@@ -30,6 +30,8 @@ include_once('../../lib/profiles.inc'); // functions to load and save profiles
 include_once('../../lib/status.inc'); // Return error-message
 include_once('../../lib/pdf.inc'); // Return a pdf-file
 include_once('../../lib/ldap.inc'); // LDAP-functions
+include_once('../../lib/modules.inc');
+include_once('../../lib/cache.inc');
 
 /* We have to include all modules
 * before start session
