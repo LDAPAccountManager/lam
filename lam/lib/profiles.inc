@@ -92,7 +92,7 @@ function loadUserProfile($profile) {
 				continue;
 			}
 			if (substr($line, 0, 18) == "general_groupadd: ") {
-				$acc->general_groupadd = chop(substr($line, 18, strlen($line)-18));
+				$acc->general_groupadd = explode(";", chop(substr($line, 18, strlen($line)-18)));
 				continue;
 			}
 			if (substr($line, 0, 17) == "general_homedir: ") {
@@ -207,7 +207,7 @@ function loadHostProfile($profile) {
 				continue;
 			}
 			if (substr($line, 0, 18) == "general_groupadd: ") {
-				$acc->general_groupadd = chop(substr($line, 18, strlen($line)-18));
+				$acc->general_groupadd = explode(";", chop(substr($line, 18, strlen($line)-18)));
 				continue;
 			}
 			if (substr($line, 0, 18) == "unix_password_no: ") {
@@ -282,10 +282,27 @@ function saveUserProfile($account, $profile) {
 	if (!is_object($account)) {echo _("saveUserProfile: \$account has wrong type!"); exit;}
 	$path = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/users/" . $profile . ".pru";
 	$file = fopen($path, "w");
+	// replace user and group names
+	$homedir = $account->general_homedir;
+//	$profpath = $account->smb_profilePath;
+	$scriptpath = $account->smb_scriptpath;
+	$smbhome = $account->smb_smbhome;
+	if ($account->general_username) {
+		$homedir = str_replace($account->general_username, "\$user", $homedir);
+//		$profpath = str_replace($account->general_username, "\$user", $profpath);
+		$scriptpath = str_replace($account->general_username, "\$user", $scriptpath);
+		$smbhome = str_replace($account->general_username, "\$user", $smbhome);
+	}
+	if ($account->general_group) {
+		$homedir = str_replace($account->general_group, "\$group", $homedir);
+//		$profpath = str_replace($account->general_group, "\$group", $profpath);
+		$scriptpath = str_replace($account->general_group, "\$group", $scriptpath);
+		$smbhome = str_replace($account->general_group, "\$group", $smbhome);
+	}
 	// write attributes
 	if ($account->general_group) fputs($file, "general_group: " . $account->general_group . "\n");
-	if ($account->general_groupadd) fputs($file, "general_groupadd: " . $account->general_groupadd . "\n");
-	if ($account->general_homedir) fputs($file, "general_homedir: " . $account->general_homedir . "\n");
+	if ($account->general_groupadd) fputs($file, "general_groupadd: " . implode(";", $account->general_groupadd) . "\n");
+	if ($account->general_homedir) fputs($file, "general_homedir: " . $homedir . "\n");
 	if ($account->general_shell) fputs($file, "general_shell: " . $account->general_shell . "\n");
 	if ($account->unix_password_no) fputs($file, "unix_password_no: " . $account->unix_password_no . "\n");
 	if ($account->unix_pwdwarn) fputs($file, "unix_pwdwarn: " . $account->unix_pwdwarn . "\n");
@@ -301,9 +318,9 @@ function saveUserProfile($account, $profile) {
 	if ($account->smb_pwdcanchange) fputs($file, "smb_pwdcanchange: " . $account->smb_pwdcanchange . "\n");
 	if ($account->smb_pwdmustchange) fputs($file, "smb_pwdmustchange: " . $account->smb_pwdmustchange . "\n");
 	if ($account->smb_homedrive) fputs($file, "smb_homedrive: " . $account->smb_homedrive . "\n");
-	if ($account->smb_scriptpath) fputs($file, "smb_scriptpath: " . $account->smb_scriptpath . "\n");
+	if ($account->smb_scriptpath) fputs($file, "smb_scriptpath: " . $scriptpath . "\n");
 	if ($account->smb_smbuserworkstations) fputs($file, "smb_smbuserworkstations: " . $account->smb_smbuserworkstations . "\n");
-	if ($account->smb_smbhome) fputs($file, "smb_smbhome: " . $account->smb_smbhome . "\n");
+	if ($account->smb_smbhome) fputs($file, "smb_smbhome: " . $smbhome . "\n");
 	if ($account->smb_domain) fputs($file, "smb_domain: " . $account->smb_domain . "\n");
 	// close file
 	fclose($file);
@@ -324,7 +341,7 @@ function saveHostProfile($account, $profile) {
 	$file = fopen($path, "w");
 	// write attributes
 	if ($account->general_group) fputs($file, "general_group: " . $account->general_group . "\n");
-	if ($account->general_groupadd) fputs($file, "general_groupadd: " . $account->general_groupadd . "\n");
+	if ($account->general_groupadd) fputs($file, "general_groupadd: " . implode(";", $account->general_groupadd) . "\n");
 	if ($account->unix_password_no) fputs($file, "unix_password_no: " . $account->unix_password_no . "\n");
 	if ($account->unix_pwdwarn) fputs($file, "unix_pwdwarn: " . $account->unix_pwdwarn . "\n");
 	if ($account->unix_pwdallowlogin) fputs($file, "unix_pwdallowlogin: " . $account->unix_pwdallowlogin . "\n");
