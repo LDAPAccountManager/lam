@@ -81,17 +81,22 @@ echo $_SESSION['header'];
 		<hr><br><br>
 		<!-- form to change existing profiles -->
 		<form action="confmain.php" method="post">
-		<table border=0 align="center">
+		<table align="center" border="2" rules="none" bgcolor="white">
 			<tr>
-				<td colspan=2 align="center"><b> <?php echo _("Please enter password to change preferences:"); ?> </b></td>
+				<td style="border-style:none" rowspan="7" width="20"></td>
+				<td style="border-style:none" colspan="2" height="20"></td>
+				<td style="border-style:none" rowspan="7" width="20"></td>
 			</tr>
-			<tr><td colspan=2 >&nbsp;</td></tr>
+			<tr>
+				<td style="border-style:none" colspan=2 align="center"><b> <?php echo _("Please enter password to change preferences:"); ?> </b></td>
+			</tr>
+			<tr><td style="border-style:none" colspan=2 >&nbsp;</td></tr>
 <?php
 	// print message if login was incorrect
 	if ($message) echo ("<tr><td colspan=4 align=\"center\"><font color=red>" . $message . "</font></td></tr>");
 ?>
 			<tr>
-				<td colspan=2 align="center">
+				<td style="border-style:none" colspan=2 align="center">
 					<select size=1 name="filename">
 					<?php
 						$files = getConfigProfiles();
@@ -108,15 +113,18 @@ echo $_SESSION['header'];
 					<a href="../help.php?HelpNumber=200" target="lamhelp"><?php echo _("Help") ?></a></td>
 			</tr>
 			<tr>
-				<td colspan=2>&nbsp;</td>
+				<td  style="border-style:none"colspan=2>&nbsp;</td>
 			</tr>
 			<tr>
-				<td align="left" width="50%">
+				<td style="border-style:none" align="left">
 					<b><a href="profmanage.php"><?php echo _("Manage profiles") ?></a></b>
 				</td>
-				<td align="right" width="50%">
+				<td style="border-style:none" align="right">
 					<b><a href="../confwiz/start.php"><?php echo _("Configuration wizard") ?></a></b>
 				</td>
+			</tr>
+			<tr>
+				<td style="border-style:none" colspan=2 height="20"></td>
 			</tr>
 		</table>
 		</form>
