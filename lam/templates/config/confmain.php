@@ -308,13 +308,13 @@ echo ("<fieldset><legend><b>" . _("Script settings") . "</b></legend>\n");
 echo ("<table border=0>\n");
 
 echo ("<tr><td align=\"right\"><b>".
-	_("Path to external script") . ": </b></td>".
-	"<td><input size=50 type=\"text\" name=\"scriptpath\" value=\"" . $conf->get_scriptPath() . "\"></td>\n");
-echo ("<td><a href=\"../help.php?HelpNumber=210\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
-echo ("<tr><td align=\"right\"><b>".
 	_("Server of external script") . ": </b></td>".
 	"<td><input size=50 type=\"text\" name=\"scriptserver\" value=\"" . $conf->get_scriptServer() . "\"></td>\n");
 echo ("<td><a href=\"../help.php?HelpNumber=211\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
+echo ("<tr><td align=\"right\"><b>".
+	_("Path to external script") . ": </b></td>".
+	"<td><input size=50 type=\"text\" name=\"scriptpath\" value=\"" . $conf->get_scriptPath() . "\"></td>\n");
+echo ("<td><a href=\"../help.php?HelpNumber=210\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 
 echo ("</table>\n");
 echo ("</fieldset>\n");
