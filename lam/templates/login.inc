@@ -22,9 +22,14 @@ $Id$
 
   LDAP Account Manager main login page.
 */
-?>
 
-<?
+// generate 256 bit key and initialization vector for user/passwd-encryption
+$key = mcrypt_create_iv(32, MCRYPT_DEV_RANDOM);
+$iv = mcrypt_create_iv(32, MCRYPT_DEV_RANDOM);
+
+// save both in cookie
+setcookie("Key", base64_encode($key), 0, "/");
+setcookie("IV", base64_encode($iv), 0, "/");
 
 // loading available languages from language.conf file
 

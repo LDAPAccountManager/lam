@@ -36,14 +36,6 @@ $session_save_path .= "/sess";
 
 session_save_path($session_save_path); // Set session save path
 @session_start(); // Start LDAP Account Manager session
-// generate 256 bit key and initialization vector for user/passwd-encryption
-$key = mcrypt_create_iv(32, MCRYPT_DEV_RANDOM);
-$iv = mcrypt_create_iv(32, MCRYPT_DEV_RANDOM);
-
-// save both in cookie
-setcookie("Key", base64_encode($key));
-setcookie("IV", base64_encode($iv));
-
 // checking if the submitted username/password is correct.
 if($action == "checklogin")
 {
