@@ -115,7 +115,6 @@ elseif(isset($_GET['remove'])) {
 			$current = next($_SESSION['currentPDFStructure']);
 			$end++;
 		}
-		echo "start: $start\nend: $end\n";
 		array_splice($_SESSION['currentPDFStructure'],$start,$end - $start + 1);
 	}
 	elseif($remove['tag'] == "ENTRY") {
