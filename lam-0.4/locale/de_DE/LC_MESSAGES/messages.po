@@ -1979,11 +1979,11 @@ msgstr "Minimale GID-Nummer ist ungültig!"
 #: ../templates/config/confmain.php:215 ../templates/confwiz/o_ranges.php:137
 #: ../lib/config.inc:283
 msgid "Minimum Machine number"
-msgstr "Minimale Maschienen-Nummer"
+msgstr "Minimale Maschinen-Nummer"
 
 #: ../templates/config/confsave.php:144 ../templates/confwiz/o_ranges.php:66
 msgid "Minimum Machine number is invalid!"
-msgstr "Minimale Maschienen-Nummer ist ungültig!"
+msgstr "Minimale Maschinen-Nummer ist ungültig!"
 
 #: ../templates/config/confmain.php:197 ../templates/confwiz/o_ranges.php:119
 #: ../lib/config.inc:279
@@ -3362,7 +3362,7 @@ msgid ""
 msgstr ""
 "Das ist der Suffix im LDAP-Baum in dem nach Benutzern/Gruppen/Hosts gesucht "
 "wird. Nur Einträge in diesen Teilbäumen werden in den Listen angezeigt. Neue "
-"Accounts werden werden unter dieser DN gespeichert."
+"Accounts werden werden unter diesem DN gespeichert."
 
 #: ../help/help.inc:104
 msgid ""
