@@ -47,7 +47,7 @@ function pwd_hash($password, $enabled=true) {
 			break;
 		case 'SMD5':
 			$salt = mhash_keygen_s2k(MHASH_MD5, $password, substr(pack("h*", md5(mt_rand())), 0, 8), 4);
-			$hash = base64_encode(mHash(MHASH_SMD5, $password . $salt) . $salt);
+			$hash = base64_encode(mHash(MHASH_MD5, $password . $salt) . $salt);
 			$hash = "{SMD5}" . $hash;
 			break;
 		case 'SHA':
