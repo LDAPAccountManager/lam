@@ -8,8 +8,13 @@ Installation Instructions for LAM
    - Apache webserver (SSL optional) with installed PHP-Module (PHP-Module with
      ldap, gettext, mcrypt+mhash optional)
    - Perl
-   - Openldap (>2.0)
+   - OpenLDAP (>2.0)
    - A web browser :-)
+
+   MHash is only needed if you use PHP < 4.3 and want to use SHA or SSHA
+   for password hashes.
+   MCrypt will be used if available, otherwise Blowfish will be used
+   to store your LDAP password in the session file.
 
    Getting mcrypt and mhash for Suse/RedHat:
 
@@ -22,23 +27,25 @@ Installation Instructions for LAM
 2. Installation
 
    * Extract package with:
-     tar xzf lam-version.tar.gz
+     tar xzf ldap-account-manager_<version>.tar.gz
 
    * Copy files into the html-file scope of the webserver. For example
      /apache/htdocs.
 
    * Set appropriate file permissions:
-     - /lam/sess: write permission for apache user
-     - /lam/tmp: write permission for apache user
-     - /lam/config (with subdirectories): write permission for apache user
-     - /lam/lib: perl files must be set executable (See also
-       docs/readme.lamdeamon.pl)
+     - lam/sess: write permission for apache user
+     - lam/tmp: write permission for apache user
+     - lam/config (with subdirectories): write permission for apache user
+     - lam/lib: perl files must be set executable (See also
+       docs/readme.lamdeamon.txt)
 
    * Configure config.cfg and create a configuration profile.
      Copy config.cfg_sample to config.cfg and set the master password and default
      profile.
-     Then use the web interface with the link "Configuration Login" (start file is /lam/index.html)
-     or configure LAM manually. (The default password to edit the options is "lam")
+
+     - With web browser:
+       Follow the link "Configuration Login" from the start page (lam/index.html).
+       (The default password to edit the options is "lam")
 
      - Manually:
        A default config file can be found in /lam/config/lam.conf_sample.

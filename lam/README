@@ -60,19 +60,12 @@ LAM - Readme
   Installation:
     Please see the INSTALL file.
 
-  Known Bugs:
-    - If you fill in the Unix workstations field the LDAP add/modify operation
-      may fail. This is because the host attribute is provided only by
-      objectClass account which conflicts with inetOrgPerson.
-      If you want to use host restrictions, add the host attribute to
-      inetOrgPerson in your schema file.
-
   Documentation:
-    Basic documentation available in /docs
+    Basic documentation is available in the directory "docs".
 
   Internationalization:
     If you want to use a translated version of LAM be sure to install the
-    needed locales. See locale/ for a list of supported locales.
+    needed locales. See locale/ for a list of supported locales and languages.
     Debian users can add locales with "dpkg-reconfigure locales".
 
   Security:
@@ -81,7 +74,7 @@ LAM - Readme
     LAM needs to store your LDAP username + password in the session. The session
     files are saved in sess/ and are accessible only by the web server. To increase
     security username and password are encrypted with MCrypt/AES or Blowfish.
-    The key and iv are generated at random when you log in. They are stored in two
+    The key and IV are generated at random when you log in. They are stored in two
     cookies.
  
 
