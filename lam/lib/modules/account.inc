@@ -54,6 +54,8 @@ class account extends baseModule {
 		$return['dependencies'] = array('depends' => array(), 'conflicts' => array('inetOrgPerson'));
 		// available PDF fields
 		$return['PDF_fields'] = array('description');
+		// help Entries
+		$return['help'] = array (	'description'	=>	array ("ext" => "FALSE", "Headline" => _("Gecos"), "Text" => _("Host description. If left empty host name will be used.")));
 		return $return;
 	}
 
@@ -106,12 +108,11 @@ class account extends baseModule {
 	function get_help($id) {
 		switch ($id) {
 			case "description":
-				return array ("ext" => "FALSE", "Headline" => _("Description"),
-					"Text" => _("Host Description."));
+				return array ("ext" => "FALSE", "Headline" => _("Gecos"), "Text" => _("Host description. If left empty host name will be used."));
 				break;
-			}
-		return false;
 		}
+		return false;
+	}
 
 	/* This function returns all ldap attributes
 	* which are part of account and returns

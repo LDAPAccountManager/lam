@@ -142,6 +142,13 @@ class shadowAccount extends baseModule {
 													'shadowExpire',
 													'shadowFlag',
 													'description');
+		// help Entries
+		$return['help'] = array (	'shadowWarning'	=>	array ("ext" => "FALSE", "Headline" => _("Password warn"), "Text" => _("Days before password is to expire that user is warned of pending password expiration. If set value must be 0<."). ' '. _("Can be left empty.")),
+											'shadowInactive'	=>	array ("ext" => "FALSE", "Headline" => _("Password expire"), "Text" => _("Number of days a user can login even his password has expired. -1=always."). ' '. _("Can be left empty.")),
+											'shadowMin'		=>	array ("ext" => "FALSE", "Headline" => _("Minimum password age"), "Text" => _("Number of days a user has to wait until he\'s allowed to change his password again. If set value must be 0<."). ' '. _("Can be left empty.")),
+											'shadowMax'		=>	array ("ext" => "FALSE", "Headline" => _("Maximum password age"), "Text" => _("Number of days after a user has to change his password again. If set value must be 0<."). ' '. _("Can be left empty.")),
+											'shadowExpire'	=>	array ("ext" => "FALSE", "Headline" => _("Expire date"), "Text" => _("Account expire date. Format: DD-MM-YYYY")));
+		
 		return $return;
 	}
 
@@ -204,13 +211,24 @@ class shadowAccount extends baseModule {
 	*/
 	function get_help($id) {
 		switch ($id) {
-			case "description":
-				return array ("ext" => "FALSE", "Headline" => _("Description"),
-					"Text" => _("Host Description."));
+			case 'shadowWarning':
+				return array ("ext" => "FALSE", "Headline" => _("Password warn"), "Text" => _("Days before password is to expire that user is warned of pending password expiration. If set value must be 0<."). ' '. _("Can be left empty."));
 				break;
-			}
-		return false;
+			case 'shadowInactive':
+				return array ("ext" => "FALSE", "Headline" => _("Password expire"), "Text" => _("Number of days a user can login even his password has expired. -1=always."). ' '. _("Can be left empty."));
+				break;
+			case 'shadowMin':
+				return array ("ext" => "FALSE", "Headline" => _("Minimum password age"), "Text" => _("Number of days a user has to wait until he\'s allowed to change his password again. If set value must be 0<."). ' '. _("Can be left empty."));
+				break;
+			case 'shadowMax':
+				return array ("ext" => "FALSE", "Headline" => _("Maximum password age"), "Text" => _("Number of days after a user has to change his password again. If set value must be 0<."). ' '. _("Can be left empty."));
+				break;
+			case 'shadowExpire':
+				return array ("ext" => "FALSE", "Headline" => _("Expire date"), "Text" => _("Account expire date. Format: DD-MM-YYYY"));
+				break;
 		}
+		return false;
+	}
 
 	/* This function returns all ldap attributes
 	* which are part of shadowAccount and returns

@@ -97,6 +97,11 @@ class sambaGroupMapping extends baseModule {
 				'required' => false
 			)
 		);
+		// help Entries
+		$return['help'] = array (	'displayName'				=>	array ("ext" => "FALSE", "Headline" => _("Display name"), "Text" => _("Windows clients will show display name as group description.")),
+											'sambaSID'				=>	array ("ext" => "FALSE", "Headline" => _("Windows groupname"), "Text" => _("If you want to use a well known RID you can selcet a well known group.")),
+											'sambaDomainName'	=>	array ("ext" => "FALSE", "Headline" => _("Domain"), "Text" => _("Windows-Domain of group."). ' '. _("Can be left empty.")));
+		
 		return $return;
 	}
 
@@ -161,13 +166,18 @@ class sambaGroupMapping extends baseModule {
 	*/
 	function get_help($id) {
 		switch ($id) {
-			case "description":
-				return array ("ext" => "FALSE", "Headline" => _("Description"),
-					"Text" => _("Host Description."));
+			case 'displayName':
+				return array ("ext" => "FALSE", "Headline" => _("Display name"), "Text" => _("Windows clients will show display name as group description."));
 				break;
-			}
-		return false;
+			case 'sambaSID':
+				return array ("ext" => "FALSE", "Headline" => _("Windows groupname"), "Text" => _("If you want to use a well known RID you can selcet a well known group."));
+				break;
+			case 'sambaDomainName':
+				return array ("ext" => "FALSE", "Headline" => _("Domain"), "Text" => _("Windows-Domain of group."). ' '. _("Can be left empty."));
+				break;
 		}
+		return false;
+	}
 
 	/* This function returns all ldap attributes
 	* which are part of sambaGroupMapping and returns
