@@ -19,15 +19,23 @@ $Id$
   along with this program; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-	User is logged off from LDAP server, session is destroyed.  
-  
 */
+
+/**
+* User is logged off from LDAP server, session is destroyed.
+*
+* @package main
+* @author Roland Gruber
+*/ 
+
 
 // delete key and iv in cookie
 setcookie("Key", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", 0, "/");
 setcookie("IV", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", 0, "/");
 
+/** Used to display status messages */
 include_once("../lib/status.inc");
+/** LDAP settings are deleted at logout */
 include_once("../lib/ldap.inc");
 
 // start session

@@ -19,10 +19,18 @@ $Id$
   along with this program; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-  Manages Samba 3 domain entries.
-
 */
+  
+/**
+* Manages Samba 3 domain entries.
+*
+* @package tools
+* @author Roland Gruber
+*/
+
+/** access to configuration options */
 include_once ("../lib/config.inc");
+/** access to LDAP server */
 include_once ("../lib/ldap.inc");
 
 // start session

@@ -25,7 +25,7 @@ $Id$
 * Provides a list of tools like file upload or profile editor.
 *
 * @author Roland Gruber
-* @package main
+* @package tools
 */
 
 /** access to configuration options */
