@@ -80,7 +80,7 @@ $helpArray = array (
 				"208" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("Maximum list entries"),
 					"Text" => _("This is the number of rows to show in the user/group/host list. If more entries are found the list will be split to several pages.")),
 				"209" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("Default language"),
-					"Text" => _("Defines the language of the login window and is sets this language the default language. Users can change the language at login.")),
+					"Text" => _("Defines the language of the login window and is sets this language as the default language. Users can change the language at login.")),
 				"210" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("Script path"),
 					"Text" => _("This is the absolute path to an external script for setting quotas and creating home directories.").
 							"<br><br><b>".
