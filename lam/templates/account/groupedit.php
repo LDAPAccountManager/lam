@@ -34,6 +34,13 @@ include_once('../../lib/ldap.inc'); // LDAP-functions
 // Start session
 session_save_path('../../sess');
 @session_start();
+
+// Redirect to startpage if user is not loged in
+if (!isset($_SESSION['loggedIn'])) {
+	metaRefresh("../login.php");
+	die;
+	}
+
 // Set correct language, codepages, ....
 setlanguage();
 
@@ -321,8 +328,12 @@ do { // X-Or, only one if() can be true
 		}
 	if ($_POST['next_final']) {
 		// Check if objectclasses are OK
-		if ($config_intern->is_samba3() && !isset($account_new->smb_domain)) // Samba page not viewed; can not create group because if missing options
+		$stay = false;
+		if ($config_intern->is_samba3() && !isset($account_new->smb_domain)) {
+			// Samba page not viewed; can not create group because if missing options
 			$errors[] = array("ERROR", _("Samba Options not set!"), _("Please check settings on samba page."));
+			$stay = true;
+			}
 		if (isset($account_old->general_objectClass)) {
 			if (($config_intern->is_samba3()) && (!in_array('sambaGroupMapping', $account_old->general_objectClass)))
 				$errors[] = array('WARN', _('ObjectClass sambaGroupMapping not found.'), _('Have to add objectClass sambaGroupMapping.'));
@@ -334,7 +345,7 @@ do { // X-Or, only one if() can be true
 			$errors[] = array('INFO', _('GID-number has changed. You have to run the following command as root in order to change existing file-permissions:'),
 			'find / -gid ' . $account_old->general_uidNumber . ' -exec chgrp ' . $account_new->general_uidNumber . ' {} \;');
 		// Go from final to next page if no error did ocour
-		if (!isset($errors)) $select_local='final';
+		if (!$stay)) $select_local='final';
 			else $select_local=$_POST['select'];
 		break;
 		}

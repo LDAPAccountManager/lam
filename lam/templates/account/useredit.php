@@ -34,6 +34,13 @@ include_once('../../lib/ldap.inc'); // LDAP-functions
 // Start session
 session_save_path('../../sess');
 @session_start();
+
+// Redirect to startpage if user is not loged in
+if (!isset($_SESSION['loggedIn'])) {
+	metaRefresh("../login.php");
+	die;
+	}
+
 // Set correct language, codepages, ....
 setlanguage();
 
@@ -537,6 +544,7 @@ do { // X-Or, only one if() can be true
 		}
 	if ($_POST['next_final']) {
 		// Go from final to next page if no error did ocour
+		$stay = false;
 		if (($account_old) && ($account_new->general_uidNumber != $account_old->general_uidNumber))
 			$errors[] = array('INFO', _('UID-number has changed. You have to run the following command as root in order to change existing file-permissions:'),
 				'find / -gid ' . $account_old->general_uidNumber . ' -exec chown ' . $account_new->general_uidNumber . ' {} \;');
@@ -546,10 +554,12 @@ do { // X-Or, only one if() can be true
 		if (($account_old) && ($account_new->general_homedir != $account_old->general_homedir))
 			$errors[] = array('INFO', _('Home Directory has changed. You have to run the following command as root in order to change the existing homedirectory:'),
 				'mv ' . $account_old->general_homedir . ' ' . $account_new->general_homedir);
-		if ($config_intern->is_samba3() && !isset($account_new->smb_domain))
+		if ($config_intern->is_samba3() && !isset($account_new->smb_domain)) {
 			// Samba page not viewed; can not create user because if missing options
 			$errors[] = array("ERROR", _("Samba Options not set!"), _("Please check settings on samba page."));
-		else {
+			$stay = true;
+			}
+		if (!$config_intern->is_samba3()) {
 			$found = false;
 			if (strstr($account_new->smb_scriptPath, '$group')) $found = true;
 			if (strstr($account_new->smb_scriptPath, '$user')) $found = true;
@@ -559,6 +569,7 @@ do { // X-Or, only one if() can be true
 			if (strstr($account_new->smb_smbhome, '$user')) $found = true;
 			if ($found)
 				// Samba page not viewed; can not create group because if missing options
+				$stay = true;
 				$errors[] = array("ERROR", _("Samba Options not set!"), _("Please check settings on samba page."));
 			}
 		if (isset($account_old->general_objectClass)) {
@@ -575,7 +586,7 @@ do { // X-Or, only one if() can be true
 					$errors[] = array('WARN', _('ObjectClass sambaAccount not found.'), _('Have to add objectClass sambaAccount. User with sambaSamAccount will be set back to sambaAccount.'));
 				}
 			}
-		if (!is_array($errors)) $select_local='final';
+		if (!$stay) $select_local='final';
 			else $select_local=$_POST['select'];
 		break;
 		}

@@ -34,6 +34,13 @@ include_once('../../lib/ldap.inc'); // LDAP-functions
 // Start session
 session_save_path('../../sess');
 @session_start();
+
+// Redirect to startpage if user is not loged in
+if (!isset($_SESSION['loggedIn'])) {
+	metaRefresh("login.php");
+	die;
+	}
+
 // Set correct language, codepages, ....
 setlanguage();
 

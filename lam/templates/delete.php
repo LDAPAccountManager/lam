@@ -29,6 +29,12 @@ include_once('../lib/config.inc');
 // start session
 session_save_path('../sess');
 @session_start();
+// Redirect to startpage if user is not loged in
+if (!isset($_SESSION['loggedIn'])) {
+	metaRefresh("login.php");
+	die;
+	}
+
 // set language
 setlanguage();
 
@@ -177,10 +183,9 @@ if ($_POST['delete_yes']) {
 				// Get group GIDNumber
 				$groupgid = getgid($groupname);
 				// Search for users which have gid set to current gid
-				$result = ldap_search($ldap_intern->server(), $dn, "gidNumber=$groupgid", array(''));
-				$entry = ldap_first_entry($ldap_intern->server(), $result);
+				$result = ldap_search($ldap_intern->server(), $config_intern->get_UserSuffix(), "gidNumber=$groupgid", array(''));
 				// Print error if still users in group
-				if ($entry) $error = _('Could not delete group. Still users in group:').' '.$dn;
+				if (!$result) $error = _('Could not delete group. Still users in group:').' '.$dn;
 				else {
 					// continue if no primary users are in group
 					// Remove quotas if lamdaemon.pl is used

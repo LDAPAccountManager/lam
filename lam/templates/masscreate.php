@@ -34,6 +34,13 @@ include_once('../lib/pdf.inc'); // Return a pdf-file
 // Start Session
 session_save_path('../sess');
 @session_start();
+
+// Redirect to startpage if user is not loged in
+if (!isset($_SESSION['loggedIn'])) {
+	metaRefresh("login.php");
+	die;
+	}
+
 // Set correct language, codepages, ....
 setlanguage();
 
@@ -443,7 +450,7 @@ echo '</form></body></html>';
 function loadfile() {
 	if ($_FILES['userfile']['size']>0) {
 		// Array with all OUs from users
-		$OUs = array();
+		$OUs = $_SESSION['ldap']->search_units($_SESSION['config']->get_UserSuffix());
 		// fixme **** load all existing OUs in Array
 		// open csv-file
 		$handle = fopen($_FILES['userfile']['tmp_name'], 'r');
@@ -510,11 +517,11 @@ function loadfile() {
 				// Expand DN of user with ou=$group
 				$_SESSION['accounts'][$row]->general_dn = "ou=".$_SESSION['accounts'][$row]->general_group .','. $_POST['f_general_suffix'];
 				// Create OUs if needed
-				if (!in_array($_SESSION['accounts'][$row]->general_group, $OUs)) {
+				if (!in_array("ou=".$_SESSION['accounts'][$row]->general_group.",".$_POST['f_general_suffix'], $OUs)) {
 					$attr['objectClass']= 'organizationalUnit';
 					$attr['ou'] = $_SESSION['accounts'][$row]->general_group;
-					$success = @ldap_add($_SESSION['ldap']->server(), $_SESSION['accounts'][$row]->general_dn, $attr);
-					if ($success) $OUs[] = $_SESSION['accounts'][$row]->general_group;
+					$success = ldap_add($_SESSION['ldap']->server(), $_SESSION['accounts'][$row]->general_dn, $attr);
+					if ($success) $OUs[] = "ou=".$_SESSION['accounts'][$row]->general_group.",".$_POST['f_general_suffix'];
 					}
 				}
 			// Set DN without uid=$username
