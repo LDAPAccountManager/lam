@@ -34,19 +34,22 @@ if($action == "checklogin")
 	$config = new Config;
 	$ldap = new Ldap($config);
 	$result = $ldap->connect($username,$password);
-	if($result)
+	if($result == True)
 	{
 		include("./main.php"); // Username/password correct. Loading main Frame.
 	}
-	elseif($result == "Unable to bind to Server!")
+	else
 	{
-		$error_message = "Wrong Password/Username  combination. Try again.";
-		include("./login.inc"); // Username/password invalid. Returning to Login page.
-	}
-	elseif($result == "Unable to connect to Server!")
-	{
-		$error_message = "Cannot connect to specified LDAP-Server. Try again.";
-		include("./login.inc"); // Server not reachable. Returning to Login page.
+		if($ldap->server)
+		{
+			$error_message = "Wrong Password/Username  combination. Try again.";
+			include("./login.inc"); // Username/password invalid. Returning to Login page.
+		}
+		else
+		{
+			$error_message = "Cannot connect to specified LDAP-Server. Try again.";
+			include("./login.inc"); // Server not reachable. Returning to Login page.
+		}
 	}
 }
 // Loading Login page
