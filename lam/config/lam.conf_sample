@@ -23,6 +23,14 @@ groupsuffix: ou=groups,dc=my-domain,dc=com
 # e.g. ou=machines,dc=yourdomain,dc=org
 hostsuffix: ou=machines,dc=my-domain,dc=com
 
+# suffix of Samba 3 domains
+# e.g. ou=domains,dc=yourdomain,dc=org
+domainsuffix: ou=domains,dc=my-domain,dc=com
+
+# suffix of Samba 3 user/group mappings
+# e.g. ou=mappings,dc=yourdomain,dc=org
+mapsuffix: 
+
 # minimum and maximum UID numbers
 minUID: 10000
 maxUID: 20000
@@ -60,10 +68,10 @@ maxlistentries: 30
 defaultLanguage: en_GB:ISO-8859-1:English (Britain)
 
 # Path to external Script
-scriptPath:
+scriptPath: 
 
 # Server of external Script
-scriptServer:
+scriptServer: 
 
 # Set to "yes" only if you use the new Samba 3.x schema.
 samba3: no
