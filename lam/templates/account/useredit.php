@@ -53,6 +53,11 @@ if (isset($_GET['DN'])) {
 		$_SESSION['account']->smb_flagsW = 0;
 		if (isset($_SESSION['account_old'])) unset($_SESSION['account_old']);
 		$_SESSION['account_old'] = false;
+		$values = getquotas('user');
+		if (is_object($values)) {
+			while (list($key, $val) = each($values)) // Set only defined values
+				if (isset($val)) $_SESSION['account']->$key = $val;
+				}
 		}
 	}
 else if (count($_POST)==0) { // Startcondition. useredit.php was called from outside
@@ -183,7 +188,7 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 			$select_local = 'unix';
 			}
 			// Check if values are OK and set automatic values. if not error-variable will be set
-			else { // $errors = checkunix($_SESSION['account'], $_SESSION['account']->type); // account.inc
+			else { // account.inc
 				if ($_SESSION['account']->unix_password != '') {
 					$iv = base64_decode($_COOKIE["IV"]);
 					$key = base64_decode($_COOKIE["Key"]);
@@ -479,7 +484,7 @@ if ($select_local != 'pdf') {
 		}
 	}
 
- print_r($_SESSION['account']);
+// print_r($_SESSION['account']);
 // print_r($_POST);
 
 switch ($select_local) { // Select which part of page will be loaded

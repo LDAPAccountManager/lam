@@ -47,12 +47,12 @@ if (isset($_GET['DN'])) {
 		$_SESSION['account'] ->type = 'group';
 		if (isset($_SESSION['account_old'])) unset($_SESSION['account_old']);
 		$_SESSION['account_old'] = false;
+		$values = getquotas('group');
+		if (is_object($values)) {
+			while (list($key, $val) = each($values)) // Set only defined values
+				if (isset($val)) $_SESSION['account']->$key = $val;
+				}
 		}
-	$values = getquotas($type);
-	if (is_object($values)) {
-		while (list($key, $val) = each($values)) // Set only defined values
-			if (isset($val)) $_SESSION['account']->$key = $val;
-			}
 	}
 else if (count($_POST)==0) { // Startcondition. groupedit.php was called from outside
 	$_SESSION['account'] = loadGroupProfile('default');

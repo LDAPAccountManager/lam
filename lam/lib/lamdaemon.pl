@@ -77,7 +77,7 @@ sub get_fs { # Load mountpoints from mtab if enabled quotas
 			$quota_usr[$j][3] = $args[$i][3];
 			$j++;
 			}
-		elsif ( $args[$i][3] =~ m/grpquota/ ) {
+		if ( $args[$i][3] =~ m/grpquota/ ) {
 			$quota_grp[$k][0] = $args[$i][0];
 			$quota_grp[$k][1] = $args[$i][1];
 			$quota_grp[$k][2] = $args[$i][2];
@@ -151,6 +151,7 @@ if ($found==true) {
 				get_fs(); # Load list of devices with enabled quotas
 					# Store quota information in array
 				@quota_temp1 = split (':', $vals[6]);
+				$group=0;
 				$i=0;
 				while ($quota_temp1[$i]) {
 					$j=0;
@@ -162,7 +163,7 @@ if ($found==true) {
 					$i++;
 					}
 				if ($vals[5] eq 'u') { $group=false; } else {
-				    $group=true;
+				    $group=1;
 				    @quota_usr = @quota_grp;
 				    }
 				switch2: {
@@ -171,7 +172,6 @@ if ($found==true) {
 						($<, $>) = ($>, $<); # Get root privileges
 						while ($quota_usr[$i][0]) {
 							$dev = Quota::getqcarg($quota_usr[$i][1]);
-							print "$user[2]\n";
 							$return = Quota::setqlim($dev,$user[2],0,0,0,0,1,$group);
 							$i++;
 							}
@@ -196,7 +196,7 @@ if ($found==true) {
 							if ($vals[2]ne'+') {
 								$dev = Quota::getqcarg($quota_usr[$i][1]);
 								@temp = Quota::query($dev,$user[2],$group);
-								if ($temp[0]) {
+								if ($temp[0]ne'') {
     								    $return = "$quota_usr[$i][1],$temp[0],$temp[1],$temp[2],$temp[3],$temp[4],$temp[5],$temp[6],$temp[7]:$return";
 								    }
 								else { $return = "$quota_usr[$i][1],0,0,0,0,0,0,0,0:$return"; }

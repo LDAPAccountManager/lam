@@ -355,33 +355,117 @@ function loadfile() {
 				}
 			if ($values->general_username != $return->general_username) $error[] = array('WARN', _('Username'), _('Username in use. Selected next free username.'));
 			$_SESSION['errors'][$row2] = array_merge($_SESSION['errors'][$row2], $error);
-			list($values, $error) = checkglobal($_SESSION['accounts'][$row2], 'user'); // account.inc
-			$_SESSION['errors'][$row2] = array_merge($_SESSION['errors'][$row2], $error);
-			if (is_object($values)) {
-				while (list($key, $val) = each($values)) // Set only defined values
-					if ($val) $_SESSION['accounts'][$row2]->$key = $val;
-				$_SESSION['accounts'][$row2]->general_uidNumber="";
+			// Check if Homedir is valid
+			$_SESSION['account'][$row2]->general_homedir = str_replace('$group', $_SESSION['account'][$row2]->general_group, $_SESSION['account'][$row2]->general_homedir);
+			if ($_SESSION['account'][$row2]->general_username != '')
+				$_SESSION['account'][$row2]->general_homedir = str_replace('$user', $_SESSION['account'][$row2]->general_username, $_SESSION['account'][$row2]->general_homedir);
+			if ( !ereg('^[/]([a-z]|[A-Z])([a-z]|[A-Z]|[0-9]|[.]|[-]|[_])*([/]([a-z]|[A-Z])([a-z]|[A-Z]|[0-9]|[.]|[-]|[_])*)*$', $_SESSION['account'][$row2]->general_homedir ))
+				$errors[] = array('ERROR', _('Home directory'), _('Homedirectory contains invalid characters.'));
+			// Check if givenname is valid
+			if ( !ereg('^([a-z]|[A-Z]|[-]|[ ]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+$', $_SESSION['account'][$row2]->general_givenname)) $errors[] = array('ERROR', _('Given name'), _('Given name contains invalid characters'));
+			// Check if surname is valid
+			if ( !ereg('^([a-z]|[A-Z]|[-]|[ ]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+$', $_SESSION['account'][$row2]->general_surname)) $errors[] = array('ERROR', _('Surname'), _('Surname contains invalid characters'));
+			if ( ($_SESSION['account'][$row2]->general_gecos=='') || ($_SESSION['account'][$row2]->general_gecos==' ')) {
+				$_SESSION['account'][$row2]->general_gecos = $_SESSION['account'][$row2]->general_givenname . " " . $_SESSION['account'][$row2]->general_surname ;
+				$errors[] = array('INFO', _('Gecos'), _('Inserted sur- and given name in gecos-field.'));
 				}
-			$error = checkunix($_SESSION['accounts'][$row2], 'user'); // account.inc
-			$_SESSION['errors'][$row2] = array_merge($_SESSION['errors'][$row2], $error);
-			list($values, $error) = checksamba($_SESSION['accounts'][$row2], 'user'); // account.inc
-			if (is_object($values)) {
-				while (list($key, $val) = each($values)) // Set only defined values
-				if ($val) $_SESSION['accounts'][$row2]->$key = $val;
+			if ($_SESSION['account'][$row2]->general_group=='') $errors[] = array('ERROR', _('Primary group'), _('No primary group defined!'));
+			// Check if Username contains only valid characters
+			if ( !ereg('^([a-z]|[0-9]|[.]|[-]|[_])*$', $_SESSION['account'][$row2]->general_username))
+				$errors[] = array('ERROR', _('Username'), _('Username contains invalid characters. Valid characters are: a-z, 0-9 and .-_ !'));
+			// Check if user already exists
+			if (isset($_SESSION['account'][$row2]->general_groupadd) && in_array($_SESSION['account'][$row2]->general_group, $_SESSION['account'][$row2]->general_groupadd)) {
+				for ($i=0; $i<count($_SESSION['account'][$row2]->general_groupadd); $i++ )
+					if ($_SESSION['account'][$row2]->general_groupadd[$i] == $_SESSION['account'][$row2]->general_group) {
+						unset ($_SESSION['account'][$row2]->general_groupadd[$i]);
+						$_SESSION['account'][$row2]->general_groupadd = array_values($_SESSION['account'][$row2]->general_groupadd);
+						}
 				}
-			$_SESSION['errors'][$row2] = array_merge($_SESSION['errors'][$row2], $error);
-			list($values, $error) = checkquota($_SESSION['accounts'][$row2], 'user'); // account.inc
-			if (is_object($values)) {
-				while (list($key, $val) = each($values)) // Set only defined values
-				if ($val) $_SESSION['accounts'][$row2]->$key = $val;
+			// Create automatic useraccount with number if original user already exists
+			// Reset name to original name if new name is in use
+			while ($temp = ldapexists($_SESSION['account'][$row2], 'user')) {
+				// get last character of username
+				$lastchar = substr($_SESSION['account'][$row2]->general_username, strlen($_SESSION['account'][$row2]->general_username)-1, 1);
+				// Last character is no number
+				if ( !ereg('^([0-9])+$', $lastchar))
+					$_SESSION['account'][$row2]->general_username = $_SESSION['account'][$row2]->general_username . '2';
+				 else {
+				 	$i=strlen($_SESSION['account'][$row2]->general_username)-1;
+					$mark = false;
+				 	while (!$mark) {
+						if (ereg('^([0-9])+$',substr($_SESSION['account'][$row2]->general_username, $i, strlen($_SESSION['account'][$row2]->general_username)-$i))) $i--;
+							else $mark=true;
+						}
+					// increase last number with one
+					$firstchars = substr($_SESSION['account'][$row2]->general_username, 0, $i+1);
+					$lastchars = substr($_SESSION['account'][$row2]->general_username, $i+1, strlen($_SESSION['account'][$row2]->general_username)-$i);
+					$_SESSION['account'][$row2]->general_username = $firstchars . (intval($lastchars)+1);
+				 	}
 				}
-			$_SESSION['errors'][$row2] = array_merge($_SESSION['errors'][$row2], $error);
-			list($values, $error) = checkpersonal($_SESSION['accounts'][$row2], 'user'); // account.inc
-			if (is_object($values)) {
-				while (list($key, $val) = each($values)) // Set only defined values
-				if ($val) $_SESSION['accounts'][$row2]->$key = $val;
+
+			// Check if UID is valid. If none value was entered, the next useable value will be inserted
+			$_SESSION['account'][$row2]->general_uidNumber = checkid($_SESSION['account'][$row2], 'user');
+			if (is_string($_SESSION['account'][$row2]->general_uidNumber)) { // true if checkid has returned an error
+				$errors[] = array('ERROR', _('ID-Number'), $_SESSION['account'][$row2]->general_uidNumber);
+				unset($_SESSION['account'][$row2]->general_uidNumber);
 				}
-			$_SESSION['errors'][$row2] = array_merge($_SESSION['errors'][$row2], $error);
+			// Check if Name-length is OK. minLength=3, maxLength=20
+			if ( !ereg('.{3,20}', $_SESSION['account'][$row2]->general_username)) $errors[] = array('ERROR', _('Name'), _('Name must contain between 3 and 20 characters.'));
+			// Check if Name starts with letter
+			if ( !ereg('^([a-z]|[A-Z]).*$', $_SESSION['account'][$row2]->general_username))
+				$errors[] = array('ERROR', _('Name'), _('Name contains invalid characters. First character must be a letter'));
+			$_SESSION['errors'][$row2] = array_merge($_SESSION['errors'][$row2], $errors);
+			if (isset($errors)) unset ($errors);
+
+			if ($_SESSION['account'][$row2]->unix_password != '') {
+				$iv = base64_decode($_COOKIE["IV"]);
+				$key = base64_decode($_COOKIE["Key"]);
+				$password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($_SESSION['account'][$row2]->unix_password), MCRYPT_MODE_ECB, $iv);
+				$password = str_replace(chr(00), '', $password);
+				}
+			if (!ereg('^([a-z]|[A-Z]|[0-9]|[\|]|[\#]|[\*]|[\,]|[\.]|[\;]|[\:]|[\_]|[\-]|[\+]|[\!]|[\%]|[\&]|[\/]|[\?]|[\{]|[\[]|[\(]|[\)]|[\]]|[\}])*$', $password))
+				$errors[] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
+			if ( !ereg('^([0-9])*$', $_SESSION['account'][$row2]->unix_pwdminage))  $errors[] = array('ERROR', _('Password minage'), _('Password minage must be are natural number.'));
+			if ( $_SESSION['account'][$row2]->unix_pwdminage > $_SESSION['account'][$row2]->unix_pwdmaxage ) $errors[] = array('ERROR', _('Password maxage'), _('Password maxage must bigger as Password Minage.'));
+			if ( !ereg('^([0-9]*)$', $_SESSION['account'][$row2]->unix_pwdmaxage)) $errors[] = array('ERROR', _('Password maxage'), _('Password maxage must be are natural number.'));
+			if ( !ereg('^(([-][1])|([0-9]*))$', $_SESSION['account'][$row2]->unix_pwdallowlogin))
+				$errors[] = array('ERROR', _('Password Expire'), _('Password expire must be are natural number or -1.'));
+			if ( !ereg('^([0-9]*)$', $_SESSION['account'][$row2]->unix_pwdwarn)) $errors[] = array('ERROR', _('Password warn'), _('Password warn must be are natural number.'));
+			if ((!$_SESSION['account'][$row2]->unix_host=='') && !ereg('^([a-z]|[A-Z]|[0-9]|[.]|[-])+(([,])+([ ])*([a-z]|[A-Z]|[0-9]|[.]|[-])+)*$', $_SESSION['account']->unix_host))
+				$errors[] = array('ERROR', _('Unix workstations'), _('Unix workstations is invalid.'));
+			$_SESSION['errors'][$row2] = array_merge($_SESSION['errors'][$row2], $errors);
+			if (isset($errors)) unset ($errors);
+
+			$_SESSION['account'][$row2]->smb_displayName = $_SESSION['account'][$row2]->general_gecos;
+
+			$i=0;
+			while ($_SESSION['account'][$row2]->quota[$i][0]) {
+				// Check if values are OK and set automatic values. if not error-variable will be set
+				if (!ereg('^([0-9])*$', $_SESSION['account'][$row2]->quota[$i][2]))
+					$errors[] = array('ERROR', _('Block soft quota'), _('Block soft quota contains invalid characters. Only natural numbers are allowed'));
+				if (!ereg('^([0-9])*$', $_SESSION['account'][$row2]->quota[$i][3]))
+					$errors[] = array('ERROR', _('Block hard quota'), _('Block hard quota contains invalid characters. Only natural numbers are allowed'));
+				if (!ereg('^([0-9])*$', $_SESSION['account'][$row2]->quota[$i][6]))
+					$errors[] = array('ERROR', _('Inode soft quota'), _('Inode soft quota contains invalid characters. Only natural numbers are allowed'));
+				if (!ereg('^([0-9])*$', $_SESSION['account'][$row2]->quota[$i][7]))
+					$errors[] = array('ERROR', _('Inode hard quota'), _('Inode hard quota contains invalid characters. Only natural numbers are allowed'));
+				$i++;
+				}
+			$_SESSION['errors'][$row2] = array_merge($_SESSION['errors'][$row2], $errors);
+			if (isset($errors)) unset ($errors);
+
+			if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/])*$', $_SESSION['account'][$row2]->personal_telephoneNumber))  $errors[] = array('ERROR', _('Telephone number'), _('Please enter a valid telephone number!'));
+			if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/])*$', $_SESSION['account'][$row2]->personal_mobileTelephoneNumber))  $errors[] = array('ERROR', _('Mobile number'), _('Please enter a valid mobile number!'));
+			if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/])*$', $_SESSION['account'][$row2]->personal_facsimileTelephoneNumber))  $errors[] = array('ERROR', _('Fax number'), _('Please enter a valid fax number!'));
+			if ( !ereg('^(([0-9]|[A-Z]|[a-z]|[.]|[-]|[_])+[@]([0-9]|[A-Z]|[a-z]|[-])+([.]([0-9]|[A-Z]|[a-z]|[-])+)*)*$', $_SESSION['account'][$row2]->personal_mail))  $errors[] = array('ERROR', _('eMail address'), _('Please enter a valid eMail address!'));
+			if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $_SESSION['account'][$row2]->personal_street))  $errors[] = array('ERROR', _('Street'), _('Please enter a valid street name!'));
+			if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $_SESSION['account'][$row2]->personal_postalAddress))  $errors[] = array('ERROR', _('Postal address'), _('Please enter a valid postal address!'));
+			if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $_SESSION['account'][$row2]->personal_title))  $errors[] = array('ERROR', _('Title'), _('Please enter a valid title!'));
+			if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $_SESSION['account'][$row2]->personal_employeeType))  $errors[] = array('ERROR', _('Employee type'), _('Please enter a valid employee type!'));
+			if ( !ereg('^([0-9]|[A-Z]|[a-z])*$', $_SESSION['account']->personal_postalCode))  $errors[] = array('ERROR', _('Postal code'), _('Please enter a valid postal code!'));
+			$_SESSION['errors'][$row2] = array_merge($_SESSION['errors'][$row2], $errors);
+			if (isset($errors)) unset ($errors);
+
 			}
 		}
 	if ($_FILES['userfile']['size']>0) {

@@ -708,14 +708,7 @@ function loadgroup($dn) { // Will load all needed values from an existing group
 		}
 	if (isset($attr['gidNumber'][0])) $return->general_uidNumber = $attr['gidNumber'][0];
 	if (isset($attr['description'][0])) $return->general_gecos = utf8_decode($attr['description'][0]);
-	if (isset($attr['cn'][0])) {
-		$return->general_username = $attr['cn'][0];
-		$values = getquotas('group', $attr['cn'][0]);
-		if (is_object($values)) {
-			while (list($key, $val) = each($values)) // Set only defined values
-				if (isset($val)) $return->$key = $val;
-			}
-		}
+	if (isset($attr['cn'][0])) $return->general_username = $attr['cn'][0];
 	if (isset($attr['sambaSID'][0])) { // Samba3 Samba 2.0 don't have any objects 4 groups
 		$return->smb_mapgroup = $attr['sambaSID'][0];
 		if (isset($attr['displayName'][0])) $return->smb_displayName = utf8_decode($attr['displayName'][0]);
@@ -726,6 +719,7 @@ function loadgroup($dn) { // Will load all needed values from an existing group
 		for ($i=0; $i<sizeof($samba3domains); $i++)
 			if ($SID == $samba3domains[$i]->SID) $return->smb_domain = $samba3domains[$i];
 		}
+	// load quotas
 	if ($_SESSION['config']->scriptServer) {
 		$values = getquotas('group',$return->general_username);
 		if (is_object($values)) {

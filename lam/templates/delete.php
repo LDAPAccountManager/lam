@@ -51,9 +51,7 @@ if ($_POST['backmain'])
 			}
 echo '</head>'."\n".
 	'<body>'."\n".
-	'<form action="delete.php" method="post">'."\n".
-	'<table class="delete" width="100%">'."\n".
-	'<tr><td>';
+	'<form action="delete.php" method="post">'."\n";
 
 if ($_GET['type']) {
 	$DN2 = explode(";", str_replace("\'", '',$_GET['DN']));
@@ -61,31 +59,66 @@ if ($_GET['type']) {
 	echo '<input name="DN" type="hidden" value="'.$_GET['DN'].'">';
 	switch ($_GET['type']) {
 		case 'user':
-			echo _('Do you really want to delete user(s):');
+			echo "<fieldset class=\"useredit-bright\"><legend class=\"useredit-bright\"><b>";
+			echo _('Delete user(s)');
+			echo "</b></legend>\n";
+			echo _('<b>Do you really want to delete user(s):</b>');
 			break;
 		case 'host':
-			echo _('Do you really want to delete host(s):');
+			echo "<fieldset class=\"hostedit-bright\"><legend class=\"hostedit-bright\"><b>";
+			echo _('Delete host(s)');
+			echo "</b></legend>\n";
+			echo _('<b>Do you really want to delete host(s):</b>');
 			break;
 		case 'group':
-			echo _('Do you really want to delete group(s):');
+			echo "<fieldset class=\"groupedit-bright\"><legend class=\"groupedit-bright\"><b>";
+			echo _('Delete group(s)');
+			echo "</b></legend>\n";
+			echo _('<b>Do you really want to delete group(s):</b>');
 			break;
 		}
-	echo '</td></tr>'."\n";
+	echo "<table border=0 width=\"100%\">\n";
 	foreach ($DN2 as $dn) echo '<tr><td>'.$dn.'</td></tr>';
-	echo '<tr><td>';
+	echo "</table>\n";
 	if (($_GET['type']== user) && $_SESSION['config']->scriptServer) {
+		echo "<table border=0 width=\"100%\">\n";
+		echo '<tr><td>';
 		echo _('Delete also Homedirectories');
 		echo '</td>'."\n".'<td><input name="f_rem_home" type="checkbox">'.
-			'</td></tr>'."\n".'<tr><td>';
+			'</td></tr>'."\n";
+		echo "</table>\n";
 		}
-	echo '<br></td></tr>'."\n".'<tr><td>'.
+
+	echo "<br><table border=0 width=\"100%\">\n";
+	echo '<tr><td>'.
 		'<input name="delete_no" type="submit" value="';
 	echo _('Cancel'); echo '"></td><td></td><td>'.
 		'<input name="delete_yes" type="submit" value="';
 	echo _('Commit'); echo '"></td></tr>';
+	echo "</table></fieldset>\n";
 	}
 
+
 if ($_POST['delete_yes'] && !$_POST['backmain']) {
+
+	switch ($_POST['type5']) {
+		case 'user':
+			echo "<fieldset class=\"useredit-bright\"><legend class=\"useredit-bright\"><b>";
+			echo _('Deleting user(s)...');
+			echo "</b></legend>\n";
+			break;
+		case 'host':
+			echo "<fieldset class=\"hostedit-bright\"><legend class=\"hostedit-bright\"><b>";
+			echo _('Deleting host(s)...');
+			echo "</b></legend>\n";
+			break;
+		case 'group':
+			echo "<fieldset class=\"groupedit-bright\"><legend class=\"groupedit-bright\"><b>";
+			echo _('Deleting group(s)...');
+			echo "</b></legend>\n";
+			break;
+		}
+	echo "<br><table border=0 width=\"100%\">\n";
 	$DN2 = explode(";", str_replace("\\", '',str_replace("\'", '',$_POST['DN'])));
 	foreach ($DN2 as $dn) {
 		echo '<input name="type5" type="hidden" value="'.$_POST['type5'].'">';
@@ -136,48 +169,74 @@ if ($_POST['delete_yes'] && !$_POST['backmain']) {
 					}
 				break;
 			}
-		if (!$error) echo $dn.' '. _('deleted').'.';
-		 else echo $error;
-		echo '</td></tr>'."\n".'<tr><td>';
+		if (!$error) echo "<tr><td><b>$dn ". _('deleted').".</b></td></tr>\n";
+		 else echo "<tr><td><b>$error</b></td></tr>\n";
 		}
+	echo "</table><br>\n";
 	switch ($_POST['type5']) {
 		case 'user':
-			echo '<input name="backmain" type="submit" value="'; echo _('Back to user list'); echo '">'.
-			'</td></tr>'."\n";
+			echo '<input name="backmain" type="submit" value="'; echo _('Back to user list'); echo '">';
 			break;
 		case 'group':
-			echo '<input name="backmain" type="submit" value="'; echo _('Back to group list'); echo '">'.
-			'</td></tr>'."\n";
+			echo '<input name="backmain" type="submit" value="'; echo _('Back to group list'); echo '">';
 			break;
 		case 'host':
-			echo '<input name="backmain" type="submit" value="'; echo _('Back to host list'); echo '">'.
-			'</td></tr>'."\n";
+			echo '<input name="backmain" type="submit" value="'; echo _('Back to host list'); echo '">';
 			break;
 		}
+	echo "</fieldset>\n";
 	}
 
 if ($_POST['delete_no']) {
-	echo _('Nothing was deleted').'</td></tr>';
+	switch ($_POST['type5']) {
+		case 'user':
+			echo "<fieldset class=\"useredit-bright\"><legend class=\"useredit-bright\"><b>";
+			echo _('Deleting user(s) canceled.');
+			echo "</b></legend>\n";
+			echo _('No user(s) were deleted');
+			echo "<br>";
+			echo '<input name="backmain" type="submit" value="'; echo _('Back to user list'); echo '">';
+			echo "</fieldset>\n";
+			break;
+		case 'host':
+			echo "<fieldset class=\"hostedit-bright\"><legend class=\"hostedit-bright\"><b>";
+			echo _('Deleting host(s) canceled.');
+			echo "</b></legend>\n";
+			echo _('No host(s) were deleted');
+			echo "<br>";
+			echo '<input name="backmain" type="submit" value="'; echo _('Back to host list'); echo '">';
+			echo "</fieldset>\n";
+			break;
+		case 'group':
+			echo "<fieldset class=\"groupedit-bright\"><legend class=\"groupedit-bright\"><b>";
+			echo _('Deleting group(s) canceled.');
+			echo "</b></legend>\n";
+			echo _('No group(s) were deleted');
+			echo "<br>";
+			echo '<input name="backmain" type="submit" value="'; echo _('Back to group list'); echo '">';
+			echo "</fieldset>\n";
+			break;
+		}
 
 	}
 
 if ($_POST['backmain'])
 	switch ( $_POST['type5'] ) {
 		case 'user' :
-			echo '<tr><td><a href="lists/listusers.php">';
+			echo '<a href="lists/listusers.php">';
 			echo _('Please press here if meta-refresh didn\'t work.');
-			echo "</a></td></tr>\n";
+			echo "</a>\n";
 			break;
 		case 'group' :
-			echo '<tr><td><a href="lists/listgroup.php">';
+			echo '<a href="lists/listgroups.php">';
 			echo _('Please press here if meta-refresh didn\'t work.');
-			echo "</a></td></tr>\n";
+			echo "</a>\n";
 			break;
 		case 'host' :
-			echo '<tr><td><a href="lists/listhost.php">';
+			echo '<a href="lists/listhosts.php">';
 			echo _('Please press here if meta-refresh didn\'t work.');
-			echo "</a></td></tr>\n";
+			echo "</a>\n";
 			break;
 			}
-echo '</table></form></body></html>'."\n";
+echo '</form></body></html>'."\n";
 ?>
