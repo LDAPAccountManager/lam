@@ -25,6 +25,7 @@ $Id$
 
 include_once("config.inc");
 
+// manages connection to LDAP and several helper functions
 class Ldap{
 
   // object of Config to access preferences
@@ -105,76 +106,103 @@ class Ldap{
     }
   }
 
-  // closes connection to server
-  function close() {
-    ldap_close($this->server);
-  }
+	// closes connection to server
+	function close() {
+		ldap_close($this->server);
+	}
 
-  // searches LDAP for a specific user name
-  // and returns its DN entry
-  function search_username($name) {
-	if ($this->conf->get_samba3() == "yes") {
-		// users have the attribute "posixAccount" or "sambaSamAccount" and uid $name
-		$filter = "(&(objectClass=sambaSamAccount) (uid=$name))";
+	// searches LDAP for a specific user name
+	// and returns its DN entry
+	function search_username($name) {
+		if ($this->conf->get_samba3() == "yes") {
+			// users have the attribute "posixAccount" or "sambaSamAccount" and uid $name
+			$filter = "(&(objectClass=sambaSamAccount) (uid=$name))";
+		}
+		else {
+			// users have the attribute "posixAccount" or "sambaAccount" and uid $name
+			$filter = "(&(objectClass=sambaAccount) (uid=$name))";
+		}
+		$attrs = array();
+		$sr = @ldap_search($this->server, $this->conf->get_UserSuffix(), $filter, $attrs);
+		if ($sr) {
+			$info = ldap_get_entries($this->server, $sr);
+			// return only first DN entry
+			$ret = $info[0]["dn"];
+			ldap_free_result($sr);
+			return $ret;
+		}
 	}
-	else {
-		// users have the attribute "posixAccount" or "sambaAccount" and uid $name
-		$filter = "(&(objectClass=sambaAccount) (uid=$name))";
-	}
-    $attrs = array();
-    $sr = @ldap_search($this->server, $this->conf->get_UserSuffix(), $filter, $attrs);
-    if ($sr) {
-		$info = ldap_get_entries($this->server, $sr);
-		// return only first DN entry
-		$ret = $info[0]["dn"];
-		ldap_free_result($sr);
-		return $ret;
-	}
-  }
 
 	// returns an array with all organizational units under the given suffix
 	function search_units($suffix) {
-	$ret = array();
-	$sr = @ldap_search($_SESSION["ldap"]->server(), $suffix, "objectClass=organizationalunit", array("DN"));
-	if ($sr) {
-		$units = ldap_get_entries($_SESSION["ldap"]->server, $sr);
-		// extract Dns
-		for ($i = 0; $i < sizeof($units); $i++) {
-			if ($units[$i]['dn']) $ret[] = $units[$i]['dn'];
+		$ret = array();
+		$sr = @ldap_search($_SESSION["ldap"]->server(), $suffix, "objectClass=organizationalunit", array("DN"));
+		if ($sr) {
+			$units = ldap_get_entries($_SESSION["ldap"]->server, $sr);
+			// extract Dns
+			for ($i = 0; $i < sizeof($units); $i++) {
+				if ($units[$i]['dn']) $ret[] = $units[$i]['dn'];
+			}
 		}
-	}
-	// add root suffix if needed
-	$found == false;
-	for ($i = 0; $i < sizeof($ret); $i++) { // search suffix case-intensitive
-		if (strtolower($suffix) == strtolower($ret[$i])) {
-			$found = true;
-			break;
+		// add root suffix if needed
+		$found == false;
+		for ($i = 0; $i < sizeof($ret); $i++) { // search suffix case-intensitive
+			if (strtolower($suffix) == strtolower($ret[$i])) {
+				$found = true;
+				break;
+			}
 		}
-	}
-	if (!$found) {
-		$ret[] = $suffix;
-	}
-	usort($ret, array($this,"cmp_array"));
-	return $ret;
+		if (!$found) {
+			$ret[] = $suffix;
+		}
+		usort($ret, array($this,"cmp_array"));
+		return $ret;
 	}
 
-  // returns the LDAP connection handle
-  function server() {
-    return $this->server;
-  }
+	// returns an array with all Samba 3 domain entries under the given suffix
+	function search_domains($suffix) {
+		$ret = array();
+		$attr = array("DN", "sambaDomainName", "sambaSID", "sambaNextRid", "sambaNextGroupRid",
+			"sambaNextUserRid", "sambaAlgorithmicRidBase");
+		$sr = @ldap_search($_SESSION["ldap"]->server(), $suffix, "sambaDomainName=*", $attr);
+		if ($sr) {
+			$units = ldap_get_entries($_SESSION["ldap"]->server, $sr);
+			// delete count entry
+			array_shift($units);
+			// extract attributes
+			for ($i = 0; $i < sizeof($units); $i++) {
+				$ret[$i] = new samba3domain();
+				$ret[$i]->dn = $units[$i]['dn'];
+				$ret[$i]->name = $units[$i]['sambadomainname'][0];
+				$ret[$i]->SID = $units[$i]['sambasid'][0];
+				$ret[$i]->nextRID = $units[$i]['sambanextrid'][0];
+				$ret[$i]->nextGroupRID = $units[$i]['sambanextgrouprid'][0];
+				$ret[$i]->nextUserRID = $units[$i]['sambanextuserrid'][0];
+				if (isset($units[$i]['sambaalgorithmicridbase'][0])) $ret[$i]->RIDbase = $units[$i]['sambaalgorithmicridbase'][0];
+			}
+			// sort array by domain name
+			usort($ret, array($this,"cmp_domain"));
+		}
+		return $ret;
+	}
 
-  // closes connection to LDAP server before serialization
-  function __sleep() {
-  	$this->close();
-	// define which attributes to save
-	return array("conf", "username", "password", "ldapUserAttributes", "ldapGroupAttributes", "ldapHostAttributes");
-  }
+	// returns the LDAP connection handle
+	function server() {
+		return $this->server;
+	}
 
-  // reconnects to LDAP server when deserialized
-  function __wakeup() {
-  	$data = $this->decrypt();
-  	$this->connect($data[0], $data[1]);
-  }
+	// closes connection to LDAP server before serialization
+	function __sleep() {
+		$this->close();
+		// define which attributes to save
+		return array("conf", "username", "password", "ldapUserAttributes", "ldapGroupAttributes", "ldapHostAttributes");
+	}
+
+	// reconnects to LDAP server when deserialized
+	function __wakeup() {
+		$data = $this->decrypt();
+		$this->connect($data[0], $data[1]);
+	}
 
 	// encrypts username and password
 	function encrypt($username, $password) {
@@ -249,7 +277,40 @@ class Ldap{
 			else return -1;
 		}
 	}
+
+	// helper function to sort the domains
+	function cmp_domain($a, $b) {
+		if ($a->name == $b->name) return 0;
+		elseif ($a->name == max($a->name, $b->name)) return 1;
+		else return -1;
+	}
+
+
 }
 
+// represents a Samba 3 domain entry
+class samba3domain {
+
+	// DN
+	var $dn;
+
+	// domain name
+	var $name;
+
+	// domain SID
+	var $SID;
+
+	// next RID
+	var $nextRID;
+
+	// next user RID
+	var $nextUserRID;
+
+	// next group RID
+	var $nextGroupRID;
+
+	// RID base to calculate RIDs, default 1000
+	var $RIDbase=1000;
+}
 
 ?>
