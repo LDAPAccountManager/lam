@@ -144,29 +144,35 @@ class Ldap{
   }
   
   // encrypts username and password
-  // TODO: implement encryption algorithm
   function encrypt($username, $password) {
-	$this->username = $username;
-	$this->password = $password;
+	// read key and iv from cookie
+	$iv = base64_decode($_COOKIE["IV"]);
+	$key = base64_decode($_COOKIE["Key"]);
+	// encrypt username and password
+	$this->username = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $username, MCRYPT_MODE_ECB, $iv));
+	$this->password = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $password, MCRYPT_MODE_ECB, $iv));
   }
 
   // decrypts username and password
-  // TODO: implement encryption algorithm
   function decrypt() {
-  	$ret = array($this->username, $this->password);
+  	// read key and iv from cookie
+	$iv = base64_decode($_COOKIE["IV"]);
+	$key = base64_decode($_COOKIE["Key"]);
+	// decrypt username and password
+	$username = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($this->username), MCRYPT_MODE_ECB, $iv);
+	$password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($this->password), MCRYPT_MODE_ECB, $iv);
+  	$ret = array($username, $password);
 	return $ret;
   }
-  
+
   // closes connection to LDAP server and deletes encrypted username/password
   function destroy() {
   	$this->close();
 	$this->username="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
 	$this->password="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
-	// TODO: delete encryption key
   }
 
 }
 
 
 ?>
- 

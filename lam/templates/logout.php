@@ -23,6 +23,10 @@ $Id$
   
 */
 
+// delete key and iv in cookie
+setcookie("Key", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+setcookie("IV", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+
 include_once("../lib/ldap.php");
 
 // start session
