@@ -87,6 +87,30 @@ class baseModule {
 	}
 
 
+	/* This function loads all standard ldap attributes. It is used
+	* by the modules to reduce code
+	*/
+	function load_ldap_attributes($attr) {
+		// Load attributes which are displayed
+		// unset count entries
+		unset ($attr['count']);
+		$attributes = array_keys($attr);
+		foreach ($attributes as $attribute) unset ($attr[$attribute]['count']);
+		// unset double entries
+		for ($i=0; $i<count($attr); $i++)
+		if (isset($attr[$i])) unset($attr[$i]);
+		foreach ($attributes as $attribute) {
+			if (isset($this->attributes[$attribute])) {
+				// decode as unicode
+				$this->attributes[$attribute] = $attr[$attribute];
+				for ($i=0; $i<count($this->attributes[$attribute]); $i++) {
+					$this->attributes[$attribute][$i] = utf8_decode ($this->attributes[$attribute][$i]);
+					$this->orig[$attribute][$i] = utf8_decode ($this->attributes[$attribute][$i]);
+				}
+			}
+		}
+	}
+
 	/**
 	* Dummy function, meta data is provided by sub classes.
 	*

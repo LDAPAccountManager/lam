@@ -114,13 +114,6 @@ class sambaGroupMapping extends baseModule {
 		}
 
 	// Variables
-
-	// This variable contains all inetOrgPerson attributes
-	var $attributes;
-	/* If an account was loaded all attributes are kept in this array
-	* to compare it with new changed attributes
-	*/
-	var $orig;
 	// Array of well known rids
 	var $rids;
 
@@ -161,26 +154,7 @@ class sambaGroupMapping extends baseModule {
 	* $attr is an array as it's retured from ldap_get_attributes
 	*/
 	function load_attributes($attr) {
-		// Load attributes which are displayed
-		// unset count entries
-		unset ($attr['count']);
-		$attributes = array_keys($attr);
-		foreach ($attributes as $attribute) unset ($attr[$attribute]['count']);
-		// unset double entries
-		for ($i=0; $i<count($attr); $i++)
-			if (isset($attr[$i])) unset($attr[$i]);
-		foreach ($attributes as $attribute) {
-			if (isset($this->attributes[$attribute])) {
-				// decode as unicode
-				$this->attributes[$attribute] = $attr[$attribute];
-				for ($i=0; $i<count($this->attributes[$attribute]); $i++) {
-					$this->attributes[$attribute][$i] = utf8_decode ($this->attributes[$attribute][$i]);
-					$this->orig[$attribute][$i] = utf8_decode ($this->attributes[$attribute][$i]);
-					}
-				}
-			}
-		// Values are kept as copy so we can compare old attributes with new attributes
-		$this->attributes['objectClass'][0] = 'sambaGroupMapping';
+		$this->load_ldap_attributes($attr);
 		return 0;
 		}
 

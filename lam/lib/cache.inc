@@ -28,16 +28,12 @@ $Id$
 */
 class cache {
 	function cache() {
-		$this->config =& $_SESSION['config'];
-		$this->ldap =& $_SESSION['ldap'];
 		$this->time = 0;
 		$this->attributes = array();
 		}
 
 	var $ldapcache; // This variable contains the cache
 	var $attributes; // This variable contains a list and their scope of attributes which should be cached
-	var $config; // This is a reference to the config class in session
-	var $ldap; // This is a reference to the ldap class in session
 	var $time; // This is the laste timestamp ldap cache has been refreshed
 
 	/* This function adds attributes to cache
@@ -83,9 +79,9 @@ class cache {
 		if ($line==-1) trigger_error (sprintf(_("objectClass %s required but not defined in ldap."), $objectClass), E_USER_WARNING);
 
 		// Create list of all allowed attributes
-		for ($i=0; $i<count($this->ldap->objectClasses); $i++ ) {
-			if (strpos($this->ldap->objectClasses[$i],  'MUST (')) {
-				$string_withtail = substr($this->ldap->objectClasses[$i], strpos($this->ldap->objectClasses[$i],  'MUST (')+6);
+		for ($i=0; $i<count($_SESSION['ldap']->objectClasses); $i++ ) {
+			if (strpos($_SESSION['ldap']->objectClasses[$i],  'MUST (')) {
+				$string_withtail = substr($_SESSION['ldap']->objectClasses[$i], strpos($_SESSION['ldap']->objectClasses[$i],  'MUST (')+6);
 				// Now we have a string with all must-attributes
 				$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
 				$string = trim($string);
@@ -93,8 +89,8 @@ class cache {
 				}
 			// create array with may-attributes
 			// Get startposition in string
-			if (strpos($this->ldap->objectClasses[$i],  'MAY (')) {
-				$string_withtail = substr($this->ldap->objectClasses[$i], strpos($this->ldap->objectClasses[$i],  'MAY (')+5);
+			if (strpos($_SESSION['ldap']->objectClasses[$i],  'MAY (')) {
+				$string_withtail = substr($_SESSION['ldap']->objectClasses[$i], strpos($_SESSION['ldap']->objectClasses[$i],  'MAY (')+5);
 				// Now we have a string with all must-attributes
 				$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
 				$string = trim($string);
@@ -120,7 +116,7 @@ class cache {
 				foreach ($DNs as $dn) {
 					if (isset($this->ldapcache[$scope][$dn][$attribute]) && in_array($objectClass, $this->ldapcache[$scope][$dn]['objectClass'])) {
 						// return string if only attribute exists only once
-						if (count($this->ldapcache[$scope][$dn][$attribute])==1) $return[$dn][] = $this->ldapcache[$scope][$dn][$attribute][0];
+						if (count($this->ldapcache[$scope][$dn][$attribute])==1) $return[$dn] = array($this->ldapcache[$scope][$dn][$attribute][0]);
 						else {
 							// else return array with all attributes
 							$return[$dn] = $this->ldapcache[$scope][$dn][$attribute];
@@ -142,9 +138,9 @@ class cache {
 		$allowed_types = array ( 'user', 'group', 'host', 'domain', '*' );
 		if (!in_array($singlescope, $allowed_types)) trigger_error(sprintf(_('Invalid scope. Valid scopes are %s.'), implode(" ", $allowed_types)), E_USER_ERROR);
 		// Create list of all allowed attributes
-		for ($i=0; $i<count($this->ldap->objectClasses); $i++ ) {
-			if (strpos($this->ldap->objectClasses[$i],  'MUST (')) {
-				$string_withtail = substr($this->ldap->objectClasses[$i], strpos($this->ldap->objectClasses[$i],  'MUST (')+6);
+		for ($i=0; $i<count($_SESSION['ldap']->objectClasses); $i++ ) {
+			if (strpos($_SESSION['ldap']->objectClasses[$i],  'MUST (')) {
+				$string_withtail = substr($_SESSION['ldap']->objectClasses[$i], strpos($_SESSION['ldap']->objectClasses[$i],  'MUST (')+6);
 				// Now we have a string with all must-attributes
 				$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
 				$string = trim($string);
@@ -152,8 +148,8 @@ class cache {
 				}
 			// create array with may-attributes
 			// Get startposition in string
-			if (strpos($this->ldap->objectClasses[$i],  'MAY (')) {
-				$string_withtail = substr($this->ldap->objectClasses[$i], strpos($this->ldap->objectClasses[$i],  'MAY (')+5);
+			if (strpos($_SESSION['ldap']->objectClasses[$i],  'MAY (')) {
+				$string_withtail = substr($_SESSION['ldap']->objectClasses[$i], strpos($_SESSION['ldap']->objectClasses[$i],  'MAY (')+5);
 				// Now we have a string with all must-attributes
 				$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
 				$string = trim($string);
@@ -194,25 +190,24 @@ class cache {
 	/* This functions refreshs the cache
 	*/
 	function refresh_cache($rebuild=false) {
-		if ($time + $this->config->get_cacheTimeoutSec() < time() || $rebuild) {
+		if ($this->time + $_SESSION['config']->get_cacheTimeoutSec() < time() || $rebuild) {
 			// unset old cache
 			unset ($this->ldapcache);
 			$scopes = array_keys($this->attributes);
 			foreach ($scopes as $scope) {
 				// Get Scope
-				//$function = '$suffix = $this->config->get_'.ucfirst($scope).'Suffix();';
-				If ($scope != '*') //eval($function);
-					$suffix = call_user_func(array(&$this->config, 'get_'.ucfirst($scope).'Suffix'));
+				If ($scope != '*')
+					$suffix = call_user_func(array(&$_SESSION['config'], 'get_'.ucfirst($scope).'Suffix'));
 					else $suffix = '';
 				// Get Data from ldap
 				$search = $this->attributes[$scope];
 				$search[] = 'objectClass';
-				$result = @ldap_search($this->ldap->server(), $suffix, 'objectClass=*', $search, 0);
+				$result = @ldap_search($_SESSION['ldap']->server(), $suffix, 'objectClass=*', $search, 0);
 				// Write search result in array
-				$entry = @ldap_first_entry($this->ldap->server(), $result);
+				$entry = @ldap_first_entry($_SESSION['ldap']->server(), $result);
 				while ($entry) {
-					$dn = (ldap_get_dn($this->ldap->server(), $entry));
-					$attr = ldap_get_attributes($this->ldap->server(), $entry);
+					$dn = (ldap_get_dn($_SESSION['ldap']->server(), $entry));
+					$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
 					// unset every count entry
 					unset ($attr['count']);
 					$attributes = array_keys($attr);
@@ -225,7 +220,7 @@ class cache {
 					$addcache = $attr;
 					unset ($addcache['objectClass']);
 					if (count($addcache)!=0) $this->ldapcache[$scope][$dn] = $attr;
-					$entry = ldap_next_entry($this->ldap->server(), $entry);
+					$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
 					}
 				}
 			$this->time = time();
@@ -240,10 +235,9 @@ class cache {
 		$allowed_types = array ( 'user', 'group', 'host', '*' );
 		for ($i=0; $i<count($allowed_types); $i++) {
 			if ($allowed_types[$i]!='*') {
-				$function = '$suffix = $$this->config->get_'.ucfirst($allowed_types[$i]).'Suffix();';
 				// *** fixme, where is get_DomainSuffix
-				If ($scope != '*') //eval($function);
-					$suffix = call_user_func(array(&$this->config, 'get_'.ucfirst($allowed_types[$i]).'Suffix'));
+				If ($scope != '*')
+					$suffix = call_user_func(array(&$_SESSION['config'], 'get_'.ucfirst($allowed_types[$i]).'Suffix'));
 					else $suffix = '';
 				if (substr($suffix, $dn)) $singlescope = $allowed_types[$i];
 				}
@@ -253,10 +247,8 @@ class cache {
 		// Everything seems to be OK, start processing data
 		// Get Scope
 		foreach ($allowed_types as $scope) {
-			//$function = '$suffix = $this->config->get_'.ucfirst($scope).'Suffix();';
-			//eval($function);
 			if ($scope!='*') {
-				$suffix = call_user_func(array(&$this->config, 'get_'.ucfirst($scope).'Suffix'));
+				$suffix = call_user_func(array(&$_SESSION['config'], 'get_'.ucfirst($scope).'Suffix'));
 				if (strpos($dn, $suffix)) $singlescope = $scope;
 				}
 			}
