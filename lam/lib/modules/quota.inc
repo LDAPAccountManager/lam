@@ -105,7 +105,7 @@ class quota extends baseModule {
 		// call parent init
 		parent::init($base);
 		// Get basic quotas for new account
-		$output_array = $_SESSION[$this->base]->lamdaemon(array("+ quota get " . $_SESSION[$this->base]->type));
+		$output_array = lamdaemon(array("+ quota get " . $_SESSION[$this->base]->type));
 		// process quotas
 		if (is_array($output_array)) {
 			$all_quota = explode(':', $output_array[0]);
@@ -174,7 +174,7 @@ class quota extends baseModule {
 		if ($_SESSION[$this->base]->type=='user') $id = $attr['uid'][0];
 		if ($_SESSION[$this->base]->type=='group') $id = $attr['cn'][0];
 		// Get quotas
-		$output_array = $_SESSION[$this->base]->lamdaemon(array("$id quota get " . $_SESSION[$this->base]->type));
+		$output_array = lamdaemon(array("$id quota get " . $_SESSION[$this->base]->type));
 		// process quotas
 		if (is_array($output_array)) {
 			$all_quota = explode(':', $output_array[0]);
@@ -336,7 +336,7 @@ class quota extends baseModule {
 	*/
 	function get_profileOptions() {
 		// Get quotas
-		$quotas = $_SESSION[$this->base]->lamdaemon(array("+ quota get " . $this->get_scope()));
+		$quotas = lamdaemon(array("+ quota get " . $this->get_scope()));
 		$dirs = split(":", $quotas[0]);
 		array_pop($dirs); // remove empty element at the end
 		for ($i = 0; $i < sizeof($dirs); $i++) {

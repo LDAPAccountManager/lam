@@ -39,6 +39,8 @@ include_once("account.inc");
 include_once("baseModule.inc");
 /** access to LDAP server */
 include_once("ldap.inc");
+/** lamdaemon functions */
+include_once("lamdaemon.inc");
  
 /**
 * This includes all module files.
@@ -1424,7 +1426,7 @@ class accountContainer {
 
 		if (!$stopprocessing) {
 			foreach ($attributes as $DN) {
-				if (is_array($DN['lamdaemon']['command'])) $result = $this->lamdaemon($DN['lamdaemon']['command']);
+				if (is_array($DN['lamdaemon']['command'])) $result = lamdaemon($DN['lamdaemon']['command']);
 				// Error somewhere in lamdaemon
 				if (is_array($result))
 					foreach ($result as $singleresult) {
@@ -1442,57 +1444,6 @@ class accountContainer {
 		return 0;
 		}
 
-	function lamdaemon($commands) {
-		// get username and password of the current lam-admin
-		$ldap_q = $_SESSION['ldap']->decrypt_login();
-		/* $towrite has the following syntax:
-		* admin-username, admin-password, owner of homedir, 'home', operation='add'
-		* use escapeshellarg to make exec() shell-safe
-		*/
-		$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." ".
-			escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]);
-
-		$userstring = implode ("\n", $commands);
-		if (function_exists(proc_open)) {
-			// New Code, requires PHP 4.3
-			$descriptorspec = array(
-				0 => array("pipe", "r"), // stdin
-				1 => array("pipe", "w"), // stout
-				2 => array("file", "/dev/null", "a") // sterr
-				);
-			$process = proc_open(escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".$towrite,
-				$descriptorspec,
-				$pipes);
-			if (is_resource($process)) {
-				/* perl-script is running
-				* $pipes[0] is writeable handle to child stdin
-				* $pipes[1] is readable handle to child stdout
-				* any error is send to /dev/null
-				*/
-				// Write to stdin
-				fwrite($pipes[0], $userstring);
-				}
-			fclose($pipes[0]);
-			while (!feof($pipes[1])) {
-				$output = fgets($pipes[1], 1024);
-				if ($output!='') $output_array[] = $output;
-				}
-			fclose($pipes[1]);
-			proc_close($process);
-			}
-		else { // PHP 4.3>
-			$command = escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".$towrite;
-			$pipe = popen("echo \"$userstring\"|$command" , 'r');
-			while(!feof($pipe)) {
-				//$output .= fread($pipe, 1024);
-				$output = fgets($pipe, 1024);
-				if ($output!='') $output_array[] = $output;
-				}
-			pclose($pipe);
-			}
-		return $output_array;
-		}
-		
 		/**
 		 * 
 		 * 

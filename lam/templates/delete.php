@@ -31,6 +31,7 @@ include_once('../lib/profiles.inc'); // functions to load and save profiles
 include_once('../lib/status.inc'); // Return error-message
 include_once('../lib/pdf.inc'); // Return a pdf-file
 include_once('../lib/ldap.inc'); // LDAP-functions
+include_once('../lib/lamdaemon.inc'); // lamdaemon
 
 /* We have to include all modules
 * before start session
@@ -201,7 +202,7 @@ if ($_POST['delete']) {
 			}
 		if (!$stopprocessing) {
 			foreach ($attributes as $DN) {
-				if (is_array($DN['lamdaemon']['command'])) $result = $_SESSION['account']->lamdaemon($DN['lamdaemon']['command']);
+				if (is_array($DN['lamdaemon']['command'])) $result = lamdaemon($DN['lamdaemon']['command']);
 				// Error somewhere in lamdaemon
 				foreach ($result as $singleresult) {
 					if (is_array($singleresult)) {
