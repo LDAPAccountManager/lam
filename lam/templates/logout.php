@@ -41,15 +41,25 @@ $_SESSION["ldap"]->destroy();
 session_destroy();
 
 // print logout message
+
+echo ("<?xml version=\"1.0\" encoding=\"ISO-8859-15\"?>\n");
+echo ("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n");
+
 ?>
 
 <html>
-	<body>
+	<head>
 	<title>
 		<? echo _("Logout"); ?>
 	</title>
 	<link rel="stylesheet" type="text/css" href="../style/layout.css">
-	<p align="center"><a href="http://lam.sf.net" target="new_window"><img src="../graphics/banner.jpg" border=1></a></p><hr><br>
+	</head>
+	<body>
+	<p align="center"><a href="http://lam.sf.net" target="new_window">
+		<img src="../graphics/banner.jpg" border=1 alt="LDAP Account Manager"></a>
+	</p>
+	<hr>
+	<br>
 	<p align="center"><big><? echo ("You have been logged off from LDAP Account Manager."); ?></big></p>
 	<br><br><br><br><br><a href="../templates/login.php" target="_top"> <? echo _("Back to Login") ?> </a>
 	</body>
