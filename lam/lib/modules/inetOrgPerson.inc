@@ -94,11 +94,11 @@ class inetOrgPerson extends baseModule {
 			array(
 				0 => array('kind' => 'text', 'text' => _('Job title') . ":"),
 				1 => array('kind' => 'input', 'name' => 'inetOrgPerson_title', 'type' => 'text', 'size' => '30', 'maxlength' => '255'),
-				2 => array('kind' => 'help', 'value' => 'TODO')),
+				2 => array('kind' => 'help', 'value' => 'title')),
 			array(
 				0 => array('kind' => 'text', 'text' => _('Employee type') . ":"),
 				1 => array('kind' => 'input', 'name' => 'inetOrgPerson_employeeType', 'type' => 'text', 'size' => '30', 'maxlength' => '255'),
-				2 => array('kind' => 'help', 'value' => 'TODO'))
+				2 => array('kind' => 'help', 'value' => 'employeeType'))
 		);
 		// profile checks
 		$return['profile_checks']['inetOrgPerson_title'] = array(
