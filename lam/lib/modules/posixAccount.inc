@@ -90,6 +90,7 @@ class posixAccount {
 			}
 		$this->orig = $this->attributes ;
 		$this->attributes['objectClass'][0] = 'posixAccount';
+		$this->createhomedir=false;
 		}
 
 	// Variables
@@ -109,6 +110,7 @@ class posixAccount {
 	*/
 	var $groups;
 	var $groups_orig;
+	var $createhomedir;
 
 	/* This function returns a list with all required modules
 	*/
@@ -132,6 +134,8 @@ class posixAccount {
 		$this->attributes['homeDirectory'][0] = $post['form_posixAccount_homeDirectory'];
 		$this->attributes['loginShell'][0] = $post['form_posixAccount_loginShell'];
 		$this->attributes['gecos'][0] = $post['form_posixAccount_gecos'];
+		if ($post['form_posixAccount_createhomedir']) $this->createhomedir = true;
+			else $this->createhomedir = false;
 
 		// Check if UID is valid. If none value was entered, the next useable value will be inserted
 		// load min and may uidNumber
@@ -322,6 +326,7 @@ class posixAccount {
 					}
 				}
 			}
+		if ($this->createhomedir) $return[$_SESSION[$this->base]->dn]['lamdaemon'][] = $this->attributes['uid'][0] . " home add";
 		return $return;
 		}
 
@@ -367,6 +372,14 @@ class posixAccount {
 			echo "<td><input name=\"form_posixAccount_homeDirectory\" type=\"text\" size=\"30\" maxlength=\"255\" value=\"".$this->attributes['homeDirectory'][0]."\"></td>\n";
 			echo "<td><a href=\"../help.php?HelpNumber=403\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
 			echo "</tr>\n";
+			if ($this->orig['homeDirectory']=='' && isset($_SESSION[$_SESSION[$this->base]->config]->scriptPath)) {
+				echo "<tr>\n";
+				echo "<td>" . _('Create home directory') . "*</td>\n";
+				echo "<td><input name=\"form_posixAccount_createhomedir\" type=\"checkbox\"";
+					if ($this->createhomedir) echo " checked ";
+					echo "></td>\n";
+				echo "<tr>\n";
+				}
 			}
 		echo "<tr>\n";
 		echo "<td>" . _('Gecos') . "</td>\n";

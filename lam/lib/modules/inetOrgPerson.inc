@@ -61,11 +61,9 @@ class inetOrgPerson {
 		$this->orig = $this->attributes ;
 		$this->attributes['objectClass'][0] = 'inetOrgPerson';
 		// unset userPassword because we handle it separat.
-		if (isset($this->attributes['userPassword'])) unset($this->attributes['userPassword']);
 		$this->alias = _('inetOrgPerson');
 		// Add attributes which should be cached
 		$_SESSION[$_SESSION[$this->base]->cache]->add_cache(array ('user' => array('uid'), 'host' => array('uid')));
-
 		}
 
 	// Variables
@@ -266,6 +264,8 @@ class inetOrgPerson {
 	*/
 	function save_attributes() {
 		$return = $_SESSION[$this->base]->save_module_attributes($this->attributes, $this->orig);
+		if (isset($return[$_SESSION[$this->base]->dn]['modify']['userPassword']))
+			unset($return[$_SESSION[$this->base]->dn]['modify']['userPassword']);
 		// Set unix password
 		if (count($this->orig['userPassword'])==0) {
 			// New user or no old password set

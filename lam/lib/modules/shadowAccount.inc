@@ -110,8 +110,8 @@ class shadowAccount {
 		$this->attributes['shadowMax'][0] = $post['form_shadowAccount_shadowMax'];
 		$this->attributes['shadowWarning'][0] = $post['form_shadowAccount_shadowWarning'];
 		$this->attributes['shadowInactive'][0] = $post['form_shadowAccount_shadowInactive'];
-		$this->attributes['shadowExpire'][0] = mktime(10, 0, 0, $post['form_shadowAccount_shadowExpire_mon'],
-			$post['form_shadowAccount_shadowExpire_day'], $post['form_shadowAccount_shadowExpire_yea'])/3600/24;
+		$this->attributes['shadowExpire'][0] = intval(mktime(10, 0, 0, $post['form_shadowAccount_shadowExpire_mon'],
+			$post['form_shadowAccount_shadowExpire_day'], $post['form_shadowAccount_shadowExpire_yea'])/3600/24);
 
 		if ( !ereg('^([0-9])*$', $this->attributes['shadowMin'][0]))  $errors[] = array('ERROR', _('Password minage'), _('Password minage must be are natural number.'));
 		if ( $this->attributes['shadowMin'][0] > $this->attributes['shadowMax'][0] ) $errors[] = array('ERROR', _('Password maxage'), _('Password maxage must bigger as Password Minage.'));
@@ -163,7 +163,7 @@ class shadowAccount {
 
 		// Set shadowLastchange manual.
 		if ($_SESSION[$this->base]->module['inetOrgPerson']->userPassword()!='' || $_SESSION[$this->base]->module['inetOrgPerson']->userPassword_no)
-			$return[$_SESSION[$this->base]->dn]['modify']['shadowLastChange'] = array(time()/3600/24);
+			$return[$_SESSION[$this->base]->dn]['modify']['shadowLastChange'] = array(intval(time()/3600/24));
 
 		return $return;
 		}
