@@ -133,7 +133,7 @@ class sambaSamAccount {
 			return 0;
 			}
 		else {
-			if ($this->useunixpwd) return $_SESSION[$this->base]->module['inetOrgPerson']->userPassword();
+			if ($this->useunixpwd) return $_SESSION[$this->base]->module['posixAccount']->userPassword();
 			if ($this->attributes['sambaLMPassword'][0]!='') {
 				// Read existing password if set
 				$iv = base64_decode($_COOKIE["IV"]);
@@ -158,7 +158,6 @@ class sambaSamAccount {
 		for ($i=0; $i<count($sambaDomains); $i++ )
 			if ($this->attributes['sambaDomainName'][0] == $sambaDomains[$i]->name) {
 				$SID = $sambaDomains[$i]->SID;
-				$RIDbase = $sambaDomain[$i]->RIDbase;
 				}
 
 		$flag = "[";
@@ -174,6 +173,15 @@ class sambaSamAccount {
 		// End character
 		$flag = $flag. "]";
 		$this->attributes['sambaAcctFlags'][0] = $flag;
+
+		if ($_SESSION[$this->base]->type=='host') {
+			$this->attributes['sambaPrimaryGroupSID'][0] = $SID."-".$this->rids[_('Domain Computers')];
+			if ($post['form_sambaSamAccount_ResetSambaPassword']) {
+				// *** fixme. What is the default password?
+				$this->sambaLMPassword('');
+				$_SESSION[$this->base]->module['posixAccount']->userPassword('');
+				}
+			}
 
 		if ($_SESSION[$this->base]->type=='user') {
 			$this->attributes['sambaPwdCanChange'][0] = mktime($post['form_sambaSamAccount_sambaPwdCanChange_h'], $post['form_sambaSamAccount_sambaPwdCanChange_m'], $post['form_sambaSamAccount_sambaPwdCanChange_s'],
@@ -204,11 +212,20 @@ class sambaSamAccount {
 				}
 			if ($post['form_sambaSamAccount_useunixpwd']) $this->useunixpwd = true;
 				else $this->useunixpwd = false;
-			}
 
-
-		// Check values
-		if ($_SESSION[$this->base]->type=='user') {
+			if ($post['form_sambaSamAccount_sambaSID']== _('Administrator')) {
+				$this->attributes['sambaSID'][0] = $SID."-500";
+				// Do a check if an administrator already exists
+				if ($_SESSION[$_SESSION[$this->base]->cache]->in_cache($SID."-500", 'sambaSID', 'user'))
+					$errors[] = array('ERROR', _('Special user'), _('There can be only one administrator per domain.'));
+				}
+			if ($post['form_sambaSamAccount_sambaSID']== _('Guest')) {
+				$this->attributes['sambaSID'][0] = $SID."-501";
+				// Do a check if an administrator already exists
+				if ($_SESSION[$_SESSION[$this->base]->cache]->in_cache($SID."-501", 'sambaSID', 'user'))
+					$errors[] = array('ERROR', _('Special user'), _('There can be only one guest per domain.'));
+				}
+			// Check values
 			$this->attributes['sambaHomePath'][0] = str_replace('$user', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['uid'][0], $this->attributes['sambaHomePath'][0]);
 			$this->attributes['sambaHomePath'][0] = str_replace('$group', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['gid'][0], $this->attributes['sambaHomePath'][0]);
 			if ($this->attributes['sambaHomePath'][0] != stripslashes($post['form_sambaSamAccount_sambaHomePath'])) $errors[] = array('INFO', _('Home path'), _('Inserted user- or groupname in HomePath.'));
@@ -229,10 +246,6 @@ class sambaSamAccount {
 				&& (!ereg('^[\][\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+([\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+)+$', $this->attributes['sambaProfilePath'][0])))
 					$errors[] = array('ERROR', _('Profile path'), _('Profile path is invalid!'));
 			}
-
-		if ((!$this->attributes['sambaDomainName'][0]=='') && !ereg('^([a-z]|[A-Z]|[0-9]|[-])+$', $this->attributes['sambaDomainName'][0]))
-			$errors[] = array('ERROR', _('Domain name'), _('Domain name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and -.'));
-
 
 		if (is_array($errors)) return $errors;
 		if ($post['form_sambaSamAccount_sambaUserWorkstations'])  return 'sambaUserWorkstations';
@@ -322,6 +335,21 @@ class sambaSamAccount {
 	* modify are attributes which have to been modified in ldap entry
 	*/
 	function save_attributes() {
+		/* Create sambaSID. Can't create it while loading attributes because
+		* it's psssible uidNumber has changed
+		*/
+		// Get Domain SID from name
+		$sambaDomains = $_SESSION[$_SESSION[$this->base]->ldap]->search_domains($_SESSION[$_SESSION[$this->base]->config]->get_domainSuffix());
+		for ($i=0; $i<count($sambaDomains); $i++ )
+			if ($this->attributes['sambaDomainName'][0] == $sambaDomains[$i]->name) {
+				$SID = $sambaDomains[$i]->SID;
+				$RIDbase = $sambaDomain[$i]->RIDbase;
+				}
+		$special = false;
+		if ($this->attributes['sambaSID'][0] == $SID."-500") $special = true;
+		if ($this->attributes['sambaSID'][0] == $SID."-501") $special = true;
+		if (!$special) $this->attributes['sambaSID'][0] == $SID."-".($_SESSION[$this->base]->module['posixAccount']->attributes['uidNumber'][0]*2+$RIDbase);
+
 		$return = $_SESSION[$this->base]->save_module_attributes($this->attributes, $this->orig);
 		// Set password
 		if (isset($return[$_SESSION[$this->base]->dn]['modify']['sambaLMPassword']))
@@ -355,16 +383,16 @@ class sambaSamAccount {
 	* It will output a complete html-table
 	*/
 	function display_html_attributes($post) {
+		// Get Domain SID from name
+		$sambaDomains = $_SESSION[$_SESSION[$this->base]->ldap]->search_domains($_SESSION[$_SESSION[$this->base]->config]->get_domainSuffix());
+		for ($i=0; $i<count($sambaDomains); $i++ ) {
+			$sambaDomainNames[] = $sambaDomains[$i]->name;
+			if ($this->attributes['sambaDomainName'][0] == $sambaDomains[$i]->name)
+				$SID = $sambaDomains[$i]->SID;
+			}
 		if ($_SESSION[$this->base]->type=='user') {
 			$canchangedate = getdate($this->attributes['sambaPwdCanChange'][0]);
 			$mustchangedate = getdate($this->attributes['sambaPwdMustChange'][0]);
-			// Get Domain SID from name
-			$sambaDomains = $_SESSION[$_SESSION[$this->base]->ldap]->search_domains($_SESSION[$_SESSION[$this->base]->config]->get_domainSuffix());
-			for ($i=0; $i<count($sambaDomains); $i++ ) {
-				$sambaDomainNames[] = $sambaDomains[$i]->name;
-				if ($this->attributes['sambaDomainName'][0] == $sambaDomains[$i]->name)
-					$SID = $sambaDomains[$i]->SID;
-				}
 			echo	'<input name="form_sambaSamAccount_sambaPwdCanChange_h" type="hidden" value="'.$canchangedate['hours'].'">'.
 				'<input name="form_sambaSamAccount_sambaPwdCanChange_m" type="hidden" value="'.$canchangedate['minutes'].'">'.
 				'<input name="form_sambaSamAccount_sambaPwdCanChange_s" type="hidden" value="'.$canchangedate['seconds'].'">'.
@@ -385,13 +413,15 @@ class sambaSamAccount {
 				echo "\"></td>\n";
 			echo "<td></td>\n";
 			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td>" . _('Use unix password') . "</td>\n";
-			echo "<td><input name=\"form_sambaSamAccount_useunixpwd\" type=\"checkbox\"";
-				if ($this->useunixpwd) echo " checked ";
-				echo "></td>\n";
-			echo "<td><a href=\"../help.php?HelpNumber=428\" target=\"lamhelp\">" . _('Help') . "</a></td>";
-			echo "</tr>\n";
+			if ($_SESSION[$this->base]->module['posixAccount']->orig['userPassword'][0] != $_SESSION[$this->base]->module['posixAccount']->attributes['userPassword'][0]) {
+				echo "<tr>\n";
+				echo "<td>" . _('Use unix password') . "</td>\n";
+				echo "<td><input name=\"form_sambaAccount_useunixpwd\" type=\"checkbox\"";
+					if ($this->useunixpwd) echo " checked ";
+					echo "></td>\n";
+				echo "<td><a href=\"../help.php?HelpNumber=428\" target=\"lamhelp\">" . _('Help') . "</a></td>";
+				echo "</tr>\n";
+				}
 			echo "<tr>\n";
 			echo "<td>" . _('Use no password') . "</td>\n";
 			echo "<td><input name=\"form_sambaSamAccount_sambaAcctFlagsN\" type=\"checkbox\"";
@@ -501,6 +531,26 @@ class sambaSamAccount {
 			echo "<td><a href=\"../help.php?HelpNumber=464\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
 			echo "</tr>\n";
 			echo "<tr>\n";
+			echo "<td>" . _('Special user') . "</td>\n";
+			echo "<td><select name=\"form_sambaSamAccount_sambaSID\">";
+				// Display if group SID should be mapped to a well kown SID
+				$wrid=false;
+				if ($this->attributes['sambaSID'][0]==$SID."-500") {
+					echo "<option selected>" . _('Administrator') . "</option>";
+					$wrid=true;
+					}
+				else echo "<option>" . _('Administrator') . "</option>";
+				if ($this->attributes['sambaSID'][0]==$SID."-501") {
+					echo "<option selected>" . _('Guest') . "</option>";
+					$wrid=true;
+					}
+				else echo "<option>" . _('Guest') . "</option>";
+				if ($wrid) echo "<option>" . _('Ordinary user') . "</option>";
+					else echo "<option selected>" . _('Ordinary user') . "</option>";
+				echo	"</select></td>\n";
+			echo "<td><a href=\"../help.php?HelpNumber=XXX\" target=\"lamhelp\">" . _('Help-XX') . "</a></td>\n";
+			echo "</tr>\n";
+			echo "<tr>\n";
 			echo "<td>" . _('Domain') . "</td>\n";
 			echo "<td><select name=\"form_sambaSamAccount_sambaDomainName\">";
 				foreach ($sambaDomainNames as $domain) {
@@ -512,8 +562,24 @@ class sambaSamAccount {
 			echo "</tr>\n";
 			echo "</table>\n";
 			}
-		else {
-
+		if ($_SESSION[$this->base]->type=='host') {
+			echo '<input name="form_sambaSamAccount_sambaAcctFlagsW" type="hidden" value="true">';
+			echo "<table border=0 width=\"100%\">\n<tr>\n";
+			echo "<tr>\n";
+			echo "<td>" . _('Reset password') . "</td>\n";
+			echo "<td><input name=\"form_sambaSamAccount_ResetSambaPassword\" type=\"submit\" value=\"" . _('Reset password') . "\"></td>\n";
+			echo "</tr>\n";
+			echo "<tr>\n";
+			echo "<td>" . _('Domain') . "</td>\n";
+			echo "<td><select name=\"form_sambaSamAccount_sambaDomainName\">";
+				foreach ($sambaDomainNames as $domain) {
+					if ($this->attributes['sambaDomainName'][0]==$domain) echo "<option selected>$domain</option>";
+						else "<option>$domain</option>";
+					}
+				echo "</select></td>\n";
+			echo "<td><a href=\"../help.php?HelpNumber=438\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
+			echo "</tr>\n";
+			echo "</table>\n";
 			}
 		return 0;
 		}
@@ -572,6 +638,7 @@ class sambaSamAccount {
 
 
 	}
+
 
 
 

@@ -133,7 +133,7 @@ class sambaAccount {
 			return 0;
 			}
 		else {
-			if ($this->useunixpwd) return $_SESSION[$this->base]->module['inetOrgPerson']->userPassword();
+			if ($this->useunixpwd) return $_SESSION[$this->base]->module['posixAccount']->userPassword();
 			if ($this->attributes['lmPassword'][0]!='') {
 				// Read existing password if set
 				$iv = base64_decode($_COOKIE["IV"]);
@@ -151,7 +151,32 @@ class sambaAccount {
 	/* Write variables into object and do some regexp checks
 	*/
 	function proccess_attributes($post) {
-		// Load attributes
+		$this->attributes['domain'][0] = $post['form_sambaAccount_domain'];
+		// Start character
+		$flag = "[";
+		if ($post['form_sambaAccount_acctFlagsD']) $flag .= "D";
+		if ($post['form_sambaAccount_acctFlagsX']) $flag .= "X";
+		if ($post['form_sambaAccount_acctFlagsN']) $flag .= "N";
+		if ($post['form_sambaAccount_acctFlagsS']) $flag .= "S";
+		if ($post['form_sambaAccount_acctFlagsH']) $flag .= "H";
+		if ($post['form_sambaAccount_acctFlagsW']) $flag .= "W";
+		if ($post['form_sambaAccount_acctFlagsU']) $flag .= "U";
+		// Expand string to fixed length
+		$flag = str_pad($flag, 12);
+		// End character
+		$flag = $flag. "]";
+		$this->attributes['acctFlags'][0] = $flag;
+
+		if ($_SESSION[$this->base]->type=='host') {
+			$this->attributes['primaryGroupID'][0] = $this->rids[_('Domain Computers')];
+			if ($post['form_sambaAccount_ResetSambaPassword']) {
+				// *** fixme. What is the default password?
+				$this->lmPassword('');
+				$_SESSION[$this->base]->module['posixAccount']->userPassword('');
+				}
+			}
+
+		// Check values
 		if ($_SESSION[$this->base]->type=='user') {
 			$this->attributes['pwdCanChange'][0] = mktime($post['form_sambaAccount_pwdCanChange_h'], $post['form_sambaAccount_pwdCanChange_m'], $post['form_sambaAccount_pwdCanChange_s'],
 				$post['form_sambaAccount_pwdCanChange_mon'], $post['form_sambaAccount_pwdCanChange_day'], $post['form_sambaAccount_pwdCanChange_yea']);
@@ -180,26 +205,19 @@ class sambaAccount {
 				}
 			if ($post['form_sambaAccount_useunixpwd']) $this->useunixpwd = true;
 				else $this->useunixpwd = false;
-			}
 
-		$this->attributes['domain'][0] = $post['form_sambaAccount_domain'];
-		// Start character
-		$flag = "[";
-		if ($post['form_sambaAccount_acctFlagsD']) $flag .= "D";
-		if ($post['form_sambaAccount_acctFlagsX']) $flag .= "X";
-		if ($post['form_sambaAccount_acctFlagsN']) $flag .= "N";
-		if ($post['form_sambaAccount_acctFlagsS']) $flag .= "S";
-		if ($post['form_sambaAccount_acctFlagsH']) $flag .= "H";
-		if ($post['form_sambaAccount_acctFlagsW']) $flag .= "W";
-		if ($post['form_sambaAccount_acctFlagsU']) $flag .= "U";
-		// Expand string to fixed length
-		$flag = str_pad($flag, 12);
-		// End character
-		$flag = $flag. "]";
-		$this->attributes['acctFlags'][0] = $flag;
-
-		// Check values
-		if ($_SESSION[$this->base]->type=='user') {
+			if ($post['form_sambaAccount_rid']== _('Administrator')) {
+				$this->attributes['rid'][0] = "500";
+				// Do a check if an administrator already exists
+				if ($_SESSION[$_SESSION[$this->base]->cache]->in_cache("500", 'rid', 'user'))
+					$errors[] = array('ERROR', _('Special user'), _('There can be only one administrator per domain.'));
+				}
+			if ($post['form_sambaAccount_rid']== _('Guest')) {
+				$this->attributes['rid'][0] = "501";
+				// Do a check if an administrator already exists
+				if ($_SESSION[$_SESSION[$this->base]->cache]->in_cache("501", 'rid', 'user'))
+					$errors[] = array('ERROR', _('Special user'), _('There can be only one guest per domain.'));
+				}
 			$this->attributes['smbHome'][0] = str_replace('$user', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['uid'][0], $this->attributes['smbHome'][0]);
 			$this->attributes['smbHome'][0] = str_replace('$group', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['gid'][0], $this->attributes['smbHome'][0]);
 			if ($this->attributes['smbHome'][0] != stripslashes($post['form_sambaAccount_smbHome'])) $errors[] = array('INFO', _('Home path'), _('Inserted user- or groupname in HomePath.'));
@@ -312,6 +330,17 @@ class sambaAccount {
 	* modify are attributes which have to been modified in ldap entry
 	*/
 	function save_attributes() {
+		/* Create sambaSID. Can't create it while loading attributes because
+		* it's psssible uidNumber has changed
+		*/
+		$special = false;
+		if ($this->attributes['rid'][0] == "500") $special = true;
+		if ($this->attributes['rid'][0] == "501") $special = true;
+		if ($this->attributes['rid'][0] == "515") $special = true;
+		if (!$special) $this->attributes['rid'][0] == $_SESSION[$this->base]->module['posixAccount']->attributes['uidNumber'][0]*2+1000;
+
+
+
 		$return = $_SESSION[$this->base]->save_module_attributes($this->attributes, $this->orig);
 		// Set password
 		if (isset($return[$_SESSION[$this->base]->dn]['modify']['lmPassword']))
@@ -368,13 +397,15 @@ class sambaAccount {
 				echo "\"></td>\n";
 			echo "<td></td>\n";
 			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td>" . _('Use unix password') . "</td>\n";
-			echo "<td><input name=\"form_sambaAccount_useunixpwd\" type=\"checkbox\"";
-				if ($this->useunixpwd) echo " checked ";
-				echo "></td>\n";
-			echo "<td><a href=\"../help.php?HelpNumber=428\" target=\"lamhelp\">" . _('Help') . "</a></td>";
-			echo "</tr>\n";
+			if ($_SESSION[$this->base]->module['posixAccount']->orig['userPassword'][0] != $_SESSION[$this->base]->module['posixAccount']->attributes['userPassword'][0]) {
+				echo "<tr>\n";
+				echo "<td>" . _('Use unix password') . "</td>\n";
+				echo "<td><input name=\"form_sambaAccount_useunixpwd\" type=\"checkbox\"";
+					if ($this->useunixpwd) echo " checked ";
+					echo "></td>\n";
+				echo "<td><a href=\"../help.php?HelpNumber=428\" target=\"lamhelp\">" . _('Help') . "</a></td>";
+				echo "</tr>\n";
+				}
 			echo "<tr>\n";
 			echo "<td>" . _('Use no password') . "</td>\n";
 			echo "<td><input name=\"form_sambaAccount_acctFlagsN\" type=\"checkbox\"";
@@ -484,14 +515,45 @@ class sambaAccount {
 			echo "<td><a href=\"../help.php?HelpNumber=464\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
 			echo "</tr>\n";
 			echo "<tr>\n";
+			echo "<td>" . _('Special user') . "</td>\n";
+			echo "<td><select name=\"form_sambaAccount_rid\">";
+				// Display if group SID should be mapped to a well kown SID
+				$wrid=false;
+				if ($this->attributes['rid'][0]=="500") {
+					echo "<option selected>" . _('Administrator') . "</option>";
+					$wrid=true;
+					}
+				else echo "<option>" . _('Administrator') . "</option>";
+				if ($this->attributes['rid'][0]=="501") {
+					echo "<option selected>" . _('Guest') . "</option>";
+					$wrid=true;
+					}
+				else echo "<option>" . _('Guest') . "</option>";
+				if ($wrid) echo "<option>" . _('Ordinary user') . "</option>";
+					else echo "<option selected>" . _('Ordinary user') . "</option>";
+				echo	"</select></td>\n";
+			echo "<td><a href=\"../help.php?HelpNumber=XXX\" target=\"lamhelp\">" . _('Help-XX') . "</a></td>\n";
+			echo "</tr>\n";
+			echo "<tr>\n";
 			echo "<td>" . _('Domain') . "</td>\n";
 			echo "<td><input name=\"form_sambaAccount_domain\" type=\"text\" size=\"20\" maxlength=\"80\" value=\"" . $this->attributes['domain'][0] . "\"></td>\n";
 			echo "<td><a href=\"../help.php?HelpNumber=438\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
 			echo "</tr>\n";
 			echo "</table>\n";
 			}
-		else {
-
+		if ($_SESSION[$this->base]->type=='host') {
+			echo '<input name="form_sambaAccount_acctFlagsW" type="hidden" value="true">';
+			echo "<table border=0 width=\"100%\">\n<tr>\n";
+			echo "<tr>\n";
+			echo "<td>" . _('Reset password') . "</td>\n";
+			echo "<td><input name=\"form_sambaAccount_ResetSambaPassword\" type=\"submit\" value=\"" . _('Reset password') . "\"></td>\n";
+			echo "</tr>\n";
+			echo "<tr>\n";
+			echo "<td>" . _('Domain') . "</td>\n";
+			echo "<td><input name=\"form_sambaAccount_domain\" type=\"text\" size=\"20\" maxlength=\"80\" value=\"" . $this->attributes['domain'][0] . "\"></td>\n";
+			echo "<td><a href=\"../help.php?HelpNumber=438\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
+			echo "</tr>\n";
+			echo "</table>\n";
 			}
 		return 0;
 		}

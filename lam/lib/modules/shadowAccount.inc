@@ -95,7 +95,7 @@ class shadowAccount {
 	/* This function returns a list with all required modules
 	*/
 	function dependencies() {
-		return array('inetOrgPerson');
+		return array('posixAccount');
 		}
 
 	function module_ready() {
@@ -162,7 +162,7 @@ class shadowAccount {
 		$return = $_SESSION[$this->base]->save_module_attributes($this->attributes, $this->orig);
 
 		// Set shadowLastchange manual.
-		if ($_SESSION[$this->base]->module['inetOrgPerson']->userPassword()!='' || $_SESSION[$this->base]->module['inetOrgPerson']->userPassword_no)
+		if (($_SESSION[$this->base]->module['posixAccount']->orig['userPassword'][0] != $_SESSION[$this->base]->module['posixAccount']->attributes['userPassword'][0]  && $_SESSION[$this->base]->module['posixAccount']->userPassword()!='') || $_SESSION[$this->base]->module['posixAccount']->userPassword_no)
 			$return[$_SESSION[$this->base]->dn]['modify']['shadowLastChange'] = array(intval(time()/3600/24));
 
 		return $return;

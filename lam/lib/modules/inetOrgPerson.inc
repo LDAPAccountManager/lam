@@ -60,10 +60,7 @@ class inetOrgPerson {
 		$_SESSION[$this->base]->add_attributes ('inetOrgPerson');
 		$this->orig = $this->attributes ;
 		$this->attributes['objectClass'][0] = 'inetOrgPerson';
-		// unset userPassword because we handle it separat.
 		$this->alias = _('inetOrgPerson');
-		// Add attributes which should be cached
-		$_SESSION[$_SESSION[$this->base]->cache]->add_cache(array ('user' => array('uid'), 'host' => array('uid')));
 		}
 
 	// Variables
@@ -71,10 +68,6 @@ class inetOrgPerson {
 	var $alias;
 	// reference to base-array so we can read other classes in basearray
 	var $base;
-	// Use a unix password?
-	var $userPassword_no;
-	// Lock account?
-	var $userPassword_lock;
 	// This variable contains all inetOrgPerson attributes
 	var $attributes;
 	/* If an account was loaded all attributes are kept in this array
@@ -82,33 +75,6 @@ class inetOrgPerson {
 	*/
 	var $orig;
 
-	/* $attribute['userPassword'] can't accessed directly because it's enrcypted
-	* To read / write password function userPassword is needed
-	* This function will return the unencrypted password when
-	* called without a variable
-	* If it's called with a new password, the
-	* new password will be stored encrypted
-	*/
-	function userPassword($newpassword=false) {
-		if (is_string($newpassword)) {
-			// Write new password
-			$iv = base64_decode($_COOKIE["IV"]);
-			$key = base64_decode($_COOKIE["Key"]);
-			$this->attributes['userPassword'][0] = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $newpassword, MCRYPT_MODE_ECB, $iv));
-			return 0;
-			}
-		else {
-			if ($this->attributes['userPassword'][0]!='') {
-				// Read existing password if set
-				$iv = base64_decode($_COOKIE["IV"]);
-				$key = base64_decode($_COOKIE["Key"]);
-				$password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($this->attributes['userPassword'][0]), MCRYPT_MODE_ECB, $iv);
-				$password = str_replace(chr(00), '', $password);
-				return $password;
-				}
-			else return '';
-			}
-		}
 
 	/* This function returns a list with all required modules
 	*/
@@ -124,10 +90,6 @@ class inetOrgPerson {
 	*/
 	function proccess_attributes($post) {
 		// Load attributes
-		if (($this->attributes['uid'][0] != $post['form_inetOrgPerson_uid']) &&  ereg('[A-Z]$', $post['form_inetOrgPerson_uid']))
-			$errors[] = array('WARN', _('Username'), _('You are using a capital letters. This can cause problems because windows isn\'t case-sensitive.'));
-		$this->attributes['uid'][0] = $post['form_inetOrgPerson_uid'];
-		$this->attributes['cn'][0] = $this->attributes['uid'][0];
 		$this->attributes['description'][0] = $post['form_inetOrgPerson_description'];
 		$this->attributes['sn'][0] = $post['form_inetOrgPerson_sn'];
 		$this->attributes['givenName'][0] = $post['form_inetOrgPerson_givenName'];
@@ -151,67 +113,10 @@ class inetOrgPerson {
 				if ($host!="") $this->attributes['host'][] = $host;
 			}
 
-		if ($post['form_inetOrgPerson_userPassword_no']) $this->userPassword_no=true;
-			else $this->userPassword_no=false;
-		if ($post['form_inetOrgPerson_userPassword_lock']) $this->userPassword_lock=true;
-			else $this->userPassword_lock=false;
-		if (isset($post['form_inetOrgPerson_userPassword'])) {
-			if ($post['form_inetOrgPerson_userPassword'] != $post['form_inetOrgPerson_userPassword2']) {
-				$errors[] = array('ERROR', _('Password'), _('Please enter the same password in both password-fields.'));
-				unset ($post['form_inetOrgPerson_userPassword2']);
-				}
-				else $this->userPassword($post['form_inetOrgPerson_userPassword']);
-			}
-		if ($post['form_inetOrgPerson_genpass']) $this->userPassword(genpasswd());
-
 		// Check if givenname is valid
 		if ( !ereg('^([a-z]|[A-Z]|[-]|[ ]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+$', $this->attributes['givenName'][0])) $errors[] = array('ERROR', _('Given name'), _('Given name contains invalid characters'));
 		// Check if surname is valid
 		if ( !ereg('^([a-z]|[A-Z]|[-]|[ ]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+$', $this->attributes['sn'][0])) $errors[] = array('ERROR', _('Surname'), _('Surname contains invalid characters'));
-		// Check if Username contains only valid characters
-		if ( !ereg('^([a-z]|[A-Z]|[0-9]|[.]|[-]|[_])+$', $this->attributes['uid'][0]))
-			$errors[] = array('ERROR', _('Username'), _('Username contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
-		// Create automatic useraccount with number if original user already exists
-		// Reset name to original name if new name is in use
-		// Set username back to original name if new username is in use
-		if ($_SESSION[$_SESSION[$this->base]->cache]->in_cache($this->attributes['uid'][0],'uid', '*')!=false && ($this->orig['uid'][0]!='')) {
-			$this->attributes['uid'][0] = $this->orig['uid'][0];
-			}
-		// Change uid to a new uid until a free uid is found
-		else while ($_SESSION[$_SESSION[$this->base]->cache]->in_cache($this->attributes['uid'][0], 'uid', '*')) {
-			// get last character of username
-			$lastchar = substr($this->attributes['uid'][0], strlen($this->attributes['uid'][0])-1, 1);
-			// Last character is no number
-			if ( !ereg('^([0-9])+$', $lastchar))
-				/* Last character is no number. Therefore we only have to
-				* add "2" to it.
-				*/
-				$this->attributes['uid'][0] = $this->attributes['uid'][0] . '2';
-			 else {
-				/* Last character is a number -> we have to increase the number until we've
-				* found a groupname with trailing number which is not in use.
-				*
-				* $i will show us were we have to split groupname so we get a part
-				* with the groupname and a part with the trailing number
-				*/
-				$i=strlen($this->attributes['uid'][0])-1;
-				$mark = false;
-				// Set $i to the last character which is a number in $account_new->general_username
-				while (!$mark) {
-					if (ereg('^([0-9])+$',substr($this->attributes['uid'][0], $i, strlen($this->attributes['uid'][0])-$i))) $i--;
-						else $mark=true;
-					}
-				// increase last number with one
-				$firstchars = substr($this->attributes['uid'][0], 0, $i+1);
-				$lastchars = substr($this->attributes['uid'][0], $i+1, strlen($this->attributes['uid'][0])-$i);
-				// Put username together
-				$this->attributes['uid'][0] = $firstchars . (intval($lastchars)+1);
-				}
-			}
-		// Show warning if lam has changed username
-		if ($this->attributes['uid'][0] != $post['form_inetOrgPerson_uid']) $errors[] = array('WARN', _('Username'), _('Username in use. Selected next free username.'));
-		if (!ereg('^([a-z]|[A-Z]|[0-9]|[\|]|[\#]|[\*]|[\,]|[\.]|[\;]|[\:]|[\_]|[\-]|[\+]|[\!]|[\%]|[\&]|[\/]|[\?]|[\{]|[\[]|[\(]|[\)]|[\]]|[\}])*$', $this->userPassword()))
-			$errors[] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
 
 		if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/]|[-])*$', $this->attributes['telephoneNumber'][0]))  $errors[] = array('ERROR', _('Telephone number'), _('Please enter a valid telephone number!'));
 		if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/]|[-])*$', $this->attributes['mobileTelephoneNumber'][0]))  $errors[] = array('ERROR', _('Mobile number'), _('Please enter a valid mobile number!'));
@@ -249,7 +154,6 @@ class inetOrgPerson {
 		// Values are kept as copy so we can compare old attributes with new attributes
 		$this->orig['objectClass'][0] = 'inetOrgPerson';
 		$this->attributes = $this->orig;
-		$this->userPassword(''); // Remove old password so it won't displayed as hash
 		return 0;
 		}
 
@@ -266,36 +170,6 @@ class inetOrgPerson {
 		$return = $_SESSION[$this->base]->save_module_attributes($this->attributes, $this->orig);
 		if (isset($return[$_SESSION[$this->base]->dn]['modify']['userPassword']))
 			unset($return[$_SESSION[$this->base]->dn]['modify']['userPassword']);
-		// Set unix password
-		if (count($this->orig['userPassword'])==0) {
-			// New user or no old password set
-			if ($this->userPassword_no) {
-				$return[$_SESSION[$this->base]->dn]['modify']['userPassword'][0] = pwd_hash ('', !$this->userPassword_lock);
-				}
-				else $return[$_SESSION[$this->base]->dn]['modify']['userPassword'][0] = utf8_encode(pwd_hash ($this->userPassword(), !$this->userPassword_lock));
-			}
-		else {
-			if ($this->userPassword()!='' || $this->userPassword_no) {
-				// Write new password
-				if ($this->userPassword_no) $return[$_SESSION[$this->base]->dn]['modify']['userPassword'][0] = pwd_hash ('', !$this->userPassword_lock);
-					else $return[$_SESSION[$this->base]->dn]['modify']['userPassword'][0] = utf8_encode(pwd_hash ($this->userPassword(), !$this->userPassword_lock));
-				}
-			else { // No new password but old password
-				// (un)lock password
-				if ($this->userPassword_lock == pwd_is_enabled($this->orig['userPassword'][0])) {
-					// Split old password hash in {CRYPT} and password-hash
-					$i = 0;
-					while ($this->orig['userPassword'][0]{$i} != '}') $i++;
-					$passwd = substr($this->orig['userPassword'][0], $i+1 );
-					$crypt = substr($this->orig['userPassword'][0], 0, $i+1 );
-					// remove trailing ! from password hash
-					if ($passwd{0} == '!') $passwd = substr($passwd, 1);
-					// Write new password
-					if ($this->userPassword_lock) $return[$_SESSION[$this->base]->dn]['modify']['userPassword'][0] = utf8_encode("$crypt!$passwd");
-					else $return[$_SESSION[$this->base]->dn]['modify']['userPassword'][0] = utf8_encode("$crypt$passwd");
-					}
-				}
-			}
 		return $return;
 		}
 
@@ -304,9 +178,7 @@ class inetOrgPerson {
 	* also their values.
 	*/
 	function get_attributes() {
-		$return = $this->attributes;
-		$return['userPassword'] = $this->userPassword();
-		return $return;
+		return $this->attributes;
 		}
 
 	/* This function will create the html-page
@@ -315,42 +187,11 @@ class inetOrgPerson {
 	*/
 	function display_html_attributes($post) {
 
-		echo "<table border=0 width=\"100%\">\n<tr>\n";
-		echo '<td>' . _('Username') . "*</td>\n";
-		echo "<td><input name=\"form_inetOrgPerson_uid\" type=\"text\" size=\"20\" maxlength=\"20\" value=\"".$this->attributes['uid'][0]."\"></td>\n";
-		echo "<td><a href=\"../help.php?HelpNumber=400\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-		echo "</tr>\n";
+		echo "<table border=0 width=\"100%\">\n";
 		echo "<tr>\n";
 		echo "<td>" . _('Description') . "</td>\n";
 		echo "<td><input name=\"form_inetOrgPerson_description\" type=\"text\" size=\"30\" maxlength=\"255\" value=\"".$this->attributes['description'][0]."\"></td>\n";
 		echo "<td><a href=\"../help.php?HelpNumber=404\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-		echo "</tr>\n";
-		echo "<tr>\n";
-		echo "<td>" . _('Password') . "</td>\n";
-		echo "<td><input name=\"form_inetOrgPerson_userPassword\" type=\"password\" size=\"20\" maxlength=\"20\" value=\"".$this->userPassword()."\"></td>\n";
-		echo "<td><input name=\"form_inetOrgPerson_genpass\" type=\"submit\" value=\"" . _('Generate password') . "\"></td>\n";
-		echo "</tr>\n";
-		echo "<tr>\n";
-		echo "<td>" . _('Repeat password') . "</td>\n";
-		echo "<td><input name=\"form_inetOrgPerson_userPassword2\" type=\"password\" size=\"20\" maxlength=\"20\" value=\"";
-			if ($post['form_inetOrgPerson_userPassword2']!='') echo $post['form_posixAccount_userPassword2'];
-			else echo $this->userPassword();
-		echo "\"></td>\n";
-		echo "<td></td>\n";
-		echo "</tr>\n";
-		echo "<tr>\n";
-		echo "<td>" . _('Use no password') . "</td>\n";
-		echo "<td><input name=\"form_inetOrgPerson_userPassword_no\" type=\"checkbox\"";
-			if ($this->userPassword_no) echo " checked ";
-			echo "></td>\n";
-		echo "<td><a href=\"../help.php?HelpNumber=426\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-		echo "</tr>\n";
-		echo "<tr>\n";
-		echo "<td>" . _('Lock password') . "</td>\n";
-		echo "<td><input name=\"form_inetOrgPerson_userPassword_lock\" type=\"checkbox\"";
-			if ($this->userPassword_lock) echo " checked ";
-			echo "></td>\n";
-		echo "<td><a href=\"../help.php?HelpNumber=426\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
 		echo "</tr>\n";
 		if (isset($this->attributes['host'])) {
 			echo "<tr>\n";

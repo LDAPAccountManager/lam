@@ -44,7 +44,6 @@ class cache {
 	* syntax of $attributes is array( scope1 => array ( attributes ), scope2 => array ( attributes ), ...)
 	*/
 	function add_cache($attributes) {
-		$this->refresh_cache();
 		// Check input variable
 		$allowed_types = array ( 'user', 'group', 'host', '*' );
 		if (!is_array($attributes)) trigger_error(_('Argument of add_cache must be : array ( scope => array(attribute1(string), attribute2(string), ..), scope => ... ).'), E_USER_ERROR);
@@ -64,6 +63,8 @@ class cache {
 				if (!@in_array($attributes[$scope][$i] ,$this->attributes[$scope])) $this->attributes[$scope][] = $attributes[$scope][$i];
 				}
 			}
+		// Rebuild cache
+		$this->refresh_cache(true);
 		}
 
 	/* This function returns an array ( dn1 => array(uidnumber1), dn2 => array(uidnumber2), ... )
@@ -80,10 +81,39 @@ class cache {
 			}
 		// Return error if objectClass isn't found
 		if ($line==-1) trigger_error (sprintf(_("objectClass %s required but not defined in ldap."), $objectClass), E_USER_WARNING);
+
+		// Create list of all allowed attributes
+		for ($i=0; $i<count($this->ldap->objectClasses); $i++ ) {
+			if (strpos($this->ldap->objectClasses[$i],  'MUST (')) {
+				$string_withtail = substr($this->ldap->objectClasses[$i], strpos($this->ldap->objectClasses[$i],  'MUST (')+6);
+				// Now we have a string with all must-attributes
+				$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
+				$string = trim($string);
+				$allowed_attributes = array_merge($allowed_attributes, explode(" $ ", $string));
+				}
+			// create array with may-attributes
+			// Get startposition in string
+			if (strpos($this->ldap->objectClasses[$i],  'MAY (')) {
+				$string_withtail = substr($this->ldap->objectClasses[$i], strpos($this->ldap->objectClasses[$i],  'MAY (')+5);
+				// Now we have a string with all must-attributes
+				$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
+				$string = trim($string);
+				$allowed_attributes = array_merge($allowed_attributes, explode(" $ ", $string));
+				}
+			}
+		$allowed_attributes = array_unique($allowed_attributes);
+		if (!in_array($attribute, $allowed_attributes)) trigger_error(_('Attribute not defined in LDAP.'), E_USER_WARNING);
+
 		// Everything seems to be OK, start processing data
 		$this->refresh_cache();
 		if ($singlescope == '*') $scopes = $allowed_types;
 			else $scopes = array ( $singlescope );
+		// Add cache entry dynamic
+		foreach ($scopes as $scope) {
+			if (!@in_array($attribute ,$this->attributes[$scope])) $add[$scope][] = $attribute;
+			}
+		if (count($add)!=0) $this->add_cache($add);
+
 		foreach ($scopes as $scope) {
 			if (isset($this->ldapcache[$scope])) {
 				$DNs = array_keys($this->ldapcache[$scope]);
@@ -132,11 +162,17 @@ class cache {
 			}
 		$allowed_attributes = array_unique($allowed_attributes);
 		if (!in_array($attribute, $allowed_attributes)) trigger_error(_('Attribute not defined in LDAP.'), E_USER_WARNING);
+
 		// Everything seems to be OK, start processing data
 		$this->refresh_cache();
 		if ($singlescope == '*') $scopes = $allowed_types;
 			else $scopes = array ( $singlescope );
-		//print_r($this->ldapcache);
+		// Add cache entry dynamic
+		foreach ($scopes as $scope) {
+			if (!@in_array($attribute ,$this->attributes[$scope])) $add[$scope][] = $attribute;
+			}
+		if (count($add)!=0) $this->add_cache($add);
+
 		foreach ($scopes as $scope) {
 			if (isset($this->ldapcache[$scope])) {
 				$DNs = array_keys($this->ldapcache[$scope]);
@@ -157,8 +193,8 @@ class cache {
 
 	/* This functions refreshs the cache
 	*/
-	function refresh_cache() {
-		if ($time + $this->config->get_cacheTimeoutSec() < time()) {
+	function refresh_cache($rebuild=false) {
+		if ($time + $this->config->get_cacheTimeoutSec() < time() || $rebuild) {
 			// unset old cache
 			unset ($this->ldapcache);
 			$scopes = array_keys($this->attributes);
@@ -813,7 +849,8 @@ class accountContainer {
 		// Add objects
 		foreach ($attr['objectClass'] as $objectClass) $this->add_objectClass($objectClass);
 		// load attributes
-		foreach ($attr['objectClass'] as $objectClass) if (isset($this->module[$objectClass])) $this->module[$objectClass]->load_attributes($attr);
+		foreach ($attr['objectClass'] as $objectClass)
+			if (isset($this->module[$objectClass])) $this->module[$objectClass]->load_attributes($attr);
 		// sortm modules and make all active because all required attributes should be set
 		$module = array_keys ($this->module);
 		$modulelist = array();
