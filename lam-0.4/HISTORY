@@ -1,4 +1,5 @@
 26.01.2005 0.4.8
+  - allow "%" at the beginning of Samba home/profile path (1107998)
   - fixed bugs:
       fixed IE fix ;-)
       no more warnings for profiles with no additional groups set
