@@ -42,8 +42,8 @@ use Quota; # Needed to get and set quotas
 use Net::LDAP; # Needed to connect to ldap-server
 #use strict; # Use strict for security reasons
 
+@quota_grp;
 @quota_usr; # Filesystems with enabled userquotas
-@quota_grp; # Filesystems with enabled userquotas
 @vals = @ARGV;
 	# vals = DN, PAssword, user, home, (add|rem),
 	#                            quota, (set|get),(u|g), (mountpoint,blocksoft,blockhard,filesoft,filehard)+
@@ -107,9 +107,9 @@ if ($found==true) {
 						my $path = $user[7];
 						$path =~ s,/(?:[^/]*)$,,;
 						($<, $>) = ($>, $<); # Get root privileges
-						system 'mkdir', '-m 755 -p', $patch; # Create paths to homedir
+						system 'mkdir', '-m 755', '-p', $path; # Create paths to homedir
 						system 'mkdir', '-m 700', $user[7]; # Create himdir itself
-						system 'cp', '-a', '/etc/skel/*', $user[7]; # Copy /etc/sekl into homedir
+						system "cp -a /etc/skel/* /etc/skel/.[^.]* $user[7]"; # Copy /etc/sekl into homedir
 						system 'chown', '-R', "$user[2]:$user[3]" , $user[7]; # Change owner to new user
 						system '/usr/sbin/useradd.local', $user[0]; # run useradd-script
 						($<, $>) = ($>, $<); # Give up root previleges
@@ -139,8 +139,23 @@ if ($found==true) {
 						}
 					$i++;
 					}
-				if ($vals[5] eq 'u') { $group=false; } else { $group=true; }
+				if ($vals[5] eq 'u') { $group=false; } else {
+				    $group=true;
+				    @quota_usr = @quota_grp;
+				    }
 				switch2: {
+					$vals[4] eq 'rem' && do {
+						$i=0;
+						($<, $>) = ($>, $<); # Get root privileges
+						while ($quota_usr[$i][0]) {
+							$dev = Quota::getqcarg($quota_usr[$i][0]);
+							print "$user[2]\n";
+							$return = Quota::setqlim($dev,$user[2],0,0,0,0,1,$group);
+							$i++;
+							}
+						($<, $>) = ($>, $<); # Give up root previleges
+						last switch2;
+						};
 					$vals[4] eq 'set' && do {
 						$i=0;
 						($<, $>) = ($>, $<); # Get root privileges
@@ -157,7 +172,8 @@ if ($found==true) {
 						($<, $>) = ($>, $<); # Get root privileges
 						while ($quota_usr[$i][0]) {
 							if ($vals[2]ne'+') {
-								@temp = Quota::query($quota_usr[$i][0],$user[2],$group);
+								$dev = Quota::getqcarg($quota_usr[$i][0]);
+								@temp = Quota::query($dev,$user[2],$group);
 								$return = "$quota_usr[$i][1],$temp[0],$temp[1],$temp[2],$temp[3],$temp[4],$temp[5],$temp[6],$temp[7]:$return";
 								}
 							else { $return = "$quota_usr[$i][1],0,0,0,0,0,0,0,0:$return"; }

@@ -40,7 +40,7 @@ if ( $_GET['type'] ) { // Type is true if account.php was called from Users/Grou
 	$_SESSION['account_temp'] = ""; // Delete $_SESSION['account_temp'] because values are now invalid
 	$_SESSION['modify'] = 0; // Set modify back to false
 	$_SESSION['shelllist'] = getshells(); // Write List of all valid shells in variable
-	if ((($_GET['type']=='user')||($_GET['type']=='group')) && ($_SESSION['config']->scriptServer)) getquotas();
+	if ((($_GET['type']=='user')||($_GET['type']=='group')) && ($_SESSION['config']->scriptServer) && (!$_GET['DN'])) getquotas();
 	}
 
 if ( $_GET['DN'] ) { // $DN is true if an entry should be modified and account.php was called from Users/Group/Host-List
@@ -48,7 +48,11 @@ if ( $_GET['DN'] ) { // $DN is true if an entry should be modified and account.p
 	$DN = str_replace("\'", '',$_GET['DN']);
 	switch ($_SESSION['type2']) {
 		case 'user': loaduser($DN); break;
-		case 'group': loadgroup($DN); break;
+		case 'group':
+			loadgroup($DN);
+			if (!session_is_registered('final_changegids')) session_register('final_changegids');
+			 else $_SESSION['final_changegids'] = '';
+			break;
 		case 'host': loadhost($DN); break;
 		}
 	}
@@ -203,6 +207,7 @@ switch ($_POST['select']) {
 		if ($_POST['next'] && ($error=="0")) $select_local = 'final';
 		break;
 	case 'final':
+		if ($_POST['f_final_changegids']) $_SESSION['final_changegids'] = $_POST['f_final_changegids'] ;
 		if ($_POST['back'] && ($error=="0"))
 			switch ($_SESSION['type2']) {
 				case 'user': $select_local = 'personal'; break;
@@ -215,7 +220,6 @@ switch ($_POST['select']) {
 
 
 if ( $_POST['create'] ) { // Create-Button was pressed
-	$_SESSION['account']->final_changegids = $_POST['f_final_changegids'];
 	switch ($_SESSION['type2']) {
 		case 'user':
 			$result = createuser(); // account.inc
@@ -750,7 +754,8 @@ switch ($select_local) {
 		// Final Settings
 		echo '<input name="select" type="hidden" value="final">
 		<tr><td>';
-		echo _('Create');
+		if ($_SESSION['modify']==1) echo _('Modify');
+		 else echo _('Create');
 		echo '</td></tr>';
 		switch ( $_SESSION['type2'] ) {
 			case 'user' :
@@ -770,12 +775,12 @@ switch ($select_local) {
 			case 'group' :
 				if (($_SESSION['modify']==1) && ($_SESSION['account']->general_uidNumber != $_SESSION['account_old']->general_uidNumber)) {
 					echo '<tr>';
-					StausMessage ('INFO', _('GID-number has changed. You have to run the following command as root in order to change existing file-permissions:'),
+					StatusMessage ('INFO', _('GID-number has changed. You have to run the following command as root in order to change existing file-permissions:'),
 					'find / -gid ' . $_SESSION['account_old' ]->general_uidNumber . ' -exec chgrp ' . $_SESSION['account']->general_uidNumber . ' {} \;');
 					echo '</tr>';
 					echo '<tr><td>';
 					echo '<input name="f_final_changegids" type="checkbox"';
-						if ($_SESSION['account']->final_changegids) echo ' checked ';
+						if ($_SESSION['final_changegids']) echo ' checked ';
 					echo ' >';
 					echo _('Change GID-Number of all users in group to new value');
 					echo '</td></tr>';
@@ -800,7 +805,10 @@ switch ($select_local) {
 			echo '">';
 			}
 		echo '</td><td>
-		<input name="create" type="submit" value="'; echo _('Create Account'); echo '">
+		<input name="create" type="submit" value="';
+		if ($_SESSION['modify']==1) echo _('Modify Account');
+		 else echo _('Create Account');
+		echo '">
 		</td></tr>';
 		break;
 	case 'finish':
@@ -814,12 +822,14 @@ switch ($select_local) {
 				echo '<tr><td>';
 				echo _('User ');
 				echo $_SESSION['account']->general_username;
-				echo _('has been created');
+				if ($_SESSION['modify']==1) echo _('has been modified');
+				 else echo _('has been created');
 				echo '</td></tr>';
 				foreach (file('../config/print.html') as $line) eval("?".">".$line."<"."?");
-				echo '<tr><td>
-				<input name="createagain" type="submit" value="'; echo _('Create another user'); echo '">
-				</td><td>
+				echo '<tr><td>';
+				if ($_SESSION['modify']!=1)
+					{ echo '<input name="createagain" type="submit" value="'; echo _('Create another user'); echo '">'; }
+				echo '</td><td>
 				<a href  ="javascript:self.print();">';
 				echo _('Print');
 				echo '</a></td><td>
@@ -830,10 +840,12 @@ switch ($select_local) {
 				echo '<tr><td>';
 				echo _('Group ');
 				echo $_SESSION['account']->general_username;
-				echo _('has been created');
-				echo '</td></tr><tr><td>
-				<input name="createagain" type="submit" value="'; echo _('Create another group'); echo '">
-				</td><td></td><td>
+				if ($_SESSION['modify']==1) echo _('has been modified');
+				 else echo _('has been created');
+				echo '</td></tr><tr><td>';
+				if ($_SESSION['modify']!=1)
+					{ echo' <input name="createagain" type="submit" value="'; echo _('Create another group'); echo '">'; }
+				echo '</td><td></td><td>
 				<input name="backmain" type="submit" value="'; echo _('Back to grouplist'); echo '">
 				</td></tr>';
 				break;
@@ -841,10 +853,12 @@ switch ($select_local) {
 				echo '<tr><td>';
 				echo _('Host ');
 				echo $_SESSION['account']->general_username;
-				echo _('has been created');
-				echo '</td></tr><tr><td>
-				<input name="createagain" type="submit" value="'; echo _('Create another host'); echo '">
-				</td><td></td><td>
+				if ($_SESSION['modify']==1) echo _('has been modified');
+				 else echo _('has been created');
+				echo '</td></tr><tr><td>';
+				if ($_SESSION['modify']!=1)
+					{ echo '<input name="createagain" type="submit" value="'; echo _('Create another host'); echo '">'; }
+				echo '</td><td></td><td>
 				<input name="backmain" type="submit" value="'; echo _('Back to hostlist'); echo '">
 				</td></tr>';
 				break;

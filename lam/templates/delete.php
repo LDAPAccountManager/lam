@@ -69,25 +69,44 @@ if ($_POST['delete_yes']) {
 	foreach ($DN2 as $dn) {
 		switch ($_POST['type5']) {
 			case 'user':
+				$temp=explode(',', $dn);
+				$username = str_replace('cn=', '', $temp[0]);
+				if ($_SESSION['config']->scriptServer) {
+					remhomedir($username);
+					remquotas($username, $_POST['type5']);
+					}
+				$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(), 'objectClass=PosixGroup', array('memberUid'));
+				$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
+				while ($entry) {
+					$attr2 = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
+					if ($attr2['memberUid']) {
+						array_shift($attr2['memberUid']);
+						foreach ($attr2['memberUid'] as $nam) {
+							if ($nam==$username) {
+								$todelete['memberUid'] = $nam;
+								$success = ldap_mod_del($_SESSION['ldap']->server(), ldap_get_dn($_SESSION['ldap']->server(), $entry) ,$todelete);
+								}
+							}
+						}
+					$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
+					}
 				$success = ldap_delete($_SESSION['ldap']->server(), $dn);
 				if (!$success) $error = _('Could not delete user: ').$dn;
-					else {
-						$temp=explode(',', $dn);
-						$username = str_replace('cn=', '', $temp[0]);
-						if ($_SESSION['config']->scriptServer) remhomedir($username);
-						}
 				break;
 			case 'host':
 				$success = ldap_delete($_SESSION['ldap']->server(), $dn);
 				if (!$success) $error = _('Could not delete host: ').$dn;
 				break;
 			case 'group':
+				$temp=explode(',', $dn);
+				$username = str_replace('cn=', '', $temp[0]);
 				$result = ldap_search($_SESSION['ldap']->server(), $dn, 'objectClass=*');
 				if (!$result) $error = _('Could not delete group: ').$dn;
 				$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 				$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
 				if ($attr['memberUid']) $error = _('Could not delete group. Still users in group: ').$dn;
 				    else {
+					if ($_SESSION['config']->scriptServer) remquotas($username, $_POST['type5']);
 					$success = ldap_delete($_SESSION['ldap']->server(), $dn);
 					if (!$success) $error = _('Could not delete user: ').$dn;
 					}

@@ -389,12 +389,20 @@ function setquotas($user) { // Whis function will set the quotas from the specif
 	while ($_SESSION['account']->quota[$i][0]) {
 		if ($_SESSION['account']->quota[$i] != $_SESSION['account_old']->quota[$i]) {
 			$towrite = $towrite. $_SESSION['account']->quota[$i][0] .','.$_SESSION['account']->quota[$i][2] .','.$_SESSION['account']->quota[$i][3]
-			.','.$_SESSION['account']->quota[$i][6] .','. $_SESSION['account']->quota[$i][7] .':'.
-			$i++;
+			.','.$_SESSION['account']->quota[$i][6] .','. $_SESSION['account']->quota[$i][7] .':';
 			}
+		$i++;
 		}
-	echo("/usr/bin/ssh ".$_SESSION['config']->scriptServer." sudo ".$_SESSION['config']->scriptPath." $towrite");
 	if ($i!=0) exec("/usr/bin/ssh ".$_SESSION['config']->scriptServer." sudo ".$_SESSION['config']->scriptPath." $towrite", $vals);
+	}
+
+function remquotas($user, $kind) { // Whis function will remove the quotas from the specified user.
+	$ldap_q = $_SESSION['ldap']->decrypt();
+	//$towrite = $ldap_q[0].' '.$ldap_q[1].' '.$user.' quota set ';
+	$towrite = 'cn=Manager,dc=my-domain,dc=com secret '.$user.' quota rem ';
+	if ($_SESSION['type2']=='user') $towrite = $towrite.'u ';
+	 else $towrite = $towrite.'g ';
+	exec("/usr/bin/ssh ".$_SESSION['config']->scriptServer." sudo ".$_SESSION['config']->scriptPath." $towrite", $vals);
 	}
 
 
@@ -590,7 +598,6 @@ function loaduser($dn) { // Will load all needed values from an existing account
 	$_SESSION['account_old'] = $_SESSION['account'];
 	if ($attr['userPassword'][0]) $_SESSION['account_old']->unix_password = $attr['userPassword'][0];
 	if ($attr['ntPassword'][0])  $_SESSION['account_old']->smb_password = $attr['ntPassword'][0];
-	if ($_SESSION['config']->scriptServer) getquotas($attr['uid'][0]);
 	}
 
 function loadhost($dn) { // Will load all needed values from an existing account
@@ -649,7 +656,10 @@ function loadgroup($dn) { // Will load all needed values from an existing group
 	$result = ldap_search($_SESSION['ldap']->server(), $dn, "objectclass=PosixGroup");
 	$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 	$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
-	if ($attr['gidNumber'][0]) $_SESSION['account']->general_uidNumber = $attr['gidNumber'][0];
+	if ($attr['gidNumber'][0]) {
+		$_SESSION['account']->general_uidNumber = $attr['gidNumber'][0];
+		if ($_SESSION['config']->scriptServer) getquotas($attr['uid'][0]);
+		}
 	if ($attr['description'][0]) $_SESSION['account']->general_gecos = $attr['description'][0];
 	if ($attr['cn'][0]) {
 		$_SESSION['account']->general_username = $attr['cn'][0];
@@ -659,7 +669,6 @@ function loadgroup($dn) { // Will load all needed values from an existing group
 	if (is_array($_SESSION['account']->general_memberUid)) array_shift($_SESSION['account']->general_memberUid);
 	$_SESSION['account']->general_dn = $dn;
 	$_SESSION['account_old'] = $_SESSION['account'];
-	if ($_SESSION['config']->scriptServer) getquotas($attr['uid'][0]);
 	}
 
 
@@ -670,7 +679,7 @@ function createuser() { // Will create the LDAP-Account
 	// 4 == Error while creating Account
 	// 5 == Error while modifying Account
 	// Value stored in shadowExpire, days since 1.1.1970
-	$date = mktime(0,0,0, $_SESSION['account']->unix_pwdexpire_day, $_SESSION['account']->unix_pwdexpire_mon, $_SESSION['account']->unix_pwdexpire_yea) / 86400 ;
+	$date = mktime(10,0,0, $_SESSION['account']->unix_pwdexpire_mon, $_SESSION['account']->unix_pwdexpire_day, $_SESSION['account']->unix_pwdexpire_yea) / 86400 ;
 	settype($date, 'integer');
 	$_SESSION['account']->general_dn = 'cn=' . $_SESSION['account']->general_username . ',' . $_SESSION['config']->get_UserSuffix();
 
@@ -763,9 +772,12 @@ function createuser() { // Will create the LDAP-Account
 				}
 		if (!$success) return 5;
 		// Write Groupmemberchips
-		$allgroups = $_SESSION['account']->general_groupadd;
-		if (!in_array($_SESSION['account']->general_group, $allgroups)) $allgroups[] = $_SESSION['account']->general_group;
-		$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(), 'objectClass=PosixGroup', array('uidNumber'));
+		if ($_SESSION['account']->general_groupadd) {
+			$allgroups = $_SESSION['account']->general_groupadd;
+			if (!in_array($_SESSION['account']->general_group, $allgroups)) $allgroups[] = $_SESSION['account']->general_group;
+			}
+		 else $allgroups[0] = $_SESSION['account']->general_group;
+		$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(), 'objectClass=PosixGroup', array('memberUid'));
 		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 		while ($entry) {
 			$modifygroup=0;
@@ -773,8 +785,8 @@ function createuser() { // Will create the LDAP-Account
 			if ($attr2['memberUid']) {
 				array_shift($attr2['memberUid']);
 				foreach ($attr2['memberUid'] as $nam) {
-					if ( ($attr2['memberUid'][$nam]==$_SESSION['account']->general_username) && !in_array($attr2['memberUid'][$nam], $allgroups)) {
-						$todelete['memberUid'] = $attr2['memberUid'][$nam];
+					if ( ($nam==$_SESSION['account']->general_username) && !in_array($nam, $allgroups)) {
+						$todelete['memberUid'] = $nam;
 						$success = ldap_mod_del($_SESSION['ldap']->server(), ldap_get_dn($_SESSION['ldap']->server(), $entry) ,$todelete);
 						}
 					}
@@ -799,7 +811,6 @@ function createuser() { // Will create the LDAP-Account
 	 else {
 		// Write a new entry if user doesn't exists
 		$success = ldap_add($_SESSION['ldap']->server(),$_SESSION['account']->general_dn, $attr);
-		if (!$success) return 4;
 		if ($_SESSION['config']->scriptServer) {
 			setquotas($_SESSION['account']->general_username);
 			addhomedir($_SESSION['account']->general_username);
@@ -809,7 +820,7 @@ function createuser() { // Will create the LDAP-Account
 		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 		$group = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
 		if ($group['memberUid']) array_shift($group['memberUid']);
-		if (! in_array($_SESSION['account']->general_username, $group['memberUid'])) {
+		if (! in_array($_SESSION['account']->general_username, $group)) {
 			$toadd['memberUid'] = $_SESSION['account']->general_username;
 			$success = ldap_mod_add($_SESSION['ldap']->server(), 'cn='.$_SESSION['account']->general_group.','.$_SESSION['config']->get_GroupSuffix(), $toadd);
 			}
@@ -839,7 +850,7 @@ function createhost() { // Will create the LDAP-Host
 	// 5 == Error while modifying Host
 
 	// Value stored in shadowExpire, days since 1.1.1970
-	$date = mktime(0,0,0, $_SESSION['account']->unix_pwdexpire_day, $_SESSION['account']->unix_pwdexpire_mon, $_SESSION['account']->unix_pwdexpire_yea) / 86400 ;
+	$date = mktime(10,0,0, $_SESSION['account']->unix_pwdexpire_mon, $_SESSION['account']->unix_pwdexpire_day, $_SESSION['account']->unix_pwdexpire_yea) / 86400 ;
 	settype($date, 'integer');
 	$_SESSION['account']->general_dn = 'cn=' . $_SESSION['account']->general_username . ',' . $_SESSION['config']->get_HostSuffix();
 
@@ -913,8 +924,11 @@ function createhost() { // Will create the LDAP-Host
 				if ($success) ldap_delete($_SESSION['ldap']->server(),$_SESSION['account_old']->general_dn);
 				}
 		if (!$success) return 5;
-		$allgroups = $_SESSION['account']->general_groupadd;
-		if (!in_array($_SESSION['account']->general_group, $allgroups)) $allgroups[] = $_SESSION['account']->general_group;
+		if ($_SESSION['account']->general_groupadd) {
+			$allgroups = $_SESSION['account']->general_groupadd;
+			if (!in_array($_SESSION['account']->general_group, $allgroups)) $allgroups[] = $_SESSION['account']->general_group;
+			}
+		 else $allgroups[0] = $_SESSION['account']->general_group;
 		$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(), 'objectClass=PosixGroup', array('memberUid'));
 		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 		while ($entry) {
@@ -923,8 +937,8 @@ function createhost() { // Will create the LDAP-Host
 			if ($attr2['memberUid']) {
 				array_shift($attr2['memberUid']);
 				foreach ($attr2['memberUid'] as $nam) {
-					if ( ($attr2['memberUid'][$nam]==$_SESSION['account']->general_username) && !in_array($attr2['memberUid'][$nam], $allgroups)) {
-						$todelete['memberUid'] = $attr2['memberUid'][$nam];
+					if ( ($nam==$_SESSION['account']->general_username) && !in_array($nam, $allgroups)) {
+						$todelete['memberUid'] = $nam;
 						$success = ldap_mod_del($_SESSION['ldap']->server(), ldap_get_dn($_SESSION['ldap']->server(), $entry) ,$todelete);
 						}
 					}
@@ -1002,8 +1016,9 @@ function creategroup() { // Will create the LDAP-Group
 				$success = ldap_add($_SESSION['ldap']->server(),$_SESSION['account']->general_dn, $attr);
 				if ($success) ldap_delete($_SESSION['ldap']->server(),$_SESSION['account_old']->general_dn);
 				}
-		// Fragen, ob bei geänderter gid die gids der Beutzer in der Gruppe geändert werden sollen. *********************************
-		if ( $_SESSION['account']->final_changegids==true ) {
+			echo "draussen";
+		if ( $_SESSION['final_changegids']==true ) {
+			echo "drin";
 			$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_UserSuffix(), 'gidNumber=' . $_SESSION['account_old']->general_uidNumber, array('gidNumber'));
 			$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 			while ($entry) {
