@@ -323,7 +323,7 @@ class posixGroup extends baseModule {
 					$DNs = array_keys($result);
 					for ($i=0; $i<count($DNs); $i++) {
 						// Get Domain SID from name
-						$sambaDomains = $_SESSION['ldap']->search_domains($_SESSION['config']->get_domainSuffix());
+						$sambaDomains = search_domains($_SESSION['config']->get_domainSuffix());
 						// Get Domain-SID from group SID
 						$domainSID = substr($result[$DNs[$i]], 0, strrpos($result[$DNs[$i]], "-"));
 						for ($i=0; $i<count($sambaDomains); $i++ )
@@ -607,6 +607,54 @@ class posixGroup extends baseModule {
 		'posixGroup_gidNumber' => array('<block><key>' . _('GID number') . '</key><value>' . $this->attributes['gidNumber'][0] . '</value></block>'),
 		'posixGroup_memberUid' => array('<block><key>' . _('Group members') . '</key><value>' . $this->attributes['memberUid'][0] . '</value></block>'),
 		'posixGroup_description' => array('<block><key>' . _('Description') . '</key><value>' . $this->attributes['description'][0] . '</value></block>'));
+	}
+
+	/**
+	* In this function the LDAP account is built up.
+	*
+	* @param array $rawAccounts list of hash arrays (name => value) from user input
+	* @param array $partialAccounts list of hash arrays (name => value) which are later added to LDAP
+	* @param array $ids list of IDs for column position (e.g. "posixAccount_uid" => 5)
+	* @return array list of error messages if any
+	*/
+	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts) {
+		$errors = array();
+		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
+			if (!in_array("posixGroup", $partialAccounts[$i]['objectClasses'])) $partialAccounts[$i]['objectClasses'][] = "posixGroup";
+			if (eregi(".*", $rawAccounts[$i][$ids['posixGroup_cn']])) {  // TODO use real regex for group name
+				$partialAccounts[$i]['cn'] = $rawAccounts[$i][$ids['posixGroup_cn']];
+			}
+			if ($rawAccounts[$i][$ids['posixGroup_gid']] == "") {
+				// TODO autoGID
+				$partialAccounts[$i]['gidNumber'] = 42;
+			}
+			elseif (eregi(".*", $rawAccounts[$i][$ids['posixGroup_gid']])) {  // TODO use real regex for group name
+				$partialAccounts[$i]['gidNumber'] = $rawAccounts[$i][$ids['posixGroup_gid']];
+			}
+			if ($rawAccounts[$i][$ids['posixGroup_description']] == "") {
+				$partialAccounts[$i]['description'] = $partialAccounts[$i]['cn'];
+			}
+			elseif (eregi(".*", $rawAccounts[$i][$ids['posixGroup_description']])) {  // TODO use real regex for group name
+				$partialAccounts[$i]['description'] = $rawAccounts[$i][$ids['posixGroup_description']];
+			}
+			if ($rawAccounts[$i][$ids['posixGroup_members']] != "") {
+				if (eregi(".*", $rawAccounts[$i][$ids['posixGroup_members']])) {  // TODO use real regex for group name
+					$partialAccounts[$i]['memberUid'] = explode(",", $rawAccounts[$i][$ids['posixGroup_members']]);
+				}
+				else {
+					$errors[] = array(); // TODO error message
+				}
+			}
+			if ($rawAccounts[$i][$ids['posixGroup_password']] != "") {
+				if (eregi(".*", $rawAccounts[$i][$ids['posixGroup_password']])) {  // TODO use real regex for group name
+					$partialAccounts[$i]['password'] = pwd_hash($rawAccounts[$i][$ids['posixGroup_password']], true, $this->moduleSettings['posixAccount_pwdHash'][0]);
+				}
+				else {
+					$errors[] = array(); // TODO error message
+				}
+			}
+		}
+		return $errors;
 	}
 
 }
