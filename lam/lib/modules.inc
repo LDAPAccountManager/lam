@@ -151,7 +151,7 @@ function check_module_conflicts($selected, $deps) {
 }
 
 // returns an array with all available user module names
-// $scope = suer, group, host, ....
+// $scope = user, group, host, ...
 function getAvailableModules($scope) {
 	// get module names.
 	$dir = opendir('../../lib/modules');
@@ -175,15 +175,18 @@ function getProfileOptions($scope) {
 	return $return;
 	}
 
-function checkProfileOptions($scope, $post) {
-	// type = user, group, host, ...
-	if (!isset($_SESSION['profile_account'])) {
-		// create new object
-		$_SESSION['profile_account'] = new accountContainer($scope, 'profile_account');
-		$_SESSION['profile_account']->new_account();
-		}
-	return $_SESSION['profile_account']->process_profile($post);
+// checks if the profile options are valid
+// $scope: user, group, host, ...
+// $options: an hash array containing all options (name => array(...))
+function checkProfileOptions($scope, $options) {
+	$return = array();
+	$modules = getAvailableModules($scope);
+	for ($i = 0; $i < sizeof($modules); $i++) {
+			$errors = call_user_func(array($modules[$i], "check_profileOptions"), $scope, $options);
+			$return = array_merge($return, $errors);
 	}
+	return $return;
+}
 
 
 class accountContainer {
@@ -713,6 +716,7 @@ class accountContainer {
 		return $return;
 		}
 
+	// TODO remove this function?
 	function proccess_profile($post) {
 		$return = array();
 		$module = array_keys ($this->module);
