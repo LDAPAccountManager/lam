@@ -19,11 +19,19 @@ $Id$
   along with this program; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-	This test reads all preferences from lam.conf. Then it writes new values and verifies
-	if they were written. At last the old values are restored.
 */
 
+/**
+* This test reads all preferences from lam.conf. Then it writes new values and verifies
+* if they were written. At last the old values are restored.
+*
+* @author Roland Gruber
+* @package tests
+*/
+
+/** access to configuration functions */
 include ("../lib/config.inc");
+
 $conf = new Config('test');
 echo "<html><head><title></title><link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\"></head><body>";
 echo ("<b> Current Config</b><br><br>");
