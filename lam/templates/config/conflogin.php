@@ -51,6 +51,10 @@ echo ("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http:/
 			<tr>
 				<td colspan=3 align="center"><b> <? echo _("Password to enter preferences:"); ?> </b></td>
 			</tr>
+<?
+	// print message if login was incorrect
+	if ($message) echo ("<tr><td colspan=3 align=\"center\"><font color=red>" . $message . "</font></td></tr>");
+?>
 			<tr>
 				<td align="center"><input type="password" name="passwd"></td>
 				<td><input type="submit" name="submit" value= <? echo _("Ok"); ?> </td>

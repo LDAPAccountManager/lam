@@ -81,6 +81,7 @@ if ($_POST['passwd']) $passwd = $_POST['passwd'];
 // check if password was entered
 // if not: load login page
 if (! $passwd) {
+	$message = _("No password was entered!");
 	require('conflogin.php');
 	exit;
 }
@@ -90,6 +91,7 @@ if (! $passwd) {
 include_once ('../../lib/config.inc');
 $conf = new Config();
 if (!(($conf->get_Passwd()) == $passwd)) {
+	$message = _("The password is invalid! Please try again.");
 	require('conflogin.php');
 	exit;
 }
