@@ -181,6 +181,7 @@ function checkglobal($values, $type, $values_old=false) { // This functions chec
 				$return->general_gecos = $values->general_givenname . " " . $values->general_surname ;
 				$errors[] = array('INFO', _('Gecos'), _('Inserted sur- and givenname in gecos-field.'));
 				}
+			if ($values->general_group=='') $errors[] = array('ERROR', _('Primary Group'), _('No primary Group defined!'));
 			// Check if Username contents only valid characters
 			if ( !ereg('^([a-z]|[0-9]|[.]|[-]|[_])*$', $values->general_username))
 				$errors[] = array('ERROR', _('Username'), _('Username contents invalid characters. Valid characters are: a-z, 0-9 and .-_ !'));
@@ -290,7 +291,7 @@ function checkglobal($values, $type, $values_old=false) { // This functions chec
 	if ( !ereg('^[a-z].*$', $values->general_username))
 		$errors[] = array('ERROR', _('Name'), _('Name contents invalid characters. First character must be a letter'));
 	// Return values and errors
-	if (!$errors) return array($return, '');
+	if (!$errors) return array($return);
 	 else return array($return, $errors);
 	}
 
@@ -374,7 +375,7 @@ function checksamba($values, $type) { // This function checks all samba account 
 			}
 		 else $return->smb_password = "";
 	// Return values and errors
-	if (!$errors) return array($return, '');
+	if (!$errors) return array($return);
 	 else return array($return, $errors);
 	}
 
@@ -401,7 +402,7 @@ function checkquota($values) { // This function checks all quota paramters
 		$i++;
 		}
 	// Return values and errors
-	if (!$errors) return array($return, '');
+	if (!$errors) return array($return);
 	 else return array($return, $errors);
 	}
 
