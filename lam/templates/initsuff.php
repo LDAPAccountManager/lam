@@ -126,22 +126,43 @@ if ($_POST['add_suff'] || $_POST['cancel']) {
 	}
 	echo $_SESSION['header'];
 	echo "<html>\n";
-	echo "<head><title>initsuff</title></head>\n";
+	echo "<head><title>initsuff</title>\n";
 	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">\n";
-	echo "<body>\n";
+	echo "</head>\n<body>\n";
 	// print error/success messages
 	if ($_POST['add_suff']) {
 		if (sizeof($fail) > 0) {
+			// print error messages
 			for ($i = 0; $i < sizeof($fail); $i++) {
 				StatusMessage("ERROR", _("Failed to create entry!") . "<br>" . $error[$i], $fail[$i]);
 			}
+			echo "<p>&nbsp;</p>\n";
+			echo "<a href=\"lists/listusers.php\">" . _("User list") . "</a>\n";
+			echo "</body></html>\n";
 		}
-		else StatusMessage("INFO", "", _("All changes were successful."));
+		else {
+			// print success message
+			StatusMessage("INFO", "", _("All changes were successful."));
+			if ($_SESSION['config']->is_samba3()) {
+				$doms = $_SESSION['ldap']->search_domains($_SESSION['config']->get_domainSuffix());
+				echo "<p>&nbsp;</p>\n";
+				echo "<a href=\"domain.php?action=new\">" . _("No domains found, please create one.") . "</a>\n";
+				echo "</body></html>\n";
+			}
+			else {
+				echo "<p>&nbsp;</p>\n";
+				echo "<a href=\"lists/listusers.php\">" . _("User list") . "</a>\n";
+				echo "</body></html>\n";
+			}
+		}
 	}
-	else StatusMessage("INFO", "", _("No changes were made."));
-	echo "<p>&nbsp;</p>\n";
-	echo "<a href=\"lists/listusers.php\">" . _("User list") . "</a>\n";
-	echo "</body></html>\n";
+	else {
+		// no suffixes were created
+		StatusMessage("INFO", "", _("No changes were made."));
+		echo "<p>&nbsp;</p>\n";
+		echo "<a href=\"lists/listusers.php\">" . _("User list") . "</a>\n";
+		echo "</body></html>\n";
+	}
 	exit;
 }
 
