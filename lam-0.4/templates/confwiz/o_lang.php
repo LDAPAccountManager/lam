@@ -149,7 +149,7 @@ echo "<form action=\"o_lang.php\" method=\"post\">\n";
 	echo ("<table border=0>");
 
 	echo ("<tr><td align=\"right\"><b>".
-		_("List of valid users") . " *: </b></td>".
+		_("List of valid users") . ": </b></td>".
 		"<td colspan=2><input size=50 type=\"text\" name=\"admins\" value=\"" . $_SESSION['confwiz_config']->get_Adminstring() . "\"></td>\n");
 	echo ("</tr>\n");
 

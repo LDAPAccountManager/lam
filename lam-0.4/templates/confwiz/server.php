@@ -63,6 +63,7 @@ if ($_POST['submit'] || $_POST['cancel']) {
 			$ret = $_SESSION['confwiz_ldap']->connect($_POST['ldapadmin'], $_POST['ldappwd']);
 			if ($ret === 0) {
 				metarefresh('server2.php');
+				exit;
 			}
 			elseif ($ret === False) $error = _("Cannot connect to specified LDAP-Server. Please try again.");
 			elseif ($ret == 81) $error = _("Cannot connect to specified LDAP-Server. Please try again.");
@@ -134,6 +135,7 @@ echo "<form action=\"server.php\" method=\"post\">\n";
 		echo "</td>\n";
 	echo "</tr>\n";
 
+	echo "<tr><td colspan=2>&nbsp;</td></tr>\n";
 	echo "<tr><td colspan=2>&nbsp;</td></tr>\n";
 
 	// admin user+password

@@ -116,28 +116,28 @@ echo "<form action=\"o_ranges.php\" method=\"post\">\n";
 
 	// minUID
 	echo ("<tr><td align=\"right\"><b>".
-		_("Minimum UID number") . " *: </b>".
+		_("Minimum UID number") . ": </b>".
 		"<input size=6 type=\"text\" name=\"minUID\" value=\"" . $_SESSION['confwiz_config']->get_minUID() . "\"></td>\n");
 	// maxUID
-	echo ("<td align=\"right\"><b>&nbsp;" . _("Maximum UID number") . " *: </b>".
+	echo ("<td align=\"right\"><b>&nbsp;" . _("Maximum UID number") . ": </b>".
 		"<input size=6 type=\"text\" name=\"maxUID\" value=\"" . $_SESSION['confwiz_config']->get_maxUID() . "\"></td>\n");
 	// UID text
 	echo ("<td><a href=\"../help.php?HelpNumber=203\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 	// minGID
 	echo ("<tr><td align=\"right\"><b>".
-		_("Minimum GID number") . " *: </b>".
+		_("Minimum GID number") . ": </b>".
 		"<input size=6 type=\"text\" name=\"minGID\" value=\"" . $_SESSION['confwiz_config']->get_minGID() . "\"></td>\n");
 	// maxGID
-	echo ("<td align=\"right\"><b>&nbsp;" . _("Maximum GID number")." *: </b>".
+	echo ("<td align=\"right\"><b>&nbsp;" . _("Maximum GID number").": </b>".
 		"<input size=6 type=\"text\" name=\"maxGID\" value=\"" . $_SESSION['confwiz_config']->get_maxGID() . "\"></td>\n");
 	// GID text
 	echo ("<td><a href=\"../help.php?HelpNumber=204\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 	// minMach
 	echo ("<tr><td align=\"right\"><b>".
-		_("Minimum Machine number") . " *: </b>".
+		_("Minimum Machine number") . ": </b>".
 		"<input size=6 type=\"text\" name=\"minMach\" value=\"" . $_SESSION['confwiz_config']->get_minMachine() . "\"></td>\n");
 	// maxMach
-	echo ("<td align=\"right\"><b>&nbsp;" . _("Maximum Machine number") . " *: </b>".
+	echo ("<td align=\"right\"><b>&nbsp;" . _("Maximum Machine number") . ": </b>".
 		"<input size=6 type=\"text\" name=\"maxMach\" value=\"" . $_SESSION['confwiz_config']->get_maxMachine() . "\"></td>\n");
 	// Machine text
 	echo ("<td><a href=\"../help.php?HelpNumber=205\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");

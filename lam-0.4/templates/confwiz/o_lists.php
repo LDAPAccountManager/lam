@@ -123,17 +123,17 @@ echo "<form action=\"o_lists.php\" method=\"post\">\n";
 
 // user list attributes
 echo ("<tr><td align=\"right\"><b>".
-	_("Attributes in User List") . " *:</b></td>".
+	_("Attributes in User List") . ":</b></td>".
 	"<td><input size=50 type=\"text\" name=\"usrlstattr\" value=\"" . $_SESSION['confwiz_config']->get_userlistAttributes() . "\"></td>");
 echo ("</tr>\n");
 // group list attributes
 echo ("<tr><td align=\"right\"><b>".
-	_("Attributes in Group List") . " *:</b></td>".
+	_("Attributes in Group List") . ":</b></td>".
 	"<td><input size=50 type=\"text\" name=\"grplstattr\" value=\"" . $_SESSION['confwiz_config']->get_grouplistAttributes() . "\"></td>");
 echo ("</tr>\n");
 // host list attributes
 echo ("<tr><td align=\"right\"><b>".
-	_("Attributes in Host List") . " *:</b></td>".
+	_("Attributes in Host List") . ":</b></td>".
 	"<td><input size=50 type=\"text\" name=\"hstlstattr\" value=\"" . $_SESSION['confwiz_config']->get_hostlistAttributes() . "\"></td>");
 echo ("</tr>\n");
 
