@@ -56,7 +56,7 @@ function echoHTMLFoot()
 }
 
 /* Print help site */
-function displayHelp($helpEntry) {
+function displayHelp($helpEntry,$helpVariables) {
 	/* Load external help page */
 	if($helpEntry["ext"] == "TRUE")
 	{
@@ -67,11 +67,6 @@ function displayHelp($helpEntry) {
 	/* Print help site out of $helpEntry */
 	else
 	{
-		$helpVariables = array();
-		while($current = current($helpEntry['Variables'])) {
-			array_push($helpVariables,$current);
-			next($helpEntry['variables']);
-		}
 		echoHTMLHead();
 		echo "		<h1 class=\"help\">" . $helpEntry['Headline'] . "</h1>\n";
 		$format = "		<p class=\"help\">" . $helpEntry['Text'] . "</p>\n";
@@ -119,6 +114,19 @@ else {
 	}
 }
 
-displayHelp($helpEntry);
+$i = 1;
+$moreVariables = true;
+$helpVariables = array();
+while($moreVariables) {
+	if(isset($_GET['var' . $i])) {
+		array_push($helpVariables,$_GET['var' . $i]);
+		$i++;
+	}
+	else {
+		$moreVariables = false;
+	}
+}
+
+displayHelp($helpEntry,$helpVariables);
 
 ?>
