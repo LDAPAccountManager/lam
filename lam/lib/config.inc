@@ -30,7 +30,7 @@ include_once("status.inc");
 function setlanguage() {
 	if ($_SESSION['language']) {
 		$language = explode(":", $_SESSION['language']);
-		putenv("LANG=" . $language[1]);
+		putenv("LANG=" . $language[0]);
 		setlocale(LC_ALL, $language[0]);
 		$locdir = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/locale";
 		bindtextdomain("messages", $locdir);
