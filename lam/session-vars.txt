@@ -91,20 +91,15 @@ useredit:
 - hostDN: Array mit allen hosts.
 
 
-account.php:
-
-wird nicht mehr verwendet?
-
-
-hostedit: s.o.
-- account:
+hostedit:
+- account: s.o.
 - account_old:
 - final_changegids:
 - shelllist:
 
 
 groupedit:
-- account:
+- account: s.o.
 - account_old:
 - final_changeids:
 - userDN: Array mit allen Benutzern
@@ -118,13 +113,15 @@ account.inc:
 - account: s.o.
 - final_changeids: s.o.
 
+
 delete.php
 - delete_dn :  Liste der DNs, die gelscht werden sollen.
 
 
 confwiz/*.php
 - confwiz_config: Config-Objekt mit Optionen
-
+- confwiz_ldap: LDAP-Objekt
+- conwiz_masterpwd: Hauptpasswort für Einstellungen, zur Überprüfung des Admins
 
 
 
