@@ -47,7 +47,7 @@ $user = str_replace("\\", '',$user);
 $user = str_replace("'", '',$user);
 
 // get DN of user
-$dn = $_SESSION['ldap']->search_username($user);
+$dn = search_username($user);
 
 if ($dn) {
 	// redirect to account/edit.php
@@ -67,4 +67,24 @@ else {
 }
 
 
+/**
+* Searches LDAP for a specific user name (uid attribute) and returns its DN entry
+*
+* @param string $name user name
+* @return string DN
+*/
+function search_username($name) {
+	$filter = "(uid=$name)";
+	$attrs = array();
+	$sr = @ldap_search($_SESSION['ldap']->server, $_SESSION['config']->get_UserSuffix(), $filter, $attrs);
+	if ($sr) {
+		$info = ldap_get_entries($_SESSION['ldap']->server, $sr);
+		// return only first DN entry
+		$ret = $info[0]["dn"];
+		ldap_free_result($sr);
+		return $ret;
+	}
+	else return "";
+}
 
+?>
