@@ -36,6 +36,8 @@ if ($passwd != $conf->get_Passwd()) {
 	exit;
 }
 
+echo ("<p align=\"center\"><a href=\"http://lam.sf.net\" target=\"new_window\"><img src=\"../graphics/banner.jpg\" border=1></a></p><hr><br><br>");
+
 // check new preferences
 if (chop($host) == "") {
 	echo _("<b>" . _("Hostname is empty!") . "</b>");
@@ -107,9 +109,6 @@ $conf->set_minMachine($minMach);
 $conf->set_maxMachine($maxMach);
 $conf->set_defaultShell($defShell);
 $conf->set_shellList($shellList);
-
-echo ("<p align=\"center\"><img src=\"../graphics/banner.jpg\"></p><hr><br><br>");
-
 
 // check if password was changed
 if ($pass1 != $pass2) {

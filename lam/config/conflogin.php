@@ -34,7 +34,7 @@ session_start();
 		</title>
 	</head>
 	<body>
-		<p align="center"><img src="../graphics/banner.jpg" border=1></p><hr><br><br>
+		<p align="center"><a href="http://lam.sf.net" target="new_window"><img src="../graphics/banner.jpg" border=1></a></p><hr><br><br>
 		<b><p align="center"> <? echo _("Password to enter preferences:"); ?> </b></p>
 		<form action="confmain.php" method="post">
 			<p align="center"><input type="password" name="passwd">

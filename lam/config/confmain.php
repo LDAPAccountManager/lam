@@ -47,7 +47,7 @@ echo ("<head>\n");
 echo ("<title>" . _("LDAP Account Manager Configuration") . "</title>\n");
 echo ("</head>\n");
 echo ("<body>\n");
-echo ("<p align=\"center\"><img src=\"../graphics/banner.jpg\" border=1></p><hr><br><br>\n");
+echo ("<p align=\"center\"><a href=\"http://lam.sf.net\" target=\"new_window\"><img src=\"../graphics/banner.jpg\" border=1></a></p><hr><br><br>\n");
 echo ("<form action=\"confsave.php\" method=\"post\">\n");
 echo ("<p align=\"center\"><table border=\"0\">");
 echo ("<tr><th><p align=\"right\"><b>" . _("Hostname") . ": </b></th> <th><p align=\"left\"><input type=\"text\" name=\"host\" value=\"" . $conf->get_Host() . "\"></th>\n");
