@@ -51,7 +51,51 @@ get_metaData() {<br>
 </table>
 <br>
 <br>
-<h2>2. Alias name</h2>
+<h2>2. Base modules<br>
+</h2>
+In LDAP every entry needs exactly one <span style="font-style: italic;">structural
+object class</span>. Therefore all modules which provide a <span
+ style="font-style: italic;">structural object class</span> are marked
+as <span style="font-weight: bold;">base module</span>.<br>
+<br>
+This is done with <span style="font-weight: bold;">is_base_module()</span>
+or <span style="font-weight: bold;">meta['is_base']</span>.<br>
+<br>
+<span style="font-weight: bold; text-decoration: underline;">Example:</span><br
+ style="font-weight: bold; text-decoration: underline;">
+<br>
+The <span style="font-style: italic;">inetOrgPerson</span>
+module manages the structural object class "inetOrgPerson" and
+therefore is a <span style="font-weight: bold;">base module</span>.<br>
+If your module is not a base module you can skip the meta data for
+this, default is <span style="font-style: italic;">false</span>.<br>
+<br>
+<table style="width: 100%; text-align: left;" class="mod-code"
+ border="0" cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
+&nbsp;&nbsp;&nbsp; * Returns meta data that is interpreted by parent
+class<br>
+&nbsp;&nbsp;&nbsp; *<br>
+&nbsp;&nbsp;&nbsp; * @return array array with meta data<br>
+&nbsp;&nbsp;&nbsp; */<br>
+&nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">function</span>
+get_metaData() {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $return = array();<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // base module<br>
+      <span style="color: rgb(255, 0, 0);">&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; $return["is_base"] = true;</span><br
+ style="color: rgb(255, 0, 0);">
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return $return;<br>
+&nbsp;&nbsp;&nbsp; }<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<br>
+<h2>3. Alias name</h2>
 The module name is very limited, therefore every module has an <span
  style="font-style: italic;">alias name</span>. This <span
  style="font-style: italic;">alias name</span> has no limitations and
@@ -100,7 +144,7 @@ get_metaData() {<br>
 </table>
 <br>
 <br>
-<h2>3. Dependencies</h2>
+<h2>4. Dependencies</h2>
 Modules can depend on eachother. This is useful if you need to access
 attributes from other modules or the managed object classes of your
 module are not structural.<br>
@@ -148,7 +192,7 @@ array('account'), 'conflicts' =&gt; array());</span><br
 </table>
 <br>
 <br>
-<h2>4. Messages</h2>
+<h2>5. Messages</h2>
 There are many situations where you will display messages to the user.
 The modules should define such messages at a common place to make it
 easier to modify them without searching the complete file.<br>

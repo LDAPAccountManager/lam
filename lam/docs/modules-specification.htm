@@ -83,11 +83,10 @@ sure that there is a general alias for unknown types.<br>
 Returns <span style="font-weight: bold;">true</span> if your module is
 a base module and otherwise <span style="font-weight: bold;">false</span>.<br>
 <span style="font-weight: bold;"></span><br>
-Every account type needs at least one base module. A base module
-defines a full qualified account.<br>
-E.g. modules that use the object class posixAccount may be base modules
-as it makes sense to manage these Unix accounts. On the other hand the
-quota module is no base module as it needs posixAccount.<br>
+Every account type needs exactly one base module. A base module manages
+a structural object class.<br>
+E.g. the inetOrgPerson module is a base module since its object class
+is structural.<br>
 <br>
 <h3>2.1.4. get_ldap_filter*</h3>
 <br>
@@ -115,11 +114,7 @@ The resulting LDAP filter will look like this:
 <span style="font-weight: bold;">Example: <span
  style="font-style: italic;">return "('or' =&gt;
 '(objectClass=posixAccount)', 'and' =&gt; '(!(uid=*$))')"</span></span><br>
-<br>
-<span style="font-weight: bold; color: rgb(255, 0, 0);">This function
-is only used for base modules. Standard modules do not need to
-implement it.</span><br>
-<br>
+<span style="font-weight: bold; color: rgb(255, 0, 0);"></span><br>
 <h3>2.1.5. get_RDNAttributes*</h3>
 <br>
 <table style="text-align: left; width: 300px; height: 30px;" border="0"
