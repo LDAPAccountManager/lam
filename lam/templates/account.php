@@ -26,6 +26,7 @@ $Id$
 include_once('../lib/account.inc'); // File with custom functions
 include_once('../lib/config.inc');
 include_once('../lib/ldap.inc');
+include_once('../lib/profiles.inc');
 
 registervars(); // Register all needed variables in session and register session
 $error = "0";
@@ -236,6 +237,8 @@ if ($backmain) {
 	$_SESSION['account_old']="";
 	}
 
+if ($load) $select='load';
+if ($save) $select='save';
 
 
 
@@ -319,7 +322,9 @@ switch ($select) {
 					if ( $_SESSION['account']->general_shell == '/usr/bin/zsh' ) echo '<option selected> /usr/bin/zsh'; else echo '<option> /usr/bin/zsh';
 				echo	'</select></td><td>';
 				echo _('To disable login use /bin/false.');
-				echo '</td></tr>';
+				echo '</td></tr><tr><td>
+				<input name="load" type="submit" value="'; echo _('Load Profile'); echo '">
+				</td><td>';
 				break;
 			case 'group':
 				echo '<tr><td>';
@@ -374,12 +379,12 @@ switch ($select) {
 				echo '</td><td><input name="f_general_gecos" type="text" size="30" value="' . $_SESSION['account']->general_gecos . '">
 					</td><td>';
 				echo _('Host descriptopn. If left empty hostname will be used.');
-				echo '</td></tr>';
+				echo '</td></tr><tr><td>
+				<input name="load" type="submit" value="'; echo _('Load Profile'); echo '">
+				</td><td>';
 				break;
 			}
-		echo '<tr><td>
-		<input name="load" type="submit" value="'; echo _('Load Profile'); echo '">
-		</td><td></td><td>
+		echo '</td><td>
 		<input name="next" type="submit" value="'; echo _('next'); echo '">
 		</td></tr>';
 		break;
@@ -743,9 +748,13 @@ switch ($select) {
 			}
 		echo '<tr><td>';
 		echo '<input name="back" type="submit" value="'; echo _('back'); echo '">
-		</td><td>
-		<input name="save" type="submit" value="'; echo _('Save Profile'); echo '">
-		</td><td>
+		</td><td>';
+		if (($_SESSION['type2']=='user') || ($_SESSION['type2']=='host')) {
+			echo '<input name="save" type="submit" value="';
+			echo _('Save Profile');
+			echo '">';
+			}
+		echo '</td><td>
 		<input name="create" type="submit" value="'; echo _('Create Account'); echo '">
 		</td></tr>';
 		break;
@@ -807,6 +816,26 @@ switch ($select) {
 			case 'host' :
 				echo '<meta http-equiv="refresh" content="0; URL=lists/listhosts.php">';
 				break;
+			}
+		break;
+	case 'load':
+		switch ( $_SESSION['type2'] ) {
+			case 'user':
+				print_r (getUserProfiles());
+			break;
+			case 'host':
+				print_r (getHostProfiles());
+			break;
+			}
+		break;
+	case 'save':
+		switch ( $_SESSION['type2'] ) {
+			case 'user':
+				print_r (getUserProfiles());
+			break;
+			case 'host':
+				print_r (getUserProfiles());
+			break;
 			}
 		break;
 	}
