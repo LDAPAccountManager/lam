@@ -24,7 +24,7 @@ $Id$
 class sambaGroupMapping extends baseModule {
 
 	// Variables
-	// Array of well known rids
+	/** Array of well known RIDs */
 	var $rids;
 
 	
@@ -48,6 +48,60 @@ class sambaGroupMapping extends baseModule {
 
 		// call parent constructor
 		parent::baseModule($scope);
+	}
+
+	/**
+	* In this function the LDAP account is built up.
+	*
+	* @param array $rawAccounts list of hash arrays (name => value) from user input
+	* @param array $partialAccounts list of hash arrays (name => value) which are later added to LDAP
+	* @param array $ids list of IDs for column position (e.g. "posixAccount_uid" => 5)
+	* @return array list of error messages if any
+	*/
+	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts) {
+		// search existing Samba 3 domains
+		$domains = search_domains($_SESSION['config']->get_domainSuffix());
+		$nameToSID = array();
+		// get domain SIDs
+		for ($i = 0; $i < sizeof($domains); $i++) {
+			$nameToSID[$domains[$i]->name] = $domains[$i]->SID;
+		}
+		// get domain RID bases
+		$nameToRIDBase = array();
+		for ($i = 0; $i < sizeof($domains); $i++) {
+			$nameToRIDBase[$domains[$i]->name] = $domains[$i]->RIDbase;
+		}
+		$errors = array();
+		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
+			// group type is always 2
+			$partialAccounts[$i]['sambaGroupType'] = "2";
+			if (!in_array("sambaGroupMapping", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "sambaGroupMapping";
+			// SID
+			$domSID = $nameToSID[$rawAccounts[$i][$ids['sambaGroupMapping_domain']]];
+			if (!isset($domSID)) {
+				$errors[] =array("ERROR", "", ""); // TODO
+			}
+			else {
+				// RID
+				$rid = $rawAccounts[$i][$ids['sambaGroupMapping_rid']];
+				if (isset($this->rids[$rid])) $rid = $this->rids[$rid];
+				// check if RID has to be calculated
+				if (($rid == "") || (!isset($rid))) {
+					$ridBase = $nameToRIDBase[$rawAccounts[$i][$ids['sambaGroupMapping_domain']]];
+					$partialAccounts[$i]['sambaSID'] = $domSID . "-" . (($partialAccounts[$i]['gidNumber'] * 2) + $ridBase + 1);
+				}
+				elseif (get_preg($rid, 'digit')) {
+					$partialAccounts[$i]['sambaSID'] = $domSID . "-" . $rid;
+				}
+			}
+			// display name (UTF-8, no regex check needed)
+			if ($rawAccounts[$i][$ids['sambaGroupMapping_name']] == "") {
+				$partialAccounts[$i]['displayName'] = $partialAccounts[$i]['cn'];
+			}
+			else {
+				$partialAccounts[$i]['displayName'] = $rawAccounts[$i][$ids['sambaGroupMapping_name']];
+			}
+		}
 	}
 
 	function delete_attributes($post) {
