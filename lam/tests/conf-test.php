@@ -23,7 +23,7 @@ $Id$
 	if they were written. At last the old values are restored.
 */
 
-include ("../config/config.php");
+include ("../lib/config.inc");
 $conf = new Config();
 echo ("<b> Current Config</b><br><br>");
 $conf->printconf();
