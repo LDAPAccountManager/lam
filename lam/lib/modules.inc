@@ -183,7 +183,7 @@ class accountContainer {
 		echo "</title>\n";
 		echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
 		echo "</head><body>\n";
-		echo "<form action=\"".$this->type."edit.php\" method=\"post\">\n";
+		echo "<form action=\"edit.php\" method=\"post\">\n";
 		// Display errir-messages
 		if (is_array($result))
 			foreach ($result as $result2)
