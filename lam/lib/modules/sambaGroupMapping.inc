@@ -307,10 +307,18 @@ class sambaGroupMapping {
 
 	function get_profileOptions() {
 		$return = array();
-		// TODO fill in correct domains
-		$return[] = array (0 => array ('kind' => 'text', 'text' => _('Domain')),
-			1 => array ('kind' => 'select', 'name' => 'sambaDomainName', 'options' => $sambaDomainNames),
-			2 => array ('kind' => 'help', 'value' => 'sambaDomainName' ));
+		// get list of domains
+		$sambaDomains = $_SESSION['ldap']->search_domains($_SESSION['config']->get_domainSuffix());
+		$sambaDomainNames = array();
+		for ($i = 0; $i < count($sambaDomains); $i++ ) {
+			// extract names
+			$sambaDomainNames[] = $sambaDomains[$i]->name;
+		}
+		// domain
+		$return[] = array (
+			0 => array('kind' => 'text', 'text' => _('Domain')),
+			1 => array('kind' => 'select', 'name' => 'sambaDomainName', 'options' => $sambaDomainNames, 'options_selected' => array ()),
+			2 => array('kind' => 'help', 'value' => 'sambaDomainName' ));
 		return $return;
 	}
 

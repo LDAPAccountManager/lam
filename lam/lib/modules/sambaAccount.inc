@@ -608,9 +608,78 @@ class sambaAccount {
 
 	function get_profileOptions() {
 		$return = array();
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Domain') ),
-				1 => array ( 'kind' => 'input', 'type' => 'text', 'name' => 'domain', 'size' => '20', 'maxlength' => '255', 'value' => $this->attributes['domain'][0]),
-				2 => array ( 'kind' => 'help', 'value' => 'domain' ));
+		if ($_SESSION[$this->base]->type=='user') {
+			// set Unix password for Samba
+			$return[] = array(
+				0 => array('kind' => 'text', 'text' => _('Use unix password') . ': '),
+				1 => array('kind' => 'input', 'name' => 'sambaAccount_useunixpwd', 'type' => 'checkbox', 'checked' => true),
+				2 => array('kind' => 'help', 'value' => 'TODO')
+				);
+			// set no password
+			$return[] = array(
+				0 => array('kind' => 'text', 'text' => _('Use no password') . ': '),
+				1 => array('kind' => 'input', 'name' => 'sambaAccount_acctFlagsN', 'type' => 'checkbox', 'checked' => false),
+				2 => array('kind' => 'help', 'value' => 'TODO')
+				);
+			// password expiry
+			$return[] = array(
+				0 => array('kind' => 'text', 'text' => _('Password does not expire') . ': '),
+				1 => array('kind' => 'input', 'name' => 'sambaAccount_acctFlagsX', 'type' => 'checkbox', 'checked' => true),
+				2 => array('kind' => 'help', 'value' => 'TODO')
+				);
+			// account deactivation
+			$return[] = array(
+				0 => array('kind' => 'text', 'text' => _('Account is deactivated') . ': '),
+				1 => array('kind' => 'input', 'name' => 'sambaAccount_acctFlagsD', 'type' => 'checkbox', 'checked' => false),
+				2 => array('kind' => 'help', 'value' => 'TODO')
+				);
+			// drive letter
+			$drives = array();
+			for ($i = 90; $i > 67; $i--) $drives[] = chr($i) . ':';
+			$return[] = array(
+				0 => array('kind' => 'text', 'text' => _('Home drive') . ': '),
+				1 => array('kind' => 'select', 'name' => 'sambaAccount_homeDrive', 'options' => $drives, 'options_selected' => array ('Z:')),
+				2 => array('kind' => 'help', 'value' => 'TODO')
+				);
+			// path to home directory
+			$return[] = array(
+				0 => array('kind' => 'text', 'text' => _('Home path') . ': '),
+				1 => array('kind' => 'input', 'type' => 'text', 'name' => 'sambaAccount_smbHome', 'size' => '20', 'maxlength' => '255', 'value' => ''),
+				2 => array('kind' => 'help', 'value' => 'TODO')
+				);
+			// path to profile
+			$return[] = array(
+				0 => array('kind' => 'text', 'text' => _('Profile path') . ': '),
+				1 => array('kind' => 'input', 'type' => 'text', 'name' => 'sambaAccount_profilePath', 'size' => '20', 'maxlength' => '255', 'value' => ''),
+				2 => array('kind' => 'help', 'value' => 'TODO')
+				);
+			// logon script
+			$return[] = array(
+				0 => array('kind' => 'text', 'text' => _('Logon script') . ': '),
+				1 => array('kind' => 'input', 'type' => 'text', 'name' => 'sambaAccount_scriptPath', 'size' => '20', 'maxlength' => '255', 'value' => ''),
+				2 => array('kind' => 'help', 'value' => 'TODO')
+				);
+			// allowed workstations
+			$return[] = array(
+				0 => array('kind' => 'text', 'text' => _('Samba workstations') . ': '),
+				1 => array('kind' => 'input', 'type' => 'text', 'name' => 'sambaAccount_userWorkstations', 'value' => ''),
+				2 => array('kind' => 'help', 'value' => 'TODO')
+				);
+			// Samba domain
+			$return[] = array(
+				0 => array('kind' => 'text', 'text' => _('Domain') . ': '),
+				1 => array('kind' => 'input', 'type' => 'text', 'name' => 'sambaAccount_domain', 'size' => '20', 'maxlength' => '255', 'value' => ''),
+				2 => array('kind' => 'help', 'value' => 'TODO')
+				);
+		}
+		elseif ($_SESSION[$this->base]->type=='user') {
+			// Samba domain
+			$return[] = array(
+				0 => array('kind' => 'text', 'text' => _('Domain') . ': '),
+				1 => array('kind' => 'input', 'type' => 'text', 'name' => 'sambaAccount_domain', 'size' => '20', 'maxlength' => '255', 'value' => ''),
+				2 => array('kind' => 'help', 'value' => 'TODO')
+				);
+		}
 		return $return;
 	}
 
