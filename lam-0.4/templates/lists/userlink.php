@@ -34,7 +34,8 @@ setlanguage();
 
 // get user name
 $user = $_GET['user'];
-$user = str_replace("\'", '',$user);
+$user = str_replace("\\", '',$user);
+$user = str_replace("'", '',$user);
 
 // get DN of user
 $dn = $_SESSION['ldap']->search_username($user);
