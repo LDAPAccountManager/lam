@@ -10,6 +10,7 @@ beta
 - clean up code
 - support for Samba 3.x schema
 - support for multiple organizational units under the suffixes
+- profiles for lam.conf
 
 alpha 2
 
