@@ -73,8 +73,8 @@ if ($_POST['new_user'] || $_POST['del_user'] || $_POST['pdf_user'] || $_POST['pd
 	elseif ($_POST['del_user']){
 		// search for checkboxes
 		$users = array_keys($_POST, "on");
-		$userstr = implode(";", $users);
-		metaRefresh("../delete.php?type=user&amp;DN='$userstr'");
+		$_SESSION['delete_dn'] = $users;
+		metaRefresh("../delete.php?type=user");
 	}
 	// PDF for selected users
 	elseif ($_POST['pdf_user']){

@@ -52,8 +52,8 @@ if ($_POST['new_host'] || $_POST['del_host']){
 	if ($_POST['del_host']){
 		// search for checkboxes
 		$hosts = array_keys($_POST, "on");
-		$hoststr = implode(";", $hosts);
-		metaRefresh("../delete.php?type=host&amp;DN='$hoststr'");
+		$_SESSION['delete_dn'] = $hosts;
+		metaRefresh("../delete.php?type=host");
 		}
 		exit;
 }

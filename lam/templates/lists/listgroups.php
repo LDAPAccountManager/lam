@@ -52,8 +52,8 @@ if ($_POST['new_group'] || $_POST['del_group']){
 	if ($_POST['del_group']){
 		// search for checkboxes
 		$groups = array_keys($_POST, "on");
-		$groupstr = implode(";", $groups);
-		metaRefresh("../delete.php?type=group&amp;DN='$groupstr'");
+		$_SESSION['delete_dn'] = $groups;
+		metaRefresh("../delete.php?type=group");
 		}
 		exit;
 }
