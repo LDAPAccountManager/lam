@@ -1091,8 +1091,8 @@ class sambaAccount extends baseModule {
 						$triggered_messages[] = $errMsg;
 					}
 				}
-				// RID (RID uid*2 + RIDBase)
-				$partialAccounts[$i]['rid'] = $partialAccounts[$i]['uidNumber']*2 + $domains[$domIndex]->RIDbase;
+				// RID (RID uid*2 + 1000)
+				$partialAccounts[$i]['rid'] = $partialAccounts[$i]['uidNumber']*2 + 1000;
 				// passwords ( = host name)
 				$partialAccounts[$i]['lmPassword'] = lmPassword(substr($partialAccounts[$i]['uid'], 0, sizeof($partialAccounts[$i]['uid']) - 1));
 				$partialAccounts[$i]['ntPassword'] = ntPassword(substr($partialAccounts[$i]['uid'], 0, sizeof($partialAccounts[$i]['uid']) - 1));
