@@ -104,11 +104,6 @@ $helpArray = array (
 						"<br><br><b>".
 						_("LAM will not work if version is wrong!").
 						"</b>"),
-				"214" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("Samba domain SID"),
-					"Text" => _("If you use the new Samba 3.x schema enter your domain SID here.").
-						"<br><br>".
-						_("You can get your domain SID with this command:").
-					"<b> \"net getlocalsid\"</b>"),
 				// 300 - 399
 				// Roland Gruber
 				// profile editor
@@ -130,8 +125,8 @@ $helpArray = array (
 						_("If unsure say \"no\" here.")),
 				"304" => array ("ext" => "FALSE", "Headline" => _("Profile Editor") . " - " . _("Home drive"),
 					"Text" => _("This is the drive letter for the user's home drive. The home directory will be connected with this drive letter at login."),
-					"SeeAlso" => "<a href=\"./help.php?HelpNumber=305\" target=\"_self\">Path to home directory</a>"),
-				"305" => array ("ext" => "FALSE", "Headline" => _("Profile Editor") . " - " . _("Path to home directory"),
+					"SeeAlso" => "<a href=\"./help.php?HelpNumber=305\" target=\"_self\">Home path</a>"),
+				"305" => array ("ext" => "FALSE", "Headline" => _("Profile Editor") . " - " . _("Home path"),
 					"Text" => _("This is the path to the user's home directory. The home directory will be connected at login."),
 					"SeeAlso" => "<a href=\"./help.php?HelpNumber=304\" target=\"_self\">Home drive</a>"),
 				"306" => array ("ext" => "FALSE", "Headline" => _("Profile Editor") . " - " . _("Profile path"),

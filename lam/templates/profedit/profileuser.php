@@ -292,7 +292,7 @@ echo ("</tr>\n");
 
 // path to home directory
 echo ("<tr>\n");
-echo ("<td align=\"right\"><b>" . _("Path to home directory") . ": </b></td>\n");
+echo ("<td align=\"right\"><b>" . _("Home path") . ": </b></td>\n");
 echo ("<td><input type=\"text\" value=\"" . $acct->smb_smbhome . "\" name=\"smb_smbhome\"></td>\n");
 echo ("<td><a href=\"../help.php?HelpNumber=305\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
 echo ("</tr>\n");
