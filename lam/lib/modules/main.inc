@@ -223,7 +223,7 @@ class main extends baseModule {
 		if (count($table)!=0) $return[] = array ( 0 => array ( 'kind' => 'table', 'value' => $table ) );
 		// loop through all suffixes
 		$rootsuffix = call_user_func(array($_SESSION['config'], 'get_' . ucfirst($_SESSION[$this->base]->type) . 'Suffix'));
-		foreach ($_SESSION[$_SESSION[$this->base]->ldap]->search_units($rootsuffix) as $suffix) {
+		foreach ($_SESSION['ldap']->search_units($rootsuffix) as $suffix) {
 			if ($_SESSION[$this->base]->dn) {
 				if ($_SESSION[$this->base]->dn == $suffix) $option_selected = $suffix;
 				else $suffixes[] = $suffix;

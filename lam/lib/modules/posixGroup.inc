@@ -222,13 +222,13 @@ class posixGroup extends baseModule {
 	function userPassword($newpassword=false) {
 		if (is_string($newpassword)) {
 			// Write new password
-			$this->attributes['userPassword'][0] = base64_encode($_SESSION[$_SESSION[$this->base]->ldap]->encrypt($newpassword));
+			$this->attributes['userPassword'][0] = base64_encode($_SESSION['ldap']->encrypt($newpassword));
 			return 0;
 			}
 		else {
 			if ($this->attributes['userPassword'][0]!='') {
 				// Read existing password if set
-				return $_SESSION[$_SESSION[$this->base]->ldap]->decrypt(base64_decode($this->attributes['userPassword'][0]));
+				return $_SESSION['ldap']->decrypt(base64_decode($this->attributes['userPassword'][0]));
 				}
 			else return '';
 			}
@@ -358,8 +358,8 @@ class posixGroup extends baseModule {
 		if ($this->changegids) {
 			// get gidNumber
 			$line=-1;
-			for ($i=0; $i<count($_SESSION[$this->ldap]->objectClasses) || $i==-1; $i++) {
-				if (strpos($_SESSION[$this->ldap]->objectClasses[$i], "NAME 'posixAccount'")) $line = $i;
+			for ($i=0; $i<count($_SESSION['ldap']->objectClasses) || $i==-1; $i++) {
+				if (strpos($_SESSION['ldap']->objectClasses[$i], "NAME 'posixAccount'")) $line = $i;
 				}
 			if ($line!=-1) {
 				$result = $_SESSION[$_SESSION[$this->base]->cache]->get_cache('gidNumber', 'posixAccount', '*');
@@ -369,8 +369,8 @@ class posixGroup extends baseModule {
 				}
 			// change primaryGroupID
 			$line=-1;
-			for ($i=0; $i<count($_SESSION[$this->ldap]->objectClasses) || $i==-1; $i++) {
-				if (strpos($_SESSION[$this->ldap]->objectClasses[$i], "NAME 'sambaAccount'")) $line = $i;
+			for ($i=0; $i<count($_SESSION['ldap']->objectClasses) || $i==-1; $i++) {
+				if (strpos($_SESSION['ldap']->objectClasses[$i], "NAME 'sambaAccount'")) $line = $i;
 				}
 			if ($line!=-1) {
 				$result = $_SESSION[$_SESSION[$this->base]->cache]->get_cache('primaryGroupID', 'sambaAccount', '*');
@@ -381,15 +381,15 @@ class posixGroup extends baseModule {
 				}
 			// change sambaPrimaryGroupSID
 			$line=-1;
-			for ($i=0; $i<count($_SESSION[$this->ldap]->objectClasses) || $i==-1; $i++) {
-				if (strpos($_SESSION[$this->ldap]->objectClasses[$i], "NAME 'sambaSamAccount'")) $line = $i;
+			for ($i=0; $i<count($_SESSION['ldap']->objectClasses) || $i==-1; $i++) {
+				if (strpos($_SESSION['ldap']->objectClasses[$i], "NAME 'sambaSamAccount'")) $line = $i;
 				}
 			if ($line!=-1) {
 				$result = $_SESSION[$_SESSION[$this->base]->cache]->get_cache('sambaPrimaryGroupSID', 'sambaSamAccount', '*');
 				$DNs = array_keys($result);
 				for ($i=0; $i<count($DNs); $i++) {
 					// Get Domain SID from name
-					$sambaDomains = $_SESSION[$_SESSION[$this->base]->ldap]->search_domains($_SESSION[$_SESSION[$this->base]->config]->get_domainSuffix());
+					$sambaDomains = $_SESSION['ldap']->search_domains($_SESSION['config']->get_domainSuffix());
 					// Get Domain-SID from group SID
 					$domainSID = substr($result[$DNs[$i]], 0, strrpos($result[$DNs[$i]], "-"));
 					for ($i=0; $i<count($sambaDomains); $i++ )

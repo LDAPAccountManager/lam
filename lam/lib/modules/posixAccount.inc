@@ -223,13 +223,13 @@ class posixAccount extends baseModule {
 	function userPassword($newpassword=false) {
 		if (is_string($newpassword)) {
 			// Write new password
-			$this->attributes['userPassword'][0] = base64_encode($_SESSION[$_SESSION[$this->base]->ldap]->encrypt($newpassword));
+			$this->attributes['userPassword'][0] = base64_encode($_SESSION['ldap']->encrypt($newpassword));
 			return 0;
 			}
 		else {
 			if ($this->attributes['userPassword'][0]!='') {
 				// Read existing password if set
-				return $_SESSION[$_SESSION[$this->base]->ldap]->decrypt(base64_decode($this->attributes['userPassword'][0]));
+				return $_SESSION['ldap']->decrypt(base64_decode($this->attributes['userPassword'][0]));
 				}
 			else return '';
 			}
@@ -364,7 +364,7 @@ class posixAccount extends baseModule {
 			// Add new memberships
 			if (is_array($this->groups))
 				foreach ($this->groups as $group) {
-					$dn = $_SESSION[$_SESSION[$this->base]->ldap]->in_cache ($group, 'cn', 'group');
+					$dn = $_SESSION['ldap']->in_cache ($group, 'cn', 'group');
 					$return[$dn]['add']['memberUid'][0] = $this->attributes['uid'][0];
 					}
 			}
@@ -664,7 +664,7 @@ class posixAccount extends baseModule {
 				1 => array ( 'kind' => 'input', 'name' => 'homeDirectory', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => $this->attributes['homeDirectory'][0]),
 				2 => array ('kind' => 'help', 'value' => 'homeDirectory'));
 			if (!$profile) {
-				if ($this->orig['homeDirectory']=='' && isset($_SESSION[$_SESSION[$this->base]->config]->scriptPath)) {
+				if ($this->orig['homeDirectory']=='' && isset($_SESSION['config']->scriptPath)) {
 					$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Create home directory') ),
 						1 => array ( 'kind' => 'input', 'name' => 'createhomedir', 'type' => 'checkbox', 'checked' => $this->createhomedir),
 						2 => array ('kind' => 'help', 'value' => 'createhomedir'));
@@ -694,7 +694,7 @@ class posixAccount extends baseModule {
 		}
 
 	function display_html_delete($post) {
-		if ($_SESSION[$this->base]->type=='user' && isset($_SESSION[$_SESSION[$this->base]->config]->scriptPath)) {
+		if ($_SESSION[$this->base]->type=='user' && isset($_SESSION['config']->scriptPath)) {
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Delete home directory') ),
 				1 => array ( 'kind' => 'input', 'name' => 'deletehomedir', 'type' => 'checkbox'),
 				2 => array ('kind' => 'help', 'value' => 'deletehomedir'));

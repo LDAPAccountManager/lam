@@ -168,14 +168,14 @@ class sambaSamAccount extends baseModule {
 	function sambaLMPassword($newpassword=false) {
 		if (is_string($newpassword)) {
 			// Write new password
-			$this->attributes['sambaLMPassword'][0] = base64_encode($_SESSION[$_SESSION[$this->base]->ldap]->encrypt($newpassword));
+			$this->attributes['sambaLMPassword'][0] = base64_encode($_SESSION['ldap']->encrypt($newpassword));
 			return 0;
 			}
 		else {
 			if ($this->useunixpwd) return $_SESSION[$this->base]->module['posixAccount']->userPassword();
 			if ($this->attributes['sambaLMPassword'][0]!='') {
 				// Read existing password if set
-				return $_SESSION[$_SESSION[$this->base]->ldap]->decrypt(base64_decode($this->attributes['sambaLMPassword'][0]));
+				return $_SESSION['ldap']->decrypt(base64_decode($this->attributes['sambaLMPassword'][0]));
 				}
 			else return '';
 			}
@@ -268,7 +268,7 @@ class sambaSamAccount extends baseModule {
 		* it's psssible uidNumber has changed
 		*/
 		// Get Domain SID from name
-		$sambaDomains = $_SESSION[$_SESSION[$this->base]->ldap]->search_domains($_SESSION[$_SESSION[$this->base]->config]->get_domainSuffix());
+		$sambaDomains = $_SESSION['ldap']->search_domains($_SESSION['config']->get_domainSuffix());
 		for ($i=0; $i<count($sambaDomains); $i++ )
 			if ($this->attributes['sambaDomainName'][0] == $sambaDomains[$i]->name) {
 				$SID = $sambaDomains[$i]->SID;
@@ -315,7 +315,7 @@ class sambaSamAccount extends baseModule {
 		// Load attributes
 		$this->attributes['sambaDomainName'][0] = $post['sambaDomainName'];
 		// Get Domain SID from name
-		$sambaDomains = $_SESSION[$_SESSION[$this->base]->ldap]->search_domains($_SESSION[$_SESSION[$this->base]->config]->get_domainSuffix());
+		$sambaDomains = $_SESSION['ldap']->search_domains($_SESSION['config']->get_domainSuffix());
 		for ($i=0; $i<count($sambaDomains); $i++ )
 			if ($this->attributes['sambaDomainName'][0] == $sambaDomains[$i]->name) {
 				$SID = $sambaDomains[$i]->SID;
@@ -485,7 +485,7 @@ class sambaSamAccount extends baseModule {
 	*/
 	function display_html_attributes($post, $profile=false) {
 		// Get Domain SID from name
-		$sambaDomains = $_SESSION[$_SESSION[$this->base]->ldap]->search_domains($_SESSION[$_SESSION[$this->base]->config]->get_domainSuffix());
+		$sambaDomains = $_SESSION['ldap']->search_domains($_SESSION['config']->get_domainSuffix());
 		for ($i=0; $i<count($sambaDomains); $i++ ) {
 			$sambaDomainNames[] = $sambaDomains[$i]->name;
 			if ($this->attributes['sambaDomainName'][0] == $sambaDomains[$i]->name)

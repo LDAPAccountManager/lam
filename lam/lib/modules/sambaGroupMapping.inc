@@ -207,7 +207,7 @@ class sambaGroupMapping extends baseModule {
 	*/
 	function save_attributes() {
 		// Get Domain SID from name
-		$sambaDomains = $_SESSION[$_SESSION[$this->base]->ldap]->search_domains($_SESSION[$_SESSION[$this->base]->config]->get_domainSuffix());
+		$sambaDomains = $_SESSION['ldap']->search_domains($_SESSION['config']->get_domainSuffix());
 		// Get Domain-SID from group SID
 		$domainSID = substr($this->attributes['sambaSID'][0], 0, strrpos($this->attributes['sambaSID'][0], "-"));
 		for ($i=0; $i<count($sambaDomains); $i++ )
@@ -240,7 +240,7 @@ class sambaGroupMapping extends baseModule {
 
 		if (!$profile) {
 			// Get Domain SID from name
-			$sambaDomains = $_SESSION[$_SESSION[$this->base]->ldap]->search_domains($_SESSION[$_SESSION[$this->base]->config]->get_domainSuffix());
+			$sambaDomains = $_SESSION['ldap']->search_domains($_SESSION['config']->get_domainSuffix());
 			for ($i=0; $i<count($sambaDomains); $i++ )
 				if ($post['sambaDomainName'] == $sambaDomains[$i]->name) {
 					$SID = $sambaDomains[$i]->SID;
@@ -277,7 +277,7 @@ class sambaGroupMapping extends baseModule {
 	*/
 	function display_html_attributes($post, $profile=false) {
 		// Get Domain SID from name
-		$sambaDomains = $_SESSION[$_SESSION[$this->base]->ldap]->search_domains($_SESSION[$_SESSION[$this->base]->config]->get_domainSuffix());
+		$sambaDomains = $_SESSION['ldap']->search_domains($_SESSION['config']->get_domainSuffix());
 		// Get Domain-SID from group SID
 		$domainSID = substr($this->attributes['sambaSID'][0], 0, strrpos($this->attributes['sambaSID'][0], "-"));
 		for ($i=0; $i<count($sambaDomains); $i++ ) {

@@ -105,7 +105,7 @@ class quota extends baseModule {
 
 
 	function module_ready() {
-		if (!isset($_SESSION[$_SESSION[$this->base]->config]->scriptPath)) return $false;
+		if (!isset($_SESSION['config']->scriptPath)) return $false;
 		if ($_SESSION[$this->base]->type=='user' && $_SESSION[$this->base]->module['posixAccount']->attributes['uid'][0]=='') return false;
 		if ($_SESSION[$this->base]->type=='group' && $_SESSION[$this->base]->module['posixGroup']->attributes['cn'][0]=='') return false;
 		return true;
