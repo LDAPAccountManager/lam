@@ -27,7 +27,9 @@ Description: Webfrontend for managing Unix and Samba accounts in a LDAP director
  exported as PDF file. There is also a script
  included which manages quota and homedirectories, you have to
  setup sudo if you want to use it. LAM is translated to
- English and German.
+ English, German, Hungarian and Japanese.
+ .
+ Homepage: http://lam.sourceforge.net/
 Install: sh
  yada install -data -into /usr/share/ldap-account-manager index.html
  yada install -data -into /var/lib/ldap-account-manager/tmp tmp/.htaccess
@@ -52,8 +54,6 @@ Install: sh
  yada install -data -into /usr/share/ldap-account-manager/lib lib/*.js
  yada install -exec -into /usr/share/ldap-account-manager/lib lib/*.pl
  yada install -data -into /usr/share/ldap-account-manager/lib/font lib/font/*.php
- yada install -data -into /usr/share/ldap-account-manager/lib/font/makefont lib/font/makefont/*.php
- yada install -data -into /usr/share/ldap-account-manager/lib/font/makefont lib/font/makefont/*.map
  yada install -dir /usr/share/ldap-account-manager/locale
  yada install -dir /usr/share/ldap-account-manager/locale/de_DE
  yada install -data -into /usr/share/ldap-account-manager/locale/de_DE/LC_MESSAGES locale/de_DE/LC_MESSAGES/messages.?o
