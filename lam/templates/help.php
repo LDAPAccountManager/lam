@@ -72,10 +72,12 @@ function displayHelp($helpNumber)
 	/* If submitted help number is not in help/help.inc print error message */
 	elseif(!array_key_exists($helpNumber,$helpArray))
 	{
-		$reference = "({bold}" . $helpNumber . "{endbold})";
-		$errorMessage = _("Sorry this help number $reference is not available.");
+		$variables = array();
+		array_push($variables,$helpNumber);
+		echo "variables[0]=" . $variables[0] . "<br>";
+		$errorMessage = _("Sorry this help number ({bold}%d{endbold}) is not available.");
 		echoHTMLHead();
-		statusMessage("ERROR","",$errorMessage);
+		statusMessage("ERROR","",$errorMessage,$variables);
 		echoHTMLFoot();
 	}
 	/* Print help site out of $helpArray */
@@ -83,7 +85,9 @@ function displayHelp($helpNumber)
 	{
 		echoHTMLHead();
 		echo "		<h1 class=\"help\">" . $helpArray[$helpNumber]['Headline'] . "</h1>\n";
-		echo "		<p class=\"help\">" . $helpArray[$helpNumber]['Text'] . "</p>\n";
+		$format = "		<p class=\"help\">" . $helpArray[$helpNumber]['Text'] . "</p>\n";
+		printf($format,$helpArray[$helpNumber]['variables'][0],$helpArray[$helpNumber]['variables'][1],$helpArray[$helpNumber]['variables'][2],$helpArray[$helpNumber]['variables'][3],$helpArray[$helpNumber]['variables'][4],$helpArray[$helpNumber]['variables'][5],$helpArray[$helpNumber]['variables'][6],$helpArray[$helpNumber]['variables'][7],$helpArray[$helpNumber]['variables'][8],$helpArray[$helpNumber]['variables'][9]);
+		//echo "		<p class=\"help\">" . $helpArray[$helpNumber]['Text'] . "</p>\n";
 		if($helpArray[$helpNumber]["SeeAlso"] <> "")
 		{
 			echo "		<p class=\"help\">See also: " . $helpArray[$helpNumber]['SeeAlso'] . "</p>\n";

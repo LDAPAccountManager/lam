@@ -34,5 +34,6 @@ include_once("../lib/status.inc");
 $Typ = "WARN";
 $Headline = "Test";
 $Text = "{color=00FF00}Farbe{endcolor} {bold}fett{endbold}";
-StatusMessage($Typ,$Headline,$Text);
+$Variables = array();
+StatusMessage($Typ,$Headline,$Text,$Variables);
 ?>

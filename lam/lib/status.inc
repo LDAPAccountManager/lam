@@ -23,29 +23,21 @@ $Id$
   LDAP Account Manager status messages.
 */
 
-function StatusMessage($MessageTyp, $MessageHeadline, $MessageText)
-{
+function StatusMessage($MessageTyp,$MessageHeadline,$MessageText,$MessageVariables) {
 	/* Setting CSS-StyleSheet class depending on the $MessageTyp and rewriting $MessageTyp with a readable string. */
-	if($MessageTyp == "INFO")
-	{
+	if($MessageTyp == "INFO") {
 		$class = "class=\"statusInfo\"";
-		$MessageTyp = _("Information");
 	}
-	elseif($MessageTyp == "WARN")
-	{
+	elseif($MessageTyp == "WARN") {
 		$class = "class=\"statusWarn\"";
-		$MessageTyp = _("Warning");
 	}
-	elseif($MessageTyp == "ERROR")
-	{
+	elseif($MessageTyp == "ERROR") {
 		$class = "class=\"statusError\"";
-		$MessageTyp = _("Error");
 	}
 	/* Set output-message, when none or false $MessageTyp is submitted. */
-	else
-	{
+	else {
 		$class = "class=\"statusError\"";
-		$MessageTyp = _("LAM Internal Error");
+		$MessageTyp = s_("LAM Internal Error");
 		$MessageHeadline = _("Invalid/Missing Message type");
 		$MessageText = _("Please report this error to the Bug-Tracker at {link=http://lam.sf.net}LDAP Account Manager Development Team{endlink}. The error number is {bold}0001:Invalid/Missing Message type.{endbold} Thank you.");
 	}
@@ -53,37 +45,41 @@ function StatusMessage($MessageTyp, $MessageHeadline, $MessageText)
 	$MessageHeadline = parseMessageString($MessageHeadline);
 	$MessageText = parseMessageString($MessageText);
 
-	$MessageTyp = "<h1 $class>$MessageTyp</h1>"; // Format $MessageTyp
-	$MessageHeadline = "<h2 $class>$MessageHeadline</h2>"; // Format $MessageHeadline
-	$MessageText = "<p $class>$MessageText</p>"; // Format $MessageText
-	echo "<div $class><br>" . $MessageTyp.$MessageHeadline.$MessageText . "<br></div>"; // Writing status message
+	//$MessageTyp = "<h1 " . $class . ">" . $MessageTyp . "</h1>"; // Format $MessageTyp
+	$MessageTyp = "<img src=\"../graphics/" . strtolower($MessageTyp) . ".jpg\" alt=\"" . $MessageTyp . "\" width=\"50\" height=\"60\">";
+	$MessageHeadline = "<h2 " . $class . ">" . $MessageHeadline . "</h2>"; // Format $MessageHeadline
+	$MessageText = "<p " . $class . ">" . $MessageText . "</p>"; // Format $MessageText
+	$format = "<div " . $class . "><br><table><tr><td>" . $MessageTyp . "</td><td>" . $MessageHeadline . $MessageText . "</td></tr></table><br></div>";
+	for($i=0;$i<count($MessageVariables);$i++) {
+		$variables .= "," . $MessageVariables[$i];
+		echo "variable[" . $i . "]=" . $variables[$i] . "<br>";
+	}
+	$command = 'printf("' . addslashes($format) . '"' . $variables . ');';
+	echo "command=" . $command . "<br>";
+	eval($command);
 }
 
 /* Use the three replace functions on the submitted Text. */
-function parseMessageString($MessageString)
-{
+function parseMessageString($MessageString) {
 	return linkText(colorText(boldText($MessageString)));
 }
 
 /* Replace {bold} and {endbold} with <b> and </b> HTML-Tags. */
-function boldText($text)
-{
+function boldText($text) {
 	$pattern = "/\{bold\}([^{]*)\{endbold\}/"; // Regular expression matching {bold}[Text]{endbold}
-	$replace = "<b class\"status\">\\1</b>"; // Replace pattern
+	$replace = "<b class=\"status\">\\1</b>"; // Replace pattern
 	return preg_replace($pattern,$replace,$text);
 }
 
 /* Replace {color=#[HEX-Value]} or {color=[HEX-Value]} and {endcolor} with <font color="#[HEX-Value]"> and </font> HTML-Tags. */
-function colorText($text)
-{
+function colorText($text) {
 	$pattern = "/\{color=#?([0-9,a-f,A-F]{6})\}([^{]*)\{endcolor\}/"; // Regular expression matching {color=#[HEX-Value]}[Text]{endcolor} or {color=[HEX-Value]}[Text]{endcolor}
 	$replace = "<font color=\"#\\1\">\\2</font>"; // Replace pattern
 	return preg_replace($pattern,$replace,$text);
 }
 
 /* Replace {link=[Link-Target]} and {endlink} with <a href="[Link-Target]" target="_blank"> and </a> HTML-Tags. */
-function linkText($text)
-{
+function linkText($text) {
 	$pattern = "/\{link=([^}]*)\}([^{]*)\{endlink\}/"; // Regular expression matching {link=[Link-Target]}[Text]{endlink}
 	$replace = "<a href=\"\\1\" target=\"_blank\">\\2</a>"; //Replace pattern
 	return preg_replace($pattern,$replace,$text);

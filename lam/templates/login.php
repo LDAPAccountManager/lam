@@ -33,17 +33,19 @@ function display_LoginPage($config_object,$profile)
 	global $error_message;
 	// generate 256 bit key and initialization vector for user/passwd-encryption
 	// check if we can use /dev/random otherwise use /dev/urandom or rand()
-	$key = @mcrypt_create_iv(32, MCRYPT_DEV_RANDOM);
-	if (! $key) $key = @mcrypt_create_iv(32, MCRYPT_DEV_URANDOM);
-	if (! $key) {
-		srand((double)microtime()*1234567);
-		$key = mcrypt_create_iv(32, MCRYPT_RAND);
-	}
-	$iv = @mcrypt_create_iv(32, MCRYPT_DEV_RANDOM);
-	if (! $iv) $iv = @mcrypt_create_iv(32, MCRYPT_DEV_URANDOM);
-	if (! $iv) {
-		srand((double)microtime()*1234567);
-		$iv = mcrypt_create_iv(32, MCRYPT_RAND);
+	if(function_exists(mcrypt_create_iv)) {
+		$key = @mcrypt_create_iv(32, MCRYPT_DEV_RANDOM);
+		if (! $key) $key = @mcrypt_create_iv(32, MCRYPT_DEV_URANDOM);
+		if (! $key) {
+			srand((double)microtime()*1234567);
+			$key = mcrypt_create_iv(32, MCRYPT_RAND);
+		}
+		$iv = @mcrypt_create_iv(32, MCRYPT_DEV_RANDOM);
+		if (! $iv) $iv = @mcrypt_create_iv(32, MCRYPT_DEV_URANDOM);
+		if (! $iv) {
+			srand((double)microtime()*1234567);
+			$iv = mcrypt_create_iv(32, MCRYPT_RAND);
+		}
 	}
 
 	// save both in cookie
@@ -108,6 +110,19 @@ function display_LoginPage($config_object,$profile)
 			</tr>
 		</table>
 		<hr><br><br>
+		<?php
+		if(! function_exists('mcrypt_create_iv')) {
+			StatusMessage("ERROR", "Your PHP does not support MCrypt, you will not be able to log in! Please install the required package.","See http://lam.sf.net/documentation/faq.html#2 for Suse/RedHat");
+			?>
+	</body>
+</html>
+			<?php
+			exit;
+		}
+		if(! function_exists('mHash')) {
+			StatusMessage("WARN", "Your PHP does not support MHash, you will only be able to use CRYPT/PLAIN for user passwords! Please install the required package.","See http://lam.sf.net/documentation/faq.html#2 for Suse/RedHat");
+		}
+		?>
 		<p align="center">
 			<b><?php echo _("Enter Username and Password for Account") . ":"; ?></b>
 		</p>
@@ -255,9 +270,13 @@ function display_LoginPage($config_object,$profile)
 // checking if the submitted username/password is correct.
 if($_POST['action'] == "checklogin")
 {
+	$_SESSION['lampath'] = realpath('../') . "/";  // Save full path to lam in session
+	$_SESSION['lamurl'] = substr($_SERVER['HTTP_REFERER'],0,strlen($_SERVER['HTTP_REFERER'])-19); // Save full URI to lam in session
+
 	include_once("../lib/ldap.inc"); // Include ldap.php which provides Ldap class
 
 	$_SESSION['ldap'] = new Ldap($_SESSION['config']); // Create new Ldap object
+
 	if($_POST['passwd'] == "")
 	{
 		$error_message = _("Empty Password submitted. Try again.");
@@ -266,6 +285,7 @@ if($_POST['action'] == "checklogin")
 	else
 	{
 		$result = $_SESSION['ldap']->connect($_POST['username'],$_POST['passwd']); // Connect to LDAP server for verifing username/password
+
 		if($result == True) // Username/password correct. Do some configuration and load main frame.
 		{
 			$_SESSION['language'] = $_POST['language']; // Write selected language in session
@@ -298,15 +318,6 @@ elseif($_POST['action'] == "profileChange") {
 // Load login page
 else
 {
-
-	$_SESSION['lampath'] = realpath('../') . "/";
-	$protocol = explode("/",$_SERVER['SERVER_PROTOCOL']);
-	$protocol = strToLower($protocol[0]) . "://";
-	$_SESSION['lamurl'] = $protocol . $_SERVER['SERVER_NAME'] . $_SERVER['SCRIPT_NAME'];
-	$_SESSION['lamurl'] = substr($_SESSION['lamurl'],0,strlen($_SESSION['lamurl'])-19);
-	//echo "lampath=" . $_SESSION['lampath'] . "<br>";
-	//echo "lamurl=" . $_SESSION['lamurl'] . "<br>";
-
 	$default_Config = new CfgMain();
 	$default_Profile = $default_Config->default;
 	$_SESSION["config"] = new Config($default_Profile); // Create new Config object

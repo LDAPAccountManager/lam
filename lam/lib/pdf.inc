@@ -227,8 +227,8 @@ function createUserPDF($accounts) {
 				$pdfFile->Cell(50,5,"",0,0,"R",0);
 				$pdfFile->Cell(30,5,$quotas[$j][0],0,0,"L",0);
 				$pdfFile->Cell(30,5,$quotas[$j][2],0,0,"L",0);
-				$pdfFile->Cell(30,5,$quotas[$j][3],0,0,"L",0);
 				$pdfFile->Cell(30,5,$quotas[$j][6],0,0,"L",0);
+				$pdfFile->Cell(30,5,$quotas[$j][3],0,0,"L",0);
 				$pdfFile->Cell(30,5,$quotas[$j][7],0,1,"L",0);
 			}
 		}
@@ -251,8 +251,9 @@ function createUserPDF($accounts) {
 	while ($file=readdir($h)) {
     	    if (substr($file, -4)=='.pdf') {
     		$path = $relpath.$file;
-    		if ($t-filemtime($path)>180)
-		@unlink($path);
+    		if ($t-filemtime($path)>180) {
+				@unlink($path);
+			}
 	    }
 	}
 	closedir($h);
@@ -421,7 +422,6 @@ function createHostPDF($accounts) {
 	$pdfFile->Output($filename);
 
 	// Create redirector page
-
 
 	echo $_SESSION['header'];
 	echo "<html><head><title>";
