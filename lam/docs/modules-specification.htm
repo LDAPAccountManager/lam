@@ -271,7 +271,7 @@ It must return the help entry as array for the submitted help
 identifier. The format of the array to be returned is described in
 section 4. "Help entry syntax".<br>
 <br>
-<h3>2.2.5. get_profileOptions</h3>
+<h3>2.2.5. get_profileOptions*</h3>
 <br>
 <table cellpadding="2" cellspacing="2" border="0"
  style="text-align: left; width: 300px; height: 30px;">
@@ -279,7 +279,7 @@ section 4. "Help entry syntax".<br>
     <tr>
       <td
  style="vertical-align: top; background-color: rgb(204, 204, 204); text-align: center;"><span
- style="font-weight: bold;">function get_profileOptions($scope)</span><br>
+ style="font-weight: bold;">function get_profileOptions()</span><br>
       </td>
     </tr>
   </tbody>
@@ -288,10 +288,8 @@ section 4. "Help entry syntax".<br>
 This function defines what attributes will be used in the account
 profiles and their appearance in the profile editor.<br>
 <br>
-<span style="font-weight: bold;">$scope</span> is the account type
-("user", "group", "host" at this time).<br>
-The return value is an array that contains <span
- style="font-weight: bold;">meta HTML code</span>.<br>
+<span style="font-weight: bold;"></span>The return value is an array
+that contains <span style="font-weight: bold;">meta HTML code</span>.<br>
 <br>
 The type "fieldset" is not allowed here.<br>
 The <span style="font-style: italic;">name</span> attributes are used
@@ -299,7 +297,7 @@ as keywords to load and save profiles. We recommend to use the module
 name as prefix for them (e.g. posixAccount_homeDirectory) to avoid
 naming confilcts.<br>
 <br>
-<h3>2.2.6. check_profileOptions</h3>
+<h3>2.2.6. check_profileOptions*</h3>
 <br>
 <table style="text-align: left; width: 400px; height: 30px;" border="0"
  cellspacing="2" cellpadding="2">
@@ -307,8 +305,7 @@ naming confilcts.<br>
     <tr>
       <td
  style="vertical-align: top; background-color: rgb(204, 204, 204); text-align: center;"><span
- style="font-weight: bold;">function check_profileOptions($scope,
-$options)</span><br>
+ style="font-weight: bold;">function check_profileOptions($options)</span><br>
       </td>
     </tr>
   </tbody>
@@ -576,8 +573,74 @@ array("user", "host")</span><br style="font-weight: bold;">
  style="font-weight: bold; font-style: italic;">"depends"
 =&gt; array("posixAccount", array("qmail", "sendmail")), "conflicts"
 =&gt; array("exim")</span></span><span
- style="font-style: italic; font-weight: bold;">)</span><span
- style="font-style: italic; font-weight: bold;"><br>
+ style="font-style: italic; font-weight: bold;">)<br>
+</span><br>
+<h3>6.5 get_profileOptions()<br>
+</h3>
+&nbsp;&nbsp;&nbsp; "profile_options" =&gt; array<br>
+<br>
+<span style="font-weight: bold;">&nbsp;&nbsp; <span
+ style="font-style: italic;">Syntax for array is the same as for the
+return value of get_profileOptions().<br>
+<br>
+</span></span>
+<h3>6.6 check_profileOptions()<br>
+</h3>
+&nbsp;&nbsp;&nbsp; "profile_checks" =&gt; array<br>
+<br>
+<span style="font-weight: bold;">&nbsp;&nbsp; The keys of the array are
+the names of the option identifiers.<br>
+&nbsp;&nbsp; Each array element is an array containing these values:<br>
+<br>
 </span>
+<ul>
+  <li style="font-weight: bold;">type:<span style="font-weight: normal;">
+determines how to check input</span></li>
+  <ul>
+    <li style="font-weight: bold;">regex:<span
+ style="font-weight: normal;"> check with regular expression from <span
+ style="font-style: italic;">regex</span> variable, case sensitive</span></li>
+    <li style="font-weight: bold;">regex_i:<span
+ style="font-weight: normal;"> check with regular expression from <span
+ style="font-style: italic;">regex</span> variable, case insensitive</span></li>
+  </ul>
+  <li style="font-weight: bold;">error_message:<span
+ style="font-weight: normal;"> message that is displayed if input value
+was syntactically incorrect</span></li>
+  <ul>
+    <li style="font-weight: bold;"><span style="font-weight: normal;">array
+to build StatusMessages (0 =&gt; message type, 1 =&gt; message
+head, 2 =&gt; message text, 3 =&gt; additional variables)</span><span
+ style="font-weight: normal;"></span></li>
+  </ul>
+  <li style="font-weight: bold;">regex:<span
+ style="font-weight: normal;"> regular expression string (only if <span
+ style="font-style: italic;">type</span> is <span
+ style="font-style: italic;">regex</span>/<span
+ style="font-style: italic;">regex_i</span>)</span><br>
+  </li>
+  <li><span style="font-weight: bold;">required:</span> <span
+ style="font-style: italic;">true</span> or <span
+ style="font-style: italic;">false</span>, if this input field must be
+filled set to true (optional)<span style="font-weight: bold;"><br>
+    </span></li>
+  <li><span style="font-weight: bold;">required_message:</span> message<span
+ style="font-weight: normal;"> that is displayed if no input value was
+given</span><span style="font-weight: normal;"> (only if <span
+ style="font-style: italic;">required</span> == true)</span><span
+ style="font-weight: bold;"></span></li>
+  <ul>
+    <li>&nbsp;array to build StatusMessages (0 =&gt; message type, 1
+=&gt; message
+head, 2 =&gt; message text, 3 =&gt; additional variables)<span
+ style="font-weight: bold;"><br>
+      </span></li>
+  </ul>
+</ul>
+<span style="font-weight: bold;"></span><span style="font-weight: bold;"><span
+ style="font-style: italic;"></span></span><span
+ style="font-style: italic; font-weight: bold;"></span><span
+ style="font-style: italic; font-weight: bold;"></span><span
+ style="font-style: italic; font-weight: bold;"></span>
 </body>
 </html>

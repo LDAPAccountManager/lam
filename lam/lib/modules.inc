@@ -240,13 +240,13 @@ function getProfileOptions($scope) {
 * @return array list of error messages
 */
 function checkProfileOptions($scope, $options) {
-	$return = array();
-	$modules = getAvailableModules($scope);
-	for ($i = 0; $i < sizeof($modules); $i++) {
-			$errors = call_user_func(array($modules[$i], "check_profileOptions"), $scope, $options);
-			$return = array_merge($return, $errors);
+	// create new account container if needed
+	if (! isset($_SESSION["profile_account_$scope"])) {
+		$_SESSION["profile_account_$scope"] = new accountContainer($scope, "profile_account_$scope");
+		$_SESSION["profile_account_$scope"]->new_account();
 	}
-	return $return;
+	// get options
+	return $_SESSION["profile_account_$scope"]->checkProfileOptions($options);
 }
 
 /**
@@ -804,6 +804,22 @@ class accountContainer {
 		$modules = array_keys($this->module);
 		foreach ($modules as $singlemodule) {
 			$return[$singlemodule] = $this->module[$singlemodule]->get_profileOptions();
+		}
+		return $return;
+	}
+
+	/**
+	* Checks the input values of an account profile.
+	*
+	* @param array $options list of input values
+	* @return array list of error messages
+	*/
+	function checkProfileOptions($options) {
+		$return = array();
+		$modules = array_keys($this->module);
+		foreach ($modules as $singlemodule) {
+			$temp = $this->module[$singlemodule]->check_profileOptions($options);
+			$return = array_merge($return, $temp);
 		}
 		return $return;
 	}

@@ -128,6 +128,47 @@ class baseModule {
 		else return array('depends' => array(), 'conflicts' => array());
 		}
 
+	/**
+	* Returns a list of elements for the account profiles.
+	*
+	* @return profile elements
+	*/
+	function get_profileOptions() {
+		if (isset($this->meta['profile_options'])) return $this->meta['profile_options'];
+		else return array();
+	}
+
+	/**
+	* Checks input values of account profiles.
+	*
+	* @return profile elements
+	*/
+	function check_profileOptions($options) {
+		$messages = array();
+		if (is_array($this->meta['profile_checks'])) {
+			$identifiers = array_keys($this->meta['profile_checks']);
+			for ($i = 0; $i < sizeof($identifiers); $i++) {
+				// check if option is required
+				if ($this->meta['profile_checks'][$identifiers[$i]]['required'] && ($options[$identifiers[$i]][0] == '')) {
+					$messages[] = $this->meta['profile_checks'][$identifiers[$i]]['required_message'];
+				}
+				// check by regular expression (case insensitive)
+				if ($this->meta['profile_checks'][$identifiers[$i]]['type'] == 'regex_i') {
+					if (! eregi($this->meta['profile_checks'][$identifiers[$i]]['regex'], $options[$identifiers[$i]][0])) {
+						$messages[] = $this->meta['profile_checks'][$identifiers[$i]]['error_message'];
+					}
+				}
+				// check by regular expression (case sensitive)
+				elseif ($this->meta['profile_checks'][$identifiers[$i]]['type'] == 'regex') {
+					if (! ereg($this->meta['profile_checks'][$identifiers[$i]]['regex'], $options[$identifiers[$i]][0])) {
+						$messages[] = $this->meta['profile_checks'][$identifiers[$i]]['error_message'];
+					}
+				}
+			}
+		}
+		return $messages;
+	}
+
 // TODO implement missing interface
 }
 

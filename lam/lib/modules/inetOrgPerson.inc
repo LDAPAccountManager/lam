@@ -42,7 +42,6 @@ class inetOrgPerson extends baseModule {
 	* Creates a new inetOrgPerson object.
 	*/
 	function inetOrgPerson($scope) {
-	parent::baseModule($scope);
 	// error messages for input checks
 	$this->messages['host'] = array('ERROR', _('Unix workstations'), _('Unix workstations is invalid.'));
 	$this->messages['givenName'] = array('ERROR', _('Given name'), _('Given name contains invalid characters'));
@@ -56,6 +55,8 @@ class inetOrgPerson extends baseModule {
 	$this->messages['postalCode'] = array('ERROR', _('Postal code'), _('Please enter a valid postal code!'));
 	$this->messages['title'] = array('ERROR', _('Title'), _('Please enter a valid title!'));
 	$this->messages['employeeType'] = array('ERROR', _('Employee type'), _('Please enter a valid employee type!'));
+	// call parent constructor
+	parent::baseModule($scope);
 	}
 
 	/**
@@ -71,6 +72,22 @@ class inetOrgPerson extends baseModule {
 		$return["alias"] = _('Personal');
 		// module dependencies
 		$return['dependencies'] = array('depends' => array('posixAccount'), 'conflicts' => array('account'));
+		// profile elements
+		$return['profile_options'] = array(
+			array(
+				0 => array('kind' => 'text', 'text' => _('Job title') . ":"),
+				1 => array('kind' => 'input', 'name' => 'inetOrgPerson_title', 'type' => 'text', 'size' => '30', 'maxlength' => '255'),
+				2 => array('kind' => 'help', 'value' => 'TODO')),
+			array(
+				0 => array('kind' => 'text', 'text' => _('Employee type') . ":"),
+				1 => array('kind' => 'input', 'name' => 'inetOrgPerson_employeeType', 'type' => 'text', 'size' => '30', 'maxlength' => '255'),
+				2 => array('kind' => 'help', 'value' => 'TODO'))
+		);
+		// profile checks
+		$return['profile_checks']['inetOrgPerson_title'] = array('type' => 'regex_i', 'regex' => $this->regex_title,
+			'error_message' => $this->messages['title']);
+		$return['profile_checks']['inetOrgPerson_employeeType'] = array('type' => 'regex_i',
+			'regex' => $this->regex_employeeType, 'error_message' => $this->messages['employeeType']);
 		return $return;
 	}
 
@@ -277,9 +294,9 @@ class inetOrgPerson extends baseModule {
 					'maxlength' => '255', 'value' => $hostvalues ),
 				2 => array ('kind' => 'help', 'value' => 'host'));
 			}
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Title') ),
+		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Job title') ),
 			1 => array ( 'kind' => 'input', 'name' => 'title', 'type' => 'text', 'size' => '10',
-				'maxlength' => '10', 'value' => $this->attributes['title'][0] ),
+				'value' => $this->attributes['title'][0] ),
 			2 => array ('kind' => 'help', 'value' => 'title'));
 		if (!$profile) {
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('First name').'*' ),
@@ -332,17 +349,6 @@ class inetOrgPerson extends baseModule {
 		return 0;
 		}
 
-	function get_profileOptions() {
-		return array();
-	}
-
-	// checks if the values of a new or modified profile are valid
-	// $scope: the account type (user, group, host, ...)
-	// $options: a hash array (name => value) containing the options
-	function check_profileOptions($scope, $options) {
-		return array();
-	}
-	
 	function get_pdfFields($account_type = "user") {
 		return array(	'description',
 							'host',
