@@ -57,11 +57,12 @@ class baseModule {
 	/** contains all ldap attributes which are loaded from ldap */
 	var $orig;
 
-	/** contains the last error messages of the module.
-	* Ths variable is needed because we don't want to make
-	* unnecesarry checks when a attributes wasn't changed */
+	/** contains all error messages wich were troggered*/
 	var $errors;
 	
+	/** contains all error messages of a module */
+	var $errormessages;
+
 	/**
 	* Creates a new base module class
 	*
@@ -80,6 +81,8 @@ class baseModule {
 	*/
 	function init($base) {
 		$this->base = $base;
+		// load error messages
+		$this->loadErrorMessages();
 		// Create Arrays with ldap attributes
 		$this->attributes =& $_SESSION[$this->base]->get_module_attributes(get_class($this));
 		$this->orig =& $_SESSION[$this->base]->get_module_attributes(get_class($this), true);
@@ -97,6 +100,7 @@ class baseModule {
 	*/
 	function load_ldap_attributes($attr) {
 		// Load attributes which are displayed
+		$objectClassName = $this->attributes['objectClass'];
 		// unset count entries
 		unset ($attr['count']);
 		$attributes = array_keys($attr);
@@ -114,6 +118,10 @@ class baseModule {
 				}
 			}
 		}
+		$this->attributes['objectClass'] = $objectClassName;
+		if (in_array($objectClassName[0], $attr['objectClass']))
+			$this->orig['objectClass'] = $objectClassName;
+		else $this->orig['objectClass'] = array();
 	}
 
 	/**
@@ -134,6 +142,11 @@ class baseModule {
 		return $this->scope;
 	}
 
+	/**
+	* This function is needed to avoid error messages */
+	function loadErrorMessages() {
+	}
+	
 	/**
 	* Returns true if this module fits for the current scope.
 	*
