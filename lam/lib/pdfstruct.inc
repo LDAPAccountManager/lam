@@ -89,4 +89,8 @@ function savePDFStructureDefinitions($scope,$definition) {
 	fwrite($handle,$file);
 	fclose($handle);
 }
+
+function deletePDFStructureDefinition($scope,$definition) {
+	return unlink($_SESSION['lampath'] . 'config/pdf/' . $scope . '/' . $definition . '.xml');
+}
 ?>

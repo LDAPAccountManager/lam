@@ -303,6 +303,7 @@ if(!isset($_SESSION['currentPDFStructure'])) {
 	// Load structure file to be edit
 	if($_GET['edit']) {
 		$_SESSION['currentPDFStructure'] = loadPDFStructureDefinitions($_GET['type'],$_GET['edit']);
+		$_GET['pdfname'] = substr($_GET['edit'],0,strlen($_GET['edit']) - 4);
 	}
 	// Load default structure file when creating a new one
 	else {
@@ -578,6 +579,9 @@ foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 								<b><?php echo _("Submit"); ?></b>
 							</legend>
 							<table border="0" align="left">
+							<?php
+							if(!isset($_GET['pdfname'])) {
+							?>
 								<tr>
 									<td>
 										<b><?php echo _("Structure name"); ?>:</b>
@@ -594,8 +598,18 @@ foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 										&nbsp
 									</td>
 								</tr>
+							<?php
+							}
+							?>
 								<tr>
 									<td>
+									<?php
+									if(isset($_GET['pdfname'])) {
+									?>
+										<input type="hidden" name="pdfname" value="<?php echo $_GET['pdfname']; ?>">
+									<?php
+									}
+									?>
 										<input type="submit" name="submit" value="<?php echo _("Save");?>">
 									</td>
 									<td>

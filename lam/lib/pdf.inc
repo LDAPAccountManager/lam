@@ -92,15 +92,8 @@ function createModulePDF($accounts,$pdf_structure="default.xml") {
 			}
 			// We have to include a static text.
 			elseif($entry['tag'] == "TEXT") {
-				// Decide which individual text to fetch
-				if(isset($entry['attributes']['NAME'])) {
-					$text_name = $entry['attributes']['NAME'];
-				}
-				else {
-					$text_name = "User";
-				}
-				// Load string with individual text for PDF from session
-				$info_string = $_SESSION['config']->get_pdftext($text_name);
+				// Load PDF text from structure array
+				$info_string = $entry['value'];
 				// Get all allowed vairables from account-object
 				$values = get_object_vars($account);
 				$values = array_keys($values);

@@ -26,6 +26,7 @@ $Id$
 include_once("../../lib/pdfstruct.inc");
 include_once("../../lib/ldap.inc");
 include_once("../../lib/config.inc");
+include_once("../../lib/modules.inc");
 
 // start session
 session_save_path("../../sess");
@@ -56,65 +57,33 @@ if ($_POST['forward'] == "yes") {
 	}
 	// on submit forward to other pdf structure pages
 	else if($_POST['submit']) {
-		// create new user pdf structure
-		if ($_POST['pdf'] == "new_user") {
-			metaRefresh("pdfpage.php?type=user");
+		if($_POST['pdf'] == 'new') {
+			metaRefresh('pdfpage.php?type=' . $_POST['scope']);
 		}
-		// edit user pdf structure
-		elseif($_POST['pdf'] == "edit_user") {
-			metaRefresh("pdfpage.php?type=user&amp;edit=" . $_POST['edit_user']);
+		else if($_POST['pdf'] == 'edit') {
+			$edit = split(':',$_POST['edit']);
+			metaRefresh('pdfpage.php?type=' . $edit[0] . '&edit=' . $edit[1]);
 		}
-		// delete user pdf structure
-		elseif($_POST['pdf'] == "delete_user") {
-			metaRefresh("pdfdelete.php?type=user&amp;delete=" . $_POST['delete_user']);
-		}
-		// create new group pdf structure
-		elseif ($_POST['pdf'] == "new_group") {
-			metaRefresh("pdfpage.php?type=group");
-		}
-		// edit group pdf structure
-		elseif($_POST['pdf'] == "edit_group") {
-			metaRefresh("pdfpage.php?type=group&amp;edit=" . $_POST['edit_group']);
-		}
-		// delete group pdf structure
-		elseif($_POST['pdf'] == "delete_group") {
-			metaRefresh("pdfdelete.php?type=group&amp;delete=" . $_POST['delete_group']);
-		}
-		// create new host pdf structure
-		elseif ($_POST['pdf'] == "new_host") {
-			metaRefresh("pdfpage.php?type=host");
-		}
-		// edit host pdf structure
-		elseif($_POST['pdf'] == "edit_host") {
-			metaRefresh("pdfpage.php?type=host&amp;edit=" . $_POST['edit_host']);
-		}
-		// delete host pdf structure
-		elseif($_POST['pdf'] == "delete_host") {
-			metaRefresh("pdfdelete.php?type=host&amp;delete=" . $_POST['delete_host']);
+		else if($_POST['pdf'] == 'delete') {
+			$delete = split(':',$_POST['delete']);
+			metaRefresh('pdfdelete.php?type=' . $delete[0] . '&delete=' . $delete[1]);
 		}
 	}
 	exit;
 }
 
-// Get available user PDF structure definitions
-$pdfStructDefs = getPDFStructureDefinitions('user');
-$user_pdf = '';
-for($i = 0;$i < count($pdfStructDefs); $i++) {
-	$user_pdf .= '<option value="' . $pdfStructDefs[$i] . '.xml">' . $pdfStructDefs[$i] . "</option>\n";
-}
+$scopes = getAvailableScopes();
 
-// Get available group PDF structure definitions
-$pdfStructDefs = getPDFStructureDefinitions('group');
-$group_pdf = '';
-for($i = 0;$i < count($pdfStructDefs); $i++) {
-	$group_pdf .= '<option value="' . $pdfStructDefs[$i] . '.xml">' . $pdfStructDefs[$i] . "</option>\n";
-}
+$availableStructureDefinitions = '';
+$availableScopes = '';
 
-// Get available host PDF structure definitions
-$pdfStructDefs = getPDFStructureDefinitions('host');
-$host_pdf = '';
-for($i = 0;$i < count($pdfStructDefs); $i++) {
-	$host_pdf .= '<option value="' . $pdfStructDefs[$i] . '.xml">' . $pdfStructDefs[$i] . "</option>\n";
+foreach($scopes as $scope) {
+	$pdfStructDefs = getPDFStructureDefinitions($scope);
+	$availableScopes .= '<option value="' . $scope . '">' . $scope . "</option>\n";
+	
+	foreach($pdfStructDefs as $pdfStructureDefinition) {
+		$availableStructureDefinitions .= '<option value="' . $scope . ':' . $pdfStructureDefinition . '.xml">' . $scope . ' - ' . $pdfStructureDefinition . "</option>\n";
+	}
 }
 
 echo $_SESSION['header'];
@@ -125,127 +94,46 @@ echo $_SESSION['header'];
 	<body>
 		<p></p>
 		<form action="pdfmain.php" method="post">
-		<!-- user pdf structure options -->
+		<!-- pdf structure options -->
 		<fieldset>
 			<legend>
-				<b><?php echo _("User PDF structures"); ?></b>
+				<b><?php echo _("PDF structures"); ?></b>
 			</legend>
 			<table border=0>
-				<!-- new user pdf structure -->
+				<!-- new pdf structure -->
 				<tr>
 					<td>
-						<input type="radio" name="pdf" value="new_user" checked>
+						<input type="radio" name="pdf" value="new" checked="checked">
 					</td>
-					<td colspan=2><?php echo _("Create a new user PDF structure"); ?></td>
+					<td colspan=2><?php echo _("Create a new PDF structure for scope: "); ?><select name="scope" size="1"><?php echo $availableScopes; ?></select></td>
 				</tr>
-				<!-- edit user pdf structure -->
+				<!-- edit pdf structure -->
 				<tr>
 					<td>
-						<input type="radio" name="pdf" value="edit_user">
+						<input type="radio" name="pdf" value="edit">
 					</td>
 					<td>
-						<select name="edit_user" size=1>
-							<?php echo $user_pdf ?>
+						<select name="edit" size=1>
+							<?php echo $availableStructureDefinitions; ?>
 						</select>
 					</td>
-					<td><?php echo _("Edit user PDF structure"); ?></td>
+					<td><?php echo _("Edit PDF structure"); ?></td>
 				</tr>
-				<!-- delete user pdf structure -->
+				<!-- delete pdf structure -->
 				<tr>
 					<td>
-						<input type="radio" name="pdf" value="delete_user">
+						<input type="radio" name="pdf" value="delete">
 					</td>
 					<td>
-						<select name="delete_user" size=1>
-							<?php echo $user_pdf ?>
+						<select name="delete" size=1>
+							<?php echo $availableStructureDefinitions; ?>
 						</select>
 					</td>
-					<td><?php echo _("Delete user PDF structure"); ?></td>
+					<td><?php echo _("Delete PDF structure"); ?></td>
 				</tr>
 			</table>
 		</fieldset>
 		<p></p>
-		
-		<!-- group pdf structure options -->
-		<fieldset>
-			<legend>
-				<b><?php echo _("Group PDF structures"); ?></b>
-			</legend>
-			<table border=0>
-				<!-- new group pdf structure -->
-				<tr>
-					<td>
-						<input type="radio" name="pdf" value="new_group">
-					</td>
-					<td colspan=2><?php echo _("Create a new group PDF structure"); ?></td>
-				</tr>
-				<!-- edit group pdf structure -->
-				<tr>
-					<td>
-						<input type="radio" name="pdf" value="edit_group">
-					</td>
-					<td>
-						<select name="edit_group" size=1>
-							<?php echo $group_pdf ?>
-						</select>
-					</td>
-					<td><?php echo _("Edit group PDF structure"); ?></td>
-				</tr>
-				<!-- delete group pdf structure -->
-				<tr>
-					<td>
-						<input type="radio" name="pdf" value="delete_group">
-					</td>
-					<td>
-						<select name="delete_group" size=1>
-							<?php echo $group_pdf ?>
-						</select>
-					</td>
-					<td><?php echo _("Delete group PDF structure"); ?></td>
-				</tr>
-			</table>
-		</fieldset>
-		<p></p>
-		
-		<!-- host pdf structure options -->
-		<fieldset>
-			<legend>
-				<b><?php echo _("Host PDF structures"); ?></b>
-			</legend>
-			<table border=0>
-				<!-- new host pdf structure -->
-				<tr>
-					<td>
-						<input type="radio" name="pdf" value="new_host">
-					</td>
-					<td colspan=2><?php echo _("Create a new host PDF structure"); ?></td>
-				</tr>
-				<!-- edit host pdf structure -->
-				<tr>
-					<td>
-						<input type="radio" name="pdf" value="edit_host">
-					</td>
-					<td>
-						<select name="edit_host" size=1>
-							<?php echo $host_pdf ?>
-						</select>
-					</td>
-					<td><?php echo _("Edit host PDF structure"); ?></td>
-				</tr>
-				<!-- delete host pdf structure -->
-				<tr>
-					<td>
-						<input type="radio" name="pdf" value="delete_host">
-					</td>
-					<td>
-						<select name="delete_host" size=1>
-							<?php echo $host_pdf ?>
-						</select>
-					</td>
-					<td><?php echo _("Delete host PDF structure"); ?></td>
-				</tr>
-			</table>
-		</fieldset>
 		
 		<!-- forward is used to check if buttons were pressed -->
 		<p>

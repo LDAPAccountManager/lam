@@ -277,6 +277,15 @@ function getAvailablePDFFields($scope) {
 }
 
 /**
+ * Return a list of current available scopes
+ *
+ * @return array Available scopes
+ */
+function getAvailableScopes() {
+	return array('user','group','host');
+}
+
+/**
 * This class includes all modules and attributes of an account.
 *
 * @package modules
@@ -1098,7 +1107,7 @@ class accountContainer {
 		function getAvailablePDFFields() {
 			$return = array();
 			foreach($this->module as $moduleName => $module) {
-				echo "<pre>moduleName: $moduleName\n</pre>";
+				//echo "<pre>moduleName: $moduleName\n</pre>";
 				$return[$moduleName] = $module->get_pdfFields($this->type);
 			}
 			return $return;
