@@ -29,7 +29,7 @@ include_once("ldap.php");
 session_save_path("../sess");
 @session_start();
 
-echo "<html><head><title>hjhj</title>\n";
+echo "<html><head><title>listhosts</title>\n";
 echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">\n";
 echo "</head><body>\n";
 echo "<script src=\"./functions.js\" type=\"text/javascript\" language=\"javascript\"></script>\n";
