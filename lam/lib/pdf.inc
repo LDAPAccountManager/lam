@@ -27,23 +27,29 @@ define('FPDF_FONTPATH', 'font/');
 include_once("fpdf.php");
 
 function createUserPDF($accounts) {
+// Check if all submitted accounts are user accounts
+	for($i=0;$i<count($accounts);$i++) {
+		$account = $accounts[$i];
+		if($account->type <> "user") {
+			return 2; // 2 means non user account submitted for createUserPDF()
+		}
+	}
+// Start PDF file
 	$pdfFile = new lamPDF();
-	$pdfFile->AliasNbPages();
 	$pdfFile->Open();
-	// Write some information into the PDF file
+// Write some information into the PDF file
 	$pdfFile->setFont("arial","",12);
 	$pdfFile->setTitle("LDAP Account Manager");
 	$pdfFile->setSubject(_("User information page"));
 	$pdfFile->setAuthor("LDAP Account Manager Devel-Team -Michael Dürgner-");
 	$pdfFile->setCreator("LDAP Account Manager (pdf.inc)");
+// Loop for every sumbitted account and print its values on a extra page
 	for($i=0;$i<count($accounts);$i++) {
 		$account = $accounts[$i];
 		$iv = base64_decode($_COOKIE['IV']);
 		$key = base64_decode($_COOKIE['Key']);
-		$account->unix_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($account->unix_password), MCRYPT_MODE_ECB, $iv);
-		$account->unix_password = str_replace(chr(00), '', $account->unix_password);
 		$pdfFile->addPage();
-		// Print General settings
+// Print General settings
 		$pdfFile->setFont("arial","B",12);
 		$pdfFile->Write(5,"- " . _("General User Settings") . ":");
 		$pdfFile->Ln(6);
@@ -88,13 +94,21 @@ function createUserPDF($accounts) {
 		$pdfFile->Cell(50,5,$text,0,1,"L",0);
 		$pdfFile->Ln(9);
 		$pdfFile->setFont("arial","B",12);
-		// print Unix settings
+// Print Unix settings
 		$pdfFile->Write(5,"- " . _("Unix User Settings") . ":");
 		$pdfFile->Ln(6);
 		$pdfFile->setFont("times","",10);
 		$pdfFile->Cell(50,5,_("Unix password") . ":",0,0,"R",0);
-		$pdfFile->setFont("times","B",10);
-		$pdfFile->Cell(50,5,$account->unix_password,0,1,"L",0);
+		if($account->unix_password_no == "1") {
+			$pdfFile->setFont("times","B",10);
+			$pdfFile->Cell(50,5,_("Unix password disabled!"),0,1,"L",0);
+		}
+		else {
+			$account->unix_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($account->unix_password), MCRYPT_MODE_ECB, $iv);
+			$account->unix_password = str_replace(chr(00), '', $account->unix_password);
+			$pdfFile->setFont("times","B",10);
+			$pdfFile->Cell(50,5,$account->unix_password,0,1,"L",0);
+		}
 		$pdfFile->setFont("times","",10);
 		$pdfFile->Cell(50,5,_("Password expire") . ":",0,0,"R",0);
 		$pdfFile->setFont("times","B",10);
@@ -105,24 +119,22 @@ function createUserPDF($accounts) {
 		$pdfFile->Cell(50,5,$account->unix_host,0,1,"L",0);
 		$pdfFile->Ln(9);
 		$pdfFile->setFont("arial","B",12);
-		// Print Samba settings
+// Print Samba settings
 		$pdfFile->Write(5,"- " . _("Samba User Settings") . ":");
 		$pdfFile->Ln(6);
 		$pdfFile->setFont("times","",10);
-		$pdfFile->Cell(50,5,_("Use Unix password") . ":",0,0,"R",0);
-		$pdfFile->setFont("times","B",10);
-		if($account->smb_useunixpwd == 1) {
-			$text = _("Yes");
+		$pdfFile->Cell(50,5,_("Samba password") . ":",0,0,"R",0);
+		if($account->smb_password_no == "1") {
+			$pdfFile->setFont("times","B",10);
+			$pdfFile->Cell(50,5,_("Samba password disabled!"),0,1,"L",0);
+		}
+		elseif($account->smb_useunixpwd == "1") {
+			$pdfFile->setFont("times","B",10);
+			$pdfFile->Cell(50,5,_("Samba password set to unix password."),0,1,"L",0);
 		}
 		else {
-			$text = _("No");
-		}
-		$pdfFile->Cell(50,5,$text,0,1,"L",0);
-		if($account->smb_useunixpwd == 0) {
 			$account->smb_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($account->smb_password), MCRYPT_MODE_ECB, $iv);
 			$account->smb_password = str_replace(chr(00), '', $account->smb_password);
-			$pdfFile->setFont("times","",10);
-			$pdfFile->Cell(50,5,_("Samba password") . ":",0,0,"R",0);
 			$pdfFile->setFont("times","B",10);
 			$pdfFile->Cell(50,5,$account->smb_password,0,1,"L",0);
 		}
@@ -149,19 +161,40 @@ function createUserPDF($accounts) {
 		$pdfFile->setFont("times","",10);
 		$pdfFile->Cell(50,5,_("Samba Domain") . ":",0,0,"R",0);
 		$pdfFile->setFont("times","B",10);
+		if($_SESSION['config']->get_samba3() == "yes") {
+			$account->smb_domain = $account->smb_domain->name;
+		}
 		$pdfFile->Cell(50,5,$account->smb_domain,0,1,"L",0);
 		$pdfFile->Ln(9);
 		$pdfFile->setFont("arial","B",12);
-		// Print Quota settings (no quota outpunt yet)
+// Print Quota settings
 		$pdfFile->Write(5,"- " . _("Quota Settings") . ":");
 		$pdfFile->Ln(6);
 		$pdfFile->setFont("times","",10);
 		$pdfFile->Cell(50,5,_("User quota(s)") . ":",0,0,"R",0);
 		$pdfFile->setFont("times","B",10);
-		$pdfFile->Cell(50,5,$account->quota,0,1,"L",0);
+		$quotas = $account->quota;
+		if(count($quota)>0) {
+			$pdfFile->Cell(20,5,_("Mountpoint"),0,0,"L",0);
+			$pdfFile->Cell(20,5,_("Soft block"),0,0,"L",0);
+			$pdfFile->Cell(20,5,_("Soft inode"),0,0,"L",0);
+			$pdfFile->Cell(20,5,_("Hard block"),0,0,"L",0);
+			$pdfFile->Cell(20,5,_("Hard inode"),0,1,"L",0);
+			for($j=0;$j<count($quotas);$j++) {
+				$pdfFile->Cell(50,5,"",0,0,"R",0);
+				$pdfFile->Cell(20,5,$quotas[$j][0],0,0,"L",0);
+				$pdfFile->Cell(20,5,$quotas[$j][2],0,0,"L",0);
+				$pdfFile->Cell(20,5,$quotas[$j][3],0,0,"L",0);
+				$pdfFile->Cell(20,5,$quotas[$j][6],0,0,"L",0);
+				$pdfFile->Cell(20,5,$quotas[$j][7],0,1,"L",0);
+			}
+		}
+		else {
+			$pdfFile->Cell(50,5,_("No user quotas defined or no quota support by filesystem."),0,1,"L",0);
+		}
 		$pdfFile->Ln(9);
 		$pdfFile->setFont("arial","B",12);
-		// Print Personal settings
+// Print Personal settings
 		$pdfFile->Write(5,"- " . _("Personal User Settings") . ":");
 		$pdfFile->Ln(6);
 		$pdfFile->setFont("times","",10);
@@ -197,13 +230,16 @@ function createUserPDF($accounts) {
 		$pdfFile->setFont("times","B",10);
 		$pdfFile->Cell(50,5,$account->personal_postalAddress,0,1,"L",0);
 	}
+// Close document and send it to the browser
 	$pdfFile->Close();
 	$pdfFile->Output();
+	return 0; // 0 means everything successful; page(s) printed
 }
 
+// lamPDF class || For defining own a Header and Footer
 class lamPDF extends FPDF {
+	// Print page header
 	function header() {
-		// Print page header
 		$this->Image("../graphics/printLogo.jpg",10,10,50,20,"JPG");
 		$this->SetFont("arial","B",22);
 		$this->Cell(170,5,"LDAP Account Manager",0,1,"R",0);
@@ -216,8 +252,8 @@ class lamPDF extends FPDF {
 		$this->SetY(60);
 	}
 
+	// Print page footer
 	function footer() {
-		// Print page footer
 		$this->SetLineWidth(0.8);
 		$this->Line(10,280,200,280);
 		$this->Line(10,282,200,282);
