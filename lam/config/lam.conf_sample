@@ -70,7 +70,7 @@ scriptPath:
 scriptServer: 
 
 # Set to "yes" only if you use the new Samba 3.x schema.
-samba3: no
+samba3: yes
 
 # Number of minutes LAM caches LDAP searches.
 cachetimeout: 5
