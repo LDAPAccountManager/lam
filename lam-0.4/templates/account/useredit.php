@@ -492,7 +492,7 @@ switch ($_POST['select']) {
 		if ( !ereg('^(([0-9]|[A-Z]|[a-z]|[.]|[-]|[_])+[@]([0-9]|[A-Z]|[a-z]|[-])+([.]([0-9]|[A-Z]|[a-z]|[-])+)*)*$', $account_new->personal_mail))  $errors[] = array('ERROR', _('eMail address'), _('Please enter a valid eMail address!'));
 		if ( !ereg('^([0-9]|[A-Z]|[a-z]|[-]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $account_new->personal_street))  $errors[] = array('ERROR', _('Street'), _('Please enter a valid street name!'));
 		if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $account_new->personal_postalAddress))  $errors[] = array('ERROR', _('Postal address'), _('Please enter a valid postal address!'));
-		if ( !ereg('^([0-9]|[A-Z]|[a-z]|[-]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $account_new->personal_title))  $errors[] = array('ERROR', _('Title'), _('Please enter a valid title!'));
+		if ( !ereg('^([0-9]|[A-Z]|[a-z]|[-]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $account_new->personal_title))  $errors[] = array('ERROR', _('Job title'), _('Please enter a valid job title!'));
 		if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $account_new->personal_employeeType))  $errors[] = array('ERROR', _('Employee type'), _('Please enter a valid employee type!'));
 		if ( !ereg('^([0-9]|[A-Z]|[a-z])*$', $account_new->personal_postalCode))  $errors[] = array('ERROR', _('Postal code'), _('Please enter a valid postal code!'));
 		break;
@@ -1463,7 +1463,7 @@ switch ($select_local) {
 		echo "</fieldset></td></tr></table></td>\n<td valign=\"top\">";
 		echo "<table border=0 width=\"100%\"><tr><td><fieldset class=\"useredit-bright\"><legend class=\"useredit-bright\"><b>"._('Personal properties')."</b></legend>\n";
 		echo "<table border=0 width=\"100%\"><tr><td>";
-		echo _('Title');
+		echo _('Job title');
 		echo '</td>'."\n".'<td>'.
 			'<input name="f_personal_title" type="text" size="10" maxlength="10" value="' . $account_new->personal_title . '"> ';
 		echo $account_new->general_givenname . ' ' . $account_new->general_surname . '</td><td>'.

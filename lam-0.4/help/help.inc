@@ -245,10 +245,10 @@ $helpArray = array (
 				"447" => array ("ext" => "FALSE", "Headline" => _("Grace inode period"),
 					"Text" => _("Grace inode (files) period. Most filesystems use a fixed maximum value of 7 days."), "SeeAlso" => '<a href="http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.6">'.
 						'Quota How-To</a>'),
-				"448" => array ("ext" => "FALSE", "Headline" => _("Title"),
-					"Text" => _("Title of user, Mr., Ms., ...")),
+				"448" => array ("ext" => "FALSE", "Headline" => _("Job title"),
+					"Text" => _("Job title of user, Vice President, ...")),
 				"449" => array ("ext" => "FALSE", "Headline" => _("Employee type"),
-					"Text" => _("Employee type: worker, student, nurse, ...")),
+					"Text" => _("Employee type: Contractor, Employee, Intern, Temp, External, ...")),
 				"450" => array ("ext" => "FALSE", "Headline" => _("Street"),
 					"Text" => _("Street")),
 				"451" => array ("ext" => "FALSE", "Headline" => _("Postal code"),

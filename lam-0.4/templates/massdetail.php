@@ -137,7 +137,7 @@ if ($_POST['apply']) {
 			}
 		}
 	// Check personal settings
-	if ( !eregi('^([a-z φόδί\\.-])*$', $_POST['f_personal_title']))  $errors2[] = array('ERROR', _('Title'), _('Please enter a valid title!'));
+	if ( !eregi('^([a-z φόδί\\.-])*$', $_POST['f_personal_title']))  $errors2[] = array('ERROR', _('Job title'), _('Please enter a valid job title!'));
 		else $_SESSION['mass_accounts'][$row]->personal_title = $_POST['f_personal_title'];
 	if ( !eregi('^([a-z0-9 φόδί\\.-])*$', $_POST['f_personal_employeeType']))  $errors2[] = array('ERROR', _('Employee type'), _('Please enter a valid employee type!'));
 		else $_SESSION['mass_accounts'][$row]->personal_employeeType = $_POST['f_personal_employeeType'];
@@ -217,7 +217,7 @@ switch ($select) {
 			'</td><td>'.
 			'<a href="help.php?HelpNumber=400" target="lamhelp">'._('Help').'</a>'.
 			'</td></tr>'."\n".'<tr><td>';
-		echo _('Title');
+		echo _('Job title');
 		echo '</td>'."\n".'<td>'.
 			'<input name="f_personal_title" type="text" size="10" maxlength="10" value="' . $_SESSION['mass_accounts'][$row]->personal_title . '"> ';
 		echo $_SESSION['mass_accounts']->general_surname . ' ' . $_SESSION['mass_accounts']->general_givenname . '</td><td>'.

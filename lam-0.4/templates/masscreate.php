@@ -358,7 +358,7 @@ switch ($select) {
 		echo "</td>\n<td>";
 		echo _('Primary group').',';
 		echo '</td>'."\n".'<td>';
-		echo _('Title').',';
+		echo _('Job title').',';
 		echo '</td>'."\n".'<td>';
 		echo _('eMail address').',';
 		echo '</td>'."\n".'<td>';
@@ -571,7 +571,7 @@ function loadfile() {
 			if ( !ereg('^(([0-9]|[A-Z]|[a-z]|[.]|[-]|[_])+[@]([0-9]|[A-Z]|[a-z]|[-])+([.]([0-9]|[A-Z]|[a-z]|[-])+)*)*$', $_SESSION['mass_accounts'][$row2]->personal_mail))  $_SESSION['mass_errors'][$row2][] = array('ERROR', _('eMail address'), _('Please enter a valid eMail address!'));
 			if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])*$', $_SESSION['mass_accounts'][$row2]->personal_street))  $_SESSION['mass_errors'][$row2][] = array('ERROR', _('Street'), _('Please enter a valid street name!'));
 			if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])*$', $_SESSION['mass_accounts'][$row2]->personal_postalAddress))  $_SESSION['mass_errors'][$row2][] = array('ERROR', _('Postal address'), _('Please enter a valid postal address!'));
-			if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])*$', $_SESSION['mass_accounts'][$row2]->personal_title))  $_SESSION['mass_errors'][$row2][] = array('ERROR', _('Title'), _('Please enter a valid title!'));
+			if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])*$', $_SESSION['mass_accounts'][$row2]->personal_title))  $_SESSION['mass_errors'][$row2][] = array('ERROR', _('Job title'), _('Please enter a valid job title!'));
 			if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])*$', $_SESSION['mass_accounts'][$row2]->personal_employeeType))  $_SESSION['mass_errors'][$row2][] = array('ERROR', _('Employee type'), _('Please enter a valid employee type!'));
 			if ( !ereg('^([0-9]|[A-Z]|[a-z])*$', $_SESSION['mass_accounts']->personal_postalCode))  $_SESSION['mass_errors'][$row2][] = array('ERROR', _('Postal code'), _('Please enter a valid postal code!'));
 			}
