@@ -417,11 +417,12 @@ function createGroupPDF($accounts) {
 	$pdfFile->setSubject(_("Group information page"));
 	$pdfFile->setAuthor("LDAP Account Manager Devel-Team -Roland Gruber-");
 	$pdfFile->setCreator("LDAP Account Manager (pdf.inc)");
-	// print host accounts
+	// print group accounts
 	$pdfFile->addPage();
 	for($i = 0; $i < count($accounts); $i++) {
 		$account = $accounts[$i];
 		$ypos = $pdfFile->GetY();
+		if ($ypos > 260) $pdfFile->addPage();
 		$pdfFile->setFont("times","B",16);
 		$pdfFile->Write(5,$account->general_username);
 		$pdfFile->Ln(8);
