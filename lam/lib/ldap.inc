@@ -157,7 +157,9 @@ class Ldap{
 			"uid" => _("Host username"),
 			"cn" => _("Host name"),
 			"rid" => _("RID (Windows UID)"),
-			"description" => _("Host description")
+			"description" => _("Host description"),
+			"uidnumber" => _("UID number"),
+			"gidnumber" => _("GID number")
 			);
 		return true;
 	}

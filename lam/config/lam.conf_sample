@@ -43,7 +43,7 @@ maxMachine: 35000
 # entries can either be predefined values (e.g. '#cn' or '#uid')
 # or individual ones (e.g. 'uid:User ID' or 'host:Host Name')
 # values have to be seperated by semicolons
-userlistAttributes: #uid;#cn;#uidNumber;#gidNumber
+userlistAttributes: #uid;#givenName;#sn;#uidNumber;#gidNumber
 
 # list of attributes to show in group list
 # entries can either be predefined values (e.g. '#cn' or '#gidNumber')
@@ -55,7 +55,7 @@ grouplistAttributes: #cn;#gidNumber;#memberUID;#description
 # entries can either be predefined values (e.g. '#cn' or '#uid')
 # or individual ones (e.g. 'cn:Host Name')
 # values have to be seperated by semicolons
-hostlistAttributes: #cn;#rid;#description;gidNumber:GID
+hostlistAttributes: #cn;#description;#uidNumber;#gidNumber
 
 # maximum number of rows to show in user/group/host lists
 maxlistentries: 30
