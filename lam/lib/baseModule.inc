@@ -389,6 +389,22 @@ class baseModule {
 		// must be implemented in sub modules
 		return $partialAccounts;
 	}
+	
+	/**
+	 * This function return the help entry array for a specific help id. Normally this->meta can be used.
+	 * 
+	 * @param string $id The id string for the help entry needed.
+	 * 
+	 * @return array The desired help entry.
+	 */
+	function get_help($id) {
+		if(isset($this->meta['help'][$id])) {
+			return $this->meta['help'][$id];
+		}
+		else {
+			return false;
+		}
+	}
 
 // TODO implement missing interface
 }
