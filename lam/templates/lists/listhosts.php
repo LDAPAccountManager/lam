@@ -148,7 +148,7 @@ if (! $_GET['norefresh']) {
 	else StatusMessage("ERROR", _("LDAP Search failed! Please check your preferences."), _("No Samba Hosts found!"));
 }
 else {
-	if (sizeof($hst_info) == 0) StatusMessage("WARN", "", _("No Hosts found!"));
+	if (sizeof($hst_info) == 0) StatusMessage("WARN", "", _("No Samba Hosts found!"));
 	// sort rows by sort column ($sort)
 	if ($hst_info) usort($hst_info, "cmp_array");
 }
