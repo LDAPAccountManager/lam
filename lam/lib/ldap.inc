@@ -22,7 +22,7 @@ $Id$
 */
 
 // ldap.php provides basic functions to connect to the OpenLDAP server and get lists of users and groups.
-include_once("../config/config.php");
+include_once("config.inc");
 
 class Ldap{
 

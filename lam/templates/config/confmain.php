@@ -25,7 +25,7 @@ $Id$
 */
 
 // start session
-session_save_path("../sess");
+session_save_path("../../sess");
 session_start();
 
 // check if password was entered
@@ -37,7 +37,7 @@ if (! $passwd) {
 
 // check if password is valid
 // if not: load login page
-include_once ('config.php');
+include_once ('../../lib/config.inc');
 $conf = new Config();
 if (!(($conf->get_Passwd()) == $passwd)) {
 	require('conflogin.php');
@@ -49,14 +49,11 @@ echo ("<head>\n");
 echo ("<title>" . _("LDAP Account Manager Configuration") . "</title>\n");
 echo ("</head>\n");
 echo ("<body>\n");
-echo ("<p align=\"center\"><a href=\"http://lam.sf.net\" target=\"new_window\"><img src=\"../graphics/banner.jpg\" border=1 alt=\"LDAP Account Manager\"></a></p><hr><br><br>\n");
+echo ("<p align=\"center\"><a href=\"http://lam.sf.net\" target=\"new_window\"><img src=\"../../graphics/banner.jpg\" border=1 alt=\"LDAP Account Manager\"></a></p><hr><br><br>\n");
 echo ("<form action=\"confsave.php\" method=\"post\">\n");
 echo ("<table align=\"center\" border=\"0\">");
 echo ("<tr><td width=\"20%\"><p align=\"right\"><b>" . _("Server Address") . ": </b></p></td> <td width=\"30%\"><p align=\"left\"><input size=50 type=\"text\" name=\"serverurl\" value=\"" . $conf->get_ServerURL() . "\"></td>\n");
 echo ("<td width=\"50%\"><p align=\"left\">" . _("Server Address of LDAP server (e.g. ldap://localhost:389 or ldaps://localhost:636)") . "</p></td></tr>\n");
-echo ("<tr><td>&nbsp</td></tr>");
-echo ("<tr><td><p align=\"right\"><b>" . _("List of valid users") . ": </b></p></td> <td><input size=50 type=\"text\" name=\"admins\" value=\"" . $conf->get_Adminstring() . "\"></td>\n");
-echo ("<td><p align=\"left\">" . _("Usernames must be seperated by semicolons<br>(e.g. cn=admin,dc=yourcompany,dc=com;uid=root,ou=people,dc=yourcompany,dc=com)") . "</p></td></tr>\n");
 echo ("<tr><td>&nbsp</td></tr>");
 echo ("<tr><td><p align=\"right\"><b>" . _("UserSuffix") . ": </b></p></td> <td><input size=50 type=\"text\" name=\"suffusers\" value=\"" . $conf->get_UserSuffix() . "\"></td>\n");
 echo ("<td><p align=\"left\">" . _("This is the suffix from where to search for users.<br>(e.g. ou=People,dc=yourcompany,dc=com)") . "</p></td></tr>\n");
@@ -80,18 +77,21 @@ echo ("<td rowspan=3><p>" . _("This is the list of attributes to show in the lis
 	. "</p></td></tr>");
 echo ("<tr><td><p align=\"right\"><b>" . _("Attributes in Group List:") . "</b></p></td><td><input size=50 type=\"text\" name=\"grplstattr\" value=\"" . $conf->get_grouplistAttributes() . "\"></td></tr>");
 echo ("<tr><td><p align=\"right\"><b>" . _("Attributes in Host List:") . "</b></p></td><td><input size=50 type=\"text\" name=\"hstlstattr\" value=\"" . $conf->get_hostlistAttributes() . "\"></td></tr>");
+echo ("<tr><td>&nbsp</td></tr>");
+echo ("<tr><td>&nbsp</td></tr>");
+echo ("<tr><td><p align=\"right\"><b>" . _("List of valid users") . ": </b></p></td> <td><input size=50 type=\"text\" name=\"admins\" value=\"" . $conf->get_Adminstring() . "\"></td>\n");
+echo ("<td><p align=\"left\">" . _("Usernames must be seperated by semicolons<br>(e.g. cn=admin,dc=yourcompany,dc=com;uid=root,ou=people,dc=yourcompany,dc=com)") . "</p></td></tr>\n");
 echo ("</table>\n");
 echo ("<p>&nbsp</p>\n");
 echo ("<table align=\"left\" border=\"0\">");
-echo ("<tr><td bgcolor=\"red\" align=\"right\"><b>" . _("New Password") . ": </b></td> <td bgcolor=\"red\" align=\"left\"><input type=\"password\" name=\"pass1\"></td>");
-echo ("<td rowspan=2 width=10></td><td rowspan=2>" . _("Optional") . "</td></tr>\n");
+echo ("<tr><td bgcolor=\"red\" align=\"right\"><b>" . _("New Password") . ": </b></td> <td bgcolor=\"red\" align=\"left\"><input type=\"password\" name=\"pass1\"></td></tr>");
 echo ("<tr><td bgcolor=\"red\" align=\"right\"><b>" . _("Reenter Password") . ": </b></td> <td bgcolor=\"red\" align=\"left\"><input type=\"password\" name=\"pass2\"></td></tr>\n");
 echo ("</table>\n");
 echo ("<p>&nbsp</p>\n");
 echo ("<p>&nbsp</p>\n");
 echo ("<table align=\"left\" border=\"0\">");
 echo ("<tr><td align=\"left\"><pre><input type=\"submit\" name=\"submitconf\" value=\"" . _("Submit") . "\">     <input type=\"reset\" name=\"resetconf\" value=\"" . _("Reset") . "\">");
-echo ("<input type=\"button\" name=\"back\" value=\"" . _("Abort") . "\" onClick=\"self.location.href='../templates/login.php'\"></pre></td></tr>\n");
+echo ("<input type=\"button\" name=\"back\" value=\"" . _("Abort") . "\" onClick=\"self.location.href='../login.php'\"></pre></td></tr>\n");
 echo ("</table>\n");
 echo ("<input type=\"hidden\" name=\"passwd\" value=\"" . $passwd . "\"><br>\n");
 echo ("</form>\n");

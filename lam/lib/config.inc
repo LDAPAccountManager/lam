@@ -62,14 +62,21 @@ class Config {
 	var $grouplistAttributes;
 	var $hostlistAttributes;
 
-	// constructor, loads preferences from ../lam.conf
+	// constructor, loads preferences from ../config/lam.conf
 	function Config() {
 		$this->reload();
 	}
 	
-	// reloads preferences from ../lam.conf
+	// reloads preferences from ../config/lam.conf
 	function reload() {
-		$conffile = "../lam.conf";
+		// Get path of lam.conf
+		$path = getcwd();
+		$path = explode("/", substr($path,1));
+		for($i = 0; $i <= array_search("lam", $path); $i++) {
+			$conffile .= "/" . $path[$i];
+		}
+		echo ;
+		$conffile .= "/config/lam.conf";
 		if (is_file($conffile) == True) {
 			$file = fopen($conffile, "r");
 			while (!feof($file)) {
@@ -142,13 +149,20 @@ class Config {
 			fclose($file);
 		}
 		else {
-			echo _("Unable to load lam.conf!"); echo "<br>";
+			echo _("Unable to load lam.conf! ") . $conffile ; echo "<br>";
 		}
 	}
 	
-	// saves preferences to ../lam.conf
+	// saves preferences to ../config/lam.conf
 	function save() {
-		$conffile = "../lam.conf";
+		// Get path of lam.conf
+		$path = getcwd();
+		$path = explode("/", substr($path,1));
+		for($i = 0; $i <= array_search("lam", $path); $i++) {
+			$conffile .= "/" . $path[$i];
+		}
+		echo ;
+		$conffile .= "/config/lam.conf";
 		if (is_file($conffile) == True) {
 			// booleans to check if value was already saved
 			$save_serverURL = $save_passwd = $save_admins = $save_suffusr = $save_suffgrp = $save_suffhst =

@@ -25,10 +25,10 @@ $Id$
 */
 
 // start session
-session_save_path("../sess");
+session_save_path("../../sess");
 session_start();
 
-include_once ('config.php');
+include_once ('../../lib/config.inc');
 $conf = new Config();
 
 // check if password is correct 
@@ -38,7 +38,7 @@ if ($passwd != $conf->get_Passwd()) {
 	exit;
 }
 
-echo ("<p align=\"center\"><a href=\"http://lam.sf.net\" target=\"new_window\"><img src=\"../graphics/banner.jpg\" border=1></a></p><hr><br><br>");
+echo ("<p align=\"center\"><a href=\"http://lam.sf.net\" target=\"new_window\"><img src=\"../../graphics/banner.jpg\" border=1></a></p><hr><br><br>");
 
 // check new preferences
 if (chop($serverurl) == "") {
@@ -137,6 +137,6 @@ if ($pass1 != "") {
 $conf->save();
 echo ("<b>" . _("The following settings were saved:") . "</b><br><br>");
 $conf->printconf();
-echo ("<br><br><br><br><br><a href=\"../templates/login.php\" target=\"_top\">" . _("Back to Login") . "</a>");
+echo ("<br><br><br><br><br><a href=\"../login.php\" target=\"_top\">" . _("Back to Login") . "</a>");
 
 ?>
