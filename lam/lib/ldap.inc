@@ -96,6 +96,8 @@ class Ldap{
 		if ($this->server) {
 			// use LDAPv3
 			ldap_set_option($this->server, LDAP_OPT_PROTOCOL_VERSION, 3);
+			// start TLS if possible
+			if (function_exists('ldap_start_tls')) ldap_start_tls($this->server);
 			$bind = @ldap_bind($this->server, $user, $passwd);
 			if ($bind) {
 				// return server handle
