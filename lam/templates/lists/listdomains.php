@@ -94,7 +94,7 @@ session_register('dom_suffix');
 
 if (! $_GET['norefresh']) {
 	// configure search filter
-	$filter = "(sambaDomainName=*)";
+	$filter = "(objectClass=sambaDomain)";
 	$attrs = $attr_array;
 	$sr = @ldap_search($_SESSION["ldap"]->server(),
 		$dom_suffix,
