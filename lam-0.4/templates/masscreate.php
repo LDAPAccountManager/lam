@@ -505,7 +505,7 @@ function loadfile() {
 	ldapreload('user');
 	// Get List with all existing usernames
 	$users = array();
-	foreach ($_SESSION['userDN'] as $user_array) $users[] = $user_array['cn'];
+	foreach ($_SESSION['userDN'] as $user_array) $users[] = $user_array['uid'];
 	for ($row2=0; $row2<sizeof($_SESSION['mass_accounts']); $row2++) {
 		/* loops for every user
 		* Check for double entries in $_SESSION['mass_accounts']

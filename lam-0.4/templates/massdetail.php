@@ -93,7 +93,7 @@ if ($_POST['apply']) {
 		// Validate cache-array
 		ldapreload('user');
 		// Get List with all existing usernames
-		foreach ($_SESSION['userDN'] as $user_array) $users[] = $user_array['cn'];
+		foreach ($_SESSION['userDN'] as $user_array) $users[] = $user_array['uid'];
 		// Get List with all users in array
 		foreach ($_SESSION['mass_accounts'] as $user_array) $users[] = $user_array->general_username;
 		// unset old username in user-array

@@ -482,7 +482,7 @@ switch ($select_local) {
 		// unset timestamp stored in $temp2[0]
 		unset($temp2[0]);
 		// load list with all users
-		foreach ($temp2 as $temp) $users[] = $temp['cn'];
+		foreach ($temp2 as $temp) $users[] = $temp['uid'];
 		// sort users
 		if (is_array($users)) sort($users, SORT_STRING);
 		// remove users which are allready additional members of group
@@ -493,16 +493,16 @@ switch ($select_local) {
 		*/
 		// Do a ldap-search
 		if (isset($account_old->general_uidNumber))
-			$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_UserSuffix(), "(&(objectClass=PosixAccount)(gidNumber=$account_old->general_uidNumber))", array('cn'));
-		else $result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_UserSuffix(), "(&(objectClass=PosixAccount)(gidNumber=$account_new->general_uidNumber))", array('cn'));
+			$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_UserSuffix(), "(&(objectClass=PosixAccount)(gidNumber=$account_old->general_uidNumber))", array('uid'));
+		else $result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_UserSuffix(), "(&(objectClass=PosixAccount)(gidNumber=$account_new->general_uidNumber))", array('uid'));
 		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 		// loop for every user which is primary member of group
 		while ($entry) {
 			$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
-			if (isset($attr['cn'][0])) {
+			if (isset($attr['uid'][0])) {
 				// Remove user from user list
 				$users = @array_flip($users);
-				unset ($users[$attr['cn'][0]]);
+				unset ($users[$attr['uid'][0]]);
 				$users = @array_flip($users);
 				}
 			// Go to next entry

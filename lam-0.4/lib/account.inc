@@ -607,14 +607,14 @@ function ldapreload($type) {
 				$_SESSION['userDN'][0] = time();
 				// Search 4 values which should be cached
 				$result = @ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_UserSuffix(),
-					'(&(objectClass=posixAccount)(!(uid=*$)))', array('cn', 'uidNumber'), 0);
+					'(&(objectClass=posixAccount)(!(uid=*$)))', array('uid', 'uidNumber'), 0);
 				// Write search result in array
 				$entry = @ldap_first_entry($_SESSION['ldap']->server(), $result);
 				while ($entry) {
 					$dn = (ldap_get_dn($_SESSION['ldap']->server(), $entry));
 					$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
-					if (isset($attr['cn'][0]))
-						$_SESSION['userDN'][$dn]['cn'] = $attr['cn'][0];
+					if (isset($attr['uid'][0]))
+						$_SESSION['userDN'][$dn]['uid'] = $attr['uid'][0];
 					if (isset($attr['uidNumber'][0]))
 						$_SESSION['userDN'][$dn]['uidNumber'] = $attr['uidNumber'][0];
 					$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
@@ -660,14 +660,14 @@ function ldapreload($type) {
 				$_SESSION['hostDN'][0] = time();
 				// Search 4 values which should be cached
 				$result = @ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_HostSuffix(),
-					'(&(objectClass=posixAccount)(uid=*$))', array('cn', 'uidNumber'), 0);
+					'(&(objectClass=posixAccount)(uid=*$))', array('uid', 'uidNumber'), 0);
 				// Write search result in array
 				$entry = @ldap_first_entry($_SESSION['ldap']->server(), $result);
 				while ($entry) {
 					$dn = (ldap_get_dn($_SESSION['ldap']->server(), $entry));
 					$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
-					if (isset($attr['cn'][0]))
-						$_SESSION['hostDN'][$dn]['cn'] = $attr['cn'][0];
+					if (isset($attr['uid'][0]))
+						$_SESSION['hostDN'][$dn]['uid'] = $attr['uid'][0];
 					if (isset($attr['uidNumber'][0]))
 						$_SESSION['hostDN'][$dn]['uidNumber'] = $attr['uidNumber'][0];
 					$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);

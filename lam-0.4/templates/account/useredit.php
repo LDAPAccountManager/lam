@@ -774,7 +774,7 @@ switch ($select_local) {
 		// unset timestamp stored in $temp2[0]
 		unset($temp2[0]);
 		// Remove $ from workstations
-		foreach ($temp2 as $temp) $hosts[] = str_replace("$", '',$temp['cn']);
+		foreach ($temp2 as $temp) $hosts[] = str_replace("$", '',$temp['uid']);
 		// sort workstations
 		sort($hosts, SORT_STRING);
 		// get workstation array
