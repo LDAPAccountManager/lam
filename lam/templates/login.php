@@ -34,11 +34,20 @@ if($action == "checklogin")
 	$config = new Config;
 	$ldap = new Ldap($config);
 	$result = $ldap->connect($username,$passwd);
-	if($result == True)
+	if($result == True) // Username/password correct. Doing some configuration and loading main Frame.
 	{
-		session_register($ldap);
-		session_register($config);
-		include("./main.php"); // Username/password correct. Loading main Frame.
+		session_register($ldap); // register $ldap object in session
+		session_register($config); // register $config object in session
+		session_register($language); // register $language in session
+
+		// setting language
+		$language = explode(":", $language);
+		putenv("LANG=" . $language[1]);
+		setlocale("LC_ALL", $language[0]);
+		bindtextdomain("lam", "../locale");
+		textdomain("lam");
+
+		include("./main.php");
 	}
 	else
 	{
