@@ -350,7 +350,7 @@ function loadHostProfile($profile) {
 								@array_shift($info);
 								$dom->dn = $dn;
 								$dom->name = $info[0]['sambadomainname'][0];
-								$dom->SID = $info[0]['sambaSID'][0];
+								$dom->SID = $info[0]['sambasid'][0];
 								$dom->nextRID = $info[0]['sambanextrid'][0];
 								$dom->nextUserRID = $info[0]['sambanextuserrid'][0];
 								$dom->nextGroupRID = $info[0]['sambanextgrouprid'][0];
