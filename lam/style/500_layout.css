@@ -62,6 +62,10 @@ input {
 font-weight:bold;
 background-color:#CCCCFF;
 }
+button {
+font-weight:bold;
+background-color:#CCCCFF;
+}
 
 fieldset {
 background-color:#EEEEEE;
