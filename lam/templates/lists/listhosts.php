@@ -176,12 +176,12 @@ echo "</tr>\n";
 
 // print filter row
 echo "<tr align=\"center\" class=\"hostlist\"><td width=22 height=34></td><td>";
-echo "<input type=\"submit\" name=\"apply_filter\" value=\"" . _("Apply") . "\">";
+echo "<input type=\"submit\" name=\"apply_filter\" value=\"" . _("Filter") . "\">";
 echo "</td>";
 // print input boxes for filters
 for ($k = 0; $k < sizeof ($desc_array); $k++) {
   echo "<td>";
-  echo ("<input type=\"text\" name=\"filter" . strtolower ($attr_array[$k]) .
+  echo ("<input type=\"text\" size=15 name=\"filter" . strtolower ($attr_array[$k]) .
 	"\" value=\"" . $_POST["filter" . strtolower($attr_array[$k])] . "\">");
   echo "</td>";
 }

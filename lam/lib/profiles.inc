@@ -233,47 +233,54 @@ function saveUserProfile($account, $profile) {
 		exit;
 	}
 	$path = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/users/" . $profile . ".pru";
-	$file = fopen($path, "w");
-	// replace user and group names
-	$homedir = $account->general_homedir;
-	$profpath = $account->smb_profilePath;
-	$scriptPath = $account->smb_scriptPath;
-	$smbhome = $account->smb_smbhome;
-	if ($account->general_username) {
-		$homedir = str_replace($account->general_username, "\$user", $homedir);
-		$profpath = str_replace($account->general_username, "\$user", $profpath);
-		$scriptPath = str_replace($account->general_username, "\$user", $scriptPath);
-		$smbhome = str_replace($account->general_username, "\$user", $smbhome);
+	$file = @fopen($path, "w");
+	if ($file) {
+		// replace user and group names
+		$homedir = $account->general_homedir;
+		$profpath = $account->smb_profilePath;
+		$scriptPath = $account->smb_scriptPath;
+		$smbhome = $account->smb_smbhome;
+		if ($account->general_username) {
+			$homedir = str_replace($account->general_username, "\$user", $homedir);
+			$profpath = str_replace($account->general_username, "\$user", $profpath);
+			$scriptPath = str_replace($account->general_username, "\$user", $scriptPath);
+			$smbhome = str_replace($account->general_username, "\$user", $smbhome);
+		}
+		if ($account->general_group) {
+			$homedir = str_replace($account->general_group, "\$group", $homedir);
+			$profpath = str_replace($account->general_group, "\$group", $profpath);
+			$scriptPath = str_replace($account->general_group, "\$group", $scriptPath);
+			$smbhome = str_replace($account->general_group, "\$group", $smbhome);
+		}
+		// write attributes
+		if (isset($account->general_group)) fputs($file, "general_group: " . $account->general_group . "\n");
+		if (isset($account->general_groupadd)) fputs($file, "general_groupadd: " . implode(";", $account->general_groupadd) . "\n");
+		if (isset($account->general_homedir)) fputs($file, "general_homedir: " . $homedir . "\n");
+		if (isset($account->general_shell)) fputs($file, "general_shell: " . $account->general_shell . "\n");
+		if (isset($account->unix_password_no)) fputs($file, "unix_password_no: " . $account->unix_password_no . "\n");
+		if (isset($account->unix_pwdwarn)) fputs($file, "unix_pwdwarn: " . $account->unix_pwdwarn . "\n");
+		if (isset($account->unix_pwdallowlogin)) fputs($file, "unix_pwdallowlogin: " . $account->unix_pwdallowlogin . "\n");
+		if (isset($account->unix_pwdminage)) fputs($file, "unix_pwdminage: " . $account->unix_pwdminage . "\n");
+		if (isset($account->unix_pwdmaxage)) fputs($file, "unix_pwdmaxage: " . $account->unix_pwdmaxage . "\n");
+		if (isset($account->unix_pwdexpire)) fputs($file, "unix_pwdexpire: " . $account->unix_pwdexpire . "\n");
+		if (isset($account->unix_deactivated)) fputs($file, "unix_deactivated: " . $account->unix_deactivated . "\n");
+		if (isset($account->smb_password_no)) fputs($file, "smb_password_no: " . $account->smb_password_no . "\n");
+		if (isset($account->smb_useunixpwd)) fputs($file, "smb_useunixpwd: " . $account->smb_useunixpwd . "\n");
+		if (isset($account->smb_flagsD)) fputs($file, "smb_flagsD: " . $account->smb_flagsD . "\n");
+		if (isset($account->smb_homedrive)) fputs($file, "smb_homedrive: " . $account->smb_homedrive . "\n");
+		if (isset($account->smb_scriptPath)) fputs($file, "smb_scriptPath: " . $scriptPath . "\n");
+		if (isset($account->smb_profilePath)) fputs($file, "smb_profilePath: " . $profpath . "\n");
+		if (isset($account->smb_smbuserworkstations)) fputs($file, "smb_smbuserworkstations: " . $account->smb_smbuserworkstations . "\n");
+		if (isset($account->smb_smbhome)) fputs($file, "smb_smbhome: " . $smbhome . "\n");
+		if (isset($account->smb_domain)) fputs($file, "smb_domain: " . $account->smb_domain . "\n");
+		// close file
+		fclose($file);
 	}
-	if ($account->general_group) {
-		$homedir = str_replace($account->general_group, "\$group", $homedir);
-		$profpath = str_replace($account->general_group, "\$group", $profpath);
-		$scriptPath = str_replace($account->general_group, "\$group", $scriptPath);
-		$smbhome = str_replace($account->general_group, "\$group", $smbhome);
+	else {
+		StatusMessage("ERROR", _("Unable to save profile!"), $path);
+		return false;
 	}
-	// write attributes
-	if (isset($account->general_group)) fputs($file, "general_group: " . $account->general_group . "\n");
-	if (isset($account->general_groupadd)) fputs($file, "general_groupadd: " . implode(";", $account->general_groupadd) . "\n");
-	if (isset($account->general_homedir)) fputs($file, "general_homedir: " . $homedir . "\n");
-	if (isset($account->general_shell)) fputs($file, "general_shell: " . $account->general_shell . "\n");
-	if (isset($account->unix_password_no)) fputs($file, "unix_password_no: " . $account->unix_password_no . "\n");
-	if (isset($account->unix_pwdwarn)) fputs($file, "unix_pwdwarn: " . $account->unix_pwdwarn . "\n");
-	if (isset($account->unix_pwdallowlogin)) fputs($file, "unix_pwdallowlogin: " . $account->unix_pwdallowlogin . "\n");
-	if (isset($account->unix_pwdminage)) fputs($file, "unix_pwdminage: " . $account->unix_pwdminage . "\n");
-	if (isset($account->unix_pwdmaxage)) fputs($file, "unix_pwdmaxage: " . $account->unix_pwdmaxage . "\n");
-	if (isset($account->unix_pwdexpire)) fputs($file, "unix_pwdexpire: " . $account->unix_pwdexpire . "\n");
-	if (isset($account->unix_deactivated)) fputs($file, "unix_deactivated: " . $account->unix_deactivated . "\n");
-	if (isset($account->smb_password_no)) fputs($file, "smb_password_no: " . $account->smb_password_no . "\n");
-	if (isset($account->smb_useunixpwd)) fputs($file, "smb_useunixpwd: " . $account->smb_useunixpwd . "\n");
-	if (isset($account->smb_flagsD)) fputs($file, "smb_flagsD: " . $account->smb_flagsD . "\n");
-	if (isset($account->smb_homedrive)) fputs($file, "smb_homedrive: " . $account->smb_homedrive . "\n");
-	if (isset($account->smb_scriptPath)) fputs($file, "smb_scriptPath: " . $scriptPath . "\n");
-	if (isset($account->smb_profilePath)) fputs($file, "smb_profilePath: " . $profpath . "\n");
-	if (isset($account->smb_smbuserworkstations)) fputs($file, "smb_smbuserworkstations: " . $account->smb_smbuserworkstations . "\n");
-	if (isset($account->smb_smbhome)) fputs($file, "smb_smbhome: " . $smbhome . "\n");
-	if (isset($account->smb_domain)) fputs($file, "smb_domain: " . $account->smb_domain . "\n");
-	// close file
-	fclose($file);
+	return true;
 }
 
 // saves an account object to an group profile with name $profile (without .prg)
@@ -291,12 +298,19 @@ function saveHostProfile($account, $profile) {
 		exit;
 	}
 	$path = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/hosts/" . $profile . ".prh";
-	$file = fopen($path, "w");
-	// write attributes
-	if (isset($account->general_group)) fputs($file, "general_group: " . $account->general_group . "\n");
-	if (isset($account->smb_domain)) fputs($file, "smb_domain: " . $account->smb_domain . "\n");
-	// close file
-	fclose($file);
+	$file = @fopen($path, "w");
+	if ($file) {
+		// write attributes
+		if (isset($account->general_group)) fputs($file, "general_group: " . $account->general_group . "\n");
+		if (isset($account->smb_domain)) fputs($file, "smb_domain: " . $account->smb_domain . "\n");
+		// close file
+		fclose($file);
+	}
+	else {
+		StatusMessage("ERROR", _("Unable to save profile!"), $path);
+		return false;
+	}
+	return true;
 }
 
 // deletes a user profile

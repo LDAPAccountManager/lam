@@ -25,10 +25,13 @@ $Id$
 
 include_once("../../lib/profiles.inc");
 include_once("../../lib/ldap.inc");
+include_once("../../lib/config.inc");
 
 // start session
 session_save_path("../../sess");
 @session_start();
+
+setlanguage();
 
 // check if user is logged in, if not go to login
 if (!$_SESSION['ldap'] || !$_SESSION['ldap']->server()) {

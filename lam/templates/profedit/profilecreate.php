@@ -27,10 +27,13 @@ include_once("../../lib/status.inc");
 include_once("../../lib/account.inc");
 include_once("../../lib/profiles.inc");
 include_once("../../lib/ldap.inc");
+include_once("../../lib/config.inc");
 
 // start session
 session_save_path("../../sess");
 @session_start();
+
+setlanguage();
 
 // abort button was pressed in profileuser/~host.php
 // back to profile editor
@@ -223,8 +226,9 @@ if ($_GET['type'] == "user") {
 		exit;
 	}
 	// save profile
-	saveUserProfile($acct, $profname);
-	echo ("<br><br><p align=\"center\"><big><b>" . _("Profile $profname was saved.") . "</b></big></p>");
+	if (saveUserProfile($acct, $profname)) {
+		echo StatusMessage("INFO", _("Profile was saved."), $profname);
+	}
 	echo ("<br><p><a href=\"profilemain.php\">" . _("Back to Profile Editor") . "</a></p>");
 }
 
@@ -249,8 +253,9 @@ elseif ($_GET['type'] == "host") {
 		exit;
 	}
 	// save profile
-	saveHostProfile($acct, $profname);
-	echo ("<br><br><p align=\"center\"><big><b>" . _("Profile $profname was saved.") . "</b></big></p>");
+	if (saveHostProfile($acct, $profname)) {
+		echo StatusMessage("INFO", _("Profile was saved."), $profname);
+	}
 	echo ("<br><p><a href=\"profilemain.php\">" . _("Back to Profile Editor") . "</a></p>");
 }
 

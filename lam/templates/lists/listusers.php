@@ -192,13 +192,13 @@ if ($user_count != 0) {
   echo "</tr>\n";
 
   echo "<tr class=\"userlist\"><th width=22 height=34></th><th>\n";
-  echo "<input type=\"submit\" name=\"apply_filter\" value=\"" . _("Apply") . "\">";
+  echo "<input type=\"submit\" name=\"apply_filter\" value=\"" . _("Filter") . "\">";
   echo "</th>\n";
 
   // print input boxes for filters
   for ($k = 0; $k < sizeof ($desc_array); $k++) {
     echo "<th>";
-    echo ("<input type=\"text\" name=\"filter" . strtolower ($attr_array[$k]) .
+    echo ("<input type=\"text\" size=15 name=\"filter" . strtolower ($attr_array[$k]) .
 	  "\" value=\"" . $_POST["filter" . strtolower($attr_array[$k])] . "\">");
     echo "</th>";
   }
