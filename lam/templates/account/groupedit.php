@@ -440,8 +440,9 @@ do { // X-Or, only one if() can be true
 		if ($_POST['f_finish_safeProfile']=='')
 			$errors[] = array('ERROR', _('Save profile'), _('No profilename given.'));
 		else {
-			saveGroupProfile($account_new, $_POST['f_finish_safeProfile']);
-			$errors[] = array('INFO', _('Save profile'), _('New profile created.'));
+			if (saveGroupProfile($account_new, $_POST['f_finish_safeProfile']))
+				$errors[] = array('INFO', _('Save profile'), _('New profile created.'));
+			else $errors[] = array('ERROR', _('Save profile'), _('Wrong profilename given.'));
 			}
 		// select last page displayed before user is created
 		$select_local='final';
