@@ -509,3 +509,87 @@ select.useredit-bright {
   background-color:#CCCCFF;
 }
 
+
+table.schema_oclasses {
+	border-left: 1px solid black;
+	border-right: 1px solid black;
+	border-bottom: 1px solid black;
+	border-top: 0;
+	margin-bottom: 10px;
+	background-color: #eee;
+}
+
+table.schema_oclasses td {
+	vertical-align: top;
+	text-align: left;
+	padding-left: 5px;
+}
+
+table.schema_attr th {
+	background-color: #016;
+	padding: 5px;
+	color: white;
+	font-weight: bold;
+	font-size: 125%;
+}
+
+table.schema_attr td {
+	padding: 5px;
+	vertical-align: top;
+}
+
+table.schema_attr tr.even {
+	background-color: #eee;
+}
+
+table.schema_attr tr.odd {
+	background-color: #ccc;
+}
+
+table.schema_attr tr.highlight{
+	background-color: #bcd;
+	font-weight: Bold;
+}
+
+ul.schema {
+	margin: 5px;
+	margin-left: 0px;
+	padding-left: 20px;
+}
+
+ul.schema li {
+	margin-left: 0px;
+	padding-left: 0px;
+}
+
+ul.schema li small {
+	font-size: 75%;
+	color: #777;
+}
+
+ul.schema li small a {
+	color: #77c;
+}
+
+h4.schema_oclass {
+	background: #016;
+	padding: 5px;
+	margin: 0px;
+	margin-top: 8px;
+	font-weight: normal;
+	border: 1px solid black;
+	font-size: 140%;
+	color: white;
+}
+
+h4.schema_oclass_sub {
+	background: #dde;
+	border: 1px solid black;
+	border-top: 0px;
+	font-weight: normal;
+	margin: 0px;
+	padding: 2px;
+	padding-left: 5px;
+	font-size: 80%;
+}
+

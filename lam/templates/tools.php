@@ -85,6 +85,13 @@ $tools[] = array(
 		"link" => "pdfedit/pdfmain.php"
 	);
 
+// schema browser
+$tools[] = array(
+		"name" => _("Schema browser"),
+		"description" => _("Here you can browse LDAP object classes and attributes."),
+		"link" => "schema/schema.php"
+	);
+
 echo "<p>&nbsp;</p>\n";
 
 // print tools table

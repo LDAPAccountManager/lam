@@ -32,6 +32,8 @@ $Id$
 include_once("config.inc");
 /** Encryption functions */
 include_once("blowfish.inc");
+/** LDAP schema */
+include_once("schema.inc");
 
 /**
 * Converts a HEX string to a binary value
@@ -126,6 +128,11 @@ class Ldap{
 				if (! $this->objectClasses) {
 					$this->updateClasses();
 					$this->updateCapabilities();
+					// update schema
+					get_schema_objectclasses();
+					get_schema_attributes();
+					get_schema_matching_rules();
+					get_schema_syntaxes();
 				}
 				// return success number
 				return ldap_errno($this->server);
