@@ -213,10 +213,13 @@ class Ldap{
 					$this->updateClasses();
 					$this->updateCapabilities();
 				}
-				// return server handle
-				return $this->server;
+				// return success number
+				return ldap_errno($this->server);
 			}
+			// return error number
+			else return ldap_errno($this->server);
 		}
+		else return false;
 	}
 
 	// closes connection to server

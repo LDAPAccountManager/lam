@@ -288,7 +288,7 @@ if($_POST['action'] == "checklogin")
 	{
 		$result = $_SESSION['ldap']->connect($_POST['username'],$_POST['passwd']); // Connect to LDAP server for verifing username/password
 
-		if($result == True) // Username/password correct. Do some configuration and load main frame.
+		if($result == 0) // Username/password correct. Do some configuration and load main frame.
 		{
 			$_SESSION['loggedIn'] = true;
 			$_SESSION['language'] = $_POST['language']; // Write selected language in session
@@ -303,15 +303,25 @@ if($_POST['action'] == "checklogin")
 		}
 		else
 		{
-			if($ldap->server)
+			if ($result === False)
+			{
+				$error_message = _("Cannot connect to specified LDAP-Server. Please try again.");
+				display_LoginPage($_SESSION['config'],""); // connection failed
+			}
+			elseif ($result == 81)
+			{
+				$error_message = _("Cannot connect to specified LDAP-Server. Please try again.");
+				display_LoginPage($_SESSION['config'],""); // connection failed
+			}
+			elseif ($result == 49)
 			{
 				$error_message = _("Wrong Password/Username combination. Try again.");
 				display_LoginPage($_SESSION['config'],""); // Username/password invalid. Return to login page.
 			}
 			else
 			{
-				$error_message = _("Cannot connect to specified LDAP-Server. Try again.");
-				display_LoginPage($_SESSION['config'],""); // Username/password invalid. Return to login page.
+				$error_message = _("LDAP error, server says:") .  "\n<br>($result) " . ldap_err2str($result);
+				display_LoginPage($_SESSION['config'],""); // other errors
 			}
 		}
 	}
