@@ -131,7 +131,7 @@ function display_LoginPage($config_object,$profile)
 							$text = explode(",", $admins[$i]);
 							$text = explode("=", $text[0]);
 							?>
-							<option value="<?php echo $config_object->Admins[$i]; ?>"><?php echo $text[1]; ?></option>
+							<option value="<?php echo $admins[$i]; ?>"><?php echo $text[1]; ?></option>
 							<?php
 						}
 						?>
