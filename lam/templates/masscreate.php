@@ -33,6 +33,15 @@ include_once('../lib/pdf.inc'); // Return a pdf-file
 session_save_path('../sess');
 @session_start();
 
+print_r($_FILES['userfile']);
+if ($_POST['tolist'] && ($_FILES['userfile']['size']>0)) $select = 'list';
+if ($_POST['back']) $select = 'main';
+if ($_POST['cancel']) $select = 'cancel';
+if ($_POST['create']) $select = 'create';
+if ($_POST['pdf']) createpdf($_SESSION['accounts']);
+if (!$select) $select='main';
+
+
 // Write HTML-Header and part of Table
 echo '<html><head><title>';
 echo _('Create new Accounts');
@@ -44,14 +53,6 @@ echo '</title>
 	<form enctype="multipart/form-data" action="masscreate.php" method="post">';
 	echo '<table rules="all" class="masscreate" width="100%">
 	<tr><td></td></tr>';
-
-if ($_POST['tolist']) $select = 'list';
-if ($_POST['back']) $select = 'main';
-if ($_POST['cancel']) $select = 'cancel';
-if ($_POST['create']) $select = 'create';
-if ($_POST['pdf']) createpdf($_SESSION['accounts']);
-if (!$select) $select='main';
-
 
 switch ($select) {
 	case 'main':
@@ -86,12 +87,12 @@ switch ($select) {
 		if ( session_is_registered("accounts")) session_unregister("accounts");
 		session_register("accounts");
 		if (!is_array($accounts)) $accounts = array();
-	 	$handler = fopen($_FILES['userfile']->tmp_name, 'r');
+	 	$handle = fopen($_FILES['userfile']['tmp_name'], 'r');
 		$error=false;
 		echo '<tr><td>';
 		echo _('Confirm List');
 		echo '</td></tr>';
-		for ($row=0; $line_array=fgetcvs($handle,2048); ++$row) { // loops for every row
+		for ($row=0; $line_array=fgetcsv($handle,2048); ++$row) { // loops for every row
 			$_SESSION['accounts'][$row] = loadUserProfile($_POST['f_selectprofile']) ;
 			if ($line_array[0]) $_SESSION['accounts'][$row]->general_surname = $line_array[0];
 			if ($line_array[1]) $_SESSION['accounts'][$row]->general_givenname = $line_array[1];
@@ -134,8 +135,8 @@ switch ($select) {
 			if (getgid($_SESSION['accounts'][$row]->general_group)==-1) StatusMessage('INFO', _('Group ').
 				$_SESSION['accounts'][$row]->general_group._(' not found in row ').$row.'!', _('It will be created.'));
 			}
-		fclose($handler);
-		unlink($_FILES['userfile']->tmp_name);
+		fclose($handle);
+		unlink($_FILES['userfile']['tmp_name']);
 		echo '<tr><td>'. _('Surname'). '</td><td>'. _('Givenname'). '</td><td>'. _('Username'). '</td><td>'. _('Primary Group'). '</td><td>'.
 			_('Title'). '</td><td>'. _('Mail Address'). '</td><td>'. _('Telephonenumber'). '</td><td>'. _('Mobiletelephonenumber')
 			. '</td><td>'. _('Facsimiletelephonenumber'). '</td><td>'. _('Street'). '</td><td>'. _('Postal Code')
