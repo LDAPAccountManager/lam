@@ -212,22 +212,22 @@ function draw_navigation_bar ($count) {
   echo ("<tr>\n");
   echo ("<td><input type=\"submit\" name=\"refresh\" value=\"" . _("Refresh") . "\">&nbsp;&nbsp;");
   if ($page != 1)
-    echo ("<a align=\"right\" class=\"userlist\" href=\"listhosts.php?page=" . ($page - 1) . "&list=" . $list . "\"><=</a>\n");
+    echo ("<a class=\"userlist\" href=\"listhosts.php?page=" . ($page - 1) . "&list=" . $list . "\">&lt;=</a>\n");
   else
-    echo ("<=");
+    echo ("&lt;=");
   echo ("&nbsp;");
 
   if ($page < ($count / $max_pageentrys))
-    echo ("<a align=\"right\" class=\"userlist\" href=\"listhosts.php?page=" . ($page + 1) . "&list=" . $list . "\">=></a>\n");
+    echo ("<a class=\"userlist\" href=\"listhosts.php?page=" . ($page + 1) . "&list=" . $list . "\">=&gt;</a>\n");
   else
-    echo ("=></td>");
+    echo ("=&gt;</td>");
 
   echo ("<td style=\"color:red\" align=\"right\">");
   for ($i = 0; $i < ($count / $max_pageentrys); $i++) {
     if ($i == $page - 1)
       echo ("&nbsp;" . ($i + 1));
     else
-      echo ("&nbsp;<a align=\"right\" class=\"userlist\" href=\"listhosts.php?page=" . ($i + 1) .
+      echo ("&nbsp;<a class=\"userlist\" href=\"listhosts.php?page=" . ($i + 1) .
 	    "&list=" . $list . "\">" . ($i + 1) . "</a>\n");
   }
   echo ("</td></tr></table>\n");
