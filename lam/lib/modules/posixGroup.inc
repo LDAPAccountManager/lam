@@ -54,36 +54,44 @@ class posixGroup extends baseModule {
 		$errors = array();
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			if (!in_array("posixGroup", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "posixGroup";
-			if (eregi(".*", $rawAccounts[$i][$ids['posixGroup_cn']])) {  // TODO use real regex for group name
+			// group name
+			if (get_preg($rawAccounts[$i][$ids['posixGroup_cn']], 'groupname')) {
 				$partialAccounts[$i]['cn'] = $rawAccounts[$i][$ids['posixGroup_cn']];
 			}
+			else {
+				$errors[] =$this->messages['cn'][2];
+			}
+			// GID
 			if ($rawAccounts[$i][$ids['posixGroup_gid']] == "") {
 				// TODO autoGID
 				$partialAccounts[$i]['gidNumber'] = 42;
 			}
-			elseif (eregi(".*", $rawAccounts[$i][$ids['posixGroup_gid']])) {  // TODO use real regex for group name
+			elseif (get_preg($rawAccounts[$i][$ids['posixGroup_gid']], 'digit')) {
 				$partialAccounts[$i]['gidNumber'] = $rawAccounts[$i][$ids['posixGroup_gid']];
 			}
+			// description (UTF-8, no regex check needed)
 			if ($rawAccounts[$i][$ids['posixGroup_description']] == "") {
 				$partialAccounts[$i]['description'] = $partialAccounts[$i]['cn'];
 			}
-			elseif (eregi(".*", $rawAccounts[$i][$ids['posixGroup_description']])) {  // TODO use real regex for group name
+			else {
 				$partialAccounts[$i]['description'] = $rawAccounts[$i][$ids['posixGroup_description']];
 			}
+			// group members
 			if ($rawAccounts[$i][$ids['posixGroup_members']] != "") {
-				if (eregi(".*", $rawAccounts[$i][$ids['posixGroup_members']])) {  // TODO use real regex for group name
+				if (get_preg($rawAccounts[$i][$ids['posixGroup_members']], 'usernameList')) {
 					$partialAccounts[$i]['memberUid'] = explode(",", $rawAccounts[$i][$ids['posixGroup_members']]);
 				}
 				else {
-					$errors[] = array(); // TODO error message
+					$errors[] = $this->messages['memberUID'][0];
 				}
 			}
+			// password
 			if ($rawAccounts[$i][$ids['posixGroup_password']] != "") {
-				if (eregi(".*", $rawAccounts[$i][$ids['posixGroup_password']])) {  // TODO use real regex for group name
+				if (get_preg($rawAccounts[$i][$ids['posixGroup_password']], 'password')) {
 					$partialAccounts[$i]['userPassword'] = pwd_hash($rawAccounts[$i][$ids['posixGroup_password']], true, $this->moduleSettings['posixAccount_pwdHash'][0]);
 				}
 				else {
-					$errors[] = array(); // TODO error message
+					$errors[] = $this->messages['userPassword'][1];
 				}
 			}
 		}
@@ -401,6 +409,7 @@ class posixGroup extends baseModule {
 		$this->messages['cn'][0] = array('WARN', _('Groupname'), _('You are using a capital letters. This can cause problems because windows isn\'t case-sensitive.'));
 		$this->messages['cn'][1] = array('WARN', _('Groupname'), _('Groupname in use. Selected next free groupname.'));
 		$this->messages['cn'][2] = array('ERROR', _('Groupname'), _('Groupname contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
+		$this->messages['memberUID'][0] = array('ERROR', 'PosixGroup_members', _("This value must be a list of user names separated by semicolons."));
 		} 
 
 
