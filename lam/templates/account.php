@@ -23,9 +23,9 @@ $Id$
   LDAP Account Manager displays table for creating or modifying accounts in LDAP
 */
 
-include('../lib/account.inc'); // File with custom functions
-include('../lib/config.inc');
-include('../lib/ldap.inc');
+include_once('../lib/account.inc'); // File with custom functions
+include_once('../lib/config.inc');
+include_once('../lib/ldap.inc');
 
 registervars(); // Register all needed variables in session and register session
 $error = "0";
