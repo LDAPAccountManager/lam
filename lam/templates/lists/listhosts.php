@@ -214,8 +214,8 @@ if (sizeof($hst_info) > 0) {
 			echo ("<td>");
 			// print all attribute entries seperated by "; "
 			if (sizeof($hst_info[$i][strtolower($attr_array[$k])]) > 0) {
-				// delete first array entry which is "count"
-				if ((! $_GET['norefresh']) && (is_array($hst_info[$i][strtolower($attr_array[$k])]))) array_shift($hst_info[$i][strtolower($attr_array[$k])]);
+				// delete "count" entry
+				unset($hst_info[$i][strtolower($attr_array[$k])]['count']);
 				if (is_array($hst_info[$i][strtolower($attr_array[$k])])) {
 					// sort array
 					sort($hst_info[$i][strtolower($attr_array[$k])]);

@@ -188,45 +188,64 @@ $table_begin = ($page - 1) * $max_pageentrys;
 if (($page * $max_pageentrys) > sizeof($grp_info)) $table_end = sizeof($grp_info);
 else $table_end = ($page * $max_pageentrys);
 
-// print group list
-for ($i = $table_begin; $i < $table_end; $i++) {
-	echo("<tr class=\"grouplist\" onMouseOver=\"group_over(this, '" . $grp_info[$i]["dn"] . "')\"" .
-								" onMouseOut=\"group_out(this, '" . $grp_info[$i]["dn"] . "')\"" .
-								" onClick=\"group_click(this, '" . $grp_info[$i]["dn"] . "')\"" .
-								" onDblClick=\"parent.frames[1].location.href='../account/groupedit.php?DN=" . $grp_info[$i]["dn"] . "'\">" .
-								" <td height=22><input onClick=\"group_click(this, '" . $grp_info[$i]["dn"] . "')\" type=\"checkbox\" name=\"" . $grp_info[$i]["dn"] . "\"></td>" .
-								" <td align='center'><a href=\"../account/groupedit.php?DN='" . $grp_info[$i]["dn"] . "'\">" . _("Edit") . "</a></td>");
-	for ($k = 0; $k < sizeof($attr_array); $k++) {
-		echo ("<td>");
-		// print all attribute entries seperated by "; "
-		if (sizeof($grp_info[$i][strtolower($attr_array[$k])]) > 0) {
-			// delete first array entry which is "count"
-			if ((! $_GET['norefresh']) && (is_array($grp_info[$i][strtolower($attr_array[$k])]))) array_shift($grp_info[$i][strtolower($attr_array[$k])]);
-			// generate links for group members
-			if (strtolower($attr_array[$k]) == "memberuid") {
-				// sort array
-				sort($grp_info[$i][strtolower($attr_array[$k])]);
-				// make a link for each member of the group
-				$linklist = array();
-				for ($d = 0; $d < sizeof($grp_info[$i][strtolower($attr_array[$k])]); $d++) {
-					$user = $grp_info[$i][strtolower($attr_array[$k])][$d]; // user name
-					$linklist[$d] = "<a href=\"userlink.php?user='" . $user . "' \">" . $user . "</a>";
-				}
-				echo implode("; ", $linklist);
-			}
-			// print all other attributes
-			else {
-				if (is_array($grp_info[$i][strtolower($attr_array[$k])])) {
+if (sizeof($grp_info) > 0) {
+	// print group list
+	for ($i = $table_begin; $i < $table_end; $i++) {
+		echo("<tr class=\"grouplist\" onMouseOver=\"group_over(this, '" . $grp_info[$i]["dn"] . "')\"" .
+									" onMouseOut=\"group_out(this, '" . $grp_info[$i]["dn"] . "')\"" .
+									" onClick=\"group_click(this, '" . $grp_info[$i]["dn"] . "')\"" .
+									" onDblClick=\"parent.frames[1].location.href='../account/groupedit.php?DN=" . $grp_info[$i]["dn"] . "'\">");
+		if ($_GET['selectall'] == "yes") {
+		echo " <td height=22><input onClick=\"group_click(this, '" . $grp_info[$i]["dn"] . "')\" type=\"checkbox\"" .
+			" name=\"" . $grp_info[$i]["dn"] . "\" checked></td>";
+		}
+		else {
+		echo " <td height=22><input onClick=\"group_click(this, '" . $grp_info[$i]["dn"] . "')\" type=\"checkbox\"" .
+			" name=\"" . $grp_info[$i]["dn"] . "\"></td>";
+		}
+		echo (" <td align='center'><a href=\"../account/groupedit.php?DN='" . $grp_info[$i]["dn"] . "'\">" . _("Edit") . "</a></td>");
+		for ($k = 0; $k < sizeof($attr_array); $k++) {
+			echo ("<td>");
+			// print all attribute entries seperated by "; "
+			if (sizeof($grp_info[$i][strtolower($attr_array[$k])]) > 0) {
+				// delete first array entry which is "count"
+				if ((! $_GET['norefresh']) && (is_array($grp_info[$i][strtolower($attr_array[$k])]))) array_shift($grp_info[$i][strtolower($attr_array[$k])]);
+				// generate links for group members
+				if (strtolower($attr_array[$k]) == "memberuid") {
 					// sort array
 					sort($grp_info[$i][strtolower($attr_array[$k])]);
-					echo utf8_decode(implode("; ", $grp_info[$i][strtolower($attr_array[$k])]));
+					// make a link for each member of the group
+					$linklist = array();
+					for ($d = 0; $d < sizeof($grp_info[$i][strtolower($attr_array[$k])]); $d++) {
+						$user = $grp_info[$i][strtolower($attr_array[$k])][$d]; // user name
+						$linklist[$d] = "<a href=\"userlink.php?user='" . $user . "' \">" . $user . "</a>";
+					}
+					echo implode("; ", $linklist);
 				}
-				else echo utf8_decode($grp_info[$i][strtolower($attr_array[$k])]);
+				// print all other attributes
+				else {
+					if (is_array($grp_info[$i][strtolower($attr_array[$k])])) {
+						// delete "count" entry
+						unset($grp_info[$i][strtolower($attr_array[$k])]['count']);
+						// sort array
+						sort($grp_info[$i][strtolower($attr_array[$k])]);
+						echo utf8_decode(implode("; ", $grp_info[$i][strtolower($attr_array[$k])]));
+					}
+					else echo utf8_decode($grp_info[$i][strtolower($attr_array[$k])]);
+				}
 			}
+			echo ("</td>");
 		}
-		echo ("</td>");
+		echo("</tr>\n");
 	}
-	echo("</tr>\n");
+	// display select all link
+	$colspan = sizeof($attr_array) + 1;
+	echo "<tr class=\"grouplist\">\n";
+	echo "<td align=\"center\"><img src=\"../../graphics/select.jpg\" alt=\"select all\"></td>\n";
+	echo "<td colspan=$colspan>&nbsp;<a href=\"listgroups.php?norefresh=y&amp;page=" . $page . "&amp;sort=" . $sort .
+		$searchfilter . "&amp;selectall=yes\">" .
+		"<font color=\"black\"><b>" . _("Select all") . "</b></font></a></td>\n";
+	echo "</tr>\n";
 }
 echo ("</table>");
 echo ("<br>");
