@@ -90,8 +90,8 @@ switch ($_POST['select']) {
 	* final = page which will be displayed if changes were made
 	*/
 	case 'general':
-		// Write all general values into $account_new if no profile should be loaded
 		if (!$_POST['load']) {
+			// Write all general values into $account_new if no profile should be loaded
 			$account_new->general_dn = $_POST['f_general_suffix'];
 			$account_new->general_username = $_POST['f_general_username'];
 			$account_new->general_uidNumber = $_POST['f_general_uidNumber'];
@@ -272,9 +272,9 @@ do { // X-Or, only one if() can be true
 		}
 	// Go back to listhosts.php
 	if ($_POST['backmain']) {
-		metaRefresh("../lists/listhosts.php");
 		if (isset($_SESSION['account_'.$varkey.'_account_new'])) unset($_SESSION['account_'.$varkey.'_account_new']);
 		if (isset($_SESSION['account_'.$varkey.'_account_old'])) unset($_SESSION['account_'.$varkey.'_account_old']);
+		metaRefresh("../lists/listhosts.php");
 		die;
 		break;
 		}

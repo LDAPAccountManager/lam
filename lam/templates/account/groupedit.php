@@ -37,8 +37,8 @@ session_save_path('../../sess');
 // Set correct language, codepages, ....
 setlanguage();
 
-/* hostaccount.php is using dynamic session varialenames so
-* we can run several copies of hostaccount.php at the same
+/* groupedit.php is using dynamic session varialenames so
+* we can run several copies of groupedit.php at the same
 * time
 * $varkey is the dynamic part of the variable name
 */
@@ -56,7 +56,6 @@ $ldap_intern =& $_SESSION['ldap'];
 $config_intern =& $_SESSION['config'];
 $header_intern =& $_SESSION['header'];
 $userDN_intern =& $_SESSION['userDN'];
-// Register Post-Variables as reference
 
 // $_GET is only valid if groupedit.php was called from grouplist.php
 if (isset($_GET['DN']) && $_GET['DN']!='') {
@@ -129,7 +128,6 @@ switch ($_POST['select']) {
 	* general = startpage, general account paramters
 	* samba = page with all samba-related parameters e.g. smbpassword
 	* quota = page with all quota-related parameters e.g. hard file quota
-	* personal = page with all personal-related parametergs, e.g. phone number
 	* final = last page shown before account is created/modified
 	* finish = page shown after account has been created/modified
 	*/
@@ -142,11 +140,11 @@ switch ($_POST['select']) {
 				$account_new->unix_memberUid = array_flip($account_new->unix_memberUid);
 				array_unique($account_new->unix_memberUid);
 				$account_new->unix_memberUid = array_flip($account_new->unix_memberUid);
-				// sort user
+				// sort users
 				sort($account_new->unix_memberUid);
 				break;
 				}
-			if (isset($_POST['members']) && isset($_POST['remove'])) { // remove users fromlist
+			if (isset($_POST['members']) && isset($_POST['remove'])) { // remove users from list
 				$account_new->unix_memberUid = array_delete($_POST['members'], $account_new->unix_memberUid);
 				break;
 				}
@@ -155,15 +153,14 @@ switch ($_POST['select']) {
 		$select_local = 'groupmembers';
 		break;
 	case 'general':
-		// Write all general attributes into $account_new if no profile should be loaded
 		if (!$_POST['load']) {
+			// Write all general attributes into $account_new if no profile should be loaded
 			$account_new->general_dn = $_POST['f_general_suffix'];
 			$account_new->general_username = $_POST['f_general_username'];
 			$account_new->general_uidNumber = $_POST['f_general_uidNumber'];
 			$account_new->general_gecos = $_POST['f_general_gecos'];
 
 			// Check if values are OK and set automatic values.  if not error-variable will be set
-
 			// Check if Groupname contains only valid characters
 			if ( !ereg('^([a-z]|[0-9]|[.]|[-]|[_])*$', $account_new->general_username))
 				$errors[] = array('ERROR', _('Groupname'), _('Groupname contains invalid characters. Valid characters are: a-z, 0-9 and .-_ !'));
@@ -369,10 +366,10 @@ do { // X-Or, only one if() can be true
 		}
 	// Go back to listgroups.php
 	if ($_POST['backmain']) {
-		metaRefresh("../lists/listgroups.php");
 		if (isset($_SESSION['account_'.$varkey.'_account_new'])) unset($_SESSION['account_'.$varkey.'_account_new']);
 		if (isset($_SESSION['account_'.$varkey.'_account_old'])) unset($_SESSION['account_'.$varkey.'_account_old']);
 		if (isset($_SESSION['account_'.$varkey.'_final_changegids'])) unset($_SESSION['account_'.$varkey.'_final_changegids']);
+		metaRefresh("../lists/listgroups.php");
 		die;
 		break;
 		}

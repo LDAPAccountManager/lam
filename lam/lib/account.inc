@@ -210,7 +210,7 @@ function getquotas($type,$user='+') {
 	/* scriptServer is the IP to remote-host to which lam should connect via ssh
 	* scriptPath is Path to lamdaemon.pl on remote system
 	*/
-	exec(("perl ".$_SESSION['lampath']."lib/lamdaemon.pl ".$_SESSION['config']->scriptServer ." ".$_SESSION['config']->scriptPath." ".$towrite), $vals, $status);
+	exec("perl ".$_SESSION['lampath']."lib/lamdaemon.pl ".$_SESSION['config']->scriptServer ." ".$_SESSION['config']->scriptPath." ".$towrite, $vals, $status);
 	/* $vals is a string which contains a two dimensional array.
 	* We have to recreate it with explode
 	*
@@ -702,6 +702,8 @@ function loaduser($dn) {
 	$return->general_dn = ldap_get_dn($_SESSION['ldap']->server(), $entry);
 	$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
 
+	// Set user samba flag
+	$account_new->smb_flagsW = 0;
 	/* Write attributes into $return.
 	* Some values don't have to be set. These are only loaded if they are set
 	*/
@@ -1668,8 +1670,9 @@ function createhost($values) {
 	if ($_SESSION['config']->is_samba3()) {
 		// Add all attributes as samba3 objectclass
 		$attr['objectClass'][3] = 'sambaSamAccount';
-		$attr['sambaNTPassword'] = 'NO PASSWORD*****';
-		$attr['sambaLMPassword'] = 'NO PASSWORD*****';
+		// "Standard" password for new hosts
+		$attr['sambaNTPassword'] = '0CB6948805F797BF2A82807973B89537';
+		$attr['sambaLMPassword'] = '01FC5A6BE7BC6929AAD3B435B51404EE';
 		$attr['sambaPwdLastSet'] = time(); // sambaAccount_may
 		$attr['sambaSID'] = $values->smb_domain->SID . "-" . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase); // sambaAccount_may
 		$attr['sambaPrimaryGroupSID'] = $values->smb_domain->SID . "-" . (2 * getgid($values->general_group) + $values->smb_domain->RIDbase +1); // sambaAccount_req
@@ -1682,8 +1685,9 @@ function createhost($values) {
 	else {
 		// Add all attributes as samba2.2 objectclass
 		$attr['objectClass'][3] = 'sambaAccount';
-		$attr['ntPassword'] = 'NO PASSWORD*****';
-		$attr['lmPassword'] = 'NO PASSWORD*****';
+		// "Standard" password for new hosts
+		$attr['ntPassword'] = '0CB6948805F797BF2A82807973B89537';
+		$attr['lmPassword'] = '01FC5A6BE7BC6929AAD3B435B51404EE';
 		$attr['pwdLastSet'] = time(); // sambaAccount_may
 		$attr['rid'] = (2 * $values->general_uidNumber + 1000); // sambaAccount_may
 		$attr['primaryGroupID'] = (2 * getgid($values->general_group) + 1001); // sambaAccount_req
@@ -1823,8 +1827,9 @@ function modifyhost($values,$values_old) {
 			}
 		// Reset password
 		if ($values->smb_password_no) {
-			$attr['sambaNTPassword'] = 'NO PASSWORD*****';
-			$attr['sambaLMPassword'] = 'NO PASSWORD*****';
+			// "Standard" password for new hosts
+			$attr['sambaNTPassword'] = '0CB6948805F797BF2A82807973B89537';
+			$attr['sambaLMPassword'] = '01FC5A6BE7BC6929AAD3B435B51404EE';
 			$attr['sambaPwdLastSet'] = time(); // sambaAccount_may
 			$attr['userPassword'] = '';
 			$attr['shadowLastChange'] = getdays();
@@ -1886,8 +1891,9 @@ function modifyhost($values,$values_old) {
 			if (isset($attr_old['sambaSID'][0])) $attr_rem['sambaSID'] = $attr_old['sambaSID'][0];
 			}
 		if ($values->smb_password_no) {
-			$attr['ntPassword'] = 'NO PASSWORD*****';
-			$attr['lmPassword'] = 'NO PASSWORD*****';
+			// "Standard" password for new hosts
+			$attr['ntPassword'] = '0CB6948805F797BF2A82807973B89537';
+			$attr['lmPassword'] = '01FC5A6BE7BC6929AAD3B435B51404EE';
 			$attr['pwdLastSet'] = time(); // sambaAccount_may
 			$attr['userPassword'] = '';
 			$attr['shadowLastChange'] = getdays();
