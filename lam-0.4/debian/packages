@@ -4,7 +4,7 @@ Source: ldap-account-manager
 Section: web
 Priority: extra
 Maintainer: Roland Gruber <post@rolandgruber.de>
-Standards-Version: 3.5.9
+Standards-Version: 3.6.1
 Home-Page: <URL:http://lam.sf.net>
 Description: Webfrontend to manage Samba and Unix accounts
 Origin: debian
@@ -14,8 +14,8 @@ Major-Changes:
 
 Package: ldap-account-manager
 Architecture: all
-Depends: php4 | php4-cgi, php4-ldap , php4-mcrypt , php4-mhash , apache | apache-ssl | httpd, perl, wwwconfig-common, debconf
-Suggests: ldap-server, sudo
+Depends: php4 | php4-cgi, php4-ldap, php4-mhash, apache | apache-ssl | httpd, perl, wwwconfig-common, debconf
+Suggests: ldap-server, sudo, php4-mcrypt
 Conflicts: php4-apc
 Description: Webfrontend for managing Unix and Samba accounts in a LDAP directory
  LDAP Account Manager (LAM) runs on an existing webserver. LAM
