@@ -1048,6 +1048,7 @@ function loaduser($dns) {
 				if (isset($attr['sambaAcctFlags'][0])) {
 					if (strrpos($attr['sambaAcctFlags'][0], 'D')) $return[$i]->smb_flagsD=true;
 					if (strrpos($attr['sambaAcctFlags'][0], 'X')) $return[$i]->smb_flagsX=true;
+					if (strrpos($attr['sambaAcctFlags'][0], 'N')) $return[$i]->smb_password_no=true;
 					}
 				if (isset($attr['sambaPwdCanChange'][0])) $return[$i]->smb_pwdcanchange = $attr['sambaPwdCanChange'][0];
 				if (isset($attr['sambaPwdMustChange'][0])) $return[$i]->smb_pwdmustchange = $attr['sambaPwdMustChange'][0];
@@ -1084,6 +1085,7 @@ function loaduser($dns) {
 				if (isset($attr['acctFlags'][0])) {
 					if (strrpos($attr['acctFlags'][0], 'D')) $return[$i]->smb_flagsD=true;
 					if (strrpos($attr['acctFlags'][0], 'X')) $return[$i]->smb_flagsX=true;
+					if (strrpos($attr['acctFlags'][0], 'N')) $return[$i]->smb_password_no=true;
 					}
 				if (isset($attr['ntPassword'][0]))  $return[$i]->smb_password = $attr['ntPassword'][0];
 				if (isset($attr['smbHome'][0])) $return[$i]->smb_smbhome = utf8_decode($attr['smbHome'][0]);
