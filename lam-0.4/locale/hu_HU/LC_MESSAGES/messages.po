@@ -1,0 +1,4062 @@
+# $Id$
+#
+#
+# LDAP Account Manager
+#
+# Ezt a verziot forditotta: Kakasy Gergely <kg201@hszk.bme.hu>
+# Utolso modositas: 2004. jan. 25.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LAM 0.4.2\n"
+"Report-Msgid-Bugs-To: post@rolandgruber.de \n"
+"POT-Creation-Date: 2004-01-14 17:45+0200\n"
+"PO-Revision-Date: 2004-02-01 13:30+0100\n"
+"Last-Translator: Lohner Zoltan <lohner@aldea.hu>\n"
+"Language-Team: Hungarian <lam-public@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-2\n"
+"Content-Transfer-Encoding: 8bit"
+
+#: ../lib/account.inc:722 ../lib/account.inc:727
+#, php-format
+msgid "%s already exists!"
+msgstr "%s már létezik!"
+
+#: ../templates/confwiz/ldaptest.php:345 ../templates/confwiz/ldaptest.php:353
+#: ../templates/confwiz/ldaptest.php:361
+msgid "(optional)"
+msgstr "(nem kötelezõ)"
+
+#: ../templates/ou_edit.php:95 ../templates/ou_edit.php:160
+#: ../templates/ou_edit.php:225 ../templates/ou_edit.php:290
+#: ../templates/config/confmain.php:371
+#: ../templates/profedit/profiledelete.php:98
+#: ../templates/profedit/profiledelete.php:110
+#: ../templates/profedit/profiledelete.php:122
+#: ../templates/profedit/profilegroup.php:153
+#: ../templates/profedit/profilehost.php:122
+#: ../templates/profedit/profilemain.php:262
+#: ../templates/profedit/profileuser.php:430
+msgid "Abort"
+msgstr "Megszakítás"
+
+#: ../templates/account/useredit.php:1113 ../help/help.inc:196
+msgid "Account deactivated"
+msgstr "Azonosító letiltva"
+
+#: ../help/help.inc:179
+msgid "Account expire date. Format: DD-MM-YYYY"
+msgstr "Azonosító lejáratának dátuma. Formátum: NN-HH-ÉÉÉÉ"
+
+#: ../templates/profedit/profileuser.php:180
+msgid "Account expires on"
+msgstr "Az azonosító lejár"
+
+#: ../templates/account/useredit.php:1244
+#: ../templates/profedit/profileuser.php:218
+#: ../templates/profedit/profileuser.php:267 ../help/help.inc:206
+msgid "Account is deactivated"
+msgstr "Azonosító letiltva"
+
+#: ../templates/config/profmanage.php:155 ../help/help.inc:109
+msgid "Add profile"
+msgstr "Profil hozzáadása"
+
+#: ../templates/account/hostedit.php:131
+msgid "Added $ to hostname."
+msgstr "A $ a gazdaállomás nevéhez lett adva."
+
+#: ../templates/account/groupedit.php:534
+msgid "Additional group members"
+msgstr "A csoport további tagjai"
+
+#: ../templates/account/useredit.php:873 ../templates/account/useredit.php:972
+#: ../templates/profedit/profileuser.php:105 ../help/help.inc:144
+msgid "Additional groups"
+msgstr "További csoportok"
+
+#: ../templates/domain.php:135 ../templates/confwiz/ldaptest.php:372
+#: ../help/help.inc:304
+msgid "Algorithmic RID Base"
+msgstr "Algoritmikus RID alap"
+
+#: ../templates/domain.php:240 ../templates/confwiz/ldaptest.php:252
+msgid "Algorithmic RID base is not a number!"
+msgstr "Az algoritmikus RID alap nem szám!"
+
+#: ../templates/masscreate.php:267
+msgid "All Users have been created"
+msgstr "Összes felhasználó létrehozva"
+
+#: ../templates/massdetail.php:79
+msgid "All changes were reseted"
+msgstr "Minden változatás visszavonva"
+
+#: ../templates/initsuff.php:148
+msgid "All changes were successful."
+msgstr "Minden változtatás sikeres volt."
+
+#: ../lib/ldap.inc:197
+msgid "Allowed hosts"
+msgstr "Engedélyezett gazdagépek"
+
+#: ../templates/account/useredit.php:806
+msgid "Allowed workstations"
+msgstr "Engedélyezett munkaállomások"
+
+#: ../templates/massdetail.php:282 ../templates/lists/listusers.php:354
+msgid "Apply"
+msgstr "Próba"
+
+#: ../templates/config/confmain.php:237 ../templates/confwiz/o_lists.php:131
+#: ../lib/config.inc:286
+msgid "Attributes in Group List"
+msgstr "Attribútumok a csoport listában"
+
+#: ../templates/config/confmain.php:242 ../templates/confwiz/o_lists.php:136
+#: ../lib/config.inc:287
+msgid "Attributes in Host List"
+msgstr "Attribútumok a gazdaállomások listájában"
+
+#: ../templates/config/confmain.php:232 ../templates/confwiz/o_lists.php:126
+#: ../lib/config.inc:285
+msgid "Attributes in User List"
+msgstr "Attribútumok a felhasználó listában"
+
+#: ../templates/confwiz/server2.php:225
+msgid "Attributes in list views"
+msgstr "Attribútumok a listázásban"
+
+#: ../templates/account/useredit.php:891
+msgid "Available groups"
+msgstr "Regisztrált csoportok"
+
+#: ../templates/account/groupedit.php:552
+msgid "Available users"
+msgstr "Regisztrált felhasználók"
+
+#: ../templates/account/useredit.php:821
+msgid "Available workstations"
+msgstr "Regisztrált munkaállomások"
+
+#: ../templates/account/useredit.php:830 ../templates/account/useredit.php:903
+#: ../templates/masscreate.php:335 ../templates/confwiz/server2.php:235
+msgid "Back"
+msgstr "Vissza"
+
+#: ../templates/logout.php:63 ../templates/config/conflogin.php:128
+#: ../templates/config/confsave.php:222 ../templates/confwiz/final.php:55
+msgid "Back to Login"
+msgstr "Vissza a bejelentkezéshez"
+
+#: ../templates/ou_edit.php:309 ../templates/ou_edit.php:313
+msgid "Back to OU-Editor"
+msgstr "Vissza az OU szerkesztõbe"
+
+#: ../templates/profedit/profilecreate.php:65
+#: ../templates/profedit/profilecreate.php:76
+#: ../templates/profedit/profilecreate.php:84
+#: ../templates/profedit/profilecreate.php:92
+#: ../templates/profedit/profilecreate.php:100
+#: ../templates/profedit/profilecreate.php:108
+#: ../templates/profedit/profilecreate.php:116
+#: ../templates/profedit/profilecreate.php:124
+#: ../templates/profedit/profilecreate.php:132
+#: ../templates/profedit/profilecreate.php:140
+#: ../templates/profedit/profilecreate.php:148
+#: ../templates/profedit/profilecreate.php:156
+#: ../templates/profedit/profilecreate.php:164
+#: ../templates/profedit/profilecreate.php:172
+#: ../templates/profedit/profilecreate.php:180
+#: ../templates/profedit/profilecreate.php:188
+#: ../templates/profedit/profilecreate.php:198
+#: ../templates/profedit/profilecreate.php:208
+#: ../templates/profedit/profilecreate.php:218
+#: ../templates/profedit/profilecreate.php:226
+#: ../templates/profedit/profilecreate.php:234
+#: ../templates/profedit/profilecreate.php:250
+#: ../templates/profedit/profilecreate.php:255
+#: ../templates/profedit/profilecreate.php:260
+#: ../templates/profedit/profilecreate.php:265
+#: ../templates/profedit/profilecreate.php:277
+#: ../templates/profedit/profilecreate.php:287
+#: ../templates/profedit/profilecreate.php:300
+#: ../templates/profedit/profilecreate.php:315
+#: ../templates/profedit/profilecreate.php:320
+#: ../templates/profedit/profilecreate.php:325
+#: ../templates/profedit/profilecreate.php:330
+#: ../templates/profedit/profilecreate.php:342
+#: ../templates/profedit/profilecreate.php:352
+#: ../templates/profedit/profilecreate.php:365
+#: ../templates/profedit/profilecreate.php:373
+#: ../templates/profedit/profilecreate.php:381
+#: ../templates/profedit/profilecreate.php:388
+#: ../templates/profedit/profiledelete.php:75
+#: ../templates/profedit/profiledelete.php:83
+#: ../templates/profedit/profiledelete.php:131
+msgid "Back to Profile Editor"
+msgstr "Vissza a profilszerkesztõbe"
+
+#: ../templates/domain.php:278 ../templates/domain.php:305
+msgid "Back to domain list"
+msgstr "Vissza a tartománylistához"
+
+#: ../templates/account/groupedit.php:857 ../templates/delete.php:212
+#: ../templates/delete.php:248 ../templates/lists/userlink.php:55
+msgid "Back to group list"
+msgstr "Vissza a csoportlistához"
+
+#: ../templates/account/hostedit.php:475 ../templates/delete.php:215
+#: ../templates/delete.php:240
+msgid "Back to host list"
+msgstr "Vissza a gazdaállomáslistához"
+
+#: ../templates/account/hostedit.php:99
+msgid "Back to hostlist"
+msgstr "Vissza a gazdaállomáslistához"
+
+#: ../templates/confwiz/o_daemon.php:79
+msgid "Back to lamdaemon and PDF settings"
+msgstr "Vissza a lamdaemon és PDF beállításokhoz"
+
+#: ../templates/confwiz/o_lang.php:76
+msgid "Back to language and admin settings."
+msgstr "Vissza a nyelvi és adminisztrátori beállításokhoz"
+
+#: ../templates/confwiz/server2.php:88 ../templates/confwiz/server.php:85
+msgid "Back to last page"
+msgstr "Vissza az elõzõ oldalra"
+
+#: ../templates/confwiz/o_lists.php:79
+msgid "Back to list settings"
+msgstr "Vissza a lista beállításaihoz"
+
+#: ../templates/config/confsave.php:84 ../templates/config/confsave.php:90
+#: ../templates/config/confsave.php:95 ../templates/config/confsave.php:100
+#: ../templates/config/confsave.php:105 ../templates/config/confsave.php:110
+#: ../templates/config/confsave.php:115 ../templates/config/confsave.php:120
+#: ../templates/config/confsave.php:125 ../templates/config/confsave.php:130
+#: ../templates/config/confsave.php:135 ../templates/config/confsave.php:140
+#: ../templates/config/confsave.php:145 ../templates/config/confsave.php:150
+#: ../templates/config/confsave.php:155 ../templates/config/confsave.php:160
+#: ../templates/config/confsave.php:165 ../templates/config/confsave.php:170
+#: ../templates/config/confsave.php:176 ../templates/config/confsave.php:182
+#: ../templates/config/confsave.php:188 ../templates/config/confsave.php:194
+#: ../templates/config/confsave.php:200
+msgid "Back to preferences..."
+msgstr "Vissza a beállításokhoz..."
+
+#: ../templates/config/profmanage.php:365 ../templates/confwiz/start.php:77
+msgid "Back to profile login"
+msgstr "Vissza a belépés profilhoz"
+
+#: ../templates/confwiz/o_ranges.php:88
+msgid "Back to range settings"
+msgstr "Vissza a tartományi beállításokhoz"
+
+#: ../templates/confwiz/ldaptest.php:182 ../templates/confwiz/ldaptest.php:292
+#: ../templates/confwiz/ldaptest.php:568
+msgid "Back to server settings"
+msgstr "Vissza a szerverbeállításokhoz"
+
+#: ../templates/account/useredit.php:1575 ../templates/delete.php:209
+#: ../templates/delete.php:232
+msgid "Back to user list"
+msgstr "Vissza a felhasználólistához"
+
+#: ../templates/account/useredit.php:108
+msgid "Back to userlist"
+msgstr "Vissza a felhasználólistához"
+
+#: ../templates/account/groupedit.php:262
+#: ../templates/account/useredit.php:464
+#: ../templates/profedit/profilecreate.php:254
+#: ../templates/profedit/profilecreate.php:319
+msgid "Block hard quota"
+msgstr "Blokkokra vonatkozó kemény kvóta"
+
+#: ../templates/account/groupedit.php:262
+#: ../templates/account/useredit.php:464
+#: ../templates/profedit/profilecreate.php:254
+#: ../templates/profedit/profilecreate.php:319
+msgid ""
+"Block hard quota contains invalid characters. Only natural numbers are "
+"allowed"
+msgstr ""
+"A blokkokra vonatkozó kemény kvóta érvénytelen karaktereket tartalmaz. Csak "
+"természetes számok használhatóak."
+
+#: ../templates/account/groupedit.php:260
+#: ../templates/account/useredit.php:462
+#: ../templates/profedit/profilecreate.php:249
+#: ../templates/profedit/profilecreate.php:314
+msgid "Block soft quota"
+msgstr "Blokkokra vonatkozó lágy kvóta"
+
+#: ../templates/account/groupedit.php:260
+#: ../templates/account/useredit.php:462
+#: ../templates/profedit/profilecreate.php:249
+#: ../templates/profedit/profilecreate.php:314
+msgid ""
+"Block soft quota contains invalid characters. Only natural numbers are "
+"allowed"
+msgstr ""
+"A blokkokra vonatkozó lágy kvóta érvénytelen karaktereket tartalmaz. Csak "
+"természetes számok használhatóak."
+
+#: ../templates/config/confmain.php:163 ../templates/confwiz/server2.php:202
+#: ../help/help.inc:103 ../lib/config.inc:273
+msgid "Cache timeout"
+msgstr "Cache idõtúllépés"
+
+#: ../templates/config/confsave.php:94 ../templates/confwiz/server2.php:74
+msgid "Cache timeout is invalid!"
+msgstr "A cache idõtúllépés értéke érvénytelen!"
+
+#: ../help/help.inc:145 ../help/help.inc:171 ../help/help.inc:173
+#: ../help/help.inc:175 ../help/help.inc:177 ../help/help.inc:211
+#: ../help/help.inc:214 ../help/help.inc:217 ../help/help.inc:219
+#: ../help/help.inc:222 ../help/help.inc:270 ../help/help.inc:280
+#: ../help/help.inc:282 ../help/help.inc:284
+msgid "Can be left empty."
+msgstr "Üresen hagyható."
+
+#: ../templates/account/hostedit.php:98
+msgid "Can not create any hosts."
+msgstr "Nem tudok gazdaállomást létrehozni."
+
+#: ../templates/account/useredit.php:107
+msgid "Can not create any users."
+msgstr "Nem tudok felhasználót létrehozni!"
+
+#: ../templates/delete.php:115 ../templates/domain.php:177
+#: ../templates/domain.php:207 ../templates/initsuff.php:197
+#: ../templates/masscreate.php:122 ../templates/masscreate.php:253
+#: ../templates/masscreate.php:336 ../templates/confwiz/o_ranges.php:153
+#: ../templates/confwiz/o_daemon.php:142 ../templates/confwiz/ldaptest.php:209
+#: ../templates/confwiz/ldaptest.php:402 ../templates/confwiz/ldaptest.php:491
+#: ../templates/confwiz/server2.php:236 ../templates/confwiz/o_lang.php:163
+#: ../templates/confwiz/server.php:197 ../templates/confwiz/o_lists.php:148
+#: ../templates/confwiz/start.php:182
+msgid "Cancel"
+msgstr "Mégsem"
+
+#: ../templates/login.php:307 ../templates/login.php:312
+#: ../templates/confwiz/server.php:68 ../templates/confwiz/server.php:69
+msgid "Cannot connect to specified LDAP-Server. Please try again."
+msgstr "Nem tudok csatlakozni a megadott LDAP szerverhez. Kérem, próbálja újra."
+
+#: ../lib/config.inc:263 ../lib/config.inc:777
+msgid "Cannot open config file!"
+msgstr "Nem lehet megnyitni a konfigurációs fájlt!"
+
+#: ../lib/pdf.inc:113
+msgid "Cellular phone"
+msgstr "Mobiltelefon"
+
+#: ../templates/account/groupedit.php:831
+msgid "Change GID-Number of all users in group to new value"
+msgstr ""
+"A csoportba tartozó minden felhasználó csoportazonosító számának átállítása "
+"új értékre"
+
+#: ../templates/login.php:264
+msgid "Change Profile"
+msgstr "Profil módosítáa"
+
+#: ../templates/lists/listdomains.php:192
+#: ../templates/lists/listgroups.php:302 ../templates/lists/listhosts.php:286
+#: ../templates/lists/listusers.php:342
+msgid "Change Suffix"
+msgstr "Utótag megváltoztatása"
+
+#: ../templates/config/profmanage.php:302 ../help/help.inc:117
+msgid "Change default profile"
+msgstr "Alapértelmezett profil módosítása"
+
+#: ../templates/config/profmanage.php:322 ../help/help.inc:119
+msgid "Change master password"
+msgstr "Master jelszó módosítása"
+
+#: ../help/help.inc:96
+msgid "Change password"
+msgstr "Jelszó módosítása"
+
+#: ../templates/massdetail.php:197 ../templates/massdetail.php:202
+msgid "Check values."
+msgstr "Adatok ellenõrzése."
+
+#: ../templates/masscreate.php:251 ../lib/config.inc:70
+msgid "Click here if you are not directed to the next page."
+msgstr "Kattintson ide, ha nem irányítódik automatikusan a következõ oldalra."
+
+#: ../help/help.inc:280
+msgid "Comma separated list of unix workstations the user is allowed to login."
+msgstr ""
+"Azon unix munkaállomások vesszõvel elválasztott nevének listája, melyekre a "
+"felhasználó bejelentkezhet."
+
+#: ../templates/delete.php:117
+msgid "Commit"
+msgstr "Ok"
+
+#: ../templates/login.php:118
+msgid "Configuration Login"
+msgstr "Beállítások módosítása"
+
+#: ../help/help.inc:36 ../help/help.inc:38 ../help/help.inc:50
+#: ../help/help.inc:56 ../help/help.inc:58 ../help/help.inc:60
+#: ../help/help.inc:62 ../help/help.inc:77 ../help/help.inc:82
+#: ../help/help.inc:84 ../help/help.inc:86 ../help/help.inc:91
+#: ../help/help.inc:96 ../help/help.inc:98 ../help/help.inc:103
+#: ../help/help.inc:105 ../help/help.inc:107
+msgid "Configuration Wizard"
+msgstr "Beállításvarázsló"
+
+#: ../templates/confwiz/start.php:135
+msgid ""
+"Configuration profiles are protected with a password from unauthorised "
+"access. Please enter it here."
+msgstr "A beállítás-profilok jelszóval védettek az illetéktelen hozzáféréstõl. "
+"Kérem, most adja meg a jelszót."
+
+#: ../templates/config/conflogin.php:118 ../templates/confwiz/final.php:46
+#: ../templates/confwiz/o_ranges.php:82 ../templates/confwiz/o_ranges.php:98
+#: ../templates/confwiz/o_daemon.php:73 ../templates/confwiz/o_daemon.php:89
+#: ../templates/confwiz/ldaptest.php:168 ../templates/confwiz/ldaptest.php:191
+#: ../templates/confwiz/ldaptest.php:278 ../templates/confwiz/ldaptest.php:302
+#: ../templates/confwiz/ldaptest.php:469 ../templates/confwiz/ldaptest.php:554
+#: ../templates/confwiz/server2.php:82 ../templates/confwiz/server2.php:107
+#: ../templates/confwiz/o_lang.php:70 ../templates/confwiz/o_lang.php:86
+#: ../templates/confwiz/server.php:81 ../templates/confwiz/server.php:106
+#: ../templates/confwiz/o_lists.php:73 ../templates/confwiz/o_lists.php:89
+#: ../templates/confwiz/start.php:73 ../templates/confwiz/start.php:95
+msgid "Configuration wizard"
+msgstr "Beállításvarázsló"
+
+#: ../templates/masscreate.php:289
+msgid "Confirm List"
+msgstr "Lista megerõsítése"
+
+#: ../templates/masscreate.php:124
+msgid "Contiune"
+msgstr "Tovább"
+
+#: ../templates/masscreate.php:212
+msgid "Could not create group!"
+msgstr "Nem lehet létrehozni a csoportot!"
+
+#: ../templates/masscreate.php:242
+msgid "Could not create user!"
+msgstr "Nem lehet létrehozni a felhasználót!"
+
+#: ../templates/delete.php:185
+msgid "Could not delete group. Still users in group:"
+msgstr ""
+"Nem tudom törölni a csoportot. A csoportba még a következõ felhasználók "
+"tartoznak:"
+
+#: ../templates/delete.php:189
+msgid "Could not delete group:"
+msgstr "Nem lehet törölni a csoportot:"
+
+#: ../templates/delete.php:169
+msgid "Could not delete host:"
+msgstr "Nem lehet törölni a gazdaállomást:"
+
+#: ../templates/delete.php:164
+msgid "Could not delete user:"
+msgstr "Nem lehet törölni a felhasználót:"
+
+#: ../templates/config/profmanage.php:90
+msgid "Could not rename file!"
+msgstr "Nem lehet átnevezni a fájlt!"
+
+#: ../templates/account/groupedit.php:822
+#: ../templates/account/hostedit.php:443
+#: ../templates/account/useredit.php:1550 ../templates/initsuff.php:196
+#: ../templates/masscreate.php:338 ../templates/confwiz/ldaptest.php:208
+#: ../templates/confwiz/ldaptest.php:401 ../templates/confwiz/ldaptest.php:489
+msgid "Create"
+msgstr "Létrehoz"
+
+#: ../templates/account/groupedit.php:836
+#: ../templates/account/hostedit.php:454
+#: ../templates/account/useredit.php:1555
+msgid "Create Account"
+msgstr "Azonosító létrehozása"
+
+#: ../templates/account/groupedit.php:855
+#: ../templates/account/hostedit.php:473
+#: ../templates/account/useredit.php:1573 ../templates/masscreate.php:270
+msgid "Create PDF file"
+msgstr "PDF file létrehozása"
+
+#: ../templates/lists/listgroups.php:314
+msgid "Create PDF for all groups"
+msgstr "PDF létrehozása az összes csoporthoz"
+
+#: ../templates/lists/listhosts.php:299
+msgid "Create PDF for all hosts"
+msgstr "PDF létrehozása az összes munkaállomáshoz"
+
+#: ../templates/lists/listusers.php:368
+msgid "Create PDF for all users"
+msgstr "PDF létrehozása az összes felhasználóhoz"
+
+#: ../templates/lists/listgroups.php:312
+msgid "Create PDF for selected group(s)"
+msgstr "PDF létrehozása a kiválasztott csoport(ok)hoz"
+
+#: ../templates/lists/listhosts.php:297
+msgid "Create PDF for selected host(s)"
+msgstr "PDF létrehozása a kiválasztott gazdaállomás(ok)hoz"
+
+#: ../templates/lists/listusers.php:366
+msgid "Create PDF for selected user(s)"
+msgstr "PDF létrehozása a kiválasztott felhaszáló(k)hoz"
+
+#: ../templates/profedit/profilemain.php:180
+msgid "Create a new Group Profile"
+msgstr "Új csoportprofil létrehozása"
+
+#: ../templates/profedit/profilemain.php:226
+msgid "Create a new Samba Host Profile"
+msgstr "Új Samba gazdaaállomásprofil létrehozása"
+
+#: ../templates/profedit/profilemain.php:136
+msgid "Create a new User Profile"
+msgstr "Új felhasználói profil létrehozása"
+
+#: ../templates/account/groupedit.php:853
+msgid "Create another group"
+msgstr "Újabb csoport létrehozása"
+
+#: ../templates/account/hostedit.php:471
+msgid "Create another host"
+msgstr "Újabb gazdaállomás létrehozása"
+
+#: ../templates/account/useredit.php:1571
+msgid "Create another user"
+msgstr "Újabb felhasználó létrehozása"
+
+#: ../templates/account/groupedit.php:450 ../templates/account/hostedit.php:91
+#: ../templates/account/hostedit.php:311 ../templates/account/useredit.php:100
+#: ../templates/account/useredit.php:736
+msgid "Create new Account"
+msgstr "Új azonosító létrehozása"
+
+#: ../templates/masscreate.php:110 ../templates/masscreate.php:135
+msgid "Create new Accounts"
+msgstr "Új azonosítók létrehozása"
+
+#: ../templates/massdetail.php:169
+msgid "Create new accounts"
+msgstr "Új azonosítók létrehozása"
+
+#: ../templates/masscreate.php:207
+#, php-format
+msgid "Created group %s."
+msgstr "%s csoport létrehozva."
+
+#: ../templates/config/profmanage.php:75
+msgid "Created new profile."
+msgstr "Új profil létrehozva."
+
+#: ../templates/masscreate.php:237
+#, php-format
+msgid "Created user %s."
+msgstr "%s felhasználó létrehozva."
+
+#: ../templates/masscreate.php:161
+msgid "Creating users. Please stand by ...."
+msgstr "Felhasználók létrehozása. Kis türelmet..."
+
+#: ../lib/pdf.inc:324 ../lib/pdf.inc:370 ../lib/pdf.inc:449
+msgid "DN"
+msgstr "DN"
+
+#: ../help/help.inc:203
+msgid "Date after the user is able to change his password. Format: DD-MM-YYYY"
+msgstr ""
+"Az a dátum, mely után a felhasználó meg tudja változtatni jelszavát. "
+"Formátuma: NN-HH-ÉÉÉÉ"
+
+#: ../help/help.inc:205
+msgid "Date after the user must change his password. Format: DD-MM-YYYY"
+msgstr ""
+"Az a dátum, mely után a felhasználónak meg _kell_ változtatnia jelszavát. "
+"Formátuma: NN-HH-ÉÉÉ"
+
+#: ../help/help.inc:171
+msgid ""
+"Days before password is to expire that user is warned of pending password "
+"expiration. If set value must be 0<."
+msgstr ""
+"Az a szám, ahány nappal korábban a felhasználó értesítést kap arról, hogy "
+"jelszava lejár. Ha beállítja, értéke 0-nál nagyobb legyen."
+
+#: ../templates/config/confmain.php:270 ../templates/confwiz/o_lang.php:108
+#: ../help/help.inc:84 ../lib/config.inc:289
+msgid "Default language"
+msgstr "Alapértelmezett nyelv"
+
+#: ../templates/domain.php:206
+msgid "Delete"
+msgstr "Törlés"
+
+#: ../templates/delete.php:58
+msgid "Delete Account"
+msgstr "Account törlése"
+
+#: ../templates/lists/listdomains.php:199
+msgid "Delete Domain(s)"
+msgstr "Tartomány(ok) törlése"
+
+#: ../templates/profedit/profilemain.php:205
+msgid "Delete Group Profile"
+msgstr "Csoport profil törlése."
+
+#: ../templates/lists/listgroups.php:309
+msgid "Delete Group(s)"
+msgstr "Csoport(ok) törlése"
+
+#: ../templates/lists/listhosts.php:294
+msgid "Delete Host(s)"
+msgstr "Gazdaállomás(ok) törlése"
+
+#: ../templates/profedit/profilemain.php:250
+msgid "Delete Samba Host Profile"
+msgstr "A Samba gazdaállomás profil törlése"
+
+#: ../templates/profedit/profiledelete.php:44
+#: ../templates/profedit/profilemain.php:160
+msgid "Delete User Profile"
+msgstr "Felhasználói profil törlése"
+
+#: ../templates/delete.php:105
+msgid "Delete also Homedirectories"
+msgstr "A Home könyvtárak is törlésre kerülnek"
+
+#: ../templates/domain.php:197
+msgid "Delete domain(s)"
+msgstr "Tartomány(ok) törlése"
+
+#: ../templates/delete.php:89
+msgid "Delete group(s)"
+msgstr "Csoport(ok) törlése"
+
+#: ../templates/delete.php:83
+msgid "Delete host(s)"
+msgstr "Gazdaállomás(ok) törlése"
+
+#: ../templates/profedit/profiledelete.php:82
+msgid "Delete operation canceled."
+msgstr "A törlési mûvelet megszakítva."
+
+#: ../templates/ou_edit.php:357 ../templates/ou_edit.php:390
+#: ../templates/ou_edit.php:423 ../templates/ou_edit.php:457
+#: ../help/help.inc:290
+msgid "Delete organizational unit"
+msgstr "Szervezeti egység törlése"
+
+#: ../templates/config/profmanage.php:231 ../help/help.inc:113
+msgid "Delete profile"
+msgstr "Profil törlése"
+
+#: ../templates/delete.php:77 ../templates/lists/listusers.php:363
+msgid "Delete user(s)"
+msgstr "Felhasználó(k) törlése"
+
+#: ../templates/profedit/profiledelete.php:55
+#: ../templates/profedit/profiledelete.php:62
+#: ../templates/profedit/profiledelete.php:69
+msgid "Deleted profile:"
+msgstr "Törölt profil:"
+
+#: ../templates/delete.php:244
+msgid "Deleting group(s) canceled."
+msgstr "Csoport(ok) törlése megszakítva."
+
+#: ../templates/delete.php:137
+msgid "Deleting group(s)..."
+msgstr "Csoport(ok) törlése..."
+
+#: ../templates/delete.php:236
+msgid "Deleting host(s) canceled."
+msgstr "Gazdaállomás(ok) törlése megszakítva."
+
+#: ../templates/delete.php:132
+msgid "Deleting host(s)..."
+msgstr "Gazdaállomás(ok) törlése..."
+
+#: ../templates/delete.php:228
+msgid "Deleting user(s) canceled."
+msgstr "Felhasználó(k) törlése megszakítva."
+
+#: ../templates/delete.php:127
+msgid "Deleting user(s)..."
+msgstr "Felhasználó(k) törlése..."
+
+#: ../templates/account/groupedit.php:603 ../lib/ldap.inc:203
+#: ../lib/pdf.inc:297 ../lib/pdf.inc:339 ../lib/pdf.inc:425
+msgid "Description"
+msgstr "Leírás"
+
+#: ../templates/masscreate.php:292
+msgid "Details"
+msgstr "Részletek"
+
+#: ../templates/account/groupedit.php:246
+#: ../templates/account/groupedit.php:660
+#: ../templates/account/useredit.php:448
+#: ../templates/account/useredit.php:1175 ../help/help.inc:182
+#: ../lib/pdf.inc:431
+msgid "Display name"
+msgstr "Képernyõnév"
+
+#: ../templates/domain.php:198
+msgid "Do you really want to delete domain(s):"
+msgstr "Valóban törli a tartományt?"
+
+#: ../templates/delete.php:91
+msgid "Do you really want to delete group(s):"
+msgstr "Valóban törli a csoportot?"
+
+#: ../templates/delete.php:85
+msgid "Do you really want to delete host(s):"
+msgstr "Valóban törli a munkaállomást?"
+
+#: ../templates/ou_edit.php:87 ../templates/ou_edit.php:152
+#: ../templates/ou_edit.php:217 ../templates/ou_edit.php:282
+msgid "Do you really want to delete this OU?"
+msgstr "Valóban törli ezt az OU-t?"
+
+#: ../templates/profedit/profiledelete.php:93
+#: ../templates/profedit/profiledelete.php:105
+#: ../templates/profedit/profiledelete.php:117
+msgid "Do you really want to delete this profile?"
+msgstr "Valóban törli a profilt?"
+
+#: ../templates/delete.php:79
+msgid "Do you really want to delete user(s):"
+msgstr "Valóban törli a felhasználót?"
+
+#: ../templates/account/groupedit.php:707
+#: ../templates/account/hostedit.php:398
+#: ../templates/account/useredit.php:1360
+#: ../templates/profedit/profilegroup.php:72
+#: ../templates/profedit/profilehost.php:83
+#: ../templates/profedit/profileuser.php:345 ../help/help.inc:221
+#: ../help/help.inc:281 ../lib/pdf.inc:312 ../lib/pdf.inc:357
+#: ../lib/pdf.inc:443
+msgid "Domain"
+msgstr "Tartomány"
+
+#: ../templates/account/groupedit.php:237
+#: ../templates/account/groupedit.php:697
+#: ../templates/account/groupedit.php:701
+#: ../templates/account/useredit.php:387 ../templates/account/useredit.php:402
+#: ../templates/account/useredit.php:1311
+#: ../templates/account/useredit.php:1315
+#: ../templates/account/useredit.php:1349
+#: ../templates/account/useredit.php:1353
+msgid "Domain Admins"
+msgstr "Tartomány adminisztrátorok"
+
+#: ../templates/account/groupedit.php:235
+#: ../templates/account/groupedit.php:679
+#: ../templates/account/groupedit.php:683
+#: ../templates/account/useredit.php:385 ../templates/account/useredit.php:400
+#: ../templates/account/useredit.php:1293
+#: ../templates/account/useredit.php:1297
+#: ../templates/account/useredit.php:1331
+#: ../templates/account/useredit.php:1335
+msgid "Domain Guests"
+msgstr "Tartomány vendégek"
+
+#: ../templates/domain.php:93 ../templates/lists/listdomains.php:84
+#: ../templates/confwiz/ldaptest.php:333 ../help/help.inc:296
+msgid "Domain SID"
+msgstr "Tartomány-SID"
+
+#: ../templates/domain.php:72 ../templates/confwiz/ldaptest.php:315
+msgid "Domain Settings"
+msgstr "Tartomány beállítások"
+
+#: ../templates/account/groupedit.php:236
+#: ../templates/account/groupedit.php:688
+#: ../templates/account/groupedit.php:692
+#: ../templates/account/useredit.php:386 ../templates/account/useredit.php:401
+#: ../templates/account/useredit.php:1302
+#: ../templates/account/useredit.php:1306
+#: ../templates/account/useredit.php:1340
+#: ../templates/account/useredit.php:1344
+msgid "Domain Users"
+msgstr "Tartomány felhasználók"
+
+#: ../templates/account/hostedit.php:212 ../templates/account/useredit.php:444
+#: ../templates/domain.php:77 ../templates/lists/listdomains.php:83
+#: ../templates/confwiz/ldaptest.php:320 ../help/help.inc:292
+msgid "Domain name"
+msgstr "Tartománynév"
+
+#: ../templates/account/hostedit.php:212 ../templates/account/useredit.php:444
+msgid ""
+"Domain name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 "
+"and -."
+msgstr ""
+"A tartománynév érvénytelen karaktert tartalmaz. Érvényes karakterek: a-z, A-"
+"Z, 0-9 és -."
+
+#: ../templates/domain.php:230 ../templates/profedit/profilecreate.php:233
+#: ../templates/profedit/profilecreate.php:299
+#: ../templates/profedit/profilecreate.php:372
+#: ../templates/confwiz/ldaptest.php:235
+msgid "Domain name is invalid!"
+msgstr "Érvénytelen tartománynév!"
+
+#: ../templates/config/confmain.php:138 ../templates/confwiz/server2.php:156
+#: ../lib/config.inc:278
+msgid "DomainSuffix"
+msgstr "Tartomány utótag"
+
+#: ../templates/config/confsave.php:119 ../templates/confwiz/server2.php:68
+msgid "DomainSuffix is invalid!"
+msgstr "Tartomány utótag érvénytelen!"
+
+#: ../templates/main_header.php:72 ../templates/ou_edit.php:439
+msgid "Domains"
+msgstr "Tartományok"
+
+#: ../help/help.inc:209
+msgid "Driveletter assigned on windows workstations as homedirectory."
+msgstr ""
+"A Windows munkaállomásokon ennek megfelelõ betûjelû meghajtó lesz a home "
+"könyvtár."
+
+#: ../lib/ldap.inc:202 ../lib/pdf.inc:105
+msgid "E-Mail"
+msgstr "E-Mail"
+
+#: ../templates/lists/listdomains.php:153
+#: ../templates/lists/listgroups.php:234 ../templates/lists/listhosts.php:234
+#: ../templates/lists/listusers.php:291
+msgid "Edit"
+msgstr "Szerkesztés"
+
+#: ../templates/profedit/profilemain.php:193
+msgid "Edit Group Profile"
+msgstr "Csoportprofil szerkesztése"
+
+#: ../templates/profedit/profilemain.php:238
+msgid "Edit Samba Host Profile"
+msgstr "Samba gazdaállomásprofil szerkesztése"
+
+#: ../templates/profedit/profilemain.php:148
+msgid "Edit User Profile"
+msgstr "Felhasználóprofil szerkesztése"
+
+#: ../templates/account/useredit.php:973
+msgid "Edit groups"
+msgstr "Csoportok szerkesztése"
+
+#: ../templates/account/useredit.php:1273
+msgid "Edit workstations"
+msgstr "Munkaállomások szerkesztése"
+
+#: ../templates/account/useredit.php:491
+#: ../templates/account/useredit.php:1467 ../templates/masscreate.php:383
+#: ../templates/masscreate.php:580 ../templates/massdetail.php:149
+#: ../templates/massdetail.php:234 ../help/help.inc:249
+msgid "Employee type"
+msgstr "Alkalmazott típusa"
+
+#: ../help/help.inc:250
+msgid "Employee type: worker, student, nurse, ..."
+msgstr "Alkalmazott típusa: munkás, tanuló, nõvér, ..."
+
+#: ../templates/login.php:283
+msgid "Empty Password submitted. Try again."
+msgstr "Üres a jelszómezõ. Próbálja újra."
+
+#: ../templates/login.php:129
+msgid "Enter Username and Password for Account"
+msgstr "Adja meg a felhasználónevét és jelszavát"
+
+#: ../templates/masscreate.php:292
+msgid "Errors"
+msgstr "Hibák"
+
+#: ../templates/confwiz/o_lang.php:147 ../templates/confwiz/o_lists.php:109
+#: ../help/help.inc:65 ../help/help.inc:80
+msgid "Example"
+msgstr "Minta"
+
+#: ../templates/confwiz/server.php:124 ../help/help.inc:41 ../help/help.inc:53
+msgid "Examples"
+msgstr "Minták"
+
+#: ../templates/masscreate.php:408 ../help/help.inc:186
+msgid "Expand suffix with primary groupname"
+msgstr "Az utótag bõvítése az elsõdleges csoportnévvel"
+
+#: ../templates/account/useredit.php:1094 ../help/help.inc:178
+msgid "Expire date"
+msgstr "Lejárat dátuma"
+
+#: ../lib/pdf.inc:117
+msgid "Facsimile"
+msgstr "Fax"
+
+#: ../templates/domain.php:275 ../templates/confwiz/ldaptest.php:267
+msgid "Failed to add domain!"
+msgstr "Nem sikerült a tartományt hozzáadni!"
+
+#: ../templates/initsuff.php:140 ../templates/confwiz/ldaptest.php:179
+msgid "Failed to create entry!"
+msgstr "Nem sikerült a bejegyzést létrehozni!"
+
+#: ../templates/account/useredit.php:486
+#: ../templates/account/useredit.php:1503 ../templates/masscreate.php:375
+#: ../templates/masscreate.php:575 ../templates/massdetail.php:161
+#: ../templates/massdetail.php:270 ../help/help.inc:261 ../help/help.inc:262
+msgid "Fax number"
+msgstr "Fax-szám"
+
+#: ../templates/main_header.php:58
+msgid "File Upload"
+msgstr "Fájl feltöltése"
+
+#: ../help/help.inc:211
+#, php-format
+msgid ""
+"Filename and -path relative to netlogon-share which should be executed on "
+"logon. $%s and $%s are replaced with user- and groupname."
+msgstr ""
+"A belépéskor végrehajtandó file neve és elérési útja a netlogon-share-hez viszonyítva. A $%s és $%s változók felhasználó- és csoportnévvel lesznek helyettesítve."
+
+#: ../templates/lists/listgroups.php:203 ../templates/lists/listhosts.php:203
+#: ../templates/lists/listusers.php:248
+msgid "Filter"
+msgstr "Szûrõ"
+
+#: ../templates/account/groupedit.php:524
+#: ../templates/account/groupedit.php:581
+#: ../templates/account/groupedit.php:648
+#: ../templates/account/groupedit.php:744
+#: ../templates/account/groupedit.php:801
+#: ../templates/account/useredit.php:791 ../templates/account/useredit.php:861
+#: ../templates/account/useredit.php:923
+#: ../templates/account/useredit.php:1044
+#: ../templates/account/useredit.php:1161
+#: ../templates/account/useredit.php:1400
+#: ../templates/account/useredit.php:1449
+#: ../templates/account/useredit.php:1529
+msgid "Final"
+msgstr "Befejezés"
+
+#: ../templates/account/useredit.php:949 ../lib/ldap.inc:198
+msgid "First name"
+msgstr "Vezetéknév"
+
+#: ../lib/pdf.inc:437
+msgid "GID"
+msgstr "Csoportazonosító, GID"
+
+#: ../templates/account/groupedit.php:599 ../help/help.inc:58
+#: ../help/help.inc:156 ../lib/ldap.inc:195 ../lib/ldap.inc:207
+#: ../lib/ldap.inc:218
+msgid "GID number"
+msgstr "GID szám"
+
+#: ../templates/account/groupedit.php:333
+msgid ""
+"GID-number has changed. You have to run the following command as root in "
+"order to change existing file-permissions:"
+msgstr ""
+"A csoportazonosító szám megváltozott. Root-ként kell futtatnia a következõ "
+"utasítást, hogy a jelenleg érvényes file-engedélyeket megváltoztassa:"
+
+#: ../templates/account/groupedit.php:170
+#: ../templates/account/hostedit.php:186 ../templates/account/hostedit.php:386
+#: ../templates/account/useredit.php:240 ../templates/account/useredit.php:982
+#: ../templates/masscreate.php:560 ../help/help.inc:148 ../help/help.inc:159
+#: ../help/help.inc:168
+msgid "Gecos"
+msgstr "Gecos"
+
+#: ../templates/account/groupedit.php:516
+#: ../templates/account/groupedit.php:573
+#: ../templates/account/groupedit.php:643
+#: ../templates/account/groupedit.php:737
+#: ../templates/account/groupedit.php:794
+#: ../templates/account/useredit.php:785 ../templates/account/useredit.php:855
+#: ../templates/account/useredit.php:917
+#: ../templates/account/useredit.php:1038
+#: ../templates/account/useredit.php:1155
+#: ../templates/account/useredit.php:1395
+#: ../templates/account/useredit.php:1443
+#: ../templates/account/useredit.php:1523
+msgid "General"
+msgstr "Általános"
+
+#: ../templates/account/groupedit.php:593
+#: ../templates/account/hostedit.php:363 ../templates/account/useredit.php:935
+msgid "General properties"
+msgstr "Általános jellemzõk"
+
+#: ../templates/account/useredit.php:1061
+msgid "Generate password"
+msgstr "Jelszó generálása"
+
+#: ../templates/account/useredit.php:235 ../templates/masscreate.php:291
+#: ../templates/masscreate.php:361 ../templates/masscreate.php:555
+#: ../templates/massdetail.php:91 ../templates/massdetail.php:216
+#: ../help/help.inc:192 ../lib/pdf.inc:89
+msgid "Given name"
+msgstr "Keresztnév"
+
+#: ../templates/account/useredit.php:235 ../templates/masscreate.php:555
+#: ../templates/massdetail.php:91
+msgid "Given name contains invalid characters"
+msgstr "A keresztnév érvénytelen karatereket tartalmaz"
+
+#: ../help/help.inc:193
+msgid "Given name of user. Only letters, - and spaces are allowed."
+msgstr ""
+"A felhasználó keresztneve. Csak betûk, a - jel, és szóközök használhatóak."
+
+#: ../templates/account/groupedit.php:758
+#: ../templates/account/useredit.php:1413 ../help/help.inc:233
+msgid "Grace block period"
+msgstr "Grace blokk periódus"
+
+#: ../help/help.inc:234
+msgid ""
+"Grace block period. Most filesystems use a fixed maximum value of 7 days."
+msgstr "Grace blokk periódus. A legtöbb filerendszer rögzített maximum értéke "
+"7 nap."
+
+#: ../help/help.inc:245
+msgid ""
+"Grace inode (files) period. Most filesystems use a fixed maximum value of 7 "
+"days."
+msgstr "Grace inode (file-ok) periódus. A legtöbb filerendszer rögzített maximum értéke "
+"7 nap."
+
+#: ../templates/account/groupedit.php:760
+#: ../templates/account/useredit.php:1415 ../help/help.inc:244
+msgid "Grace inode period"
+msgstr "Grace inode periódus"
+
+#: ../templates/account/groupedit.php:847 ../templates/masscreate.php:286
+msgid "Group"
+msgstr "Csoport"
+
+#: ../templates/profedit/profilemain.php:172
+msgid "Group Profiles"
+msgstr "Csoportprofilok"
+
+#: ../templates/confwiz/ldaptest.php:484
+msgid "Group SID"
+msgstr "Csoport SID"
+
+#: ../lib/ldap.inc:210
+msgid "Group description"
+msgstr "Csoport leírása"
+
+#: ../help/help.inc:160
+msgid "Group description. If left empty group name will be used."
+msgstr "Csoport leírása. Ha üresen hagyja, a csoport nevének felel meg."
+
+#: ../lib/pdf.inc:412 ../lib/pdf.inc:552
+msgid "Group information page"
+msgstr "Csoport információs lapja"
+
+#: ../templates/config/confsave.php:159 ../templates/confwiz/o_lists.php:57
+msgid "Group list attributes are invalid!"
+msgstr "A csoportlista attribútumai érvénytelenek!"
+
+#: ../lib/ldap.inc:209
+msgid "Group member DNs"
+msgstr "Csoporttagok DN-jei"
+
+#: ../templates/account/groupedit.php:537 ../help/help.inc:180
+#: ../help/help.inc:283 ../lib/ldap.inc:208
+msgid "Group members"
+msgstr "A csoport tagjai"
+
+#: ../lib/ldap.inc:206
+msgid "Group name"
+msgstr "Csoport név"
+
+#: ../help/help.inc:155
+msgid ""
+"Group name of the group which should be created. Valid characters are: a-z,0-"
+"9, .-_. Lam does not allow a number as first character because groupadd also "
+"does not allow it. Lam does not allow capital letters A-Z because it can "
+"cause several problems. If groupname is already used groupname will be "
+"expanded with a number. The next free number will be used."
+msgstr ""
+"A létrehozásra kerülõ csoport neve. Érvényes karakterek: a-z, 0-9, .-_. "
+"A Lam nem fogad el elsõ karakterként számot, mert a csoport hozzáadása parancs "
+"sem fogadja el. A Lam nem engedi a nagybetûs A-Z karakterek használatát, mert "
+"ez különbözõ problémák forrása lehet. Ha a csoportnév már létezik, egy számmmal "
+"lesz kiegészítve. A legközelebbi, még nem használt számmal."
+
+#: ../templates/masscreate.php:412 ../help/help.inc:188
+msgid "Group suffix"
+msgstr "Csoport utótag"
+
+#: ../lib/pdf.inc:146
+msgid "Group(s)"
+msgstr "Csoport(ok)"
+
+#: ../templates/lists/listgroups.php:348
+msgid "Group(s) found"
+msgstr "Csoport található"
+
+#: ../templates/config/confmain.php:128 ../templates/confwiz/server2.php:139
+#: ../lib/config.inc:276
+msgid "GroupSuffix"
+msgstr "Csoportutótag"
+
+#: ../templates/config/confsave.php:109 ../templates/confwiz/server2.php:62
+msgid "GroupSuffix is invalid!"
+msgstr "Csoportutótag érvénytelen!"
+
+#: ../templates/account/groupedit.php:157
+#: ../templates/account/groupedit.php:167
+#: ../templates/account/groupedit.php:207
+#: ../templates/account/groupedit.php:595 ../help/help.inc:154
+msgid "Groupname"
+msgstr "Csoportnév"
+
+#: ../templates/account/groupedit.php:207
+msgid "Groupname already in use. Selected next free groupname."
+msgstr "A csoportnév már létezik. A legközelebb álló, még nem használt nevet "
+"választom helyette."
+
+#: ../templates/account/groupedit.php:167
+msgid ""
+"Groupname contains invalid characters. Valid characters are: a-z, A-Z, 0-9 "
+"and .-_ !"
+msgstr ""
+"A csoportnév érvénytelen karaktert tartalmaz. Érvényes karakterek: a-z, A-Z, 0-9, ., - és _!"
+
+#: ../templates/main_header.php:74 ../templates/main_header.php:79
+#: ../templates/ou_edit.php:372 ../templates/confwiz/o_lists.php:115
+#: ../help/help.inc:72
+msgid "Groups"
+msgstr "Csoportok"
+
+#: ../lib/pdf.inc:240
+msgid "Hard block"
+msgstr "Kemény blokk"
+
+#: ../templates/account/groupedit.php:758
+#: ../templates/account/useredit.php:1413
+#: ../templates/profedit/profilegroup.php:101
+#: ../templates/profedit/profileuser.php:378 ../help/help.inc:230
+#: ../help/help.inc:231
+msgid "Hard block limit"
+msgstr "Kemény blokk határa"
+
+#: ../lib/pdf.inc:241
+msgid "Hard inode"
+msgstr "Kemény inode"
+
+#: ../help/help.inc:242
+msgid "Hard inode (files) limit"
+msgstr "Kemény inode (file-ok) határa"
+
+#: ../templates/account/groupedit.php:760
+#: ../templates/account/useredit.php:1415
+#: ../templates/profedit/profilegroup.php:103
+#: ../templates/profedit/profileuser.php:380 ../help/help.inc:241
+msgid "Hard inode limit"
+msgstr "Kemény inode határa"
+
+#: ../templates/account/hostedit.php:222 ../templates/account/useredit.php:580
+msgid "Have to add objectClass posixAccount."
+msgstr "PosixAzonosító objektumOsztályt kell hozzáadni."
+
+#: ../templates/account/groupedit.php:329
+msgid "Have to add objectClass posixGroup."
+msgstr "PosixCsoport objektumOsztályt kell hozzáadni."
+
+#: ../templates/account/hostedit.php:227
+msgid ""
+"Have to add objectClass sambaAccount. Host with sambaSamAccount will be set "
+"back to sambaAccount."
+msgstr ""
+"SambaAzonosító objektumOsztályt kell hozzáadni. A gazdaállomás "
+"sambaSamAzonosítója sambaAzonosítóra lesz visszaállítva."
+
+#: ../templates/account/useredit.php:589
+msgid ""
+"Have to add objectClass sambaAccount. User with sambaSamAccount will be set "
+"back to sambaAccount."
+msgstr ""
+"SambaAzonosító objetumOsztályt kell hozzáadni. A felhasználó "
+"sambaSamAzonosítója sambaAzonosítóra lesz visszaállítva."
+
+#: ../templates/account/groupedit.php:327
+msgid "Have to add objectClass sambaGroupMapping."
+msgstr "SambaCsoportTérképezés objektumOsztályt kell hozzáadni."
+
+#: ../templates/account/hostedit.php:225
+msgid ""
+"Have to add objectClass sambaSamAccount. Host with sambaAccount will be "
+"updated."
+msgstr ""
+"SambaSamAzonosító objektumOsztályt kell hozzáadni. A gazdaállomás "
+"sambaAzonosítója frissítve lesz."
+
+#: ../templates/account/useredit.php:585
+msgid ""
+"Have to add objectClass sambaSamAccount. USer with sambaAccount will be "
+"updated."
+msgstr ""
+"SambaSamAzonosító objektumOsztályt kell hozzáadni. A felhasználó "
+"sambaAzonosítója frissítve lesz."
+
+#: ../templates/account/hostedit.php:223 ../templates/account/useredit.php:582
+msgid "Have to add objectClass shadowAccount."
+msgstr "ÁrnyékAzonosító objektumOsztályt kell hozzáadni."
+
+#: ../templates/account/groupedit.php:550
+#: ../templates/account/groupedit.php:598
+#: ../templates/account/groupedit.php:601
+#: ../templates/account/groupedit.php:605
+#: ../templates/account/groupedit.php:616
+#: ../templates/account/groupedit.php:630
+#: ../templates/account/groupedit.php:663
+#: ../templates/account/groupedit.php:705
+#: ../templates/account/groupedit.php:722
+#: ../templates/account/groupedit.php:761
+#: ../templates/account/groupedit.php:762
+#: ../templates/account/groupedit.php:763
+#: ../templates/account/groupedit.php:764
+#: ../templates/account/groupedit.php:765
+#: ../templates/account/groupedit.php:818
+#: ../templates/account/hostedit.php:359 ../templates/account/hostedit.php:369
+#: ../templates/account/hostedit.php:375 ../templates/account/hostedit.php:384
+#: ../templates/account/hostedit.php:389 ../templates/account/hostedit.php:416
+#: ../templates/account/hostedit.php:427 ../templates/account/hostedit.php:438
+#: ../templates/account/useredit.php:819 ../templates/account/useredit.php:889
+#: ../templates/account/useredit.php:941 ../templates/account/useredit.php:947
+#: ../templates/account/useredit.php:953 ../templates/account/useredit.php:959
+#: ../templates/account/useredit.php:969 ../templates/account/useredit.php:975
+#: ../templates/account/useredit.php:980 ../templates/account/useredit.php:985
+#: ../templates/account/useredit.php:994
+#: ../templates/account/useredit.php:1006
+#: ../templates/account/useredit.php:1020
+#: ../templates/account/useredit.php:1072
+#: ../templates/account/useredit.php:1077
+#: ../templates/account/useredit.php:1082
+#: ../templates/account/useredit.php:1087
+#: ../templates/account/useredit.php:1092
+#: ../templates/account/useredit.php:1111
+#: ../templates/account/useredit.php:1117
+#: ../templates/account/useredit.php:1125
+#: ../templates/account/useredit.php:1178
+#: ../templates/account/useredit.php:1192
+#: ../templates/account/useredit.php:1198
+#: ../templates/account/useredit.php:1204
+#: ../templates/account/useredit.php:1223
+#: ../templates/account/useredit.php:1242
+#: ../templates/account/useredit.php:1248
+#: ../templates/account/useredit.php:1255
+#: ../templates/account/useredit.php:1260
+#: ../templates/account/useredit.php:1265
+#: ../templates/account/useredit.php:1270
+#: ../templates/account/useredit.php:1275
+#: ../templates/account/useredit.php:1358
+#: ../templates/account/useredit.php:1379
+#: ../templates/account/useredit.php:1416
+#: ../templates/account/useredit.php:1417
+#: ../templates/account/useredit.php:1418
+#: ../templates/account/useredit.php:1419
+#: ../templates/account/useredit.php:1420
+#: ../templates/account/useredit.php:1465
+#: ../templates/account/useredit.php:1471
+#: ../templates/account/useredit.php:1477
+#: ../templates/account/useredit.php:1483
+#: ../templates/account/useredit.php:1489
+#: ../templates/account/useredit.php:1495
+#: ../templates/account/useredit.php:1501
+#: ../templates/account/useredit.php:1507
+#: ../templates/account/useredit.php:1513
+#: ../templates/account/useredit.php:1546 ../templates/domain.php:85
+#: ../templates/domain.php:101 ../templates/domain.php:112
+#: ../templates/domain.php:120 ../templates/domain.php:128
+#: ../templates/domain.php:140 ../templates/domain.php:158
+#: ../templates/masscreate.php:401 ../templates/masscreate.php:406
+#: ../templates/masscreate.php:411 ../templates/masscreate.php:416
+#: ../templates/masscreate.php:424 ../templates/massdetail.php:214
+#: ../templates/massdetail.php:220 ../templates/massdetail.php:226
+#: ../templates/massdetail.php:232 ../templates/massdetail.php:238
+#: ../templates/massdetail.php:244 ../templates/massdetail.php:250
+#: ../templates/massdetail.php:256 ../templates/massdetail.php:262
+#: ../templates/massdetail.php:268 ../templates/massdetail.php:274
+#: ../templates/massdetail.php:280 ../templates/ou_edit.php:352
+#: ../templates/ou_edit.php:365 ../templates/ou_edit.php:385
+#: ../templates/ou_edit.php:398 ../templates/ou_edit.php:418
+#: ../templates/ou_edit.php:431 ../templates/ou_edit.php:452
+#: ../templates/ou_edit.php:465 ../templates/config/conflogin.php:108
+#: ../templates/config/confmain.php:116 ../templates/config/confmain.php:125
+#: ../templates/config/confmain.php:130 ../templates/config/confmain.php:135
+#: ../templates/config/confmain.php:140 ../templates/config/confmain.php:156
+#: ../templates/config/confmain.php:172 ../templates/config/confmain.php:186
+#: ../templates/config/confmain.php:203 ../templates/config/confmain.php:212
+#: ../templates/config/confmain.php:221 ../templates/config/confmain.php:234
+#: ../templates/config/confmain.php:239 ../templates/config/confmain.php:244
+#: ../templates/config/confmain.php:259 ../templates/config/confmain.php:299
+#: ../templates/config/confmain.php:313 ../templates/config/confmain.php:317
+#: ../templates/config/confmain.php:331 ../templates/config/confmain.php:345
+#: ../templates/config/confmain.php:355 ../templates/config/profmanage.php:163
+#: ../templates/config/profmanage.php:210
+#: ../templates/config/profmanage.php:235
+#: ../templates/config/profmanage.php:264
+#: ../templates/config/profmanage.php:307
+#: ../templates/config/profmanage.php:330
+#: ../templates/config/profmanage.php:358
+#: ../templates/profedit/profilegroup.php:84
+#: ../templates/profedit/profilegroup.php:106
+#: ../templates/profedit/profilegroup.php:107
+#: ../templates/profedit/profilegroup.php:108
+#: ../templates/profedit/profilegroup.php:109
+#: ../templates/profedit/profilegroup.php:110
+#: ../templates/profedit/profilegroup.php:145
+#: ../templates/profedit/profilehost.php:75
+#: ../templates/profedit/profilehost.php:100
+#: ../templates/profedit/profilehost.php:114
+#: ../templates/profedit/profileuser.php:100
+#: ../templates/profedit/profileuser.php:112
+#: ../templates/profedit/profileuser.php:122
+#: ../templates/profedit/profileuser.php:134
+#: ../templates/profedit/profileuser.php:147
+#: ../templates/profedit/profileuser.php:154
+#: ../templates/profedit/profileuser.php:161
+#: ../templates/profedit/profileuser.php:168
+#: ../templates/profedit/profileuser.php:175
+#: ../templates/profedit/profileuser.php:200
+#: ../templates/profedit/profileuser.php:210
+#: ../templates/profedit/profileuser.php:223
+#: ../templates/profedit/profileuser.php:242
+#: ../templates/profedit/profileuser.php:252
+#: ../templates/profedit/profileuser.php:262
+#: ../templates/profedit/profileuser.php:272
+#: ../templates/profedit/profileuser.php:306
+#: ../templates/profedit/profileuser.php:313
+#: ../templates/profedit/profileuser.php:320
+#: ../templates/profedit/profileuser.php:327
+#: ../templates/profedit/profileuser.php:337
+#: ../templates/profedit/profileuser.php:362
+#: ../templates/profedit/profileuser.php:383
+#: ../templates/profedit/profileuser.php:384
+#: ../templates/profedit/profileuser.php:385
+#: ../templates/profedit/profileuser.php:386
+#: ../templates/profedit/profileuser.php:387
+#: ../templates/profedit/profileuser.php:422
+#: ../templates/confwiz/o_ranges.php:125 ../templates/confwiz/o_ranges.php:134
+#: ../templates/confwiz/o_ranges.php:143 ../templates/confwiz/ldaptest.php:325
+#: ../templates/confwiz/ldaptest.php:338 ../templates/confwiz/ldaptest.php:349
+#: ../templates/confwiz/ldaptest.php:357 ../templates/confwiz/ldaptest.php:365
+#: ../templates/confwiz/ldaptest.php:376 ../templates/confwiz/ldaptest.php:393
+msgid "Help"
+msgstr "Segítség"
+
+#: ../help/help.inc:145
+msgid "Hold the CTRL-key to (de)select multiple groups."
+msgstr ""
+"Tartsa lenyomva a CTRL-billentyût több csoport kijelöléséhez, illetve a "
+"kijelölés megszûntetéséhez."
+
+#: ../templates/profedit/profileuser.php:120 ../lib/pdf.inc:155
+msgid "Home Directory"
+msgstr "Home könyvtár"
+
+#: ../templates/account/useredit.php:557
+msgid ""
+"Home Directory has changed. You have to run the following command as root in "
+"order to change the existing homedirectory:"
+msgstr ""
+"A home könyvtár megváltozott. Root-ként kell futtatnia a következõ "
+"utasítást , hogy megváltoztassa a jelenlegi home-könyvtárat:"
+
+#: ../templates/account/useredit.php:295 ../templates/account/useredit.php:297
+#: ../templates/account/useredit.php:977 ../help/help.inc:146
+#: ../lib/ldap.inc:200
+msgid "Home directory"
+msgstr "Home könyvtár"
+
+#: ../templates/account/useredit.php:1250
+#: ../templates/profedit/profileuser.php:280 ../help/help.inc:208
+#: ../lib/pdf.inc:203
+msgid "Home drive"
+msgstr "Home meghajtó"
+
+#: ../templates/account/useredit.php:432 ../templates/account/useredit.php:434
+#: ../templates/account/useredit.php:1257
+#: ../templates/profedit/profileuser.php:311 ../help/help.inc:218
+msgid "Home path"
+msgstr "A home könyvtár elérési útvonala"
+
+#: ../templates/account/useredit.php:434
+msgid "Home path is invalid."
+msgstr "A home könyvtár elérési útvonala érvénytelen!"
+
+#: ../templates/profedit/profilecreate.php:75
+msgid "Homedir is invalid!"
+msgstr "A home könyvtár érvénytelen!"
+
+#: ../templates/account/useredit.php:297
+msgid "Homedirectory contains invalid characters."
+msgstr "A home könyvtár neve érvénytelen karaktereket tartalmaz."
+
+#: ../templates/account/hostedit.php:465
+msgid "Host"
+msgstr "Gazdaállomás"
+
+#: ../templates/profedit/profilehost.php:63
+msgid "Host attributes"
+msgstr "Gazdaállomás attribútumai"
+
+#: ../lib/ldap.inc:216
+msgid "Host description"
+msgstr "Gazdaállomás leírása"
+
+#: ../help/help.inc:169
+msgid "Host description. If left empty host name will be used."
+msgstr "A gazdaállomás leírása. Ha üresen hagyja, a gazda nevét használom helyette."
+
+#: ../templates/config/confsave.php:164 ../templates/confwiz/o_lists.php:60
+msgid "Host list attributes are invalid!"
+msgstr "Gazdaállomás listájának attribútumai érvénytelenek!"
+
+#: ../templates/account/hostedit.php:131 ../templates/account/hostedit.php:137
+#: ../templates/account/hostedit.php:177 ../templates/account/hostedit.php:365
+#: ../help/help.inc:161 ../lib/ldap.inc:214
+msgid "Host name"
+msgstr "Gazdaállomás név"
+
+#: ../help/help.inc:162
+msgid ""
+"Host name of the host which should be created. Valid characters are: a-z,0-"
+"9, .-_$. Lam does not allow a number as first character because useradd also "
+"does not allow it. Lam does not allow capital letters A-Z because it can "
+"cause several problems. Hostnames are always ending with $. If last "
+"character is not $ it will be added. If hostname is already used hostname "
+"will be expanded with a number. The next free number will be used."
+msgstr ""
+"A létrehozásra kerülõ gazdaállomás neve. Érvényes karakterek: a-z, 0-9, .-_$. A Lam nem fogad el elsõ karakterként számot, mert a felhasználó hozzáadása parancs sem fogadja el. A Lam nem engedi a nagybetûs A-Z karakterek használatát, mert ez különbözõ problémák forrása lehet. A gazdanevek mindig $ karakterrel végzõdnek. Ha az utolsó karakter nem \"$\", akkor ez automatikusan hozzáadódik. Ha a gazdanév már létezik, a név egy számmmal lesz kiegészítve. A legközelebbi, még nem használt számmal."
+
+#: ../lib/ldap.inc:213
+msgid "Host username"
+msgstr "A gazdán használt felhasználónév"
+
+#: ../templates/config/confmain.php:133 ../templates/confwiz/server2.php:147
+#: ../lib/config.inc:277
+msgid "HostSuffix"
+msgstr "Gazda utótag"
+
+#: ../templates/config/confsave.php:114 ../templates/confwiz/server2.php:65
+msgid "HostSuffix is invalid!"
+msgstr "Gazda utótag érvénytelen!"
+
+#: ../templates/account/hostedit.php:120
+msgid "Hostname"
+msgstr "Gazdaállomás neve"
+
+#: ../templates/account/hostedit.php:177
+msgid "Hostname already in use. Selected next free hostname."
+msgstr ""
+"A gazdanév már létezik. A legközelebb álló, nem használt nevet választom "
+"helyette."
+
+#: ../templates/account/hostedit.php:137
+msgid ""
+"Hostname contains invalid characters. Valid characters are: a-z, A-Z, 0-9 "
+"and .-_ !"
+msgstr ""
+"Munkaállomásnév érvénytelen karaktereket tartalmaz. Érvényes karaketerek: a-"
+"z, A-Z, 0-9 és .-_ !"
+
+#: ../templates/main_header.php:75 ../templates/main_header.php:80
+#: ../templates/confwiz/o_lists.php:118 ../help/help.inc:75
+msgid "Hosts"
+msgstr "Gazdaállomások"
+
+#: ../lib/account.inc:894 ../lib/account.inc:897
+msgid "ID is already in use"
+msgstr "Az ID már foglalt"
+
+#: ../lib/account.inc:878 ../lib/account.inc:879 ../lib/account.inc:890
+#: ../lib/account.inc:894 ../lib/account.inc:897
+msgid "ID-Number"
+msgstr "ID szám"
+
+#: ../templates/masscreate.php:389
+msgid "If Primary group does not exist it will be created."
+msgstr "Ha az elsõdleges csoport nem létezik, létrehozom."
+
+#: ../templates/masscreate.php:387
+msgid "If Primary group is not given it'll used from profile."
+msgstr ""
+"Ha az elsõdleges csoportot nem adja meg, a profilban érvényes változatot "
+"használom."
+
+#: ../help/help.inc:189
+msgid ""
+"If a not yet existing group is defined in csv-file, a new group in the "
+"selected group suffix will be created."
+msgstr ""
+"Ha még nem létezõ csoport szerepel a csv-file-ban, a kijelölt csoport "
+"utótagban egy új csoport kerül létrehozásra."
+
+#: ../help/help.inc:268
+msgid ""
+"If a not yet existing group is defined in csv-file, a new group with the "
+"selected group profile will be created."
+msgstr ""
+"Ha a csv-file-ban még nem létezõ csoport szerepel, egy új csoportot hozok "
+"létre a kijelölt csoport-profillal."
+
+#: ../help/help.inc:197
+msgid ""
+"If checked account will be deactivated by putting a ! before the encrypted "
+"password."
+msgstr ""
+"Ha bejelöli, az azonosítót letiltom, kódolt jelszava elé egy ! karaktert "
+"helyezve."
+
+#: ../help/help.inc:207
+msgid "If checked account will be deactivated. (Setting D-Flag)"
+msgstr "Ha bejelöli, az azonosítót letiltom. (A D-Flag beállítása)"
+
+#: ../help/help.inc:195
+msgid "If checked no password will be used."
+msgstr "Ha bejelöli, akkor ide nem tartozik majd jelszó."
+
+#: ../help/help.inc:201
+msgid "If checked password does not expire. (Setting X-Flag)"
+msgstr "Ha bejelöli, a jelszavak nem járnak le sohasem. (Az X-Flag beállítása)"
+
+#: ../help/help.inc:199
+msgid "If checked unix password will also be used as samba password."
+msgstr "Ha bejelöli, a unix jelszó szolgál majd samba jelszóként is."
+
+#: ../help/help.inc:157
+#, php-format
+msgid ""
+"If empty GID number will be generated automaticly. Valid values are between %"
+"s and %s."
+msgstr ""
+"Ha üresen hagyja, a GID szám automatikusan keletkezik. Használható értékek %"
+"s és %s között."
+
+#: ../help/help.inc:142 ../help/help.inc:164
+#, php-format
+msgid ""
+"If empty UID number will be generated automaticly. Valid values are between %"
+"s and %s."
+msgstr ""
+"Ha üresen hagyja, az UID szám automatikusan keletkezik. Használható értékek %"
+"s és %s között."
+
+#: ../help/help.inc:187
+msgid ""
+"If selected users will be added with OUs expanded with their primary group. "
+"E.g. if a user is in group admin the user suffix will be ou=admin,+user "
+"suffix."
+msgstr ""
+"Ha kijelöli, a felhasználók OU-jának létrehozása elsõdleges csoportnevükkel "
+"kibõvítve történik. Pl. ha egy felhasználó az admin csoport tagja, a "
+"felhasználói utótag ou=admin,+user utótag lesz."
+
+#: ../help/help.inc:127
+msgid ""
+"If set to \"yes\" the Windows password will be the same as the Unix one."
+msgstr ""
+"Ha \"igen\"-re állítja, a Windows jelszó ugyanaz lesz, mint a Unix-on "
+"használatos."
+
+#: ../help/help.inc:131
+msgid "If set to \"yes\" the user will be able to change his Windows password."
+msgstr ""
+"Ha \"igen\"-re állítja, a felhasználó megváltoztathatja Windows-jelszavát."
+
+#: ../help/help.inc:129 ../help/help.inc:133
+msgid "If unsure say \"yes\" here."
+msgstr "Ha bizonytalan, válaszoljon \"igen\"-t."
+
+#: ../help/help.inc:99
+msgid ""
+"If you use Samba 3.x with the new LDAP schema say \"yes\" here, otherwise "
+"\"no\"."
+msgstr ""
+"Ha Samba 3.x-et használ az új LDAP sémával, akkor most válaszoljon \"igen\"-"
+"nel, egyébként \"nem\"-mel."
+
+#: ../templates/confwiz/o_lang.php:146
+msgid ""
+"If you want more than one user to login to LAM please enter its DN(s) here. "
+"Multiple entries are seperated by semicolons."
+msgstr "Ha azt akarja, hogy egynél több felhasználó léphessen be a LAM-ba, "
+"akkor kérem, itt adja meg DN-jét (DN-jeit). Több bejegyzést pontosvesszõvel "
+"elválasztva kell megadni."
+
+#: ../help/help.inc:97
+msgid ""
+"If you want to change the current preferences password, please enter it here."
+msgstr ""
+"Ha a jelenlegi beállításokat védõ jelszót meg akarja változtatni, kérem, "
+"most adja meg."
+
+#: ../help/help.inc:120
+msgid ""
+"If you want to change your master configuration password, please enter it "
+"here."
+msgstr ""
+"Ha a mester beállításokat védõ jelszót meg akarja változtatni, kérem, most "
+"adja meg."
+
+#: ../templates/confwiz/o_lists.php:106
+msgid ""
+"If you want to input your own description it would look like this: "
+"\"attribute:description\"."
+msgstr "Ha Ön saját leírást óhajt megadni, ilyen formában nézhet ki: "
+"\"attribútum:leírás\"."
+
+#: ../templates/confwiz/o_daemon.php:105
+msgid ""
+"If you want to manage quotas and homedirectories with LAM you need to setup "
+"lamdaemon.pl."
+msgstr "Ha a kvótákat és a home-könyvtárakat akarja szabályozni a LAM "
+"segítségével, akkor be kell állítania a lamdaemon.pl-t."
+
+#: ../help/help.inc:278
+msgid "If you want to use a well known RID you can selcet a well known group."
+msgstr ""
+"Ha egy jól ismert RID-t akar használni, egy jól ismert csoportot választhat."
+
+#: ../templates/confwiz/ldaptest.php:490
+msgid "Ignore"
+msgstr "Figyelmen kívül hagyni"
+
+#: ../templates/masscreate.php:292
+msgid "Infos"
+msgstr "Információk"
+
+#: ../templates/account/groupedit.php:266
+#: ../templates/account/useredit.php:468
+#: ../templates/profedit/profilecreate.php:264
+#: ../templates/profedit/profilecreate.php:329
+msgid "Inode hard quota"
+msgstr "Inode kemény kvóta"
+
+#: ../templates/account/groupedit.php:266
+#: ../templates/account/useredit.php:468
+#: ../templates/profedit/profilecreate.php:264
+#: ../templates/profedit/profilecreate.php:329
+msgid ""
+"Inode hard quota contains invalid characters. Only natural numbers are "
+"allowed"
+msgstr ""
+"Az inode kemény kvóta érvénytelen karaktereket tartalmaz. Csak természetes "
+"számok használhatóak."
+
+#: ../templates/account/groupedit.php:264
+#: ../templates/account/useredit.php:466
+#: ../templates/profedit/profilecreate.php:259
+#: ../templates/profedit/profilecreate.php:324
+msgid "Inode soft quota"
+msgstr "Inode lágy kvóta"
+
+#: ../templates/account/groupedit.php:264
+#: ../templates/account/useredit.php:466
+#: ../templates/profedit/profilecreate.php:259
+#: ../templates/profedit/profilecreate.php:324
+msgid ""
+"Inode soft quota contains invalid characters. Only natural numbers are "
+"allowed"
+msgstr ""
+"Az inode lágy kvóta érvénytelen karaktereket tartalmaz. Csak "
+"természetes számok használhatóak."
+
+#: ../templates/account/groupedit.php:246
+#: ../templates/account/useredit.php:448
+msgid "Inserted gecos-field as display name."
+msgstr "A gecos-mezõ képernyõnévként beillesztve."
+
+#: ../templates/account/groupedit.php:170
+msgid "Inserted groupname in gecos-field."
+msgstr "A csoportnév a gecos-mezõbe illesztve."
+
+#: ../templates/account/hostedit.php:186
+msgid "Inserted hostname in gecos-field."
+msgstr "A gazdaállomás neve a gecos-mezõbe illesztve."
+
+#: ../templates/account/useredit.php:240 ../templates/masscreate.php:560
+msgid "Inserted sur- and given name in gecos-field."
+msgstr "A vezeték- és keresztnév a gecos-mezõbe illesztve."
+
+#: ../templates/account/useredit.php:432
+msgid "Inserted user- or groupname in HomePath."
+msgstr ""
+"A felhasználó- vagy csoportnév a home könyvtár elérési útvonalába illesztve."
+
+#: ../templates/account/useredit.php:429
+msgid "Inserted user- or groupname in profilepath."
+msgstr "A felhasználó- vagy csoportnév a profil elérési útvonalába illesztve."
+
+#: ../templates/account/useredit.php:426
+msgid "Inserted user- or groupname in scriptpath."
+msgstr "A felhasználó- vagy csoportnév a szkript elérési útvonalába illesztve."
+
+#: ../templates/massdetail.php:192
+msgid "Invalid Value!"
+msgstr "Érvénytelen érték!"
+
+#: ../templates/profedit/profilecreate.php:276
+#: ../templates/profedit/profilecreate.php:341
+#: ../templates/profedit/profilecreate.php:380
+msgid "Invalid profile name!"
+msgstr "Érvénytelen profilnév!"
+
+#: ../lib/status.inc:41
+msgid "Invalid/Missing Message type"
+msgstr "Érvénytelen/hiányzó üzenettípus"
+
+#: ../lib/account.inc:879
+msgid ""
+"It is possible that this ID-number is reused. This can cause several "
+"problems because files with old permissions might still exist. To avoid this "
+"warning set maxUID to a higher value."
+msgstr ""
+"Lehetséges, hogy ez az ID-szám egyszer már használatban volt. Ez különbözõ "
+"problémákat okozhat, mert lehetséges, hogy léteznek file-ok régi "
+"engedélyekkel. Hogy ne legyen szükség ilyen figyelmeztetésre, állítsa a "
+"maxUID értékét magasabbra."
+
+#: ../templates/masscreate.php:286
+msgid "It will be created."
+msgstr "Létrehozva."
+
+#: ../lib/status.inc:40
+msgid "LAM Internal Error"
+msgstr "LAM belsõ hiba"
+
+#: ../templates/confwiz/server2.php:196
+msgid ""
+"LAM caches its LDAP searches, you can set the cache time here. Shorter times "
+"will stress LDAP more but decrease the possibility that changes are not "
+"identified."
+msgstr ""
+"A LAM cache-elést használ LDAP kereséseihez, a cache idejét itt adhatja meg. "
+"Rövidebb idõértékek jobban terhelik az LDAP-t, de csökkentik annak "
+"valószínûségét, hogy a változások nem kerülnek felismerésre."
+
+#: ../templates/confwiz/ldaptest.php:479
+msgid "LAM can create them for you or you have to create them manually later."
+msgstr "A LAM létrehozhatja ezeket Önnek, vagy Önnek kell késõbb manuálisan "
+"létrehoznia õket. "
+
+#: ../templates/confwiz/ldaptest.php:478
+msgid ""
+"LAM detected that one or more essential Samba groups are missing. They are "
+"listed below."
+msgstr "A LAM észrevette, hogy egy vagy több lényeges Samba csoport hiányzik. "
+"Ezek listája alább látható."
+
+#: ../templates/confwiz/server2.php:170 ../help/help.inc:106
+msgid ""
+"LAM supports CRYPT, SHA, SSHA, MD5 and SMD5 to generate the hash value of an "
+"user password. SSHA and CRYPT are the most common but CRYPT does not support "
+"passwords greater than 8 letters. We do not recommend to use plain text "
+"passwords."
+msgstr ""
+"A LAM támogatja a CRYPT-et, az SHA-t, az SSHA-t, az MD5-öt és az SMD5-öt a "
+"felhasználói jelszó hash értékének létrehozásához. Az SSHA és a CRYPT a "
+"legelterjedtebbek, ám a CRYPT nem támogat 8 betûnél hosszabb jelszavakat. "
+"Nem javasoljuk a sima szöveges, úgynevezett plain text jelszavak használatát."
+
+#: ../help/help.inc:101
+msgid "LAM will not work if version is wrong!"
+msgstr "A LAM nem fog mûködni, ha a verziószám helytelen!"
+
+#: ../templates/config/confmain.php:99 ../templates/config/confsave.php:74
+msgid "LDAP Account Manager Configuration"
+msgstr "Az LDAP Account Manager beállítása"
+
+#: ../templates/config/confmain.php:227
+msgid "LDAP List settings"
+msgstr "LDAP listázási beállítások"
+
+#: ../templates/lists/listdomains.php:110
+#: ../templates/lists/listgroups.php:170 ../templates/lists/listhosts.php:170
+#: ../templates/lists/listusers.php:212
+msgid "LDAP Search failed! Please check your preferences."
+msgstr "Az LDAP keresés sikertelen! Kérem, ellenõrízze a beállításait."
+
+#: ../templates/confwiz/server.php:150
+msgid "LDAP admin DN"
+msgstr "LDAP adminisztrátor DN"
+
+#: ../templates/login.php:322 ../templates/confwiz/server.php:71
+msgid "LDAP error, server says:"
+msgstr "LDAP hiba, a szerver azt válaszolja:"
+
+#: ../templates/lists/listdomains.php:99 ../templates/lists/listgroups.php:156
+#: ../templates/lists/listhosts.php:156 ../templates/lists/listusers.php:197
+msgid "LDAP sizelimit exceeded, not all entries are shown."
+msgstr "Elértük az LDAP mérethatárt, nem látszik minden bejegyzés."
+
+#: ../templates/confwiz/server2.php:227
+msgid "Lamdaemon settings and PDF text"
+msgstr "Lamdaemon beállítások és PDF szöveg"
+
+#: ../templates/confwiz/server2.php:226
+msgid "Language and additional admin users"
+msgstr "Nyelv és további adminisztrátor felhasználók"
+
+#: ../templates/config/confsave.php:175 ../templates/confwiz/o_lang.php:54
+msgid "Language is not defined!"
+msgstr "Nincs megadva a nyelv!"
+
+#: ../lib/config.inc:39
+msgid "Language not defined in session!"
+msgstr "A nyelv nincs megadva a session-ben!"
+
+#: ../templates/config/confmain.php:265
+msgid "Language settings"
+msgstr "Nyelvi beállítások"
+
+#: ../templates/account/useredit.php:955 ../lib/ldap.inc:199
+msgid "Last name"
+msgstr "Keresztnév"
+
+#: ../help/help.inc:62
+msgid "List attributes"
+msgstr "Lista attribútumok"
+
+#: ../templates/config/confsave.php:99 ../templates/confwiz/o_lang.php:57
+msgid "List of admin users is empty or invalid!"
+msgstr "Az adminisztrátor felhasználók listája üres vagy érvénytelen!"
+
+#: ../help/help.inc:217
+msgid ""
+"List of samba workstations the user is allowed to login. Empty means every "
+"workstation."
+msgstr ""
+"Azon samba munkaállomások listája, melyekre a felhasználó bejelentkezhet. Ha "
+"üresen marad, minden munkaállomásra való bejelentkezés engedélyezett."
+
+#: ../templates/config/confmain.php:343 ../templates/confwiz/o_lang.php:152
+#: ../lib/config.inc:292
+msgid "List of valid users"
+msgstr "Az érvényes felhasználók listája"
+
+#: ../templates/account/groupedit.php:628
+#: ../templates/account/hostedit.php:357
+#: ../templates/account/useredit.php:1018
+msgid "Load Profile"
+msgstr "Profil betöltése"
+
+#: ../templates/account/groupedit.php:623
+#: ../templates/account/hostedit.php:279 ../templates/account/hostedit.php:352
+#: ../templates/account/useredit.php:1013 ../help/help.inc:184
+msgid "Load profile"
+msgstr "Profil betöltése"
+
+#: ../templates/login.php:227 ../templates/config/conflogin.php:72
+#: ../help/help.inc:36
+msgid "Login"
+msgstr "Bejelentkezés"
+
+#: ../lib/pdf.inc:159
+msgid "Login Shell"
+msgstr "Bejelentkezõ shell"
+
+#: ../lib/pdf.inc:169
+msgid "Login at host(s)"
+msgstr "Bejelentkezés a következõ gép(ek)re"
+
+#: ../lib/pdf.inc:215
+msgid "Login at workstation(s)"
+msgstr "Bejelentkezés a következõ munkaállomás(ok)ra"
+
+#: ../templates/account/useredit.php:987
+#: ../templates/profedit/profileuser.php:127 ../help/help.inc:150
+#: ../lib/ldap.inc:201
+msgid "Login shell"
+msgstr "Bejelentkezõ shell"
+
+#: ../templates/logout.php:52 ../templates/main_header.php:51
+msgid "Logout"
+msgstr "Kijelentkezés"
+
+#: ../help/help.inc:60
+msgid "Machine number"
+msgstr "Munkaállomás száma"
+
+#: ../templates/config/conflogin.php:115
+msgid "Manage profiles"
+msgstr "Profilok beállítása"
+
+#: ../templates/masscreate.php:353
+msgid "Mass Creation"
+msgstr ""
+
+#: ../templates/config/profmanage.php:351
+msgid "Master Password:"
+msgstr "Mesterjelszó:"
+
+#: ../templates/confwiz/start.php:168 ../help/help.inc:121
+msgid "Master password"
+msgstr "Mesterjelszó"
+
+#: ../templates/config/profmanage.php:59 ../templates/confwiz/start.php:45
+msgid "Master password is wrong!"
+msgstr "Hibás mesterjelszó!"
+
+#: ../templates/config/profmanage.php:119
+msgid "Master passwords are different or empty!"
+msgstr "A mester jelszavaknak meg kell egyezniük!"
+
+#: ../templates/masscreate.php:119
+msgid "Max 400 users allowed. Ignored additional users."
+msgstr ""
+"Legfeljebb 400 felhasználó fogadható. A további felhasználókat figyelmen "
+"kívül hagyom."
+
+#: ../templates/config/confsave.php:169
+msgid "Max list entries is invalid!"
+msgstr "A maximális listabejegyzés érvénytelen!"
+
+#: ../templates/config/confmain.php:209 ../templates/confwiz/o_ranges.php:131
+#: ../lib/config.inc:282
+msgid "Maximum GID number"
+msgstr "A legnagyobb GID értéke"
+
+#: ../templates/config/confsave.php:139 ../templates/confwiz/o_ranges.php:63
+msgid "Maximum GID number is invalid!"
+msgstr "A legnagyobb GID-érték érvénytelen!"
+
+#: ../templates/config/confmain.php:218 ../templates/confwiz/o_ranges.php:140
+#: ../lib/config.inc:284
+msgid "Maximum Machine number"
+msgstr "Legnagyobb munkaállomásszám"
+
+#: ../templates/config/confsave.php:149 ../templates/confwiz/o_ranges.php:69
+msgid "Maximum Machine number is invalid!"
+msgstr "A legnagyobb munkaállomásszám érvénytelen!"
+
+#: ../templates/config/confmain.php:200 ../templates/confwiz/o_ranges.php:122
+#: ../lib/config.inc:280
+msgid "Maximum UID number"
+msgstr "Legnagyobb UID értéke"
+
+#: ../templates/config/confsave.php:129 ../templates/confwiz/o_ranges.php:57
+msgid "Maximum UID number is invalid!"
+msgstr "A legnagyobb UID-érték érvénytelen!"
+
+#: ../templates/config/confmain.php:250 ../help/help.inc:82
+#: ../lib/config.inc:288
+msgid "Maximum list entries"
+msgstr "Legtöbb listabejegyzés száma"
+
+#: ../templates/account/useredit.php:1084
+#: ../templates/profedit/profileuser.php:166 ../help/help.inc:174
+msgid "Maximum password age"
+msgstr "A jelszó lejárásának legkésõbbi idõpontja"
+
+#: ../templates/account/groupedit.php:517
+#: ../templates/account/groupedit.php:574
+#: ../templates/account/groupedit.php:644
+#: ../templates/account/groupedit.php:738
+#: ../templates/account/groupedit.php:795 ../lib/pdf.inc:455
+msgid "Members"
+msgstr "Tagok"
+
+#: ../templates/config/confmain.php:206 ../templates/confwiz/o_ranges.php:128
+#: ../lib/config.inc:281
+msgid "Minimum GID number"
+msgstr "A minimális GID érték"
+
+#: ../templates/config/confsave.php:134 ../templates/confwiz/o_ranges.php:60
+msgid "Minimum GID number is invalid!"
+msgstr "A legkisebb GID-érték érvénytelen!"
+
+#: ../templates/config/confmain.php:215 ../templates/confwiz/o_ranges.php:137
+#: ../lib/config.inc:283
+msgid "Minimum Machine number"
+msgstr "Minimum munkaállomásszám"
+
+#: ../templates/config/confsave.php:144 ../templates/confwiz/o_ranges.php:66
+msgid "Minimum Machine number is invalid!"
+msgstr "A legkisebb munkaállomásszám érvénytelen!"
+
+#: ../templates/config/confmain.php:197 ../templates/confwiz/o_ranges.php:119
+#: ../lib/config.inc:279
+msgid "Minimum UID number"
+msgstr "Minimális UID értéke"
+
+#: ../templates/config/confsave.php:124 ../templates/confwiz/o_ranges.php:54
+msgid "Minimum UID number is invalid!"
+msgstr "A legkisebb UID-érték érvénytelen!"
+
+#: ../templates/account/useredit.php:1089
+#: ../templates/profedit/profileuser.php:173 ../help/help.inc:176
+msgid "Minimum password age"
+msgstr "A jelszót minimum eddig kell használni"
+
+#: ../templates/account/useredit.php:485
+#: ../templates/account/useredit.php:1497 ../templates/masscreate.php:373
+#: ../templates/masscreate.php:574 ../templates/massdetail.php:159
+#: ../templates/massdetail.php:264 ../help/help.inc:259 ../help/help.inc:260
+msgid "Mobile number"
+msgstr "Mobil telefonszám"
+
+#: ../templates/account/groupedit.php:821
+#: ../templates/account/hostedit.php:442
+#: ../templates/account/useredit.php:1549
+msgid "Modify"
+msgstr "Módosítás"
+
+#: ../templates/account/groupedit.php:835
+#: ../templates/account/hostedit.php:453
+#: ../templates/account/useredit.php:1554
+msgid "Modify Account"
+msgstr "Azonosító módosítása"
+
+#: ../templates/account/groupedit.php:757
+#: ../templates/account/useredit.php:1412
+#: ../templates/profedit/profilegroup.php:99
+#: ../templates/profedit/profileuser.php:376 ../help/help.inc:223
+#: ../lib/pdf.inc:237
+msgid "Mountpoint"
+msgstr "Csatolási pont"
+
+#: ../help/help.inc:224
+msgid "Mountpoint of device with enabled quotas."
+msgstr "Kvótákkal szabályozott eszköz csatolási pontja."
+
+#: ../templates/account/groupedit.php:214
+#: ../templates/account/groupedit.php:217
+#: ../templates/account/hostedit.php:179 ../templates/account/hostedit.php:182
+#: ../templates/account/useredit.php:304 ../templates/account/useredit.php:307
+#: ../templates/masscreate.php:568 ../templates/masscreate.php:571
+#: ../templates/massdetail.php:97
+msgid "Name"
+msgstr "Név"
+
+#: ../templates/account/groupedit.php:217
+#: ../templates/account/hostedit.php:182 ../templates/account/useredit.php:307
+#: ../templates/masscreate.php:571 ../templates/massdetail.php:97
+msgid "Name contains invalid characters. First character must be a letter."
+msgstr ""
+"A név érvénytelen karaktereket tartalmaz. Az elsõ karakternek betûnek kell "
+"lennie."
+
+#: ../templates/account/groupedit.php:214
+#: ../templates/account/hostedit.php:179 ../templates/account/useredit.php:304
+#: ../templates/masscreate.php:568
+msgid "Name must contain between 3 and 20 characters."
+msgstr "A névnek minimum 3, maximum 20 karakterbõl kell állnia."
+
+#: ../help/help.inc:135
+msgid ""
+"Name under which the profile will be saved. If a profile with the same name "
+"exists, it will be overwritten."
+msgstr ""
+"Név, mellyel a profil el lesz mentve. Ha már van ilyen nevû profil, az új "
+"profil felülírja azt."
+
+#: ../templates/lists/listdomains.php:198
+msgid "New Domain"
+msgstr "Új tartomány"
+
+#: ../templates/lists/listgroups.php:307
+msgid "New Group"
+msgstr "Új csoport"
+
+#: ../templates/lists/listhosts.php:292
+msgid "New Host"
+msgstr "Új gazdaaállomás"
+
+#: ../templates/ou_edit.php:52 ../templates/ou_edit.php:117
+#: ../templates/ou_edit.php:182 ../templates/ou_edit.php:247
+msgid "New OU created successfully."
+msgstr "Új OU-t sikeresen létrehozva."
+
+#: ../templates/config/confmain.php:353
+msgid "New Password"
+msgstr "Új jelszó"
+
+#: ../templates/config/profmanage.php:126
+msgid "New default profile set successfully."
+msgstr "Az új alapértelmezett profil sikeresen beállítva."
+
+#: ../templates/config/profmanage.php:326
+msgid "New master password"
+msgstr "Új mester jelszó"
+
+#: ../templates/config/profmanage.php:117
+msgid "New master password set successfully."
+msgstr "Az új mester jelszó sikeresen beállítva."
+
+#: ../templates/ou_edit.php:344 ../templates/ou_edit.php:377
+#: ../templates/ou_edit.php:410 ../templates/ou_edit.php:444
+#: ../help/help.inc:288
+msgid "New organizational unit"
+msgstr "Új szervezeti egység"
+
+#: ../templates/config/profmanage.php:107
+msgid "New password set successfully."
+msgstr "A jelszó módosítva."
+
+#: ../templates/account/groupedit.php:434
+#: ../templates/account/hostedit.php:289 ../templates/account/useredit.php:714
+msgid "New profile created."
+msgstr "Az új profil létrehozva."
+
+#: ../templates/lists/listusers.php:361
+msgid "New user"
+msgstr "Új felhasználó"
+
+#: ../templates/masscreate.php:428 ../templates/confwiz/o_ranges.php:152
+#: ../templates/confwiz/o_daemon.php:141 ../templates/confwiz/server2.php:234
+#: ../templates/confwiz/o_lang.php:162 ../templates/confwiz/server.php:196
+#: ../templates/confwiz/o_lists.php:147 ../templates/confwiz/start.php:181
+msgid "Next"
+msgstr "Következõ"
+
+#: ../templates/domain.php:124 ../templates/confwiz/ldaptest.php:361
+#: ../help/help.inc:302
+msgid "Next Group RID"
+msgstr "Következõ csoport RID"
+
+#: ../templates/domain.php:108 ../templates/confwiz/ldaptest.php:345
+#: ../help/help.inc:298
+msgid "Next RID"
+msgstr "Következõ RID"
+
+#: ../templates/domain.php:237 ../templates/confwiz/ldaptest.php:243
+msgid "Next RID is not a number!"
+msgstr "A következõ RID értéke nem szám!"
+
+#: ../help/help.inc:299
+msgid "Next RID to use when creating accounts."
+msgstr "A következõ RID, melyet azonosítók létrehozásakor használni kell."
+
+#: ../help/help.inc:303
+msgid "Next RID to use when creating groups."
+msgstr "A következõ RID, melyet csoportok létrehozásakor használni kell."
+
+#: ../help/help.inc:301
+msgid "Next RID to use when creating user accounts."
+msgstr ""
+"A következõ RID, melyet felhasználói azonosítók létrehozásakor használni "
+"kell."
+
+#: ../templates/domain.php:116 ../templates/confwiz/ldaptest.php:353
+#: ../help/help.inc:300
+msgid "Next User RID"
+msgstr "Következõ felhasználó RID"
+
+#: ../templates/domain.php:239 ../templates/confwiz/ldaptest.php:249
+msgid "Next group RID is not a number!"
+msgstr "A következõ csoport RID-je nem szám!"
+
+#: ../templates/domain.php:238 ../templates/confwiz/ldaptest.php:246
+msgid "Next user RID is not a number!"
+msgstr "A következõ felhasználó RID-je nem szám!"
+
+#: ../templates/lists/listgroups.php:161 ../templates/lists/listgroups.php:170
+#: ../templates/lists/listgroups.php:174
+msgid "No Groups found!"
+msgstr "csoport nem található!"
+
+#: ../templates/lists/listdomains.php:104
+#: ../templates/lists/listdomains.php:110
+#: ../templates/lists/listdomains.php:114
+msgid "No Samba Domains found!"
+msgstr "Samba tartomány nem található!"
+
+#: ../templates/lists/listhosts.php:161 ../templates/lists/listhosts.php:170
+#: ../templates/lists/listhosts.php:174
+msgid "No Samba Hosts found!"
+msgstr "Samba munkaállomás nem található"
+
+#: ../templates/lists/listusers.php:202 ../templates/lists/listusers.php:213
+msgid "No Users found!"
+msgstr "Felhasználó nem található!"
+
+#: ../templates/initsuff.php:169
+msgid "No changes were made."
+msgstr "Nem történt változtatás."
+
+#: ../templates/initsuff.php:153 ../templates/main.php:64
+#: ../templates/confwiz/ldaptest.php:311
+msgid "No domains found, please create one."
+msgstr "Nincs létrehozva tartomány, készítsen egyet."
+
+#: ../lib/account.inc:878
+msgid "No free ID-Number!"
+msgstr "Nincs szabad ID-szám!"
+
+#: ../templates/delete.php:246
+msgid "No group(s) were deleted"
+msgstr "Egy csoport sem lett törölve."
+
+#: ../templates/delete.php:238
+msgid "No host(s) were deleted"
+msgstr "Egy gazdaállomás sem lett törölve"
+
+#: ../templates/config/confmain.php:82
+msgid "No password was entered!"
+msgstr "Nem adott meg jelszót!"
+
+#: ../templates/account/useredit.php:242 ../templates/masscreate.php:563
+msgid "No primary group defined!"
+msgstr "Nincs megadva elsõdleges csoport!"
+
+#: ../templates/account/groupedit.php:431
+#: ../templates/account/hostedit.php:286 ../templates/account/useredit.php:711
+msgid "No profilename given."
+msgstr "Nem adott meg profilnevet."
+
+#: ../templates/profedit/profilecreate.php:392
+msgid "No type specified!"
+msgstr "Nem határozott meg típust!"
+
+#: ../lib/pdf.inc:252
+msgid "No user quotas defined or no quota support by filesystem."
+msgstr ""
+"Nincsenek meghatározott felhasználói kvóták, vagy a filerendszer nem "
+"támogatja a kvótát."
+
+#: ../templates/delete.php:230
+msgid "No user(s) were deleted"
+msgstr "Egy felhasználó sem lett törölve"
+
+#: ../templates/account/groupedit.php:844
+#: ../templates/account/hostedit.php:462
+#: ../templates/account/useredit.php:1562 ../help/help.inc:47
+msgid "Note"
+msgstr "Megjegyzés"
+
+#: ../help/help.inc:173
+msgid ""
+"Number of days a user can login even his password has expired. -1=always."
+msgstr ""
+"Ahány napig a felhasználó beléphet jelszavának lejárta után. -1=mindig."
+
+#: ../help/help.inc:177
+msgid ""
+"Number of days a user has to wait until he\\'s allowed to change his "
+"password again. If set value must be 0<."
+msgstr ""
+"Ahány napig a felhasználónak várnia kell, hogy jelszavát újra "
+"megváltoztassa. Ha beállítja, 0-nál nagyobb értéket kell megadnia."
+
+#: ../help/help.inc:175
+msgid ""
+"Number of days after a user has to change his password again. If set value "
+"must be 0<."
+msgstr ""
+"Ahány nap után a felhasználónak ismételten meg kell változtatnia jelszavát. "
+"Ha beállítja, 0-nál nagyobb értéket kell megadnia."
+
+#: ../templates/ou_edit.php:58 ../templates/ou_edit.php:123
+#: ../templates/ou_edit.php:188 ../templates/ou_edit.php:253
+msgid "OU already exists!"
+msgstr "Az OU már létezik!"
+
+#: ../templates/ou_edit.php:69 ../templates/ou_edit.php:134
+#: ../templates/ou_edit.php:199 ../templates/ou_edit.php:264
+msgid "OU deleted successfully."
+msgstr "Az OU sikeresen törölve."
+
+#: ../templates/ou_edit.php:62 ../templates/ou_edit.php:127
+#: ../templates/ou_edit.php:192 ../templates/ou_edit.php:257
+msgid "OU is invalid!"
+msgstr "Az OU érvénytelen!"
+
+#: ../templates/ou_edit.php:99 ../templates/ou_edit.php:164
+#: ../templates/ou_edit.php:229 ../templates/ou_edit.php:294
+msgid "OU is not empty or invalid!"
+msgstr "Az OU nem üres vagy érvénytelen!"
+
+#: ../templates/main_header.php:54 ../help/help.inc:288 ../help/help.inc:290
+msgid "OU-Editor"
+msgstr "OU szerkesztõ"
+
+#: ../templates/account/hostedit.php:222 ../templates/account/useredit.php:580
+msgid "ObjectClass posixAccount not found."
+msgstr "A posixAzonosító objektumOsztály nem található."
+
+#: ../templates/account/groupedit.php:329
+msgid "ObjectClass posixGroup not found."
+msgstr "A posixcsoport objektumOsztály nem található."
+
+#: ../templates/account/hostedit.php:227 ../templates/account/useredit.php:589
+msgid "ObjectClass sambaAccount not found."
+msgstr "A sambaAzonosító objektumOsztály nem található."
+
+#: ../templates/account/groupedit.php:327
+msgid "ObjectClass sambaGroupMapping not found."
+msgstr "A sambaCsoportTérkép objektumOsztály nem található."
+
+#: ../templates/account/hostedit.php:225 ../templates/account/useredit.php:585
+msgid "ObjectClass sambaSamAccount not found."
+msgstr "A sambaSamAzonosító objektumOsztály nem található."
+
+#: ../templates/account/hostedit.php:223 ../templates/account/useredit.php:582
+msgid "ObjectClass shadowAccount not found."
+msgstr "Az árnyékAzonosító objektumOsztály nem található."
+
+#: ../templates/config/conflogin.php:107
+msgid "Ok"
+msgstr "Ok"
+
+#: ../templates/confwiz/server2.php:221
+msgid "Optional settings"
+msgstr "Nem kötelezõ beállítások"
+
+#: ../templates/config/confmain.php:325
+msgid "PDF settings"
+msgstr "PDF beállítások"
+
+#: ../templates/confwiz/o_daemon.php:126
+msgid "PDF text"
+msgstr "PDF szöveg"
+
+#: ../templates/account/hostedit.php:391 ../templates/account/useredit.php:315
+#: ../templates/account/useredit.php:345 ../templates/account/useredit.php:412
+#: ../templates/account/useredit.php:436
+#: ../templates/account/useredit.php:1056 ../templates/login.php:171
+#: ../templates/confwiz/server.php:159 ../templates/confwiz/start.php:141
+msgid "Password"
+msgstr "Jelszó"
+
+#: ../templates/account/useredit.php:350
+msgid "Password Expire"
+msgstr "Jelszó érvényessége"
+
+#: ../templates/config/confsave.php:214
+msgid "Password changed!"
+msgstr "Jelszó megváltozott!"
+
+#: ../templates/account/useredit.php:345 ../templates/account/useredit.php:436
+msgid ""
+"Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 "
+"and #*,.;:_-+!$%&/|?{[()]}= !"
+msgstr ""
+"A jelszó érvénytelen karaktert tartalmaz. Érvényes karakterek: a-z, A-Z, 0-9 "
+"és #*,.;:_-+!$%&/|?{[()]}= !"
+
+#: ../templates/account/useredit.php:1200
+#: ../templates/profedit/profileuser.php:257 ../help/help.inc:200
+msgid "Password does not expire"
+msgstr "A jelszó nem jár le"
+
+#: ../templates/account/useredit.php:1079 ../help/help.inc:172
+#: ../lib/pdf.inc:165
+msgid "Password expire"
+msgstr "Jelszó érvényessége"
+
+#: ../templates/account/useredit.php:350
+msgid "Password expire must be are natural number or -1."
+msgstr ""
+"A jelszó lejárásához megadott érték csak természetes szám lehet, vagy -1. "
+
+#: ../templates/profedit/profileuser.php:159
+msgid "Password expiry"
+msgstr "A jelszó lejárása"
+
+#: ../templates/profedit/profilecreate.php:147
+msgid "Password expiry is not numeric!"
+msgstr "A jelszó lejárásához megadott érték nem numerikus!"
+
+#: ../templates/config/confsave.php:193 ../templates/confwiz/server2.php:71
+msgid "Password hash is invalid!"
+msgstr "A jelszó hash-e érvénytelen!"
+
+#: ../templates/config/confmain.php:147 ../templates/confwiz/server2.php:176
+#: ../help/help.inc:105 ../lib/config.inc:272
+msgid "Password hash type"
+msgstr "A jelszó hash-ének típusa"
+
+#: ../templates/account/useredit.php:347 ../templates/account/useredit.php:348
+msgid "Password maxage"
+msgstr "A jelszó maximális érvényességi ideje"
+
+#: ../templates/account/useredit.php:348
+msgid "Password maxage must be are natural number."
+msgstr "A jelszó maximális érvényességi ideje csak természetes szám lehet."
+
+#: ../templates/account/useredit.php:347
+msgid "Password maxage must bigger as Password Minage."
+msgstr ""
+"A jelszó maximális érvényességi idejének nagyobbnak kell lennie a minimális "
+"érvényességi idõnél."
+
+#: ../templates/profedit/profilecreate.php:115
+msgid "Password maximum age is not numeric!"
+msgstr "A jelszó maximális érvényességi ideje nem numerikus!"
+
+#: ../templates/account/useredit.php:346
+msgid "Password minage"
+msgstr "A jelszó minimális érvényességi ideje"
+
+#: ../templates/account/useredit.php:346
+msgid "Password minage must be are natural number."
+msgstr "A jelszó minimális érvényességi ideje csak természetes szám lehet."
+
+#: ../templates/profedit/profilecreate.php:107
+msgid "Password minimum age is not numeric!"
+msgstr "A jelszó minimális érvényességi ideje nem numerikus!"
+
+#: ../templates/account/useredit.php:351
+#: ../templates/account/useredit.php:1074 ../help/help.inc:170
+msgid "Password warn"
+msgstr "Jelszó figyelmeztetés"
+
+#: ../templates/account/useredit.php:351
+msgid "Password warn must be are natural number."
+msgstr "Jelszó figyelmeztetés értéke csak természetes szám lehet."
+
+#: ../templates/profedit/profileuser.php:152
+msgid "Password warning"
+msgstr "Jelszó figyelmeztetés"
+
+#: ../templates/config/confsave.php:208
+msgid "Passwords are different!"
+msgstr "A két jelszó nem egyezik!"
+
+#: ../help/help.inc:214
+#, php-format
+msgid ""
+"Path of the userprofile. Can be a local absolute path or a UNC-path (\\\\server\\share). $%s and $%s are replaced with user- and groupname."
+msgstr ""
+"A felhasználói profil elérési útvonala. Helyi abszolút elérési útvonal vagy UNC elérési útvonal is lehet (\\\\server\\share). A $%s és $%s változók a felhasználó-és csoportnévvel lesznek helyettesítve."
+
+#: ../templates/config/confmain.php:315 ../templates/confwiz/o_daemon.php:117
+#: ../lib/config.inc:290
+msgid "Path to external script"
+msgstr "A külsõ script elérési útvonala"
+
+#: ../templates/account/useredit.php:790 ../templates/account/useredit.php:860
+#: ../templates/account/useredit.php:922
+#: ../templates/account/useredit.php:1043
+#: ../templates/account/useredit.php:1160
+#: ../templates/account/useredit.php:1399
+#: ../templates/account/useredit.php:1448
+#: ../templates/account/useredit.php:1528
+msgid "Personal"
+msgstr "Személyes adatok"
+
+#: ../lib/pdf.inc:78
+msgid "Personal User Infos"
+msgstr "Személyes felhasználói adatok"
+
+#: ../templates/account/useredit.php:1459
+msgid "Personal properties"
+msgstr "Személyes tulajdonságok"
+
+#: ../lib/pdf.inc:109
+msgid "Phone"
+msgstr "Telefon"
+
+#: ../templates/account/groupedit.php:322
+#: ../templates/account/useredit.php:561 ../templates/account/useredit.php:575
+msgid "Please check settings on samba page."
+msgstr "Kérem ellenõrízze a beállításokat a samba oldalon."
+
+#: ../templates/account/hostedit.php:98 ../templates/account/useredit.php:107
+msgid "Please create a group first."
+msgstr "Kérem, elõbb hozzon létre egy csoportot."
+
+#: ../templates/confwiz/start.php:117
+msgid ""
+"Please enter a name for the new profile. The name may contain letters, "
+"digits and -_."
+msgstr ""
+"Kérem adja meg az új profil nevét. A név betûket, számokat és a -_ karaktereket tartalmazhatja."
+
+#: ../templates/account/useredit.php:487 ../templates/masscreate.php:576
+#: ../templates/massdetail.php:163
+msgid "Please enter a valid eMail address!"
+msgstr "Az e-mail cím formátuma érvénytelen!"
+
+#: ../templates/account/useredit.php:491 ../templates/masscreate.php:580
+#: ../templates/massdetail.php:149
+msgid "Please enter a valid employee type!"
+msgstr "Kérem adjon érvényes alkalmazott típust!"
+
+#: ../templates/account/useredit.php:486 ../templates/masscreate.php:575
+#: ../templates/massdetail.php:161
+msgid "Please enter a valid fax number!"
+msgstr "A fax szám formátuma érvénytelen!"
+
+#: ../templates/account/useredit.php:485 ../templates/masscreate.php:574
+#: ../templates/massdetail.php:159
+msgid "Please enter a valid mobile number!"
+msgstr "A mobiltelefonszám formátuma érvénytelen!"
+
+#: ../templates/account/useredit.php:489 ../templates/masscreate.php:578
+#: ../templates/massdetail.php:155
+msgid "Please enter a valid postal address!"
+msgstr "A levelezési cím formátuma érvénytelen!"
+
+#: ../templates/account/useredit.php:492 ../templates/masscreate.php:581
+#: ../templates/massdetail.php:153
+msgid "Please enter a valid postal code!"
+msgstr "Az irányítószám formátuma érvénytelen!"
+
+#: ../templates/account/useredit.php:488 ../templates/masscreate.php:577
+#: ../templates/massdetail.php:151
+msgid "Please enter a valid street name!"
+msgstr "Az utcanév formátuma érvénytelen!"
+
+#: ../templates/account/useredit.php:484 ../templates/masscreate.php:573
+#: ../templates/massdetail.php:157
+msgid "Please enter a valid telephone number!"
+msgstr "A telefonszám formátuma érvénytelen!"
+
+#: ../templates/account/useredit.php:490 ../templates/masscreate.php:579
+#: ../templates/massdetail.php:147
+msgid "Please enter a valid title!"
+msgstr "Kérem adjon érvényes címet!"
+
+#: ../lib/account.inc:890
+#, php-format
+msgid "Please enter a value between %s and %s!"
+msgstr "Kérem adjon %s és %s közötti értéket!"
+
+#: ../templates/config/conflogin.php:86
+msgid "Please enter password to change preferences:"
+msgstr "Kérem adja meg a jelszót a beállítások módosításához:"
+
+#: ../templates/confwiz/o_ranges.php:112
+msgid "Please enter the UID/GID ranges for your accounts:"
+msgstr "Kérem, adja meg az UID/GID tartományokat az azonosítóihoz:"
+
+#: ../templates/confwiz/server.php:123
+msgid "Please enter the URL of your LDAP server."
+msgstr "Kérem, adja meg LDAP szerverének URL-ét."
+
+#: ../help/help.inc:37
+msgid ""
+"Please enter the configuration password. This is NOT your LDAP password. It "
+"is stored in your .conf-file. If this is the first time you log in, enter "
+"\"lam\"."
+msgstr ""
+"Kérem adja meg a beállítást védõ jelszót. Ez NEM az ön LDAP jelszava. Ez az "
+"ön .conf-filejában tárolódik. Ha most lép be elõször, akkor az \"lam\"-et "
+"használja."
+
+#: ../help/help.inc:122
+msgid ""
+"Please enter the master configuration password. This is NOT your LDAP "
+"password. It is stored in your config.cfg file. If this is the first time "
+"you log in, enter \"lam\"."
+msgstr ""
+"Kérem, adja meg a mester beállításokat védõ jelszót. Ez NEM az ön LDAP "
+"jelszava. Ez az ön config.cfg file-jában tárolódik. Ha most lép be elõször, "
+"akkor az \"lam\"-et használja."
+
+#: ../help/help.inc:110
+msgid ""
+"Please enter the name of the new profile and the password to change its "
+"settings. Profile names may contain letters, numbers and -/_."
+msgstr ""
+"Kérem adja meg az új profil nevét és a beállítások megváltoztatásához "
+"szükséges jelszót. A profilnevek betûket, számokat és -/_ karaktereket "
+"tartalmazhatnak. "
+
+#: ../help/help.inc:112
+msgid ""
+"Please enter the new name of the profile. The name may contain letters, "
+"numbers and -/_."
+msgstr ""
+"Kérem adja meg az új profil nevét. A név betûket, számokat és a -/_ "
+"karaktereket tartalmazhatja."
+
+#: ../templates/account/useredit.php:315 ../templates/account/useredit.php:412
+msgid "Please enter the same password in both password-fields."
+msgstr "Kérem, egyezõ jelszót írjon a két jelszó-mezõbe."
+
+#: ../templates/confwiz/server2.php:125
+msgid ""
+"Please enter the suffixes of your LDAP tree where LAM should store the "
+"accounts."
+msgstr "Kérem, adja meg az utótagjait az Ön által használt LDAP fának, "
+"ahol a LAM-nak az azonosítókat tárolnia kell."
+
+#: ../templates/confwiz/o_lists.php:103
+msgid "Please enter which attributes should be displayed in the list views."
+msgstr "Kérem, adja meg, hogy a listanézetekben mely attribútumok látszódjanak."
+
+#: ../templates/confwiz/start.php:162
+msgid ""
+"Please enter your configuration master password. This password is \"lam\" by "
+"default."
+msgstr "Kérem, adja meg beállításainak mester jelszavát. Ez alapértelemzés "
+"szerint \"lam\". "
+
+#: ../templates/masscreate.php:355
+msgid ""
+"Please provide a csv-file with the following syntax. Values with * are "
+"required:"
+msgstr ""
+"Kérem, adjon meg egy csv-file-t a következõ szintakszis szerint. A *-os "
+"értékek szükségesek:"
+
+#: ../lib/status.inc:42
+msgid ""
+"Please report this error to the Bug-Tracker at {link=http://lam.sf.net}LDAP "
+"Account Manager Development Team{endlink}. The error number is {bold}0001:"
+"Invalid/Missing Message type.{endbold} Thank you."
+msgstr ""
+"Kérem jelezze ezt a hibát a Bug-Tracker-en a {link=http://lam.sf.net}LDAP "
+"Account Manager Development Team{endlink}-nél. A hiba száma {bold}0001:"
+"Invalid/Missing Message type.{endbold}. Köszönöm."
+
+#: ../templates/confwiz/server2.php:222
+msgid ""
+"Please select here if you want to make additional changes to your "
+"configuration profile or if LAM should use default values."
+msgstr "Kérem, most döntse el, hogy akar -e további változtatásokat beállítási "
+"profiljában, vagy a LAM használja az alapértelemzés szerinti értékeket."
+
+#: ../templates/account/groupedit.php:514
+#: ../templates/account/groupedit.php:571
+#: ../templates/account/groupedit.php:641
+#: ../templates/account/groupedit.php:735
+#: ../templates/account/groupedit.php:792
+#: ../templates/account/useredit.php:783 ../templates/account/useredit.php:853
+#: ../templates/account/useredit.php:915
+#: ../templates/account/useredit.php:1036
+#: ../templates/account/useredit.php:1153
+#: ../templates/account/useredit.php:1393
+#: ../templates/account/useredit.php:1441
+#: ../templates/account/useredit.php:1521 ../templates/masscreate.php:333
+msgid "Please select page:"
+msgstr "Kérem, válassza ki az oldalt:"
+
+#: ../templates/confwiz/o_lang.php:101
+msgid "Please select your prefered language."
+msgstr "Kérem, válassza ki a nyelvet, melyet használni szeretne."
+
+#: ../help/help.inc:274
+msgid "Position in ldap-tree where the group should be created."
+msgstr "A hely az ldap-fán, ahol a csoportot létre kell hozni."
+
+#: ../help/help.inc:276
+msgid "Position in ldap-tree where the host should be created."
+msgstr "A hely az ldap-fán, ahol a gazdaállomást létre kell hozni."
+
+#: ../help/help.inc:272
+msgid "Position in ldap-tree where the user should be created."
+msgstr "A hely az ldap-fán, ahol a felhasználót létre kell hozni."
+
+#: ../templates/account/useredit.php:489
+#: ../templates/account/useredit.php:1485 ../templates/masscreate.php:381
+#: ../templates/masscreate.php:578 ../templates/massdetail.php:155
+#: ../templates/massdetail.php:252 ../help/help.inc:255 ../lib/pdf.inc:101
+msgid "Postal address"
+msgstr "Levelezési cím"
+
+#: ../help/help.inc:256
+msgid "Postal address, city"
+msgstr "Település"
+
+#: ../templates/account/useredit.php:492
+#: ../templates/account/useredit.php:1479 ../templates/masscreate.php:379
+#: ../templates/masscreate.php:581 ../templates/massdetail.php:153
+#: ../templates/massdetail.php:246 ../help/help.inc:253 ../help/help.inc:254
+#: ../lib/pdf.inc:97
+msgid "Postal code"
+msgstr "Irányítószám"
+
+#: ../templates/confwiz/o_lists.php:105
+msgid "Predefined attributes are of type \"#attribute\"."
+msgstr "Az elõre meghatározott attribútumok \"#attribute\" típusúak."
+
+#: ../templates/confwiz/o_lists.php:111 ../help/help.inc:67
+msgid "Predefined values"
+msgstr "Elõre meghatározott értékek"
+
+#: ../templates/account/hostedit.php:377 ../templates/account/useredit.php:242
+#: ../templates/account/useredit.php:961 ../templates/masscreate.php:291
+#: ../templates/masscreate.php:365 ../templates/masscreate.php:563
+#: ../templates/profedit/profilehost.php:68
+#: ../templates/profedit/profileuser.php:93 ../help/help.inc:152
+#: ../help/help.inc:166 ../lib/pdf.inc:307 ../lib/pdf.inc:351
+msgid "Primary group"
+msgstr "Elsõdleges csoport"
+
+#: ../templates/account/useredit.php:554
+msgid ""
+"Primary group has changed. You have to run the following command as root in "
+"order to change existing file-permissions:"
+msgstr ""
+"Az elsõdleges csoport megváltozott. Root-ként kell futtatnia a következõ "
+"utasítást, hogy a jelenleg érvényes file-engedélyeket megváltoztassa:"
+
+#: ../templates/profedit/profilecreate.php:64
+#: ../templates/profedit/profilecreate.php:364
+msgid "Primary group name is invalid!"
+msgstr "Az elsõdleges csoportnév érvénytelen!"
+
+#: ../templates/main_header.php:43 ../help/help.inc:126 ../help/help.inc:130
+#: ../help/help.inc:134
+msgid "Profile Editor"
+msgstr "Profil szerkesztõ"
+
+#: ../templates/config/profmanage.php:97
+msgid "Profile deleted."
+msgstr "Profil törölve."
+
+#: ../templates/account/hostedit.php:279
+msgid "Profile loaded."
+msgstr "Profil betöltve."
+
+#: ../templates/config/profmanage.php:41
+#: ../templates/config/profmanage.php:144 ../help/help.inc:109
+#: ../help/help.inc:111 ../help/help.inc:113 ../help/help.inc:115
+#: ../help/help.inc:117 ../help/help.inc:119 ../help/help.inc:121
+msgid "Profile management"
+msgstr "Profile beállítások"
+
+#: ../templates/config/profmanage.php:159
+#: ../templates/config/profmanage.php:206
+#: ../templates/profedit/profilegroup.php:143
+#: ../templates/profedit/profilehost.php:112
+#: ../templates/profedit/profileuser.php:420
+#: ../templates/confwiz/start.php:123 ../help/help.inc:134
+msgid "Profile name"
+msgstr "Profilnév"
+
+#: ../templates/config/profmanage.php:81 ../templates/config/profmanage.php:92
+#: ../templates/confwiz/start.php:65
+msgid "Profile name is invalid!"
+msgstr "A profilnév érvénytelen!"
+
+#: ../templates/config/profmanage.php:170
+#: ../templates/config/profmanage.php:260
+msgid "Profile password"
+msgstr "Profiljelszó"
+
+#: ../templates/config/profmanage.php:79
+#: ../templates/config/profmanage.php:109 ../templates/confwiz/start.php:67
+msgid "Profile passwords are different or empty!"
+msgstr "A profiljelszavak különböznek vagy üresek!"
+
+#: ../templates/account/useredit.php:429 ../templates/account/useredit.php:442
+#: ../templates/account/useredit.php:1262
+#: ../templates/profedit/profileuser.php:318 ../help/help.inc:213
+#: ../lib/pdf.inc:211
+msgid "Profile path"
+msgstr "Profil elérési útvonala"
+
+#: ../templates/account/useredit.php:442
+#: ../templates/profedit/profilecreate.php:207
+msgid "Profile path is invalid!"
+msgstr "A profil elérési útvonala érvénytelen!"
+
+#: ../templates/profedit/profilecreate.php:283
+#: ../templates/profedit/profilecreate.php:348
+#: ../templates/profedit/profilecreate.php:386
+msgid "Profile was saved."
+msgstr "Profil elmentve."
+
+#: ../templates/account/groupedit.php:523
+#: ../templates/account/groupedit.php:580
+#: ../templates/account/groupedit.php:647
+#: ../templates/account/groupedit.php:743
+#: ../templates/account/groupedit.php:800
+#: ../templates/account/useredit.php:789 ../templates/account/useredit.php:859
+#: ../templates/account/useredit.php:921
+#: ../templates/account/useredit.php:1042
+#: ../templates/account/useredit.php:1159
+#: ../templates/account/useredit.php:1398
+#: ../templates/account/useredit.php:1447
+#: ../templates/account/useredit.php:1527
+msgid "Quota"
+msgstr "Kvóta"
+
+#: ../lib/pdf.inc:230
+msgid "Quota Settings"
+msgstr "Kvóta beállítások"
+
+#: ../templates/account/groupedit.php:755
+#: ../templates/account/useredit.php:1410
+#: ../templates/profedit/profilegroup.php:95
+#: ../templates/profedit/profileuser.php:372
+msgid "Quota properties"
+msgstr "Kvóta jellemzõk"
+
+#: ../lib/ldap.inc:215
+msgid "RID (Windows UID)"
+msgstr "RID (Windows UID)"
+
+#: ../templates/config/confmain.php:192
+msgid "Ranges"
+msgstr "Értékek"
+
+#: ../templates/confwiz/server2.php:224
+msgid "Ranges for UID and GID numbers"
+msgstr "Az UID és GID számok tartományai"
+
+#: ../templates/config/confmain.php:358 ../templates/confwiz/start.php:149
+msgid "Reenter Password"
+msgstr "Jelszó ismétlése"
+
+#: ../templates/config/profmanage.php:337
+msgid "Reenter new master password"
+msgstr "Új mester jelszó megismétlése"
+
+#: ../templates/config/profmanage.php:179
+#: ../templates/config/profmanage.php:271
+msgid "Reenter profile password"
+msgstr "Profil jelszó megismétlése"
+
+#: ../templates/masscreate.php:337 ../templates/lists/listdomains.php:218
+#: ../templates/lists/listgroups.php:335 ../templates/lists/listhosts.php:320
+#: ../templates/lists/listusers.php:392
+msgid "Refresh"
+msgstr "Frissítés"
+
+#: ../templates/config/profmanage.php:202 ../help/help.inc:111
+msgid "Rename profile"
+msgstr "Profil átnevezése"
+
+#: ../templates/config/profmanage.php:88
+msgid "Renamed profile."
+msgstr "Profil átnevezve."
+
+#: ../templates/account/useredit.php:1062
+#: ../templates/account/useredit.php:1182
+msgid "Repeat password"
+msgstr "Ismételje meg a jelszót"
+
+#: ../templates/account/useredit.php:295
+#, php-format
+msgid "Replaced $%s or $%s in homedir."
+msgstr "A home könyvtárban a $%s vagy $%s értéke átállítva."
+
+#: ../templates/domain.php:176 ../templates/config/confmain.php:370
+#: ../templates/profedit/profilegroup.php:152
+#: ../templates/profedit/profilehost.php:121
+#: ../templates/profedit/profileuser.php:429
+msgid "Reset"
+msgstr "Törlés"
+
+#: ../templates/account/groupedit.php:528
+#: ../templates/account/groupedit.php:585
+#: ../templates/account/groupedit.php:652
+#: ../templates/account/groupedit.php:748
+#: ../templates/account/groupedit.php:805
+#: ../templates/account/useredit.php:795 ../templates/account/useredit.php:865
+#: ../templates/account/useredit.php:927
+#: ../templates/account/useredit.php:1048
+#: ../templates/account/useredit.php:1165
+#: ../templates/account/useredit.php:1404
+#: ../templates/account/useredit.php:1453
+#: ../templates/account/useredit.php:1533
+msgid "Reset all changes."
+msgstr "Módosítások elvetése."
+
+#: ../templates/account/hostedit.php:395
+msgid "Reset password"
+msgstr "Jelszó törlése"
+
+#: ../templates/account/groupedit.php:520
+#: ../templates/account/groupedit.php:577
+#: ../templates/account/groupedit.php:645
+#: ../templates/account/groupedit.php:741
+#: ../templates/account/groupedit.php:797
+#: ../templates/account/useredit.php:787 ../templates/account/useredit.php:857
+#: ../templates/account/useredit.php:919
+#: ../templates/account/useredit.php:1040
+#: ../templates/account/useredit.php:1157
+#: ../templates/account/useredit.php:1397
+#: ../templates/account/useredit.php:1445
+#: ../templates/account/useredit.php:1525
+#: ../templates/profedit/profilegroup.php:67
+msgid "Samba"
+msgstr "Samba"
+
+#: ../templates/domain.php:232 ../templates/confwiz/ldaptest.php:239
+msgid "Samba 3 domain SID is invalid!"
+msgstr "Samba 3 tartomány SID érvénytelen!"
+
+#: ../templates/config/confmain.php:183 ../lib/config.inc:274
+msgid "Samba 3.x schema"
+msgstr "Samba 3.x séma"
+
+#: ../templates/lists/listdomains.php:231
+msgid "Samba Domain(s) found"
+msgstr "Samba tartomány(oka)t találtam"
+
+#: ../templates/profedit/profilemain.php:218
+msgid "Samba Host Profiles"
+msgstr "Samba gazdaállomás profilok"
+
+#: ../templates/lists/listhosts.php:333
+msgid "Samba Host(s) found"
+msgstr "Samba gazdaállomás(oka)t találtam"
+
+#: ../templates/ou_edit.php:405
+msgid "Samba Hosts"
+msgstr "Samba gazdaállomások"
+
+#: ../templates/account/groupedit.php:322
+#: ../templates/account/useredit.php:561 ../templates/account/useredit.php:575
+msgid "Samba Options not set!"
+msgstr "Samba beállításai nincsenek megadva!"
+
+#: ../templates/profedit/profileuser.php:232
+msgid "Samba account"
+msgstr "Samba azonosító"
+
+#: ../templates/profedit/profilecreate.php:197
+msgid "Samba home directory is invalid!"
+msgstr "A Samba home könyvtár érvénytelen!"
+
+#: ../templates/account/useredit.php:1179
+msgid "Samba password"
+msgstr "Samba jelszó"
+
+#: ../templates/account/groupedit.php:658
+#: ../templates/account/useredit.php:1173
+msgid "Samba properties"
+msgstr "Samba tulajdonságok"
+
+#: ../templates/config/confmain.php:178
+msgid "Samba settings"
+msgstr "Samba beállítások"
+
+#: ../templates/confwiz/server.php:179 ../help/help.inc:98
+msgid "Samba version"
+msgstr "Samba verzió"
+
+#: ../templates/config/confsave.php:83
+msgid "Samba version is not defined!"
+msgstr "A Samba verziója nincs megadva!"
+
+#: ../templates/account/useredit.php:1272 ../help/help.inc:216
+msgid "Samba workstations"
+msgstr "Samba munkaállomások"
+
+#: ../templates/profedit/profilecreate.php:225
+msgid "Samba workstations are invalid!"
+msgstr "A megadott Samba munkaállomások érvénytelenek!"
+
+#: ../lib/pdf.inc:283 ../lib/pdf.inc:521
+msgid "Samba-Host information page"
+msgstr "Samba-gazda információs lap"
+
+#: ../templates/profedit/profilegroup.php:151
+#: ../templates/profedit/profilehost.php:120
+#: ../templates/profedit/profileuser.php:428
+msgid "Save"
+msgstr "Mentés"
+
+#: ../templates/account/groupedit.php:431
+#: ../templates/account/groupedit.php:434
+#: ../templates/account/groupedit.php:435
+#: ../templates/account/groupedit.php:813
+#: ../templates/account/groupedit.php:817
+#: ../templates/account/hostedit.php:286 ../templates/account/hostedit.php:289
+#: ../templates/account/hostedit.php:290 ../templates/account/hostedit.php:433
+#: ../templates/account/hostedit.php:437 ../templates/account/useredit.php:711
+#: ../templates/account/useredit.php:714 ../templates/account/useredit.php:715
+#: ../templates/account/useredit.php:1541
+#: ../templates/account/useredit.php:1545 ../help/help.inc:265
+msgid "Save profile"
+msgstr "Profil mentése"
+
+#: ../templates/config/confsave.php:199 ../templates/confwiz/o_daemon.php:60
+msgid "Saving PDF text failed!"
+msgstr "A PDF szöveg elmentése nem sikerült!"
+
+#: ../templates/account/useredit.php:426 ../templates/account/useredit.php:439
+#: ../templates/account/useredit.php:1267
+#: ../templates/profedit/profileuser.php:325 ../help/help.inc:86
+#: ../help/help.inc:210 ../lib/pdf.inc:207
+msgid "Script path"
+msgstr "Script elérési útvonala"
+
+#: ../templates/account/useredit.php:439 ../templates/config/confsave.php:181
+#: ../templates/profedit/profilecreate.php:217
+#: ../templates/confwiz/o_daemon.php:54
+msgid "Script path is invalid!"
+msgstr "Script elérési útvonala érvénytelen!"
+
+#: ../help/help.inc:91
+msgid "Script server"
+msgstr "Script szerver"
+
+#: ../templates/config/confsave.php:187 ../templates/confwiz/o_daemon.php:57
+msgid "Script server is invalid!"
+msgstr "Script szerver érvénytelen!"
+
+#: ../templates/config/confmain.php:307
+msgid "Script settings"
+msgstr "Script beállítások"
+
+#: ../templates/config/confmain.php:339
+msgid "Security settings"
+msgstr "Biztonsági beállítások"
+
+#: ../templates/help.php:90
+msgid "See also"
+msgstr "Lásd még"
+
+#: ../templates/lists/listgroups.php:275 ../templates/lists/listhosts.php:258
+#: ../templates/lists/listusers.php:316
+msgid "Select all"
+msgstr "Összes kijelölése"
+
+#: ../templates/masscreate.php:426
+msgid "Select file:"
+msgstr "Fájl kijelölése:"
+
+#: ../templates/masscreate.php:418 ../help/help.inc:267
+msgid "Select group profile"
+msgstr "Válassza ki a csoport profilt"
+
+#: ../templates/masscreate.php:392
+msgid "Select settings"
+msgstr "Válassza ki a beállításokat"
+
+#: ../templates/masscreate.php:395
+msgid "Select user profile:"
+msgstr "Válasszon felhasználói profilt:"
+
+#: ../templates/account/useredit.php:803
+msgid "Select workstations"
+msgstr "Munkaállomások kiválasztása"
+
+#: ../templates/account/useredit.php:876
+msgid "Selected groups"
+msgstr "Kiválasztott csoportok"
+
+#: ../templates/config/confsave.php:89 ../templates/confwiz/server.php:74
+msgid "Server Address is empty!"
+msgstr "A szervercím üres!"
+
+#: ../templates/config/confmain.php:112 ../templates/confwiz/server.php:130
+#: ../help/help.inc:38 ../lib/config.inc:271
+msgid "Server address"
+msgstr "Szervercím"
+
+#: ../templates/config/confmain.php:311 ../templates/confwiz/o_daemon.php:113
+#: ../lib/config.inc:291
+msgid "Server of external script"
+msgstr "A külsõ script szervere"
+
+#: ../templates/config/confmain.php:109
+msgid "Server settings"
+msgstr "Szerverbeállítások"
+
+#: ../templates/profedit/profileuser.php:237
+msgid "Set Samba password"
+msgstr "A Samba jelszó beállítása"
+
+#: ../templates/profedit/profileuser.php:142
+msgid "Set Unix Password"
+msgstr "A Unix jelszó beállítása"
+
+#: ../templates/profedit/profileuser.php:247 ../help/help.inc:126
+msgid "Set Unix password for Samba"
+msgstr "A Sambához tartozó Unix jelszó beállítása"
+
+#: ../templates/config/profmanage.php:256 ../help/help.inc:115
+msgid "Set profile password"
+msgstr "A profilhoz tartozó jelszó beállítása"
+
+#: ../templates/profedit/profilecreate.php:83
+msgid "Shell is invalid!"
+msgstr "A shell érvénytelen!"
+
+#: ../templates/masscreate.php:300
+msgid "Show Details."
+msgstr "Részletek mutatása"
+
+#: ../templates/masscreate.php:317
+msgid "Show Errors."
+msgstr "Hibák mutatása."
+
+#: ../templates/masscreate.php:305
+msgid "Show Infos."
+msgstr "Információk mutatása."
+
+#: ../templates/masscreate.php:311
+msgid "Show Warnings."
+msgstr "Figyelmeztetések mutatása."
+
+#: ../lib/pdf.inc:238
+msgid "Soft block"
+msgstr "Lágy blokk"
+
+#: ../templates/account/groupedit.php:758
+#: ../templates/account/useredit.php:1413
+#: ../templates/profedit/profilegroup.php:100
+#: ../templates/profedit/profileuser.php:377 ../help/help.inc:227
+msgid "Soft block limit"
+msgstr "Lágy blokk határa"
+
+#: ../help/help.inc:228
+msgid "Soft block limit."
+msgstr "Lágy blokk határa."
+
+#: ../lib/pdf.inc:239
+msgid "Soft inode"
+msgstr "Lágy inode"
+
+#: ../help/help.inc:239
+msgid "Soft inode (files) limit."
+msgstr "Lágy inode (file-ok) határa."
+
+#: ../templates/account/groupedit.php:759
+#: ../templates/account/useredit.php:1414
+#: ../templates/profedit/profilegroup.php:102
+#: ../templates/profedit/profileuser.php:379 ../help/help.inc:238
+msgid "Soft inode limit"
+msgstr "Lágy inode határa"
+
+#: ../templates/help.php:65
+msgid "Sorry no help number submitted."
+msgstr "Sajnos nem adott meg súgó-számot."
+
+#: ../templates/help.php:75
+#, php-format
+msgid "Sorry this help number ({bold}%d{endbold}) is not available."
+msgstr "Sajnos ez a súgó-szám ({bold}%d{endbold}) érvénytelen."
+
+#: ../templates/account/useredit.php:488
+#: ../templates/account/useredit.php:1473 ../templates/masscreate.php:377
+#: ../templates/masscreate.php:577 ../templates/massdetail.php:151
+#: ../templates/massdetail.php:240 ../help/help.inc:251 ../help/help.inc:252
+#: ../lib/pdf.inc:93
+msgid "Street"
+msgstr "Utca"
+
+#: ../templates/domain.php:175 ../templates/ou_edit.php:94
+#: ../templates/ou_edit.php:159 ../templates/ou_edit.php:224
+#: ../templates/ou_edit.php:289 ../templates/ou_edit.php:472
+#: ../templates/config/confmain.php:369 ../templates/config/profmanage.php:356
+#: ../templates/profedit/profiledelete.php:97
+#: ../templates/profedit/profiledelete.php:109
+#: ../templates/profedit/profiledelete.php:121
+#: ../templates/profedit/profilemain.php:261
+msgid "Submit"
+msgstr "Elküld"
+
+#: ../templates/account/groupedit.php:606
+#: ../templates/account/hostedit.php:418 ../templates/account/useredit.php:996
+#: ../templates/domain.php:148 ../templates/lists/listdomains.php:185
+#: ../templates/lists/listgroups.php:295 ../templates/lists/listhosts.php:279
+#: ../templates/lists/listusers.php:335 ../templates/confwiz/ldaptest.php:384
+#: ../help/help.inc:271 ../help/help.inc:273 ../help/help.inc:275
+#: ../help/help.inc:294
+msgid "Suffix"
+msgstr "Utótag"
+
+#: ../templates/account/useredit.php:237 ../templates/masscreate.php:291
+#: ../templates/masscreate.php:359 ../templates/masscreate.php:557
+#: ../templates/massdetail.php:88 ../templates/massdetail.php:210
+#: ../help/help.inc:190 ../lib/pdf.inc:85
+msgid "Surname"
+msgstr "Vezetéknév"
+
+#: ../templates/account/useredit.php:237 ../templates/masscreate.php:557
+#: ../templates/massdetail.php:88
+msgid "Surname contains invalid characters"
+msgstr "A vezetéknév érvénytelen karaktereket tartalmaz"
+
+#: ../help/help.inc:191
+msgid "Surname of user. Only letters, - and spaces are allowed."
+msgstr ""
+"A felhasználó vezetékneve. Csak betûk, a \"-\", és szóközök használhatóak."
+
+#: ../templates/account/useredit.php:484
+#: ../templates/account/useredit.php:1491 ../templates/masscreate.php:371
+#: ../templates/masscreate.php:573 ../templates/massdetail.php:157
+#: ../templates/massdetail.php:258 ../help/help.inc:257 ../help/help.inc:258
+msgid "Telephone number"
+msgstr "Telefonszám"
+
+#: ../templates/config/confmain.php:329 ../help/help.inc:107
+#: ../lib/config.inc:293
+msgid "Text for user PDF"
+msgstr "Szöveg a felhasználók PDF-eihez"
+
+#: ../help/help.inc:153
+msgid "The Primary Group the user should be member of."
+msgstr "A felhasználó elsõdleges csoportja."
+
+#: ../help/help.inc:167
+msgid "The Primary group the host should be member of."
+msgstr "A gazdaállomás elsõdleges csoportja."
+
+#: ../help/help.inc:297
+msgid "The SID of your Samba server. Get it with \"net getlocalsid\"."
+msgstr ""
+"Az ön Samba szerverének SID száma. A \"net getlocalsid\"-del kapja meg."
+
+#: ../help/help.inc:295
+msgid "The domain entry will be saved under this suffix."
+msgstr "A tartománybejegyzés ezzel az utótaggal lesz elmentve."
+
+#: ../templates/confwiz/o_lists.php:107
+msgid "The entries are separated by semicolons."
+msgstr "A bejegyzéseket pontosvesszõvel kell elválasztani."
+
+#: ../templates/config/confsave.php:220 ../templates/confwiz/final.php:52
+msgid "The following settings were saved to profile:"
+msgstr "A következõ beállítások lettek a profilba mentve:"
+
+#: ../templates/initsuff.php:187
+msgid ""
+"The following suffix(es) are missing in LDAP. LAM can create them for you."
+msgstr ""
+"A következõ suffix-ek hiányoznak az LDAP-ban. A LAM elkészítheti ezeket "
+"önnek."
+
+#: ../templates/confwiz/ldaptest.php:200
+msgid ""
+"The following suffix(es) are missing in LDAP. LAM will create them for you."
+msgstr ""
+"A következõ suffix-ek hiányoznak az LDAP-ban. A LAM elkészíti ezeket Önnek."
+
+#: ../help/help.inc:293
+msgid "The name of your Windows domain or workgroup."
+msgstr "Az ön Windows tartományának vagy munkacsoportjának neve."
+
+#: ../templates/config/confmain.php:92
+msgid "The password is invalid! Please try again."
+msgstr "Érvénytelen jelszó! Kérem próbálja újra."
+
+#: ../templates/masscreate.php:329
+msgid "There are some errors."
+msgstr "Pár hiba történt."
+
+#: ../templates/masscreate.php:330
+msgid "There are some warnings."
+msgstr "Pár figyelmeztetés érkezett."
+
+#: ../help/help.inc:59
+msgid ""
+"These are the minimum and maximum numbers to use for group IDs when creating "
+"new group accounts. New group accounts will always get the highest number in "
+"use plus one."
+msgstr ""
+"Ezek a minimális és maximális számértékek, melyek a csoport ID-khez "
+"használhatóak új csoportazonosítók létrehozásakor. Az új csoportazonosítók "
+"mindig a már felhasznált legnagyobb számot 1-el megnövelt értéket kapják."
+
+#: ../help/help.inc:61
+msgid ""
+"These are the minimum and maximum numbers to use for machine IDs when "
+"creating new accounts for Samba hosts. The range should be different from "
+"that of users. New host accounts will always get the highest number in use "
+"plus one."
+msgstr ""
+"Ezek a minimális és maximális számértékek, melyek a gép ID-khez "
+"használhatóak új Samba gazdagépek létrehozásakor. A tartománynak a "
+"felhasználók esetében használt tartománytól el kell térnie. Az új gazdagép-"
+"azonosítók mindig a már felhasznált legnagyobb szám 1-el megnövelt értékét "
+"kapják."
+
+#: ../help/help.inc:57
+msgid ""
+"These are the minimum and maximum numbers to use for user IDs when creating "
+"new user accounts. The range should be different from that of machines. New "
+"user accounts will always get the highest number in use plus one."
+msgstr ""
+"Ezek a minimális és maximális számértékek, melyek a felhasználói ID-khez használhatóak új felhasználói azonosítók létrehozásakor. A tartománynak a gépek esetében használt tartománytól el kell térnie. Az új felhasználói azonosítók mindig a már felhasznált legnagyobb szám 1-el megnövelt értékét kapják."
+
+#: ../templates/domain.php:235 ../templates/confwiz/ldaptest.php:231
+msgid "This Samba 3 domain is already present!"
+msgstr "Ez a Samba 3 tartomány már létezik!"
+
+#: ../templates/confwiz/o_lists.php:104
+msgid ""
+"This can be a list of predefined attributes which have a description and are "
+"translated or you can write your own description."
+msgstr "Ez az elõre meghatározott attribútumok listája lehet, melyeknek leírása "
+"van és le vannak fordítva, vagy megadhatja az Ön saját leírását."
+
+#: ../help/help.inc:116
+msgid "This changes the password of the selected profile."
+msgstr "Ez a kiválasztott profil jelszavát változtatja meg."
+
+#: ../help/help.inc:118
+msgid "This changes the profile which is selected by default at login."
+msgstr ""
+"Ez a belépéskor alapértelmezés szerint kiválasztott profilt változtatja meg."
+
+#: ../templates/confwiz/o_lang.php:102 ../help/help.inc:85
+msgid ""
+"This defines the language of the login window and sets this language as the "
+"default language. Users can change the language at login."
+msgstr ""
+"A login ablak nyelvének beállítása, mely egyben az alapértelmezett nyelv "
+"lesz. A felhasználók belépéskor ezt maguknak átállíthatják."
+
+#: ../lib/pdf.inc:506 ../lib/pdf.inc:535 ../lib/pdf.inc:566
+msgid "This document was automatically created by LDAP Account Manager"
+msgstr "Ezt a dokumentumot az LDAP Account Manager automatikusan hozta létre."
+
+#: ../help/help.inc:78
+msgid ""
+"This is a list of valid DN entries of all users that are allowed to login to "
+"LDAP Account Manager. The user names have to be separated by semicolons."
+msgstr ""
+"Ez azon felhasználók érvényes DN bejegyzéseinek listája, akik az LDAP "
+"Account Manager-be beléphetnek. A felhasználók nevét pontosvesszõvel kell "
+"elválasztani."
+
+#: ../help/help.inc:87
+msgid ""
+"This is the absolute path to an external script for setting quotas and "
+"creating home directories."
+msgstr ""
+"Ez az abszolút elérési útvonala a külsõ szkriptnek, mely a kvóták és a home "
+"könytvtárak beállítására szolgál."
+
+#: ../help/help.inc:63
+msgid ""
+"This is the list of attributes to show in the user/group/host list. The "
+"entries can either be predefined values, \"#attribute\", or individual ones, "
+"\"attribute:description\". Several entries are seperated by semicolons."
+msgstr ""
+"Ez azon attribútumok listája, melyeknek látszódniuk kell a felhasználó/"
+"csoport/gazdaállomás listán. A bejegyzések lehetnek elõre meghatározott "
+"értékek , \"#attribute\", vagy egyedi értékek, \"attribútum:leírás\". "
+"A különbözõ bejegyzéseket pontosvesszõvel kell elválasztani."
+
+#: ../help/help.inc:83
+msgid ""
+"This is the number of rows to show in the user/group/host list. If more "
+"entries are found the list will be split into several pages."
+msgstr ""
+"Ennyi sor lesz majd látható a felhasználó/csoport/gazdaállomás listában.  Ha "
+"ennél több bejegyzés létezik, a lista több oldalra lesz osztva."
+
+#: ../help/help.inc:39
+msgid ""
+"This is the server address of your LDAP server. Use ldap:// for standard "
+"LDAP connections and ldaps:// for encrypted (require server certificates) "
+"connections. The port value is optional."
+msgstr ""
+"Ez a szervercíme az ön LDAP szerverének. Használja az ldap:// formátumot a "
+"szokásos LDAP kapcsolatokhoz és az ldaps:// formátumot a titkosított "
+"(szerver bizonyítványok szükségesek) kapcsolathoz. A port értéke elhagyható."
+
+#: ../templates/confwiz/o_daemon.php:107
+msgid ""
+"This is the server and path where the lamdaemon.pl script is stored. LDAP "
+"Account Manager will make a SSH connection to this server with username and "
+"password provided at login."
+msgstr ""
+"Az a szerver és elérési útvonal, ahol a lamdaemon szkript található. Az LDAP "
+"Account Manager SSH kapcsolatot létesít ezzel a szerverrel, a belépéskor "
+"(login) megadott felhasználónév és jelszó használatával."
+
+#: ../help/help.inc:92
+msgid ""
+"This is the server where the lamdaemon script is stored. LDAP Account "
+"Manager will make a SSH connection to this server with username and password "
+"provided at login."
+msgstr ""
+"Az a szerver, ahol a lamdaemon szkript található. Az LDAP Account Manager "
+"SSH kapcsolatot létesít ezzel a szerverrel, a belépéskor (login) megadott "
+"felhasználónév és jelszó használatával."
+
+#: ../help/help.inc:51
+msgid ""
+"This is the suffix of the LDAP tree from where to search for user/group/host "
+"entries. Only entries in these subtrees will be displayed in the user/group/"
+"host list. When creating a new accont this will be the DN where it is saved."
+msgstr ""
+"Ez az utótagja az LDAP fának ahonnan a felhasználó/csoport/gazdaállomás "
+"bejegyzések keresése kezdõdik. Csak az ezekben az al-fákban található "
+"bejegyzések szerepelnek majd a felhasználó/csoport/gazdaállomás listán. Új "
+"azonosító létrehozásakor ez lesz a DN, ahová az azonosító elmentõdik."
+
+#: ../help/help.inc:104
+msgid ""
+"This is the time in minutes which LAM caches its LDAP searches. Shorter "
+"times will stress LDAP more but decrease the possibility that changes are "
+"not identified."
+msgstr ""
+"Ez az a percekben mért idõ, amennyit az LAM cache-el az LDAP keresés során. "
+"Rövidebb idõértékek jobban terhelik az LDAP-t, de csökkentik annak "
+"valószínûségét, hogy a változások nem kerülnek felismerésre."
+
+#: ../templates/confwiz/o_daemon.php:127 ../help/help.inc:108
+msgid "This text will appear on top of every user PDF file."
+msgstr "Ez a szöveg jelenik majd meg minden felhasználó PDF file-jának tetején."
+
+#: ../templates/lists/userlink.php:53
+msgid "This user was not found!"
+msgstr "A felhasználó nem található"
+
+#: ../help/help.inc:289
+msgid "This will create a new organizational unit under the selected one."
+msgstr "Ezzel egy új szervezeti egység keletkezik a kijelölt alatt."
+
+#: ../help/help.inc:291
+msgid ""
+"This will delete the selected organizational unit. The OU has to be empty."
+msgstr ""
+"Ezzel törli a kiválasztott szervezeti egységet. Az OU-nak üresnek kell "
+"lennie."
+
+#: ../help/help.inc:114
+msgid "This will delete the selected profile."
+msgstr "Ezzel törli a kiválasztott profilt."
+
+#: ../help/help.inc:266
+msgid ""
+"This will make a profile of the current account. The saved values are the "
+"same as in the profile editor. Profile names may contain the letters a-z, 0-"
+"9 and -_."
+msgstr ""
+"Ezzel profilt készít a jelenlegi azonosítóról. Az elmentett értékek "
+"ugyanazok, mint a profilszerkesztõben. A profilnevek a következõ "
+"karaktereket tartalmazhatják: a-z, 0-9 és -_."
+
+#: ../templates/account/useredit.php:490
+#: ../templates/account/useredit.php:1461 ../templates/masscreate.php:367
+#: ../templates/masscreate.php:579 ../templates/massdetail.php:147
+#: ../templates/massdetail.php:228 ../help/help.inc:247 ../lib/pdf.inc:81
+msgid "Title"
+msgstr "Megszólítás"
+
+#: ../help/help.inc:248
+msgid "Title of user, Mr., Ms., ..."
+msgstr "A felhasználó megszólítása, Mr, Ms., ..."
+
+#: ../templates/confwiz/server.php:144
+msgid ""
+"To connect to your LDAP server please enter now the DN of your "
+"administrative user and the password."
+msgstr "LDAP szerveréhez való kapcsolódáshoz kérem adja meg adminisztrátorának "
+"DN-jét és a jelszót."
+
+#: ../help/help.inc:151
+msgid ""
+"To disable login use /bin/false. List of shells is read from lam/config/"
+"shells"
+msgstr ""
+"A belépés letiltásához használja a /bin/false-ot. A shell-ek listája a /lam/"
+"config/shells file-ból olvasódik."
+
+#: ../templates/lists/listusers.php:349
+msgid "Translate GID number to group name"
+msgstr "A GID szám lefordítása csoportnévre"
+
+#: ../lib/pdf.inc:302 ../lib/pdf.inc:345
+msgid "UID"
+msgstr "Felhasználói azonosító, UID"
+
+#: ../templates/account/hostedit.php:371 ../templates/account/useredit.php:943
+#: ../help/help.inc:56 ../help/help.inc:141 ../help/help.inc:163
+#: ../lib/ldap.inc:194 ../lib/ldap.inc:217
+msgid "UID number"
+msgstr "UID szám"
+
+#: ../templates/account/useredit.php:551
+msgid ""
+"UID-number has changed. You have to run the following command as root in "
+"order to change existing file-permissions:"
+msgstr ""
+"Az UID száma megváltozott. Root-ként kell futtatnia a következõ utasítást "
+"hogy megváltoztassa a jelenlegi file-engedélyeket."
+
+#: ../help/help.inc:219
+#, php-format
+msgid ""
+"UNC-path (\\\\server\\share) of homedirectory. $%s and $%s are replaced with "
+"user- and groupname."
+msgstr ""
+"A home könyvtár UNC elérési útvonala (\\\\server\\share). A $%s és a $%s a felhasználó-és csoportnévvel helyettesítõdnek."
+
+#: ../templates/ou_edit.php:55 ../templates/ou_edit.php:120
+#: ../templates/ou_edit.php:185 ../templates/ou_edit.php:250
+msgid "Unable to create new OU!"
+msgstr "Nem tudok új OU-t létrehozni!"
+
+#: ../templates/config/profmanage.php:77 ../templates/confwiz/start.php:63
+msgid "Unable to create new profile!"
+msgstr "Az új profilt nem lehet létrehozni!"
+
+#: ../templates/ou_edit.php:72 ../templates/ou_edit.php:137
+#: ../templates/ou_edit.php:202 ../templates/ou_edit.php:267
+msgid "Unable to delete OU!"
+msgstr "Nem tudom törölni az OU-t!"
+
+#: ../templates/config/profmanage.php:99
+#: ../templates/profedit/profiledelete.php:53
+#: ../templates/profedit/profiledelete.php:60
+#: ../templates/profedit/profiledelete.php:67
+msgid "Unable to delete profile!"
+msgstr "A profilt nem lehet törölni!"
+
+#: ../templates/login.php:99 ../templates/config/confmain.php:296
+#: ../templates/confwiz/o_lang.php:134
+msgid ""
+"Unable to load available languages. Setting English as default language. For "
+"further instructions please contact the Admin of this site."
+msgstr ""
+"Nem tudom betölteni az elérhetõ nyelveket. Az angolt állítom be "
+"alapértelmezett nyelvnek. További teendõkért kérem forduljon az oldal "
+"adminisztrátorához."
+
+#: ../lib/config.inc:184 ../lib/config.inc:735
+msgid "Unable to load configuration!"
+msgstr "Nem tudom betölteni a beállításokat!"
+
+#: ../lib/profiles.inc:252 ../lib/profiles.inc:256 ../lib/profiles.inc:319
+#: ../lib/profiles.inc:323 ../lib/profiles.inc:375 ../lib/profiles.inc:379
+msgid "Unable to load profile!"
+msgstr "Nem tudom betölteni a profilt!"
+
+#: ../templates/profedit/profilecreate.php:285
+#: ../templates/profedit/profilecreate.php:350 ../lib/profiles.inc:451
+#: ../lib/profiles.inc:486 ../lib/profiles.inc:514
+msgid "Unable to save profile!"
+msgstr "Nem tudom elmenteni a profilt!"
+
+#: ../templates/account/groupedit.php:530
+#: ../templates/account/groupedit.php:587
+#: ../templates/account/groupedit.php:654
+#: ../templates/account/groupedit.php:750
+#: ../templates/account/groupedit.php:807
+#: ../templates/account/useredit.php:797 ../templates/account/useredit.php:867
+#: ../templates/account/useredit.php:929
+#: ../templates/account/useredit.php:1050
+#: ../templates/account/useredit.php:1167
+#: ../templates/account/useredit.php:1406
+#: ../templates/account/useredit.php:1455
+#: ../templates/account/useredit.php:1535 ../templates/massdetail.php:79
+#: ../templates/massdetail.php:283
+msgid "Undo"
+msgstr "Mégsem"
+
+#: ../templates/account/hostedit.php:448
+msgid "Undo changes"
+msgstr "Változások elvetése"
+
+#: ../templates/account/useredit.php:786 ../templates/account/useredit.php:856
+#: ../templates/account/useredit.php:918
+#: ../templates/account/useredit.php:1039
+#: ../templates/account/useredit.php:1156
+#: ../templates/account/useredit.php:1396
+#: ../templates/account/useredit.php:1444
+#: ../templates/account/useredit.php:1524
+msgid "Unix"
+msgstr "Unix"
+
+#: ../lib/pdf.inc:124
+msgid "Unix User Settings"
+msgstr "Unix felhasználói beállítások"
+
+#: ../templates/profedit/profileuser.php:88
+msgid "Unix account"
+msgstr "Unix azonosító"
+
+#: ../templates/confwiz/ldaptest.php:483
+msgid "Unix group name"
+msgstr "Unix csoportnév"
+
+#: ../lib/pdf.inc:132 ../lib/pdf.inc:141
+msgid "Unix password"
+msgstr "Unix jelszó"
+
+#: ../lib/pdf.inc:134
+msgid "Unix password disabled!"
+msgstr "Unix jelszó kikapcsolva!"
+
+#: ../templates/account/useredit.php:1054
+msgid "Unix properties"
+msgstr "Unix tulajdonságok"
+
+#: ../templates/account/useredit.php:353
+#: ../templates/account/useredit.php:1122
+#: ../templates/profedit/profileuser.php:208 ../help/help.inc:279
+msgid "Unix workstations"
+msgstr "Unix munkaállomások"
+
+#: ../templates/profedit/profilecreate.php:131
+msgid "Unix workstations are invalid!"
+msgstr "A megadott Unix munkaállomások érvénytelenek!"
+
+#: ../templates/account/useredit.php:353
+msgid "Unix workstations is invalid."
+msgstr "A megadott Unix munkaállomás érvénytelen."
+
+#: ../templates/confwiz/o_daemon.php:108 ../help/help.inc:89
+#: ../help/help.inc:94
+msgid ""
+"Use it at your own risk and read the documentation for lamdaemon before you "
+"use it!"
+msgstr ""
+"Használja saját felelõsségére és olvassa el a lamdaemon leírását a használat "
+"elõtt!"
+
+#: ../templates/account/useredit.php:1068
+#: ../templates/account/useredit.php:1194 ../help/help.inc:194
+msgid "Use no password"
+msgstr "Jelszó nélküli használat"
+
+#: ../templates/account/useredit.php:1188 ../help/help.inc:198
+msgid "Use unix password"
+msgstr "Unix jelszó használata"
+
+#: ../templates/account/groupedit.php:757
+#: ../templates/account/useredit.php:1412 ../help/help.inc:225
+msgid "Used blocks"
+msgstr "Használt blokkok"
+
+#: ../help/help.inc:226
+msgid "Used blocks. 1000 blocks are usually 1MB"
+msgstr "Használt blokkok. Általában 1000 blokk számít 1 MB-nek"
+
+#: ../help/help.inc:305
+msgid "Used for calculating RIDs from UID/GID. Do not change if unsure."
+msgstr ""
+"A RID-ek UID/GID-bõl történõ kiszámításához használatos. Ha bizonytalan, ne "
+"változtassa meg."
+
+#: ../templates/account/groupedit.php:759
+#: ../templates/account/useredit.php:1414 ../help/help.inc:236
+msgid "Used inodes"
+msgstr "Használt inode-ok"
+
+#: ../help/help.inc:237
+msgid "Used inodes (files)"
+msgstr "Használt inode-ok (file-ok)"
+
+#: ../templates/account/useredit.php:1565
+msgid "User "
+msgstr "Felhasználó "
+
+#: ../lib/ldap.inc:193
+msgid "User ID"
+msgstr "Felhasználó ID"
+
+#: ../templates/profedit/profilemain.php:128
+msgid "User Profiles"
+msgstr "Felhasználóprofil"
+
+#: ../templates/account/useredit.php:1206 ../help/help.inc:130
+#: ../help/help.inc:202
+msgid "User can change password"
+msgstr "A felhasználó módosíthatja a jelszavát"
+
+#: ../help/help.inc:149
+msgid "User description. If left empty sur- and give name will be used."
+msgstr ""
+"A felhasználó leírása. Ha üresen hagyja, a keresztnév és vezetéknév szolgál "
+"erre."
+
+#: ../lib/pdf.inc:39 ../lib/pdf.inc:493
+msgid "User information page"
+msgstr "Felhasználói információs lap"
+
+#: ../templates/initsuff.php:143 ../templates/initsuff.php:156
+#: ../templates/initsuff.php:162 ../templates/initsuff.php:171
+#: ../templates/masscreate.php:269
+msgid "User list"
+msgstr "Felhasználólista"
+
+#: ../templates/config/confsave.php:154 ../templates/confwiz/o_lists.php:54
+msgid "User list attributes are invalid!"
+msgstr "A felhasználói lista attribútumai érvénytelenek!"
+
+#: ../templates/account/useredit.php:1225 ../help/help.inc:204
+msgid "User must change password"
+msgstr "A felhasználónak módosítania kell a jelszavát"
+
+#: ../templates/masscreate.php:291
+msgid "User name"
+msgstr "Felhasználónév"
+
+#: ../lib/pdf.inc:233
+msgid "User quota(s)"
+msgstr "Felhasználói kvóta/kvóták"
+
+#: ../templates/masscreate.php:402
+msgid "User suffix"
+msgstr "Felhasználó utótag"
+
+#: ../templates/lists/listusers.php:405
+msgid "User(s) found"
+msgstr "Felhasználó(ka)t találtam"
+
+#: ../help/help.inc:50
+msgid "User/Group/Host suffix"
+msgstr "Felhasználó/Csoport/Gazdaállomás utótag"
+
+#: ../templates/config/confmain.php:123 ../templates/confwiz/server2.php:131
+#: ../lib/config.inc:275
+msgid "UserSuffix"
+msgstr "Felhasználó utótag"
+
+#: ../templates/config/confsave.php:104 ../templates/confwiz/server2.php:59
+msgid "UserSuffix is invalid!"
+msgstr "Felhasználó utótag érvénytelen"
+
+#: ../templates/account/useredit.php:223 ../templates/account/useredit.php:245
+#: ../templates/account/useredit.php:290 ../templates/account/useredit.php:937
+#: ../templates/login.php:148 ../templates/masscreate.php:363
+#: ../templates/masscreate.php:553 ../templates/masscreate.php:566
+#: ../templates/massdetail.php:95 ../templates/massdetail.php:144
+#: ../templates/massdetail.php:222 ../help/help.inc:139 ../lib/ldap.inc:196
+#: ../lib/pdf.inc:127 ../lib/pdf.inc:178
+msgid "Username"
+msgstr "Felhasználónév"
+
+#: ../templates/account/useredit.php:245 ../templates/masscreate.php:566
+#: ../templates/massdetail.php:95
+msgid ""
+"Username contains invalid characters. Valid characters are: a-z, A-Z, 0-9 "
+"and .-_ !"
+msgstr ""
+"A felhasználónév érvénytelen karaktereket tartalmaz. Érvényes karakterek: a-z, A-Z, 0-9 és .-_ !"
+
+#: ../templates/account/useredit.php:290 ../templates/masscreate.php:553
+#: ../templates/massdetail.php:144
+msgid "Username in use. Selected next free username."
+msgstr ""
+"Ez a felhasználónév már használatban van. A legközelebb álló, használatlan "
+"felhasználónevet választom."
+
+#: ../help/help.inc:140
+msgid ""
+"Username of the user who should be created. Valid characters are: a-z,0-9, .-"
+"_. Lam does not allow a number as first character because useradd also does "
+"not allow it. Lam does not allow capital letters A-Z because it can cause "
+"several problems. If username is already used username will be expanded with "
+"a number. The next free number will be used. Warning: Older systems have "
+"problems with usernames longer than 8 characters. You can not log in to "
+"Windows if username is longer than 16 characters."
+msgstr ""
+"A létrehozásra kerülõ felhasználó felhasználói neve. Használható karakterek: "
+"a-z, 0-9, .-_. A Lam nem fogad el számot elsõ karakterként, mert a useradd "
+"sem fogadja el. A Lam nem engedi a nagybetûk A-Z használatát, mert ez "
+"különbözõ problémák forrása lehet. Ha a felhasználónév már használatban van, "
+"számmal lesz megtoldva. A legközelebbi, használatlan szám lesz felhasználva. "
+"Figyelem: Régebbi rendszereken problémát jelenthetnek a 8-nál több "
+"karakterbõl álló felhasználónevek. Windows-ba nem fog tudni bejelentkezni, "
+"ha a felhasználónév 16 karakternél hosszabb."
+
+#: ../templates/main_header.php:73 ../templates/main_header.php:78
+#: ../templates/ou_edit.php:339 ../templates/confwiz/o_lists.php:112
+#: ../help/help.inc:69
+msgid "Users"
+msgstr "Felhasználók"
+
+#: ../help/help.inc:284
+msgid "Users also being member of the current group."
+msgstr "A jelenlegi csoportba tartozó további felhasználók."
+
+#: ../help/help.inc:181
+msgid "Users wich are also members of group."
+msgstr "A csoportba tartozó további felhasználók."
+
+#: ../templates/confwiz/o_lang.php:145 ../help/help.inc:77
+msgid "Valid users"
+msgstr "Elfogadott felhasználók"
+
+#: ../templates/account/groupedit.php:618
+#: ../templates/account/hostedit.php:429
+#: ../templates/account/useredit.php:1008
+#: ../templates/account/useredit.php:1129
+msgid "Values with * are required"
+msgstr "A *-al jelölt értékek kötelezõek."
+
+#: ../templates/masscreate.php:292
+msgid "Warnings"
+msgstr "Figyelmeztetések"
+
+#: ../templates/masscreate.php:212 ../templates/masscreate.php:242
+#, php-format
+msgid "Was unable to create %s."
+msgstr "Nem lehet létrehozni: %s."
+
+#: ../templates/confwiz/start.php:107
+msgid "Welcome to LAM Configuration wizard."
+msgstr "Üdvözli Önt a LAM Beállításvarázsló."
+
+#: ../help/help.inc:49
+msgid ""
+"When using ldaps:// be sure to use exactly the same IP/domain name as in "
+"your certificate!"
+msgstr ""
+"Ha az ldaps://-t használja, ügyeljen, hogy ugyanazt az IP/domain nevet használja, mint ami a bizonyítványában szerepel!"
+
+#: ../templates/confwiz/server.php:173
+msgid "Which Samba version do you use?"
+msgstr "Melyik Samba verziót használja?"
+
+#: ../lib/pdf.inc:185
+msgid "Window password disabled!"
+msgstr "Windows jelszó letiltva!"
+
+#: ../lib/pdf.inc:223
+msgid "Windows Domain"
+msgstr "Windows tartomány"
+
+#: ../lib/pdf.inc:175
+msgid "Windows User Settings"
+msgstr "Windows felhasználói beállítások"
+
+#: ../help/help.inc:183
+msgid "Windows clients will show display name as group description."
+msgstr "A Windows kliensek a képernyõnevet mutatják majd csoport-leírásként."
+
+#: ../help/help.inc:269
+msgid "Windows domain"
+msgstr "Windows tartomány"
+
+#: ../help/help.inc:270
+msgid "Windows domain of host."
+msgstr "A gazdaállomás Windows tartománya."
+
+#: ../templates/confwiz/ldaptest.php:482
+msgid "Windows group name"
+msgstr "Windows csoportnév"
+
+#: ../templates/account/groupedit.php:664
+#: ../templates/account/useredit.php:1277 ../help/help.inc:277
+msgid "Windows groupname"
+msgstr "Windows csoportnév"
+
+#: ../lib/pdf.inc:219
+msgid "Windows home directory"
+msgstr "Windows home könyvtár"
+
+#: ../lib/pdf.inc:183 ../lib/pdf.inc:189 ../lib/pdf.inc:198
+msgid "Windows password"
+msgstr "Windows jelszó"
+
+#: ../lib/pdf.inc:191
+msgid "Windows password set to unix password."
+msgstr "Windows jelszóként a Unix jelszó lett beállítva."
+
+#: ../help/help.inc:282
+msgid "Windows-Domain of group."
+msgstr "A csoport Windows-tartománya."
+
+#: ../help/help.inc:222
+msgid "Windows-Domain of user."
+msgstr "A felhasználó Windows-tartománya."
+
+#: ../templates/profedit/profileuser.php:335
+msgid "Workstations"
+msgstr "Munkaállomások"
+
+#: ../templates/login.php:317 ../templates/confwiz/server.php:70
+msgid "Wrong Password/Username combination. Try again."
+msgstr "Rossz jelszó-felhasználónév kombináció. Próbálja újra."
+
+#: ../templates/profedit/profiledelete.php:73
+#: ../templates/profedit/profiledelete.php:130
+msgid "Wrong or missing type!"
+msgstr "Rossz vagy hiányzó típus!"
+
+#: ../templates/profedit/profilecreate.php:171
+msgid "Wrong parameter for Samba option: Account does not expire!"
+msgstr "Rossz paraméter a Samba beállításaként: az azonosító nem jár le!"
+
+#: ../templates/profedit/profilecreate.php:179
+msgid "Wrong parameter for Samba option: Account is disabled!"
+msgstr "Rossz paraméter a Samba beállításaként: letiltott azonosító!"
+
+#: ../templates/profedit/profilecreate.php:155
+msgid "Wrong parameter for Samba option: Set Samba Password!"
+msgstr "Rossz paraméter a Samba beállításaként: állítsa be a Samba jelszót!"
+
+#: ../templates/profedit/profilecreate.php:163
+msgid "Wrong parameter for Samba option: Set Unix Password for Samba!"
+msgstr ""
+"Rossz paraméter a Samba beállításaként: állítsa be a Unix jelszót a Sambához!"
+
+#: ../templates/profedit/profilecreate.php:187
+msgid "Wrong parameter for Samba option: home drive!"
+msgstr "Rossz paraméter a Samba beállításaként: home meghajtó!"
+
+#: ../templates/profedit/profilecreate.php:139
+msgid "Wrong parameter for Unix account activation!"
+msgstr "Rossz paraméter a Unix azonosító aktiválásához!"
+
+#: ../templates/profedit/profilecreate.php:123
+msgid "Wrong parameter for Unix password expiry!"
+msgstr "Rossz paraméter a Unix jelszó lejárásához!"
+
+#: ../templates/profedit/profilecreate.php:99
+msgid "Wrong parameter for Unix password warning!"
+msgstr "Rossz paraméter a Unix jelszó figyelmeztetéshez!"
+
+#: ../templates/profedit/profilecreate.php:91
+msgid "Wrong parameter for login disable!"
+msgstr "Rossz paraméter a belépés letiltásához!"
+
+#: ../templates/account/groupedit.php:435
+#: ../templates/account/hostedit.php:290 ../templates/account/useredit.php:715
+msgid "Wrong profilename given."
+msgstr "Rossz profilnevet adott meg."
+
+#: ../templates/login.php:236
+msgid "You are connecting to ServerURL"
+msgstr "Csatlakozás a következõ címhez"
+
+#: ../templates/login.php:248
+msgid "You are currently using Profile"
+msgstr "Jelenleg használt profil"
+
+#: ../templates/account/groupedit.php:157
+#: ../templates/account/hostedit.php:120 ../templates/account/useredit.php:223
+msgid ""
+"You are using a capital letters. This can cause problems because not all "
+"programs are case-sensitive."
+msgstr "Nagy betûket használ. Ez problémákat jelenthet, mert nem minden program case-szenzitív."
+
+#: ../help/help.inc:185
+msgid ""
+"You can select a previous defined profile here. This will set all fields to "
+"the profile values."
+msgstr ""
+"Itt választhat egy elõzõleg beállított profilt. Ez minden mezõt a profil értékeire állít."
+
+#: ../templates/logout.php:62
+msgid "You have been logged off from LDAP Account Manager."
+msgstr "Kijelentkezett az LDAP Account Manager alkalmazásból"
+
+#: ../templates/login.php:197
+msgid "Your Language"
+msgstr "Nyelv"
+
+#: ../templates/delete.php:202
+msgid "deleted"
+msgstr "törölve"
+
+#: ../templates/account/useredit.php:487
+#: ../templates/account/useredit.php:1509 ../templates/masscreate.php:369
+#: ../templates/masscreate.php:576 ../templates/massdetail.php:163
+#: ../templates/massdetail.php:276 ../help/help.inc:263 ../help/help.inc:264
+msgid "eMail address"
+msgstr "E-Mail cím"
+
+#: ../templates/account/groupedit.php:850
+#: ../templates/account/hostedit.php:468
+#: ../templates/account/useredit.php:1568
+msgid "has been created"
+msgstr "létrehozva"
+
+#: ../templates/account/groupedit.php:849
+#: ../templates/account/hostedit.php:467
+#: ../templates/account/useredit.php:1567
+msgid "has been modified"
+msgstr "módosítva"
+
+#: ../lib/account.inc:276 ../lib/account.inc:278
+msgid "hours"
+msgstr "órák"
+
+#: ../help/help.inc:43
+msgid ""
+"ldap://localhost:389 connects to localhost using a standard LDAP connection "
+"on port 389"
+msgstr ""
+"ldap://localhost:839 kapcsolódik localhost-hoz szokványos LDAP kapcsolattal "
+"a 389-es porton"
+
+#: ../help/help.inc:45
+msgid ""
+"ldaps://141.40.146.133 connects to 141.40.146.133 using an encrypted LDAP "
+"connection."
+msgstr ""
+"ldaps://141.40.146.133 kapcsolódik a 141.40.146.133-hoz titkosított LDAP "
+"kapcsolatottal."
+
+#: ../templates/profedit/profileuser.php:144
+#: ../templates/profedit/profileuser.php:145
+#: ../templates/profedit/profileuser.php:220
+#: ../templates/profedit/profileuser.php:221
+#: ../templates/profedit/profileuser.php:239
+#: ../templates/profedit/profileuser.php:240
+#: ../templates/profedit/profileuser.php:249
+#: ../templates/profedit/profileuser.php:250
+#: ../templates/profedit/profileuser.php:259
+#: ../templates/profedit/profileuser.php:260
+#: ../templates/profedit/profileuser.php:269
+#: ../templates/profedit/profileuser.php:270
+msgid "no"
+msgstr "nem"
+
+#: ../templates/masscreate.php:286
+msgid "not found!"
+msgstr "nem található!"
+
+#: ../help/help.inc:55
+msgid ""
+"ou=People,dc=yourcompany,dc=com will read and store all accounts in this "
+"subtree."
+msgstr ""
+"ou=emberek,dc=az_ön_cége,dc=com minden azonosítót ezen az al-fán olvas és "
+"tárol."
+
+#: ../templates/config/confmain.php:379
+msgid "required"
+msgstr "szükséges"
+
+#: ../templates/config/confmain.php:380
+msgid "required for Samba 3 schema"
+msgstr "a Samba 3 sémájához szükséges"
+
+#: ../templates/masscreate.php:291
+msgid "row"
+msgstr "sor"
+
+#: ../lib/profiles.inc:466
+msgid "saveGroupProfile: account has wrong type!"
+msgstr "Csoport profil mentése: az azonosító típusa hibás!"
+
+#: ../lib/profiles.inc:501
+msgid "saveHostProfile: account has wrong type!"
+msgstr "Gazdaállomási profil mentése: az azonosító típusa hibás!"
+
+#: ../lib/profiles.inc:393
+msgid "saveUserProfile: account has wrong type!"
+msgstr "Felhasználói profil mentése: az azonosító típusa hibás!"
+
+#: ../templates/profedit/profileuser.php:144
+#: ../templates/profedit/profileuser.php:145
+#: ../templates/profedit/profileuser.php:220
+#: ../templates/profedit/profileuser.php:221
+#: ../templates/profedit/profileuser.php:239
+#: ../templates/profedit/profileuser.php:240
+#: ../templates/profedit/profileuser.php:249
+#: ../templates/profedit/profileuser.php:250
+#: ../templates/profedit/profileuser.php:259
+#: ../templates/profedit/profileuser.php:260
+#: ../templates/profedit/profileuser.php:269
+#: ../templates/profedit/profileuser.php:270
+msgid "yes"
+msgstr "igen"
