@@ -681,7 +681,7 @@ class Config {
 	}
 
 	// returns text for user PDF files
-	function get_pdftext() {
+	function get_pdftext($name = "User") {
 		if ($this->pdftext) return $this->pdftext;
 		else return "";
 	}
