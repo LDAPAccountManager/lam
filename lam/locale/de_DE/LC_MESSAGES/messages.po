@@ -276,7 +276,7 @@ msgstr "Soll dieses Objekt gelöscht werden?"
 msgid "Attribute"
 msgstr "Attribut"
 
-#: ../lib/cache.inc:101 ../lib/cache.inc:160
+#: ../lib/cache.inc:102 ../lib/cache.inc:162
 msgid "Attribute not defined in LDAP."
 msgstr "Attribut ist nicht in LDAP definiert."
 
@@ -468,9 +468,10 @@ msgstr "Abbrechen"
 
 #: ../templates/login.php:339 ../templates/login.php:344
 msgid "Cannot connect to specified LDAP-Server. Please try again."
-msgstr "Kann keine Verbindung zum LDAP-Server aufbauen. Bitte erneut versuchen."
+msgstr ""
+"Kann keine Verbindung zum LDAP-Server aufbauen. Bitte erneut versuchen."
 
-#: ../lib/config.inc:328 ../lib/config.inc:960
+#: ../lib/config.inc:328 ../lib/config.inc:866
 msgid "Cannot open config file!"
 msgstr "Kann Konfigurationsdatei nicht öffnen!"
 
@@ -685,7 +686,7 @@ msgstr "Aktuelle Werte für Attribut:"
 #: ../templates/tree/update_confirm.php:75
 #: ../templates/tree/add_attr_form.php:72 ../templates/tree/delete_form.php:76
 #: ../templates/tree/delete_form.php:150 ../templates/delete.php:90
-#: ../lib/modules.inc:1478
+#: ../lib/modules.inc:1486
 msgid "DN"
 msgstr "DN"
 
@@ -705,12 +706,14 @@ msgstr "Datenfeld für RDN ist leer!"
 #: ../lib/modules/sambaAccount.inc:350 ../lib/modules/sambaSamAccount.inc:165
 #: ../help/help.inc:201
 msgid "Date after the user is able to change his password. Format: DD-MM-YYYY"
-msgstr "Datum, nach dem der Benutzer sein Passwort ändern kann. Format: TT-MM-JJJJ"
+msgstr ""
+"Datum, nach dem der Benutzer sein Passwort ändern kann. Format: TT-MM-JJJJ"
 
 #: ../lib/modules/sambaAccount.inc:352 ../lib/modules/sambaSamAccount.inc:167
 #: ../help/help.inc:203
 msgid "Date after the user must change his password. Format: DD-MM-YYYY"
-msgstr "Datum, nach dem der Benutzer sein Passwort ändern muss. Format: TT-MM-JJJJ"
+msgstr ""
+"Datum, nach dem der Benutzer sein Passwort ändern muss. Format: TT-MM-JJJJ"
 
 #: ../lib/modules/shadowAccount.inc:147 ../help/help.inc:171
 msgid ""
@@ -1188,7 +1191,8 @@ msgstr "Vorname enthält ungültige Zeichen!"
 
 #: ../lib/modules/inetOrgPerson.inc:232 ../help/help.inc:193
 msgid "First name of user. Only letters, - and spaces are allowed."
-msgstr "Vorname des Benutzers. Es sind nur Buchstaben, - und Leerzeichen erlaubt."
+msgstr ""
+"Vorname des Benutzers. Es sind nur Buchstaben, - und Leerzeichen erlaubt."
 
 #: ../lib/modules/posixGroup.inc:128 ../lib/modules/posixGroup.inc:295
 #: ../lib/modules/posixGroup.inc:325 ../lib/modules/posixGroup.inc:350
@@ -1248,14 +1252,17 @@ msgid "Grace block period"
 msgstr "Block-Frist"
 
 #: ../lib/modules/quota.inc:81
-msgid "Grace block period. Most filesystems use a fixed maximum value of 7 days."
-msgstr "Block-Frist. Viele Dateisysteme verwenden ein festes Maximum von 7 Tagen."
+msgid ""
+"Grace block period. Most filesystems use a fixed maximum value of 7 days."
+msgstr ""
+"Block-Frist. Viele Dateisysteme verwenden ein festes Maximum von 7 Tagen."
 
 #: ../lib/modules/quota.inc:97
 msgid ""
 "Grace inode (files) period. Most filesystems use a fixed maximum value of 7 "
 "days."
-msgstr "Inode-Frist. Viele Dateisysteme verwenden ein festes Maximum von 7 Tagen."
+msgstr ""
+"Inode-Frist. Viele Dateisysteme verwenden ein festes Maximum von 7 Tagen."
 
 #: ../lib/modules/quota.inc:96 ../lib/modules/quota.inc:299
 msgid "Grace inode period"
@@ -1269,7 +1276,7 @@ msgstr "Gruppenbeschreibung"
 msgid "Group description. If left empty group name will be used."
 msgstr "Gruppenbeschreibung. Falls leer wird der Gruppename verwendet."
 
-#: ../lib/pdf.inc:454
+#: ../lib/pdf.inc:452
 msgid "Group information page"
 msgstr "Gruppeninformationen"
 
@@ -1426,7 +1433,7 @@ msgstr "Höhe"
 #: ../templates/pdfedit/pdfpage.php:811
 #: ../templates/profedit/profilepage.php:90
 #: ../templates/profedit/profilepage.php:129
-#: ../templates/profedit/profilepage.php:166 ../lib/modules.inc:871
+#: ../templates/profedit/profilepage.php:166 ../lib/modules.inc:879
 msgid "Help"
 msgstr "Hilfe"
 
@@ -1449,7 +1456,8 @@ msgid "Here you can manage your account profiles."
 msgstr "Hier können Sie Ihre Accountprofile verwalten."
 
 #: ../help/help.inc:113
-msgid "Here you can select which plugins you want to use for account management."
+msgid ""
+"Here you can select which plugins you want to use for account management."
 msgstr ""
 "Hier können Sie die Plugins wählen, die Sie zur Accountverwaltung verwenden "
 "möchten."
@@ -1460,7 +1468,9 @@ msgstr "Interne Attribute verstecken"
 
 #: ../templates/tree/edit.php:117
 msgid "Hint: To delete an attribute, empty the text field and click save."
-msgstr "Tipp: Um ein Attribut zu löschen, leeren Sie das Eingabefeld und speichern die Änderung."
+msgstr ""
+"Tipp: Um ein Attribut zu löschen, leeren Sie das Eingabefeld und speichern "
+"die Änderung."
 
 #: ../lib/modules/posixAccount.inc:334 ../help/help.inc:147
 msgid "Hold the CTRL-key to (de)select multiple groups."
@@ -1597,7 +1607,8 @@ msgstr ""
 
 #: ../lib/modules/posixAccount.inc:81
 msgid "Hostname in use. Selected next free hostname."
-msgstr "Hostname wird bereits verwendet. Nächster freier Hostname wurde ausgewählt."
+msgstr ""
+"Hostname wird bereits verwendet. Nächster freier Hostname wurde ausgewählt."
 
 #: ../templates/main_header.php:87 ../lib/modules/posixAccount.inc:59
 #: ../lib/modules/posixAccount.inc:60 ../lib/modules/posixAccount.inc:62
@@ -1641,7 +1652,8 @@ msgstr ""
 
 #: ../lib/modules/sambaAccount.inc:326 ../lib/modules/sambaSamAccount.inc:141
 msgid "If checked Unix password will also be used as Samba password."
-msgstr "Falls aktiviert wird das Unix-Passwort auch als Samba-Passwort verwendet."
+msgstr ""
+"Falls aktiviert wird das Unix-Passwort auch als Samba-Passwort verwendet."
 
 #: ../lib/modules/sambaAccount.inc:344 ../lib/modules/sambaSamAccount.inc:159
 #: ../help/help.inc:205
@@ -1661,7 +1673,8 @@ msgstr "Falls angekreuzt läuft das Passwort nicht aus. (X-Flag wird gesetzt)"
 
 #: ../help/help.inc:197
 msgid "If checked unix password will also be used as samba password."
-msgstr "Falls aktiviert wird das Unix-Passwort auch als Samba-Passwort verwendet."
+msgstr ""
+"Falls aktiviert wird das Unix-Passwort auch als Samba-Passwort verwendet."
 
 #: ../lib/modules/posixGroup.inc:326 ../help/help.inc:159
 msgid ""
@@ -1709,20 +1722,24 @@ msgstr ""
 "gesetzt)"
 
 #: ../lib/modules/sambaSamAccount.inc:189
-msgid "If you leave this empty LAM will use: uidNumber*2 + sambaAlgorithmicRidBase."
+msgid ""
+"If you leave this empty LAM will use: uidNumber*2 + sambaAlgorithmicRidBase."
 msgstr ""
 "Wenn Sie das Feld leer lassen wird LAM folgenden Wert einfügen: uidNumber*2 "
 "+ sambaAlgorithmicRidBase."
 
 #: ../help/help.inc:107
-msgid "If you want to change the current preferences password, please enter it here."
-msgstr "Wenn Sie das aktuelle Profilpasswort ändern wollen, geben Sie es hier ein."
+msgid ""
+"If you want to change the current preferences password, please enter it here."
+msgstr ""
+"Wenn Sie das aktuelle Profilpasswort ändern wollen, geben Sie es hier ein."
 
 #: ../help/help.inc:125
 msgid ""
 "If you want to change your master configuration password, please enter it "
 "here."
-msgstr "Wenn Sie das aktuelle Hauptpasswort ändern wollen, geben Sie es hier ein."
+msgstr ""
+"Wenn Sie das aktuelle Hauptpasswort ändern wollen, geben Sie es hier ein."
 
 #: ../lib/modules/sambaAccount.inc:376
 msgid ""
@@ -1853,7 +1870,9 @@ msgid ""
 "LAM can recursively delete this entry and all of its children. See below for "
 "a list of all the entries that this action will delete. Do you want to do "
 "this?"
-msgstr "LAM kann diesen Eintrag rekursiv löschen. Es folgt eine Liste der zu löschenden Einträge. Wollen Sie alle diese Einträge löschen?"
+msgstr ""
+"LAM kann diesen Eintrag rekursiv löschen. Es folgt eine Liste der zu "
+"löschenden Einträge. Wollen Sie alle diese Einträge löschen?"
 
 #: ../templates/massBuildAccounts.php:188
 msgid "LAM has checked your input and is now ready to create the accounts."
@@ -1960,7 +1979,8 @@ msgstr "Nachname enthält ungültige Zeichen!"
 
 #: ../lib/modules/inetOrgPerson.inc:236 ../help/help.inc:191
 msgid "Last name of user. Only letters, - and spaces are allowed."
-msgstr "Nachname des Benutzers. Es sind nur Buchstaben, - und Leerzeichen erlaubt."
+msgstr ""
+"Nachname des Benutzers. Es sind nur Buchstaben, - und Leerzeichen erlaubt."
 
 #: ../lib/modules/shadowAccount.inc:338
 msgid "Last password change"
@@ -2482,10 +2502,14 @@ msgstr "Hinweis"
 msgid ""
 "Note: You will get an \"inappropriate matching\" error if you have not setup "
 "an EQUALITY rule on your LDAP server for this attribute."
-msgstr "Hinweis: Sie werden einen \"inappropriate matching\"-Fehler erhalten wenn Sie keine Gleichheitsregel für dieses Attribut am LDAP-Server festgelegt haben."
+msgstr ""
+"Hinweis: Sie werden einen \"inappropriate matching\"-Fehler erhalten wenn "
+"Sie keine Gleichheitsregel für dieses Attribut am LDAP-Server festgelegt "
+"haben."
 
 #: ../lib/modules/shadowAccount.inc:151 ../help/help.inc:173
-msgid "Number of days a user can login even his password has expired. -1=always."
+msgid ""
+"Number of days a user can login even his password has expired. -1=always."
 msgstr ""
 "Anzahl der Tage, in denen sich ein Benutzer anmelden kann, obwohl sein "
 "Passwort bereits abgelaufen ist. -1 = immer."
@@ -2543,8 +2567,8 @@ msgstr "OU-Editor"
 msgid "Object classes"
 msgstr "Objektklassen"
 
-#: ../lib/cache.inc:79 ../lib/modules.inc:901 ../lib/modules.inc:939
-#: ../lib/modules.inc:1054
+#: ../lib/cache.inc:79 ../lib/modules.inc:909 ../lib/modules.inc:947
+#: ../lib/modules.inc:1062
 #, php-format
 msgid "ObjectClass %s required but not defined in LDAP."
 msgstr "Objektklasse %s wird benötigt, wurde aber nicht in LDAP gefunden."
@@ -2729,7 +2753,8 @@ msgstr "Bitte bestätigen:"
 
 #: ../lib/modules/sambaSamAccount.inc:60
 msgid "Please enter a RID number or the name of a special account!"
-msgstr "Bitte geben Sie eine RID-Nummer oder den Namen eines Spezialaccounts ein!"
+msgstr ""
+"Bitte geben Sie eine RID-Nummer oder den Namen eines Spezialaccounts ein!"
 
 #: ../lib/modules/sambaAccount.inc:55 ../lib/modules/sambaAccount.inc:56
 #: ../lib/modules/sambaSamAccount.inc:53 ../lib/modules/sambaSamAccount.inc:54
@@ -3179,7 +3204,7 @@ msgstr "Samba-Passwort"
 msgid "Samba workstations"
 msgstr "Samba PCs"
 
-#: ../lib/pdf.inc:457
+#: ../lib/pdf.inc:455
 msgid "Samba-Host information page"
 msgstr "Samba-Host-Informationen"
 
@@ -3375,10 +3400,6 @@ msgstr ""
 msgid "Sorry this help number ({bold}%d{endbold}) is not available."
 msgstr "Diese Hilfenummer ist leider nicht verfügbar: {bold}%d{endbold}"
 
-#: ../lib/modules/sambaGroupMapping.inc:360
-msgid "Special Group"
-msgstr "Spezielle Gruppe"
-
 #: ../lib/modules/sambaAccount.inc:62 ../lib/modules/sambaAccount.inc:63
 #: ../lib/modules/sambaAccount.inc:293 ../lib/modules/sambaAccount.inc:375
 #: ../lib/modules/sambaAccount.inc:813 ../lib/modules/sambaSamAccount.inc:58
@@ -3514,7 +3535,8 @@ msgstr ""
 #: ../templates/tree/templates/creation/custom.php:99
 #, php-format
 msgid "The container you specified (%s) does not exist. Please try again."
-msgstr "Der angegebene Container (%s) existiert nicht. Bitte versuchen Sie es erneut."
+msgstr ""
+"Der angegebene Container (%s) existiert nicht. Bitte versuchen Sie es erneut."
 
 #: ../help/help.inc:248
 msgid "The domain entry will be saved under this suffix."
@@ -3529,7 +3551,8 @@ msgid "The following settings were saved to profile:"
 msgstr "Die folgenden Einstellungen wurden gespeichert:"
 
 #: ../templates/initsuff.php:178
-msgid "The following suffix(es) are missing in LDAP. LAM can create them for you."
+msgid ""
+"The following suffix(es) are missing in LDAP. LAM can create them for you."
 msgstr "Folgende Suffixe fehlen in LDAP. LAM kann sie für Sie erstellen."
 
 #: ../lib/modules/sambaSamAccount.inc:71
@@ -3580,9 +3603,8 @@ msgid "There can be only one administrator per domain."
 msgstr "Es kann nur einen Administrator pro Domäne geben."
 
 #: ../lib/modules/sambaGroupMapping.inc:360
-#, php-format
-msgid "There can be only one group %s."
-msgstr "Es kann nur eine Gruppe %s geben."
+msgid "There can be only one group of this type."
+msgstr "Es kann nur eine Gruppe diesen Typs geben."
 
 #: ../lib/modules/sambaAccount.inc:63 ../lib/modules/sambaSamAccount.inc:59
 msgid "There can be only one guest per domain."
@@ -3625,7 +3647,8 @@ msgstr ""
 "plus 1."
 
 #: ../lib/modules/posixAccount.inc:85
-msgid "This GID number is invalid! Please provide either a number or a group name."
+msgid ""
+"This GID number is invalid! Please provide either a number or a group name."
 msgstr ""
 "Diese GID-Nummer ist ungültig! Bitte geben Sie eine Nummer ein oder einen "
 "Gruppennamen."
@@ -3643,7 +3666,8 @@ msgid "This changes the profile which is selected by default at login."
 msgstr "Damit ändern Sie das Standardprofil am Login."
 
 #: ../templates/massBuildAccounts.php:148
-msgid "This column is defined to include unique entries but duplicates were found:"
+msgid ""
+"This column is defined to include unique entries but duplicates were found:"
 msgstr "Diese Spalte darf keine doppelten Einträge enthalten:"
 
 #: ../help/help.inc:95
@@ -3654,7 +3678,7 @@ msgstr ""
 "Bestimmt die Sprache des Logins und setzt diese Sprache als Standard. "
 "Benutzer können die Sprache beim Login ändern."
 
-#: ../lib/pdf.inc:514
+#: ../lib/pdf.inc:511
 msgid "This document was automatically created by LDAP Account Manager"
 msgstr "Dieses Dokument wurde von LDAP Account Manager erstellt."
 
@@ -3722,7 +3746,8 @@ msgstr "Dies ist ein Empfänger für diesen Alias."
 msgid ""
 "This is the MAC address of the network card of the device (e.g. 00:01:02:DE:"
 "EF:18)."
-msgstr "Dies ist die MAC-Adresse der Netzwerkkarte im Gerät (z.B. 00:01:02:DE:EF:18)."
+msgstr ""
+"Dies ist die MAC-Adresse der Netzwerkkarte im Gerät (z.B. 00:01:02:DE:EF:18)."
 
 #: ../lib/modules/sambaAccount.inc:373
 msgid "This is the RID of the user's primary Windows group."
@@ -3906,14 +3931,16 @@ msgstr "Dieser Wert darf nur \\\"true\\\" oder \\\"false\\\" sein."
 
 #: ../lib/modules/posixGroup.inc:412
 msgid "This value must be a list of user names separated by semicolons."
-msgstr "Dieser Wert muss eine Liste von Benutzernamen, getrennt duch Kommata, sein."
+msgstr ""
+"Dieser Wert muss eine Liste von Benutzernamen, getrennt duch Kommata, sein."
 
 #: ../help/help.inc:242
 msgid "This will create a new organizational unit under the selected one."
 msgstr "Dies erzeugt eine neue Organizational Unit unterhalb der markierten."
 
 #: ../help/help.inc:244
-msgid "This will delete the selected organizational unit. The OU has to be empty."
+msgid ""
+"This will delete the selected organizational unit. The OU has to be empty."
 msgstr "Dies löscht die markierte Organizational Unit. Die OU muss leer sein."
 
 #: ../help/help.inc:119
@@ -3956,7 +3983,7 @@ msgstr "Baumansicht"
 
 #: ../templates/main_header.php:78
 msgid "Tree view"
-msgstr "BaumSuffix"
+msgstr "Baumansicht"
 
 #: ../templates/config/confmain.php:196 ../lib/config.inc:342
 msgid "TreeSuffix"
@@ -3976,7 +4003,8 @@ msgstr "Benutzer ID"
 
 #: ../lib/modules/posixAccount.inc:75
 msgid "UID has changed. Do you want to change home directory?"
-msgstr "UID-Nummer wurde geändert. Soll das Heimatverzeichnis angepasst werden?"
+msgstr ""
+"UID-Nummer wurde geändert. Soll das Heimatverzeichnis angepasst werden?"
 
 #: ../lib/modules/posixAccount.inc:70
 msgid ""
@@ -4199,7 +4227,7 @@ msgstr "Benutzer kann Passwort ändern"
 msgid "User description. If left empty sur- and give name will be used."
 msgstr "Benutzerbeschreibung, falls leer wird Vor- und Nachname verwendet."
 
-#: ../lib/pdf.inc:451
+#: ../lib/pdf.inc:449
 msgid "User information page"
 msgstr "Benutzerinformationen"
 
@@ -4323,30 +4351,30 @@ msgstr "Verwendete Vorlage:"
 msgid "Valid users"
 msgstr "Berechtigte Benutzer"
 
-#: ../templates/delete.php:185 ../lib/modules.inc:1426
+#: ../templates/delete.php:185 ../lib/modules.inc:1434
 #, php-format
 msgid "Was unable to add attribtues to DN: %s."
 msgstr "Konnte keine Attribute zum DN hinzufügen: %s."
 
-#: ../lib/modules.inc:1391 ../lib/modules.inc:1400
+#: ../lib/modules.inc:1399 ../lib/modules.inc:1408
 #, php-format
 msgid "Was unable to create DN: %s."
 msgstr "Konnte DN nicht erstellen: %s."
 
-#: ../templates/tree/delete.php:109 ../lib/modules.inc:1384
+#: ../templates/tree/delete.php:109 ../lib/modules.inc:1392
 #, php-format
 msgid "Was unable to delete DN: %s."
 msgstr "Konnte DN nicht löschen: %s."
 
 #: ../templates/tree/update.php:105 ../templates/tree/add_oclass.php:89
 #: ../templates/tree/add_oclass_form.php:155 ../templates/delete.php:175
-#: ../lib/modules.inc:1416
+#: ../lib/modules.inc:1424
 #, php-format
 msgid "Was unable to modify attribtues from DN: %s."
 msgstr "Konnte die Attribute nicht ändern: %s."
 
 #: ../templates/delete.php:195 ../templates/delete.php:219
-#: ../lib/modules.inc:1436
+#: ../lib/modules.inc:1444
 #, php-format
 msgid "Was unable to remove attribtues from DN: %s."
 msgstr "Konnte die Attribute nicht löschen: %s."
@@ -4467,7 +4495,9 @@ msgstr "Sie wurden vom LDAP Account Manager abgemeldet."
 
 #: ../templates/tree/add_attr.php:75
 msgid "You left the attribute value blank. Please go back and try again."
-msgstr "Der Wert des Attributes war leer. Bitte gehen Sie zurück und füllen den Eintrag."
+msgstr ""
+"Der Wert des Attributes war leer. Bitte gehen Sie zurück und füllen den "
+"Eintrag."
 
 #: ../templates/tree/create.php:81
 #, php-format
@@ -4486,7 +4516,9 @@ msgstr "Sprache"
 msgid ""
 "Your PHP configuration has disabled file uploads. Please check php.ini "
 "before proceeding."
-msgstr "Ihre PHP-Konfiguration erlaubt keine Dateiuploads. Bitte prüfen Sie Ihre php.ini."
+msgstr ""
+"Ihre PHP-Konfiguration erlaubt keine Dateiuploads. Bitte prüfen Sie Ihre php."
+"ini."
 
 #: ../templates/tree/update_confirm.php:188
 #: ../templates/tree/update_confirm.php:200
@@ -4559,7 +4591,8 @@ msgstr "JPEG-Bild enthält Fehler"
 msgid ""
 "ldap://localhost:389 connects to localhost using a standard LDAP connection "
 "on port 389"
-msgstr "ldaps://141.40.146.133 baut eine einfache Verbindung zu 141.40.146.133 auf."
+msgstr ""
+"ldaps://141.40.146.133 baut eine einfache Verbindung zu 141.40.146.133 auf."
 
 #: ../help/help.inc:55
 msgid ""
@@ -4662,3 +4695,5 @@ msgstr "benutzer@firma.de"
 msgid "users"
 msgstr "Benutzer"
 
+#~ msgid "Special Group"
+#~ msgstr "Spezielle Gruppe"
