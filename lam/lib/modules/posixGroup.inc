@@ -99,8 +99,8 @@ class posixGroup extends baseModule {
 		$return['config_descriptions'] = array(
 			'legend' => _("GID ranges for Unix groups"),
 			'descriptions' => array(
-				'posixGroup_minGID' => "Minimum GID number for Unix groups",
-				'posixGroup_maxGID' => "Maximum GID number for Unix groups",
+				'posixGroup_minGID' => _("Minimum GID number for Unix groups"),
+				'posixGroup_maxGID' => _("Maximum GID number for Unix groups"),
 			)
 		);
 		// configuration checks

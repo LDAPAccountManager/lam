@@ -242,7 +242,7 @@ class baseModule {
 	*
 	* @param array $scopes list of account types which are used
 	* @param array $options hash array containing the settings (array('option' => array('value')))
-	* @return array profile elements
+	* @return array list of error messages
 	*/
 	function check_configOptions($scopes, $options) {
 		$messages = array();
