@@ -46,6 +46,14 @@ if (chop($admins) == "") {
 	echo _("<b>" . _("List of admin users is empty!") . "</b>");
 	exit;
 }
+if (chop($suffusers) == "") {
+	echo _("<b>" . _("UserSuffix is empty!") . "</b>");
+	exit;
+}
+if (chop($suffgroups) == "") {
+	echo _("<b>" . _("UserSuffix is empty!") . "</b>");
+	exit;
+}
 
 // set new preferences
 $conf->set_Host($host);
@@ -53,8 +61,11 @@ $conf->set_Port($port);
 $conf->set_Adminstring($admins);
 if ($ssl == "on") $conf->set_SSL("True");
 else $conf->set_SSL("False");
+$conf->set_UserSuffix($suffusers);
+$conf->set_GroupSuffix($suffgroups);
+$conf->set_HostSuffix($suffhosts);
 
-echo ("<br><b><big><big><p align=\"center\"> LDAP Account Manager</b></big></big></p><br><br>");
+echo ("<p align=\"center\"><img src=\"../graphics/banner.jpg\"></p><hr><br><br>");
 
 
 // check if password was changed
@@ -70,4 +81,5 @@ if ($pass1 != "") {
 $conf->save();
 echo ("<b>" . _("Saving the following settings:") . "</b><br><br>");
 $conf->printconf();
-?> 
+
+?>

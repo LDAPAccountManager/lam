@@ -33,7 +33,7 @@ $Id$
 		</title>
 	</head>
 	<body>
-		<br><b><big><big><p align="center"> LDAP Account Manager</b></big></big></p><br><br>
+		<p align="center"><img src="../graphics/banner.jpg" border=1></p><hr><br><br>
 		<b><p align="center"> <? echo _("Password to enter preferences:"); ?> </b></p>
 		<form action="confmain.php" method="post">
 			<p align="center"><input type="password" name="passwd">
