@@ -1015,7 +1015,9 @@ class posixAccount extends baseModule {
 			}
 		}
 		return $return;
-	n	/**
+	}
+
+	/**
 	* In this function the LDAP account is built up.
 	*
 	* @param array $rawAccounts list of hash arrays (name => value) from user input
