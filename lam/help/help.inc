@@ -53,10 +53,6 @@ $helpArray = array (
 						_("Examples").
 						":</b><br><br>".
 						_("ou=People,dc=yourcompany,dc=com will read and store all accounts in this subtree.")),
-				"203" => array ("ext" => "FALSE", "Headline" => _("Configuration wizard") . " - " . _("UID number"),
-					"Text" => _("These are the minimum and maximum numbers to use for user IDs when creating new user accounts. The range should be different from that of machines. New user accounts will always get the highest number in use plus one.")),
-				"205" => array ("ext" => "FALSE", "Headline" => _("Configuration wizard") . " - " . _("Machine number"),
-					"Text" => _("These are the minimum and maximum numbers to use for machine IDs when creating new accounts for Samba hosts. The range should be different from that of users. New host accounts will always get the highest number in use plus one.")),
 				"206" => array ("ext" => "FALSE", "Headline" => _("Configuration wizard") . " - " . _("List attributes"),
 					"Text" => _("This is the list of attributes to show in the user/group/host list. The entries can either be predefined values, \"#attribute\", or individual ones, \"attribute:description\". Several entries are seperated by semicolons.") .
 						"<br><br><b>" .

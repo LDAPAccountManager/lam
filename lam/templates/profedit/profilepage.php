@@ -163,7 +163,9 @@ function print_option($values, $modulename, $old_options, &$tabindex) {
 			break;
 		// help link
 		case 'help':
-			echo "<a href=../help.php?module=$modulename&amp;HelpNumber=" . $values['value'] . ">" . _('Help') . "</a>\n";
+			echo "<a href=../help.php?module=$modulename&amp;HelpNumber=" . $values['value'];
+			if (isset($values['scope'])) echo "&amp;scope=" . $values['scope'];
+			echo ">" . _('Help') . "</a>\n";
 			break;
 		// input field
 		case 'input':

@@ -112,7 +112,7 @@ class posixAccount extends baseModule {
 				2 => array('kind' => 'text', 'value' => '&nbsp;'),
 				3 => array('kind' => 'text', 'text' => _('Maximum UID number') . ": "),
 				4 => array('kind' => 'input', 'name' => 'posixAccount_maxUID', 'type' => 'text', 'size' => '10', 'maxlength' => '255'),
-				5 => array('kind' => 'help', 'value' => 'TODO'))
+				5 => array('kind' => 'help', 'value' => 'minMaxUser'))
 		);
 		$return['config_options']['host'] = array(
 			array(
@@ -121,7 +121,7 @@ class posixAccount extends baseModule {
 				2 => array('kind' => 'text', 'value' => '&nbsp;'),
 				3 => array('kind' => 'text', 'text' => _('Maximum UID number') . ": "),
 				4 => array('kind' => 'input', 'name' => 'posixAccount_maxMachine', 'type' => 'text', 'size' => '10', 'maxlength' => '255'),
-				5 => array('kind' => 'help', 'value' => 'TODO'))
+				5 => array('kind' => 'help', 'value' => 'minMaxHost'))
 		);
 		$return['config_options']['all'] = array(
 			array(
@@ -131,7 +131,7 @@ class posixAccount extends baseModule {
 				2 => array('kind' => 'text', 'value' => '&nbsp;'),
 				3 => array('kind' => 'text', 'value' => '&nbsp;'),
 				4 => array('kind' => 'text', 'value' => '&nbsp;'),
-				5 => array('kind' => 'help', 'value' => 'TODO'))
+				5 => array('kind' => 'help', 'value' => 'pwdHash'))
 		);
 		// configuration descriptions
 		$return['config_descriptions'] = array(
@@ -155,20 +155,68 @@ class posixAccount extends baseModule {
 													'userPassword',
 													'loginShell');
 		// help Entries
-		$return['help'] = array (	'user'						=>	array(	'uid'				=>	array ("ext" => "FALSE", "Headline" => _("Username"), "Text" => _("Username of the user who should be created. Valid characters are: a-z,0-9, .-_. Lam does not allow a number as first character because useradd also does not allow it. Lam does not allow capital letters A-Z because it can cause several problems. If username is already used username will be expanded with a number. The next free number will be used. Warning: Older systems have problems with usernames longer than 8 characters. You can not log in to Windows if username is longer than 16 characters.")),
-																								'gecos'			=>	array ("ext" => "FALSE", "Headline" => _("Gecos"), "Text" => _("User description. If left empty sur- and give name will be used.")),
-																								'gidNumber'	=>	array ("ext" => "FALSE", "Headline" => _("Primary group"), "Text" => _("The Primary Group the user should be member of."))),
-											'host'						=>	array(	'uid'				=>	array ("ext" => "FALSE", "Headline" => _("Host name"), "Text" => _("Host name of the host which should be created. Valid characters are: a-z,0-9, .-_$. Lam does not allow a number as first character because useradd also does not allow it. Lam does not allow capital letters A-Z because it can cause several problems. Hostnames are always ending with $. If last character is not $ it will be added. If hostname is already used hostname will be expanded with a number. The next free number will be used.")),
-																								'gecos'			=>	array ("ext" => "FALSE", "Headline" => _("Gecos"), "Text" => _("Host description. If left empty host name will be used.")),
-																								'gidNumber'	=>	array ("ext" => "FALSE", "Headline" => _("Primary group"), "Text" => _("The Primary group the host should be member of."))),
-											'uidNumber'				=>	array ("ext" => "FALSE", "Headline" => _("UID number"), "Text" => _("If empty UID number will be generated automaticly.")),
-											'addgroup'					=>	array ("ext" => "FALSE", "Headline" => _("Additional groups"), "Text" => _("Hold the CTRL-key to (de)select multiple groups."). ' '. _("Can be left empty.")),
-											'homeDirectory'			=>	array ("ext" => "FALSE", "Headline" => _("Home directory"), "Text" => _("$user and $group are replaced with username or primary groupname.")),
-											/*'userPassword'		=>*/
-											'userPassword_no'	=>	array ("ext" => "FALSE", "Headline" => _("Use no password"), "Text" => _("If checked no password will be used.")),
-											/*'userPassword_lock'	=>*/
-											'loginShell'					=>	array ("ext" => "FALSE", "Headline" => _("Login shell"), "Text" => _("To disable login use /bin/false. List of shells is read from lam/config/shells")));	
-		
+		$return['help'] = array(
+			"minMaxUser" => array(
+				"ext" => "FALSE",
+				"Headline" => _("UID number"),
+				"Text" => _("These are the minimum and maximum numbers to use for user IDs when creating new user accounts. The range should be different from that of machines. New user accounts will always get the highest number in use plus one.")),
+			"minMaxHost" => array(
+				"ext" => "FALSE",
+				"Headline" => _("UID number"),
+				"Text" => _("These are the minimum and maximum numbers to use for machine IDs when creating new accounts for Samba hosts. The range should be different from that of users. New host accounts will always get the highest number in use plus one.")),
+			'pwdHash' => array(
+				"ext" => "FALSE",
+				"Headline" => _("Password hash type"),
+				"Text" => _("LAM supports CRYPT, SHA, SSHA, MD5 and SMD5 to generate the hash value of passwords. SSHA and CRYPT are the most common but CRYPT does not support passwords greater than 8 letters. We do not recommend to use plain text passwords.")),
+			'uidNumber' => array(
+				"ext" => "FALSE",
+				"Headline" => _("UID number"),
+				"Text" => _("If empty UID number will be generated automaticly.")),
+			'user' => array(
+				'uid' => array(
+					"ext" => "FALSE",
+					"Headline" => _("Username"),
+					"Text" => _("Username of the user who should be created. Valid characters are: a-z,0-9, .-_. Lam does not allow a number as first character because useradd also does not allow it. Lam does not allow capital letters A-Z because it can cause several problems. If username is already used username will be expanded with a number. The next free number will be used. Warning: Older systems have problems with usernames longer than 8 characters. You can not log in to Windows if username is longer than 16 characters.")),
+				'gecos' => array(
+					"ext" => "FALSE",
+					"Headline" => _("Gecos"),
+					"Text" => _("User description. If left empty sur- and give name will be used.")),
+				'gidNumber' => array(
+					"ext" => "FALSE",
+					"Headline" => _("Primary group"),
+					"Text" => _("The Primary Group the user should be member of.")),
+				'homeDirectory' => array(
+					"ext" => "FALSE",
+					"Headline" => _("Home directory"),
+					"Text" => _("$user and $group are replaced with username or primary groupname.")),
+				/*'userPassword'		=>*/
+				'userPassword_no' => array(
+					"ext" => "FALSE",
+					"Headline" => _("Use no password"),
+					"Text" => _("If checked no password will be used.")),
+				/*'userPassword_lock'	=>*/
+				'loginShell' => array(
+					"ext" => "FALSE",
+					"Headline" => _("Login shell"),
+					"Text" => _("To disable login use /bin/false. List of shells is read from lam/config/shells")),
+				'addgroup' => array(
+					"ext" => "FALSE",
+					"Headline" => _("Additional groups"),
+					"Text" => _("Hold the CTRL-key to (de)select multiple groups."). ' '. _("Can be left empty."))),
+			'host' => array(
+				'uid' => array(
+					"ext" => "FALSE",
+					"Headline" => _("Host name"),
+					"Text" => _("Host name of the host which should be created. Valid characters are: a-z,0-9, .-_$. Lam does not allow a number as first character because useradd also does not allow it. Lam does not allow capital letters A-Z because it can cause several problems. Hostnames are always ending with $. If last character is not $ it will be added. If hostname is already used hostname will be expanded with a number. The next free number will be used.")),
+				'gecos' => array(
+					"ext" => "FALSE",
+					"Headline" => _("Gecos"),
+					"Text" => _("Host description. If left empty host name will be used.")),
+				'gidNumber' => array(
+					"ext" => "FALSE",
+					"Headline" => _("Primary group"),
+					"Text" => _("The Primary group the host should be member of."))));
+
 		return $return;
 	}
 
@@ -709,34 +757,41 @@ class posixAccount extends baseModule {
 	*/
 	function get_profileOptions() {
 		$return = array();
-		if ($_SESSION[$this->base]->type=='user') {
+		if ($this->scope == 'user') {
 			$groups = $_SESSION['cache']->findgroups(); // list of all groupnames
 			$shelllist = getshells(); // list of all valid shells
 			// primary Unix group
 			$return[] = array(0 => array('kind' => 'text', 'text' => _('Primary group') . ": "),
 				1 => array('kind' => 'select', 'name' => 'posixAccount_primaryGroup', 'options' => $groups, 'options_selected' => array(), 'size' => 1),
-				2 => array('kind' => 'help', 'value' => 'TODO'));
+				2 => array('kind' => 'help', 'value' => 'gidNumber', 'scope' => 'user'));
 			// additional group memberships
 			$return[] = array(0 => array('kind' => 'text', 'text' => _('Additional groups') . ": "),
 				1 => array('kind' => 'select', 'name' => 'posixAccount_additionalGroup', 'options' => $groups,
 					'options_selected' => array(), 'size' => 10, 'multiple' => true),
-				2 => array('kind' => 'help', 'value' => 'TODO'));
+				2 => array('kind' => 'help', 'value' => 'addgroup', 'scope' => 'user'));
 			// home directory
 			$return[] = array(0 => array('kind' => 'text', 'text' => _('Home directory') . ": "),
 				1 => array('kind' => 'input', 'name' => 'posixAccount_homeDirectory', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => '/home/$user'),
-				2 => array('kind' => 'help', 'value' => 'TODO'));
+				2 => array('kind' => 'help', 'value' => 'homeDirectory', 'scope' => 'user'));
 			// login shell
 			$return[] = array(0 => array('kind' => 'text', 'text' => _('Login shell') . ": "),
 				1 => array('kind' => 'select', 'name' => 'posixAccount_loginShell', 'options' => $shelllist, 'options_selected' => array("/bin/bash")),
-				2 => array('kind' => 'help', 'value' => 'TODO'));
+				2 => array('kind' => 'help', 'value' => 'loginShell', 'scope' => 'user'));
 			// do not set password
 			$return[] = array(0 => array('kind' => 'text', 'text' => _('Set no password') . ": "),
 				1 => array('kind' => 'input', 'name' => 'posixAccount_userPassword_no', 'type' => 'checkbox', 'checked' => false),
-				2 => array('kind' => 'help', 'value' => 'TODO'));
+				2 => array('kind' => 'help', 'value' => 'TODO', 'scope' => 'user'));
 			// disable account
 			$return[] = array(0 => array('kind' => 'text', 'text' => _('Lock password') . ": "),
 				1 => array('kind' => 'input', 'name' => 'posixAccount_userPassword_lock', 'type' => 'checkbox', 'checked' => false),
-				2 => array('kind' => 'help', 'value' => 'TODO'));
+				2 => array('kind' => 'help', 'value' => 'TODO', 'scope' => 'user'));
+		}
+		elseif ($this->scope == 'host') {
+			$groups = $_SESSION['cache']->findgroups(); // list of all groupnames
+			// primary Unix group
+			$return[] = array(0 => array('kind' => 'text', 'text' => _('Primary group') . ": "),
+				1 => array('kind' => 'select', 'name' => 'posixAccount_primaryGroup', 'options' => $groups, 'options_selected' => array(), 'size' => 1),
+				2 => array('kind' => 'help', 'value' => 'gidNumber', 'scope' => 'host'));
 		}
 		return $return;
 	}
