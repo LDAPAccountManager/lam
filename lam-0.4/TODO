@@ -6,6 +6,4 @@ stable
 0.5
 
 - check security
-
-0.4.2
-
+- modular architecture
