@@ -92,6 +92,7 @@ tr.userlist-head {
 
 /* color of rows on mouseOver */
 tr.userlist-over {
+  background-color:#ccccff;
 }
 
 /* color of checked rows */
@@ -298,6 +299,22 @@ tr.domainlist-over {
 tr.domainlist-checked {
   background-color:#f27c71;
 }
+
+/**
+ * style for domain.php
+ *
+ */
+
+/* fieldset and legend */
+
+fieldset.domedit {
+background-color:#c9ddd2;
+}
+
+legend.domedit {
+color:blue;
+}
+
 
 /**
  * table style for delete.php

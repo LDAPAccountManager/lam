@@ -70,8 +70,8 @@ if (($_GET['action'] == "edit") || ($_GET['action'] == "new")) {
 		// print fieldset
 		echo "<form action=\"domain.php\" method=\"post\">\n";
 		echo "<p>&nbsp;</p>\n";
-		echo "<fieldset>\n";
-			echo "<legend><b>" . _("Domain Settings") . "</b></legend>\n";
+		echo "<fieldset class=\"domedit\">\n";
+			echo "<legend class=\"domedit\"><b>" . _("Domain Settings") . "</b></legend>\n";
 			echo "<table border=0>\n";
 				echo "<tr>\n";
 					echo "<td>\n";
