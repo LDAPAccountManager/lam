@@ -1077,6 +1077,29 @@ class sambaAccount extends baseModule {
 				}
 			}
 		}
+		else {  // hosts
+			for ($i = 0; $i < sizeof($rawAccounts); $i++) {
+				if (!in_array("sambaAccount", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "sambaAccount";
+				// domain
+				if ($rawAccounts[$i][$ids['sambaAccount_domain']] != "") {
+					if (get_preg($rawAccounts[$i][$ids['sambaAccount_domain']], 'domainname')) {
+						$partialAccounts[$i]['domain'] = $rawAccounts[$i][$ids['sambaAccount_domain']];
+					}
+					else {
+						$errMsg = $this->messages['domain'][1];
+						array_push($errMsg, array($i));
+						$triggered_messages[] = $errMsg;
+					}
+				}
+				// RID (RID uid*2 + RIDBase)
+				$partialAccounts[$i]['rid'] = $partialAccounts[$i]['uidNumber']*2 + $domains[$domIndex]->RIDbase;
+				// passwords ( = host name)
+				$partialAccounts[$i]['lmPassword'] = lmPassword(substr($partialAccounts[$i]['uid'], 0, sizeof($partialAccounts[$i]['uid']) - 1));
+				$partialAccounts[$i]['ntPassword'] = ntPassword(substr($partialAccounts[$i]['uid'], 0, sizeof($partialAccounts[$i]['uid']) - 1));
+				// flags
+				$partialAccounts[$i]['acctFlags'] = "[W          ]";
+			}
+		}
 		return $triggered_messages;
 	}
 

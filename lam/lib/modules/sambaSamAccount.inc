@@ -58,6 +58,7 @@ class sambaSamAccount extends baseModule {
 		$this->messages['rid'][0] = array('ERROR', _('Special user'), _('There can be only one administrator per domain.'));
 		$this->messages['rid'][1] = array('ERROR', _('Special user'), _('There can be only one guest per domain.'));
 		$this->messages['rid'][2] = array('ERROR', _('Account %s:') . ' sambaSamAccount_rid', _('Please enter a RID number or the name of a special account!'));
+		$this->messages['rid'][3] = array('ERROR', _('Account %s:') . ' sambaSamAccount_rid', _('This is not a valid RID number!'));
 		$this->messages['displayName'][0] = array('ERROR', _('Account %s:') . ' sambaSamAccount_displayName', _('Please enter a valid display name!'));
 		$this->messages['pwdUnix'][0] = array('ERROR', _('Account %s:') . ' sambaSamAccount_pwdUnix', _('This value can only be \"true\" or \"false\"!'));
 		$this->messages['noPassword'][0] = array('ERROR', _('Account %s:') . ' sambaSamAccount_noPassword', _('This value can only be \"true\" or \"false\"!'));
@@ -182,6 +183,9 @@ class sambaSamAccount extends baseModule {
 				"ext" => "FALSE", "Headline" => _("Samba RID"),
 				"Text" => _("This is the relative ID number for your Windows account. You can either enter a number or one of these special accounts: %s. If you leave this empty LAM will use: uidNumber*2 + sambaAlgorithmicRidBase."),
 				"variables" => implode(", ", $this->rids)),
+			"ridUploadHost" => array(
+				"ext" => "FALSE", "Headline" => _("Samba RID"),
+				"Text" => _("This is the relative ID number for your host account. If you leave this empty LAM will use: uidNumber*2 + sambaAlgorithmicRidBase.")),
 			"domain" => array(
 				"ext" => "FALSE", "Headline" => _("Domain"),
 				"Text" => _("Windows domain name of account.")),
@@ -316,13 +320,14 @@ class sambaSamAccount extends baseModule {
 				array(
 					'name' => 'sambaSamAccount_domain',
 					'description' => _('Domain'),
+					'required' => true,
 					'help' => 'domain',
 					'example' => _('mydomain')
 				),
 				array(
 					'name' => 'sambaSamAccount_rid',
 					'description' => _('Samba RID'),
-					'help' => 'ridUploadHost', //todo
+					'help' => 'ridUploadHost',
 					'example' => '1235',
 					'default' => '&lt;uidNumber&gt;*2 + &lt;sambaAlgorithmicRidBase&gt;'
 				)
@@ -422,7 +427,7 @@ class sambaSamAccount extends baseModule {
 		for ($i=0; $i<count($sambaDomains); $i++ )
 			if ($this->attributes['sambaDomainName'][0] == $sambaDomains[$i]->name) {
 				$SID = $sambaDomains[$i]->SID;
-				$RIDbase = $sambaDomain[$i]->RIDbase;
+				$RIDbase = $sambaDomains[$i]->RIDbase;
 				}
 		$special = false;
 		if ($this->attributes['sambaSID'][0] == $SID."-500") $special = true;
@@ -1199,6 +1204,49 @@ class sambaSamAccount extends baseModule {
 				else {
 					$partialAccounts[$i]['sambaLogonHours'] = "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
 				}
+			}
+		}
+		else {  // hosts
+			for ($i = 0; $i < sizeof($rawAccounts); $i++) {
+				if (!in_array("sambaSamAccount", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "sambaSamAccount";
+				// domain
+				$domIndex = -1;
+				for ($d = 0; $d < sizeof($domains); $d++) {
+					if ($domains[$d]->name == $rawAccounts[$i][$ids['sambaSamAccount_domain']]) {
+						$domIndex = $d;
+						break;
+					}
+				}
+				if ($domIndex > -1) {
+					$partialAccounts[$i]['sambaDomainName'] = $domains[$domIndex]->name;
+					$partialAccounts[$i]['sambaSID'] = $domains[$domIndex]->SID;
+					$partialAccounts[$i]['sambaPrimaryGroupSID'] = $domains[$domIndex]->SID . " - 515";
+				}
+				else {
+					$errMsg = $this->messages['domain'][0];
+					array_push($errMsg, array($i));
+					$triggered_messages[] = $errMsg;
+				}
+				// RID
+				if ($rawAccounts[$i][$ids['sambaSamAccount_rid']] != "") {
+					if (get_preg($rawAccounts[$i][$ids['sambaSamAccount_rid']], 'digit')) {
+						$partialAccounts[$i]['sambaSID'] .= '-' . $rawAccounts[$i][$ids['sambaSamAccount_rid']];
+					}
+					else {
+						$errMsg = $this->messages['rid'][3];
+						array_push($errMsg, array($i));
+						$triggered_messages[] = $errMsg;
+					}
+				}
+				else {
+					// default RID uid*2 + RIDBase
+					$partialAccounts[$i]['sambaSID'] .= '-' . ($partialAccounts[$i]['uidNumber']*2 + $domains[$domIndex]->RIDbase);
+				}
+				// passwords ( = host name)
+				$partialAccounts[$i]['sambaLMPassword'] = lmPassword(substr($partialAccounts[$i]['uid'], 0, sizeof($partialAccounts[$i]['uid']) - 1));
+				$partialAccounts[$i]['sambaNTPassword'] = ntPassword(substr($partialAccounts[$i]['uid'], 0, sizeof($partialAccounts[$i]['uid']) - 1));
+				// flags
+				$partialAccounts[$i]['sambaAcctFlags'] = "[W          ]";
 			}
 		}
 		return $triggered_messages;
