@@ -1251,8 +1251,8 @@ function createhost($values) { // Will create the LDAP-Account
 			}
 		$attr['sambaSID'] = $_SESSION[config]->get_domainSID() . "-" . (2 * $values->general_uidNumber + 1000); // sambaAccount_may
 		$attr['sambaPrimaryGroupSID'] = $_SESSION[config]->get_domainSID() . "-" . (2 * getgid($values->general_group) + 1001); // sambaAccount_req
-		if ($values->smb_pwdcanchange) $attr['pwdCanChange'] = "1"; else $attr['pwdCanChange'] = "0"; // sambaAccount_may
-		if ($values->smb_pwdmustchange) $attr['pwdMustChange'] = "1"; else $attr['pwdMustChange'] = "0"; // sambaAccount_may
+		if ($values->smb_pwdcanchange) $attr['sambaPwdCanChange'] = "1"; else $attr['sambaPwdCanChange'] = "0"; // sambaAccount_may
+		if ($values->smb_pwdmustchange) $attr['sambaPwdMustChange'] = "1"; else $attr['sambaPwdMustChange'] = "0"; // sambaAccount_may
 		$attr['sambaAcctFlags'] = smbflag($values); // sambaAccount_may
 		$attr['displayName'] = $values->general_gecos; // sambaAccount_may
 		if ($values->smb_domain!='') $attr['sambaDomainName'] = $values->smb_domain; // sambaAccount_may
