@@ -1,1 +1,12 @@
- 
+04.07.2003 Alpha 2
+
+  - support for multiple OUs + OU-Editor
+  - account creation via file upload
+  - profile editor
+  - experimental Samba 3 support
+  - fixed a lot of bugs
+
+
+23.05.2003 Alpha 1
+
+  Initial release
