@@ -439,7 +439,8 @@ function getgid($groupname) { // Will return the the gid to an existing Groupnam
 	$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(), 'cn=' . $groupname, array('gidNumber'), 0);
 	$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 	$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
-	return $attr['gidNumber'][0];
+	if ($attr['gidNumber'][0]) return $attr['gidNumber'][0];
+		else return -1;
 	}
 
 

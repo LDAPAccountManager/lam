@@ -258,8 +258,6 @@ echo '</title>
 	echo '<table rules="all" class="account" width="100%">
 	<tr><td></td></tr>';
 
-print_r($_SESSION['account']);
-
 
 if (!$select_local) $select_local='general';
 if ($_POST['createagain']) {

@@ -148,7 +148,7 @@ switch ($select) {
 				$_SESSION['accounts'][$row]->personal_postalCode.'</td><td>'.
 				$_SESSION['accounts'][$row]->personal_postalAddress.'</td><td>'.
 				$_SESSION['accounts'][$row]->personal_employeeType.'</td></tr>';
-			}
+			} 
 		echo '<tr><td><input name="back" type="submit" value="'; echo _('Back'); echo '">';
 		echo '</td><td><input name="cancel" type="submit" value="'; echo _('Cancel'); echo '">';
 		echo '</td><td><input name="create" type="submit" value="'; echo _('Create'); echo '">';
