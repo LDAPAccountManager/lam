@@ -84,7 +84,7 @@ function getAvailableModules($scope) {
 	return $return;
 	}
 
-function getProfileOptions($scope, $post) {
+function getProfileOptions($scope, $post=false) {
 	// type = user, group, host, ...
 	if (!isset($_SESSION['profile_account'])) {
 		// create new object
@@ -623,7 +623,9 @@ class accountContainer {
 				$function = 'display_html_' . $item;
 				$page = $this->module[$singlemodule]->$function($post,true);
 				//eval($function);
-				$return = array_merge($return, $page);
+				foreach ( $page as $item )
+					$return[$singlemodule][] = $item;
+				//$return = array_merge($return, $page);
 				}
 			}
 		return $return;
@@ -654,6 +656,7 @@ class accountContainer {
 		foreach ($modules as $module) $this->module[$module] = new $module($this->base);
 
 		$module = array_keys ($this->module);
+		$modulelist = array();
 		// loop until all modules are in order.
 		// We don't want to loop forever
 		$remain = count($module) * count($module);
