@@ -80,6 +80,7 @@ function registervars() { // This function registers all needes session-varibale
 	session_save_path('../sess');
 	@session_start();
 	if ( !session_is_registered("type2")) session_register("type2"); // $type2 stores the kind of account (User|GRoup|Host)
+	if ( !session_is_registered("shelllist")) session_register("shelllist"); // $shelllist contains all shells defined in /etc/shells
 	if ( !session_is_registered("modify")) session_register("modify"); // if an existing account should be modified modify is true
 	if ( !session_is_registered("account")) session_register("account"); // The new Accout properties are stored here
 	if ( !session_is_registered("account_temp")) session_register("account_temp"); // Tempoprary account properties. If values are OK they will be moved to var account
@@ -89,6 +90,11 @@ function registervars() { // This function registers all needes session-varibale
 	if (!is_object($account_old)) $account = new account();
 	}
 
+function getshells() { // Return a list of all shells listed in /etc/shells
+	$shells =  file('/etc/shells');
+	foreach ($shells as $shell) chop($shell);
+	return $shells; 
+	}
 
 function checkglobal() { // This functions checks all global account parameters
 	// Check if username has been entered

@@ -36,6 +36,7 @@ if ( $type ) { // Type is true if account.php was called from Users/Group/Hosts-
 	$_SESSION['account_old'] = ""; // Delete $_SESSION['account_old'] because values are now invalid
 	$_SESSION['account_temp'] = ""; // Delete $_SESSION['account_temp'] because values are now invalid
 	$_SESSION['modify'] = 0; // Set modify back to false
+	$_SESSION['shelllist'] = getshells(); // Write List of all valid shells in variable
 	}
 
 if ( $DN ) { // $DN is true if an entry should be modified and account.php was called from Users/Group/Host-List
@@ -179,7 +180,7 @@ switch ($select) {
 		if ($next && ($error=="0")) $select = 'final';
 		break;
 	case 'final':
-		if ($back && ($error=="0")) $select = 'quota';
+		if ($back && ($error=="0"))
 			switch ($_SESSION['type2']) {
 				case 'user': $select = 'personal'; break;
 				case 'group': $select = 'quota'; break;
@@ -254,6 +255,7 @@ switch ($select) {
 		echo '</td></tr>';
 		switch ( $_SESSION['type2'] ) {
 			case 'user':
+				$profilelist = getUserProfiles();
 				echo '<tr><td>';
 				echo _('Username');
 				echo '</td><td>
@@ -308,21 +310,14 @@ switch ($select) {
 				echo '</td></tr><tr><td>';
 				echo _('Login Shell');
 				echo '</td><td><select name="f_general_shell" >';
-					if ( $_SESSION['account']->general_shell == '/bin/ash' ) echo '<option selected> /bin/ash'; else echo '<option> /bin/ash';
-					if ( $_SESSION['account']->general_shell == '/bin/bash' ) echo '<option selected> /bin/bash'; else echo '<option> /bin/bash';
-					if ( $_SESSION['account']->general_shell == '/bin/csh' ) echo '<option selected> /bin/csh'; else echo '<option> /bin/csh';
-					if ( $_SESSION['account']->general_shell == '/bin/false' ) echo '<option selected> /bin/false'; else echo '<option> /bin/false';
-					if ( $_SESSION['account']->general_shell == '/bin/sh' ) echo '<option selected> /bin/sh'; else echo '<option> /bin/sh';
-					if ( $_SESSION['account']->general_shell == '/bin/tcsh' ) echo '<option selected> /bin/tcsh'; else echo '<option> /bin/tcsh';
-					if ( $_SESSION['account']->general_shell == '/bin/true' ) echo '<option selected> /bin/true'; else echo '<option> /bin/true';
-					if ( $_SESSION['account']->general_shell == '/bin/zsh' ) echo '<option selected> /bin/zsh'; else echo '<option> /bin/zsh';
-					if ( $_SESSION['account']->general_shell == '/usr/bin/csh' ) echo '<option selected> /usr/bin/csh'; else echo '<option> /usr/bin/csh';
-					if ( $_SESSION['account']->general_shell == '/usr/bin/rbash' ) echo '<option selected> /usr/bin/rbash'; else echo '<option> /usr/bin/rbash';
-					if ( $_SESSION['account']->general_shell == '/usr/bin/tcsh' ) echo '<option selected> /usr/bin/tcsh'; else echo '<option> /usr/bin/tcsh';
-					if ( $_SESSION['account']->general_shell == '/usr/bin/zsh' ) echo '<option selected> /usr/bin/zsh'; else echo '<option> /usr/bin/zsh';
+					foreach ($_SESSION['shelllist'] as $shell)
+						if ($_SESSION['account']->general_shell==$shell) echo '<option selected> '.$shell;
+							else echo '<option> '.$shell;
 				echo	'</select></td><td>';
 				echo _('To disable login use /bin/false.');
-				echo '</td></tr><tr><td>
+				echo '</td></tr><tr><td><select name="f_general_selectprofile">';
+				foreach ($profilelist as $profile) echo '<option>' . $profile;
+				echo '</select>
 				<input name="load" type="submit" value="'; echo _('Load Profile'); echo '">
 				</td><td>';
 				break;
@@ -345,6 +340,7 @@ switch ($select) {
 				echo '</td></tr>';
 				break;
 			case 'host':
+				$profilelist = getHostProfiles();
 				echo '<tr><td>';
 				echo _('Hostname');
 				echo '</td><td>
@@ -379,7 +375,9 @@ switch ($select) {
 				echo '</td><td><input name="f_general_gecos" type="text" size="30" value="' . $_SESSION['account']->general_gecos . '">
 					</td><td>';
 				echo _('Host descriptopn. If left empty hostname will be used.');
-				echo '</td></tr><tr><td>
+				echo '</td></tr><tr><td><select name="f_general_selectprofile">';
+				foreach ($profilelist as $profile) echo '<option>' . $profile;
+				echo '</select>
 				<input name="load" type="submit" value="'; echo _('Load Profile'); echo '">
 				</td><td>';
 				break;
@@ -750,7 +748,8 @@ switch ($select) {
 		echo '<input name="back" type="submit" value="'; echo _('back'); echo '">
 		</td><td>';
 		if (($_SESSION['type2']=='user') || ($_SESSION['type2']=='host')) {
-			echo '<input name="save" type="submit" value="';
+			echo '</td><td><input name="f_finish_safeProfile" type="text" size="30" maxlength="30">
+				<input name="save" type="submit" value="';
 			echo _('Save Profile');
 			echo '">';
 			}
@@ -821,22 +820,24 @@ switch ($select) {
 	case 'load':
 		switch ( $_SESSION['type2'] ) {
 			case 'user':
-				print_r (getUserProfiles());
-			break;
+				$_SESSION['account'] = loadUserProfile($f_general_selectprofile);
+				break;
 			case 'host':
-				print_r (getHostProfiles());
-			break;
+				$_SESSION['account'] = loadHostProfile($f_general_selectprofile);
+				break;
 			}
+		echo '<meta http-equiv="refresh" content="2; URL=account.php">';
 		break;
 	case 'save':
 		switch ( $_SESSION['type2'] ) {
 			case 'user':
-				print_r (getUserProfiles());
+				saveUserProfile($_SESSION['account'], $f_finish_safeProfile);
 			break;
 			case 'host':
-				print_r (getUserProfiles());
+				saveHostProfile($_SESSION['account'], $f_finish_safeProfile);
 			break;
 			}
+		echo '<meta http-equiv="refresh" content="0; URL=account.php?select=final">';
 		break;
 	}
 
