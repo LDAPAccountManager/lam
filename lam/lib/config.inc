@@ -460,16 +460,17 @@ class Config {
     return $this->ServerURL;
   }
 
-  // sets the server address
-  function set_ServerURL($value) {
-    if (is_string($value)) $this->ServerURL = $value;
-    else StatusMessage("WARN", "", _("Config->set_ServerURL failed!") . " (" . $value . ")");
-  }
+	// sets the server address
+	function set_ServerURL($value) {
+		if (is_string($value)) $this->ServerURL = $value;
+		else return false;
+		return true;
+	}
 
-  // returns an array of string with all admin names
-  function get_Admins() {
-    return $this->Admins;
-  }
+	// returns an array of string with all admin names
+	function get_Admins() {
+		return $this->Admins;
+	}
 
 	// needs an array of string containing all admin users
 	function set_Admins($value) {
@@ -483,60 +484,65 @@ class Config {
 			}
 			if ($b) $this->Admins = $value;
 		}
-		else StatusMessage("WARN", "", _("Config->set_Admins failed!") . " (" . $value . ")");
+		else return false;
+		return true;
 	}
 
-  // returns all admin users seperated by semicolons
-  function get_Adminstring() {
-    return $this->Adminstring;
-  }
+	// returns all admin users seperated by semicolons
+	function get_Adminstring() {
+		return $this->Adminstring;
+	}
 
-  // needs a string that contains all admin users seperated by semicolons
-  function set_Adminstring($value) {
-    if (is_string($value) &&
+	// needs a string that contains all admin users seperated by semicolons
+	function set_Adminstring($value) {
+		if (is_string($value) &&
 		eregi("^([a-z0-9]|-)+=([a-z0-9]|-)+(,([a-z0-9]|-)+=([a-z0-9]|-)+)+(;([a-z0-9]|-)+=([a-z0-9]|-)+(,([a-z0-9]|-)+=([a-z0-9]|-)+)+)*$", $value)) {
-      $this->Adminstring = $value;
-      $this->Admins = explode(";", $value);
-    }
-    else StatusMessage("WARN", "", _("Config->set_Adminstring failed!") . " (" . $value . ")");
-  }
-
-  // returns the password to access the preferences wizard
-  function get_Passwd() {
-    return $this->Passwd;
-  }
-
-  // sets the preferences wizard password
-  function set_Passwd($value) {
-    if (is_string($value)) $this->Passwd = $value;
-    else StatusMessage("WARN", "", _("Config->set_Passwd failed!") . " (" . $value . ")");
-  }
-
-  // returns the LDAP suffix where users are saved
-  function get_UserSuffix() {
-    return $this->Suff_users;
-  }
-
-  // sets the LDAP suffix where users are saved
-  function set_UserSuffix($value) {
-    if (is_string($value) && (eregi("^(([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)(,([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)*$", $value))) {
-		$this->Suff_users = $value;
+			$this->Adminstring = $value;
+			$this->Admins = explode(";", $value);
+		}
+		else return false;
+		return true;
 	}
-    else StatusMessage("WARN", "", _("Config->set_UserSuffix failed!") . " (" . $value . ")");
-  }
 
-  // returns the LDAP suffix where groups are saved
-  function get_GroupSuffix() {
-    return $this->Suff_groups;
-  }
-
-  // sets the LDAP suffix where groups are saved
-  function set_GroupSuffix($value) {
-    if (is_string($value) && (eregi("^(([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)(,([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)*$", $value))) {
-		$this->Suff_groups = $value;
+	// returns the password to access the preferences wizard
+	function get_Passwd() {
+		return $this->Passwd;
 	}
-	else StatusMessage("WARN", "", _("Config->set_GroupSuffix failed!") . " (" . $value . ")");
-  }
+
+	// sets the preferences wizard password
+	function set_Passwd($value) {
+		if (is_string($value)) $this->Passwd = $value;
+		else return false;
+		return true;
+	}
+
+	// returns the LDAP suffix where users are saved
+	function get_UserSuffix() {
+		return $this->Suff_users;
+	}
+
+	// sets the LDAP suffix where users are saved
+	function set_UserSuffix($value) {
+		if (is_string($value) && (eregi("^(([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)(,([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)*$", $value))) {
+			$this->Suff_users = $value;
+		}
+		else return false;
+		return true;
+	}
+
+	// returns the LDAP suffix where groups are saved
+	function get_GroupSuffix() {
+		return $this->Suff_groups;
+	}
+
+	// sets the LDAP suffix where groups are saved
+	function set_GroupSuffix($value) {
+		if (is_string($value) && (eregi("^(([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)(,([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)*$", $value))) {
+			$this->Suff_groups = $value;
+		}
+		else return false;
+		return true;
+	}
 
 	// returns the LDAP suffix where hosts are saved
 	function get_HostSuffix() {
@@ -548,7 +554,8 @@ class Config {
 		if (is_string($value) && (eregi("^(([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)(,([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)*$", $value))) {
 		$this->Suff_hosts = $value;
 	}
-		else StatusMessage("WARN", "", _("Config->set_HostSuffix failed!") . " (" . $value . ")");
+		else return false;
+		return true;
 	}
 
 	// returns the LDAP suffix where domains are saved
@@ -562,7 +569,8 @@ class Config {
 		elseif (is_string($value) && (eregi("^(([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)(,([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)*$", $value))) {
 			$this->Suff_domains = $value;
 		}
-		else StatusMessage("WARN", "", _("Config->set_DomainSuffix failed!") . " (" . $value . ")");
+		else return false;
+		return true;
 	}
 
 	// returns the LDAP suffix where mappings are saved
@@ -576,190 +584,206 @@ class Config {
 		elseif (is_string($value) && (eregi("^(([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)(,([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)*$", $value))) {
 			$this->Suff_map = $value;
 		}
-		else StatusMessage("WARN", "", _("Config->set_MappingSuffix failed!") . " (" . $value . ")");
+		else return false;
+		return true;
 	}
 
-  // returns the minimum UID to use when creating new users
-  function get_minUID() {
-    return $this->MinUID;
-  }
-
-  // sets the minimum UID to use when creating new users
-  function set_minUID($value) {
-    if (is_numeric($value)) $this->MinUID = $value;
-    else StatusMessage("WARN", "", _("Config->set_minUID failed!") . " (" . $value . ")");
-  }
-
-  // returns the maximum UID to use when creating new users
-  function get_maxUID() {
-    return $this->MaxUID;
-  }
-
-  // sets the maximum UID to use when creating new users
-  function set_maxUID($value) {
-    if (is_numeric($value)) $this->MaxUID = $value;
-    else StatusMessage("WARN", "", _("Config->set_maxUID failed!") . " (" . $value . ")");
-  }
-
-  // returns the minimum GID to use when creating new groups
-  function get_minGID() {
-    return $this->MinGID;
-  }
-
-  // sets the minimum GID to use when creating new groups
-  function set_minGID($value) {
-    if (is_numeric($value)) $this->MinGID = $value;
-    else StatusMessage("WARN", "", _("Config->set_minGID failed!") . " (" . $value . ")");
-  }
-
-  // returns the maximum GID to use when creating new groups
-  function get_maxGID() {
-    return $this->MaxGID;
-  }
-
-  // sets the maximum GID to use when creating new groups
-  function set_maxGID($value) {
-    if (is_numeric($value)) $this->MaxGID = $value;
-    else StatusMessage("WARN", "", _("Config->set_maxGID failed!") . " (" . $value . ")");
-  }
-
-  // returns the minimum UID to use when creating new Samba hosts
-  function get_minMachine() {
-    return $this->MinMachine;
-  }
-
-  // sets the minimum UID to use when creating new Samba hosts
-  function set_minMachine($value) {
-    if (is_numeric($value)) $this->MinMachine = $value;
-    else StatusMessage("WARN", "", _("Config->set_minMachine failed!") . " (" . $value . ")");
-  }
-
-  // returns the maximum UID to use when creating new Samba hosts
-  function get_maxMachine() {
-    return $this->MaxMachine;
-  }
-
-  // sets the maximum UID to use when creating new Samba hosts
-  function set_maxMachine($value) {
-    if (is_numeric($value)) $this->MaxMachine = $value;
-    else StatusMessage("WARN", "", _("Config->set_maxMachine failed!") . " (" . $value . ")");
-  }
-
-  // returns the list of attributes to show in user list
-  function get_userlistAttributes() {
-    return $this->userlistAttributes;
-  }
-
-  // sets the list of attributes to show in user list
-  function set_userlistAttributes($value) {
-    if (is_string($value) && eregi("^((#[a-z]*)|([a-z]*:[a-z*]))(;((#[a-z]*)|([a-z]*:[a-z]*)))*$", $value)) {
-		$this->userlistAttributes = $value;
+	// returns the minimum UID to use when creating new users
+	function get_minUID() {
+		return $this->MinUID;
 	}
-    else StatusMessage("WARN", "", _("Config->set_userlistAttributes failed!") . " (" . $value . ")");
-  }
 
-  // returns the list of attributes to show in group list
-  function get_grouplistAttributes() {
-    return $this->grouplistAttributes;
-  }
-
-  // sets the list of attributes to show in group list
-  function set_grouplistAttributes($value) {
-    if (is_string($value) && eregi("^((#[a-z]*)|([a-z]*:[a-z*]))(;((#[a-z]*)|([a-z]*:[a-z]*)))*$", $value)) {
-    	$this->grouplistAttributes = $value;
+	// sets the minimum UID to use when creating new users
+	function set_minUID($value) {
+		if (is_numeric($value)) $this->MinUID = $value;
+		else return false;
+		return true;
 	}
-    else StatusMessage("WARN", "", _("Config->set_grouplistAttributes failed!") . " (" . $value . ")");
-  }
 
-  // returns the list of attributes to show in host list
-  function get_hostlistAttributes() {
-    return $this->hostlistAttributes;
-  }
-
-  // sets the list of attributes to show in host list
-  function set_hostlistAttributes($value) {
-    if (is_string($value) && eregi("^((#[a-z]*)|([a-z]*:[a-z*]))(;((#[a-z]*)|([a-z]*:[a-z]*)))*$", $value)) {
-    	$this->hostlistAttributes = $value;
+	// returns the maximum UID to use when creating new users
+	function get_maxUID() {
+		return $this->MaxUID;
 	}
-    else StatusMessage("WARN", "", _("Config->set_hostlistAttributes failed!") . " (" . $value . ")");
-  }
 
-  // returns the maximum number of rows in user/group/host lists
-  function get_MaxListEntries() {
-    return $this->maxlistentries;
-  }
-
-  // sets the maximum number of rows in user/group/host lists
-  function set_MaxListEntries ($value) {
-    if (is_numeric($value)) $this->maxlistentries = $value;
-    else StatusMessage("WARN", "", _("Config->set_MaxListEntries failed!") . $value);
-  }
-
-  // returns the default language string
-  function get_defaultLanguage() {
-    return $this->defaultLanguage;
-  }
-
-  // sets the default language string
-  function set_defaultLanguage($value) {
-    if (is_string($value)) $this->defaultLanguage = $value;
-    else StatusMessage("WARN", "", _("Config->set_defaultLanguage failed!") . " (" . $value . ")");
-  }
-
-  // returns the path to the external script
-  function get_scriptPath() {
-    return $this->scriptPath;
-  }
-
-  // sets the path to the external script
-  function set_scriptPath($value) {
-	if (!$value) $this->scriptPath = ""; // optional parameter
-    elseif (is_string($value) && eregi("^/([a-z0-9_\\-])+(/([a-z0-9_\\-])+)+$", $value)) $this->scriptPath = $value;
-    else StatusMessage("WARN", "", _("Config->set_scriptPath failed!") . " (" . $value . ")");
-  }
-
-  // returns the server of the external script
-  function get_scriptServer() {
-    return $this->scriptServer;
-  }
-
-  // sets the server of the external script
-  function set_scriptServer($value) {
-	if (!$value) $value = ""; // optional parameter
-    if (is_string($value)) {
-		$this->scriptServer = $value;
+	// sets the maximum UID to use when creating new users
+	function set_maxUID($value) {
+		if (is_numeric($value)) $this->MaxUID = $value;
+		else return false;
+		return true;
 	}
-    else StatusMessage("WARN", "", _("Config->set_scriptServer failed!") . " (" . $value . ")");
-  }
 
-  // returns "yes" if Samba 3.x schema is used, otherwise "no"
-  function get_samba3() {
-    return $this->samba3;
-  }
-
-  // set Samba version: "yes" means 3.x schema, "no" means 2.2.x schema
-  function set_samba3($value) {
-    if (is_string($value) && eregi("^(yes|no)$", $value)) {
-		$this->samba3 = $value;
+	// returns the minimum GID to use when creating new groups
+	function get_minGID() {
+		return $this->MinGID;
 	}
-    else StatusMessage("WARN", "", _("Config->set_samba3 failed!") . " (" . $value . ")");
-  }
 
-  // returns the Samba domain SID (Samba 3 only)
-  function get_domainSID() {
-    return $this->domainSID;
-  }
+	// sets the minimum GID to use when creating new groups
+	function set_minGID($value) {
+		if (is_numeric($value)) $this->MinGID = $value;
+		else return false;
+		return true;
+	}
 
-  // sets the Samba domain SID (Samba 3 only)
-  function set_domainSID($value) {
-	if (!$value) { // optional parameter
-		$this->domainSID = "";
+	// returns the maximum GID to use when creating new groups
+	function get_maxGID() {
+		return $this->MaxGID;
 	}
-    elseif (is_string($value) && eregi("^S-[0-9]-[0-9]-[0-9]{2,2}-[0-9]*-[0-9]*-[0-9]*$", $value)) {
-		$this->domainSID = $value;
+
+	// sets the maximum GID to use when creating new groups
+	function set_maxGID($value) {
+		if (is_numeric($value)) $this->MaxGID = $value;
+		else return false;
+		return true;
 	}
-    else StatusMessage("WARN", "", _("Config->set_domainSID failed!") . " (" . $value . ")");
-  }
+
+	// returns the minimum UID to use when creating new Samba hosts
+	function get_minMachine() {
+		return $this->MinMachine;
+	}
+
+	// sets the minimum UID to use when creating new Samba hosts
+	function set_minMachine($value) {
+		if (is_numeric($value)) $this->MinMachine = $value;
+		else return false;
+		return true;
+	}
+
+	// returns the maximum UID to use when creating new Samba hosts
+	function get_maxMachine() {
+		return $this->MaxMachine;
+	}
+
+	// sets the maximum UID to use when creating new Samba hosts
+	function set_maxMachine($value) {
+		if (is_numeric($value)) $this->MaxMachine = $value;
+		else return false;
+		return true;
+	}
+
+	// returns the list of attributes to show in user list
+	function get_userlistAttributes() {
+		return $this->userlistAttributes;
+	}
+
+	// sets the list of attributes to show in user list
+	function set_userlistAttributes($value) {
+		if (is_string($value) && eregi("^((#[a-z]*)|([a-z]*:[a-z*]))(;((#[a-z]*)|([a-z]*:[a-z]*)))*$", $value)) {
+			$this->userlistAttributes = $value;
+		}
+		else return false;
+		return true;
+	}
+
+	// returns the list of attributes to show in group list
+	function get_grouplistAttributes() {
+		return $this->grouplistAttributes;
+	}
+
+	// sets the list of attributes to show in group list
+	function set_grouplistAttributes($value) {
+		if (is_string($value) && eregi("^((#[a-z]*)|([a-z]*:[a-z*]))(;((#[a-z]*)|([a-z]*:[a-z]*)))*$", $value)) {
+			$this->grouplistAttributes = $value;
+		}
+		else return false;
+		return true;
+	}
+
+	// returns the list of attributes to show in host list
+	function get_hostlistAttributes() {
+		return $this->hostlistAttributes;
+	}
+
+	// sets the list of attributes to show in host list
+	function set_hostlistAttributes($value) {
+		if (is_string($value) && eregi("^((#[a-z]*)|([a-z]*:[a-z*]))(;((#[a-z]*)|([a-z]*:[a-z]*)))*$", $value)) {
+			$this->hostlistAttributes = $value;
+		}
+		else return false;
+		return true;
+	}
+
+	// returns the maximum number of rows in user/group/host lists
+	function get_MaxListEntries() {
+		return $this->maxlistentries;
+	}
+
+	// sets the maximum number of rows in user/group/host lists
+	function set_MaxListEntries ($value) {
+		if (is_numeric($value)) $this->maxlistentries = $value;
+		else return false;
+		return true;
+	}
+
+	// returns the default language string
+	function get_defaultLanguage() {
+		return $this->defaultLanguage;
+	}
+
+	// sets the default language string
+	function set_defaultLanguage($value) {
+		if (is_string($value)) $this->defaultLanguage = $value;
+		else return false;
+		return true;
+	}
+
+	// returns the path to the external script
+	function get_scriptPath() {
+		return $this->scriptPath;
+	}
+
+	// sets the path to the external script
+	function set_scriptPath($value) {
+		if (!$value) $this->scriptPath = ""; // optional parameter
+		elseif (is_string($value) && eregi("^/([a-z0-9_\\-])+(/([a-z0-9_\\-])+)+$", $value)) $this->scriptPath = $value;
+		else return false;
+		return true;
+	}
+
+	// returns the server of the external script
+	function get_scriptServer() {
+		return $this->scriptServer;
+	}
+
+	// sets the server of the external script
+	function set_scriptServer($value) {
+		if (!$value) $value = ""; // optional parameter
+		if (is_string($value)) {
+			$this->scriptServer = $value;
+		}
+		else return false;
+		return true;
+	}
+
+	// returns "yes" if Samba 3.x schema is used, otherwise "no"
+	function get_samba3() {
+		return $this->samba3;
+	}
+
+	// set Samba version: "yes" means 3.x schema, "no" means 2.2.x schema
+	function set_samba3($value) {
+		if (is_string($value) && eregi("^(yes|no)$", $value)) {
+			$this->samba3 = $value;
+		}
+		else return false;
+		return true;
+	}
+
+	// returns the Samba domain SID (Samba 3 only)
+	function get_domainSID() {
+		return $this->domainSID;
+	}
+
+	// sets the Samba domain SID (Samba 3 only)
+	function set_domainSID($value) {
+		if (!$value) { // optional parameter
+			$this->domainSID = "";
+		}
+		elseif (is_string($value) && eregi("^S-[0-9]-[0-9]-[0-9]{2,2}-[0-9]*-[0-9]*-[0-9]*$", $value)) {
+			$this->domainSID = $value;
+		}
+		else return false;
+		return true;
+	}
 
 
 }
