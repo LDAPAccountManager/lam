@@ -51,7 +51,7 @@ class cache {
 			}
 		$scopes = array_keys($attributes);
 		foreach ($scopes as $scope) {
-			if (!@in_array($scope, $allowed_types)) trigger_error(sprintf(_('Invalid scope. Valid scopes are %s.'), implode(" ", $allowed_types)), E_USER_ERROR);
+			if (!@in_array($scope, $allowed_types)) trigger_error(sprintf('Invalid scope. Valid scopes are %s.', implode(" ", $allowed_types)), E_USER_ERROR);
 			}
 		// Everything seems to be OK, start processing data
 		foreach ($scopes as $scope) {

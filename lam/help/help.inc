@@ -118,7 +118,7 @@ $helpArray = array (
 					"Text" => _("This is the identifier for the relative DN value. It must be one of the given allowed LDAP attributes (e.g. user accounts usually use \"uid\" while groups use \"cn\").")),
 				"360" => array ("ext" => "FALSE", "Headline" => _("Profile name"),
 					"Text" => _("Name under which the profile will be saved. If a profile with the same name exists, it will be overwritten.")),
-				"361" => array ("ext" => "FALSE", "Headline" => _("DN Suffix"),
+				"361" => array ("ext" => "FALSE", "Headline" => _("DN suffix"),
 					"Text" => _("The new account will be saved under this LDAP suffix.")),
 				// 400 - 499
 				// Tilo Lutz

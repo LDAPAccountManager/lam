@@ -86,7 +86,7 @@ if ($_GET['type']) {
 	for ($i=0; $i<count($users); $i++) {
 		echo "<tr>\n";
 		echo "<td>" . sprintf(_('%sname:'), ucfirst($_GET['type'])) . " $users[$i]</td>\n";
-		echo "<td>" . _('DN:') . " " . $_SESSION['delete_dn'][$i] . "</td>\n";
+		echo "<td>" . _('DN') . " " . $_SESSION['delete_dn'][$i] . "</td>\n";
 		echo "</tr>\n";
 		}
 	echo "</table>\n";

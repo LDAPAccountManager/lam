@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: messages\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de \n"
 "POT-Creation-Date: 2004-01-14 17:45+0200\n"
-"PO-Revision-Date: 2004-10-23 14:08+0200\n"
+"PO-Revision-Date: 2004-10-24 21:13+0200\n"
 "Last-Translator: Roland Gruber <post@rolandgruber.de>\n"
 "Language-Team: Deutsch <lam-i18n@lists.sourceforge.org>\n"
 "MIME-Version: 1.0\n"
@@ -81,6 +81,8 @@ msgstr "Account"
 #: ../lib/modules/posixAccount.inc:83 ../lib/modules/posixAccount.inc:84
 #: ../lib/modules/posixAccount.inc:85 ../lib/modules/posixAccount.inc:86
 #: ../lib/modules/posixAccount.inc:87 ../lib/modules/posixAccount.inc:88
+#: ../lib/modules/sambaGroupMapping.inc:338
+#: ../lib/modules/sambaGroupMapping.inc:339
 #: ../lib/modules/inetOrgPerson.inc:53 ../lib/modules/inetOrgPerson.inc:55
 #: ../lib/modules/inetOrgPerson.inc:57 ../lib/modules/inetOrgPerson.inc:59
 #: ../lib/modules/inetOrgPerson.inc:61 ../lib/modules/inetOrgPerson.inc:63
@@ -114,10 +116,6 @@ msgstr "Account deaktiviert"
 msgid "Account modules"
 msgstr "Accountmodule"
 
-#: ../lib/modules.inc:545
-msgid "Account type not recognized."
-msgstr ""
-
 #: ../templates/pdfedit/pdfpage.php:725
 msgid "Add"
 msgstr "Hinzufügen"
@@ -135,8 +133,8 @@ msgid "Add section or static text"
 msgstr ""
 
 #: ../lib/modules/posixAccount.inc:188 ../lib/modules/posixAccount.inc:319
-#: ../lib/modules/posixAccount.inc:813 ../lib/modules/posixAccount.inc:874
-#: ../lib/modules/posixAccount.inc:906 ../lib/modules/posixAccount.inc:947
+#: ../lib/modules/posixAccount.inc:817 ../lib/modules/posixAccount.inc:879
+#: ../lib/modules/posixAccount.inc:911 ../lib/modules/posixAccount.inc:952
 #: ../help/help.inc:130
 msgid "Additional groups"
 msgstr "Zusätzliche Gruppen"
@@ -150,11 +148,11 @@ msgstr "Zusätzliche Aufgaben des Moduls:"
 #: ../lib/modules/sambaSamAccount.inc:534
 #: ../lib/modules/sambaSamAccount.inc:537
 msgid "Administrator"
-msgstr ""
+msgstr "Administrator"
 
 #: ../lib/modules/posixGroup.inc:303
 msgid "Administrators group"
-msgstr ""
+msgstr "Administratoren"
 
 #: ../templates/domain.php:146 ../help/help.inc:262
 msgid "Algorithmic RID Base"
@@ -199,28 +197,24 @@ msgid "Attributes in User List"
 msgstr "Attributnamen in der Benutzerliste"
 
 #: ../templates/pdfedit/pdfpage.php:859
-#, fuzzy
 msgid "Available PDF fields"
-msgstr "Verfügbare Benutzer"
+msgstr "Verfügbare PDF-Felder"
 
 #: ../templates/config/confmodules.php:319
-#, fuzzy
 msgid "Available group modules"
-msgstr "Verfügbare Gruppen"
+msgstr "Verfügbare Gruppenmodule"
 
-#: ../lib/modules/posixAccount.inc:880
+#: ../lib/modules/posixAccount.inc:885
 msgid "Available groups"
 msgstr "Verfügbare Gruppen"
 
 #: ../templates/config/confmodules.php:422
-#, fuzzy
 msgid "Available host modules"
-msgstr "Verfügbare Benutzer"
+msgstr "Verfügbare Hostmodule"
 
 #: ../templates/config/confmodules.php:216
-#, fuzzy
 msgid "Available user modules"
-msgstr "Verfügbare Benutzer"
+msgstr "Verfügbare Benutzermodule"
 
 #: ../lib/modules/posixGroup.inc:199
 msgid "Available users"
@@ -231,7 +225,7 @@ msgid "Available workstations"
 msgstr "Verfügbare PCs"
 
 #: ../lib/modules/posixGroup.inc:203 ../lib/modules/sambaAccount.inc:626
-#: ../lib/modules/sambaSamAccount.inc:594 ../lib/modules/posixAccount.inc:884
+#: ../lib/modules/sambaSamAccount.inc:594 ../lib/modules/posixAccount.inc:889
 msgid "Back"
 msgstr "Zurück"
 
@@ -251,9 +245,8 @@ msgstr "Zurück zum OU-Editor"
 
 #: ../templates/pdfedit/pdfdelete.php:61 ../templates/pdfedit/pdfdelete.php:69
 #: ../templates/pdfedit/pdfdelete.php:90
-#, fuzzy
 msgid "Back to PDF Editor"
-msgstr "Zurück zum OU-Editor"
+msgstr "Zurück zum PDF-Editor"
 
 #: ../templates/profedit/profilecreate.php:115
 #: ../templates/profedit/profiledelete.php:63
@@ -271,9 +264,8 @@ msgid "Back to group list"
 msgstr "Zurück zur Gruppenliste"
 
 #: ../templates/delete.php:238
-#, fuzzy
 msgid "Back to list"
-msgstr "Zurück zur Benutzerliste"
+msgstr "Zurück zur Liste"
 
 #: ../templates/config/confsave.php:92 ../templates/config/confsave.php:97
 #: ../templates/config/confsave.php:102 ../templates/config/confsave.php:107
@@ -308,9 +300,8 @@ msgstr ""
 "erlaubt"
 
 #: ../lib/modules/quota.inc:34
-#, fuzzy
 msgid "Block quota"
-msgstr "weiches Block-Quota"
+msgstr "Block-Quota"
 
 #: ../lib/modules/quota.inc:30
 msgid "Block soft quota"
@@ -326,7 +317,7 @@ msgstr ""
 
 #: ../lib/modules/quota.inc:34
 msgid "Block soft quota must be smaller than block hard quota"
-msgstr ""
+msgstr "Weiches Block-Quota muss kleiner sein als hartes Block-Quota"
 
 #: ../templates/pdfedit/pdfpage.php:524
 msgid "Bottom"
@@ -338,9 +329,8 @@ msgid "Builtin Group"
 msgstr "Zusätzliche Gruppen"
 
 #: ../templates/masscreate.php:127
-#, fuzzy
 msgid "CSV file:"
-msgstr "Datei wählen:"
+msgstr "CSV-Datei:"
 
 #: ../templates/config/confmain.php:198 ../lib/config.inc:332
 #: ../help/help.inc:94
@@ -377,12 +367,10 @@ msgid "Cannot open config file!"
 msgstr "Kann Konfigurationsdatei nicht öffnen!"
 
 #: ../templates/pdfedit/pdfpage.php:605 ../templates/pdfedit/pdfpage.php:611
-#, fuzzy
 msgid "Change"
-msgstr "Bereiche"
+msgstr "Ändern"
 
 #: ../lib/modules/posixGroup.inc:155
-#, fuzzy
 msgid "Change GID number of users and hosts"
 msgstr "Ändere die GID-Nummern aller Benutzer auf den neuen Wert"
 
@@ -407,6 +395,15 @@ msgstr "Hauptpasswort ändern"
 msgid "Change password"
 msgstr "Passwort ändern"
 
+#: ../lib/baseModule.inc:524
+#, php-format
+msgid "Changed value %s because only numeric values are allowed."
+msgstr ""
+
+#: ../lib/baseModule.inc:541
+msgid "Changed value s because only US-ASCII allowed."
+msgstr ""
+
 #: ../lib/modules.inc:726
 #, fuzzy
 msgid "Check module"
@@ -418,7 +415,7 @@ msgstr "Hier klicken wenn Sie nicht zur nächsten Seite weitergeleitet werden."
 
 #: ../templates/masscreate.php:135
 msgid "Columns:"
-msgstr ""
+msgstr "Spalten:"
 
 #: ../help/help.inc:238
 msgid "Comma separated list of unix workstations the user is allowed to login."
@@ -427,9 +424,8 @@ msgstr ""
 "Benutzer anmelden darf."
 
 #: ../lib/modules/inetOrgPerson.inc:115
-#, fuzzy
 msgid "Common name"
-msgstr "Domänenname"
+msgstr "Allgemeiner Name"
 
 #: ../templates/login.php:119
 msgid "Configuration Login"
@@ -450,8 +446,8 @@ msgstr "Einstellungsassistent"
 #: ../templates/config/confmodules.php:257
 #: ../templates/config/confmodules.php:360
 #: ../templates/config/confmodules.php:463
-msgid "Conflicting module: "
-msgstr ""
+msgid "Conflicting module:"
+msgstr "Modulkonflikt:"
 
 #: ../templates/config/profmanage.php:99
 msgid "Could not rename file!"
@@ -501,9 +497,8 @@ msgstr "Neues Benutzerprofil erstellen"
 #: ../templates/profedit/profilemain.php:140
 #: ../templates/profedit/profilemain.php:183
 #: ../templates/profedit/profilemain.php:226
-#, fuzzy
 msgid "Create a new profile"
-msgstr "Neues Profil wurde erstellt."
+msgstr "Neues Profil erstellen"
 
 #: ../lib/modules.inc:772
 #, fuzzy, php-format
@@ -511,28 +506,24 @@ msgid "Create another %s"
 msgstr "Weiteren Benutzer anlegen"
 
 #: ../templates/masscreate.php:99
-#, fuzzy
 msgid "Create group accounts"
-msgstr "Neue Accounts anlegen"
+msgstr "Gruppenaccounts anlegen"
 
-#: ../lib/modules/posixAccount.inc:820
-#, fuzzy
+#: ../lib/modules/posixAccount.inc:824
 msgid "Create home directory"
-msgstr "Heimatverzeichnis"
+msgstr "Heimatverzeichnis anlegen"
 
 #: ../templates/masscreate.php:102
-#, fuzzy
 msgid "Create host accounts"
-msgstr "Neue Accounts anlegen"
+msgstr "Hostaccounts anlegen"
 
 #: ../lib/modules.inc:672
 msgid "Create new Account"
 msgstr "Neuen Account anlegen"
 
 #: ../templates/masscreate.php:96
-#, fuzzy
 msgid "Create user accounts"
-msgstr "Neue Accounts anlegen"
+msgstr "Useraccounts anlegen"
 
 #: ../templates/config/profmanage.php:84
 msgid "Created new profile."
@@ -540,26 +531,19 @@ msgstr "Neues Profil wurde erstellt."
 
 #: ../templates/tools.php:70
 msgid "Creates accounts by uploading a CSV formated file."
-msgstr ""
+msgstr "Erstellt Accounts durch das Hochladen einer CSV formatierten Datei."
 
-#: ../lib/modules.inc:1527
+#: ../lib/modules.inc:1532
 msgid "DN"
 msgstr "DN"
 
-#: ../help/help.inc:121
-#, fuzzy
-msgid "DN Suffix"
-msgstr "Suffix"
-
 #: ../templates/masscreate.php:138
-#, fuzzy
 msgid "DN settings"
-msgstr "PDF-Einstellungen"
+msgstr "DN-Einstellungen"
 
-#: ../templates/masscreate.php:142
-#, fuzzy
+#: ../templates/masscreate.php:142 ../help/help.inc:121
 msgid "DN suffix"
-msgstr "Benutzersuffix"
+msgstr "DN-Suffix"
 
 #: ../templates/delete.php:89
 #, fuzzy
@@ -568,11 +552,11 @@ msgstr "DN"
 
 #: ../lib/modules/sambaGroupMapping.inc:251
 msgid "DOMAIN_ADMINS"
-msgstr ""
+msgstr "Domänenadministratoren"
 
 #: ../templates/massBuildAccounts.php:164
 msgid "Data field for RDN is empty!"
-msgstr ""
+msgstr "Datenfeld für RDN ist leer!"
 
 #: ../help/help.inc:185
 msgid "Date after the user is able to change his password. Format: DD-MM-YYYY"
@@ -596,9 +580,8 @@ msgid "Default language"
 msgstr "Standardsprache"
 
 #: ../templates/masscreate.php:147 ../templates/masscreate.php:302
-#, fuzzy
 msgid "Default value"
-msgstr "Standardsprache"
+msgstr "Standardwert"
 
 #: ../templates/domain.php:218 ../templates/delete.php:103
 msgid "Delete"
@@ -622,7 +605,7 @@ msgstr "Lösche Host(s)"
 
 #: ../templates/pdfedit/pdfdelete.php:48 ../templates/pdfedit/pdfmain.php:133
 msgid "Delete PDF structure"
-msgstr ""
+msgstr "PDF-Struktur löschen"
 
 #: ../templates/profedit/profiledelete.php:52
 msgid "Delete User Profile"
@@ -632,10 +615,9 @@ msgstr "Benutzerprofil löschen"
 msgid "Delete domain(s)"
 msgstr "Lösche Domäne(n)"
 
-#: ../lib/modules/posixAccount.inc:851
-#, fuzzy
+#: ../lib/modules/posixAccount.inc:856
 msgid "Delete home directory"
-msgstr "Heimatverzeichnisse mitlöschen"
+msgstr "Heimatverzeichnis löschen"
 
 #: ../templates/pdfedit/pdfdelete.php:68
 #: ../templates/profedit/profiledelete.php:70
@@ -660,14 +642,13 @@ msgid "Delete user(s)"
 msgstr "Lösche Benutzer"
 
 #: ../lib/modules/sambaGroupMapping.inc:56
-#, fuzzy
 msgid "Deleted Account"
-msgstr "Lösche Account"
+msgstr "Gelöschter Account"
 
 #: ../templates/delete.php:224
-#, fuzzy, php-format
+#, php-format
 msgid "Deleted DN: %s"
-msgstr "Gelöschtes Profil:"
+msgstr "Gelöschter DN: %s"
 
 #: ../templates/pdfedit/pdfdelete.php:59
 #, fuzzy
@@ -884,7 +865,7 @@ msgstr "Editieren"
 msgid "Edit PDF structure"
 msgstr ""
 
-#: ../lib/modules/posixGroup.inc:135 ../lib/modules/posixAccount.inc:814
+#: ../lib/modules/posixGroup.inc:135 ../lib/modules/posixAccount.inc:818
 msgid "Edit groups"
 msgstr "Gruppen ändern"
 
@@ -1001,7 +982,7 @@ msgstr "Vorname"
 #: ../lib/modules/posixGroup.inc:128 ../lib/modules/posixGroup.inc:295
 #: ../lib/modules/posixGroup.inc:326 ../lib/modules/posixGroup.inc:351
 #: ../lib/modules/posixGroup.inc:369 ../lib/modules/posixGroup.inc:400
-#: ../lib/modules/posixAccount.inc:41 ../lib/modules/posixAccount.inc:944
+#: ../lib/modules/posixAccount.inc:41 ../lib/modules/posixAccount.inc:949
 #: ../lib/modules/sambaGroupMapping.inc:294 ../lib/lists.inc:179
 #: ../lib/lists.inc:199 ../lib/lists.inc:218 ../help/help.inc:142
 msgid "GID number"
@@ -1032,13 +1013,13 @@ msgstr ""
 
 #: ../lib/modules/account.inc:41 ../lib/modules/posixAccount.inc:223
 #: ../lib/modules/posixAccount.inc:255 ../lib/modules/posixAccount.inc:297
-#: ../lib/modules/posixAccount.inc:328 ../lib/modules/posixAccount.inc:803
-#: ../lib/modules/posixAccount.inc:945 ../lib/modules/inetOrgPerson.inc:210
+#: ../lib/modules/posixAccount.inc:328 ../lib/modules/posixAccount.inc:807
+#: ../lib/modules/posixAccount.inc:950 ../lib/modules/inetOrgPerson.inc:210
 #: ../help/help.inc:134 ../help/help.inc:144 ../help/help.inc:152
 msgid "Gecos"
 msgstr "Beschreibung"
 
-#: ../lib/modules/posixGroup.inc:139 ../lib/modules/posixAccount.inc:826
+#: ../lib/modules/posixGroup.inc:139 ../lib/modules/posixAccount.inc:830
 msgid "Generate password"
 msgstr "Passwort generieren"
 
@@ -1268,8 +1249,8 @@ msgstr "Halten Sie Strg gedrückt um mehrere Gruppen zu markieren."
 #: ../lib/modules/posixAccount.inc:36 ../lib/modules/posixAccount.inc:64
 #: ../lib/modules/posixAccount.inc:65 ../lib/modules/posixAccount.inc:194
 #: ../lib/modules/posixAccount.inc:305 ../lib/modules/posixAccount.inc:697
-#: ../lib/modules/posixAccount.inc:816 ../lib/modules/posixAccount.inc:911
-#: ../lib/modules/posixAccount.inc:948 ../lib/lists.inc:184
+#: ../lib/modules/posixAccount.inc:820 ../lib/modules/posixAccount.inc:916
+#: ../lib/modules/posixAccount.inc:953 ../lib/lists.inc:184
 #: ../help/help.inc:132
 msgid "Home directory"
 msgstr "Heimatverzeichnis"
@@ -1560,13 +1541,12 @@ msgstr ""
 msgid "Invalid mode. Valid modes are %s."
 msgstr ""
 
-#: ../lib/modules/posixGroup.inc:148 ../lib/modules/posixAccount.inc:835
+#: ../lib/modules/posixGroup.inc:148 ../lib/modules/posixAccount.inc:839
 #, fuzzy
 msgid "Invalid password"
 msgstr "Unix-Passwort"
 
-#: ../lib/cache.inc:54 ../lib/cache.inc:73 ../lib/cache.inc:139
-#: ../lib/cache.inc:247
+#: ../lib/cache.inc:73 ../lib/cache.inc:139 ../lib/cache.inc:247
 #, php-format
 msgid "Invalid scope. Valid scopes are %s."
 msgstr ""
@@ -1628,6 +1608,11 @@ msgstr ""
 
 #: ../lib/modules/posixAccount.inc:84
 msgid "LAM was unable to find a group with this name!"
+msgstr ""
+
+#: ../lib/modules/posixAccount.inc:1204
+#, php-format
+msgid "LAM was unable to modify group memberships for group: %s"
 msgstr ""
 
 #: ../templates/config/confmodules.php:67 ../templates/config/confsave.php:74
@@ -1730,7 +1715,7 @@ msgid "Local Group"
 msgstr "Gruppe"
 
 #: ../lib/modules/posixGroup.inc:151 ../lib/modules/posixAccount.inc:215
-#: ../lib/modules/posixAccount.inc:838 ../lib/modules/posixAccount.inc:923
+#: ../lib/modules/posixAccount.inc:842 ../lib/modules/posixAccount.inc:928
 #, fuzzy
 msgid "Lock password"
 msgstr "Kein Passwort setzen"
@@ -1741,8 +1726,8 @@ msgid "Login"
 msgstr "Login"
 
 #: ../lib/modules/posixAccount.inc:201 ../lib/modules/posixAccount.inc:315
-#: ../lib/modules/posixAccount.inc:842 ../lib/modules/posixAccount.inc:915
-#: ../lib/modules/posixAccount.inc:950 ../lib/lists.inc:185
+#: ../lib/modules/posixAccount.inc:846 ../lib/modules/posixAccount.inc:920
+#: ../lib/modules/posixAccount.inc:955 ../lib/lists.inc:185
 #: ../help/help.inc:136
 msgid "Login shell"
 msgstr "Login Shell"
@@ -2204,8 +2189,8 @@ msgstr ""
 #: ../lib/modules/sambaAccount.inc:48 ../lib/modules/sambaSamAccount.inc:46
 #: ../lib/modules/sambaSamAccount.inc:47 ../lib/modules/posixAccount.inc:71
 #: ../lib/modules/posixAccount.inc:72 ../lib/modules/posixAccount.inc:73
-#: ../lib/modules/posixAccount.inc:209 ../lib/modules/posixAccount.inc:824
-#: ../lib/modules/posixAccount.inc:949
+#: ../lib/modules/posixAccount.inc:209 ../lib/modules/posixAccount.inc:828
+#: ../lib/modules/posixAccount.inc:954
 msgid "Password"
 msgstr "Passwort"
 
@@ -2491,8 +2476,8 @@ msgstr ""
 
 #: ../lib/modules/posixAccount.inc:181 ../lib/modules/posixAccount.inc:248
 #: ../lib/modules/posixAccount.inc:301 ../lib/modules/posixAccount.inc:332
-#: ../lib/modules/posixAccount.inc:807 ../lib/modules/posixAccount.inc:902
-#: ../lib/modules/posixAccount.inc:930 ../lib/modules/posixAccount.inc:946
+#: ../lib/modules/posixAccount.inc:811 ../lib/modules/posixAccount.inc:907
+#: ../lib/modules/posixAccount.inc:935 ../lib/modules/posixAccount.inc:951
 #: ../help/help.inc:138 ../help/help.inc:150
 msgid "Primary group"
 msgstr "Primäre Gruppe"
@@ -2599,7 +2584,7 @@ msgid "Renamed profile."
 msgstr "Profil umbenannt."
 
 #: ../lib/modules/posixGroup.inc:142 ../lib/modules/sambaAccount.inc:490
-#: ../lib/modules/sambaSamAccount.inc:456 ../lib/modules/posixAccount.inc:829
+#: ../lib/modules/sambaSamAccount.inc:456 ../lib/modules/posixAccount.inc:833
 msgid "Repeat password"
 msgstr "Passwort wiederholen"
 
@@ -2784,7 +2769,7 @@ msgstr "Gruppenprofil wählen"
 msgid "Selected group modules"
 msgstr "Gewählte Gruppen"
 
-#: ../lib/modules/posixAccount.inc:875
+#: ../lib/modules/posixAccount.inc:880
 msgid "Selected groups"
 msgstr "Gewählte Gruppen"
 
@@ -2820,8 +2805,8 @@ msgstr "Server mit externem Script"
 msgid "Server settings"
 msgstr "Servereinstellungen"
 
-#: ../lib/modules/posixGroup.inc:145 ../lib/modules/posixAccount.inc:832
-#: ../lib/modules/posixAccount.inc:919
+#: ../lib/modules/posixGroup.inc:145 ../lib/modules/posixAccount.inc:836
+#: ../lib/modules/posixAccount.inc:924
 #, fuzzy
 msgid "Set no password"
 msgstr "Kein Passwort setzen"
@@ -3338,7 +3323,7 @@ msgstr ""
 #: ../lib/modules/posixAccount.inc:46 ../lib/modules/posixAccount.inc:175
 #: ../lib/modules/posixAccount.inc:242 ../lib/modules/posixAccount.inc:276
 #: ../lib/modules/posixAccount.inc:280 ../lib/modules/posixAccount.inc:288
-#: ../lib/modules/posixAccount.inc:799 ../lib/modules/posixAccount.inc:943
+#: ../lib/modules/posixAccount.inc:803 ../lib/modules/posixAccount.inc:948
 #: ../lib/lists.inc:178 ../lib/lists.inc:217 ../help/help.inc:128
 #: ../help/help.inc:148
 msgid "UID number"
@@ -3400,6 +3385,10 @@ msgstr "Kann das Profil nicht löschen!"
 msgid "Unable to delete profile!"
 msgstr "Kann das Profil nicht löschen!"
 
+#: ../lib/modules/posixAccount.inc:1221
+msgid "Unable to find group in LDAP."
+msgstr ""
+
 #: ../templates/login.php:100 ../templates/config/confmain.php:355
 msgid ""
 "Unable to load available languages. Setting English as default language. For "
@@ -3438,7 +3427,7 @@ msgstr ""
 #: ../templates/config/confmodules.php:245
 #: ../templates/config/confmodules.php:348
 #: ../templates/config/confmodules.php:451
-msgid "Unsolved dependency: "
+msgid "Unsolved dependency:"
 msgstr ""
 
 #: ../templates/pdfedit/pdfpage.php:581
@@ -3580,8 +3569,8 @@ msgstr "UserSuffix ist ungültig!"
 #: ../templates/login.php:157 ../lib/modules/sambaAccount.inc:640
 #: ../lib/modules/sambaSamAccount.inc:699 ../lib/modules/posixAccount.inc:76
 #: ../lib/modules/posixAccount.inc:77 ../lib/modules/posixAccount.inc:80
-#: ../lib/modules/posixAccount.inc:293 ../lib/modules/posixAccount.inc:796
-#: ../lib/modules/posixAccount.inc:942 ../lib/lists.inc:180
+#: ../lib/modules/posixAccount.inc:293 ../lib/modules/posixAccount.inc:800
+#: ../lib/modules/posixAccount.inc:947 ../lib/lists.inc:180
 #: ../help/help.inc:126
 msgid "Username"
 msgstr "Benutzername"
@@ -3644,26 +3633,26 @@ msgstr "Benutzer die Mitglieder der Gruppe sind."
 msgid "Valid users"
 msgstr "Berechtigte Benutzer"
 
-#: ../templates/delete.php:184 ../lib/modules.inc:1424
+#: ../templates/delete.php:184 ../lib/modules.inc:1429
 #, php-format
 msgid ""
 "Was unable to add attribtues to dn: %s. This is possible a bug. Please check "
 "your ldap logs and send a bug report if it is a possible bug."
 msgstr ""
 
-#: ../lib/modules.inc:1389 ../lib/modules.inc:1398
+#: ../lib/modules.inc:1394 ../lib/modules.inc:1403
 #, php-format
 msgid ""
 "Was unable to create dn: %s. This is possible a bug. Please check your ldap "
 "logs and send a bug report if it is a possible bug."
 msgstr ""
 
-#: ../lib/modules.inc:1382
+#: ../lib/modules.inc:1387
 #, fuzzy, php-format
 msgid "Was unable to delete dn: %s."
 msgstr "Konnte %s nicht erstellen."
 
-#: ../templates/delete.php:174 ../lib/modules.inc:1414
+#: ../templates/delete.php:174 ../lib/modules.inc:1419
 #, php-format
 msgid ""
 "Was unable to modify attribtues from dn: %s. This is possible a bug. Please "
@@ -3671,7 +3660,7 @@ msgid ""
 msgstr ""
 
 #: ../templates/delete.php:194 ../templates/delete.php:218
-#: ../lib/modules.inc:1434
+#: ../lib/modules.inc:1439
 #, php-format
 msgid ""
 "Was unable to remove attribtues from dn: %s. This is possible a bug. Please "
@@ -3908,4 +3897,7 @@ msgstr ""
 #, fuzzy
 msgid "users"
 msgstr "Benutzer"
+
+#~ msgid "DN Suffix"
+#~ msgstr "DN-Suffix"
 

@@ -242,7 +242,7 @@ if ($user_depends != false) {
 	$no_depends_user = false;
 	echo "<p>\n";
 		for ($i = 0; $i < sizeof($user_depends); $i++) {
-			echo "<font color=\"red\"><b>" . _("Unsolved dependency: ") . "</b>" . $user_depends[$i][0] . " (" .
+			echo "<font color=\"red\"><b>" . _("Unsolved dependency:") . " </b>" . $user_depends[$i][0] . " (" .
 				$user_depends[$i][1] . ")" . "</font><br>\n";
 		}
 	echo "<p>\n";
@@ -254,7 +254,7 @@ if ($user_conflicts != false) {
 	$no_conflicts_user = false;
 	echo "<p>\n";
 		for ($i = 0; $i < sizeof($user_conflicts); $i++) {
-			echo "<font color=\"red\"><b>" . _("Conflicting module: ") . "</b>" . $user_conflicts[$i][0] . " (" .
+			echo "<font color=\"red\"><b>" . _("Conflicting module:") . " </b>" . $user_conflicts[$i][0] . " (" .
 				$user_conflicts[$i][1] . ")" . "</font><br>\n";
 		}
 	echo "<p>\n";
@@ -345,7 +345,7 @@ if ($group_depends != false) {
 	$no_depends_group = false;
 	echo "<p>\n";
 		for ($i = 0; $i < sizeof($group_depends); $i++) {
-			echo "<font color=\"red\"><b>" . _("Unsolved dependency: ") . "</b>" . $group_depends[$i][0] . " (" .
+			echo "<font color=\"red\"><b>" . _("Unsolved dependency:") . " </b>" . $group_depends[$i][0] . " (" .
 				$group_depends[$i][1] . ")" . "</font><br>\n";
 		}
 	echo "<p>\n";
@@ -357,7 +357,7 @@ if ($group_conflicts != false) {
 	$no_conflicts_group = false;
 	echo "<p>\n";
 		for ($i = 0; $i < sizeof($group_conflicts); $i++) {
-			echo "<font color=\"red\"><b>" . _("Conflicting module: ") . "</b>" . $group_conflicts[$i][0] . " (" .
+			echo "<font color=\"red\"><b>" . _("Conflicting module:") . " </b>" . $group_conflicts[$i][0] . " (" .
 				$group_conflicts[$i][1] . ")" . "</font><br>\n";
 		}
 	echo "<p>\n";
@@ -448,7 +448,7 @@ if ($host_depends != false) {
 	$no_depends_host = false;
 	echo "<p>\n";
 		for ($i = 0; $i < sizeof($host_depends); $i++) {
-			echo "<font color=\"red\"><b>" . _("Unsolved dependency: ") . "</b>" . $host_depends[$i][0] . " (" .
+			echo "<font color=\"red\"><b>" . _("Unsolved dependency:") . " </b>" . $host_depends[$i][0] . " (" .
 				$host_depends[$i][1] . ")" . "</font><br>\n";
 		}
 	echo "<p>\n";
@@ -460,7 +460,7 @@ if ($host_conflicts != false) {
 	$no_conflicts_host = false;
 	echo "<p>\n";
 		for ($i = 0; $i < sizeof($host_conflicts); $i++) {
-			echo "<font color=\"red\"><b>" . _("Conflicting module: ") . "</b>" . $host_conflicts[$i][0] . " (" .
+			echo "<font color=\"red\"><b>" . _("Conflicting module:") . " </b>" . $host_conflicts[$i][0] . " (" .
 				$host_conflicts[$i][1] . ")" . "</font><br>\n";
 		}
 	echo "<p>\n";
