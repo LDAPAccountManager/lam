@@ -9,4 +9,7 @@ en_GB:ISO-8859-1:English (Britain)
 # German Language
 de_DE:ISO-8859-15:Deutsch (Deutschland)
 
+# Hungarian Language
+hu_HU:ISO-8859-2:Hungary (Magyar)
+
 
