@@ -386,7 +386,8 @@ class Config {
 	// $value: new host suffix
 	// returns true if $value has correct format
 	function set_HostSuffix($value) {
-		if (is_string($value) && (eregi("^(([a-z0-9 \\-])*=([a-z0-9 \\-])*)(,([a-z0-9 \\-])*=([a-z0-9 \\-])*)*$", $value))) {
+		if (! $value) $this->hostsuffix = "";
+		elseif (is_string($value) && (eregi("^(([a-z0-9 \\-])*=([a-z0-9 \\-])*)(,([a-z0-9 \\-])*=([a-z0-9 \\-])*)*$", $value))) {
 		$this->hostsuffix = $value;
 	}
 		else return false;
@@ -475,7 +476,8 @@ class Config {
 	// $value: new minimum machine number
 	// returns true if $value has correct format
 	function set_minMachine($value) {
-		if (is_numeric($value)) $this->MinMachine = $value;
+		if (! $value && ($this->hostsuffix == "")) $this->MinMachine = "";
+		elseif (is_numeric($value)) $this->MinMachine = $value;
 		else return false;
 		return true;
 	}
@@ -489,7 +491,8 @@ class Config {
 	// $value: new maximum machine number
 	// returns true if $value has correct format
 	function set_maxMachine($value) {
-		if (is_numeric($value)) $this->MaxMachine = $value;
+		if (! $value && ($this->hostsuffix == "")) $this->MaxMachine = "";
+		elseif (is_numeric($value)) $this->MaxMachine = $value;
 		else return false;
 		return true;
 	}
@@ -535,7 +538,8 @@ class Config {
 	// $value: new attribute string
 	// returns true if $value has correct format
 	function set_hostlistAttributes($value) {
-		if (is_string($value) && eregi("^((#[^:;]+)|([^:;]*:[^:;]+))(;((#[^:;]+)|([^:;]*:[^:;]+)))*$", $value)) {
+		if (! $value && ($this->hostsuffix == "")) $this->hostlistAttributes = "";
+		elseif (is_string($value) && eregi("^((#[^:;]+)|([^:;]*:[^:;]+))(;((#[^:;]+)|([^:;]*:[^:;]+)))*$", $value)) {
 			$this->hostlistAttributes = $value;
 		}
 		else return false;

@@ -130,12 +130,12 @@ echo ("<tr><td align=\"right\"><b>".
 echo ("<td><a href=\"../help.php?HelpNumber=202\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 // host suffix
 echo ("<tr><td align=\"right\"><b>".
-	_("HostSuffix") . " *: </b></td>".
+	_("HostSuffix") . " **: </b></td>".
 	"<td><input size=50 type=\"text\" name=\"suffhosts\" value=\"" . $conf->get_HostSuffix() . "\"></td>\n");
 echo ("<td><a href=\"../help.php?HelpNumber=202\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 // domain suffix
 echo ("<tr><td align=\"right\"><b>".
-	_("DomainSuffix") . " **: </b></td>".
+	_("DomainSuffix") . " ***: </b></td>".
 	"<td><input size=50 type=\"text\" name=\"suffdomains\" value=\"" . $conf->get_DomainSuffix() . "\"></td>\n");
 echo ("<td><a href=\"../help.php?HelpNumber=202\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 
@@ -144,7 +144,7 @@ echo ("<tr><td colspan=3>&nbsp</td></tr>");
 
 // LDAP password hash type
 echo ("<tr><td align=\"right\"><b>".
-	_("Password hash type") . " *: </b></td>".
+	_("Password hash type") . " : </b></td>".
 	"<td><select name=\"pwdhash\">\n<option selected>" . $conf->get_pwdhash() . "</option>\n");
 if ($conf->get_pwdhash() != "CRYPT") echo("<option>CRYPT</option>\n");
 if ($conf->get_pwdhash() != "SHA") echo("<option>SHA</option>\n");
@@ -160,7 +160,7 @@ echo ("<tr><td colspan=3>&nbsp</td></tr>");
 
 // LDAP cache timeout
 echo ("<tr><td align=\"right\"><b>".
-	_("Cache timeout") . " *: </b></td>".
+	_("Cache timeout") . " : </b></td>".
 	"<td><select name=\"cachetimeout\">\n<option selected>".$conf->get_cacheTimeout()."</option>\n");
 if ($conf->get_cacheTimeout() != 0) echo("<option>0</option>\n");
 if ($conf->get_cacheTimeout() != 1) echo("<option>1</option>\n");
@@ -180,8 +180,9 @@ echo ("<table border=0>");
 
 // Samba version
 echo ("<tr><td align=\"right\"><b>".
-	_("Samba 3.x schema") . ": </b></td><td><select name=\"samba3\">\n");
-if ($conf->is_samba3()) echo ("<option>yes</option><option>no</option></select></td>");
+	_("Manage Samba 3 accounts") . ": </b></td><td><select name=\"samba3\">\n");
+if ($conf->is_samba3()) echo ("<option value=\"yes\">" . _("yes") . "</option>
+	<option value=\"no\">" . _("no") . "</option></select></td>");
 else echo ("<option>no</option><option>yes</option></select></td>");
 echo ("<td><a href=\"../help.php?HelpNumber=213\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 
@@ -212,10 +213,10 @@ echo ("<td align=\"right\"><b>" . _("Maximum GID number")." *: </b>".
 echo ("<td><a href=\"../help.php?HelpNumber=204\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 // minMach
 echo ("<tr><td align=\"right\"><b>".
-	_("Minimum Machine number") . " *: </b>".
+	_("Minimum Machine number") . " **: </b>".
 	"<input size=6 type=\"text\" name=\"minMach\" value=\"" . $conf->get_minMachine() . "\"></td>\n");
 // maxMach
-echo ("<td align=\"right\"><b>" . _("Maximum Machine number") . " *: </b>".
+echo ("<td align=\"right\"><b>" . _("Maximum Machine number") . " **: </b>".
 	"<input size=6 type=\"text\" name=\"maxMach\" value=\"" . $conf->get_maxMachine() . "\"></td>\n");
 // Machine text
 echo ("<td><a href=\"../help.php?HelpNumber=205\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
@@ -239,7 +240,7 @@ echo ("<tr><td align=\"right\"><b>".
 echo ("<td><a href=\"../help.php?HelpNumber=206\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 // host list attributes
 echo ("<tr><td align=\"right\"><b>".
-	_("Attributes in Host List") . " *:</b></td>".
+	_("Attributes in Host List") . " **:</b></td>".
 	"<td><input size=50 type=\"text\" name=\"hstlstattr\" value=\"" . $conf->get_hostlistAttributes() . "\"></td>");
 echo ("<td><a href=\"../help.php?HelpNumber=206\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 
@@ -247,7 +248,7 @@ echo ("<tr><td colspan=3>&nbsp</td></tr>\n");
 
 // maximum list entries
 echo ("<tr><td align=\"right\"><b>".
-	_("Maximum list entries") . " *: </b></td>".
+	_("Maximum list entries") . " : </b></td>".
 	"<td><select name=\"maxlistentries\">\n<option selected>".$conf->get_MaxListEntries()."</option>\n");
 if ($conf->get_MaxListEntries() != 10) echo("<option>10</option>\n");
 if ($conf->get_MaxListEntries() != 20) echo("<option>20</option>\n");
@@ -377,7 +378,8 @@ echo ("</table>\n");
 echo ("<p></p>");
 
 echo ("<p>* = ". _("required") . "</p>");
-echo ("<p>** = ". _("required for Samba 3 schema") . "</p>");
+echo ("<p>** = ". _("required for Samba accounts") . "</p>");
+echo ("<p>*** = ". _("required for Samba 3 accounts") . "</p>");
 
 // password for configuration
 echo ("<p><input type=\"hidden\" name=\"passwd\" value=\"" . $passwd . "\"></p>\n");

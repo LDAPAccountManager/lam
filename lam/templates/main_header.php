@@ -31,6 +31,12 @@ session_save_path("../sess");
 setlanguage();
 
 echo $_SESSION['header'];
+
+// number of list views (users, groups, ...)
+$lists = 2;
+if ($_SESSION['config']->is_samba3()) $lists++;
+if ($_SESSION['config']->get_Hostsuffix() != "") $lists++;
+
 ?>
 
 	<title></title>
@@ -42,9 +48,7 @@ echo $_SESSION['header'];
 	<tr>
     	<td width="100" align="left"><a href="./profedit/profilemain.php" target="mainpart"><?php echo _("Profile Editor"); ?></a></td>
 		<?php
-			// Samba 3 has more list views
-			if ($_SESSION['config']->is_samba3()) echo "<td rowspan=3 colspan=4 align=\"center\">\n";
-			else echo "<td rowspan=3 colspan=3 align=\"center\">\n";
+			echo "<td rowspan=3 colspan=$lists align=\"center\">\n";
 		?>
 			<a href="http://lam.sf.net" target="new_window"><img src="../graphics/banner.jpg" border=1 alt="LDAP Account Manager"></a>
 		</td>
@@ -59,9 +63,8 @@ echo $_SESSION['header'];
 	</tr>
 	<tr>
 		<?php
-			// Samba 3 has more list views
-			if ($_SESSION['config']->is_samba3()) echo "<td colspan=6>&nbsp;</td>\n";
-			else echo "<td colspan=5>&nbsp;</td>\n";
+			$temp = $lists + 2;
+			echo "<td colspan=$temp><font size=1>&nbsp;</font></td>\n";
 		?>
 	</tr>
 	<tr>
@@ -69,15 +72,19 @@ echo $_SESSION['header'];
 		<?php
 			// Samba 3 has more list views
 			if ($_SESSION['config']->is_samba3()) {
-				echo '<td width="120" align="center"><a href="./lists/listdomains.php" target="mainpart">' . _("Domains") . '</a></td>' . "\n";
-				echo '<td width="120" align="center"><a href="./lists/listusers.php" target="mainpart">' . _("Users") . '</a></td>' . "\n";
-				echo '<td width="120" align="center"><a href="./lists/listgroups.php" target="mainpart">' . _("Groups") . '</a></td>' . "\n";
-				echo '<td width="120" align="center"><a href="./lists/listhosts.php" target="mainpart">' . _("Hosts") . '</a></td>' . "\n";
+				echo '<td width="120" align="center"><a href="./lists/listdomains.php" target="mainpart"><big>' . _("Domains") . '</big></a></td>' . "\n";
+				echo '<td width="120" align="center"><a href="./lists/listusers.php" target="mainpart"><big>' . _("Users") . '</big></a></td>' . "\n";
+				echo '<td width="120" align="center"><a href="./lists/listgroups.php" target="mainpart"><big>' . _("Groups") . '</big></a></td>' . "\n";
+				if ($_SESSION['config']->get_Hostsuffix() != "") {
+					echo '<td width="120" align="center"><a href="./lists/listhosts.php" target="mainpart"><big>' . _("Hosts") . '</big></a></td>' . "\n";
+				}
 			}
 			else {
-				echo '<td width="200" align="center"><a href="./lists/listusers.php" target="mainpart">' . _("Users") . '</a></td>' . "\n";
-				echo '<td width="200" align="center"><a href="./lists/listgroups.php" target="mainpart">' . _("Groups") . '</a></td>' . "\n";
-				echo '<td width="200" align="center"><a href="./lists/listhosts.php" target="mainpart">' . _("Hosts") . '</a></td>' . "\n";
+				echo '<td width="200" align="center"><a href="./lists/listusers.php" target="mainpart"><big>' . _("Users") . '</big></a></td>' . "\n";
+				echo '<td width="200" align="center"><a href="./lists/listgroups.php" target="mainpart"><big>' . _("Groups") . '</big></a></td>' . "\n";
+				if ($_SESSION['config']->get_Hostsuffix() != "") {
+					echo '<td width="200" align="center"><a href="./lists/listhosts.php" target="mainpart"><big>' . _("Hosts") . '</big></a></td>' . "\n";
+				}
 			}
 		?>
 		<td></td>
