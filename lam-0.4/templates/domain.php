@@ -224,8 +224,8 @@ elseif ($_POST['sub_save']) {
 		$suffix = $_SESSION['config']->get_DomainSuffix();
 		$server = $_SESSION['ldap']->server;
 		$filter = "(|(sambasid=" . $_POST['dom_SID'] . ")(sambadomainname=" . $_POST['dom_name'] . "))";
-		$sr = ldap_search($server, $suffix, $filter, array());
-		$info = ldap_get_entries($_SESSION["ldap"]->server, $sr);
+		$sr = @ldap_search($server, $suffix, $filter, array());
+		$info = @ldap_get_entries($_SESSION["ldap"]->server, $sr);
 	}
 	if ($_POST['add'] && !eregi("^[a-z0-9_\\-]+$", $_POST['dom_name'])) StatusMessage("ERROR", "", _("Domain name is invalid!"));
 	elseif ($_POST['add'] && !eregi("^S-[0-9]-[0-9]-[0-9]{2,2}-[0-9]*-[0-9]*-[0-9]*$", $_POST['dom_SID'])) {
