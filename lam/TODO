@@ -5,15 +5,13 @@ stable
 
 beta
 
-- translate to German
 - check security
 - clean up code
-- support for Samba 3.x schema
-- support for multiple organizational units under the suffixes
-- profiles for lam.conf
 
-alpha 2
+alpha 3
 
 - improve status messages and help support
-- mass creation of users/groups/hosts
-- Better error handling
+- improve mass creation of users/groups/hosts
+- support for Samba 3.x schema
+- translate to German
+- PDF support
