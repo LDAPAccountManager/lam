@@ -256,7 +256,7 @@ class sambaSamAccount extends baseModule {
 		* it's psssible uidNumber has changed
 		*/
 		// Get Domain SID from name
-		$sambaDomains = $_SESSION['ldap']->search_domains($_SESSION['config']->get_domainSuffix());
+		$sambaDomains = search_domains($_SESSION['config']->get_domainSuffix());
 		for ($i=0; $i<count($sambaDomains); $i++ )
 			if ($this->attributes['sambaDomainName'][0] == $sambaDomains[$i]->name) {
 				$SID = $sambaDomains[$i]->SID;
@@ -303,7 +303,7 @@ class sambaSamAccount extends baseModule {
 		// Load attributes
 		$this->attributes['sambaDomainName'][0] = $post['sambaDomainName'];
 		// Get Domain SID from name
-		$sambaDomains = $_SESSION['ldap']->search_domains($_SESSION['config']->get_domainSuffix());
+		$sambaDomains = search_domains($_SESSION['config']->get_domainSuffix());
 		for ($i=0; $i<count($sambaDomains); $i++ )
 			if ($this->attributes['sambaDomainName'][0] == $sambaDomains[$i]->name) {
 				$SID = $sambaDomains[$i]->SID;
@@ -473,7 +473,7 @@ class sambaSamAccount extends baseModule {
 	*/
 	function display_html_attributes($post, $profile=false) {
 		// Get Domain SID from name
-		$sambaDomains = $_SESSION['ldap']->search_domains($_SESSION['config']->get_domainSuffix());
+		$sambaDomains = search_domains($_SESSION['config']->get_domainSuffix());
 		for ($i=0; $i<count($sambaDomains); $i++ ) {
 			$sambaDomainNames[] = $sambaDomains[$i]->name;
 			if ($this->attributes['sambaDomainName'][0] == $sambaDomains[$i]->name)
@@ -644,6 +644,11 @@ class sambaSamAccount extends baseModule {
 		return $return;
 		}
 
+	/**
+	* Returns a list of elements for the account profiles.
+	*
+	* @return profile elements
+	*/
 	function get_profileOptions() {
 		$return = array();
 		if ($_SESSION[$this->base]->type=='user') {
@@ -704,7 +709,7 @@ class sambaSamAccount extends baseModule {
 				2 => array('kind' => 'help', 'value' => 'TODO')
 				);
 			// domains
-			$sambaDomains = $_SESSION['ldap']->search_domains($_SESSION['config']->get_domainSuffix());
+			$sambaDomains = search_domains($_SESSION['config']->get_domainSuffix());
 			$sambaDomainNames = array();
 			for ($i = 0; $i < count($sambaDomains); $i++) {
 				$sambaDomainNames[] = $sambaDomains[$i]->name;
@@ -717,7 +722,7 @@ class sambaSamAccount extends baseModule {
 		}
 		elseif ($_SESSION[$this->base]->type=='host') {
 			// domains
-			$sambaDomains = $_SESSION['ldap']->search_domains($_SESSION['config']->get_domainSuffix());
+			$sambaDomains = search_domains($_SESSION['config']->get_domainSuffix());
 			$sambaDomainNames = array();
 			for ($i = 0; $i < count($sambaDomains); $i++) {
 				$sambaDomainNames[] = $sambaDomains[$i]->name;

@@ -32,6 +32,8 @@ $Id$
 include_once ("../lib/config.inc");
 /** access to LDAP server */
 include_once ("../lib/ldap.inc");
+/** Samba 3 domain object */
+include_once ("../lib/account.inc");
 
 // start session
 session_save_path("../sess");
@@ -43,7 +45,7 @@ setlanguage();
 // add/edit domain
 if (($_GET['action'] == "edit") || ($_GET['action'] == "new")) {
 	// get list of domains
-	$domlist = $_SESSION['ldap']->search_domains($_SESSION['config']->get_domainSuffix());
+	$domlist = search_domains($_SESSION['config']->get_domainSuffix());
 	// get possible suffixes
 	$domsuff = $_SESSION['ldap']->search_units($_SESSION['config']->get_domainSuffix());
 	if ($_GET['action'] == "edit") {

@@ -97,6 +97,7 @@ class sambaGroupMapping extends baseModule {
 				'required' => false
 			)
 		);
+		$return['upload_preDepends'] = array('posixGroup');
 		// help Entries
 		$return['help'] = array (	'displayName'				=>	array ("ext" => "FALSE", "Headline" => _("Display name"), "Text" => _("Windows clients will show display name as group description.")),
 											'sambaSID'				=>	array ("ext" => "FALSE", "Headline" => _("Windows groupname"), "Text" => _("If you want to use a well known RID you can selcet a well known group.")),
@@ -168,7 +169,7 @@ class sambaGroupMapping extends baseModule {
 	*/
 	function save_attributes() {
 		// Get Domain SID from name
-		$sambaDomains = $_SESSION['ldap']->search_domains($_SESSION['config']->get_domainSuffix());
+		$sambaDomains = search_domains($_SESSION['config']->get_domainSuffix());
 		// Get Domain-SID from group SID
 		$domainSID = substr($this->attributes['sambaSID'][0], 0, strrpos($this->attributes['sambaSID'][0], "-"));
 		for ($i=0; $i<count($sambaDomains); $i++ )
@@ -199,7 +200,7 @@ class sambaGroupMapping extends baseModule {
 
 		if (!$profile) {
 			// Get Domain SID from name
-			$sambaDomains = $_SESSION['ldap']->search_domains($_SESSION['config']->get_domainSuffix());
+			$sambaDomains = search_domains($_SESSION['config']->get_domainSuffix());
 			for ($i=0; $i<count($sambaDomains); $i++ )
 				if ($post['sambaDomainName'] == $sambaDomains[$i]->name) {
 					$SID = $sambaDomains[$i]->SID;
@@ -236,7 +237,7 @@ class sambaGroupMapping extends baseModule {
 	*/
 	function display_html_attributes($post, $profile=false) {
 		// Get Domain SID from name
-		$sambaDomains = $_SESSION['ldap']->search_domains($_SESSION['config']->get_domainSuffix());
+		$sambaDomains = search_domains($_SESSION['config']->get_domainSuffix());
 		// Get Domain-SID from group SID
 		$domainSID = substr($this->attributes['sambaSID'][0], 0, strrpos($this->attributes['sambaSID'][0], "-"));
 		for ($i=0; $i<count($sambaDomains); $i++ ) {
@@ -279,10 +280,15 @@ class sambaGroupMapping extends baseModule {
 		return 0;
 		}
 
+	/**
+	* Returns a list of elements for the account profiles.
+	*
+	* @return profile elements
+	*/
 	function get_profileOptions() {
 		$return = array();
 		// get list of domains
-		$sambaDomains = $_SESSION['ldap']->search_domains($_SESSION['config']->get_domainSuffix());
+		$sambaDomains = search_domains($_SESSION['config']->get_domainSuffix());
 		$sambaDomainNames = array();
 		for ($i = 0; $i < count($sambaDomains); $i++ ) {
 			// extract names

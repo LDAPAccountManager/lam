@@ -140,26 +140,6 @@ class Ldap{
 	}
 
 	/**
-	* Searches LDAP for a specific user name and returns its DN entry
-	*
-	* @param string $name user name
-	* @return string DN
-	*/
-	function search_username($name) {
-		$filter = "(uid=$name)";
-		$attrs = array();
-		$sr = @ldap_search($this->server, $this->conf->get_UserSuffix(), $filter, $attrs);
-		if ($sr) {
-			$info = ldap_get_entries($this->server, $sr);
-			// return only first DN entry
-			$ret = $info[0]["dn"];
-			ldap_free_result($sr);
-			return $ret;
-		}
-		else return "";
-	}
-
-	/**
 	* Returns an array with all organizational units under the given suffix
 	*
 	* @param string $suffix search suffix
@@ -187,38 +167,6 @@ class Ldap{
 			$ret[] = $suffix;
 		}
 		usort($ret, array($this,"cmp_array"));
-		return $ret;
-	}
-
-	/**
-	* Returns an array with all Samba 3 domain entries under the given suffix
-	*
-	* @param string $suffix search suffix
-	* @return array list of samba3domain objects
-	*/
-	function search_domains($suffix) {
-		$ret = array();
-		$attr = array("DN", "sambaDomainName", "sambaSID", "sambaNextRid", "sambaNextGroupRid",
-			"sambaNextUserRid", "sambaAlgorithmicRidBase");
-		$sr = @ldap_search($this->server(), $suffix, "objectClass=sambaDomain", $attr);
-		if ($sr) {
-			$units = ldap_get_entries($this->server, $sr);
-			// delete count entry
-			array_shift($units);
-			// extract attributes
-			for ($i = 0; $i < sizeof($units); $i++) {
-				$ret[$i] = new samba3domain();
-				$ret[$i]->dn = $units[$i]['dn'];
-				$ret[$i]->name = $units[$i]['sambadomainname'][0];
-				$ret[$i]->SID = $units[$i]['sambasid'][0];
-				$ret[$i]->nextRID = $units[$i]['sambanextrid'][0];
-				$ret[$i]->nextGroupRID = $units[$i]['sambanextgrouprid'][0];
-				$ret[$i]->nextUserRID = $units[$i]['sambanextuserrid'][0];
-				if (isset($units[$i]['sambaalgorithmicridbase'][0])) $ret[$i]->RIDbase = $units[$i]['sambaalgorithmicridbase'][0];
-			}
-			// sort array by domain name
-			usort($ret, array($this,"cmp_domain"));
-		}
 		return $ret;
 	}
 
@@ -309,7 +257,7 @@ class Ldap{
 	*/
 	function encrypt($data) {
 		// use MCrypt if available
-		if (function_exists(mcrypt_create_iv)) {
+		if (function_exists('mcrypt_create_iv')) {
 			// read key and iv from cookie
 			$iv = base64_decode($_COOKIE["IV"]);
 			$key = base64_decode($_COOKIE["Key"]);
@@ -336,7 +284,7 @@ class Ldap{
 	*/
 	function decrypt($data) {
 		// use MCrypt if available
-		if (function_exists(mcrypt_create_iv)) {
+		if (function_exists('mcrypt_create_iv')) {
 			// read key and iv from cookie
 			$iv = base64_decode($_COOKIE["IV"]);
 			$key = base64_decode($_COOKIE["Key"]);
@@ -424,49 +372,7 @@ class Ldap{
 		return -1;
 	}
 
-	/**
-	* Helper function to sort the domains
-	*
-	* @param string $a first argument to compare
-	* @param string $b second argument to compare
-	* @return integer 0 if equal, 1 if $a is greater, -1 if $b is greater
-	*/
-	function cmp_domain($a, $b) {
-		if ($a->name == $b->name) return 0;
-		elseif ($a->name == max($a->name, $b->name)) return 1;
-		else return -1;
-	}
 
-
-}
-
-/**
-* Represents a Samba 3 domain entry
-*
-* @package LDAP
-*/
-class samba3domain {
-
-	/** DN */
-	var $dn;
-
-	/** Domain name */
-	var $name;
-
-	/** Domain SID */
-	var $SID;
-
-	/** Next RID */
-	var $nextRID;
-
-	/** Next user RID */
-	var $nextUserRID;
-
-	/** Next group RID */
-	var $nextGroupRID;
-
-	/** RID base to calculate RIDs, default 1000 */
-	var $RIDbase = 1000;
 }
 
 ?>
