@@ -1573,21 +1573,15 @@ function modifyuser($values,$values_old,$uselamdaemon=true) { // Will modify the
 	// Check if shadow expire has changed
 	if ($values->unix_pwdexpire != $values_old->unix_pwdexpire) $attr['shadowExpire'] = intval($values->unix_pwdexpire / 86400) ;
 	// Set unix password
-	if ($values->unix_password=='') {
-		// $values->unix_password=='' means use old password
-		if ($values->unix_deactivated != $values_old->unix_deactivated) {
-			// (de)activate password
-			// Split old password hash in {CRYPT} and password-hash
-			$i = 0;
-			while ($values_old->unix_password{$i} != '}') $i++;
-			$passwd = substr($values_old->unix_password, $i+1 );
-			$crypt = substr($values_old->unix_password, 0, $i+1 );
-			// remove trailing ! from password hash
-			if ($passwd{0} == '!') $passwd = substr($passwd, 1);
-			// Write new password
-			if ($values->unix_deactivated) $attr['userPassword'] = $crypt.'!'.$passwd;
-				else $attr['userPassword'] = $crypt.$passwd;
+	if ($values->unix_password=='') {  // $values->unix_password=='' means use old password
+		if ($values->unix_deactivated != $values_old->unix_deactivated) {  // check if password was enabled/disabled
+			if ($values->unix_deactivated) {
+				$attr['userPassword'] = pwd_disable($values_old->unix_password);
 			}
+			else {
+				$attr['userPassword'] = pwd_enable($values_old->unix_password);
+			}
+		}
 		if ($values->unix_password_no) {
 			// use no password
 			if ($values->unix_deactivated) $attr['userPassword'] = pwd_hash('', false);

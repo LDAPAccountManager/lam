@@ -133,6 +133,10 @@ class posixAccount {
 		return _('posixAccount');
 		}
 
+	function is_base_module() {
+		return true;
+	}
+
 	/* This function returns a list with all required modules
 	*/
 	function get_dependencies($scope) {
@@ -256,19 +260,15 @@ class posixAccount {
 			else { // No new password but old password
 				// (un)lock password
 				if ($this->userPassword_lock == pwd_is_enabled($this->orig['userPassword'][0])) {
-					// Split old password hash in {CRYPT} and password-hash
-					$i = 0;
-					while ($this->orig['userPassword'][0]{$i} != '}') $i++;
-					$passwd = substr($this->orig['userPassword'][0], $i+1 );
-					$crypt = substr($this->orig['userPassword'][0], 0, $i+1 );
-					// remove trailing ! from password hash
-					if ($passwd{0} == '!') $passwd = substr($passwd, 1);
-					// Write new password
-					if ($this->userPassword_lock) $return[$_SESSION[$this->base]->dn]['modify']['userPassword'][0] = utf8_encode("$crypt!$passwd");
-					else $return[$_SESSION[$this->base]->dn]['modify']['userPassword'][0] = utf8_encode("$crypt$passwd");
+					if ($this->userPassword_lock) {
+						$return[$_SESSION[$this->base]->dn]['modify']['userPassword'][0] = utf8_encode(pwd_disable($this->orig['userPassword'][0]));
+					}
+					else {
+						$return[$_SESSION[$this->base]->dn]['modify']['userPassword'][0] = utf8_encode(pwd_enable($this->orig['userPassword'][0]));
 					}
 				}
 			}
+		}
 
 		// Remove primary group from additional groups
 		for ($i=0; $i<count($this->groups); $i++) {
