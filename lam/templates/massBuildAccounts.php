@@ -161,7 +161,7 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 		if ($accounts != false) {
 			// set DN
 			for ($i = 0; $i < sizeof($accounts); $i++) {
-				if (!isset($accounts[$i][$data[$i][$ids['dn_rdn']]])) $errors[] = array(_('Account %s: dn_rdn'), _("Data field for RDN is empty!"), array($i));
+				if (!isset($accounts[$i][$data[$i][$ids['dn_rdn']]])) $errors[] = array(_('Account %s:') . ' dn_rdn', _("Data field for RDN is empty!"), array($i));
 				// TODO check against list of possible RDN attributes
 				else {
 					$account_dn = $data[$i][$ids['dn_rdn']] . "=" . $accounts[$i][$data[$i][$ids['dn_rdn']]] . ",";

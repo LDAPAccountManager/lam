@@ -45,7 +45,7 @@ if (!$_SESSION['ldap'] || !$_SESSION['ldap']->server()) {
 
 // print standard header
 echo $_SESSION['header'];
-echo ("<title>" . _("Delete PDF Structure") . "</title>\n");
+echo ("<title>" . _("Delete PDF structure") . "</title>\n");
 echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
 echo ("</head>\n<body>\n<p><br></p>\n");
 

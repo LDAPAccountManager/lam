@@ -50,28 +50,28 @@ class inetOrgPerson extends baseModule {
 	function load_Messages() {
 		$this->messages['host'][0] = array('ERROR', _('Unix workstations'), _('Unix workstations is invalid.'));
 		$this->messages['givenName'][0] = array('ERROR', _('Given name'), _('Given name contains invalid characters!'));
-		$this->messages['givenName'][1] = array('ERROR', _('Account %s: inetOrgPerson_lastName'), _('Given name contains invalid characters!'));
+		$this->messages['givenName'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_lastName', _('Given name contains invalid characters!'));
 		$this->messages['surname'][0] = array('ERROR', _('Surname'), _('Surname contains invalid characters!'));
-		$this->messages['surname'][1] = array('ERROR', _('Account %s: inetOrgPerson_firstName'), _('Surname contains invalid characters!'));
+		$this->messages['surname'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_firstName', _('Surname contains invalid characters!'));
 		$this->messages['telephoneNumber'][0] = array('ERROR', _('Telephone number'), _('Please enter a valid telephone number!'));
-		$this->messages['telephoneNumber'][1] = array('ERROR', _('Account %s: inetOrgPerson_telephone'), _('Please enter a valid telephone number!'));
+		$this->messages['telephoneNumber'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_telephone', _('Please enter a valid telephone number!'));
 		$this->messages['mobileTelephone'][0] = array('ERROR', _('Mobile number'), _('Please enter a valid mobile number!'));
-		$this->messages['mobileTelephone'][1] = array('ERROR', _('Account %s: inetOrgPerson_mobile'), _('Please enter a valid mobile number!'));
+		$this->messages['mobileTelephone'][1] = array('ERROR', _('Account %s:') . " inetOrgPerson_mobile", _('Please enter a valid mobile number!'));
 		$this->messages['facsimileNumber'][0] = array('ERROR', _('Fax number'), _('Please enter a valid fax number!'));
-		$this->messages['facsimileNumber'][1] = array('ERROR', _('Account %s: inetOrgPerson_fax'), _('Please enter a valid fax number!'));
+		$this->messages['facsimileNumber'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_fax', _('Please enter a valid fax number!'));
 		$this->messages['email'][0] = array('ERROR', _('eMail address'), _('Please enter a valid eMail address!'));
-		$this->messages['email'][1] = array('ERROR', _('Account %s: inetOrgPerson_email'), _('Please enter a valid eMail address!'));
+		$this->messages['email'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_email', _('Please enter a valid eMail address!'));
 		$this->messages['street'][0] = array('ERROR', _('Street'), _('Please enter a valid street name!'));
-		$this->messages['street'][1] = array('ERROR', _('Account %s: inetOrgPerson_street'), _('Please enter a valid street name!'));
+		$this->messages['street'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_street', _('Please enter a valid street name!'));
 		$this->messages['postalAddress'][0] = array('ERROR', _('Postal address'), _('Please enter a valid postal address!'));
-		$this->messages['postalAddress'][1] = array('ERROR', _('Account %s: inetOrgPerson_address'), _('Please enter a valid postal address!'));
+		$this->messages['postalAddress'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_address', _('Please enter a valid postal address!'));
 		$this->messages['postalCode'][0] = array('ERROR', _('Postal code'), _('Please enter a valid postal code!'));
-		$this->messages['postalCode'][1] = array('ERROR', _('Account %s: inetOrgPerson_postalCode'), _('Please enter a valid postal code!'));
+		$this->messages['postalCode'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_postalCode', _('Please enter a valid postal code!'));
 		$this->messages['title'][0] = array('ERROR', _('Title'), _('Please enter a valid title!'));
-		$this->messages['title'][1] = array('ERROR', _('Account %s: inetOrgPerson_title'), _('Please enter a valid title!'));
+		$this->messages['title'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_title', _('Please enter a valid title!'));
 		$this->messages['employeeType'][0] = array('ERROR', _('Employee type'), _('Please enter a valid employee type!'));
-		$this->messages['employeeType'][1] = array('ERROR', _('Account %s: inetOrgPerson_type'), _('Please enter a valid employee type!'));
-		$this->messages['cn'][0] = array('ERROR', _('Account %s: inetOrgPerson_cn'), _('Please enter a valid common name!'));
+		$this->messages['employeeType'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_type', _('Please enter a valid employee type!'));
+		$this->messages['cn'][0] = array('ERROR', _('Account %s:') . ' inetOrgPerson_cn', _('Please enter a valid common name!'));
 	}	
 	
 	/**
@@ -119,13 +119,13 @@ class inetOrgPerson extends baseModule {
 		),
 		array(
 		'name' => 'inetOrgPerson_firstName',
-		'description' => _('First Name'),
+		'description' => _('First name'),
 		'help' => 'givenName',
 		'example' => _('Steve')
 		),
 		array(
 		'name' => 'inetOrgPerson_lastName',
-		'description' => _('Last Name'),
+		'description' => _('Last name'),
 		'help' => 'sn',
 		'example' => _('Miller'),
 		'required' => true

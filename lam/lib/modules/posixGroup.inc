@@ -404,12 +404,12 @@ class posixGroup extends baseModule {
 		$this->messages['gidNumber'][5] = array('ERROR', _('Minimum GID number'), _('Minimum GID number is invalid or empty!'));
 		$this->messages['gidNumber'][6] = array('ERROR', _('Maximum GID number'), _('Maximum GID number is invalid or empty!'));
 		$this->messages['gidNumber'][7] = array('ERROR', _('Maximum GID number'), _('Maximum GID number must be greater than minimum GID number!'));
-		$this->messages['gidNumber'][8] = array('ERROR', _('Account %s: posixGroup_gid'), _('GID number has to be a numeric value!'));
+		$this->messages['gidNumber'][8] = array('ERROR', _('Account %s:') . ' posixGroup_gid', _('GID number has to be a numeric value!'));
 		$this->messages['cn'][0] = array('WARN', _('Groupname'), _('You are using a capital letters. This can cause problems because windows isn\'t case-sensitive.'));
 		$this->messages['cn'][1] = array('WARN', _('Groupname'), _('Groupname in use. Selected next free groupname.'));
 		$this->messages['cn'][2] = array('ERROR', _('Groupname'), _('Groupname contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
-		$this->messages['cn'][3] = array('ERROR', _('Account %s: posixGroup_cn'), _('Groupname contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
-		$this->messages['memberUID'][0] = array('ERROR', _('Account %s: posixGroup_members'), _("This value must be a list of user names separated by semicolons."));
+		$this->messages['cn'][3] = array('ERROR', _('Account %s:') . ' posixGroup_cn', _('Groupname contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
+		$this->messages['memberUID'][0] = array('ERROR', _('Account %s:') . ' posixGroup_members', _("This value must be a list of user names separated by semicolons."));
 		} 
 
 

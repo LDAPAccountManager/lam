@@ -177,8 +177,6 @@ $helpArray = array (
 					"Text" => _("Given name of user. Only letters, - and spaces are allowed.")),
 				"426" => array ("ext" => "FALSE", "Headline" => _("Use no password"),
 					"Text" => _("If checked no password will be used.")),
-				"427" => array ("ext" => "FALSE", "Headline" => _("Account deactivated"),
-					"Text" => _("If checked account will be deactivated by putting a ! before the encrypted password.")),
 				"428" => array ("ext" => "FALSE", "Headline" => _("Use unix password"),
 					"Text" => _("If checked unix password will also be used as samba password.")),
 				"429" => array ("ext" => "FALSE", "Headline" => _("Password does not expire"),

@@ -539,8 +539,8 @@ class accountContainer {
 		*/
 		// Check input variable
 		
-		if (!is_string($type)) trigger_error(_('Argument of accountContainer must be string.'), E_USER_ERROR);
-		if (!is_string($base)) trigger_error(_('Argument of accountContainer must be string.'), E_USER_ERROR);
+		if (!is_string($type)) trigger_error('Argument of accountContainer must be string.', E_USER_ERROR);
+		if (!is_string($base)) trigger_error('Argument of accountContainer must be string.', E_USER_ERROR);
 		// *** fixme use global variable to determine allowed types
 		if (!in_array($type, getAvailableScopes())) trigger_error(_('Account type not recognized.'), E_USER_ERROR);
 		$this->type = $type;

@@ -42,11 +42,11 @@ class cache {
 	function add_cache($attributes) {
 		// Check input variable
 		$allowed_types = array ( 'user', 'group', 'host', 'domain', '*' );
-		if (!is_array($attributes)) trigger_error(_('Argument of add_cache must be : array ( scope => array(attribute1(string), attribute2(string), ..), scope => ... ).'), E_USER_ERROR);
+		if (!is_array($attributes)) trigger_error('Argument of add_cache must be : array ( scope => array(attribute1(string), attribute2(string), ..), scope => ... ).', E_USER_ERROR);
 		foreach ($attributes as $attribute) {
-			if (!is_array($attribute)) trigger_error(_('Argument of add_cache must be : array ( scope => array(attribute1(string), attribute2(string), ..), scope => ... ).'), E_USER_ERROR);
+			if (!is_array($attribute)) trigger_error('Argument of add_cache must be : array ( scope => array(attribute1(string), attribute2(string), ..), scope => ... ).', E_USER_ERROR);
 			foreach ($attribute as $singleattribute) {
-				if (!is_string($singleattribute)) trigger_error(_('Argument of add_cache must be : array ( scope => array(attribute1(string), attribute2(string), ..), scope => ... ).'), E_USER_ERROR);
+				if (!is_string($singleattribute)) trigger_error('Argument of add_cache must be : array ( scope => array(attribute1(string), attribute2(string), ..), scope => ... ).', E_USER_ERROR);
 				}
 			}
 		$scopes = array_keys($attributes);

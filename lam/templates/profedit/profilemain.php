@@ -129,7 +129,7 @@ echo $_SESSION['header'];
 		<!-- user profile options -->
 		<fieldset>
 			<legend>
-				<b><?php echo _("User Profiles"); ?></b>
+				<b><?php echo _("User profiles"); ?></b>
 			</legend>
 			<table border=0>
 				<!-- new user profile -->
@@ -137,7 +137,7 @@ echo $_SESSION['header'];
 					<td>
 						<input type="radio" name="profile" value="newuser" checked>
 					</td>
-					<td colspan=2><?php echo _("Create a new User Profile"); ?></td>
+					<td colspan=2><?php echo _("Create a new profile"); ?></td>
 				</tr>
 				<!-- edit user profile -->
 				<tr>
@@ -149,7 +149,7 @@ echo $_SESSION['header'];
 							<?php echo $userprofiles ?>
 						</select>
 					</td>
-					<td><?php echo _("Edit User Profile"); ?></td>
+					<td><?php echo _("Edit profile"); ?></td>
 				</tr>
 				<!-- delete user profile -->
 				<tr>
@@ -161,7 +161,7 @@ echo $_SESSION['header'];
 							<?php echo $userprofiles ?>
 						</select>
 					</td>
-					<td><?php echo _("Delete User Profile"); ?></td>
+					<td><?php echo _("Delete profile"); ?></td>
 				</tr>
 			</table>
 		</fieldset>
@@ -172,7 +172,7 @@ echo $_SESSION['header'];
 echo "		<!-- group profile options -->";
 echo "		<fieldset>";
 echo "			<legend>";
-echo "				<b>" . _("Group Profiles") . "</b>";
+echo "				<b>" . _("Group profiles") . "</b>";
 echo "			</legend>";
 echo "			<table border=0>";
 echo "				<!-- new group profile -->";
@@ -180,7 +180,7 @@ echo "				<tr>";
 echo "					<td>";
 echo "						<input type=\"radio\" name=\"profile\" value=\"newgroup\">";
 echo "					</td>";
-echo "					<td colspan=2>" . _("Create a new Group Profile") . "</td>";
+echo "					<td colspan=2>" . _("Create a new profile") . "</td>";
 echo "				</tr>";
 echo "				<!-- edit group profile -->";
 echo "				<tr>";
@@ -192,7 +192,7 @@ echo "						<select name=\"e_group\" size=1>";
 echo "							" . $groupprofiles;
 echo "						</select>";
 echo "					</td>";
-echo "					<td>" . _("Edit Group Profile") . "</td>";
+echo "					<td>" . _("Edit profile") . "</td>";
 echo "				</tr>";
 echo "				<!-- delete group profile -->";
 echo "				<tr>";
@@ -204,7 +204,7 @@ echo "						<select name=\"d_group\" size=1>";
 echo "							" . $groupprofiles;
 echo "						</select>";
 echo "					</td>";
-echo "					<td>" . _("Delete Group Profile") . "</td>";
+echo "					<td>" . _("Delete profile") . "</td>";
 echo "				</tr>";
 echo "			</table>";
 echo "		</fieldset>";
@@ -215,7 +215,7 @@ echo "		<p></p>";
 		<!-- host profile options -->
 		<fieldset>
 			<legend>
-				<b><?php echo _("Samba Host Profiles"); ?></b>
+				<b><?php echo _("Host profiles"); ?></b>
 			</legend>
 			<table border=0>
 				<!-- new host profile -->
@@ -223,7 +223,7 @@ echo "		<p></p>";
 					<td>
 						<input type="radio" name="profile" value="newhost">
 					</td>
-					<td colspan=2><?php echo _("Create a new Samba Host Profile"); ?></td>
+					<td colspan=2><?php echo _("Create a new profile"); ?></td>
 				</tr>
 				<!-- edit host profile -->
 				<tr>
@@ -235,7 +235,7 @@ echo "		<p></p>";
 							<?php echo $hostprofiles ?>
 						</select>
 					</td>
-					<td><?php echo _("Edit Samba Host Profile"); ?></td>
+					<td><?php echo _("Edit profile"); ?></td>
 				</tr>
 				<!-- delete host profile -->
 				<tr>
@@ -247,7 +247,7 @@ echo "		<p></p>";
 							<?php echo $hostprofiles ?>
 						</select>
 					</td>
-					<td><?php echo _("Delete Samba Host Profile"); ?></td>
+					<td><?php echo _("Delete profile"); ?></td>
 				</tr>
 			</table>
 		</fieldset>
