@@ -127,7 +127,6 @@ function get_ldap_filter($scope) {
 */
 function getModulesDependencies($scope) {
 	$mods = getAvailableModules($scope);
-	$deps = array();
 	for ($i = 0; $i < sizeof($mods); $i++) {
 		$module = new $mods[$i]($scope);
 		$return[$mods[$i]] = $module->get_dependencies();
@@ -368,6 +367,73 @@ function getUploadColumns($scope) {
 	return $_SESSION["profile_account_$scope"]->get_uploadColumns();
 }
 
+/**
+* This function builds the LDAP accounts for the file upload.
+*
+* If there are problems status messages will be printed automatically.
+*
+* @param string $scope account type
+* @param array $data array containing one account in each element
+* @param array $ids array(<column_name> => <column number>)
+* @return mixed array including accounts or false if there were errors
+*/
+function buildUploadAccounts($scope, $data, $ids) {
+	// build module order
+	$unOrdered = getAvailableModules($scope);
+	$ordered = array();
+	$predepends = array();
+	for ($i = 0; $i < sizeof($unOrdered); $i++) {
+		$mod = new $unOrdered[$i]($scope);
+		$predepends[$unOrdered[$i]] = $mod->get_uploadPreDepends();
+	}
+	// first all modules without predepends can be ordered
+	for ($i = 0; $i < sizeof($unOrdered); $i++) {
+		if (sizeof($predepends[$unOrdered[$i]]) == 0) {
+			$ordered[] = $unOrdered[$i];
+			unset($unOrdered[$i]);
+			$unOrdered = array_values($unOrdered);
+			$i--;
+		}
+	}
+	$unOrdered = array_values($unOrdered);  // fix indexes
+	// now add all modules with fulfilled dependencies until all are in order
+	while (sizeof($unOrdered) > 0) {
+		$newRound = false;
+		for ($i = 0; $i < sizeof($unOrdered); $i++) {
+			$deps = $predepends[$unOrdered[$i]];
+			$depends = false;
+			for ($d = 0; $d < sizeof($deps); $d++) {
+				if (in_array($deps[$d], $unOrdered)) {
+					$depends = true;
+					break;
+				}
+			}
+			if (!$depends) {  // add to order if dependencies are fulfilled
+				$ordered[] = $unOrdered[$i];
+				unset($unOrdered[$i]);
+				$unOrdered = array_values($unOrdered);
+				$newRound = true;
+				break;
+			}
+		}
+		if ($newRound) continue;
+		// this point should never be reached, LAM was unable to find a correct module order
+		StatusMessage("ERROR", _("Internal Error: Unable to find correct module order."), "");
+		return false;
+	}
+	// give raw data to modules
+	$errors = array();
+	$partialAccounts = array();
+	for ($i = 0; $i < sizeof($data); $i++) $partialAccounts[$i]['objectClasses'] = array();
+	for ($i = 0; $i < sizeof($ordered); $i++) {
+		$module = new $ordered[$i]($scope);
+		$errors = $module->build_uploadAccounts($data, $ids, &$partialAccounts);
+		if (sizeof($errors) > 0) break;
+	}
+	print_r($partialAccounts);
+	print_r($errors);
+	return $return;
+}
 
 /**
 * This class includes all modules and attributes of an account.
