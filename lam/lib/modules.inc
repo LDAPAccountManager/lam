@@ -535,9 +535,10 @@ function doUploadPostActions($scope, $data, $ids, $failed) {
 * @param boolean $restricted If true then no buttons will be displayed
 * @param integer $tabindex Start value of tabulator index for input fields
 * @param integer $tabindexLink Start value of tabulator index for links
+* @param string $scope Account type
 * @return array List of input field names and their type (name => type)
 */
-function parseHtml($module, $input, $values, $restricted, &$tabindex, &$tabindexLink) {
+function parseHtml($module, $input, $values, $restricted, &$tabindex, &$tabindexLink, $scope) {
 	$ret = array();
 	if (is_array($input)) {
 		echo "<table>\n";
@@ -569,14 +570,14 @@ function parseHtml($module, $input, $values, $restricted, &$tabindex, &$tabindex
 						// checkbox
 						if ($type == "checkbox") {
 							if (isset($values[$input[$i][$j]['name']])) {
-								if ($values[$input[$i][$j]['name']] == "true") $output .= ' checked';
+								if ($values[$input[$i][$j]['name']][0] == "true") $output .= ' checked';
 							}
 							elseif ($input[$i][$j]['checked']) $output .= ' checked';
 						}
 						// other input element
 						else {
 							if (isset($values[$input[$i][$j]['name']])) {
-								$output .= ' value="' . $values[$input[$i][$j]['name']] . '"';
+								$output .= ' value="' . $values[$input[$i][$j]['name']][0] . '"';
 							}
 							elseif ($input[$i][$j]['value']!='') $output .= ' value="' . $input[$i][$j]['value'] . '"';
 						}
@@ -594,7 +595,7 @@ function parseHtml($module, $input, $values, $restricted, &$tabindex, &$tabindex
 					case 'fieldset':
 						echo "<fieldset>\n";
 						if ($input[$i][$j]['legend']!='') echo "<legend>" . $input[$i][$j]['legend'] . "</legend>\n";
-						parseHtml($module, $input[$i][$j]['value'], $values, $restricted, $tabindex, $tabindexLink);
+						parseHtml($module, $input[$i][$j]['value'], $values, $restricted, $tabindex, $tabindexLink, $scope);
 						echo "</fieldset>\n";
 						break;
 					// selection
@@ -641,11 +642,11 @@ function parseHtml($module, $input, $values, $restricted, &$tabindex, &$tabindex
 						break;
 					// sub table
 					case 'table':
-						parseHtml($module, $input[$i][$j]['value'], $values, $restricted, $tabindex, $tabindexLink);
+						parseHtml($module, $input[$i][$j]['value'], $values, $restricted, $tabindex, $tabindexLink, $scope);
 						break;
 					// help link
 					case 'help':
-						echo "<a href=../help.php?module=$module&amp;HelpNumber=". $input[$i][$j]['value'] . "&amp;scope=" . $this->type . " target=\"help\" tabindex=$tabindexLink>" . _('Help') . "</a>\n";
+						echo "<a href=../help.php?module=$module&amp;HelpNumber=". $input[$i][$j]['value'] . "&amp;scope=" . $scope . " target=\"help\" tabindex=$tabindexLink>" . _('Help') . "</a>\n";
 						$tabindexLink++;
 						break;
 					// status message
@@ -917,7 +918,7 @@ class accountContainer {
 		else $return = call_user_func(array($this->module[$this->order[$this->current_page]], 'display_html_'.$this->subpage), $post);
 		$y = 5000;
 		$z = 10000;
-		parseHtml($this->order[$this->current_page], $return, array(), false, $y, $z);
+		parseHtml($this->order[$this->current_page], $return, array(), false, $y, $z, $this->type);
 		// Display rest of html-page
 		echo "</fieldset>\n";
 		echo "</td></tr></table>\n";
