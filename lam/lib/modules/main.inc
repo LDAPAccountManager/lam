@@ -283,23 +283,6 @@ class main extends baseModule {
 		return $return;
 		}
 
-	function get_profileOptions() {
-		$return = array();
-		$suffixes = array();
-		// get root suffix
-		$rootsuffix = call_user_func(array($_SESSION['config'], 'get_' . ucfirst($_SESSION[$this->base]->type) . 'Suffix'));
-		// get subsuffixes
-		foreach ($_SESSION['ldap']->search_units($rootsuffix) as $suffix) {
-			$suffixes[] = $suffix;
-		}
-		$return[] = array(
-			0 => array('kind' => 'text', 'text' => _('Suffix') . ': '),
-			1 => array('kind' => 'select', 'name' => 'main_suffix', 'options' => $suffixes, 'option_selected' => array($rootsuffix)),
-			2 => array('kind' => 'help', 'value' => 'TODO')
-			);
-		return $return;
-	}
-	
 	function get_pdfFields($account_type="user") {
 		return array(	'dn');
 	}

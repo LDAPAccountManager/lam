@@ -75,6 +75,24 @@ if ($_GET['edit']) {
 // display formular
 echo ("<form action=\"profilecreate.php?type=$type\" method=\"post\">\n");
 
+// suffix box
+// get root suffix
+$rootsuffix = call_user_func(array($_SESSION['config'], 'get_' . ucfirst($type) . 'Suffix'));
+// get subsuffixes
+$suffixes = array();
+foreach ($_SESSION['ldap']->search_units($rootsuffix) as $suffix) {
+	$suffixes[] = $suffix;
+}
+if (sizeof($suffixes) > 0) {
+echo "<fieldset>\n<legend><b>" . _("LDAP suffix") . "</b></legend>\n";
+	echo _("LDAP suffix") . ":&nbsp;&nbsp;";
+	echo "<select>";
+	for ($i = 0; $i < sizeof($suffixes); $i++) echo "<option>" . $suffixes[$i] . "</option>\n";
+	echo "</select>\n";
+	echo "&nbsp;&nbsp;<a href=../help.php?HelpNumber=TODO>" . _('Help') . "</a>\n";
+echo "</fieldset>\n<br>\n";
+}
+
 // display module options
 $modules = array_keys($options);
 for ($m = 0; $m < sizeof($modules); $m++) {
