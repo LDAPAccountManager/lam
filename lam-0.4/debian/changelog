@@ -8,8 +8,6 @@ ldap-account-manager (0.4.4-1) unstable; urgency=low
 ldap-account-manager (0.4.3-1) unstable; urgency=low
 
   * Updated to new upstream version (0.4.3)
-  * Closes: #208406: ITP: ldap-account-manager -- LDAP Account Manager
-    (LAM) manages Unix and Samba accounts in a LDAP directory.
 
  -- Roland Gruber <post@rolandgruber.de>  Sun,  8 Feb 2004 17:15:47 +0100
 
