@@ -251,7 +251,7 @@ switch ($select) {
 		if (!$stay) {
 			// Display rest of meta-refreh page if there are still users to create
 			echo '<tr><td><a href="masscreate.php?create=true">';
-			echo _('Please press here if meta-refresh didn\'t work.');
+			echo _('Click here if you are not directed to the next page.');
 			echo '</a></td></tr>'."\n";
 			echo '<tr><td><input name="cancel" type="submit" value="'; echo _('Cancel');
 			echo '"></td></tr></table>';
@@ -569,12 +569,12 @@ function loadfile() {
 			if ($_SESSION['accounts'][$row2]->general_group=='') $_SESSION['mass_errors'][$row2][] = array('ERROR', _('Primary group'), _('No primary group defined!'));
 			// Check if Username contains only valid characters
 			if ( !ereg('^([a-z]|[0-9]|[.]|[-]|[_])*$', $_SESSION['accounts'][$row2]->general_username))
-				$_SESSION['mass_errors'][$row2][] = array('ERROR', _('Username'), _('Username contains invalid characters. Valid characters are: a-z, 0-9 and .-_ !'));
+				$_SESSION['mass_errors'][$row2][] = array('ERROR', _('Username'), _('Username contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
 			// Check if Name-length is OK. minLength=3, maxLength=20
 			if ( !ereg('.{3,20}', $_SESSION['accounts'][$row2]->general_username)) $_SESSION['mass_errors'][$row2][] = array('ERROR', _('Name'), _('Name must contain between 3 and 20 characters.'));
 			// Check if Name starts with letter
 			if ( !ereg('^([a-z]|[A-Z]).*$', $_SESSION['accounts'][$row2]->general_username))
-				$_SESSION['mass_errors'][$row2][] = array('ERROR', _('Name'), _('Name contains invalid characters. First character must be a letter'));
+				$_SESSION['mass_errors'][$row2][] = array('ERROR', _('Name'), _('Name contains invalid characters. First character must be a letter.'));
 			// Personal Settings
 			if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/])*$', $_SESSION['accounts'][$row2]->personal_telephoneNumber))  $_SESSION['mass_errors'][$row2][] = array('ERROR', _('Telephone number'), _('Please enter a valid telephone number!'));
 			if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/])*$', $_SESSION['accounts'][$row2]->personal_mobileTelephoneNumber))  $_SESSION['mass_errors'][$row2][] = array('ERROR', _('Mobile number'), _('Please enter a valid mobile number!'));

@@ -92,9 +92,9 @@ if ($_POST['apply']) {
 		else $_SESSION['accounts'][$row]->general_givenname = $_POST['f_general_givenname'];
 	// Check if username is valid
 	if ( !ereg('^([a-z]|[0-9]|[.]|[-]|[_])*$', $_POST['f_general_username']))
-		$errors2[] = array('ERROR', _('Username'), _('Username contains invalid characters. Valid characters are: a-z, 0-9 and .-_ !'));
+		$errors2[] = array('ERROR', _('Username'), _('Username contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
 	else if ( !ereg('^([a-z]|[A-Z]).*$', $_POST['f_general_username']))
-		$errors2[] = array('ERROR', _('Name'), _('Name contains invalid characters. First character must be a letter'));
+		$errors2[] = array('ERROR', _('Name'), _('Name contains invalid characters. First character must be a letter.'));
 	else {
 		// Create Array with all users in ldap and in array
 		// Validate cache-array

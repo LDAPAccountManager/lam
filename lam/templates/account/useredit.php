@@ -220,7 +220,7 @@ switch ($_POST['select']) {
 	case 'general':
 		if (!$_POST['load']) {
 			if (($account_new->general_username != $_POST['f_general_username']) &&  ereg('[A-Z]$', $_POST['f_general_username']))
-				$errors[] = array('WARN', _('Username'), _('You are using a capital letters. This can cause problems because user and uSer could have the same mail-address.'));
+				$errors[] = array('WARN', _('Username'), _('You are using a capital letters. This can cause problems because user and user could have the same mail-address.'));
 			// Write all general values into $account_new if no profile should be loaded
 			$account_new->general_dn = $_POST['f_general_suffix'];
 			$account_new->general_username = $_POST['f_general_username'];
@@ -304,7 +304,7 @@ switch ($_POST['select']) {
 			if ( !ereg('.{3,20}', $account_new->general_username)) $errors[] = array('ERROR', _('Name'), _('Name must contain between 3 and 20 characters.'));
 			// Check if Name starts with letter
 			if ( !ereg('^([a-z]|[A-Z]).*$', $account_new->general_username))
-				$errors[] = array('ERROR', _('Name'), _('Name contains invalid characters. First character must be a letter'));
+				$errors[] = array('ERROR', _('Name'), _('Name contains invalid characters. First character must be a letter.'));
 			}
 		break;
 	case 'unix':
@@ -579,10 +579,11 @@ do { // X-Or, only one if() can be true
 			if (strstr($account_new->smb_profilePath, '$user')) $found = true;
 			if (strstr($account_new->smb_smbhome, '$group')) $found = true;
 			if (strstr($account_new->smb_smbhome, '$user')) $found = true;
-			if ($found)
+			if ($found) {
 				// Samba page not viewed; can not create group because if missing options
 				$stay = true;
 				$errors[] = array("ERROR", _("Samba Options not set!"), _("Please check settings on samba page."));
+				}
 			}
 		if (isset($account_old->general_objectClass)) {
 			if (!in_array('posixAccount', $account_old->general_objectClass))

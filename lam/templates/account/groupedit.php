@@ -214,7 +214,7 @@ switch ($_POST['select']) {
 			if ( !ereg('.{3,20}', $account_new->general_username)) $errors[] = array('ERROR', _('Name'), _('Name must contain between 3 and 20 characters.'));
 			// Check if Name starts with letter
 			if ( !ereg('^([a-z]|[A-Z]).*$', $account_new->general_username))
-				$errors[] = array('ERROR', _('Name'), _('Name contains invalid characters. First character must be a letter'));
+				$errors[] = array('ERROR', _('Name'), _('Name contains invalid characters. First character must be a letter.'));
 			}
 		break;
 	case 'samba':
