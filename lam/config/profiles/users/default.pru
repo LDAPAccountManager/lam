@@ -1,5 +1,5 @@
 general_group: admin
-general_homedir: /home/$group/$user
+general_homedir: /home/$user
 general_shell: /bin/bash
 unix_password_no: 0
 unix_pwdwarn: 10
@@ -12,5 +12,3 @@ smb_password_no: 0
 smb_useunixpwd: 1
 smb_flagsD: 1
 smb_homedrive: U:
-smb_domain: sambaDomainName=test,dc=my-domain,dc=com
-quota: /home,10000,10000,500,500;/,20000,20000,1000,1000

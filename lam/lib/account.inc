@@ -832,10 +832,11 @@ function createuser($values) { // Will create the LDAP-Account
 	if ($values->personal_employeeType!='') $attr['employeeType'] = utf8_encode($values->personal_employeeType);
 	// posixAccount_may shadowAccount_may
 	if ($values->unix_password_no) $values->unix_password = '';
-	if ($values->unix_deactivated) $attr['userPassword'] = '!' . crypt($values->unix_password);
+	if ($values->unix_deactivated) $attr['userPassword'] = '{CRYPT}!' . crypt($values->unix_password);
+	    else $attr['userPassword'] = '{CRYPT}'. crypt($values->unix_password);
 	$attr['shadowLastChange'] = getdays(); // shadowAccount_may
 	$attr['loginShell'] = $values->general_shell; // posixAccount_may
-	$attr['gecos'] = utf8_encode($values->general_gecos); // posixAccount_may
+	$attr['gecos'] = utf8_encode(replace_umlaut($values->general_gecos)); // posixAccount_may
 	$attr['description'] = utf8_encode($values->general_gecos); // posixAccount_may sambaAccount_may
 	$attr['displayName'] = utf8_encode($values->smb_displayName); // sambaAccount_may
 
@@ -1052,7 +1053,7 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 	if ($values->general_shell != $values_old->general_shell)
 		$attr['loginShell'] = $values->general_shell; // posixAccount_may
 	if ($values->general_gecos != $values_old->general_gecos) {
-		$attr['gecos'] = utf8_encode($values->general_gecos); // posixAccount_may
+		$attr['gecos'] = utf8_encode(replace_umlaut($values->general_gecos)); // posixAccount_may
 		$attr['description'] = utf8_encode($values->general_gecos); // posixAccount_may sambaAccount_may
 		}
 
@@ -1365,7 +1366,7 @@ function createhost($values) { // Will create the LDAP-Account
 
 	$attr['shadowLastChange'] = getdays(); // shadowAccount_may
 	$attr['loginShell'] = $values->general_shell; // posixAccount_may
-	$attr['gecos'] = utf8_encode($values->general_gecos); // posixAccount_may
+	$attr['gecos'] = utf8_encode(replace_umlaut($values->general_gecos)); // posixAccount_may
 	$attr['description'] = utf8_encode($values->general_gecos); // posixAccount_may sambaAccount_may
 	if ($date!='') $attr['shadowExpire'] =  $date ; // shadowAccount_may
 	$success = ldap_add($_SESSION['ldap']->server(),$values->general_dn, $attr);
@@ -1568,7 +1569,7 @@ function modifyhost($values,$values_old) { // Will modify the LDAP-Account
 		}
 
 	if ($values->general_gecos != $values_old->general_gecos) {
-		$attr['gecos'] = utf8_encode($values->general_gecos); // posixAccount_may
+		$attr['gecos'] = utf8_encode(replace_umlaut($values->general_gecos)); // posixAccount_may
 		$attr['description'] = utf8_encode($values->general_gecos); // posixAccount_may sambaAccount_may
 		}
 
