@@ -55,7 +55,6 @@ else if (count($_POST)==0) { // Startcondition. groupedit.php was called from ou
 	if (isset($_SESSION['account_old'])) unset($_SESSION['account_old']);
 	}
 
-
 switch ($_POST['select']) { // Select which part of page should be loaded and check values
 	// general = startpage, general account paramters
 	// unix = page with all shadow-options and password
@@ -118,8 +117,6 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 		$select_local = 'final';
 		break;
 	}
-
-
 
 // Write HTML-Header and part of Table
 echo $_SESSION['header'];
@@ -283,9 +280,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		if ($_SESSION['config']->samba3 == 'yes') $samba3domains = $_SESSION['ldap']->search_domains($_SESSION[config]->get_domainSuffix());
 		$_SESSION['account']->smb_flagsW = 1;
 		if ($_SESSION['account']->smb_password_no) echo '<input name="f_smb_password_no" type="hidden" value="1">';
-		echo '<input name="f_unix_password_no" type="hidden" value="';
 		echo '<input name="select" type="hidden" value="samba">';
-
 		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
 		echo "<br><fieldset><legend>";
 		echo _('Please select page:');

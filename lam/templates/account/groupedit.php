@@ -281,7 +281,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "<td align=\"center\" width=\"10%\"><input type=\"submit\" name=\"add\" value=\"<=\">";
 		echo " ";
 		echo "<input type=\"submit\" name=\"remove\" value=\"=>\"><br><br>";
-		echo "<a href=\"help.php?HelpNumber=XXX\" target=\"lamhelp\">"._('Help-XX')."</a></td>\n";
+		echo "<a href=\"../help.php?HelpNumber=XXX\" target=\"lamhelp\">"._('Help-XX')."</a></td>\n";
 		echo "<td valign=\"top\"><fieldset><legend>";
 		echo _('Available users');
 		echo "</legend><select name=\"users[]\" size=15 multiple>\n";
@@ -316,14 +316,14 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo _("Groupname")."*";
 		echo "</td>\n<td>".
 			"<input name=\"f_general_username\" type=\"text\" size=\"30\" maxlength=\"20\" value=\"".$_SESSION['account']->general_username."\">".
-			"</td>\n<td><a href=\"help.php?HelpNumber=407\" target=\"lamhelp\">"._('Help')."</a></td>\n</tr>\n<tr>\n<td>";
+			"</td>\n<td><a href=\"../help.php?HelpNumber=407\" target=\"lamhelp\">"._('Help')."</a></td>\n</tr>\n<tr>\n<td>";
 		echo _('GID number');
 		echo "</td>\n<td><input name=\"f_general_uidNumber\" type=\"text\" size=\"30\" maxlength=\"6\" value=\"".$_SESSION['account']->general_uidNumber."\">".
-			"</td>\n<td><a href=\"help.php?HelpNumber=408\" target=\"lamhelp\">"._('Help').
+			"</td>\n<td><a href=\"../help.php?HelpNumber=408\" target=\"lamhelp\">"._('Help').
 			"</a></td>\n</tr>\n<tr>\n<td>";
 		echo _('Gecos');
 		echo "</td>\n<td><input name=\"f_general_gecos\" type=\"text\" size=\"30\" value=\"".$_SESSION['account']->general_gecos."\"></td>\n".
-			"<td><a href=\"help.php?HelpNumber=409\" target=\"lamhelp\">"._('Help')."</a></td>\n</tr>\n<tr>\n<td>";
+			"<td><a href=\"../help.php?HelpNumber=409\" target=\"lamhelp\">"._('Help')."</a></td>\n</tr>\n<tr>\n<td>";
 		echo _('Suffix'); echo "</td>\n<td><select name=\"f_general_suffix\">";
 
 		foreach ($_SESSION['ldap']->search_units($_SESSION['config']->get_GroupSuffix()) as $suffix) {
@@ -334,7 +334,7 @@ switch ($select_local) { // Select which part of page will be loaded
 				}
 			else echo "	<option>$suffix</option>\n";
 			}
-		echo "</select></td>\n<td><a href=\"help.php?HelpNumber=462\" target=\"lamhelp\">"._('Help').
+		echo "</select></td>\n<td><a href=\"../help.php?HelpNumber=462\" target=\"lamhelp\">"._('Help').
 			"</a></td>\n</tr>\n</table>";
 		echo _('Values with * are required');
 		echo "</fieldset>\n</td></tr><tr><td>";
@@ -408,7 +408,7 @@ switch ($select_local) { // Select which part of page will be loaded
 			echo "</option>\n";
 			}
 		echo	"</select></td>\n<td>".
-			'<a href="help.php?HelpNumber=464" target="lamhelp">'._('Help').'</a>'.
+			'<a href="../help.php?HelpNumber=464" target="lamhelp">'._('Help').'</a>'.
 			'</td></tr>'."\n".'<tr><td>';
 		echo _('Domain');
 		echo '</td><td><select name="f_smb_domain">';
@@ -420,7 +420,7 @@ switch ($select_local) { // Select which part of page will be loaded
 				}
 			else echo '<option>' . $samba3domains[$i]->name. '</option>';
 			}
-		echo	'</select></td>'."\n".'<td><a href="help.php?HelpNumber=467" target="lamhelp">'._('Help').'</a></td></tr>'."\n";
+		echo	'</select></td>'."\n".'<td><a href="../help.php?HelpNumber=467" target="lamhelp">'._('Help').'</a></td></tr>'."\n";
 		echo "</table>\n</fieldset>\n</tr>\n</table>\n";
 		break;
 
@@ -444,11 +444,11 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo _('Soft block limit'); echo '</td>'."\n".'<td>'; echo _('Hard block limit'); echo '</td>'."\n".'<td>'; echo _('Grace block period');
 		echo '</td>'."\n".'<td>'; echo _('Used inodes'); echo '</td>'."\n".'<td>'; echo _('Soft inode limit'); echo '</td>'."\n".'<td>';
 		echo _('Hard inode limit'); echo '</td>'."\n".'<td>'; echo _('Grace inode period'); echo '</td></tr>'."\n";
-		echo '<tr><td><a href="help.php?HelpNumber=439" target="lamhelp">'._('Help').'</a></td>'."\n".'<td><a href="help.php?HelpNumber=440" target="lamhelp">'._('Help').'</a></td>'."\n".'<td>'.
-			'<a href="help.php?HelpNumber=441" target="lamhelp">'._('Help').'</a></td>'."\n".'<td><a href="help.php?HelpNumber=442" target="lamhelp">'._('Help').'</a></td>'."\n".'<td>'.
-			'<a href="help.php?HelpNumber=443" target="lamhelp">'._('Help').'</a></td>'."\n".'<td><a href="help.php?HelpNumber=444" target="lamhelp">'._('Help').'</a></td>'."\n".'<td>'.
-			'<a href="help.php?HelpNumber=445" target="lamhelp">'._('Help').'</a></td>'."\n".'<td><a href="help.php?HelpNumber=446" target="lamhelp">'._('Help').'</a></td>'."\n".'<td>'.
-			'<a href="help.php?HelpNumber=447" target="lamhelp">'._('Help').'</a></td></tr>'."\n";
+		echo '<tr><td><a href="../help.php?HelpNumber=439" target="lamhelp">'._('Help').'</a></td>'."\n".'<td><a href="../help.php?HelpNumber=440" target="lamhelp">'._('Help').'</a></td>'."\n".'<td>'.
+			'<a href="../help.php?HelpNumber=441" target="lamhelp">'._('Help').'</a></td>'."\n".'<td><a href="../help.php?HelpNumber=442" target="lamhelp">'._('Help').'</a></td>'."\n".'<td>'.
+			'<a href="../help.php?HelpNumber=443" target="lamhelp">'._('Help').'</a></td>'."\n".'<td><a href="../help.php?HelpNumber=444" target="lamhelp">'._('Help').'</a></td>'."\n".'<td>'.
+			'<a href="../help.php?HelpNumber=445" target="lamhelp">'._('Help').'</a></td>'."\n".'<td><a href="../help.php?HelpNumber=446" target="lamhelp">'._('Help').'</a></td>'."\n".'<td>'.
+			'<a href="../help.php?HelpNumber=447" target="lamhelp">'._('Help').'</a></td></tr>'."\n";
 		$i=0;
 		while ($_SESSION['account']->quota[$i][0]) {
 			echo '<tr><td>'.$_SESSION['account']->quota[$i][0].'</td><td>'.$_SESSION['account']->quota[$i][1].'</td>'; // used blocks
