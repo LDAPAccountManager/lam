@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
-  Copyright (C) 2003  Roland Gruber
+  Copyright (C) 2003-04  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -80,72 +80,78 @@ function metaRefresh($page) {
 // manages .conf files
 class Config {
 
-  // server address (e.g. ldap://127.0.0.1:389)
-  var $ServerURL;
+	// server address (e.g. ldap://127.0.0.1:389)
+	var $ServerURL;
 
-  // array of strings: users with admin rights
-  var $Admins;
+	// array of strings: users with admin rights
+	var $Admins;
 
-  // string: password to edit preferences
-  var $Passwd;
+	// string: password to edit preferences
+	var $Passwd;
 
-  // suffix for users
-  var $usersuffix;
+	// suffix for users
+	var $usersuffix;
 
-  // suffix for groups
-  var $groupsuffix;
+	// suffix for groups
+	var $groupsuffix;
 
-  // suffix for Samba hosts
-  var $hostsuffix;
+	// suffix for Samba hosts
+	var $hostsuffix;
 
-  // suffix for domains (Samba 3)
-  var $domainsuffix;
+	// suffix for domains (Samba 3)
+	var $domainsuffix;
 
-  // minimum/maximum numbers for UID, GID and UID of Samba Hosts
-  var $MinUID;
-  var $MaxUID;
-  var $MinGID;
-  var $MaxGID;
-  var $MinMachine;
-  var $MaxMachine;
+	// minimum/maximum numbers for UID, GID and UID of Samba Hosts
+	var $MinUID;
+	var $MaxUID;
+	var $MinGID;
+	var $MaxGID;
+	var $MinMachine;
+	var $MaxMachine;
 
-  // attributes that are shown in the user/group/host tables
-  var $userlistAttributes;
-  var $grouplistAttributes;
-  var $hostlistAttributes;
+	// attributes that are shown in the user/group/host tables
+	var $userlistAttributes;
+	var $grouplistAttributes;
+	var $hostlistAttributes;
 
-  // maximum number of rows shown in user/group/host list
-  var $maxlistentries;
+	// maximum number of rows shown in user/group/host list
+	var $maxlistentries;
 
-  // default language
-  var $defaultLanguage;
+	// default language
+	var $defaultLanguage;
 
-  // Path to external script and server where it is executed
-  // used for managing quota and home directories
-  // optional settings, may not be defined
-  var $scriptPath;
-  var $scriptServer;
+	// Path to external script and server where it is executed
+	// used for managing quota and home directories
+	// optional settings, may not be defined
+	var $scriptPath;
+	var $scriptServer;
 
-  // if "yes" use the new LDAP schema for Samba 3.x
-  var $samba3;
+	// if "yes" use the new LDAP schema for Samba 3.x
+	var $samba3;
 
-  // LDAP cache timeout
-  var $cachetimeout;
+	// LDAP cache timeout
+	var $cachetimeout;
 
-  // password hash algorithm
-  var $pwdhash;
+	// password hash algorithm
+	var $pwdhash;
 
-  // text to include in user PDF files
-  var $pdftext = "";
+	// text to include in user PDF files
+	var $pdftext = "";
 
-  // name of configuration file
-  var $file;
+	// account modules		// TODO add default modules for LAM <0.5
+	var $usermodules = "um1,um2,um3";
+	var $groupmodules = "gm1,gm2,gm3";
+	var $hostmodules = "hm1,hm2,hm3";
+
+	// name of configuration file
+	var $file;
 
 	// list of all settings in config file
 	var $settings = array("ServerURL", "Passwd", "Admins", "usersuffix", "groupsuffix", "hostsuffix",
 		"domainsuffix", "MinUID", "MaxUID", "MinGID", "MaxGID", "MinMachine", "MaxMachine",
 		"userlistAttributes", "grouplistAttributes", "hostlistAttributes", "maxlistentries",
-		"defaultLanguage", "scriptPath", "scriptServer", "samba3", "cachetimeout", "pwdhash");
+		"defaultLanguage", "scriptPath", "scriptServer", "samba3", "cachetimeout", "pwdhash",
+		"usermodules", "groupmodules", "hostmodules");
 
 
 	// constructor, loads preferences from config file
@@ -695,7 +701,53 @@ class Config {
 		return true;
 	}
 
+	// returns an array of all selected user modules
+	function get_UserModules() {
+		return explode(",", $this->usermodules);
+	}
+
+	// sets the selected user modules
+	// $modules: array with module names (not aliases!)
+	// returns true if $modules has correct format
+	function set_UserModules($modules) {
+		if (! is_array($modules)) return false;
+		// check module names
+		// TODO check against available module names
+		$this->usermodules = implode(",", $modules);
+	}
+
+	// returns an array of all selected group modules
+	function get_GroupModules() {
+		return explode(",", $this->usermodules);
+	}
+
+	// sets the selected group modules
+	// $modules: array with module names (not aliases!)
+	// returns true if $modules has correct format
+	function set_GroupModules($modules) {
+		if (! is_array($modules)) return false;
+		// check module names
+		// TODO check against available module names
+		$this->groupmodules = implode(",", $modules);
+	}
+
+	// returns an array of all selected host modules
+	function get_HostModules() {
+		return explode(",", $this->usermodules);
+	}
+
+	// sets the selected host modules
+	// $modules: array with module names (not aliases!)
+	// returns true if $modules has correct format
+	function set_HostModules($modules) {
+		if (! is_array($modules)) return false;
+		// check module names
+		// TODO check against available module names
+		$this->hostmodules = implode(",", $modules);
+	}
+
 }
+
 
 /*
 // class CfgMain
