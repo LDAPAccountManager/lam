@@ -9,7 +9,7 @@ Home-Page: <URL:http://lam.sf.net>
 Description: Webfrontend to manage Samba and Unix accounts
 Origin: debian
 Copyright: GPL
- Copyright 2003 Tilo Lutz, Roland Gruber, Michael Duergner, Leo Walchshaeusel
+ Copyright 2003 - 2004 Tilo Lutz, Roland Gruber, Michael Duergner, Leo Walchshaeusel
 Major-Changes:
 
 Package: ldap-account-manager
@@ -27,7 +27,7 @@ Description: Webfrontend for managing Unix and Samba accounts in a LDAP director
  exported as PDF file. There is also a script
  included which manages quota and homedirectories, you have to
  setup sudo if you want to use it. LAM is translated to
- English, German, Hungarian and Japanese.
+ English, French, German, Hungarian and Japanese.
  .
  Homepage: http://lam.sourceforge.net/
 Install: sh
@@ -61,6 +61,8 @@ Install: sh
  yada install -data -into /usr/share/ldap-account-manager/locale/hu_HU/LC_MESSAGES locale/hu_HU/LC_MESSAGES/messages.?o
  yada install -dir /usr/share/ldap-account-manager/locale/ja_JP
  yada install -data -into /usr/share/ldap-account-manager/locale/ja_JP/LC_MESSAGES locale/ja_JP/LC_MESSAGES/messages.?o
+ yada install -dir /usr/share/ldap-account-manager/locale/fr_FR
+ yada install -data -into /usr/share/ldap-account-manager/locale/fr_FR/LC_MESSAGES locale/fr_FR/LC_MESSAGES/messages.?o
  yada install -data -into /var/lib/ldap-account-manager/sess sess/.htaccess
  yada install -data -into /usr/share/ldap-account-manager/style style/*.css
  yada install -data -into /usr/share/ldap-account-manager/templates templates/*.php
