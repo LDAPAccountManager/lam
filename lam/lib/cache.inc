@@ -241,11 +241,9 @@ class cache {
 		for ($i=0; $i<count($allowed_types); $i++) {
 			if ($allowed_types[$i]!='*') {
 				$function = '$suffix = $$this->config->get_'.ucfirst($allowed_types[$i]).'Suffix();';
-				print $function;
-				print "<br>";
 				// *** fixme, where is get_DomainSuffix
 				If ($scope != '*') //eval($function);
-					$suffix = call_user_func(array($$this->config, 'get_'.ucfirst($allowed_types[$i]).'Suffix'));
+					$suffix = call_user_func(array($this->config, 'get_'.ucfirst($allowed_types[$i]).'Suffix'));
 					else $suffix = '';
 				if (substr($suffix, $dn)) $singlescope = $allowed_types[$i];
 				}
@@ -255,10 +253,12 @@ class cache {
 		// Everything seems to be OK, start processing data
 		// Get Scope
 		foreach ($allowed_types as $scope) {
-			$function = '$suffix = $this->config->get_'.ucfirst($scope).'Suffix();';
+			//$function = '$suffix = $this->config->get_'.ucfirst($scope).'Suffix();';
 			//eval($function);
-			$suffix = call_user_func(array($$this->config, 'get_'.ucfirst($scope).'Suffix'));
-			if (strpos($dn, $suffix)) $singlescope = $scope;
+			if ($scope!='*') {
+				$suffix = call_user_func(array($this->config, 'get_'.ucfirst($scope).'Suffix'));
+				if (strpos($dn, $suffix)) $singlescope = $scope;
+				}
 			}
 		if (!isset($singlescope)) trigger_error(sprintf(_('Invalid dn: %s. DN not covered by any suffix.'), $dn), E_USER_WARN);
 		// Refresh Cache
@@ -326,12 +326,15 @@ class cache {
 	*/
 	function getgrnam($gidNumber) {
 		$dn_groups = $_SESSION['cache']->get_cache('gidNumber', 'posixGroup', 'group');
-		$DNs = array_keys($dn_groups);
-		foreach ($DNs as $DN) {
-			if ($dn_groups[$DN][0]==$gidNumber)
-				$return = substr($DN, 3, strpos($DN, ',')-3);
+		if (is_array($dn_groups)) {
+			$DNs = array_keys($dn_groups);
+			foreach ($DNs as $DN) {
+				if ($dn_groups[$DN][0]==$gidNumber)
+					$return = substr($DN, 3, strpos($DN, ',')-3);
+				}
+			return $return;
 			}
-		return $return;
+		else return -1;
 		}
 
 	}

@@ -338,7 +338,7 @@ function getAvailablePDFFields($scope) {
  * @return array Available scopes
  */
 function getAvailableScopes() {
-	return array('user','group','host');
+	return array('user','group','host', 'domain');
 }
 
 /**
@@ -356,8 +356,7 @@ class accountContainer {
 		if (!is_string($type)) trigger_error(_('Argument of accountContainer must be string.'), E_USER_ERROR);
 		if (!is_string($base)) trigger_error(_('Argument of accountContainer must be string.'), E_USER_ERROR);
 		// *** fixme use global variable to determine allowed types
-		$allowed_types = array ( 'user', 'group', 'host', 'domain' );
-		if (!in_array($type, $allowed_types)) trigger_error(_('Account type not recognized.'), E_USER_ERROR);
+		if (!in_array($type, getAvailableScopes())) trigger_error(_('Account type not recognized.'), E_USER_ERROR);
 		$this->type = $type;
 		$this->base = $base;
 		// Name of variables in session
@@ -1156,9 +1155,6 @@ class accountContainer {
 					}
 				}
 			}
-		print $this->dn;
-		print $this->dn_orig;
-		print_r($attributes);
 		// Complete dn with uid or cn=
 		if ($this->type=='group') $search = 'cn';
 			else $search = 'uid';
@@ -1200,16 +1196,17 @@ class accountContainer {
 			}
 		// fixme *** ad update_cache after every ldap-change
 
+		print_r($attributes);
 		if (!$stopprocessing) {
 			if ($this->dn != $this->dn_orig) {
 				// move existing DN
 				if ($this->dn_orig!='') {
 					// merge attributes together
 					$attr = array_merge_recursive($attributes[$this->dn]['add'], $attributes[$this->dn]['notchanged'], $attributes[$this->dn]['modify']);
-					$success = @ldap_add($_SESSION[$this->ldap]->server(), $this->dn, $attr);
+					$success = ldap_add($_SESSION[$this->ldap]->server(), $this->dn, $attr);
 					if ($success) {
 						$_SESSION[$this->cache]->update_cache($this->$dn, 'add', $attr);
-						$success = @ldap_delete($_SESSION[$this->ldap]->server(), $this->dn_orig);
+						$success = ldap_delete($_SESSION[$this->ldap]->server(), $this->dn_orig);
 						if (!$success) {
 							$errors[] = array('ERROR', 'LDAP', sprintf(_('Was unable to delete dn: %s.'), $this->dn_orig));
 							$stopprocessing = true;
@@ -1224,16 +1221,14 @@ class accountContainer {
 					}
 				// create complete new dn
 				else {
-		print "XXXXXXXX";
 					$attr = array_merge_recursive($attributes[$this->dn]['add'], $attributes[$this->dn]['notchanged'], $attributes[$this->dn]['modify']);
-					print_r($attribtues);
-					$success = ldap_add($_SESSION[$this->ldap]->server(), $this->dn, $attributes[$this->dn]['add']);
+					$success = ldap_add($_SESSION[$this->ldap]->server(), $this->dn, $attr);
 					if (!$success) {
 						$errors[] = array('ERROR', 'LDAP', sprintf(_('Was unable to create dn: %s. This is possible a bug. Please check your ldap logs and send a bug report if it is a possible bug.'), $this->dn));
 						$stopprocessing = true;
 						}
 					else
-						$_SESSION[$this->cache]->update_cache($this->$dn, 'add', $attributes[$this->dn]['add']);
+						$_SESSION[$this->cache]->update_cache($this->$dn, 'add', $attr);
 					}
 				unset($attributes[$this->dn]);
 				}
@@ -1278,15 +1273,16 @@ class accountContainer {
 			foreach ($attributes as $DN) {
 				if (is_array($DN['lamdaemon']['command'])) $result = $this->lamdaemon($DN['lamdaemon']['command']);
 				// Error somewhere in lamdaemon
-				foreach ($result as $singleresult) {
-					if (is_array($singleresult)) {
-						if ($singleresult[0] = 'ERROR') $stopprocessing = true;
-						$temparray[0] = $singleresult[0];
-						$temparray[1] = _($singleresult[1]);
-						$temparray[2] = _($singleresult[2]);
-						$errors[] = $temparray;
+				if (is_array($result))
+					foreach ($result as $singleresult) {
+						if (is_array($singleresult)) {
+							if ($singleresult[0] = 'ERROR') $stopprocessing = true;
+							$temparray[0] = $singleresult[0];
+							$temparray[1] = _($singleresult[1]);
+							$temparray[2] = _($singleresult[2]);
+							$errors[] = $temparray;
+							}
 						}
-					}
 				}
 			}
 		if (count($errors)!=0) return $errors;

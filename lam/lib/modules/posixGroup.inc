@@ -343,18 +343,20 @@ class posixGroup extends baseModule {
 
 		// Remove primary group from users from memberUid
 		$users_dn = $_SESSION[$_SESSION[$this->base]->cache]->get_cache('gidNumber', 'posixAccount', 'user');
-		$DNs = array_keys($users_dn);
-		for ($i=0; $i<count($DNs); $i++) {
-			if ($users_dn[$DNs[$i]][0]==$this->attributes['gidNumber'][0]) {
-				$thisuser = substr($DNs[$i], 4, strpos($DNs[$i], ",")-4);
-				if (@in_array($thisuser, $this->attribtues['memberUid'])) {
-					$this->attribtues['memberUid'] = @array_flip($this->attribtues['memberUid']);
-					unset($this->attribtues['memberUid'][$thisuser]);
-					$this->attribtues['memberUid'] = @array_flip($this->attribtues['memberUid']);
+		if (is_array($users_dn)) {
+			$DNs = array_keys($users_dn);
+			for ($i=0; $i<count($DNs); $i++) {
+				if ($users_dn[$DNs[$i]][0]==$this->attributes['gidNumber'][0]) {
+					$thisuser = substr($DNs[$i], 4, strpos($DNs[$i], ",")-4);
+					if (@in_array($thisuser, $this->attribtues['memberUid'])) {
+						$this->attribtues['memberUid'] = @array_flip($this->attribtues['memberUid']);
+						unset($this->attribtues['memberUid'][$thisuser]);
+						$this->attribtues['memberUid'] = @array_flip($this->attribtues['memberUid']);
+						}
 					}
 				}
 			}
-
+	
 		// Change gids of users and hosts?
 		if ($this->changegids) {
 			// get gidNumber
@@ -401,6 +403,8 @@ class posixGroup extends baseModule {
 				}
 			}
 
+		// Add ObjectClass
+		$return[$_SESSION[$this->base]->dn]['notchanged']['objectClass'][0] = 'posixGroup';
 		return $return;
 		}
 
@@ -443,8 +447,10 @@ class posixGroup extends baseModule {
 			$maxID = intval($this->moduleSettings['posixGroup_maxGID'][0]);
 			$dn_gids = $_SESSION[$_SESSION[$this->base]->cache]->get_cache('gidNumber', 'posixGroup', '*');
 			// get_cache will return an array ( dn1 => array(uidnumber1), dn2 => array(uidnumber2), ... )
-			foreach ($dn_gids as $gid) $gids[] = $gid[0];
-			if(is_array($gids)) sort ($gids, SORT_NUMERIC);
+			if(is_array($dn_gids)) {
+				foreach ($dn_gids as $gid) $gids[] = $gid[0];
+				sort ($gids, SORT_NUMERIC);
+				}
 			if ($this->attributes['gidNumber'][0]=='') {
 				// No id-number given
 				if ($this->orig['gidNumber'][0]=='') {
@@ -628,29 +634,31 @@ class posixGroup extends baseModule {
 	function display_html_user($post, $profile=false) {
 		// load list with all groups
 		$dn_users = $_SESSION[$_SESSION[$this->base]->cache]->get_cache('uid', 'posixAccount', 'user');
-		foreach ($dn_users as $user) $users[] = $user[0];
-		// sort groups
-		sort($users, SORT_STRING);
-		// remove groups the user is member of from grouplist
-		$users = array_delete($this->attributes['memberUid'], $users);
-		// Remove primary group from grouplist
-		$users_dn = $_SESSION[$_SESSION[$this->base]->cache]->get_cache('gidNumber', 'posixAccount', 'user');
-		$DNs = array_keys($users_dn);
-		for ($i=0; $i<count($DNs); $i++) {
-			if ($users_dn[$DNs[$i]][0]==$this->attributes['gidNumber'][0]) {
-				$thisuser = substr($DNs[$i], 4, strpos($DNs[$i], ",")-4);
-				if (in_array($thisuser, $users)) {
-					$users = @array_flip($users);
-					unset($users[$thisuser]);
-					$users = @array_flip($users);
+		if (is_array($dn_users)) {
+			foreach ($dn_users as $user) $users[] = $user[0];
+			// sort groups
+			sort($users, SORT_STRING);
+			// remove groups the user is member of from grouplist
+			$users = array_delete($this->attributes['memberUid'], $users);
+			// Remove primary group from grouplist
+			$users_dn = $_SESSION[$_SESSION[$this->base]->cache]->get_cache('gidNumber', 'posixAccount', 'user');
+			$DNs = array_keys($users_dn);
+			for ($i=0; $i<count($DNs); $i++) {
+				if ($users_dn[$DNs[$i]][0]==$this->attributes['gidNumber'][0]) {
+					$thisuser = substr($DNs[$i], 4, strpos($DNs[$i], ",")-4);
+					if (in_array($thisuser, $users)) {
+						$users = @array_flip($users);
+						unset($users[$thisuser]);
+						$users = @array_flip($users);
+						}
 					}
 				}
+			// sort users
+			sort($users);
 			}
-		// sort users
-		sort($users);
-
+			
 		$return[] = array ( 0 => array ( 'kind' => 'fieldset', 'legend' => _("Group members"), 'value' =>
-			array ( 0 => array ( 0 => array ('kind' => 'fieldset', 'td' => array ('valign' => 'top'), 'legend' => _("Selected userss"), 'value' =>
+			array ( 0 => array ( 0 => array ('kind' => 'fieldset', 'td' => array ('valign' => 'top'), 'legend' => _("Selected users"), 'value' =>
 				array ( 0 => array ( 0 => array ( 'kind' => 'select', 'name' => 'removeusers[]', 'size' => '15', 'multiple', 'options' => $this->attributes['memberUid'])))),
 			1 => array ( 'kind' => 'table', 'value' => array ( 0 => array ( 0 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'addusers_button',
 				'value' => '<=')), 1 => array ( 0 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'removeusers_button', 'value' => '=>' )),
