@@ -714,6 +714,10 @@ class sambaSamAccount {
 	function check_profileOptions($scope, $options) {
 		return array();
 	}
+	
+	function get_pdfEntries($account_type = "User") {
+		return array();
+	}
 
 }
 

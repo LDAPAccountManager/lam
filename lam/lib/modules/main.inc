@@ -301,6 +301,10 @@ class main {
 			);
 		return $return;
 	}
+	
+	function get_pdfEntries($account_type = "User") {
+		return array();
+	}
 
 	}
 

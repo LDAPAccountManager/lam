@@ -709,6 +709,19 @@ class posixAccount {
 	function check_profileOptions($scope, $options) {
 		return array();
 	}
+	
+	function get_pdfEntries($account_type = "User") {
+		return array(	'uid' => array('<block><key>' . _('Username') . '</key><value>' . $this->attributes['uid'][0] . '</value></block>'),
+							'uidNumber' => array('<block><key>' . _('UID number') . '</key><value>' . $this->attributes['uidNumber'][0] . '</value></block>'),
+							'gidNumber' => array('<block><key>' . _('GID number') . '</key><value>' . $this->attributes['gidNumber'][0] . '</value></block>'),
+							'gecos' => array('<block><key>' . _('Gecos') . '</key><value>' . $this->attributes['gecos'][0] . '</value></block>'),
+							'primaryGroup' => array('<block><key>' . _('Primary group') . '</key><value>' . $_SESSION[$_SESSION[$this->base]->cache]->getgrnam($this->attributes['gidNumber'][0]) . '</value></block>'),
+							'additionalGroups' => array('<block><key>' . _('Additional groups') . '</key><value>' . '</value></block>'),
+							'homeDirectory' => array('<block><key>' . _('Home directory') . '</key><value>' . $this->attributes['homeDirectory'][0] . '</value></block>'),
+							'userPassword' => array('<block><key>' . _('Password') . '</key><value>' . $this->attributes['userPassword'][0] . '</value></block>'),
+							'loginShell' => array('<block><key>' . _('Login Shell') . '</key><value>' . $this->attributes['loginShell'][0] . '</value></block>'),
+							);
+	}
 
 }
 

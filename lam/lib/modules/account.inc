@@ -208,6 +208,10 @@ class account {
 	function check_profileOptions($scope, $options) {
 		return array();
 	}
+	
+	function get_pdfEntries($account_type = "User") {
+		return array('description' => array('<block><key>' . _('Description') . '</key><value>' . $this->attributes['description'][0] . '</value></block>'));
+	}
 
 }
 

@@ -313,6 +313,22 @@ class inetOrgPerson {
 	function check_profileOptions($scope, $options) {
 		return array();
 	}
+	
+	function get_pdfEntries($account_type = "User") {
+		return array(	'description' => array('<block><key>' . _('Description') . '</key><value>' . $this->attributes['description'][0] . '</value></block>'),
+							'host' => array('<block><key>' . _('Unix workstations') . '</key><value>' . $this->attributes['host'][0] . '</value></block>'),
+							'title' => array('<block><key>' . _('Title') . '</key><value>' . $this->attributes['title'][0] . '</value></block>'),
+							'givenName' => array('<block><key>' . _('First name') . '</key><value>' . $this->attributes['givenName'][0] . '</value></block>'),
+							'sn' => array('<block><key>' . -_('Last name') . '</key><value>' . $this->attributes['sn'][0] . '</value></block>'),
+							'employeeType' => array('<block><key>' . _('Employee type') . '</key><value>' . $this->attributes['employeeType'][0]),
+							'street' => array('<block><key>' . _('Street') . '</key><value>' . $this->attributes['street'] . '</value></block>'),
+							'postalCode' => array('<block><key>' . _('Postal code') . '</key><value>' . $this->attributes['postalCode'][0] . '</value></block>'),
+							'postalAddress' => array('<block><key>' . _('Postal address') . '</key><value>' . $this->attributes['postalAddress'][0] . '</value></block>'),
+							'telephoneNumber' => array('<block><key>' . _('Telephone number') . '</key><value>' . $this->attributes['telephoneNumber'][0] . '</value></block>'),
+							'mobileTelephoneNumber' => array('<block><key>' . _('Mobile number') . '</key><value>' . $this->attributes['mobileTelephoneNumber'][0] . '</value></block>'),
+							'facimileTelefonNumber' => array('<block><key>' . _('Fax number') . '</key><value>' . $this->attributes['facsimileTelephoneNumber'][0] . '</value></block>'),
+							'mail' => array('<block><key>' . _('eMail address') . '</key><value>' . $this->attributes['mail'][0] . '</value></block>'));
+	}
 
 }
 
