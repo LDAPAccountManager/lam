@@ -1118,13 +1118,14 @@ function createuser($values) { // Will create the LDAP-Account
 	// Add User to Additional Groups
 	if ($values->general_groupadd[0])
 		foreach ($values->general_groupadd as $group2) {
-			$result = ldap_search($_SESSION['ldap']->server(), 'cn='.$group2.','.$_SESSION['config']->get_GroupSuffix(), "objectclass=posixGroup", array('memberUid'));
+			$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(), "&((objectclass=posixGroup)(cn=$group2))", array('memberUid'));
 			$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 			$group = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
+			$dn = (ldap_get_dn($_SESSION['ldap']->server(), $entry));
 			if ($group['memberUid']) array_shift($group['memberUid']);
-			if (! in_array($values->general_username, $group['memberUid'])) {
+			if (! @in_array($values->general_username, $group['memberUid'])) {
 				$toadd['memberUid'] = $values->general_username;
-				$success = ldap_mod_add($_SESSION['ldap']->server(), 'cn='.$group2.','.$_SESSION['config']->get_GroupSuffix(), $toadd);
+				$success = ldap_mod_add($_SESSION['ldap']->server(), $dn, $toadd);
 				}
 			if (!$success) return 4;
 		}
