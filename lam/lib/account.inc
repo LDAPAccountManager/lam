@@ -165,17 +165,20 @@ function checkglobal($values, $type, $values_old=false) { // This functions chec
 			$return->general_homedir = str_replace('$group', $values->general_group, $values->general_homedir);
 			if ($values->general_username != '')
 				$return->general_homedir = str_replace('$user', $values->general_username, $values->general_homedir);
-			if ( !ereg('^[/][a-z]([a-z]|[0-9]|[.]|[-]|[_])*([/][a-z]([a-z]|[0-9]|[.]|[-]|[_])*)*$', $return->general_homedir ))
-				return _('Homedirectory contents invalid characters.');
+			if ($return->general_homedir != $values->general_homedir) $errors[] = array('INFO', _('Homedir'), _('Replaced $user or $group in homedir.'));
+			if ( !ereg('^[/]([a-z]|[A-Z])([a-z]|[A-Z]|[0-9]|[.]|[-]|[_])*([/]([a-z]|[A-Z])([a-z]|[A-Z]|[0-9]|[.]|[-]|[_])*)*$', $return->general_homedir ))
+				$errors[] = array('ERROR', _('Homedir'), _('Homedirectory contents invalid characters.'));
 			// Check if givenname is valid
-			if ( !ereg('^([a-z]|[A-Z])+$', $values->general_givenname)) return _('Givenname contents invalid characters');
+			if ( !ereg('^([a-z]|[A-Z])+$', $values->general_givenname)) $errors[] = array('ERROR', _('Givenname'), _('Givenname contents invalid characters'));
 			// Check if surname is valid
-			if ( !ereg('^([a-z]|[A-Z])+$', $values->general_surname)) return _('Surname contents invalid characters');
-			if ( ($values->general_gecos=='') || ($values->general_gecos==' '))
+			if ( !ereg('^([a-z]|[A-Z])+$', $values->general_surname)) $errors[] = array('ERROR', _('Surname'), _('Surname contents invalid characters'));
+			if ( ($values->general_gecos=='') || ($values->general_gecos==' ')) {
 				$return->general_gecos = $values->general_givenname . " " . $values->general_surname ;
+				$errors[] = array('INFO', _('Gecos'), _('Inserted sur- and givenname in gecos-field.'));
+				}
 			// Check if Username contents only valid characters
 			if ( !ereg('^([a-z]|[0-9]|[.]|[-]|[_])*$', $values->general_username))
-				return _('Username contents invalid characters. Valid characters are: a-z, 0-9 and .-_ !');
+				$errors[] = array('ERROR', _('Username'), _('Username contents invalid characters. Valid characters are: a-z, 0-9 and .-_ !'));
 			// Check if user already exists
 			$return->general_username = $values->general_username;
 			// Create automatic useraccount with number if original user allready exists
@@ -198,12 +201,16 @@ function checkglobal($values, $type, $values_old=false) { // This functions chec
 					$return->general_username = $firstchars . (intval($lastchars)+1);
 				 	}
 				}
+			if ($values->general_username != $return->general_username) $errors[] = array('WARN', _('Username'), _('Username allready in use. Selected next free username.'));
 			break;
 		case 'group' :
 			// Check if Groupname contents only valid characters
 			if ( !ereg('^([a-z]|[0-9]|[.]|[-]|[_])*$', $values->general_username))
-				return _('Groupname contents invalid characters. Valid characters are: a-z, 0-9 and .-_ !');
-			if ($values->general_gecos=='') $return->general_gecos = $values->general_username ;
+				$errors[] = array('ERROR', _('Groupname'), _('Groupname contents invalid characters. Valid characters are: a-z, 0-9 and .-_ !'));
+			if ($values->general_gecos=='') {
+				$return->general_gecos = $values->general_username ;
+				$errors[] = array('INFO', _('Gecos'), _('Inserted groupname in gecos-field.'));
+				}
 			// Check if user already exists
 			$return->general_username = $values->general_username;
 			// Create automatic groupaccount with number if original user allready exists
@@ -226,19 +233,25 @@ function checkglobal($values, $type, $values_old=false) { // This functions chec
 					$return->general_username = $firstchars . (intval($lastchars)+1);
 				 	}
 				}
+			if ($values->general_username != $return->general_username) $errors[] = array('WARN', _('Groupname'), _('Groupname allready in use. Selected next free groupname.'));
 			break;
 		case 'host' :
-			if ( substr($values->general_username, strlen($values->general_username)-1, strlen($values->general_username)) != '$' )
+			if ( substr($values->general_username, strlen($values->general_username)-1, strlen($values->general_username)) != '$' ) {
 				$return->general_username = $values->general_username . '$';
+				$errors[] = array('WARN', _('Hostname'), _('Added $ to hostname.'));
+				}
 			// Check if Hostname contents only valid characters
 			if ( !ereg('^([a-z]|[0-9]|[.]|[-]|[$])*$', $values->general_username))
-				return _('Hostname contents invalid characters. Valid characters are: a-z, 0-9 and .-_ !');
+				$errors[] = array('ERROR', _('Hostname'), _('Hostname contents invalid characters. Valid characters are: a-z, 0-9 and .-_ !'));
 			// Check if Hostname already exists
 			$return->general_homedir = '/dev/null';
 			$return->general_shell = '/bin/false';
 			// Check if user already exists
 			$return->general_username = $values->general_username;
-			if ($values->general_gecos=='') $return->general_gecos = $values->general_username;
+			if ($values->general_gecos=='') {
+				$return->general_gecos = $values->general_username;
+				$errors[] = array('INFO', _('Gecos'), _('Inserted hostname in gecos-field.'));
+				}
 			// Create automatic groupaccount with number if original user allready exists
 			while ($temp = ldapexists($return, $type, $values_old)) {
 				// get last character of username
@@ -259,58 +272,78 @@ function checkglobal($values, $type, $values_old=false) { // This functions chec
 					$return->general_username = $firstchars . (intval($lastchars)+1). '$';
 				 	}
 				}
+			if ($values->general_username != $return->general_username) $errors[] = array('WARN', _('Hostname'), _('Hostname allready in use. Selected next free hostname.'));
 			break;
 		}
 	// Check if UID is valid. If none value was entered, the next useable value will be inserted
 	$return->general_uidNumber = checkid($values, $type, $values_old);
-	if (is_string($return->general_uidNumber)) return $return->general_uidNumber;
+	if (is_string($return->general_uidNumber)) // true if checkid has returned an error
+		$errors[] = array('ERROR', _('ID-Number'), $return->general_uidNumber);
 	// Check if Name-length is OK. minLength=3, maxLength=20
-	if ( !ereg('.{3,20}', $values->general_username)) return _('Name must content between 3 and 20 characters.');
+	if ( !ereg('.{3,20}', $values->general_username)) $errors[] = array('ERROR', _('Name'), _('Name must content between 3 and 20 characters.'));
 	// Check if Name starts with letter
 	if ( !ereg('^[a-z].*$', $values->general_username))
-		return _('Name contents invalid characters. First character must be a letter');
-	return $return;
+		$errors[] = array('ERROR', _('Name'), _('Name contents invalid characters. First character must be a letter'));
+	// Return values and errors
+	if (!$errors) return array($return, '');
+	 else return array($return, $errors);
 	}
 
 
 function checkunix($values, $type) { // This function checks all unix account paramters
+	$key = $_COOKIE['Key'];
+	$iv = $_COOKIE['IV'];
+	$values->unix_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, base64_decode($key),
+		base64_decode($values->unix_password), MRYPT_MODE_ECB,
+		base64_decode($iv));
+	$values->unix_password = str_replace(chr(00), '', $values->unix_password);
 	if ($type=='user' && !ereg('^([a-z]|[A-Z]|[0-9]|[\|]|[\#]|[\*]|[\,]|[\.]|[\;]|[\:]|[\_]|[\-]|[\+]|[\!]|[\%]|[\&]|[\/]|[\?]|[\{]|[\[]|[\(]|[\)]|[\]]|[\}])*$', $values->unix_password))
-		return _('Password contents invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !');
-	if ( !ereg('^([0-9]*)$', $values->unix_pwdminage))  return _('Password Minage must be are natural number.');
-	if ( $values->unix_pwdminage > $values->unix_pwdmaxage ) return _('Password Maxage must bigger as Password Minage.');
-	if ( !ereg('^([1-9]+)([0-9]*)$', $values->unix_pwdmaxage)) return _('Password Maxage must be are natural number.');
-	if ($values->unix_pwdminage=='') return _('No value for Password Minage.');
+		$errors[] = array('ERROR', _('Password'), _('Password contents invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
+	if ( !ereg('^([0-9]*)$', $values->unix_pwdminage))  $errors[] = array('ERROR', _('Password Minage'), _('Password Minage must be are natural number.'));
+	if ( $values->unix_pwdminage > $values->unix_pwdmaxage ) $errors[] = array('ERROR', _('Password Maxage'), _('Password Maxage must bigger as Password Minage.'));
+	if ( !ereg('^([1-9]+)([0-9]*)$', $values->unix_pwdmaxage)) $errors[] = array('ERROR', _('Password Maxage'), _('Password Maxage must be are natural number.'));
+	if ($values->unix_pwdminage=='') $errors[] = array('ERROR', _('Password Minage'),  _('No value for Password Minage.'));
 	if ( !ereg('^(([-][1])|([0-9]*))$', $values->unix_pwdallowlogin))
-	return _('Password Expire must be are natural number or -1.');
-	if ($values->unix_pwdmaxage=='') return _('No value for Password Maxage.');
-	if ( !ereg('^([1-9]+)([0-9]*)$', $values->unix_pwdwarn)) return _('Password Warn must be are natural number.');
-	if ($values->unix_pwdallowlogin=='') return _('No value for Password Expire.');
-	if ($values->unix_pwdwarn=='') return _('No value for Password Warn.');
-	return 0;
+		$errors[] = array('ERROR', _('Password Expire'), _('Password Expire must be are natural number or -1.'));
+	if ($values->unix_pwdmaxage=='') $errors[] = array('ERROR', _('Password Maxage'), _('No value for Password Maxage.'));
+	if ( !ereg('^([1-9]+)([0-9]*)$', $values->unix_pwdwarn)) $errors[] = array('ERROR', _('Password Warn'), _('Password Warn must be are natural number.'));
+	if ($values->unix_pwdallowlogin=='') $errors[] = array('ERROR', _('Password Expire'), _('No value for Password Expire.'));
+	if ($values->unix_pwdwarn=='') $errors[] = array('ERROR', _('Password Warn'), _('No value for Password Warn.'));
+	return $errors;
 	}
 
 function checksamba($values, $type) { // This function checks all samba account paramters
+	$values->smb_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, base64_decode($_COOKIE['Key']),
+		base64_decode($values->smb_password), MRYPT_MODE_ECB,
+		base64_decode($_COOKIE['IV']));
+	$values->smb_password = str_replace(chr(00), '', $values->smb_password);
 	$return = new account();
 	if ($values->smb_useunixpwd) $return->smb_password = $values->unix_password;
 	switch ($type) {
 		case 'user' :
 			$return->smb_scriptPath = str_replace('$user', $values->general_username, $values->smb_scriptPath);
-			$return->smb_scriptPath = str_replace('$group', $values->general_group, $values->smb_scriptPath);
+			if ($values->smb_scriptPath != $return->smb_scriptPath) $errors[] = array('INFO', _('Scriptpath'), _('Inserted username in scriptpath.'));
+			$return->smb_scriptPath = str_replace('$group', $values->general_group, $return->smb_scriptPath);
+			if ($values->smb_scriptPath != $return->smb_scriptPath) $errors[] = array('INFO', _('Scriptpath'), _('Inserted groupname in scriptpath.'));
 			$return->smb_profilePath = str_replace('$user', $values->general_username, $values->smb_profilePath);
+			if ($values->smb_profilePath != $return->smb_profilePath) $errors[] = array('INFO', _('Profilepath'), _('Inserted username in profilepath.'));
 			$return->smb_profilePath = str_replace('$group', $return->general_group, $return->smb_profilePath);
+			if ($values->smb_profilePath != $return->smb_profilePath) $errors[] = array('INFO', _('Profilepath'), _('Inserted groupname in profilepath.'));
 			$return->smb_smbHome = str_replace('$user', $values->general_username, $values->smb_smbHome);
+			if ($values->smb_smbHome != $return->smb_smbHome) $errors[] = array('INFO', _('smbHome'), _('Inserted username in smbhome.'));
 			$return->smb_smbHome = str_replace('$group', $return->general_group, $return->smb_smbHome);
+			if ($values->smb_smbHome != $return->smb_smbHome) $errors[] = array('INFO', _('smbHome'), _('Inserted groupname in smbhome.'));
 			if ( !ereg('^([a-z]|[A-Z]|[0-9]|[\|]|[\#]|[\*]|[\,]|[\.]|[\;]|[\:]|[\_]|[\-]|[\+]|[\!]|[\%]|[\&]|[\/]|[\?]|[\{]|[\[]|[\(]|[\)]|[\]]|[\}])*$',
-				$values->smb_password)) return _('Password contents invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !');
+				$values->smb_password)) $errors[] = array('ERROR', _('Password'), _('Password contents invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
 			if ( (!$return->smb_scriptPath=='') && (!ereg('^([/])*[a-z]([a-z]|[0-9]|[.]|[-]|[_])*([/][a-z]([a-z]|[0-9]|[.]|[-]|[_])*)*$', $return->smb_scriptPath)))
-				return _('Scriptpath is invalid');
+				$errors[] = array('ERROR', _('Scriptpath'), _('Scriptpath is invalid'));
 			if ( (!$return->smb_profilePath=='') && (!ereg('^[/][a-z]([a-z]|[0-9]|[.]|[-]|[_])*([/][a-z]([a-z]|[0-9]|[.]|[-]|[_])*)*$', $return->smb_profilePath))
 				&& (!ereg('^[\][\]([a-z]|[A-Z]|[0-9]|[.]|[-])+([\]([a-z]|[A-Z]|[0-9]|[.]|[-])+)+$', $return->smb_profilePath)))
-					return _('ProfilePath is invalid.');
+					$errors[] = array('ERROR', _('Profilepath'), _('ProfilePath is invalid.'));
 			if ( (!$return->smb_smbHome=='') && !ereg('^[\][\]([a-z]|[A-Z]|[0-9]|[.]|[-])+([\]([a-z]|[A-Z]|[0-9]|[.]|[-])+)+$', $return->smb_smbhome))
-				return _('smbHome is invalid.');
+				$errors[] = array('ERROR', _('smbHome'), _('smbHome is invalid.'));
 			if ((!$values->smb_smbuserworkstations=='') && !ereg('^([a-z]|[A-Z]|[0-9]|[.]|[-])+(([,])+([a-z]|[A-Z]|[0-9]|[.]|[-])+)*$', $values->smb_smbuserworkstations))
-				return _('User Workstations is invalid.');
+				$errors[] = array('ERROR', _('User Workstations'), _('User Workstations is invalid.'));
 			$return->smb_flagsW = 0;
 			break;
 		case 'host' :
@@ -319,11 +352,13 @@ function checksamba($values, $type) { // This function checks all samba account 
 			break;
 		}
 	if ((!$values->smb_domain=='') && !ereg('^([a-z]|[A-Z]|[0-9]|[-])+$', $values->smb_domain))
-		return _('Domain Name contents invalid characters. Valid characters are: a-z, A-Z, 0-9 and -.');
+		$errors[] = array('ERROR', _('Domain Name'), _('Domain Name contents invalid characters. Valid characters are: a-z, A-Z, 0-9 and -.'));
 	if ($values->smb_useunixpwd) $return->smb_useunixpwd = 1; else $return->smb_useunixpwd = 0;
 	if ($values->smb_pwdcanchange) $return->smb_pwdcanchange = 1; else $return->smb_pwdcanchange = 0;
 	if ($values->smb_pwdmustchange) $return->smb_pwdmustchange = 1; else $return->smb_pwdmustchange = 0;
-	return $return;
+	// Return values and errors
+	if (!$errors) return array($return, '');
+	 else return array($return, $errors);
 	}
 
 function checkquota($values) { // This function checks all quota paramters
@@ -332,30 +367,34 @@ function checkquota($values) { // This function checks all quota paramters
 	while ($values->quota[$i][0]) {
 		if (!$values->quota[$i][2]) $return->quota[$i][2] = 0;
 			else if (!ereg('^([0-9])*$', $values->quota[$i][2]))
-				return _('Block soft quota contains invalid characters. Only natural numbers are allowed');
+				$errors[] = array('ERROR', _('Block soft quota'), _('Block soft quota contains invalid characters. Only natural numbers are allowed'));
 		if (!$values->quota[$i][3]) $return->quota[$i][3] = 0;
 			else if (!ereg('^([0-9])*$', $values->quota[$i][3]))
-				return _('Block hard quota contains invalid characters. Only natural numbers are allowed');
+				$errors[] = array('ERROR', _('Block hard quota'), _('Block hard quota contains invalid characters. Only natural numbers are allowed'));
 		if (!$values->quota[$i][6]) $return->quota[$i][6] = 0;
 			else if (!ereg('^([0-9])*$', $values->quota[$i][6]))
-				return _('Inode soft quota contains invalid characters. Only natural numbers are allowed');
+				$errors[] = array('ERROR', _('Inode soft quota'), _('Inode soft quota contains invalid characters. Only natural numbers are allowed'));
 		if (!$values->quota[$i][7]) $return->quota[$i][7] = 0;
 			else if (!ereg('^([0-9])*$', $values->quota[$i][7]))
-				return _('Inode hard quota contains invalid characters. Only natural numbers are allowed');
+				$errors[] = array('ERROR', _('Inode hard quota'), _('Inode hard quota contains invalid characters. Only natural numbers are allowed'));
 		$return->quota[$i][2] = $values->quota[$i][2];
 		$return->quota[$i][3] = $values->quota[$i][3];
 		$return->quota[$i][6] = $values->quota[$i][6];
 		$return->quota[$i][7] = $values->quota[$i][7];
 		$i++;
 		}
-	return $return;
+	// Return values and errors
+	if (!$errors) return array($return, '');
+	 else return array($return, $errors);
 	}
 
 
 function checkpersonal($values) {
 	$return = new account();
 	$return = $values;
-	return $return;
+	// Return values and errors
+	if (!$errors) return array($return, '');
+	 else return array($return, $errors);
 	}
 
 function genpasswd() { // This function will return a password with max. 8 characters
@@ -760,6 +799,15 @@ function createuser($values) { // Will create the LDAP-Account
 	$date = mktime(10,0,0, $values->unix_pwdexpire_mon, $values->unix_pwdexpire_day, $values->unix_pwdexpire_yea) / 86400 ;
 	settype($date, 'integer');
 	$values->general_dn = 'uid=' . $values->general_username . ',' . $_SESSION['config']->get_UserSuffix();
+	// decrypt password
+	$values->unix_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, base64_decode($_COOKIE['Key']),
+		base64_decode($values->unix_password), MRYPT_MODE_ECB,
+		base64_decode($_COOKIE['IV']));
+	$values->unix_password = str_replace(chr(00), '', $values->unix_password);
+	$values->smb_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, base64_decode($_COOKIE['Key']),
+		base64_decode($values->smb_password), MRYPT_MODE_ECB,
+		base64_decode($_COOKIE['IV']));
+	$values->smb_password = str_replace(chr(00), '', $values->smb_password);
 
 	// All Values need for an user-account
 	// General Objectclasses
@@ -846,6 +894,16 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 	// 3 == Account has been modified
 	// 5 == Error while modifying Account
 	// Value stored in shadowExpire, days since 1.1.1970
+	// decrypt password
+	$values->unix_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, base64_decode($_COOKIE['Key']),
+		base64_decode($values->unix_password), MRYPT_MODE_ECB,
+		base64_decode($_COOKIE['IV']));
+	$values->unix_password = str_replace(chr(00), '', $values->unix_password);
+	$values->smb_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, base64_decode($_COOKIE['Key']),
+		base64_decode($values->smb_password), MRYPT_MODE_ECB,
+		base64_decode($_COOKIE['IV']));
+	$values->smb_password = str_replace(chr(00), '', $values->smb_password);
+
 	$date = mktime(10,0,0, $values->unix_pwdexpire_mon, $values->unix_pwdexpire_day, $values->unix_pwdexpire_yea) / 86400 ;
 	settype($date, 'integer');
 	$values->general_dn = 'uid=' . $values->general_username . ',' . $_SESSION['config']->get_UserSuffix();
@@ -1026,6 +1084,16 @@ function createhost($values) { // Will create the LDAP-Account
 	settype($date, 'integer');
 	$values->general_dn = 'uid=' . $values->general_username . ',' . $_SESSION['config']->get_HostSuffix();
 
+	// decrypt password
+	$values->unix_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, base64_decode($_COOKIE['Key']),
+		base64_decode($values->unix_password), MRYPT_MODE_ECB,
+		base64_decode($_COOKIE['IV']));
+	$values->unix_password = str_replace(chr(00), '', $values->unix_password);
+	$values->smb_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, base64_decode($_COOKIE['Key']),
+		base64_decode($values->smb_password), MRYPT_MODE_ECB,
+		base64_decode($_COOKIE['IV']));
+	$values->smb_password = str_replace(chr(00), '', $values->smb_password);
+
 	// All Values need for an host-account
 	// General Objectclasses
 	$attr['objectClass'][0] = 'posixAccount';
@@ -1092,6 +1160,17 @@ function modifyhost($values,$values_old) { // Will modify the LDAP-Account
 	// Value stored in shadowExpire, days since 1.1.1970
 	$date = mktime(10,0,0, $values->unix_pwdexpire_mon, $values->unix_pwdexpire_day, $values->unix_pwdexpire_yea) / 86400 ;
 	settype($date, 'integer');
+
+	// decrypt password
+	$values->unix_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, base64_decode($_COOKIE['Key']),
+		base64_decode($values->unix_password), MRYPT_MODE_ECB,
+		base64_decode($_COOKIE['IV']));
+	$values->unix_password = str_replace(chr(00), '', $values->unix_password);
+	$values->smb_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, base64_decode($_COOKIE['Key']),
+		base64_decode($values->smb_password), MRYPT_MODE_ECB,
+		base64_decode($_COOKIE['IV']));
+	$values->smb_password = str_replace(chr(00), '', $values->smb_password);
+
 	$values->general_dn = 'uid=' . $values->general_username . ',' . $_SESSION['config']->get_HostSuffix();
 	if ($values->general_username != $values_old->general_username) {
 		$attr['cn'] = $values->general_username; // posixAccount_req shadowAccount_req sambaAccount_may
@@ -1216,6 +1295,17 @@ function creategroup($values) { // Will create the LDAP-Group
 	// 4 == Error while creating Group
 	// 5 == Error while modifying Group
 	$values->general_dn = 'cn=' . $values->general_username . ',' . $_SESSION['config']->get_GroupSuffix();
+
+	// decrypt password
+	$values->unix_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, base64_decode($_COOKIE['Key']),
+		base64_decode($values->unix_password), MRYPT_MODE_ECB,
+		base64_decode($_COOKIE['IV']));
+	$values->unix_password = str_replace(chr(00), '', $values->unix_password);
+	$values->smb_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, base64_decode($_COOKIE['Key']),
+		base64_decode($values->smb_password), MRYPT_MODE_ECB,
+		base64_decode($_COOKIE['IV']));
+	$values->smb_password = str_replace(chr(00), '', $values->smb_password);
+
 	$attr['objectClass'] = 'posixGroup';
 	$attr['cn'] = $values->general_username;
 	$attr['gidNumber'] = $values->general_uidNumber;
@@ -1232,6 +1322,17 @@ function modifygroup($values,$values_old) { // Will modify the LDAP-Group
 	// 3 == Group has been modified
 	// 5 == Error while modifying Group
 	$values->general_dn = 'cn=' . $values->general_username . ',' . $_SESSION['config']->get_GroupSuffix();
+
+	// decrypt password
+	$values->unix_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, base64_decode($_COOKIE['Key']),
+		base64_decode($values->unix_password), MRYPT_MODE_ECB,
+		base64_decode($_COOKIE['IV']));
+	$values->unix_password = str_replace(chr(00), '', $values->unix_password);
+	$values->smb_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, base64_decode($_COOKIE['Key']),
+		base64_decode($values->smb_password), MRYPT_MODE_ECB,
+		base64_decode($_COOKIE['IV']));
+	$values->smb_password = str_replace(chr(00), '', $values->smb_password);
+
 	if ($values->general_username != $values_old->general_username) $attr['cn'] = $values->general_username;
 	if ($values->general_uidNumber != $values_old->general_uidNumber) $attr['gidNumber'] = $values->general_uidNumber;
 	if ($values->general_gecos != $values_old->general_gecos) $attr['description'] = $values->general_gecos;

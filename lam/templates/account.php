@@ -30,7 +30,6 @@ include_once('../lib/profiles.inc'); // functions to load and save profiles
 include_once('../lib/status.inc'); // Return error-message
 include_once('../lib/pdf.inc'); // Return a pdf-file
 
-$error = "0";
 initvars($_GET['type'], $_GET['DN']); // Initialize all needed vars
 
 switch ($_POST['select']) { // Select which part of page should be loaded and check values
@@ -62,15 +61,14 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 			if ($_POST['f_general_gecos']) $_SESSION['account']->general_gecos = $_POST['f_general_gecos'];
 				else $_SESSION['account']->general_gecos = "";
 			// Check if values are OK and set automatic values.  if not error-variable will be set
-			if ($_SESSION['account_old']) $values = checkglobal($_SESSION['account'], $_SESSION['type2'], $_SESSION['account_old']); // account.inc
-				else $values = checkglobal($_SESSION['account'], $_SESSION['type2']); // account.inc
+			if ($_SESSION['account_old']) list($values, $errors) = checkglobal($_SESSION['account'], $_SESSION['type2'], $_SESSION['account_old']); // account.inc
+				else list($values, $errors) = checkglobal($_SESSION['account'], $_SESSION['type2']); // account.inc
 			if (is_object($values)) {
 				while (list($key, $val) = each($values)) // Set only defined values
 					if ($val) $_SESSION['account']->$key = $val;
 				}
-				else $error = $values;
 			// Check which part Site should be displayed next
-			if ($_POST['next'] && ($error=="0"))
+			if ($_POST['next'] && ($errors==''))
 				switch ($_SESSION['type2']) {
 					case 'user': $select_local = 'unix'; break;
 					case 'group': $select_local = 'quota'; break;
@@ -80,8 +78,13 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 		break;
 	case 'unix':
 		// Write all general values into $_SESSION['account']
-		if ($_POST['f_unix_password']) $_SESSION['account']->unix_password = $_POST['f_unix_password'];
-			else $_SESSION['account']->unix_password = '';
+		if ($_POST['f_unix_password']) {
+			// Encraypt password
+			$iv = base64_decode($_COOKIE["IV"]);
+			$key = base64_decode($_COOKIE["Key"]);
+			$_SESSION['account']->unix_password = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $_POST['f_unix_password'], MCRYPT_MODE_ECB, $iv));
+			}
+		 else $_SESSION['account']->unix_password = '';
 		if ($_POST['f_unix_password_no']) $_SESSION['account']->unix_password_no = true;
 			else $_SESSION['account']->unix_password_no = false;
 		if ($_POST['f_unix_pwdwarn']) $_SESSION['account']->unix_pwdwarn = $_POST['f_unix_pwdwarn'];
@@ -104,7 +107,7 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 			$select_local = 'unix';
 			}
 			// Check if values are OK and set automatic values. if not error-variable will be set
-			else $error = checkunix($_SESSION['account'], $_SESSION['type2']); // account.inc
+			else $errors = checkunix($_SESSION['account'], $_SESSION['type2']); // account.inc
 		// Check which part Site should be displayd
 		// Reset password if reset button was pressed. Button only vissible if account should be modified
 		if ($_POST['respass']) {
@@ -113,13 +116,16 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 			}
 		// Check which part Site should be displayed next
 		if ($_POST['back']) $select_local = 'general';
-		else if (($_POST['next']) && ($error=="0")) $select_local = 'samba';
+		else if (($_POST['next']) && ($errors=='')) $select_local = 'samba';
 			else $select_local = 'unix';
 		break;
 	case 'samba':
 		// Write all general values into $_SESSION['account']
-		if ($_POST['f_smb_password']) $_SESSION['account']->smb_password = $_POST['f_smb_password'];
-			else $_SESSION['account']->smb_password = "";
+		if ($_POST['f_smb_password'])
+			// Encrypt password
+			$_SESSION['account']->smb_password = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, base64_decode($_COOKIE['Key']), $_POST['f_smb_password'],
+			MCRYPT_MODE_ECB, base64_decode($_COOKIE['IV'])));
+		 else $_SESSION['account']->smb_password = "";
 		if ($_POST['f_smb_password_no']) $_SESSION['account']->smb_password_no = true;
 			else $_SESSION['account']->smb_password_no = false;
 		if ($_POST['f_smb_useunixpwd']) $_SESSION['account']->smb_useunixpwd = $_POST['f_smb_useunixpwd'];
@@ -146,16 +152,15 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 		if ($_POST['f_smb_flagsX']) $_SESSION['account']->smb_flagsX = $_POST['f_smb_flagsX'];
 			else $_SESSION['account']->smb_flagsX = false;
 		// Check if values are OK and set automatic values. if not error-variable will be set
-		$values = checksamba($_SESSION['account'], $_SESSION['type2']); // account.inc
+		list($values, $errors) = checksamba($_SESSION['account'], $_SESSION['type2']); // account.inc
 		if (is_object($values)) {
 			while (list($key, $val) = each($values)) // Set only defined values
 				if ($val) $_SESSION['account']->$key = $val;
 			}
-			else $error = $values;
 		// Check which part Site should be displayed next
 		if ($_POST['back']) $select_local = 'unix';
 		else if ($_POST['next'])
-			if ($error=="0")
+			if($errors=='')
 				switch ($_SESSION['type2']) {
 					case 'user': $select_local = 'quota'; break;
 					case 'host': $select_local = 'final'; break;
@@ -173,12 +178,11 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 			$i++;
 			}
 		// Check if values are OK and set automatic values. if not error-variable will be set
-		$values = checkquota($_SESSION['account'], $_SESSION['type2']); // account.inc
+		list($values, $errors) = checkquota($_SESSION['account'], $_SESSION['type2']); // account.inc
 		if (is_object($values)) {
 			while (list($key, $val) = each($values)) // Set only defined values
 				if ($val) $_SESSION['account']->$key = $val;
 			}
-			else $error = $values;
 		// Check which part Site should be displayed next
 		if ($_POST['back'])
 			switch ($_SESSION['type2']) {
@@ -186,7 +190,7 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 				case 'group': $select_local = 'general'; break;
 				}
 		else if ($_POST['next'])
-			if ($error=="0")
+			if ($errors=='')
 				switch ($_SESSION['type2']) {
 					case 'user': $select_local = 'personal'; break;
 					case 'group': $select_local = 'final'; break;
@@ -214,16 +218,15 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 		if ($_POST['f_personal_employeeType']) $_SESSION['account']->personal_employeeType = $_POST['f_personal_employeeType'];
 			else $_SESSION['account']->personal_employeeType = "";
 		// Check if values are OK and set automatic values. if not error-variable will be set
-		$values = checkpersonal($_SESSION['account'], $_SESSION['type2']); // account.inc
+		list($values, $errors) = checkpersonal($_SESSION['account'], $_SESSION['type2']); // account.inc
 		if (is_object($values)) {
 			while (list($key, $val) = each($values)) // Set only defined values
 				if ($val) $_SESSION['account']->$key = $val;
 			}
-			else $error = $values;
 		// Check which part Site should be displayed next
 		if ($_POST['back']) $select_local = 'quota';
 		else if ($_POST['next'])
-			if  ($error=="0") $select_local = 'final';
+			if  ($errors=='') $select_local = 'final';
 				else $select_local = 'personal';
 		break;
 	case 'final':
@@ -297,7 +300,7 @@ if ($select_local != 'pdf') {
 		<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">\n
 		<meta http-equiv=\"pragma\" content=\"no-cache\">\n
 		<meta http-equiv=\"cache-control\" content=\"no-cache\">\n
-		<meta http-equiv=\"Content-Type\" content=\"text/html; charset=ISO-8859-1\">";
+		<meta http-equiv=\"Content-Type\" content=\"text/html; charset=ISO-8859-15\">";
 	}
 
 switch ($select_local) {
@@ -362,8 +365,9 @@ switch ($select_local) {
 if ($select_local != 'pdf') {
 	echo "</head><body>\n";
 	echo "<form action=\"account.php\" method=\"post\">\n";
-	if ($error != "0") StatusMessage("ERROR", _("Invalid Value!"), $error);
 	echo "<table class=\"account\" width=\"100%\">\n";
+	if (is_array($errors))
+		for ($i=0; $i<sizeof($errors); $i++) StatusMessage($errors[$i][0], $errors[$i][1], $errors[$i][2]);
 	}
 
 
@@ -550,6 +554,11 @@ switch ($select_local) { // Select which part of page will be loaded
 		break;
 	case 'unix':
 		// Unix Password Settings
+		// decrypt password
+		$password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, base64_decode($_COOKIE['Key']),
+			base64_decode($_SESSION['account']->unix_password), MRYPT_MODE_ECB,
+			base64_decode($_COOKIE['IV']));
+		$password = str_replace(chr(00), '', $password);
 		echo '<tr><td><input name="select" type="hidden" value="unix">';
 		echo _('Unix Properties');
 		echo '</td></tr>'."\n".'';
@@ -558,7 +567,7 @@ switch ($select_local) { // Select which part of page will be loaded
 				echo '<tr><td>';
 				echo _('Password');
 				echo '</td>'."\n".'<td>
-					<input name="f_unix_password" type="text" size="20" maxlength="20" value="' . $_SESSION['account']->unix_password . '">
+					<input name="f_unix_password" type="text" size="20" maxlength="20" value="' . $password . '">
 					</td>'."\n".'<td>
 					<input name="genpass" type="submit" value="';
 				echo _('Generate Password'); echo '">
@@ -687,13 +696,18 @@ switch ($select_local) { // Select which part of page will be loaded
 	case 'samba':
 		// Samba Settings
 		echo '<tr><td><input name="select" type="hidden" value="samba">'; echo _('Samba Properties'); echo '</td></tr>'."\n";
+		// decrypt password
+		$password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, base64_decode($_COOKIE['Key']),
+			base64_decode($_SESSION['account']->smb_password), MRYPT_MODE_ECB,
+			base64_decode($_COOKIE['IV']));
+		$password = str_replace(chr(00), '', $password);
 		switch ( $_SESSION['type2'] ) {
 			case 'user':
 				// Set Account is samba-workstation to false
 				$_SESSION['account']->smb_flagsW = 0;
 				echo '<tr><td>';
 				echo _('Samba Password');
-				echo '</td>'."\n".'<td><input name="f_smb_password" type="text" size="20" maxlength="20" value="' . $_SESSION['account']->smb_password . '">
+				echo '</td>'."\n".'<td><input name="f_smb_password" type="text" size="20" maxlength="20" value="' . $password . '">
 					</td>'."\n".'<td><input name="f_smb_useunixpwd" type="checkbox"';
 				if ($_SESSION['account']->smb_useunixpwd) echo ' checked ';
 				echo '>';

@@ -56,7 +56,7 @@ if ($select!='pdf') {
 		<link rel="stylesheet" type="text/css" href="../style/layout.css">
 		<meta http-equiv="pragma" content="no-cache">
 		<meta http-equiv="cache-control" content="no-cache">
-		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">';
+		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-15">';
 	}
 
 switch ($select) {
@@ -115,7 +115,6 @@ switch ($select) {
 	case 'list':
 		if (!is_array($accounts)) $accounts = array();
 	 	$handle = fopen($_FILES['userfile']['tmp_name'], 'r');
-		$error=false;
 		$groups = array();
 		echo '<tr><td>';
 		echo _('Confirm List');
@@ -137,38 +136,42 @@ switch ($select) {
 			if ($line_array[12]) $_SESSION['accounts'][$row]->personal_employeeType = $line_array[12];
 			$_SESSION['accounts'][$row]->unix_password=genpasswd();
 			$_SESSION['accounts'][$row]->smb_password=genpasswd();
-			$values = checkglobal($_SESSION['accounts'][$row], 'user'); // account.inc
+			list($values, $errors) = checkglobal($_SESSION['accounts'][$row], 'user'); // account.inc
 			if (is_object($values)) {
 				while (list($key, $val) = each($values)) // Set only defined values
 					if ($val) $_SESSION['accounts'][$row]->$key = $val;
 				$_SESSION['accounts'][$row]->general_uidNumber="";
 				}
-				else $error = $values;
-			if (!$error) {
-				$values = checkpersonal($_SESSION['accounts'][$row], 'user'); // account.inc
+			if ($errors=='') {
+				list($values, $errors) = checkpersonal($_SESSION['accounts'][$row], 'user'); // account.inc
 				if (is_object($values)) {
 					while (list($key, $val) = each($values)) // Set only defined values
 						if ($val) $_SESSION['accounts'][$row]->$key = $val;
 					}
-					else $error = $values;
 				}
-			if (!$error) {
-				$values = checksamba($_SESSION['accounts'][$row], 'user'); // account.inc
+			if ($errors=='') {
+				list($values, $errors) = checksamba($_SESSION['accounts'][$row], 'user'); // account.inc
 				if (is_object($values)) {
 					while (list($key, $val) = each($values)) // Set only defined values
 						if ($val) $_SESSION['accounts'][$row]->$key = $val;
 					}
-					else $error = $values;
-				$values = checkquota($_SESSION['accounts'][$row], 'user'); // account.inc
 				}
-			if (!$error) {
+			if ($errors=='') {
+				list($values, $errors) = checkquota($_SESSION['accounts'][$row], 'user'); // account.inc
 				if (is_object($values)) {
 					while (list($key, $val) = each($values)) // Set only defined values
 						if ($val) $_SESSION['accounts'][$row]->$key = $val;
 					}
-					else $error = $values;
 				}
-			if ($error) StatusMessage('ERROR', _('Invalid Value in row ').$row.'!', $error);
+			if ($errors=='') {
+				list($values, $errors) = checkpersonal($_SESSION['accounts'][$row], 'user'); // account.inc
+				if (is_object($values)) {
+					while (list($key, $val) = each($values)) // Set only defined values
+						if ($val) $_SESSION['accounts'][$row]->$key = $val;
+					}
+				}
+			if (is_array($errors))
+				for ($i=0; $i<sizeof($errors); $i++) StatusMessage($errors[$i][0], _('Invalid Value in row ').$row.'!', $errors[$i][2]);
 			if ((getgid($_SESSION['accounts'][$row]->general_group)==-1) && (!in_array($_SESSION['accounts'][$row]->general_group, $groups))) $groups[] = $_SESSION['accounts'][$row]->general_group;
 			}
 		for ($i=0; $i<sizeof($groups); $i++)
