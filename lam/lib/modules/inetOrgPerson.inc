@@ -48,7 +48,7 @@ class inetOrgPerson extends baseModule {
 	$this->messages['telephoneNumber'] = array('ERROR', _('Telephone number'), _('Please enter a valid telephone number!'));
 	$this->messages['mobileTelephone'] = array('ERROR', _('Mobile number'), _('Please enter a valid mobile number!'));
 	$this->messages['facsimileNumber'] = array('ERROR', _('Fax number'), _('Please enter a valid fax number!'));
-	$this->messages['email'] = $errors['mail'] = array('ERROR', _('eMail address'), _('Please enter a valid eMail address!'));
+	$this->messages['email'] = array('ERROR', _('eMail address'), _('Please enter a valid eMail address!'));
 	$this->messages['street'] = array('ERROR', _('Street'), _('Please enter a valid street name!'));
 	$this->messages['postalAddress'] = array('ERROR', _('Postal address'), _('Please enter a valid postal address!'));
 	$this->messages['postalCode'] = array('ERROR', _('Postal code'), _('Please enter a valid postal code!'));
@@ -276,16 +276,16 @@ class inetOrgPerson extends baseModule {
 		if (!$profile) {
 			if ( !eregi($this->regex_name, $this->attributes['givenName'][0])) $errors['givenName'][] = $this->messages['givenName'];
 			if ( !eregi($this->regex_name, $this->attributes['sn'][0])) $errors['sn'][] = $this->messages['surname'];
-			if ( !ereg($this->regex_telephoneNumber, $this->attributes['telephoneNumber'][0]))  $errors['telephoneNumber'][] = $this->messages['telephoneNumber'];
-			if ( !ereg($this->regex_telephoneNumber, $this->attributes['mobileTelephoneNumber'][0]))  $errors['mobileTelephoneNumber'][] = $this->messages['mobileTelephone'];
-			if ( !ereg($this->regex_telephoneNumber, $this->attributes['facsimileTelephoneNumber'][0]))  $errors['facsimileTelephoneNumber'][] = $this->messages['facsimileNumber'];
-			if ( !eregi($this->regex_email, $this->attributes['mail'][0])) $this->messages['email'];
-			if ( !eregi($this->regex_street, $this->attributes['street'][0]))  $errors['street'][] = $this->messages['street'];
-			if ( !eregi($this->regex_postalAddress, $this->attributes['postalAddress'][0]))  $errors['postalAdress'][] = $this->messages['postalAddress'];
-			if ( !eregi($this->regex_postalCode, $this->attributes['personal_postalCode'][0]))  $errors['personal_postalCode'][] = $this->messages['postalCode'];
+			if ( !ereg($this->regex_telephoneNumber, $this->attributes['telephoneNumber'][0])) $errors['telephoneNumber'][] = $this->messages['telephoneNumber'];
+			if ( !ereg($this->regex_telephoneNumber, $this->attributes['mobileTelephoneNumber'][0])) $errors['mobileTelephoneNumber'][] = $this->messages['mobileTelephone'];
+			if ( !ereg($this->regex_telephoneNumber, $this->attributes['facsimileTelephoneNumber'][0])) $errors['facsimileTelephoneNumber'][] = $this->messages['facsimileNumber'];
+			if ( !eregi($this->regex_email, $this->attributes['mail'][0])) $errors['mail'][] = $this->messages['email'];
+			if ( !eregi($this->regex_street, $this->attributes['street'][0])) $errors['street'][] = $this->messages['street'];
+			if ( !eregi($this->regex_postalAddress, $this->attributes['postalAddress'][0])) $errors['postalAdress'][] = $this->messages['postalAddress'];
+			if ( !eregi($this->regex_postalCode, $this->attributes['personal_postalCode'][0])) $errors['personal_postalCode'][] = $this->messages['postalCode'];
 			}
-		if ( !eregi($this->regex_title, $this->attributes['title'][0]))  $errors['title'][] = $this->messages['title'];
-		if ( !eregi($this->regex_employeeType, $this->attributes['employeeType'][0]))  $errors['employeeType'][] = $this->messages['employeeType'];
+		if ( !eregi($this->regex_title, $this->attributes['title'][0])) $errors['title'][] = $this->messages['title'];
+		if ( !eregi($this->regex_employeeType, $this->attributes['employeeType'][0])) $errors['employeeType'][] = $this->messages['employeeType'];
 		// Return error-messages
 		if (is_array($errors)) return $errors;
 		return 0;
