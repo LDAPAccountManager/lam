@@ -35,6 +35,9 @@ setlanguage();
 // get sorting column when register_globals is off
 $list = $_GET['list'];
 
+// copy HTTP-GET variables to HTTP-POST
+$_POST = $_POST + $_GET;
+
 // check if button was pressed and if we have to add/delete a group
 if ($_POST['new_group'] || $_POST['del_group']){
 	// add new group
@@ -88,6 +91,15 @@ for ($i = 0; $i < sizeof($temp_array); $i++) {
 	}
 }
 
+// generate search filter for sort links
+$searchfilter = "";
+for ($k = 0; $k < sizeof($desc_array); $k++) {
+	if ($_POST["filter" . strtolower($attr_array[$k])]) {
+		$searchfilter = $searchfilter . "&filter" . strtolower($attr_array[$k]) . "=".
+			$_POST["filter" . strtolower($attr_array[$k])];
+	}
+}
+
 // configure search filter
 // Groups have the attribute "posixGroup"
 $filter = "(&(objectClass=posixGroup)";
@@ -125,9 +137,11 @@ echo "<tr class=\"grouplist_head\"><th width=22 height=34></th><th></th>";
 // table header
 for ($k = 0; $k < sizeof($desc_array); $k++) {
 	if (strtolower($attr_array[$k]) == $list) {
-		echo "<th class=\"grouplist_sort\"><a href=\"listgroups.php?list=" . strtolower($attr_array[$k]) . "\">" . $desc_array[$k] . "</a></th>";
+		echo "<th class=\"grouplist_sort\"><a href=\"listgroups.php?".
+			"list=" . strtolower($attr_array[$k]) . $searchfilter . "\">" . $desc_array[$k] . "</a></th>";
 	}
-	else echo "<th><a href=\"listgroups.php?list=" . strtolower($attr_array[$k]) . "\">" . $desc_array[$k] . "</a></th>";
+	else echo "<th><a href=\"listgroups.php?".
+		"list=" . strtolower($attr_array[$k]) . $searchfilter . "\">" . $desc_array[$k] . "</a></th>";
 }
 echo "</tr>\n";
 
