@@ -25,22 +25,24 @@ $Id$
 // Config supplies access to the configuration data.
 
 class Config {
-	// boolean: use SSL-connection?
+	// string: can be "True" or "False"
+	//         use SSL-connection?
 	var $SSL;
 	// string: hostname
 	var $Host;
-	// int: port number
+	// string: port number
 	var $Port;
 	// array of strings: users with admin rights
 	var $Admins;
 	// string: password to edit preferences
 	var $Passwd;
 
+	// single line with the names of all admin users
+	var $Adminstring;
 	
 	// constructor, loads preferences from ../lam.conf
 	function Config() {
 		$this->reload();
-		$this->save();
 	}
 	
 	// reloads preferences from ../lam.conf
@@ -52,23 +54,24 @@ class Config {
 				$line = fgets($file, 1024);
 				if (($line == "\n")||($line[0] == "#")) continue;
 				if (substr($line, 0, 5) == "ssl: ") {
-					$this->SSL = substr($line, 5, strlen($line)-5);
+					$this->SSL = chop(substr($line, 5, strlen($line)-5));
 					continue;
 				}
 				if (substr($line, 0, 6) == "host: ") {
-					$this->Host = substr($line, 6, strlen($line)-6);
+					$this->Host = chop(substr($line, 6, strlen($line)-6));
 					continue;
 				}
 				if (substr($line, 0, 6) == "port: ") {
-					$this->Port = substr($line, 6, strlen($line)-6);
+					$this->Port = chop(substr($line, 6, strlen($line)-6));
 					continue;
 				}
 				if (substr($line, 0, 8) == "passwd: ") {
-					$this->Passwd = substr($line, 8, strlen($line)-8);
+					$this->Passwd = chop(substr($line, 8, strlen($line)-8));
 					continue;
 				}
 				if (substr($line, 0, 8) == "admins: ") {
-					$adminstr = substr($line, 8, strlen($line)-8);
+					$adminstr = chop(substr($line, 8, strlen($line)-8));
+					$this->Adminstring = $adminstr;
 					$this->Admins = explode(";", $adminstr);
 					continue;
 				}
@@ -94,27 +97,27 @@ class Config {
 			for ($i = 0; $i < sizeof($file_array); $i++) {
 				if (($file_array[$i] == "\n")||($file_array[$i][0] == "#")) continue;
 				if (substr($file_array[$i], 0, 5) == "ssl: ") {
-					$file_array[$i] = "ssl: " . $this->SSL;
+					$file_array[$i] = "ssl: " . $this->SSL . "\n";
 					$save_ssl = True;
 					continue;
 				}
 				if (substr($file_array[$i], 0, 6) == "host: ") {
-					$file_array[$i] = "host: " . $this->Host;
+					$file_array[$i] = "host: " . $this->Host . "\n";
 					$save_host = True;
 					continue;
 				}
 				if (substr($file_array[$i], 0, 6) == "port: ") {
-					$file_array[$i] = "port: " . $this->Port;
+					$file_array[$i] = "port: " . $this->Port . "\n";
 					$save_port = True;
 					continue;
 				}
 				if (substr($file_array[$i], 0, 8) == "passwd: ") {
-					$file_array[$i] = "passwd: " . $this->Passwd;
+					$file_array[$i] = "passwd: " . $this->Passwd . "\n";
 					$save_passwd = True;
 					continue;
 				}
 				if (substr($file_array[$i], 0, 8) == "admins: ") {
-					$file_array[$i] = "admins: " . implode(";", $this->Admins);
+					$file_array[$i] = "admins: " . implode(";", $this->Admins) . "\n";
 					$save_admins = True;
 					continue;
 				}
@@ -133,19 +136,6 @@ class Config {
 		}
 	}
 	
-	// used by configuration wizard to save new preferences
-	function input() {
-	if (is_numeric($Port) && $Host!="" && $Admins!="") {
-		$this->SSL = $SSL;
-		$this->Host = $Host;
-		$this->Port = $Port;
-		$this->Admins = $Admins;
-		$this->Passwd = $Passwd;
-		$this->save();	
-	}
-	else echo _("Portnumber must be a number!");
-	}
-	
 	// prints current preferences
 	function printconf() {
 		echo _("SSL: " ) . $this->SSL . "</br>";
@@ -160,7 +150,8 @@ class Config {
 	}
 	
 	function set_SSL($value) {
-		if (is_bool($value)) $this->SSL = $value;
+		if (($value == "True") || ($value == "False")) $this->SSL = $value;
+		else echo _("Config->set_SSL failed!");
 	}
 	
 	function get_Host() {
@@ -169,6 +160,7 @@ class Config {
 	
 	function set_Host($value) {
 		if (is_string($value)) $this->Host = $value;
+		else echo _("Config->set_Host failed!");
 	}
 	
 	function get_Port() {
@@ -177,6 +169,7 @@ class Config {
 	
 	function set_Port($value) {
 		if (is_numeric($value)) $this->Port = $value;
+		else echo _("Config->set_Port failed!");
 	}
 	
 	function get_Admins() {
@@ -196,12 +189,25 @@ class Config {
 		}
 	}
 	
+	function get_Adminstring() {
+		return $this->Adminstring;
+	}
+	
+	function set_Adminstring($value) {
+		if (is_string($value)) {
+			$this->Adminstring = $value;
+			$this->Admins = explode(";", $value);
+		}
+		else echo _("Config->set_Adminstring failed!");
+	}
+	
 	function get_Passwd() {
 		return $this->Passwd;
 	}
 	
 	function set_Passwd($value) {
 		if (is_string($value)) $this->Passwd = $value;
+		else echo _("Config->set_Passwd failed!");
 	}
 	
 }
