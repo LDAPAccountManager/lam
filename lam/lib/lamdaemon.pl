@@ -121,7 +121,7 @@ if ($( == 0 ) { # we are root
 					use Quota; # Needed to get and set quotas
 					get_fs(); # Load list of devices with enabled quotas
 					# Store quota information in array
-					@quota_temp1 = split (':', $vals[6]);
+					@quota_temp1 = split (':', $vals[4]);
 					$group=0;
 					$i=0;
 					while ($quota_temp1[$i]) {
@@ -132,54 +132,54 @@ if ($( == 0 ) { # we are root
 								$j++;
 								}
 							$i++;
-							}
-						if ($vals[3] eq 'user') { $group=false; }
-						else {
-							$group=1;
-							@quota_usr = @quota_grp;
-							}
-						switch2: {
-							$vals[2] eq 'rem' && do {
-								$i=0;
-								($<, $>) = ($>, $<); # Get root privileges
-								while ($quota_usr[$i][0]) {
+						}
+					if ($vals[3] eq 'user') { $group=false; }
+					else {
+						$group=1;
+						@quota_usr = @quota_grp;
+						}
+					switch2: {
+						$vals[2] eq 'rem' && do {
+							$i=0;
+							($<, $>) = ($>, $<); # Get root privileges
+							while ($quota_usr[$i][0]) {
+								$dev = Quota::getqcarg($quota_usr[$i][1]);
+								$return = Quota::setqlim($dev,$user[2],0,0,0,0,1,$group);
+								$i++;
+								}
+							($<, $>) = ($>, $<); # Give up root previleges
+							last switch2;
+							};
+						$vals[2] eq 'set' && do {
+							$i=0;
+							($<, $>) = ($>, $<); # Get root privileges
+							while ($quota_usr[$i][0]) {
+								$dev = Quota::getqcarg($quota[$i][0]);
+								$return = Quota::setqlim($dev,$user[2],$quota[$i][1],$quota[$i][2],$quota[$i][3],$quota[$i][4],1,$group);
+								$i++;
+								}
+							($<, $>) = ($>, $<); # Give up root previleges
+							last switch2;
+							};
+						$vals[2] eq 'get' && do {
+							$i=0;
+							($<, $>) = ($>, $<); # Get root privileges
+							while ($quota_usr[$i][0]) {
+								if ($vals[2]ne'+') {
 									$dev = Quota::getqcarg($quota_usr[$i][1]);
-									$return = Quota::setqlim($dev,$user[2],0,0,0,0,1,$group);
-									$i++;
-									}
-								($<, $>) = ($>, $<); # Give up root previleges
-								last switch2;
-								};
-							$vals[2] eq 'set' && do {
-								$i=0;
-								($<, $>) = ($>, $<); # Get root privileges
-								while ($quota_usr[$i][0]) {
-									$dev = Quota::getqcarg($quota[$i][0]);
-									$return = Quota::setqlim($dev,$user[2],$quota[$i][1],$quota[$i][2],$quota[$i][3],$quota[$i][4],1,$group);
-									$i++;
-									}
-								($<, $>) = ($>, $<); # Give up root previleges
-								last switch2;
-								};
-							$vals[2] eq 'get' && do {
-								$i=0;
-								($<, $>) = ($>, $<); # Get root privileges
-								while ($quota_usr[$i][0]) {
-									if ($vals[2]ne'+') {
-										$dev = Quota::getqcarg($quota_usr[$i][1]);
-										@temp = Quota::query($dev,$user[2],$group);
-										if ($temp[0]ne'') {
-											$return = "$quota_usr[$i][1],$temp[0],$temp[1],$temp[2],$temp[3],$temp[4],$temp[5],$temp[6],$temp[7]:$return";
-											}
-										else { $return = "$quota_usr[$i][1],0,0,0,0,0,0,0,0:$return"; }
+									@temp = Quota::query($dev,$user[2],$group);
+									if ($temp[0]ne'') {
+										$return = "$quota_usr[$i][1],$temp[0],$temp[1],$temp[2],$temp[3],$temp[4],$temp[5],$temp[6],$temp[7]:$return";
 										}
 									else { $return = "$quota_usr[$i][1],0,0,0,0,0,0,0,0:$return"; }
-									$i++;
 									}
-								($<, $>) = ($>, $<); # Give up root previleges
-								last switch2;
-								};
-							}
+								else { $return = "$quota_usr[$i][1],0,0,0,0,0,0,0,0:$return"; }
+								$i++;
+								}
+							($<, $>) = ($>, $<); # Give up root previleges
+							last switch2;
+							};
+						}
 						last switch;
 					};
 					last switch;

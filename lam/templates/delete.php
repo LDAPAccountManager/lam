@@ -190,7 +190,7 @@ if ($_POST['delete_yes']) {
 					}
 				break;
 			}
-		if ($config_intern->scriptServer && is_set($usernames)) {
+		if ($config_intern->scriptServer && isset($usernames)) {
 			// Remove homedir if required
 			if ($_POST['f_rem_home']) remhomedir($usernames);
 			// Remove quotas if lamdaemon.pl is used

@@ -276,8 +276,8 @@ function setquotas($values2,$values2_old=false) {
 	* admin-username, admin-password, account with quotas, 'quota', operation='set', type=user|group
 	* use escapeshellarg to make exec() shell-safe
 	*/
-	$towrite = escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".escapeshellarg($_SESSION['config']->scriptServer)." ".
-		escapeshellarg($_SESSION['config']->scriptPath)." ".escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]);
+	$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." ".
+		escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]);
 	$descriptorspec = array(
 		0 => array("pipe", "r"), // stdin
 		1 => array("pipe", "w"), // stout
@@ -333,8 +333,8 @@ function remquotas($users, $type) {
 	* admin-username, admin-password, account with quotas, 'quota', operation='rem', type=user|group
 	* use escapeshellarg to make exec() shell-safe
 	*/
-	$towrite = escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".escapeshellarg($_SESSION['config']->scriptServer)." ".
-		escapeshellarg($_SESSION['config']->scriptPath)." ".escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]);
+	$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." ".
+		escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]);
 	$descriptorspec = array(
 		0 => array("pipe", "r"), // stdin
 		1 => array("pipe", "w"), // stout
@@ -373,8 +373,8 @@ function addhomedir($users) {
 	* admin-username, admin-password, owner of homedir, 'home', operation='add'
 	* use escapeshellarg to make exec() shell-safe
 	*/
-	$towrite = escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".escapeshellarg($_SESSION['config']->scriptServer)." ".
-		escapeshellarg($_SESSION['config']->scriptPath)." ".escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]);
+	$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." ".
+		escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]);
 	$descriptorspec = array(
 		0 => array("pipe", "r"), // stdin
 		1 => array("pipe", "w"), // stout
@@ -408,15 +408,15 @@ function addhomedir($users) {
 * account is removed from ldap
 * $users = array of usernames
 */
-function remhomedir($user) {
+function remhomedir($users) {
 	// get username and password of the current lam-admin
 	$ldap_q = $_SESSION['ldap']->decrypt();
 	/* $towrite has the following syntax:
 	* admin-username, admin-password, owner of homedir, 'home', operation='add'
 	* use escapeshellarg to make exec() shell-safe
 	*/
-	$towrite = escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".escapeshellarg($_SESSION['config']->scriptServer)." ".
-		escapeshellarg($_SESSION['config']->scriptPath)." ".escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]);
+	$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." ".
+		escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]);
 	$descriptorspec = array(
 		0 => array("pipe", "r"), // stdin
 		1 => array("pipe", "w"), // stout
@@ -1736,7 +1736,8 @@ function modifyuser($values,$values_old,$uselamdaemon=true) { // Will modify the
 		}
 
 	// Change quotas if quotas are set and lamdaemon.pl should be used
-	if ($_SESSION['config']->scriptServer && is_array($values->quota) && $uselamdaemon) setquotas(array($values),array($values_old));
+	if ($_SESSION['config']->scriptServer && is_array($values->quota) && $uselamdaemon)
+		setquotas(array($values),array($values_old));
 	//make required changes in cache-array
 	if ((isset($_SESSION['userDN']))) {
 		if ($values->general_dn != $values_old->general_dn) {

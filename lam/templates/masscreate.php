@@ -584,9 +584,9 @@ function loadfile() {
 			$users[] = $_SESSION['accounts'][$row2]->general_username;
 			if ($_SESSION['accounts'][$row2]->general_username != $username) $_SESSION['mass_errors'][$row2][] = array('WARN', _('Username'), _('Username in use. Selected next free username.'));
 			// Check if givenname is valid
-			if ( !ereg('^([a-z]|[A-Z]|[-]|[ ]|[ï¿½|[ï¿½|[ï¿½|[ï¿½|[]|[ï¿½|[ï¿½)+$', $_SESSION['accounts'][$row2]->general_givenname)) $_SESSION['mass_errors'][$row2][] = array('ERROR', _('Given name'), _('Given name contains invalid characters'));
+			if ( !ereg('^([a-z]|[A-Z]|[-]|[ ]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+$', $_SESSION['accounts'][$row2]->general_givenname)) $_SESSION['mass_errors'][$row2][] = array('ERROR', _('Given name'), _('Given name contains invalid characters'));
 			// Check if surname is valid
-			if ( !ereg('^([a-z]|[A-Z]|[-]|[ ]|[ï¿½|[ï¿½|[ï¿½|[ï¿½|[]|[ï¿½|[ï¿½)+$', $_SESSION['accounts'][$row2]->general_surname)) $_SESSION['mass_errors'][$row2][] = array('ERROR', _('Surname'), _('Surname contains invalid characters'));
+			if ( !ereg('^([a-z]|[A-Z]|[-]|[ ]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+$', $_SESSION['accounts'][$row2]->general_surname)) $_SESSION['mass_errors'][$row2][] = array('ERROR', _('Surname'), _('Surname contains invalid characters'));
 			if ( ($_SESSION['accounts'][$row2]->general_gecos=='') || ($_SESSION['accounts'][$row2]->general_gecos==' ')) {
 				$_SESSION['accounts'][$row2]->general_gecos = $_SESSION['accounts'][$row2]->general_givenname . " " . $_SESSION['accounts'][$row2]->general_surname ;
 				$_SESSION['mass_errors'][$row2][] = array('INFO', _('Gecos'), _('Inserted sur- and given name in gecos-field.'));
@@ -606,10 +606,10 @@ function loadfile() {
 			if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/])*$', $_SESSION['accounts'][$row2]->personal_mobileTelephoneNumber))  $_SESSION['mass_errors'][$row2][] = array('ERROR', _('Mobile number'), _('Please enter a valid mobile number!'));
 			if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/])*$', $_SESSION['accounts'][$row2]->personal_facsimileTelephoneNumber))  $_SESSION['mass_errors'][$row2][] = array('ERROR', _('Fax number'), _('Please enter a valid fax number!'));
 			if ( !ereg('^(([0-9]|[A-Z]|[a-z]|[.]|[-]|[_])+[@]([0-9]|[A-Z]|[a-z]|[-])+([.]([0-9]|[A-Z]|[a-z]|[-])+)*)*$', $_SESSION['accounts'][$row2]->personal_mail))  $_SESSION['mass_errors'][$row2][] = array('ERROR', _('eMail address'), _('Please enter a valid eMail address!'));
-			if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[ï¿½|[ï¿½|[ï¿½|[ï¿½|[ï¿½|[]|[ï¿½)*$', $_SESSION['accounts'][$row2]->personal_street))  $_SESSION['mass_errors'][$row2][] = array('ERROR', _('Street'), _('Please enter a valid street name!'));
-			if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[ï¿½|[ï¿½|[ï¿½|[ï¿½|[ï¿½|[]|[ï¿½)*$', $_SESSION['accounts'][$row2]->personal_postalAddress))  $_SESSION['mass_errors'][$row2][] = array('ERROR', _('Postal address'), _('Please enter a valid postal address!'));
-			if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[ï¿½|[ï¿½|[ï¿½|[ï¿½|[ï¿½|[]|[ï¿½)*$', $_SESSION['accounts'][$row2]->personal_title))  $_SESSION['mass_errors'][$row2][] = array('ERROR', _('Title'), _('Please enter a valid title!'));
-			if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[ï¿½|[ï¿½|[ï¿½|[ï¿½|[ï¿½|[]|[ï¿½)*$', $_SESSION['accounts'][$row2]->personal_employeeType))  $_SESSION['mass_errors'][$row2][] = array('ERROR', _('Employee type'), _('Please enter a valid employee type!'));
+			if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])*$', $_SESSION['accounts'][$row2]->personal_street))  $_SESSION['mass_errors'][$row2][] = array('ERROR', _('Street'), _('Please enter a valid street name!'));
+			if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])*$', $_SESSION['accounts'][$row2]->personal_postalAddress))  $_SESSION['mass_errors'][$row2][] = array('ERROR', _('Postal address'), _('Please enter a valid postal address!'));
+			if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])*$', $_SESSION['accounts'][$row2]->personal_title))  $_SESSION['mass_errors'][$row2][] = array('ERROR', _('Title'), _('Please enter a valid title!'));
+			if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])*$', $_SESSION['accounts'][$row2]->personal_employeeType))  $_SESSION['mass_errors'][$row2][] = array('ERROR', _('Employee type'), _('Please enter a valid employee type!'));
 			if ( !ereg('^([0-9]|[A-Z]|[a-z])*$', $_SESSION['accounts']->personal_postalCode))  $_SESSION['mass_errors'][$row2][] = array('ERROR', _('Postal code'), _('Please enter a valid postal code!'));
 			}
 		}
