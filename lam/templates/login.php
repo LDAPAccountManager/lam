@@ -56,7 +56,7 @@ if($action == "checklogin")
 		// setting language
 		$language = explode(":", $language);
 		putenv("LANG=" . $language[1]);
-		setlocale("LC_ALL", $language[0]);
+		setlocale(LC_ALL, $language[0]);
 		bindtextdomain("lam", "../locale");
 		textdomain("lam");
 
