@@ -14,7 +14,7 @@ $Id$
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
-  
+
   You should have received a copy of the GNU General Public License
   along with this program; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -22,6 +22,9 @@ $Id$
 
   Login page to change the preferences.
 */
+
+include_once('../../lib/config.inc');
+include_once('../../lib/status.inc');
 
 // start session
 session_save_path("../../sess");
@@ -46,21 +49,53 @@ echo ("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http:/
 			<img src="../../graphics/banner.jpg" border=1 alt="LDAP Account Manager"></a>
 		</p>
 		<hr><br><br>
+		<!-- form to change existing profiles -->
 		<form action="confmain.php" method="post">
 		<table border=0 align="center">
 			<tr>
-				<td colspan=3 align="center"><b> <?php echo _("Password to enter preferences:"); ?> </b></td>
+				<td colspan=4 align="center"><b> <?php echo _("Please enter password to change preferences:"); ?> </b></td>
 			</tr>
 <?php
 	// print message if login was incorrect
-	if ($message) echo ("<tr><td colspan=3 align=\"center\"><font color=red>" . $message . "</font></td></tr>");
+	if ($message) echo ("<tr><td colspan=4 align=\"center\"><font color=red>" . $message . "</font></td></tr>");
 ?>
 			<tr>
+				<td>
+					<select size=1 name="filename">
+					<?php
+						$files = getConfigProfiles();
+							$conf = new CfgMain();
+							$defaultprofile = $conf->default;
+							for ($i = 0; $i < sizeof($files); $i++) {
+								if ($files[$i] == $defaultprofile) echo ("<option selected>" . $files[$i] . "</option>\n");
+								else echo ("<option>" . $files[$i] . "</option>\n");
+							}
+					?>
+					</select>
+				</td>
 				<td align="center"><input type="password" name="passwd"></td>
-				<td><input type="submit" name="submit" value= <?php echo _("Ok"); ?> </td>
+				<td>
+					<input type="submit" name="submit" value= <?php echo _("Ok"); ?>
+				</td>
 				<td><a href="../help.php?HelpNumber=200" target="lamhelp"><?php echo _("Help") ?></a></td>
+			</tr>
+			<tr>
+				<td colspan=3>&nbsp;</td>
+			</tr>
+			<tr>
+				<td colspan=3 align="center">
+					<b><a href="profmanage.php"><?php echo _("Manage profiles") ?></a></b>
+				</td>
 			</tr>
 		</table>
 		</form>
+
+		<p><br><br><br><br><br><br><br></p>
+
+		<!-- back to login page -->
+		<p>
+			<a href="../login.php"> <?php echo _("Back to Login"); ?> </a>
+		</p>
+
 	</body>
 </html>

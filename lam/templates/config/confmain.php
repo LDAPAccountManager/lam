@@ -62,10 +62,11 @@ if ($_POST['back'] || $_POST['submitconf']){
 		else $scriptpath = "";
 		if ($_POST['scriptserver']) $scriptserver = $_POST['scriptserver'];
 		else $scriptserver = "";
+		if ($_POST['filename']) $filename = $_POST['filename'];
 		session_register('passwd', 'passwd1', 'passwd2', 'serverurl', 'admins', 'suffusers',
 			'suffgroups', 'suffhosts', 'minUID', 'maxUID', 'minGID', 'maxGID', 'minMach',
 			'maxMach', 'usrlstattr', 'grplstattr', 'hstlstattr', 'maxlistentries', 'language',
-			'scriptpath', 'scriptserver', 'samba3', 'domainSID');
+			'scriptpath', 'scriptserver', 'samba3', 'domainSID', 'filename');
 		echo("<meta http-equiv=\"refresh\" content=\"0; URL=confsave.php\">");
 	}
 	// back to login
@@ -89,7 +90,7 @@ if (! $passwd) {
 // check if password is valid
 // if not: load login page
 include_once ('../../lib/config.inc');
-$conf = new Config();
+$conf = new Config($_POST['filename']);
 if (!(($conf->get_Passwd()) == $passwd)) {
 	$message = _("The password is invalid! Please try again.");
 	require('conflogin.php');
@@ -339,6 +340,9 @@ echo ("<p></p>");
 
 // password for configuration
 echo ("<p><input type=\"hidden\" name=\"passwd\" value=\"" . $passwd . "\"></p>\n");
+
+// config file
+echo ("<p><input type=\"hidden\" name=\"filename\" value=\"" . $_POST['filename'] . "\"></p>\n");
 
 echo ("</form>\n");
 echo ("</body>\n");

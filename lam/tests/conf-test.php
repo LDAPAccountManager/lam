@@ -24,7 +24,7 @@ $Id$
 */
 
 include ("../lib/config.inc");
-$conf = new Config();
+$conf = new Config('default');
 echo "<html><head><title></title><link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\"></head><body>";
 echo ("<b> Current Config</b><br><br>");
 $conf->printconf();
@@ -82,7 +82,7 @@ $conf->save();
 echo ("done<br>");
 // at last all preferences are read from lam.conf and compared
 echo ("Loading and comparing...");
-$conf = new Config();
+$conf = new Config('default');
 if ($conf->get_ServerURL() != "ldap://123.345.678.123:777") echo ("<br><font color=\"#FF0000\">Saving ServerURL failed!</font><br>");
 $adm_arr = $conf->get_Admins();
 if ($adm_arr[0] != "uid=test,o=test,dc=org") echo ("<br><font color=\"#FF0000\">Saving admins failed!" . $adm_arr[0] . "</font><br>");

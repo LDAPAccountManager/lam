@@ -29,7 +29,7 @@ session_save_path("../../sess");
 session_start();
 
 include_once ('../../lib/config.inc');
-$conf = new Config();
+$conf = new Config($_SESSION['filename']);
 
 // get data from session
 if ($_SESSION['passwd']) $passwd = $_SESSION['passwd'];
@@ -55,6 +55,7 @@ if ($_SESSION['scriptpath']) $scriptpath = $_SESSION['scriptpath'];
 if ($_SESSION['scriptserver']) $scriptserver = $_SESSION['scriptserver'];
 if ($_SESSION['samba3']) $samba3 = $_SESSION['samba3'];
 if ($_SESSION['domainSID']) $domainSID = $_SESSION['domainSID'];
+if ($_SESSION['filename']) $filename = $_SESSION['filename'];
 
 // check if password is correct
 // if not: load login page
@@ -207,7 +208,7 @@ if ($pass1 != "") {
 }
 // save settings and display new settings
 $conf->save();
-echo ("<b>" . _("The following settings were saved:") . "</b><br><br>");
+echo ("<b>" . _("The following settings were saved to profile:") . " </b>" . $filename . "<br><br>");
 $conf->printconf();
 echo ("<br><br><br><br><br><a href=\"../login.php\" target=\"_top\">" . _("Back to Login") . "</a>");
 
@@ -237,5 +238,6 @@ unset($_SESSION['scriptpath']);
 unset($_SESSION['scriptserver']);
 unset($_SESSION['samba3']);
 unset($_SESSION['domainSID']);
+unset($_SESSION['filename']);
 
 ?>

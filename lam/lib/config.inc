@@ -39,7 +39,28 @@ function setlanguage() {
 	else echo _("Language not defined in session!");
 }
 
+// returns an array of String with all available configuration profiles (without .conf)
+function getConfigProfiles() {
+	$dir = dir(substr(__FILE__, 0, strlen(__FILE__) - 15) . "/config");
+	$ret = array();
+	$pos = 0;
+	while ($entry = $dir->read()){
+		$ext = substr($entry, strlen($entry)-5, 5);
+		$name = substr($entry, 0, strlen($entry)-5);
+		if ($ext == ".conf") {
+			$ret[$pos] = $name;
+			$pos ++;
+		}
+	}
+	sort($ret);
+	return $ret;
+}
 
+
+/*
+// class Config
+*/
+// manages .conf files
 class Config {
 
   // server address (e.g. ldap://127.0.0.1:389)
@@ -93,14 +114,22 @@ class Config {
   // Samba 3 domain SIDs
   var $domainSID;
 
-  // constructor, loads preferences from ../config/lam.conf
-  function Config() {
+  // name of configuration file
+  var $file;
+
+  // constructor, loads preferences from config file
+  function Config($file=0) {
+    if (!is_string($file)) {
+		$profiles = getConfigProfiles();
+		$file = $profiles[0];
+	}
+	$this->file = $file;
     $this->reload();
   }
 
-  // reloads preferences from ../config/lam.conf
+  // reloads preferences from config file
   function reload() {
-    $conffile = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/config/lam.conf";
+    $conffile = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/config/" . $this->file . ".conf";
     if (is_file($conffile) == True) {
       $file = fopen($conffile, "r");
       while (!feof($file)) {
@@ -197,13 +226,13 @@ class Config {
       fclose($file);
     }
     else {
-      StatusMessage("ERROR", "", _("Unable to load lam.conf!") . " (" . $conffile . ")");
+      StatusMessage("ERROR", "", _("Unable to load configuration!") . " (" . $conffile . ")");
     }
   }
 
-  // saves preferences to ../config/lam.conf
+  // saves preferences to config file
   function save() {
-    $conffile = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/config/lam.conf";
+    $conffile = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/config/" . $this->file . ".conf";
     if (is_file($conffile) == True) {
       // booleans to check if value was already saved
       $save_serverURL = $save_passwd = $save_admins = $save_suffusr = $save_suffgrp = $save_suffhst =
@@ -212,12 +241,12 @@ class Config {
 	$save_scriptPath = $save_scriptServer = $save_samba3 = $save_domainSID = False;
 	$file = fopen($conffile, "r");
 	$file_array = array();
-	// read lam.conf
+	// read config file
 	while (!feof($file)) {
 		array_push($file_array, fgets($file, 1024));
 	}
 	fclose($file);
-	// generate new lam.conf
+	// generate new configuration file
 	for ($i = 0; $i < sizeof($file_array); $i++) {
 		if (($file_array[$i] == "\n")||($file_array[$i][0] == "#")) continue; // ignore comments
 		// search for keywords
@@ -327,36 +356,36 @@ class Config {
 			continue;
 		}
 	}
-	// check if we have to add new entries (e.g. if user upgraded LAM and has an old lam.conf)
-	if (!$save_serverURL == True) array_push($file_array, "\n\n# server address (e.g. ldap://localhost:389 or ldaps://localhost:636)\n" . "serverURL: " . $this->ServerURL);
-	if (!$save_passwd == True) array_push($file_array, "\n\n# password to change these preferences via webfrontend\n" . "passwd: " . $this->Passwd);
+	// check if we have to add new entries (e.g. if user upgraded LAM and has an old config file)
+	if (!$save_serverURL == True) array_push($file_array, "\n\n# server address (e.g. ldap://localhost:389 or ldaps://localhost:636)\n" . "serverURL: " . $this->ServerURL . "\n");
+	if (!$save_passwd == True) array_push($file_array, "\n\n# password to change these preferences via webfrontend\n" . "passwd: " . $this->Passwd . "\n");
 	if (!$save_admins == True) array_push($file_array, "\n\n# list of users who are allowed to use LDAP Account Manager\n" .
 					    "# names have to be seperated by semicolons\n" .
-					    "# e.g. admins: cn=admin,dc=yourdomain,dc=org;cn=root,dc=yourdomain,dc=org\n" . "admins: " . $this->Admins);
+					    "# e.g. admins: cn=admin,dc=yourdomain,dc=org;cn=root,dc=yourdomain,dc=org\n" . "admins: " . $this->Admins . "\n");
 	if (!$save_suffusr == True) array_push($file_array, "\n\n# suffix of users\n" .
-					     "# e.g. ou=People,dc=yourdomain,dc=org\n" . "usersuffix: " . $this->Suff_users);
+					     "# e.g. ou=People,dc=yourdomain,dc=org\n" . "usersuffix: " . $this->Suff_users . "\n");
 	if (!$save_suffgrp == True) array_push($file_array, "\n\n# suffix of groups\n" .
-					     "# e.g. ou=Groups,dc=yourdomain,dc=org\n" . "groupsuffix: " . $this->Suff_groups);
+					     "# e.g. ou=Groups,dc=yourdomain,dc=org\n" . "groupsuffix: " . $this->Suff_groups . "\n");
 	if (!$save_suffhst == True) array_push($file_array, "\n\n# suffix of Samba hosts\n" .
-					     "# e.g. ou=machines,dc=yourdomain,dc=org\n" . "hostsuffix: " . $this->Suff_hosts);
-	if (!$save_minUID == True) array_push($file_array, "\n\n# minimum UID number\n" . "minUID: " . $this->MinUID);
-	if (!$save_maxUID == True) array_push($file_array, "\n\n# maximum UID number\n" . "maxUID: " . $this->MaxUID);
-	if (!$save_minGID == True) array_push($file_array, "\n\n# minimum GID number\n" . "minGID: " . $this->MinGID);
-	if (!$save_maxGID == True) array_push($file_array, "\n\n# maximum GID number\n" . "maxGID: " . $this->MaxGID);
-	if (!$save_minMach == True) array_push($file_array, "\n\n# minimum UID number for Samba hosts\n" . "minMachine: " . $this->MinMachine);
-	if (!$save_maxMach == True) array_push($file_array, "\n\n# maximum UID number for Samba hosts\n" . "maxMachine: " . $this->MaxMachine);
+					     "# e.g. ou=machines,dc=yourdomain,dc=org\n" . "hostsuffix: " . $this->Suff_hosts . "\n");
+	if (!$save_minUID == True) array_push($file_array, "\n\n# minimum UID number\n" . "minUID: " . $this->MinUID . "\n");
+	if (!$save_maxUID == True) array_push($file_array, "\n\n# maximum UID number\n" . "maxUID: " . $this->MaxUID . "\n");
+	if (!$save_minGID == True) array_push($file_array, "\n\n# minimum GID number\n" . "minGID: " . $this->MinGID . "\n");
+	if (!$save_maxGID == True) array_push($file_array, "\n\n# maximum GID number\n" . "maxGID: " . $this->MaxGID . "\n");
+	if (!$save_minMach == True) array_push($file_array, "\n\n# minimum UID number for Samba hosts\n" . "minMachine: " . $this->MinMachine . "\n");
+	if (!$save_maxMach == True) array_push($file_array, "\n\n# maximum UID number for Samba hosts\n" . "maxMachine: " . $this->MaxMachine . "\n");
 	if (!$save_usrlstattr == True) array_push($file_array, "\n\n# list of attributes to show in user list\n# entries can either be predefined values (e.g. '#cn' or '#uid')" .
-						"\n# or individual ones (e.g. 'uid:User ID' or 'host:Host Name')\n# values have to be seperated by semicolons\n" . "userlistAttributes: " . $this->userlistAttributes);
+						"\n# or individual ones (e.g. 'uid:User ID' or 'host:Host Name')\n# values have to be seperated by semicolons\n" . "userlistAttributes: " . $this->userlistAttributes . "\n");
 	if (!$save_grplstattr == True) array_push($file_array, "\n\n# list of attributes to show in group list\n# entries can either be predefined values (e.g. '#cn' or '#gidNumber')" .
-						"\n# or individual ones (e.g. 'cn:Group Name')\n# values have to be seperated by semicolons\n" . "grouplistAttributes: " . $this->grouplistAttributes);
+						"\n# or individual ones (e.g. 'cn:Group Name')\n# values have to be seperated by semicolons\n" . "grouplistAttributes: " . $this->grouplistAttributes . "\n");
 	if (!$save_hstlstattr == True) array_push($file_array, "\n\n# list of attributes to show in host list\n# entries can either be predefined values (e.g. '#cn' or '#uid')" .
-						"\n# or individual ones (e.g. 'cn:Host Name')\n# values have to be seperated by semicolons\n" . "hostlistAttributes: " . $this->hostlistAttributes);
-	if (!$save_maxlstent == True) array_push($file_array, "\n\n# maximum number of rows to show in user/group/host lists\n" . "maxlistentries: " . $this->maxlistentries);
-	if (!$save_deflang == True) array_push($file_array, "\n\n# default language (a line from language.conf)\n" . "defaultLanguage: " . $this->defaultLanguage);
-	if (!$save_scriptPath == True) array_push($file_array, "\n\n# Path to external Script\n" . "scriptPath: " . $this->scriptPath);
-	if (!$save_scriptServer == True) array_push($file_array, "\n\n# Server of external Script\n" . "scriptServer: " . $this->scriptServer);
-	if (!$save_samba3 == True) array_push($file_array, "\n\n# Set to \"yes\" only if you use the new Samba 3.x schema.\n" . "samba3: " . $this->samba3);
-	if (!$save_domainSID == True) array_push($file_array, "\n\n# Samba 3 domain SID. Set only if you use the new Samba 3.x schema.\n" . "domainSID: " . $this->domainSID);
+						"\n# or individual ones (e.g. 'cn:Host Name')\n# values have to be seperated by semicolons\n" . "hostlistAttributes: " . $this->hostlistAttributes . "\n");
+	if (!$save_maxlstent == True) array_push($file_array, "\n\n# maximum number of rows to show in user/group/host lists\n" . "maxlistentries: " . $this->maxlistentries . "\n");
+	if (!$save_deflang == True) array_push($file_array, "\n\n# default language (a line from language.conf)\n" . "defaultLanguage: " . $this->defaultLanguage . "\n");
+	if (!$save_scriptPath == True) array_push($file_array, "\n\n# Path to external Script\n" . "scriptPath: " . $this->scriptPath . "\n");
+	if (!$save_scriptServer == True) array_push($file_array, "\n\n# Server of external Script\n" . "scriptServer: " . $this->scriptServer . "\n");
+	if (!$save_samba3 == True) array_push($file_array, "\n\n# Set to \"yes\" only if you use the new Samba 3.x schema.\n" . "samba3: " . $this->samba3 . "\n");
+	if (!$save_domainSID == True) array_push($file_array, "\n\n# Samba 3 domain SID. Set only if you use the new Samba 3.x schema.\n" . "domainSID: " . $this->domainSID . "\n");
 	$file = fopen($conffile, "w");
 	if ($file) {
 		for ($i = 0; $i < sizeof($file_array); $i++) fputs($file, $file_array[$i]);
@@ -674,6 +703,93 @@ class Config {
     else StatusMessage("WARN", "", _("Config->set_domainSID failed!") . " (" . $value . ")");
   }
 
+
+}
+
+/*
+// class CfgMain
+*/
+// manages config.cfg
+class CfgMain {
+
+	// default profile
+	var $default;
+
+	// password to change config.cfg
+	var $password;
+
+	// constructor, loads preferences from config file
+	function CfgMain() {
+		$this->reload();
+	}
+
+	// reloads preferences from config file config.cfg
+	function reload() {
+		$conffile = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/config/config.cfg";
+		if (is_file($conffile) == True) {
+			$file = fopen($conffile, "r");
+			while (!feof($file)) {
+				$line = fgets($file, 1024);
+				if (($line == "\n")||($line[0] == "#")) continue; // ignore comments
+				// search keywords
+				if (substr($line, 0, 10) == "password: ") {
+					$this->password = chop(substr($line, 10, strlen($line)-10));
+					continue;
+				}
+				if (substr($line, 0, 9) == "default: ") {
+					$this->default = chop(substr($line, 9, strlen($line)-9));
+					continue;
+				}
+			}
+			fclose($file);
+		}
+		else {
+			StatusMessage("ERROR", "", _("Unable to load configuration!") . " (" . $conffile . ")");
+		}
+	}
+
+	// saves preferences to config file config.cfg
+	function save() {
+		$conffile = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/config/config.cfg";
+		if (is_file($conffile) == True) {
+			// booleans to check if value was already saved
+			$save_password = $save_default = False;
+			$file = fopen($conffile, "r");
+			$file_array = array();
+			// read config file
+			while (!feof($file)) {
+				array_push($file_array, fgets($file, 1024));
+			}
+			fclose($file);
+			// generate new configuration file
+			for ($i = 0; $i < sizeof($file_array); $i++) {
+				if (($file_array[$i] == "\n")||($file_array[$i][0] == "#")) continue; // ignore comments
+				// search for keywords
+				if (substr($file_array[$i], 0, 10) == "password: ") {
+					$file_array[$i] = "password: " . $this->password . "\n";
+					$save_password = True;
+					continue;
+				}
+				if (substr($file_array[$i], 0, 9) == "default: ") {
+					$file_array[$i] = "default: " . $this->default . "\n";
+					$save_default = True;
+					continue;
+				}
+			}
+		}
+		// check if we have to add new entries (e.g. if user upgraded LAM and has an old config file)
+		if (!$save_password == True) array_push($file_array, "\n\n# password to add/delete/rename configuration profiles\n" . "password: " . $this->password);
+		if (!$save_default == True) array_push($file_array, "\n\n# default profile, without \".conf\"\n" . "default: " . $this->default);
+		$file = fopen($conffile, "w");
+		if ($file) {
+			for ($i = 0; $i < sizeof($file_array); $i++) fputs($file, $file_array[$i]);
+			fclose($file);
+		}
+		else {
+			StatusMessage("ERROR", "", _("Cannot open config file!") . " (" . $conffile . ")");
+			exit;
+		}
+	}
 
 }
 
