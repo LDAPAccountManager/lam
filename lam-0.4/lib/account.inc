@@ -1345,6 +1345,7 @@ function createuser($values, $uselamdaemon=true) {
 	// explode host-string and save every allowed host as separate attribute
 	$values->unix_host = str_replace(' ', '', $values->unix_host);
 	$hosts = explode (',', $values->unix_host);
+	$hosts = array_unique($hosts);
 	$i=0;
 	while(isset($hosts[$i])) {
 		if ($hosts[$i]!='') $attr['host'][$i] = $hosts[$i];
@@ -1600,6 +1601,7 @@ function modifyuser($values,$values_old,$uselamdaemon=true) { // Will modify the
 	if (($values->unix_host != $values_old->unix_host)) {
 		$values->unix_host = str_replace(' ', '', $values->unix_host);
 		$host = explode (',', $values->unix_host);
+		$host = array_unique($host);
 		$values_old->unix_host = str_replace(' ', '', $values_old->unix_host);
 		$host_old = explode (',', $values_old->unix_host);
 		if ($host[0]=='') $attr_rem['host'] = $host_old;
