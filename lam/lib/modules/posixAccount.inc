@@ -148,6 +148,17 @@ class posixAccount extends baseModule {
 													'homeDirectory',
 													'userPassword',
 													'loginShell');
+		// help Entries
+		$return['help'] = array(	'uid'							=>	array ("ext" => "FALSE", "Headline" => _("Username"), "Text" => _("Username of the user who should be created. Valid characters are: a-z,0-9, .-_. Lam does not allow a number as first character because useradd also does not allow it. Lam does not allow capital letters A-Z because it can cause several problems. If username is already used username will be expanded with a number. The next free number will be used. Warning: Older systems have problems with usernames longer than 8 characters. You can not log in to Windows if username is longer than 16 characters."))),
+											'uidNumber'				=>	array ("ext" => "FALSE", "Headline" => _("UID number"), "Text" => _("If empty UID number will be generated automaticly.")),
+											'gecos'						=>	array ("ext" => "FALSE", "Headline" => _("Gecos"), "Text" => _("User description. If left empty sur- and give name will be used.")),
+											'gidNumber'				=>	array ("ext" => "FALSE", "Headline" => _("Primary group"), "Text" => _("The Primary Group the user should be member of.")),
+											'addgroup'					=>	array ("ext" => "FALSE", "Headline" => _("Additional groups"), "Text" => _("Hold the CTRL-key to (de)select multiple groups."). ' '. _("Can be left empty.")),
+											'homeDirectory'			=>	array ("ext" => "FALSE", "Headline" => _("Home directory"), "Text" => _("$user and $group are replaced with username or primary groupname.")),
+											/*'userPassword'		=>*/
+											/*'userPassword_no'	=>*/
+											/*'userPassword_lock'	=>*/
+											'loginShell'					=>	array ("ext" => "FALSE", "Headline" => _("Login shell"), "Text" => _("To disable login use /bin/false. List of shells is read from lam/config/shells")))	
 		
 		return $return;
 	}
@@ -249,7 +260,7 @@ class posixAccount extends baseModule {
 
 	/*
 	*/
-	function get_help($id) {
+	/*function get_help($id) {
 		switch ($id) {
 			case "description":
 				return array ("ext" => "FALSE", "Headline" => _("Description"),
@@ -257,7 +268,7 @@ class posixAccount extends baseModule {
 				break;
 			}
 		return false;
-		}
+		}*/
 
 	/* This function returns all ldap attributes
 	* which are part of posixAccount and returns
