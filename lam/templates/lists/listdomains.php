@@ -98,7 +98,7 @@ if (! $_GET['norefresh']) {
 	$attrs = $attr_array;
 	$sr = @ldap_search($_SESSION["ldap"]->server(), $dom_suffix, $filter, $attrs);
 	if (ldap_errno($_SESSION["ldap"]->server()) == 4) {
-		StatusMessage("WARN", _("LDAP sizelimit exceeded, not all entries are shown."), "See README.openldap to solve this problem.");
+		StatusMessage("WARN", _("LDAP sizelimit exceeded, not all entries are shown."), _("See README.openldap.txt to solve this problem."));
 	}
 	if ($sr) {
 		$dom_info = ldap_get_entries($_SESSION["ldap"]->server, $sr);
