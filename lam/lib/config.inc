@@ -240,6 +240,7 @@ class Config {
 			if ($file) {
 				for ($i = 0; $i < sizeof($file_array); $i++) fputs($file, $file_array[$i]);
 				fclose($file);
+				@chmod ($conffile, 0600);
 			}
 			else {
 				StatusMessage("ERROR", "", _("Cannot open config file!") . " (" . $conffile . ")");
