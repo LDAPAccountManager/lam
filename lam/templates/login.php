@@ -153,7 +153,7 @@ function display_LoginPage($config_object,$profile)
 						?>
 					</b>&nbsp;&nbsp;</td>
 					<td style="border-style:none" height="35" align="left">
-						<select name="username" size="1">
+						<select name="username" size="1" tabindex="0">
 						<?php
 						$admins = $config_object->get_Admins();
 						for($i = 0; $i < count($admins); $i++) {
@@ -174,7 +174,7 @@ function display_LoginPage($config_object,$profile)
 						?>
 					</b>&nbsp;&nbsp;</td>
 					<td style="border-style:none" height="35" align="left">
-						<input type="password" name="passwd">
+						<input type="password" name="passwd" tabindex="1">
 					</td>
 				</tr>
 				<tr>
@@ -197,7 +197,7 @@ function display_LoginPage($config_object,$profile)
 						?>
 					</b>&nbsp;&nbsp;</td>
 					<td style="border-style:none" height="35" align="left">
-						<select name="language" size="1">
+						<select name="language" size="1" tabindex="2">
 						<?php
 						for($i = 0; $i < count($languages); $i++) {
 							if($languages[$i]["default"] == "YES") {
@@ -222,7 +222,7 @@ function display_LoginPage($config_object,$profile)
 				<tr>
 					<td style="border-style:none" height="50" colspan="2" align="center">
 						<input name="checklogin" type="hidden" value="<?php echo _('Login'); ?>">
-						<input type="submit" value="<?php echo _("Login"); ?>">
+						<input type="submit" value="<?php echo _("Login"); ?>" tabindex="3">
 					</td>
 				</tr>
 				<tr>
@@ -255,7 +255,7 @@ function display_LoginPage($config_object,$profile)
 					<?php echo $_POST['profile']; ?>
 				</td>
 				<td style="border-style:none" height="30" align="right">
-					<select name="profile" size="1">
+					<select name="profile" size="1" tabindex="4">
 					<?php
 					for($i=0;$i<count($profiles);$i++) {
 						?>
@@ -264,7 +264,7 @@ function display_LoginPage($config_object,$profile)
 					}
 					?>
 					</select>
-					<input name="profileChange" type="submit" value="<?php echo _("Change Profile"); ?>">
+					<input name="profileChange" type="submit" value="<?php echo _("Change Profile"); ?>" tabindex="5">
 				</td>
 				</tr>
 				<tr>
