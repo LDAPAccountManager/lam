@@ -46,14 +46,12 @@ if (isset($_GET['DN'])) {
 		$_SESSION['account'] = loadGroupProfile('default');
 		$_SESSION['account'] ->type = 'group';
 		if (isset($_SESSION['account_old'])) unset($_SESSION['account_old']);
-		$_SESSION['account_old'] = false;
 		}
 	}
 else if (count($_POST)==0) { // Startcondition. groupedit.php was called from outside
 	$_SESSION['account'] = loadGroupProfile('default');
 	$_SESSION['account'] ->type = 'group';
 	if (isset($_SESSION['account_old'])) unset($_SESSION['account_old']);
-	$_SESSION['account_old'] = false;
 	}
 
 switch ($_POST['select']) { // Select which part of page should be loaded and check values
@@ -572,8 +570,7 @@ switch ($select_local) { // Select which part of page will be loaded
 
 	case 'quota':
 		// Quota Settings
-
-		if (!isset($_SESSION['account']->quota)) { // load quotas
+		if (!isset($_SESSION['account']->quota[0]) || (!isset($_SESSION['account']->quota[0][1])) && isset($_SESSION['account_old']) ) { // load quotas
 			$values = getquotas('group', $_SESSION['account']->general_username);
 			if (is_object($values)) {
 				while (list($key, $val) = each($values)) // Set only defined values
@@ -641,6 +638,20 @@ switch ($select_local) { // Select which part of page will be loaded
 				$disabled = "disabled";
 				}
 			}
+
+		if (!isset($_SESSION['account']->quota[0]) || (!isset($_SESSION['account']->quota[0][1])) && isset($_SESSION['account_old']) ) { // load quotas
+			$values = getquotas('group', $_SESSION['account']->general_username);
+			if (is_object($values)) {
+				while (list($key, $val) = each($values)) // Set only defined values
+					if (isset($val)) $_SESSION['account']->$key = $val;
+				}
+			if (is_object($values) && isset($_SESSION['account_old'])) {
+				while (list($key, $val) = each($values)) // Set only defined values
+					if (isset($val)) $_SESSION['account_old']->$key = $val;
+				}
+			}
+
+
 		echo '<input name="select" type="hidden" value="final">';
 		echo "<input name=\"select\" type=\"hidden\" value=\"final\">\n";
 		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";

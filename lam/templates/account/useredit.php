@@ -52,7 +52,6 @@ if (isset($_GET['DN'])) {
 		$_SESSION['account'] ->type = 'user';
 		$_SESSION['account']->smb_flagsW = 0;
 		if (isset($_SESSION['account_old'])) unset($_SESSION['account_old']);
-		$_SESSION['account_old'] = false;
 		}
 	}
 else if (count($_POST)==0) { // Startcondition. useredit.php was called from outside
@@ -60,7 +59,6 @@ else if (count($_POST)==0) { // Startcondition. useredit.php was called from out
 	$_SESSION['account'] ->type = 'user';
 	$_SESSION['account']->smb_flagsW = 0;
 	if (isset($_SESSION['account_old'])) unset($_SESSION['account_old']);
-	$_SESSION['account_old'] = false;
 	}
 
 
@@ -1088,7 +1086,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		break;
 	case 'quota':
 		// Quota Settings
-		if (!isset($_SESSION['account']->quota)) { // load quotas
+		if (!isset($_SESSION['account']->quota[0]) || (!isset($_SESSION['account']->quota[0][1])) && isset($_SESSION['account_old']) ) { // load quotas
 			$values = getquotas('user', $_SESSION['account']->general_username);
 			if (is_object($values)) {
 				while (list($key, $val) = each($values)) // Set only defined values
@@ -1099,7 +1097,6 @@ switch ($select_local) { // Select which part of page will be loaded
 					if (isset($val)) $_SESSION['account_old']->$key = $val;
 				}
 			}
-
 		echo "<input name=\"select\" type=\"hidden\" value=\"quota\">\n";
 		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
 		echo "<table border=0><tr><td><fieldset class=\"useredit-dark\"><legend class=\"useredit-bright\"><b>";
@@ -1234,6 +1231,19 @@ switch ($select_local) { // Select which part of page will be loaded
 				$disabled = "disabled";
 				}
 			}
+
+		if (!isset($_SESSION['account']->quota[0]) || (!isset($_SESSION['account']->quota[0][1])) && isset($_SESSION['account_old']) ) { // load quotas
+			$values = getquotas('user', $_SESSION['account']->general_username);
+			if (is_object($values)) {
+				while (list($key, $val) = each($values)) // Set only defined values
+					if (isset($val)) $_SESSION['account']->$key = $val;
+				}
+			if (is_object($values) && isset($_SESSION['account_old'])) {
+				while (list($key, $val) = each($values)) // Set only defined values
+					if (isset($val)) $_SESSION['account_old']->$key = $val;
+				}
+			}
+
 		echo '<input name="select" type="hidden" value="final">';
 		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
 		echo "<table><tr><td><fieldset class=\"useredit-dark\"><legend class=\"useredit-bright\"><b>";
@@ -1273,6 +1283,12 @@ switch ($select_local) { // Select which part of page will be loaded
 			echo '<tr>';
 			StatusMessage ('INFO', _('UID-number has changed. You have to run the following command as root in order to change existing file-permissions:'),
 			'find / -gid ' . $_SESSION['account_old' ]->general_uidNumber . ' -exec chown ' . $_SESSION['account']->general_uidNumber . ' {} \;');
+			echo '</tr>'."\n";
+			}
+		if (($_SESSION['account_old']) && ($_SESSION['account']->general_group != $_SESSION['account_old']->general_group)) {
+			echo '<tr>';
+			StatusMessage ('INFO', _('Primary group has changed. You have to run the following command as root in order to change existing file-permissions:'),
+			'find / -uid ' . $_SESSION['account']->general_uidNumber . ' -gid ' . getgid($_SESSION['account_old']->general_group) .' -exec chown ' . $_SESSION['account']->general_uidNumber . ':'.getgid($_SESSION['account' ]->general_group). ' {} \;');
 			echo '</tr>'."\n";
 			}
 		if (($_SESSION['account_old']) && ($_SESSION['account']->general_homedir != $_SESSION['account_old']->general_homedir)) {

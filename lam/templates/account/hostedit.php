@@ -53,7 +53,6 @@ if (isset($_GET['DN'])) {
 		$_SESSION['account']->general_homedir = '/dev/null';
 		$_SESSION['account']->general_shell = '/bin/false';
 		if (isset($_SESSION['account_old'])) unset($_SESSION['account_old']);
-		$_SESSION['account_old'] = false;
 		}
 	}
 else if (count($_POST)==0) { // Startcondition. hostedit.php was called from outside
@@ -64,7 +63,6 @@ else if (count($_POST)==0) { // Startcondition. hostedit.php was called from out
 	$_SESSION['account']->general_homedir = '/dev/null';
 	$_SESSION['account']->general_shell = '/bin/false';
 	if (isset($_SESSION['account_old'])) unset($_SESSION['account_old']);
-	$_SESSION['account_old'] = false;
 	}
 
 switch ($_POST['select']) { // Select which part of page should be loaded and check values
@@ -171,6 +169,7 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 		if ($_POST['respass']) {
 			$_SESSION['account']->unix_password_no=true;
 			$_SESSION['account']->smb_password_no=true;
+			$select_local = 'samba';
 			}
 		break;
 	case 'final':
