@@ -62,7 +62,7 @@ if (count($_POST)==0) {
 	else $select='main';
 	}
 else {
-	/* Check loaded attributed in $_SESSION['accounts'] if file was loaded and
+	/* Check loaded attributed in $_SESSION['mass_accounts'] if file was loaded and
 	* filesize is bigger as 0.
 	*/
 	if ($_POST['tolist'] && ($_FILES['userfile']['size']>0)) $select = 'list';
@@ -73,7 +73,7 @@ else {
 	else if ($_POST['create']) $select = 'create';
 	else if ($_POST['pdf']) {
 		// Create PDF-File
-		createUserPDF($_SESSION['accounts']);
+		createUserPDF($_SESSION['mass_accounts']);
 		// Stop script
 		die;
 		}
@@ -93,8 +93,8 @@ switch ($select) {
 	case 'list' :
 		if (loadfile()) {
 			// Do Refresh to masscreate.php itself if csv-file was loaded successfully
-			$_SESSION['group_suffix'] = $_POST['f_group_suffix'];
-			$_SESSION['group_selectprofile'] =  $_POST['f_selectgroupprofile'];
+			$_SESSION['mass_group_suffix'] = $_POST['f_group_suffix'];
+			$_SESSION['mass_group_selectprofile'] =  $_POST['f_selectgroupprofile'];
 			metaRefresh("masscreate.php?list2=true");
 			// Stop script
 			die;
@@ -110,8 +110,6 @@ switch ($select) {
 			echo _('Create new Accounts');
 			echo '</title>'."\n".
 				'<link rel="stylesheet" type="text/css" href="../style/layout.css">'."\n".
-				'<meta http-equiv="pragma" content="no-cache">'."\n".
-				'<meta http-equiv="cache-control" content="no-cache">'."\n".
 				'</head><body>'."\n".
 				'<form enctype="multipart/form-data" action="masscreate.php" method="post">'."\n".
 				'<table class="masscreate" width="100%">'.
@@ -134,10 +132,7 @@ echo $_SESSION['header'];
 echo '<title>';
 echo _('Create new Accounts');
 echo '</title>'."\n".
-	'<link rel="stylesheet" type="text/css" href="../style/layout.css">'."\n".
-	'<meta http-equiv="pragma" content="no-cache">'."\n".
-	'<meta http-equiv="cache-control" content="no-cache">'."\n";
-
+	'<link rel="stylesheet" type="text/css" href="../style/layout.css">'."\n";
 
 switch ($select) {
 	/* Select which part of page should be loaded
@@ -150,7 +145,7 @@ switch ($select) {
 		* 5 sec. should be enough to create the current
 		* user
 		*/
-		if ($_SESSION['pointer'] < sizeof($_SESSION['accounts'])) {
+		if ($_SESSION['mass_pointer'] < sizeof($_SESSION['mass_accounts'])) {
 			$refresh = get_cfg_var('max_execution_time')-5;
 			echo '<meta http-equiv="refresh" content="'.$refresh.'; URL=masscreate.php?create=true">'."\n";
 			}
@@ -160,13 +155,12 @@ switch ($select) {
 			"<fieldset class=\"useredit-bright\"><legend class=\"useredit-bright\"><b>";
 			echo _('Creating users. Please stand by ....');
 			echo "</b></legend>\n<table border=0 width=\"100%\">\n";
-		// Keys needed to encrypt passwords from session
 		$stay=true;
 		// Stay in loop as long there are still users to create and no error did ocour
-		while (($_SESSION['pointer'] < sizeof($_SESSION['accounts'])) && $stay) {
-			if (getgid($_SESSION['accounts'][$_SESSION['pointer']]->general_group)==-1) {
+		while (isset($_SESSION['mass_pointer']) && ($_SESSION['mass_pointer'] < sizeof($_SESSION['mass_accounts'])) && $stay) {
+			if (getgid($_SESSION['mass_accounts'][$_SESSION['mass_pointer']]->general_group)==-1) {
 					// Create group if it doesn't exist yet
-					$group = LoadGroupProfile($_SESSION['group_selectprofile']);
+					$group = LoadGroupProfile($_SESSION['mass_group_selectprofile']);
 					$group->type = 'group';
 					// load quotas from profile and check if they are valid
 					if ($config_intern->scriptServer) {
@@ -191,112 +185,110 @@ switch ($select) {
 						$group->quota = array_values($group->quota);
 						}
 					// Get groupname from current user
-					$group->general_username=$_SESSION['accounts'][$_SESSION['pointer']]->general_group;
+					$group->general_username=$_SESSION['mass_accounts'][$_SESSION['mass_pointer']]->general_group;
 					// gid Number
 					$temp = explode(':', checkid($group));
 					$group->general_uidNumber = $temp[0];
 					// Set Gecos to groupname
-					$group->general_gecos=$_SESSION['accounts'][$_SESSION['pointer']]->general_group;
+					$group->general_gecos=$_SESSION['mass_accounts'][$_SESSION['mass_pointer']]->general_group;
 					// Set DN
-					$group->general_dn=$_SESSION['group_suffix'];
+					$group->general_dn=$_SESSION['mass_group_suffix'];
 					// Create group
 					$error = creategroup($group);
 					// Show success or failure-message about group creation
 					if ($error==1) {
 						echo '<tr><td>';
-						sprintf (_('Created group %s.'), $_SESSION['accounts'][$_SESSION['pointer']]->general_group);
+						sprintf (_('Created group %s.'), $_SESSION['mass_accounts'][$_SESSION['mass_pointer']]->general_group);
 						echo '</td></tr>'."\n";
 						}
 					else {
 						$stay = false;
-						StatusMessage('ERROR', _('Could not create group!'), sprintf (_('Was unable to create %s.'), $_SESSION['accounts'][$row]->general_group));
+						StatusMessage('ERROR', _('Could not create group!'), sprintf (_('Was unable to create %s.'), $_SESSION['mass_accounts'][$row]->general_group));
 						}
 					}
 			// Check if Homedir is valid
-			$_SESSION['accounts'][$_SESSION['pointer']]->general_homedir = str_replace('$group', $_SESSION['accounts'][$_SESSION['pointer']]->general_group, $_SESSION['accounts'][$_SESSION['pointer']]->general_homedir);
-			if ($_SESSION['accounts'][$_SESSION['pointer']]->general_username != '')
-				$_SESSION['accounts'][$_SESSION['pointer']]->general_homedir = str_replace('$user', $_SESSION['accounts'][$_SESSION['pointer']]->general_username, $_SESSION['accounts'][$_SESSION['pointer']]->general_homedir);
+			$_SESSION['mass_accounts'][$_SESSION['mass_pointer']]->general_homedir = str_replace('$group', $_SESSION['mass_accounts'][$_SESSION['mass_pointer']]->general_group, $_SESSION['mass_accounts'][$_SESSION['mass_pointer']]->general_homedir);
+			if ($_SESSION['mass_accounts'][$_SESSION['mass_pointer']]->general_username != '')
+				$_SESSION['mass_accounts'][$_SESSION['mass_pointer']]->general_homedir = str_replace('$user', $_SESSION['mass_accounts'][$_SESSION['mass_pointer']]->general_username, $_SESSION['mass_accounts'][$_SESSION['mass_pointer']]->general_homedir);
 			// Set uid number
-			$temp = explode(':', checkid($_SESSION['accounts'][$_SESSION['pointer']]));
-			$_SESSION['accounts'][$_SESSION['pointer']]->general_uidNumber = $temp[0];
-			$_SESSION['accounts'][$_SESSION['pointer']]->smb_scriptPath = str_replace('$user', $_SESSION['accounts'][$_SESSION['pointer']]->general_username, $_SESSION['accounts'][$_SESSION['pointer']]->smb_scriptPath);
-			$_SESSION['accounts'][$_SESSION['pointer']]->smb_scriptPath = str_replace('$group', $_SESSION['accounts'][$_SESSION['pointer']]->general_group, $_SESSION['accounts'][$_SESSION['pointer']]->smb_scriptPath);
-			$_SESSION['accounts'][$_SESSION['pointer']]->smb_profilePath = str_replace('$user', $_SESSION['accounts'][$_SESSION['pointer']]->general_username, $_SESSION['accounts'][$_SESSION['pointer']]->smb_profilePath);
-			$_SESSION['accounts'][$_SESSION['pointer']]->smb_profilePath = str_replace('$group', $_SESSION['accounts'][$_SESSION['pointer']]->general_group, $_SESSION['accounts'][$_SESSION['pointer']]->smb_profilePath);
-			$_SESSION['accounts'][$_SESSION['pointer']]->smb_smbhome = str_replace('$user', $_SESSION['accounts'][$_SESSION['pointer']]->general_username, $_SESSION['accounts'][$_SESSION['pointer']]->smb_smbhome);
-			$_SESSION['accounts'][$_SESSION['pointer']]->smb_smbhome = str_replace('$group', $_SESSION['accounts'][$_SESSION['pointer']]->general_group, $_SESSION['accounts'][$_SESSION['pointer']]->smb_smbhome);
-			$_SESSION['accounts'][$_SESSION['pointer']]->unix_password = base64_encode($_SESSION['ldap']->encrypt(genpasswd()));
-			$_SESSION['accounts'][$_SESSION['pointer']]->smb_password = $_SESSION['accounts'][$_SESSION['pointer']]->unix_password;
+			$temp = explode(':', checkid($_SESSION['mass_accounts'][$_SESSION['mass_pointer']]));
+			$_SESSION['mass_accounts'][$_SESSION['mass_pointer']]->general_uidNumber = $temp[0];
+			$_SESSION['mass_accounts'][$_SESSION['mass_pointer']]->smb_scriptPath = str_replace('$user', $_SESSION['mass_accounts'][$_SESSION['mass_pointer']]->general_username, $_SESSION['mass_accounts'][$_SESSION['mass_pointer']]->smb_scriptPath);
+			$_SESSION['mass_accounts'][$_SESSION['mass_pointer']]->smb_scriptPath = str_replace('$group', $_SESSION['mass_accounts'][$_SESSION['mass_pointer']]->general_group, $_SESSION['mass_accounts'][$_SESSION['mass_pointer']]->smb_scriptPath);
+			$_SESSION['mass_accounts'][$_SESSION['mass_pointer']]->smb_profilePath = str_replace('$user', $_SESSION['mass_accounts'][$_SESSION['mass_pointer']]->general_username, $_SESSION['mass_accounts'][$_SESSION['mass_pointer']]->smb_profilePath);
+			$_SESSION['mass_accounts'][$_SESSION['mass_pointer']]->smb_profilePath = str_replace('$group', $_SESSION['mass_accounts'][$_SESSION['mass_pointer']]->general_group, $_SESSION['mass_accounts'][$_SESSION['mass_pointer']]->smb_profilePath);
+			$_SESSION['mass_accounts'][$_SESSION['mass_pointer']]->smb_smbhome = str_replace('$user', $_SESSION['mass_accounts'][$_SESSION['mass_pointer']]->general_username, $_SESSION['mass_accounts'][$_SESSION['mass_pointer']]->smb_smbhome);
+			$_SESSION['mass_accounts'][$_SESSION['mass_pointer']]->smb_smbhome = str_replace('$group', $_SESSION['mass_accounts'][$_SESSION['mass_pointer']]->general_group, $_SESSION['mass_accounts'][$_SESSION['mass_pointer']]->smb_smbhome);
+			$_SESSION['mass_accounts'][$_SESSION['mass_pointer']]->unix_password = base64_encode($_SESSION['ldap']->encrypt(genpasswd()));
+			$_SESSION['mass_accounts'][$_SESSION['mass_pointer']]->smb_password = $_SESSION['mass_accounts'][$_SESSION['mass_pointer']]->unix_password;
 				// Only create user if we have at least 5sec time to create the user
 			if ( (time()-$time)<(get_cfg_var('max_execution_time')-10)) {
-				$error = createuser($_SESSION['accounts'][$_SESSION['pointer']], false);
+				$error = createuser($_SESSION['mass_accounts'][$_SESSION['mass_pointer']], false);
 					// Show error or success message
 					if ($error==1) {
-						$_SESSION['pointer']++;
+						$_SESSION['mass_pointer']++;
 						echo '<tr><td>';
-						sprintf (_('Created user %s.'), $_SESSION['accounts'][$_SESSION['pointer']]->general_username);
+						sprintf (_('Created user %s.'), $_SESSION['mass_accounts'][$_SESSION['mass_pointer']]->general_username);
 						echo '</td></tr>'."\n";
 						}
 					else {
 						$stay = false;
-						StatusMessage('ERROR', _('Could not create user!'), sprintf (_('Was unable to create %s.'), $_SESSION['accounts'][$row]->general_username));
+						StatusMessage('ERROR', _('Could not create user!'), sprintf (_('Was unable to create %s.'), $_SESSION['mass_accounts'][$row]->general_username));
 						}
 					}
 				// End loop if we don't have enough time to create user
 			else $stay=false;
 			}
+		echo "</table>\n";
 		if (!$stay) {
 			// Display rest of meta-refreh page if there are still users to create
-			echo '<tr><td><a href="masscreate.php?create=true">';
+			echo '<a href="masscreate.php?create=true">';
 			echo _('Click here if you are not directed to the next page.');
-			echo '</a></td></tr>'."\n";
-			echo '<tr><td><input name="cancel" type="submit" value="'; echo _('Cancel');
-			echo '"></td></tr></table>';
+			echo '</a><br>'."\n";
+			echo '<input name="cancel" type="submit" value="'; echo _('Cancel');
+			echo '">';
 			echo "</fieldset>\n";
 			}
 		else {
 			// Write homedirs and quotas if needed
 			if ($_SESSION['config']->scriptServer) {
-				setquotas ($_SESSION['accounts']);
+				setquotas ($_SESSION['mass_accounts']);
 				// Get array with new usernames
-				foreach ($_SESSION['accounts'] as $account) $users[] = $account->general_username;
+				foreach ($_SESSION['mass_accounts'] as $account) $users[] = $account->general_username;
 				addhomedir($users);
 				}
 			// Show success-page
-			echo '<tr><td>';
 			echo _('All Users have been created');
-			echo '</td></tr>'."\n".'<tr><td>';
-			echo '<tr><td><input name="cancel" type="submit" value="'; echo _('User list'); echo '">';
-			echo '</td><td></td><td><input name="pdf" type="submit" value="'; echo _('Create PDF file'); echo '">';
-			echo '</td></tr></table>'."\n</fieldset>\n";
+			echo "<br>\n";
+			echo '<input name="cancel" type="submit" value="'; echo _('User list'); echo '">';
+			echo '&nbsp;<input name="pdf" type="submit" value="'; echo _('Create PDF file'); echo '">';
+			echo "</fieldset>\n";
 			// unset variables
-			if ( isset($_SESSION['pointer'])) unset($_SESSION['pointer']);
+			if ( isset($_SESSION['mass_pointer'])) unset($_SESSION['mass_pointer']);
 			if ( isset($_SESSION['mass_errors'])) unset($_SESSION['mass_errors']);
-			if ( isset($_SESSION['group_suffix'])) unset($_SESSION['group_suffix']);
-			if ( isset($_SESSION['group_selectprofile'])) unset($_SESSION['group_selectprofile']);
+			if ( isset($_SESSION['mass_group_suffix'])) unset($_SESSION['mass_group_suffix']);
+			if ( isset($_SESSION['mass_group_selectprofile'])) unset($_SESSION['mass_group_selectprofile']);
 			}
 		break;
 	case 'list2':
 		// Show table with all users
 		echo	'</head><body>'."\n".
-			'<form enctype="multipart/form-data" action="masscreate.php" method="post">'."\n".
-			'<table border=0 width="100%">';
+			'<form enctype="multipart/form-data" action="masscreate.php" method="post">'."\n";
 		for ($i=0; $i<sizeof($groups); $i++)
-			if ($_SESSION['accounts'][$i]->general_group!='')
-				StatusMessage('INFO', _('Group').' '. $_SESSION['accounts'][$i]->general_group.' '._('not found!'), _('It will be created.'));
-		echo "</table>\n";
+			if ($_SESSION['mass_accounts'][$i]->general_group!='')
+				StatusMessage('INFO', _('Group').' '. $_SESSION['mass_accounts'][$i]->general_group.' '._('not found!'), _('It will be created.'));
 		echo "<fieldset class=\"useredit-bright\"><legend class=\"useredit-bright\"><b>";
 		echo _('Confirm List');
 		echo "</b></legend>\n<table border=0 width=\"100%\">\n";
 		echo '<tr><td>'._('row').'</td>'."\n".'<td>'. _('Surname'). '</td>'."\n".'<td>'. _('Given name'). '</td>'."\n".'<td>'. _('User name'). '</td>'."\n".'<td>'. _('Primary group'). '</td>'."\n".'<td>'.
 			_('Details'). '</td>'."\n".'<td>' . _('Infos'). '</td>'."\n".'<td>' . _('Warnings'). '</td>'."\n".'<td>' . _('Errors') . '</td>'."\n".'</tr>'."\n";
-		$end = sizeof($_SESSION['accounts']);
+		$end = sizeof($_SESSION['mass_accounts']);
 		for ($row=0; $row<$end; $row++) { // loops for every row
 			echo '<tr><td>'.$row.'</td>'."\n".'<td>'.
-				$_SESSION['accounts'][$row]->general_surname.'</td>'."\n".'<td>'.
-				$_SESSION['accounts'][$row]->general_givenname.'</td>'."\n".'<td>'.
-				$_SESSION['accounts'][$row]->general_username.'</td>'."\n".'<td>'.
-				$_SESSION['accounts'][$row]->general_group.'</td>'."\n".'<td>'.
+				$_SESSION['mass_accounts'][$row]->general_surname.'</td>'."\n".'<td>'.
+				$_SESSION['mass_accounts'][$row]->general_givenname.'</td>'."\n".'<td>'.
+				$_SESSION['mass_accounts'][$row]->general_username.'</td>'."\n".'<td>'.
+				$_SESSION['mass_accounts'][$row]->general_group.'</td>'."\n".'<td>'.
 				'<a target=_blank href="massdetail.php?row='.$row.'&amp;type=detail">'._('Show Details.').'</a></td>'."\n".'<td>';
 			$found=false;
 			// Show infos
@@ -325,28 +317,30 @@ switch ($select) {
 		for ($i=0; $i<sizeof($_SESSION['mass_errors']); $i++)
 			for ($j=0; $j<sizeof($_SESSION['mass_errors'][$i]); $j++)
 				if ($_SESSION['mass_errors'][$i][$j][0] == 'WARN') $nowarn=false;
-		echo '<br>';
+		echo '<tr><td></td></tr>';
 		if (!$noerrors) { echo '<tr><td>'. _('There are some errors.') . '</td></tr>'."\n"; }
 		if (!$nowarn) { echo '<tr><td>'. _('There are some warnings.') . '</td></tr>'."\n"; }
 		echo '</table></fieldset>';
 		echo "<fieldset class=\"useredit-bright\"><legend class=\"useredit-bright\"><b>";
 		echo _('Please select page:');
-		echo "</b></legend>\n<table border=0 width=\"100%\">\n".
-			'<tr><td><input name="back" type="submit" value="'; echo _('Back');
-		echo '"></td><td><input name="cancel" type="submit" value="'; echo _('Cancel');
-		echo '"></td><td><input name="list2" type="submit" value="'; echo _('Refresh'); echo '">';
-		if ($noerrors) { echo '</td><td><input name="create" type="submit" value="'; echo _('Create'); echo '">'; }
-		echo '</td></tr>'."\n"."</table>\n</fieldset>";
+		echo "</b></legend>\n";
+		if ($noerrors) {
+			echo '<input name="create" type="submit" value="' . _('Create') . '">&nbsp;&nbsp;';
+		}
+		echo '<input name="back" type="submit" value="' . _('Back') . "\">";
+		echo '&nbsp;<input name="cancel" type="submit" value="' . _('Cancel') . "\">";
+		echo '&nbsp;&nbsp;<input name="list2" type="submit" value="' . _('Refresh') . '">';
+		echo "</fieldset>";
 		break;
 	case 'main':
 		// Unset old variables
-		if ( isset($_SESSION['accounts'])) unset($_SESSION['accounts']);
-		if ( isset($_SESSION['pointer'])) unset($_SESSION['pointer']);
+		if ( isset($_SESSION['mass_accounts'])) unset($_SESSION['mass_accounts']);
+		if ( isset($_SESSION['mass_pointer'])) unset($_SESSION['mass_pointer']);
 		if ( isset($_SESSION['mass_errors'])) unset($_SESSION['mass_errors']);
-		if ( isset($_SESSION['group_suffix'])) unset($_SESSION['group_suffix']);
-		if ( isset($_SESSION['group_selectprofile'])) unset($_SESSION['group_selectprofile']);
+		if ( isset($_SESSION['mass_group_suffix'])) unset($_SESSION['mass_group_suffix']);
+		if ( isset($_SESSION['mass_group_selectprofile'])) unset($_SESSION['mass_group_selectprofile']);
 		// Set pointer to 0, first user
-		$_SESSION['pointer']=0;
+		$_SESSION['mass_pointer']=0;
 		echo	'</head><body>'."\n".
 			'<form enctype="multipart/form-data" action="masscreate.php" method="post">'."\n".
 			"<fieldset class=\"useredit-bright\"><legend class=\"useredit-bright\"><b>";
@@ -434,7 +428,7 @@ echo '</form></body></html>';
 
 
 /* Whis function will load a csv-file and
-* load all attributes into $_SESSION['accounts'][$row] which
+* load all attributes into $_SESSION['mass_accounts'][$row] which
 * is an array of account objects
 * The csv file is using the following syntax:
 */
@@ -474,59 +468,60 @@ function loadfile() {
 		for ($row=0; $line_array=fgetcsv($handle,2048); $row++) {
 			 // loops for every row
 			// Set corrent user to profile
-			$_SESSION['accounts'][$row] = $profile;
+			$_SESSION['mass_accounts'][$row] = $profile;
 			// Load values from file into array
-			if (isset($line_array[0])) $_SESSION['accounts'][$row]->general_surname = $line_array[0];
-			if (isset($line_array[1])) $_SESSION['accounts'][$row]->general_givenname = $line_array[1];
-			if (isset($line_array[2])) $_SESSION['accounts'][$row]->general_username = $line_array[2];
-			if (isset($line_array[3])) $_SESSION['accounts'][$row]->general_group = $line_array[3];
-			if (isset($line_array[4])) $_SESSION['accounts'][$row]->personal_title = $line_array[4];
-			if (isset($line_array[5])) $_SESSION['accounts'][$row]->personal_mail = $line_array[5];
-			if (isset($line_array[6])) $_SESSION['accounts'][$row]->personal_telephoneNumber = $line_array[6];
-			if (isset($line_array[7])) $_SESSION['accounts'][$row]->personal_mobileTelephoneNumber = $line_array[7];
-			if (isset($line_array[8])) $_SESSION['accounts'][$row]->personal_facsimileTelephoneNumber = $line_array[8];
-			if (isset($line_array[9])) $_SESSION['accounts'][$row]->personal_street = $line_array[9];
-			if (isset($line_array[10])) $_SESSION['accounts'][$row]->personal_postalCode = $line_array[10];
-			if (isset($line_array[11])) $_SESSION['accounts'][$row]->personal_postalAddress = $line_array[11];
-			if (isset($line_array[12])) $_SESSION['accounts'][$row]->personal_employeeType = $line_array[12];
+			if (isset($line_array[0])) $_SESSION['mass_accounts'][$row]->general_surname = $line_array[0];
+			if (isset($line_array[1])) $_SESSION['mass_accounts'][$row]->general_givenname = $line_array[1];
+			if (isset($line_array[2])) $_SESSION['mass_accounts'][$row]->general_username = $line_array[2];
+			if (isset($line_array[3])) $_SESSION['mass_accounts'][$row]->general_group = $line_array[3];
+			if (isset($line_array[4])) $_SESSION['mass_accounts'][$row]->personal_title = $line_array[4];
+			if (isset($line_array[5])) $_SESSION['mass_accounts'][$row]->personal_mail = $line_array[5];
+			if (isset($line_array[6])) $_SESSION['mass_accounts'][$row]->personal_telephoneNumber = $line_array[6];
+			if (isset($line_array[7])) $_SESSION['mass_accounts'][$row]->personal_mobileTelephoneNumber = $line_array[7];
+			if (isset($line_array[8])) $_SESSION['mass_accounts'][$row]->personal_facsimileTelephoneNumber = $line_array[8];
+			if (isset($line_array[9])) $_SESSION['mass_accounts'][$row]->personal_street = $line_array[9];
+			if (isset($line_array[10])) $_SESSION['mass_accounts'][$row]->personal_postalCode = $line_array[10];
+			if (isset($line_array[11])) $_SESSION['mass_accounts'][$row]->personal_postalAddress = $line_array[11];
+			if (isset($line_array[12])) $_SESSION['mass_accounts'][$row]->personal_employeeType = $line_array[12];
 			if ($_POST['f_ou_expand']) {
 				// Expand DN of user with ou=$group
-				$_SESSION['accounts'][$row]->general_dn = "ou=".$_SESSION['accounts'][$row]->general_group .','. $_POST['f_general_suffix'];
+				$_SESSION['mass_accounts'][$row]->general_dn = "ou=".$_SESSION['mass_accounts'][$row]->general_group .','. $_POST['f_general_suffix'];
 				// Create OUs if needed
-				if (!in_array("ou=".$_SESSION['accounts'][$row]->general_group.",".$_POST['f_general_suffix'], $OUs)) {
+				if (!in_array("ou=".$_SESSION['mass_accounts'][$row]->general_group.",".$_POST['f_general_suffix'], $OUs)) {
 					$attr['objectClass']= 'organizationalUnit';
-					$attr['ou'] = $_SESSION['accounts'][$row]->general_group;
-					$success = ldap_add($_SESSION['ldap']->server(), $_SESSION['accounts'][$row]->general_dn, $attr);
-					if ($success) $OUs[] = "ou=".$_SESSION['accounts'][$row]->general_group.",".$_POST['f_general_suffix'];
+					$attr['ou'] = $_SESSION['mass_accounts'][$row]->general_group;
+					$success = ldap_add($_SESSION['ldap']->server(), $_SESSION['mass_accounts'][$row]->general_dn, $attr);
+					if ($success) $OUs[] = "ou=".$_SESSION['mass_accounts'][$row]->general_group.",".$_POST['f_general_suffix'];
 					}
 				}
 			// Set DN without uid=$username
-			else $_SESSION['accounts'][$row]->general_dn = $_POST['f_general_suffix'];
+			else $_SESSION['mass_accounts'][$row]->general_dn = $_POST['f_general_suffix'];
 			// Create Random Password
-			$_SESSION['accounts'][$row]->unix_password = base64_encode($_SESSION['ldap']->encrypt(genpasswd()));
-			$_SESSION['accounts'][$row]->smb_password=$_SESSION['accounts'][$row]->unix_password;
+			$_SESSION['mass_accounts'][$row]->unix_password = base64_encode($_SESSION['ldap']->encrypt(genpasswd()));
+			$_SESSION['mass_accounts'][$row]->smb_password=$_SESSION['mass_accounts'][$row]->unix_password;
 			}
 		}
 	// Validate cache-array
 	ldapreload('user');
 	// Get List with all existing usernames
+	$users = array();
 	foreach ($_SESSION['userDN'] as $user_array) $users[] = $user_array['cn'];
-	for ($row2=0; $row2<sizeof($_SESSION['accounts']); $row2++) {
+	for ($row2=0; $row2<sizeof($_SESSION['mass_accounts']); $row2++) {
 		/* loops for every user
-		* Check for double entries in $_SESSION['accounts']
+		* Check for double entries in $_SESSION['mass_accounts']
 		* Stop Execution after line 400 because max executiontime would be to close
 		*/
 		if ($row2<401) {
 			// Set all usernames to unique usernames
-			while (in_array($_SESSION['accounts'][$row2]->general_username, $users)) {
+			while (in_array($_SESSION['mass_accounts'][$row2]->general_username, $users)) {
 				// get last character of username
-				$lastchar = substr($_SESSION['accounts'][$row2]->general_username, strlen($_SESSION['accounts'][$row2]->general_username)-1, 1);
+				$lastchar = substr($_SESSION['mass_accounts'][$row2]->general_username, strlen($_SESSION['mass_accounts'][$row2]->general_username)-1, 1);
 				// Last character is no number
 				if ( !ereg('^([0-9])+$', $lastchar))
 					/* Last character is no number. Therefore we only have to
 					* add "2" to it.
 					*/
-					$_SESSION['accounts'][$row2]->general_username = $_SESSION['accounts'][$row2]->general_username . '2';
+					$_SESSION['mass_accounts'][$row2]->general_username = $_SESSION['mass_accounts'][$row2]->general_username . '2';
 				 else {
 					/* Last character is a number -> we have to increase the number until we've
 					* found a groupname with trailing number which is not in use.
@@ -534,51 +529,51 @@ function loadfile() {
 					* $i will show us were we have to split groupname so we get a part
 					* with the groupname and a part with the trailing number
 					*/
-				 	$i=strlen($_SESSION['accounts'][$row2]->general_username)-1;
+				 	$i=strlen($_SESSION['mass_accounts'][$row2]->general_username)-1;
 					$mark = false;
 					// Set $i to the last character which is a number in $account_new->general_username
 				 	while (!$mark) {
-						if (ereg('^([0-9])+$',substr($_SESSION['accounts'][$row2]->general_username, $i, strlen($_SESSION['accounts'][$row2]->general_username)-$i))) $i--;
+						if (ereg('^([0-9])+$',substr($_SESSION['mass_accounts'][$row2]->general_username, $i, strlen($_SESSION['mass_accounts'][$row2]->general_username)-$i))) $i--;
 							else $mark=true;
 						}
 					// increase last number with one
-					$firstchars = substr($_SESSION['accounts'][$row2]->general_username, 0, $i+1);
-					$lastchars = substr($_SESSION['accounts'][$row2]->general_username, $i+1, strlen($_SESSION['accounts'][$row2]->general_username)-$i);
+					$firstchars = substr($_SESSION['mass_accounts'][$row2]->general_username, 0, $i+1);
+					$lastchars = substr($_SESSION['mass_accounts'][$row2]->general_username, $i+1, strlen($_SESSION['mass_accounts'][$row2]->general_username)-$i);
 					// Put username together
-					$_SESSION['accounts'][$row2]->general_username = $firstchars . (intval($lastchars)+1);
+					$_SESSION['mass_accounts'][$row2]->general_username = $firstchars . (intval($lastchars)+1);
 				 	}
+					$_SESSION['mass_errors'][$row2][] = array('WARN', _('Username'), _('Username in use. Selected next free username.'));
 				}
 			// Add uername to array so it's not used again for another user in masscreate
-			$users[] = $_SESSION['accounts'][$row2]->general_username;
-			if ($_SESSION['accounts'][$row2]->general_username != $username) $_SESSION['mass_errors'][$row2][] = array('WARN', _('Username'), _('Username in use. Selected next free username.'));
+			$users[] = $_SESSION['mass_accounts'][$row2]->general_username;
 			// Check if givenname is valid
-			if ( !ereg('^([a-z]|[A-Z]|[-]|[ ]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+$', $_SESSION['accounts'][$row2]->general_givenname)) $_SESSION['mass_errors'][$row2][] = array('ERROR', _('Given name'), _('Given name contains invalid characters'));
+			if ( !ereg('^([a-z]|[A-Z]|[-]|[ ]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+$', $_SESSION['mass_accounts'][$row2]->general_givenname)) $_SESSION['mass_errors'][$row2][] = array('ERROR', _('Given name'), _('Given name contains invalid characters'));
 			// Check if surname is valid
-			if ( !ereg('^([a-z]|[A-Z]|[-]|[ ]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+$', $_SESSION['accounts'][$row2]->general_surname)) $_SESSION['mass_errors'][$row2][] = array('ERROR', _('Surname'), _('Surname contains invalid characters'));
-			if ( ($_SESSION['accounts'][$row2]->general_gecos=='') || ($_SESSION['accounts'][$row2]->general_gecos==' ')) {
-				$_SESSION['accounts'][$row2]->general_gecos = $_SESSION['accounts'][$row2]->general_givenname . " " . $_SESSION['accounts'][$row2]->general_surname ;
+			if ( !ereg('^([a-z]|[A-Z]|[-]|[ ]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+$', $_SESSION['mass_accounts'][$row2]->general_surname)) $_SESSION['mass_errors'][$row2][] = array('ERROR', _('Surname'), _('Surname contains invalid characters'));
+			if ( ($_SESSION['mass_accounts'][$row2]->general_gecos=='') || ($_SESSION['mass_accounts'][$row2]->general_gecos==' ')) {
+				$_SESSION['mass_accounts'][$row2]->general_gecos = $_SESSION['mass_accounts'][$row2]->general_givenname . " " . $_SESSION['mass_accounts'][$row2]->general_surname ;
 				$_SESSION['mass_errors'][$row2][] = array('INFO', _('Gecos'), _('Inserted sur- and given name in gecos-field.'));
 				}
-			$_SESSION['accounts'][$row2]->smb_displayName = $_SESSION['accounts'][$row2]->general_gecos;
-			if ($_SESSION['accounts'][$row2]->general_group=='') $_SESSION['mass_errors'][$row2][] = array('ERROR', _('Primary group'), _('No primary group defined!'));
+			$_SESSION['mass_accounts'][$row2]->smb_displayName = $_SESSION['mass_accounts'][$row2]->general_gecos;
+			if ($_SESSION['mass_accounts'][$row2]->general_group=='') $_SESSION['mass_errors'][$row2][] = array('ERROR', _('Primary group'), _('No primary group defined!'));
 			// Check if Username contains only valid characters
-			if ( !ereg('^([a-z]|[0-9]|[.]|[-]|[_])*$', $_SESSION['accounts'][$row2]->general_username))
+			if ( !ereg('^([a-z]|[0-9]|[.]|[-]|[_])*$', $_SESSION['mass_accounts'][$row2]->general_username))
 				$_SESSION['mass_errors'][$row2][] = array('ERROR', _('Username'), _('Username contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
 			// Check if Name-length is OK. minLength=3, maxLength=20
-			if ( !ereg('.{3,20}', $_SESSION['accounts'][$row2]->general_username)) $_SESSION['mass_errors'][$row2][] = array('ERROR', _('Name'), _('Name must contain between 3 and 20 characters.'));
+			if ( !ereg('.{3,20}', $_SESSION['mass_accounts'][$row2]->general_username)) $_SESSION['mass_errors'][$row2][] = array('ERROR', _('Name'), _('Name must contain between 3 and 20 characters.'));
 			// Check if Name starts with letter
-			if ( !ereg('^([a-z]|[A-Z]).*$', $_SESSION['accounts'][$row2]->general_username))
+			if ( !ereg('^([a-z]|[A-Z]).*$', $_SESSION['mass_accounts'][$row2]->general_username))
 				$_SESSION['mass_errors'][$row2][] = array('ERROR', _('Name'), _('Name contains invalid characters. First character must be a letter.'));
 			// Personal Settings
-			if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/])*$', $_SESSION['accounts'][$row2]->personal_telephoneNumber))  $_SESSION['mass_errors'][$row2][] = array('ERROR', _('Telephone number'), _('Please enter a valid telephone number!'));
-			if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/])*$', $_SESSION['accounts'][$row2]->personal_mobileTelephoneNumber))  $_SESSION['mass_errors'][$row2][] = array('ERROR', _('Mobile number'), _('Please enter a valid mobile number!'));
-			if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/])*$', $_SESSION['accounts'][$row2]->personal_facsimileTelephoneNumber))  $_SESSION['mass_errors'][$row2][] = array('ERROR', _('Fax number'), _('Please enter a valid fax number!'));
-			if ( !ereg('^(([0-9]|[A-Z]|[a-z]|[.]|[-]|[_])+[@]([0-9]|[A-Z]|[a-z]|[-])+([.]([0-9]|[A-Z]|[a-z]|[-])+)*)*$', $_SESSION['accounts'][$row2]->personal_mail))  $_SESSION['mass_errors'][$row2][] = array('ERROR', _('eMail address'), _('Please enter a valid eMail address!'));
-			if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])*$', $_SESSION['accounts'][$row2]->personal_street))  $_SESSION['mass_errors'][$row2][] = array('ERROR', _('Street'), _('Please enter a valid street name!'));
-			if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])*$', $_SESSION['accounts'][$row2]->personal_postalAddress))  $_SESSION['mass_errors'][$row2][] = array('ERROR', _('Postal address'), _('Please enter a valid postal address!'));
-			if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])*$', $_SESSION['accounts'][$row2]->personal_title))  $_SESSION['mass_errors'][$row2][] = array('ERROR', _('Title'), _('Please enter a valid title!'));
-			if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])*$', $_SESSION['accounts'][$row2]->personal_employeeType))  $_SESSION['mass_errors'][$row2][] = array('ERROR', _('Employee type'), _('Please enter a valid employee type!'));
-			if ( !ereg('^([0-9]|[A-Z]|[a-z])*$', $_SESSION['accounts']->personal_postalCode))  $_SESSION['mass_errors'][$row2][] = array('ERROR', _('Postal code'), _('Please enter a valid postal code!'));
+			if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/])*$', $_SESSION['mass_accounts'][$row2]->personal_telephoneNumber))  $_SESSION['mass_errors'][$row2][] = array('ERROR', _('Telephone number'), _('Please enter a valid telephone number!'));
+			if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/])*$', $_SESSION['mass_accounts'][$row2]->personal_mobileTelephoneNumber))  $_SESSION['mass_errors'][$row2][] = array('ERROR', _('Mobile number'), _('Please enter a valid mobile number!'));
+			if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/])*$', $_SESSION['mass_accounts'][$row2]->personal_facsimileTelephoneNumber))  $_SESSION['mass_errors'][$row2][] = array('ERROR', _('Fax number'), _('Please enter a valid fax number!'));
+			if ( !ereg('^(([0-9]|[A-Z]|[a-z]|[.]|[-]|[_])+[@]([0-9]|[A-Z]|[a-z]|[-])+([.]([0-9]|[A-Z]|[a-z]|[-])+)*)*$', $_SESSION['mass_accounts'][$row2]->personal_mail))  $_SESSION['mass_errors'][$row2][] = array('ERROR', _('eMail address'), _('Please enter a valid eMail address!'));
+			if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])*$', $_SESSION['mass_accounts'][$row2]->personal_street))  $_SESSION['mass_errors'][$row2][] = array('ERROR', _('Street'), _('Please enter a valid street name!'));
+			if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])*$', $_SESSION['mass_accounts'][$row2]->personal_postalAddress))  $_SESSION['mass_errors'][$row2][] = array('ERROR', _('Postal address'), _('Please enter a valid postal address!'));
+			if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])*$', $_SESSION['mass_accounts'][$row2]->personal_title))  $_SESSION['mass_errors'][$row2][] = array('ERROR', _('Title'), _('Please enter a valid title!'));
+			if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])*$', $_SESSION['mass_accounts'][$row2]->personal_employeeType))  $_SESSION['mass_errors'][$row2][] = array('ERROR', _('Employee type'), _('Please enter a valid employee type!'));
+			if ( !ereg('^([0-9]|[A-Z]|[a-z])*$', $_SESSION['mass_accounts']->personal_postalCode))  $_SESSION['mass_errors'][$row2][] = array('ERROR', _('Postal code'), _('Please enter a valid postal code!'));
 			}
 		}
 	// Close file if it was opened
