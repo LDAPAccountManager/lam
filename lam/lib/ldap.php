@@ -117,28 +117,39 @@ class Ldap{
     }
   }
 
-  // fills the UserEntry object with attributes from the ldap server with the 
-  // given dn of an user entry 
-  function getUser ($in_user_dn) {
-    $user = new UserEntry();
-    $attrs = array();
-    $resource = ldap_read ($this->server,
-			   $in_user_dn, "(objectClass=*)", $attrs);
-    $entry = ldap_first_entry ($this->server, $resource);
+
+  /** 
+   * @brief Populates any given object with the available attributes in the
+   * LDAP. The names of the member variables of the object must correspond to
+   * the attribute names in the LDAP server.
+   * 
+   * @param in_entry_dn distinguished name of entry in ldap
+   * @param in_object input object to populate
+   * 
+   * @return populated object
+   */
+  function getEntry ($in_entry_dn, $in_object) {
     
-    // attributes which are not multivalued ...
-    $uid = ldap_get_values ($this->server, $entry, "uid");
-    $user->setUid ($uid[0]);
-    $cn = ldap_get_values ($this->server, $entry, "cn");
-    $user->setCn ($cn[0]);
-    $sn = ldap_get_values ($this->server, $entry, "sn");
-    $user->setSn ($sn[0]);
-    $givenName = ldap_get_values ($this->server, $entry, "givenName");
-    $user->setGivenName ($givenName[0]);
-    $homeDirectory = ldap_get_values ($this->server, $entry, "homeDirectory");
-    $user->setHomeDirectory ($homeDirectory[0]);
-    return $user;
+    // read all variables of given object to $vararray
+    $vararray = get_object_vars ($in_object);
+
+    // set attributefilter only to attributes present in given object
+    $attributefilter = array();
+    foreach (array_keys ($vararray) as $varname)
+      $attributefilter[] = $varname;
+
+    // filter doesn't matter (we only read one entry)
+    $filter = "(objectClass=*)";
+    $resource = ldap_read ($this->server,
+			   $in_entry_dn, $filter, $attributefilter);
+    $entry = ldap_first_entry ($this->server, $resource);
+
+    foreach (array_keys ($vararray) as $varname)
+      $in_object->$varname = ldap_get_values ($this->server, $entry, $varname);
+
+    return $in_object;
   }
+
 	
   // closes connection to server
   function close() {

@@ -54,11 +54,13 @@ echo "</tr>";
 foreach ($user_dn_list as $user_dn) {
   echo "<tr>\n";
 
-  $userentry = $ldap->getUser ($user_dn);
-  echo ("<td class=\"userlist\">" . $userentry->getGivenName() . "</td>");
-  echo ("<td class=\"userlist\">" . $userentry->getSn() . "</td>");    
-  echo ("<td class=\"userlist\">" . $userentry->getUid() . "</td>");    
-  echo ("<td class=\"userlist\">" . $userentry->gethomeDirectory() . "</td>");
+  $userentry = new UserEntry();
+  $userentry = $ldap->getEntry ($user_dn, $userentry);
+  $ldap->getEntry ($user_dn, $userentry);
+  echo ("<td class=\"userlist\">" . current ($userentry->getGivenName()) . "</td>");
+  echo ("<td class=\"userlist\">" . current ($userentry->getSn()) . "</td>");    
+  echo ("<td class=\"userlist\">" . current ($userentry->getUid()) . "</td>");    
+  echo ("<td class=\"userlist\">" . current ($userentry->gethomeDirectory()) . "</td>");
   echo "</tr>\n";
 }
 echo "</table>";
