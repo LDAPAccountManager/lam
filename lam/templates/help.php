@@ -1,3 +1,4 @@
+#!/usr/bin/php
 <?php
 /*
 $Id$
@@ -74,7 +75,7 @@ function displayHelp($helpEntry,$helpVariables) {
 		call_user_func_array("printf",$helpVariables);
 		while($current = current($helpEntry["SeeAlso"]))
 		{
-			echo "		<p class=\"help\">" . ((isset($current['link']) ? "<a class=\"helpSeeAlso\" href=\"" . $current['link']"\">" : "") . _("See also") . ": " . $current['text'] . ((isset($current['link'])) ? "</a>" : "") . "</p>\n";
+			echo '		<p class="help">' . (( isset($current['link'])) ? '<a class="helpSeeAlso" href="' . $current['link'] . '">' : '') . _('See also') . ': ' . $current['text'] . (( isset($current['link'])) ? '</a>' : '') . '</p>\n';
 			next($helpEntry["SeeAlso"]);
 		}
 		echoHTMLFoot();
@@ -93,7 +94,7 @@ if(!isset($_GET['HelpNumber']))
 
 $helpEntry = array();
 
-if(isset[$_GET['Module']) {
+if(isset($_GET['Module'])) {
 	include_once("../lib/modules.inc");
 	$helpEntry = getHelp($_GET['Module'],$_GET['HelpNumber']);
 }
