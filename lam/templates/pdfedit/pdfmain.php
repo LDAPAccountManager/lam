@@ -92,21 +92,21 @@ if ($_POST['forward'] == "yes") {
 $pdfStructDefs = getPDFStructureDefinitions('user');
 $user_pdf = '';
 for($i = 0;$i < count($pdfStructDefs); $i++) {
-	$user_pdf .= '<option value="' . $pdfStructDefs . '.xml">' . $pdfStructDefs[$i] . "</option>\n";
+	$user_pdf .= '<option value="' . $pdfStructDefs[$i] . '.xml">' . $pdfStructDefs[$i] . "</option>\n";
 }
 
 // Get available group PDF structure definitions
 $pdfStructDefs = getPDFStructureDefinitions('group');
 $group_pdf = '';
 for($i = 0;$i < count($pdfStructDefs); $i++) {
-	$group_pdf .= '<option value="' . $pdfStructDefs . '.xml">' . $pdfStructDefs[$i] . "</option>\n";
+	$group_pdf .= '<option value="' . $pdfStructDefs[$i] . '.xml">' . $pdfStructDefs[$i] . "</option>\n";
 }
 
 // Get available host PDF structure definitions
 $pdfStructDefs = getPDFStructureDefinitions('host');
 $host_pdf = '';
 for($i = 0;$i < count($pdfStructDefs); $i++) {
-	$host_pdf .= '<option value="' . $pdfStructDefs . '.xml">' . $pdfStructDefs[$i] . "</option>\n";
+	$host_pdf .= '<option value="' . $pdfStructDefs[$i] . '.xml">' . $pdfStructDefs[$i] . "</option>\n";
 }
 
 echo $_SESSION['header'];
