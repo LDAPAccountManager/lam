@@ -10,7 +10,8 @@
 #   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #   GNU General Public License for more details.
 #
-# $Horde: horde/po/extract.pl,v 1.6 2001/09/14 20:03:33 jon Exp $
+#   original from Horde,
+#   modified for LAM by Roland Gruber
 #
 # Perl script to extract strings from all the files and print
 # to stdout for use with xgettext.
@@ -25,9 +26,9 @@ use vars qw($exts @dirs $dirs %strings);
 
 chdir(dirname($0));
 
-@dirs = qw($ /templates /lib /config /admin /util);
+@dirs = qw($ /help /templates /lib);
 
-$exts = '(\.php$|\.inc$|\.dist$)';
+$exts = '(\.php$|\.inc$)';
 $dirs = '^' . cwd() . '/..(' . join('|', @dirs) . ')';
 
 find(\&extract, cwd() . '/..');
