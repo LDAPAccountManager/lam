@@ -19,11 +19,14 @@ $Id$
   along with this program; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-	.
+	This test establishes a connection to a LDAP server and checks the
+	crypt-functions of ldap.inc.
+
 */
 include_once("../lib/config.inc");
 include_once("../lib/ldap.inc");
 
+// check if login page was displayed before
 if ($url && $user && $pass){
 	$config = new Config();
 	$ldap = new Ldap($config);
@@ -37,6 +40,7 @@ if ($url && $user && $pass){
 	echo "<br><br><br>If you do not see any error messages all should be ok.";
 	exit;
 }
+// display login page
 else {
 	// generate 256 bit key and initialization vector for user/passwd-encryption
 	$key = mcrypt_create_iv(32, MCRYPT_DEV_RANDOM);
@@ -46,9 +50,7 @@ else {
 	setcookie("Key", base64_encode($key), 0, "/");
 	setcookie("IV", base64_encode($iv), 0, "/");
 }
-
 ?>
-
 <html>
 	<head>
 		<title>
