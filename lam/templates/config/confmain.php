@@ -58,7 +58,6 @@ if ($_POST['back'] || $_POST['submitconf'] || $_POST['editmodules']){
 		$_SESSION['conf_hstlstattr'] = $_POST['hstlstattr'];
 		$_SESSION['conf_maxlistentries'] = $_POST['maxlistentries'];
 		$_SESSION['conf_lang'] = $_POST['lang'];
-		$_SESSION['conf_samba3'] = $_POST['samba3'];
 		$_SESSION['conf_pwdhash'] = $_POST['pwdhash'];
 		$_SESSION['conf_scriptpath'] = $_POST['scriptpath'];
 		$_SESSION['conf_scriptserver'] = $_POST['scriptserver'];
@@ -111,7 +110,6 @@ if (!(($conf->get_Passwd()) == $passwd)) {
 // check if user comes from modules page
 if ($_GET["modulesback"] == "true") {
 	// load config values from session
-	$conf->set_samba3($_SESSION['conf_samba3']);
 	$conf->set_ServerURL($_SESSION['conf_serverurl']);
 	$conf->set_cacheTimeout($_SESSION['conf_cachetimeout']);
 	$conf->set_Adminstring($_SESSION['conf_admins']);
@@ -234,22 +232,6 @@ echo "<tr><td><b>" . _("Host modules") . ": </b>" . implode(", ", $conf->get_Hos
 echo "<tr><td>&nbsp;</td></tr>\n";
 echo "<tr><td><input type=\"submit\" name=\"editmodules\" value=\"" . _("Edit modules") . "\">&nbsp;&nbsp;" .
 	"<a href=\"../help.php?HelpNumber=217\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n";
-
-echo ("</table>");
-echo ("</fieldset>");
-
-echo ("<p></p>");
-
-echo ("<fieldset><legend><b>" . _("Samba settings") . "</b></legend>");
-echo ("<table border=0>");
-
-// Samba version
-echo ("<tr><td align=\"right\"><b>".
-	_("Manage Samba 3 accounts") . ": </b></td><td><select name=\"samba3\">\n");
-if ($conf->is_samba3()) echo ("<option value=\"yes\">" . _("yes") . "</option>
-	<option value=\"no\">" . _("no") . "</option></select></td>");
-else echo ("<option>no</option><option>yes</option></select></td>");
-echo ("<td><a href=\"../help.php?HelpNumber=213\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 
 echo ("</table>");
 echo ("</fieldset>");

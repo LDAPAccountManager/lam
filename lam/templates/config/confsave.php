@@ -57,7 +57,6 @@ $maxlistentries = $_SESSION['conf_maxlistentries'];
 $lang = $_SESSION['conf_lang'];
 $scriptpath = $_SESSION['conf_scriptpath'];
 $scriptserver = $_SESSION['conf_scriptserver'];
-$samba3 = $_SESSION['conf_samba3'];
 $pwdhash = $_SESSION['conf_pwdhash'];
 $pdftext = $_SESSION['conf_pdf_usertext'];
 $filename = $_SESSION['conf_filename'];
@@ -79,12 +78,6 @@ echo ("<p align=\"center\"><a href=\"http://lam.sf.net\" target=\"new_window\">"
 	"<img src=\"../../graphics/banner.jpg\" border=1 alt=\"LDAP Account Manager\"></a></p><hr><br><br>");
 
 // check new preferences
-if (!$conf->set_samba3($samba3)) {
-	echo ("<font color=\"red\"><b>" . _("Samba version is not defined!") . "</b></font>");
-	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
-	exit;
-}
-
 if (!$conf->set_ServerURL($serverurl)) {
 	echo ("<font color=\"red\"><b>" . _("Server Address is empty!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
@@ -265,7 +258,6 @@ unset($_SESSION['conf_maxlistentries']);
 unset($_SESSION['conf_lang']);
 unset($_SESSION['conf_scriptpath']);
 unset($_SESSION['conf_scriptserver']);
-unset($_SESSION['conf_samba3']);
 unset($_SESSION['conf_pwdhash']);
 unset($_SESSION['conf_pdf_usertext']);
 unset($_SESSION['conf_filename']);
