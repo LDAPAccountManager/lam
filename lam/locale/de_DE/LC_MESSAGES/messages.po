@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: messages\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de \n"
 "POT-Creation-Date: 2004-01-14 17:45+0200\n"
-"PO-Revision-Date: 2004-10-27 20:00+0200\n"
+"PO-Revision-Date: 2004-10-28 17:18+0200\n"
 "Last-Translator: Roland Gruber <post@rolandgruber.de>\n"
 "Language-Team: Deutsch <lam-i18n@lists.sourceforge.org>\n"
 "MIME-Version: 1.0\n"
@@ -359,8 +359,7 @@ msgstr "Abbrechen"
 
 #: ../templates/login.php:321 ../templates/login.php:326
 msgid "Cannot connect to specified LDAP-Server. Please try again."
-msgstr ""
-"Kann keine Verbindung zum LDAP-Server aufbauen. Bitte erneut versuchen."
+msgstr "Kann keine Verbindung zum LDAP-Server aufbauen. Bitte erneut versuchen."
 
 #: ../lib/config.inc:323 ../lib/config.inc:895
 msgid "Cannot open config file!"
@@ -554,13 +553,11 @@ msgstr "Datenfeld für RDN ist leer!"
 
 #: ../help/help.inc:183
 msgid "Date after the user is able to change his password. Format: DD-MM-YYYY"
-msgstr ""
-"Datum, nach dem der Benutzer sein Passwort ändern kann. Format: TT-MM-JJJJ"
+msgstr "Datum, nach dem der Benutzer sein Passwort ändern kann. Format: TT-MM-JJJJ"
 
 #: ../help/help.inc:185
 msgid "Date after the user must change his password. Format: DD-MM-YYYY"
-msgstr ""
-"Datum, nach dem der Benutzer sein Passwort ändern muss. Format: TT-MM-JJJJ"
+msgstr "Datum, nach dem der Benutzer sein Passwort ändern muss. Format: TT-MM-JJJJ"
 
 #: ../lib/modules/shadowAccount.inc:130 ../help/help.inc:153
 msgid ""
@@ -666,7 +663,7 @@ msgstr "Erstelle Benutzer. Bitte haben Sie ein wenig Geduld."
 #: ../lib/modules/sambaSamAccount.inc:706
 #: ../lib/modules/sambaGroupMapping.inc:298
 #: ../lib/modules/shadowAccount.inc:280 ../lib/modules/inetOrgPerson.inc:135
-#: ../lib/modules/inetOrgPerson.inc:345 ../lib/modules/inetOrgPerson.inc:413
+#: ../lib/modules/inetOrgPerson.inc:346 ../lib/modules/inetOrgPerson.inc:414
 #: ../lib/lists.inc:187
 msgid "Description"
 msgstr "Beschreibung"
@@ -871,13 +868,13 @@ msgid "Edit workstations"
 msgstr "Arbeitsstationen ändern"
 
 #: ../lib/modules/inetOrgPerson.inc:72 ../lib/modules/inetOrgPerson.inc:99
-#: ../lib/modules/inetOrgPerson.inc:147 ../lib/modules/inetOrgPerson.inc:214
-#: ../lib/modules/inetOrgPerson.inc:369 ../lib/modules/inetOrgPerson.inc:418
+#: ../lib/modules/inetOrgPerson.inc:147 ../lib/modules/inetOrgPerson.inc:215
+#: ../lib/modules/inetOrgPerson.inc:370 ../lib/modules/inetOrgPerson.inc:419
 #: ../help/help.inc:205
 msgid "Employee type"
 msgstr "Angestelltentyp"
 
-#: ../lib/modules/inetOrgPerson.inc:214 ../help/help.inc:206
+#: ../lib/modules/inetOrgPerson.inc:215 ../help/help.inc:206
 msgid "Employee type: worker, student, nurse, ..."
 msgstr ""
 
@@ -932,8 +929,8 @@ msgid "Failed to modify domain!"
 msgstr "Konnte Domäne nicht ändern!"
 
 #: ../lib/modules/inetOrgPerson.inc:60 ../lib/modules/inetOrgPerson.inc:183
-#: ../lib/modules/inetOrgPerson.inc:220 ../lib/modules/inetOrgPerson.inc:393
-#: ../lib/modules/inetOrgPerson.inc:424 ../help/help.inc:217
+#: ../lib/modules/inetOrgPerson.inc:221 ../lib/modules/inetOrgPerson.inc:394
+#: ../lib/modules/inetOrgPerson.inc:425 ../help/help.inc:217
 #: ../help/help.inc:218
 msgid "Fax number"
 msgstr "Faxnummer"
@@ -956,10 +953,20 @@ msgstr ""
 msgid "Filter"
 msgstr "Filtern"
 
-#: ../lib/modules/inetOrgPerson.inc:122 ../lib/modules/inetOrgPerson.inc:361
-#: ../lib/modules/inetOrgPerson.inc:416 ../lib/lists.inc:182
+#: ../lib/modules/inetOrgPerson.inc:52 ../lib/modules/inetOrgPerson.inc:122
+#: ../lib/modules/inetOrgPerson.inc:213 ../lib/modules/inetOrgPerson.inc:362
+#: ../lib/modules/inetOrgPerson.inc:417 ../lib/lists.inc:182
+#: ../help/help.inc:174
 msgid "First name"
 msgstr "Vorname"
+
+#: ../lib/modules/inetOrgPerson.inc:52 ../lib/modules/inetOrgPerson.inc:53
+msgid "First name contains invalid characters!"
+msgstr "Vorname enthält ungültige Zeichen!"
+
+#: ../lib/modules/inetOrgPerson.inc:213 ../help/help.inc:175
+msgid "First name of user. Only letters, - and spaces are allowed."
+msgstr "Vorname des Benutzers. Es sind nur Buchstaben, - und Leerzeichen erlaubt."
 
 #: ../lib/modules/posixGroup.inc:128 ../lib/modules/posixGroup.inc:295
 #: ../lib/modules/posixGroup.inc:326 ../lib/modules/posixGroup.inc:351
@@ -999,7 +1006,7 @@ msgstr "GID-Bereiche für Unix-Gruppen"
 #: ../lib/modules/account.inc:41 ../lib/modules/posixAccount.inc:223
 #: ../lib/modules/posixAccount.inc:255 ../lib/modules/posixAccount.inc:297
 #: ../lib/modules/posixAccount.inc:328 ../lib/modules/posixAccount.inc:807
-#: ../lib/modules/posixAccount.inc:950 ../lib/modules/inetOrgPerson.inc:210
+#: ../lib/modules/posixAccount.inc:950 ../lib/modules/inetOrgPerson.inc:211
 #: ../help/help.inc:132 ../help/help.inc:142 ../help/help.inc:150
 msgid "Gecos"
 msgstr "Beschreibung"
@@ -1008,37 +1015,19 @@ msgstr "Beschreibung"
 msgid "Generate password"
 msgstr "Passwort generieren"
 
-#: ../lib/modules/inetOrgPerson.inc:52 ../lib/modules/inetOrgPerson.inc:212
-#: ../help/help.inc:174
-msgid "Given name"
-msgstr "Vorname"
-
-#: ../lib/modules/inetOrgPerson.inc:52 ../lib/modules/inetOrgPerson.inc:53
-#, fuzzy
-msgid "Given name contains invalid characters!"
-msgstr "Vorname enthält ungültige Zeichen"
-
-#: ../lib/modules/inetOrgPerson.inc:212 ../help/help.inc:175
-msgid "Given name of user. Only letters, - and spaces are allowed."
-msgstr ""
-"Vorname des Benutzers. Es sind nur Buchstaben, - und Leerzeichen erlaubt."
-
 #: ../lib/modules/quota.inc:81 ../lib/modules/quota.inc:299
 msgid "Grace block period"
 msgstr "Block-Frist"
 
 #: ../lib/modules/quota.inc:82
-msgid ""
-"Grace block period. Most filesystems use a fixed maximum value of 7 days."
-msgstr ""
-"Block-Frist. Viele Dateisysteme verwenden ein festes Maximum von 7 Tagen."
+msgid "Grace block period. Most filesystems use a fixed maximum value of 7 days."
+msgstr "Block-Frist. Viele Dateisysteme verwenden ein festes Maximum von 7 Tagen."
 
 #: ../lib/modules/quota.inc:101
 msgid ""
 "Grace inode (files) period. Most filesystems use a fixed maximum value of 7 "
 "days."
-msgstr ""
-"Inode-Frist. Viele Dateisysteme verwenden ein festes Maximum von 7 Tagen."
+msgstr "Inode-Frist. Viele Dateisysteme verwenden ein festes Maximum von 7 Tagen."
 
 #: ../lib/modules/quota.inc:100 ../lib/modules/quota.inc:303
 msgid "Grace inode period"
@@ -1221,8 +1210,7 @@ msgid "Here you can manage your account profiles."
 msgstr "Hier können Sie Ihre Accountprofile verwalten."
 
 #: ../help/help.inc:97
-msgid ""
-"Here you can select which plugins you want to use for account management."
+msgid "Here you can select which plugins you want to use for account management."
 msgstr ""
 "Hier können Sie die Plugins wählen, die Sie zur Accountverwaltung verwenden "
 "möchten."
@@ -1280,7 +1268,7 @@ msgid "Host description"
 msgstr "Hostbeschreibung"
 
 #: ../lib/modules/account.inc:41 ../lib/modules/posixAccount.inc:329
-#: ../lib/modules/inetOrgPerson.inc:210 ../help/help.inc:151
+#: ../lib/modules/inetOrgPerson.inc:211 ../help/help.inc:151
 msgid "Host description. If left empty host name will be used."
 msgstr "Hostbeschreibung. Falls leer wird der Hostname verwendet."
 
@@ -1352,8 +1340,7 @@ msgstr ""
 
 #: ../lib/modules/posixAccount.inc:81
 msgid "Hostname in use. Selected next free hostname."
-msgstr ""
-"Hostname wird bereits verwendet. Nächster freier Hostname wurde ausgewählt."
+msgstr "Hostname wird bereits verwendet. Nächster freier Hostname wurde ausgewählt."
 
 #: ../templates/main_header.php:77 ../lib/modules/posixAccount.inc:59
 #: ../lib/modules/posixAccount.inc:60 ../lib/modules/posixAccount.inc:62
@@ -1410,8 +1397,7 @@ msgstr "Falls angekreuzt läuft das Passwort nicht aus. (X-Flag wird gesetzt)"
 
 #: ../help/help.inc:179
 msgid "If checked unix password will also be used as samba password."
-msgstr ""
-"Falls aktiviert wird das Unix-Passwort auch als Samba-Passwort verwendet."
+msgstr "Falls aktiviert wird das Unix-Passwort auch als Samba-Passwort verwendet."
 
 #: ../lib/modules/posixGroup.inc:327 ../help/help.inc:141
 msgid ""
@@ -1437,17 +1423,14 @@ msgstr ""
 "ou=Administratoren,+Benutzersuffix sein."
 
 #: ../help/help.inc:91
-msgid ""
-"If you want to change the current preferences password, please enter it here."
-msgstr ""
-"Wenn Sie das aktuelle Profilpasswort ändern wollen, geben Sie es hier ein."
+msgid "If you want to change the current preferences password, please enter it here."
+msgstr "Wenn Sie das aktuelle Profilpasswort ändern wollen, geben Sie es hier ein."
 
 #: ../help/help.inc:109
 msgid ""
 "If you want to change your master configuration password, please enter it "
 "here."
-msgstr ""
-"Wenn Sie das aktuelle Hauptpasswort ändern wollen, geben Sie es hier ein."
+msgstr "Wenn Sie das aktuelle Hauptpasswort ändern wollen, geben Sie es hier ein."
 
 #: ../lib/modules/sambaGroupMapping.inc:271 ../help/help.inc:234
 msgid "If you want to use a well known RID you can selcet a well known group."
@@ -1538,7 +1521,7 @@ msgid "Ivalid Account"
 msgstr "Ungültiger Account"
 
 #: ../lib/modules/inetOrgPerson.inc:95 ../lib/modules/inetOrgPerson.inc:141
-#: ../lib/modules/inetOrgPerson.inc:357
+#: ../lib/modules/inetOrgPerson.inc:358
 msgid "Job title"
 msgstr "Berufsbezeichnung"
 
@@ -1635,13 +1618,23 @@ msgstr "Sprache ist nicht definiert!"
 msgid "Language settings"
 msgstr "Spacheinstellungen"
 
-#: ../lib/modules/inetOrgPerson.inc:128 ../lib/modules/inetOrgPerson.inc:365
-#: ../lib/modules/inetOrgPerson.inc:417 ../lib/lists.inc:183
+#: ../lib/modules/inetOrgPerson.inc:54 ../lib/modules/inetOrgPerson.inc:128
+#: ../lib/modules/inetOrgPerson.inc:214 ../lib/modules/inetOrgPerson.inc:366
+#: ../lib/modules/inetOrgPerson.inc:418 ../lib/lists.inc:183
+#: ../help/help.inc:172
 msgid "Last name"
 msgstr "Nachname"
 
-#: ../lib/modules/shadowAccount.inc:275
+#: ../lib/modules/inetOrgPerson.inc:54 ../lib/modules/inetOrgPerson.inc:55
+msgid "Last name contains invalid characters!"
+msgstr "Nachname enthält ungültige Zeichen!"
+
+#: ../lib/modules/inetOrgPerson.inc:214 ../help/help.inc:173
 #, fuzzy
+msgid "Last name of user. Only letters, - and spaces are allowed."
+msgstr "Nachname des Benutzers. Es sind nur Buchstaben, - und Leerzeichen erlaubt."
+
+#: ../lib/modules/shadowAccount.inc:275
 msgid "Last password change"
 msgstr "Letzte Passwortänderung"
 
@@ -1841,8 +1834,8 @@ msgid "Minimum password age"
 msgstr "Minimales Passwortalter"
 
 #: ../lib/modules/inetOrgPerson.inc:58 ../lib/modules/inetOrgPerson.inc:177
-#: ../lib/modules/inetOrgPerson.inc:219 ../lib/modules/inetOrgPerson.inc:389
-#: ../lib/modules/inetOrgPerson.inc:423 ../help/help.inc:215
+#: ../lib/modules/inetOrgPerson.inc:220 ../lib/modules/inetOrgPerson.inc:390
+#: ../lib/modules/inetOrgPerson.inc:424 ../help/help.inc:215
 #: ../help/help.inc:216
 msgid "Mobile number"
 msgstr "Mobil"
@@ -2045,8 +2038,7 @@ msgid "Note"
 msgstr "Hinweis"
 
 #: ../lib/modules/shadowAccount.inc:131 ../help/help.inc:155
-msgid ""
-"Number of days a user can login even his password has expired. -1=always."
+msgid "Number of days a user can login even his password has expired. -1=always."
 msgstr ""
 "Anzahl der Tage, in denen sich ein Benutzer anmelden kann, obwohl sein "
 "Passwort bereits abgelaufen ist. -1 = immer."
@@ -2395,18 +2387,18 @@ msgid "Possible values"
 msgstr "Mögliche Werte"
 
 #: ../lib/modules/inetOrgPerson.inc:66 ../lib/modules/inetOrgPerson.inc:165
-#: ../lib/modules/inetOrgPerson.inc:217 ../lib/modules/inetOrgPerson.inc:381
-#: ../lib/modules/inetOrgPerson.inc:421 ../help/help.inc:211
+#: ../lib/modules/inetOrgPerson.inc:218 ../lib/modules/inetOrgPerson.inc:382
+#: ../lib/modules/inetOrgPerson.inc:422 ../help/help.inc:211
 msgid "Postal address"
 msgstr "Anschrift"
 
-#: ../lib/modules/inetOrgPerson.inc:217 ../help/help.inc:212
+#: ../lib/modules/inetOrgPerson.inc:218 ../help/help.inc:212
 msgid "Postal address, city"
 msgstr "Bitte geben Sie hier die Anschrift ein."
 
 #: ../lib/modules/inetOrgPerson.inc:68 ../lib/modules/inetOrgPerson.inc:159
-#: ../lib/modules/inetOrgPerson.inc:216 ../lib/modules/inetOrgPerson.inc:377
-#: ../lib/modules/inetOrgPerson.inc:420 ../help/help.inc:209
+#: ../lib/modules/inetOrgPerson.inc:217 ../lib/modules/inetOrgPerson.inc:378
+#: ../lib/modules/inetOrgPerson.inc:421 ../help/help.inc:209
 #: ../help/help.inc:210
 msgid "Postal code"
 msgstr "Postleitzahl"
@@ -2818,8 +2810,8 @@ msgid "Steve Miller,Room 2.14,123-123-1234,123-123-1234"
 msgstr "Hans Müller,Raum 2.14,123-123-1234,123-123-1234"
 
 #: ../lib/modules/inetOrgPerson.inc:64 ../lib/modules/inetOrgPerson.inc:153
-#: ../lib/modules/inetOrgPerson.inc:215 ../lib/modules/inetOrgPerson.inc:373
-#: ../lib/modules/inetOrgPerson.inc:419 ../help/help.inc:207
+#: ../lib/modules/inetOrgPerson.inc:216 ../lib/modules/inetOrgPerson.inc:374
+#: ../lib/modules/inetOrgPerson.inc:420 ../help/help.inc:207
 #: ../help/help.inc:208
 msgid "Street"
 msgstr "Straße"
@@ -2853,24 +2845,9 @@ msgstr "Seiteneinstellungen übernehmen"
 msgid "Suffix"
 msgstr "Suffix"
 
-#: ../lib/modules/inetOrgPerson.inc:54 ../lib/modules/inetOrgPerson.inc:213
-#: ../help/help.inc:172
-msgid "Surname"
-msgstr "Nachname"
-
-#: ../lib/modules/inetOrgPerson.inc:54 ../lib/modules/inetOrgPerson.inc:55
-#, fuzzy
-msgid "Surname contains invalid characters!"
-msgstr "Nachname enthält ungültige Zeichen"
-
-#: ../lib/modules/inetOrgPerson.inc:213 ../help/help.inc:173
-msgid "Surname of user. Only letters, - and spaces are allowed."
-msgstr ""
-"Nachname des Benutzers. Es sind nur Buchstaben, - und Leerzeichen erlaubt."
-
 #: ../lib/modules/inetOrgPerson.inc:56 ../lib/modules/inetOrgPerson.inc:171
-#: ../lib/modules/inetOrgPerson.inc:218 ../lib/modules/inetOrgPerson.inc:385
-#: ../lib/modules/inetOrgPerson.inc:422 ../help/help.inc:213
+#: ../lib/modules/inetOrgPerson.inc:219 ../lib/modules/inetOrgPerson.inc:386
+#: ../lib/modules/inetOrgPerson.inc:423 ../help/help.inc:213
 #: ../help/help.inc:214
 msgid "Telephone number"
 msgstr "Telefonnummer"
@@ -2915,8 +2892,7 @@ msgid "The following settings were saved to profile:"
 msgstr "Die folgenden Einstellungen wurden gespeichert:"
 
 #: ../templates/initsuff.php:184
-msgid ""
-"The following suffix(es) are missing in LDAP. LAM can create them for you."
+msgid "The following suffix(es) are missing in LDAP. LAM can create them for you."
 msgstr "Folgende Suffixe fehlen in LDAP. LAM kann sie für Sie erstellen."
 
 #: ../templates/pdfedit/pdfpage.php:73
@@ -3004,8 +2980,7 @@ msgstr ""
 "plus 1."
 
 #: ../lib/modules/posixAccount.inc:85
-msgid ""
-"This GID number is invalid! Please provide either a number or a group name."
+msgid "This GID number is invalid! Please provide either a number or a group name."
 msgstr ""
 "Diese GID-Nummer ist ungültig! Bitte geben Sie eine Nummer ein oder einen "
 "Gruppennamen."
@@ -3023,8 +2998,7 @@ msgid "This changes the profile which is selected by default at login."
 msgstr "Damit ändern Sie das Standardprofil am Login."
 
 #: ../templates/massBuildAccounts.php:148
-msgid ""
-"This column is defined to include unique entries but duplicates were found:"
+msgid "This column is defined to include unique entries but duplicates were found:"
 msgstr "Diese Spalte darf keine doppelten Einträge enthalten:"
 
 #: ../help/help.inc:79
@@ -3178,16 +3152,14 @@ msgstr "Dieser Wert darf nur \\\"true\\\" oder \\\"false\\\" sein."
 
 #: ../lib/modules/posixGroup.inc:412
 msgid "This value must be a list of user names separated by semicolons."
-msgstr ""
-"Dieser Wert muss eine Liste von Benutzernamen, getrennt duch Kommata, sein."
+msgstr "Dieser Wert muss eine Liste von Benutzernamen, getrennt duch Kommata, sein."
 
 #: ../help/help.inc:245
 msgid "This will create a new organizational unit under the selected one."
 msgstr "Dies erzeugt eine neue Organizational Unit unterhalb der markierten."
 
 #: ../help/help.inc:247
-msgid ""
-"This will delete the selected organizational unit. The OU has to be empty."
+msgid "This will delete the selected organizational unit. The OU has to be empty."
 msgstr "Dies löscht die markierte Organizational Unit. Die OU muss leer sein."
 
 #: ../help/help.inc:103
@@ -3204,12 +3176,12 @@ msgstr ""
 "selben Werte wie im Profileditor gespeichert. Profilnamen dürfen die "
 "Buchstaben a-z, 0-9 und -_ enthalten."
 
-#: ../lib/modules/inetOrgPerson.inc:70 ../lib/modules/inetOrgPerson.inc:211
-#: ../lib/modules/inetOrgPerson.inc:415 ../help/help.inc:203
+#: ../lib/modules/inetOrgPerson.inc:70 ../lib/modules/inetOrgPerson.inc:212
+#: ../lib/modules/inetOrgPerson.inc:416 ../help/help.inc:203
 msgid "Title"
 msgstr "Titel"
 
-#: ../lib/modules/inetOrgPerson.inc:211 ../help/help.inc:204
+#: ../lib/modules/inetOrgPerson.inc:212 ../help/help.inc:204
 #, fuzzy
 msgid "Title of user, Mr., Ms., ..."
 msgstr "Berufsbezeichnung des Benutzers (Präsident, Abteilungsleiter, etc.)."
@@ -3240,8 +3212,7 @@ msgstr "Benutzer ID"
 
 #: ../lib/modules/posixAccount.inc:75
 msgid "UID has changed. Do you want to change home directory?"
-msgstr ""
-"UID-Nummer wurde geändert. Soll das Heimatverzeichnis angepasst werden?"
+msgstr "UID-Nummer wurde geändert. Soll das Heimatverzeichnis angepasst werden?"
 
 #: ../lib/modules/posixAccount.inc:70
 msgid ""
@@ -3335,8 +3306,8 @@ msgstr "Kann das Profil nicht speichern!"
 msgid "Unix"
 msgstr "Unix"
 
-#: ../lib/modules/inetOrgPerson.inc:51 ../lib/modules/inetOrgPerson.inc:352
-#: ../lib/modules/inetOrgPerson.inc:414 ../help/help.inc:235
+#: ../lib/modules/inetOrgPerson.inc:51 ../lib/modules/inetOrgPerson.inc:353
+#: ../lib/modules/inetOrgPerson.inc:415 ../help/help.inc:235
 msgid "Unix workstations"
 msgstr "Arbeitsstationen"
 
@@ -3707,8 +3678,8 @@ msgid "created"
 msgstr "Erstellen"
 
 #: ../lib/modules/inetOrgPerson.inc:62 ../lib/modules/inetOrgPerson.inc:189
-#: ../lib/modules/inetOrgPerson.inc:221 ../lib/modules/inetOrgPerson.inc:397
-#: ../lib/modules/inetOrgPerson.inc:425 ../help/help.inc:219
+#: ../lib/modules/inetOrgPerson.inc:222 ../lib/modules/inetOrgPerson.inc:398
+#: ../lib/modules/inetOrgPerson.inc:426 ../help/help.inc:219
 #: ../help/help.inc:220
 msgid "eMail address"
 msgstr "E-Mail Adresse"
@@ -3726,8 +3697,7 @@ msgstr "Stunden"
 msgid ""
 "ldap://localhost:389 connects to localhost using a standard LDAP connection "
 "on port 389"
-msgstr ""
-"ldaps://141.40.146.133 baut eine einfache Verbindung zu 141.40.146.133 auf."
+msgstr "ldaps://141.40.146.133 baut eine einfache Verbindung zu 141.40.146.133 auf."
 
 #: ../help/help.inc:45
 msgid ""
@@ -3801,4 +3771,18 @@ msgstr "benutzer@firma.de"
 #: ../lib/modules/posixAccount.inc:183
 msgid "users"
 msgstr "Benutzer"
+
+#~ msgid "Given name"
+#~ msgstr "Vorname"
+
+#, fuzzy
+#~ msgid "Given name contains invalid characters!"
+#~ msgstr "Vorname enthält ungültige Zeichen"
+
+#~ msgid "Given name of user. Only letters, - and spaces are allowed."
+#~ msgstr ""
+#~ "Vorname des Benutzers. Es sind nur Buchstaben, - und Leerzeichen erlaubt."
+
+#~ msgid "Surname"
+#~ msgstr "Nachname"
 
