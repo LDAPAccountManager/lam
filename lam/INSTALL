@@ -27,10 +27,12 @@ Installation Instructions for LAM
    * Copy files into the html-file scope of the webserver. For example
      /apache/htdocs.
 
-   * Set appropriate file permissions for /lam/sess and /lam/config (with subdirectories).
-     Both directories must have write permissions set for the specified apache
-     web user. The perl files in /lam/lib must be set executable. (See also
-     docs/readme.lamdeamon.pl)
+   * Set appropriate file permissions:
+     - /lam/sess: write permission for apache user
+     - /lam/tmp: write permission for apache user
+     - /lam/config (with subdirectories): write permission for apache user
+     - /lam/lib: perl files must be set executable (See also
+       docs/readme.lamdeamon.pl)
 
    * Configure config.cfg and create a configuration profile.
      Copy config.cfg_sample to config.cfg and set the master password and default
