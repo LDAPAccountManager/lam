@@ -152,8 +152,54 @@ common cases.<br>
 <br>
 <br>
 <h2>3. Loading an account profile</h2>
+When an account profile is loaded the modules have to check what values
+they need for their internal data structures.<br>
+The <span style="font-style: italic;">baseModule</span> already
+provides the possibility to store profile values directly as LDAP
+attributes in <span style="font-style: italic;">$this-&gt;attributes</span>.
+This is done by defining profile-attribute mappings in <span
+ style="font-weight: bold;">meta['profile_mappings']</span>.<br>
+If you have other values than LDAP attributes or need some post
+processing you can implement the function <span
+ style="font-weight: bold;">load_profile()</span> in your module.<br>
 <br>
-TODO<br>
+<span style="font-weight: bold; text-decoration: underline;">Example:</span><br
+ style="font-weight: bold; text-decoration: underline;">
+<br>
+The <span style="font-style: italic;">inetLocalMailRecipient</span>
+module only
+needs a static mapping. This can be done by
+the <span style="font-style: italic;">baseModule</span>.<br>
+<br>
+<table style="width: 100%; text-align: left;" class="mod-code"
+ border="0" cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
+&nbsp;&nbsp;&nbsp; * Returns meta data that is interpreted by parent
+class<br>
+&nbsp;&nbsp;&nbsp; *<br>
+&nbsp;&nbsp;&nbsp; * @return array array with meta data<br>
+&nbsp;&nbsp;&nbsp; */<br>
+&nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">function</span>
+get_metaData() {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $return = array();<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; // profile mappings<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;$return[<span
+ style="color: rgb(255, 0, 0);">'profile_mappings'</span>] = array(<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;'inetLocalMailRecipient_host' =&gt; 'mailHost'<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [...]<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+In this example the profile option "inetLocalMailRecipient_host" is
+stored as LDAP attribute "mailHost".<br>
+<br>
+<br>
 <span style="font-weight: bold;"></span>
 <h2><span style="font-weight: bold;"></span></h2>
 </div>

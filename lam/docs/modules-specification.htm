@@ -26,8 +26,8 @@ All module classes should extend the baseModule class.<br>
 </h3>
 <h3>2.1.1. can_manage*</h3>
 <br>
-<table cellpadding="2" cellspacing="2" border="0"
- style="text-align: left; width: 300px;">
+<table style="text-align: left; width: 300px;" border="0"
+ cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
       <td
@@ -46,7 +46,7 @@ otherwise <span style="font-style: italic;">false</span>.<br>
 <h3>2.1.2. get_alias*</h3>
 <br>
 <table style="text-align: left; width: 300px;" border="0"
- cellspacing="2" cellpadding="2">
+ cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
       <td
@@ -69,7 +69,7 @@ sure that there is a general alias for unknown types.<br>
 <h3>2.1.3. is_base_module*</h3>
 <br>
 <table style="text-align: left; width: 300px; height: 30px;" border="0"
- cellspacing="2" cellpadding="2">
+ cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
       <td
@@ -92,7 +92,7 @@ quota module is no base module as it needs posixAccount.<br>
 <h3>2.1.4. get_ldap_filter*</h3>
 <br>
 <table style="text-align: left; width: 300px; height: 30px;" border="0"
- cellspacing="2" cellpadding="2">
+ cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
       <td
@@ -123,7 +123,7 @@ implement it.</span><br>
 <h3>2.1.5. get_RDNAttributes*</h3>
 <br>
 <table style="text-align: left; width: 300px; height: 30px;" border="0"
- cellspacing="2" cellpadding="2">
+ cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
       <td
@@ -149,8 +149,8 @@ for the RDN selection.<br>
 <span style="font-weight: bold; color: rgb(255, 0, 0);"></span><br>
 <h3>2.1.6. get_dependencies*</h3>
 <br>
-<table cellpadding="2" cellspacing="2" border="0"
- style="text-align: left; width: 300px; font-weight: bold;">
+<table style="text-align: left; width: 300px; font-weight: bold;"
+ border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
       <td
@@ -180,8 +180,8 @@ your module depends on one of these modules.<br>
 <br>
 <h3>2.1.7. get_metaData()</h3>
 <br>
-<table cellpadding="2" cellspacing="2" border="0"
- style="text-align: left; width: 300px;">
+<table style="text-align: left; width: 300px;" border="0"
+ cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
       <td
@@ -199,8 +199,8 @@ true);</span><br style="font-weight: bold;">
 <br>
 <h3>2.1.8. get_configOptions()*</h3>
 <br>
-<table cellpadding="2" cellspacing="2" border="0"
- style="text-align: left; width: 300px;">
+<table style="text-align: left; width: 300px;" border="0"
+ cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
       <td
@@ -227,8 +227,8 @@ naming confilcts.<br>
 <br>
 <h3>2.1.9. get_configDescriptions()*</h3>
 <br>
-<table cellpadding="2" cellspacing="2" border="0"
- style="text-align: left; width: 300px;">
+<table style="text-align: left; width: 300px;" border="0"
+ cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
       <td
@@ -255,7 +255,7 @@ array with this format:<br>
 <h3>2.1.10. check_configOptions*</h3>
 <br>
 <table style="text-align: left; width: 400px; height: 30px;" border="0"
- cellspacing="2" cellpadding="2">
+ cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
       <td
@@ -284,8 +284,8 @@ If no errors occured the function returns an empty array.<span
 <span style="font-weight: bold;"></span>
 <h3>2.1.11. get_scope()</h3>
 <br>
-<table cellpadding="2" cellspacing="2" border="0"
- style="text-align: left; width: 300px;">
+<table style="text-align: left; width: 300px;" border="0"
+ cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
       <td
@@ -304,7 +304,7 @@ baseModule and should not be overwritten.</span><br>
 <h3>2.1.12. get_uploadColumns*</h3>
 <br>
 <table style="text-align: left; width: 300px; height: 30px;" border="0"
- cellspacing="2" cellpadding="2">
+ cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
       <td
@@ -351,7 +351,7 @@ all values of this column must be different values <span
 <h3>2.1.13. get_uploadPreDepends*</h3>
 <br>
 <table style="text-align: left; width: 300px; height: 30px;" border="0"
- cellspacing="2" cellpadding="2">
+ cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
       <td
@@ -369,7 +369,7 @@ The named modules may not be active, LAM will check this automatically.<br>
 <h3>2.1.14. build_uploadAccounts</h3>
 <br>
 <table style="text-align: left; width: 484px; height: 31px;" border="0"
- cellspacing="2" cellpadding="2">
+ cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
       <td
@@ -398,7 +398,7 @@ if any errors occured.<br>
 <h3>2.1.15. do_uploadPostActions</h3>
 <br>
 <table style="text-align: left; width: 484px; height: 31px;" border="0"
- cellspacing="2" cellpadding="2">
+ cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
       <td
@@ -445,8 +445,8 @@ StatusMessages<br>
 <br>
 <h3>2.1.16. get_profileOptions*</h3>
 <br>
-<table cellpadding="2" cellspacing="2" border="0"
- style="text-align: left; width: 300px; height: 30px;">
+<table style="text-align: left; width: 300px; height: 30px;" border="0"
+ cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
       <td
@@ -472,7 +472,7 @@ naming confilcts.<br>
 <h3>2.1.17. check_profileOptions*</h3>
 <br>
 <table style="text-align: left; width: 400px; height: 30px;" border="0"
- cellspacing="2" cellpadding="2">
+ cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
       <td
@@ -495,6 +495,27 @@ head, 2 =&gt; message text, 3 =&gt; additional variables).<br>
 If no errors occured the function returns an empty array.<span
  style="font-weight: bold;"></span><br>
 <br>
+<h3>2.1.18. load_profile*</h3>
+<br>
+<table style="text-align: left; width: 400px; height: 30px;" border="0"
+ cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204); text-align: center;"><span
+ style="font-weight: bold;">function load_profile($profile)</span><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+This function loads the values from an account profile to the module's
+internal data structures.<br>
+<br>
+<span style="font-weight: bold;"></span><span style="font-weight: bold;">$profile</span>
+is an hash array (identifier =&gt; array(values))&nbsp; with all values
+of an account profile.<br>
+<br>
 <h3><br>
 </h3>
 <br>
@@ -503,8 +524,8 @@ If no errors occured the function returns an empty array.<span
 </h3>
 <h3>2.2.1. init</h3>
 <br>
-<table cellpadding="2" cellspacing="2" border="0"
- style="text-align: left; width: 300px; height: 30px;">
+<table style="text-align: left; width: 300px; height: 30px;" border="0"
+ cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
       <td
@@ -523,8 +544,8 @@ several helper functions.<br>
 <br>
 <h3>2.2.2. module_ready</h3>
 <br>
-<table cellpadding="2" cellspacing="2" border="0"
- style="text-align: left; width: 300px; height: 30px;">
+<table style="text-align: left; width: 300px; height: 30px;" border="0"
+ cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
       <td
@@ -543,7 +564,7 @@ your module accepts input, otherwise <span style="font-weight: bold;">false</spa
 <h3>2.2.3. module_complete</h3>
 <br>
 <table style="text-align: left; width: 300px; height: 30px;" border="0"
- cellspacing="2" cellpadding="2">
+ cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
       <td
@@ -564,7 +585,7 @@ page will be displayed.<br>
 <h3>2.2.4. get_help</h3>
 <br>
 <table style="text-align: left; width: 300px; height: 30px;" border="0"
- cellspacing="2" cellpadding="2">
+ cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
       <td
@@ -587,7 +608,7 @@ section 4. "Help entry syntax".<br>
 <h3>2.2.7. get_pdfEntries</h3>
 <br>
 <table style="text-align: left; width: 300px; height: 30px;" border="0"
- cellspacing="2" cellpadding="2">
+ cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
       <td
@@ -613,7 +634,7 @@ syntax".<br>
 </h3>
 <br>
 <table style="text-align: left; width: 349px; height: 50px;" border="0"
- cellspacing="2" cellpadding="2">
+ cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
       <td
@@ -636,7 +657,7 @@ Returnis an array as expected from StatusMessage().<br>
 </h3>
 <br>
 <table style="text-align: left; width: 280px; height: 50px;" border="0"
- cellspacing="2" cellpadding="2">
+ cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
       <td
@@ -657,7 +678,7 @@ $this-&gt;messages[x][y][z]<br>
 </h3>
 <br>
 <table style="text-align: left; width: 280px; height: 50px;" border="0"
- cellspacing="2" cellpadding="2">
+ cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
       <td
@@ -685,7 +706,7 @@ separat.<br>
 </h3>
 <br>
 <table style="text-align: left; width: 280px; height: 50px;" border="0"
- cellspacing="2" cellpadding="2">
+ cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
       <td
@@ -716,7 +737,7 @@ itself which should be executed by lamdaemon.<br>
 </h3>
 <br>
 <table style="text-align: left; width: 280px; height: 50px;" border="0"
- cellspacing="2" cellpadding="2">
+ cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
       <td
@@ -737,7 +758,7 @@ is needed t interact with the user.<br>
 </h3>
 <br>
 <table style="text-align: left; width: 386px; height: 50px;" border="0"
- cellspacing="2" cellpadding="2">
+ cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
       <td
@@ -775,7 +796,7 @@ array();<br>
 </h3>
 <br>
 <table style="text-align: left; width: 346px; height: 50px;" border="0"
- cellspacing="2" cellpadding="2">
+ cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
       <td
@@ -797,7 +818,7 @@ is needed t interact with the user.<br>
 </h3>
 <br>
 <table style="text-align: left; width: 346px; height: 50px;" border="0"
- cellspacing="2" cellpadding="2">
+ cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
       <td
@@ -819,7 +840,7 @@ is needed t interact with the user.<br>
 </h3>
 <br>
 <table style="text-align: left; width: 346px; height: 50px;" border="0"
- cellspacing="2" cellpadding="2">
+ cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
       <td
@@ -842,7 +863,7 @@ is needed t interact with the user.<br>
 </h3>
 <br>
 <table style="text-align: left; width: 346px; height: 50px;" border="0"
- cellspacing="2" cellpadding="2">
+ cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
       <td
@@ -1184,7 +1205,16 @@ head, 2 =&gt; message text, 3 =&gt; additional variables)</li>
   </ul>
 </ul>
 <br>
-<h3>6.8 get_configOptions()<br>
+<h3>6.8 load_profile()<br>
+</h3>
+&nbsp;&nbsp;&nbsp; "profile_mappings" =&gt; array('profile_identifier1'
+=&gt; 'LDAP_attribute1', 'profile_identifier2' =&gt; 'LDAP_attribute2')<br>
+<br>
+&nbsp;&nbsp;&nbsp; The mapped values are stored directly in
+$this-&gt;attributes.<br>
+<span style="font-weight: bold;"><span style="font-style: italic;"><br>
+</span></span>
+<h3>6.9 get_configOptions()<br>
 </h3>
 &nbsp;&nbsp;&nbsp; "config_options" =&gt; array('user' =&gt; array,
 'host' =&gt; array, 'all' =&gt; array)<br>
@@ -1200,7 +1230,7 @@ the
 return value of get_configOptions().<br>
 <br>
 </span></span>
-<h3>6.9 get_configDescriptions()<br>
+<h3>6.10 get_configDescriptions()<br>
 </h3>
 &nbsp;&nbsp;&nbsp; "config_descriptions" =&gt; array<br>
 <br>
@@ -1209,7 +1239,7 @@ return value of get_configOptions().<br>
 return value of get_configDescriptions().<br>
 <br>
 </span></span>
-<h3>6.10 check_configOptions()<br>
+<h3>6.11 check_configOptions()<br>
 </h3>
 &nbsp;&nbsp;&nbsp; "config_checks" =&gt; array('user' =&gt; array,
 'host' =&gt; 'array', 'all' =&gt; array)<br>
@@ -1223,14 +1253,14 @@ the other values only if they are inside the <span
 check_profileOptions().<br>
 <br>
 </span></span>
-<h3>6.11 get_uploadColumns()</h3>
+<h3>6.12 get_uploadColumns()</h3>
 "upload_columns" =&gt; array()<br>
 <span style="font-weight: bold;"><br>
 <span style="font-style: italic;">Syntax for array is the same as for
 the
 return value of get_uploadColumns().<br>
 </span></span><br>
-<h3>6.12 get_uploadPreDepends()</h3>
+<h3>6.13 get_uploadPreDepends()</h3>
 "upload_preDepends" =&gt; array()<br>
 <span style="font-weight: bold;"><br>
 <span style="font-style: italic;">Syntax for array is the same as for
