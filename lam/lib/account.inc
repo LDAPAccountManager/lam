@@ -529,7 +529,7 @@ function smbflag() { // Creates te attribute attrFlags
 	if ($_SESSION['account']->smb_flagsW) $flag = $flag . "W"; else $flag = $flag . "U";
 	if ($_SESSION['account']->smb_flagsD) $flag = $flag . "D";
 	if ($_SESSION['account']->smb_flagsX) $flag = $flag . "X";
-	str_pad($flag, 12);
+	$flag = str_pad($flag, 12);
 	$flag = $flag. "]";
 	return $flag;
 	}
