@@ -320,12 +320,6 @@ exit;
 else display_main();
 
 function display_main() {
-	// generate lists of possible suffixes
-	$usr_units = $_SESSION['ldap']->search_units($_SESSION["config"]->get_UserSuffix());
-	$grp_units = $_SESSION['ldap']->search_units($_SESSION["config"]->get_GroupSuffix());
-	$hst_units = $_SESSION['ldap']->search_units($_SESSION["config"]->get_HostSuffix());
-	$dom_units = $_SESSION['ldap']->search_units($_SESSION["config"]->get_DomainSuffix());
-
 	// display main page
 	echo $_SESSION['header'];
 	echo ("<title>OU-Editor</title>\n");
@@ -336,136 +330,152 @@ function display_main() {
 	echo ("<form action=\"ou_edit.php?type=user\" method=\"post\">\n");
 
 	// user OUs
-	echo ("<fieldset><legend><b>" . _("Users") . "</b></legend>\n");
-	echo ("<table border=0>\n");
-	// new OU
-	echo ("<tr>\n");
-	echo ("<td><input type=radio name=\"type\" value=\"new_usr\" checked></td>\n");
-	echo ("<td><b>" . _("New organizational unit") . ":</b></td>\n");
-	echo ("<td>&nbsp;</td>\n");
-	echo ("<td><select size=1 name=usersuff_n>");
-	for ($i = 0; $i < sizeof($usr_units); $i++) {
-		echo ("<option>" . $usr_units[$i] . "</option>\n");
+	if ($_SESSION["config"]->get_UserSuffix() != "") {
+		// generate lists of possible suffixes
+		$usr_units = $_SESSION['ldap']->search_units($_SESSION["config"]->get_UserSuffix());
+		echo ("<fieldset><legend><b>" . _("Users") . "</b></legend>\n");
+		echo ("<table border=0>\n");
+		// new OU
+		echo ("<tr>\n");
+		echo ("<td><input type=radio name=\"type\" value=\"new_usr\" checked></td>\n");
+		echo ("<td><b>" . _("New organizational unit") . ":</b></td>\n");
+		echo ("<td>&nbsp;</td>\n");
+		echo ("<td><select size=1 name=usersuff_n>");
+		for ($i = 0; $i < sizeof($usr_units); $i++) {
+			echo ("<option>" . $usr_units[$i] . "</option>\n");
+		}
+		echo ("</select><td>\n");
+		echo ("<td><input type=text name=newsuff_u></td>\n");
+		echo ("<td><a href=\"help.php?HelpNumber=601\" target=\"lamhelp\">". _("Help") ."</a></td>\n");
+		echo ("</tr>\n");
+		// delete OU
+		echo ("<tr>\n");
+		echo ("<td><input type=radio name=\"type\" value=\"del_usr\"></td>\n");
+		echo ("<td><b>" . _("Delete organizational unit") . ":</b></td>\n");
+		echo ("<td>&nbsp;</td>\n");
+		echo ("<td><select size=1 name=usersuff_d>");
+		for ($i = 0; $i < sizeof($usr_units); $i++) {
+			echo ("<option>" . $usr_units[$i] . "</option>\n");
+		}
+		echo ("</select><td>\n");
+		echo ("<td>&nbsp;</td>\n");
+		echo ("<td><a href=\"help.php?HelpNumber=602\" target=\"lamhelp\">". _("Help") ."</a></td>\n");
+		echo ("</tr>\n");
+		echo ("</table>\n");
+		echo ("</fieldset>\n");
+		echo ("<br>\n");
 	}
-	echo ("</select><td>\n");
-	echo ("<td><input type=text name=newsuff_u></td>\n");
-	echo ("<td><a href=\"help.php?HelpNumber=601\" target=\"lamhelp\">". _("Help") ."</a></td>\n");
-	echo ("</tr>\n");
-	// delete OU
-	echo ("<tr>\n");
-	echo ("<td><input type=radio name=\"type\" value=\"del_usr\"></td>\n");
-	echo ("<td><b>" . _("Delete organizational unit") . ":</b></td>\n");
-	echo ("<td>&nbsp;</td>\n");
-	echo ("<td><select size=1 name=usersuff_d>");
-	for ($i = 0; $i < sizeof($usr_units); $i++) {
-		echo ("<option>" . $usr_units[$i] . "</option>\n");
-	}
-	echo ("</select><td>\n");
-	echo ("<td>&nbsp;</td>\n");
-	echo ("<td><a href=\"help.php?HelpNumber=602\" target=\"lamhelp\">". _("Help") ."</a></td>\n");
-	echo ("</tr>\n");
-	echo ("</table>\n");
-	echo ("</fieldset>\n");
-	echo ("<br>\n");
 
 	// group OUs
-	echo ("<fieldset><legend><b>" . _("Groups") . "</b></legend>\n");
-	echo ("<table border=0>\n");
-	// new OU
-	echo ("<tr>\n");
-	echo ("<td><input type=radio name=\"type\" value=\"new_grp\"></td>\n");
-	echo ("<td><b>" . _("New organizational unit") . ":</b></td>\n");
-	echo ("<td>&nbsp;</td>\n");
-	echo ("<td><select size=1 name=groupsuff_n>");
-	for ($i = 0; $i < sizeof($grp_units); $i++) {
-		echo ("<option>" . $grp_units[$i] . "</option>\n");
+	if ($_SESSION["config"]->get_GroupSuffix() != "") {
+		// generate lists of possible suffixes
+		$grp_units = $_SESSION['ldap']->search_units($_SESSION["config"]->get_GroupSuffix());
+		echo ("<fieldset><legend><b>" . _("Groups") . "</b></legend>\n");
+		echo ("<table border=0>\n");
+		// new OU
+		echo ("<tr>\n");
+		echo ("<td><input type=radio name=\"type\" value=\"new_grp\"></td>\n");
+		echo ("<td><b>" . _("New organizational unit") . ":</b></td>\n");
+		echo ("<td>&nbsp;</td>\n");
+		echo ("<td><select size=1 name=groupsuff_n>");
+		for ($i = 0; $i < sizeof($grp_units); $i++) {
+			echo ("<option>" . $grp_units[$i] . "</option>\n");
+		}
+		echo ("</select><td>\n");
+		echo ("<td><input type=text name=newsuff_g></td>\n");
+		echo ("<td><a href=\"help.php?HelpNumber=601\" target=\"lamhelp\">". _("Help") ."</a></td>\n");
+		echo ("</tr>\n");
+		// delete OU
+		echo ("<tr>\n");
+		echo ("<td><input type=radio name=\"type\" value=\"del_grp\"></td>\n");
+		echo ("<td><b>" . _("Delete organizational unit") . ":</b></td>\n");
+		echo ("<td>&nbsp;</td>\n");
+		echo ("<td><select size=1 name=groupsuff_d>");
+		for ($i = 0; $i < sizeof($grp_units); $i++) {
+			echo ("<option>" . $grp_units[$i] . "</option>\n");
+		}
+		echo ("</select><td>\n");
+		echo ("<td>&nbsp;</td>\n");
+		echo ("<td><a href=\"help.php?HelpNumber=602\" target=\"lamhelp\">". _("Help") ."</a></td>\n");
+		echo ("</tr>\n");
+		echo ("</table>\n");
+		echo ("</fieldset>\n");
+		echo ("<br>\n");
 	}
-	echo ("</select><td>\n");
-	echo ("<td><input type=text name=newsuff_g></td>\n");
-	echo ("<td><a href=\"help.php?HelpNumber=601\" target=\"lamhelp\">". _("Help") ."</a></td>\n");
-	echo ("</tr>\n");
-	// delete OU
-	echo ("<tr>\n");
-	echo ("<td><input type=radio name=\"type\" value=\"del_grp\"></td>\n");
-	echo ("<td><b>" . _("Delete organizational unit") . ":</b></td>\n");
-	echo ("<td>&nbsp;</td>\n");
-	echo ("<td><select size=1 name=groupsuff_d>");
-	for ($i = 0; $i < sizeof($grp_units); $i++) {
-		echo ("<option>" . $grp_units[$i] . "</option>\n");
-	}
-	echo ("</select><td>\n");
-	echo ("<td>&nbsp;</td>\n");
-	echo ("<td><a href=\"help.php?HelpNumber=602\" target=\"lamhelp\">". _("Help") ."</a></td>\n");
-	echo ("</tr>\n");
-	echo ("</table>\n");
-	echo ("</fieldset>\n");
-	echo ("<br>\n");
 
 	// host OUs
-	echo ("<fieldset><legend><b>" . _("Samba Hosts") . "</b></legend>\n");
-	echo ("<table border=0>\n");
-	// new OU
-	echo ("<tr>\n");
-	echo ("<td><input type=radio name=\"type\" value=\"new_hst\"></td>\n");
-	echo ("<td><b>" . _("New organizational unit") . ":</b></td>\n");
-	echo ("<td>&nbsp;</td>\n");
-	echo ("<td><select size=1 name=hostsuff_n>");
-	for ($i = 0; $i < sizeof($hst_units); $i++) {
-		echo ("<option>" . $hst_units[$i] . "</option>\n");
+	if ($_SESSION["config"]->get_HostSuffix() != "") {
+		// generate lists of possible suffixes
+		$hst_units = $_SESSION['ldap']->search_units($_SESSION["config"]->get_HostSuffix());
+		echo ("<fieldset><legend><b>" . _("Samba Hosts") . "</b></legend>\n");
+		echo ("<table border=0>\n");
+		// new OU
+		echo ("<tr>\n");
+		echo ("<td><input type=radio name=\"type\" value=\"new_hst\"></td>\n");
+		echo ("<td><b>" . _("New organizational unit") . ":</b></td>\n");
+		echo ("<td>&nbsp;</td>\n");
+		echo ("<td><select size=1 name=hostsuff_n>");
+		for ($i = 0; $i < sizeof($hst_units); $i++) {
+			echo ("<option>" . $hst_units[$i] . "</option>\n");
+		}
+		echo ("</select><td>\n");
+		echo ("<td><input type=text name=newsuff_h></td>\n");
+		echo ("<td><a href=\"help.php?HelpNumber=601\" target=\"lamhelp\">". _("Help") ."</a></td>\n");
+		echo ("</tr>\n");
+		// delete OU
+		echo ("<tr>\n");
+		echo ("<td><input type=radio name=\"type\" value=\"del_hst\"></td>\n");
+		echo ("<td><b>" . _("Delete organizational unit") . ":</b></td>\n");
+		echo ("<td>&nbsp;</td>\n");
+		echo ("<td><select size=1 name=hostsuff_d>");
+		for ($i = 0; $i < sizeof($hst_units); $i++) {
+			echo ("<option>" . $hst_units[$i] . "</option>\n");
+		}
+		echo ("</select><td>\n");
+		echo ("<td>&nbsp;</td>\n");
+		echo ("<td><a href=\"help.php?HelpNumber=602\" target=\"lamhelp\">". _("Help") ."</a></td>\n");
+		echo ("</tr>\n");
+		echo ("</table>\n");
+		echo ("</fieldset>\n");
+		echo ("<br>\n");
 	}
-	echo ("</select><td>\n");
-	echo ("<td><input type=text name=newsuff_h></td>\n");
-	echo ("<td><a href=\"help.php?HelpNumber=601\" target=\"lamhelp\">". _("Help") ."</a></td>\n");
-	echo ("</tr>\n");
-	// delete OU
-	echo ("<tr>\n");
-	echo ("<td><input type=radio name=\"type\" value=\"del_hst\"></td>\n");
-	echo ("<td><b>" . _("Delete organizational unit") . ":</b></td>\n");
-	echo ("<td>&nbsp;</td>\n");
-	echo ("<td><select size=1 name=hostsuff_d>");
-	for ($i = 0; $i < sizeof($hst_units); $i++) {
-		echo ("<option>" . $hst_units[$i] . "</option>\n");
-	}
-	echo ("</select><td>\n");
-	echo ("<td>&nbsp;</td>\n");
-	echo ("<td><a href=\"help.php?HelpNumber=602\" target=\"lamhelp\">". _("Help") ."</a></td>\n");
-	echo ("</tr>\n");
-	echo ("</table>\n");
-	echo ("</fieldset>\n");
-	echo ("<br>\n");
 
 	// domain OUs
-	echo ("<fieldset><legend><b>" . _("Domains") . "</b></legend>\n");
-	echo ("<table border=0>\n");
-	// new OU
-	echo ("<tr>\n");
-	echo ("<td><input type=radio name=\"type\" value=\"new_dom\"></td>\n");
-	echo ("<td><b>" . _("New organizational unit") . ":</b></td>\n");
-	echo ("<td>&nbsp;</td>\n");
-	echo ("<td><select size=1 name=domsuff_n>");
-	for ($i = 0; $i < sizeof($dom_units); $i++) {
-		echo ("<option>" . $dom_units[$i] . "</option>\n");
+	if ($_SESSION["config"]->get_DomainSuffix() != "") {
+		// generate lists of possible suffixes
+		$dom_units = $_SESSION['ldap']->search_units($_SESSION["config"]->get_DomainSuffix());
+		echo ("<fieldset><legend><b>" . _("Domains") . "</b></legend>\n");
+		echo ("<table border=0>\n");
+		// new OU
+		echo ("<tr>\n");
+		echo ("<td><input type=radio name=\"type\" value=\"new_dom\"></td>\n");
+		echo ("<td><b>" . _("New organizational unit") . ":</b></td>\n");
+		echo ("<td>&nbsp;</td>\n");
+		echo ("<td><select size=1 name=domsuff_n>");
+		for ($i = 0; $i < sizeof($dom_units); $i++) {
+			echo ("<option>" . $dom_units[$i] . "</option>\n");
+		}
+		echo ("</select><td>\n");
+		echo ("<td><input type=text name=newsuff_d></td>\n");
+		echo ("<td><a href=\"help.php?HelpNumber=601\" target=\"lamhelp\">". _("Help") ."</a></td>\n");
+		echo ("</tr>\n");
+		// delete OU
+		echo ("<tr>\n");
+		echo ("<td><input type=radio name=\"type\" value=\"del_dom\"></td>\n");
+		echo ("<td><b>" . _("Delete organizational unit") . ":</b></td>\n");
+		echo ("<td>&nbsp;</td>\n");
+		echo ("<td><select size=1 name=domsuff_d>");
+		for ($i = 0; $i < sizeof($dom_units); $i++) {
+			echo ("<option>" . $dom_units[$i] . "</option>\n");
+		}
+		echo ("</select><td>\n");
+		echo ("<td>&nbsp;</td>\n");
+		echo ("<td><a href=\"help.php?HelpNumber=602\" target=\"lamhelp\">". _("Help") ."</a></td>\n");
+		echo ("</tr>\n");
+		echo ("</table>\n");
+		echo ("</fieldset>\n");
+		echo ("<br>\n");
 	}
-	echo ("</select><td>\n");
-	echo ("<td><input type=text name=newsuff_d></td>\n");
-	echo ("<td><a href=\"help.php?HelpNumber=601\" target=\"lamhelp\">". _("Help") ."</a></td>\n");
-	echo ("</tr>\n");
-	// delete OU
-	echo ("<tr>\n");
-	echo ("<td><input type=radio name=\"type\" value=\"del_dom\"></td>\n");
-	echo ("<td><b>" . _("Delete organizational unit") . ":</b></td>\n");
-	echo ("<td>&nbsp;</td>\n");
-	echo ("<td><select size=1 name=domsuff_d>");
-	for ($i = 0; $i < sizeof($dom_units); $i++) {
-		echo ("<option>" . $dom_units[$i] . "</option>\n");
-	}
-	echo ("</select><td>\n");
-	echo ("<td>&nbsp;</td>\n");
-	echo ("<td><a href=\"help.php?HelpNumber=602\" target=\"lamhelp\">". _("Help") ."</a></td>\n");
-	echo ("</tr>\n");
-	echo ("</table>\n");
-	echo ("</fieldset>\n");
-	echo ("<br>\n");
 
 	echo ("<input type=\"submit\" name=\"submit\" value=\"" . _("Submit") . "\">");
 	echo ("</form>\n");
