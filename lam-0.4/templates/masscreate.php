@@ -344,7 +344,7 @@ switch ($select) {
 		echo	'</head><body>'."\n".
 			'<form enctype="multipart/form-data" action="masscreate.php" method="post">'."\n".
 			"<fieldset class=\"useredit-bright\"><legend class=\"useredit-bright\"><b>";
-		echo _('Mass Creation');
+		echo _('File Upload');
 		echo "</b></legend>\n<table border=0 width=\"100%\">\n<tr>\n<td>";
 		echo _('Please provide a csv-file with the following syntax. Values with * are required:');
 		echo '</td></tr></table>'.
