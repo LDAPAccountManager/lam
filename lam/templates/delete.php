@@ -27,16 +27,15 @@ include_once('../lib/account.inc');
 include_once('../lib/config.inc');
 session_save_path('../sess');
 @session_start();
+setlanguage();
 
-echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"'.
-       '"http://www.w3.org/TR/html4/loose.dtd">'."\n";
+echo $_SESSION['header'];
 echo '<html><head><title>';
 echo _('Delete Account');
 echo '</title>'."\n".
 	'<link rel="stylesheet" type="text/css" href="../style/layout.css">'."\n".
 	'<meta http-equiv="pragma" content="no-cache">'."\n".
 	'<meta http-equiv="cache-control" content="no-cache">'."\n".
-	'<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">'."\n".
 	'</head>'."\n".
 	'<body>'."\n".
 	'<form action="delete.php" method="post">'."\n".

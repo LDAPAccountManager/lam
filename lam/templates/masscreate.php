@@ -32,6 +32,7 @@ include_once('../lib/pdf.inc'); // Return a pdf-file
 
 session_save_path('../sess');
 @session_start();
+setlanguage();
 
 $time=time();
 if ($_POST['tolist'] && ($_FILES['userfile']['size']>0)) $select = 'list';
@@ -49,15 +50,13 @@ if (!$select && $_SESSION['pointer']) $select='create';
 
 if ($select!='pdf') {
 	// Write HTML-Header and part of Table
-	echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"'.
-		'."http://www.w3.org/TR/html4/loose.dtd">';
+	echo $_SESSION['header'];
 	echo '<html><head><title>';
 	echo _('Create new Accounts');
 	echo '</title>'.
 		'<link rel="stylesheet" type="text/css" href="../style/layout.css">'.
 		'<meta http-equiv="pragma" content="no-cache">'.
 		'<meta http-equiv="cache-control" content="no-cache">'.
-		'<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-15">';
 	}
 
 switch ($select) {

@@ -31,7 +31,7 @@
 @admins = ('cn=Manager,dc=my-domain,dc=com');
 $server="127.0.0.1"; # IP or DNS of ldap-server
 $server_port='389'; # Port used from ldap
-$server_ssl='no'; # Use SSL? ************* Not working yet
+$server_tls='no'; # Use TLS? ************* Not working yet
 $debug=true; # Show debug messages
 
 # Don't change anything below this line

@@ -74,7 +74,7 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 					case 'user': $select_local = 'unix'; break;
 					case 'group': if ($_SESSION['config']->samba3=='yes') $select_local = 'samba';
 						else $select_local = 'quota'; break;
-					case 'host': $select_local = 'unix'; break;
+					case 'host': $select_local = 'samba'; break;
 					}
 			}
 		break;
@@ -114,11 +114,6 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 			// Check if values are OK and set automatic values. if not error-variable will be set
 			else $errors = checkunix($_SESSION['account'], $_SESSION['type2']); // account.inc
 		// Check which part Site should be displayd
-		// Reset password if reset button was pressed. Button only vissible if account should be modified
-		if ($_POST['respass']) {
-			$_SESSION['account']->unix_password_no=true;
-			$_SESSION['account']->smb_password_no=true;
-			}
 		// Check which part Site should be displayed next
 		if ($_POST['back']) $select_local = 'general';
 		else if (($_POST['next']) && ($errors=='')) $select_local = 'samba';
@@ -151,19 +146,30 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 			else $_SESSION['account']->smb_smbhome = "";
 		if (isset($_POST['f_smb_profilePath'])) $_SESSION['account']->smb_profilePath = stripslashes($_POST['f_smb_profilePath']);
 			else $_SESSION['account']->smb_profilePath = "";
-		if (isset($_POST['f_smb_domain'])) $_SESSION['account']->smb_domain = $_POST['f_smb_domain'];
-			else $_SESSION['account']->smb_domain = false;
-		if ($_POST['f_smb_flagsW']) $_SESSION['account']->smb_flagsW = $_POST['f_smb_flagsW'];
+		if ($_POST['f_smb_flagsW']) $_SESSION['account']->smb_flagsW = true;
 			else $_SESSION['account']->smb_flagsW = false;
-		if ($_POST['f_smb_flagsD']) $_SESSION['account']->smb_flagsD = $_POST['f_smb_flagsD'];
+		if ($_POST['f_smb_flagsD']) $_SESSION['account']->smb_flagsD = true;
 			else $_SESSION['account']->smb_flagsD = false;
-		if ($_POST['f_smb_flagsX']) $_SESSION['account']->smb_flagsX = $_POST['f_smb_flagsX'];
+		if ($_POST['f_smb_flagsX']) $_SESSION['account']->smb_flagsX = true;
 			else $_SESSION['account']->smb_flagsX = false;
 		if ($_POST['f_smb_mapgroup'] == _('Domain Guests')) $_SESSION['account']->smb_mapgroup = $_SESSION[config]->get_domainSID() . "-" . '514';
 		if ($_POST['f_smb_mapgroup'] == _('Domain Users')) $_SESSION['account']->smb_mapgroup = $_SESSION[config]->get_domainSID() . "-" . '513';
 		if ($_POST['f_smb_mapgroup'] == _('Domain Admins')) $_SESSION['account']->smb_mapgroup = $_SESSION[config]->get_domainSID() . "-" . '512';
 		if (isset($_POST['f_smb_domain'])) $_SESSION['account']->smb_displayName = $_POST['f_smb_domain'];
 			else $_SESSION['account']->smb_displayName = '';
+
+		if ($_SESSION['config']->samba3 == 'yes') {
+			$samba3domains = $_SESSION['ldap']->search_domains($_SESSION[config]->get_domainSuffix());
+			for ($i=0; $i<sizeof($samba3domains); $i++)
+				if ($_POST['f_smb_domain'] == $samba3domains[$i]->name) {
+					$_SESSION['account']->smb_domain = $samba3domains[$i];
+					}
+			}
+		else {
+			if (isset($_POST['f_smb_domain'])) $_SESSION['account']->smb_domain = $_POST['f_smb_domain'];
+				else $_SESSION['account']->smb_domain = false;
+			}
+		// Reset password if reset button was pressed. Button only vissible if account should be modified
 		// Check if values are OK and set automatic values. if not error-variable will be set
 		list($values, $errors) = checksamba($_SESSION['account'], $_SESSION['type2']); // account.inc
 		if (is_object($values)) {
@@ -184,6 +190,11 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 					case 'host': $select_local = 'final'; break;
 					}
 				else $select_local = 'samba';
+		if ($_POST['respass']) {
+			$_SESSION['account']->unix_password_no=true;
+			$_SESSION['account']->smb_password_no=true;
+			$select_local = 'samba';
+			}
 		break;
 	case 'quota':
 		// Write all general values into $_SESSION['account']
@@ -311,15 +322,13 @@ if ($_POST['save']) $select_local='save';
 
 if ($select_local != 'pdf') {
 	// Write HTML-Header and part of Table
-	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"".
-		"\"http://www.w3.org/TR/html4/loose.dtd\">\n";
+	echo $_SESSION['header'];
 	echo "<html><head><title>";
 	echo _("Create new Account");
 	echo "</title>\n".
 		"<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">\n".
 		"<meta http-equiv=\"pragma\" content=\"no-cache\">\n".
-		"<meta http-equiv=\"cache-control\" content=\"no-cache\">\n".
-		"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=ISO-8859-15\">";
+		"<meta http-equiv=\"cache-control\" content=\"no-cache\">\n";
 	}
 
 switch ($select_local) {
@@ -389,7 +398,8 @@ if ($select_local != 'pdf') {
 	if (is_array($errors))
 		for ($i=0; $i<sizeof($errors); $i++) StatusMessage($errors[$i][0], $errors[$i][1], $errors[$i][2]);
 	}
-//print_r($_SESSION['account']);
+
+// print_r($_SESSION['account']);
 //print_r($_POST);
 
 switch ($select_local) { // Select which part of page will be loaded
@@ -566,18 +576,6 @@ switch ($select_local) { // Select which part of page will be loaded
 				echo '</select></td><td>'.
 					'<a href="help.php?HelpNumber=412" target="lamhelp">'._('Help').'</a>'.
 					'</td></tr>'."\n".'<tr><td>';
-				echo _('Additional Groupmembership');
-				echo '</td>'."\n".'<td><select name="f_general_groupadd[]" size="3" multiple>';
-				foreach ($groups as $group) {
-					if ($_SESSION['account']->general_groupadd) {
-						if (in_array($group, $_SESSION['account']->general_groupadd)) echo '<option selected>'.$group. '</option>';
-						else echo '<option>'.$group. '</option>';
-						}
-					else echo '<option>'.$group. '</option>';
-					}
-				echo	'</select></td>'."\n".'<td>'.
-					'<a href="help.php?HelpNumber=402" target="lamhelp">'._('Help').'</a>'.
-					'</td></tr>'."\n".'<tr><td>';
 				echo _('Gecos');
 				echo '</td><td><input name="f_general_gecos" type="text" size="30" value="' . $_SESSION['account']->general_gecos . '">'.
 					'</td>'."\n".'<td>'.
@@ -666,7 +664,7 @@ switch ($select_local) { // Select which part of page will be loaded
 					else echo "<option> $i". '</option>';
 					}
 				echo '</select><select name="f_unix_pwdexpire_yea">';
-				for ( $i=2003; $i<=2030; $i++ ) {
+				for ( $i=2030; $i>=2003; $i-- ) {
 					if ($date['year']==$i) echo "<option selected> $i". '</option>';
 					else echo "<option> $i". '</option>';
 					}
@@ -687,19 +685,6 @@ switch ($select_local) { // Select which part of page will be loaded
 				echo _('Values with * are required');
 				echo '</td></tr>'."\n".'<tr><td>';
 				break;
-			case 'host' :
-				echo '<input name="f_unix_password_no" type="hidden" value="';
-				if ($_SESSION['account']->unix_password_no) echo 'checked';
-				echo  '">';
-				echo '<tr><td>';
-				echo _('Password');
-				echo '</td>'."\n".'<td></td>'."\n".'<td>';
-				if ($_SESSION['account_old']) {
-					echo '<input name="respass" type="submit" value="';
-					echo _('Reset Password'); echo '">';
-					}
-				echo '</td></tr>';
-				break;
 			}
 		echo '<tr><td>'.
 		'<input name="back" type="submit" value="'; echo _('back'); echo '">'.
@@ -718,6 +703,7 @@ switch ($select_local) { // Select which part of page will be loaded
 			$password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($_SESSION['account']->smb_password), MCRYPT_MODE_ECB, $iv);
 			$password = str_replace(chr(00), '', $password);
 			}
+		if ($_SESSION['config']->samba3 == 'yes') $samba3domains = $_SESSION['ldap']->search_domains($_SESSION[config]->get_domainSuffix());
 		switch ( $_SESSION['type2'] ) {
 			case 'user':
 				// Set Account is samba-workstation to false
@@ -781,7 +767,7 @@ switch ($select_local) { // Select which part of page will be loaded
 					else echo "<option> $i". '</option>';
 					}
 				echo '</select><select name="f_smb_pwdmustchange_yea">';
-				for ( $i=2003; $i<=2030; $i++ ) {
+				for ( $i=2030; $i>=2003; $i-- ) {
 					if ($mustchangedate['year']==$i) echo "<option selected> $i". '</option>';
 					else echo "<option> $i". '</option>';
 					}
@@ -822,10 +808,21 @@ switch ($select_local) { // Select which part of page will be loaded
 					'<a href="help.php?HelpNumber=437" target="lamhelp">'._('Help').'</a>'.
 					'</td></tr>'."\n".'<tr><td>';
 				echo _('Domain');
-				echo '</td>'."\n".'<td><input name="f_smb_domain" type="text" size="20" maxlength="80" value="' . $_SESSION['account']->smb_domain . '">'.
-					'</td>'."\n".'<td>'.
-					'<a href="help.php?HelpNumber=438" target="lamhelp">'._('Help').'</a>'.
-					'</td></tr>'."\n";
+				if ($_SESSION['config']->samba3 == 'yes') {
+					echo '</td><td><select name="f_smb_domain">';
+					for ($i=0; $i<sizeof($samba3domains); $i++) {
+						if ($_SESSION['account']->smb_domain->name) {
+							if ($_SESSION['account']->smb_domain->name == $samba3domains[$i]->name)
+								echo '<option selected>' . $samba3domains[$i]->name. '</option>';
+							else echo '<option>' . $samba3domains[$i]->name. '</option>';
+							}
+						else echo '<option>' . $samba3domains[$i]->name. '</option>';
+						}
+					}
+				else {
+					echo '</td>'."\n".'<td><input name="f_smb_domain" type="text" size="20" maxlength="80" value="' . $_SESSION['account']->smb_domain . '">';
+					}
+				echo	'</td>'."\n".'<td><a href="help.php?HelpNumber=438" target="lamhelp">'._('Help').'</a></td></tr>'."\n";
 				break;
 			case 'group':
 				echo '<tr><td>';
@@ -871,51 +868,17 @@ switch ($select_local) { // Select which part of page will be loaded
 			case 'host':
 				// set smb_flgasW true because account is host
 				$_SESSION['account']->smb_flagsW = 1;
-				echo '<tr><td><input name="f_smb_password_no" type="hidden" value="'.$_SESSION['account']->unix_password_no.'">';
-				echo _('Password doesn\'t expire.');
-				echo '</td>'."\n".'<td><input name="f_smb_flagsX" type="checkbox"';
-				if ($_SESSION['account']->smb_flagsX) echo ' checked ';
-				echo '></td><td>'.
-					'<a href="help.php?HelpNumber=429" target="lamhelp">'._('Help').'</a>'.
-					'</td></tr>'."\n".'<tr><td>';
-				echo _('Host can change Password');
-				echo '</td>'."\n".'<td><select name="f_smb_pwdcanchange_day">';
-				for ( $i=1; $i<=31; $i++ ) {
-					if ($canchangedate['mday']==$i) echo "<option selected> $i". '</option>';
-					else echo "<option> $i". '</option>';
+				echo '<input name="f_unix_password_no" type="hidden" value="';
+				if ($_SESSION['account']->unix_password_no) echo 'checked';
+				echo  '">';
+				echo '<tr><td>';
+				echo _('Password');
+				echo '</td><td>';
+				if ($_SESSION['account_old']) {
+					echo '<input name="respass" type="submit" value="';
+					echo _('Reset password'); echo '">';
 					}
-				echo '</select><select name="f_smb_pwdcanchange_mon">';
-				for ( $i=1; $i<=12; $i++ ) {
-					if ($canchangedate['mon'] == $i) echo "<option selected> $i". '</option>';
-					else echo "<option> $i". '</option>';
-					}
-				echo '</select><select name="f_smb_pwdcanchange_yea">';
-				for ( $i=2003; $i<=2030; $i++ ) {
-					if ($canchangedate['year']==$i) echo "<option selected> $i". '</option>';
-					else echo "<option> $i". '</option>';
-					}
-				echo '</select></td>'."\n".'<td>';
-				echo	'<a href="help.php?HelpNumber=430" target="lamhelp">'._('Help').'</a>'.
-					'</td></tr>'."\n".'<tr><td>';
-				echo _('Host must change Password');
-				echo '</td>'."\n".'<td><select name="f_smb_pwdmustchange_day">';
-				for ( $i=1; $i<=31; $i++ ) {
-					if ($mustchangedate['mday']==$i) echo "<option selected> $i". '</option>';
-					else echo "<option> $i". '</option>';
-					}
-				echo '</select><select name="f_smb_pwdmustchange_mon">';
-				for ( $i=1; $i<=12; $i++ ) {
-					if ($mustchangedate['mon'] == $i) echo "<option selected> $i". '</option>';
-					else echo "<option> $i". '</option>';
-					}
-				echo '</select><select name="f_smb_pwdmustchange_yea">';
-				for ( $i=2003; $i<=2030; $i++ ) {
-					if ($mustchangedate['year']==$i) echo "<option selected> $i". '</option>';
-					else echo "<option> $i". '</option>';
-					}
-				echo '</select></td>'."\n".'<td>';
-				echo	'<a href="help.php?HelpNumber=431" target="lamhelp">'._('Help').'</a>'.
-					'</td></tr>'."\n".'<tr><td>';
+				echo '</td></tr>'."\n".'<tr><td>';
 				echo _('Account is deactivated');
 				echo '</td>'."\n".'<td><input name="f_smb_flagsD" type="checkbox"';
 				if ($_SESSION['account']->smb_flagsD) echo ' checked ';
@@ -924,10 +887,21 @@ switch ($select_local) { // Select which part of page will be loaded
 					'</td></tr>'."\n".'<tr><td>';
 				echo '</td></tr>'."\n".'<tr><td>';
 				echo _('Domain');
-				echo '</td>'."\n".'<td><input name="f_smb_domain" type="text" size="20" maxlength="20" value="' . $_SESSION['account']->smb_domain . '">'.
-					'</td><td>'.
-					'<a href="help.php?HelpNumber=460" target="lamhelp">'._('Help').'</a>'.
-					'</td></tr>'."\n";
+				if ($_SESSION['config']->samba3 == 'yes') {
+					echo '</td><td><select name="f_smb_domain">';
+					for ($i=0; $i<sizeof($samba3domains); $i++) {
+						if ($_SESSION['account']->smb_domain->name) {
+							if ($_SESSION['account']->smb_domain->name == $samba3domains[$i]->name)
+								echo '<option selected>' . $samba3domains[$i]->name. '</option>';
+							else echo '<option>' . $samba3domains[$i]->name. '</option>';
+							}
+						else echo '<option>' . $samba3domains[$i]->name. '</option>';
+						}
+					}
+				else {
+					echo '</td>'."\n".'<td><input name="f_smb_domain" type="text" size="20" maxlength="80" value="' . $_SESSION['account']->smb_domain . '">';
+					}
+				echo	'</td>'."\n".'<td><a href="help.php?HelpNumber=460" target="lamhelp">'._('Help').'</a></td></tr>'."\n";
 				break;
 			}
 		echo '<tr><td><input name="back" type="submit" value="'; echo _('back');

@@ -29,15 +29,13 @@ include_once('../lib/config.inc'); // File with configure-functions
 session_save_path('../sess');
 @session_start();
 
-echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"'.
-	'"http://www.w3.org/TR/html4/loose.dtd">'.
-	'<html><head><title>';
+echo $_SESSION['account'];
+echo	'<html><head><title>';
 echo _('Create new Accounts');
 echo '</title>'.
 	'<link rel="stylesheet" type="text/css" href="../style/layout.css">'.
 	'<meta http-equiv="pragma" content="no-cache">'.
 	'<meta http-equiv="cache-control" content="no-cache">'.
-	'<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-15">'.
 	'</head><body>'.
 	'<form enctype="multipart/form-data" action="massdetail.php" method="post">'.
 	'<table class="massdetail" width="100%">'.
