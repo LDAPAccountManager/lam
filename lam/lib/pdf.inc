@@ -69,9 +69,6 @@ function createUserPDF($accounts) {
 			}
 		// Split string in array
 		$info_array = explode("\n", $info_string);
-		$pdfFile->setFont("arial","B",12);
-		$pdfFile->Write(5,"- " . _("User Information") . ":");
-		$pdfFile->Ln(6);
 		$pdfFile->setFont("times","",10);
 		foreach ($info_array as $info)
 			$pdfFile->Cell(50,5,$info,0,1,"L",0);
@@ -497,7 +494,7 @@ class lamPDF extends FPDF {
 		$this->SetLineWidth(0.8);
 		$this->Line(10,40,200,40);
 		$this->Line(10,42,200,42);
-		$this->SetY(60);
+		$this->SetY(50);
 	}
 
 	// Print page footer
