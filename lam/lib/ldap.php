@@ -39,53 +39,68 @@ class Ldap{
 		else { echo _("Ldap->Ldap failed!"); exit;}
 	}
 
-	// returns an array of strings with the DN entries
+	// returns an array of strings with the DN entries of all users
 	// $base is optional and specifies the root from where to search for entries
 	function getUsers($base = "") {
-		if ($base == "") $base = $this->conf->get_UserSuffix(); 
+		if ($base == "") $base = $this->conf->get_UserSuffix();
+		// users have the attribute "posixAccount" or "sambaAccount" and do not end with "$"
 		$filter = "(&(|(objectClass=posixAccount) (objectClass=sambaAccount)) (!(uid=*$)))";
 		$attrs = array();
 		$sr = ldap_search($this->server, $base, $filter, $attrs);
 		$info = ldap_get_entries($this->server, $sr);
 		$ret = array();
 		for ($i = 0; $i < $info["count"]; $i++) $ret[$i] = $info[$i]["dn"];
+		ldap_free_result($sr);
 		return $ret;
 	}
 
-	// returns an array of strings with the DN entries
+	// returns an array of strings with the DN entries of all groups
 	// $base is optional and specifies the root from where to search for entries
 	function getGroups($base = "") {
 		if ($base == "") $base = $this->conf->get_GroupSuffix(); 
+		// groups have the attribute "posixGroup"
 		$filter = "(objectClass=posixGroup)";
 		$attrs = array();
 		$sr = ldap_search($this->server, $base, $filter, $attrs);
 		$info = ldap_get_entries($this->server, $sr);
 		$ret = array();
 		for ($i = 0; $i < $info["count"]; $i++) $ret[$i] = $info[$i]["dn"];
+		ldap_free_result($sr);
 		return $ret;
 	}
 	
-	// returns an array of strings with the DN entries
+	// returns an array of strings with the DN entries of all Samba hosts
 	// $base is optional and specifies the root from where to search for entries
 	function getMachines($base = "") {
 		if ($base == "") $base = $this->conf->get_HostSuffix();
+		// Samba hosts have the attribute "sambaAccount" and end with "$"
 		$filter = "(&(objectClass=sambaAccount) (uid=*$))";
 		$attrs = array();
 		$sr = ldap_search($this->server, $base, $filter, $attrs);
 		$info = ldap_get_entries($this->server, $sr);
 		$ret = array();
 		for ($i = 0; $i < $info["count"]; $i++) $ret[$i] = $info[$i]["dn"];
+		ldap_free_result($sr);
 		return $ret;
 	}
 
 	// connects to the server using the given username and password
 	// $base is optional and specifies the root from where to search for entries
+	// if connect succeeds the server handle is returned
 	function connect($user, $passwd) {
+		// do not allow anonymous bind
+		if ((!$user)||($user = "")) {
+			echo _("No username was specified!");
+			exit;
+		}
 		if ($this->conf->get_SSL() == "True") $this->server = ldap_connect("ldaps://" . $this->conf->get_Host(), $this->conf->get_Port());
 		else $this->server = ldap_connect("ldap://" . $this->conf->get_Host(), $this->conf->get_Port());
 		if ($this->server) {
-			if (ldap_bind($this->server, $user, $passwd)) {
-				return True;
+		ldap_set_option($this->server, LDAP_OPT_DEBUG_LEVEL, 0);
+			$bind = ldap_bind($this->server, $user, $passwd);
+			if ($bind) {
+			// return server handle
+			return $this->server;
 			}
 			else {
 				echo _("Unable to bind to Server!");
@@ -96,8 +111,6 @@ class Ldap{
 			echo _("Unable to connect to Server!");
 			exit;
 		}
-		// return server handle
-		return $this->server;
 	}
 	
 	// closes connection to server
