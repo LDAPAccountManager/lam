@@ -201,7 +201,7 @@ if ($_GET['type'] == "user") {
 	}
 	// replace double \'s with \
 	$_POST['smb_scriptPath'] = str_replace('\\\\', '\\', $_POST['smb_scriptPath']);
-	if ($_POST['smb_scriptPath'] && eregi("^[\][\]([a-z0-9])+([\][a-z0-9_\\-\\$%.]+)+$", $_POST['smb_scriptPath'])) {
+	if ($_POST['smb_scriptPath'] && is_string($_POST['smb_scriptPath'])) {
 		$acct->smb_scriptPath = $_POST['smb_scriptPath'];
 	}
 	elseif ($_POST['smb_scriptPath']) {
