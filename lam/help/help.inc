@@ -119,6 +119,8 @@ $helpArray = array (
 					"Text" => _("If you want to change your master configuration password, please enter it here.")),
 				"236" => array ("ext" => "FALSE", "Headline" => _("Profile management") . " - " . _("Master password"),
 					"Text" => _("Please enter the master configuration password. This is NOT your LDAP password. It is stored in your config.cfg file. If this is the first time you log in, enter \"lam\".")),
+				"237" => array ("ext" => "FALSE", "Headline" => _("Configuration wizard") . " - " . _("Base module"),
+					"Text" => _("Every account type needs exactly one base module. This module provides a structural object class.")),
 				// 300 - 399
 				// Roland Gruber
 				// profile editor, file upload
