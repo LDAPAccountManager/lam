@@ -130,22 +130,33 @@ tr.grouplist_checked {
  * table style for hostlist.php
  *
  */
-th.hostlist {
+
+/* table preferences */
+table.hostlist {
   border-width:1px;
   border-style:solid;
-  border-color:#B7C7B7;
-  padding:10px;
-  background-color:#ffc4ba;
+  border-color:#911a1a;
   font-size:14px;
+}
+
+/* color of entry rows */
+tr.hostlist {
+  background-color:#ffe2dd;
+}
+
+/* color of head row */
+tr.hostlist_head {
+  background-color:#ffc4ba;
   font-weight:bold;
 }
 
-td.hostlist {
-  border-width:1px;
-  border-style:solid;
-  border-color:#C7D7C7;
-  padding:4px;
-  background-color:#ffe2dd;
-  font-size:14px;
+/* color of rows on mouseOver */
+tr.hostlist_over {
+  background-color:#ffe265;
+}
+
+/* color of checked rows */
+tr.hostlist_checked {
+  background-color:#f27c71;
 }
 

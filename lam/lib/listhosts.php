@@ -29,7 +29,10 @@ include_once("ldap.php");
 session_save_path("../sess");
 @session_start();
 
-echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\" />";
+echo "<html><head><title>hjhj</title>\n";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">\n";
+echo "</head><body>\n";
+echo "<script src=\"./functions.js\" type=\"text/javascript\" language=\"javascript\"></script>\n";
 
 // generate attribute-description table
 $attr_array;	// list of LDAP attributes to show
@@ -66,19 +69,26 @@ if ($sr) {
 else echo ("<br><br><font color=\"red\"><b>" . _("LDAP Search failed! Please check your preferences. <br> No Samba Hosts found!") . "</b></font><br><br>");
 
 echo ("<form action=\"../templates/account.php?type=host\" method=\"post\">\n");
-// print host table
-echo "<table width=\"100%\">\n";
-echo "<tr><th class=\"hostlist\" width=12></th>";
+
+// print host table header
+echo "<table rules=\"all\" class=\"hostlist\" width=\"100%\">\n";
+echo "<tr class=\"hostlist_head\"><th width=22 height=34></th><th></th>";
 // table header
 for ($k = 0; $k < sizeof($desc_array); $k++) {
-	echo "<th class=\"hostlist\">" . $desc_array[$k] . "</th>";
+	echo "<th>" . $desc_array[$k] . "</th>";
 }
 echo "</tr>\n";
+
 // print host list
 for ($i = 0; $i < sizeof($info)-1; $i++) { // ignore last entry in array which is "count"
-	echo("<tr><td class=\"hostlist\"><input type=\"radio\" name=\"DN\" value=\"" . $info[$i]["dn"] . "\"></td>");
+	echo("<tr class=\"hostlist\" onMouseOver=\"host_over(this, '" . $info[$i]["dn"] . "')\"" .
+								" onMouseOut=\"host_out(this, '" . $info[$i]["dn"] . "')\"" .
+								" onClick=\"host_click(this, '" . $info[$i]["dn"] . "')\"" .
+								" onDblClick=parent.frames[1].location.href=\"../templates/account.php?type=host,DN='" . $info[$i]["dn"] . "'\">" .
+								" <td height=22><input type=\"checkbox\" name=\"" . $info[$i]["dn"] . "\"></td>" .
+								" <td align='center'><a href=\"../templates/account.php?type=host,DN='" . $info[$i]["dn"] . "'\">" . _("Edit") . "</a></td>");
 	for ($k = 0; $k < sizeof($attr_array); $k++) {
-		echo ("<td class=\"hostlist\">");
+		echo ("<td>");
 		// print all attribute entries seperated by "; "
 		if (sizeof($info[$i][strtolower($attr_array[$k])]) > 0) {
 			array_shift($info[$i][strtolower($attr_array[$k])]);
@@ -90,11 +100,10 @@ for ($i = 0; $i < sizeof($info)-1; $i++) { // ignore last entry in array which i
 }
 echo ("</table>");
 echo ("<p>&nbsp</p>\n");
-echo ("<p>&nbsp</p>\n");
 echo ("<table align=\"left\" border=\"0\">");
-echo ("<tr><td align=\"left\"><input type=\"submit\" name=\"edithost\" value=\"" . _("Edit Host") . "\">");
-echo ("&nbsp<input type=\"button\" name=\"newhost\" value=\"" . _("New Host") . "\" onClick=\"self.location.href='../templates/account.php?type=host'\">");
-echo ("&nbsp<input type=\"button\" name=\"delhost\" value=\"" . _("Delete Host") . "\" onClick=\"self.location.href='../templates/account.php?type=delete'\"></td></tr>\n");
+echo ("<tr><td align=\"left\"><input type=\"button\" name=\"newhost\" value=\"" . _("New Host") . "\" onClick=\"self.location.href='../templates/account.php?type=host'\">");
+echo ("&nbsp<input type=\"button\" name=\"delhost\" value=\"" . _("Delete Host(s)") . "\" onClick=\"self.location.href='../templates/account.php?type=delete'\"></td></tr>\n");
 echo ("</table>\n");
 echo ("</form>\n");
+echo "</body></html>\n";
 ?>

@@ -29,9 +29,9 @@ include_once("ldap.php");
 session_save_path("../sess");
 @session_start();
 
-echo "<html><head><title>hjhj</title>";
+echo "<html><head><title>hjhj</title>\n";
 echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">\n";
-echo "</head><body bgcolor=\"#F4F4F4\">\n";
+echo "</head><body>\n";
 echo "<script src=\"./functions.js\" type=\"text/javascript\" language=\"javascript\"></script>\n";
 
 // generate attribute-description table
@@ -70,14 +70,15 @@ else echo ("<br><br><font color=\"red\"><b>" . _("LDAP Search failed! Please che
 
 echo ("<form action=\"../templates/account.php?type=group\" method=\"post\">\n");
 
-// print host table header
-echo "<table rules='all' class=\"grouplist\" width=\"100%\">\n";
+// print group table header
+echo "<table rules=\"all\" class=\"grouplist\" width=\"100%\">\n";
 echo "<tr class=\"grouplist_head\"><th width=22 height=34></th><th></th>";
 // table header
 for ($k = 0; $k < sizeof($desc_array); $k++) {
 	echo "<th>" . $desc_array[$k] . "</th>";
 }
 echo "</tr>\n";
+
 // print group list
 for ($i = 0; $i < sizeof($info)-1; $i++) { // ignore last entry in array which is "count"
 	echo("<tr class=\"grouplist\" onMouseOver=\"group_over(this, '" . $info[$i]["dn"] . "')\"" .
