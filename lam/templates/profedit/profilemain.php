@@ -59,8 +59,22 @@ if ($_POST['forward'] == "yes") {
 		elseif($_POST['profile'] == "deluser") {
 			metaRefresh("profiledelete.php?type=user&del=" . $_POST['d_user']);
 		}
+		if ($_SESSION['config']->is_samba3() || $_SESSION['config']->get_scriptPath()) {
+			// create new group profile
+			if ($_POST['profile'] == "newgroup") {
+				metaRefresh("profilegroup.php");
+			}
+			// edit group profile
+			elseif($_POST['profile'] == "editgroup") {
+				metaRefresh("profilegroup.php?edit=" . $_POST['e_group']);
+			}
+			// delete group profile
+			elseif($_POST['profile'] == "delgroup") {
+				metaRefresh("profiledelete.php?type=group&del=" . $_POST['d_group']);
+			}
+		}
 		// create new host profile
-		elseif ($_POST['profile'] == "newhost") {
+		if ($_POST['profile'] == "newhost") {
 			metaRefresh("profilehost.php");
 		}
 		// edit host profile
@@ -80,6 +94,15 @@ $usrprof = getUserProfiles();
 $userprofiles = "";
 for ($i = 0; $i < sizeof($usrprof); $i++) {
 	$userprofiles = $userprofiles . "<option>" . $usrprof[$i] . "</option>\n";
+}
+
+if ($_SESSION['config']->is_samba3() || $_SESSION['config']->get_scriptPath()) {
+	// get list of group profiles and generate entries for dropdown box
+	$grpprof = getGroupProfiles();
+	$groupprofiles = "";
+	for ($i = 0; $i < sizeof($grpprof); $i++) {
+		$groupprofiles = $groupprofiles . "<option>" . $grpprof[$i] . "</option>\n";
+	}
 }
 
 // get list of host profiles and generate entries for dropdown box
@@ -142,6 +165,54 @@ echo $_SESSION['header'];
 		</fieldset>
 
 		<p></p>
+
+<?php
+if ($_SESSION['config']->is_samba3() || $_SESSION['config']->get_scriptPath()) {
+	echo "		<!-- group profile options -->";
+	echo "		<fieldset>";
+	echo "			<legend>";
+	echo "				<b>" . _("Group Profiles") . "</b>";
+	echo "			</legend>";
+	echo "			<table border=0>";
+	echo "				<!-- new group profile -->";
+	echo "				<tr>";
+	echo "					<td>";
+	echo "						<input type=\"radio\" name=\"profile\" value=\"newgroup\">";
+	echo "					</td>";
+	echo "					<td colspan=2>" . _("Create a new Group Profile") . "</td>";
+	echo "				</tr>";
+	if ($groupprofiles != "") {
+		echo "				<!-- edit group profile -->";
+		echo "				<tr>";
+		echo "					<td>";
+		echo "						<input type=\"radio\" name=\"profile\" value=\"editgroup\">";
+		echo "					</td>";
+		echo "					<td>";
+		echo "						<select name=\"e_group\" size=1>";
+		echo "							" . $groupprofiles;
+		echo "						</select>";
+		echo "					</td>";
+		echo "					<td>" . _("Edit Group Profile") . "</td>";
+		echo "				</tr>";
+		echo "				<!-- delete group profile -->";
+		echo "				<tr>";
+		echo "					<td>";
+		echo "						<input type=\"radio\" name=\"profile\" value=\"delgroup\">";
+		echo "					</td>";
+		echo "					<td>";
+		echo "						<select name=\"d_group\" size=1>";
+		echo "							" . $groupprofiles;
+		echo "						</select>";
+		echo "					</td>";
+		echo "					<td>" . _("Delete Group Profile") . "</td>";
+		echo "				</tr>";
+	}
+	echo "			</table>";
+	echo "		</fieldset>";
+
+	echo "		<p></p>";
+}
+?>
 
 		<!-- host profile options -->
 		<fieldset>

@@ -55,6 +55,13 @@ if ($_POST['submit']) {
 		}
 		else StatusMessage("INFO", "", _("Deleted profile:") . " " . $_POST['del']);
 	}
+	// delete group profile
+	elseif ($_POST['type'] == "group") {
+		if (!delGroupProfile($_POST['del'])) {
+			StatusMessage("ERROR", "", _("Unable to delete profile!") . " " . $_POST['del']);
+		}
+		else StatusMessage("INFO", "", _("Deleted profile:") . " " . $_POST['del']);
+	}
 	// delete host profile
 	elseif ($_POST['type'] == "host") {
 		if (!delHostProfile($_POST['del'])) {
@@ -81,7 +88,7 @@ if ($_POST['abort']) {
 
 // check if right type was given
 $type = $_GET['type'];
-if (($type == "user") || ($type == "host")) {
+if (($type == "user") || ($type == "host") || ($type == "group")) {
 	// user profile
 	if ($type == "user") {
 		echo ("<p align=\"center\"><big>" . _("Do you really want to delete this profile?") . " <b>");
@@ -91,6 +98,18 @@ if (($type == "user") || ($type == "host")) {
 		echo ("<input type=\"submit\" name=\"submit\" value=\"" . _("Submit") . "\">\n");
 		echo ("<input type=\"submit\" name=\"abort\" value=\"" . _("Abort") . "\">\n");
 		echo ("<input type=\"hidden\" name=\"type\" value=\"user\">");
+		echo ("<input type=\"hidden\" name=\"del\" value=\"" . $_GET['del'] . "\">");
+		echo ("</p></form></body></html>\n");
+	}
+	// group profile
+	elseif ($type == "group") {
+		echo ("<p align=\"center\"><big>" . _("Do you really want to delete this profile?") . " <b>");
+			echo ($_GET['del'] . "</b></big><br></p>\n");
+		echo ("<form action=\"profiledelete.php\" method=\"post\">\n");
+		echo ("<p align=\"center\">\n");
+		echo ("<input type=\"submit\" name=\"submit\" value=\"" . _("Submit") . "\">\n");
+		echo ("<input type=\"submit\" name=\"abort\" value=\"" . _("Abort") . "\">\n");
+		echo ("<input type=\"hidden\" name=\"type\" value=\"group\">");
 		echo ("<input type=\"hidden\" name=\"del\" value=\"" . $_GET['del'] . "\">");
 		echo ("</p></form></body></html>\n");
 	}

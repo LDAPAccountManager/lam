@@ -30,15 +30,17 @@ include_once("ldap.inc");
 
 // returns an array of String with all available user profiles (without .pru)
 function getUserProfiles() {
-	$dir = dir(substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/users");
+	$dir = @dir(substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/users");
 	$ret = array();
 	$pos = 0;
-	while ($entry = $dir->read()){
-		$ext = substr($entry, strlen($entry)-4, 4);
-		$name = substr($entry, 0, strlen($entry)-4);
-		if ($ext == ".pru") {
-			$ret[$pos] = $name;
-			$pos ++;
+	if ($dir) {
+		while ($entry = $dir->read()){
+			$ext = substr($entry, strlen($entry)-4, 4);
+			$name = substr($entry, 0, strlen($entry)-4);
+			if ($ext == ".pru") {
+				$ret[$pos] = $name;
+				$pos ++;
+			}
 		}
 	}
 	return $ret;
@@ -47,32 +49,35 @@ function getUserProfiles() {
 // returns an array of String with all available group profiles (without .prg)
 function getGroupProfiles() {
 // group profiles are not supported at this time
-/*	$dir = dir(substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/groups");
+	$dir = @dir(substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/groups");
 	$ret = array();
 	$pos = 0;
-	while ($entry = $dir->read()){
-		$ext = substr($entry, strlen($entry)-4, 4);
-		$name = substr($entry, 0, strlen($entry)-4);
-		if ($ext == ".prg") {
-			$ret[$pos] = $name;
-			$pos ++;
+	if ($dir) {
+		while ($entry = $dir->read()){
+			$ext = substr($entry, strlen($entry)-4, 4);
+			$name = substr($entry, 0, strlen($entry)-4);
+			if ($ext == ".prg") {
+				$ret[$pos] = $name;
+				$pos ++;
+			}
 		}
 	}
-	return $ret; */
-	return array();
+	return $ret;
 }
 
 // returns an array of String with all available host profiles (without .prh)
 function getHostProfiles() {
-	$dir = dir(substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/hosts");
+	$dir = @dir(substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/hosts");
 	$ret = array();
 	$pos = 0;
-	while ($entry = $dir->read()){
-		$ext = substr($entry, strlen($entry)-4, 4);
-		$name = substr($entry, 0, strlen($entry)-4);
-		if ($ext == ".prh") {
-			$ret[$pos] = $name;
-			$pos ++;
+	if ($dir) {
+		while ($entry = $dir->read()){
+			$ext = substr($entry, strlen($entry)-4, 4);
+			$name = substr($entry, 0, strlen($entry)-4);
+			if ($ext == ".prh") {
+				$ret[$pos] = $name;
+				$pos ++;
+			}
 		}
 	}
 	return $ret;
@@ -228,7 +233,67 @@ function loadUserProfile($profile) {
 // loads an group profile with name $profile (without .prg)
 // the return value is an account object
 function loadGroupProfile($profile) {
-	// no group profiles yet
+	if (!eregi("^([0-9]|[a-z]|-|_)*$", $profile)) exit;
+	$acc = new account();
+	$file = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/groups/" . $profile . ".prg";
+	if (is_file($file) == True) {
+		$file = @fopen($file, "r");
+		if ($file) {
+			while (!feof($file)) {
+				$line = fgets($file, 1024);
+				if (($line == "\n")||($line[0] == "#")) continue; // ignore comments
+				// search keywords
+				if (substr($line, 0, 12) == "smb_domain: ") {
+					if ($_SESSION['config']->is_samba3()) {
+						$dn = chop(substr($line, 12, strlen($line)-12));
+						// load domain object
+						$dom = new samba3domain();
+						$sr = @ldap_search($_SESSION['ldap']->server, $dn, "objectClass=sambaDomain");
+						if ($sr) {
+							$info = @ldap_get_entries($_SESSION['ldap']->server, $sr);
+							if ($info) {
+								// get domain attributes
+								@array_shift($info);
+								$dom->dn = $dn;
+								$dom->name = $info[0]['sambadomainname'][0];
+								$dom->SID = $info[0]['sambaSID'][0];
+								$dom->nextRID = $info[0]['sambanextrid'][0];
+								$dom->nextUserRID = $info[0]['sambanextuserrid'][0];
+								$dom->nextGroupRID = $info[0]['sambanextgrouprid'][0];
+								if (isset($dom->RIDbase)) $dom->RIDbase = $info[0]['sambaalgorithmicridbase'][0];
+							}
+						}
+						$acc->smb_domain = $dom;
+					}
+				}
+				if (substr($line, 0, 7) == "quota: ") {
+					if ($_SESSION['config']->get_scriptPath()) {
+						$acc->quota = chop(substr($line, 7, strlen($line)-7));
+						// split mountpoints
+						$acc->quota = explode(";", $acc->quota);
+						// split attributes
+						for ($i = 0; $i < sizeof($acc->quota); $i++) {
+							$temp = explode(",", $acc->quota[$i]);
+							$acc->quota[$i] = array();
+							$acc->quota[$i][0] = $temp[0];
+							$acc->quota[$i][2] = $temp[1];
+							$acc->quota[$i][3] = $temp[2];
+							$acc->quota[$i][6] = $temp[3];
+							$acc->quota[$i][7] = $temp[4];
+						}
+					}
+				}
+			}
+			fclose($file);
+		}
+		else {
+			StatusMessage("ERROR", "", _("Unable to load profile!") . " " . $file);
+		}
+	}
+	else {
+		StatusMessage("ERROR", "", _("Unable to load profile!") . " " . $file);
+	}
+	return $acc;
 }
 
 // loads an host profile with name $profile (without .prh)
@@ -357,7 +422,32 @@ function saveUserProfile($account, $profile) {
 // saves an account object to an group profile with name $profile (without .prg)
 // file is created, if needed
 function saveGroupProfile($account, $profile) {
-	// no group profiles yet
+	if (!eregi("^([0-9]|[a-z]|-|_)*$", $profile)) exit;
+	if (!is_object($account)) {
+		StatusMessage("ERROR", "", _("saveGroupProfile: account has wrong type!"));
+		exit;
+	}
+	$path = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/groups/" . $profile . ".prg";
+	$file = @fopen($path, "w");
+	if ($file) {
+		// write attributes
+		if (isset($account->smb_domain)) fputs($file, "smb_domain: " . $account->smb_domain . "\n");
+		if (isset($account->quota)) {
+			// convert array to string
+			for ($i = 0; $i < sizeof($account->quota); $i++) {
+				$account->quota[$i] = implode(",", $account->quota[$i]);
+			}
+			$temp = implode(";", $account->quota);
+			fputs($file, "quota: " . $temp . "\n");
+		}
+		// close file
+		fclose($file);
+	}
+	else {
+		StatusMessage("ERROR", _("Unable to save profile!"), $path);
+		return false;
+	}
+	return true;
 }
 
 // saves an account object to an host profile with name $profile (without .prh)
@@ -388,6 +478,15 @@ function saveHostProfile($account, $profile) {
 function delUserProfile($file) {
 	if (!eregi("^([0-9]|[a-z]|-|_)*$", $profile)) exit;
 	$prof = substr(__FILE__, 0, strlen(__FILE__) - 16) . "config/profiles/users/".$file.".pru";
+	if (is_file($prof)) {
+		return @unlink($prof);
+	}
+}
+
+// deletes a group profile
+function delGroupProfile($file) {
+	if (!eregi("^([0-9]|[a-z]|-|_)*$", $profile)) exit;
+	$prof = substr(__FILE__, 0, strlen(__FILE__) - 16) . "config/profiles/groups/".$file.".prg";
 	if (is_file($prof)) {
 		return @unlink($prof);
 	}
