@@ -243,9 +243,9 @@ function getquotas($users) {
 	else { // PHP 4.3>
 		$command = escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".$towrite;
 		$pipe = popen("echo \"$userstring\"|$command" , 'r');
-		$output = '';
 		while(!feof($pipe)) {
-			$output .= fread($pipe, 1024);
+			//$output .= fread($pipe, 1024);
+			$output = fgets($pipe, 1024);
 			if ($output!='') $output_array[] = $output;
 			}
 		pclose($pipe);
@@ -370,7 +370,7 @@ function setquotas($values2) {
 		$command = escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".$towrite;
 		$pipe = popen("echo \"$input\"|$command" , 'r');
 		while(!feof($pipe)) {
-			$return[] = fread($pipe, 1024);
+			$return[] = fgets($pipe, 1024);
 			}
 		pclose($pipe);
 		}
@@ -424,7 +424,7 @@ function remquotas($users, $type) {
 		$pipe = popen("echo \"$input\"|$command" , 'r');
 		$output = '';
 		while(!feof($pipe)) {
-			$return[] = fread($pipe, 1024);
+			$return[] = fgets($pipe, 1024);
 			}
 		pclose($pipe);
 		}
@@ -533,7 +533,7 @@ function remhomedir($users) {
 		$pipe = popen("echo \"$input\"|$command" , 'r');
 		$output = '';
 		while(!feof($pipe)) {
-			$return[] = fread($pipe, 1024);
+			$return[] = fgets($pipe, 1024);
 			}
 		pclose($pipe);
 		}
