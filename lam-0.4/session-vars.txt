@@ -1,0 +1,131 @@
+Alle:
+
+- config: Config-Objekt für die Einstellungen
+- ldap: LDAP-Objekt für Funktionen rund um LDAP
+- language: Sprache für LAM
+- header: String-Array mit Standard-HTML-Header
+- lampath: String mit Pfad zum LAM-Verzeichnis
+
+
+massdetail:
+- accounts: Array aus account-Objekten
+- errors:  Array aus Fehlermeldungen. Index ist gleich Index von accounts
+
+
+masscreate:
+- accounts: Array aus account-Objekten
+- pointer: Zeigt auf den aktuellen Startpunkt, ab dem Benutzer angelegt werden sollen.
+           Noetig, da mit Meta-Refreshs gearbeitet werden muss
+- errors:  Array aus Fehlermeldungen. Index ist gleich Index von accounts
+- group_suffix: Suffix, unter welchem eine Gruppe bei Bedarf angelegt wird
+- group_selectprofile: Profil, mit dem eine Gruppe bei Bedarf angelegt werden soll
+- rowstart: ??? nicht mehr benutzt
+
+
+main:
+- domain_message: Wird auf der "neue Domain" Seite ausgegeben, wenn keine Domäne gefunden wurde
+
+
+listusers:
+- trans_primary_hash: Tabelle mit GID - Gruppenname
+- userlist: Useraccounts vom LDAP-Server
+- usr_suffix: aktueller Suffix
+- usr_units: Suffixliste für Benutzer
+
+
+listhosts:
+- hst_info: Hostaccounts vom LDAP-Server
+- hst_suffix: aktueller Suffix
+- hst_units: Suffixliste für Hosts
+
+
+listgroups:
+- grp_info: Gruppenaccounts vom LDAP-Server
+- grp_suffix: aktueller Suffix
+- grp_units: Suffixliste für Gruppen
+
+
+listdomains:
+- dom_info: Domänen vom LDAP-Server
+- dom_suffix: aktueller Suffix
+- dom_units: Suffixliste für Domänen
+
+
+domain:
+- domain_message: Wird auf der "neue Domain" Seite ausgegeben, wenn keine Domäne gefunden wurde
+
+
+convsave, confmain, conflogin:
+- conf_passwd: Eingabe von confmain
+- conf_passwd1: Eingabe von confmain
+- conf_passwd2: Eingabe von confmain
+- conf_serverurl: Eingabe von confmain
+- conf_cachetimeout: Eingabe von confmain
+- conf_admins: Eingabe von confmain
+- conf_suffusers: Eingabe von confmain
+- conf_suffgroups: Eingabe von confmain
+- conf_suffhosts: Eingabe von confmain
+- conf_suffdomains: Eingabe von confmain
+- conf_minUID: Eingabe von confmain
+- conf_maxUID: Eingabe von confmain
+- conf_minGID: Eingabe von confmain
+- conf_maxGID: Eingabe von confmain
+- conf_minMach: Eingabe von confmain
+- conf_maxMach: Eingabe von confmain
+- conf_usrlstattr: Eingabe von confmain
+- conf_grplstattr: Eingabe von confmain
+- conf_hstlstattr: Eingabe von confmain
+- conf_maxlistentries: Eingabe von confmain
+- conf_lang: Eingabe von confmain
+- conf_scriptpath: Eingabe von confmain
+- conf_scriptserver: Eingabe von confmain
+- conf_samba3: Eingabe von confmain
+- conf_filename: Dateiname des Profils
+
+
+useredit:
+- shellist: Array mit allen shells
+- account_old: Object account. Hier wird beim laden eines Accounts alle alten Werte zwischengespeichert 
+- account: Object account. Hier wird der aktuelle Eintrag gespeichert
+- final_changegids: boolean. Wenn gesetzt, werden die gids in ldap angepasst
+- hostDN: Array mit allen hosts.
+
+
+hostedit:
+- account: s.o.
+- account_old:
+- final_changegids:
+- shelllist:
+
+
+groupedit:
+- account: s.o.
+- account_old:
+- final_changeids:
+- userDN: Array mit allen Benutzern
+- Account: ??? Tipfehler
+
+
+account.inc:
+- userDN: array mit allen Benutzern
+- groupDN: array mit allen Gruppen
+- hostDN: array mit allen Gruppen
+- account: s.o.
+- final_changeids: s.o.
+
+
+delete.php
+- delete_dn :  Liste der DNs, die gelscht werden sollen.
+
+
+confwiz/*.php
+- confwiz_config: Config-Objekt mit Optionen
+- confwiz_ldap: LDAP-Objekt
+- conwiz_masterpwd: Hauptpasswort für Einstellungen, zur Überprüfung des Admins
+
+
+
+
+
+
+

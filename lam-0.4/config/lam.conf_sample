@@ -1,0 +1,80 @@
+# LDAP Account Manager configuration
+
+# server address (e.g. ldap://localhost:389 or ldaps://localhost:636)
+serverURL: ldap://localhost:389
+
+# list of users who are allowed to use LDAP Account Manager
+# names have to be seperated by semicolons
+# e.g. admins: cn=admin,dc=yourdomain,dc=org;cn=root,dc=yourdomain,dc=org
+admins: cn=Manager,dc=my-domain,dc=com
+
+# password to change these preferences via webfrontend
+passwd: lam
+
+# suffix of users
+# e.g. ou=People,dc=yourdomain,dc=org
+usersuffix: ou=people,dc=my-domain,dc=com
+
+# suffix of groups
+# e.g. ou=Groups,dc=yourdomain,dc=org
+groupsuffix: ou=groups,dc=my-domain,dc=com
+
+# suffix of Samba hosts
+# e.g. ou=machines,dc=yourdomain,dc=org
+hostsuffix: ou=machines,dc=my-domain,dc=com
+
+# suffix of Samba 3 domains
+# e.g. ou=domains,dc=yourdomain,dc=org
+domainsuffix: ou=domains,dc=my-domain,dc=com
+
+# minimum and maximum UID numbers
+minUID: 10000
+maxUID: 20000
+
+# minimum and maximum GID numbers
+minGID: 10000
+maxGID: 20000
+
+# minimum and maximum UID numbers for Samba Hosts
+minMachine: 25000
+maxMachine: 35000
+
+# list of attributes to show in user list
+# entries can either be predefined values (e.g. '#cn' or '#uid')
+# or individual ones (e.g. 'uid:User ID' or 'host:Host Name')
+# values have to be seperated by semicolons
+userlistAttributes: #uid;#givenName;#sn;#uidNumber;#gidNumber
+
+# list of attributes to show in group list
+# entries can either be predefined values (e.g. '#cn' or '#gidNumber')
+# or individual ones (e.g. 'cn:Group Name')
+# values have to be seperated by semicolons
+grouplistAttributes: #cn;#gidNumber;#memberUID;#description
+
+# list of attributes to show in host list
+# entries can either be predefined values (e.g. '#cn' or '#uid')
+# or individual ones (e.g. 'cn:Host Name')
+# values have to be seperated by semicolons
+hostlistAttributes: #cn;#description;#uidNumber;#gidNumber
+
+# maximum number of rows to show in user/group/host lists
+maxlistentries: 30
+
+# default language (a line from config/language)
+defaultLanguage: en_GB:ISO-8859-1:English (Britain)
+
+# Path to external Script
+scriptPath: 
+
+# Server of external Script
+scriptServer: 
+
+# Set to "yes" only if you use the new Samba 3.x schema.
+samba3: yes
+
+# Number of minutes LAM caches LDAP searches.
+cachetimeout: 5
+
+# Password hash algorithm (CRYPT/MD5/SMD5/SHA/SSHA/PLAIN).
+pwdhash: SSHA
+

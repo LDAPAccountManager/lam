@@ -1,0 +1,55 @@
+ldap-account-manager (0.4.1-1) unstable; urgency=low
+
+  * Updated to new upstream version (0.4.1)
+
+ -- Roland Gruber <post@rolandgruber.de>  Fri, 29 Dec 2003 21:19:27 +0100
+
+ldap-account-manager (0.4-4) unstable; urgency=low
+
+  * added debconf template for alias name
+
+ -- Roland Gruber <post@rolandgruber.de>  Sun, 16 Nov 2003 16:03:55 +0100
+
+ldap-account-manager (0.4-3) unstable; urgency=low
+
+  * copied access control from .htaccess files to apache.conf
+
+ -- Roland Gruber <post@rolandgruber.de>  Sat,  1 Nov 2003 13:22:56 +0100
+
+ldap-account-manager (0.4-2) unstable; urgency=low
+
+  * fixed error in postinst script
+  * added dependency php4-mhash
+
+ -- Roland Gruber <post@rolandgruber.de>  Thu, 30 Oct 2003 16:19:45 +0100
+
+ldap-account-manager (0.4-1) unstable; urgency=low
+
+  * Updated to Beta 1 release (0.4)
+
+ -- Roland Gruber <post@rolandgruber.de>  Mon, 13 Oct 2003 20:23:29 +0200
+
+ldap-account-manager (0.3-1) unstable; urgency=low
+
+  * Updated to Alpha 3 Release.
+
+ -- Roland Gruber <linux@rolandgruber.de>  Fri,  29 August 2003 17:04:00 +0200
+
+ldap-account-manager (0.2-1) unstable; urgency=low
+
+  * Updated to Alpha 2 Release.
+
+ -- Roland Gruber <linux@rolandgruber.de>  Sat,  2 July 2003 18:42:00 +0200
+
+ldap-account-manager (0.1-2) unstable; urgency=low
+
+  * Fixed missing directory config/profiles/groups.
+
+ -- Roland Gruber <linux@rolandgruber.de>  Sat,  4 June 2003 18:19:00 +0200
+
+ldap-account-manager (0.1-1) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Roland Gruber <linux@rolandgruber.de>  Sat,  3 May 2003 21:14:23 +0200
+
