@@ -246,9 +246,9 @@ elseif ($_POST['sub_save']) {
 		$attr['objectclass'] = "sambaDomain";
 		$attr['sambaDomainName'] = $_POST['dom_name'];
 		$attr['sambaSID'] = $_POST['dom_SID'];
-		$attr['sambaNextRid'] = $_POST['dom_nextRID'];
-		$attr['sambaNextGroupRid'] = $_POST['dom_nextGroupRID'];
-		$attr['sambaNextUserRid'] = $_POST['dom_nextUserRID'];
+		if ($_POST['dom_nextRID']) $attr['sambaNextRid'] = $_POST['dom_nextRID'];
+		if ($_POST['dom_nextGroupRID']) $attr['sambaNextGroupRid'] = $_POST['dom_nextGroupRID'];
+		if ($_POST['dom_nextUserRID']) $attr['sambaNextUserRid'] = $_POST['dom_nextUserRID'];
 		$attr['sambaAlgorithmicRidBase'] = $_POST['dom_RIDbase'];
 		// write to LDAP
 		if (ldap_add($_SESSION['ldap']->server(), $DN, $attr)) {
