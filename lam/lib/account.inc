@@ -1006,10 +1006,12 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 	$password_old = str_replace('{CRYPT}', '',$values_old->unix_password);
 	if (substr($password_old,0,1) == '!' ) $password_old = substr($password_old,1,strlen($password_old));
 	if ($values->unix_password=='') {
-		if ($values->unix_password_no) $password_old = '';
+		if ($values->unix_password_no) {
+			$password_old = '';
+			$attr['shadowLastChange'] = getdays(); // shadowAccount_may
+			}
 		if ($values->unix_deactivated) $attr['userPassword'] = '{CRYPT}!' . $password_old;
 		else $attr['userPassword'] = '{CRYPT}' . $password_old;
-		$attr['shadowLastChange'] =  $values_old->unix_shadowLastChange; // shadowAccount_may
 		}
 	 else {
 		if ($values->unix_deactivated) $attr['userPassword'] = '{CRYPT}!' . crypt($values->unix_password);
@@ -1149,9 +1151,11 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 			$success = ldap_mod_del($_SESSION['ldap']->server(),$values_old->general_dn, $attr_rem);
 			if (!$success) return 5;
 			}
-	if ($values->general_dn == $values_old->general_dn) // Username hasn't changed
-		$success = ldap_modify($_SESSION['ldap']->server(),$values->general_dn, $attr);
-			else {
+	if ($attr) {
+		$success = ldap_modify($_SESSION['ldap']->server(),$values_old->general_dn, $attr);
+			if (!$success) return 5;
+			}
+	if ($values->general_dn != $values_old->general_dn) { // Username hasn't changed
 				$result = ldap_search($_SESSION['ldap']->server(), $values_old->general_dn, "objectclass=PosixAccount");
 				$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 				$attr_old = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
@@ -1163,7 +1167,6 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 					unset($attr_old[$keys[$i]]['count']);
 				$success = ldap_add($_SESSION['ldap']->server(),$values->general_dn, $attr_old);
 				if ($success) $success = ldap_delete($_SESSION['ldap']->server(),$values_old->general_dn);
-				if ($success) $success = ldap_mod_replace($_SESSION['ldap']->server(),$values->general_dn, $attr);
 				}
 	if (!$success) return 5;
 	// Write Groupmemberchips
@@ -1351,10 +1354,12 @@ function modifyhost($values,$values_old) { // Will modify the LDAP-Account
 	$password_old = str_replace('{CRYPT}', '',$values_old->unix_password);
 	if (substr($password_old,0,1) == '!' ) $password_old = substr($password_old,1,strlen($password_old));
 	if ($values->unix_password=='') {
-		if ($values->unix_password_no) $password_old = '';
+		if ($values->unix_password_no) {
+			$password_old = '';
+			$attr['shadowLastChange'] = getdays();
+			}
 		if ($values->unix_deactivated) $attr['userPassword'] = '{CRYPT}!' . $password_old;
 		else $attr['userPassword'] = '{CRYPT}' . $password_old;
-		$attr['shadowLastChange'] =  $values_old->unix_shadowLastChange; // shadowAccount_may
 		}
 	 else {
 		if ($values->unix_deactivated) $attr['userPassword'] = '{CRYPT}!' . crypt($values->unix_password);
@@ -1429,14 +1434,15 @@ function modifyhost($values,$values_old) { // Will modify the LDAP-Account
 		$attr_rem['shadowInactive'] = $values->unix_pwdallowlogin; // shadowAccount_may
 	if (($date != $date_old) && $date) $attr['shadowExpire'] =  $date ; // shadowAccount_may
 	if (($date != $date_old) && !$date) $attr_rem['shadowExpire'] =  $date_old ; // shadowAccount_may
-
 	if ($attr_rem) {
 		$success = ldap_mod_del($_SESSION['ldap']->server(),$values_old->general_dn, $attr_rem);
 		if (!$success) return 5;
 		}
-	if ($values->general_dn == $values_old->general_dn) // Hostname hasn't changed
-		$success = ldap_modify($_SESSION['ldap']->server(),$values->general_dn, $attr);
-	else {
+	if ($attr) {
+		$success = ldap_modify($_SESSION['ldap']->server(),$values_old->general_dn, $attr);
+		if (!$success) return 5;
+		}
+	if ($values->general_dn != $values_old->general_dn) {// Hostname hasn't changed
 		$result = ldap_search($_SESSION['ldap']->server(), $dn, "objectclass=PosixAccount");
 		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 		$attr_old = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
@@ -1448,7 +1454,6 @@ function modifyhost($values,$values_old) { // Will modify the LDAP-Account
 			unset($attr_old[$keys[$i]]['count']);
 		$success = ldap_add($_SESSION['ldap']->server(),$values->general_dn, $attr_old);
 		if ($success) $success = ldap_delete($_SESSION['ldap']->server(),$values_old->general_dn);
-		if ($success) $success = ldap_mod_replace($_SESSION['ldap']->server(),$values->general_dn, $attr);
 		}
 	if (!$success) return 5;
 	$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(), 'objectClass=PosixGroup', array('memberUid', 'cn'));
@@ -1537,9 +1542,11 @@ function modifygroup($values,$values_old) { // Will modify the LDAP-Group
 	if ($values->general_uidNumber != $values_old->general_uidNumber) $attr['gidNumber'] = $values->general_uidNumber;
 	if ($values->general_gecos != $values_old->general_gecos) $attr['description'] = $values->general_gecos;
 	if ($values->general_memeberUid != $values_old->general_memberUid) $attr['memberUid'] = $values->general_memberUid;
-	if ($values->general_dn == $values_old->general_dn) // Groupname hasn't changed
+	if ($attr) {
 		$success = ldap_mod_replace($_SESSION['ldap']->server(),$values->general_dn, $attr);
-	else {
+		if (!$success) return 5;
+		}
+	if ($values->general_dn != $values_old->general_dn) {// Groupname hasn't changed
 		$result = ldap_search($_SESSION['ldap']->server(), $dn, "objectclass=PosixGroup");
 		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 		$attr_old = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
