@@ -23,16 +23,55 @@ $Id$
 
 // profiles.inc provides functions to load and save profiles for users/groups/hosts
 
+include_once("config.inc");
+
+
 // returns an array of String with all available user profiles
 function getUserProfiles() {
+	$dir = dir(getLAMPath() . "/config/profiles/users");
+	$ret = array();
+	$pos = 0;
+	while ($entry = $dir->read()){
+		$ext = substr($entry, strlen($entry)-4, 4);
+		$name = substr($entry, 0, strlen($entry)-4);
+		if ($ext == ".pru") {
+			$ret[$pos] = $name;
+			$pos ++;
+		}
+	}
+	return $ret;
 }
 
 // returns an array of String with all available group profiles
 function getGroupProfiles() {
+	$dir = dir(getLAMPath() . "/config/profiles/groups");
+	$ret = array();
+	$pos = 0;
+	while ($entry = $dir->read()){
+		$ext = substr($entry, strlen($entry)-4, 4);
+		$name = substr($entry, 0, strlen($entry)-4);
+		if ($ext == ".prg") {
+			$ret[$pos] = $name;
+			$pos ++;
+		}
+	}
+	return $ret;
 }
 
 // returns an array of String with all available host profiles
 function getHostProfiles() {
+	$dir = dir(getLAMPath() . "/config/profiles/hosts");
+	$ret = array();
+	$pos = 0;
+	while ($entry = $dir->read()){
+		$ext = substr($entry, strlen($entry)-4, 4);
+		$name = substr($entry, 0, strlen($entry)-4);
+		if ($ext == ".prh") {
+			$ret[$pos] = $name;
+			$pos ++;
+		}
+	}
+	return $ret;
 }
 
 // loads an user profile with name $profile
