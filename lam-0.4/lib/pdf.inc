@@ -171,7 +171,7 @@ function createUserPDF($accounts) {
 		$pdfFile->setFont("times","B",10);
 		$pdfFile->Cell(50,5,_("Login at host(s)") . ":",0,0,"R",0);
 		$pdfFile->setFont("times","",10);
-		$pdfFile->Cell(50,5,$account->unix_host,0,1,"L",0);
+		$pdfFile->MultiCell(0,5,implode(", ",explode(",",$account->unix_host)),0,1,"L",0);
 // Print Samba settings
 		$pdfFile->Ln(9);
 		$pdfFile->setFont("arial","B",12);
@@ -217,7 +217,7 @@ function createUserPDF($accounts) {
 		$pdfFile->setFont("times","B",10);
 		$pdfFile->Cell(50,5,_("Login at workstation(s)") . ":",0,0,"R",0);
 		$pdfFile->setFont("times","",10);
-		$pdfFile->Cell(50,5,$account->smb_smbuserworkstations,0,1,"L",0);
+		$pdfFile->MultiCell(0,5,implode(", ",explode(",",$account->smb_smbuserworkstations)),0,1,"L",0);
 		$pdfFile->setFont("times","B",10);
 		$pdfFile->Cell(50,5,_("Windows home directory") . ":",0,0,"R",0);
 		$pdfFile->setFont("times","",10);
