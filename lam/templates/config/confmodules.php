@@ -44,9 +44,11 @@ if ($passwd != $conf->get_Passwd()) {
 
 // user pressed submit/abort button
 if ($_POST['submit']) {
+	//selection ok, back to other settings
 	metarefresh('confmain.php?modulesback=true&amp;moduleschanged=true');
 }
 elseif ($_POST['abort']) {
+	// no changes
 	metarefresh('confmain.php?modulesback=true');
 }
 
@@ -62,17 +64,13 @@ echo ("<p align=\"center\"><a href=\"http://lam.sf.net\" target=\"new_window\">"
 echo ("<form action=\"confmodules.php\" method=\"post\">\n");
 echo "<p align=\"center\"><big><b>" . _("Module selection") . "</b></big><br><br></p>";
 
-// module dependencies
-$user_deps = getModulesDependencies('user');
-$group_deps = getModulesDependencies('group');
-$host_deps = getModulesDependencies('host');
 
 // user modules
 $selected_users_temp = $_SESSION['conf_usermodules'];
 $available_users = array();
 $available_users = getAvailableModules('user');
 $selected_users = array();
-// only use available modules
+// only use available modules as selected
 for ($i = 0; $i < sizeof($selected_users_temp); $i++) {
 	if (in_array($selected_users_temp[$i], $available_users)) $selected_users[] = $selected_users_temp[$i];
 }
@@ -88,6 +86,7 @@ if ($_POST['user_selected'] && ($_POST['user_remove'])) {
 	$selected_users = $new_selected_users;
 	$_SESSION['conf_usermodules'] = $selected_users;
 }
+
 // add modules to selection
 elseif ($_POST['user_available'] && ($_POST['user_add'])) {
 	$new_selected_users = $selected_users;
@@ -98,12 +97,13 @@ elseif ($_POST['user_available'] && ($_POST['user_add'])) {
 	$_SESSION['conf_usermodules'] = $selected_users;
 }
 
+
 // group modules
 $selected_groups_temp = $_SESSION['conf_groupmodules'];
 $available_groups = array();
 $available_groups = getAvailableModules('group');
 $selected_groups = array();
-// only use available modules
+// only use available modules as selected
 for ($i = 0; $i < sizeof($selected_groups_temp); $i++) {
 	if (in_array($selected_groups_temp[$i], $available_groups)) $selected_groups[] = $selected_groups_temp[$i];
 }
@@ -119,6 +119,7 @@ if ($_POST['group_selected'] && ($_POST['group_remove'])) {
 	$selected_groups = $new_selected_groups;
 	$_SESSION['conf_groupmodules'] = $selected_groups;
 }
+
 // add modules to selection
 elseif ($_POST['group_available'] && ($_POST['group_add'])) {
 	$new_selected_groups = $selected_groups;
@@ -129,12 +130,13 @@ elseif ($_POST['group_available'] && ($_POST['group_add'])) {
 	$_SESSION['conf_groupmodules'] = $selected_groups;
 }
 
+
 // host modules
 $selected_hosts_temp = $_SESSION['conf_hostmodules'];
 $available_hosts = array();
 $available_hosts = getAvailableModules('host');
 $selected_hosts = array();
-// only use available modules
+// only use available modules as selected
 for ($i = 0; $i < sizeof($selected_hosts_temp); $i++) {
 	if (in_array($selected_hosts_temp[$i], $available_hosts)) $selected_hosts[] = $selected_hosts_temp[$i];
 }
@@ -150,6 +152,7 @@ if ($_POST['host_selected'] && ($_POST['host_remove'])) {
 	$selected_hosts = $new_selected_hosts;
 	$_SESSION['conf_hostmodules'] = $selected_hosts;
 }
+
 // add modules to selection
 elseif ($_POST['host_available'] && ($_POST['host_add'])) {
 	$new_selected_hosts = $selected_hosts;
@@ -160,45 +163,68 @@ elseif ($_POST['host_available'] && ($_POST['host_add'])) {
 	$_SESSION['conf_hostmodules'] = $selected_hosts;
 }
 
+
 // show user modules
 echo "<fieldset class=\"useredit-bright\"><legend class=\"useredit-bright\"><b>" . _("User modules") . "</b></legend>\n";
 echo "<table border=0 width=\"100%\">\n";
 	// select boxes
 	echo "<tr>\n";
-		echo "<td>&nbsp;&nbsp;</td>\n";
-		echo "<td>\n";
+		echo "<td width=\"5%\"></td>\n";
+		echo "<td width=\"40%\">\n";
 			echo "<fieldset class=\"useredit-bright\">\n";
 				echo "<legend class=\"useredit-bright\">" . _("Selected user modules") . "</legend>\n";
 				echo "<select class=\"useredit-bright\" name=\"user_selected[]\" size=5 multiple>\n";
 					for ($i = 0; $i < sizeof($selected_users); $i++) {
-						if (in_array($selected_users[$i], $available_users)) echo "<option>" . $selected_users[$i] . "</option>\n";
+						if (in_array($selected_users[$i], $available_users)) {  // selected modules must be available
+							if (is_base_module($selected_users[$i])) {  // mark base modules
+								echo "<option value=\"" . $selected_users[$i] . "\">";
+								echo $selected_users[$i] . "(" . getModuleAlias($selected_users[$i], "user") .  ")(" . _("base module") . ")";
+								echo "</option>\n";
+							}
+							else {
+								echo "<option value=\"" . $selected_users[$i] . "\">";
+								echo $selected_users[$i] . "(" . getModuleAlias($selected_users[$i], "user") .  ")";
+								echo "</option>\n";
+							}
+						}
 					}
 				echo "</select>\n";
 			echo "</fieldset>\n";
 		echo "</td>\n";
-		echo "<td>&nbsp;&nbsp;</td>\n";
-		echo "<td align=\"center\">\n";
+		echo "<td width=\"10%\" align=\"center\">\n";
 			echo "<p>";
 				echo "<input type=submit value=\"&lt;=\" name=\"user_add\">";
 				echo "<br>";
 				echo "<input type=submit value=\"=&gt;\" name=\"user_remove\">";
 			echo "</p>\n";
 		echo "</td>\n";
-		echo "<td>&nbsp;&nbsp;</td>\n";
-		echo "<td>\n";
+		echo "<td width=\"40%\">\n";
 			echo "<fieldset class=\"useredit-bright\">\n";
 				echo "<legend class=\"useredit-bright\">" . _("Available user modules") . "</legend>\n";
 				echo "<select class=\"useredit-bright\" name=\"user_available[]\" size=5 multiple>\n";
 					for ($i = 0; $i < sizeof($available_users); $i++) {
-						if (! in_array($available_users[$i], $selected_users)) echo "<option>" . $available_users[$i] . "</option>\n";
+						if (! in_array($available_users[$i], $selected_users)) {  // display non-selected modules
+							if (is_base_module($available_users[$i])) {  // mark base modules
+								echo "<option value=\"" . $available_users[$i] . "\">";
+								echo $available_users[$i] . "(" . getModuleAlias($available_users[$i], "user") .  ")(" . _("base module") . ")";
+								echo "</option>\n";
+							}
+							else {
+								echo "<option value=\"" . $available_users[$i] . "\">";
+								echo $available_users[$i] . "(" . getModuleAlias($available_users[$i], "user") .  ")";
+								echo "</option>\n";
+							}
+						}
 					}
 				echo "</select>\n";
 			echo "</fieldset>\n";
 		echo "</td>\n";
-		echo "<td>&nbsp;&nbsp;</td>\n";
+		echo "<td width=\"5%\"></td>\n";
 	echo "</tr>\n";
 echo "</table>\n";
-$user_depends = user_depends($selected_users);
+
+// check dependencies
+$user_depends = check_module_depends($selected_users, getModulesDependencies('user'));
 if ($user_depends != false) {
 	$no_depends_user = false;
 	echo "<p>\n";
@@ -208,7 +234,9 @@ if ($user_depends != false) {
 		}
 	echo "<p>\n";
 }
-$user_conflicts = user_conflicts($selected_users);
+
+// check conflicts
+$user_conflicts = check_module_conflicts($selected_users, getModulesDependencies('user'));
 if ($user_conflicts != false) {
 	$no_conflicts_user = false;
 	echo "<p>\n";
@@ -218,49 +246,87 @@ if ($user_conflicts != false) {
 		}
 	echo "<p>\n";
 }
+
+// check for base module
+$found = false;
+for ($i = 0; $i < sizeof($selected_users); $i++) {
+	if (is_base_module($selected_users[$i], "user")) {
+		$found = true;
+		break;
+	}
+}
+if (! $found) {
+	echo "<p>\n";
+			echo "<font color=\"red\"><b>" . _("No base module selected!") . "</b></font><br>\n";
+	echo "<p>\n";
+}
+
 echo "</fieldset>\n";
 
 echo "<p></p>\n";
+
 
 // show group modules
 echo "<fieldset class=\"groupedit-bright\"><legend class=\"groupedit-bright\"><b>" . _("Group modules") . "</b></legend>\n";
 echo "<table border=0 width=\"100%\">\n";
 	// select boxes
 	echo "<tr>\n";
-		echo "<td>&nbsp;&nbsp;</td>\n";
-		echo "<td>\n";
+		echo "<td width=\"5%\"></td>\n";
+		echo "<td width=\"40%\">\n";
 			echo "<fieldset class=\"groupedit-bright\">\n";
 				echo "<legend class=\"groupedit-bright\">" . _("Selected group modules") . "</legend>\n";
 				echo "<select class=\"groupedit-bright\" name=\"group_selected[]\" size=5 multiple>\n";
 					for ($i = 0; $i < sizeof($selected_groups); $i++) {
-						if (in_array($selected_groups[$i], $available_groups)) echo "<option>" . $selected_groups[$i] . "</option>\n";
+						if (in_array($selected_groups[$i], $available_groups)) {  // selected modules must be available
+							if (is_base_module($selected_groups[$i])) {  // mark base modules
+								echo "<option value=\"" . $selected_groups[$i] . "\">";
+								echo $selected_groups[$i] . "(" . getModuleAlias($selected_groups[$i], "group") .  ")(" . _("base module") . ")";
+								echo "</option>\n";
+							}
+							else {
+								echo "<option value=\"" . $selected_groups[$i] . "\">";
+								echo $selected_groups[$i] . "(" . getModuleAlias($selected_groups[$i], "group") .  ")";
+								echo "</option>\n";
+							}
+						}
 					}
 				echo "</select>\n";
 			echo "</fieldset>\n";
 		echo "</td>\n";
-		echo "<td>&nbsp;&nbsp;</td>\n";
-		echo "<td align=\"center\">\n";
+		echo "<td width=\"10%\" align=\"center\">\n";
 			echo "<p>";
 				echo "<input type=submit value=\"&lt;=\" name=\"group_add\">";
 				echo "<br>";
 				echo "<input type=submit value=\"=&gt;\" name=\"group_remove\">";
 			echo "</p>\n";
 		echo "</td>\n";
-		echo "<td>&nbsp;&nbsp;</td>\n";
-		echo "<td>\n";
+		echo "<td width=\"40%\">\n";
 			echo "<fieldset class=\"groupedit-bright\">\n";
 				echo "<legend class=\"groupedit-bright\">" . _("Available group modules") . "</legend>\n";
 				echo "<select class=\"groupedit-bright\" name=\"group_available[]\" size=5 multiple>\n";
 					for ($i = 0; $i < sizeof($available_groups); $i++) {
-						if (! in_array($available_groups[$i], $selected_groups)) echo "<option>" . $available_groups[$i] . "</option>\n";
+						if (! in_array($available_groups[$i], $selected_groups)) {  // display non-selected modules
+							if (is_base_module($available_groups[$i])) {  // mark base modules
+								echo "<option value=\"" . $available_groups[$i] . "\">";
+								echo $available_users[$i] . "(" . getModuleAlias($available_groups[$i], "group") .  ")(" . _("base module") . ")";
+								echo "</option>\n";
+							}
+							else {
+								echo "<option value=\"" . $available_groups[$i] . "\">";
+								echo $available_groups[$i] . "(" . getModuleAlias($available_groups[$i], "group") .  ")";
+								echo "</option>\n";
+							}
+						}
 					}
 				echo "</select>\n";
 			echo "</fieldset>\n";
 		echo "</td>\n";
-		echo "<td>&nbsp;&nbsp;</td>\n";
+		echo "<td width=\"5%\"></td>\n";
 	echo "</tr>\n";
 echo "</table>\n";
-$group_depends = group_depends($selected_groups);
+
+// check dependencies
+$group_depends = check_module_depends($selected_groups, getModulesDependencies('group'));
 if ($group_depends != false) {
 	$no_depends_group = false;
 	echo "<p>\n";
@@ -270,7 +336,9 @@ if ($group_depends != false) {
 		}
 	echo "<p>\n";
 }
-$group_conflicts = group_conflicts($selected_groups);
+
+// check conflicts
+$group_conflicts = check_module_conflicts($selected_groups, getModulesDependencies('group'));
 if ($group_conflicts != false) {
 	$no_conflicts_group = false;
 	echo "<p>\n";
@@ -280,49 +348,87 @@ if ($group_conflicts != false) {
 		}
 	echo "<p>\n";
 }
+
+// check for base module
+$found = false;
+for ($i = 0; $i < sizeof($selected_groups); $i++) {
+	if (is_base_module($selected_groups[$i], "group")) {
+		$found = true;
+		break;
+	}
+}
+if (! $found) {
+	echo "<p>\n";
+			echo "<font color=\"red\"><b>" . _("No base module selected!") . "</b></font><br>\n";
+	echo "<p>\n";
+}
+
 echo "</fieldset>\n";
 
 echo "<p></p>\n";
+
 
 // show host modules
 echo "<fieldset class=\"hostedit-bright\"><legend class=\"hostedit-bright\"><b>" . _("Host modules") . "</b></legend>\n";
 echo "<table border=0 width=\"100%\">\n";
 	// select boxes
 	echo "<tr>\n";
-		echo "<td>&nbsp;&nbsp;</td>\n";
-		echo "<td>\n";
+		echo "<td width=\"5%\"></td>\n";
+		echo "<td width=\"40%\">\n";
 			echo "<fieldset class=\"hostedit-bright\">\n";
 				echo "<legend class=\"hostedit-bright\">" . _("Selected host modules") . "</legend>\n";
 				echo "<select class=\"hostedit-bright\" name=\"host_selected[]\" size=5 multiple>\n";
 					for ($i = 0; $i < sizeof($selected_hosts); $i++) {
-						if (in_array($selected_hosts[$i], $available_hosts)) echo "<option>" . $selected_hosts[$i] . "</option>\n";
+						if (in_array($selected_hosts[$i], $available_hosts)) {  // selected modules must be available
+							if (is_base_module($selected_hosts[$i])) {  // mark base modules
+								echo "<option value=\"" . $selected_hosts[$i] . "\">";
+								echo $selected_hosts[$i] . "(" . getModuleAlias($selected_hosts[$i], "host") .  ")(" . _("base module") . ")";
+								echo "</option>\n";
+							}
+							else {
+								echo "<option value=\"" . $selected_hosts[$i] . "\">";
+								echo $selected_hosts[$i] . "(" . getModuleAlias($selected_hosts[$i], "host") .  ")";
+								echo "</option>\n";
+							}
+						}
 					}
 				echo "</select>\n";
 			echo "</fieldset>\n";
 		echo "</td>\n";
-		echo "<td>&nbsp;&nbsp;</td>\n";
-		echo "<td align=\"center\">\n";
+		echo "<td width=\"10%\" align=\"center\">\n";
 			echo "<p>";
 				echo "<input type=submit value=\"&lt;=\" name=\"host_add\">";
 				echo "<br>";
 				echo "<input type=submit value=\"=&gt;\" name=\"host_remove\">";
 			echo "</p>\n";
 		echo "</td>\n";
-		echo "<td>&nbsp;&nbsp;</td>\n";
-		echo "<td>\n";
+		echo "<td width=\"40%\">\n";
 			echo "<fieldset class=\"hostedit-bright\">\n";
 				echo "<legend class=\"hostedit-bright\">" . _("Available host modules") . "</legend>\n";
 				echo "<select class=\"hostedit-bright\" name=\"host_available[]\" size=5 multiple>\n";
 					for ($i = 0; $i < sizeof($available_hosts); $i++) {
-						if (! in_array($available_hosts[$i], $selected_hosts)) echo "<option>" . $available_hosts[$i] . "</option>\n";
+						if (! in_array($available_hosts[$i], $selected_hosts)) {  // display non-selected modules
+							if (is_base_module($available_hosts[$i])) {  // mark base modules
+								echo "<option value=\"" . $available_hosts[$i] . "\">";
+								echo $available_hosts[$i] . "(" . getModuleAlias($available_hosts[$i], "host") .  ")(" . _("base module") . ")";
+								echo "</option>\n";
+							}
+							else {
+								echo "<option value=\"" . $available_hosts[$i] . "\">";
+								echo $available_hosts[$i] . "(" . getModuleAlias($available_hosts[$i], "host") .  ")";
+								echo "</option>\n";
+							}
+						}
 					}
 				echo "</select>\n";
 			echo "</fieldset>\n";
 		echo "</td>\n";
-		echo "<td>&nbsp;&nbsp;</td>\n";
+		echo "<td width=\"5%\"></td>\n";
 	echo "</tr>\n";
 echo "</table>\n";
-$host_depends = host_depends($selected_hosts);
+
+// check dependencies
+$host_depends = check_module_depends($selected_hosts, getModulesDependencies('host'));
 if ($host_depends != false) {
 	$no_depends_host = false;
 	echo "<p>\n";
@@ -332,7 +438,9 @@ if ($host_depends != false) {
 		}
 	echo "<p>\n";
 }
-$host_conflicts = host_conflicts($selected_hosts);
+
+// check conflicts
+$host_conflicts = check_module_conflicts($selected_hosts, getModulesDependencies('host'));
 if ($host_conflicts != false) {
 	$no_conflicts_host = false;
 	echo "<p>\n";
@@ -342,7 +450,23 @@ if ($host_conflicts != false) {
 		}
 	echo "<p>\n";
 }
+
+// check for base module
+$found = false;
+for ($i = 0; $i < sizeof($selected_hosts); $i++) {
+	if (is_base_module($selected_hosts[$i], "host")) {
+		$found = true;
+		break;
+	}
+}
+if (! $found) {
+	echo "<p>\n";
+			echo "<font color=\"red\"><b>" . _("No base module selected!") . "</b></font><br>\n";
+	echo "<p>\n";
+}
+
 echo "</fieldset>\n";
+
 
 // submit buttons
 echo "<p>\n";
@@ -360,168 +484,6 @@ echo "</p>\n";
 echo "</form>\n";
 echo "</body>\n";
 echo "</html>\n";
-
-// checks if there are missing dependencies between user modules
-// $selected is an array of selected module names
-// returns false if no misssing dependency was found
-// returns an array of array(selected module, depending module) if missing dependencies were found
-function user_depends($selected) {
-global $user_deps;
-	$ret = array();
-	for ($m = 0; $m < sizeof($selected); $m++) {
-		for ($i = 0; $i < sizeof($user_deps[$selected[$m]]['depends']); $i++) {
-			// check if we have OR-combined modules
-			if (is_array($user_deps[$selected[$m]]['depends'][$i])) {
-				// one of the elements is needed
-				$found = false;
-				$depends = $user_deps[$selected[$m]]['depends'][$i];
-				for ($d = 0; $d < sizeof($depends); $d++) {
-					if (in_array($depends[$d], $selected)) {
-						$found = true;
-						break;
-					}
-				}
-				if (! $found) {
-					$ret[] = array($selected[$m], implode(" || ", $depends));
-				}
-			}
-			else {
-				// single dependency
-				if (! in_array($user_deps[$selected[$m]]['depends'][$i], $selected)) {
-					$ret[] = array($selected[$m], $user_deps[$selected[$m]]['depends'][$i]);
-				}
-			}
-		}
-	}
-	if (sizeof($ret) > 0) return $ret;
-	else return false;
-}
-
-// checks if there are conflicts between user modules
-// $selected is an array of selected module names
-// returns false if no conflict was found
-// returns an array of array(selected module, conflicting module) if conflicts were found
-function user_conflicts($selected) {
-global $user_deps;
-	$ret = array();
-	for ($m = 0; $m < sizeof($selected); $m++) {
-		for ($i = 0; $i < sizeof($user_deps[$selected[$m]]['conflicts']); $i++) {
-			if (in_array($user_deps[$selected[$m]]['conflicts'][$i], $selected)) {
-				$ret[] = array($selected[$m], $user_deps[$selected[$m]]['conflicts'][$i]);
-			}
-		}
-	}
-	if (sizeof($ret) > 0) return $ret;
-	else return false;
-}
-
-// checks if there are missing dependencies between group modules
-// $selected is an array of selected module names
-// returns false if no misssing dependency was found
-// returns an array of array(selected module, depending module) if missing dependencies were found
-function group_depends($selected) {
-global $group_deps;
-	$ret = array();
-	for ($m = 0; $m < sizeof($selected); $m++) {
-		for ($i = 0; $i < sizeof($group_deps[$selected[$m]]['depends']); $i++) {
-			// check if we have OR-combined modules
-			if (is_array($group_deps[$selected[$m]]['depends'][$i])) {
-				// one of the elements is needed
-				$found = false;
-				$depends = $group_deps[$selected[$m]]['depends'][$i];
-				for ($d = 0; $d < sizeof($depends); $d++) {
-					if (in_array($depends[$d], $selected)) {
-						$found = true;
-						break;
-					}
-				}
-				if (! $found) {
-					$ret[] = array($selected[$m], implode(" || ", $depends));
-				}
-			}
-			else {
-				// single dependency
-				if (! in_array($group_deps[$selected[$m]]['depends'][$i], $selected)) {
-					$ret[] = array($selected[$m], $group_deps[$selected[$m]]['depends'][$i]);
-				}
-			}
-		}
-	}
-	if (sizeof($ret) > 0) return $ret;
-	else return false;
-}
-
-// checks if there are conflicts between group modules
-// $selected is an array of selected module names
-// returns false if no conflict was found
-// returns an array of array(selected module, conflicting module) if conflicts were found
-function group_conflicts($selected) {
-global $group_deps;
-	$ret = array();
-	for ($m = 0; $m < sizeof($selected); $m++) {
-		for ($i = 0; $i < sizeof($group_deps[$selected[$m]]['conflicts']); $i++) {
-			if (in_array($group_deps[$selected[$m]]['conflicts'][$i], $selected)) {
-				$ret[] = array($selected[$m], $group_deps[$selected[$m]]['conflicts'][$i]);
-			}
-		}
-	}
-	if (sizeof($ret) > 0) return $ret;
-	else return false;
-}
-
-// checks if there are missing dependencies between host modules
-// $selected is an array of selected module names
-// returns false if no misssing dependency was found
-// returns an array of array(selected module, depending module) if missing dependencies were found
-function host_depends($selected) {
-global $host_deps;
-	$ret = array();
-	for ($m = 0; $m < sizeof($selected); $m++) {
-		for ($i = 0; $i < sizeof($host_deps[$selected[$m]]['depends']); $i++) {
-			// check if we have OR-combined modules
-			if (is_array($host_deps[$selected[$m]]['depends'][$i])) {
-				// one of the elements is needed
-				$found = false;
-				$depends = $host_deps[$selected[$m]]['depends'][$i];
-				for ($d = 0; $d < sizeof($depends); $d++) {
-					if (in_array($depends[$d], $selected)) {
-						$found = true;
-						break;
-					}
-				}
-				if (! $found) {
-					$ret[] = array($selected[$m], implode(" || ", $depends));
-				}
-			}
-			else {
-				// single dependency
-				if (! in_array($host_deps[$selected[$m]]['depends'][$i], $selected)) {
-					$ret[] = array($selected[$m], $host_deps[$selected[$m]]['depends'][$i]);
-				}
-			}
-		}
-	}
-	if (sizeof($ret) > 0) return $ret;
-	else return false;
-}
-
-// checks if there are conflicts between host modules
-// $selected is an array of selected module names
-// returns false if no conflict was found
-// returns an array of array(selected module, conflicting module) if conflicts were found
-function host_conflicts($selected) {
-global $host_deps;
-	$ret = array();
-	for ($m = 0; $m < sizeof($selected); $m++) {
-		for ($i = 0; $i < sizeof($host_deps[$selected[$m]]['conflicts']); $i++) {
-			if (in_array($host_deps[$selected[$m]]['conflicts'][$i], $selected)) {
-				$ret[] = array($selected[$m], $host_deps[$selected[$m]]['conflicts'][$i]);
-			}
-		}
-	}
-	if (sizeof($ret) > 0) return $ret;
-	else return false;
-}
 
 ?>
 
