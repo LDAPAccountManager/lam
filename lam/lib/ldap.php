@@ -103,6 +103,11 @@ class Ldap{
 		ldap_close($this->server);
 	}
 	
+	// returns the LDAP connection handle
+	function server() {
+		return $this->server;
+	}
+	
 }
 
 
