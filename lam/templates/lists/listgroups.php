@@ -63,6 +63,16 @@ $desc_array;	// list of descriptions for the attributes
 $attr_string = $_SESSION["config"]->get_grouplistAttributes();
 $temp_array = explode(";", $attr_string);
 $hash_table = $_SESSION["ldap"]->attributeGroupArray();
+
+// get current page
+$page = $_GET["page"];
+if (!$page) $page = 1;
+// take maximum count of user entries shown on one page out of session
+if ($_SESSION["config"]->get_MaxListEntries() <= 0)
+	$max_pageentrys = 10;	// default setting, if not yet set
+else
+	$max_pageentrys = $_SESSION["config"]->get_MaxListEntries();
+
 for ($i = 0; $i < sizeof($temp_array); $i++) {
 // if value is predifined, look up description in hash_table
 if (substr($temp_array[$i],0,1) == "#") {
@@ -78,8 +88,18 @@ else {
 }
 }
 
+// configure search filter
 // Groups have the attribute "posixGroup"
 $filter = "(objectClass=posixGroup)";
+$filter = "(&(objectClass=posixGroup)";
+for ($k = 0; $k < sizeof($desc_array); $k++) {
+  if ($_POST["filter" . strtolower($attr_array[$k])])
+    $filter = $filter . "(" . strtolower($attr_array[$k]) . "=" .
+      $_POST["filter" . strtolower($attr_array[$k])] . ")";
+  else
+    $_POST["filter" . strtolower($attr_array[$k])] = "";
+}
+$filter = $filter . ")";
 $attrs = $attr_array;
 $sr = @ldap_search($_SESSION["ldap"]->server(),
 	$_SESSION["config"]->get_GroupSuffix(),
@@ -103,6 +123,19 @@ echo "<tr class=\"grouplist_head\"><th width=22 height=34></th><th></th>";
 // table header
 for ($k = 0; $k < sizeof($desc_array); $k++) {
 	echo "<th><a href=\"listgroups.php?list=" . strtolower($attr_array[$k]) . "\">" . $desc_array[$k] . "</a></th>";
+}
+echo "</tr>\n";
+
+// print filter row
+echo "<tr align=\"center\" class=\"grouplist\"><td width=22 height=34></td><td>";
+echo "<input type=\"submit\" name=\"apply_filter\" value=\"" . _("Apply") . "\">";
+echo "</td>";
+// print input boxes for filters
+for ($k = 0; $k < sizeof ($desc_array); $k++) {
+  echo "<td>";
+  echo ("<input type=\"text\" name=\"filter" . strtolower ($attr_array[$k]) .
+	"\" value=\"" . $_POST["filter" . strtolower($attr_array[$k])] . "\">");
+  echo "</td>";
 }
 echo "</tr>\n";
 
