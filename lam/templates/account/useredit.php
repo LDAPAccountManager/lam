@@ -473,9 +473,9 @@ switch ($_POST['select']) {
 		$account_new->personal_postalAddress = $_POST['f_personal_postalAddress'];
 		$account_new->personal_employeeType = $_POST['f_personal_employeeType'];
 		// Check if values are OK and set automatic values. if not error-variable will be set
-		if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/])*$', $account_new->personal_telephoneNumber))  $errors[] = array('ERROR', _('Telephone number'), _('Please enter a valid telephone number!'));
-		if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/])*$', $account_new->personal_mobileTelephoneNumber))  $errors[] = array('ERROR', _('Mobile number'), _('Please enter a valid mobile number!'));
-		if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/])*$', $account_new->personal_facsimileTelephoneNumber))  $errors[] = array('ERROR', _('Fax number'), _('Please enter a valid fax number!'));
+		if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/]|[-])*$', $account_new->personal_telephoneNumber))  $errors[] = array('ERROR', _('Telephone number'), _('Please enter a valid telephone number!'));
+		if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/]|[-])*$', $account_new->personal_mobileTelephoneNumber))  $errors[] = array('ERROR', _('Mobile number'), _('Please enter a valid mobile number!'));
+		if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/]|[-])*$', $account_new->personal_facsimileTelephoneNumber))  $errors[] = array('ERROR', _('Fax number'), _('Please enter a valid fax number!'));
 		if ( !ereg('^(([0-9]|[A-Z]|[a-z]|[.]|[-]|[_])+[@]([0-9]|[A-Z]|[a-z]|[-])+([.]([0-9]|[A-Z]|[a-z]|[-])+)*)*$', $account_new->personal_mail))  $errors[] = array('ERROR', _('eMail address'), _('Please enter a valid eMail address!'));
 		if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $account_new->personal_street))  $errors[] = array('ERROR', _('Street'), _('Please enter a valid street name!'));
 		if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $account_new->personal_postalAddress))  $errors[] = array('ERROR', _('Postal address'), _('Please enter a valid postal address!'));
@@ -502,8 +502,7 @@ switch ($_POST['select']) {
 					}
 				}
 			// Create / display PDf-file
-			createUSerPDF(array($account_new));
-			// Stop script
+			createUserPDF(array($account_new));
 			die;
 			}
 		break;
@@ -942,13 +941,13 @@ switch ($select_local) {
 			'</td>'."\n".'<td>'.
 			'<a href="../help.php?HelpNumber=401" target="lamhelp">'._('Help').'</a>'.
 			'</td></tr>'."\n".'<tr><td>';
-		echo _('Given name').'*';
+		echo _('First name').'*';
 		echo '</td>'."\n".'<td>'.
 			'<input name="f_general_givenname" type="text" size="20" maxlength="20" value="' . $account_new->general_givenname . '">'.
 			'</td>'."\n".'<td>'.
 			'<a href="../help.php?HelpNumber=425" target="lamhelp">'._('Help').'</a>'.
 			'</td>'."\n".'</tr>'."\n".'<tr><td>';
-		echo _('Surname').'*';
+		echo _('Last name').'*';
 		echo '</td>'."\n".'<td>'.
 			'<input name="f_general_surname" type="text" size="20" maxlength="20" value="' . $account_new->general_surname . '">'.
 			'</td><td>'.
@@ -1110,7 +1109,7 @@ switch ($select_local) {
 		'<a href="../help.php?HelpNumber=427" target="lamhelp">'._('Help').'</a>'.
 		'</td></tr>'."\n";
 		// show only hosts if schema does allow hosts
-		if ($_SESSION['ldap']->support_unix_hosts) {
+		if ($_SESSION['ldap']->supports_unix_hosts) {
 			echo '<tr><td>';
 			echo _('Unix workstations');
 			echo '</td>'."\n".'<td><input name="f_unix_host" type="text" size="20" maxlength="80" value="' . $account_new->unix_host . '">'.
@@ -1457,7 +1456,7 @@ switch ($select_local) {
 		echo _('Title');
 		echo '</td>'."\n".'<td>'.
 			'<input name="f_personal_title" type="text" size="10" maxlength="10" value="' . $account_new->personal_title . '"> ';
-		echo $account_new->general_surname . ' ' . $account_new->general_givenname . '</td><td>'.
+		echo $account_new->general_givenname . ' ' . $account_new->general_surname . '</td><td>'.
 			'<a href="../help.php?HelpNumber=448" target="lamhelp">'._('Help').'</a>'.
 			'</td></tr>'."\n".'<tr><td>';
 		echo _('Employee type');

@@ -85,10 +85,10 @@ if ($_POST['apply']) {
 	// Show Detail-page
 	$select = 'detail';
 	// Check if surname is valid
-	if ( !ereg('^([a-z]|[A-Z]|[-]|[ ]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+$', $_POST['f_general_surname'])) $errors2[] = array('ERROR', _('Surname'), _('Surname contains invalid characters'));
+	if ( !ereg('^([a-z]|[A-Z]|[-]|[ ]|[ï¿½|[ï¿½|[ï¿½|[ï¿½|[]|[ï¿½|[ï¿½)+$', $_POST['f_general_surname'])) $errors2[] = array('ERROR', _('Surname'), _('Surname contains invalid characters'));
 		else $_SESSION['accounts'][$row]->general_surname = $_POST['f_general_surname'];
 	// Check if givenname is valid
-	if ( !ereg('^([a-z]|[A-Z]|[-]|[ ]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+$', $_POST['f_general_givenname'])) $errors2[] = array('ERROR', _('Given name'), _('Given name contains invalid characters'));
+	if ( !ereg('^([a-z]|[A-Z]|[-]|[ ]|[ï¿½|[ï¿½|[ï¿½|[ï¿½|[]|[ï¿½|[ï¿½)+$', $_POST['f_general_givenname'])) $errors2[] = array('ERROR', _('Given name'), _('Given name contains invalid characters'));
 		else $_SESSION['accounts'][$row]->general_givenname = $_POST['f_general_givenname'];
 	// Check if username is valid
 	if ( !ereg('^([a-z]|[0-9]|[.]|[-]|[_])*$', $_POST['f_general_username']))
@@ -144,15 +144,15 @@ if ($_POST['apply']) {
 			if ($_SESSION['accounts'][$row2]->general_username != $_POST['f_general_username']) $errors2[] = array('WARN', _('Username'), _('Username in use. Selected next free username.'));
 		}
 	// Check personal settings
-	if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $_POST['f_personal_title']))  $errors2[] = array('ERROR', _('Title'), _('Please enter a valid title!'));
+	if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[ï¿½|[ï¿½|[ï¿½|[ï¿½|[ï¿½|[]|[ï¿½)*$', $_POST['f_personal_title']))  $errors2[] = array('ERROR', _('Title'), _('Please enter a valid title!'));
 		else $_SESSION['accounts'][$row]->personal_title = $_POST['f_personal_title'];
-	if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $_POST['f_personal_employeeType']))  $errors2[] = array('ERROR', _('Employee type'), _('Please enter a valid employee type!'));
+	if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[ï¿½|[ï¿½|[ï¿½|[ï¿½|[ï¿½|[]|[ï¿½)*$', $_POST['f_personal_employeeType']))  $errors2[] = array('ERROR', _('Employee type'), _('Please enter a valid employee type!'));
 		else $_SESSION['accounts'][$row]->personal_employeeType = $_POST['f_personal_employeeType'];
-	if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $_POST['f_personal_street']))  $errors2[] = array('ERROR', _('Street'), _('Please enter a valid street name!'));
+	if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[ï¿½|[ï¿½|[ï¿½|[ï¿½|[ï¿½|[]|[ï¿½)*$', $_POST['f_personal_street']))  $errors2[] = array('ERROR', _('Street'), _('Please enter a valid street name!'));
 		else $_SESSION['accounts'][$row]->personal_street = $_POST['f_personal_street'];
 	if ( !ereg('^([0-9]|[A-Z]|[a-z])*$', $_POST['f_personal_postalCode']))  $errors2[] = array('ERROR', _('Postal code'), _('Please enter a valid postal code!'));
 		else $_SESSION['accounts'][$row]->personal_postalCode = $_POST['f_personal_postalCode'];
-	if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $_POST['f_personal_postalAddress']))  $errors2[] = array('ERROR', _('Postal address'), _('Please enter a valid postal address!'));
+	if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[ï¿½|[ï¿½|[ï¿½|[ï¿½|[ï¿½|[]|[ï¿½)*$', $_POST['f_personal_postalAddress']))  $errors2[] = array('ERROR', _('Postal address'), _('Please enter a valid postal address!'));
 		else $_SESSION['accounts'][$row]->personal_postalAddress = $_POST['f_personal_postalAddress'];
 	if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/])*$', $_POST['f_personal_telephoneNumber']))  $errors2[] = array('ERROR', _('Telephone number'), _('Please enter a valid telephone number!'));
 		else $_SESSION['accounts'][$row]->personal_telephoneNumber = $_POST['f_personal_telephoneNumber'];
@@ -187,19 +187,19 @@ switch ($select) {
 	* error = Show all errors about user
 	*/
 	case 'error':
-		for ($i=0; $i<sizeof($_SESSION['errors'][$row]); $i++)
-			if ($_SESSION['errors'][$row][$i][0] == 'ERROR')
-				StatusMessage('ERROR', _('Invalid Value!'), $_SESSION['errors'][$row][$i][2]);
+		for ($i=0; $i<sizeof($_SESSION['mass_errors'][$row]); $i++)
+			if ($_SESSION['mass_errors'][$row][$i][0] == 'ERROR')
+				StatusMessage('ERROR', _('Invalid Value!'), $_SESSION['mass_errors'][$row][$i][2]);
 		break;
 	case 'info':
-		for ($i=0; $i<sizeof($_SESSION['errors'][$row]); $i++)
-			if ($_SESSION['errors'][$row][$i][0] == 'INFO')
-				StatusMessage('INFO', _('Check values.'), $_SESSION['errors'][$row][$i][2]);
+		for ($i=0; $i<sizeof($_SESSION['mass_errors'][$row]); $i++)
+			if ($_SESSION['mass_errors'][$row][$i][0] == 'INFO')
+				StatusMessage('INFO', _('Check values.'), $_SESSION['mass_errors'][$row][$i][2]);
 		break;
 	case 'warn':
-		for ($i=0; $i<sizeof($_SESSION['errors'][$row]); $i++)
-			if ($_SESSION['errors'][$row][$i][0] == 'WARN')
-				StatusMessage('WARN', _('Check values.'), $_SESSION['errors'][$row][$i][2]);
+		for ($i=0; $i<sizeof($_SESSION['mass_errors'][$row]); $i++)
+			if ($_SESSION['mass_errors'][$row][$i][0] == 'WARN')
+				StatusMessage('WARN', _('Check values.'), $_SESSION['mass_errors'][$row][$i][2]);
 		break;
 	case 'detail':
 		echo '<table class="massdetail" width="100%">';
