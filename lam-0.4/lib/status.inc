@@ -59,7 +59,8 @@ function StatusMessage($MessageTyp,$MessageHeadline,$MessageText,$MessageVariabl
 		$variables .= "," . $MessageVariables[$i];
 	}
 	$command = 'printf("' . addslashes($format) . '"' . $variables . ');';
-	eval($command);
+	call_user_func_array(printf,array{$format,$MessageVariables});
+	//eval($command);
 }
 
 /* Use the three replace functions on the submitted Text. */
