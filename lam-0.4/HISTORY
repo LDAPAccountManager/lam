@@ -1,8 +1,13 @@
-0.4.5
+21.03.2004 0.4.5
+  - added French translation
   - fixed bugs:
       StatusMessages with additional variables did not work
       Samba hosts had unnecessary objectClass shadowAccount (910084)
+      Samba host passwords were still wrong
       LAM had problems with non-standard spelled object classes (907636)
+      Perl scripts did not work if Perl is not installed in /usr/bin/perl (913554)
+      problems when cn!=uid (915041)
+      home directories were not deleted by lamdaemon.pl (913552)
 
 
 29.02.2004 0.4.4 (stable)
