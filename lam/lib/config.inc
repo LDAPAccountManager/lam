@@ -396,7 +396,7 @@ class Config {
 	*/
 	function set_Adminstring($value) {
 		if (is_string($value) &&
-		eregi("^[a-z0-9\\-]+=[a-z0-9\\-]+(,[a-z0-9\\-]+=[a-z0-9 \\-]+)+(;[a-z0-9\\-]+=[a-z0-9\\-]+(,[a-z0-9\\-]+=[a-z0-9 \\-]+)+)*$", $value)) {
+		eregi("^[^;]+(;[^;]+)*$", $value)) {
 			$this->Admins = $value;
 		}
 		else return false;
