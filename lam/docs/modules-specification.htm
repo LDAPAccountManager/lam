@@ -4,7 +4,7 @@
   <meta content="text/html; charset=ISO-8859-15"
  http-equiv="content-type">
   <title>Module specification</title>
-<style>
+  <style>
 <!--
 	h2 {
 		color:darkblue;
@@ -19,7 +19,7 @@
 		background-color:#bdcaff;
 	}
 -->
-</style>
+  </style>
 </head>
 <body>
 <h1 style="text-align: center;">This document describes the module
@@ -42,12 +42,10 @@ All module classes should extend the baseModule class.<br>
 </h3>
 <h3>2.1.1. can_manage*</h3>
 <br>
-<table border="0"
- cellpadding="2" cellspacing="2">
+<table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td
- style="vertical-align: top; text-align: center;"><span
+      <td style="vertical-align: top; text-align: center;"><span
  style="font-weight: bold;">function can_manage()</span><br>
       </td>
     </tr>
@@ -61,12 +59,10 @@ otherwise <span style="font-style: italic;">false</span>.<br>
 <br>
 <h3>2.1.2. get_alias*</h3>
 <br>
-<table border="0"
- cellpadding="2" cellspacing="2">
+<table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td
- style="vertical-align: top; text-align: center;"><span
+      <td style="vertical-align: top; text-align: center;"><span
  style="font-weight: bold;">function get_alias()</span><br>
       </td>
     </tr>
@@ -84,12 +80,10 @@ sure that there is a general alias for unknown types.<br>
 <br>
 <h3>2.1.3. is_base_module*</h3>
 <br>
-<table border="0"
- cellpadding="2" cellspacing="2">
+<table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td
- style="vertical-align: top; text-align: center;"><span
+      <td style="vertical-align: top; text-align: center;"><span
  style="font-weight: bold;">function is_base_module()</span><br>
       </td>
     </tr>
@@ -106,12 +100,10 @@ is structural.<br>
 <br>
 <h3>2.1.4. get_ldap_filter*</h3>
 <br>
-<table border="0"
- cellpadding="2" cellspacing="2">
+<table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td
- style="vertical-align: top; text-align: center;"><span
+      <td style="vertical-align: top; text-align: center;"><span
  style="font-weight: bold;">function get_ldap_filter()</span><br>
       </td>
     </tr>
@@ -133,12 +125,10 @@ The resulting LDAP filter will look like this:
 <span style="font-weight: bold; color: rgb(255, 0, 0);"></span><br>
 <h3>2.1.5. get_RDNAttributes*</h3>
 <br>
-<table border="0"
- cellpadding="2" cellspacing="2">
+<table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td
- style="vertical-align: top; text-align: center;"><span
+      <td style="vertical-align: top; text-align: center;"><span
  style="font-weight: bold;">function get_RDNAttributes()</span><br>
       </td>
     </tr>
@@ -190,12 +180,10 @@ your module depends on one of these modules.<br>
 <br>
 <h3>2.1.7. get_metaData()</h3>
 <br>
-<table border="0"
- cellpadding="2" cellspacing="2">
+<table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td
- style="vertical-align: top; text-align: center;"><span
+      <td style="vertical-align: top; text-align: center;"><span
  style="font-weight: bold;">function get_metaData()</span><br>
       </td>
     </tr>
@@ -209,12 +197,10 @@ true);</span><br style="font-weight: bold;">
 <br>
 <h3>2.1.8. get_configOptions()*</h3>
 <br>
-<table border="0"
- cellpadding="2" cellspacing="2">
+<table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td
- style="vertical-align: top; text-align: center;"><span
+      <td style="vertical-align: top; text-align: center;"><span
  style="font-weight: bold;">function get_configOptions($scopes)</span><br>
       </td>
     </tr>
@@ -237,12 +223,10 @@ naming confilcts.<br>
 <br>
 <h3>2.1.9. get_configDescriptions()*</h3>
 <br>
-<table border="0"
- cellpadding="2" cellspacing="2">
+<table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td
- style="vertical-align: top; text-align: center;"><span
+      <td style="vertical-align: top; text-align: center;"><span
  style="font-weight: bold;">function get_configDescriptions()</span><br>
       </td>
     </tr>
@@ -264,12 +248,10 @@ array with this format:<br>
 <br>
 <h3>2.1.10. check_configOptions*</h3>
 <br>
-<table border="0"
- cellpadding="2" cellspacing="2">
+<table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td
- style="vertical-align: top; text-align: center;"><span
+      <td style="vertical-align: top; text-align: center;"><span
  style="font-weight: bold;">function check_configOptions($scopes,
 $options)</span><br>
       </td>
@@ -294,12 +276,10 @@ If no errors occured the function returns an empty array.<span
 <span style="font-weight: bold;"></span>
 <h3>2.1.11. get_scope()</h3>
 <br>
-<table border="0"
- cellpadding="2" cellspacing="2">
+<table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td
- style="vertical-align: top; text-align: center;"><span
+      <td style="vertical-align: top; text-align: center;"><span
  style="font-weight: bold;">function get_scope()</span><br>
       </td>
     </tr>
@@ -313,12 +293,10 @@ baseModule and should not be overwritten.</span><br>
 <br>
 <h3>2.1.12. get_uploadColumns*</h3>
 <br>
-<table border="0"
- cellpadding="2" cellspacing="2">
+<table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td
- style="vertical-align: top; text-align: center;"><span
+      <td style="vertical-align: top; text-align: center;"><span
  style="font-weight: bold;">function get_uploadColumns()</span><br>
       </td>
     </tr>
@@ -360,12 +338,10 @@ all values of this column must be different values <span
 <br>
 <h3>2.1.13. get_uploadPreDepends*</h3>
 <br>
-<table border="0"
- cellpadding="2" cellspacing="2">
+<table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td
- style="vertical-align: top; text-align: center;"><span
+      <td style="vertical-align: top; text-align: center;"><span
  style="font-weight: bold;">function get_uploadPreDepends()</span><br>
       </td>
     </tr>
@@ -378,12 +354,10 @@ The named modules may not be active, LAM will check this automatically.<br>
 <br>
 <h3>2.1.14. build_uploadAccounts</h3>
 <br>
-<table border="0"
- cellpadding="2" cellspacing="2">
+<table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td
- style="vertical-align: top; text-align: center;"><span
+      <td style="vertical-align: top; text-align: center;"><span
  style="font-weight: bold;">function get_uploadAccounts($rawAccounts,
 $ids, $partialAccounts)</span><br>
       </td>
@@ -407,12 +381,10 @@ if any errors occured.<br>
 <br>
 <h3>2.1.15. do_uploadPostActions</h3>
 <br>
-<table border="0"
- cellpadding="2" cellspacing="2">
+<table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td
- style="vertical-align: top; text-align: center;"><span
+      <td style="vertical-align: top; text-align: center;"><span
  style="font-weight: bold;">function do_uploadPostActions($data, $ids,
 $failed, &amp;$temp)</span><br>
       </td>
@@ -455,12 +427,10 @@ StatusMessages<br>
 <br>
 <h3>2.1.16. get_profileOptions*</h3>
 <br>
-<table border="0"
- cellpadding="2" cellspacing="2">
+<table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td
- style="vertical-align: top; text-align: center;"><span
+      <td style="vertical-align: top; text-align: center;"><span
  style="font-weight: bold;">function get_profileOptions()</span><br>
       </td>
     </tr>
@@ -481,12 +451,10 @@ naming confilcts.<br>
 <br>
 <h3>2.1.17. check_profileOptions*</h3>
 <br>
-<table border="0"
- cellpadding="2" cellspacing="2">
+<table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td
- style="vertical-align: top; text-align: center;"><span
+      <td style="vertical-align: top; text-align: center;"><span
  style="font-weight: bold;">function check_profileOptions($options)</span><br>
       </td>
     </tr>
@@ -507,12 +475,10 @@ If no errors occured the function returns an empty array.<span
 <br>
 <h3>2.1.18. load_profile*</h3>
 <br>
-<table border="0"
- cellpadding="2" cellspacing="2">
+<table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td
- style="vertical-align: top; text-align: center;"><span
+      <td style="vertical-align: top; text-align: center;"><span
  style="font-weight: bold;">function load_profile($profile)</span><br>
       </td>
     </tr>
@@ -534,12 +500,10 @@ of an account profile.<br>
 </h3>
 <h3>2.2.1. init</h3>
 <br>
-<table border="0"
- cellpadding="2" cellspacing="2">
+<table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td
- style="vertical-align: top; text-align: center;"><span
+      <td style="vertical-align: top; text-align: center;"><span
  style="font-weight: bold;">function init($base)</span><br>
       </td>
     </tr>
@@ -554,12 +518,10 @@ several helper functions.<br>
 <br>
 <h3>2.2.2. module_ready</h3>
 <br>
-<table border="0"
- cellpadding="2" cellspacing="2">
+<table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td
- style="vertical-align: top; text-align: center;"><span
+      <td style="vertical-align: top; text-align: center;"><span
  style="font-weight: bold;">function module_ready()</span><br>
       </td>
     </tr>
@@ -573,12 +535,10 @@ your module accepts input, otherwise <span style="font-weight: bold;">false</spa
 <br>
 <h3>2.2.3. module_complete</h3>
 <br>
-<table border="0"
- cellpadding="2" cellspacing="2">
+<table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td
- style="vertical-align: top; text-align: center;"><span
+      <td style="vertical-align: top; text-align: center;"><span
  style="font-weight: bold;">function module_complete()</span><br>
       </td>
     </tr>
@@ -594,12 +554,10 @@ page will be displayed.<br>
 <br>
 <h3>2.2.4. get_help</h3>
 <br>
-<table border="0"
- cellpadding="2" cellspacing="2">
+<table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td
- style="vertical-align: top; text-align: center;"><span
+      <td style="vertical-align: top; text-align: center;"><span
  style="font-weight: bold;">function get_help($helpID)</span><br>
       </td>
     </tr>
@@ -617,12 +575,10 @@ section 4. "Help entry syntax".<br>
 <br>
 <h3>2.2.7. get_pdfEntries</h3>
 <br>
-<table border="0"
- cellpadding="2" cellspacing="2">
+<table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td
- style="vertical-align: top; text-align: center;"><span
+      <td style="vertical-align: top; text-align: center;"><span
  style="font-weight: bold;">function get_PDF_Entries($scope)</span><br>
       </td>
     </tr>
@@ -643,12 +599,10 @@ syntax".<br>
 <h3>2.2.8. dynamic_Message<br>
 </h3>
 <br>
-<table border="0"
- cellpadding="2" cellspacing="2">
+<table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td
- style="vertical-align: top; text-align: center;"><span
+      <td style="vertical-align: top; text-align: center;"><span
  style="font-weight: bold;">function dynamic_Message($attribute, $id)</span><br>
       </td>
     </tr>
@@ -666,12 +620,10 @@ Returnis an array as expected from StatusMessage().<br>
 <h3>2.2.9. load_Messages<br>
 </h3>
 <br>
-<table border="0"
- cellpadding="2" cellspacing="2">
+<table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td
- style="vertical-align: top; text-align: center;"><span
+      <td style="vertical-align: top; text-align: center;"><span
  style="font-weight: bold;">function load_Messages()</span><br>
       </td>
     </tr>
@@ -687,12 +639,10 @@ $this-&gt;messages[x][y][z]<br>
 <h3>2.2.10. load_attributes<br>
 </h3>
 <br>
-<table border="0"
- cellpadding="2" cellspacing="2">
+<table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td
- style="vertical-align: top; text-align: center;"><span
+      <td style="vertical-align: top; text-align: center;"><span
  style="font-weight: bold;">function load_attributes($attr)</span><br>
       </td>
     </tr>
@@ -715,12 +665,10 @@ separat.<br>
 <h3>2.2.11. save_attributes<br>
 </h3>
 <br>
-<table border="0"
- cellpadding="2" cellspacing="2">
+<table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td
- style="vertical-align: top; text-align: center;"><span
+      <td style="vertical-align: top; text-align: center;"><span
  style="font-weight: bold;">function save_attributes()</span><br>
       </td>
     </tr>
@@ -746,12 +694,10 @@ itself which should be executed by lamdaemon.<br>
 <h3>2.2.12. delete_attributes<br>
 </h3>
 <br>
-<table border="0"
- cellpadding="2" cellspacing="2">
+<table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td
- style="vertical-align: top; text-align: center;"><span
+      <td style="vertical-align: top; text-align: center;"><span
  style="font-weight: bold;">function delete_attributes($post)</span><br>
       </td>
     </tr>
@@ -767,12 +713,10 @@ is needed t interact with the user.<br>
 <h3>2.2.13. process_attributes<br>
 </h3>
 <br>
-<table border="0"
- cellpadding="2" cellspacing="2">
+<table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td
- style="vertical-align: top; text-align: center;"><span
+      <td style="vertical-align: top; text-align: center;"><span
  style="font-weight: bold;">function process_attributes($post)</span><br>
       </td>
     </tr>
@@ -805,12 +749,10 @@ array();<br>
 <h3>2.2.14. process_*<br>
 </h3>
 <br>
-<table border="0"
- cellpadding="2" cellspacing="2">
+<table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td
- style="vertical-align: top; text-align: center;"><span
+      <td style="vertical-align: top; text-align: center;"><span
  style="font-weight: bold;">function process_*($post)</span><br>
       </td>
     </tr>
@@ -827,12 +769,10 @@ is needed t interact with the user.<br>
 <h3>2.2.15. display_html_attributes($post)<br>
 </h3>
 <br>
-<table border="0"
- cellpadding="2" cellspacing="2">
+<table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td
- style="vertical-align: top; text-align: center;"><span
+      <td style="vertical-align: top; text-align: center;"><span
  style="font-weight: bold;">function display_html_attributes($post)</span><br>
       </td>
     </tr>
@@ -849,12 +789,10 @@ is needed t interact with the user.<br>
 <h3>2.2.16. display_html_*($post)<br>
 </h3>
 <br>
-<table border="0"
- cellpadding="2" cellspacing="2">
+<table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td
- style="vertical-align: top; text-align: center;"><span
+      <td style="vertical-align: top; text-align: center;"><span
  style="font-weight: bold;">function display_html_*($post)</span><br>
       </td>
     </tr>
@@ -872,12 +810,10 @@ is needed t interact with the user.<br>
 <h3>2.2.17. display_html_delete($post)<br>
 </h3>
 <br>
-<table border="0"
- cellpadding="2" cellspacing="2">
+<table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td
- style="vertical-align: top; text-align: center;"><span
+      <td style="vertical-align: top; text-align: center;"><span
  style="font-weight: bold;">function display_html_delete($post)</span><br>
       </td>
     </tr>
@@ -989,6 +925,17 @@ element.</li>
     <li><span style="font-weight: bold;">text:</span> The text to
 display.</li>
   </ul>
+  <li><span style="font-weight: bold;">image:</span> Displays an image.</li>
+  <ul>
+    <li><span style="font-weight: bold;">path:</span> Path to the image</li>
+    <li><span style="font-weight: bold;">width:</span> Width of the
+image</li>
+    <li><span style="font-weight: bold;">height:</span> Height of the
+image</li>
+    <li><span style="font-weight: bold;">alt:</span> Alt text of the
+image<br>
+    </li>
+  </ul>
 </ul>
 <br>
 Beneath those values a <span style="font-weight: bold;">"td"</span>
@@ -997,11 +944,13 @@ options:<br>
 <br>
 <ul>
   <li><span style="font-weight: bold;">colspan:</span> Like the HTML
-colspan attribute for td elements.</li>
+colspan attribute for td elements</li>
   <li><span style="font-weight: bold;">rowspan:</span> Like the HTML
-rowspan attribute for td elements.</li>
+rowspan attribute for td elements</li>
   <li><span style="font-weight: bold;">align:</span>
-left/center/right/justify Like the HTML align attribute.</li>
+left/center/right/justify Like the HTML align attribute</li>
+  <li><span style="font-weight: bold;">valign:</span> top/middle/bottom
+Like the HTML valign attribute</li>
 </ul>
 <br>
 <span style="font-weight: bold;">Example:</span><span
