@@ -137,6 +137,9 @@ if ($_GET["modulesback"] == "true") {
 	}
 }
 
+// index for tab order
+$tabindex = 1;
+
 echo $_SESSION['header'];
 
 echo ("<title>" . _("LDAP Account Manager Configuration") . "</title>\n");
@@ -154,9 +157,10 @@ echo ("<table border=0>");
 // serverURL
 echo ("<tr><td align=\"right\"><b>" . _("Server address") . " *: </b></td>".
 	"<td align=\"left\">".
-	"<input size=50 type=\"text\" name=\"serverurl\" value=\"" . $conf->get_ServerURL() . "\">".
+	"<input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"serverurl\" value=\"" . $conf->get_ServerURL() . "\">".
 	"</td>\n");
 echo ("<td><a href=\"../help.php?HelpNumber=201\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
+$tabindex++;
 
 // new line
 echo ("<tr><td colspan=3>&nbsp</td></tr>");
@@ -164,23 +168,27 @@ echo ("<tr><td colspan=3>&nbsp</td></tr>");
 // user suffix
 echo ("<tr><td align=\"right\"><b>".
 	_("UserSuffix") . " *: </b></td>".
-	"<td><input size=50 type=\"text\" name=\"suffusers\" value=\"" . $conf->get_UserSuffix() . "\"></td>\n");
+	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"suffusers\" value=\"" . $conf->get_UserSuffix() . "\"></td>\n");
 echo ("<td><a href=\"../help.php?HelpNumber=202\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
+$tabindex++;
 // group suffix
 echo ("<tr><td align=\"right\"><b>".
 	_("GroupSuffix") . " *: </b></td>".
-	"<td><input size=50 type=\"text\" name=\"suffgroups\" value=\"" . $conf->get_GroupSuffix() . "\"></td>\n");
+	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"suffgroups\" value=\"" . $conf->get_GroupSuffix() . "\"></td>\n");
 echo ("<td><a href=\"../help.php?HelpNumber=202\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
+$tabindex++;
 // host suffix
 echo ("<tr><td align=\"right\"><b>".
 	_("HostSuffix") . " **: </b></td>".
-	"<td><input size=50 type=\"text\" name=\"suffhosts\" value=\"" . $conf->get_HostSuffix() . "\"></td>\n");
+	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"suffhosts\" value=\"" . $conf->get_HostSuffix() . "\"></td>\n");
 echo ("<td><a href=\"../help.php?HelpNumber=202\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
+$tabindex++;
 // domain suffix
 echo ("<tr><td align=\"right\"><b>".
 	_("DomainSuffix") . " ***: </b></td>".
-	"<td><input size=50 type=\"text\" name=\"suffdomains\" value=\"" . $conf->get_DomainSuffix() . "\"></td>\n");
+	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"suffdomains\" value=\"" . $conf->get_DomainSuffix() . "\"></td>\n");
 echo ("<td><a href=\"../help.php?HelpNumber=202\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
+$tabindex++;
 
 // new line
 echo ("<tr><td colspan=3>&nbsp</td></tr>");
@@ -188,7 +196,7 @@ echo ("<tr><td colspan=3>&nbsp</td></tr>");
 // LDAP cache timeout
 echo ("<tr><td align=\"right\"><b>".
 	_("Cache timeout") . ": </b></td>".
-	"<td><select name=\"cachetimeout\">\n<option selected>".$conf->get_cacheTimeout()."</option>\n");
+	"<td><select tabindex=\"$tabindex\" name=\"cachetimeout\">\n<option selected>".$conf->get_cacheTimeout()."</option>\n");
 if ($conf->get_cacheTimeout() != 0) echo("<option>0</option>\n");
 if ($conf->get_cacheTimeout() != 1) echo("<option>1</option>\n");
 if ($conf->get_cacheTimeout() != 2) echo("<option>2</option>\n");
@@ -196,6 +204,7 @@ if ($conf->get_cacheTimeout() != 5) echo("<option>5</option>\n");
 if ($conf->get_cacheTimeout() != 10) echo("<option>10</option>\n");
 if ($conf->get_cacheTimeout() != 15) echo("<option>15</option>\n");
 echo ("</select></td>\n");
+$tabindex++;
 echo ("<td><a href=\"../help.php?HelpNumber=214\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 
 echo ("</table>");
@@ -211,8 +220,9 @@ echo "<tr><td><b>" . _("User modules") . ": </b>" . implode(", ", $conf->get_Use
 echo "<tr><td><b>" . _("Group modules") . ": </b>" . implode(", ", $conf->get_GroupModules()) . "</td></tr>\n";
 echo "<tr><td><b>" . _("Host modules") . ": </b>" . implode(", ", $conf->get_HostModules()) . "</td></tr>\n";
 echo "<tr><td>&nbsp;</td></tr>\n";
-echo "<tr><td><input type=\"submit\" name=\"editmodules\" value=\"" . _("Edit modules") . "\">&nbsp;&nbsp;" .
+echo "<tr><td><input tabindex=\"$tabindex\" type=\"submit\" name=\"editmodules\" value=\"" . _("Edit modules") . "\">&nbsp;&nbsp;" .
 	"<a href=\"../help.php?HelpNumber=217\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n";
+$tabindex++;
 
 echo ("</table>");
 echo ("</fieldset>");
@@ -240,9 +250,6 @@ $moduleDescriptions = getConfigDescriptions();
 
 // save scopes
 $_SESSION['config_scopes'] = $scopes;
-
-// index for tab order (1 is LDAP suffix)
-$tabindex = 2;
 
 // display module boxes
 $modules = array_keys($options);
@@ -277,25 +284,28 @@ echo ("<table border=0>\n");
 // user list attributes
 echo ("<tr><td align=\"right\"><b>".
 	_("Attributes in User List") . " *:</b></td>".
-	"<td><input size=50 type=\"text\" name=\"usrlstattr\" value=\"" . $conf->get_userlistAttributes() . "\"></td>");
+	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"usrlstattr\" value=\"" . $conf->get_userlistAttributes() . "\"></td>");
 echo ("<td><a href=\"../help.php?HelpNumber=206\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
+$tabindex++;
 // group list attributes
 echo ("<tr><td align=\"right\"><b>".
 	_("Attributes in Group List") . " *:</b></td>".
-	"<td><input size=50 type=\"text\" name=\"grplstattr\" value=\"" . $conf->get_grouplistAttributes() . "\"></td>");
+	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"grplstattr\" value=\"" . $conf->get_grouplistAttributes() . "\"></td>");
 echo ("<td><a href=\"../help.php?HelpNumber=206\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
+$tabindex++;
 // host list attributes
 echo ("<tr><td align=\"right\"><b>".
 	_("Attributes in Host List") . " **:</b></td>".
-	"<td><input size=50 type=\"text\" name=\"hstlstattr\" value=\"" . $conf->get_hostlistAttributes() . "\"></td>");
+	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"hstlstattr\" value=\"" . $conf->get_hostlistAttributes() . "\"></td>");
 echo ("<td><a href=\"../help.php?HelpNumber=206\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
+$tabindex++;
 
 echo ("<tr><td colspan=3>&nbsp</td></tr>\n");
 
 // maximum list entries
 echo ("<tr><td align=\"right\"><b>".
 	_("Maximum list entries") . " : </b></td>".
-	"<td><select name=\"maxlistentries\">\n<option selected>".$conf->get_MaxListEntries()."</option>\n");
+	"<td><select tabindex=\"$tabindex\" name=\"maxlistentries\">\n<option selected>".$conf->get_MaxListEntries()."</option>\n");
 if ($conf->get_MaxListEntries() != 10) echo("<option>10</option>\n");
 if ($conf->get_MaxListEntries() != 20) echo("<option>20</option>\n");
 if ($conf->get_MaxListEntries() != 30) echo("<option>30</option>\n");
@@ -303,6 +313,7 @@ if ($conf->get_MaxListEntries() != 50) echo("<option>50</option>\n");
 if ($conf->get_MaxListEntries() != 75) echo("<option>75</option>\n");
 if ($conf->get_MaxListEntries() != 100) echo("<option>100</option>\n");
 echo ("</select></td>\n");
+$tabindex++;
 echo ("<td><a href=\"../help.php?HelpNumber=208\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 
 echo ("</table>\n");
@@ -330,13 +341,14 @@ if(is_file($languagefile))
 	}
 	fclose($file);
 // generate language list
-echo ("<select name=\"lang\">");
+echo ("<select tabindex=\"$tabindex\" name=\"lang\">");
 for ($i = 0; $i < sizeof($languages); $i++) {
 	$entry = explode(":", $languages[$i]);
 	if ($conf->get_defaultLanguage() != $languages[$i]) echo("<option value=\"" . $languages[$i] . "\">" . $entry[2] . "</option>\n");
 	else echo("<option selected value=\"" . $languages[$i] . "\">" . $entry[2] . "</option>\n");
 }
 echo ("</select>\n");
+$tabindex++;
 }
 else
 {
@@ -356,11 +368,13 @@ echo ("<table border=0>\n");
 
 echo ("<tr><td align=\"right\"><b>".
 	_("Server of external script") . ": </b></td>".
-	"<td><input size=50 type=\"text\" name=\"scriptserver\" value=\"" . $conf->get_scriptServer() . "\"></td>\n");
+	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"scriptserver\" value=\"" . $conf->get_scriptServer() . "\"></td>\n");
+$tabindex++;
 echo ("<td><a href=\"../help.php?HelpNumber=211\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 echo ("<tr><td align=\"right\"><b>".
 	_("Path to external script") . ": </b></td>".
-	"<td><input size=50 type=\"text\" name=\"scriptpath\" value=\"" . $conf->get_scriptPath() . "\"></td>\n");
+	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"scriptpath\" value=\"" . $conf->get_scriptPath() . "\"></td>\n");
+$tabindex++;
 echo ("<td><a href=\"../help.php?HelpNumber=210\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 
 echo ("</table>\n");
@@ -374,20 +388,23 @@ echo ("<table border=0>\n");
 // admin list
 echo ("<tr><td align=\"right\"><b>".
 	_("List of valid users") . " *: </b></td>".
-	"<td><input size=50 type=\"text\" name=\"admins\" value=\"" . $conf->get_Adminstring() . "\"></td>\n");
+	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"admins\" value=\"" . $conf->get_Adminstring() . "\"></td>\n");
 echo ("<td><a href=\"../help.php?HelpNumber=207\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
+$tabindex++;
 
 echo ("<tr><td colspan=3>&nbsp;</td></tr>\n");
 
 // new password
 echo ("<tr><td align=\"right\"><font color=\"red\"><b>".
 	_("New Password") . ": </b></font></td>".
-	"<td align=\"left\"><input type=\"password\" name=\"passwd1\"></td>\n");
+	"<td align=\"left\"><input tabindex=\"$tabindex\" type=\"password\" name=\"passwd1\"></td>\n");
+$tabindex++;
 echo ("<td rowspan=2><a href=\"../help.php?HelpNumber=212\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 // reenter password
 echo ("<tr><td align=\"right\"><font color=\"red\"><b>".
 	_("Reenter Password") . ": </b></font></td>".
-	"<td align=\"left\"><input type=\"password\" name=\"passwd2\"></td></tr>\n");
+	"<td align=\"left\"><input tabindex=\"$tabindex\" type=\"password\" name=\"passwd2\"></td></tr>\n");
+$tabindex++;
 echo ("</table>\n");
 echo ("</fieldset>\n");
 echo ("<p></p>\n");
@@ -396,10 +413,14 @@ echo ("<p></p>\n");
 // buttons
 echo ("<table border=0>\n");
 
-echo ("<tr><td align=\"left\"><pre>".
-	"<input type=\"submit\" name=\"submitconf\" value=\"" . _("Submit") . "\">".
-	"<input type=\"reset\" name=\"resetconf\" value=\"" . _("Reset") . "\">".
-	"<input type=\"submit\" name=\"back\" value=\"" . _("Abort") . "\"\n");
+echo "<tr>";
+echo "<td align=\"left\"><pre>";
+	echo "<input tabindex=\"$tabindex\" type=\"submit\" name=\"submitconf\" value=\"" . _("Submit") . "\">";
+	$tabindex++;
+	echo "<input tabindex=\"$tabindex\" type=\"reset\" name=\"resetconf\" value=\"" . _("Reset") . "\">";
+	$tabindex++;
+	echo "<input tabindex=\"$tabindex\" type=\"submit\" name=\"back\" value=\"" . _("Abort") . "\"\n";
+	$tabindex++;
 
 echo ("></pre></td></tr>\n");
 
