@@ -103,6 +103,10 @@ function createUserPDF($accounts) {
 			$pdfFile->setFont("times","B",10);
 			$pdfFile->Cell(50,5,_("Unix password disabled!"),0,1,"L",0);
 		}
+		elseif($account->unix_password == "") {
+			$pdfFile->setFont("times","B",10);
+			$pdfFile->Cell(50,5,_("[Empty password string]"),0,1,"L",0);
+		}
 		else {
 			$account->unix_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($account->unix_password), MCRYPT_MODE_ECB, $iv);
 			$account->unix_password = str_replace(chr(00), '', $account->unix_password);
@@ -131,6 +135,10 @@ function createUserPDF($accounts) {
 		elseif($account->smb_useunixpwd == "1") {
 			$pdfFile->setFont("times","B",10);
 			$pdfFile->Cell(50,5,_("Samba password set to unix password."),0,1,"L",0);
+		}
+		elseif($account->smb_password == "") {
+			$pdfFile->setFont("times","B",10);
+			$pdfFile->Cell(50,5,_("[Empty password string]"),0,1,"L",0);
 		}
 		else {
 			$account->smb_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($account->smb_password), MCRYPT_MODE_ECB, $iv);
