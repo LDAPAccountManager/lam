@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
-  Copyright (C) 2003  Tilo Lutz
+  Copyright (C) 2004  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -35,6 +35,7 @@ include_once('../lib/status.inc');
 /** account modules */
 include_once('../lib/modules.inc');
 
+
 // Start session
 session_save_path('../sess');
 @session_start();
@@ -43,7 +44,7 @@ session_save_path('../sess');
 if (!isset($_SESSION['loggedIn'])) {
 	metaRefresh("login.php");
 	exit;
-	}
+}
 
 // Set correct language, codepages, ....
 setlanguage();
@@ -55,9 +56,9 @@ echo "</head>\n";
 echo "<body>\n";
 
 // check if account specific page should be shown
-if ($_POST['user']) showMainPage('user');
-elseif ($_POST['group']) showMainPage('group');
-elseif ($_POST['host']) showMainPage('host');
+if (isset($_POST['user'])) showMainPage('user');
+elseif (isset($_POST['group'])) showMainPage('group');
+elseif (isset($_POST['host'])) showMainPage('host');
 // show start page
 else {
 	echo "<h1 align=\"center\">" . _("Account creation via file upload") . "</h1>\n";
@@ -74,7 +75,7 @@ else {
 	echo _("Please select your account type:");
 	echo "</b></p>\n";
 	
-	echo "<form action=\"masscreate.php\" method=\"post\">\n";
+	echo "<form enctype=\"multipart/form-data\" action=\"masscreate.php\" method=\"post\">\n";
 	echo "<table style=\"border-color: grey\" cellpadding=\"10\" border=\"2\" cellspacing=\"0\">\n";
 	echo "<tr>\n";
 		echo "<th class=\"userlist-sort\">\n";
@@ -107,15 +108,48 @@ function showMainPage($scope) {
 	
 	echo "<p>&nbsp;</p>\n";
 
+	echo "<form enctype=\"multipart/form-data\" action=\"massBuildAccounts.php\" method=\"post\">\n";
 	echo "<p>\n";
-	echo "<b>" . _("CSV file:") . "</b> <input name=\"inputfile\" type=\"file\">";
+	echo "<b>" . _("CSV file:") . "</b> <input name=\"inputfile\" type=\"file\">&nbsp;&nbsp;";
+	echo "<input name=\"submitfile\" type=\"submit\" value=\"" . _('Upload file and create accounts') . "\">\n";
+	echo "<input type=\"hidden\" name=\"scope\" value=\"$scope\">\n";
 	echo "</p>\n";
+	echo "</form>\n";
 
 	echo "<p>&nbsp;</p>\n";
 
 	echo "<big><b>" . _("Columns:") . "</b></big>\n";
-	echo "<p>\n";
 
+	// DN options
+	echo "<fieldset>\n<legend><b>" . _("DN settings") . "</b></legend>\n";
+	echo "<table>\n";
+		echo "<tr>\n";
+			echo "<td>\n";
+			echo "<b>" . _("DN suffix") . "</b>\n";
+			echo "<br>\n";
+				echo "<ul>\n";
+					echo "<li><b>" . _("Identifier") . ":</b> " . "dn_suffix</li>\n";
+					echo "<li><b>" . _("Example value") . ":</b> " . "ou=accounts,dc=yourdomain,dc=org</li>\n";
+					echo "<li>\n";
+						echo "<a href=\"help.php?HelpNumber=TODO\" target=\"lamhelp\">" . _("Help") . "</a>\n";
+					echo "</li>\n";
+				echo "</ul>\n";
+			echo "</td>\n";
+			echo "<td>\n";
+			echo "<b><font color=\"red\">" . _("RDN identifier") . "</font></b>\n";
+			echo "<br>\n";
+				echo "<ul>\n";
+					echo "<li><b>" . _("Identifier") . ":</b> " . "dn_rdn</li>\n";
+					echo "<li><b>" . _("Example value") . ":</b> " . "uid</li>\n";
+					echo "<li>\n";
+						echo "<a href=\"help.php?HelpNumber=TODO\" target=\"lamhelp\">" . _("Help") . "</a>\n";
+					echo "</li>\n";
+				echo "</ul>\n";
+			echo "</td>\n";
+		echo "</tr>\n";
+	echo "</table>\n";
+	echo "</fieldset>\n";
+	
 	// get input fields from modules
 	$columns = getUploadColumns($scope);
 
@@ -128,17 +162,17 @@ function showMainPage($scope) {
 		for ($i = 0; $i < sizeof($columns[$modules[$m]]); $i++) {
 			echo "<tr>\n";
 				echo "<td>\n";
-					showColumnData($scope, $modules[$m], $columns[$modules[$m]][$i]);
+					showColumnData($modules[$m], $columns[$modules[$m]][$i]);
 				echo "</td>\n";
 				$i++;
 				if ($i < sizeof($columns[$modules[$m]])) {
 					echo "<td>\n";
-						showColumnData($scope, $modules[$m], $columns[$modules[$m]][$i]);
+						showColumnData($modules[$m], $columns[$modules[$m]][$i]);
 					echo "</td>\n";
 					$i++;
 					if ($i < sizeof($columns[$modules[$m]])) {
 						echo "<td>\n";
-							showColumnData($scope, $modules[$m], $columns[$modules[$m]][$i]);
+							showColumnData($modules[$m], $columns[$modules[$m]][$i]);
 						echo "</td>\n";
 					}
 					else echo "<td></td>"; // empty cell if no more fields
@@ -149,14 +183,12 @@ function showMainPage($scope) {
 		echo "</table>\n";
 		echo "</fieldset>";
 	}
-	echo "</p>\n";
 
 	echo "<p>&nbsp;</p>\n";
 
 	// print table example
 	echo "<big><b>" . _("This is an example how it would look in your spreadsheet program before you convert to CSV:") . "</b></big>\n";
 
-	echo "<p>\n";
 	echo "<table style=\"border-color: grey\" cellpadding=\"10\" border=\"2\" cellspacing=\"0\">\n";
 		echo "<tr>\n";
 			for ($m = 0; $m < sizeof($modules); $m++) {
@@ -179,7 +211,6 @@ function showMainPage($scope) {
 			}
 		echo "</tr>\n";
 	echo "</table>\n";
-	echo "</p>\n";
 
 	echo "</body>\n";
 	echo "</html>\n";
@@ -189,11 +220,10 @@ function showMainPage($scope) {
 /**
 * Prints the properties of one input field.
 *
-* @param string $scope account type
 * @param string $module account module name
 * @param array $data field data from modules
 */
-function showColumnData($scope, $module, $data) {
+function showColumnData($module, $data) {
 	if ($data['required']) {
 		echo "<font color=\"red\"><b>\n";
 			echo $data['description'];
