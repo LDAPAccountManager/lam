@@ -386,11 +386,12 @@ function loadHostProfile($profile) {
 // $profile: name of the user profile (without .pru)
 // $account: account object which is saved
 function saveUserProfile($account, $profile) {
+	if (!$_SESSION['loggedIn'] == true) return false;
 	// check profile name
-	if (!eregi("^[0-9a-z_\\-]+$", $profile)) return false;
+	if (!eregi("^[0-9a-z\\-_]+$", $profile)) return false;
 	if (!is_object($account)) {
 		StatusMessage("ERROR", "", _("saveUserProfile: account has wrong type!"));
-		exit;
+		return false;
 	}
 	$path = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/users/" . $profile . ".pru";
 	$file = @fopen($path, "w");
@@ -458,11 +459,12 @@ function saveUserProfile($account, $profile) {
 // $profile: name of the group profile (without .prg)
 // $account: account object which is saved
 function saveGroupProfile($account, $profile) {
+	if (!$_SESSION['loggedIn'] == true) return false;
 	// check profile name
-	if (!eregi("^[0-9a-z_\\-]+$", $profile)) return false;
+	if (!eregi("^[0-9a-z\\-_]+$", $profile)) return false;
 	if (!is_object($account)) {
 		StatusMessage("ERROR", "", _("saveGroupProfile: account has wrong type!"));
-		exit;
+		return false;
 	}
 	$path = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/groups/" . $profile . ".prg";
 	$file = @fopen($path, "w");
@@ -492,11 +494,12 @@ function saveGroupProfile($account, $profile) {
 // $profile: name of the host profile (without .prh)
 // $account: account object which is saved
 function saveHostProfile($account, $profile) {
+	if (!$_SESSION['loggedIn'] == true) return false;
 	// check profile name
-	if (!eregi("^[0-9a-z_\\-]+$", $profile)) return false;
+	if (!eregi("^[0-9a-z\\-_]+$", $profile)) return false;
 	if (!is_object($account)) {
 		StatusMessage ("ERROR", "", _("saveHostProfile: account has wrong type!"));
-		exit;
+		return false;
 	}
 	$path = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/hosts/" . $profile . ".prh";
 	$file = @fopen($path, "w");
@@ -516,7 +519,8 @@ function saveHostProfile($account, $profile) {
 
 // deletes a user profile
 function delUserProfile($file) {
-	if (!eregi("^[0-9a-z_\\-]+$", $profile)) exit;
+	if (!$_SESSION['loggedIn'] == true) return false;
+	if (!eregi("^[0-9a-z\\-_]+$", $file)) return false;
 	$prof = substr(__FILE__, 0, strlen(__FILE__) - 16) . "config/profiles/users/".$file.".pru";
 	if (is_file($prof)) {
 		return @unlink($prof);
@@ -525,7 +529,8 @@ function delUserProfile($file) {
 
 // deletes a group profile
 function delGroupProfile($file) {
-	if (!eregi("^[0-9a-z_\\-]+$", $profile)) exit;
+	if (!$_SESSION['loggedIn'] == true) return false;
+	if (!eregi("^[0-9a-z\\-_]+$", $file)) return false;
 	$prof = substr(__FILE__, 0, strlen(__FILE__) - 16) . "config/profiles/groups/".$file.".prg";
 	if (is_file($prof)) {
 		return @unlink($prof);
@@ -534,7 +539,8 @@ function delGroupProfile($file) {
 
 // deletes a host profile
 function delHostProfile($file) {
-	if (!eregi("^[0-9a-z_\\-]+$", $profile)) exit;
+	if (!$_SESSION['loggedIn'] == true) return false;
+	if (!eregi("^[0-9a-z\\-_]+$", $file)) return false;
 	$prof = substr(__FILE__, 0, strlen(__FILE__) - 16) . "config/profiles/hosts/".$file.".prh";
 	if (is_file($prof)) {
 		return @unlink($prof);
