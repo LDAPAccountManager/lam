@@ -294,6 +294,9 @@ if($_POST['checklogin'])
 	}
 	else
 	{
+		if (get_magic_quotes_gpc() == 1) {
+			$_POST['passwd'] = stripslashes($_POST['passwd']);
+		}
 		$result = $_SESSION['ldap']->connect($_POST['username'],$_POST['passwd']); // Connect to LDAP server for verifing username/password
 
 		if($result === 0) // Username/password correct. Do some configuration and load main frame.
