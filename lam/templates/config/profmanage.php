@@ -156,7 +156,7 @@ if ($_POST['submit']) {
 							<?php echo _("Add profile:"); ?>
 							&nbsp
 						</b>
-						&nbsp <?php echo _("Profile name:"); ?>
+						&nbsp <?php echo _("Profile name"); ?> :
 						<input type="text" name="addprofile">
 					</td>
 					<td>

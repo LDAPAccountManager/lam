@@ -209,17 +209,17 @@ echo ("<table border=0>\n");
 
 // user list attributes
 echo ("<tr><td align=\"right\"><b>".
-	_("Attributes in User List:") . "</b></td>".
+	_("Attributes in User List") . ":</b></td>".
 	"<td><input size=50 type=\"text\" name=\"usrlstattr\" value=\"" . $conf->get_userlistAttributes() . "\"></td>");
 echo ("<td><a href=\"../help.php?HelpNumber=206\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 // user list attributes
 echo ("<tr><td align=\"right\"><b>".
-	_("Attributes in Group List:") . "</b></td>".
+	_("Attributes in Group List") . ":</b></td>".
 	"<td><input size=50 type=\"text\" name=\"grplstattr\" value=\"" . $conf->get_grouplistAttributes() . "\"></td>");
 echo ("<td><a href=\"../help.php?HelpNumber=206\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 // user list attributes
 echo ("<tr><td align=\"right\"><b>".
-	_("Attributes in Host List:") . "</b></td>".
+	_("Attributes in Host List") . ":</b></td>".
 	"<td><input size=50 type=\"text\" name=\"hstlstattr\" value=\"" . $conf->get_hostlistAttributes() . "\"></td>");
 echo ("<td><a href=\"../help.php?HelpNumber=206\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 

@@ -241,7 +241,7 @@ echo ("<td><select name=\"smb_flagsD\">\n");
 if ($acct->smb_flagsD == "0") echo ("<option selected value=0>"._("no")."</option><option value=1>"._("yes")."</option>\n");
 else echo ("<option selected value=1>"._("yes")."</option><option value=0>"._("no")."</option>\n");
 echo ("</select></td>\n");
-echo ("<td><a href=\"../help.php?HelpNumber=302\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
+echo ("<td><a href=\"../help.php?HelpNumber=310\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
 echo ("</tr>\n");
 
 // user can change his password
@@ -346,7 +346,7 @@ echo ("<br><br>\n");
 // profile name and submit/abort buttons
 echo ("<table border=0>\n");
 echo ("<tr>\n");
-echo ("<td><b>" . _("Profile Name") . ":</b></td>\n");
+echo ("<td><b>" . _("Profile name") . ":</b></td>\n");
 echo ("<td><input type=\"text\" name=\"profname\" value=\"" . $_GET['edit'] . "\"></td>\n");
 echo ("<td><a href=\"../help.php?HelpNumber=360\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
 echo ("</tr>\n");

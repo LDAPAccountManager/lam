@@ -206,7 +206,7 @@ for ($i = $table_begin; $i < $table_end; $i++) {
 				$linklist = array();
 				for ($d = 0; $d < sizeof($grp_info[$i][strtolower($attr_array[$k])]); $d++) {
 					$user = $grp_info[$i][strtolower($attr_array[$k])][$d]; // user name
-					// if user was found in LDAP make link, otherwise just print name
+					// make a link for each member of the group
 					$linklist[$d] = "<a href=\"userlink.php?user='" . $user . "' \">" . $user . "</a>";
 				}
 				echo implode("; ", $linklist);

@@ -142,6 +142,8 @@ $helpArray = array (
 					"Text" => _("These are the workstations on which the user is allowed to login. They have to be seperated by spaces (e.g. \"PC01 PC09 PC34\"). If the user is allowed to login on all workstations, leave this field empty.")),
 				"309" => array ("ext" => "FALSE", "Headline" => _("Profile Editor - Domain"),
 					"Text" => _("This is the Windows domain name.")),
+				"310" => array ("ext" => "FALSE", "Headline" => _("Profile Editor - Password does not expire"),
+					"Text" => _("If set to 'true' the user will never have to change his password.")),
 				"330" => array ("ext" => "FALSE", "Headline" => _("Profile Editor - Primary group"),
 					"Text" => _("This is the user's primary group.")),
 				"331" => array ("ext" => "FALSE", "Headline" => _("Profile Editor - Additional groups"),
