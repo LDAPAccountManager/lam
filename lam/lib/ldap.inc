@@ -192,7 +192,7 @@ class Ldap{
 		}
 		// save password und username encrypted
 		$this->encrypt($user, $passwd);
-		$this->server = @ldap_connect($this->conf->get_ServerURL());
+		$this->server = ldap_connect($this->conf->get_ServerURL());
 		if ($this->server) {
 			// use LDAPv3
 			ldap_set_option($this->server, LDAP_OPT_PROTOCOL_VERSION, 3);

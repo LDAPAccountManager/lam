@@ -52,10 +52,8 @@ function StatusMessage($MessageTyp,$MessageHeadline,$MessageText,$MessageVariabl
 	$format = "<div " . $class . "><br><table><tr><td>" . $MessageTyp . "</td><td>" . $MessageHeadline . $MessageText . "</td></tr></table><br></div>";
 	for($i=0;$i<count($MessageVariables);$i++) {
 		$variables .= "," . $MessageVariables[$i];
-		echo "variable[" . $i . "]=" . $variables[$i] . "<br>";
 	}
 	$command = 'printf("' . addslashes($format) . '"' . $variables . ');';
-	echo "command=" . $command . "<br>";
 	eval($command);
 }
 

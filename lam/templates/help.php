@@ -74,7 +74,6 @@ function displayHelp($helpNumber)
 	{
 		$variables = array();
 		array_push($variables,$helpNumber);
-		echo "variables[0]=" . $variables[0] . "<br>";
 		$errorMessage = _("Sorry this help number ({bold}%d{endbold}) is not available.");
 		echoHTMLHead();
 		statusMessage("ERROR","",$errorMessage,$variables);
