@@ -1476,6 +1476,7 @@ function createuser($values, $uselamdaemon=true) {
 	if (isset($values->general_groupadd[0]))
 		// Loop for every group
 		foreach ($values->general_groupadd as $group2) {
+			if (! isset($group2) || ($group2 == "")) continue;
 			// Search for group in LDAP
 			$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(), "(&(objectclass=posixGroup)(cn=$group2))", array(''));
 			$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
