@@ -108,9 +108,7 @@ class posixGroup {
 		if (is_string($newpassword)) {
 			// Write new password
 			if ($newpassword!='') {
-				$iv = base64_decode($_COOKIE["IV"]);
-				$key = base64_decode($_COOKIE["Key"]);
-				$this->attributes['userPassword'][0] = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $newpassword, MCRYPT_MODE_ECB, $iv));
+				$this->attributes['userPassword'][0] = base64_encode($_SESSION['ldap']->encrypt($newpassword));
 				}
 			else $this->attributes['userPassword'][0] = '';
 			return 0;
@@ -118,10 +116,7 @@ class posixGroup {
 		else {
 			if ($this->attributes['userPassword'][0]!='') {
 				// Read existing password if set
-				$iv = base64_decode($_COOKIE["IV"]);
-				$key = base64_decode($_COOKIE["Key"]);
-				$password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($this->attributes['userPassword'][0]), MCRYPT_MODE_ECB, $iv);
-				$password = str_replace(chr(00), '', $password);
+				$password = $_SESSION['ldap']->decrypt(base64_decode($this->attributes['userPassword'][0]));
 				return $password;
 				}
 			else return '';

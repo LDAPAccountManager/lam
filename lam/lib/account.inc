@@ -856,7 +856,7 @@ class accountContainer {
 
 	function lamdaemon($commands) {
 		// get username and password of the current lam-admin
-		$ldap_q = $_SESSION[$this->ldap]->decrypt();
+		$ldap_q = $_SESSION[$this->ldap]->decrypt_login();
 		/* $towrite has the following syntax:
 		* admin-username, admin-password, owner of homedir, 'home', operation='add'
 		* use escapeshellarg to make exec() shell-safe
@@ -1084,7 +1084,7 @@ function getquotas($users) {
 	if (is_array($users)) $return = $users;
 		else $return[0] = $users;
 	// get username and password of the current lam-admin
-	$ldap_q = $_SESSION['ldap']->decrypt();
+	$ldap_q = $_SESSION['ldap']->decrypt_login();
 	/* $towrite has the following syntax:
 	* admin-username, admin-password, account with quotas, 'quota', operation='get', type=user|group
 	* use escapeshellarg to make exec() shell-safe
@@ -1182,7 +1182,7 @@ function getquotas($users) {
 */
 function setquotas($values2) {
 	// get username and password of the current lam-admin
-	$ldap_q = $_SESSION['ldap']->decrypt();
+	$ldap_q = $_SESSION['ldap']->decrypt_login();
 	/* $towrite has the following syntax:
 	* admin-username, admin-password, account with quotas, 'quota', operation='set', type=user|group
 	* use escapeshellarg to make exec() shell-safe
@@ -1273,7 +1273,7 @@ function setquotas($values2) {
 */
 function remquotas($users, $type) {
 	// get username and password of the current lam-admin
-	$ldap_q = $_SESSION['ldap']->decrypt();
+	$ldap_q = $_SESSION['ldap']->decrypt_login();
 	/* $towrite has the following syntax:
 	* admin-username, admin-password, account with quotas, 'quota', operation='rem', type=user|group
 	* use escapeshellarg to make exec() shell-safe
@@ -1338,7 +1338,7 @@ function remquotas($users, $type) {
 */
 function addhomedir($users) {
 	// get username and password of the current lam-admin
-	$ldap_q = $_SESSION['ldap']->decrypt();
+	$ldap_q = $_SESSION['ldap']->decrypt_login();
 	/* $towrite has the following syntax:
 	* admin-username, admin-password, owner of homedir, 'home', operation='add'
 	* use escapeshellarg to make exec() shell-safe
@@ -1404,7 +1404,7 @@ function addhomedir($users) {
 */
 function remhomedir($users) {
 	// get username and password of the current lam-admin
-	$ldap_q = $_SESSION['ldap']->decrypt();
+	$ldap_q = $_SESSION['ldap']->decrypt_login();
 	/* $towrite has the following syntax:
 	* admin-username, admin-password, owner of homedir, 'home', operation='add'
 	* use escapeshellarg to make exec() shell-safe
@@ -2192,15 +2192,11 @@ function createuser($values, $uselamdaemon=true) {
 	// Create DN for new user account
 	$values->general_dn = 'uid=' . $values->general_username . ',' . $values->general_dn;
 	// decrypt password because we don't want to store them unencrypted in session
-	$iv = base64_decode($_COOKIE["IV"]);
-	$key = base64_decode($_COOKIE["Key"]);
 	if ($values->unix_password != '') {
-		$values->unix_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($values->unix_password), MCRYPT_MODE_ECB, $iv);
-		$values->unix_password = str_replace(chr(00), '', $values->unix_password);
+		$values->unix_password = $_SESSION['ldap']->decrypt(base64_decode($values->unix_password));
 		}
 	if ($values->smb_password != '') {
-		$values->smb_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($values->smb_password), MCRYPT_MODE_ECB, $iv);
-		$values->smb_password = str_replace(chr(00), '', $values->smb_password);
+		$values->smb_password = $_SESSION['ldap']->decrypt(base64_decode($values->smb_password));
 		}
 
 	// Attributes which are required
@@ -2382,15 +2378,11 @@ function modifyuser($values,$values_old,$uselamdaemon=true) { // Will modify the
 	// Create DN for new user account
 	$values->general_dn = 'uid=' . $values->general_username . ',' . $values->general_dn;
 	// decrypt password because we don't want to store them unencrypted in session
-	$iv = base64_decode($_COOKIE["IV"]);
-	$key = base64_decode($_COOKIE["Key"]);
 	if ($values->unix_password != '') {
-		$values->unix_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($values->unix_password), MCRYPT_MODE_ECB, $iv);
-		$values->unix_password = str_replace(chr(00), '', $values->unix_password);
+		$values->unix_password = $_SESSION['ldap']->decrypt(base64_decode($values->unix_password));
 		}
 	if ($values->smb_password != '') {
-		$values->smb_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($values->smb_password), MCRYPT_MODE_ECB, $iv);
-		$values->smb_password = str_replace(chr(00), '', $values->smb_password);
+		$values->smb_password = $_SESSION['ldap']->decrypt(base64_decode($values->smb_password));
 		}
 	// Attributes which are required
 	if ($values->general_username != $values_old->general_username) {

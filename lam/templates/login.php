@@ -47,6 +47,14 @@ function display_LoginPage($config_object,$profile)
 			$iv = mcrypt_create_iv(32, MCRYPT_RAND);
 		}
 	}
+	// use Blowfish if MCrypt is not available
+	else {
+		// generate iv and key for encryption
+		$key = "";
+		$iv = "";
+		while (strlen($key) < 30) $key .= mt_rand();
+		while (strlen($iv) < 30) $iv .= mt_rand();
+	}
 
 	// save both in cookie
 	setcookie("Key", base64_encode($key), 0, "/");
@@ -113,16 +121,8 @@ function display_LoginPage($config_object,$profile)
 		</table>
 		<hr><br><br>
 		<?php
-		if(! function_exists('mcrypt_create_iv')) {
-			StatusMessage("ERROR", "Your PHP does not support MCrypt, you will not be able to log in! Please install the required package.","See http://lam.sf.net/documentation/faq.html#2 for Suse/RedHat");
-			?>
-	</body>
-</html>
-			<?php
-			exit;
-		}
-		if(! function_exists('mHash')) {
-			StatusMessage("WARN", "Your PHP does not support MHash, you will only be able to use CRYPT/PLAIN for user passwords! Please install the required package.","See http://lam.sf.net/documentation/faq.html#2 for Suse/RedHat");
+		if ((! function_exists('mHash')) && (! function_exists('sha1'))) {
+			StatusMessage("INFO", "Your PHP does not support MHash or sha1(), you will only be able to use CRYPT/PLAIN/MD5/SMD5 for user passwords!", "Please install MHash or update to PHP >4.3.");
 		}
 		?>
 		<p align="center">

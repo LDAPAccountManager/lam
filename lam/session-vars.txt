@@ -85,7 +85,7 @@ convsave, confmain, conflogin:
 
 useredit:
 - shellist: Array mit allen shells
-- account_old: Object account. Hier wird beim laden eines Accounts alle alten Werte zwischengespeichert
+- account_old: Object account. Hier wird beim laden eines Accounts alle alten Werte zwischengespeichert 
 - account: Object account. Hier wird der aktuelle Eintrag gespeichert
 - final_changegids: boolean. Wenn gesetzt, werden die gids in ldap angepasst
 - hostDN: Array mit allen hosts.
@@ -122,9 +122,9 @@ confwiz/*.php
 - confwiz_config: Config-Objekt mit Optionen
 - confwiz_ldap: LDAP-Objekt
 - conwiz_masterpwd: Hauptpasswort für Einstellungen, zur Überprüfung des Admins
-- confwiz_domainsid: Domänen-SID der erstellten/zuerst gefundenen Domäne
-- confwiz_missing_groups: Array mit fehlenden Standard-Samba-Gruppen
-- confwiz_optional: Array mit optionalen Seiten, die angezeigt werden sollen
+
+
+
 
 
 

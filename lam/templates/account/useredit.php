@@ -311,13 +311,11 @@ switch ($_POST['select']) {
 		// Write all general values into $account_new
 		if (isset($_POST['f_unix_password'])) {
 			// Encraypt password
-			$iv = base64_decode($_COOKIE["IV"]);
-			$key = base64_decode($_COOKIE["Key"]);
 			if ($_POST['f_unix_password'] != $_POST['f_unix_password2']) {
 				$errors[] = array('ERROR', _('Password'), _('Please enter the same password in both password-fields.'));
 				unset ($_POST['f_unix_password2']);
 				}
-				else $account_new->unix_password = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $_POST['f_unix_password'], MCRYPT_MODE_ECB, $iv));
+				else $account_new->unix_password = base64_encode($_SESSION['ldap']->encrypt($_POST['f_unix_password']));
 			}
 		 else $account_new->unix_password = '';
 		if ($_POST['f_unix_password_no']) $account_new->unix_password_no = true;
@@ -333,9 +331,7 @@ switch ($_POST['select']) {
 			else $account_new->unix_deactivated = false;
 		if ($_POST['genpass']) {
 			// Generate a random password if generate-button was pressed
-			$iv = base64_decode($_COOKIE["IV"]);
-			$key = base64_decode($_COOKIE["Key"]);
-			$account_new->unix_password = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, genpasswd(), MCRYPT_MODE_ECB, $iv));
+			$account_new->unix_password = base64_encode($_SESSION['ldap']->encrypt(genpasswd()));
 			unset ($_POST['f_unix_password2']);
 			// Keep unix-page acitve
 			$select_local = 'unix';
@@ -343,10 +339,7 @@ switch ($_POST['select']) {
 		// Check if values are OK and set automatic values. if not error-variable will be set
 		else { // account.inc
 			if ($account_new->unix_password != '') {
-				$iv = base64_decode($_COOKIE["IV"]);
-				$key = base64_decode($_COOKIE["Key"]);
-				$password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($account_new->unix_password), MCRYPT_MODE_ECB, $iv);
-				$password = str_replace(chr(00), '', $password);
+				$password = $_SESSION['ldap']->decrypt(base64_decode($account_new->unix_password));
 				}
 			if (!ereg('^([a-z]|[A-Z]|[0-9]|[\|]|[\#]|[\*]|[\,]|[\.]|[\;]|[\:]|[\_]|[\-]|[\+]|[\!]|[\%]|[\&]|[\/]|[\?]|[\{]|[\[]|[\(]|[\)]|[\]]|[\}])*$', $password))
 				$errors[] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
@@ -412,8 +405,6 @@ switch ($_POST['select']) {
 					break;
 				}
 			}
-		$iv = base64_decode($_COOKIE["IV"]);
-		$key = base64_decode($_COOKIE["Key"]);
 		// Set Samba password
 		if (isset($_POST['f_smb_password']) && !$account_new->smb_useunixpwd) {
 			// Encraypt password
@@ -421,14 +412,13 @@ switch ($_POST['select']) {
 				$errors[] = array('ERROR', _('Password'), _('Please enter the same password in both password-fields.'));
 				unset ($_POST['f_smb_password2']);
 				}
-				else $account_new->smb_password = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $_POST['f_smb_password'], MCRYPT_MODE_ECB, $iv));
+				else $account_new->smb_password = base64_encode($_SESSION['ldap']->encrypt($_POST['f_smb_password']));
 			}
 		 	else $account_new->smb_password = '';
 		if ( (($account_new->smb_useunixpwd && !$account_old) || ($account_new->smb_useunixpwd && $account_new->unix_password!='')) && isset($account_new->unix_password) ) {
 			// Set Samba-Password to unix-password if option is set
-			$unix_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($account_new->unix_password), MCRYPT_MODE_ECB, $iv);
-			$smb_password = str_replace(chr(00), '', $unix_password);
-			$account_new->smb_password = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $smb_password, MCRYPT_MODE_ECB, $iv));
+			$unix_password = $_SESSION['ldap']->decrypt(base64_decode($account_new->unix_password));
+			$account_new->smb_password = base64_encode($_SESSION['ldap']->encrypt($smb_password));
 			}
 		// Check values
 		$account_new->smb_scriptPath = str_replace('$user', $account_new->general_username, $account_new->smb_scriptPath);
@@ -1034,10 +1024,7 @@ switch ($select_local) {
 		// Unix Password Settings
 		// decrypt password
 		if ($account_new->unix_password != '') {
-			$iv = base64_decode($_COOKIE["IV"]);
-			$key = base64_decode($_COOKIE["Key"]);
-			$password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($account_new->unix_password), MCRYPT_MODE_ECB, $iv);
-			$password = str_replace(chr(00), '', $password);
+			$password = $_SESSION['ldap']->decrypt(base64_decode($account_new->unix_password));
 			}
 		 else $password='';
 		// Use dd-mm-yyyy format of date because it's easier to read for humans
@@ -1145,10 +1132,7 @@ switch ($select_local) {
 		// Samba Settings
 		// decrypt password
 		if ($account_new->smb_password != '') {
-			$iv = base64_decode($_COOKIE["IV"]);
-			$key = base64_decode($_COOKIE["Key"]);
-			$password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($account_new->smb_password), MCRYPT_MODE_ECB, $iv);
-			$password = str_replace(chr(00), '', $password);
+			$password = $_SESSION['ldap']->decrypt(base64_decode($account_new->smb_password));
 			}
 		else $password = "";
 		if ($config_intern->is_samba3()) $samba3domains = $ldap_intern->search_domains($config_intern->get_domainSuffix());
