@@ -723,6 +723,11 @@ class posixAccount extends baseModule {
 		}
 
 
+	/**
+	* Returns a list of elements for the account profiles.
+	*
+	* @return profile elements
+	*/
 	function get_profileOptions() {
 		$return = array();
 		if ($_SESSION[$this->base]->type=='user') {

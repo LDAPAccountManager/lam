@@ -308,6 +308,11 @@ class quota extends baseModule {
 		return 0;
 		}
 
+	/**
+	* Returns a list of elements for the account profiles.
+	*
+	* @return profile elements
+	*/
 	function get_profileOptions() {
 		// Get quotas
 		$quotas = $_SESSION[$this->base]->lamdaemon(array("+ quota get " . $this->get_scope()));
@@ -345,9 +350,12 @@ class quota extends baseModule {
 		return $return;
 	}
 
-	// checks if the values of a new or modified profile are valid
-	// $scope: the account type (user, group, host, ...)
-	// $options: a hash array (name => value) containing the options
+	/**
+	* Checks input values of account profiles.
+	*
+	* @param array $options a hash array (name => value) containing the options
+	* @return array list of error messages (array(type, title, text)) to generate StatusMessages, if any
+	*/
 	function check_profileOptions($options) {
 		$return = array();
 		$i = 0;
