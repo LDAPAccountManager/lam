@@ -28,87 +28,83 @@ include_once("config.inc");
 // manages connection to LDAP and several helper functions
 class Ldap{
 
-  // object of Config to access preferences
-  var $conf;
+	// object of Config to access preferences
+	var $conf;
 
-  // server handle
-  var $server;
+	// server handle
+	var $server;
 
-  // LDAP username and password used for bind
-  var $username;
-  var $password;
+	// LDAP username and password used for bind
+	var $username;
+	var $password;
 
-  // Arrays that contain LDAP attributes and their descriptions which are translated
-  var $ldapUserAttributes;
-  var $ldapGroupAttributes;
-  var $ldapHostAttributes;
+	// Arrays that contain LDAP attributes and their descriptions which are translated
+	var $ldapUserAttributes;
+	var $ldapGroupAttributes;
+	var $ldapHostAttributes;
 
-  // constructor
-  // $config has to be an object of Config (../config/config.php)
-  function Ldap($config) {
-    if (is_object($config)) $this->conf = $config;
-    else { echo _("Ldap->Ldap failed!"); exit;}
-	// construct arrays with known LDAP attributes
-	$this->ldapUserAttributes = array (
-		"uid" => _("User ID"),
-		"uidNumber" => _("UID Number"),
-		"gidNumber" => _("GID Number"),
-		"cn" => _("User Name"),
-		"host" => _("Allowed Hosts"),
-		"givenName" => _("First Name"),
-		"sn" => _("Last Name"),
-		"homeDirectory" => _("Home Directory"),
-		"loginShell" => _("Login Shell"),
-		"mail" => _("E-Mail"),
-		"gecos" => _("Description")
-		);
-	$this->ldapGroupAttributes = array (
-		"cn" => _("Group Name"),
-		"gidNumber" => _("GID Number"),
-		"memberUID" => _("Group Members"),
-		"member" => _("Group Member DNs"),
-		"description" => _("Group Description")
-		);
-	$this->ldapHostAttributes = array (
-		"uid" => _("Host Username"),
-		"cn" => _("Host Name"),
-		"rid" => _("RID (Windows UID)"),
-		"description" => _("Host Description")
-		);
-  }
+	// constructor
+	// $config has to be an object of Config (../config/config.php)
+	function Ldap($config) {
+		if (is_object($config)) $this->conf = $config;
+		else return false;
+		// construct arrays with known LDAP attributes
+		$this->ldapUserAttributes = array (
+			"uid" => _("User ID"),
+			"uidNumber" => _("UID number"),
+			"gidNumber" => _("GID number"),
+			"cn" => _("Username"),
+			"host" => _("Allowed hosts"),
+			"givenName" => _("First name"),
+			"sn" => _("Last name"),
+			"homeDirectory" => _("Home directory"),
+			"loginShell" => _("Login shell"),
+			"mail" => _("E-Mail"),
+			"gecos" => _("Description")
+			);
+		$this->ldapGroupAttributes = array (
+			"cn" => _("Group name"),
+			"gidNumber" => _("GID number"),
+			"memberUID" => _("Group members"),
+			"member" => _("Group member DNs"),
+			"description" => _("Group description")
+			);
+		$this->ldapHostAttributes = array (
+			"uid" => _("Host username"),
+			"cn" => _("Host name"),
+			"rid" => _("RID (Windows UID)"),
+			"description" => _("Host description")
+			);
+		return true;
+	}
 
-  // connects to the server using the given username and password
-  // $base is optional and specifies the root from where to search for entries
-  // if connect succeeds the server handle is returned
-  function connect($user, $passwd) {
-    // close any prior connection
-    @$this->close();
-    // do not allow anonymous bind
-    if ((!$user)||($user == "")||(!$passwd)) {
-		echo ("<html><head><title></title>");
-		echo ("<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\"></head><body>");
-		StatusMessage("ERROR", "", _("No username was specified or password is empty!"));
-		echo ("<br><br><a href=\"login.php\">" . _("Back to Login") . "</a></body></html>");
-		exit;
-    }
-	// save password und username encrypted
-	$this->encrypt($user, $passwd);
-
-	$this->server = @ldap_connect($this->conf->get_ServerURL());
-    if ($this->server) {
-      // use LDAPv3
-      ldap_set_option($this->server, LDAP_OPT_PROTOCOL_VERSION, 3);
-      $bind = @ldap_bind($this->server, $user, $passwd);
-      if ($bind) {
-	// return server handle
-	return $this->server;
-      }
-    }
-  }
+	// connects to the server using the given username and password
+	// $base is optional and specifies the root from where to search for entries
+	// if connect succeeds the server handle is returned
+	function connect($user, $passwd) {
+		// close any prior connection
+		@$this->close();
+		// do not allow anonymous bind
+		if ((!$user)||($user == "")||(!$passwd)) {
+			return false;
+		}
+		// save password und username encrypted
+		$this->encrypt($user, $passwd);
+		$this->server = @ldap_connect($this->conf->get_ServerURL());
+		if ($this->server) {
+			// use LDAPv3
+			ldap_set_option($this->server, LDAP_OPT_PROTOCOL_VERSION, 3);
+			$bind = @ldap_bind($this->server, $user, $passwd);
+			if ($bind) {
+				// return server handle
+				return $this->server;
+			}
+		}
+	}
 
 	// closes connection to server
 	function close() {
-		ldap_close($this->server);
+		if (isset($this->server)) ldap_close($this->server);
 	}
 
 	// searches LDAP for a specific user name
