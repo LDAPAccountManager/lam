@@ -232,12 +232,12 @@ echo ("<tr><td align=\"right\"><b>".
 	_("Attributes in User List") . " *:</b></td>".
 	"<td><input size=50 type=\"text\" name=\"usrlstattr\" value=\"" . $conf->get_userlistAttributes() . "\"></td>");
 echo ("<td><a href=\"../help.php?HelpNumber=206\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
-// user list attributes
+// group list attributes
 echo ("<tr><td align=\"right\"><b>".
 	_("Attributes in Group List") . " *:</b></td>".
 	"<td><input size=50 type=\"text\" name=\"grplstattr\" value=\"" . $conf->get_grouplistAttributes() . "\"></td>");
 echo ("<td><a href=\"../help.php?HelpNumber=206\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
-// user list attributes
+// host list attributes
 echo ("<tr><td align=\"right\"><b>".
 	_("Attributes in Host List") . " *:</b></td>".
 	"<td><input size=50 type=\"text\" name=\"hstlstattr\" value=\"" . $conf->get_hostlistAttributes() . "\"></td>");
@@ -286,7 +286,7 @@ if(is_file($languagefile))
 echo ("<select name=\"lang\">");
 for ($i = 0; $i < sizeof($languages); $i++) {
 	$entry = explode(":", $languages[$i]);
-	if ($_SESSION['config']->get_defaultLanguage() != $languages[$i]) echo("<option value=\"" . $languages[$i] . "\">" . $entry[2] . "</option>\n");
+	if ($conf->get_defaultLanguage() != $languages[$i]) echo("<option value=\"" . $languages[$i] . "\">" . $entry[2] . "</option>\n");
 	else echo("<option selected value=\"" . $languages[$i] . "\">" . $entry[2] . "</option>\n");
 }
 echo ("</select>\n");
