@@ -273,9 +273,9 @@ function getquotas($users) {
 				for ($k=0; $k<sizeof($single_quota); $k++)
 					$return[$i]->quota[$j][$k] = $single_quota[$k];
 				if ($return[$i]->quota[$j][4]<time()) $return[$i]->quota[$j][4] = '';
-					else $return[$i]->quota[$j][4] = strval(($return[$i]->quota[$j][4]-time())/3600) .' '. _('hours');
+					else $return[$i]->quota[$j][4] = strval(intval(($return[$i]->quota[$j][4]-time())/3600)) .' '. _('hours');
 				if ($return[$i]->quota[$j][8]<time()) $return[$i]->quota[$j][8] = '';
-					else $return[$i]->quota[$j][8] = strval(($return[$i]->quota[$j][8]-time())/3600) .' '. _('hours');
+					else $return[$i]->quota[$j][8] = strval(intval(($return[$i]->quota[$j][8]-time())/3600)) .' '. _('hours');
 				}
 			$j=0;
 			while (isset($return[$i]->quota[$j][0]))
@@ -920,6 +920,7 @@ function smbflag($values) {
 	if ($values->smb_flagsW) $flag = $flag . "W"; else $flag = $flag . "U";
 	if ($values->smb_flagsD) $flag = $flag . "D";
 	if ($values->smb_flagsX) $flag = $flag . "X";
+	if ($values->smb_password_no) $flag = $flag . "N";
 	// Expand string to fixed length
 	$flag = str_pad($flag, 12);
 	// End character
