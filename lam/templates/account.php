@@ -269,6 +269,7 @@ if ($_POST['load']) $select_local='load';
 if ($_POST['save']) $select_local='save';
 
 
+
 switch ($select_local) {
 	case 'general':
 		// General Account Settings
@@ -618,7 +619,7 @@ switch ($select_local) {
 				echo _('User Workstations');
 				echo '</td><td><input name="f_smb_smbuserworkstations" type="text" size="20" maxlength="20" value="' . $_SESSION['account']->smb_smbuserworkstations . '">
 					</td><td>';
-				echo _('Workstations the user is allowed to login. * means every workstation. Can be left empty.');
+				echo _('Komma-separated list of workstations the user is allowed to login. Empty means every workstation. Can be left empty.');
 				echo '</td></tr><tr><td>';
 				echo _('smb Home');
 				echo '</td><td><input name="f_smb_smbhome" type="text" size="20" maxlength="20" value="' . $_SESSION['account']->smb_smbhome . '">

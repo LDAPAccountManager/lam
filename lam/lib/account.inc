@@ -96,10 +96,11 @@ function getshells() { // Return a list of all shells listed in /etc/shells
 	$shells =  file('../config/shells');
 	$i=0;
 	while ($shells[$i]) {
-		// ******** Fixme remove everthing starting from # and every empty line
 		chop($shells[$i]);
 		trim($shells[$i]);
-		$i++;
+		$shells[$i] = substr($shells[$i], 0, strpos($shells[$i], '#'));
+		if ($shells[$i]=='') unset ($shells[$i]);
+		 else $i++;
 		}
 	return $shells;
 	}
@@ -197,17 +198,17 @@ function checkunix() { // This function checks all unix account paramters
 			if ($_SESSION['account_temp']->unix_pwdwarn=='') $error = _('No value for Password Warn.');
 			break;
 		case 'host' :
-			// Sonderzeichen |#*,.;:_-+!$%&/|?{[()]} ****************************************************
-			if ( !ereg('^([a-z]|[A-Z]|[0-9])*$', $_SESSION['account_temp']->unix_password)) $error = _('Password contents invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !');
-			if ($_SESSION['account_temp']->unix_pwdwarn=='') $error = _('No value for Password Warn.');
-			if ( !ereg('^([1-9]+)([0-9]*)$', $_SESSION['account_temp']->unix_pwdwarn))  $error = _('Password Warn must be are natural number.');
-			if ($_SESSION['account_temp']->unix_pwdallowlogin=='') $error = _('No value for Password Expire.');
-			if ( !ereg('^(([-][1])|([0-9]*))$', $_SESSION['account_temp']->unix_pwdallowlogin))  $error = _('Password Expire must be are natural number or -1.');
-			if ($_SESSION['account_temp']->unix_pwdmaxage=='') $error = _('No value for Password Maxage.');
-			if ( !ereg('^([1-9]+)([0-9]*)$', $_SESSION['account_temp']->unix_pwdmaxage))  $error = _('Password Maxage must be are natural number.');
-			if ($_SESSION['account_temp']->unix_pwdminage=='') $error = _('No value for Password Minage.');
 			if ( !ereg('^([0-9]*)$', $_SESSION['account_temp']->unix_pwdminage))  $error = _('Password Minage must be are natural number.');
 			if ( $_SESSION['account_temp']->unix_pwdminage > $_SESSION['account_temp']->unix_pwdmaxage ) $error = _('Password Maxage must bigger as Password Minage.');
+			if ( !ereg('^([1-9]+)([0-9]*)$', $_SESSION['account_temp']->unix_pwdmaxage))  $error = _('Password Maxage must be are natural number.');
+			if ($_SESSION['account_temp']->unix_pwdminage=='') $error = _('No value for Password Minage.');
+			if ( !ereg('^(([-][1])|([0-9]*))$', $_SESSION['account_temp']->unix_pwdallowlogin))  $error = _('Password Expire must be are natural number or -1.');
+			if ($_SESSION['account_temp']->unix_pwdmaxage=='') $error = _('No value for Password Maxage.');
+			if ( !ereg('^([1-9]+)([0-9]*)$', $_SESSION['account_temp']->unix_pwdwarn))  $error = _('Password Warn must be are natural number.');
+			if ($_SESSION['account_temp']->unix_pwdallowlogin=='') $error = _('No value for Password Expire.');
+			if ( !ereg('^([a-z]|[A-Z]|[0-9]|[\|]|[\#]|[\*]|[\,]|[\.]|[\;]|[\:]|[\_]|[\-]|[\+]|[\!]|[\%]|[\&]|[\/]|[\?]|[\{]|[\[]|[\(]|[\)]|[\]]|[\}])*$',
+				$_SESSION['account_temp']->unix_password)) $error = _('Password contents invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !');
+			if ($_SESSION['account_temp']->unix_pwdwarn=='') $error = _('No value for Password Warn.');
 			break;
 		}
 	// Write Values from Webpage to Session-Variables
@@ -245,9 +246,9 @@ function checksamba() { // This function checks all samba account paramters
 			$_SESSION['account_temp']->smb_flagsW = 0;
 			break;
 		case 'host' :
-			// Sonderzeichen |#*,.;:_-+!$%&/|?{[()]} ****************************************************
-			if ( !ereg('^([a-z]|[A-Z]|[0-9])*$', $_SESSION['account_temp']->smb_password)) $error = _('Password contents invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !');
 			if ( (!$_SESSION['account_temp']->smb_domain=='') && !ereg('^([a-z]|[A-Z]|[0-9]|[-])+$', $_SESSION['account_temp']->smb_domain)) $error = _('Domain Name contents invalid characters. Valid characters are: a-z, A-Z, 0-9 and -.');
+			if ( !ereg('^([a-z]|[A-Z]|[0-9]|[\|]|[\#]|[\*]|[\,]|[\.]|[\;]|[\:]|[\_]|[\-]|[\+]|[\!]|[\%]|[\&]|[\/]|[\?]|[\{]|[\[]|[\(]|[\)]|[\]]|[\}])*$',
+				$_SESSION['account_temp']->smb_password)) $error = _('Password contents invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !');
 			$_SESSION['account_temp']->smb_flagsW = 1;
 			break;
 		}
@@ -423,11 +424,20 @@ function remhomedir($user) { // Remove Homedirectory
 
 function ldapexists() { // This function will search if the DN already exists
 	switch ($_SESSION['type2']) {
-		case 'user': $searchbase = $_SESSION['config']->get_UserSuffix(); break;
-		case 'group': $searchbase = $_SESSION['config']->get_GroupSuffix(); break;
-		case 'host': $searchbase = $_SESSION['config']->get_HostSuffix(); break;
+		case 'user':
+			$searchbase = $_SESSION['config']->get_UserSuffix();
+			$search = "uid=".$_SESSION['account_temp']->general_username;
+			break;
+		case 'group':
+			$searchbase = $_SESSION['config']->get_GroupSuffix();
+			$search = "cn=".$_SESSION['account_temp']->general_username;
+			break;
+		case 'host':
+			$searchbase = $_SESSION['config']->get_HostSuffix();
+			$search = "uid=".$_SESSION['account_temp']->general_username;
+			break;
 		}
-	$result = ldap_search($_SESSION['ldap']->server(), $searchbase, 'cn=' . $_SESSION['account_temp']->general_username, array(''), 1);
+	$result = ldap_search($_SESSION['ldap']->server(), $searchbase, $search , array(''), 1);
 	$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 	if ($entry) $dn = (ldap_get_dn($_SESSION['ldap']->server(), $entry));
 	if ($dn) {
@@ -526,6 +536,7 @@ function smbflag() { // Creates te attribute attrFlags
 	if ($_SESSION['account']->smb_flagsW) $flag = $flag . "W"; else $flag = $flag . "U";
 	if ($_SESSION['account']->smb_flagsD) $flag = $flag . "D";
 	if ($_SESSION['account']->smb_flagsX) $flag = $flag . "X";
+	str_pad($flag, 12);
 	$flag = $flag. "]";
 	return $flag;
 	}
@@ -681,7 +692,7 @@ function createuser() { // Will create the LDAP-Account
 	// Value stored in shadowExpire, days since 1.1.1970
 	$date = mktime(10,0,0, $_SESSION['account']->unix_pwdexpire_mon, $_SESSION['account']->unix_pwdexpire_day, $_SESSION['account']->unix_pwdexpire_yea) / 86400 ;
 	settype($date, 'integer');
-	$_SESSION['account']->general_dn = 'cn=' . $_SESSION['account']->general_username . ',' . $_SESSION['config']->get_UserSuffix();
+	$_SESSION['account']->general_dn = 'uid=' . $_SESSION['account']->general_username . ',' . $_SESSION['config']->get_UserSuffix();
 
 	// All Values need for an user-account
 	// General Objectclasses
@@ -852,7 +863,7 @@ function createhost() { // Will create the LDAP-Host
 	// Value stored in shadowExpire, days since 1.1.1970
 	$date = mktime(10,0,0, $_SESSION['account']->unix_pwdexpire_mon, $_SESSION['account']->unix_pwdexpire_day, $_SESSION['account']->unix_pwdexpire_yea) / 86400 ;
 	settype($date, 'integer');
-	$_SESSION['account']->general_dn = 'cn=' . $_SESSION['account']->general_username . ',' . $_SESSION['config']->get_HostSuffix();
+	$_SESSION['account']->general_dn = 'uid=' . $_SESSION['account']->general_username . ',' . $_SESSION['config']->get_HostSuffix();
 
 	// All Values needed for an user-account
 	// General Objectclasses

@@ -70,7 +70,7 @@ if ($_POST['delete_yes']) {
 		switch ($_POST['type5']) {
 			case 'user':
 				$temp=explode(',', $dn);
-				$username = str_replace('cn=', '', $temp[0]);
+				$username = str_replace('uid=', '', $temp[0]);
 				if ($_SESSION['config']->scriptServer) {
 					remhomedir($username);
 					remquotas($username, $_POST['type5']);
@@ -99,16 +99,15 @@ if ($_POST['delete_yes']) {
 				break;
 			case 'group':
 				$temp=explode(',', $dn);
-				$username = str_replace('cn=', '', $temp[0]);
+				$groupname = str_replace('cn=', '', $temp[0]);
 				$result = ldap_search($_SESSION['ldap']->server(), $dn, 'objectClass=*');
 				if (!$result) $error = _('Could not delete group: ').$dn;
 				$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 				$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
 				if ($attr['memberUid']) $error = _('Could not delete group. Still users in group: ').$dn;
 				    else {
-					if ($_SESSION['config']->scriptServer) remquotas($username, $_POST['type5']);
+					if ($_SESSION['config']->scriptServer) remquotas($groupname, $_POST['type5']);
 					$success = ldap_delete($_SESSION['ldap']->server(), $dn);
-					if (!$success) $error = _('Could not delete user: ').$dn;
 					}
 				break;
 			}
