@@ -351,21 +351,13 @@ function RndInt($Format){
 * 8 CHARACTERS IN THE PASSWORD PRODUCED.
 */
 
-function getquotas($user='*') { // Whis function will return the quotas from the specified user If empty only filesystems with enabled quotas are returned
-	//$ldap = $_SESSION['ldap']->decrypt();
-	$ldap_q[0] = 'cn=Manager,dc=my-domain,dc=com';
-	$ldap_q[1] = 'secret';
+function getquotas($user='+') { // Whis function will return the quotas from the specified user If empty only filesystems with enabled quotas are returned
+	$ldap_q = $_SESSION['ldap']->decrypt();
 	$towrite = $ldap_q[0].' '.$ldap_q[1].' '.$user.' quota get ';
 	if ($_SESSION['type2']=='user') $towrite = $towrite.'u';
 	 else $towrite = $towrite.'g';
-	$file = fopen('../lib/lamdaemon.fifo', 'w');
-	fwrite($file, $towrite);
-	fclose ($file);
-	$file = fopen('../lib/lamdaemon.fifo', 'r');
-	$input = fread($file, 1024);
-	fclose ($file);
-	$vals = explode(';', $input);
-	$i=0;
+	exec("/usr/bin/ssh ".$_SESSION['config']->scriptServer." sudo ".$_SESSION['config']->scriptPath." $towrite", $vals);
+	$vals = explode(';', $vals[0]);
 	while ($vals[$i]) {
 		$vals2 = explode(',', $vals[$i]);
 		$j=0;
@@ -373,8 +365,41 @@ function getquotas($user='*') { // Whis function will return the quotas from the
 			$_SESSION['account']->quota[$i][$j] = $vals2[$j];
 			$j++;
 			}
+		if ($_SESSION['account']->quota[$i][4]<$time) $_SESSION['account']->quota[$i][4] = '';
+			else $_SESSION['account']->quota[$i][4] = strval(($_SESSION['account']->quota[$i][4]-$time)/3600) . _('hours');
+		if ($_SESSION['account']->quota[$i][8]<$time) $_SESSION['account']->quota[$i][8] = '';
+			else $_SESSION['account']->quota[$i][8] = strval(($_SESSION['account']->quota[$i][8]-$time)/3600) . _('hours');
 		$i++;
 		}
+	}
+
+function setquotas($user) { // Whis function will set the quotas from the specified user.
+	$ldap_q = $_SESSION['ldap']->decrypt();
+	$towrite = $ldap_q[0].' '.$ldap_q[1].' '.$user.' quota set ';
+	if ($_SESSION['type2']=='user') $towrite = $towrite.'u ';
+	 else $towrite = $towrite.'g ';
+	$i=0;
+	while ($_SESSION['account']->quota[$i][0]) {
+		if ($_SESSION['account']->quota[$i] != $_SESSION['account_old']->quota[$i]) {
+			$towrite = $towrite. $_SESSION['account']->quota[$i][0] .','.$_SESSION['account']->quota[$i][2] .','.$_SESSION['account']->quota[$i][3]
+			.','.$_SESSION['account']->quota[$i][6] .','. $_SESSION['account']->quota[$i][7] .';'.
+			$i++;
+			}
+		}
+	if ($i!=0) exec("/usr/bin/ssh ".$_SESSION['config']->scriptServer." sudo ".$_SESSION['config']->scriptPath." $towrite", $vals);
+	}
+
+
+function addhomedir($user) { // Create Homedirectory
+	$ldap_q = $_SESSION['ldap']->decrypt();
+	$towrite = $ldap_q[0].' '.$ldap_q[1].' '.$user.' home add';
+	exec("/usr/bin/ssh ".$_SESSION['config']->scriptServer." sudo ".$_SESSION['config']->scriptPath." $towrite", $vals);
+	}
+
+function remhomedir($user) { // Remove Homedirectory
+	$ldap_q = $_SESSION['ldap']->decrypt();
+	$towrite = $ldap_q[0].' '.$ldap_q[1].' '.$user.' home rem';
+	exec("/usr/bin/ssh ".$_SESSION['config']->scriptServer." sudo ".$_SESSION['config']->scriptPath." $towrite", $vals);
 	}
 
 
@@ -552,7 +577,7 @@ function loaduser($dn) { // Will load all needed values from an existing account
 	$_SESSION['account_old'] = $_SESSION['account'];
 	if ($attr['userPassword'][0]) $_SESSION['account_old']->unix_password = $attr['userPassword'][0];
 	if ($attr['ntPassword'][0])  $_SESSION['account_old']->smb_password = $attr['ntPassword'][0];
-	//getquotas($attr['uid'][0]);
+	if ($_SESSION['config']->scriptServer) getquotas($attr['uid'][0]);
 	}
 
 function loadhost($dn) { // Will load all needed values from an existing account
@@ -618,7 +643,7 @@ function loadgroup($dn) { // Will load all needed values from an existing group
 	if (is_array($_SESSION['account']->general_memberUid)) array_shift($_SESSION['account']->general_memberUid);
 	$_SESSION['account']->general_dn = $dn;
 	$_SESSION['account_old'] = $_SESSION['account'];
-	//getquotas($attr['uid'][0]);
+	if ($_SESSION['config']->scriptServer) getquotas($attr['uid'][0]);
 	}
 
 
@@ -752,6 +777,7 @@ function createuser() { // Will create the LDAP-Account
 			$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
 			}
 		if (!$success) return 5;
+		if ($_SESSION['config']->scriptServer) setquotas($attr['uid'][0]);
 		return 3;
 		}
 	 else {
@@ -780,6 +806,10 @@ function createuser() { // Will create the LDAP-Account
 					$success = ldap_mod_add($_SESSION['ldap']->server(), 'cn='.$group2.','.$_SESSION['config']->get_GroupSuffix(), $toadd);
 					}
 				if (!$success) return 4;
+			}
+		if ($_SESSION['config']->scriptServer) {
+			setquotas($attr['uid'][0]);
+			addhomedir($attr['uid'][0]);
 			}
 		return 1;
 		}
@@ -945,6 +975,7 @@ function creategroup() { // Will create the LDAP-Group
 	if ($_SESSION['account']->general_memeberUid) $attr['memberUid'] = $_SESSION['account']->general_memberUid;
 	if ( $_SESSION['modify']==0 ) { // Write a new entry if group doesn't exists
 		$success = ldap_add($_SESSION['ldap']->server(),$_SESSION['account']->general_dn, $attr);
+		if ($_SESSION['config']->scriptServer) setquotas($attr['uid'][0]);
 		if ($success) return 1;
 		else return 4;
 		}
@@ -965,6 +996,7 @@ function creategroup() { // Will create the LDAP-Group
 				$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
 				}
 			}
+		if ($_SESSION['config']->scriptServer) setquotas($attr['uid'][0]);
 		if ($success) return 3;
 		else return 5;
 		}

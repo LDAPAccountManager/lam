@@ -60,7 +60,7 @@ if ($_GET['type']) {
 	<input name="delete_yes" type="submit" value="';
 	echo _('Commit'); echo '"></td><td></td><td>
 	<input name="delete_no" type="submit" value="';
-	echo _('Chancel'); echo '">';
+	echo _('Cancel'); echo '">';
 	}
 
 if ($_POST['delete_yes']) {

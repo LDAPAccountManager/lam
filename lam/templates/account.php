@@ -253,6 +253,7 @@ if ($_POST['load']) $select_local='load';
 if ($_POST['save']) $select_local='save';
 
 
+getquotas();
 
 switch ($select_local) {
 	case 'general':
