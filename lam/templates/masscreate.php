@@ -223,24 +223,24 @@ switch ($select) {
 							$lastchars = substr($_SESSION['accounts'][$i]->general_username, $j+1, strlen($_SESSION['accounts'][$i]->general_username)-$j);
 							$_SESSION['accounts'][$i]->general_username = $firstchars . (intval($lastchars)+1);
 							}
-						}
 						while ($temp = ldapexists($_SESSION['accounts'][$i], 'user')) {
-						// get last character of username
-						$lastchar = substr($_SESSION['accounts'][$i]->general_username, strlen($_SESSION['accounts'][$i]->general_username)-1, 1);
-						// Last character is no number
-						if ( !ereg('^([0-9])+$', $lastchar))
-							$_SESSION['accounts'][$i]->general_username = $_SESSION['accounts'][$i]->general_username . '2';
-						 else {
-							$j=strlen($_SESSION['accounts'][$i]->general_username)-1;
-							$mark = false;
-							while (!$mark) {
-								if (ereg('^([0-9])+$',substr($_SESSION['accounts'][$i]->general_username, $j, strlen($_SESSION['accounts'][$i]->general_username)-$j))) $i--;
-									else $mark=true;
+							// get last character of username
+							$lastchar = substr($_SESSION['accounts'][$i]->general_username, strlen($_SESSION['accounts'][$i]->general_username)-1, 1);
+							// Last character is no number
+							if ( !ereg('^([0-9])+$', $lastchar))
+								$_SESSION['accounts'][$i]->general_username = $_SESSION['accounts'][$i]->general_username . '2';
+							 else {
+								$j=strlen($_SESSION['accounts'][$i]->general_username)-1;
+								$mark = false;
+								while (!$mark) {
+									if (ereg('^([0-9])+$',substr($_SESSION['accounts'][$i]->general_username, $j, strlen($_SESSION['accounts'][$i]->general_username)-$j))) $i--;
+										else $mark=true;
+									}
+								// increase last number with one
+								$firstchars = substr($_SESSION['accounts'][$i]->general_username, 0, $j+1);
+								$lastchars = substr($_SESSION['accounts'][$i]->general_username, $j+1, strlen($_SESSION['accounts'][$i]->general_username)-$j);
+								$_SESSION['accounts'][$i]->general_username = $firstchars . (intval($lastchars)+1);
 								}
-							// increase last number with one
-							$firstchars = substr($_SESSION['accounts'][$i]->general_username, 0, $j+1);
-							$lastchars = substr($_SESSION['accounts'][$i]->general_username, $j+1, strlen($_SESSION['accounts'][$i]->general_username)-$j);
-							$_SESSION['accounts'][$i]->general_username = $firstchars . (intval($lastchars)+1);
 							}
 						}
 					}
