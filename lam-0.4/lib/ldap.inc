@@ -266,7 +266,7 @@ class Ldap{
 			if (function_exists('ldap_start_tls')) {
 				@ldap_start_tls($this->server);
 				// connect without TLS if it failed
-				if (ldap_errno($this->server) > 0) {
+				if (ldap_errno($this->server) != 0) {
 					@ldap_close($this->server);
 					$this->server = @ldap_connect($this->conf->get_ServerURL());
 					ldap_set_option($this->server, LDAP_OPT_PROTOCOL_VERSION, 3);

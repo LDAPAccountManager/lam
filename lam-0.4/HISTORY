@@ -1,9 +1,10 @@
-??? 0.4.6
+26.05.2004 0.4.6
   - fixed bugs:
       password hashes were not disabled correctly
       street was copied to postal code on modify (938502)
       underscore was not allowed for host names (934445)
       deleting postal address or facsimile number failed (948616)
+      TLS error handling (958497)
       smaller fixes on personal settings page
 
 
