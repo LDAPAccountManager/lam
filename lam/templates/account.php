@@ -72,8 +72,7 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 			if ($_POST['next'] && ($errors==''))
 				switch ($_SESSION['account']->type) {
 					case 'user': $select_local = 'unix'; break;
-					case 'group': if ($_SESSION['config']->samba3=='yes') $select_local = 'samba';
-						else $select_local = 'quota'; break;
+					case 'group': $select_local = 'unix'; break;
 					case 'host': $select_local = 'samba'; break;
 					}
 			}
@@ -97,6 +96,8 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 			else $_SESSION['account']->unix_pwdmaxage = '';
 		if (isset($_POST['f_unix_pwdminage'])) $_SESSION['account']->unix_pwdminage = $_POST['f_unix_pwdminage'];
 			else $_SESSION['account']->unix_pwdminage = '';
+		if (isset($_POST['f_unix_memberUid'])) $_SESSION['account']->unix_memberUid = $_POST['f_unix_memberUid'];
+			else $_SESSION['account']->unix_memberUid = '';
 		if (isset($_POST['f_unix_host'])) $_SESSION['account']->unix_host = $_POST['f_unix_host'];
 			else $_SESSION['account']->unix_host = '';
 		$_SESSION['account']->unix_pwdexpire = mktime(10, 0, 0, $_POST['f_unix_pwdexpire_mon'],
@@ -116,8 +117,13 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 		// Check which part Site should be displayd
 		// Check which part Site should be displayed next
 		if ($_POST['back']) $select_local = 'general';
-		else if (($_POST['next']) && ($errors=='')) $select_local = 'samba';
-			else $select_local = 'unix';
+		else if ($_POST['next'] && ($errors==''))
+				switch ($_SESSION['account']->type) {
+					case 'user': $select_local = 'samba'; break;
+					case 'group': if ($_SESSION['config']->samba3=='yes') $select_local = 'samba';
+						else $select_local = 'quota'; break;
+					case 'host': $select_local = 'samba'; break;
+					}
 		break;
 	case 'samba':
 		// Write all general values into $_SESSION['account']
@@ -193,7 +199,7 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 		if ($_POST['back'])
 			switch ($_SESSION['account']->type) {
 				case 'user': $select_local = 'unix'; break;
-				case 'group': $select_local = 'general'; break;
+				case 'group': $select_local = 'unix'; break;
 				}
 		else if ($_POST['next'])
 			if($errors=='')
@@ -230,7 +236,7 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 			switch ($_SESSION['account']->type) {
 				case 'user': $select_local = 'samba'; break;
 				case 'group': if ($_SESSION['config']->samba3=='yes') $select_local = 'samba';
-					else $select_local = 'general'; break;
+					else $select_local = 'unix'; break;
 				}
 		else if ($_POST['next'])
 			if ($errors=='')
@@ -698,6 +704,14 @@ switch ($select_local) { // Select which part of page will be loaded
 					'</td></tr>'."\n".'<tr><td>';
 				echo _('Values with * are required');
 				echo '</td></tr>'."\n".'<tr><td>';
+				break;
+			case 'group' :
+				echo '<tr><td>';
+				echo _('Group members');
+				echo '</td>'."\n".'<td><input name="f_unix_memberUid" type="text" size="20" maxlength="200" value="' . $_SESSION['account']->unix_memberUid . '">'.
+					'</td>'."\n".'<td>'.
+					'<a href="help.php?HelpNumber=468" target="lamhelp">'._('Help').'</a>'.
+					'</td></tr>'."\n".'<tr><td>';
 				break;
 			}
 		echo '<tr><td>'.

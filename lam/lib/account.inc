@@ -38,8 +38,8 @@ class account { // This class keeps all needed values for any account
 	var $general_homedir;		// atring Homedirectoy (user) For host it's hardcoded to/dev/null
 	var $general_shell;		// array(string) list off all valid shells (user) hosts are hard-wired to /bin/false
 	var $general_gecos;		// string, gecos-field (user|roup|host)
-	var $general_memberUid;		// array(string) Stores all users which are member of group but is not primary group (group)
 	// Unix Password Settings
+	var $unix_memberUid;		// string Stores all users which are member of group but is not primary group (group)
 	var $unix_password;		// string for unix-password (user|host)
 	var $unix_password_no;		// string (0|1) set unix-password to none (user|host)
 	var $unix_pwdwarn;		// string number of days a user is warned before password expires (user|host) value must be a natural number (user|host)
@@ -983,13 +983,19 @@ function loadgroup($dn) { // Will load all needed values from an existing group
 		$return->general_objectClass[$i] = $attr['objectClass'][$i];
 		$i++;
 		}
+	$i=0;
+	while (isset($attr['memberUid'][$i])) {
+		if ($i==0) $return->unix_memberUid = $attr['memberUid'][$i];
+			else $return->unix_memberUid = $return->unix_memberUid . ', ' . $attr['memberUid'][$i];
+		$i++;
+		}
 	if (isset($attr['gidNumber'][0])) $return->general_uidNumber = $attr['gidNumber'][0];
 	if (isset($attr['description'][0])) $return->general_gecos = $attr['description'][0];
 	if (isset($attr['cn'][0])) {
 		$return->general_username = $attr['cn'][0];
 		if ($_SESSION['config']->scriptServer) getquotas('group',$attr['cn'][0]);
 		}
-	if (isset($attr['memberUid'][0])) $return->general_memberUid = $attr['memberUid'][0];
+	//if (isset($attr['memberUid'][0])) $return->general_memberUid = $attr['memberUid'][0];
 	if (is_array($return->general_memberUid)) array_shift($return->general_memberUid);
 	if (isset($attr['sambaSID'][0])) {
 		$return->smb_mapgroup = $attr['sambaSID'][0];
@@ -1292,32 +1298,11 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 
 	if (($values->unix_host != $values_old->unix_host)) {
 		$values->unix_host = str_replace(' ', '', $values->unix_host);
-		$hosts = explode (',', $values->unix_host);
+		$host = explode (',', $values->unix_host);
 		$values_old->unix_host = str_replace(' ', '', $values_old->unix_host);
-		$hosts_old = explode (',', $values_old->unix_host);
-		$i=0;
-		while (isset($hosts[$i])) {
-			if ( in_array($hosts[$i], $hosts_old) ) unset ($hosts[$i]);
-				else $i++;
-			}
-		}
-	$i=0;
-	$j=0;
-	while(isset($hosts[$i])) {
-		if ($hosts[$i]!='') {
-			if ($hosts[$i]!='') $attr['host'][$j] = $hosts[$i];
-			$j++;
-			}
-		$i++;
-		}
-	$i=0;
-	$j=0;
-	while(isset($hosts_old[$i])) {
-		if ($hosts_old[$i]!='') {
-			if ($hosts_old[$i]!='') $attr_rem['host'][$j] = $hosts_old[$i];
-			$j++;
-			}
-		$i++;
+		$host_old = explode (',', $values_old->unix_host);
+		if ($host[0]=='') $attr_rem['host'] = $host_old;
+		 else if ($host[0]!='') $attr['host'] = $host;
 		}
 
 	if (($values->unix_pwdminage != $values_old->unix_pwdminage) && ($values->unix_pwdminage !=''))
@@ -1524,6 +1509,13 @@ function createhost($values) { // Will create the LDAP-Account
 	$attr['gidNumber'] = getgid($values->general_group); // posixAccount_req
 	$attr['homeDirectory'] = $values->general_homedir; // posixAccount_req
 
+	$values->unix_memberUid = str_replace(' ', '', $values->unix_memberUid);
+	$memberUid = explode (',', $values->unix_memberUid);
+	$i=0;
+	while(isset($memberUid[$i])) {
+		if ($memberUid[$i]!='') $attr['memberUid'][$i] = $memberUid[$i];
+		$i++;
+		}
 	// posixAccount_may shadowAccount_may
 	//if ($values->unix_password_no) $values->unix_password = '';
 	$values->unix_password = '';
@@ -1685,7 +1677,6 @@ function creategroup($values) { // Will create the LDAP-Group
 	$attr['cn'] = $values->general_username;
 	$attr['gidNumber'] = $values->general_uidNumber;
 	$attr['description'] = $values->general_gecos;
-	if ($values->general_memeberUid) $attr['memberUid'] = $values->general_memberUid;
 	if ($_SESSION['config']->samba3 =='yes' && (isset($values->smb_mapgroup))) {
 		$attr['sambaSID'] = $values->smb_mapgroup;
 		$attr['objectClass'][1] = 'sambaGroupMapping';
@@ -1724,13 +1715,22 @@ function modifygroup($values,$values_old) { // Will modify the LDAP-Group
 	if ($values->general_username != $values_old->general_username) $attr['cn'] = $values->general_username;
 	if ($values->general_uidNumber != $values_old->general_uidNumber) $attr['gidNumber'] = $values->general_uidNumber;
 	if ($values->general_gecos != $values_old->general_gecos) $attr['description'] = $values->general_gecos;
-	if ($values->general_memeberUid != $values_old->general_memberUid) $attr['memberUid'] = $values->general_memberUid;
 	if ($_SESSION['config']->samba3 =='yes') {
 		if ($values->smb_mapgroup != $values_old->smb_mapgroup)
 			$attr['sambaSID'] = $values->smb_mapgroup;
 		if ($values->general_gecos!=$values_old->general_gecos)
 			$attr['displayName'] = $values->general_gecos;
 		}
+
+	if (($values->unix_memberUid != $values_old->unix_memberUid)) {
+		$values->unix_memberUid = str_replace(' ', '', $values->unix_memberUid);
+		$memberUid = explode (',', $values->unix_memberUid);
+		$values_old->unix_memberUid = str_replace(' ', '', $values_old->unix_memberUid);
+		$memberUid_old = explode (',', $values_old->unix_memberUid);
+		if ($memberUid[0]=='') $attr_rem['memberUid'] = $memberUid_old;
+		 else if ($memberUid[0]!='') $attr['memberUid'] = $memberUid;
+		}
+
 	if ($attr_rem) {
 		$success = ldap_mod_del($_SESSION['ldap']->server(),$values_old->general_dn, $attr_rem);
 		if (!$success) return 5;
@@ -1753,7 +1753,7 @@ function modifygroup($values,$values_old) { // Will modify the LDAP-Group
 			else return 5;
 		}
 	if ($attr) {
-		$success = ldap_mod_replace($_SESSION['ldap']->server(),$values->general_dn, $attr);
+		$success = ldap_modify($_SESSION['ldap']->server(),$values->general_dn, $attr);
 		if (!$success) return 5;
 		}
 	if ($values->general_dn != $values_old->general_dn) {// Groupname hasn't changed

@@ -254,6 +254,8 @@ $helpArray = array (
 					"Text" => _("Comma separated list of unix workstations the user is allowed to login."). ' '. _("Can be left empty.")),
 				"467" => array ("ext" => "FALSE", "Headline" => _("Domain"),
 					"Text" => _("Windows-Domain of group."). ' '. _("Can be left empty.")),
+				"468" => array ("ext" => "FALSE", "Headline" => _("Group members"),
+					"Text" => _("Users also being member of the current group. Members are comma separated."). ' '. _("Can be left empty.")),
 				// 600 - 699
 				// Roland Gruber
 				// OU-editor, domain page
