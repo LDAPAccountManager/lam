@@ -93,6 +93,7 @@ echo "</fieldset>\n<br>\n";
 
 // index for tab order (1 is LDAP suffix)
 $tabindex = 2;
+$tabindexLink = 1000;	// links are at the end
 
 // display module options
 $modules = array_keys($options);
@@ -101,21 +102,8 @@ for ($m = 0; $m < sizeof($modules); $m++) {
 	if (sizeof($options[$modules[$m]]) < 1) continue;
 	echo "<fieldset>\n";
 		echo "<legend><b>" . getModuleAlias($modules[$m], $type) . "</b></legend>\n";
-		echo "<table>\n";
-		for ($l = 0; $l < sizeof($options[$modules[$m]]); $l++) {  // option lines
-			echo "<tr>\n";
-			for ($o = 0; $o < sizeof($options[$modules[$m]][$l]); $o++) {  // line parts
-				echo "<td";
-				if (isset($options[$modules[$m]][$l][$o]['align'])) echo " align=\"" . $options[$modules[$m]][$l][$o]['align'] . "\"";
-				if (isset($options[$modules[$m]][$l][$o]['colspan'])) echo " colspan=\"" . $options[$modules[$m]][$l][$o]['colspan'] . "\"";
-				if (isset($options[$modules[$m]][$l][$o]['rowspan'])) echo " rowspan=\"" . $options[$modules[$m]][$l][$o]['rowspan'] . "\"";
-				echo ">";
-				print_option($options[$modules[$m]][$l][$o], $modules[$m], $old_options, $tabindex);
-				echo "</td>\n";
-			}
-			echo "</tr>\n";
-		}
-		echo "</table>\n";
+	$profileTypes = parseHtml($modules[$m], $options[$modules[$m]], $old_options, true, $tabindex, $tabindexLink, $type);
+	$_SESSION['profile_types'] = array_merge($profileTypes, $_SESSION['profile_types']);
 	echo "</fieldset>\n";
 	echo "<br>";
 }
@@ -144,109 +132,5 @@ echo ("</table>\n");
 echo "<input type=\"hidden\" name=\"accounttype\" value=\"$type\">\n";
 
 echo ("</form></body></html>\n");
-
-/**
-* prints out the row of a section table including the option name, values and help
-*
-* @param array $values an array formated as module option
-* @param string $module_name the name of the module the options belong to
-* @param array $old_options a hash array with the values from the loaded profile
-* @param integer $tabindex current value for tabulator order
-*/
-function print_option($values, $modulename, $old_options, &$tabindex) {
-	switch ($values['kind']) {
-		// text value
-		case 'text':
-			echo $values['text'] . "\n";
-			break;
-		// help link
-		case 'help':
-			echo "<a href=../help.php?module=$modulename&amp;HelpNumber=" . $values['value'];
-			if (isset($values['scope'])) echo "&amp;scope=" . $values['scope'];
-			echo ">" . _('Help') . "</a>\n";
-			break;
-		// input field
-		case 'input':
-			if (($values['type'] == 'text') || ($values['type'] == 'checkbox')) {
-				if ($values['type'] == 'text') {
-					$output = "<input tabindex=\"$tabindex\" type=\"text\" name=\"" . $values['name'] . "\"";
-					if ($values['size']) $output .= " size=\"" . $values['size'] . "\"";
-					if ($values['maxlength']) $output .= " maxlength=\"" . $values['maxlength'] . "\"";
-					if (isset($old_options[$values['name']])) $output .= " value=\"" . $old_options[$values['name']][0] . "\"";
-					elseif ($values['value']) $output .= " value=\"" . $values['value'] . "\"";
-					if ($values['disabled']) $output .= " disabled";
-					$output .= ">\n";
-					echo $output;
-					$_SESSION['profile_types'][$values['name']] = "text";
-				}
-				elseif ($values['type'] == 'checkbox') {
-					$output = "<input tabindex=\"$tabindex\" type=\"checkbox\" name=\"" . $values['name'] . "\"";
-					if ($values['size']) $output .= " size=\"" . $values['size'] . "\"";
-					if ($values['maxlength']) $output .= " maxlength=\"" . $values['maxlength'] . "\"";
-					if ($values['disabled']) $output .= " disabled";
-					if (isset($old_options[$values['name']]) && ($old_options[$values['name']][0] == 'true')) $output .= " checked";
-					elseif ($values['checked']) $output .= " checked";
-					$output .= ">\n";
-					echo $output;
-					$_SESSION['profile_types'][$values['name']] = "checkbox";
-				}
-				$tabindex++;
-			}
-			break;
-		// select box
-		case 'select':
-			if (! is_numeric($values['size'])) $values['size'] = 1;// correct size if needed
-			if ($values['multiple']) {
-				echo "<select tabindex=\"$tabindex\" name=\"" . $values['name'] . "[]\" size=\"" . $values['size'] . "\" multiple>\n";
-				$_SESSION['profile_types'][$values['name']] = "multiselect";
-			}
-			else {
-				echo "<select tabindex=\"$tabindex\" name=\"" . $values['name'] . "\" size=\"" . $values['size'] . "\">\n";
-				$_SESSION['profile_types'][$values['name']] = "select";
-			}
-			// option values
-			for ($i = 0; $i < sizeof($values['options']); $i++) {
-				// use values from old profile if given
-				if (isset($old_options[$values['name']])) {
-					if (in_array($values['options'][$i], $old_options[$values['name']])) {
-						echo "<option selected>" . $values['options'][$i] . "</option>\n";
-					}
-					else {
-						echo "<option>" . $values['options'][$i] . "</option>\n";
-					}
-				}
-				// use default values if not in profile
-				else {
-					if (is_array($values['options_selected']) && in_array($values['options'][$i], $values['options_selected'])) {
-						echo "<option selected>" . $values['options'][$i] . "</option>\n";
-					}
-					else {
-						echo "<option>" . $values['options'][$i] . "</option>\n";
-					}
-				}
-			}
-			echo "</select>\n";
-			$tabindex++;
-			break;
-		// subtable
-		case 'table':
-			echo "<table>\n";
-			for ($l = 0; $l < sizeof($values['value']); $l++) {  // option lines
-				echo "<tr>\n";
-				for ($o = 0; $o < sizeof($values['value'][$l]); $o++) {  // line parts
-					echo "<td>";
-					print_option($values['value'][$l][$o], $values['value'], $old_options, $tabindex);
-					echo "</td>\n";
-				}
-				echo "</tr>\n";
-			}
-			echo "</table>\n";
-		break;
-		// print error message for invalid types
-		default:
-			echo "Unrecognized type" . ": " . $values['kind'] . "\n";
-			break;
-	}
-}
 
 ?>
