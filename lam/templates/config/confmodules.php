@@ -68,10 +68,14 @@ $group_deps = getModulesDependencies('group');
 $host_deps = getModulesDependencies('host');
 
 // user modules
-$selected_users = array();
-$selected_users = $_SESSION['conf_usermodules'];
+$selected_users_temp = $_SESSION['conf_usermodules'];
 $available_users = array();
 $available_users = getAvailableModules('user');
+$selected_users = array();
+// only use available modules
+for ($i = 0; $i < sizeof($selected_users_temp); $i++) {
+	if (in_array($selected_users_temp[$i], $available_users)) $selected_users[] = $selected_users_temp[$i];
+}
 $no_conflicts_user = true;
 $no_depends_user = true;
 
@@ -95,10 +99,14 @@ elseif ($_POST['user_available'] && ($_POST['user_add'])) {
 }
 
 // group modules
-$selected_groups = array();
-$selected_groups = $_SESSION['conf_groupmodules'];
+$selected_groups_temp = $_SESSION['conf_groupmodules'];
 $available_groups = array();
 $available_groups = getAvailableModules('group');
+$selected_groups = array();
+// only use available modules
+for ($i = 0; $i < sizeof($selected_groups_temp); $i++) {
+	if (in_array($selected_groups_temp[$i], $available_groups)) $selected_groups[] = $selected_groups_temp[$i];
+}
 $no_conflicts_group = true;
 $no_depends_group = true;
 
@@ -122,10 +130,14 @@ elseif ($_POST['group_available'] && ($_POST['group_add'])) {
 }
 
 // host modules
-$selected_hosts = array();
-$selected_hosts = $_SESSION['conf_hostmodules'];
+$selected_hosts_temp = $_SESSION['conf_hostmodules'];
 $available_hosts = array();
 $available_hosts = getAvailableModules('host');
+$selected_hosts = array();
+// only use available modules
+for ($i = 0; $i < sizeof($selected_hosts_temp); $i++) {
+	if (in_array($selected_hosts_temp[$i], $available_hosts)) $selected_hosts[] = $selected_hosts_temp[$i];
+}
 $no_conflicts_host = true;
 $no_depends_host = true;
 
@@ -339,10 +351,10 @@ echo "<p>\n";
 		echo "<input type=\"submit\" value=\"Submit\" name=\"submit\">\n";
 	}
 	else {
-		echo "<input type=\"submit\" value=\"Submit\" name=\"submit\" disabled>\n";
+		echo "<input type=\"submit\" value=\"" . _("Submit") . "\" name=\"submit\" disabled>\n";
 	}
 	echo "&nbsp;";
-	echo "<input type=\"submit\" value=\"Abort\" name=\"abort\">\n";
+	echo "<input type=\"submit\" value=\"" . _("Abort") . "\" name=\"abort\">\n";
 echo "</p>\n";
 
 echo "</form>\n";

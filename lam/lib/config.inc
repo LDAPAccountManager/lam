@@ -710,7 +710,14 @@ class Config {
 
 	// returns an array of all selected user modules
 	function get_UserModules() {
-		return explode(",", $this->usermodules);
+		$modules = explode(",", $this->usermodules);
+		$available = getAvailableModules('user');
+		// only return available modules
+		$ret = array();
+		for ($i = 0; $i < sizeof($modules); $i++) {
+			if (in_array($modules[$i], $available)) $ret[] = $modules[$i];
+		}
+		return $ret;
 	}
 
 	// sets the selected user modules
@@ -730,7 +737,14 @@ class Config {
 
 	// returns an array of all selected group modules
 	function get_GroupModules() {
-		return explode(",", $this->groupmodules);
+		$modules = explode(",", $this->groupmodules);
+		$available = getAvailableModules('group');
+		// only return available modules
+		$ret = array();
+		for ($i = 0; $i < sizeof($modules); $i++) {
+			if (in_array($modules[$i], $available)) $ret[] = $modules[$i];
+		}
+		return $ret;
 	}
 
 	// sets the selected group modules
@@ -750,7 +764,14 @@ class Config {
 
 	// returns an array of all selected host modules
 	function get_HostModules() {
-		return explode(",", $this->hostmodules);
+		$modules = explode(",", $this->hostmodules);
+		$available = getAvailableModules('host');
+		// only return available modules
+		$ret = array();
+		for ($i = 0; $i < sizeof($modules); $i++) {
+			if (in_array($modules[$i], $available)) $ret[] = $modules[$i];
+		}
+		return $ret;
 	}
 
 	// sets the selected host modules
