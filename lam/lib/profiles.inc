@@ -21,13 +21,19 @@ $Id$
 
 */
 
-// profiles.inc provides functions to load and save profiles for users/groups/hosts
+/**
+* This file provides functions to load and save account profiles for users/groups/hosts.
+*
+* @package configuration
+* @author Roland Gruber
+*/
 
-include_once("config.inc");
-include_once("ldap.inc");
 
-
-// returns an array of String with all available user profiles (without .pru)
+/**
+* Returns an array of string with all available user profiles (without .pru)
+*
+* @return array profile names
+*/
 function getUserProfiles() {
 	$dir = @dir(substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/users");
 	$ret = array();
@@ -45,7 +51,11 @@ function getUserProfiles() {
 	return $ret;
 }
 
-// returns an array of String with all available group profiles (without .prg)
+/**
+* Returns an array of String with all available group profiles (without .prg)
+*
+* @return array profile names
+*/
 function getGroupProfiles() {
 	$dir = @dir(substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/groups");
 	$ret = array();
@@ -63,7 +73,11 @@ function getGroupProfiles() {
 	return $ret;
 }
 
-// returns an array of String with all available host profiles (without .prh)
+/**
+* Returns an array of String with all available host profiles (without .prh)
+*
+* @return array profile names
+*/
 function getHostProfiles() {
 	$dir = @dir(substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/hosts");
 	$ret = array();
@@ -81,9 +95,12 @@ function getHostProfiles() {
 	return $ret;
 }
 
-// loads an user profile
-// $profile: name of the profile (without .pru)
-// the return value is an hash array (attribute => value)
+/**
+* Loads an user profile
+*
+* @param string $profile name of the profile (without .pru)
+* @return array hash array (attribute => value)
+*/
 function loadUserProfile($profile) {
 	if (!eregi("^[0-9a-z_\\-]+$", $profile)) return false;
 	$settings = array();
@@ -118,9 +135,12 @@ function loadUserProfile($profile) {
 	return $settings;
 }
 
-// loads an group profile
-// $profile: name of the group profile (without .prg)
-// the return value is an hash array (attribute => value)
+/**
+* Loads an group profile
+*
+* @param string $profile name of the profile (without .prg)
+* @return array hash array (attribute => value)
+*/
 function loadGroupProfile($profile) {
 	if (!eregi("^[0-9a-z_\\-]+$", $profile)) return false;
 	$settings = array();
@@ -155,9 +175,12 @@ function loadGroupProfile($profile) {
 	return $settings;
 }
 
-// loads an host profile
-// $profile: name of the host profile (without .prh)
-// the return value is an hash array (attribute => value)
+/**
+* Loads an host profile
+*
+* @param string $profile name of the profile (without .prh)
+* @return array hash array (attribute => value)
+*/
 function loadHostProfile($profile) {
 	if (!eregi("^[0-9a-z_\\-]+$", $profile)) return false;
 	$settings = array();
@@ -192,10 +215,15 @@ function loadHostProfile($profile) {
 	return $settings;
 }
 
-// saves an hash array (attribute => value) to an user profile
-// file is created, if needed
-// $profile: name of the user profile (without .pru)
-// $attributes: hash array(attribute => value)
+/**
+* Saves an hash array (attribute => value) to an user profile
+*
+* file is created, if needed
+*
+* @param string $profile name of the user profile (without .pru)
+* @param array $attributes hash array (attribute => value)
+* @return boolean true, if saving succeeded
+*/
 function saveUserProfile($attributes, $profile) {
 	if (!$_SESSION['loggedIn'] == true) return false;
 	// check profile name
@@ -226,10 +254,15 @@ function saveUserProfile($attributes, $profile) {
 	return true;
 }
 
-// saves an hash array (attribute => value) to an group profile
-// file is created, if needed
-// $profile: name of the group profile (without .prg)
-// $attributes: hash array(attribute => value)
+/**
+* Saves an hash array (attribute => value) to an group profile
+*
+* file is created, if needed
+*
+* @param string $profile name of the group profile (without .prg)
+* @param array $attributes hash array (attribute => value)
+* @return boolean true, if saving succeeded
+*/
 function saveGroupProfile($attributes, $profile) {
 	if (!$_SESSION['loggedIn'] == true) return false;
 	// check profile name
@@ -255,10 +288,15 @@ function saveGroupProfile($attributes, $profile) {
 	return true;
 }
 
-// saves an hash array (attribute => value) to an host profile
-// file is created, if needed
-// $profile: name of the host profile (without .prh)
-// $attributes: hash array(attribute => value)
+/**
+* Saves an hash array (attribute => value) to an host profile
+*
+* file is created, if needed
+*
+* @param string $profile name of the host profile (without .prh)
+* @param array $attributes hash array (attribute => value)
+* @return boolean true, if saving succeeded
+*/
 function saveHostProfile($attributes, $profile) {
 	if (!$_SESSION['loggedIn'] == true) return false;
 	// check profile name
@@ -284,7 +322,11 @@ function saveHostProfile($attributes, $profile) {
 	return true;
 }
 
-// deletes a user profile
+/**
+* Deletes a user profile
+*
+* @param string $file name of profile (Without .pru)
+*/
 function delUserProfile($file) {
 	if (!$_SESSION['loggedIn'] == true) return false;
 	if (!eregi("^[0-9a-z\\-_]+$", $file)) return false;
@@ -294,7 +336,11 @@ function delUserProfile($file) {
 	}
 }
 
-// deletes a group profile
+/**
+* Deletes a group profile
+*
+* @param string $file name of profile (Without .prg)
+*/
 function delGroupProfile($file) {
 	if (!$_SESSION['loggedIn'] == true) return false;
 	if (!eregi("^[0-9a-z\\-_]+$", $file)) return false;
@@ -304,7 +350,11 @@ function delGroupProfile($file) {
 	}
 }
 
-// deletes a host profile
+/**
+* Deletes a host profile
+*
+* @param string $file name of profile (Without .prh)
+*/
 function delHostProfile($file) {
 	if (!$_SESSION['loggedIn'] == true) return false;
 	if (!eregi("^[0-9a-z\\-_]+$", $file)) return false;
