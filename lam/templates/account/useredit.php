@@ -544,7 +544,8 @@ do { // X-Or, only one if() can be true
 		}
 	if ($_POST['next_final']) {
 		// Go from final to next page if no error did ocour
-		$stay = false;
+		if (is_array($errors)) $stay=true;
+			else $stay = false;
 		if (($account_old) && ($account_new->general_uidNumber != $account_old->general_uidNumber))
 			$errors[] = array('INFO', _('UID-number has changed. You have to run the following command as root in order to change existing file-permissions:'),
 				'find / -gid ' . $account_old->general_uidNumber . ' -exec chown ' . $account_new->general_uidNumber . ' {} \;');

@@ -328,7 +328,8 @@ do { // X-Or, only one if() can be true
 		}
 	if ($_POST['next_final']) {
 		// Check if objectclasses are OK
-		$stay = false;
+		if (is_array($errors)) $stay=true;
+			else $stay = false;
 		if ($config_intern->is_samba3() && !isset($account_new->smb_domain)) {
 			// Samba page not viewed; can not create group because if missing options
 			$errors[] = array("ERROR", _("Samba Options not set!"), _("Please check settings on samba page."));
