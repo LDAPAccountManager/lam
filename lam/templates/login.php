@@ -230,7 +230,8 @@ if($_POST['action'] == "checklogin")
 {
 	include_once("../lib/ldap.inc"); // Include ldap.php which provides Ldap class
 
-	$ldap = new Ldap($_SESSION['config']); //$config); // Create new Ldap object
+	session_register("ldap"); // Register $ldap object in session
+	$_SESSION['ldap'] = new Ldap($_SESSION['config']); //$config); // Create new Ldap object
 	if($_POST['passwd'] == "")
 	{
 		$error_message = _("Empty Password submitted. Try again.");
@@ -238,14 +239,13 @@ if($_POST['action'] == "checklogin")
 	}
 	else
 	{
-		$result = $ldap->connect($_POST['username'],$_POST['passwd']); // Connect to LDAP server for verifing username/password
+		$result = $_SESSION['ldap']->connect($_POST['username'],$_POST['passwd']); // Connect to LDAP server for verifing username/password
 		if($result == True) // Username/password correct. Do some configuration and load main frame.
 		{
 			$_SESSION['language'] = $_POST['language']; // Write selected language in session
 			$language = explode(":",$_SESSION['language']);
 			$_SESSION['header'] = "<?xml version=\"1.0\" encoding=\"" . $language[3] . "\"?>\n<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n\n";
 
-			session_register("ldap"); // Register $ldap object in session
 
 			include("./main.php"); // Load main frame
 		}
