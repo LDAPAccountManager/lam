@@ -1,0 +1,22 @@
+stable
+
+???
+
+
+beta
+
+- add support for adding users with input file
+- translate to German
+
+alpha
+
+- limit entries in user/group/host lists
+- check security
+- profile editor
+- implement status messages and help support
+
+pre-alpha
+
+- write Readme and Install files
+- check licences
+- finish profile support
