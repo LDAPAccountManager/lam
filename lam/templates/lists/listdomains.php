@@ -72,9 +72,9 @@ $page = $_GET["page"];
 if (!$page) $page = 1;
 // take maximum count of domain entries shown on one page out of session
 if ($_SESSION["config"]->get_MaxListEntries() <= 0)
-	$max_pageentrys = 10;	// default setting, if not yet set
+	$max_page_entries = 10;	// default setting, if not yet set
 else
-	$max_pageentrys = $_SESSION["config"]->get_MaxListEntries();
+	$max_page_entries = $_SESSION["config"]->get_MaxListEntries();
 
 
 // generate attribute and description tables
@@ -106,7 +106,7 @@ if (! $_GET['norefresh']) {
 		ldap_free_result($sr);
 		if ($dom_info["count"] == 0) StatusMessage("WARN", "", _("No Samba Domains found!"));
 		// delete first array entry which is "count"
-		array_shift($dom_info);
+		unset($dom_info['count']);
 		// sort rows by sort column ($sort)
 		$dom_info = listSort($sort, $attr_array, $dom_info);
 	}
@@ -123,7 +123,7 @@ echo ("<form action=\"listdomains.php\" method=\"post\">\n");
 
 // draw navigation bar if domain accounts were found
 if (sizeof($dom_info) > 0) {
-draw_navigation_bar(sizeof($dom_info));
+listDrawNavigationBar(sizeof($dom_info), $max_page_entries, $page, $sort, $searchFilter, "domain", _("%s Samba domain(s) found"));
 echo ("<br>\n");
 }
 
@@ -142,9 +142,9 @@ for ($k = 0; $k < sizeof($desc_array); $k++) {
 echo "</tr>\n";
 
 // calculate which rows to show
-$table_begin = ($page - 1) * $max_pageentrys;
-if (($page * $max_pageentrys) > sizeof($dom_info)) $table_end = sizeof($dom_info);
-else $table_end = ($page * $max_pageentrys);
+$table_begin = ($page - 1) * $max_page_entries;
+if (($page * $max_page_entries) > sizeof($dom_info)) $table_end = sizeof($dom_info);
+else $table_end = ($page * $max_page_entries);
 
 // print domain list
 for ($i = $table_begin; $i < $table_end; $i++) {
@@ -159,7 +159,7 @@ for ($i = $table_begin; $i < $table_end; $i++) {
 		// print all attribute entries seperated by "; "
 		if (sizeof($dom_info[$i][strtolower($attr_array[$k])]) > 0) {
 			// delete first array entry which is "count"
-			if ((! $_GET['norefresh']) && (is_array($dom_info[$i][strtolower($attr_array[$k])]))) array_shift($dom_info[$i][strtolower($attr_array[$k])]);
+			if (is_array($dom_info[$i][strtolower($attr_array[$k])])) unset($dom_info[$i][strtolower($attr_array[$k])]['count']);
 			if (is_array($dom_info[$i][strtolower($attr_array[$k])])) echo implode("; ", $dom_info[$i][strtolower($attr_array[$k])]);
 			else echo $dom_info[$i][strtolower($attr_array[$k])];
 		}
@@ -173,7 +173,7 @@ echo ("<br>");
 
 // draw navigation bar if domain accounts were found
 if (sizeof($dom_info) > 0) {
-draw_navigation_bar(sizeof($dom_info));
+listDrawNavigationBar(sizeof($dom_info), $max_page_entries, $page, $sort, $searchFilter, "domain", _("%s Samba domain(s) found"));
 echo ("<br>\n");
 }
 
@@ -204,46 +204,6 @@ echo ("</p>\n");
 
 echo ("</form>\n");
 echo "</body></html>\n";
-
-/**
- * @brief draws a navigation bar to switch between pages
- *
- *
- * @return void
- */
-function draw_navigation_bar ($count) {
-  global $max_pageentrys;
-  global $page;
-  global $sort;
-
-  echo ("<table class=\"domainnav\" width=\"100%\" border=\"0\">\n");
-  echo ("<tr>\n");
-  echo ("<td><input type=\"submit\" name=\"refresh\" value=\"" . _("Refresh") . "\">&nbsp;&nbsp;");
-  if ($page != 1)
-    echo ("<a href=\"listdomains.php?page=" . ($page - 1) . "&amp;sort=" . $sort . "\">&lt;=</a>\n");
-  else
-    echo ("&lt;=");
-  echo ("&nbsp;");
-
-  if ($page < ($count / $max_pageentrys))
-    echo ("<a href=\"listdomains.php?page=" . ($page + 1) . "&amp;sort=" . $sort . "\">=&gt;</a>\n");
-  else
-    echo ("=&gt;</td>");
-
-  echo ("<td class=\"domainnav-text\">");
-  echo "&nbsp;" . $count . " " .  _("Samba Domain(s) found");
-  echo ("</td>");
-
-  echo ("<td class=\"domainlist_activepage\" align=\"right\">");
-  for ($i = 0; $i < ($count / $max_pageentrys); $i++) {
-    if ($i == $page - 1)
-      echo ("&nbsp;" . ($i + 1));
-    else
-      echo ("&nbsp;<a href=\"listdomains.php?page=" . ($i + 1) .
-	    "&amp;sort=" . $sort . "\">" . ($i + 1) . "</a>\n");
-  }
-  echo ("</td></tr></table>\n");
-}
 
 
 

@@ -106,23 +106,23 @@ tr.userlist-checked {
 }
 
 /* color for active page digit */
-td.userlist-activepage {
+td.usernav-activepage {
  color:red;
 }
 
 /* style of navigation bar */
-td.userlist-navbar {
+td.usernav {
  color:#AAAAAA;
 }
 
-table.userlist-navbar {
+table.usernav {
   background-color:#fff2a3;
   border-width:1px;
   border-style:solid;
   border-color:#9b8523;
 }
 
-td.userlist-navbartext {
+td.usernav-text {
   color:green;
   font-family:Verdana,sans-serif;
   font-size:12px;

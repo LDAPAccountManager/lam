@@ -111,9 +111,9 @@ $page = $_GET["page"];
 if (!$page) $page = 1;
 // take maximum count of group entries shown on one page out of session
 if ($_SESSION["config"]->get_MaxListEntries() <= 0)
-	$max_pageentrys = 10;	// default setting, if not yet set
+	$max_page_entries = 10;	// default setting, if not yet set
 else
-	$max_pageentrys = $_SESSION["config"]->get_MaxListEntries();
+	$max_page_entries = $_SESSION["config"]->get_MaxListEntries();
 
 // generate column attributes and descriptions
 for ($i = 0; $i < sizeof($temp_array); $i++) {
@@ -139,10 +139,10 @@ elseif ($_SESSION['grp_suffix']) $grp_suffix = $_SESSION['grp_suffix'];  // old 
 else $grp_suffix = $_SESSION["config"]->get_GroupSuffix();  // default suffix
 
 // generate search filter for sort links
-$searchfilter = "";
+$searchFilter = "";
 for ($k = 0; $k < sizeof($desc_array); $k++) {
 	if (eregi("^([0-9a-z_\\*\\+\\-])+$", $_POST["filter" . strtolower($attr_array[$k])])) {
-		$searchfilter = $searchfilter . "&amp;filter" . strtolower($attr_array[$k]) . "=".
+		$searchFilter = $searchFilter . "&amp;filter" . strtolower($attr_array[$k]) . "=".
 			$_POST["filter" . strtolower($attr_array[$k])];
 	}
 }
@@ -169,7 +169,7 @@ if (! $_GET['norefresh']) {
 		ldap_free_result($sr);
 		if ($grp_info["count"] == 0) StatusMessage("WARN", "", _("No Groups found!"));
 		// delete first array entry which is "count"
-		array_shift($grp_info);
+		unset($grp_info['count']);
 		// sort rows by sort column ($sort)
 		$grp_info = listSort($sort, $attr_array, $grp_info);
 	}
@@ -189,7 +189,7 @@ echo ("<form action=\"listgroups.php\" method=\"post\">\n");
 
 // draw navigation bar if group accounts were found
 if (sizeof($grp_info) > 0) {
-draw_navigation_bar(sizeof($grp_info));
+listDrawNavigationBar(sizeof($grp_info), $max_page_entries, $page, $sort, $searchFilter, "group", _("%s group(s) found"));
 echo ("<br>");
 }
 
@@ -200,10 +200,10 @@ echo "<tr class=\"grouplist-head\"><th width=22 height=34></th><th></th>";
 for ($k = 0; $k < sizeof($desc_array); $k++) {
 	if (strtolower($attr_array[$k]) == $sort) {
 		echo "<th class=\"grouplist-sort\"><a href=\"listgroups.php?".
-			"sort=" . strtolower($attr_array[$k]) . $searchfilter . "&amp;norefresh=y" . "\">" . $desc_array[$k] . "</a></th>";
+			"sort=" . strtolower($attr_array[$k]) . $searchFilter . "&amp;norefresh=y" . "\">" . $desc_array[$k] . "</a></th>";
 	}
 	else echo "<th><a href=\"listgroups.php?".
-		"sort=" . strtolower($attr_array[$k]) . $searchfilter . "&amp;norefresh=y" . "\">" . $desc_array[$k] . "</a></th>";
+		"sort=" . strtolower($attr_array[$k]) . $searchFilter . "&amp;norefresh=y" . "\">" . $desc_array[$k] . "</a></th>";
 }
 echo "</tr>\n";
 
@@ -221,9 +221,9 @@ for ($k = 0; $k < sizeof ($desc_array); $k++) {
 echo "</tr>\n";
 
 // calculate which rows to show
-$table_begin = ($page - 1) * $max_pageentrys;
-if (($page * $max_pageentrys) > sizeof($grp_info)) $table_end = sizeof($grp_info);
-else $table_end = ($page * $max_pageentrys);
+$table_begin = ($page - 1) * $max_page_entries;
+if (($page * $max_page_entries) > sizeof($grp_info)) $table_end = sizeof($grp_info);
+else $table_end = ($page * $max_page_entries);
 
 if (sizeof($grp_info) > 0) {
 	// print group list
@@ -246,7 +246,7 @@ if (sizeof($grp_info) > 0) {
 			// print all attribute entries seperated by "; "
 			if (sizeof($grp_info[$i][strtolower($attr_array[$k])]) > 0) {
 				// delete first array entry which is "count"
-				if ((! $_GET['norefresh']) && (is_array($grp_info[$i][strtolower($attr_array[$k])]))) array_shift($grp_info[$i][strtolower($attr_array[$k])]);
+				if (is_array($grp_info[$i][strtolower($attr_array[$k])])) unset($grp_info[$i][strtolower($attr_array[$k])]['count']);
 				// generate links for group members
 				if (strtolower($attr_array[$k]) == "memberuid") {
 					// sort array
@@ -280,7 +280,7 @@ if (sizeof($grp_info) > 0) {
 	echo "<tr class=\"grouplist\">\n";
 	echo "<td align=\"center\"><img src=\"../../graphics/select.png\" alt=\"select all\"></td>\n";
 	echo "<td colspan=$colspan>&nbsp;<a href=\"listgroups.php?norefresh=y&amp;page=" . $page . "&amp;sort=" . $sort .
-		$searchfilter . "&amp;selectall=yes\">" .
+		$searchFilter . "&amp;selectall=yes\">" .
 		"<font color=\"black\"><b>" . _("Select all") . "</b></font></a></td>\n";
 	echo "</tr>\n";
 }
@@ -289,7 +289,7 @@ echo ("<br>");
 
 // draw navigation bar if group accounts were found
 if (sizeof($grp_info) > 0) {
-draw_navigation_bar(sizeof($grp_info));
+listDrawNavigationBar(sizeof($grp_info), $max_page_entries, $page, $sort, $searchFilter, "group", _("%s group(s) found"));
 echo ("<br>\n");
 }
 
@@ -326,47 +326,6 @@ if (sizeof($grp_info) > 0) {
 
 echo ("</form>\n");
 echo "</body></html>\n";
-
-/**
- * @brief draws a navigation bar to switch between pages
- *
- *
- * @return void
- */
-function draw_navigation_bar ($count) {
-  global $max_pageentrys;
-  global $page;
-  global $sort;
-  global $searchfilter;
-
-  echo ("<table class=\"groupnav\" width=\"100%\" border=\"0\">\n");
-  echo ("<tr>\n");
-  echo ("<td><input type=\"submit\" name=\"refresh\" value=\"" . _("Refresh") . "\">&nbsp;&nbsp;");
-  if ($page != 1)
-    echo ("<a href=\"listgroups.php?page=" . ($page - 1) . "&amp;sort=" . $sort . $searchfilter . "\">&lt;=</a>\n");
-  else
-    echo ("&lt;=");
-  echo ("&nbsp;");
-
-  if ($page < ($count / $max_pageentrys))
-    echo ("<a href=\"listgroups.php?page=" . ($page + 1) . "&amp;sort=" . $sort . $searchfilter . "\">=&gt;</a>\n");
-  else
-    echo ("=&gt;</td>");
-
-  echo ("<td class=\"groupnav-text\">");
-  echo "&nbsp;" . $count . " " .  _("Group(s) found");
-  echo ("</td>");
-
-  echo ("<td class=\"groupnav-activepage\" align=\"right\">");
-  for ($i = 0; $i < ($count / $max_pageentrys); $i++) {
-    if ($i == $page - 1)
-      echo ("&nbsp;" . ($i + 1));
-    else
-      echo ("&nbsp;<a href=\"listgroups.php?page=" . ($i + 1) .
-	    "&amp;sort=" . $sort . "\">" . ($i + 1) . "</a>\n");
-  }
-  echo ("</td></tr></table>\n");
-}
 
 // save variables to session
 $_SESSION['grp_info'] = $grp_info;

@@ -72,7 +72,58 @@ function listSort($sort, $attr_array, $info) {
 	// sort and return account list
 	usort($info, "cmp_array");
 	return $info;
-
 }
+
+
+/**
+* @brief draws a navigation bar to switch between pages
+*
+* @param integer $count number of account entries
+* @param integer $max_page_entries maximum number of account per page
+* @param integer $page current page number
+* @param string $sort sort attribute
+* @param string $searchFilter LDAP search filter
+* @param string $scope account type (user/group/host/domain)
+* @param string $text string including the number of accounts
+*/
+function listDrawNavigationBar($count, $max_page_entries, $page, $sort, $searchFilter, $scope, $text) {
+
+	echo("<table class=\"" . $scope . "nav\" width=\"100%\" border=\"0\">\n");
+	echo("<tr>\n");
+	echo("<td><input type=\"submit\" name=\"refresh\" value=\"" . _("Refresh") . "\">&nbsp;&nbsp;");
+	if ($page != 1) {
+		echo("<a href=\"list" . $scope . "s.php?page=" . ($page - 1) . "&amp;sort=" . $sort . $searchFilter . "\">&lt;=</a>\n");
+	}
+	else {
+		echo("&lt;=");
+	}
+	echo("&nbsp;");
+
+	if ($page < ($count / $max_page_entries)) {
+		echo("<a href=\"list" . $scope . "s.php?page=" . ($page + 1) . "&amp;sort=" . $sort . $searchFilter . "\">=&gt;</a>\n");
+	}
+	else {
+		echo("=&gt;</td>");
+	}
+
+	echo("<td class=\"" . $scope . "nav-text\">");
+	//echo"&nbsp;" . $count . " " .  _("Group(s) found");
+	echo"&nbsp;";
+	printf($text, $count);
+	echo("</td>");
+
+	echo("<td class=\"" . $scope . "nav-activepage\" align=\"right\">");
+	for ($i = 0; $i < ($count / $max_page_entries); $i++) {
+		if ($i == $page - 1) {
+			echo("&nbsp;" . ($i + 1));
+		}
+		else {
+			echo("&nbsp;<a href=\"list" . $scope . "s.php?page=" . ($i + 1) . "&amp;sort=" . $sort . "\">" . ($i + 1) . "</a>\n");
+		}
+	}
+	echo("</td></tr></table>\n");
+}
+
+
 
 ?>

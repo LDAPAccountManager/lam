@@ -54,7 +54,7 @@ if ($trans_primary == "on" && !$_GET["norefresh"]) {
 	$sr = @ldap_search($_SESSION["ldap"]->server(), $suffix, $filter, $attrs);
 	if ($sr) {
 		$info = @ldap_get_entries($_SESSION["ldap"]->server(), $sr);
-		array_shift($info); // delete count entry
+		unset($info['count']); // delete count entry
 		for ($i = 0; $i < sizeof($info); $i++) {
 			$trans_primary_hash[$info[$i]['gidnumber'][0]] = $info[$i]['cn'][0];
 		}
@@ -129,9 +129,9 @@ if (!$page) $page = 1;
 
 // take maximum count of user entries shown on one page out of session
 if ($_SESSION["config"]->get_MaxListEntries() <= 0) {
-	$max_pageentrys = 10;	// default setting, if not yet set
+	$max_page_entries = 10;	// default setting, if not yet set
 }
-else $max_pageentrys = $_SESSION["config"]->get_MaxListEntries();
+else $max_page_entries = $_SESSION["config"]->get_MaxListEntries();
 
 // generate attribute-description table
 $attr_array = array();	// list of LDAP attributes to show
@@ -158,7 +158,7 @@ for ($i = 0; $i < sizeof($temp_array); $i++) {
   }
 }
 
-$sort = $_GET["sortattrib"];
+$sort = $_GET["sort"];
 if (!$sort)
      $sort = strtolower($attr_array[0]);
 
@@ -169,10 +169,10 @@ else $usr_suffix = $_SESSION["config"]->get_UserSuffix();  // default suffix
 
 
 // generate search filter for sort links
-$searchfilter = "";
+$searchFilter = "";
 for ($k = 0; $k < sizeof($desc_array); $k++) {
 	if (eregi("^([0-9a-z_\\*\\+\\-])+$", $_POST["filter" . strtolower($attr_array[$k])])) {
-		$searchfilter = $searchfilter . "&filter" .
+		$searchFilter = $searchFilter . "&filter" .
 		  strtolower($attr_array[$k]) . "=".
 		  $_POST["filter" . strtolower($attr_array[$k])];
 	}
@@ -207,7 +207,7 @@ else {
 		ldap_free_result ($sr);
 		if ($userinfo["count"] == 0) StatusMessage("WARN", "", _("No Users found!"));
 			// delete first array entry which is "count"
-			array_shift($userinfo);
+			unset($userinfo['count']);
 			$userinfo = listSort($sort, $attr_array, $userinfo);
 			$_SESSION["userlist"] = $userinfo;
 		}
@@ -226,11 +226,10 @@ echo ("<form action=\"listusers.php\" method=\"post\">\n");
 
 // display table only if users exist in LDAP
 if ($user_count != 0) {
-
-  // create navigation bar on top of user table
-  draw_navigation_bar ($user_count);
-
-  echo ("<br />");
+	// create navigation bar on top of user table
+	listDrawNavigationBar($user_count, $max_page_entries, $page, $sort,
+		$searchFilter . "&amp;trans_primary=" . $trans_primary, "user", _("%s user(s) found"));
+	echo ("<br />");
 }
 
   // print user table header
@@ -244,8 +243,8 @@ if ($user_count != 0) {
       echo "<th class=\"userlist-activecolumn\">\n";
     else
       echo "<th>\n";
-    echo "<a class=\"userlist\" href=\"listusers.php?norefresh=1&amp;sortattrib=" .
-      strtolower($attr_array[$k]) . $searchfilter . "&amp;trans_primary=" . $trans_primary . "\">" .
+    echo "<a class=\"userlist\" href=\"listusers.php?norefresh=1&amp;sort=" .
+      strtolower($attr_array[$k]) . $searchFilter . "&amp;trans_primary=" . $trans_primary . "\">" .
       $desc_array[$k] . "</a></th>\n";
   }
   echo "</tr>\n";
@@ -278,7 +277,7 @@ if ($user_count != 0) {
 		}
 	}
 	// print user list
-	$userinfo = array_slice ($userinfo, ($page - 1) * $max_pageentrys, $max_pageentrys);
+	$userinfo = array_slice ($userinfo, ($page - 1) * $max_page_entries, $max_page_entries);
 	for ($i = 0; $i < sizeof ($userinfo); $i++) { // ignore last entry in array which is "count"
 		echo("<tr class=\"userlist\"\nonMouseOver=\"user_over(this, '" . $userinfo[$i]["dn"] . "')\"\n" .
 			"onMouseOut=\"user_out(this, '" . $userinfo[$i]["dn"] . "')\"\n" .
@@ -301,7 +300,7 @@ if ($user_count != 0) {
 			if (sizeof($userinfo[$i][strtolower($attr_array[$k])]) > 0) {
 				if (is_array($userinfo[$i][strtolower($attr_array[$k])])) {
 					// delete first array entry which is "count"
-					array_shift($userinfo[$i][strtolower($attr_array[$k])]);
+					unset($userinfo[$i][strtolower($attr_array[$k])]['count']);
 					// sort array
 					sort($userinfo[$i][strtolower($attr_array[$k])]);
 					// print all attribute entries seperated by "; "
@@ -317,8 +316,8 @@ if ($user_count != 0) {
 	$colspan = sizeof($attr_array) + 1;
 	echo "<tr class=\"userlist\">\n";
 	echo "<td align=\"center\"><img src=\"../../graphics/select.png\" alt=\"select all\"></td>\n";
-	echo "<td colspan=$colspan>&nbsp;<a href=\"listusers.php?norefresh=1&amp;page=" . $page . "&amp;sortattrib=" . $sort .
-		$searchfilter . "&amp;trans_primary=" . $trans_primary . "&amp;selectall=yes\">" .
+	echo "<td colspan=$colspan>&nbsp;<a href=\"listusers.php?norefresh=1&amp;page=" . $page . "&amp;sort=" . $sort .
+		$searchFilter . "&amp;trans_primary=" . $trans_primary . "&amp;selectall=yes\">" .
 		"<font color=\"black\"><b>" . _("Select all") . "</b></font></a></td>\n";
 	echo "</tr>\n";
 }
@@ -326,8 +325,9 @@ echo ("</table>\n");
 
 echo ("<br>");
 if ($user_count != 0) {
-  draw_navigation_bar ($user_count);
-  echo ("<br>");
+	listDrawNavigationBar($user_count, $max_page_entries, $page, $sort,
+		$searchFilter . "&amp;trans_primary=" . $trans_primary, "user", _("%s user(s) found"));
+	echo ("<br>");
 }
 
 if (! $_GET['norefresh']) {
@@ -379,48 +379,6 @@ echo ("<p>&nbsp;</p>\n");
 
 echo ("</form>\n");
 echo "</body></html>\n";
-
-/**
- * @brief draws a navigation bar to switch between pages
- *
- *
- * @return void
- */
-function draw_navigation_bar ($user_count) {
-	global $max_pageentrys;
-	global $page;
-	global $sort;
-	global $searchfilter;
-	global $trans_primary;
-
-	echo ("<table class=\"userlist-navbar\" width=\"100%\" border=\"0\"\n");
-	echo ("<tr>\n");
-	echo ("<td class=\"userlist-navbar\">\n<input type=\"submit\" name=\"refresh\" value=\"" . _("Refresh") . "\">\n&nbsp;&nbsp;");
-	if ($page != 1)
-		echo ("<a class=\"userlist\" href=\"listusers.php?norefresh=1&amp;page=" .
-			($page - 1) . "&amp;sortattrib=" . $sort . $searchfilter . "&amp;trans_primary=" . $trans_primary . "\">&lt;=</a>\n");
-	else echo ("&lt;=");
-	echo ("&nbsp;");
-
-	if ($page < ($user_count / $max_pageentrys))
-		echo ("<a class=\"userlist\" href=\"listusers.php?norefresh=1&amp;page=" .
-			($page + 1) . "&amp;sortattrib=" . $sort . $searchfilter . "&amp;trans_primary=" . $trans_primary . "\">=&gt;</a>\n");
-	else echo ("=&gt;");
-	echo ("</td>\n");
-	echo ("<td class=\"userlist-navbartext\">\n");
-	echo "&nbsp;" . $user_count . " " .  _("User(s) found") . "\n";
-	echo ("</td>\n");
-
-
-	echo ("<td class=\"userlist-activepage\" align=\"right\">");
-	for ($i = 0; $i < ($user_count / $max_pageentrys); $i++) {
-		if ($i == $page - 1) echo ("&nbsp;" . ($i + 1));
-		else echo ("&nbsp;<a class=\"userlist\" href=\"listusers.php?norefresh=1&amp;page=" .
-				($i + 1) . "&amp;sortattrib=" . $sort . $searchfilter . "&amp;trans_primary=" . $trans_primary .
-				"\">" . ($i + 1) . "</a>\n");
-	}
-	echo ("</td></tr>\n</table>\n");
-}
 
 
 // save variables to session
