@@ -34,7 +34,7 @@ LAM - Readme
   Requirements:
     PHP4
     openldap (2.0 or greater)
-    a web-browser
+    a web-browser that supports CSS (Netscape 4.x is not recommended)
 
   Summary:
     with LAM you can easily manage user, group and machine accounts stored in
@@ -57,9 +57,13 @@ LAM - Readme
     Please see the INSTALL file.
 
   Documentation:
-    Basic documentation available in /doc
+    Basic documentation available in /docs
 
-
+  Internationalization:
+    If you want to use a translated version of LAM be sure to install the
+    needed locales. See locale/ for a list of supported locales.
+    Debian users can add locales with "dpkg-reconfigure locales".
+ 
 
     Have fun!
         The LAM devel team
