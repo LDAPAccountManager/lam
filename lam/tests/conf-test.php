@@ -29,7 +29,7 @@ echo "<html><head><title></title><link rel=\"stylesheet\" type=\"text/css\" href
 echo ("<b> Current Config</b><br><br>");
 $conf->printconf();
 echo ("<br><br><big><b> Starting Test...</b></big><br><br>");
-// now all prferences are loaded
+// now all preferences are loaded
 echo ("Loading preferences...");
 $ServerURL = $conf->get_ServerURL();
 $cachetimeout = $conf->get_cacheTimeout();
@@ -53,6 +53,7 @@ $defaultlanguage = $conf->get_defaultlanguage();
 $scriptpath = $conf->get_scriptPath();
 $scriptServer = $conf->get_scriptServer();
 $pwdhash = $conf->get_pwdhash();
+$moduleSettings = $conf->get_moduleSettings();
 echo ("done<br>");
 // next we modify them and save lam.conf
 echo ("Changing preferences...");
@@ -78,6 +79,7 @@ $conf->set_defaultlanguage("de_AT:iso639_de:Deutsch (Oesterreich)");
 $conf->set_scriptPath("/var/www/lam/lib/script");
 $conf->set_scriptServer("127.0.0.1");
 $conf->set_pwdhash("SMD5");
+$conf->set_moduleSettings(array("test1" => 11, "test2" => "abc", 'test3' => 3));
 $conf->save();
 echo ("done<br>");
 // at last all preferences are read from lam.conf and compared
@@ -105,6 +107,8 @@ if ($conf2->get_defaultlanguage() != "de_AT:iso639_de:Deutsch (Oesterreich)") ec
 if ($conf2->get_scriptPath() != "/var/www/lam/lib/script") echo ("<br><font color=\"#FF0000\">Saving script path failed!</font><br>");
 if ($conf2->get_scriptServer() != "127.0.0.1") echo ("<br><font color=\"#FF0000\">Saving script server failed!</font><br>");
 if ($conf2->get_pwdhash() != "SMD5") echo ("<br><font color=\"#FF0000\">Saving pwdhash failed!</font><br>");
+$msettings = $conf2->get_moduleSettings();
+if (($msettings['test1'] != 11) || ($msettings['test2'] != 'abc') || ($msettings['test3'] != '3')) echo ("<br><font color=\"#FF0000\">Saving module settings failed!</font><br>");
 echo ("done<br>");
 // restore old values
 echo ("Restoring old preferences...");
@@ -128,8 +132,9 @@ $conf2->set_hostlistAttributes($hostlistAttributes);
 $conf2->set_maxlistentries($maxlistentries);
 $conf2->set_defaultLanguage($defaultlanguage);
 $conf2->set_scriptPath($scriptpath);
-$conf2->set_scriptServer($scriptserver);
+$conf2->set_scriptServer($scriptServer);
 $conf2->set_pwdhash($pwdhash);
+$conf2->set_moduleSettings($moduleSettings);
 $conf2->save();
 echo ("done<br>");
 // finished

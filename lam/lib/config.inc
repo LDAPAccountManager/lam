@@ -145,6 +145,9 @@ class Config {
 	/** Default language */
 	var $defaultLanguage;
 
+	/** module settings */
+	var $moduleSettings = array();
+
 	/**
 	* Path to external lamdaemon script on server where it is executed
 	*
@@ -183,7 +186,7 @@ class Config {
 		"domainsuffix", "MinUID", "MaxUID", "MinGID", "MaxGID", "MinMachine", "MaxMachine",
 		"userlistAttributes", "grouplistAttributes", "hostlistAttributes", "maxlistentries",
 		"defaultLanguage", "scriptPath", "scriptServer", "cachetimeout", "pwdhash",
-		"usermodules", "groupmodules", "hostmodules");
+		"usermodules", "groupmodules", "hostmodules", "modules");
 
 
 	/**
@@ -201,11 +204,16 @@ class Config {
 		$this->reload();
 	}
 
-	/** Reloads preferences from config file */
+	/**
+	* Reloads preferences from config file
+	*
+	* @return boolean true if file was readable
+	*/
 	function reload() {
 		$conffile = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/config/" . $this->file . ".conf";
 		if (is_file($conffile) == True) {
-			$file = fopen($conffile, "r");
+			$file = @fopen($conffile, "r");
+			if (!$file) return false; // abort if file is not readable
 			while (!feof($file)) {
 				$line = fgets($file, 1024);
 				$line = trim($line);  // remove spaces at the beginning and end
@@ -215,16 +223,23 @@ class Config {
 					$keyword = $this->settings[$i];
 					$keylen = strlen($keyword);
 					if (strtolower(substr($line, 0, $keylen + 2)) == strtolower($keyword . ": ")) {
-						$this->$keyword = substr($line, $keylen + 2, strlen($line) - $keylen -2);
+						// module settings
+						if (strtolower(substr($line, 0, $keylen + 2)) == "modules: ") {
+							$option = substr($line, $keylen + 2, strlen($line) - $keylen - 2);
+							$pos = strpos($option, ":");
+							$this->moduleSettings[substr($option, 0, $pos)] = substr($option, $pos + 2, strlen($option) - $pos - 2);
+						}
+						// general settings
+						else {
+							$this->$keyword = substr($line, $keylen + 2, strlen($line) - $keylen - 2);
+						}
 						break;
 					}
 				}
 			}
 			fclose($file);
 		}
-		else {
-			StatusMessage("ERROR", "", _("Unable to load configuration!") . " (" . $conffile . ")");
-		}
+		return true;
 	}
 
 	/** Saves preferences to config file */
@@ -240,6 +255,7 @@ class Config {
 			fclose($file);
 			// generate new configuration file
 			$saved = array();	// includes all settings which have been saved
+			$mod_saved = array();	// includes all module settings which have been saved
 			for ($i = 0; $i < sizeof($file_array); $i++) {
 				$line = trim($file_array[$i]);
 				if (($line == "")||($line[0] == "#")) continue; // ignore comments and empty lines
@@ -248,8 +264,19 @@ class Config {
 					$keyword = $this->settings[$k];
 					$keylen = strlen($keyword);
 					if (strtolower(substr($line, 0, $keylen + 1)) == strtolower($keyword . ":")) {
-						$file_array[$i] = $keyword . ": " . $this->$keyword . "\n";
-						$saved[] = $keyword;	// mark keyword as saved
+						// module settings
+						if (strtolower(substr($line, 0, $keylen + 2)) == "modules: ") {
+							$option = substr($line, $keylen + 2, strlen($line) - $keylen - 2);
+							$pos = strpos($option, ":");
+							$name = substr($option, 0, $pos);
+							$file_array[$i] = "modules: " . $name . ": " . $this->moduleSettings[$name] . "\n";
+							$mod_saved[] = $name;	// mark keyword as saved
+						}
+						// general settings
+						else {
+							$file_array[$i] = $keyword . ": " . $this->$keyword . "\n";
+							$saved[] = $keyword;	// mark keyword as saved
+						}
 						break;
 					}
 				}
@@ -289,6 +316,13 @@ class Config {
 			if (!in_array("usermodules", $saved)) array_push($file_array, "\n\n# List of used user modules\n" . "usermodules: " . $this->usermodules . "\n");
 			if (!in_array("groupmodules", $saved)) array_push($file_array, "\n\n# List of used group modules\n" . "groupmodules: " . $this->groupmodules . "\n");
 			if (!in_array("hostmodules", $saved)) array_push($file_array, "\n\n# List of used host modules\n" . "hostmodules: " . $this->hostmodules . "\n");
+			// check if all module settings were added
+			$m_settings = array_keys($this->moduleSettings);
+			for ($i = 0; $i < sizeof($m_settings); $i++) {
+				if (!in_array($m_settings[$i], $mod_saved)) {
+					array_push($file_array, "modules: " . $m_settings[$i] . ": " . $this->moduleSettings[$m_settings[$i]] . "\n");
+				}
+			}
 			$file = fopen($conffile, "w");
 			if ($file) {
 				for ($i = 0; $i < sizeof($file_array); $i++) fputs($file, $file_array[$i]);
@@ -304,30 +338,35 @@ class Config {
 
 	/** Prints current preferences */
 	function printconf() {
-		echo "<b>" . _("Server address") . ": </b>" . $this->ServerURL . "<br>";
-		echo "<b>" . _("Password hash type") . ": </b>" . $this->pwdhash . "<br>";
-		echo "<b>" . _("Cache timeout") . ": </b>" . $this->cachetimeout . "<br>";
-		echo "<b>" . _("UserSuffix") . ": </b>" . $this->usersuffix . "<br>";
-		echo "<b>" . _("GroupSuffix") . ": </b>" . $this->groupsuffix . "<br>";
-		echo "<b>" . _("HostSuffix") . ": </b>" . $this->hostsuffix . "<br>";
-		echo "<b>" . _("DomainSuffix") . ": </b>" . $this->domainsuffix . "<br>";
-		echo "<b>" . _("Minimum UID number") . ": </b>" . $this->MinUID . "<br>";
-		echo "<b>" . _("Maximum UID number") . ": </b>" . $this->MaxUID . "<br>";
-		echo "<b>" . _("Minimum GID number") . ": </b>" . $this->MinGID . "<br>";
-		echo "<b>" . _("Maximum GID number") . ": </b>" . $this->MaxGID . "<br>";
-		echo "<b>" . _("Minimum Machine number") . ": </b>" . $this->MinMachine . "<br>";
-		echo "<b>" . _("Maximum Machine number") . ": </b>" . $this->MaxMachine . "<br>";
-		echo "<b>" . _("Attributes in User List") . ": </b>" . $this->userlistAttributes . "<br>";
-		echo "<b>" . _("Attributes in Group List") . ": </b>" . $this->grouplistAttributes . "<br>";
-		echo "<b>" . _("Attributes in Host List") . ": </b>" . $this->hostlistAttributes . "<br>";
-		echo "<b>" . _("Maximum list entries") . ": </b>" . $this->maxlistentries . "<br>";
-		echo "<b>" . _("Default language") . ": </b>" . $this->defaultLanguage . "<br>";
-		echo "<b>" . _("Path to external script") . ": </b>" . $this->scriptPath . "<br>";
-		echo "<b>" . _("Server of external script") . ": </b>" . $this->scriptServer . "<br>";
-		echo "<b>" . _("List of valid users") . ": </b>" . $this->Admins . "<br>";
-		echo "<b>" . _("User modules") . ": </b>" . $this->usermodules . "<br>";
-		echo "<b>" . _("Group modules") . ": </b>" . $this->groupmodules . "<br>";
-		echo "<b>" . _("Host modules") . ": </b>" . $this->hostmodules . "<br><br>";
+		echo "<b>" . _("Server address") . ": </b>" . $this->ServerURL . "<br>\n";
+		echo "<b>" . _("Password hash type") . ": </b>" . $this->pwdhash . "<br>\n";
+		echo "<b>" . _("Cache timeout") . ": </b>" . $this->cachetimeout . "<br>\n";
+		echo "<b>" . _("UserSuffix") . ": </b>" . $this->usersuffix . "<br>\n";
+		echo "<b>" . _("GroupSuffix") . ": </b>" . $this->groupsuffix . "<br>\n";
+		echo "<b>" . _("HostSuffix") . ": </b>" . $this->hostsuffix . "<br>\n";
+		echo "<b>" . _("DomainSuffix") . ": </b>" . $this->domainsuffix . "<br>\n";
+		echo "<b>" . _("Minimum UID number") . ": </b>" . $this->MinUID . "<br>\n";
+		echo "<b>" . _("Maximum UID number") . ": </b>" . $this->MaxUID . "<br>\n";
+		echo "<b>" . _("Minimum GID number") . ": </b>" . $this->MinGID . "<br>\n";
+		echo "<b>" . _("Maximum GID number") . ": </b>" . $this->MaxGID . "<br>\n";
+		echo "<b>" . _("Minimum Machine number") . ": </b>" . $this->MinMachine . "<br>\n";
+		echo "<b>" . _("Maximum Machine number") . ": </b>" . $this->MaxMachine . "<br>\n";
+		echo "<b>" . _("Attributes in User List") . ": </b>" . $this->userlistAttributes . "<br>\n";
+		echo "<b>" . _("Attributes in Group List") . ": </b>" . $this->grouplistAttributes . "<br>\n";
+		echo "<b>" . _("Attributes in Host List") . ": </b>" . $this->hostlistAttributes . "<br>\n";
+		echo "<b>" . _("Maximum list entries") . ": </b>" . $this->maxlistentries . "<br>\n";
+		echo "<b>" . _("Default language") . ": </b>" . $this->defaultLanguage . "<br>\n";
+		echo "<b>" . _("Path to external script") . ": </b>" . $this->scriptPath . "<br>\n";
+		echo "<b>" . _("Server of external script") . ": </b>" . $this->scriptServer . "<br>\n";
+		echo "<b>" . _("List of valid users") . ": </b>" . $this->Admins . "<br>\n";
+		echo "<b>" . _("User modules") . ": </b>" . $this->usermodules . "<br>\n";
+		echo "<b>" . _("Group modules") . ": </b>" . $this->groupmodules . "<br>\n";
+		echo "<b>" . _("Host modules") . ": </b>" . $this->hostmodules . "<br><br>\n";
+		echo "<b>" . _("Module settings") . ": </b><br>\n";
+		echo "<ul>\n";
+		$names = array_keys($this->moduleSettings);
+		for ($i = 0; $i < sizeof($names); $i++) echo "<li>" . $names[$i] . " :" . $this->moduleSettings[$names[$i]] . "</li>\n";
+		echo "</ul>\n";
 	}
 
 	// functions to read/write preferences
@@ -946,6 +985,27 @@ class Config {
 		return true;
 	}
 
+	/**
+	* Sets the settings for the account modules.
+	*
+	* @param array $settings list of module setting array(name => value)
+	* @return true if $settings has correct format
+	*/
+	function set_moduleSettings($settings) {
+		if (!is_array($settings)) return false;
+		$this->moduleSettings = $settings;
+		return true;
+	}
+
+	/**
+	* Returns a list of saved module settings
+	*
+	* @return array list of settings: array(name => value)
+	*/
+	function get_moduleSettings() {
+		return $this->moduleSettings;
+	}
+
 }
 
 
@@ -971,11 +1031,14 @@ class CfgMain {
 
 	/**
 	* Reloads preferences from config file config.cfg
+	*
+	* @return boolean true if file was readable
 	*/
 	function reload() {
 		$conffile = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/config/config.cfg";
 		if (is_file($conffile) == True) {
-			$file = fopen($conffile, "r");
+			$file = @fopen($conffile, "r");
+			if (!$file) return false; // abort if file is not readable
 			while (!feof($file)) {
 				$line = fgets($file, 1024);
 				$line = trim($line);  // remove spaces at the beginning and end
@@ -992,9 +1055,7 @@ class CfgMain {
 			}
 			fclose($file);
 		}
-		else {
-			StatusMessage("ERROR", "", _("Unable to load configuration!") . " (" . $conffile . ")");
-		}
+		return true;
 	}
 
 	/**
