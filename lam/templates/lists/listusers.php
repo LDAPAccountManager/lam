@@ -63,7 +63,7 @@ if ($trans_primary == "on" && !$_GET["norefresh"]) {
 $usr_units = $_SESSION['usr_units'];
 
 // check if button was pressed and if we have to add/delete a user or create a PDF
-if ($_POST['new_user'] || $_POST['del_user'] || $_POST['pdf_user']){
+if ($_POST['new_user'] || $_POST['del_user'] || $_POST['pdf_user'] || $_POST['pdf_all']){
 	// add new user
 	if ($_POST['new_user']){
 		metaRefresh("../account.php?type=user");
@@ -76,18 +76,28 @@ if ($_POST['new_user'] || $_POST['del_user'] || $_POST['pdf_user']){
 		$userstr = implode(";", $users);
 		metaRefresh("../delete.php?type=user&DN='$userstr'");
 	}
-	// PDF
+	// PDF for selected users
 	elseif ($_POST['pdf_user']){
 		// search for checkboxes
 		$users = array_keys($_POST, "on");
-		$userlist = array();
+		$list = array();
 		// load users from LDAP
 		for ($i = 0; $i < sizeof($users); $i++) {
-			$userlist[$i] = loaduser($users[$i]);
-			$userlist[$i]->unix_password = "";
-			$userlist[$i]->smb_password = "";
+			$list[$i] = loaduser($users[$i]);
+			$list[$i]->unix_password = "";
+			$list[$i]->smb_password = "";
 		}
-		createUserPDF($userlist);
+		if (sizeof($list) > 0) createUserPDF($list);
+	}
+	// PDF for all users
+	elseif ($_POST['pdf_all']){
+		$list = array();
+		for ($i = 0; $i < sizeof($_SESSION['userlist']); $i++) {
+			$list[$i] = loaduser($_SESSION['userlist'][$i]['dn']);
+			$list[$i]->unix_password = "";
+			$list[$i]->smb_password = "";
+		}
+		if (sizeof($list) > 0) createUserPDF($list);
 	}
 	exit;
 }
@@ -321,8 +331,9 @@ echo ("<p align=\"left\">\n");
 echo ("<input type=\"submit\" name=\"new_user\" value=\"" . _("New user") . "\">\n");
 if ($user_count != 0) {
 	echo ("<input type=\"submit\" name=\"del_user\" value=\"" . _("Delete user(s)") . "\">\n");
-	echo ("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-	echo ("<input type=\"submit\" name=\"pdf_user\" value=\"" . _("Create PDF for user(s)") . "\">\n");
+	echo ("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+	echo ("<input type=\"submit\" name=\"pdf_user\" value=\"" . _("Create PDF for selected user(s)") . "\">\n");
+	echo ("<input type=\"submit\" name=\"pdf_all\" value=\"" . _("Create PDF for all users") . "\">\n");
 }
 echo ("</p>\n");
 
@@ -333,7 +344,7 @@ echo "</body></html>\n";
 
 /**
  * @brief draws a navigation bar to switch between pages
- * 
+ *
  *
  * @return void
  */
