@@ -154,7 +154,7 @@ else $usr_suffix = $_SESSION["config"]->get_UserSuffix();  // default suffix
 // generate search filter for sort links
 $searchfilter = "";
 for ($k = 0; $k < sizeof($desc_array); $k++) {
-	if ($_POST["filter" . strtolower($attr_array[$k])]) {
+	if (eregi("^([0-9a-z_\\*\\+\\-])+$", $_POST["filter" . strtolower($attr_array[$k])])) {
 		$searchfilter = $searchfilter . "&filter" .
 		  strtolower($attr_array[$k]) . "=".
 		  $_POST["filter" . strtolower($attr_array[$k])];
@@ -165,7 +165,7 @@ for ($k = 0; $k < sizeof($desc_array); $k++) {
 // Unix/Samba3 users have the attribute "posixAccount" and do not end with "$"
 $filter = "(&(objectClass=posixAccount) (!(uid=*$))";
 for ($k = 0; $k < sizeof($desc_array); $k++) {
-  if ($_POST["filter" . strtolower($attr_array[$k])])
+  if (eregi("^([0-9a-z_\\*\\+\\-])+$", $_POST["filter" . strtolower($attr_array[$k])]))
     $filter = $filter . "(" . strtolower($attr_array[$k]) . "=" .
       $_POST["filter" . strtolower($attr_array[$k])] . ")";
   else
@@ -299,7 +299,7 @@ if ($user_count != 0) {
 	// display select all link
 	$colspan = sizeof($attr_array) + 1;
 	echo "<tr class=\"userlist\">\n";
-	echo "<td align=\"center\"><img src=\"../../graphics/select.jpg\" alt=\"select all\"></td>\n";
+	echo "<td align=\"center\"><img src=\"../../graphics/select.png\" alt=\"select all\"></td>\n";
 	echo "<td colspan=$colspan>&nbsp;<a href=\"listusers.php?norefresh=1&amp;page=" . $page . "&amp;sortattrib=" . $sortattrib .
 		$searchfilter . "&amp;trans_primary=" . $trans_primary . "&amp;selectall=yes\">" .
 		"<font color=\"black\"><b>" . _("Select all") . "</b></font></a></td>\n";
@@ -350,7 +350,7 @@ echo ("<p align=\"left\">\n");
 echo ("<input type=\"submit\" name=\"new_user\" value=\"" . _("New user") . "\">\n");
 if ($user_count != 0) {
 	echo ("<input type=\"submit\" name=\"del_user\" value=\"" . _("Delete user(s)") . "\">\n");
-	echo ("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+	echo ("<br><br>\n");
 	echo ("<input type=\"submit\" name=\"pdf_user\" value=\"" . _("Create PDF for selected user(s)") . "\">\n");
 	echo ("<input type=\"submit\" name=\"pdf_all\" value=\"" . _("Create PDF for all users") . "\">\n");
 }

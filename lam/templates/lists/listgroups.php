@@ -104,7 +104,7 @@ else $grp_suffix = $_SESSION["config"]->get_GroupSuffix();  // default suffix
 // generate search filter for sort links
 $searchfilter = "";
 for ($k = 0; $k < sizeof($desc_array); $k++) {
-	if ($_POST["filter" . strtolower($attr_array[$k])]) {
+	if (eregi("^([0-9a-z_\\*\\+\\-])+$", $_POST["filter" . strtolower($attr_array[$k])])) {
 		$searchfilter = $searchfilter . "&amp;filter" . strtolower($attr_array[$k]) . "=".
 			$_POST["filter" . strtolower($attr_array[$k])];
 	}
@@ -115,7 +115,7 @@ if (! $_GET['norefresh']) {
 	// Groups have the attribute "posixGroup"
 	$filter = "(&(objectClass=posixGroup)";
 	for ($k = 0; $k < sizeof($desc_array); $k++) {
-	if ($_POST["filter" . strtolower($attr_array[$k])])
+	if (eregi("^([0-9a-z_\\*\\+\\-])+$", $_POST["filter" . strtolower($attr_array[$k])]))
 		$filter = $filter . "(" . strtolower($attr_array[$k]) . "=" .
 		$_POST["filter" . strtolower($attr_array[$k])] . ")";
 	else
@@ -241,7 +241,7 @@ if (sizeof($grp_info) > 0) {
 	// display select all link
 	$colspan = sizeof($attr_array) + 1;
 	echo "<tr class=\"grouplist\">\n";
-	echo "<td align=\"center\"><img src=\"../../graphics/select.jpg\" alt=\"select all\"></td>\n";
+	echo "<td align=\"center\"><img src=\"../../graphics/select.png\" alt=\"select all\"></td>\n";
 	echo "<td colspan=$colspan>&nbsp;<a href=\"listgroups.php?norefresh=y&amp;page=" . $page . "&amp;sort=" . $sort .
 		$searchfilter . "&amp;selectall=yes\">" .
 		"<font color=\"black\"><b>" . _("Select all") . "</b></font></a></td>\n";
