@@ -85,10 +85,11 @@ function get_ldap_filter($scope) {
 // the elements of conflicts are module names
 // $scope: user, group, host, ....
 function getModulesDependencies($scope) {
+	global $relative;
 	// get module names.
-	$dir = opendir('../../lib/modules');
+	$dir = opendir($relative . 'lib/modules');
 	while ($entry = readdir($dir))
-		if (is_file('../../lib/modules/'.$entry)) {
+		if (is_file($relative . 'lib/modules/'.$entry)) {
 			$entry = substr($entry, 0, strpos($entry, '.'));
 			$deps = call_user_func(array($entry, "get_dependencies"), $scope);
 			if ($deps != -1) $return[$entry] = $deps;
@@ -156,11 +157,12 @@ function check_module_conflicts($selected, $deps) {
 // returns an array with all available user module names
 // $scope = user, group, host, ...
 function getAvailableModules($scope) {
+	global $relative;
 	$return = array();
 	// get module names.
-	$dir = opendir('../../lib/modules');
+	$dir = opendir($relative . 'lib/modules');
 	while ($entry = readdir($dir))
-		if (is_file('../../lib/modules/'.$entry)) {
+		if (is_file($relative . 'lib/modules/'.$entry)) {
 			$entry = substr($entry, 0, strpos($entry, '.'));
 			if (call_user_func(array($entry, "can_manage"), $scope)) $return[] = $entry;
 		}
