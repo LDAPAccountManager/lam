@@ -574,8 +574,8 @@ class sambaAccount extends baseModule {
 				$wrid=true;
 				}
 			else $options[] = _('Guest');
-			if ($wrid) $options[] = _('Ordinary user');
-				else $selected[] = _('Ordinary user');
+			if ($wrid) $options[] = "-";
+				else $selected[] = "-";
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Special user') ),
 				1 => array ( 'kind' => 'select', 'name' => 'rid', 'options' => $options, 'options_selected' => $selected),
 				2 => array ( 'kind' => 'help', 'value' => 'rid' ));

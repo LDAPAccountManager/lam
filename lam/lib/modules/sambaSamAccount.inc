@@ -334,7 +334,7 @@ class sambaSamAccount extends baseModule {
 				if ($_SESSION['cache']->in_cache($SID."-501", 'sambaSID', 'user')!=$_SESSION[$this->base]->dn_orig)
 					$triggered_messages['sambaSID'][] = $this->messages['rid'][1];
 				}
-			else if ($post['sambaSID']== _('Ordinary user')) {
+			else if ($post['sambaSID']== "-") {
 				$this->attributes['sambaSID'][0] = $SID."-". (($_SESSION[$this->base]->module['posixAccount']->attributes['uidNumber'][0]*2)+$RIDbase);
 			}
 			// Check values
@@ -542,8 +542,8 @@ class sambaSamAccount extends baseModule {
 				$wrid=true;
 				}
 			else $options[] = _('Guest');
-			if ($wrid) $options[] = _('Ordinary user');
-				else $selected[] = _('Ordinary user');
+			if ($wrid) $options[] = "-";
+				else $selected[] = "-";
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Special user') ),
 				1 => array ( 'kind' => 'select', 'name' => 'sambaSID', 'options' => $options, 'options_selected' => $selected),
 				2 => array ( 'kind' => 'help', 'value' => 'sambaSID' ));
