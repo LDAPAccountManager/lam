@@ -40,55 +40,68 @@ echo ("<p align=\"center\"><a href=\"http://lam.sf.net\" target=\"new_window\"><
 
 // check new preferences
 if (chop($host) == "") {
-	echo _("<b>" . _("Hostname is empty!") . "</b>");
+	echo _("<font color=\"red\"><b>" . _("Hostname is empty!") . "</b></font>");
+	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
 if (chop($port) == "") {
-	echo _("<b>" . _("Portnumber is empty!") . "</b>");
+	echo _("<font color=\"red\"><b>" . _("Portnumber is empty!") . "</b></font>");
+	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
 if (chop($admins) == "") {
-	echo _("<b>" . _("List of admin users is empty!") . "</b>");
+	echo _("<font color=\"red\"><b>" . _("List of admin users is empty!") . "</b></font>");
+	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
 if (chop($suffusers) == "") {
-	echo _("<b>" . _("UserSuffix is empty!") . "</b>");
+	echo _("<font color=\"red\"><b>" . _("UserSuffix is empty!") . "</b></font>");
+	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
 if (chop($suffgroups) == "") {
-	echo _("<b>" . _("UserSuffix is empty!") . "</b>");
+	echo _("<font color=\"red\"><b>" . _("UserSuffix is empty!") . "</b></font>");
+	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
 if (chop($minUID) == "") {
-	echo _("<b>" . _("minUID is empty!") . "</b>");
+	echo _("<font color=\"red\"><b>" . _("MinUID is empty!") . "</b></font>");
+	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
 if (chop($maxUID) == "") {
-	echo _("<b>" . _("maxUID is empty!") . "</b>");
+	echo _("<font color=\"red\"><b>" . _("MaxUID is empty!") . "</b></font>");
+	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
 if (chop($minGID) == "") {
-	echo _("<b>" . _("minGID is empty!") . "</b>");
+	echo _("<font color=\"red\"><b>" . _("MinGID is empty!") . "</b></font>");
+	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
 if (chop($maxGID) == "") {
-	echo _("<b>" . _("maxGID is empty!") . "</b>");
+	echo _("<font color=\"red\"><b>" . _("MaxGID is empty!") . "</b></font>");
+	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
 if (chop($minMach) == "") {
-	echo _("<b>" . _("minMachine is empty!") . "</b>");
+	echo _("<font color=\"red\"><b>" . _("MinMachine is empty!") . "</b></font>");
+	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
 if (chop($maxMach) == "") {
-	echo _("<b>" . _("maxMachine is empty!") . "</b>");
+	echo _("<font color=\"red\"><b>" . _("MaxMachine is empty!") . "</b></font>");
+	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
 if (chop($defShell) == "") {
-	echo _("<b>" . _("default shell is empty!") . "</b>");
+	echo _("<font color=\"red\"><b>" . _("Default shell is empty!") . "</b></font>");
+	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
 if (chop($shellList) == "") {
-	echo _("<b>" . _("shell list is empty!") . "</b>");
+	echo _("<font color=\"red\"><b>" . _("Shell list is empty!") . "</b></font>");
+	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
 
