@@ -289,7 +289,7 @@ page will be displayed.<br>
 </table>
 <br>
 This function is called when a page requests a help topic from this module.<br>
-<span style="font-weight: bold;">$scope</span> is the help identifier; it must only contain a-z, A-Z, 0-9
+<span style="font-weight: bold;">$helpID</span> is the help identifier; it must only contain a-z, A-Z, 0-9
 -, . and _.<br>
 It must return the help entry as array for the submitted help identifier. The format of the array to be returned is described in section 4. "Help entry syntax".<br>
 <br>
@@ -436,7 +436,12 @@ elements are not allowed here.
 <br>The text of this help entry. Can constist if any alpha-numeric characters and can contain 
 placeholder for variables passed to this help entry. The placeholder must follow the syntax for 
 placeholder defined by the PHP <b>printf</b> function. HTML/CSS elements are allowed here as long 
-as they follow the XHTML1.0 Strict specification.
+as they follow the XHTML1.0 Strict specification.<br><br>
+When placeholders are included you can submit the values that should be displayed there as arguments 
+when calling the <b>templates/help.php</b> file. There they are attached as <b>var1</b>, <b>var2</b> 
+and so on. The names must follow the following rules:<br>
+1. They must be named <b>var$i</b> where $i is any positive number except the '0'.<br>
+2. This number ($i) must either be '1' or $i -1 must be present.
 <br><br>
 <span style="font-weight: bold;">SeeAlso</span> <span style="font-style: italic;">(OPTIONAL)</span> 
 <br>An array of references to anonther related subjects. Each row of the array must contain a field 
