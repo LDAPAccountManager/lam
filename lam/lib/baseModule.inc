@@ -57,6 +57,11 @@ class baseModule {
 	/** contains all ldap attributes which are loaded from ldap */
 	var $orig;
 
+	/** contains the last error messages of the module.
+	* Ths variable is needed because we don't want to make
+	* unnecesarry checks when a attributes wasn't changed */
+	var $errors;
+	
 	/**
 	* Creates a new base module class
 	*

@@ -368,7 +368,7 @@ class posixGroup extends baseModule {
 				$errors['userPassword'][] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
 			}
 			if ($post['genpass']) $this->userPassword(genpasswd());
-			if ($this->attributes['gidNumber'][0]!=$post['gidNumber']) {
+			if ($this->attributes['gidNumber'][0]!=$post['gidNumber'] || ($this->errors['gidNumber'][0]='ERROR')) {
 				// Check if GID is valid. If none value was entered, the next useable value will be inserted
 				// load min and may uidNumber
 				$minID = intval($this->moduleSettings['posixGroup_minGID'][0]);
@@ -426,7 +426,7 @@ class posixGroup extends baseModule {
 					}
 				}
 			}
-			if ($this->attributes['cn'][0]!=$post['cn']) {
+			if ($this->attributes['cn'][0]!=$post['cn'] || ($this->errors['cn'][0]='ERROR')) {
 				$this->attributes['cn'][0] = $post['cn'];
 				if (($this->attributes['cn'][0] != $post['cn']) &&  ereg('[A-Z]$', $post['cn']))
 				$errors['cn'][] = array('WARN', _('Groupname'), _('You are using a capital letters. This can cause problems because windows isn\'t case-sensitive.'));
@@ -477,7 +477,11 @@ class posixGroup extends baseModule {
 			}
 		}
 		// Return error-messages
-		if (is_array($errors)) return $errors;
+		if (count($errors)!=0) {
+			$this->errors = $errors;
+			return $errors;
+		}
+		else $this->errors = array();
 		// Go to additional group page when no error did ocour and button was pressed
 		if ($post['adduser'])  return 'user';
 		return 0;
