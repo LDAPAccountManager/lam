@@ -29,25 +29,32 @@ include_once("ldap.php");
 echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\" />";
 
 // Samba hosts have the attribute "sambaAccount" and end with "$"
-$filter = "(&(objectClass=sambaAccount) (uid=*$))";
-$attrs = array("cn", "rid");
+$filter = "(objectClass=posixGroup)";
+$attrs = array("cn", "gidNumber", "memberUID", "description");
 $sr = ldap_search($_SESSION["ldap"]->server(),
-	$_SESSION["config"]->get_HostSuffix(),
+	$_SESSION["config"]->get_GroupSuffix(),
 	$filter, $attrs);
 $info = ldap_get_entries($_SESSION["ldap"]->server, $sr);
 ldap_free_result($sr);
 
-// print host table
+// print host table header
 echo "<table width=\"100%\">\n";
 echo "<tr>";
-echo "<th class=\"userlist\">" . _("Host Name") . "</th>";
-echo "<th class=\"userlist\">RID</th>";
+echo "<th class=\"userlist\">" . _("Grup Name") . "</th>";
+echo "<th class=\"userlist\">" . _("GID Number") . "</th>";
+echo "<th class=\"userlist\">" . _("Group Members") . "</th>";
+echo "<th class=\"userlist\">" . _("Description") . "</th>";
 echo "</tr>";
 // print host list
 for ($i = 0; $i < sizeof($info)-1; $i++) { // ignore last entry in array which is "count"
 	echo("<tr>");
 	echo ("<td class=\"userlist\">" . $info[$i]["cn"][0] . "</td>");
-	echo ("<td class=\"userlist\">" . $info[$i]["rid"][0] . "</td>");
+	echo ("<td class=\"userlist\">" . $info[$i]["gidnumber"][0] . "</td>");
+	// create list of group members
+	array_shift($info[$i]["memberuid"]); // delete count entry
+	$grouplist = implode("; ", $info[$i]["memberuid"]);
+	echo ("<td class=\"userlist\">" . $grouplist . "</td>");
+	echo ("<td class=\"userlist\">" . $info[$i]["description"][0] . "</td>");
 	echo("</tr>");
 }
 echo ("</table>");
