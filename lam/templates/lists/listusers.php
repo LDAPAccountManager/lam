@@ -85,13 +85,13 @@ for ($i = 0; $i < sizeof($temp_array); $i++) {
   if (substr($temp_array[$i],0,1) == "#") {
     $attr = substr($temp_array[$i],1);
     $attr_array[$i] = $attr;
-    $desc_array[] = $hash_table[$attr];
+    $desc_array[] = strtoupper($hash_table[$attr]);
   }
   // if not predefined, the attribute is seperated by a ":" from description
   else {
     $attr = explode(":", $temp_array[$i]);
     $attr_array[$i] = $attr[0];
-    $desc_array[$i] = $attr[1];
+    $desc_array[$i] = strtoupper($attr[1]);
   }
 }
 

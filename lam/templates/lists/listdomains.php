@@ -82,8 +82,8 @@ $desc_array;	// list of descriptions for the attributes
 $attr_array[] = "sambaDomainName";
 $attr_array[] = "sambaSID";
 $attr_array[] = "dn";
-$desc_array[] = _("Domain Name");
-$desc_array[] = _("Domain SID");
+$desc_array[] = strtoupper(_("Domain name"));
+$desc_array[] = strtoupper(_("Domain SID"));
 $desc_array[] = "DN";
 
 // check search suffix
