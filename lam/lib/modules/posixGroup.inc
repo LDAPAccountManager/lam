@@ -583,18 +583,6 @@ class posixGroup extends baseModule {
 		return $return;
 		}
 
-	// posixGroup has no profile options
-	function get_profileOptions() {
-		return array();
-	}
-
-	// checks if the values of a new or modified profile are valid
-	// $scope: the account type (user, group, host, ...)
-	// $options: a hash array (name => value) containing the options
-	function check_profileOptions($options) {
-		return array();
-	}
-	
 	function get_pdfFields($account_type="user") {
 		return array(	'cn',
 							'gidNumber',
