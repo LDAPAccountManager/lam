@@ -131,7 +131,7 @@ function showMainPage($scope) {
 					echo "<li><b>" . _("Identifier") . ":</b> " . "dn_suffix</li>\n";
 					echo "<li><b>" . _("Example value") . ":</b> " . "ou=accounts,dc=yourdomain,dc=org</li>\n";
 					echo "<li>\n";
-						echo "<a href=\"help.php?HelpNumber=TODO\" target=\"lamhelp\">" . _("Help") . "</a>\n";
+						echo "<a href=\"help.php?HelpNumber=361\" target=\"lamhelp\">" . _("Help") . "</a>\n";
 					echo "</li>\n";
 				echo "</ul>\n";
 			echo "</td>\n";
@@ -140,9 +140,10 @@ function showMainPage($scope) {
 			echo "<br>\n";
 				echo "<ul>\n";
 					echo "<li><b>" . _("Identifier") . ":</b> " . "dn_rdn</li>\n";
+					echo "<li><b>" . _("Possible values") . ":</b> " . "uid, cn, sambaSID</li>\n";  // TODO fill with correct values
 					echo "<li><b>" . _("Example value") . ":</b> " . "uid</li>\n";
 					echo "<li>\n";
-						echo "<a href=\"help.php?HelpNumber=TODO\" target=\"lamhelp\">" . _("Help") . "</a>\n";
+						echo "<a href=\"help.php?HelpNumber=301\" target=\"lamhelp\">" . _("Help") . "</a>\n";
 					echo "</li>\n";
 				echo "</ul>\n";
 			echo "</td>\n";

@@ -113,7 +113,9 @@ $helpArray = array (
 					"Text" => _("Please enter the master configuration password. This is NOT your LDAP password. It is stored in your config.cfg file. If this is the first time you log in, enter \"lam\".")),
 				// 300 - 399
 				// Roland Gruber
-				// profile editor
+				// profile editor, file upload
+				"301" => array ("ext" => "FALSE", "Headline" => _("RDN identifier"),
+					"Text" => _("This is the identifier for the relative DN value. It must be one of the given allowed LDAP attributes (e.g. user accounts usually use \"uid\" while groups use \"cn\").")),
 				"360" => array ("ext" => "FALSE", "Headline" => _("Profile name"),
 					"Text" => _("Name under which the profile will be saved. If a profile with the same name exists, it will be overwritten.")),
 				"361" => array ("ext" => "FALSE", "Headline" => _("DN Suffix"),
