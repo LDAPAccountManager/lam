@@ -400,26 +400,26 @@ class Config {
 
   // prints current preferences
   function printconf() {
-    echo "<b>" . _("ServerURL") . ": </b>" . $this->ServerURL . "<br>";
-    echo "<b>" . _("Samba3") . ": </b>" . $this->samba3 . "<br>";
-    echo "<b>" . _("Domain SID") . ": </b>" . $this->domainSID . "<br>";
+    echo "<b>" . _("Server Address") . ": </b>" . $this->ServerURL . "<br>";
+    echo "<b>" . _("Samba 3.x schema") . ": </b>" . $this->samba3 . "<br>";
+    echo "<b>" . _("Domain SID (Samba 3 only)") . ": </b>" . $this->domainSID . "<br>";
     echo "<b>" . _("UserSuffix") . ": </b>" . $this->Suff_users . "<br>";
     echo "<b>" . _("GroupSuffix") . ": </b>" . $this->Suff_groups . "<br>";
     echo "<b>" . _("HostSuffix") . ": </b>" . $this->Suff_hosts . "<br>";
-    echo "<b>" . _("minUID") . ": </b>" . $this->MinUID . "<br>";
-    echo "<b>" . _("maxUID") . ": </b>" . $this->MaxUID . "<br>";
-    echo "<b>" . _("minGID") . ": </b>" . $this->MinGID . "<br>";
-    echo "<b>" . _("maxGID") . ": </b>" . $this->MaxGID . "<br>";
-    echo "<b>" . _("minMachine") . ": </b>" . $this->MinMachine . "<br>";
-    echo "<b>" . _("maxMachine") . ": </b>" . $this->MaxMachine . "<br>";
-    echo "<b>" . _("userlistAttributes") . ": </b>" . $this->userlistAttributes . "<br>";
-    echo "<b>" . _("grouplistAttributes") . ": </b>" . $this->grouplistAttributes . "<br>";
-    echo "<b>" . _("hostlistAttributes") . ": </b>" . $this->hostlistAttributes . "<br>";
-    echo "<b>" . _("maxlistentries") . ": </b>" . $this->maxlistentries . "<br>";
-    echo "<b>" . _("defaultLanguage") . ": </b>" . $this->defaultLanguage . "<br>";
-    echo "<b>" . _("scriptPath") . ": </b>" . $this->scriptPath . "<br>";
-    echo "<b>" . _("scriptServer") . ": </b>" . $this->scriptServer . "<br>";
-    echo "<b>" . _("Admins") . ": </b>" . $this->Adminstring;
+    echo "<b>" . _("Minimum UID number") . ": </b>" . $this->MinUID . "<br>";
+    echo "<b>" . _("Maximum UID number") . ": </b>" . $this->MaxUID . "<br>";
+    echo "<b>" . _("Minimum GID number") . ": </b>" . $this->MinGID . "<br>";
+    echo "<b>" . _("Maximum GID number") . ": </b>" . $this->MaxGID . "<br>";
+    echo "<b>" . _("Minimum Machine number") . ": </b>" . $this->MinMachine . "<br>";
+    echo "<b>" . _("Maximum Machine number") . ": </b>" . $this->MaxMachine . "<br>";
+    echo "<b>" . _("Attributes in User List") . ": </b>" . $this->userlistAttributes . "<br>";
+    echo "<b>" . _("Attributes in Group List") . ": </b>" . $this->grouplistAttributes . "<br>";
+    echo "<b>" . _("Attributes in Host List") . ": </b>" . $this->hostlistAttributes . "<br>";
+    echo "<b>" . _("Maximum list entries") . ": </b>" . $this->maxlistentries . "<br>";
+    echo "<b>" . _("Default Language") . ": </b>" . $this->defaultLanguage . "<br>";
+    echo "<b>" . _("Path to external script") . ": </b>" . $this->scriptPath . "<br>";
+    echo "<b>" . _("Server of external script") . ": </b>" . $this->scriptServer . "<br>";
+    echo "<b>" . _("List of valid users") . ": </b>" . $this->Adminstring;
   }
 
   // functions to read/write preferences

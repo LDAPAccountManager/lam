@@ -36,7 +36,7 @@ $helpArray = array (
 				// configuration wizard
 				// configuration login
 				"200" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard - Login"),
-					"Text" => _("Please enter the configuration password. This is NOT your LDAP password. It is stored in your .conf-file. If this is the first time you log in, enter 'lam'.")),
+					"Text" => _("Please enter the configuration password. This is NOT your LDAP password. It is stored in your .conf-file. If this is the first time you log in, enter \"lam\".")),
 				"201" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard - Server Address"),
 					"Text" => _("This is the Server Address of your LDAP server. Use ldap:// for standard LDAP connections and ldaps:// for encrypted (require server certificates) connections. The port value is optional.") .
 						"<br><br><b> " .
@@ -62,7 +62,7 @@ $helpArray = array (
 				"205" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard - Machine Number"),
 					"Text" => _("These are the minimum and maximum numbers to use for machine IDs when creating new accounts for Samba hosts. The range has to be different from that of users. New host accounts will always get the highest number in use plus one.")),
 				"206" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard - List Attributes"),
-					"Text" => _("This is the list of attributes to show in the user/group/host list. The entries can either be predefined values, '#value', or individual ones, 'value:description'. Several entries are seperated by semicolons.") .
+					"Text" => _("This is the list of attributes to show in the user/group/host list. The entries can either be predefined values, \"#value\", or individual ones, \"value:description\". Several entries are seperated by semicolons.") .
 						"<br><br><b>" .
 						_("Example") .
 						": </b>#homeDirectory;#uid;#cn;#uidNumber;#gidNumber;description:UserDescription<br><br><br><u><b>" .
@@ -100,7 +100,7 @@ $helpArray = array (
 				"212" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard - Change Password"),
 					"Text" => _("If you want to change the current preferences password, please enter it here.")),
 				"213" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard - Samba version"),
-					"Text" => _("If you use Samba 3.x with the new LDAP schema say 'yes' here, otherwise 'no'.").
+					"Text" => _("If you use Samba 3.x with the new LDAP schema say \"yes\" here, otherwise \"no\".").
 						"<br><br><b>".
 						_("LAM will not work if version is wrong!").
 						"</b>"),
@@ -108,22 +108,26 @@ $helpArray = array (
 					"Text" => _("If you use the new Samba 3.x schema enter your domain SID here.").
 						"<br><br>".
 						_("You can get your domain SID with this command: ").
-					"<b>'net getlocalsid'</b>"),
+					"<b>\"net getlocalsid\"</b>"),
 				// 300 - 399
 				// Roland Gruber
 				// profile editor
 				"300" => array ("ext" => "FALSE", "Headline" => _("Profile Editor - Set Samba Password"),
-					"Text" => _("If set to \"no\" the NT and LM passwords will be set to \"NO PASSWORD*****\" and the user will be unable to login.".
-						"<br><br>If unsure say \"yes\" here.")),
+					"Text" => _("If set to \"no\" the NT and LM passwords will be set to \"NO PASSWORD*****\" and the user will be unable to login.").
+						"<br><br>".
+						_("If unsure say \"yes\" here.")),
 				"301" => array ("ext" => "FALSE", "Headline" => _("Profile Editor - Set Unix Password for Samba"),
-					"Text" => _("If set to \"yes\" the Windows password will be the same as the Unix one.".
-						"<br><br>If unsure say \"yes\" here.")),
+					"Text" => _("If set to \"yes\" the Windows password will be the same as the Unix one.").
+						"<br><br>".
+						_("If unsure say \"yes\" here.")),
 				"302" => array ("ext" => "FALSE", "Headline" => _("Profile Editor - User can change password"),
-					"Text" => _("If set to \"yes\" the user will be able to change his Windows password.".
-						"<br><br>If unsure say \"yes\" here.")),
+					"Text" => _("If set to \"yes\" the user will be able to change his Windows password.").
+						"<br><br>".
+						_("If unsure say \"yes\" here.")),
 				"303" => array ("ext" => "FALSE", "Headline" => _("Profile Editor - User must change password"),
-					"Text" => _("If set to \"yes\" the user will need to change his Windows password at next login.".
-						"<br><br>If unsure say \"no\" here.")),
+					"Text" => _("If set to \"yes\" the user will need to change his Windows password at next login.").
+						"<br><br>".
+						_("If unsure say \"no\" here.")),
 				"304" => array ("ext" => "FALSE", "Headline" => _("Profile Editor - Home drive"),
 					"Text" => _("This is the drive letter for the user's home drive. The home directory will be connected with this drive letter at login."),
 					"SeeAlso" => "<a href=\"./help.php?HelpNumber=305\" target=\"_self\">Path to home directory</a>"),
@@ -135,8 +139,7 @@ $helpArray = array (
 				"307" => array ("ext" => "FALSE", "Headline" => _("Profile Editor - Script path"),
 					"Text" => _("This is the path to the logon script directory.")),
 				"308" => array ("ext" => "FALSE", "Headline" => _("Profile Editor - User Workstations"),
-					"Text" => _("These are the workstations on which the user is allowed to login. They have to be seperated by spaces".
-						" (e.g. \"PC01 PC09 PC34\"). If the user is allowed to login on all workstations, leave this field empty.")),
+					"Text" => _("These are the workstations on which the user is allowed to login. They have to be seperated by spaces (e.g. \"PC01 PC09 PC34\"). If the user is allowed to login on all workstations, leave this field empty.")),
 				"309" => array ("ext" => "FALSE", "Headline" => _("Profile Editor - Domain"),
 					"Text" => _("This is the Windows domain name.")),
 				"330" => array ("ext" => "FALSE", "Headline" => _("Profile Editor - Primary group"),
@@ -148,8 +151,9 @@ $helpArray = array (
 				"333" => array ("ext" => "FALSE", "Headline" => _("Profile Editor - Login Shell"),
 					"Text" => _("This is the user's login shell. Set to \"/bin/bash\" if unsure.")),
 				"334" => array ("ext" => "FALSE", "Headline" => _("Profile Editor - Set Unix Password"),
-					"Text" => _("If set to \"no\" the Unix password will not be set and the user will be unable to login.".
-						"<br><br>If unsure say \"yes\" here.")),
+					"Text" => _("If set to \"no\" the Unix password will not be set and the user will be unable to login.").
+						"<br><br>".
+						_("If unsure say \"yes\" here.")),
 				"335" => array ("ext" => "FALSE", "Headline" => _("Profile Editor - Password warning"),
 					"Text" => _("Number of days a user will be warned before his password expires.")),
 				"336" => array ("ext" => "FALSE", "Headline" => _("Profile Editor - Password expiry"),
