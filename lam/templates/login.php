@@ -23,15 +23,10 @@ $Id$
   LDAP Account Manager checking login data.
 */
 
-// Starting LDAP Account Manager session
-session_name("LDAP Account Manager");
-session_start();
-
 // including ldap.php which provides basic ldap functions
 include_once("../lib/ldap.php");
 
 $config = new Config; // Creating new Config object
-session_register($config); // Register $config object in session
 
 // checking if the submitted username/password is correct.
 if($action == "checklogin")
@@ -40,8 +35,8 @@ if($action == "checklogin")
 	$result = $ldap->connect($username,$passwd);
 	if($result == True) // Username/password correct. Doing some configuration and loading main Frame.
 	{
-		session_register(ldap); // Register $ldap object in session
-		session_register(language); // Register $language in session
+		session_register("ldap"); // Register $ldap object in session
+		session_register("language"); // Register $language in session
 
 		// setting language
 		$language = explode(":", $language);
@@ -69,6 +64,13 @@ if($action == "checklogin")
 // Loading Login page
 else
 {
-include("./login.inc");
+	// Starting LDAP Account Manager session
+	session_name("LDAP Account Manager");
+	session_start();
+
+	session_register("config"); // Register $config object in session
+
+
+	include("./login.inc");
 }
 ?>
