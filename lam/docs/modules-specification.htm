@@ -301,6 +301,202 @@ Returns the account type (user/group/host) of this module object.<br>
 <span style="font-weight: bold;">This function is provided by the
 baseModule and should not be overwritten.</span><br>
 <br>
+<h3>2.1.12. get_uploadColumns*</h3>
+<br>
+<table style="text-align: left; width: 300px; height: 30px;" border="0"
+ cellspacing="2" cellpadding="2">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204); text-align: center;"><span
+ style="font-weight: bold;">function get_uploadColumns()</span><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+Returns a list of column entries for the upload .csv-file.<br>
+Each column entry is an array containing these values:<br>
+<ul>
+  <li><span style="font-weight: bold;"><span style="font-style: italic;">string</span>
+name:</span> fixed non-translated name which is used as column name
+(should be of format: &lt;module name&gt;_&lt;column name&gt;)</li>
+  <li><span style="font-weight: bold;"><span style="font-style: italic;">string</span>
+description:</span> short descriptive name</li>
+  <li><span style="font-weight: bold;"><span style="font-style: italic;">string</span>
+help:</span> help ID</li>
+  <li><span style="font-weight: bold;"><span style="font-style: italic;">string</span>
+example:</span> example value</li>
+  <li><span style="font-weight: bold;"><span style="font-style: italic;">string</span>
+values:</span> possible input values<span style="font-style: italic;"> </span><span
+ style="font-weight: bold; font-style: italic;">(optional)</span></li>
+  <li><span style="font-weight: bold; font-style: italic;">string</span><span
+ style="font-weight: bold;"> default:</span><span
+ style="font-weight: bold; font-style: italic;"> </span>default value <span
+ style="font-weight: bold; font-style: italic;">(optional)</span><br>
+  </li>
+  <li><span style="font-weight: bold;"><span style="font-style: italic;">boolean</span>
+required:</span> true, if user must set a value for this column <span
+ style="font-weight: bold; font-style: italic;">(optional, default:
+"false")</span><br>
+  </li>
+  <li><span style="font-weight: bold;"><span style="font-style: italic;">boolean</span>
+unique:</span> true if
+all values of this column must be different values <span
+ style="font-style: italic; font-weight: bold;">(optional, default:
+"false")</span><br>
+  </li>
+</ul>
+<br>
+<h3>2.1.13. get_uploadPreDepends*</h3>
+<br>
+<table style="text-align: left; width: 300px; height: 30px;" border="0"
+ cellspacing="2" cellpadding="2">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204); text-align: center;"><span
+ style="font-weight: bold;">function get_uploadPreDepends()</span><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+Returns a list of module names which must be processed before this
+module at builing accounts.<br>
+The named modules may not be active, LAM will check this automatically.<br>
+<br>
+<h3>2.1.14. build_uploadAccounts</h3>
+<br>
+<table style="text-align: left; width: 484px; height: 31px;" border="0"
+ cellspacing="2" cellpadding="2">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204); text-align: center;"><span
+ style="font-weight: bold;">function get_uploadAccounts($rawAccounts,
+$ids, $partialAccounts)</span><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+This function takes the user input and generates the LDAP accounts.<br>
+<br>
+<span style="font-weight: bold;"><span style="font-style: italic;">array</span>
+$rawAccounts:</span> The user input data, contains one sub array for
+each account.<br>
+<span style="font-weight: bold;"><span style="font-style: italic;">array</span>
+$ids:</span> Maps the column names to keys for the sub arrays.<br>
+<span style="font-weight: bold;"><span style="font-style: italic;">array</span>
+$partialAccounts:</span> Containing one sub array for each account,
+format is the same as used for ldap_add().<br>
+<br>
+Returns an array which contains sub arrays to generate StatusMessages
+if any errors occured.<br>
+<br>
+<h3>2.1.15. do_uploadPostActions</h3>
+<br>
+<table style="text-align: left; width: 484px; height: 31px;" border="0"
+ cellspacing="2" cellpadding="2">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204); text-align: center;"><span
+ style="font-weight: bold;">function do_uploadPostActions($data, $ids,
+$failed, &amp;$temp)</span><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+This function is responsible to do additional tasks after the account
+has been created in LDAP.<br>
+E.g. modifying group memberships, adding Quota etc..<br>
+<br>
+This function is called as long as the returned status is <span
+ style="font-style: italic;">'finished'</span>. Please make sure that
+one function call lasts no longer than 3-4 seconds. Otherwise the
+upload may fail because the time limit is exceeded. You should not make
+more than one LDAP operation in each call.<br>
+<br>
+<span style="font-weight: bold;"><span style="font-style: italic;">array</span>
+$data:</span> The user input data, contains one sub array for each
+account.<br>
+<span style="font-weight: bold;"><span style="font-style: italic;">array</span>
+$ids:</span> Maps the column names to keys for the sub arrays.<br>
+<span style="font-weight: bold;"><span style="font-style: italic;">array</span>
+$failed:</span> List of account numbers which could not be successfully
+uploaded to LDAP.<br>
+<span style="font-weight: bold;"><span style="font-style: italic;">array</span>
+&amp;$temp:</span> Pointer to temporary variable which can be used to
+save information between two function calls.<br>
+<br>
+<span style="font-weight: bold;">return array (</span><br>
+&nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">'status' =&gt;
+'finished' | 'inProgress'</span>&nbsp;&nbsp; // Defines if all
+operations are complete<br>
+&nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">'progress' =&gt;
+0..100</span>&nbsp;&nbsp; // The progress of the operations in percent<br>
+&nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">'errors' =&gt;
+array()</span>&nbsp;&nbsp; // List of arrays which are used to generate
+StatusMessages<br>
+&nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">)</span><br>
+<br>
+<h3>2.1.16. get_profileOptions*</h3>
+<br>
+<table cellpadding="2" cellspacing="2" border="0"
+ style="text-align: left; width: 300px; height: 30px;">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204); text-align: center;"><span
+ style="font-weight: bold;">function get_profileOptions()</span><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+This function defines what attributes will be used in the account
+profiles and their appearance in the profile editor.<br>
+<br>
+<span style="font-weight: bold;"></span>The return value is an array
+that contains <span style="font-weight: bold;">meta HTML code</span>.<br>
+<br>
+The type "fieldset" is not allowed here.<br>
+The <span style="font-style: italic;">name</span> attributes are used
+as keywords to load and save profiles. We recommend to use the module
+name as prefix for them (e.g. posixAccount_homeDirectory) to avoid
+naming confilcts.<br>
+<br>
+<h3>2.1.17. check_profileOptions*</h3>
+<br>
+<table style="text-align: left; width: 400px; height: 30px;" border="0"
+ cellspacing="2" cellpadding="2">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204); text-align: center;"><span
+ style="font-weight: bold;">function check_profileOptions($options)</span><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+This function checks the input for a new or modified account profile.<br>
+<br>
+<span style="font-weight: bold;"></span><span style="font-weight: bold;">$options</span>
+is an hash array
+(option name =&gt; value) that contains the input. The option values
+are all arrays containing one or more elements.<br>
+If the input data is invalid the return value is an array that contains
+arrays to build StatusMessages (0 =&gt; message type, 1 =&gt; message
+head, 2 =&gt; message text, 3 =&gt; additional variables).<br>
+If no errors occured the function returns an empty array.<span
+ style="font-weight: bold;"></span><br>
+<br>
+<h3><br>
+</h3>
 <br>
 <br>
 <h3>2.2. Functions which are called inside of an account container<br>
@@ -388,58 +584,6 @@ It must return the help entry as array for the submitted help
 identifier. The format of the array to be returned is described in
 section 4. "Help entry syntax".<br>
 <br>
-<h3>2.2.5. get_profileOptions*</h3>
-<br>
-<table cellpadding="2" cellspacing="2" border="0"
- style="text-align: left; width: 300px; height: 30px;">
-  <tbody>
-    <tr>
-      <td
- style="vertical-align: top; background-color: rgb(204, 204, 204); text-align: center;"><span
- style="font-weight: bold;">function get_profileOptions()</span><br>
-      </td>
-    </tr>
-  </tbody>
-</table>
-<br>
-This function defines what attributes will be used in the account
-profiles and their appearance in the profile editor.<br>
-<br>
-<span style="font-weight: bold;"></span>The return value is an array
-that contains <span style="font-weight: bold;">meta HTML code</span>.<br>
-<br>
-The type "fieldset" is not allowed here.<br>
-The <span style="font-style: italic;">name</span> attributes are used
-as keywords to load and save profiles. We recommend to use the module
-name as prefix for them (e.g. posixAccount_homeDirectory) to avoid
-naming confilcts.<br>
-<br>
-<h3>2.2.6. check_profileOptions*</h3>
-<br>
-<table style="text-align: left; width: 400px; height: 30px;" border="0"
- cellspacing="2" cellpadding="2">
-  <tbody>
-    <tr>
-      <td
- style="vertical-align: top; background-color: rgb(204, 204, 204); text-align: center;"><span
- style="font-weight: bold;">function check_profileOptions($options)</span><br>
-      </td>
-    </tr>
-  </tbody>
-</table>
-<br>
-This function checks the input for a new or modified account profile.<br>
-<br>
-<span style="font-weight: bold;"></span><span style="font-weight: bold;">$options</span>
-is an hash array
-(option name =&gt; value) that contains the input. The option values
-are all arrays containing one or more elements.<br>
-If the input data is invalid the return value is an array that contains
-arrays to build StatusMessages (0 =&gt; message type, 1 =&gt; message
-head, 2 =&gt; message text, 3 =&gt; additional variables).<br>
-If no errors occured the function returns an empty array.<span
- style="font-weight: bold;"></span><br>
-<br>
 <h3>2.2.7. get_pdfEntries</h3>
 <br>
 <table style="text-align: left; width: 300px; height: 30px;" border="0"
@@ -465,54 +609,7 @@ user to decide which fields are to be displayed on the PDF file. The
 format of the array to be returned is described in section 5. "PDF
 syntax".<br>
 <br>
-<h3>2.2.8. get_uploadColumns</h3>
-<br>
-<table style="text-align: left; width: 300px; height: 30px;" border="0"
- cellspacing="2" cellpadding="2">
-  <tbody>
-    <tr>
-      <td
- style="vertical-align: top; background-color: rgb(204, 204, 204); text-align: center;"><span
- style="font-weight: bold;">function get_uploadColumns()</span><br>
-      </td>
-    </tr>
-  </tbody>
-</table>
-<br>
-Returns a list of column entries for the upload .csv-file.<br>
-Each column entry is an array containing these values:<br>
-<ul>
-  <li><span style="font-weight: bold;"><span style="font-style: italic;">string</span>
-name:</span> fixed non-translated name which is used as column name
-(should be of format: &lt;module name&gt;_&lt;column name&gt;)</li>
-  <li><span style="font-weight: bold;"><span style="font-style: italic;">string</span>
-description:</span> short descriptive name</li>
-  <li><span style="font-weight: bold;"><span style="font-style: italic;">string</span>
-help:</span> help ID</li>
-  <li><span style="font-weight: bold;"><span style="font-style: italic;">string</span>
-example:</span> example value</li>
-  <li><span style="font-weight: bold;"><span style="font-style: italic;">string</span>
-values:</span> possible input values<span style="font-style: italic;"> </span><span
- style="font-weight: bold; font-style: italic;">(optional)</span></li>
-  <li><span style="font-weight: bold; font-style: italic;">string</span><span
- style="font-weight: bold;"> default:</span><span
- style="font-weight: bold; font-style: italic;"> </span>default value <span
- style="font-weight: bold; font-style: italic;">(optional)</span><br>
-  </li>
-  <li><span style="font-weight: bold;"><span style="font-style: italic;">boolean</span>
-required:</span> true, if user must set a value for this column <span
- style="font-weight: bold; font-style: italic;">(optional, default:
-"false")</span><br>
-  </li>
-  <li><span style="font-weight: bold;"><span style="font-style: italic;">boolean</span>
-unique:</span> true if
-all values of this column must be different values <span
- style="font-style: italic; font-weight: bold;">(optional, default:
-"false")</span><br>
-  </li>
-</ul>
-<br>
-<h3>2.2.9. dynamic_Message<br>
+<h3>2.2.8. dynamic_Message<br>
 </h3>
 <br>
 <table style="text-align: left; width: 349px; height: 50px;" border="0"
@@ -535,7 +632,7 @@ message is corresponding to.<br>
 <br>
 Returnis an array as expected from StatusMessage().<br>
 <br>
-<h3>2.2.10. load_Messages<br>
+<h3>2.2.9. load_Messages<br>
 </h3>
 <br>
 <table style="text-align: left; width: 280px; height: 50px;" border="0"
@@ -556,7 +653,7 @@ Second Index (y) selects the exact message. Third Index (z) contains an
 array as expected from StatusMessage().<br>
 $this-&gt;messages[x][y][z]<br>
 <br>
-<h3>2.2.11. load_attributes<br>
+<h3>2.2.10. load_attributes<br>
 </h3>
 <br>
 <table style="text-align: left; width: 280px; height: 50px;" border="0"
@@ -584,7 +681,7 @@ This function has t be expanded when attributes have to be loaded from
 a different DN or handled completly<br>
 separat.<br>
 <br>
-<h3>2.2.12. save_attributes<br>
+<h3>2.2.11. save_attributes<br>
 </h3>
 <br>
 <table style="text-align: left; width: 280px; height: 50px;" border="0"
@@ -615,7 +712,7 @@ first index is 'lamdaemon'. Second index is 'command'. Third index is
 the command<br>
 itself which should be executed by lamdaemon.<br>
 <br>
-<h3>2.2.13. delete_attributes<br>
+<h3>2.2.12. delete_attributes<br>
 </h3>
 <br>
 <table style="text-align: left; width: 280px; height: 50px;" border="0"
@@ -636,7 +733,7 @@ save_attributes().<br>
 is needed t interact with the user.<br>
 <br>
 <br>
-<h3>2.2.14. proccess_attributes<br>
+<h3>2.2.13. proccess_attributes<br>
 </h3>
 <br>
 <table style="text-align: left; width: 386px; height: 50px;" border="0"
@@ -674,7 +771,7 @@ array();<br>
 <br>
 <br>
 <br>
-<h3>2.2.15. proccess_*<br>
+<h3>2.2.14. proccess_*<br>
 </h3>
 <br>
 <table style="text-align: left; width: 346px; height: 50px;" border="0"
@@ -696,7 +793,7 @@ should be proccessed.<br>
 is needed t interact with the user.<br>
 <br>
 <br>
-<h3>2.2.16. display_html_attributes($post)<br>
+<h3>2.2.15. display_html_attributes($post)<br>
 </h3>
 <br>
 <table style="text-align: left; width: 346px; height: 50px;" border="0"
@@ -718,7 +815,7 @@ Return is an array of meta HTML code.<br>
 is needed t interact with the user.<br>
 <br>
 <br>
-<h3>2.2.17. display_html_*($post)<br>
+<h3>2.2.16. display_html_*($post)<br>
 </h3>
 <br>
 <table style="text-align: left; width: 346px; height: 50px;" border="0"
@@ -741,7 +838,7 @@ is needed t interact with the user.<br>
 <br>
 <span style="font-weight: bold;"><br>
 </span>
-<h3>2.2.16. display_html_delete($post)<br>
+<h3>2.2.17. display_html_delete($post)<br>
 </h3>
 <br>
 <table style="text-align: left; width: 346px; height: 50px;" border="0"
@@ -1126,8 +1223,20 @@ the other values only if they are inside the <span
 check_profileOptions().<br>
 <br>
 </span></span>
-<h3><br>
-</h3>
+<h3>6.11 get_uploadColumns()</h3>
+"upload_columns" =&gt; array()<br>
+<span style="font-weight: bold;"><br>
+<span style="font-style: italic;">Syntax for array is the same as for
+the
+return value of get_uploadColumns().<br>
+</span></span><br>
+<h3>6.12 get_uploadPreDepends()</h3>
+"upload_preDepends" =&gt; array()<br>
+<span style="font-weight: bold;"><br>
+<span style="font-style: italic;">Syntax for array is the same as for
+the
+return value of get_uploadPreDepends().<br>
+</span></span><br>
 <span style="font-weight: bold;"></span><span style="font-weight: bold;"><span
  style="font-style: italic;"></span></span><span
  style="font-style: italic; font-weight: bold;"></span><span
