@@ -382,6 +382,7 @@ elseif ($_GET['type'] == "host") {
 	if (saveHostProfile($acct, $profname)) {
 		echo StatusMessage("INFO", _("Profile was saved."), $profname);
 	}
+	else StatusMessage("ERROR", _("Unable to save profile!"), $profname);
 	echo ("<br><p><a href=\"profilemain.php\">" . _("Back to Profile Editor") . "</a></p>");
 }
 
