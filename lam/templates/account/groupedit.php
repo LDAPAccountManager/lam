@@ -110,7 +110,12 @@ else if (count($_POST)==0) {
 				else $j++;
 			}
 		// Beautify array, repair index
-		$account_new->quota = array_values($account_new->quota);
+		if (is_array($account_new->quota)) $account_new->quota = array_values($account_new->quota);
+		// Set used blocks
+		for ($i=0; $i<count($account_new->quota); $i++) {
+			$account_new->quota[$i][1] = 0;
+			$account_new->quota[$i][5] = 0;
+			}
 		}
 	// Display general-page
 	$select_local = 'general';
@@ -272,7 +277,7 @@ switch ($_POST['select']) {
 			// Load quotas if not yet done because they are needed for the pdf-file
 			if ($config_intern->scriptServer && !isset($account_new->quota[0])) { // load quotas
 				$quotas = getquotas(array($account_old));
-				$account_new = $quotas[0];
+				$account_new->quota = $quotas[0]->quota;
 				}
 			// Create / display PDf-file
 			createGroupPDF(array($account_new));
@@ -398,7 +403,22 @@ do { // X-Or, only one if() can be true
 					else $j++;
 				}
 			// Beautify array, repair index
-			$account_new->quota = array_values($account_new->quota);
+			if (is_array($account_new->quota)) $account_new->quota = array_values($account_new->quota);
+			// Set used blocks
+			if (isset($account_old)) {
+				for ($i=0; $i<count($account_new->quota); $i++)
+					for ($j=0; $j<count($quotas[0]->quota); $j++)
+						if ($quotas[0]->quota[$j][0] == $account_new->quota[$i][0]) {
+							$account_new->quota[$i][1] = $quotas[0]->quota[$i][1];
+							$account_new->quota[$i][4] = $quotas[0]->quota[$i][4];
+							$account_new->quota[$i][5] = $quotas[0]->quota[$i][5];
+							$account_new->quota[$i][8] = $quotas[0]->quota[$i][8];
+							}
+				}
+			else for ($i=0; $i<count($account_new->quota); $i++) {
+				$account_new->quota[$i][1] = 0;
+				$account_new->quota[$i][5] = 0;
+				}
 			}
 		// select general page after group has been loaded
 		$select_local='general';
@@ -707,7 +727,7 @@ switch ($select_local) {
 		// Load quotas if not yet done
 		if ($config_intern->scriptServer && !isset($account_new->quota[0]) ) { // load quotas
 			$quotas = getquotas(array($account_new));
-			$account_new = $quotas[0];
+			$account_new->quota = $quotas[0]->quota;
 			}
 		echo "<input name=\"select\" type=\"hidden\" value=\"samba\">\n";
 		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";

@@ -192,8 +192,8 @@ function RndInt($Format){
 
 
 /* Whis function will return the quotas from the specified user If empty only filesystems with enabled quotas are returned
-* $users = array of account objects. If $user is a string (user or group)
-*         an array with all quota-enabled partitions will be returned in this case all returned values are 0 exept mointpoint[x][0]
+* $users = array of account objects.
+*        An array with all quota-enabled partitions will be returned in this case all returned values are 0 exept mointpoint[x][0]
 */
 function getquotas($users) {
 	// define new object
@@ -258,38 +258,42 @@ function getquotas($users) {
 	* mountpoint, used blocks, soft block limit, hard block limit, grace block period, used inodes,
 	* soft inode limit, hard inode limit, grace inode period
 	*/
-	for ($i=0; $i<count($return); $i++) {
-		$all_quota = explode(':', $output_array[$i]);
-		for ($j=0; $j<sizeof($all_quota)-1; $j++) {
-			$single_quota = explode(',', $all_quota[$j]);
-			// unset not existing quotas from account-object
-			// collect all existing mountpoints in array
-			$real_quotas[] = $single_quota[0];
-			for ($k=0; $k<sizeof($single_quota); $k++)
-				$return[$i]->quota[$j][$k] = $single_quota[$k];
-			if ($return[$i]->quota[$j][4]<time()) $return[$i]->quota[$j][4] = '';
-				else $return[$i]->quota[$j][4] = strval(($return[$i]->quota[$j][4]-time())/3600) .' '. _('hours');
-			if ($return[$i]->quota[$j][8]<time()) $return[$i]->quota[$j][8] = '';
-				else $return[$i]->quota[$j][8] = strval(($return[$i]->quota[$j][8]-time())/3600) .' '. _('hours');
+	if (is_array($output_array)) {
+		for ($i=0; $i<count($return); $i++) {
+			$all_quota = explode(':', $output_array[$i]);
+			for ($j=0; $j<sizeof($all_quota)-1; $j++) {
+				$single_quota = explode(',', $all_quota[$j]);
+				// unset not existing quotas from account-object
+				// collect all existing mountpoints in array
+				$real_quotas[] = $single_quota[0];
+				for ($k=0; $k<sizeof($single_quota); $k++)
+					$return[$i]->quota[$j][$k] = $single_quota[$k];
+				if ($return[$i]->quota[$j][4]<time()) $return[$i]->quota[$j][4] = '';
+					else $return[$i]->quota[$j][4] = strval(($return[$i]->quota[$j][4]-time())/3600) .' '. _('hours');
+				if ($return[$i]->quota[$j][8]<time()) $return[$i]->quota[$j][8] = '';
+					else $return[$i]->quota[$j][8] = strval(($return[$i]->quota[$j][8]-time())/3600) .' '. _('hours');
+				}
+			$j=0;
+			while (isset($return[$i]->quota[$j][0]))
+				// remove invalid quotas
+				if (!in_array($return[$i]->quota[$j][0], $real_quotas)) unset($return[$i]->quota[$j]);
+					else $j++;
+			// Beautify array, repair index
+			if (is_array($return[$i]->quota)) $return[$i]->quota = array_values($return[$i]->quota);
 			}
-		$j=0;
-		while (isset($return[$i]->quota[$j][0]))
-			// remove invalid quotas
-			if (!in_array($return[$i]->quota[$j][0], $real_quotas)) unset($return[$i]->quota[$j]);
-				else $j++;
-		// Beautify array, repair index
-		$return[$i]->quota = array_values($return[$i]->quota);
+		return $return;
 		}
-	return $return;
+	else {
+		return -1;
+		}
 	}
-
 
 /* Whis function will set the quotas from the specified user.
 * $values2 = array of object account with quotas which should be set
 * $values2_old = array of object account if set values and values_old will be compared. Quota will only be changed
 *               if values differ
 */
-function setquotas($values2,$values2_old=false) {
+function setquotas($values2) {
 	// get username and password of the current lam-admin
 	$ldap_q = $_SESSION['ldap']->decrypt();
 	/* $towrite has the following syntax:
@@ -1745,6 +1749,13 @@ function modifyuser($values,$values_old,$uselamdaemon=true) { // Will modify the
 	if (($values->personal_employeeType != $values_old->personal_employeeType) && ($values->personal_employeeType==''))
 		$attr_rem['employeeType'] = utf8_encode($values_old->personal_employeeType);
 
+	if (($values->general_uidNumber != $values_old->general_uidNumber) && $_SESSION['config']->scriptServer) {
+		// Remove old quotas
+		remquotas(array($values_old->general_username), "user");
+		// Remove quotas from $values_old because we have to rewrite them all
+		unset ($values_old->quota);
+		}
+
 	if ($values->general_dn != $values_old->general_dn) {
 		// Account should be moved to a new location
 		// Load old account
@@ -1829,8 +1840,8 @@ function modifyuser($values,$values_old,$uselamdaemon=true) { // Will modify the
 		}
 
 	// Change quotas if quotas are set and lamdaemon.pl should be used
-	if ($_SESSION['config']->scriptServer && is_array($values->quota) && $uselamdaemon)
-		setquotas(array($values),array($values_old));
+	if ($_SESSION['config']->scriptServer && is_array($values->quota) && $uselamdaemon && ($values->quota != $values_old->quota))
+		setquotas(array($values));
 	//make required changes in cache-array
 	if ((isset($_SESSION['userDN']))) {
 		if ($values->general_dn != $values_old->general_dn) {
@@ -2246,6 +2257,13 @@ function modifygroup($values,$values_old, $uselamdaemon=true) {
 		if (count($values->unix_memberUid)==0) $attr_rem['memberUid'] = $values_old->unix_memberUid;
 		 else $attr['memberUid'] = $values->unix_memberUid;
 		}
+	// Rewrite quotas if uidnumbers has changed
+	if ($values->general_uidNumber != $values_old->general_uidNumber && $_SESSION['config']->scriptServer) {
+		// Remove old quotas
+		remquotas(array($values_old->general_username), "user");
+		// Remove quotas from $values_old because we have to rewrite them all
+		unset ($values_old->quota);
+		}
 
 	if ($values->general_dn != $values_old->general_dn) {
 		// Account should be moved to a new location
@@ -2302,7 +2320,8 @@ function modifygroup($values,$values_old, $uselamdaemon=true) {
 		}
 
 	// Change quotas if quotas are set and lamdaemon.pl should be used
-	if ($_SESSION['config']->scriptServer && is_array($values->quota) && $uselamdaemon) setquotas(array($values),array($values_old));
+	if ($_SESSION['config']->scriptServer && is_array($values->quota) && $uselamdaemon && ($values->quota != $values_old->quota))
+		setquotas(array($values));
 	//make required changes in cache-array
 	if ((isset($_SESSION['groupDN']))) {
 		if ($values->general_dn != $values_old->general_dn) {

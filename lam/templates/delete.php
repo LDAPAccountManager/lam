@@ -69,7 +69,6 @@ if ($_GET['type']) {
 	// $_GET['type'] is true if delete.php was called from *list.php
 	// Store $_GET['type'] as $_POST['type']
 	// Replace wrong chars from Session
-	for ($i=0; $i<count($delete_dn); $i++) $delete_dn[$i] = str_replace("_", " ", $delete_dn[$i]);
 	echo '<input name="type" type="hidden" value="'.$_GET['type'].'">';
 	switch ($_GET['type']) {
 		// Select which layout and text should be displayed

@@ -81,7 +81,6 @@ if (isset($_GET['DN']) && $_GET['DN']!='') {
 	$DN = str_replace("\'", '',$_GET['DN']);
 	// Load existing group
 	$account_new = loaduser($DN);
-	$account_new ->type = 'user';
 	$account_old = $account_new;
 	$account_new->unix_password='';
 	$account_new->smb_password='';
@@ -131,7 +130,12 @@ if (isset($_GET['DN']) && $_GET['DN']!='') {
 				else $j++;
 			}
 		// Beautify array, repair index
-		$account_new->quota = array_values($account_new->quota);
+		if (is_array($account_new->quota)) $account_new->quota = array_values($account_new->quota);
+		// Set used blocks
+		for ($i=0; $i<count($account_new->quota); $i++) {
+			$account_new->quota[$i][1] = 0;
+			$account_new->quota[$i][5] = 0;
+			}
 		}
 	// Display general-page
 	$select_local = 'general';
@@ -506,8 +510,7 @@ switch ($_POST['select']) {
 			// Load quotas if not yet done because they are needed for the pdf-file
 			if ($config_intern->scriptServer && !isset($account_new->quota[0])) { // load quotas
 				$quotas = getquotas(array($account_old));
-				$account_new = $quotas[0];
-				$account_new->quota = $account_old->quota;
+				$account_new->quota = $quotas[0]->quota;
 				}
 			// Create / display PDf-file
 			createUserPDF(array($account_new));
@@ -670,7 +673,8 @@ do { // X-Or, only one if() can be true
 			$account_new->smb_smbhome = str_replace('$user', $account_new->general_username, $account_new->smb_smbhome);
 		if ($config_intern->scriptServer) {
 			// load quotas and check if quotas from profile are valid
-			$quotas = getquotas(array($account_new));
+			if (isset($account_old)) $quotas = getquotas(array($account_old));
+				else $quotas = getquotas(array($account_new));
 			for ($i=0; $i<count($account_new->quota); $i++) $profile_quotas[] = $account_new->quota[$i][0];
 			for ($i=0; $i<count($quotas[0]->quota); $i++) {
 				$real_quotas[] = $quotas[0]->quota[$i][0];
@@ -687,7 +691,22 @@ do { // X-Or, only one if() can be true
 					else $j++;
 				}
 			// Beautify array, repair index
-			$account_new->quota = array_values($account_new->quota);
+			if (is_array($account_new->quota)) $account_new->quota = array_values($account_new->quota);
+			// Set used blocks
+			if (isset($account_old)) {
+				for ($i=0; $i<count($account_new->quota); $i++)
+					for ($j=0; $j<count($quotas[0]->quota); $j++)
+						if ($quotas[0]->quota[$j][0] == $account_new->quota[$i][0]) {
+							$account_new->quota[$i][1] = $quotas[0]->quota[$i][1];
+							$account_new->quota[$i][4] = $quotas[0]->quota[$i][4];
+							$account_new->quota[$i][5] = $quotas[0]->quota[$i][5];
+							$account_new->quota[$i][8] = $quotas[0]->quota[$i][8];
+							}
+				}
+			else for ($i=0; $i<count($account_new->quota); $i++) {
+				$account_new->quota[$i][1] = 0;
+				$account_new->quota[$i][5] = 0;
+				}
 			}
 		// select general page after group has been loaded
 		$select_local='general';
@@ -735,9 +754,8 @@ echo "</title>\n".
 if (is_array($errors))
 	for ($i=0; $i<sizeof($errors); $i++) StatusMessage($errors[$i][0], $errors[$i][1], $errors[$i][2]);
 
-// print_r($account_new);
+//print_r($account_new);
 //print_r($account_old);
-
 
 switch ($select_local) {
 	/* Select which part of page should be loaded and check values
@@ -1379,7 +1397,7 @@ switch ($select_local) {
 		// Load quotas if not yet done
 		if ($config_intern->scriptServer && !isset($account_new->quota[0])) { // load quotas
 			$quotas = getquotas(array($account_old));
-			$account_new = $quotas[0];
+			$account_new->quota = $quotas[0]->quota;
 			}
 		echo "<input name=\"select\" type=\"hidden\" value=\"quota\">\n";
 		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
