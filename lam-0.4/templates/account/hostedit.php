@@ -133,7 +133,7 @@ switch ($_POST['select']) {
 			// Get copy of hostname so we can check if changes were made
 			$tempname = $account_new->general_username;
 			// Check if Hostname contains only valid characters
-			if ( !ereg('^([a-z]|[A-Z]|[0-9]|[.]|[-]|[$])*$', $account_new->general_username))
+			if ( !eregi('^([a-z0-9_]|[.]|[-]|[$])*$', $account_new->general_username))
 				$errors[] = array('ERROR', _('Host name'), _('Hostname contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
 
 			// Create automatic Hostname with number if original host already exists
@@ -178,7 +178,7 @@ switch ($_POST['select']) {
 			// Check if Name-length is OK. minLength=3, maxLength=20
 			if ( !ereg('.{3,20}', $account_new->general_username)) $errors[] = array('ERROR', _('Name'), _('Name must contain between 3 and 20 characters.'));
 			// Check if Name starts with letter
-			if ( !ereg('^([a-z]|[A-Z]).*$', $account_new->general_username))
+			if ( !eregi('^([a-z]).*$', $account_new->general_username))
 				$errors[] = array('ERROR', _('Name'), _('Name contains invalid characters. First character must be a letter.'));
 			// Set gecos-field to hostname if it's empty
 			if ($account_new->general_gecos=='') {
