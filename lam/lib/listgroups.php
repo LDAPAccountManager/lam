@@ -51,8 +51,11 @@ for ($i = 0; $i < sizeof($info)-1; $i++) { // ignore last entry in array which i
 	echo ("<td class=\"userlist\">" . $info[$i]["cn"][0] . "</td>");
 	echo ("<td class=\"userlist\">" . $info[$i]["gidnumber"][0] . "</td>");
 	// create list of group members
-	array_shift($info[$i]["memberuid"]); // delete count entry
-	$grouplist = implode("; ", $info[$i]["memberuid"]);
+	if (sizeof($info[$i]["memberuid"]) > 0) {
+		array_shift($info[$i]["memberuid"]); // delete count entry
+		$grouplist = implode("; ", $info[$i]["memberuid"]);
+	}
+	else $grouplist = "";
 	echo ("<td class=\"userlist\">" . $grouplist . "</td>");
 	echo ("<td class=\"userlist\">" . $info[$i]["description"][0] . "</td>");
 	echo("</tr>");
