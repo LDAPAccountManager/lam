@@ -534,13 +534,9 @@ function loaduser($dn) { // Will load all needed values from an existing account
 	if (isset($attr['postalCode'][0])) $return->personal_postalCode = utf8_decode($attr['postalCode'][0]);
 	if (isset($attr['postalAddress'][0])) $return->personal_postalAddress = utf8_decode($attr['postalAddress'][0]);
 	if (isset($attr['employeeType'][0])) $return->personal_employeeType = utf8_decode($attr['employeeType'][0]);
-	// New password code. should work with every kind of encryption ({CRYPT}, {SHA}
 	if ( ereg('^[{]([A-Z]|[a-z]|[0-9])+[}][!]', $attr['userPassword'][0])) $return->unix_deactivated=true;
-	// next line is old code
-	//if (substr(str_replace('{CRYPT}', '',$attr['userPassword'][0]),0,1) == '!' ) $return->unix_deactivated=true;
 
 	if (isset($attr['userPassword'][0])) $return->unix_password = $attr['userPassword'][0];
-
 
 	if (isset($attr['displayName'][0])) $return->smb_displayName = utf8_decode($attr['displayName'][0]);
 
@@ -828,8 +824,8 @@ function createuser($values) { // Will create the LDAP-Account
 	if ($values->personal_employeeType!='') $attr['employeeType'] = utf8_encode($values->personal_employeeType);
 	// posixAccount_may shadowAccount_may
 	if ($values->unix_password_no) $values->unix_password = '';
-	if ($values->unix_deactivated) $attr['userPassword'] = '{CRYPT}!' . crypt($values->unix_password);
-	    else $attr['userPassword'] = '{CRYPT}'. crypt($values->unix_password);
+	if ($values->unix_deactivated) $attr['userPassword'] = pwd_hash($values->unix_password, false);
+	    else $attr['userPassword'] = pwd_hash($values->unix_password, false);
 	$attr['shadowLastChange'] = getdays(); // shadowAccount_may
 	$attr['loginShell'] = $values->general_shell; // posixAccount_may
 	$attr['gecos'] = utf8_encode(replace_umlaut($values->general_gecos)); // posixAccount_may
@@ -938,50 +934,30 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 	if ($values->general_homedir != $values_old->general_homedir)
 		$attr['homeDirectory'] = $values->general_homedir; // posixAccount_req
 	// posixAccount_may shadowAccount_may
-	// new password code
-	// Why doesn't ldap encrypt the password if now {???} is given?
-	// change password if new password is used or account es (un)locked
-	/*
+
+	// Set new password
 	if ($values->unix_password=='') {
-		// check if account has been (un)locked
-		if ($values->unix_deactivated && !$values_old->unix_deactivated) {
-			// Put ! between {??} andPassword Hash
-			for ($i=0; $i<strlen($values_old->unix_password); $i++)
-				if ($values_old->unix_password{$i} == '}') $char = $i;
-			//$attr['userPassword'] = substr($values_old->unix_password,0,$char). "!". substr($values_old->unix_password,$char+1,-1);
-			echo $values_old->unix_password."---";
-			echo substr($values_old->unix_password,0,$char). "!". substr($values_old->unix_password,$char+1,-1);
+		if ($values->unix_deactivated != $values_old->unix_deactivated) {
+			$i = 0;
+			while ($values_old->unix_password{$i} != '}') $i++;
+			$passwd = substr($values_old->unix_password, $i+1 );
+			$crypt = substr($values_old->unix_password, 0, $i+1 );
+			if ($passwd{0} == '!') $passwd = substr($passwd, 1);
+			if ($values->unix_deactivated) $attr['userPassword'] = $crypt.'!'.$passwd;
+				else $attr['userPassword'] = $crypt.$passwd;
 			}
-		if (!$values->unix_deactivated && $values_old->unix_deactivated) {
-			// Remov ! between {??} andPassword Hash
-			for ($i=0; $i<strlen($values_old->unix_password); $i++)
-				if ($values_old->unix_password{$i} == '}') $char = $i;
-			$attr['userPassword'] = substr($values_old->unix_password,0,$char). substr($values_old->unix_password,$char+2,-1);
+		if ($values->unix_password_no) {
+			if ($values->unix_deactivated) $attr['userPassword'] = pwd_hash('', false);
+				else $attr['userPassword'] = pwd_hash('');
+			$attr['shadowLastChange'] = getdays(); // shadowAccount_may
 			}
 		}
 	else {
-		// Create new password
+		if ($values->unix_password_no) $values->unix_password = '';
+		if ($values->unix_deactivated) $attr['userPassword'] = pwd_hash($values->unix_password, false);
+		else $attr['userPassword'] = pwd_hash($values->unix_password);
 		$attr['shadowLastChange'] = getdays(); // shadowAccount_may
-		if ($values->unix_deactivated) $attr['userPassword'] = '!'. $values->unix_password;
-		else $attr['userPassword'] = $values->unix_password;
-	} */
-
-	// old password code
-	$password_old = str_replace('{CRYPT}', '',$values_old->unix_password);
-	if (substr($password_old,0,1) == '!' ) $password_old = substr($password_old,1,strlen($password_old));
-       if ($values->unix_password=='') {
-                if ($values->unix_password_no) {
-                        $password_old = '';
-                        $attr['shadowLastChange'] = getdays(); // shadowAccount_may
-                        }
-                if ($values->unix_deactivated && !$values_old->unix_deactivated) $attr['userPassword'] = '{CRYPT}!' . $password_old;
-                if (!$values->unix_deactivated && $values_old->unix_deactivated) $attr['userPassword'] = '{CRYPT}' . $password_old;
-                }
-         else {
-                if ($values->unix_deactivated) $attr['userPassword'] = '{CRYPT}!' . crypt($values->unix_password);
-                else $attr['userPassword'] = '{CRYPT}' . crypt($values->unix_password);
-                $attr['shadowLastChange'] = getdays(); // shadowAccount_may
-                }
+		}
 
 	if ($_SESSION['config']->is_samba3()) {
 		if ($values->smb_password_no) {
@@ -1357,8 +1333,8 @@ function createhost($values) { // Will create the LDAP-Account
 	$attr['gidNumber'] = getgid($values->general_group); // posixAccount_req
 	$attr['homeDirectory'] = $values->general_homedir; // posixAccount_req
 
-	if ($values->smb_flagsD) $attr['userPassword'] = '{CRYPT}!' . crypt('');
-	else $attr['userPassword'] = '{CRYPT}' . crypt('');
+	if ($values->smb_flagsD) $attr['userPassword'] = pwd_hash('', false);
+	else $attr['userPassword'] = pwd_hash('');
 
 	$attr['shadowLastChange'] = getdays(); // shadowAccount_may
 	$attr['loginShell'] = $values->general_shell; // posixAccount_may
@@ -1407,15 +1383,22 @@ function modifyhost($values,$values_old) { // Will modify the LDAP-Account
 			}
 		}
 
-	// Lock unix password if Account should be disbaled
-	$password_old = str_replace('{CRYPT}', '',$values_old->unix_password);
-	if (substr($password_old,0,1) == '!' ) $password_old = substr($password_old,1,strlen($password_old));
-	if ($values->smb_password_no) {
-		$password_old = '';
-		$attr['shadowLastChange'] = getdays();
+
+
+	if ($values->smb_flagsD != $values_old->smb_flagsD) {
+		$i = 0;
+		while ($values_old->unix_password{$i} != '}') $i++;
+		$passwd = substr($values_old->unix_password, $i+1 );
+		$crypt = substr($values_old->unix_password, 0, $i+1 );
+		if ($passwd{0} == '!') $passwd = substr($passwd, 1);
+		if ($values->smb_flagsD ) $attr['userPassword'] = $crypt.'!'.$passwd;
+			else $attr['userPassword'] = $crypt.$passwd;
 		}
-	if ($values->smb_flagsD) $attr['userPassword'] = '{CRYPT}!' . $password_old;
-		else $attr['userPassword'] = '{CRYPT}' . $password_old;
+	if ($values->smb_password_no) {
+		if ($values->smb_flagsD) $attr['userPassword'] = pwd_hash('', false);
+			else $attr['userPassword'] = pwd_hash('');
+		$attr['shadowLastChange'] = getdays(); // shadowAccount_may
+		}
 
 	// Add missing objectclasses to group
 	if (!in_array('posixAccount', $values->general_objectClass)) {
