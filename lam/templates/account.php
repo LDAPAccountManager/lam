@@ -466,7 +466,7 @@ switch ($select_local) { // Select which part of page will be loaded
 					<a href="help.php?HelpNumber=405" target="lamhelp">'._('Help').'</a>
 					</td></tr>'."\n".'<tr><td>';
 				echo _('Suffix'); echo '</td><td><select name="f_general_suffix">';
-				foreach (search_units($_SESSION['config']->get_UserSuffix()) as $suffix) {
+				foreach ($_SESSION['ldap']->search_units($_SESSION['config']->get_UserSuffix()) as $suffix) {
 					if ($_SESSION['account']->general_dn) {
 						if ($_SESSION['account']->general_dn == $suffix) echo '<option selected>' . $suffix. '</option>';
 						else echo '<option>' . $suffix. '</option>';
@@ -506,7 +506,7 @@ switch ($select_local) { // Select which part of page will be loaded
 					<a href="help.php?HelpNumber=409" target="lamhelp">'._('Help').'</a>
 					</td></tr><tr><td>';
 				echo _('Suffix'); echo '</td><td><select name="f_general_suffix">';
-				foreach (search_units($_SESSION['config']->get_GroupSuffix()) as $suffix) {
+				foreach ($_SESSION['ldap']->search_units($_SESSION['config']->get_GroupSuffix()) as $suffix) {
 					if ($_SESSION['account']->general_dn) {
 						if ($_SESSION['account']->general_dn == $suffix) echo '<option selected>' . $suffix. '</option>';
 						else echo '<option>' . $suffix. '</option>';
@@ -566,7 +566,7 @@ switch ($select_local) { // Select which part of page will be loaded
 					<a href="help.php?HelpNumber=413" target="lamhelp">'._('Help').'</a>
 					</td></tr><tr><td>';
 				echo _('Suffix'); echo '</td><td><select name="f_general_suffix">';
-				foreach (search_units($_SESSION['config']->get_HostSuffix()) as $suffix) {
+				foreach ($_SESSION['ldap']->search_units($_SESSION['config']->get_HostSuffix()) as $suffix) {
 					if ($_SESSION['account']->general_dn) {
 						if ($_SESSION['account']->general_dn == $suffix) echo '<option selected>' . $suffix. '</option>';
 						else echo '<option>' . $suffix. '</option>';
