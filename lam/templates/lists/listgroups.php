@@ -221,7 +221,7 @@ function draw_navigation_bar ($count) {
   echo ("&nbsp;");
 
   if ($page < ($count / $max_pageentrys))
-    echo ("<a align=\"right\" class=\"userlist\" href=\"listgrous.php?page=" . ($page + 1) . "&list=" . $list . "\">=></a>\n");
+    echo ("<a align=\"right\" class=\"userlist\" href=\"listgroups.php?page=" . ($page + 1) . "&list=" . $list . "\">=></a>\n");
   else
     echo ("=></td>");
 
