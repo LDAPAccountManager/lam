@@ -417,7 +417,7 @@ switch ($_POST['select']) {
 		 	else $account_new->smb_password = '';
 		if ( (($account_new->smb_useunixpwd && !$account_old) || ($account_new->smb_useunixpwd && $account_new->unix_password!='')) && isset($account_new->unix_password) ) {
 			// Set Samba-Password to unix-password if option is set
-			$unix_password = $_SESSION['ldap']->decrypt(base64_decode($account_new->unix_password));
+			$smb_password = $_SESSION['ldap']->decrypt(base64_decode($account_new->unix_password));
 			$account_new->smb_password = base64_encode($_SESSION['ldap']->encrypt($smb_password));
 			}
 		// Check values

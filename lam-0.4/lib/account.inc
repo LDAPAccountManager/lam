@@ -1315,7 +1315,6 @@ function createuser($values, $uselamdaemon=true) {
 	if ($values->smb_password != '') {
 		$values->smb_password = $_SESSION['ldap']->decrypt(base64_decode($values->smb_password));
 		}
-
 	// Attributes which are required
 	$attr['cn'] = $values->general_username;
 	$attr['uid'] = $values->general_username;
