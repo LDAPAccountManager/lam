@@ -27,6 +27,18 @@ class sambaGroupMapping extends baseModule {
 	// Array of well known rids
 	var $rids;
 
+	
+	/**
+	* Creates a new module for Samba 3 groups.
+	*
+	* @param string $scope account type
+	*/
+	function sambaGroupMapping($scope) {
+		// load error messages
+		$this->load_errorMessages();
+		// call parent constructor
+		parent::baseModule($scope);
+	}
 
 	function delete_attributes($post) {
 		return 0;
