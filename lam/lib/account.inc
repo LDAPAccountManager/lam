@@ -23,6 +23,302 @@ $Id$
   LDAP Account Manager functions used by account.php
 */
 
+/* This class contains all functions
+* which are needed to manage the ldap cache
+*/
+class cache {
+	function cache() {
+		$this->config = &$_SESSION['config'];
+		$this->ldap = &$_SESSION['ldap'];
+		$this->time = 0;
+		}
+
+	var $ldapcache; // This variable contains the cache
+	var $attributes; // This variable contains a list and their scope of attributes which should be cached
+	var $config; // This is a reference to the config class in session
+	var $ldap; // This is a reference to the ldap class in session
+	var $time; // This is the laste timestamp ldap cache has been refreshed
+
+	/* This function adds attributes to cache
+	* syntax of $attributes is array( scope1 => array ( attributes ), scope2 => array ( attributes ), ...)
+	*/
+	function add_cache($attributes) {
+		// Check input variable
+		$allowed_types = array ( 'user', 'group', 'host', '*' );
+		if (!is_array($attributes)) trigger_error(_('Argument of add_cache must be : array ( scope => array(attribute1(string), attribute2(string), ..), scope => ... ).'), E_USER_ERROR);
+		foreach ($attributes as $attribute) {
+			if (!is_array($attribute)) trigger_error(_('Argument of add_cache must be : array ( scope => array(attribute1(string), attribute2(string), ..), scope => ... ).'), E_USER_ERROR);
+			foreach ($attribute as $singleattribute) {
+				if (!is_string($singleattribute)) trigger_error(_('Argument of add_cache must be : array ( scope => array(attribute1(string), attribute2(string), ..), scope => ... ).'), E_USER_ERROR);
+				}
+			}
+		$scopes = array_keys($attributes);
+		foreach ($scopes as $scope) {
+			if (!@in_array($scope, $allowed_types)) trigger_error(sprintf(_('Invalid scope. Valid scopes are $s.'), implode(" ", $allowed_types)), E_USER_ERROR);
+			}
+		// Everything seems to be OK, start processing data
+		foreach ($scopes as $scope) {
+			for ($i=0; $i<count($attributes[$scope]); $i++ ) {
+				if (!@in_array($attributes[$scope][$i] ,$this->attributes[$scope])) $this->attributes[$scope][] = $attributes[$scope][$i];
+				}
+			}
+		}
+
+	/* This function returns an array ( dn1 => array(uidnumber1), dn2 => array(uidnumber2), ... )
+	*
+	*/
+	function get_cache($attribute, $objectClass, $singlescope) {
+		// Check input variables
+		$allowed_types = array ( 'user', 'group', 'host', '*' );
+		if (!in_array($singlescope, $allowed_types)) trigger_error(sprintf(_('Invalid scope. Valid scopes are %s.'), implode(" ", $allowed_types)), E_USER_ERROR);
+		$line=-1;
+		for ($i=0; $i<count($_SESSION['ldap']->objectClasses) || $i==-1; $i++) {
+			if (strpos($_SESSION['ldap']->objectClasses[$i], "NAME '$objectClass'")) $line = $i;
+			}
+		// Return error if objectClass isn't found
+		if ($line==-1) trigger_error (_("objectClass objectClass required but not defined in ldap."), E_USER_WARNING);
+		// Everything seems to be OK, start processing data
+		$this->refresh_cache();
+		if ($singlescope == '*') $scopes = $allowed_types;
+			else $scopes = array ( $singlescope );
+		foreach ($scopes as $scope) {
+			$DNs = array_keys($this->ldapcache[$scope]);
+			foreach ($DNs as $dn) {
+				if (isset($this->ldapcache[$scope][$dn][$attribute])) {
+					// return string if only attribute exists only once
+					if (count($this->ldapcache[$scope][$dn][$attribute])==1) $return[$dn] = $this->ldapcache[$scope][$dn][$attribute][0];
+					else {
+						// else return array with all attributes
+						$return[$dn] = $this->ldapcache[$scope][$dn][$attribute];
+						}
+					}
+				}
+			}
+		return $return;
+		}
+
+	/* This functions returns the dn if a dn with $attribute=$value is found
+	* $values is the value $attribute is set to
+	* $scope is the scope where to search
+	*/
+	function in_cache($value, $attribute, $singlescope) {
+		// Check input variables
+		$allowed_types = array ( 'user', 'group', 'host', '*' );
+		if (!in_array($singlescope, $allowed_types)) trigger_error(sprintf(_('Invalid scope. Valid scopes are %s.'), implode(" ", $allowed_types)), E_USER_ERROR);
+		// Create list of all allowed attributes
+		for ($i=0; $i<count($this->ldap->objectClasses); $i++ ) {
+			if (strpos($this->ldap->objectClasses[$i],  'MUST (')) {
+				$string_withtail = substr($this->ldap->objectClasses[$i], strpos($this->ldap->objectClasses[$i],  'MUST (')+6);
+				// Now we have a string with all must-attributes
+				$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
+				$string = trim($string);
+				$allowed_attributes = array_merge($allowed_attributes, explode(" $ ", $string));
+				}
+			// create array with may-attributes
+			// Get startposition in string
+			if (strpos($this->ldap->objectClasses[$i],  'MAY (')) {
+				$string_withtail = substr($this->ldap->objectClasses[$i], strpos($this->ldap->objectClasses[$i],  'MAY (')+5);
+				// Now we have a string with all must-attributes
+				$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
+				$string = trim($string);
+				$allowed_attributes = array_merge($allowed_attributes, explode(" $ ", $string));
+				}
+			}
+		$allowed_attributes = array_unique($allowed_attributes);
+		if (!in_array($attribute, $allowed_attributes)) trigger_error(_('Attribute not defined in LDAP.'), E_USER_WARNING);
+		// Everything seems to be OK, start processing data
+		$this->refresh_cache();
+		if ($singlescope == '*') $scopes = $allowed_types;
+			else $scopes = array ( $singlescope );
+		foreach ($scopes as $scope) {
+			$DNs = array_keys($this->ldapcache[$scope]);
+			foreach ($DNs as $dn) {
+				if (in_array($value, $this->ldapcache[$scope][$dn][$attribute])) {
+					// Return value if value was found
+					return $dn;
+					}
+				}
+			}
+		// Return false if value wasn't found
+		return false;
+		}
+
+
+	/* This functions refreshs the cache
+	*/
+	function refresh_cache() {
+		if ($time + $this->config->get_cacheTimeoutSec() < time()) {
+			// unset old cache
+			unset ($this->ldapcache);
+			$scopes = array_keys($this->attributes);
+			foreach ($scopes as $scope) {
+				// Get Scope
+				$function = 'get_'.ucfirst($scope).'Suffix()';
+				If ($scope != '*') $suffix = $this->config->get_UserSuffix();   // fixme *** how to call function? $function;
+					else $suffix = '';
+				// Get Data from ldap
+				$search = $this->attributes[$scope];
+				$search[] = 'objectClass';
+				$result = @ldap_search($this->ldap->server(), $suffix, 'objectClass=*', $search, 0);
+				// Write search result in array
+				$entry = @ldap_first_entry($this->ldap->server(), $result);
+				while ($entry) {
+					$dn = (ldap_get_dn($this->ldap->server(), $entry));
+					$attr = ldap_get_attributes($this->ldap->server(), $entry);
+					// unset every count entry
+					unset ($attr['count']);
+					$attributes = array_keys($attr);
+					foreach ($attributes as $attribute) unset ($attr[$attribute]['count']);
+					// unset double entries
+					for ($i=0; $i<count($attr); $i++) {
+						if (isset($attr[$i])) unset($attr[$i]);
+						}
+					// Write new cache entry
+					$addcache = $attr;
+					unset ($addcache['objectClass']);
+					if (count($addcache)!=0) $this->ldapcache[$scope][$dn] = $attr;
+					$entry = ldap_next_entry($this->ldap->server(), $entry);
+					}
+				}
+			$this->time = time();
+			}
+		}
+
+	/* This function update the cache when changes were
+	* made without refrehing the complete cache
+	*/
+	function update_cache($dn, $attributes, $singlescope) {
+		$allowed_types = array ( 'user', 'group', 'host', '*' );
+		if (!in_array($singlescope, $allowed_types)) trigger_error(sprintf(_('Invalid scope. Valid scopes are %s.'), implode(" ", $allowed_types)), E_USER_ERROR);
+		// Everything seems to be OK, start processing data
+		$this->refresh_cache();
+		if (isset($this->ldapcache[$singlescope][$dn])) unset($this->ldapcache[$singlescope][$dn]);
+		$attrnames = array_keys ($this->attributes[$singlescope]);
+		foreach ($attrnames as $name) {
+			if (is_string($attributes[$name])) $this->ldapcache[$singlescope][$dn][$name][] = $attributes[$name];
+			if (is_array($attributes[$name])) $this->ldapcache[$singlescope][$dn][$name] = $attributes[$name];
+			}
+		}
+
+	}
+
+
+
+class accountContainer {
+	// Constructor
+	function accountContainer($type) {
+		/* Set the type of account. Valid
+		* types are: user, group, host
+		*/
+		// Check input variable
+		if (!is_string($type)) trigger_error(_('Argument of accountContainer must be string.'), E_USER_ERROR);
+		// *** fixme use global variable to determine allowed types
+		$allowed_types = array ( 'user', 'group', 'host' );
+		if (!in_array($type, $allowed_types)) trigger_error(_('Account type not recognized.'), E_USER_ERROR);
+		$this->type = $type;
+		$this->lampath = &$_SESSION['lampath'];
+		$this->ldap = &$_SESSION['ldap'];
+		return 0;
+		}
+
+	/* Array of all used attributes
+	* Syntax is attribute => array ( objectClass => MUST or MAY, ...)
+	*/
+	var $attributes;
+	/* This variale stores the type
+	* of account. Current unix, group, host are supported
+	*/
+	var $type;
+	var $lampath; // reference to lampath from Session
+	var $ldap; // This is a reference to the ldap class in session
+
+	/* Get the type of account. Valid
+	* types are: user, group, host
+	*/
+	function get_type() {
+		return $this->type;
+		}
+
+	/* Add attributes to variable. Syntax is array( attribute = array ( objectClass1 => MUST|MAX, objectClass2 => MUST|MAY ), ... )
+	*/
+	function add_attributes($objectClass) {
+		// loop through every existing objectlass and select current objectClass
+		$line=-1;
+		for ($i=0; $i<count($this->ldap->objectClasses) || $i==-1; $i++) {
+			if (strpos($this->ldap->objectClasses[$i], "NAME '$objectClass'")) $line = $i;
+			}
+		// Return error if objectClass isn't found
+		if ($line==-1) trigger_error (_("objectClass objectClass required but not defined in ldap."), E_USER_WARNING);
+		// create array with must-attributes
+		// Get startposition in string
+		if (strpos($this->ldap->objectClasses[$line],  'MUST (')) {
+			$string_withtail = substr($this->ldap->objectClasses[$line], strpos($this->ldap->objectClasses[$line],  'MUST (')+6);
+			// Now we have a string with all must-attributes
+			$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
+			$string = trim($string);
+			$must = explode(" $ ", $string);
+			// Ad must
+			foreach ($must as $attribute) {
+				if (!isset($this->attributes[$attribute])) $this->attributes[$attribute][$objectClass] = 'MUST';
+					else $this->attributes[$attribute][$objectClass] = 'MUST';
+				}
+			}
+		// create array with may-attributes
+		// Get startposition in string
+		if (strpos($this->ldap->objectClasses[$line],  'MAY (')) {
+			$string_withtail = substr($this->ldap->objectClasses[$line], strpos($_SESSION['ldap']->objectClasses[$line],  'MAY (')+5);
+			// Now we have a string with all must-attributes
+			$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
+			$string = trim($string);
+			$may = explode(" $ ", $string);
+			// Ad may
+			foreach ($may as $attribute) {
+				if (!isset($this->attributes[$attribute])) $this->attributes[$attribute][$objectClass] = 'MAY';
+					else $this->attributes[$attribute][$objectClass] = 'MAY';
+				}
+			}
+		}
+
+	/* This function return ldap attributes
+	* Syntax is get_attributes($value, $scope)
+	* $scope = 'objectClass', $value = objectClass return value are all attributes of objectClass
+	* $scope = 'attribute', $value = attribute returns alle objectClasses which are using the attribute
+	*/
+	function get_attributes($value, $scope) {
+		if ($scope=='attribute' && isset($this->attributes[$value])) return $this->attributes[$value];
+		if ($scope=='objectClass') {
+			$keys = array_keys($this->attributes);
+			foreach ($keys as $attribute) {
+				if (isset($this->attributes[$attribute][$value])) $return[$attribute] = $this->attributes[$attribute][$value];
+				}
+			return $return;
+			}
+		return 0;
+		}
+
+	/* This function adds an objectClass class (module) to accountContainer
+	*/
+	function add_objectClass($objectClass) {
+		$line=-1;
+		for ($i=0; $i<count($_SESSION['ldap']->objectClasses) || $i==-1; $i++) {
+			if (strpos($_SESSION['ldap']->objectClasses[$i], "NAME '$objectClass'")) $line = $i;
+			}
+		// Return error if objectClass isn't found
+		if ($line==-1) trigger_error (_("objectClass objectClass required but not defined in ldap."), E_USER_WARNING);
+		else {
+			// Add module if it exists
+			if (filetype($this->lampath."/lib/modules/".$objectClass.".inc") == 'file') {
+				include_once ($this->lampath."/lib/modules/".$objectClass.".inc");
+				$this[] = new $objectClass($this);
+				}
+			}
+		return 0;
+		}
+
+	}
+
+
+
 // This class keeps all needed values for any account
 class account {
 	// Type : user | group | host
