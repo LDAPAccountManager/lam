@@ -126,15 +126,6 @@ class inetOrgPerson extends baseModule {
 	function init($base) {
 		// call parent init
 		parent::init($base);
-		// load attribtues which are used in inetOrgPerson objectClass
-		// unset attributes which are "must" but not in this module
-		// cn will be set to uid in module posixAccount
-		// Therefore module posixAccount is required an cn will be removed from main index in account_container
-		// Create copy of attributes
-		$this->orig = $_SESSION[$this->base]->get_module_attributes('inetOrgPerson');
-		$this->attributes = $_SESSION[$this->base]->get_module_attributes('inetOrgPerson');
-		// Add objectClass to attributes
-		$this->attributes['objectClass'][0] = 'inetOrgPerson';
 		}
 
 	// Variables
@@ -149,21 +140,21 @@ class inetOrgPerson extends baseModule {
 	/** regular expression for host name */
 	var $regex_host = '^([a-z0-9\\.-])+(([,])+([ ])*([a-z0-9\\.-])+)*$';
 	/** regular expression for first/last name */
-	var $regex_name = '^([a-z äöüß-])+$';
+	var $regex_name = '^([a-z ï¿½ï¿½])+$';
 	/** regular expression for telephone numbers */
 	var $regex_telephoneNumber = '^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/]|[-])*$';
 	/** regular expression for e-mail */
 	var $regex_email = '^(([0-9a-z\\._-])+[@]([0-9a-z-])+([.]([0-9a-z-])+)*)*$';
 	/** regular expression for street names */
-	var $regex_street = '^([0-9a-z \\.äöüß-])*$';
+	var $regex_street = '^([0-9a-z \\.ï¿½ï¿½])*$';
 	/** regular expression for postal address */
-	var $regex_postalAddress = '^([0-9a-z \\.äöüß-])*$';
+	var $regex_postalAddress = '^([0-9a-z \\.ï¿½ï¿½])*$';
 	/** regular expression for postal codes */
 	var $regex_postalCode = '^([0-9a-z])*$';
 	/** regular expression for job titles */
-	var $regex_title = '^([0-9a-z \\.äöüß-])*$';
+	var $regex_title = '^([0-9a-z \\.ï¿½ï¿½])*$';
 	/** regular expression for employee types */
-	var $regex_employeeType = '^([0-9a-z \\.äöüß-])*$';
+	var $regex_employeeType = '^([0-9a-z \\.ï¿½ï¿½])*$';
 
 	/** list of possible error messages */
 	var $messages = array();

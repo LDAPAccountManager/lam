@@ -892,6 +892,8 @@ class accountContainer {
 			}
 		// Return error if objectClass isn't found
 		if ($line==-1) trigger_error (sprintf(_("ObjectClass %s required but not defined in ldap."), $objectClass), E_USER_WARNING);
+		// get casesensitive objectClass name
+		$objectClassName = substr($_SESSION['ldap']->objectClasses[$line], 6+strpos($_SESSION['ldap']->objectClasses[$line], "NAME '"), strlen($objectClass) );
 		if (strpos($_SESSION['ldap']->objectClasses[$line],  'MUST (')) {
 			$string_withtail = substr($_SESSION['ldap']->objectClasses[$line], strpos($_SESSION['ldap']->objectClasses[$line],  'MUST (')+6);
 			// Now we have a string with all must-attributes
@@ -972,8 +974,8 @@ class accountContainer {
 							$return[$attribute] =& $this->module[$module[$i]]->orig[$attribute];
 				}
 			}
-
-			return $return;
+		$return['objectClass'][0] = $objectClassName;
+		return $return;
 		}
 
 	/* This function return ldap attributes which are uses by $objectClass

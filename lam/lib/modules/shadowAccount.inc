@@ -156,18 +156,6 @@ class shadowAccount extends baseModule {
 	function init($base) {
 		// call parent init
 		parent::init($base);
-		// Add Array with all attributes and type
-		$this->attributes = $_SESSION[$this->base]->get_module_attributes('shadowAccount');
-		$_SESSION[$this->base]->add_attributes ('shadowAccount');
-		// Make references to attributes which already esists in ldap
-		$newattributes = array_keys($this->attributes);
-		$module = array_keys($_SESSION[$this->base]->module);
-		for ($i=0; $i<count($module); $i++) {
-			foreach ($newattributes as $attribute)
-				if (isset($_SESSION[$this->base]->module[$module[$i]]->attributes[$attribute])) $this->attributes[$attribute] =& $_SESSION[$this->base]->module[$module[$i]]->attributes[$attribute];
-			}
-		$this->orig = $this->attributes ;
-		$this->attributes['objectClass'][0] = 'shadowAccount';
 		}
 
 	// Variables

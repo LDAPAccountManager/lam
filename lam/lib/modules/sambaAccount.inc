@@ -182,18 +182,6 @@ class sambaAccount extends baseModule {
 	function init($base) {
 		// call parent init
 		parent::init($base);
-		// Add Array with all attributes and type
-		$this->attributes = $_SESSION[$this->base]->get_module_attributes('sambaAccount');
-		$_SESSION[$this->base]->add_attributes ('sambaAccount');
-		// Make references to attributes which already esists in ldap
-		$newattributes = array_keys($this->attributes);
-		$module = array_keys($_SESSION[$this->base]->module);
-		for ($i=0; $i<count($module); $i++) {
-			foreach ($newattributes as $attribute)
-				if (isset($_SESSION[$this->base]->module[$module[$i]]->attributes[$attribute])) $this->attributes[$attribute] =& $_SESSION[$this->base]->module[$module[$i]]->attributes[$attribute];
-			}
-		$this->orig = $this->attributes ;
-		$this->attributes['objectClass'][0] = 'sambaAccount';
 		$this->useunixpwd=false;
 		// List of well known rids
 		$this->rids = array ( _('Domain Admins') => 512, _('Domain Users') => 513, _('Domain Guests') => 514, _('Domain Computers') => 515, _('Domain Controllers') => 516,
@@ -213,11 +201,11 @@ class sambaAccount extends baseModule {
 	var $rids;
 
 	/** regular expression for home directory */
-	var $regex_homedir = '^[\][\]([a-z0-9\\.%-])+([\]([a-z0-9\\.%äöüß\\$-])+)+$';
+	var $regex_homedir = '^[\][\]([a-z0-9\\.%-])+([\]([a-z0-9\\.%ï¿½ï¿½\$-])+)+$';
 	/** regular expression for profile path */
 	var $regex_profilePath = '^([\][\]([a-zA-Z0-9\\.%-])+([\]([a-z0-9\\.%-])+)+)|([/][a-z]([a-z0-9\\._%-])*([/][a-z]([a-z0-9\\._%-])*)*)$';
 	/** regular expression for logon script */
-	var $regex_logonScript = '^([/])*([a-z0-9\\._%äöüß-])+([/]([a-z0-9\\._%äöüß-])+)*((\\.bat)|(\\.cmd))$';
+	var $regex_logonScript = '^([/])*([a-z0-9\\._%ï¿½ï¿½])+([/]([a-z0-9\\._%ï¿½ï¿½])+)*((\\.bat)|(\\.cmd))$';
 	/** regular expression for allowed workstations */
 	var $regex_workstations = '^([a-z0-9\\._-])+(,[a-z0-9\\._-])*$';
 	/** regular expression for domain name */
@@ -464,10 +452,10 @@ class sambaAccount extends baseModule {
 				$scriptPath = str_replace('$group', 'group', $scriptPath);
 				$profilePath = str_replace('$user', 'user', $this->attributes['profilePath'][0]);
 				$profilePath = str_replace('$group', 'group', $profilePath);
-				if ( (!$smbHome=='') && (!ereg('^[\][\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+([\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+)+$', $smbHome)))
+				if ( (!$smbHome=='') && (!ereg('^[\][\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+([\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%]|[ï¿½|[ï¿½|[ï¿½|[ï¿½|[]|[ï¿½|[ï¿½)+)+$', $smbHome)))
 						$errors['smbHome'][] = array('ERROR', _('Home path'), _('Home path is invalid.'));
-				if ( (!$scriptPath=='') && (!ereg('^([/])*([a-z]|[0-9]|[.]|[-]|[_]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+([a-z]|[0-9]|[.]|[-]|[_]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])*'.
-					'([/]([a-z]|[0-9]|[.]|[-]|[_]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+([a-z]|[0-9]|[.]|[-]|[_]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])*)*(([.][b][a][t])|([.][c][m][d]))$', $scriptPath)))
+				if ( (!$scriptPath=='') && (!ereg('^([/])*([a-z]|[0-9]|[.]|[-]|[_]|[%]|[ï¿½|[ï¿½|[ï¿½|[ï¿½|[]|[ï¿½|[ï¿½)+([a-z]|[0-9]|[.]|[-]|[_]|[%]|[ï¿½|[ï¿½|[ï¿½|[ï¿½|[]|[ï¿½|[ï¿½)*'.
+					'([/]([a-z]|[0-9]|[.]|[-]|[_]|[%]|[ï¿½|[ï¿½|[ï¿½|[ï¿½|[]|[ï¿½|[ï¿½)+([a-z]|[0-9]|[.]|[-]|[_]|[%]|[ï¿½|[ï¿½|[ï¿½|[ï¿½|[]|[ï¿½|[ï¿½)*)*(([.][b][a][t])|([.][c][m][d]))$', $scriptPath)))
 					$errors['scriptPath'][] = array('ERROR', _('Script path'), _('Script path is invalid!'));
 				if ( (!$profilePath=='') && (!ereg('^[/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*([/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*)*$', $profilePath))
 					&& (!ereg('^[\][\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+([\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+)+$', $profilePath)))

@@ -170,21 +170,9 @@ class posixAccount extends baseModule {
 	function init($base) {
 		// call parent init
 		parent::init($base);
-		// Add Array with all attributes and type
-		$this->orig = $_SESSION[$this->base]->get_module_attributes('posixAccount');
-		$this->attributes = $_SESSION[$this->base]->get_module_attributes('posixAccount');
-
 		$groups = $_SESSION['cache']->findgroups(); // list of all groupnames
 		if (count($groups)==0) trigger_error(_('No groups found in ldap.'), E_USER_WARNING);
 
-		// Make references to attributes which already esists in ldap
-		$newattributes = array_keys($this->attributes);
-		$module = array_keys($_SESSION[$this->base]->module);
-		for ($i=0; $i<count($module); $i++) {
-			foreach ($newattributes as $attribute)
-				if (isset($_SESSION[$this->base]->module[$module[$i]]->attributes[$attribute])) $this->attributes[$attribute] =& $_SESSION[$this->base]->module[$module[$i]]->attributes[$attribute];
-			}
-		$this->attributes['objectClass'][0] = 'posixAccount';
 		$this->createhomedir=false;
 		}
 

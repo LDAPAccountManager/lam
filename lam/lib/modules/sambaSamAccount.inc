@@ -115,18 +115,6 @@ class sambaSamAccount extends baseModule {
 	function init($base) {
 		// call parent init
 		parent::init($base);
-		// Add Array with all attributes and type
-		$this->attributes = $_SESSION[$this->base]->get_module_attributes('sambaSamAccount');
-		$_SESSION[$this->base]->add_attributes ('sambaSamAccount');
-		// Make references to attributes which already esists in ldap
-		$newattributes = array_keys($this->attributes);
-		$module = array_keys($_SESSION[$this->base]->module);
-		for ($i=0; $i<count($module); $i++) {
-			foreach ($newattributes as $attribute)
-				if (isset($_SESSION[$this->base]->module[$module[$i]]->attributes[$attribute])) $this->attributes[$attribute] =& $_SESSION[$this->base]->module[$module[$i]]->attributes[$attribute];
-			}
-		$this->orig = $this->attributes ;
-		$this->attributes['objectClass'][0] = 'sambaSamAccount';
 		$this->useunixpwd=false;
 		// List of well known rids
 		$this->rids = array ( _('Domain Admins') => 512, _('Domain Users') => 513, _('Domain Guests') => 514, _('Domain Computers') => 515, _('Domain Controllers') => 516,
@@ -147,11 +135,11 @@ class sambaSamAccount extends baseModule {
 
 
 	/** regular expression for home directory */
-	var $regex_homedir = '^[\][\]([a-z0-9\\.%-])+([\]([a-z0-9\\.%äöüß\\$-])+)+$';
+	var $regex_homedir = '^[\][\]([a-z0-9\\.%-])+([\]([a-z0-9\\.%ï¿½ï¿½\$-])+)+$';
 	/** regular expression for profile path */
 	var $regex_profilePath = '^([\][\]([a-zA-Z0-9\\.%-])+([\]([a-z0-9\\.%-])+)+)|([/][a-z]([a-z0-9\\._%-])*([/][a-z]([a-z0-9\\._%-])*)*)$';
 	/** regular expression for logon script */
-	var $regex_logonScript = '^([/])*([a-z0-9\\._%äöüß-])+([/]([a-z0-9\\._%äöüß-])+)*((\\.bat)|(\\.cmd))$';
+	var $regex_logonScript = '^([/])*([a-z0-9\\._%ï¿½ï¿½])+([/]([a-z0-9\\._%ï¿½ï¿½])+)*((\\.bat)|(\\.cmd))$';
 	/** regular expression for allowed workstations */
 	var $regex_workstations = '^([a-z0-9\\._-])+(,[a-z0-9\\._-])*$';
 

@@ -63,11 +63,6 @@ class account extends baseModule {
 	function init($base) {
 		// call parent init
 		parent::init($base);
-		// load attribtues which are used in account objectClass
-		$this->orig = $_SESSION[$this->base]->get_module_attributes('account');
-		$this->attributes = $_SESSION[$this->base]->get_module_attributes('account');
-		// Add objectClass to attributes
-		$this->attributes['objectClass'][0] = 'account';
 		}
 
 	// Variables

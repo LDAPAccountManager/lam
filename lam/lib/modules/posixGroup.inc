@@ -163,8 +163,6 @@ class posixGroup extends baseModule {
 	function init($base) {
 		// call parent init
 		parent::init($base);
-		$this->attributes =& $_SESSION[$this->base]->get_module_attributes('posixGroup');
-		$this->orig =& $_SESSION[$this->base]->get_module_attributes('posixGroup', true);
 		$this->changegids=false;
 		}
 
