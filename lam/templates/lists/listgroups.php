@@ -196,11 +196,11 @@ if (sizeof($grp_info) > 0) {
 									" onClick=\"group_click(this, '" . $grp_info[$i]["dn"] . "')\"" .
 									" onDblClick=\"parent.frames[1].location.href='../account/groupedit.php?DN=" . $grp_info[$i]["dn"] . "'\">");
 		if ($_GET['selectall'] == "yes") {
-		echo " <td height=22><input onClick=\"group_click(this, '" . $grp_info[$i]["dn"] . "')\" type=\"checkbox\"" .
+		echo " <td height=22 align=\"center\"><input onClick=\"group_click(this, '" . $grp_info[$i]["dn"] . "')\" type=\"checkbox\"" .
 			" name=\"" . $grp_info[$i]["dn"] . "\" checked></td>";
 		}
 		else {
-		echo " <td height=22><input onClick=\"group_click(this, '" . $grp_info[$i]["dn"] . "')\" type=\"checkbox\"" .
+		echo " <td height=22 align=\"center\"><input onClick=\"group_click(this, '" . $grp_info[$i]["dn"] . "')\" type=\"checkbox\"" .
 			" name=\"" . $grp_info[$i]["dn"] . "\"></td>";
 		}
 		echo (" <td align='center'><a href=\"../account/groupedit.php?DN='" . $grp_info[$i]["dn"] . "'\">" . _("Edit") . "</a></td>");

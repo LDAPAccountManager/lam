@@ -269,11 +269,11 @@ if ($user_count != 0) {
 			"onDblClick=\"parent.frames[1].location.href='../account/useredit.php?type=user&amp;DN=" . $userinfo[$i]["dn"] . "'\">\n");
 		// check boxes if selectall = "yes"
 		if ($_GET['selectall'] == "yes") {
-			echo "<td height=22>\n<input onClick=\"user_click(this, '" . $userinfo[$i]["dn"] . "')\" type=\"checkbox\" name=\"" .
+			echo "<td height=22 align=\"center\">\n<input onClick=\"user_click(this, '" . $userinfo[$i]["dn"] . "')\" type=\"checkbox\" name=\"" .
 				$userinfo[$i]["dn"] . "\" checked>\n</td>\n";
 		}
 		else {
-			echo "<td height=22>\n<input onClick=\"user_click(this, '" . $userinfo[$i]["dn"] . "')\" type=\"checkbox\" name=\"" .
+			echo "<td height=22 align=\"center\">\n<input onClick=\"user_click(this, '" . $userinfo[$i]["dn"] . "')\" type=\"checkbox\" name=\"" .
 				$userinfo[$i]["dn"] . "\">\n</td>\n";
 		}
 		echo ("<td align='center'>\n<a href=\"../account/useredit.php?type=user&amp;DN='" . $userinfo[$i]["dn"] . "'\">" .

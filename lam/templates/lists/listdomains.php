@@ -149,7 +149,7 @@ for ($i = $table_begin; $i < $table_end; $i++) {
 								" onMouseOut=\"domain_out(this, '" . $dom_info[$i]["dn"] . "')\"" .
 								" onClick=\"domain_click(this, '" . $dom_info[$i]["dn"] . "')\"" .
 								" onDblClick=\"parent.frames[1].location.href='../domain.php?action=edit&amp;DN=" . $dom_info[$i]["dn"] . "'\">" .
-								" <td height=22><input onClick=\"domain_click(this, '" . $dom_info[$i]["dn"] . "')\" type=\"checkbox\" name=\"" . $dom_info[$i]["dn"] . "\"></td>" .
+								" <td height=22 align=\"center\"><input onClick=\"domain_click(this, '" . $dom_info[$i]["dn"] . "')\" type=\"checkbox\" name=\"" . $dom_info[$i]["dn"] . "\"></td>" .
 								" <td align='center'><a href=\"../domain.php?action=edit&amp;DN='" . $dom_info[$i]["dn"] . "'\">" . _("Edit") . "</a></td>");
 	for ($k = 0; $k < sizeof($attr_array); $k++) {
 		echo ("<td>");

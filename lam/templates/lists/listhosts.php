@@ -202,11 +202,11 @@ if (sizeof($hst_info) > 0) {
 									" onClick=\"host_click(this, '" . $hst_info[$i]["dn"] . "')\"" .
 									" onDblClick=\"parent.frames[1].location.href='../account/hostedit.php?DN=" . $hst_info[$i]["dn"] . "'\">");
 		if ($_GET['selectall'] == "yes") {
-		echo " <td height=22><input onClick=\"host_click(this, '" . $hst_info[$i]["dn"] . "')\"" .
+		echo " <td height=22 align=\"center\"><input onClick=\"host_click(this, '" . $hst_info[$i]["dn"] . "')\"" .
 					" type=\"checkbox\" checked name=\"" . $hst_info[$i]["dn"] . "\"></td>";
 		}
 		else {
-		echo " <td height=22><input onClick=\"host_click(this, '" . $hst_info[$i]["dn"] . "')\"" .
+		echo " <td height=22 align=\"center\"><input onClick=\"host_click(this, '" . $hst_info[$i]["dn"] . "')\"" .
 					" type=\"checkbox\" name=\"" . $hst_info[$i]["dn"] . "\"></td>";
 		}
 		echo (" <td align='center'><a href=\"../account/hostedit.php?DN='" . $hst_info[$i]["dn"] . "'\">" . _("Edit") . "</a></td>");
