@@ -66,6 +66,11 @@ else if (count($_POST)==0) { // Startcondition. useredit.php was called from out
 	$_SESSION['account']->smb_flagsW = 0;
 	if (isset($_SESSION['account_old'])) unset($_SESSION['account_old']);
 	$_SESSION['account_old'] = false;
+	$values = getquotas('user');
+	if (is_object($values)) {
+		while (list($key, $val) = each($values)) // Set only defined values
+			if (isset($val)) $_SESSION['account']->$key = $val;
+		}
 	}
 
 

@@ -840,6 +840,7 @@ function createuser($values) { // Will create the LDAP-Account
 	$attr['shadowLastChange'] = getdays(); // shadowAccount_may
 	$attr['loginShell'] = $values->general_shell; // posixAccount_may
 	$attr['gecos'] = utf8_encode($values->general_gecos); // posixAccount_may
+	print $attr['gecos'];
 	$attr['description'] = utf8_encode($values->general_gecos); // posixAccount_may sambaAccount_may
 	$attr['displayName'] = utf8_encode($values->smb_displayName); // sambaAccount_may
 
