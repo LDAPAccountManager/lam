@@ -108,7 +108,7 @@ echo ("<p align=\"center\"><a href=\"http://lam.sf.net\" target=\"new_window\">"
 echo ("<form action=\"confmain.php\" method=\"post\">\n");
 
 echo ("<fieldset><legend><b>" . _("Server settings") . "</b></legend>");
-echo ("<table align=\"left\" border=\"0\">");
+echo ("<table align=\"left\" border=0>");
 // serverURL
 echo ("<tr><td align=\"right\"><b>" . _("Server Address") . ": </b></td>".
 	"<td align=\"left\">".
@@ -117,7 +117,7 @@ echo ("<tr><td align=\"right\"><b>" . _("Server Address") . ": </b></td>".
 echo ("<td><a href=\"../help.php?HelpNumber=201\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 
 // new line
-echo ("<tr><td>&nbsp</td></tr>");
+echo ("<tr><td colspan=3>&nbsp</td></tr>");
 
 // user suffix
 echo ("<tr><td align=\"right\"><b>".
@@ -136,7 +136,7 @@ echo ("<tr><td align=\"right\"><b>".
 echo ("<td><a href=\"../help.php?HelpNumber=202\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 
 // new line
-echo ("<tr><td>&nbsp</td></tr>");
+echo ("<tr><td colspan=3>&nbsp</td></tr>");
 
 // Samba version
 echo ("<tr><td align=\"right\"><b>".
@@ -150,7 +150,7 @@ echo ("</fieldset>");
 echo ("<br>");
 
 echo ("<fieldset><legend><b>" . _("Ranges") . "</b></legend>");
-echo ("<table align=\"left\" border=\"0\">");
+echo ("<table align=\"left\" border=0>");
 
 // minUID
 echo ("<tr><td align=\"right\"><b>".
@@ -185,7 +185,7 @@ echo ("</fieldset>");
 echo ("<br>");
 
 echo ("<fieldset><legend><b>" . _("LDAP List settings") . "</b></legend>");
-echo ("<table align=\"left\" border=\"0\">");
+echo ("<table align=\"left\" border=0>");
 
 // user list attributes
 echo ("<tr><td align=\"right\"><b>".
@@ -203,7 +203,7 @@ echo ("<tr><td align=\"right\"><b>".
 	"<td><input size=50 type=\"text\" name=\"hstlstattr\" value=\"" . $conf->get_hostlistAttributes() . "\"></td>");
 echo ("<td><a href=\"../help.php?HelpNumber=206\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>");
 
-echo ("<tr><td>&nbsp</td></tr>");
+echo ("<tr><td colspan=3>&nbsp</td></tr>");
 
 // maximum list entries
 echo ("<tr><td align=\"right\"><b>".
@@ -223,7 +223,7 @@ echo ("</fieldset>\n");
 echo ("<br>\n");
 
 echo ("<fieldset><legend><b>" . _("Language settings") . "</b></legend>\n");
-echo ("<table align=\"left\" border=\"0\">\n");
+echo ("<table align=\"left\" border=0>\n");
 
 // language
 echo ("<tr>");
@@ -263,7 +263,7 @@ echo ("</fieldset>\n");
 echo ("<br>\n");
 
 echo ("<fieldset><legend><b>" . _("Script settings") . "</b></legend>\n");
-echo ("<table align=\"left\" border=\"0\">\n");
+echo ("<table align=\"left\" border=0>\n");
 
 // script settings
 echo ("<tr><td align=\"right\"><b>".
@@ -281,7 +281,7 @@ echo ("<br>\n");
 
 
 echo ("<fieldset><legend><b>" . _("Security settings") . "</b></legend>\n");
-echo ("<table align=\"left\" border=\"0\">\n");
+echo ("<table align=\"left\" border=0>\n");
 // admin list
 echo ("<tr><td align=\"right\"><b>".
 	_("List of valid users") . ": </b></td>".
@@ -291,7 +291,7 @@ echo ("</table>\n");
 
 echo ("<br><br><br>");
 
-echo ("<table align=\"left\" border=\"0\">\n");
+echo ("<table align=\"left\" border=0>\n");
 // new password
 echo ("<tr><td bgcolor=\"red\" align=\"right\"><b>".
 	_("New Password") . ": </b></td>".
@@ -307,7 +307,7 @@ echo ("<br>");
 
 
 // buttons
-echo ("<table align=\"left\" border=\"0\">");
+echo ("<table align=\"left\" border=0>");
 
 echo ("<tr><td align=\"left\"><pre>".
 	"<input type=\"submit\" name=\"submitconf\" value=\"" . _("Submit") . "\">".
