@@ -37,10 +37,12 @@ if (!$_SESSION['ldap'] || !$_SESSION['ldap']->server()) {
 }
 
 // print standard header
+echo ("<?xml version=\"1.0\" encoding=\"ISO-8859-15\"?>\n");
+echo ("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n");
 echo ("<html>");
 echo ("<head><title>" . _("Delete User Profile") . "</title>\n");
 echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
-echo ("</head><body><br>");
+echo ("</head>\n<body>\n<p><br></p>");
 
 // check if admin has submited delete operation
 if ($_POST['submit']) {
@@ -81,26 +83,26 @@ if (($type == "user") || ($type == "host")) {
 	// user profile
 	if ($type == "user") {
 		echo ("<p align=\"center\"><big>" . _("Do you really want to delete this profile? ") . "<b>");
-			echo ($_GET['del'] . "</b></big></p><br>\n");
+			echo ($_GET['del'] . "</b></big><br></p>\n");
 		echo ("<form action=\"profiledelete.php\" method=\"post\">\n");
-		echo ("<table align=\"center\" border=0><tr><td>\n");
+		echo ("<p align=\"center\">\n");
 		echo ("<input type=\"submit\" name=\"submit\" value=\"" . _("Submit") . "\">\n");
 		echo ("<input type=\"submit\" name=\"abort\" value=\"" . _("Abort") . "\">\n");
 		echo ("<input type=\"hidden\" name=\"type\" value=\"user\">");
 		echo ("<input type=\"hidden\" name=\"del\" value=\"" . $_GET['del'] . "\">");
-		echo ("</td></tr></table></form></body></html>\n");
+		echo ("</p></form></body></html>\n");
 	}
 	// host profile
 	elseif ($type == "host") {
 		echo ("<p align=\"center\"><big>" . _("Do you really want to delete this profile? ") . "<b>");
-			echo ($_GET['del'] . "</b></big></p><br>\n");
+			echo ($_GET['del'] . "</b></big><br></p>\n");
 		echo ("<form action=\"profiledelete.php\" method=\"post\">\n");
-		echo ("<table align=\"center\" border=0><tr><td>\n");
+		echo ("<p align=\"center\">\n");
 		echo ("<input type=\"submit\" name=\"submit\" value=\"" . _("Submit") . "\">\n");
 		echo ("<input type=\"submit\" name=\"abort\" value=\"" . _("Abort") . "\">\n");
 		echo ("<input type=\"hidden\" name=\"type\" value=\"host\">");
 		echo ("<input type=\"hidden\" name=\"del\" value=\"" . $_GET['del'] . "\">");
-		echo ("</td></tr></table></form></body></html>\n");
+		echo ("</p></form></body></html>\n");
 	}
 }
 else{
