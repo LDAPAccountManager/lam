@@ -407,6 +407,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		unset($temp2[0]);
 		foreach ($temp2 as $temp) $users[] = $temp['cn'];
 		sort($users, SORT_STRING);
+		$users = array_delete($account_new->unix_memberUid, $users);
 		echo "<input name=\"select\" type=\"hidden\" value=\"groupmembers\">\n";
 		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
 		echo "<table border=0><tr><td><fieldset class=\"groupedit-middle\"><legend class=\"groupedit-bright\"><b>";

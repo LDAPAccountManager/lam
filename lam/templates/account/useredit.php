@@ -52,6 +52,7 @@ $ldap_intern =& $_SESSION['ldap'];
 $config_intern =& $_SESSION['config'];
 $header_intern =& $_SESSION['header'];
 $hostDN_intern =& $_SESSION['hostDN'];
+$groupDN_intern =& $_SESSION['groupDN'];
 
 
 
@@ -121,6 +122,28 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 	// final = last page shown before account is created/modified
 	//		if account is modified commands might be ran are shown
 	// finish = page shown after account has been created/modified
+
+	case 'groups':
+		do { // X-Or, only one if() can be true
+			if (isset($_POST['allgroups']) && isset($_POST['add'])) { // Add users to list
+				// Add new user
+				$account_new->general_groupadd = array_merge($account_new->general_groupadd, $_POST['allgroups']);
+				// remove doubles
+				$account_new->general_groupadd = array_flip($account_new->general_groupadd);
+				array_unique($account_new->general_groupadd);
+				$account_new->general_groupadd = array_flip($account_new->general_groupadd);
+				// sort user
+				sort($account_new->general_groupadd);
+				// display groupmembers page
+				break;
+				}
+			if (isset($_POST['selectedgroups']) && isset($_POST['remove'])) { // remove users fromlist
+				$account_new->general_groupadd = array_delete($_POST['selectedgroups'], $account_new->general_groupadd);
+				break;
+				}
+			} while(0);
+		$select_local = 'groups';
+		break;
 
 	case 'workstations':
 		do { // X-Or, only one if() can be true
@@ -505,6 +528,11 @@ do { // X-Or, only one if() can be true
 			else $select_local=$_POST['select'];
 		break;
 		}
+	if ($_POST['next_groups']) {
+		if (!is_array($errors)) $select_local='groups';
+			else $select_local=$_POST['select'];
+		break;
+		}
 	if ($_POST['next_reset']) {
 		$account_new = $account_old;
 		$account_new->unix_password='';
@@ -651,11 +679,12 @@ switch ($select_local) { // Select which part of page will be loaded
 		ldapreload('host');
 		$temp2 = $hostDN_intern;
 		unset($temp2[0]);
-		foreach ($temp2 as $temp) $hosts[] = $temp['cn'];
+		foreach ($temp2 as $temp) $hosts[] = str_replace("$", '',$temp['cn']);
 		sort($hosts, SORT_STRING);
 		// get workstation array
 		$temp = str_replace(' ', '', $account_new->smb_smbuserworkstations);
 		$workstations = explode (',', $temp);
+		$hosts = array_delete($workstations, $hosts);
 		echo '<input name="select" type="hidden" value="workstations">';
 		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
 		echo "<table><tr><td><fieldset class=\"useredit-dark\"><legend class=\"useredit-bright\"><b>";
@@ -700,14 +729,74 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "</legend>\n";
 		if (count($hosts)!=0) {
 			echo "<select name=\"hosts[]\" size=15 multiple class=\"useredit-bright\">\n";
-			foreach ($hosts as $temp) {
+			foreach ($hosts as $temp) echo "		<option>$temp</option>\n";
+			echo "</select>\n";
+			}
+		echo "</fieldset></td>\n</tr>\n</table>\n";
+		echo "<input name=\"next_samba\" type=\"submit\" value=\""; echo _('Back'); echo "\">\n";
+		echo "</fieldset></td></tr></table>\n</td></tr>\n</table>\n";
+		break;
+
+	case 'groups':
+		ldapreload('group');
+		$temp2 = $groupDN_intern;
+		unset($temp2[0]);
+		foreach ($temp2 as $temp) $groups[] = $temp['cn'];
+		sort($groups, SORT_STRING);
+		$groups = array_delete($account_new->general_groupadd, $groups);
+
+		echo '<input name="select" type="hidden" value="groups">';
+		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
+		echo "<table><tr><td><fieldset class=\"useredit-dark\"><legend class=\"useredit-bright\"><b>";
+		echo _('Please select page:');
+		echo "</b></legend>\n";
+		echo "<input name=\"next_general\" type=\"submit\" value=\""; echo _('General'); echo "\">\n<br>";
+		echo "<input name=\"next_unix\" type=\"submit\" value=\""; echo _('Unix'); echo "\">\n<br>";
+		echo "<input name=\"next_samba\" type=\"submit\" value=\""; echo _('Samba'); echo "\">\n<br>";
+		echo "<input name=\"next_quota\" type=\"submit\""; if (!isset($config_intern->scriptPath)) echo " disabled ";
+		echo "value=\""; echo _('Quota'); echo "\">\n<br>";
+		echo "<input name=\"next_personal\" type=\"submit\" value=\""; echo _('Personal'); echo "\">\n<br>";
+		echo "<input name=\"next_final\" type=\"submit\" value=\""; echo _('Final');
+		echo "\">";
+		if (isset($account_old)) {
+			echo "<br><br>";
+			echo _("Reset all changes.");
+			echo "<br>";
+			echo "<input name=\"next_reset\" type=\"submit\" value=\""; echo _('Undo');
+			echo "\">\n";
+			}
+		echo "</fieldset></td></tr></table></td>\n<td>";
+		echo "<table border=0 width=\"100%\">\n<tr>\n<td>";
+		echo "<fieldset class=\"useredit-bright\"><legend class=\"useredit-bright\"><b>";
+		echo _("Additional groups");
+		echo "</b></legend>\n<table border=0 width=\"100%\">\n<tr>\n<td valign=\"top\">";
+		echo "<fieldset class=\"useredit-bright\"><legend class=\"useredit-bright\">";
+		echo _("Selected groups");
+		echo "</legend>\n";
+		if (count($account_new->general_groupadd)!=0) {
+			echo "<select name=\"selectedgroups[]\" class=\"useredit-bright\" size=15 multiple>\n";
+			for ($i=0; $i<count($account_new->general_groupadd); $i++)
+				if ($account_new->general_groupadd[$i]!='') echo "		<option>".$account_new->general_groupadd[$i]."</option>\n";
+			echo "</select>\n";
+			}
+		echo "</fieldset></td>\n";
+		echo "<td align=\"center\" width=\"10%\"><input type=\"submit\" name=\"add\" value=\"<=\">";
+		echo " ";
+		echo "<input type=\"submit\" name=\"remove\" value=\"=>\"><br><br>";
+		echo "<a href=\""."../help.php?HelpNumber=XXX\" target=\"lamhelp\">"._('Help-XX')."</a></td>\n";
+		echo "<td valign=\"top\"><fieldset class=\"useredit-bright\"><legend class=\"useredit-bright\">";
+		echo _('Available groups');
+		echo "</legend>\n";
+		if (count($groups)!=0) {
+			echo "<select name=\"allgroups[]\" size=15 multiple class=\"useredit-bright\">\n";
+			foreach ($groups as $temp) {
 					$temp = str_replace("$", '',$temp);
 					echo "		<option>$temp</option>\n";
 					}
 			echo "</select>\n";
 			}
 		echo "</fieldset></td>\n</tr>\n</table>\n";
-		echo "<input name=\"next_samba\" type=\"submit\" value=\""; echo _('Back'); echo "\">\n";
+		echo "<input name=\"next_general\" type=\"submit\" value=\""; echo _('Back'); echo "\">\n";
 		echo "</fieldset></td></tr></table>\n</td></tr>\n</table>\n";
 		break;
 
@@ -778,17 +867,10 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo '</select></td><td>'.
 			'<a href="../help.php?HelpNumber=406" target="lamhelp">'._('Help').'</a>'.
 			'</td></tr>'."\n".'<tr><td>';
+
 		echo _('Additional groups');
-		echo '</td>'."\n".'<td><select name="f_general_groupadd[]" size="3" multiple>';
-		// loop though existing groups for additional groups
-		foreach ($groups as $group) {
-			if ($account_new->general_groupadd) {
-				if (in_array($group, $account_new->general_groupadd)) echo '<option selected>'.$group. '</option>';
-				else echo '<option>'.$group. '</option>';
-				}
-			else echo '<option>'.$group. '</option>';
-			}
-		echo	'</select></td>'."\n".'<td>'.
+		echo '</td>'."\n".'<td><input name="next_groups" type="submit" value="'. _('Edit groups') . '">'.
+			'</td>'."\n".'<td>'.
 			'<a href="../help.php?HelpNumber=402" target="lamhelp">'._('Help').'</a>'.
 			'</td></tr>'."\n".'<tr><td>';
 		echo _('Home directory').'*';

@@ -823,7 +823,7 @@ function createuser($values) { // Will create the LDAP-Account
 		if ($values->smb_pwdmustchange!='') $attr['pwdMustChange'] = $values->smb_pwdmustchange; // sambaAccount_may
 			else $attr['pwdMustChange'] = time() + 1000000000; // sambaAccount_may
 		$attr['pwdMustChange'] = $values->smb_pwdmustchange; // sambaAccount_may
-		$attr['acctFlags'] = smbflag(values); // sambaAccount_may
+		$attr['acctFlags'] = smbflag($values); // sambaAccount_may
 		$attr['displayName'] = $values->general_gecos; // sambaAccount_may
 		if ($values->smb_smbhome!='') $attr['smbHome'] = utf8_encode($values->smb_smbhome); // sambaAccount_may
 		if ($values->smb_homedrive!='') $attr['homeDrive'] = $values->smb_homedrive; // sambaAccount_may
@@ -877,7 +877,7 @@ function createuser($values) { // Will create the LDAP-Account
 	$success = ldap_add($_SESSION['ldap']->server(),$values->general_dn, $attr);
 	if (!$success) return 4;
 	if ($_SESSION['config']->scriptServer) {
-		setquotas($values,'user');
+		if (is_array($values->quota)) setquotas($values,'user');
 		addhomedir($values->general_username);
 		}
 	// Add User to Additional Groups
@@ -999,7 +999,7 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 				}
 		if ($values->smb_pwdcanchange != $values_old->smb_pwdcanchange) $attr['sambaPwdCanChange'] = $values->smb_pwdcanchange; // sambaAccount_may
 		if ($values->smb_pwdmustchange != $values_old->smb_pwdmustchange) $attr['sambaPwdMustChange'] = $values->smb_pwdmustchange; // sambaAccount_may
-		$attr['sambaAcctFlags'] = smbflag($values); // sambaAccount_may
+		if (smbflag($values) != smbflag($values_old)) $attr['sambaAcctFlags'] = smbflag($values); // sambaAccount_may
 		if (($values->smb_smbhome!='') && ($values->smb_smbhome!=$values_old->smb_smbhome)) $attr['sambaHomePath'] = utf8_encode($values->smb_smbhome); // sambaAccount_may
 		if (($values->smb_smbhome=='') && ($values->smb_smbhome!=$values_old->smb_smbhome)) $attr_rem['sambaHomePath'] = utf8_encode($values_old->smb_smbhome); // sambaAccount_may
 		if (($values->smb_homedrive!='') && ($values->smb_homedrive!=$values_old->smb_homedrive)) $attr['sambaHomeDrive'] = $values->smb_homedrive; // sambaAccount_may
@@ -1030,7 +1030,7 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 				}
 		if ($values->smb_pwdcanchange != $values_old->smb_pwdcanchange) $attr['pwdCanChange'] = $values->smb_pwdcanchange; // sambaAccount_may
 		if ($values->smb_pwdmustchange != $values_old->smb_pwdmustchange) $attr['pwdMustChange'] = $values->smb_pwdmustchange; // sambaAccount_may
-		$attr['acctFlags'] = smbflag($values); // sambaAccount_may
+		if (smbflag($values) != smbflag($values_old)) $attr['acctFlags'] = smbflag($values); // sambaAccount_may
 		if (($values->smb_smbhome!='') && ($values->smb_smbhome!=$values_old->smb_smbhome)) $attr['smbHome'] = utf8_encode($values->smb_smbhome); // sambaAccount_may
 		if (($values->smb_smbhome=='') && ($values->smb_smbhome!=$values_old->smb_smbhome)) $attr_rem['smbHome'] = utf8_encode($values_old->smb_smbhome); // sambaAccount_may
 		if (($values->smb_homedrive!='') && ($values->smb_homedrive!=$values_old->smb_homedrive)) $attr['homeDrive'] = $values->smb_homedrive; // sambaAccount_may
@@ -1298,7 +1298,7 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 			}
 		$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
 		}
-	if ($_SESSION['config']->scriptServer) setquotas($values,'user',$values_old);
+	if ($_SESSION['config']->scriptServer && is_array($values->quota) ) setquotas($values,'user',$values_old);
 	if ((isset($_SESSION['userDN']))) {
 		if ($values->general_dn != $values_old->general_dn) {
 			unset ($_SESSION['userDN'][$values_old->general_dn]);
@@ -1408,8 +1408,6 @@ function modifyhost($values,$values_old) { // Will modify the LDAP-Account
 			if (!$found) $attr['primaryGroupID'] = (2 * getgid($_SESSION['account']->general_group) + 1001);
 			}
 		}
-
-
 
 	if ($values->smb_flagsD != $values_old->smb_flagsD) {
 		$i = 0;
@@ -1555,7 +1553,7 @@ function modifyhost($values,$values_old) { // Will modify the LDAP-Account
 			$attr['userPassword'] = '';
 			$attr['shadowLastChange'] = getdays();
 			}
-		$attr['sambaAcctFlags'] = smbflag($values); // sambaAccount_may
+		if (smbflag($values) != smbflag($values_old)) $attr['sambaAcctFlags'] = smbflag($values); // sambaAccount_may
 		if ($values->smb_domain->name!=$values_old->smb_domain->name) $attr['sambaDomainName'] = $values->smb_domain->name; // sambaAccount_may
 		}
 	// samba 2.2
@@ -1568,7 +1566,7 @@ function modifyhost($values,$values_old) { // Will modify the LDAP-Account
 			$attr['shadowLastChange'] = getdays();
 			}
 		if (isset($attr_old['sambaSID'][0])) $attr_rem['sambaSID'] = $attr_old['sambaSID'][0];
-		$attr['acctFlags'] = smbflag($values); // sambaAccount_may
+		if (smbflag($values) != smbflag($values_old)) $attr['acctFlags'] = smbflag($values); // sambaAccount_may
 		if (($values->smb_domain!='') && ($values->smb_domain!=$values_old->smb_domain)) $attr['domain'] = $values->smb_domain; // sambaAccount_may
 		if (($values->smb_domain=='') && ($values->smb_domain!=$values_old->smb_domain)) $attr_rem['domain'] = $values_old->smb_domain; // sambaAccount_may
 		}
@@ -1634,7 +1632,7 @@ function creategroup($values) { // Will create the LDAP-Group
 		$attr['memberUid'][] = $user;
 	$success = ldap_add($_SESSION['ldap']->server(),$values->general_dn, $attr);
 	if (!$success) return 4;
-	if ($_SESSION['config']->scriptServer) setquotas($values,'group');
+	if ($_SESSION['config']->scriptServer && is_array($values->quota)) setquotas($values,'group');
 	// Add entry to cache-array
 	if ((isset($_SESSION['groupDN']))) {
 		$_SESSION['groupDN'][$values->general_dn]['cn'] = $values->general_username;
@@ -1715,12 +1713,12 @@ function modifygroup($values,$values_old) { // Will modify the LDAP-Group
 		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 		while ($entry) {
 			$user['gidNumber'][0] = $values->general_uidNumber;
-			ldap_modify($_SESSION['ldap']->server(), ldap_get_dn($_SESSION['ldap']->server(), $entry), $user);
+			$success =ldap_modify($_SESSION['ldap']->server(), ldap_get_dn($_SESSION['ldap']->server(), $entry), $user);
 			$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
 			}
 		}
-	if ($_SESSION['config']->scriptServer) setquotas($values,'group',$values_old);
-
+	if (!$success) return 5;
+	if ($_SESSION['config']->scriptServer && is_array($values->quota)) setquotas($values,'group',$values_old);
 	if ((isset($_SESSION['groupDN']))) { // refresh group-cache array
 		if ($values->general_dn != $values_old->general_dn) {
 			unset ($_SESSION['groupDN'][$values_old->general_dn]);
