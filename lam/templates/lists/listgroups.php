@@ -78,6 +78,7 @@ if ($_SESSION["config"]->get_MaxListEntries() <= 0)
 else
 	$max_pageentrys = $_SESSION["config"]->get_MaxListEntries();
 
+// generate column attributes and descriptions
 for ($i = 0; $i < sizeof($temp_array); $i++) {
 	// if value is predifined, look up description in hash_table
 	if (substr($temp_array[$i],0,1) == "#") {
@@ -92,6 +93,12 @@ for ($i = 0; $i < sizeof($temp_array); $i++) {
 		$desc_array[$i] = $attr[1];
 	}
 }
+
+// check search suffix
+if ($_POST['grp_suffix']) $grp_suffix = $_POST['grp_suffix'];  // new suffix selected via combobox
+elseif ($_SESSION['grp_suffix']) $grp_suffix = $_SESSION['grp_suffix'];  // old suffix from session
+else $grp_suffix = $_SESSION["config"]->get_GroupSuffix();  // default suffix
+session_register('grp_suffix');
 
 // generate search filter for sort links
 $searchfilter = "";
@@ -115,7 +122,7 @@ for ($k = 0; $k < sizeof($desc_array); $k++) {
 $filter = $filter . ")";
 $attrs = $attr_array;
 $sr = @ldap_search($_SESSION["ldap"]->server(),
-	$_SESSION["config"]->get_GroupSuffix(),
+	$grp_suffix,
 	$filter, $attrs);
 if ($sr) {
 	$info = ldap_get_entries($_SESSION["ldap"]->server, $sr);
@@ -215,9 +222,30 @@ draw_navigation_bar(sizeof($info));
 echo ("<br>\n");
 }
 
+// generate list of possible suffixes
+$sr = @ldap_search($_SESSION["ldap"]->server(),
+	$_SESSION["config"]->get_GroupSuffix(),
+	"objectClass=organizationalunit", array("DN"));
+if ($sr) {
+	$units = ldap_get_entries($_SESSION["ldap"]->server, $sr);
+	// delete first array entry which is "count"
+	array_shift($units);
+}
+
 echo ("<p align=\"left\">\n");
 echo ("<input type=\"submit\" name=\"new_group\" value=\"" . _("New Group") . "\">\n");
 if (sizeof($info) > 0) echo ("<input type=\"submit\" name=\"del_group\" value=\"" . _("Delete Group(s)") . "\">\n");
+// print combobox with possible sub-DNs
+if (sizeof($units) > 1) {
+echo ("&nbsp;&nbsp;&nbsp;&nbsp;<b>" . _("Suffix") . ": </b>");
+echo ("<select size=1 name=\"grp_suffix\">\n");
+for ($i = 0; $i < sizeof($units); $i++) {
+	if ($grp_suffix == $units[$i]['dn']) echo ("<option selected>" . $units[$i]['dn'] . "</option>\n");
+	else echo("<option>" . $units[$i]['dn'] . "</option>\n");
+}
+echo ("</select>\n");
+echo ("<input type=\"submit\" name=\"refresh\" value=\"" . _("Change Suffix") . "\">");
+}
 echo ("</p>\n");
 echo ("</form>\n");
 echo "</body></html>\n";
