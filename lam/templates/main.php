@@ -36,21 +36,29 @@ if (!isset($_SESSION['cache'])) {
 	$_SESSION['cache'] = new cache();
 }
 
+$startPage = "";
 
 // check if all suffixes in conf-file exist
 $conf = $_SESSION['config'];
 $new_suffs = array();
 if ($conf->get_UserSuffix() && ($conf->get_UserSuffix() != "")) {
+	$startPage = "./lists/listusers.php";
 	$info = @ldap_search($_SESSION['ldap']->server, $conf->get_UserSuffix(), "", array());
 	$res = @ldap_get_entries($_SESSION['ldap']->server, $info);
 	if (!$res && !in_array($conf->get_UserSuffix(), $new_suffs)) $new_suffs[] = $conf->get_UserSuffix();
 }
 if ($conf->get_GroupSuffix() && ($conf->get_GroupSuffix() != "")) {
+	if ($startPage == "") {
+		$startPage = "./lists/listgroups.php";
+	}
 	$info = @ldap_search($_SESSION['ldap']->server, $conf->get_GroupSuffix(), "", array());
 	$res = @ldap_get_entries($_SESSION['ldap']->server, $info);
 	if (!$res && !in_array($conf->get_GroupSuffix(), $new_suffs)) $new_suffs[] = $conf->get_GroupSuffix();
 }
 if ($conf->get_HostSuffix() && ($conf->get_HostSuffix() != "")) {
+	if ($startPage == "") {
+		$startPage = "./lists/listhosts.php";
+	}
 	$info = @ldap_search($_SESSION['ldap']->server, $conf->get_HostSuffix(), "", array());
 	$res = @ldap_get_entries($_SESSION['ldap']->server, $info);
 	if (!$res && !in_array($conf->get_HostSuffix(), $new_suffs)) $new_suffs[] = $conf->get_HostSuffix();
@@ -80,7 +88,7 @@ echo ("<frame src=\"./main_header.php\" name=\"head\" frameborder=\"0\" scrollin
 // display page to add suffixes, if needed
 if (sizeof($new_suffs) > 0) echo ("<frame src=\"initsuff.php?suffs='" . implode(";", $new_suffs) .
 	"'\" name=\"mainpart\" frameborder=\"0\" scrolling=\"yes\">\n");
-else echo ("<frame src=\"./lists/listusers.php\" name=\"mainpart\" frameborder=\"0\" scrolling=\"yes\">\n");
+else echo ("<frame src=\"$startPage\" name=\"mainpart\" frameborder=\"0\" scrolling=\"yes\">\n");
 echo ("<noframes>\n");
 echo ("This page requires a browser that can show frames!\n");
 echo ("</noframes>\n");
