@@ -4,7 +4,6 @@ Alle:
 - ldap: LDAP-Objekt für Funktionen rund um LDAP
 - language: Sprache für LAM
 - header: String-Array mit Standard-HTML-Header
-- lamurl: String mit URL von LAM
 - lampath: String mit Pfad zum LAM-Verzeichnis
 
 

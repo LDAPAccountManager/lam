@@ -273,7 +273,6 @@ function display_LoginPage($config_object,$profile)
 if($_POST['action'] == "checklogin")
 {
 	$_SESSION['lampath'] = realpath('../') . "/";  // Save full path to lam in session
-	$_SESSION['lamurl'] = substr($_SERVER['HTTP_REFERER'],0,strlen($_SERVER['HTTP_REFERER'])-19); // Save full URI to lam in session
 
 	include_once("../lib/ldap.inc"); // Include ldap.php which provides Ldap class
 
