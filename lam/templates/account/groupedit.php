@@ -46,6 +46,7 @@ if (isset($_GET['DN'])) {
 		$_SESSION['account'] = loadGroupProfile('default');
 		$_SESSION['account'] ->type = 'group';
 		if (isset($_SESSION['account_old'])) unset($_SESSION['account_old']);
+		$_SESSION['account_old'] = false;
 		}
 	$values = getquotas($type);
 	if (is_object($values)) {
@@ -57,6 +58,7 @@ else if (count($_POST)==0) { // Startcondition. groupedit.php was called from ou
 	$_SESSION['account'] = loadGroupProfile('default');
 	$_SESSION['account'] ->type = 'group';
 	if (isset($_SESSION['account_old'])) unset($_SESSION['account_old']);
+	$_SESSION['account_old'] = false;
 	}
 
 switch ($_POST['select']) { // Select which part of page should be loaded and check values
@@ -87,7 +89,6 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 				$select_local = 'groupmembers';
 				break;
 				}
-			$select_local = 'groupmembers';
 			} while(0);
 		break;
 
@@ -105,20 +106,58 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 								(2 * $_POST['f_general_uidNumber'] + $_SESSION['account']->smb_domain->RIDbase +1);
 						}
 					}
-
 			$_SESSION['account']->general_dn = $_POST['f_general_suffix'];
 			$_SESSION['account']->general_username = $_POST['f_general_username'];
 			$_SESSION['account']->general_uidNumber = $_POST['f_general_uidNumber'];
 			$_SESSION['account']->general_gecos = $_POST['f_general_gecos'];
+
 			// Check if values are OK and set automatic values.  if not error-variable will be set
-			if (isset($_SESSION['account_old'])) list($values, $errors) = checkglobal($_SESSION['account'], 'group', $_SESSION['account_old']); // account.inc
-				else list($values, $errors) = checkglobal($_SESSION['account'], 'group'); // account.inc
-			if (is_object($values)) { // Set only defined values
-				while (list($key, $val) = each($values))
-					if (isset($val)) $_SESSION['account']->$key = $val;
+
+			// Check if Groupname contains only valid characters
+			if ( !ereg('^([a-z]|[0-9]|[.]|[-]|[_])*$', $_SESSION['account']->general_username))
+				$errors[] = array('ERROR', _('Groupname'), _('Groupname contains invalid characters. Valid characters are: a-z, 0-9 and .-_ !'));
+			if ($_SESSION['account']->general_gecos=='') {
+				$_SESSION['account']->general_gecos = $_SESSION['account']->general_username ;
+				$errors[] = array('INFO', _('Gecos'), _('Inserted groupname in gecos-field.'));
 				}
-			// Check which part Site should be displayed next
-			$select_local = 'general';
+			// Create automatic groupaccount with number if original user already exists
+			// Reset name to original name if new name is in use
+			if (ldapexists($_SESSION['account'], 'group', $_SESSION['account_old']) && is_object($_SESSION['account_old']))
+				$_SESSION['account']->general_username = $_SESSION['account_old']->general_username;
+			while ($temp = ldapexists($_SESSION['account'], 'group', $_SESSION['account_old'])) {
+				// get last character of username
+				$lastchar = substr($_SESSION['account']->general_username, strlen($_SESSION['account']->general_username)-1, 1);
+				// Last character is no number
+				if ( !ereg('^([0-9])+$', $lastchar))
+					$_SESSION['account']->general_username = $_SESSION['account']->general_username . '2';
+				 else {
+				 	$i=strlen($_SESSION['account']->general_username)-1;
+					$mark = false;
+				 	while (!$mark) {
+						if (ereg('^([0-9])+$',substr($_SESSION['account']->general_username, $i, strlen($_SESSION['account']->general_username)-$i))) $i--;
+							else $mark=true;
+						}
+					// increase last number with one
+					$firstchars = substr($_SESSION['account']->general_username, 0, $i+1);
+					$lastchars = substr($_SESSION['account']->general_username, $i+1, strlen($_SESSION['account']->general_username)-$i);
+					$_SESSION['account']->general_username = $firstchars . (intval($lastchars)+1);
+				 	}
+				}
+			if ($_SESSION['account']->general_username != $_POST['f_general_username']) $errors[] = array('WARN', _('Groupname'), _('Groupname already in use. Selected next free groupname.'));
+
+			// Check if UID is valid. If none value was entered, the next useable value will be inserted
+			$_SESSION['account']->general_uidNumber = checkid($_SESSION['account'], 'group', $_SESSION['account_old']);
+			if (is_string($_SESSION['account']->general_uidNumber)) { // true if checkid has returned an error
+				$errors[] = array('ERROR', _('ID-Number'), $_SESSION['account']->general_uidNumber);
+			unset($return->general_uidNumber);
+			}
+
+			// Check if Name-length is OK. minLength=3, maxLength=20
+			if ( !ereg('.{3,20}', $_SESSION['account']->general_username)) $errors[] = array('ERROR', _('Name'), _('Name must contain between 3 and 20 characters.'));
+			// Check if Name starts with letter
+			if ( !ereg('^([a-z]|[A-Z]).*$', $_SESSION['account']->general_username))
+				$errors[] = array('ERROR', _('Name'), _('Name contains invalid characters. First character must be a letter'));
+
 			}
 		break;
 
@@ -137,12 +176,12 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 					(2 * getgid($_SESSION['account']->general_username) + $_SESSION['account']->smb_domain->RIDbase +1);
 				break;
 			}
-		if (isset($_SESSION['account_old'])) list($values, $errors) = checksamba($_SESSION['account'], 'group', $_SESSION['account_old']); // account.inc
-			else list($values, $errors) = checksamba($_SESSION['account'], 'group'); // account.inc
-		if (is_object($values)) { // Set only defined values
-			while (list($key, $val) = each($values))
-				if (isset($val)) $_SESSION['account']->$key = $val;
+		// Check if value is set
+		if (($_SESSION['account']->smb_displayName=='') && isset($_SESSION['account']->general_gecos)) {
+			$_SESSION['account']->smb_displayName = $_SESSION['account']->general_gecos;
+			$errors[] = array('INFO', _('Display name'), _('Inserted gecos-field as display name.'));
 			}
+
 		break;
 
 	case 'quota':
@@ -157,19 +196,24 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 			}
 
 		// Check if values are OK and set automatic values. if not error-variable will be set
-		list($values, $errors) = checkquota($_SESSION['account'], $_SESSION['account']->type); // account.inc
-		if (is_object($values)) {
-			while (list($key, $val) = each($values)) // Set only defined values
-				if (isset($val)) $_SESSION['account']->$key = $val;
+		$i=0;
+		while ($_SESSION['account']->quota[$i][0]) {
+			if (!ereg('^([0-9])*$', $_SESSION['account']->quota[$i][2]))
+				$errors[] = array('ERROR', _('Block soft quota'), _('Block soft quota contains invalid characters. Only natural numbers are allowed'));
+			if (!ereg('^([0-9])*$', $_SESSION['account']->quota[$i][3]))
+				$errors[] = array('ERROR', _('Block hard quota'), _('Block hard quota contains invalid characters. Only natural numbers are allowed'));
+			if (!ereg('^([0-9])*$', $_SESSION['account']->quota[$i][6]))
+				$errors[] = array('ERROR', _('Inode soft quota'), _('Inode soft quota contains invalid characters. Only natural numbers are allowed'));
+			if (!ereg('^([0-9])*$', $_SESSION['account']->quota[$i][7]))
+				$errors[] = array('ERROR', _('Inode hard quota'), _('Inode hard quota contains invalid characters. Only natural numbers are allowed'));
+			$i++;
 			}
 
-		// Check which part Site should be displayed next
 		break;
 
 	case 'final':
 		// Write all general values into $_SESSION['account']
 		if ($_POST['f_final_changegids']) $_SESSION['final_changegids'] = $_POST['f_final_changegids'] ;
-		// Check which part Site should be displayed next
 		break;
 
 	}
@@ -284,8 +328,9 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "</b></legend>\n";
 		echo "<input name=\"next_general\" type=\"submit\" value=\""; echo _('General'); echo "\">\n<br>";
 		echo "<input name=\"next_members\" type=\"submit\" disabled value=\""; echo _('Members'); echo "\">\n<br>";
-		if ($_SESSION['config']->samba3 == 'yes')
+		if ($_SESSION['config']->samba3 == 'yes') {
 			echo "<input name=\"next_samba\" type=\"submit\" value=\""; echo _('Samba'); echo "\">\n<br>";
+			}
 		echo "<input name=\"next_quota\" type=\"submit\""; if (!isset($_SESSION['config']->scriptPath)) echo " disabled ";
 		echo "value=\""; echo _('Quota'); echo "\">\n<br>";
 		echo "<input name=\"next_final\" type=\"submit\" value=\""; echo _('Final');
@@ -294,22 +339,30 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "<table border=0 width=\"100%\">\n";
 		echo "<tr><td valign=\"top\"><fieldset class=\"groupedit-middle\"><legend class=\"groupedit-bright\">";
 		echo _('Group members');
-		echo "</legend><select name=\"members[]\" class=\"groupedit-bright\" size=15 multiple>\n";
-		for ($i=0; $i<count($_SESSION['account']->unix_memberUid); $i++)
-			if ($_SESSION['account']->unix_memberUid[$i]!='') echo "		<option>".$_SESSION['account']->unix_memberUid[$i]."</option>\n";
-		echo "</select></fieldset></td>\n";
+		echo "</legend>";
+		if (count($_SESSION['account']->unix_memberUid)!=0) {
+			echo "<select name=\"members[]\" class=\"groupedit-bright\" size=15 multiple>\n";
+			for ($i=0; $i<count($_SESSION['account']->unix_memberUid); $i++)
+				if ($_SESSION['account']->unix_memberUid[$i]!='') echo "		<option>".$_SESSION['account']->unix_memberUid[$i]."</option>\n";
+			echo "</select>\n";
+			}
+		echo "</fieldset></td>\n";
 		echo "<td align=\"center\" width=\"10%\"><input type=\"submit\" name=\"add\" value=\"<=\">";
 		echo " ";
 		echo "<input type=\"submit\" name=\"remove\" value=\"=>\"><br><br>";
-		echo "<a href=\"../help.php?HelpNumber=XXX\" target=\"lamhelp\">"._('Help-XX')."</a></td>\n";
+		echo "<a href=\"../help.php?HelpNumber=419\" target=\"lamhelp\">"._('Help')."</a></td>\n";
 		echo "<td valign=\"top\"><fieldset class=\"groupedit-middle\"><legend class=\"groupedit-bright\">";
 		echo _('Available users');
-		echo "</legend><select name=\"users[]\" size=15 multiple class=\"groupedit-bright\">\n";
-		foreach ($_SESSION['userDN'] as $temp)
-			if (is_array($temp)) {
-				echo "		<option>$temp[cn]</option>\n";
-				}
-		echo "</select></fieldset></td>\n</tr>\n</table>\n</fieldset></td></tr></table>\n</td></tr>\n</table>\n";
+		echo "</legend>\n";
+		if (count($_SESSION['userDN'])!=0) {
+			echo "<select name=\"users[]\" size=15 multiple class=\"groupedit-bright\">\n";
+			foreach ($_SESSION['userDN'] as $temp)
+				if (is_array($temp)) {
+					echo "		<option>$temp[cn]</option>\n";
+					}
+			echo "</select>\n";
+			}
+		echo "</fieldset></td>\n</tr>\n</table>\n</fieldset></td></tr></table>\n</td></tr>\n</table>\n";
 		break;
 
 	case 'general':
@@ -324,8 +377,9 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "</b></legend>\n";
 		echo "<input name=\"next_general\" type=\"submit\" disabled value=\""; echo _('General'); echo "\">\n<br>";
 		echo "<input name=\"next_members\" type=\"submit\" value=\""; echo _('Members'); echo "\">\n<br>";
-		if ($_SESSION['config']->samba3 == 'yes')
+		if ($_SESSION['config']->samba3 == 'yes') {
 			echo "<input name=\"next_samba\" type=\"submit\" value=\""; echo _('Samba'); echo "\">\n<br>";
+			}
 		echo "<input name=\"next_quota\" type=\"submit\""; if (!isset($_SESSION['config']->scriptPath)) echo " disabled ";
 		echo "value=\""; echo _('Quota'); echo "\">\n<br>";
 		echo "<input name=\"next_final\" type=\"submit\" value=\""; echo _('Final');
@@ -392,7 +446,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo _("Display name");
 		echo "</td>\n<td>".
 			"<input name=\"f_smb_displayName\" type=\"text\" size=\"30\" maxlength=\"50\" value=\"".$_SESSION['account']->smb_displayName."\">".
-			"</td>\n<td><a href=\"../help.php?HelpNumber=XXX\" target=\"lamhelp\">"._('Help-XX')."</a></td>\n</tr>\n<tr>\n<td>";
+			"</td>\n<td><a href=\"../help.php?HelpNumber=420\" target=\"lamhelp\">"._('Help')."</a></td>\n</tr>\n<tr>\n<td>";
 		echo _('Windows groupname');
 		echo "</td>\n<td><select name=\"f_smb_mapgroup\">";
 		if ( $_SESSION['account']->smb_mapgroup == $_SESSION['account']->smb_domain->SID . "-".
@@ -458,8 +512,9 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "</b></legend>\n";
 		echo "<input name=\"next_general\" type=\"submit\" value=\""; echo _('General'); echo "\">\n<br>";
 		echo "<input name=\"next_members\" type=\"submit\" value=\""; echo _('Members'); echo "\">\n<br>";
-		if ($_SESSION['config']->samba3 == 'yes')
+		if ($_SESSION['config']->samba3 == 'yes') {
 			echo "<input name=\"next_samba\" type=\"submit\" value=\""; echo _('Samba'); echo "\">\n<br>";
+			}
 		echo "<input name=\"next_quota\" type=\"submit\" disabled value=\""; echo _('Quota'); echo "\">\n<br>";
 		echo "<input name=\"next_final\" type=\"submit\" value=\""; echo _('Final');
 		echo "\"></fieldset></td></tr></table></td>\n<td valign=\"top\">";
@@ -500,8 +555,9 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "</b></legend>\n";
 		echo "<input name=\"next_general\" type=\"submit\" value=\""; echo _('General'); echo "\">\n<br>";
 		echo "<input name=\"next_members\" type=\"submit\" value=\""; echo _('Members'); echo "\">\n<br>";
-		if ($_SESSION['config']->samba3 == 'yes')
+		if ($_SESSION['config']->samba3 == 'yes') {
 			echo "<input name=\"next_samba\" type=\"submit\" value=\""; echo _('Samba'); echo "\">\n<br>";
+			}
 		echo "<input name=\"next_quota\" type=\"submit\""; if (!isset($_SESSION['config']->scriptPath)) echo " disabled ";
 		echo "value=\""; echo _('Quota'); echo "\">\n<br>";
 		echo "<input name=\"next_final\" type=\"submit\" disabled value=\""; echo _('Final');
@@ -533,7 +589,7 @@ switch ($select_local) { // Select which part of page will be loaded
 			echo '</td></tr>'."\n";
 			}
 		$disabled = "";
-		if (!isset($_SESSION['account']->smb_domain)) { // Samba page nit viewd; can not create group because if missing options
+		if ((!isset($_SESSION['account']->smb_domain)) && ($_SESSION['config']->samba3 == 'yes')) { // Samba page nit viewd; can not create group because if missing options
 			$disabled = "disabled";
 			echo "<tr>";
 			StatusMessage("ERROR", _("Samba Options not set!"), _("Please check settings on samba page."));
