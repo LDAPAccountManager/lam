@@ -415,14 +415,22 @@ function draw_navigation_bar ($user_count) {
 // rows are sorted with the first attribute entry of the sort column
 // if objects have attributes with multiple values the others are ignored
 function cmp_array($a, $b) {
-  // sortattrib specifies the sort column
-  global $sortattrib;
-  global $attr_array;
-  // sort by first attribute with name $sortattrib
+	// sortattrib specifies the sort column
+	global $sortattrib;
+	global $attr_array;
+	// sort by first attribute with name $sortattrib
 	if (!$sortattrib) $sortattrib = strtolower($attr_array[0]);
-	if ($a[$sortattrib][0] == $b[$sortattrib][0]) return 0;
-	else if ($a[$sortattrib][0] == max($a[$sortattrib][0], $b[$sortattrib][0])) return 1;
-	else return -1;
+	if ($sortattrib != "dn") {
+		// sort by first column if no attribute is given
+		if ($a[$sortattrib][0] == $b[$sortattrib][0]) return 0;
+		else if ($a[$sortattrib][0] == max($a[$sortattrib][0], $b[$sortattrib][0])) return 1;
+		else return -1;
+	}
+	else {
+		if ($a[$sortattrib] == $b[$sortattrib]) return 0;
+		else if ($a[$sortattrib] == max($a[$sortattrib], $b[$sortattrib])) return 1;
+		else return -1;
+	}
 }
 
 // save variables to session

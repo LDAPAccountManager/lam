@@ -251,11 +251,19 @@ function cmp_array($a, $b) {
 	// sort specifies the sort column
 	global $sort;
 	global $attr_array;
-	// sort by first attribute with name $sort
+	// sort by first column if no attribute is given
 	if (!$sort) $sort = strtolower($attr_array[0]);
-	if ($a[$sort][0] == $b[$sort][0]) return 0;
-	else if ($a[$sort][0] == max($a[$sort][0], $b[$sort][0])) return 1;
-	else return -1;
+	if ($sort != "dn") {
+		// sort by first attribute with name $sort
+		if ($a[$sort][0] == $b[$sort][0]) return 0;
+		else if ($a[$sort][0] == max($a[$sort][0], $b[$sort][0])) return 1;
+		else return -1;
+	}
+	else {
+		if ($a[$sort] == $b[$sort]) return 0;
+		else if ($a[$sort] == max($a[$sort], $b[$sort])) return 1;
+		else return -1;
+	}
 }
 
 
