@@ -41,6 +41,12 @@ session_save_path("../../sess");
 
 setlanguage();
 
+$profileClasses = array(
+	array('scope' => 'user', 'title' => _('User profiles'), 'profiles' => ""),
+	array('scope' => 'group', 'title' => _('Group profiles'), 'profiles' => ""),
+	array('scope' => 'host', 'title' => _('Host profiles'), 'profiles' => "")
+);
+
 // check if user is logged in, if not go to login
 if (!$_SESSION['ldap'] || !$_SESSION['ldap']->server()) {
 	metaRefresh("../login.php");
@@ -48,220 +54,111 @@ if (!$_SESSION['ldap'] || !$_SESSION['ldap']->server()) {
 }
 
 // check if user has pressed submit or abort button
-if ($_POST['forward'] == "yes") {
+if ($_POST['submit']) {
 	// on abort go back to main page
 	if ($_POST['abort']) {
 		metaRefresh("../lists/listusers.php");
 	}
 	// on submit forward to other profile pages
 	elseif ($_POST['submit']) {
-		// create new user profile
-		if ($_POST['profile'] == "newuser") {
-			metaRefresh("profilepage.php?type=user");
-		}
-		// edit user profile
-		elseif($_POST['profile'] == "edituser") {
-			metaRefresh("profilepage.php?type=user&amp;edit=" . $_POST['e_user']);
-		}
-		// delete user profile
-		elseif($_POST['profile'] == "deluser") {
-			metaRefresh("profiledelete.php?type=user&del=" . $_POST['d_user']);
-		}
-		// create new group profile
-		if ($_POST['profile'] == "newgroup") {
-			metaRefresh("profilepage.php?type=group");
-		}
-		// edit group profile
-		elseif($_POST['profile'] == "editgroup") {
-			metaRefresh("profilepage.php?type=group&amp;edit=" . $_POST['e_group']);
-		}
-		// delete group profile
-		elseif($_POST['profile'] == "delgroup") {
-			metaRefresh("profiledelete.php?type=group&del=" . $_POST['d_group']);
-		}
-		// create new host profile
-		if ($_POST['profile'] == "newhost") {
-			metaRefresh("profilepage.php?type=host");
-		}
-		// edit host profile
-		elseif($_POST['profile'] == "edithost") {
-			metaRefresh("profilepage.php?type=host&amp;edit=" . $_POST['e_host']);
-		}
-		// delete user profile
-		elseif($_POST['profile'] == "delhost") {
-			metaRefresh("profiledelete.php?type=host&del=" . $_POST['d_host']);
+		for ($i = 0; $i < sizeof($profileClasses); $i++) {
+			// create new profile
+			if ($_POST['profile'] == ("new" . $profileClasses[$i]['scope'])) {
+				metaRefresh("profilepage.php?type=" . $profileClasses[$i]['scope']);
+			}
+			// edit profile
+			elseif($_POST['profile'] == ("edit" . $profileClasses[$i]['scope'])) {
+				metaRefresh("profilepage.php?type=" . $profileClasses[$i]['scope'] .
+					"&amp;edit=" . $_POST['e_' . $profileClasses[$i]['scope']]);
+			}
+			// delete profile
+			elseif($_POST['profile'] == ("del" . $profileClasses[$i]['scope'])) {
+				metaRefresh("profiledelete.php?type=" . $profileClasses[$i]['scope'] .
+					"&amp;del=" . $_POST['d_' . $profileClasses[$i]['scope']]);
+			}
 		}
 	}
 	exit;
 }
 
-// get list of user profiles and generate entries for dropdown box
-$usrprof = getAccountProfiles('user');
-$userprofiles = "";
-for ($i = 0; $i < sizeof($usrprof); $i++) {
-	$userprofiles = $userprofiles . "<option>" . $usrprof[$i] . "</option>\n";
-}
-
-// get list of group profiles and generate entries for dropdown box
-$grpprof = getAccountProfiles('group');
-$groupprofiles = "";
-for ($i = 0; $i < sizeof($grpprof); $i++) {
-	$groupprofiles = $groupprofiles . "<option>" . $grpprof[$i] . "</option>\n";
-}
-
-// get list of host profiles and generate entries for dropdown box
-$hstprof = getAccountProfiles('host');
-$hostprofiles = "";
-for ($i = 0; $i < sizeof($hstprof); $i++) {
-	$hostprofiles = $hostprofiles . "<option>" . $hstprof[$i] . "</option>\n";
+// get list of profiles for each account type
+for ($i = 0; $i < sizeof($profileClasses); $i++) {
+	$profileList = getAccountProfiles($profileClasses[$i]['scope']);
+	$profiles = "";
+	for ($l = 0; $l < sizeof($profileList); $l++) {
+		$profiles = $profiles . "<option>" . $profileList[$l] . "</option>\n";
+	}
+	$profileClasses[$i]['profiles'] = $profiles;
 }
 
 echo $_SESSION['header'];
+
+
+echo "<title>LDAP Account Manager</title>\n";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
+echo "</head>\n";
+echo "<body>\n";
+
+echo "<p></p>\n";
+
+echo "<form action=\"profilemain.php\" method=\"post\">\n";
+
+for ($i = 0; $i < sizeof($profileClasses); $i++) {
+
+	echo "<fieldset>\n";
+	echo "<legend>\n";
+	echo "<b>" . $profileClasses[$i]['title'] . "</b>\n";
+	echo "</legend>\n";
+	echo "<table border=0>\n";
+	
+	// new profile
+	echo "<tr>\n";
+	echo "<td>\n";
+	echo "<input type=\"radio\" name=\"profile\" value=\"new" . $profileClasses[$i]['scope'] . "\">\n";
+	echo "</td>\n";
+	echo "<td colspan=2>" . _("Create a new profile") . "</td>\n";
+	echo "</tr>\n";
+	
+	// edit profile
+	echo "<tr>\n";
+	echo "<td>\n";
+	echo "<input type=\"radio\" name=\"profile\" value=\"edit" . $profileClasses[$i]['scope'] . "\">\n";
+	echo "</td>\n";
+	echo "<td>\n";
+	echo "<select name=\"e_" . $profileClasses[$i]['scope'] . "\" size=1>\n";
+	echo $profileClasses[$i]['profiles'];
+	echo "</select>\n";
+	echo "</td>\n";
+	echo "<td>" . _("Edit profile") . "</td>\n";
+	echo "</tr>\n";
+	
+	// delete profile
+	echo "<tr>\n";
+	echo "<td>\n";
+	echo "<input type=\"radio\" name=\"profile\" value=\"del" . $profileClasses[$i]['scope'] . "\">\n";
+	echo "</td>\n";
+	echo "<td>\n";
+	echo "<select name=\"d_" . $profileClasses[$i]['scope'] . "\" size=1>\n";
+	echo $profileClasses[$i]['profiles'];
+	echo "</select>\n";
+	echo "</td>\n";
+	echo "<td>" . _("Delete profile") . "</td>\n";
+	echo "</tr>\n";
+	echo "</table>\n";
+	echo "</fieldset>\n";
+	
+	echo "<p></p>\n";
+	
+}
+
+
+echo "<p>\n";
+echo "<input type=\"submit\" name=\"submit\" value=\"" . _("Submit") . "\">\n";
+echo "<input type=\"submit\" name=\"abort\" value=\"" . _("Abort") . "\">\n";
+echo "</p>\n";
+
+echo "</form>\n";
+echo "</body>\n";
+echo "</html>\n";
+
 ?>
-
-		<title>LDAP Account Manager</title>
-		<link rel="stylesheet" type="text/css" href="../../style/layout.css">
-	</head>
-	<body>
-		<p></p>
-		<form action="profilemain.php" method="post">
-
-		<!-- user profile options -->
-		<fieldset>
-			<legend>
-				<b><?php echo _("User profiles"); ?></b>
-			</legend>
-			<table border=0>
-				<!-- new user profile -->
-				<tr>
-					<td>
-						<input type="radio" name="profile" value="newuser" checked>
-					</td>
-					<td colspan=2><?php echo _("Create a new profile"); ?></td>
-				</tr>
-				<!-- edit user profile -->
-				<tr>
-					<td>
-						<input type="radio" name="profile" value="edituser">
-					</td>
-					<td>
-						<select name="e_user" size=1>
-							<?php echo $userprofiles ?>
-						</select>
-					</td>
-					<td><?php echo _("Edit profile"); ?></td>
-				</tr>
-				<!-- delete user profile -->
-				<tr>
-					<td>
-						<input type="radio" name="profile" value="deluser">
-					</td>
-					<td>
-						<select name="d_user" size=1>
-							<?php echo $userprofiles ?>
-						</select>
-					</td>
-					<td><?php echo _("Delete profile"); ?></td>
-				</tr>
-			</table>
-		</fieldset>
-
-		<p></p>
-
-<?php
-echo "		<!-- group profile options -->";
-echo "		<fieldset>";
-echo "			<legend>";
-echo "				<b>" . _("Group profiles") . "</b>";
-echo "			</legend>";
-echo "			<table border=0>";
-echo "				<!-- new group profile -->";
-echo "				<tr>";
-echo "					<td>";
-echo "						<input type=\"radio\" name=\"profile\" value=\"newgroup\">";
-echo "					</td>";
-echo "					<td colspan=2>" . _("Create a new profile") . "</td>";
-echo "				</tr>";
-echo "				<!-- edit group profile -->";
-echo "				<tr>";
-echo "					<td>";
-echo "						<input type=\"radio\" name=\"profile\" value=\"editgroup\">";
-echo "					</td>";
-echo "					<td>";
-echo "						<select name=\"e_group\" size=1>";
-echo "							" . $groupprofiles;
-echo "						</select>";
-echo "					</td>";
-echo "					<td>" . _("Edit profile") . "</td>";
-echo "				</tr>";
-echo "				<!-- delete group profile -->";
-echo "				<tr>";
-echo "					<td>";
-echo "						<input type=\"radio\" name=\"profile\" value=\"delgroup\">";
-echo "					</td>";
-echo "					<td>";
-echo "						<select name=\"d_group\" size=1>";
-echo "							" . $groupprofiles;
-echo "						</select>";
-echo "					</td>";
-echo "					<td>" . _("Delete profile") . "</td>";
-echo "				</tr>";
-echo "			</table>";
-echo "		</fieldset>";
-
-echo "		<p></p>";
-?>
-
-		<!-- host profile options -->
-		<fieldset>
-			<legend>
-				<b><?php echo _("Host profiles"); ?></b>
-			</legend>
-			<table border=0>
-				<!-- new host profile -->
-				<tr>
-					<td>
-						<input type="radio" name="profile" value="newhost">
-					</td>
-					<td colspan=2><?php echo _("Create a new profile"); ?></td>
-				</tr>
-				<!-- edit host profile -->
-				<tr>
-					<td>
-						<input type="radio" name="profile" value="edithost">
-					</td>
-					<td>
-						<select name="e_host" size=1>
-							<?php echo $hostprofiles ?>
-						</select>
-					</td>
-					<td><?php echo _("Edit profile"); ?></td>
-				</tr>
-				<!-- delete host profile -->
-				<tr>
-					<td>
-						<input type="radio" name="profile" value="delhost">
-					</td>
-					<td>
-						<select name="d_host" size=1>
-							<?php echo $hostprofiles ?>
-						</select>
-					</td>
-					<td><?php echo _("Delete profile"); ?></td>
-				</tr>
-			</table>
-		</fieldset>
-
-		<p></p>
-
-		<!-- forward is used to check if buttons were pressed -->
-		<p>
-		<input type="hidden" name="forward" value="yes">
-
-		<input type="submit" name="submit" value="<?php echo _("Submit"); ?>">
-		<input type="submit" name="abort" value="<?php echo _("Abort"); ?>">
-		</p>
-
-		</form>
-	</body>
-</html>

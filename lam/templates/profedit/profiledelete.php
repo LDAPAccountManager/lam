@@ -49,7 +49,7 @@ if (!$_SESSION['ldap'] || !$_SESSION['ldap']->server()) {
 
 // print standard header
 echo $_SESSION['header'];
-echo ("<title>" . _("Delete User Profile") . "</title>\n");
+echo ("<title>" . _("Delete profile") . "</title>\n");
 echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
 echo ("</head>\n<body>\n<p><br></p>\n");
 
@@ -77,41 +77,15 @@ if ($_POST['abort']) {
 $type = $_GET['type'];
 if (($type == "user") || ($type == "host") || ($type == "group")) {
 	// user profile
-	if ($type == "user") {
-		echo ("<p align=\"center\"><big>" . _("Do you really want to delete this profile?") . " <b>");
-			echo ($_GET['del'] . "</b></big><br></p>\n");
-		echo ("<form action=\"profiledelete.php\" method=\"post\">\n");
-		echo ("<p align=\"center\">\n");
-		echo ("<input type=\"submit\" name=\"submit\" value=\"" . _("Submit") . "\">\n");
-		echo ("<input type=\"submit\" name=\"abort\" value=\"" . _("Abort") . "\">\n");
-		echo ("<input type=\"hidden\" name=\"type\" value=\"user\">");
-		echo ("<input type=\"hidden\" name=\"del\" value=\"" . $_GET['del'] . "\">");
-		echo ("</p></form></body></html>\n");
-	}
-	// group profile
-	elseif ($type == "group") {
-		echo ("<p align=\"center\"><big>" . _("Do you really want to delete this profile?") . " <b>");
-			echo ($_GET['del'] . "</b></big><br></p>\n");
-		echo ("<form action=\"profiledelete.php\" method=\"post\">\n");
-		echo ("<p align=\"center\">\n");
-		echo ("<input type=\"submit\" name=\"submit\" value=\"" . _("Submit") . "\">\n");
-		echo ("<input type=\"submit\" name=\"abort\" value=\"" . _("Abort") . "\">\n");
-		echo ("<input type=\"hidden\" name=\"type\" value=\"group\">");
-		echo ("<input type=\"hidden\" name=\"del\" value=\"" . $_GET['del'] . "\">");
-		echo ("</p></form></body></html>\n");
-	}
-	// host profile
-	elseif ($type == "host") {
-		echo ("<p align=\"center\"><big>" . _("Do you really want to delete this profile?") . " <b>");
-			echo ($_GET['del'] . "</b></big><br></p>\n");
-		echo ("<form action=\"profiledelete.php\" method=\"post\">\n");
-		echo ("<p align=\"center\">\n");
-		echo ("<input type=\"submit\" name=\"submit\" value=\"" . _("Submit") . "\">\n");
-		echo ("<input type=\"submit\" name=\"abort\" value=\"" . _("Abort") . "\">\n");
-		echo ("<input type=\"hidden\" name=\"type\" value=\"host\">");
-		echo ("<input type=\"hidden\" name=\"del\" value=\"" . $_GET['del'] . "\">");
-		echo ("</p></form></body></html>\n");
-	}
+	echo ("<p align=\"center\"><big>" . _("Do you really want to delete this profile?") . " <b>");
+	echo ($_GET['del'] . "</b></big><br></p>\n");
+	echo ("<form action=\"profiledelete.php\" method=\"post\">\n");
+	echo ("<p align=\"center\">\n");
+	echo ("<input type=\"submit\" name=\"submit\" value=\"" . _("Submit") . "\">\n");
+	echo ("<input type=\"submit\" name=\"abort\" value=\"" . _("Abort") . "\">\n");
+	echo ("<input type=\"hidden\" name=\"type\" value=\"$type\">");
+	echo ("<input type=\"hidden\" name=\"del\" value=\"" . $_GET['del'] . "\">");
+	echo ("</p></form></body></html>\n");
 }
 else{
 	// no valid profile type
