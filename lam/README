@@ -76,6 +76,14 @@ LAM - Readme
     If you want to use a translated version of LAM be sure to install the
     needed locales. See locale/ for a list of supported locales.
     Debian users can add locales with "dpkg-reconfigure locales".
+
+  Security:
+    It is strongly recommended to use a SSL connection to your web server.
+
+    LAM needs to store your LDAP username + password in the session. The session
+    files are saved in sess/ and are accessible only by the web server. To increase
+    security username and password are encrypted with AES (256 bit). The key and iv
+    are generated at random when you log in. They are stored in two cookies.
  
 
     Have fun!
