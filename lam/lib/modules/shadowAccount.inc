@@ -55,6 +55,22 @@ $Id$
 class shadowAccount extends baseModule {
 
 	/**
+	* Creates a new shadowAccount object.
+	*
+	* @param string $scope account type (user, group, host)
+	*/
+	function shadowAccount($scope) {
+	// error messages for input checks
+	$this->messages['shadowMin'] = array('ERROR', _('Password minage'), _('Password minage must be are natural number.'));
+	$this->messages['shadowMax'] = array('ERROR', _('Password maxage'), _('Password maxage must be are natural number.'));
+	$this->messages['inactive'] = array('ERROR', _('Password Expire'), _('Password expire must be are natural number or -1.'));
+	$this->messages['shadowWarning'] = array('ERROR', _('Password warn'), _('Password warn must be are natural number.'));
+	$this->messages['shadow_cmp'] = array('ERROR', _('Password maxage'), _('Password maxage must bigger as Password Minage.'));
+	// call parent constructor
+	parent::baseModule($scope);
+	}
+
+	/**
 	* Returns meta data that is interpreted by parent class
 	*
 	* @return array array with meta data
@@ -67,6 +83,47 @@ class shadowAccount extends baseModule {
 		$return["alias"] = _('Shadow');
 		// module dependencies
 		$return['dependencies'] = array('depends' => array('posixAccount'), 'conflicts' => array());
+		// lists for expiration date
+		$day = array(); $mon = array(); $year = array();
+		for ( $i=1; $i<=31; $i++ ) $day[] = $i;
+		for ( $i=1; $i<=12; $i++ ) $mon[] = $i;
+		for ( $i=2003; $i<=2030; $i++ ) $year[] = $i;
+		$return['profile_options'] = array(
+			// password warning
+			array(
+				0 => array('kind' => 'text', 'text' => _('Password warn')),
+				1 => array('kind' => 'input', 'name' => 'shadowAccount_shadowWarning', 'type' => 'text', 'size' => '4', 'maxlength' => '4', 'value' => ""),
+				2 => array('kind' => 'help', 'value' => 'TODO')),
+			// password expiration
+			array(
+				0 => array('kind' => 'text', 'text' => _('Password expire')),
+				1 => array('kind' => 'input', 'name' => 'shadowAccount_shadowInactive', 'type' => 'text', 'size' => '4', 'maxlength' => '4', 'value' => ""),
+				2 => array('kind' => 'help', 'value' => 'TODO')),
+			// minimum password age
+			array(
+				0 => array('kind' => 'text', 'text' => _('Minimum password age')),
+				1 => array('kind' => 'input', 'name' => 'shadowAccount_shadowMin', 'type' => 'text', 'size' => '5', 'maxlength' => '5', 'value' => ""),
+				2 => array('kind' => 'help', 'value' => 'TODO')),
+			// maximum password age
+			array(
+				0 => array('kind' => 'text', 'text' => _('Maximum password age')),
+				1 => array('kind' => 'input', 'name' => 'shadowAccount_shadowMax', 'type' => 'text', 'size' => '5', 'maxlength' => '5', 'value' => ""),
+				2 => array('kind' => 'help', 'value' => 'TODO')),
+			// expiration date
+			array(
+				0 => array('kind' => 'text', 'text' => _('Expire day')),
+				1 => array('kind' => 'table', 'value' => array(
+					0 => array (
+						0 => array('kind' => 'select', 'name' => 'shadowAccount_shadowExpire_day',
+							'options' => $day, 'options_selectd' => ""),
+						1 => array('kind' => 'select', 'name' => 'shadowAccount_shadowExpire_mon',
+							'options' => $mon, 'options_selectd' => ""),
+						2 => array('kind' => 'select', 'name' => 'shadowAccount_shadowExpire_yea',
+							'options' => $year, 'options_selectd' => "")
+					)
+				)),
+				2 => array('kind' => 'help', 'value' => 'TODO'))
+		);
 		return $return;
 	}
 
@@ -104,6 +161,13 @@ class shadowAccount extends baseModule {
 	*/
 	var $orig;
 
+	/** regular expression for numeric values */
+	var $regex_number = '^([0-9])*$';
+	/** regular expression for shasowInactive */
+	var $regex_inactive = '^(([-][1])|([0-9]*))$';
+
+	/** list of possible error messages */
+	var $messages = array();
 
 	function module_ready() {
 		return true;
@@ -204,12 +268,11 @@ class shadowAccount extends baseModule {
 		$this->attributes['shadowExpire'][0] = intval(mktime(10, 0, 0, $post['shadowExpire_mon'],
 			$post['shadowExpire_day'], $post['shadowExpire_yea'])/3600/24);
 
-		if ( !ereg('^([0-9])*$', $this->attributes['shadowMin'][0]))  $errors['shadowMin'][] = array('ERROR', _('Password minage'), _('Password minage must be are natural number.'));
-		if ( $this->attributes['shadowMin'][0] > $this->attributes['shadowMax'][0]) $errors['shadowMin'][] = array('ERROR', _('Password maxage'), _('Password maxage must bigger as Password Minage.'));
-		if ( !ereg('^([0-9]*)$', $this->attributes['shadowMax'][0])) $errors['shadowMax'][] = array('ERROR', _('Password maxage'), _('Password maxage must be are natural number.'));
-		if ( !ereg('^(([-][1])|([0-9]*))$', $this->attributes['shadowInactive'][0]))
-			$errors['shadowInactive'][] = array('ERROR', _('Password Expire'), _('Password expire must be are natural number or -1.'));
-		if ( !ereg('^([0-9]*)$', $this->attributes['shadowWarning'][0])) $errors['shadowWarning'][] = array('ERROR', _('Password warn'), _('Password warn must be are natural number.'));
+		if ( !ereg($this->regex_number, $this->attributes['shadowMin'][0]))  $errors['shadowMin'][] = $this->messages['shadowMin'];
+		if ( !ereg($this->regex_number, $this->attributes['shadowMax'][0])) $errors['shadowMax'][] = $this->messages['shadowMax'];
+		if ( $this->attributes['shadowMin'][0] > $this->attributes['shadowMax'][0]) $errors['shadowMin'][] = $this->messages['shadow_cmp'];
+		if ( !ereg($this->regex_inactive, $this->attributes['shadowInactive'][0])) $errors['shadowInactive'][] = $this->messages['inactive'];
+		if ( !ereg($this->regex_number, $this->attributes['shadowWarning'][0])) $errors['shadowWarning'][] = $this->messages['shadowWarning'];
 		if (is_array($errors)) return $errors;
 		return 0;
 		}
@@ -228,12 +291,12 @@ class shadowAccount extends baseModule {
 		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Password expire') ),
 			1 => array ( 'kind' => 'input', 'name' => 'shadowInactive', 'type' => 'text', 'size' => '4', 'maxlength' => '4', 'value' => $this->attributes['shadowInactive'][0] ),
 			2 => array ( 'kind' => 'help', 'value' => 'shadowInactive' ));
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Maximum password age') ),
-			1 => array ( 'kind' => 'input', 'name' => 'shadowMax', 'type' => 'text', 'size' => '5', 'maxlength' => '5', 'value' => $this->attributes['shadowMax'][0] ),
-			2 => array ( 'kind' => 'help', 'value' => 'shadowMax' ));
 		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Minimum password age') ),
 			1 => array ( 'kind' => 'input', 'name' => 'shadowMin', 'type' => 'text', 'size' => '5', 'maxlength' => '5', 'value' => $this->attributes['shadowMin'][0] ),
 			2 => array ( 'kind' => 'help', 'value' => 'shadowMin' ));
+		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Maximum password age') ),
+			1 => array ( 'kind' => 'input', 'name' => 'shadowMax', 'type' => 'text', 'size' => '5', 'maxlength' => '5', 'value' => $this->attributes['shadowMax'][0] ),
+			2 => array ( 'kind' => 'help', 'value' => 'shadowMax' ));
 
 		for ( $i=1; $i<=31; $i++ ) $mday[] = $i;
 		for ( $i=1; $i<=12; $i++ ) $mon[] = $i;
@@ -254,50 +317,19 @@ class shadowAccount extends baseModule {
 		return 0;
 		}
 
-	function get_profileOptions() {
-		$return = array();
-		// password warning
-		$return[] = array(0 => array('kind' => 'text', 'text' => _('Password warn')),
-			1 => array('kind' => 'input', 'name' => 'shadowAccount_shadowWarning', 'type' => 'text', 'size' => '4', 'maxlength' => '4', 'value' => ""),
-			2 => array('kind' => 'help', 'value' => 'TODO'));
-		// password expiration
-		$return[] = array(0 => array('kind' => 'text', 'text' => _('Password expire')),
-			1 => array('kind' => 'input', 'name' => 'shadowAccount_shadowInactive', 'type' => 'text', 'size' => '4', 'maxlength' => '4', 'value' => ""),
-			2 => array('kind' => 'help', 'value' => 'TODO'));
-		// maximum password age
-		$return[] = array(0 => array('kind' => 'text', 'text' => _('Maximum password age')),
-			1 => array('kind' => 'input', 'name' => 'shadowAccount_shadowMax', 'type' => 'text', 'size' => '5', 'maxlength' => '5', 'value' => ""),
-			2 => array('kind' => 'help', 'value' => 'TODO'));
-		// minimum password age
-		$return[] = array(0 => array('kind' => 'text', 'text' => _('Minimum password age')),
-			1 => array('kind' => 'input', 'name' => 'shadowAccount_shadowMin', 'type' => 'text', 'size' => '5', 'maxlength' => '5', 'value' => ""),
-			2 => array('kind' => 'help', 'value' => 'TODO'));
-		// expiration date
-		$day = array(); $mon = array(); $year = array();
-		for ( $i=1; $i<=31; $i++ ) $day[] = $i;
-		for ( $i=1; $i<=12; $i++ ) $mon[] = $i;
-		for ( $i=2003; $i<=2030; $i++ ) $year[] = $i;
-		$return[] = array(
-			0 => array('kind' => 'text', 'text' => _('Expire day')),
-			1 => array('kind' => 'table', 'value' => array(
-				0 => array (
-					0 => array('kind' => 'select', 'name' => 'shadowAccount_shadowExpire_day',
-						'options' => $day, 'options_selectd' => ""),
-					1 => array('kind' => 'select', 'name' => 'shadowAccount_shadowExpire_mon',
-						'options' => $mon, 'options_selectd' => ""),
-					2 => array('kind' => 'select', 'name' => 'shadowAccount_shadowExpire_yea',
-						'options' => $year, 'options_selectd' => "")
-				)
-			)),
-			2 => array('kind' => 'help', 'value' => 'TODO'));
-		return $return;
-	}
-
-	// checks if the values of a new or modified profile are valid
-	// $scope: the account type (user, group, host, ...)
-	// $options: a hash array (name => value) containing the options
+	/**
+	* Checks input values of account profiles.
+	*
+	* @return profile elements
+	*/
 	function check_profileOptions($options) {
-		return array();
+		$errors = array();
+		if (!ereg($this->regex_number, $options['shadowAccount_shadowMin'][0])) $errors[] = $this->messages['shadowMin'];
+		if (!ereg($this->regex_number, $options['shadowAccount_shadowMax'][0])) $errors[] = $this->messages['shadowMax'];
+		if ($options['shadowAccount_shadowMin'][0] > $options['shadowAccount_shadowMax'][0]) $errors[] = $this->messages['shadow_cmp'];
+		if (!ereg($this->regex_inactive, $options['shadowAccount_shadowInactive'][0])) $errors[] = $this->messages['inactive'];
+		if (!ereg($this->regex_number, $options['shadowAccount_shadowWarning'][0])) $errors[] = $this->messages['shadowWarning'];
+		return $errors;
 	}
 	
 	function get_pdfFields($account_type="user") {
