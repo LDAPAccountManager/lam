@@ -71,11 +71,10 @@ if ($( == 0 ) { # we are root
 	if ($ARGV[0] eq "*test") {
 		use Quota; # Needed to get and set quotas
 		print "Perl quota module successfully installed.\n";
-		print "IF you haven't seen any errors lamdaemon.pl was set up successfully.\n";
+		print "If you haven't seen any errors lamdaemon.pl was set up successfully.\n";
 		}
 	else {
 		# loop for every transmitted user
-		# XXX fixme change code to read stdin at once and then loop
 		my $string = do {local $/;<STDIN>};
 		@input = split ("\n", $string );
 		for ($i=0; $i<=$#input; $i++) {
@@ -103,21 +102,30 @@ if ($( == 0 ) { # we are root
 									system '/usr/sbin/useradd.local', $user[0]; # run useradd-script
 									}
 								}
+							else {
+								$return = "ERROR,Lamdaemon,Homedirectory already exists.:$return";
+								}
 							($<, $>) = ($>, $<); # Give up root previleges
 							last switch2;
 							};
 						$vals[2] eq 'rem' && do {
 							($<, $>) = ($>, $<); # Get root previliges
 							if (-d $user[7]) {
+								# Fixme, only delete files owned by user.
 								system 'rm', '-R', $user[7]; # Delete Homedirectory
 								if (-e '/usr/sbin/userdel.local') {
 									system '/usr/sbin/userdel.local', $user[0];
 									}
 								}
+							else {
+								$return = "ERROR,Lamdaemon,Homedirectory doesn't exists.:$return";
+								}
 							($<, $>) = ($>, $<); # Give up root previleges
 							last switch2;
 							};
 						}
+					# Show error if undfined command is used
+					$return = "ERROR,Lamdaemon,Unknown command $vals[2].:$return";
 					last switch;
 					};
 				$vals[1] eq 'quota' && do {
@@ -182,9 +190,11 @@ if ($( == 0 ) { # we are root
 							($<, $>) = ($>, $<); # Give up root previleges
 							last switch2;
 							};
+						$return = "ERROR,Lamdaemon,Unknown command $vals[2].:$return";
 						}
 					};
 					last switch;
+				$return = "ERROR,Lamdaemon,Unknown command $vals[1].:$return";
 				};
 				print "$return\n";
 			}

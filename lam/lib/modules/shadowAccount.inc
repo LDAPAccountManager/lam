@@ -189,12 +189,12 @@ class shadowAccount {
 		$this->attributes['shadowExpire'][0] = intval(mktime(10, 0, 0, $post['shadowExpire_mon'],
 			$post['shadowExpire_day'], $post['shadowExpire_yea'])/3600/24);
 
-		if ( !ereg('^([0-9])*$', $this->attributes['shadowMin'][0]))  $errors[] = array('ERROR', _('Password minage'), _('Password minage must be are natural number.'), 'shadowMin');
-		if ( $this->attributes['shadowMin'][0] > $this->attributes['shadowMax'][0] ) $errors[] = array('ERROR', _('Password maxage'), _('Password maxage must bigger as Password Minage.'), 'shadowMin');
-		if ( !ereg('^([0-9]*)$', $this->attributes['shadowMax'][0])) $errors[] = array('ERROR', _('Password maxage'), _('Password maxage must be are natural number.'), 'shadowMax');
+		if ( !ereg('^([0-9])*$', $this->attributes['shadowMin'][0]))  $errors['shadowMin'][] = array('ERROR', _('Password minage'), _('Password minage must be are natural number.'));
+		if ( $this->attributes['shadowMin'][0] > $this->attributes['shadowMax'][0]) $errors['shadowMin'][] = array('ERROR', _('Password maxage'), _('Password maxage must bigger as Password Minage.'));
+		if ( !ereg('^([0-9]*)$', $this->attributes['shadowMax'][0])) $errors['shadowMax'][] = array('ERROR', _('Password maxage'), _('Password maxage must be are natural number.'));
 		if ( !ereg('^(([-][1])|([0-9]*))$', $this->attributes['shadowInactive'][0]))
-			$errors[] = array('ERROR', _('Password Expire'), _('Password expire must be are natural number or -1.'), 'shadowInactive');
-		if ( !ereg('^([0-9]*)$', $this->attributes['shadowWarning'][0])) $errors[] = array('ERROR', _('Password warn'), _('Password warn must be are natural number.'), 'shadowWarning');
+			$errors['shadowInactive'][] = array('ERROR', _('Password Expire'), _('Password expire must be are natural number or -1.'));
+		if ( !ereg('^([0-9]*)$', $this->attributes['shadowWarning'][0])) $errors['shadowWarning'][] = array('ERROR', _('Password warn'), _('Password warn must be are natural number.'));
 		if (is_array($errors)) return $errors;
 		return 0;
 		}
