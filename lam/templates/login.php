@@ -32,8 +32,9 @@ function display_LoginPage($config_object,$profile)
 {
 	global $error_message;
 	// generate 256 bit key and initialization vector for user/passwd-encryption
-	$key = mcrypt_create_iv(32, MCRYPT_DEV_RANDOM);
-	$iv = mcrypt_create_iv(32, MCRYPT_DEV_RANDOM);
+	srand((double)microtime()*1234567);
+	$key = mcrypt_create_iv(32, MCRYPT_RAND);
+	$iv = mcrypt_create_iv(32, MCRYPT_RAND);
 
 	// save both in cookie
 	setcookie("Key", base64_encode($key), 0, "/");
@@ -42,7 +43,7 @@ function display_LoginPage($config_object,$profile)
 	$_SESSION['language'] = $config_object->get_defaultLanguage();
 
 	$current_language = explode(":",$_SESSION['language']);
-	$_SESSION['header'] = "<?xml version=\"1.0\" encoding=\"" . $current_language[1] . "\"?>\n<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n\n";
+	$_SESSION['header'] = "<?xml version=\"1.0\" encoding=\"" . $current_language[1] . "\"?>\n<!DOCTYPE>\n\n";
 
 	// loading available languages from language.conf file
 	$languagefile = "../config/language";
