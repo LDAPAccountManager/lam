@@ -366,7 +366,6 @@ function getquotas($type,$user='+') { // Whis function will return the quotas fr
 		if ($return->quota[$i][8]<$time) $return->quota[$i][8] = '';
 			else $return->quota[$i][8] = strval(($return->quota[$i][8]-$time)/3600) . _(' hours');
 		}
-	print_r ($return);
 	return $return;
 	}
 

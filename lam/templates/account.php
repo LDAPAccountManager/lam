@@ -414,7 +414,7 @@ switch ($select_local) { // Select which part of page will be loaded
 					</td>'."\n".'<td>
 					<a href="help.php?HelpNumber=425" target="lamhelp">'._('Help').'</a>
 					</td>'."\n".'</tr>'."\n".'<tr><td>';
-				echo _('Primary Group');
+				echo _('Primary Group*');
 				echo '</td>'."\n".'<td><select name="f_general_group">';
 				// loop trough existing groups
 				foreach ($groups as $group) {
@@ -437,7 +437,7 @@ switch ($select_local) { // Select which part of page will be loaded
 				echo	'</select></td>'."\n".'<td>
 					<a href="help.php?HelpNumber=402" target="lamhelp">'._('Help').'</a>
 					</td></tr>'."\n".'<tr><td>';
-				echo _('Home Directory');
+				echo _('Home Directory*');
 				echo '</td>'."\n".'<td><input name="f_general_homedir" type="text" size="30" value="' . $_SESSION['account']->general_homedir . '">
 					</td>'."\n".'<td>
 					<a href="help.php?HelpNumber=403" target="lamhelp">'._('Help').'</a>
@@ -447,7 +447,7 @@ switch ($select_local) { // Select which part of page will be loaded
 					</td>'."\n".'<td>
 					<a href="help.php?HelpNumber=404" target="lamhelp">'._('Help').'</a>
 					</td></tr>'."\n".'<tr><td>';
-				echo _('Login Shell');
+				echo _('Login Shell*');
 				echo '</td>'."\n".'<td><select name="f_general_shell" >';
 					// loop through shells
 					foreach ($_SESSION['shelllist'] as $shell)
@@ -455,7 +455,9 @@ switch ($select_local) { // Select which part of page will be loaded
 							else echo '<option>'.$shell;
 				echo '</select></td>'."\n".'<td>
 					<a href="help.php?HelpNumber=405" target="lamhelp">'._('Help').'</a>
-					</td></tr>'."\n".'<tr><td><select name="f_general_selectprofile">';
+					</td></tr>'."\n".'<tr><td>';
+					echo _('Values with * are required');
+					echo '</td></tr><tr><td><select name="f_general_selectprofile">';
 				// loop through profiles
 				foreach ($profilelist as $profile) echo '<option>' . $profile;
 				echo '</select>
@@ -467,7 +469,7 @@ switch ($select_local) { // Select which part of page will be loaded
 				$profilelist = getGroupProfiles();
 				// Create HTML-page
 				echo '<tr><td>';
-				echo _('Groupname');
+				echo _('Groupname*');
 				echo '</td>'."\n".'<td>
 					<input name="f_general_username" type="text" size="20" maxlength="20" value="' . $_SESSION['account']->general_username . '">
 					</td><td>
@@ -483,7 +485,9 @@ switch ($select_local) { // Select which part of page will be loaded
 				echo '</td>'."\n".'<td><input name="f_general_gecos" type="text" size="30" value="' . $_SESSION['account']->general_gecos . '">
 					</td>'."\n".'<td>
 					<a href="help.php?HelpNumber=409" target="lamhelp">'._('Help').'</a>
-					</td></tr>'."\n".'<tr><td><select name="f_general_selectprofile" >';
+					</td></tr><tr><td>';
+					echo _('Values with * are required');
+					echo '</td></tr>'."\n".'<tr><td><select name="f_general_selectprofile" >';
 				foreach ($profilelist as $profile) echo '<option>' . $profile;
 				echo '</select>
 					<input name="load" type="submit" value="'; echo _('Load Profile'); echo '">
@@ -494,7 +498,7 @@ switch ($select_local) { // Select which part of page will be loaded
 				$profilelist = getHostProfiles();
 				// Create HTML-page
 				echo '<tr><td>';
-				echo _('Hostname');
+				echo _('Hostname*');
 				echo '</td>'."\n".'<td>
 					<input name="f_general_username" type="text" size="20" maxlength="20" value="' . $_SESSION['account']->general_username . '">
 					</td><td>
@@ -506,7 +510,7 @@ switch ($select_local) { // Select which part of page will be loaded
 					</td>'."\n".'<td>
 					<a href="help.php?HelpNumber=411" target="lamhelp">'._('Help').'</a>
 					</td></tr>'."\n".'<tr><td>';
-				echo _('Primary Group');
+				echo _('Primary Group*');
 				echo '</td>'."\n".'<td><select name="f_general_group">';
 				foreach ($groups as $group) {
 					if ($_SESSION['account']->general_group == $group) echo '<option selected>' . $group;
@@ -531,7 +535,9 @@ switch ($select_local) { // Select which part of page will be loaded
 				echo '</td><td><input name="f_general_gecos" type="text" size="30" value="' . $_SESSION['account']->general_gecos . '">
 					</td>'."\n".'<td>
 					<a href="help.php?HelpNumber=413" target="lamhelp">'._('Help').'</a>
-					</td></tr>'."\n".'<tr><td><select name="f_general_selectprofile">';
+					</td></tr><tr><td>';
+					echo _('Values with * are required');
+					echo '</td></tr>'."\n".'<tr><td><select name="f_general_selectprofile">';
 				foreach ($profilelist as $profile) echo '<option>' . $profile;
 				echo '</select>
 					<input name="load" type="submit" value="'; echo _('Load Profile'); echo '">
@@ -563,27 +569,27 @@ switch ($select_local) { // Select which part of page will be loaded
 				echo '></td>'."\n".'<td>
 				<a href="help.php?HelpNumber=426" target="lamhelp">'._('Help').'</a>
 				</td></tr>'."\n".'<tr><td>';
-				echo _('Password Warn');
+				echo _('Password Warn*');
 				echo '</td>'."\n".'<td><input name="f_unix_pwdwarn" type="text" size="4" maxlength="4" value="' . $_SESSION['account']->unix_pwdwarn . '">
 					</td>'."\n".'<td>
 					<a href="help.php?HelpNumber=414" target="lamhelp">'._('Help').'</a>
 					</td></tr>'."\n".'<tr><td>';
-				echo _('Password Expire');
+				echo _('Password Expire*');
 				echo '</td>'."\n".'<td><input name="f_unix_pwdallowlogin" type="text" size="4" maxlength="4" value="' . $_SESSION['account']->unix_pwdallowlogin . '">
 					</td>'."\n".'<td>
 					<a href="help.php?HelpNumber=415" target="lamhelp">'._('Help').'</a>
 					</td></tr>'."\n".'<tr><td>';
-				echo _('Maximum Passwordage');
+				echo _('Maximum Passwordage*');
 				echo '</td>'."\n".'<td><input name="f_unix_pwdmaxage" type="text" size="5" maxlength="5" value="' . $_SESSION['account']->unix_pwdmaxage . '">
 					</td>'."\n".'<td>
 					<a href="help.php?HelpNumber=416" target="lamhelp">'._('Help').'</a>
 					</td></tr>'."\n".'<tr><td>';
-				echo _('Minimum Passwordage');
+				echo _('Minimum Passwordage*');
 				echo '</td>'."\n".'<td><input name="f_unix_pwdminage" type="text" size="4" maxlength="4" value="' . $_SESSION['account']->unix_pwdminage . '">
 					</td>'."\n".'<td>
 					<a href="help.php?HelpNumber=417" target="lamhelp">'._('Help').'</a>
 					</td></tr>'."\n".'<tr><td>';
-				echo _('Expire Date');
+				echo _('Expire Date*');
 				echo '</td>'."\n".'<td><select name="f_unix_pwdexpire_day">';
 				for ( $i=1; $i<=31; $i++ ) {
 					if ($_SESSION['account']->unix_pwdexpire_day==$i) echo "<option selected> $i";
@@ -607,7 +613,9 @@ switch ($select_local) { // Select which part of page will be loaded
 				if ($_SESSION['account']->unix_deactivated) echo ' checked ';
 				echo '></td>'."\n".'<td>
 				<a href="help.php?HelpNumber=427" target="lamhelp">'._('Help').'</a>
-				</td></tr>'."\n".'<tr><td>';
+				</td></tr><tr><td>';
+					echo _('Values with * are required');
+					echo '</td></tr>'."\n".'<tr><td>';
 				break;
 			case 'host' :
 				echo '<input name="f_unix_password_no" type="hidden" value="';
@@ -621,27 +629,27 @@ switch ($select_local) { // Select which part of page will be loaded
 					echo _('Reset Password'); echo '">';
 					}
 				echo '</td></tr>'."\n".'<tr><td>';
-				echo _('Password Warn');
+				echo _('Password Warn*');
 				echo '</td>'."\n".'<td><input name="f_unix_pwdwarn" type="text" size="4" maxlength="4" value="' . $_SESSION['account']->unix_pwdwarn . '">
 					</td>'."\n".'<td>
 					<a href="help.php?HelpNumber=419" target="lamhelp">'._('Help').'</a>
 					</td></tr>'."\n".'<tr><td>';
-				echo _('Password Expire');
+				echo _('Password Expire*');
 				echo '</td>'."\n".'<td><input name="f_unix_pwdallowlogin" type="text" size="4" maxlength="4" value="' . $_SESSION['account']->unix_pwdallowlogin . '">
 					</td>'."\n".'<td>
 					<a href="help.php?HelpNumber=420" target="lamhelp">'._('Help').'</a>
 					</td></tr>'."\n".'<tr><td>';
-				echo _('Maximum Passwordage');
+				echo _('Maximum Passwordage*');
 				echo '</td>'."\n".'<td><input name="f_unix_pwdmaxage" type="text" size="5" maxlength="5" value="' . $_SESSION['account']->unix_pwdmaxage . '">
 					</td>'."\n".'<td>
 					<a href="help.php?HelpNumber=421" target="lamhelp">'._('Help').'</a>
 					</td></tr>'."\n".'<tr><td>';
-				echo _('Minimum Passwordage');
+				echo _('Minimum Passwordage*');
 				echo '</td>'."\n".'<td><input name="f_unix_pwdminage" type="text" size="4" maxlength="4" value="' . $_SESSION['account']->unix_pwdminage . '">
 					</td>'."\n".'<td>
 					<a href="help.php?HelpNumber=422" target="lamhelp">'._('Help').'</a>
 					</td></tr>'."\n".'<tr><td>';
-				echo _('Expire Date');
+				echo _('Expire Date*');
 				echo '</td>'."\n".'<td><select name="f_unix_pwdexpire_day">';
 				for ( $i=1; $i<=31; $i++ ) {
 					if ($_SESSION['account']->unix_pwdexpire_day==$i) echo "<option selected> $i";
@@ -665,7 +673,9 @@ switch ($select_local) { // Select which part of page will be loaded
 				if ($_SESSION['account']->unix_deactivated) echo ' checked ';
 				echo '></td><td>
 					<a href="help.php?HelpNumber=432" target="lamhelp">'._('Help').'</a>
-					</td></tr>'."\n";
+					</td></tr><tr><td>';
+					echo _('Values with * are required');
+					echo '</td></tr>'."\n";
 				break;
 			}
 		echo '<tr><td>
