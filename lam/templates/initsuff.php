@@ -37,6 +37,7 @@ setlanguage();
 if ($_POST['add_suff'] || $_POST['cancel']) {
 	if ($_POST['add_suff']) {
 	$fail = array();
+	$errors = array();
 	$new_suff = $_POST['new_suff'];
 	$new_suff = str_replace("\\'", "", $new_suff);
 	$new_suff = explode(";", $new_suff);
@@ -58,7 +59,10 @@ if ($_POST['add_suff'] || $_POST['cancel']) {
 				$attr['objectClass'] = "organizationalunit";
 				$attr['ou'] = $name;
 				$dn = "ou=" . $name . "," . $end;
-				if (!@ldap_add($_SESSION['ldap']->server(), $dn, $attr)) $fail[] = $suff;
+				if (!@ldap_add($_SESSION['ldap']->server(), $dn, $attr)) {
+					$fail[] = $suff;
+					$error[] = ldap_error($_SESSION['ldap']->server());
+				}
 			}
 		}
 	}
@@ -71,7 +75,7 @@ if ($_POST['add_suff'] || $_POST['cancel']) {
 	if ($_POST['add_suff']) {
 		if (sizeof($fail) > 0) {
 			for ($i = 0; $i < sizeof($fail); $i++) {
-				StatusMessage("ERROR", _("Failed to create entry!"), $fail[$i]);
+				StatusMessage("ERROR", _("Failed to create entry!") . "<br>" . $error[$i], $fail[$i]);
 			}
 		}
 		else StatusMessage("INFO", "", _("All changes were successful."));
