@@ -26,30 +26,25 @@ $Id$
 // check if all suffixes in conf-file exist
 $conf = $_SESSION['config'];
 $new_suffs = array();
-if ($conf->Suff_users && ($conf->Suff_users != "")) {
-	$info = @ldap_search($_SESSION['ldap']->server, $conf->Suff_users, "", array());
+if ($conf->get_UserSuffix() && ($conf->get_UserSuffix() != "")) {
+	$info = @ldap_search($_SESSION['ldap']->server, $conf->get_UserSuffix(), "", array());
 	$res = @ldap_get_entries($_SESSION['ldap']->server, $info);
-	if (!$res) $new_suffs[] = $conf->Suff_users;
+	if (!$res) $new_suffs[] = $conf->get_UserSuffix();
 }
-if ($conf->Suff_groups && ($conf->Suff_groups != "")) {
-	$info = @ldap_search($_SESSION['ldap']->server, $conf->Suff_groups, "", array());
+if ($conf->get_GroupSuffix() && ($conf->get_GroupSuffix() != "")) {
+	$info = @ldap_search($_SESSION['ldap']->server, $conf->get_GroupSuffix(), "", array());
 	$res = @ldap_get_entries($_SESSION['ldap']->server, $info);
-	if (!$res) $new_suffs[] = $conf->Suff_groups;
+	if (!$res) $new_suffs[] = $conf->get_GroupSuffix();
 }
-if ($conf->Suff_hosts && ($conf->Suff_hosts != "")) {
-	$info = @ldap_search($_SESSION['ldap']->server, $conf->Suff_hosts, "", array());
+if ($conf->get_HostSuffix() && ($conf->get_HostSuffix() != "")) {
+	$info = @ldap_search($_SESSION['ldap']->server, $conf->get_HostSuffix(), "", array());
 	$res = @ldap_get_entries($_SESSION['ldap']->server, $info);
-	if (!$res) $new_suffs[] = $conf->Suff_hosts;
+	if (!$res) $new_suffs[] = $conf->get_HostSuffix();
 }
-if ($conf->Suff_domains && ($conf->Suff_domains != "")) {
-	$info = @ldap_search($_SESSION['ldap']->server, $conf->Suff_domains, "", array());
+if ($conf->get_DomainSuffix() && ($conf->get_DomainSuffix() != "")) {
+	$info = @ldap_search($_SESSION['ldap']->server, $conf->get_DomainSuffix(), "", array());
 	$res = @ldap_get_entries($_SESSION['ldap']->server, $info);
-	if (!$res) $new_suffs[] = $conf->Suff_domains;
-}
-if ($conf->Suff_map && ($conf->Suff_map != "")) {
-	$info = @ldap_search($_SESSION['ldap']->server, $conf->Suff_map, "", array());
-	$res = @ldap_get_entries($_SESSION['ldap']->server, $info);
-	if (!$res) $new_suffs[] = $conf->Suff_map;
+	if (!$res) $new_suffs[] = $conf->get_DomainSuffix();
 }
 
 if ($_SESSION['config']->is_samba3()) {
