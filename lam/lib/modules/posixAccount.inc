@@ -101,6 +101,8 @@ class posixAccount extends baseModule {
 		}
 		// alias name
 		$return["alias"] = _("Unix");
+		// RDN attributes
+		$return["RDN"] = array("uid" => "normal", "cn" => "low");
 		// profile checks
 		$return['profile_checks']['posixAccount_homeDirectory'] = array('type' => 'regex_i', 'regex' => 'homeDirectory',
 			'error_message' => $this->messages['homeDirectory'][0]);

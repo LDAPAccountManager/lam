@@ -116,6 +116,51 @@ function get_ldap_filter($scope) {
 }
 
 /**
+* Returns a list of LDAP attributes which can be used to form the RDN.
+*
+* The list is already sorted by the priority given by the nodules.
+*
+* @param string $scope account type (user, group, host)
+* @return array list of LDAP attributes
+*/
+function getRDNAttributes($scope) {
+	$mods = getAvailableModules($scope);
+	$return = array();
+	$attrs_low = array();
+	$attrs_normal = array();
+	$attrs_high = array();
+	for ($i = 0; $i < sizeof($mods); $i++) {
+		// get list of attributes
+		$module = new $mods[$i]($scope);
+		$attrs = $module->get_RDNAttributes();
+		$keys = array_keys($attrs);
+		// sort attributes
+		for ($k = 0; $k < sizeof($keys); $k++) {
+			switch ($attrs[$keys[$k]]) {
+				case "low":
+					$attrs_low[] = $keys[$k];
+					break;
+				case "normal":
+					$attrs_normal[] = $keys[$k];
+					break;
+				case "high":
+					$attrs_high[] = $keys[$k];
+					break;
+				default:
+					$attrs_low[] = $keys[$k];
+					break;
+			}
+		}
+	}
+	// merge arrays
+	$return = $attrs_high;
+	for ($i = 0; $i < sizeof($attrs_normal); $i++) $return[] = $attrs_normal[$i];
+	for ($i = 0; $i < sizeof($attrs_low); $i++) $return[] = $attrs_low[$i];
+	$return = array_values(array_unique($return));
+	return $return;
+}
+
+/**
 * Returns a hash array (module name => dependencies) of all user module dependencies
 *
 * "dependencies" contains an array with two sub arrays: depends, conflicts

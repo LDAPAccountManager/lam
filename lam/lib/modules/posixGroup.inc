@@ -230,6 +230,8 @@ class posixGroup extends baseModule {
 		}
 		// alias name
 		$return["alias"] = _('Unix');
+		// RDN attribute
+		$return["RDN"] = array("cn" => "normal");
 		// module dependencies
 		$return['dependencies'] = array('depends' => array(), 'conflicts' => array('inetOrgPerson', 'account', 'sambaDomain'));
 		// configuration options

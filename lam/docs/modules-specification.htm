@@ -120,7 +120,34 @@ The resulting LDAP filter will look like this:
 is only used for base modules. Standard modules do not need to
 implement it.</span><br>
 <br>
-<h3>2.1.5. get_dependencies*</h3>
+<h3>2.1.5. get_RDNAttributes*</h3>
+<br>
+<table style="text-align: left; width: 300px; height: 30px;" border="0"
+ cellspacing="2" cellpadding="2">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204); text-align: center;"><span
+ style="font-weight: bold;">function get_RDNAttributes()</span><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+Returns a hash array containing a list of possible LDAP attributes that
+can be used to form the RDN (Relative Distinguished Name).<br>
+<span style="font-weight: bold;"></span><br>
+The keys of the array are the LDAP attributes, the values are the
+priority <span style="font-style: italic;">("low"/"normal"/"high")</span>.<br>
+Attributes with higher priority are placed higher in the drop down box
+for the RDN selection.<br>
+<br>
+<span style="font-weight: bold;">Example: <span
+ style="font-style: italic;">return "('uid' =&gt;
+'normal', 'cn' =&gt; 'low')"</span></span><br>
+<br>
+<span style="font-weight: bold; color: rgb(255, 0, 0);"></span><br>
+<h3>2.1.6. get_dependencies*</h3>
 <br>
 <table cellpadding="2" cellspacing="2" border="0"
  style="text-align: left; width: 300px; font-weight: bold;">
@@ -151,7 +178,7 @@ your module depends on one of these modules.<br>
 =&gt; array("exim"));</span><br
  style="font-weight: bold; font-style: italic;">
 <br>
-<h3>2.1.6. get_metaData()</h3>
+<h3>2.1.7. get_metaData()</h3>
 <br>
 <table cellpadding="2" cellspacing="2" border="0"
  style="text-align: left; width: 300px;">
@@ -170,7 +197,7 @@ Returns an hash array including meta data for the baseModule.<br>
 <span style="font-weight: bold;">Example: return array("is_base" =&gt;
 true);</span><br style="font-weight: bold;">
 <br>
-<h3>2.1.7. get_configOptions()*</h3>
+<h3>2.1.8. get_configOptions()*</h3>
 <br>
 <table cellpadding="2" cellspacing="2" border="0"
  style="text-align: left; width: 300px;">
@@ -198,7 +225,7 @@ as keywords to load and save settings. We recommend to use the module
 name as prefix for them (e.g. posixAccount_homeDirectory) to avoid
 naming confilcts.<br>
 <br>
-<h3>2.1.8. get_configDescriptions()*</h3>
+<h3>2.1.9. get_configDescriptions()*</h3>
 <br>
 <table cellpadding="2" cellspacing="2" border="0"
  style="text-align: left; width: 300px;">
@@ -225,7 +252,7 @@ array with this format:<br>
 &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 'descriptions' =&gt; array('option1'
 =&gt; 'description1', ...))</span><br>
 <br>
-<h3>2.1.9. check_configOptions*</h3>
+<h3>2.1.10. check_configOptions*</h3>
 <br>
 <table style="text-align: left; width: 400px; height: 30px;" border="0"
  cellspacing="2" cellpadding="2">
@@ -255,7 +282,7 @@ If no errors occured the function returns an empty array.<span
  style="font-weight: bold;"></span><br>
 <br style="font-weight: bold;">
 <span style="font-weight: bold;"></span>
-<h3>2.1.10. get_scope()</h3>
+<h3>2.1.11. get_scope()</h3>
 <br>
 <table cellpadding="2" cellspacing="2" border="0"
  style="text-align: left; width: 300px;">
@@ -276,7 +303,8 @@ baseModule and should not be overwritten.</span><br>
 <br>
 <br>
 <br>
-<h3>2.2. Class functions</h3>
+<h3>2.2. Functions which are called inside of an account container<br>
+</h3>
 <h3>2.2.1. init</h3>
 <br>
 <table cellpadding="2" cellspacing="2" border="0"
@@ -685,7 +713,16 @@ array("user", "host")</span><br style="font-weight: bold;">
 'objectClass=posixAccount', 'and' =&gt; '(!(uid=*$))')<br>
 <br>
 </span>
-<h3>6.4 get_dependencies()<br>
+<h3>6.4 get_RDNAttributes()</h3>
+&nbsp;&nbsp;&nbsp; "RDN" =&gt; array<br>
+<br>
+<span style="font-weight: bold;">&nbsp;&nbsp; Example:</span><span
+ style="font-style: italic; font-weight: bold;"> array('uid' =&gt;
+'normal', 'cn' =&gt; 'low')<br>
+<br>
+</span>
+<span style="font-style: italic; font-weight: bold;"></span>
+<h3>6.5 get_dependencies()<br>
 </h3>
 &nbsp;&nbsp;&nbsp; "dependencies" =&gt; array<br>
 <br>
@@ -697,7 +734,7 @@ array("user", "host")</span><br style="font-weight: bold;">
 =&gt; array("exim")</span></span><span
  style="font-style: italic; font-weight: bold;">)<br>
 </span><br>
-<h3>6.5 get_profileOptions()<br>
+<h3>6.6 get_profileOptions()<br>
 </h3>
 &nbsp;&nbsp;&nbsp; "profile_options" =&gt; array<br>
 <br>
@@ -706,7 +743,7 @@ array("user", "host")</span><br style="font-weight: bold;">
 return value of get_profileOptions().<br>
 <br>
 </span></span>
-<h3>6.6 check_profileOptions()<br>
+<h3>6.7 check_profileOptions()<br>
 </h3>
 &nbsp;&nbsp;&nbsp; "profile_checks" =&gt; array<br>
 <br>
@@ -781,7 +818,7 @@ head, 2 =&gt; message text, 3 =&gt; additional variables)</li>
   </ul>
 </ul>
 <br>
-<h3>6.7 get_configOptions()<br>
+<h3>6.8 get_configOptions()<br>
 </h3>
 &nbsp;&nbsp;&nbsp; "config_options" =&gt; array('user' =&gt; array,
 'host' =&gt; array, 'all' =&gt; array)<br>
@@ -797,7 +834,7 @@ the
 return value of get_configOptions().<br>
 <br>
 </span></span>
-<h3>6.8 get_configDescriptions()<br>
+<h3>6.9 get_configDescriptions()<br>
 </h3>
 &nbsp;&nbsp;&nbsp; "config_descriptions" =&gt; array<br>
 <br>
@@ -806,7 +843,7 @@ return value of get_configOptions().<br>
 return value of get_configDescriptions().<br>
 <br>
 </span></span>
-<h3>6.9 check_configOptions()<br>
+<h3>6.10 check_configOptions()<br>
 </h3>
 &nbsp;&nbsp;&nbsp; "config_checks" =&gt; array('user' =&gt; array,
 'host' =&gt; 'array', 'all' =&gt; array)<br>

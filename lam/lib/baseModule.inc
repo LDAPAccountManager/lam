@@ -190,6 +190,20 @@ class baseModule {
 	}
 
 	/**
+	* Returns a list of possible LDAP attributes which can be used to form the RDN.
+	*
+	* The returned elements have this form: <attribute> => <priority>
+	* <br> <attribute> is the name of the LDAP attribute
+	* <br> <priority> defines the priority of the attribute (can be "low", "normal", "high")
+	*
+	* @return array list of attributes
+	*/
+	function get_RDNAttributes() {
+		if (isset($this->meta['RDN'])) return $this->meta['RDN'];
+		else return array();
+	}
+
+	/**
 	* This function returns a list with all depending and conflicting modules.
 	*
 	* @return array list of dependencies and conflicts
@@ -489,7 +503,6 @@ class baseModule {
 		}
 	}
 
-// TODO implement missing interface
 }
 
 

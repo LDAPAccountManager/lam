@@ -73,6 +73,8 @@ class inetOrgPerson extends baseModule {
 		$return["account_types"] = array("user");
 		// alias name
 		$return["alias"] = _('Personal');
+		// RDN attribute
+		$return["RDN"] = array("cn" => "low");
 		// module dependencies
 		$return['dependencies'] = array('depends' => array('posixAccount'), 'conflicts' => array('account'));
 		// profile elements
