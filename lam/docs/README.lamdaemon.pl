@@ -29,7 +29,7 @@ thins to get it work.
    Therefore you should disable logging so the password doesn't
    apear in any logfile
    This can be done by adding the following line:
-   Defaults:$admin !syslog logfile=/dev/null
+   Defaults:$admin !syslog
    
 4. Set up perl
    We need some external perl-modules, Quota and Net::LDAP

@@ -82,16 +82,8 @@ function createUserPDF($accounts) {
 		$pdfFile->Cell(50,5,_("Login Shell(s)") . ":",0,0,"R",0);
 		$text = "";
 		$shells = $account->general_shell;
-		for($j=0;$j<count($shells);$j++) {
-			if($j == 0 || count($shells) == 1) {
-				$text = $shells[$j];
-			}
-			else {
-				$text .= ", " . $shells[$j];
-			}
-		}
 		$pdfFile->setFont("times","B",10);
-		$pdfFile->Cell(50,5,$text,0,1,"L",0);
+		$pdfFile->Cell(50,5,$account->general_shell,0,1,"L",0);
 		$pdfFile->Ln(9);
 		$pdfFile->setFont("arial","B",12);
 // Print Unix settings
@@ -116,7 +108,7 @@ function createUserPDF($accounts) {
 		$pdfFile->setFont("times","",10);
 		$pdfFile->Cell(50,5,_("Password expire") . ":",0,0,"R",0);
 		$pdfFile->setFont("times","B",10);
-		$pdfFile->Cell(50,5,$account->unix_pwdexpire,0,1,"L",0);
+		$pdfFile->Cell(50,5,date('j. F Y' ,$account->unix_pwdexpire),0,1,"L",0);
 		$pdfFile->setFont("times","",10);
 		$pdfFile->Cell(50,5,_("Login at host(s)") . ":",0,0,"R",0);
 		$pdfFile->setFont("times","B",10);
