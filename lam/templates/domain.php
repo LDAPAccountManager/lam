@@ -40,7 +40,8 @@ if (($_GET['action'] == "edit") || ($_GET['action'] == "new")) {
 	$domsuff = $_SESSION['ldap']->search_units($_SESSION['config']->get_domainSuffix());
 	if ($_GET['action'] == "edit") {
 		// remove "\'"
-		$_GET['DN'] = str_replace("\\'", "", $_GET['DN']);
+		$_GET['DN'] = str_replace("\\", "", $_GET['DN']);
+		$_GET['DN'] = str_replace("'", "", $_GET['DN']);
 		// load attributes from domain
 		for ($i = 0; $i < sizeof($domlist); $i++) {
 			if ($domlist[$i]->dn == $_GET['DN']) {
@@ -185,7 +186,8 @@ if (($_GET['action'] == "edit") || ($_GET['action'] == "new")) {
 // delete domain, ask if sure
 elseif ($_GET['action'] == "delete") {
 	// remove "\'" and make array
-	$DNs = str_replace("\\'", "", $_GET['DN']);
+	$DNs = str_replace("\\", "", $_GET['DN']);
+	$DNs = str_replace("'", "", $DNs);
 	$DNs = explode(";", $DNs);
 	// display page
 	echo $_SESSION['header'];

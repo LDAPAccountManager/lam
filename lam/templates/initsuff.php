@@ -39,7 +39,8 @@ if ($_POST['add_suff'] || $_POST['cancel']) {
 		$fail = array();
 		$errors = array();
 		$new_suff = $_POST['new_suff'];
-		$new_suff = str_replace("\\'", "", $new_suff);
+		$new_suff = str_replace("\\", "", $new_suff);
+		$new_suff = str_replace("'", "", $new_suff);
 		$new_suff = explode(";", $new_suff);
 		// add entries
 		for ($i = 0; $i < sizeof($new_suff); $i++) {
@@ -176,7 +177,8 @@ if ($_POST['add_suff'] || $_POST['cancel']) {
 
 // first show of page
 $new_suff = $_GET['suffs'];
-$new_suff = str_replace("\\'", "", $new_suff);
+$new_suff = str_replace("\\", "", $new_suff);
+$new_suff = str_replace("'", "", $new_suff);
 $new_suff = explode(";", $new_suff);
 
 echo $_SESSION['header'];

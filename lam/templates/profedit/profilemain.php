@@ -49,11 +49,11 @@ if ($_POST['forward'] == "yes") {
 	elseif ($_POST['submit']) {
 		// create new user profile
 		if ($_POST['profile'] == "newuser") {
-			metaRefresh("profileuser.php");
+			metaRefresh("profilepage.php?type=user");
 		}
 		// edit user profile
 		elseif($_POST['profile'] == "edituser") {
-			metaRefresh("profileuser.php?edit=" . $_POST['e_user']);
+			metaRefresh("profileuser.php?type=user&amp;edit=" . $_POST['e_user']);
 		}
 		// delete user profile
 		elseif($_POST['profile'] == "deluser") {
