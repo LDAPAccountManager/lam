@@ -149,7 +149,7 @@ class posixAccount extends baseModule {
 													'userPassword',
 													'loginShell');
 		// help Entries
-		$return['help'] = array(	'uid'							=>	array ("ext" => "FALSE", "Headline" => _("Username"), "Text" => _("Username of the user who should be created. Valid characters are: a-z,0-9, .-_. Lam does not allow a number as first character because useradd also does not allow it. Lam does not allow capital letters A-Z because it can cause several problems. If username is already used username will be expanded with a number. The next free number will be used. Warning: Older systems have problems with usernames longer than 8 characters. You can not log in to Windows if username is longer than 16 characters."))),
+		$return['help'] = array (	'uid'							=>	array ("ext" => "FALSE", "Headline" => _("Username"), "Text" => _("Username of the user who should be created. Valid characters are: a-z,0-9, .-_. Lam does not allow a number as first character because useradd also does not allow it. Lam does not allow capital letters A-Z because it can cause several problems. If username is already used username will be expanded with a number. The next free number will be used. Warning: Older systems have problems with usernames longer than 8 characters. You can not log in to Windows if username is longer than 16 characters.")),
 											'uidNumber'				=>	array ("ext" => "FALSE", "Headline" => _("UID number"), "Text" => _("If empty UID number will be generated automaticly.")),
 											'gecos'						=>	array ("ext" => "FALSE", "Headline" => _("Gecos"), "Text" => _("User description. If left empty sur- and give name will be used.")),
 											'gidNumber'				=>	array ("ext" => "FALSE", "Headline" => _("Primary group"), "Text" => _("The Primary Group the user should be member of.")),
@@ -158,7 +158,7 @@ class posixAccount extends baseModule {
 											/*'userPassword'		=>*/
 											/*'userPassword_no'	=>*/
 											/*'userPassword_lock'	=>*/
-											'loginShell'					=>	array ("ext" => "FALSE", "Headline" => _("Login shell"), "Text" => _("To disable login use /bin/false. List of shells is read from lam/config/shells")))	
+											'loginShell'					=>	array ("ext" => "FALSE", "Headline" => _("Login shell"), "Text" => _("To disable login use /bin/false. List of shells is read from lam/config/shells")));	
 		
 		return $return;
 	}
