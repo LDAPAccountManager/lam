@@ -97,8 +97,8 @@ else {
 $searchfilter = "";
 for ($k = 0; $k < sizeof($desc_array); $k++) {
 	if ($_POST["filter" . strtolower($attr_array[$k])]) {
-		$searchfilter = $searchfilter . "&filter" . strtolower($attr_array[$k]) . "=".
-			$_POST["filter" . strtolower($attr_array[$k])];
+		$searchfilter = $searchfilter . "&amp;filter" . strtolower($attr_array[$k]) . "='".
+			$_POST["filter" . strtolower($attr_array[$k])] . "'";
 	}
 }
 
@@ -136,8 +136,11 @@ else StatusMessage("ERROR", _("LDAP Search failed! Please check your preferences
 
 echo ("<form action=\"listhosts.php\" method=\"post\">\n");
 
+// draw navigation bar if host accounts were found
+if (sizeof($info) > 0) {
 draw_navigation_bar(sizeof($info));
-echo ("<br>");
+echo ("<br>\n");
+}
 
 // print host table header
 echo "<table rules=\"all\" class=\"hostlist\" width=\"100%\">\n";
@@ -195,13 +198,16 @@ echo ("</table>");
 
 echo ("<br>");
 
+// draw navigation bar if host accounts were found
+if (sizeof($info) > 0) {
 draw_navigation_bar(sizeof($info));
-
 echo ("<br>\n");
-echo ("<table align=\"left\" border=\"0\">\n");
-echo ("<tr><td align=\"left\"><input type=\"submit\" name=\"new_host\" value=\"" . _("New Host") . "\"></td>\n");
-echo ("<td align=\"left\"><input type=\"submit\" name=\"del_host\" value=\"" . _("Delete Host(s)") . "\"></td></tr>\n");
-echo ("</table>\n");
+}
+
+echo ("<p align=\"left\">\n");
+echo ("<input type=\"submit\" name=\"new_host\" value=\"" . _("New Host") . "\">\n");
+if (sizeof($info) > 0) echo ("<input type=\"submit\" name=\"del_host\" value=\"" . _("Delete Host(s)") . "\">\n");
+echo ("</p>\n");
 echo ("</form>\n");
 echo "</body></html>\n";
 

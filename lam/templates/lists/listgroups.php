@@ -97,8 +97,8 @@ for ($i = 0; $i < sizeof($temp_array); $i++) {
 $searchfilter = "";
 for ($k = 0; $k < sizeof($desc_array); $k++) {
 	if ($_POST["filter" . strtolower($attr_array[$k])]) {
-		$searchfilter = $searchfilter . "&filter" . strtolower($attr_array[$k]) . "=".
-			$_POST["filter" . strtolower($attr_array[$k])];
+		$searchfilter = $searchfilter . "&amp;filter" . strtolower($attr_array[$k]) . "='".
+			$_POST["filter" . strtolower($attr_array[$k])] . "'";
 	}
 }
 
@@ -130,8 +130,11 @@ else StatusMessage("ERROR", _("LDAP Search failed! Please check your preferences
 
 echo ("<form action=\"listgroups.php\" method=\"post\">\n");
 
+// draw navigation bar if group accounts were found
+if (sizeof($info) > 0) {
 draw_navigation_bar(sizeof($info));
 echo ("<br>");
+}
 
 // print group table header
 echo "<table rules=\"all\" class=\"grouplist\" width=\"100%\">\n";
@@ -206,13 +209,16 @@ for ($i = $table_begin; $i < $table_end; $i++) {
 echo ("</table>");
 echo ("<br>");
 
+// draw navigation bar if group accounts were found
+if (sizeof($info) > 0) {
 draw_navigation_bar(sizeof($info));
-
 echo ("<br>\n");
-echo ("<table align=\"left\" border=\"0\"\n>");
-echo ("<tr><td align=\"left\"><input type=\"submit\" name=\"new_group\" value=\"" . _("New Group") . "\"></td>\n");
-echo ("<td align=\"left\"><input type=\"submit\" name=\"del_group\" value=\"" . _("Delete Group(s)") . "\"></td></tr>\n");
-echo ("</table>\n");
+}
+
+echo ("<p align=\"left\">\n");
+echo ("<input type=\"submit\" name=\"new_group\" value=\"" . _("New Group") . "\">\n");
+if (sizeof($info) > 0) echo ("<input type=\"submit\" name=\"del_group\" value=\"" . _("Delete Group(s)") . "\">\n");
+echo ("</p>\n");
 echo ("</form>\n");
 echo "</body></html>\n";
 
