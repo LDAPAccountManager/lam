@@ -33,12 +33,14 @@ include_once('../lib/pdf.inc'); // Return a pdf-file
 session_save_path('../sess');
 @session_start();
 
+$time=time();
 if ($_POST['tolist'] && ($_FILES['userfile']['size']>0)) $select = 'list';
 if ($_POST['back']) $select = 'main';
 if ($_POST['cancel']) $select = 'cancel';
 if ($_POST['create']) $select = 'create';
 if ($_POST['pdf']) createpdf($_SESSION['accounts']);
-if (!$select) $select='main';
+if (!$select && !$_SESSION['pointer']) $select='main';
+if (!$select && $_SESSION['pointer']) $select='create';
 
 
 // Write HTML-Header and part of Table
@@ -55,7 +57,14 @@ echo '</title>
 switch ($select) {
 	case 'cancel':
 		if ( session_is_registered("accounts")) session_unregister("accounts");
+		if ( session_is_registered("pointer")) session_unregister("pointer");
 		echo '<meta http-equiv="refresh" content="0; URL=lists/listusers.php">';
+		break;
+	case 'create':
+		if ($_SESSION['pointer'] < sizeof($_SESSION['accounts'])) {
+			$refresh = get_cfg_var('max_execution_time')-5;
+			echo '<meta http-equiv="refresh" content="'.$refresh.'; URL=masscreate.php">';
+			}
 		break;
 	}
 
@@ -67,7 +76,10 @@ echo	'</head><body>
 switch ($select) {
 	case 'main':
 		if ( session_is_registered("accounts")) session_unregister("accounts");
+		if ( session_is_registered("pointer")) session_unregister("pointer");
 		session_register("accounts");
+		session_register("pointer");
+		$_SESSION['pointer']=0;
 		$profilelist = getUserProfiles();
 		echo '<tr><td><input name="select" type="hidden" value="main">';
 		echo _('Mass Creation');
@@ -182,31 +194,35 @@ switch ($select) {
 		echo '</td><td><input name="create" type="submit" value="'; echo _('Create'); echo '">';
 		break;
 	case 'create':
-		$row=0;
 		$stay=true;
-		while (($row < sizeof($_SESSION['accounts'])) && $stay) {
-			if (getgid($_SESSION['accounts'][$row]->general_group)==-1) {
+		while (($_SESSION['pointer'] < sizeof($_SESSION['accounts'])) && $stay) {
+			if (getgid($_SESSION['accounts'][$_SESSION['pointer']]->general_group)==-1) {
 				$group = new account();
-				$group->general_username=$_SESSION['accounts'][$row]->general_group;
-				$group->general_uidNumber=checkid($_SESSION['accounts'][$row], 'group');
-				$group->general_gecos=$_SESSION['accounts'][$row]->general_group;
+				$group->general_username=$_SESSION['accounts'][$_SESSION['pointer']]->general_group;
+				$group->general_uidNumber=checkid($_SESSION['accounts'][$_SESSION['pointer']], 'group');
+				$group->general_gecos=$_SESSION['accounts'][$_SESSION['pointer']]->general_group;
 				creategroup($group);
 				}
-			$_SESSION['accounts'][$row]->general_uidNumber = checkid($_SESSION['accounts'][$row], 'user');
-			$error = createuser($_SESSION['accounts'][$row]);
-			if ($error==1) $row++;
-				else {
-				$stay = false;
-				StatusMessage('ERROR', _('Could not create user'), _('Was unable to create ').$_SESSION['accounts'][$row]->general_username);
+			$_SESSION['accounts'][$_SESSION['pointer']]->general_uidNumber = checkid($_SESSION['accounts'][$_SESSION['pointer']], 'user');
+			if ( time()-$time<(get_cfg_var('max_execution_time')-10)) {
+				$error = createuser($_SESSION['accounts'][$_SESSION['pointer']]);
+				if ($error==1) $_SESSION['pointer']++;
+					else {
+					$stay = false;
+					StatusMessage('ERROR', _('Could not create user'), _('Was unable to create ').$_SESSION['accounts'][$row]->general_username);
+					}
 				}
+				else $stay=false;
 			}
-		if (!$stay) { echo '<tr><td><input name="cancel" type="submit" value="'; echo _('Cancel'); echo '">'; }
+		if (!$stay) { echo '<tr><td><input name="cancel" type="submit" value="'; echo _('Cancel'); echo '">
+			<td>'._('Please wait until all users are created if no error is shown.').'</td></tr>'; }
 			else {
 			echo '<tr><td>';
 			echo _('All Users have been created');
 			echo '</td></tr><tr><td>';
 			echo '<tr><td><input name="cancel" type="submit" value="'; echo _('Mainmenu'); echo '">';
 			echo '</td><td></td><td><input name="pdf" type="submit" value="'; echo _('Create PDF-File'); echo '">';
+			echo '</td></tr>';
 			}
 		break;
 	}
