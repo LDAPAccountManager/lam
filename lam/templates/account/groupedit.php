@@ -95,17 +95,6 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 	case 'general':
 		// Write all general values into $_SESSION['account'] if no profile should be loaded
 		if (!$_POST['load']) {
-			// Set correct SID if GIS has changed
-			if ($_SESSION['config']->samba3 == 'yes')
-				if (isset($_SESSION['account_old']->general_uidNumber)) {
-					if ($_SESSION['account']->general_uidNumber != $_POST['f_general_uidNumber']) {
-						$temp = explode('-', $_SESSION['account']->smb_mapgroup);
-						$SID = $temp[0].'-'.$temp[1].'-'.$temp[2].'-'.$temp[3].'-'.$temp[4].'-'.$temp[5].'-'.$temp[6];
-						if ( $temp[7]!='512' && $temp[7]!='513' && $temp[7]!='514' )
-							$_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-".
-								(2 * $_POST['f_general_uidNumber'] + $_SESSION['account']->smb_domain->RIDbase +1);
-						}
-					}
 			$_SESSION['account']->general_dn = $_POST['f_general_suffix'];
 			$_SESSION['account']->general_username = $_POST['f_general_username'];
 			$_SESSION['account']->general_uidNumber = $_POST['f_general_uidNumber'];
@@ -120,7 +109,7 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 				$_SESSION['account']->general_gecos = $_SESSION['account']->general_username ;
 				$errors[] = array('INFO', _('Gecos'), _('Inserted groupname in gecos-field.'));
 				}
-			// Create automatic groupaccount with number if original user already exists
+			// Create automatic groupaccount with number if original group already exists
 			// Reset name to original name if new name is in use
 			if (ldapexists($_SESSION['account'], 'group', $_SESSION['account_old']) && is_object($_SESSION['account_old']))
 				$_SESSION['account']->general_username = $_SESSION['account_old']->general_username;
@@ -421,7 +410,8 @@ switch ($select_local) { // Select which part of page will be loaded
 			foreach ($profilelist as $profile) echo "	<option>$profile</option>\n";
 			echo "</select>\n".
 				"<input name=\"load\" type=\"submit\" value=\""; echo _('Load Profile');
-			echo "\"></td>\n</tr>\n</table>\n</fieldset>\n";
+			echo "\"></td><td><a href=\"../help.php?HelpNumber=421\" target=\"lamhelp\">";
+			echo _('Help')."</a></td>\n</tr>\n</table>\n</fieldset>\n";
 			}
 		echo "</td></tr>\n</table>\n</td></tr></table>\n";
 		break;

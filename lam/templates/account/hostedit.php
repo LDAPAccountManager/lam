@@ -38,11 +38,10 @@ if (isset($_GET['DN'])) {
 		if (isset($_SESSION['account_old'])) unset($_SESSION['account_old']);
 		$DN = str_replace("\'", '',$_GET['DN']);
 		$_SESSION['account'] = loadhost($DN);
-		$_SESSION['account'] ->type = 'host';
 		$_SESSION['account']->smb_flagsW = 1;
+		$_SESSION['account']->smb_flagsX = 1;
 		$_SESSION['account_old'] = $_SESSION['account'];
-		$_SESSION['account']->unix_password='';
-		$_SESSION['account']->smb_password='';
+		// Store only DN without uid=$name
 		$_SESSION['account']->general_dn = substr($_SESSION['account']->general_dn, strpos($_SESSION['account']->general_dn, ',')+1);
 		$_SESSION['final_changegids'] = '';
 		}
@@ -50,14 +49,22 @@ if (isset($_GET['DN'])) {
 		$_SESSION['account'] = loadHostProfile('default');
 		$_SESSION['account'] ->type = 'host';
 		$_SESSION['account']->smb_flagsW = 1;
+		$_SESSION['account']->smb_flagsX = 1;
+		$_SESSION['account']->general_homedir = '/dev/null';
+		$_SESSION['account']->general_shell = '/bin/false';
 		if (isset($_SESSION['account_old'])) unset($_SESSION['account_old']);
+		$_SESSION['account_old'] = false;
 		}
 	}
-else if (count($_POST)==0) { // Startcondition. groupedit.php was called from outside
+else if (count($_POST)==0) { // Startcondition. hostedit.php was called from outside
 	$_SESSION['account'] = loadHostProfile('default');
 	$_SESSION['account'] ->type = 'host';
 	$_SESSION['account']->smb_flagsW = 1;
+	$_SESSION['account']->smb_flagsX = 1;
+	$_SESSION['account']->general_homedir = '/dev/null';
+	$_SESSION['account']->general_shell = '/bin/false';
 	if (isset($_SESSION['account_old'])) unset($_SESSION['account_old']);
+	$_SESSION['account_old'] = false;
 	}
 
 switch ($_POST['select']) { // Select which part of page should be loaded and check values
@@ -79,21 +86,68 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 			$_SESSION['account']->general_gecos = $_POST['f_general_gecos'];
 
 			// Check if values are OK and set automatic values.  if not error-variable will be set
-			if (isset($_SESSION['account_old'])) list($values, $errors) = checkglobal($_SESSION['account'], $_SESSION['account']->type, $_SESSION['account_old']); // account.inc
-				else list($values, $errors) = checkglobal($_SESSION['account'], $_SESSION['account']->type); // account.inc
-			if (is_object($values)) {
-				while (list($key, $val) = each($values)) // Set only defined values
-					if (isset($val)) $_SESSION['account']->$key = $val;
+			if ( substr($_SESSION['account']->general_username, strlen($_SESSION['account']->general_username)-1, strlen($_SESSION['account']->general_username)) != '$' ) {
+				$_SESSION['account']->general_username = $_SESSION['account']->general_username . '$';
+				$errors[] = array('WARN', _('Host name'), _('Added $ to hostname.'));
 				}
-			// Check which part Site should be displayed next
-			$select_local = 'general';
+			// Check if Hostname contains only valid characters
+			if ( !ereg('^([a-z]|[A-Z]|[0-9]|[.]|[-]|[$])*$', $_SESSION['account']->general_username))
+				$errors[] = array('ERROR', _('Host name'), _('Hostname contains invalid characters. Valid characters are: a-z, 0-9 and .-_ !'));
+
+			if ($_SESSION['account']->general_gecos=='') {
+				$_SESSION['account']->general_gecos = $_SESSION['account']->general_username;
+				$errors[] = array('INFO', _('Gecos'), _('Inserted hostname in gecos-field.'));
+				}
+			// Create automatic Hostname with number if original user already exists
+			// Reset name to original name if new name is in use
+			if (ldapexists($_SESSION['account'], 'group', $_SESSION['account_old']) && is_object($_SESSION['account_old']))
+				$_SESSION['account']->general_username = $_SESSION['account_old']->general_username;
+			while ($temp = ldapexists($_SESSION['account'], 'host', $_SESSION['account_old'])) {
+				// get last character of username
+				$_SESSION['account']->general_username = substr($_SESSION['account']->general_username, 0, $_SESSION['account']->general_username-1);
+				$lastchar = substr($_SESSION['account']->general_username, strlen($_SESSION['account']->general_username)-2, 1);
+				// Last character is no number
+				if ( !ereg('^([0-9])+$', $lastchar))
+					$_SESSION['account']->general_username = $_SESSION['account']->general_username . '2';
+				 else {
+				 	$i=strlen($_SESSION['account']->general_username)-3;
+					$mark = false;
+				 	while (!$mark) {
+						if (ereg('^([0-9])+$',substr($_SESSION['account']->general_username, $i, strlen($_SESSION['account']->general_username)-1))) $i--;
+							else $mark=true;
+						}
+					// increase last number with one
+					$firstchars = substr($_SESSION['account']->general_username, 0, $i+1);
+					$lastchars = substr($_SESSION['account']->general_username, $i+1, strlen($_SESSION['account']->general_username)-$i);
+					$_SESSION['account']->general_username = $firstchars . (intval($lastchars)+1). '$';
+				 	}
+				$_SESSION['account']->general_username = $_SESSION['account']->general_username . "$";
+				}
+			if ($_SESSION['account']->general_username != $_POST['f_general_username'])
+				$errors[] = array('WARN', _('Host name'), _('Hostname already in use. Selected next free hostname.'));
+
+			// Check if UID is valid. If none value was entered, the next useable value will be inserted
+			$_SESSION['account']->general_uidNumber = checkid($_SESSION['account'], 'host', $_SESSION['account_old']);
+			if (is_string($_SESSION['account']->general_uidNumber)) { // true if checkid has returned an error
+				$errors[] = array('ERROR', _('ID-Number'), $_SESSION['account']->general_uidNumber);
+				unset($_SESSION['account']->general_uidNumber);
+				}
+			// Check if Name-length is OK. minLength=3, maxLength=20
+			if ( !ereg('.{3,20}', $_SESSION['account']->general_username)) $errors[] = array('ERROR', _('Name'), _('Name must contain between 3 and 20 characters.'));
+			// Check if Name starts with letter
+			if ( !ereg('^([a-z]|[A-Z]).*$', $_SESSION['account']->general_username))
+				$errors[] = array('ERROR', _('Name'), _('Name contains invalid characters. First character must be a letter'));
+
 			}
 		break;
 
 	case 'samba':
 		// Write all general values into $_SESSION['account']
+		$_SESSION['account']->smb_displayName = $_POST['f_smb_displayName'];
+
 		if (isset($_POST['f_smb_flagsD'])) $_SESSION['account']->smb_flagsD = true;
 			else $_SESSION['account']->smb_flagsD = false;
+
 		if ($_SESSION['config']->samba3 == 'yes') {
 			$samba3domains = $_SESSION['ldap']->search_domains($_SESSION[config]->get_domainSuffix());
 			for ($i=0; $i<sizeof($samba3domains); $i++)
@@ -104,19 +158,20 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 		else {
 			$_SESSION['account']->smb_domain = $_POST['f_smb_domain'];
 			}
-		// Reset password if reset button was pressed. Button only vissible if account should be modified
 		// Check if values are OK and set automatic values. if not error-variable will be set
-		list($values, $errors) = checksamba($_SESSION['account'], $_SESSION['account']->type); // account.inc
-		if (is_object($values)) {
-			while (list($key, $val) = each($values)) // Set only defined values
-				if (isset($val)) $_SESSION['account']->$key = $val;
+		if (($_SESSION['account']->smb_displayName=='') && isset($_SESSION['account']->general_gecos)) {
+			$_SESSION['account']->smb_displayName = $_SESSION['account']->general_gecos;
+			$errors[] = array('INFO', _('Display name'), _('Inserted gecos-field as display name.'));
 			}
-		// Check which part Site should be displayed next
+
+		if ((!$_SESSION['account']->smb_domain=='') && !ereg('^([a-z]|[A-Z]|[0-9]|[-])+$', $_SESSION['account']->smb_domain))
+			$errors[] = array('ERROR', _('Domain name'), _('Domain name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and -.'));
+
+		// Reset password if reset button was pressed. Button only vissible if account should be modified
 		if ($_POST['respass']) {
 			$_SESSION['account']->unix_password_no=true;
 			$_SESSION['account']->smb_password_no=true;
 			}
-		$select_local = 'samba';
 		break;
 	case 'final':
 		$select_local = 'final';
@@ -196,9 +251,9 @@ if (is_array($errors)) {
 	for ($i=0; $i<sizeof($errors); $i++) StatusMessage($errors[$i][0], $errors[$i][1], $errors[$i][2]);
 	echo "</table>";
 	}
+
+
 // print_r($_SESSION['account']);
-
-
 
 
 switch ($select_local) { // Select which part of page will be loaded
@@ -277,8 +332,8 @@ switch ($select_local) { // Select which part of page will be loaded
 			foreach ($profilelist as $profile) echo "	<option>$profile</option>\n";
 			echo "</select></td><td>\n".
 				"<input name=\"load\" type=\"submit\" value=\""; echo _('Load Profile');
-			echo "\"></td><td><a href=\"../help.php?HelpNumber=XXX\" target=\"lamhelp\">";
-			echo _('Help-XX')."</a></td>\n</tr>\n</table>\n</fieldset>\n";
+			echo "\"></td><td><a href=\"../help.php?HelpNumber=421\" target=\"lamhelp\">";
+			echo _('Help')."</a></td>\n</tr>\n</table>\n</fieldset>\n";
 			}
 		echo "</td></tr></table>\n</td></tr>\n</table>\n";
 		break;
@@ -298,6 +353,10 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "\"></fieldset></td></tr></table></td>\n<td>";
 		echo "<table border=0 width=\"100%\"><tr><td><fieldset class=\"hostedit-bright\"><legend class=\"hostedit-bright\"><b>"._('Samba properties')."</b></legend>\n";
 		echo "<table border=0 width=\"100%\"><tr><td>";
+		echo _("Display name");
+		echo "</td>\n<td>".
+			"<input name=\"f_smb_displayName\" type=\"text\" size=\"30\" maxlength=\"50\" value=\"".$_SESSION['account']->smb_displayName."\">".
+			"</td>\n<td><a href=\"../help.php?HelpNumber=420\" target=\"lamhelp\">"._('Help')."</a></td>\n</tr>\n<tr>\n<td>";
 		echo _('Password');
 		echo '</td><td>';
 		if (isset($_SESSION['account_old'])) {
@@ -357,38 +416,27 @@ switch ($select_local) { // Select which part of page will be loaded
 		 else echo _('Create');
 		echo "</b></legend>\n";
 		echo "<table border=0 width=\"100%\"><tr><td>";
-		if (($_SESSION['account_old']) && ($_SESSION['account']->general_uidNumber != $_SESSION['account_old']->general_uidNumber)) {
-			echo '<tr>';
-			StatusMessage ('INFO', _('UID-number has changed. You have to run the following command as root in order to change existing file-permissions:'),
-			'find / -gid ' . $_SESSION['account_old' ]->general_uidNumber . ' -exec chown ' . $_SESSION['account']->general_uidNumber . ' {} \;');
-			echo '</tr>'."\n";
-			}
 		if (isset($_SESSION['account_old']->general_objectClass)) {
 			if (!in_array('posixAccount', $_SESSION['account_old']->general_objectClass)) {
 				echo '<tr>';
-				StatusMessage('WARN', _('ObjectClass posixAccount not found.'), _('Have to recreate entry.'));
+				StatusMessage('WARN', _('ObjectClass posixAccount not found.'), _('Have to add objectClass posixAccount.'));
 				echo "</tr>\n";
 				}
 			if (!in_array('shadowAccount', $_SESSION['account_old']->general_objectClass)) {
 				echo '<tr>';
-				StatusMessage('WARN', _('ObjectClass shadowAccount not found.'), _('Have to recreate entry.'));
-				echo "</tr>\n";
-				}
-			if (!in_array('account', $_SESSION['account_old']->general_objectClass)) {
-				echo '<tr>';
-				StatusMessage('WARN', _('ObjectClass account not found.'), _('Have to recreate entry.'));
+				StatusMessage('WARN', _('ObjectClass shadowAccount not found.'), _('Have to add objectClass shadowAccount.'));
 				echo "</tr>\n";
 				}
 			if ($_SESSION['config']->samba3 == 'yes') {
 				if (!in_array('sambaSamAccount', $_SESSION['account_old']->general_objectClass)) {
 					echo '<tr>';
-					StatusMessage('WARN', _('ObjectClass sambaSamAccount not found.'), _('Have to recreate entry.'));
+					StatusMessage('WARN', _('ObjectClass sambaSamAccount not found.'), _('Have to add objectClass sambaSamAccount. Host with sambaAccount will be updated.'));
 					echo "</tr>\n";
 					}}
 				else
 				if (!in_array('sambaAccount', $_SESSION['account_old']->general_objectClass)) {
 					echo '<tr>';
-					StatusMessage('WARN', _('ObjectClass sambaAccount not found.'), _('Have to recreate entry.'));
+					StatusMessage('WARN', _('ObjectClass sambaAccount not found.'), _('Have to add objectClass sambaSamAccount. Host with sambaSamAccount will be set back to sambaAccount.'));
 					echo "</tr>\n";
 					}
 			}

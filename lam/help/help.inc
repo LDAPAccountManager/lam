@@ -170,6 +170,8 @@ $helpArray = array (
 					"Text" => _("Users wich are also members of group.")),
 				"420" => array ("ext" => "FALSE", "Headline" => _("Display name"),
 					"Text" => _("Groupname Windows clients will show.")),
+				"421" => array ("ext" => "FALSE", "Headline" => _("Load profile"),
+					"Text" => _("You can select a previous defined profile here. All values which make senso to store in profile are overwritten with the stored values.")),
 				"424" => array ("ext" => "FALSE", "Headline" => _("Surname"),
 					"Text" => _("Surname of user. Only letters, - and spaces are allowed.")),
 				"425" => array ("ext" => "FALSE", "Headline" => _("Given name"),
