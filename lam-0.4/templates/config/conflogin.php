@@ -58,6 +58,11 @@ unset($_SESSION['conf_samba3']);
 unset($_SESSION['conf_pwdhash']);
 unset($_SESSION['conf_filename']);
 
+// remove config wizard settings
+unset($_SESSION['confwiz_config']);
+unset($_SESSION['confwiz_ldap']);
+unset($_SESSION['confwiz_masterpwd']);
+
 echo $_SESSION['header'];
 
 ?>
@@ -78,15 +83,15 @@ echo $_SESSION['header'];
 		<form action="confmain.php" method="post">
 		<table border=0 align="center">
 			<tr>
-				<td colspan=4 align="center"><b> <?php echo _("Please enter password to change preferences:"); ?> </b></td>
+				<td colspan=2 align="center"><b> <?php echo _("Please enter password to change preferences:"); ?> </b></td>
 			</tr>
-			<tr><td colspan=4 >&nbsp;</td></tr>
+			<tr><td colspan=2 >&nbsp;</td></tr>
 <?php
 	// print message if login was incorrect
 	if ($message) echo ("<tr><td colspan=4 align=\"center\"><font color=red>" . $message . "</font></td></tr>");
 ?>
 			<tr>
-				<td>
+				<td colspan=2 align="center">
 					<select size=1 name="filename">
 					<?php
 						$files = getConfigProfiles();
@@ -98,25 +103,25 @@ echo $_SESSION['header'];
 							}
 					?>
 					</select>
-				</td>
-				<td align="center"><input type="password" name="passwd"></td>
-				<td>
-					<input type="submit" name="submit" value= <?php echo _("Ok"); ?>
-				</td>
-				<td><a href="../help.php?HelpNumber=200" target="lamhelp"><?php echo _("Help") ?></a></td>
+					<input type="password" name="passwd">
+					<input type="submit" name="submit" value=" <?php echo _("Ok"); ?> ">
+					<a href="../help.php?HelpNumber=200" target="lamhelp"><?php echo _("Help") ?></a></td>
 			</tr>
 			<tr>
-				<td colspan=3>&nbsp;</td>
+				<td colspan=2>&nbsp;</td>
 			</tr>
 			<tr>
-				<td colspan=3 align="center">
+				<td align="left" width="50%">
 					<b><a href="profmanage.php"><?php echo _("Manage profiles") ?></a></b>
+				</td>
+				<td align="right" width="50%">
+					<b><a href="../confwiz/start.php"><?php echo _("Configuration wizard") ?></a></b>
 				</td>
 			</tr>
 		</table>
 		</form>
 
-		<p><br><br><br><br><br><br><br></p>
+		<p><br><br><br><br><br></p>
 
 		<!-- back to login page -->
 		<p>
