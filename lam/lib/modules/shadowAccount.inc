@@ -147,14 +147,8 @@ class shadowAccount extends baseModule {
 
 	// Constructor
 	function init($base) {
-		/* Return an error if shadowAccount should be created without
-		* base container
-		*/
-		if (!$base) trigger_error(_('Please create a base object with $var = new accountContainer();'), E_USER_ERROR);
-		if (!is_string($base)) trigger_error(_('Please create a new module object in an accountContainer object first.'), E_USER_ERROR);
-		$this->base = $base;
-		// shadowAccount is only a valid objectClass for user and host
-		if (!($_SESSION[$this->base]->get_type() == 'user')) trigger_error(_('shadowAccount can only be used for users.'), E_USER_WARNING);
+		// call parent init
+		parent::init($base);
 		// Add Array with all attributes and type
 		$this->attributes = $_SESSION[$this->base]->get_module_attributes('shadowAccount');
 		$_SESSION[$this->base]->add_attributes ('shadowAccount');
@@ -170,8 +164,6 @@ class shadowAccount extends baseModule {
 		}
 
 	// Variables
-	// name of accountContainer so we can read other classes in accuontArray
-	var $base;
 	// This variable contains all inetOrgPerson attributes
 	var $attributes;
 	/* If an account was loaded all attributes are kept in this array

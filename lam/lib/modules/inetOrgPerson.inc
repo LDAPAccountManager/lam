@@ -111,12 +111,8 @@ class inetOrgPerson extends baseModule {
 	* @param string $base the name of account_container in session
 	*/
 	function init($base) {
-		// Get local copy of name of account_container in session
-		$this->base = $base;
-		// Do some error checks
-		if (!$base) trigger_error(_('Please create a base object with $var = new accountContainer();'), E_USER_ERROR);
-		if (!is_string($base)) trigger_error(_('Please create a new module in an accountContainer object first.'), E_USER_ERROR);
-		if ($_SESSION[$this->base]->type != 'user') trigger_error(_('inetOrgPerson can only be used for users.'), E_USER_WARNING);
+		// call parent init
+		parent::init($base);
 		// load attribtues which are used in inetOrgPerson objectClass
 		// unset attributes which are "must" but not in this module
 		// cn will be set to uid in module posixAccount
@@ -129,8 +125,6 @@ class inetOrgPerson extends baseModule {
 		}
 
 	// Variables
-	/** name of account_container in session so we can read other classes in account_container */
-	var $base;
 	/** This variable contains all inetOrgPerson attributes */
 	var $attributes;
 	/**

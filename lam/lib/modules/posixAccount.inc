@@ -154,19 +154,8 @@ class posixAccount extends baseModule {
 
 	// Constructor
 	function init($base) {
-		/* Return an error if posixAccount should be created without
-		* base container
-		*/
-		if (!$base) trigger_error(_('Please create a base object with $var = new accountContainer();'), E_USER_ERROR);
-		if (!is_string($base)) trigger_error(_('Please create a new module object in an accountContainer object first.'), E_USER_ERROR);
-		$this->base = $base;
-		// posixAccount is only a valid objectClass for user and host
-		if (!($_SESSION[$this->base]->get_type() == 'user') && !($_SESSION[$this->base]->get_type() == 'host')) trigger_error(_('posixAccount can only be used for users or hosts.'), E_USER_WARNING);
-		/* Check if ldap conatiner is in array and set type
-		* users are using inetOrgPerson-, hosts account-container
-		*/
-		if (!isset($_SESSION[$this->base]->module['inetOrgPerson']) && $_SESSION[$this->base]->type=='user') $_SESSION[$this->base]->modules['inetOrgPerson'] = new inetOrgPerson($this->base);
-		if (!isset($_SESSION[$this->base]->module['account']) && $_SESSION[$this->base]->type=='host') $_SESSION[$this->base]->modules['account'] = new account($this->base);
+		// call parent init
+		parent::init($base);
 		// Add Array with all attributes and type
 		$this->orig = $_SESSION[$this->base]->get_module_attributes('posixAccount');
 		$this->attributes = $_SESSION[$this->base]->get_module_attributes('posixAccount');
@@ -186,8 +175,6 @@ class posixAccount extends baseModule {
 		}
 
 	// Variables
-	// name of accountContainer so we can read other classes in accuontArray
-	var $base;
 	// Use a unix password?
 	var $userPassword_no;
 	// Lock account?

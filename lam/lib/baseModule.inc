@@ -48,6 +48,9 @@ class baseModule {
 	/** configuration settings of all modules */
 	var $moduleSettings;
 
+	/** name of parent accountContainer ($_SESSION[$base]) */
+	var $base;
+
 	/**
 	* Creates a new base module class
 	*
@@ -58,6 +61,16 @@ class baseModule {
 		$this->meta = $this->get_metaData();
 		if (isset($_SESSION['config'])) $this->moduleSettings = $_SESSION['config']->get_moduleSettings();
 	}
+
+	/**
+	* Initializes the module after it became part of an accountContainer
+	*
+	* @param string $base the name of the accountContainer object ($_SESSION[$base])
+	*/
+	function init($base) {
+		$this->base = $base;
+	}
+
 
 	/**
 	* Dummy function, meta data is provided by sub classes.

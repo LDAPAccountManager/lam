@@ -169,18 +169,11 @@ class posixGroup extends baseModule {
 
 	// Constructor
 	function init($base) {
-		/* Return an error if posixGroup should be created without
-		* base container
-		*/
-		if (!$base) trigger_error(_('Please create a base object with $var = new accountContainer();'), E_USER_ERROR);
-		if (!is_string($base)) trigger_error(_('Please create a new module object in an accountContainer object first.'), E_USER_ERROR);
-		$this->base = $base;
-		// posixGroup is only a valid objectClass for user and host
-		if ($_SESSION[$this->base]->get_type() != 'group') trigger_error(_('posixGroup can only be used for groups.'), E_USER_WARNING);
+		// call parent init
+		parent::init($base);
 		// Add Array with all attributes and type
 		$this->attributes = $_SESSION[$this->base]->get_module_attributes('posixGroup');
 		$_SESSION[$this->base]->add_attributes ('posixGroup');
-		$this->alias = _('posixGroup');
 		// Make references to attributes which already esists in ldap
 		$newattributes = array_keys($this->attributes);
 		$module = array_keys($_SESSION[$this->base]->module);
@@ -196,8 +189,6 @@ class posixGroup extends baseModule {
 
 
 	// Variables
-	// name of accountContainer so we can read other classes in accuontArray
-	var $base;
 	// Use a unix password?
 	var $userPassword_no;
 	// Lock account?

@@ -102,14 +102,8 @@ class sambaGroupMapping extends baseModule {
 
 	// Constructor
 	function init($base) {
-		/* Return an error if sambaGroupMapping should be created without
-		* base container
-		*/
-		if (!$base) trigger_error(_('Please create a base object with $var = new accountContainer();'), E_USER_ERROR);
-		if (!is_string($base)) trigger_error(_('Please create a new module object in an accountContainer object first.'), E_USER_ERROR);
-		$this->base = $base;
-		// sambaGroupMapping is only a valid objectClass for user and host
-		if ($_SESSION[$this->base]->get_type() != 'group') trigger_error(_('sambaGroupMapping can only be used for groups.'), E_USER_WARNING);
+		// call parent init
+		parent::init($base);
 		// Add Array with all attributes and type
 		$this->attributes = $_SESSION[$this->base]->get_module_attributes('sambaGroupMapping');
 		$_SESSION[$this->base]->add_attributes ('sambaGroupMapping');
@@ -128,8 +122,6 @@ class sambaGroupMapping extends baseModule {
 		}
 
 	// Variables
-	// name of accountContainer so we can read other classes in accuontArray
-	var $base;
 
 	// This variable contains all inetOrgPerson attributes
 	var $attributes;
