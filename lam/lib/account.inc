@@ -159,4 +159,24 @@ function smbflag($input) {
 	return $flag;
 	}
 
+/**
+* Generates the LM hash of a password.
+*
+* @param string password original password
+* @return string password hash
+*/
+function lmPassword($password) {
+	return exec(escapeshellarg($_SESSION['lampath'] . 'lib/createntlm.pl') . " lm " . escapeshellarg($password));
+}
+
+/**
+* Generates the NT hash of a password.
+*
+* @param string password original password
+* @return string password hash
+*/
+function ntPassword($password) {
+	return exec(escapeshellarg($_SESSION['lampath'] . 'lib/createntlm.pl') . " nt " . escapeshellarg($password));
+}
+
 ?>
