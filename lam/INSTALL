@@ -6,10 +6,17 @@ Installation Instructions for LAM
 1. Requirements
 
    - Apache webserver (SSL optional) with installed PHP-Module (PHP-Module with
-     ldap, gettext, mcrypt, openldap)
+     ldap, gettext, mcrypt, mhash)
    - Perl
    - Openldap (>2.0)
    - A web browser :-)
+
+   Getting mcrypt and mhash for Suse/RedHat:
+
+   Either you compile PHP4 yourself or you use some unofficial packages:
+
+   - Suse: ftp://ftp.suse.com/pub/people/poeml/mod_php4
+   - RedHat: http://ftp.horde.org/pub/RPMS
 
 
 2. Installation
