@@ -52,6 +52,8 @@ else {
 	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
 	echo "</head><body>\n";
 	StatusMessage("ERROR", "", _("This user was not found!") . " (" . $user . ")");
+	echo "<p>&nbsp;</p>";
+	echo "<p><a href=\"listgroups.php\">" . _("Back to group list") . "</a></p>";
 	echo ("</body></html>\n");
 }
 
