@@ -12,7 +12,8 @@
   - new plugin for managing MAC addresses (RFE 926017)
   - new plugin for managing NIS mail aliases (RFE 1050036)
   - new plugin for managing mail routing with inetLocalMailRecipient (RFE 1092137)
-  - added schema browser
+  - schema browser
+  - tree view
 
 
 26.01.2005 0.4.8

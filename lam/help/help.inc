@@ -63,6 +63,12 @@ $helpArray = array (
 						_("Examples").
 						":</b><br><br>".
 						_("ou=People,dc=yourcompany,dc=com will read and store all accounts in this subtree.")),
+				"203" => array ("ext" => "FALSE", "Headline" => _("Configuration wizard") . " - " . _("Tree suffix"),
+					"Text" => _("This is the suffix for the LDAP tree viewer.") .
+						"<br><br><b>".
+						_("Example").
+						":</b><br><br>".
+						_("dc=yourcompany,dc=com")),
 				"206" => array ("ext" => "FALSE", "Headline" => _("Configuration wizard") . " - " . _("List attributes"),
 					"Text" => _("This is the list of attributes to show in the user/group/host list. The entries can either be predefined values, \"#attribute\", or individual ones, \"attribute:description\". Several entries are seperated by semicolons.") .
 						"<br><br><b>" .

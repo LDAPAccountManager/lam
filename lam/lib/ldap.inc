@@ -312,7 +312,7 @@ class Ldap{
 			$time = time();
 			$dir = @opendir($relpath);
 			while ($file = @readdir($dir)) {
-					if (substr($file, -4) == '.pdf') {
+					if ((substr($file, -4) == '.pdf') || (substr($file, -4) == '.jpg')) {
 					$path = $relpath . $file;
 					if ($time - filemtime($path) > 600) {
 						@unlink($path);
@@ -323,11 +323,17 @@ class Ldap{
 		}
 	}
 
-	/** Calculates a new value for rand */
+	/**
+	* Calculates a new value for rand
+	*
+	* @return int New random value
+	*/
 	function new_rand() {
 		// change random number
 		mt_srand($this->rand + (microtime() * 1000000));
-		$this->rand = mt_rand();
+		$r = mt_rand();
+		$this->rand = $r;
+		return $r;
 	}
 
 	/**

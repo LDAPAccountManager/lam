@@ -57,6 +57,7 @@ if (isset($_POST['back']) || isset($_POST['submitconf']) || isset($_POST['editmo
 		$_SESSION['conf_suffgroups'] = $_POST['suffgroups'];
 		$_SESSION['conf_suffhosts'] = $_POST['suffhosts'];
 		$_SESSION['conf_suffdomains'] = $_POST['suffdomains'];
+		$_SESSION['conf_sufftree'] = $_POST['sufftree'];
 		$_SESSION['conf_usrlstattr'] = $_POST['usrlstattr'];
 		$_SESSION['conf_grplstattr'] = $_POST['grplstattr'];
 		$_SESSION['conf_hstlstattr'] = $_POST['hstlstattr'];
@@ -122,6 +123,7 @@ if (isset($_GET["modulesback"])) {
 	$conf->set_GroupSuffix($_SESSION['conf_suffgroups']);
 	$conf->set_HostSuffix($_SESSION['conf_suffhosts']);
 	$conf->set_DomainSuffix($_SESSION['conf_suffdomains']);
+	$conf->set_Suffix('tree', $_SESSION['conf_sufftree']);
 	$conf->set_userlistAttributes($_SESSION['conf_usrlstattr']);
 	$conf->set_grouplistAttributes($_SESSION['conf_grplstattr']);
 	$conf->set_hostlistAttributes($_SESSION['conf_hstlstattr']);
@@ -167,27 +169,33 @@ echo ("<tr><td colspan=3>&nbsp</td></tr>");
 
 // user suffix
 echo ("<tr><td align=\"right\"><b>".
-	_("UserSuffix") . " *: </b></td>".
+	_("UserSuffix") . ": </b></td>".
 	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"suffusers\" value=\"" . $conf->get_UserSuffix() . "\"></td>\n");
 echo ("<td><a href=\"../help.php?HelpNumber=202\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 $tabindex++;
 // group suffix
 echo ("<tr><td align=\"right\"><b>".
-	_("GroupSuffix") . " *: </b></td>".
+	_("GroupSuffix") . ": </b></td>".
 	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"suffgroups\" value=\"" . $conf->get_GroupSuffix() . "\"></td>\n");
 echo ("<td><a href=\"../help.php?HelpNumber=202\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 $tabindex++;
 // host suffix
 echo ("<tr><td align=\"right\"><b>".
-	_("HostSuffix") . " **: </b></td>".
+	_("HostSuffix") . ": </b></td>".
 	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"suffhosts\" value=\"" . $conf->get_HostSuffix() . "\"></td>\n");
 echo ("<td><a href=\"../help.php?HelpNumber=202\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 $tabindex++;
 // domain suffix
 echo ("<tr><td align=\"right\"><b>".
-	_("DomainSuffix") . " ***: </b></td>".
+	_("DomainSuffix") . " **: </b></td>".
 	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"suffdomains\" value=\"" . $conf->get_DomainSuffix() . "\"></td>\n");
 echo ("<td><a href=\"../help.php?HelpNumber=202\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
+$tabindex++;
+// tree suffix
+echo ("<tr><td align=\"right\"><b>".
+	_("TreeSuffix") . ": </b></td>".
+	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"sufftree\" value=\"" . $conf->get_Suffix('tree') . "\"></td>\n");
+echo ("<td><a href=\"../help.php?HelpNumber=203\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 $tabindex++;
 
 // new line
@@ -429,8 +437,7 @@ echo ("</table>\n");
 echo ("<p></p>");
 
 echo ("<p>* = ". _("required") . "</p>");
-echo ("<p>** = ". _("required for Samba accounts") . "</p>");
-echo ("<p>*** = ". _("required for Samba 3 accounts") . "</p>");
+echo ("<p>** = ". _("required for Samba 3 accounts") . "</p>");
 
 // password for configuration
 echo ("<p><input type=\"hidden\" name=\"passwd\" value=\"" . $passwd . "\"></p>\n");

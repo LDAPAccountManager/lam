@@ -52,6 +52,7 @@ $suffusers = $_SESSION['conf_suffusers'];
 $suffgroups = $_SESSION['conf_suffgroups'];
 $suffhosts = $_SESSION['conf_suffhosts'];
 $suffdomains = $_SESSION['conf_suffdomains'];
+$sufftree = $_SESSION['conf_sufftree'];
 $usrlstattr = $_SESSION['conf_usrlstattr'];
 $grplstattr = $_SESSION['conf_grplstattr'];
 $hstlstattr = $_SESSION['conf_hstlstattr'];
@@ -119,6 +120,11 @@ if (!$conf->set_HostSuffix($suffhosts)) {
 }
 if (!$conf->set_DomainSuffix($suffdomains)) {
 	echo ("<font color=\"red\"><b>" . _("DomainSuffix is invalid!") . "</b></font>");
+	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
+	exit;
+}
+if (!$conf->set_Suffix("tree", $sufftree)) {
+	echo ("<font color=\"red\"><b>" . _("TreeSuffix is invalid!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
@@ -260,6 +266,7 @@ unset($_SESSION['conf_suffusers']);
 unset($_SESSION['conf_suffgroups']);
 unset($_SESSION['conf_suffhosts']);
 unset($_SESSION['conf_suffdomains']);
+unset($_SESSION['conf_sufftree']);
 unset($_SESSION['conf_usrlstattr']);
 unset($_SESSION['conf_grplstattr']);
 unset($_SESSION['conf_hstlstattr']);

@@ -44,6 +44,7 @@ $lists = 0;
 if ($_SESSION['config']->get_Usersuffix() != "") $lists++;
 if ($_SESSION['config']->get_Groupsuffix() != "") $lists++;
 if ($_SESSION['config']->get_Hostsuffix() != "") $lists++;
+if ($_SESSION['config']->get_Suffix('tree') != "") $lists++;
 
 ?>
 
@@ -73,6 +74,9 @@ if ($_SESSION['config']->get_Hostsuffix() != "") $lists++;
 	<tr>
 		<td></td>
 		<?php
+			if ($_SESSION['config']->get_Suffix('tree') != "") {
+				echo '<td width="120" align="center"><a href="./tree/tree_view.php" target="mainpart"><big>' . _("Tree view") . '</big></a></td>' . "\n";
+			}
 			if ($_SESSION['config']->get_Usersuffix() != "") {
 				echo '<td width="120" align="center"><a href="./lists/listusers.php" target="mainpart"><big>' . _("Users") . '</big></a></td>' . "\n";
 			}

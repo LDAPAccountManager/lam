@@ -120,6 +120,9 @@ class Config {
 	/** LDAP suffix for Samba 3 domains */
 	var $domainsuffix;
 
+	/** LDAP suffix for tree view */
+	var $treesuffix;
+
 	/** Attributes that are shown in the user list */
 	var $userlistAttributes;
 	/** Attributes that are shown in the group list */
@@ -165,7 +168,7 @@ class Config {
 	var $file;
 
 	/** List of all settings in config file */
-	var $settings = array("ServerURL", "Passwd", "Admins", "usersuffix", "groupsuffix", "hostsuffix",
+	var $settings = array("ServerURL", "Passwd", "Admins", "usersuffix", "groupsuffix", "hostsuffix", "treesuffix",
 		"domainsuffix", "userlistAttributes", "grouplistAttributes", "hostlistAttributes", "maxlistentries",
 		"defaultLanguage", "scriptPath", "scriptServer", "cachetimeout",
 		"usermodules", "groupmodules", "hostmodules", "modules");
@@ -288,10 +291,12 @@ class Config {
 								"# e.g. ou=People,dc=yourdomain,dc=org\n" . "usersuffix: " . $this->usersuffix . "\n");
 			if (!in_array("groupsuffix", $saved)) array_push($file_array, "\n\n# suffix of groups\n" .
 								"# e.g. ou=Groups,dc=yourdomain,dc=org\n" . "groupsuffix: " . $this->groupsuffix . "\n");
-			if (!in_array("hostsuffix", $saved)) array_push($file_array, "\n\n# suffix of Samba hosts\n" .
+			if (!in_array("hostsuffix", $saved)) array_push($file_array, "\n\n# suffix of hosts\n" .
 								"# e.g. ou=machines,dc=yourdomain,dc=org\n" . "hostsuffix: " . $this->hostsuffix . "\n");
 			if (!in_array("domainsuffix", $saved)) array_push($file_array, "\n\n# suffix of Samba 3 domains\n" .
 								"# e.g. ou=domains,dc=yourdomain,dc=org\n" . "domainsuffix: " . $this->domainsuffix . "\n");
+			if (!in_array("treesuffix", $saved)) array_push($file_array, "\n\n# suffix of tree view\n" .
+								"# e.g. dc=yourdomain,dc=org\n" . "treesuffix: " . $this->treesuffix . "\n");
 			if (!in_array("userlistAttributes", $saved)) array_push($file_array, "\n\n# list of attributes to show in user list\n# entries can either be predefined values (e.g. '#cn' or '#uid')" .
 								"\n# or individual ones (e.g. 'uid:User ID' or 'host:Host Name')\n# values have to be seperated by semicolons\n" . "userlistAttributes: " . $this->userlistAttributes . "\n");
 			if (!in_array("grouplistAttributes", $saved)) array_push($file_array, "\n\n# list of attributes to show in group list\n# entries can either be predefined values (e.g. '#cn' or '#gidNumber')" .
@@ -334,6 +339,7 @@ class Config {
 		echo "<b>" . _("GroupSuffix") . ": </b>" . $this->groupsuffix . "<br>\n";
 		echo "<b>" . _("HostSuffix") . ": </b>" . $this->hostsuffix . "<br>\n";
 		echo "<b>" . _("DomainSuffix") . ": </b>" . $this->domainsuffix . "<br>\n";
+		echo "<b>" . _("TreeSuffix") . ": </b>" . $this->treesuffix . "<br>\n";
 		echo "<b>" . _("Attributes in User List") . ": </b>" . $this->userlistAttributes . "<br>\n";
 		echo "<b>" . _("Attributes in Group List") . ": </b>" . $this->grouplistAttributes . "<br>\n";
 		echo "<b>" . _("Attributes in Host List") . ": </b>" . $this->hostlistAttributes . "<br>\n";
@@ -528,6 +534,65 @@ class Config {
 			$this->domainsuffix = $value;
 		}
 		else return false;
+		return true;
+	}
+
+	/**
+	* Returns the LDAP suffix for the given account type
+	*
+	* @param string $scope account type
+	* @return string the LDAP suffix
+	*/
+	function get_Suffix($scope) {
+		switch ($scope) {
+			case 'user':
+					return $this->usersuffix;
+				break;
+			case 'group':
+					return $this->groupsuffix;
+				break;
+			case 'host':
+					return $this->hostsuffix;
+				break;
+			case 'domain':
+					return $this->domainsuffix;
+				break;
+			case 'tree':
+					return $this->treesuffix;
+				break;
+		}
+		return "";
+	}
+
+	/**
+	* Sets the LDAP suffix where accounts are saved
+	*
+	* @param string $scope account type
+	* @param string $value new LDAP suffix
+	* @return boolean true if $value has correct format
+	*/
+	function set_Suffix($scope, $value) {
+		if (!$value) $value = "";
+		elseif (!is_string($value)) {
+			return false;
+		}
+		switch ($scope) {
+			case 'user':
+					$this->usersuffix = $value;
+				break;
+			case 'group':
+					$this->groupsuffix = $value;
+				break;
+			case 'host':
+					$this->hostsuffix = $value;
+				break;
+			case 'domain':
+					$this->domainsuffix = $value;
+				break;
+			case 'tree':
+					$this->treesuffix = $value;
+				break;
+		}
 		return true;
 	}
 

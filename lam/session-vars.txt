@@ -63,6 +63,7 @@ convsave, confmain, conflogin:
 - conf_suffgroups: Eingabe von confmain
 - conf_suffhosts: Eingabe von confmain
 - conf_suffdomains: Eingabe von confmain
+- conf_sufftree: Eingabe von confmain
 - conf_usrlstattr: Eingabe von confmain
 - conf_grplstattr: Eingabe von confmain
 - conf_hstlstattr: Eingabe von confmain
