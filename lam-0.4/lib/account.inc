@@ -1388,10 +1388,9 @@ function createuser($values, $uselamdaemon=true) {
 			$attr['sambaLMPassword'] = 'NO PASSWORD*****';
 			}
 		else {
-			// use escapeshellarg() to make command shell-secure
 			// Set samba-passwords with external perl-script
-			$attr['sambaNTPassword'] = exec(escapeshellarg($_SESSION['lampath'].'lib/createntlm.pl')." nt ".escapeshellarg($values->smb_password));
-			$attr['sambaLMPassword'] = exec(escapeshellarg($_SESSION['lampath'].'lib/createntlm.pl')." lm ".escapeshellarg($values->smb_password));
+			$attr['sambaNTPassword'] = getNTPasswordHash($values->smb_password);
+			$attr['sambaLMPassword'] = getLMPasswordHash($values->smb_password);
 			}
 		$attr['sambaPwdLastSet'] = time();
 		// Generate SID
@@ -1425,10 +1424,9 @@ function createuser($values, $uselamdaemon=true) {
 			$attr['lmPassword'] = 'NO PASSWORD*****';
 			}
 		else {
-			// use escapeshellarg() to make command shell-secure
 			// Set samba-passwords with external perl-script
-			$attr['ntPassword'] = exec(escapeshellarg($_SESSION['lampath'].'lib/createntlm.pl')." nt ".escapeshellarg($values->smb_password));
-			$attr['lmPassword'] = exec(escapeshellarg($_SESSION['lampath'].'lib/createntlm.pl')." lm ".escapeshellarg($values->smb_password));
+			$attr['ntPassword'] = getNTPasswordHash($values->smb_password);
+			$attr['lmPassword'] = getLMPasswordHash($values->smb_password);
 			}
 		$attr['pwdLastSet'] = time();
 		// Generate pseudo SID
@@ -1697,10 +1695,9 @@ function modifyuser($values,$values_old,$uselamdaemon=true) { // Will modify the
 			}
 		 else
 			if ($values->smb_password!='') {
-				// use escapeshellarg() to make command shell-secure
 				// Set samba-passwords with external perl-script
-				$attr['sambaNTPassword'] = exec(escapeshellarg($_SESSION['lampath'].'lib/createntlm.pl')." nt ".escapeshellarg($values->smb_password));
-				$attr['sambaLMPassword'] = exec(escapeshellarg($_SESSION['lampath'].'lib/createntlm.pl')." lm ".escapeshellarg($values->smb_password));
+				$attr['sambaNTPassword'] = getNTPasswordHash($values->smb_password);
+				$attr['sambaLMPassword'] = getLMPasswordHash($values->smb_password);
 				$attr['sambaPwdLastSet'] = time(); // sambaAccount_may
 				}
 		// Check which Samba-Attributes have changed
@@ -1793,10 +1790,9 @@ function modifyuser($values,$values_old,$uselamdaemon=true) { // Will modify the
 			}
 		 else
 			if ($values->smb_password!='') {
-				// use escapeshellarg() to make command shell-secure
 				// Set samba-passwords with external perl-script
-				$attr['ntPassword'] = exec(escapeshellarg($_SESSION['lampath'].'lib/createntlm.pl')." nt ".escapeshellarg($values->smb_password));
-				$attr['lmPassword'] = exec(escapeshellarg($_SESSION['lampath'].'lib/createntlm.pl')." lm ".escapeshellarg($values->smb_password));
+				$attr['ntPassword'] = getNTPasswordHash($values->smb_password);
+				$attr['lmPassword'] = getLMPasswordHash($values->smb_password);
 				$attr['pwdLastSet'] = time(); // sambaAccount_may
 				}
 		// Check which Samba-Attributes have changed
@@ -2036,9 +2032,9 @@ function createhost($values) {
 	if ($_SESSION['config']->is_samba3()) {
 		// Add all attributes as samba3 objectclass
 		$attr['objectClass'][] = 'sambaSamAccount';
-		// "Standard" password for new hosts
-		$attr['sambaNTPassword'] = '7DC46419FE56BD28F7587D05D06791D4';
-		$attr['sambaLMPassword'] = '206893E4C077CE5E27BCBF149915A329';
+		// password for new hosts is hostname
+		$attr['sambaNTPassword'] = getNTPasswordHash(substr($values->general_username, 0, strlen($values->general_username) - 1));
+		$attr['sambaLMPassword'] = getLMPasswordHash(substr($values->general_username, 0, strlen($values->general_username) - 1));
 		$attr['sambaPwdLastSet'] = time(); // sambaAccount_may
 		$attr['sambaSID'] = $values->smb_domain->SID . "-" . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase); // sambaAccount_may
 		$attr['sambaPrimaryGroupSID'] = $values->smb_domain->SID . "-515"; // sambaAccount_req
@@ -2050,9 +2046,9 @@ function createhost($values) {
 	else {
 		// Add all attributes as samba2.2 objectclass
 		$attr['objectClass'][] = 'sambaAccount';
-		// "Standard" password for new hosts
-		$attr['ntPassword'] = '7DC46419FE56BD28F7587D05D06791D4';
-		$attr['lmPassword'] = '206893E4C077CE5E27BCBF149915A329';
+		// password for new hosts is hostname
+		$attr['ntPassword'] = getNTPasswordHash(substr($values->general_username, 0, strlen($values->general_username) - 1));
+		$attr['lmPassword'] = getLMPasswordHash(substr($values->general_username, 0, strlen($values->general_username) - 1));
 		$attr['pwdLastSet'] = time(); // sambaAccount_may
 		$attr['rid'] = (2 * $values->general_uidNumber + 1000); // sambaAccount_may
 		$attr['primaryGroupID'] = (2 * getgid($values->general_group) + 1001); // sambaAccount_req
@@ -2179,9 +2175,9 @@ function modifyhost($values,$values_old) {
 			}
 		// Reset password
 		if ($values->smb_flags['N']) {
-			// "Standard" password for new hosts
-			$attr['sambaNTPassword'] = '7DC46419FE56BD28F7587D05D06791D4';
-			$attr['sambaLMPassword'] = '206893E4C077CE5E27BCBF149915A329';
+			// password for new hosts is hostname
+			$attr['sambaNTPassword'] = getNTPasswordHash(substr($values->general_username, 0, strlen($values->general_username) - 1));
+			$attr['sambaLMPassword'] = getLMPasswordHash(substr($values->general_username, 0, strlen($values->general_username) - 1));
 			$attr['sambaPwdLastSet'] = time(); // sambaAccount_may
 			}
 		if ($values->smb_domain->name!=$values_old->smb_domain->name) {
@@ -2246,9 +2242,9 @@ function modifyhost($values,$values_old) {
 			if (isset($attr_old['sambaSID'][0])) $attr_rem['sambaSID'] = $attr_old['sambaSID'][0];
 			}
 		if ($values->smb_flags['N']) {
-			// "Standard" password for new hosts
-			$attr['ntPassword'] = '7DC46419FE56BD28F7587D05D06791D4';
-			$attr['lmPassword'] = '206893E4C077CE5E27BCBF149915A329';
+			// password for new hosts is hostname
+			$attr['ntPassword'] = getNTPasswordHash(substr($values->general_username, 0, strlen($values->general_username) - 1));
+			$attr['lmPassword'] = getLMPasswordHash(substr($values->general_username, 0, strlen($values->general_username) - 1));
 			$attr['pwdLastSet'] = time(); // sambaAccount_may
 			}
 		if (isset($attr_old['sambaSID'][0])) $attr_rem['sambaSID'] = $attr_old['sambaSID'][0];
@@ -2483,5 +2479,34 @@ function modifygroup($values,$values_old, $uselamdaemon=true) {
 	return 3;
 	}
 
+/**
+*  Returns the nt password hash of a given password.
+*  $password: The cleartext password
+*/
+function getNTPasswordHash($password) {
+	// if Perl is installed in default directory use it
+	if (file_exists("/usr/bin/perl")) {
+		return exec('/usr/bin/perl ' . escapeshellarg($_SESSION['lampath'].'lib/createntlm.pl')." nt ".escapeshellarg($password));
+	}
+	// otherwise use Perl in search path
+	else {
+		return exec('perl ' . escapeshellarg($_SESSION['lampath'].'lib/createntlm.pl')." nt ".escapeshellarg($password));
+	}
+}
+
+/**
+*  Returns the lanman password hash of a given password.
+*  $password: The cleartext password
+*/
+function getLMPasswordHash($password) {
+	// if Perl is installed in default directory use it
+	if (file_exists("/usr/bin/perl")) {
+		return exec('/usr/bin/perl ' . escapeshellarg($_SESSION['lampath'].'lib/createntlm.pl')." lm ".escapeshellarg($password));
+	}
+	// otherwise use Perl in search path
+	else {
+		return exec('perl ' . escapeshellarg($_SESSION['lampath'].'lib/createntlm.pl')." lm ".escapeshellarg($password));
+	}
+}
 
 ?>
