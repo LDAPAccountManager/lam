@@ -783,7 +783,7 @@ function createuser() { // Will create the LDAP-Account
 			if (!in_array($_SESSION['account']->general_group, $allgroups)) $allgroups[] = $_SESSION['account']->general_group;
 			}
 		 else $allgroups[0] = $_SESSION['account']->general_group;
-		$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(), 'objectClass=PosixGroup', array('memberUid'));
+		$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(), 'objectClass=PosixGroup');
 		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 		while ($entry) {
 			$modifygroup=0;
@@ -822,7 +822,7 @@ function createuser() { // Will create the LDAP-Account
 			addhomedir($_SESSION['account']->general_username);
 			}
 		// Add user to groups
-		$result = ldap_search($_SESSION['ldap']->server(), 'cn='.$_SESSION['account']->general_group.','.$_SESSION['config']->get_GroupSuffix(), "objectclass=posixGroup", array('memberUid'));
+		$result = ldap_search($_SESSION['ldap']->server(), 'cn='.$_SESSION['account']->general_group.','.$_SESSION['config']->get_GroupSuffix(), "objectclass=posixGroup");
 		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 		$group = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
 		if ($group['memberUid']) array_shift($group['memberUid']);
@@ -834,7 +834,7 @@ function createuser() { // Will create the LDAP-Account
 		// Add User to Additional Groups
 		if ($_SESSION['account']->general_groupadd)
 			foreach ($_SESSION['account']->general_groupadd as $group2) {
-				$result = ldap_search($_SESSION['ldap']->server(), 'cn='.$group2.','.$_SESSION['config']->get_GroupSuffix(), "objectclass=posixGroup", array('memberUid'));
+				$result = ldap_search($_SESSION['ldap']->server(), 'cn='.$group2.','.$_SESSION['config']->get_GroupSuffix(), "objectclass=posixGroup");
 				$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 				$group = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
 				if ($group['memberUid']) array_shift($group['memberUid']);
@@ -935,7 +935,7 @@ function createhost() { // Will create the LDAP-Host
 			if (!in_array($_SESSION['account']->general_group, $allgroups)) $allgroups[] = $_SESSION['account']->general_group;
 			}
 		 else $allgroups[0] = $_SESSION['account']->general_group;
-		$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(), 'objectClass=PosixGroup', array('memberUid'));
+		$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(), 'objectClass=PosixGroup');
 		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 		while ($entry) {
 			$modifygroup=0;
@@ -970,7 +970,7 @@ function createhost() { // Will create the LDAP-Host
 		$success = ldap_add($_SESSION['ldap']->server(),$_SESSION['account']->general_dn, $attr);
 		if (!$success) return 4;
 		// Add Host to groups
-		$result = ldap_search($_SESSION['ldap']->server(), 'cn='.$_SESSION['account']->general_group.','.$_SESSION['config']->get_GroupSuffix(), "objectclass=posixGroup", array('memberUid'));
+		$result = ldap_search($_SESSION['ldap']->server(), 'cn='.$_SESSION['account']->general_group.','.$_SESSION['config']->get_GroupSuffix(), "objectclass=posixGroup");
 		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 		$group = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
 		if ($group['memberUid']) array_shift($group['memberUid']);
@@ -982,7 +982,7 @@ function createhost() { // Will create the LDAP-Host
 		// Add Host to Additional Groups
 		if ($_SESSION['account']->general_groupadd)
 			foreach ($_SESSION['account']->general_groupadd as $group2) {
-				$result = ldap_search($_SESSION['ldap']->server(), 'cn='.$group2.','.$_SESSION['config']->get_GroupSuffix(), "objectclass=posixGroup", array('memberUid'));
+				$result = ldap_search($_SESSION['ldap']->server(), 'cn='.$group2.','.$_SESSION['config']->get_GroupSuffix(), "objectclass=posixGroup");
 				$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 				$group = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
 				if ($group['memberUid']) array_shift($group['memberUid']);
