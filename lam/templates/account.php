@@ -309,15 +309,15 @@ if ($_POST['save']) $select_local='save';
 
 if ($select_local != 'pdf') {
 	// Write HTML-Header and part of Table
-	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"
-		\"http://www.w3.org/TR/html4/loose.dtd\">\n";
+	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"".
+		"\"http://www.w3.org/TR/html4/loose.dtd\">\n";
 	echo "<html><head><title>";
 	echo _("Create new Account");
-	echo "</title>\n
-		<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">\n
-		<meta http-equiv=\"pragma\" content=\"no-cache\">\n
-		<meta http-equiv=\"cache-control\" content=\"no-cache\">\n
-		<meta http-equiv=\"Content-Type\" content=\"text/html; charset=ISO-8859-15\">";
+	echo "</title>\n".
+		"<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">\n".
+		"<meta http-equiv=\"pragma\" content=\"no-cache\">\n".
+		"<meta http-equiv=\"cache-control\" content=\"no-cache\">\n".
+		"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=ISO-8859-15\">";
 	}
 
 switch ($select_local) {
@@ -335,6 +335,7 @@ switch ($select_local) {
 				echo "<meta http-equiv=\"refresh\" content=\"0; URL=lists/listusers.php\">\n";
 				break;
 			case 'group' :
+
 				if (session_is_registered("type2")) session_unregister("type2");
 				echo "<meta http-equiv=\"refresh\" content=\"0; URL=lists/listgroups.php\">\n";
 				break;
@@ -414,28 +415,28 @@ switch ($select_local) { // Select which part of page will be loaded
 				echo '<tr><td>';
 				echo _('Username*');
 				echo "</td>\n<td>".
-					'<input name="f_general_username" type="text" size="20" maxlength="20" value="' . $_SESSION['account']->general_username . '">
-					</td><td>
-					<a href="help.php?HelpNumber=400" target="lamhelp">'._('Help').'</a>
-					</td></tr>'."\n".'<tr><td>';
+					'<input name="f_general_username" type="text" size="20" maxlength="20" value="' . $_SESSION['account']->general_username . '">'.
+					'</td><td>'.
+					'<a href="help.php?HelpNumber=400" target="lamhelp">'._('Help').'</a>'.
+					'</td></tr>'."\n".'<tr><td>';
 				echo _('UID Number');
-				echo '</td>'."\n".'<td>
-					<input name="f_general_uidNumber" type="text" size="6" maxlength="6" value="' . $_SESSION['account']->general_uidNumber . '">
-					</td>'."\n".'<td>
-					<a href="help.php?HelpNumber=401" target="lamhelp">'._('Help').'</a>
-					</td></tr>'."\n".'<tr><td>';
+				echo '</td>'."\n".'<td>'.
+					'<input name="f_general_uidNumber" type="text" size="6" maxlength="6" value="' . $_SESSION['account']->general_uidNumber . '">'.
+					'</td>'."\n".'<td>'.
+					'<a href="help.php?HelpNumber=401" target="lamhelp">'._('Help').'</a>'.
+					'</td></tr>'."\n".'<tr><td>';
 				echo _('Surname*');
-				echo '</td>'."\n".'<td>
-					<input name="f_general_surname" type="text" size="20" maxlength="20" value="' . $_SESSION['account']->general_surname . '">
-					</td><td>
-					<a href="help.php?HelpNumber=424" target="lamhelp">'._('Help').'</a>
-					</td></tr>'."\n".'<tr><td>';
+				echo '</td>'."\n".'<td>'.
+					'<input name="f_general_surname" type="text" size="20" maxlength="20" value="' . $_SESSION['account']->general_surname . '">'.
+					'</td><td>'.
+					'<a href="help.php?HelpNumber=424" target="lamhelp">'._('Help').'</a>'.
+					'</td></tr>'."\n".'<tr><td>';
 				echo _('Given name*');
-				echo '</td>'."\n".'<td>
-					<input name="f_general_givenname" type="text" size="20" maxlength="20" value="' . $_SESSION['account']->general_givenname . '">
-					</td>'."\n".'<td>
-					<a href="help.php?HelpNumber=425" target="lamhelp">'._('Help').'</a>
-					</td>'."\n".'</tr>'."\n".'<tr><td>';
+				echo '</td>'."\n".'<td>'.
+					'<input name="f_general_givenname" type="text" size="20" maxlength="20" value="' . $_SESSION['account']->general_givenname . '">'.
+					'</td>'."\n".'<td>'.
+					'<a href="help.php?HelpNumber=425" target="lamhelp">'._('Help').'</a>'.
+					'</td>'."\n".'</tr>'."\n".'<tr><td>';
 				echo _('Primary Group*');
 				echo '</td>'."\n".'<td><select name="f_general_group">';
 				// loop trough existing groups
@@ -443,9 +444,9 @@ switch ($select_local) { // Select which part of page will be loaded
 					if ($_SESSION['account']->general_group == $group) echo '<option selected>' . $group. '</option>';
 					else echo '<option>' . $group. '</option>';
 					 }
-				echo '</select></td><td>
-					<a href="help.php?HelpNumber=406" target="lamhelp">'._('Help').'</a>
-					</td></tr>'."\n".'<tr><td>';
+				echo '</select></td><td>'.
+					'<a href="help.php?HelpNumber=406" target="lamhelp">'._('Help').'</a>'.
+					'</td></tr>'."\n".'<tr><td>';
 				echo _('Additional Groupmembership');
 				echo '</td>'."\n".'<td><select name="f_general_groupadd[]" size="3" multiple>';
 				// loop though existing groups for additional groups
@@ -456,28 +457,28 @@ switch ($select_local) { // Select which part of page will be loaded
 						}
 					else echo '<option>'.$group. '</option>';
 					}
-				echo	'</select></td>'."\n".'<td>
-					<a href="help.php?HelpNumber=402" target="lamhelp">'._('Help').'</a>
-					</td></tr>'."\n".'<tr><td>';
+				echo	'</select></td>'."\n".'<td>'.
+					'<a href="help.php?HelpNumber=402" target="lamhelp">'._('Help').'</a>'.
+					'</td></tr>'."\n".'<tr><td>';
 				echo _('Home Directory*');
-				echo '</td>'."\n".'<td><input name="f_general_homedir" type="text" size="30" value="' . $_SESSION['account']->general_homedir . '">
-					</td>'."\n".'<td>
-					<a href="help.php?HelpNumber=403" target="lamhelp">'._('Help').'</a>
-					</td></tr>'."\n".'<tr><td>';
+				echo '</td>'."\n".'<td><input name="f_general_homedir" type="text" size="30" value="' . $_SESSION['account']->general_homedir . '">'.
+					'</td>'."\n".'<td>'.
+					'<a href="help.php?HelpNumber=403" target="lamhelp">'._('Help').'</a>'.
+					'</td></tr>'."\n".'<tr><td>';
 				echo _('Gecos');
-				echo '</td>'."\n".'<td><input name="f_general_gecos" type="text" size="30" value="' . $_SESSION['account']->general_gecos . '">
-					</td>'."\n".'<td>
-					<a href="help.php?HelpNumber=404" target="lamhelp">'._('Help').'</a>
-					</td></tr>'."\n".'<tr><td>';
+				echo '</td>'."\n".'<td><input name="f_general_gecos" type="text" size="30" value="' . $_SESSION['account']->general_gecos . '">'.
+					'</td>'."\n".'<td>'.
+					'<a href="help.php?HelpNumber=404" target="lamhelp">'._('Help').'</a>'.
+					'</td></tr>'."\n".'<tr><td>';
 				echo _('Login Shell*');
 				echo '</td>'."\n".'<td><select name="f_general_shell" >';
 					// loop through shells
 					foreach ($_SESSION['shelllist'] as $shell)
 						if ($_SESSION['account']->general_shell==trim($shell)) echo '<option selected>'.$shell. '</option>';
 							else echo '<option>'.$shell. '</option>';
-				echo '</select></td>'."\n".'<td>
-					<a href="help.php?HelpNumber=405" target="lamhelp">'._('Help').'</a>
-					</td></tr>'."\n".'<tr><td>';
+				echo '</select></td>'."\n".'<td>'.
+					'<a href="help.php?HelpNumber=405" target="lamhelp">'._('Help').'</a>'.
+					'</td></tr>'."\n".'<tr><td>';
 				echo _('Suffix'); echo '</td><td><select name="f_general_suffix">';
 				foreach ($_SESSION['ldap']->search_units($_SESSION['config']->get_UserSuffix()) as $suffix) {
 					if ($_SESSION['account']->general_dn) {
@@ -487,15 +488,15 @@ switch ($select_local) { // Select which part of page will be loaded
 						}
 					else echo '<option>' . $suffix. '</option>';
 					}
-				echo '</select></td><td><a href="help.php?HelpNumber=461" target="lamhelp">'._('Help').'</a>
-					</td></tr><tr><td>';
+				echo '</select></td><td><a href="help.php?HelpNumber=461" target="lamhelp">'._('Help').'</a>'.
+					'</td></tr><tr><td>';
 					echo _('Values with * are required');
 					echo '</td></tr><tr><td><select name="f_general_selectprofile">';
 				// loop through profiles
 				foreach ($profilelist as $profile) echo '<option>' . $profile. '</option>';
-				echo '</select>
-					<input name="load" type="submit" value="'; echo _('Load Profile'); echo '">
-					</td>'."\n".'<td>';
+				echo '</select>'.
+					'<input name="load" type="submit" value="'; echo _('Load Profile'); echo '">'.
+					'</td>'."\n".'<td>';
 				break;
 			case 'group':
 				// load list of profiles
@@ -503,22 +504,22 @@ switch ($select_local) { // Select which part of page will be loaded
 				// Create HTML-page
 				echo '<tr><td>';
 				echo _('Groupname*');
-				echo '</td>'."\n".'<td>
-					<input name="f_general_username" type="text" size="20" maxlength="20" value="' . $_SESSION['account']->general_username . '">
-					</td><td>
-					<a href="help.php?HelpNumber=407" target="lamhelp">'._('Help').'</a>
-					</td></tr>'."\n".'<tr><td>';
+				echo '</td>'."\n".'<td>'.
+					'<input name="f_general_username" type="text" size="20" maxlength="20" value="' . $_SESSION['account']->general_username . '">'.
+					'</td><td>'.
+					'<a href="help.php?HelpNumber=407" target="lamhelp">'._('Help').'</a>'.
+					'</td></tr>'."\n".'<tr><td>';
 				echo _('GID Number');
-				echo '</td>'."\n".'<td>
-					<input name="f_general_uidNumber" type="text" size="6" maxlength="6" value="' . $_SESSION['account']->general_uidNumber . '">
-					</td>'."\n".'<td>
-					<a href="help.php?HelpNumber=408" target="lamhelp">'._('Help').'</a>
-					</td></tr>'."\n".'<tr><td>';
+				echo '</td>'."\n".'<td>'.
+					'<input name="f_general_uidNumber" type="text" size="6" maxlength="6" value="' . $_SESSION['account']->general_uidNumber . '">'.
+					'</td>'."\n".'<td>'.
+					'<a href="help.php?HelpNumber=408" target="lamhelp">'._('Help').'</a>'.
+					'</td></tr>'."\n".'<tr><td>';
 				echo _('Gecos');
-				echo '</td>'."\n".'<td><input name="f_general_gecos" type="text" size="30" value="' . $_SESSION['account']->general_gecos . '">
-					</td>'."\n".'<td>
-					<a href="help.php?HelpNumber=409" target="lamhelp">'._('Help').'</a>
-					</td></tr><tr><td>';
+				echo '</td>'."\n".'<td><input name="f_general_gecos" type="text" size="30" value="' . $_SESSION['account']->general_gecos . '">'.
+					'</td>'."\n".'<td>'.
+					'<a href="help.php?HelpNumber=409" target="lamhelp">'._('Help').'</a>'.
+					'</td></tr><tr><td>';
 				echo _('Suffix'); echo '</td><td><select name="f_general_suffix">';
 				foreach ($_SESSION['ldap']->search_units($_SESSION['config']->get_GroupSuffix()) as $suffix) {
 					if ($_SESSION['account']->general_dn) {
@@ -528,14 +529,14 @@ switch ($select_local) { // Select which part of page will be loaded
 						}
 					else echo '<option>' . $suffix. '</option>';
 					}
-				echo '</select></td><td><a href="help.php?HelpNumber=462" target="lamhelp">'._('Help').'</a>
-					</td></tr><tr><td>';
+				echo '</select></td><td><a href="help.php?HelpNumber=462" target="lamhelp">'._('Help').'</a>'.
+					'</td></tr><tr><td>';
 					echo _('Values with * are required');
 					echo '</td></tr>'."\n".'<tr><td><select name="f_general_selectprofile" >';
 				foreach ($profilelist as $profile) echo '<option>' . $profile. '</option>';
-				echo '</select>
-					<input name="load" type="submit" value="'; echo _('Load Profile'); echo '">
-					</td>'."\n".'<td>';
+				echo '</select>'.
+					'<input name="load" type="submit" value="'; echo _('Load Profile'); echo '">'.
+					'</td>'."\n".'<td>';
 				break;
 			case 'host':
 				// load list of profiles
@@ -543,26 +544,26 @@ switch ($select_local) { // Select which part of page will be loaded
 				// Create HTML-page
 				echo '<tr><td>';
 				echo _('Hostname*');
-				echo '</td>'."\n".'<td>
-					<input name="f_general_username" type="text" size="20" maxlength="20" value="' . $_SESSION['account']->general_username . '">
-					</td><td>
-					<a href="help.php?HelpNumber=410" target="lamhelp">'._('Help').'</a>
-					</td></tr>'."\n".'<tr><td>';
+				echo '</td>'."\n".'<td>'.
+					'<input name="f_general_username" type="text" size="20" maxlength="20" value="' . $_SESSION['account']->general_username . '">'.
+					'</td><td>'.
+					'<a href="help.php?HelpNumber=410" target="lamhelp">'._('Help').'</a>'.
+					'</td></tr>'."\n".'<tr><td>';
 				echo _('UID Number');
-				echo '</td>'."\n".'<td>
-					<input name="f_general_uidNumber" type="text" size="6" maxlength="6" value="' . $_SESSION['account']->general_uidNumber . '">
-					</td>'."\n".'<td>
-					<a href="help.php?HelpNumber=411" target="lamhelp">'._('Help').'</a>
-					</td></tr>'."\n".'<tr><td>';
+				echo '</td>'."\n".'<td>'.
+					'<input name="f_general_uidNumber" type="text" size="6" maxlength="6" value="' . $_SESSION['account']->general_uidNumber . '">'.
+					'</td>'."\n".'<td>'.
+					'<a href="help.php?HelpNumber=411" target="lamhelp">'._('Help').'</a>'.
+					'</td></tr>'."\n".'<tr><td>';
 				echo _('Primary Group*');
 				echo '</td>'."\n".'<td><select name="f_general_group">';
 				foreach ($groups as $group) {
 					if ($_SESSION['account']->general_group == $group) echo '<option selected>' . $group. '</option>';
 					else echo '<option>' . $group. '</option>';
 					 }
-				echo '</select></td><td>
-					<a href="help.php?HelpNumber=412" target="lamhelp">'._('Help').'</a>
-					</td></tr>'."\n".'<tr><td>';
+				echo '</select></td><td>'.
+					'<a href="help.php?HelpNumber=412" target="lamhelp">'._('Help').'</a>'.
+					'</td></tr>'."\n".'<tr><td>';
 				echo _('Additional Groupmembership');
 				echo '</td>'."\n".'<td><select name="f_general_groupadd[]" size="3" multiple>';
 				foreach ($groups as $group) {
@@ -572,14 +573,14 @@ switch ($select_local) { // Select which part of page will be loaded
 						}
 					else echo '<option>'.$group. '</option>';
 					}
-				echo	'</select></td>'."\n".'<td>
-					<a href="help.php?HelpNumber=402" target="lamhelp">'._('Help').'</a>
-					</td></tr>'."\n".'<tr><td>';
+				echo	'</select></td>'."\n".'<td>'.
+					'<a href="help.php?HelpNumber=402" target="lamhelp">'._('Help').'</a>'.
+					'</td></tr>'."\n".'<tr><td>';
 				echo _('Gecos');
-				echo '</td><td><input name="f_general_gecos" type="text" size="30" value="' . $_SESSION['account']->general_gecos . '">
-					</td>'."\n".'<td>
-					<a href="help.php?HelpNumber=413" target="lamhelp">'._('Help').'</a>
-					</td></tr><tr><td>';
+				echo '</td><td><input name="f_general_gecos" type="text" size="30" value="' . $_SESSION['account']->general_gecos . '">'.
+					'</td>'."\n".'<td>'.
+					'<a href="help.php?HelpNumber=413" target="lamhelp">'._('Help').'</a>'.
+					'</td></tr><tr><td>';
 				echo _('Suffix'); echo '</td><td><select name="f_general_suffix">';
 				foreach ($_SESSION['ldap']->search_units($_SESSION['config']->get_HostSuffix()) as $suffix) {
 					if ($_SESSION['account']->general_dn) {
@@ -589,19 +590,19 @@ switch ($select_local) { // Select which part of page will be loaded
 						}
 					else echo '<option>' . $suffix. '</option>';
 					}
-				echo '</select></td><td><a href="help.php?HelpNumber=463" target="lamhelp">'._('Help').'</a>
-					</td></tr><tr><td>';
+				echo '</select></td><td><a href="help.php?HelpNumber=463" target="lamhelp">'._('Help').'</a>'.
+					'</td></tr><tr><td>';
 					echo _('Values with * are required');
 					echo '</td></tr>'."\n".'<tr><td><select name="f_general_selectprofile">';
 				foreach ($profilelist as $profile) echo '<option>' . $profile. '</option>';
-				echo '</select>
-					<input name="load" type="submit" value="'; echo _('Load Profile'); echo '">
-					</td>'."\n".'<td>';
+				echo '</select>'.
+					'<input name="load" type="submit" value="'; echo _('Load Profile'); echo '">'.
+					'</td>'."\n".'<td>';
 				break;
 			}
-		echo '</td>'."\n".'<td>
-			<input name="next" type="submit" value="'; echo _('next'); echo '">
-			</td></tr>'."\n";
+		echo '</td>'."\n".'<td>'.
+			'<input name="next" type="submit" value="'; echo _('next'); echo '">'.
+			'</td></tr>'."\n";
 		break;
 	case 'unix':
 		// Unix Password Settings
@@ -620,38 +621,37 @@ switch ($select_local) { // Select which part of page will be loaded
 			case 'user' :
 				echo '<tr><td>';
 				echo _('Password');
-				echo '</td>'."\n".'<td>
-					<input name="f_unix_password" type="text" size="20" maxlength="20" value="' . $password . '">
-					</td>'."\n".'<td>
-					<input name="genpass" type="submit" value="';
-				echo _('Generate Password'); echo '">
-					</td></tr><tr><td>';
+				echo '</td>'."\n".'<td>'.
+					'<input name="f_unix_password" type="text" size="20" maxlength="20" value="' . $password . '">'.
+					'</td>'."\n".'<td>'.
+					'<input name="genpass" type="submit" value="';
+				echo _('Generate Password'); echo '"></td></tr><tr><td>';
 				echo _('Use no Password.');
 				echo '</td>'."\n".'<td><input name="f_unix_password_no" type="checkbox"';
 				if ($_SESSION['account']->unix_password_no) echo ' checked ';
-				echo '></td>'."\n".'<td>
-				<a href="help.php?HelpNumber=426" target="lamhelp">'._('Help').'</a>
-				</td></tr>'."\n".'<tr><td>';
+				echo '></td>'."\n".'<td>'.
+				'<a href="help.php?HelpNumber=426" target="lamhelp">'._('Help').'</a>'.
+				'</td></tr>'."\n".'<tr><td>';
 				echo _('Password Warn');
-				echo '</td>'."\n".'<td><input name="f_unix_pwdwarn" type="text" size="4" maxlength="4" value="' . $_SESSION['account']->unix_pwdwarn . '">
-					</td>'."\n".'<td>
-					<a href="help.php?HelpNumber=414" target="lamhelp">'._('Help').'</a>
-					</td></tr>'."\n".'<tr><td>';
+				echo '</td>'."\n".'<td><input name="f_unix_pwdwarn" type="text" size="4" maxlength="4" value="' . $_SESSION['account']->unix_pwdwarn . '">'.
+					'</td>'."\n".'<td>'.
+					'<a href="help.php?HelpNumber=414" target="lamhelp">'._('Help').'</a>'.
+					'</td></tr>'."\n".'<tr><td>';
 				echo _('Password Expire');
-				echo '</td>'."\n".'<td><input name="f_unix_pwdallowlogin" type="text" size="4" maxlength="4" value="' . $_SESSION['account']->unix_pwdallowlogin . '">
-					</td>'."\n".'<td>
-					<a href="help.php?HelpNumber=415" target="lamhelp">'._('Help').'</a>
-					</td></tr>'."\n".'<tr><td>';
+				echo '</td>'."\n".'<td><input name="f_unix_pwdallowlogin" type="text" size="4" maxlength="4" value="' . $_SESSION['account']->unix_pwdallowlogin . '">'.
+					'</td>'."\n".'<td>'.
+					'<a href="help.php?HelpNumber=415" target="lamhelp">'._('Help').'</a>'.
+					'</td></tr>'."\n".'<tr><td>';
 				echo _('Maximum Passwordage');
-				echo '</td>'."\n".'<td><input name="f_unix_pwdmaxage" type="text" size="5" maxlength="5" value="' . $_SESSION['account']->unix_pwdmaxage . '">
-					</td>'."\n".'<td>
-					<a href="help.php?HelpNumber=416" target="lamhelp">'._('Help').'</a>
-					</td></tr>'."\n".'<tr><td>';
+				echo '</td>'."\n".'<td><input name="f_unix_pwdmaxage" type="text" size="5" maxlength="5" value="' . $_SESSION['account']->unix_pwdmaxage . '">'.
+					'</td>'."\n".'<td>'.
+					'<a href="help.php?HelpNumber=416" target="lamhelp">'._('Help').'</a>'.
+					'</td></tr>'."\n".'<tr><td>';
 				echo _('Minimum Passwordage');
-				echo '</td>'."\n".'<td><input name="f_unix_pwdminage" type="text" size="4" maxlength="4" value="' . $_SESSION['account']->unix_pwdminage . '">
-					</td>'."\n".'<td>
-					<a href="help.php?HelpNumber=417" target="lamhelp">'._('Help').'</a>
-					</td></tr>'."\n".'<tr><td>';
+				echo '</td>'."\n".'<td><input name="f_unix_pwdminage" type="text" size="4" maxlength="4" value="' . $_SESSION['account']->unix_pwdminage . '">'.
+					'</td>'."\n".'<td>'.
+					'<a href="help.php?HelpNumber=417" target="lamhelp">'._('Help').'</a>'.
+					'</td></tr>'."\n".'<tr><td>';
 				echo _('Expire Date');
 				echo '</td>'."\n".'<td><select name="f_unix_pwdexpire_day">';
 				for ( $i=1; $i<=31; $i++ ) {
@@ -668,15 +668,15 @@ switch ($select_local) { // Select which part of page will be loaded
 					if ($date['year']==$i) echo "<option selected> $i". '</option>';
 					else echo "<option> $i". '</option>';
 					}
-				echo '</select></td>'."\n".'<td>
-					<a href="help.php?HelpNumber=418" target="lamhelp">'._('Help').'</a>
-					</td></tr>'."\n".'<tr><td>';
+				echo '</select></td>'."\n".'<td>'.
+					'<a href="help.php?HelpNumber=418" target="lamhelp">'._('Help').'</a>'.
+					'</td></tr>'."\n".'<tr><td>';
 				echo _('Account deactivated');
 				echo '</td>'."\n".'<td><input name="f_unix_deactivated" type="checkbox"';
 				if ($_SESSION['account']->unix_deactivated) echo ' checked ';
-				echo '></td>'."\n".'<td>
-				<a href="help.php?HelpNumber=427" target="lamhelp">'._('Help').'</a>
-				</td></tr><tr><td>';
+				echo '></td>'."\n".'<td>'.
+				'<a href="help.php?HelpNumber=427" target="lamhelp">'._('Help').'</a>'.
+				'</td></tr><tr><td>';
 					echo _('Values with * are required');
 					echo '</td></tr>'."\n".'<tr><td>';
 				break;
@@ -694,11 +694,11 @@ switch ($select_local) { // Select which part of page will be loaded
 				echo '</td></tr>';
 				break;
 			}
-		echo '<tr><td>
-		<input name="back" type="submit" value="'; echo _('back'); echo '">
-		</td>'."\n".'<td></td>'."\n".'<td>
-		<input name="next" type="submit" value="'; echo _('next'); echo '">
-		</td></tr>'."\n";
+		echo '<tr><td>'.
+		'<input name="back" type="submit" value="'; echo _('back'); echo '">'.
+		'</td>'."\n".'<td></td>'."\n".'<td>'.
+		'<input name="next" type="submit" value="'; echo _('next'); echo '">'.
+		'</td></tr>'."\n";
 		break;
 	case 'samba':
 		// Samba Settings
@@ -718,15 +718,15 @@ switch ($select_local) { // Select which part of page will be loaded
 				$mustchangedate = getdate($_SESSION['account']->smb_pwdmustchange);
 				$_SESSION['account']->smb_flagsW = 0;
 				echo '<tr><td>';
-				echo	'<input name="f_smb_pwdcanchange_h" type="hidden" value="'.$canchangedate['hours'].'">
-					<input name="f_smb_pwdcanchange_m" type="hidden" value="'.$canchangedate['minutes'].'">
-					<input name="f_smb_pwdcanchange_s" type="hidden" value="'.$canchangedate['seconds'].'">
-					<input name="f_smb_pwdmustchange_h" type="hidden" value="'.$mustchangedate['hours'].'">
-					<input name="f_smb_pwdmustchange_m" type="hidden" value="'.$mustchangedate['minutes'].'">
-					<input name="f_smb_pwdmustchange_s" type="hidden" value="'.$mustchangedate['seconds'].'">';
+				echo	'<input name="f_smb_pwdcanchange_h" type="hidden" value="'.$canchangedate['hours'].'">'.
+					'<input name="f_smb_pwdcanchange_m" type="hidden" value="'.$canchangedate['minutes'].'">'.
+					'<input name="f_smb_pwdcanchange_s" type="hidden" value="'.$canchangedate['seconds'].'">'.
+					'<input name="f_smb_pwdmustchange_h" type="hidden" value="'.$mustchangedate['hours'].'">'.
+					'<input name="f_smb_pwdmustchange_m" type="hidden" value="'.$mustchangedate['minutes'].'">'.
+					'<input name="f_smb_pwdmustchange_s" type="hidden" value="'.$mustchangedate['seconds'].'">';
 				echo _('Samba Password');
-				echo '</td>'."\n".'<td><input name="f_smb_password" type="text" size="20" maxlength="20" value="' . $password . '">
-					</td>'."\n".'<td><input name="f_smb_useunixpwd" type="checkbox"';
+				echo '</td>'."\n".'<td><input name="f_smb_password" type="text" size="20" maxlength="20" value="' . $password . '">'.
+					'</td>'."\n".'<td><input name="f_smb_useunixpwd" type="checkbox"';
 				if ($_SESSION['account']->smb_useunixpwd) echo ' checked ';
 				echo '>';
 				echo _('Use Unix-Password');
@@ -734,15 +734,15 @@ switch ($select_local) { // Select which part of page will be loaded
 				echo _('Use no Password.');
 				echo '</td>'."\n".'<td><input name="f_smb_password_no" type="checkbox"';
 				if ($_SESSION['account']->smb_password_no) echo ' checked ';
-				echo '></td>'."\n".'<td>
-					<a href="help.php?HelpNumber=428" target="lamhelp">'._('Help').'</a>
-					</td></tr>'."\n".'<tr><td>';
+				echo '></td>'."\n".'<td>'.
+					'<a href="help.php?HelpNumber=428" target="lamhelp">'._('Help').'</a>'.
+					'</td></tr>'."\n".'<tr><td>';
 				echo _('Password doesn\'t expire.');
 				echo '</td>'."\n".'<td><input name="f_smb_flagsX" type="checkbox"';
 				if ($_SESSION['account']->smb_flagsX) echo ' checked ';
-				echo '></td>'."\n".'<td>
-					<a href="help.php?HelpNumber=429" target="lamhelp">'._('Help').'</a>
-					</td></tr>'."\n".'<tr><td>';
+				echo '></td>'."\n".'<td>'.
+					'<a href="help.php?HelpNumber=429" target="lamhelp">'._('Help').'</a>'.
+					'</td></tr>'."\n".'<tr><td>';
 				echo _('User can change Password');
 				echo '</td>'."\n".'<td><select name="f_smb_pwdcanchange_day">';
 				for ( $i=1; $i<=31; $i++ ) {
@@ -760,8 +760,8 @@ switch ($select_local) { // Select which part of page will be loaded
 					else echo "<option> $i". '</option>';
 					}
 				echo '</select></td>'."\n".'<td>';
-				echo	'<a href="help.php?HelpNumber=430" target="lamhelp">'._('Help').'</a>
-					</td></tr>'."\n".'<tr><td>';
+				echo	'<a href="help.php?HelpNumber=430" target="lamhelp">'._('Help').'</a>'.
+					'</td></tr>'."\n".'<tr><td>';
 				echo _('User must change Password');
 				echo '</td>'."\n".'<td><select name="f_smb_pwdmustchange_day">';
 				for ( $i=1; $i<=31; $i++ ) {
@@ -779,46 +779,46 @@ switch ($select_local) { // Select which part of page will be loaded
 					else echo "<option> $i". '</option>';
 					}
 				echo '</select></td>'."\n".'<td>';
-				echo	'<a href="help.php?HelpNumber=431" target="lamhelp">'._('Help').'</a>
-					</td></tr>'."\n".'<tr><td>';
+				echo	'<a href="help.php?HelpNumber=431" target="lamhelp">'._('Help').'</a>'.
+					'</td></tr>'."\n".'<tr><td>';
 				echo _('Accout is deactivated');
 				echo '</td>'."\n".'<td><input name="f_smb_flagsD" type="checkbox"';
 				if ($_SESSION['account']->smb_flagsD) echo ' checked ';
-				echo '></td>'."\n".'<td>
-					<a href="help.php?HelpNumber=432" target="lamhelp">'._('Help').'</a>
-					</td></tr>'."\n".'<tr><td>';
+				echo '></td>'."\n".'<td>'.
+					'<a href="help.php?HelpNumber=432" target="lamhelp">'._('Help').'</a>'.
+					'</td></tr>'."\n".'<tr><td>';
 				echo _('Home Drive');
 				echo '</td>'."\n".'<td><select name="f_smb_homedrive" >';
 					for ($i=68; $i<91; $i++)
 						if ($_SESSION['account']->smb_homedrive== chr($i).':') echo '<option selected> '.chr($i).':</option>'; else echo '<option> '.chr($i).':</option>';
-				echo	'</select></td>'."\n".'<td>
-					<a href="help.php?HelpNumber=433" target="lamhelp">'._('Help').'</a>
-					</td></tr>'."\n".'<tr><td>';
+				echo	'</select></td>'."\n".'<td>'.
+					'<a href="help.php?HelpNumber=433" target="lamhelp">'._('Help').'</a>'.
+					'</td></tr>'."\n".'<tr><td>';
 				echo _('Script Path');
-				echo '</td>'."\n".'<td><input name="f_smb_scriptpath" type="text" size="20" maxlength="80" value="' . $_SESSION['account']->smb_scriptPath . '">
-					</td>'."\n".'<td>
-					<a href="help.php?HelpNumber=434" target="lamhelp">'._('Help').'</a>
-					</td></tr>'."\n".'<tr><td>';
+				echo '</td>'."\n".'<td><input name="f_smb_scriptpath" type="text" size="20" maxlength="80" value="' . $_SESSION['account']->smb_scriptPath . '">'.
+					'</td>'."\n".'<td>'.
+					'<a href="help.php?HelpNumber=434" target="lamhelp">'._('Help').'</a>'.
+					'</td></tr>'."\n".'<tr><td>';
 				echo _('Profile Path');
-				echo '</td>'."\n".'<td><input name="f_smb_profilePath" type="text" size="20" maxlength="80" value="' . $_SESSION['account']->smb_profilePath . '">
-					</td>'."\n".'<td>
-					<a href="help.php?HelpNumber=435" target="lamhelp">'._('Help').'</a>
-					</td></tr>'."\n".'<tr><td>';
+				echo '</td>'."\n".'<td><input name="f_smb_profilePath" type="text" size="20" maxlength="80" value="' . $_SESSION['account']->smb_profilePath . '">'.
+					'</td>'."\n".'<td>'.
+					'<a href="help.php?HelpNumber=435" target="lamhelp">'._('Help').'</a>'.
+					'</td></tr>'."\n".'<tr><td>';
 				echo _('User Workstations');
-				echo '</td>'."\n".'<td><input name="f_smb_smbuserworkstations" type="text" size="20" maxlength="80" value="' . $_SESSION['account']->smb_smbuserworkstations . '">
-					</td>'."\n".'<td>
-					<a href="help.php?HelpNumber=436" target="lamhelp">'._('Help').'</a>
-					</td></tr>'."\n".'<tr><td>';
+				echo '</td>'."\n".'<td><input name="f_smb_smbuserworkstations" type="text" size="20" maxlength="80" value="' . $_SESSION['account']->smb_smbuserworkstations . '">'.
+					'</td>'."\n".'<td>'.
+					'<a href="help.php?HelpNumber=436" target="lamhelp">'._('Help').'</a>'.
+					'</td></tr>'."\n".'<tr><td>';
 				echo _('smb Home');
-				echo '</td>'."\n".'<td><input name="f_smb_smbhome" type="text" size="20" maxlength="80" value="' . $_SESSION['account']->smb_smbhome . '">
-					</td>'."\n".'<td>
-					<a href="help.php?HelpNumber=437" target="lamhelp">'._('Help').'</a>
-					</td></tr>'."\n".'<tr><td>';
+				echo '</td>'."\n".'<td><input name="f_smb_smbhome" type="text" size="20" maxlength="80" value="' . $_SESSION['account']->smb_smbhome . '">'.
+					'</td>'."\n".'<td>'.
+					'<a href="help.php?HelpNumber=437" target="lamhelp">'._('Help').'</a>'.
+					'</td></tr>'."\n".'<tr><td>';
 				echo _('Domain');
-				echo '</td>'."\n".'<td><input name="f_smb_domain" type="text" size="20" maxlength="80" value="' . $_SESSION['account']->smb_domain . '">
-					</td>'."\n".'<td>
-					<a href="help.php?HelpNumber=438" target="lamhelp">'._('Help').'</a>
-					</td></tr>'."\n";
+				echo '</td>'."\n".'<td><input name="f_smb_domain" type="text" size="20" maxlength="80" value="' . $_SESSION['account']->smb_domain . '">'.
+					'</td>'."\n".'<td>'.
+					'<a href="help.php?HelpNumber=438" target="lamhelp">'._('Help').'</a>'.
+					'</td></tr>'."\n";
 				break;
 			case 'group':
 				echo '<tr><td>';
@@ -851,15 +851,15 @@ switch ($select_local) { // Select which part of page will be loaded
 						echo _('Domain Admins');
 						echo "</option>\n";
 						}
-				echo	'</select></td>'."\n".'<td>
-					<a href="help.php?HelpNumber=464" target="lamhelp">'._('Help').'</a>
-					</td></tr>'."\n".'<tr><td>';
+				echo	'</select></td>'."\n".'<td>'.
+					'<a href="help.php?HelpNumber=464" target="lamhelp">'._('Help').'</a>'.
+					'</td></tr>'."\n".'<tr><td>';
 					echo _('Windows Groupname');
-					echo '</td><td>
-					<input name="f_smb_domain" type="text" size="30" maxlength="80" value="' . $_SESSION['account']->smb_displayName . '">
-					</td><td>
-					<a href="help.php?HelpNumber=465" target="lamhelp">'._('Help').'</a>
-					</td></tr>'."\n";
+					echo '</td><td>'.
+					'<input name="f_smb_domain" type="text" size="30" maxlength="80" value="' . $_SESSION['account']->smb_displayName . '">'.
+					'</td><td>'.
+					'<a href="help.php?HelpNumber=465" target="lamhelp">'._('Help').'</a>'.
+					'</td></tr>'."\n";
 				break;
 			case 'host':
 				// set smb_flgasW true because account is host
@@ -868,9 +868,9 @@ switch ($select_local) { // Select which part of page will be loaded
 				echo _('Password doesn\'t expire.');
 				echo '</td>'."\n".'<td><input name="f_smb_flagsX" type="checkbox"';
 				if ($_SESSION['account']->smb_flagsX) echo ' checked ';
-				echo '></td><td>
-					<a href="help.php?HelpNumber=429" target="lamhelp">'._('Help').'</a>
-					</td></tr>'."\n".'<tr><td>';
+				echo '></td><td>'.
+					'<a href="help.php?HelpNumber=429" target="lamhelp">'._('Help').'</a>'.
+					'</td></tr>'."\n".'<tr><td>';
 				echo _('Host can change Password');
 				echo '</td>'."\n".'<td><select name="f_smb_pwdcanchange_day">';
 				for ( $i=1; $i<=31; $i++ ) {
@@ -888,8 +888,8 @@ switch ($select_local) { // Select which part of page will be loaded
 					else echo "<option> $i". '</option>';
 					}
 				echo '</select></td>'."\n".'<td>';
-				echo	'<a href="help.php?HelpNumber=430" target="lamhelp">'._('Help').'</a>
-					</td></tr>'."\n".'<tr><td>';
+				echo	'<a href="help.php?HelpNumber=430" target="lamhelp">'._('Help').'</a>'.
+					'</td></tr>'."\n".'<tr><td>';
 				echo _('Host must change Password');
 				echo '</td>'."\n".'<td><select name="f_smb_pwdmustchange_day">';
 				for ( $i=1; $i<=31; $i++ ) {
@@ -907,20 +907,20 @@ switch ($select_local) { // Select which part of page will be loaded
 					else echo "<option> $i". '</option>';
 					}
 				echo '</select></td>'."\n".'<td>';
-				echo	'<a href="help.php?HelpNumber=431" target="lamhelp">'._('Help').'</a>
-					</td></tr>'."\n".'<tr><td>';
+				echo	'<a href="help.php?HelpNumber=431" target="lamhelp">'._('Help').'</a>'.
+					'</td></tr>'."\n".'<tr><td>';
 				echo _('Accout is deactivated');
 				echo '</td>'."\n".'<td><input name="f_smb_flagsD" type="checkbox"';
 				if ($_SESSION['account']->smb_flagsD) echo ' checked ';
-				echo '></td><td>
-					<a href="help.php?HelpNumber=432" target="lamhelp">'._('Help').'</a>
-					</td></tr>'."\n".'<tr><td>';
+				echo '></td><td>'.
+					'<a href="help.php?HelpNumber=432" target="lamhelp">'._('Help').'</a>'.
+					'</td></tr>'."\n".'<tr><td>';
 				echo '</td></tr>'."\n".'<tr><td>';
 				echo _('Domain');
-				echo '</td>'."\n".'<td><input name="f_smb_domain" type="text" size="20" maxlength="20" value="' . $_SESSION['account']->smb_domain . '">
-					</td><td>
-					<a href="help.php?HelpNumber=460" target="lamhelp">'._('Help').'</a>
-					</td></tr>'."\n";
+				echo '</td>'."\n".'<td><input name="f_smb_domain" type="text" size="20" maxlength="20" value="' . $_SESSION['account']->smb_domain . '">'.
+					'</td><td>'.
+					'<a href="help.php?HelpNumber=460" target="lamhelp">'._('Help').'</a>'.
+					'</td></tr>'."\n";
 				break;
 			}
 		echo '<tr><td><input name="back" type="submit" value="'; echo _('back');
@@ -935,11 +935,11 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo _('soft block limit'); echo '</td>'."\n".'<td>'; echo _('hard block limit'); echo '</td>'."\n".'<td>'; echo _('grace block period');
 		echo '</td>'."\n".'<td>'; echo _('used inodes'); echo '</td>'."\n".'<td>'; echo _('soft inode limit'); echo '</td>'."\n".'<td>';
 		echo _('hard inode limit'); echo '</td>'."\n".'<td>'; echo _('grace inode period'); echo '</td></tr>'."\n";
-		echo '<tr><td><a href="help.php?HelpNumber=439" target="lamhelp">'._('Help').'</a></td>'."\n".'<td><a href="help.php?HelpNumber=440" target="lamhelp">'._('Help').'</a></td>'."\n".'<td>
-			<a href="help.php?HelpNumber=441" target="lamhelp">'._('Help').'</a></td>'."\n".'<td><a href="help.php?HelpNumber=442" target="lamhelp">'._('Help').'</a></td>'."\n".'<td>
-			<a href="help.php?HelpNumber=443" target="lamhelp">'._('Help').'</a></td>'."\n".'<td><a href="help.php?HelpNumber=444" target="lamhelp">'._('Help').'</a></td>'."\n".'<td>
-			<a href="help.php?HelpNumber=445" target="lamhelp">'._('Help').'</a></td>'."\n".'<td><a href="help.php?HelpNumber=446" target="lamhelp">'._('Help').'</a></td>'."\n".'<td>
-			<a href="help.php?HelpNumber=447" target="lamhelp">'._('Help').'</a></td></tr>'."\n";
+		echo '<tr><td><a href="help.php?HelpNumber=439" target="lamhelp">'._('Help').'</a></td>'."\n".'<td><a href="help.php?HelpNumber=440" target="lamhelp">'._('Help').'</a></td>'."\n".'<td>'.
+			'<a href="help.php?HelpNumber=441" target="lamhelp">'._('Help').'</a></td>'."\n".'<td><a href="help.php?HelpNumber=442" target="lamhelp">'._('Help').'</a></td>'."\n".'<td>'.
+			'<a href="help.php?HelpNumber=443" target="lamhelp">'._('Help').'</a></td>'."\n".'<td><a href="help.php?HelpNumber=444" target="lamhelp">'._('Help').'</a></td>'."\n".'<td>'.
+			'<a href="help.php?HelpNumber=445" target="lamhelp">'._('Help').'</a></td>'."\n".'<td><a href="help.php?HelpNumber=446" target="lamhelp">'._('Help').'</a></td>'."\n".'<td>'.
+			'<a href="help.php?HelpNumber=447" target="lamhelp">'._('Help').'</a></td></tr>'."\n";
 		$i=0;
 		while ($_SESSION['account']->quota[$i][0]) {
 			echo '<tr><td>'.$_SESSION['account']->quota[$i][0].'</td><td>'.$_SESSION['account']->quota[$i][1].'</td>'; // used blocks
@@ -952,11 +952,11 @@ switch ($select_local) { // Select which part of page will be loaded
 			echo '<td>'.$_SESSION['account']->quota[$i][8].'</td></tr>'; // inodes grace period
 			$i++;
 			}
-		echo '<tr><td>
-		<input name="back" type="submit" value="'; echo _('back'); echo '">
-		</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
-		<input name="next" type="submit" value="'; echo _('next'); echo '">
-		</td></tr>'."\n";
+		echo '<tr><td>'.
+		'<input name="back" type="submit" value="'; echo _('back'); echo '">'.
+		'</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>'.
+		'<input name="next" type="submit" value="'; echo _('next'); echo '">'.
+		'</td></tr>'."\n";
 		break;
 	case 'personal':
 		// Personal Settings
@@ -964,63 +964,63 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo _('Personal Properties');
 		echo '</td></tr>'."\n".'<tr><td>';
 		echo _('Title');
-		echo '</td>'."\n".'<td>
-			<input name="f_personal_title" type="text" size="10" maxlength="10" value="' . $_SESSION['account']->personal_title . '"> ';
-		echo $_SESSION['account']->general_surname . ' ' . $_SESSION['account']->general_givenname . '</td><td>
-			<a href="help.php?HelpNumber=448" target="lamhelp">'._('Help').'</a>
-			</td></tr>'."\n".'<tr><td>';
+		echo '</td>'."\n".'<td>'.
+			'<input name="f_personal_title" type="text" size="10" maxlength="10" value="' . $_SESSION['account']->personal_title . '"> ';
+		echo $_SESSION['account']->general_surname . ' ' . $_SESSION['account']->general_givenname . '</td><td>'.
+			'<a href="help.php?HelpNumber=448" target="lamhelp">'._('Help').'</a>'.
+			'</td></tr>'."\n".'<tr><td>';
 		echo _('Employee Type');
-		echo '</td>'."\n".'<td>
-			<input name="f_personal_employeeType" type="text" size="30" maxlength="30" value="' . $_SESSION['account']->personal_employeeType . '">
-			</td><td>
-			<a href="help.php?HelpNumber=449" target="lamhelp">'._('Help').'</a>
-			</td></tr>'."\n".'<tr><td>';
+		echo '</td>'."\n".'<td>'.
+			'<input name="f_personal_employeeType" type="text" size="30" maxlength="30" value="' . $_SESSION['account']->personal_employeeType . '">'.
+			'</td><td>'.
+			'<a href="help.php?HelpNumber=449" target="lamhelp">'._('Help').'</a>'.
+			'</td></tr>'."\n".'<tr><td>';
 		echo _('Street');
-		echo '</td>'."\n".'<td>
-			<input name="f_personal_street" type="text" size="30" maxlength="30" value="' . $_SESSION['account']->personal_street . '">
-			</td><td>
-			<a href="help.php?HelpNumber=450" target="lamhelp">'._('Help').'</a>
-			</td></tr>'."\n".'<tr><td>';
+		echo '</td>'."\n".'<td>'.
+			'<input name="f_personal_street" type="text" size="30" maxlength="30" value="' . $_SESSION['account']->personal_street . '">'.
+			'</td><td>'.
+			'<a href="help.php?HelpNumber=450" target="lamhelp">'._('Help').'</a>'.
+			'</td></tr>'."\n".'<tr><td>';
 		echo _('Postal code');
-		echo '</td>'."\n".'<td>
-			<input name="f_personal_postalCode" type="text" size="5" maxlength="5" value="' . $_SESSION['account']->personal_postalCode . '">
-			</td><td>
-			<a href="help.php?HelpNumber=451" target="lamhelp">'._('Help').'</a>
-			</td></tr>'."\n".'<tr><td>';
+		echo '</td>'."\n".'<td>'.
+			'<input name="f_personal_postalCode" type="text" size="5" maxlength="5" value="' . $_SESSION['account']->personal_postalCode . '">'.
+			'</td><td>'.
+			'<a href="help.php?HelpNumber=451" target="lamhelp">'._('Help').'</a>'.
+			'</td></tr>'."\n".'<tr><td>';
 		echo _('Postal address');
-		echo '</td>'."\n".'<td>
-			<input name="f_personal_postalAddress" type="text" size="30" maxlength="80" value="' . $_SESSION['account']->personal_postalAddress . '">
-			</td><td>
-			<a href="help.php?HelpNumber=452" target="lamhelp">'._('Help').'</a>
-			</td></tr>'."\n".'<tr><td>';
+		echo '</td>'."\n".'<td>'.
+			'<input name="f_personal_postalAddress" type="text" size="30" maxlength="80" value="' . $_SESSION['account']->personal_postalAddress . '">'.
+			'</td><td>'.
+			'<a href="help.php?HelpNumber=452" target="lamhelp">'._('Help').'</a>'.
+			'</td></tr>'."\n".'<tr><td>';
 		echo _('Telephone Number');
-		echo '</td>'."\n".'<td>
-			<input name="f_personal_telephoneNumber" type="text" size="30" maxlength="30" value="' . $_SESSION['account']->personal_telephoneNumber . '">
-			</td><td>
-			<a href="help.php?HelpNumber=453" target="lamhelp">'._('Help').'</a>
-			</td></tr>'."\n".'<tr><td>';
+		echo '</td>'."\n".'<td>'.
+			'<input name="f_personal_telephoneNumber" type="text" size="30" maxlength="30" value="' . $_SESSION['account']->personal_telephoneNumber . '">'.
+			'</td><td>'.
+			'<a href="help.php?HelpNumber=453" target="lamhelp">'._('Help').'</a>'.
+			'</td></tr>'."\n".'<tr><td>';
 		echo _('Mobile Phonenumber');
-		echo '</td>'."\n".'<td>
-			<input name="f_personal_mobileTelephoneNumber" type="text" size="30" maxlength="30" value="' . $_SESSION['account']->personal_mobileTelephoneNumber . '">
-			</td><td>
-			<a href="help.php?HelpNumber=454" target="lamhelp">'._('Help').'</a>
-			</td></tr>'."\n".'<tr><td>';
+		echo '</td>'."\n".'<td>'.
+			'<input name="f_personal_mobileTelephoneNumber" type="text" size="30" maxlength="30" value="' . $_SESSION['account']->personal_mobileTelephoneNumber . '">'.
+			'</td><td>'.
+			'<a href="help.php?HelpNumber=454" target="lamhelp">'._('Help').'</a>'.
+			'</td></tr>'."\n".'<tr><td>';
 		echo _('Facsimile Number');
-		echo '</td>'."\n".'<td>
-			<input name="f_personal_facsimileTelephoneNumber" type="text" size="30" maxlength="30" value="' . $_SESSION['account']->personal_facsimileTelephoneNumber . '">
-			</td><td>
-			<a href="help.php?HelpNumber=455" target="lamhelp">'._('Help').'</a>
-			</td></tr>'."\n".'<tr><td>';
+		echo '</td>'."\n".'<td>'.
+			'<input name="f_personal_facsimileTelephoneNumber" type="text" size="30" maxlength="30" value="' . $_SESSION['account']->personal_facsimileTelephoneNumber . '">'.
+			'</td><td>'.
+			'<a href="help.php?HelpNumber=455" target="lamhelp">'._('Help').'</a>'.
+			'</td></tr>'."\n".'<tr><td>';
 		echo _('eMail Address');
-		echo '</td>'."\n".'<td>
-			<input name="f_personal_mail" type="text" size="30" maxlength="80" value="' . $_SESSION['account']->personal_mail . '">
-			</td><td>
-			<a href="help.php?HelpNumber=456" target="lamhelp">'._('Help').'</a>
-			</td></tr>'."\n".'<tr><td>
-		<input name="back" type="submit" value="'; echo _('back'); echo '">
-		</td><td></td>'."\n".'<td>
-		<input name="next" type="submit" value="'; echo _('next'); echo '">
-		</td></tr>'."\n";
+		echo '</td>'."\n".'<td>'.
+			'<input name="f_personal_mail" type="text" size="30" maxlength="80" value="' . $_SESSION['account']->personal_mail . '">'.
+			'</td><td>'.
+			'<a href="help.php?HelpNumber=456" target="lamhelp">'._('Help').'</a>'.
+			'</td></tr>'."\n".'<tr><td>'.
+			'<input name="back" type="submit" value="'; echo _('back'); echo '">'.
+			'</td><td></td>'."\n".'<td>'.
+			'<input name="next" type="submit" value="'; echo _('next'); echo '">'.
+			'</td></tr>'."\n";
 		break;
 	case 'final':
 		// Final Settings
@@ -1066,19 +1066,19 @@ switch ($select_local) { // Select which part of page will be loaded
 					}
 				break;
 			}
-		echo '<tr><td>
-			<input name="back" type="submit" value="'; echo _('back'); echo '">
-			</td>'."\n".'<td>
-			</td>'."\n".'<td><input name="f_finish_safeProfile" type="text" size="30" maxlength="50">
-			<input name="save" type="submit" value="';
+		echo '<tr><td>'.
+			'<input name="back" type="submit" value="'; echo _('back'); echo '">'.
+			'</td>'."\n".'<td>'.
+			'</td>'."\n".'<td><input name="f_finish_safeProfile" type="text" size="30" maxlength="50">'.
+			'<input name="save" type="submit" value="';
 		echo _('Save Profile');
-		echo '"><a href="help.php?HelpNumber=457" target="lamhelp">'._('Help').'</a>
-			</td>'."\n".'<td>
-			<input name="create" type="submit" value="';
+		echo '"><a href="help.php?HelpNumber=457" target="lamhelp">'._('Help').'</a>'.
+			'</td>'."\n".'<td>'.
+			'<input name="create" type="submit" value="';
 		if ($_SESSION['account_old']) echo _('Modify Account');
 		 else echo _('Create Account');
-		echo '">
-		</td></tr>'."\n";
+		echo '">'.
+		'</td></tr>'."\n";
 		break;
 	case 'finish':
 		// Final Settings
@@ -1094,11 +1094,11 @@ switch ($select_local) { // Select which part of page will be loaded
 				 else echo _(' has been created. ');
 				if (!$_SESSION['account_old'])
 					{ echo '<input name="createagain" type="submit" value="'; echo _('Create another user'); echo '">'; }
-				echo '</td>'."\n".'<td>
-					<input name="outputpdf" type="submit" value="'; echo _('Create PDF-file'); echo '">
-					</td>'."\n".'<td>
-					<input name="backmain" type="submit" value="'; echo _('Back to userlist'); echo '">
-					</td></tr>'."\n";
+				echo '</td>'."\n".'<td>'.
+					'<input name="outputpdf" type="submit" value="'; echo _('Create PDF-file'); echo '">'.
+					'</td>'."\n".'<td>'.
+					'<input name="backmain" type="submit" value="'; echo _('Back to userlist'); echo '">'.
+					'</td></tr>'."\n";
 				break;
 			case 'group' :
 				echo '<tr><td>';
@@ -1109,9 +1109,9 @@ switch ($select_local) { // Select which part of page will be loaded
 				echo '</td></tr>'."\n".'<tr><td>';
 				if (!$_SESSION['account_old'])
 					{ echo' <input name="createagain" type="submit" value="'; echo _('Create another group'); echo '">'; }
-				echo '</td><td></td><td>
-					<input name="backmain" type="submit" value="'; echo _('Back to grouplist'); echo '">
-					</td></tr>'."\n";
+				echo '</td><td></td><td>'.
+					'<input name="backmain" type="submit" value="'; echo _('Back to grouplist'); echo '">'.
+					'</td></tr>'."\n";
 				break;
 			case 'host' :
 				echo '<tr><td>';
@@ -1122,9 +1122,9 @@ switch ($select_local) { // Select which part of page will be loaded
 				echo '</td></tr>'."\n".'<tr><td>';
 				if (!$_SESSION['account_old'])
 					{ echo '<input name="createagain" type="submit" value="'; echo _('Create another host'); echo '">'; }
-				echo '</td><td>'."\n".'</td><td>
-					<input name="backmain" type="submit" value="'; echo _('Back to hostlist'); echo '">
-					</td></tr>'."\n";
+				echo '</td><td>'."\n".'</td><td>'.
+					'<input name="backmain" type="submit" value="'; echo _('Back to hostlist'); echo '">'.
+					'</td></tr>'."\n";
 				break;
 			}
 		break;

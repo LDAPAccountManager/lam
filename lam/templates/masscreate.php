@@ -49,15 +49,15 @@ if (!$select && $_SESSION['pointer']) $select='create';
 
 if ($select!='pdf') {
 	// Write HTML-Header and part of Table
-	echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-		"http://www.w3.org/TR/html4/loose.dtd">';
+	echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"'.
+		'."http://www.w3.org/TR/html4/loose.dtd">';
 	echo '<html><head><title>';
 	echo _('Create new Accounts');
-	echo '</title>
-		<link rel="stylesheet" type="text/css" href="../style/layout.css">
-		<meta http-equiv="pragma" content="no-cache">
-		<meta http-equiv="cache-control" content="no-cache">
-		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-15">';
+	echo '</title>'.
+		'<link rel="stylesheet" type="text/css" href="../style/layout.css">'.
+		'<meta http-equiv="pragma" content="no-cache">'.
+		'<meta http-equiv="cache-control" content="no-cache">'.
+		'<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-15">';
 	}
 
 switch ($select) {
@@ -76,10 +76,10 @@ switch ($select) {
 	}
 
 if ($select!='pdf') {
-	echo	'</head><body>
-		<form enctype="multipart/form-data" action="masscreate.php" method="post">';
-	echo '<table class="masscreate" width="100%">
-		<tr><td></td></tr>';
+	echo	'</head><body>'.
+		'<form enctype="multipart/form-data" action="masscreate.php" method="post">';
+	echo '<table class="masscreate" width="100%">'.
+		'<tr><td></td></tr>';
 	}
 
 switch ($select) {
@@ -119,12 +119,12 @@ switch ($select) {
 				}
 			else echo '<option>' . $suffix. '</option>';
 			}
-		echo '</select></td><td><a href="help.php?HelpNumber=461" target="lamhelp">'._('Help').'</a>
-			</td></tr><tr><td>
-			<input type="hidden" name="MAX_FILE_SIZE" value="100000">';
+		echo '</select></td><td><a href="help.php?HelpNumber=461" target="lamhelp">'._('Help').'</a>'.
+			'</td></tr><tr><td>'.
+			'<input type="hidden" name="MAX_FILE_SIZE" value="100000">';
 		echo _('Select file:');
-		echo '</td><td><input name="userfile" type="file"></td></tr>
-			<tr><td><input name="tolist" type="submit" value="'; echo _('Commit'); echo '">';
+		echo '</td><td><input name="userfile" type="file"></td></tr>'.
+			'<tr><td><input name="tolist" type="submit" value="'; echo _('Commit'); echo '">';
 		echo '</td></tr>';
 		break;
 	case 'list':
@@ -201,8 +201,8 @@ switch ($select) {
 				$_SESSION['accounts'][$row]->general_surname.'</td><td>'.
 				$_SESSION['accounts'][$row]->general_givenname.'</td><td>'.
 				$_SESSION['accounts'][$row]->general_username.'</td><td>'.
-				$_SESSION['accounts'][$row]->general_group.'</td><td>
-				<a target=_blank href="massdetail.php?row='.$row.'&type=detail">'._('Show Details.').'</a></td><td>';
+				$_SESSION['accounts'][$row]->general_group.'</td><td>'.
+				'<a target=_blank href="massdetail.php?row='.$row.'&type=detail">'._('Show Details.').'</a></td><td>';
 				for ($i=$row+1; $i<sizeof($_SESSION['accounts']); $i++ ) {
 					if ($_SESSION['accounts'][$row]->general_username == $_SESSION['accounts'][$i]->general_username) { // Found user with same name
 						// Set Info
@@ -269,8 +269,8 @@ switch ($select) {
 		echo '<br>';
 		if (!$noerrors) { echo '<tr><td>'. _('There are some errors!!') . '</td></tr>'; }
 		if (!$nowarn) { echo '<tr><td>'. _('There are some warnings.') . '</td></tr>'; }
-		echo '</table><br><table class="masscreate" width="100%">
-			<tr><td><input name="back" type="submit" value="'; echo _('Back'); echo '">';
+		echo '</table><br><table class="masscreate" width="100%">'.
+			'<tr><td><input name="back" type="submit" value="'; echo _('Back'); echo '">';
 		echo '</td><td><input name="cancel" type="submit" value="'; echo _('Cancel'); echo '">';
 		echo '</td><td><input name="list" type="submit" value="'; echo _('Refresh'); echo '">';
 		if ($noerrors) { echo '</td><td><input name="create" type="submit" value="'; echo _('Create'); echo '">'; }
@@ -302,8 +302,8 @@ switch ($select) {
 				}
 				else $stay=false;
 			}
-		if (!$stay) { echo '<tr><td><input name="cancel" type="submit" value="'; echo _('Cancel'); echo '">
-			<td>'._('Please wait until all users are created if no error is shown.').'</td></tr>'; }
+		if (!$stay) { echo '<tr><td><input name="cancel" type="submit" value="'; echo _('Cancel'); echo '">'.
+			'<td>'._('Please wait until all users are created if no error is shown.').'</td></tr>'; }
 			else {
 			echo '<tr><td>';
 			echo _('All Users have been created');

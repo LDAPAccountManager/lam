@@ -28,20 +28,20 @@ include_once('../lib/config.inc');
 session_save_path('../sess');
 @session_start();
 
-echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-       "http://www.w3.org/TR/html4/loose.dtd">'."\n";
+echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"'.
+       '"http://www.w3.org/TR/html4/loose.dtd">'."\n";
 echo '<html><head><title>';
 echo _('Delete Account');
-echo '</title>'."\n".'
-	<link rel="stylesheet" type="text/css" href="../style/layout.css">'."\n".'
-	<meta http-equiv="pragma" content="no-cache">'."\n".'
-	<meta http-equiv="cache-control" content="no-cache">'."\n".'
-	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">'."\n".'
-	</head>'."\n".'
-	<body>'."\n".'
-	<form action="delete.php" method="post">'."\n".'
-	<table class="delete" width="100%">'."\n".'
-	<tr><td>';
+echo '</title>'."\n".
+	'<link rel="stylesheet" type="text/css" href="../style/layout.css">'."\n".
+	'<meta http-equiv="pragma" content="no-cache">'."\n".
+	'<meta http-equiv="cache-control" content="no-cache">'."\n".
+	'<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">'."\n".
+	'</head>'."\n".
+	'<body>'."\n".
+	'<form action="delete.php" method="post">'."\n".
+	'<table class="delete" width="100%">'."\n".
+	'<tr><td>';
 
 if ($_GET['type']) {
 	$DN2 = explode(";", str_replace("\'", '',$_GET['DN']));
@@ -63,13 +63,13 @@ if ($_GET['type']) {
 	echo '<tr><td>';
 	if (($_GET['type']== user) && $_SESSION['config']->scriptServer) {
 		echo _('Delete also Homedirectories');
-		echo '</td>'."\n".'<td><input name="f_rem_home" type="checkbox">
-			</td></tr>'."\n".'<tr><td>';
+		echo '</td>'."\n".'<td><input name="f_rem_home" type="checkbox">'.
+			'</td></tr>'."\n".'<tr><td>';
 		}
-	echo '<br></td></tr>'."\n".'<tr><td>
-		<input name="delete_no" type="submit" value="';
-	echo _('Cancel'); echo '"></td><td></td><td>
-		<input name="delete_yes" type="submit" value="';
+	echo '<br></td></tr>'."\n".'<tr><td>'.
+		'<input name="delete_no" type="submit" value="';
+	echo _('Cancel'); echo '"></td><td></td><td>'.
+		'<input name="delete_yes" type="submit" value="';
 	echo _('Commit'); echo '">';
 	}
 
