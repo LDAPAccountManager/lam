@@ -435,39 +435,37 @@ function display_main() {
 	echo ("<br>\n");
 
 	// domain OUs
-	if ($_SESSION['config']->is_samba3()) {
-		echo ("<fieldset><legend><b>" . _("Domains") . "</b></legend>\n");
-		echo ("<table border=0>\n");
-		// new OU
-		echo ("<tr>\n");
-		echo ("<td><input type=radio name=\"type\" value=\"new_dom\"></td>\n");
-		echo ("<td><b>" . _("New organizational unit") . ":</b></td>\n");
-		echo ("<td>&nbsp;</td>\n");
-		echo ("<td><select size=1 name=domsuff_n>");
-		for ($i = 0; $i < sizeof($dom_units); $i++) {
-			echo ("<option>" . $dom_units[$i] . "</option>\n");
-		}
-		echo ("</select><td>\n");
-		echo ("<td><input type=text name=newsuff_d></td>\n");
-		echo ("<td><a href=\"help.php?HelpNumber=601\" target=\"lamhelp\">". _("Help") ."</a></td>\n");
-		echo ("</tr>\n");
-		// delete OU
-		echo ("<tr>\n");
-		echo ("<td><input type=radio name=\"type\" value=\"del_dom\"></td>\n");
-		echo ("<td><b>" . _("Delete organizational unit") . ":</b></td>\n");
-		echo ("<td>&nbsp;</td>\n");
-		echo ("<td><select size=1 name=domsuff_d>");
-		for ($i = 0; $i < sizeof($dom_units); $i++) {
-			echo ("<option>" . $dom_units[$i] . "</option>\n");
-		}
-		echo ("</select><td>\n");
-		echo ("<td>&nbsp;</td>\n");
-		echo ("<td><a href=\"help.php?HelpNumber=602\" target=\"lamhelp\">". _("Help") ."</a></td>\n");
-		echo ("</tr>\n");
-		echo ("</table>\n");
-		echo ("</fieldset>\n");
-		echo ("<br>\n");
+	echo ("<fieldset><legend><b>" . _("Domains") . "</b></legend>\n");
+	echo ("<table border=0>\n");
+	// new OU
+	echo ("<tr>\n");
+	echo ("<td><input type=radio name=\"type\" value=\"new_dom\"></td>\n");
+	echo ("<td><b>" . _("New organizational unit") . ":</b></td>\n");
+	echo ("<td>&nbsp;</td>\n");
+	echo ("<td><select size=1 name=domsuff_n>");
+	for ($i = 0; $i < sizeof($dom_units); $i++) {
+		echo ("<option>" . $dom_units[$i] . "</option>\n");
 	}
+	echo ("</select><td>\n");
+	echo ("<td><input type=text name=newsuff_d></td>\n");
+	echo ("<td><a href=\"help.php?HelpNumber=601\" target=\"lamhelp\">". _("Help") ."</a></td>\n");
+	echo ("</tr>\n");
+	// delete OU
+	echo ("<tr>\n");
+	echo ("<td><input type=radio name=\"type\" value=\"del_dom\"></td>\n");
+	echo ("<td><b>" . _("Delete organizational unit") . ":</b></td>\n");
+	echo ("<td>&nbsp;</td>\n");
+	echo ("<td><select size=1 name=domsuff_d>");
+	for ($i = 0; $i < sizeof($dom_units); $i++) {
+		echo ("<option>" . $dom_units[$i] . "</option>\n");
+	}
+	echo ("</select><td>\n");
+	echo ("<td>&nbsp;</td>\n");
+	echo ("<td><a href=\"help.php?HelpNumber=602\" target=\"lamhelp\">". _("Help") ."</a></td>\n");
+	echo ("</tr>\n");
+	echo ("</table>\n");
+	echo ("</fieldset>\n");
+	echo ("<br>\n");
 
 	echo ("<input type=\"submit\" name=\"submit\" value=\"" . _("Submit") . "\">");
 	echo ("</form>\n");

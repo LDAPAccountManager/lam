@@ -33,8 +33,7 @@ setlanguage();
 echo $_SESSION['header'];
 
 // number of list views (users, groups, ...)
-$lists = 2;
-if ($_SESSION['config']->is_samba3()) $lists++;
+$lists = 3;
 if ($_SESSION['config']->get_Hostsuffix() != "") $lists++;
 
 ?>
@@ -70,21 +69,11 @@ if ($_SESSION['config']->get_Hostsuffix() != "") $lists++;
 	<tr>
 		<td></td>
 		<?php
-			// Samba 3 has more list views
-			if ($_SESSION['config']->is_samba3()) {
-				echo '<td width="120" align="center"><a href="./lists/listdomains.php" target="mainpart"><big>' . _("Domains") . '</big></a></td>' . "\n";
-				echo '<td width="120" align="center"><a href="./lists/listusers.php" target="mainpart"><big>' . _("Users") . '</big></a></td>' . "\n";
-				echo '<td width="120" align="center"><a href="./lists/listgroups.php" target="mainpart"><big>' . _("Groups") . '</big></a></td>' . "\n";
-				if ($_SESSION['config']->get_Hostsuffix() != "") {
-					echo '<td width="120" align="center"><a href="./lists/listhosts.php" target="mainpart"><big>' . _("Hosts") . '</big></a></td>' . "\n";
-				}
-			}
-			else {
-				echo '<td width="200" align="center"><a href="./lists/listusers.php" target="mainpart"><big>' . _("Users") . '</big></a></td>' . "\n";
-				echo '<td width="200" align="center"><a href="./lists/listgroups.php" target="mainpart"><big>' . _("Groups") . '</big></a></td>' . "\n";
-				if ($_SESSION['config']->get_Hostsuffix() != "") {
-					echo '<td width="200" align="center"><a href="./lists/listhosts.php" target="mainpart"><big>' . _("Hosts") . '</big></a></td>' . "\n";
-				}
+			echo '<td width="120" align="center"><a href="./lists/listdomains.php" target="mainpart"><big>' . _("Domains") . '</big></a></td>' . "\n";
+			echo '<td width="120" align="center"><a href="./lists/listusers.php" target="mainpart"><big>' . _("Users") . '</big></a></td>' . "\n";
+			echo '<td width="120" align="center"><a href="./lists/listgroups.php" target="mainpart"><big>' . _("Groups") . '</big></a></td>' . "\n";
+			if ($_SESSION['config']->get_Hostsuffix() != "") {
+				echo '<td width="120" align="center"><a href="./lists/listhosts.php" target="mainpart"><big>' . _("Hosts") . '</big></a></td>' . "\n";
 			}
 		?>
 		<td></td>

@@ -147,22 +147,9 @@ if ($_POST['add_suff'] || $_POST['cancel']) {
 		else {
 			// print success message
 			StatusMessage("INFO", "", _("All changes were successful."));
-			if ($_SESSION['config']->is_samba3()) {
-				$doms = $_SESSION['ldap']->search_domains($_SESSION['config']->get_domainSuffix());
-				echo "<p>&nbsp;</p>\n";
-				if (sizeof($doms) == 0) {
-					echo "<a href=\"domain.php?action=new\">" . _("No domains found, please create one.") . "</a>\n";
-				}
-				else {
-					echo "<a href=\"lists/listusers.php\">" . _("User list") . "</a>\n";
-				}
-				echo "</body></html>\n";
-			}
-			else {
-				echo "<p>&nbsp;</p>\n";
-				echo "<a href=\"lists/listusers.php\">" . _("User list") . "</a>\n";
-				echo "</body></html>\n";
-			}
+			echo "<p>&nbsp;</p>\n";
+			echo "<a href=\"lists/listusers.php\">" . _("User list") . "</a>\n";
+			echo "</body></html>\n";
 		}
 	}
 	else {
