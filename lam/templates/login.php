@@ -288,6 +288,7 @@ if($_POST['action'] == "checklogin")
 
 		if($result == True) // Username/password correct. Do some configuration and load main frame.
 		{
+			$_SESSION['loggedIn'] = true;
 			$_SESSION['language'] = $_POST['language']; // Write selected language in session
 			$current_language = explode(":",$_SESSION['language']);
 			$_SESSION['header'] = "<?xml version=\"1.0\" encoding=\"" . $current_language[1] . "\"?>\n<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n\n";
@@ -318,6 +319,7 @@ elseif($_POST['action'] == "profileChange") {
 // Load login page
 else
 {
+	$_SESSION['loggedIn'] = false;
 	$default_Config = new CfgMain();
 	$default_Profile = $default_Config->default;
 	$_SESSION["config"] = new Config($default_Profile); // Create new Config object
