@@ -612,7 +612,7 @@ class posixAccount {
 					1 => array ( 'kind' => 'input', 'name' => 'userPassword2', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => $password2),
 					2 => array ('kind' => 'help', 'value' => 'userPassword'));
 				}
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Use no password') ),
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Set no password') ),
 				1 => array ( 'kind' => 'input', 'name' => 'userPassword_no', 'type' => 'checkbox', 'checked' => $this->userPassword_no),
 				2 => array ('kind' => 'help', 'value' => 'userPassword_no'));
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Lock password') ),
@@ -671,10 +671,35 @@ class posixAccount {
 
 	function get_profileOptions() {
 		$return = array();
-		// TODO fill in correct groups
-		$return[] = array (0 => array ('kind' => 'text', 'text' => _('Primary group')),
-			1 => array ('kind' => 'select', 'name' => 'gidNumber', 'options' => array('g1', 'g2', 'g3'), 'options_selected' => array(), 'size' => 1),
-			2 => array ('kind' => 'help', 'value' => 'gidNumber'));
+		if ($_SESSION[$this->base]->type=='user') {
+			$groups = $_SESSION[$_SESSION[$this->base]->cache]->findgroups(); // list of all groupnames
+			$shelllist = getshells(); // list of all valid shells
+			// primary Unix group
+			$return[] = array(0 => array('kind' => 'text', 'text' => _('Primary group') . ": "),
+				1 => array('kind' => 'select', 'name' => 'posixAccount_primaryGroup', 'options' => $groups, 'options_selected' => array(), 'size' => 1),
+				2 => array('kind' => 'help', 'value' => 'TODO'));
+			// additional group memberships
+			$return[] = array(0 => array('kind' => 'text', 'text' => _('Additional groups') . ": "),
+				1 => array('kind' => 'select', 'name' => 'posixAccount_additionalGroup', 'options' => $groups,
+					'options_selected' => array(), 'size' => 10, 'multiple' => true),
+				2 => array('kind' => 'help', 'value' => 'TODO'));
+			// home directory
+			$return[] = array(0 => array('kind' => 'text', 'text' => _('Home directory') . ": "),
+				1 => array('kind' => 'input', 'name' => 'posixAccount_homeDirectory', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => '/home/$user'),
+				2 => array('kind' => 'help', 'value' => 'TODO'));
+			// login shell
+			$return[] = array(0 => array('kind' => 'text', 'text' => _('Login shell') . ": "),
+				1 => array('kind' => 'select', 'name' => 'posixAccount_loginShell', 'options' => $shelllist, 'options_selected' => array("/bin/bash")),
+				2 => array('kind' => 'help', 'value' => 'TODO'));
+			// do not set password
+			$return[] = array(0 => array('kind' => 'text', 'text' => _('Set no password') . ": "),
+				1 => array('kind' => 'input', 'name' => 'posixAccount_userPassword_no', 'type' => 'checkbox', 'checked' => false),
+				2 => array('kind' => 'help', 'value' => 'TODO'));
+			// disable account
+			$return[] = array(0 => array('kind' => 'text', 'text' => _('Lock password') . ": "),
+				1 => array('kind' => 'input', 'name' => 'posixAccount_userPassword_lock', 'type' => 'checkbox', 'checked' => false),
+				2 => array('kind' => 'help', 'value' => 'TODO'));
+		}
 		return $return;
 	}
 
