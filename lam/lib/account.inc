@@ -57,10 +57,10 @@ function getshells() {
 * In order to map all non-ascii characters this function should be changed
 */
 function replace_umlaut($text) {
-	$aTranslate = array("ä"=>"ae", "Ä"=>"Ae",
-		"ö"=>"oe", "Ö"=>"Oe",
-		"ü"=>"ue", "Ü"=>"Ue",
-		"ß"=>"ss"
+	$aTranslate = array("ï¿½"=>"ae", "ï¿½"=>"Ae",
+		"ï¿½"=>"oe", "ï¿½"=>"Oe",
+		"ï¿½"=>"ue", "ï¿½"=>"Ue",
+		"ï¿½"=>"ss"
 		);
 	return strtr($text, $aTranslate);
 	}
@@ -414,6 +414,46 @@ class samba3domain {
 
 	/** RID base to calculate RIDs, default 1000 */
 	var $RIDbase = 1000;
+}
+
+/** This functions contains a collection of regular expressions
+* It's much easier to handle them here than in every module
+* because many of them are used several times.
+**/
+function get_ereg($argument, $regexp) {
+	// First we check "positive" cases
+	$eregexpr = '';
+	switch ($regexp) {
+		case "password":      $eregexpr = '^([a-z]|[A-Z]|[0-9]|[\|]|[\#]|[\*]|[\,]|[\.]|[\;]|[\:]|[\_]|[\-]|[\+]|[\!]|[\%]|[\&]|[\/]|[\?]|[\{]|[\[]|[\(]|[\)]|[\]]|[\}])*$'; break;
+		case "username":      $eregexpr = '^([a-z]|[A-Z]|[0-9]|[.]|[ ]|[-]|[_])+$'; break;
+		case "hostname":      $eregexpr = '^([a-z0-9\\.-])+(([,])+([ ])*([a-z0-9\\.-])+)*$'; break;
+		case "realname":      $eregexpr = ''; break;
+		case "telephone":     $eregexpr = '^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/]|[-])*$'; break;
+		case "email":         $eregexpr = '^(([0-9a-z\\._-])+[@]([0-9a-z-])+([.]([0-9a-z-])+)*)*$'; break;
+		case "street":        $eregexpr = '^([0-9a-z])*$'; break; // ereg broken
+		case "postalAddress": $eregexpr = '^([0-9a-z])*$'; break; // ereg broken
+		case "postalCode":    $eregexpr = '^([0-9a-z])*$'; break;
+		case "title":         $eregexpr = '^([0-9a-z])*$'; break; // ereg broken
+		case "employeeType":  $eregexpr = '^([0-9a-z])*$'; break; // ereg broken
+		case "homedir":       $eregexpr = '^[/]([a-z])([a-z0-9\\._-])*([/]([a-z\\$])([a-z0-9\\._-])*)*$'; break;
+		case "naturalnumber": $eregexpr = '^[0-9]+$'; break;
+		case "UNC":           $eregexpr = '^([\][\]([a-zA-Z0-9\\.%-])+([\]([a-z0-9\\.%-])+)+)|([/][a-z]([a-z0-9\\._%-])*([/][a-z]([a-z0-9\\._%-])*)*)$'; break;
+		case "logonscript":   $eregexpr = '^([/])*([a-z0-9])+([/]([a-z0-9])+)*((\\.bat)|(\\.cmd))$'; break;  // ereg broken
+		case "workstations":  $eregexpr = '^([a-z0-9\\._-])+(,[a-z0-9\\._-])*$'; break;
+		case "domainname":    $eregexpr = '^([a-z0-9_-])+$'; break;
+		case 'homepath':      $eregexpr = '[\][\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+([\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%]|[?]|[?]|[?]|[?]|[?]|[?]|[?])+)+$'; break;
+		case 'naturalnumber2': $eregexpr = '^(([-][1])|([0-9]*))$'; break;
+	}
+	if ($eregexpr!='')
+		if (ereg($eregexpr, $argument)) return true;
+	// Now we check "negative" cases, characters which are not allowed
+	$eregexpr = '';
+	switch ($regexp) {
+		case "password":      $eregexpr = '^([a-z]|[A-Z]|[0-9]|[\|]|[\#]|[\*]|[\,]|[\.]|[\;]|[\:]|[\_]|[\-]|[\+]|[\!]|[\%]|[\&]|[\/]|[\?]|[\{]|[\[]|[\(]|[\)]|[\]]|[\}])*$'; break;
+	}
+	if ($eregexpr!='')
+		if (!ereg($eregexpr, $argument)) return true;
+	return false;
 }
 
 ?>

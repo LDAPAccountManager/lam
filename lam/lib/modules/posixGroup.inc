@@ -347,10 +347,9 @@ class posixGroup extends baseModule {
 	/** this functin fills the error message array with messages
 	**/
 	function load_errorMessages() {
-		// *** fixme really neccesarry for posixGroup?
-		//$this->errormessages['minGID'][0] = array('ERROR', _('Minimum GID number'), _('Minimum GID number is invalid or empty!'));
-		//$this->errormessages['maxGID'][0] = array('ERROR', _('Maximum GID number'), _('Maximum GID number is invalid or empty!'));
-		//$this->errormessages['cmpGID'][1] = array('ERROR', _('Maximum GID number'), _('Maximum GID number must be greater than minimum GID number!'));
+		$this->errormessages['minGID'][0] = array('ERROR', _('Minimum GID number'), _('Minimum GID number is invalid or empty!'));
+		$this->errormessages['maxGID'][0] = array('ERROR', _('Maximum GID number'), _('Maximum GID number is invalid or empty!'));
+		$this->errormessages['cmpGID'][0] = array('ERROR', _('Maximum GID number'), _('Maximum GID number must be greater than minimum GID number!'));
 		$this->errormessages['userPassword'][0] = array('ERROR', _('Password'), _('Please enter the same password in both password-fields.'));
 		$this->errormessages['userPassword'][1] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
 		$this->errormessages['gidNumber'][0] = array('INFO', _('GID number'), _('GID number has changed. Please select checkbox to change GID number of users and hosts.'));
@@ -474,7 +473,7 @@ class posixGroup extends baseModule {
 				if (($this->attributes['cn'][0] != $post['cn']) &&  ereg('[A-Z]$', $post['cn']))
 				$errors['cn'][] = $this->errormessages['cn'][0];
 				// Check if Groupname contains only valid characters
-				if ( !ereg('^([a-z]|[A-Z]|[0-9]|[.]|[-]|[_])+$', $this->attributes['cn'][0]))
+				if ( !ereg('^([a-z]|[A-Z]|[0-9]|[.]|[ ]|[-]|[_])+$', $this->attributes['cn'][0]))
 				$errors['cn'][] = $this->errormessages['cn'][2];
 				// Create automatic useraccount with number if original user already exists
 				// Reset name to original name if new name is in use
