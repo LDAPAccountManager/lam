@@ -97,9 +97,11 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 			else $_SESSION['account']->unix_pwdmaxage = '';
 		if ($_POST['f_unix_pwdminage']) $_SESSION['account']->unix_pwdminage = $_POST['f_unix_pwdminage'];
 			else $_SESSION['account']->unix_pwdminage = '';
-		if ($_POST['f_unix_pwdexpire_day']) $_SESSION['account']->unix_pwdexpire_day = $_POST['f_unix_pwdexpire_day'];
-		if ($_POST['f_unix_pwdexpire_mon']) $_SESSION['account']->unix_pwdexpire_mon = $_POST['f_unix_pwdexpire_mon'];
-		if ($_POST['f_unix_pwdexpire_yea']) $_SESSION['account']->unix_pwdexpire_yea = $_POST['f_unix_pwdexpire_yea'];
+		//if ($_POST['f_unix_pwdexpire_day']) $_SESSION['account']->unix_pwdexpire_day = $_POST['f_unix_pwdexpire_day'];
+		//if ($_POST['f_unix_pwdexpire_mon']) $_SESSION['account']->unix_pwdexpire_mon = $_POST['f_unix_pwdexpire_mon'];
+		//if ($_POST['f_unix_pwdexpire_yea']) $_SESSION['account']->unix_pwdexpire_yea = $_POST['f_unix_pwdexpire_yea'];
+		if ($_POST['f_unix_pwdexpire_mon']) $_SESSION['account']->unix_pwdexpire = mktime(10, 0, 0, $_POST['f_unix_pwdexpire_mon'],
+			$_POST['f_unix_pwdexpire_day'], $_POST['f_unix_pwdexpire_yea']);
 		if ($_POST['f_unix_deactivated']) $_SESSION['account']->unix_deactivated = $_POST['f_unix_deactivated'];
 			else $_SESSION['account']->unix_deactivated = false;
 		if ($_POST['genpass']) {
@@ -613,6 +615,7 @@ switch ($select_local) { // Select which part of page will be loaded
 			$password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($_SESSION['account']->unix_password), MCRYPT_MODE_ECB, $iv);
 			$password = str_replace(chr(00), '', $password);
 			}
+		$date = getdate ($_SESSION['account']->unix_pwdexpire);
 		echo '<tr><td><input name="select" type="hidden" value="unix">';
 		echo _('Unix Properties');
 		echo '</td></tr>'."\n".'';
@@ -655,17 +658,17 @@ switch ($select_local) { // Select which part of page will be loaded
 				echo _('Expire Date');
 				echo '</td>'."\n".'<td><select name="f_unix_pwdexpire_day">';
 				for ( $i=1; $i<=31; $i++ ) {
-					if ($_SESSION['account']->unix_pwdexpire_day==$i) echo "<option selected> $i". '</option>';
+					if ($date['mday']==$i) echo "<option selected> $i". '</option>';
 					else echo "<option> $i". '</option>';
 					}
 				echo '</select><select name="f_unix_pwdexpire_mon">';
 				for ( $i=1; $i<=12; $i++ ) {
-					if ($_SESSION['account']->unix_pwdexpire_mon == $i) echo "<option selected> $i". '</option>';
+					if ($date['mon'] == $i) echo "<option selected> $i". '</option>';
 					else echo "<option> $i". '</option>';
 					}
 				echo '</select><select name="f_unix_pwdexpire_yea">';
 				for ( $i=2003; $i<=2030; $i++ ) {
-					if ($_SESSION['account']->unix_pwdexpire_yea==$i) echo "<option selected> $i". '</option>';
+					if ($date['year']==$i) echo "<option selected> $i". '</option>';
 					else echo "<option> $i". '</option>';
 					}
 				echo '</select></td>'."\n".'<td>
