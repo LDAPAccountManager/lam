@@ -31,34 +31,34 @@ session_save_path("../../sess");
 
 setlanguage();
 
-$conf = new Config($_SESSION['filename']);
+$conf = new Config($_SESSION['conf_filename']);
 
 // get data from session
-if ($_SESSION['passwd']) $passwd = $_SESSION['passwd'];
-if ($_SESSION['passwd1']) $passwd1 = $_SESSION['passwd1'];
-if ($_SESSION['passwd2']) $passwd2 = $_SESSION['passwd2'];
-if ($_SESSION['serverurl']) $serverurl = $_SESSION['serverurl'];
-if (isset($_SESSION['cachetimeout'])) $cachetimeout = $_SESSION['cachetimeout'];
-if ($_SESSION['admins']) $admins = $_SESSION['admins'];
-if ($_SESSION['suffusers']) $suffusers = $_SESSION['suffusers'];
-if ($_SESSION['suffgroups']) $suffgroups = $_SESSION['suffgroups'];
-if ($_SESSION['suffhosts']) $suffhosts = $_SESSION['suffhosts'];
-if ($_SESSION['suffdomains']) $suffdomains = $_SESSION['suffdomains'];
-if (isset($_SESSION['minUID'])) $minUID = $_SESSION['minUID'];
-if ($_SESSION['maxUID']) $maxUID = $_SESSION['maxUID'];
-if (isset($_SESSION['minGID'])) $minGID = $_SESSION['minGID'];
-if ($_SESSION['maxGID']) $maxGID = $_SESSION['maxGID'];
-if (isset($_SESSION['minMach'])) $minMach = $_SESSION['minMach'];
-if ($_SESSION['maxMach']) $maxMach = $_SESSION['maxMach'];
-if ($_SESSION['usrlstattr']) $usrlstattr = $_SESSION['usrlstattr'];
-if ($_SESSION['grplstattr']) $grplstattr = $_SESSION['grplstattr'];
-if ($_SESSION['hstlstattr']) $hstlstattr = $_SESSION['hstlstattr'];
-if ($_SESSION['maxlistentries']) $maxlistentries = $_SESSION['maxlistentries'];
-if ($_SESSION['lang']) $lang = $_SESSION['lang'];
-if ($_SESSION['scriptpath']) $scriptpath = $_SESSION['scriptpath'];
-if ($_SESSION['scriptserver']) $scriptserver = $_SESSION['scriptserver'];
-if ($_SESSION['samba3']) $samba3 = $_SESSION['samba3'];
-if ($_SESSION['filename']) $filename = $_SESSION['filename'];
+if ($_SESSION['conf_passwd']) $passwd = $_SESSION['conf_passwd'];
+if ($_SESSION['conf_passwd1']) $passwd1 = $_SESSION['conf_passwd1'];
+if ($_SESSION['conf_passwd2']) $passwd2 = $_SESSION['conf_passwd2'];
+if ($_SESSION['conf_serverurl']) $serverurl = $_SESSION['conf_serverurl'];
+if (isset($_SESSION['conf_cachetimeout'])) $cachetimeout = $_SESSION['conf_cachetimeout'];
+if ($_SESSION['conf_admins']) $admins = $_SESSION['conf_admins'];
+if ($_SESSION['conf_suffusers']) $suffusers = $_SESSION['conf_suffusers'];
+if ($_SESSION['conf_suffgroups']) $suffgroups = $_SESSION['conf_suffgroups'];
+if ($_SESSION['conf_suffhosts']) $suffhosts = $_SESSION['conf_suffhosts'];
+if ($_SESSION['conf_suffdomains']) $suffdomains = $_SESSION['conf_suffdomains'];
+if (isset($_SESSION['conf_minUID'])) $minUID = $_SESSION['conf_minUID'];
+if ($_SESSION['conf_maxUID']) $maxUID = $_SESSION['conf_maxUID'];
+if (isset($_SESSION['conf_minGID'])) $minGID = $_SESSION['conf_minGID'];
+if ($_SESSION['conf_maxGID']) $maxGID = $_SESSION['conf_maxGID'];
+if (isset($_SESSION['conf_minMach'])) $minMach = $_SESSION['conf_minMach'];
+if ($_SESSION['conf_maxMach']) $maxMach = $_SESSION['conf_maxMach'];
+if ($_SESSION['conf_usrlstattr']) $usrlstattr = $_SESSION['conf_usrlstattr'];
+if ($_SESSION['conf_grplstattr']) $grplstattr = $_SESSION['conf_grplstattr'];
+if ($_SESSION['conf_hstlstattr']) $hstlstattr = $_SESSION['conf_hstlstattr'];
+if ($_SESSION['conf_maxlistentries']) $maxlistentries = $_SESSION['conf_maxlistentries'];
+if ($_SESSION['conf_lang']) $lang = $_SESSION['conf_lang'];
+if ($_SESSION['conf_scriptpath']) $scriptpath = $_SESSION['conf_scriptpath'];
+if ($_SESSION['conf_scriptserver']) $scriptserver = $_SESSION['conf_scriptserver'];
+if ($_SESSION['conf_samba3']) $samba3 = $_SESSION['conf_samba3'];
+if ($_SESSION['conf_filename']) $filename = $_SESSION['conf_filename'];
 
 // check if password is correct
 // if not: load login page
@@ -213,15 +213,18 @@ $conf->set_scriptserver($scriptserver);
 
 
 // check if password was changed
-if ($pass1 != $pass2) {
-	echo ("<b>" . _("Passwords are different!") . "</b>");
-	exit;
+if ($passwd1) {
+	if ($passwd1 != $passwd2) {
+		echo ("<b>" . _("Passwords are different!") . "</b>");
+		exit;
+	}
+	// set new password
+	if ($passwd1 != "") {
+		$conf->set_Passwd($passwd1);
+		echo ("<b>" . _("Password changed!") . "</b><br><br>");
+	}
 }
-// set new password
-if ($pass1 != "") {
-	$conf->set_Passwd($pass1);
-	echo ("<b>" . _("Password changed!") . "</b><br><br>");
-}
+
 // save settings and display new settings
 $conf->save();
 echo ("<b>" . _("The following settings were saved to profile:") . " </b>" . $filename . "<br><br>");
@@ -231,30 +234,30 @@ echo ("<br><br><br><br><br><a href=\"../login.php\" target=\"_top\">" . _("Back 
 echo("</body></html>");
 
 // remove settings from session
-unset($_SESSION['passwd']);
-unset($_SESSION['passwd1']);
-unset($_SESSION['passwd2']);
-unset($_SESSION['serverurl']);
-unset($_SESSION['cachetimeout']);
-unset($_SESSION['admins']);
-unset($_SESSION['suffusers']);
-unset($_SESSION['suffgroups']);
-unset($_SESSION['suffhosts']);
-unset($_SESSION['suffdomains']);
-unset($_SESSION['minUID']);
-unset($_SESSION['maxUID']);
-unset($_SESSION['minGID']);
-unset($_SESSION['maxGID']);
-unset($_SESSION['minMach']);
-unset($_SESSION['maxMach']);
-unset($_SESSION['usrlstattr']);
-unset($_SESSION['grplstattr']);
-unset($_SESSION['hstlstattr']);
-unset($_SESSION['maxlistentries']);
-unset($_SESSION['lang']);
-unset($_SESSION['scriptpath']);
-unset($_SESSION['scriptserver']);
-unset($_SESSION['samba3']);
-unset($_SESSION['filename']);
+unset($_SESSION['conf_passwd']);
+unset($_SESSION['conf_passwd1']);
+unset($_SESSION['conf_passwd2']);
+unset($_SESSION['conf_serverurl']);
+unset($_SESSION['conf_cachetimeout']);
+unset($_SESSION['conf_admins']);
+unset($_SESSION['conf_suffusers']);
+unset($_SESSION['conf_suffgroups']);
+unset($_SESSION['conf_suffhosts']);
+unset($_SESSION['conf_suffdomains']);
+unset($_SESSION['conf_minUID']);
+unset($_SESSION['conf_maxUID']);
+unset($_SESSION['conf_minGID']);
+unset($_SESSION['conf_maxGID']);
+unset($_SESSION['conf_minMach']);
+unset($_SESSION['conf_maxMach']);
+unset($_SESSION['conf_usrlstattr']);
+unset($_SESSION['conf_grplstattr']);
+unset($_SESSION['conf_hstlstattr']);
+unset($_SESSION['conf_maxlistentries']);
+unset($_SESSION['conf_lang']);
+unset($_SESSION['conf_scriptpath']);
+unset($_SESSION['conf_scriptserver']);
+unset($_SESSION['conf_samba3']);
+unset($_SESSION['conf_filename']);
 
 ?>

@@ -38,33 +38,33 @@ if ($_POST['back'] || $_POST['submitconf']){
 	if ($_POST['submitconf']){
 		// save HTTP-POST variables in session
 		// get data if register_globals is off
-		if ($_POST['passwd']) $_SESSION['passwd'] = $_POST['passwd'];
-		if ($_POST['passwd1']) $_SESSION['passwd1'] = $_POST['passwd1'];
-		if ($_POST['passwd2']) $_SESSION['passwd2'] = $_POST['passwd2'];
-		if ($_POST['serverurl']) $_SESSION['serverurl'] = $_POST['serverurl'];
-		if (isset($_POST['cachetimeout'])) $_SESSION['cachetimeout'] = $_POST['cachetimeout'];
-		if ($_POST['admins']) $_SESSION['admins'] = $_POST['admins'];
-		if ($_POST['suffusers']) $_SESSION['suffusers'] = $_POST['suffusers'];
-		if ($_POST['suffgroups']) $_SESSION['suffgroups'] = $_POST['suffgroups'];
-		if ($_POST['suffhosts']) $_SESSION['suffhosts'] = $_POST['suffhosts'];
-		if ($_POST['suffdomains']) $_SESSION['suffdomains'] = $_POST['suffdomains'];
-		if (isset($_POST['minUID'])) $_SESSION['minUID'] = $_POST['minUID'];
-		if ($_POST['maxUID']) $_SESSION['maxUID'] = $_POST['maxUID'];
-		if (isset($_POST['minGID'])) $_SESSION['minGID'] = $_POST['minGID'];
-		if ($_POST['maxGID']) $_SESSION['maxGID'] = $_POST['maxGID'];
-		if (isset($_POST['minMach'])) $_SESSION['minMach'] = $_POST['minMach'];
-		if ($_POST['maxMach']) $_SESSION['maxMach'] = $_POST['maxMach'];
-		if ($_POST['usrlstattr']) $_SESSION['usrlstattr'] = $_POST['usrlstattr'];
-		if ($_POST['grplstattr']) $_SESSION['grplstattr'] = $_POST['grplstattr'];
-		if ($_POST['hstlstattr']) $_SESSION['hstlstattr'] = $_POST['hstlstattr'];
-		if ($_POST['maxlistentries']) $_SESSION['maxlistentries'] = $_POST['maxlistentries'];
-		if ($_POST['lang']) $_SESSION['lang'] = $_POST['lang'];
-		if ($_POST['samba3']) $_SESSION['samba3'] = $_POST['samba3'];
-		if ($_POST['scriptpath']) $_SESSION['scriptpath'] = $_POST['scriptpath'];
-		else $_SESSION['scriptpath'] = "";
-		if ($_POST['scriptserver']) $_SESSION['scriptserver'] = $_POST['scriptserver'];
-		else $_SESSION['scriptserver'] = "";
-		if ($_POST['filename']) $_SESSION['filename'] = $_POST['filename'];
+		if ($_POST['passwd']) $_SESSION['conf_passwd'] = $_POST['passwd'];
+		if ($_POST['passwd1']) $_SESSION['conf_passwd1'] = $_POST['passwd1'];
+		if ($_POST['passwd2']) $_SESSION['conf_passwd2'] = $_POST['passwd2'];
+		if ($_POST['serverurl']) $_SESSION['conf_serverurl'] = $_POST['serverurl'];
+		if (isset($_POST['cachetimeout'])) $_SESSION['conf_cachetimeout'] = $_POST['cachetimeout'];
+		if ($_POST['admins']) $_SESSION['conf_admins'] = $_POST['admins'];
+		if ($_POST['suffusers']) $_SESSION['conf_suffusers'] = $_POST['suffusers'];
+		if ($_POST['suffgroups']) $_SESSION['conf_suffgroups'] = $_POST['suffgroups'];
+		if ($_POST['suffhosts']) $_SESSION['conf_suffhosts'] = $_POST['suffhosts'];
+		if ($_POST['suffdomains']) $_SESSION['conf_suffdomains'] = $_POST['suffdomains'];
+		if (isset($_POST['minUID'])) $_SESSION['conf_minUID'] = $_POST['minUID'];
+		if ($_POST['maxUID']) $_SESSION['conf_maxUID'] = $_POST['maxUID'];
+		if (isset($_POST['minGID'])) $_SESSION['conf_minGID'] = $_POST['minGID'];
+		if ($_POST['maxGID']) $_SESSION['conf_maxGID'] = $_POST['maxGID'];
+		if (isset($_POST['minMach'])) $_SESSION['conf_minMach'] = $_POST['minMach'];
+		if ($_POST['maxMach']) $_SESSION['conf_maxMach'] = $_POST['maxMach'];
+		if ($_POST['usrlstattr']) $_SESSION['conf_usrlstattr'] = $_POST['usrlstattr'];
+		if ($_POST['grplstattr']) $_SESSION['conf_grplstattr'] = $_POST['grplstattr'];
+		if ($_POST['hstlstattr']) $_SESSION['conf_hstlstattr'] = $_POST['hstlstattr'];
+		if ($_POST['maxlistentries']) $_SESSION['conf_maxlistentries'] = $_POST['maxlistentries'];
+		if ($_POST['lang']) $_SESSION['conf_lang'] = $_POST['lang'];
+		if ($_POST['samba3']) $_SESSION['conf_samba3'] = $_POST['samba3'];
+		if ($_POST['scriptpath']) $_SESSION['conf_scriptpath'] = $_POST['scriptpath'];
+		else $_SESSION['conf_scriptpath'] = "";
+		if ($_POST['scriptserver']) $_SESSION['conf_scriptserver'] = $_POST['scriptserver'];
+		else $_SESSION['conf_scriptserver'] = "";
+		if ($_POST['filename']) $_SESSION['conf_filename'] = $_POST['filename'];
 		metaRefresh("confsave.php");
 	}
 	// back to login
@@ -322,12 +322,12 @@ echo ("<table border=0>\n");
 // new password
 echo ("<tr><td bgcolor=\"red\" align=\"right\"><b>".
 	_("New Password") . ": </b></td>".
-	"<td bgcolor=\"red\" align=\"left\"><input type=\"password\" name=\"pass1\"></td>\n");
+	"<td bgcolor=\"red\" align=\"left\"><input type=\"password\" name=\"passwd1\"></td>\n");
 echo ("<td rowspan=2><a href=\"../help.php?HelpNumber=212\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 // reenter password
 echo ("<tr><td bgcolor=\"red\" align=\"right\"><b>".
 	_("Reenter Password") . ": </b></td>".
-	"<td bgcolor=\"red\" align=\"left\"><input type=\"password\" name=\"pass2\"></td></tr>\n");
+	"<td bgcolor=\"red\" align=\"left\"><input type=\"password\" name=\"passwd2\"></td></tr>\n");
 echo ("</table>\n");
 echo ("</fieldset>\n");
 echo ("<p></p>\n");

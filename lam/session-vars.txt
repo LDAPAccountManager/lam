@@ -56,31 +56,31 @@ domain:
 
 
 convsave, confmain, conflogin:
-- passwd: Eingabe von confmain
-- passwd1: Eingabe von confmain
-- passwd2: Eingabe von confmain
-- serverurl: Eingabe von confmain
-- cachetimeout: Eingabe von confmain
-- admins: Eingabe von confmain
-- suffusers: Eingabe von confmain
-- suffgroups: Eingabe von confmain
-- suffhosts: Eingabe von confmain
-- suffdomains: Eingabe von confmain
-- minUID: Eingabe von confmain
-- maxUID: Eingabe von confmain
-- minGID: Eingabe von confmain
-- maxGID: Eingabe von confmain
-- minMach: Eingabe von confmain
-- maxMach: Eingabe von confmain
-- usrlstattr: Eingabe von confmain
-- grplstattr: Eingabe von confmain
-- hstlstattr: Eingabe von confmain
-- maxlistentries: Eingabe von confmain
-- lang: Eingabe von confmain
-- scriptpath: Eingabe von confmain
-- scriptserver: Eingabe von confmain
-- samba3: Eingabe von confmain
-- filename: Dateiname des Profils
+- conf_passwd: Eingabe von confmain
+- conf_passwd1: Eingabe von confmain
+- conf_passwd2: Eingabe von confmain
+- conf_serverurl: Eingabe von confmain
+- conf_cachetimeout: Eingabe von confmain
+- conf_admins: Eingabe von confmain
+- conf_suffusers: Eingabe von confmain
+- conf_suffgroups: Eingabe von confmain
+- conf_suffhosts: Eingabe von confmain
+- conf_suffdomains: Eingabe von confmain
+- conf_minUID: Eingabe von confmain
+- conf_maxUID: Eingabe von confmain
+- conf_minGID: Eingabe von confmain
+- conf_maxGID: Eingabe von confmain
+- conf_minMach: Eingabe von confmain
+- conf_maxMach: Eingabe von confmain
+- conf_usrlstattr: Eingabe von confmain
+- conf_grplstattr: Eingabe von confmain
+- conf_hstlstattr: Eingabe von confmain
+- conf_maxlistentries: Eingabe von confmain
+- conf_lang: Eingabe von confmain
+- conf_scriptpath: Eingabe von confmain
+- conf_scriptserver: Eingabe von confmain
+- conf_samba3: Eingabe von confmain
+- conf_filename: Dateiname des Profils
 
 
 useredit:
