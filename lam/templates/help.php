@@ -23,6 +23,7 @@ $Id$
   LDAP Account Manager display help pages.
 */
 include_once("../lib/ldap.inc");
+include_once("../lib/config.inc");
 
 session_save_path("../sess"); // Set session save path
 @session_start(); // Start LDAP Account Manager session
@@ -33,6 +34,8 @@ include_once("../help/help.inc"); // Include help/help.inc which provides $helpA
 /* Print HTML head */
 function echoHTMLHead()
 {
+setlanguage();
+echo $_SESSION['header'];
 ?>
 <html>
 	<head>
