@@ -58,6 +58,7 @@ if ($_SESSION['conf_lang']) $lang = $_SESSION['conf_lang'];
 if ($_SESSION['conf_scriptpath']) $scriptpath = $_SESSION['conf_scriptpath'];
 if ($_SESSION['conf_scriptserver']) $scriptserver = $_SESSION['conf_scriptserver'];
 if ($_SESSION['conf_samba3']) $samba3 = $_SESSION['conf_samba3'];
+if ($_SESSION['conf_pwdhash']) $pwdhash = $_SESSION['conf_pwdhash'];
 if ($_SESSION['conf_filename']) $filename = $_SESSION['conf_filename'];
 
 // check if password is correct
@@ -209,6 +210,7 @@ $conf->set_defaultLanguage($lang);
 $conf->set_samba3($samba3);
 $conf->set_scriptpath($scriptpath);
 $conf->set_scriptserver($scriptserver);
+$conf->set_pwdhash($pwdhash);
 
 
 
@@ -258,6 +260,7 @@ unset($_SESSION['conf_lang']);
 unset($_SESSION['conf_scriptpath']);
 unset($_SESSION['conf_scriptserver']);
 unset($_SESSION['conf_samba3']);
+unset($_SESSION['conf_pwdhash']);
 unset($_SESSION['conf_filename']);
 
 ?>

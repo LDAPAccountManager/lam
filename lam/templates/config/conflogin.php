@@ -55,7 +55,7 @@ unset($_SESSION['conf_lang']);
 unset($_SESSION['conf_scriptpath']);
 unset($_SESSION['conf_scriptserver']);
 unset($_SESSION['conf_samba3']);
-unset($_SESSION['conf_domainSID']);
+unset($_SESSION['conf_pwdhash']);
 unset($_SESSION['conf_filename']);
 
 echo $_SESSION['header'];

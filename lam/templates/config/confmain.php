@@ -60,6 +60,7 @@ if ($_POST['back'] || $_POST['submitconf']){
 		if ($_POST['maxlistentries']) $_SESSION['conf_maxlistentries'] = $_POST['maxlistentries'];
 		if ($_POST['lang']) $_SESSION['conf_lang'] = $_POST['lang'];
 		if ($_POST['samba3']) $_SESSION['conf_samba3'] = $_POST['samba3'];
+		if ($_POST['pwdhash']) $_SESSION['conf_pwdhash'] = $_POST['pwdhash'];
 		if ($_POST['scriptpath']) $_SESSION['conf_scriptpath'] = $_POST['scriptpath'];
 		else $_SESSION['conf_scriptpath'] = "";
 		if ($_POST['scriptserver']) $_SESSION['conf_scriptserver'] = $_POST['scriptserver'];
@@ -140,6 +141,21 @@ echo ("<td><a href=\"../help.php?HelpNumber=202\" target=\"lamhelp\">" . _("Help
 echo ("<tr><td align=\"right\"><b>".
 	_("DomainSuffix") . " **: </b></td>".
 	"<td><input size=50 type=\"text\" name=\"suffdomains\" value=\"" . $conf->get_DomainSuffix() . "\"></td>\n");
+echo ("<td><a href=\"../help.php?HelpNumber=202\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
+
+// new line
+echo ("<tr><td colspan=3>&nbsp</td></tr>");
+
+// LDAP password hash type
+echo ("<tr><td align=\"right\"><b>".
+	_("Password hash type") . " *: </b></td>".
+	"<td><select name=\"pwdhash\">\n<option selected>" . $conf->get_pwdhash() . "</option>\n");
+if ($conf->get_pwdhash() != "CRYPT") echo("<option>CRYPT</option>\n");
+if ($conf->get_pwdhash() != "SHA") echo("<option>SHA</option>\n");
+if ($conf->get_pwdhash() != "SSHA") echo("<option>SSHA</option>\n");
+if ($conf->get_pwdhash() != "MD5") echo("<option>MD5</option>\n");
+if ($conf->get_pwdhash() != "SMD5") echo("<option>SMD5</option>\n");
+echo ("</select></td>\n");
 echo ("<td><a href=\"../help.php?HelpNumber=215\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 
 // new line

@@ -53,6 +53,7 @@ $defaultlanguage = $conf->get_defaultlanguage();
 $scriptpath = $conf->get_scriptPath();
 $scriptServer = $conf->get_scriptServer();
 $samba3 = $conf->get_samba3();
+$pwdhash = $conf->get_pwdhash();
 echo ("done<br>");
 // next we modify them and save lam.conf
 echo ("Changing preferences...");
@@ -78,6 +79,7 @@ $conf->set_defaultlanguage("de_AT:iso639_de:Deutsch (Oesterreich)");
 $conf->set_scriptPath("/var/www/lam/lib/script");
 $conf->set_scriptServer("127.0.0.1");
 $conf->set_samba3("yes");
+$conf->set_pwdhash("SMD5");
 $conf->save();
 echo ("done<br>");
 // at last all preferences are read from lam.conf and compared
@@ -105,6 +107,7 @@ if ($conf2->get_defaultlanguage() != "de_AT:iso639_de:Deutsch (Oesterreich)") ec
 if ($conf2->get_scriptPath() != "/var/www/lam/lib/script") echo ("<br><font color=\"#FF0000\">Saving script path failed!</font><br>");
 if ($conf2->get_scriptServer() != "127.0.0.1") echo ("<br><font color=\"#FF0000\">Saving script server failed!</font><br>");
 if ($conf2->get_samba3() != "yes") echo ("<br><font color=\"#FF0000\">Saving samba3 failed!</font><br>");
+if ($conf2->get_pwdhash() != "SMD5") echo ("<br><font color=\"#FF0000\">Saving pwdhash failed!</font><br>");
 echo ("done<br>");
 // restore old values
 echo ("Restoring old preferences...");
@@ -130,6 +133,7 @@ $conf2->set_defaultLanguage($defaultlanguage);
 $conf2->set_scriptPath($scriptpath);
 $conf2->set_scriptServer($scriptserver);
 $conf2->set_samba3($samba3);
+$conf2->set_pwdhash($pwdhash);
 $conf2->save();
 echo ("done<br>");
 // finished

@@ -132,6 +132,9 @@ class Config {
   // LDAP cache timeout
   var $cachetimeout;
 
+  // password hash algorithm
+  var $pwdhash;
+
   // name of configuration file
   var $file;
 
@@ -139,7 +142,7 @@ class Config {
 	var $settings = array("ServerURL", "Passwd", "Admins", "usersuffix", "groupsuffix", "hostsuffix",
 		"domainsuffix", "MinUID", "MaxUID", "MinGID", "MaxGID", "MinMachine", "MaxMachine",
 		"userlistAttributes", "grouplistAttributes", "hostlistAttributes", "maxlistentries",
-		"defaultLanguage", "scriptPath", "scriptServer", "samba3", "cachetimeout");
+		"defaultLanguage", "scriptPath", "scriptServer", "samba3", "cachetimeout", "pwdhash");
 
 
 	// constructor, loads preferences from config file
@@ -236,6 +239,7 @@ class Config {
 			if (!in_array("scriptServer", $saved)) array_push($file_array, "\n\n# Server of external Script\n" . "scriptServer: " . $this->scriptServer . "\n");
 			if (!in_array("samba3", $saved)) array_push($file_array, "\n\n# Set to \"yes\" only if you use the new Samba 3.x schema.\n" . "samba3: " . $this->samba3 . "\n");
 			if (!in_array("cachetimeout", $saved)) array_push($file_array, "\n\n# Number of minutes LAM caches LDAP searches.\n" . "cacheTimeout: " . $this->cachetimeout . "\n");
+			if (!in_array("pwdhash", $saved)) array_push($file_array, "\n\n# Password hash algorithm (CRYPT/MD5/SMD5/SHA/SSHA).\n" . "pwdhash: " . $this->pwdhash . "\n");
 			$file = fopen($conffile, "w");
 			if ($file) {
 				for ($i = 0; $i < sizeof($file_array); $i++) fputs($file, $file_array[$i]);
@@ -252,6 +256,7 @@ class Config {
 	// prints current preferences
 	function printconf() {
 		echo "<b>" . _("Server address") . ": </b>" . $this->ServerURL . "<br>";
+		echo "<b>" . _("Password hash type") . ": </b>" . $this->pwdhash . "<br>";
 		echo "<b>" . _("Cache timeout") . ": </b>" . $this->cachetimeout . "<br>";
 		echo "<b>" . _("Samba 3.x schema") . ": </b>" . $this->samba3 . "<br>";
 		echo "<b>" . _("UserSuffix") . ": </b>" . $this->usersuffix . "<br>";
@@ -565,7 +570,8 @@ class Config {
 
 	// returns the LDAP cache timeout in minutes
 	function get_cacheTimeout() {
-		return $this->cachetimeout;
+		if ($this->cachetimeout) return $this->cachetimeout;
+		else return 5;
 	}
 
 	// returns the LDAP cache timeout in seconds
@@ -573,10 +579,25 @@ class Config {
 		return $this->cachetimeout * 60;
 	}
 
-	// sets the LDAP cache timeout in minutes
+	// sets the LDAP cache timeout in minutes (0,1,2,5,10,15)
 	function set_cacheTimeout($value) {
 		if (is_numeric($value) && ($value > -1)) {
 			$this->cachetimeout = $value;
+		}
+		else return false;
+		return true;
+	}
+
+	// returns the password hash type
+	function get_pwdhash() {
+		if ($this->pwdhash) return strtoupper($this->pwdhash);
+		else return "SSHA";
+	}
+
+	// set the password hash type (CRYPT/SHA/SSHA/MD5/SMD5)
+	function set_pwdhash($value) {
+		if (is_string($value) && eregi("^(crypt|sha|ssha|md5|smd5)$", $value)) {
+			$this->pwdhash = $value;
 		}
 		else return false;
 		return true;
