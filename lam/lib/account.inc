@@ -76,7 +76,7 @@ class cache {
 			if (strpos($_SESSION['ldap']->objectClasses[$i], "NAME '$objectClass'")) $line = $i;
 			}
 		// Return error if objectClass isn't found
-		if ($line==-1) trigger_error (_("objectClass objectClass required but not defined in ldap."), E_USER_WARNING);
+		if ($line==-1) trigger_error (_("objectClass $objectClass required but not defined in ldap."), E_USER_WARNING);
 		// Everything seems to be OK, start processing data
 		$this->refresh_cache();
 		if ($singlescope == '*') $scopes = $allowed_types;
@@ -84,7 +84,7 @@ class cache {
 		foreach ($scopes as $scope) {
 			$DNs = array_keys($this->ldapcache[$scope]);
 			foreach ($DNs as $dn) {
-				if (isset($this->ldapcache[$scope][$dn][$attribute])) {
+				if (isset($this->ldapcache[$scope][$dn][$attribute]) && in_array($objectClass, $this->ldapcache[$scope][$dn]['objectClass'])) {
 					// return string if only attribute exists only once
 					if (count($this->ldapcache[$scope][$dn][$attribute])==1) $return[$dn] = $this->ldapcache[$scope][$dn][$attribute][0];
 					else {
@@ -153,8 +153,8 @@ class cache {
 			$scopes = array_keys($this->attributes);
 			foreach ($scopes as $scope) {
 				// Get Scope
-				$function = 'get_'.ucfirst($scope).'Suffix()';
-				If ($scope != '*') $suffix = $this->config->get_UserSuffix();   // fixme *** how to call function? $function;
+				$function = '$suffix = $this->config->get_'.ucfirst($scope).'Suffix();';
+				If ($scope != '*') eval($function);
 					else $suffix = '';
 				// Get Data from ldap
 				$search = $this->attributes[$scope];

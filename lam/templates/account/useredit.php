@@ -758,6 +758,10 @@ if (is_array($errors))
 
 // print_r($account_new);
 //print_r($account_old);
+//$temp = new cache();
+//$temp->add_cache(array( 'user' => array('uid', 'cn' ) ));
+//print_r($temp->get_cache('uid', 'posixAccount', 'user'));
+//print_r($temp->ldapcache);
 
 switch ($select_local) {
 	/* Select which part of page should be loaded and check values
