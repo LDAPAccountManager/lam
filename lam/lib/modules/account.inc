@@ -37,9 +37,9 @@ $Id$
 *
 */
 
-class account {
+class account extends baseModule {
 	// Constructor
-	function account($base) {
+	function init($base) {
 		// Get local copy of name of account_container in session
 		$this->base = $base;
 		// Do some error checks
@@ -70,10 +70,6 @@ class account {
 	function can_manage($scope) {
 		if ($scope == "host") return true;
 		else return false;
-	}
-
-	function is_base_module($scope) {
-		return false;
 	}
 
 	/* This function returns a list with all required modules

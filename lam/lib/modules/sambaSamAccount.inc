@@ -52,9 +52,23 @@ $Id$
 * type: 'user' or 'host'
 * 'attributes': this is a list of arrays with all ldap attributes wich are allowed for this account
 */
-class sambaSamAccount {
+class sambaSamAccount extends baseModule {
+
+	/**
+	* Returns meta data that is interpreted by parent class
+	*
+	* @return array array with meta data
+	*/
+	function get_metaData() {
+		$return = array();
+		if ($this->get_scope() == "host") {
+			$return["is_base"] = true;
+		}
+		return $return;
+	}
+
 	// Constructor
-	function sambaSamAccount($base) {
+	function init($base) {
 		/* Return an error if sambaSamAccount should be created without
 		* base container
 		*/
@@ -129,11 +143,6 @@ class sambaSamAccount {
 	function can_manage($scope) {
 		if ($scope == "host") return true;
 		elseif ($scope == "user") return true;
-		else return false;
-	}
-
-		function is_base_module($scope) {
-		if ($scope == "host") return true;
 		else return false;
 	}
 

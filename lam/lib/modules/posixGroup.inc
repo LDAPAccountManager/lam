@@ -52,9 +52,23 @@ $Id$
 * type: 'user' or 'host'
 * 'attributes': this is a list of arrays with all ldap attributes wich are allowed for this account
 */
-class posixGroup {
+class posixGroup extends baseModule {
+
+	/**
+	* Returns meta data that is interpreted by parent class
+	*
+	* @return array array with meta data
+	*/
+	function get_metaData() {
+		$return = array();
+		if ($this->get_scope() == "group") {
+			$return["is_base"] = true;
+		}
+		return $return;
+	}
+
 	// Constructor
-	function posixGroup($base) {
+	function init($base) {
 		/* Return an error if posixGroup should be created without
 		* base container
 		*/
@@ -126,10 +140,6 @@ class posixGroup {
 	function can_manage($scope) {
 		if ($scope == "group") return true;
 		else return false;
-	}
-
-	function is_base_module($scope) {
-		return true;
 	}
 
 	// returns an LDAP filter for the account lists

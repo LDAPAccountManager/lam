@@ -43,9 +43,9 @@ $Id$
 * ldap functions in this module are only dummy functions
 * It also chooses which page to show.
 */
-class main {
+class main extends baseModule {
 	// Constructor
-	function main($base) {
+	function init($base) {
 		// Set counter to first page
 		$this->current_page = 0;
 		// reset subpage counter
@@ -68,10 +68,6 @@ class main {
 		}
 
 	function can_manage($scope) {
-		return false;
-	}
-
-	function is_base_module($scope) {
 		return false;
 	}
 

@@ -21,9 +21,9 @@ $Id$
 */
 
 
-class quota {
+class quota extends baseModule {
 	// Constructor
-	function quota($base) {
+	function init($base) {
 		$this->base = $base;
 		if (!$base) trigger_error(_('Please create a base object with $var = new accountContainer();'), E_USER_ERROR);
 		if (!is_string($base)) trigger_error(_('Please create a new module in an accountContainer object first.'), E_USER_ERROR);
@@ -75,10 +75,6 @@ class quota {
 		if ($scope == "group") return true;
 		elseif ($scope == "user") return true;
 		else return false;
-	}
-
-	function is_base_module($scope) {
-		return false;
 	}
 
 	/* This function returns a list with all required modules

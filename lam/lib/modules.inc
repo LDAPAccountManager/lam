@@ -26,6 +26,8 @@ $Id$
 
 include_once("cache.inc");
 include_once("account.inc");
+/** parent class of account modules */
+include_once("baseModule.inc");
 
 /* We have to include all modules
 * before start session
@@ -57,7 +59,8 @@ function getModuleAlias($name, $scope) {
 // $name: the module name
 // $scope: the account type ("user", "group", "host")
 function is_base_module($name, $scope) {
-	return call_user_func(array($name, "is_base_module"), $scope);
+	$module = new $name($scope);
+	return $module->is_base_module();
 }
 
 // returns a LDAP filter used by the account lists
@@ -235,7 +238,8 @@ class accountContainer {
 		$this->config = 'config';
 		$this->cache = 'cache';
 		$this->header2 = 'header';
-		$this->module['main'] = new main($this->base);
+		$this->module['main'] = new main($this->type);
+		$this->module['main']->init($this->base);
 		// create cache if needed
 		if (!isset($_SESSION['cache'])) {
 			$_SESSION['cache'] = new cache();
@@ -699,7 +703,10 @@ class accountContainer {
 		$attr = ldap_get_attributes($_SESSION[$this->ldap]->server(), $entry);
 				
 		foreach ($modules as $module) {
-			if (!isset($this->module[$module])) $this->module[$module] = new $module($this->base);
+			if (!isset($this->module[$module])) {
+				$this->module[$module] = new $module($this->type);
+				$this->module[$module]->init($this->base);
+			}
 			$this->module[$module]->load_attributes($attr);
 			}
 
@@ -762,7 +769,10 @@ class accountContainer {
 	function new_account() {
 		$temp = ucfirst($this->type);
 		$modules = call_user_func(array(&$_SESSION['config'], 'get_' . $temp . 'Modules'));
-		foreach ($modules as $module) $this->module[$module] = new $module($this->base);
+		foreach ($modules as $module) {
+			$this->module[$module] = new $module($this->type);
+			$this->module[$module]->init($this->base);
+		}
 
 		$module = array_keys ($this->module);
 		$modulelist = array();

@@ -52,9 +52,9 @@ $Id$
 * type: 'user' or 'host'
 * 'attributes': this is a list of arrays with all ldap attributes wich are allowed for this account
 */
-class shadowAccount {
+class shadowAccount extends baseModule {
 	// Constructor
-	function shadowAccount($base) {
+	function init($base) {
 		/* Return an error if shadowAccount should be created without
 		* base container
 		*/
@@ -94,10 +94,6 @@ class shadowAccount {
 	function can_manage($scope) {
 		if ($scope == "user") return true;
 		else return false;
-	}
-
-	function is_base_module($scope) {
-		return false;
 	}
 
 	/* This function returns a list with all required modules

@@ -36,9 +36,9 @@ $Id$
 * $base is the name of account_container in session
 */
 
-class inetOrgPerson {
+class inetOrgPerson extends baseModule {
 	// Constructor
-	function inetOrgPerson($base) {
+	function init($base) {
 		// Get local copy of name of account_container in session
 		$this->base = $base;
 		// Do some error checks
@@ -73,10 +73,6 @@ class inetOrgPerson {
 	function can_manage($scope) {
 		if ($scope == "user") return true;
 		else return false;
-	}
-
-	function is_base_module($scope) {
-		return false;
 	}
 
 	/* This function returns a list with all required modules
