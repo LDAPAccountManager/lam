@@ -1,10 +1,13 @@
-??? 0.4.1
+13.12.2003 0.4.1
 
   - better error handling at login
   - support spaces in DNs
   - PDF text for users
-  - fixed bug with SMD5 passwords
   - create missing OUs recursivly
+  - fixed bugs:
+      SMD5 passwords were wrong
+      primaryGroupSID wrong if SID has no relation to Algorithmic RID Base
+      Samba 2 accounts could not be created
 
 
 29.10.2003 0.4 (Beta1)
