@@ -49,6 +49,7 @@ if ($_POST['maxMach']) $maxMach = $_POST['maxMach'];
 if ($_POST['usrlstattr']) $usrlstattr = $_POST['usrlstattr'];
 if ($_POST['grplstattr']) $grplstattr = $_POST['grplstattr'];
 if ($_POST['hstlstattr']) $hstlstattr = $_POST['hstlstattr'];
+if ($_POST['maxlistentries']) $maxlistentries = $_POST['maxlistentries'];
 
 // check if password is correct
 // if not: load login page
@@ -130,6 +131,11 @@ if (chop($hstlstattr) == "") {
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
+if (chop($maxlistentries) == "") {
+	echo _("<font color=\"red\"><b>" . _("Max list entries is empty!") . "</b></font>");
+	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
+	exit;
+}
 
 // set new preferences
 $conf->set_ServerURL($serverurl);
@@ -146,6 +152,7 @@ $conf->set_maxMachine($maxMach);
 $conf->set_userlistAttributes($usrlstattr);
 $conf->set_grouplistAttributes($grplstattr);
 $conf->set_hostlistAttributes($hstlstattr);
+$conf->set_MaxListEntries($maxlistentries);
 
 // check if password was changed
 if ($pass1 != $pass2) {
