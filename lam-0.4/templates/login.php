@@ -132,23 +132,23 @@ function display_LoginPage($config_object,$profile)
 		<form action="login.php" method="post">
 			<table width="650" align="center" border="2" rules="none" bgcolor="white">
 				<tr>
-					<td width="70" rowspan="9">
+					<td style="border-style:none" width="70" rowspan="9">
 						<img src="../graphics/lam.png" alt="Logo">
 					</td>
-					<td height="70" colspan="2" align="center">
+					<td style="border-style:none" height="70" colspan="2" align="center">
 						<font color="darkblue"><b><big><?php echo _("Enter Username and Password for Account"); ?></big></b></font>
 					</td>
-					<td rowspan="9" width="70">
+					<td style="border-style:none" rowspan="9" width="70">
 						&nbsp;
 					</td>
 				</tr>
 				<tr>
-					<td height="35" align="right"><b>
+					<td style="border-style:none" height="35" align="right"><b>
 						<?php
 						echo _("Username") . ":";
 						?>
 					</b>&nbsp;&nbsp;</td>
-					<td height="35" align="left">
+					<td style="border-style:none" height="35" align="left">
 						<select name="username" size="1">
 						<?php
 						$admins = $config_object->get_Admins();
@@ -164,12 +164,12 @@ function display_LoginPage($config_object,$profile)
 					</td>
 				</tr>
 				<tr>
-					<td height="35" align="right"><b>
+					<td style="border-style:none" height="35" align="right"><b>
 						<?php
 						echo _("Password") . ":";
 						?>
 					</b>&nbsp;&nbsp;</td>
-					<td height="35" align="left">
+					<td style="border-style:none" height="35" align="left">
 						<input type="password" name="passwd">
 					</td>
 				</tr>
@@ -187,12 +187,12 @@ function display_LoginPage($config_object,$profile)
 				else
 				{
 					?>
-					<td align="right"><b>
+					<td style="border-style:none" align="right"><b>
 						<?php
 						echo _("Your Language") . ":";
 						?>
 					</b>&nbsp;&nbsp;</td>
-					<td height="35" align="left">
+					<td style="border-style:none" height="35" align="left">
 						<select name="language" size="1">
 						<?php
 						for($i = 0; $i < count($languages); $i++) {
@@ -216,12 +216,12 @@ function display_LoginPage($config_object,$profile)
 				?>
 				</tr>
 				<tr>
-					<td height="50" colspan="2" align="center">
+					<td style="border-style:none" height="50" colspan="2" align="center">
 						<input name="checklogin" type="submit" value="<?php echo _("Login"); ?>">
 					</td>
 				</tr>
 				<tr>
-					<td height="50" colspan="2" align="center">
+					<td style="border-style:none" height="50" colspan="2" align="center">
 						<?php
 							if($error_message != "") {
 								echo "<font color=\"red\"><b>" . $error_message . "</b></font>";
@@ -230,7 +230,9 @@ function display_LoginPage($config_object,$profile)
 					</td>
 				</tr>
 				<tr>
-					<td height="30" colspan="2"><b>
+					<td style="border-style:none" height="30" colspan="2">
+						<hr>
+						<b>
 						<?php
 						echo _("LDAP server") . ": ";
 						?></b>
@@ -238,16 +240,16 @@ function display_LoginPage($config_object,$profile)
 					</td>
 				</tr>
 				<tr>
-				<td height="30"><b>
+				<td style="border-style:none" height="30"><b>
 					<?php
 					echo _("Configuration profile") . ": ";
-					if(!$_POST['profile']) {
-						$_POST['profile'] = $profile;
+					if(!$_POST['profileChange']) {
+						$_POST['profile'] = $_SESSION['config']->file;
 					}
 					?></b>
 					<?php echo $_POST['profile']; ?>
 				</td>
-				<td height="30" align="right">
+				<td style="border-style:none" height="30" align="right">
 					<select name="profile" size="1">
 					<?php
 					for($i=0;$i<count($profiles);$i++) {
@@ -261,7 +263,7 @@ function display_LoginPage($config_object,$profile)
 				</td>
 				</tr>
 				<tr>
-					<td height="10" colspan="2"></td>
+					<td style="border-style:none" height="10" colspan="2"></td>
 				</tr>
 			</table>
 		</form>
