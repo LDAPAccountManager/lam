@@ -646,7 +646,9 @@ function parseHtml($module, $input, $values, $restricted, &$tabindex, &$tabindex
 						break;
 					// help link
 					case 'help':
-						echo "<a href=../help.php?module=$module&amp;HelpNumber=". $input[$i][$j]['value'] . "&amp;scope=" . $scope . " target=\"help\" tabindex=$tabindexLink>" . _('Help') . "</a>\n";
+						$helpPath = "../";
+						if (is_file("./help.php")) $helpPath = "./";
+						echo "<a href=" . $helpPath . "help.php?module=$module&amp;HelpNumber=". $input[$i][$j]['value'] . "&amp;scope=" . $scope . " target=\"help\" tabindex=$tabindexLink>" . _('Help') . "</a>\n";
 						$tabindexLink++;
 						break;
 					// status message
