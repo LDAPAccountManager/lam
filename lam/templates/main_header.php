@@ -38,26 +38,27 @@ echo ("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http:/
 <body>
 <table border=0 width="100%">
 	<tr>
-		<td width="100" rowspan=3>&nbsp</td>
-		<td rowspan=3 align="center">
+    	<td width="100" align="left"><a href="./profedit/profilemain.php" target="mainpart"><? echo _("Profile Editor") ?></a></td>
+		<td rowspan=3 colspan=3 align="center">
 			<a href="http://lam.sf.net" target="new_window"><img src="../graphics/banner.jpg" border=1 alt="LDAP Account Manager"></a>
 		</td>
-	<td width="100" align="right" height=20><a href="./logout.php" target="_top"><b><? echo _("Logout") ?></b></a></td>
+	<td width="100" align="right" height=20><a href="./logout.php" target="_top"><big><b><? echo _("Logout") ?></b></big></a></td>
 	</tr>
 	<tr>
-    	<td align="right"><a href="./profedit/profilemain.php" target="mainpart"><? echo _("Profile Editor") ?></a></td>
+    	<td align="left"><a href="ou_edit.php" target="mainpart"><? echo _("OU Editor") ?></a></td>
+		<td rowspan=2></td>
 	</tr>
 	<tr>
-    	<td align="right"><a href="masscreate.php" target="mainpart"><? echo _("File Upload") ?></a></td>
+    	<td align="left"><a href="masscreate.php" target="mainpart"><? echo _("File Upload") ?></a></td>
 	</tr>
-</table>
-<br>
-<table border=0 align="center" width="600">
-  <tr>
-    <td width="200" align="center"><a href="./lists/listusers.php" target="mainpart"> <? echo _("Users");?> </a></td>
-    <td width="200" align="center"><a href="./lists/listgroups.php" target="mainpart"> <? echo _("Groups");?> </a></td>
-    <td width="200" align="center"><a href="./lists/listhosts.php" target="mainpart"> <? echo _("Hosts");?> </a></td>
-  </tr>
+	<tr><td colspan=5>&nbsp;</td></tr>
+	<tr>
+		<td></td>
+		<td width="200" align="center"><a href="./lists/listusers.php" target="mainpart"> <? echo _("Users");?> </a></td>
+		<td width="200" align="center"><a href="./lists/listgroups.php" target="mainpart"> <? echo _("Groups");?> </a></td>
+		<td width="200" align="center"><a href="./lists/listhosts.php" target="mainpart"> <? echo _("Hosts");?> </a></td>
+		<td></td>
+	</tr>
 </table>
 </body>
 </html>
