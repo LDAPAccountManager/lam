@@ -73,6 +73,30 @@ class sambaGroupMapping extends baseModule {
 													'displayName',
 													'sambaGroupType',
 													'description');
+		// upload fields
+		$return['upload_columns'] = array(
+			array(
+				'name' => 'sambaGroupMapping_domain',
+				'description' => _('Samba 3 domain name'),
+				'help' => 'TODO',
+				'example' => _('domain1'),
+				'required' => true
+			),
+			array(
+				'name' => 'sambaGroupMapping_name',
+				'description' => _('Samba 3 display name'),
+				'help' => 'TODO',
+				'example' => _('Domain administrators'),
+				'required' => false
+			),
+			array(
+				'name' => 'sambaGroupMapping_rid',
+				'description' => _('Samba 3 rid number'),
+				'help' => 'TODO',
+				'example' => 'DOMAIN_ADMINS',
+				'required' => false
+			)
+		);
 		return $return;
 	}
 

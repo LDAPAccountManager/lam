@@ -437,6 +437,37 @@ user to decide which fields are to be displayed on the PDF file. The
 format of the array to be returned is described in section 5. "PDF
 syntax".<br>
 <br>
+<h3>2.2.8. get_uploadColumns</h3>
+<br>
+<table style="text-align: left; width: 300px; height: 30px;" border="0"
+ cellspacing="2" cellpadding="2">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204); text-align: center;"><span
+ style="font-weight: bold;">function get_uploadColumns()</span><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+Returns a list of column entries for the upload .csv-file.<br>
+Each column entry is an array containing these values:<br>
+<ul>
+  <li><span style="font-weight: bold;"><span style="font-style: italic;">string</span>
+name:</span> fixed non-translated name which is used as column name
+(should be of format: &lt;module name&gt;_&lt;column name&gt;)</li>
+  <li><span style="font-weight: bold;"><span style="font-style: italic;">string</span>
+description:</span> short descriptive name</li>
+  <li><span style="font-weight: bold;"><span style="font-style: italic;">string</span>
+help:</span> help ID</li>
+  <li><span style="font-weight: bold;"><span style="font-style: italic;">string</span>
+example:</span> example value</li>
+  <li><span style="font-weight: bold;"><span style="font-style: italic;">boolean</span>
+required:</span> true, if user must set a value for this column<br>
+  </li>
+</ul>
+<br>
 <br>
 <span style="font-weight: bold;">*: These functions do not need to be
 implemented if meta data is supplied. See 6 for a list of meta data

@@ -342,8 +342,8 @@ class baseModule {
 	* Syntax:
 	* <br> array(
 	* <br>  string: name,  // fixed non-translated name which is used as column name (should be of format: <module name>_<column name>)
-	* <br>  string: descriptive name,  // short descriptive name
-	* <br>  string: help entry,  // help ID
+	* <br>  string: description,  // short descriptive name
+	* <br>  string: help,  // help ID
 	* <br>  string: example,  // example value
 	* <br>  boolean: required  // true, if user must set a value for this column
 	* <br> )

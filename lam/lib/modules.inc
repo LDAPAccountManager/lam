@@ -341,6 +341,32 @@ function getAvailableScopes() {
 }
 
 /**
+* Returns an array containing all input columns for the file upload.
+*
+* Syntax:
+* <br> array(
+* <br>  string: name,  // fixed non-translated name which is used as column name (should be of format: <module name>_<column name>)
+* <br>  string: description,  // short descriptive name
+* <br>  string: help,  // help ID
+* <br>  string: example,  // example value
+* <br>  boolean: required  // true, if user must set a value for this column
+* <br> )
+*
+* @param string $scope account type
+* @return array column list
+*/
+function get_uploadColumns($scope) {
+	// create new account container if needed
+	if (! isset($_SESSION["profile_account_$scope"])) {
+		$_SESSION["profile_account_$scope"] = new accountContainer($scope, "profile_account_$scope");
+		$_SESSION["profile_account_$scope"]->new_account();
+	}
+	// get options
+	return $_SESSION["profile_account_$scope"]->get_uploadColumns();
+}
+
+
+/**
 * This class includes all modules and attributes of an account.
 *
 * @package modules
@@ -1186,5 +1212,28 @@ class accountContainer {
 			}
 			return $return;
 		}
+
+		/**
+		* Returns an array containing all input columns for the file upload.
+		*
+		* Syntax:
+		* <br> array(
+		* <br>  string: name,  // fixed non-translated name which is used as column name (should be of format: <module name>_<column name>)
+		* <br>  string: description,  // short descriptive name
+		* <br>  string: help,  // help ID
+		* <br>  string: example,  // example value
+		* <br>  boolean: required  // true, if user must set a value for this column
+		* <br> )
+		*
+		* @return array column list
+		*/
+		function get_uploadColumns() {
+			$return = array();
+			foreach($this->module as $moduleName => $module) {
+				$return[$moduleName] = $module->get_uploadColumns();
+			}
+			return $return;
+		}
+
 	}
 ?>

@@ -126,6 +126,44 @@ class posixGroup extends baseModule {
 													'gidNumber',
 													'memberUid',
 													'description');
+		// upload fields
+		$return['upload_columns'] = array(
+			array(
+				'name' => 'posixGroup_cn',
+				'description' => _('Group name'),
+				'help' => 'TODO',
+				'example' => _('adminstrators'),
+				'required' => true
+			),
+			array(
+				'name' => 'posixGroup_gid',
+				'description' => _('GID number'),
+				'help' => 'TODO',
+				'example' => _('2034'),
+				'required' => false
+			),
+			array(
+				'name' => 'posixGroup_description',
+				'description' => _('Group description'),
+				'help' => 'TODO',
+				'example' => _('Administrators group'),
+				'required' => false
+			),
+			array(
+				'name' => 'posixGroup_members',
+				'description' => _('Group members'),
+				'help' => 'TODO',
+				'example' => _('user01,user02,user03'),
+				'required' => false
+			),
+			array(
+				'name' => 'posixGroup_password',
+				'description' => _('Group password'),
+				'help' => 'TODO',
+				'example' => _('secret'),
+				'required' => false
+			)
+		);
 		return $return;
 	}
 
