@@ -200,7 +200,7 @@ for ($i = $table_begin; $i < $table_end; $i++) {
 		// print all attribute entries seperated by "; "
 		if (sizeof($grp_info[$i][strtolower($attr_array[$k])]) > 0) {
 			// delete first array entry which is "count"
-			if (! $_GET['norefresh']) array_shift($grp_info[$i][strtolower($attr_array[$k])]);
+			if ((! $_GET['norefresh']) && (is_array($grp_info[$i][strtolower($attr_array[$k])]))) array_shift($grp_info[$i][strtolower($attr_array[$k])]);
 			// generate links for group members
 			if (strtolower($attr_array[$k]) == "memberuid") {
 				$linklist = array();
@@ -213,7 +213,10 @@ for ($i = $table_begin; $i < $table_end; $i++) {
 			}
 			// print all other attributes
 			else {
-				echo implode("; ", $grp_info[$i][strtolower($attr_array[$k])]);
+				if (is_array($grp_info[$i][strtolower($attr_array[$k])])) {
+					echo implode("; ", $grp_info[$i][strtolower($attr_array[$k])]);
+				}
+				else echo $grp_info[$i][strtolower($attr_array[$k])];
 			}
 		}
 		echo ("</td>");
