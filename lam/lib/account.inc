@@ -69,7 +69,7 @@ class account { // This class keeps all needed values for any account
 	// Quota Settins
 	var $quota;			// array[][] First array is an index for every chare with active quotas
 					// second array Contains values for every share:
-					// mointpoint, used blocks, soft block limit, hard block limit, grace block period, used inodes,
+					// mountpoint, used blocks, soft block limit, hard block limit, grace block period, used inodes,
 					// soft inode limit, hard inode limit, grace inode period
 	// Personal Settings
 	var $personal_title;		// string title of user
@@ -180,23 +180,23 @@ function checkglobal($values, $type, $values_old=false) { // This functions chec
 				$return->general_homedir = str_replace('$user', $values->general_username, $return->general_homedir);
 			if ($return->general_homedir != $values->general_homedir) $errors[] = array('INFO', _('Home Directory'), _('Replaced $user or $group in homedir.'));
 			if ( !ereg('^[/]([a-z]|[A-Z])([a-z]|[A-Z]|[0-9]|[.]|[-]|[_])*([/]([a-z]|[A-Z])([a-z]|[A-Z]|[0-9]|[.]|[-]|[_])*)*$', $return->general_homedir ))
-				$errors[] = array('ERROR', _('Home Directory'), _('Homedirectory contents invalid characters.'));
+				$errors[] = array('ERROR', _('Home Directory'), _('Homedirectory contains invalid characters.'));
 			// Check if givenname is valid
-			if ( !ereg('^([a-z]|[A-Z]|[-]|[ ]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+$', $values->general_givenname)) $errors[] = array('ERROR', _('Given name'), _('Given name contents invalid characters'));
+			if ( !ereg('^([a-z]|[A-Z]|[-]|[ ]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+$', $values->general_givenname)) $errors[] = array('ERROR', _('Given name'), _('Given name contains invalid characters'));
 			// Check if surname is valid
-			if ( !ereg('^([a-z]|[A-Z]|[-]|[ ]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+$', $values->general_surname)) $errors[] = array('ERROR', _('Surname'), _('Surname contents invalid characters'));
+			if ( !ereg('^([a-z]|[A-Z]|[-]|[ ]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+$', $values->general_surname)) $errors[] = array('ERROR', _('Surname'), _('Surname contains invalid characters'));
 			if ( ($values->general_gecos=='') || ($values->general_gecos==' ')) {
 				$return->general_gecos = replace_umlaut($values->general_givenname) . " " . replace_umlaut($values->general_surname) ;
 				$errors[] = array('INFO', _('Gecos'), _('Inserted sur- and given name in gecos-field.'));
 				}
 			if ($values->general_group=='') $errors[] = array('ERROR', _('Primary group'), _('No primary group defined!'));
-			// Check if Username contents only valid characters
+			// Check if Username contains only valid characters
 			if ( !ereg('^([a-z]|[0-9]|[.]|[-]|[_])*$', $values->general_username))
-				$errors[] = array('ERROR', _('Username'), _('Username contents invalid characters. Valid characters are: a-z, 0-9 and .-_ !'));
+				$errors[] = array('ERROR', _('Username'), _('Username contains invalid characters. Valid characters are: a-z, 0-9 and .-_ !'));
 			// Check if user already exists
 			$return->general_username = $values->general_username;
 			$return->general_dn = $values->general_dn;
-			// Create automatic useraccount with number if original user allready exists
+			// Create automatic useraccount with number if original user already exists
 			while ($temp = ldapexists($return, $type, $values_old)) {
 				// get last character of username
 				$lastchar = substr($return->general_username, strlen($return->general_username)-1, 1);
@@ -216,19 +216,19 @@ function checkglobal($values, $type, $values_old=false) { // This functions chec
 					$return->general_username = $firstchars . (intval($lastchars)+1);
 				 	}
 				}
-			if ($values->general_username != $return->general_username) $errors[] = array('WARN', _('Username'), _('Username allready in use. Selected next free username.'));
+			if ($values->general_username != $return->general_username) $errors[] = array('WARN', _('Username'), _('Username in use. Selected next free username.'));
 			break;
 		case 'group' :
-			// Check if Groupname contents only valid characters
+			// Check if Groupname contains only valid characters
 			if ( !ereg('^([a-z]|[0-9]|[.]|[-]|[_])*$', $values->general_username))
-				$errors[] = array('ERROR', _('Groupname'), _('Groupname contents invalid characters. Valid characters are: a-z, 0-9 and .-_ !'));
+				$errors[] = array('ERROR', _('Groupname'), _('Groupname contains invalid characters. Valid characters are: a-z, 0-9 and .-_ !'));
 			if ($values->general_gecos=='') {
 				$return->general_gecos = $values->general_username ;
 				$errors[] = array('INFO', _('Gecos'), _('Inserted groupname in gecos-field.'));
 				}
 			// Check if user already exists
 			$return->general_username = $values->general_username;
-			// Create automatic groupaccount with number if original user allready exists
+			// Create automatic groupaccount with number if original user already exists
 			while ($temp = ldapexists($return, $type, $values_old)) {
 				// get last character of username
 				$lastchar = substr($return->general_username, strlen($return->general_username)-1, 1);
@@ -248,7 +248,7 @@ function checkglobal($values, $type, $values_old=false) { // This functions chec
 					$return->general_username = $firstchars . (intval($lastchars)+1);
 				 	}
 				}
-			if ($values->general_username != $return->general_username) $errors[] = array('WARN', _('Groupname'), _('Groupname allready in use. Selected next free groupname.'));
+			if ($values->general_username != $return->general_username) $errors[] = array('WARN', _('Groupname'), _('Groupname already in use. Selected next free groupname.'));
 			break;
 		case 'host' :
 			if ( substr($values->general_username, strlen($values->general_username)-1, strlen($values->general_username)) != '$' ) {
@@ -256,9 +256,9 @@ function checkglobal($values, $type, $values_old=false) { // This functions chec
 				$errors[] = array('WARN', _('Host name'), _('Added $ to hostname.'));
 				}
 			$return->general_username = $values->general_username;
-			// Check if Hostname contents only valid characters
+			// Check if Hostname contains only valid characters
 			if ( !ereg('^([a-z]|[A-Z]|[0-9]|[.]|[-]|[$])*$', $values->general_username))
-				$errors[] = array('ERROR', _('Host name'), _('Hostname contents invalid characters. Valid characters are: a-z, 0-9 and .-_ !'));
+				$errors[] = array('ERROR', _('Host name'), _('Hostname contains invalid characters. Valid characters are: a-z, 0-9 and .-_ !'));
 			// Check if Hostname already exists
 			$return->general_homedir = '/dev/null';
 			$return->general_shell = '/bin/false';
@@ -267,7 +267,7 @@ function checkglobal($values, $type, $values_old=false) { // This functions chec
 				$return->general_gecos = $values->general_username;
 				$errors[] = array('INFO', _('Gecos'), _('Inserted hostname in gecos-field.'));
 				}
-			// Create automatic groupaccount with number if original user allready exists
+			// Create automatic groupaccount with number if original user already exists
 			while ($temp = ldapexists($return, $type, $values_old)) {
 				// get last character of username
 				$lastchar = substr($return->general_username, strlen($return->general_username)-2, 1);
@@ -287,7 +287,7 @@ function checkglobal($values, $type, $values_old=false) { // This functions chec
 					$return->general_username = $firstchars . (intval($lastchars)+1). '$';
 				 	}
 				}
-			if ($values->general_username != $return->general_username) $errors[] = array('WARN', _('Host name'), _('Hostname allready in use. Selected next free hostname.'));
+			if ($values->general_username != $return->general_username) $errors[] = array('WARN', _('Host name'), _('Hostname already in use. Selected next free hostname.'));
 			break;
 		}
 	// Check if UID is valid. If none value was entered, the next useable value will be inserted
@@ -297,10 +297,10 @@ function checkglobal($values, $type, $values_old=false) { // This functions chec
 		unset($return->general_uidNumber);
 		}
 	// Check if Name-length is OK. minLength=3, maxLength=20
-	if ( !ereg('.{3,20}', $values->general_username)) $errors[] = array('ERROR', _('Name'), _('Name must content between 3 and 20 characters.'));
+	if ( !ereg('.{3,20}', $values->general_username)) $errors[] = array('ERROR', _('Name'), _('Name must contain between 3 and 20 characters.'));
 	// Check if Name starts with letter
 	if ( !ereg('^([a-z]|[A-Z]).*$', $values->general_username))
-		$errors[] = array('ERROR', _('Name'), _('Name contents invalid characters. First character must be a letter'));
+		$errors[] = array('ERROR', _('Name'), _('Name contains invalid characters. First character must be a letter'));
 	// Return values and errors
 	if (!$errors) return array($return);
 	 else return array($return, $errors);
@@ -315,7 +315,7 @@ function checkunix($values, $type) { // This function checks all unix account pa
 		$values->unix_password = str_replace(chr(00), '', $values->unix_password);
 		}
 	if ($type=='user' && !ereg('^([a-z]|[A-Z]|[0-9]|[\|]|[\#]|[\*]|[\,]|[\.]|[\;]|[\:]|[\_]|[\-]|[\+]|[\!]|[\%]|[\&]|[\/]|[\?]|[\{]|[\[]|[\(]|[\)]|[\]]|[\}])*$', $values->unix_password))
-		$errors[] = array('ERROR', _('Password'), _('Password contents invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
+		$errors[] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
 	if ( !ereg('^([0-9])*$', $values->unix_pwdminage))  $errors[] = array('ERROR', _('Password Minage'), _('Password Minage must be are natural number.'));
 	if ( $values->unix_pwdminage > $values->unix_pwdmaxage ) $errors[] = array('ERROR', _('Password Maxage'), _('Password Maxage must bigger as Password Minage.'));
 	if ( !ereg('^([0-9]*)$', $values->unix_pwdmaxage)) $errors[] = array('ERROR', _('Password Maxage'), _('Password Maxage must be are natural number.'));
@@ -359,18 +359,18 @@ function checksamba($values, $type) { // This function checks all samba account 
 			if ( (!$return->smb_smbhome=='') && (!ereg('^[\][\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+([\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+)+$', $return->smb_smbhome)))
 					$errors[] = array('ERROR', _('Home path'), _('Home path is invalid.'));
 			if ( !ereg('^([a-z]|[A-Z]|[0-9]|[\|]|[\#]|[\*]|[\,]|[\.]|[\;]|[\:]|[\_]|[\-]|[\+]|[\!]|[\%]|[\&]|[\/]|[\?]|[\{]|[\[]|[\(]|[\)]|[\]]|[\}])*$',
-				$values->smb_password)) $errors[] = array('ERROR', _('Password'), _('Password contents invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
+				$values->smb_password)) $errors[] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
 			if ( (!$return->smb_scriptPath=='') && (!ereg('^([/])*([a-z]|[0-9]|[.]|[-]|[_]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+([a-z]|[0-9]|[.]|[-]|[_]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])*'.
 				'([/]([a-z]|[0-9]|[.]|[-]|[_]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+([a-z]|[0-9]|[.]|[-]|[_]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])*)*$', $return->smb_scriptPath)))
-				$errors[] = array('ERROR', _('Script path'), _('Script path is invalid').'.');
+				$errors[] = array('ERROR', _('Script path'), _('Script path is invalid!'));
 			if ( (!$return->smb_profilePath=='') && (!ereg('^[/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*([/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*)*$', $return->smb_profilePath))
 				&& (!ereg('^[\][\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+([\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+)+$', $return->smb_profilePath)))
-					$errors[] = array('ERROR', _('Profile path'), _('Profile path is invalid').'.');
+					$errors[] = array('ERROR', _('Profile path'), _('Profile path is invalid!'));
 			if ((!$values->smb_smbuserworkstations=='') && !ereg('^([a-z]|[A-Z]|[0-9]|[.]|[-])+(([,])+([a-z]|[A-Z]|[0-9]|[.]|[-])+)*$', $values->smb_smbuserworkstations))
-				$errors[] = array('ERROR', _('Samba workstations'), _('Samba workstations is invalid.'));
+				$errors[] = array('ERROR', _('Samba workstations'), _('Samba workstations are invalid!'));
 			$return->smb_flagsW = 0;
 			if ((!$values->smb_domain=='') && !ereg('^([a-z]|[A-Z]|[0-9]|[-])+$', $values->smb_domain))
-				$errors[] = array('ERROR', _('Domain name'), _('Domain name contents invalid characters. Valid characters are: a-z, A-Z, 0-9 and -.'));
+				$errors[] = array('ERROR', _('Domain name'), _('Domain name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and -.'));
 			if ($values->smb_useunixpwd) $return->smb_useunixpwd = 1; else $return->smb_useunixpwd = 0;
 			if ($values->smb_password) {
 				// Encrypt password
@@ -383,7 +383,7 @@ function checksamba($values, $type) { // This function checks all samba account 
 			$return->smb_password = $values->unix_password;
 			$return->smb_flagsW = 1;
 			if ((!$values->smb_domain=='') && !ereg('^([a-z]|[A-Z]|[0-9]|[-])+$', $values->smb_domain))
-				$errors[] = array('ERROR', _('Domain Name'), _('Domain Name contents invalid characters. Valid characters are: a-z, A-Z, 0-9 and -.'));
+				$errors[] = array('ERROR', _('Domain name'), _('Domain name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and -.'));
 			if ($values->smb_useunixpwd) $return->smb_useunixpwd = 1; else $return->smb_useunixpwd = 0;
 			if ($values->smb_password) {
 				// Encrypt password
@@ -663,27 +663,24 @@ function ldapexists($values, $type, $values_old=false) { // This function will s
 
 function findgroups() { // Will return an array with all Groupnames found in LDAP
 	ldapreload('group');
-	$group = array_keys($_SESSION['groupDN']);
-	unset ($group[0]);
-	$group = array_values($group);
-	for ($i=0; $i<count($group); $i++) {
-		$start = strpos($group[$i], '=')+1;
-		$end = strpos($group[$i], ',');
-		$group[$i] = substr($group[$i], $start, $end-$start);
+	$groups = $_SESSION['groupDN'];
+	unset ($groups[0]);
+	foreach ($groups as $group) {
+		$return[] = $group['cn'];
 		}
-	sort ($group, SORT_STRING);
-	return $group;
+	sort ($return, SORT_STRING);
+	return $return;
 	}
 
 
 function getgid($groupname) { // Will return the the gid to an existing Groupname
 	ldapreload('group');
 	$search = 'cn='.$groupname;
-	$keys = array_keys($_SESSION['groupDN']);
+	$keys = $_SESSION['groupDN'];
 	unset ($keys[0]);
-	$keys = array_values($keys);
-	foreach ($keys as $key)
-		if (strstr($key, $search))  return $_SESSION['groupDN'][$key]['gidNumber'];
+	foreach ($keys as $key) {
+		if ($key['cn']==$groupname)  return $key['uidNumber'];
+		}
 	return -1;
 	}
 
@@ -751,9 +748,9 @@ function checkid($values, $type, $values_old=false) { // if value is empty will 
 	if ( $values->general_uidNumber < $minID || $values->general_uidNumber > $maxID) return sprintf(_('Please enter a value between %s and %s!'), $minID, $maxID);
 	foreach ($keys as $key)
 		if ($key['uidNumber']==$values->general_uidNumber) {
-			if (!$values_old) return _('ID is allready in use');
+			if (!$values_old) return _('ID is already in use');
 			if (($key['uidNumber']==$values->general_uidNumber) &&
-				($key['uidNumber']!=$values_old->general_uidNumber)) return _('ID is allready in use');
+				($key['uidNumber']!=$values_old->general_uidNumber)) return _('ID is already in use');
 			}
 	return intval($values->general_uidNumber);
 	}
@@ -998,7 +995,7 @@ function loadgroup($dn) { // Will load all needed values from an existing group
 
 
 function createuser($values) { // Will create the LDAP-Account
-	// 2 == Account allready exists at different location
+	// 2 == Account already exists at different location
 	// 1 == Account has been created
 	// 4 == Error while creating Account
 	// values stored in shadowExpire, days since 1.1.1970
@@ -1034,7 +1031,9 @@ function createuser($values) { // Will create the LDAP-Account
 			$attr['sambaPwdLastSet'] = time(); // sambaAccount_may
 			}
 		$attr['sambaSID'] = $values->smb_domain->SID . "-"  . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase); // sambaAccount_may
-		$attr['sambaPrimaryGroupSID'] = $values->smb_mapgroup; // sambaAccount_req
+		if ($values->smb_mapgroup!='') $attr['sambaPrimaryGroupSID'] = $values->smb_mapgroup; // sambaAccount_req
+			else $attr['sambaPrimaryGroupSID'] = $_SESSION['account']->smb_domain->SID . "-".
+							(2 * $_SESSION['account']->general_uidNumber + $values->smb_domain->RIDbase +1);
 		$attr['sambaPwdCanChange'] = $values->smb_pwdcanchange; // sambaAccount_may
 		$attr['sambaPwdMustChange'] = $values->smb_pwdmustchange; // sambaAccount_may
 		$attr['sambaAcctFlags'] = smbflag(values); // sambaAccount_may
@@ -1137,7 +1136,7 @@ function createuser($values) { // Will create the LDAP-Account
 	}
 
 function modifyuser($values,$values_old) { // Will modify the LDAP-Account
-	// 2 == Account allready exists at different location
+	// 2 == Account already exists at different location
 	// 3 == Account has been modified
 	// 5 == Error while modifying Account
 	// Value stored in shadowExpire, days since 1.1.1970
@@ -1452,7 +1451,7 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 
 
 function createhost($values) { // Will create the LDAP-Account
-	// 2 == Account allready exists at different location
+	// 2 == Account already exists at different location
 	// 1 == Account has been created
 	// 3 == Account has been modified
 	// 4 == Error while creating Account
@@ -1522,7 +1521,7 @@ function createhost($values) { // Will create the LDAP-Account
 	}
 
 function modifyhost($values,$values_old) { // Will modify the LDAP-Account
-	// 2 == Account allready exists at different location
+	// 2 == Account already exists at different location
 	// 3 == Account has been modified
 	// 5 == Error while modifying Account
 	// Value stored in shadowExpire, days since 1.1.1970
@@ -1641,7 +1640,7 @@ function modifyhost($values,$values_old) { // Will modify the LDAP-Account
 
 
 function creategroup($values) { // Will create the LDAP-Group
-	// 2 == Group allready exists at different location
+	// 2 == Group already exists at different location
 	// 1 == Group has been created
 	// 3 == Group has been modified
 	// 4 == Error while creating Group
@@ -1683,7 +1682,7 @@ function creategroup($values) { // Will create the LDAP-Group
 	}
 
 function modifygroup($values,$values_old) { // Will modify the LDAP-Group
-	// 2 == Group allready exists at different location
+	// 2 == Group already exists at different location
 	// 3 == Group has been modified
 	// 5 == Error while modifying Group
 	$values->general_dn = 'cn=' . $values->general_username . ',' . $values->general_dn;

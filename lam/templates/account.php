@@ -159,29 +159,28 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 				if ($_POST['f_smb_domain'] == $samba3domains[$i]->name) {
 					$_SESSION['account']->smb_domain = $samba3domains[$i];
 					}
-			switch ($_POST['f_smb_mapgroup']) {
-				case '*'._('Domain Guests'): $_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-" . '514'; break;
-				case '*'._('Domain Users'): $_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-" . '513'; break;
-				case '*'._('Domain Admins'): $_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-" . '512'; break;
-				case $_SESSION['account']->general_username:
-					if ($_SESSION['config']->samba3 == 'yes') {
-						if ($_SESSION['account']->type == 'group') $_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-".
-							(2 * $_SESSION['account']->general_uidNumber + $values->smb_domain->RIDbase +1);
-						else $_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-".
-							(2 * getgid($_SESSION['account']->general_group) + $values->smb_domain->RIDbase);
-						}
-					else {
-						if ($_SESSION['account']->type == 'group') $_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-".
-							(2 * $_SESSION['account']->general_uidNumber +1001);
-						else $_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-".
-							(2 * getgid($_SESSION['account']->general_group) +1000);
-						}
-					break;
-				}
 			}
 		else {
 			if (isset($_POST['f_smb_domain'])) $_SESSION['account']->smb_domain = $_POST['f_smb_domain'];
 				else $_SESSION['account']->smb_domain = '';
+			}
+
+		switch ($_POST['f_smb_mapgroup']) {
+			case '*'._('Domain Guests'): $_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-" . '514'; break;
+			case '*'._('Domain Users'): $_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-" . '513'; break;
+			case '*'._('Domain Admins'): $_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-" . '512'; break;
+			case $_SESSION['account']->general_group:
+				if ($_SESSION['config']->samba3 == 'yes')
+					$_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-".
+						(2 * getgid($_SESSION['account']->general_group) + $_SESSION['account']->smb_domain->RIDbase +1);
+				else $_SESSION['account']->smb_mapgroup = (2 * getgid($_SESSION['account']->general_group) + 1001);
+				break;
+			case $_SESSION['account']->general_username:
+				if ($_SESSION['config']->samba3 == 'yes')
+					$_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-".
+						(2 * $_SESSION['account']->general_uidNumber + $_SESSION['account']->smb_domain->RIDbase +1);
+				else $_SESSION['account']->smb_mapgroup = (2 * $_SESSION['account']->general_uidNumber + 1001);
+				break;
 			}
 		// Reset password if reset button was pressed. Button only vissible if account should be modified
 		// Check if values are OK and set automatic values. if not error-variable will be set
@@ -1005,7 +1004,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		// Quota Settings
 		echo '<tr><td><input name="select" type="hidden" value="quota">';
 		echo _('Quota properties');
-		echo '</td></tr>'."\n".'<tr><td>'; echo _('Mointpoint'); echo '</td>'."\n".'<td>'; echo _('Used blocks'); echo '</td>'."\n".'<td>';
+		echo '</td></tr>'."\n".'<tr><td>'; echo _('Mountpoint'); echo '</td>'."\n".'<td>'; echo _('Used blocks'); echo '</td>'."\n".'<td>';
 		echo _('Soft block limit'); echo '</td>'."\n".'<td>'; echo _('Hard block limit'); echo '</td>'."\n".'<td>'; echo _('Grace block period');
 		echo '</td>'."\n".'<td>'; echo _('Used inodes'); echo '</td>'."\n".'<td>'; echo _('Soft inode limit'); echo '</td>'."\n".'<td>';
 		echo _('Hard inode limit'); echo '</td>'."\n".'<td>'; echo _('Grace inode period'); echo '</td></tr>'."\n";

@@ -185,7 +185,7 @@ switch ($select) {
 				}
 		for ($i=0; $i<sizeof($groups); $i++)
 			if ($_SESSION['accounts'][$i]->general_group!='')
-				StatusMessage('INFO', _('Group ').
+				StatusMessage('INFO', _('Group').' '
 					$_SESSION['accounts'][$i]->general_group.' '._('not found!'), _('It will be created.'));
 		if ($_FILES['userfile']['size']>0) {
 			fclose($handle);
@@ -242,7 +242,7 @@ switch ($select) {
 							}
 						}
 					}
-			if ($values->general_username != $return->general_username) $errors[] = array('WARN', _('Username'), _('Username allready in use. Selected next free username.'));
+			if ($values->general_username != $return->general_username) $errors[] = array('WARN', _('Username'), _('Username in use. Selected next free username.'));
 				$found=false;
 				for ($i=0; $i<sizeof($_SESSION['errors'][$row]); $i++)
 					if ($_SESSION['errors'][$row][$i][0] == 'INFO') $found=true;
