@@ -29,6 +29,23 @@ include_once("../../lib/ldap.inc");
 session_save_path("../../sess");
 @session_start();
 
+// check if button was pressed and if we have to add/delete a group
+if ($_POST['new_group'] || $_POST['del_group']){
+	// add new group
+	if ($_POST['new_group']){
+		echo("<meta http-equiv=\"refresh\" content=\"0; URL=../account.php?type=group\">");
+		exit;
+	}
+	// delete group(s)
+	if ($_POST['del_group']){
+		// search for checkboxes
+		$groups = array_keys($_POST, "on");
+		$groupstr = implode(";", $groups);
+		echo("<meta http-equiv=\"refresh\" content=\"0; URL=../delete.php?type=group&DN='$groupstr'\">");
+		}
+		exit;
+}
+
 echo "<html><head><title>listgroups</title>\n";
 echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
 echo "</head><body>\n";
@@ -68,7 +85,7 @@ if ($sr) {
 }
 else echo ("<br><br><font color=\"red\"><b>" . _("LDAP Search failed! Please check your preferences. <br> No Groups found!") . "</b></font><br><br>");
 
-echo ("<form action=\"../account.php?type=group\" method=\"post\">\n");
+echo ("<form action=\"listgroups.php?type=group\" method=\"post\">\n");
 
 // delete first array entry which is "count"
 array_shift($info);
@@ -125,8 +142,8 @@ for ($i = 0; $i < sizeof($info); $i++) { // ignore last entry in array which is 
 echo ("</table>");
 echo ("<p>&nbsp</p>\n");
 echo ("<table align=\"left\" border=\"0\">");
-echo ("<tr><td align=\"left\"><a href=\"../account.php?type=group\" target=\"_self\">" . _("New Group") . "</a>");
-echo ("&nbsp&nbsp&nbsp<a href=\"../delete.php?type=group\" target=\"_self\">" . _("Delete Group(s)") . "</a></td></tr>\n");
+echo ("<tr><td align=\"left\"><input type=\"submit\" name=\"new_group\" value=\"" . _("New Group") . "\"></td>");
+echo ("<td align=\"left\"><input type=\"submit\" name=\"del_group\" value=\"" . _("Delete Group(s)") . "\"></td></tr>");
 echo ("</table>\n");
 echo ("</form>\n");
 echo "</body></html>\n";
