@@ -41,8 +41,6 @@ function createUserPDF($accounts) {
 	$pdfFile->setCreator("LDAP Account Manager (pdf.inc)");
 // Loop for every sumbitted account and print its values on a extra page
 	foreach ($accounts as $account) {
-		$iv = base64_decode($_COOKIE['IV']);
-		$key = base64_decode($_COOKIE['Key']);
 		$pdfFile->addPage();
 		// Load string with additional information from session
 		$info_string = $_SESSION['config']->pdftext;
@@ -141,8 +139,7 @@ function createUserPDF($accounts) {
 		elseif($account->unix_password == "") {
 		}
 		else {
-			$account->unix_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($account->unix_password), MCRYPT_MODE_ECB, $iv);
-			$account->unix_password = str_replace(chr(00), '', $account->unix_password);
+			$account->unix_password = $_SESSION['ldap']->decrypt(base64_decode($account->unix_password));
 			$pdfFile->setFont("times","B",10);
 			$pdfFile->Cell(50,5,_("Unix password") . ":",0,0,"R",0);
 			$pdfFile->setFont("times","",10);
@@ -199,8 +196,7 @@ function createUserPDF($accounts) {
 		elseif($account->smb_password == "") {
 		}
 		else {
-			$account->smb_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($account->smb_password), MCRYPT_MODE_ECB, $iv);
-			$account->smb_password = str_replace(chr(00), '', $account->smb_password);
+			$account->smb_password = $_SESSION['ldap']->decrypt(base64_decode($account->smb_password));
 			$pdfFile->setFont("times","B",10);
 			$pdfFile->Cell(50,5,_("Windows password") . ":",0,0,"R",0);
 			$pdfFile->setFont("times","",10);

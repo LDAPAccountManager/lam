@@ -161,8 +161,6 @@ switch ($select) {
 			echo _('Creating users. Please stand by ....');
 			echo "</b></legend>\n<table border=0 width=\"100%\">\n";
 		// Keys needed to encrypt passwords from session
-		$iv = base64_decode($_COOKIE["IV"]);
-		$key = base64_decode($_COOKIE["Key"]);
 		$stay=true;
 		// Stay in loop as long there are still users to create and no error did ocour
 		while (($_SESSION['pointer'] < sizeof($_SESSION['accounts'])) && $stay) {
@@ -227,8 +225,7 @@ switch ($select) {
 			$_SESSION['accounts'][$_SESSION['pointer']]->smb_profilePath = str_replace('$group', $_SESSION['accounts'][$_SESSION['pointer']]->general_group, $_SESSION['accounts'][$_SESSION['pointer']]->smb_profilePath);
 			$_SESSION['accounts'][$_SESSION['pointer']]->smb_smbhome = str_replace('$user', $_SESSION['accounts'][$_SESSION['pointer']]->general_username, $_SESSION['accounts'][$_SESSION['pointer']]->smb_smbhome);
 			$_SESSION['accounts'][$_SESSION['pointer']]->smb_smbhome = str_replace('$group', $_SESSION['accounts'][$_SESSION['pointer']]->general_group, $_SESSION['accounts'][$_SESSION['pointer']]->smb_smbhome);
-			$_SESSION['accounts'][$_SESSION['pointer']]->unix_password = base64_encode(mcrypt_encrypt(
-				MCRYPT_RIJNDAEL_256, $key, genpasswd(), MCRYPT_MODE_ECB, $iv));
+			$_SESSION['accounts'][$_SESSION['pointer']]->unix_password = base64_encode($_SESSION['ldap']->encrypt(genpasswd()));
 			$_SESSION['accounts'][$_SESSION['pointer']]->smb_password = $_SESSION['accounts'][$_SESSION['pointer']]->unix_password;
 				// Only create user if we have at least 5sec time to create the user
 			if ( (time()-$time)<(get_cfg_var('max_execution_time')-10)) {
@@ -474,8 +471,6 @@ function loadfile() {
 			$profile->quota = array_values($profile->quota);
 			}
 		// Get keys to en/decrypt passwords
-		$iv = base64_decode($_COOKIE["IV"]);
-		$key = base64_decode($_COOKIE["Key"]);
 		for ($row=0; $line_array=fgetcsv($handle,2048); $row++) {
 			 // loops for every row
 			// Set corrent user to profile
@@ -508,8 +503,7 @@ function loadfile() {
 			// Set DN without uid=$username
 			else $_SESSION['accounts'][$row]->general_dn = $_POST['f_general_suffix'];
 			// Create Random Password
-			$_SESSION['accounts'][$row]->unix_password = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256,
-				$key, genpasswd(), MCRYPT_MODE_ECB, $iv));
+			$_SESSION['accounts'][$row]->unix_password = base64_encode($_SESSION['ldap']->encrypt(genpasswd()));
 			$_SESSION['accounts'][$row]->smb_password=$_SESSION['accounts'][$row]->unix_password;
 			}
 		}

@@ -96,7 +96,7 @@ if ($_POST['submit'] || $_POST['cancel']) {
 $back = false;
 if ($_GET['back'] || $_POST['back']) {
 	$back = true;
-	$auth = $_SESSION['confwiz_ldap']->decrypt();
+	$auth = $_SESSION['confwiz_ldap']->decrypt_login();
 }
 
 echo $_SESSION['header'];

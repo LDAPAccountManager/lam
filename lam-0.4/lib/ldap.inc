@@ -24,6 +24,7 @@ $Id$
 // ldap.inc provides basic functions to connect to the OpenLDAP server.
 
 include_once("config.inc");
+include_once("blowfish.inc");
 
 // converts a HEX string to a binary value
 function hex2bin($value) {
@@ -233,7 +234,7 @@ class Ldap{
 			return false;
 		}
 		// save password und username encrypted
-		$this->encrypt($user, $passwd);
+		$this->encrypt_login($user, $passwd);
 		$this->server = @ldap_connect($this->conf->get_ServerURL());
 		if ($this->server) {
 			// use LDAPv3
@@ -386,7 +387,7 @@ class Ldap{
 
 	// reconnects to LDAP server when deserialized
 	function __wakeup() {
-		$data = $this->decrypt();
+		$data = $this->decrypt_login();
 		$this->connect($data[0], $data[1]);
 		// change random number
 		mt_srand($this->rand + (microtime() * 1000000));
@@ -415,32 +416,74 @@ class Ldap{
 		$this->rand = mt_rand();
 	}
 
+	// encrypts a string
+	// $data: string to encrypt
+	// return: encrypted string
+	function encrypt($data) {
+		// use MCrypt if available
+		if (function_exists(mcrypt_create_iv)) {
+			// read key and iv from cookie
+			$iv = base64_decode($_COOKIE["IV"]);
+			$key = base64_decode($_COOKIE["Key"]);
+			// encrypt string
+			return mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $data, MCRYPT_MODE_ECB, $iv);
+		}
+		// use Blowfish if MCrypt is not available
+		else {
+			// read key and iv from cookie
+			$iv = base64_decode($_COOKIE["IV"]);
+			$key = base64_decode($_COOKIE["Key"]);
+			$b_key = $iv . $key;
+			// encrypt string
+			$b_fish = new Cipher_blowfish();
+			return $b_fish->encrypt($data, $b_key);
+		}
+	}
+
+	// decrypts a string
+	// $data: string to decrypt
+	// return: decrypted string
+	function decrypt($data) {
+		// use MCrypt if available
+		if (function_exists(mcrypt_create_iv)) {
+			// read key and iv from cookie
+			$iv = base64_decode($_COOKIE["IV"]);
+			$key = base64_decode($_COOKIE["Key"]);
+			// decrypt string
+			$ret = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, $data, MCRYPT_MODE_ECB, $iv);
+			$ret = str_replace(chr(00), "", $ret);
+			return $ret;
+		}
+		// use Blowfish if MCrypt is not available
+		else {
+			// read key and iv from cookie
+			$iv = base64_decode($_COOKIE["IV"]);
+			$key = base64_decode($_COOKIE["Key"]);
+			$b_key = $iv . $key;
+			// decrypt string
+			$b_fish = new Cipher_blowfish();
+			return $b_fish->decrypt($data, $b_key);
+		}
+	}
+
 	// encrypts username and password
 	// $username: LDAP user name
 	// $password: LDAP password
-	function encrypt($username, $password) {
-		// read key and iv from cookie
-		$iv = base64_decode($_COOKIE["IV"]);
-		$key = base64_decode($_COOKIE["Key"]);
+	function encrypt_login($username, $password) {
 		// encrypt username and password
-		$this->username = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $username, MCRYPT_MODE_ECB, $iv));
-		$this->password = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $password, MCRYPT_MODE_ECB, $iv));
+		$this->username = base64_encode($this->encrypt($username));
+		$this->password = base64_encode($this->encrypt($password));
 	}
 
 	// decrypts username and password
 	// returns an array
 	// return[0]: user name
 	// return[1]: password
-	function decrypt() {
-		// read key and iv from cookie
-		$iv = base64_decode($_COOKIE["IV"]);
-		$key = base64_decode($_COOKIE["Key"]);
+	function decrypt_login() {
 		// decrypt username and password
-		$username = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($this->username), MCRYPT_MODE_ECB, $iv);
-		$password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($this->password), MCRYPT_MODE_ECB, $iv);
+		$username = $this->decrypt(base64_decode($this->username));
+		$password = $this->decrypt(base64_decode($this->password));
 		$ret = array($username, $password);
-		$ret[0] = str_replace(chr(00), "", $ret[0]);
-		$ret[1] = str_replace(chr(00), "", $ret[1]);
 		return $ret;
 	}
 
