@@ -144,7 +144,14 @@ class Ldap{
 		}
 	}
 	// add root suffix if needed
-	if (!in_array($suffix, $ret)) {
+	$found == false;
+	for ($i = 0; $i < sizeof($ret); $i++) { // search suffix case-intensitive
+		if (strtolower($suffix) == strtolower($ret[$i])) {
+			$found = true;
+			break;
+		}
+	}
+	if (!$found) {
 		$ret[] = $suffix;
 	}
 	return $ret;
