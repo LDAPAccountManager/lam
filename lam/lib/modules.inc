@@ -25,6 +25,7 @@ $Id$
 */
 
 include_once("cache.inc");
+include_once("account.inc");
 
 /* We have to include all modules
 * before start session
