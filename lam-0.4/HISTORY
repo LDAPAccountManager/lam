@@ -2,6 +2,9 @@
   - fixed bugs:
       plain posix groups could not be used as Samba 3 primary group
       if magic_quotes_gpc in php.ini is was set to "Off", several pages did not work
+      some smaller bugs in mass upload
+      Samba hash values for hosts were not correct
+      Unix passwords could be disabled but not reenabled
 
 
 08.02.2004 0.4.3
