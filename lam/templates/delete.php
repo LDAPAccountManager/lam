@@ -32,11 +32,12 @@ session_save_path('../sess');
 echo '<html><head><title>';
 echo _('Delete Account');
 echo '</title>
-	</head><body>
+	</head>
 	<link rel="stylesheet" type="text/css" href="../style/layout.css">
-	<form action="delete.php" method="post">
 	<meta http-equiv="pragma" content="no-cache">
 	<meta http-equiv="cache-control" content="no-cache">
+	<body>
+	<form action="delete.php" method="post">
 	<table rules="all" class="delete" width="100%">
 	<tr><td>';
 
