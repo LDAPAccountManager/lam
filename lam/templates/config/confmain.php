@@ -56,7 +56,7 @@ if ($_POST['back'] || $_POST['submitconf']){
 		if ($_POST['grplstattr']) $grplstattr = $_POST['grplstattr'];
 		if ($_POST['hstlstattr']) $hstlstattr = $_POST['hstlstattr'];
 		if ($_POST['maxlistentries']) $maxlistentries = $_POST['maxlistentries'];
-		if ($_POST['language']) $language = $_POST['language'];
+		if ($_POST['lang']) $lang = $_POST['lang'];
 		if ($_POST['scriptpath']) $scriptpath = $_POST['scriptpath'];
 		if ($_POST['samba3']) $samba3 = $_POST['samba3'];
 		if ($_POST['domainSID']) $domainSID = $_POST['domainSID'];
@@ -67,7 +67,7 @@ if ($_POST['back'] || $_POST['submitconf']){
 		if ($_POST['filename']) $filename = $_POST['filename'];
 		session_register('passwd', 'passwd1', 'passwd2', 'serverurl', 'admins', 'suffusers',
 			'suffgroups', 'suffhosts', 'minUID', 'maxUID', 'minGID', 'maxGID', 'minMach',
-			'maxMach', 'usrlstattr', 'grplstattr', 'hstlstattr', 'maxlistentries', 'language',
+			'maxMach', 'usrlstattr', 'grplstattr', 'hstlstattr', 'maxlistentries', 'lang',
 			'scriptpath', 'scriptserver', 'samba3', 'domainSID', 'filename');
 		echo("<meta http-equiv=\"refresh\" content=\"0; URL=confsave.php\">");
 	}
@@ -263,7 +263,7 @@ if(is_file($languagefile))
 	}
 	fclose($file);
 // generate language list
-echo ("<select name=\"language\">");
+echo ("<select name=\"lang\">");
 for ($i = 0; $i < sizeof($languages); $i++) {
 	$entry = explode(":", $languages[$i]);
 	if ($_SESSION['config']->get_defaultLanguage() != $languages[$i]) echo("<option value=\"" . $languages[$i] . "\">" . $entry[2] . "</option>\n");

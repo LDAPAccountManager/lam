@@ -52,7 +52,7 @@ if ($_SESSION['usrlstattr']) $usrlstattr = $_SESSION['usrlstattr'];
 if ($_SESSION['grplstattr']) $grplstattr = $_SESSION['grplstattr'];
 if ($_SESSION['hstlstattr']) $hstlstattr = $_SESSION['hstlstattr'];
 if ($_SESSION['maxlistentries']) $maxlistentries = $_SESSION['maxlistentries'];
-if ($_SESSION['language']) $language = $_SESSION['language'];
+if ($_SESSION['lang']) $lang = $_SESSION['lang'];
 if ($_SESSION['scriptpath']) $scriptpath = $_SESSION['scriptpath'];
 if ($_SESSION['scriptserver']) $scriptserver = $_SESSION['scriptserver'];
 if ($_SESSION['samba3']) $samba3 = $_SESSION['samba3'];
@@ -153,7 +153,7 @@ if (!$maxlistentries) {
 	exit;
 }
 
-if (!$language) {
+if (!$lang) {
 	echo ("<font color=\"red\"><b>" . _("Language is not defined!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
@@ -187,7 +187,7 @@ $conf->set_userlistAttributes($usrlstattr);
 $conf->set_grouplistAttributes($grplstattr);
 $conf->set_hostlistAttributes($hstlstattr);
 $conf->set_MaxListEntries($maxlistentries);
-$conf->set_defaultLanguage($language);
+$conf->set_defaultLanguage($lang);
 $conf->set_samba3($samba3);
 $conf->set_domainSID($domainSID);
 // optional
@@ -217,29 +217,29 @@ echo ("<br><br><br><br><br><a href=\"../login.php\" target=\"_top\">" . _("Back 
 echo("</body></html>");
 
 // remove settings from session
-unset($_SESSION['passwd']);
-unset($_SESSION['passwd1']);
-unset($_SESSION['passwd2']);
-unset($_SESSION['serverurl']);
-unset($_SESSION['admins']);
-unset($_SESSION['suffusers']);
-unset($_SESSION['suffgroups']);
-unset($_SESSION['suffhosts']);
-unset($_SESSION['minUID']);
-unset($_SESSION['maxUID']);
-unset($_SESSION['minGID']);
-unset($_SESSION['maxGID']);
-unset($_SESSION['minMach']);
-unset($_SESSION['maxMach']);
-unset($_SESSION['usrlstattr']);
-unset($_SESSION['grplstattr']);
-unset($_SESSION['hstlstattr']);
-unset($_SESSION['maxlistentries']);
-unset($_SESSION['language']);
-unset($_SESSION['scriptpath']);
-unset($_SESSION['scriptserver']);
-unset($_SESSION['samba3']);
-unset($_SESSION['domainSID']);
-unset($_SESSION['filename']);
+session_unregister('passwd');
+session_unregister('passwd1');
+session_unregister('passwd2');
+session_unregister('serverurl');
+session_unregister('admins');
+session_unregister('suffusers');
+session_unregister('suffgroups');
+session_unregister('suffhosts');
+session_unregister('minUID');
+session_unregister('maxUID');
+session_unregister('minGID');
+session_unregister('maxGID');
+session_unregister('minMach');
+session_unregister('maxMach');
+session_unregister('usrlstattr');
+session_unregister('grplstattr');
+session_unregister('hstlstattr');
+session_unregister('maxlistentries');
+session_unregister('lang');
+session_unregister('scriptpath');
+session_unregister('scriptserver');
+session_unregister('samba3');
+session_unregister('domainSID');
+session_unregister('filename');
 
 ?>

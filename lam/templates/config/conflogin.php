@@ -32,6 +32,32 @@ session_save_path("../../sess");
 
 setlanguage();
 
+// remove settings from session
+session_unregister('passwd');
+session_unregister('passwd1');
+session_unregister('passwd2');
+session_unregister('serverurl');
+session_unregister('admins');
+session_unregister('suffusers');
+session_unregister('suffgroups');
+session_unregister('suffhosts');
+session_unregister('minUID');
+session_unregister('maxUID');
+session_unregister('minGID');
+session_unregister('maxGID');
+session_unregister('minMach');
+session_unregister('maxMach');
+session_unregister('usrlstattr');
+session_unregister('grplstattr');
+session_unregister('hstlstattr');
+session_unregister('maxlistentries');
+session_unregister('lang');
+session_unregister('scriptpath');
+session_unregister('scriptserver');
+session_unregister('samba3');
+session_unregister('domainSID');
+session_unregister('filename');
+
 echo ("<?xml version=\"1.0\" encoding=\"ISO-8859-15\"?>");
 echo ("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">");
 
