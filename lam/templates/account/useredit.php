@@ -758,12 +758,6 @@ if (is_array($errors))
 
 // print_r($account_new);
 //print_r($account_old);
-$_SESSION['cache'] = new cache();
-$temp = new accountContainer('user');
-$temp->add_objectClass('inetOrgPerson');
-$temp->module['inetOrgPerson']->display_html_attributes();
-
-exit;
 
 switch ($select_local) {
 	/* Select which part of page should be loaded and check values
