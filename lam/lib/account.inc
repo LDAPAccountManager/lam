@@ -381,13 +381,13 @@ class accountContainer {
 			if ($this->order[$i]==$this->order[$this->module['main']->current_page] || !$this->module[$this->order[$i]]->module_ready() ) {
 				// print disabled button
 				echo "<input name=\"form_main_".$this->order[$i]."\" type=\"submit\" value=\"";
-				echo $this->module[$this->order[$i]]->alias;
+				echo $this->module[$this->order[$i]]->get_alias();
 				echo "\" disabled>\n<br>";
 				}
 			else {
 				// print normal button
 				echo "<input name=\"form_main_".$this->order[$i]."\" type=\"submit\" value=\"";
-				echo $this->module[$this->order[$i]]->alias;
+				echo $this->module[$this->order[$i]]->get_alias();
 				echo "\">\n<br>";
 				}
 			}
@@ -395,7 +395,7 @@ class accountContainer {
 		echo "</fieldset></td></tr>\n";
 		echo "</table></td>\n<td>";
 		echo "<td><fieldset class=\"".$this->type."edit-dark\"><legend class=\"".$this->type."edit-bright\"><b>";
-			echo $this->module[$this->order[$this->module['main']->current_page]]->alias;
+			echo $this->module[$this->order[$this->module['main']->current_page]]->get_alias();
 			echo "</b></legend>\n";
 		// display html-code from mdule
 		$function = '$result = $this->module[$this->order[$this->module[\'main\']->current_page]]->display_html_'.$this->module['main']->subpage.'($post);';
@@ -706,10 +706,10 @@ class accountContainer {
 		while ( (count($module) != count($modulelist)) && ($remain!=0) ) {
 			$remain--;
 			foreach ($module as $moduleitem) {
-				$required = $this->module[$moduleitem]->dependencies();
+				$required = $this->module[$moduleitem]->get_dependencies($this->type);
 				$everything_found = true;
-				if (is_array($required)) {
-					foreach ($required as $requireditem)
+				if (is_array($required['require'])) {
+					foreach ($required['require'] as $requireditem)
 						if (!in_array($reuquireditem, $modulelist)) $everthing_found = false;
 					}
 				if ($everything_found && !in_array($moduleitem, $order) ) $order[] = $moduleitem;
@@ -736,10 +736,10 @@ class accountContainer {
 		while ( (count($module) != count($modulelist)) && ($remain!=0) ) {
 			$remain--;
 			foreach ($module as $moduleitem) {
-				$required = $this->module[$moduleitem]->dependencies();
+				$required = $this->module[$moduleitem]->get_dependencies($this->type);
 				$everything_found = true;
-				if (is_array($required)) {
-					foreach ($required as $requireditem)
+				if (is_array($required['require'])) {
+					foreach ($required['require'] as $requireditem)
 						if (!in_array($reuquireditem, $modulelist)) $everthing_found = false;
 					}
 				if ($everything_found && !in_array($moduleitem, $order) ) $order[] = $moduleitem;
@@ -906,7 +906,7 @@ class accountContainer {
 		}
 
 	}
-
+/*
 // This class keeps all needed values for any account
 class account {
 	// Type : user | group | host
@@ -955,7 +955,7 @@ class account {
 					* mountpoint, used blocks, soft block limit, hard block limit, grace block period, used inodes,
 					* soft inode limit, hard inode limit, grace inode period
 					*/
-	// Personal Settings
+/*	// Personal Settings
 	var $personal_title;		// string title of user
 	var $personal_mail;		// string mailaddress of user
 	var $personal_telephoneNumber;	// string telephonenumber of user
@@ -966,7 +966,7 @@ class account {
 	var $personal_postalAddress;	// string postal Address of user
 	var $personal_employeeType;	// string employe type of user
 	}
-
+*/
 
 
 /* Return a list of all shells listed in ../config/shells

@@ -52,30 +52,43 @@ class main {
 		$this->subpage = '';
 		// Get local copy of name of account_container in session
 		$this->base = $base;
-		// Set aliasname
-		$this->alias = _('main');
 		}
 
 
 	// Variables
-
 	// This variable stores the number of the current displayed page
 	var $current_page;
 	// This variable os set to the pagename of a subpage if it should be displayed
 	var $subpage;
 	// name of accountContainer so we can read other classes in accuontArray
 	var $base;
-	// Alias Name. This name is shown in the menu instead of main
-	var $alias;
+
+	function get_alias() {
+		return _('main');
+		}
 
 	/* This function returns a list with all required modules
 	*/
-	function dependencies() {
-		return array();
+	function get_dependencies($scope) {
+		return array('require' => array(), 'conflict' => array() );
 		}
 
 	function module_ready() {
 		return true;
+		}
+
+	/* This function returns a list of all html-pages in module
+	* This is usefull for mass upload and pdf-files
+	* because lam can walk trough all pages itself and do some
+	* error checkings
+	*/
+	function pages() {
+		return array('attributes', 'finish');
+		}
+
+	// Dummy functions to make module compatible
+	function get_attributes() {
+		return array();
 		}
 
 	// Dummy functions to make module compatible
@@ -88,9 +101,79 @@ class main {
 		return array();
 		}
 
-	// Dummy functions to make module compatible
-	function get_attributes() {
-		return array();
+	function delete_attributes($post) {
+		$return = array();
+		return $return;
+		}
+
+	/* Write variables into object and do some regexp checks
+	*/
+	function proccess_attributes($post) {
+		// change dn
+		if ($post['suffix']!='') $_SESSION[$this->base]->dn = $post['suffix'];
+		// load profile
+		if ($post['selectLoadProfile'] && $post['loadProfile']) {
+			// *** fixme load*Profile must return array in the same way ldap_get_attributes does.
+			$function = '$newattributes = load'.ucfirst($scope).'Profile($post[\'selectLoadProfile\']);';
+			eval($function);
+			// pass newattributes to each module
+			$modules = array_keys($_SESSION[$this->base]->module);
+			foreach ($modules as $module) $_SESSION[$this->base]->module[$module]->load_attributes($newattributes);
+			return 0;
+			}
+		// save account
+		if ($post['create']) {
+			$success = $_SESSION[$this->base]->save_account();
+			if (is_array($success)) return array($success);
+			// return name of subpage
+			return 'finish';
+			}
+		// save profile
+		if ($post['saveProfile']) {
+			if ($post['selectSaveProfile']=='') $errors[] = array('ERROR', _('Save profile'), _('No profilename given.'));
+			else {
+				$function = 'save'.ucfirst($scope).'Profile();';
+				eval($function);
+				if ($function) $errors[] = array('INFO', _('Save profile'), _('New profile created.'));
+					else $errors[] = array('ERROR', _('Save profile'), _('Wrong profilename given.'));
+				}
+			if (is_array($errors)) return $errors;
+				else return 0;
+			}
+		return 0;
+		}
+
+	/* Write variables into object and do some regexp checks
+	*/
+	function proccess_finish($post) {
+		if ($post['createagain']) {
+			// Reset objects
+			$modules = array_keys($_SESSION[$this->base]->module);
+			foreach ($modules as $module)
+				if ($module!='main') unset($_SESSION[$this->base]->module[$module]);
+			// Reset accountContainer
+			$_SESSION[$this->base]->dn = '';
+			$_SESSION[$this->base]->dn_orig = '';
+			$_SESSION[$this->base]->attributes = array();
+			$_SESSION[$this->base]->order = array();
+			$this->current_page = 0;
+			$this->subpage = '';
+			// Add all required objects etc.
+			$_SESSION[$this->base]->new_account();
+			return 0;
+			}
+		if ($post['backmain']) {
+			// Return to *-list
+			// *** fixme unset accountContainer in session
+			metaRefresh("../lists/list".$_SESSION[$this->base]->type."s.php");
+			exit;
+			}
+		if ($post['outputpdf']) {
+			// Create / display PDf-file
+			$function = 'create'.ucfirst($_SESSION[$this->base]->type).'PDF(array($_SESSION[$this->base]));';
+			eval($function);
+			exit;
+			}
 		}
 
 	function display_html_attributes($post) {
@@ -108,7 +191,7 @@ class main {
 		echo "<table border=0 width=\"100%\">\n";
 		echo "<tr>\n";
 		echo "<td>" . _('Suffix') . "</td>\n";
-		echo "<td><select name=\"form_main_suffix\">";
+		echo "<td><select name=\"suffix\">";
 		// loop through all suffixes
 		$function = '$suffix = $_SESSION[$_SESSION[$this->base]->config]->get_'.ucfirst($_SESSION[$this->base]->type).'Suffix();';
 		eval($function);
@@ -127,22 +210,22 @@ class main {
 		if (count($profilelist)!=0) {
 			echo "<tr>\n";
 			echo "<td>" . _("Load profile") . "</td>\n";
-			echo "<td><select name=\"form_main_selectLoadProfile\">";
+			echo "<td><select name=\"selectLoadProfile\">";
 				foreach ($profilelist as $profile) echo "<option>$profile</option>\n";
 			echo "</select>\n";
-			echo "<input name=\"form_main_loadProfile\" type=\"submit\" value=\"" . _('Load Profile') . "\"></td>\n";
+			echo "<input name=\"loadProfile\" type=\"submit\" value=\"" . _('Load Profile') . "\"></td>\n";
 			echo "<td><a href=\"../help.php?HelpNumber=421\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
 			echo "</tr>\n";
 			}
 
 		echo "<tr>\n";
 		echo "<td>" . _("Save profile") . "</td>\n";
-		echo "<td><input name=\"form_main_selectSaveProfile\" type=\"text\" size=\"30\" maxlength=\"50\">\n";
-			echo "<input name=\"form_main_saveProfile\" type=\"submit\" value=\"" . _('Save profile') . "\" $disabled ></td>\n";
+		echo "<td><input name=\"selectSaveProfile\" type=\"text\" size=\"30\" maxlength=\"50\">\n";
+			echo "<input name=\"saveProfile\" type=\"submit\" value=\"" . _('Save profile') . "\" $disabled ></td>\n";
 		echo "<td><a href=\"../help.php?HelpNumber=457\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
 		echo "</tr>\n";
 		echo "<tr>\n";
-		echo "<td><input name=\"form_main_create\" type=\"submit\" value=\"";
+		echo "<td><input name=\"create\" type=\"submit\" value=\"";
 			if ($_SESSION[$this->base]->dn_orig!='') echo _('Modify Account');
 	 			else echo _('Create Account');
 			echo "\" $disabled ></td>\n";
@@ -151,6 +234,9 @@ class main {
 		return 0;
 		}
 
+	function display_html_delete($post) {
+		return 0;
+		}
 
 	/* This page will be shown if an account
 	* has been saved
@@ -166,86 +252,16 @@ class main {
 		echo "<table border=0 width=\"100%\">\n";
 		echo "<tr>\n";
 		if ($_SESSION[$this->base]->dn_orig=='') {
-			echo "<td><input name=\"form_main_createagain\" type=\"submit\" value=\"";
+			echo "<td><input name=\"createagain\" type=\"submit\" value=\"";
 				echo sprintf(_('Create another %s'), $_SESSION[$this->base]->type);
 				echo "\"></td>\n";
 			}
-		echo "<td><input name=\"form_main_outputpdf\" type=\"submit\" value=\"" . _('Create PDF file') . "\"></td>\n";
-		echo "<td><input name=\"form_main_backmain\" type=\"submit\" value=\"";
+		echo "<td><input name=\"outputpdf\" type=\"submit\" value=\"" . _('Create PDF file') . "\"></td>\n";
+		echo "<td><input name=\"backmain\" type=\"submit\" value=\"";
 			echo sprintf (_('Back to %s list'), $_SESSION[$this->base]->type);
 			echo "\"></td>\n";
 		echo "</tr>\n";
 		echo "</table>\n";
-		return 0;
-		}
-
-	/* Write variables into object and do some regexp checks
-	*/
-	function proccess_finish($post) {
-		if ($post['form_main_createagain']) {
-			// Reset objects
-			$modules = array_keys($_SESSION[$this->base]->module);
-			foreach ($modules as $module)
-				if ($module!='main') unset($_SESSION[$this->base]->module[$module]);
-			// Reset accountContainer
-			$_SESSION[$this->base]->dn = '';
-			$_SESSION[$this->base]->dn_orig = '';
-			$_SESSION[$this->base]->attributes = array();
-			$_SESSION[$this->base]->order = array();
-			$this->current_page = 0;
-			$this->subpage = '';
-			// Add all required objects etc.
-			$_SESSION[$this->base]->new_account();
-			return 0;
-			}
-		if ($post['form_main_backmain']) {
-			// Return to *-list
-			// *** fixme unset accountContainer in session
-			metaRefresh("../lists/list".$_SESSION[$this->base]->type."s.php");
-			exit;
-			}
-		if ($post['form_main_outputpdf']) {
-			// Create / display PDf-file
-			$function = 'create'.ucfirst($_SESSION[$this->base]->type).'PDF(array($_SESSION[$this->base]));';
-			eval($function);
-			exit;
-			}
-		}
-
-	/* Write variables into object and do some regexp checks
-	*/
-	function proccess_attributes($post) {
-		// change dn
-		if ($post['form_main_suffix']!='') $_SESSION[$this->base]->dn = $post['form_main_suffix'];
-		// load profile
-		if ($post['form_main_selectLoadProfile'] && $post['form_main_loadProfile']) {
-			// *** fixme load*Profile must return array in the same way ldap_get_attributes does.
-			$function = '$newattributes = load'.ucfirst($scope).'Profile($post[\'form_main_selectLoadProfile\']);';
-			eval($function);
-			// pass newattributes to each module
-			$modules = array_keys($_SESSION[$this->base]->module);
-			foreach ($modules as $module) $_SESSION[$this->base]->module[$module]->load_attributes($newattributes);
-			return 0;
-			}
-		// save account
-		if ($post['form_main_create']) {
-			$success = $_SESSION[$this->base]->save_account();
-			if (is_array($success)) return array($success);
-			// return name of subpage
-			return 'finish';
-			}
-		// save profile
-		if ($post['form_main_saveProfile']) {
-			if ($post['form_main_selectSaveProfile']=='') $errors[] = array('ERROR', _('Save profile'), _('No profilename given.'));
-			else {
-				$function = 'save'.ucfirst($scope).'Profile();';
-				eval($function);
-				if ($function) $errors[] = array('INFO', _('Save profile'), _('New profile created.'));
-					else $errors[] = array('ERROR', _('Save profile'), _('Wrong profilename given.'));
-				}
-			if (is_array($errors)) return $errors;
-				else return 0;
-			}
 		return 0;
 		}
 

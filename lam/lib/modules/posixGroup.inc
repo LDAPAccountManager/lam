@@ -77,13 +77,10 @@ class posixGroup {
 					$this->attributes[$attribute] =& $_SESSION[$this->base]->module[$module[$i]]->attributes[$attribute];
 			}
 		$this->orig = $this->attributes ;
-		$this->attributes['objectClass'][0] = 'posixGroup';
 		$this->changegids=false;
 		}
 
 	// Variables
-	// Alias Name. This name is shown in the menu instead of posixGroup
-	var $alias;
 	// name of accountContainer so we can read other classes in accuontArray
 	var $base;
 	// Use a unix password?
@@ -131,180 +128,39 @@ class posixGroup {
 			}
 		}
 
+	function get_alias() {
+		return _('posixGroup');
+		}
+
 	/* This function returns a list with all required modules
 	*/
-	function dependencies() {
-		return array('main');
+	function get_dependencies($scope) {
+		if ($scope=='group') return array('require' => array('main'), 'conflict' => array('inetOrgPerson', 'account', 'sambaDomain') );
+		return -1;
 		}
 
 	function module_ready() {
 		return true;
 		}
 
-	/* Write variables into object and do some regexp checks
+	/* This function returns a list of all html-pages in module
+	* This is usefull for mass upload and pdf-files
+	* because lam can walk trough all pages itself and do some
+	* error checkings
 	*/
-	function proccess_attributes($post) {
-		if ($this->orig['gidNumber'][0]!='' && $post['form_posixGroup_gidNumber']!=$this->attributes['gidNumber'][0])
-			$errors[] = array('INFO', _('GID number'), _('GID number has changed. Please select checkbox to change GID number of users and hosts.'));
-
-		// Load attributes
-		$this->attributes['cn'][0] = $post['form_posixGroup_cn'];
-		$this->attributes['gidNumber'][0] = $post['form_posixGroup_gidNumber'];
-		$this->attributes['description'][0] = $post['form_posixGroup_description'];
-		if ($post['form_posixGroup_userPassword_no']) $this->userPassword_no=true;
-			else $this->userPassword_no=false;
-		if ($post['form_posixGroup_userPassword_lock']) $this->userPassword_lock=true;
-			else $this->userPassword_lock=false;
-		if ($post['form_posixGroup_changegids']) $this->changegids=true;
-			else $this->changegids=false;
-
-		if (isset($post['form_posixGroup_userPassword'])) {
-			if ($post['form_posixGroup_userPassword'] != $post['form_posixGroup_userPassword2']) {
-				$errors[] = array('ERROR', _('Password'), _('Please enter the same password in both password-fields.'));
-				unset ($post['form_posixGroup_userPassword2']);
-				}
-				else $this->userPassword($post['form_posixGroup_userPassword']);
-			}
-		if ($post['form_posixGroup_genpass']) $this->userPassword(genpasswd());
-
-		// Check if UID is valid. If none value was entered, the next useable value will be inserted
-		// load min and may uidNumber
-		$minID = intval($_SESSION[$_SESSION[$this->base]->config]->get_minGID());
-		$maxID = intval($_SESSION[$_SESSION[$this->base]->config]->get_maxGID());
-		$dn_gids = $_SESSION[$_SESSION[$this->base]->cache]->get_cache('gidNumber', 'posixGroup', '*');
-		// get_cache will return an array ( dn1 => array(uidnumber1), dn2 => array(uidnumber2), ... )
-		foreach ($dn_gids as $gid) $gids[] = $gid[0];
-		if(is_array($gids)) sort ($gids, SORT_NUMERIC);
-		if ($this->attributes['gidNumber'][0]=='') {
-			// No id-number given
-			if ($this->orig['gidNumber'][0]=='') {
-				// new account -> we have to find a free id-number
-				if (count($gids)!=0) {
-					// There are some uids
-					// Store highest id-number
-					$id = $gids[count($gids)-1];
-					// Return minimum allowed id-number if all found id-numbers are too low
-					if ($id < $minID) $this->attributes['gidNumber'][0] = $minID;
-					// Return higesht used id-number + 1 if it's still in valid range
-					if ($id < $maxID) $this->attributes['gidNumber'][0] = $id+1;
-					/* If this function is still running we have to fid a free id-number between
-					* the used id-numbers
-					*/
-					$i = intval($minID);
-					while (in_array($i, $gids)) $i++;
-					if ($i>$maxID)
-						$errors[] = array('ERROR', _('ID-Number'), _('No free ID-Number!'));
-						else {
-							$this->attributes['gidNumber'][0] = $i;
-							$errors[] = array('WARN', _('ID-Number'), _('It is possible that this ID-number is reused. This can cause several problems because files with old permissions might still exist. To avoid this warning set maxUID to a higher value.'));
-							}
-					}
-				else $this->attributes['gidNumber'][0] = $minID;
-				// return minimum allowed id-number if no id-numbers are found
-				}
-			else $this->attributes['gidNumber'][0] = $this->orig['gidNumber'][0];
-			// old account -> return id-number which has been used
-			}
-		else {
-			// Check manual ID
-			// id-number is out of valid range
-			if ( ($this->attributes['gidNumber'][0]!=$post['form_posixGroup_gidNumber']) && ($this->attributes['gidNumber'][0] < $minID || $this->attributes['gidNumber'][0] > $maxID)) $errors[] = array('ERROR', _('ID-Number'), sprintf(_('Please enter a value between %s and %s!'), $minID, $maxID));
-			// $uids is allways an array but not if no entries were found
-			if (is_array($gids)) {
-				// id-number is in use and account is a new account
-				if ((in_array($this->attributes['gidNumber'][0], $gids)) && $this->orig['gidNumber'][0]=='') $errors[] = array('ERROR', _('ID-Number'), _('ID is already in use'));
-				// id-number is in use, account is existing account and id-number is not used by itself
-				if ((in_array($this->attributes['gidNumber'][0], $gids)) && $this->orig['gidNumber'][0]!='' && ($this->orig['gidNumber'][0] != $this->attributes['gidNumber'][0]) ) {
-					$errors[] = array('ERROR', _('ID-Number'), _('ID is already in use'));
-					$this->attributes['gidNumber'][0] = $this->orig['gidNumber'][0];
-					}
-				}
-			}
-
-		if (($this->attributes['cn'][0] != $post['form_posixGroup_cn']) &&  ereg('[A-Z]$', $post['form_posixGroup_cn']))
-			$errors[] = array('WARN', _('Groupname'), _('You are using a capital letters. This can cause problems because windows isn\'t case-sensitive.'));
-		// Check if Username contains only valid characters
-		if ( !ereg('^([a-z]|[A-Z]|[0-9]|[.]|[-]|[_])+$', $this->attributes['cn'][0]))
-			$errors[] = array('ERROR', _('Groupname'), _('Groupname contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
-
-		// Create automatic useraccount with number if original user already exists
-		// Reset name to original name if new name is in use
-		// Set username back to original name if new username is in use
-		if ($_SESSION[$_SESSION[$this->base]->cache]->in_cache($this->attributes['cn'][0],'cn', '*')!=false && ($this->orig['cn'][0]!='')) {
-			$this->attributes['cn'][0] = $this->orig['cn'][0];
-			}
-		// Change uid to a new uid until a free uid is found
-		else while ($_SESSION[$_SESSION[$this->base]->cache]->in_cache($this->attributes['cn'][0], 'cn', '*')) {
-			// get last character of username
-			$lastchar = substr($this->attributes['cn'][0], strlen($this->attributes['cn'][0])-1, 1);
-			// Last character is no number
-			if ( !ereg('^([0-9])+$', $lastchar))
-				/* Last character is no number. Therefore we only have to
-				* add "2" to it.
-				*/
-				$this->attributes['cn'][0] = $this->attributes['cn'][0] . '2';
-			 else {
-				/* Last character is a number -> we have to increase the number until we've
-				* found a groupname with trailing number which is not in use.
-				*
-				* $i will show us were we have to split groupname so we get a part
-				* with the groupname and a part with the trailing number
-				*/
-				$i=strlen($this->attributes['cn'][0])-1;
-				$mark = false;
-				// Set $i to the last character which is a number in $account_new->general_username
-				while (!$mark) {
-					if (ereg('^([0-9])+$',substr($this->attributes['cn'][0], $i, strlen($this->attributes['cn'][0])-$i))) $i--;
-						else $mark=true;
-					}
-				// increase last number with one
-				$firstchars = substr($this->attributes['cn'][0], 0, $i+1);
-				$lastchars = substr($this->attributes['cn'][0], $i+1, strlen($this->attributes['cn'][0])-$i);
-				// Put username together
-				$this->attributes['cn'][0] = $firstchars . (intval($lastchars)+1);
-				}
-			}
-
-		// Show warning if lam has changed username
-		if ($this->attributes['cn'][0] != $post['form_posixGroup_cn']) {
-			$errors[] = array('WARN', _('Groupname'), _('Groupname in use. Selected next free groupname.'));
-			}
-
-		if (!ereg('^([a-z]|[A-Z]|[0-9]|[\|]|[\#]|[\*]|[\,]|[\.]|[\;]|[\:]|[\_]|[\-]|[\+]|[\!]|[\%]|[\&]|[\/]|[\?]|[\{]|[\[]|[\(]|[\)]|[\]]|[\}])*$', $this->userPassword()))
-			$errors[] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
-
-		// Return error-messages
-		if (is_array($errors)) return $errors;
-		// Go to additional group page when no error did ocour and button was pressed
-		if ($post['form_posixGroup_adduser'])  return 'user';
-		return 0;
+	function pages() {
+		return array('attributes', 'user');
 		}
 
-	/* Write variables into object and do some regexp checks
+	/* This function returns all ldap attributes
+	* which are part of posixGroup and returns
+	* also their values.
 	*/
-	function proccess_user($post) {
-		do { // X-Or, only one if() can be true
-			if (isset($post['form_posixGroup_addusers']) && isset($post['form_posixGroup_addusers_button'])) { // Add groups to list
-				// Add new user
-				$this->attributes['memberUid'] = @array_merge($this->attributes['memberUid'], $post['form_posixGroup_addusers']);
-				// remove doubles
-				$this->attributes['memberUid'] = @array_flip($this->attributes['memberUid']);
-				array_unique($this->attributes['memberUid']);
-				$this->attributes['memberUid'] = @array_flip($this->attributes['memberUid']);
-				// sort groups
-				sort($this->attributes['memberUid']);
-				break;
-				}
-			if (isset($post['form_posixGroup_removeusers']) && isset($post['form_posixGroup_removeusers_button'])) { // remove groups from list
-				$this->attributes['memberUid'] = array_delete($post['form_posixGroup_removeusers'], $this->attributes['memberUid']);
-				break;
-				}
-			} while(0);
-		if (isset($post['form_posixGroup_adduser_button']) || isset($post['form_posixGroup_removeuser_button'])) return 'user';
-		if ($post['form_posixGroup_toattributes']) return 'attributes';
-		return 0;
+	function get_attributes() {
+		$return = $this->attributes;
+		$return['userPassword'] = $this->userPassword();
+		return $return;
 		}
-
 
 	/* This function loads all attributes into the object
 	* $attr is an array as it's retured from ldap_get_attributes
@@ -328,11 +184,8 @@ class posixGroup {
 		// Values are kept as copy so we can compare old attributes with new attributes
 		$this->attributes['objectClass'][0] = 'posixGroup';
 		$this->orig = $this->attributes;
-
 		return 0;
 		}
-
-
 
 	/* This function returns an array with 3 entries:
 	* array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
@@ -441,15 +294,172 @@ class posixGroup {
 		return $return;
 		}
 
-
-	/* This function returns all ldap attributes
-	* which are part of posixGroup and returns
-	* also their values.
-	*/
-	function get_attributes() {
-		$return = $this->attributes;
-		$return['userPassword'] = $this->userPassword();
+	function delete_attributes($post) {
+		$return = array();
 		return $return;
+		}
+
+	/* Write variables into object and do some regexp checks
+	*/
+	function proccess_attributes($post) {
+		if ($this->orig['gidNumber'][0]!='' && $post['gidNumber']!=$this->attributes['gidNumber'][0])
+			$errors[] = array('INFO', _('GID number'), _('GID number has changed. Please select checkbox to change GID number of users and hosts.'), 'gidNumber');
+
+		// Load attributes
+		$this->attributes['cn'][0] = $post['cn'];
+		$this->attributes['gidNumber'][0] = $post['gidNumber'];
+		$this->attributes['description'][0] = $post['description'];
+		if ($post['userPassword_no']) $this->userPassword_no=true;
+			else $this->userPassword_no=false;
+		if ($post['userPassword_lock']) $this->userPassword_lock=true;
+			else $this->userPassword_lock=false;
+		if ($post['changegids']) $this->changegids=true;
+			else $this->changegids=false;
+
+		if (isset($post['userPassword'])) {
+			if ($post['userPassword'] != $post['userPassword2']) {
+				$errors[] = array('ERROR', _('Password'), _('Please enter the same password in both password-fields.'), 'userPassword');
+				unset ($post['userPassword2']);
+				}
+				else $this->userPassword($post['userPassword']);
+			}
+		if ($post['genpass']) $this->userPassword(genpasswd());
+
+		// Check if UID is valid. If none value was entered, the next useable value will be inserted
+		// load min and may uidNumber
+		$minID = intval($_SESSION[$_SESSION[$this->base]->config]->get_minGID());
+		$maxID = intval($_SESSION[$_SESSION[$this->base]->config]->get_maxGID());
+		$dn_gids = $_SESSION[$_SESSION[$this->base]->cache]->get_cache('gidNumber', 'posixGroup', '*');
+		// get_cache will return an array ( dn1 => array(uidnumber1), dn2 => array(uidnumber2), ... )
+		foreach ($dn_gids as $gid) $gids[] = $gid[0];
+		if(is_array($gids)) sort ($gids, SORT_NUMERIC);
+		if ($this->attributes['gidNumber'][0]=='') {
+			// No id-number given
+			if ($this->orig['gidNumber'][0]=='') {
+				// new account -> we have to find a free id-number
+				if (count($gids)!=0) {
+					// There are some uids
+					// Store highest id-number
+					$id = $gids[count($gids)-1];
+					// Return minimum allowed id-number if all found id-numbers are too low
+					if ($id < $minID) $this->attributes['gidNumber'][0] = $minID;
+					// Return higesht used id-number + 1 if it's still in valid range
+					if ($id < $maxID) $this->attributes['gidNumber'][0] = $id+1;
+					/* If this function is still running we have to fid a free id-number between
+					* the used id-numbers
+					*/
+					$i = intval($minID);
+					while (in_array($i, $gids)) $i++;
+					if ($i>$maxID)
+						$errors[] = array('ERROR', _('ID-Number'), _('No free ID-Number!'), 'gidNumber');
+						else {
+							$this->attributes['gidNumber'][0] = $i;
+							$errors[] = array('WARN', _('ID-Number'), _('It is possible that this ID-number is reused. This can cause several problems because files with old permissions might still exist. To avoid this warning set maxUID to a higher value.'), 'gidNumber');
+							}
+					}
+				else $this->attributes['gidNumber'][0] = $minID;
+				// return minimum allowed id-number if no id-numbers are found
+				}
+			else $this->attributes['gidNumber'][0] = $this->orig['gidNumber'][0];
+			// old account -> return id-number which has been used
+			}
+		else {
+			// Check manual ID
+			// id-number is out of valid range
+			if ( ($this->attributes['gidNumber'][0]!=$post['gidNumber']) && ($this->attributes['gidNumber'][0] < $minID || $this->attributes['gidNumber'][0] > $maxID)) $errors[] = array('ERROR', _('ID-Number'), sprintf(_('Please enter a value between %s and %s!'), $minID, $maxID), 'gidNumber');
+			// $uids is allways an array but not if no entries were found
+			if (is_array($gids)) {
+				// id-number is in use and account is a new account
+				if ((in_array($this->attributes['gidNumber'][0], $gids)) && $this->orig['gidNumber'][0]=='') $errors[] = array('ERROR', _('ID-Number'), _('ID is already in use'), 'gidNumber');
+				// id-number is in use, account is existing account and id-number is not used by itself
+				if ((in_array($this->attributes['gidNumber'][0], $gids)) && $this->orig['gidNumber'][0]!='' && ($this->orig['gidNumber'][0] != $this->attributes['gidNumber'][0]) ) {
+					$errors[] = array('ERROR', _('ID-Number'), _('ID is already in use'), 'gidNumber');
+					$this->attributes['gidNumber'][0] = $this->orig['gidNumber'][0];
+					}
+				}
+			}
+
+		if (($this->attributes['cn'][0] != $post['cn']) &&  ereg('[A-Z]$', $post['cn']))
+			$errors[] = array('WARN', _('Groupname'), _('You are using a capital letters. This can cause problems because windows isn\'t case-sensitive.'), 'cn');
+		// Check if Username contains only valid characters
+		if ( !ereg('^([a-z]|[A-Z]|[0-9]|[.]|[-]|[_])+$', $this->attributes['cn'][0]))
+			$errors[] = array('ERROR', _('Groupname'), _('Groupname contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'), 'cn');
+
+		// Create automatic useraccount with number if original user already exists
+		// Reset name to original name if new name is in use
+		// Set username back to original name if new username is in use
+		if ($_SESSION[$_SESSION[$this->base]->cache]->in_cache($this->attributes['cn'][0],'cn', '*')!=false && ($this->orig['cn'][0]!='')) {
+			$this->attributes['cn'][0] = $this->orig['cn'][0];
+			}
+		// Change uid to a new uid until a free uid is found
+		else while ($_SESSION[$_SESSION[$this->base]->cache]->in_cache($this->attributes['cn'][0], 'cn', '*')) {
+			// get last character of username
+			$lastchar = substr($this->attributes['cn'][0], strlen($this->attributes['cn'][0])-1, 1);
+			// Last character is no number
+			if ( !ereg('^([0-9])+$', $lastchar))
+				/* Last character is no number. Therefore we only have to
+				* add "2" to it.
+				*/
+				$this->attributes['cn'][0] = $this->attributes['cn'][0] . '2';
+			 else {
+				/* Last character is a number -> we have to increase the number until we've
+				* found a groupname with trailing number which is not in use.
+				*
+				* $i will show us were we have to split groupname so we get a part
+				* with the groupname and a part with the trailing number
+				*/
+				$i=strlen($this->attributes['cn'][0])-1;
+				$mark = false;
+				// Set $i to the last character which is a number in $account_new->general_username
+				while (!$mark) {
+					if (ereg('^([0-9])+$',substr($this->attributes['cn'][0], $i, strlen($this->attributes['cn'][0])-$i))) $i--;
+						else $mark=true;
+					}
+				// increase last number with one
+				$firstchars = substr($this->attributes['cn'][0], 0, $i+1);
+				$lastchars = substr($this->attributes['cn'][0], $i+1, strlen($this->attributes['cn'][0])-$i);
+				// Put username together
+				$this->attributes['cn'][0] = $firstchars . (intval($lastchars)+1);
+				}
+			}
+
+		// Show warning if lam has changed username
+		if ($this->attributes['cn'][0] != $post['cn']) {
+			$errors[] = array('WARN', _('Groupname'), _('Groupname in use. Selected next free groupname.'), 'cn');
+			}
+
+		if (!ereg('^([a-z]|[A-Z]|[0-9]|[\|]|[\#]|[\*]|[\,]|[\.]|[\;]|[\:]|[\_]|[\-]|[\+]|[\!]|[\%]|[\&]|[\/]|[\?]|[\{]|[\[]|[\(]|[\)]|[\]]|[\}])*$', $this->userPassword()))
+			$errors[] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'), 'userPassword');
+		// Return error-messages
+		if (is_array($errors)) return $errors;
+		// Go to additional group page when no error did ocour and button was pressed
+		if ($post['adduser'])  return 'user';
+		return 0;
+		}
+
+	/* Write variables into object and do some regexp checks
+	*/
+	function proccess_user($post) {
+		do { // X-Or, only one if() can be true
+			if (isset($post['addusers']) && isset($post['addusers_button'])) { // Add groups to list
+				// Add new user
+				$this->attributes['memberUid'] = @array_merge($this->attributes['memberUid'], $post['addusers']);
+				// remove doubles
+				$this->attributes['memberUid'] = @array_flip($this->attributes['memberUid']);
+				array_unique($this->attributes['memberUid']);
+				$this->attributes['memberUid'] = @array_flip($this->attributes['memberUid']);
+				// sort groups
+				sort($this->attributes['memberUid']);
+				break;
+				}
+			if (isset($post['removeusers']) && isset($post['removeusers_button'])) { // remove groups from list
+				$this->attributes['memberUid'] = array_delete($post['removeusers'], $this->attributes['memberUid']);
+				break;
+				}
+			} while(0);
+		if (isset($post['adduser_button']) || isset($post['removeuser_button'])) return 'user';
+		if ($post['toattributes']) return 'attributes';
+		return 0;
 		}
 
 	/* This function will create the html-page
@@ -462,47 +472,47 @@ class posixGroup {
 		echo "<table border=0 width=\"100%\">\n";
 		echo "<tr>\n";
 		echo '<td>' . _('Groupname') . "*</td>\n";
-		echo "<td><input name=\"form_posixGroup_cn\" type=\"text\" size=\"20\" maxlength=\"20\" value=\"".$this->attributes['cn'][0]."\"></td>\n";
+		echo "<td><input name=\"cn\" type=\"text\" size=\"20\" maxlength=\"20\" value=\"".$this->attributes['cn'][0]."\"></td>\n";
 		echo "<td><a href=\"../help.php?HelpNumber=400\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
 		echo "</tr>\n";
 		echo "<tr>\n";
 		echo "<td>" . _('GID number') ."</td>\n";
-		echo "<td><input name=\"form_posixGroup_gidNumber\" type=\"text\" size=\"6\" maxlength=\"6\" value=\"".$this->attributes['gidNumber'][0]."\"></td>\n";
+		echo "<td><input name=\"gidNumber\" type=\"text\" size=\"6\" maxlength=\"6\" value=\"".$this->attributes['gidNumber'][0]."\"></td>\n";
 		echo "<td><a href=\"../help.php?HelpNumber=401\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
 		echo "</tr>\n";
 		echo "<tr>\n";
 		echo "<td>" . _('Description') . "</td>\n";
-		echo "<td><input name=\"form_posixGroup_description\" type=\"text\" size=\"30\" maxlength=\"255\" value=\"".$this->attributes['description'][0]."\"></td>\n";
+		echo "<td><input name=\"description\" type=\"text\" size=\"30\" maxlength=\"255\" value=\"".$this->attributes['description'][0]."\"></td>\n";
 		echo "<td><a href=\"../help.php?HelpNumber=404\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
 		echo "</tr>\n";
 		echo "<tr>\n";
 		echo "<td>" . _('Group members') . "</td>\n";
-		echo "<td><input name=\"form_posixGroup_adduser\" type=\"submit\" value=\"" . _('Edit groups') . "\"></td>\n";
+		echo "<td><input name=\"adduser\" type=\"submit\" value=\"" . _('Edit groups') . "\"></td>\n";
 		echo "<td><a href=\"../help.php?HelpNumber=402\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
 		echo "</tr>\n";
 		echo "<tr>\n";
 		echo "<td>" . _('Password') . "</td>\n";
-		echo "<td><input name=\"form_posixGroup_userPassword\" type=\"password\" size=\"20\" maxlength=\"20\" value=\"$password\"></td>\n";
-		echo "<td><input name=\"form_posixGroup_genpass\" type=\"submit\" value=\"" . _('Generate password') . "\"></td>\n";
+		echo "<td><input name=\"userPassword\" type=\"password\" size=\"20\" maxlength=\"20\" value=\"$password\"></td>\n";
+		echo "<td><input name=\"genpass\" type=\"submit\" value=\"" . _('Generate password') . "\"></td>\n";
 		echo "</tr>\n";
 		echo "<tr>\n";
 		echo "<td>" . _('Repeat password') . "</td>\n";
-		echo "<td><input name=\"form_posixGroup_userPassword2\" type=\"password\" size=\"20\" maxlength=\"20\" value=\"";
-			if ($post['form_posixGroup_userPassword2']!='') echo $post['form_posixGroup_userPassword2'];
+		echo "<td><input name=\"userPassword2\" type=\"password\" size=\"20\" maxlength=\"20\" value=\"";
+			if ($post['userPassword2']!='') echo $post['userPassword2'];
 			else echo $password;
 		echo "\"></td>\n";
 		echo "<td></td>\n";
 		echo "</tr>\n";
 		echo "<tr>\n";
 		echo "<td>" . _('Use no password') . "</td>\n";
-		echo "<td><input name=\"form_posixGroup_userPassword_no\" type=\"checkbox\"";
+		echo "<td><input name=\"userPassword_no\" type=\"checkbox\"";
 			if ($this->userPassword_no) echo " checked ";
 			echo "></td>\n";
 		echo "<td><a href=\"../help.php?HelpNumber=426\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
 		echo "</tr>\n";
 		echo "<tr>\n";
 		echo "<td>" . _('Lock password') . "</td>\n";
-		echo "<td><input name=\"form_posixGroup_userPassword_lock\" type=\"checkbox\"";
+		echo "<td><input name=\"userPassword_lock\" type=\"checkbox\"";
 			if ($this->userPassword_lock) echo " checked ";
 			echo "></td>\n";
 		echo "<td><a href=\"../help.php?HelpNumber=426\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
@@ -510,13 +520,17 @@ class posixGroup {
 		if ($this->attributes['gidNumber'][0]!=$this->orig['gidNumber'][0] && $this->orig['gidNumber'][0]!='') {
 			echo "<tr>\n";
 			echo "<td>" . _('Change GID number of users and hosts') . "</td>\n";
-			echo "<td><input name=\"form_posixGroup_changegids\" type=\"checkbox\"";
+			echo "<td><input name=\"changegids\" type=\"checkbox\"";
 				if ($this->changegids) echo " checked ";
 				echo "></td>\n";
 			echo "<td><a href=\"../help.php?HelpNumber=XXX\" target=\"lamhelp\">" . _('Help-XX') . "</a></td>\n";
 			echo "</tr>\n";
 			}
 		echo "</table>\n";
+		return 0;
+		}
+
+	function display_html_delete($post) {
 		return 0;
 		}
 
@@ -553,22 +567,22 @@ class posixGroup {
 				echo "<legend class=\"".$_SESSION[$this->base]->type."edit-bright\">" . _("Selected users") . "</legend>\n";
 					// Show all groups the user is additional member of
 					if (count($this->attributes['memberUid'])!=0) {
-						echo "<select name=\"form_posixGroup_removeusers[]\" class=\"".$_SESSION[$this->base]->type."edit-bright\" size=15 multiple>\n";
+						echo "<select name=\"removeusers[]\" class=\"".$_SESSION[$this->base]->type."edit-bright\" size=15 multiple>\n";
 						foreach ($this->attributes['memberUid'] as $member)
 							if ($member!='') echo "<option>$member</option>\n";
 						echo "</select>\n";
 						}
 					echo "</fieldset></td>\n";
-				echo "<td align=\"center\" width=\"10%\"><input type=\"submit\" name=\"form_posixGroup_addusers_button\" value=\"<=\">";
+				echo "<td align=\"center\" width=\"10%\"><input type=\"submit\" name=\"addusers_button\" value=\"<=\">";
 				echo " ";
-				echo "<input type=\"submit\" name=\"form_posixGroup_removeusers_button\" value=\"=>\"><br><br>";
+				echo "<input type=\"submit\" name=\"removeusers_button\" value=\"=>\"><br><br>";
 				echo "<a href=\""."../help.php?HelpNumber=402\" target=\"lamhelp\">"._('Help')."</a></td>\n";
 				echo "<td valign=\"top\">\n";
 				echo "<fieldset class=\"".$_SESSION[$this->base]->type."edit-bright\">";
 				echo "<legend class=\"".$_SESSION[$this->base]->type."edit-bright\">" . _('Available users') . "</legend>\n";
 					// show all groups expect these the user is member of
 					if (count($users)!=0) {
-						echo "<select name=\"form_posixGroup_addusers[]\" size=15 multiple class=\"".$_SESSION[$this->base]->type."edit-bright\">\n";
+						echo "<select name=\"addusers[]\" size=15 multiple class=\"".$_SESSION[$this->base]->type."edit-bright\">\n";
 						for ($i=0; $i<count($users); $i++)
 							if ($users[$i]!='') echo "<option> $users[$i] </option>\n";
 						echo "</select>\n";
@@ -576,7 +590,7 @@ class posixGroup {
 					echo "</fieldset></td>\n";
 				echo "</tr>\n";
 				echo "</table>\n";
-			echo "<input name=\"form_posixGroup_toattributes\" type=\"submit\" value=\""; echo _('Back'); echo "\">\n";
+			echo "<input name=\"toattributes\" type=\"submit\" value=\""; echo _('Back'); echo "\">\n";
 			echo "</fieldset>\n";
 		echo "</td></tr></table>\n";
 		return 0;

@@ -76,14 +76,11 @@ class sambaGroupMapping {
 				if (isset($_SESSION[$this->base]->module[$module[$i]]->attributes[$attribute])) $this->attributes[$attribute] =& $_SESSION[$this->base]->module[$module[$i]]->attributes[$attribute];
 			}
 		$this->orig = $this->attributes ;
-		$this->attributes['objectClass'][0] = 'sambaGroupMapping';
 		$this->rids = array ( _('Domain Admins') => 512, _('Domain Users') => 513, _('Domain Guests') => 514, _('Domain Computers') => 515, _('Domain Controllers') => 516,
 			_('Domain Certificate Admins') => 517, _('Domain Schema Admins') => 518, _('Domain Enterprise Admins') => 519, _('Domain Policy Admins') => 520 );
 		}
 
 	// Variables
-	// Alias Name. This name is shown in the menu instead of sambaGroupMapping
-	var $alias;
 	// name of accountContainer so we can read other classes in accuontArray
 	var $base;
 
@@ -96,10 +93,15 @@ class sambaGroupMapping {
 	// Array of well known rids
 	var $rids;
 
+	function get_alias() {
+		return _('sambaGroupMapping');
+		}
+
 	/* This function returns a list with all required modules
 	*/
-	function dependencies() {
-		return array('posixGroup');
+	function get_dependencies($scope) {
+		if ($scope=='group') return array('require' => array('posixGroup'), 'conflict' => array() );
+		return -1;
 		}
 
 	function module_ready() {
@@ -107,42 +109,22 @@ class sambaGroupMapping {
 		return true;
 		}
 
-	/* Write variables into object and do some regexp checks
+	/* This function returns a list of all html-pages in module
+	* This is usefull for mass upload and pdf-files
+	* because lam can walk trough all pages itself and do some
+	* error checkings
 	*/
-	function proccess_attributes($post) {
-		// Get Domain SID from name
-		$sambaDomains = $_SESSION[$_SESSION[$this->base]->ldap]->search_domains($_SESSION[$_SESSION[$this->base]->config]->get_domainSuffix());
-		for ($i=0; $i<count($sambaDomains); $i++ )
-			if ($post['form_sambaGroupMapping_sambaDomainName'] == $sambaDomains[$i]->name) {
-				$SID = $sambaDomains[$i]->SID;
-				$RIDbase = $sambaDomain[$i]->RIDbase;
-				}
-
-		// Load attributes
-		$this->attributes['displayName'][0] = $post['form_sambaGroupMapping_displayName'];
-		$this->attributes['sambaGroupType'][0] = 2;
-
-		$rids = array_keys($this->rids);
-		$wrid = false;
-		for ($i=0; $i<count($rids); $i++) {
-			if ($post['form_sambaGroupMapping_sambaSID'] == $rids[$i]) {
-				$wrid = true;
-				// Get Domain SID
-				$this->attributes['sambaSID'][0] = $SID."-".$this->rids[$rids[$i]];
-				// Do a check if special grou pis unique
-				if ($_SESSION[$_SESSION[$this->base]->cache]->in_cache($SID."-".$this->rids[$rids[$i]], 'sambaSID', 'group'))
-					$errors[] = array('ERROR', _('Special Group'),sprintf( _('There can be only one group %s.'), $rids[$i]));
-				}
-			}
-		if (!$wrid) $this->attributes['sambaSID'][0] = $SID."-".($_SESSION[$this->base]->module['posixGroup']->attributes['gidNumber'][0]*2)+$RIDbase+1;
-
-
-
-		// Return error-messages
-		if (is_array($errors)) return $errors;
-		return 0;
+	function pages() {
+		return array('attributes');
 		}
 
+	/* This function returns all ldap attributes
+	* which are part of sambaGroupMapping and returns
+	* also their values.
+	*/
+	function get_attributes() {
+		return $this->attributes;
+		}
 
 	/* This function loads all attributes into the object
 	* $attr is an array as it's retured from ldap_get_attributes
@@ -168,8 +150,6 @@ class sambaGroupMapping {
 		$this->orig = $this->attributes;
 		return 0;
 		}
-
-
 
 	/* This function returns an array with 3 entries:
 	* array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
@@ -199,13 +179,42 @@ class sambaGroupMapping {
 		return $return;
 		}
 
+	function delete_attributes($post) {
+		$return = array();
+		return $return;
+		}
 
-	/* This function returns all ldap attributes
-	* which are part of sambaGroupMapping and returns
-	* also their values.
+	/* Write variables into object and do some regexp checks
 	*/
-	function get_attributes() {
-		return $this->attributes;
+	function proccess_attributes($post) {
+		// Get Domain SID from name
+		$sambaDomains = $_SESSION[$_SESSION[$this->base]->ldap]->search_domains($_SESSION[$_SESSION[$this->base]->config]->get_domainSuffix());
+		for ($i=0; $i<count($sambaDomains); $i++ )
+			if ($post['sambaDomainName'] == $sambaDomains[$i]->name) {
+				$SID = $sambaDomains[$i]->SID;
+				$RIDbase = $sambaDomain[$i]->RIDbase;
+				}
+
+		// Load attributes
+		$this->attributes['displayName'][0] = $post['displayName'];
+		$this->attributes['sambaGroupType'][0] = 2;
+
+		$rids = array_keys($this->rids);
+		$wrid = false;
+		for ($i=0; $i<count($rids); $i++) {
+			if ($post['sambaSID'] == $rids[$i]) {
+				$wrid = true;
+				// Get Domain SID
+				$this->attributes['sambaSID'][0] = $SID."-".$this->rids[$rids[$i]];
+				// Do a check if special grou pis unique
+				if ($_SESSION[$_SESSION[$this->base]->cache]->in_cache($SID."-".$this->rids[$rids[$i]], 'sambaSID', 'group'))
+					$errors[] = array('ERROR', _('Special Group'),sprintf( _('There can be only one group %s.'), $rids[$i]), 'sambaSID');
+				}
+			}
+		if (!$wrid) $this->attributes['sambaSID'][0] = $SID."-".($_SESSION[$this->base]->module['posixGroup']->attributes['gidNumber'][0]*2)+$RIDbase+1;
+		// Return error-messages
+		if (is_array($errors)) return $errors;
+		return 0;
 		}
 
 	/* This function will create the html-page
@@ -228,12 +237,12 @@ class sambaGroupMapping {
 		echo "<table border=0 width=\"100%\">\n";
 		echo "<tr>\n";
 		echo "<td>" . _("Display name") . "</td>\n";
-		echo "<td><input name=\"form_sambaGroupMapping_displayName\" type=\"text\" size=\"30\" maxlength=\"50\" value=\"".$this->attributes['displayName'][0]."\"></td>\n";
+		echo "<td><input name=\"displayName\" type=\"text\" size=\"30\" maxlength=\"50\" value=\"".$this->attributes['displayName'][0]."\"></td>\n";
 		echo "<td><a href=\"../help.php?HelpNumber=420\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
 		echo "</tr>\n";
 		echo "<tr>\n";
 		echo "<td>" . _('Special group') . "</td>\n";
-		echo "<td><select name=\"form_sambaGroupMapping_sambaSID\">";
+		echo "<td><select name=\"sambaSID\">";
 			// Display if group SID should be mapped to a well kown SID
 			$names = array_keys($this->rids);
 			$wrid=false;
@@ -251,7 +260,7 @@ class sambaGroupMapping {
 		echo "</tr>\n";
 		echo "<tr>\n";
 		echo "<td>" . _('Domain') . "</td>\n";
-		echo "<td><select name=\"form_sambaGroupMapping_sambaDomainName\">";
+		echo "<td><select name=\"sambaDomainName\">";
 			foreach ($sambaDomainNames as $domain) {
 				if ($sel_domain==$domain) echo "<option selected>$domain</option>";
 					else echo "<option>$domain</option>";
@@ -263,6 +272,9 @@ class sambaGroupMapping {
 		return 0;
 		}
 
+	function display_html_delete($post) {
+		return 0;
+		}
 
 	}
 

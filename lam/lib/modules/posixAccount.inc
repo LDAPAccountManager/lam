@@ -89,8 +89,6 @@ class posixAccount {
 		}
 
 	// Variables
-	// Alias Name. This name is shown in the menu instead of posixAccount
-	var $alias;
 	// name of accountContainer so we can read other classes in accuontArray
 	var $base;
 	// Use a unix password?
@@ -142,12 +140,15 @@ class posixAccount {
 			}
 		}
 
+	function get_alias() {
+		return _('posixAccount');
+		}
+
 	/* This function returns a list with all required modules
 	*/
-	function dependencies() {
-		if ($_SESSION[$this->base]->type=='user') return array('inetOrgPerson');
-		if ($_SESSION[$this->base]->type=='host') return array('account');
-		// return error if unsupported type is used
+	function get_dependencies($scope) {
+		if ($scope=='host') return array('require' => array('account'), 'conflict' => array() );
+		if ($scope=='user') return array('require' => array('inetOrgPerson'), 'conflict' => array() );
 		return -1;
 		}
 
@@ -155,206 +156,24 @@ class posixAccount {
 		return true;
 		}
 
-	/* Write variables into object and do some regexp checks
+	/* This function returns a list of all html-pages in module
+	* This is usefull for mass upload and pdf-files
+	* because lam can walk trough all pages itself and do some
+	* error checkings
 	*/
-	function proccess_attributes($post) {
-		if ($this->orig['uid'][0]!='' && $post['form_posixAccount_uid']!=$this->attributes['uid'][0])
-			$errors[] = array('INFO', _('UID'), _('UID has changed. Do you want to change home directory?'));
-		if ($this->orig['gidNumber'][0]!='' && $_SESSION[$_SESSION[$this->base]->cache]->getgid($post['form_posixAccount_gidNumber'])!=$this->attributes['gidNumber'][0])
-			$errors[] = array('INFO', _('GID number'), sprintf(_('GID number has changed. To keep file ownership you have to run the following command as root: \'find / -gid %s -uid %s -exec chgrp %s {} \;\''), $this->orig['gidNumber'][0], $this->orig['uidNumber'][0], $_SESSION[$_SESSION[$this->base]->cache]->getgid($post['form_posixAccount_gidNumber'])));
-		if ($this->orig['uidNumber'][0]!='' && $post['form_posixAccount_uidNumber']!=$this->attributes['uidNumber'][0])
-			$errors[] = array('INFO', _('UID number'), sprintf(_('UID number has changed. To keep file ownership you have to run the following command as root: \'find / -uid %s -exec chown %s {} \;\''), $this->orig['uidNumber'][0], $this->attributes['uidNumber'][0]));
-		if (isset($post['form_posixAccount_homeDirectory']) && $this->orig['homeDirectory'][0]!='' && $post['form_posixAccount_homeDirectory']!=$this->attributes['homeDirectory'][0])
-			$errors[] = array('INFO', _('Home directory'), sprintf(_('Home directory changed. To keep home directory you have to run the following command as root: \'mv %s %s\''), $this->orig['homeDirectory'][0], $this->attributes['homeDirectory'][0]));
-
-		// Load attributes
-		$this->attributes['uid'][0] = $post['form_posixAccount_uid'];
-		$this->attributes['cn'][0] = $this->attributes['uid'][0];
-		$this->attributes['uidNumber'][0] = $post['form_posixAccount_uidNumber'];
-		$this->attributes['gidNumber'][0] = $_SESSION[$_SESSION[$this->base]->cache]->getgid($post['form_posixAccount_gidNumber']);
-		$this->attributes['homeDirectory'][0] = $post['form_posixAccount_homeDirectory'];
-		$this->attributes['loginShell'][0] = $post['form_posixAccount_loginShell'];
-		$this->attributes['gecos'][0] = $post['form_posixAccount_gecos'];
-		if ($post['form_posixAccount_createhomedir']) $this->createhomedir = true;
-			else $this->createhomedir = false;
-		if ($post['form_posixAccount_userPassword_no']) $this->userPassword_no=true;
-			else $this->userPassword_no=false;
-		if ($post['form_posixAccount_userPassword_lock']) $this->userPassword_lock=true;
-			else $this->userPassword_lock=false;
-		if (isset($post['form_posixAccount_userPassword'])) {
-			if ($post['form_posixAccount_userPassword'] != $post['form_posixAccount_userPassword2']) {
-				$errors[] = array('ERROR', _('Password'), _('Please enter the same password in both password-fields.'));
-				unset ($post['form_posixAccount_userPassword2']);
-				}
-				else $this->userPassword($post['form_posixAccount_userPassword']);
-			}
-		if ($post['form_posixAccount_genpass']) $this->userPassword(genpasswd());
-
-
-		// Check if UID is valid. If none value was entered, the next useable value will be inserted
-		// load min and may uidNumber
-		if ($_SESSION[$this->base]->type=='user') {
-			$minID = intval($_SESSION[$_SESSION[$this->base]->config]->get_minUID());
-			$maxID = intval($_SESSION[$_SESSION[$this->base]->config]->get_maxUID());
-			}
-		if ($_SESSION[$this->base]->type=='host') {
-			$minID = intval($_SESSION[$_SESSION[$this->base]->config]->get_minMachine());
-			$maxID = intval($_SESSION[$_SESSION[$this->base]->config]->get_maxMachine());
-			}
-		$dn_uids = $_SESSION[$_SESSION[$this->base]->cache]->get_cache('uidNumber', 'posixAccount', '*');
-		// get_cache will return an array ( dn1 => array(uidnumber1), dn2 => array(uidnumber2), ... )
-		foreach ($dn_uids as $uid) $uids[] = $uid[0];
-		if(is_array($uids)) sort ($uids, SORT_NUMERIC);
-		if ($this->attributes['uidNumber'][0]=='') {
-			// No id-number given
-			if ($this->orig['uidNumber'][0]=='') {
-				// new account -> we have to find a free id-number
-				if (count($uids)!=0) {
-					// There are some uids
-					// Store highest id-number
-					$id = $uids[count($uids)-1];
-					// Return minimum allowed id-number if all found id-numbers are too low
-					if ($id < $minID) $this->attributes['uidNumber'][0] = $minID;
-					// Return higesht used id-number + 1 if it's still in valid range
-					if ($id < $maxID) $this->attributes['uidNumber'][0] = $id+1;
-					/* If this function is still running we have to fid a free id-number between
-					* the used id-numbers
-					*/
-					$i = intval($minID);
-					while (in_array($i, $uids)) $i++;
-					if ($i>$maxID)
-						$errors[] = array('ERROR', _('ID-Number'), _('No free ID-Number!'));
-						else {
-							$this->attributes['uidNumber'][0] = $i;
-							$errors[] = array('WARN', _('ID-Number'), _('It is possible that this ID-number is reused. This can cause several problems because files with old permissions might still exist. To avoid this warning set maxUID to a higher value.'));
-							}
-					}
-				else $this->attributes['uidNumber'][0] = $minID;
-				// return minimum allowed id-number if no id-numbers are found
-				}
-			else $this->attributes['uidNumber'][0] = $this->orig['uidNumber'][0];
-			// old account -> return id-number which has been used
-			}
-		else {
-			// Check manual ID
-			// id-number is out of valid range
-			if ( ($this->attributes['uidNumber'][0]!=$post['form_posixAccount_uidNumber']) && ($this->attributes['uidNumber'][0] < $minID || $this->attributes['uidNumber'][0] > $maxID)) $errors[] = array('ERROR', _('ID-Number'), sprintf(_('Please enter a value between %s and %s!'), $minID, $maxID));
-			// $uids is allways an array but not if no entries were found
-			if (is_array($uids)) {
-				// id-number is in use and account is a new account
-				if ((in_array($this->attributes['uidNumber'][0], $uids)) && $this->orig['uidNumber'][0]=='') $errors[] = array('ERROR', _('ID-Number'), _('ID is already in use'));
-				// id-number is in use, account is existing account and id-number is not used by itself
-				if ((in_array($this->attributes['uidNumber'][0], $uids)) && $this->orig['uidNumber'][0]!='' && ($this->orig['uidNumber'][0] != $this->attributes['uidNumber'][0]) ) {
-					$errors[] = array('ERROR', _('ID-Number'), _('ID is already in use'));
-					$this->attributes['uidNumber'][0] = $this->orig['uidNumber'][0];
-					}
-				}
-			}
-
-		if ($_SESSION[$this->base]->type=='user') {
-			if (($this->attributes['uid'][0] != $post['form_posixAccount_uid']) &&  ereg('[A-Z]$', $post['form_posixAccount_uid']))
-				$errors[] = array('WARN', _('Username'), _('You are using a capital letters. This can cause problems because windows isn\'t case-sensitive.'));
-			// Check if Homedir is valid
-			$this->attributes['homeDirectory'][0] = str_replace('$group', $_SESSION[$_SESSION[$this->base]->cache]->getgrnam($this->attributes['gidNumber'][0]), $this->attributes['homeDirectory'][0]);
-			if ($this->attributes['uid'][0] != '')
-				$this->attributes['homeDirectory'][0] = str_replace('$user', $this->attributes['uid'][0], $this->attributes['homeDirectory'][0]);
-			if ($this->attributes['homeDirectory'][0] != $post['form_posixAccount_homeDirectory']) $errors[] = array('INFO', _('Home directory'), _('Replaced $user or $group in homedir.'));
-			if ( !ereg('^[/]([a-z]|[A-Z])([a-z]|[A-Z]|[0-9]|[.]|[-]|[_])*([/]([a-z]|[A-Z])([a-z]|[A-Z]|[0-9]|[.]|[-]|[_])*)*$', $this->attributes['homeDirectory'][0] ))
-				$errors[] = array('ERROR', _('Home directory'), _('Homedirectory contains invalid characters.'));
-			// Check if Username contains only valid characters
-			if ( !ereg('^([a-z]|[A-Z]|[0-9]|[.]|[-]|[_])+$', $this->attributes['uid'][0]))
-				$errors[] = array('ERROR', _('Username'), _('Username contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
-			}
-
-		if ($_SESSION[$this->base]->type=='host') {
-			if (($this->attributes['uid'][0] != $post['form_account_uid']) &&  ereg('[A-Z]$', $post['form_account_uid']))
-				$errors[] = array('WARN', _('Hostname'), _('You are using a capital letters. This can cause problems because windows isn\'t case-sensitive.'));
-			// Check if Username contains only valid characters
-			if ( !ereg('^([a-z]|[A-Z]|[0-9]|[.]|[-]|[_])+[$]$', $this->attributes['uid'][0]))
-				$errors[] = array('ERROR', _('Hostname'), _('Hostname contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ ! Hostname must end with $ !'));
-			}
-
-		// Create automatic useraccount with number if original user already exists
-		// Reset name to original name if new name is in use
-		// Set username back to original name if new username is in use
-		if ($_SESSION[$_SESSION[$this->base]->cache]->in_cache($this->attributes['uid'][0],'uid', '*')!=false && ($this->orig['uid'][0]!='')) {
-			$this->attributes['uid'][0] = $this->orig['uid'][0];
-			}
-		// Change uid to a new uid until a free uid is found
-		else while ($_SESSION[$_SESSION[$this->base]->cache]->in_cache($this->attributes['uid'][0], 'uid', '*')) {
-			if ($_SESSION[$this->base]->type=='host') $this->attributes['uid'][0] = substr($this->attributes['uid'][0], 0, -1);
-				// get last character of username
-			$lastchar = substr($this->attributes['uid'][0], strlen($this->attributes['uid'][0])-1, 1);
-			// Last character is no number
-			if ( !ereg('^([0-9])+$', $lastchar))
-				/* Last character is no number. Therefore we only have to
-				* add "2" to it.
-				*/
-				if ($_SESSION[$this->base]->type=='host') $this->attributes['uid'][0] = $this->attributes['uid'][0] . '2$';
-					else $this->attributes['uid'][0] = $this->attributes['uid'][0] . '2';
-			 else {
-				/* Last character is a number -> we have to increase the number until we've
-				* found a groupname with trailing number which is not in use.
-				*
-				* $i will show us were we have to split groupname so we get a part
-				* with the groupname and a part with the trailing number
-				*/
-				$i=strlen($this->attributes['uid'][0])-1;
-				$mark = false;
-				// Set $i to the last character which is a number in $account_new->general_username
-				while (!$mark) {
-					if (ereg('^([0-9])+$',substr($this->attributes['uid'][0], $i, strlen($this->attributes['uid'][0])-$i))) $i--;
-						else $mark=true;
-					}
-				// increase last number with one
-				$firstchars = substr($this->attributes['uid'][0], 0, $i+1);
-				$lastchars = substr($this->attributes['uid'][0], $i+1, strlen($this->attributes['uid'][0])-$i);
-				// Put username together
-				if ($_SESSION[$this->base]->type=='host') $this->attributes['uid'][0] = $firstchars . (intval($lastchars)+1)."$";
-					else $this->attributes['uid'][0] = $firstchars . (intval($lastchars)+1);
-				}
-			}
-
-		// Show warning if lam has changed username
-		if ($_SESSION[$this->base]->type=='user')
-			if ($this->attributes['uid'][0] != $post['form_posixAccount_uid']) {
-				$errors[] = array('WARN', _('Username'), _('Username in use. Selected next free username.'));
-				}
-		if ($_SESSION[$this->base]->type=='host')
-			if ($this->attributes['uid'][0] != $post['form_posixAccount_uid']) {
-				$errors[] = array('WARN', _('Hostname'), _('Hostname in use. Selected next free hostname.'));
-				}
-
-		if (!ereg('^([a-z]|[A-Z]|[0-9]|[\|]|[\#]|[\*]|[\,]|[\.]|[\;]|[\:]|[\_]|[\-]|[\+]|[\!]|[\%]|[\&]|[\/]|[\?]|[\{]|[\[]|[\(]|[\)]|[\]]|[\}])*$', $this->userPassword()))
-			$errors[] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
-		// Return error-messages
-		if (is_array($errors)) return $errors;
-		// Go to additional group page when no error did ocour and button was pressed
-		if ($post['form_posixAccount_addgroup'])  return 'group';
-		return 0;
+	function pages() {
+		return array('attributes', 'groups');
 		}
 
-	/* Write variables into object and do some regexp checks
+	/* This function returns all ldap attributes
+	* which are part of posixAccount and returns
+	* also their values.
 	*/
-	function proccess_group($post) {
-		do { // X-Or, only one if() can be true
-			if (isset($post['form_posixAccount_addgroups']) && isset($post['form_posixAccount_addgroups_button'])) { // Add groups to list
-				// Add new group
-				$this->groups = @array_merge($this->groups, $post['form_posixAccount_addgroups']);
-				// sort groups
-				sort($this->groups);
-				break;
-				}
-			if (isset($post['form_posixAccount_removegroups']) && isset($post['form_posixAccount_removegroups_button'])) { // remove groups from list
-				$this->groups = array_delete($post['form_posixAccount_removegroups'], $this->groups);
-				break;
-				}
-			} while(0);
-		if (isset($post['form_posixAccount_addgroups_button']) || isset($post['form_posixAccount_removegroups_button'])) return 'group';
-		if ($post['form_posixAccount_toattributes']) return 'attributes';
-		return 0;
+	function get_attributes() {
+		$return = $this->attributes;
+		$return['userPassword'] = $this->userPassword();
+		return $return;
 		}
-
 
 	/* This function loads all attributes into the object
 	* $attr is an array as it's retured from ldap_get_attributes
@@ -390,8 +209,6 @@ class posixAccount {
 		$this->groups_orig = $this->groups;
 		return 0;
 		}
-
-
 
 	/* This function returns an array with 3 entries:
 	* array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
@@ -469,12 +286,12 @@ class posixAccount {
 					$DNs = array_keys($dn_cns);
 					foreach ($DNs as $DN) {
 						if (is_array($add))
-							if (in_array($dn_cns[$DN][0], $add)) $return[$DN]['add']['memberUid'] = $this->attributes['uid'];
+							if (in_array($dn_cns[$DN][0], $add)) $return[$DN]['add']['memberUid'] = $this->attributes['uid'][0];
 						if (is_array($remove))
-							if (in_array($dn_cns[$DN][0], $remove)) $return[$DN]['remove']['memberUid'] = $this->attributes['uid'];
+							if (in_array($dn_cns[$DN][0], $remove)) $return[$DN]['remove']['memberUid'] = $this->attributes['uid'][0];
 						}
 					// primary group mut also be removed if it has changed after setting additional groups
-					if (in_array($_SESSION[$_SESSION[$this->base]->cache]->getgrnam($this->attributes['gidNumber']), $this->groups_orig)) $return[$DN]['remove']['memberUid'] = $this->attributes['uid'];
+					if (in_array($_SESSION[$_SESSION[$this->base]->cache]->getgrnam($this->attributes['gidNumber'][0]), $this->groups_orig)) $return[$DN]['remove']['memberUid'] = $this->attributes['uid'];
 					}
 				else {
 					// Add user to every group
@@ -482,7 +299,7 @@ class posixAccount {
 					// get_cache will return an array ( dn1 => array(cn1), dn2 => array(cn2), ... )
 					$DNs = array_keys($dn_cns);
 					foreach ($DNs as $DN) {
-						if (in_array($dn_cns[$DN][0], $this->groups)) $return[$DN]['add']['memberUid'] = $this->attributes['uid'];
+						if (in_array($dn_cns[$DN][0], $this->groups)) $return[$DN]['add']['memberUid'] = $this->attributes['uid'][0];
 						}
 					}
 				}
@@ -493,7 +310,7 @@ class posixAccount {
 					// get_cache will return an array ( dn1 => array(cn1), dn2 => array(cn2), ... )
 					$DNs = array_keys($dn_cns);
 					foreach ($DNs as $DN) {
-						if (in_array($dn_cns[$DN][0], $this->orig['groups'])) $return[$DN]['remove']['memberUid'] = $this->attributes['uid'];
+						if (in_array($dn_cns[$DN][0], $this->orig['groups'])) $return[$DN]['remove']['memberUid'] = $this->attributes['uid'][0];
 						}
 					}
 				}
@@ -503,20 +320,214 @@ class posixAccount {
 		return $return;
 		}
 
-
-	function delete_attributes() {
-
+	function delete_attributes($post) {
+		$return = array();
+		// remove memberUids if set
+		$groups = $_SESSION[$_SESSION[$this->base]->cache]->get_cache('memberUid', 'posixGroup', 'group');
+		$DNs = array_keys($groups);
+		for ($i=0; $i<count($DNs); $i++) {
+			if (in_array($this->attributes['uid'][0], $groups[$DNs[$i]])) $return[$DNs[$i]]['remove']['memberUid'] = $this->attributes['uid'][0];
+			}
+		if ($post['deletehomedir']) $return[$_SESSION[$this->base]->dn]['lamdaemon']['command'][] = $this->attributes['uid'][0] . " home rem";
+		return $return;
 		}
 
-
-	/* This function returns all ldap attributes
-	* which are part of posixAccount and returns
-	* also their values.
+	/* Write variables into object and do some regexp checks
 	*/
-	function get_attributes() {
-		$return = $this->attributes;
-		$return['userPassword'] = $this->userPassword();
-		return $return;
+	function proccess_attributes($post) {
+		if ($this->orig['uid'][0]!='' && $post['uid']!=$this->attributes['uid'][0])
+			$errors[] = array('INFO', _('UID'), _('UID has changed. Do you want to change home directory?'), 'uid');
+		if ($this->orig['gidNumber'][0]!='' && $_SESSION[$_SESSION[$this->base]->cache]->getgid($post['gidNumber'])!=$this->attributes['gidNumber'][0])
+			$errors[] = array('INFO', _('GID number'), sprintf(_('GID number has changed. To keep file ownership you have to run the following command as root: \'find / -gid %s -uid %s -exec chgrp %s {} \;\''), $this->orig['gidNumber'][0], $this->orig['uidNumber'][0], $_SESSION[$_SESSION[$this->base]->cache]->getgid($post['gidNumber'])), 'gidNumber');
+		if ($this->orig['uidNumber'][0]!='' && $post['uidNumber']!=$this->attributes['uidNumber'][0])
+			$errors[] = array('INFO', _('UID number'), sprintf(_('UID number has changed. To keep file ownership you have to run the following command as root: \'find / -uid %s -exec chown %s {} \;\''), $this->orig['uidNumber'][0], $this->attributes['uidNumber'][0]), 'uidNumber');
+		if (isset($post['homeDirectory']) && $this->orig['homeDirectory'][0]!='' && $post['homeDirectory']!=$this->attributes['homeDirectory'][0])
+			$errors[] = array('INFO', _('Home directory'), sprintf(_('Home directory changed. To keep home directory you have to run the following command as root: \'mv %s %s\''), $this->orig['homeDirectory'][0], $this->attributes['homeDirectory'][0]), 'homeDirectory');
+
+		// Load attributes
+		$this->attributes['uid'][0] = $post['uid'];
+		$this->attributes['cn'][0] = $this->attributes['uid'][0];
+		$this->attributes['uidNumber'][0] = $post['uidNumber'];
+		$this->attributes['gidNumber'][0] = $_SESSION[$_SESSION[$this->base]->cache]->getgid($post['gidNumber']);
+		$this->attributes['homeDirectory'][0] = $post['homeDirectory'];
+		$this->attributes['loginShell'][0] = $post['loginShell'];
+		$this->attributes['gecos'][0] = $post['gecos'];
+		if ($post['createhomedir']) $this->createhomedir = true;
+			else $this->createhomedir = false;
+		if ($post['userPassword_no']) $this->userPassword_no=true;
+			else $this->userPassword_no=false;
+		if ($post['userPassword_lock']) $this->userPassword_lock=true;
+			else $this->userPassword_lock=false;
+		if (isset($post['userPassword'])) {
+			if ($post['userPassword'] != $post['userPassword2']) {
+				$errors[] = array('ERROR', _('Password'), _('Please enter the same password in both password-fields.'), 'userPassword');
+				unset ($post['userPassword2']);
+				}
+				else $this->userPassword($post['userPassword']);
+			}
+		if ($post['genpass']) $this->userPassword(genpasswd());
+		// Check if UID is valid. If none value was entered, the next useable value will be inserted
+		// load min and may uidNumber
+		if ($_SESSION[$this->base]->type=='user') {
+			$minID = intval($_SESSION[$_SESSION[$this->base]->config]->get_minUID());
+			$maxID = intval($_SESSION[$_SESSION[$this->base]->config]->get_maxUID());
+			}
+		if ($_SESSION[$this->base]->type=='host') {
+			$minID = intval($_SESSION[$_SESSION[$this->base]->config]->get_minMachine());
+			$maxID = intval($_SESSION[$_SESSION[$this->base]->config]->get_maxMachine());
+			}
+		$dn_uids = $_SESSION[$_SESSION[$this->base]->cache]->get_cache('uidNumber', 'posixAccount', '*');
+		// get_cache will return an array ( dn1 => array(uidnumber1), dn2 => array(uidnumber2), ... )
+		foreach ($dn_uids as $uid) $uids[] = $uid[0];
+		if(is_array($uids)) sort ($uids, SORT_NUMERIC);
+		if ($this->attributes['uidNumber'][0]=='') {
+			// No id-number given
+			if ($this->orig['uidNumber'][0]=='') {
+				// new account -> we have to find a free id-number
+				if (count($uids)!=0) {
+					// There are some uids
+					// Store highest id-number
+					$id = $uids[count($uids)-1];
+					// Return minimum allowed id-number if all found id-numbers are too low
+					if ($id < $minID) $this->attributes['uidNumber'][0] = $minID;
+					// Return higesht used id-number + 1 if it's still in valid range
+					if ($id < $maxID) $this->attributes['uidNumber'][0] = $id+1;
+					/* If this function is still running we have to fid a free id-number between
+					* the used id-numbers
+					*/
+					$i = intval($minID);
+					while (in_array($i, $uids)) $i++;
+					if ($i>$maxID)
+						$errors[] = array('ERROR', _('ID-Number'), _('No free ID-Number!'), 'uidNumber');
+						else {
+							$this->attributes['uidNumber'][0] = $i;
+							$errors[] = array('WARN', _('ID-Number'), _('It is possible that this ID-number is reused. This can cause several problems because files with old permissions might still exist. To avoid this warning set maxUID to a higher value.'), 'uidNumber');
+							}
+					}
+				else $this->attributes['uidNumber'][0] = $minID;
+				// return minimum allowed id-number if no id-numbers are found
+				}
+			else $this->attributes['uidNumber'][0] = $this->orig['uidNumber'][0];
+			// old account -> return id-number which has been used
+			}
+		else {
+			// Check manual ID
+			// id-number is out of valid range
+			if ( ($this->attributes['uidNumber'][0]!=$post['uidNumber']) && ($this->attributes['uidNumber'][0] < $minID || $this->attributes['uidNumber'][0] > $maxID)) $errors[] = array('ERROR', _('ID-Number'), sprintf(_('Please enter a value between %s and %s!'), $minID, $maxID), 'uidNumber');
+			// $uids is allways an array but not if no entries were found
+			if (is_array($uids)) {
+				// id-number is in use and account is a new account
+				if ((in_array($this->attributes['uidNumber'][0], $uids)) && $this->orig['uidNumber'][0]=='') $errors[] = array('ERROR', _('ID-Number'), _('ID is already in use'), 'uidNumber');
+				// id-number is in use, account is existing account and id-number is not used by itself
+				if ((in_array($this->attributes['uidNumber'][0], $uids)) && $this->orig['uidNumber'][0]!='' && ($this->orig['uidNumber'][0] != $this->attributes['uidNumber'][0]) ) {
+					$errors[] = array('ERROR', _('ID-Number'), _('ID is already in use'), 'uidNumber');
+					$this->attributes['uidNumber'][0] = $this->orig['uidNumber'][0];
+					}
+				}
+			}
+
+		if ($_SESSION[$this->base]->type=='user') {
+			if (($this->attributes['uid'][0] != $post['uid']) &&  ereg('[A-Z]$', $post['uid']))
+				$errors[] = array('WARN', _('Username'), _('You are using a capital letters. This can cause problems because windows isn\'t case-sensitive.'), 'uid');
+			// Check if Homedir is valid
+			$this->attributes['homeDirectory'][0] = str_replace('$group', $_SESSION[$_SESSION[$this->base]->cache]->getgrnam($this->attributes['gidNumber'][0]), $this->attributes['homeDirectory'][0]);
+			if ($this->attributes['uid'][0] != '')
+				$this->attributes['homeDirectory'][0] = str_replace('$user', $this->attributes['uid'][0], $this->attributes['homeDirectory'][0]);
+			if ($this->attributes['homeDirectory'][0] != $post['homeDirectory']) $errors[] = array('INFO', _('Home directory'), _('Replaced $user or $group in homedir.'));
+			if ( !ereg('^[/]([a-z]|[A-Z])([a-z]|[A-Z]|[0-9]|[.]|[-]|[_])*([/]([a-z]|[A-Z])([a-z]|[A-Z]|[0-9]|[.]|[-]|[_])*)*$', $this->attributes['homeDirectory'][0] ))
+				$errors[] = array('ERROR', _('Home directory'), _('Homedirectory contains invalid characters.'), 'homeDirectory');
+			// Check if Username contains only valid characters
+			if ( !ereg('^([a-z]|[A-Z]|[0-9]|[.]|[-]|[_])+$', $this->attributes['uid'][0]))
+				$errors[] = array('ERROR', _('Username'), _('Username contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'), 'uid');
+			}
+
+		if ($_SESSION[$this->base]->type=='host') {
+			if (($this->attributes['uid'][0] != $post['form_account_uid']) &&  ereg('[A-Z]$', $post['form_account_uid']))
+				$errors[] = array('WARN', _('Hostname'), _('You are using a capital letters. This can cause problems because windows isn\'t case-sensitive.'), 'uid');
+			// Check if Username contains only valid characters
+			if ( !ereg('^([a-z]|[A-Z]|[0-9]|[.]|[-]|[_])+[$]$', $this->attributes['uid'][0]))
+				$errors[] = array('ERROR', _('Hostname'), _('Hostname contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ ! Hostname must end with $ !'), 'uid');
+			}
+
+		// Create automatic useraccount with number if original user already exists
+		// Reset name to original name if new name is in use
+		// Set username back to original name if new username is in use
+		if ($_SESSION[$_SESSION[$this->base]->cache]->in_cache($this->attributes['uid'][0],'uid', '*')!=false && ($this->orig['uid'][0]!='')) {
+			$this->attributes['uid'][0] = $this->orig['uid'][0];
+			}
+		// Change uid to a new uid until a free uid is found
+		else while ($_SESSION[$_SESSION[$this->base]->cache]->in_cache($this->attributes['uid'][0], 'uid', '*')) {
+			if ($_SESSION[$this->base]->type=='host') $this->attributes['uid'][0] = substr($this->attributes['uid'][0], 0, -1);
+				// get last character of username
+			$lastchar = substr($this->attributes['uid'][0], strlen($this->attributes['uid'][0])-1, 1);
+			// Last character is no number
+			if ( !ereg('^([0-9])+$', $lastchar))
+				/* Last character is no number. Therefore we only have to
+				* add "2" to it.
+				*/
+				if ($_SESSION[$this->base]->type=='host') $this->attributes['uid'][0] = $this->attributes['uid'][0] . '2$';
+					else $this->attributes['uid'][0] = $this->attributes['uid'][0] . '2';
+			 else {
+				/* Last character is a number -> we have to increase the number until we've
+				* found a groupname with trailing number which is not in use.
+				*
+				* $i will show us were we have to split groupname so we get a part
+				* with the groupname and a part with the trailing number
+				*/
+				$i=strlen($this->attributes['uid'][0])-1;
+				$mark = false;
+				// Set $i to the last character which is a number in $account_new->general_username
+				while (!$mark) {
+					if (ereg('^([0-9])+$',substr($this->attributes['uid'][0], $i, strlen($this->attributes['uid'][0])-$i))) $i--;
+						else $mark=true;
+					}
+				// increase last number with one
+				$firstchars = substr($this->attributes['uid'][0], 0, $i+1);
+				$lastchars = substr($this->attributes['uid'][0], $i+1, strlen($this->attributes['uid'][0])-$i);
+				// Put username together
+				if ($_SESSION[$this->base]->type=='host') $this->attributes['uid'][0] = $firstchars . (intval($lastchars)+1)."$";
+					else $this->attributes['uid'][0] = $firstchars . (intval($lastchars)+1);
+				}
+			}
+
+		// Show warning if lam has changed username
+		if ($_SESSION[$this->base]->type=='user')
+			if ($this->attributes['uid'][0] != $post['uid']) {
+				$errors[] = array('WARN', _('Username'), _('Username in use. Selected next free username.'), 'uid');
+				}
+		if ($_SESSION[$this->base]->type=='host')
+			if ($this->attributes['uid'][0] != $post['uid']) {
+				$errors[] = array('WARN', _('Hostname'), _('Hostname in use. Selected next free hostname.'), 'uid');
+				}
+
+		if (!ereg('^([a-z]|[A-Z]|[0-9]|[\|]|[\#]|[\*]|[\,]|[\.]|[\;]|[\:]|[\_]|[\-]|[\+]|[\!]|[\%]|[\&]|[\/]|[\?]|[\{]|[\[]|[\(]|[\)]|[\]]|[\}])*$', $this->userPassword()))
+			$errors[] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'), 'userPassword');
+		// Return error-messages
+		if (is_array($errors)) return $errors;
+		// Go to additional group page when no error did ocour and button was pressed
+		if ($post['addgroup'])  return 'group';
+		return 0;
+		}
+
+	/* Write variables into object and do some regexp checks
+	*/
+	function proccess_group($post) {
+		do { // X-Or, only one if() can be true
+			if (isset($post['addgroups']) && isset($post['addgroups_button'])) { // Add groups to list
+				// Add new group
+				$this->groups = @array_merge($this->groups, $post['addgroups']);
+				// sort groups
+				sort($this->groups);
+				break;
+				}
+			if (isset($post['removegroups']) && isset($post['removegroups_button'])) { // remove groups from list
+				$this->groups = array_delete($post['removegroups'], $this->groups);
+				break;
+				}
+			} while(0);
+		if (isset($post['addgroups_button']) || isset($post['removegroups_button'])) return 'group';
+		if ($post['toattributes']) return 'attributes';
+		return 0;
 		}
 
 	/* This function will create the html-page
@@ -524,6 +535,9 @@ class posixAccount {
 	* It will output a complete html-table
 	*/
 	function display_html_attributes($post) {
+		print_r($this->attributes);
+		print "<br>";
+		print_r($this->attributes);
 		$groups = $_SESSION[$_SESSION[$this->base]->cache]->findgroups(); // list of all groupnames
 		$shelllist = getshells(); // list of all valid shells
 		if ($this->attributes['userPassword'][0] != $this->orig['userPassword'][0]) $password=$this->userPassword();
@@ -531,22 +545,22 @@ class posixAccount {
 		echo "<table border=0 width=\"100%\">\n";
 		echo "<tr>\n";
 		echo '<td>' . _('Username') . "*</td>\n";
-		echo "<td><input name=\"form_posixAccount_uid\" type=\"text\" size=\"20\" maxlength=\"20\" value=\"".$this->attributes['uid'][0]."\"></td>\n";
+		echo "<td><input name=\"uid\" type=\"text\" size=\"20\" maxlength=\"20\" value=\"".$this->attributes['uid'][0]."\"></td>\n";
 		echo "<td><a href=\"../help.php?HelpNumber=400\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
 		echo "</tr>\n";
 		echo "<tr>\n";
 		echo "<td>" . _('UID number') ."</td>\n";
-		echo "<td><input name=\"form_posixAccount_uidNumber\" type=\"text\" size=\"6\" maxlength=\"6\" value=\"".$this->attributes['uidNumber'][0]."\"></td>\n";
+		echo "<td><input name=\"uidNumber\" type=\"text\" size=\"6\" maxlength=\"6\" value=\"".$this->attributes['uidNumber'][0]."\"></td>\n";
 		echo "<td><a href=\"../help.php?HelpNumber=401\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
 		echo "</tr>\n";
 		echo "<tr>\n";
 		echo "<td>" . _('Gecos') . "</td>\n";
-		echo "<td><input name=\"form_posixAccount_gecos\" type=\"text\" size=\"30\" maxlength=\"255\" value=\"".$this->attributes['gecos'][0]."\"></td>\n";
+		echo "<td><input name=\"gecos\" type=\"text\" size=\"30\" maxlength=\"255\" value=\"".$this->attributes['gecos'][0]."\"></td>\n";
 		echo "<td><a href=\"../help.php?HelpNumber=404\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
 		echo "</tr>\n";
 		echo "<tr>\n";
 		echo "<td>" . _('Primary group') . "*</td>\n";
-		echo "<td><select name=\"form_posixAccount_gidNumber\">";
+		echo "<td><select name=\"gidNumber\">";
 		// loop trough existing groups
 		foreach ($groups as $group)
 			if ($_SESSION[$_SESSION[$this->base]->cache]->getgrnam($this->attributes['gidNumber'][0]) == $group) echo "<option selected> $group </option>\n";
@@ -557,45 +571,45 @@ class posixAccount {
 		if ($_SESSION[$this->base]->type=='user') {
 			echo "<tr>\n";
 			echo "<td>" . _('Additional groups') . "</td>\n";
-			echo "<td><input name=\"form_posixAccount_addgroup\" type=\"submit\" value=\"" . _('Edit groups') . "\"></td>\n";
+			echo "<td><input name=\"addgroup\" type=\"submit\" value=\"" . _('Edit groups') . "\"></td>\n";
 			echo "<td><a href=\"../help.php?HelpNumber=402\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
 			echo "</tr>\n";
 			echo "<tr>\n";
 			echo "<td>" . _('Home directory') . "*</td>\n";
-			echo "<td><input name=\"form_posixAccount_homeDirectory\" type=\"text\" size=\"30\" maxlength=\"255\" value=\"".$this->attributes['homeDirectory'][0]."\"></td>\n";
+			echo "<td><input name=\"homeDirectory\" type=\"text\" size=\"30\" maxlength=\"255\" value=\"".$this->attributes['homeDirectory'][0]."\"></td>\n";
 			echo "<td><a href=\"../help.php?HelpNumber=403\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
 			echo "</tr>\n";
 			if ($this->orig['homeDirectory']=='' && isset($_SESSION[$_SESSION[$this->base]->config]->scriptPath)) {
 				echo "<tr>\n";
 				echo "<td>" . _('Create home directory') . "*</td>\n";
-				echo "<td><input name=\"form_posixAccount_createhomedir\" type=\"checkbox\"";
+				echo "<td><input name=\"createhomedir\" type=\"checkbox\"";
 					if ($this->createhomedir) echo " checked ";
 					echo "></td>\n";
 				echo "<tr>\n";
 				}
 			echo "<tr>\n";
 			echo "<td>" . _('Password') . "</td>\n";
-			echo "<td><input name=\"form_posixAccount_userPassword\" type=\"password\" size=\"20\" maxlength=\"20\" value=\"$password\"></td>\n";
-			echo "<td><input name=\"form_posixAccount_genpass\" type=\"submit\" value=\"" . _('Generate password') . "\"></td>\n";
+			echo "<td><input name=\"userPassword\" type=\"password\" size=\"20\" maxlength=\"20\" value=\"$password\"></td>\n";
+			echo "<td><input name=\"genpass\" type=\"submit\" value=\"" . _('Generate password') . "\"></td>\n";
 			echo "</tr>\n";
 			echo "<tr>\n";
 			echo "<td>" . _('Repeat password') . "</td>\n";
-			echo "<td><input name=\"form_posixAccount_userPassword2\" type=\"password\" size=\"20\" maxlength=\"20\" value=\"";
-				if ($post['form_posixAccount_userPassword2']!='') echo $post['form_posixAccount_userPassword2'];
+			echo "<td><input name=\"userPassword2\" type=\"password\" size=\"20\" maxlength=\"20\" value=\"";
+				if ($post['userPassword2']!='') echo $post['userPassword2'];
 				else echo $password;
 			echo "\"></td>\n";
 			echo "<td></td>\n";
 			echo "</tr>\n";
 			echo "<tr>\n";
 			echo "<td>" . _('Use no password') . "</td>\n";
-			echo "<td><input name=\"form_posixAccount_userPassword_no\" type=\"checkbox\"";
+			echo "<td><input name=\"userPassword_no\" type=\"checkbox\"";
 				if ($this->userPassword_no) echo " checked ";
 				echo "></td>\n";
 			echo "<td><a href=\"../help.php?HelpNumber=426\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
 			echo "</tr>\n";
 			echo "<tr>\n";
 			echo "<td>" . _('Lock password') . "</td>\n";
-			echo "<td><input name=\"form_posixAccount_userPassword_lock\" type=\"checkbox\"";
+			echo "<td><input name=\"userPassword_lock\" type=\"checkbox\"";
 				if ($this->userPassword_lock) echo " checked ";
 				echo "></td>\n";
 			echo "<td><a href=\"../help.php?HelpNumber=426\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
@@ -603,7 +617,7 @@ class posixAccount {
 			if (count($shelllist)!=0) {
 				echo "<tr>\n";
 				echo "<td>" . _('Login shell') . "*</td>\n";
-				echo "<td><select name=\"form_posixAccount_loginShell\">";
+				echo "<td><select name=\"loginShell\">";
 				// loop through shells
 				foreach ($shelllist as $shell)
 					if ($this->attributes['loginShell'][0]==trim($shell)) echo "<option selected> $shell </option>\n";
@@ -614,6 +628,16 @@ class posixAccount {
 				}
 			}
 		echo "</table>\n";
+		return 0;
+		}
+
+	function display_html_delete($post) {
+		if ($_SESSION[$this->base]->type=='user' && isset($_SESSION[$_SESSION[$this->base]->config]->scriptPath)) {
+			echo "<tr>\n";
+			echo "<td>" . _('Delete home directory') . "*</td>\n";
+			echo "<td><input name=\"deletehomedir\" type=\"checkbox\"></td>\n";
+			echo "<tr>\n";
+			}
 		return 0;
 		}
 
@@ -640,22 +664,22 @@ class posixAccount {
 				echo "<legend class=\"".$_SESSION[$this->base]->type."edit-bright\">" . _("Selected groups") . "</legend>\n";
 					// Show all groups the user is additional member of
 					if (count($this->groups)!=0) {
-						echo "<select name=\"form_posixAccount_removegroups[]\" class=\"".$_SESSION[$this->base]->type."edit-bright\" size=15 multiple>\n";
+						echo "<select name=\"removegroups[]\" class=\"".$_SESSION[$this->base]->type."edit-bright\" size=15 multiple>\n";
 						for ($i=0; $i<count($this->groups); $i++)
 							echo "<option>" . $this->groups[$i] . "</option>\n";
 						echo "</select>\n";
 						}
 					echo "</fieldset></td>\n";
-				echo "<td align=\"center\" width=\"10%\"><input type=\"submit\" name=\"form_posixAccount_addgroups_button\" value=\"<=\">";
+				echo "<td align=\"center\" width=\"10%\"><input type=\"submit\" name=\"addgroups_button\" value=\"<=\">";
 				echo " ";
-				echo "<input type=\"submit\" name=\"form_posixAccount_removegroups_button\" value=\"=>\"><br><br>";
+				echo "<input type=\"submit\" name=\"removegroups_button\" value=\"=>\"><br><br>";
 				echo "<a href=\""."../help.php?HelpNumber=402\" target=\"lamhelp\">"._('Help')."</a></td>\n";
 				echo "<td valign=\"top\">\n";
 				echo "<fieldset class=\"".$_SESSION[$this->base]->type."edit-bright\">";
 				echo "<legend class=\"".$_SESSION[$this->base]->type."edit-bright\">" . _('Available groups') . "</legend>\n";
 					// show all groups expect these the user is member of
 					if (count($groups)!=0) {
-						echo "<select name=\"form_posixAccount_addgroups[]\" size=15 multiple class=\"".$_SESSION[$this->base]->type."edit-bright\">\n";
+						echo "<select name=\"addgroups[]\" size=15 multiple class=\"".$_SESSION[$this->base]->type."edit-bright\">\n";
 						for ($i=0; $i<count($groups); $i++)
 							echo "<option> $groups[$i] </option>\n";
 						echo "</select>\n";
@@ -663,7 +687,7 @@ class posixAccount {
 					echo "</fieldset></td>\n";
 				echo "</tr>\n";
 				echo "</table>\n";
-			echo "<input name=\"form_posixAccount_toattributes\" type=\"submit\" value=\""; echo _('Back'); echo "\">\n";
+			echo "<input name=\"toattributes\" type=\"submit\" value=\""; echo _('Back'); echo "\">\n";
 			echo "</fieldset>\n";
 		echo "</td></tr></table>\n";
 		return 0;
@@ -671,7 +695,5 @@ class posixAccount {
 
 
 	}
-
-
 
 ?>

@@ -66,7 +66,6 @@ class shadowAccount {
 		// Add Array with all attributes and type
 		$this->attributes = $_SESSION[$this->base]->get_module_attributes('shadowAccount');
 		$_SESSION[$this->base]->add_attributes ('shadowAccount');
-		$this->alias = _('shadowAccount');
 		// Make references to attributes which already esists in ldap
 		$newattributes = array_keys($this->attributes);
 		$module = array_keys($_SESSION[$this->base]->module);
@@ -79,11 +78,8 @@ class shadowAccount {
 		}
 
 	// Variables
-	// Alias Name. This name is shown in the menu instead of shadowAccount
-	var $alias;
 	// name of accountContainer so we can read other classes in accuontArray
 	var $base;
-
 	// This variable contains all inetOrgPerson attributes
 	var $attributes;
 	/* If an account was loaded all attributes are kept in this array
@@ -91,38 +87,37 @@ class shadowAccount {
 	*/
 	var $orig;
 
+	function get_alias() {
+		return _('shadowAccount');
+		}
+
 	/* This function returns a list with all required modules
 	*/
-	function dependencies() {
-		return array('posixAccount');
+	function get_dependencies($scope) {
+		if ($scope=='user') return array('require' => array('inetOrgPerson'), 'conflict' => array() );
+		return -1;
 		}
 
 	function module_ready() {
 		return true;
 		}
 
-	/* Write variables into object and do some regexp checks
+	/* This function returns a list of all html-pages in module
+	* This is usefull for mass upload and pdf-files
+	* because lam can walk trough all pages itself and do some
+	* error checkings
 	*/
-	function proccess_attributes($post) {
-		// Load attributes
-		$this->attributes['shadowMin'][0] = $post['form_shadowAccount_shadowMin'];
-		$this->attributes['shadowMax'][0] = $post['form_shadowAccount_shadowMax'];
-		$this->attributes['shadowWarning'][0] = $post['form_shadowAccount_shadowWarning'];
-		$this->attributes['shadowInactive'][0] = $post['form_shadowAccount_shadowInactive'];
-		$this->attributes['shadowExpire'][0] = intval(mktime(10, 0, 0, $post['form_shadowAccount_shadowExpire_mon'],
-			$post['form_shadowAccount_shadowExpire_day'], $post['form_shadowAccount_shadowExpire_yea'])/3600/24);
-
-		if ( !ereg('^([0-9])*$', $this->attributes['shadowMin'][0]))  $errors[] = array('ERROR', _('Password minage'), _('Password minage must be are natural number.'));
-		if ( $this->attributes['shadowMin'][0] > $this->attributes['shadowMax'][0] ) $errors[] = array('ERROR', _('Password maxage'), _('Password maxage must bigger as Password Minage.'));
-		if ( !ereg('^([0-9]*)$', $this->attributes['shadowMax'][0])) $errors[] = array('ERROR', _('Password maxage'), _('Password maxage must be are natural number.'));
-		if ( !ereg('^(([-][1])|([0-9]*))$', $this->attributes['shadowInactive'][0]))
-			$errors[] = array('ERROR', _('Password Expire'), _('Password expire must be are natural number or -1.'));
-		if ( !ereg('^([0-9]*)$', $this->attributes['shadowWarning'][0])) $errors[] = array('ERROR', _('Password warn'), _('Password warn must be are natural number.'));
-
-		if (is_array($errors)) return $errors;
-		return 0;
+	function pages() {
+		return array('attributes');
 		}
 
+	/* This function returns all ldap attributes
+	* which are part of shadowAccount and returns
+	* also their values.
+	*/
+	function get_attributes() {
+		return $this->attributes;
+		}
 
 	/* This function loads all attributes into the object
 	* $attr is an array as it's retured from ldap_get_attributes
@@ -148,7 +143,6 @@ class shadowAccount {
 		$this->orig = $this->attributes;
 		}
 
-
 	/* This function returns an array with 3 entries:
 	* array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
 	* DN is the DN to change. It may be possible to change several DNs,
@@ -163,17 +157,33 @@ class shadowAccount {
 		// Set shadowLastchange manual.
 		if (($_SESSION[$this->base]->module['posixAccount']->orig['userPassword'][0] != $_SESSION[$this->base]->module['posixAccount']->attributes['userPassword'][0]  && $_SESSION[$this->base]->module['posixAccount']->userPassword()!='') || $_SESSION[$this->base]->module['posixAccount']->userPassword_no)
 			$return[$_SESSION[$this->base]->dn]['modify']['shadowLastChange'] = array(intval(time()/3600/24));
-
 		return $return;
 		}
 
+	function delete_attributes($post) {
+		$return = array();
+		return $return;
+		}
 
-	/* This function returns all ldap attributes
-	* which are part of shadowAccount and returns
-	* also their values.
+	/* Write variables into object and do some regexp checks
 	*/
-	function get_attributes() {
-		return $this->attributes;
+	function proccess_attributes($post) {
+		// Load attributes
+		$this->attributes['shadowMin'][0] = $post['shadowMin'];
+		$this->attributes['shadowMax'][0] = $post['shadowMax'];
+		$this->attributes['shadowWarning'][0] = $post['shadowWarning'];
+		$this->attributes['shadowInactive'][0] = $post['shadowInactive'];
+		$this->attributes['shadowExpire'][0] = intval(mktime(10, 0, 0, $post['shadowExpire_mon'],
+			$post['shadowExpire_day'], $post['shadowExpire_yea'])/3600/24);
+
+		if ( !ereg('^([0-9])*$', $this->attributes['shadowMin'][0]))  $errors[] = array('ERROR', _('Password minage'), _('Password minage must be are natural number.'), 'shadowMin');
+		if ( $this->attributes['shadowMin'][0] > $this->attributes['shadowMax'][0] ) $errors[] = array('ERROR', _('Password maxage'), _('Password maxage must bigger as Password Minage.'), 'shadowMin');
+		if ( !ereg('^([0-9]*)$', $this->attributes['shadowMax'][0])) $errors[] = array('ERROR', _('Password maxage'), _('Password maxage must be are natural number.'), 'shadowMax');
+		if ( !ereg('^(([-][1])|([0-9]*))$', $this->attributes['shadowInactive'][0]))
+			$errors[] = array('ERROR', _('Password Expire'), _('Password expire must be are natural number or -1.'), 'shadowInactive');
+		if ( !ereg('^([0-9]*)$', $this->attributes['shadowWarning'][0])) $errors[] = array('ERROR', _('Password warn'), _('Password warn must be are natural number.'), 'shadowWarning');
+		if (is_array($errors)) return $errors;
+		return 0;
 		}
 
 	/* This function will create the html-page
@@ -185,37 +195,37 @@ class shadowAccount {
 		$date = getdate ($this->attributes['shadowExpire'][0]*3600*24);
 		echo "<table border=0 width=\"100%\">\n<tr>\n";
 		echo "<td>" . _('Password warn') . "</td>\n";
-		echo "<td><input name=\"form_shadowAccount_shadowWarning\" type=\"text\" size=\"4\" maxlength=\"4\" value=\"" . $this->attributes['shadowWarning'][0] . "\"></td>\n";
+		echo "<td><input name=\"shadowWarning\" type=\"text\" size=\"4\" maxlength=\"4\" value=\"" . $this->attributes['shadowWarning'][0] . "\"></td>\n";
 		echo "<td><a href=\"../help.php?HelpNumber=414\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
 		echo "</tr>\n";
 		echo "<tr>\n";
 		echo "<td>" . _('Password Expire') . "</td>\n";
-		echo "<td><input name=\"form_shadowAccount_shadowInactive\" type=\"text\" size=\"4\" maxlength=\"4\" value=\"" . $this->attributes['shadowInactive'][0] . "\"></td>\n";
+		echo "<td><input name=\"shadowInactive\" type=\"text\" size=\"4\" maxlength=\"4\" value=\"" . $this->attributes['shadowInactive'][0] . "\"></td>\n";
 		echo "<td><a href=\"../help.php?HelpNumber=415\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
 		echo "</tr>\n";
 		echo "<tr>\n";
 		echo "<td>" . _('Maximum password age') . "</td>\n";
-		echo "<td><input name=\"form_shadowAccount_shadowMax\" type=\"text\" size=\"5\" maxlength=\"5\" value=\"" . $this->attributes['shadowMax'][0] . "\"></td>\n";
+		echo "<td><input name=\"shadowMax\" type=\"text\" size=\"5\" maxlength=\"5\" value=\"" . $this->attributes['shadowMax'][0] . "\"></td>\n";
 		echo "<td><a href=\"../help.php?HelpNumber=416\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
 		echo "</tr>\n";
 		echo "<tr>\n";
 		echo "<td>" . _('Minimum password age') . "</td>\n";
-		echo "<td><input name=\"form_shadowAccount_shadowMin\" type=\"text\" size=\"4\" maxlength=\"4\" value=\"" . $this->attributes['shadowMin'][0] . "\"></td>\n";
+		echo "<td><input name=\"shadowMin\" type=\"text\" size=\"4\" maxlength=\"4\" value=\"" . $this->attributes['shadowMin'][0] . "\"></td>\n";
 		echo "<td><a href=\"../help.php?HelpNumber=417\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
 		echo "</tr>\n";
 		echo "<tr>\n";
 		echo "<td>" . _('Expire date') . "</td>\n";
-		echo "<td><select name=\"form_shadowAccount_shadowExpire_day\">";
+		echo "<td><select name=\"shadowExpire_day\">";
 			for ( $i=1; $i<=31; $i++ ) {
 				if ($date['mday']==$i) echo "<option selected>$i</option>";
 				else echo "<option>$i</option>";
 				}
-			echo "</select>\n<select name=\"form_shadowAccount_shadowExpire_mon\">";
+			echo "</select>\n<select name=\"shadowExpire_mon\">";
 			for ( $i=1; $i<=12; $i++ ) {
 				if ($date['mon'] == $i) echo "<option selected>$i</option>";
 				else echo "<option>$i</option>";
 				}
-			echo "</select>\n<select name=\"form_shadowAccount_shadowExpire_yea\">";
+			echo "</select>\n<select name=\"shadowExpire_yea\">";
 			for ( $i=2030; $i>=2003; $i-- ) {
 				if ($date['year']==$i) echo "<option selected>$i</option>";
 				else echo "<option>$i</option>";
@@ -227,9 +237,10 @@ class shadowAccount {
 		return 0;
 		}
 
+	function display_html_delete($post) {
+		return 0;
+		}
 
 	}
-
-
 
 ?>

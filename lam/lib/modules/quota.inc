@@ -28,14 +28,12 @@ class quota {
 		if (!$base) trigger_error(_('Please create a base object with $var = new accountContainer();'), E_USER_ERROR);
 		if (!is_string($base)) trigger_error(_('Please create a new module object with $accountContainer->add_objectClass(\'quota\');'), E_USER_ERROR);
 		// quota is only a valid objectClass for user and host
-		if (!($_SESSION[$this->base]->get_type() == 'user') && !($_SESSION[$this->base]->get_type() == 'group')) trigger_error(_('quota can only be used for users or hosts.'), E_USER_WARNING);
+		if (!($_SESSION[$this->base]->get_type() == 'user') && !($_SESSION[$this->base]->get_type() == 'group')) trigger_error(_('quota can only be used for users or groups.'), E_USER_WARNING);
 		/* Check if ldap conatiner is in array and set type
 		* users are using inetOrgPerson-, hosts account-container
 		*/
 		if (!isset($_SESSION[$this->base]->module['posixAccount']) && $_SESSION[$this->base]->type=='user') $_SESSION[$this->base]->add_objectClass('posixAccount');
 		if (!isset($_SESSION[$this->base]->module['posixGroup']) && $_SESSION[$this->base]->type=='group') $_SESSION[$this->base]->add_objectClass('posixGroup');
-		$this->alias = _('quota');
-
 		// Get basic quotas for new account
 		$output_array = $_SESSION[$this->base]->lamdaemon(array("+ quota get " . $_SESSION[$this->base]->type));
 		// process quotas
@@ -64,19 +62,20 @@ class quota {
 		}
 
 	// Variables
-	// Alias Name. This name is shown in the menu instead of quota
-	var $alias;
 	// name of accountContainer so we can read other classes in accuontArray
 	var $base;
 
 	var $quota;
 
+	function get_alias() {
+		return _('quota');
+		}
+
 	/* This function returns a list with all required modules
 	*/
-	function dependencies() {
-		if ($_SESSION[$this->base]->type=='user') return array('posixAccount');
-		if ($_SESSION[$this->base]->type=='group') return array('posixGroup');
-		// return error if unsupported type is used
+	function get_dependencies($scope) {
+		if ($scope=='group') return array('require' => array('posixGroup'), 'conflict' => array() );
+		if ($scope=='user') return array('require' => array('posixAccount'), 'conflict' => array() );
 		return -1;
 		}
 
@@ -87,39 +86,22 @@ class quota {
 		return true;
 		}
 
-	/* Write variables into object and do some regexp checks
+	/* This function returns a list of all html-pages in module
+	* This is usefull for mass upload and pdf-files
+	* because lam can walk trough all pages itself and do some
+	* error checkings
 	*/
-	function proccess_attributes($post) {
-		// Write all general values into $account_new
-		$i=0;
-		// loop for every mointpoint with quotas
-		while ($this->quota[$i][0]) {
-			$this->quota[$i][2] = $post['form_quota_' . $i . '_2'];
-			$this->quota[$i][3] = $post['form_quota_' . $i . '_3'];
-			$this->quota[$i][6] = $post['form_quota_' . $i . '_6'];
-			$this->quota[$i][7] = $post['form_quota_' . $i . '_7'];
-			// Check if values are OK and set automatic values. if not error-variable will be set
-			if (!ereg('^([0-9])*$', $this->quota[$i][2]))
-				$errors[] = array('ERROR', _('Block soft quota'), _('Block soft quota contains invalid characters. Only natural numbers are allowed'));
-			if (!ereg('^([0-9])*$', $this->quota[$i][3]))
-				$errors[] = array('ERROR', _('Block hard quota'), _('Block hard quota contains invalid characters. Only natural numbers are allowed'));
-			if (!ereg('^([0-9])*$', $this->quota[$i][6]))
-				$errors[] = array('ERROR', _('Inode soft quota'), _('Inode soft quota contains invalid characters. Only natural numbers are allowed'));
-			if (!ereg('^([0-9])*$', $this->quota[$i][7]))
-				$errors[] = array('ERROR', _('Inode hard quota'), _('Inode hard quota contains invalid characters. Only natural numbers are allowed'));
-			if (intval($this->quota[$i][2]) > intval($this->quota[$i][3]))
-				$errors[] = array('ERROR', _('Block quota'), _('Block soft quota must be smaller than block hard quota'));
-			if (intval($this->quota[$i][6]) > intval($this->quota[$i][7]))
-				$errors[] = array('ERROR', _('Inode quota'), _('Inode soft quota must be smaller than inode hard quota'));
-			$i++;
-			}
-
-		// Return error-messages
-		if (is_array($errors)) return $errors;
-		// Go to additional group page when no error did ocour and button was pressed
-		return 0;
+	function pages() {
+		return array('attributes');
 		}
 
+	/* This function returns all ldap attributes
+	* which are part of quota and returns
+	* also their values.
+	*/
+	function get_attributes() {
+		return $this->quota;
+		}
 
 	/* This function loads all attributes into the object
 	* $attr is an array as it's retured from ldap_get_attributes
@@ -156,8 +138,6 @@ class quota {
 		return 0;
 		}
 
-
-
 	/* This function returns an array with 3 entries:
 	* array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
 	* DN is the DN to change. It may be possible to change several DNs,
@@ -191,7 +171,7 @@ class quota {
 		return $return;
 		}
 
-	function delete_attributes() {
+	function delete_attributes($post) {
 		$i=0;
 		while ($this->quota[$i][0]) {
 			$quotastring = $quotastring . $this->quota[$i][0] . ',0,0,0,0:';
@@ -203,13 +183,37 @@ class quota {
 		return $return;
 		}
 
-
-	/* This function returns all ldap attributes
-	* which are part of quota and returns
-	* also their values.
+	/* Write variables into object and do some regexp checks
 	*/
-	function get_attributes() {
-		return $this->quota;
+	function proccess_attributes($post) {
+		// Write all general values into $account_new
+		$i=0;
+		// loop for every mointpoint with quotas
+		while ($this->quota[$i][0]) {
+			$this->quota[$i][2] = $post[$i . '_2'];
+			$this->quota[$i][3] = $post[$i . '_3'];
+			$this->quota[$i][6] = $post[$i . '_6'];
+			$this->quota[$i][7] = $post[$i . '_7'];
+			// Check if values are OK and set automatic values. if not error-variable will be set
+			if (!ereg('^([0-9])*$', $this->quota[$i][2]))
+				$errors[] = array('ERROR', _('Block soft quota'), _('Block soft quota contains invalid characters. Only natural numbers are allowed'));
+			if (!ereg('^([0-9])*$', $this->quota[$i][3]))
+				$errors[] = array('ERROR', _('Block hard quota'), _('Block hard quota contains invalid characters. Only natural numbers are allowed'));
+			if (!ereg('^([0-9])*$', $this->quota[$i][6]))
+				$errors[] = array('ERROR', _('Inode soft quota'), _('Inode soft quota contains invalid characters. Only natural numbers are allowed'));
+			if (!ereg('^([0-9])*$', $this->quota[$i][7]))
+				$errors[] = array('ERROR', _('Inode hard quota'), _('Inode hard quota contains invalid characters. Only natural numbers are allowed'));
+			if (intval($this->quota[$i][2]) > intval($this->quota[$i][3]))
+				$errors[] = array('ERROR', _('Block quota'), _('Block soft quota must be smaller than block hard quota'));
+			if (intval($this->quota[$i][6]) > intval($this->quota[$i][7]))
+				$errors[] = array('ERROR', _('Inode quota'), _('Inode soft quota must be smaller than inode hard quota'));
+			$i++;
+			}
+
+		// Return error-messages
+		if (is_array($errors)) return $errors;
+		// Go to additional group page when no error did ocour and button was pressed
+		return 0;
 		}
 
 	/* This function will create the html-page
@@ -247,25 +251,20 @@ class quota {
 			echo "<tr>\n";
 			echo "<td>" . $this->quota[$i][0] . "</td>\n";
 			echo "<td>" . $this->quota[$i][1] . "</td>\n"; // used blocks
-			echo "<td><input name=\"form_quota_" . $i . "_2\" type=\"text\" size=\"12\" maxlength=\"20\" value=\"" . $this->quota[$i][2] . "\"></td>\n"; // blocks soft limit
-			echo "<td><input name=\"form_quota_" . $i . "_3\" type=\"text\" size=\"12\" maxlength=\"20\" value=\"" . $this->quota[$i][3] . "\"></td>\n"; // blocks hard limit
+			echo "<td><input name=\"" . $i . "_2\" type=\"text\" size=\"12\" maxlength=\"20\" value=\"" . $this->quota[$i][2] . "\"></td>\n"; // blocks soft limit
+			echo "<td><input name=\"" . $i . "_3\" type=\"text\" size=\"12\" maxlength=\"20\" value=\"" . $this->quota[$i][3] . "\"></td>\n"; // blocks hard limit
 			echo "<td>" . $this->quota[$i][4] . "</td>\n"; // block grace period
 			echo "<td>" . $this->quota[$i][5] . "</td>\n"; // used inodes
-			echo "<td><input name=\"form_quota_" . $i . "_6\" type=\"text\" size=\"12\" maxlength=\"20\" value=\"" . $this->quota[$i][6] . "\"></td>\n"; // inodes soft limit
-			echo "<td><input name=\"form_quota_" . $i . "_7\" type=\"text\" size=\"12\" maxlength=\"20\" value=\"" . $this->quota[$i][7] . "\"></td>\n"; // inodes hard limit
+			echo "<td><input name=\"" . $i . "_6\" type=\"text\" size=\"12\" maxlength=\"20\" value=\"" . $this->quota[$i][6] . "\"></td>\n"; // inodes soft limit
+			echo "<td><input name=\"" . $i . "_7\" type=\"text\" size=\"12\" maxlength=\"20\" value=\"" . $this->quota[$i][7] . "\"></td>\n"; // inodes hard limit
 			echo "<td>" . $this->quota[$i][8] . "</td>\n";
 			echo "</tr>\n"; // inodes grace period
 			$i++;
 			}
-
 		echo "</table>\n";
 		return 0;
 		}
 
-
-
 	}
-
-
 
 ?>

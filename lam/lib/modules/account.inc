@@ -52,13 +52,9 @@ class account {
 		$this->orig = $this->attributes ;
 		// Add objectClass to attributes
 		$this->attributes['objectClass'][0] = 'account';
-		// Set aliasname
-		$this->alias = _('account');
 		}
 
 	// Variables
-	// Alias Name. This name is shown in the menu instead of 'account'
-	var $alias;
 	// name of account_container in session so we can read other classes in account_container
 	var $base;
 	// This variable contains all account attributes
@@ -68,10 +64,15 @@ class account {
 	*/
 	var $orig;
 
+	function get_alias() {
+		return _('account');
+		}
+
 	/* This function returns a list with all required modules
 	*/
-	function dependencies() {
-		return array('main');
+	function get_dependencies($scope) {
+		if ($scope=='host') return array('require' => array('main'), 'conflict' => array('inetOrgPerson', 'posixGroup', 'sambaDomain') );
+		return -1;
 		}
 
 	/* This function returns true if all required attributes from other
@@ -80,7 +81,6 @@ class account {
 	function module_ready() {
 		return true;
 		}
-
 
 	/* This function returns a list of all html-pages in module
 	* This is usefull for mass upload and pdf-files
@@ -91,13 +91,12 @@ class account {
 		return array('attributes');
 		}
 
-
-	/* Write variables into object and do some regexp checks
+	/* This function returns all ldap attributes
+	* which are part of account and returns
+	* also their values.
 	*/
-	function proccess_attributes($post) {
-		// Load attributes
-		$this->attributes['description'][0] = $post['form_account_description'];
-		return 0;
+	function get_attributes() {
+		return $this->attributes;
 		}
 
 	/* This function loads all attributes into the object
@@ -141,12 +140,17 @@ class account {
 		return $return;
 		}
 
-	/* This function returns all ldap attributes
-	* which are part of account and returns
-	* also their values.
+	function delete_attributes($post) {
+		$return = array();
+		return $return;
+		}
+
+	/* Write variables into object and do some regexp checks
 	*/
-	function get_attributes() {
-		return $this->attributes;
+	function proccess_attributes($post) {
+		// Load attributes
+		$this->attributes['description'][0] = $post['description'];
+		return 0;
 		}
 
 	/* This function will create the html-page
@@ -157,10 +161,14 @@ class account {
 		echo "<table border=0 width=\"100%\">\n<tr>\n";
 		echo "<tr>\n";
 		echo "<td>" . _('Description') . "</td>\n";
-		echo "<td><input name=\"form_account_description\" type=\"text\" size=\"30\" maxlength=\"255\" value=\"".$this->attributes['description'][0]."\"></td>\n";
+		echo "<td><input name=\"description\" type=\"text\" size=\"30\" maxlength=\"255\" value=\"".$this->attributes['description'][0]."\"></td>\n";
 		echo "<td><a href=\"../help.php?HelpNumber=404\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
 		echo "</tr>\n";
 		echo "</table>\n";
+		return 0;
+		}
+
+	function display_html_delete($post) {
 		return 0;
 		}
 
