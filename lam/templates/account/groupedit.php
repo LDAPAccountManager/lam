@@ -530,12 +530,12 @@ switch ($select_local) { // Select which part of page will be loaded
 		if (isset($_SESSION['account_old']->general_objectClass)) {
 			if (($_SESSION['config']->samba3 == 'yes') && (!in_array('sambaGroupMapping', $_SESSION['account_old']->general_objectClass))) {
 				echo '<tr>';
-				StatusMessage('WARN', _('ObjectClass sambaGroupMapping not found.'), _('Have to recreate entry.'));
+				StatusMessage('WARN', _('ObjectClass sambaGroupMapping not found.'), _('Have to add objectClass sambaGroupMapping.'));
 				echo "</tr>\n";
 				}
 			if (!in_array('posixGroup', $_SESSION['account_old']->general_objectClass)) {
 				echo '<tr>';
-				StatusMessage('WARN', _('ObjectClass posixGroup not found.'), _('Have to recreate entry.'));
+				StatusMessage('WARN', _('ObjectClass posixGroup not found.'), _('Have to add objectClass posixGroup.'));
 				echo "</tr>\n";
 				}
 			}
@@ -548,9 +548,11 @@ switch ($select_local) { // Select which part of page will be loaded
 
 	case 'finish':
 		// Final Settings
+		if (($_SESSION['config']->samba3 =='yes') && !isset($_SESSION['Account']->smb_mapgroup)) $disabled = 'disabled';
+			else $disabled = '';
 		echo '<input name="select" type="hidden" value="finish">';
 		echo "<fieldset class=\"groupedit-bright\"><legend class=\"groupedit-bright\"><b>"._('Success')."</b></legend>\n";
-		echo "<table border=0 width=\"100%\"><tr><td>";
+		echo "<table border=0 width=\"100%\">";
 		echo '<tr><td>';
 		echo _('Group').' ';
 		echo $_SESSION['account']->general_username;

@@ -1628,7 +1628,7 @@ function creategroup($values) { // Will create the LDAP-Group
 	$attr['cn'] = $values->general_username;
 	$attr['gidNumber'] = $values->general_uidNumber;
 	if ($values->general_gecos) $attr['description'] = utf8_encode($values->general_gecos);
-	if ($_SESSION['config']->samba3 =='yes' && (isset($values->smb_mapgroup))) {
+	if ($_SESSION['config']->samba3 =='yes') {
 		$attr['sambaSID'] = $values->smb_mapgroup;
 		$attr['objectClass'][1] = 'sambaGroupMapping';
 		$attr['sambaGroupType'] = '2';
@@ -1637,6 +1637,7 @@ function creategroup($values) { // Will create the LDAP-Group
 	$success = ldap_add($_SESSION['ldap']->server(),$values->general_dn, $attr);
 	if ($_SESSION['config']->scriptServer) setquotas($values,'group');
 	if ($success) {
+		// Add entry to cache-array
 		if ((isset($_SESSION['groupDN']))) {
 			$_SESSION['groupDN'][$values->general_dn]['cn'] = $values->general_username;
 			$_SESSION['groupDN'][$values->general_dn]['uidNumber'] = $values->general_uidNumber;
@@ -1671,31 +1672,27 @@ function modifygroup($values,$values_old) { // Will modify the LDAP-Group
 		 else $attr['memberUid'] = $values->unix_memberUid;
 		}
 
-	if ($attr_rem) {
+
+	// Add missing objectclasses to group
+	if (!in_array('posixGroup', $values->general_objectClass)) {
+		$attr['objectClass'] = $values->general_objectClass;
+		$attr['objectClass'][] = 'posixGroup';
+		}
+	if (($_SESSION['config']->samba3 == 'yes') && (!in_array('sambaGroupMapping', $values->general_objectClass))) {
+		if (!isset($attr['objectClass'])) $attr['objectClass'] = $values->general_objectClass;
+		$attr['objectClass'][] = 'sambaGroupMapping';
+		}
+
+	if ($attr_rem) { // Remove attributes not longer valid
 		$success = ldap_mod_del($_SESSION['ldap']->server(),$values_old->general_dn, $attr_rem);
 		if (!$success) return 5;
 		}
-	if (($_SESSION['config']->samba3 = 'yes') && (!in_array('sambaGroupMapping', $_SESSION['account_old']->general_objectClass))) {
-		$result = ldap_search($_SESSION['ldap']->server(), $values_old->general_dn, "objectclass=PosixGroup");
-		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
-		$attr_old = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
-		// remove "count" from array
-		unset($attr_old['count']);
-		for ($i=0; $i < sizeof($attr_old); $i++) unset($attr_old[$i]);
-		$keys = array_keys($attr_old);
-		for ($i=0; $i < sizeof($keys); $i++)
-			unset($attr_old[$keys[$i]]['count']);
-		unset ($attr_old['objectClass']);
-		$attr_old['objectClass'][0] = 'posixGroup';
-		$attr_old['objectClass'][1] = 'sambaGroupMapping';
-		$success = ldap_delete($_SESSION['ldap']->server(),$values_old->general_dn);
-		if ($success) $success = ldap_add($_SESSION['ldap']->server(),$values->general_dn, $attr_old);
-			else return 5;
-		}
-	if ($attr) {
+
+	if ($attr) { // Add /replace new attributes
 		$success = ldap_modify($_SESSION['ldap']->server(),$values->general_dn, $attr);
 		if (!$success) return 5;
 		}
+
 	if ($values->general_dn != $values_old->general_dn) {// Groupname hasn't changed
 		$result = ldap_search($_SESSION['ldap']->server(), $values_old->general_dn, "objectclass=PosixGroup");
 		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
@@ -1712,7 +1709,7 @@ function modifygroup($values,$values_old) { // Will modify the LDAP-Group
 		if (!$success) return 5;
 		}
 
-	if ( $_SESSION['final_changegids']==true ) {
+	if ( $_SESSION['final_changegids']==true ) { // Chnage GIDs of all users which are member of group
 		$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_UserSuffix(), 'gidNumber=' . $values_old->general_uidNumber, array('gidNumber'));
 		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 		while ($entry) {
@@ -1722,7 +1719,8 @@ function modifygroup($values,$values_old) { // Will modify the LDAP-Group
 			}
 		}
 	if ($_SESSION['config']->scriptServer) setquotas($values,'group',$values_old);
-	if ((isset($_SESSION['groupDN']))) {
+
+	if ((isset($_SESSION['groupDN']))) { // refresh group-cache array
 		if ($values->general_dn != $values_old->general_dn) {
 			unset ($_SESSION['groupDN'][$values_old->general_dn]);
 			}
