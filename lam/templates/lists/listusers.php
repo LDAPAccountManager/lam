@@ -23,6 +23,8 @@ $Id$
 
 include_once ("../../lib/config.inc");
 include_once("../../lib/ldap.inc");
+include_once("../../lib/pdf.inc");
+include_once("../../lib/account.inc");
 
 // used to display status messages
 include_once ("../../lib/status.inc");
@@ -60,21 +62,31 @@ if ($trans_primary == "on" && !$_GET["norefresh"]) {
 
 $usr_units = $_SESSION['usr_units'];
 
-// check if button was pressed and if we have to add/delete a user
-if ($_POST['new_user'] || $_POST['del_user']){
-  // add new user
-  if ($_POST['new_user']){
-    echo("<meta http-equiv=\"refresh\" content=\"0; URL=../account.php?type=user\">");
-    exit;
-  }
-  // delete user(s)
-  if ($_POST['del_user']){
-    // search for checkboxes
-    $users = array_keys($_POST, "on");
-    $userstr = implode(";", $users);
-    echo("<meta http-equiv=\"refresh\" content=\"0; URL=../delete.php?type=user&DN='$userstr'\">");
-  }
-  exit;
+// check if button was pressed and if we have to add/delete a user or create a PDF
+if ($_POST['new_user'] || $_POST['del_user'] || $_POST['pdf_user']){
+	// add new user
+	if ($_POST['new_user']){
+		echo("<meta http-equiv=\"refresh\" content=\"0; URL=../account.php?type=user\">");
+		exit;
+	}
+	// delete user(s)
+	elseif ($_POST['del_user']){
+		// search for checkboxes
+		$users = array_keys($_POST, "on");
+		$userstr = implode(";", $users);
+		echo("<meta http-equiv=\"refresh\" content=\"0; URL=../delete.php?type=user&DN='$userstr'\">");
+	}
+	// PDF
+	elseif ($_POST['pdf_user']){
+		// search for checkboxes
+		$users = array_keys($_POST, "on");
+		print_r($users);
+		$userlist = array();
+		// load users from LDAP
+		for ($i = 0; $i < sizeof($users); $i++) $userlist[] = loaduser($users[$i]);
+		createUserPDF($userlist);
+	}
+	exit;
 }
 
 echo $_SESSION['header'];
@@ -303,8 +315,12 @@ if (in_array("gidnumber", $attr_array)) {
 echo ("<p>&nbsp;</p>\n");
 
 echo ("<p align=\"left\">\n");
-echo ("<input type=\"submit\" name=\"new_user\" value=\"" . _("New User") . "\">\n");
-if ($user_count != 0) echo ("<input type=\"submit\" name=\"del_user\" value=\"" . _("Delete User(s)") . "\">\n");
+echo ("<input type=\"submit\" name=\"new_user\" value=\"" . _("New user") . "\">\n");
+if ($user_count != 0) {
+	echo ("<input type=\"submit\" name=\"del_user\" value=\"" . _("Delete user(s)") . "\">\n");
+	echo ("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+	echo ("<input type=\"submit\" name=\"pdf_user\" value=\"" . _("Create PDF for user(s)") . "\">\n");
+}
 echo ("</p>\n");
 
 echo ("<p>&nbsp;</p>\n");
