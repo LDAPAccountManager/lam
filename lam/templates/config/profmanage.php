@@ -60,9 +60,9 @@ echo $_SESSION['header'];
 
 <?php
 
+$cfg = new CfgMain();
 // check if submit button was pressed
 if ($_POST['submit']) {
-	$cfg = new CfgMain();
 	// check master password
 	if ($cfg->password != $_POST['passwd']) {
 		$error = _("Master password is wrong!");
@@ -140,6 +140,14 @@ if ($_POST['submit']) {
 		if ($msg) StatusMessage("INFO", "", $msg);
 	}
 	else exit;
+}
+
+
+// check if config.cfg is valid
+if (!isset($cfg->default) && !isset($cfg->password)) {
+	StatusMessage("ERROR", _("Please set up your master configuration file (config/config.cfg) first!"), "");
+	echo "</body>\n</html>\n";
+	die();
 }
 
 ?>
