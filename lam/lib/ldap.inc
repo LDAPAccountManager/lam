@@ -21,7 +21,8 @@ $Id$
 
 */
 
-// ldap.php provides basic functions to connect to the OpenLDAP server and get lists of users and groups.
+// ldap.inc provides basic functions to connect to the OpenLDAP server.
+
 include_once("config.inc");
 
 class Ldap{
@@ -75,21 +76,6 @@ class Ldap{
 		);
   }
 
-  // returns an array of strings with the DN entries of all users
-  // $base is optional and specifies the root from where to search for entries
-  function getUsers($base = "") {
-    if ($base == "") $base = $this->conf->get_UserSuffix();
-    // users have the attribute "posixAccount" or "sambaAccount" and do not end with "$"
-    $filter = "(&(|(objectClass=posixAccount) (objectClass=sambaAccount)) (!(uid=*$)))";
-    $attrs = array();
-    $sr = ldap_search($this->server, $base, $filter, $attrs);
-    $info = ldap_get_entries($this->server, $sr);
-    $ret = array();
-    for ($i = 0; $i < $info["count"]; $i++) $ret[$i] = $info[$i]["dn"];
-    ldap_free_result($sr);
-    return $ret;
-  }
-
   // connects to the server using the given username and password
   // $base is optional and specifies the root from where to search for entries
   // if connect succeeds the server handle is returned
@@ -116,40 +102,6 @@ class Ldap{
     }
   }
 
-
-  /** 
-   * @brief Populates any given object with the available attributes in the
-   * LDAP. The names of the member variables of the object must correspond to
-   * the attribute names in the LDAP server.
-   * 
-   * @param in_entry_dn distinguished name of entry in ldap
-   * @param in_object input object to populate
-   * 
-   * @return populated object
-   */
-  function getEntry ($in_entry_dn, $in_object) {
-    
-    // read all variables of given object to $vararray
-    $vararray = get_object_vars ($in_object);
-
-    // set attributefilter only to attributes present in given object
-    $attributefilter = array();
-    foreach (array_keys ($vararray) as $varname)
-      $attributefilter[] = $varname;
-
-    // filter doesn't matter (we only read one entry)
-    $filter = "(objectClass=*)";
-    $resource = ldap_read ($this->server,
-			   $in_entry_dn, $filter, $attributefilter);
-    $entry = ldap_first_entry ($this->server, $resource);
-
-    foreach (array_keys ($vararray) as $varname)
-      $in_object->$varname = ldap_get_values ($this->server, $entry, $varname);
-
-    return $in_object;
-  }
-
-	
   // closes connection to server
   function close() {
     ldap_close($this->server);
