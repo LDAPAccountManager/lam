@@ -23,7 +23,8 @@ $Id$
   
 */
 include_once ("../../lib/config.inc");
-include_once("../../lib/ldap.inc");
+include_once ("../../lib/ldap.inc");
+include_once ("../../lib/status.inc");
 
 // start session
 session_save_path("../../sess");
@@ -81,13 +82,13 @@ $sr = @ldap_search($_SESSION["ldap"]->server(),
 if ($sr) {
 	$info = ldap_get_entries($_SESSION["ldap"]->server, $sr);
 	ldap_free_result($sr);
-	if ($info["count"] == 0) echo ("<br><br><font color=\"red\"><b>" . _("No Samba Hosts found!") . "</b></font><br><br>");
+	if ($info["count"] == 0) StatusMessage("WARN", "", _("No Samba Hosts found!"));
 	// delete first array entry which is "count"
 	array_shift($info);
 	// sort rows by sort column ($list)
 	usort($info, "cmp_array");
 }
-else echo ("<br><br><font color=\"red\"><b>" . _("LDAP Search failed! Please check your preferences. <br> No Samba Hosts found!") . "</b></font><br><br>");
+else StatusMessage("ERROR", _("LDAP Search failed! Please check your preferences."), _("No Samba Hosts found!"));
 
 echo ("<form action=\"listhosts.php\" method=\"post\">\n");
 
