@@ -6,6 +6,7 @@ stable
 beta 2
 
 - check security
+- add text field to PDF files
 
 beta 1
 
@@ -14,3 +15,4 @@ beta 1
 - improve status messages and help support
 - improve design
 - write documentation
+- PDF for users/hosts
