@@ -183,6 +183,7 @@ class sambaSamAccount extends baseModule {
 	function get_attributes() {
 		$return = $this->attributes;
 		$return['sambaLMPassword'] = $this->sambaLMPassword();
+		$return['sambaNTPassword'] = $this->sambaLMPassword();
 		return $return;
 		}
 
@@ -258,6 +259,7 @@ class sambaSamAccount extends baseModule {
 		for ($i=0; $i<count($sambaDomains); $i++ )
 			if ($this->attributes['sambaDomainName'][0] == $sambaDomains[$i]->name) {
 				$SID = $sambaDomains[$i]->SID;
+				$RIDbase = $sambaDomains[$i]->RIDbase;
 				}
 		$flag = "[";
 		if ($post['sambaAcctFlagsD']) $flag .= "D";
@@ -320,12 +322,15 @@ class sambaSamAccount extends baseModule {
 					if ($_SESSION['cache']->in_cache($SID."-500", 'sambaSID', 'user')!=$_SESSION[$this->base]->dn_orig)
 						$errors['sambaSID'][] = $this->messages['rid'][0];
 					}
-				if ($post['sambaSID']== _('Guest')) {
+				else if ($post['sambaSID']== _('Guest')) {
 					$this->attributes['sambaSID'][0] = $SID."-501";
-					// Do a check if an administrator already exists
+					// Do a check if an guest already exists
 					if ($_SESSION['cache']->in_cache($SID."-501", 'sambaSID', 'user')!=$_SESSION[$this->base]->dn_orig)
 						$errors['sambaSID'][] = $this->messages['rid'][1];
 					}
+				else if ($post['sambaSID']== _('Ordinary user')) {
+					$this->attributes['sambaSID'][0] = $SID."-". (($_SESSION[$this->base]->module['posixAccount']->attributes['uidNumber'][0]*2)+$RIDbase);
+				}
 				// Check values
 				$this->attributes['sambaHomePath'][0] = str_replace('$user', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['uid'][0], $this->attributes['sambaHomePath'][0]);
 				$this->attributes['sambaHomePath'][0] = str_replace('$group', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['gid'][0], $this->attributes['sambaHomePath'][0]);

@@ -424,25 +424,30 @@ class samba3domain {
 * because many of them are used several times.
 **/
 function get_preg($argument, $regexp) {
+	/* Bug in php preg_match doesn't work correct with utf8
+	*/
+	$language = explode(":", $_SESSION['language']);
+	$language2 = explode ('.', $language[0]);
+	setlocale(LC_ALL, $language2[0]);
 	// First we check "positive" cases
 	$pregexpr = '';
 	switch ($regexp) {
 		case 'password':	// fixme where do i get an exact regexp?
-					$pregexpr = '/^([[:alnum:]\\ \\|\\#\\*\\,\\.\\;\\:\\_\\+\\!\\%\\&\\/\\?\\{\\(\\)\\}-])*$/';
+					$pregexpr = '/^([[:alnum:]\\ \\|\\#\\*\\,\\.\\;\\:\\_\\+\\!\\%\\&\\/\\?\\{\\(\\)\\}-])*$/u';
 					break;
 		case 'groupname':	// first character must be a letter. All letters, numbers, space and ._- are allowed characters
 		case 'username':	// first character must be a letter. All letters, numbers, space and ._- are allowed characters
-					$pregexpr = '/^[[:alpha:]]([[:alnum:]\\.\\ \\_-])*$/';
+					$pregexpr = '/^[[:alpha:]]([[:alnum:]\\.\\ \\_-])*$/u';
 					break;
 		case 'usernameList':	// comma separated list of user names
 		case 'groupnameList':	// comma separated list of group names
-					$pregexpr = '/^[[:alpha:]]([[:alnum:]\\.\\ \\_-])*(,[[:alpha:]]([[:alnum:]\\.\\ \\_-])*)*$/';
+					$pregexpr = '/^[[:alpha:]]([[:alnum:]\\.\\ \\_-])*(,[[:alpha:]]([[:alnum:]\\.\\ \\_-])*)*$/u';
 					break;
 		case 'hostname':	// first character must be letter, last must be $. Only normal letters, numbers and ._- are allowed
-					$pregexpr = '/^[a-zA-Z]([a-zA-Z0-9\\.\\_-])*\\$$/';
+					$pregexpr = '/^[a-zA-Z]([a-zA-Z0-9\\.\\_-])*\\$$/u';
 					break;
 		case 'realname':	// Allow all letters, space and  .-_
-					$pregexpr = '/^[[:alpha:]]([[:alpha:]\\.\\ \\_-])*$/';
+					$pregexpr = '/^[[:alpha:]]([[:alpha:]\\.\\ \\_-])*$/u';
 					break;
 		case "telephone":	// Allow numbers, space, brackets, /-+.
 					$pregexpr = '/^(\\+)*([0-9\\.\\ \\(\\)\\/-])*$/';
@@ -451,25 +456,25 @@ function get_preg($argument, $regexp) {
 					$pregexpr = '/^(([0-9a-z\\._-])+[@]([0-9a-z-])+([.]([0-9a-z-])+)*)*$/';
 					break;
 		case "street":		// Allow all letters, numbers, space and .-_
-					$pregexpr = '/^([[:alnum:]\\.\\ \\_-])*$/';
+					$pregexpr = '/^([[:alnum:]\\.\\ \\_-])*$/u';
 					break;
 		case "postalAddress":	// Allow all letters, numbers, space and .-_
 		case "postalCode":		// Allow all letters, numbers, space and .-_
 		case "title":			// Allow all letters, numbers, space and .-_
 		case "employeeType":	// Allow all letters, numbers, space and .-_
-					$pregexpr = '/^([[:alnum:]\\.\\ \\_-])*$/';
+					$pregexpr = '/^([[:alnum:]\\.\\ \\_-])*$/u';
 					break;
 		case "homeDirectory":		// Homapath, /path/......
-					$pregexpr = '/^([\/]([[:alnum:]\\.\\ \\_-])+)+$/';
+					$pregexpr = '/^([\/]([[:alnum:]\\.\\ \\_-])+)+$/u';
 					break;
 		case "digit":		// Normal number
 					$pregexpr = '/^[[:digit:]]*$/';
 					break;
 		case "UNC":			// UNC Path, e.g. \\server\share\folder\...
-					$pregexpr = '/^([\\\][\\\]([a-zA-Z0-9\\.-])+)([\\\]([[:alnum:]\\.\\ \\_-])+)+$/';
+					$pregexpr = '/^([\\\][\\\]([a-zA-Z0-9\\.-])+)([\\\]([[:alnum:]\\.\\ \\_-])+)+$/u';
 					break;
 		case "logonscript":	// path to login-script. normal unix file
-					$pregexpr = '/^(([\/])*([[:alnum:]\\.\\ \\_-])+([\/]([[:alnum:]\\.\\ \\_-])+)*((\\.bat)|(\\.cmd)))*$/';
+					$pregexpr = '/^(([\/])*([[:alnum:]\\.\\ \\_-])+([\/]([[:alnum:]\\.\\ \\_-])+)*((\\.bat)|(\\.cmd)))*$/u';
 					break;
 		case "workstations":	// comma separated list with windows-hosts
 					$pregexpr = '/^(([a-zA-Z0-9\\.\\_-])+(,[a-zA-Z0-9\\.\\_-])*)*$/';
@@ -485,8 +490,12 @@ function get_preg($argument, $regexp) {
 					break;
 	}
 	if ($pregexpr!='')
-		if (preg_match($pregexpr, $argument)) return true;
-	
+		if (preg_match($pregexpr, $argument)) {
+			/* Bug in php preg_match doesn't work correct with utf8
+			*/
+			setlocale(LC_ALL, $language[0]);
+			return true;
+		}
 	// Now we check "negative" cases, characters which are not allowed
 	$pregexpr = '';
 	switch ($regexp) {
@@ -501,7 +510,15 @@ function get_preg($argument, $regexp) {
 			break;
 	}
 	if ($pregexpr!='')
-			if (!preg_match($pregexpr, $argument)) return true;
+		if (!preg_match($pregexpr, $argument)) {
+			/* Bug in php preg_match doesn't work correct with utf8
+			*/
+			setlocale(LC_ALL, $language[0]);
+			return true;
+		}
+	/* Bug in php preg_match doesn't work correct with utf8
+	*/
+	setlocale(LC_ALL, $language[0]);
 	return false;
 }
 
