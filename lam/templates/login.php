@@ -96,6 +96,7 @@ function display_LoginPage($config_object,$profile)
 	}
 	else
 	{
+		//TODO Generate Status message
 		$message = _("Unable to load available languages. Setting English as default language. For further instructions please contact the Admin of this site.");
 	}
 
@@ -123,34 +124,31 @@ function display_LoginPage($config_object,$profile)
 		<?php
 		if ((! function_exists('mHash')) && (! function_exists('sha1'))) {
 			StatusMessage("INFO", "Your PHP does not support MHash or sha1(), you will only be able to use CRYPT/PLAIN/MD5/SMD5 for user passwords!", "Please install MHash or update to PHP >4.3.");
-		}
-		?>
-		<p align="center">
-			<b><?php echo _("Enter Username and Password for Account") . ":"; ?></b>
-		</p>
-		<?php
-		if($error_message != "") {
-		?>
-		<p align="center">
-			<?php
-			echo $error_message;
 			?>
-		</p>
-		<?php
+			<br><br>
+			<?php
 		}
 		?>
 		<form action="login.php" method="post">
-			<input type="hidden" name="action" value="checklogin">
-			<table width="500" align="center" border="0">
+			<table width="650" align="center" border="2" rules="none" bgcolor="white">
 				<tr>
-					<td width="45%" align="right">
+					<td style="border-style:none" width="70" rowspan="9">
+						<img src="../graphics/lam.png" alt="Logo">
+					</td>
+					<td style="border-style:none" height="70" colspan="2" align="center">
+						<font color="darkblue"><b><big><?php echo _("Enter Username and Password for Account"); ?></big></b></font>
+					</td>
+					<td style="border-style:none" rowspan="9" width="70">
+						&nbsp;
+					</td>
+				</tr>
+				<tr>
+					<td style="border-style:none" height="35" align="right"><b>
 						<?php
 						echo _("Username") . ":";
 						?>
-					</td>
-					<td width="10%">
-					</td>
-					<td width="45%" align="left">
+					</b>&nbsp;&nbsp;</td>
+					<td style="border-style:none" height="35" align="left">
 						<select name="username" size="1">
 						<?php
 						$admins = $config_object->get_Admins();
@@ -166,14 +164,12 @@ function display_LoginPage($config_object,$profile)
 					</td>
 				</tr>
 				<tr>
-					<td width="45%" align="right">
+					<td style="border-style:none" height="35" align="right"><b>
 						<?php
 						echo _("Password") . ":";
 						?>
-					</td>
-					<td width="10%">
-					</td>
-					<td width="45%" align="left">
+					</b>&nbsp;&nbsp;</td>
+					<td style="border-style:none" height="35" align="left">
 						<input type="password" name="passwd">
 					</td>
 				</tr>
@@ -181,25 +177,22 @@ function display_LoginPage($config_object,$profile)
 				<?php
 				if($message != "") {
 					?>
-					<td width="100%" colspan="3" align="center">
+					<td height="35" colspan="3" align="center">
 					<?php
 						echo $message;
 					?>
-						<input type="hidden" name="language" value="english">
 					</td>
 					<?php
 				}
 				else
 				{
 					?>
-					<td width="45%" align="right">
+					<td style="border-style:none" align="right"><b>
 						<?php
 						echo _("Your Language") . ":";
 						?>
-					</td>
-					<td width="10%">
-					</td>
-					<td width="45%" align="left">
+					</b>&nbsp;&nbsp;</td>
+					<td style="border-style:none" height="35" align="left">
 						<select name="language" size="1">
 						<?php
 						for($i = 0; $i < count($languages); $i++) {
@@ -223,54 +216,65 @@ function display_LoginPage($config_object,$profile)
 				?>
 				</tr>
 				<tr>
-					<td width="100%" colspan="3" align="center">
-						<input type="submit" name="submit" value="<?php echo _("Login"); ?>">
+					<td style="border-style:none" height="50" colspan="2" align="center">
+						<input name="checklogin" type="submit" value="<?php echo _("Login"); ?>">
 					</td>
 				</tr>
-			</table>
-			<br><br>
-			<table width="345" align="center" bgcolor="#C7E7C7" border="0">
 				<tr>
-					<td width="100%" align="center">
+					<td style="border-style:none" height="50" colspan="2" align="center">
 						<?php
-						echo _("You are connecting to ServerURL") . ": ";
+							if($error_message != "") {
+								echo "<font color=\"red\"><b>" . $error_message . "</b></font>";
+							}
 						?>
-						<b><?php echo $config_object->get_ServerURL(); ?></b>
 					</td>
+				</tr>
+				<tr>
+					<td style="border-style:none" height="30" colspan="2">
+						<hr>
+						<b>
+						<?php
+						echo _("LDAP server") . ": ";
+						?></b>
+						<?php echo $config_object->get_ServerURL(); ?>
+					</td>
+				</tr>
+				<tr>
+				<td style="border-style:none" height="30"><b>
+					<?php
+					echo _("Configuration profile") . ": ";
+					if(!$_POST['profileChange']) {
+						$_POST['profile'] = $_SESSION['config']->file;
+					}
+					?></b>
+					<?php echo $_POST['profile']; ?>
+				</td>
+				<td style="border-style:none" height="30" align="right">
+					<select name="profile" size="1">
+					<?php
+					for($i=0;$i<count($profiles);$i++) {
+						?>
+						<option value="<?php echo $profiles[$i]; ?>"><?php echo $profiles[$i]; ?></option>
+						<?php
+					}
+					?>
+					</select>
+					<input name="profileChange" type="submit" value="<?php echo _("Change Profile"); ?>">
+				</td>
+				</tr>
+				<tr>
+					<td style="border-style:none" height="10" colspan="2"></td>
 				</tr>
 			</table>
 		</form>
 		<br><br>
-		<form action="./login.php" method="post" enctype="plain/text">
-			<input type="hidden" name="action" value="profileChange">
-			<p align="center">
-				<?php
-				echo _("You are currently using Profile") . ": ";
-				if(!$_POST['profile']) {
-					$_POST['profile'] = $profile;
-				}
-				?>
-				<b><?php echo $_POST['profile']; ?></b>
-				<br>
-				<select name="profile" size="1">
-				<?php
-				for($i=0;$i<count($profiles);$i++) {
-					?>
-					<option value="<?php echo $profiles[$i]; ?>"><?php echo $profiles[$i]; ?></option>
-					<?php
-				}
-				?>
-				</select>
-				<input type="submit" value="<?php echo _("Change Profile"); ?>">
-			</p>
-		</form>
 	</body>
 </html>
 <?php
 }
 
 // checking if the submitted username/password is correct.
-if($_POST['action'] == "checklogin")
+if($_POST['checklogin'])
 {
 	$_SESSION['lampath'] = realpath('../') . "/";  // Save full path to lam in session
 
@@ -326,7 +330,7 @@ if($_POST['action'] == "checklogin")
 	}
 }
 // Reload loginpage after a profile change
-elseif($_POST['action'] == "profileChange") {
+elseif($_POST['profileChange']) {
 	$_SESSION['config'] = new Config($_POST['profile']); // Recreate the config object with the submited
 
 	display_LoginPage($_SESSION['config'],""); // Load login page
