@@ -207,22 +207,23 @@ function draw_navigation_bar ($count) {
   global $max_pageentrys;
   global $page;
   global $list;
+  global $searchfilter;
 
   echo ("<table class=\"hostnav\" width=\"100%\" border=\"0\">\n");
   echo ("<tr>\n");
   echo ("<td><input type=\"submit\" name=\"refresh\" value=\"" . _("Refresh") . "\">&nbsp;&nbsp;");
   if ($page != 1)
-    echo ("<a class=\"userlist\" href=\"listhosts.php?page=" . ($page - 1) . "&list=" . $list . "\">&lt;=</a>\n");
+    echo ("<a class=\"userlist\" href=\"listhosts.php?page=" . ($page - 1) . "&list=" . $list . $searchfilter . "\">&lt;=</a>\n");
   else
     echo ("&lt;=");
   echo ("&nbsp;");
 
   if ($page < ($count / $max_pageentrys))
-    echo ("<a class=\"userlist\" href=\"listhosts.php?page=" . ($page + 1) . "&list=" . $list . "\">=&gt;</a>\n");
+    echo ("<a class=\"userlist\" href=\"listhosts.php?page=" . ($page + 1) . "&list=" . $list . $searchfilter . "\">=&gt;</a>\n");
   else
     echo ("=&gt;</td>");
 
-  echo ("<td style=\"color:red\" align=\"right\">");
+  echo ("<td class=\"userlist_activepage\" align=\"right\">");
   for ($i = 0; $i < ($count / $max_pageentrys); $i++) {
     if ($i == $page - 1)
       echo ("&nbsp;" . ($i + 1));
