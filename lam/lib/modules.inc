@@ -570,51 +570,27 @@ class accountContainer {
 			}
 		}
 
-	/* This function adds an objectClass class (module) to accountContainer
-	*/
-	function add_objectClass($objectClass) {
-		$line=-1;
-		for ($i=0; $i<count($_SESSION['ldap']->objectClasses) || $i==-1; $i++) {
-			if (strpos($_SESSION['ldap']->objectClasses[$i], "NAME '$objectClass'")) $line = $i;
-			}
-		// Return error if objectClass isn't found
-		if ($line==-1) trigger_error (_("objectClass $objectClass required but not defined in ldap."), E_USER_WARNING);
-		else {
-			// Add module if it exists
-			if (class_exists($objectClass)) {
-				$this->module[$objectClass] = new $objectClass($this->base);
-				}
-			else trigger_error (_("objectClass $objectClass required but no module found."), E_USER_WARNING);
-			}
-		return 0;
-		}
-
 	/* This function will load an account.
 	* $dn is the dn of the account which should be loaded
 	*/
 	function load_account($dn) {
+		$function = '$modules = $_SESSION[$this->config]->get_'.ucfirst($this->type).'Modules();';
+		eval ($function); 
 		$search = substr($dn, 0, strpos($dn, ','));
 		$result = ldap_search($_SESSION[$this->ldap]->server(), $dn, $search);
 		$entry = ldap_first_entry($_SESSION[$this->ldap]->server(), $result);
 		$this->dn = substr($dn, strpos($dn, ',')+1);
 		$this->dn_orig = $dn;
 		$attr = ldap_get_attributes($_SESSION[$this->ldap]->server(), $entry);
-		if (isset($attr['objectClass']['count'])) unset($attr['objectClass']['count']);
-		// load attributes
-		foreach ($attr['objectClass'] as $objectClass) {
-			$this->add_objectClass($objectClass);
-			if (isset($this->module[$objectClass])) $this->module[$objectClass]->load_attributes($attr);
+		
+		foreach ($modules as $module) {
+			$this->module[$module] = new $module($this->base);
+			$this->module[$module]->load_attributes($attr);
 			}
-		$this->module['quota'] = new quota($this->base);
-		$this->module['quota']->load_attributes($attr);
-
 
 		// sortm modules and make all active because all required attributes should be set
 		$module = array_keys ($this->module);
 		$modulelist = array();
-		// *** fixme add modules from config which should be used but not yet in loaded account
-		// *** fixme how to handle non ldap modules?
-
 		// loop until all modules are in order.
 		// We don't want to loop forever
 		$remain = count($module) * count($module);
@@ -673,9 +649,9 @@ class accountContainer {
 	* for a new account
 	*/
 	function new_account() {
-		$modulelist = array('posixAccount', 'sambaAccount');
-		// *** fixme add modules from config which should be used but not yet in loaded account
-		foreach ($modulelist as $objectClass) $this->add_objectClass($objectClass);
+		$function = '$modules = $_SESSION[$this->config]->get_'.ucfirst($this->type).'Modules();';
+		eval ($function); 
+		foreach ($modules as $module) $this->module[$module] = new $module($this->base);
 
 		$module = array_keys ($this->module);
 		// loop until all modules are in order.
