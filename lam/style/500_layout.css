@@ -339,21 +339,21 @@ div.statusError {
 /* H1 (MessageTyp) font size, family, color, and some more settings for the different Status Messages */
 h1.statusInfo {
   font-size:16pt;
-  font-family:arial;
+  font-family:Arial,sans-serif;
   color:#FFFFFF;
   margin-left:20px;
 }
 
 h1.statusWarn {
   font-size:16pt;
-  font-family:arial;
+  font-family:Arial,sans-serif;
   color:#FFFFFF;
   margin-left:20px;
 }
 
 h1.statusError {
   font-size:16pt;
-  font-family:arial;
+  font-family:Arial,sans-serif;
   color:#FFFFFF;
   margin-left:20px;
 }
@@ -361,7 +361,7 @@ h1.statusError {
 /* H2 (MessageHeadline) font size, family, color, and some more settings for the different Status Messages */
 h2.statusInfo {
   font-size:13pt;
-  font-family:arial;
+  font-family:Arial,sans-serif;
   color:#FFFFFF;
   margin-left:25px;
   margin-right:25px;
@@ -369,7 +369,7 @@ h2.statusInfo {
 
 h2.statusWarn {
   font-size:13pt;
-  font-family:arial;
+  font-family:Arial,sans-serif;
   color:#FFFFFF;
   margin-left:25px;
   margin-right:25px;
@@ -377,7 +377,7 @@ h2.statusWarn {
 
 h2.statusError {
   font-size:13pt;
-  font-family:arial;
+  font-family:Arial,sans-serif;
   color:#FFFFFF;
   margin-left:25px;
   margin-right:25px;
@@ -386,7 +386,7 @@ h2.statusError {
 /* P (MessageText) font size, family, color, and some more settings for the different Status Messages */
 p.statusInfo {
   font-size:11pt;
-  font-family:serif;
+  font-family:Times,serif;
   color:#FFFFFF;
   margin-left:35px;
   margin-right:35px;
@@ -394,7 +394,7 @@ p.statusInfo {
 
 p.statusWarn {
   font-size:11pt;
-  font-family:serif;
+  font-family:Times,serif;
   color:#FFFFFF;
   margin-left:35px;
   margin-right:35px;
@@ -402,7 +402,7 @@ p.statusWarn {
 
 p.statusError {
   font-size:11pt;
-  font-family:serif;
+  font-family:Times,serif;
   color:#FFFFFF;
   margin-left:35px;
   margin-right:35px;
