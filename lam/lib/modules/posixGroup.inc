@@ -53,7 +53,8 @@ class posixGroup extends baseModule {
 	* @return array list of error messages if any
 	*/
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts) {
-		$triggered_messages = array();
+		$error_messages = array();
+		$needAutoGID = array();
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			if (!in_array("posixGroup", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "posixGroup";
 			// group name
@@ -63,12 +64,12 @@ class posixGroup extends baseModule {
 			else {
 				$errMsg = $this->messages['cn'][3];
 				array_push($errMsg, array($i));
-				$triggered_messages[] = $errMsg;
+				$error_messages[] = $errMsg;
 			}
 			// GID
 			if ($rawAccounts[$i][$ids['posixGroup_gid']] == "") {
-				// TODO autoGID
-				$partialAccounts[$i]['gidNumber'] = 42;
+				// autoGID
+				$needAutoGID[] = $i;
 			}
 			elseif (get_preg($rawAccounts[$i][$ids['posixGroup_gid']], 'digit')) {
 				$partialAccounts[$i]['gidNumber'] = $rawAccounts[$i][$ids['posixGroup_gid']];
@@ -76,7 +77,7 @@ class posixGroup extends baseModule {
 			else {
 				$errMsg = $this->messages['gidNumber'][8];
 				array_push($errMsg, array($i));
-				$triggered_messages[] = $errMsg;
+				$error_messages[] = $errMsg;
 			}
 			// description (UTF-8, no regex check needed)
 			if ($rawAccounts[$i][$ids['posixGroup_description']] == "") {
@@ -93,7 +94,7 @@ class posixGroup extends baseModule {
 				else {
 					$errMsg = $this->messages['memberUID'][0];
 					array_push($errMsg, $i);
-					$triggered_messages[] =$errMsg;
+					$error_messages[] =$errMsg;
 				}
 			}
 			// password
@@ -102,11 +103,23 @@ class posixGroup extends baseModule {
 					$partialAccounts[$i]['userPassword'] = pwd_hash($rawAccounts[$i][$ids['posixGroup_password']], true, $this->moduleSettings['posixAccount_pwdHash'][0]);
 				}
 				else {
-					$triggered_messages[] = $this->messages['userPassword'][1];
+					$error_messages[] = $this->messages['userPassword'][1];
 				}
 			}
 		}
-		return $triggered_messages;
+		// fill in autoGIDs
+		if (sizeof($needAutoGID) > 0) {
+			$gids = $this->getNextGIDs(sizeof($needAutoGID));
+			if (is_array($gids)) {
+				for ($i = 0; $i < sizeof($needAutoGID); $i++) {
+					$partialAccounts[$i]['gidNumber'] = $gids[$i];
+				}
+			}
+			else {
+				$error_messages[] = $this->messages['gidNumber'][2];
+			}
+		}
+		return $error_messages;
 	}
 
 
@@ -495,31 +508,15 @@ class posixGroup extends baseModule {
 			}
 			$this->attributes['gidNumber'][0]=$post['gidNumber'];
 				if ($this->attributes['gidNumber'][0]=='') {
-				// No id-number given
+				// No id-number given, find free GID
 				if ($this->orig['gidNumber'][0]=='') {
-					// new account -> we have to find a free id-number
-					if (count($gids)!=0) {
-						// There are some uids
-						// Store highest id-number
-						$id = $gids[count($gids)-1];
-						// Return minimum allowed id-number if all found id-numbers are too low
-						if ($id < $minID) $this->attributes['gidNumber'][0] = $minID;
-						// Return higesht used id-number + 1 if it's still in valid range
-						if ($id < $maxID) $this->attributes['gidNumber'][0] = $id+1;
-						/* If this function is still running we have to fid a free id-number between
-						* the used id-numbers
-						*/
-						$i = intval($minID);
-						while (in_array($i, $gids)) $i++;
-						if ($i>$maxID)
-						$triggered_messages['gidNumber'][] = $this->messages['gidNumber'][3];
-						else {
-							$this->attributes['gidNumber'][0] = $i;
-							$triggered_messages['gidNumber'][] = $this->messages['gidNumber'][2];
-						}
+					$newGID = $this->getNextGIDs(1);
+					if (is_array($newGID)) {
+						$this->attributes['gidNumber'][0] = $newGID[0];
 					}
-					else $this->attributes['gidNumber'][0] = $minID;
-					// return minimum allowed id-number if no id-numbers are found
+					else {
+						$triggered_messages['gidNumber'][] = $this->messages['gidNumber'][3];
+					}
 				}
 				else $this->attributes['gidNumber'][0] = $this->orig['gidNumber'][0];
 				// old account -> return id-number which has been used
@@ -766,6 +763,61 @@ class posixGroup extends baseModule {
 		}
 	}
 
+	/**
+	* Returns one or more free GID numbers.
+	*
+	* @param integer $count Number of needed free GIDs.
+	* @return mixed Null if no GIDs are free else an array of free GIDs. 
+	*/
+	function getNextGIDs($count) {
+		$ret = array();
+		$minID = intval($this->moduleSettings['posixGroup_minGID'][0]);
+		$maxID = intval($this->moduleSettings['posixGroup_maxGID'][0]);
+		$dn_gids = $_SESSION['cache']->get_cache('gidNumber', 'posixGroup', '*');
+		// get_cache will return an array ( dn1 => array(uidnumber1), dn2 => array(uidnumber2), ... )
+		$gids = array();
+		if(is_array($dn_gids)) {
+			foreach ($dn_gids as $gid) $gids[] = $gid[0];
+			sort ($gids, SORT_NUMERIC);
+		}
+		for ($i = 0; $i < $count; $i++) {
+			if (count($gids) != 0) {
+				// there already are some GIDs
+				// store highest id-number
+				$id = $gids[count($gids)-1];
+				// Return minimum allowed id-number if all found id-numbers are too low
+				if ($id < $minID) {
+					$ret[] = $minID;
+					$gids[] = $minID;
+				}
+				// return highest used id-number + 1 if it's still in valid range
+				elseif ($id < $maxID) {
+					$ret[] = $id + 1;
+					$gids[] = $id + 1;
+				}
+				// find free numbers between existing ones
+				else {
+					$k = intval($minID);
+					while (in_array($k, $gids)) $k++;
+					if ($k > $maxID) return null;
+					else {
+						$ret[] = $k;
+						$gids[] = $k;
+						sort ($gids, SORT_NUMERIC);
+					}
+					// show warning message
+					$triggered_messages['gidNumber'][] = $this->messages['gidNumber'][2];
+				}
+			}
+			else {
+				// return minimum allowed id-number if no id-numbers are found
+				$ret[] = $minID;
+				$gids[] = $minID;
+			}
+		}
+		return $ret;
 	}
+
+}
 	
 ?>
