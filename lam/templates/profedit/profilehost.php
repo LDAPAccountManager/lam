@@ -93,7 +93,7 @@ echo ("<table border=0>\n");
 echo ("<tr>\n");
 echo ("<td><b>" . _("Profile Name") . ":</b></td>\n");
 echo ("<td><input type=\"text\" name=\"profname\" value=\"" . $_GET['edit'] . "\"></td>\n");
-echo ("<td><a href=\"../help.php?HelpNumber=380\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
+echo ("<td><a href=\"../help.php?HelpNumber=360\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
 echo ("</tr>\n");
 echo ("<tr>\n");
 echo ("<td colspan=2>&nbsp</td>");

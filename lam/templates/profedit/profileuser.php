@@ -159,7 +159,7 @@ echo ("</tr>\n");
 
 // password expire date
 echo ("<tr>\n");
-echo ("<td align=\"right\"><b>" . _("Password expires on") . ": </b></td>\n");
+echo ("<td align=\"right\"><b>" . _("Account expires on") . ": </b></td>\n");
 echo ("<td>\n");
 echo ("<select name=\"unix_pwdexpire_day\">\n");
 for ( $i=1; $i<=31; $i++ ) {
