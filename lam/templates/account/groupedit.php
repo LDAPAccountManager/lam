@@ -533,7 +533,7 @@ switch ($select_local) { // Select which part of page will be loaded
 			echo '</td></tr>'."\n";
 			}
 		$disabled = "";
-		if (!isset($_SESSION['account']->smb_mapgroup)) { // Samba page nit viewd; can not create group because if missing options
+		if (!isset($_SESSION['account']->smb_domain)) { // Samba page nit viewd; can not create group because if missing options
 			$disabled = "disabled";
 			echo "<tr>";
 			StatusMessage("ERROR", _("Samba Options not set!"), _("Please check settings on samba page."));
@@ -544,10 +544,6 @@ switch ($select_local) { // Select which part of page will be loaded
 				echo '<tr>';
 				StatusMessage('WARN', _('ObjectClass sambaGroupMapping not found.'), _('Have to add objectClass sambaGroupMapping.'));
 				echo "</tr>\n";
-				$disabled = "disabled";
-				echo "<tr>";
-				StatusMessage("ERROR", _("Samba Options not set!"), _("Please check settings on samba page."));
-				echo "</tr>";
 				}
 			if (!in_array('posixGroup', $_SESSION['account_old']->general_objectClass)) {
 				echo '<tr>';
