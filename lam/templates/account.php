@@ -582,27 +582,27 @@ switch ($select_local) { // Select which part of page will be loaded
 				echo '></td>'."\n".'<td>
 				<a href="help.php?HelpNumber=426" target="lamhelp">'._('Help').'</a>
 				</td></tr>'."\n".'<tr><td>';
-				echo _('Password Warn*');
+				echo _('Password Warn');
 				echo '</td>'."\n".'<td><input name="f_unix_pwdwarn" type="text" size="4" maxlength="4" value="' . $_SESSION['account']->unix_pwdwarn . '">
 					</td>'."\n".'<td>
 					<a href="help.php?HelpNumber=414" target="lamhelp">'._('Help').'</a>
 					</td></tr>'."\n".'<tr><td>';
-				echo _('Password Expire*');
+				echo _('Password Expire');
 				echo '</td>'."\n".'<td><input name="f_unix_pwdallowlogin" type="text" size="4" maxlength="4" value="' . $_SESSION['account']->unix_pwdallowlogin . '">
 					</td>'."\n".'<td>
 					<a href="help.php?HelpNumber=415" target="lamhelp">'._('Help').'</a>
 					</td></tr>'."\n".'<tr><td>';
-				echo _('Maximum Passwordage*');
+				echo _('Maximum Passwordage');
 				echo '</td>'."\n".'<td><input name="f_unix_pwdmaxage" type="text" size="5" maxlength="5" value="' . $_SESSION['account']->unix_pwdmaxage . '">
 					</td>'."\n".'<td>
 					<a href="help.php?HelpNumber=416" target="lamhelp">'._('Help').'</a>
 					</td></tr>'."\n".'<tr><td>';
-				echo _('Minimum Passwordage*');
+				echo _('Minimum Passwordage');
 				echo '</td>'."\n".'<td><input name="f_unix_pwdminage" type="text" size="4" maxlength="4" value="' . $_SESSION['account']->unix_pwdminage . '">
 					</td>'."\n".'<td>
 					<a href="help.php?HelpNumber=417" target="lamhelp">'._('Help').'</a>
 					</td></tr>'."\n".'<tr><td>';
-				echo _('Expire Date*');
+				echo _('Expire Date');
 				echo '</td>'."\n".'<td><select name="f_unix_pwdexpire_day">';
 				for ( $i=1; $i<=31; $i++ ) {
 					if ($_SESSION['account']->unix_pwdexpire_day==$i) echo "<option selected> $i";
@@ -641,54 +641,7 @@ switch ($select_local) { // Select which part of page will be loaded
 					echo '<input name="respass" type="submit" value="';
 					echo _('Reset Password'); echo '">';
 					}
-				echo '</td></tr>'."\n".'<tr><td>';
-				echo _('Password Warn*');
-				echo '</td>'."\n".'<td><input name="f_unix_pwdwarn" type="text" size="4" maxlength="4" value="' . $_SESSION['account']->unix_pwdwarn . '">
-					</td>'."\n".'<td>
-					<a href="help.php?HelpNumber=419" target="lamhelp">'._('Help').'</a>
-					</td></tr>'."\n".'<tr><td>';
-				echo _('Password Expire*');
-				echo '</td>'."\n".'<td><input name="f_unix_pwdallowlogin" type="text" size="4" maxlength="4" value="' . $_SESSION['account']->unix_pwdallowlogin . '">
-					</td>'."\n".'<td>
-					<a href="help.php?HelpNumber=420" target="lamhelp">'._('Help').'</a>
-					</td></tr>'."\n".'<tr><td>';
-				echo _('Maximum Passwordage*');
-				echo '</td>'."\n".'<td><input name="f_unix_pwdmaxage" type="text" size="5" maxlength="5" value="' . $_SESSION['account']->unix_pwdmaxage . '">
-					</td>'."\n".'<td>
-					<a href="help.php?HelpNumber=421" target="lamhelp">'._('Help').'</a>
-					</td></tr>'."\n".'<tr><td>';
-				echo _('Minimum Passwordage*');
-				echo '</td>'."\n".'<td><input name="f_unix_pwdminage" type="text" size="4" maxlength="4" value="' . $_SESSION['account']->unix_pwdminage . '">
-					</td>'."\n".'<td>
-					<a href="help.php?HelpNumber=422" target="lamhelp">'._('Help').'</a>
-					</td></tr>'."\n".'<tr><td>';
-				echo _('Expire Date*');
-				echo '</td>'."\n".'<td><select name="f_unix_pwdexpire_day">';
-				for ( $i=1; $i<=31; $i++ ) {
-					if ($_SESSION['account']->unix_pwdexpire_day==$i) echo "<option selected> $i";
-					else echo "<option> $i";
-					}
-				echo '</select><select name="f_unix_pwdexpire_mon">';
-				for ( $i=1; $i<=12; $i++ ) {
-					if ($_SESSION['account']->unix_pwdexpire_mon == $i) echo "<option selected> $i";
-					else echo "<option> $i";
-					}
-				echo '</select><select name="f_unix_pwdexpire_yea">';
-				for ( $i=2003; $i<=2030; $i++ ) {
-					if ($_SESSION['account']->unix_pwdexpire_yea==$i) echo "<option selected> $i";
-					else echo "<option> $i";
-					}
-				echo '</select></td>'."\n".'<td>
-					<a href="help.php?HelpNumber=422" target="lamhelp">'._('Help').'</a>
-					</td></tr>'."\n".'<tr><td>';
-				echo _('Account deactivated');
-				echo '</td>'."\n".'<td><input name="f_unix_deactivated" type="checkbox"';
-				if ($_SESSION['account']->unix_deactivated) echo ' checked ';
-				echo '></td><td>
-					<a href="help.php?HelpNumber=432" target="lamhelp">'._('Help').'</a>
-					</td></tr><tr><td>';
-					echo _('Values with * are required');
-					echo '</td></tr>'."\n";
+				echo '</td></tr>';
 				break;
 			}
 		echo '<tr><td>

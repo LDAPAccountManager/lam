@@ -94,7 +94,7 @@ if ($found==true) {
 	# Connect to ldap-server and check if password is valid.
 	$ldap = Net::LDAP->new($server, port => $server_port) or die ('Can\'t connect to ldapserver.');
 	$result = $ldap->bind (dn => $vals[0], password => $vals[1]) ;
-	$ldap->unbind(); # Clode ldap connection.
+	$ldap->unbind(); # Close ldap connection.
 	if (!$result->code) { # password is valid
 		switch: {
 			# Get user information

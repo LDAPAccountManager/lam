@@ -237,9 +237,10 @@ function checkglobal($values, $type, $values_old=false) { // This functions chec
 			break;
 		case 'host' :
 			if ( substr($values->general_username, strlen($values->general_username)-1, strlen($values->general_username)) != '$' ) {
-				$return->general_username = $values->general_username . '$';
+				$values->general_username = $values->general_username . '$';
 				$errors[] = array('WARN', _('Hostname'), _('Added $ to hostname.'));
 				}
+			$return->general_username = $values->general_username;
 			// Check if Hostname contents only valid characters
 			if ( !ereg('^([a-z]|[0-9]|[.]|[-]|[$])*$', $values->general_username))
 				$errors[] = array('ERROR', _('Hostname'), _('Hostname contents invalid characters. Valid characters are: a-z, 0-9 and .-_ !'));
@@ -247,7 +248,6 @@ function checkglobal($values, $type, $values_old=false) { // This functions chec
 			$return->general_homedir = '/dev/null';
 			$return->general_shell = '/bin/false';
 			// Check if user already exists
-			$return->general_username = $values->general_username;
 			if ($values->general_gecos=='') {
 				$return->general_gecos = $values->general_username;
 				$errors[] = array('INFO', _('Gecos'), _('Inserted hostname in gecos-field.'));
@@ -299,16 +299,12 @@ function checkunix($values, $type) { // This function checks all unix account pa
 		}
 	if ($type=='user' && !ereg('^([a-z]|[A-Z]|[0-9]|[\|]|[\#]|[\*]|[\,]|[\.]|[\;]|[\:]|[\_]|[\-]|[\+]|[\!]|[\%]|[\&]|[\/]|[\?]|[\{]|[\[]|[\(]|[\)]|[\]]|[\}])*$', $values->unix_password))
 		$errors[] = array('ERROR', _('Password'), _('Password contents invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
-	if ( !ereg('^([0-9]*)$', $values->unix_pwdminage))  $errors[] = array('ERROR', _('Password Minage'), _('Password Minage must be are natural number.'));
+	if ( !ereg('^([0-9])*$', $values->unix_pwdminage))  $errors[] = array('ERROR', _('Password Minage'), _('Password Minage must be are natural number.'));
 	if ( $values->unix_pwdminage > $values->unix_pwdmaxage ) $errors[] = array('ERROR', _('Password Maxage'), _('Password Maxage must bigger as Password Minage.'));
-	if ( !ereg('^([1-9]+)([0-9]*)$', $values->unix_pwdmaxage)) $errors[] = array('ERROR', _('Password Maxage'), _('Password Maxage must be are natural number.'));
-	if ($values->unix_pwdminage=='') $errors[] = array('ERROR', _('Password Minage'),  _('No value for Password Minage.'));
+	if ( !ereg('^([0-9]*)$', $values->unix_pwdmaxage)) $errors[] = array('ERROR', _('Password Maxage'), _('Password Maxage must be are natural number.'));
 	if ( !ereg('^(([-][1])|([0-9]*))$', $values->unix_pwdallowlogin))
 		$errors[] = array('ERROR', _('Password Expire'), _('Password Expire must be are natural number or -1.'));
-	if ($values->unix_pwdmaxage=='') $errors[] = array('ERROR', _('Password Maxage'), _('No value for Password Maxage.'));
-	if ( !ereg('^([1-9]+)([0-9]*)$', $values->unix_pwdwarn)) $errors[] = array('ERROR', _('Password Warn'), _('Password Warn must be are natural number.'));
-	if ($values->unix_pwdallowlogin=='') $errors[] = array('ERROR', _('Password Expire'), _('No value for Password Expire.'));
-	if ($values->unix_pwdwarn=='') $errors[] = array('ERROR', _('Password Warn'), _('No value for Password Warn.'));
+	if ( !ereg('^([0-9]*)$', $values->unix_pwdwarn)) $errors[] = array('ERROR', _('Password Warn'), _('Password Warn must be are natural number.'));
 	return $errors;
 	}
 
@@ -587,7 +583,7 @@ function checkid($values, $type, $values_old=false) { // if value is empty will 
 		}
 	if ($values->general_uidNumber=='')
 		if (!$values_old) {
-			$result = ldap_search($_SESSION['ldap']->server(), $suffix, 'ObjectClass='.$ObjectClass);
+			$result = ldap_search($_SESSION['ldap']->server(), $suffix, 'ObjectClass='.$ObjectClass, array($search));
 			$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 			while ($entry) {
 				$vals = ldap_get_values($_SESSION['ldap']->server(), $entry, $search);
@@ -603,7 +599,8 @@ function checkid($values, $type, $values_old=false) { // if value is empty will 
 				else {
 					$i=$minID;
 					foreach ($ids as $id) if ($id == $i) $i++;
-					$useID = $i;
+					if ($i > $maxID) return _('No free ID-Number!');
+					 else $useID = $i;
 					}
 				}
 			 else $useID = $minID;
@@ -798,8 +795,10 @@ function createuser($values) { // Will create the LDAP-Account
 	// 1 == Account has been created
 	// 4 == Error while creating Account
 	// values stored in shadowExpire, days since 1.1.1970
-	$date = mktime(10,0,0, $values->unix_pwdexpire_mon, $values->unix_pwdexpire_day, $values->unix_pwdexpire_yea) / 86400 ;
-	settype($date, 'integer');
+	if ($values->unix_pwdexpire_mon) {
+		$date = mktime(10,0,0, $values->unix_pwdexpire_mon, $values->unix_pwdexpire_day, $values->unix_pwdexpire_yea) / 86400 ;
+		settype($date, 'integer');
+		}
 	$values->general_dn = 'uid=' . $values->general_username . ',' . $_SESSION['config']->get_UserSuffix();
 	// decrypt password
 	$iv = base64_decode($_COOKIE["IV"]);
@@ -850,11 +849,11 @@ function createuser($values) { // Will create the LDAP-Account
 	$attr['gecos'] = $values->general_gecos; // posixAccount_may
 	$attr['description'] = $values->general_gecos; // posixAccount_may sambaAccount_may
 
-	$attr['shadowMin'] = $values->unix_pwdminage; // shadowAccount_may
-	$attr['shadowMax'] = $values->unix_pwdmaxage; // shadowAccount_may
-	$attr['shadowWarning'] = $values->unix_pwdwarn; // shadowAccount_may
-	$attr['shadowInactive'] = $values->unix_pwdallowlogin; // shadowAccount_may
-	$attr['shadowExpire'] =  $date ; // shadowAccount_may
+	if ($values->unix_pwdminage!='') $attr['shadowMin'] = $values->unix_pwdminage; // shadowAccount_may
+	if ($values->unix_pwdmaxage!='') $attr['shadowMax'] = $values->unix_pwdmaxage; // shadowAccount_may
+	if ($values->unix_pwdwarn!='') $attr['shadowWarning'] = $values->unix_pwdwarn; // shadowAccount_may
+	if ($values->unix_pwdallowlogin!='') $attr['shadowInactive'] = $values->unix_pwdallowlogin; // shadowAccount_may
+	if ($date) $attr['shadowExpire'] =  $date ; // shadowAccount_may
 	$attr['rid'] = (2 * $values->general_uidNumber + 1000); // sambaAccount_may
 	$attr['PrimaryGroupID'] = (2 * getgid($values->general_group) + 1001); // sambaAccount_req
 	if ($values->smb_pwdcanchange) $attr['pwdCanChange'] = "1"; else $attr['pwdCanChange'] = "0"; // sambaAccount_may
@@ -880,7 +879,7 @@ function createuser($values) { // Will create the LDAP-Account
 	// Add User to Additional Groups
 	if ($values->general_groupadd[0])
 		foreach ($values->general_groupadd as $group2) {
-			$result = ldap_search($_SESSION['ldap']->server(), 'cn='.$group2.','.$_SESSION['config']->get_GroupSuffix(), "objectclass=posixGroup");
+			$result = ldap_search($_SESSION['ldap']->server(), 'cn='.$group2.','.$_SESSION['config']->get_GroupSuffix(), "objectclass=posixGroup", array('memberUid'));
 			$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 			$group = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
 			if ($group['memberUid']) array_shift($group['memberUid']);
@@ -901,6 +900,14 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 	// decrypt password
 	$iv = base64_decode($_COOKIE["IV"]);
 	$key = base64_decode($_COOKIE["Key"]);
+	if ($values->unix_pwdexpire_mon) {
+		$date = mktime(10,0,0, $values->unix_pwdexpire_mon, $values->unix_pwdexpire_day, $values->unix_pwdexpire_yea) / 86400 ;
+		settype($date, 'integer');
+		}
+	if ($values_old->unix_pwdexpire_mon) {
+		$date_old = mktime(10,0,0, $values_old->unix_pwdexpire_mon, $values_old->unix_pwdexpire_day, $values_old->unix_pwdexpire_yea) / 86400 ;
+		settype($date_old, 'integer');
+		}
 	if ($values->unix_password != '') {
 		$values->unix_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($values->unix_password), MCRYPT_MODE_ECB, $iv);
 		$values->unix_password = str_replace(chr(00), '', $values->unix_password);
@@ -909,9 +916,10 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 		$values->smb_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($values->smb_password), MCRYPT_MODE_ECB, $iv);
 		$values->smb_password = str_replace(chr(00), '', $values->smb_password);
 		}
-
-	$date = mktime(10,0,0, $values->unix_pwdexpire_mon, $values->unix_pwdexpire_day, $values->unix_pwdexpire_yea) / 86400 ;
-	settype($date, 'integer');
+	if ($values->unix_pwdexpire_mon) {
+		$date = mktime(10,0,0, $values->unix_pwdexpire_mon, $values->unix_pwdexpire_day, $values->unix_pwdexpire_yea) / 86400 ;
+		settype($date, 'integer');
+		}
 	$values->general_dn = 'uid=' . $values->general_username . ',' . $_SESSION['config']->get_UserSuffix();
 	if ($values->general_username != $values_old->general_username) {
 		$attr['cn'] = $values->general_username; // posixAccount_req shadowAccount_req sambaAccount_may
@@ -959,14 +967,24 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 		$attr['description'] = $values->general_gecos; // posixAccount_may sambaAccount_may
 		$attr['displayName'] = $values->general_gecos; // sambaAccount_may
 		}
-	if ($values->general_pwdminage != $values_old->general_pwdminage)
+	if (($values->unix_pwdminage != $values_old->unix_pwdminage) && ($values->unix_pwdminage !=''))
 		$attr['shadowMin'] = $values->unix_pwdminage; // shadowAccount_may
-	if ($values->general_pwdmaxage != $values_old->general_pwdmaxage)
+	if (($values->unix_pwdminage != $values_old->unix_pwdminage) && ($values->unix_pwdminage ==''))
+		$attr_rem['shadowMin'] = $values_old->unix_pwdminage; // shadowAccount_may
+	if (($values->unix_pwdmaxage != $values_old->unix_pwdmaxage) && ($values->unix_pwdmaxage !=''))
 		$attr['shadowMax'] = $values->unix_pwdmaxage; // shadowAccount_may
-	if ($values->general_pwdwarn != $values_old->general_pwdwarn)
+	if (($values->unix_pwdmaxage != $values_old->unix_pwdmaxage) && ($values->unix_pwdmaxage ==''))
+		$attr_rem['shadowMax'] = $values_old->unix_pwdmaxage; // shadowAccount_may
+	if (($values->unix_pwdwarn != $values_old->unix_pwdwarn) && ($values->unix_pwdwarn !=''))
 		$attr['shadowWarning'] = $values->unix_pwdwarn; // shadowAccount_may
-	if ($values->general_pwdallowlogin != $values_old->general_pwdallowlogin)
+	if (($values->unix_pwdwarn != $values_old->unix_pwdwarn) && ($values->general_pwdwarn ==''))
+		$attr_rem['shadowWarning'] = $values_old->unix_pwdwarn; // shadowAccount_may
+	if (($values->general_pwdallowlogin != $values_old->general_pwdallowlogin) && ($values->general_pwdallowlogin !=''))
 		$attr['shadowInactive'] = $values->unix_pwdallowlogin; // shadowAccount_may
+	if (($values->general_pwdallowlogin != $values_old->general_pwdallowlogin) && ($values->general_pwdallowlogin ==''))
+		$attr_rem['shadowInactive'] = $values_old->unix_pwdallowlogin; // shadowAccount_may
+	if (($date != $date_old) && $date) $attr['shadowExpire'] =  $date ; // shadowAccount_may
+	if (($date != $date_old) && !$date) $attr_rem['shadowExpire'] =  $date_old ; // shadowAccount_may
 	if (($values->personal_title != $values_old->personal_title) && ($values->personal_title != ''))
 		$attr['title'] = $values->personal_title;
 	if (($values->personal_title != $values_old->personal_title) && ($values->personal_title == ''))
@@ -1086,8 +1104,10 @@ function createhost($values) { // Will create the LDAP-Account
 	// 4 == Error while creating Account
 	// 5 == Error while modifying Account
 	// Value stored in shadowExpire, days since 1.1.1970
-	$date = mktime(10,0,0, $values->unix_pwdexpire_mon, $values->unix_pwdexpire_day, $values->unix_pwdexpire_yea) / 86400 ;
-	settype($date, 'integer');
+	if ($values->unix_pwdexpire_mon) {
+		$date = mktime(10,0,0, $values->unix_pwdexpire_mon, $values->unix_pwdexpire_day, $values->unix_pwdexpire_yea) / 86400 ;
+		settype($date, 'integer');
+		}
 	$values->general_dn = 'uid=' . $values->general_username . ',' . $_SESSION['config']->get_HostSuffix();
 
 	// decrypt password
@@ -1130,16 +1150,16 @@ function createhost($values) { // Will create the LDAP-Account
 	$attr['gecos'] = $values->general_gecos; // posixAccount_may
 	$attr['description'] = $values->general_gecos; // posixAccount_may sambaAccount_may
 
-	$attr['shadowMin'] = $values->unix_pwdminage; // shadowAccount_may
-	$attr['shadowMax'] = $values->unix_pwdmaxage; // shadowAccount_may
-	$attr['shadowWarning'] = $values->unix_pwdwarn; // shadowAccount_may
-	$attr['shadowInactive'] = $values->unix_pwdallowlogin; // shadowAccount_may
-	$attr['shadowExpire'] =  $date ; // shadowAccount_may
+	if ($values->unix_pwdminage!='') $attr['shadowMin'] = $values->unix_pwdminage; // shadowAccount_may
+	if ($values->unix_pwdmaxage!='') $attr['shadowMax'] = $values->unix_pwdmaxage; // shadowAccount_may
+	if ($values->unix_pwdwarn!='') $attr['shadowWarning'] = $values->unix_pwdwarn; // shadowAccount_may
+	if ($values->unix_pwdallowlogin!='') $attr['shadowInactive'] = $values->unix_pwdallowlogin; // shadowAccount_may
+	if ($date!='') $attr['shadowExpire'] =  $date ; // shadowAccount_may
 	$attr['rid'] = (2 * $values->general_uidNumber + 1000); // sambaAccount_may
 	$attr['PrimaryGroupID'] = (2 * getgid($values->general_group) + 1001); // sambaAccount_req
 	if ($values->smb_pwdcanchange) $attr['pwdCanChange'] = "1"; else $attr['pwdCanChange'] = "0"; // sambaAccount_may
 	if ($values->smb_pwdmustchange) $attr['pwdMustChange'] = "1"; else $attr['pwdMustChange'] = "0"; // sambaAccount_may
-	$attr['acctFlags'] = smbflag(); // sambaAccount_may
+	$attr['acctFlags'] = smbflag($values); // sambaAccount_may
 	$attr['displayName'] = $values->general_gecos; // sambaAccount_may
 	if ($values->smb_domain!='') $attr['domain'] = $values->smb_domain; // sambaAccount_may
 	$success = ldap_add($_SESSION['ldap']->server(),$values->general_dn, $attr);
@@ -1147,7 +1167,7 @@ function createhost($values) { // Will create the LDAP-Account
 	// Add Host to Additional Groups
 	if ($values->general_groupadd[0])
 		foreach ($values->general_groupadd as $group2) {
-			$result = ldap_search($_SESSION['ldap']->server(), 'cn='.$group2.','.$_SESSION['config']->get_GroupSuffix(), "objectclass=posixGroup");
+			$result = ldap_search($_SESSION['ldap']->server(), 'cn='.$group2.','.$_SESSION['config']->get_GroupSuffix(), "objectclass=posixGroup", array('memberUid'));
 			$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 			$group = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
 			if ($group['memberUid']) array_shift($group['memberUid']);
@@ -1165,9 +1185,14 @@ function modifyhost($values,$values_old) { // Will modify the LDAP-Account
 	// 3 == Account has been modified
 	// 5 == Error while modifying Account
 	// Value stored in shadowExpire, days since 1.1.1970
-	$date = mktime(10,0,0, $values->unix_pwdexpire_mon, $values->unix_pwdexpire_day, $values->unix_pwdexpire_yea) / 86400 ;
-	settype($date, 'integer');
-
+	if ($values->unix_pwdexpire_mon) {
+		$date = mktime(10,0,0, $values->unix_pwdexpire_mon, $values->unix_pwdexpire_day, $values->unix_pwdexpire_yea) / 86400 ;
+		settype($date, 'integer');
+		}
+	if ($values_old->unix_pwdexpire_mon) {
+		$date_old = mktime(10,0,0, $values_old->unix_pwdexpire_mon, $values_old->unix_pwdexpire_day, $values_old->unix_pwdexpire_yea) / 86400 ;
+		settype($date_old, 'integer');
+		}
 	// decrypt password
 	$iv = base64_decode($_COOKIE["IV"]);
 	$key = base64_decode($_COOKIE["Key"]);
@@ -1226,18 +1251,24 @@ function modifyhost($values,$values_old) { // Will modify the LDAP-Account
 		$attr['description'] = $values->general_gecos; // posixAccount_may sambaAccount_may
 		$attr['displayName'] = $values->general_gecos; // sambaAccount_may
 		}
-	if ($values->general_pwdminage != $values_old->general_pwdminage)
+	if (($values->unix_pwdminage != $values_old->unix_pwdminage) && ($values->unix_pwdminage !=''))
 		$attr['shadowMin'] = $values->unix_pwdminage; // shadowAccount_may
-	if ($values->general_pwdmaxage != $values_old->general_pwdmaxage)
+	if (($values->unix_pwdminage != $values_old->unix_pwdminage) && ($values->unix_pwdminage ==''))
+		$attr_rem['shadowMin'] = $values_old->unix_pwdminage; // shadowAccount_may
+	if (($values->unix_pwdmaxage != $values_old->unix_pwdmaxage) && ($values->unix_pwdmaxage !=''))
 		$attr['shadowMax'] = $values->unix_pwdmaxage; // shadowAccount_may
-	if ($values->general_pwdwarn != $values_old->general_pwdwarn)
+	if (($values->unix_pwdmaxage != $values_old->unix_pwdmaxage) && ($values->unix_pwdmaxage ==''))
+		$attr_rem['shadowMax'] = $values->unix_pwdmaxage; // shadowAccount_may
+	if (($values->unix_pwdwarn != $values_old->unix_pwdwarn) && ($values->unix_pwdwarn !=''))
 		$attr['shadowWarning'] = $values->unix_pwdwarn; // shadowAccount_may
-	if ($values->general_pwdallowlogin != $values_old->general_pwdallowlogin)
+	if (($values->unix_pwdwarn != $values_old->unix_pwdwarn) && ($values->unix_pwdwarn ==''))
+		$attr_rem['shadowWarning'] = $values->unix_pwdwarn; // shadowAccount_may
+	if (($values->unix_pwdallowlogin != $values_old->unix_pwdallowlogin) && ($values->unix_pwdallowlogin !=''))
 		$attr['shadowInactive'] = $values->unix_pwdallowlogin; // shadowAccount_may
-	if (($values->unix_pwdexpire_day = $date['mday']!=$values_old->unix_pwdexpire_day = $date['mday']) ||
-		($values->unix_pwdexpire_mon = $date['mon'] != $values_old->unix_pwdexpire_mon = $date['mon']) ||
-		($values->unix_pwdexpire_yea = $date['year'] != $values->unix_pwdexpire_yea = $date['year']))
-			$attr['shadowExpire'] =  $date ; // shadowAccount_may
+	if (($values->unix_pwdallowlogin != $values_old->unix_pwdallowlogin) && ($values->unix_pwdallowlogin ==''))
+		$attr_rem['shadowInactive'] = $values->unix_pwdallowlogin; // shadowAccount_may
+	if (($date != $date_old) && $date) $attr['shadowExpire'] =  $date ; // shadowAccount_may
+	if (($date != $date_old) && !$date) $attr_rem['shadowExpire'] =  $date_old ; // shadowAccount_may
 	if ($values->smb_pwdcanchange && $values_old->smb_pwdcanchange==0) $attr['pwdCanChange'] = "1"; else $attr['pwdCanChange'] = "0"; // sambaAccount_may
 	if ($values->smb_pwdcanchange==0 && $values_old->smb_pwdcanchange==1) $attr_rem['pwdCanChange'] = "1"; else $attr['pwdCanChange'] = "0"; // sambaAccount_may
 	if ($values->smb_pwdmustchange && $values->smb_pwdmustchange==0) $attr['pwdMustChange'] = "1"; else $attr['pwdMustChange'] = "0"; // sambaAccount_may
