@@ -355,25 +355,36 @@ function checksamba($values, $type) { // This function checks all samba account 
 			if ((!$values->smb_smbuserworkstations=='') && !ereg('^([a-z]|[A-Z]|[0-9]|[.]|[-])+(([,])+([a-z]|[A-Z]|[0-9]|[.]|[-])+)*$', $values->smb_smbuserworkstations))
 				$errors[] = array('ERROR', _('User Workstations'), _('User Workstations is invalid.'));
 			$return->smb_flagsW = 0;
+			if ((!$values->smb_domain=='') && !ereg('^([a-z]|[A-Z]|[0-9]|[-])+$', $values->smb_domain))
+				$errors[] = array('ERROR', _('Domain Name'), _('Domain Name contents invalid characters. Valid characters are: a-z, A-Z, 0-9 and -.'));
+			if ($values->smb_useunixpwd) $return->smb_useunixpwd = 1; else $return->smb_useunixpwd = 0;
+			if ($values->smb_pwdcanchange) $return->smb_pwdcanchange = 1; else $return->smb_pwdcanchange = 0;
+			if ($values->smb_pwdmustchange) $return->smb_pwdmustchange = 1; else $return->smb_pwdmustchange = 0;
+			if ($values->smb_password) {
+				// Encrypt password
+				$return->smb_password = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $values->smb_password,
+				MCRYPT_MODE_ECB, $iv));
+				}
+		 else $return->smb_password = "";
 			break;
 		case 'host' :
 			$return->smb_password = $values->unix_password;
 			$return->smb_flagsW = 1;
+			if ((!$values->smb_domain=='') && !ereg('^([a-z]|[A-Z]|[0-9]|[-])+$', $values->smb_domain))
+				$errors[] = array('ERROR', _('Domain Name'), _('Domain Name contents invalid characters. Valid characters are: a-z, A-Z, 0-9 and -.'));
+			if ($values->smb_useunixpwd) $return->smb_useunixpwd = 1; else $return->smb_useunixpwd = 0;
+			if ($values->smb_pwdcanchange) $return->smb_pwdcanchange = 1; else $return->smb_pwdcanchange = 0;
+			if ($values->smb_pwdmustchange) $return->smb_pwdmustchange = 1; else $return->smb_pwdmustchange = 0;
+			if ($values->smb_password) {
+				// Encrypt password
+				$return->smb_password = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $values->smb_password,
+				MCRYPT_MODE_ECB, $iv));
+				}
+		 else $return->smb_password = "";
 			break;
 		case 'group' :
 			break;
 		}
-	if ((!$values->smb_domain=='') && !ereg('^([a-z]|[A-Z]|[0-9]|[-])+$', $values->smb_domain))
-		$errors[] = array('ERROR', _('Domain Name'), _('Domain Name contents invalid characters. Valid characters are: a-z, A-Z, 0-9 and -.'));
-	if ($values->smb_useunixpwd) $return->smb_useunixpwd = 1; else $return->smb_useunixpwd = 0;
-	if ($values->smb_pwdcanchange) $return->smb_pwdcanchange = 1; else $return->smb_pwdcanchange = 0;
-	if ($values->smb_pwdmustchange) $return->smb_pwdmustchange = 1; else $return->smb_pwdmustchange = 0;
-	if ($values->smb_password) {
-			// Encrypt password
-			$return->smb_password = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $values->smb_password,
-			MCRYPT_MODE_ECB, $iv));
-			}
-		 else $return->smb_password = "";
 	// Return values and errors
 	if (!$errors) return array($return);
 	 else return array($return, $errors);

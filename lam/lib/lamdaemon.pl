@@ -107,18 +107,22 @@ if ($found==true) {
 						my $path = $user[7];
 						$path =~ s,/(?:[^/]*)$,,;
 						($<, $>) = ($>, $<); # Get root privileges
-						system 'mkdir', '-m 755', '-p', $path; # Create paths to homedir
-						system 'mkdir', '-m 700', $user[7]; # Create himdir itself
-						system "cp -a /etc/skel/* /etc/skel/.[^.]* $user[7]"; # Copy /etc/sekl into homedir
-						system 'chown', '-R', "$user[2]:$user[3]" , $user[7]; # Change owner to new user
-						system '/usr/sbin/useradd.local', $user[0]; # run useradd-script
+						if (! -e $path) {
+    						    system 'mkdir', '-m 755', '-p', $path; # Create paths to homedir
+						    system 'mkdir', '-m 700', $user[7]; # Create himdir itself
+						    system "cp -a /etc/skel/* /etc/skel/.[^.]* $user[7]"; # Copy /etc/sekl into homedir
+					    	    system 'chown', '-R', "$user[2]:$user[3]" , $user[7]; # Change owner to new user
+						    system '/usr/sbin/useradd.local', $user[0]; # run useradd-script
+						    }
 						($<, $>) = ($>, $<); # Give up root previleges
 						last switch2;
 						};
 					$vals[4] eq 'rem' && do {
 						($<, $>) = ($>, $<); # Get root previliges
-						system 'rm', '-R', $user[7]; # Delete Homedirectory
-						system '/usr/sbin/userdel.local', $user[0];
+						if (-d $user[7]) {
+						    system 'rm', '-R', $user[7]; # Delete Homedirectory
+						    system '/usr/sbin/userdel.local', $user[0];
+						    }
 						($<, $>) = ($>, $<); # Give up root previleges
 						last switch2;
 						};
