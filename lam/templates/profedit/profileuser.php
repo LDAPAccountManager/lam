@@ -116,7 +116,7 @@ echo ("</tr>\n");
 
 // login shell
 echo ("<tr>\n");
-echo ("<td align=\"right\"><b>" . _("Login Shell") . ": </b></td>\n");
+echo ("<td align=\"right\"><b>" . _("Login shell") . ": </b></td>\n");
 echo ("<td><select name=\"general_shell\">\n");
 for ($i = 0; $i < sizeof($shells); $i++) {
 	if ($shells[$i] == $acct->general_shell) echo ("<option selected>" . $shells[$i] . "</option>\n");
@@ -238,7 +238,7 @@ echo ("</tr>\n");
 
 // use Unix password as Samba password
 echo ("<tr>\n");
-echo ("<td align=\"right\"><b>" . _("Set Unix Password for Samba") . ": </b></td>\n");
+echo ("<td align=\"right\"><b>" . _("Set Unix password for Samba") . ": </b></td>\n");
 echo ("<td><select name=\"smb_useunixpwd\">\n");
 if ($acct->smb_useunixpwd == "0") echo ("<option selected value=0>"._("no")."</option><option value=1>"._("yes")."</option>\n");
 else echo ("<option selected value=1>"._("yes")."</option><option value=0>"._("no")."</option>\n");
