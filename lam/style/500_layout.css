@@ -307,7 +307,7 @@ tr.domainlist-checked {
 
 /* table preferences */
 table.account {
-  border-width:1px;
+  border-width:0px;
   border-style:solid;
   border-color:#000000;
 }

@@ -39,7 +39,7 @@ class account { // This class keeps all needed values for any account
 	var $general_shell;		// array(string) list off all valid shells (user) hosts are hard-wired to /bin/false
 	var $general_gecos;		// string, gecos-field (user|roup|host)
 	// Unix Password Settings
-	var $unix_memberUid;		// string Stores all users which are member of group but is not primary group (group)
+	var $unix_memberUid;		// array Stores all users which are member of group but is not primary group (group)
 	var $unix_password;		// string for unix-password (user|host)
 	var $unix_password_no;		// string (0|1) set unix-password to none (user|host)
 	var $unix_pwdwarn;		// string number of days a user is warned before password expires (user|host) value must be a natural number (user|host)
@@ -168,6 +168,15 @@ function replace_umlaut($text) { // This function will replace umlates with ascc
 		);
 	return strtr($text, $aTranslate);
 	}
+
+function array_delete($values, $array) { // This function will return all values from $array without values of $values
+	foreach ($array as $array_value)
+		if (!in_array($array_value, $values))
+			$return[] = $array_value;
+	return $return;
+	}
+
+
 
 function checkglobal($values, $type, $values_old=false) { // This functions checks all global account parameters $values is class account(), $type=user|host|group
 	// If all values are OK an array of class account is returned. Else an error-string is returned
@@ -736,8 +745,8 @@ function checkid($values, $type, $values_old=false) { // if value is empty will 
 			//	$ids[] = $_SESSION['hostDN'][$key]['uidNumber'];
 			break;
 		}
-	if ($values->general_uidNumber=='')
-		if (!$values_old) {
+	if ($values->general_uidNumber=='') {
+		if (!isset($values_old)) {
 			if ($keys) {
 				$id = 0;
 				foreach ($keys as $key)
@@ -759,8 +768,10 @@ function checkid($values, $type, $values_old=false) { // if value is empty will 
 			 else $useID = $minID;
 			return intval($useID);
 			}
-		else return intval($values_old->general_uidNumber);
-
+		else {
+			return intval($values_old->general_uidNumber);
+			}
+		}
 	// Check manual ID
 	if ( $values->general_uidNumber < $minID || $values->general_uidNumber > $maxID) return sprintf(_('Please enter a value between %s and %s!'), $minID, $maxID);
 	foreach ($keys as $key)
@@ -985,8 +996,7 @@ function loadgroup($dn) { // Will load all needed values from an existing group
 		}
 	$i=0;
 	while (isset($attr['memberUid'][$i])) {
-		if ($i==0) $return->unix_memberUid = $attr['memberUid'][$i];
-			else $return->unix_memberUid = $return->unix_memberUid . ', ' . $attr['memberUid'][$i];
+		$return->unix_memberUid[$i] = $attr['memberUid'][$i];
 		$i++;
 		}
 	if (isset($attr['gidNumber'][0])) $return->general_uidNumber = $attr['gidNumber'][0];
@@ -995,8 +1005,6 @@ function loadgroup($dn) { // Will load all needed values from an existing group
 		$return->general_username = $attr['cn'][0];
 		if ($_SESSION['config']->scriptServer) getquotas('group',$attr['cn'][0]);
 		}
-	//if (isset($attr['memberUid'][0])) $return->general_memberUid = $attr['memberUid'][0];
-	if (is_array($return->general_memberUid)) array_shift($return->general_memberUid);
 	if (isset($attr['sambaSID'][0])) {
 		$return->smb_mapgroup = $attr['sambaSID'][0];
 		$temp = explode('-', $attr['sambaSID'][0]);
@@ -1372,7 +1380,7 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 		(($_SESSION['config']->samba3 =='yes') && (!in_array('sambaSamAccount', $_SESSION['account_old']->general_objectClass))) ||
 		(($_SESSION['config']->samba3 !='yes') && (!in_array('sambaAccount', $_SESSION['account_old']->general_objectClass)))) {
 
-			$result = ldap_search($_SESSION['ldap']->server(), $values_old->general_dn, "objectclass=PosixGroup");
+			$result = ldap_search($_SESSION['ldap']->server(), $values_old->general_dn, "objectclass=PosixAccount");
 			$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 			$attr_old = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
 			// remove "count" from array
@@ -1509,13 +1517,13 @@ function createhost($values) { // Will create the LDAP-Account
 	$attr['gidNumber'] = getgid($values->general_group); // posixAccount_req
 	$attr['homeDirectory'] = $values->general_homedir; // posixAccount_req
 
-	$values->unix_memberUid = str_replace(' ', '', $values->unix_memberUid);
-	$memberUid = explode (',', $values->unix_memberUid);
-	$i=0;
-	while(isset($memberUid[$i])) {
-		if ($memberUid[$i]!='') $attr['memberUid'][$i] = $memberUid[$i];
-		$i++;
-		}
+	//$values->unix_memberUid = str_replace(' ', '', $values->unix_memberUid);
+	//$memberUid = explode (',', $values->unix_memberUid);
+	//$i=0;
+	//while(isset($memberUid[$i])) {
+	//	if ($memberUid[$i]!='') $attr['memberUid'][$i] = $memberUid[$i];
+	//	$i++;
+	//	}
 	// posixAccount_may shadowAccount_may
 	//if ($values->unix_password_no) $values->unix_password = '';
 	$values->unix_password = '';
@@ -1600,7 +1608,7 @@ function modifyhost($values,$values_old) { // Will modify the LDAP-Account
 		(($_SESSION['config']->samba3 =='yes') && (!in_array('sambaSamAccount', $_SESSION['account_old']->general_objectClass))) ||
 		(($_SESSION['config']->samba3 !='yes') && (!in_array('sambaAccount', $_SESSION['account_old']->general_objectClass)))) {
 
-			$result = ldap_search($_SESSION['ldap']->server(), $values_old->general_dn, "objectclass=PosixGroup");
+			$result = ldap_search($_SESSION['ldap']->server(), $values_old->general_dn, "objectclass=PosixAccount");
 			$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 			$attr_old = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
 			// remove "count" from array
@@ -1723,12 +1731,14 @@ function modifygroup($values,$values_old) { // Will modify the LDAP-Group
 		}
 
 	if (($values->unix_memberUid != $values_old->unix_memberUid)) {
-		$values->unix_memberUid = str_replace(' ', '', $values->unix_memberUid);
-		$memberUid = explode (',', $values->unix_memberUid);
-		$values_old->unix_memberUid = str_replace(' ', '', $values_old->unix_memberUid);
-		$memberUid_old = explode (',', $values_old->unix_memberUid);
-		if ($memberUid[0]=='') $attr_rem['memberUid'] = $memberUid_old;
-		 else if ($memberUid[0]!='') $attr['memberUid'] = $memberUid;
+		//$values->unix_memberUid = str_replace(' ', '', $values->unix_memberUid);
+		//$memberUid = explode (',', $values->unix_memberUid);
+		//$values_old->unix_memberUid = str_replace(' ', '', $values_old->unix_memberUid);
+		//$memberUid_old = explode (',', $values_old->unix_memberUid);
+		//if ($memberUid[0]=='') $attr_rem['memberUid'] = $memberUid_old;
+		// else if ($memberUid[0]!='') $attr['memberUid'] = $memberUid;
+		if (count($values->unix_memberUid)==0) $attr_rem['memberUid'] = $values_old->unix_memberUid;
+		 else $attr['memberUid'] = $values->unix_memberUid;
 		}
 
 	if ($attr_rem) {

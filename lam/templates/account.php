@@ -41,6 +41,60 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 	// final = last page shown before account is created/modified
 	//		if account is modified commands might be ran are shown
 	// finish = page shown after account has been created/modified
+	case 'groupmembers':
+		do {
+			if (isset($_POST['users']) && isset($_POST['add'])) {
+				// Add new user
+				$_SESSION['account']->unix_memberUid = array_merge($_SESSION['account']->unix_memberUid, $_POST['users']);
+				// remove doubles
+				$_SESSION['account']->unix_memberUid = array_flip($_SESSION['account']->unix_memberUid);
+				array_unique($_SESSION['account']->unix_memberUid);
+				$_SESSION['account']->unix_memberUid = array_flip($_SESSION['account']->unix_memberUid);
+				// sort user
+				sort($_SESSION['account']->unix_memberUid);
+				// display groupmembers page
+				$select_local = 'groupmembers';
+				break;
+				}
+			if (isset($_POST['members']) && isset($_POST['remove'])) {
+				$_SESSION['account']->unix_memberUid = array_delete($_POST['members'], $_SESSION['account']->unix_memberUid);
+				$select_local = 'groupmembers';
+				break;
+				}
+			if (isset($_POST['back'])) {
+				$select_local = 'general';
+				break;
+				}
+			if (isset($_POST['next']))
+				if ($_SESSION['config']->samba3=='yes') {
+					$select_local = 'samba';
+					break;
+					}
+				else {
+					$select_local = 'quota';
+					break;
+					}
+			} while(0);
+/*		$select_local = 'groupmembers';
+*		if (isset($_POST['users']) && isset($_POST['add'])) {
+*			// Add new user
+*			$_SESSION['account']->unix_memberUid = array_merge($_SESSION['account']->unix_memberUid, $_POST['users']);
+*			// remove doubles
+*			$_SESSION['account']->unix_memberUid = array_flip($_SESSION['account']->unix_memberUid);
+*			array_unique($_SESSION['account']->unix_memberUid);
+*			$_SESSION['account']->unix_memberUid = array_flip($_SESSION['account']->unix_memberUid);
+*			// sort user
+*			sort($_SESSION['account']->unix_memberUid);
+*			}
+*	  if (isset($_POST['members']) && isset($_POST['remove'])) {
+*			$_SESSION['account']->unix_memberUid = array_delete($_POST['members'], $_SESSION['account']->unix_memberUid);
+*			}
+*		if (isset($_POST['back'])) $select_local = 'general';
+*		if (isset($_POST['next']))
+*			if ($_SESSION['config']->samba3=='yes') $select_local = 'samba';
+*				else $select_local = 'quota';
+*/
+		break;
 	case 'general':
 		// Write all general values into $_SESSION['account'] if no profile should be loaded
 		if (!$_POST['load']) {
@@ -72,7 +126,7 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 			if ($_POST['next'] && ($errors==''))
 				switch ($_SESSION['account']->type) {
 					case 'user': $select_local = 'unix'; break;
-					case 'group': $select_local = 'unix'; break;
+					case 'group': $select_local = 'groupmembers'; break;
 					case 'host': $select_local = 'samba'; break;
 					}
 			}
@@ -96,8 +150,8 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 			else $_SESSION['account']->unix_pwdmaxage = '';
 		if (isset($_POST['f_unix_pwdminage'])) $_SESSION['account']->unix_pwdminage = $_POST['f_unix_pwdminage'];
 			else $_SESSION['account']->unix_pwdminage = '';
-		if (isset($_POST['f_unix_memberUid'])) $_SESSION['account']->unix_memberUid = $_POST['f_unix_memberUid'];
-			else $_SESSION['account']->unix_memberUid = '';
+		//if (isset($_POST['f_unix_memberUid'])) $_SESSION['account']->unix_memberUid = $_POST['f_unix_memberUid'];
+		//	else $_SESSION['account']->unix_memberUid = '';
 		if (isset($_POST['f_unix_host'])) $_SESSION['account']->unix_host = $_POST['f_unix_host'];
 			else $_SESSION['account']->unix_host = '';
 		$_SESSION['account']->unix_pwdexpire = mktime(10, 0, 0, $_POST['f_unix_pwdexpire_mon'],
@@ -199,7 +253,7 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 		if ($_POST['back'])
 			switch ($_SESSION['account']->type) {
 				case 'user': $select_local = 'unix'; break;
-				case 'group': $select_local = 'unix'; break;
+				case 'group': $select_local = 'groupmembers'; break;
 				}
 		else if ($_POST['next'])
 			if($errors=='')
@@ -236,7 +290,7 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 			switch ($_SESSION['account']->type) {
 				case 'user': $select_local = 'samba'; break;
 				case 'group': if ($_SESSION['config']->samba3=='yes') $select_local = 'samba';
-					else $select_local = 'unix'; break;
+					else $select_local = 'groupmembers'; break;
 				}
 		else if ($_POST['next'])
 			if ($errors=='')
@@ -346,7 +400,7 @@ else {
 			}
 		}
 	}
-
+if ($_POST['groupmembers']) $select_local = 'groupmembers';
 
 if ($select_local != 'pdf') {
 	// Write HTML-Header and part of Table
@@ -431,6 +485,29 @@ switch ($select_local) { // Select which part of page will be loaded
 	// final = last page shown before account is created/modified
 	//		if account is modified commands might be ran are shown
 	// finish = page shown after account has been created/modified
+	case 'groupmembers':
+		ldapreload('user');
+		echo '<tr><td><input name="select" type="hidden" value="groupmembers">';
+		echo _('Group members');
+		echo '</td><td></td><td>'."\n";
+		echo _('Available users');
+		echo '</td></tr>'."\n".'<tr><td>';
+		echo '<select name="members[]" size=20 multiple>'."\n";
+		for ($i=0; $i<count($_SESSION['account']->unix_memberUid); $i++)
+			if ($_SESSION['account']->unix_memberUid[$i]!='') echo "<option>".$_SESSION['account']->unix_memberUid[$i]."</option>\n";
+		echo '</select></td><td><input type="submit" name="add" value="<=">'."\n";
+		echo '<br><br><input type="submit" name="remove" value="=>"></td><td>'."\n";
+		echo '<select name="users[]" size=20 multiple>'."\n";
+		foreach ($_SESSION['userDN'] as $temp)
+			if (is_array($temp)) {
+				echo "<option>$temp[cn]</option>\n";
+				}
+		echo '</select></td></tr>'."\n";
+		echo '<tr><td>'.
+			'<input name="back" type="submit" value="'; echo _('Back'); echo '"></td><td></td><td>'.
+			'<input name="next" type="submit" value="'; echo _('Next'); echo '">'.
+			'</td></tr>'."\n";
+		break;
 	case 'general':
 		// General Account Settings
 		// load list of all groups
@@ -708,8 +785,10 @@ switch ($select_local) { // Select which part of page will be loaded
 			case 'group' :
 				echo '<tr><td>';
 				echo _('Group members');
-				echo '</td>'."\n".'<td><input name="f_unix_memberUid" type="text" size="20" maxlength="200" value="' . $_SESSION['account']->unix_memberUid . '">'.
-					'</td>'."\n".'<td>'.
+				echo '</td>'."\n".'<td>';
+				//echo '<input name="f_unix_memberUid" type="text" size="20" maxlength="200" value="' . $_SESSION['account']->unix_memberUid . '">';
+				echo '<input name="groupmembers" type="submit" value="'; echo _('Edit Members'); echo '">';
+				echo '</td>'."\n".'<td>'.
 					'<a href="help.php?HelpNumber=468" target="lamhelp">'._('Help').'</a>'.
 					'</td></tr>'."\n".'<tr><td>';
 				break;

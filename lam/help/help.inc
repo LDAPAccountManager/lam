@@ -167,7 +167,7 @@ $helpArray = array (
 				"418" => array ("ext" => "FALSE", "Headline" => _("Expire date"),
 					"Text" => _("Account expire date. If an account is expired login is only possible if password expire is set. Format: DD-MM-YYYY")),
 				"424" => array ("ext" => "FALSE", "Headline" => _("Surname"),
-					"Text" => _("Surname of user. Only letters, - and spaces are allowed. Have you ever seen anybody with a number in his name?")),
+					"Text" => _("Surname of user. Only letters, - and spaces are allowed.")),
 				"425" => array ("ext" => "FALSE", "Headline" => _("Given name"),
 					"Text" => _("Given name of user. Only letters - and spaces are allowed. Have you ever seen anybody with a number in his name?")),
 				"426" => array ("ext" => "FALSE", "Headline" => _("Use no password"),
