@@ -61,3 +61,6 @@ hostlistAttributes: #cn;#rid;#description;gidNumber:GID
 
 # maximum number of rows to show in user/group/host lists
 maxlistentries: 30
+
+# default language (a line from language.conf)
+defaultLanguage: de_DE:iso639_de:Deutsch (Deutschland)

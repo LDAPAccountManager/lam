@@ -24,7 +24,7 @@ $Id$
 
 */
 
-// sets language settings for i18n
+// sets language settings for automatic translation
 function setlanguage() {
 	if ($_SESSION['language']) {
 		$language = explode(":", $_SESSION['language']);
@@ -76,6 +76,9 @@ class Config {
 
   // maximum number of rows shown in user/group/host list
   var $maxlistentries;
+
+  // default language
+  var $defaultLanguage;
 
   // constructor, loads preferences from ../config/lam.conf
   function Config() {
@@ -157,6 +160,10 @@ class Config {
 	  $this->maxlistentries = chop(substr($line, 16, strlen($line)-16));
 	  continue;
 	}
+	if (substr($line, 0, 17) == "defaultLanguage: ") {
+	  $this->defaultLanguage = chop(substr($line, 17, strlen($line)-17));
+	  continue;
+	}
       }
       fclose($file);
     }
@@ -179,7 +186,7 @@ class Config {
       // booleans to check if value was already saved
       $save_serverURL = $save_passwd = $save_admins = $save_suffusr = $save_suffgrp = $save_suffhst =
 	$save_minUID = $save_maxUID = $save_minGID = $save_maxGID = $save_minMach = $save_maxMach =
-	$save_usrlstatrr =  $save_grplstatrr = $save_hstlstatrr = $maxlstent = False;
+	$save_usrlstatrr =  $save_grplstatrr = $save_hstlstatrr = $save_maxlstent = $save_deflang = False;
       $file = fopen($conffile, "r");
       $file_array = array();
       while (!feof($file)) {
@@ -269,6 +276,11 @@ class Config {
 	  $save_maxlstent = True;
 	  continue;
 	}
+	if (substr($file_array[$i], 0, 17) == "defaultLanguage: ") {
+	  $file_array[$i] = "defaultLanguage: " . $this->defaultLanguage . "\n";
+	  $save_deflang = True;
+	  continue;
+	}
       }
       // check if we have to add new entries (e.g. if user upgraded LAM and has an old lam.conf)
       if (!$save_serverURL == True) array_push($file_array, "\n\n# server address (e.g. ldap://localhost:389 or ldaps://localhost:636)\n" . "serverURL: " . $this->ServerURL);
@@ -295,6 +307,7 @@ class Config {
       if (!$save_hstlstattr == True) array_push($file_array, "\n\n# list of attributes to show in host list\n# entries can either be predefined values (e.g. '#cn' or '#uid')" .
 						"\n# or individual ones (e.g. 'cn:Host Name')\n# values have to be seperated by semicolons\n" . "hostlistAttributes: " . $this->hostlistAttributes);
       if (!$save_maxlstent == True) array_push($file_array, "\n\n# maximum number of rows to show in user/group/host lists\n" . "maxlistentries: " . $this->maxlistentries);
+      if (!$save_deflang == True) array_push($file_array, "\n\n# default language (a line from language.conf)\n" . "defaultLanguage: " . $this->defaultLanguage);
       $file = fopen($conffile, "w");
       if ($file) {
 	for ($i = 0; $i < sizeof($file_array); $i++) fputs($file, $file_array[$i]);
@@ -323,11 +336,12 @@ class Config {
     echo _("<b>userlistAttributes: </b>") . $this->userlistAttributes . "<br>";
     echo _("<b>grouplistAttributes: </b>") . $this->grouplistAttributes . "<br>";
     echo _("<b>hostlistAttributes: </b>") . $this->hostlistAttributes . "<br>";
-    echo _("<b>maxlistentries: </b>") . $this->maxlistentries;
+    echo _("<b>maxlistentries: </b>") . $this->maxlistentries . "<br>";
+    echo _("<b>defaultLanguage: </b>") . $this->defaultLanguage;
   }
 
   // functions to read/write preferences
-	
+
   // returns the server address as string
   function get_ServerURL() {
     return $this->ServerURL;
@@ -338,12 +352,12 @@ class Config {
     if (is_string($value)) $this->ServerURL = $value;
     else echo _("Config->set_ServerURL failed!");
   }
-	
+
   // returns an array of string with all admin names
   function get_Admins() {
     return $this->Admins;
   }
-	
+
   // needs an array of string containing all admin users
   function set_Admins($value) {
     if (is_array($value)) { // check if $value is array of strings
@@ -516,26 +530,37 @@ class Config {
     else echo _("Config->set_hostlistAttributes failed!");
   }
 
-  /** 
-   * 
-   * 
-   * 
+  /**
+   *
+   *
+   *
    * @return maxlistentries
    */
   function get_MaxListEntries() {
     return $this->maxlistentries;
   }
-	
-  /** 
+
+  /**
    * @brief sets the maximum of entries to display on one page of the lists
-   * 
+   *
    * @param value maximum count of entries on one page
-   * 
-   * @return 
+   *
+   * @return
    */
   function set_MaxListEntries ($value) {
     if (is_numeric($value)) $this->maxlistentries = $value;
-    else echo _("Config->set_MaxListEntries failed!");
+    else echo _("Config->set_MaxListEntries failed!" . $value);
+  }
+
+  // returns the default language string
+  function get_defaultLanguage() {
+    return $this->defaultLanguage;
+  }
+
+  // sets the default language string
+  function set_defaultLanguage($value) {
+    if (is_string($value)) $this->defaultLanguage = $value;
+    else echo _("Config->set_defaultLanguage failed!");
   }
 
 

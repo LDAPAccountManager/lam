@@ -32,24 +32,25 @@ include_once ('../../lib/config.inc');
 $conf = new Config();
 
 // get data if register_globals is off
-if ($_POST['passwd']) $passwd = $_POST['passwd'];
-if ($_POST['passwd1']) $passwd1 = $_POST['passwd1'];
-if ($_POST['passwd2']) $passwd2 = $_POST['passwd2'];
-if ($_POST['serverurl']) $serverurl = $_POST['serverurl'];
-if ($_POST['admins']) $admins = $_POST['admins'];
-if ($_POST['suffusers']) $suffusers = $_POST['suffusers'];
-if ($_POST['suffgroups']) $suffgroups = $_POST['suffgroups'];
-if ($_POST['suffhosts']) $suffhosts = $_POST['suffhosts'];
-if ($_POST['minUID']) $minUID = $_POST['minUID'];
-if ($_POST['maxUID']) $maxUID = $_POST['maxUID'];
-if ($_POST['minGID']) $minGID = $_POST['minGID'];
-if ($_POST['maxGID']) $maxGID = $_POST['maxGID'];
-if ($_POST['minMach']) $minMach = $_POST['minMach'];
-if ($_POST['maxMach']) $maxMach = $_POST['maxMach'];
-if ($_POST['usrlstattr']) $usrlstattr = $_POST['usrlstattr'];
-if ($_POST['grplstattr']) $grplstattr = $_POST['grplstattr'];
-if ($_POST['hstlstattr']) $hstlstattr = $_POST['hstlstattr'];
-if ($_POST['maxlistentries']) $maxlistentries = $_POST['maxlistentries'];
+if ($_SESSION['passwd']) $passwd = $_SESSION['passwd'];
+if ($_SESSION['passwd1']) $passwd1 = $_SESSION['passwd1'];
+if ($_SESSION['passwd2']) $passwd2 = $_SESSION['passwd2'];
+if ($_SESSION['serverurl']) $serverurl = $_SESSION['serverurl'];
+if ($_SESSION['admins']) $admins = $_SESSION['admins'];
+if ($_SESSION['suffusers']) $suffusers = $_SESSION['suffusers'];
+if ($_SESSION['suffgroups']) $suffgroups = $_SESSION['suffgroups'];
+if ($_SESSION['suffhosts']) $suffhosts = $_SESSION['suffhosts'];
+if ($_SESSION['minUID']) $minUID = $_SESSION['minUID'];
+if ($_SESSION['maxUID']) $maxUID = $_SESSION['maxUID'];
+if ($_SESSION['minGID']) $minGID = $_SESSION['minGID'];
+if ($_SESSION['maxGID']) $maxGID = $_SESSION['maxGID'];
+if ($_SESSION['minMach']) $minMach = $_SESSION['minMach'];
+if ($_SESSION['maxMach']) $maxMach = $_SESSION['maxMach'];
+if ($_SESSION['usrlstattr']) $usrlstattr = $_SESSION['usrlstattr'];
+if ($_SESSION['grplstattr']) $grplstattr = $_SESSION['grplstattr'];
+if ($_SESSION['hstlstattr']) $hstlstattr = $_SESSION['hstlstattr'];
+if ($_SESSION['maxlistentries']) $maxlistentries = $_SESSION['maxlistentries'];
+if ($_SESSION['language']) $language = $_SESSION['language'];
 
 // check if password is correct
 // if not: load login page
@@ -58,7 +59,8 @@ if ($passwd != $conf->get_Passwd()) {
 	exit;
 }
 
-echo ("<p align=\"center\"><a href=\"http://lam.sf.net\" target=\"new_window\"><img src=\"../../graphics/banner.jpg\" border=1></a></p><hr><br><br>");
+echo ("<p align=\"center\"><a href=\"http://lam.sf.net\" target=\"new_window\">".
+	"<img src=\"../../graphics/banner.jpg\" border=1></a></p><hr><br><br>");
 
 // check new preferences
 if (chop($serverurl) == "") {
@@ -153,6 +155,9 @@ $conf->set_userlistAttributes($usrlstattr);
 $conf->set_grouplistAttributes($grplstattr);
 $conf->set_hostlistAttributes($hstlstattr);
 $conf->set_MaxListEntries($maxlistentries);
+$conf->set_defaultLanguage($language);
+
+
 
 // check if password was changed
 if ($pass1 != $pass2) {
@@ -169,5 +174,24 @@ $conf->save();
 echo ("<b>" . _("The following settings were saved:") . "</b><br><br>");
 $conf->printconf();
 echo ("<br><br><br><br><br><a href=\"../login.php\" target=\"_top\">" . _("Back to Login") . "</a>");
-
+// remove settings from session
+unset($_SESSION['passwd']);
+unset($_SESSION['passwd1']);
+unset($_SESSION['passwd2']);
+unset($_SESSION['serverurl']);
+unset($_SESSION['admins']);
+unset($_SESSION['suffusers']);
+unset($_SESSION['suffgroups']);
+unset($_SESSION['suffhosts']);
+unset($_SESSION['minUID']);
+unset($_SESSION['maxUID']);
+unset($_SESSION['minGID']);
+unset($_SESSION['maxGID']);
+unset($_SESSION['minMach']);
+unset($_SESSION['maxMach']);
+unset($_SESSION['usrlstattr']);
+unset($_SESSION['grplstattr']);
+unset($_SESSION['hstlstattr']);
+unset($_SESSION['maxlistentries']);
+unset($_SESSION['language']);
 ?>
