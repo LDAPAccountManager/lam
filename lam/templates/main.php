@@ -23,7 +23,6 @@ $Id$
   
 */
 
-session_start();
 ?>
  
 <html>

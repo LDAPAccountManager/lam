@@ -24,6 +24,8 @@ $Id$
   
 */
 
+session_start();
+
 // check if password was entered
 // if not: load login page
 if (! $passwd) {

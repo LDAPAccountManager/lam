@@ -22,6 +22,7 @@ $Id$
   
   Login page to change the preferences.
 */
+session_start();
 ?>
 
 <html>

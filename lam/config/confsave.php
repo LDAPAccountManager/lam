@@ -24,6 +24,8 @@ $Id$
   
 */
 
+session_start();
+
 include_once ('config.php');
 $conf = new Config();
 

@@ -276,8 +276,14 @@ class Config {
 			if (!$save_defShell == True) array_push($file_array, "\n\n# default shell when creating new user\n" . "defaultShell: " . $this->DefaultShell);
 			if (!$save_shellList == True) array_push($file_array, "\n\n# list of possible shells\n" . "shellList: " . $this->ShellList);
 			$file = fopen($conffile, "w");
-			for ($i = 0; $i < sizeof($file_array); $i++) fputs($file, $file_array[$i]);
-			fclose($file);
+			if ($file) {
+				for ($i = 0; $i < sizeof($file_array); $i++) fputs($file, $file_array[$i]);
+				fclose($file);
+			}
+			else {
+				echo _("<br><font color=\"red\">Cannot open config file!</font>");
+				exit;
+			}
 		}
 	}
 	
