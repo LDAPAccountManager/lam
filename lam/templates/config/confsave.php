@@ -198,7 +198,7 @@ if (!$conf->set_pwdhash($pwdhash)) {
 }
 
 if (!$conf->set_pdftext($pdftext)) {
-	echo ("<font color=\"red\"><b>" . _("PDF text is invalid!") . "</b></font>");
+	echo ("<font color=\"red\"><b>" . _("Saving PDF text failed!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }

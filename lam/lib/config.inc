@@ -138,7 +138,7 @@ class Config {
   var $pwdhash;
 
   // text to include in user PDF files
-  var $pdftext;
+  var $pdftext = "";
 
   // name of configuration file
   var $file;
@@ -675,7 +675,10 @@ class Config {
 	// $value: string containing the text
 	// returns true if $value has correct format and could be saved
 	function set_pdftext($value) {
+		// check if text changed
+		if ($value == $this->pdftext) return true;
 		if (is_string($value)) {
+			// save to file
 			$pdffile = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/config/pdf/" . $this->file . ".txt";
 			$file = @fopen($pdffile, "w");
 			if ($file) {
