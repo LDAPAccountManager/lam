@@ -34,7 +34,7 @@ if ($url && $user && $pass){
 	$ldap->__wakeup();
 	echo "<br>Closing connection";
 	$ldap->destroy();
-	echo "<br><br><br>If you do not see anny error messages all should be ok.";
+	echo "<br><br><br>If you do not see any error messages all should be ok.";
 	exit;
 }
 else {
