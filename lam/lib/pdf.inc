@@ -248,14 +248,14 @@ function createUserPDF($accounts) {
 class lamPDF extends FPDF {
 	// Print page header
 	function header() {
-		$lamPath = explode("/",$SCRIPT_NAME);
-		$i=0;
+		$lamPath = explode("/",__FILE__);
+		$i=1;
 		$imageFile = "";
 		while($lamPath[$i] <> "lam") {
 			$imageFile .= "/" . $lamPath[$i];
 			$i++;
 		}
-		$imageFile .= "/graphics/printLogo.jpg";
+		$imageFile .= "/lam/graphics/printLogo.jpg";
 		$this->Image($imageFile,10,10,50,20,"JPG");
 		$this->SetFont("arial","B",22);
 		$this->Cell(170,5,"LDAP Account Manager",0,1,"R",0);
