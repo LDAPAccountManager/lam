@@ -191,8 +191,7 @@ for ($i = $table_begin; $i < $table_end; $i++) {
 								" onClick=\"group_click(this, '" . $grp_info[$i]["dn"] . "')\"" .
 								" onDblClick=\"parent.frames[1].location.href='../account/groupedit.php?DN=" . $grp_info[$i]["dn"] . "'\">" .
 								" <td height=22><input onClick=\"group_click(this, '" . $grp_info[$i]["dn"] . "')\" type=\"checkbox\" name=\"" . $grp_info[$i]["dn"] . "\"></td>" .
-								" <td align='center'><a href=\"../groupmembers.php?DN='" . $grp_info[$i]["dn"] . "'\">" . _("Members") . "</a>" .
-									"<hr><a href=\"../account/groupedit.php?DN='" . $grp_info[$i]["dn"] . "'\">" . _("Edit") . "</a></td>");
+								" <td align='center'><a href=\"../account/groupedit.php?DN='" . $grp_info[$i]["dn"] . "'\">" . _("Edit") . "</a></td>");
 	for ($k = 0; $k < sizeof($attr_array); $k++) {
 		echo ("<td>");
 		// print all attribute entries seperated by "; "
