@@ -163,6 +163,10 @@ function loadUserProfile($profile) {
 				$acc->smb_scriptpath = chop(substr($line, 16, strlen($line)-16));
 				continue;
 			}
+			if (substr($line, 0, 17) == "smb_profilePath: ") {
+				$acc->smb_profilePath = chop(substr($line, 17, strlen($line)-17));
+				continue;
+			}
 			if (substr($line, 0, 25) == "smb_smbuserworkstations: ") {
 				$acc->smb_smbuserworkstations = chop(substr($line, 25, strlen($line)-25));
 				continue;
@@ -284,18 +288,18 @@ function saveUserProfile($account, $profile) {
 	$file = fopen($path, "w");
 	// replace user and group names
 	$homedir = $account->general_homedir;
-//	$profpath = $account->smb_profilePath;
+	$profpath = $account->smb_profilePath;
 	$scriptpath = $account->smb_scriptpath;
 	$smbhome = $account->smb_smbhome;
 	if ($account->general_username) {
 		$homedir = str_replace($account->general_username, "\$user", $homedir);
-//		$profpath = str_replace($account->general_username, "\$user", $profpath);
+		$profpath = str_replace($account->general_username, "\$user", $profpath);
 		$scriptpath = str_replace($account->general_username, "\$user", $scriptpath);
 		$smbhome = str_replace($account->general_username, "\$user", $smbhome);
 	}
 	if ($account->general_group) {
 		$homedir = str_replace($account->general_group, "\$group", $homedir);
-//		$profpath = str_replace($account->general_group, "\$group", $profpath);
+		$profpath = str_replace($account->general_group, "\$group", $profpath);
 		$scriptpath = str_replace($account->general_group, "\$group", $scriptpath);
 		$smbhome = str_replace($account->general_group, "\$group", $smbhome);
 	}
@@ -319,6 +323,7 @@ function saveUserProfile($account, $profile) {
 	if ($account->smb_pwdmustchange) fputs($file, "smb_pwdmustchange: " . $account->smb_pwdmustchange . "\n");
 	if ($account->smb_homedrive) fputs($file, "smb_homedrive: " . $account->smb_homedrive . "\n");
 	if ($account->smb_scriptpath) fputs($file, "smb_scriptpath: " . $scriptpath . "\n");
+	if ($account->smb_profilePath) fputs($file, "smb_profilePath: " . $profpath . "\n");
 	if ($account->smb_smbuserworkstations) fputs($file, "smb_smbuserworkstations: " . $account->smb_smbuserworkstations . "\n");
 	if ($account->smb_smbhome) fputs($file, "smb_smbhome: " . $smbhome . "\n");
 	if ($account->smb_domain) fputs($file, "smb_domain: " . $account->smb_domain . "\n");
