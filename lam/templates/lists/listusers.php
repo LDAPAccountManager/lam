@@ -130,7 +130,9 @@ if ($_SESSION["userlist"] && $_GET["norefresh"]) {
     $userinfo = ldap_get_entries ($_SESSION["ldap"]->server, $sr);
     ldap_free_result ($sr);
     if ($userinfo["count"] == 0)
-      StatusMessage("WARN", "", _("No Users found!"));
+      StatusMessage ("WARN", "",
+		     _("No User(s) found with applied search filter <") .
+		     $filter . ">");
 
     // delete first array entry which is "count"
     array_shift($userinfo);
@@ -146,71 +148,85 @@ $user_count = sizeof ($_SESSION["userlist"]);
 
 echo ("<form action=\"listusers.php\" method=\"post\">\n");
 
-// create navigation bar on top of user table
-draw_navigation_bar ($user_count);
-echo ("<br />");
+// display table only if users exist in LDAP
+if ($user_count != 0) {
 
-// print user table header
-echo "<table rules=\"all\" class=\"userlist\" width=\"100%\">\n";
-echo "<tr class=\"userlist_head\"><th width=22 height=34></th><th></th>\n";
-// table header
-for ($k = 0; $k < sizeof ($desc_array); $k++) {
-  if ($sortattrib == strtolower($attr_array[$k]))
-    echo "<th class=\"userlist_activecolumn\">\n";
-  else
-    echo "<th>\n";
-  echo "<a class=\"userlist\" href=\"listusers.php?norefresh=1&sort=1&sortattrib=" . 
-    strtolower($attr_array[$k]) . $searchfilter . "\">" . 
-    $desc_array[$k] . "</a></th>\n";
+  // create navigation bar on top of user table
+  draw_navigation_bar ($user_count);
+
+  echo ("<br />");
 }
-echo "</tr>\n";
-echo "<tr class=\"test\"><th width=22 height=34></th><th>\n";
-echo "<input type=\"submit\" name=\"apply_filter\" value=\"" . _("Apply") . "\">";
-echo "</th>\n";
 
-// print input boxes for filters
-for ($k = 0; $k < sizeof ($desc_array); $k++) {
-  echo "<th>";
-  echo ("<input type=\"text\" name=\"filter" . strtolower ($attr_array[$k]) . 
-	"\" value=\"" . $_POST["filter" . strtolower($attr_array[$k])] . "\">");
-  echo "</th>";
-}
-echo "</tr>\n";
+  // print user table header
+  echo "<table rules=\"all\" class=\"userlist\" width=\"100%\">\n";
 
-// print user list
-$userinfo = array_slice ($userinfo, ($page - 1) * $max_pageentrys, 
-			 $max_pageentrys); 
-for ($i = 0; $i < sizeof ($userinfo); $i++) { // ignore last entry in array which is "count"
-  echo("<tr class=\"userlist\" onMouseOver=\"user_over(this, '" . $userinfo[$i]["dn"] . "')\"" .
-       " onMouseOut=\"user_out(this, '" . $userinfo[$i]["dn"] . "')\"" .
-       " onClick=\"user_click(this, '" . $userinfo[$i]["dn"] . "')\"" .
-       " onDblClick=parent.frames[1].location.href=\"../account.php?type=user&DN='" . $userinfo[$i]["dn"] . "'\">" .
-       " <td height=22><input onClick=\"user_click(this, '" . $userinfo[$i]["dn"] . "')\" type=\"checkbox\" name=\"" . $userinfo[$i]["dn"] . "\"></td>" .
-       " <td align='center'><a href=\"../account.php?type=user&DN='" . $userinfo[$i]["dn"] . "'\">" . _("Edit") . "</a></td>\n");
-  for ($k = 0; $k < sizeof($attr_array); $k++) {
-    echo ("<td>\n");
-    // print all attribute entries seperated by "; "
-    if (sizeof($userinfo[$i][strtolower($attr_array[$k])]) > 0) {
-      // delete first array entry which is "count"
-      array_shift($userinfo[$i][strtolower($attr_array[$k])]);
-      // print all other attributes
-      echo implode("; ", $userinfo[$i][strtolower($attr_array[$k])]);
-    }
+
+  echo "<tr class=\"userlist_head\"><th width=22 height=34></th><th></th>\n";
+  // table header
+  for ($k = 0; $k < sizeof ($desc_array); $k++) {
+    if ($sortattrib == strtolower($attr_array[$k]))
+      echo "<th class=\"userlist_activecolumn\">\n";
+    else
+      echo "<th>\n";
+    echo "<a class=\"userlist\" href=\"listusers.php?norefresh=1&sort=1&sortattrib=" . 
+      strtolower($attr_array[$k]) . $searchfilter . "\">" . 
+      $desc_array[$k] . "</a></th>\n";
   }
-  echo ("</td>");
-}
-echo("</tr>\n");
+  echo "</tr>\n";
 
+  echo "<tr class=\"test\"><th width=22 height=34></th><th>\n";
+  echo "<input type=\"submit\" name=\"apply_filter\" value=\"" . _("Apply") . "\">";
+  echo "</th>\n";
+
+  // print input boxes for filters
+  for ($k = 0; $k < sizeof ($desc_array); $k++) {
+    echo "<th>";
+    echo ("<input type=\"text\" name=\"filter" . strtolower ($attr_array[$k]) . 
+	  "\" value=\"" . $_POST["filter" . strtolower($attr_array[$k])] . "\">");
+    echo "</th>";
+  }
+  echo "</tr>\n";
+
+if ($user_count != 0) {
+  // print user list
+  $userinfo = array_slice ($userinfo, ($page - 1) * $max_pageentrys, 
+			   $max_pageentrys); 
+  for ($i = 0; $i < sizeof ($userinfo); $i++) { // ignore last entry in array which is "count"
+    echo("<tr class=\"userlist\" onMouseOver=\"user_over(this, '" . $userinfo[$i]["dn"] . "')\"" .
+	 " onMouseOut=\"user_out(this, '" . $userinfo[$i]["dn"] . "')\"" .
+	 " onClick=\"user_click(this, '" . $userinfo[$i]["dn"] . "')\"" .
+	 " onDblClick=parent.frames[1].location.href=\"../account.php?type=user&DN='" . $userinfo[$i]["dn"] . "'\">" .
+	 " <td height=22><input onClick=\"user_click(this, '" . $userinfo[$i]["dn"] . "')\" type=\"checkbox\" name=\"" . $userinfo[$i]["dn"] . "\"></td>" .
+	 " <td align='center'><a href=\"../account.php?type=user&DN='" . $userinfo[$i]["dn"] . "'\">" . _("Edit") . "</a></td>\n");
+    for ($k = 0; $k < sizeof($attr_array); $k++) {
+      echo ("<td>\n");
+      // print all attribute entries seperated by "; "
+      if (sizeof($userinfo[$i][strtolower($attr_array[$k])]) > 0) {
+	// delete first array entry which is "count"
+	array_shift($userinfo[$i][strtolower($attr_array[$k])]);
+	// print all other attributes
+	echo implode("; ", $userinfo[$i][strtolower($attr_array[$k])]);
+      }
+    }
+    echo ("</td>");
+  }
+  echo("</tr>\n");
+}
 echo ("</table>");
 
 echo ("<br />");
-draw_navigation_bar ($user_count);
-echo ("<br />");
+if ($user_count != 0) {
+  draw_navigation_bar ($user_count);
+  echo ("<br />");
+}
 
 
 echo ("<table align=\"left\" border=\"0\">");
 echo ("<tr><td align=\"left\"><input type=\"submit\" name=\"new_user\" value=\"" . _("New User") . "\"></td>");
-echo ("<td align=\"left\"><input type=\"submit\" name=\"del_user\" value=\"" . _("Delete User(s)") . "\"></td></tr>");
+
+if ($user_count != 0) {
+  echo ("<td align=\"left\"><input type=\"submit\" name=\"del_user\" value=\"" . _("Delete User(s)") . "\"></td></tr>");
+}
 echo ("</table>\n");
 echo ("</form>\n");
 echo "</body></html>\n";
