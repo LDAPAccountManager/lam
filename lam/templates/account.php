@@ -23,21 +23,28 @@ $Id$
   LDAP Account Manager displays table for creating or modifying accounts in LDAP
 */
 
-include_once('../lib/account.inc'); // File with custom functions
+include_once('../lib/account.inc'); // File with all account-funtions
 include_once('../lib/config.inc'); // File with configure-functions
 include_once('../lib/ldap.inc'); // LDAP-functions
 include_once('../lib/profiles.inc'); // functions to load and save profiles
 include_once('../lib/status.inc'); // Return error-message
 include_once('../lib/pdf.inc'); // Return a pdf-file
 
-
 $error = "0";
 initvars($_GET['type'], $_GET['DN']); // Initialize all needed vars
 
-switch ($_POST['select']) {
+switch ($_POST['select']) { // Select which part of page should be loaded and check values
+	// general = startpage, general account paramters
+	// unix = page with all shadow-options and password
+	// samba = page with all samba-related parameters e.g. smbpassword
+	// quota = page with all quota-related parameters e.g. hard file quota
+	// personal = page with all personal-related parametergs, e.g. phone number
+	// final = last page shown before account is created/modified
+	//		if account is modified commands might be ran are shown
+	// finish = page shown after account has been created/modified
 	case 'general':
-		if (!$_POST['load']) { // No Profile was loaded
-			// Write all values in temporary object
+		// Write all general values into $_SESSION['account'] if no profile should be loaded
+		if (!$_POST['load']) {
 			if ($_POST['f_general_username']) $_SESSION['account']->general_username = $_POST['f_general_username'];
 				else $_SESSION['account']->general_username = $_POST['f_general_username'];
 			if ($_POST['f_general_surname']) $_SESSION['account']->general_surname = $_POST['f_general_surname'];
@@ -47,13 +54,14 @@ switch ($_POST['select']) {
 			if ($_POST['f_general_uidNumber']) $_SESSION['account']->general_uidNumber = $_POST['f_general_uidNumber'];
 				else $_SESSION['account']->general_uidNumber = "";
 			if ($_POST['f_general_group']) $_SESSION['account']->general_group = $_POST['f_general_group'];
-				if ($_POST['f_general_groupadd']) $_SESSION['account']->general_groupadd = $_POST['f_general_groupadd'];
+			if ($_POST['f_general_groupadd']) $_SESSION['account']->general_groupadd = $_POST['f_general_groupadd'];
+				else $_SESSION['account']->general_groupadd = '';
 			if ($_POST['f_general_homedir']) $_SESSION['account']->general_homedir = $_POST['f_general_homedir'];
 				else $_SESSION['account']->general_homedir = "";
 			if ($_POST['f_general_shell']) $_SESSION['account']->general_shell = $_POST['f_general_shell'];
 			if ($_POST['f_general_gecos']) $_SESSION['account']->general_gecos = $_POST['f_general_gecos'];
 				else $_SESSION['account']->general_gecos = "";
-			// Check Values
+			// Check if values are OK and set automatic values.  if not error-variable will be set
 			if ($_SESSION['account_old']) $values = checkglobal($_SESSION['account'], $_SESSION['type2'], $_SESSION['account_old']); // account.inc
 				else $values = checkglobal($_SESSION['account'], $_SESSION['type2']); // account.inc
 			if (is_object($values)) {
@@ -61,7 +69,7 @@ switch ($_POST['select']) {
 					if ($val) $_SESSION['account']->$key = $val;
 				}
 				else $error = $values;
-			// Check which part Site should be displayd
+			// Check which part Site should be displayed next
 			if ($_POST['next'] && ($error=="0"))
 				switch ($_SESSION['type2']) {
 					case 'user': $select_local = 'unix'; break;
@@ -71,10 +79,9 @@ switch ($_POST['select']) {
 			}
 		break;
 	case 'unix':
-		// Write all values in temporary object
+		// Write all general values into $_SESSION['account']
 		if ($_POST['f_unix_password']) $_SESSION['account']->unix_password = $_POST['f_unix_password'];
 			else $_SESSION['account']->unix_password = '';
-		if ($_POST['genpass']) { $_SESSION['account']->unix_password = genpasswd(); }
 		if ($_POST['f_unix_password_no']) $_SESSION['account']->unix_password_no = true;
 			else $_SESSION['account']->unix_password_no = false;
 		if ($_POST['f_unix_pwdwarn']) $_SESSION['account']->unix_pwdwarn = $_POST['f_unix_pwdwarn'];
@@ -90,20 +97,27 @@ switch ($_POST['select']) {
 		if ($_POST['f_unix_pwdexpire_yea']) $_SESSION['account']->unix_pwdexpire_yea = $_POST['f_unix_pwdexpire_yea'];
 		if ($_POST['f_unix_deactivated']) $_SESSION['account']->unix_deactivated = $_POST['f_unix_deactivated'];
 			else $_SESSION['account']->unix_deactivated = false;
-		// Check Values
-		// Check which part Site should be displayd
-		if ($_POST['genpass']) $select_local = 'unix';
+		if ($_POST['genpass']) {
+			// Generate a random password if generate-button was pressed
+			$_SESSION['account']->unix_password = genpasswd();
+			// Keep unix-page acitve
+			$select_local = 'unix';
+			}
+			// Check if values are OK and set automatic values. if not error-variable will be set
 			else $error = checkunix($_SESSION['account'], $_SESSION['type2']); // account.inc
+		// Check which part Site should be displayd
+		// Reset password if reset button was pressed. Button only vissible if account should be modified
 		if ($_POST['respass']) {
 			$_SESSION['account']->unix_password_no=true;
 			$_SESSION['account']->smb_password_no=true;
 			}
-		if (($_POST['next']) && ($error=="0")) $select_local = 'samba';
-			else $select_local = 'unix';
+		// Check which part Site should be displayed next
 		if ($_POST['back']) $select_local = 'general';
+		else if (($_POST['next']) && ($error=="0")) $select_local = 'samba';
+			else $select_local = 'unix';
 		break;
 	case 'samba':
-		// Write all values in temporary object
+		// Write all general values into $_SESSION['account']
 		if ($_POST['f_smb_password']) $_SESSION['account']->smb_password = $_POST['f_smb_password'];
 			else $_SESSION['account']->smb_password = "";
 		if ($_POST['f_smb_password_no']) $_SESSION['account']->smb_password_no = true;
@@ -131,25 +145,25 @@ switch ($_POST['select']) {
 			else $_SESSION['account']->smb_flagsD = false;
 		if ($_POST['f_smb_flagsX']) $_SESSION['account']->smb_flagsX = $_POST['f_smb_flagsX'];
 			else $_SESSION['account']->smb_flagsX = false;
-		// Check Values
+		// Check if values are OK and set automatic values. if not error-variable will be set
 		$values = checksamba($_SESSION['account'], $_SESSION['type2']); // account.inc
 		if (is_object($values)) {
 			while (list($key, $val) = each($values)) // Set only defined values
 				if ($val) $_SESSION['account']->$key = $val;
 			}
 			else $error = $values;
-		// Check which part Site should be displayd
+		// Check which part Site should be displayed next
 		if ($_POST['back']) $select_local = 'unix';
-		if ($_POST['next']) {
+		else if ($_POST['next'])
 			if ($error=="0")
 				switch ($_SESSION['type2']) {
 					case 'user': $select_local = 'quota'; break;
 					case 'host': $select_local = 'final'; break;
 					}
 				else $select_local = 'samba';
-			}
 		break;
 	case 'quota':
+		// Write all general values into $_SESSION['account']
 		$i=0;
 		while ($_SESSION['account']->quota[$i][0]) {
 			$_SESSION['account']->quota[$i][2] = $_POST['f_quota_'.$i.'_2'];
@@ -158,28 +172,29 @@ switch ($_POST['select']) {
 			$_SESSION['account']->quota[$i][7] = $_POST['f_quota_'.$i.'_7'];
 			$i++;
 			}
+		// Check if values are OK and set automatic values. if not error-variable will be set
 		$values = checkquota($_SESSION['account'], $_SESSION['type2']); // account.inc
 		if (is_object($values)) {
 			while (list($key, $val) = each($values)) // Set only defined values
 				if ($val) $_SESSION['account']->$key = $val;
 			}
 			else $error = $values;
-		// Check which part Site should be displayd
+		// Check which part Site should be displayed next
 		if ($_POST['back'])
 			switch ($_SESSION['type2']) {
 				case 'user': $select_local = 'samba'; break;
 				case 'group': $select_local = 'general'; break;
 				}
-		if ($_POST['next']) {
+		else if ($_POST['next'])
 			if ($error=="0")
 				switch ($_SESSION['type2']) {
 					case 'user': $select_local = 'personal'; break;
 					case 'group': $select_local = 'final'; break;
 					}
 				else $select_local = 'quota';
-			}
 		break;
 	case 'personal':
+		// Write all general values into $_SESSION['account']
 		if ($_POST['f_personal_title']) $_SESSION['account']->personal_title = $_POST['f_personal_title'];
 			else $_SESSION['account']->personal_title = "";
 		if ($_POST['f_personal_mail']) $_SESSION['account']->personal_mail = $_POST['f_personal_mail'];
@@ -198,19 +213,24 @@ switch ($_POST['select']) {
 			else $_SESSION['account']->personal_postalAddress = "";
 		if ($_POST['f_personal_employeeType']) $_SESSION['account']->personal_employeeType = $_POST['f_personal_employeeType'];
 			else $_SESSION['account']->personal_employeeType = "";
-		// Check which part Site should be displayd
+		// Check if values are OK and set automatic values. if not error-variable will be set
 		$values = checkpersonal($_SESSION['account'], $_SESSION['type2']); // account.inc
 		if (is_object($values)) {
 			while (list($key, $val) = each($values)) // Set only defined values
 				if ($val) $_SESSION['account']->$key = $val;
 			}
 			else $error = $values;
-		if ($_POST['back'] && ($error=="0")) $select_local = 'quota';
-		if ($_POST['next'] && ($error=="0")) $select_local = 'final';
+		// Check which part Site should be displayed next
+		if ($_POST['back']) $select_local = 'quota';
+		else if ($_POST['next'])
+			if  ($error=="0") $select_local = 'final';
+				else $select_local = 'personal';
 		break;
 	case 'final':
+		// Write all general values into $_SESSION['account']
 		if ($_POST['f_final_changegids']) $_SESSION['final_changegids'] = $_POST['f_final_changegids'] ;
-		if ($_POST['back'] && ($error=="0"))
+		// Check which part Site should be displayed next
+		if ($_POST['back'])
 			switch ($_SESSION['type2']) {
 				case 'user': $select_local = 'personal'; break;
 				case 'group': $select_local = 'quota'; break;
@@ -218,6 +238,7 @@ switch ($_POST['select']) {
 				}
 		break;
 	case 'finish':
+		// Check if pdf-file should be created
 		if ($_POST['outputpdf']) createpdf($_SESSION['account']);
 		break;
 	}
@@ -225,6 +246,7 @@ switch ($_POST['select']) {
 
 
 if ( $_POST['create'] ) { // Create-Button was pressed
+	// Create or modify an account
 	switch ($_SESSION['type2']) {
 		case 'user':
 			if ($_SESSION['account_old']) $result = modifyuser($_SESSION['account'],$_SESSION['account_old']);
@@ -245,51 +267,60 @@ if ( $_POST['create'] ) { // Create-Button was pressed
 	}
 
 
+// Set selected page to general if no page was defined. should only true if account.php wasn't called by itself
 if (!$select_local) $select_local='general';
+// Reset variables if recreate-button was pressed
 if ($_POST['createagain']) {
 	$select_local='general';
 	$_SESSION['account']="";
 	}
+// Set selected page to backmain (Back to main listmenu)
 if ($_POST['backmain']) {
 	$select_local='backmain';
 	}
-
+// Set selected page to load (load profile)
 if ($_POST['load']) $select_local='load';
+// Set selected page to save (save profile)
 if ($_POST['save']) $select_local='save';
 
 
 // Write HTML-Header and part of Table
-echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-       "http://www.w3.org/TR/html4/loose.dtd">';
-echo '<html><head><title>';
-echo _('Create new Account');
-echo '</title>
-	<link rel="stylesheet" type="text/css" href="../style/layout.css">
-	<meta http-equiv="pragma" content="no-cache">
-	<meta http-equiv="cache-control" content="no-cache">
-	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">';
+echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"
+       \"http://www.w3.org/TR/html4/loose.dtd\">\n";
+echo "<html><head><title>";
+echo _("Create new Account");
+echo "</title>\n
+	<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">\n
+	<meta http-equiv=\"pragma\" content=\"no-cache\">\n
+	<meta http-equiv=\"cache-control\" content=\"no-cache\">\n
+	<meta http-equiv=\"Content-Type\" content=\"text/html; charset=ISO-8859-1\">";
 
 switch ($select_local) {
+	// backmain = back to lists
+	// load = load profile
+	// save = save profile
 	case 'backmain':
+		// unregister sessionvar and select which list should be shown
 		if (session_is_registered("shelllist")) session_unregister("shelllist");
 		if (session_is_registered("account")) session_unregister("account");
 		if (session_is_registered("account_old")) session_unregister("account_old");
 		switch ( $_SESSION['type2'] ) {
 			case 'user' :
 				if (session_is_registered("type2")) session_unregister("type2");
-				echo '<meta http-equiv="refresh" content="0; URL=lists/listusers.php">';
+				echo "<meta http-equiv=\"refresh\" content=\"0; URL=lists/listusers.php\">\n";
 				break;
 			case 'group' :
 				if (session_is_registered("type2")) session_unregister("type2");
-				echo '<meta http-equiv="refresh" content="0; URL=lists/listgroups.php">';
+				echo "<meta http-equiv=\"refresh\" content=\"0; URL=lists/listgroups.php\">\n";
 				break;
 			case 'host' :
 				if (session_is_registered("type2")) session_unregister("type2");
-				echo '<meta http-equiv="refresh" content="0; URL=lists/listhosts.php">';
+				echo "<meta http-equiv=\"refresh\" content=\"0; URL=lists/listhosts.php\">\n";
 				break;
 			}
 		break;
 	case 'load':
+		// load profile
 		switch ( $_SESSION['type2'] ) {
 			case 'user':
 				$_SESSION['account'] = loadUserProfile($_POST['f_general_selectprofile']);
@@ -301,9 +332,11 @@ switch ($select_local) {
 				$_SESSION['account'] = loadGroupProfile($_POST['f_general_selectprofile']);
 				break;
 			}
+		// select general page after group has been loaded
 		$select_local='general';
 		break;
 	case 'save':
+		// save profile
 		switch ( $_SESSION['type2'] ) {
 			case 'user':
 				saveUserProfile($_SESSION['account'], $_POST['f_finish_safeProfile']);
@@ -315,54 +348,73 @@ switch ($select_local) {
 				saveGroupProfile($_SESSION['account'], $_POST['f_finish_safeProfile']);
 			break;
 			}
+		// select last page displayed before user is created
 		$select_local='final';
 		break;
 	}
 
-	echo '</head><body>
-	<form action="account.php" method="post">';
-	if ($error != "0") StatusMessage('ERROR', _('Invalid Value!'), $error);
-	echo '<table rules="all" class="account" width="100%">';
+	echo "</head><body>\n";
+	echo "<form action=\"account.php\" method=\"post\">\n";
+	if ($error != "0") StatusMessage("ERROR", _("Invalid Value!"), $error);
+	echo "<table rules=\"all\" class=\"account\" width=\"100%\">\n";
 
 
-switch ($select_local) {
+switch ($select_local) { // Select which part of page will be loaded
+	// general = startpage, general account paramters
+	// unix = page with all shadow-options and password
+	// samba = page with all samba-related parameters e.g. smbpassword
+	// quota = page with all quota-related parameters e.g. hard file quota
+	// personal = page with all personal-related parametergs, e.g. phone number
+	// final = last page shown before account is created/modified
+	//		if account is modified commands might be ran are shown
+	// finish = page shown after account has been created/modified
 	case 'general':
 		// General Account Settings
+		// load list of all groups
 		$groups = findgroups();
+		// Show page info
 		echo '<tr><td><input name="select" type="hidden" value="general">';
 		echo _('General Properties');
-		echo '</td></tr>';
+		echo "</td></tr>\n";
 		switch ( $_SESSION['type2'] ) {
 			case 'user':
+				// load list of profiles
 				$profilelist = getUserProfiles();
+				// Create HTML-page
 				echo '<tr><td>';
-				echo _('Username');
-				echo '</td><td>
-					<input name="f_general_username" type="text" size="20" maxlength="20" value="' . $_SESSION['account']->general_username . '">
-					</td></tr><tr><td>';
+				echo _('Username*');
+				echo "</td>\n<td>".
+					'<input name="f_general_username" type="text" size="20" maxlength="20" value="' . $_SESSION['account']->general_username . '">
+					</td><td>
+					<a href="help.php?HelpNumber=400" target="lamhelp">'._('Help').'</a>
+					</td></tr>'."\n".'<tr><td>';
 				echo _('UID Number');
-				echo '</td><td>
+				echo '</td>'."\n".'<td>
 					<input name="f_general_uidNumber" type="text" size="6" maxlength="6" value="' . $_SESSION['account']->general_uidNumber . '">
-					</td><td>';
-				echo _('If empty UID Number will be generated automaticly.');
-				echo '</td></tr><tr><td>';
-				echo _('Surname');
-				echo '</td><td>
+					</td>'."\n".'<td>
+					<a href="help.php?HelpNumber=401" target="lamhelp">'._('Help').'</a>
+					</td></tr>'."\n".'<tr><td>';
+				echo _('Surname*');
+				echo '</td>'."\n".'<td>
 					<input name="f_general_surname" type="text" size="20" maxlength="20" value="' . $_SESSION['account']->general_surname . '">
-					</td></tr><tr><td>';
-				echo _('Given name');
-				echo '</td><td>
+					</td></tr>'."\n".'<tr><td>';
+				echo _('Given name*');
+				echo '</td>'."\n".'<td>
 					<input name="f_general_givenname" type="text" size="20" maxlength="20" value="' . $_SESSION['account']->general_givenname . '">
-					</td></tr><tr><td>';
+					</td></tr>'."\n".'<tr><td>';
 				echo _('Primary Group');
-				echo '</td><td><select name="f_general_group">';
+				echo '</td>'."\n".'<td><select name="f_general_group">';
+				// loop trough existing groups
 				foreach ($groups as $group) {
 					if ($_SESSION['account']->general_group == $group) echo '<option selected>' . $group;
 					else echo '<option>' . $group;
 					 }
-				echo '</select></td></tr><tr><td>';
+				echo '</select></td><td>
+					<a href="help.php?HelpNumber=406" target="lamhelp">'._('Help').'</a>
+					</td></tr>'."\n".'<tr><td>';
 				echo _('Additional Groupmembership');
-				echo '</td><td><select name="f_general_groupadd[]" size="3" multiple>';
+				echo '</td>'."\n".'<td><select name="f_general_groupadd[]" size="3" multiple>';
+				// loop though existing groups for additional groups
 				foreach ($groups as $group) {
 					if ($_SESSION['account']->general_groupadd) {
 						if (in_array($group, $_SESSION['account']->general_groupadd)) echo '<option selected>'.$group;
@@ -370,77 +422,89 @@ switch ($select_local) {
 						}
 					else echo '<option>'.$group;
 					}
-				echo	'</select></td><td>';
-				echo _('Can be left empty. Hold the CTRL-key to select multiple groups.');
-				echo '</td></tr><tr><td>';
+				echo	'</select></td>'."\n".'<td>
+					<a href="help.php?HelpNumber=402" target="lamhelp">'._('Help').'</a>
+					</td></tr>'."\n".'<tr><td>';
 				echo _('Home Directory');
-				echo '</td><td><input name="f_general_homedir" type="text" size="30" value="' . $_SESSION['account']->general_homedir . '">
-					</td><td>';
-				echo _('$user and $group are replaced with username or primary groupname.');
-				echo '</td></tr><tr><td>';
+				echo '</td>'."\n".'<td><input name="f_general_homedir" type="text" size="30" value="' . $_SESSION['account']->general_homedir . '">
+					</td>'."\n".'<td>
+					<a href="help.php?HelpNumber=403" target="lamhelp">'._('Help').'</a>
+					</td></tr>'."\n".'<tr><td>';
 				echo _('Gecos');
-				echo '</td><td><input name="f_general_gecos" type="text" size="30" value="' . $_SESSION['account']->general_gecos . '">
-					</td><td>';
-				echo _('User descriptopn. If left empty sur- and givename will be used.');
-				echo '</td></tr><tr><td>';
+				echo '</td>'."\n".'<td><input name="f_general_gecos" type="text" size="30" value="' . $_SESSION['account']->general_gecos . '">
+					</td>'."\n".'<td>
+					<a href="help.php?HelpNumber=404" target="lamhelp">'._('Help').'</a>
+					</td></tr>'."\n".'<tr><td>';
 				echo _('Login Shell');
-				echo '</td><td><select name="f_general_shell" >';
+				echo '</td>'."\n".'<td><select name="f_general_shell" >';
+					// loop through shells
 					foreach ($_SESSION['shelllist'] as $shell)
 						if ($_SESSION['account']->general_shell==trim($shell)) echo '<option selected>'.$shell;
 							else echo '<option>'.$shell;
-				echo	'</select></td><td>';
-				echo _('To disable login use /bin/false.');
-				echo '</td></tr><tr><td><select name="f_general_selectprofile">';
+				echo '</select></td>'."\n".'<td>
+					<a href="help.php?HelpNumber=405" target="lamhelp">'._('Help').'</a>
+					</td></tr>'."\n".'<tr><td><select name="f_general_selectprofile">';
+				// loop through profiles
 				foreach ($profilelist as $profile) echo '<option>' . $profile;
 				echo '</select>
-				<input name="load" type="submit" value="'; echo _('Load Profile'); echo '">
-				</td><td>';
+					<input name="load" type="submit" value="'; echo _('Load Profile'); echo '">
+					</td>'."\n".'<td>';
 				break;
 			case 'group':
+				// load list of profiles
 				$profilelist = getGroupProfiles();
+				// Create HTML-page
 				echo '<tr><td>';
 				echo _('Groupname');
-				echo '</td><td>
+				echo '</td>'."\n".'<td>
 					<input name="f_general_username" type="text" size="20" maxlength="20" value="' . $_SESSION['account']->general_username . '">
-					</td></tr><tr><td>';
+					</td><td>
+					<a href="help.php?HelpNumber=407" target="lamhelp">'._('Help').'</a>
+					</td></tr>'."\n".'<tr><td>';
 				echo _('GID Number');
-				echo '</td><td>
+				echo '</td>'."\n".'<td>
 					<input name="f_general_uidNumber" type="text" size="6" maxlength="6" value="' . $_SESSION['account']->general_uidNumber . '">
-					</td><td>';
-				echo _('If empty GID Number will be generated automaticly.');
-				echo '</td></tr><tr><td>';
+					</td>'."\n".'<td>
+					<a href="help.php?HelpNumber=408" target="lamhelp">'._('Help').'</a>
+					</td></tr>'."\n".'<tr><td>';
 				echo _('Gecos');
-				echo '</td><td><input name="f_general_gecos" type="text" size="30" value="' . $_SESSION['account']->general_gecos . '">
-					</td><td>';
-				echo _('User descriptopn. If left empty groupname will be used.');
-				echo '</td></tr><tr><td><select name="f_general_selectprofile" >';
+				echo '</td>'."\n".'<td><input name="f_general_gecos" type="text" size="30" value="' . $_SESSION['account']->general_gecos . '">
+					</td>'."\n".'<td>
+					<a href="help.php?HelpNumber=409" target="lamhelp">'._('Help').'</a>
+					</td></tr>'."\n".'<tr><td><select name="f_general_selectprofile" >';
 				foreach ($profilelist as $profile) echo '<option>' . $profile;
 				echo '</select>
-				<input name="load" type="submit" value="'; echo _('Load Profile'); echo '">
-				</td><td>';
+					<input name="load" type="submit" value="'; echo _('Load Profile'); echo '">
+					</td>'."\n".'<td>';
 				break;
 			case 'host':
+				// load list of profiles
 				$profilelist = getHostProfiles();
+				// Create HTML-page
 				echo '<tr><td>';
 				echo _('Hostname');
-				echo '</td><td>
+				echo '</td>'."\n".'<td>
 					<input name="f_general_username" type="text" size="20" maxlength="20" value="' . $_SESSION['account']->general_username . '">
-					</td></tr><tr><td>';
+					</td><td>
+					<a href="help.php?HelpNumber=410" target="lamhelp">'._('Help').'</a>
+					</td></tr>'."\n".'<tr><td>';
 				echo _('UID Number');
-				echo '</td><td>
+				echo '</td>'."\n".'<td>
 					<input name="f_general_uidNumber" type="text" size="6" maxlength="6" value="' . $_SESSION['account']->general_uidNumber . '">
-					</td><td>';
-				echo _('If empty UID Number will be generated automaticly.');
-				echo '</td></tr><tr><td>';
+					</td>'."\n".'<td>
+					<a href="help.php?HelpNumber=411" target="lamhelp">'._('Help').'</a>
+					</td></tr>'."\n".'<tr><td>';
 				echo _('Primary Group');
-				echo '</td><td><select name="f_general_group">';
+				echo '</td>'."\n".'<td><select name="f_general_group">';
 				foreach ($groups as $group) {
 					if ($_SESSION['account']->general_group == $group) echo '<option selected>' . $group;
 					else echo '<option>' . $group;
 					 }
-				echo '</select></td></tr><tr><td>';
+				echo '</select></td><td>
+					<a href="help.php?HelpNumber=412" target="lamhelp">'._('Help').'</a>
+					</td></tr>'."\n".'<tr><td>';
 				echo _('Additional Groupmembership');
-				echo '</td><td><select name="f_general_groupadd[]" size="3" multiple>';
+				echo '</td>'."\n".'<td><select name="f_general_groupadd[]" size="3" multiple>';
 				foreach ($groups as $group) {
 					if ($_SESSION['account']->general_groupadd) {
 						if (in_array($group, $_SESSION['account']->general_groupadd)) echo '<option selected>'.$group;
@@ -448,65 +512,65 @@ switch ($select_local) {
 						}
 					else echo '<option>'.$group;
 					}
-				echo	'</select></td><td>';
-				echo _('Can be left empty. Hold the CTRL-key to select multiple groups.');
-				echo '</td></tr><tr><td>';
+				echo	'</select></td>'."\n".'<td>
+					<a href="help.php?HelpNumber=402" target="lamhelp">'._('Help').'</a>
+					</td></tr>'."\n".'<tr><td>';
 				echo _('Gecos');
 				echo '</td><td><input name="f_general_gecos" type="text" size="30" value="' . $_SESSION['account']->general_gecos . '">
-					</td><td>';
-				echo _('Host descriptopn. If left empty hostname will be used.');
-				echo '</td></tr><tr><td><select name="f_general_selectprofile">';
+					</td>'."\n".'<td>
+					<a href="help.php?HelpNumber=413" target="lamhelp">'._('Help').'</a>
+					</td></tr>'."\n".'<tr><td><select name="f_general_selectprofile">';
 				foreach ($profilelist as $profile) echo '<option>' . $profile;
 				echo '</select>
-				<input name="load" type="submit" value="'; echo _('Load Profile'); echo '">
-				</td><td>';
+					<input name="load" type="submit" value="'; echo _('Load Profile'); echo '">
+					</td>'."\n".'<td>';
 				break;
 			}
-		echo '</td><td>
-		<input name="next" type="submit" value="'; echo _('next'); echo '">
-		</td></tr>';
+		echo '</td>'."\n".'<td>
+			<input name="next" type="submit" value="'; echo _('next'); echo '">
+			</td></tr>'."\n";
 		break;
 	case 'unix':
 		// Unix Password Settings
 		echo '<tr><td><input name="select" type="hidden" value="unix">';
 		echo _('Unix Properties');
-		echo '</td></tr>';
+		echo '</td></tr>'."\n".'';
 		switch ( $_SESSION['type2'] ) {
 			case 'user' :
 				echo '<tr><td>';
 				echo _('Password');
-				echo '</td><td>
+				echo '</td>'."\n".'<td>
 					<input name="f_unix_password" type="text" size="20" maxlength="20" value="' . $_SESSION['account']->unix_password . '">
-					</td><td>
+					</td>'."\n".'<td>
 					<input name="genpass" type="submit" value="';
 				echo _('Generate Password'); echo '">
-					</td></tr><tr><td>';
+					</td></tr>'."\n".'<tr><td>';
 				echo _('Use no Password.');
-				echo '</td><td><input name="f_unix_password_no" type="checkbox"';
+				echo '</td>'."\n".'<td><input name="f_unix_password_no" type="checkbox"';
 				if ($_SESSION['account']->unix_password_no) echo ' checked ';
-				echo '></td></tr><tr><td>';
+				echo '></td></tr>'."\n".'<tr><td>';
 				echo _('Password Warn');
-				echo '</td><td><input name="f_unix_pwdwarn" type="text" size="4" maxlength="4" value="' . $_SESSION['account']->unix_pwdwarn . '">
-					</td><td>';
-				echo _('Number of days a user will be warned when password will expire. Value must be 0<.');
-				echo	'</td></tr><tr><td>';
+				echo '</td>'."\n".'<td><input name="f_unix_pwdwarn" type="text" size="4" maxlength="4" value="' . $_SESSION['account']->unix_pwdwarn . '">
+					</td>'."\n".'<td>
+					<a href="help.php?HelpNumber=414" target="lamhelp">'._('Help').'</a>
+					</td></tr>'."\n".'<tr><td>';
 				echo _('Password Expire');
-				echo '</td><td><input name="f_unix_pwdallowlogin" type="text" size="4" maxlength="4" value="' . $_SESSION['account']->unix_pwdallowlogin . '">
-					</td><td>';
-				echo _('Number of days a user can login even his password has expired. -1=always');
-				echo '</td></tr><tr><td>';
+				echo '</td>'."\n".'<td><input name="f_unix_pwdallowlogin" type="text" size="4" maxlength="4" value="' . $_SESSION['account']->unix_pwdallowlogin . '">
+					</td>'."\n".'<td>
+					<a href="help.php?HelpNumber=415" target="lamhelp">'._('Help').'</a>
+					</td></tr>'."\n".'<tr><td>';
 				echo _('Maximum Passwordage');
-				echo '</td><td><input name="f_unix_pwdmaxage" type="text" size="5" maxlength="5" value="' . $_SESSION['account']->unix_pwdmaxage . '">
-					</td><td>';
-				echo _('Number of days after a user has to change his password again Value must be 0<.');
-				echo '</td></tr><tr><td>';
+				echo '</td>'."\n".'<td><input name="f_unix_pwdmaxage" type="text" size="5" maxlength="5" value="' . $_SESSION['account']->unix_pwdmaxage . '">
+					</td>'."\n".'<td>
+					<a href="help.php?HelpNumber=416" target="lamhelp">'._('Help').'</a>
+					</td></tr>'."\n".'<tr><td>';
 				echo _('Minimum Passwordage');
-				echo '</td><td><input name="f_unix_pwdminage" type="text" size="4" maxlength="4" value="' . $_SESSION['account']->unix_pwdminage . '">
-					</td><td>';
-				echo _('Number of days a user has to wait until he\'s allowed to change his password again. Value must be 0<.');
-				echo '</td></tr><tr><td>';
+				echo '</td>'."\n".'<td><input name="f_unix_pwdminage" type="text" size="4" maxlength="4" value="' . $_SESSION['account']->unix_pwdminage . '">
+					</td>'."\n".'<td>
+					<a href="help.php?HelpNumber=417" target="lamhelp">'._('Help').'</a>
+					</td></tr>'."\n".'<tr><td>';
 				echo _('Expire Date');
-				echo '</td><td><select name="f_unix_pwdexpire_day">';
+				echo '</td>'."\n".'<td><select name="f_unix_pwdexpire_day">';
 				for ( $i=1; $i<=31; $i++ ) {
 					if ($_SESSION['account']->unix_pwdexpire_day==$i) echo "<option selected> $i";
 					else echo "<option> $i";
@@ -521,13 +585,13 @@ switch ($select_local) {
 					if ($_SESSION['account']->unix_pwdexpire_yea==$i) echo "<option selected> $i";
 					else echo "<option> $i";
 					}
-				echo '</select></td><td>';
-				echo _('Account expire date.');
-				echo '</td></tr><tr><td>';
+				echo '</select></td>'."\n".'<td>
+					<a href="help.php?HelpNumber=418" target="lamhelp">'._('Help').'</a>
+					</td></tr>'."\n".'<tr><td>';
 				echo _('Account deactivated');
-				echo '</td><td><input name="f_unix_deactivated" type="checkbox"';
+				echo '</td>'."\n".'<td><input name="f_unix_deactivated" type="checkbox"';
 				if ($_SESSION['account']->unix_deactivated) echo ' checked ';
-				echo '></td></tr>';
+				echo '></td></tr>'."\n";
 				break;
 			case 'host' :
 				echo '<input name="f_unix_password_no" type="hidden" value="';
@@ -535,34 +599,34 @@ switch ($select_local) {
 				echo  '">';
 				echo '<tr><td>';
 				echo _('Password');
-				echo '</td><td></td><td>';
+				echo '</td>'."\n".'<td></td>'."\n".'<td>';
 				if ($_SESSION['account_old']) {
 					echo '<input name="respass" type="submit" value="';
 					echo _('Reset Password'); echo '">';
 					}
-				echo '</td></tr><tr><td>';
+				echo '</td></tr>'."\n".'<tr><td>';
 				echo _('Password Warn');
-				echo '</td><td><input name="f_unix_pwdwarn" type="text" size="4" maxlength="4" value="' . $_SESSION['account']->unix_pwdwarn . '">
-					</td><td>';
-				echo _('Number of host a user will be warned when password will expire. Value must be 0<.');
-				echo	'</td></tr><tr><td>';
+				echo '</td>'."\n".'<td><input name="f_unix_pwdwarn" type="text" size="4" maxlength="4" value="' . $_SESSION['account']->unix_pwdwarn . '">
+					</td>'."\n".'<td>
+					<a href="help.php?HelpNumber=419" target="lamhelp">'._('Help').'</a>
+					</td></tr>'."\n".'<tr><td>';
 				echo _('Password Expire');
-				echo '</td><td><input name="f_unix_pwdallowlogin" type="text" size="4" maxlength="4" value="' . $_SESSION['account']->unix_pwdallowlogin . '">
-					</td><td>';
-				echo _('Number of days a host can login even his password has expired. -1=always');
-				echo '</td></tr><tr><td>';
+				echo '</td>'."\n".'<td><input name="f_unix_pwdallowlogin" type="text" size="4" maxlength="4" value="' . $_SESSION['account']->unix_pwdallowlogin . '">
+					</td>'."\n".'<td>
+					<a href="help.php?HelpNumber=420" target="lamhelp">'._('Help').'</a>
+					</td></tr>'."\n".'<tr><td>';
 				echo _('Maximum Passwordage');
-				echo '</td><td><input name="f_unix_pwdmaxage" type="text" size="5" maxlength="5" value="' . $_SESSION['account']->unix_pwdmaxage . '">
-					</td><td>';
-				echo _('Number of days after a host has to change his password again Value must be 0< and should be higher as the value on client-side.');
-				echo '</td></tr><tr><td>';
+				echo '</td>'."\n".'<td><input name="f_unix_pwdmaxage" type="text" size="5" maxlength="5" value="' . $_SESSION['account']->unix_pwdmaxage . '">
+					</td>'."\n".'<td>
+					<a href="help.php?HelpNumber=421" target="lamhelp">'._('Help').'</a>
+					</td></tr>'."\n".'<tr><td>';
 				echo _('Minimum Passwordage');
-				echo '</td><td><input name="f_unix_pwdminage" type="text" size="4" maxlength="4" value="' . $_SESSION['account']->unix_pwdminage . '">
-					</td><td>';
-				echo _('Number of days a user has to wait until he\'s allowed to change his password again. Value must be 0<.');
-				echo '</td></tr><tr><td>';
+				echo '</td>'."\n".'<td><input name="f_unix_pwdminage" type="text" size="4" maxlength="4" value="' . $_SESSION['account']->unix_pwdminage . '">
+					</td>'."\n".'<td>
+					<a href="help.php?HelpNumber=422" target="lamhelp">'._('Help').'</a>
+					</td></tr>'."\n".'<tr><td>';
 				echo _('Expire Date');
-				echo '</td><td><select name="f_unix_pwdexpire_day">';
+				echo '</td>'."\n".'<td><select name="f_unix_pwdexpire_day">';
 				for ( $i=1; $i<=31; $i++ ) {
 					if ($_SESSION['account']->unix_pwdexpire_day==$i) echo "<option selected> $i";
 					else echo "<option> $i";
@@ -577,30 +641,30 @@ switch ($select_local) {
 					if ($_SESSION['account']->unix_pwdexpire_yea==$i) echo "<option selected> $i";
 					else echo "<option> $i";
 					}
-				echo '</select></td><td>';
-				echo _('Account expire date.');
-				echo '</td></tr><tr><td>';
+				echo '</select></td>'."\n".'<td>
+					<a href="help.php?HelpNumber=422" target="lamhelp">'._('Help').'</a>
+					</td></tr>'."\n".'<tr><td>';
 				echo _('Account deactivated');
-				echo '</td><td><input name="f_unix_deactivated" type="checkbox"';
+				echo '</td>'."\n".'<td><input name="f_unix_deactivated" type="checkbox"';
 				if ($_SESSION['account']->unix_deactivated) echo ' checked ';
-				echo '></td></tr>';
+				echo '></td></tr>'."\n";
 				break;
 			}
 		echo '<tr><td>
 		<input name="back" type="submit" value="'; echo _('back'); echo '">
-		</td><td></td><td>
+		</td>'."\n".'<td></td>'."\n".'<td>
 		<input name="next" type="submit" value="'; echo _('next'); echo '">
-		</td></tr>';
+		</td></tr>'."\n";
 		break;
 	case 'samba':
 		// Samba Settings
-		echo '<tr><td><input name="select" type="hidden" value="samba">'; echo _('Samba Properties'); echo '</td></tr>';
+		echo '<tr><td><input name="select" type="hidden" value="samba">'; echo _('Samba Properties'); echo '</td></tr>'."\n";
 		switch ( $_SESSION['type2'] ) {
 			case 'user':
 				echo '<tr><td>';
 				echo _('Samba Password');
 				echo '</td><td><input name="f_smb_password" type="text" size="20" maxlength="20" value="' . $_SESSION['account']->smb_password . '">
-				</td><td><input name="f_smb_useunixpwd" type="checkbox"';
+					</td><td><input name="f_smb_useunixpwd" type="checkbox"';
 				if ($_SESSION['account']->smb_useunixpwd) echo ' checked ';
 				echo '>';
 				echo _('Use Unix-Password');

@@ -547,7 +547,7 @@ function loaduser($dn) { // Will load all needed values from an existing account
 	if ($attr['gecos'][0]) $return->general_gecos = $attr['gecos'][0];
 	if ($attr['description'][0]) $return->general_gecos = $attr['description'][0];
 	if ($attr['gidNumber'][0]) {
-		$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(), "objectclass=PosixGroup", array('uidNumber'));
+		$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(), "objectclass=PosixGroup", array('gidNumber', 'cn'));
 		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 		while ($entry) {
 			$attr2 = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
@@ -555,7 +555,7 @@ function loaduser($dn) { // Will load all needed values from an existing account
 			$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
 			}
 		}
-	$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(), "objectclass=PosixGroup", array('memberUid'));
+	$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(), "objectclass=PosixGroup", array('memberUid', 'cn'));
 	$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 	while ($entry) {
 		$attr2 = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
@@ -590,7 +590,8 @@ function loaduser($dn) { // Will load all needed values from an existing account
 	if ($attr['title'][0]) $return->personal_title = $attr['title'][0];
 	if ($attr['mail'][0]) $return->personal_mail = $attr['mail'][0];
 	if ($attr['telephoneNumber'][0]) $return->personal_telephoneNumber = $attr['telephoneNumber'][0];
-	if ($attr['mobile'][0]) $return->personal_mobileTelephoneNumber = $attr['mobile'][0];
+	if ($attr['mobilemobileTelephoneNumber'][0]) $return->personal_mobileTelephoneNumber = $attr['mobilemobileTelephoneNumber'][0];
+		else 	if ($attr['mobile'][0]) $return->personal_mobileTelephoneNumber = $attr['mobile'][0];
 	if ($attr['facsimileTelephoneNumber'][0]) $return->personal_facsimileTelephoneNumber = $attr['facsimileTelephoneNumber'][0];
 	if ($attr['street'][0]) $return->personal_street = $attr['street'][0];
 	if ($attr['postalCode'][0]) $return->personal_postalCode = $attr['postalCode'][0];
@@ -621,7 +622,7 @@ function loadhost($dn) { // Will load all needed values from an existing account
 	if ($attr['gecos'][0]) $return->general_gecos = $attr['gecos'][0];
 	if ($attr['description'][0]) $return->general_gecos = $attr['description'][0];
 	if ($attr['gidNumber'][0]) {
-		$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(), "objectclass=PosixGroup", array('uidNumber'));
+		$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(), "objectclass=PosixGroup", array('gidNumber', 'cn'));
 		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 		while ($entry) {
 			$attr2 = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
@@ -629,7 +630,7 @@ function loadhost($dn) { // Will load all needed values from an existing account
 			$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
 			}
 		}
-	$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(), "objectclass=PosixGroup", array('memberUid'));
+	$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(), "objectclass=PosixGroup", array('memberUid', 'cn'));
 	$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 	while ($entry) {
 		$attr2 = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
@@ -713,7 +714,7 @@ function createuser($values) { // Will create the LDAP-Account
 	if ($values->personal_title!='') $attr['title'] = $values->personal_title;
 	if ($values->personal_mail!='') $attr['mail'] = $values->personal_mail;
 	if ($values->personal_telephoneNumber!='') $attr['telephoneNumber'] = $values->personal_telephoneNumber;
-	if ($values->personal_mobileTelephoneNumber!='') $attr['mobile'] = $values->personal_mobileTelephoneNumber;
+	if ($values->personal_mobileTelephoneNumber!='') $attr['mobilemobileTelephoneNumber'] = $values->personal_mobileTelephoneNumber;
 	if ($values->personal_facsimileTelephoneNumber!='') $attr['facsimileTelephoneNumber'] = $values->personal_facsimileTelephoneNumber;
 	if ($values->personal_street!='') $attr['street'] = $values->personal_street;
 	if ($values->personal_postalCode!='') $attr['postalCode'] = $values->personal_postalCode;
@@ -762,16 +763,6 @@ function createuser($values) { // Will create the LDAP-Account
 	if ($_SESSION['config']->scriptServer) {
 		setquotas($values->general_username,'user');
 		addhomedir($values->general_username);
-		}
-	// Add user to groups
-	$result = ldap_search($_SESSION['ldap']->server(), 'cn='.$values->general_group.','.$_SESSION['config']->get_GroupSuffix(), "objectclass=posixGroup");
-	$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
-	$group = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
-	if ($group['memberUid']) array_shift($group['memberUid']);
-	if (! in_array($values->general_username, $group)) {
-		$toadd['memberUid'] = $values->general_username;
-		$success = ldap_mod_add($_SESSION['ldap']->server(), 'cn='.$values->general_group.','.$_SESSION['config']->get_GroupSuffix(), $toadd);
-		if (!$success) return 4;
 		}
 	// Add User to Additional Groups
 	if ($values->general_groupadd)
@@ -864,9 +855,9 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 	if (($values->personal_telephoneNumber != $values_old->personal_telephoneNumber) && ($values->personal_telephoneNumber ==''))
 		$attr_rem['telephoneNumber'] = $values_old->personal_telephoneNumber;
 	if (($values->personal_mobileTelephoneNumber != $values_old->personal_mobileTelephoneNumber) && ($values->personal_mobileTelephoneNumber!=''))
-		$attr['mobiler'] = $values->personal_mobileTelephoneNumber;
+		$attr['mobileTelephoneNumber'] = $values->personal_mobileTelephoneNumber;
 	if (($values->personal_mobileTelephoneNumber != $values_old->personal_mobileTelephoneNumber) && ($values->personal_mobileTelephoneNumber==''))
-		$attr_rem['mobile'] = $values_old->personal_mobileTelephoneNumber;
+		$attr_rem['mobilemobileTelephoneNumber'] = $values_old->personal_mobileTelephoneNumber;
 	if (($values->personal_facsimileTelephoneNumber != $values_old->personal_facsimileTelephoneNumber) && ($values->personal_facsimileTelephoneNumber!=''))
 		$attr['facsimileTelephoneNumber'] = $values->personal_facsimileTelephoneNumber;
 	if (($values->personal_facsimileTelephoneNumber != $values_old->personal_facsimileTelephoneNumber) && ($values->personal_facsimileTelephoneNumber==''))
@@ -927,12 +918,7 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 				}
 	if (!$success) return 5;
 	// Write Groupmemberchips
-	if ($values->general_groupadd) {
-		$allgroups = $values->general_groupadd;
-		if (!in_array($values->general_group, $allgroups)) $allgroups[] = $values->general_group;
-		}
-	 else $allgroups[0] = $values->general_group;
-	$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(), 'objectClass=PosixGroup');
+	$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(), 'objectClass=PosixGroup', array('memberUid', 'cn'));
 	$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 	while ($entry) {
 		$modifygroup=0;
@@ -940,13 +926,13 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 		if ($attr2['memberUid']) {
 			array_shift($attr2['memberUid']);
 			foreach ($attr2['memberUid'] as $nam) {
-				if ( ($nam==$values->general_username) && !in_array($nam, $allgroups)) {
+				if ( ($nam==$values->general_username) && !in_array($attr2['cn'][0], $values->general_groupadd)) {
 					$todelete['memberUid'] = $nam;
 					$success = ldap_mod_del($_SESSION['ldap']->server(), ldap_get_dn($_SESSION['ldap']->server(), $entry) ,$todelete);
 					if (!$success) return 5;
 					}
 				}
-			if (!in_array($values->general_username, $attr2['memberUid']) && in_array($attr2['cn'][0], $allgroups)) {
+			if (!in_array($values->general_username, $attr2['memberUid']) && in_array($attr2['cn'][0], $values->general_groupadd) && ($attr2['cn'][0]!=$values->general_group)) {
 				$toadd['memberUid'] = $attr2['memberUid'];
 				$toadd['memberUid'][] = $values->general_username;
 				$success = ldap_mod_replace($_SESSION['ldap']->server(), ldap_get_dn($_SESSION['ldap']->server(), $entry),  $toadd);
@@ -954,7 +940,7 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 				}
 			}
 		 else {
-			if (in_array($attr2['cn'][0], $allgroups)) {
+			if (in_array($attr2['cn'][0], $values->general_groupadd) && ($attr2['cn'][0]!=$values->general_group)) {
 				$toadd['memberUid'] = $values->general_username;
 				$success = ldap_mod_add($_SESSION['ldap']->server(), ldap_get_dn($_SESSION['ldap']->server(), $entry),  $toadd);
 				if (!$success) return 5;
@@ -1022,16 +1008,6 @@ function createhost($values) { // Will create the LDAP-Account
 	if ($values->smb_domain!='') $attr['domain'] = $values->smb_domain; // sambaAccount_may
 	$success = ldap_add($_SESSION['ldap']->server(),$values->general_dn, $attr);
 	if (!$success) return 4;
-	// Add host to groups
-	$result = ldap_search($_SESSION['ldap']->server(), 'cn='.$values->general_group.','.$_SESSION['config']->get_GroupSuffix(), "objectclass=posixGroup");
-	$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
-	$group = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
-	if ($group['memberUid']) array_shift($group['memberUid']);
-	if (! in_array($values->general_username, $group)) {
-		$toadd['memberUid'] = $values->general_username;
-		$success = ldap_mod_add($_SESSION['ldap']->server(), 'cn='.$values->general_group.','.$_SESSION['config']->get_GroupSuffix(), $toadd);
-		if (!$success) return 4;
-		}
 	// Add Host to Additional Groups
 	if ($values->general_groupadd)
 		foreach ($values->general_groupadd as $group2) {
@@ -1137,12 +1113,6 @@ function modifyhost($values,$values_old) { // Will modify the LDAP-Account
 				if ($success) $success = ldap_mod_replace($_SESSION['ldap']->server(),$values->general_dn, $attr);
 				}
 	if (!$success) return 5;
-	// Write Groupmemberchips
-	if ($values->general_groupadd) {
-		$allgroups = $values->general_groupadd;
-		if (!in_array($values->general_group, $allgroups)) $allgroups[] = $values->general_group;
-		}
-	 else $allgroups[0] = $values->general_group;
 	$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(), 'objectClass=PosixGroup');
 	$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 	while ($entry) {
@@ -1151,13 +1121,13 @@ function modifyhost($values,$values_old) { // Will modify the LDAP-Account
 		if ($attr2['memberUid']) {
 			array_shift($attr2['memberUid']);
 			foreach ($attr2['memberUid'] as $nam) {
-				if ( ($nam==$values->general_username) && !in_array($nam, $allgroups)) {
+				if ( ($nam==$values->general_username) && !in_array($nam, $values->general_groupadd)) {
 					$todelete['memberUid'] = $nam;
 					$success = ldap_mod_del($_SESSION['ldap']->server(), ldap_get_dn($_SESSION['ldap']->server(), $entry) ,$todelete);
 					if (!$success) return 5;
 					}
 				}
-			if (!in_array($values->general_username, $attr2['memberUid']) && in_array($attr2['cn'][0], $allgroups)) {
+			if (!in_array($values->general_username, $attr2['memberUid']) && in_array($attr2['cn'][0], $values->general_groupadd)) {
 				$toadd['memberUid'] = $attr2['memberUid'];
 				$toadd['memberUid'][] = $values->general_username;
 				$success = ldap_mod_replace($_SESSION['ldap']->server(), ldap_get_dn($_SESSION['ldap']->server(), $entry),  $toadd);
@@ -1165,7 +1135,7 @@ function modifyhost($values,$values_old) { // Will modify the LDAP-Account
 				}
 			}
 		 else {
-			if (in_array($attr2['cn'][0], $allgroups)) {
+			if (in_array($attr2['cn'][0], $values->general_groupadd)) {
 				$toadd['memberUid'] = $values->general_username;
 				$success = ldap_mod_add($_SESSION['ldap']->server(), ldap_get_dn($_SESSION['ldap']->server(), $entry),  $toadd);
 				if (!$success) return 5;
