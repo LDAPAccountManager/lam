@@ -123,10 +123,13 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 		break;
 	case 'samba':
 		// Write all general values into $_SESSION['account']
-		if ($_POST['f_smb_password'])
+		if ($_POST['f_smb_password']) {
 			// Encrypt password
+			$iv = base64_decode($_COOKIE["IV"]);
+			$key = base64_decode($_COOKIE["Key"]);
 			$_SESSION['account']->smb_password = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, base64_decode($_COOKIE['Key']), $_POST['f_smb_password'],
 			MCRYPT_MODE_ECB, base64_decode($_COOKIE['IV'])));
+			}
 		 else $_SESSION['account']->smb_password = "";
 		if ($_POST['f_smb_password_no']) $_SESSION['account']->smb_password_no = true;
 			else $_SESSION['account']->smb_password_no = false;
@@ -653,6 +656,7 @@ switch ($select_local) { // Select which part of page will be loaded
 	case 'samba':
 		// Samba Settings
 		echo '<tr><td><input name="select" type="hidden" value="samba">'; echo _('Samba Properties'); echo '</td></tr>'."\n";
+		// decrypt password
 		// decrypt password
 		if ($_SESSION['account']->smb_password != '') {
 			$iv = base64_decode($_COOKIE["IV"]);

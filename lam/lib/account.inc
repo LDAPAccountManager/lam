@@ -309,14 +309,20 @@ function checkunix($values, $type) { // This function checks all unix account pa
 	}
 
 function checksamba($values, $type) { // This function checks all samba account paramters
-	if ($values->unix_password != '') {
-		$iv = base64_decode($_COOKIE["IV"]);
-		$key = base64_decode($_COOKIE["Key"]);
+	$return = new account();
+	$iv = base64_decode($_COOKIE["IV"]);
+	$key = base64_decode($_COOKIE["Key"]);
+	if ($values->smb_password != '') {
 		$values->smb_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($values->smb_password), MCRYPT_MODE_ECB, $iv);
 		$values->smb_password = str_replace(chr(00), '', $values->smb_password);
 		}
-	$return = new account();
-	if ($values->smb_useunixpwd) $return->smb_password = $values->unix_password;
+	if ($values->smb_useunixpwd) {
+		if ($values->unix_password != '') {
+			$values->unix_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($values->unix_password), MCRYPT_MODE_ECB, $iv);
+			$values->unix_password = str_replace(chr(00), '', $values->unix_password);
+			}
+		$values->smb_password = $values->unix_password;
+		}
 	switch ($type) {
 		case 'user' :
 			$return->smb_scriptPath = str_replace('$user', $values->general_username, $values->smb_scriptPath);
@@ -354,6 +360,12 @@ function checksamba($values, $type) { // This function checks all samba account 
 	if ($values->smb_useunixpwd) $return->smb_useunixpwd = 1; else $return->smb_useunixpwd = 0;
 	if ($values->smb_pwdcanchange) $return->smb_pwdcanchange = 1; else $return->smb_pwdcanchange = 0;
 	if ($values->smb_pwdmustchange) $return->smb_pwdmustchange = 1; else $return->smb_pwdmustchange = 0;
+	if ($values->smb_password) {
+			// Encrypt password
+			$return->smb_password = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $values->smb_password,
+			MCRYPT_MODE_ECB, $iv));
+			}
+		 else $return->smb_password = "";
 	// Return values and errors
 	if (!$errors) return array($return, '');
 	 else return array($return, $errors);
