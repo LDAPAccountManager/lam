@@ -35,7 +35,6 @@ class sambaGroupMapping extends baseModule {
 	*/
 	function sambaGroupMapping($scope) {
 		// load error messages
-		$this->load_errorMessages();
 		$this->rids = array(
 			_('Domain Admins') => 512,
 			_('Domain Users') => 513,

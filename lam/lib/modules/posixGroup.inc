@@ -252,41 +252,25 @@ class posixGroup extends baseModule {
 		)
 		);
 		// configuration checks
-  $return['config_checks']['group']['posixGroup_minGID'] = array
+  $return['config_checks']['group']['posixGroup_minGID'] = array (
+   'type' => 'regex',
+   'regex' => 'digit',
+   'required' => true,
+   'required_message' => $this->errormessages['gidNumber'][5],
+   'error_message' => $this->errormessages['gidNumber'][5]);
 
-   'type' => 'regex'
+  $return['config_checks']['group']['posixGroup_maxGID'] = array (
+   'type' => 'regex',
+   'regex' => 'digit',
+   'required' => true,
+   'required_message' => $this->errormessages['gidNumber'][6],
+   'error_message' => $this->errormessages['gidNumber'][6]);
 
-   'regex' => 'digit'
-
-   'required' => true
-
-   'required_message' => $this->errormessages['gidNumber'][5]
-
-   'error_message' => $this->errormessages['gidNumber'][5])
-
-  $return['config_checks']['group']['posixGroup_maxGID'] = array
-
-   'type' => 'regex'
-
-   'regex' => 'digit'
-
-   'required' => true
-
-   'required_message' => $this->errormessages['gidNumber'][6]
-
-   'error_message' => $this->errormessages['gidNumber'][6])
-
-  $return['config_checks']['group']['cmpGID'] = array
-
-   'type' => 'int_greater'
-
-   'cmp_name1' => 'posixGroup_maxGID'
-
-   'cmp_name2' => 'posixGroup_minGID'
-
-   'error_message' => $this->errormessages['gidNumber'][7])
-
-
+  $return['config_checks']['group']['cmpGID'] = array (
+   'type' => 'int_greater',
+   'cmp_name1' => 'posixGroup_maxGID',
+   'cmp_name2' => 'posixGroup_minGID',
+   'error_message' => $this->errormessages['gidNumber'][7]);
 
 		// available PDF fields
 		$return['PDF_fields'] = array(	'cn',
