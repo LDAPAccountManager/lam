@@ -256,8 +256,8 @@ elseif ($_POST['sub_save']) {
 		if ($_POST['dom_DN'] != $newDN) {
 			$success = ldap_rename($_SESSION['ldap']->server(), $_POST['dom_DN'], $RDN, $_POST['dom_suffix'], true);
 		}
-		if ($success) StatusMessage("INFO", "Domain has been modified.", $DN);
-		else StatusMessage("ERROR", "", "Failed to modify domain!");
+		if ($success) StatusMessage("INFO", _("Domain has been modified."), $DN);
+		else StatusMessage("ERROR", "", _("Failed to modify domain!"));
 	}
 	// add entry
 	else {
@@ -300,8 +300,8 @@ elseif ($_POST['sub_delete']) {
 	echo "<body>\n";
 	// delete DNs
 	for ($i = 0; $i < sizeof($DNs); $i++) {
-		if (ldap_delete($_SESSION['ldap']->server(), $DNs[$i])) StatusMessage("INFO", "Domain deleted successfully.", $DNs[$i]);
-		else StatusMessage("ERROR", "Unable to delete domain!", $DNs[$i]);
+		if (ldap_delete($_SESSION['ldap']->server(), $DNs[$i])) StatusMessage("INFO", _("Domain deleted successfully."), $DNs[$i]);
+		else StatusMessage("ERROR", _("Unable to delete domain!"), $DNs[$i]);
 	}
 	echo "<p>&nbsp;</p>\n";
 	echo "<p><a href=\"lists/listdomains.php\">" . _("Back to domain list") . "</a></p>\n";
