@@ -53,81 +53,14 @@ class inetOrgPerson {
 		if (!$base) trigger_error(_('Please create a base object with $var = new accountContainer();'), E_USER_ERROR);
 		if (!is_string($base)) trigger_error(_('Please create a new module object with $accountContainer->add_objectClass(\'inetOrgPerson\');'), E_USER_ERROR);
 		$this->base = $base;
-		// posixAccount is only a valid objectClass for user and host
+		// inetOrgPerson is only a valid objectClass for users
 		if ($_SESSION[$this->base]->get_type() != 'user') trigger_error(_('inetOrgPerson can only be used for users.'), E_USER_WARNING);
-
-		// Add account type to object
-		$line=-1;
-		for ($i=0; $i<count($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses) || $i==-1; $i++) {
-			if (strpos($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$i], "NAME 'inetOrgPerson'")) $line = $i;
-			}
-		// Return error if objectClass isn't found
-		if ($line==-1) trigger_error (sprintf(_("ObjectClass %s required but not defined in ldap."), 'inetOrgPerson'), E_USER_WARNING);
 		// Add Array with all attributes and type
+		$this->attributes = $_SESSION[$this->base]->get_module_attributes('inetOrgPerson');
 		$_SESSION[$this->base]->add_attributes ('inetOrgPerson');
-		// create array with must-attributes
-		// Get startposition in string
-		if (strpos($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line],  'MUST (')) {
-			$string_withtail = substr($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line], strpos($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line],  'MUST (')+6);
-			// Now we have a string with all must-attributes
-			$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
-			$string = trim($string);
-			// Ad must
-			foreach (explode(" $ ", $string) as $attribute) {
-				$this->attributes[$attribute] = '';
-				}
-			}
-		// create array with may-attributes
-		// Get startposition in string
-		if (strpos($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line],  'MAY (')) {
-			$string_withtail = substr($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line], strpos($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line],  'MAY (')+5);
-			// Now we have a string with all must-attributes
-			$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
-			$string = trim($string);
-			// Ad may
-			foreach (explode(" $ ", $string) as $attribute) {
-				$this->attributes[$attribute] = '';
-				}
-			}
-		// Get attributes of subclasses
-		while (strpos($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line], "SUP ")) {
-			$string_withtail = substr($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line], strpos($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line],  'SUP ')+4);
-			$subclass = substr($string_withtail, 0, strpos($string_withtail, ' '));
-			// Add account type to object
-			for ($i=0; $i<count($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses) || $i==-1; $i++) {
-				if (strpos($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$i], "NAME '$subclass'")) $line = $i;
-				}
-			// Return error if objectClass isn't found
-			// *** fixme, fix error message
-			if ($line==-1) trigger_error (_("objectClass objectClass required but not defined in ldap."), E_USER_WARNING);
-
-			// create array with must-attributes
-			// Get startposition in string
-			if (strpos($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line],  'MUST (')) {
-				$string_withtail = substr($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line], strpos($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line],  'MUST (')+6);
-				// Now we have a string with all must-attributes
-				$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
-				$string = trim($string);
-				// Ad must
-				foreach (explode(" $ ", $string) as $attribute) {
-					$this->attributes[$attribute] = '';
-					}
-				}
-			// create array with may-attributes
-			// Get startposition in string
-			if (strpos($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line],  'MAY (')) {
-				$string_withtail = substr($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line], strpos($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line],  'MAY (')+5);
-				// Now we have a string with all must-attributes
-				$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
-				$string = trim($string);
-				// Ad may
-				foreach (explode(" $ ", $string) as $attribute) {
-					$this->attributes[$attribute] = '';
-					}
-				}
-			}
 		$this->orig = $this->attributes ;
 		$this->attributes['objectClass'][0] = 'inetOrgPerson';
+		// unset userPassword because we handle it separat.
 		if (isset($this->attributes['userPassword'])) unset($this->attributes['userPassword']);
 		$this->alias = _('inetOrgPerson');
 		// Add attributes which should be cached
@@ -150,10 +83,10 @@ class inetOrgPerson {
 	* to compare it with new changed attributes
 	*/
 	var $orig;
-	/* $attribute['password'] can't accessed directly because it's enrcypted
+
+	/* $attribute['userPassword'] can't accessed directly because it's enrcypted
 	* To read / write password function userPassword is needed
-	*/
-	/* This function will return the unencrypted password when
+	* This function will return the unencrypted password when
 	* called without a variable
 	* If it's called with a new password, the
 	* new password will be stored encrypted
@@ -167,12 +100,15 @@ class inetOrgPerson {
 			return 0;
 			}
 		else {
-			// Read existing password if set
-			$iv = base64_decode($_COOKIE["IV"]);
-			$key = base64_decode($_COOKIE["Key"]);
-			$password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($this->attributes['userPassword'][0]), MCRYPT_MODE_ECB, $iv);
-			$password = str_replace(chr(00), '', $password);
-			return $password;
+			if ($this->attributes['userPassword'][0]!='') {
+				// Read existing password if set
+				$iv = base64_decode($_COOKIE["IV"]);
+				$key = base64_decode($_COOKIE["Key"]);
+				$password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($this->attributes['userPassword'][0]), MCRYPT_MODE_ECB, $iv);
+				$password = str_replace(chr(00), '', $password);
+				return $password;
+				}
+			else return '';
 			}
 		}
 
@@ -182,6 +118,10 @@ class inetOrgPerson {
 		return array('main');
 		}
 
+	function module_ready() {
+		return true;
+		}
+
 	/* Write variables into object and do some regexp checks
 	*/
 	function proccess_attributes($post) {
@@ -189,7 +129,7 @@ class inetOrgPerson {
 		if (($this->attributes['uid'][0] != $post['form_inetOrgPerson_uid']) &&  ereg('[A-Z]$', $post['form_inetOrgPerson_uid']))
 			$errors[] = array('WARN', _('Username'), _('You are using a capital letters. This can cause problems because windows isn\'t case-sensitive.'));
 		$this->attributes['uid'][0] = $post['form_inetOrgPerson_uid'];
-		$this->attributes['cn'][0] &= $this->attributes['uid'][0];
+		$this->attributes['cn'][0] = $this->attributes['uid'][0];
 		$this->attributes['description'][0] = $post['form_inetOrgPerson_description'];
 		$this->attributes['sn'][0] = $post['form_inetOrgPerson_sn'];
 		$this->attributes['givenName'][0] = $post['form_inetOrgPerson_givenName'];
@@ -202,6 +142,16 @@ class inetOrgPerson {
 		$this->attributes['postalCode'][0] = $post['form_inetOrgPerson_postalCode'];
 		$this->attributes['postalAddress'][0] = $post['form_inetOrgPerson_postalAddress'];
 		$this->attributes['employeeType'][0] = $post['form_inetOrgPerson_employeeType'];
+
+		if (isset($this->attributes['host'])) {
+			$host = $post['form_inetOrgPerson_host'];
+			if ((!$host=='') && !ereg('^([a-z]|[A-Z]|[0-9]|[.]|[-])+(([,])+([ ])*([a-z]|[A-Z]|[0-9]|[.]|[-])+)*$', $host))
+				$errors[] = array('ERROR', _('Unix workstations'), _('Unix workstations is invalid.'));
+			$hosts = explode(" ", $host);
+			$this->attributes['host'] = array();
+			foreach ($hosts as $host)
+				if ($host!="") $this->attributes['host'][] = $host;
+			}
 
 		if ($post['form_inetOrgPerson_userPassword_no']) $this->userPassword_no=true;
 			else $this->userPassword_no=false;
@@ -315,53 +265,7 @@ class inetOrgPerson {
 	* remove are attributes which have to be removed from ldap entry
 	*/
 	function save_attributes() {
-		// Get list of all "easy" attributes
-		$attr_names = array_keys($this->attributes);
-		// Get attributes which should be added
-		for ($i=0; $i<count($attr_names); $i++) {
-			for ($j=0; $j<count($this->orig[$attr_names[$i]]); $j++) {
-				if (is_array($this->attributes[$attr_names[$i]])) {
-					if (!in_array($this->orig[$attr_names[$i]][$j], $this->attributes[$attr_names[$i]]))
-						if ($this->orig[$attr_names[$i]][$j]!='') $torem[$attr_names[$i]][] =utf8_encode($this->orig[$attr_names[$i]][$j]);
-					}
-				else if ($this->orig[$attr_names[$i]][$j]!='') $torem[$attr_names[$i]][] = utf8_encode($this->orig[$attr_names[$i]][$j]);
-				}
-			for ($j=0; $j<count($this->attributes[$attr_names[$i]]); $j++) {
-				if (is_array($this->orig[$attr_names[$i]])) {
-					if (!in_array($this->attributes[$attr_names[$i]][$j], $this->orig[$attr_names[$i]]))
-						if ($this->attributes[$attr_names[$i]][$j]!='') $toadd[$attr_names[$i]][] = utf8_encode($this->attributes[$attr_names[$i]][$j]);
-					}
-				else if ($this->attributes[$attr_names[$i]][$j]!='') $toadd[$attr_names[$i]][] = utf8_encode($this->attributes[$attr_names[$i]][$j]);
-				}
-			for ($j=0; $j<count($this->attributes[$attr_names[$i]]); $j++) {
-				if (is_array($this->orig[$attr_names[$i]]) && is_array($this->attributes[$attr_names[$i]])) {
-					if (($this->attributes[$attr_names[$i]][$j]==$this->orig[$attr_names[$i]][$j]) && $this->attributes[$attr_names[$i]][$j]!='')
-						$notchanged[$attr_names[$i]][] = utf8_encode($this->attributes[$attr_names[$i]][$j]);
-					}
-				}
-			}
-		// create modify wuth add and remove
-		if (is_array($toadd)) {
-			$attributes = array_keys($toadd);
-			for ($i=0; $i<count($attributes); $i++) {
-				if (isset($torem[$attributes[$i]])) {
-					// found modify entry
-					// Add unchanged attributes
-					if (isset($notchanged[$attributes[$i]])) $tomodify[$attributes[$i]] = $notchanged[$attributes[$i]];
-					$tomodify[$attributes[$i]] = array_merge_recursive($tomodify[$attributes[$i]], $toadd[$attributes[$i]]);
-						// unset attributes
-					if (isset($notchanged[$attributes[$i]])) unset($notchanged[$attributes[$i]]);
-					if (isset($toadd[$attributes[$i]])) unset($toadd[$attributes[$i]]);
-					if (isset($torem[$attributes[$i]])) unset($torem[$attributes[$i]]);
-					}
-				}
-			}
-
-		if (count($toadd)!=0) $return[$_SESSION[$this->base]->dn]['add'] = $toadd;
-		if (count($torem)!=0) $return[$_SESSION[$this->base]->dn]['remove'] = $torem;
-		if (count($tomodify)!=0) $return[$_SESSION[$this->base]->dn]['modify'] = $tomodify;
-		if (count($notchanged)!=0) $return[$_SESSION[$this->base]->dn]['notchanged'] = $notchanged;
-
+		$return = $_SESSION[$this->base]->save_module_attributes($this->attributes, $this->orig);
 		// Set unix password
 		if (count($this->orig['userPassword'])==0) {
 			// New user or no old password set
@@ -448,6 +352,16 @@ class inetOrgPerson {
 			echo "></td>\n";
 		echo "<td><a href=\"../help.php?HelpNumber=426\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
 		echo "</tr>\n";
+		if (isset($this->attributes['host'])) {
+			echo "<tr>\n";
+			echo "<td>" . _('Unix workstations') . "</td>\n";
+			echo "<td><input name=\"form_inetOrgPerson_host\" type=\"text\" size=\"20\" maxlength=\"80\" value=\"";
+			if (is_array($this->attributes['host']))
+				foreach ($this->attributes['host'] as $host) echo $host." ";
+			echo "\"></td>\n";
+			echo "<td><a href=\"../help.php?HelpNumber=466\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
+			echo "</tr>\n";
+			}
 		echo "<tr>\n";
 		echo "<td>" . _('Title') . "</td>\n";
 		echo "<td><input name=\"form_inetOrgPerson_title\" type=\"text\" size=\"10\" maxlength=\"10\" value=\"".$this->attributes['title'][0]."\"></td>\n";

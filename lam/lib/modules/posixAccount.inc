@@ -62,82 +62,16 @@ class posixAccount {
 		if (!is_string($base)) trigger_error(_('Please create a new module object with $accountContainer->add_objectClass(\'posixAccount\');'), E_USER_ERROR);
 		$this->base = $base;
 		// posixAccount is only a valid objectClass for user and host
-		if (!($_SESSION[$this->base]->get_type() == 'user' || $_SESSION[$this->base]->get_type() != 'host')) trigger_error(_('posixAccount can only be used for users or hosts.'), E_USER_WARNING);
+		if (!($_SESSION[$this->base]->get_type() == 'user') && !($_SESSION[$this->base]->get_type() != 'host')) trigger_error(_('posixAccount can only be used for users or hosts.'), E_USER_WARNING);
 		/* Check if ldap conatiner is in array and set type
 		* users are using inetOrgPerson-, hosts account-container
 		*/
 		if (!isset($_SESSION[$this->base]->module['inetOrgPerson']) && $_SESSION[$this->base]->type=='user') $_SESSION[$this->base]->add_objectClass('inetOrgPerson');
 		if (!isset($_SESSION[$this->base]->module['account']) && $_SESSION[$this->base]->type=='host') $_SESSION[$this->base]->add_objectClass('account');
-		// Add account type to object
-		$line=-1;
-		for ($i=0; $i<count($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses) || $i==-1; $i++) {
-			if (strpos($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$i], "NAME 'posixAccount'")) $line = $i;
-			}
-		// Return error if objectClass isn't found
-		if ($line==-1) trigger_error (sprintf(_("ObjectClass %s required but not defined in ldap."), 'posixAccount'), E_USER_WARNING);
 		// Add Array with all attributes and type
+		$this->attributes = $_SESSION[$this->base]->get_module_attributes('posixAccount');
 		$_SESSION[$this->base]->add_attributes ('posixAccount');
-		// create array with must-attributes
-		// Get startposition in string
-		if (strpos($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line],  'MUST (')) {
-			$string_withtail = substr($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line], strpos($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line],  'MUST (')+6);
-			// Now we have a string with all must-attributes
-			$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
-			$string = trim($string);
-			// Ad must
-			foreach (explode(" $ ", $string) as $attribute) {
-				$this->attributes[$attribute] = '';
-				}
-			}
-		// create array with may-attributes
-		// Get startposition in string
-		if (strpos($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line],  'MAY (')) {
-			$string_withtail = substr($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line], strpos($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line],  'MAY (')+5);
-			// Now we have a string with all must-attributes
-			$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
-			$string = trim($string);
-			// Ad may
-			foreach (explode(" $ ", $string) as $attribute) {
-				$this->attributes[$attribute] = '';
-				}
-			}
-		// Get attributes of subclasses
-		while (strpos($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line], "SUP ")) {
-			$string_withtail = substr($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line], strpos($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line],  'SUP ')+4);
-			$subclass = substr($string_withtail, 0, strpos($string_withtail, ' '));
-			// Add account type to object
-			for ($i=0; $i<count($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses) || $i==-1; $i++) {
-				if (strpos($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$i], "NAME '$subclass'")) $line = $i;
-				}
-			// Return error if objectClass isn't found
-			// *** fixme, fix error message
-			if ($line==-1) trigger_error (_("objectClass objectClass required but not defined in ldap."), E_USER_WARNING);
 
-			// create array with must-attributes
-			// Get startposition in string
-			if (strpos($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line],  'MUST (')) {
-				$string_withtail = substr($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line], strpos($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line],  'MUST (')+6);
-				// Now we have a string with all must-attributes
-				$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
-				$string = trim($string);
-				// Ad must
-				foreach (explode(" $ ", $string) as $attribute) {
-					$this->attributes[$attribute] = '';
-					}
-				}
-			// create array with may-attributes
-			// Get startposition in string
-			if (strpos($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line],  'MAY (')) {
-				$string_withtail = substr($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line], strpos($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line],  'MAY (')+5);
-				// Now we have a string with all must-attributes
-				$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
-				$string = trim($string);
-				// Ad may
-				foreach (explode(" $ ", $string) as $attribute) {
-					$this->attributes[$attribute] = '';
-					}
-				}
-			}
 		$this->alias = _('posixAccount');
 		// Add attributes which should be cached
 		$_SESSION[$_SESSION[$this->base]->cache]->add_cache(array ('user' => array('cn', 'uid', 'uidNumber'), 'host' => array('cn', 'uid', 'uidNumber'), 'group' => array('cn', 'memberUid')));
@@ -183,6 +117,10 @@ class posixAccount {
 		if ($_SESSION[$this->base]->type=='host') return array('account');
 		// return error if unsupported type is used
 		return -1;
+		}
+
+	function module_ready() {
+		return true;
 		}
 
 	/* Write variables into object and do some regexp checks
@@ -315,8 +253,8 @@ class posixAccount {
 				}
 			}
 		// Values are kept as copy so we can compare old attributes with new attributes
-		$this->orig = $this->attributes;
 		$this->attributes['objectClass'][0] = 'posixAccount';
+		$this->orig = $this->attributes;
 		// get all additional groupmemberships
 		$dn_groups = $_SESSION[$_SESSION[$this->base]->cache]->get_cache('memberUid', 'posixGroup', 'group');
 		$DNs = array_keys($dn_groups);
@@ -339,52 +277,7 @@ class posixAccount {
 	* modify are attributes which have to been modified in ldap entry
 	*/
 	function save_attributes() {
-		// Get list of all "easy" attributes
-		$attr_names = array_keys($this->attributes);
-		// Get attributes which should be added
-		for ($i=0; $i<count($attr_names); $i++) {
-			for ($j=0; $j<count($this->orig[$attr_names[$i]]); $j++) {
-				if (is_array($this->attributes[$attr_names[$i]])) {
-					if (!in_array($this->orig[$attr_names[$i]][$j], $this->attributes[$attr_names[$i]]))
-						if ($this->orig[$attr_names[$i]][$j]!='') $torem[$attr_names[$i]][] =utf8_encode($this->orig[$attr_names[$i]][$j]);
-					}
-				else if ($this->orig[$attr_names[$i]][$j]!='') $torem[$attr_names[$i]][] = utf8_encode($this->orig[$attr_names[$i]][$j]);
-				}
-			for ($j=0; $j<count($this->attributes[$attr_names[$i]]); $j++) {
-				if (is_array($this->orig[$attr_names[$i]])) {
-					if (!in_array($this->attributes[$attr_names[$i]][$j], $this->orig[$attr_names[$i]]))
-						if ($this->attributes[$attr_names[$i]][$j]!='') $toadd[$attr_names[$i]][] = utf8_encode($this->attributes[$attr_names[$i]][$j]);
-					}
-				else if ($this->attributes[$attr_names[$i]][$j]!='') $toadd[$attr_names[$i]][] = utf8_encode($this->attributes[$attr_names[$i]][$j]);
-				}
-			for ($j=0; $j<count($this->attributes[$attr_names[$i]]); $j++) {
-				if (is_array($this->orig[$attr_names[$i]]) && is_array($this->attributes[$attr_names[$i]])) {
-					if (($this->attributes[$attr_names[$i]][$j]==$this->orig[$attr_names[$i]][$j]) && $this->attributes[$attr_names[$i]][$j]!='')
-						$notchanged[$attr_names[$i]][] = utf8_encode($this->attributes[$attr_names[$i]][$j]);
-					}
-				}
-			}
-		// create modify wuth add and remove
-		if (is_array($toadd)) {
-			$attributes = array_keys($toadd);
-			for ($i=0; $i<count($attributes); $i++) {
-				if (isset($torem[$attributes[$i]])) {
-					// found modify entry
-					// Add unchanged attributes
-					if (isset($notchanged[$attributes[$i]])) $tomodify[$attributes[$i]] = $notchanged[$attributes[$i]];
-					$tomodify[$attributes[$i]] = array_merge_recursive($tomodify[$attributes[$i]], $toadd[$attributes[$i]]);
-						// unset attributes
-					if (isset($notchanged[$attributes[$i]])) unset($notchanged[$attributes[$i]]);
-					if (isset($toadd[$attributes[$i]])) unset($toadd[$attributes[$i]]);
-					if (isset($torem[$attributes[$i]])) unset($torem[$attributes[$i]]);
-					}
-				}
-			}
-
-		if (count($toadd)!=0) $return[$_SESSION[$this->base]->dn]['add'] = $toadd;
-		if (count($torem)!=0) $return[$_SESSION[$this->base]->dn]['remove'] = $torem;
-		if (count($tomodify)!=0) $return[$_SESSION[$this->base]->dn]['modify'] = $tomodify;
-		if (count($notchanged)!=0) $return[$_SESSION[$this->base]->dn]['notchanged'] = $notchanged;
+		$return = $_SESSION[$this->base]->save_module_attributes($this->attributes, $this->orig);
 
 		// Remove primary group from additional groups
 		for ($i=0; $i<count($this->groups); $i++) {
@@ -512,15 +405,15 @@ class posixAccount {
 		$groups = array_flip($groups);
 
 		echo "<table border=0 width=\"100%\">\n<tr>\n";
-		echo "<td><fieldset class=\"useredit-bright\">";
-			echo "<legend class=\"useredit-bright\"><b>" . _("Additional groups") . "</b></legend>\n";
+		echo "<td><fieldset class=\"".$_SESSION[$this->base]->type."edit-bright\">";
+			echo "<legend class=\"".$_SESSION[$this->base]->type."edit-bright\"><b>" . _("Additional groups") . "</b></legend>\n";
 			echo "<table border=0 width=\"100%\">\n<tr>\n";
 				echo "<td valign=\"top\">";
-				echo "<fieldset class=\"useredit-bright\">";
-				echo "<legend class=\"useredit-bright\">" . _("Selected groups") . "</legend>\n";
+				echo "<fieldset class=\"".$_SESSION[$this->base]->type."edit-bright\">";
+				echo "<legend class=\"".$_SESSION[$this->base]->type."edit-bright\">" . _("Selected groups") . "</legend>\n";
 					// Show all groups the user is additional member of
 					if (count($this->groups)!=0) {
-						echo "<select name=\"form_posixAccount_removegroups[]\" class=\"useredit-bright\" size=15 multiple>\n";
+						echo "<select name=\"form_posixAccount_removegroups[]\" class=\"".$_SESSION[$this->base]->type."edit-bright\" size=15 multiple>\n";
 						for ($i=0; $i<count($this->groups); $i++)
 							if ($this->groups[$i]!='') echo "<option> $this->groups[$i] </option>\n";
 						echo "</select>\n";
@@ -531,11 +424,11 @@ class posixAccount {
 				echo "<input type=\"submit\" name=\"form_posixAccount_removegroups_button\" value=\"=>\"><br><br>";
 				echo "<a href=\""."../help.php?HelpNumber=402\" target=\"lamhelp\">"._('Help')."</a></td>\n";
 				echo "<td valign=\"top\">\n";
-				echo "<fieldset class=\"useredit-bright\">";
-				echo "<legend class=\"useredit-bright\">" . _('Available groups') . "</legend>\n";
+				echo "<fieldset class=\"".$_SESSION[$this->base]->type."edit-bright\">";
+				echo "<legend class=\"".$_SESSION[$this->base]->type."edit-bright\">" . _('Available groups') . "</legend>\n";
 					// show all groups expect these the user is member of
 					if (count($groups)!=0) {
-						echo "<select name=\"form_posixAccount_addgroups[]\" size=15 multiple class=\"useredit-bright\">\n";
+						echo "<select name=\"form_posixAccount_addgroups[]\" size=15 multiple class=\"".$_SESSION[$this->base]->type."edit-bright\">\n";
 						for ($i=0; $i<count($groups); $i++)
 							if ($groups[$i]!='') echo "<option> $groups[$i] </option>\n";
 						echo "</select>\n";

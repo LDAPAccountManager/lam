@@ -63,80 +63,9 @@ class shadowAccount {
 		$this->base = $base;
 		// shadowAccount is only a valid objectClass for user and host
 		if (!($_SESSION[$this->base]->get_type() == 'user')) trigger_error(_('shadowAccount can only be used for users.'), E_USER_WARNING);
-		/* Check if ldap conatiner is in array and set type
-		* users are using inetOrgPerson-, hosts account-container
-		*/
-		if (!isset($_SESSION[$this->base]->module['inetOrgPerson'])) $_SESSION[$this->base]->add_objectClass('inetOrgPerson');
-		// Add account type to object
-		$line=-1;
-		for ($i=0; $i<count($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses) || $i==-1; $i++) {
-			if (strpos($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$i], "NAME 'shadowAccount'")) $line = $i;
-			}
-		// Return error if objectClass isn't found
-		if ($line==-1) trigger_error (sprintf(_("ObjectClass %s required but not defined in ldap."), 'shadowAccount'), E_USER_WARNING);
 		// Add Array with all attributes and type
+		$this->attributes = $_SESSION[$this->base]->get_module_attributes('shadowAccount');
 		$_SESSION[$this->base]->add_attributes ('shadowAccount');
-		// create array with must-attributes
-		// Get startposition in string
-		if (strpos($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line],  'MUST (')) {
-			$string_withtail = substr($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line], strpos($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line],  'MUST (')+6);
-			// Now we have a string with all must-attributes
-			$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
-			$string = trim($string);
-			// Ad must
-			foreach (explode(" $ ", $string) as $attribute) {
-				$this->attributes[$attribute] = '';
-				}
-			}
-		// create array with may-attributes
-		// Get startposition in string
-		if (strpos($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line],  'MAY (')) {
-			$string_withtail = substr($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line], strpos($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line],  'MAY (')+5);
-			// Now we have a string with all must-attributes
-			$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
-			$string = trim($string);
-			// Ad may
-			foreach (explode(" $ ", $string) as $attribute) {
-				$this->attributes[$attribute] = '';
-				}
-			}
-		// Get attributes of subclasses
-		while (strpos($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line], "SUP ")) {
-			$string_withtail = substr($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line], strpos($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line],  'SUP ')+4);
-			$subclass = substr($string_withtail, 0, strpos($string_withtail, ' '));
-			// Add account type to object
-			for ($i=0; $i<count($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses) || $i==-1; $i++) {
-				if (strpos($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$i], "NAME '$subclass'")) $line = $i;
-				}
-			// Return error if objectClass isn't found
-			// *** fixme, fix error message
-			if ($line==-1) trigger_error (_("objectClass objectClass required but not defined in ldap."), E_USER_WARNING);
-
-			// create array with must-attributes
-			// Get startposition in string
-			if (strpos($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line],  'MUST (')) {
-				$string_withtail = substr($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line], strpos($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line],  'MUST (')+6);
-				// Now we have a string with all must-attributes
-				$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
-				$string = trim($string);
-				// Ad must
-				foreach (explode(" $ ", $string) as $attribute) {
-					$this->attributes[$attribute] = '';
-					}
-				}
-			// create array with may-attributes
-			// Get startposition in string
-			if (strpos($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line],  'MAY (')) {
-				$string_withtail = substr($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line], strpos($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line],  'MAY (')+5);
-				// Now we have a string with all must-attributes
-				$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
-				$string = trim($string);
-				// Ad may
-				foreach (explode(" $ ", $string) as $attribute) {
-					$this->attributes[$attribute] = '';
-					}
-				}
-			}
 		$this->alias = _('shadowAccount');
 		// Make references to attributes which already esists in ldap
 		$newattributes = array_keys($this->attributes);
@@ -169,6 +98,10 @@ class shadowAccount {
 		return array('inetOrgPerson');
 		}
 
+	function module_ready() {
+		return true;
+		}
+
 	/* Write variables into object and do some regexp checks
 	*/
 	function proccess_attributes($post) {
@@ -177,8 +110,8 @@ class shadowAccount {
 		$this->attributes['shadowMax'][0] = $post['form_shadowAccount_shadowMax'];
 		$this->attributes['shadowWarning'][0] = $post['form_shadowAccount_shadowWarning'];
 		$this->attributes['shadowInactive'][0] = $post['form_shadowAccount_shadowInactive'];
-		$this->attributes['shadowWarning'][0] = mtime(10, 0, 0, $post['form_shadowAccount_shadowExpire_mon'],
-			$post['form_shadowAccount_shadowExpire_day'], $post['form_shadowAccount_shadowExpire_yea']);
+		$this->attributes['shadowExpire'][0] = mktime(10, 0, 0, $post['form_shadowAccount_shadowExpire_mon'],
+			$post['form_shadowAccount_shadowExpire_day'], $post['form_shadowAccount_shadowExpire_yea'])/3600/24;
 
 		if ( !ereg('^([0-9])*$', $this->attributes['shadowMin'][0]))  $errors[] = array('ERROR', _('Password minage'), _('Password minage must be are natural number.'));
 		if ( $this->attributes['shadowMin'][0] > $this->attributes['shadowMax'][0] ) $errors[] = array('ERROR', _('Password maxage'), _('Password maxage must bigger as Password Minage.'));
@@ -212,8 +145,8 @@ class shadowAccount {
 				}
 			}
 		// Values are kept as copy so we can compare old attributes with new attributes
-		$this->orig = $this->attributes;
 		$this->attributes['objectClass'][0] = 'shadowAccount';
+		$this->orig = $this->attributes;
 		}
 
 
@@ -226,52 +159,7 @@ class shadowAccount {
 	* modify are attributes which have to been modified in ldap entry
 	*/
 	function save_attributes() {
-		// Get list of all "easy" attributes
-		$attr_names = array_keys($this->attributes);
-		// Get attributes which should be added
-		for ($i=0; $i<count($attr_names); $i++) {
-			for ($j=0; $j<count($this->orig[$attr_names[$i]]); $j++) {
-				if (is_array($this->attributes[$attr_names[$i]])) {
-					if (!in_array($this->orig[$attr_names[$i]][$j], $this->attributes[$attr_names[$i]]))
-						if ($this->orig[$attr_names[$i]][$j]!='') $torem[$attr_names[$i]][] =utf8_encode($this->orig[$attr_names[$i]][$j]);
-					}
-				else if ($this->orig[$attr_names[$i]][$j]!='') $torem[$attr_names[$i]][] = utf8_encode($this->orig[$attr_names[$i]][$j]);
-				}
-			for ($j=0; $j<count($this->attributes[$attr_names[$i]]); $j++) {
-				if (is_array($this->orig[$attr_names[$i]])) {
-					if (!in_array($this->attributes[$attr_names[$i]][$j], $this->orig[$attr_names[$i]]))
-						if ($this->attributes[$attr_names[$i]][$j]!='') $toadd[$attr_names[$i]][] = utf8_encode($this->attributes[$attr_names[$i]][$j]);
-					}
-				else if ($this->attributes[$attr_names[$i]][$j]!='') $toadd[$attr_names[$i]][] = utf8_encode($this->attributes[$attr_names[$i]][$j]);
-				}
-			for ($j=0; $j<count($this->attributes[$attr_names[$i]]); $j++) {
-				if (is_array($this->orig[$attr_names[$i]]) && is_array($this->attributes[$attr_names[$i]])) {
-					if (($this->attributes[$attr_names[$i]][$j]==$this->orig[$attr_names[$i]][$j]) && $this->attributes[$attr_names[$i]][$j]!='')
-						$notchanged[$attr_names[$i]][] = utf8_encode($this->attributes[$attr_names[$i]][$j]);
-					}
-				}
-			}
-		// create modify wuth add and remove
-		if (is_array($toadd)) {
-			$attributes = array_keys($toadd);
-			for ($i=0; $i<count($attributes); $i++) {
-				if (isset($torem[$attributes[$i]])) {
-					// found modify entry
-					// Add unchanged attributes
-					if (isset($notchanged[$attributes[$i]])) $tomodify[$attributes[$i]] = $notchanged[$attributes[$i]];
-					$tomodify[$attributes[$i]] = array_merge_recursive($tomodify[$attributes[$i]], $toadd[$attributes[$i]]);
-						// unset attributes
-					if (isset($notchanged[$attributes[$i]])) unset($notchanged[$attributes[$i]]);
-					if (isset($toadd[$attributes[$i]])) unset($toadd[$attributes[$i]]);
-					if (isset($torem[$attributes[$i]])) unset($torem[$attributes[$i]]);
-					}
-				}
-			}
-
-		if (count($toadd)!=0) $return[$_SESSION[$this->base]->dn]['add'] = $toadd;
-		if (count($torem)!=0) $return[$_SESSION[$this->base]->dn]['remove'] = $torem;
-		if (count($tomodify)!=0) $return[$_SESSION[$this->base]->dn]['modify'] = $tomodify;
-		if (count($notchanged)!=0) $return[$_SESSION[$this->base]->dn]['notchanged'] = $notchanged;
+		$return = $_SESSION[$this->base]->save_module_attributes($this->attributes, $this->orig);
 
 		// Set shadowLastchange manual.
 		if ($_SESSION[$this->base]->module['inetOrgPerson']->userPassword()!='' || $_SESSION[$this->base]->module['inetOrgPerson']->userPassword_no)
