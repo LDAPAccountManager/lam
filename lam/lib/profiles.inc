@@ -82,9 +82,9 @@ function getHostProfiles() {
 	return $ret;
 }
 
-// loads an user profile with name $profile (without .pru)
+// loads an user profile
+// $profile: name of the profile (without .pru)
 // the return value is an account object
-// if $timestamps is true, smb_pwdcanchange and smb_pwdmustchange are returned as timestamp
 function loadUserProfile($profile) {
 	if (!eregi("^([0-9]|[a-z]|-|_)*$", $profile)) exit;
 	$acc = new account();
@@ -258,7 +258,8 @@ function loadUserProfile($profile) {
 	return $acc;
 }
 
-// loads an group profile with name $profile (without .prg)
+// loads an group profile
+// $profile: name of the group profile (without .prg)
 // the return value is an account object
 function loadGroupProfile($profile) {
 	if (!eregi("^([0-9]|[a-z]|-|_)*$", $profile)) exit;
@@ -324,7 +325,8 @@ function loadGroupProfile($profile) {
 	return $acc;
 }
 
-// loads an host profile with name $profile (without .prh)
+// loads an host profile
+// $profile: name of the host profile (without .prh)
 // the return value is an account object
 function loadHostProfile($profile) {
 	if (!eregi("^([0-9]|[a-z]|-|_)*$", $profile)) exit;
@@ -379,8 +381,10 @@ function loadHostProfile($profile) {
 	return $acc;
 }
 
-// saves an account object to an user profile with name $profile (without .pru)
+// saves an account object to an user profile
 // file is created, if needed
+// $profile: name of the user profile (without .pru)
+// $account: account object which is saved
 function saveUserProfile($account, $profile) {
 	if (!eregi("^([0-9]|[a-z]|-|_)*$", $profile)) exit;
 	if (!is_object($account)) {
@@ -448,8 +452,10 @@ function saveUserProfile($account, $profile) {
 	return true;
 }
 
-// saves an account object to an group profile with name $profile (without .prg)
+// saves an account object to an group profile
 // file is created, if needed
+// $profile: name of the group profile (without .prg)
+// $account: account object which is saved
 function saveGroupProfile($account, $profile) {
 	if (!eregi("^([0-9]|[a-z]|-|_)*$", $profile)) exit;
 	if (!is_object($account)) {
@@ -479,8 +485,10 @@ function saveGroupProfile($account, $profile) {
 	return true;
 }
 
-// saves an account object to an host profile with name $profile (without .prh)
+// saves an account object to an host profile
 // file is created, if needed
+// $profile: name of the host profile (without .prh)
+// $account: account object which is saved
 function saveHostProfile($account, $profile) {
 	if (!eregi("^[0-9a-z\\-_]+$", $profile)) exit;
 	if (!is_object($account)) {
