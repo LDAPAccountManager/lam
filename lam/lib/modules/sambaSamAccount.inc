@@ -258,13 +258,13 @@ class sambaSamAccount extends baseModule {
 		if (isset($return[$_SESSION[$this->base]->dn]['modify']['sambaNTPassword']))
 			unset($return[$_SESSION[$this->base]->dn]['modify']['sambaNTPassword']);
 		if (!isset($this->orig['sambaLMPassword'][0])) {
-			$return[$_SESSION[$this->base]->dn]['modify']['sambaLMPassword'][0] = exec(escapeshellarg($_SESSION['lampath'].'lib/createntlm.pl')." lm ".escapeshellarg($this->sambaLMPassword()));
-			$return[$_SESSION[$this->base]->dn]['modify']['sambaNTPassword'][0] = exec(escapeshellarg($_SESSION['lampath'].'lib/createntlm.pl')." nt ".escapeshellarg($this->sambaLMPassword()));
+			$return[$_SESSION[$this->base]->dn]['modify']['sambaLMPassword'][0] = lmPassword($this->sambaLMPassword());
+			$return[$_SESSION[$this->base]->dn]['modify']['sambaNTPassword'][0] = ntPassword($this->sambaLMPassword());
 			$return[$_SESSION[$this->base]->dn]['modify']['sambaPwdLastSet'][0] = time();
 			}
 		if ($this->sambaLMPassword()!='') {
-			$return[$_SESSION[$this->base]->dn]['modify']['sambaLMPassword'][0] = exec(escapeshellarg($_SESSION['lampath'].'lib/createntlm.pl')." lm ".escapeshellarg($this->sambaLMPassword()));
-			$return[$_SESSION[$this->base]->dn]['modify']['sambaNTPassword'][0] = exec(escapeshellarg($_SESSION['lampath'].'lib/createntlm.pl')." nt ".escapeshellarg($this->sambaLMPassword()));
+			$return[$_SESSION[$this->base]->dn]['modify']['sambaLMPassword'][0] = lmPassword($this->sambaLMPassword());
+			$return[$_SESSION[$this->base]->dn]['modify']['sambaNTPassword'][0] = ntPassword($this->sambaLMPassword());
 			$return[$_SESSION[$this->base]->dn]['modify']['sambaPwdLastSet'][0] = time();
 			}
 		return $return;
