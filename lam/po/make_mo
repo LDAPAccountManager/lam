@@ -7,4 +7,4 @@
 # This script generates a messages.mo file from the translated messages.po file.
 
 rm -f messages.mo
-msgfmt -v messages.po -o messages.mo
+msgfmt -v -c --statistics messages.po -o messages.mo
