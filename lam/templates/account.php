@@ -850,14 +850,20 @@ switch ($select_local) {
 			}
 		break;
 	case 'backmain':
+		if (session_is_registered("shelllist")) session_unregister("shelllist");
+		if (session_is_registered("account")) session_unregister("account");
+		if (session_is_registered("account_old")) session_unregister("account_old");
 		switch ( $_SESSION['type2'] ) {
 			case 'user' :
+				if (session_is_registered("type2")) session_unregister("type2");
 				echo '<meta http-equiv="refresh" content="0; URL=lists/listusers.php">';
 				break;
 			case 'group' :
+				if (session_is_registered("type2")) session_unregister("type2");
 				echo '<meta http-equiv="refresh" content="0; URL=lists/listgroups.php">';
 				break;
 			case 'host' :
+				if (session_is_registered("type2")) session_unregister("type2");
 				echo '<meta http-equiv="refresh" content="0; URL=lists/listhosts.php">';
 				break;
 			}

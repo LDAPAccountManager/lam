@@ -116,6 +116,7 @@ function initvars($type=false,$DN=false) { // This function registers all needes
 					}
 			}
 		 else {
+			if (session_is_registered("account_old")) session_unregister("account_old");
 			if ( (($type=='user')||($type=='group')) && ($_SESSION['config']->scriptServer)) $_SESSION['account'] = getquotas($type);
 			switch ($type) {
 				case 'user':
@@ -500,7 +501,7 @@ function checkid($values, $type, $values_old=false) { // if value is empty will 
 	if ($entry) { // Entry with same ID found
 		$dn = (ldap_get_dn($_SESSION['ldap']->server(), $entry));
 		if (!$values_old) return _('ID is used from ' . $dn . ' !');
-		 else if ($dn!=$values_old->general_uidNumber) return _('ID is used from ' . $dn . ' !');
+		 else if ($dn!=$values_old->general_dn) return _('ID is used from ' . $dn . ' !');
 		 }
 	if ( $values->general_uidNumber < $minID || $values->general_uidNumber > $maxID) return _('Please enter a value between '. $minID . ' and ' . $maxID . '!');
 	return intval($values->general_uidNumber);
