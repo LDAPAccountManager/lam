@@ -46,14 +46,25 @@ class Config {
 	var $Adminstring;
 	
 	// suffix for users
-	var $suff_users;
+	var $Suff_users;
 	
 	// suffix for groups
-	var $suff_groups;
+	var $Suff_groups;
 	
 	// suffix for Samba hosts
-	var $suff_hosts;
+	var $Suff_hosts;
 
+	// minimum/maximum numbers for UID, GID and UID of Samba Hosts
+	var $MinUID;
+	var $MaxUID;
+	var $MinGID;
+	var $MaxGID;
+	var $MinMachine;
+	var $MaxMachine;
+	
+	// default shell and list of possible shells
+	var $DefaultShell;
+	var $ShellList;
 
 	// constructor, loads preferences from ../lam.conf
 	function Config() {
@@ -91,22 +102,54 @@ class Config {
 					continue;
 				}
 				if (substr($line, 0, 12) == "usersuffix: ") {
-					$this->suff_users = chop(substr($line, 12, strlen($line)-12));
+					$this->Suff_users = chop(substr($line, 12, strlen($line)-12));
 					continue;
 				}
 				if (substr($line, 0, 13) == "groupsuffix: ") {
-					$this->suff_groups = chop(substr($line, 13, strlen($line)-13));
+					$this->Suff_groups = chop(substr($line, 13, strlen($line)-13));
 					continue;
 				}
 				if (substr($line, 0, 12) == "hostsuffix: ") {
-					$this->suff_hosts = chop(substr($line, 12, strlen($line)-12));
+					$this->Suff_hosts = chop(substr($line, 12, strlen($line)-12));
+					continue;
+				}
+				if (substr($line, 0, 8) == "minUID: ") {
+					$this->MinUID = chop(substr($line, 8, strlen($line)-8));
+					continue;
+				}
+				if (substr($line, 0, 8) == "maxUID: ") {
+					$this->MaxUID = chop(substr($line, 8, strlen($line)-8));
+					continue;
+				}
+				if (substr($line, 0, 8) == "minGID: ") {
+					$this->MinGID = chop(substr($line, 8, strlen($line)-8));
+					continue;
+				}
+				if (substr($line, 0, 8) == "maxGID: ") {
+					$this->MaxGID = chop(substr($line, 8, strlen($line)-8));
+					continue;
+				}
+				if (substr($line, 0, 12) == "minMachine: ") {
+					$this->MinMachine = chop(substr($line, 12, strlen($line)-12));
+					continue;
+				}
+				if (substr($line, 0, 12) == "maxMachine: ") {
+					$this->MaxMachine = chop(substr($line, 12, strlen($line)-12));
+					continue;
+				}
+				if (substr($line, 0, 14) == "defaultShell: ") {
+					$this->DefaultShell = chop(substr($line, 14, strlen($line)-14));
+					continue;
+				}
+				if (substr($line, 0, 11) == "shellList: ") {
+					$this->ShellList = chop(substr($line, 11, strlen($line)-11));
 					continue;
 				}
 			}
 			fclose($file);
 		}
 		else {
-			echo _("Unable to load lam.conf!"); echo "</br>";
+			echo _("Unable to load lam.conf!"); echo "<br>";
 		}
 	}
 	
@@ -114,7 +157,8 @@ class Config {
 	function save() {
 		$conffile = "../lam.conf";
 		if (is_file($conffile) == True) {
-			$save_ssl = $save_host = $save_port = $save_passwd = $save_admins = $save_suffusr = $save_suffgrp = $save_suffhst = False;
+			$save_ssl = $save_host = $save_port = $save_passwd = $save_admins = $save_suffusr = $save_suffgrp = $save_suffhst =
+				$save_minUID = $save_maxUID = $save_minGID = $save_maxGID = $save_minMach = $save_maxMach = $save_defShell = $save_shellList = False;
 			$file = fopen($conffile, "r");
 			$file_array = array();
 			while (!feof($file)) {
@@ -149,35 +193,83 @@ class Config {
 					continue;
 				}
 				if (substr($file_array[$i], 0, 12) == "usersuffix: ") {
-					$file_array[$i] = "usersuffix: " . $this->suff_users . "\n";
+					$file_array[$i] = "usersuffix: " . $this->Suff_users . "\n";
 					$save_suffusr = True;
 					continue;
 				}
 				if (substr($file_array[$i], 0, 13) == "groupsuffix: ") {
-					$file_array[$i] = "groupsuffix: " . $this->suff_groups . "\n";
+					$file_array[$i] = "groupsuffix: " . $this->Suff_groups . "\n";
 					$save_suffgrp = True;
 					continue;
 				}
 				if (substr($file_array[$i], 0, 12) == "hostsuffix: ") {
-					$file_array[$i] = "hostsuffix: " . $this->suff_hosts . "\n";
+					$file_array[$i] = "hostsuffix: " . $this->Suff_hosts . "\n";
 					$save_suffhst = True;
+					continue;
+				}
+				if (substr($file_array[$i], 0, 8) == "minUID: ") {
+					$file_array[$i] = "minUID: " . $this->MinUID . "\n";
+					$save_minUID = True;
+					continue;
+				}
+				if (substr($file_array[$i], 0, 8) == "maxUID: ") {
+					$file_array[$i] = "maxUID: " . $this->MaxUID . "\n";
+					$save_maxUID = True;
+					continue;
+				}
+				if (substr($file_array[$i], 0, 8) == "minGID: ") {
+					$file_array[$i] = "minGID: " . $this->MinGID . "\n";
+					$save_minGID = True;
+					continue;
+				}
+				if (substr($file_array[$i], 0, 8) == "maxGID: ") {
+					$file_array[$i] = "maxGID: " . $this->MaxGID . "\n";
+					$save_maxGID = True;
+					continue;
+				}
+				if (substr($file_array[$i], 0, 12) == "minMachine: ") {
+					$file_array[$i] = "minMachine: " . $this->MinMachine . "\n";
+					$save_minMach = True;
+					continue;
+				}
+				if (substr($file_array[$i], 0, 12) == "maxMachine: ") {
+					$file_array[$i] = "maxMachine: " . $this->MaxMachine . "\n";
+					$save_maxMach = True;
+					continue;
+				}
+				if (substr($file_array[$i], 0, 14) == "defaultShell: ") {
+					$file_array[$i] = "defaultShell: " . $this->DefaultShell . "\n";
+					$save_defShell = True;
+					continue;
+				}
+				if (substr($file_array[$i], 0, 11) == "shellList: ") {
+					$file_array[$i] = "shellList: " . $this->ShellList . "\n";
+					$save_shellList = True;
 					continue;
 				}
 			}
 			// check if we have to add new entries (e.g. if user upgraded LAM)
-			if (!$save_ssl == True) array_push($file_array, "\n# use SSL to connect, can be True or False\n" . "ssl: " . $this->SSL);
-			if (!$save_host == True) array_push($file_array, "\n# hostname of LDAP server (e.g localhost)\n" . "host: " . $this->Host);
-			if (!$save_port == True) array_push($file_array, "\n# portnumber of LDAP server (default 389)\n" . "port: " . $this->Port);
-			if (!$save_passwd == True) array_push($file_array, "\n# password to change these preferences via webfrontend\n" . "passwd: " . $this->Passwd);
-			if (!$save_admins == True) array_push($file_array, "\n# list of users who are allowed to use LDAP Account Manager\n" . 
+			if (!$save_ssl == True) array_push($file_array, "\n\n# use SSL to connect, can be True or False\n" . "ssl: " . $this->SSL);
+			if (!$save_host == True) array_push($file_array, "\n\n# hostname of LDAP server (e.g localhost)\n" . "host: " . $this->Host);
+			if (!$save_port == True) array_push($file_array, "\n\n# portnumber of LDAP server (default 389)\n" . "port: " . $this->Port);
+			if (!$save_passwd == True) array_push($file_array, "\n\n# password to change these preferences via webfrontend\n" . "passwd: " . $this->Passwd);
+			if (!$save_admins == True) array_push($file_array, "\n\n# list of users who are allowed to use LDAP Account Manager\n" . 
 				"# names have to be seperated by semicolons\n" . 
 				"# e.g. admins: cn=admin,dc=yourdomain,dc=org;cn=root,dc=yourdomain,dc=org\n" . "admins: " . $this->Admins);
-			if (!$save_suffusr == True) array_push($file_array, "\n# suffix of users\n" . 
-				"# e.g. ou=People,dc=yourdomain,dc=org\n" . "usersuffix: " . $this->suff_users);
-			if (!$save_suffgrp == True) array_push($file_array, "\n# suffix of groups\n" . 
-				"# e.g. ou=Groups,dc=yourdomain,dc=org\n" . "groupsuffix: " . $this->suff_groups);
-			if (!$save_suffhst == True) array_push($file_array, "\n# suffix of Samba hosts\n" . 
-				"# e.g. ou=machines,dc=yourdomain,dc=org\n" . "hostsuffix: " . $this->suff_hosts);
+			if (!$save_suffusr == True) array_push($file_array, "\n\n# suffix of users\n" . 
+				"# e.g. ou=People,dc=yourdomain,dc=org\n" . "usersuffix: " . $this->Suff_users);
+			if (!$save_suffgrp == True) array_push($file_array, "\n\n# suffix of groups\n" . 
+				"# e.g. ou=Groups,dc=yourdomain,dc=org\n" . "groupsuffix: " . $this->Suff_groups);
+			if (!$save_suffhst == True) array_push($file_array, "\n\n# suffix of Samba hosts\n" . 
+				"# e.g. ou=machines,dc=yourdomain,dc=org\n" . "hostsuffix: " . $this->Suff_hosts);
+			if (!$save_minUID == True) array_push($file_array, "\n\n# minimum UID number\n" . "minUID: " . $this->MinUID);
+			if (!$save_maxUID == True) array_push($file_array, "\n\n# maximum UID number\n" . "maxUID: " . $this->MaxUID);
+			if (!$save_minGID == True) array_push($file_array, "\n\n# minimum GID number\n" . "minGID: " . $this->MinGID);
+			if (!$save_maxGID == True) array_push($file_array, "\n\n# maximum GID number\n" . "maxGID: " . $this->MaxGID);
+			if (!$save_minMach == True) array_push($file_array, "\n\n# minimum UID number for Samba hosts\n" . "minMachine: " . $this->MinMachine);
+			if (!$save_maxMach == True) array_push($file_array, "\n\n# maximum UID number for Samba hosts\n" . "maxMachine: " . $this->MaxMachine);
+			if (!$save_defShell == True) array_push($file_array, "\n\n# default shell when creating new user\n" . "defaultShell: " . $this->DefaultShell);
+			if (!$save_shellList == True) array_push($file_array, "\n\n# list of possible shells\n" . "shellList: " . $this->ShellList);
 			$file = fopen($conffile, "w");
 			for ($i = 0; $i < sizeof($file_array); $i++) fputs($file, $file_array[$i]);
 			fclose($file);
@@ -186,13 +278,21 @@ class Config {
 	
 	// prints current preferences
 	function printconf() {
-		echo _("<b>SSL: </b>" ) . $this->SSL . "</br>";
-		echo _("<b>Host: </b>") . $this->Host . "</br>";
-		echo _("<b>Port: </b>") . $this->Port . "</br>";
-		echo _("<b>Admins: </b>") . $this->Adminstring . "</br>";
-		echo _("<b>UserSuffix: </b>") . $this->suff_users . "</br>";
-		echo _("<b>GroupSuffix: </b>") . $this->suff_groups . "</br>";
-		echo _("<b>HostSuffix: </b>") . $this->suff_hosts;
+		echo _("<b>SSL: </b>" ) . $this->SSL . "<br>";
+		echo _("<b>Host: </b>") . $this->Host . "<br>";
+		echo _("<b>Port: </b>") . $this->Port . "<br>";
+		echo _("<b>Admins: </b>") . $this->Adminstring . "<br>";
+		echo _("<b>UserSuffix: </b>") . $this->Suff_users . "<br>";
+		echo _("<b>GroupSuffix: </b>") . $this->Suff_groups . "<br>";
+		echo _("<b>HostSuffix: </b>") . $this->Suff_hosts . "<br>";
+		echo _("<b>minUID: </b>") . $this->MinUID . "<br>";
+		echo _("<b>maxUID: </b>") . $this->MaxUID . "<br>";
+		echo _("<b>minGID: </b>") . $this->MinGID . "<br>";
+		echo _("<b>maxGID: </b>") . $this->MaxGID . "<br>";
+		echo _("<b>minMachine: </b>") . $this->MinMachine . "<br>";
+		echo _("<b>maxMachine: </b>") . $this->MaxMachine . "<br>";
+		echo _("<b>Default Shell: </b>") . $this->DefaultShell . "<br>";
+		echo _("<b>Shell list: </b>") . $this->ShellList;
 	}
 
 // functions to read/write preferences
@@ -264,32 +364,104 @@ class Config {
 	}
 	
 	function get_UserSuffix() {
-		return $this->suff_users;
+		return $this->Suff_users;
 	}
 	
 	function set_UserSuffix($value) {
-		if (is_string($value)) $this->suff_users = $value;
+		if (is_string($value)) $this->Suff_users = $value;
 		else echo _("Config->set_UserSuffix failed!");
 	}
 	
 	function get_GroupSuffix() {
-		return $this->suff_groups;
+		return $this->Suff_groups;
 	}
 	
 	function set_GroupSuffix($value) {
-		if (is_string($value)) $this->suff_groups = $value;
+		if (is_string($value)) $this->Suff_groups = $value;
 		else echo _("Config->set_GroupSuffix failed!");
 	}
 	
 	function get_HostSuffix() {
-		return $this->suff_hosts;
+		return $this->Suff_hosts;
 	}
 	
 	function set_HostSuffix($value) {
-		if (is_string($value)) $this->suff_hosts = $value;
+		if (is_string($value)) $this->Suff_hosts = $value;
 		else echo _("Config->set_HostSuffix failed!");
 	}
 	
+	function get_minUID() {
+	return $this->MinUID;
+	}
+	
+	function set_minUID($value) {
+		if (is_numeric($value)) $this->MinUID = $value;
+		else echo _("Config->set_minUID failed!");
+	}
+
+	function get_maxUID() {
+	return $this->MaxUID;
+	}
+	
+	function set_maxUID($value) {
+		if (is_numeric($value)) $this->MaxUID = $value;
+		else echo _("Config->set_maxUID failed!");
+	}
+
+	function get_minGID() {
+	return $this->MinGID;
+	}
+	
+	function set_minGID($value) {
+		if (is_numeric($value)) $this->MinGID = $value;
+		else echo _("Config->set_minGID failed!");
+	}
+
+	function get_maxGID() {
+	return $this->MaxGID;
+	}
+	
+	function set_maxGID($value) {
+		if (is_numeric($value)) $this->MaxGID = $value;
+		else echo _("Config->set_maxGID failed!");
+	}
+
+	function get_minMachine() {
+	return $this->MinMachine;
+	}
+	
+	function set_minMachine($value) {
+		if (is_numeric($value)) $this->MinMachine = $value;
+		else echo _("Config->set_minMachine failed!");
+	}
+
+	function get_maxMachine() {
+	return $this->MaxMachine;
+	}
+	
+	function set_maxMachine($value) {
+		if (is_numeric($value)) $this->MaxMachine = $value;
+		else echo _("Config->set_maxMachine failed!");
+	}
+	
+	function get_defaultShell() {
+	return $this->DefaultShell;
+	}
+	
+	function set_defaultShell($value) {
+		if (is_string($value)) $this->DefaultShell = $value;
+		else echo _("Config->set_shellList failed!");
+	}
+
+	function get_shellList() {
+	return $this->ShellList;
+	}
+	
+	function set_shellList($value) {
+		if (is_string($value)) $this->ShellList = $value;
+		else echo _("Config->set_shellList failed!");
+	}
+
 }
 
 ?>

@@ -55,6 +55,38 @@ if (chop($suffgroups) == "") {
 	echo _("<b>" . _("UserSuffix is empty!") . "</b>");
 	exit;
 }
+if (chop($minUID) == "") {
+	echo _("<b>" . _("minUID is empty!") . "</b>");
+	exit;
+}
+if (chop($maxUID) == "") {
+	echo _("<b>" . _("maxUID is empty!") . "</b>");
+	exit;
+}
+if (chop($minGID) == "") {
+	echo _("<b>" . _("minGID is empty!") . "</b>");
+	exit;
+}
+if (chop($maxGID) == "") {
+	echo _("<b>" . _("maxGID is empty!") . "</b>");
+	exit;
+}
+if (chop($minMach) == "") {
+	echo _("<b>" . _("minMachine is empty!") . "</b>");
+	exit;
+}
+if (chop($maxMach) == "") {
+	echo _("<b>" . _("maxMachine is empty!") . "</b>");
+	exit;
+}
+if (chop($defShell) == "") {
+	echo _("<b>" . _("default shell is empty!") . "</b>");
+	exit;
+}
+if (chop($shellList) == "") {
+	echo _("<b>" . _("shell list is empty!") . "</b>");
+	exit;
+}
 
 // set new preferences
 $conf->set_Host($host);
@@ -65,6 +97,14 @@ else $conf->set_SSL("False");
 $conf->set_UserSuffix($suffusers);
 $conf->set_GroupSuffix($suffgroups);
 $conf->set_HostSuffix($suffhosts);
+$conf->set_minUID($minUID);
+$conf->set_maxUID($maxUID);
+$conf->set_minGID($minGID);
+$conf->set_maxGID($maxGID);
+$conf->set_minMachine($minMach);
+$conf->set_maxMachine($maxMach);
+$conf->set_defaultShell($defShell);
+$conf->set_shellList($shellList);
 
 echo ("<p align=\"center\"><img src=\"../graphics/banner.jpg\"></p><hr><br><br>");
 
