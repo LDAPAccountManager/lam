@@ -24,9 +24,10 @@ $Id$
 */
 
 include_once('../lib/account.inc'); // File with custom functions
-include_once('../lib/config.inc');
-include_once('../lib/ldap.inc');
-include_once('../lib/profiles.inc');
+include_once('../lib/config.inc'); // File with configure-functions
+include_once('../lib/ldap.inc'); // LDAP-functions
+include_once('../lib/profiles.inc'); // functions to load and save profiles
+include_once('../templates/status.php'); // Return error-message
 
 registervars(); // Register all needed variables in session and register session
 $error = "0";
@@ -218,11 +219,10 @@ echo '</title>
 	</head><body>
 	<form action="account.php" method="post">
 	<meta http-equiv="pragma" content="no-cache">
-	<meta http-equiv="cache-control" content="no-cache">
-	<table rules="all" class="account" width="100%">
-	<tr><td>';
-	if ($error != "0") echo $error;
-	echo '</td></tr>';
+	<meta http-equiv="cache-control" content="no-cache">';
+	if ($error != "0") StatusMessage('ERROR', _('Invalid Value!'), $error);
+	echo '<table rules="all" class="account" width="100%">
+	<tr><td></td></tr>';
 
 
 if (!$select_local) $select_local='general';
@@ -715,27 +715,24 @@ switch ($select_local) {
 		switch ( $_SESSION['type2'] ) {
 			case 'user' :
 				if (($_SESSION['modify']==1) && ($_SESSION['account']->general_uidNumber != $_SESSION['account_old']->general_uidNumber)) {
-					echo '<tr><td>';
-					echo _('UID-number has changed. You have to run the following command as root in order to change existing file-permissions:');
-					echo '</td><td>';
-					echo 'find / -gid ' . $_SESSION['account_old' ]->general_uidNumber . ' -exec chown ' . $_SESSION['account']->general_uidNumber . ' {} \;';
-					echo '</td></tr>';
+					echo '<tr>';
+					StatusMessage ('INFO', _('UID-number has changed. You have to run the following command as root in order to change existing file-permissions:'),
+					'find / -gid ' . $_SESSION['account_old' ]->general_uidNumber . ' -exec chown ' . $_SESSION['account']->general_uidNumber . ' {} \;');
+					echo '</tr>';
 					}
 				if (($_SESSION['modify']==1) && ($_SESSION['account']->general_homedir != $_SESSION['account_old']->general_homedir)) {
-					echo '<tr><td>';
-					echo _('Home Directory has changed. You have to run the following command as root in order to change the existing homedirectory:');
-					echo '</td><td>';
-					echo 'mv ' . $_SESSION['account_old' ]->general_homedir . ' ' . $_SESSION['account']->general_homedir;
-					echo '</td></tr>';
+					echo '<tr>';
+					StatusMessage ('INFO', _('Home Directory has changed. You have to run the following command as root in order to change the existing homedirectory:'),
+					'mv ' . $_SESSION['account_old' ]->general_homedir . ' ' . $_SESSION['account']->general_homedir);
+					echo '</tr>';
 					}
 				break;
 			case 'group' :
 				if (($_SESSION['modify']==1) && ($_SESSION['account']->general_uidNumber != $_SESSION['account_old']->general_uidNumber)) {
-					echo '<tr><td>';
-					echo _('GID-number has changed. You have to run the following command as root in order to change existing file-permissions:');
-					echo '</td><td>';
-					echo 'find / -gid ' . $_SESSION['account_old' ]->general_uidNumber . ' -exec chgrp ' . $_SESSION['account']->general_uidNumber . ' {} \;';
-					echo '</td></tr>';
+					echo '<tr>';
+					StausMessage ('INFO', _('GID-number has changed. You have to run the following command as root in order to change existing file-permissions:'),
+					'find / -gid ' . $_SESSION['account_old' ]->general_uidNumber . ' -exec chgrp ' . $_SESSION['account']->general_uidNumber . ' {} \;');
+					echo '</tr>';
 					echo '<tr><td>';
 					echo '<input name="f_final_changegids" type="checkbox"';
 						if ($_SESSION['account']->final_changegids) echo ' checked ';

@@ -815,7 +815,9 @@ function createhost() { // Will create the LDAP-Host
 				if ($success) ldap_delete($_SESSION['ldap']->server(),$_SESSION['account_old']->general_dn);
 				}
 		if (!$success) return 5;
-		if ($attr['uidNumber']!=$_SESSION['account_old']->general_uidNumber) echo ('find / -uid ' . $_SESSION['account_old' ]->general_uidNumber . ' -exec chown ' . $_SESSION['account']->general_uidNumber . ' {} \;');
+		if ($attr['uidNumber']!=$_SESSION['account_old']->general_uidNumber) StatusMessage('INFO', _('Attention:'),
+			_('You have to run the following command if yuo want to preserve filepermission: ').
+			('find / -uid ' . $_SESSION['account_old' ]->general_uidNumber . ' -exec chown ' . $_SESSION['account']->general_uidNumber . ' {} \;'));
 		// Write Groupmemberchips
 		$allgroups = $_SESSION['account']->general_groupadd;
 		if (!in_array($_SESSION['account']->general_group, $allgroups)) $allgroups[] = $_SESSION['account']->general_group;
