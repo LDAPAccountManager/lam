@@ -63,8 +63,8 @@ foreach ($opt_keys as $element) {
 	}
 	// checkboxes
 	elseif ($_SESSION['profile_types'][$element] == "checkbox") {
-		if ($_POST[$element] == "checked") $options[$element] = array(true);
-		else $options[$element] = array(false);
+		if ($_POST[$element] == "on") $options[$element] = array('true');
+		else $options[$element] = array('false');
 	}
 	// dropdownbox
 	elseif ($_SESSION['profile_types'][$element] == "select") {
