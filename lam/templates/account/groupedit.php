@@ -33,49 +33,79 @@ include_once('../../lib/ldap.inc'); // LDAP-functions
 session_save_path('../../sess');
 @session_start();
 setlanguage();
+
+if (!isset($_POST['varkey'])) $varkey = session_id().time();
+	else $varkey = $_POST['varkey'];
+
+if (!isset($_SESSION['account_'.$varkey.'_account_new'])) $_SESSION['account_'.$varkey.'_account_new'] = new account();
+if (!isset($_SESSION['account_'.$varkey.'_account_old'])) $_SESSION['account_'.$varkey.'_account_old'] = new account();
+if (!isset($_SESSION['account_'.$varkey.'_final_changegids'])) $_SESSION['account_'.$varkey.'_final_changegids'] = '';
+
+// Register Session-Variables with references so we don't net to change to complete code if names changes
+$account_new =& $_SESSION['account_'.$varkey.'_account_new'];
+$final_changegids =& $_SESSION['account_'.$varkey.'_final_changegids'];
+if (isset($_SESSION['account_'.$varkey.'_account_old'])) $account_old =& $_SESSION['account_'.$varkey.'_account_old'];
+
+$ldap_intern =& $_SESSION['ldap'];
+$config_intern =& $_SESSION['config'];
+$lamurl_intern =& $_SESSION['lamurl'];
+$header_intern =& $_SESSION['header'];
+$userDN_intern =& $_SESSION['userDN'];
+
+if (isset($_POST['select'])) $select =& $_POST['select'];
+if (isset($_POST['load'])) $load =& $_POST['load'];
+
 if (isset($_GET['DN'])) {
 	if (isset($_GET['DN']) && $_GET['DN']!='') {
-		if (isset($_SESSION['account_old'])) unset($_SESSION['account_old']);
+		if (isset($_SESSION['account_'.$varkey.'_account_old'])) {
+			unset($account_old);
+			unset($_SESSION['account_'.$varkey.'_account_old']);
+			$_SESSION['account_'.$varkey.'_account_old'] = new account();
+			$account_old =& $_SESSION['account_'.$varkey.'_account_old'];
+			}
 		$DN = str_replace("\'", '',$_GET['DN']);
-		$_SESSION['account'] = loadgroup($DN);
-		$_SESSION['account_old'] = $_SESSION['account'];
-		$_SESSION['account']->general_dn = substr($_SESSION['account']->general_dn, strpos($_SESSION['account']->general_dn, ',')+1);
-		$_SESSION['final_changegids'] = '';
+		$account_new = loadgroup($DN);
+		$account_old = $account_new;
+		$account_new->general_dn = substr($account_new->general_dn, strpos($account_new->general_dn, ',')+1);
+		$final_changegids = '';
 		}
 	}
 else if (count($_POST)==0) { // Startcondition. groupedit.php was called from outside
-	$_SESSION['account'] = loadGroupProfile('default');
-	$_SESSION['account'] ->type = 'group';
-	// load quotas from profile and check if they are valid
-	$values = getquotas('group');
-	if (isset($_SESSION['account']->quota[0])) { // check quotas from profile
-		$i=0;
-		// check quota settings
-		while (isset($_SESSION['account']->quota[$i])) {
-			$found = (-1);
-			for ($j=0; $j<count($values->quota); $j++)
-				if ($values->quota[$j][0]==$_SESSION['account']->quota[$i][0]) $found = $j;
-			if ($found==-1) unset($_SESSION['account']->quota[$i]);
-			else {
-				$_SESSION['account']->quota[$i][1] = $values->quota[$found][1];
-				$_SESSION['account']->quota[$i][5] = $values->quota[$found][5];
-				$_SESSION['account']->quota[$i][4] = $values->quota[$found][4];
-				$_SESSION['account']->quota[$i][8] = $values->quota[$found][8];
-				$i++;
+	$account_new = loadGroupProfile('default');
+	$account_new ->type = 'group';
+	if ($config_intern->scriptServer) {
+		// load quotas from profile and check if they are valid
+		$values = getquotas('group');
+		if (isset($account_new->quota[0])) { // check quotas from profile
+			$i=0;
+			// check quota settings
+			while (isset($account_new->quota[$i])) {
+				$found = (-1);
+				for ($j=0; $j<count($values->quota); $j++)
+					if ($values->quota[$j][0]==$account_new->quota[$i][0]) $found = $j;
+				if ($found==-1) unset($account_new->quota[$i]);
+				else {
+					$account_new->quota[$i][1] = $values->quota[$found][1];
+					$account_new->quota[$i][5] = $values->quota[$found][5];
+					$account_new->quota[$i][4] = $values->quota[$found][4];
+					$account_new->quota[$i][8] = $values->quota[$found][8];
+					$i++;
+					}
+				}
+			$account_new->quota = array_values($account_new->quota);
+			}
+		else { // No quotas saved in profile
+			if (is_object($values)) {
+				while (list($key, $val) = each($values)) // Set only defined values
+				if (isset($val)) $account_new->$key = $val;
 				}
 			}
-		$_SESSION['account']->quota = array_values($_SESSION['account']->quota);
 		}
-	else { // No quotas saved in profile
-		if (is_object($values)) {
-			while (list($key, $val) = each($values)) // Set only defined values
-			if (isset($val)) $_SESSION['account']->$key = $val;
-			}
-		}
-	if (isset($_SESSION['account_old'])) unset($_SESSION['account_old']);
+	unset($account_old);
+	unset($_SESSION['account_'.$varkey.'_account_old']);
 	}
 
-switch ($_POST['select']) { // Select which part of page should be loaded and check values
+switch ($select) { // Select which part of page should be loaded and check values
 	// general = startpage, general account paramters
 	// samba = page with all samba-related parameters e.g. smbpassword
 	// quota = page with all quota-related parameters e.g. hard file quota
@@ -87,18 +117,18 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 		do { // X-Or, only one if() can be true
 			if (isset($_POST['users']) && isset($_POST['add'])) { // Add users to list
 				// Add new user
-				$_SESSION['account']->unix_memberUid = array_merge($_SESSION['account']->unix_memberUid, $_POST['users']);
+				$account_new->unix_memberUid = array_merge($account_new->unix_memberUid, $_POST['users']);
 				// remove doubles
-				$_SESSION['account']->unix_memberUid = array_flip($_SESSION['account']->unix_memberUid);
-				array_unique($_SESSION['account']->unix_memberUid);
-				$_SESSION['account']->unix_memberUid = array_flip($_SESSION['account']->unix_memberUid);
+				$account_new->unix_memberUid = array_flip($account_new->unix_memberUid);
+				array_unique($account_new->unix_memberUid);
+				$account_new->unix_memberUid = array_flip($account_new->unix_memberUid);
 				// sort user
-				sort($_SESSION['account']->unix_memberUid);
+				sort($account_new->unix_memberUid);
 				// display groupmembers page
 				break;
 				}
 			if (isset($_POST['members']) && isset($_POST['remove'])) { // remove users fromlist
-				$_SESSION['account']->unix_memberUid = array_delete($_POST['members'], $_SESSION['account']->unix_memberUid);
+				$account_new->unix_memberUid = array_delete($_POST['members'], $account_new->unix_memberUid);
 				break;
 				}
 			} while(0);
@@ -106,122 +136,122 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 		break;
 
 	case 'general':
-		// Write all general values into $_SESSION['account'] if no profile should be loaded
-		if (!$_POST['load']) {
-			$_SESSION['account']->general_dn = $_POST['f_general_suffix'];
-			$_SESSION['account']->general_username = $_POST['f_general_username'];
-			$_SESSION['account']->general_uidNumber = $_POST['f_general_uidNumber'];
-			$_SESSION['account']->general_gecos = $_POST['f_general_gecos'];
+		// Write all general values into $account_new if no profile should be loaded
+		if (!$load) {
+			$account_new->general_dn = $_POST['f_general_suffix'];
+			$account_new->general_username = $_POST['f_general_username'];
+			$account_new->general_uidNumber = $_POST['f_general_uidNumber'];
+			$account_new->general_gecos = $_POST['f_general_gecos'];
 
 			// Check if values are OK and set automatic values.  if not error-variable will be set
 
 			// Check if Groupname contains only valid characters
-			if ( !ereg('^([a-z]|[0-9]|[.]|[-]|[_])*$', $_SESSION['account']->general_username))
+			if ( !ereg('^([a-z]|[0-9]|[.]|[-]|[_])*$', $account_new->general_username))
 				$errors[] = array('ERROR', _('Groupname'), _('Groupname contains invalid characters. Valid characters are: a-z, 0-9 and .-_ !'));
-			if ($_SESSION['account']->general_gecos=='') {
-				$_SESSION['account']->general_gecos = $_SESSION['account']->general_username ;
+			if ($account_new->general_gecos=='') {
+				$account_new->general_gecos = $account_new->general_username ;
 				$errors[] = array('INFO', _('Gecos'), _('Inserted groupname in gecos-field.'));
 				}
 			// Create automatic groupaccount with number if original group already exists
 			// Reset name to original name if new name is in use
-			if (ldapexists($_SESSION['account'], 'group', $_SESSION['account_old']) && is_object($_SESSION['account_old']))
-				$_SESSION['account']->general_username = $_SESSION['account_old']->general_username;
-			while ($temp = ldapexists($_SESSION['account'], 'group', $_SESSION['account_old'])) {
+			if (ldapexists($account_new, 'group', $account_old) && is_object($account_old))
+				$account_new->general_username = $account_old->general_username;
+			while ($temp = ldapexists($account_new, 'group', $account_old)) {
 				// get last character of username
-				$lastchar = substr($_SESSION['account']->general_username, strlen($_SESSION['account']->general_username)-1, 1);
+				$lastchar = substr($account_new->general_username, strlen($account_new->general_username)-1, 1);
 				// Last character is no number
 				if ( !ereg('^([0-9])+$', $lastchar))
-					$_SESSION['account']->general_username = $_SESSION['account']->general_username . '2';
+					$account_new->general_username = $account_new->general_username . '2';
 				 else {
-				 	$i=strlen($_SESSION['account']->general_username)-1;
+				 	$i=strlen($account_new->general_username)-1;
 					$mark = false;
 				 	while (!$mark) {
-						if (ereg('^([0-9])+$',substr($_SESSION['account']->general_username, $i, strlen($_SESSION['account']->general_username)-$i))) $i--;
+						if (ereg('^([0-9])+$',substr($account_new->general_username, $i, strlen($account_new->general_username)-$i))) $i--;
 							else $mark=true;
 						}
 					// increase last number with one
-					$firstchars = substr($_SESSION['account']->general_username, 0, $i+1);
-					$lastchars = substr($_SESSION['account']->general_username, $i+1, strlen($_SESSION['account']->general_username)-$i);
-					$_SESSION['account']->general_username = $firstchars . (intval($lastchars)+1);
+					$firstchars = substr($account_new->general_username, 0, $i+1);
+					$lastchars = substr($account_new->general_username, $i+1, strlen($account_new->general_username)-$i);
+					$account_new->general_username = $firstchars . (intval($lastchars)+1);
 				 	}
 				}
-			if ($_SESSION['account']->general_username != $_POST['f_general_username']) $errors[] = array('WARN', _('Groupname'), _('Groupname already in use. Selected next free groupname.'));
+			if ($account_new->general_username != $_POST['f_general_username']) $errors[] = array('WARN', _('Groupname'), _('Groupname already in use. Selected next free groupname.'));
 
 			// Check if UID is valid. If none value was entered, the next useable value will be inserted
-			$_SESSION['account']->general_uidNumber = checkid($_SESSION['account'], 'group', $_SESSION['account_old']);
-			if (is_string($_SESSION['account']->general_uidNumber)) { // true if checkid has returned an error
-				$errors[] = array('ERROR', _('ID-Number'), $_SESSION['account']->general_uidNumber);
+			$account_new->general_uidNumber = checkid($account_new, 'group', $account_old);
+			if (is_string($account_new->general_uidNumber)) { // true if checkid has returned an error
+				$errors[] = array('ERROR', _('ID-Number'), $account_new->general_uidNumber);
 			unset($return->general_uidNumber);
 			}
 
 			// Check if Name-length is OK. minLength=3, maxLength=20
-			if ( !ereg('.{3,20}', $_SESSION['account']->general_username)) $errors[] = array('ERROR', _('Name'), _('Name must contain between 3 and 20 characters.'));
+			if ( !ereg('.{3,20}', $account_new->general_username)) $errors[] = array('ERROR', _('Name'), _('Name must contain between 3 and 20 characters.'));
 			// Check if Name starts with letter
-			if ( !ereg('^([a-z]|[A-Z]).*$', $_SESSION['account']->general_username))
+			if ( !ereg('^([a-z]|[A-Z]).*$', $account_new->general_username))
 				$errors[] = array('ERROR', _('Name'), _('Name contains invalid characters. First character must be a letter'));
 
 			}
 		break;
 
 	case 'samba':
-		$samba3domains = $_SESSION['ldap']->search_domains($_SESSION[config]->get_domainSuffix());
+		$samba3domains = $ldap_intern->search_domains($config_intern->get_domainSuffix());
 		foreach ($samba3domains as $domain)
 			if ($_POST['f_smb_domain'] == $domain->name)
-				$_SESSION['account']->smb_domain = $domain;
-		$_SESSION['account']->smb_displayName = $_POST['f_smb_displayName'];
+				$account_new->smb_domain = $domain;
+		$account_new->smb_displayName = $_POST['f_smb_displayName'];
 
-		if ($_SESSION['config']->is_samba3())
+		if ($config_intern->is_samba3())
 			switch ($_POST['f_smb_mapgroup']) {
-				case '*'._('Domain Guests'): $_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-" . '514'; break;
-				case '*'._('Domain Users'): $_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-" . '513'; break;
-				case '*'._('Domain Admins'): $_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-" . '512'; break;
-				case $_SESSION['account']->general_username:
-						$_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-".
-							(2 * getgid($_SESSION['account']->general_username) + $_SESSION['account']->smb_domain->RIDbase +1);
+				case '*'._('Domain Guests'): $account_new->smb_mapgroup = $account_new->smb_domain->SID . "-" . '514'; break;
+				case '*'._('Domain Users'): $account_new->smb_mapgroup = $account_new->smb_domain->SID . "-" . '513'; break;
+				case '*'._('Domain Admins'): $account_new->smb_mapgroup = $account_new->smb_domain->SID . "-" . '512'; break;
+				case $account_new->general_username:
+						$account_new->smb_mapgroup = $account_new->smb_domain->SID . "-".
+							(2 * getgid($account_new->general_username) + $account_new->smb_domain->RIDbase +1);
 					break;
 				}
 		else
 			switch ($_POST['f_smb_mapgroup']) {
-				case '*'._('Domain Guests'): $_SESSION['account']->smb_mapgroup = '514'; break;
-				case '*'._('Domain Users'): $_SESSION['account']->smb_mapgroup = '513'; break;
-				case '*'._('Domain Admins'): $_SESSION['account']->smb_mapgroup = '512'; break;
-				case $_SESSION['account']->general_username:
-					$_SESSION['account']->smb_mapgroup = (2 * getgid($_SESSION['account']->general_username) + 1001);
+				case '*'._('Domain Guests'): $account_new->smb_mapgroup = '514'; break;
+				case '*'._('Domain Users'): $account_new->smb_mapgroup = '513'; break;
+				case '*'._('Domain Admins'): $account_new->smb_mapgroup = '512'; break;
+				case $account_new->general_username:
+					$account_new->smb_mapgroup = (2 * getgid($account_new->general_username) + 1001);
 					break;
 				}
 
 		// Check if value is set
-		if (($_SESSION['account']->smb_displayName=='') && isset($_SESSION['account']->general_gecos)) {
-			$_SESSION['account']->smb_displayName = $_SESSION['account']->general_gecos;
+		if (($account_new->smb_displayName=='') && isset($account_new->general_gecos)) {
+			$account_new->smb_displayName = $account_new->general_gecos;
 			$errors[] = array('INFO', _('Display name'), _('Inserted gecos-field as display name.'));
 			}
 
 		break;
 
 	case 'quota':
-		// Write all general values into $_SESSION['account']
+		// Write all general values into $account_new
 		$i=0;
-		while ($_SESSION['account']->quota[$i][0]) {
-			$_SESSION['account']->quota[$i][2] = $_POST['f_quota_'.$i.'_2'];
-			$_SESSION['account']->quota[$i][3] = $_POST['f_quota_'.$i.'_3'];
-			$_SESSION['account']->quota[$i][6] = $_POST['f_quota_'.$i.'_6'];
-			$_SESSION['account']->quota[$i][7] = $_POST['f_quota_'.$i.'_7'];
+		while ($account_new->quota[$i][0]) {
+			$account_new->quota[$i][2] = $_POST['f_quota_'.$i.'_2'];
+			$account_new->quota[$i][3] = $_POST['f_quota_'.$i.'_3'];
+			$account_new->quota[$i][6] = $_POST['f_quota_'.$i.'_6'];
+			$account_new->quota[$i][7] = $_POST['f_quota_'.$i.'_7'];
 			// Check if values are OK and set automatic values. if not error-variable will be set
-			if (!ereg('^([0-9])*$', $_SESSION['account']->quota[$i][2]))
+			if (!ereg('^([0-9])*$', $account_new->quota[$i][2]))
 				$errors[] = array('ERROR', _('Block soft quota'), _('Block soft quota contains invalid characters. Only natural numbers are allowed'));
-			if (!ereg('^([0-9])*$', $_SESSION['account']->quota[$i][3]))
+			if (!ereg('^([0-9])*$', $account_new->quota[$i][3]))
 				$errors[] = array('ERROR', _('Block hard quota'), _('Block hard quota contains invalid characters. Only natural numbers are allowed'));
-			if (!ereg('^([0-9])*$', $_SESSION['account']->quota[$i][6]))
+			if (!ereg('^([0-9])*$', $account_new->quota[$i][6]))
 				$errors[] = array('ERROR', _('Inode soft quota'), _('Inode soft quota contains invalid characters. Only natural numbers are allowed'));
-			if (!ereg('^([0-9])*$', $_SESSION['account']->quota[$i][7]))
+			if (!ereg('^([0-9])*$', $account_new->quota[$i][7]))
 				$errors[] = array('ERROR', _('Inode hard quota'), _('Inode hard quota contains invalid characters. Only natural numbers are allowed'));
 			$i++;
 			}
 		break;
 
 	case 'final':
-		// Write all general values into $_SESSION['account']
-		if ($_POST['f_final_changegids']) $_SESSION['final_changegids'] = $_POST['f_final_changegids'] ;
+		// Write all general values into $account_new
+		if ($_POST['f_final_changegids']) $final_changegids = $_POST['f_final_changegids'] ;
 		break;
 
 	}
@@ -230,41 +260,41 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 do { // X-Or, only one if() can be true
 	if ($_POST['next_members']) {
 		if (!is_array($errors)) $select_local='groupmembers';
-			else $select_local=$_POST['select'];
+			else $select_local=$select;
 		break;
 		}
 	if ($_POST['next_general']) {
 		if (!is_array($errors)) $select_local='general';
-			else $select_local=$_POST['select'];
+			else $select_local=$select;
 		break;
 		}
 	if ($_POST['next_samba']) {
 		if (!is_array($errors)) $select_local='samba';
-			else $select_local=$_POST['select'];
+			else $select_local=$select;
 		break;
 		}
 	if ($_POST['next_quota']) {
 		if (!is_array($errors)) $select_local='quota';
-			else $select_local=$_POST['select'];
+			else $select_local=$select;
 		break;
 		}
 	if ($_POST['next_final']) {
 		if (!isset($errors)) $select_local='final';
-			else $select_local=$_POST['select'];
+			else $select_local=$select;
 		break;
 		}
 	if ($_POST['next_reset']) {
-		$_SESSION['account'] = $_SESSION['account_old'];
-		$_SESSION['account']->unix_password='';
-		$_SESSION['account']->smb_password='';
-		$_SESSION['account']->smb_flagsW = 0;
-		$_SESSION['account']->general_dn = substr($_SESSION['account']->general_dn, strpos($_SESSION['account']->general_dn, ',')+1);
-		$select_local = $_POST['select'];
+		$account_new = $account_old;
+		$account_new->unix_password='';
+		$account_new->smb_password='';
+		$account_new->smb_flagsW = 0;
+		$account_new->general_dn = substr($account_new->general_dn, strpos($account_new->general_dn, ',')+1);
+		$select_local = $select;
 		break;
 		}
 	if ( $_POST['create'] ) { // Create-Button was pressed
-		if ($_SESSION['account_old']) $result = modifygroup($_SESSION['account'],$_SESSION['account_old']);
-		 else $result = creategroup($_SESSION['account']); // account.inc
+		if ($account_old) $result = modifygroup($account_new,$account_old);
+		 else $result = creategroup($account_new); // account.inc
 		if ( $result==1 || $result==3 ) $select_local = 'finish';
 			else $select_local = 'final';
 		break;
@@ -272,62 +302,63 @@ do { // X-Or, only one if() can be true
 	// Reset variables if recreate-button was pressed
 	if ($_POST['createagain']) {
 		$select_local='general';
-		unset($_SESSION['account']);
-		$_SESSION['account'] = loadGroupProfile('default');
-		$_SESSION['account'] ->type = 'group';
+		unset($account_new);
+		$account_new = loadGroupProfile('default');
+		$account_new ->type = 'group';
 		break;
 		}
 	if ($_POST['backmain']) {
-		metaRefresh($_SESSION['lamurl']."templates/lists/listgroups.php");
+		metaRefresh($lamurl_intern."templates/lists/listgroups.php");
 		die;
 		break;
 		}
-	if ($_POST['load']) {
-		$_SESSION['account']->general_dn = $_POST['f_general_suffix'];
-		$_SESSION['account']->general_username = $_POST['f_general_username'];
-		$_SESSION['account']->general_uidNumber = $_POST['f_general_uidNumber'];
-		$_SESSION['account']->general_gecos = $_POST['f_general_gecos'];
+	if ($load) {
+		$account_new->general_dn = $_POST['f_general_suffix'];
+		$account_new->general_username = $_POST['f_general_username'];
+		$account_new->general_uidNumber = $_POST['f_general_uidNumber'];
+		$account_new->general_gecos = $_POST['f_general_gecos'];
 		// load profile
 		if ($_POST['f_general_selectprofile']!='') $values = loadGroupProfile($_POST['f_general_selectprofile']);
 		if (is_object($values)) {
 			while (list($key, $val) = each($values)) // Set only defined values
-				if (isset($val)) $_SESSION['account']->$key = $val;
+				if (isset($val)) $account_new->$key = $val;
 			}
 
-		// load quotas from profile and check if they are valid
-		$values = getquotas('group', $_SESSION['account_old']->general_username);
-		if (isset($_SESSION['account']->quota[0])) { // check quotas from profile
-			$i=0;
-			// check quota settings
-			while (isset($_SESSION['account']->quota[$i])) {
-				$found = (-1);
-				for ($j=0; $j<count($values->quota); $j++)
-					if ($values->quota[$j][0]==$_SESSION['account']->quota[$i][0]) $found = $j;
-				if ($found==-1) unset($_SESSION['account']->quota[$i]);
-					else {
-					$_SESSION['account']->quota[$i][1] = $values->quota[$found][1];
-					$_SESSION['account']->quota[$i][5] = $values->quota[$found][5];
-					$_SESSION['account']->quota[$i][4] = $values->quota[$found][4];
-					$_SESSION['account']->quota[$i][8] = $values->quota[$found][8];
-					$i++;
+		if ($config_intern->scriptServer) {
+			// load quotas from profile and check if they are valid
+			$values = getquotas('group', $account_old->general_username);
+			if (isset($account_new->quota[0])) { // check quotas from profile
+				$i=0;
+				// check quota settings
+				while (isset($account_new->quota[$i])) {
+					$found = (-1);
+					for ($j=0; $j<count($values->quota); $j++)
+						if ($values->quota[$j][0]==$account_new->quota[$i][0]) $found = $j;
+					if ($found==-1) unset($account_new->quota[$i]);
+						else {
+						$account_new->quota[$i][1] = $values->quota[$found][1];
+						$account_new->quota[$i][5] = $values->quota[$found][5];
+						$account_new->quota[$i][4] = $values->quota[$found][4];
+						$account_new->quota[$i][8] = $values->quota[$found][8];
+						$i++;
+						}
+					}
+				$account_new->quota = array_values($account_new->quota);
+				}
+			else { // No quotas saved in profile
+				if (is_object($values)) {
+					while (list($key, $val) = each($values)) // Set only defined values
+					if (isset($val)) $account_new->$key = $val;
 					}
 				}
-			$_SESSION['account']->quota = array_values($_SESSION['account']->quota);
 			}
-		else { // No quotas saved in profile
-			if (is_object($values)) {
-				while (list($key, $val) = each($values)) // Set only defined values
-				if (isset($val)) $_SESSION['account']->$key = $val;
-				}
-			}
-
 		// select general page after group has been loaded
 		$select_local='general';
 		break;
 		}
 	if ($_POST['save']) {
 		// save profile
-		saveGroupProfile($_SESSION['account'], $_POST['f_finish_safeProfile']);
+		saveGroupProfile($account_new, $_POST['f_finish_safeProfile']);
 		// select last page displayed before user is created
 		$select_local='final';
 		break;
@@ -341,15 +372,16 @@ do { // X-Or, only one if() can be true
 	} while(0);
 
 // Write HTML-Header
-echo $_SESSION['header'];
+echo $header_intern;
 echo "<html><head><title>";
 echo _("Create new Account");
 echo "</title>\n".
-	"<link rel=\"stylesheet\" type=\"text/css\" href=\"".$_SESSION['lamurl']."style/layout.css\">\n".
+	"<link rel=\"stylesheet\" type=\"text/css\" href=\"".$lamurl_intern."style/layout.css\">\n".
 	"<meta http-equiv=\"pragma\" content=\"no-cache\">\n".
 	"<meta http-equiv=\"cache-control\" content=\"no-cache\">\n".
 	"</head><body>\n".
-	"<form action=\"groupedit.php\" method=\"post\">\n";
+	"<form action=\"groupedit.php\" method=\"post\">\n".
+	"<input name=\"varkey\" type=\"hidden\" value=\"".$varkey."\">\n";
 
 if (is_array($errors)) {
 	echo "<table class=\"groupedit\" width=\"100%\">\n";
@@ -357,7 +389,7 @@ if (is_array($errors)) {
 	echo "</table>";
 	}
 
-// print_r($_SESSION['account']);
+// print_r($account_old);
 
 switch ($select_local) { // Select which part of page will be loaded
 	// general = startpage, general account paramters
@@ -370,7 +402,7 @@ switch ($select_local) { // Select which part of page will be loaded
 	// finish = page shown after account has been created/modified
 	case 'groupmembers':
 		ldapreload('user');
-		$temp2 = $_SESSION['userDN'];
+		$temp2 = $userDN_intern;
 		unset($temp2[0]);
 		foreach ($temp2 as $temp) $users[] = $temp['cn'];
 		sort($users, SORT_STRING);
@@ -381,14 +413,14 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "</b></legend>\n";
 		echo "<input name=\"next_general\" type=\"submit\" value=\""; echo _('General'); echo "\">\n<br>";
 		echo "<input name=\"next_members\" type=\"submit\" disabled value=\""; echo _('Members'); echo "\">\n<br>";
-		if ($_SESSION['config']->is_samba3()) {
+		if ($config_intern->is_samba3()) {
 			echo "<input name=\"next_samba\" type=\"submit\" value=\""; echo _('Samba'); echo "\">\n<br>";
 			}
-		echo "<input name=\"next_quota\" type=\"submit\""; if (!isset($_SESSION['config']->scriptPath)) echo " disabled ";
+		echo "<input name=\"next_quota\" type=\"submit\""; if (!isset($config_intern->scriptPath)) echo " disabled ";
 		echo "value=\""; echo _('Quota'); echo "\">\n<br>";
 		echo "<input name=\"next_final\" type=\"submit\" value=\""; echo _('Final');
 		echo "\">";
-		if (isset($_SESSION['account_old'])) {
+		if (isset($account_old)) {
 			echo "<br><br>";
 			echo _("Reset all changes.");
 			echo "<br>";
@@ -401,17 +433,17 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "<tr><td valign=\"top\"><fieldset class=\"groupedit-middle\"><legend class=\"groupedit-bright\">";
 		echo _('Group members');
 		echo "</legend>";
-		if (count($_SESSION['account']->unix_memberUid)!=0) {
+		if (count($account_new->unix_memberUid)!=0) {
 			echo "<select name=\"members[]\" class=\"groupedit-bright\" size=15 multiple>\n";
-			for ($i=0; $i<count($_SESSION['account']->unix_memberUid); $i++)
-				if ($_SESSION['account']->unix_memberUid[$i]!='') echo "		<option>".$_SESSION['account']->unix_memberUid[$i]."</option>\n";
+			for ($i=0; $i<count($account_new->unix_memberUid); $i++)
+				if ($account_new->unix_memberUid[$i]!='') echo "		<option>".$account_new->unix_memberUid[$i]."</option>\n";
 			echo "</select>\n";
 			}
 		echo "</fieldset></td>\n";
 		echo "<td align=\"center\" width=\"10%\"><input type=\"submit\" name=\"add\" value=\"<=\">";
 		echo " ";
 		echo "<input type=\"submit\" name=\"remove\" value=\"=>\"><br><br>";
-		echo "<a href=\"".$_SESSION['lamurl']."templates/help.php?HelpNumber=419\" target=\"lamhelp\">"._('Help')."</a></td>\n";
+		echo "<a href=\"".$lamurl_intern."templates/help.php?HelpNumber=419\" target=\"lamhelp\">"._('Help')."</a></td>\n";
 		echo "<td valign=\"top\"><fieldset class=\"groupedit-middle\"><legend class=\"groupedit-bright\">";
 		echo _('Available users');
 		echo "</legend>\n";
@@ -436,14 +468,14 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "</b></legend>\n";
 		echo "<input name=\"next_general\" type=\"submit\" disabled value=\""; echo _('General'); echo "\">\n<br>";
 		echo "<input name=\"next_members\" type=\"submit\" value=\""; echo _('Members'); echo "\">\n<br>";
-		if ($_SESSION['config']->is_samba3()) {
+		if ($config_intern->is_samba3()) {
 			echo "<input name=\"next_samba\" type=\"submit\" value=\""; echo _('Samba'); echo "\">\n<br>";
 			}
-		echo "<input name=\"next_quota\" type=\"submit\""; if (!isset($_SESSION['config']->scriptPath)) echo " disabled ";
+		echo "<input name=\"next_quota\" type=\"submit\""; if (!isset($config_intern->scriptPath)) echo " disabled ";
 		echo "value=\""; echo _('Quota'); echo "\">\n<br>";
 		echo "<input name=\"next_final\" type=\"submit\" value=\""; echo _('Final');
 		echo "\">";
-		if (isset($_SESSION['account_old'])) {
+		if (isset($account_old)) {
 			echo "<br><br>";
 			echo _("Reset all changes.");
 			echo "<br>";
@@ -457,26 +489,26 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "</b></legend>\n<table border=0 width=\"100%\">\n<tr>\n<td>";
 		echo _("Groupname")."*";
 		echo "</td>\n<td>".
-			"<input name=\"f_general_username\" type=\"text\" size=\"30\" maxlength=\"20\" value=\"".$_SESSION['account']->general_username."\">".
-			"</td>\n<td><a href=\"".$_SESSION['lamurl']."templates/help.php?HelpNumber=407\" target=\"lamhelp\">"._('Help')."</a></td>\n</tr>\n<tr>\n<td>";
+			"<input name=\"f_general_username\" type=\"text\" size=\"30\" maxlength=\"20\" value=\"".$account_new->general_username."\">".
+			"</td>\n<td><a href=\"".$lamurl_intern."templates/help.php?HelpNumber=407\" target=\"lamhelp\">"._('Help')."</a></td>\n</tr>\n<tr>\n<td>";
 		echo _('GID number');
-		echo "</td>\n<td><input name=\"f_general_uidNumber\" type=\"text\" size=\"30\" maxlength=\"6\" value=\"".$_SESSION['account']->general_uidNumber."\">".
-			"</td>\n<td><a href=\"".$_SESSION['lamurl']."templates/help.php?HelpNumber=408\" target=\"lamhelp\">"._('Help').
+		echo "</td>\n<td><input name=\"f_general_uidNumber\" type=\"text\" size=\"30\" maxlength=\"6\" value=\"".$account_new->general_uidNumber."\">".
+			"</td>\n<td><a href=\"".$lamurl_intern."templates/help.php?HelpNumber=408\" target=\"lamhelp\">"._('Help').
 			"</a></td>\n</tr>\n<tr>\n<td>";
 		echo _('Description');
-		echo "</td>\n<td><input name=\"f_general_gecos\" type=\"text\" size=\"30\" value=\"".$_SESSION['account']->general_gecos."\"></td>\n".
-			"<td><a href=\"".$_SESSION['lamurl']."templates/help.php?HelpNumber=409\" target=\"lamhelp\">"._('Help')."</a></td>\n</tr>\n<tr>\n<td>";
+		echo "</td>\n<td><input name=\"f_general_gecos\" type=\"text\" size=\"30\" value=\"".$account_new->general_gecos."\"></td>\n".
+			"<td><a href=\"".$lamurl_intern."templates/help.php?HelpNumber=409\" target=\"lamhelp\">"._('Help')."</a></td>\n</tr>\n<tr>\n<td>";
 		echo _('Suffix'); echo "</td>\n<td><select name=\"f_general_suffix\">";
 
-		foreach ($_SESSION['ldap']->search_units($_SESSION['config']->get_GroupSuffix()) as $suffix) {
-			if ($_SESSION['account']->general_dn) {
-				if ($_SESSION['account']->general_dn == $suffix)
+		foreach ($ldap_intern->search_units($config_intern->get_GroupSuffix()) as $suffix) {
+			if ($account_new->general_dn) {
+				if ($account_new->general_dn == $suffix)
 					echo "	<option selected>$suffix</option>\n";
 				else echo "	<option>$suffix</option>\n";
 				}
 			else echo "	<option>$suffix</option>\n";
 			}
-		echo "</select></td>\n<td><a href=\"".$_SESSION['lamurl']."templates/help.php?HelpNumber=462\" target=\"lamhelp\">"._('Help').
+		echo "</select></td>\n<td><a href=\"".$lamurl_intern."templates/help.php?HelpNumber=462\" target=\"lamhelp\">"._('Help').
 			"</a></td>\n</tr>\n</table>";
 		echo _('Values with * are required');
 		echo "</fieldset>\n</td></tr><tr><td>";
@@ -488,7 +520,7 @@ switch ($select_local) { // Select which part of page will be loaded
 			foreach ($profilelist as $profile) echo "	<option>$profile</option>\n";
 			echo "</select>\n".
 				"<input name=\"load\" type=\"submit\" value=\""; echo _('Load Profile');
-			echo "\"></td><td><a href=\"".$_SESSION['lamurl']."templates/help.php?HelpNumber=421\" target=\"lamhelp\">";
+			echo "\"></td><td><a href=\"".$lamurl_intern."templates/help.php?HelpNumber=421\" target=\"lamhelp\">";
 			echo _('Help')."</a></td>\n</tr>\n</table>\n</fieldset>\n";
 			}
 		echo "</td></tr>\n</table>\n</td></tr></table>\n";
@@ -496,7 +528,7 @@ switch ($select_local) { // Select which part of page will be loaded
 
 	case 'samba':
 		// Samba Settings
-		$samba3domains = $_SESSION['ldap']->search_domains($_SESSION[config]->get_domainSuffix());
+		$samba3domains = $ldap_intern->search_domains($config_intern->get_domainSuffix());
 		echo "<input name=\"select\" type=\"hidden\" value=\"samba\">\n";
 		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
 		echo "<table border=0><tr><td><fieldset class=\"groupedit-middle\"><legend class=\"groupedit-bright\"><b>";
@@ -505,11 +537,11 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "<input name=\"next_general\" type=\"submit\" value=\""; echo _('General'); echo "\">\n<br>";
 		echo "<input name=\"next_members\" type=\"submit\" value=\""; echo _('Members'); echo "\">\n<br>";
 		echo "<input name=\"next_samba\" type=\"submit\" disabled value=\""; echo _('Samba'); echo "\">\n<br>";
-		echo "<input name=\"next_quota\" type=\"submit\""; if (!isset($_SESSION['config']->scriptPath)) echo " disabled ";
+		echo "<input name=\"next_quota\" type=\"submit\""; if (!isset($config_intern->scriptPath)) echo " disabled ";
 		echo "value=\""; echo _('Quota'); echo "\">\n<br>";
 		echo "<input name=\"next_final\" type=\"submit\" value=\""; echo _('Final');
 		echo "\">";
-		if (isset($_SESSION['account_old'])) {
+		if (isset($account_old)) {
 			echo "<br><br>";
 			echo _("Reset all changes.");
 			echo "<br>";
@@ -521,22 +553,22 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "<table border=0 width=\"100%\"><tr><td>";
 		echo _("Display name");
 		echo "</td>\n<td>".
-			"<input name=\"f_smb_displayName\" type=\"text\" size=\"30\" maxlength=\"50\" value=\"".$_SESSION['account']->smb_displayName."\">".
-			"</td>\n<td><a href=\"".$_SESSION['lamurl']."templates/help.php?HelpNumber=420\" target=\"lamhelp\">"._('Help')."</a></td>\n</tr>\n<tr>\n<td>";
+			"<input name=\"f_smb_displayName\" type=\"text\" size=\"30\" maxlength=\"50\" value=\"".$account_new->smb_displayName."\">".
+			"</td>\n<td><a href=\"".$lamurl_intern."templates/help.php?HelpNumber=420\" target=\"lamhelp\">"._('Help')."</a></td>\n</tr>\n<tr>\n<td>";
 		echo _('Windows groupname');
 		echo "</td>\n<td><select name=\"f_smb_mapgroup\">";
-		if ($_SESSION['config']->samba3=='yes') {
-			if ( $_SESSION['account']->smb_mapgroup == $_SESSION['account']->smb_domain->SID . "-".
-			(2 * getgid($_SESSION['account']->general_username) + $values->smb_domain->RIDbase+1)) {
+		if ($config_intern->samba3=='yes') {
+			if ( $account_new->smb_mapgroup == $account_new->smb_domain->SID . "-".
+			(2 * getgid($account_new->general_username) + $values->smb_domain->RIDbase+1)) {
 				echo '<option selected> ';
-				echo $_SESSION['account']->general_username;
+				echo $account_new->general_username;
 				echo "</option>\n"; }
 			 else {
 				echo '<option> ';
-				echo $_SESSION['account']->general_username;
+				echo $account_new->general_username;
 				echo "</option>\n";
 				}
-			if ( $_SESSION['account']->smb_mapgroup == $_SESSION['account']->smb_domain->SID . "-" . '514' ) {
+			if ( $account_new->smb_mapgroup == $account_new->smb_domain->SID . "-" . '514' ) {
 				echo '<option selected> *';
 				echo _('Domain Guests');
 				echo "</option>\n"; }
@@ -545,7 +577,7 @@ switch ($select_local) { // Select which part of page will be loaded
 				echo _('Domain Guests');
 				echo "</option>\n";
 				}
-			if ( $_SESSION['account']->smb_mapgroup == $_SESSION['account']->smb_domain->SID . "-" . '513' ) {
+			if ( $account_new->smb_mapgroup == $account_new->smb_domain->SID . "-" . '513' ) {
 				echo '<option selected> *';
 				echo _('Domain Users');
 				echo "</option>\n"; }
@@ -554,7 +586,7 @@ switch ($select_local) { // Select which part of page will be loaded
 				echo _('Domain Users');
 				echo "</option>\n";
 				}
-			if ( $_SESSION['account']->smb_mapgroup == $_SESSION['account']->smb_domain->SID . "-" . '512' ) {
+			if ( $account_new->smb_mapgroup == $account_new->smb_domain->SID . "-" . '512' ) {
 				echo '<option selected> *';
 				echo _('Domain Admins');
 				echo "</option>\n"; }
@@ -565,16 +597,16 @@ switch ($select_local) { // Select which part of page will be loaded
 				}
 			}
 		else {
-			if ( $_SESSION['account']->smb_mapgroup == (2 * getgid($_SESSION['account']->general_username) +1001)) {
+			if ( $account_new->smb_mapgroup == (2 * getgid($account_new->general_username) +1001)) {
 				echo '<option selected> ';
-				echo $_SESSION['account']->general_username;
+				echo $account_new->general_username;
 				echo "</option>\n"; }
 			 else {
 				echo '<option> ';
-				echo $_SESSION['account']->general_username;
+				echo $account_new->general_username;
 				echo "</option>\n";
 				}
-			if ( $_SESSION['account']->smb_mapgroup == '514' ) {
+			if ( $account_new->smb_mapgroup == '514' ) {
 				echo '<option selected> *';
 				echo _('Domain Guests');
 				echo "</option>\n"; }
@@ -583,7 +615,7 @@ switch ($select_local) { // Select which part of page will be loaded
 				echo _('Domain Guests');
 				echo "</option>\n";
 				}
-			if ( $_SESSION['account']->smb_mapgroup == '513' ) {
+			if ( $account_new->smb_mapgroup == '513' ) {
 				echo '<option selected> *';
 				echo _('Domain Users');
 				echo "</option>\n"; }
@@ -592,7 +624,7 @@ switch ($select_local) { // Select which part of page will be loaded
 				echo _('Domain Users');
 				echo "</option>\n";
 				}
-			if ( $_SESSION['account']->smb_mapgroup == '512' ) {
+			if ( $account_new->smb_mapgroup == '512' ) {
 				echo '<option selected> *';
 				echo _('Domain Admins');
 				echo "</option>\n"; }
@@ -603,33 +635,33 @@ switch ($select_local) { // Select which part of page will be loaded
 				}
 			}
 		echo	"</select></td>\n<td>".
-			'<a href="'.$_SESSION['lamurl'].'templates/help.php?HelpNumber=464" target="lamhelp">'._('Help').'</a>'.
+			'<a href="'.$lamurl_intern.'templates/help.php?HelpNumber=464" target="lamhelp">'._('Help').'</a>'.
 			'</td></tr>'."\n".'<tr><td>';
 		echo _('Domain');
 		echo '</td><td><select name="f_smb_domain">';
 		for ($i=0; $i<sizeof($samba3domains); $i++) {
-			if ($_SESSION['account']->smb_domain->name) {
-				if ($_SESSION['account']->smb_domain->name == $samba3domains[$i]->name)
+			if ($account_new->smb_domain->name) {
+				if ($account_new->smb_domain->name == $samba3domains[$i]->name)
 					echo '<option selected>' . $samba3domains[$i]->name. '</option>';
 				else echo '<option>' . $samba3domains[$i]->name. '</option>';
 				}
 			else echo '<option>' . $samba3domains[$i]->name. '</option>';
 			}
-		echo	'</select></td>'."\n".'<td><a href="'.$_SESSION['lamurl'].'templates/help.php?HelpNumber=467" target="lamhelp">'._('Help').'</a></td></tr>'."\n";
+		echo	'</select></td>'."\n".'<td><a href="'.$lamurl_intern.'templates/help.php?HelpNumber=467" target="lamhelp">'._('Help').'</a></td></tr>'."\n";
 		echo "</table>\n</fieldset>\n</td></tr></table></td></tr>\n</table>\n";
 		break;
 
 	case 'quota':
 		// Quota Settings
-		if (!isset($_SESSION['account']->quota[0]) ) { // load quotas
-			$values = getquotas('group', $_SESSION['account']->general_username);
+		if ($config_intern->scriptServer && !isset($account_new->quota[0]) ) { // load quotas
+			$values = getquotas('group', $account_new->general_username);
 			if (is_object($values)) {
 				while (list($key, $val) = each($values)) // Set only defined values
-					if (isset($val)) $_SESSION['account']->$key = $val;
+					if (isset($val)) $account_new->$key = $val;
 				}
-			if (is_object($values) && isset($_SESSION['account_old'])) {
+			if (is_object($values) && isset($account_old)) {
 				while (list($key, $val) = each($values)) // Set only defined values
-					if (isset($val)) $_SESSION['account_old']->$key = $val;
+					if (isset($val)) $account_old->$key = $val;
 				}
 			}
 
@@ -640,13 +672,13 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "</b></legend>\n";
 		echo "<input name=\"next_general\" type=\"submit\" value=\""; echo _('General'); echo "\">\n<br>";
 		echo "<input name=\"next_members\" type=\"submit\" value=\""; echo _('Members'); echo "\">\n<br>";
-		if ($_SESSION['config']->is_samba3()) {
+		if ($config_intern->is_samba3()) {
 			echo "<input name=\"next_samba\" type=\"submit\" value=\""; echo _('Samba'); echo "\">\n<br>";
 			}
 		echo "<input name=\"next_quota\" type=\"submit\" disabled value=\""; echo _('Quota'); echo "\">\n<br>";
 		echo "<input name=\"next_final\" type=\"submit\" value=\""; echo _('Final');
 		echo "\">";
-		if (isset($_SESSION['account_old'])) {
+		if (isset($account_old)) {
 			echo "<br><br>";
 			echo _("Reset all changes.");
 			echo "<br>";
@@ -661,21 +693,21 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo _('Soft block limit'); echo '</td>'."\n".'<td>'; echo _('Hard block limit'); echo '</td>'."\n".'<td>'; echo _('Grace block period');
 		echo '</td>'."\n".'<td>'; echo _('Used inodes'); echo '</td>'."\n".'<td>'; echo _('Soft inode limit'); echo '</td>'."\n".'<td>';
 		echo _('Hard inode limit'); echo '</td>'."\n".'<td>'; echo _('Grace inode period'); echo '</td></tr>'."\n";
-		echo '<tr><td><a href="'.$_SESSION['lamurl'].'templates/help.php?HelpNumber=439" target="lamhelp">'._('Help').'</a></td>'."\n".'<td><a href="'.$_SESSION['lamurl'].'templates/help.php?HelpNumber=440" target="lamhelp">'._('Help').'</a></td>'."\n".'<td>'.
-			'<a href="'.$_SESSION['lamurl'].'templates/help.php?HelpNumber=441" target="lamhelp">'._('Help').'</a></td>'."\n".'<td><a href="'.$_SESSION['lamurl'].'templates/help.php?HelpNumber=442" target="lamhelp">'._('Help').'</a></td>'."\n".'<td>'.
-			'<a href="'.$_SESSION['lamurl'].'templates/help.php?HelpNumber=443" target="lamhelp">'._('Help').'</a></td>'."\n".'<td><a href="'.$_SESSION['lamurl'].'templates/help.php?HelpNumber=444" target="lamhelp">'._('Help').'</a></td>'."\n".'<td>'.
-			'<a href="'.$_SESSION['lamurl'].'templates/help.php?HelpNumber=445" target="lamhelp">'._('Help').'</a></td>'."\n".'<td><a href="'.$_SESSION['lamurl'].'templates/help.php?HelpNumber=446" target="lamhelp">'._('Help').'</a></td>'."\n".'<td>'.
-			'<a href="'.$_SESSION['lamurl'].'templates/help.php?HelpNumber=447" target="lamhelp">'._('Help').'</a></td></tr>'."\n";
+		echo '<tr><td><a href="'.$lamurl_intern.'templates/help.php?HelpNumber=439" target="lamhelp">'._('Help').'</a></td>'."\n".'<td><a href="'.$lamurl_intern.'templates/help.php?HelpNumber=440" target="lamhelp">'._('Help').'</a></td>'."\n".'<td>'.
+			'<a href="'.$lamurl_intern.'templates/help.php?HelpNumber=441" target="lamhelp">'._('Help').'</a></td>'."\n".'<td><a href="'.$lamurl_intern.'templates/help.php?HelpNumber=442" target="lamhelp">'._('Help').'</a></td>'."\n".'<td>'.
+			'<a href="'.$lamurl_intern.'templates/help.php?HelpNumber=443" target="lamhelp">'._('Help').'</a></td>'."\n".'<td><a href="'.$lamurl_intern.'templates/help.php?HelpNumber=444" target="lamhelp">'._('Help').'</a></td>'."\n".'<td>'.
+			'<a href="'.$lamurl_intern.'templates/help.php?HelpNumber=445" target="lamhelp">'._('Help').'</a></td>'."\n".'<td><a href="'.$lamurl_intern.'templates/help.php?HelpNumber=446" target="lamhelp">'._('Help').'</a></td>'."\n".'<td>'.
+			'<a href="'.$lamurl_intern.'templates/help.php?HelpNumber=447" target="lamhelp">'._('Help').'</a></td></tr>'."\n";
 		$i=0;
-		while ($_SESSION['account']->quota[$i][0]) {
-			echo '<tr><td>'.$_SESSION['account']->quota[$i][0].'</td><td>'.$_SESSION['account']->quota[$i][1].'</td>'; // used blocks
-			echo '<td><input name="f_quota_'.$i.'_2" type="text" size="12" maxlength="20" value="'.$_SESSION['account']->quota[$i][2].'"></td>'; // blocks soft limit
-			echo '<td><input name="f_quota_'.$i.'_3" type="text" size="12" maxlength="20" value="'.$_SESSION['account']->quota[$i][3].'"></td>'; // blocks hard limit
-			echo '<td>'.$_SESSION['account']->quota[$i][4].'</td>'; // block grace period
-			echo '<td>'.$_SESSION['account']->quota[$i][5].'</td>'; // used inodes
-			echo '<td><input name="f_quota_'.$i.'_6" type="text" size="12" maxlength="20" value="'.$_SESSION['account']->quota[$i][6].'"></td>'; // inodes soft limit
-			echo '<td><input name="f_quota_'.$i.'_7" type="text" size="12" maxlength="20" value="'.$_SESSION['account']->quota[$i][7].'"></td>'; // inodes hard limit
-			echo '<td>'.$_SESSION['account']->quota[$i][8].'</td></tr>'; // inodes grace period
+		while ($account_new->quota[$i][0]) {
+			echo '<tr><td>'.$account_new->quota[$i][0].'</td><td>'.$account_new->quota[$i][1].'</td>'; // used blocks
+			echo '<td><input name="f_quota_'.$i.'_2" type="text" size="12" maxlength="20" value="'.$account_new->quota[$i][2].'"></td>'; // blocks soft limit
+			echo '<td><input name="f_quota_'.$i.'_3" type="text" size="12" maxlength="20" value="'.$account_new->quota[$i][3].'"></td>'; // blocks hard limit
+			echo '<td>'.$account_new->quota[$i][4].'</td>'; // block grace period
+			echo '<td>'.$account_new->quota[$i][5].'</td>'; // used inodes
+			echo '<td><input name="f_quota_'.$i.'_6" type="text" size="12" maxlength="20" value="'.$account_new->quota[$i][6].'"></td>'; // inodes soft limit
+			echo '<td><input name="f_quota_'.$i.'_7" type="text" size="12" maxlength="20" value="'.$account_new->quota[$i][7].'"></td>'; // inodes hard limit
+			echo '<td>'.$account_new->quota[$i][8].'</td></tr>'; // inodes grace period
 			$i++;
 			}
 		echo "</table>\n</fieldset>\n</td></tr></table></td></tr>\n</table>\n";
@@ -684,8 +716,8 @@ switch ($select_local) { // Select which part of page will be loaded
 	case 'final':
 		// Final Settings
 		$disabled = "";
-		if ($_SESSION['config']->is_samba3()) {
-			if (!isset($_SESSION['account']->smb_domain)) { // Samba page nit viewd; can not create group because if missing options
+		if ($config_intern->is_samba3()) {
+			if (!isset($account_new->smb_domain)) { // Samba page nit viewd; can not create group because if missing options
 				$disabled = "disabled";
 				}
 			}
@@ -698,14 +730,14 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "</b></legend>\n";
 		echo "<input name=\"next_general\" type=\"submit\" value=\""; echo _('General'); echo "\">\n<br>";
 		echo "<input name=\"next_members\" type=\"submit\" value=\""; echo _('Members'); echo "\">\n<br>";
-		if ($_SESSION['config']->is_samba3()) {
+		if ($config_intern->is_samba3()) {
 			echo "<input name=\"next_samba\" type=\"submit\" value=\""; echo _('Samba'); echo "\">\n<br>";
 			}
-		echo "<input name=\"next_quota\" type=\"submit\""; if (!isset($_SESSION['config']->scriptPath)) echo " disabled ";
+		echo "<input name=\"next_quota\" type=\"submit\""; if (!isset($config_intern->scriptPath)) echo " disabled ";
 		echo "value=\""; echo _('Quota'); echo "\">\n<br>";
 		echo "<input name=\"next_final\" type=\"submit\" disabled value=\""; echo _('Final');
 		echo "\">";
-		if (isset($_SESSION['account_old'])) {
+		if (isset($account_old)) {
 			echo "<br><br>";
 			echo _("Reset all changes.");
 			echo "<br>";
@@ -720,21 +752,21 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo '<input name="f_finish_safeProfile" type="text" size="30" maxlength="50">';
 		echo "</td><td><input name=\"save\" type=\"submit\" $disabled value=\"";
 		echo _('Save profile');
-		echo '"></td><td><a href="'.$_SESSION['lamurl'].'templates/help.php?HelpNumber=457" target="lamhelp">'._('Help');
+		echo '"></td><td><a href="'.$lamurl_intern.'templates/help.php?HelpNumber=457" target="lamhelp">'._('Help');
 		echo "</a></td>\n</tr>\n</table>\n</fieldset>\n</td></tr>\n<tr><td>\n";
 		echo "<fieldset class=\"groupedit-bright\"><legend class=\"groupedit-bright\"><b>";
-		if ($_SESSION['account_old']) echo _('Modify');
+		if ($account_old) echo _('Modify');
 		 else echo _('Create');
 		echo "</b></legend>\n";
 		echo "<table border=0 width=\"100%\">";
-		if (($_SESSION['account_old']) && ($_SESSION['account']->general_uidNumber != $_SESSION['account_old']->general_uidNumber)) {
+		if (($account_old) && ($account_new->general_uidNumber != $account_old->general_uidNumber)) {
 			echo '<tr>';
 			StatusMessage ('INFO', _('GID-number has changed. You have to run the following command as root in order to change existing file-permissions:'),
-			'find / -gid ' . $_SESSION['account_old' ]->general_uidNumber . ' -exec chgrp ' . $_SESSION['account']->general_uidNumber . ' {} \;');
+			'find / -gid ' . $account_old->general_uidNumber . ' -exec chgrp ' . $account_new->general_uidNumber . ' {} \;');
 			echo '</tr>'."\n";
 			echo '<tr><td>';
 			echo '<input name="f_final_changegids" type="checkbox"';
-				if ($_SESSION['final_changegids']) echo ' checked ';
+				if ($final_changegids) echo ' checked ';
 			echo ' >';
 			echo _('Change GID-Number of all users in group to new value');
 			echo '</td></tr>'."\n";
@@ -744,20 +776,20 @@ switch ($select_local) { // Select which part of page will be loaded
 			StatusMessage("ERROR", _("Samba Options not set!"), _("Please check settings on samba page."));
 			echo "</tr>";
 			}
-		if (isset($_SESSION['account_old']->general_objectClass)) {
-			if (($_SESSION['config']->is_samba3()) && (!in_array('sambaGroupMapping', $_SESSION['account_old']->general_objectClass))) {
+		if (isset($account_old->general_objectClass)) {
+			if (($config_intern->is_samba3()) && (!in_array('sambaGroupMapping', $account_old->general_objectClass))) {
 				echo '<tr>';
 				StatusMessage('WARN', _('ObjectClass sambaGroupMapping not found.'), _('Have to add objectClass sambaGroupMapping.'));
 				echo "</tr>\n";
 				}
-			if (!in_array('posixGroup', $_SESSION['account_old']->general_objectClass)) {
+			if (!in_array('posixGroup', $account_old->general_objectClass)) {
 				echo '<tr>';
 				StatusMessage('WARN', _('ObjectClass posixGroup not found.'), _('Have to add objectClass posixGroup.'));
 				echo "</tr>\n";
 				}
 			}
 		echo "<tr><td><input name=\"create\" type=\"submit\" $disabled value=\"";
-		if ($_SESSION['account_old']) echo _('Modify Account');
+		if ($account_old) echo _('Modify Account');
 		 else echo _('Create Account');
 		echo '">'."\n";
 		echo "</td></tr></table></fieldset>\n</td></tr></table>\n</tr></table>";
@@ -765,18 +797,18 @@ switch ($select_local) { // Select which part of page will be loaded
 
 	case 'finish':
 		// Final Settings
-		if (($_SESSION['config']->samba3 =='yes') && !isset($_SESSION['account']->smb_mapgroup)) $disabled = 'disabled';
+		if (($config_intern->samba3 =='yes') && !isset($account_new->smb_mapgroup)) $disabled = 'disabled';
 			else $disabled = '';
 		echo '<input name="select" type="hidden" value="finish">';
 		echo "<fieldset class=\"groupedit-bright\"><legend class=\"groupedit-bright\"><b>"._('Success')."</b></legend>\n";
 		echo "<table border=0 width=\"100%\">";
 		echo '<tr><td>';
 		echo _('Group').' ';
-		echo $_SESSION['account']->general_username;
-		if ($_SESSION['account_old']) echo ' '._('has been modified').'.';
+		echo $account_new->general_username;
+		if ($account_old) echo ' '._('has been modified').'.';
 		 else echo ' '._('has been created').'.';
 		echo '</td></tr>'."\n".'<tr><td>';
-		if (!$_SESSION['account_old'])
+		if (!$account_old)
 			{ echo' <input name="createagain" type="submit" value="'; echo _('Create another group'); echo '">'; }
 		echo '</td><td></td><td>'.
 			'<input name="backmain" type="submit" value="'; echo _('Back to group list'); echo '">'.
@@ -785,12 +817,12 @@ switch ($select_local) { // Select which part of page will be loaded
 
 	case 'backmain':
 		// unregister sessionvar and select which list should be shown
-		echo '<a href="'.$_SESSION['lamurl'].'templates/lists/listgroups.php">';
+		echo '<a href="'.$lamurl_intern.'templates/lists/listgroups.php">';
 		echo _('Please press here if meta-refresh didn\'t work.');
 		echo "</a>\n";
-		if (isset($_SESSION['shelllist'])) unset($_SESSION['shelllist']);
-		if (isset($_SESSION['account'])) unset($_SESSION['account']);
-		if (isset($_SESSION['account_old'])) unset($_SESSION['account_old']);
+		if (isset($_SESSION['account_'.$varkey.'_account_new'])) unset($_SESSION['account_'.$varkey.'_account_new']);
+		if (isset($_SESSION['account_'.$varkey.'_account_old'])) unset($_SESSION['account_'.$varkey.'_account_old']);
+		if (isset($_SESSION['account_'.$varkey.'_final_changegids'])) unset($_SESSION['account_'.$varkey.'_final_changegids']);
 		break;
 	}
 

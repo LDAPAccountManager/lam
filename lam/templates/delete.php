@@ -29,18 +29,24 @@ session_save_path('../sess');
 @session_start();
 setlanguage();
 
+$ldap_intern =& $_SESSION['ldap'];
+$header_intern =& $_SESSION['header'];
+$lamurl_intern =& $_SESSION['lamurl'];
+$config_intern =& $_SESSION['config'];
+$delete_dn =& $_SESSION['delete_dn'];
+
 
 if ($_POST['backmain']) { // back to list page
 	if (isset($_SESSION['delete_dn'])) unset ($_SESSION['delete_dn']);
-	metaRefresh($_SESSION['lamurl']."templates/lists/list".$_POST['type5']."s.php");
+	metaRefresh($lamurl_intern."templates/lists/list".$_POST['type5']."s.php");
 	die;
 	}
 
-echo $_SESSION['header'];
+echo $header_intern;
 echo '<html><head><title>';
 echo _('Delete Account');
 echo '</title>'."\n".
-	'<link rel="stylesheet" type="text/css" href="'.$_SESSION['lamurl'].'style/layout.css">'."\n".
+	'<link rel="stylesheet" type="text/css" href="'.$lamurl_intern.'style/layout.css">'."\n".
 	'<meta http-equiv="pragma" content="no-cache">'."\n".
 	'<meta http-equiv="cache-control" content="no-cache">'."\n".
 	'</head>'."\n".
@@ -72,9 +78,9 @@ if ($_GET['type']) {
 		}
 	echo "<br>\n";
 	echo "<table border=0 width=\"100%\">\n";
-	foreach ($_SESSION['delete_dn'] as $dn) echo '<tr><td>'.$dn.'</td></tr>';
+	foreach ($delete_dn as $dn) echo '<tr><td>'.$dn.'</td></tr>';
 	echo "</table>\n";
-	if (($_GET['type']== user) && $_SESSION['config']->scriptServer) {
+	if (($_GET['type']== user) && $config_intern->scriptServer) {
 		echo "<br>\n";
 		echo "<table border=0>\n";
 		echo '<tr><td>';
@@ -115,50 +121,50 @@ if ($_POST['delete_yes'] && !$_POST['backmain']) {
 		}
 	echo "<br><table border=0 >\n";
 	echo '<input name="type5" type="hidden" value="'.$_POST['type5'].'">';
-	foreach ($_SESSION['delete_dn'] as $dn) {
+	foreach ($delete_dn as $dn) {
 		switch ($_POST['type5']) {
 			case 'user':
 				$temp=explode(',', $dn);
 				$username = str_replace('uid=', '', $temp[0]);
-				if ($_SESSION['config']->scriptServer) {
+				if ($config_intern->scriptServer) {
 					if ($_POST['f_rem_home']) remhomedir($username);
 					remquotas($username, $_POST['type5']);
 					}
-				$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(), 'objectClass=PosixGroup', array('memberUid'));
-				$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
+				$result = ldap_search($ldap_intern->server(), $config_intern->get_GroupSuffix(), 'objectClass=PosixGroup', array('memberUid'));
+				$entry = ldap_first_entry($ldap_intern->server(), $result);
 				while ($entry) {
-					$attr2 = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
+					$attr2 = ldap_get_attributes($ldap_intern->server(), $entry);
 					if ($attr2['memberUid']) {
 						array_shift($attr2['memberUid']);
 						foreach ($attr2['memberUid'] as $nam) {
 							if ($nam==$username) {
 								$todelete['memberUid'] = $nam;
-								$success = ldap_mod_del($_SESSION['ldap']->server(), ldap_get_dn($_SESSION['ldap']->server(), $entry) ,$todelete);
+								$success = ldap_mod_del($ldap_intern->server(), ldap_get_dn($ldap_intern->server(), $entry) ,$todelete);
 								}
 							}
 						}
-					$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
+					$entry = ldap_next_entry($ldap_intern->server(), $entry);
 					}
-				$success = ldap_delete($_SESSION['ldap']->server(), $dn);
+				$success = ldap_delete($ldap_intern->server(), $dn);
 				if (!$success) $error = _('Could not delete user:').' '.$dn;
 				break;
 			case 'host':
-				$success = ldap_delete($_SESSION['ldap']->server(), $dn);
+				$success = ldap_delete($ldap_intern->server(), $dn);
 				if (!$success) $error = _('Could not delete host:').' '.$dn;
 				break;
 			case 'group':
 				$temp=explode(',', $dn);
 				$groupname = str_replace('cn=', '', $temp[0]);
-				$result = ldap_search($_SESSION['ldap']->server(), $dn, 'objectClass=*', array('gidNumber'));
-				$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
+				$result = ldap_search($ldap_intern->server(), $dn, 'objectClass=*', array('gidNumber'));
+				$entry = ldap_first_entry($ldap_intern->server(), $result);
 				while ($entry) {
-					$attr2 = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
+					$attr2 = ldap_get_attributes($ldap_intern->server(), $entry);
 					if ($attr2['gidNumber']==getgid($groupname)) $error = _('Could not delete group. Still users in group:').' '.$dn;
-					$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
+					$entry = ldap_next_entry($ldap_intern->server(), $entry);
 					}
 				if (!$error) {
-					if ($_SESSION['config']->scriptServer) remquotas($groupname, $_POST['type5']);
-					$success = ldap_delete($_SESSION['ldap']->server(), $dn);
+					if ($config_intern->scriptServer) remquotas($groupname, $_POST['type5']);
+					$success = ldap_delete($ldap_intern->server(), $dn);
 					if (!$success) $error = _('Could not delete group:').' '.$dn;
 					}
 				break;
