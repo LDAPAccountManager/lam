@@ -156,6 +156,7 @@ function check_module_conflicts($selected, $deps) {
 // returns an array with all available user module names
 // $scope = user, group, host, ...
 function getAvailableModules($scope) {
+	$return = array();
 	// get module names.
 	$dir = opendir('../../lib/modules');
 	while ($entry = readdir($dir))
@@ -164,7 +165,7 @@ function getAvailableModules($scope) {
 			if (call_user_func(array($entry, "can_manage"), $scope)) $return[] = $entry;
 		}
 	return $return;
-	}
+}
 
 // $scope = user, group, host, ...
 function getProfileOptions($scope) {
@@ -980,7 +981,7 @@ class accountContainer {
 		function get_pdfEntries($acount_type) {
 			$return = array();
 			for($i=0;$i<count($modules);$i++) {
-				$entries = ($this->modules[i])->get_pdfEntries($account_type);
+				$entries = $this->modules[i]->get_pdfEntries($account_type);
 				while(list($key,$value) = each($entries)) {
 					if(array_key_exists($key,$return)) {
 						array_push($return[$key],$value);
