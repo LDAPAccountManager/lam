@@ -56,7 +56,7 @@ if ($select!='pdf') {
 	echo '</title>'.
 		'<link rel="stylesheet" type="text/css" href="../style/layout.css">'.
 		'<meta http-equiv="pragma" content="no-cache">'.
-		'<meta http-equiv="cache-control" content="no-cache">'.
+		'<meta http-equiv="cache-control" content="no-cache">';
 	}
 
 switch ($select) {
