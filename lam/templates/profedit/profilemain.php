@@ -86,8 +86,7 @@ for ($i = 0; $i < sizeof($hstprof); $i++) {
 	$hostprofiles = $hostprofiles . "<option>" . $hstprof[$i] . "</option>\n";
 }
 
-echo ("<?xml version=\"1.0\" encoding=\"ISO-8859-15\"?>\n");
-echo ("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Strict//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">\n");
+echo $_SESSION['header'];
 ?>
 
 <html>

@@ -52,8 +52,7 @@ if ($conf->Suff_map && ($conf->Suff_map != "")) {
 	if (!$res) $new_suffs[] = $conf->Suff_map;
 }
 
-echo ("<?xml version=\"1.0\" encoding=\"ISO-8859-15\"?>\n");
-echo ("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Frameset//EN\" \"http://www.w3.org/TR/frameset.dtd\">\n");
+echo $_SESSION['header'];
 echo ("<html>\n");
 echo ("<head>\n");
 echo ("<title>LDAP Account Manager</title>\n");

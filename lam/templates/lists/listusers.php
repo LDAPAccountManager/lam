@@ -36,10 +36,6 @@ setlanguage();
 // copy HTTP-GET variables to HTTP-POST
 $_POST = $_POST + $_GET;
 
-// insert header for html file
-echo "<?xml version=\"1.0\" encoding=\"ISO-8859-15\"?>\n";
-echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n";
-
 $usr_units = $_SESSION['usr_units'];
 session_register('usr_units');
 
@@ -60,7 +56,7 @@ if ($_POST['new_user'] || $_POST['del_user']){
   exit;
 }
 
-
+echo $_SESSION['header'];
 
 echo "<html><head><title>listusers</title>\n";
 echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";

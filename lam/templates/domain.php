@@ -31,9 +31,6 @@ session_save_path("../sess");
 
 setlanguage();
 
-echo ("<?xml version=\"1.0\" encoding=\"ISO-8859-15\"?>\n");
-echo ("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n");
-
 
 // add/edit domain
 if (($_GET['action'] == "edit") || ($_GET['action'] == "new")) {
@@ -59,6 +56,7 @@ if (($_GET['action'] == "edit") || ($_GET['action'] == "new")) {
 		$domain_suffix = $_SESSION['config']->get_domainSuffix();
 	}
 	// display page
+	echo $_SESSION['header'];
 	echo "<html>\n";
 	echo "<head>\n";
 	echo "<title>Domain Management</title>\n";
