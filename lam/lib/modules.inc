@@ -984,6 +984,7 @@ class accountContainer {
 			$return = array();
 			while(($current = current($this->module)) != null) {
 				$return = array_merge($return,$current->get_pdfEntries($account_type));
+				next($this->module);
 			}
 			return $return;
 		}
