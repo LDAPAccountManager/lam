@@ -54,13 +54,14 @@ function createModulePDF($accounts,$pdf_structure="default.xml") {
 	}
 	
 	// Get PDF structure from xml file
-	$structure = getStructure($account_type,$pdf_structure);
+	$load = getStructure($account_type,$pdf_structure);
+	$structure = $load['structure'];
 	
 	// The decimal separator must be a dot in order to write pdf-files
 	setlocale(LC_NUMERIC, "C");
 	
 	// Create a new PDF file acording to the account type
-	$pdf = new LamPDF($account_type);
+	$pdf = new LamPDF($account_type,$load['page_definitions']);
 	
 	// Loop over each account and add a new page in the PDF file for it 
 	foreach($accounts as $account) {
@@ -178,14 +179,18 @@ function getStructure($scope,$pdf_structure) {
 	
 	$border = array();
 	$structure = array();
-	$pdf_entries = $xml[1]['PDF'];
-	while(($index = current($pdf_entries)) != null) {
-		$border['start'] = $index;
-		next($pdf_entries);
-		$border['end'] = current($pdf_entries);
-		next($pdf_entries);
+	$complete_page_definitions = array('filename' => 'printLogo.jpg', 'headline' => 'LDAP Account Manager', 'margin-top' => '10.0', 'margin-bottom' => '20.0', 'margin-left' => '10.0', 'margin-right' => '10.0');
+	if($xml[0][$xml[1]['PDF'][0]]['attributes']['TYPE'] == $scope) {
+		$border['start'] = $xml[1]['PDF'][0];
+		$page_definitions = $xml[0][$xml[1]['PDF'][0]]['attributes'];
+		foreach($page_definitions as $key => $value) {
+			$complete_page_definitions[strtolower($key)] = $value;
+			unset($page_definitions[$key]);
+		}
+		$border['end'] = $xml[1]['PDF'][1];
 	}
-	return array_slice($xml[0],$border['start'] + 1,$border['end'] - ($border['start'] + 1));
+	$structure = array_slice($xml[0],$border['start'] + 1,$border['end'] - ($border['start'] + 1));
+	return array('structure' => $structure, 'page_definitions' => $complete_page_definitions);
 }
 
 function getSectionHeadline($line) {
@@ -325,9 +330,17 @@ function processAttributes($attrs,$return = array()) {
 // lamPDF class || For defining own a Header and Footer
 class lamPDF extends FPDF {
 	
-	function lamPDF($account_type = "User") {
+	var $page_definitions;
+	
+	function lamPDF($account_type = "User",$page_definitions = array()) {
 		// Call constructor of superclass
 		$this->FPDF('P','mm','A4');
+		
+		$this->page_definitions = $page_definitions;
+		
+		echo "<pre>";
+		print_r($this->page_definitions);
+		echo "</pre>";
 		
 		// Decide which PDF file type we shall use
 		switch($account_type) {
@@ -345,24 +358,43 @@ class lamPDF extends FPDF {
 		// Open PDF file and write some basic information
 		$this->Open();
 		$this->setFont("arial","",12);
-		$this->setTitle("LDAP Account Manager");
+		$this->setTitle($this->page_definitions['headline']);
 		$this->setSubject($subject);
 		$this->setAuthor("LDAP Account Manager Devel-Team -Michael Duergner-");
 		$this->setCreator("LDAP Account Manager (pdf.inc)");
+		//$this->setMargins(10.0,10.0,10.0);
+		$this->setMargins($this->page_definitions['margin-left'],$this->page_definitions['margin-top'],$this->page_definitions['margin-right']);
+		$this->setAutoPageBreak(true,$this->page_definitions['margin-bottom']);
 	}
 	
 	// Print page header
 	function header() {
-		$imageFile = substr(__FILE__,0,strlen(__FILE__)- 11) . "graphics/printLogo.jpg";
-		$this->Image($imageFile,10,10,50,20,"JPG");
+		if($this->page_definitions['filename'] != 'none') {
+			$imageFile = substr(__FILE__,0,strlen(__FILE__)- 11) . "config/pdf/logos/" . $this->page_definitions['filename'];
+			$width = $this->page_definitions['logo-width'];
+			$height = $this->page_definitions['logo-height'];
+			if($this->page_definitions['logo-max'] == true) {
+				if(($width / $height) <= 2.5) {
+					$factor = 20 / $height;
+					$width = $factor * $width;
+					$height = 20;
+				}
+				else {
+					$factor = 50 / $width;
+					$height = $factor * $height;
+					$width = 50;
+				}
+			}
+			$this->Image($imageFile,10,10,$width,$height,"JPG");
+		}
 		$this->SetFont("arial","B",22);
-		$this->Cell(170,5,"LDAP Account Manager",0,1,"R",0);
+		$this->Cell(170,5,$this->page_definitions['headline'],0,1,"R",0);
 		$this->Ln(3);
 		$this->SetFont("times","",14);
 		$this->Cell(170,5,"- " . $this->subject . " -",0,0,"R",0);
 		$this->SetLineWidth(0.8);
-		$this->Line(10,40,200,40);
-		$this->Line(10,42,200,42);
+		$this->Line(10,$this->page_definitions['margin-top'] + 30,200,$this->page_definitions['margin-top'] + 30);
+		$this->Line(10,$this->page_definitions['margin-top'] + 32,200,$this->page_definitions['margin-top'] + 32);
 		$this->SetY(50);
 	}
 

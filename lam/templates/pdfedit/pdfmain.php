@@ -38,10 +38,11 @@ setlanguage();
 if(isset($_SESSION['currentPDFStructure'])) {
 	unset($_SESSION['currentPDFStructure']);
 	unset($_SESSION['availablePDFFields']);
+	unset($_SESSION['currentPageDefinitions']);
 	session_unregister('currentPDFStructure');
 	session_unregister('availablePDFFields');
+	session_unregister('currentPageDefinitions');
 }
-
 
 // check if user is logged in, if not go to login
 if (!$_SESSION['ldap'] || !$_SESSION['ldap']->server()) {

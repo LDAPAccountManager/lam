@@ -44,6 +44,9 @@ if (!$_SESSION['ldap'] || !$_SESSION['ldap']->server()) {
 // Write $_POST variables to $_GET when form was submitted via post
 if(isset($_POST['type'])) {
 	$_GET = $_POST;
+	if($_POST['pdfname'] == '') {
+		unset($_GET['pdfname']);
+	}
 }
 
 // Abort and go back to main pdf structure page
@@ -297,17 +300,89 @@ elseif(isset($_GET['down'])) {
 		$_SESSION['currentPDFStructure'][$_GET['down'] + 1] = $tmp;
 	}
 }
+// TODO implement page handling
+elseif(isset($_POST['page'])) {
+	if($_POST['logoFile'] != 'printLogo.jpg' && $_POST['logoFile'] != $_SESSION['currentPageDefinitions']['filename']) {
+		$_SESSION['currentPageDefinitions']['filename'] = $_POST['logoFile'];
+	}
+	if($_POST['logo-width'] != '50' && $_POST['logo-width'] != $_SESSION['currentPageDefinitions']['logo-width']) {
+		if($_POST['logo-width'] <= 50 && $_POST['logo-width'] > 0) {
+			$_SESSION['currentPageDefinitions']['logo-width'] = $_POST['logo-width'];
+		}
+	}
+	if($_POST['logo-height'] != '20' && $_POST['logo-height'] != $_SESSION['currentPageDefinitions']['logo-height']) {
+		if($_POST['logo-height'] <= 20 && $_POST['logo-height'] > 0) {
+			$_SESSION['currentPageDefinitions']['logo-height'] = $_POST['logo-height'];
+		}
+	}
+	if(isset($_POST['logo-max']) && !isset($_SESSION['currentPageDefinitions']['logo-max'])) {
+		$_SESSION['currentPageDefinitions']['logo-max'] = true;
+	}
+	if($_POST['headline'] != 'LDAP Account Manager' && $_POST['headline'] != $_SESSION['currentPageDefinitions']['headline']) {
+		$_SESSION['currentPageDefinitions']['headline'] = $_POST['headline'];
+	}
+	if($_POST['margin-top'] != '10.0' && $_SESSION['currentPageDefinitions']['margin-top'] != $_POST['margin-top']) {
+		$_SESSION['currentPageDefinitions']['margin-top'] = $_POST['margin-top'];
+	}
+	if($_POST['margin-bottom'] != '20.0' && $_SESSION['currentPageDefinitions']['margin-bottom'] != $_POST['margin-bottom']) {
+		$_SESSION['currentPageDefinitions']['margin-bottom'] = $_POST['margin-bottom'];
+	}
+	if($_POST['margin-left'] != '10.0' && $_SESSION['currentPageDefinitions']['margin-left'] != $_POST['margin-left']) {
+		$_SESSION['currentPageDefinitions']['margin-left'] = $_POST['margin-left'];
+	}
+	if($_POST['margin-right'] != '10.0' && $_SESSION['currentPageDefinitions']['margin-right'] != $_POST['margin-right']) {
+		$_SESSION['currentPageDefinitions']['margin-right'] = $_POST['margin-right'];
+	}
+	if(isset($_POST['defaults'])) {
+		foreach($_POST['defaults'] as $default) {
+			switch($default) {
+				case 'logoFile':
+					unset($_SESSION['currentPageDefinitions']['filename']);
+					break;
+				case 'logoSize':
+					unset($_SESSION['currentPageDefinitions']['logo-width']);
+					unset($_SESSION['currentPageDefinitions']['logo-height']);
+					unset($_SESSION['currentPageDefinitions']['logo-max']);
+					break;
+				case 'headline':
+					unset($_SESSION['currentPageDefinitions']['headline']);
+					break;
+				case 'margin-top':
+					unset($_SESSION['currentPageDefinitions']['margin-top']);
+					break;
+				case 'margin-bottom':
+					unset($_SESSION['currentPageDefinitions']['margin-bottom']);
+					break;
+				case 'margin-left':
+					unset($_SESSION['currentPageDefinitions']['margin-left']);
+					break;
+				case 'margin-right':
+					unset($_SESSION['currentPageDefinitions']['margin-right']);
+					break;
+				default:
+					break;
+			}
+		}
+		if(count($_SESSION['currentPageDefinitions']['margin']) == 0) {
+			unset($_SESSION['currentPageDefinitions']['margin']);
+		}
+	}
+}
 
 // Load PDF structure from file if it is not defined in session
 if(!isset($_SESSION['currentPDFStructure'])) {
 	// Load structure file to be edit
 	if($_GET['edit']) {
-		$_SESSION['currentPDFStructure'] = loadPDFStructureDefinitions($_GET['type'],$_GET['edit']);
+		$load = loadPDFStructureDefinitions($_GET['type'],$_GET['edit']);
+		$_SESSION['currentPDFStructure'] = $load['structure'];
+		$_SESSION['currentPageDefinitions'] = $load['page_definitions'];
 		$_GET['pdfname'] = substr($_GET['edit'],0,strlen($_GET['edit']) - 4);
 	}
 	// Load default structure file when creating a new one
 	else {
-		$_SESSION['currentPDFStructure'] = loadPDFStructureDefinitions($_GET['type']);
+		$load = loadPDFStructureDefinitions($_GET['type']);
+		$_SESSION['currentPDFStructure'] = $load['structure'];
+		$_SESSION['currentPageDefinitions'] = $load['page_definitions'];
 	}
 }
 
@@ -330,8 +405,15 @@ foreach($_SESSION['availablePDFFields'] as $module => $values) {
 }
 $modules = join(',',$modules);
 
+$logoFiles = getAvailableLogos();
+$logos = '<option value="none"' . (($_SESSION['currentPageDefinitions']['filename'] == 'none') ? ' selected="selected"' : '') . '>' . _('No logo') . "</option>\n";
+foreach($logoFiles as $logoFile) {
+	$logos .= "\t\t\t\t\t\t\t\t\t\t\t<option value=\"" . $logoFile['filename'] . "\"" .(($_SESSION['currentPageDefinitions']['filename'] == $logoFile['filename'] || (!isset($_SESSION['currentPageDefinitions']['filename']) && $logoFile['filename'] == 'printLogo.jpg')) ? ' selected="selected"' : '') . '">' . $logoFile['filename'] . ' (' . $logoFile['infos'][0] . ' x ' . $logoFile['infos'][1] . ")</option>\n";  
+}
+
 // print header
 echo $_SESSION['header'];
+// TODO Change enctype of form
 ?>
 		<title>LDAP Account Manager</title>
 		<link rel="stylesheet" type="text/css" href="../../style/layout.css">
@@ -341,11 +423,154 @@ echo $_SESSION['header'];
 		<form action="pdfpage.php" method="post">
 			<table width="100%">
 				<tr>
+					<td width="100%" colspan="3" align="center">
+						<fieldset>
+							<legend>
+								<b><?php echo _('Overall page settings'); ?></b>
+							</legend>
+							<table width="100%">
+								<tr>
+									<td>
+										<b><?php echo _('Logo'); ?>:</b>
+									</td>
+									<td>
+										<select name="logoFile" size="1">
+											<?php echo $logos; ?>
+										</select>
+									</td>
+									<td>
+										<?php echo _('Use default') ?> <input type="checkbox" name="defaults[]" value="logoFile">
+									</td>
+									<td rowspan="4" align="center">
+										<input type="submit" name="page" value="<?php echo _('Submit page settings'); ?>">
+									</td>
+								</tr>
+								<tr>
+									<td>
+									</td>
+									<td>
+										<p>
+											<fieldset>
+												<legend>
+													<?php echo _('Size'); ?>
+												</legend>
+											<table width="100%">
+												<tr>
+													<td>
+															<?php echo _('Width') . ':'; ?>
+													</td>
+													<td>
+															<input type="text" name="logo-width" value="<?php echo ((isset($_SESSION['currentPageDefinitions']['logo-width'])) ? $_SESSION['currentPageDefinitions']['logo-width'] : '50'); ?>" size="5"> <?php echo _('cm'); ?>
+													</td>
+												</tr>
+												<tr>
+													<td>
+															<?php echo _('Height') . ':'; ?>
+													</td>
+													<td>
+															<input type="text" name="logo-height" value="<?php echo ((isset($_SESSION['currentPageDefinitions']['logo-height'])) ? $_SESSION['currentPageDefinitions']['logo-height'] : '20'); ?>" size="5"> <?php echo _('cm'); ?>
+													</td>
+												</tr>
+												<tr>
+													<td>
+															<input type="checkbox" name="logo-max"<?php echo ((isset($_SESSION['currentPageDefinitions']['logo-max'])) ? ' checked="checked"' : ''); ?>>
+													</td>
+													<td>
+															<?php echo _('Maximize with correct ratio'); ?>
+													</td>
+												</tr>
+											</table>
+											</fieldset>
+										</p>
+									</td>
+									<td>
+										<?php echo _('Use default') ?> <input type="checkbox" name="defaults[]" value="logoSize">
+									</td>
+									<!-- <td rowspan="3" align="center">
+										<input type="submit" name="page" value="<?php echo _('Submit page settings'); ?>">
+									</td> -->
+								</tr>
+								<tr>
+									<td>
+										<b><?php echo _('Headline'); ?>:</b>
+									</td>
+									<td>
+										<input type="text" name="headline" value="<?php echo ((isset($_SESSION['currentPageDefinitions']['headline'])) ? $_SESSION['currentPageDefinitions']['headline'] : 'LDAP Account Manager'); ?>">
+									</td>
+									<td>
+										<?php echo _('Use default') ?> <input type="checkbox" name="defaults[]" value="headline">
+									</td>
+								</tr>
+								<tr>
+									<td colspan="3">
+										<fieldset>
+											<legend>
+												<?php echo _('Margin'); ?>
+											</legend>
+											<table width="100%">
+												<tr>
+													<td>
+														<b><?php echo _('Top'); ?>:</b>
+													</td>
+													<td>
+														<input type="text" name="margin-top" value="<?php echo ((isset($_SESSION['currentPageDefinitions']['margin-top'])) ? $_SESSION['currentPageDefinitions']['margin-top'] : '10.0'); ?>" size="5">
+													</td>
+													<td>
+														<?php echo _('Use default') ?> <input type="checkbox" name="defaults[]" value="margin-top">
+													</td>
+												</tr>
+												<tr>
+													<td>
+														<b><?php echo _('Bottom'); ?>:</b>
+													</td>
+													<td>
+														<input type="text" name="margin-bottom" value="<?php echo ((isset($_SESSION['currentPageDefinitions']['margin-bottom'])) ? $_SESSION['currentPageDefinitions']['margin-bottom'] : '20.0'); ?>" size="5">
+													</td>
+													<td>
+														<?php echo _('Use default') ?> <input type="checkbox" name="defaults[]" value="margin-bottom">
+													</td>
+												</tr>
+												<tr>
+													<td>
+														<b><?php echo _('Left'); ?>:</b>
+													</td>
+													<td>
+														<input type="text" name="margin-left" value="<?php echo ((isset($_SESSION['currentPageDefinitions']['margin-left'])) ? $_SESSION['currentPageDefinitions']['margin-left'] : '10.0'); ?>" size="5">
+													</td>
+													<td>
+														<?php echo _('Use default') ?> <input type="checkbox" name="defaults[]" value="margin-left">
+													</td>
+												</tr>
+												<tr>
+													<td>
+														<b><?php echo _('right'); ?>:</b>
+													</td>
+													<td>
+														<input type="text" name="margin-right" value="<?php echo ((isset($_SESSION['currentPageDefinitions']['margin-right'])) ? $_SESSION['currentPageDefinitions']['margin-right'] : '10.0'); ?>" size="5">
+													</td>
+													<td>
+														<?php echo _('Use default') ?> <input type="checkbox" name="defaults[]" value="margin-right">
+													</td>
+												</tr>
+											</table>
+										</fieldset>
+									</td>
+								</tr>
+							</table>
+						</fieldset>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="3">
+						<br>
+					</td>
+				</tr>
+				<tr>
 					<!-- print current structure -->
 					<td width="45%" align="center">
 						<fieldset>
 							<legend>
-								<b><?php echo (($_GET['edit']) ? substr($_GET['edit'],0,strlen($GET['edit']) - 4) : _('New') . ' ' . $_GET['type']) . ' ' . _("PDF structure"); ?></b>
+								<b><?php echo _("PDF structure"); ?></b>
 							</legend>
 							<table>
 <?php

@@ -42,23 +42,30 @@ function loadPDFStructureDefinitions($scope='user', $definition='default.xml') {
 	
 	$border = array();
 	$structure = array();
-	$pdf_entries = $xml[1]['PDF'];
 	$border[$current] = array();
-	while(($index = current($pdf_entries)) != null) {
-		if($xml[0][$index]['attributes']['TYPE'] == $scope) {
-			$border['start'] = $index;
-			next($pdf_entries);
-			$border['end'] = current($pdf_entries);
+	$page_definitions = array();
+	if($xml[0][$xml[1]['PDF'][0]]['attributes']['TYPE'] == $scope) {
+		$border['start'] = $xml[1]['PDF'][0];
+		$page_definitions = $xml[0][$xml[1]['PDF'][0]]['attributes'];
+		foreach($page_definitions as $key => $value) {
+			$page_definitions[strtolower($key)] = $value;
+			unset($page_definitions[$key]);
 		}
-		next($pdf_entries);
+		$border['end'] = $xml[1]['PDF'][1];
 	}
 	$structure = array_slice($xml[0],$border['start'] + 1,$border['end'] - ($border['start'] + 1));
-	return $structure;
+	return array('structure' => $structure, 'page_definitions' => $page_definitions);
 }
 
 function savePDFStructureDefinitions($scope,$definition) {
 	$handle = fopen($_SESSION['lampath'] . 'config/pdf/' . $scope . '/' . $definition,'w');
-	$file = "<pdf type=\"" . $scope . "\">\n";
+	$pdf_attributes = '';
+	foreach($_SESSION['currentPageDefinitions'] as $key => $value) {
+		if($key != 'TYPE') {
+			$pdf_attributes .= ' ' . $key . '="' . $value . '"';
+		}
+	}
+	$file = '<pdf type="' . $scope . "\"" . $pdf_attributes . ">\n";
 	foreach($_SESSION['currentPDFStructure'] as $entry) {
 		$ident = '';
 		for($i=0;$i<$entry['level'] -1;$i++) {
@@ -92,5 +99,21 @@ function savePDFStructureDefinitions($scope,$definition) {
 
 function deletePDFStructureDefinition($scope,$definition) {
 	return unlink($_SESSION['lampath'] . 'config/pdf/' . $scope . '/' . $definition . '.xml');
+}
+
+function getAvailableLogos() {
+	$return = array();
+	$dirPath = $_SESSION['lampath'] . '/config/pdf/logos/';
+	$dirHandle = opendir($dirPath);
+	while($file = readdir($dirHandle)) {
+		if(!is_dir($file) && $file != '.' && $file != '..' && preg_match('/\\.(jpg|png)$/',$file)) {
+			$infos = getimagesize($dirPath . $file);
+			if($infos[0] <= 400 && $infos[1] <= 60) {
+				array_push($return, array('filename' => $file, 'infos' => $infos));
+			}
+		}
+	}
+	sort($return);
+	return $return;
 }
 ?>
