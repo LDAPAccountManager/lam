@@ -91,9 +91,12 @@ if ($_GET['type']) {
 	// Print delete rows from modules
 	echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
 	$modules = $_SESSION['config']->get_AccountModules($_GET['type']);
+	$values = array();
+	$tabindex = 100;
+	$tabindexLink = 1000;
 	foreach ($modules as $module) {
 		$module = new $module($_GET['type']);
-		$module->display_html_delete($_POST);
+		parseHtml(get_class($module), $module->display_html_delete($_POST), $values, true, $tabindex, $tabindexLink, $_GET['type']);
 	}
 	echo "</table>\n";
 	echo "<br>\n";
