@@ -3,13 +3,35 @@ $Id$
 Installation Instructions for LAM
 ---------------------------------
 
-bla bla
 
-1.
+1. Requirements
 
-2.
+   -Apache webserver (SSL optional) with installed PHP-Module (PHP-Module with
+    ldap, gettext, mcrypt, openldap and perl)
+   -openldap (2.0 or >)
+   -a web browser :-)
 
-3.
+
+2. Installation
+
+   * Extract package with:
+     tar xzf lam-version.tar.gz
+   
+   * Copy files into the html-file scope of the webserver. For example
+     /apache/htdocs.
+
+   * Set appropriate file permissions for /lam/sess and /lam/profiles.
+     Both directories must have write permissions set for the specified apache
+     web user. The perl files in /lam/lib must set executable. (See also
+     readme.lamdeamon.pl)
+
+   * Configure lam. Either use the web interface with the link
+     "Configuration Login". Start file is /lam/index.html.
+     or configure LAM manually. (The default password to edit the
+     options is "lam")
+     -Manually:
+      A default config file can be found in /lam/config/lam.conf_sample.
+      Change the necessary entries and rename it to /lam/config/lam.conf.
 
 
-QUICK INSTALL:
+3. Troubleshooting
