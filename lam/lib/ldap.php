@@ -164,7 +164,7 @@ class Ldap{
   // closes connection to LDAP server before serialization
   function __sleep() {
   	$this->close();
-	return array("conf", "server", "username", "password");
+	return array("conf", "username", "password");
   }
   
   // reconnects to LDAP server when deserialized
