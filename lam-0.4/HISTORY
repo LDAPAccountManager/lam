@@ -1,3 +1,9 @@
+  - fixed bugs:
+      fixed doctype of main frame
+      removed syntax check for LDAP suffixes
+      fixed IE bug at login
+
+
 26.05.2004 0.4.6
   - fixed bugs:
       password hashes were not disabled correctly
