@@ -44,7 +44,7 @@ function display_LoginPage($config_object,$profile)
 
 	session_register("header");
 	$language = explode(":",$_SESSION['language']);
-	$_SESSION['header'] = "<?xml version=\"1.0\" encoding=\"" . $language[3] . "\"?>\n<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n\n";
+	$_SESSION['header'] = "<?xml version=\"1.0\" encoding=\"" . $language[1] . "\"?>\n<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n\n";
 
 	// loading available languages from language.conf file
 	$languagefile = "../config/language";
