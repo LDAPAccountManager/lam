@@ -72,7 +72,8 @@ function get_ldap_filter($scope) {
 	$orFilter = '';
 	for ($i = 0; $i < sizeof($mods); $i++) {
 		if (is_base_module($mods[$i], $scope)) {
-			$modinfo = call_user_func(array($mods[$i], "get_ldap_filter"), $scope);
+			$module = new $mods[$i]($scope);
+			$modinfo = $module->get_ldap_filter();
 			if (isset($modinfo['or'])) $filters['or'][] = $modinfo['or'];
 			if (isset($modinfo['and'])) $filters['and'][] = $modinfo['and'];
 		}

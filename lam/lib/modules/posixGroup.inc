@@ -62,7 +62,10 @@ class posixGroup extends baseModule {
 	function get_metaData() {
 		$return = array();
 		if ($this->get_scope() == "group") {
+			// this is a base module
 			$return["is_base"] = true;
+			// LDAP filter
+			$return["ldap_filter"] = array('or' => "(objectClass=posixGroup)");
 		}
 		return $return;
 	}
@@ -139,13 +142,6 @@ class posixGroup extends baseModule {
 
 	function can_manage($scope) {
 		if ($scope == "group") return true;
-		else return false;
-	}
-
-	// returns an LDAP filter for the account lists
-	// $scope: the account type ("user", "group", "host")
-	function get_ldap_filter($scope) {
-		if ($scope == "group") return array('or' => "(objectClass=posixGroup)");
 		else return false;
 	}
 

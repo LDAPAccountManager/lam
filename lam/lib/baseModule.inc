@@ -85,6 +85,16 @@ class baseModule {
 		else return false;
 	}
 
+	/**
+	* returns an LDAP filter for the account lists
+	*
+	* @return string LDAP filter
+	*/
+	function get_ldap_filter() {
+		if (isset($this->meta['ldap_filter'])) return $this->meta['ldap_filter'];
+		else return "";
+	}
+
 // TODO implement missing interface
 }
 
