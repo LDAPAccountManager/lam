@@ -42,8 +42,11 @@ if (isset($_GET['DN'])) {
 		$_SESSION['account']->general_dn = substr($_SESSION['account']->general_dn, strpos($_SESSION['account']->general_dn, ',')+1);
 		$_SESSION['final_changegids'] = '';
 		}
-	else $_SESSION['account'] = loadGroupProfile('default');
-
+	else {
+		$_SESSION['account'] = loadGroupProfile('default');
+		if (isset($_SESSION['account_old'])) unset($_SESSION['account_old']);
+		}
+	$_SESSION['account'] ->type = 'group';
 	$values = getquotas($type);
 	if (is_object($values)) {
 		while (list($key, $val) = each($values)) // Set only defined values
@@ -91,10 +94,9 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 			$_SESSION['account']->general_username = $_POST['f_general_username'];
 			$_SESSION['account']->general_uidNumber = $_POST['f_general_uidNumber'];
 			$_SESSION['account']->general_gecos = $_POST['f_general_gecos'];
-
 			// Check if values are OK and set automatic values.  if not error-variable will be set
-			if (isset($_SESSION['account_old'])) list($values, $errors) = checkglobal($_SESSION['account'], $_SESSION['account']->type, $_SESSION['account_old']); // account.inc
-				else list($values, $errors) = checkglobal($_SESSION['account'], $_SESSION['account']->type); // account.inc
+			if (isset($_SESSION['account_old'])) list($values, $errors) = checkglobal($_SESSION['account'], 'group', $_SESSION['account_old']); // account.inc
+				else list($values, $errors) = checkglobal($_SESSION['account'], 'group'); // account.inc
 			if (is_object($values)) { // Set only defined values
 				while (list($key, $val) = each($values))
 					if (isset($val)) $_SESSION['account']->$key = $val;
@@ -227,6 +229,7 @@ do { // X-Or, only one if() can be true
 
 echo "</head><body>\n";
 echo "<form action=\"groupedit.php\" method=\"post\">\n";
+
 if (is_array($errors)) {
 	echo "<table class=\"account\" width=\"100%\">\n";
 	for ($i=0; $i<sizeof($errors); $i++) StatusMessage($errors[$i][0], $errors[$i][1], $errors[$i][2]);
@@ -259,7 +262,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "\"></fieldset></td>\n<td>";
 		echo "<fieldset><legend><b>". _('Additional group members') . "</b></legend>\n";
 		echo "<table border=0 width=\"100%\">\n";
-		echo "<tr><td><fieldset><legend>";
+		echo "<tr><td valign=\"top\"><fieldset><legend>";
 		echo _('Group members');
 		echo "</legend><select name=\"members[]\" size=15 multiple>\n";
 		for ($i=0; $i<count($_SESSION['account']->unix_memberUid); $i++)
@@ -269,7 +272,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo " ";
 		echo "<input type=\"submit\" name=\"remove\" value=\"=>\"><br><br>";
 		echo "<a href=\"help.php?HelpNumber=XXX\" target=\"lamhelp\">"._('Help-XX')."</a></td>\n";
-		echo "<td><fieldset><legend>";
+		echo "<td valign=\"top\"><fieldset><legend>";
 		echo _('Available users');
 		echo "</legend><select name=\"users[]\" size=15 multiple>\n";
 		foreach ($_SESSION['userDN'] as $temp)
@@ -284,6 +287,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		// load list of profiles
 		$profilelist = getGroupProfiles();
 		// Show page info
+		echo "<input name=\"select\" type=\"hidden\" value=\"general\">\n";
 		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
 		echo "<br><fieldset><legend>";
 		echo _('Please select page:');
@@ -481,6 +485,13 @@ switch ($select_local) { // Select which part of page will be loaded
 			echo _('Change GID-Number of all users in group to new value');
 			echo '</td></tr>'."\n";
 			}
+		$disabled = "";
+		if (!isset($_SESSION['account']->smb_mapgroup)) { // Samba page nit viewd; can not create group because if missing options
+			$disabled = "disabled";
+			echo "<tr>";
+			StatusMessage("ERROR", _("Samba Options not set!"), _("Please check settings on samba page."));
+			echo "</tr>";
+			}
 		if (isset($_SESSION['account_old']->general_objectClass)) {
 			if (($_SESSION['config']->samba3 == 'yes') && (!in_array('sambaGroupMapping', $_SESSION['account_old']->general_objectClass))) {
 				echo '<tr>';
@@ -501,7 +512,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo _('Save profile');
 		echo '"><a href="help.php?HelpNumber=457" target="lamhelp">'._('Help').'</a>'.
 			'</td>'."\n".'<td>'.
-			'<input name="create" type="submit" value="';
+			"<input name=\"create\" type=\"submit\" $disabled value=\"";
 		if ($_SESSION['account_old']) echo _('Modify Account');
 		 else echo _('Create Account');
 		echo '">'.

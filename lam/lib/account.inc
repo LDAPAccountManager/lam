@@ -181,6 +181,7 @@ function array_delete($values, $array) { // This function will return all values
 function checkglobal($values, $type, $values_old=false) { // This functions checks all global account parameters $values is class account(), $type=user|host|group
 	// If all values are OK an array of class account is returned. Else an error-string is returned
 	$return = new account();
+	$return->general_dn = $values->general_dn;
 	switch ($type) {
 		case 'user' :
 			// Check if Homedir is valid
@@ -662,12 +663,13 @@ function ldapexists($values, $type, $values_old=false) { // This function will s
 			$keys = array_keys($_SESSION['groupDN']);
 			unset ($keys[0]);
 			$keys = array_values($keys);
-			if ( ($values_old->general_username != $values->general_username) &&
+			if (in_array($search , $keys)) print "hit";
+			 if ( ($values_old->general_username != $values->general_username) &&
 				($_SESSION['groupDN'][0] != $values->general_username) &&
 				(in_array($search , $keys)) ) return sprintf (_('%s already exists!'), $type);
 			if ((!$values_old) &&
 				($_SESSION['groupDN'][0] != $values->general_username) &&
-				(in_array($search , $keys))) return sprintf (_('%s already exists!'), $type);
+				(in_array($search , $keys)) ) return sprintf (_('%s already exists!'), $type);
 			break;
 		case 'host':
 			ldapreload('host');
@@ -715,6 +717,7 @@ function getgid($groupname) { // Will return the the gid to an existing Groupnam
 function checkid($values, $type, $values_old=false) { // if value is empty will return an unused id from all ids found in LDAP else check existing value
 	switch ($type) {
 		case 'user':
+			ldapreload('user');
 			$minID = intval($_SESSION['config']->get_minUID());
 			$maxID = intval($_SESSION['config']->get_maxUID());
 			$suffix = $_SESSION['config']->get_UserSuffix();
@@ -725,6 +728,7 @@ function checkid($values, $type, $values_old=false) { // if value is empty will 
 			//	$ids[] = $_SESSION['userDN'][$key]['uidNumber'];
 			break;
 		case 'group':
+			ldapreload('group');
 			$minID = intval($_SESSION['config']->get_MinGID());
 			$maxID = intval($_SESSION['config']->get_MaxGID());
 			$suffix = $_SESSION['config']->get_GroupSuffix();
@@ -735,6 +739,7 @@ function checkid($values, $type, $values_old=false) { // if value is empty will 
 			//	$ids[] = $_SESSION['groupDN'][$key]['gidNumber'];
 			break;
 		case 'host':
+			ldapreload('host');
 			$minID = intval($_SESSION['config']->get_MinMachine());
 			$maxID = intval($_SESSION['config']->get_MaxMachine());
 			$suffix = $_SESSION['config']->get_HostSuffix();
@@ -746,7 +751,7 @@ function checkid($values, $type, $values_old=false) { // if value is empty will 
 			break;
 		}
 	if ($values->general_uidNumber=='') {
-		if (!isset($values_old)) {
+		if (!isset($values_old->general_uidNumber)) {
 			if ($keys) {
 				$id = 0;
 				foreach ($keys as $key)
