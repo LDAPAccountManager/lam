@@ -67,6 +67,7 @@ if ($pass1 != "") {
 	echo ("<b>" . _("Password changed!") . "</b><br><br>");
 }
 // save settings
+$conf->save();
 echo ("<b>" . _("Saving the following settings:") . "</b><br><br>");
 $conf->printconf();
 ?> 
