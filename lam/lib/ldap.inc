@@ -128,6 +128,14 @@ class Ldap{
 	var $ldapGroupAttributes;
 	var $ldapHostAttributes;
 
+	// array with all objectClass strings from the LDAP server
+	var $objectClasses;
+
+	// capabilities of the LDAP server
+	var $supports_unix_hosts=false;  // host attribute in inetOrgPerson
+	var $supports_samba2_schema=false;  // objectClass sambaAccount
+	var $supports_samba3_schema=false;  // objectClass sambaSamAccount
+
 	// constructor
 	// $config: an object of Config (../config/config.php)
 	function Ldap($config) {
@@ -195,6 +203,11 @@ class Ldap{
 			}
 			$bind = @ldap_bind($this->server, $user, $passwd);
 			if ($bind) {
+				// read objectClasses from server and update capabilities if needed
+				if (! $this->objectClasses) {
+					$this->updateClasses();
+					$this->updateCapabilities();
+				}
 				// return server handle
 				return $this->server;
 			}
@@ -277,6 +290,36 @@ class Ldap{
 		return $ret;
 	}
 
+	// reads the array of objectClasses from the LDAP server
+	function updateClasses() {
+		// read from default cn
+		$sr = @ldap_read($this->server, 'cn=subschema', '(objectClass=*)', array('objectclasses'));
+		// if default was not correct check different cn
+		if (!$sr) $sr = @ldap_read($this->server, 'cn=schema', '(objectClass=*)', array('objectclasses'));
+		if ($sr) {
+			// get search result and save it
+			$info = @ldap_get_entries($this->server,$sr);
+			if ($info) {
+				$this->objectClasses = $info[0]['objectclasses'];
+				array_shift($this->objectClasses);
+				return true;
+			}
+		}
+		// if search failed save empty result
+		$this->objectClasses = array();
+	}
+
+	// updates the capabilities values (var $supports_*)
+	function updateCapabilities() {
+		for ($i = 0; $i < sizeof($this->objectClasses); $i++) {
+			$line = $this->objectClasses[$i];
+			// search keywords
+			if (strpos($line, "NAME 'inetOrgPerson'") && strpos($line, " host ")) $this->supports_unix_hosts = true;
+			if (strpos($line, "NAME 'sambaAccount'")) $this->supports_samba2_schema = true;
+			if (strpos($line, "NAME 'sambaSamAccount'")) $this->supports_samba3_schema = true;
+		}
+	}
+
 	// returns the LDAP connection handle
 	function server() {
 		return $this->server;
@@ -286,7 +329,9 @@ class Ldap{
 	function __sleep() {
 		$this->close();
 		// define which attributes to save
-		return array("conf", "username", "password", "ldapUserAttributes", "ldapGroupAttributes", "ldapHostAttributes");
+		return array("conf", "username", "password", "ldapUserAttributes", "ldapGroupAttributes",
+			"ldapHostAttributes", "objectClasses", "supports_unix_hosts", "supports_samba2_schema",
+			"supports_samba3_schema");
 	}
 
 	// reconnects to LDAP server when deserialized
