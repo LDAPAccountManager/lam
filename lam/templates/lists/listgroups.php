@@ -136,7 +136,11 @@ if (! $_GET['norefresh']) {
 		// sort rows by sort column ($sort)
 		usort($grp_info, "cmp_array");
 	}
-	else StatusMessage("ERROR", _("LDAP Search failed! Please check your preferences."), _("No Groups found!"));
+	else {
+		$grp_info = array();
+		$_SESSION['grp_info'] = array();
+		StatusMessage("ERROR", _("LDAP Search failed! Please check your preferences."), _("No Groups found!"));
+		}
 }
 else {
 	if (sizeof($grp_info) == 0) StatusMessage("WARN", "", _("No Groups found!"));

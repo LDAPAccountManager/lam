@@ -142,7 +142,11 @@ if (! $_GET['norefresh']) {
 		// sort rows by sort column ($sort)
 		usort($hst_info, "cmp_array");
 	}
-	else StatusMessage("ERROR", _("LDAP Search failed! Please check your preferences."), _("No Samba Hosts found!"));
+	else {
+		$hst_info = array();
+		$_SESSION['hst_info'] = array();
+		StatusMessage("ERROR", _("LDAP Search failed! Please check your preferences."), _("No Samba Hosts found!"));
+		}
 }
 else {
 	if (sizeof($hst_info) == 0) StatusMessage("WARN", "", _("No Samba Hosts found!"));

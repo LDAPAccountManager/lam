@@ -195,6 +195,8 @@ else {
 			$_SESSION["userlist"] = $userinfo;
 		}
 	else {
+		$_SESSION['userlist'] = array();
+		$userinfo = array();
 		StatusMessage("ERROR",
 			_("LDAP Search failed! Please check your preferences."),
 			_("No Users found!"));
