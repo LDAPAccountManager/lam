@@ -80,7 +80,6 @@ if ($_POST['new_user'] || $_POST['del_user'] || $_POST['pdf_user']){
 	elseif ($_POST['pdf_user']){
 		// search for checkboxes
 		$users = array_keys($_POST, "on");
-		print_r($users);
 		$userlist = array();
 		// load users from LDAP
 		for ($i = 0; $i < sizeof($users); $i++) $userlist[] = loaduser($users[$i]);
