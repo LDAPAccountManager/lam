@@ -130,7 +130,9 @@ if ($found==true) {
 						    system 'mkdir', '-m 755', $user[7]; # Create himdir itself
 						    system "cp -a /etc/skel/* /etc/skel/.[^.]* $user[7]"; # Copy /etc/sekl into homedir
 					    	    system 'chown', '-R', "$user[2]:$user[3]" , $user[7]; # Change owner to new user
-						    system '/usr/sbin/useradd.local', $user[0]; # run useradd-script
+						    if (-e '/usr/sbin/useradd.local') {
+							    system '/usr/sbin/useradd.local', $user[0]; # run useradd-script
+							    }
 						    }
 						($<, $>) = ($>, $<); # Give up root previleges
 						last switch2;

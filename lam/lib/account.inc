@@ -531,15 +531,6 @@ function loaduser($dn) { // Will load all needed values from an existing account
 	if (substr(str_replace('{CRYPT}', '',$attr['userPassword'][0]),0,1) == '!' ) $return->unix_deactivated=true;
 	if (isset($attr['userPassword'][0])) $return->unix_password = $attr['userPassword'][0];
 
-	// load quotas
-	if ($_SESSION['config']->scriptServer) {
-		$values = getquotas('user',$return->general_username);
-		if (is_object($values)) {
-			while (list($key, $val) = each($values)) // Set only defined values
-				if ($val) $return->$key = $val;
-			}
-		}
-
 
 	if (isset($attr['displayName'][0])) $return->smb_displayName = utf8_decode($attr['displayName'][0]);
 
@@ -574,7 +565,7 @@ function loaduser($dn) { // Will load all needed values from an existing account
 				else $return->smb_mapgroup = 2*$attr['gidNumber'][0]+1001;
 			}
 		// return value to prevent loaded values to be overwritten from old samba 2.2 attributes
-		if ($_SESSION['config']->samba3 == 'yes') return $return;
+		if ($_SESSION['config']->is_samba3()) return $return;
 		}
 
 	if (in_array('sambaAccount', $attr['objectClass'])) {
@@ -662,7 +653,7 @@ function loadhost($dn) { // Will load all needed values from an existing account
 				else $return->smb_mapgroup = 2*$attr['gidNumber'][0]+1001;
 			}
 		// return value to prevent loaded values to be overwritten from old samba 2.2 attributes
-		if ($_SESSION['config']->samba3 == 'yes') return $return;
+		if ($_SESSION['config']->is_samba3()) return $return;
 		}
 	// load samba 2.2 attributes
 	if (in_array('sambaAccount', $attr['objectClass'])) {
@@ -719,14 +710,6 @@ function loadgroup($dn) { // Will load all needed values from an existing group
 		for ($i=0; $i<sizeof($samba3domains); $i++)
 			if ($SID == $samba3domains[$i]->SID) $return->smb_domain = $samba3domains[$i];
 		}
-	// load quotas
-	if ($_SESSION['config']->scriptServer) {
-		$values = getquotas('group',$return->general_username);
-		if (is_object($values)) {
-			while (list($key, $val) = each($values)) // Set only defined values
-				if ($val) $return->$key = $val;
-			}
-		}
 	$return->type='group';
 	return $return;
 	}
@@ -760,7 +743,7 @@ function createuser($values) { // Will create the LDAP-Account
 	// General Objectclasses
 	$attr['objectClass'][0] = 'posixAccount';
 	$attr['objectClass'][1] = 'shadowAccount';
-	if ($_SESSION['config']->samba3 == 'yes') {
+	if ($_SESSION['config']->is_samba3()) {
 		$attr['objectClass'][2] = 'sambaSamAccount';
 		if ($values->smb_password_no) {
 			$attr['sambaNTPassword'] = 'NO PASSWORD*****';
@@ -926,13 +909,13 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 		}
 	if ($values->general_uidNumber != $values_old->general_uidNumber) {
 		$attr['uidNumber'] = $values->general_uidNumber; // posixAccount_req
-		if ($_SESSION['config']->samba3 == 'yes') $attr['sambaSid'] = $values->smb_domain->SID . "-" . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase); // sambaAccount_may
+		if ($_SESSION['config']->is_samba3()) $attr['sambaSid'] = $values->smb_domain->SID . "-" . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase); // sambaAccount_may
 			else $attr['rid'] = (2 * $values->general_uidNumber + 1000); // sambaAccount_may
 		}
 	if ($values->general_group != $values_old->general_group) {
 		$attr['gidNumber'] = getgid($values->general_group); // posixAccount_req
 		$change = false;
-		if ($_SESSION['config']->samba3 == 'yes') {
+		if ($_SESSION['config']->is_samba3()) {
 			if ($values->smb_mapgroup==$_SESSION['account']->smb_domain->SID . '-512') $found=true;
 			if ($values->smb_mapgroup==$_SESSION['account']->smb_domain->SID . '-513') $found=true;
 			if ($values->smb_mapgroup==$_SESSION['account']->smb_domain->SID . '-514') $found=true;
@@ -966,7 +949,7 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 		$attr['shadowLastChange'] = getdays(); // shadowAccount_may
 		}
 
-	if ($_SESSION['config']->samba3 == 'yes') {
+	if ($_SESSION['config']->is_samba3()) {
 		if ($values->smb_password_no) {
 			$attr['sambaNTPassword'] = 'NO PASSWORD*****';
 			$attr['sambaLMPassword'] = 'NO PASSWORD*****';
@@ -1118,7 +1101,7 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 
 
 	// Add or convert samba attributes & object to samba 3
-	if (($_SESSION['config']->samba3 == 'yes') && (!in_array('sambaSamAccount', $values->general_objectClass))) {
+	if (($_SESSION['config']->is_samba3()) && (!in_array('sambaSamAccount', $values->general_objectClass))) {
 		if (!isset($attr['objectClass'])) $attr['objectClass'] = $values->general_objectClass;
 		$attr['objectClass'][] = 'sambaSamAccount';
 		// unset old sambaAccount objectClass
@@ -1307,7 +1290,7 @@ function createhost($values) { // Will create the LDAP-Account
 	$attr['objectClass'][0] = 'posixAccount';
 	$attr['objectClass'][1] = 'shadowAccount';
 
-	if ($_SESSION['config']->samba3 == 'yes') {
+	if ($_SESSION['config']->is_samba3()) {
 		$attr['objectClass'][2] = 'sambaSamAccount';
 		$attr['sambaNTPassword'] = 'NO PASSWORD*****';
 		$attr['sambaLMPassword'] = 'NO PASSWORD*****';
@@ -1369,13 +1352,13 @@ function modifyhost($values,$values_old) { // Will modify the LDAP-Account
 		}
 	if ($values->general_uidNumber != $values_old->general_uidNumber) {
 		$attr['uidNumber'] = $values->general_uidNumber; // posixAccount_req
-		if ($_SESSION['config']->samba3 == 'yes') $attr['sambaSid'] = $values->smb_domain->SID . "-" . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase); // sambaAccount_may
+		if ($_SESSION['config']->is_samba3()) $attr['sambaSid'] = $values->smb_domain->SID . "-" . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase); // sambaAccount_may
 			else $attr['rid'] = (2 * $values->general_uidNumber + 1000); // sambaAccount_may
 		}
 	if ($values->general_group != $values_old->general_group) {
 		$attr['gidNumber'] = getgid($values->general_group); // posixAccount_req
 		$change = false;
-		if ($_SESSION['config']->samba3 == 'yes') {
+		if ($_SESSION['config']->is_samba3()) {
 			if ($values->smb_mapgroup==$_SESSION['account']->smb_domain->SID . '-512') $found=true;
 			if ($values->smb_mapgroup==$_SESSION['account']->smb_domain->SID . '-513') $found=true;
 			if ($values->smb_mapgroup==$_SESSION['account']->smb_domain->SID . '-514') $found=true;
@@ -1414,7 +1397,7 @@ function modifyhost($values,$values_old) { // Will modify the LDAP-Account
 		$attr['displayName'] = utf8_encode($values->smb_displayName);
 
 	// Add or convert samba attributes & object to samba 3
-	if (($_SESSION['config']->samba3 == 'yes') && (!in_array('sambaSamAccount', $values->general_objectClass))) {
+	if (($_SESSION['config']->is_samba3()) && (!in_array('sambaSamAccount', $values->general_objectClass))) {
 		if (!isset($attr['objectClass'])) $attr['objectClass'] = $values->general_objectClass;
 		$attr['objectClass'][] = 'sambaSamAccount';
 		// unset old sambaAccount objectClass
@@ -1520,7 +1503,7 @@ function modifyhost($values,$values_old) { // Will modify the LDAP-Account
 		if (isset($attr_old['sambaSID'][0])) $attr_rem['sambaSID'] = $attr_old['sambaSID'][0];
 		}
 
-	if ($_SESSION['config']->samba3 == 'yes') {
+	if ($_SESSION['config']->is_samba3()) {
 		// Reset password
 		if ($values->smb_password_no) {
 			$attr['sambaNTPassword'] = 'NO PASSWORD*****';
@@ -1627,7 +1610,7 @@ function modifygroup($values,$values_old) { // Will modify the LDAP-Group
 	// Set correct SID if UID was changed
 	if ($values->general_uidNumber != $values_old->general_uidNumber) {
 		$attr['uidNumber'] = $values->general_uidNumber; // posixAccount_req
-		if ($_SESSION['config']->samba3 == 'yes') $attr['sambaSid'] = $values->smb_domain->SID . "-" . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase +1); // sambaAccount_may
+		if ($_SESSION['config']->is_samba3()) $attr['sambaSid'] = $values->smb_domain->SID . "-" . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase +1); // sambaAccount_may
 			else $attr['rid'] = (2 * $values->general_uidNumber + 1001); // sambaAccount_may
 		}
 
@@ -1652,7 +1635,7 @@ function modifygroup($values,$values_old) { // Will modify the LDAP-Group
 		$attr['objectClass'] = $values->general_objectClass;
 		$attr['objectClass'][] = 'posixGroup';
 		}
-	if (($_SESSION['config']->samba3 == 'yes') && (!in_array('sambaGroupMapping', $values->general_objectClass))) {
+	if (($_SESSION['config']->is_samba3()) && (!in_array('sambaGroupMapping', $values->general_objectClass))) {
 		if (!isset($attr['objectClass'])) $attr['objectClass'] = $values->general_objectClass;
 		$attr['objectClass'][] = 'sambaGroupMapping';
 		$attr['sambaGroupType'] = '2';

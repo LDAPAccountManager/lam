@@ -53,11 +53,6 @@ if (isset($_GET['DN'])) {
 		$_SESSION['account']->smb_flagsW = 0;
 		if (isset($_SESSION['account_old'])) unset($_SESSION['account_old']);
 		$_SESSION['account_old'] = false;
-		$values = getquotas('user');
-		if (is_object($values)) {
-			while (list($key, $val) = each($values)) // Set only defined values
-				if (isset($val)) $_SESSION['account']->$key = $val;
-				}
 		}
 	}
 else if (count($_POST)==0) { // Startcondition. useredit.php was called from outside
@@ -66,11 +61,6 @@ else if (count($_POST)==0) { // Startcondition. useredit.php was called from out
 	$_SESSION['account']->smb_flagsW = 0;
 	if (isset($_SESSION['account_old'])) unset($_SESSION['account_old']);
 	$_SESSION['account_old'] = false;
-	$values = getquotas('user');
-	if (is_object($values)) {
-		while (list($key, $val) = each($values)) // Set only defined values
-			if (isset($val)) $_SESSION['account']->$key = $val;
-		}
 	}
 
 
@@ -83,6 +73,48 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 	// final = last page shown before account is created/modified
 	//		if account is modified commands might be ran are shown
 	// finish = page shown after account has been created/modified
+
+	case 'workstations':
+		do { // X-Or, only one if() can be true
+			if (isset($_POST['hosts']) && isset($_POST['add'])) { // Add users to list
+				$temp = str_replace(' ', '', $_SESSION['account']->smb_smbuserworkstations);
+				$workstations = explode (',', $temp);
+				for ($i=0; $i<count($workstations); $i++)
+					if ($workstations[$i]=='') unset($workstations[$i]);
+				$workstations = array_values($workstations);
+				// Add new hosts
+				$workstations = array_merge($workstations, $_POST['hosts']);
+				// remove doubles
+				$workstations = array_flip($workstations);
+				array_unique($workstations);
+				$workstations = array_flip($workstations);
+				// sort user
+				sort($workstations);
+				$_SESSION['account']->smb_smbuserworkstations = $workstations[0];
+				for ($i=1; $i<count($workstations); $i++) {
+					$_SESSION['account']->smb_smbuserworkstations = $_SESSION['account']->smb_smbuserworkstations . ", " . $workstations[$i];
+					}
+				// display groupmembers page
+				break;
+				}
+			if (isset($_POST['members']) && isset($_POST['remove'])) { // remove users fromlist
+				$temp = str_replace(' ', '', $_SESSION['account']->smb_smbuserworkstations);
+				$workstations = explode (',', $temp);
+				for ($i=0; $i<count($workstations); $i++)
+					if ($workstations[$i]=='') unset($workstations[$i]);
+				$workstations = array_values($workstations);
+				$workstations = array_delete($_POST['members'], $workstations);
+				$_SESSION['account']->smb_smbuserworkstations = $workstations[0];
+				for ($i=1; $i<count($workstations); $i++) {
+					$_SESSION['account']->smb_smbuserworkstations = $_SESSION['account']->smb_smbuserworkstations . ", " . $workstations[$i];
+					}
+				break;
+				}
+			} while(0);
+		$select_local = 'workstations';
+		break;
+
+
 	case 'general':
 		// Write all general values into $_SESSION['account'] if no profile should be loaded
 		if (!$_POST['load']) {
@@ -225,7 +257,6 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 			else $_SESSION['account']->smb_useunixpwd = false;
 		$_SESSION['account']->smb_homedrive = $_POST['f_smb_homedrive'];
 		$_SESSION['account']->smb_scriptPath = $_POST['f_smb_scriptpath'];
-		$_SESSION['account']->smb_smbuserworkstations = $_POST['f_smb_smbuserworkstations'];
 		$_SESSION['account']->smb_smbhome = stripslashes($_POST['f_smb_smbhome']);
 		$_SESSION['account']->smb_profilePath = stripslashes($_POST['f_smb_profilePath']);
 		$_SESSION['account']->smb_displayName = $_POST['f_smb_displayName'];
@@ -236,7 +267,7 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 		if ($_POST['f_smb_flagsX']) $_SESSION['account']->smb_flagsX = true;
 			else $_SESSION['account']->smb_flagsX = false;
 
-		if ($_SESSION['config']->samba3 == 'yes') {
+		if ($_SESSION['config']->is_samba3()) {
 			$samba3domains = $_SESSION['ldap']->search_domains($_SESSION[config]->get_domainSuffix());
 			for ($i=0; $i<sizeof($samba3domains); $i++)
 				if ($_POST['f_smb_domain'] == $samba3domains[$i]->name) {
@@ -248,7 +279,7 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 				else $_SESSION['account']->smb_domain = '';
 			}
 
-		if ($_SESSION['config']->samba3 == 'yes')
+		if ($_SESSION['config']->is_samba3())
 			switch ($_POST['f_smb_mapgroup']) {
 				case '*'._('Domain Guests'): $_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-" . '514'; break;
 				case '*'._('Domain Users'): $_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-" . '513'; break;
@@ -301,8 +332,6 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 		if ( (!$_SESSION['account']->smb_profilePath=='') && (!ereg('^[/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*([/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*)*$', $_SESSION['account']->smb_profilePath))
 			&& (!ereg('^[\][\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+([\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+)+$', $_SESSION['account']->smb_profilePath)))
 				$errors[] = array('ERROR', _('Profile path'), _('Profile path is invalid!'));
-		if ((!$_SESSION['account']->smb_smbuserworkstations=='') && !ereg('^([a-z]|[A-Z]|[0-9]|[.]|[-])+(([,])+([a-z]|[A-Z]|[0-9]|[.]|[-])+)*$', $_SESSION['account']->smb_smbuserworkstations))
-			$errors[] = array('ERROR', _('Samba workstations'), _('Samba workstations are invalid!'));
 		if ((!$_SESSION['account']->smb_domain=='') && (!is_object($_SESSION['account']->smb_domain)) && !ereg('^([a-z]|[A-Z]|[0-9]|[-])+$', $_SESSION['account']->smb_domain))
 			$errors[] = array('ERROR', _('Domain name'), _('Domain name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and -.'));
 		if ($_SESSION['account']->smb_useunixpwd) $_SESSION['account']->smb_useunixpwd = 1; else $_SESSION['account']->smb_useunixpwd = 0;
@@ -420,6 +449,20 @@ do { // X-Or, only one if() can be true
 			else $select_local=$_POST['select'];
 		break;
 		}
+	if ($_POST['next_workstations']) {
+		if (!is_array($errors)) $select_local='workstations';
+			else $select_local=$_POST['select'];
+		break;
+		}
+	if ($_POST['next_reset']) {
+		$_SESSION['account'] = $_SESSION['account_old'];
+		$_SESSION['account']->unix_password='';
+		$_SESSION['account']->smb_password='';
+		$_SESSION['account']->smb_flagsW = 0;
+		$_SESSION['account']->general_dn = substr($_SESSION['account']->general_dn, strpos($_SESSION['account']->general_dn, ',')+1);
+		$select_local = $_POST['select'];
+		break;
+		}
 	if ( $_POST['create'] ) { // Create-Button was pressed
 		// Create or modify an account
 		if ($_SESSION['account_old']) $result = modifyuser($_SESSION['account'],$_SESSION['account_old']);
@@ -437,6 +480,17 @@ do { // X-Or, only one if() can be true
 		}
 	if ($_POST['load']) {
 		// load profile
+		$_SESSION['account']->general_dn = $_POST['f_general_suffix'];
+		$_SESSION['account']->general_username = $_POST['f_general_username'];
+		$_SESSION['account']->general_surname = $_POST['f_general_surname'];
+		$_SESSION['account']->general_givenname = $_POST['f_general_givenname'];
+		$_SESSION['account']->general_uidNumber = $_POST['f_general_uidNumber'];
+		$_SESSION['account']->general_group = $_POST['f_general_group'];
+		if (isset($_POST['f_general_groupadd'])) $_SESSION['account']->general_groupadd = $_POST['f_general_groupadd'];
+			else $_SESSION['account']->general_groupadd = array('');
+		$_SESSION['account']->general_homedir = $_POST['f_general_homedir'];
+		$_SESSION['account']->general_shell = $_POST['f_general_shell'];
+		$_SESSION['account']->general_gecos = $_POST['f_general_gecos'];
 		if ($_POST['f_general_selectprofile']!='') $values = loadUserProfile($_POST['f_general_selectprofile']);
 		if (is_object($values)) {
 			while (list($key, $val) = each($values)) // Set only defined values
@@ -501,6 +555,70 @@ switch ($select_local) { // Select which part of page will be loaded
 	// final = last page shown before account is created/modified
 	//		if account is modified commands might be ran are shown
 	// finish = page shown after account has been created/modified
+
+	case 'workstations':
+		ldapreload('host');
+		// get workstation array
+		$temp = str_replace(' ', '', $_SESSION['account']->smb_smbuserworkstations);
+		$workstations = explode (',', $temp);
+
+		echo '<input name="select" type="hidden" value="workstations">';
+		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
+		echo "<table><tr><td><fieldset class=\"useredit-dark\"><legend class=\"useredit-bright\"><b>";
+		echo _('Please select page:');
+		echo "</b></legend>\n";
+		echo "<input name=\"next_general\" type=\"submit\" value=\""; echo _('General'); echo "\">\n<br>";
+		echo "<input name=\"next_unix\" type=\"submit\" value=\""; echo _('Unix'); echo "\">\n<br>";
+		echo "<input name=\"next_samba\" type=\"submit\" value=\""; echo _('Samba'); echo "\">\n<br>";
+		echo "<input name=\"next_quota\" type=\"submit\""; if (!isset($_SESSION['config']->scriptPath)) echo " disabled ";
+		echo "value=\""; echo _('Quota'); echo "\">\n<br>";
+		echo "<input name=\"next_personal\" type=\"submit\" value=\""; echo _('Personal'); echo "\">\n<br>";
+		echo "<input name=\"next_final\" type=\"submit\" value=\""; echo _('Final');
+		echo "\">";
+		if (isset($_SESSION['account_old'])) {
+			echo "<br><br>";
+			echo _("Reset all changes.");
+			echo "<br>";
+			echo "<input name=\"next_reset\" type=\"submit\" value=\""; echo _('Undo');
+			echo "\">\n";
+			}
+		echo "</fieldset></td></tr></table></td>\n<td>";
+		echo "<table border=0 width=\"100%\">\n<tr>\n<td>";
+		echo "<fieldset class=\"useredit-bright\"><legend class=\"useredit-bright\"><b>";
+		echo _("Select workstations");
+		echo "</b></legend>\n<table border=0 width=\"100%\">\n<tr>\n<td valign=\"top\">";
+		echo "<fieldset class=\"useredit-bright\"><legend class=\"useredit-bright\">";
+		echo _("Allowed workstations");
+		echo "</legend>\n";
+		if (count($workstations)!=0) {
+			echo "<select name=\"members[]\" class=\"useredit-bright\" size=15 multiple>\n";
+			for ($i=0; $i<count($workstations); $i++)
+				if ($workstations[$i]!='') echo "		<option>".$workstations[$i]."</option>\n";
+			echo "</select>\n";
+			}
+		echo "</fieldset></td>\n";
+		echo "<td align=\"center\" width=\"10%\"><input type=\"submit\" name=\"add\" value=\"<=\">";
+		echo " ";
+		echo "<input type=\"submit\" name=\"remove\" value=\"=>\"><br><br>";
+		echo "<a href=\"../help.php?HelpNumber=XXX\" target=\"lamhelp\">"._('Help-XX')."</a></td>\n";
+		echo "<td valign=\"top\"><fieldset class=\"useredit-bright\"><legend class=\"useredit-bright\">";
+		echo _('Available workstations');
+		echo "</legend>\n";
+		if (count($_SESSION['hostDN'])!=0) {
+			echo "<select name=\"hosts[]\" size=15 multiple class=\"useredit-bright\">\n";
+			foreach ($_SESSION['hostDN'] as $temp)
+				if (is_array($temp)) {
+					$temp[cn] = str_replace("$", '',$temp[cn]);
+					echo "		<option>$temp[cn]</option>\n";
+					}
+			echo "</select>\n";
+			}
+		echo "</fieldset></td>\n</tr>\n</table>\n";
+		echo "<input name=\"next_samba\" type=\"submit\" value=\""; echo _('Back'); echo "\">\n";
+		echo "</fieldset></td></tr></table>\n</td></tr>\n</table>\n";
+		break;
+
+
 	case 'general':
 		// General Account Settings
 		// load list of all groups
@@ -520,7 +638,15 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "value=\""; echo _('Quota'); echo "\">\n<br>";
 		echo "<input name=\"next_personal\" type=\"submit\" value=\""; echo _('Personal'); echo "\">\n<br>";
 		echo "<input name=\"next_final\" type=\"submit\" value=\""; echo _('Final');
-		echo "\"></fieldset></td></tr></table></td>\n<td>";
+		echo "\">";
+		if (isset($_SESSION['account_old'])) {
+			echo "<br><br>";
+			echo _("Reset all changes.");
+			echo "<br>";
+			echo "<input name=\"next_reset\" type=\"submit\" value=\""; echo _('Undo');
+			echo "\">\n";
+			}
+		echo "</fieldset></td></tr></table></td>\n<td>";
 		echo "<table border=0 width=\"100%\">\n<tr>\n<td>";
 		echo "<fieldset class=\"useredit-bright\"><legend class=\"useredit-bright\"><b>";
 		echo _("General properties");
@@ -641,7 +767,15 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "value=\""; echo _('Quota'); echo "\">\n<br>";
 		echo "<input name=\"next_personal\" type=\"submit\" value=\""; echo _('Personal'); echo "\">\n<br>";
 		echo "<input name=\"next_final\" type=\"submit\" value=\""; echo _('Final');
-		echo "\"></fieldset></td></tr></table></td>\n<td valign=\"top\">";
+		echo "\">";
+		if (isset($_SESSION['account_old'])) {
+			echo "<br><br>";
+			echo _("Reset all changes.");
+			echo "<br>";
+			echo "<input name=\"next_reset\" type=\"submit\" value=\""; echo _('Undo');
+			echo "\">\n";
+			}
+		echo "</fieldset></td></tr></table></td>\n<td valign=\"top\">";
 		echo "<table border=0 width=\"100%\"><tr><td><fieldset class=\"useredit-bright\"><legend class=\"useredit-bright\"><b>"._('Unix properties')."</b></legend>\n";
 		echo "<table border=0 width=\"100%\"><tr><td>";
 		echo _('Password');
@@ -720,7 +854,7 @@ switch ($select_local) { // Select which part of page will be loaded
 			$password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($_SESSION['account']->smb_password), MCRYPT_MODE_ECB, $iv);
 			$password = str_replace(chr(00), '', $password);
 			}
-		if ($_SESSION['config']->samba3 == 'yes') $samba3domains = $_SESSION['ldap']->search_domains($_SESSION[config]->get_domainSuffix());
+		if ($_SESSION['config']->is_samba3()) $samba3domains = $_SESSION['ldap']->search_domains($_SESSION[config]->get_domainSuffix());
 		$canchangedate = getdate($_SESSION['account']->smb_pwdcanchange);
 		$mustchangedate = getdate($_SESSION['account']->smb_pwdmustchange);
 
@@ -742,7 +876,15 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "value=\""; echo _('Quota'); echo "\">\n<br>";
 		echo "<input name=\"next_personal\" type=\"submit\" value=\""; echo _('Personal'); echo "\">\n<br>";
 		echo "<input name=\"next_final\" type=\"submit\" value=\""; echo _('Final');
-		echo "\"></fieldset></td></tr></table></td>\n<td>";
+		echo "\">";
+		if (isset($_SESSION['account_old'])) {
+			echo "<br><br>";
+			echo _("Reset all changes.");
+			echo "<br>";
+			echo "<input name=\"next_reset\" type=\"submit\" value=\""; echo _('Undo');
+			echo "\">\n";
+			}
+		echo "</fieldset></td></tr></table></td>\n<td>";
 		echo "<table border=0 width=\"100%\">\n<tr>\n<td>";
 		echo "<fieldset class=\"useredit-bright\"><legend class=\"useredit-bright\"><b>";
 		echo _("Samba properties");
@@ -839,7 +981,7 @@ switch ($select_local) { // Select which part of page will be loaded
 			'<a href="help.php?HelpNumber=434" target="lamhelp">'._('Help').'</a>'.
 			'</td></tr>'."\n".'<tr><td>';
 		echo _('Samba workstations');
-		echo '</td>'."\n".'<td><input name="f_smb_smbuserworkstations" type="text" size="20" maxlength="80" value="' . $_SESSION['account']->smb_smbuserworkstations . '">'.
+		echo '</td>'."\n".'<td><input name="next_workstations" type="submit" value="'. _('Edit workstations') . '">'.
 			'</td>'."\n".'<td>'.
 			'<a href="help.php?HelpNumber=436" target="lamhelp">'._('Help').'</a>'.
 			'</td></tr>'."\n".'<tr><td>';
@@ -926,7 +1068,7 @@ switch ($select_local) { // Select which part of page will be loaded
 			'<a href="help.php?HelpNumber=464" target="lamhelp">'._('Help').'</a>'.
 			'</td></tr>'."\n".'<tr><td>';
 		echo _('Domain');
-		if ($_SESSION['config']->samba3 == 'yes') {
+		if ($_SESSION['config']->is_samba3()) {
 			echo '</td><td><select name="f_smb_domain">';
 			for ($i=0; $i<sizeof($samba3domains); $i++) {
 				if ($_SESSION['account']->smb_domain->name) {
@@ -946,6 +1088,18 @@ switch ($select_local) { // Select which part of page will be loaded
 		break;
 	case 'quota':
 		// Quota Settings
+		if (!isset($_SESSION['account']->quota)) { // load quotas
+			$values = getquotas('user', $_SESSION['account']->general_username);
+			if (is_object($values)) {
+				while (list($key, $val) = each($values)) // Set only defined values
+					if (isset($val)) $_SESSION['account']->$key = $val;
+				}
+			if (is_object($values) && isset($_SESSION['account_old'])) {
+				while (list($key, $val) = each($values)) // Set only defined values
+					if (isset($val)) $_SESSION['account_old']->$key = $val;
+				}
+			}
+
 		echo "<input name=\"select\" type=\"hidden\" value=\"quota\">\n";
 		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
 		echo "<table border=0><tr><td><fieldset class=\"useredit-dark\"><legend class=\"useredit-bright\"><b>";
@@ -957,7 +1111,15 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "<input name=\"next_quota\" type=\"submit\" disabled value=\""; echo _('Quota'); echo "\">\n<br>";
 		echo "<input name=\"next_personal\" type=\"submit\" value=\""; echo _('Personal'); echo "\">\n<br>";
 		echo "<input name=\"next_final\" type=\"submit\" value=\""; echo _('Final');
-		echo "\"></fieldset></td></tr></table></td>\n<td valign=\"top\">";
+		echo "\">";
+		if (isset($_SESSION['account_old'])) {
+			echo "<br><br>";
+			echo _("Reset all changes.");
+			echo "<br>";
+			echo "<input name=\"next_reset\" type=\"submit\" value=\""; echo _('Undo');
+			echo "\">\n";
+			}
+		echo "</fieldset></td></tr></table></td>\n<td valign=\"top\">";
 		echo "<table border=0 width=\"100%\"><tr><td><fieldset class=\"useredit-bright\"><legend class=\"useredit-bright\"><b>"._('Quota properties')."</b></legend>\n";
 		echo "<table border=0 width=\"100%\"><tr><td>";
 		echo _('Mountpoint'); echo '</td>'."\n".'<td>'; echo _('Used blocks'); echo '</td>'."\n".'<td>';
@@ -998,7 +1160,15 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "value=\""; echo _('Quota'); echo "\">\n<br>";
 		echo "<input name=\"next_personal\" type=\"submit\" disabled value=\""; echo _('Personal'); echo "\">\n<br>";
 		echo "<input name=\"next_final\" type=\"submit\" value=\""; echo _('Final');
-		echo "\"></fieldset></td></tr></table></td>\n<td valign=\"top\">";
+		echo "\">";
+		if (isset($_SESSION['account_old'])) {
+			echo "<br><br>";
+			echo _("Reset all changes.");
+			echo "<br>";
+			echo "<input name=\"next_reset\" type=\"submit\" value=\""; echo _('Undo');
+			echo "\">\n";
+			}
+		echo "</fieldset></td></tr></table></td>\n<td valign=\"top\">";
 		echo "<table border=0 width=\"100%\"><tr><td><fieldset class=\"useredit-bright\"><legend class=\"useredit-bright\"><b>"._('Personal properties')."</b></legend>\n";
 		echo "<table border=0 width=\"100%\"><tr><td>";
 		echo _('Title');
@@ -1059,7 +1229,7 @@ switch ($select_local) { // Select which part of page will be loaded
 	case 'final':
 		// Final Settings
 		$disabled = "";
-		if ($_SESSION['config']->samba3 == 'yes') {
+		if ($_SESSION['config']->is_samba3()) {
 			if (!isset($_SESSION['account']->smb_domain)) { // Samba page nit viewd; can not create group because if missing options
 				$disabled = "disabled";
 				}
@@ -1076,7 +1246,15 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "value=\""; echo _('Quota'); echo "\">\n<br>";
 		echo "<input name=\"next_personal\" type=\"submit\" value=\""; echo _('Personal'); echo "\">\n<br>";
 		echo "<input name=\"next_final\" type=\"submit\" disabed value=\""; echo _('Final');
-		echo "\"></fieldset></td></tr></table></td>\n<td valign=\"top\">";
+		echo "\">";
+		if (isset($_SESSION['account_old'])) {
+			echo "<br><br>";
+			echo _("Reset all changes.");
+			echo "<br>";
+			echo "<input name=\"next_reset\" type=\"submit\" value=\""; echo _('Undo');
+			echo "\">\n";
+			}
+		echo "</fieldset></td></tr></table></td>\n<td valign=\"top\">";
 		echo "<table border=0 width=\"100%\">\n<tr>\n<td>";
 		echo "<table border=0 width=\"100%\"><tr><td><fieldset class=\"useredit-dark\"><legend class=\"useredit-bright\"><b>";
 		echo _("Save profile");
@@ -1137,7 +1315,7 @@ switch ($select_local) { // Select which part of page will be loaded
 				StatusMessage('WARN', _('ObjectClass shadowAccount.'), _('Have to add objectClass shadowAccount.'));
 				echo "</tr>\n";
 				}
-			if ($_SESSION['config']->samba3 == 'yes') {
+			if ($_SESSION['config']->is_samba3()) {
 				if (!in_array('sambaSamAccount', $_SESSION['account_old']->general_objectClass)) {
 					echo '<tr>';
 					StatusMessage('WARN', _('ObjectClass sambaSamAccount not found.'), _('Have to add objectClass sambaSamAccount. USer with sambaAccount will be updated.'));

@@ -47,11 +47,6 @@ if (isset($_GET['DN'])) {
 		$_SESSION['account'] ->type = 'group';
 		if (isset($_SESSION['account_old'])) unset($_SESSION['account_old']);
 		$_SESSION['account_old'] = false;
-		$values = getquotas('group');
-		if (is_object($values)) {
-			while (list($key, $val) = each($values)) // Set only defined values
-				if (isset($val)) $_SESSION['account']->$key = $val;
-				}
 		}
 	}
 else if (count($_POST)==0) { // Startcondition. groupedit.php was called from outside
@@ -81,15 +76,14 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 				// sort user
 				sort($_SESSION['account']->unix_memberUid);
 				// display groupmembers page
-				$select_local = 'groupmembers';
 				break;
 				}
 			if (isset($_POST['members']) && isset($_POST['remove'])) { // remove users fromlist
 				$_SESSION['account']->unix_memberUid = array_delete($_POST['members'], $_SESSION['account']->unix_memberUid);
-				$select_local = 'groupmembers';
 				break;
 				}
 			} while(0);
+		$select_local = 'groupmembers';
 		break;
 
 	case 'general':
@@ -157,7 +151,7 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 				$_SESSION['account']->smb_domain = $domain;
 		$_SESSION['account']->smb_displayName = $_POST['f_smb_displayName'];
 
-		if ($_SESSION['config']->samba3 == 'yes')
+		if ($_SESSION['config']->is_samba3())
 			switch ($_POST['f_smb_mapgroup']) {
 				case '*'._('Domain Guests'): $_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-" . '514'; break;
 				case '*'._('Domain Users'): $_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-" . '513'; break;
@@ -248,6 +242,15 @@ do { // X-Or, only one if() can be true
 			else $select_local=$_POST['select'];
 		break;
 		}
+	if ($_POST['next_reset']) {
+		$_SESSION['account'] = $_SESSION['account_old'];
+		$_SESSION['account']->unix_password='';
+		$_SESSION['account']->smb_password='';
+		$_SESSION['account']->smb_flagsW = 0;
+		$_SESSION['account']->general_dn = substr($_SESSION['account']->general_dn, strpos($_SESSION['account']->general_dn, ',')+1);
+		$select_local = $_POST['select'];
+		break;
+		}
 	if ( $_POST['create'] ) { // Create-Button was pressed
 		if ($_SESSION['account_old']) $result = modifygroup($_SESSION['account'],$_SESSION['account_old']);
 		 else $result = creategroup($_SESSION['account']); // account.inc
@@ -269,6 +272,10 @@ do { // X-Or, only one if() can be true
 		break;
 		}
 	if ($_POST['load']) {
+		$_SESSION['account']->general_dn = $_POST['f_general_suffix'];
+		$_SESSION['account']->general_username = $_POST['f_general_username'];
+		$_SESSION['account']->general_uidNumber = $_POST['f_general_uidNumber'];
+		$_SESSION['account']->general_gecos = $_POST['f_general_gecos'];
 		// load profile
 		if ($_POST['f_general_selectprofile']!='') $values = loadGroupProfile($_POST['f_general_selectprofile']);
 		if (is_object($values)) {
@@ -323,13 +330,21 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "</b></legend>\n";
 		echo "<input name=\"next_general\" type=\"submit\" value=\""; echo _('General'); echo "\">\n<br>";
 		echo "<input name=\"next_members\" type=\"submit\" disabled value=\""; echo _('Members'); echo "\">\n<br>";
-		if ($_SESSION['config']->samba3 == 'yes') {
+		if ($_SESSION['config']->is_samba3()) {
 			echo "<input name=\"next_samba\" type=\"submit\" value=\""; echo _('Samba'); echo "\">\n<br>";
 			}
 		echo "<input name=\"next_quota\" type=\"submit\""; if (!isset($_SESSION['config']->scriptPath)) echo " disabled ";
 		echo "value=\""; echo _('Quota'); echo "\">\n<br>";
 		echo "<input name=\"next_final\" type=\"submit\" value=\""; echo _('Final');
-		echo "\"></fieldset></td></tr></table></td>\n<td>";
+		echo "\">";
+		if (isset($_SESSION['account_old'])) {
+			echo "<br><br>";
+			echo _("Reset all changes.");
+			echo "<br>";
+			echo "<input name=\"next_reset\" type=\"submit\" value=\""; echo _('Undo');
+			echo "\">\n";
+			}
+		echo "</fieldset></td></tr></table></td>\n<td>";
 		echo "<table border=0><tr><td><fieldset class=\"groupedit-bright\"><legend class=\"groupedit-bright\"><b>". _('Additional group members') . "</b></legend>\n";
 		echo "<table border=0 width=\"100%\">\n";
 		echo "<tr><td valign=\"top\"><fieldset class=\"groupedit-middle\"><legend class=\"groupedit-bright\">";
@@ -372,13 +387,21 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "</b></legend>\n";
 		echo "<input name=\"next_general\" type=\"submit\" disabled value=\""; echo _('General'); echo "\">\n<br>";
 		echo "<input name=\"next_members\" type=\"submit\" value=\""; echo _('Members'); echo "\">\n<br>";
-		if ($_SESSION['config']->samba3 == 'yes') {
+		if ($_SESSION['config']->is_samba3()) {
 			echo "<input name=\"next_samba\" type=\"submit\" value=\""; echo _('Samba'); echo "\">\n<br>";
 			}
 		echo "<input name=\"next_quota\" type=\"submit\""; if (!isset($_SESSION['config']->scriptPath)) echo " disabled ";
 		echo "value=\""; echo _('Quota'); echo "\">\n<br>";
 		echo "<input name=\"next_final\" type=\"submit\" value=\""; echo _('Final');
-		echo "\"></fieldset></td></tr></table></td>\n<td valign=\"top\">";
+		echo "\">";
+		if (isset($_SESSION['account_old'])) {
+			echo "<br><br>";
+			echo _("Reset all changes.");
+			echo "<br>";
+			echo "<input name=\"next_reset\" type=\"submit\" value=\""; echo _('Undo');
+			echo "\">\n";
+			}
+		echo "</fieldset></td></tr></table></td>\n<td valign=\"top\">";
 		echo "<table border=0 width=\"100%\">\n<tr>\n<td>";
 		echo "<fieldset class=\"groupedit-bright\"><legend class=\"groupedit-bright\"><b>";
 		echo _("General properties");
@@ -436,7 +459,15 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "<input name=\"next_quota\" type=\"submit\""; if (!isset($_SESSION['config']->scriptPath)) echo " disabled ";
 		echo "value=\""; echo _('Quota'); echo "\">\n<br>";
 		echo "<input name=\"next_final\" type=\"submit\" value=\""; echo _('Final');
-		echo "\"></fieldset></td></tr></table></td>\n<td valign=\"top\">";
+		echo "\">";
+		if (isset($_SESSION['account_old'])) {
+			echo "<br><br>";
+			echo _("Reset all changes.");
+			echo "<br>";
+			echo "<input name=\"next_reset\" type=\"submit\" value=\""; echo _('Undo');
+			echo "\">\n";
+			}
+		echo "</fieldset></td></tr></table></td>\n<td valign=\"top\">";
 		echo "<table border=0 width=\"100%\"><tr><td><fieldset class=\"groupedit-bright\"><legend class=\"groupedit-bright\"><b>"._('Samba properties')."</b></legend>\n";
 		echo "<table border=0 width=\"100%\"><tr><td>";
 		echo _("Display name");
@@ -541,6 +572,19 @@ switch ($select_local) { // Select which part of page will be loaded
 
 	case 'quota':
 		// Quota Settings
+
+		if (!isset($_SESSION['account']->quota)) { // load quotas
+			$values = getquotas('group', $_SESSION['account']->general_username);
+			if (is_object($values)) {
+				while (list($key, $val) = each($values)) // Set only defined values
+					if (isset($val)) $_SESSION['account']->$key = $val;
+				}
+			if (is_object($values) && isset($_SESSION['account_old'])) {
+				while (list($key, $val) = each($values)) // Set only defined values
+					if (isset($val)) $_SESSION['account_old']->$key = $val;
+				}
+			}
+
 		echo "<input name=\"select\" type=\"hidden\" value=\"samba\">\n";
 		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
 		echo "<table border=0><tr><td><fieldset class=\"groupedit-middle\"><legend class=\"groupedit-bright\"><b>";
@@ -548,12 +592,20 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "</b></legend>\n";
 		echo "<input name=\"next_general\" type=\"submit\" value=\""; echo _('General'); echo "\">\n<br>";
 		echo "<input name=\"next_members\" type=\"submit\" value=\""; echo _('Members'); echo "\">\n<br>";
-		if ($_SESSION['config']->samba3 == 'yes') {
+		if ($_SESSION['config']->is_samba3()) {
 			echo "<input name=\"next_samba\" type=\"submit\" value=\""; echo _('Samba'); echo "\">\n<br>";
 			}
 		echo "<input name=\"next_quota\" type=\"submit\" disabled value=\""; echo _('Quota'); echo "\">\n<br>";
 		echo "<input name=\"next_final\" type=\"submit\" value=\""; echo _('Final');
-		echo "\"></fieldset></td></tr></table></td>\n<td valign=\"top\">";
+		echo "\">";
+		if (isset($_SESSION['account_old'])) {
+			echo "<br><br>";
+			echo _("Reset all changes.");
+			echo "<br>";
+			echo "<input name=\"next_reset\" type=\"submit\" value=\""; echo _('Undo');
+			echo "\">\n";
+			}
+		echo "</fieldset></td></tr></table></td>\n<td valign=\"top\">";
 		echo '<input name="select" type="hidden" value="quota">';
 		echo "<table border=0><tr><td><fieldset class=\"groupedit-bright\"><legend class=\"groupedit-bright\"><b>"._('Quota properties')."</b></legend>\n";
 		echo "<table border=0 width=\"100%\"><tr><td>";
@@ -584,7 +636,7 @@ switch ($select_local) { // Select which part of page will be loaded
 	case 'final':
 		// Final Settings
 		$disabled = "";
-		if ($_SESSION['config']->samba3 == 'yes') {
+		if ($_SESSION['config']->is_samba3()) {
 			if (!isset($_SESSION['account']->smb_domain)) { // Samba page nit viewd; can not create group because if missing options
 				$disabled = "disabled";
 				}
@@ -597,13 +649,21 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "</b></legend>\n";
 		echo "<input name=\"next_general\" type=\"submit\" value=\""; echo _('General'); echo "\">\n<br>";
 		echo "<input name=\"next_members\" type=\"submit\" value=\""; echo _('Members'); echo "\">\n<br>";
-		if ($_SESSION['config']->samba3 == 'yes') {
+		if ($_SESSION['config']->is_samba3()) {
 			echo "<input name=\"next_samba\" type=\"submit\" value=\""; echo _('Samba'); echo "\">\n<br>";
 			}
 		echo "<input name=\"next_quota\" type=\"submit\""; if (!isset($_SESSION['config']->scriptPath)) echo " disabled ";
 		echo "value=\""; echo _('Quota'); echo "\">\n<br>";
 		echo "<input name=\"next_final\" type=\"submit\" disabled value=\""; echo _('Final');
-		echo "\"></fieldset></td></tr></table></td>\n<td valign=\"top\">";
+		echo "\">";
+		if (isset($_SESSION['account_old'])) {
+			echo "<br><br>";
+			echo _("Reset all changes.");
+			echo "<br>";
+			echo "<input name=\"next_reset\" type=\"submit\" value=\""; echo _('Undo');
+			echo "\">\n";
+			}
+		echo "</fieldset></td></tr></table></td>\n<td valign=\"top\">";
 		echo "<table border=0 width=\"100%\">\n<tr>\n<td>";
 		echo "<fieldset class=\"groupedit-middle\"><legend class=\"groupedit-bright\"><b>";
 		echo _("Save profile");
@@ -636,7 +696,7 @@ switch ($select_local) { // Select which part of page will be loaded
 			echo "</tr>";
 			}
 		if (isset($_SESSION['account_old']->general_objectClass)) {
-			if (($_SESSION['config']->samba3 == 'yes') && (!in_array('sambaGroupMapping', $_SESSION['account_old']->general_objectClass))) {
+			if (($_SESSION['config']->is_samba3()) && (!in_array('sambaGroupMapping', $_SESSION['account_old']->general_objectClass))) {
 				echo '<tr>';
 				StatusMessage('WARN', _('ObjectClass sambaGroupMapping not found.'), _('Have to add objectClass sambaGroupMapping.'));
 				echo "</tr>\n";

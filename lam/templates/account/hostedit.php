@@ -148,7 +148,7 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 		if (isset($_POST['f_smb_flagsD'])) $_SESSION['account']->smb_flagsD = true;
 			else $_SESSION['account']->smb_flagsD = false;
 
-		if ($_SESSION['config']->samba3 == 'yes') {
+		if ($_SESSION['config']->is_samba3()) {
 			$samba3domains = $_SESSION['ldap']->search_domains($_SESSION[config]->get_domainSuffix());
 			for ($i=0; $i<sizeof($samba3domains); $i++)
 				if ($_POST['f_smb_domain'] == $samba3domains[$i]->name) {
@@ -203,6 +203,15 @@ do { // X-Or, only one if() can be true
 			else $select_local=$_POST['select'];
 		break;
 		}
+	if ($_POST['next_reset']) {
+		$_SESSION['account'] = $_SESSION['account_old'];
+		$_SESSION['account']->unix_password='';
+		$_SESSION['account']->smb_password='';
+		$_SESSION['account']->smb_flagsW = 0;
+		$_SESSION['account']->general_dn = substr($_SESSION['account']->general_dn, strpos($_SESSION['account']->general_dn, ',')+1);
+		$select_local = $_POST['select'];
+		break;
+		}
 	if ( $_POST['create'] ) { // Create-Button was pressed
 		// Create or modify an account
 		if ($_SESSION['account_old']) $result = modifyhost($_SESSION['account'],$_SESSION['account_old']);
@@ -218,6 +227,11 @@ do { // X-Or, only one if() can be true
 		break;
 		}
 	if ($_POST['load']) {
+		$_SESSION['account']->general_dn = $_POST['f_general_suffix'];
+		$_SESSION['account']->general_username = $_POST['f_general_username'];
+		$_SESSION['account']->general_uidNumber = $_POST['f_general_uidNumber'];
+		$_SESSION['account']->general_group = $_POST['f_general_group'];
+		$_SESSION['account']->general_gecos = $_POST['f_general_gecos'];
 		// load profile
 		if ($_POST['f_general_selectprofile']!='') $values = loadHostProfile($_POST['f_general_selectprofile']);
 		if (is_object($values)) {
@@ -280,7 +294,15 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "<input name=\"next_general\" type=\"submit\" disabled value=\""; echo _('General'); echo "\">\n<br>";
 		echo "<input name=\"next_samba\" type=\"submit\" value=\""; echo _('Samba'); echo "\">\n<br>";
 		echo "<input name=\"next_final\" type=\"submit\" value=\""; echo _('Final');
-		echo "\"></fieldset></td></tr></table></td>\n<td>";
+		echo "\">";
+		if (isset($_SESSION['account_old'])) {
+			echo "<br><br>";
+			echo _("Reset all changes.");
+			echo "<br>";
+			echo "<input name=\"next_reset\" type=\"submit\" value=\""; echo _('Undo');
+			echo "\">\n";
+			}
+		echo "</fieldset></td></tr></table></td>\n<td>";
 		echo "<table border=0 width=\"100%\">\n<tr>\n<td>";
 		echo "<fieldset class=\"hostedit-bright\"><legend class=\"hostedit-bright\"><b>";
 		echo _("General properties");
@@ -340,7 +362,7 @@ switch ($select_local) { // Select which part of page will be loaded
 
 	case 'samba':
 		// Samba Settings
-		if ($_SESSION['config']->samba3 == 'yes') $samba3domains = $_SESSION['ldap']->search_domains($_SESSION[config]->get_domainSuffix());
+		if ($_SESSION['config']->is_samba3()) $samba3domains = $_SESSION['ldap']->search_domains($_SESSION[config]->get_domainSuffix());
 		if ($_SESSION['account']->smb_password_no) echo '<input name="f_smb_password_no" type="hidden" value="1">';
 		echo '<input name="select" type="hidden" value="samba">';
 		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
@@ -350,7 +372,15 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "<input name=\"next_general\" type=\"submit\" value=\""; echo _('General'); echo "\">\n<br>";
 		echo "<input name=\"next_samba\" type=\"submit\" disabled value=\""; echo _('Samba'); echo "\">\n<br>";
 		echo "<input name=\"next_final\" type=\"submit\" value=\""; echo _('Final');
-		echo "\"></fieldset></td></tr></table></td>\n<td>";
+		echo "\">";
+		if (isset($_SESSION['account_old'])) {
+			echo "<br><br>";
+			echo _("Reset all changes.");
+			echo "<br>";
+			echo "<input name=\"next_reset\" type=\"submit\" value=\""; echo _('Undo');
+			echo "\">\n";
+			}
+		echo "</fieldset></td></tr></table></td>\n<td>";
 		echo "<table border=0 width=\"100%\"><tr><td><fieldset class=\"hostedit-bright\"><legend class=\"hostedit-bright\"><b>"._('Samba properties')."</b></legend>\n";
 		echo "<table border=0 width=\"100%\"><tr><td>";
 		echo _("Display name");
@@ -372,7 +402,7 @@ switch ($select_local) { // Select which part of page will be loaded
 			'</td></tr>'."\n".'<tr><td>';
 		echo '</td></tr>'."\n".'<tr><td>';
 		echo _('Domain');
-		if ($_SESSION['config']->samba3 == 'yes') {
+		if ($_SESSION['config']->is_samba3()) {
 				echo '</td><td><select name="f_smb_domain">';
 			for ($i=0; $i<sizeof($samba3domains); $i++) {
 				if ($_SESSION['account']->smb_domain->name) {
@@ -401,7 +431,15 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "<input name=\"next_general\" type=\"submit\" value=\""; echo _('General'); echo "\">\n<br>";
 		echo "<input name=\"next_samba\" type=\"submit\" value=\""; echo _('Samba'); echo "\">\n<br>";
 		echo "<input name=\"next_final\" type=\"submit\" disabled value=\""; echo _('Final');
-		echo "\"></fieldset></td></tr></table></td>\n<td>";
+		echo "\">";
+		if (isset($_SESSION['account_old'])) {
+			echo "<br><br>";
+			echo _("Reset all changes.");
+			echo "<br>";
+			echo "<input name=\"next_reset\" type=\"submit\" value=\""; echo _('Undo');
+			echo "\">\n";
+			}
+		echo "</fieldset></td></tr></table></td>\n<td>";
 		echo "<table border=0 width=\"100%\">\n<tr>\n<td>";
 		echo "<table border=0 width=\"100%\"><tr><td><fieldset class=\"hostedit-dark\"><legend class=\"hostedit-bright\"><b>";
 		echo _("Save profile");
@@ -427,7 +465,7 @@ switch ($select_local) { // Select which part of page will be loaded
 				StatusMessage('WARN', _('ObjectClass shadowAccount not found.'), _('Have to add objectClass shadowAccount.'));
 				echo "</tr>\n";
 				}
-			if ($_SESSION['config']->samba3 == 'yes') {
+			if ($_SESSION['config']->is_samba3()) {
 				if (!in_array('sambaSamAccount', $_SESSION['account_old']->general_objectClass)) {
 					echo '<tr>';
 					StatusMessage('WARN', _('ObjectClass sambaSamAccount not found.'), _('Have to add objectClass sambaSamAccount. Host with sambaAccount will be updated.'));
