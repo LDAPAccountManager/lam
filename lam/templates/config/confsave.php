@@ -51,6 +51,8 @@ if ($_SESSION['grplstattr']) $grplstattr = $_SESSION['grplstattr'];
 if ($_SESSION['hstlstattr']) $hstlstattr = $_SESSION['hstlstattr'];
 if ($_SESSION['maxlistentries']) $maxlistentries = $_SESSION['maxlistentries'];
 if ($_SESSION['language']) $language = $_SESSION['language'];
+if ($_SESSION['scriptpath']) $scriptpath = $_SESSION['scriptpath'];
+if ($_SESSION['scriptserver']) $scriptserver = $_SESSION['scriptserver'];
 
 // check if password is correct
 // if not: load login page
@@ -139,6 +141,12 @@ if (chop($maxlistentries) == "") {
 	exit;
 }
 
+if (chop($language) == "") {
+	echo _("<font color=\"red\"><b>" . _("Language is not defined!") . "</b></font>");
+	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
+	exit;
+}
+
 // set new preferences
 $conf->set_ServerURL($serverurl);
 $conf->set_Adminstring($admins);
@@ -156,6 +164,11 @@ $conf->set_grouplistAttributes($grplstattr);
 $conf->set_hostlistAttributes($hstlstattr);
 $conf->set_MaxListEntries($maxlistentries);
 $conf->set_defaultLanguage($language);
+// optional
+if ($_SESSION['scriptpath']) $conf->set_scriptpath($scriptpath);
+else $conf->set_scriptpath("");
+if ($_SESSION['scriptserver']) $conf->set_scriptserver($scriptserver);
+else $conf->set_scriptserver("");
 
 
 
@@ -194,4 +207,7 @@ unset($_SESSION['grplstattr']);
 unset($_SESSION['hstlstattr']);
 unset($_SESSION['maxlistentries']);
 unset($_SESSION['language']);
+unset($_SESSION['scriptpath']);
+unset($_SESSION['scriptserver']);
+
 ?>

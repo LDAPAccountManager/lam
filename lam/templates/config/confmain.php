@@ -55,9 +55,12 @@ if ($_POST['back'] || $_POST['submitconf']){
 		if ($_POST['hstlstattr']) $hstlstattr = $_POST['hstlstattr'];
 		if ($_POST['maxlistentries']) $maxlistentries = $_POST['maxlistentries'];
 		if ($_POST['language']) $language = $_POST['language'];
+		if ($_POST['scriptpath']) $scriptpath = $_POST['scriptpath'];
+		if ($_POST['scriptserver']) $scriptserver = $_POST['scriptserver'];
 		session_register('passwd', 'passwd1', 'passwd2', 'serverurl', 'admins', 'suffusers',
 			'suffgroups', 'suffhosts', 'minUID', 'maxUID', 'minGID', 'maxGID', 'minMach',
-			'maxMach', 'usrlstattr', 'grplstattr', 'hstlstattr', 'maxlistentries', 'language');
+			'maxMach', 'usrlstattr', 'grplstattr', 'hstlstattr', 'maxlistentries', 'language',
+			'scriptpath', 'scriptserver');
 		echo("<meta http-equiv=\"refresh\" content=\"0; URL=confsave.php\">");
 	}
 	// back to login
@@ -226,15 +229,16 @@ echo ("<td><p align=\"left\">".
 	_("This is the maximum count of entries which are displayed on one page of the user/host/group lists.").
 	"</p></td></tr>\n");
 
-echo ("</table>");
-echo ("</fieldset>");
-echo ("<br>");
+echo ("</table>\n");
+echo ("</fieldset>\n");
+echo ("<br>\n");
 
-echo ("<fieldset><legend><b>" . _("Language settings") . "</b></legend>");
-echo ("<table align=\"left\" border=\"0\">");
+echo ("<fieldset><legend><b>" . _("Language settings") . "</b></legend>\n");
+echo ("<table align=\"left\" border=\"0\">\n");
 
 // language
-echo ("<tr><td>");
+echo ("<tr>");
+echo ("<td><b>" . _("Default Language") . "</b></td>\n<td>");
 // read available languages
 $languagefile = "../../config/language.conf";
 if(is_file($languagefile))
@@ -244,8 +248,8 @@ if(is_file($languagefile))
 	while(!feof($file))
 	{
 		$line = fgets($file, 1024);
-		if($line == "\n" || $line[0] == "#") continue; // ignore comment and empty lines
-		$languages[$i] = $line;
+		if($line == "\n" || $line[0] == "#" || $line == "") continue; // ignore comment and empty lines
+		$languages[$i] = chop($line);
 		$i++;
 	}
 	fclose($file);
@@ -253,29 +257,43 @@ if(is_file($languagefile))
 echo ("<select name=\"language\">");
 for ($i = 0; $i < sizeof($languages); $i++) {
 	$entry = explode(":", $languages[$i]);
-	if ($_SESSION['config']->get_defaultLanguage() != $languages[$i]) echo("<option value=\"" . $languages[$i] . "\">" . $entry[2] . "</option>");
-	else echo("<option selected value=\"" . $languages[$i] . "\">" . $entry[2] . "</option>");
+	if ($_SESSION['config']->get_defaultLanguage() != $languages[$i]) echo("<option value=\"" . $languages[$i] . "\">" . $entry[2] . "</option>\n");
+	else echo("<option selected value=\"" . $languages[$i] . "\">" . $entry[2] . "</option>\n");
 }
-echo ("</select>");
+echo ("</select>\n");
 }
 else
 {
-	echo _("Unable to load available languages. For further instructions please contact the Admin of this site.");
+	echo _("Unable to load available languages. For further instructions please contact the Admin of this site.\n");
 }
-
-
-echo ("</td></tr>");
+echo ("</td></tr>\n");
 
 echo ("</table>\n");
-echo ("</fieldset>");
-echo ("<br>");
+echo ("</fieldset>\n");
+echo ("<br>\n");
 
-echo ("<fieldset><legend><b>" . _("Security settings") . "</b></legend>");
-echo ("<table align=\"left\" border=\"0\">");
+echo ("<fieldset><legend><b>" . _("Script settings") . "</b></legend>\n");
+echo ("<table align=\"left\" border=\"0\">\n");
+
+// script settings
+echo ("<tr><td><p align=\"right\"><b>".
+	_("Path to external script") . ": </b></p></td>".
+	"<td><input size=50 type=\"text\" name=\"scriptpath\" value=\"" . $conf->get_scriptPath() . "\"></td></tr>\n");
+echo ("<tr><td><p align=\"right\"><b>".
+	_("Server of external script") . ": </b></p></td>".
+	"<td><input size=50 type=\"text\" name=\"scriptserver\" value=\"" . $conf->get_scriptServer() . "\"></td></tr>\n");
+
+echo ("</table>\n");
+echo ("</fieldset>\n");
+echo ("<br>\n");
+
+
+echo ("<fieldset><legend><b>" . _("Security settings") . "</b></legend>\n");
+echo ("<table align=\"left\" border=\"0\">\n");
 // new password
 echo ("<tr><td bgcolor=\"red\" align=\"right\"><b>".
 	_("New Password") . ": </b></td>".
-	"<td bgcolor=\"red\" align=\"left\"><input type=\"password\" name=\"pass1\"></td></tr>");
+	"<td bgcolor=\"red\" align=\"left\"><input type=\"password\" name=\"pass1\"></td></tr>\n");
 // reenter password
 echo ("<tr><td bgcolor=\"red\" align=\"right\"><b>".
 	_("Reenter Password") . ": </b></td>".
@@ -291,7 +309,7 @@ echo ("<table align=\"left\" border=\"0\">");
 echo ("<tr><td align=\"left\"><pre>".
 	"<input type=\"submit\" name=\"submitconf\" value=\"" . _("Submit") . "\">".
 	"<input type=\"reset\" name=\"resetconf\" value=\"" . _("Reset") . "\">".
-	"<input type=\"submit\" name=\"back\" value=\"" . _("Abort") . "\"");
+	"<input type=\"submit\" name=\"back\" value=\"" . _("Abort") . "\"\n");
 
 echo ("></pre></td></tr>\n");
 

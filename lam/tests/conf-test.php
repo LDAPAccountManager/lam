@@ -48,6 +48,8 @@ $grouplistAttributes = $conf->get_grouplistAttributes();
 $hostlistAttributes = $conf->get_hostlistAttributes();
 $maxlistentries = $conf->get_maxlistentries();
 $defaultlanguage = $conf->get_defaultlanguage();
+$scriptpath = $conf->get_scriptPath();
+$scriptServer = $conf->get_scriptServer();
 echo ("done<br>");
 // next we modify them and save lam.conf
 echo ("Changing preferences...");
@@ -69,6 +71,8 @@ $conf->set_grouplistAttributes("#gidNumber;#cn;#memberUID");
 $conf->set_hostlistAttributes("#cn;#uid;#description");
 $conf->set_maxlistentries("54");
 $conf->set_defaultlanguage("de_AT:iso639_de:Deutsch (Oesterreich)");
+$conf->set_scriptPath("/var/www/lam/lib/script");
+$conf->set_scriptServer("127.0.0.1");
 $conf->save();
 echo ("done<br>");
 // at last all preferences are read from lam.conf and compared
@@ -94,6 +98,8 @@ if ($conf->get_grouplistAttributes() != "#gidNumber;#cn;#memberUID") echo ("<br>
 if ($conf->get_hostlistAttributes() != "#cn;#uid;#description") echo ("<br><font color=\"#FF0000\">Saving hostlistAttributes failed!</font><br>");
 if ($conf->get_maxlistentries() != "54") echo ("<br><font color=\"#FF0000\">Saving maxlistentries failed!</font><br>");
 if ($conf->get_defaultlanguage() != "de_AT:iso639_de:Deutsch (Oesterreich)") echo ("<br><font color=\"#FF0000\">Saving default language failed!</font><br>");
+if ($conf->get_scriptPath() != "/var/www/lam/lib/script") echo ("<br><font color=\"#FF0000\">Saving script path failed!</font><br>");
+if ($conf->get_scriptServer() != "127.0.0.1") echo ("<br><font color=\"#FF0000\">Saving script server failed!</font><br>");
 echo ("done<br>");
 // restore old values
 echo ("Restoring old preferences...");
@@ -115,6 +121,8 @@ $conf->set_grouplistAttributes($grouplistAttributes);
 $conf->set_hostlistAttributes($hostlistAttributes);
 $conf->set_maxlistentries($maxlistentries);
 $conf->set_defaultLanguage($defaultlanguage);
+$conf->set_scriptPath($scriptpath);
+$conf->set_scriptServer($scriptserver);
 $conf->save();
 echo ("done<br>");
 // finished
