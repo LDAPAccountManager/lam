@@ -633,7 +633,7 @@ class accountContainer {
 		echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
 		echo "</head><body>\n";
 		echo "<form action=\"edit.php\" method=\"post\">\n";
-		// Display errir-messages
+		// Display error-messages
 		if (is_array($result))
 			foreach ($result as $result2)
 				if (is_array($result2))

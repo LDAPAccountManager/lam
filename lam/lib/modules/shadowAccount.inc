@@ -176,6 +176,12 @@ class shadowAccount extends baseModule {
 	* $attr is an array as it's retured from ldap_get_attributes
 	*/
 	function load_attributes($attr) {
+		/* unset userPassword because:
+		 * it is used by posixAccount
+		 * it is a special attribute and stores encrypted in session
+		 */
+		unset($this->attributes['userPassword']);
+		unset($this->orig['userPassword']);
 		$this->load_ldap_attributes($attr);
 		return 0;
 		}
@@ -192,8 +198,12 @@ class shadowAccount extends baseModule {
 		$return = $_SESSION[$this->base]->save_module_attributes($this->attributes, $this->orig);
 
 		// Set shadowLastchange manual.
-		if (($_SESSION[$this->base]->module['posixAccount']->orig['userPassword'][0] != $_SESSION[$this->base]->module['posixAccount']->attributes['userPassword'][0]  && $_SESSION[$this->base]->module['posixAccount']->userPassword()!='') || $_SESSION[$this->base]->module['posixAccount']->userPassword_no)
-			$return[$_SESSION[$this->base]->dn]['modify']['shadowLastChange'] = array(intval(time()/3600/24));
+		if (isset($_SESSION[$this->base]->module['posixAccount']->orig['userPassword'][0])) {
+			// TODO fixme ****** fix this behavoir 
+			if ($_SESSION[$this->base]->module['posixAccount']->orig['userPassword'][0] != $_SESSION[$this->base]->module['posixAccount']->attributes['userPassword'][0] && $_SESSION[$this->base]->module['posixAccount']->attributes['userPassword'][0]!='')
+				$return[$_SESSION[$this->base]->dn]['modify']['shadowLastChange'] = array(intval(time()/3600/24));
+		}
+		
 		return $return;
 		}
 
@@ -247,11 +257,11 @@ class shadowAccount extends baseModule {
 		for ( $i=2003; $i<=2030; $i++ ) $year[] = $i;
 		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Expire day') ),
 			1 => array ( 'kind' => 'table', 'value' => array ( 0 => array ( 0 => array ( 'kind' => 'select', 'name' => 'shadowExpire_day',
-					'options' => $mday, 'options_selectd' => $date['mday']),
+					'options' => $mday, 'options_selected' => $date['mday']),
 				1 => array ( 'kind' => 'select', 'name' => 'shadowExpire_mon',
-					'options' => $mon, 'options_selectd' => $date['mon']),
+					'options' => $mon, 'options_selected' => $date['mon']),
 				2 => array ( 'kind' => 'select', 'name' => 'shadowExpire_yea',
-					'options' => $year, 'options_selectd' => $date['year'])))),
+					'options' => $year, 'options_selected' => $date['year'])))),
 			2 => array ( 'kind' => 'help', 'value' => 'shadowExpire' ));
 
 		return $return;
