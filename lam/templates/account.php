@@ -80,6 +80,8 @@ switch ($select) {
 		if ($genpass) { $f_unix_password = genpasswd(); }
 		if ($f_unix_password) $_SESSION['account_temp']->unix_password = $f_unix_password;
 			else $_SESSION['account_temp']->unix_password = '';
+		if ($f_unix_password_no) $_SESSION['account_temp']->unix_password_no = $f_unix_password_no;
+			else $_SESSION['account_temp']->unix_password_no = false;
 		if ($f_unix_pwdwarn) $_SESSION['account_temp']->unix_pwdwarn = $f_unix_pwdwarn;
 			else $_SESSION['account_temp']->unix_pwdwarn = '';
 		if ($f_unix_pwdallowlogin) $_SESSION['account_temp']->unix_pwdallowlogin = $f_unix_pwdallowlogin;
@@ -103,6 +105,8 @@ switch ($select) {
 		// Write alle values in temporary object
 		if ($f_smb_password) $_SESSION['account_temp']->smb_password = $f_smb_password;
 			else $_SESSION['account_temp']->smb_password = "";
+		if ($f_smb_password_no) $_SESSION['account_temp']->smb_password_no = $f_smb_password_no;
+			else $_SESSION['account_temp']->smb_password_no = false;
 		if ($f_smb_useunixpwd) $_SESSION['account_temp']->smb_useunixpwd = $f_smb_useunixpwd;
 			else $_SESSION['account_temp']->smb_useunixpwd = false;
 		if ($f_smb_pwdcanchange) $_SESSION['account_temp']->smb_pwdcanchange = $f_smb_pwdcanchange;
@@ -397,6 +401,10 @@ switch ($select) {
 					<input name="genpass" type="submit" value="';
 				echo _('Generate Password'); echo '">
 					</td></tr><tr><td>';
+				echo _('Use no Password.');
+				echo '</td><td><input name="f_unix_password_no" type="checkbox"';
+				if ($_SESSION['account']->unix_password_no) echo ' checked ';
+				echo '></td></tr><tr><td>';
 				echo _('Password Warn');
 				echo '</td><td><input name="f_unix_pwdwarn" type="text" size="4" maxlength="4" value="' . $_SESSION['account']->unix_pwdwarn . '">
 					</td><td>';
@@ -450,6 +458,10 @@ switch ($select) {
 					<input name="genpass" type="submit" value="';
 				echo _('Generate Password'); echo '">
 					</td></tr><tr><td>';
+				echo _('Use no Password.');
+				echo '</td><td><input name="f_unix_password_no" type="checkbox"';
+				if ($_SESSION['account']->unix_password_no) echo ' checked ';
+				echo '></td></tr><tr><td>';
 				echo _('Password Warn');
 				echo '</td><td><input name="f_unix_pwdwarn" type="text" size="4" maxlength="4" value="' . $_SESSION['account']->unix_pwdwarn . '">
 					</td><td>';
@@ -515,6 +527,14 @@ switch ($select) {
 				echo '>';
 				echo _('Use Unix-Password');
 				echo '</td></tr><tr><td>';
+				echo _('Use no Password.');
+				echo '</td><td><input name="f_smb_password_no" type="checkbox"';
+				if ($_SESSION['account']->smb_password_no) echo ' checked ';
+				echo '></td></tr><tr><td>';
+				echo _('Password doesn\'t expire.');
+				echo '</td><td><input name="f_smb_flagsX" type="checkbox"';
+				if ($_SESSION['account']->smb_flagsX) echo ' checked ';
+				echo '></td></tr><tr><td>';
 				echo _('User can change Password');
 				echo '</td><td><input name="f_smb_pwdcanchange" type="checkbox"';
 				if ($_SESSION['account']->smb_pwdcanchange) echo ' checked ';
@@ -591,6 +611,14 @@ switch ($select) {
 				echo '>';
 				echo _('Use Unix-Password');
 				echo '</td></tr><tr><td>';
+				echo _('Use no Password.');
+				echo '</td><td><input name="f_smb_password_no" type="checkbox"';
+				if ($_SESSION['account']->smb_password_no) echo ' checked ';
+				echo '></td></tr><tr><td>';
+				echo _('Password doesn\'t expire.');
+				echo '</td><td><input name="f_smb_flagsX" type="checkbox"';
+				if ($_SESSION['account']->smb_flagsX) echo ' checked ';
+				echo '></td></tr><tr><td>';
 				echo _('Host can change Password');
 				echo '</td><td><input name="f_smb_pwdcanchange" type="checkbox"';
 				if ($_SESSION['account']->smb_pwdcanchange) echo ' checked ';

@@ -38,6 +38,7 @@ class account { // This class keeps all needed values for any account
 	var $general_memberUid;
 	// Unix Password Settings
 	var $unix_password;
+	var $unix_password_no;
 	var $unix_pwdwarn;
 	var $unix_pwdallowlogin;
 	var $unix_pwdmaxage;
@@ -49,6 +50,7 @@ class account { // This class keeps all needed values for any account
 	var $unix_shadowLastChange;
 	// Samba Account
 	var $smb_password;
+	var $smb_password_no;
 	var $smb_useunixpwd;
 	var $smb_pwdcanchange;
 	var $smb_pwdmustchange;
@@ -195,6 +197,7 @@ function checkunix() { // This function checks all unix account paramters
 		}
 	// Write Values from Webpage to Session-Variables
 	$_SESSION['account']->unix_password = $_SESSION['account_temp']->unix_password;
+	$_SESSION['account']->unix_password_no = $_SESSION['account_temp']->unix_password_no;
 	$_SESSION['account']->unix_pwdwarn = $_SESSION['account_temp']->unix_pwdwarn;
 	$_SESSION['account']->unix_pwdallowlogin = $_SESSION['account_temp']->unix_pwdallowlogin;
 	$_SESSION['account']->unix_pwdmaxage = $_SESSION['account_temp']->unix_pwdmaxage;
@@ -235,6 +238,7 @@ function checksamba() { // This function checks all samba account paramters
 		}
 	// Write Values from Webpage to Session-Variables
 	$_SESSION['account']->smb_password = $_SESSION['account_temp']->smb_password;
+	$_SESSION['account']->smb_password_no = $_SESSION['account_temp']->smb_password_no;
 	if ($_SESSION['account_temp']->smb_useunixpwd ) $_SESSION['account']->smb_useunixpwd = 1; else $_SESSION['account']->smb_useunixpwd = 0;
 	if ($_SESSION['account_temp']->smb_pwdcanchange ) $_SESSION['account']->smb_pwdcanchange = 1; else $_SESSION['account']->smb_pwdcanchange = 0;
 	if ($_SESSION['account_temp']->smb_pwdmustchange) $_SESSION['account']->smb_pwdmustchange = 1; else $_SESSION['account']->smb_pwdmustchange = 0;
@@ -421,7 +425,7 @@ function smbflag() { // Creates te attribute attrFlags
 	$flag = "[";
 	if ($_SESSION['account']->smb_flagsW) $flag = $flag . "W"; else $flag = $flag . "U";
 	if ($_SESSION['account']->smb_flagsD) $flag = $flag . "D";
-	// ****************** Fixme What to do eith the X-Flag?
+	if ($_SESSION['account']->smb_flagsX) $flag = $flag . "X";
 	$flag = $flag. "]";
 	return $flag;
 	}
@@ -597,6 +601,7 @@ function createuser() { // Will create the LDAP-Account
 		$password_old = str_replace('{CRYPT}', '',$_SESSION['account_old']->unix_password);
 		if (substr($password_old,0,1) == '!' ) $password_old = substr($password_old,1,strlen($password_old));
 		if ($_SESSION['account']->unix_password=='') {
+			if ($_SESSION['account']->unix_password_no) $password_old = '';
 			if ($_SESSION['account']->unix_deactivated) $attr['userPassword'] = '{CRYPT}!' . $password_old;
 			else $attr['userPassword'] = '{CRYPT}' . $password_old;
 			$attr['shadowLastChange'] =  $_SESSION['account_old']->unix_shadowLastChange; // shadowAccunt_may
@@ -606,11 +611,25 @@ function createuser() { // Will create the LDAP-Account
 			else $attr['userPassword'] = '{CRYPT}' . crypt($_SESSION['account']->unix_password);
 			$attr['shadowLastChange'] = getdays(); // shadowAccunt_may
 			}
+		if ($_SESSION['account']->smb_password!='') {
+			$attr['ntPassword'] = exec('../lib/createntlm.pl nt' . $_SESSION['account']->smb_password);
+			$attr['lmPassword'] = exec('../lib/createntlm.pl lm' . $_SESSION['account']->smb_password);
+			$attr['pwdLastSet'] = time(); // sambaAccount_may
+			}
 		}
 	 else {
+		if ($_SESSION['account']->unix_password_no) $_SESSION['account']->unix_password = '';
 		if ($_SESSION['account']->unix_deactivated) $attr['userPassword'] = '{CRYPT}!' . crypt($_SESSION['account']->unix_password);
 		else $attr['userPassword'] = '{CRYPT}' . crypt($_SESSION['account']->unix_password);
 		$attr['shadowLastChange'] = getdays(); // shadowAccunt_may
+		$attr['ntPassword'] = exec('../lib/createntlm.pl nt' . $_SESSION['account']->smb_password);
+		$attr['lmPassword'] = exec('../lib/createntlm.pl lm' . $_SESSION['account']->smb_password);
+		$attr['pwdLastSet'] = time(); // sambaAccount_may
+		}
+	if ($_SESSION['account']->smb_password_no) {
+		$attr['ntPassword'] = 'NO PASSWORD*****';
+		$attr['lmPassword'] = 'NO PASSWORD*****';
+		$attr['pwdLastSet'] = time(); // sambaAccount_may
 		}
 	$attr['loginShell'] = $_SESSION['account']->general_shell; // posixAccount_may
 	$attr['gecos'] = $_SESSION['account']->general_gecos; // posixAccount_may
@@ -623,10 +642,6 @@ function createuser() { // Will create the LDAP-Account
 	$attr['shadowExpire'] =  $date ; // shadowAccunt_may
 	$attr['rid'] = (2 * $_SESSION['account']->general_uidNumber + 1000); // sambaAccount_may
 	$attr['PrimaryGroupID'] = (2 * getgid($_SESSION['account']->general_group) + 1001); // sambaAccount_req
-	// Samba-Passwort?
-	//$attr['lmPassword'] = ""; // sambaAccount_may
-	//$attr['ntPassword'] = ""; // sambaAccount_may
-	$attr['pwdLastSet'] = time(); // sambaAccount_may *************************************** only change if password has been changed
 	if ($_SESSION['account']->smb_pwdcanchange) $attr['pwdCanChange'] = "1"; else $attr['pwdCanChange'] = "0"; // sambaAccount_may
 	if ($_SESSION['account']->smb_pwdmustchange) $attr['pwdMustChange'] = "1"; else $attr['pwdMustChange'] = "0"; // sambaAccount_may
 	$attr['acctFlags'] = smbflag(); // sambaAccount_may
@@ -740,7 +755,8 @@ function createhost() { // Will create the LDAP-Host
 	if ($_SESSION['modify']==1) {
 		$password_old = str_replace('{CRYPT}', '',$_SESSION['account_old']->unix_password);
 		if (substr($password_old,0,1) == '!' ) $password_old = substr($password_old,1,strlen($password_old));
-		if (!$_SESSION['account']->unix_password) {
+		if ($_SESSION['account']->unix_password=='') {
+			if ($_SESSION['account']->unix_password_no) $password_old = '';
 			if ($_SESSION['account']->unix_deactivated) $attr['userPassword'] = '{CRYPT}!' . $password_old;
 			else $attr['userPassword'] = '{CRYPT}' . $password_old;
 			$attr['shadowLastChange'] =  $_SESSION['account_old']->unix_shadowLastChange; // shadowAccunt_may
@@ -750,16 +766,29 @@ function createhost() { // Will create the LDAP-Host
 			else $attr['userPassword'] = '{CRYPT}' . crypt($_SESSION['account']->unix_password);
 			$attr['shadowLastChange'] = getdays(); // shadowAccunt_may
 			}
+		if ($_SESSION['account']->smb_password!='') {
+			$attr['ntPassword'] = exec('../lib/createntlm.pl nt' . $_SESSION['account']->smb_password);
+			$attr['lmPassword'] = exec('../lib/createntlm.pl lm' . $_SESSION['account']->smb_password);
+			$attr['pwdLastSet'] = time(); // sambaAccount_may
+			}
 		}
 	 else {
+		if ($_SESSION['account']->unix_password_no) $_SESSION['account']->unix_password = '';
 		if ($_SESSION['account']->unix_deactivated) $attr['userPassword'] = '{CRYPT}!' . crypt($_SESSION['account']->unix_password);
 		else $attr['userPassword'] = '{CRYPT}' . crypt($_SESSION['account']->unix_password);
 		$attr['shadowLastChange'] = getdays(); // shadowAccunt_may
+		$attr['ntPassword'] = exec('../lib/createntlm.pl nt' . $_SESSION['account']->smb_password);
+		$attr['lmPassword'] = exec('../lib/createntlm.pl lm' . $_SESSION['account']->smb_password);
+		$attr['pwdLastSet'] = time(); // sambaAccount_may
+		}
+	if ($_SESSION['account']->smb_password_no) {
+		$attr['ntPassword'] = 'NO PASSWORD*****';
+		$attr['lmPassword'] = 'NO PASSWORD*****';
+		$attr['pwdLastSet'] = time(); // sambaAccount_may
 		}
 	$attr['loginShell'] = $_SESSION['account']->general_shell; // posixAccount_may
 	$attr['gecos'] = $_SESSION['account']->general_gecos; // posixAccount_may
 	$attr['description'] = $_SESSION['account']->general_gecos; // posixAccount_may sambaAccount_may
-
 	$attr['shadowMin'] = $_SESSION['account']->unix_pwdminage; // shadowAccunt_may
 	$attr['shadowMax'] = $_SESSION['account']->unix_pwdmaxage; // shadowAccunt_may
 	$attr['shadowWarning'] = $_SESSION['account']->unix_pwdwarn; // shadowAccunt_may
@@ -767,13 +796,6 @@ function createhost() { // Will create the LDAP-Host
 	$attr['shadowExpire'] =  $date ; // shadowAccunt_may
 	$attr['rid'] = (2 * $_SESSION['account']->general_uidNumber + 1000); // sambaAccount_may
 	$attr['PrimaryGroupID'] = (2 * getgid($_SESSION['account']->general_group) + 1001); // sambaAccount_req
-	// Samba-Passwort?
-	//$attr['lmPassword'] = ""; // sambaAccount_may
-	//$attr['ntPassword'] = ""; // sambaAccount_may
-	$attr['pwdLastSet'] = time(); // sambaAccount_may *************************************** only change if password has been changed
-	// $attr['logonTime'] = ""; // sambaAccount_may
-	// $attr['logoffTime'] = ""; // sambaAccount_may
-	// $attr['kickoffTime'] = ""; // sambaAccount_may
 	if ($_SESSION['account']->smb_pwdcanchange) $attr['pwdCanChange'] = "1"; else $attr['pwdCanChange'] = "0"; // sambaAccount_may
 	if ($_SESSION['account']->smb_pwdmustchange) $attr['pwdMustChange'] = "1"; else $attr['pwdMustChange'] = "0"; // sambaAccount_may
 	$attr['acctFlags'] = smbflag(); // sambaAccount_may
