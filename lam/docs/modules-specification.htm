@@ -1,0 +1,329 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-15"
+ http-equiv="content-type">
+  <title>Module specification</title>
+</head>
+<body>
+<h1 style="text-align: center;">This document describes the module
+interface for LDAP Account Manager</h1>
+<br>
+<br>
+<h2>1. Location and naming of modules</h2>
+All LAM modules are placed in lib/modules/ and are named "&lt;class
+name&gt;.inc".<br>
+E.g. if you create a new module and its class name is "qmail" then the
+filename would be "qmail.inc".<br>
+<br>
+The class name of a module must contain only a-z, A-Z, 0-9, -, and _.<br>
+<br>
+<br>
+<h2>2. Class functions</h2>
+<h3>2.1. Static functions</h3>
+These functions are called without instanciating an object of the
+module class. They must not depend on class variables and are only
+allowed to call other static functions.<br>
+<br>
+<h3>2.1.1. Constructor</h3>
+<br>
+<table style="text-align: left; width: 300px; height: 30px;" border="0"
+ cellspacing="2" cellpadding="2">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204); text-align: center;"><span
+ style="font-weight: bold;">function &lt;module name&gt; ($base)</span><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+Every module needs a constructor that has an<span
+ style="font-style: italic;"> <span style="font-weight: bold;">account
+container</span></span> as argument $base.<br>
+With this account container you can interact with other modules and use
+several helper functions.<br>
+<br>
+<h3>2.1.2. get_alias</h3>
+<br>
+<table style="text-align: left; width: 300px;" border="0"
+ cellspacing="2" cellpadding="2">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204); text-align: center;"><span
+ style="font-weight: bold;">function get_alias()</span><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+This function returns a more descriptive string than the class name.
+Alias names are used for the buttons of the account pages and the
+module selection of the configuration wizard.<br>
+Please take care that your alias name is not too long. It may contain
+a-z, A-Z, 0-9, -, _ and spaces.<br>
+<br>
+<br>
+<h3>2.1.3. get_dependencies</h3>
+<br>
+<table style="text-align: left; width: 300px; font-weight: bold;"
+ border="0" cellspacing="2" cellpadding="2">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204); text-align: center;">function
+get_dependencies($scope)<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+This function returns a list of modules it depends on.<br>
+The <span style="font-weight: bold;">$scope</span> parameter defines
+the account type ("user", "group", "host" at this time).<br>
+<br>
+The return value is an array with two sub arrays, <span
+ style="font-weight: bold;">"depends"</span> and <span
+ style="font-weight: bold;">"conficts"</span>.<br>
+All values of the conflict array are string values with module names.<br>
+All values of the depends array are either string values with module
+names or arrays which include only string values with module names. If
+an element of the depends array is itself an array, this means that
+your module depends on one of these modules.<br>
+<br>
+<span style="font-weight: bold;">Example: </span><span
+ style="font-weight: bold; font-style: italic;">return array("depends"
+=&gt; array("posixAccount", array("qmail", "sendmail")), "conflicts"
+=&gt; array("exim"));</span><br
+ style="font-weight: bold; font-style: italic;">
+<br>
+<br>
+<h3>2.1.4. module_ready</h3>
+<br>
+<table style="text-align: left; width: 300px; height: 30px;" border="0"
+ cellspacing="2" cellpadding="2">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204); text-align: center;"><span
+ style="font-weight: bold;">function module_ready()</span><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+Your module might depend on input of other modules. This function
+determines if the module button on the account page is active or not.<br>
+The return value is <span style="font-weight: bold;">true</span> if
+your module accepts input, otherwise <span style="font-weight: bold;">false</span>.<br>
+<br>
+<br>
+<h3>2.1.5. module_complete</h3>
+<br>
+<table style="text-align: left; width: 300px; height: 30px;" border="0"
+ cellspacing="2" cellpadding="2">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204); text-align: center;"><span
+ style="font-weight: bold;">function module_complete()</span><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+This function is called after your module has processed the POST input
+data.<br>
+If there was an input error and you want to display a page again then
+return <span style="font-weight: bold;">false</span>. If <span
+ style="font-weight: bold;">true</span> is returned the next module
+page will be displayed.<br>
+<br>
+<h3>2.1.6. is_base_module</h3>
+<br>
+<table style="text-align: left; width: 300px; height: 30px;" border="0"
+ cellspacing="2" cellpadding="2">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204); text-align: center;"><span
+ style="font-weight: bold;">function is_base_module($scope)</span><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+Returns <span style="font-weight: bold;">true</span> if your module is
+a base module and otherwise <span style="font-weight: bold;">false</span>.<br>
+<span style="font-weight: bold;">$scope</span> is the account type
+("user", "group", "host" at this time).<br>
+<br>
+Every account type needs at least one base module. A base module
+defines a full qualified account.<br>
+E.g. modules that use the object class posixAccount may be base modules
+as it makes sense to manage these Unix accounts. On the other hand the
+quota module is no base module as it needs posixAccount.<br>
+<br>
+<h3>2.1.7. get_ldap_filter</h3>
+<br>
+<table style="text-align: left; width: 300px; height: 30px;" border="0"
+ cellspacing="2" cellpadding="2">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204); text-align: center;"><span
+ style="font-weight: bold;">function get_ldap_filter($scope)</span><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+Returns a string that can be used as part of a LDAP filter. Usually
+used to filter object classes.<br>
+<span style="font-weight: bold;">$scope</span> is the account type
+("user", "group", "host" at this time).<br>
+<br>
+All filter parts of the base modules are combined with OR and used to
+find the accounts for the lists.<br>
+<br>
+<span style="font-weight: bold;">Example: <span
+ style="font-style: italic;">return "(objectClass=posixAccount)"</span></span><br>
+<br>
+<span style="font-weight: bold; color: rgb(255, 0, 0);">This function
+is only used for base modules.</span><br>
+<br>
+<br>
+<h3>2.1.8. get_profileOptions</h3>
+<br>
+<table style="text-align: left; width: 300px; height: 30px;" border="0"
+ cellspacing="2" cellpadding="2">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204); text-align: center;"><span
+ style="font-weight: bold;">function get_profileOptions($scope)</span><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<h2>3. Meta HTML code</h2>
+The modules are not allowed to display HTML code directly but return
+meta HTML code. This allows to have a common design for all module
+pages.<br>
+Meta HTML code is always returned as a three dimensional <span
+ style="font-weight: bold;">array[a][b][c]</span> where <span
+ style="font-weight: bold;">a</span> is the row number, <span
+ style="font-weight: bold;">b</span> is the coumn number and <span
+ style="font-weight: bold;">c</span> is is a <span
+ style="font-style: italic;">data elememt</span>.<br>
+<br>
+<span style="font-weight: bold;">Format for <span
+ style="font-style: italic;">data elements</span>:</span><br>
+<br>
+A <span style="font-style: italic;">data element</span> is an array
+which contains the data to display.<br>
+All <span style="font-style: italic;">data elements</span> must
+contail a value <span style="font-weight: bold;">"kind"</span> which
+defines what kind of element should be displayed.<br>
+<br>
+These are the possibilies for <span style="font-weight: bold;">kind</span>
+and what other options are implicated:<br>
+<br>
+<ul>
+  <li><span style="font-weight: bold;">fieldset:</span> Inserts a
+fieldset.</li>
+  <ul>
+    <li><span style="font-weight: bold;">legend:</span> The legend of
+the fieldset.</li>
+    <li><span style="font-weight: bold;">value:</span> A <span
+ style="font-style: italic;">data element</span>. Can be used
+recursively.</li>
+  </ul>
+  <li><span style="font-weight: bold;">help:</span> Adds a help link.</li>
+  <ul>
+    <li><span style="font-weight: bold;">value:</span> The help number
+for the help entry.</li>
+  </ul>
+  <li><span style="font-weight: bold;">input:</span> Adds a HTML input
+element.</li>
+  <ul>
+    <li><span style="font-weight: bold;">name:</span> The name of the
+element, will be used later as variable name when user input is
+returned.</li>
+    <li><span style="font-weight: bold;">type:</span> allowed values:
+submit, reset, checkbox, text, password, file, hidden</li>
+    <li><span style="font-weight: bold;">checked:</span> Boolean value,
+if true a checkbox will be checked. This value is only needed or
+checkboxes.</li>
+    <li><span style="font-weight: bold;">disabled:</span> Boolean
+value, if true the element will be disabled.</li>
+    <li><span style="font-weight: bold;">size:</span> The length of the
+input element, only used for text, password and file.</li>
+    <li><span style="font-weight: bold;">maxlength:</span> The maximum
+size of the input element, only used for text, password and file.</li>
+    <li><span style="font-weight: bold;">value:</span> The element will
+have this value as default. Button elements will have this as caption.</li>
+  </ul>
+  <li><span style="font-weight: bold;">select:</span> This will add a
+select field.</li>
+  <ul>
+    <li><span style="font-weight: bold;">name:</span> The name of the
+element, will be used later as variable name when user input is
+returned.</li>
+    <li><span style="font-weight: bold;">multiple:</span> Boolean
+value, if set to true the user can select more than one entry.</li>
+    <li><span style="font-weight: bold;">options:</span> Array of
+string. This is the list of option values the user can select.</li>
+    <li><span style="font-weight: bold;">options_selected:</span> Array
+of string. This is the list of pre selected elements, must contain
+values that are also in <span style="font-style: italic;">options</span>.</li>
+    <li><span style="font-weight: bold;">size:</span> The size of the
+select field, if set to 1 a dropdown box will be displayed.</li>
+  </ul>
+  <li><span style="font-weight: bold;">table:</span> Adds a table. Can
+be used recursively.</li>
+  <ul>
+    <li><span style="font-weight: bold;">value:</span> A <span
+ style="font-style: italic;">data element</span>. Can be used
+recursively.</li>
+  </ul>
+  <li><span style="font-weight: bold;">text:</span> Inserts a text
+element.</li>
+  <ul>
+    <li><span style="font-weight: bold;">text:</span> The text to
+display.</li>
+  </ul>
+</ul>
+<br>
+Beneath those values a <span style="font-weight: bold;">"td"</span>
+value may be added. This has to be an array with one or more of these
+options:<br>
+<br>
+<ul>
+  <li><span style="font-weight: bold;">colspan:</span> Like the HTML
+colspan attribute for td elements.</li>
+  <li><span style="font-weight: bold;">rowspan:</span> Like the HTML
+rowspan attribute for td elements.</li>
+  <li><span style="font-weight: bold;">align:</span>
+left/center/right/justify Like the HTML align attribute.</li>
+</ul>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+</body>
+</html>
