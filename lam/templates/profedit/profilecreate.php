@@ -86,6 +86,13 @@ foreach ($opt_keys as $element) {
 	}
 }
 
+// remove double slashes if magic quotes are on
+if (get_magic_quotes_gpc() == 1) {
+	foreach ($opt_keys as $element) {
+		if (is_string($options[$element][0])) $options[$element][0] = stripslashes($options[$element][0]);
+	}
+}
+
 // check options
 $errors = checkProfileOptions($_POST['accounttype'], $options);
 // print error messages if any
