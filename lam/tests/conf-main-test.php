@@ -19,11 +19,19 @@ $Id$
   along with this program; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-	This test reads all preferences from lam.conf. Then it writes new values and verifies
-	if they were written. At last the old values are restored.
 */
 
+/**
+* This test reads all preferences from config.cfg. Then it writes new values and verifies
+* if they were written. At last the old values are restored.
+*
+* @author Roland Gruber
+* @package tests
+*/
+
+/** configuration interface */
 include ("../lib/config.inc");
+
 $conf = new CfgMain();
 echo "<html><head><title></title><link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\"></head><body>";
 echo ("<b> Current Values</b><br><br>");
@@ -41,7 +49,7 @@ $conf->password = "123456";
 $conf->default = "lam";
 $conf->save();
 echo ("done<br>");
-// at last all preferences are read from lam.conf and compared
+// at last all preferences are read from config.cfg and compared
 echo ("Loading and comparing...");
 $conf = new CfgMain();
 if ($conf->password != "123456") echo ("<br><font color=\"#FF0000\">Saving password failed!</font><br>");
