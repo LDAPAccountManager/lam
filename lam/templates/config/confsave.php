@@ -43,7 +43,7 @@ if ($_SESSION['suffusers']) $suffusers = $_SESSION['suffusers'];
 if ($_SESSION['suffgroups']) $suffgroups = $_SESSION['suffgroups'];
 if ($_SESSION['suffhosts']) $suffhosts = $_SESSION['suffhosts'];
 if ($_SESSION['suffdomains']) $suffdomains = $_SESSION['suffdomains'];
-if ($_SESSION['suffmap']) $suffmap = $_SESSION['suffmap'];
+//if ($_SESSION['suffmap']) $suffmap = $_SESSION['suffmap'];
 if ($_SESSION['minUID']) $minUID = $_SESSION['minUID'];
 if ($_SESSION['maxUID']) $maxUID = $_SESSION['maxUID'];
 if ($_SESSION['minGID']) $minGID = $_SESSION['minGID'];
@@ -108,11 +108,11 @@ if (($samba3 == "yes") && !eregi("^(([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)(,([a-z]|-
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
-if ($suffmap && !eregi("^(([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)(,([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)*$", $suffmap)) {
+/*if ($suffmap && !eregi("^(([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)(,([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)*$", $suffmap)) {
 	echo ("<font color=\"red\"><b>" . _("MappingSuffix is invalid!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
-}
+}*/
 if (!$minUID || !is_numeric($minUID)) {
 	echo ("<font color=\"red\"><b>" . _("MinUID is invalid!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
@@ -201,7 +201,7 @@ $conf->set_UserSuffix($suffusers);
 $conf->set_GroupSuffix($suffgroups);
 $conf->set_HostSuffix($suffhosts);
 $conf->set_DomainSuffix($suffdomains);
-$conf->set_MapSuffix($suffmap);
+//$conf->set_MapSuffix($suffmap);
 $conf->set_minUID($minUID);
 $conf->set_maxUID($maxUID);
 $conf->set_minGID($minGID);
@@ -248,7 +248,7 @@ session_unregister('suffusers');
 session_unregister('suffgroups');
 session_unregister('suffhosts');
 session_unregister('suffdomains');
-session_unregister('suffmap');
+//session_unregister('suffmap');
 session_unregister('minUID');
 session_unregister('maxUID');
 session_unregister('minGID');

@@ -88,7 +88,7 @@ class Config {
   var $Suff_domains;
 
   // suffix for user/group mappings (Samba 3)
-  var $Suff_map;
+  //var $Suff_map;
 
   // minimum/maximum numbers for UID, GID and UID of Samba Hosts
   var $MinUID;
@@ -172,10 +172,10 @@ class Config {
 	  $this->Suff_domains = chop(substr($line, 14, strlen($line)-14));
 	  continue;
 	}
-	if (substr($line, 0, 11) == "mapsuffix: ") {
+/*	if (substr($line, 0, 11) == "mapsuffix: ") {
 	  $this->Suff_map = chop(substr($line, 11, strlen($line)-11));
 	  continue;
-	}
+	}*/
 	if (substr($line, 0, 8) == "minUID: ") {
 	  $this->MinUID = chop(substr($line, 8, strlen($line)-8));
 	  continue;
@@ -300,11 +300,11 @@ class Config {
 			$save_suffdom = True;
 			continue;
 		}
-		if (substr($file_array[$i], 0, 11) == "mapsuffix: ") {
+/*		if (substr($file_array[$i], 0, 11) == "mapsuffix: ") {
 			$file_array[$i] = "mapsuffix: " . $this->Suff_map . "\n";
 			$save_suffmap = True;
 			continue;
-		}
+		}*/
 		if (substr($file_array[$i], 0, 8) == "minUID: ") {
 			$file_array[$i] = "minUID: " . $this->MinUID . "\n";
 			$save_minUID = True;
@@ -395,8 +395,8 @@ class Config {
 					     "# e.g. ou=machines,dc=yourdomain,dc=org\n" . "hostsuffix: " . $this->Suff_hosts . "\n");
 	if (!$save_suffdom == True) array_push($file_array, "\n\n# suffix of Samba 3 domains\n" .
 					     "# e.g. ou=domains,dc=yourdomain,dc=org\n" . "domainsuffix: " . $this->Suff_domains . "\n");
-	if (!$save_suffmap == True) array_push($file_array, "\n\n# suffix of Samba 3 user/group mappings\n" .
-					     "# e.g. ou=mappings,dc=yourdomain,dc=org\n" . "mapsuffix: " . $this->Suff_map . "\n");
+//	if (!$save_suffmap == True) array_push($file_array, "\n\n# suffix of Samba 3 user/group mappings\n" .
+//					     "# e.g. ou=mappings,dc=yourdomain,dc=org\n" . "mapsuffix: " . $this->Suff_map . "\n");
 	if (!$save_minUID == True) array_push($file_array, "\n\n# minimum UID number\n" . "minUID: " . $this->MinUID . "\n");
 	if (!$save_maxUID == True) array_push($file_array, "\n\n# maximum UID number\n" . "maxUID: " . $this->MaxUID . "\n");
 	if (!$save_minGID == True) array_push($file_array, "\n\n# minimum GID number\n" . "minGID: " . $this->MinGID . "\n");
@@ -436,7 +436,7 @@ class Config {
     echo "<b>" . _("GroupSuffix") . ": </b>" . $this->Suff_groups . "<br>";
     echo "<b>" . _("HostSuffix") . ": </b>" . $this->Suff_hosts . "<br>";
     echo "<b>" . _("DomainSuffix") . ": </b>" . $this->Suff_domains . "<br>";
-    echo "<b>" . _("MappingSuffix") . ": </b>" . $this->Suff_map . "<br>";
+//    echo "<b>" . _("MappingSuffix") . ": </b>" . $this->Suff_map . "<br>";
     echo "<b>" . _("Minimum UID number") . ": </b>" . $this->MinUID . "<br>";
     echo "<b>" . _("Maximum UID number") . ": </b>" . $this->MaxUID . "<br>";
     echo "<b>" . _("Minimum GID number") . ": </b>" . $this->MinGID . "<br>";
@@ -574,19 +574,19 @@ class Config {
 	}
 
 	// returns the LDAP suffix where mappings are saved
-	function get_MapSuffix() {
+/*	function get_MapSuffix() {
 		return $this->Suff_map;
-	}
+	}*/
 
 	// sets the LDAP suffix where mappings are saved
-	function set_MapSuffix($value) {
+/*	function set_MapSuffix($value) {
 		if (!$value) $this->Suff_map = ""; // optional parameter
 		elseif (is_string($value) && (eregi("^(([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)(,([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)*$", $value))) {
 			$this->Suff_map = $value;
 		}
 		else return false;
 		return true;
-	}
+	}*/
 
 	// returns the minimum UID to use when creating new users
 	function get_minUID() {

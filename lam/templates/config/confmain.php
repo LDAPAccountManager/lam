@@ -47,7 +47,7 @@ if ($_POST['back'] || $_POST['submitconf']){
 		if ($_POST['suffgroups']) $suffgroups = $_POST['suffgroups'];
 		if ($_POST['suffhosts']) $suffhosts = $_POST['suffhosts'];
 		if ($_POST['suffdomains']) $suffdomains = $_POST['suffdomains'];
-		if ($_POST['suffmap']) $suffmap = $_POST['suffmap'];
+//		if ($_POST['suffmap']) $suffmap = $_POST['suffmap'];
 		if ($_POST['minUID']) $minUID = $_POST['minUID'];
 		if ($_POST['maxUID']) $maxUID = $_POST['maxUID'];
 		if ($_POST['minGID']) $minGID = $_POST['minGID'];
@@ -68,7 +68,7 @@ if ($_POST['back'] || $_POST['submitconf']){
 		else $scriptserver = "";
 		if ($_POST['filename']) $filename = $_POST['filename'];
 		session_register('passwd', 'passwd1', 'passwd2', 'serverurl', 'admins', 'suffusers',
-			'suffgroups', 'suffhosts', 'suffdomains', 'suffmap', 'minUID', 'maxUID', 'minGID',
+			'suffgroups', 'suffhosts', 'suffdomains', 'minUID', 'maxUID', 'minGID',
 			'maxGID', 'minMach', 'maxMach', 'usrlstattr', 'grplstattr', 'hstlstattr', 'maxlistentries',
 			'lang', 'scriptpath', 'scriptserver', 'samba3', 'domainSID', 'filename');
 		echo("<meta http-equiv=\"refresh\" content=\"0; URL=confsave.php\">");
@@ -148,10 +148,10 @@ echo ("<tr><td align=\"right\"><b>".
 	"<td><input size=50 type=\"text\" name=\"suffdomains\" value=\"" . $conf->get_DomainSuffix() . "\"></td>\n");
 echo ("<td><a href=\"../help.php?HelpNumber=215\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 // mapping suffix
-echo ("<tr><td align=\"right\"><b>".
+/*echo ("<tr><td align=\"right\"><b>".
 	_("MappingSuffix") . ": </b></td>".
 	"<td><input size=50 type=\"text\" name=\"suffmap\" value=\"" . $conf->get_MapSuffix() . "\"></td>\n");
-echo ("<td><a href=\"../help.php?HelpNumber=216\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
+echo ("<td><a href=\"../help.php?HelpNumber=216\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");*/
 
 echo ("</table>");
 echo ("</fieldset>");

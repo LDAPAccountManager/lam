@@ -27,10 +27,6 @@ hostsuffix: ou=machines,dc=my-domain,dc=com
 # e.g. ou=domains,dc=yourdomain,dc=org
 domainsuffix: ou=domains,dc=my-domain,dc=com
 
-# suffix of Samba 3 user/group mappings
-# e.g. ou=mappings,dc=yourdomain,dc=org
-mapsuffix: 
-
 # minimum and maximum UID numbers
 minUID: 10000
 maxUID: 20000
