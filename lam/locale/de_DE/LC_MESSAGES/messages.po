@@ -1,4 +1,4 @@
-# $Id: messages.po,v 1.15 2003/08/29 13:25:02 gruberroland Exp $
+# $Id: messages.po,v 1.16 2003/09/06 12:14:26 gruberroland Exp $
 #
 #
 # LDAP Account Manager
@@ -420,7 +420,9 @@ msgstr ""
 msgid ""
 "Days before password is to expire that user is warned of pending password "
 "expiration. If set value must be 0<."
-msgstr "Anzahl Tage, die der Benutzer gewarnt wird bevor sein Passwort abläuft. Wert muss größer 0 sein."
+msgstr ""
+"Anzahl Tage, die der Benutzer gewarnt wird bevor sein Passwort abläuft. Wert "
+"muss größer 0 sein."
 
 #: ../templates/config/confmain.php:257 ../help/help.inc:82
 #: ../lib/config.inc:452
@@ -743,13 +745,15 @@ msgstr "Block-Frist"
 #: ../help/help.inc:210
 msgid ""
 "Grace block period. Most filesystems use a fixed maximum value of 7 days."
-msgstr "Block-Frist. Viele Dateisysteme verwenden ein festes Maximum von 7 Tagen."
+msgstr ""
+"Block-Frist. Viele Dateisysteme verwenden ein festes Maximum von 7 Tagen."
 
 #: ../help/help.inc:221
 msgid ""
 "Grace inode (files) period. Most filesystems use a fixed maximum value of 7 "
 "days."
-msgstr "Inode-Frist. Viele Dateisysteme verwenden ein festes Maximum von 7 Tagen."
+msgstr ""
+"Inode-Frist. Viele Dateisysteme verwenden ein festes Maximum von 7 Tagen."
 
 #: ../templates/account.php:1022 ../help/help.inc:220
 msgid "Grace inode period"
@@ -1120,7 +1124,8 @@ msgstr "Bei \"ja\" kann der Benutzer sein Passwort ändern."
 msgid ""
 "If set to \"yes\" the user will need to change his Windows password at next "
 "login."
-msgstr "Bei \"ja\" muss der Benutzer sein Passwort bei der nächsten Anmeldung ändern."
+msgstr ""
+"Bei \"ja\" muss der Benutzer sein Passwort bei der nächsten Anmeldung ändern."
 
 #: ../help/help.inc:119
 msgid "If unsure say \"no\" here."
@@ -1134,7 +1139,9 @@ msgstr "Wenn Sie unsicher sind wählen Sie \"ja\"."
 msgid ""
 "If you use Samba 3.x with the new LDAP schema say \"yes\" here, otherwise "
 "\"no\"."
-msgstr "Wenn Sie Samba 3.x mit dem neuen LDAP-Schema verwenden wählen Sie \"ja\", sonst \"nein\"."
+msgstr ""
+"Wenn Sie Samba 3.x mit dem neuen LDAP-Schema verwenden wählen Sie \"ja\", "
+"sonst \"nein\"."
 
 #: ../help/help.inc:97
 msgid ""
@@ -1144,7 +1151,9 @@ msgstr ""
 
 #: ../help/help.inc:252
 msgid "If you want to use a well known RID you can selcet a well known group."
-msgstr "Wenn Sie eine vordefinierte RID verwenden wollen, wählen Sie eine der vordefinierten Gruppen."
+msgstr ""
+"Wenn Sie eine vordefinierte RID verwenden wollen, wählen Sie eine der "
+"vordefinierten Gruppen."
 
 #: ../lib/status.inc:32
 msgid "Information"
@@ -1611,13 +1620,17 @@ msgstr ""
 msgid ""
 "Number of days a user has to wait until he\\'s allowed to change his "
 "password again. If set value must be 0<."
-msgstr "Anzahl Tage, die ein Benutzer warten muss bevor er sein Passwort ändern darf. Wert muss >0 sein."
+msgstr ""
+"Anzahl Tage, die ein Benutzer warten muss bevor er sein Passwort ändern "
+"darf. Wert muss >0 sein."
 
 #: ../help/help.inc:164
 msgid ""
 "Number of days after a user has to change his password again. If set value "
 "must be 0<."
-msgstr "Anzahl Tage, nach denen der Benutzer sein Passwort ändern muss. Wert muss >0 sein."
+msgstr ""
+"Anzahl Tage, nach denen der Benutzer sein Passwort ändern muss. Wert muss >0 "
+"sein."
 
 #: ../templates/ou_edit.php:58 ../templates/ou_edit.php:123
 #: ../templates/ou_edit.php:188 ../templates/ou_edit.php:253
@@ -1773,7 +1786,10 @@ msgstr "Die Passwörter stimmen nicht überein!"
 msgid ""
 "Path of the userprofile. Can be a local absolute path or a UNC-path (\\"
 "\\server\\share). $user and $group are replaced with user- and groupname."
-msgstr "Pfad zum Benutzerprofil. Kann ein lokaler Pfad oder UNC-Pfad (\\\\Server\\Freigabe) sein. $user und $group werden durch Benutzer- und Gruppenname ersetzt."
+msgstr ""
+"Pfad zum Benutzerprofil. Kann ein lokaler Pfad oder UNC-Pfad (\\\\Server"
+"\\Freigabe) sein. $user und $group werden durch Benutzer- und Gruppenname "
+"ersetzt."
 
 #: ../templates/config/confmain.php:297 ../lib/config.inc:453
 msgid "Path to external script"
@@ -1841,7 +1857,10 @@ msgid ""
 "Please enter the configuration password. This is NOT your LDAP password. It "
 "is stored in your .conf-file. If this is the first time you log in, enter "
 "\"lam\"."
-msgstr "Bitte geben Sie das Konfigurationspasswort ein. Das ist NICHT ihr LDAP-Passwort. Es befindet sich in ihrer .conf-Datei. Wenn Sie sich zum ersten Mal anmelden geben Sie \"lam\" ein."
+msgstr ""
+"Bitte geben Sie das Konfigurationspasswort ein. Das ist NICHT ihr LDAP-"
+"Passwort. Es befindet sich in ihrer .conf-Datei. Wenn Sie sich zum ersten "
+"Mal anmelden geben Sie \"lam\" ein."
 
 #: ../templates/account.php:1291 ../templates/account.php:1296
 #: ../templates/account.php:1301 ../templates/delete.php:168
@@ -1854,14 +1873,19 @@ msgstr ""
 msgid ""
 "Please provide a csv-file with the following syntax. Values with * are "
 "required:"
-msgstr "Bitte übergeben Sie eine CSV-Datei mit folgender Syntax, Werte mit * sind erforderlich:"
+msgstr ""
+"Bitte übergeben Sie eine CSV-Datei mit folgender Syntax, Werte mit * sind "
+"erforderlich:"
 
 #: ../lib/status.inc:50
 msgid ""
 "Please report this error to the Bug-Tracker at {link=http://lam.sf.net}LDAP "
 "Account Manager Development Team{endlink}. The error number is {bold}0001:"
 "Invalid/Missing Message type.{endbold} Thank you."
-msgstr "Bitte melden Sie dieses Problem an den Bug-Tracker des {link=http://lam.sf.net}LDAP Account Manager Entwickler-Teams{endlink}. Die Fehlernummer ist {bold}0001:Fehlerhafter/Fehlender Nachrichtentyp.{endbold} Danke."
+msgstr ""
+"Bitte melden Sie dieses Problem an den Bug-Tracker des {link=http://lam.sf."
+"net}LDAP Account Manager Entwickler-Teams{endlink}. Die Fehlernummer ist "
+"{bold}0001:Fehlerhafter/Fehlender Nachrichtentyp.{endbold} Danke."
 
 #: ../help/help.inc:248
 msgid "Position in ldap-tree where the group should be created."
@@ -2320,7 +2344,10 @@ msgid ""
 "These are the minimum and maximum numbers to use for group IDs when creating "
 "new group accounts. New group accounts will always get the highest number in "
 "use plus one."
-msgstr "Das sind die minimalen und maximalen Nummern für Gruppen-IDs wenn neue Gruppen erstellt werden. Neue Gruppen bekommen die immer die höchste verwendete Zahl plus 1."
+msgstr ""
+"Das sind die minimalen und maximalen Nummern für Gruppen-IDs wenn neue "
+"Gruppen erstellt werden. Neue Gruppen bekommen die immer die höchste "
+"verwendete Zahl plus 1."
 
 #: ../help/help.inc:59
 msgid ""
@@ -2328,14 +2355,20 @@ msgid ""
 "creating new accounts for Samba hosts. The range has to be different from "
 "that of users. New host accounts will always get the highest number in use "
 "plus one."
-msgstr "Das sind die minimalen und maximalen Nummern für Host-IDs wenn neue Hosts erstellt werden. Neue Hosts bekommen die immer die höchste verwendete Zahl plus 1."
+msgstr ""
+"Das sind die minimalen und maximalen Nummern für Host-IDs wenn neue Hosts "
+"erstellt werden. Neue Hosts bekommen die immer die höchste verwendete Zahl "
+"plus 1."
 
 #: ../help/help.inc:55
 msgid ""
 "These are the minimum and maximum numbers to use for user IDs when creating "
 "new user accounts. The range has to be different from that of machines. New "
 "user accounts will always get the highest number in use plus one."
-msgstr "Das sind die minimalen und maximalen Nummern für Benutzer-IDs wenn neue Benutzer erstellt werden. Neue Benutzer bekommen die immer die höchste verwendete Zahl plus 1."
+msgstr ""
+"Das sind die minimalen und maximalen Nummern für Benutzer-IDs wenn neue "
+"Benutzer erstellt werden. Neue Benutzer bekommen die immer die höchste "
+"verwendete Zahl plus 1."
 
 #: ../lib/pdf.inc:262
 msgid "This document was automatically created by LDAP Account Manager"
@@ -2345,40 +2378,58 @@ msgstr "Dieses Dokument wurde von LDAP Account Manager erstellt."
 msgid ""
 "This is a list of valid DN entries of all users that are allowed to login to "
 "LDAP Account Manager. The user names have to be separated by semicolons."
-msgstr "Das ist eine Liste von DN-Einträgen aller Benutzer, die sich bei LDAP Account Manager anmelden dürfen. Die Benutzernamen müssen mit Strichpunkten getrennt sein."
+msgstr ""
+"Das ist eine Liste von DN-Einträgen aller Benutzer, die sich bei LDAP "
+"Account Manager anmelden dürfen. Die Benutzernamen müssen mit Strichpunkten "
+"getrennt sein."
 
 #: ../help/help.inc:37
 msgid ""
 "This is the Server Address of your LDAP server. Use ldap:// for standard "
 "LDAP connections and ldaps:// for encrypted (require server certificates) "
 "connections. The port value is optional."
-msgstr "Das ist die Serveradresse ihres LDAP-Servers. Verwenden Sie ldap:// für normale LDAP-Verbindungen und ldaps:// für verschlüsselte Verbindungen (benötigt Serverzertifikat). Die Portnummer ist optional."
+msgstr ""
+"Das ist die Serveradresse ihres LDAP-Servers. Verwenden Sie ldap:// für "
+"normale LDAP-Verbindungen und ldaps:// für verschlüsselte Verbindungen "
+"(benötigt Serverzertifikat). Die Portnummer ist optional."
 
 #: ../help/help.inc:85
 msgid ""
 "This is the absolute path to an external script for setting quotas and "
 "creating home directories."
-msgstr "Das ist der absolute Pfad zu einem externen Script, das Quotas und Heimatverzeichnisse verwaltet."
+msgstr ""
+"Das ist der absolute Pfad zu einem externen Script, das Quotas und "
+"Heimatverzeichnisse verwaltet."
 
 #: ../help/help.inc:61
 msgid ""
 "This is the list of attributes to show in the user/group/host list. The "
 "entries can either be predefined values, \"#value\", or individual ones, "
 "\"value:description\". Several entries are seperated by semicolons."
-msgstr "Das ist eine Liste von Attributen, die in den Benutzer/Gruppen/Host-Listen angezeigt wird. Die Einträge können entweder vordefinierte Werte (#Wert) oder eigne Werte (#Wert:Beschreibung) sein. Mehrere Werte werden durch Strichpunkte getrennt."
+msgstr ""
+"Das ist eine Liste von Attributen, die in den Benutzer/Gruppen/Host-Listen "
+"angezeigt wird. Die Einträge können entweder vordefinierte Werte (#Wert) "
+"oder eigne Werte (#Wert:Beschreibung) sein. Mehrere Werte werden durch "
+"Strichpunkte getrennt."
 
 #: ../help/help.inc:81
 msgid ""
 "This is the number of rows to show in the user/group/host list. If more "
 "entries are found the list will be split to several pages."
-msgstr "Das ist die Anzahl von Zeilen, die in den Benutzer/Gruppen/Host-Listen angezeigt wird. Wenn mehr Einträge gefunden werden, wird die Liste auf mehrere Seiten aufgeteilt."
+msgstr ""
+"Das ist die Anzahl von Zeilen, die in den Benutzer/Gruppen/Host-Listen "
+"angezeigt wird. Wenn mehr Einträge gefunden werden, wird die Liste auf "
+"mehrere Seiten aufgeteilt."
 
 #: ../help/help.inc:91
 msgid ""
 "This is the server where the lamdaemon script is stored. LDAP Account "
 "Manager will make a SSH connection to this server with username and password "
 "provided at login."
-msgstr "Das ist der Server auf dem das lamdaemon-Script liegt. LDAP Account Manager wird eine SSH-Verbindung zu diesem Serer aufbauen, dabei werden Benutzername und Passwort vom Login verwendet."
+msgstr ""
+"Das ist der Server auf dem das lamdaemon-Script liegt. LDAP Account Manager "
+"wird eine SSH-Verbindung zu diesem Serer aufbauen, dabei werden Benutzername "
+"und Passwort vom Login verwendet."
 
 #: ../help/help.inc:49
 msgid ""
@@ -2415,13 +2466,15 @@ msgstr "Titel"
 
 #: ../help/help.inc:224
 msgid "Title of user, Mr., Ms., ..."
-msgstr ""
+msgstr "Titel des Benutzers (Herr, Frau, Dr., etc.)."
 
 #: ../help/help.inc:138
 msgid ""
 "To disable login use /bin/false. List of shells is read from lam/config/"
 "shells"
 msgstr ""
+"Verwenden Sie /bin/false um den Login zu deaktivieren. Die Shellliste wird "
+"von lam/config/shells gelesen."
 
 #: ../templates/lists/listusers.php:309
 msgid "Translate GID number to group name"
@@ -2438,12 +2491,16 @@ msgid ""
 "UID-number has changed. You have to run the following command as root in "
 "order to change existing file-permissions:"
 msgstr ""
+"Die UID-Nummer hat sich geändert. Sie müssen folgenden Befehl als root "
+"ausführen um die existierenden Dateirechte zu ändern:"
 
 #: ../help/help.inc:196
 msgid ""
 "UNC-path (\\\\server\\share) of homedirectory. $user and $group are replaced "
 "with user- and groupname."
 msgstr ""
+"UNC-Pfad (\\\\Server\\Freigabe) des Heimatverzeichnisses. $user und $group "
+"werden durch Benutzer- und Gruppenname ersetzt."
 
 #: ../templates/groupmembers.php:80
 msgid "Unable to add users!"
@@ -2473,17 +2530,14 @@ msgstr "Kann das Profil nicht löschen!"
 msgid "Unable to find group!"
 msgstr "Kann Gruppe nicht finden!"
 
-#: ../templates/login.php:75
+#: ../templates/config/confmain.php:283 ../templates/login.php:75
 msgid ""
 "Unable to load available languages. Setting English as default language. For "
 "further instructions please contact the Admin of this site."
 msgstr ""
-
-#: ../templates/config/confmain.php:283
-msgid ""
-"Unable to load available languages. Setting English as default language. For "
-"further instructions please contact the Admin of this site.\n"
-msgstr ""
+"Konnte verfügbare Sprachen nicht laden. Englisch wurde als Standardsprache "
+"gesetzt. Für weitere Anweisungen wenden Sie sich bitte an den Administrator "
+"dieser Seite."
 
 #: ../lib/config.inc:254 ../lib/config.inc:817
 msgid "Unable to load configuration!"
@@ -2544,6 +2598,8 @@ msgid ""
 "Use it at your own risk and read the documentation for lamdaemon before you "
 "use it!"
 msgstr ""
+"Verwendung auf eigene Gefahr. Lesen Sie die Dokumentation für lamdaemon "
+"bevor Sie es benutzen!"
 
 #: ../templates/account.php:649 ../templates/account.php:757
 #: ../help/help.inc:173
@@ -2560,7 +2616,7 @@ msgstr "Benutzte Blöcke"
 
 #: ../help/help.inc:202
 msgid "Used blocks. 1000 blocks are usually 1MB"
-msgstr ""
+msgstr "Verwendete Blöcke. 1000 Blöcke sind normalerweise 1 MB."
 
 #: ../help/help.inc:279
 msgid "Used for calculating RIDs from UID/GID. Do not change if unsure."
@@ -2618,7 +2674,7 @@ msgstr "Benutzername"
 
 #: ../lib/pdf.inc:174
 msgid "User quota(s)"
-msgstr ""
+msgstr "Benutzer Quota"
 
 #: ../templates/lists/listusers.php:362
 msgid "User(s) found"
@@ -2654,6 +2710,8 @@ msgstr ""
 #: ../templates/masscreate.php:356 ../lib/account.inc:227
 msgid "Username in use. Selected next free username."
 msgstr ""
+"Der Benutzername ist bereits vorhanden, der nächste freie Name wurde "
+"ausgewählt."
 
 #: ../help/help.inc:126
 msgid ""
@@ -2702,6 +2760,8 @@ msgid ""
 "When using ldaps:// be sure to use exactly the same IP/domain name as in "
 "your certificate!"
 msgstr ""
+"Wenn Sie ldaps:// verwenden stellen Sie sicher, dass Sie genau die selbe IP/"
+"Domäne wie in ihrem Zertifikat verwenden!"
 
 #: ../help/help.inc:243
 msgid "Windows domain"
@@ -2866,6 +2926,8 @@ msgid ""
 "ou=People,dc=yourcompany,dc=com will read and store all accounts in this "
 "subtree."
 msgstr ""
+"ou=People,dc=yourcompany,dc=com liest und speichert alle Accounts in diesem "
+"Unterzweig."
 
 #: ../templates/config/confmain.php:350
 msgid "required"

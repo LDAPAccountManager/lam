@@ -280,7 +280,7 @@ echo ("</select>\n");
 }
 else
 {
-	echo _("Unable to load available languages. Setting English as default language. For further instructions please contact the Admin of this site.\n");
+	echo _("Unable to load available languages. Setting English as default language. For further instructions please contact the Admin of this site.");
 }
 echo ("</td>\n");
 echo ("<td><a href=\"../help.php?HelpNumber=209\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
