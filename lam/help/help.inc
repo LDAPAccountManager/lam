@@ -293,7 +293,15 @@ $helpArray = array (
 				"464" => array ("ext" => "FALSE", "Headline" => _("Windows Well Known Group"),
 					"Text" => _("Windows Well Known Group")),
 				"465" => array ("ext" => "FALSE", "Headline" => _("Windows Groupname"),
-					"Text" => _("Windows Groupname"))
+					"Text" => _("Windows Groupname")),
+				// 600 - 699
+				// Roland Gruber
+				// OU-editor
+				"601" => array ("ext" => "FALSE", "Headline" => _("OU-Editor - New organizational unit"),
+					"Text" => _("This will create a new organizational unit under the selected one.")),
+				"602" => array ("ext" => "FALSE", "Headline" => _("OU-Editor - Delete organizational unit"),
+					"Text" => _("This will the selected organizational unit. The OU has to be empty."))
+
 /* This is a sample help entry. Just copy this line an modify the vakues between the [] brackets.
 	Help text is located in the array:
 		"[Helpnumber]" => array ("ext" => "FALSE", "Headline" => _("[Headline]"), "Text" => _("[Text]"), "SeeAlso" => "[SeeAlso link]"),

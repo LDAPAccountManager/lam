@@ -312,7 +312,7 @@ function display_main() {
 	echo ("<td><input type=text name=newsuff_u></td>\n");
 	echo ("<td><b>" . _("New organizational unit") . "</b></td>\n");
 	echo ("<td>&nbsp;</td>\n");
-	echo ("<td><a href=\"help.php?HelpNumber=501\">". _("Help") ."</a></td>\n");
+	echo ("<td><a href=\"help.php?HelpNumber=601\" target=\"lamhelp\">". _("Help") ."</a></td>\n");
 	echo ("</tr>\n");
 	// delete OU
 	echo ("<tr>\n");
@@ -325,7 +325,7 @@ function display_main() {
 	echo ("<td>&nbsp;</td>\n");
 	echo ("<td><b>" . _("Delete organizational unit") . "</b></td>\n");
 	echo ("<td>&nbsp;</td>\n");
-	echo ("<td><a href=\"help.php?HelpNumber=502\">". _("Help") ."</a></td>\n");
+	echo ("<td><a href=\"help.php?HelpNumber=602\" target=\"lamhelp\">". _("Help") ."</a></td>\n");
 	echo ("</tr>\n");
 	echo ("</table>\n");
 	echo ("</fieldset>\n");
@@ -345,7 +345,7 @@ function display_main() {
 	echo ("<td><input type=text name=newsuff_g></td>\n");
 	echo ("<td><b>" . _("New organizational unit") . "</b></td>\n");
 	echo ("<td>&nbsp;</td>\n");
-	echo ("<td><a href=\"help.php?HelpNumber=511\">". _("Help") ."</a></td>\n");
+	echo ("<td><a href=\"help.php?HelpNumber=601\" target=\"lamhelp\">". _("Help") ."</a></td>\n");
 	echo ("</tr>\n");
 	// delete OU
 	echo ("<tr>\n");
@@ -358,7 +358,7 @@ function display_main() {
 	echo ("<td>&nbsp;</td>\n");
 	echo ("<td><b>" . _("Delete organizational unit") . "</b></td>\n");
 	echo ("<td>&nbsp;</td>\n");
-	echo ("<td><a href=\"help.php?HelpNumber=512\">". _("Help") ."</a></td>\n");
+	echo ("<td><a href=\"help.php?HelpNumber=602\" target=\"lamhelp\">". _("Help") ."</a></td>\n");
 	echo ("</tr>\n");
 	echo ("</table>\n");
 	echo ("</fieldset>\n");
@@ -378,7 +378,7 @@ function display_main() {
 	echo ("<td><input type=text name=newsuff_h></td>\n");
 	echo ("<td><b>" . _("New organizational unit") . "</b></td>\n");
 	echo ("<td>&nbsp;</td>\n");
-	echo ("<td><a href=\"help.php?HelpNumber=521\">". _("Help") ."</a></td>\n");
+	echo ("<td><a href=\"help.php?HelpNumber=601\" target=\"lamhelp\">". _("Help") ."</a></td>\n");
 	echo ("</tr>\n");
 	// delete OU
 	echo ("<tr>\n");
@@ -391,7 +391,7 @@ function display_main() {
 	echo ("<td>&nbsp;</td>\n");
 	echo ("<td><b>" . _("Delete organizational unit") . "</b></td>\n");
 	echo ("<td>&nbsp;</td>\n");
-	echo ("<td><a href=\"help.php?HelpNumber=522\">". _("Help") ."</a></td>\n");
+	echo ("<td><a href=\"help.php?HelpNumber=602\" target=\"lamhelp\">". _("Help") ."</a></td>\n");
 	echo ("</tr>\n");
 	echo ("</table>\n");
 	echo ("</fieldset>\n");
