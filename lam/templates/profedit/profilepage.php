@@ -67,9 +67,7 @@ $options = getProfileOptions($type);
 // load old profile if needed
 $old_options = array();
 if ($_GET['edit']) {
-	if ($type == "user") $old_options = loadUserProfile($_GET['edit']);
-	elseif ($type == "group") $old_options = loadGroupProfile($_GET['edit']);
-	elseif ($type == "host") $old_options = loadHostProfile($_GET['edit']);
+	$old_options = loadAccountProfile($_GET['edit'], $type);
 }
 
 // display formular

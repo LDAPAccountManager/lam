@@ -30,81 +30,43 @@ $Id$
 
 
 /**
-* Returns an array of string with all available user profiles (without .pru)
+* Returns an array of string with all available profiles for the given account type
 *
+* @param string $scope account type
 * @return array profile names
 */
-function getUserProfiles() {
-	$dir = @dir(substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/users");
+function getAccountProfiles($scope) {
+	$dir = @dir(substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles");
 	$ret = array();
 	$pos = 0;
 	if ($dir) {
-		while ($entry = $dir->read()){
-			$ext = substr($entry, strlen($entry)-4, 4);
-			$name = substr($entry, 0, strlen($entry)-4);
-			if ($ext == ".pru") {
-				$ret[$pos] = $name;
-				$pos ++;
+		$entry = $dir->read();
+		while ($entry){
+			// check if filename ends with .<scope>
+			if (strrpos($entry, '.')) {
+				$pos = strrpos($entry, '.');
+				if (substr($entry, $pos + 1) == $scope) {
+					$name = substr($entry, 0, $pos);
+					$ret[] = $name;
+				}
 			}
+			$entry = $dir->read();
 		}
 	}
 	return $ret;
 }
 
 /**
-* Returns an array of String with all available group profiles (without .prg)
+* Loads an profile of the given account type
 *
-* @return array profile names
-*/
-function getGroupProfiles() {
-	$dir = @dir(substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/groups");
-	$ret = array();
-	$pos = 0;
-	if ($dir) {
-		while ($entry = $dir->read()){
-			$ext = substr($entry, strlen($entry)-4, 4);
-			$name = substr($entry, 0, strlen($entry)-4);
-			if ($ext == ".prg") {
-				$ret[$pos] = $name;
-				$pos ++;
-			}
-		}
-	}
-	return $ret;
-}
-
-/**
-* Returns an array of String with all available host profiles (without .prh)
-*
-* @return array profile names
-*/
-function getHostProfiles() {
-	$dir = @dir(substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/hosts");
-	$ret = array();
-	$pos = 0;
-	if ($dir) {
-		while ($entry = $dir->read()){
-			$ext = substr($entry, strlen($entry)-4, 4);
-			$name = substr($entry, 0, strlen($entry)-4);
-			if ($ext == ".prh") {
-				$ret[$pos] = $name;
-				$pos ++;
-			}
-		}
-	}
-	return $ret;
-}
-
-/**
-* Loads an user profile
-*
-* @param string $profile name of the profile (without .pru)
+* @param string $profile name of the profile (without .<scope> extension)
+* @param string $scope account type
 * @return array hash array (attribute => value)
 */
-function loadUserProfile($profile) {
-	if (!eregi("^[0-9a-z_\\-]+$", $profile)) return false;
+function loadAccountProfile($profile, $scope) {
+	if (!eregi("^[0-9a-z_-]+$", $profile) || !eregi("^[a-z]+$", $scope)) return false;
 	$settings = array();
-	$file = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/users/" . $profile . ".pru";
+	$file = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/" . $profile . "." . $scope;
 	if (is_file($file) == True) {
 		$file = @fopen($file, "r");
 		if ($file) {
@@ -136,102 +98,23 @@ function loadUserProfile($profile) {
 }
 
 /**
-* Loads an group profile
-*
-* @param string $profile name of the profile (without .prg)
-* @return array hash array (attribute => value)
-*/
-function loadGroupProfile($profile) {
-	if (!eregi("^[0-9a-z_\\-]+$", $profile)) return false;
-	$settings = array();
-	$file = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/groups/" . $profile . ".prg";
-	if (is_file($file) == True) {
-		$file = @fopen($file, "r");
-		if ($file) {
-			while (!feof($file)) {
-				$line = fgets($file, 1024);
-				if (($line == "\n")||($line[0] == "#")) continue; // ignore comments
-				// search keywords
-				$parts = array();
-				$parts = split(": ", $line);
-				if (sizeof($parts) != 2) continue;  // ignore malformed settings
-				else {
-					$option = $parts[0];
-					$value = $parts[1];
-					// remove line ends
-					$value = chop($value);
-					$settings[$option] = explode("+::+", $value);
-				}
-			}
-			fclose($file);
-		}
-		else {
-			StatusMessage("ERROR", "", _("Unable to load profile!") . " " . $file);
-		}
-	}
-	else {
-		StatusMessage("ERROR", "", _("Unable to load profile!") . " " . $file);
-	}
-	return $settings;
-}
-
-/**
-* Loads an host profile
-*
-* @param string $profile name of the profile (without .prh)
-* @return array hash array (attribute => value)
-*/
-function loadHostProfile($profile) {
-	if (!eregi("^[0-9a-z_\\-]+$", $profile)) return false;
-	$settings = array();
-	$file = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/hosts/" . $profile . ".prh";
-	if (is_file($file) == True) {
-		$file = @fopen($file, "r");
-		if ($file) {
-			while (!feof($file)) {
-				$line = fgets($file, 1024);
-				if (($line == "\n")||($line[0] == "#")) continue; // ignore comments
-				// search keywords
-				$parts = array();
-				$parts = split(": ", $line);
-				if (sizeof($parts) != 2) continue;  // ignore malformed settings
-				else {
-					$option = $parts[0];
-					$value = $parts[1];
-					// remove line ends
-					$value = chop($value);
-					$settings[$option] = explode("+::+", $value);
-				}
-			}
-			fclose($file);
-		}
-		else {
-			StatusMessage("ERROR", "", _("Unable to load profile!") . " " . $file);
-		}
-	}
-	else {
-		StatusMessage("ERROR", "", _("Unable to load profile!") . " " . $file);
-	}
-	return $settings;
-}
-
-/**
-* Saves an hash array (attribute => value) to an user profile
+* Saves an hash array (attribute => value) to an account profile
 *
 * file is created, if needed
 *
-* @param string $profile name of the user profile (without .pru)
+* @param string $profile name of the account profile (without .<scope> extension)
 * @param array $attributes hash array (attribute => value)
+* @param string $scope account type
 * @return boolean true, if saving succeeded
 */
-function saveUserProfile($attributes, $profile) {
+function saveAccountProfile($attributes, $profile, $scope) {
 	if (!$_SESSION['loggedIn'] == true) return false;
 	// check profile name
-	if (!eregi("^[0-9a-z_-]+$", $profile)) return false;
+	if (!eregi("^[0-9a-z_-]+$", $profile) || !eregi("^[a-z]+$", $scope)) return false;
 	if (!is_array($attributes)) {
 		return false;
 	}
-	$path = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/users/" . $profile . ".pru";
+	$path = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/" . $profile . "." . $scope;
 	$file = @fopen($path, "w");
 	if ($file) {
   	// write attributes
@@ -255,119 +138,21 @@ function saveUserProfile($attributes, $profile) {
 }
 
 /**
-* Saves an hash array (attribute => value) to an group profile
+* Deletes an account profile
 *
-* file is created, if needed
-*
-* @param string $profile name of the group profile (without .prg)
-* @param array $attributes hash array (attribute => value)
-* @return boolean true, if saving succeeded
-*/
-function saveGroupProfile($attributes, $profile) {
-	if (!$_SESSION['loggedIn'] == true) return false;
-	// check profile name
-	if (!eregi("^[0-9a-z_-]+$", $profile)) return false;
-	if (!is_array($attributes)) {
-		return false;
-	}
-	$path = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/groups/" . $profile . ".prg";
-	$file = @fopen($path, "w");
-	if ($file) {
-		// write attributes
-		$keys = array_keys($attributes);
-		for ($i = 0; $i < sizeof($keys); $i++) {
-			$line = $keys[$i] . ": " . implode("+::+", $attributes[$keys[$i]]) . "\n";
-			fputs($file, $line);
-		}
-		// close file
-		fclose($file);
-	}
-	else {
-		return false;
-	}
-	return true;
-}
-
-/**
-* Saves an hash array (attribute => value) to an host profile
-*
-* file is created, if needed
-*
-* @param string $profile name of the host profile (without .prh)
-* @param array $attributes hash array (attribute => value)
-* @return boolean true, if saving succeeded
-*/
-function saveHostProfile($attributes, $profile) {
-	if (!$_SESSION['loggedIn'] == true) return false;
-	// check profile name
-	if (!eregi("^[0-9a-z_-]+$", $profile)) return false;
-	if (!is_array($attributes)) {
-		return false;
-	}
-	$path = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/hosts/" . $profile . ".prh";
-	$file = @fopen($path, "w");
-	if ($file) {
-		// write attributes
-		$keys = array_keys($attributes);
-		for ($i = 0; $i < sizeof($keys); $i++) {
-			$line = $keys[$i] . ": " . implode("+::+", $attributes[$keys[$i]]) . "\n";
-			fputs($file, $line);
-		}
-		// close file
-		fclose($file);
-	}
-	else {
-		return false;
-	}
-	return true;
-}
-
-/**
-* Deletes a user profile
-*
-* @param string $file name of profile (Without .pru)
+* @param string $file name of profile (Without .<scope> extension)
+* @param string $scope account type
 * @return boolean true if profile was deleted
 */
-function delUserProfile($file) {
+function delAccountProfile($file, $scope) {
 	if (!$_SESSION['loggedIn'] == true) return false;
-	if (!eregi("^[0-9a-z\\-_]+$", $file)) return false;
-	$prof = substr(__FILE__, 0, strlen(__FILE__) - 16) . "config/profiles/users/".$file.".pru";
+	if (!eregi("^[0-9a-z\\-_]+$", $file) || !eregi("^[0-9a-z\\-_]+$", $scope)) return false;
+	$prof = substr(__FILE__, 0, strlen(__FILE__) - 16) . "config/profiles/" . $file . "." . $scope;
 	if (is_file($prof)) {
 		return @unlink($prof);
 	}
 	else return false;
 }
 
-/**
-* Deletes a group profile
-*
-* @param string $file name of profile (Without .prg)
-* @return boolean true if profile was deleted
-*/
-function delGroupProfile($file) {
-	if (!$_SESSION['loggedIn'] == true) return false;
-	if (!eregi("^[0-9a-z\\-_]+$", $file)) return false;
-	$prof = substr(__FILE__, 0, strlen(__FILE__) - 16) . "config/profiles/groups/".$file.".prg";
-	if (is_file($prof)) {
-		return @unlink($prof);
-	}
-	else return false;
-}
-
-/**
-* Deletes a host profile
-*
-* @param string $file name of profile (Without .prh)
-* @return boolean true if profile was deleted
-*/
-function delHostProfile($file) {
-	if (!$_SESSION['loggedIn'] == true) return false;
-	if (!eregi("^[0-9a-z\\-_]+$", $file)) return false;
-	$prof = substr(__FILE__, 0, strlen(__FILE__) - 16) . "config/profiles/hosts/".$file.".prh";
-	if (is_file($prof)) {
-		return @unlink($prof);
-	}
-	else return false;
-}
 
 ?>

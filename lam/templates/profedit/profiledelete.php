@@ -55,31 +55,11 @@ echo ("</head>\n<body>\n<p><br></p>\n");
 
 // check if admin has submited delete operation
 if ($_POST['submit']) {
-	// delete user profile
-	if ($_POST['type'] == "user") {
-		if (!delUserProfile($_POST['del'])) {
-			StatusMessage("ERROR", "", _("Unable to delete profile!") . " " . $_POST['del']);
-		}
-		else StatusMessage("INFO", "", _("Deleted profile:") . " " . $_POST['del']);
+	// delete profile
+	if (!delAccountProfile($_POST['del'], $_POST['type'])) {
+		StatusMessage("ERROR", _("Unable to delete profile!"), $_POST['del'] . "." . $_POST['type']);
 	}
-	// delete group profile
-	elseif ($_POST['type'] == "group") {
-		if (!delGroupProfile($_POST['del'])) {
-			StatusMessage("ERROR", "", _("Unable to delete profile!") . " " . $_POST['del']);
-		}
-		else StatusMessage("INFO", "", _("Deleted profile:") . " " . $_POST['del']);
-	}
-	// delete host profile
-	elseif ($_POST['type'] == "host") {
-		if (!delHostProfile($_POST['del'])) {
-			StatusMessage("ERROR", "", _("Unable to delete profile!") . " " . $_POST['del']);
-		}
-		else StatusMessage("INFO", "", _("Deleted profile:") . " " . $_POST['del']);
-	}
-	// wrong profile type
-	else {
-		StatusMessage("ERROR", "", _("Wrong or missing type!") . " " . $_POST['type']);
-	}
+	else StatusMessage("INFO", _("Deleted profile:"), $_POST['del'] . "." . $_POST['type']);
 	echo ("<br><a href=\"profilemain.php\">" . _("Back to Profile Editor") . "</a>");
 	echo ("</body></html>\n");
 	exit;

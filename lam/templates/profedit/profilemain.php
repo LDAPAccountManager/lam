@@ -96,21 +96,21 @@ if ($_POST['forward'] == "yes") {
 }
 
 // get list of user profiles and generate entries for dropdown box
-$usrprof = getUserProfiles();
+$usrprof = getAccountProfiles('user');
 $userprofiles = "";
 for ($i = 0; $i < sizeof($usrprof); $i++) {
 	$userprofiles = $userprofiles . "<option>" . $usrprof[$i] . "</option>\n";
 }
 
 // get list of group profiles and generate entries for dropdown box
-$grpprof = getGroupProfiles();
+$grpprof = getAccountProfiles('group');
 $groupprofiles = "";
 for ($i = 0; $i < sizeof($grpprof); $i++) {
 	$groupprofiles = $groupprofiles . "<option>" . $grpprof[$i] . "</option>\n";
 }
 
 // get list of host profiles and generate entries for dropdown box
-$hstprof = getHostProfiles();
+$hstprof = getAccountProfiles('host');
 $hostprofiles = "";
 for ($i = 0; $i < sizeof($hstprof); $i++) {
 	$hostprofiles = $hostprofiles . "<option>" . $hstprof[$i] . "</option>\n";

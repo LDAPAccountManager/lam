@@ -234,9 +234,13 @@ class baseModule {
 		if (is_array($this->meta['profile_checks'])) {
 			$identifiers = array_keys($this->meta['profile_checks']);
 			for ($i = 0; $i < sizeof($identifiers); $i++) {
-				// check if option is required
-				if ($this->meta['profile_checks'][$identifiers[$i]]['required'] && ($options[$identifiers[$i]][0] == '')) {
-					$messages[] = $this->meta['profile_checks'][$identifiers[$i]]['required_message'];
+				// empty input
+				if (($options[$identifiers[$i]][0] == '') || !isset($options[$identifiers[$i]][0])) {
+					// check if option is required
+					if ($this->meta['profile_checks'][$identifiers[$i]]['required']) {
+						$messages[] = $this->meta['profile_checks'][$identifiers[$i]]['required_message'];
+					}
+					return $messages;
 				}
 				switch ($this->meta['profile_checks'][$identifiers[$i]]['type']) {
 					// check by regular expression (from account.inc)
