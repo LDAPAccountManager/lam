@@ -142,7 +142,7 @@ echo "<form action=\"o_lang.php\" method=\"post\">\n";
 	echo "<p><br></p>\n";
 
 	// admin users
-	echo "<p><b>" . _("Valid users:") . "</b></p>\n";
+	echo "<p><b>" . _("Valid users") . ":</b></p>\n";
 	echo "<p>" . _("If you want more than one user to login to LAM please enter its DN(s) here. Multiple entries are seperated by semicolons.") . "</p>\n";
 	echo "<p><b>" . _("Example") . ": </b>cn=admin,dc=yourdomain,dc=org;cn=manager,dc=yourdomain,dc=org<br><br></p>\n";
 

@@ -85,7 +85,7 @@ if ($_POST['submit']) {
 		for ($i = 0; $i < sizeof($errors); $i++) {
 			StatusMessage("ERROR", $errors[$i], "");
 		}
-		echo "<p><br><br><a href=\"o_ranges.php\">" . _("Back to range settings.") . "</a></p>\n";
+		echo "<p><br><br><a href=\"o_ranges.php\">" . _("Back to range settings") . "</a></p>\n";
 		echo "</body></html>\n";
 		exit;
 	}

@@ -76,7 +76,7 @@ if ($_POST['submit']) {
 		for ($i = 0; $i < sizeof($errors); $i++) {
 			StatusMessage("ERROR", $errors[$i], "");
 		}
-		echo "<p><br><br><a href=\"o_lists.php\">" . _("Back to list settings.") . "</a></p>\n";
+		echo "<p><br><br><a href=\"o_lists.php\">" . _("Back to list settings") . "</a></p>\n";
 		echo "</body></html>\n";
 		exit;
 	}
