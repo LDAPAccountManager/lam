@@ -70,7 +70,7 @@ $hash_table = $_SESSION["ldap"]->attributeGroupArray();
 // get current page
 $page = $_GET["page"];
 if (!$page) $page = 1;
-// take maximum count of user entries shown on one page out of session
+// take maximum count of group entries shown on one page out of session
 if ($_SESSION["config"]->get_MaxListEntries() <= 0)
 	$max_pageentrys = 10;	// default setting, if not yet set
 else
@@ -230,22 +230,26 @@ function draw_navigation_bar ($count) {
   echo ("<tr>\n");
   echo ("<td><input type=\"submit\" name=\"refresh\" value=\"" . _("Refresh") . "\">&nbsp;&nbsp;");
   if ($page != 1)
-    echo ("<a class=\"userlist\" href=\"listgroups.php?page=" . ($page - 1) . "&list=" . $list . $searchfilter . "\">&lt;=</a>\n");
+    echo ("<a href=\"listgroups.php?page=" . ($page - 1) . "&list=" . $list . $searchfilter . "\">&lt;=</a>\n");
   else
     echo ("&lt;=");
   echo ("&nbsp;");
 
   if ($page < ($count / $max_pageentrys))
-    echo ("<a class=\"userlist\" href=\"listgroups.php?page=" . ($page + 1) . "&list=" . $list . $searchfilter . "\">=&gt;</a>\n");
+    echo ("<a href=\"listgroups.php?page=" . ($page + 1) . "&list=" . $list . $searchfilter . "\">=&gt;</a>\n");
   else
     echo ("=&gt;</td>");
 
-  echo ("<td class=\"userlist_activepage\" align=\"right\">");
+  echo ("<td class=\"groupnav_text\">");
+  echo "&nbsp;" . $count . " " .  _("Group(s) found");
+  echo ("</td>");
+
+  echo ("<td class=\"groupnav_activepage\" align=\"right\">");
   for ($i = 0; $i < ($count / $max_pageentrys); $i++) {
     if ($i == $page - 1)
       echo ("&nbsp;" . ($i + 1));
     else
-      echo ("&nbsp;<a class=\"userlist\" href=\"listgroups.php?page=" . ($i + 1) .
+      echo ("&nbsp;<a href=\"listgroups.php?page=" . ($i + 1) .
 	    "&list=" . $list . "\">" . ($i + 1) . "</a>\n");
   }
   echo ("</td></tr></table>\n");

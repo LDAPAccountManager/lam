@@ -213,22 +213,26 @@ function draw_navigation_bar ($count) {
   echo ("<tr>\n");
   echo ("<td><input type=\"submit\" name=\"refresh\" value=\"" . _("Refresh") . "\">&nbsp;&nbsp;");
   if ($page != 1)
-    echo ("<a class=\"userlist\" href=\"listhosts.php?page=" . ($page - 1) . "&list=" . $list . $searchfilter . "\">&lt;=</a>\n");
+    echo ("<a href=\"listhosts.php?page=" . ($page - 1) . "&list=" . $list . $searchfilter . "\">&lt;=</a>\n");
   else
     echo ("&lt;=");
   echo ("&nbsp;");
 
   if ($page < ($count / $max_pageentrys))
-    echo ("<a class=\"userlist\" href=\"listhosts.php?page=" . ($page + 1) . "&list=" . $list . $searchfilter . "\">=&gt;</a>\n");
+    echo ("<a href=\"listhosts.php?page=" . ($page + 1) . "&list=" . $list . $searchfilter . "\">=&gt;</a>\n");
   else
     echo ("=&gt;</td>");
 
-  echo ("<td class=\"userlist_activepage\" align=\"right\">");
+  echo ("<td class=\"hostnav_text\">");
+  echo "&nbsp;" . $count . " " .  _("Samba Host(s) found");
+  echo ("</td>");
+
+  echo ("<td class=\"hostlist_activepage\" align=\"right\">");
   for ($i = 0; $i < ($count / $max_pageentrys); $i++) {
     if ($i == $page - 1)
       echo ("&nbsp;" . ($i + 1));
     else
-      echo ("&nbsp;<a class=\"userlist\" href=\"listhosts.php?page=" . ($i + 1) .
+      echo ("&nbsp;<a href=\"listhosts.php?page=" . ($i + 1) .
 	    "&list=" . $list . "\">" . ($i + 1) . "</a>\n");
   }
   echo ("</td></tr></table>\n");
