@@ -58,10 +58,12 @@ background-color:#CCCCFF;
 }
 
 fieldset {
-color:darkgreen;
 background-color:#EEEEEE;
 }
 
+legend {
+color:darkgreen;
+}
 
 
 /**
