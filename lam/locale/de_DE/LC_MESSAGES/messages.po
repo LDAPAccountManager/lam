@@ -10,9 +10,9 @@ msgstr ""
 "Project-Id-Version: messages\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de \n"
 "POT-Creation-Date: 2004-01-14 17:45+0200\n"
-"PO-Revision-Date: 2004-10-25 13:26+0200\n"
+"PO-Revision-Date: 2004-10-25 20:35+0200\n"
 "Last-Translator: Roland Gruber <post@rolandgruber.de>\n"
-"Language-Team: Deutsch <lam-i18n@lists.sf.net>\n"
+"Language-Team: Deutsch <lam-i18n@lists.sourceforge.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -49,10 +49,6 @@ msgstr "%s Benutzer gefunden"
 #, fuzzy, php-format
 msgid "%sname:"
 msgstr "Benutzername"
-
-#: ../lib/modules/sambaAccount.inc:234
-msgid "."
-msgstr ""
 
 #: ../lib/modules/posixAccount.inc:196
 msgid "/home/smiller"
@@ -299,10 +295,10 @@ msgstr "hartes Block-Quota"
 #: ../lib/modules/quota.inc:31
 msgid ""
 "Block hard quota contains invalid characters. Only natural numbers are "
-"allowed"
+"allowed."
 msgstr ""
 "Hartes Block-Quota enthält ungültige Zeichen. Nur natürliche Zahlen sind "
-"erlaubt"
+"erlaubt."
 
 #: ../lib/modules/quota.inc:34
 msgid "Block quota"
@@ -315,14 +311,14 @@ msgstr "weiches Block-Quota"
 #: ../lib/modules/quota.inc:30
 msgid ""
 "Block soft quota contains invalid characters. Only natural numbers are "
-"allowed"
+"allowed."
 msgstr ""
 "Weiches Block-Quota enthält ungültige Zeichen. Nur natürliche Zahlen sind "
-"erlaubt"
+"erlaubt."
 
 #: ../lib/modules/quota.inc:34
-msgid "Block soft quota must be smaller than block hard quota"
-msgstr "Weiches Block-Quota muss kleiner sein als hartes Block-Quota"
+msgid "Block soft quota must be smaller than block hard quota."
+msgstr "Weiches Block-Quota muss kleiner sein als hartes Block-Quota."
 
 #: ../templates/pdfedit/pdfpage.php:524
 msgid "Bottom"
@@ -399,12 +395,12 @@ msgstr "Hauptpasswort ändern"
 msgid "Change password"
 msgstr "Passwort ändern"
 
-#: ../lib/baseModule.inc:527
+#: ../lib/baseModule.inc:524
 #, php-format
 msgid "Changed value %s because only numeric values are allowed."
 msgstr ""
 
-#: ../lib/baseModule.inc:544
+#: ../lib/baseModule.inc:541
 msgid "Changed value s because only US-ASCII allowed."
 msgstr ""
 
@@ -649,8 +645,8 @@ msgid "Deleted DN: %s"
 msgstr "Gelöschter DN: %s"
 
 #: ../templates/pdfedit/pdfdelete.php:59
-msgid "Deleted pdf structure:"
-msgstr "PDF-Struktur wurde gelöscht:"
+msgid "Deleted PDF structure:"
+msgstr "PDF-Struktur gelöscht:"
 
 #: ../templates/profedit/profiledelete.php:62
 msgid "Deleted profile:"
@@ -698,9 +694,8 @@ msgid "Do you really want to delete this OU?"
 msgstr "Soll diese OU gelöscht werden?"
 
 #: ../templates/pdfedit/pdfdelete.php:77
-#, fuzzy
-msgid "Do you really want to delete this pdf structure?"
-msgstr "Soll dieses Profil gelöscht werden?"
+msgid "Do you really want to delete this PDF structure?"
+msgstr "Soll diese PDF-Struktur gelöscht werden?"
 
 #: ../templates/profedit/profiledelete.php:81
 #: ../templates/profedit/profiledelete.php:93
@@ -1130,7 +1125,6 @@ msgstr ""
 "9, ., - und _!"
 
 #: ../lib/modules/posixGroup.inc:409
-#, fuzzy
 msgid "Groupname in use. Selected next free groupname."
 msgstr ""
 "Gruppenname wird bereits verwendet. Nächster freier Gruppenname wurde "
@@ -1408,21 +1402,17 @@ msgid "If checked unix password will also be used as samba password."
 msgstr "Falls aktiviert wird das Unix-Passwort auch als Samba-Passwort verwendet."
 
 #: ../lib/modules/posixGroup.inc:327 ../help/help.inc:143
-#, fuzzy
 msgid ""
 "If empty GID number will be generated automaticly depending on your "
 "configuration settings."
 msgstr ""
-"Falls leer wird die GID-Nummer automatisch generiert. Gültige Werte liegen "
-"zwischen %s und %s."
+"Falls leer wird die GID-Nummer automatisch auf Basis Ihrer "
+"Konfigurationseinstellungen generiert."
 
 #: ../lib/modules/posixAccount.inc:289 ../help/help.inc:129
 #: ../help/help.inc:149
-#, fuzzy
 msgid "If empty UID number will be generated automaticly."
-msgstr ""
-"Falls leer wird die UID-Nummer automatisch generiert. Gültige Werte liegen "
-"zwischen %s und %s."
+msgstr "Falls leer wird die UID-Nummer automatisch generiert."
 
 #: ../help/help.inc:171
 msgid ""
@@ -1466,10 +1456,10 @@ msgstr "hartes Inode-Quota"
 #: ../lib/modules/quota.inc:33
 msgid ""
 "Inode hard quota contains invalid characters. Only natural numbers are "
-"allowed"
+"allowed."
 msgstr ""
 "Hartes Inode-Limit enthält ungültige Zeichen. Nur natürliche Zahlen sind "
-"erlaubt"
+"erlaubt."
 
 #: ../lib/modules/quota.inc:35
 msgid "Inode quota"
@@ -1482,14 +1472,14 @@ msgstr "weiches Inode-Quota"
 #: ../lib/modules/quota.inc:32
 msgid ""
 "Inode soft quota contains invalid characters. Only natural numbers are "
-"allowed"
+"allowed."
 msgstr ""
 "Weiches Inode-Limit enthält ungültige Zeichen. Nur natürliche Zahlen sind "
-"erlaubt"
+"erlaubt."
 
 #: ../lib/modules/quota.inc:35
-msgid "Inode soft quota must be smaller than inode hard quota"
-msgstr ""
+msgid "Inode soft quota must be smaller than inode hard quota."
+msgstr "Das weiche Inode-Quota muss kleiner sein als das harte Inode-Quota."
 
 #: ../lib/modules/sambaAccount.inc:40 ../lib/modules/sambaSamAccount.inc:40
 msgid "Inserted user- or groupname in HomePath."
@@ -2013,9 +2003,8 @@ msgid "No changes were made."
 msgstr "Keine Änderungen vorgenommen."
 
 #: ../templates/config/conflogin.php:93
-#, fuzzy
 msgid "No configuration profiles found. Please create one."
-msgstr "Keine Domänen gefunden, bitte erstellen Sie eine."
+msgstr "Keine Konfigurationsprofile gefunden, bitte erstellen Sie eines."
 
 #: ../lib/modules/posixGroup.inc:402 ../lib/modules/posixAccount.inc:67
 msgid "No free ID-Number!"
@@ -2129,12 +2118,11 @@ msgstr "PDF-Editor"
 #: ../templates/lists/listhosts.php:296 ../templates/lists/listgroups.php:311
 #: ../templates/lists/listusers.php:359 ../templates/pdfedit/pdfpage.php:573
 msgid "PDF structure"
-msgstr ""
+msgstr "PDF-Struktur"
 
 #: ../templates/pdfedit/pdfmain.php:101
-#, fuzzy
 msgid "PDF structures"
-msgstr "PDF-Einstellungen"
+msgstr "PDF-Strukturen"
 
 #: ../templates/pdfedit/pdfpage.php:61
 msgid "PDF-structure name not valid"
@@ -2187,14 +2175,12 @@ msgid "Password hash type"
 msgstr "Passwort-Hash"
 
 #: ../lib/modules/posixAccount.inc:157
-#, fuzzy
 msgid "Password hash type for Unix accounts"
-msgstr "Passwort-Hash"
+msgstr "Passwort-Hashtyp für Unix-Accounts"
 
 #: ../lib/modules/posixGroup.inc:257
-#, fuzzy
 msgid "Password hash type for Unix groups"
-msgstr "Passwort-Hash"
+msgstr "Passwort-Hashtyp für Unix-Gruppen"
 
 #: ../lib/modules/shadowAccount.inc:40 ../lib/modules/shadowAccount.inc:43
 msgid "Password maxage"
@@ -2294,7 +2280,6 @@ msgid "Please enter a valid telephone number!"
 msgstr "Bitte geben Sie eine gültige Telefonnummer ein!"
 
 #: ../lib/modules/inetOrgPerson.inc:70 ../lib/modules/inetOrgPerson.inc:71
-#, fuzzy
 msgid "Please enter a valid title!"
 msgstr "Bitte geben Sie eine gültige Berufsbezeichnung ein!"
 
@@ -2380,7 +2365,9 @@ msgstr ""
 
 #: ../templates/config/profmanage.php:148
 msgid "Please set up your master configuration file (config/config.cfg) first!"
-msgstr "Bitte konfigurieren Sie zuerst die Haupteinstellungsdatei (config/config.cfg)!"
+msgstr ""
+"Bitte konfigurieren Sie zuerst die Haupteinstellungsdatei (config/config."
+"cfg)!"
 
 #: ../templates/pdfedit/pdfpage.php:708
 msgid "Position"
@@ -2789,18 +2776,14 @@ msgstr "Weiches Inode-Limit (Dateien)."
 msgid "Soft inode limit"
 msgstr "weiches Inode-Limit"
 
-#: ../templates/help.php:89
-msgid "Sorry no help number submitted."
-msgstr ""
-
-#: ../templates/help.php:106
+#: ../templates/help.php:96
 #, fuzzy, php-format
 msgid ""
 "Sorry this help id ({bold}%s{endbold}) is not available for this module "
 "({bold}%s{endbold})."
 msgstr "Diese Hilfenummer ist leider nicht verfügbar: {bold}%d{endbold}"
 
-#: ../templates/help.php:119
+#: ../templates/help.php:109
 #, php-format
 msgid "Sorry this help number ({bold}%d{endbold}) is not available."
 msgstr "Diese Hilfenummer ist leider nicht verfügbar: {bold}%d{endbold}"
@@ -2914,9 +2897,13 @@ msgstr "Die Domänen-SID des Samba-Servers. Auszulesen mit \"net getlocalsid\"."
 #: ../lib/modules/posixAccount.inc:63
 msgid ""
 "The UID ranges for users and hosts overlap! This is a problem because LAM "
-"uses the highest UID in use + 1. Please set the minimum UID to equal values "
-"or use independent ranges."
+"uses the highest UID in use + 1 for new accounts. Please set the minimum UID "
+"to equal values or use independent ranges."
 msgstr ""
+"Die UID-Bereiche für Benutzer und Hosts überlappen! Dies ist ein Problem "
+"weil LAM die größte verwendete UID + 1 für neue Accounts verwendet. Bitte "
+"setzen Sie die minimalen UID-Nummern auf den selben Wert oder verwenden Sie "
+"unabhängige Bereiche."
 
 #: ../help/help.inc:253
 msgid "The domain entry will be saved under this suffix."
@@ -3014,7 +3001,7 @@ msgstr ""
 
 #: ../lib/modules/posixAccount.inc:85
 msgid "This GID number is invalid! Please provide either a number or a group name."
-msgstr ""
+msgstr "Diese GID-Nummer ist ungültig! Bitte geben Sie eine Nummer ein oder einen Gruppennamen."
 
 #: ../templates/domain.php:247
 msgid "This Samba 3 domain is already present!"
@@ -3062,7 +3049,7 @@ msgstr ""
 msgid ""
 "This is an example how it would look in your spreadsheet program before you "
 "convert to CSV:"
-msgstr ""
+msgstr "Dies ist ein Beispiel wie es in Ihrem Tabellenkalkulationsprogramm aussehen würde bevor Sie nach CSV konvertieren:"
 
 #: ../lib/modules/sambaGroupMapping.inc:339
 msgid "This is not a valid Samba 3 group type!"
@@ -3078,14 +3065,14 @@ msgstr ""
 
 #: ../lib/modules/sambaGroupMapping.inc:267
 msgid "This is the group name which will be shown in Windows."
-msgstr ""
+msgstr "Das ist der Gruppenname, der in Windows angezeigt wird."
 
 #: ../help/help.inc:118
 msgid ""
 "This is the identifier for the relative DN value. It must be one of the "
 "given allowed LDAP attributes (e.g. user accounts usually use \"uid\" while "
 "groups use \"cn\")."
-msgstr ""
+msgstr "Das ist der Bezeichner für den relativen DN-Wert. Er muss eines der erlaubten LDAP-Attribute sein (z.B. verwenden Benutzeraccounts gewöhnlich \"uid\" und Gruppen \"cn\")."
 
 #: ../help/help.inc:57
 msgid ""
@@ -3237,13 +3224,15 @@ msgstr "Benutzer ID"
 
 #: ../lib/modules/posixAccount.inc:75
 msgid "UID has changed. Do you want to change home directory?"
-msgstr ""
+msgstr "UID-Nummer wurde geändert. Soll das Heimatverzeichnis angepasst werden?"
 
 #: ../lib/modules/posixAccount.inc:70
 msgid ""
 "UID must be a number. It has to be inside the UID range which is defined in "
 "your configuration profile."
-msgstr "UID muss eine Zahl sein. Sie muss sich innerhalb des Bereiches befinden der in Ihrem Konfigurationsprofil festgelegt ist."
+msgstr ""
+"UID muss eine Zahl sein. Sie muss sich innerhalb des Bereiches befinden der "
+"in Ihrem Konfigurationsprofil festgelegt ist."
 
 #: ../lib/modules/posixAccount.inc:46 ../lib/modules/posixAccount.inc:175
 #: ../lib/modules/posixAccount.inc:242 ../lib/modules/posixAccount.inc:276
@@ -3255,13 +3244,13 @@ msgid "UID number"
 msgstr "UID Nummer"
 
 #: ../lib/modules/posixAccount.inc:46
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "UID number has changed. To keep file ownership you have to run the following "
 "command as root: 'find / -uid %s -exec chown %s {} \\;'"
 msgstr ""
 "Die UID-Nummer hat sich geändert. Sie müssen folgenden Befehl als root "
-"ausführen um die existierenden Dateirechte zu ändern:"
+"ausführen um die existierenden Dateirechte zu ändern: 'find / -uid %s -exec chown %s {} \\;'"
 
 #: ../lib/modules/posixAccount.inc:63 ../lib/modules/posixAccount.inc:151
 msgid "UID ranges for Unix accounts"
@@ -3290,13 +3279,13 @@ msgstr "Kann das Profil nicht erstellen!"
 msgid "Unable to delete OU!"
 msgstr "Kann OU nicht löschen!"
 
+#: ../templates/pdfedit/pdfdelete.php:56
+msgid "Unable to delete PDF structure!"
+msgstr "Kann die PDF-Struktur nicht löschen!"
+
 #: ../templates/domain.php:314
 msgid "Unable to delete domain!"
 msgstr "Kann Domäne nicht löschen!"
-
-#: ../templates/pdfedit/pdfdelete.php:56
-msgid "Unable to delete pdf structure!"
-msgstr "Kann die PDF-Struktur nicht löschen!"
 
 #: ../templates/config/profmanage.php:108
 #: ../templates/profedit/profiledelete.php:60
@@ -3305,7 +3294,7 @@ msgstr "Kann das Profil nicht löschen!"
 
 #: ../lib/modules/posixAccount.inc:1221
 msgid "Unable to find group in LDAP."
-msgstr ""
+msgstr "Kann Gruppe nicht im LDAP-Baum finden."
 
 #: ../templates/login.php:100 ../templates/config/confmain.php:355
 msgid ""
@@ -3657,7 +3646,9 @@ msgstr "Falscher Profilname angegeben."
 msgid ""
 "You are using a capital letters. This can cause problems because windows "
 "isn't case-sensitive."
-msgstr "Sie verwenden Großbuchstaben, das kann Probleme verursachen, da Windows Groß-/Kleinschreibung nicht unterscheidet."
+msgstr ""
+"Sie verwenden Großbuchstaben, das kann Probleme verursachen, da Windows "
+"Groß-/Kleinschreibung nicht unterscheidet."
 
 #: ../help/help.inc:169
 msgid ""
@@ -3791,4 +3782,7 @@ msgstr "benutzer@firma.de"
 #: ../lib/modules/posixAccount.inc:183
 msgid "users"
 msgstr "Benutzer"
+
+#~ msgid "Deleted pdf structure:"
+#~ msgstr "PDF-Struktur wurde gelöscht:"
 

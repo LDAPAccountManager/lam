@@ -53,10 +53,10 @@ echo ("</head>\n<body>\n<p><br></p>\n");
 if ($_POST['submit']) {
 	// delete user profile
 	if(!deletePDFStructureDefinition($_POST['type'],$_POST['delete'])) {
-		StatusMessage('ERROR', '', _('Unable to delete pdf structure!') . ' ' . _('Scope') . ': ' . $_POST['type'] . ' ' . _('Name') . ': ' . substr($_POST['delete'],0,strlen($_POST['delete']) - 4));
+		StatusMessage('ERROR', '', _('Unable to delete PDF structure!') . ' ' . _('Scope') . ': ' . $_POST['type'] . ' ' . _('Name') . ': ' . substr($_POST['delete'],0,strlen($_POST['delete']) - 4));
 	}
 	else {
-		StatusMessage('INFO', '', _('Deleted pdf structure:') . ' ' . _('Scope') . ': ' . $_POST['type'] . ' ' . _('Name') . ': ' . substr($_POST['delete'],0,strlen($_POST['delete']) - 4));
+		StatusMessage('INFO', '', _('Deleted PDF structure:') . ' ' . _('Scope') . ': ' . $_POST['type'] . ' ' . _('Name') . ': ' . substr($_POST['delete'],0,strlen($_POST['delete']) - 4));
 	}
 	echo ("<br><a href=\"pdfmain.php\">" . _("Back to PDF Editor") . "</a>");
 	echo ("</body></html>\n");
@@ -74,7 +74,7 @@ if ($_POST['abort']) {
 // check if right type was given
 $type = $_GET['type'];
 if (($type == "user") || ($type == "host") || ($type == "group")) {
-	echo ("<p align=\"center\"><big>" . _("Do you really want to delete this pdf structure?") . " <b>");
+	echo ("<p align=\"center\"><big>" . _("Do you really want to delete this PDF structure?") . " <b>");
 		echo (_('Scope') . ': ' . $_GET['type'] . ' ' . _('Name') . ': ' . substr($_GET['delete'],0,strlen($_GET['delete']) - 4) . "</b></big><br></p>\n");
 	echo ("<form action=\"pdfdelete.php\" method=\"post\">\n");
 	echo ("<p align=\"center\">\n");
