@@ -107,8 +107,8 @@ $helpArray = array (
 				"214" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard - Samba domain SID"),
 					"Text" => _("If you use the new Samba 3.x schema enter your domain SID here.").
 						"<br><br>".
-						_("You can get your domain SID with this command: ").
-					"<b>\"net getlocalsid\"</b>"),
+						_("You can get your domain SID with this command:").
+					"<b> \"net getlocalsid\"</b>"),
 				// 300 - 399
 				// Roland Gruber
 				// profile editor

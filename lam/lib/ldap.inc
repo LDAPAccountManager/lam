@@ -60,7 +60,7 @@ class Ldap{
 		"homeDirectory" => _("Home Directory"),
 		"loginShell" => _("Login Shell"),
 		"mail" => _("E-Mail"),
-		"gecos" => _("description")
+		"gecos" => _("Description")
 		);
 	$this->ldapGroupAttributes = array (
 		"cn" => _("Group Name"),

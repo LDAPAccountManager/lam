@@ -431,7 +431,7 @@ class Config {
   function printconf() {
     echo "<b>" . _("Server Address") . ": </b>" . $this->ServerURL . "<br>";
     echo "<b>" . _("Samba 3.x schema") . ": </b>" . $this->samba3 . "<br>";
-    echo "<b>" . _("Domain SID (Samba 3 only)") . ": </b>" . $this->domainSID . "<br>";
+    echo "<b>" . _("Domain SID") . ": </b>" . $this->domainSID . "<br>";
     echo "<b>" . _("UserSuffix") . ": </b>" . $this->Suff_users . "<br>";
     echo "<b>" . _("GroupSuffix") . ": </b>" . $this->Suff_groups . "<br>";
     echo "<b>" . _("HostSuffix") . ": </b>" . $this->Suff_hosts . "<br>";

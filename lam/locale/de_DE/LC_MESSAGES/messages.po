@@ -1,4 +1,4 @@
-# $Id: messages.po,v 1.1 2003/05/02 11:37:25 dechutes Exp $
+# $Id: messages.po,v 1.2 2003/07/29 20:46:45 gruberroland Exp $
 #
 #
 # LDAP Account Manager
@@ -128,7 +128,7 @@ msgstr ""
 
 #: ../lib/ldap.inc:57
 msgid "Allowed Hosts"
-msgstr "Zugriffsberechtigte Hosts"
+msgstr "Erlaubte PCs"
 
 #: ../templates/lists/listgroups.php:173 ../templates/lists/listhosts.php:179
 #: ../templates/lists/listusers.php:195
@@ -835,7 +835,7 @@ msgstr "Gruppen Beschreibung"
 
 #: ../lib/ldap.inc:69
 msgid "Group Member DNs"
-msgstr "Gruppenmitglieder DNS"
+msgstr "DNs der Gruppenmitglieder"
 
 #: ../lib/ldap.inc:68
 msgid "Group Members"
@@ -843,7 +843,7 @@ msgstr "Gruppenmitglieder"
 
 #: ../lib/ldap.inc:66
 msgid "Group Name"
-msgstr "Gruppen Name"
+msgstr "Gruppenname"
 
 #: ../help/help.inc:203
 msgid "Group descriptopn. If left empty groupname will be used."
@@ -859,7 +859,7 @@ msgstr ""
 
 #: ../templates/config/confmain.php:137 ../lib/config.inc:436
 msgid "GroupSuffix"
-msgstr "GruppenSuffix"
+msgstr "Gruppensuffix"
 
 #: ../help/help.inc:196 ../lib/account.inc:218 ../lib/account.inc:245
 msgid "Groupname"
@@ -1048,7 +1048,7 @@ msgstr "Host Beschreibung"
 
 #: ../lib/ldap.inc:74
 msgid "Host Name"
-msgstr "Host Name"
+msgstr "Hostname"
 
 #: ../lib/ldap.inc:73
 msgid "Host Username"
@@ -1813,7 +1813,7 @@ msgstr ""
 
 #: ../templates/config/conflogin.php:83
 msgid "Please enter password to change preferences:"
-msgstr "Passwort um die Einstellungen zu ändern:"
+msgstr "Bitte Konfigurationspasswort eingeben:"
 
 #: ../help/help.inc:39
 msgid ""
@@ -2808,7 +2808,7 @@ msgstr ""
 
 #: ../lib/ldap.inc:63
 msgid "description"
-msgstr "Beschreibung:"
+msgstr "Beschreibung"
 
 #: ../templates/account.php:1014 ../templates/massdetail.php:171
 #: ../help/help.inc:298 ../help/help.inc:299

@@ -154,7 +154,7 @@ if (!$grplstattr || !eregi("^((#[a-z]*)|([a-z]*:[a-z*]))(;((#[a-z]*)|([a-z]*:[a-
 	exit;
 }
 if (!$hstlstattr || !eregi("^((#[a-z]*)|([a-z]*:[a-z*]))(;((#[a-z]*)|([a-z]*:[a-z]*)))*$", $hstlstattr)) {
-	echo ("<font color=\"red\"><b>" . _("Host list attributes are invalidUser list attributes are invalid!") . "</b></font>");
+	echo ("<font color=\"red\"><b>" . _("Host list attributes are invalid!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }

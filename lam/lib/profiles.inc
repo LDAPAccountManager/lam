@@ -175,11 +175,11 @@ function loadUserProfile($profile) {
 			fclose($file);
 		}
 		else {
-			StatusMessage("ERROR", "", _("Unable to load profile! ") . $file);
+			StatusMessage("ERROR", "", _("Unable to load profile!") . " " . $file);
 		}
 	}
 	else {
-		StatusMessage("ERROR", "", _("Unable to load profile! ") . $file);
+		StatusMessage("ERROR", "", _("Unable to load profile!") . " " . $file);
 	}
 	return $acc;
 }
@@ -215,11 +215,11 @@ function loadHostProfile($profile) {
 			fclose($file);
 		}
 		else {
-			StatusMessage("ERROR", "", _("Unable to load profile! ") . $file);
+			StatusMessage("ERROR", "", _("Unable to load profile!") . " " . $file);
 		}
 	}
 	else {
-		StatusMessage("ERROR", "", _("Unable to load profile! ") . $file);
+		StatusMessage("ERROR", "", _("Unable to load profile!") . " " . $file);
 	}
 	return $acc;
 }
