@@ -36,7 +36,8 @@ if($action == "checklogin")
 	$result = $ldap->connect($username,$passwd);
 	if($result == True)
 	{
-		session_register($ldap->server);
+		session_register($ldap);
+		session_register($config);
 		include("./main.php"); // Username/password correct. Loading main Frame.
 	}
 	else
