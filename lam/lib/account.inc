@@ -178,8 +178,7 @@ function getquotas($type,$user='+') { // Whis function will return the quotas fr
 	$towrite = $ldap_q[0].' '.$ldap_q[1].' '.$user.' quota get ';
 	if ($type=='user') $towrite = $towrite.'u';
 	 else $towrite = $towrite.'g';
-	//exec("/usr/bin/ssh ".$_SESSION['config']->scriptServer." sudo ".$_SESSION['config']->scriptPath." $towrite", $vals);
-	exec("perl ".$_SESSION['config']->scriptPath." $towrite", $vals, $status);
+	exec("perl ../../lib/lamdaemon.pl ".$_SESSION['config']->scriptServer ." ".$_SESSION['config']->scriptPath." ".$towrite, $vals, $status);
 	$vals = explode(':', $vals[0]);
 	for ($i=0; $i<sizeof($vals); $i++) {
 		$vals2 = explode(',', $vals[$i]);
@@ -211,7 +210,7 @@ function setquotas($values,$type,$values_old=false) { // Whis function will set 
 			}
 		$i++;
 		}
-	if ($i!=0) exec($_SESSION['config']->scriptPath." $towrite", $vals);
+	if ($i!=0) exec("perl ../../lib/lamdaemon.pl ".$_SESSION['config']->scriptServer ." ".$_SESSION['config']->scriptPath." ".$towrite, $vals);
 	}
 
 function remquotas($user, $type) { // Whis function will remove the quotas from the specified user.
@@ -221,7 +220,7 @@ function remquotas($user, $type) { // Whis function will remove the quotas from 
 	$towrite = $ldap_q[0].' '.$ldap_q[1].' '.$user.' quota set ';
 	if ($type=='user') $towrite = $towrite.'u ';
 	 else $towrite = $towrite.'g ';
-	exec($_SESSION['config']->scriptPath." $towrite", $vals);
+	exec("perl ../../lib/lamdaemon.pl ".$_SESSION['config']->scriptServer ." ".$_SESSION['config']->scriptPath." ".$towrite, $vals);
 	}
 
 
@@ -230,7 +229,7 @@ function addhomedir($user) { // Create Homedirectory
 	// all other needed vars are taken from remotesystem getusrnam
 	$ldap_q = $_SESSION['ldap']->decrypt();
 	$towrite = $ldap_q[0].' '.$ldap_q[1].' '.$user.' home add';
-	exec($_SESSION['config']->scriptPath." $towrite", $vals);
+	exec("perl ../../lib/lamdaemon.pl ".$_SESSION['config']->scriptServer ." ".$_SESSION['config']->scriptPath." ".$towrite, $vals);
 	}
 
 function remhomedir($user) { // Remove Homedirectory
@@ -238,7 +237,7 @@ function remhomedir($user) { // Remove Homedirectory
 	// all other needed vars are taken from remotesystem getusrnam
 	$ldap_q = $_SESSION['ldap']->decrypt();
 	$towrite = $ldap_q[0].' '.$ldap_q[1].' '.$user.' home rem';
-	exec($_SESSION['config']->scriptPath." $towrite", $vals);
+	exec("perl ../../lib/lamdaemon.pl ".$_SESSION['config']->scriptServer ." ".$_SESSION['config']->scriptPath." ".$towrite, $vals);
 	}
 
 function ldapreload($type) { // This function will load an array th cache ldap-requests

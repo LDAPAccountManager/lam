@@ -21,18 +21,7 @@
 #
 #
 #  LDAP Account Manager daemon to create and delete homedirecotries and quotas
-######################################################
-# Configure-Options
-# change only variables starting from here
-
-$server_ssh="127.0.0.1"; # IP or DNS of host to create homedirs, quota, ....
-$server_ssh_ident = "/var/lib/wwwrun/.ssh/id_dsa"; # SSH-Key to use
-$path = "/srv/www/htdocs/lam/lib/lamdaemon.pl"; # path to ldap on remote-host
-
 $debug=true; # Show debug messages
-
-# Don't change anything below this line
-############################################################
 
 
 use Quota; # Needed to get and set quotas
@@ -192,14 +181,16 @@ if ($( == 0 ) {
 	print "$return\n";
 	}
 else {
+	$hostname = shift @ARGV;
+	$remotepath = shift @ARGV;
 	use Net::SSH::Perl;
-	@username = split (',', $vals[0]);
+	@username = split (',', $ARGV[0]);
 	$username[0] =~ s/uid=//;
-	my $ssh = Net::SSH::Perl->new($server_ssh, options=>[
-		"IdentityFile $server_ssh_ident",
+	my $ssh = Net::SSH::Perl->new($hostname, options=>[
+		"IdentityFile /var/lib/wwwrun/.ssh/id_dsa",
 		"UserKnownHostsFile /dev/null"
 		]);
-	$ssh->login($username[0], $vals[1]);
-	($stdout, $stderr, $exit) = $ssh->cmd("sudo $path @ARGV");
+	$ssh->login($username[0], $ARGV[1]);
+	($stdout, $stderr, $exit) = $ssh->cmd("sudo $remotepath @ARGV");
 	print "$stdout";
 	}

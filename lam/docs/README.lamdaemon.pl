@@ -8,14 +8,8 @@ thins to get it work.
     (e.g. 127.0.0.1)
    * Path to lamdaemon.pl, e.g. /srv/www/htdocs/lam/lib/lamdaemon.pl  
 
-2. Set up SSH
-   I don't know if this step is really needed but I had some
-   problems using Net::SSH without keys.
-   * Log in on remote host as $admin
-   * run "ssh-keygen -t dsa" to create all needed keys
-     if not yet done
 
-3. Set up sudo
+2. Set up sudo
    The perlskript has to run as root (very ugly I know but
    I haven't found any other solution). Therefor we need
    a wrapper, sudo.
@@ -31,8 +25,8 @@ thins to get it work.
    This can be done by adding the following line:
    Defaults:$admin !syslog
    
-4. Set up perl
-   We need some external perl-modules, Quota and Net::LDAP
+3. Set up perl
+   We need some external perl-modules, Quota and Net::SSH::Perl
    Th install them, run:
    perl -MCPAN -e shell
    install Quota
@@ -40,7 +34,7 @@ thins to get it work.
    Please answer all questions to describe your system
    Every additional needed module should be installed
    automaticly
-   LDAP isn't used in perl anymore 
+   LDAP isn't used by lamdaemon.pl anymore 
 
    I installed Math::Pari, a needed module, by hand.
    I had many problems to install Math::Pari, a module needed
@@ -55,9 +49,7 @@ thins to get it work.
    * run make
    * run make install
    
-5. Set up lamdaemon.pl
-   Make all needed changes in lamdaemon.pl
-      
+
 Now everything should work fine
 
 This is a very incomplete Documention for Alpha-Release only.
