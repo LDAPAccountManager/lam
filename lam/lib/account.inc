@@ -179,12 +179,12 @@ function checkglobal($values, $type, $values_old=false) { // This functions chec
 			if ( !ereg('^[/]([a-z]|[A-Z])([a-z]|[A-Z]|[0-9]|[.]|[-]|[_])*([/]([a-z]|[A-Z])([a-z]|[A-Z]|[0-9]|[.]|[-]|[_])*)*$', $return->general_homedir ))
 				$errors[] = array('ERROR', _('Home Directory'), _('Homedirectory contents invalid characters.'));
 			// Check if givenname is valid
-			if ( !ereg('^([a-z]|[A-Z]|[-]|[ ]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+$', $values->general_givenname)) $errors[] = array('ERROR', _('Given name'), _('Givenname contents invalid characters'));
+			if ( !ereg('^([a-z]|[A-Z]|[-]|[ ]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+$', $values->general_givenname)) $errors[] = array('ERROR', _('Given name'), _('Given name contents invalid characters'));
 			// Check if surname is valid
 			if ( !ereg('^([a-z]|[A-Z]|[-]|[ ]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+$', $values->general_surname)) $errors[] = array('ERROR', _('Surname'), _('Surname contents invalid characters'));
 			if ( ($values->general_gecos=='') || ($values->general_gecos==' ')) {
 				$return->general_gecos = replace_umlaut($values->general_givenname) . " " . replace_umlaut($values->general_surname) ;
-				$errors[] = array('INFO', _('Gecos'), _('Inserted sur- and givenname in gecos-field.'));
+				$errors[] = array('INFO', _('Gecos'), _('Inserted sur- and given name in gecos-field.'));
 				}
 			if ($values->general_group=='') $errors[] = array('ERROR', _('Primary group'), _('No primary group defined!'));
 			// Check if Username contents only valid characters
@@ -768,16 +768,16 @@ function loaduser($dn) { // Will load all needed values from an existing account
 		}
 	if (isset($attr['givenName'][0])) $return->general_givenname = utf8_decode($attr['givenName'][0]);
 	if (isset($attr['sn'][0])) $return->general_surname = utf8_decode($attr['sn'][0]);
-	if (isset($attr['title'][0])) $return->personal_title = $attr['title'][0];
-	if (isset($attr['mail'][0])) $return->personal_mail = $attr['mail'][0];
-	if (isset($attr['telephoneNumber'][0])) $return->personal_telephoneNumber = $attr['telephoneNumber'][0];
-	if (isset($attr['mobilemobileTelephoneNumber'][0])) $return->personal_mobileTelephoneNumber = $attr['mobilemobileTelephoneNumber'][0];
-		else 	if (isset($attr['mobile'][0])) $return->personal_mobileTelephoneNumber = $attr['mobile'][0];
-	if (isset($attr['facsimileTelephoneNumber'][0])) $return->personal_facsimileTelephoneNumber = $attr['facsimileTelephoneNumber'][0];
-	if (isset($attr['street'][0])) $return->personal_street = $attr['street'][0];
-	if (isset($attr['postalCode'][0])) $return->personal_postalCode = $attr['postalCode'][0];
-	if (isset($attr['postalAddress'][0])) $return->personal_postalAddress = $attr['postalAddress'][0];
-	if (isset($attr['employeeType'][0])) $return->personal_employeeType = $attr['employeeType'][0];
+	if (isset($attr['title'][0])) $return->personal_title = utf8_decode($attr['title'][0]);
+	if (isset($attr['mail'][0])) $return->personal_mail = utf8_decode($attr['mail'][0]);
+	if (isset($attr['telephoneNumber'][0])) $return->personal_telephoneNumber = utf8_decode($attr['telephoneNumber'][0]);
+	if (isset($attr['mobilemobileTelephoneNumber'][0])) $return->personal_mobileTelephoneNumber = utf8_decode($attr['mobilemobileTelephoneNumber'][0]);
+		else 	if (isset($attr['mobile'][0])) $return->personal_mobileTelephoneNumber = utf8_decode($attr['mobile'][0]);
+	if (isset($attr['facsimileTelephoneNumber'][0])) $return->personal_facsimileTelephoneNumber = utf8_decode($attr['facsimileTelephoneNumber'][0]);
+	if (isset($attr['street'][0])) $return->personal_street = utf8_decode($attr['street'][0]);
+	if (isset($attr['postalCode'][0])) $return->personal_postalCode = utf8_decode($attr['postalCode'][0]);
+	if (isset($attr['postalAddress'][0])) $return->personal_postalAddress = utf8_decode($attr['postalAddress'][0]);
+	if (isset($attr['employeeType'][0])) $return->personal_employeeType = utf8_decode($attr['employeeType'][0]);
 	if (substr(str_replace('{CRYPT}', '',$attr['userPassword'][0]),0,1) == '!' ) $return->unix_deactivated=true;
 	if (isset($attr['userPassword'][0])) $return->unix_password = $attr['userPassword'][0];
 	if ($_SESSION['config']->scriptServer) {
@@ -979,15 +979,15 @@ function createuser($values) { // Will create the LDAP-Account
 	$attr['uidNumber'] = $values->general_uidNumber; // posixAccount_req
 	$attr['gidNumber'] = getgid($values->general_group); // posixAccount_req
 	$attr['homeDirectory'] = $values->general_homedir; // posixAccount_req
-	if ($values->personal_title!='') $attr['title'] = $values->personal_title;
-	if ($values->personal_mail!='') $attr['mail'] = $values->personal_mail;
-	if ($values->personal_telephoneNumber!='') $attr['telephoneNumber'] = $values->personal_telephoneNumber;
-	if ($values->personal_mobileTelephoneNumber!='') $attr['mobilemobileTelephoneNumber'] = $values->personal_mobileTelephoneNumber;
-	if ($values->personal_facsimileTelephoneNumber!='') $attr['facsimileTelephoneNumber'] = $values->personal_facsimileTelephoneNumber;
-	if ($values->personal_street!='') $attr['street'] = $values->personal_street;
-	if ($values->personal_postalCode!='') $attr['postalCode'] = $values->personal_postalCode;
-	if ($values->personal_postalAddress!='') $attr['postalAddress'] = $values->personal_postalAddress;
-	if ($values->personal_employeeType!='') $attr['employeeType'] = $values->personal_employeeType;
+	if ($values->personal_title!='') $attr['title'] = utf8_encode($values->personal_title);
+	if ($values->personal_mail!='') $attr['mail'] = utf8_encode($values->personal_mail);
+	if ($values->personal_telephoneNumber!='') $attr['telephoneNumber'] = utf8_encode($values->personal_telephoneNumber);
+	if ($values->personal_mobileTelephoneNumber!='') $attr['mobilemobileTelephoneNumber'] = utf8_encode($values->personal_mobileTelephoneNumber);
+	if ($values->personal_facsimileTelephoneNumber!='') $attr['facsimileTelephoneNumber'] = utf8_encode($values->personal_facsimileTelephoneNumber);
+	if ($values->personal_street!='') $attr['street'] = utf8_encode($values->personal_street);
+	if ($values->personal_postalCode!='') $attr['postalCode'] = utf8_encode($values->personal_postalCode);
+	if ($values->personal_postalAddress!='') $attr['postalAddress'] = utf8_encode($values->personal_postalAddress);
+	if ($values->personal_employeeType!='') $attr['employeeType'] = utf8_encode($values->personal_employeeType);
 	// posixAccount_may shadowAccount_may
 	if ($values->unix_password_no) $values->unix_password = '';
 	if ($values->unix_deactivated) $attr['userPassword'] = '{CRYPT}!' . crypt($values->unix_password);
@@ -1211,41 +1211,41 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 	if (($date != $date_old) && $date) $attr['shadowExpire'] =  $date ; // shadowAccount_may
 	if (($date != $date_old) && !$date) $attr_rem['shadowExpire'] =  $date_old ; // shadowAccount_may
 	if (($values->personal_title != $values_old->personal_title) && ($values->personal_title != ''))
-		$attr['title'] = $values->personal_title;
+		$attr['title'] = utf8_encode($values->personal_title);
 	if (($values->personal_title != $values_old->personal_title) && ($values->personal_title == ''))
-		$attr_rem['title'] = $values_old->personal_title;
+		$attr_rem['title'] = utf8_encode($values_old->personal_title);
 	if (($values->personal_mail != $values_old->personal_mail) && ($values->personal_mail != ''))
-		$attr['mail'] = $values->personal_mail;
+		$attr['mail'] = utf8_encode($values->personal_mail);
 	if (($values->personal_mail != $values_old->personal_mail) && ($values->personal_mail == ''))
-		$attr_rem['mail'] = $values_old->personal_mail;
+		$attr_rem['mail'] = utf8_encode($values_old->personal_mail);
 	if (($values->personal_telephoneNumber != $values_old->personal_telephoneNumber) && ($values->personal_telephoneNumber !=''))
-		$attr['telephoneNumber'] = $values->personal_telephoneNumber;
+		$attr['telephoneNumber'] = utf8_encode($values->personal_telephoneNumber);
 	if (($values->personal_telephoneNumber != $values_old->personal_telephoneNumber) && ($values->personal_telephoneNumber ==''))
-		$attr_rem['telephoneNumber'] = $values_old->personal_telephoneNumber;
+		$attr_rem['telephoneNumber'] = utf8_encode($values_old->personal_telephoneNumber);
 	if (($values->personal_mobileTelephoneNumber != $values_old->personal_mobileTelephoneNumber) && ($values->personal_mobileTelephoneNumber!=''))
-		$attr['mobileTelephoneNumber'] = $values->personal_mobileTelephoneNumber;
+		$attr['mobileTelephoneNumber'] = utf8_encode($values->personal_mobileTelephoneNumber);
 	if (($values->personal_mobileTelephoneNumber != $values_old->personal_mobileTelephoneNumber) && ($values->personal_mobileTelephoneNumber==''))
-		$attr_rem['mobilemobileTelephoneNumber'] = $values_old->personal_mobileTelephoneNumber;
+		$attr_rem['mobilemobileTelephoneNumber'] = utf8_encode($values_old->personal_mobileTelephoneNumber);
 	if (($values->personal_facsimileTelephoneNumber != $values_old->personal_facsimileTelephoneNumber) && ($values->personal_facsimileTelephoneNumber!=''))
-		$attr['facsimileTelephoneNumber'] = $values->personal_facsimileTelephoneNumber;
+		$attr['facsimileTelephoneNumber'] = utf8_encode($values->personal_facsimileTelephoneNumber);
 	if (($values->personal_facsimileTelephoneNumber != $values_old->personal_facsimileTelephoneNumber) && ($values->personal_facsimileTelephoneNumber==''))
-		$attr_rem['facsimileTelephoneNumber'] = $values_old->personal_facsimileTelephoneNumber;
+		$attr_rem['facsimileTelephoneNumber'] = utf8_encode($values_old->personal_facsimileTelephoneNumber);
 	if (($values->personal_street != $values_old->personal_street) && ($values->personal_street!=''))
-		$attr['street'] = $values->personal_street;
+		$attr['street'] = utf8_encode($values->personal_street);
 	if (($values->personal_street != $values_old->personal_street) && ($values->personal_street==''))
-		$attr_rem['street'] = $values_old->personal_street;
+		$attr_rem['street'] = utf8_encode($values_old->personal_street);
 	if (($values->personal_street != $values_old->personal_street) && ($values->personal_street!=''))
-		$attr['postalCode'] = $values->personal_street;
+		$attr['postalCode'] = utf8_encode($values->personal_street);
 	if (($values->personal_street != $values_old->personal_street) && ($values->personal_street==''))
-		$attr_rem['postalCode'] = $values_old->personal_street;
+		$attr_rem['postalCode'] = utf8_encode($values_old->personal_street);
 	if (($values->personal_postalAddress != $values_old->personal_postalAddress) && ($values->personal_postalAddress!=''))
-		$attr['postalAddress'] = $values->personal_postalAddress;
+		$attr['postalAddress'] = utf8_encode($values->personal_postalAddress);
 	if (($values->personal_postalAddress != $values_old->personal_postalAddress) && ($values->personal_postalAddress==''))
-		$attr_rem['postalAddress'] = $values_old->personal_postalAddress;
+		$attr_rem['postalAddress'] = utf8_encode($values_old->personal_postalAddress);
 	if (($values->personal_employeeType != $values_old->personal_employeeType) && ($values->personal_employeeType!=''))
-		$attr['employeeType'] = $values->personal_employeeType;
+		$attr['employeeType'] = utf8_encode($values->personal_employeeType);
 	if (($values->personal_employeeType != $values_old->personal_employeeType) && ($values->personal_employeeType==''))
-		$attr_rem['employeeType'] = $values_old->personal_employeeType;
+		$attr_rem['employeeType'] = utf8_encode($values_old->personal_employeeType);
 	if (($values->unix_pwdexpire_day = $date['mday']!=$values_old->unix_pwdexpire_day = $date['mday']) ||
 		($values->unix_pwdexpire_mon = $date['mon'] != $values_old->unix_pwdexpire_mon = $date['mon']) ||
 		($values->unix_pwdexpire_yea = $date['year'] != $values->unix_pwdexpire_yea = $date['year']))
