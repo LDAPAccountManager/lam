@@ -5,10 +5,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: LAM 0.4.5\n"
+"Project-Id-Version: LAM 0.4.6\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de \n"
 "POT-Creation-Date: 2004-01-14 17:45+0200\n"
-"PO-Revision-Date: 2004-03-16 11:38+0900\n"
+"PO-Revision-Date: 2004-05-25 17:48+0900\n"
 "Last-Translator: Oota toshiya <ribbon@sourceforge.net>\n"
 "Language-Team: Japanese <ribbon@sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -16,11 +16,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8-bit\n"
 
 #: ../help/help.inc:147
-#, fuzzy, php-format
 msgid "$%s and $%s are replaced with username or primary groupname."
 msgstr ""
-"ホームディレクトリのUNCパス (\\\\サーバ\\共有)。$%s と $%s はユーザ名とグルー"
-"プ名に変換される。"
+"ホームディレクトリのUNCパス (\\\\サーバ\\共有)。$%s と $%s はユーザ名と"
+"プライマリグループ名に変換される。"
 
 #: ../lib/account.inc:722 ../lib/account.inc:727
 #, php-format
@@ -30,7 +29,7 @@ msgstr "%s はすでに存在する!"
 #: ../templates/confwiz/ldaptest.php:345 ../templates/confwiz/ldaptest.php:353
 #: ../templates/confwiz/ldaptest.php:361
 msgid "(optional)"
-msgstr "(optional)"
+msgstr "(オプション)"
 
 #: ../templates/ou_edit.php:95 ../templates/ou_edit.php:160
 #: ../templates/ou_edit.php:225 ../templates/ou_edit.php:290
@@ -1233,7 +1232,6 @@ msgstr ""
 "sambaAccountは更新される."
 
 #: ../templates/account/useredit.php:590
-#, fuzzy
 msgid ""
 "Have to add objectClass sambaSamAccount. User with sambaAccount will be "
 "updated."
@@ -3030,7 +3028,7 @@ msgstr "セキュリティ設定"
 #: ../templates/lists/listgroups.php:161 ../templates/lists/listhosts.php:165
 #: ../templates/lists/listusers.php:203
 msgid "See README.openldap.txt to solve this problem."
-msgstr ""
+msgstr "この問題を解決するためにREADME.openldapを参照のこと"
 
 #: ../templates/help.php:90
 msgid "See also"
