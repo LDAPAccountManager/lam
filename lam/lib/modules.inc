@@ -467,6 +467,7 @@ function buildUploadAccounts($scope, $data, $ids) {
 		$module = new $ordered[$i]($scope);
 		$errors = $module->build_uploadAccounts($data, $ids, $partialAccounts);
 		if (sizeof($errors) > 0) {
+			array_unshift($errors, array("INFO", _("Displayed account numbers start at \"0\". Add 2 to get the row in your spreadsheet."), ""));
 			$errors[] = array("ERROR", _("Upload was stopped after errors in %s module!"), "", array($module->get_alias()));
 			break;
 		}
