@@ -38,12 +38,42 @@ class Ldap{
   // LDAP username and password used for bind
   var $username;
   var $password;
-  
+
+  // Arrays that contain LDAP attributes and their descriptions which are translated
+  var $ldapUserAttributes;
+  var $ldapGroupAttributes;
+  var $ldapHostAttributes;
+
   // constructor
   // $config has to be an object of Config (../config/config.php)
   function Ldap($config) {
     if (is_object($config)) $this->conf = $config;
     else { echo _("Ldap->Ldap failed!"); exit;}
+	// construct arrays with known LDAP attributes
+	$this->ldapUserAttributes = array (
+		"uid" => _("User ID"),
+		"uidNumber" => _("UID Number"),
+		"gidNumber" => _("GID Number"),
+		"cn" => _("User Name"),
+		"host" => _("Allowed Hosts"),
+		"givenName" => _("First Name"),
+		"sn" => _("Last Name"),
+		"homeDirectory" => _("Home Directory"),
+		"loginShell" => _("Login Shell"),
+		"mail" => _("E-Mail"),
+		"gecos" => _("description")
+		);
+	$this->ldapGroupAttributes = array (
+		"cn" => _("Group Name"),
+		"gidNumber" => _("GID Number"),
+		"memberUID" => _("Group Members"),
+		"member" => _("Group Member DNs")
+		);
+	$this->ldapHostAttributes = array (
+		"UID" => _("Host Username"),
+		"cn" => _("Host Name"),
+		"rid" => _("Windows UID")
+		);
   }
 
   // returns an array of strings with the DN entries of all users
@@ -170,6 +200,21 @@ class Ldap{
   	$this->close();
 	$this->username="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
 	$this->password="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
+  }
+
+  // returns an array that contains LDAP attribute names and their description
+  function attributeUserArray() {
+  	return $this->ldapUserAttributes;
+  }
+
+  // returns an array that contains LDAP attribute names and their description
+  function attributeGroupArray() {
+  	return $this->ldapGroupAttributes;
+  }
+
+  // returns an array that contains LDAP attribute names and their description
+  function attributeHostArray() {
+  	return $this->ldapHostAttributes;
   }
 
 }
