@@ -63,6 +63,8 @@ class account { // This class keeps all needed values for any account
 	var $smb_flagsW;		// string (1|0) account is host? (user|host)
 	var $smb_flagsD;		// string (1|0) account is disabled? (user|host)
 	var $smb_flagsX;		// string (1|0) password doesn'T expire (user|host)
+	var $smb_mapgroup;		// decimal ID for groups
+	var $smb_displayName;		// GRoupname displayed by samba
 	// Quota Settins
 	var $quota;			// array[][] First array is an index for every chare with active quotas
 					// second array Contains values for every share:
@@ -356,6 +358,8 @@ function checksamba($values, $type) { // This function checks all samba account 
 		case 'host' :
 			$return->smb_password = $values->unix_password;
 			$return->smb_flagsW = 1;
+			break;
+		case 'group' :
 			break;
 		}
 	if ((!$values->smb_domain=='') && !ereg('^([a-z]|[A-Z]|[0-9]|[-])+$', $values->smb_domain))
@@ -818,7 +822,8 @@ function loadgroup($dn) { // Will load all needed values from an existing group
 		}
 	if ($attr['memberUid']) $return->general_memberUid = $attr['memberUid'];
 	if (is_array($return->general_memberUid)) array_shift($return->general_memberUid);
-	$return->general_dn = $dn;
+	if ($attr['sambaSID']) $return->smb_mapgroup = $attr['sambaSID'];
+	if ($attr['displayName']) $return->smb_displayName = $attr['displayName'];
 	if ($_SESSION['config']->scriptServer) {
 		$values = getquotas('group',$return->general_username);
 		if (is_object($values)) {
@@ -1510,11 +1515,17 @@ function creategroup($values) { // Will create the LDAP-Group
 		$values->smb_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($values->smb_password), MCRYPT_MODE_ECB, $iv);
 		$values->smb_password = str_replace(chr(00), '', $values->smb_password);
 		}
-	$attr['objectClass'] = 'posixGroup';
+	$attr['objectClass'][0] = 'posixGroup';
 	$attr['cn'] = $values->general_username;
 	$attr['gidNumber'] = $values->general_uidNumber;
 	$attr['description'] = $values->general_gecos;
 	if ($values->general_memeberUid) $attr['memberUid'] = $values->general_memberUid;
+	if ($_SESSION['config']->samba3 =='yes') {
+		$attr['objectClass'][1] = 'sambaGroupMapping';
+		$attr['sambaSID'] = $values->smb_mapgroup;
+		$attr['sambaGroupType'] = '2';
+		if ($values->smb_displayName) $attr['displayName'] = $values->smb_displayName;
+		}
 	$success = ldap_add($_SESSION['ldap']->server(),$values->general_dn, $attr);
 	if ($_SESSION['config']->scriptServer) setquotas($attr['uid'][0],'group');
 	if ($success) return 1;
@@ -1542,6 +1553,18 @@ function modifygroup($values,$values_old) { // Will modify the LDAP-Group
 	if ($values->general_uidNumber != $values_old->general_uidNumber) $attr['gidNumber'] = $values->general_uidNumber;
 	if ($values->general_gecos != $values_old->general_gecos) $attr['description'] = $values->general_gecos;
 	if ($values->general_memeberUid != $values_old->general_memberUid) $attr['memberUid'] = $values->general_memberUid;
+	if ($_SESSION['config']->samba3 =='yes') {
+		if ($values->smb_mapgroup != $values_old->smb_mapgroup)
+			$attr['sambaSID'] = $values->smb_mapgroup;
+		if (($values->smb_displayName!='') && ($values->smb_displayName!=$values_old->smb_displayName))
+			$attr['displayName'] = $values->smb_displayName;
+		if (($values->smb_displayName=='') && ($values->smb_displayName!=$values_old->smb_displayName))
+			$attr_rem['displayName'] = $values->smb_displayName;
+		}
+	if ($attr_rem) {
+		$success = ldap_mod_del($_SESSION['ldap']->server(),$values_old->general_dn, $attr_rem);
+		if (!$success) return 5;
+		}
 	if ($attr) {
 		$success = ldap_mod_replace($_SESSION['ldap']->server(),$values->general_dn, $attr);
 		if (!$success) return 5;

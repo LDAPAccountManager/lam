@@ -72,7 +72,8 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 			if ($_POST['next'] && ($errors==''))
 				switch ($_SESSION['type2']) {
 					case 'user': $select_local = 'unix'; break;
-					case 'group': $select_local = 'quota'; break;
+					case 'group': if ($_SESSION['config']->samba3=='yes') $select_local = 'samba';
+						else $select_local = 'quota'; break;
 					case 'host': $select_local = 'unix'; break;
 					}
 			}
@@ -157,6 +158,11 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 			else $_SESSION['account']->smb_flagsD = false;
 		if ($_POST['f_smb_flagsX']) $_SESSION['account']->smb_flagsX = $_POST['f_smb_flagsX'];
 			else $_SESSION['account']->smb_flagsX = false;
+		if ($_POST['f_smb_mapgroup'] == _('Domain Guests')) $_SESSION['account']->smb_mapgroup = $_SESSION[config]->get_domainSID() . "-" . '514';
+		if ($_POST['f_smb_mapgroup'] == _('Domain Users')) $_SESSION['account']->smb_mapgroup = $_SESSION[config]->get_domainSID() . "-" . '513';
+		if ($_POST['f_smb_mapgroup'] == _('Domain Admins')) $_SESSION['account']->smb_mapgroup = $_SESSION[config]->get_domainSID() . "-" . '512';
+		if ($_POST['f_smb_domain']) $_SESSION['account']->smb_displayName = $_POST['f_smb_domain'];
+			else $_SESSION['account']->smb_displayName = '';
 		// Check if values are OK and set automatic values. if not error-variable will be set
 		list($values, $errors) = checksamba($_SESSION['account'], $_SESSION['type2']); // account.inc
 		if (is_object($values)) {
@@ -164,11 +170,16 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 				if ($val) $_SESSION['account']->$key = $val;
 			}
 		// Check which part Site should be displayed next
-		if ($_POST['back']) $select_local = 'unix';
+		if ($_POST['back'])
+			switch ($_SESSION['type2']) {
+				case 'user': $select_local = 'unix'; break;
+				case 'group': $select_local = 'general'; break;
+				}
 		else if ($_POST['next'])
 			if($errors=='')
 				switch ($_SESSION['type2']) {
 					case 'user': $select_local = 'quota'; break;
+					case 'group': $select_local = 'quota'; break;
 					case 'host': $select_local = 'final'; break;
 					}
 				else $select_local = 'samba';
@@ -193,7 +204,8 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 		if ($_POST['back'])
 			switch ($_SESSION['type2']) {
 				case 'user': $select_local = 'samba'; break;
-				case 'group': $select_local = 'general'; break;
+				case 'group': if ($_SESSION['config']->samba3=='yes') $select_local = 'samba';
+					else $select_local = 'general'; break;
 				}
 		else if ($_POST['next'])
 			if ($errors=='')
@@ -376,7 +388,6 @@ if ($select_local != 'pdf') {
 	if (is_array($errors))
 		for ($i=0; $i<sizeof($errors); $i++) StatusMessage($errors[$i][0], $errors[$i][1], $errors[$i][2]);
 	}
-
 
 switch ($select_local) { // Select which part of page will be loaded
 	// general = startpage, general account paramters
@@ -793,6 +804,47 @@ switch ($select_local) { // Select which part of page will be loaded
 				echo '</td>'."\n".'<td><input name="f_smb_domain" type="text" size="20" maxlength="20" value="' . $_SESSION['account']->smb_domain . '">
 					</td>'."\n".'<td>
 					<a href="help.php?HelpNumber=438" target="lamhelp">'._('Help').'</a>
+					</td></tr>'."\n";
+				break;
+			case 'group':
+				echo '<tr><td>';
+				echo _('Windows well known group');
+				echo '</td>'."\n".'<td><select name="f_smb_mapgroup" >';
+					if ( $_SESSION['account']->smb_mapgroup == $_SESSION[config]->get_domainSID() . "-" . '514' ) {
+						echo '<option selected> ';
+						echo _('Domain Guests');
+						echo "</option>\n"; }
+					 else {
+						echo '<option> ';
+						echo _('Domain Guests');
+						echo "</option>\n";
+						}
+					if ( $_SESSION['account']->smb_mapgroup == $_SESSION[config]->get_domainSID() . "-" . '513' ) {
+						echo '<option selected> ';
+						echo _('Domain Users');
+						echo "</option>\n"; }
+					 else {
+						echo '<option> ';
+						echo _('Domain Users');
+						echo "</option>\n";
+						}
+					if ( $_SESSION['account']->smb_mapgroup == $_SESSION[config]->get_domainSID() . "-" . '512' ) {
+						echo '<option selected> ';
+						echo _('Domain Admins');
+						echo "</option>\n"; }
+					 else {
+						echo '<option> ';
+						echo _('Domain Admins');
+						echo "</option>\n";
+						}
+				echo	'</select></td>'."\n".'<td>
+					<a href="help.php?HelpNumber=464" target="lamhelp">'._('Help').'</a>
+					</td></tr>'."\n".'<tr><td>';
+					echo _('Windows Groupname');
+					echo '</td><td>
+					<input name="f_smb_domain" type="text" size="30" maxlength="30" value="' . $_SESSION['account']->smb_displayName . '">
+					</td><td>
+					<a href="help.php?HelpNumber=465" target="lamhelp">'._('Help').'</a>
 					</td></tr>'."\n";
 				break;
 			case 'host':
