@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
-  Copyright (C) 2003  Roland Gruber
+  Copyright (C) 2003  Michael Dürgner
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -54,5 +54,39 @@ function loadPDFStructureDefinitions($scope='user', $definition='default.xml') {
 	}
 	$structure = array_slice($xml[0],$border['start'] + 1,$border['end'] - ($border['start'] + 1));
 	return $structure;
+}
+
+function savePDFStructureDefinitions($scope,$definition) {
+	$handle = fopen($_SESSION['lampath'] . 'config/pdf/' . $scope . '/' . $definition,'w');
+	$file = "<pdf type=\"" . $scope . "\">\n";
+	foreach($_SESSION['currentPDFStructure'] as $entry) {
+		$ident = '';
+		for($i=0;$i<$entry['level'] -1;$i++) {
+			$ident .= "\t";
+		}
+		$attributes = '';
+		if(is_array($entry['attributes'])) {
+			foreach($entry['attributes'] as $key => $value) {
+				$attributes .= ' ' . strtolower($key) . '="' . $value . '"';
+			}
+		}
+		if($entry['type'] == 'open') {
+			$file .= $ident . '<' . strtolower($entry['tag']) . $attributes . ">\n"; 
+		}
+		elseif($entry['type'] == 'close') {
+			$file .= $ident . '</' . strtolower($entry['tag']) . ">\n";
+		}
+		elseif($entry['type'] == 'complete') {
+			if(isset($entry['value'])) {
+				$file .= $ident . '<' . strtolower($entry['tag']) . $attributes . '>' . $entry['value'] . '</' . strtolower($entry['tag']) . ">\n";
+			}
+			else {
+				$file .= $ident . '<' . strtolower($entry['tag']) . $attributes . " />\n";
+			}
+		}
+	}
+	$file .= "</pdf>";
+	fwrite($handle,$file);
+	fclose($handle);
 }
 ?>

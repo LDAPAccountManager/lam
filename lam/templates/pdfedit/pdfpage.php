@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
-  Copyright (C) 2003  Roland Gruber
+  Copyright (C) 2003  Michael Dürgner
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -54,7 +54,7 @@ if(isset($_GET['abort'])) {
 	exit;
 }
 elseif(isset($_GET['submit'])) {
-	// TODO implement save of PDF structure
+	savePDFStructureDefinitions($_GET['type'],$_GET['pdfname'] . '.xml');
 	unset($_SESSION['currentPDFStructure']);
 	unset($_SESSION['availablePDFFields']);
 	session_unregister('currentPDFStructure');
@@ -129,28 +129,110 @@ elseif(isset($_GET['up'])) {
 	$tmp = $_SESSION['currentPDFStructure'][$_GET['up']];
 	$prev = $_SESSION['currentPDFStructure'][$_GET['up'] - 1];
 	if($tmp['tag'] == 'SECTION') {
-		
+		$pos = 0;
+		$borders = array();
+		$current = current($_SESSION['currentPDFStructure']);
+		if($current['tag'] == 'SECTION') {
+			$borders[$current['type']][] = $pos;
+		}
+		while($pos < $_GET['up']) {
+			$current = next($_SESSION['currentPDFStructure']);
+			$pos++;
+			if($current['tag'] == 'SECTION') {
+				$borders[$current['type']][] = $pos;
+			}
+		}
+		if(count($borders['close']) > 0) {
+			$current = next($_SESSION['currentPDFStructure']);
+			$pos++;
+			while($current && $current['tag'] != 'SECTION' && $current['type'] != 'close') {
+				$current = next($_SESSION['currentPDFStructure']);
+				$pos++;
+			}
+			$borders['close'][] = $pos;
+			$cut_start = $borders['open'][count($borders['open']) - 1];
+			$cut_count = $borders['close'][count($borders['close']) - 1] - $borders['open'][count($borders['open']) - 1] + 1;
+			$insert_pos = $borders['open'][count($borders['open']) - 2];
+			$tomove = array_splice($_SESSION['currentPDFStructure'],$cut_start,$cut_count);
+			array_splice($_SESSION['currentPDFStructure'],$insert_pos,0,$tomove);
+		}
 	}
 	elseif($tmp['tag'] == 'ENTRY' && $prev['tag'] == 'ENTRY') {
 		$_SESSION['currentPDFStructure'][$_GET['up']] = $_SESSION['currentPDFStructure'][$_GET['up'] - 1];
 		$_SESSION['currentPDFStructure'][$_GET['up'] - 1] = $tmp;
 	}
 	elseif($tmp['tag'] == 'TEXT') {
-		
+		if($_GET['up'] != 0) {
+			$tomove = array_splice($_SESSION['currentPDFStructure'],$_GET['up'],1);
+			array_splice($_SESSION['currentPDFStructure'],0,0,$tomove);
+		}
 	}
 }
 elseif(isset($_GET['down'])) {
 	$tmp = $_SESSION['currentPDFStructure'][$_GET['down']];
 	$next = $_SESSION['currentPDFStructure'][$_GET['down'] + 1];
 	if($tmp['tag'] == 'SECTION') {
-		
+		$pos = 0;
+		$current = current($_SESSION['currentPDFStructure']);
+		while($pos < $_GET['down']) {
+			$current = next($_SESSION['currentPDFStructure']);
+			$pos++;
+		}
+		$borders = array();
+		$borders[$current['type']][] = $pos;
+		$current = next($_SESSION['currentPDFStructure']);
+		$pos++;
+		while($current && $current['tag'] != 'SECTION' && $current['type'] != 'close') {
+			$current = next($_SESSION['currentPDFStructure']);
+			$pos++;
+		}
+		$borders['close'][] = $pos;
+		$current = next($_SESSION['currentPDFStructure']);
+		$pos++;
+		if($current) {
+			$borders[$current['type']][] = $pos;
+			$current = next($_SESSION['currentPDFStructure']);
+			$pos++;
+			while($current && $current['tag'] != 'SECTION' && $current['type'] != 'close') {
+				if($current['tag'] == 'SECTION') {
+					$borders[$current['type']][] = $pos;
+				}
+				$current = next($_SESSION['currentPDFStructure']);
+				$pos++;
+			}
+			$borders['close'][] = $pos;
+		}
+		if(count($borders['open']) > 1) {
+			$cut_start = $borders['open'][count($borders['open']) - 1];
+			$cut_count = $borders['close'][count($borders['close']) - 1] - $borders['open'][count($borders['open']) - 1] + 1;
+			$insert_pos = $borders['open'][count($borders['open']) - 2];
+			$tomove = array_splice($_SESSION['currentPDFStructure'],$cut_start,$cut_count);
+			array_splice($_SESSION['currentPDFStructure'],$insert_pos,0,$tomove);
+		}
 	}
 	elseif($tmp['tag'] == 'ENTRY' && $next['tag'] == 'ENTRY') {
 		$_SESSION['currentPDFStructure'][$_GET['down']] = $_SESSION['currentPDFStructure'][$_GET['down'] + 1];
 		$_SESSION['currentPDFStructure'][$_GET['down'] + 1] = $tmp;
 	}
 	elseif($tmp['tag'] == 'TEXT') {
-		
+		if($_GET['down'] != (count($_SESSION['currentPDFStructure']) -1)) {
+			$tomove = array_splice($_SESSION['currentPDFStructure'],$_GET['down'],1);
+			array_splice($_SESSION['currentPDFStructure'],count($_SESSION['currentPDFStructure']),0,$tomove);
+		}
+	}
+}
+elseif(isset($_GET['add_text'])) {
+	if($_GET['text_type'] == 'config') {
+		$entry = array('tag' => 'TEXT','type' => 'complete','level' => '2','attributes' => array('type' => $_GET['type']));
+	}
+	else {
+		$entry = array('tag' => 'TEXT','type' => 'complete','level' => '2','value' => $_GET['text_text']);
+	}
+	if($_GET['text_position'] == 'top') {
+		array_splice($_SESSION['currentPDFStructure'],0,0,array($entry));
+	}
+	else {
+		array_push($_SESSION['currentPDFStructure'],$entry);
 	}
 }
 
@@ -235,7 +317,7 @@ foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 	}
 	// We have to include a static text.
 	elseif($entry['tag'] == "TEXT") {
-		if($entry['type'] == "complete") {
+		if(!isset($entry['value'])) {
 			?>
 								<tr>
 									<td>
@@ -271,18 +353,23 @@ foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 									<?php echo $links;?>
 								</tr>
 								<tr>
-									<td colspan="3">
+									<td colspan="2">
 									</td>
 									<td>
-										<textarea name="pdftext" rows="10" cols="50" wrap="off">
-											<?php echo $entry['value'];?>
-										</textarea>
+										<?php echo $entry['value'];?>
 									</td>
 										<td colspan="6">
 									</td>
 								</tr>
 			<?php
 		}
+		?>
+								<tr>
+									<td colspan="9">
+										<br>
+									</td>
+								</tr>
+		<?php
 	}
 	// We have to include an entry from the account
 	elseif($entry['tag'] == "ENTRY") {
@@ -310,7 +397,7 @@ foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 								<legend>
 									<b><?php echo _("Add new section"); ?></b>
 								</legend>
- 								<table align="left"> 
+ 								<table align="left" width="100%"> 
 									<tr>
 										<td>
 											<input type="radio" name="section_type" value="text" checked>
@@ -330,6 +417,76 @@ foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 											<select name="section_item">
 												<?php echo $section_items;?>
 											</select>
+										</td>
+									</tr>
+								</table>
+							</fieldset>
+							<p>&nbsp;</p>
+							<fieldset>
+								<legend>
+									<b><?php echo _("Add static text"); ?></b>
+								</legend>
+								<table align="left" width="100%">
+									<tr>
+										<td colspan="2">
+											<fieldset style="margin:0px;">
+												<legend>
+													<?php echo _('Position');?>
+												</legend>
+												<table width="100%" style="margin:0px;">
+													<tr>
+														<td>
+															<input type="radio" name="text_position" value="top" checked>
+														</td>
+														<td width="50%">
+															<?php echo _('Top');?>
+														</td>
+														<td>
+															<input type="radio" name="text_position" value="bottom">
+														</td>
+														<td width="50%">
+															<?php echo _('Bottom');?>
+														</td>
+													</tr>
+												</table>
+											</fieldset>
+										</td>
+										<td rowspan="2">
+											<input type="submit" name="add_text" value="<?php echo _('Add');?>">
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<fieldset>
+												<legend>
+													<?php echo _('Text');?>
+												</legend>
+												<table width="100%">
+													<tr>
+														<td>
+															<input type="radio" name="text_type" value="config" checked>
+														</td>
+														<td>
+															<?php echo _('Insert static text from config.');?>
+														</td>
+													</tr>
+													<tr>
+														<td>
+															<input type="radio" name="text_type" value="textfield">
+														</td>
+														<td>
+															<?php echo _('Use text from field below.');?>
+														</td>
+													</tr>
+													<tr>
+														<td>
+														</td>
+														<td>
+															<textarea name="text_text" rows="4" cols="40"></textarea>
+ 														</td>
+ 													</tr>
+												</table>
+											</fieldset>
 										</td>
 									</tr>
 								</table>
