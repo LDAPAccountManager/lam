@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: messages\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de \n"
 "POT-Creation-Date: 2004-01-14 17:45+0200\n"
-"PO-Revision-Date: 2004-10-25 13:06+0200\n"
+"PO-Revision-Date: 2004-10-25 13:26+0200\n"
 "Last-Translator: Roland Gruber <post@rolandgruber.de>\n"
 "Language-Team: Deutsch <lam-i18n@lists.sf.net>\n"
 "MIME-Version: 1.0\n"
@@ -49,6 +49,10 @@ msgstr "%s Benutzer gefunden"
 #, fuzzy, php-format
 msgid "%sname:"
 msgstr "Benutzername"
+
+#: ../lib/modules/sambaAccount.inc:234
+msgid "."
+msgstr ""
 
 #: ../lib/modules/posixAccount.inc:196
 msgid "/home/smiller"
@@ -680,7 +684,9 @@ msgstr "Anzeigename"
 msgid ""
 "Displayed account numbers start at \"0\". Add 2 to get the row in your "
 "spreadsheet."
-msgstr "Die angezeigten Accountnummern beginnen mit \"0\". Addieren Sie 2 um die Reihennummer in Ihrer Tabellenkalkulation zu erhalten."
+msgstr ""
+"Die angezeigten Accountnummern beginnen mit \"0\". Addieren Sie 2 um die "
+"Reihennummer in Ihrer Tabellenkalkulation zu erhalten."
 
 #: ../templates/domain.php:210
 msgid "Do you really want to delete domain(s):"
@@ -784,7 +790,6 @@ msgid "Domain Users"
 msgstr "Domänenbenutzer"
 
 #: ../lib/modules/sambaGroupMapping.inc:245
-
 msgid "Domain administrators"
 msgstr "Domänenadministratoren"
 
@@ -1214,7 +1219,9 @@ msgstr "Hier können Sie Ihre Accountprofile verwalten."
 
 #: ../help/help.inc:99
 msgid "Here you can select which plugins you want to use for account management."
-msgstr "Hier können Sie die Plugins wählen, die Sie zur Accountverwaltung verwenden möchten."
+msgstr ""
+"Hier können Sie die Plugins wählen, die Sie zur Accountverwaltung verwenden "
+"möchten."
 
 #: ../lib/modules/posixAccount.inc:320 ../help/help.inc:131
 msgid "Hold the CTRL-key to (de)select multiple groups."
@@ -1263,13 +1270,9 @@ msgstr "Heimatverzeichnis ist ungültig."
 msgid "Homedirectory contains invalid characters."
 msgstr "Heimatverzeichnis enthält ungültige Zeichen."
 
+#: ../lib/modules/sambaAccount.inc:234 ../lib/modules/sambaSamAccount.inc:175
 #: ../lib/lists.inc:216
 msgid "Host description"
-msgstr "Hostbeschreibung"
-
-#: ../lib/modules/sambaAccount.inc:234 ../lib/modules/sambaSamAccount.inc:175
-#, fuzzy
-msgid "Host description."
 msgstr "Hostbeschreibung"
 
 #: ../lib/modules/account.inc:41 ../lib/modules/posixAccount.inc:329
@@ -1344,7 +1347,6 @@ msgstr ""
 "und .-_! Hostname muss mit $ enden!"
 
 #: ../lib/modules/posixAccount.inc:81
-
 msgid "Hostname in use. Selected next free hostname."
 msgstr "Hostname wird bereits verwendet. Nächster freier Hostname wurde ausgewählt."
 
@@ -2368,9 +2370,8 @@ msgid "Please select page:"
 msgstr "Bitte Seite wählen:"
 
 #: ../templates/masscreate.php:89
-#, fuzzy
 msgid "Please select your account type:"
-msgstr "Bitte Seite wählen:"
+msgstr "Bitte Accounttyp wählen:"
 
 #: ../lib/modules.inc:727
 #, php-format
@@ -2379,7 +2380,7 @@ msgstr ""
 
 #: ../templates/config/profmanage.php:148
 msgid "Please set up your master configuration file (config/config.cfg) first!"
-msgstr ""
+msgstr "Bitte konfigurieren Sie zuerst die Haupteinstellungsdatei (config/config.cfg)!"
 
 #: ../templates/pdfedit/pdfpage.php:708
 msgid "Position"
@@ -2500,7 +2501,7 @@ msgstr "Quota"
 
 #: ../templates/masscreate.php:154 ../help/help.inc:117
 msgid "RDN identifier"
-msgstr ""
+msgstr "RDN-Bezeichner"
 
 #: ../lib/lists.inc:215
 msgid "RID (Windows UID)"
@@ -2525,7 +2526,7 @@ msgstr "Aktualisieren"
 
 #: ../templates/pdfedit/pdfpage.php:581
 msgid "Remove"
-msgstr ""
+msgstr "Löschen"
 
 #: ../templates/config/profmanage.php:219 ../help/help.inc:102
 msgid "Rename profile"
@@ -2585,14 +2586,12 @@ msgid "Samba RID number"
 msgstr "Samba RID-Nummer"
 
 #: ../lib/modules/sambaGroupMapping.inc:243
-#, fuzzy
 msgid "Samba display name"
-msgstr "Samba 3 Anzeigename"
+msgstr "Samba Anzeigename"
 
 #: ../lib/modules/sambaGroupMapping.inc:235
-#, fuzzy
 msgid "Samba domain name"
-msgstr "Samba 3 Domänenname"
+msgstr "Samba Domänenname"
 
 #: ../lib/modules/sambaGroupMapping.inc:255
 #: ../lib/modules/sambaGroupMapping.inc:282
@@ -2673,9 +2672,8 @@ msgid "Script settings"
 msgstr "Scripteinstellungen"
 
 #: ../templates/pdfedit/pdfpage.php:740
-#, fuzzy
 msgid "Section"
-msgstr "Beschreibung"
+msgstr "Abschnitt"
 
 #: ../templates/config/confmain.php:386
 msgid "Security settings"
@@ -2738,7 +2736,6 @@ msgstr "Servereinstellungen"
 
 #: ../lib/modules/posixGroup.inc:145 ../lib/modules/posixAccount.inc:836
 #: ../lib/modules/posixAccount.inc:924
-#, fuzzy
 msgid "Set no password"
 msgstr "Kein Passwort setzen"
 
@@ -2747,9 +2744,8 @@ msgid "Set profile password"
 msgstr "Profilpasswort setzen"
 
 #: ../lib/modules/posixGroup.inc:343
-#, fuzzy
 msgid "Sets the group password."
-msgstr "Profilpasswort setzen"
+msgstr "Setzt das Gruppenpasswort."
 
 #: ../lib/modules/shadowAccount.inc:56
 msgid "Shadow"
@@ -2823,7 +2819,7 @@ msgstr "Spezieller Benutzer"
 #: ../templates/pdfedit/pdfpage.php:645 ../templates/pdfedit/pdfpage.php:651
 #: ../templates/pdfedit/pdfpage.php:777
 msgid "Static text"
-msgstr ""
+msgstr "Statischer Text"
 
 #: ../lib/modules/inetOrgPerson.inc:124
 msgid "Steve"
@@ -2845,9 +2841,8 @@ msgid "Street"
 msgstr "Straße"
 
 #: ../templates/pdfedit/pdfpage.php:812
-#, fuzzy
 msgid "Structure name"
-msgstr "Nachname"
+msgstr "Name der Struktur"
 
 #: ../templates/ou_edit.php:94 ../templates/ou_edit.php:159
 #: ../templates/ou_edit.php:224 ../templates/ou_edit.php:289
@@ -2951,9 +2946,8 @@ msgid "The name of your Windows domain or workgroup."
 msgstr "Der Name ihrer Windows-Domäne oder Arbeitsgruppe."
 
 #: ../help/help.inc:122
-#, fuzzy
 msgid "The new account will be saved under this LDAP suffix."
-msgstr "Der Domäneneintrag wird unter diesem Suffix gespeichert."
+msgstr "Der neue Account wird unter diesem LDAP-Suffix gespeichert."
 
 #: ../templates/config/confmain.php:109
 msgid "The password is invalid! Please try again."
@@ -3036,7 +3030,7 @@ msgstr "Damit ändern Sie das Standardprofil am Login."
 
 #: ../templates/massBuildAccounts.php:148
 msgid "This column is defined to include unique entries but duplicates were found:"
-msgstr ""
+msgstr "Diese Spalte darf keine doppelten Einträge enthalten:"
 
 #: ../help/help.inc:79
 msgid ""
@@ -3161,9 +3155,8 @@ msgstr ""
 "Änderungen nicht erkannt werden."
 
 #: ../lib/modules/posixAccount.inc:87
-#, fuzzy
 msgid "This login shell is invalid!"
-msgstr "Shell ist ungültig!"
+msgstr "Login-Shell ist ungültig!"
 
 #: ../help/help.inc:97
 msgid "This text will appear on top of every user PDF file."
@@ -3171,7 +3164,7 @@ msgstr "Dieser Text erscheint am Anfang jedes Benutzer-PDFs."
 
 #: ../templates/tools.php:84
 msgid "This tool allows you to customize the PDF pages."
-msgstr ""
+msgstr "Dieses Werkzeug erlaubt die Anpassung der PDF-Seiten."
 
 #: ../templates/lists/userlink.php:63
 msgid "This user was not found!"
@@ -3179,7 +3172,7 @@ msgstr "Dieser Benutzer wurde nicht gefunden!"
 
 #: ../lib/modules/posixAccount.inc:88
 msgid "This value can only be \\\"true\\\" or \\\"false\\\"."
-msgstr ""
+msgstr "Dieser Wert darf nur \\\"true\\\" oder \\\"false\\\" sein."
 
 #: ../lib/modules/posixGroup.inc:412
 #, fuzzy
@@ -3232,7 +3225,7 @@ msgstr "Werkzeuge"
 
 #: ../templates/pdfedit/pdfpage.php:513
 msgid "Top"
-msgstr ""
+msgstr "Anfang"
 
 #: ../templates/lists/listusers.php:342
 msgid "Translate GID number to group name"
@@ -3250,7 +3243,7 @@ msgstr ""
 msgid ""
 "UID must be a number. It has to be inside the UID range which is defined in "
 "your configuration profile."
-msgstr ""
+msgstr "UID muss eine Zahl sein. Sie muss sich innerhalb des Bereiches befinden der in Ihrem Konfigurationsprofil festgelegt ist."
 
 #: ../lib/modules/posixAccount.inc:46 ../lib/modules/posixAccount.inc:175
 #: ../lib/modules/posixAccount.inc:242 ../lib/modules/posixAccount.inc:276
@@ -3302,9 +3295,8 @@ msgid "Unable to delete domain!"
 msgstr "Kann Domäne nicht löschen!"
 
 #: ../templates/pdfedit/pdfdelete.php:56
-#, fuzzy
 msgid "Unable to delete pdf structure!"
-msgstr "Kann das Profil nicht löschen!"
+msgstr "Kann die PDF-Struktur nicht löschen!"
 
 #: ../templates/config/profmanage.php:108
 #: ../templates/profedit/profiledelete.php:60
@@ -3358,15 +3350,15 @@ msgstr "Ungelöste Abhängigkeit:"
 
 #: ../templates/pdfedit/pdfpage.php:581
 msgid "Up"
-msgstr ""
+msgstr "nach oben"
 
 #: ../templates/massBuildAccounts.php:193
 msgid "Upload accounts to LDAP"
-msgstr ""
+msgstr "Accounts in LDAP anlegen"
 
 #: ../templates/masscreate.php:128
 msgid "Upload file and create accounts"
-msgstr ""
+msgstr "Datei hochladen und Accounts erstellen"
 
 #: ../lib/modules.inc:471
 #, php-format
@@ -3377,9 +3369,8 @@ msgstr "Upload wurde nach Fehlern im Modul %s gestoppt!"
 #: ../templates/pdfedit/pdfpage.php:501 ../templates/pdfedit/pdfpage.php:519
 #: ../templates/pdfedit/pdfpage.php:530 ../templates/pdfedit/pdfpage.php:541
 #: ../templates/pdfedit/pdfpage.php:552
-#, fuzzy
 msgid "Use default"
-msgstr "Benutzerliste"
+msgstr "Standardwert benutzen"
 
 #: ../help/help.inc:83 ../help/help.inc:88
 msgid ""
@@ -3621,18 +3612,16 @@ msgid "Windows group"
 msgstr "Windows-Gruppe"
 
 #: ../lib/modules/sambaGroupMapping.inc:283
-#, fuzzy
 msgid "Windows group type."
-msgstr "Windows-Gruppenname"
+msgstr "Windows-Gruppentyp."
 
 #: ../lib/modules/sambaGroupMapping.inc:270 ../help/help.inc:235
 msgid "Windows groupname"
 msgstr "Windows-Gruppenname"
 
 #: ../lib/modules/sambaGroupMapping.inc:279
-#, fuzzy
 msgid "Windows-Domain name of group."
-msgstr "Windows-Domäne der Gruppe."
+msgstr "Windows-Domänenname der Gruppe."
 
 #: ../help/help.inc:240
 msgid "Windows-Domain of group."
@@ -3665,13 +3654,10 @@ msgstr "Falscher Profilname angegeben."
 
 #: ../lib/modules/posixGroup.inc:408 ../lib/modules/posixAccount.inc:76
 #: ../lib/modules/posixAccount.inc:78
-#, fuzzy
 msgid ""
 "You are using a capital letters. This can cause problems because windows "
 "isn't case-sensitive."
-msgstr ""
-"Sie verwenden Großbuchstaben, das kann Probleme verursachen, da nicht alle "
-"Programme Groß-/Kleinschreibung unterscheiden."
+msgstr "Sie verwenden Großbuchstaben, das kann Probleme verursachen, da Windows Groß-/Kleinschreibung nicht unterscheidet."
 
 #: ../help/help.inc:169
 msgid ""
