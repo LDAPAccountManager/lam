@@ -83,6 +83,7 @@ echo ("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http:/
 			<tr>
 				<td colspan=4 align="center"><b> <?php echo _("Please enter password to change preferences:"); ?> </b></td>
 			</tr>
+			<tr><td colspan=4 >&nbsp;</td></tr>
 <?php
 	// print message if login was incorrect
 	if ($message) echo ("<tr><td colspan=4 align=\"center\"><font color=red>" . $message . "</font></td></tr>");
