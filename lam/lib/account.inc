@@ -635,7 +635,7 @@ function checkid($values, $values_old=false) {
 				$i = intval($minID);
 				while (in_array($i, $uids)) $i++;
 				if ($i>$maxID) return implode(':', array($values->general_uidNumber , implode(';', array('ERROR', _('ID-Number'), _('No free ID-Number!')))));
-					else return implode(':', array($i, implode(';', array('WARN', _('ID-Number'), _('It\'s possible id-number is reused.')))));
+					else return implode(':', array($i, implode(';', array('WARN', _('ID-Number'), _('It\'s possible id-number is reused. This can cause several problems because some old file-permission can be still in use. To avoid this warning set maxUID to a higher value.')))));
 				}
 			else return implode(':', array($minID, ''));
 			// return minimum allowed id-number if no id-numbers are found

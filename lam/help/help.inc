@@ -54,11 +54,11 @@ $helpArray = array (
 						":</b><br><br>".
 						_("ou=People,dc=yourcompany,dc=com will read and store all accounts in this subtree.")),
 				"203" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("UID number"),
-					"Text" => _("These are the minimum and maximum numbers to use for user IDs when creating new user accounts. The range has to be different from that of machines. New user accounts will always get the highest number in use plus one.")),
+					"Text" => _("These are the minimum and maximum numbers to use for user IDs when creating new user accounts. The range has to be different from that of machines. New user accounts will allways get the highest number in use plus one.")),
 				"204" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("GID number"),
-					"Text" => _("These are the minimum and maximum numbers to use for group IDs when creating new group accounts. New group accounts will always get the highest number in use plus one.")),
+					"Text" => _("These are the minimum and maximum numbers to use for group IDs when creating new group accounts. New group accounts will allways get the highest number in use plus one.")),
 				"205" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("Machine number"),
-					"Text" => _("These are the minimum and maximum numbers to use for machine IDs when creating new accounts for Samba hosts. The range has to be different from that of users. New host accounts will always get the highest number in use plus one.")),
+					"Text" => _("These are the minimum and maximum numbers to use for machine IDs when creating new accounts for Samba hosts. The range has to be different from that of users. New host accounts will allways get the highest number in use plus one.")),
 				"206" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("List attributes"),
 					"Text" => _("This is the list of attributes to show in the user/group/host list. The entries can either be predefined values, \"#value\", or individual ones, \"value:description\". Several entries are seperated by semicolons.") .
 						"<br><br><b>" .
@@ -137,11 +137,7 @@ $helpArray = array (
 				// Tilo Lutz
 				// account.php
 				"400" => array ("ext" => "FALSE", "Headline" => _("Username"),
-					"Text" => _("Username of the user which should be created. Valid characters are: a-z,0-9, .-_. Lam doesn't allow a number as first
-					 character because useradd also does not allow it. Lam doesn't allow capital letters A-Z because it
-					 can cause several problems. If username is allready used username will expanded with a number. The next free number will be used.
-					 Warning: Older systems have problems with usernames longer than 8 characters. You can't log in to Windows if username is longer than 16
-					 characters.")),
+					"Text" => _("Username of the user who should be created. Valid characters are: a-z,0-9, .-_. Lam does not allow a number as first character because useradd also does not allow it. Lam does not allow capital letters A-Z because it can cause several problems. If username is allready used username will expanded with a number. The next free number will be used. Warning: Older systems have problems with usernames longer than 8 characters. You can not log in to Windows if username is longer than 16 characters.")),
 				"401" => array ("ext" => "FALSE", "Headline" => _("UID number"),
 					"Text" => _("If empty UID number will be generated automaticly. Valid values are between %s and %s."),
 					"variables" => array($_SESSION['config']->get_minUID(), $_SESSION['config']->get_maxUID())),
@@ -156,18 +152,14 @@ $helpArray = array (
 				"406" => array ("ext" => "FALSE", "Headline" => _("Primary group"),
 					"Text" => _("The Primary Group the user should be member of.")),
 				"407" => array ("ext" => "FALSE", "Headline" => _("Groupname"),
-					"Text" => _("Groupname of the group which should be created. Valid characters are: a-z,0-9, .-_. Lam doesn't allow a number as first
-					 character because groupadd also does not allow it. Lam doesn't allow capital letters A-Z because it
-					 can cause several problems. If groupname is allready used username will expanded with a number. The next free number will be used.")),
+					"Text" => _("Group name of the group which should be created. Valid characters are: a-z,0-9, .-_. Lam does not allow a number as first character because groupadd also does not allow it. Lam does not allow capital letters A-Z because it can cause several problems. If groupname is allready used username will be expanded with a number. The next free number will be used.")),
 				"408" => array ("ext" => "FALSE", "Headline" => _("GID number"),
 					"Text" => _("If empty GID number will be generated automaticly. Valid values are between %s and %s."),
 					"variables" => array($_SESSION['config']->get_minGID(), $_SESSION['config']->get_maxGID())),
 				"409" => array ("ext" => "FALSE", "Headline" => _("Gecos"),
 					"Text" => _("Group description. If left empty group name will be used.")),
 				"410" => array ("ext" => "FALSE", "Headline" => _("Host name"),
-					"Text" => _("Groupname of the group which should be created. Valid characters are: a-z,0-9, .-_$. Lam doesn't allow a number as first
-					 character because useradd also does not allow it. Lam doesn't allow capital letters A-Z because it
-					 can cause several problems. Hostnames are always ending with $. If last character isn't $ it will be added. If hostname is allready used username will expanded with a number. The next free number will be used.")),
+					"Text" => _("Group name of the group which should be created. Valid characters are: a-z,0-9, .-_$. Lam does not allow a number as first character because useradd also does not allow it. Lam does not allow capital letters A-Z because it can cause several problems. Hostnames are allways ending with $. If last character is not $ it will be added. If hostname is allready used username will expanded with a number. The next free number will be used.")),
 				"411" => array ("ext" => "FALSE", "Headline" => _("UID number"),
 					"Text" => _("If empty UID number will be generated automaticly. Valid values are between %s and %s."),
 					"variables" => array($_SESSION['config']->get_minMachine(), $_SESSION['config']->get_maxMachine())),
@@ -178,19 +170,19 @@ $helpArray = array (
 				"414" => array ("ext" => "FALSE", "Headline" => _("Password warn"),
 					"Text" => _("Days before password is to expire that user is warned of pending password expiration. If set value must be 0<."). ' '. _("Can be left empty.")),
 				"415" => array ("ext" => "FALSE", "Headline" => _("Password expire"),
-					"Text" => _("Number of days a user can login even his password has expired. -1=always."). ' '. _("Can be left empty.")),
+					"Text" => _("Number of days a user can login even his password has expired. -1=allways."). ' '. _("Can be left empty.")),
 				"416" => array ("ext" => "FALSE", "Headline" => _("Maximum password age"),
 					"Text" => _("Number of days after a user has to change his password again. If set value must be 0<."). ' '. _("Can be left empty.")),
 				"417" => array ("ext" => "FALSE", "Headline" => _("Minimum password age"),
 					"Text" => _("Number of days a user has to wait until he\'s allowed to change his password again. If set value must be 0<."). ' '. _("Can be left empty.")),
 				"418" => array ("ext" => "FALSE", "Headline" => _("Expire date"),
-					"Text" => _("Account expire date. If an account is expired login is only possible if password expire is set. Format: DD-MM-YYYY")),
+					"Text" => _("Account expire date. If an account is expired login is only possible if option password expire is set. Format: DD-MM-YYYY")),
 				"419" => array ("ext" => "FALSE", "Headline" => _("Group members"),
 					"Text" => _("Users wich are also members of group.")),
 				"420" => array ("ext" => "FALSE", "Headline" => _("Display name"),
-					"Text" => _("Groupname Windows clients will show.")),
+					"Text" => _("Groupname Windows clients will show as group description.")),
 				"421" => array ("ext" => "FALSE", "Headline" => _("Load profile"),
-					"Text" => _("You can select a previous defined profile here. All values which make senso to store in profile are overwritten with the stored values.")),
+					"Text" => _("You can select a previous defined profile here. All values which make sense to store in profile are overwritten with the stored values.")),
 				"422" => array ("ext" => "FALSE", "Headline" => _("Expand suffix with primary groupname"),
 					"Text" => _("If select users will be added with OUs expanded with their primary group. E.G a user is in group admin, user suffix will be ou=admin,+user suffix.")),
 				"423" => array ("ext" => "FALSE", "Headline" => _("Group suffix"),
@@ -198,7 +190,7 @@ $helpArray = array (
 				"424" => array ("ext" => "FALSE", "Headline" => _("Surname"),
 					"Text" => _("Surname of user. Only letters, - and spaces are allowed.")),
 				"425" => array ("ext" => "FALSE", "Headline" => _("Given name"),
-					"Text" => _("Given name of user. Only letters - and spaces are allowed. Have you ever seen anybody with a number in his name?")),
+					"Text" => _("Given name of user. Only letters - and spaces are allowed.")),
 				"426" => array ("ext" => "FALSE", "Headline" => _("Use no password"),
 					"Text" => _("If checked no password will be used.")),
 				"427" => array ("ext" => "FALSE", "Headline" => _("Account deactivated"),
@@ -252,7 +244,7 @@ $helpArray = array (
 				"448" => array ("ext" => "FALSE", "Headline" => _("Title"),
 					"Text" => _("Title of user, Mr., Ms., ...")),
 				"449" => array ("ext" => "FALSE", "Headline" => _("Employee type"),
-					"Text" => _("Employee type, worker, ...")),
+					"Text" => _("Employee type: worker, student, nurse, ...")),
 				"450" => array ("ext" => "FALSE", "Headline" => _("Street"),
 					"Text" => _("Street")),
 				"451" => array ("ext" => "FALSE", "Headline" => _("Postal code"),
@@ -286,7 +278,7 @@ $helpArray = array (
 				"467" => array ("ext" => "FALSE", "Headline" => _("Domain"),
 					"Text" => _("Windows-Domain of group."). ' '. _("Can be left empty.")),
 				"468" => array ("ext" => "FALSE", "Headline" => _("Group members"),
-					"Text" => _("Users also being member of the current group. Members are comma separated."). ' '. _("Can be left empty.")),
+					"Text" => _("Users also being member of the current group."). ' '. _("Can be left empty.")),
 				// 600 - 699
 				// Roland Gruber
 				// OU-editor, domain page

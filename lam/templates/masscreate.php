@@ -339,7 +339,7 @@ switch ($select) {
 		if (!$nowarn) { echo '<tr><td>'. _('There are some warnings.') . '</td></tr>'."\n"; }
 		echo '</table></fieldset>';
 		echo "<fieldset class=\"useredit-bright\"><legend class=\"useredit-bright\"><b>";
-		echo _('Please select page');
+		echo _('Please select page:');
 		echo "</b></legend>\n<table border=0 width=\"100%\">\n".
 			'<tr><td><input name="back" type="submit" value="'; echo _('Back');
 		echo '"></td><td><input name="cancel" type="submit" value="'; echo _('Cancel');

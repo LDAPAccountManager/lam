@@ -211,7 +211,7 @@ switch ($_POST['select']) {
 			if ($config_intern->is_samba3()) {
 				if (!in_array('sambaSamAccount', $account_old->general_objectClass)) $errors[] = array('WARN', _('ObjectClass sambaSamAccount not found.'), _('Have to add objectClass sambaSamAccount. Host with sambaAccount will be updated.'));
 				}
-			else if (!in_array('sambaAccount', $account_old->general_objectClass)) $errors[] = array('WARN', _('ObjectClass sambaAccount not found.'), _('Have to add objectClass sambaSamAccount. Host with sambaSamAccount will be set back to sambaAccount.'));
+			else if (!in_array('sambaAccount', $account_old->general_objectClass)) $errors[] = array('WARN', _('ObjectClass sambaAccount not found.'), _('Have to add objectClass sambaAccount. Host with sambaSamAccount will be set back to sambaAccount.'));
 			}
 
 		break;
