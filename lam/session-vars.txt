@@ -117,12 +117,6 @@ delete.php
 - delete_dn :  Liste der DNs, die gelscht werden sollen.
 
 
-confwiz/*.php
-- confwiz_config: Config-Objekt mit Optionen
-- confwiz_ldap: LDAP-Objekt
-- conwiz_masterpwd: Hauptpasswort für Einstellungen, zur Überprüfung des Admins
-
-
 profilepage.php/profilecreate.php
 - profile_types: Hash Array mit Typen (text, select, ...) der verarbeiteten Optionen
 

@@ -66,11 +66,6 @@ unset($_SESSION['conf_scriptserver']);
 unset($_SESSION['conf_pwdhash']);
 unset($_SESSION['conf_filename']);
 
-// remove config wizard settings
-unset($_SESSION['confwiz_config']);
-unset($_SESSION['confwiz_ldap']);
-unset($_SESSION['confwiz_masterpwd']);
-
 echo $_SESSION['header'];
 
 ?>
@@ -92,13 +87,13 @@ echo $_SESSION['header'];
 		<table align="center" border="2" rules="none" bgcolor="white">
 			<tr>
 				<td style="border-style:none" rowspan="3" width="20"></td>
-				<td style="border-style:none" colspan="2" height="20"></td>
+				<td style="border-style:none" height="20"></td>
 				<td style="border-style:none" rowspan="3" width="20"></td>
 			</tr>
 			<tr>
-				<td style="border-style:none" colspan=2 align="center"><b> <?php echo _("Please enter password to change preferences:"); ?> </b></td>
+				<td style="border-style:none" align="center"><b> <?php echo _("Please enter password to change preferences:"); ?> </b></td>
 			</tr>
-			<tr><td style="border-style:none" colspan=2 >&nbsp;</td></tr>
+			<tr><td style="border-style:none" >&nbsp;</td></tr>
 <?php
 	// print message if login was incorrect
 	if ($message) {
@@ -110,7 +105,7 @@ echo $_SESSION['header'];
 ?>
 			<tr>
 				<td style="border-style:none" rowspan="4" width="20"></td>
-				<td style="border-style:none" colspan=2 align="center">
+				<td style="border-style:none" align="center">
 					<select size=1 name="filename">
 					<?php
 						$files = getConfigProfiles();
@@ -128,18 +123,15 @@ echo $_SESSION['header'];
 				<td style="border-style:none" rowspan="4" width="20"></td>
 			</tr>
 			<tr>
-				<td  style="border-style:none"colspan=2>&nbsp;</td>
+				<td  style="border-style:none">&nbsp;</td>
 			</tr>
 			<tr>
-				<td style="border-style:none" align="left">
+				<td style="border-style:none" align="center">
 					<b><a href="profmanage.php"><?php echo _("Manage profiles") ?></a></b>
 				</td>
-				<td style="border-style:none" align="right">
-					<b><a href="../confwiz/start.php"><?php echo _("Configuration wizard") ?></a></b>
-				</td>
 			</tr>
 			<tr>
-				<td style="border-style:none" colspan=2 height="20"></td>
+				<td style="border-style:none" height="20"></td>
 			</tr>
 		</table>
 		</form>
