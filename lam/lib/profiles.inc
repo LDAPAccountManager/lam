@@ -216,7 +216,6 @@ function saveUserProfile($attributes, $profile) {
 		fclose($file);
 	}
 	else {
-		StatusMessage("ERROR", _("Unable to save profile!"), $path);
 		return false;
 	}
 	return true;
@@ -246,7 +245,6 @@ function saveGroupProfile($attributes, $profile) {
 		fclose($file);
 	}
 	else {
-		StatusMessage("ERROR", _("Unable to save profile!"), $path);
 		return false;
 	}
 	return true;
@@ -276,7 +274,6 @@ function saveHostProfile($attributes, $profile) {
 		fclose($file);
 	}
 	else {
-		StatusMessage("ERROR", _("Unable to save profile!"), $path);
 		return false;
 	}
 	return true;
