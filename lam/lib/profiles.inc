@@ -45,7 +45,8 @@ function getUserProfiles() {
 
 // returns an array of String with all available group profiles (without .prg)
 function getGroupProfiles() {
-	$dir = dir(substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/groups");
+// group profiles are not supported at this time
+/*	$dir = dir(substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/groups");
 	$ret = array();
 	$pos = 0;
 	while ($entry = $dir->read()){
@@ -56,7 +57,8 @@ function getGroupProfiles() {
 			$pos ++;
 		}
 	}
-	return $ret;
+	return $ret; */
+	return array();
 }
 
 // returns an array of String with all available host profiles (without .prh)
