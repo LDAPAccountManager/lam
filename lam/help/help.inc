@@ -153,7 +153,7 @@ $helpArray = array (
 				"400" => array ("ext" => "FALSE", "Headline" => _("Username"),
 					"Text" => _("Username of the user which should be created. Valid characters are: a-z,0-9, .-_. Lam doesn't allow a number as first
 					 character because it's impossible to create a homedirectory starting with a number. Lam doesn't allow capital letters A-Z because it
-					 can cause several problems.")),
+					 can cause several problems. If username is allready used username will expanded with a number. The next free number will be used.")),
 				"401" => array ("ext" => "FALSE", "Headline" => _("UID Number"),
 					"Text" => _("If empty UID Number will be generated automaticly. Valid values are between ").$_SESSION['config']->get_minUID()._(" and ").$_SESSION['config']->get_maxUID()."."),
 				"402" => array ("ext" => "FALSE", "Headline" => _("Additional Groupmembership"),
@@ -169,7 +169,7 @@ $helpArray = array (
 				"407" => array ("ext" => "FALSE", "Headline" => _("Groupname"),
 					"Text" => _("Groupname of the group which should be created. Valid characters are: a-z,0-9, .-_. Lam doesn't allow a number as first
 					 character because it's impossible to create a homedirectory starting with a number. Lam doesn't allow capital letters A-Z because it
-					 can cause several problems.")),
+					 can cause several problems. If groupname is allready used username will expanded with a number. The next free number will be used.")),
 				"408" => array ("ext" => "FALSE", "Headline" => _("GID Number"),
 					"Text" => _("If empty GID Number will be generated automaticly. Valid values are between ").$_SESSION['config']->get_minGID()._(" and ").$_SESSION['config']->get_maxGID()."."),
 				"409" => array ("ext" => "FALSE", "Headline" => _("Gecos"),
@@ -177,7 +177,7 @@ $helpArray = array (
 				"410" => array ("ext" => "FALSE", "Headline" => _("Hostname"),
 					"Text" => _("Groupname of the group which should be created. Valid characters are: a-z,0-9, .-_$. Lam doesn't allow a number as first
 					 character because it's impossible to create a homedirectory starting with a number. Lam doesn't allow capital letters A-Z because it
-					 can cause several problems. Hostnames are always ending with $. If last character isn't $ it will be added.")),
+					 can cause several problems. Hostnames are always ending with $. If last character isn't $ it will be added. If hostname is allready used username will expanded with a number. The next free number will be used.")),
 				"411" => array ("ext" => "FALSE", "Headline" => _("UID Number"),
 					"Text" => _("If empty UID Number will be generated automaticly. Valid values are between ").$_SESSION['config']->get_minMachine()._(" and ").$_SESSION['config']->get_maxMachine()."."),
 				"412" => array ("ext" => "FALSE", "Headline" => _("Primary Group"),

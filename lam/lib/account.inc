@@ -177,13 +177,55 @@ function checkglobal($values, $type, $values_old=false) { // This functions chec
 			if ( !ereg('^([a-z]|[0-9]|[.]|[-]|[_])*$', $values->general_username))
 				return _('Username contents invalid characters. Valid characters are: a-z, 0-9 and .-_ !');
 			// Check if user already exists
+			$return->general_username = $values->general_username;
+			// Create automatic useraccount with number if original user allready exists
+			while ($temp = ldapexists($return, $type, $values_old)) {
+				// get last character of username
+				$lastchar = substr($return->general_username, strlen($return->general_username)-1, 1);
+				// Last character is no number
+				if ( !ereg('^([0-9])+$', $lastchar))
+					$return->general_username = $return->general_username . '2';
+				 else {
+				 	$i=strlen($return->general_username)-1;
+					$mark = false;
+				 	while (!$mark) {
+						if (ereg('^([0-9])+$',substr($return->general_username, $i, strlen($return->general_username)-$i))) $i--;
+							else $mark=true;
+						}
+					// increase last number with one
+					$firstchars = substr($return->general_username, 0, $i+1);
+					$lastchars = substr($return->general_username, $i+1, strlen($return->general_username)-$i);
+					$return->general_username = $firstchars . (intval($lastchars)+1);
+				 	}
+				}
 			break;
 		case 'group' :
 			// Check if Groupname contents only valid characters
 			if ( !ereg('^([a-z]|[0-9]|[.]|[-]|[_])*$', $values->general_username))
 				return _('Groupname contents invalid characters. Valid characters are: a-z, 0-9 and .-_ !');
-			// Check if group already exists
 			if ($values->general_gecos=='') $return->general_gecos = $values->general_username ;
+			// Check if user already exists
+			$return->general_username = $values->general_username;
+			// Create automatic groupaccount with number if original user allready exists
+			while ($temp = ldapexists($return, $type, $values_old)) {
+				// get last character of username
+				$lastchar = substr($return->general_username, strlen($return->general_username)-1, 1);
+				// Last character is no number
+				if ( !ereg('^([0-9])+$', $lastchar))
+					$return->general_username = $return->general_username . '2';
+				 else {
+				 	$i=strlen($return->general_username)-1;
+					$mark = false;
+				 	while (!$mark) {
+						if (ereg('^([0-9])+$',substr($return->general_username, $i, strlen($return->general_username)-$i))) $i--;
+							else $mark=true;
+						}
+					// increase last number with one
+					$firstchars = substr($return->general_username, 0, $i+1);
+					$lastchars = substr($return->general_username, $i+1, strlen($return->general_username)-$i);
+					$return->general_username = $firstchars . (intval($lastchars)+1);
+				 	}
+				}
 			break;
 		case 'host' :
 			if ( substr($values->general_username, strlen($values->general_username)-1, strlen($values->general_username)) != '$' )
@@ -194,10 +236,31 @@ function checkglobal($values, $type, $values_old=false) { // This functions chec
 			// Check if Hostname already exists
 			$return->general_homedir = '/dev/null';
 			$return->general_shell = '/bin/false';
+			// Check if user already exists
+			$return->general_username = $values->general_username;
 			if ($values->general_gecos=='') $return->general_gecos = $values->general_username;
+			// Create automatic groupaccount with number if original user allready exists
+			while ($temp = ldapexists($return, $type, $values_old)) {
+				// get last character of username
+				$lastchar = substr($return->general_username, strlen($return->general_username)-2, 1);
+				// Last character is no number
+				if ( !ereg('^([0-9])+$', $lastchar))
+					$return->general_username = $return->general_username . '2';
+				 else {
+				 	$i=strlen($return->general_username)-3;
+					$mark = false;
+				 	while (!$mark) {
+						if (ereg('^([0-9])+$',substr($return->general_username, $i, strlen($return->general_username)-1))) $i--;
+							else $mark=true;
+						}
+					// increase last number with one
+					$firstchars = substr($return->general_username, 0, $i+1);
+					$lastchars = substr($return->general_username, $i+1, strlen($return->general_username)-$i);
+					$return->general_username = $firstchars . (intval($lastchars)+1). '$';
+				 	}
+				}
 			break;
 		}
-	if ($temp = ldapexists($values, $type, $values_old)) return $temp;
 	// Check if UID is valid. If none value was entered, the next useable value will be inserted
 	$return->general_uidNumber = checkid($values, $type, $values_old);
 	if (is_string($return->general_uidNumber)) return $return->general_uidNumber;
