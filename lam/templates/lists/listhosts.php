@@ -194,30 +194,47 @@ $table_begin = ($page - 1) * $max_pageentrys;
 if (($page * $max_pageentrys) > sizeof($hst_info)) $table_end = sizeof($hst_info);
 else $table_end = ($page * $max_pageentrys);
 
-// print host list
-for ($i = $table_begin; $i < $table_end; $i++) {
-	echo("<tr class=\"hostlist\" onMouseOver=\"host_over(this, '" . $hst_info[$i]["dn"] . "')\"" .
-								" onMouseOut=\"host_out(this, '" . $hst_info[$i]["dn"] . "')\"" .
-								" onClick=\"host_click(this, '" . $hst_info[$i]["dn"] . "')\"" .
-								" onDblClick=\"parent.frames[1].location.href='../account/hostedit.php?DN=" . $hst_info[$i]["dn"] . "'\">" .
-								" <td height=22><input onClick=\"host_click(this, '" . $hst_info[$i]["dn"] . "')\" type=\"checkbox\" name=\"" . $hst_info[$i]["dn"] . "\"></td>" .
-								" <td align='center'><a href=\"../account/hostedit.php?DN='" . $hst_info[$i]["dn"] . "'\">" . _("Edit") . "</a></td>");
-	for ($k = 0; $k < sizeof($attr_array); $k++) {
-		echo ("<td>");
-		// print all attribute entries seperated by "; "
-		if (sizeof($hst_info[$i][strtolower($attr_array[$k])]) > 0) {
-			// delete first array entry which is "count"
-			if ((! $_GET['norefresh']) && (is_array($hst_info[$i][strtolower($attr_array[$k])]))) array_shift($hst_info[$i][strtolower($attr_array[$k])]);
-			if (is_array($hst_info[$i][strtolower($attr_array[$k])])) {
-				// sort array
-				sort($hst_info[$i][strtolower($attr_array[$k])]);
-				echo utf8_decode(implode("; ", $hst_info[$i][strtolower($attr_array[$k])]));
-			}
-			else echo utf8_decode($hst_info[$i][strtolower($attr_array[$k])]);
+if (sizeof($hst_info) > 0) {
+	// print host list
+	for ($i = $table_begin; $i < $table_end; $i++) {
+		echo("<tr class=\"hostlist\" onMouseOver=\"host_over(this, '" . $hst_info[$i]["dn"] . "')\"" .
+									" onMouseOut=\"host_out(this, '" . $hst_info[$i]["dn"] . "')\"" .
+									" onClick=\"host_click(this, '" . $hst_info[$i]["dn"] . "')\"" .
+									" onDblClick=\"parent.frames[1].location.href='../account/hostedit.php?DN=" . $hst_info[$i]["dn"] . "'\">");
+		if ($_GET['selectall'] == "yes") {
+		echo " <td height=22><input onClick=\"host_click(this, '" . $hst_info[$i]["dn"] . "')\"" .
+					" type=\"checkbox\" checked name=\"" . $hst_info[$i]["dn"] . "\"></td>";
 		}
-		echo ("</td>");
+		else {
+		echo " <td height=22><input onClick=\"host_click(this, '" . $hst_info[$i]["dn"] . "')\"" .
+					" type=\"checkbox\" name=\"" . $hst_info[$i]["dn"] . "\"></td>";
+		}
+		echo (" <td align='center'><a href=\"../account/hostedit.php?DN='" . $hst_info[$i]["dn"] . "'\">" . _("Edit") . "</a></td>");
+		for ($k = 0; $k < sizeof($attr_array); $k++) {
+			echo ("<td>");
+			// print all attribute entries seperated by "; "
+			if (sizeof($hst_info[$i][strtolower($attr_array[$k])]) > 0) {
+				// delete first array entry which is "count"
+				if ((! $_GET['norefresh']) && (is_array($hst_info[$i][strtolower($attr_array[$k])]))) array_shift($hst_info[$i][strtolower($attr_array[$k])]);
+				if (is_array($hst_info[$i][strtolower($attr_array[$k])])) {
+					// sort array
+					sort($hst_info[$i][strtolower($attr_array[$k])]);
+					echo utf8_decode(implode("; ", $hst_info[$i][strtolower($attr_array[$k])]));
+				}
+				else echo utf8_decode($hst_info[$i][strtolower($attr_array[$k])]);
+			}
+			echo ("</td>");
+		}
+		echo("</tr>\n");
 	}
-	echo("</tr>\n");
+	// display select all link
+	$colspan = sizeof($attr_array) + 1;
+	echo "<tr class=\"hostlist\">\n";
+	echo "<td align=\"center\"><img src=\"../../graphics/select.jpg\" alt=\"select all\"></td>\n";
+	echo "<td colspan=$colspan>&nbsp;<a href=\"listhosts.php?norefresh=y&amp;page=" . $page . "&amp;sort=" . $sort .
+		$searchfilter . "&amp;selectall=yes\">" .
+		"<font color=\"black\"><b>" . _("Select all") . "</b></font></a></td>\n";
+	echo "</tr>\n";
 }
 echo ("</table>");
 
