@@ -976,10 +976,21 @@ class accountContainer {
 			}
 		return $output_array;
 		}
-
+		
+		function get_pdfEntries($acount_type) {
+			$return = array();
+			for($i=0;$i<count($modules);$i++) {
+				$entries = ($this->modules[i])->get_pdfEntries($account_type);
+				while(list($key,$value) = each($entries)) {
+					if(array_key_exists($key,$return)) {
+						array_push($return[$key],$value);
+					}
+					else {
+						$return[$key] = array($value);
+					}
+				}
+			}
+			return $return;
+		}
 	}
-
-
-
-
 ?>
