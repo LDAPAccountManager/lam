@@ -221,8 +221,7 @@ function display_LoginPage($config_object,$profile)
 				</tr>
 				<tr>
 					<td style="border-style:none" height="50" colspan="2" align="center">
-						<input name="checklogin" type="hidden" value="<?php echo _('Login'); ?>">
-						<input type="submit" value="<?php echo _("Login"); ?>">
+						<input name="checklogin" type="submit" value="<?php echo _("Login"); ?>">
 					</td>
 				</tr>
 				<tr>

@@ -226,8 +226,7 @@ function display_LoginPage($config_object,$profile)
 				</tr>
 				<tr>
 					<td style="border-style:none" height="50" colspan="2" align="center">
-						<input name="checklogin" type="hidden" value="<?php echo _('Login'); ?>">
-						<input type="submit" value="<?php echo _("Login"); ?>" tabindex="3">
+						<input name="checklogin" type="submit" value="<?php echo _("Login"); ?>" tabindex="3">
 					</td>
 				</tr>
 				<tr>
@@ -345,7 +344,6 @@ if($_POST['checklogin'])
 // Reload loginpage after a profile change
 elseif($_POST['profileChange']) {
 	$_SESSION['config'] = new Config($_POST['profile']); // Recreate the config object with the submited
-
 	display_LoginPage($_SESSION['config'],""); // Load login page
 }
 // Load login page
