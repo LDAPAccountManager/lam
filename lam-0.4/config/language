@@ -3,15 +3,17 @@
 # Each line consists of a : seperated entrys. The first entry is the link to the language definition, the second is the language description. Further entries are not used yet.
 # Normally you don't have to edit this file manually. It is modified automatically when you add a new language in the Configuration-Site.
 
-# Englisch Language
+# Englisch language
 en_GB:ISO-8859-1:English (Great Britain)
 
-# German Language
+# German language
 de_DE:ISO-8859-15:Deutsch (Deutschland)
 
-# Hungarian Language
+# Hungarian language
 hu_HU:ISO-8859-2:Magyar (Magyarorszag)
 
-# Japanese Language
+# Japanese language
 ja_JP.eucJP:EUC-JP:Japanese (EUC)
 
+# French language
+fr_FR:ISO-8859-15:Francais (France)
