@@ -95,22 +95,14 @@ class Ldap{
 			echo _("No username was specified!");
 			exit;
 		}
-		if ($this->conf->get_SSL() == "True") $this->server = ldap_connect("ldaps://" . $this->conf->get_Host(), $this->conf->get_Port());
-		else $this->server = ldap_connect("ldap://" . $this->conf->get_Host(), $this->conf->get_Port());
+		if ($this->conf->get_SSL() == "True") $this->server = @ldap_connect("ldaps://" . $this->conf->get_Host(), $this->conf->get_Port());
+		else $this->server = @ldap_connect("ldap://" . $this->conf->get_Host(), $this->conf->get_Port());
 		if ($this->server) {
-			$bind = ldap_bind($this->server, $user, $passwd);
+			$bind = @ldap_bind($this->server, $user, $passwd);
 			if ($bind) {
 			// return server handle
 			return $this->server;
 			}
-			else {
-				echo _("Unable to bind to Server!");
-				exit;
-			}
-		}
-		else {
-			echo _("Unable to connect to Server!");
-			exit;
 		}
 	}
 	
