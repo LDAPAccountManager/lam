@@ -78,6 +78,7 @@ function getHostProfiles() {
 // loads an user profile with name $profile (without .pru)
 // the return value is an account object
 function loadUserProfile($profile) {
+	if (!eregi("^([0-9]|[a-z]|-|_)*$", $profile)) exit;
 	$acc = new account();
 	$file = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/users/" . $profile . ".pru";
 	if (is_file($file) == True) {
@@ -192,6 +193,7 @@ function loadGroupProfile($profile) {
 // loads an host profile with name $profile (without .prh)
 // the return value is an account object
 function loadHostProfile($profile) {
+	if (!eregi("^([0-9]|[a-z]|-|_)*$", $profile)) exit;
 	$acc = new account();
 	$file = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/hosts/" . $profile . ".prh";
 	if (is_file($file) == True) {
@@ -276,6 +278,7 @@ function loadHostProfile($profile) {
 // saves an account object to an user profile with name $profile (without .pru)
 // file is created, if needed
 function saveUserProfile($account, $profile) {
+	if (!eregi("^([0-9]|[a-z]|-|_)*$", $profile)) exit;
 	if (!is_object($account)) {echo _("saveUserProfile: \$account has wrong type!"); exit;}
 	$path = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/users/" . $profile . ".pru";
 	$file = fopen($path, "w");
@@ -315,6 +318,7 @@ function saveGroupProfile($account, $profile) {
 // saves an account object to an host profile with name $profile (without .prh)
 // file is created, if needed
 function saveHostProfile($account, $profile) {
+	if (!eregi("^([0-9]|[a-z]|-|_)*$", $profile)) exit;
 	if (!is_object($account)) {echo _("saveHostProfile: \$account has wrong type!"); exit;}
 	$path = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/hosts/" . $profile . ".prh";
 	$file = fopen($path, "w");
