@@ -31,8 +31,15 @@ include_once ("../../lib/status.inc");
 session_save_path("../../sess");
 @session_start();
 
+setlanguage();
+
 // copy HTTP-GET variables to HTTP-POST
 $_POST = $_POST + $_GET;
+
+// insert header for html file
+echo "<?xml version=\"1.0\" encoding=\"ISO-8859-15\"?>\n";
+echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"
+\"http://www.w3.org/TR/html4/loose.dtd\">\n";
 
 // check if button was pressed and if we have to add/delete a user
 if ($_POST['new_user'] || $_POST['del_user']){
@@ -50,6 +57,8 @@ if ($_POST['new_user'] || $_POST['del_user']){
   }
   exit;
 }
+
+
 
 echo "<html><head><title>listusers</title>\n";
 echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
