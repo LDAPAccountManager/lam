@@ -23,12 +23,14 @@ $Id$
   confsave saves the new preferences to lam.conf
 
 */
+include_once ('../../lib/config.inc');
 
 // start session
 session_save_path("../../sess");
-session_start();
+@session_start();
 
-include_once ('../../lib/config.inc');
+setlanguage();
+
 $conf = new Config($_SESSION['filename']);
 
 // get data from session

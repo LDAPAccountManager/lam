@@ -30,6 +30,8 @@ include_once ("../../lib/config.inc");
 session_save_path("../../sess");
 @session_start();
 
+setlanguage();
+
 // check if button was pressed and if we have to save the setting or go back to login
 if ($_POST['back'] || $_POST['submitconf']){
 	// save settings
