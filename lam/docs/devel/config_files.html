@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-15"
+ http-equiv="content-type">
+  <title>Configuration profiles</title>
+  <link rel="stylesheet" type="text/css" href="style/layout.css">
+</head>
+<body>
+<h1 style="text-align: center;">Configuration profiles</h1>
+<br>
+LAM allows the user to store the configuration settings in <span
+ style="font-weight: bold;">profiles</span>. This makes it easy to
+manage different LDAP servers. All profile files ae stored in <span
+ style="font-weight: bold;">config/</span> and are named <span
+ style="font-weight: bold;"><span style="font-style: italic;">&lt;name&gt;</span>.conf</span>.<br>
+The <span style="font-weight: bold;">master configuration</span> file <span
+ style="font-style: italic;">config/config.cfg</span> only stores the
+default profile and master password. It has the same file format as the
+profiles.<br>
+<br>
+<h2>File format</h2>
+LAM allows to store values and comments in the configuration files.
+Only one type per line is allowed, it is not possible to mix comments
+and values in the same line.<br>
+<br>
+<h3>Settings<br>
+</h3>
+<span style="font-weight: bold;">&lt;identifier&gt;: &lt;value&gt;<br>
+<br>
+</span>The first word in the line is taken as identifier for the
+setting. It must be followed by a <span style="font-weight: bold;">":"</span>
+and a space.<br>
+The rest of the line is taken as the value for this setting.<br>
+<br>
+<h3>Comments</h3>
+<span style="font-weight: bold;"># Comment</span><br
+ style="font-weight: bold;">
+<br>
+Comments always start with a <span style="font-weight: bold;">"#"</span>
+as first character and end at the line end. LAM will ignore all lines
+starting with a <span style="font-style: italic;">"#"</span>.<br>
+</body>
+</html>
