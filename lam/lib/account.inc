@@ -1443,7 +1443,7 @@ function createuser($values, $uselamdaemon=true) {
 		}
 
 	// Add User to Additional Groups
-	if ($values->general_groupadd[0])
+	if (isset($values->general_groupadd[0]))
 		// Loop for every group
 		foreach ($values->general_groupadd as $group2) {
 			// Search for group in LDAP

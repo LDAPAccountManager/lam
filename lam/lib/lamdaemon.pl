@@ -183,7 +183,6 @@ if ($( == 0 ) { # we are root
 							last switch2;
 							};
 						}
-						last switch;
 					};
 					last switch;
 				};
@@ -208,6 +207,12 @@ else {
 		"UserKnownHostsFile /dev/null"],
 		protocol => "2,1" );
 	$ssh->login($username[0], $password);
-	($stdout, $stderr, $exit) = $ssh->cmd("sudo $remotepath $argv", $string);
+	# Change needed to prevent buffer overrun
+	@string2 = split ("\n", $string);
+	for ($i=0; $i<=$#string2; $i++) {
+		($stdout2, $stderr, $exit) = $ssh->cmd("sudo $remotepath $argv", $string2[$i]);
+		$stdout .= $stdout2;
+		}
+	#($stdout, $stderr, $exit) = $ssh->cmd("sudo $remotepath $argv", $string);
 	print $stdout;
 	}

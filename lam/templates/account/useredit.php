@@ -495,9 +495,9 @@ switch ($_POST['select']) {
 		if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/]|[-])*$', $account_new->personal_mobileTelephoneNumber))  $errors[] = array('ERROR', _('Mobile number'), _('Please enter a valid mobile number!'));
 		if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/]|[-])*$', $account_new->personal_facsimileTelephoneNumber))  $errors[] = array('ERROR', _('Fax number'), _('Please enter a valid fax number!'));
 		if ( !ereg('^(([0-9]|[A-Z]|[a-z]|[.]|[-]|[_])+[@]([0-9]|[A-Z]|[a-z]|[-])+([.]([0-9]|[A-Z]|[a-z]|[-])+)*)*$', $account_new->personal_mail))  $errors[] = array('ERROR', _('eMail address'), _('Please enter a valid eMail address!'));
-		if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $account_new->personal_street))  $errors[] = array('ERROR', _('Street'), _('Please enter a valid street name!'));
+		if ( !ereg('^([0-9]|[A-Z]|[a-z]|[-]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $account_new->personal_street))  $errors[] = array('ERROR', _('Street'), _('Please enter a valid street name!'));
 		if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $account_new->personal_postalAddress))  $errors[] = array('ERROR', _('Postal address'), _('Please enter a valid postal address!'));
-		if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $account_new->personal_title))  $errors[] = array('ERROR', _('Title'), _('Please enter a valid title!'));
+		if ( !ereg('^([0-9]|[A-Z]|[a-z]|[-]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $account_new->personal_title))  $errors[] = array('ERROR', _('Title'), _('Please enter a valid title!'));
 		if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $account_new->personal_employeeType))  $errors[] = array('ERROR', _('Employee type'), _('Please enter a valid employee type!'));
 		if ( !ereg('^([0-9]|[A-Z]|[a-z])*$', $account_new->personal_postalCode))  $errors[] = array('ERROR', _('Postal code'), _('Please enter a valid postal code!'));
 		break;
@@ -745,8 +745,8 @@ echo "<title>";
 echo _("Create new Account");
 echo "</title>\n".
 	"<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n".
-	"<meta http-equiv=\"pragma\" content=\"no-cache\">\n".
-	"<meta http-equiv=\"cache-control\" content=\"no-cache\">\n".
+//	"<meta http-equiv=\"pragma\" content=\"no-cache\">\n".
+//	"<meta http-equiv=\"cache-control\" content=\"no-cache\">\n".
 	"</head><body>\n".
 	"<form action=\"useredit.php\" method=\"post\">\n".
 	"<input name=\"varkey\" type=\"hidden\" value=\"".$varkey."\">\n";
