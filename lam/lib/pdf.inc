@@ -174,7 +174,11 @@ function createModulePDF($accounts,$account_type="") {
 
 function getStructure($account_type = array("user","group","host")) {
 	$parser = new xmlParser();
-	$xml = $parser->parse($_SESSION['lam_path'] . '/config/pdf-structure.xml');
+	$xml = $parser->parse($_SESSION['lampath'] . '/config/pdf-structure.xml');
+	
+	// Don't know why this is needed but without the array pointer seems to
+	// be at the last element and therefor the while loop fails.
+	reset($account_type);
 	$border = array();
 	$structure = array();
 	while(($current = current($account_type)) != null) {

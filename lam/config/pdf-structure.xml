@@ -1,5 +1,5 @@
 <settings type="pdf">
-	<pdf type="User">
+	<pdf type="user">
 		<text name="User" />
 		<section name="Personal User Infos">
 			<entry name="title" />
@@ -37,7 +37,7 @@
 			<entry name="User quotas" />
 		</section>
 	</pdf>
-	<pdf type="Group">
+	<pdf type="group">
 		<section name="_name">
 			<entry name="description" />
 			<entry name="Display name" />
@@ -47,7 +47,7 @@
 			<entry name="Members" />
 		</section>
 	</pdf>
-	<pdf type="Host">
+	<pdf type="host">
 		<section name="_name">
 			<entry name="description" />
 			<entry name="UID" />
