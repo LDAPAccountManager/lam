@@ -239,7 +239,7 @@ class Config {
 			if (!in_array("scriptServer", $saved)) array_push($file_array, "\n\n# Server of external Script\n" . "scriptServer: " . $this->scriptServer . "\n");
 			if (!in_array("samba3", $saved)) array_push($file_array, "\n\n# Set to \"yes\" only if you use the new Samba 3.x schema.\n" . "samba3: " . $this->samba3 . "\n");
 			if (!in_array("cachetimeout", $saved)) array_push($file_array, "\n\n# Number of minutes LAM caches LDAP searches.\n" . "cacheTimeout: " . $this->cachetimeout . "\n");
-			if (!in_array("pwdhash", $saved)) array_push($file_array, "\n\n# Password hash algorithm (CRYPT/MD5/SMD5/SHA/SSHA).\n" . "pwdhash: " . $this->pwdhash . "\n");
+			if (!in_array("pwdhash", $saved)) array_push($file_array, "\n\n# Password hash algorithm (CRYPT/MD5/SMD5/SHA/SSHA/PLAIN).\n" . "pwdhash: " . $this->pwdhash . "\n");
 			$file = fopen($conffile, "w");
 			if ($file) {
 				for ($i = 0; $i < sizeof($file_array); $i++) fputs($file, $file_array[$i]);
@@ -596,7 +596,7 @@ class Config {
 
 	// set the password hash type (CRYPT/SHA/SSHA/MD5/SMD5)
 	function set_pwdhash($value) {
-		if (is_string($value) && eregi("^(crypt|sha|ssha|md5|smd5)$", $value)) {
+		if (is_string($value) && eregi("^(crypt|sha|ssha|md5|smd5|plain)$", $value)) {
 			$this->pwdhash = $value;
 		}
 		else return false;

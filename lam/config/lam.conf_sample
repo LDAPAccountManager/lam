@@ -75,6 +75,6 @@ samba3: no
 # Number of minutes LAM caches LDAP searches.
 cachetimeout: 5
 
-# Password hash algorithm (CRYPT/MD5/SMD5/SHA/SSHA).
+# Password hash algorithm (CRYPT/MD5/SMD5/SHA/SSHA/PLAIN).
 pwdhash: SSHA
 

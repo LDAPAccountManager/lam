@@ -155,6 +155,7 @@ if ($conf->get_pwdhash() != "SHA") echo("<option>SHA</option>\n");
 if ($conf->get_pwdhash() != "SSHA") echo("<option>SSHA</option>\n");
 if ($conf->get_pwdhash() != "MD5") echo("<option>MD5</option>\n");
 if ($conf->get_pwdhash() != "SMD5") echo("<option>SMD5</option>\n");
+if ($conf->get_pwdhash() != "PLAIN") echo("<option>PLAIN</option>\n");
 echo ("</select></td>\n");
 echo ("<td><a href=\"../help.php?HelpNumber=215\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 

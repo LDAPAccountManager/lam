@@ -4,7 +4,7 @@
   - Fixed possible error which could delete entries if objectclass didn't fit
   - Fixed many samba 3.0 related bugs, most related to SIDs
   - edit group members directly
-  - support for several password hashes (CRYPT/SHA/SSHA/MD5/SMD5)
+  - support for several password hashes (CRYPT/SHA/SSHA/MD5/SMD5/PLAIN)
   - PDF output for groups and hosts
 
 

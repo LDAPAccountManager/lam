@@ -31,11 +31,16 @@ include_once("config.inc");
 // $password: the password string
 // $enabled: marks the hash as enabled/disabled (e.g. by prefixing "!")
 function pwd_hash($password, $enabled=true) {
+	// check for empty password
+	if (! $password || ($password == "")) {
+		if ($enabled) return "";
+		else return "!";
+	}
 	// hash password with algorithm from config file
 	$hash = "";
 	switch ($_SESSION['config']->get_pwdhash()) {
 		case 'CRYPT':
-			$hash = "{crypt}" . crypt($password);
+			$hash = "{CRYPT}" . crypt($password);
 			break;
 		case 'MD5':
 			$hash = "{MD5}" . base64_encode(mHash(MHASH_MD5, $password));
@@ -53,6 +58,9 @@ function pwd_hash($password, $enabled=true) {
 			$salt = mhash_keygen_s2k(MHASH_SHA1, $password, substr(pack("h*", md5(mt_rand())), 0, 8), 4);
 			$hash = base64_encode(mHash(MHASH_SHA1, $password . $salt) . $salt);
 			$hash = "{SSHA}" . $hash;
+			break;
+		case 'PLAIN':
+			$hash = $password;
 			break;
 		// use SSHA if the setting is invalid
 		default:
