@@ -1,3 +1,10 @@
+ldap-account-manager (0.4.4-1) unstable; urgency=low
+
+  * Updated to new upstream version (0.4.4)
+  * Closes: #232820: config/shells is no longer a symbolic link
+
+ -- Roland Gruber <post@rolandgruber.de>  Wed, 25 Feb 2004 21:07:36 +0100
+
 ldap-account-manager (0.4.3-1) unstable; urgency=low
 
   * Updated to new upstream version (0.4.3)
