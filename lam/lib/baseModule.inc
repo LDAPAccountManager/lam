@@ -57,11 +57,11 @@ class baseModule {
 	/** contains all ldap attributes which are loaded from ldap */
 	var $orig;
 
-	/** contains all error messages wich were troggered*/
+	/** contains all error messages wich were triggered*/
 	var $errors;
 	
 	/** contains all error messages of a module */
-	var $errormessages;
+	var $messages;
 
 	/**
 	* Creates a new base module class
