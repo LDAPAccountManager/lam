@@ -182,7 +182,7 @@ if (($samba3 == "yes") && !eregi("^S-[0-9]-[0-9]-[0-9]{2,2}-[0-9]*-[0-9]*-[0-9]*
 	exit;
 }
 
-if ($scriptpath && !eregi("^/[a-z0-9_\\-]+(/[a-z0-9_\\-]+)+$", $scriptpath)) {
+if ($scriptpath && !eregi("^/[a-z0-9_\\-]+(/[a-z0-9_\\.\\-]+)+$", $scriptpath)) {
 	echo ("<font color=\"red\"><b>" . _("Script path is invalid!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;

@@ -734,7 +734,7 @@ class Config {
 	// sets the path to the external script
 	function set_scriptPath($value) {
 		if (!$value) $this->scriptPath = ""; // optional parameter
-		elseif (is_string($value) && eregi("^/([a-z0-9_\\-])+(/([a-z0-9_\\-])+)+$", $value)) $this->scriptPath = $value;
+		elseif (is_string($value) && eregi("^/([a-z0-9_\\-])+(/([a-z0-9_\\.\\-])+)+$", $value)) $this->scriptPath = $value;
 		else return false;
 		return true;
 	}
