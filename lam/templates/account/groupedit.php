@@ -227,10 +227,11 @@ do { // X-Or, only one if() can be true
 
 echo "</head><body>\n";
 echo "<form action=\"groupedit.php\" method=\"post\">\n";
-//echo "<table class=\"account\" width=\"100%\">\n";
-//if (is_array($errors))
-//	for ($i=0; $i<sizeof($errors); $i++) StatusMessage($errors[$i][0], $errors[$i][1], $errors[$i][2]);
-
+if (is_array($errors)) {
+	echo "<table class=\"account\" width=\"100%\">\n";
+	for ($i=0; $i<sizeof($errors); $i++) StatusMessage($errors[$i][0], $errors[$i][1], $errors[$i][2]);
+	echo "</table>";
+	}
 // print_r($_SESSION['account']);
 
 switch ($select_local) { // Select which part of page will be loaded
@@ -245,12 +246,22 @@ switch ($select_local) { // Select which part of page will be loaded
 	case 'groupmembers':
 		ldapreload('user');
 		echo "<input name=\"select\" type=\"hidden\" value=\"groupmembers\">\n";
+		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
+		echo "<br><fieldset><legend>";
+		echo _('Please select page:');
+		echo "</legend>\n";
+		echo "<input name=\"next_general\" type=\"submit\" value=\""; echo _('General'); echo "\">\n<br>";
+		echo "<input name=\"next_members\" type=\"submit\" disabled value=\""; echo _('Members'); echo "\">\n<br>";
+		echo "<input name=\"next_samba\" type=\"submit\" value=\""; echo _('Samba'); echo "\">\n<br>";
+		echo "<input name=\"next_quota\" type=\"submit\""; if (!isset($_SESSION['config']->scriptPath)) echo " disabled ";
+		echo "value=\""; echo _('Quota'); echo "\">\n<br>";
+		echo "<input name=\"next_final\" type=\"submit\" value=\""; echo _('Final');
+		echo "\"></fieldset></td>\n<td>";
 		echo "<fieldset><legend><b>". _('Additional group members') . "</b></legend>\n";
 		echo "<table border=0 width=\"100%\">\n";
-		echo "<td><fieldset><legend>";
+		echo "<tr><td><fieldset><legend>";
 		echo _('Group members');
 		echo "</legend><select name=\"members[]\" size=15 multiple>\n";
-
 		for ($i=0; $i<count($_SESSION['account']->unix_memberUid); $i++)
 			if ($_SESSION['account']->unix_memberUid[$i]!='') echo "		<option>".$_SESSION['account']->unix_memberUid[$i]."</option>\n";
 		echo "</select></fieldset></td>\n";
@@ -265,19 +276,7 @@ switch ($select_local) { // Select which part of page will be loaded
 			if (is_array($temp)) {
 				echo "		<option>$temp[cn]</option>\n";
 				}
-		echo "</select></fieldset></td>\n</tr>\n</table>\n</fieldset>\n";
-		echo "<table border=0 width=\"100%\">\n<tr>\n";
-		echo "<td>1. <input name=\"next_general\" type=\"submit\" value=\""; echo _('General'); echo "\"></td>\n";
-		echo "<td>==></td>";
-		echo "<td>2. "; echo _('Members'); echo "</td>\n";
-		echo "<td>==></td>";
-		echo "<td>3. <input name=\"next_samba\" type=\"submit\" value=\""; echo _('Samba'); echo "\"></td>\n";
-		echo "<td>==></td>";
-		echo "<td>4. <input name=\"next_quota\" type=\"submit\" value=\""; echo _('Quota'); echo "\"></td>\n";
-		echo "<td>==></td>";
-		echo "<td>5. <input name=\"next_final\" type=\"submit\" value=\""; echo _('Final'); echo "\"></td>\n";
-		echo "</tr>\n</table>\n";
-
+		echo "</select></fieldset></td>\n</tr>\n</table>\n</fieldset>\n</tr>\n</table>\n";
 		break;
 
 	case 'general':
@@ -285,7 +284,17 @@ switch ($select_local) { // Select which part of page will be loaded
 		// load list of profiles
 		$profilelist = getGroupProfiles();
 		// Show page info
-		echo "<input name=\"select\" type=\"hidden\" value=\"general\">\n";
+		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
+		echo "<br><fieldset><legend>";
+		echo _('Please select page:');
+		echo "</legend>\n";
+		echo "<input name=\"next_general\" type=\"submit\" disabled value=\""; echo _('General'); echo "\">\n<br>";
+		echo "<input name=\"next_members\" type=\"submit\" value=\""; echo _('Members'); echo "\">\n<br>";
+		echo "<input name=\"next_samba\" type=\"submit\" value=\""; echo _('Samba'); echo "\">\n<br>";
+		echo "<input name=\"next_quota\" type=\"submit\""; if (!isset($_SESSION['config']->scriptPath)) echo " disabled ";
+		echo "value=\""; echo _('Quota'); echo "\">\n<br>";
+		echo "<input name=\"next_final\" type=\"submit\" value=\""; echo _('Final');
+		echo "\"></fieldset></td>\n<td>";
 		echo "<fieldset><legend><b>";
 		echo _("General properties");
 		echo "</b></legend>\n<table border=0 width=\"100%\">\n<tr>\n<td>";
@@ -313,25 +322,17 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "</select></td>\n<td><a href=\"help.php?HelpNumber=462\" target=\"lamhelp\">"._('Help').
 			"</a></td>\n</tr>\n</table>";
 		echo _('Values with * are required');
-		echo "</fieldset>\n";
-		echo "<fieldset><legend>";
-		echo _("Load profile");
-		echo "</legend>\n<table border=0>\n<tr>\n<td>";
-		echo "<select name=\"f_general_selectprofile\" >";
-		foreach ($profilelist as $profile) echo "	<option>$profile</option>\n";
-		echo "</select>\n".
-			"<input name=\"load\" type=\"submit\" value=\""; echo _('Load Profile');
-		echo "\"></td>\n</tr>\n</table>\n</fieldset>\n";
-		echo "<table border=0 width=\"100%\">\n<tr>\n";
-		echo "<td>1. "; echo _('General'); echo "</td>\n";
-		echo "<td>==></td>";
-		echo "<td>2. <input name=\"next_members\" type=\"submit\" value=\""; echo _('Members'); echo "\"></td>\n";
-		echo "<td>==></td>";
-		echo "<td>3. <input name=\"next_samba\" type=\"submit\" value=\""; echo _('Samba'); echo "\"></td>\n";
-		echo "<td>==></td>";
-		echo "<td>4. <input name=\"next_quota\" type=\"submit\" value=\""; echo _('Quota'); echo "\"></td>\n";
-		echo "<td>==></td>";
-		echo "<td>5. <input name=\"next_final\" type=\"submit\" value=\""; echo _('Final'); echo "\"></td>\n";
+		echo "</fieldset>\n</td></tr></table>";
+		if (count($profilelist)!=0) {
+			echo "<fieldset><legend>";
+			echo _("Load profile");
+			echo "</legend>\n<table border=0>\n<tr>\n<td>";
+			echo "<select name=\"f_general_selectprofile\" >";
+			foreach ($profilelist as $profile) echo "	<option>$profile</option>\n";
+			echo "</select>\n".
+				"<input name=\"load\" type=\"submit\" value=\""; echo _('Load Profile');
+			echo "\"></td>\n</tr>\n</table>\n</fieldset>\n";
+			}
 		echo "</tr>\n</table>\n";
 		break;
 
@@ -339,6 +340,17 @@ switch ($select_local) { // Select which part of page will be loaded
 		// Samba Settings
 		if ($_SESSION['config']->samba3 == 'yes') $samba3domains = $_SESSION['ldap']->search_domains($_SESSION[config]->get_domainSuffix());
 		echo "<input name=\"select\" type=\"hidden\" value=\"samba\">\n";
+		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
+		echo "<br><fieldset><legend>";
+		echo _('Please select page:');
+		echo "</legend>\n";
+		echo "<input name=\"next_general\" type=\"submit\" value=\""; echo _('General'); echo "\">\n<br>";
+		echo "<input name=\"next_members\" type=\"submit\" value=\""; echo _('Members'); echo "\">\n<br>";
+		echo "<input name=\"next_samba\" type=\"submit\" disabled value=\""; echo _('Samba'); echo "\">\n<br>";
+		echo "<input name=\"next_quota\" type=\"submit\""; if (!isset($_SESSION['config']->scriptPath)) echo " disabled ";
+		echo "value=\""; echo _('Quota'); echo "\">\n<br>";
+		echo "<input name=\"next_final\" type=\"submit\" value=\""; echo _('Final');
+		echo "\"></fieldset></td>\n<td>";
 		echo "<fieldset><legend><b>"._('Samba properties')."</b></legend>\n";
 		echo "<table border=0 width=\"100%\"><tr><td>";
 		echo _('Windows groupname');
@@ -394,22 +406,22 @@ switch ($select_local) { // Select which part of page will be loaded
 			else echo '<option>' . $samba3domains[$i]->name. '</option>';
 			}
 		echo	'</select></td>'."\n".'<td><a href="help.php?HelpNumber=467" target="lamhelp">'._('Help').'</a></td></tr>'."\n";
-		echo "</table>\n</fieldset>\n";
-		echo "<table border=0 width=\"100%\">\n<tr>\n";
-		echo "<td>2. <input name=\"next_general\" type=\"submit\" value=\""; echo _('General'); echo "\"></td>\n";
-		echo "<td>==></td>";
-		echo "<td>2. <input name=\"next_members\" type=\"submit\" value=\""; echo _('Members'); echo "\"></td>\n";
-		echo "<td>==></td>";
-		echo "<td>3. "; echo _('Samba'); echo "</td>\n";
-		echo "<td>==></td>";
-		echo "<td>4. <input name=\"next_quota\" type=\"submit\" value=\""; echo _('Quota'); echo "\"></td>\n";
-		echo "<td>==></td>";
-		echo "<td>5. <input name=\"next_final\" type=\"submit\" value=\""; echo _('Final'); echo "\"></td>\n";
-		echo "</tr>\n</table>\n";
+		echo "</table>\n</fieldset>\n</tr>\n</table>\n";
 		break;
 
 	case 'quota':
 		// Quota Settings
+		echo "<input name=\"select\" type=\"hidden\" value=\"samba\">\n";
+		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
+		echo "<br><fieldset><legend>";
+		echo _('Please select page:');
+		echo "</legend>\n";
+		echo "<input name=\"next_general\" type=\"submit\" value=\""; echo _('General'); echo "\">\n<br>";
+		echo "<input name=\"next_members\" type=\"submit\" value=\""; echo _('Members'); echo "\">\n<br>";
+		echo "<input name=\"next_samba\" type=\"submit\" value=\""; echo _('Samba'); echo "\">\n<br>";
+		echo "<input name=\"next_quota\" type=\"submit\" disabled value=\""; echo _('Quota'); echo "\">\n<br>";
+		echo "<input name=\"next_final\" type=\"submit\" value=\""; echo _('Final');
+		echo "\"></fieldset></td>\n<td>";
 		echo '<input name="select" type="hidden" value="quota">';
 		echo "<fieldset><legend><b>"._('Quota properties')."</b></legend>\n";
 		echo "<table border=0 width=\"100%\"><tr><td>";
@@ -434,23 +446,24 @@ switch ($select_local) { // Select which part of page will be loaded
 			echo '<td>'.$_SESSION['account']->quota[$i][8].'</td></tr>'; // inodes grace period
 			$i++;
 			}
-		echo "</table>\n</fieldset>\n";
-		echo "<table border=0 width=\"100%\">\n<tr>\n";
-		echo "<td>2. <input name=\"next_general\" type=\"submit\" value=\""; echo _('General'); echo "\"></td>\n";
-		echo "<td>==></td>";
-		echo "<td>2. <input name=\"next_members\" type=\"submit\" value=\""; echo _('Members'); echo "\"></td>\n";
-		echo "<td>==></td>";
-		echo "<td>3. <input name=\"next_samba\" type=\"submit\" value=\""; echo _('Samba'); echo "\"></td>\n";
-		echo "<td>==></td>";
-		echo "<td>4. "; echo _('Quota'); echo "</td>\n";
-		echo "<td>==></td>";
-		echo "<td>5. <input name=\"next_final\" type=\"submit\" value=\""; echo _('Final'); echo "\"></td>\n";
-		echo "</tr>\n</table>\n";
+		echo "</table>\n</fieldset>\n</tr>\n</table>\n";
 		break;
 
 	case 'final':
 		// Final Settings
 		echo '<input name="select" type="hidden" value="final">';
+		echo "<input name=\"select\" type=\"hidden\" value=\"samba\">\n";
+		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
+		echo "<br><fieldset><legend>";
+		echo _('Please select page:');
+		echo "</legend>\n";
+		echo "<input name=\"next_general\" type=\"submit\" value=\""; echo _('General'); echo "\">\n<br>";
+		echo "<input name=\"next_members\" type=\"submit\" value=\""; echo _('Members'); echo "\">\n<br>";
+		echo "<input name=\"next_samba\" type=\"submit\" value=\""; echo _('Samba'); echo "\">\n<br>";
+		echo "<input name=\"next_quota\" type=\"submit\""; if (!isset($_SESSION['config']->scriptPath)) echo " disabled ";
+		echo "value=\""; echo _('Quota'); echo "\">\n<br>";
+		echo "<input name=\"next_final\" type=\"submit\" disabled value=\""; echo _('Final');
+		echo "\"></fieldset></td>\n<td>";
 		echo "<fieldset><legend><b>";
 		if ($_SESSION['account_old']) echo _('Modify');
 		 else echo _('Create');
@@ -493,18 +506,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		 else echo _('Create Account');
 		echo '">'.
 		'</td></tr>'."\n";
-		echo "</table>\n</fieldset>\n";
-		echo "<table border=0 width=\"100%\">\n<tr>\n";
-		echo "<td>2. <input name=\"next_general\" type=\"submit\" value=\""; echo _('General'); echo "\"></td>\n";
-		echo "<td>==></td>";
-		echo "<td>2. <input name=\"next_members\" type=\"submit\" value=\""; echo _('Members'); echo "\"></td>\n";
-		echo "<td>==></td>";
-		echo "<td>3. <input name=\"next_samba\" type=\"submit\" value=\""; echo _('Samba'); echo "\"></td>\n";
-		echo "<td>==></td>";
-		echo "<td>4. <input name=\"next_quota\" type=\"submit\" value=\""; echo _('Quota'); echo "\"></td>\n";
-		echo "<td>==></td>";
-		echo "<td>5. "; echo _('Final'); echo "</td>\n";
-		echo "</tr>\n</table>\n";
+		echo "</table>\n</fieldset>\n</tr>\n</table>\n";
 		break;
 
 	case 'finish':
