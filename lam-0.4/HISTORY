@@ -1,3 +1,11 @@
+08.02.2004 0.4.3
+  - new login layout
+  - added Hungarian and Japanese translations
+  - fixed bugs:
+      Samba paswords were sometimes empty for new users (892272)
+      links in list views may not work with web servers other than Apache
+
+
 21.01.2004 0.4.2
   - added config wizard
   - MHash is only needed for PHP < 4.3
