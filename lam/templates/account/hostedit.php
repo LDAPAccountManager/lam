@@ -423,7 +423,7 @@ switch ($select_local) {
 		echo _("Save profile");
 		echo "</b></legend>\n<table border=0 width=\"100%\">\n<tr>\n<td width=\"50%\">";
 		echo '<input name="f_finish_safeProfile" type="text" size="30" maxlength="50">';
-		echo '</td><td width=\"30%\"><input name="save" type="submit" value="';
+		echo '</td><td width="30%"><input name="save" type="submit" value="';
 		echo _('Save profile');
 		echo '"></td><td width="20%"><a href="../help.php?HelpNumber=457" target="lamhelp">'._('Help');
 		echo "</a></td>\n</tr>\n</table>\n</fieldset>";

@@ -56,7 +56,29 @@ thins to get it work.
    admin-user was encrypted with {SSHA}. I had to change encryption
    for admin-accounts to {CRYPT} to get ssh work.
    
+5. Test lamdaemon.pl
+   I've installed a test-function in lamdaemon.pl. Please run lamdaemon.pl
+   with the following attributes to test it:
+   lamdaemon.pl $ssh-server $lam_path_on_host $admin-username $admin-password *test
+   $ssh-server is the remote host lamdaemon.pl should be run
+   $lam_path_on_host is the path to lamdaemon.pl on remote host
+   $admin-username is the name of the user which is allowed to run lamdaemon.pl
+                   as root. It's the same user in /etc/sudoers
+   $admin-password is the password of admin-user
+   *test is the command which tells lamdaemon.pl to test settings
+   
+   You have to run the coammd as the user your webserver is running as, e.g.
+
+   wwwrun@tilo:/srv/www/htdocs/lam/lib> /srv/www/htdocs/lam/lib/lamdaemon.pl \
+     127.0.0.1 /srv/www/htdocs/lam/lib/lamdaemon.pl root secret *test
+
+   You should get the following response:
+     Net::SSH::Perl successfully installed.
+     sudo set up correctly.
+     Perl quota module successfully installed.
+     If you have'nt seen any error lamdaemon.pl should set up successfully.
+   
 Now everything should work fine
 
-This is a very incomplete Documention for Alpha-Release only.
+This is a very incomplete Documention for Beta-Release only.
 Pleas send a mail to TiloLutz@gmx.de if you have any suggsestion

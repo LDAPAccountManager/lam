@@ -24,7 +24,6 @@
 $debug=true; # Show debug messages
 
 
-use Quota; # Needed to get and set quotas
 #use strict; # Use strict for security reasons
 
 @quota_grp;
@@ -69,6 +68,9 @@ sub get_fs { # Load mountpoints from mtab if enabled quotas
 
 # ***************** Check values
 if ($( == 0 ) {
+	if ($ARGV[2] eq "*test") { print "sudo set up correctly.\n"; }
+	use Quota; # Needed to get and set quotas
+	if ($ARGV[2] eq "*test") { print "Perl quota module successfully installed.\n"; }
 	# Drop root Previleges
 	($<, $>) = ($>, $<);
 	switch: {
@@ -175,12 +177,14 @@ if ($( == 0 ) {
 			};
 		last switch;
 		};
-	print "$return\n";
+	if ($ARGV[2] eq "*test") { print "If you have'nt seen any error lamdaemon.pl should set up successfully.\n"; }
+	    else { print "$return\n"; }
 	}
 else {
 	$hostname = shift @ARGV;
 	$remotepath = shift @ARGV;
 	use Net::SSH::Perl;
+	if ($ARGV[2] eq "*test") { print "Net::SSH::Perl successfully installed.\n"; }
 	@username = split (',', $ARGV[0]);
 	$username[0] =~ s/uid=//;
 	my $ssh = Net::SSH::Perl->new($hostname, options=>[

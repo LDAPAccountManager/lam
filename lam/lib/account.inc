@@ -1669,8 +1669,6 @@ function createhost($values) {
 	$attr['gecos'] = utf8_encode(replace_umlaut($values->general_gecos));
 	$attr['description'] = utf8_encode($values->general_gecos);
 	// Set unix password
-	$attr['userPassword'] = pwd_hash('');
-	$attr['shadowLastChange'] = getdays();
 
 	// Samba attributes
 	if ($_SESSION['config']->is_samba3()) {
@@ -1771,12 +1769,6 @@ function modifyhost($values,$values_old) {
 	if ($values->smb_displayName != $values_old->smb_displayName)
 		$attr['displayName'] = utf8_encode($values->smb_displayName);
 
-	// Set unix password
-	if ($values->smb_password_no) {
-		$attr['userPassword'] = pwd_hash('');
-		$attr['shadowLastChange'] = getdays(); // shadowAccount_may
-		}
-
 	// Samba attributes
 	if ($_SESSION['config']->is_samba3()) {
 		if (!in_array('sambaSamAccount', $values->general_objectClass)) {
@@ -1837,8 +1829,6 @@ function modifyhost($values,$values_old) {
 			$attr['sambaNTPassword'] = '0CB6948805F797BF2A82807973B89537';
 			$attr['sambaLMPassword'] = '01FC5A6BE7BC6929AAD3B435B51404EE';
 			$attr['sambaPwdLastSet'] = time(); // sambaAccount_may
-			$attr['userPassword'] = '';
-			$attr['shadowLastChange'] = getdays();
 			}
 		if ($values->smb_domain->name!=$values_old->smb_domain->name) $attr['sambaDomainName'] = $values->smb_domain->name; // sambaAccount_may
 		}
@@ -1901,8 +1891,6 @@ function modifyhost($values,$values_old) {
 			$attr['ntPassword'] = '0CB6948805F797BF2A82807973B89537';
 			$attr['lmPassword'] = '01FC5A6BE7BC6929AAD3B435B51404EE';
 			$attr['pwdLastSet'] = time(); // sambaAccount_may
-			$attr['userPassword'] = '';
-			$attr['shadowLastChange'] = getdays();
 			}
 		if (isset($attr_old['sambaSID'][0])) $attr_rem['sambaSID'] = $attr_old['sambaSID'][0];
 		if (($values->smb_domain!='') && ($values->smb_domain!=$values_old->smb_domain)) $attr['domain'] = $values->smb_domain; // sambaAccount_may
