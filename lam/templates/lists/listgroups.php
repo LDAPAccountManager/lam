@@ -65,7 +65,10 @@ if ($_POST['new_group'] || $_POST['del_group'] || $_POST['pdf_group'] || $_POST[
 		for ($i = 0; $i < sizeof($hosts); $i++) {
 			$list[$i] = loadgroup($hosts[$i]);
 		}
-		if (sizeof($list) > 0) createGroupPDF($list);
+		if (sizeof($list) > 0) {
+			createGroupPDF($list);
+			if ($_SESSION['config']->get_scriptServer()) $list = getquotas($list);
+		}
 	}
 	// PDF for all groups
 	elseif ($_POST['pdf_all']){
@@ -73,7 +76,10 @@ if ($_POST['new_group'] || $_POST['del_group'] || $_POST['pdf_group'] || $_POST[
 		for ($i = 0; $i < sizeof($_SESSION['grp_info']); $i++) {
 			$list[$i] = loadgroup($_SESSION['grp_info'][$i]['dn']);
 		}
-		if (sizeof($list) > 0) createGroupPDF($list);
+		if (sizeof($list) > 0) {
+			createGroupPDF($list);
+			if ($_SESSION['config']->get_scriptServer()) $list = getquotas($list);
+		}
 	}
 	exit;
 }
@@ -300,7 +306,6 @@ if (sizeof($grp_units) > 1) {
 	echo ("<p>&nbsp;</p>\n");
 }
 
-echo ("<p align=\"left\">\n");
 echo ("<input type=\"submit\" name=\"new_group\" value=\"" . _("New Group") . "\">\n");
 if (sizeof($grp_info) > 0) {
 	echo ("<input type=\"submit\" name=\"del_group\" value=\"" . _("Delete Group(s)") . "\">\n");
@@ -311,7 +316,6 @@ if (sizeof($grp_info) > 0) {
 	echo ("<input type=\"submit\" name=\"pdf_all\" value=\"" . _("Create PDF for all groups") . "\">\n");
 	echo "</fieldset>";
 }
-echo ("</p>\n");
 
 echo ("</form>\n");
 echo "</body></html>\n";

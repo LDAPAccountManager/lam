@@ -291,7 +291,6 @@ echo ("<p>&nbsp;</p>\n");
 }
 
 // add/delete/PDF buttons
-echo ("<p align=\"left\">\n");
 echo ("<input type=\"submit\" name=\"new_host\" value=\"" . _("New Host") . "\">\n");
 if (sizeof($hst_info) > 0) {
 	echo ("<input type=\"submit\" name=\"del_host\" value=\"" . _("Delete Host(s)") . "\">\n");
@@ -302,7 +301,6 @@ if (sizeof($hst_info) > 0) {
 	echo ("<input type=\"submit\" name=\"pdf_all\" value=\"" . _("Create PDF for all hosts") . "\">\n");
 	echo "</fieldset>";
 }
-echo ("</p>\n");
 
 echo ("</form>\n");
 echo "</body></html>\n";

@@ -91,9 +91,8 @@ if ($_POST['new_user'] || $_POST['del_user'] || $_POST['pdf_user'] || $_POST['pd
 			$list[$i]->smb_password = "";
 		}
 		if (sizeof($list) > 0) {
-			$list = quotas($list);
-			if ($list) createUserPDF($list);
-			else StatusMessage("ERROR", _("Unable to get quota information!"), "");
+			if ($_SESSION['config']->get_scriptServer()) $list = getquotas($list);
+			createUserPDF($list);
 		}
 	}
 	// PDF for all users
@@ -105,9 +104,8 @@ if ($_POST['new_user'] || $_POST['del_user'] || $_POST['pdf_user'] || $_POST['pd
 			$list[$i]->smb_password = "";
 		}
 		if (sizeof($list) > 0) {
-			$list = quotas($list);
-			if ($list) createUserPDF($list);
-			else StatusMessage("ERROR", _("Unable to get quota information!"), "");
+			if ($_SESSION['config']->get_scriptServer()) $list = getquotas($list);
+			createUserPDF($list);
 		}
 	}
 	exit;
@@ -442,24 +440,6 @@ function cmp_array($a, $b) {
 		else return -1;
 	}
 }
-
-// takes an array of account and fill the accounts with quota information
-function quotas($list) {
-	if (! is_array($list)) return false;
-	for ($i = 0; $i < sizeof($list); $i++) {
-		$usernames[] = $list[$i]->general_username;
-	}
-	$data = getquotas("user", $usernames);
-	if (sizeof($data) != sizeof($list)) {
-		return false;
-	}
-	for ($i = 0; $i < sizeof($data); $i++) {
-		$ret[$i] = $list[$i];
-		$ret[$i]->quota = $data[$i]->quota;
-	}
-	return $ret;
-}
-
 
 // save variables to session
 $_SESSION['usr_units'] = $usr_units;
