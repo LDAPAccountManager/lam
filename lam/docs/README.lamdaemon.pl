@@ -25,6 +25,11 @@ thins to get it work.
    $admin is the adminuser from lam and $path
    is the path include the filename of lamdaemon.pl
    e.g. $admin All= NOPASSWD: /srv/www/htdocs/lam/lib/lamdaemon.pl
+   At the moment the password is a paramteter of lamdaemon.pl
+   Therefore you should disable logging so the password doesn't
+   apear in any logfile
+   This can be done by adding the following line:
+   Defaults:$admin !syslog logfile=/dev/null
    
 4. Set up perl
    We need some external perl-modules, Quota and Net::LDAP
