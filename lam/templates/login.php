@@ -38,10 +38,13 @@ $Id$
 		<form action="main.php" method="post">
 			<table width="300" align="center" border="0">
 				<tr>
-					<td width="45%" align="right">Username:</td><td width="10%"></td><td width="45%" align="left"><input type="text" name="username"></td>
+					<td width="45%" align="right"><? echo _("Username:") ?></td><td width="10%"></td><td width="45%" align="left"><input type="text" name="username"></td>
 				</tr>
 				<tr>
-					<td width="45%" align="right">Password:</td><td width="10%"></td><td width="45%" align="left"><input type="password" name="passwd"></td>
+					<td width="45%" align="right"><? echo _("Password:") ?></td><td width="10%"></td><td width="45%" align="left"><input type="password" name="passwd"></td>
+				</tr>
+				<tr>
+					<td width="45%" align="right"><? echo _("Your Language:") ?></td><td width="10%"></td><td width="45%" align="left"><select name="language" size="1"><option value="german" selected="yes">Deutsch</option><option value="english">English</option></select></td>
 				</tr>
 				<tr>
 					<td width="100%" colspan="3" align="center"><input type="submit" name="submit" value=<? echo _("Login"); ?>></td>
