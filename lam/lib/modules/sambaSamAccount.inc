@@ -71,6 +71,8 @@ class sambaSamAccount extends baseModule {
 		}
 		// alias name
 		$return["alias"] = _('Samba 3');
+		// module dependencies
+		$return['dependencies'] = array('depends' => array('posixAccount'), 'conflicts' => array());
 		return $return;
 	}
 
@@ -142,14 +144,6 @@ class sambaSamAccount extends baseModule {
 				}
 			else return '';
 			}
-		}
-
-	/* This function returns a list with all required modules
-	*/
-	function get_dependencies($scope) {
-		if ($scope=='host') return array('depends' => array('posixAccount'), 'conflicts' => array() );
-		if ($scope=='user') return array('depends' => array('posixAccount'), 'conflicts' => array() );
-		return -1;
 		}
 
 	function module_ready() {

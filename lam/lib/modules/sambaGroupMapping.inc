@@ -65,6 +65,8 @@ class sambaGroupMapping extends baseModule {
 		$return["account_types"] = array("group");
 		// alias name
 		$return["alias"] = _('Samba 3');
+		// module dependencies
+		$return['dependencies'] = array('depends' => array('posixGroup'), 'conflicts' => array());
 		return $return;
 	}
 
@@ -108,13 +110,6 @@ class sambaGroupMapping extends baseModule {
 	// Array of well known rids
 	var $rids;
 
-
-	/* This function returns a list with all required modules
-	*/
-	function get_dependencies($scope) {
-		if ($scope=='group') return array('depends' => array('posixGroup'), 'conflicts' => array() );
-		return -1;
-		}
 
 	function module_ready() {
 		if ($_SESSION[$this->base]->module['posixGroup']->attributes['gidNumber'][0]=='') return false;

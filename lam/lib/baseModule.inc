@@ -118,6 +118,16 @@ class baseModule {
 		else return get_class($this);
 	}
 
+	/**
+	* This function returns a list with all depending and conflicting modules.
+	*
+	* @return array list of dependencies and conflicts
+	*/
+	function get_dependencies() {
+		if (isset($this->meta['dependencies'])) return $this->meta['dependencies'];
+		else return array('depends' => array(), 'conflicts' => array());
+		}
+
 // TODO implement missing interface
 }
 

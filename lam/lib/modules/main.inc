@@ -79,12 +79,6 @@ class main extends baseModule {
 	var $base;
 
 
-	/* This function returns a list with all required modules
-	*/
-	function get_dependencies($scope) {
-		return array('depends' => array(), 'conflicts' => array() );
-		}
-
 	function module_ready() {
 		return true;
 		}

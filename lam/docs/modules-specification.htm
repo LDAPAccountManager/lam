@@ -95,7 +95,7 @@ quota module is no base module as it needs posixAccount.<br>
     <tr>
       <td
  style="vertical-align: top; background-color: rgb(204, 204, 204); text-align: center;"><span
- style="font-weight: bold;">function get_ldap_filter($scope)</span><br>
+ style="font-weight: bold;">function get_ldap_filter()</span><br>
       </td>
     </tr>
   </tbody>
@@ -104,9 +104,7 @@ quota module is no base module as it needs posixAccount.<br>
 Returns an array('or' =&gt; '...', 'and' =&gt; '...') that is used to
 build the LDAP filter. Usually
 used to filter object classes.<br>
-<span style="font-weight: bold;">$scope</span> is the account type
-("user", "group", "host" at this time).<br>
-<br>
+<span style="font-weight: bold;"></span><br>
 All "or" filter parts of the base modules are combined with OR and then
 combined with the "and" parts.<br>
 The resulting LDAP filter will look like this:
@@ -114,7 +112,7 @@ The resulting LDAP filter will look like this:
 <br>
 <span style="font-weight: bold;">Example: <span
  style="font-style: italic;">return "('or' =&gt;
-'objectClass=posixAccount', 'and' =&gt; '(!(uid=*$))')"</span></span><br>
+'(objectClass=posixAccount)', 'and' =&gt; '(!(uid=*$))')"</span></span><br>
 <br>
 <span style="font-weight: bold; color: rgb(255, 0, 0);">This function
 is only used for base modules. Standard modules do not need to
@@ -128,15 +126,13 @@ implement it.</span><br>
     <tr>
       <td
  style="vertical-align: top; background-color: rgb(204, 204, 204); text-align: center;">function
-get_dependencies($scope)<br>
+get_dependencies()<br>
       </td>
     </tr>
   </tbody>
 </table>
 <br>
 This function returns a list of modules it depends on.<br>
-The <span style="font-weight: bold;">$scope</span> parameter defines
-the account type ("user", "group", "host" at this time).<br>
 <br>
 The return value is an array with two sub arrays, <span
  style="font-weight: bold;">"depends"</span> and <span
@@ -567,6 +563,21 @@ array("user", "host")</span><br style="font-weight: bold;">
 <br>
 <span style="font-weight: bold;">&nbsp;&nbsp; Example:</span><span
  style="font-style: italic; font-weight: bold;"> array('or' =&gt;
-'objectClass=posixAccount', 'and' =&gt; '(!(uid=*$))')</span>
+'objectClass=posixAccount', 'and' =&gt; '(!(uid=*$))')<br>
+<br>
+</span>
+<h3>6.4 get_dependencies()<br>
+</h3>
+&nbsp;&nbsp;&nbsp; "dependencies" =&gt; array<br>
+<br>
+<span style="font-weight: bold;">&nbsp;&nbsp; Example:</span><span
+ style="font-style: italic; font-weight: bold;"> array(</span><span
+ style="font-style: italic; font-weight: bold;"><span
+ style="font-weight: bold; font-style: italic;">"depends"
+=&gt; array("posixAccount", array("qmail", "sendmail")), "conflicts"
+=&gt; array("exim")</span></span><span
+ style="font-style: italic; font-weight: bold;">)</span><span
+ style="font-style: italic; font-weight: bold;"><br>
+</span>
 </body>
 </html>

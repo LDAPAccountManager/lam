@@ -65,6 +65,8 @@ class shadowAccount extends baseModule {
 		$return["account_types"] = array("user");
 		// alias name
 		$return["alias"] = _('Shadow');
+		// module dependencies
+		$return['dependencies'] = array('depends' => array('posixAccount'), 'conflicts' => array());
 		return $return;
 	}
 
@@ -102,13 +104,6 @@ class shadowAccount extends baseModule {
 	*/
 	var $orig;
 
-
-	/* This function returns a list with all required modules
-	*/
-	function get_dependencies($scope) {
-		if ($scope=='user') return array('depends' => array('inetOrgPerson'), 'conflicts' => array() );
-		return -1;
-		}
 
 	function module_ready() {
 		return true;

@@ -71,6 +71,8 @@ class posixGroup extends baseModule {
 		}
 		// alias name
 		$return["alias"] = _('Unix');
+		// module dependencies
+		$return['dependencies'] = array('depends' => array(), 'conflicts' => array('inetOrgPerson', 'account', 'sambaDomain'));
 		return $return;
 	}
 
@@ -139,13 +141,6 @@ class posixGroup extends baseModule {
 				}
 			else return '';
 			}
-		}
-
-	/* This function returns a list with all required modules
-	*/
-	function get_dependencies($scope) {
-		if ($scope=='group') return array('depends' => array(), 'conflicts' => array('inetOrgPerson', 'account', 'sambaDomain') );
-		return -1;
 		}
 
 	function module_ready() {

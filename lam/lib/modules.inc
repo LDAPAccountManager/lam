@@ -106,8 +106,8 @@ function getModulesDependencies($scope) {
 	$mods = getAvailableModules($scope);
 	$deps = array();
 	for ($i = 0; $i < sizeof($mods); $i++) {
-		$deps = call_user_func(array($mods[$i], "get_dependencies"), $scope);
-		if ($deps != -1) $return[$mods[$i]] = $deps;
+		$module = new $mods[$i]($scope);
+		$return[$mods[$i]] = $module->get_dependencies();
 	}
 	return $return;
 	}

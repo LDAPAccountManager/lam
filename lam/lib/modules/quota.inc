@@ -34,6 +34,14 @@ class quota extends baseModule {
 		$return["account_types"] = array("user", "group");
 		// alias name
 		$return["alias"] = _('Quota');
+		if ($this->get_scope() == 'group') {
+			// module dependencies
+			$return['dependencies'] = array('depends' => array('posixGroup'), 'conflicts' => array());
+		}
+		if ($this->get_scope() == 'user') {
+			// module dependencies
+			$return['dependencies'] = array('depends' => array('posixAccount'), 'conflicts' => array());
+		}
 		return $return;
 	}
 
@@ -82,14 +90,6 @@ class quota extends baseModule {
 
 	var $quota;
 
-
-	/* This function returns a list with all required modules
-	*/
-	function get_dependencies($scope) {
-		if ($scope=='group') return array('depends' => array('posixGroup'), 'conflicts' => array() );
-		if ($scope=='user') return array('depends' => array('posixAccount'), 'conflicts' => array() );
-		return -1;
-		}
 
 	function module_ready() {
 		if (!isset($_SESSION[$_SESSION[$this->base]->config]->scriptPath)) return $false;

@@ -49,6 +49,8 @@ class inetOrgPerson extends baseModule {
 		$return["account_types"] = array("user");
 		// alias name
 		$return["alias"] = _('Personal');
+		// module dependencies
+		$return['dependencies'] = array('depends' => array('posixAccount'), 'conflicts' => array('account'));
 		return $return;
 	}
 
@@ -81,13 +83,6 @@ class inetOrgPerson extends baseModule {
 	*/
 	var $orig;
 
-
-	/* This function returns a list with all required modules
-	*/
-	function get_dependencies($scope) {
-		if ($scope=='user') return array('depends' => array('posixAccount'), 'conflicts' => array('account', 'posixGroup', 'sambaDomain') );
-		return -1;
-		}
 
 	/* This function returns true if all required attributes from other
 	* modules are set. This is required to prevent undefined states
