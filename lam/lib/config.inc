@@ -69,7 +69,7 @@ class Config {
 	
 	// reloads preferences from ../config/lam.conf
 	function reload() {
-		$conffile = getLAMPath() . "/config/lam.conf";
+		$conffile = substr(__FILE__, 0, strlen(__FILE__) - 14) . "/config/lam.conf";
 		if (is_file($conffile) == True) {
 			$file = fopen($conffile, "r");
 			while (!feof($file)) {
@@ -490,17 +490,6 @@ class Config {
 		else echo _("Config->set_hostlistAttributes failed!");
 	}
 
-}
-
-// Get path of LAM directory without "/" at the end
-function getLAMPath() {
-	$lampath = "";
-	$path = getcwd();
-	$path = explode("/", substr($path,1));
-	for($i = 0; $i <= array_search("lam", $path); $i++) {
-		$lampath .= "/" . $path[$i];
-	}
-	return $lampath;
 }
 
 ?>

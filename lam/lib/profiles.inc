@@ -29,7 +29,7 @@ include_once("account.inc");
 
 // returns an array of String with all available user profiles (without .pru)
 function getUserProfiles() {
-	$dir = dir(getLAMPath() . "/config/profiles/users");
+	$dir = dir(substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/users");
 	$ret = array();
 	$pos = 0;
 	while ($entry = $dir->read()){
@@ -45,7 +45,7 @@ function getUserProfiles() {
 
 // returns an array of String with all available group profiles (without .prg)
 function getGroupProfiles() {
-	$dir = dir(getLAMPath() . "/config/profiles/groups");
+	$dir = dir(substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/groups");
 	$ret = array();
 	$pos = 0;
 	while ($entry = $dir->read()){
@@ -61,7 +61,7 @@ function getGroupProfiles() {
 
 // returns an array of String with all available host profiles (without .prh)
 function getHostProfiles() {
-	$dir = dir(getLAMPath() . "/config/profiles/hosts");
+	$dir = dir(substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/hosts");
 	$ret = array();
 	$pos = 0;
 	while ($entry = $dir->read()){
@@ -79,7 +79,7 @@ function getHostProfiles() {
 // the return value is an account object
 function loadUserProfile($profile) {
 	$acc = new account();
-	$file = getLAMPath() . "/config/profiles/users/" . $profile . ".pru";
+	$file = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/users/" . $profile . ".pru";
 	if (is_file($file) == True) {
 		$file = fopen($file, "r");
 		while (!feof($file)) {
@@ -193,7 +193,7 @@ function loadGroupProfile($profile) {
 // the return value is an account object
 function loadHostProfile($profile) {
 	$acc = new account();
-	$file = getLAMPath() . "/config/profiles/hosts/" . $profile . ".prh";
+	$file = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/hosts/" . $profile . ".prh";
 	if (is_file($file) == True) {
 		$file = fopen($file, "r");
 		while (!feof($file)) {
@@ -277,7 +277,7 @@ function loadHostProfile($profile) {
 // file is created, if needed
 function saveUserProfile($account, $profile) {
 	if (!is_object($account)) {echo _("saveUserProfile: \$account has wrong type!"); exit;}
-	$path = getLAMPath() . "/config/profiles/users/" . $profile . ".pru";
+	$path = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/users/" . $profile . ".pru";
 	$file = fopen($path, "w");
 	// write attributes
 	if ($account->general_group) fputs($file, "general_group: " . $account->general_group . "\n");
@@ -316,7 +316,7 @@ function saveGroupProfile($account, $profile) {
 // file is created, if needed
 function saveHostProfile($account, $profile) {
 	if (!is_object($account)) {echo _("saveHostProfile: \$account has wrong type!"); exit;}
-	$path = getLAMPath() . "/config/profiles/hosts/" . $profile . ".prh";
+	$path = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/hosts/" . $profile . ".prh";
 	$file = fopen($path, "w");
 	// write attributes
 	if ($account->general_group) fputs($file, "general_group: " . $account->general_group . "\n");
