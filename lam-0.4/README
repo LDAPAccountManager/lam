@@ -80,8 +80,9 @@ LAM - Readme
 
     LAM needs to store your LDAP username + password in the session. The session
     files are saved in sess/ and are accessible only by the web server. To increase
-    security username and password are encrypted with AES (256 bit). The key and iv
-    are generated at random when you log in. They are stored in two cookies.
+    security username and password are encrypted with MCrypt/AES or Blowfish.
+    The key and iv are generated at random when you log in. They are stored in two
+    cookies.
  
 
     Have fun!
