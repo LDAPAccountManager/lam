@@ -324,34 +324,34 @@ tr.account {
  */
 
 /* Background olor for the different Status Messages */
-div.status_info {
+div.statusInfo {
   background-color:#5C7EC6;
 }
 
-div.status_warn {
+div.statusWarn {
   background-color:#CE8037;
 }
 
-div.status_error {
+div.statusError {
   background-color:#C65146;
 }
 
 /* H1 (MessageTyp) font size, family, color, and some more settings for the different Status Messages */
-h1.status_info {
+h1.statusInfo {
   font-size:16pt;
   font-family:arial;
   color:#FFFFFF;
   margin-left:20px;
 }
 
-h1.status_warn {
+h1.statusWarn {
   font-size:16pt;
   font-family:arial;
   color:#FFFFFF;
   margin-left:20px;
 }
 
-h1.status_error {
+h1.statusError {
   font-size:16pt;
   font-family:arial;
   color:#FFFFFF;
@@ -359,7 +359,7 @@ h1.status_error {
 }
 
 /* H2 (MessageHeadline) font size, family, color, and some more settings for the different Status Messages */
-h2.status_info {
+h2.statusInfo {
   font-size:13pt;
   font-family:arial;
   color:#FFFFFF;
@@ -367,7 +367,7 @@ h2.status_info {
   margin-right:25px;
 }
 
-h2.status_warn {
+h2.statusWarn {
   font-size:13pt;
   font-family:arial;
   color:#FFFFFF;
@@ -375,7 +375,7 @@ h2.status_warn {
   margin-right:25px;
 }
 
-h2.status_error {
+h2.statusError {
   font-size:13pt;
   font-family:arial;
   color:#FFFFFF;
@@ -384,7 +384,7 @@ h2.status_error {
 }
 
 /* P (MessageText) font size, family, color, and some more settings for the different Status Messages */
-p.status_info {
+p.statusInfo {
   font-size:11pt;
   font-family:serif;
   color:#FFFFFF;
@@ -392,7 +392,7 @@ p.status_info {
   margin-right:35px;
 }
 
-p.status_warn {
+p.statusWarn {
   font-size:11pt;
   font-family:serif;
   color:#FFFFFF;
@@ -400,7 +400,7 @@ p.status_warn {
   margin-right:35px;
 }
 
-p.status_error {
+p.statusError {
   font-size:11pt;
   font-family:serif;
   color:#FFFFFF;
