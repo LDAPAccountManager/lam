@@ -49,17 +49,28 @@ class inetOrgPerson extends baseModule {
 	**/
 	function load_Messages() {
 		$this->messages['host'][0] = array('ERROR', _('Unix workstations'), _('Unix workstations is invalid.'));
-		$this->messages['givenName'][0] = array('ERROR', _('Given name'), _('Given name contains invalid characters'));
-		$this->messages['surname'][0] = array('ERROR', _('Surname'), _('Surname contains invalid characters'));
+		$this->messages['givenName'][0] = array('ERROR', _('Given name'), _('Given name contains invalid characters!'));
+		$this->messages['givenName'][1] = array('ERROR', _('Account %s: inetOrgPerson_lastName'), _('Given name contains invalid characters!'));
+		$this->messages['surname'][0] = array('ERROR', _('Surname'), _('Surname contains invalid characters!'));
+		$this->messages['surname'][1] = array('ERROR', _('Account %s: inetOrgPerson_firstName'), _('Surname contains invalid characters!'));
 		$this->messages['telephoneNumber'][0] = array('ERROR', _('Telephone number'), _('Please enter a valid telephone number!'));
+		$this->messages['telephoneNumber'][1] = array('ERROR', _('Account %s: inetOrgPerson_telephone'), _('Please enter a valid telephone number!'));
 		$this->messages['mobileTelephone'][0] = array('ERROR', _('Mobile number'), _('Please enter a valid mobile number!'));
+		$this->messages['mobileTelephone'][1] = array('ERROR', _('Account %s: inetOrgPerson_mobile'), _('Please enter a valid mobile number!'));
 		$this->messages['facsimileNumber'][0] = array('ERROR', _('Fax number'), _('Please enter a valid fax number!'));
+		$this->messages['facsimileNumber'][1] = array('ERROR', _('Account %s: inetOrgPerson_fax'), _('Please enter a valid fax number!'));
 		$this->messages['email'][0] = array('ERROR', _('eMail address'), _('Please enter a valid eMail address!'));
+		$this->messages['email'][1] = array('ERROR', _('Account %s: inetOrgPerson_email'), _('Please enter a valid eMail address!'));
 		$this->messages['street'][0] = array('ERROR', _('Street'), _('Please enter a valid street name!'));
+		$this->messages['street'][1] = array('ERROR', _('Account %s: inetOrgPerson_street'), _('Please enter a valid street name!'));
 		$this->messages['postalAddress'][0] = array('ERROR', _('Postal address'), _('Please enter a valid postal address!'));
+		$this->messages['postalAddress'][1] = array('ERROR', _('Account %s: inetOrgPerson_address'), _('Please enter a valid postal address!'));
 		$this->messages['postalCode'][0] = array('ERROR', _('Postal code'), _('Please enter a valid postal code!'));
+		$this->messages['postalCode'][1] = array('ERROR', _('Account %s: inetOrgPerson_postalCode'), _('Please enter a valid postal code!'));
 		$this->messages['title'][0] = array('ERROR', _('Title'), _('Please enter a valid title!'));
+		$this->messages['title'][1] = array('ERROR', _('Account %s: inetOrgPerson_title'), _('Please enter a valid title!'));
 		$this->messages['employeeType'][0] = array('ERROR', _('Employee type'), _('Please enter a valid employee type!'));
+		$this->messages['employeeType'][1] = array('ERROR', _('Account %s: inetOrgPerson_type'), _('Please enter a valid employee type!'));
 	}	
 	
 	/**
@@ -97,6 +108,88 @@ class inetOrgPerson extends baseModule {
 			'type' => 'ext_preg',
 			'regex' => 'employeeType',
 			'error_message' => $this->messages['employeeType'][0]);
+		$return['upload_columns'] = array(
+		array(
+		'name' => 'inetOrgPerson_firstName',
+		'description' => _('First Name'),
+		'help' => 'givenName',
+		'example' => _('Steve')
+		),
+		array(
+		'name' => 'inetOrgPerson_lastName',
+		'description' => _('Last Name'),
+		'help' => 'sn',
+		'example' => _('Miller'),
+		'required' => true
+		),
+		array(
+		'name' => 'inetOrgPerson_description',
+		'description' => _('Desription'),
+		'help' => 'description',
+		'example' => _('Temp, contract until december')
+		),
+		array(
+		'name' => 'inetOrgPerson_title',
+		'description' => _('Job title'),
+		'help' => 'title',
+		'example' => _('President')
+		),
+		array(
+		'name' => 'inetOrgPerson_type',
+		'description' => _('Employee type'),
+		'help' => 'employeeType',
+		'example' => _('Worker')
+		),
+		array(
+		'name' => 'inetOrgPerson_street',
+		'description' => _('Street'),
+		'help' => 'street',
+		'example' => _('Mystreetname 42')
+		),
+		array(
+		'name' => 'inetOrgPerson_postalCode',
+		'description' => _('Postal code'),
+		'help' => 'postalCode',
+		'example' => _('12345')
+		),
+		array(
+		'name' => 'inetOrgPerson_address',
+		'description' => _('Postal address'),
+		'help' => 'postalAddress',
+		'example' => _('Mycity')
+		),
+		array(
+		'name' => 'inetOrgPerson_telephone',
+		'description' => _('Telephone number'),
+		'help' => 'telephoneNumber',
+		'example' => _('123-123-1234')
+		),
+		array(
+		'name' => 'inetOrgPerson_mobile',
+		'description' => _('Mobile number'),
+		'help' => 'mobileTelephoneNumber',
+		'example' => _('123-123-1234')
+		),
+		array(
+		'name' => 'inetOrgPerson_fax',
+		'description' => _('Fax number'),
+		'help' => 'facsimileTelephoneNumber',
+		'example' => _('123-123-1234')
+		),
+		array(
+		'name' => 'inetOrgPerson_email',
+		'description' => _('eMail address'),
+		'help' => 'mail',
+		'example' => _('user@company.com')
+		),
+		array(
+		'name' => 'inetOrgPerson_cn',
+		'description' => _('Common name'),
+		'help' => 'cn',
+		'example' => _('Steve Miller')
+		)
+		);
+		// TODO unix workstations for upload
 		// available PDF fields
 		$return['PDF_fields'] = array(	'description',
 													'host',
@@ -344,6 +437,153 @@ class inetOrgPerson extends baseModule {
 							'inetOrgPerson_mail' => array('<block><key>' . _('eMail address') . '</key><value>' . $this->attributes['mail'][0] . '</value></block>'));
 	}
 
+	/**
+	* In this function the LDAP account is built up.
+	*
+	* @param array $rawAccounts list of hash arrays (name => value) from user input
+	* @param array $partialAccounts list of hash arrays (name => value) which are later added to LDAP
+	* @param array $ids list of IDs for column position (e.g. "posixAccount_uid" => 5)
+	* @return array list of error messages if any
+	*/
+	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts) {
+		$errors = array();
+		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
+			if (!in_array("inetOrgPerson", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "inetOrgPerson";
+			// last name
+			if (get_preg($rawAccounts[$i][$ids['inetOrgPerson_lastName']], 'realname')) {
+				$partialAccounts[$i]['sn'] = $rawAccounts[$i][$ids['inetOrgPerson_lastName']];
+			}
+			else {
+				$errMsg = $this->messages['surname'][1];
+				array_push($errMsg, array($i));
+				$errors[] = $errMsg;
+			}
+			// first name
+			if (($rawAccounts[$i][$ids['inetOrgPerson_firstName']] != "") && get_preg($rawAccounts[$i][$ids['inetOrgPerson_firstName']], 'realname')) {
+				$partialAccounts[$i]['givenName'] = $rawAccounts[$i][$ids['inetOrgPerson_firstName']];
+			}
+			else {
+				$errMsg = $this->messages['givenName'][1];
+				array_push($errMsg, array($i));
+				$errors[] = $errMsg;
+			}
+			// description
+			if ($rawAccounts[$i][$ids['inetOrgPerson_description']] != "") {
+				$partialAccounts[$i]['description'] = $rawAccounts[$i][$ids['inetOrgPerson_description']];
+			}
+			else {
+				if ($partialAccounts[$i]['givenName'] != "") {
+					$partialAccounts[$i]['description'] = $partialAccounts[$i]['givenName'] . " " . $partialAccounts[$i]['sn'];
+				}
+				else {
+					$partialAccounts[$i]['description'] = $partialAccounts[$i]['sn'];
+				}
+			}
+			// title
+			if (($rawAccounts[$i][$ids['inetOrgPerson_title']] != "") && get_preg($rawAccounts[$i][$ids['inetOrgPerson_title']], 'title')) {
+				$partialAccounts[$i]['title'] = $rawAccounts[$i][$ids['inetOrgPerson_title']];
+			}
+			else {
+				$errMsg = $this->messages['title'][1];
+				array_push($errMsg, array($i));
+				$errors[] = $errMsg;
+			}
+			// employee type
+			if (($rawAccounts[$i][$ids['inetOrgPerson_type']] != "") && get_preg($rawAccounts[$i][$ids['inetOrgPerson_type']], 'employeeType')) {
+				$partialAccounts[$i]['employeeType'] = $rawAccounts[$i][$ids['inetOrgPerson_type']];
+			}
+			else {
+				$errMsg = $this->messages['employeeType'][1];
+				array_push($errMsg, array($i));
+				$errors[] = $errMsg;
+			}
+			// street
+			if (($rawAccounts[$i][$ids['inetOrgPerson_street']] != "") && get_preg($rawAccounts[$i][$ids['inetOrgPerson_street']], 'street')) {
+				$partialAccounts[$i]['street'] = $rawAccounts[$i][$ids['inetOrgPerson_street']];
+			}
+			else {
+				$errMsg = $this->messages['street'][1];
+				array_push($errMsg, array($i));
+				$errors[] = $errMsg;
+			}
+			// postal code
+			if (($rawAccounts[$i][$ids['inetOrgPerson_postalCode']] != "") && get_preg($rawAccounts[$i][$ids['inetOrgPerson_postalCode']], 'postalCode')) {
+				$partialAccounts[$i]['postalCode'] = $rawAccounts[$i][$ids['inetOrgPerson_postalCode']];
+			}
+			else {
+				$errMsg = $this->messages['postalCode'][1];
+				array_push($errMsg, array($i));
+				$errors[] = $errMsg;
+			}
+			// postal address
+			if (($rawAccounts[$i][$ids['inetOrgPerson_address']] != "") && get_preg($rawAccounts[$i][$ids['inetOrgPerson_address']], 'postalAddress')) {
+				$partialAccounts[$i]['postalAddress'] = $rawAccounts[$i][$ids['inetOrgPerson_address']];
+			}
+			else {
+				$errMsg = $this->messages['postalAddress'][1];
+				array_push($errMsg, array($i));
+				$errors[] = $errMsg;
+			}
+			// telephone
+			if (($rawAccounts[$i][$ids['inetOrgPerson_telephone']] != "") && get_preg($rawAccounts[$i][$ids['inetOrgPerson_telephone']], 'telephone')) {
+				$partialAccounts[$i]['telephoneNumber'] = $rawAccounts[$i][$ids['inetOrgPerson_telephone']];
+			}
+			else {
+				$errMsg = $this->messages['telephone'][1];
+				array_push($errMsg, array($i));
+				$errors[] = $errMsg;
+			}
+			// mobile
+			if (($rawAccounts[$i][$ids['inetOrgPerson_mobile']] != "") && get_preg($rawAccounts[$i][$ids['inetOrgPerson_mobile']], 'telephone')) {
+				$partialAccounts[$i]['mobiletelephoneNumber'] = $rawAccounts[$i][$ids['inetOrgPerson_mobile']];
+			}
+			else {
+				$errMsg = $this->messages['mobileTelephone'][1];
+				array_push($errMsg, array($i));
+				$errors[] = $errMsg;
+			}
+			// facsimile
+			if (($rawAccounts[$i][$ids['inetOrgPerson_fax']] != "") && get_preg($rawAccounts[$i][$ids['inetOrgPerson_fax']], 'telephone')) {
+				$partialAccounts[$i]['facsimileTelephoneNumber'] = $rawAccounts[$i][$ids['inetOrgPerson_fax']];
+			}
+			else {
+				$errMsg = $this->messages['facsimileNumber'][1];
+				array_push($errMsg, array($i));
+				$errors[] = $errMsg;
+			}
+			// eMail
+			if (($rawAccounts[$i][$ids['inetOrgPerson_email']] != "") && get_preg($rawAccounts[$i][$ids['inetOrgPerson_email']], 'email')) {
+				$partialAccounts[$i]['mail'] = $rawAccounts[$i][$ids['inetOrgPerson_email']];
+			}
+			else {
+				$errMsg = $this->messages['email'][1];
+				array_push($errMsg, array($i));
+				$errors[] = $errMsg;
+			}
+			// cn
+			if ($rawAccounts[$i][$ids['inetOrgPerson_cn']] != "") {
+				if (get_preg($rawAccounts[$i][$ids['inetOrgPerson_cn']], 'cn')) {
+					$partialAccounts[$i]['cn'] = $rawAccounts[$i][$ids['inetOrgPerson_cn']];
+				}
+				else {
+					$errMsg = $this->messages['email'][1];
+					array_push($errMsg, array($i));
+					$errors[] = $errMsg;
+				}
+			}
+			else {
+				if ($partialAccounts[$i]['givenName'] != "") {
+					$partialAccounts[$i]['cn'] = $partialAccounts[$i]['givenName'] . " " . $partialAccounts[$i]['sn'];
+				}
+				else {
+					$partialAccounts[$i]['cn'] = $partialAccounts[$i]['sn'];
+				}
+			}
+		}
+		return $errors;
+	}
+
+	
 }
 
 ?>
