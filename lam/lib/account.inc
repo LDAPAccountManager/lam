@@ -1053,8 +1053,8 @@ function createuser($values) { // Will create the LDAP-Account
 							(2 * $_SESSION['account']->general_uidNumber + $values->smb_domain->RIDbase +1);
 		if ($values->smb_pwdcanchange!='') $attr['sambaPwdCanChange'] = $values->smb_pwdcanchange; // sambaAccount_may
 			else $attr['sambaPwdCanChange'] = time(); // sambaAccount_may
-		if ($values->smb_pwdmustchange!='') $attr['sambaMustCanChange'] = $values->smb_pwdmustchange; // sambaAccount_may
-			else $attr['sambaMustCanChange'] = time() + 1000000000; // sambaAccount_may
+		if ($values->smb_pwdmustchange!='') $attr['sambaPwdMustChange'] = $values->smb_pwdmustchange; // sambaAccount_may
+			else $attr['sambaPwdMustChange'] = time() + 1000000000; // sambaAccount_may
 		$attr['sambaAcctFlags'] = smbflag(values); // sambaAccount_may
 		$attr['displayName'] = $values->general_gecos; // sambaAccount_may
 		if ($values->smb_smbhome!='') $attr['sambaHomePath'] = utf8_encode($values->smb_smbhome); // sambaAccount_may
