@@ -96,6 +96,8 @@ class Ldap{
 			echo _("Unable to connect to Server!");
 			exit;
 		}
+		// return server handle
+		return $this->server;
 	}
 	
 	// closes connection to server
