@@ -22,10 +22,10 @@ $Id$
 
   LDAP Account Manager checking login data.
 */
-?>
-
-<?
 // including ldap.php which provides basic ldap functions
+session_name("LDAP Account Manager");
+session_start();
+
 include_once("../lib/ldap.php");
 
 // checking if the submitted username/password is correct.
@@ -36,6 +36,7 @@ if($action == "checklogin")
 	$result = $ldap->connect($username,$passwd);
 	if($result == True)
 	{
+		session_register($ldap->server);
 		include("./main.php"); // Username/password correct. Loading main Frame.
 	}
 	else
