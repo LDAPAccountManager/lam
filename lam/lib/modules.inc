@@ -88,12 +88,10 @@ function get_ldap_filter($scope) {
 	$filters = array();
 	$orFilter = '';
 	for ($i = 0; $i < sizeof($mods); $i++) {
-		if (is_base_module($mods[$i], $scope)) {
-			$module = new $mods[$i]($scope);
-			$modinfo = $module->get_ldap_filter();
-			if (isset($modinfo['or'])) $filters['or'][] = $modinfo['or'];
-			if (isset($modinfo['and'])) $filters['and'][] = $modinfo['and'];
-		}
+		$module = new $mods[$i]($scope);
+		$modinfo = $module->get_ldap_filter();
+		if (isset($modinfo['or'])) $filters['or'][] = $modinfo['or'];
+		if (isset($modinfo['and'])) $filters['and'][] = $modinfo['and'];
 	}
 	// build OR filter
 	if (sizeof($filters['or']) == 1) {
