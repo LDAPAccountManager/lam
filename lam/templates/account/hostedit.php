@@ -104,8 +104,6 @@ switch ($_POST['select']) {
 			$account_new->general_uidNumber = $_POST['f_general_uidNumber'];
 			$account_new->general_group = $_POST['f_general_group'];
 			$account_new->general_gecos = $_POST['f_general_gecos'];
-			$account_new->smb_displayName = $_POST['f_smb_displayName'];
-
 			// Check if values are OK and set automatic values.  if not error-variable will be set
 			// Add $ to end of hostname if hostname doesn't end with "$"
 			if ( substr($account_new->general_username, strlen($account_new->general_username)-1, strlen($account_new->general_username)) != '$' ) {
@@ -166,11 +164,6 @@ switch ($_POST['select']) {
 			if ($account_new->general_gecos=='') {
 				$account_new->general_gecos = $account_new->general_username;
 				$errors[] = array('INFO', _('Gecos'), _('Inserted hostname in gecos-field.'));
-				}
-			// Check if values are OK and set automatic values. if not error-variable will be set
-			if (($account_new->smb_displayName=='') && isset($account_new->general_gecos)) {
-				$account_new->smb_displayName = $account_new->general_gecos;
-				$errors[] = array('INFO', _('Display name'), _('Inserted gecos-field as display name.'));
 				}
 			// Check if UID is valid. If none value was entered, the next useable value will be inserted
 			$temp = explode(':', checkid($account_new, $account_old));
@@ -340,9 +333,9 @@ switch ($select_local) {
 			echo "</b></legend>\n<table border=0 width=\"100%\">\n<tr>\n<td width=\"50%\">";
 			echo "<select name=\"f_general_selectprofile\" >";
 			foreach ($profilelist as $profile) echo "	<option>$profile</option>\n";
-			echo "</select></td><td width=\"30%\">\n".
+			echo "</select>\n".
 				"<input name=\"load\" type=\"submit\" value=\""; echo _('Load Profile');
-			echo "\"></td><td width=\"20\"><a href=\"../help.php?HelpNumber=421\" target=\"lamhelp\">";
+			echo "\"></td><td width=\"30%\"></td><td width=\"20\"><a href=\"../help.php?HelpNumber=421\" target=\"lamhelp\">";
 			echo _('Help')."</a></td>\n</tr>\n</table>\n</fieldset>\n";
 			}
 		// Show Fieldset with all host settings
@@ -375,10 +368,6 @@ switch ($select_local) {
 			"</td>\n<td>".
 			'<a href="../help.php?HelpNumber=413" target="lamhelp">'._('Help').'</a>'.
 			'</td></tr><tr><td>';
-		echo _("Display name");
-		echo "</td>\n<td>".
-			"<input name=\"f_smb_displayName\" type=\"text\" size=\"30\" maxlength=\"50\" value=\"".$account_new->smb_displayName."\">".
-			"</td>\n<td><a href=\"../help.php?HelpNumber=420\" target=\"lamhelp\">"._('Help')."</a></td>\n</tr>\n<tr>\n<td>";
 		echo _('Password');
 		echo '</td><td>';
 		if (isset($account_old)) {
@@ -424,9 +413,9 @@ switch ($select_local) {
 		echo _("Save profile");
 		echo "</b></legend>\n<table border=0 width=\"100%\">\n<tr>\n<td width=\"50%\">";
 		echo '<input name="f_finish_safeProfile" type="text" size="30" maxlength="50">';
-		echo '</td><td width="30%"><input name="save" type="submit" value="';
+		echo '<input name="save" type="submit" value="';
 		echo _('Save profile');
-		echo '"></td><td width="20%"><a href="../help.php?HelpNumber=457" target="lamhelp">'._('Help');
+		echo '"></td><td width="30%"></td><td width="20%"><a href="../help.php?HelpNumber=457" target="lamhelp">'._('Help');
 		echo "</a></td>\n</tr>\n</table>\n</fieldset>";
 		// Show fieldset with modify, undo and back-button
 		echo "<fieldset class=\"hostedit-bright\"><legend class=\"hostedit-bright\"><b>";
@@ -439,11 +428,11 @@ switch ($select_local) {
 			echo "<input name=\"next_reset\" type=\"submit\" value=\""; echo _('Undo changes');
 			echo "\">\n";
 			}
-		echo "</td>\n<td width=\"30%\"></td><td width=\"20%\">";
+		echo "</td>\n<td width=\"30%\">";
 		echo '<input name="create" type="submit" value="';
 		if ($account_old) echo _('Modify Account');
 		 else echo _('Create Account');
-		echo '">'."\n";
+		echo "\">\n</td><td width=\"20%\">";
 		echo "</td></tr></table></fieldset>\n";
 		break;
 

@@ -369,7 +369,7 @@ function ldapreload($type) {
 				$_SESSION['userDN'][0] = time();
 				// Search 4 values which should be cached
 				$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_UserSuffix(),
-					'objectClass=posixAccount', array('cn', 'uidNumber'), 0);
+					'(&(objectClass=posixAccount)(!(uid=*$)))', array('cn', 'uidNumber'), 0);
 				// Write search result in array
 				$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 				while ($entry) {
@@ -415,7 +415,7 @@ function ldapreload($type) {
 				$_SESSION['hostDN'][0] = time();
 				// Search 4 values which should be cached
 				$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_HostSuffix(),
-					'objectClass=posixAccount', array('cn', 'uidNumber'), 0);
+					'(&(objectClass=posixAccount)(uid=*$))', array('cn', 'uidNumber'), 0);
 				// Write search result in array
 				$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 				while ($entry) {
@@ -565,7 +565,6 @@ function checkid($values, $values_old=false) {
 			// Load all needed variables from session
 			$minID = intval($_SESSION['config']->get_MinGID());
 			$maxID = intval($_SESSION['config']->get_MaxGID());
-			$suffix = $_SESSION['config']->get_GroupSuffix();
 			// Get copy of cache-array
 			$temp = $_SESSION['groupDN'];
 			break;
@@ -579,7 +578,6 @@ function checkid($values, $values_old=false) {
 			// Load all needed variables from session
 			$minID = intval($_SESSION['config']->get_minUID());
 			$maxID = intval($_SESSION['config']->get_maxUID());
-			$suffix = $_SESSION['config']->get_UserSuffix();
 			// load and merge arrays
 
 			$temp = $_SESSION['userDN'];
@@ -599,7 +597,6 @@ function checkid($values, $values_old=false) {
 			// Load all needed variables from session
 			$minID = intval($_SESSION['config']->get_minMachine());
 			$maxID = intval($_SESSION['config']->get_maxMachine());
-			$suffix = $_SESSION['config']->get_UserSuffix();
 			// load and merge arrays
 
 			$temp = $_SESSION['userDN'];
@@ -612,11 +609,10 @@ function checkid($values, $values_old=false) {
 		}
 	// Remove timestamp stored in [0]
 	unset ($temp[0]);
-	// put only uidNumbers in array
-	foreach ($temp as $key) $uids[] = $key['uidNumber'];
+	// put only uidNumbers in array. Put only uids in array witch are smaller than maxID
+	foreach ($temp as $key) if ($key['uidNumber'] < $maxID) $uids[] = $key['uidNumber'];
 	// sort array with uids
 	if(is_array($uids)) sort ($uids, SORT_NUMERIC);
-
 	if ($values->general_uidNumber=='') {
 		// No id-number given
 		if (!isset($values_old->general_uidNumber)) {
@@ -793,7 +789,6 @@ function loaduser($dn) {
 		if (isset($attr['sambaLogonScript'][0]))  $return->smb_scriptPath = utf8_decode($attr['sambaLogonScript'][0]);
 		if (isset($attr['sambaProfilePath'][0])) $return->smb_profilePath = $attr['sambaProfilePath'][0];
 		if (isset($attr['sambaUserWorkstations'][0])) $return->smb_smbuserworkstations = $attr['sambaUserWorkstations'][0];
-		if (isset($attr['sambaDomainName'][0])) $return->smb_domain = $attr['sambaDomainName'][0];
 		if (isset($attr['sambaNTPassword'][0]))  $return->smb_password = $attr['sambaNTPassword'][0];
 		if (isset($attr['sambaDomainName'][0])) {
 			if ($_SESSION['config']->is_samba3()) {
@@ -891,7 +886,6 @@ function loadhost($dn) {
 	$return->general_username = $attr['uid'][0];
 	$return->general_uidNumber = $attr['uidNumber'][0];
 	if (isset($attr['gecos'][0])) $return->general_gecos = utf8_decode($attr['gecos'][0]);
-	if (isset($attr['displayName'][0])) $return->smb_displayName = utf8_decode($attr['displayName'][0]);
 
 	// Get Groupname
 	$return->general_group = getgrnam($attr['gidNumber'][0]);
@@ -1246,11 +1240,11 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 		if ($_SESSION['config']->is_samba3()) {
 			// We use samba 3 schema
 			// Change SID only if we don't use a well known SID
-			if ($values->smb_mapgroup==$_SESSION['account']->smb_domain->SID . '-512') $found=true;
-			if ($values->smb_mapgroup==$_SESSION['account']->smb_domain->SID . '-513') $found=true;
-			if ($values->smb_mapgroup==$_SESSION['account']->smb_domain->SID . '-514') $found=true;
-			if (!$found) $attr['sambaPrimaryGroupSID'] = $_SESSION['account']->smb_domain->SID . "-".
-				(2 * getgid($_SESSION['account']->general_group) + $values->smb_domain->RIDbase+1);
+			if ($values->smb_mapgroup==$values->smb_domain->SID . '-512') $found=true;
+			if ($values->smb_mapgroup==$values->smb_domain->SID . '-513') $found=true;
+			if ($values->smb_mapgroup==$values->smb_domain->SID . '-514') $found=true;
+			if (!$found) $attr['sambaPrimaryGroupSID'] = $values->smb_domain->SID . "-".
+				(2 * getgid($values->general_group) + $values->smb_domain->RIDbase+1);
 			}
 		else {
 			// We use old samba 2.2 schema
@@ -1258,7 +1252,7 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 			if ($values->smb_mapgroup== '512') $found=true;
 			if ($values->smb_mapgroup== '513') $found=true;
 			if ($values->smb_mapgroup== '514') $found=true;
-			if (!$found) $attr['primaryGroupID'] = (2 * getgid($_SESSION['account']->general_group) + 1001);
+			if (!$found) $attr['primaryGroupID'] = (2 * getgid($values->general_group) + 1001);
 			}
 		}
 	if ($values->general_homedir != $values_old->general_homedir)
@@ -1416,8 +1410,12 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 		if (($values->smb_profilePath=='') && ($values->smb_profilePath!=$values_old->smb_profilePath)) $attr_rem['sambaProfilePath'] = $values_old->smb_profilePath; // sambaAccount_may
 		if (($values->smb_smbuserworkstations!='') && ($values->smb_smbuserworkstations!=$values_old->smb_smbuserworkstations))$attr['sambaUserWorkstations'] = $values->smb_smbuserworkstations; // sambaAccount_may
 		if (($values->smb_smbuserworkstations=='') && ($values->smb_smbuserworkstations!=$values_old->smb_smbuserworkstations))$attr_rem['sambaUserWorkstations'] = $values_old->smb_smbuserworkstations; // sambaAccount_may
-		if (($values->smb_domain->name!='') && ($values->smb_domain->name!=$values_old->smb_domain->name)) $attr['sambaDomainName'] = $values->smb_domain->name; // sambaAccount_may
-		if (($values->smb_domain->name=='') && ($values->smb_domain->name!=$values_old->smb_domain->name)) $attr_rem['sambaDomainName'] = $values_old->smb_domain->name; // sambaAccount_may
+		if ($values->smb_domain->name!=$values_old->smb_domain->name) {
+			$attr['sambaDomainName'] = $values->smb_domain->name; // sambaAccount_may
+			$attr['sambaSid'] = $values->smb_domain->SID . "-" . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase);
+			$attr['sambaPrimaryGroupSID'] = $values->smb_domain->SID . "-".
+				(2 * getgid($values->general_group) + $values->smb_domain->RIDbase+1);
+			}
 		if (($values->smb_mapgroup!='') && ($values->smb_mapgroup!=$values_old->smb_mapgroup)) $attr['sambaPrimaryGroupSID'] = $values->smb_mapgroup; // sambaAccount_may
 		if (($values->smb_mapgroup=='') && ($values->smb_mapgroup!=$values_old->smb_mapgroup)) $attr_rem['sambaPrimaryGroupSID'] = $values_old->smb_mapgroup;
 		if ($values->smb_displayName != $values_old->smb_displayName) $attr['displayName'] = utf8_encode($values->smb_displayName); // sambaAccount_may
@@ -1689,7 +1687,6 @@ function createhost($values) {
 		$attr['sambaPwdCanChange'] = time(); // sambaAccount_may
 		$attr['sambaPwdMustChange'] = "1893452400"; // sambaAccount_may // anywhere in year 2030
 		$attr['sambaAcctFlags'] = smbflag($values); // sambaAccount_may
-		$attr['displayName'] = utf8_encode($values->smb_displayName); // sambaAccount_may
 		$attr['sambaDomainName'] = $values->smb_domain->name; // sambaAccount_may
 		}
 	else {
@@ -1704,7 +1701,6 @@ function createhost($values) {
 		$attr['pwdCanChange'] = time(); // sambaAccount_may
 		$attr['pwdMustChange'] = "1893452400"; // sambaAccount_may // anywhere in 2030
 		$attr['acctFlags'] = smbflag($values); // sambaAccount_may
-		$attr['displayName'] = utf8_encode($values->smb_displayName); // sambaAccount_may
 		if ($values->smb_domain!='') $attr['domain'] = $values->smb_domain; // sambaAccount_may
 		}
 
@@ -1759,11 +1755,11 @@ function modifyhost($values,$values_old) {
 		// Because primaryGroup(S)ID is related to gidNumber we have to change it if gidNumber has changed
 		if ($_SESSION['config']->is_samba3())
 			// We use samba 3 schema
-			$attr['sambaPrimaryGroupSID'] = $_SESSION['account']->smb_domain->SID . "-".
-				(2 * getgid($_SESSION['account']->general_group) + $values->smb_domain->RIDbase+1);
+			$attr['sambaPrimaryGroupSID'] = $values->smb_domain->SID . "-".
+				(2 * getgid($values->general_group) + $values->smb_domain->RIDbase+1);
 		else
 			// We use old samba 2.2 schema
-			$attr['primaryGroupID'] = (2 * getgid($_SESSION['account']->general_group) + 1001);
+			$attr['primaryGroupID'] = (2 * getgid($values->general_group) + 1001);
 		}
 	/* Write unix attributes into $attr array
 	* Some values don't have to be set. These are only loaded if they are set
@@ -1772,8 +1768,6 @@ function modifyhost($values,$values_old) {
 		$attr['gecos'] = utf8_encode(replace_umlaut($values->general_gecos)); // posixAccount_may
 		$attr['description'] = utf8_encode($values->general_gecos); // posixAccount_may sambaAccount_may
 		}
-	if ($values->smb_displayName != $values_old->smb_displayName)
-		$attr['displayName'] = utf8_encode($values->smb_displayName);
 
 	// Samba attributes
 	if ($_SESSION['config']->is_samba3()) {
@@ -1836,7 +1830,12 @@ function modifyhost($values,$values_old) {
 			$attr['sambaLMPassword'] = '01FC5A6BE7BC6929AAD3B435B51404EE';
 			$attr['sambaPwdLastSet'] = time(); // sambaAccount_may
 			}
-		if ($values->smb_domain->name!=$values_old->smb_domain->name) $attr['sambaDomainName'] = $values->smb_domain->name; // sambaAccount_may
+		if ($values->smb_domain->name!=$values_old->smb_domain->name) {
+			$attr['sambaDomainName'] = $values->smb_domain->name; // sambaAccount_may
+			$attr['sambaSid'] = $values->smb_domain->SID . "-" . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase);
+			$attr['sambaPrimaryGroupSID'] = $values->smb_domain->SID . "-".
+				(2 * getgid($values->general_group) + $values->smb_domain->RIDbase+1);
+			}
 		}
 	else {
 		// use old samba 2.2 objectclass
@@ -2029,7 +2028,7 @@ function modifygroup($values,$values_old) {
 	// Attributes which are required
 	if ($values->general_username != $values_old->general_username) $attr['cn'] = $values->general_username;
 	if ($values->general_uidNumber != $values_old->general_uidNumber) {
-		$attr['uidNumber'] = $values->general_uidNumber;
+		$attr['gidNumber'] = $values->general_uidNumber;
 		// Set correct SID if UID was changed
 		if ($_SESSION['config']->is_samba3()) $attr['sambaSid'] = $values->smb_domain->SID . "-" . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase +1);
 		}
