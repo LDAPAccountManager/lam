@@ -60,7 +60,7 @@ class posixAccount extends baseModule {
 		$this->messages['maxMachine'][0] = array('ERROR', _('Hosts') . ': &nbsp;' . _('Maximum UID number'), _("Maximum UID number is invalid!"));
 		$this->messages['cmp_UID'][0] = array('ERROR', _('Users') . ': &nbsp;' . _('Maximum UID number'), _("Maximum UID number must be greater than minimum UID number!"));
 		$this->messages['cmp_Machine'][0] = array('ERROR', _('Hosts') . ': &nbsp;' . _('Maximum UID number'), _("Maximum UID number must be greater than minimum UID number!"));
-		$this->messages['cmp_both'][0] = array('ERROR', _('UID ranges'), _("The UID ranges for users and hosts overlap! This is a problem because LAM uses the highest UID in use + 1. Please set the minimum UID to equal values or use independent ranges."));
+		$this->messages['cmp_both'][0] = array('ERROR', _('UID ranges for Unix accounts'), _("The UID ranges for users and hosts overlap! This is a problem because LAM uses the highest UID in use + 1. Please set the minimum UID to equal values or use independent ranges."));
 		$this->messages['homeDirectory'][0] = array('ERROR', _('Home directory'), _('Homedirectory contains invalid characters.'));
 		$this->messages['homeDirectory'][1] = array('INFO', _('Home directory'), _('Replaced $user or $group in homedir.'));
 		$this->messages['homeDirectory'][2] = array('ERROR', _('Account %s:') . ' posixAccount_homedir', _('Homedirectory contains invalid characters.'));
@@ -214,7 +214,7 @@ class posixAccount extends baseModule {
 				'name' => 'posixAccount_passwordDisabled',
 				'description' => _('Lock password'),
 				'help' => 'passwordDisabled', // TODO
-				'example' => _('false'),
+				'example' => 'false',
 				'values' => 'true, false',
 				'default' => 'false'
 			),

@@ -460,7 +460,7 @@ echo $_SESSION['header'];
 															<?php echo _('Width') . ':'; ?>
 													</td>
 													<td>
-															<input type="text" name="logo-width" value="<?php echo ((isset($_SESSION['currentPageDefinitions']['logo-width'])) ? $_SESSION['currentPageDefinitions']['logo-width'] : '50'); ?>" size="5"> <?php echo _('cm'); ?>
+															<input type="text" name="logo-width" value="<?php echo ((isset($_SESSION['currentPageDefinitions']['logo-width'])) ? $_SESSION['currentPageDefinitions']['logo-width'] : '50'); ?>" size="5"> cm
 													</td>
 												</tr>
 												<tr>
@@ -468,7 +468,7 @@ echo $_SESSION['header'];
 															<?php echo _('Height') . ':'; ?>
 													</td>
 													<td>
-															<input type="text" name="logo-height" value="<?php echo ((isset($_SESSION['currentPageDefinitions']['logo-height'])) ? $_SESSION['currentPageDefinitions']['logo-height'] : '20'); ?>" size="5"> <?php echo _('cm'); ?>
+															<input type="text" name="logo-height" value="<?php echo ((isset($_SESSION['currentPageDefinitions']['logo-height'])) ? $_SESSION['currentPageDefinitions']['logo-height'] : '20'); ?>" size="5"> cm
 													</td>
 												</tr>
 												<tr>

@@ -232,7 +232,7 @@ class sambaGroupMapping extends baseModule {
 		$return['upload_columns'] = array(
 			array(
 				'name' => 'sambaGroupMapping_domain',
-				'description' => _('Samba 3 domain name'),
+				'description' => _('Samba domain name'),
 				'help' => 'sambaDomainName',
 				'example' => $domainNames[0],
 				'values' => implode(", ", $domainNames),
@@ -240,19 +240,19 @@ class sambaGroupMapping extends baseModule {
 			),
 			array(
 				'name' => 'sambaGroupMapping_name',
-				'description' => _('Samba 3 display name'),
+				'description' => _('Samba display name'),
 				'help' => 'displayName',
 				'example' => _('Domain administrators')
 			),
 			array(
 				'name' => 'sambaGroupMapping_rid',
-				'description' => _('Samba 3 RID number'),
+				'description' => _('Samba RID number'),
 				'help' => 'rid',
 				'example' => _('DOMAIN_ADMINS')
 			),
 			array(
 				'name' => 'sambaGroupMapping_groupType',
-				'description' => _('Samba 3 group type'),
+				'description' => _('Samba group type'),
 				'help' => 'type',
 				'values' => implode(", ", array_keys($this->sambaGroupTypes) + $this->sambaGroupTypes),
 				'example' => '2'

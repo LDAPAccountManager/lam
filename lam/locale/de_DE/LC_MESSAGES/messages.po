@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: messages\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de \n"
 "POT-Creation-Date: 2004-01-14 17:45+0200\n"
-"PO-Revision-Date: 2004-10-24 21:13+0200\n"
+"PO-Revision-Date: 2004-10-24 22:31+0200\n"
 "Last-Translator: Roland Gruber <post@rolandgruber.de>\n"
 "Language-Team: Deutsch <lam-i18n@lists.sourceforge.org>\n"
 "MIME-Version: 1.0\n"
@@ -533,7 +533,7 @@ msgstr "Neues Profil wurde erstellt."
 msgid "Creates accounts by uploading a CSV formated file."
 msgstr "Erstellt Accounts durch das Hochladen einer CSV formatierten Datei."
 
-#: ../lib/modules.inc:1532
+#: ../templates/delete.php:89 ../lib/modules.inc:1532
 msgid "DN"
 msgstr "DN"
 
@@ -544,11 +544,6 @@ msgstr "DN-Einstellungen"
 #: ../templates/masscreate.php:142 ../help/help.inc:121
 msgid "DN suffix"
 msgstr "DN-Suffix"
-
-#: ../templates/delete.php:89
-#, fuzzy
-msgid "DN:"
-msgstr "DN"
 
 #: ../lib/modules/sambaGroupMapping.inc:251
 msgid "DOMAIN_ADMINS"
@@ -2125,7 +2120,7 @@ msgid "OU deleted successfully."
 msgstr "OU erfolgreich gelöscht."
 
 #: ../templates/tools.php:76
-#, fuzzy
+
 msgid "OU editor"
 msgstr "OU-Editor"
 
@@ -2165,9 +2160,8 @@ msgid "Overall page settings"
 msgstr "Spacheinstellungen"
 
 #: ../templates/tools.php:83
-#, fuzzy
 msgid "PDF editor"
-msgstr "PDF-Text"
+msgstr "PDF-Editor"
 
 #: ../templates/lists/listhosts.php:296 ../templates/lists/listgroups.php:311
 #: ../templates/lists/listusers.php:359 ../templates/pdfedit/pdfpage.php:573
@@ -2427,9 +2421,8 @@ msgid "Please set up your master configuration file (config/config.cfg) first!"
 msgstr ""
 
 #: ../templates/pdfedit/pdfpage.php:708
-#, fuzzy
 msgid "Position"
-msgstr "Beschreibung"
+msgstr "Position"
 
 #: ../help/help.inc:232
 msgid "Position in ldap-tree where the group should be created."
@@ -2445,9 +2438,8 @@ msgstr "Position im LDAP-Baum, wo der Benutzer erstellt werden soll."
 
 #: ../templates/masscreate.php:158 ../templates/masscreate.php:294
 #: ../lib/modules/sambaGroupMapping.inc:339
-#, fuzzy
 msgid "Possible values"
-msgstr "Vordefinierte Werte"
+msgstr "Mögliche Werte"
 
 #: ../lib/modules/inetOrgPerson.inc:66 ../lib/modules/inetOrgPerson.inc:165
 #: ../lib/modules/inetOrgPerson.inc:217 ../lib/modules/inetOrgPerson.inc:381
@@ -2472,7 +2464,7 @@ msgstr "Vordefinierte Werte"
 
 #: ../lib/modules/inetOrgPerson.inc:143
 msgid "President"
-msgstr ""
+msgstr "Präsident"
 
 #: ../lib/modules/posixAccount.inc:181 ../lib/modules/posixAccount.inc:248
 #: ../lib/modules/posixAccount.inc:301 ../lib/modules/posixAccount.inc:332
@@ -2492,7 +2484,7 @@ msgid "Profile deleted."
 msgstr "Profil gelöscht."
 
 #: ../templates/tools.php:53
-#, fuzzy
+
 msgid "Profile editor"
 msgstr "Profileditor"
 
@@ -2599,48 +2591,41 @@ msgid "Reset"
 msgstr "Zurücksetzen"
 
 #: ../lib/modules.inc:704
-#, fuzzy
 msgid "Reset changes"
-msgstr "Alle Änderungen zurücksetzen."
+msgstr "Änderungen zurücksetzen"
 
 #: ../lib/modules/sambaAccount.inc:586 ../lib/modules/sambaSamAccount.inc:554
 msgid "Reset password"
 msgstr "Passwort zurücksetzen"
 
 #: ../lib/modules/sambaAccount.inc:70
-#, fuzzy
 msgid "Samba 2"
-msgstr "Samba"
+msgstr "Samba 2"
 
 #: ../lib/modules/sambaSamAccount.inc:68
 #: ../lib/modules/sambaGroupMapping.inc:218
-#, fuzzy
 msgid "Samba 3"
-msgstr "Samba"
+msgstr "Samba 3"
 
 #: ../lib/modules/sambaGroupMapping.inc:249
-#, fuzzy
 msgid "Samba 3 RID number"
-msgstr "Maximale UID-Nummer"
+msgstr ""
 
 #: ../lib/modules/sambaGroupMapping.inc:243
-#, fuzzy
 msgid "Samba 3 display name"
-msgstr "Anzeigename"
+msgstr "Samba 3 Anzeigename"
 
 #: ../templates/domain.php:244
 msgid "Samba 3 domain SID is invalid!"
 msgstr "Samba 3 Domänen-SID ist ungültig!"
 
 #: ../lib/modules/sambaGroupMapping.inc:235
-#, fuzzy
 msgid "Samba 3 domain name"
-msgstr "Samba 3 Domänen-SID ist ungültig!"
+msgstr "Samba 3 Domänenname"
 
 #: ../templates/tools.php:61
-#, fuzzy
 msgid "Samba 3 domains"
-msgstr "Samba PCs"
+msgstr "Samba 3 Domänen"
 
 #: ../lib/modules/sambaGroupMapping.inc:255
 #, fuzzy
@@ -2652,15 +2637,13 @@ msgid "Samba Hosts"
 msgstr "Samba Hosts"
 
 #: ../lib/modules/sambaGroupMapping.inc:274
-#, fuzzy
 msgid "Samba RID number"
-msgstr "Maximale GID-Nummer"
+msgstr "Samba RID-Nummer"
 
 #: ../lib/modules/sambaGroupMapping.inc:282
 #: ../lib/modules/sambaGroupMapping.inc:297
-#, fuzzy
 msgid "Samba group type"
-msgstr "Samba-Einstellungen"
+msgstr "Samba-Gruppentyp"
 
 #: ../lib/modules/sambaAccount.inc:488 ../lib/modules/sambaSamAccount.inc:454
 msgid "Samba password"
@@ -2694,19 +2677,16 @@ msgid "Save profile"
 msgstr "Profil speichern"
 
 #: ../templates/config/confsave.php:171
-#, fuzzy
 msgid "Saving group modules failed!"
-msgstr "Speichern des Text für Benutzer-PDF fehlgeschlagen!"
+msgstr "Speichern der Gruppenmodule fehlgeschlagen!"
 
 #: ../templates/config/confsave.php:177
-#, fuzzy
 msgid "Saving host modules failed!"
-msgstr "Speichern des Text für Benutzer-PDF fehlgeschlagen!"
+msgstr "Speichern der Hostmodule fehlgeschlagen!"
 
 #: ../templates/config/confsave.php:165
-#, fuzzy
 msgid "Saving user modules failed!"
-msgstr "Speichern des Text für Benutzer-PDF fehlgeschlagen!"
+msgstr "Speichern der Benutzermodule fehlgeschlagen!"
 
 #: ../templates/pdfedit/pdfdelete.php:56 ../templates/pdfedit/pdfdelete.php:59
 #: ../templates/pdfedit/pdfdelete.php:78
@@ -2765,28 +2745,24 @@ msgid "Select group profile"
 msgstr "Gruppenprofil wählen"
 
 #: ../templates/config/confmodules.php:291
-#, fuzzy
 msgid "Selected group modules"
-msgstr "Gewählte Gruppen"
+msgstr "Ausgewählte Gruppenmodule"
 
 #: ../lib/modules/posixAccount.inc:880
 msgid "Selected groups"
 msgstr "Gewählte Gruppen"
 
 #: ../templates/config/confmodules.php:394
-#, fuzzy
 msgid "Selected host modules"
-msgstr "Gewählte Gruppen"
+msgstr "Ausgewählte Hostmodule"
 
 #: ../templates/config/confmodules.php:188
-#, fuzzy
 msgid "Selected user modules"
-msgstr "Benutzerprofil wählen:"
+msgstr "Ausgewählte Benutzermodule"
 
 #: ../lib/modules/posixGroup.inc:194
-#, fuzzy
 msgid "Selected users"
-msgstr "Lösche Benutzer"
+msgstr "Ausgewählte Benutzer"
 
 #: ../templates/config/confsave.php:91
 msgid "Server Address is empty!"
@@ -2822,7 +2798,7 @@ msgstr "Profilpasswort setzen"
 
 #: ../lib/modules/shadowAccount.inc:56
 msgid "Shadow"
-msgstr ""
+msgstr "Shadow"
 
 #: ../lib/modules/shadowAccount.inc:279
 msgid "Shadow flag"
@@ -2830,11 +2806,11 @@ msgstr ""
 
 #: ../templates/massBuildAccounts.php:196
 msgid "Show LDIF file"
-msgstr ""
+msgstr "Zeige LDIF-Datei"
 
 #: ../templates/pdfedit/pdfpage.php:455
 msgid "Size"
-msgstr ""
+msgstr "Größe"
 
 #: ../lib/modules/quota.inc:404
 msgid "Soft block"
@@ -2875,17 +2851,15 @@ msgid "Sorry this help number ({bold}%d{endbold}) is not available."
 msgstr "Diese Hilfenummer ist leider nicht verfügbar: {bold}%d{endbold}"
 
 #: ../lib/modules/sambaGroupMapping.inc:337
-#, fuzzy
 msgid "Special Group"
-msgstr "Neue Gruppe"
+msgstr "Spezielle Gruppe"
 
 #: ../lib/modules/sambaAccount.inc:49 ../lib/modules/sambaAccount.inc:50
 #: ../lib/modules/sambaAccount.inc:577 ../lib/modules/sambaSamAccount.inc:48
 #: ../lib/modules/sambaSamAccount.inc:49
 #: ../lib/modules/sambaSamAccount.inc:545
-#, fuzzy
 msgid "Special user"
-msgstr "Berechtigte Benutzer"
+msgstr "Spezieller Benutzer"
 
 #: ../templates/pdfedit/pdfpage.php:645 ../templates/pdfedit/pdfpage.php:651
 #: ../templates/pdfedit/pdfpage.php:777
@@ -2893,17 +2867,16 @@ msgid "Static text"
 msgstr ""
 
 #: ../lib/modules/inetOrgPerson.inc:124
-#, fuzzy
 msgid "Steve"
-msgstr "Straße"
+msgstr "Hans"
 
 #: ../lib/modules/inetOrgPerson.inc:117
 msgid "Steve Miller"
-msgstr ""
+msgstr "Hans Müller"
 
 #: ../lib/modules/posixAccount.inc:225
 msgid "Steve Miller,Room 2.14,123-123-1234,123-123-1234"
-msgstr ""
+msgstr "Hans Müller,Raum 2.14,123-123-1234,123-123-1234"
 
 #: ../lib/modules/inetOrgPerson.inc:64 ../lib/modules/inetOrgPerson.inc:153
 #: ../lib/modules/inetOrgPerson.inc:215 ../lib/modules/inetOrgPerson.inc:373
@@ -2966,7 +2939,7 @@ msgstr "Telefonnummer"
 
 #: ../lib/modules/inetOrgPerson.inc:137
 msgid "Temp, contract until december"
-msgstr ""
+msgstr "Aushilfskraft, Vertrag bis Dezember"
 
 #: ../help/help.inc:96
 msgid "Text for user PDF"
@@ -3052,7 +3025,7 @@ msgstr ""
 
 #: ../templates/massDoUpload.php:119
 msgid "There were errors while uploading:"
-msgstr ""
+msgstr "Beim Upload traten Fehler auf:"
 
 #: ../lib/modules/posixGroup.inc:352
 msgid ""
@@ -3296,7 +3269,7 @@ msgstr ""
 
 #: ../templates/main_header.php:56
 msgid "Tools"
-msgstr ""
+msgstr "Werkzeuge"
 
 #: ../templates/pdfedit/pdfpage.php:513
 msgid "Top"
@@ -3338,15 +3311,9 @@ msgstr ""
 "Die UID-Nummer hat sich geändert. Sie müssen folgenden Befehl als root "
 "ausführen um die existierenden Dateirechte zu ändern:"
 
-#: ../lib/modules/posixAccount.inc:63
-#, fuzzy
-msgid "UID ranges"
-msgstr "Änderungen zurücksetzen"
-
-#: ../lib/modules/posixAccount.inc:151
-#, fuzzy
+#: ../lib/modules/posixAccount.inc:63 ../lib/modules/posixAccount.inc:151
 msgid "UID ranges for Unix accounts"
-msgstr "Bitte geben Sie die UID/GID-Bereiche für ihre Accounts ein:"
+msgstr "UID-Bereiche für Unix-Accounts"
 
 #: ../help/help.inc:201
 #, php-format
@@ -3428,7 +3395,7 @@ msgstr ""
 #: ../templates/config/confmodules.php:348
 #: ../templates/config/confmodules.php:451
 msgid "Unsolved dependency:"
-msgstr ""
+msgstr "Ungelöste Abhängigkeit:"
 
 #: ../templates/pdfedit/pdfpage.php:581
 msgid "Up"
@@ -3445,7 +3412,7 @@ msgstr ""
 #: ../lib/modules.inc:471
 #, php-format
 msgid "Upload was stopped after errors in %s module!"
-msgstr ""
+msgstr "Upload wurde nach Fehlern im Modul %s gestoppt!"
 
 #: ../templates/pdfedit/pdfpage.php:442 ../templates/pdfedit/pdfpage.php:487
 #: ../templates/pdfedit/pdfpage.php:501 ../templates/pdfedit/pdfpage.php:519
@@ -3499,7 +3466,6 @@ msgid "Used inodes (files)"
 msgstr "Benutze Inodes (Dateien)"
 
 #: ../lib/modules/sambaGroupMapping.inc:51
-#, fuzzy
 msgid "User"
 msgstr "Benutzer"
 
@@ -3531,9 +3497,8 @@ msgstr "Attribute der Benutzerliste sind ungültig!"
 
 #: ../templates/config/confmodules.php:181
 #: ../templates/config/confmain.php:219 ../lib/config.inc:345
-#, fuzzy
 msgid "User modules"
-msgstr "Benutzerprofile"
+msgstr "Benutzermodule"
 
 #: ../lib/modules/sambaAccount.inc:524 ../lib/modules/sambaSamAccount.inc:490
 #: ../help/help.inc:186
@@ -3545,14 +3510,12 @@ msgid "User name"
 msgstr "Benutzername"
 
 #: ../templates/profedit/profilemain.php:132
-#, fuzzy
 msgid "User profiles"
 msgstr "Benutzerprofile"
 
 #: ../lib/modules/quota.inc:404
-#, fuzzy
 msgid "User quota"
-msgstr "Benutzer Quota"
+msgstr "Benutzer-Quota"
 
 #: ../help/help.inc:50
 msgid "User/Group/Host suffix"
@@ -3677,7 +3640,7 @@ msgstr ""
 
 #: ../templates/pdfedit/pdfpage.php:460
 msgid "Width"
-msgstr ""
+msgstr "Breite"
 
 #: ../help/help.inc:167
 msgid "Windows clients will show display name as group description."
@@ -3695,9 +3658,8 @@ msgstr "Windows-Domäne des Hosts."
 #: ../lib/modules/sambaSamAccount.inc:707
 #: ../lib/modules/sambaGroupMapping.inc:174
 #: ../lib/modules/sambaGroupMapping.inc:295
-#, fuzzy
 msgid "Windows group"
-msgstr "Windows-Gruppenname"
+msgstr "Windows-Gruppe"
 
 #: ../lib/modules/sambaGroupMapping.inc:283
 #, fuzzy
@@ -3774,7 +3736,7 @@ msgstr "Sprache"
 
 #: ../lib/modules/posixGroup.inc:289
 msgid "adminstrators"
-msgstr ""
+msgstr "administratoren"
 
 #: ../templates/config/confmodules.php:194
 #: ../templates/config/confmodules.php:222
@@ -3783,11 +3745,7 @@ msgstr ""
 #: ../templates/config/confmodules.php:400
 #: ../templates/config/confmodules.php:428
 msgid "base module"
-msgstr ""
-
-#: ../templates/pdfedit/pdfpage.php:463 ../templates/pdfedit/pdfpage.php:471
-msgid "cm"
-msgstr ""
+msgstr "Basismodul"
 
 #: ../lib/modules.inc:765
 #, fuzzy
@@ -3801,13 +3759,9 @@ msgstr "Erstellen"
 msgid "eMail address"
 msgstr "E-Mail Adresse"
 
-#: ../lib/modules/posixAccount.inc:217
-msgid "false"
-msgstr ""
-
 #: ../lib/modules/posixAccount.inc:190
 msgid "group01,group02"
-msgstr ""
+msgstr "gruppe01,gruppe02"
 
 #: ../lib/modules/quota.inc:124 ../lib/modules/quota.inc:126
 #: ../lib/modules/quota.inc:193 ../lib/modules/quota.inc:195
@@ -3829,9 +3783,8 @@ msgstr ""
 "auf."
 
 #: ../lib/modules/posixAccount.inc:250
-#, fuzzy
 msgid "machines"
-msgstr "Domänen"
+msgstr "Hosts"
 
 #: ../lib/modules.inc:766
 msgid "modified"
@@ -3852,51 +3805,51 @@ msgstr ""
 
 #: ../lib/modules/posixAccount.inc:236
 msgid "pc01$"
-msgstr ""
+msgstr "pc01$"
 
 #: ../lib/modules/posixAccount.inc:257
 msgid "pc01,Room 2.34"
-msgstr ""
+msgstr "pc01,Raum 2.34"
 
 #: ../templates/config/confmain.php:431
 msgid "required"
 msgstr "erforderlich"
 
 #: ../templates/config/confmain.php:433
-#, fuzzy
 msgid "required for Samba 3 accounts"
-msgstr "erforderlich für Samba 3 Schema"
+msgstr "erforderlich für Samba 3 Accounts"
 
 #: ../templates/config/confmain.php:432
-#, fuzzy
 msgid "required for Samba accounts"
-msgstr "erforderlich für Samba 3 Schema"
+msgstr "erforderlich für Samba-Accounts"
 
 #: ../templates/pdfedit/pdfpage.php:546
 msgid "right"
-msgstr ""
+msgstr "rechts"
 
 #: ../lib/modules/posixGroup.inc:315 ../lib/modules/posixAccount.inc:211
 msgid "secret"
-msgstr ""
+msgstr "geheim"
 
 #: ../lib/modules/posixAccount.inc:169
-#, fuzzy
 msgid "smiller"
-msgstr "Fax"
+msgstr "hmueller"
 
 #: ../lib/modules/posixGroup.inc:309
 msgid "user01,user02,user03"
-msgstr ""
+msgstr "benutzer01,benutzer02,benutzer03"
 
 #: ../lib/modules/inetOrgPerson.inc:191
 msgid "user@company.com"
-msgstr ""
+msgstr "benutzer@firma.de"
 
 #: ../lib/modules/posixAccount.inc:183
-#, fuzzy
 msgid "users"
 msgstr "Benutzer"
+
+#, fuzzy
+#~ msgid "DN:"
+#~ msgstr "DN"
 
 #~ msgid "DN Suffix"
 #~ msgstr "DN-Suffix"
