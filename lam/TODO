@@ -15,3 +15,5 @@ alpha 3
 - support for Samba 3.x schema
 - translate to German
 - PDF support
+- ID-Mapping
+- management of Samba 3 domain objects
