@@ -307,29 +307,25 @@ class posixGroup extends baseModule {
 		'name' => 'posixGroup_gid',
 		'description' => _('GID number'),
 		'help' => 'gidNumber',
-		'example' => '2034',
-		'required' => false
+		'example' => '2034'
 		),
 		array(
 		'name' => 'posixGroup_description',
 		'description' => _('Group description'),
 		'help' => 'description',
-		'example' => _('Administrators group'),
-		'required' => false
+		'example' => _('Administrators group')
 		),
 		array(
 		'name' => 'posixGroup_members',
 		'description' => _('Group members'),
 		'help' => 'upload_members',
-		'example' => _('user01,user02,user03'),
-		'required' => false
+		'example' => _('user01,user02,user03')
 		),
 		array(
 		'name' => 'posixGroup_password',
 		'description' => _('Group password'),
 		'help' => 'password',
-		'example' => _('secret'),
-		'required' => false
+		'example' => _('secret')
 		)
 		);
 		// help Entries
@@ -423,7 +419,7 @@ class posixGroup extends baseModule {
 		$this->messages['cn'][1] = array('WARN', _('Groupname'), _('Groupname in use. Selected next free groupname.'));
 		$this->messages['cn'][2] = array('ERROR', _('Groupname'), _('Groupname contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
 		$this->messages['cn'][3] = array('ERROR', _('Account %s: posixGroup_cn'), _('Groupname contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
-		$this->messages['memberUID'][0] = array('ERROR', 'Account %s: posixGroup_members', _("This value must be a list of user names separated by semicolons."));
+		$this->messages['memberUID'][0] = array('ERROR', _('Account %s: posixGroup_members'), _("This value must be a list of user names separated by semicolons."));
 		} 
 
 
