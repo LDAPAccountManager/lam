@@ -79,6 +79,7 @@ class cache {
 		if ($line==-1) trigger_error (sprintf(_("ObjectClass %s required but not defined in LDAP."), $objectClass), E_USER_WARNING);
 
 		// Create list of all allowed attributes
+		$allowed_attributes = array();
 		for ($i=0; $i<count($_SESSION['ldap']->objectClasses); $i++ ) {
 			if (strpos($_SESSION['ldap']->objectClasses[$i],  'MUST (')) {
 				$string_withtail = substr($_SESSION['ldap']->objectClasses[$i], strpos($_SESSION['ldap']->objectClasses[$i],  'MUST (')+6);
@@ -138,6 +139,7 @@ class cache {
 		$allowed_types = array ( 'user', 'group', 'host', 'domain', '*' );
 		if (!in_array($singlescope, $allowed_types)) trigger_error(sprintf('Invalid scope. Valid scopes are %s.', implode(" ", $allowed_types)), E_USER_ERROR);
 		// Create list of all allowed attributes
+		$allowed_attributes = array();
 		for ($i=0; $i<count($_SESSION['ldap']->objectClasses); $i++ ) {
 			if (strpos($_SESSION['ldap']->objectClasses[$i],  'MUST (')) {
 				$string_withtail = substr($_SESSION['ldap']->objectClasses[$i], strpos($_SESSION['ldap']->objectClasses[$i],  'MUST (')+6);

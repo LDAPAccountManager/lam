@@ -649,7 +649,7 @@ class accountContainer {
 				$this->subpage='attributes';
 				}
 			else for ($i=1; $i<count($this->order); $i++ )
-				if ($post['form_main_'.$this->order[$i]] && ($this->module[$this->order[$i]]->module_ready())) {
+				if (isset($post['form_main_'.$this->order[$i]]) && ($this->module[$this->order[$i]]->module_ready())) {
 					$this->current_page = $i;
 					$this->subpage='attributes';
 					}
@@ -798,7 +798,7 @@ class accountContainer {
 					switch ($input[$i][$j]['kind']) {
 							case 'text':
 								echo "<td";
-								if ($input[$i][$j]['td']['valign']!='') echo ' valign="' . $input[$i][$j]['td']['valign'] .'"';
+								if (isset($input[$i][$j]['td']) && $input[$i][$j]['td']['valign'] != '') echo ' valign="' . $input[$i][$j]['td']['valign'] .'"';
 								echo ">\n";
 								echo $input[$i][$j]['text'] . "</td>\n";
 								break;
@@ -833,13 +833,21 @@ class accountContainer {
 								break;
 							case 'select':
 								if (!is_array($input[$i][$j]['options'])) $input[$i][$j]['options'] = array ( $input[$i][$j]['options'] );
-								if (!is_array($input[$i][$j]['options_selected'])) $input[$i][$j]['options_selected'] = array ( $input[$i][$j]['options_selected'] );
+								if (isset($input[$i][$j]['options_selected'])) {
+									if (!is_array($input[$i][$j]['options_selected'])) {
+										// one selected element
+										$input[$i][$j]['options_selected'] = array ( $input[$i][$j]['options_selected'] );
+									}
+								}
+								else {
+									$input[$i][$j]['options_selected'] = array();
+								}
 								echo "<td";
 								if ($input[$i][$j]['td']['valign']!='') echo ' valign="' . $input[$i][$j]['td']['valign'] .'"';
 								echo ">\n";
 								echo "<select name=\"" . $input[$i][$j]['name'] . '"';
-								if ($input[$i][$j]['multiple']) echo ' multiple';
-								if ($input[$i][$j]['size']) echo ' size="' . $input[$i][$j]['size'] . '"';
+								if (isset($input[$i][$j]['multiple'])) echo ' multiple';
+								if (isset($input[$i][$j]['size'])) echo ' size="' . $input[$i][$j]['size'] . '"';
 								// Show taborder
 								echo " tabindex=$y";
 								$y++;
@@ -1235,9 +1243,9 @@ class accountContainer {
 			foreach ($module as $moduleitem) {
 				$required = $this->module[$moduleitem]->get_dependencies($this->type);
 				$everything_found = true;
-				if (is_array($required['require'])) {
-					foreach ($required['require'] as $requireditem)
-						if (!in_array($reuquireditem, $modulelist)) $everthing_found = false;
+				if (is_array($required['depends'])) {
+					foreach ($required['depends'] as $requireditem)
+						if (!in_array($requireditem, $modulelist)) $everthing_found = false;
 					}
 				if ($everything_found && !in_array($moduleitem, $order) ) $order[] = $moduleitem;
 				}
