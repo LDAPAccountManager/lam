@@ -30,16 +30,16 @@ include_once("status.inc");
 function setlanguage() {
 	if ($_SESSION['language']) {
 		$language = explode(":", $_SESSION['language']);
-		putenv("LANG=" . $language[0]);
-		setlocale(LC_ALL, $language[0]);
-		$locdir = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/locale";
+		putenv("LANG=" . $language[0]);  // e.g. LANG=de_DE
+		setlocale(LC_ALL, $language[0]);  // set LC_ALL to de_DE
+		$locdir = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/locale";  // set path to translations
 		bindtextdomain("messages", $locdir);
 		textdomain("messages");
 	}
 	else echo _("Language not defined in session!");
 }
 
-// returns an array of String with all available configuration profiles (without .conf)
+// returns an array of string with all available configuration profiles (without .conf)
 function getConfigProfiles() {
 	$dir = dir(substr(__FILE__, 0, strlen(__FILE__) - 15) . "/config");
 	$ret = array();
@@ -47,6 +47,7 @@ function getConfigProfiles() {
 	while ($entry = $dir->read()){
 		$ext = substr($entry, strlen($entry)-5, 5);
 		$name = substr($entry, 0, strlen($entry)-5);
+		// check if extension is right, add to profile list
 		if ($ext == ".conf") {
 			$ret[$pos] = $name;
 			$pos ++;
@@ -57,7 +58,7 @@ function getConfigProfiles() {
 }
 
 // print meta refresh
-// $page is the target page
+// $page is the URL of the target page
 function metaRefresh($page) {
 	echo $_SESSION['header'];
 	echo "<html>\n";
@@ -122,6 +123,7 @@ class Config {
   var $defaultLanguage;
 
   // Path to external script and server where it is executed
+  // used for managing quota and home directories
   // optional settings, may not be defined
   var $scriptPath;
   var $scriptServer;
@@ -147,6 +149,7 @@ class Config {
 
 	// constructor, loads preferences from config file
 	function Config($file=0) {
+		// load first profile if none is given
 		if (!is_string($file)) {
 			$profiles = getConfigProfiles();
 			$file = $profiles[0];
@@ -162,13 +165,14 @@ class Config {
 			$file = fopen($conffile, "r");
 			while (!feof($file)) {
 				$line = fgets($file, 1024);
-				if (($line == "\n")||($line[0] == "#")) continue; // ignore comments
+				$line = trim($line);  // remove spaces at the beginning and end
+				if (($line == "")||($line[0] == "#")) continue; // ignore comments and empty lines
 				// search keywords
 				for ($i = 0; $i < sizeof($this->settings); $i++) {
 					$keyword = $this->settings[$i];
 					$keylen = strlen($keyword);
 					if (strtolower(substr($line, 0, $keylen + 2)) == strtolower($keyword . ": ")) {
-						$this->$keyword = chop(substr($line, $keylen + 2, strlen($line) - $keylen -2));
+						$this->$keyword = substr($line, $keylen + 2, strlen($line) - $keylen -2);
 						break;
 					}
 				}
@@ -195,7 +199,7 @@ class Config {
 			$saved = array();	// includes all settings which have been saved
 			for ($i = 0; $i < sizeof($file_array); $i++) {
 				$line = trim($file_array[$i]);
-				if (($line == "\n")||($line[0] == "#")) continue; // ignore comments
+				if (($line == "")||($line[0] == "#")) continue; // ignore comments and empty lines
 				// search for keywords
 				for ($k = 0; $k < sizeof($this->settings); $k++) {
 					$keyword = $this->settings[$k];
@@ -287,6 +291,8 @@ class Config {
 	}
 
 	// sets the server address
+	// $value: new server address
+	// returns true if $value has correct format
 	function set_ServerURL($value) {
 		if (is_string($value)) $this->ServerURL = $value;
 		else return false;
@@ -304,6 +310,8 @@ class Config {
 	}
 
 	// needs a string that contains all admin users seperated by semicolons
+	// $value: new admin string
+	// returns true if $value has correct format
 	function set_Adminstring($value) {
 		if (is_string($value) &&
 		eregi("^([a-z0-9]|-)+=([a-z0-9]|-)+(,([a-z0-9]|-)+=([a-z0-9]|-)+)+(;([a-z0-9]|-)+=([a-z0-9]|-)+(,([a-z0-9]|-)+=([a-z0-9]|-)+)+)*$", $value)) {
@@ -319,6 +327,8 @@ class Config {
 	}
 
 	// sets the preferences wizard password
+	// $value: new password
+	// returns true if $value has correct format
 	function set_Passwd($value) {
 		if (is_string($value)) $this->Passwd = $value;
 		else return false;
@@ -331,6 +341,8 @@ class Config {
 	}
 
 	// sets the LDAP suffix where users are saved
+	// $value: new user suffix
+	// returns true if $value has correct format
 	function set_UserSuffix($value) {
 		if (is_string($value) && (eregi("^(([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)(,([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)*$", $value))) {
 			$this->usersuffix = $value;
@@ -345,6 +357,8 @@ class Config {
 	}
 
 	// sets the LDAP suffix where groups are saved
+	// $value: new group suffix
+	// returns true if $value has correct format
 	function set_GroupSuffix($value) {
 		if (is_string($value) && (eregi("^(([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)(,([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)*$", $value))) {
 			$this->groupsuffix = $value;
@@ -359,6 +373,8 @@ class Config {
 	}
 
 	// sets the LDAP suffix where hosts are saved
+	// $value: new host suffix
+	// returns true if $value has correct format
 	function set_HostSuffix($value) {
 		if (is_string($value) && (eregi("^(([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)(,([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)*$", $value))) {
 		$this->hostsuffix = $value;
@@ -373,6 +389,8 @@ class Config {
 	}
 
 	// sets the LDAP suffix where domains are saved
+	// $value: new domain suffix
+	// returns true if $value has correct format
 	function set_DomainSuffix($value) {
 		if (!$value && ($this->get_Samba3() == "no")) $this->domainsuffix = "";
 		elseif (is_string($value) && (eregi("^(([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)(,([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)*$", $value))) {
@@ -388,6 +406,8 @@ class Config {
 	}
 
 	// sets the minimum UID to use when creating new users
+	// $value: new minimum UID number
+	// returns true if $value has correct format
 	function set_minUID($value) {
 		if (is_numeric($value)) $this->MinUID = $value;
 		else return false;
@@ -400,6 +420,8 @@ class Config {
 	}
 
 	// sets the maximum UID to use when creating new users
+	// $value: new maximum UID number
+	// returns true if $value has correct format
 	function set_maxUID($value) {
 		if (is_numeric($value)) $this->MaxUID = $value;
 		else return false;
@@ -412,6 +434,8 @@ class Config {
 	}
 
 	// sets the minimum GID to use when creating new groups
+	// $value: new minimum GID number
+	// returns true if $value has correct format
 	function set_minGID($value) {
 		if (is_numeric($value)) $this->MinGID = $value;
 		else return false;
@@ -424,6 +448,8 @@ class Config {
 	}
 
 	// sets the maximum GID to use when creating new groups
+	// $value: new maximum GID number
+	// returns true if $value has correct format
 	function set_maxGID($value) {
 		if (is_numeric($value)) $this->MaxGID = $value;
 		else return false;
@@ -436,6 +462,8 @@ class Config {
 	}
 
 	// sets the minimum UID to use when creating new Samba hosts
+	// $value: new minimum machine number
+	// returns true if $value has correct format
 	function set_minMachine($value) {
 		if (is_numeric($value)) $this->MinMachine = $value;
 		else return false;
@@ -448,6 +476,8 @@ class Config {
 	}
 
 	// sets the maximum UID to use when creating new Samba hosts
+	// $value: new maximum machine number
+	// returns true if $value has correct format
 	function set_maxMachine($value) {
 		if (is_numeric($value)) $this->MaxMachine = $value;
 		else return false;
@@ -460,8 +490,10 @@ class Config {
 	}
 
 	// sets the list of attributes to show in user list
+	// $value: new attribute string
+	// returns true if $value has correct format
 	function set_userlistAttributes($value) {
-		if (is_string($value) && eregi("^((#[a-z]*)|([a-z]*:[a-z*]))(;((#[a-z]*)|([a-z]*:[a-z]*)))*$", $value)) {
+		if (is_string($value) && eregi("^((#[a-z]+)|([a-z]*:[a-z_\\-]+))(;((#[a-z]+)|([a-z]*:[a-z_\\-]+)))*$", $value)) {
 			$this->userlistAttributes = $value;
 		}
 		else return false;
@@ -474,8 +506,10 @@ class Config {
 	}
 
 	// sets the list of attributes to show in group list
+	// $value: new attribute string
+	// returns true if $value has correct format
 	function set_grouplistAttributes($value) {
-		if (is_string($value) && eregi("^((#[a-z]*)|([a-z]*:[a-z*]))(;((#[a-z]*)|([a-z]*:[a-z]*)))*$", $value)) {
+		if (is_string($value) && eregi("^((#[a-z]+)|([a-z]*:[a-z_\\-]+))(;((#[a-z]+)|([a-z]*:[a-z_\\-]+)))*$", $value)) {
 			$this->grouplistAttributes = $value;
 		}
 		else return false;
@@ -488,8 +522,10 @@ class Config {
 	}
 
 	// sets the list of attributes to show in host list
+	// $value: new attribute string
+	// returns true if $value has correct format
 	function set_hostlistAttributes($value) {
-		if (is_string($value) && eregi("^((#[a-z]*)|([a-z]*:[a-z*]))(;((#[a-z]*)|([a-z]*:[a-z]*)))*$", $value)) {
+		if (is_string($value) && eregi("^((#[a-z]+)|([a-z]*:[a-z_\\-]+))(;((#[a-z]+)|([a-z]*:[a-z_\\-]+)))*$", $value)) {
 			$this->hostlistAttributes = $value;
 		}
 		else return false;
@@ -502,6 +538,8 @@ class Config {
 	}
 
 	// sets the maximum number of rows in user/group/host lists
+	// $value: new attribute string
+	// returns true if $value has correct format
 	function set_MaxListEntries ($value) {
 		if (is_numeric($value)) $this->maxlistentries = $value;
 		else return false;
@@ -514,6 +552,8 @@ class Config {
 	}
 
 	// sets the default language string
+	// $value: new default language
+	// returns true if $value has correct format
 	function set_defaultLanguage($value) {
 		if (is_string($value)) $this->defaultLanguage = $value;
 		else return false;
@@ -526,6 +566,8 @@ class Config {
 	}
 
 	// sets the path to the external script
+	// $value: new script path
+	// returns true if $value has correct format
 	function set_scriptPath($value) {
 		if (!$value) $this->scriptPath = ""; // optional parameter
 		elseif (is_string($value) && eregi("^/([a-z0-9_\\-])+(/([a-z0-9_\\.\\-])+)+$", $value)) $this->scriptPath = $value;
@@ -539,9 +581,11 @@ class Config {
 	}
 
 	// sets the server of the external script
+	// $value: new script server
+	// returns true if $value has correct format
 	function set_scriptServer($value) {
-		if (!$value) $value = ""; // optional parameter
-		if (is_string($value)) {
+		if (!$value) $this->scriptServer = ""; // optional parameter
+		elseif (is_string($value) && eregi("^[a-z0-9\\-]+(\\.[a-z0-9\\-]+)*$", $value)) {
 			$this->scriptServer = $value;
 		}
 		else return false;
@@ -560,6 +604,8 @@ class Config {
 	}
 
 	// set Samba version: "yes" means 3.x schema, "no" means 2.2.x schema
+	// $value: "yes"/"no"
+	// returns true if $value has correct format
 	function set_samba3($value) {
 		if (is_string($value) && eregi("^(yes|no)$", $value)) {
 			$this->samba3 = $value;
@@ -570,7 +616,7 @@ class Config {
 
 	// returns the LDAP cache timeout in minutes
 	function get_cacheTimeout() {
-		if ($this->cachetimeout) return $this->cachetimeout;
+		if (isset($this->cachetimeout)) return $this->cachetimeout;
 		else return 5;
 	}
 
@@ -580,6 +626,8 @@ class Config {
 	}
 
 	// sets the LDAP cache timeout in minutes (0,1,2,5,10,15)
+	// $value: new cache timeout
+	// returns true if $value has correct format
 	function set_cacheTimeout($value) {
 		if (is_numeric($value) && ($value > -1)) {
 			$this->cachetimeout = $value;
@@ -595,6 +643,8 @@ class Config {
 	}
 
 	// set the password hash type (CRYPT/SHA/SSHA/MD5/SMD5)
+	// $value: new password hash algorithm
+	// returns true if $value has correct format
 	function set_pwdhash($value) {
 		if (is_string($value) && eregi("^(crypt|sha|ssha|md5|smd5|plain)$", $value)) {
 			$this->pwdhash = $value;
@@ -629,14 +679,15 @@ class CfgMain {
 			$file = fopen($conffile, "r");
 			while (!feof($file)) {
 				$line = fgets($file, 1024);
-				if (($line == "\n")||($line[0] == "#")) continue; // ignore comments
+				$line = trim($line);  // remove spaces at the beginning and end
+				if (($line == "")||($line[0] == "#")) continue; // ignore comments
 				// search keywords
 				if (substr($line, 0, 10) == "password: ") {
-					$this->password = chop(substr($line, 10, strlen($line)-10));
+					$this->password = substr($line, 10, strlen($line)-10);
 					continue;
 				}
 				if (substr($line, 0, 9) == "default: ") {
-					$this->default = chop(substr($line, 9, strlen($line)-9));
+					$this->default = substr($line, 9, strlen($line)-9);
 					continue;
 				}
 			}
