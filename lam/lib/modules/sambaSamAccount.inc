@@ -126,6 +126,12 @@ class sambaSamAccount {
 		return _('sambaSamAccount');
 		}
 
+	function can_manage($scope) {
+		if ($scope == "host") return true;
+		elseif ($scope == "user") return true;
+		else return false;
+	}
+
 		function is_base_module($scope) {
 		return false;
 	}

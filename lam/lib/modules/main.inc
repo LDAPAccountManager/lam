@@ -67,6 +67,10 @@ class main {
 		return _('main');
 		}
 
+	function can_manage($scope) {
+		return false;
+	}
+
 	function is_base_module($scope) {
 		return false;
 	}

@@ -97,6 +97,11 @@ class sambaGroupMapping {
 		return _('sambaGroupMapping');
 		}
 
+	function can_manage($scope) {
+		if ($scope == "group") return true;
+		else return false;
+	}
+
 	function is_base_module($scope) {
 		return false;
 	}

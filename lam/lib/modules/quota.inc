@@ -71,6 +71,12 @@ class quota {
 		return _('quota');
 		}
 
+	function can_manage($scope) {
+		if ($scope == "group") return true;
+		elseif ($scope == "user") return true;
+		else return false;
+	}
+
 	function is_base_module($scope) {
 		return false;
 	}

@@ -91,6 +91,11 @@ class shadowAccount {
 		return _('shadowAccount');
 		}
 
+	function can_manage($scope) {
+		if ($scope == "user") return true;
+		else return false;
+	}
+
 	function is_base_module($scope) {
 		return false;
 	}
