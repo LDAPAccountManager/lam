@@ -274,6 +274,25 @@ return <span style="font-weight: bold;">false</span>. If <span
  style="font-weight: bold;">true</span> is returned the next module
 page will be displayed.<br>
 <br>
+<h3>2.2.4. get_help</h3>
+<br>
+<table cellpadding="2" cellspacing="2" border="0"
+ style="text-align: left; width: 300px; height: 30px;">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204); text-align: center;"><span
+ style="font-weight: bold;">function get_help($helpID)</span><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+This function is called when a page requests a help topic from this module.<br>
+<span style="font-weight: bold;">$scope</span> is the help identifier; it must only contain a-z, A-Z, 0-9
+-, . and _.<br>
+It must return the help entry as array for the submitted help identifier. The format of the array to be returned is described in section 4. "Help entry syntax".<br>
+<br>
 <h3><br>
 </h3>
 <h2>3. Meta HTML code</h2>
@@ -395,9 +414,32 @@ example", "td" =&gt; array("colspan" =&gt; 3))<br>
 )<br>
 </code><br>
 <br>
+<h3><br>
+</h3>
+<h2>4. Help entry syntax</h2>
+The array that is returned by the get_help function must follow the below described syntax. 
+Fields marked <b>REQUIRED</b> are neccessary under any circumstances. Fields marked 
+<b>OPTIONAL</b> may be left out when not needed.<br>
+There are basically two different types of help entries that can be used. Internal help entries, that 
+means the headline, text, etc is included in the help entry or external help entries, that means the help 
+entry has only a reference pointing to a HTML/PHP page that offers the help entry. <br>
 <br>
-<br>
-<br>
+<h3><br>
+</h3>
+<h2>4.1. Internal help entries</h2>
+<span style="font-weight: bold;">ext</span> <span style="font-style: italic;">(REQUIRED)</span> 
+<br>Must be <b>FALSE</b> in this case.
+<br><br>
+<span style="font-weight: bold;">Headline</span> <span style="font-style: italic;">(REQUIRED)</span> 
+<br>The headline of this help entry. Can consist of any alpha-numeric characters. No HTML/CSS 
+elements are not allowed here.
+<br><br>
+<span style="font-weight: bold;">Text</span> <span style="font-style: italic;">(REQUIRED)</span> 
+<br>The text of this help entry. Can constist if any alpha-numeric characters and can contain 
+placeholder for variables passed to this help entry. The placeholder must follow the syntax for 
+placeholder defined by the PHP <b>printf</b> function. HTML/CSS elements are allowed here as long 
+as they follow the XHTML1.0 Strict specification.
+<br><br>
 <br>
 </body>
 </html>

@@ -56,56 +56,68 @@ function echoHTMLFoot()
 }
 
 /* Print help site */
-function displayHelp($helpNumber)
-{
-	global $helpArray;
-	/* If no help number was submitted print error message */
-	if($helpNumber == "")
-	{
-		$errorMessage = _("Sorry no help number submitted.");
-		echoHTMLHead();
-		statusMessage("ERROR","",$errorMessage);
-		echoHTMLFoot();
-	}
-	/* If submitted help number is not in help/help.inc print error message */
-	elseif(!array_key_exists($helpNumber,$helpArray))
-	{
-		$variables = array();
-		array_push($variables,$helpNumber);
-		$errorMessage = _("Sorry this help number ({bold}%d{endbold}) is not available.");
-		echoHTMLHead();
-		statusMessage("ERROR","",$errorMessage,$variables);
-		echoHTMLFoot();
-	}
-	/* Print help site out of $helpArray */
-	elseif($helpArray[$helpNumber]["ext"] == "FALSE")
-	{
-		echoHTMLHead();
-		echo "		<h1 class=\"help\">" . $helpArray[$helpNumber]['Headline'] . "</h1>\n";
-		$format = "		<p class=\"help\">" . $helpArray[$helpNumber]['Text'] . "</p>\n";
-		printf($format,$helpArray[$helpNumber]['variables'][0],$helpArray[$helpNumber]['variables'][1],$helpArray[$helpNumber]['variables'][2],$helpArray[$helpNumber]['variables'][3],$helpArray[$helpNumber]['variables'][4],$helpArray[$helpNumber]['variables'][5],$helpArray[$helpNumber]['variables'][6],$helpArray[$helpNumber]['variables'][7],$helpArray[$helpNumber]['variables'][8],$helpArray[$helpNumber]['variables'][9]);
-		//echo "		<p class=\"help\">" . $helpArray[$helpNumber]['Text'] . "</p>\n";
-		if($helpArray[$helpNumber]["SeeAlso"] <> "")
-		{
-			echo "		<p class=\"help\">" . _("See also") . ": " . $helpArray[$helpNumber]['SeeAlso'] . "</p>\n";
-		}
-		echoHTMLFoot();
-	}
+function displayHelp($helpEntry) {
 	/* Load external help page */
-	elseif($helpArray[$helpNumber]["ext"] == "TRUE")
+	if($helpEntry["ext"] == "TRUE")
 	{
 		echoHTMLHead();
-		include_once("../help/" . $helpArray[$helpNumber]["Link"]);
+		include_once("../help/" . $helpEntry["Link"]);
 		echoHTMLFoot();
 	}
-	/* Print empty page in all other cases */
+	/* Print help site out of $helpEntry */
 	else
 	{
+		$helpVariables = array();
+		while($current = current($helpEntry['variables'])) {
+			array_push($helpVariables,$current);
+			next($helpEntry['variables']);
+		}
 		echoHTMLHead();
+		echo "		<h1 class=\"help\">" . $helpEntry['Headline'] . "</h1>\n";
+		$format = "		<p class=\"help\">" . $helpEntry['Text'] . "</p>\n";
+		array_unshift($helpVariables,$format);
+		call_user_func_array("printf",$helpVariables);
+		if($helpEntry["SeeAlso"] <> "")
+		{
+			echo "		<p class=\"help\">" . _("See also") . ": " . $helpEntry['SeeAlso'] . "</p>\n";
+		}
 		echoHTMLFoot();
 	}
 }
 
-displayHelp($_GET['HelpNumber']);
+/* If no help number was submitted print error message */
+if(!isset($_GET['HelpNumber']))
+{
+	$errorMessage = _("Sorry no help number submitted.");
+	echoHTMLHead();
+	statusMessage("ERROR","",$errorMessage);
+	echoHTMLFoot();
+	exit;
+}
+
+$helpEntry = array();
+
+if(isset[$_GET['Module']) {
+	include_once("../lib/modules.inc");
+	$helpEntry = getHelp($_GET['Module'],$_GET['HelpNumber']);
+}
+else {
+	/* If submitted help number is not in help/help.inc print error message */
+	if(!array_key_exists($_GET['HelpNumber'],$helpArray))
+	{
+		$variables = array();
+		array_push($variables,$_GET['HelpNumber']);
+		$errorMessage = _("Sorry this help number ({bold}%d{endbold}) is not available.");
+		echoHTMLHead();
+		statusMessage("ERROR","",$errorMessage,$variables);
+		echoHTMLFoot();
+		exit;
+	}
+	else {
+		$helpEntry = $helpArray[$_GET['HelpNumber']];
+	}
+}
+
+displayHelp($helpEntry);
 
 ?>

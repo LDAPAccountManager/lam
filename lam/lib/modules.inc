@@ -188,6 +188,11 @@ function checkProfileOptions($scope, $options) {
 	return $return;
 }
 
+// get the single help entry array for help identifier $helpID from module $module
+function getHelp($module,$helpID) {
+	return call_user_func(array($module, "get_help"), $helpID);
+}
+
 
 class accountContainer {
 	// Constructor
