@@ -27,6 +27,7 @@ $Id$
 setcookie("Key", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", 0, "/");
 setcookie("IV", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", 0, "/");
 
+include_once("../lib/status.inc");
 include_once("../lib/ldap.inc");
 
 // start session
