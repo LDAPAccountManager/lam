@@ -50,7 +50,10 @@ thins to get it work.
    Please answer all questions to describe your system
    Every additional needed module should be installed
    automaticly
-   
+
+5. Set up lamdaemon.pl
+   Make all needed changes in lamdaemon.pl
+      
 Now everything should work fine
 
 This is a very incomplete Documention for Alpha-Release only.
