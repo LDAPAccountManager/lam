@@ -147,7 +147,7 @@ class sambaGroupMapping extends baseModule {
 		$sambaDomains = search_domains($_SESSION['config']->get_domainSuffix());
 		// Get Domain-SID from group SID
 		if ($this->attributes['sambaSID'][0]!='')
-			$domainSID = substr($this->atttributes['sambaSID'][0], 0, strrpos($this->attributes['sambaSID'][0], "-"));
+			$domainSID = substr($this->attributes['sambaSID'][0], 0, strrpos($this->attributes['sambaSID'][0], "-"));
 		for ($i=0; $i<count($sambaDomains); $i++ ) {
 			// List with all valid domains
 			$sambaDomainNames[] = $sambaDomains[$i]->name;
@@ -319,11 +319,29 @@ class sambaGroupMapping extends baseModule {
 		// domain
 		$return[] = array (
 			0 => array('kind' => 'text', 'text' => _('Domain')),
-			1 => array('kind' => 'select', 'name' => 'sambaDomainName', 'options' => $sambaDomainNames, 'options_selected' => array ()),
+			1 => array('kind' => 'select', 'name' => 'sambaGroupMapping_sambaDomainName', 'options' => $sambaDomainNames, 'options_selected' => array ()),
 			2 => array('kind' => 'help', 'value' => 'sambaDomainName' ));
 		return $return;
 	}
 
+
+	/**
+	* Loads the values of an account profile into internal variables.
+	*
+	* @param array $profile hash array with profile values (identifier => value)
+	*/
+	function load_profile($profile) {
+		if (isset($profile['sambaGroupMapping_sambaDomainName'][0])) {
+			// get list of domains
+			$sambaDomains = search_domains($_SESSION['config']->get_domainSuffix());
+			for ($i = 0; $i < sizeof($sambaDomains); $i++) {
+				if ($sambaDomains[$i]->name == $profile['sambaGroupMapping_sambaDomainName'][0]) {
+					$this->attributes['sambaSID'][0] = $sambaDomains[$i]->SID . "-0";
+					break;
+				}
+			}
+		}
+	}
 
 	/* This function loads all attributes into the object
 	* $attr is an array as it's retured from ldap_get_attributes
