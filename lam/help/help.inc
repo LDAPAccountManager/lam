@@ -33,9 +33,9 @@ $helpArray = array (
 				// configuration wizard
 				// configuration login
 				// config profile management
-				"200" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("Login"),
+				"200" => array ("ext" => "FALSE", "Headline" => _("Configuration wizard") . " - " . _("Login"),
 					"Text" => _("Please enter the configuration password. This is NOT your LDAP password. It is stored in your .conf-file. If this is the first time you log in, enter \"lam\".")),
-				"201" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("Server address"),
+				"201" => array ("ext" => "FALSE", "Headline" => _("Configuration wizard") . " - " . _("Server address"),
 					"Text" => _("This is the server address of your LDAP server. Use ldap:// for standard LDAP connections and ldaps:// for encrypted (require server certificates) connections. The port value is optional.") .
 						"<br><br><b> " .
 						_("Examples") .
@@ -47,19 +47,19 @@ $helpArray = array (
 						_("Note") .
 						":</b><br><br>" .
 						_("When using ldaps:// be sure to use exactly the same IP/domain name as in your certificate!")),
-				"202" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("User/Group/Host suffix"),
+				"202" => array ("ext" => "FALSE", "Headline" => _("Configuration wizard") . " - " . _("User/Group/Host suffix"),
 					"Text" => _("This is the suffix of the LDAP tree from where to search for user/group/host entries. Only entries in these subtrees will be displayed in the user/group/host list. When creating a new accont this will be the DN where it is saved.") .
 						"<br><br><b>".
 						_("Examples").
 						":</b><br><br>".
 						_("ou=People,dc=yourcompany,dc=com will read and store all accounts in this subtree.")),
-				"203" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("UID number"),
+				"203" => array ("ext" => "FALSE", "Headline" => _("Configuration wizard") . " - " . _("UID number"),
 					"Text" => _("These are the minimum and maximum numbers to use for user IDs when creating new user accounts. The range should be different from that of machines. New user accounts will always get the highest number in use plus one.")),
-				"204" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("GID number"),
+				"204" => array ("ext" => "FALSE", "Headline" => _("Configuration wizard") . " - " . _("GID number"),
 					"Text" => _("These are the minimum and maximum numbers to use for group IDs when creating new group accounts. New group accounts will always get the highest number in use plus one.")),
-				"205" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("Machine number"),
+				"205" => array ("ext" => "FALSE", "Headline" => _("Configuration wizard") . " - " . _("Machine number"),
 					"Text" => _("These are the minimum and maximum numbers to use for machine IDs when creating new accounts for Samba hosts. The range should be different from that of users. New host accounts will always get the highest number in use plus one.")),
-				"206" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("List attributes"),
+				"206" => array ("ext" => "FALSE", "Headline" => _("Configuration wizard") . " - " . _("List attributes"),
 					"Text" => _("This is the list of attributes to show in the user/group/host list. The entries can either be predefined values, \"#attribute\", or individual ones, \"attribute:description\". Several entries are seperated by semicolons.") .
 						"<br><br><b>" .
 						_("Example") .
@@ -74,35 +74,37 @@ $helpArray = array (
 						"<br><b>" .
 						_("Hosts") .
 						": </b>#uid, #cn, #rid, #description"),
-				"207" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("Valid users"),
+				"207" => array ("ext" => "FALSE", "Headline" => _("Configuration wizard") . " - " . _("Valid users"),
 					"Text" => _("This is a list of valid DN entries of all users that are allowed to login to LDAP Account Manager. The user names have to be separated by semicolons.") .
 						"<br><br><b>" .
 						_("Example") .
 						": </b>cn=admin,dc=yourdomain,dc=org;cn=manager,dc=yourdomain,dc=org"),
-				"208" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("Maximum list entries"),
+				"208" => array ("ext" => "FALSE", "Headline" => _("Configuration wizard") . " - " . _("Maximum list entries"),
 					"Text" => _("This is the number of rows to show in the user/group/host list. If more entries are found the list will be split into several pages.")),
-				"209" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("Default language"),
+				"209" => array ("ext" => "FALSE", "Headline" => _("Configuration wizard") . " - " . _("Default language"),
 					"Text" => _("This defines the language of the login window and sets this language as the default language. Users can change the language at login.")),
-				"210" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("Script path"),
+				"210" => array ("ext" => "FALSE", "Headline" => _("Configuration wizard") . " - " . _("Script path"),
 					"Text" => _("This is the absolute path to an external script for setting quotas and creating home directories.").
 							"<br><br><b>".
 							_("Use it at your own risk and read the documentation for lamdaemon before you use it!").
 							"</b>"),
-				"211" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("Script server"),
+				"211" => array ("ext" => "FALSE", "Headline" => _("Configuration wizard") . " - " . _("Script server"),
 					"Text" => _("This is the server where the lamdaemon script is stored. LDAP Account Manager will make a SSH connection to this server with username and password provided at login.").
 						"<br><br><b>".
 						_("Use it at your own risk and read the documentation for lamdaemon before you use it!").
 						"</b>"),
-				"212" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("Change password"),
+				"212" => array ("ext" => "FALSE", "Headline" => _("Configuration wizard") . " - " . _("Change password"),
 					"Text" => _("If you want to change the current preferences password, please enter it here.")),
-				"213" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("Samba version"),
+				"213" => array ("ext" => "FALSE", "Headline" => _("Configuration wizard") . " - " . _("Samba version"),
 					"Text" => _("If you use Samba 3.x with the new LDAP schema say \"yes\" here. This will allow you to manage Samba 3 account attributes including domain objects.")),
-				"214" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("Cache timeout"),
+				"214" => array ("ext" => "FALSE", "Headline" => _("Configuration wizard") . " - " . _("Cache timeout"),
 					"Text" => _("This is the time in minutes which LAM caches its LDAP searches. Shorter times will stress LDAP more but decrease the possibility that changes are not identified.")),
-				"215" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("Password hash type"),
+				"215" => array ("ext" => "FALSE", "Headline" => _("Configuration wizard") . " - " . _("Password hash type"),
 					"Text" => _("LAM supports CRYPT, SHA, SSHA, MD5 and SMD5 to generate the hash value of an user password. SSHA and CRYPT are the most common but CRYPT does not support passwords greater than 8 letters. We do not recommend to use plain text passwords.")),
-				"216" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("Text for user PDF"),
+				"216" => array ("ext" => "FALSE", "Headline" => _("Configuration wizard") . " - " . _("Text for user PDF"),
 					"Text" => _("This text will appear on top of every user PDF file.")),
+				"217" => array ("ext" => "FALSE", "Headline" => _("Configuration wizard") . " - " . _("Account modules"),
+					"Text" => _("Here you can select which plugins you want to use for account management.")),
 				"230" => array ("ext" => "FALSE", "Headline" => _("Profile management") . " - " . _("Add profile"),
 					"Text" => _("Please enter the name of the new profile and the password to change its settings. Profile names may contain letters, numbers and -/_.")),
 				"231" => array ("ext" => "FALSE", "Headline" => _("Profile management") . " - " . _("Rename profile"),
