@@ -46,6 +46,7 @@ $MaxMachine = $conf->get_maxMachine();
 $userlistAttributes = $conf->get_userlistAttributes();
 $grouplistAttributes = $conf->get_grouplistAttributes();
 $hostlistAttributes = $conf->get_hostlistAttributes();
+$maxlistentries = $conf->get_maxlistentries();
 echo ("done<br>");
 // next we modify them and save lam.conf
 echo ("Changing preferences...");
@@ -65,6 +66,7 @@ $conf->set_maxMachine("47");
 $conf->set_userlistAttributes("#uid;#cn");
 $conf->set_grouplistAttributes("#gidNumber;#cn;#memberUID");
 $conf->set_hostlistAttributes("#cn;#uid;#description");
+$conf->set_maxlistentries("54");
 $conf->save();
 echo ("done<br>");
 // at last all preferences are read from lam.conf and compared
@@ -88,6 +90,7 @@ if ($conf->get_maxMachine() != "47") echo ("<br><font color=\"#FF0000\">Saving m
 if ($conf->get_userlistAttributes() != "#uid;#cn") echo ("<br><font color=\"#FF0000\">Saving userlistAttributes failed!</font><br>");
 if ($conf->get_grouplistAttributes() != "#gidNumber;#cn;#memberUID") echo ("<br><font color=\"#FF0000\">Saving grouplistAttributes failed!</font><br>");
 if ($conf->get_hostlistAttributes() != "#cn;#uid;#description") echo ("<br><font color=\"#FF0000\">Saving hostlistAttributes failed!</font><br>");
+if ($conf->get_maxlistentries() != "54") echo ("<br><font color=\"#FF0000\">Saving maxlistentries failed!</font><br>");
 echo ("done<br>");
 // restore old values
 echo ("Restoring old preferences...");
@@ -107,6 +110,7 @@ $conf->set_maxMachine($MaxMachine);
 $conf->set_userlistAttributes($userlistAttributes);
 $conf->set_grouplistAttributes($grouplistAttributes);
 $conf->set_hostlistAttributes($hostlistAttributes);
+$conf->set_maxlistentries($maxlistentries);
 $conf->save();
 echo ("done<br>");
 // finished

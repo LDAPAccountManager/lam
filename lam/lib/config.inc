@@ -73,6 +73,8 @@ class Config {
   var $userlistAttributes;
   var $grouplistAttributes;
   var $hostlistAttributes;
+
+  // maximum number of rows shown in user/group/host list
   var $maxlistentries;
 
   // constructor, loads preferences from ../config/lam.conf
@@ -151,6 +153,10 @@ class Config {
 	  $this->hostlistAttributes = chop(substr($line, 20, strlen($line)-20));
 	  continue;
 	}
+	if (substr($line, 0, 16) == "maxlistentries: ") {
+	  $this->maxlistentries = chop(substr($line, 16, strlen($line)-16));
+	  continue;
+	}
       }
       fclose($file);
     }
@@ -173,7 +179,7 @@ class Config {
       // booleans to check if value was already saved
       $save_serverURL = $save_passwd = $save_admins = $save_suffusr = $save_suffgrp = $save_suffhst =
 	$save_minUID = $save_maxUID = $save_minGID = $save_maxGID = $save_minMach = $save_maxMach =
-	$save_usrlstatrr =  $save_grplstatrr = $save_hstlstatrr = False;
+	$save_usrlstatrr =  $save_grplstatrr = $save_hstlstatrr = $maxlstent = False;
       $file = fopen($conffile, "r");
       $file_array = array();
       while (!feof($file)) {
@@ -258,6 +264,11 @@ class Config {
 	  $save_hstlstattr = True;
 	  continue;
 	}
+	if (substr($file_array[$i], 0, 16) == "maxlistentries: ") {
+	  $file_array[$i] = "maxlistentries: " . $this->maxlistentries . "\n";
+	  $save_maxlstent = True;
+	  continue;
+	}
       }
       // check if we have to add new entries (e.g. if user upgraded LAM and has an old lam.conf)
       if (!$save_serverURL == True) array_push($file_array, "\n\n# server address (e.g. ldap://localhost:389 or ldaps://localhost:636)\n" . "serverURL: " . $this->ServerURL);
@@ -283,6 +294,7 @@ class Config {
 						"\n# or individual ones (e.g. 'cn:Group Name')\n# values have to be seperated by semicolons\n" . "grouplistAttributes: " . $this->grouplistAttributes);
       if (!$save_hstlstattr == True) array_push($file_array, "\n\n# list of attributes to show in host list\n# entries can either be predefined values (e.g. '#cn' or '#uid')" .
 						"\n# or individual ones (e.g. 'cn:Host Name')\n# values have to be seperated by semicolons\n" . "hostlistAttributes: " . $this->hostlistAttributes);
+      if (!$save_maxlstent == True) array_push($file_array, "\n\n# maximum number of rows to show in user/group/host lists\n" . "maxlistentries: " . $this->maxlistentries);
       $file = fopen($conffile, "w");
       if ($file) {
 	for ($i = 0; $i < sizeof($file_array); $i++) fputs($file, $file_array[$i]);
@@ -310,7 +322,8 @@ class Config {
     echo _("<b>maxMachine: </b>") . $this->MaxMachine . "<br>";
     echo _("<b>userlistAttributes: </b>") . $this->userlistAttributes . "<br>";
     echo _("<b>grouplistAttributes: </b>") . $this->grouplistAttributes . "<br>";
-    echo _("<b>hostlistAttributes: </b>") . $this->hostlistAttributes;
+    echo _("<b>hostlistAttributes: </b>") . $this->hostlistAttributes . "<br>";
+    echo _("<b>maxlistentries: </b>") . $this->maxlistentries;
   }
 
   // functions to read/write preferences

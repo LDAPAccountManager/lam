@@ -8,7 +8,6 @@ serverURL: ldap://localhost:389
 # e.g. admins: cn=admin,dc=yourdomain,dc=org;cn=root,dc=yourdomain,dc=org
 admins: cn=Manager,dc=my-domain,dc=com
 
-
 # password to change these preferences via webfrontend
 passwd: lam
 
@@ -59,3 +58,6 @@ grouplistAttributes: #cn;#gidNumber;#memberUID;#description
 # or individual ones (e.g. 'cn:Host Name')
 # values have to be seperated by semicolons
 hostlistAttributes: #cn;#rid;#description;gidNumber:GID
+
+# maximum number of rows to show in user/group/host lists
+maxlistentries: 30
