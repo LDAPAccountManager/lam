@@ -40,7 +40,6 @@ setlanguage();
 
 // use references because session-vars can change in future
 $ldap_intern =& $_SESSION['ldap'];
-$header_intern =& $_SESSION['header'];
 $config_intern =& $_SESSION['config'];
 $delete_dn =& $_SESSION['delete_dn'];
 
@@ -53,13 +52,11 @@ if ($_POST['backmain']) {
 	}
 
 // Print header and part of body
-echo $header_intern;
+echo $_SESSION['header'];
 echo '<title>';
 echo _('Delete Account');
 echo '</title>'."\n".
 	'<link rel="stylesheet" type="text/css" href="../style/layout.css">'."\n".
-	'<meta http-equiv="pragma" content="no-cache">'."\n".
-	'<meta http-equiv="cache-control" content="no-cache">'."\n".
 	'</head>'."\n".
 	'<body>'."\n".
 	'<form action="delete.php" method="post">'."\n";
@@ -109,13 +106,10 @@ if ($_GET['type']) {
 		}
 
 	// Print buttons
-	echo "<br><table border=0>\n";
-	echo '<tr><td>'.
-		'<input name="delete_no" type="submit" value="';
-	echo _('Cancel'); echo '"></td><td></td><td>'.
-		'<input name="delete_yes" type="submit" value="';
-	echo _('Commit'); echo '"></td></tr>';
-	echo "</table></fieldset>\n";
+	echo "<br>\n";
+	echo '<input name="delete_yes" type="submit" value="' . _('Commit') . '">';
+	echo '&nbsp;<input name="delete_no" type="submit" value="' . _('Cancel') . '">';
+	echo "</fieldset>\n";
 	}
 
 
