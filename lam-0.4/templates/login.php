@@ -122,11 +122,15 @@ function display_LoginPage($config_object,$profile)
 		</table>
 		<hr><br><br>
 		<?php
+		// check if all password hashes are possible
 		if ((! function_exists('mHash')) && (! function_exists('sha1'))) {
 			StatusMessage("INFO", "Your PHP does not support MHash or sha1(), you will only be able to use CRYPT/PLAIN/MD5/SMD5 for user passwords!", "Please install MHash or update to PHP >4.3.");
-			?>
-			<br><br>
-			<?php
+			echo "<br><br>";
+		}
+		// check if PHP has LDAP support
+		if (! function_exists('ldap_search')) {
+			StatusMessage("ERROR", "Your PHP has no LDAP support!", "Please install the LDAP extension for PHP.");
+			echo "<br><br>";
 		}
 		?>
 		<form action="login.php" method="post">
