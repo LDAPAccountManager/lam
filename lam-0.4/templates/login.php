@@ -96,6 +96,7 @@ function display_LoginPage($config_object,$profile)
 	}
 	else
 	{
+		//TODO Generate Status message
 		$message = _("Unable to load available languages. Setting English as default language. For further instructions please contact the Admin of this site.");
 	}
 
@@ -139,9 +140,9 @@ function display_LoginPage($config_object,$profile)
 		<?php
 		}
 		?>
-		<form action="login.php" method="post">
-			<input type="hidden" name="action" value="checklogin">
-			<table width="650" align="center" border="2" rules="none" bgcolor="white">
+		<table width="650" align="center" border="2" rules="none" bgcolor="white">
+			<form action="login.php" method="post">
+				<input type="hidden" name="action" value="checklogin">
 				<tr>
 					<td width="70" rowspan="9">
 						<img src="../graphics/lam.png" alt="Logo">
@@ -243,6 +244,9 @@ function display_LoginPage($config_object,$profile)
 						<?php echo $config_object->get_ServerURL(); ?>
 					</td>
 				</tr>
+			</form>
+			<form action="./login.php" method="post" enctype="plain/text">
+				<input type="hidden" name="action" value="profileChange">
 				<tr>
 				<td height="30"><b>
 					<?php
@@ -269,9 +273,9 @@ function display_LoginPage($config_object,$profile)
 				<tr>
 					<td height="10" colspan="2"></td>
 				</tr>
-			</table>
-			<br><br>
-		</form>
+			</form>
+		</table>
+		<br><br>
 	</body>
 </html>
 <?php
