@@ -13,6 +13,5 @@ beta
 alpha 2
 
 - improve status messages and help support
-- profile editor
 - mass creation of users/groups/hosts
 - Better error handling
