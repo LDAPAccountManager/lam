@@ -57,10 +57,6 @@ if ($_POST['back'] || $_POST['submitconf'] || $_POST['editmodules']){
 		$_SESSION['conf_suffgroups'] = $_POST['suffgroups'];
 		$_SESSION['conf_suffhosts'] = $_POST['suffhosts'];
 		$_SESSION['conf_suffdomains'] = $_POST['suffdomains'];
-		$_SESSION['conf_minUID'] = $_POST['minUID'];
-		$_SESSION['conf_maxUID'] = $_POST['maxUID'];
-		$_SESSION['conf_minMach'] = $_POST['minMach'];
-		$_SESSION['conf_maxMach'] = $_POST['maxMach'];
 		$_SESSION['conf_usrlstattr'] = $_POST['usrlstattr'];
 		$_SESSION['conf_grplstattr'] = $_POST['grplstattr'];
 		$_SESSION['conf_hstlstattr'] = $_POST['hstlstattr'];
@@ -127,10 +123,6 @@ if ($_GET["modulesback"] == "true") {
 	$conf->set_GroupSuffix($_SESSION['conf_suffgroups']);
 	$conf->set_HostSuffix($_SESSION['conf_suffhosts']);
 	$conf->set_DomainSuffix($_SESSION['conf_suffdomains']);
-	$conf->set_minUID($_SESSION['conf_minUID']);
-	$conf->set_maxUID($_SESSION['conf_maxUID']);
-	$conf->set_minMachine($_SESSION['conf_minMach']);
-	$conf->set_maxMachine($_SESSION['conf_maxMach']);
 	$conf->set_userlistAttributes($_SESSION['conf_usrlstattr']);
 	$conf->set_grouplistAttributes($_SESSION['conf_grplstattr']);
 	$conf->set_hostlistAttributes($_SESSION['conf_hstlstattr']);
@@ -296,34 +288,6 @@ for ($m = 0; $m < sizeof($modules); $m++) {
 	echo "<br>";
 }
 
-
-echo ("<fieldset><legend><b>" . _("Ranges") . "</b></legend>");
-echo ("<table border=0>");
-
-// minUID
-echo ("<tr><td align=\"right\"><b>".
-	_("Minimum UID number") . " *: </b>".
-	"<input size=6 type=\"text\" name=\"minUID\" value=\"" . $conf->get_minUID() . "\"></td>\n");
-echo "<td>&nbsp;&nbsp;&nbsp;</td>\n";
-// maxUID
-echo ("<td align=\"right\"><b>" . _("Maximum UID number") . " *: </b>".
-	"<input size=6 type=\"text\" name=\"maxUID\" value=\"" . $conf->get_maxUID() . "\"></td>\n");
-// UID text
-echo ("<td><a href=\"../help.php?HelpNumber=203\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
-// minMach
-echo ("<tr><td align=\"right\"><b>".
-	_("Minimum Machine number") . " **: </b>".
-	"<input size=6 type=\"text\" name=\"minMach\" value=\"" . $conf->get_minMachine() . "\"></td>\n");
-echo "<td>&nbsp;&nbsp;&nbsp;</td>\n";
-// maxMach
-echo ("<td align=\"right\"><b>" . _("Maximum Machine number") . " **: </b>".
-	"<input size=6 type=\"text\" name=\"maxMach\" value=\"" . $conf->get_maxMachine() . "\"></td>\n");
-// Machine text
-echo ("<td><a href=\"../help.php?HelpNumber=205\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
-
-echo ("</table>\n");
-echo ("</fieldset>\n");
-echo ("<p></p>\n");
 
 echo ("<fieldset><legend><b>" . _("LDAP List settings") . "</b></legend>\n");
 echo ("<table border=0>\n");

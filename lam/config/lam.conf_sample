@@ -27,18 +27,6 @@ hostsuffix: ou=machines,dc=my-domain,dc=com
 # e.g. ou=domains,dc=yourdomain,dc=org
 domainsuffix: ou=domains,dc=my-domain,dc=com
 
-# minimum and maximum UID numbers
-minUID: 10000
-maxUID: 20000
-
-# minimum and maximum GID numbers
-minGID: 10000
-maxGID: 20000
-
-# minimum and maximum UID numbers for Samba Hosts
-minMachine: 25000
-maxMachine: 35000
-
 # list of attributes to show in user list
 # entries can either be predefined values (e.g. '#cn' or '#uid')
 # or individual ones (e.g. 'uid:User ID' or 'host:Host Name')
@@ -74,4 +62,13 @@ cachetimeout: 5
 
 # Password hash algorithm (CRYPT/MD5/SMD5/SHA/SSHA/PLAIN).
 pwdhash: SSHA
+
+# Module settings
+
+modules: posixAccount_minUID: 10000
+modules: posixAccount_maxUID: 30000
+modules: posixAccount_minMachine: 50000
+modules: posixAccount_maxMachine: 60000
+modules: posixGroup_minGID: 10000
+modules: posixGroup_maxGID: 20000
 

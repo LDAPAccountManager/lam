@@ -119,15 +119,6 @@ class Config {
 	/** LDAP suffix for Samba 3 domains */
 	var $domainsuffix;
 
-	/** Minimum UID number for users */
-	var $MinUID;
-	/** Maximum UID number for users */
-	var $MaxUID;
-	/** Minimum UID number for Samba hosts */
-	var $MinMachine;
-	/** Maximum UID number for Samba hosts */
-	var $MaxMachine;
-
 	/** Attributes that are shown in the user list */
 	var $userlistAttributes;
 	/** Attributes that are shown in the group list */
@@ -179,8 +170,7 @@ class Config {
 
 	/** List of all settings in config file */
 	var $settings = array("ServerURL", "Passwd", "Admins", "usersuffix", "groupsuffix", "hostsuffix",
-		"domainsuffix", "MinUID", "MaxUID", "MinMachine", "MaxMachine",
-		"userlistAttributes", "grouplistAttributes", "hostlistAttributes", "maxlistentries",
+		"domainsuffix", "userlistAttributes", "grouplistAttributes", "hostlistAttributes", "maxlistentries",
 		"defaultLanguage", "scriptPath", "scriptServer", "cachetimeout", "pwdhash",
 		"usermodules", "groupmodules", "hostmodules", "modules");
 
@@ -292,10 +282,6 @@ class Config {
 								"# e.g. ou=machines,dc=yourdomain,dc=org\n" . "hostsuffix: " . $this->hostsuffix . "\n");
 			if (!in_array("domainsuffix", $saved)) array_push($file_array, "\n\n# suffix of Samba 3 domains\n" .
 								"# e.g. ou=domains,dc=yourdomain,dc=org\n" . "domainsuffix: " . $this->domainsuffix . "\n");
-			if (!in_array("MinUID", $saved)) array_push($file_array, "\n\n# minimum UID number\n" . "minUID: " . $this->MinUID . "\n");
-			if (!in_array("MaxUID", $saved)) array_push($file_array, "\n\n# maximum UID number\n" . "maxUID: " . $this->MaxUID . "\n");
-			if (!in_array("MinMachine", $saved)) array_push($file_array, "\n\n# minimum UID number for Samba hosts\n" . "minMachine: " . $this->MinMachine . "\n");
-			if (!in_array("MaxMachine", $saved)) array_push($file_array, "\n\n# maximum UID number for Samba hosts\n" . "maxMachine: " . $this->MaxMachine . "\n");
 			if (!in_array("userlistAttributes", $saved)) array_push($file_array, "\n\n# list of attributes to show in user list\n# entries can either be predefined values (e.g. '#cn' or '#uid')" .
 								"\n# or individual ones (e.g. 'uid:User ID' or 'host:Host Name')\n# values have to be seperated by semicolons\n" . "userlistAttributes: " . $this->userlistAttributes . "\n");
 			if (!in_array("grouplistAttributes", $saved)) array_push($file_array, "\n\n# list of attributes to show in group list\n# entries can either be predefined values (e.g. '#cn' or '#gidNumber')" .
@@ -340,10 +326,6 @@ class Config {
 		echo "<b>" . _("GroupSuffix") . ": </b>" . $this->groupsuffix . "<br>\n";
 		echo "<b>" . _("HostSuffix") . ": </b>" . $this->hostsuffix . "<br>\n";
 		echo "<b>" . _("DomainSuffix") . ": </b>" . $this->domainsuffix . "<br>\n";
-		echo "<b>" . _("Minimum UID number") . ": </b>" . $this->MinUID . "<br>\n";
-		echo "<b>" . _("Maximum UID number") . ": </b>" . $this->MaxUID . "<br>\n";
-		echo "<b>" . _("Minimum Machine number") . ": </b>" . $this->MinMachine . "<br>\n";
-		echo "<b>" . _("Maximum Machine number") . ": </b>" . $this->MaxMachine . "<br>\n";
 		echo "<b>" . _("Attributes in User List") . ": </b>" . $this->userlistAttributes . "<br>\n";
 		echo "<b>" . _("Attributes in Group List") . ": </b>" . $this->grouplistAttributes . "<br>\n";
 		echo "<b>" . _("Attributes in Host List") . ": </b>" . $this->hostlistAttributes . "<br>\n";
@@ -537,92 +519,6 @@ class Config {
 		elseif (is_string($value) && (eregi("^(([a-z0-9 \\-])*=([a-z0-9 \\-])*)(,([a-z0-9 \\-])*=([a-z0-9 \\-])*)*$", $value))) {
 			$this->domainsuffix = $value;
 		}
-		else return false;
-		return true;
-	}
-
-	/**
-	* Returns the minimum UID to use when creating new users
-	*
-	* @return the minimum UID number
-	*/
-	function get_minUID() {
-		return $this->MinUID;
-	}
-
-	/**
-	* Sets the minimum UID to use when creating new users
-	*
-	* @param $value new minimum UID number
-	* @return true if $value has correct format
-	*/
-	function set_minUID($value) {
-		if (is_numeric($value)) $this->MinUID = $value;
-		else return false;
-		return true;
-	}
-
-	/**
-	* Returns the maximum UID to use when creating new users
-	*
-	* @return the maximum UID number
-	*/
-	function get_maxUID() {
-		return $this->MaxUID;
-	}
-
-	/**
-	* Sets the maximum UID to use when creating new users
-	*
-	* @param $value new maximum UID number
-	* @return true if $value has correct format
-	*/
-	function set_maxUID($value) {
-		if (is_numeric($value)) $this->MaxUID = $value;
-		else return false;
-		return true;
-	}
-
-	/**
-	* Returns the minimum UID to use when creating new Samba hosts
-	*
-	* @return the minimum UID number
-	*/
-	function get_minMachine() {
-		return $this->MinMachine;
-	}
-
-	/**
-	* Sets the minimum UID to use when creating new Samba hosts
-	*
-	* @param $value new minimum UID number
-	* @return true if $value has correct format
-	*/
-	function set_minMachine($value) {
-		if (! $value && ($this->hostsuffix == "")) $this->MinMachine = "";
-		elseif (is_numeric($value)) $this->MinMachine = $value;
-		else return false;
-		return true;
-	}
-
-	/**
-	* Returns the maximum UID to use when creating new Samba hosts
-	*
-	* @return the maximum UID number
-	*/
-	function get_maxMachine() {
-		return $this->MaxMachine;
-	}
-
-	/**
-	* Sets the maximum UID to use when creating new Samba hosts
-	*
-	* @param $value new maximum UID number
-	* @return true if $value has correct format
-	*/
-	function set_maxMachine($value) {
-		if (! $value && ($this->hostsuffix == "")) $this->MaxMachine = "";
-		elseif (is_numeric($value)) $this->MaxMachine = $value;
 		else return false;
 		return true;
 	}

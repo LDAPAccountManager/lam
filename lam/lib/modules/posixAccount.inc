@@ -60,6 +60,13 @@ class posixAccount extends baseModule {
 	function posixAccount($scope) {
 	// error messages for input checks
 	$this->messages['homedir'] = array('ERROR', _('Home directory'), _('Homedirectory contains invalid characters.'));
+	$this->messages['minUID'] = array('ERROR', _('Users') . ': &nbsp;' . _('Minimum UID number'), _("Minimum UID number is invalid!"));
+	$this->messages['maxUID'] = array('ERROR', _('Users') . ': &nbsp;' . _('Maximum UID number'), _("Maximum UID number is invalid!"));
+	$this->messages['minMachine'] = array('ERROR', _('Hosts') . ': &nbsp;' . _('Minimum UID number'), _("Minimum UID number is invalid!"));
+	$this->messages['maxMachine'] = array('ERROR', _('Hosts') . ': &nbsp;' . _('Maximum UID number'), _("Maximum UID number is invalid!"));
+	$this->messages['cmp_UID'] = array('ERROR', _('Users') . ': &nbsp;' . _('Maximum UID number'), _("Maximum UID number must be greater than minimum UID number!"));
+	$this->messages['cmp_Machine'] = array('ERROR', _('Hosts') . ': &nbsp;' . _('Maximum UID number'), _("Maximum UID number must be greater than minimum UID number!"));
+	$this->messages['cmp_both'] = array('ERROR', _('UID ranges'), _("The UID ranges for users and hosts overlap! This is a problem because LAM uses the highest UID in use + 1. Please set the minimum UID to equal values or use independent ranges."));
 	// call parent constructor
 	parent::baseModule($scope);
 	}
@@ -91,6 +98,35 @@ class posixAccount extends baseModule {
 		// profile checks
 		$return['profile_checks']['posixAccount_homeDirectory'] = array('type' => 'regex_i', 'regex' => $this->regex_homedir,
 			'error_message' => $this->messages['homedir']);
+		// configuration options
+		$return['config_options']['user'] = array(
+			array(
+				0 => array('kind' => 'text', 'text' => '<b>' . _("Users") . ': &nbsp;</b>' . _('Minimum UID number') . ": "),
+				1 => array('kind' => 'input', 'name' => 'posixAccount_minUID', 'type' => 'text', 'size' => '10', 'maxlength' => '255'),
+				2 => array('kind' => 'text', 'value' => '&nbsp;'),
+				3 => array('kind' => 'text', 'text' => _('Maximum UID number') . ": "),
+				4 => array('kind' => 'input', 'name' => 'posixAccount_maxUID', 'type' => 'text', 'size' => '10', 'maxlength' => '255'),
+				5 => array('kind' => 'help', 'value' => 'TODO'))
+		);
+		$return['config_options']['host'] = array(
+			array(
+				0 => array('kind' => 'text', 'text' => '<b>' . _("Hosts") . ': &nbsp;</b>' . _('Minimum UID number') . ": "),
+				1 => array('kind' => 'input', 'name' => 'posixAccount_minMachine', 'type' => 'text', 'size' => '10', 'maxlength' => '255'),
+				2 => array('kind' => 'text', 'value' => '&nbsp;'),
+				3 => array('kind' => 'text', 'text' => _('Maximum UID number') . ": "),
+				4 => array('kind' => 'input', 'name' => 'posixAccount_maxMachine', 'type' => 'text', 'size' => '10', 'maxlength' => '255'),
+				5 => array('kind' => 'help', 'value' => 'TODO'))
+		);
+		// configuration descriptions
+		$return['config_descriptions'] = array(
+			'legend' => _("UID ranges for Unix accounts"),
+			'descriptions' => array(
+				'posixAccount_minUID' => _("Minimum UID number for Unix accounts (users)"),
+				'posixAccount_maxUID' => _("Maximum UID number for Unix accounts (users)"),
+				'posixAccount_minMachine' => _("Minimum UID number for Unix accounts (hosts)"),
+				'posixAccount_maxMachine' => _("Maximum UID number for Unix accounts (hosts)"),
+			)
+		);
 		return $return;
 	}
 
@@ -418,12 +454,12 @@ class posixAccount extends baseModule {
 			// Check if UID is valid. If none value was entered, the next useable value will be inserted
 			// load min and may uidNumber
 			if ($_SESSION[$this->base]->type=='user') {
-				$minID = intval($_SESSION[$_SESSION[$this->base]->config]->get_minUID());
-				$maxID = intval($_SESSION[$_SESSION[$this->base]->config]->get_maxUID());
+				$minID = intval($this->moduleSettings['posixAccount_minUID'][0]);
+				$maxID = intval($this->moduleSettings['posixAccount_maxUID'][0]);
 				}
 			if ($_SESSION[$this->base]->type=='host') {
-				$minID = intval($_SESSION[$_SESSION[$this->base]->config]->get_minMachine());
-				$maxID = intval($_SESSION[$_SESSION[$this->base]->config]->get_maxMachine());
+				$minID = intval($this->moduleSettings['posixAccount_minMachine'][0]);
+				$maxID = intval($this->moduleSettings['posixAccount_maxMachine'][0]);
 				}
 			$dn_uids = $_SESSION[$_SESSION[$this->base]->cache]->get_cache('uidNumber', 'posixAccount', '*');
 			// get_cache will return an array ( dn1 => array(uidnumber1), dn2 => array(uidnumber2), ... )
@@ -745,6 +781,64 @@ class posixAccount extends baseModule {
 							'posixAccount_userPassword' => array('<block><key>' . _('Password') . '</key><value>' . $this->attributes['userPassword'][0] . '</value></block>'),
 							'posixAccount_loginShell' => array('<block><key>' . _('Login Shell') . '</key><value>' . $this->attributes['loginShell'][0] . '</value></block>'),
 							);
+	}
+
+	/**
+	* Checks input values of module settings.
+	*
+	* @param array $scopes list of account types which are used
+	* @param array $options hash array containing the settings (array('option' => array('value')))
+	* @return array list of error messages
+	*/
+	function check_configOptions($scopes, $options) {
+		$return = array();
+		// user settings
+		if (in_array('user', $scopes)) {
+			// min/maxUID are required, check if they are numeric
+			if (!isset($options['posixAccount_minUID'][0]) || !ereg('^[0-9]+$', $options['posixAccount_minUID'][0])) {
+				$return[] = $this->messages['minUID'];
+			}
+			if (!isset($options['posixAccount_maxUID'][0]) || !ereg('^[0-9]+$', $options['posixAccount_maxUID'][0])) {
+				$return[] = $this->messages['maxUID'];
+			}
+			// minUID < maxUID
+			if (isset($options['posixAccount_minUID'][0]) && isset($options['posixAccount_maxUID'][0])) {
+				if ($options['posixAccount_minUID'][0] > $options['posixAccount_maxUID'][0]) {
+					$return[] = $this->messages['cmp_UID'];
+				}
+			}
+		}
+		// host settings
+		if (in_array('host', $scopes)) {
+			// min/maxUID are required, check if they are numeric
+			if (!isset($options['posixAccount_minMachine'][0]) || !ereg('^[0-9]+$', $options['posixAccount_minMachine'][0])) {
+				$return[] = $this->messages['minMachine'];
+			}
+			if (!isset($options['posixAccount_maxMachine'][0]) || !ereg('^[0-9]+$', $options['posixAccount_maxMachine'][0])) {
+				$return[] = $this->messages['maxMachine'];
+			}
+			// minUID < maxUID
+			if (isset($options['posixAccount_minMachine'][0]) && isset($options['posixAccount_maxMachine'][0])) {
+				if ($options['posixAccount_minMachine'][0] > $options['posixAccount_maxMachine'][0]) {
+					$return[] = $this->messages['cmp_Machine'];
+				}
+			}
+		}
+		// check if user and host ranges overlap
+		if (in_array('user', $scopes) && in_array('host', $scopes)) {
+			if (isset($options['posixAccount_minUID'][0]) && isset($options['posixAccount_maxUID'][0]) &&
+				isset($options['posixAccount_minMachine'][0]) && isset($options['posixAccount_maxMachine'][0])) {
+				if (($options['posixAccount_minMachine'][0] > $options['posixAccount_minUID'][0]) &&
+					($options['posixAccount_minMachine'][0] < $options['posixAccount_maxUID'][0])) {
+					$return[] = $this->messages['cmp_both'];
+				}
+				if (($options['posixAccount_minUID'][0] > $options['posixAccount_minMachine'][0]) &&
+					($options['posixAccount_minUID'][0] < $options['posixAccount_maxMachine'][0])) {
+					$return[] = $this->messages['cmp_both'];
+				}
+			}
+		}
+		return $return;
 	}
 
 }
