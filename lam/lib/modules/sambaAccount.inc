@@ -56,13 +56,15 @@ class sambaAccount extends baseModule {
 
 	/**
 	* Creates a new sambaAccount object.
+	*
+	* @param string $scope account type (user, group, host)
 	*/
 	function sambaAccount($scope) {
 	// error messages for input checks
 	$this->messages['homedir'] = array('ERROR', _('Home path'), _('Home path is invalid.'));
 	$this->messages['profilePath'] = array('ERROR', _('Profile path'), _('Profile path is invalid!'));
 	$this->messages['logonScript'] = array('ERROR', _('Script path'), _('Script path is invalid!'));
-	$this->messages['workstations'] = array('ERROR', _('Samba workstations'), _('Please enter a comma separated list of host names!'));;
+	$this->messages['workstations'] = array('ERROR', _('Samba workstations'), _('Please enter a comma separated list of host names!'));
 	$this->messages['domain'] = array('ERROR', _('Domain name'), _('Domain name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and -.'));
 	// call parent constructor
 	parent::baseModule($scope);
@@ -124,7 +126,7 @@ class sambaAccount extends baseModule {
 			// path to home directory
 			$return['profile_options'][] = array(
 				0 => array('kind' => 'text', 'text' => _('Home path') . ': '),
-				1 => array('kind' => 'input', 'type' => 'text', 'name' => 'sambaAccount_smbHome', 'size' => '20', 'maxlength' => '255', 'value' => ''),
+				1 => array('kind' => 'input', 'type' => 'text', 'name' => 'sambaAccount_smbhome', 'size' => '20', 'maxlength' => '255', 'value' => ''),
 				2 => array('kind' => 'help', 'value' => 'TODO')
 				);
 			// path to profile
@@ -213,7 +215,7 @@ class sambaAccount extends baseModule {
 	var $rids;
 
 	/** regular expression for home directory */
-	var $regex_homedir = '^[\][\]([a-z0-9\\.%-])+([\]([a-z0-9\\.%дцья-])+)+$';
+	var $regex_homedir = '^[\][\]([a-z0-9\\.%-])+([\]([a-z0-9\\.%дцья\\$-])+)+$';
 	/** regular expression for profile path */
 	var $regex_profilePath = '^([\][\]([a-zA-Z0-9\\.%-])+([\]([a-z0-9\\.%-])+)+)|([/][a-z]([a-z0-9\\._%-])*([/][a-z]([a-z0-9\\._%-])*)*)$';
 	/** regular expression for logon script */
