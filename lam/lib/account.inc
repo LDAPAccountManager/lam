@@ -23,7 +23,8 @@ $Id$
   LDAP Account Manager functions used by account.php
 */
 
-class account { // This class keeps all needed values for any account
+// This class keeps all needed values for any account
+class account {
 	// Type : user | group | host
 	var $type;
 	// General Settings
@@ -34,10 +35,10 @@ class account { // This class keeps all needed values for any account
 	var $general_givenname;		// string Givenname (user)
 	var $general_dn;		// string DN
 	var $general_group;		// string Primary group (user|host)
-	var $general_groupadd;		// array(string) Addititional Groups (user|host) is member of
+	var $general_groupadd;		// array(string) Addititional Groups (user) is member of
 	var $general_homedir;		// atring Homedirectoy (user) For host it's hardcoded to/dev/null
 	var $general_shell;		// array(string) list off all valid shells (user) hosts are hard-wired to /bin/false
-	var $general_gecos;		// string, gecos-field (user|roup|host)
+	var $general_gecos;		// string, gecos-field (user|group|host)
 	// Unix Password Settings
 	var $unix_memberUid;		// array Stores all users which are member of group but is not primary group (group)
 	var $unix_password;		// string for unix-password (user|host)
@@ -64,7 +65,7 @@ class account { // This class keeps all needed values for any account
 	var $smb_domain;		// string Domain of (user|host) or samba3domain-Object
 	var $smb_flagsW;		// string (1|0) account is host? (user|host)
 	var $smb_flagsD;		// string (1|0) account is disabled? (user|host)
-	var $smb_flagsX;		// string (1|0) password doesn'T expire (user|host)
+	var $smb_flagsX;		// string (1|0) password doesn't expire (user|host)
 	var $smb_mapgroup;		// decimal ID for groups
 	var $smb_displayName;		// string, description, similar to gecos-field.
 	// Quota Settins
@@ -85,7 +86,11 @@ class account { // This class keeps all needed values for any account
 	}
 
 
-function getshells() { // Return a list of all shells listed in ../config/shells
+/* Return a list of all shells listed in ../config/shells
+* Normally ../config/shells is a symbolic link to /etc/shells
+*/
+function getshells() {
+	// Load shells from file
 	$shells =  file($_SESSION['lampath'].'config/shells');
 	$i=0;
 	while (count($shells) > $i) {
@@ -93,14 +98,20 @@ function getshells() { // Return a list of all shells listed in ../config/shells
 		trim($shells[$i]);
 		// remove lineend
 		$shells[$i] = substr($shells[$i], 0, strpos($shells[$i], "\n"));
-		// unset comments
+		// remove comments
 		if ($shells[$i]{0}=='#') unset ($shells[$i]);
 		 else $i++;
 		}
+	// $shells is array with all valid shells
 	return $shells;
 	}
 
-function replace_umlaut($text) { // This function will replace umlates with ascci-chars
+
+/* This function will replace umlates with ascci-chars
+* fixme
+* In order to map all non-ascii characters this function should be changed
+*/
+function replace_umlaut($text) {
 	$aTranslate = array("ä"=>"ae", "Ä"=>"Ae",
 		"ö"=>"oe", "Ö"=>"Oe",
 		"ü"=>"ue", "Ü"=>"Ue",
@@ -109,17 +120,26 @@ function replace_umlaut($text) { // This function will replace umlates with ascc
 	return strtr($text, $aTranslate);
 	}
 
-function array_delete($values, $array) { // This function will return all values from $array without values of $values
-	foreach ($array as $array_value)
-		if (!@in_array($array_value, $values))
-			$return[] = $array_value;
-	return $return;
+
+/* This function will return all values from $array without values of $values
+* $values, $array and $return are arrays
+*/
+function array_delete($values, $array) {
+	// Loop for every entry and check if it should be removed
+	if (is_array($array)) {
+		foreach ($array as $array_value)
+			if (!@in_array($array_value, $values))
+				$return[] = $array_value;
+		return $return;
+		}
+	else return 0;
 	}
 
 
-
-function genpasswd() { // This function will return a password with max. 8 characters
+// This function will return a password with max. 8 characters
+function genpasswd() {
 	// Allowed Characters to generate passwords
+	// I'Ve removed characters like l and 1 because they are too similar
 	$LCase = 'abcdefghjkmnpqrstuvwxyz';
 	$UCase = 'ABCDEFGHJKMNPQRSTUVWXYZ';
 	$Integer = '23456789';
@@ -147,6 +167,7 @@ function genpasswd() { // This function will return a password with max. 8 chara
 	return $PW;
 	}
 
+
 /* THIS FUNCTION GENERATES A RANDOM NUMBER THAT WILL BE USED TO
 * RANDOMLY SELECT CHARACTERS FROM THE STRINGS ABOVE
 */
@@ -167,20 +188,36 @@ function RndInt($Format){
 		}
 	return $Rnd;
 	} // END RndInt() FUNCTION
-/* RUN THE FUNCTION TO GENERATE RANDOM INTEGERS FOR EACH OF THE
-* 8 CHARACTERS IN THE PASSWORD PRODUCED.
-*/
 
-function getquotas($type,$user='+') { // Whis function will return the quotas from the specified user If empty only filesystems with enabled quotas are returned
-	// $type = user or group
-	// $user = user or groupname if no user or groupname is defined,
-	//         an array with all quota-enabled partitions is returned in this case all returned values are 0 exept mointpoint[x][0]
+
+/* Whis function will return the quotas from the specified user If empty only filesystems with enabled quotas are returned
+* $type = 'user' or 'group'
+* $user = user or groupname. If no user or groupname is defined,
+*         an array with all quota-enabled partitions will be returned in this case all returned values are 0 exept mointpoint[x][0]
+*/
+function getquotas($type,$user='+') {
+	// define new object
 	$return = new account();
+	// get username and password of the current lam-admin
 	$ldap_q = $_SESSION['ldap']->decrypt();
+	/* $towrite has the following syntax:
+	* admin-username, admin-password, account with quotas, 'quota', operation='get', type=user|group
+	*/
 	$towrite = $ldap_q[0].' '.$ldap_q[1].' '.$user.' quota get ';
 	if ($type=='user') $towrite = $towrite.'u';
 	 else $towrite = $towrite.'g';
-	exec(escapeshellarg("perl ".$_SESSION['lampath']."lib/lamdaemon.pl ".$_SESSION['config']->scriptServer ." ".$_SESSION['config']->scriptPath." ".$towrite), $vals, $status);
+	/* scriptServer is the IP to remote-host to which lam should connect via ssh
+	* scriptPath is Path to lamdaemon.pl on remote system
+	*/
+	exec(("perl ".$_SESSION['lampath']."lib/lamdaemon.pl ".$_SESSION['config']->scriptServer ." ".$_SESSION['config']->scriptPath." ".$towrite), $vals, $status);
+	/* $vals is a string which contains a two dimensional array.
+	* We have to recreate it with explode
+	*
+	* $return->quota[][] First array is an index for every chare with active quotas
+	* second array Contains values for every share:
+	* mountpoint, used blocks, soft block limit, hard block limit, grace block period, used inodes,
+	* soft inode limit, hard inode limit, grace inode period
+	*/
 	$vals = explode(':', $vals[0]);
 	for ($i=0; $i<sizeof($vals); $i++) {
 		$vals2 = explode(',', $vals[$i]);
@@ -195,16 +232,31 @@ function getquotas($type,$user='+') { // Whis function will return the quotas fr
 	return $return;
 	}
 
-function setquotas($values,$type,$values_old=false) { // Whis function will set the quotas from the specified user.
-	// $values = object account with quotas which should be set
-	// $type: user or group
-	// $values_old = object account if set values and values_old will be compared. Quota will only be changed
-	//               if values differ
+
+/* Whis function will set the quotas from the specified user.
+* $values = object account with quotas which should be set
+* $values_old = object account if set values and values_old will be compared. Quota will only be changed
+*               if values differ
+*/
+function setquotas($values,$values_old=false) {
+	// get username and password of the current lam-admin
 	$ldap_q = $_SESSION['ldap']->decrypt();
+	/* $towrite has the following syntax:
+	* admin-username, admin-password, account with quotas, 'quota', operation='set', type=user|group
+	*/
 	$towrite = $ldap_q[0].' '.$ldap_q[1].' '.$values->general_username.' quota set ';
-	if ($type=='user') $towrite = $towrite.'u ';
+	if ($values->type=='user') $towrite = $towrite.'u ';
 	 else $towrite = $towrite.'g ';
 	$i=0;
+	/* Check wich quotas have changed
+	* Because we can not send an array to lamdaemon.pl we have to put all
+	* values in a string. ':' sepraeates the first array, ',' the second
+	*
+	* $values->quota[][] First array is an index for every chare with active quotas
+	* second array Contains values for every share:
+	* mountpoint, used blocks, soft block limit, hard block limit, grace block period, used inodes,
+	* soft inode limit, hard inode limit, grace inode period
+	*/
 	while ($values->quota[$i][0]) {
 		if ($values->quota[$i] != $values_old->quota[$i]) {
 			$towrite = $towrite. $values->quota[$i][0] .','.$values->quota[$i][2] .','.$values->quota[$i][3]
@@ -212,45 +264,106 @@ function setquotas($values,$type,$values_old=false) { // Whis function will set 
 			}
 		$i++;
 		}
-	if ($i!=0) exec(escapeshellarg("perl ".$_SESSION['lampath']."lib/lamdaemon.pl ".$_SESSION['config']->scriptServer ." ".$_SESSION['config']->scriptPath." ".$towrite), $vals);
+	/* scriptServer is the IP to remote-host to which lam should connect via ssh
+	* scriptPath is Path to lamdaemon.pl on remote system
+	* only run lamdaemon.pl if quotas are really set, $i!=0
+	*/
+	if ($i!=0) exec(("perl ".$_SESSION['lampath']."lib/lamdaemon.pl ".$_SESSION['config']->scriptServer ." ".$_SESSION['config']->scriptPath." ".$towrite), $vals);
 	}
 
-function remquotas($user, $type) { // Whis function will remove the quotas from the specified user.
-	// $user = username of which quta should be deleted
-	// $type = user or group
+
+/* Whis function will remove the quotas from the specified user.
+* $user = username of which quta should be deleted
+* $type = user or group
+* Delteing quotas means settings all values to 0 which means no quotas
+*/
+function remquotas($user, $type) {
+	// get username and password of the current lam-admin
 	$ldap_q = $_SESSION['ldap']->decrypt();
-	$towrite = $ldap_q[0].' '.$ldap_q[1].' '.$user.' quota set ';
+	/* $towrite has the following syntax:
+	* admin-username, admin-password, account with quotas, 'quota', operation='rem', type=user|group
+	*/
+	$towrite = $ldap_q[0].' '.$ldap_q[1].' '.$user.' quota rem ';
 	if ($type=='user') $towrite = $towrite.'u ';
 	 else $towrite = $towrite.'g ';
-
-	exec(escapeshellarg("perl ".$_SESSION['lampath']."lib/lamdaemon.pl ".$_SESSION['config']->scriptServer ." ".$_SESSION['config']->scriptPath." ".$towrite), $vals);
+	/* scriptServer is the IP to remote-host to which lam should connect via ssh
+	* scriptPath is Path to lamdaemon.pl on remote system
+	*/
+	exec(("perl ".$_SESSION['lampath']."lib/lamdaemon.pl ".$_SESSION['config']->scriptServer ." ".$_SESSION['config']->scriptPath." ".$towrite), $vals);
 	}
 
 
-function addhomedir($user) { // Create Homedirectory
-	// $user = username
-	// all other needed vars are taken from remotesystem getusrnam
+/* Create Homedirectory
+* lamdaemon.pl uses getpwnam on remote system to get homedir path.
+* Therefore ldap have to be used on remote system for user accounts
+* $user = username
+*/
+function addhomedir($user) {
+	// get username and password of the current lam-admin
 	$ldap_q = $_SESSION['ldap']->decrypt();
+	/* $towrite has the following syntax:
+	* admin-username, admin-password, owner of homedir, 'home', operation='add'
+	*/
 	$towrite = $ldap_q[0].' '.$ldap_q[1].' '.$user.' home add';
-	exec(escapeshellarg("perl ".$_SESSION['lampath']."lib/lamdaemon.pl ".$_SESSION['config']->scriptServer ." ".$_SESSION['config']->scriptPath." ".$towrite), $vals);
+	/* scriptServer is the IP to remote-host to which lam should connect via ssh
+	* scriptPath is Path to lamdaemon.pl on remote system
+	*/
+	exec(("perl ".$_SESSION['lampath']."lib/lamdaemon.pl ".$_SESSION['config']->scriptServer ." ".$_SESSION['config']->scriptPath." ".$towrite), $vals);
 	}
 
-function remhomedir($user) { // Remove Homedirectory
-	// $user = username
-	// all other needed vars are taken from remotesystem getusrnam
+
+/* Remove Homedirectory
+* lamdaemon.pl uses getpwnam on remote system to get homedir path.
+* Therefore ldap have to be used on remote system for user accounts
+* This also means you have to remove the homedirectory before the
+* account is removed from ldap
+* $user = username
+*/
+function remhomedir($user) {
+	// get username and password of the current lam-admin
 	$ldap_q = $_SESSION['ldap']->decrypt();
+	/* $towrite has the following syntax:
+	* admin-username, admin-password, owner of homedir, 'home', operation='rem'
+	*/
 	$towrite = $ldap_q[0].' '.$ldap_q[1].' '.$user.' home rem';
-	exec(escapeshellarg("perl ".$_SESSION['lampath']."lib/lamdaemon.pl ".$_SESSION['config']->scriptServer ." ".$_SESSION['config']->scriptPath." ".$towrite), $vals);
+	/* scriptServer is the IP to remote-host to which lam should connect via ssh
+	* scriptPath is Path to lamdaemon.pl on remote system
+	*/
+	exec(("perl ".$_SESSION['lampath']."lib/lamdaemon.pl ".$_SESSION['config']->scriptServer ." ".$_SESSION['config']->scriptPath." ".$towrite), $vals);
 	}
 
-function ldapreload($type) { // This function will load an array th cache ldap-requests
+
+/* This function maintains the ldap-cache which is used to reduce ldap requests
+* If the array is older than $_SESSION['config']->get_cacheTimeoutSec() it will
+* be recreated
+*
+* $type can be user|group|host.
+*
+* $_SESSION['xxxxDN'] contains all attributes which are needed very often from
+* more than one function
+* $_SESSION['xxxx'DN'][0] contains the creation time of the array as unix timestamp.
+* All other entries have the following syntax:
+* $_SESSION['xxxx'DN'][$dn][$attributes]
+*    $dn         = DN of cached entry
+*    $attributes = All cached attributes of DN
+* The cache contains the following attributes:
+* user: cn, uidNumber
+* group: cn, gidNumber
+* host: cn, uidNumber
+*/
+function ldapreload($type) {
 	switch ($type) {
 		case 'user':
+			// Do we have to recreate array?
 			if ((!isset($_SESSION['userDN'])) || ($_SESSION['userDN'][0] < time()-$_SESSION['config']->get_cacheTimeoutSec())) {
+				// Remove old array
 				if (isset($_SESSION['userDN'])) unset($_SESSION['userDN']);
+				// insert timestamp in array
 				$_SESSION['userDN'][0] = time();
+				// Search 4 values which should be cached
 				$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_UserSuffix(),
-				'objectClass=posixAccount', array('cn', 'uidNumber'), 0);
+					'objectClass=posixAccount', array('cn', 'uidNumber'), 0);
+				// Write search result in array
 				$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 				while ($entry) {
 					$dn = (ldap_get_dn($_SESSION['ldap']->server(), $entry));
@@ -264,11 +377,16 @@ function ldapreload($type) { // This function will load an array th cache ldap-r
 				}
 			break;
 		case 'group':
+			// Do we have to recreate array?
 			if ((!isset($_SESSION['groupDN'])) || ($_SESSION['groupDN'][0] < time()-$_SESSION['config']->get_cacheTimeoutSec())) {
+				// Remove old array
 				if (isset($_SESSION['groupDN'])) unset($_SESSION['groupDN']);
+				// insert timestamp in array
 				$_SESSION['groupDN'][0] = time();
+				// Search 4 values which should be cached
 				$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(),
-				'objectClass=posixGroup', array('gidNumber', 'cn'), 0);
+					'objectClass=posixGroup', array('gidNumber', 'cn'), 0);
+				// Write search result in array
 				$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 				while ($entry) {
 					$dn = (ldap_get_dn($_SESSION['ldap']->server(), $entry));
@@ -282,11 +400,16 @@ function ldapreload($type) { // This function will load an array th cache ldap-r
 				}
 			break;
 		case 'host':
+			// Do we have to recreate array?
 			if ((!isset($_SESSION['hostDN'])) || ($_SESSION['hostDN'][0] < time()-$_SESSION['config']->get_cacheTimeoutSec())) {
+				// Remove old array
 				if (isset($_SESSION['hostDN'])) unset($_SESSION['hostDN']);
+				// insert timestamp in array
 				$_SESSION['hostDN'][0] = time();
+				// Search 4 values which should be cached
 				$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_HostSuffix(),
-				'objectClass=posixAccount', array('cn', 'uidNumber'), 0);
+					'objectClass=posixAccount', array('cn', 'uidNumber'), 0);
+				// Write search result in array
 				$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 				while ($entry) {
 					$dn = (ldap_get_dn($_SESSION['ldap']->server(), $entry));
@@ -304,64 +427,68 @@ function ldapreload($type) { // This function will load an array th cache ldap-r
 	}
 
 
-
-
-function ldapexists($values, $type, $values_old=false) { // This function will search if the DN already exists
-	switch ($type) {
+/* This function will search in cache if the DN already exists
+* $values is an account-object
+* $values_old is an account-object
+* $values_old is needed because we don't want to raise
+*             an error if the DN allredy exists but is the original DN
+*/
+function ldapexists($values, $values_old=false) {
+	switch ($values->type) {
 		case 'user':
+			// Validate cache-array
 			ldapreload('user');
-			$search = 'uid='.$values->general_username;
+			// Entry which we search in ldap ',' is needed to ensure the complete username is checked
+			$search = 'uid='.$values->general_username.',';
+			// Get copy of cache-array
 			$keys = array_keys($_SESSION['userDN']);
-			unset ($keys[0]);
-			$keys = array_values($keys);
-			if ( ($values_old->general_username != $values->general_username) &&
-				($_SESSION['userDN'][0] != $values->general_username)) {
-				foreach ($keys as $key)
-					if (strstr($key, $search)) return sprintf (_('%s already exists!'), $type);
-				}
-			if ((!$values_old) && ($_SESSION['userDN'][0] != $values->general_username))
-				foreach ($keys as $key)
-					if (strstr($key, $search)) return sprintf (_('%s already exists!'), $type);
 			break;
 		case 'group':
+			// Validate cache-array
 			ldapreload('group');
-			$search = 'cn='.$values->general_username;
+			// Entry which we search in ldap ',' is needed to ensure the complete username is checked
+			$search = 'cn='.$values->general_username.',';
+			// Get copy of cache-array and
 			$keys = array_keys($_SESSION['groupDN']);
-			unset ($keys[0]);
-			$keys = array_values($keys);
-			if ( ($values_old->general_username != $values->general_username) &&
-				($_SESSION['groupDN'][0] != $values->general_username)) {
-				foreach ($keys as $key)
-					if (strstr($key, $search)) return sprintf (_('%s already exists!'), $type);
-				}
-			if ((!$values_old) && ($_SESSION['groupDN'][0] != $values->general_username))
-				foreach ($keys as $key)
-					if (strstr($key, $search)) return sprintf (_('%s already exists!'), $type);
 			break;
 		case 'host':
+			// Validate cache-array
 			ldapreload('host');
-			$search = 'uid='.$values->general_username;
+			// Entry which we search in ldap ',' is needed to ensure the complete username is checked
+			$search = 'uid='.$values->general_username.',';
+			// Get copy of cache-array
 			$keys = array_keys($_SESSION['hostDN']);
-			unset ($keys[0]);
-			$keys = array_values($keys);
-			if ( ($values_old->general_username != $values->general_username) &&
-				($_SESSION['hostDN'][0] != $values->general_username)) {
-				foreach ($keys as $key)
-					if (strstr($key, $search)) return sprintf (_('%s already exists!'), $type);
-				}
-			if ((!$values_old) && ($_SESSION['hostDN'][0] != $values->general_username))
-				foreach ($keys as $key)
-					if (strstr($key, $search)) return sprintf (_('%s already exists!'), $type);
 			break;
+		}
+	// Remove timestamp stored in [0]
+	unset ($keys[0]);
+	$keys = array_values($keys);
+	if (!$values_old) {
+		// Create new account
+		// Check if entry allready exists
+		foreach ($keys as $key)
+			if (strstr($key, $search)) return sprintf (_('%s already exists!'), $values->type);
+		}
+	// edit existing account and don't create a new one
+	else if ($values_old->general_username != $values->general_username) {
+		foreach ($keys as $key)
+			if (strstr($key, $search)) return sprintf (_('%s already exists!'), $values->type);
 		}
 	return 0;
 	}
 
 
-function findgroups() { // Will return an array with all Groupnames found in LDAP
+/* This function will return an array with all groupnames
+* found in ldap. Groupnames are taken from cache-array.
+*/
+function findgroups() {
+	// Validate cache-array
 	ldapreload('group');
+	// Get copy of cache-array
 	$groups = $_SESSION['groupDN'];
+	// Remove timestamp stored in [0]
 	unset ($groups[0]);
+	// Create and sort array
 	foreach ($groups as $group) {
 		$return[] = $group['cn'];
 		}
@@ -370,168 +497,244 @@ function findgroups() { // Will return an array with all Groupnames found in LDA
 	}
 
 
-function getgid($groupname) { // Will return the the gid to an existing Groupname
+/* This function will return the gidNumber to an existing groupname
+* gidNumbers are taken from cache-array
+*/
+function getgid($groupname) {
+	// Validate cache-array
 	ldapreload('group');
+	// Get copy of cache-array
 	$keys = $_SESSION['groupDN'];
+	// Remove timestamp stored in [0]
 	unset ($keys[0]);
+	// Return gidNumber as soon as it's found
 	foreach ($keys as $key) {
 		if ($key['cn']==$groupname)  return $key['uidNumber'];
 		}
+	// return -1 if groupname isn't found
 	return -1;
 	}
 
 
-
-function checkid($values, $type, $values_old=false) { // if value is empty will return an unused id from all ids found in LDAP else check existing value
-	switch ($type) {
+/* This function will return an unuesed id-number if $values->general_uidNumber is not set and $values_old is false
+* If values_old is true and $values->general_uidNumber is not set the original id-number is returned
+* If $values->general_uidNumber is set id-number is checked. If it's allready in use an error will be reported
+* id-numbers are taken from cache-array
+* $values and $values_old are account objects
+* Return-Values is an integer id-number or an string-error
+*/
+function checkid($values, $values_old=false) {
+	switch ($values->type) {
 		case 'user':
+			/* Validate cache-array
+			* Because users and hosts are using the same id-numbers we have to merge
+			* both cache-arrays
+			*/
 			ldapreload('user');
 			ldapreload('host');
+			// Load all needed variables from session
 			$minID = intval($_SESSION['config']->get_minUID());
 			$maxID = intval($_SESSION['config']->get_maxUID());
 			$suffix = $_SESSION['config']->get_UserSuffix();
-			$keys = $_SESSION['userDN'];
-			unset ($keys[0]);
-			$keys = array_values($keys);
-			$keys2 = $_SESSION['hostDN'];
-			unset ($keys2[0]);
-			$keys2 = array_values($keys2);
+			// load and merge arrays
+
+			$temp = $_SESSION['userDN'];
+			// Remove timestamp stored in [0]
+			unset ($temp[0]);
+			// put only uidNumbers in array
+			 foreach ($temp as $key) $uids[] = $key['uidNumber'];
+			$temp = $_SESSION['hostDN'];
 			break;
 		case 'group':
+			// Validate cache-array
 			ldapreload('group');
+			// Load all needed variables from session
 			$minID = intval($_SESSION['config']->get_MinGID());
 			$maxID = intval($_SESSION['config']->get_MaxGID());
 			$suffix = $_SESSION['config']->get_GroupSuffix();
-			$keys = $_SESSION['groupDN'];
-			unset ($keys[0]);
-			$keys = array_values($keys);
+			// Get copy of cache-array
+			$temp = $_SESSION['groupDN'];
 			break;
 		case 'host':
+			/* Validate cache-array
+			* Because users and hosts are using the same id-numbers we have to merge
+			* both cache-arrays
+			*/
 			ldapreload('user');
 			ldapreload('host');
-			$minID = intval($_SESSION['config']->get_MinMachine());
-			$maxID = intval($_SESSION['config']->get_MaxMachine());
-			$suffix = $_SESSION['config']->get_HostSuffix();
-			$keys = $_SESSION['hostDN'];
-			unset ($keys[0]);
-			$keys = array_values($keys);
-			$keys2 = $_SESSION['userDN'];
-			unset ($keys2[0]);
-			$keys2 = array_values($keys2);
+			// Load all needed variables from session
+			$minID = intval($_SESSION['config']->get_minUID());
+			$maxID = intval($_SESSION['config']->get_maxUID());
+			$suffix = $_SESSION['config']->get_UserSuffix();
+			// load and merge arrays
+
+			$temp = $_SESSION['userDN'];
+			// Remove timestamp stored in [0]
+			unset ($temp[0]);
+			// put only uidNumbers in array
+			foreach ($temp as $key) $uids[] = $key['uidNumber'];
+			$temp = $_SESSION['hostDN'];
 			break;
 		}
-	// Store all used UIDs in Array
-	if (isset($keys2)) foreach ($keys2 as $key) $keys3[] = $key['uidNumber'];
-	foreach ($keys as $key) $keys3[] = $key['uidNumber'];
-	sort ($keys3, SORT_NUMERIC);
+	// Remove timestamp stored in [0]
+	unset ($temp[0]);
+	// put only uidNumbers in array
+	foreach ($temp as $key) $uids[] = $key['uidNumber'];
+	// sort array with uids
+	if(is_array($uids)) sort ($uids, SORT_NUMERIC);
+
 	if ($values->general_uidNumber=='') {
+		// No id-number given
 		if (!isset($values_old->general_uidNumber)) {
-			if ($keys) {
-				foreach ($keys as $key)
-					if ($key['uidNumber'] > $id) $id = $key['uidNumber'];
-				if ($id < $maxID) { // Check if Id is not used by host<->user
-					if (!isset($keys2)) return intval($id+1); // keys2 is not set 4 groups
-						else {
-						$id++;
-						while (!in_array($id, $keys3)) $id++;
-						if ($id < $maxID) return intval($id);
-						}
-					}
-				if ($id < $minID) { // Check if id is not used by host<->user
-					if (!isset($keys2)) return intval($minID); // keys2 is not set 4 groups
-						else {
-						$id = $minID;
-						while (!in_array($id, $keys3)) $id++;
-						if ($id < $maxID) return intval($id);
-						}
-					}
+			// new account -> we have to find a free id-number
+			if (count($uids)!=0) {
+				// There are some uids
+				// Store highest id-number
+				$id = $uids[count($uids)-1];
+				// Return higesht used id-number + 1 if it's still in valid range
+				if ($id < $maxID) return intval($id)+1;
+				// Return minimum allowed id-number if all found id-numbers are too low
+				if ($id < $minID) return intval($minID);
+				/* If this function is still running we have to fid a free id-number between
+				* the used id-numbers
+				*/
 				$i = intval($minID);
-				while (in_array($i, $keys3)) $i++;
+				while (in_array($i, $uids)) $i++;
 				if ($i>$maxID) return _('No free ID-Number!');
 					else return $i;
 				}
-			 else $useID = $minID;
-			return intval($useID);
+			else return intval($minID);
+			// return minimum allowed id-number if no id-numbers are found
 			}
-		else {
-			return intval($values_old->general_uidNumber);
-			}
+		else return intval($values_old->general_uidNumber);
+		// old account -> return id-number which has been used
 		}
-	// Check manual ID
-	if ( $values->general_uidNumber < $minID || $values->general_uidNumber > $maxID) return sprintf(_('Please enter a value between %s and %s!'), $minID, $maxID);
-	if ((in_array($values->general_uidNumber, $keys3)) && !$values_old) return _('ID is already in use');
-	if ((in_array($values->general_uidNumber, $keys3)) && $values_old && ($values_old->general_uidNumber != $values->general_uidNumber) )
-		return _('ID is already in use');
-	return intval($values->general_uidNumber);
+	else {
+		// Check manual ID
+		// id-number is out of valid range
+		if ( $values->general_uidNumber < $minID || $values->general_uidNumber > $maxID) return sprintf(_('Please enter a value between %s and %s!'), $minID, $maxID);
+		// $uids is allways an array but not if no entries were found
+		if (is_array($uids)) {
+			// id-number is in use and account is a new account
+			if ((in_array($values->general_uidNumber, $uids)) && !$values_old) return _('ID is already in use');
+			// id-number is in use, account is existing account and id-number is not used by itself
+			if ((in_array($values->general_uidNumber, $uids)) && $values_old && ($values_old->general_uidNumber != $values->general_uidNumber) )
+				return _('ID is already in use');
+			}
+		// return id-number if everything is OK
+		return intval($values->general_uidNumber);
+		}
 	}
 
-function getdays() { // will return the days from 1.1.1970 until now
+
+// This function will return the days from 1.1.1970 until now
+function getdays() {
 	$days = time() / 86400;
 	settype($days, 'integer');
 	return $days;
 	}
 
-function smbflag($values) { // Creates te attribute attrFlags
+
+/* This function creates all attributes stored in attrFlags. It's the same
+* syntax used in smbpasswd
+* $values is an account-object
+* Return value is a string
+*/
+function smbflag($values) {
+	// Start character
 	$flag = "[";
+	// Add Options
 	if ($values->smb_flagsW) $flag = $flag . "W"; else $flag = $flag . "U";
 	if ($values->smb_flagsD) $flag = $flag . "D";
 	if ($values->smb_flagsX) $flag = $flag . "X";
+	// Expand string to fixed length
 	$flag = str_pad($flag, 12);
+	// End character
 	$flag = $flag. "]";
 	return $flag;
 	}
 
-function loaduser($dn) { // Will load all needed values from an existing account
+
+/* This function will load all needed values from an existing account
+* $dn is the dn(string) of the user which should be loaded
+* return-value is an account-object
+*/
+function loaduser($dn) {
+	// Create new object
 	$return = new account();
+	// Set type of account
 	$return->type='user';
+	// Load userattributes from ldap
 	$result = ldap_search($_SESSION['ldap']->server(), $dn, "objectclass=PosixAccount");
 	$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 	$return->general_dn = ldap_get_dn($_SESSION['ldap']->server(), $entry);
 	$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
 
-	if (isset($attr['uid'][0])) $return->general_username = $attr['uid'][0];
-	if (isset($attr['uidNumber'][0])) $return->general_uidNumber = $attr['uidNumber'][0];
-	if (isset($attr['homeDirectory'][0])) $return->general_homedir = $attr['homeDirectory'][0];
+	/* Write attributes into $return.
+	* Some values don't have to be set. These are only loaded if they are set
+	*/
+	$return->general_username = $attr['uid'][0];
+	$return->general_uidNumber = $attr['uidNumber'][0];
+	$return->general_homedir = $attr['homeDirectory'][0];
 	if (isset($attr['shadowLastChange'][0])) $return->unix_shadowLastChange = $attr['shadowLastChange'][0];
 	if (isset($attr['loginShell'][0])) $return->general_shell = $attr['loginShell'][0];
-	if (isset($attr['gecos'][0])) $return->general_gecos = $attr['gecos'][0];
+	if (isset($attr['gecos'][0])) $return->general_gecos = utf8_decode($attr['gecos'][0]);
 
 	// get groupname
-	if (isset($attr['gidNumber'][0])) {
-		$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(), "objectclass=PosixGroup", array('gidNumber', 'cn'));
-		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
-		while ($entry) {
-			$attr2 = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
-			if ($attr2['gidNumber'][0]==$attr['gidNumber'][0]) $return->general_group = $attr2['cn'][0];
-			$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
+	// Validate cache-array
+	ldapreload('group');
+	// Get copy of cache-array
+	$groupDN_local = $_SESSION['groupDN'];
+	// Remove timestamp stored in [0]
+	unset ($groupDN_local[0]);
+	// Now we only have an array with DNs
+	$groupDN_local = array_keys($groupDN_local);
+	$i=0;
+	// Loop until we've found the right uidNumber
+	while (!isset($return->general_group) && isset($_SESSION['groupDN'][$groupDN_local[$i]]['uidNumber'])) {
+		if ($_SESSION['groupDN'][$groupDN_local[$i]]['uidNumber'] == $attr['gidNumber'][0]) {
+			// We've found the correct entry. Now we need the groupname
+			// Get end position (',')
+			$end = strpos($groupDN_local[$i], ',');
+			// start position is allways 3 (cn=...)
+			// Get groupname from dn
+			$return->general_group = substr($groupDN_local[$i], 3, $end-3);
 			}
+		// Increase loop-variable if entry wasn't found
+		else $i++;
 		}
 
 	// get all additional groupmemberships
-	$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(), "objectclass=PosixGroup", array('memberUid', 'cn'));
+	// load all groups which have memberUid set to the username which should be loaded
+	$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(), "memberUid=".$attr['uid'][0], array('cn'));
 	$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
+	// loop for every group
 	while ($entry) {
 		$attr2 = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
-		if ($attr2['memberUid']) foreach ($attr2['memberUid'] as $id)
-			if (($id==$return->general_username) && ($attr2['cn'][0]!=$return->general_group)) $return->general_groupadd[]=$attr2['cn'][0];
+		// Add groupnames to array
+		if ($attr2['cn'][0]!=$return->general_group) $return->general_groupadd[]=$attr2['cn'][0];
 		$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
 		}
 
+	/* Write attributes into $return.
+	* Some values don't have to be set. These are only loaded if they are set
+	*/
 	if (isset($attr['shadowMin'][0])) $return->unix_pwdminage = $attr['shadowMin'][0];
 	if (isset($attr['shadowMax'][0])) $return->unix_pwdmaxage = $attr['shadowMax'][0];
 	if (isset($attr['shadowWarning'][0])) $return->unix_pwdwarn = $attr['shadowWarning'][0];
 	if (isset($attr['shadowInactive'][0])) $return->unix_pwdallowlogin = $attr['shadowInactive'][0];
 	if (isset($attr['shadowExpire'][0])) $return->unix_pwdexpire = $attr['shadowExpire'][0]*86400;
 
-	// load hosts
+	// load hosts attributes if set
 	$i=0;
 	while (isset($attr['host'][$i])) {
 		if ($i==0) $return->unix_host = $attr['host'][$i];
 			else $return->unix_host = $return->unix_host . ', ' . $attr['host'][$i];
 		$i++;
 		}
-	$i=0;
 
+	// load objectclasses
+	$i=0;
 	while (isset($attr['objectClass'][$i])) {
 		$return->general_objectClass[$i] = $attr['objectClass'][$i];
 		$i++;
@@ -553,13 +756,18 @@ function loaduser($dn) { // Will load all needed values from an existing account
 
 	if (isset($attr['userPassword'][0])) {
 		$return->unix_password = $attr['userPassword'][0];
-		$return->unix_deactivated=$_SESSION['ldap']->pwd_is_enabled($attr['userPassword'][0]);
+		$return->unix_deactivated=pwd_is_enabled($attr['userPassword'][0]);
 		}
 	if (isset($attr['displayName'][0])) $return->smb_displayName = utf8_decode($attr['displayName'][0]);
 
+	// sambaSamAccount (Samba3) is used.
 	if (in_array('sambaSamAccount', $attr['objectClass'])) {
+		/* Write attributes into $return.
+		* Some values don't have to be set. These are only loaded if they are set
+		*/
 		if (isset($attr['sambaAcctFlags'][0])) {
-			if (strrpos($attr['sambaAcctFlags'][0], 'W')) $return->smb_flagsW=true;
+			// a user is no workstation
+			$return->smb_flagsW=false;
 			if (strrpos($attr['sambaAcctFlags'][0], 'D')) $return->smb_flagsD=true;
 			if (strrpos($attr['sambaAcctFlags'][0], 'X')) $return->smb_flagsX=true;
 			}
@@ -574,6 +782,7 @@ function loaduser($dn) { // Will load all needed values from an existing account
 		if (isset($attr['sambaNTPassword'][0]))  $return->smb_password = $attr['sambaNTPassword'][0];
 		if (isset($attr['sambaDomainName'][0])) {
 			if ($_SESSION['config']->samba3=='yes') {
+				// store smb_domain as samba3domain-Object
 				$samba3domains = $_SESSION['ldap']->search_domains($_SESSION[config]->get_domainSuffix());
 				$i=0;
 				while ($i!=-1) {
@@ -584,22 +793,24 @@ function loaduser($dn) { // Will load all needed values from an existing account
 					else $i++;
 					}
 				}
-			else {
-				$return->smb_domain = $attr['sambaDomainName'];
-				}
+			// store smb_domain as string
+			else $return->smb_domain = $attr['sambaDomainName'];
 			}
 		if (isset($attr['sambaPrimaryGroupSID'][0])) {
 			if ($_SESSION['config']->samba3=='yes')
+				// store "real" SID if we want to save user as samba3 entry
 				$return->smb_mapgroup = $attr['sambaPrimaryGroupSID'][0];
+				// store "calculated" id if we want to save user as samba2.2 entry
 				else $return->smb_mapgroup = 2*$attr['gidNumber'][0]+1001;
 			}
 		// return value to prevent loaded values to be overwritten from old samba 2.2 attributes
 		if ($_SESSION['config']->is_samba3()) return $return;
 		}
 
+	// sambaSamAccount (Samba2.2) is used.
 	if (in_array('sambaAccount', $attr['objectClass'])) {
 		if (isset($attr['acctFlags'][0])) {
-			if (strrpos($attr['acctFlags'][0], 'W')) $return->smb_flagsW=true;
+			$return->smb_flagsW=false;
 			if (strrpos($attr['acctFlags'][0], 'D')) $return->smb_flagsD=true;
 			if (strrpos($attr['acctFlags'][0], 'X')) $return->smb_flagsX=true;
 			}
@@ -613,20 +824,26 @@ function loaduser($dn) { // Will load all needed values from an existing account
 		if (isset($attr['userWorkstations'][0])) $return->smb_smbuserworkstations = $attr['userWorkstations'][0];
 		if (isset($attr['domain'][0])) {
 			if ($_SESSION['config']->samba3=='yes') {
+				// store smb_domain as samba3domain-Object
 				$samba3domains = $_SESSION['ldap']->search_domains($_SESSION[config]->get_domainSuffix());
 				for ($i=0; $i<sizeof($samba3domains); $i++)
 					if ($attr['domain'][0] == $samba3domains[$i]->name) $return->smb_domain = $samba3domains[$i];
 				}
+				// store smb_domain as string
 			else $return->smb_domain = $attr['domain'][0];
 			}
 		if (isset($attr['primaryGroupID'][0])) {
 			if ($_SESSION['config']->samba3=='yes')
+				// store "real" SID if we want to save user as samba3 entry
 				$return->smb_mapgroup = $return->smb_domain->SID. '-' . (2*$attr['primaryGroupID'][0]+1);
+				// store "calculated" id if we want to save user as samba2.2 entry
 				else $return->smb_mapgroup = $attr['primaryGroupID'][0];
 			}
 		}
 	return $return;
 	}
+
+
 
 function loadhost($dn) { // Will load all needed values from an existing account
 	$return = new account();
@@ -646,7 +863,7 @@ function loadhost($dn) { // Will load all needed values from an existing account
 	if (isset($attr['displayName'][0])) $return->smb_displayName = utf8_decode($attr['displayName'][0]);
 	if (isset($attr['userPassword'][0])) {
 		$return->unix_password = $attr['userPassword'][0];
-		$return->unix_deactivated=$_SESSION['ldap']->pwd_is_enabled($attr['userPassword'][0]);
+		$return->unix_deactivated=pwd_is_enabled($attr['userPassword'][0]);
 		}
 
 	// Get Groupname
@@ -784,8 +1001,8 @@ function createuser($values) { // Will create the LDAP-Account
 			}
 		else {
 			if (file_exists($_SESSION['lampath'].'lib/createntlm.pl')) { // masscreate.php is at a different relative path
-				$attr['sambaNTPassword'] = exec(escapeshellarg($_SESSION['lampath'].'lib/createntlm.pl nt ' . $values->smb_password));
-				$attr['sambaLMPassword'] = exec(escapeshellarg($_SESSION['lampath'].'lib/createntlm.pl lm ' . $values->smb_password));
+				$attr['sambaNTPassword'] = exec(($_SESSION['lampath'].'lib/createntlm.pl nt ' . $values->smb_password));
+				$attr['sambaLMPassword'] = exec(($_SESSION['lampath'].'lib/createntlm.pl lm ' . $values->smb_password));
 				}
 			$attr['sambaPwdLastSet'] = time(); // sambaAccount_may
 			}
@@ -812,8 +1029,8 @@ function createuser($values) { // Will create the LDAP-Account
 			$attr['pwdLastSet'] = time(); // sambaAccount_may
 			}
 		else {
-			$attr['ntPassword'] = exec(escapeshellarg($_SESSION['lampath'].'lib/createntlm.pl nt ' . $values->smb_password));
-			$attr['lmPassword'] = exec(escapeshellarg($_SESSION['lampath'].'lib/createntlm.pl lm ' . $values->smb_password));
+			$attr['ntPassword'] = exec(($_SESSION['lampath'].'lib/createntlm.pl nt ' . $values->smb_password));
+			$attr['lmPassword'] = exec(($_SESSION['lampath'].'lib/createntlm.pl lm ' . $values->smb_password));
 			$attr['pwdLastSet'] = time(); // sambaAccount_may
 			}
 		$attr['rid'] = (2 * $values->general_uidNumber + 1000); // sambaAccount_may
@@ -877,7 +1094,7 @@ function createuser($values) { // Will create the LDAP-Account
 	$success = ldap_add($_SESSION['ldap']->server(),$values->general_dn, $attr);
 	if (!$success) return 4;
 	if ($_SESSION['config']->scriptServer) {
-		if (is_array($values->quota)) setquotas($values,'user');
+		if (is_array($values->quota)) setquotas($values);
 		addhomedir($values->general_username);
 		}
 	// Add User to Additional Groups
@@ -993,8 +1210,8 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 			}
 		 else
 			if ($values->smb_password!='') {
-				$attr['sambaNTPassword'] = exec(escapeshellarg($_SESSION['lampath'].'lib/createntlm.pl nt ' . $values->smb_password));
-				$attr['sambaLMPassword'] = exec(escapeshellarg($_SESSION['lampath'].'lib/createntlm.pl lm ' . $values->smb_password));
+				$attr['sambaNTPassword'] = exec(($_SESSION['lampath'].'lib/createntlm.pl nt ' . $values->smb_password));
+				$attr['sambaLMPassword'] = exec(($_SESSION['lampath'].'lib/createntlm.pl lm ' . $values->smb_password));
 				$attr['sambaPwdLastSet'] = time(); // sambaAccount_may
 				}
 		if ($values->smb_pwdcanchange != $values_old->smb_pwdcanchange) $attr['sambaPwdCanChange'] = $values->smb_pwdcanchange; // sambaAccount_may
@@ -1024,8 +1241,8 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 			}
 		 else
 			if ($values->smb_password!='') {
-				$attr['ntPassword'] = exec(escapeshellarg($_SESSION['lampath'].'lib/createntlm.pl nt ' . $values->smb_password));
-				$attr['lmPassword'] = exec(escapeshellarg($_SESSION['lampath'].'lib/createntlm.pl lm ' . $values->smb_password));
+				$attr['ntPassword'] = exec(($_SESSION['lampath'].'lib/createntlm.pl nt ' . $values->smb_password));
+				$attr['lmPassword'] = exec(($_SESSION['lampath'].'lib/createntlm.pl lm ' . $values->smb_password));
 				$attr['pwdLastSet'] = time(); // sambaAccount_may
 				}
 		if ($values->smb_pwdcanchange != $values_old->smb_pwdcanchange) $attr['pwdCanChange'] = $values->smb_pwdcanchange; // sambaAccount_may
@@ -1298,7 +1515,7 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 			}
 		$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
 		}
-	if ($_SESSION['config']->scriptServer && is_array($values->quota) ) setquotas($values,'user',$values_old);
+	if ($_SESSION['config']->scriptServer && is_array($values->quota) ) setquotas($values,$values_old);
 	if ((isset($_SESSION['userDN']))) {
 		if ($values->general_dn != $values_old->general_dn) {
 			unset ($_SESSION['userDN'][$values_old->general_dn]);
@@ -1628,11 +1845,11 @@ function creategroup($values) { // Will create the LDAP-Group
 		$attr['sambaGroupType'] = '2';
 		if ($values->smb_displayName) $attr['displayName'] = utf8_encode($values->smb_displayName);
 		}
-	foreach ($values->unix_memberUid as $user)
+	if (is_array($values->unix_memberUid)) foreach ($values->unix_memberUid as $user)
 		$attr['memberUid'][] = $user;
 	$success = ldap_add($_SESSION['ldap']->server(),$values->general_dn, $attr);
 	if (!$success) return 4;
-	if ($_SESSION['config']->scriptServer && is_array($values->quota)) setquotas($values,'group');
+	if ($_SESSION['config']->scriptServer && is_array($values->quota)) setquotas($values);
 	// Add entry to cache-array
 	if ((isset($_SESSION['groupDN']))) {
 		$_SESSION['groupDN'][$values->general_dn]['cn'] = $values->general_username;
@@ -1718,7 +1935,7 @@ function modifygroup($values,$values_old) { // Will modify the LDAP-Group
 			}
 		}
 	if (!$success) return 5;
-	if ($_SESSION['config']->scriptServer && is_array($values->quota)) setquotas($values,'group',$values_old);
+	if ($_SESSION['config']->scriptServer && is_array($values->quota)) setquotas($values,$values_old);
 	if ((isset($_SESSION['groupDN']))) { // refresh group-cache array
 		if ($values->general_dn != $values_old->general_dn) {
 			unset ($_SESSION['groupDN'][$values_old->general_dn]);
