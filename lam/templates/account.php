@@ -102,7 +102,9 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 			else $_SESSION['account']->unix_deactivated = false;
 		if ($_POST['genpass']) {
 			// Generate a random password if generate-button was pressed
-			$_SESSION['account']->unix_password = genpasswd();
+			$iv = base64_decode($_COOKIE["IV"]);
+			$key = base64_decode($_COOKIE["Key"]);
+			$_SESSION['account']->unix_password = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, genpasswd(), MCRYPT_MODE_ECB, $iv));
 			// Keep unix-page acitve
 			$select_local = 'unix';
 			}
@@ -555,10 +557,12 @@ switch ($select_local) { // Select which part of page will be loaded
 	case 'unix':
 		// Unix Password Settings
 		// decrypt password
-		$password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, base64_decode($_COOKIE['Key']),
-			base64_decode($_SESSION['account']->unix_password), MRYPT_MODE_ECB,
-			base64_decode($_COOKIE['IV']));
-		$password = str_replace(chr(00), '', $password);
+		if ($_SESSION['account']->unix_password != '') {
+			$iv = base64_decode($_COOKIE["IV"]);
+			$key = base64_decode($_COOKIE["Key"]);
+			$password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($_SESSION['account']->unix_password), MCRYPT_MODE_ECB, $iv);
+			$password = str_replace(chr(00), '', $password);
+			}
 		echo '<tr><td><input name="select" type="hidden" value="unix">';
 		echo _('Unix Properties');
 		echo '</td></tr>'."\n".'';
@@ -697,10 +701,12 @@ switch ($select_local) { // Select which part of page will be loaded
 		// Samba Settings
 		echo '<tr><td><input name="select" type="hidden" value="samba">'; echo _('Samba Properties'); echo '</td></tr>'."\n";
 		// decrypt password
-		$password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, base64_decode($_COOKIE['Key']),
-			base64_decode($_SESSION['account']->smb_password), MRYPT_MODE_ECB,
-			base64_decode($_COOKIE['IV']));
-		$password = str_replace(chr(00), '', $password);
+		if ($_SESSION['account']->smb_password != '') {
+			$iv = base64_decode($_COOKIE["IV"]);
+			$key = base64_decode($_COOKIE["Key"]);
+			$password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($_SESSION['account']->smb_password), MCRYPT_MODE_ECB, $iv);
+			$password = str_replace(chr(00), '', $password);
+			}
 		switch ( $_SESSION['type2'] ) {
 			case 'user':
 				// Set Account is samba-workstation to false

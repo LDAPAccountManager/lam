@@ -291,12 +291,12 @@ function checkglobal($values, $type, $values_old=false) { // This functions chec
 
 
 function checkunix($values, $type) { // This function checks all unix account paramters
-	$key = $_COOKIE['Key'];
-	$iv = $_COOKIE['IV'];
-	$values->unix_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, base64_decode($key),
-		base64_decode($values->unix_password), MRYPT_MODE_ECB,
-		base64_decode($iv));
-	$values->unix_password = str_replace(chr(00), '', $values->unix_password);
+	if ($values->unix_password != '') {
+		$iv = base64_decode($_COOKIE["IV"]);
+		$key = base64_decode($_COOKIE["Key"]);
+		$values->unix_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($values->unix_password), MCRYPT_MODE_ECB, $iv);
+		$values->unix_password = str_replace(chr(00), '', $values->unix_password);
+		}
 	if ($type=='user' && !ereg('^([a-z]|[A-Z]|[0-9]|[\|]|[\#]|[\*]|[\,]|[\.]|[\;]|[\:]|[\_]|[\-]|[\+]|[\!]|[\%]|[\&]|[\/]|[\?]|[\{]|[\[]|[\(]|[\)]|[\]]|[\}])*$', $values->unix_password))
 		$errors[] = array('ERROR', _('Password'), _('Password contents invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
 	if ( !ereg('^([0-9]*)$', $values->unix_pwdminage))  $errors[] = array('ERROR', _('Password Minage'), _('Password Minage must be are natural number.'));
@@ -313,10 +313,12 @@ function checkunix($values, $type) { // This function checks all unix account pa
 	}
 
 function checksamba($values, $type) { // This function checks all samba account paramters
-	$values->smb_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, base64_decode($_COOKIE['Key']),
-		base64_decode($values->smb_password), MRYPT_MODE_ECB,
-		base64_decode($_COOKIE['IV']));
-	$values->smb_password = str_replace(chr(00), '', $values->smb_password);
+	if ($values->unix_password != '') {
+		$iv = base64_decode($_COOKIE["IV"]);
+		$key = base64_decode($_COOKIE["Key"]);
+		$values->smb_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($values->smb_password), MCRYPT_MODE_ECB, $iv);
+		$values->smb_password = str_replace(chr(00), '', $values->smb_password);
+		}
 	$return = new account();
 	if ($values->smb_useunixpwd) $return->smb_password = $values->unix_password;
 	switch ($type) {
@@ -800,14 +802,16 @@ function createuser($values) { // Will create the LDAP-Account
 	settype($date, 'integer');
 	$values->general_dn = 'uid=' . $values->general_username . ',' . $_SESSION['config']->get_UserSuffix();
 	// decrypt password
-	$values->unix_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, base64_decode($_COOKIE['Key']),
-		base64_decode($values->unix_password), MRYPT_MODE_ECB,
-		base64_decode($_COOKIE['IV']));
-	$values->unix_password = str_replace(chr(00), '', $values->unix_password);
-	$values->smb_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, base64_decode($_COOKIE['Key']),
-		base64_decode($values->smb_password), MRYPT_MODE_ECB,
-		base64_decode($_COOKIE['IV']));
-	$values->smb_password = str_replace(chr(00), '', $values->smb_password);
+	$iv = base64_decode($_COOKIE["IV"]);
+	$key = base64_decode($_COOKIE["Key"]);
+	if ($values->unix_password != '') {
+		$values->unix_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($values->unix_password), MCRYPT_MODE_ECB, $iv);
+		$values->unix_password = str_replace(chr(00), '', $values->unix_password);
+		}
+	if ($values->smb_password != '') {
+		$values->smb_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($values->smb_password), MCRYPT_MODE_ECB, $iv);
+		$values->smb_password = str_replace(chr(00), '', $values->smb_password);
+		}
 
 	// All Values need for an user-account
 	// General Objectclasses
@@ -895,14 +899,16 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 	// 5 == Error while modifying Account
 	// Value stored in shadowExpire, days since 1.1.1970
 	// decrypt password
-	$values->unix_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, base64_decode($_COOKIE['Key']),
-		base64_decode($values->unix_password), MRYPT_MODE_ECB,
-		base64_decode($_COOKIE['IV']));
-	$values->unix_password = str_replace(chr(00), '', $values->unix_password);
-	$values->smb_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, base64_decode($_COOKIE['Key']),
-		base64_decode($values->smb_password), MRYPT_MODE_ECB,
-		base64_decode($_COOKIE['IV']));
-	$values->smb_password = str_replace(chr(00), '', $values->smb_password);
+	$iv = base64_decode($_COOKIE["IV"]);
+	$key = base64_decode($_COOKIE["Key"]);
+	if ($values->unix_password != '') {
+		$values->unix_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($values->unix_password), MCRYPT_MODE_ECB, $iv);
+		$values->unix_password = str_replace(chr(00), '', $values->unix_password);
+		}
+	if ($values->smb_password != '') {
+		$values->smb_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($values->smb_password), MCRYPT_MODE_ECB, $iv);
+		$values->smb_password = str_replace(chr(00), '', $values->smb_password);
+		}
 
 	$date = mktime(10,0,0, $values->unix_pwdexpire_mon, $values->unix_pwdexpire_day, $values->unix_pwdexpire_yea) / 86400 ;
 	settype($date, 'integer');
@@ -1085,15 +1091,16 @@ function createhost($values) { // Will create the LDAP-Account
 	$values->general_dn = 'uid=' . $values->general_username . ',' . $_SESSION['config']->get_HostSuffix();
 
 	// decrypt password
-	$values->unix_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, base64_decode($_COOKIE['Key']),
-		base64_decode($values->unix_password), MRYPT_MODE_ECB,
-		base64_decode($_COOKIE['IV']));
-	$values->unix_password = str_replace(chr(00), '', $values->unix_password);
-	$values->smb_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, base64_decode($_COOKIE['Key']),
-		base64_decode($values->smb_password), MRYPT_MODE_ECB,
-		base64_decode($_COOKIE['IV']));
-	$values->smb_password = str_replace(chr(00), '', $values->smb_password);
-
+	$iv = base64_decode($_COOKIE["IV"]);
+	$key = base64_decode($_COOKIE["Key"]);
+	if ($values->unix_password != '') {
+		$values->unix_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($values->unix_password), MCRYPT_MODE_ECB, $iv);
+		$values->unix_password = str_replace(chr(00), '', $values->unix_password);
+		}
+	if ($values->smb_password != '') {
+		$values->smb_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($values->smb_password), MCRYPT_MODE_ECB, $iv);
+		$values->smb_password = str_replace(chr(00), '', $values->smb_password);
+		}
 	// All Values need for an host-account
 	// General Objectclasses
 	$attr['objectClass'][0] = 'posixAccount';
@@ -1162,15 +1169,16 @@ function modifyhost($values,$values_old) { // Will modify the LDAP-Account
 	settype($date, 'integer');
 
 	// decrypt password
-	$values->unix_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, base64_decode($_COOKIE['Key']),
-		base64_decode($values->unix_password), MRYPT_MODE_ECB,
-		base64_decode($_COOKIE['IV']));
-	$values->unix_password = str_replace(chr(00), '', $values->unix_password);
-	$values->smb_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, base64_decode($_COOKIE['Key']),
-		base64_decode($values->smb_password), MRYPT_MODE_ECB,
-		base64_decode($_COOKIE['IV']));
-	$values->smb_password = str_replace(chr(00), '', $values->smb_password);
-
+	$iv = base64_decode($_COOKIE["IV"]);
+	$key = base64_decode($_COOKIE["Key"]);
+	if ($values->unix_password != '') {
+		$values->unix_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($values->unix_password), MCRYPT_MODE_ECB, $iv);
+		$values->unix_password = str_replace(chr(00), '', $values->unix_password);
+		}
+	if ($values->smb_password != '') {
+		$values->smb_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($values->smb_password), MCRYPT_MODE_ECB, $iv);
+		$values->smb_password = str_replace(chr(00), '', $values->smb_password);
+		}
 	$values->general_dn = 'uid=' . $values->general_username . ',' . $_SESSION['config']->get_HostSuffix();
 	if ($values->general_username != $values_old->general_username) {
 		$attr['cn'] = $values->general_username; // posixAccount_req shadowAccount_req sambaAccount_may
@@ -1297,15 +1305,16 @@ function creategroup($values) { // Will create the LDAP-Group
 	$values->general_dn = 'cn=' . $values->general_username . ',' . $_SESSION['config']->get_GroupSuffix();
 
 	// decrypt password
-	$values->unix_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, base64_decode($_COOKIE['Key']),
-		base64_decode($values->unix_password), MRYPT_MODE_ECB,
-		base64_decode($_COOKIE['IV']));
-	$values->unix_password = str_replace(chr(00), '', $values->unix_password);
-	$values->smb_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, base64_decode($_COOKIE['Key']),
-		base64_decode($values->smb_password), MRYPT_MODE_ECB,
-		base64_decode($_COOKIE['IV']));
-	$values->smb_password = str_replace(chr(00), '', $values->smb_password);
-
+	$iv = base64_decode($_COOKIE["IV"]);
+	$key = base64_decode($_COOKIE["Key"]);
+	if ($values->unix_password != '') {
+		$values->unix_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($values->unix_password), MCRYPT_MODE_ECB, $iv);
+		$values->unix_password = str_replace(chr(00), '', $values->unix_password);
+		}
+	if ($values->smb_password != '') {
+		$values->smb_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($values->smb_password), MCRYPT_MODE_ECB, $iv);
+		$values->smb_password = str_replace(chr(00), '', $values->smb_password);
+		}
 	$attr['objectClass'] = 'posixGroup';
 	$attr['cn'] = $values->general_username;
 	$attr['gidNumber'] = $values->general_uidNumber;
@@ -1324,15 +1333,16 @@ function modifygroup($values,$values_old) { // Will modify the LDAP-Group
 	$values->general_dn = 'cn=' . $values->general_username . ',' . $_SESSION['config']->get_GroupSuffix();
 
 	// decrypt password
-	$values->unix_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, base64_decode($_COOKIE['Key']),
-		base64_decode($values->unix_password), MRYPT_MODE_ECB,
-		base64_decode($_COOKIE['IV']));
-	$values->unix_password = str_replace(chr(00), '', $values->unix_password);
-	$values->smb_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, base64_decode($_COOKIE['Key']),
-		base64_decode($values->smb_password), MRYPT_MODE_ECB,
-		base64_decode($_COOKIE['IV']));
-	$values->smb_password = str_replace(chr(00), '', $values->smb_password);
-
+	$iv = base64_decode($_COOKIE["IV"]);
+	$key = base64_decode($_COOKIE["Key"]);
+	if ($values->unix_password != '') {
+		$values->unix_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($values->unix_password), MCRYPT_MODE_ECB, $iv);
+		$values->unix_password = str_replace(chr(00), '', $values->unix_password);
+		}
+	if ($values->smb_password != '') {
+		$values->smb_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($values->smb_password), MCRYPT_MODE_ECB, $iv);
+		$values->smb_password = str_replace(chr(00), '', $values->smb_password);
+		}
 	if ($values->general_username != $values_old->general_username) $attr['cn'] = $values->general_username;
 	if ($values->general_uidNumber != $values_old->general_uidNumber) $attr['gidNumber'] = $values->general_uidNumber;
 	if ($values->general_gecos != $values_old->general_gecos) $attr['description'] = $values->general_gecos;
