@@ -113,8 +113,14 @@ class Ldap{
   // searches LDAP for a specific user name
   // and returns its DN entry
   function search_username($name) {
-    // users have the attribute "posixAccount" or "sambaAccount" and uid $name
-    $filter = "(&(|(objectClass=posixAccount) (objectClass=sambaAccount)) (uid=$name))";
+	if ($this->conf->get_samba3() == "yes") {
+		// users have the attribute "posixAccount" or "sambaSamAccount" and uid $name
+		$filter = "(&(|(objectClass=posixAccount) (objectClass=sambaSamAccount)) (uid=$name))";
+	}
+	else {
+		// users have the attribute "posixAccount" or "sambaAccount" and uid $name
+		$filter = "(&(|(objectClass=posixAccount) (objectClass=sambaAccount)) (uid=$name))";
+	}
     $attrs = array();
     $sr = @ldap_search($this->server, $this->conf->get_UserSuffix(), $filter, $attrs);
     if ($sr) {

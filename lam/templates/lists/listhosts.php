@@ -103,8 +103,14 @@ for ($k = 0; $k < sizeof($desc_array); $k++) {
 }
 
 // configure search filter
-// Samba hosts have the attribute "sambaAccount" and end with "$"
-$filter = "(&(objectClass=sambaAccount) (uid=*$)";
+if ($_SESSION['config']->get_samba3() == "yes") {
+	// Samba hosts have the attribute "sambaSamAccount" and end with "$"
+	$filter = "(&(objectClass=sambaSamAccount) (uid=*$)";
+}
+else {
+	// Samba hosts have the attribute "sambaAccount" and end with "$"
+	$filter = "(&(objectClass=sambaAccount) (uid=*$)";
+}
 for ($k = 0; $k < sizeof($desc_array); $k++) {
   if ($_POST["filter" . strtolower($attr_array[$k])])
     $filter = $filter . "(" . strtolower($attr_array[$k]) . "=" .
