@@ -123,6 +123,10 @@ class posixGroup {
 		return _('posixGroup');
 		}
 
+	function is_base_module() {
+		return true;
+	}
+
 	/* This function returns a list with all required modules
 	*/
 	function get_dependencies($scope) {

@@ -67,6 +67,10 @@ class main {
 		return _('main');
 		}
 
+	function is_base_module() {
+		return false;
+	}
+
 	/* This function returns a list with all required modules
 	*/
 	function get_dependencies($scope) {

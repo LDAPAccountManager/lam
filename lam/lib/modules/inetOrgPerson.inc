@@ -68,7 +68,11 @@ class inetOrgPerson {
 
 	function get_alias() {
 		return _('inetOrgPerson');
-		}
+	}
+
+	function is_base_module() {
+		return false;
+	}
 
 	/* This function returns a list with all required modules
 	*/

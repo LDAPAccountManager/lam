@@ -129,9 +129,9 @@ class posixAccount {
 			}
 		}
 
-	function get_alias() {
-		return _('posixAccount');
-		}
+	function get_alias($scope) {
+		return "posixAccount";
+	}
 
 	function is_base_module() {
 		return true;

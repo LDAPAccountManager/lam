@@ -65,7 +65,11 @@ class account {
 
 	function get_alias() {
 		return _('account');
-		}
+	}
+
+	function is_base_module() {
+		return false;
+	}
 
 	/* This function returns a list with all required modules
 	*/
