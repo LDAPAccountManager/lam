@@ -45,13 +45,15 @@ session_save_path("../../sess");
 
 setlanguage();
 
+$scope = 'domain';
+
 // get sorting column when register_globals is off
 $sort = $_GET['sort'];
 
 // copy HTTP-GET variables to HTTP-POST
 $_POST = $_POST + $_GET;
 
-$dom_info = $_SESSION['dom_info'];
+$info = $_SESSION[$scope . 'info'];
 $dom_units = $_SESSION['dom_units'];
 
 // check if button was pressed and if we have to add/delete a domain
@@ -104,8 +106,11 @@ if ($_POST['dom_suffix']) $dom_suffix = $_POST['dom_suffix'];  // new suffix sel
 elseif ($_SESSION['dom_suffix']) $dom_suffix = $_SESSION['dom_suffix'];  // old suffix from session
 else $dom_suffix = $_SESSION["config"]->get_DomainSuffix();  // default suffix
 
-// first time page is shown
-if (! $_GET['norefresh']) {
+$refresh = true;
+if ($_GET['norefresh']) $refresh = false;
+if ($_POST['refresh']) $refresh = true;
+
+if ($refresh) {
 	// configure search filter
 	$filter = "(objectClass=sambaDomain)";
 	$attrs = $attr_array;
@@ -114,28 +119,28 @@ if (! $_GET['norefresh']) {
 		StatusMessage("WARN", _("LDAP sizelimit exceeded, not all entries are shown."), _("See README.openldap.txt to solve this problem."));
 	}
 	if ($sr) {
-		$dom_info = ldap_get_entries($_SESSION["ldap"]->server, $sr);
+		$info = ldap_get_entries($_SESSION["ldap"]->server, $sr);
 		ldap_free_result($sr);
-		if ($dom_info["count"] == 0) StatusMessage("WARN", "", _("No Samba Domains found!"));
+		if ($info["count"] == 0) StatusMessage("WARN", "", _("No Samba domains found!"));
 		// delete first array entry which is "count"
-		unset($dom_info['count']);
+		unset($info['count']);
 		// sort rows by sort column ($sort)
-		$dom_info = listSort($sort, $attr_array, $dom_info);
+		$info = listSort($sort, $attr_array, $info);
 	}
-	else StatusMessage("ERROR", _("LDAP Search failed! Please check your preferences."), _("No Samba Domains found!"));
+	else StatusMessage("ERROR", _("LDAP Search failed! Please check your preferences."), _("No Samba domains found!"));
 }
 // use search result from session
 else {
-	if (sizeof($dom_info) == 0) StatusMessage("WARN", "", _("No Samba Domains found!"));
+	if (sizeof($info) == 0) StatusMessage("WARN", "", _("No Samba domains found!"));
 	// sort rows by sort column ($sort)
-	if ($dom_info) $dom_info = listSort($sort, $attr_array, $dom_info);
+	if ($info) $info = listSort($sort, $attr_array, $info);
 }
 
-echo ("<form action=\"listdomains.php\" method=\"post\">\n");
+echo ("<form action=\"listdomains.php?norefresh=true\" method=\"post\">\n");
 
 // draw navigation bar if domain accounts were found
-if (sizeof($dom_info) > 0) {
-listDrawNavigationBar(sizeof($dom_info), $max_page_entries, $page, $sort, '', "domain", _("%s Samba domain(s) found"));
+if (sizeof($info) > 0) {
+listDrawNavigationBar(sizeof($info), $max_page_entries, $page, $sort, '', "domain", _("%s Samba domain(s) found"));
 echo ("<br>\n");
 }
 
@@ -155,25 +160,25 @@ echo "</tr>\n";
 
 // calculate which rows to show
 $table_begin = ($page - 1) * $max_page_entries;
-if (($page * $max_page_entries) > sizeof($dom_info)) $table_end = sizeof($dom_info);
+if (($page * $max_page_entries) > sizeof($info)) $table_end = sizeof($info);
 else $table_end = ($page * $max_page_entries);
 
 // print domain list
 for ($i = $table_begin; $i < $table_end; $i++) {
-	echo("<tr class=\"domainlist\" onMouseOver=\"domain_over(this, '" . $dom_info[$i]["dn"] . "')\"" .
-								" onMouseOut=\"domain_out(this, '" . $dom_info[$i]["dn"] . "')\"" .
-								" onClick=\"domain_click(this, '" . $dom_info[$i]["dn"] . "')\"" .
-								" onDblClick=\"parent.frames[1].location.href='../domain.php?action=edit&amp;DN=" . $dom_info[$i]["dn"] . "'\">" .
-								" <td height=22 align=\"center\"><input onClick=\"domain_click(this, '" . $dom_info[$i]["dn"] . "')\" type=\"checkbox\" name=\"" . $dom_info[$i]["dn"] . "\"></td>" .
-								" <td align='center'><a href=\"../domain.php?action=edit&amp;DN='" . $dom_info[$i]["dn"] . "'\">" . _("Edit") . "</a></td>");
+	echo("<tr class=\"domainlist\" onMouseOver=\"domain_over(this, '" . $info[$i]["dn"] . "')\"" .
+								" onMouseOut=\"domain_out(this, '" . $info[$i]["dn"] . "')\"" .
+								" onClick=\"domain_click(this, '" . $info[$i]["dn"] . "')\"" .
+								" onDblClick=\"parent.frames[1].location.href='../domain.php?action=edit&amp;DN=" . $info[$i]["dn"] . "'\">" .
+								" <td height=22 align=\"center\"><input onClick=\"domain_click(this, '" . $info[$i]["dn"] . "')\" type=\"checkbox\" name=\"" . $info[$i]["dn"] . "\"></td>" .
+								" <td align='center'><a href=\"../domain.php?action=edit&amp;DN='" . $info[$i]["dn"] . "'\">" . _("Edit") . "</a></td>");
 	for ($k = 0; $k < sizeof($attr_array); $k++) {
 		echo ("<td>");
 		// print all attribute entries seperated by "; "
-		if (sizeof($dom_info[$i][strtolower($attr_array[$k])]) > 0) {
+		if (sizeof($info[$i][strtolower($attr_array[$k])]) > 0) {
 			// delete first array entry which is "count"
-			if (is_array($dom_info[$i][strtolower($attr_array[$k])])) unset($dom_info[$i][strtolower($attr_array[$k])]['count']);
-			if (is_array($dom_info[$i][strtolower($attr_array[$k])])) echo implode("; ", $dom_info[$i][strtolower($attr_array[$k])]);
-			else echo $dom_info[$i][strtolower($attr_array[$k])];
+			if (is_array($info[$i][strtolower($attr_array[$k])])) unset($info[$i][strtolower($attr_array[$k])]['count']);
+			if (is_array($info[$i][strtolower($attr_array[$k])])) echo implode("; ", $info[$i][strtolower($attr_array[$k])]);
+			else echo $info[$i][strtolower($attr_array[$k])];
 		}
 		echo ("</td>");
 	}
@@ -184,8 +189,8 @@ echo ("</table>");
 echo ("<br>");
 
 // draw navigation bar if domain accounts were found
-if (sizeof($dom_info) > 0) {
-listDrawNavigationBar(sizeof($dom_info), $max_page_entries, $page, $sort, '', "domain", _("%s Samba domain(s) found"));
+if (sizeof($info) > 0) {
+listDrawNavigationBar(sizeof($info), $max_page_entries, $page, $sort, '', "domain", _("%s Samba domain(s) found"));
 echo ("<br>\n");
 }
 
@@ -211,7 +216,7 @@ if (sizeof($dom_units) > 1) {
 
 echo ("<p align=\"left\">\n");
 echo ("<input type=\"submit\" name=\"new_domain\" value=\"" . _("New Domain") . "\">\n");
-if (sizeof($dom_info) > 0) echo ("<input type=\"submit\" name=\"del_domain\" value=\"" . _("Delete Domain(s)") . "\">\n");
+if (sizeof($info) > 0) echo ("<input type=\"submit\" name=\"del_domain\" value=\"" . _("Delete Domain(s)") . "\">\n");
 echo ("</p>\n");
 
 echo ("</form>\n");
@@ -220,7 +225,7 @@ echo "</body></html>\n";
 
 
 // save variables to session
-$_SESSION['dom_info'] = $dom_info;
+$_SESSION[$scope . 'info'] = $info;
 $_SESSION['dom_units'] = $dom_units;
 $_SESSION['dom_suffix'] = $dom_suffix;
 

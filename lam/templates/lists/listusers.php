@@ -51,6 +51,8 @@ session_save_path("../../sess");
 
 setlanguage();
 
+$scope = 'user';
+
 // copy HTTP-GET variables to HTTP-POST
 $_POST = $_POST + $_GET;
 
@@ -76,6 +78,7 @@ if ($trans_primary == "on" && !$_GET["norefresh"]) {
 }
 
 
+$info = $_SESSION[$scope . 'info'];
 $usr_units = $_SESSION['usr_units'];
 
 // check if button was pressed and if we have to add/delete a user or create a PDF
@@ -119,9 +122,9 @@ if ($_POST['new_user'] || $_POST['del_user'] || $_POST['pdf_user'] || $_POST['pd
 	// PDF for all users
 	elseif ($_POST['pdf_all']){
 		$list = array();
-		for ($i = 0; $i < sizeof($_SESSION['userlist']); $i++) {
+		for ($i = 0; $i < sizeof($_SESSION[$scope . 'info']); $i++) {
 			$_SESSION["accountPDF-$i"] = new accountContainer("user", "accountPDF-$i");
-			$_SESSION["accountPDF-$i"]->load_account($_SESSION['usr_info'][$i]['dn']);
+			$_SESSION["accountPDF-$i"]->load_account($_SESSION[$scope . 'info'][$i]['dn']);
 			$list[$i] = $_SESSION["accountPDF-$i"];
 		}
 		if (sizeof($list) > 0) {
@@ -182,61 +185,59 @@ elseif ($_SESSION['usr_suffix']) $usr_suffix = $_SESSION['usr_suffix'];  // old 
 else $usr_suffix = $_SESSION["config"]->get_UserSuffix();  // default suffix
 
 
-// generate search filter for sort links
-$searchFilter = "";
-for ($k = 0; $k < sizeof($desc_array); $k++) {
-	if (eregi("^([0-9a-z_\\*\\+\\-])+$", $_POST["filter" . strtolower($attr_array[$k])])) {
-		$searchFilter = $searchFilter . "&filter" .
-		  strtolower($attr_array[$k]) . "=".
-		  $_POST["filter" . strtolower($attr_array[$k])];
-	}
-}
-
 // configure search filter for LDAP
 $module_filter = get_ldap_filter("user");  // basic filter is provided by modules
-$filter = "(&" . $module_filter;  // users do not end with "$"
-for ($k = 0; $k < sizeof($desc_array); $k++) {
-  if (eregi("^([0-9a-z_\\*\\+\\-])+$", $_POST["filter" . strtolower($attr_array[$k])]))
-    $filter = $filter . "(" . strtolower($attr_array[$k]) . "=" .
-      $_POST["filter" . strtolower($attr_array[$k])] . ")";
-  else
-    $_POST["filter" . strtolower($attr_array[$k])] = "";
-}
-$filter = $filter . ")";
+$filter = "(&" . $module_filter . ")";
 
-// read entries only from ldap server if not yet stored in session or if refresh
-// button is pressed or if filter is applied
-if ($_SESSION["userlist"] && $_GET["norefresh"]) {
-	$_SESSION["userlist"] = listSort($sort, $attr_array, $_SESSION["userlist"]);
-	$userinfo = $_SESSION["userlist"];
-}
-else {
+$refresh = true;
+if ($_GET['norefresh']) $refresh = false;
+if ($_POST['refresh']) $refresh = true;
+
+if ($refresh) {
 	$attrs = $attr_array;
 	$sr = @ldap_search($_SESSION["ldap"]->server(), $usr_suffix, $filter, $attrs);
 	if (ldap_errno($_SESSION["ldap"]->server()) == 4) {
 		StatusMessage("WARN", _("LDAP sizelimit exceeded, not all entries are shown."), _("See README.openldap.txt to solve this problem."));
 	}
 	if ($sr) {
-		$userinfo = ldap_get_entries ($_SESSION["ldap"]->server, $sr);
+		$info = ldap_get_entries ($_SESSION["ldap"]->server, $sr);
 		ldap_free_result ($sr);
-		if ($userinfo["count"] == 0) StatusMessage("WARN", "", _("No Users found!"));
-			// delete first array entry which is "count"
-			unset($userinfo['count']);
-			$userinfo = listSort($sort, $attr_array, $userinfo);
-			$_SESSION["userlist"] = $userinfo;
-		}
+		// delete first array entry which is "count"
+		unset($info['count']);
+		// save results
+		$_SESSION[$scope . 'info'] = $info;
+	}
 	else {
-		$_SESSION['userlist'] = array();
-		$userinfo = array();
+		$_SESSION[$scope . 'info'] = array();
+		$info = array();
 		StatusMessage("ERROR",
 			_("LDAP Search failed! Please check your preferences."),
-			_("No Users found!"));
+			_("No users found!"));
 	}
 }
 
-$user_count = sizeof ($_SESSION["userlist"]);
+$filter = listBuildFilter($_POST, $attr_array);
+$info = listFilterAccounts($info, $filter);
+if (sizeof($info) == 0) StatusMessage("WARN", "", _("No users found!"));
+// sort rows by sort column ($sort)
+if ($info) $info = listSort($sort, $attr_array, $info);
 
-echo ("<form action=\"listusers.php\" method=\"post\">\n");
+// build filter URL
+$searchFilter = array();
+$filterAttributes = array_keys($filter);
+for ($i = 0; $i < sizeof($filterAttributes); $i++) {
+	$searchFilter[] = "filter" . $filterAttributes[$i] . "=" . $filter[$filterAttributes[$i]]['original'];
+}
+if (sizeof($searchFilter) > 0) {
+	$searchFilter = "&amp;" . implode("&amp;", $searchFilter);
+}
+else {
+	$searchFilter = "";
+}
+
+$user_count = sizeof($info);
+
+echo ("<form action=\"listusers.php?norefresh=true\" method=\"post\">\n");
 
 // display table only if users exist in LDAP
 if ($user_count != 0) {
@@ -249,51 +250,55 @@ if ($user_count != 0) {
 // account table head
 listPrintTableHeader("user", $searchFilter . "&amp;trans_primary=" . $trans_primary, $desc_array, $attr_array, $_POST, $sort);
 
+// calculate which rows to show
+$table_begin = ($page - 1) * $max_page_entries;
+if (($page * $max_page_entries) > sizeof($info)) $table_end = sizeof($info);
+else $table_end = ($page * $max_page_entries);
+
 if ($user_count != 0) {
 	// translate GIDs and resort array if selected
 	if ($trans_primary == "on") {
 		// translate GIDs
-		for ($i = 0; $i < sizeof($userinfo); $i++) {
-			if ($trans_primary_hash[$userinfo[$i]['gidnumber'][0]]) {
-				$userinfo[$i]['gidnumber'][0] = $trans_primary_hash[$userinfo[$i]['gidnumber'][0]];
+		for ($i = 0; $i < sizeof($info); $i++) {
+			if ($trans_primary_hash[$info[$i]['gidnumber'][0]]) {
+				$info[$i]['gidnumber'][0] = $trans_primary_hash[$info[$i]['gidnumber'][0]];
 			}
 		}
 		// resort if needed
 		if ($sort == "gidnumber") {
-			$userinfo = listSort($sort, $attr_array, $userinfo);
+			$info = listSort($sort, $attr_array, $info);
 		}
 	}
 	// print user list
-	$userinfo = array_slice ($userinfo, ($page - 1) * $max_page_entries, $max_page_entries);
-	for ($i = 0; $i < sizeof ($userinfo); $i++) { // ignore last entry in array which is "count"
-		echo("<tr class=\"userlist\"\nonMouseOver=\"user_over(this, '" . $userinfo[$i]["dn"] . "')\"\n" .
-			"onMouseOut=\"user_out(this, '" . $userinfo[$i]["dn"] . "')\"\n" .
-			"onClick=\"user_click(this, '" . $userinfo[$i]["dn"] . "')\"\n" .
-			"onDblClick=\"parent.frames[1].location.href='../account/edit.php?type=user&amp;DN=" . $userinfo[$i]["dn"] . "'\">\n");
+	for ($i = $table_begin; $i < $table_end; $i++) { // ignore last entry in array which is "count"
+		echo("<tr class=\"userlist\"\nonMouseOver=\"user_over(this, '" . $info[$i]["dn"] . "')\"\n" .
+			"onMouseOut=\"user_out(this, '" . $info[$i]["dn"] . "')\"\n" .
+			"onClick=\"user_click(this, '" . $info[$i]["dn"] . "')\"\n" .
+			"onDblClick=\"parent.frames[1].location.href='../account/edit.php?type=user&amp;DN=" . $info[$i]["dn"] . "'\">\n");
 		// checkboxes if selectall = "yes"
 		if ($_GET['selectall'] == "yes") {
-			echo "<td height=22 align=\"center\">\n<input onClick=\"user_click(this, '" . $userinfo[$i]["dn"] . "')\" type=\"checkbox\" name=\"" .
-				$userinfo[$i]["dn"] . "\" value=\"" . $userinfo[$i]["dn"] . "\" checked>\n</td>\n";
+			echo "<td height=22 align=\"center\">\n<input onClick=\"user_click(this, '" . $info[$i]["dn"] . "')\" type=\"checkbox\" name=\"" .
+				$info[$i]["dn"] . "\" value=\"" . $info[$i]["dn"] . "\" checked>\n</td>\n";
 		}
 		else {
-			echo "<td height=22 align=\"center\">\n<input onClick=\"user_click(this, '" . $userinfo[$i]["dn"] . "')\" type=\"checkbox\" name=\"" .
-				$userinfo[$i]["dn"] . "\" value=\"" . $userinfo[$i]["dn"] . "\">\n</td>\n";
+			echo "<td height=22 align=\"center\">\n<input onClick=\"user_click(this, '" . $info[$i]["dn"] . "')\" type=\"checkbox\" name=\"" .
+				$info[$i]["dn"] . "\" value=\"" . $info[$i]["dn"] . "\">\n</td>\n";
 		}
-		echo ("<td align='center'>\n<a href=\"../account/edit.php?type=user&amp;DN='" . $userinfo[$i]["dn"] . "'\">" .
+		echo ("<td align='center'>\n<a href=\"../account/edit.php?type=user&amp;DN='" . $info[$i]["dn"] . "'\">" .
 			_("Edit") . "</a>\n</td>\n");
 		for ($k = 0; $k < sizeof($attr_array); $k++) {
 			echo ("<td>\n");
 			// print attribute values
-			if (sizeof($userinfo[$i][strtolower($attr_array[$k])]) > 0) {
-				if (is_array($userinfo[$i][strtolower($attr_array[$k])])) {
+			if (sizeof($info[$i][strtolower($attr_array[$k])]) > 0) {
+				if (is_array($info[$i][strtolower($attr_array[$k])])) {
 					// delete first array entry which is "count"
-					unset($userinfo[$i][strtolower($attr_array[$k])]['count']);
+					unset($info[$i][strtolower($attr_array[$k])]['count']);
 					// sort array
-					sort($userinfo[$i][strtolower($attr_array[$k])]);
+					sort($info[$i][strtolower($attr_array[$k])]);
 					// print all attribute entries seperated by "; "
-					echo implode("; ", $userinfo[$i][strtolower($attr_array[$k])]) . "\n";
+					echo implode("; ", $info[$i][strtolower($attr_array[$k])]) . "\n";
 				}
-				else echo $userinfo[$i][strtolower($attr_array[$k])] . "\n";
+				else echo $info[$i][strtolower($attr_array[$k])] . "\n";
 			}
 		echo ("</td>\n");
 		}
