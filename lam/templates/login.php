@@ -43,7 +43,6 @@ function display_LoginPage($config_object)
 	$_SESSION["language"] = $config_object->get_defaultLanguage();
 
 	// loading available languages from language.conf file
-
 	$languagefile = "../config/language.conf";
 	if(is_file($languagefile) == True)
 	{
@@ -87,7 +86,7 @@ function display_LoginPage($config_object)
 				<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">
 			</head>
 			<body>
-				<p align=\"center\"><img src=\"../graphics/banner.jpg\" border=\"1\"></p>
+				<p align=\"center\"><a href=\"http://lam.sf.net\" target=\"_blank\"><img src=\"../graphics/banner.jpg\" border=\"1\"></a></p>
 			<table width=\"100%\" border=\"0\">
 				<tr>
 					<td width=\"100%\" align=\"right\">
@@ -99,7 +98,7 @@ function display_LoginPage($config_object)
 				</tr>
 			</table>
 			<hr><br><br>
-			<b><p align=\"center\">";
+			<p align=\"center\"><b>";
 			echo _("Enter Username and Password for Account:");
 	echo "
 			</b></p>";
@@ -186,19 +185,11 @@ function display_LoginPage($config_object)
 						</tr>
 					</table>
 					<br><br><br>
-					<table width=\"310\" align=\"center\" bgcolor=\"#C7E7C7\" border=\"0\">
+					<table width=\"345\" align=\"center\" bgcolor=\"#C7E7C7\" border=\"0\">
 						<tr>
 							<td width=\"100%\" align=\"center\">";
-								echo _("You are connecting to the server specified below:");
-	echo "
-							</td>
-						</tr>
-						<tr>
-							<td><br></td>
-						</tr>
-						<tr>
-							<td width=\"100%\" align=\"center\">
-								ServerURL: <b>";
+								echo _("You are connecting to ServerURL: ");
+	echo "						<b>";
 								echo $config_object->get_ServerURL();
 	echo "
 								</b></td>
@@ -215,25 +206,33 @@ if($_POST['action'] == "checklogin")
 	include_once("../lib/ldap.inc"); // Include ldap.php which provides Ldap class
 
 	$ldap = new Ldap($_SESSION['config']); //$config); // Create new Ldap object
-	$result = $ldap->connect($_POST['username'],$_POST['passwd']); // Connect to LDAP server for verifing username/password
-	if($result == True) // Username/password correct. Do some configuration and load main frame.
+	if($_POST['passwd'] == "")
 	{
-		$_SESSION["language"] = $_POST["language"]; // Write selected language in session
-		session_register("ldap"); // Register $ldap object in session
-
-		include("./main.php"); // Load main frame
+		$error_message = _("Empty Password submitted. Try again.");
+		display_LoginPage($_SESSION['config']); // Empty password submitted. Return to login page.
 	}
 	else
 	{
-		if($ldap->server)
+		$result = $ldap->connect($_POST['username'],$_POST['passwd']); // Connect to LDAP server for verifing username/password
+		if($result == True) // Username/password correct. Do some configuration and load main frame.
 		{
-			$error_message = _("Wrong Password/Username  combination. Try again.");
-			display_LoginPage($_SESSION['config']); // Username/password invalid. Return to login page.
+			$_SESSION["language"] = $_POST["language"]; // Write selected language in session
+			session_register("ldap"); // Register $ldap object in session
+
+			include("./main.php"); // Load main frame
 		}
 		else
 		{
-			$error_message = _("Cannot connect to specified LDAP-Server. Try again.");
-			display_LoginPage($_SESSION['config']); // Username/password invalid. Return to login page.
+			if($ldap->server)
+			{
+				$error_message = _("Wrong Password/Username  combination. Try again.");
+				display_LoginPage($_SESSION['config']); // Username/password invalid. Return to login page.
+			}
+			else
+			{
+				$error_message = _("Cannot connect to specified LDAP-Server. Try again.");
+				display_LoginPage($_SESSION['config']); // Username/password invalid. Return to login page.
+			}
 		}
 	}
 }
