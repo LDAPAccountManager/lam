@@ -71,7 +71,6 @@ if ($_POST['new_group'] || $_POST['del_group'] || $_POST['pdf_group'] || $_POST[
 		}
 		if (sizeof($list) > 0) {
 			createGroupPDF($list);
-			if ($_SESSION['config']->get_scriptServer()) $list = getquotas($list);
 			exit;
 		}
 	}
@@ -83,7 +82,6 @@ if ($_POST['new_group'] || $_POST['del_group'] || $_POST['pdf_group'] || $_POST[
 		}
 		if (sizeof($list) > 0) {
 			createGroupPDF($list);
-			if ($_SESSION['config']->get_scriptServer()) $list = getquotas($list);
 			exit;
 		}
 	}
