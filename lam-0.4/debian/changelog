@@ -1,3 +1,10 @@
+ldap-account-manager (0.4.9) unstable; urgency=low
+
+  * Updated to new upstream release
+  * Closes: #296498: added documentation for samba.schema
+
+ -- Roland Gruber <post@rolandgruber.de>  Wed,  2 Mar 2005 19:52:29 +0100
+
 ldap-account-manager (0.4.8-1) unstable; urgency=low
 
   * Updated to new upstream version 0.4.8.
