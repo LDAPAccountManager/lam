@@ -30,6 +30,9 @@ include_once ("../../lib/status.inc");
 session_save_path("../../sess");
 @session_start();
 
+// get sorting column when register_globals is off
+$list = $_GET['list'];
+
 // check if button was pressed and if we have to add/delete a host
 if ($_POST['new_host'] || $_POST['del_host']){
 	// add new host

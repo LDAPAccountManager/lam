@@ -30,6 +30,9 @@ include_once ("../../lib/status.inc");
 session_save_path("../../sess");
 @session_start();
 
+// get sorting column when register_globals is off
+$list = $_GET['list'];
+
 // check if button was pressed and if we have to add/delete a group
 if ($_POST['new_group'] || $_POST['del_group']){
 	// add new group
