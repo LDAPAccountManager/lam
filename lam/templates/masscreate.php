@@ -132,12 +132,12 @@ function showMainPage($scope) {
 
 	echo "<p>&nbsp;</p>\n";
 
-	echo "<big><b>" . _("Columns:") . "</b></big>\n";
+	echo "<p><big><b>" . _("Columns:") . "</b></big></p>\n";
 
 	// DN options
 	echo "<fieldset>\n<legend><b>" . _("DN settings") . "</b></legend>\n";
 	echo "<table width=\"100%\">\n";
-		echo "<tr>\n";
+		echo "<tr valign=\"top\">\n";
 			echo "<td width=\"50%\">\n";
 			echo "<b>" . _("DN suffix") . "</b>\n";
 			echo "<br>\n";
@@ -176,7 +176,7 @@ function showMainPage($scope) {
 		echo "<fieldset>\n<legend><b>" . getModuleAlias($modules[$m], $scope) . "</b></legend>\n";
 		echo "<table width=\"100%\">\n";
 		for ($i = 0; $i < sizeof($columns[$modules[$m]]); $i++) {
-			echo "<tr>\n";
+			echo "<tr valign=\"top\">\n";
 				echo "<td width=\"33%\">\n";
 					showColumnData($modules[$m], $columns[$modules[$m]][$i]);
 				echo "</td>\n";
