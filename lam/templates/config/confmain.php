@@ -249,7 +249,7 @@ echo ("<table border=0>\n");
 echo ("<tr>");
 echo ("<td><b>" . _("Default Language") . "</b></td><td>\n");
 // read available languages
-$languagefile = "../../config/language.conf";
+$languagefile = "../../config/language";
 if(is_file($languagefile))
 {
 	$file = fopen($languagefile, "r");

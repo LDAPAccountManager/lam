@@ -56,7 +56,7 @@ hostlistAttributes: #cn;#rid;#description;gidNumber:GID
 # maximum number of rows to show in user/group/host lists
 maxlistentries: 30
 
-# default language (a line from language.conf)
+# default language (a line from config/language)
 defaultLanguage: en_GB:iso639_en:English (Britain)
 
 # Path to external Script

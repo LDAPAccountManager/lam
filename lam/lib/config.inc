@@ -261,7 +261,7 @@ class Config {
 			continue;
 		}
 		if (substr($file_array[$i], 0, 8) == "admins: ") {
-			$file_array[$i] = "admins: " . implode(";", $this->Admins) . "\n";
+			$file_array[$i] = "admins: " . $this->Adminstring . "\n";
 			$save_admins = True;
 			continue;
 		}
@@ -361,7 +361,7 @@ class Config {
 	if (!$save_passwd == True) array_push($file_array, "\n\n# password to change these preferences via webfrontend\n" . "passwd: " . $this->Passwd . "\n");
 	if (!$save_admins == True) array_push($file_array, "\n\n# list of users who are allowed to use LDAP Account Manager\n" .
 					    "# names have to be seperated by semicolons\n" .
-					    "# e.g. admins: cn=admin,dc=yourdomain,dc=org;cn=root,dc=yourdomain,dc=org\n" . "admins: " . $this->Admins . "\n");
+					    "# e.g. admins: cn=admin,dc=yourdomain,dc=org;cn=root,dc=yourdomain,dc=org\n" . "admins: " . $this->Adminstring . "\n");
 	if (!$save_suffusr == True) array_push($file_array, "\n\n# suffix of users\n" .
 					     "# e.g. ou=People,dc=yourdomain,dc=org\n" . "usersuffix: " . $this->Suff_users . "\n");
 	if (!$save_suffgrp == True) array_push($file_array, "\n\n# suffix of groups\n" .
@@ -381,7 +381,7 @@ class Config {
 	if (!$save_hstlstattr == True) array_push($file_array, "\n\n# list of attributes to show in host list\n# entries can either be predefined values (e.g. '#cn' or '#uid')" .
 						"\n# or individual ones (e.g. 'cn:Host Name')\n# values have to be seperated by semicolons\n" . "hostlistAttributes: " . $this->hostlistAttributes . "\n");
 	if (!$save_maxlstent == True) array_push($file_array, "\n\n# maximum number of rows to show in user/group/host lists\n" . "maxlistentries: " . $this->maxlistentries . "\n");
-	if (!$save_deflang == True) array_push($file_array, "\n\n# default language (a line from language.conf)\n" . "defaultLanguage: " . $this->defaultLanguage . "\n");
+	if (!$save_deflang == True) array_push($file_array, "\n\n# default language (a line from config/language)\n" . "defaultLanguage: " . $this->defaultLanguage . "\n");
 	if (!$save_scriptPath == True) array_push($file_array, "\n\n# Path to external Script\n" . "scriptPath: " . $this->scriptPath . "\n");
 	if (!$save_scriptServer == True) array_push($file_array, "\n\n# Server of external Script\n" . "scriptServer: " . $this->scriptServer . "\n");
 	if (!$save_samba3 == True) array_push($file_array, "\n\n# Set to \"yes\" only if you use the new Samba 3.x schema.\n" . "samba3: " . $this->samba3 . "\n");
@@ -440,20 +440,20 @@ class Config {
     return $this->Admins;
   }
 
-  // needs an array of string containing all admin users
-  function set_Admins($value) {
-    if (is_array($value)) { // check if $value is array of strings
-      $b = true;
-      for($i = 0; $i < sizeof($value); $i++){
-	if (is_string($value[$i]) == false) {
-	  $b = false;
-	  break;
+	// needs an array of string containing all admin users
+	function set_Admins($value) {
+		if (is_array($value)) { // check if $value is array of strings
+			$b = true;
+			for($i = 0; $i < sizeof($value); $i++){
+				if (is_string($value[$i]) == false) {
+					$b = false;
+					break;
+				}
+			}
+			if ($b) $this->Admins = $value;
+		}
+		else StatusMessage("WARN", "", _("Config->set_Admins failed!") . " (" . $value . ")");
 	}
-      }
-      if ($b) $this->Admins = $value;
-    }
-    else StatusMessage("WARN", "", _("Config->set_Admins failed!") . " (" . $value . ")");
-  }
 
   // returns all admin users seperated by semicolons
   function get_Adminstring() {
