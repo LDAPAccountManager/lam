@@ -79,7 +79,10 @@ class sambaGroupMapping extends baseModule {
 			// SID
 			$domSID = $nameToSID[$rawAccounts[$i][$ids['sambaGroupMapping_domain']]];
 			if (!isset($domSID)) {
-				$errors[] =array("ERROR", "", ""); // TODO
+				$errMsg = $this->messages['sambaSID'][1];
+				array_push($errMsg, $rawAccounts[$i][$ids['sambaGroupMapping_domain']]);
+				array_push($errMsg, $i);
+				$errors[] = $errMsg;
 			}
 			else {
 				// RID
@@ -102,6 +105,7 @@ class sambaGroupMapping extends baseModule {
 				$partialAccounts[$i]['displayName'] = $rawAccounts[$i][$ids['sambaGroupMapping_name']];
 			}
 		}
+		return $errors;
 	}
 
 	function delete_attributes($post) {
@@ -284,6 +288,7 @@ class sambaGroupMapping extends baseModule {
 	**/
 	function load_Messages() {
 		$this->messages['sambaSID'][0] = array('ERROR', _('Special Group'),sprintf( _('There can be only one group %s.'), $rids[$i]), 'sambaSID');
+		$this->messages['sambaSID'][1] = array('ERROR', _("Account %s (sambaGroupMapping_domain): LAM was unable to find a Samba 3 domain with this name!"));  // third parameter must be set dynamically
 	}
 
 

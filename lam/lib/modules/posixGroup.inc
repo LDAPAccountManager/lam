@@ -82,7 +82,9 @@ class posixGroup extends baseModule {
 					$partialAccounts[$i]['memberUid'] = explode(",", $rawAccounts[$i][$ids['posixGroup_members']]);
 				}
 				else {
-					$errors[] = $this->messages['memberUID'][0];
+					$errMsg = $this->messages['memberUID'][0];
+					array_push($errMsg, $i);
+					$errors[] =$errMsg;
 				}
 			}
 			// password
@@ -409,7 +411,7 @@ class posixGroup extends baseModule {
 		$this->messages['cn'][0] = array('WARN', _('Groupname'), _('You are using a capital letters. This can cause problems because windows isn\'t case-sensitive.'));
 		$this->messages['cn'][1] = array('WARN', _('Groupname'), _('Groupname in use. Selected next free groupname.'));
 		$this->messages['cn'][2] = array('ERROR', _('Groupname'), _('Groupname contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
-		$this->messages['memberUID'][0] = array('ERROR', 'PosixGroup_members', _("This value must be a list of user names separated by semicolons."));
+		$this->messages['memberUID'][0] = array('ERROR', 'Account %s: posixGroup_members', _("This value must be a list of user names separated by semicolons."));
 		} 
 
 
