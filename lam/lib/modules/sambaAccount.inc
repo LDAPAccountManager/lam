@@ -74,7 +74,6 @@ class sambaAccount {
 		// Make references to attributes which already esists in ldap
 		$newattributes = array_keys($this->attributes);
 		$module = array_keys($_SESSION[$this->base]->module);
-		// fixme *** do we have to unset module sambaAccount itself
 		for ($i=0; $i<count($module); $i++) {
 			foreach ($newattributes as $attribute)
 				if (isset($_SESSION[$this->base]->module[$module[$i]]->attributes[$attribute])) $this->attributes[$attribute] =& $_SESSION[$this->base]->module[$module[$i]]->attributes[$attribute];

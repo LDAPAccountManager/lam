@@ -344,8 +344,13 @@ class accountContainer {
 	*/
 	function continue_main($post) {
 		if ($this->module['main']->subpage=='') $this->module['main']->subpage='attributes';
-		$function = '$result = $this->module[$this->order[$this->module[\'main\']->current_page]]->proccess_'.$this->module['main']->subpage.'($post);';
-		eval ($function);
+		if ($post['form_main_reset']) {
+			$this->load_account($this->dn_orig);
+			}
+		else {
+			$function = '$result = $this->module[$this->order[$this->module[\'main\']->current_page]]->proccess_'.$this->module['main']->subpage.'($post);';
+			eval ($function);
+			}
 		if (is_string($result)) $this->module['main']->subpage = $result;
 		if (is_int($result))
 			for ($i=0; $i<count($this->order); $i++ )
@@ -353,11 +358,11 @@ class accountContainer {
 					$this->module['main']->current_page = $i;
 					$this->module['main']->subpage='attributes';
 					}
-
 		// Write HTML-Code
 		echo $_SESSION[$this->header2];
 		echo "<title>";
-		echo _("Create new Account");
+		if ($this->dn_orig!='') echo _("Modify Account");
+			else echo _("Create new Account");
 		echo "</title>\n";
 		echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
 		echo "</head><body>\n";
@@ -365,7 +370,6 @@ class accountContainer {
 		// Display errir-messages
 		if (is_array($result))
 			for ($i=0; $i<sizeof($result); $i++) StatusMessage($result[$i][0], $result[$i][1], $result[$i][2]);
-
 		// Create left module-menu
 		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
 		echo "<table><tr>";
@@ -387,13 +391,17 @@ class accountContainer {
 				echo "\">\n<br>";
 				}
 			}
-		// *** Fixme add reset-button
+		if ($this->dn_orig!='') echo "<input name=\"form_main_reset\" type=\"submit\" value=\"" . _('Reset changes') . "\"><br>\n";
 		echo "</fieldset></td></tr>\n";
 		echo "</table></td>\n<td>";
+		echo "<td><fieldset class=\"".$this->type."edit-dark\"><legend class=\"".$this->type."edit-bright\"><b>";
+			echo $this->module[$this->order[$this->module['main']->current_page]]->alias;
+			echo "</b></legend>\n";
 		// display html-code from mdule
 		$function = '$result = $this->module[$this->order[$this->module[\'main\']->current_page]]->display_html_'.$this->module['main']->subpage.'($post);';
 		eval ($function);
 		// Display rest of html-page
+		echo "</fieldset>\n";
 		echo "</td></tr></table>\n";
 		echo "</form>\n";
 		echo "</body>\n";
@@ -674,7 +682,7 @@ class accountContainer {
 		$entry = ldap_first_entry($_SESSION[$this->ldap]->server(), $result);
 		$this->dn = substr($dn, strpos($dn, ',')+1);
 		$this->dn_orig = $dn;
-		$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
+		$attr = ldap_get_attributes($_SESSION[$this->ldap]->server(), $entry);
 		if (isset($attr['objectClass']['count'])) unset($attr['objectClass']['count']);
 		// load attributes
 		foreach ($attr['objectClass'] as $objectClass) {
@@ -899,6 +907,7 @@ class accountContainer {
 
 	}
 
+/*
 // This class keeps all needed values for any account
 class account {
 	// Type : user | group | host
@@ -947,6 +956,7 @@ class account {
 					* mountpoint, used blocks, soft block limit, hard block limit, grace block period, used inodes,
 					* soft inode limit, hard inode limit, grace inode period
 					*/
+/*
 	// Personal Settings
 	var $personal_title;		// string title of user
 	var $personal_mail;		// string mailaddress of user
@@ -958,6 +968,9 @@ class account {
 	var $personal_postalAddress;	// string postal Address of user
 	var $personal_employeeType;	// string employe type of user
 	}
+*/
+
+
 
 /* Return a list of all shells listed in ../config/shells
 * Normally ../config/shells is a symbolic link to /etc/shells
