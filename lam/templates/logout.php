@@ -59,7 +59,7 @@ echo $_SESSION['header'];
 	</p>
 	<hr>
 	<br>
-	<p align="center"><big><?php echo ("You have been logged off from LDAP Account Manager."); ?></big></p>
+	<p align="center"><big><b><?php echo _("You have been logged off from LDAP Account Manager."); ?></b></big></p>
 	<br><br><br><br><br><a href="../templates/login.php" target="_top"> <?php echo _("Back to Login") ?> </a>
 	</body>
 </html>
