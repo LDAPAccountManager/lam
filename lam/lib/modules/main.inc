@@ -218,9 +218,8 @@ class main {
 					
 		if (count($table)!=0) $return[] = array ( 0 => array ( 'kind' => 'table', 'value' => $table ) );
 		// loop through all suffixes
-		$function = '$suffix = $_SESSION[$_SESSION[$this->base]->config]->get_'.ucfirst($_SESSION[$this->base]->type).'Suffix();';
-		eval($function);
-		foreach ($_SESSION[$_SESSION[$this->base]->ldap]->search_units($suffix) as $suffix) {
+		$rootsuffix = call_user_func(array($_SESSION['config'], 'get_' . ucfirst($_SESSION[$this->base]->type) . 'Suffix'));
+		foreach ($_SESSION[$_SESSION[$this->base]->ldap]->search_units($rootsuffix) as $suffix) {
 			if ($_SESSION[$this->base]->dn) {
 				if ($_SESSION[$this->base]->dn == $suffix) $option_selected = $suffix;
 				else $suffixes[] = $suffix;
@@ -229,7 +228,7 @@ class main {
 			}
 		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Suffix') ),
 			1 => array ( 'kind' => 'select', 'name' => 'suffix', 'options' => $suffixes,
-				'option_selected' => $selected_suffix ),
+				'option_selected' => array($option_selected) ),
 			2 => array ('kind' => 'help', 'value' => 'suffix'));
 
 		if (!$profile) {
@@ -287,7 +286,20 @@ class main {
 		}
 
 	function get_profileOptions() {
-		return array();
+		$return = array();
+		$suffixes = array();
+		// get root suffix
+		$rootsuffix = call_user_func(array($_SESSION['config'], 'get_' . ucfirst($_SESSION[$this->base]->type) . 'Suffix'));
+		// get subsuffixes
+		foreach ($_SESSION['ldap']->search_units($rootsuffix) as $suffix) {
+			$suffixes[] = $suffix;
+		}
+		$return[] = array(
+			0 => array('kind' => 'text', 'text' => _('Suffix') . ': '),
+			1 => array('kind' => 'select', 'name' => 'main_suffix', 'options' => $suffixes, 'option_selected' => array($rootsuffix)),
+			2 => array('kind' => 'help', 'value' => 'TODO')
+			);
+		return $return;
 	}
 
 	}
