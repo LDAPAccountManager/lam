@@ -47,23 +47,15 @@ if ($conf->get_DomainSuffix() && ($conf->get_DomainSuffix() != "")) {
 	if (!$res && !in_array($conf->get_DomainSuffix(), $new_suffs)) $new_suffs[] = $conf->get_DomainSuffix();
 }
 
-if ($_SESSION['config']->is_samba3()) {
-	$doms = $_SESSION['ldap']->search_domains($_SESSION['config']->get_domainSuffix());
-}
-
 echo $_SESSION['header'];
 echo ("<title>LDAP Account Manager</title>\n");
 echo ("<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">");
 echo ("</head>\n");
 echo ("<frameset rows=\"130,*\">\n");
 echo ("<frame src=\"./main_header.php\" name=\"head\" frameborder=\"0\" scrolling=\"no\" noresize>\n");
-// display page to add suffixes or add domain, if needed
+// display page to add suffixes, if needed
 if (sizeof($new_suffs) > 0) echo ("<frame src=\"initsuff.php?suffs='" . implode(";", $new_suffs) .
 	"'\" name=\"mainpart\" frameborder=\"0\" scrolling=\"yes\">\n");
-elseif (($_SESSION['config']->is_samba3()) && (sizeof($doms) < 1)) {
-	$_SESSION['domain_message'] = _("No domains found, please create one.");
-	echo ("<frame src=\"domain.php?action=new\" name=\"mainpart\" frameborder=\"0\" scrolling=\"yes\">\n");
-}
 else echo ("<frame src=\"./lists/listusers.php\" name=\"mainpart\" frameborder=\"0\" scrolling=\"yes\">\n");
 echo ("<noframes>\n");
 echo ("This page requires a browser that can show frames!\n");
