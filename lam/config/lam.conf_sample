@@ -35,12 +35,6 @@ maxGID: 20000
 minMachine: 25000
 maxMachine: 35000
 
-# list of possible shells
-shellList: /bin/bash;/bin/sh;/bin/false
-
-# default shell when creating new user
-defaultShell: /bin/bash
-
 # list of attributes to show in user list
 # entries can either be predefined values (e.g. '#cn' or '#uid')
 # or individual ones (e.g. 'uid:User ID' or 'host:Host Name')
