@@ -336,6 +336,47 @@ class baseModule {
 		return ((isset($this->meta['PDF_entries'])) ? $this->meta['PDF_entries'] : array());
 	}
 
+	/**
+	* Returns an array containing all input columns for the file upload.
+	*
+	* Syntax:
+	* <br> array(
+	* <br>  string: name,  // fixed non-translated name which is used as column name (should be of format: <module name>_<column name>)
+	* <br>  string: descriptive name,  // short descriptive name
+	* <br>  string: help entry,  // help ID
+	* <br>  string: example,  // example value
+	* <br>  boolean: required  // true, if user must set a value for this column
+	* <br> )
+	*
+	* @return array column list
+	*/
+	function get_uploadColumns() {
+		if (isset($this->meta['upload_columns'])) return $this->meta['upload_columns'];
+		else return array();
+	}
+
+	/**
+	* Returns a list of module names which must be processed in building the account befor this module.
+	*
+	* @return array list of module names
+	*/
+	function get_uploadPreDepends() {
+		if (isset($this->meta['upload_preDepends'])) return $this->meta['upload_preDepends'];
+		else return array();
+	}
+
+	/**
+	* In this function the LDAP account is build up.
+	*
+	* @param array $rawAccounts list of hash arrays (name => value) from user input
+	* @param array $partialAccounts list of hash arrays (name => value) which are later added to LDAP
+	* @return array the updated partialAccouts
+	*/
+	function build_uploadAccounts($rawAccounts, $partialAccounts) {
+		// must be implemented in sub modules
+		return $partialAccounts;
+	}
+
 // TODO implement missing interface
 }
 
