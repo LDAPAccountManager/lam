@@ -45,15 +45,6 @@ if (isset($_GET['DN'])) {
 		$_SESSION['account']->general_dn = substr($_SESSION['account']->general_dn, strpos($_SESSION['account']->general_dn, ',')+1);
 		$_SESSION['final_changegids'] = '';
 		}
-	else {
-		$_SESSION['account'] = loadHostProfile('default');
-		$_SESSION['account'] ->type = 'host';
-		$_SESSION['account']->smb_flagsW = 1;
-		$_SESSION['account']->smb_flagsX = 1;
-		$_SESSION['account']->general_homedir = '/dev/null';
-		$_SESSION['account']->general_shell = '/bin/false';
-		if (isset($_SESSION['account_old'])) unset($_SESSION['account_old']);
-		}
 	}
 else if (count($_POST)==0) { // Startcondition. hostedit.php was called from outside
 	$_SESSION['account'] = loadHostProfile('default');
@@ -88,6 +79,7 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 				$_SESSION['account']->general_username = $_SESSION['account']->general_username . '$';
 				$errors[] = array('WARN', _('Host name'), _('Added $ to hostname.'));
 				}
+			$tempname = $_SESSION['account']->general_username;
 			// Check if Hostname contains only valid characters
 			if ( !ereg('^([a-z]|[A-Z]|[0-9]|[.]|[-]|[$])*$', $_SESSION['account']->general_username))
 				$errors[] = array('ERROR', _('Host name'), _('Hostname contains invalid characters. Valid characters are: a-z, 0-9 and .-_ !'));
@@ -121,7 +113,7 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 				 	}
 				$_SESSION['account']->general_username = $_SESSION['account']->general_username . "$";
 				}
-			if ($_SESSION['account']->general_username != $_POST['f_general_username'])
+			if ($_SESSION['account']->general_username != $tempname)
 				$errors[] = array('WARN', _('Host name'), _('Hostname already in use. Selected next free hostname.'));
 
 			// Check if UID is valid. If none value was entered, the next useable value will be inserted

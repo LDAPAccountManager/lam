@@ -66,6 +66,8 @@ if ($select!='pdf') {
 			if ( isset($_SESSION['accounts'])) unset($_SESSION['accounts']);
 			if ( isset($_SESSION['pointer'])) unset($_SESSION['pointer']);
 			if ( isset($_SESSION['errors'])) unset($_SESSION['errors']);
+			if ( isset($_SESSION['group_suffix'])) unset($_SESSION['group_suffix']);
+			if ( isset($_SESSION['group_selectprofile'])) unset($_SESSION['group_selectprofile']);
 			echo '<meta http-equiv="refresh" content="1; URL=lists/listusers.php">'."\n".
 				'</head><body>'."\n".
 				'<form enctype="multipart/form-data" action="masscreate.php" method="post">'."\n".
@@ -106,13 +108,53 @@ if ($select!='pdf') {
 
 
 					if (getgid($_SESSION['accounts'][$_SESSION['pointer']]->general_group)==-1) {
-						$group = new account();
+						$group = LoadGroupProfile($_SESSION['group_selectprofile']);
+
+						$group->type = 'group';
+						// load quotas from profile and check if they are valid
+						$values = getquotas('group');
+						if (isset($group->quota[0])) { // check quotas from profile
+							$i=0;
+							// check quota settings
+							while (isset($group->quota[$i])) {
+								$found = (-1);
+								for ($j=0; $j<count($values->quota); $j++)
+									if ($values->quota[$j][0]==$group->quota[$i][0]) $found = $j;
+								if ($found==-1) unset($group->quota[$i]);
+								else {
+									$group->quota[$i][1] = $values->quota[$found][1];
+									$group->quota[$i][5] = $values->quota[$found][5];
+									$group->quota[$i][4] = $values->quota[$found][4];
+									$group->quota[$i][8] = $values->quota[$found][8];
+									$i++;
+									}
+								}
+							$group->quota = array_values($group->quota);
+							}
+						else { // No quotas saved in profile
+							if (is_object($values)) {
+								while (list($key, $val) = each($values)) // Set only defined values
+								if (isset($val)) $group->$key = $val;
+								}
+							}
+
 						$group->general_username=$_SESSION['accounts'][$_SESSION['pointer']]->general_group;
 						$group->general_uidNumber=checkid($_SESSION['accounts'][$_SESSION['pointer']], 'group');
 						$group->general_gecos=$_SESSION['accounts'][$_SESSION['pointer']]->general_group;
-						$group->general_dn=$_SESSION['config']->get_GroupSuffix();
-						creategroup($group);
+						$group->general_dn=$_SESSION['group_suffix'];
+						$error = creategroup($group);
+						if ($error==1) {
+							$_SESSION['pointer']++;
+							echo '<tr><td>';
+							sprintf (_('Created group %s.'), $_SESSION['accounts'][$_SESSION['pointer']]->general_group);
+							echo '</td></tr>'."\n";
+							}
+						else {
+							$stay = false;
+							StatusMessage('ERROR', _('Could not create group!'), sprintf (_('Was unable to create %s.'), $_SESSION['accounts'][$row]->general_group));
+							}
 						}
+
 					$_SESSION['accounts'][$_SESSION['pointer']]->general_uidNumber = checkid($_SESSION['accounts'][$_SESSION['pointer']], 'user');
 					$iv = base64_decode($_COOKIE["IV"]);
 					$key = base64_decode($_COOKIE["Key"]);
@@ -153,6 +195,8 @@ if ($select!='pdf') {
 				echo '</td></tr></table>'."\n</fieldset>\n";
 				if ( isset($_SESSION['pointer'])) unset($_SESSION['pointer']);
 				if ( isset($_SESSION['errors'])) unset($_SESSION['errors']);
+				if ( isset($_SESSION['group_suffix'])) unset($_SESSION['group_suffix']);
+				if ( isset($_SESSION['group_selectprofile'])) unset($_SESSION['group_selectprofile']);
 				}
 			break;
 		case 'list':
@@ -165,8 +209,8 @@ if ($select!='pdf') {
 					'<a href="masscreate.php?list2">';
 				echo _('Please press here if meta-refresh didn\'t work.');
 				echo "</a>\n";
-			echo '<input name="f_group_suffix" type="hidden" value="'.$_POST['f_group_suffix'].'">';
-			echo '<input name="f_selectgroupprofile" type="hidden" value="'.$_POST['f_selectgroupprofile'].'">';
+			$_SESSION['group_suffix'] = $_POST['f_group_suffix'];
+			$_SESSION['group_selectprofile'] =  $_POST['f_selectgroupprofile'];
 
 				}
 			else {
@@ -193,7 +237,6 @@ if ($select!='pdf') {
 						StatusMessage('INFO', _('Group').' '.
 							$_SESSION['accounts'][$i]->general_group.' '._('not found!'), _('It will be created.'));
 			echo "</table>\n";
-			//print_r($_SESSION['accounts']);
 			echo "<fieldset class=\"useredit-bright\"><legend class=\"useredit-bright\"><b>";
 			echo _('Confirm List');
 			echo "</b></legend>\n<table border=0 width=\"100%\">\n";
@@ -251,6 +294,8 @@ if ($select!='pdf') {
 			if ( isset($_SESSION['accounts'])) unset($_SESSION['accounts']);
 			if ( isset($_SESSION['pointer'])) unset($_SESSION['pointer']);
 			if ( isset($_SESSION['errors'])) unset($_SESSION['errors']);
+			if ( isset($_SESSION['group_suffix'])) unset($_SESSION['group_suffix']);
+			if ( isset($_SESSION['group_selectprofile'])) unset($_SESSION['group_selectprofile']);
 			$_SESSION['pointer']=0;
 			echo	'</head><body>'."\n".
 				'<form enctype="multipart/form-data" action="masscreate.php" method="post">'."\n".
@@ -310,19 +355,19 @@ if ($select!='pdf') {
 				'</td></tr><tr><td>'."\n";
 			echo _("Expand suffix with primary groupname");
 			echo '</td>'."\n".'<td><input name="f_ou_expand" type="checkbox">';
-			echo "</td>\n<td><a href=\"help.php?HelpNumber=XXX\" target=\"lamhelp\">";
-			echo _('Help-XX')."</a></td>\n</tr>\n<tr><td>";
+			echo "</td>\n<td><a href=\"help.php?HelpNumber=422\" target=\"lamhelp\">";
+			echo _('Help')."</a></td>\n</tr>\n<tr><td>";
 			echo _('Group suffix'); echo '</td><td><select name="f_group_suffix">';
 			foreach ($_SESSION['ldap']->search_units($_SESSION['config']->get_GroupSuffix()) as $suffix)
 				echo '<option>' . $suffix. '</option>';
-			echo '</select></td>'."\n".'<td><a href="help.php?HelpNumber=XXX" target="lamhelp">'._('Help-XX').'</a>'.
+			echo '</select></td>'."\n".'<td><a href="help.php?HelpNumber=423" target="lamhelp">'._('Help').'</a>'.
 				'</td></tr><tr><td>'."\n";
 			echo _('Select group profile:');
 			echo '</td><td><select name="f_selectgroupprofile">'."\n";
 			foreach (getGroupProfiles() as $profile) echo '<option>' . $profile;
 			echo '</select>';
-			echo "</td>\n<td><a href=\"help.php?HelpNumber=XXX\" target=\"lamhelp\">";
-			echo _('Help-XX')."</a></td>\n</tr>\n<tr><td>";
+			echo "</td>\n<td><a href=\"help.php?HelpNumber=458\" target=\"lamhelp\">";
+			echo _('Help')."</a></td>\n</tr>\n<tr><td>";
 			echo '<input type="hidden" name="MAX_FILE_SIZE" value="100000">';
 			echo _('Select file:');
 			echo '</td><td><input name="userfile" type="file"></td></tr>'."\n".
@@ -340,6 +385,8 @@ function loadfile() {
 		$OUs = array();
 		$handle = fopen($_FILES['userfile']['tmp_name'], 'r');
 		$profile = loadUserProfile($_POST['f_selectprofile']) ;
+		$profile->type = 'user';
+		$profile->smb_flagsW = 0;
 
 		// load quotas from profile and check if they are valid
 		$values = getquotas('user');
@@ -367,7 +414,6 @@ function loadfile() {
 				if (isset($val)) $profile->$key = $val;
 				}
 			}
-		print_r($profile);
 
 		for ($row=0; $line_array=fgetcsv($handle,2048); $row++) { // loops for every row
 			$iv = base64_decode($_COOKIE["IV"]);
@@ -405,6 +451,20 @@ function loadfile() {
 
 			}
 		}
+
+	// check if account allready exists
+	for ($i=0; $i<sizeof($_SESSION['accounts']); $i++) { // loops for every row
+		while ($temp = ldapexists($_SESSION['accounts'][$i], 'user')) {
+			// Get interger-end of string hello456 -> hello + 456
+			$start = strlen($_SESSION['accounts'][$i]->general_username)-1;
+			while (is_numeric(substr($_SESSION['accounts'][$i]->general_username, $start))) $start--;
+			// Increse rusultung number
+			$first = substr($_SESSION['accounts'][$i]->general_username, 0, $start+1);
+			$second = intval(substr($_SESSION['accounts'][$i]->general_username, $start+1))+1;
+			$_SESSION['accounts'][$i]->general_username = $first . $second;
+			}
+		}
+
 
 	for ($row2=0; $row2<sizeof($_SESSION['accounts']); $row2++) { // loops for every row
 		// Check for double entries in $_SESSION['accounts']
