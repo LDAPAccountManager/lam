@@ -1,4 +1,3 @@
-general_group: admin
 general_homedir: /home/$user
 general_shell: /bin/bash
 unix_password_no: 0
