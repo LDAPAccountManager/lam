@@ -286,8 +286,10 @@ function checkglobal($values, $type, $values_old=false) { // This functions chec
 		}
 	// Check if UID is valid. If none value was entered, the next useable value will be inserted
 	$return->general_uidNumber = checkid($values, $type, $values_old);
-	if (is_string($return->general_uidNumber)) // true if checkid has returned an error
+	if (is_string($return->general_uidNumber)) { // true if checkid has returned an error
 		$errors[] = array('ERROR', _('ID-Number'), $return->general_uidNumber);
+		unset($return->general_uidNumber);
+		}
 	// Check if Name-length is OK. minLength=3, maxLength=20
 	if ( !ereg('.{3,20}', $values->general_username)) $errors[] = array('ERROR', _('Name'), _('Name must content between 3 and 20 characters.'));
 	// Check if Name starts with letter
@@ -580,7 +582,7 @@ function getgid($groupname) { // Will return the the gid to an existing Groupnam
 	$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 	while ($entry) {
 		$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
-		if (($attr['gidNumber'][0]) && ($attr['cn'][0]==$groupname)) return $attr['gidNumber'][0];
+		if ((isset($attr['gidNumber'][0])) && ($attr['cn'][0]==$groupname)) return $attr['gidNumber'][0];
 		$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
 		}
 	return -1;
@@ -672,14 +674,14 @@ function loaduser($dn) { // Will load all needed values from an existing account
 	$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 	$return->general_dn = ldap_get_dn($_SESSION['ldap']->server(), $entry);
 	$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
-	if ($attr['uid'][0]) $return->general_username = $attr['uid'][0];
-	if ($attr['uidNumber'][0]) $return->general_uidNumber = $attr['uidNumber'][0];
-	if ($attr['homeDirectory'][0]) $return->general_homedir = $attr['homeDirectory'][0];
-	if ($attr['shadowLastChange'][0]) $return->unix_shadowLastChange = $attr['shadowLastChange'][0];
-	if ($attr['loginShell'][0]) $return->general_shell = $attr['loginShell'][0];
-	if ($attr['gecos'][0]) $return->general_gecos = $attr['gecos'][0];
-	if ($attr['description'][0]) $return->general_gecos = $attr['description'][0];
-	if ($attr['gidNumber'][0]) {
+	if (isset($attr['uid'][0])) $return->general_username = $attr['uid'][0];
+	if (isset($attr['uidNumber'][0])) $return->general_uidNumber = $attr['uidNumber'][0];
+	if (isset($attr['homeDirectory'][0])) $return->general_homedir = $attr['homeDirectory'][0];
+	if (isset($attr['shadowLastChange'][0])) $return->unix_shadowLastChange = $attr['shadowLastChange'][0];
+	if (isset($attr['loginShell'][0])) $return->general_shell = $attr['loginShell'][0];
+	if (isset($attr['gecos'][0])) $return->general_gecos = $attr['gecos'][0];
+	if (isset($attr['description'][0])) $return->general_gecos = $attr['description'][0];
+	if (isset($attr['gidNumber'][0])) {
 		$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(), "objectclass=PosixGroup", array('gidNumber', 'cn'));
 		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 		while ($entry) {
@@ -696,56 +698,57 @@ function loaduser($dn) { // Will load all needed values from an existing account
 			if (($id==$return->general_username) && ($attr2['cn'][0]!=$return->general_group)) $return->general_groupadd[]=$attr2['cn'][0];
 		$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
 		}
-	if ($attr['shadowMin'][0]) $return->unix_pwdminage = $attr['shadowMin'][0];
-	if ($attr['shadowMax'][0]) $return->unix_pwdmaxage = $attr['shadowMax'][0];
-	if ($attr['shadowWarning'][0]) $return->unix_pwdwarn = $attr['shadowWarning'][0];
-	if ($attr['shadowInactive'][0]) $return->unix_pwdallowlogin = $attr['shadowInactive'][0];
-	if ($attr['shadowExpire'][0]) $return->unix_pwdexpire = $attr['shadowExpire'][0]*86400;
+	if (isset($attr['shadowMin'][0])) $return->unix_pwdminage = $attr['shadowMin'][0];
+	if (isset($attr['shadowMax'][0])) $return->unix_pwdmaxage = $attr['shadowMax'][0];
+	if (isset($attr['shadowWarning'][0])) $return->unix_pwdwarn = $attr['shadowWarning'][0];
+	if (isset($attr['shadowInactive'][0])) $return->unix_pwdallowlogin = $attr['shadowInactive'][0];
+	if (isset($attr['shadowExpire'][0])) $return->unix_pwdexpire = $attr['shadowExpire'][0]*86400;
 	if ($_SESSION['config']->samba3 == 'yes') {
-		if ($attr['sambaAcctFlags'][0]) {
+		if (isset($attr['sambaAcctFlags'][0])) {
 			if (strrpos($attr['sambaAcctFlags'][0], 'W')) $return->smb_flagsW=true;
 			if (strrpos($attr['sambaAcctFlags'][0], 'D')) $return->smb_flagsD=true;
 			if (strrpos($attr['sambaAcctFlags'][0], 'X')) $return->smb_flagsX=true;
 			}
-		if ($attr['sambaPwdCanChange'][0]) $return->smb_pwdcanchange = $attr['sambaPwdCanChange'][0];
-		if ($attr['sambaPwdMustChange'][0]) $return->smb_pwdmustchange = $attr['sambaPwdMustChange'][0];
-		if ($attr['sambaHomePath'][0]) $return->smb_smbhome = $attr['sambaHomePath'][0];
-		if ($attr['sambaHomeDrive'][0]) $return->smb_homedrive = $attr['sambaHomeDrive'][0];
-		if ($attr['sambaLogonScript'][0])  $return->smb_scriptPath = $attr['sambaLogonScript'][0];
-		if ($attr['sambaProfilePath'][0]) $return->smb_profilePath = $attr['sambaProfilePath'][0];
-		if ($attr['sambaUserWorkstations'][0]) $return->smb_smbuserworkstations = $attr['sambaUserWorkstations'][0];
-		if ($attr['sambaDomainName'][0]) $return->smb_domain = $attr['sambaDomainName'][0];
+		if (isset($attr['sambaPwdCanChange'][0])) $return->smb_pwdcanchange = $attr['sambaPwdCanChange'][0];
+		if (isset($attr['sambaPwdMustChange'][0])) $return->smb_pwdmustchange = $attr['sambaPwdMustChange'][0];
+		if (isset($attr['sambaHomePath'][0])) $return->smb_smbhome = $attr['sambaHomePath'][0];
+		if (isset($attr['sambaHomeDrive'][0])) $return->smb_homedrive = $attr['sambaHomeDrive'][0];
+		if (isset($attr['sambaLogonScript'][0]))  $return->smb_scriptPath = $attr['sambaLogonScript'][0];
+		if (isset($attr['sambaProfilePath'][0])) $return->smb_profilePath = $attr['sambaProfilePath'][0];
+		if (isset($attr['sambaUserWorkstations'][0])) $return->smb_smbuserworkstations = $attr['sambaUserWorkstations'][0];
+		if (isset($attr['sambaDomainName'][0])) $return->smb_domain = $attr['sambaDomainName'][0];
+		if (isset($attr['sambaNTPassword'][0]))  $return->smb_password = $attr['sambaNTPassword'][0];
 		}
 		else {
-			if ($attr['acctFlags'][0]) {
+			if (isset($attr['acctFlags'][0])) {
 				if (strrpos($attr['acctFlags'][0], 'W')) $return->smb_flagsW=true;
 				if (strrpos($attr['acctFlags'][0], 'D')) $return->smb_flagsD=true;
 				if (strrpos($attr['acctFlags'][0], 'X')) $return->smb_flagsX=true;
 				}
-			if ($attr['smbHome'][0]) $return->smb_smbhome = $attr['smbHome'][0];
-			if ($attr['pwdCanChange'][0]) $return->smb_pwdcanchange = $attr['pwdCanChange'][0];
-			if ($attr['pwdMustChange'][0]) $return->smb_pwdmustchange = $attr['pwdMustChange'][0];
-			if ($attr['homeDrive'][0]) $return->smb_homedrive = $attr['homeDrive'][0];
-			if ($attr['scriptPath'][0])  $return->smb_scriptPath = $attr['scriptPath'][0];
-			if ($attr['profilePath'][0]) $return->smb_profilePath = $attr['profilePath'][0];
-			if ($attr['userWorkstations'][0]) $return->smb_smbuserworkstations = $attr['userWorkstations'][0];
-			if ($attr['domain'][0]) $return->smb_domain = $attr['domain'][0];
+			if (isset($attr['ntPassword'][0]))  $return->smb_password = $attr['ntPassword'][0];
+			if (isset($attr['smbHome'][0])) $return->smb_smbhome = $attr['smbHome'][0];
+			if (isset($attr['pwdCanChange'][0])) $return->smb_pwdcanchange = $attr['pwdCanChange'][0];
+			if (isset($attr['pwdMustChange'][0])) $return->smb_pwdmustchange = $attr['pwdMustChange'][0];
+			if (isset($attr['homeDrive'][0])) $return->smb_homedrive = $attr['homeDrive'][0];
+			if (isset($attr['scriptPath'][0]))  $return->smb_scriptPath = $attr['scriptPath'][0];
+			if (isset($attr['profilePath'][0])) $return->smb_profilePath = $attr['profilePath'][0];
+			if (isset($attr['userWorkstations'][0])) $return->smb_smbuserworkstations = $attr['userWorkstations'][0];
+			if (isset($attr['domain'][0])) $return->smb_domain = $attr['domain'][0];
 			}
-	if ($attr['givenName'][0]) $return->general_givenname = $attr['givenName'][0];
-	if ($attr['sn'][0]) $return->general_surname = $attr['sn'][0];
-	if ($attr['title'][0]) $return->personal_title = $attr['title'][0];
-	if ($attr['mail'][0]) $return->personal_mail = $attr['mail'][0];
-	if ($attr['telephoneNumber'][0]) $return->personal_telephoneNumber = $attr['telephoneNumber'][0];
-	if ($attr['mobilemobileTelephoneNumber'][0]) $return->personal_mobileTelephoneNumber = $attr['mobilemobileTelephoneNumber'][0];
-		else 	if ($attr['mobile'][0]) $return->personal_mobileTelephoneNumber = $attr['mobile'][0];
-	if ($attr['facsimileTelephoneNumber'][0]) $return->personal_facsimileTelephoneNumber = $attr['facsimileTelephoneNumber'][0];
-	if ($attr['street'][0]) $return->personal_street = $attr['street'][0];
-	if ($attr['postalCode'][0]) $return->personal_postalCode = $attr['postalCode'][0];
-	if ($attr['postalAddress'][0]) $return->personal_postalAddress = $attr['postalAddress'][0];
-	if ($attr['employeeType'][0]) $return->personal_employeeType = $attr['employeeType'][0];
+	if (isset($attr['givenName'][0])) $return->general_givenname = $attr['givenName'][0];
+	if (isset($attr['sn'][0])) $return->general_surname = $attr['sn'][0];
+	if (isset($attr['title'][0])) $return->personal_title = $attr['title'][0];
+	if (isset($attr['mail'][0])) $return->personal_mail = $attr['mail'][0];
+	if (isset($attr['telephoneNumber'][0])) $return->personal_telephoneNumber = $attr['telephoneNumber'][0];
+	if (isset($attr['mobilemobileTelephoneNumber'][0])) $return->personal_mobileTelephoneNumber = $attr['mobilemobileTelephoneNumber'][0];
+		else 	if (isset($attr['mobile'][0])) $return->personal_mobileTelephoneNumber = $attr['mobile'][0];
+	if (isset($attr['facsimileTelephoneNumber'][0])) $return->personal_facsimileTelephoneNumber = $attr['facsimileTelephoneNumber'][0];
+	if (isset($attr['street'][0])) $return->personal_street = $attr['street'][0];
+	if (isset($attr['postalCode'][0])) $return->personal_postalCode = $attr['postalCode'][0];
+	if (isset($attr['postalAddress'][0])) $return->personal_postalAddress = $attr['postalAddress'][0];
+	if (isset($attr['employeeType'][0])) $return->personal_employeeType = $attr['employeeType'][0];
 	if (substr(str_replace('{CRYPT}', '',$attr['userPassword'][0]),0,1) == '!' ) $return->unix_deactivated=true;
-	if ($attr['userPassword'][0]) $return->unix_password = $attr['userPassword'][0];
-	if ($attr['ntPassword'][0])  $return->smb_password = $attr['ntPassword'][0];
+	if (isset($attr['userPassword'][0])) $return->unix_password = $attr['userPassword'][0];
 	if ($_SESSION['config']->scriptServer) {
 		$values = getquotas('user',$return->general_username);
 		if (is_object($values)) {
@@ -762,12 +765,12 @@ function loadhost($dn) { // Will load all needed values from an existing account
 	$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 	$return->general_dn = (ldap_get_dn($_SESSION['ldap']->server(), $entry));
 	$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
-	if ($attr['uid'][0]) $return->general_username = $attr['uid'][0];
-	if ($attr['uidNumber'][0]) $return->general_uidNumber = $attr['uidNumber'][0];
-	if ($attr['shadowLastChange'][0]) $return->unix_shadowLastChange = $attr['shadowLastChange'][0];
-	if ($attr['gecos'][0]) $return->general_gecos = $attr['gecos'][0];
-	if ($attr['description'][0]) $return->general_gecos = $attr['description'][0];
-	if ($attr['gidNumber'][0]) {
+	if (isset($attr['uid'][0])) $return->general_username = $attr['uid'][0];
+	if (isset($attr['uidNumber'][0])) $return->general_uidNumber = $attr['uidNumber'][0];
+	if (isset($attr['shadowLastChange'][0])) $return->unix_shadowLastChange = $attr['shadowLastChange'][0];
+	if (isset($attr['gecos'][0])) $return->general_gecos = $attr['gecos'][0];
+	if (isset($attr['description'][0])) $return->general_gecos = $attr['description'][0];
+	if (isset($attr['gidNumber'][0])) {
 		$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(), "objectclass=PosixGroup", array('gidNumber', 'cn'));
 		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 		while ($entry) {
@@ -784,33 +787,33 @@ function loadhost($dn) { // Will load all needed values from an existing account
 			if (($id==$return->general_username) && ($attr2['cn'][0]!=$return->general_group)) $return->general_groupadd[]=$attr2['cn'][0];
 		$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
 		}
-	if ($attr['shadowMin'][0]) $return->unix_pwdminage = $attr['shadowMin'][0];
-	if ($attr['shadowMax'][0]) $return->unix_pwdmaxage = $attr['shadowMax'][0];
-	if ($attr['shadowWarning'][0]) $return->unix_pwdwarn = $attr['shadowWarning'][0];
-	if ($attr['shadowInactive'][0]) $return->unix_pwdallowlogin = $attr['shadowInactive'][0];
-	if ($attr['shadowExpire'][0]) $return->unix_pwdexpire = $attr['shadowExpire'][0]*86400;
+	if (isset($attr['shadowMin'][0])) $return->unix_pwdminage = $attr['shadowMin'][0];
+	if (isset($attr['shadowMax'][0])) $return->unix_pwdmaxage = $attr['shadowMax'][0];
+	if (isset($attr['shadowWarning'][0])) $return->unix_pwdwarn = $attr['shadowWarning'][0];
+	if (isset($attr['shadowInactive'][0])) $return->unix_pwdallowlogin = $attr['shadowInactive'][0];
+	if (isset($attr['shadowExpire'][0])) $return->unix_pwdexpire = $attr['shadowExpire'][0]*86400;
 	if ($_SESSION['config']->samba3 == 'yes') {
-		if ($attr['sambaAcctFlags'][0]) {
+		if (isset($attr['sambaAcctFlags'][0])) {
 			if (strrpos($attr['sambaAcctFlags'][0], 'W')) $return->smb_flagsW=true;
 			if (strrpos($attr['sambaAcctFlags'][0], 'D')) $return->smb_flagsD=true;
 			if (strrpos($attr['sambaAcctFlags'][0], 'X')) $return->smb_flagsX=true;
 			}
-		if ($attr['sambaPwdCanChange'][0]) $return->smb_pwdcanchange = $attr['sambaPwdCanChange'][0];
-		if ($attr['sambaPwdMustChange'][0]) $return->smb_pwdmustchange = $attr['sambaPwdMustChange'][0];
-		if ($attr['sambaDomainName'][0]) $return->smb_domain = $attr['sambaDomainName'][0];
+		if (isset($attr['sambaPwdCanChange'][0])) $return->smb_pwdcanchange = $attr['sambaPwdCanChange'][0];
+		if (isset($attr['sambaPwdMustChange'][0])) $return->smb_pwdmustchange = $attr['sambaPwdMustChange'][0];
+		if (isset($attr['sambaDomainName'][0])) $return->smb_domain = $attr['sambaDomainName'][0];
 		}
 		else {
-			if ($attr['acctFlags'][0]) {
+			if (isset($attr['acctFlags'][0])) {
 				if (strrpos($attr['acctFlags'][0], 'W')) $return->smb_flagsW=true;
 				if (strrpos($attr['acctFlags'][0], 'D')) $return->smb_flagsD=true;
 				if (strrpos($attr['acctFlags'][0], 'X')) $return->smb_flagsX=true;
 				}
-			if ($attr['domain'][0]) $return->smb_domain = $attr['domain'][0];
-			if ($attr['pwdCanChange'][0]) $return->smb_pwdcanchange = $attr['pwdCanChange'][0];
-			if ($attr['pwdMustChange'][0]) $return->smb_pwdmustchange = $attr['pwdMustChange'][0];
+			if (isset($attr['domain'][0])) $return->smb_domain = $attr['domain'][0];
+			if (isset($attr['pwdCanChange'][0])) $return->smb_pwdcanchange = $attr['pwdCanChange'][0];
+			if (isset($attr['pwdMustChange'][0])) $return->smb_pwdmustchange = $attr['pwdMustChange'][0];
 			}
-	if ($attr['givenName'][0]) $return->general_givenname = $attr['givenName'][0];
-	if ($attr['sn'][0]) $return->general_surname = $attr['sn'][0];
+	if (isset($attr['givenName'][0])) $return->general_givenname = $attr['givenName'][0];
+	if (isset($attr['sn'][0])) $return->general_surname = $attr['sn'][0];
 	if (substr(str_replace('{CRYPT}', '',$attr['userPassword'][0]),0,1) == '!' ) $return->unix_deactivated=true;
 	return $return;
 	}
@@ -822,16 +825,16 @@ function loadgroup($dn) { // Will load all needed values from an existing group
 	$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 	$return->general_dn = (ldap_get_dn($_SESSION['ldap']->server(), $entry));
 	$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
-	if ($attr['gidNumber'][0]) $return->general_uidNumber = $attr['gidNumber'][0];
-	if ($attr['description'][0]) $return->general_gecos = $attr['description'][0];
-	if ($attr['cn'][0]) {
+	if (isset($attr['gidNumber'][0])) $return->general_uidNumber = $attr['gidNumber'][0];
+	if (isset($attr['description'][0])) $return->general_gecos = $attr['description'][0];
+	if (isset($attr['cn'][0])) {
 		$return->general_username = $attr['cn'][0];
 		if ($_SESSION['config']->scriptServer) getquotas('group',$attr['cn'][0]);
 		}
-	if ($attr['memberUid']) $return->general_memberUid = $attr['memberUid'];
+	if (isset($attr['memberUid'])) $return->general_memberUid = $attr['memberUid'];
 	if (is_array($return->general_memberUid)) array_shift($return->general_memberUid);
-	if ($attr['sambaSID']) $return->smb_mapgroup = $attr['sambaSID'];
-	if ($attr['displayName']) $return->smb_displayName = $attr['displayName'];
+	if (isset($attr['sambaSID'])) $return->smb_mapgroup = $attr['sambaSID'];
+	if (isset($attr['displayName'])) $return->smb_displayName = $attr['displayName'];
 	if ($_SESSION['config']->scriptServer) {
 		$values = getquotas('group',$return->general_username);
 		if (is_object($values)) {

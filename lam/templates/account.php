@@ -45,21 +45,21 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 		// Write all general values into $_SESSION['account'] if no profile should be loaded
 		if (!$_POST['load']) {
 			$_SESSION['account']->general_dn = $_POST['f_general_suffix'];
-			if ($_POST['f_general_username']) $_SESSION['account']->general_username = $_POST['f_general_username'];
-				else $_SESSION['account']->general_username = $_POST['f_general_username'];
-			if ($_POST['f_general_surname']) $_SESSION['account']->general_surname = $_POST['f_general_surname'];
+			if (isset($_POST['f_general_username'])) $_SESSION['account']->general_username = $_POST['f_general_username'];
+				else $_SESSION['account']->general_username = '';
+			if (isset($_POST['f_general_surname'])) $_SESSION['account']->general_surname = $_POST['f_general_surname'];
 				else $_SESSION['account']->general_surname = "";
-			if ($_POST['f_general_givenname']) $_SESSION['account']->general_givenname = $_POST['f_general_givenname'];
+			if (isset($_POST['f_general_givenname'])) $_SESSION['account']->general_givenname = $_POST['f_general_givenname'];
 				else $_SESSION['account']->general_givenname = "";
-			if ($_POST['f_general_uidNumber']) $_SESSION['account']->general_uidNumber = $_POST['f_general_uidNumber'];
+			if (isset($_POST['f_general_uidNumber'])) $_SESSION['account']->general_uidNumber = $_POST['f_general_uidNumber'];
 				else $_SESSION['account']->general_uidNumber = "";
-			if ($_POST['f_general_group']) $_SESSION['account']->general_group = $_POST['f_general_group'];
-			if ($_POST['f_general_groupadd']) $_SESSION['account']->general_groupadd = $_POST['f_general_groupadd'];
+			if (isset($_POST['f_general_group'])) $_SESSION['account']->general_group = $_POST['f_general_group'];
+			if (isset($_POST['f_general_groupadd'])) $_SESSION['account']->general_groupadd = $_POST['f_general_groupadd'];
 				else $_SESSION['account']->general_groupadd = array('');
-			if ($_POST['f_general_homedir']) $_SESSION['account']->general_homedir = $_POST['f_general_homedir'];
+			if (isset($_POST['f_general_homedir'])) $_SESSION['account']->general_homedir = $_POST['f_general_homedir'];
 				else $_SESSION['account']->general_homedir = "";
-			if ($_POST['f_general_shell']) $_SESSION['account']->general_shell = $_POST['f_general_shell'];
-			if ($_POST['f_general_gecos']) $_SESSION['account']->general_gecos = $_POST['f_general_gecos'];
+			if (isset($_POST['f_general_shell'])) $_SESSION['account']->general_shell = $_POST['f_general_shell'];
+			if (isset($_POST['f_general_gecos'])) $_SESSION['account']->general_gecos = $_POST['f_general_gecos'];
 				else $_SESSION['account']->general_gecos = "";
 			// Check if values are OK and set automatic values.  if not error-variable will be set
 			if ($_SESSION['account_old']) list($values, $errors) = checkglobal($_SESSION['account'], $_SESSION['type2'], $_SESSION['account_old']); // account.inc
@@ -80,7 +80,7 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 		break;
 	case 'unix':
 		// Write all general values into $_SESSION['account']
-		if ($_POST['f_unix_password']) {
+		if (isset($_POST['f_unix_password'])) {
 			// Encraypt password
 			$iv = base64_decode($_COOKIE["IV"]);
 			$key = base64_decode($_COOKIE["Key"]);
@@ -89,18 +89,15 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 		 else $_SESSION['account']->unix_password = '';
 		if ($_POST['f_unix_password_no']) $_SESSION['account']->unix_password_no = true;
 			else $_SESSION['account']->unix_password_no = false;
-		if ($_POST['f_unix_pwdwarn']) $_SESSION['account']->unix_pwdwarn = $_POST['f_unix_pwdwarn'];
+		if (isset($_POST['f_unix_pwdwarn'])) $_SESSION['account']->unix_pwdwarn = $_POST['f_unix_pwdwarn'];
 			else $_SESSION['account']->unix_pwdwarn = '';
-		if ($_POST['f_unix_pwdallowlogin']) $_SESSION['account']->unix_pwdallowlogin = $_POST['f_unix_pwdallowlogin'];
+		if (isset($_POST['f_unix_pwdallowlogin'])) $_SESSION['account']->unix_pwdallowlogin = $_POST['f_unix_pwdallowlogin'];
 			else $_SESSION['account']->unix_pwdallowlogin = '';
-		if ($_POST['f_unix_pwdmaxage']) $_SESSION['account']->unix_pwdmaxage = $_POST['f_unix_pwdmaxage'];
+		if (isset($_POST['f_unix_pwdmaxage'])) $_SESSION['account']->unix_pwdmaxage = $_POST['f_unix_pwdmaxage'];
 			else $_SESSION['account']->unix_pwdmaxage = '';
-		if ($_POST['f_unix_pwdminage']) $_SESSION['account']->unix_pwdminage = $_POST['f_unix_pwdminage'];
+		if (isset($_POST['f_unix_pwdminage'])) $_SESSION['account']->unix_pwdminage = $_POST['f_unix_pwdminage'];
 			else $_SESSION['account']->unix_pwdminage = '';
-		//if ($_POST['f_unix_pwdexpire_day']) $_SESSION['account']->unix_pwdexpire_day = $_POST['f_unix_pwdexpire_day'];
-		//if ($_POST['f_unix_pwdexpire_mon']) $_SESSION['account']->unix_pwdexpire_mon = $_POST['f_unix_pwdexpire_mon'];
-		//if ($_POST['f_unix_pwdexpire_yea']) $_SESSION['account']->unix_pwdexpire_yea = $_POST['f_unix_pwdexpire_yea'];
-		if ($_POST['f_unix_pwdexpire_mon']) $_SESSION['account']->unix_pwdexpire = mktime(10, 0, 0, $_POST['f_unix_pwdexpire_mon'],
+		if (isset($_POST['f_unix_pwdexpire_mon'])) $_SESSION['account']->unix_pwdexpire = mktime(10, 0, 0, $_POST['f_unix_pwdexpire_mon'],
 			$_POST['f_unix_pwdexpire_day'], $_POST['f_unix_pwdexpire_yea']);
 		if ($_POST['f_unix_deactivated']) $_SESSION['account']->unix_deactivated = $_POST['f_unix_deactivated'];
 			else $_SESSION['account']->unix_deactivated = false;
@@ -143,16 +140,16 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 			else $_SESSION['account']->smb_password_no = false;
 		if ($_POST['f_smb_useunixpwd']) $_SESSION['account']->smb_useunixpwd = $_POST['f_smb_useunixpwd'];
 			else $_SESSION['account']->smb_useunixpwd = false;
-		if ($_POST['f_smb_homedrive']) $_SESSION['account']->smb_homedrive = $_POST['f_smb_homedrive'];
-		if ($_POST['f_smb_scriptpath']) $_SESSION['account']->smb_scriptPath = $_POST['f_smb_scriptpath'];
+		if (isset($_POST['f_smb_homedrive'])) $_SESSION['account']->smb_homedrive = $_POST['f_smb_homedrive'];
+		if (isset($_POST['f_smb_scriptpath'])) $_SESSION['account']->smb_scriptPath = $_POST['f_smb_scriptpath'];
 			else $_SESSION['account']->smb_scriptPath = '';
-		if ($_POST['f_smb_smbuserworkstations']) $_SESSION['account']->smb_smbuserworkstations = $_POST['f_smb_smbuserworkstations'];
+		if (isset($_POST['f_smb_smbuserworkstations'])) $_SESSION['account']->smb_smbuserworkstations = $_POST['f_smb_smbuserworkstations'];
 			else $_SESSION['account']->smb_smbuserworkstations = "";
-		if ($_POST['f_smb_smbhome']) $_SESSION['account']->smb_smbhome = stripslashes($_POST['f_smb_smbhome']);
+		if (isset($_POST['f_smb_smbhome'])) $_SESSION['account']->smb_smbhome = stripslashes($_POST['f_smb_smbhome']);
 			else $_SESSION['account']->smb_smbhome = "";
-		if ($_POST['f_smb_profilePath']) $_SESSION['account']->smb_profilePath = stripslashes($_POST['f_smb_profilePath']);
+		if (isset($_POST['f_smb_profilePath'])) $_SESSION['account']->smb_profilePath = stripslashes($_POST['f_smb_profilePath']);
 			else $_SESSION['account']->smb_profilePath = "";
-		if ($_POST['f_smb_domain']) $_SESSION['account']->smb_domain = $_POST['f_smb_domain'];
+		if (isset($_POST['f_smb_domain'])) $_SESSION['account']->smb_domain = $_POST['f_smb_domain'];
 			else $_SESSION['account']->smb_domain = false;
 		if ($_POST['f_smb_flagsW']) $_SESSION['account']->smb_flagsW = $_POST['f_smb_flagsW'];
 			else $_SESSION['account']->smb_flagsW = false;
@@ -163,7 +160,7 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 		if ($_POST['f_smb_mapgroup'] == _('Domain Guests')) $_SESSION['account']->smb_mapgroup = $_SESSION[config]->get_domainSID() . "-" . '514';
 		if ($_POST['f_smb_mapgroup'] == _('Domain Users')) $_SESSION['account']->smb_mapgroup = $_SESSION[config]->get_domainSID() . "-" . '513';
 		if ($_POST['f_smb_mapgroup'] == _('Domain Admins')) $_SESSION['account']->smb_mapgroup = $_SESSION[config]->get_domainSID() . "-" . '512';
-		if ($_POST['f_smb_domain']) $_SESSION['account']->smb_displayName = $_POST['f_smb_domain'];
+		if (isset($_POST['f_smb_domain'])) $_SESSION['account']->smb_displayName = $_POST['f_smb_domain'];
 			else $_SESSION['account']->smb_displayName = '';
 		// Check if values are OK and set automatic values. if not error-variable will be set
 		list($values, $errors) = checksamba($_SESSION['account'], $_SESSION['type2']); // account.inc
@@ -219,23 +216,23 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 		break;
 	case 'personal':
 		// Write all general values into $_SESSION['account']
-		if ($_POST['f_personal_title']) $_SESSION['account']->personal_title = $_POST['f_personal_title'];
+		if (isset($_POST['f_personal_title'])) $_SESSION['account']->personal_title = $_POST['f_personal_title'];
 			else $_SESSION['account']->personal_title = "";
-		if ($_POST['f_personal_mail']) $_SESSION['account']->personal_mail = $_POST['f_personal_mail'];
+		if (isset($_POST['f_personal_mail'])) $_SESSION['account']->personal_mail = $_POST['f_personal_mail'];
 			else $_SESSION['account']->personal_mail = "";
-		if ($_POST['f_personal_telephoneNumber']) $_SESSION['account']->personal_telephoneNumber = $_POST['f_personal_telephoneNumber'];
+		if (isset($_POST['f_personal_telephoneNumber'])) $_SESSION['account']->personal_telephoneNumber = $_POST['f_personal_telephoneNumber'];
 			else $_SESSION['account']->personal_telephoneNumber = "";
-		if ($_POST['f_personal_mobileTelephoneNumber']) $_SESSION['account']->personal_mobileTelephoneNumber = $_POST['f_personal_mobileTelephoneNumber'];
+		if (isset($_POST['f_personal_mobileTelephoneNumber'])) $_SESSION['account']->personal_mobileTelephoneNumber = $_POST['f_personal_mobileTelephoneNumber'];
 			else $_SESSION['account']->personal_mobileTelephoneNumber = "";
-		if ($_POST['f_personal_facsimileTelephoneNumber']) $_SESSION['account']->personal_facsimileTelephoneNumber = $_POST['f_personal_facsimileTelephoneNumber'];
+		if (isset($_POST['f_personal_facsimileTelephoneNumber'])) $_SESSION['account']->personal_facsimileTelephoneNumber = $_POST['f_personal_facsimileTelephoneNumber'];
 			else $_SESSION['account']->personal_facsimileTelephoneNumber = "";
-		if ($_POST['f_personal_street']) $_SESSION['account']->personal_street = $_POST['f_personal_street'];
+		if (isset($_POST['f_personal_street'])) $_SESSION['account']->personal_street = $_POST['f_personal_street'];
 			else $_SESSION['account']->personal_street = "";
-		if ($_POST['f_personal_postalCode']) $_SESSION['account']->personal_postalCode = $_POST['f_personal_postalCode'];
+		if (isset($_POST['f_personal_postalCode'])) $_SESSION['account']->personal_postalCode = $_POST['f_personal_postalCode'];
 			else $_SESSION['account']->personal_postalCode = "";
-		if ($_POST['f_personal_postalAddress']) $_SESSION['account']->personal_postalAddress = $_POST['f_personal_postalAddress'];
+		if (isset($_POST['f_personal_postalAddress'])) $_SESSION['account']->personal_postalAddress = $_POST['f_personal_postalAddress'];
 			else $_SESSION['account']->personal_postalAddress = "";
-		if ($_POST['f_personal_employeeType']) $_SESSION['account']->personal_employeeType = $_POST['f_personal_employeeType'];
+		if (isset($_POST['f_personal_employeeType'])) $_SESSION['account']->personal_employeeType = $_POST['f_personal_employeeType'];
 			else $_SESSION['account']->personal_employeeType = "";
 		// Check if values are OK and set automatic values. if not error-variable will be set
 		list($values, $errors) = checkpersonal($_SESSION['account'], $_SESSION['type2']); // account.inc
