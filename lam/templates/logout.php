@@ -23,12 +23,22 @@ $Id$
   
 */
 
+include_once("../lib/ldap.php");
+
 @session_start();
+
+// close LDAP connection
+$_SESSION["ldap"]->destroy();
 
 // destroy session
 session_destroy();
 
 // print logout message
-
 ?>
 
+<html>
+	<body>
+	<p align="center"><a href="http://lam.sf.net" target="new_window"><img src="../graphics/banner.jpg" border=1></a></p><hr><br>
+	<p align="center"><big><? echo ("You have been logged off from LDAP Account Manager."); ?></big></p>
+	</body>
+</html>

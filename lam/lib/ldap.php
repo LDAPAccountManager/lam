@@ -35,6 +35,10 @@ class Ldap{
   // server handle
   var $server;
 
+  // LDAP username and password used for bind
+  var $username;
+  var $password;
+  
   // constructor
   // $config has to be an object of Config (../config/config.php)
   function Ldap($config) {
@@ -98,6 +102,8 @@ class Ldap{
       echo _("No username was specified!");
       exit;
     }
+	// save password und username encrypted
+	$this->encrypt($user, $passwd);
     if ($this->conf->get_SSL() == "True") $this->server = @ldap_connect("ldaps://" . $this->conf->get_Host(), $this->conf->get_Port());
     else $this->server = @ldap_connect("ldap://" . $this->conf->get_Host(), $this->conf->get_Port());
     if ($this->server) {
@@ -143,7 +149,41 @@ class Ldap{
   function server() {
     return $this->server;
   }
-	
+  
+  // closes connection to LDAP server before serialization
+  function __sleep() {
+  	$this->close();
+	return array("conf", "server", "username", "password");
+  }
+  
+  // reconnects to LDAP server when deserialized
+  function __wakeup() {
+  	$data = $this->decrypt();
+  	$this->connect($data[0], $data[1]);
+  }
+  
+  // encrypts username and password
+  // TODO: implement encryption algorithm
+  function encrypt($username, $password) {
+	$this->username = $username;
+	$this->password = $password;
+  }
+
+  // decrypts username and password
+  // TODO: implement encryption algorithm
+  function decrypt() {
+  	$ret = array($this->username, $this->password);
+	return $ret;
+  }
+  
+  // closes connection to LDAP server and deletes encrypted username/password
+  function destroy() {
+  	$this->close();
+	$this->username="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
+	$this->password="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
+	// TODO: delete encryption key
+  }
+
 }
 
 
