@@ -59,7 +59,7 @@ if ($_GET['type'] == "user") {
 		}
 	else {
 		StatusMessage("ERROR", "", _("Primary group name is invalid!") . " " . $_POST['general_group']);
-		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to profile editor...") . "</a>");
+		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
 	if ($_POST['general_groupadd']) {
@@ -70,7 +70,7 @@ if ($_GET['type'] == "user") {
 	}
 	elseif ($_POST['general_homedir']) {
 		StatusMessage("ERROR", "", _("Homedir is invalid!") . " " . $_POST['general_homedir']);
-		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to profile editor...") . "</a>");
+		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
 	if ($_POST['general_shell'] && eregi("^[/]([a-z])+([/][a-z]+)*$", $_POST['general_shell'])) {
@@ -78,7 +78,7 @@ if ($_GET['type'] == "user") {
 	}
 	else {
 		StatusMessage("ERROR", "", _("Shell is invalid!") . " " . $_POST['general_shell']);
-		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to profile editor...") . "</a>");
+		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
 	if (($_POST['unix_password_no'] == "1") || ($_POST['unix_password_no'] == "0")) {
@@ -86,7 +86,7 @@ if ($_GET['type'] == "user") {
 	}
 	else {
 		StatusMessage("ERROR", "", _("Wrong parameter for login disable!") . " " . $_POST['unix_password_no']);
-		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to profile editor...") . "</a>");
+		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
 	if ($_POST['unix_pwdwarn'] && is_numeric($_POST['unix_pwdwarn'])) {
@@ -94,7 +94,7 @@ if ($_GET['type'] == "user") {
 	}
 	elseif ($_POST['unix_pwdwarn']) {
 		StatusMessage("ERROR", "", _("Wrong parameter for Unix password warning!") . " " . $_POST['unix_pwdwarn']);
-		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to profile editor...") . "</a>");
+		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
 	if ($_POST['unix_pwdminage'] && is_numeric($_POST['unix_pwdminage'])) {
@@ -102,7 +102,7 @@ if ($_GET['type'] == "user") {
 	}
 	elseif ($_POST['unix_pwdminage']) {
 		StatusMessage("ERROR", "", _("Password minimum age is not numeric!") . " " . $_POST['unix_pwdminage']);
-		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to profile editor...") . "</a>");
+		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
 	if ($_POST['unix_pwdmaxage'] && is_numeric($_POST['unix_pwdmaxage'])) {
@@ -110,7 +110,7 @@ if ($_GET['type'] == "user") {
 	}
 	elseif ($_POST['unix_pwdmaxage']) {
 		StatusMessage("ERROR", "", _("Password maximum age is not numeric!") . " " . $_POST['unix_pwdmaxage']);
-		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to profile editor...") . "</a>");
+		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
 	if ($_POST['unix_pwdexpire_day'] && is_numeric($_POST['unix_pwdexpire_day'])) {
@@ -118,7 +118,7 @@ if ($_GET['type'] == "user") {
 	}
 	else {
 		StatusMessage("ERROR", "", _("Wrong parameter for password expiry day!") . " " . $_POST['unix_pwdexpire_day']);
-		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to profile editor...") . "</a>");
+		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
 	if ($_POST['unix_pwdexpire_mon'] && is_numeric($_POST['unix_pwdexpire_mon'])) {
@@ -126,7 +126,7 @@ if ($_GET['type'] == "user") {
 	}
 	else {
 		StatusMessage("ERROR", "", _("Wrong parameter for password expiry month!") . " " . $_POST['unix_pwdexpire_mon']);
-		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to profile editor...") . "</a>");
+		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
 	if ($_POST['unix_pwdexpire_yea'] && is_numeric($_POST['unix_pwdexpire_yea'])) {
@@ -134,7 +134,7 @@ if ($_GET['type'] == "user") {
 	}
 	else {
 		StatusMessage("ERROR", "", _("Wrong parameter for password expiry year!") . " " . $_POST['unix_pwdexpire_yea']);
-		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to profile editor...") . "</a>");
+		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
 	if (($_POST['unix_deactivated'] == "1") || ($_POST['unix_deactivated'] == "0")) {
@@ -142,7 +142,7 @@ if ($_GET['type'] == "user") {
 	}
 	else {
 		StatusMessage("ERROR", "", _("Wrong parameter for Unix account activation!") . " " . $_POST['unix_deactivated']);
-		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to profile editor...") . "</a>");
+		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
 	if ($_POST['unix_pwdallowlogin'] && is_numeric($_POST['unix_pwdallowlogin'])) {
@@ -150,7 +150,7 @@ if ($_GET['type'] == "user") {
 	}
 	elseif ($_POST['unix_pwdallowlogin']) {
 		StatusMessage("ERROR", "", _("Password expiry is not numeric!") . " " . $_POST['unix_pwdallowlogin']);
-		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to profile editor...") . "</a>");
+		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
 	if (($_POST['smb_password_no'] == "1") || ($_POST['smb_password_no'] == "0")) {
@@ -158,7 +158,7 @@ if ($_GET['type'] == "user") {
 	}
 	else {
 		StatusMessage("ERROR", "", _("Wrong parameter for Samba option: no password!") . " " . $_POST['smb_password_no']);
-		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to profile editor...") . "</a>");
+		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
 	if (($_POST['smb_useunixpwd'] == "1") || ($_POST['smb_useunixpwd'] == "0")) {
@@ -166,7 +166,7 @@ if ($_GET['type'] == "user") {
 	}
 	else {
 		StatusMessage("ERROR", "", _("Wrong parameter for Samba option: use Unix password!") . " " . $_POST['smb_useunixpwd']);
-		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to profile editor...") . "</a>");
+		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
 	if (($_POST['smb_pwdcanchange'] == "1") || ($_POST['smb_pwdcanchange'] == "0")) {
@@ -174,7 +174,7 @@ if ($_GET['type'] == "user") {
 	}
 	else {
 		StatusMessage("ERROR", "", _("Wrong parameter for Samba option: user can change password!") . " " . $_POST['smb_pwdcanchange']);
-		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to profile editor...") . "</a>");
+		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
 	if (($_POST['smb_pwdmustchange'] == "1") || ($_POST['smb_pwdmustchange'] == "0")) {
@@ -182,7 +182,7 @@ if ($_GET['type'] == "user") {
 	}
 	else {
 		StatusMessage("ERROR", "", _("Wrong parameter for Samba option: user must change password!") . " " . $_POST['smb_pwdmustchange']);
-		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to profile editor...") . "</a>");
+		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
 	if ($_POST['smb_homedrive'] && ereg("^[D-Z]:$", $_POST['smb_homedrive'])) {
@@ -190,7 +190,7 @@ if ($_GET['type'] == "user") {
 	}
 	else {
 		StatusMessage("ERROR", "", _("Wrong parameter for Samba option: home drive!") . " " . $_POST['smb_homedrive']);
-		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to profile editor...") . "</a>");
+		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
 	if ($_POST['smb_smbhome'] && eregi("^[/]([a-z0-9])+([/][a-z0-9_\\-\\$]+)*$", $_POST['smb_smbhome'])) {
@@ -198,7 +198,7 @@ if ($_GET['type'] == "user") {
 	}
 	elseif ($_POST['smb_smbhome']) {
 		StatusMessage("ERROR", "", _("Samba home directory is invalid!") . " " . $_POST['smb_smbhome']);
-		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to profile editor...") . "</a>");
+		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
 	if ($_POST['smb_profilepath'] && eregi("^[/]([a-z0-9])+([/][a-z0-9_\\-\\$]+)*$", $_POST['smb_profilepath'])) {
@@ -206,7 +206,7 @@ if ($_GET['type'] == "user") {
 	}
 	elseif ($_POST['smb_profilepath']) {
 		StatusMessage("ERROR", "", _("Profile path is invalid!") . " " . $_POST['smb_profilepath']);
-		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to profile editor...") . "</a>");
+		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
 	if ($_POST['smb_scriptPath'] && eregi("^[/]([a-z0-9])+([/][a-z0-9_\\-\\$]+)*$", $_POST['smb_scriptPath'])) {
@@ -214,7 +214,7 @@ if ($_GET['type'] == "user") {
 	}
 	elseif ($_POST['smb_scriptPath']) {
 		StatusMessage("ERROR", "", _("Script path is invalid!") . " " . $_POST['smb_scriptPath']);
-		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to profile editor...") . "</a>");
+		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
 	if ($_POST['smb_smbuserworkstations'] && eregi("^[a-z0-9\\.\\-_]+( [a-z0-9\\.\\-_]+)*$", $_POST['smb_smbuserworkstations'])) {
@@ -222,7 +222,7 @@ if ($_GET['type'] == "user") {
 	}
 	elseif ($_POST['smb_smbuserworkstations']) {
 		StatusMessage("ERROR", "", _("Samba workstations are invalid!") . " " . $_POST['smb_smbuserworkstations']);
-		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to profile editor...") . "</a>");
+		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
 	if ($_POST['smb_domain'] && eregi("^[a-z0-9_\\-]+$", $_POST['smb_domain'])) {
@@ -230,7 +230,7 @@ if ($_GET['type'] == "user") {
 	}
 	elseif ($_POST['smb_domain']) {
 		StatusMessage("ERROR", "", _("Domain name is invalid!") . " " . $_POST['smb_domain']);
-		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to profile editor...") . "</a>");
+		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
 	if ($_POST['profname'] && eregi("^[0-9a-z\\-_]+$", $_POST['profname'])) {
@@ -238,13 +238,13 @@ if ($_GET['type'] == "user") {
 	}
 	else {
 		StatusMessage("ERROR", "", _("Invalid profile name!"));
-		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to profile editor...") . "</a>");
+		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
 	// save profile
 	saveUserProfile($acct, $profname);
 	echo ("<br><br><p align=\"center\"><big><b>" . _("Profile $profname was saved.") . "</b></big></p>");
-	echo ("<br><p><a href=\"profilemain.php\">" . _("Back to profile editor") . "</a></p>");
+	echo ("<br><p><a href=\"profilemain.php\">" . _("Back to Profile Editor") . "</a></p>");
 }
 
 // save host profile
@@ -256,7 +256,7 @@ elseif ($_GET['type'] == "host") {
 		}
 	else {
 		StatusMessage("ERROR", "", _("Primary group name is invalid!") . " " . $_POST['general_group']);
-		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to profile editor...") . "</a>");
+		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
 	if ($_POST['smb_domain'] && eregi("^[a-z0-9_\\-]+$", $_POST['smb_domain'])) {
@@ -264,13 +264,13 @@ elseif ($_GET['type'] == "host") {
 	}
 	elseif ($_POST['smb_domain']) {
 		StatusMessage("ERROR", "", _("Domain name is invalid!") . " " . $_POST['smb_domain']);
-		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to profile editor...") . "</a>");
+		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
 	// save profile
 	saveHostProfile($acct, $profname);
 	echo ("<br><br><p align=\"center\"><big><b>" . _("Profile $profname was saved.") . "</b></big></p>");
-	echo ("<br><p><a href=\"profilemain.php\">" . _("Back to profile editor") . "</a></p>");
+	echo ("<br><p><a href=\"profilemain.php\">" . _("Back to Profile Editor") . "</a></p>");
 }
 
 // error: no or wrong type

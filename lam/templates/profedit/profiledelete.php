@@ -64,7 +64,7 @@ if ($_POST['submit']) {
 	else {
 		StatusMessage("ERROR", "", _("Wrong or missing type! ") . $_POST['type']);
 	}
-	echo ("<br><a href=\"profilemain.php\">" . _("Back to Profile Editor...") . "</a>");
+	echo ("<br><a href=\"profilemain.php\">" . _("Back to Profile Editor") . "</a>");
 	echo ("</body></html>\n");
 	exit;
 }
@@ -72,7 +72,7 @@ if ($_POST['submit']) {
 // check if admin has aborted delete operation
 if ($_POST['abort']) {
 	StatusMessage("INFO", "", _("Delete operation canceled."));
-	echo ("<br><a href=\"profilemain.php\">" . _("Back to Profile Editor...") . "</a>");
+	echo ("<br><a href=\"profilemain.php\">" . _("Back to Profile Editor") . "</a>");
 	echo ("</body></html>\n");
 	exit;
 }
@@ -82,7 +82,7 @@ $type = $_GET['type'];
 if (($type == "user") || ($type == "host")) {
 	// user profile
 	if ($type == "user") {
-		echo ("<p align=\"center\"><big>" . _("Do you really want to delete this profile? ") . "<b>");
+		echo ("<p align=\"center\"><big>" . _("Do you really want to delete this profile?") . " <b>");
 			echo ($_GET['del'] . "</b></big><br></p>\n");
 		echo ("<form action=\"profiledelete.php\" method=\"post\">\n");
 		echo ("<p align=\"center\">\n");
@@ -94,7 +94,7 @@ if (($type == "user") || ($type == "host")) {
 	}
 	// host profile
 	elseif ($type == "host") {
-		echo ("<p align=\"center\"><big>" . _("Do you really want to delete this profile? ") . "<b>");
+		echo ("<p align=\"center\"><big>" . _("Do you really want to delete this profile?") . " <b>");
 			echo ($_GET['del'] . "</b></big><br></p>\n");
 		echo ("<form action=\"profiledelete.php\" method=\"post\">\n");
 		echo ("<p align=\"center\">\n");
@@ -108,5 +108,5 @@ if (($type == "user") || ($type == "host")) {
 else{
 	// no valid profile type
 	StatusMessage("ERROR", "", _("Wrong or missing type! ") . $type);
-	echo ("<a href=\"profilemain.php\">" . _("Back to Profile Editor...") . "</a>");
+	echo ("<a href=\"profilemain.php\">" . _("Back to Profile Editor") . "</a>");
 }
