@@ -12,13 +12,12 @@ class Config {
 	var $Admins;
 	// string: password to edit preferences
 	var $Passwd;
-	// string: language identifier
-//	var $Language 
 
-
-	// loads preferences from ../lam.conf
+	
+	// constructor, loads preferences from ../lam.conf
 	function Config() {
 		$this->reload();
+		$this->save();
 	}
 	
 	// reloads preferences from ../lam.conf
@@ -27,30 +26,31 @@ class Config {
 		if (is_file($conffile) == True) {
 			$file = fopen($conffile, "r");
 			while (!feof($file)) {
-			$line = fgets($file, 1024);
-			if (($line == "\n")||($line[0] == "#")) continue;
-			if (substr($line, 0, 5) == "ssl: ") {
-				$this->SSL = substr($line, 5, strlen($line)-5);
-				continue;
+				$line = fgets($file, 1024);
+				if (($line == "\n")||($line[0] == "#")) continue;
+				if (substr($line, 0, 5) == "ssl: ") {
+					$this->SSL = substr($line, 5, strlen($line)-5);
+					continue;
 				}
-			if (substr($line, 0, 6) == "host: ") {
-				$this->Host = substr($line, 6, strlen($line)-6);
-				continue;
+				if (substr($line, 0, 6) == "host: ") {
+					$this->Host = substr($line, 6, strlen($line)-6);
+					continue;
 				}
-			if (substr($line, 0, 6) == "port: ") {
-				$this->Port = substr($line, 6, strlen($line)-6);
-				continue;
+				if (substr($line, 0, 6) == "port: ") {
+					$this->Port = substr($line, 6, strlen($line)-6);
+					continue;
 				}
-			if (substr($line, 0, 8) == "passwd: ") {
-				$this->Passwd = substr($line, 8, strlen($line)-8);
-				continue;
+				if (substr($line, 0, 8) == "passwd: ") {
+					$this->Passwd = substr($line, 8, strlen($line)-8);
+					continue;
 				}
-			if (substr($line, 0, 8) == "admins: ") {
-				$adminstr = substr($line, 8, strlen($line)-8);
-				$this->Admins = explode(";", $adminstr);
-				continue;
+				if (substr($line, 0, 8) == "admins: ") {
+					$adminstr = substr($line, 8, strlen($line)-8);
+					$this->Admins = explode(";", $adminstr);
+					continue;
 				}
 			}
+			fclose($file);
 		}
 		else {
 			echo _("Unable to load lam.conf!"); echo "</br>";
@@ -59,7 +59,55 @@ class Config {
 	
 	// saves preferences to ../lam.conf
 	function save() {
-	// save configs...
+		$conffile = "../lam.conf";
+		if (is_file($conffile) == True) {
+			$save_ssl = $save_host = $save_port = $save_passwd = $save_admins = False;
+			$file = fopen($conffile, "r");
+			$file_array = array();
+			while (!feof($file)) {
+				array_push($file_array, fgets($file, 1024));
+			}
+			fclose($file);
+			for ($i = 0; $i < sizeof($file_array); $i++) {
+				if (($file_array[$i] == "\n")||($file_array[$i][0] == "#")) continue;
+				if (substr($file_array[$i], 0, 5) == "ssl: ") {
+					$file_array[$i] = "ssl: " . $this->SSL;
+					$save_ssl = True;
+					continue;
+				}
+				if (substr($file_array[$i], 0, 6) == "host: ") {
+					$file_array[$i] = "host: " . $this->Host;
+					$save_host = True;
+					continue;
+				}
+				if (substr($file_array[$i], 0, 6) == "port: ") {
+					$file_array[$i] = "port: " . $this->Port;
+					$save_port = True;
+					continue;
+				}
+				if (substr($file_array[$i], 0, 8) == "passwd: ") {
+					$file_array[$i] = "passwd: " . $this->Passwd;
+					$save_passwd = True;
+					continue;
+				}
+				if (substr($file_array[$i], 0, 8) == "admins: ") {
+					$file_array[$i] = "admins: " . implode(";", $this->Admins);
+					$save_admins = True;
+					continue;
+				}
+			}
+			// check if we have to add new entries
+			if (!$save_ssl == True) array_push($file_array, "# use SSL to connect, can be True or False\n" . "ssl: " . $this->SSL);
+			if (!$save_host == True) array_push($file_array, "# hostname of LDAP server (e.g localhost)\n" . "ssl: " . $this->Host);
+			if (!$save_port == True) array_push($file_array, "# portnumber of LDAP server (default 389)\n" . "ssl: " . $this->Port);
+			if (!$save_passwd == True) array_push($file_array, "# password to change these preferences via webfrontend\n" . "ssl: " . $this->Passwd);
+			if (!$save_admins == True) array_push($file_array, "# list of users who are allowed to use LDAP Account Manager\n
+				# names have to be seperated by semicolons\n
+				# e.g. admins: cn=admin,dc=yourdomain,dc=org;cn=root,dc=yourdomain,dc=org\n" . "ssl: " . $this->Admins);
+			$file = fopen($conffile, "w");
+			for ($i = 0; $i < sizeof($file_array); $i++) fputs($file, $file_array[$i]);
+			fclose($file);
+		}
 	}
 	
 	// used by configuration wizard to save new preferences
@@ -77,11 +125,11 @@ class Config {
 	
 	// prints current preferences
 	function printconf() {
-		echo _("SSL: " ); echo $this->SSL; echo "</br>";
-		echo _("Host: "); echo $this->Host; echo "</br>";
-		echo _("Port: "); echo $this->Port; echo "</br>";
-		echo _("Passwd: "); echo $this->Passwd; echo "</br>";
-		echo _("Admins: "); for ($i = 0; $i < sizeof($this->Admins); $i++) { echo $this->Admins[$i]; echo "&nbsp;&nbsp;&nbsp;"; }
+		echo _("SSL: " ) . $this->SSL . "</br>";
+		echo _("Host: ") . $this->Host . "</br>";
+		echo _("Port: ") . $this->Port . "</br>";
+		echo _("Passwd: ") . $this->Passwd . "</br>";
+		echo _("Admins: "); for ($i = 0; $i < sizeof($this->Admins); $i++) { echo $this->Admins[$i] . "&nbsp;&nbsp;&nbsp;"; }
 	}
 	
 	function get_SSL() {
@@ -133,13 +181,4 @@ class Config {
 		if (is_string($value)) $this->Passwd = $value;
 	}
 	
-/*	function get_Language() {
-		return $this->Language;
-	}
-	
-	function set_Language($value) {
-		$this->Language = $value;
-	}
-*/	
-	
-	}
+}
