@@ -54,7 +54,11 @@ if (isset($_GET['DN'])) {
 			if (isset($val)) $_SESSION['account']->$key = $val;
 			}
 	}
-
+if (count($_POST)==0) {
+	$_SESSION['account'] = loadGroupProfile('default');
+	$_SESSION['account'] ->type = 'group';
+	if (isset($_SESSION['account_old'])) unset($_SESSION['account_old']);
+	}
 
 switch ($_POST['select']) { // Select which part of page should be loaded and check values
 	// general = startpage, general account paramters

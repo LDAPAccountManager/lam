@@ -49,6 +49,11 @@ if (isset($_GET['DN'])) {
 		if (isset($_SESSION['account_old'])) unset($_SESSION['account_old']);
 		}
 	}
+if (count($_POST)==0) {
+	$_SESSION['account'] = loadHostProfile('default');
+	$_SESSION['account'] ->type = 'host';
+	if (isset($_SESSION['account_old'])) unset($_SESSION['account_old']);
+	}
 
 
 switch ($_POST['select']) { // Select which part of page should be loaded and check values
