@@ -365,4 +365,22 @@ function saveHostProfile($account, $profile) {
 	fclose($file);
 }
 
+// deletes a user profile
+function delUserProfile($file) {
+	if (!eregi("^([0-9]|[a-z]|-|_)*$", $profile)) exit;
+	$prof = substr(__FILE__, 0, strlen(__FILE__) - 16) . "config/profiles/users/".$file.".pru";
+	if (is_file($prof)) {
+		return @unlink($prof);
+	}
+}
+
+// deletes a host profile
+function delHostProfile($file) {
+	if (!eregi("^([0-9]|[a-z]|-|_)*$", $profile)) exit;
+	$prof = substr(__FILE__, 0, strlen(__FILE__) - 16) . "config/profiles/hosts/".$file.".prh";
+	if (is_file($prof)) {
+		return @unlink($prof);
+	}
+}
+
 ?>
