@@ -88,11 +88,13 @@ class account { // This class keeps all needed values for any account
 function getshells() { // Return a list of all shells listed in ../config/shells
 	$shells =  file($_SESSION['lampath'].'config/shells');
 	$i=0;
-	while ($shells[$i]) {
-		chop($shells[$i]);
+	while (count($shells) > $i) {
+		// remove whitespaces
 		trim($shells[$i]);
-		$shells[$i] = substr($shells[$i], 0, strpos($shells[$i], '#'));
-		if ($shells[$i]=='') unset ($shells[$i]);
+		// remove lineend
+		$shells[$i] = substr($shells[$i], 0, strpos($shells[$i], "\n"));
+		// unset comments
+		if ($shells[$i]{0}=='#') unset ($shells[$i]);
 		 else $i++;
 		}
 	return $shells;
@@ -370,7 +372,6 @@ function findgroups() { // Will return an array with all Groupnames found in LDA
 
 function getgid($groupname) { // Will return the the gid to an existing Groupname
 	ldapreload('group');
-	$search = 'cn='.$groupname;
 	$keys = $_SESSION['groupDN'];
 	unset ($keys[0]);
 	foreach ($keys as $key) {
@@ -385,12 +386,16 @@ function checkid($values, $type, $values_old=false) { // if value is empty will 
 	switch ($type) {
 		case 'user':
 			ldapreload('user');
+			ldapreload('host');
 			$minID = intval($_SESSION['config']->get_minUID());
 			$maxID = intval($_SESSION['config']->get_maxUID());
 			$suffix = $_SESSION['config']->get_UserSuffix();
 			$keys = $_SESSION['userDN'];
 			unset ($keys[0]);
 			$keys = array_values($keys);
+			$keys2 = $_SESSION['hostDN'];
+			unset ($keys2[0]);
+			$keys2 = array_values($keys2);
 			break;
 		case 'group':
 			ldapreload('group');
@@ -402,6 +407,7 @@ function checkid($values, $type, $values_old=false) { // if value is empty will 
 			$keys = array_values($keys);
 			break;
 		case 'host':
+			ldapreload('user');
 			ldapreload('host');
 			$minID = intval($_SESSION['config']->get_MinMachine());
 			$maxID = intval($_SESSION['config']->get_MaxMachine());
@@ -409,26 +415,43 @@ function checkid($values, $type, $values_old=false) { // if value is empty will 
 			$keys = $_SESSION['hostDN'];
 			unset ($keys[0]);
 			$keys = array_values($keys);
+			$keys2 = $_SESSION['userDN'];
+			unset ($keys2[0]);
+			$keys2 = array_values($keys2);
 			break;
 		}
+	// Store all used UIDs in Array
+	if (isset($keys2)) foreach ($keys2 as $key) $keys3[] = $key['uidNumber'];
+	foreach ($keys as $key) $keys3[] = $key['uidNumber'];
+	sort ($keys3, SORT_NUMERIC);
 	if ($values->general_uidNumber=='') {
 		if (!isset($values_old->general_uidNumber)) {
 			if ($keys) {
-				$id = 0;
 				foreach ($keys as $key)
 					if ($key['uidNumber'] > $id) $id = $key['uidNumber'];
-				if ($key['uidNumber'] < $maxID) return intval($id+1);
-				if ($key['uidNumber'] < $minID) return intval($minID);
-				if ($values->general_uidNumber='') { // Have to search free uid
-					foreach ($keys as $key)
-						$ids[] = $key['uidNumber'];
-					sort ($ids, SORT_NUMERIC);
-					$id=0;
-					while ($values->general_uidNumber=='') {
-						if ($ids[$id]>$maxID) return _('No free ID-Number!');
-						if ($ids[$id+1]-$ids[$id]!=1) return intval($ids[$id]+1);
+				if ($id < $maxID) { // Check if Id is not used by host<->user
+					if (!isset($keys2)) return intval($id+1); // keys2 is not set 4 groups
+						else {
 						$id++;
+						while (!in_array($id, $keys3)) $id++;
+						if ($id < $maxID) return intval($id);
 						}
+					}
+				if ($id < $minID) { // Check if id is not used by host<->user
+					if (!isset($keys2)) return intval($minID); // keys2 is not set 4 groups
+						else {
+						$id = $minID;
+						while (!in_array($id, $keys3)) $id++;
+						if ($id < $maxID) return intval($id);
+						}
+					}
+
+				$id=$minID;
+				while ($values->general_uidNumber=='') {
+					if ($keys3[$id]>$maxID) return _('No free ID-Number!');
+					// if !=1, we've found an unused id
+					if ($keys3[$id+1]-$keys3[$id]!=1) return intval($keys3[$id]+1);
+					$id++;
 					}
 				}
 			 else $useID = $minID;
@@ -440,12 +463,9 @@ function checkid($values, $type, $values_old=false) { // if value is empty will 
 		}
 	// Check manual ID
 	if ( $values->general_uidNumber < $minID || $values->general_uidNumber > $maxID) return sprintf(_('Please enter a value between %s and %s!'), $minID, $maxID);
-	foreach ($keys as $key)
-		if ($key['uidNumber']==$values->general_uidNumber) {
-			if (!$values_old) return _('ID is already in use');
-			if (($key['uidNumber']==$values->general_uidNumber) &&
-				($key['uidNumber']!=$values_old->general_uidNumber)) return _('ID is already in use');
-			}
+	if ((in_array($values->general_uidNumber, $keys3)) && !$values_old) return _('ID is already in use');
+	if ((in_array($values->general_uidNumber, $keys3)) && $values_old && ($values_old->general_uidNumber != $values->general_uidNumber) )
+		return _('ID is already in use');
 	return intval($values->general_uidNumber);
 	}
 
@@ -558,8 +578,14 @@ function loaduser($dn) { // Will load all needed values from an existing account
 		if (isset($attr['sambaDomainName'][0])) {
 			if ($_SESSION['config']->samba3=='yes') {
 				$samba3domains = $_SESSION['ldap']->search_domains($_SESSION[config]->get_domainSuffix());
-				for ($i=0; $i<sizeof($samba3domains); $i++)
-					if ($attr['sambaDomainName'][0] == $samba3domains[$i]->name) $return->smb_domain = $samba3domains[$i];
+				$i=0;
+				while ($i!=-1) {
+					if ($attr['sambaDomainName'][0] == $samba3domains[$i]->name) {
+						$return->smb_domain = $samba3domains[$i];
+						$i = -1;
+						}
+					else $i++;
+					}
 				}
 			else {
 				$return->smb_domain = $attr['sambaDomainName'];
@@ -769,7 +795,7 @@ function createuser($values) { // Will create the LDAP-Account
 			else $attr['sambaPwdCanChange'] = time(); // sambaAccount_may
 		if ($values->smb_pwdmustchange!='') $attr['sambaPwdMustChange'] = $values->smb_pwdmustchange; // sambaAccount_may
 			else $attr['sambaPwdMustChange'] = time() + 1000000000; // sambaAccount_may
-		$attr['sambaAcctFlags'] = smbflag(values); // sambaAccount_may
+		$attr['sambaAcctFlags'] = smbflag($values); // sambaAccount_may
 		$attr['displayName'] = $values->general_gecos; // sambaAccount_may
 		if ($values->smb_smbhome!='') $attr['sambaHomePath'] = utf8_encode($values->smb_smbhome); // sambaAccount_may
 		if ($values->smb_homedrive!='') $attr['sambaHomeDrive'] = $values->smb_homedrive; // sambaAccount_may
@@ -825,7 +851,7 @@ function createuser($values) { // Will create the LDAP-Account
 	// posixAccount_may shadowAccount_may
 	if ($values->unix_password_no) $values->unix_password = '';
 	if ($values->unix_deactivated) $attr['userPassword'] = pwd_hash($values->unix_password, false);
-	    else $attr['userPassword'] = pwd_hash($values->unix_password, false);
+	    else $attr['userPassword'] = pwd_hash($values->unix_password);
 	$attr['shadowLastChange'] = getdays(); // shadowAccount_may
 	$attr['loginShell'] = $values->general_shell; // posixAccount_may
 	$attr['gecos'] = utf8_encode(replace_umlaut($values->general_gecos)); // posixAccount_may
@@ -1607,16 +1633,14 @@ function creategroup($values) { // Will create the LDAP-Group
 	foreach ($values->unix_memberUid as $user)
 		$attr['memberUid'][] = $user;
 	$success = ldap_add($_SESSION['ldap']->server(),$values->general_dn, $attr);
+	if (!$success) return 4;
 	if ($_SESSION['config']->scriptServer) setquotas($values,'group');
-	if ($success) {
-		// Add entry to cache-array
-		if ((isset($_SESSION['groupDN']))) {
-			$_SESSION['groupDN'][$values->general_dn]['cn'] = $values->general_username;
-			$_SESSION['groupDN'][$values->general_dn]['uidNumber'] = $values->general_uidNumber;
-			}
-		return 1;
+	// Add entry to cache-array
+	if ((isset($_SESSION['groupDN']))) {
+		$_SESSION['groupDN'][$values->general_dn]['cn'] = $values->general_username;
+		$_SESSION['groupDN'][$values->general_dn]['uidNumber'] = $values->general_uidNumber;
 		}
-	else return 4;
+	return 1;
 	}
 
 function modifygroup($values,$values_old) { // Will modify the LDAP-Group

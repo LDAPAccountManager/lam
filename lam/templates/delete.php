@@ -67,13 +67,13 @@ if ($_GET['type']) {
 			echo "<fieldset class=\"hostedit-bright\"><legend class=\"hostedit-bright\"><b>";
 			echo _('Delete host(s)');
 			echo "</b></legend>\n";
-			echo '<b>'._('Do you really want to delete host(s):').'</b>');
+			echo '<b>'._('Do you really want to delete host(s):').'</b>';
 			break;
 		case 'group':
 			echo "<fieldset class=\"groupedit-bright\"><legend class=\"groupedit-bright\"><b>";
 			echo _('Delete group(s)');
 			echo "</b></legend>\n";
-			echo '<b>'._('Do you really want to delete group(s):').'</b>');
+			echo '<b>'._('Do you really want to delete group(s):').'</b>';
 			break;
 		}
 	echo "<br>\n";

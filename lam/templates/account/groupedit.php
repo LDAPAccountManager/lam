@@ -47,7 +47,6 @@ if (is_object($_SESSION['account_'.$varkey.'_account_old'])) $account_old =& $_S
 
 $ldap_intern =& $_SESSION['ldap'];
 $config_intern =& $_SESSION['config'];
-$lamurl_intern =& $_SESSION['lamurl'];
 $header_intern =& $_SESSION['header'];
 $userDN_intern =& $_SESSION['userDN'];
 
@@ -179,8 +178,9 @@ switch ($select) { // Select which part of page should be loaded and check value
 			$account_new->general_uidNumber = checkid($account_new, 'group', $account_old);
 			if (is_string($account_new->general_uidNumber)) { // true if checkid has returned an error
 				$errors[] = array('ERROR', _('ID-Number'), $account_new->general_uidNumber);
-			unset($return->general_uidNumber);
-			}
+				if (isset($account_old)) $account_new->general_uidNumber = $account_old->general_uidNumber;
+				else unset($account_new->general_uidNumber);
+				}
 
 			// Check if Name-length is OK. minLength=3, maxLength=20
 			if ( !ereg('.{3,20}', $account_new->general_username)) $errors[] = array('ERROR', _('Name'), _('Name must contain between 3 and 20 characters.'));
@@ -306,7 +306,10 @@ do { // X-Or, only one if() can be true
 		break;
 		}
 	if ($_POST['backmain']) {
-		metaRefresh($lamurl_intern."templates/lists/listgroups.php");
+		metaRefresh("../lists/listgroups.php");
+		if (isset($_SESSION['account_'.$varkey.'_account_new'])) unset($_SESSION['account_'.$varkey.'_account_new']);
+		if (isset($_SESSION['account_'.$varkey.'_account_old'])) unset($_SESSION['account_'.$varkey.'_account_old']);
+		if (isset($_SESSION['account_'.$varkey.'_final_changegids'])) unset($_SESSION['account_'.$varkey.'_final_changegids']);
 		die;
 		break;
 		}
@@ -374,7 +377,7 @@ echo $header_intern;
 echo "<html><head><title>";
 echo _("Create new Account");
 echo "</title>\n".
-	"<link rel=\"stylesheet\" type=\"text/css\" href=\"".$lamurl_intern."style/layout.css\">\n".
+	"<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n".
 	"<meta http-equiv=\"pragma\" content=\"no-cache\">\n".
 	"<meta http-equiv=\"cache-control\" content=\"no-cache\">\n".
 	"</head><body>\n".
@@ -441,7 +444,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "<td align=\"center\" width=\"10%\"><input type=\"submit\" name=\"add\" value=\"<=\">";
 		echo " ";
 		echo "<input type=\"submit\" name=\"remove\" value=\"=>\"><br><br>";
-		echo "<a href=\"".$lamurl_intern."templates/help.php?HelpNumber=419\" target=\"lamhelp\">"._('Help')."</a></td>\n";
+		echo "<a href=\"../help.php?HelpNumber=419\" target=\"lamhelp\">"._('Help')."</a></td>\n";
 		echo "<td valign=\"top\"><fieldset class=\"groupedit-middle\"><legend class=\"groupedit-bright\">";
 		echo _('Available users');
 		echo "</legend>\n";
@@ -488,14 +491,14 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo _("Groupname")."*";
 		echo "</td>\n<td>".
 			"<input name=\"f_general_username\" type=\"text\" size=\"30\" maxlength=\"20\" value=\"".$account_new->general_username."\">".
-			"</td>\n<td><a href=\"".$lamurl_intern."templates/help.php?HelpNumber=407\" target=\"lamhelp\">"._('Help')."</a></td>\n</tr>\n<tr>\n<td>";
+			"</td>\n<td><a href=\"../help.php?HelpNumber=407\" target=\"lamhelp\">"._('Help')."</a></td>\n</tr>\n<tr>\n<td>";
 		echo _('GID number');
 		echo "</td>\n<td><input name=\"f_general_uidNumber\" type=\"text\" size=\"30\" maxlength=\"6\" value=\"".$account_new->general_uidNumber."\">".
-			"</td>\n<td><a href=\"".$lamurl_intern."templates/help.php?HelpNumber=408\" target=\"lamhelp\">"._('Help').
+			"</td>\n<td><a href=\"../help.php?HelpNumber=408\" target=\"lamhelp\">"._('Help').
 			"</a></td>\n</tr>\n<tr>\n<td>";
 		echo _('Description');
 		echo "</td>\n<td><input name=\"f_general_gecos\" type=\"text\" size=\"30\" value=\"".$account_new->general_gecos."\"></td>\n".
-			"<td><a href=\"".$lamurl_intern."templates/help.php?HelpNumber=409\" target=\"lamhelp\">"._('Help')."</a></td>\n</tr>\n<tr>\n<td>";
+			"<td><a href=\"../help.php?HelpNumber=409\" target=\"lamhelp\">"._('Help')."</a></td>\n</tr>\n<tr>\n<td>";
 		echo _('Suffix'); echo "</td>\n<td><select name=\"f_general_suffix\">";
 
 		foreach ($ldap_intern->search_units($config_intern->get_GroupSuffix()) as $suffix) {
@@ -506,7 +509,7 @@ switch ($select_local) { // Select which part of page will be loaded
 				}
 			else echo "	<option>$suffix</option>\n";
 			}
-		echo "</select></td>\n<td><a href=\"".$lamurl_intern."templates/help.php?HelpNumber=462\" target=\"lamhelp\">"._('Help').
+		echo "</select></td>\n<td><a href=\"../help.php?HelpNumber=462\" target=\"lamhelp\">"._('Help').
 			"</a></td>\n</tr>\n</table>";
 		echo _('Values with * are required');
 		echo "</fieldset>\n</td></tr><tr><td>";
@@ -518,7 +521,7 @@ switch ($select_local) { // Select which part of page will be loaded
 			foreach ($profilelist as $profile) echo "	<option>$profile</option>\n";
 			echo "</select>\n".
 				"<input name=\"load\" type=\"submit\" value=\""; echo _('Load Profile');
-			echo "\"></td><td><a href=\"".$lamurl_intern."templates/help.php?HelpNumber=421\" target=\"lamhelp\">";
+			echo "\"></td><td><a href=\"../help.php?HelpNumber=421\" target=\"lamhelp\">";
 			echo _('Help')."</a></td>\n</tr>\n</table>\n</fieldset>\n";
 			}
 		echo "</td></tr>\n</table>\n</td></tr></table>\n";
@@ -552,7 +555,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo _("Display name");
 		echo "</td>\n<td>".
 			"<input name=\"f_smb_displayName\" type=\"text\" size=\"30\" maxlength=\"50\" value=\"".$account_new->smb_displayName."\">".
-			"</td>\n<td><a href=\"".$lamurl_intern."templates/help.php?HelpNumber=420\" target=\"lamhelp\">"._('Help')."</a></td>\n</tr>\n<tr>\n<td>";
+			"</td>\n<td><a href=\"../help.php?HelpNumber=420\" target=\"lamhelp\">"._('Help')."</a></td>\n</tr>\n<tr>\n<td>";
 		echo _('Windows groupname');
 		echo "</td>\n<td><select name=\"f_smb_mapgroup\">";
 		if ($config_intern->samba3=='yes') {
@@ -633,7 +636,7 @@ switch ($select_local) { // Select which part of page will be loaded
 				}
 			}
 		echo	"</select></td>\n<td>".
-			'<a href="'.$lamurl_intern.'templates/help.php?HelpNumber=464" target="lamhelp">'._('Help').'</a>'.
+			'<a href="../help.php?HelpNumber=464" target="lamhelp">'._('Help').'</a>'.
 			'</td></tr>'."\n".'<tr><td>';
 		echo _('Domain');
 		echo '</td><td><select name="f_smb_domain">';
@@ -645,7 +648,7 @@ switch ($select_local) { // Select which part of page will be loaded
 				}
 			else echo '<option>' . $samba3domains[$i]->name. '</option>';
 			}
-		echo	'</select></td>'."\n".'<td><a href="'.$lamurl_intern.'templates/help.php?HelpNumber=467" target="lamhelp">'._('Help').'</a></td></tr>'."\n";
+		echo	'</select></td>'."\n".'<td><a href="../help.php?HelpNumber=467" target="lamhelp">'._('Help').'</a></td></tr>'."\n";
 		echo "</table>\n</fieldset>\n</td></tr></table></td></tr>\n</table>\n";
 		break;
 
@@ -691,11 +694,11 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo _('Soft block limit'); echo '</td>'."\n".'<td>'; echo _('Hard block limit'); echo '</td>'."\n".'<td>'; echo _('Grace block period');
 		echo '</td>'."\n".'<td>'; echo _('Used inodes'); echo '</td>'."\n".'<td>'; echo _('Soft inode limit'); echo '</td>'."\n".'<td>';
 		echo _('Hard inode limit'); echo '</td>'."\n".'<td>'; echo _('Grace inode period'); echo '</td></tr>'."\n";
-		echo '<tr><td><a href="'.$lamurl_intern.'templates/help.php?HelpNumber=439" target="lamhelp">'._('Help').'</a></td>'."\n".'<td><a href="'.$lamurl_intern.'templates/help.php?HelpNumber=440" target="lamhelp">'._('Help').'</a></td>'."\n".'<td>'.
-			'<a href="'.$lamurl_intern.'templates/help.php?HelpNumber=441" target="lamhelp">'._('Help').'</a></td>'."\n".'<td><a href="'.$lamurl_intern.'templates/help.php?HelpNumber=442" target="lamhelp">'._('Help').'</a></td>'."\n".'<td>'.
-			'<a href="'.$lamurl_intern.'templates/help.php?HelpNumber=443" target="lamhelp">'._('Help').'</a></td>'."\n".'<td><a href="'.$lamurl_intern.'templates/help.php?HelpNumber=444" target="lamhelp">'._('Help').'</a></td>'."\n".'<td>'.
-			'<a href="'.$lamurl_intern.'templates/help.php?HelpNumber=445" target="lamhelp">'._('Help').'</a></td>'."\n".'<td><a href="'.$lamurl_intern.'templates/help.php?HelpNumber=446" target="lamhelp">'._('Help').'</a></td>'."\n".'<td>'.
-			'<a href="'.$lamurl_intern.'templates/help.php?HelpNumber=447" target="lamhelp">'._('Help').'</a></td></tr>'."\n";
+		echo '<tr><td><a href="../help.php?HelpNumber=439" target="lamhelp">'._('Help').'</a></td>'."\n".'<td><a href="../help.php?HelpNumber=440" target="lamhelp">'._('Help').'</a></td>'."\n".'<td>'.
+			'<a href="../help.php?HelpNumber=441" target="lamhelp">'._('Help').'</a></td>'."\n".'<td><a href="../help.php?HelpNumber=442" target="lamhelp">'._('Help').'</a></td>'."\n".'<td>'.
+			'<a href="../help.php?HelpNumber=443" target="lamhelp">'._('Help').'</a></td>'."\n".'<td><a href="../help.php?HelpNumber=444" target="lamhelp">'._('Help').'</a></td>'."\n".'<td>'.
+			'<a href="../help.php?HelpNumber=445" target="lamhelp">'._('Help').'</a></td>'."\n".'<td><a href="../help.php?HelpNumber=446" target="lamhelp">'._('Help').'</a></td>'."\n".'<td>'.
+			'<a href="../help.php?HelpNumber=447" target="lamhelp">'._('Help').'</a></td></tr>'."\n";
 		$i=0;
 		while ($account_new->quota[$i][0]) {
 			echo '<tr><td>'.$account_new->quota[$i][0].'</td><td>'.$account_new->quota[$i][1].'</td>'; // used blocks
@@ -750,7 +753,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo '<input name="f_finish_safeProfile" type="text" size="30" maxlength="50">';
 		echo "</td><td><input name=\"save\" type=\"submit\" $disabled value=\"";
 		echo _('Save profile');
-		echo '"></td><td><a href="'.$lamurl_intern.'templates/help.php?HelpNumber=457" target="lamhelp">'._('Help');
+		echo '"></td><td><a href="../help.php?HelpNumber=457" target="lamhelp">'._('Help');
 		echo "</a></td>\n</tr>\n</table>\n</fieldset>\n</td></tr>\n<tr><td>\n";
 		echo "<fieldset class=\"groupedit-bright\"><legend class=\"groupedit-bright\"><b>";
 		if ($account_old) echo _('Modify');
@@ -813,15 +816,6 @@ switch ($select_local) { // Select which part of page will be loaded
 			'</td></tr></table></fieldset'."\n";
 		break;
 
-	case 'backmain':
-		// unregister sessionvar and select which list should be shown
-		echo '<a href="'.$lamurl_intern.'templates/lists/listgroups.php">';
-		echo _('Please press here if meta-refresh didn\'t work.');
-		echo "</a>\n";
-		if (isset($_SESSION['account_'.$varkey.'_account_new'])) unset($_SESSION['account_'.$varkey.'_account_new']);
-		if (isset($_SESSION['account_'.$varkey.'_account_old'])) unset($_SESSION['account_'.$varkey.'_account_old']);
-		if (isset($_SESSION['account_'.$varkey.'_final_changegids'])) unset($_SESSION['account_'.$varkey.'_final_changegids']);
-		break;
 	}
 
 // Print end of HTML-Page
