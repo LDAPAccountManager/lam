@@ -32,15 +32,23 @@ $Id$
 </head>
 <body>
 <table border=0 width="100%">
-  <tr>
-    <td width="100"></td>
-    <td><p align="center"><a href="http://lam.sf.net" target="new_window"><img src="../graphics/banner.jpg" border=1></a></p></td>
-    <td width="100"><p align="right"><a href="./logout.php" target="_top"><? echo _("Logout") ?></a></p>
-    <p align="right"><a href="./profedit/profilemain.php" target="mainpart"><? echo _("Profile Editor") ?></a></p></td>
-  </tr>
+	<tr>
+		<td width="100" rowspan=4>&nbsp</td>
+		<td rowspan=4>
+			<p align="center"><a href="http://lam.sf.net" target="new_window"><img src="../graphics/banner.jpg" border=1></a></p>
+		</td>
+		<td width="100"><p align="right"><a href="./logout.php" target="_top"><? echo _("Logout") ?></a></p></td>
+	</tr>
+	<tr><td height=3></td></tr>
+	<tr>
+    	<td align="right"><a href="./profedit/profilemain.php" target="mainpart"><? echo _("Profile Editor") ?></a></td>
+	</tr>
+	<tr>
+    	<td align="right"><a href="masscreate.php" target="mainpart"><? echo _("File Upload") ?></a></td>
+	</tr>
 </table>
 <br>
-<table border="0" align="center" width="600">
+<table border=0 align="center" width="600">
   <tr>
     <td width="200"><p align="center"><a href="./lists/listusers.php" target="mainpart"> <? echo _("Users");?> </a></p></td>
     <td width="200"><p align="center"><a href="./lists/listgroups.php" target="mainpart"> <? echo _("Groups");?> </a></p></td>
