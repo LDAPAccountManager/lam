@@ -1,4 +1,4 @@
-ldap-account-manager (0.4.9) unstable; urgency=low
+ldap-account-manager (0.4.9-1) unstable; urgency=low
 
   * Updated to new upstream release
   * Closes: #296498: added documentation for samba.schema
