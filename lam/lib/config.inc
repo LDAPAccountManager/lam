@@ -14,15 +14,17 @@ $Id$
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
-  
+
   You should have received a copy of the GNU General Public License
   along with this program; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-	
+
 	Config supplies access to the configuration data.
 
 */
+
+include_once("status.inc");
 
 // sets language settings for automatic translation
 function setlanguage() {
@@ -45,19 +47,19 @@ class Config {
 
   // array of strings: users with admin rights
   var $Admins;
-	
+
   // string: password to edit preferences
   var $Passwd;
 
   // single line with the names of all admin users
   var $Adminstring;
-	
+
   // suffix for users
   var $Suff_users;
-	
+
   // suffix for groups
   var $Suff_groups;
-	
+
   // suffix for Samba hosts
   var $Suff_hosts;
 
@@ -89,7 +91,7 @@ class Config {
   function Config() {
     $this->reload();
   }
-	
+
   // reloads preferences from ../config/lam.conf
   function reload() {
     $conffile = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/config/lam.conf";
@@ -181,10 +183,10 @@ class Config {
       fclose($file);
     }
     else {
-      echo _("Unable to load lam.conf! ") . $conffile ; echo "<br>";
+      StatusMessage("ERROR", "", _("Unable to load lam.conf! ") . $conffile);
     }
   }
-	
+
   // saves preferences to ../config/lam.conf
   function save() {
     // Get path of lam.conf
@@ -193,7 +195,6 @@ class Config {
     for($i = 0; $i <= array_search("lam", $path); $i++) {
       $conffile .= "/" . $path[$i];
     }
-    echo ;
     $conffile .= "/config/lam.conf";
     if (is_file($conffile) == True) {
       // booleans to check if value was already saved
@@ -339,10 +340,10 @@ class Config {
 	for ($i = 0; $i < sizeof($file_array); $i++) fputs($file, $file_array[$i]);
 	fclose($file);
       }
-      else {
-	echo _("<br><font color=\"red\">Cannot open config file!</font>");
-	exit;
-      }
+	else {
+		StatusMessage("ERROR", "", _("Cannot open config file!"));
+		exit;
+	}
     }
   }
 
@@ -378,7 +379,7 @@ class Config {
   // sets the server address
   function set_ServerURL($value) {
     if (is_string($value)) $this->ServerURL = $value;
-    else echo _("Config->set_ServerURL failed!") . " " . $value . " " . $value;
+    else StatusMessage("WARN", "", _("Config->set_ServerURL failed!") . " " . $value . " " . $value);
   }
 
   // returns an array of string with all admin names
@@ -398,133 +399,139 @@ class Config {
       }
       if ($b) $this->Admins = $value;
     }
-    else echo _("Config->set_Admins failed!") . " " . $value;
+    else StatusMessage("WARN", "", _("Config->set_Admins failed!") . " " . $value);
   }
-	
+
   // returns all admin users seperated by semicolons
   function get_Adminstring() {
     return $this->Adminstring;
   }
-	
+
   // needs a string that contains all admin users seperated by semicolons
   function set_Adminstring($value) {
-    if (is_string($value)) {
+    if (is_string($value) && eregi("^[a-z]*=[a-z]*(,[a-z]*=[a-z]*)*(;[a-z]*=[a-z]*(,[a-z]*=[a-z]*)*)*$", $value)) {
       $this->Adminstring = $value;
       $this->Admins = explode(";", $value);
     }
-    else echo _("Config->set_Adminstring failed!") . " " . $value;
+    else StatusMessage("WARN", "", _("Config->set_Adminstring failed!") . " " . $value);
   }
-	
+
   // returns the password to access the preferences wizard
   function get_Passwd() {
     return $this->Passwd;
   }
-	
+
   // sets the preferences wizard password
   function set_Passwd($value) {
     if (is_string($value)) $this->Passwd = $value;
-    else echo _("Config->set_Passwd failed!") . " " . $value;
+    else StatusMessage("WARN", "", _("Config->set_Passwd failed!") . " " . $value);
   }
-	
+
   // returns the LDAP suffix where users are saved
   function get_UserSuffix() {
     return $this->Suff_users;
   }
-	
+
   // sets the LDAP suffix where users are saved
   function set_UserSuffix($value) {
-    if (is_string($value)) $this->Suff_users = $value;
-    else echo _("Config->set_UserSuffix failed!") . " " . $value;
+    if (is_string($value) && (eregi("^(([a-z]|[0-9])*=([a-z]|[0-9])*)(,([a-z]|[0-9])*=([a-z]|[0-9])*)*$", $value))) {
+		$this->Suff_users = $value;
+	}
+    else StatusMessage("WARN", "", _("Config->set_UserSuffix failed!") . " " . $value);
   }
-	
+
   // returns the LDAP suffix where groups are saved
   function get_GroupSuffix() {
     return $this->Suff_groups;
   }
-	
+
   // sets the LDAP suffix where groups are saved
   function set_GroupSuffix($value) {
-    if (is_string($value)) $this->Suff_groups = $value;
-    else echo _("Config->set_GroupSuffix failed!") . " " . $value;
+    if (is_string($value) && (eregi("^(([a-z]|[0-9])*=([a-z]|[0-9])*)(,([a-z]|[0-9])*=([a-z]|[0-9])*)*$", $value))) {
+		$this->Suff_groups = $value;
+	}
+	else StatusMessage("WARN", "", _("Config->set_GroupSuffix failed!") . " " . $value);
   }
-	
+
   // returns the LDAP suffix where hosts are saved
   function get_HostSuffix() {
     return $this->Suff_hosts;
   }
-	
+
   // sets the LDAP suffix where hosts are saved
   function set_HostSuffix($value) {
-    if (is_string($value)) $this->Suff_hosts = $value;
-    else echo _("Config->set_HostSuffix failed!") . " " . $value;
+    if (is_string($value) && (eregi("^(([a-z]|[0-9])*=([a-z]|[0-9])*)(,([a-z]|[0-9])*=([a-z]|[0-9])*)*$", $value))) {
+		$this->Suff_hosts = $value;
+	}
+    else StatusMessage("WARN", "", _("Config->set_HostSuffix failed!") . " " . $value);
   }
-	
+
   // returns the minimum UID to use when creating new users
   function get_minUID() {
     return $this->MinUID;
   }
-	
+
   // sets the minimum UID to use when creating new users
   function set_minUID($value) {
     if (is_numeric($value)) $this->MinUID = $value;
-    else echo _("Config->set_minUID failed!") . " " . $value;
+    else StatusMessage("WARN", "", _("Config->set_minUID failed!") . " " . $value);
   }
 
   // returns the maximum UID to use when creating new users
   function get_maxUID() {
     return $this->MaxUID;
   }
-	
+
   // sets the maximum UID to use when creating new users
   function set_maxUID($value) {
     if (is_numeric($value)) $this->MaxUID = $value;
-    else echo _("Config->set_maxUID failed!") . " " . $value;
+    else StatusMessage("WARN", "", _("Config->set_maxUID failed!") . " " . $value);
   }
 
   // returns the minimum GID to use when creating new groups
   function get_minGID() {
     return $this->MinGID;
   }
-	
+
   // sets the minimum GID to use when creating new groups
   function set_minGID($value) {
     if (is_numeric($value)) $this->MinGID = $value;
-    else echo _("Config->set_minGID failed!") . " " . $value;
+    else StatusMessage("WARN", "", _("Config->set_minGID failed!") . " " . $value);
   }
 
   // returns the maximum GID to use when creating new groups
   function get_maxGID() {
     return $this->MaxGID;
   }
-	
+
   // sets the maximum GID to use when creating new groups
   function set_maxGID($value) {
     if (is_numeric($value)) $this->MaxGID = $value;
-    else echo _("Config->set_maxGID failed!") . " " . $value;
+    else StatusMessage("WARN", "", _("Config->set_maxGID failed!") . " " . $value);
   }
 
   // returns the minimum UID to use when creating new Samba hosts
   function get_minMachine() {
     return $this->MinMachine;
   }
-	
+
   // sets the minimum UID to use when creating new Samba hosts
   function set_minMachine($value) {
     if (is_numeric($value)) $this->MinMachine = $value;
-    else echo _("Config->set_minMachine failed!") . " " . $value;
+    else StatusMessage("WARN", "", _("Config->set_minMachine failed!") . " " . $value);
   }
 
   // returns the maximum UID to use when creating new Samba hosts
   function get_maxMachine() {
     return $this->MaxMachine;
   }
-	
+
   // sets the maximum UID to use when creating new Samba hosts
   function set_maxMachine($value) {
     if (is_numeric($value)) $this->MaxMachine = $value;
-    else echo _("Config->set_maxMachine failed!") . " " . $value;
+    else StatusMessage("WARN", "", _("Config->set_maxMachine failed!") . " " . $value);
   }
-	
+
   // returns the list of attributes to show in user list
   function get_userlistAttributes() {
     return $this->userlistAttributes;
@@ -532,8 +539,10 @@ class Config {
 
   // sets the list of attributes to show in user list
   function set_userlistAttributes($value) {
-    if (is_string($value)) $this->userlistAttributes = $value;
-    else echo _("Config->set_userlistAttributes failed!") . " " . $value;
+    if (is_string($value) && eregi("^((#[a-z]*)|([a-z]*:[a-z*]))(;((#[a-z]*)|([a-z]*:[a-z]*)))*$", $value)) {
+		$this->userlistAttributes = $value;
+	}
+    else StatusMessage("WARN", "", _("Config->set_userlistAttributes failed!") . " " . $value);
   }
 
   // returns the list of attributes to show in group list
@@ -543,8 +552,10 @@ class Config {
 
   // sets the list of attributes to show in group list
   function set_grouplistAttributes($value) {
-    if (is_string($value)) $this->grouplistAttributes = $value;
-    else echo _("Config->set_grouplistAttributes failed!") . " " . $value;
+    if (is_string($value) && eregi("^((#[a-z]*)|([a-z]*:[a-z*]))(;((#[a-z]*)|([a-z]*:[a-z]*)))*$", $value)) {
+    	$this->grouplistAttributes = $value;
+	}
+    else StatusMessage("WARN", "", _("Config->set_grouplistAttributes failed!") . " " . $value);
   }
 
   // returns the list of attributes to show in host list
@@ -554,30 +565,21 @@ class Config {
 
   // sets the list of attributes to show in host list
   function set_hostlistAttributes($value) {
-    if (is_string($value)) $this->hostlistAttributes = $value;
-    else echo _("Config->set_hostlistAttributes failed!") . " " . $value;
+    if (is_string($value) && eregi("^((#[a-z]*)|([a-z]*:[a-z*]))(;((#[a-z]*)|([a-z]*:[a-z]*)))*$", $value)) {
+    	$this->hostlistAttributes = $value;
+	}
+    else StatusMessage("WARN", "", _("Config->set_hostlistAttributes failed!") . " " . $value);
   }
 
-  /**
-   *
-   *
-   *
-   * @return maxlistentries
-   */
+  // returns the maximum number of rows in user/group/host lists
   function get_MaxListEntries() {
     return $this->maxlistentries;
   }
 
-  /**
-   * @brief sets the maximum of entries to display on one page of the lists
-   *
-   * @param value maximum count of entries on one page
-   *
-   * @return
-   */
+  // sets the maximum number of rows in user/group/host lists
   function set_MaxListEntries ($value) {
     if (is_numeric($value)) $this->maxlistentries = $value;
-    else echo _("Config->set_MaxListEntries failed!" . $value);
+    else StatusMessage("WARN", "", _("Config->set_MaxListEntries failed!") . $value);
   }
 
   // returns the default language string
@@ -588,7 +590,7 @@ class Config {
   // sets the default language string
   function set_defaultLanguage($value) {
     if (is_string($value)) $this->defaultLanguage = $value;
-    else echo _("Config->set_defaultLanguage failed!") . " " . $value;
+    else StatusMessage("WARN", "", _("Config->set_defaultLanguage failed!") . " " . $value);
   }
 
   // returns the path to the external script
@@ -600,7 +602,7 @@ class Config {
   function set_scriptPath($value) {
 	if (!$value) $value = ""; // optional parameter
     if (is_string($value) && eregi("^()|(/([a-z]|[0-9]|-|_|/)*)$", $value)) $this->scriptPath = $value;
-    else echo _("Config->set_scriptPath failed!") . " " . $value;
+    else StatusMessage("WARN", "", _("Config->set_scriptPath failed!") . " " . $value);
   }
 
   // returns the server of the external script
@@ -611,8 +613,10 @@ class Config {
   // sets the server of the external script
   function set_scriptServer($value) {
 	if (!$value) $value = ""; // optional parameter
-    if (is_string($value)) $this->scriptServer = $value;
-    else echo _("Config->set_scriptServer failed!") . " " . $value;
+    if (is_string($value) && (eregi("^([0-9]{3}.[0-9]{3}.[0-9]{3}.[0-9]{3})$", $value) || $value == "")) {
+		$this->scriptServer = $value;
+	}
+    else StatusMessage("WARN", "", _("Config->set_scriptServer failed!") . " " . $value);
   }
 
 

@@ -56,7 +56,9 @@ if ($_POST['back'] || $_POST['submitconf']){
 		if ($_POST['maxlistentries']) $maxlistentries = $_POST['maxlistentries'];
 		if ($_POST['language']) $language = $_POST['language'];
 		if ($_POST['scriptpath']) $scriptpath = $_POST['scriptpath'];
+		else $scriptpath = "";
 		if ($_POST['scriptserver']) $scriptserver = $_POST['scriptserver'];
+		else $scriptserver = "";
 		session_register('passwd', 'passwd1', 'passwd2', 'serverurl', 'admins', 'suffusers',
 			'suffgroups', 'suffhosts', 'minUID', 'maxUID', 'minGID', 'maxGID', 'minMach',
 			'maxMach', 'usrlstattr', 'grplstattr', 'hstlstattr', 'maxlistentries', 'language',

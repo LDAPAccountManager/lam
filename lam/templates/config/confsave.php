@@ -61,6 +61,10 @@ if ($passwd != $conf->get_Passwd()) {
 	exit;
 }
 
+echo "<html><head><title>listusers</title>\n";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
+echo "</head><body>\n";
+
 echo ("<p align=\"center\"><a href=\"http://lam.sf.net\" target=\"new_window\">".
 	"<img src=\"../../graphics/banner.jpg\" border=1></a></p><hr><br><br>");
 
@@ -187,6 +191,9 @@ $conf->save();
 echo ("<b>" . _("The following settings were saved:") . "</b><br><br>");
 $conf->printconf();
 echo ("<br><br><br><br><br><a href=\"../login.php\" target=\"_top\">" . _("Back to Login") . "</a>");
+
+echo("</body></html>");
+
 // remove settings from session
 unset($_SESSION['passwd']);
 unset($_SESSION['passwd1']);
