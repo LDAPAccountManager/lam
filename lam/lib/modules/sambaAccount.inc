@@ -55,6 +55,20 @@ $Id$
 class sambaAccount extends baseModule {
 
 	/**
+	* Creates a new sambaAccount object.
+	*/
+	function sambaAccount($scope) {
+	// error messages for input checks
+	$this->messages['homedir'] = array('ERROR', _('Home path'), _('Home path is invalid.'));
+	$this->messages['profilePath'] = array('ERROR', _('Profile path'), _('Profile path is invalid!'));
+	$this->messages['logonScript'] = array('ERROR', _('Script path'), _('Script path is invalid!'));
+	$this->messages['workstations'] = array('ERROR', _('Samba workstations'), _('Please enter a comma separated list of host names!'));;
+	$this->messages['domain'] = array('ERROR', _('Domain name'), _('Domain name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and -.'));
+	// call parent constructor
+	parent::baseModule($scope);
+	}
+
+	/**
 	* Returns meta data that is interpreted by parent class
 	*
 	* @return array array with meta data
@@ -73,6 +87,82 @@ class sambaAccount extends baseModule {
 		$return["alias"] = _('Samba 2');
 		// module dependencies
 		$return['dependencies'] = array('depends' => array('posixAccount'), 'conflicts' => array());
+		// profile options
+		if ($this->get_scope() == 'user') {
+			// set Unix password for Samba
+			$return['profile_options'][] = array(
+				0 => array('kind' => 'text', 'text' => _('Use unix password') . ': '),
+				1 => array('kind' => 'input', 'name' => 'sambaAccount_useunixpwd', 'type' => 'checkbox', 'checked' => true),
+				2 => array('kind' => 'help', 'value' => 'TODO')
+				);
+			// set no password
+			$return['profile_options'][] = array(
+				0 => array('kind' => 'text', 'text' => _('Use no password') . ': '),
+				1 => array('kind' => 'input', 'name' => 'sambaAccount_acctFlagsN', 'type' => 'checkbox', 'checked' => false),
+				2 => array('kind' => 'help', 'value' => 'TODO')
+				);
+			// password expiry
+			$return['profile_options'][] = array(
+				0 => array('kind' => 'text', 'text' => _('Password does not expire') . ': '),
+				1 => array('kind' => 'input', 'name' => 'sambaAccount_acctFlagsX', 'type' => 'checkbox', 'checked' => true),
+				2 => array('kind' => 'help', 'value' => 'TODO')
+				);
+			// account deactivation
+			$return['profile_options'][] = array(
+				0 => array('kind' => 'text', 'text' => _('Account is deactivated') . ': '),
+				1 => array('kind' => 'input', 'name' => 'sambaAccount_acctFlagsD', 'type' => 'checkbox', 'checked' => false),
+				2 => array('kind' => 'help', 'value' => 'TODO')
+				);
+			// drive letter
+			$drives = array();
+			for ($i = 90; $i > 67; $i--) $drives[] = chr($i) . ':';
+			$return['profile_options'][] = array(
+				0 => array('kind' => 'text', 'text' => _('Home drive') . ': '),
+				1 => array('kind' => 'select', 'name' => 'sambaAccount_homeDrive', 'options' => $drives, 'options_selected' => array ('Z:')),
+				2 => array('kind' => 'help', 'value' => 'TODO')
+				);
+			// path to home directory
+			$return['profile_options'][] = array(
+				0 => array('kind' => 'text', 'text' => _('Home path') . ': '),
+				1 => array('kind' => 'input', 'type' => 'text', 'name' => 'sambaAccount_smbHome', 'size' => '20', 'maxlength' => '255', 'value' => ''),
+				2 => array('kind' => 'help', 'value' => 'TODO')
+				);
+			// path to profile
+			$return['profile_options'][] = array(
+				0 => array('kind' => 'text', 'text' => _('Profile path') . ': '),
+				1 => array('kind' => 'input', 'type' => 'text', 'name' => 'sambaAccount_profilePath', 'size' => '20', 'maxlength' => '255', 'value' => ''),
+				2 => array('kind' => 'help', 'value' => 'TODO')
+				);
+			// logon script
+			$return['profile_options'][] = array(
+				0 => array('kind' => 'text', 'text' => _('Logon script') . ': '),
+				1 => array('kind' => 'input', 'type' => 'text', 'name' => 'sambaAccount_scriptPath', 'size' => '20', 'maxlength' => '255', 'value' => ''),
+				2 => array('kind' => 'help', 'value' => 'TODO')
+				);
+			// allowed workstations
+			$return['profile_options'][] = array(
+				0 => array('kind' => 'text', 'text' => _('Samba workstations') . ': '),
+				1 => array('kind' => 'input', 'type' => 'text', 'name' => 'sambaAccount_userWorkstations', 'value' => ''),
+				2 => array('kind' => 'help', 'value' => 'TODO')
+				);
+		}
+		// Samba domain
+		$return['profile_options'][] = array(
+			0 => array('kind' => 'text', 'text' => _('Domain') . ': '),
+			1 => array('kind' => 'input', 'type' => 'text', 'name' => 'sambaAccount_domain', 'size' => '20', 'maxlength' => '255', 'value' => ''),
+			2 => array('kind' => 'help', 'value' => 'TODO')
+			);
+		// profile checks
+		$return['profile_checks']['sambaAccount_smbhome'] = array('type' => 'regex_i', 'regex' => $this->regex_homedir,
+			'error_message' => $this->messages['homedir']);
+		$return['profile_checks']['sambaAccount_profilePath'] = array('type' => 'regex_i', 'regex' => $this->regex_profilePath,
+			'error_message' => $this->messages['profilePath']);
+		$return['profile_checks']['sambaAccount_scriptPath'] = array('type' => 'regex_i', 'regex' => $this->regex_logonScript,
+			'error_message' => $this->messages['logonScript']);
+		$return['profile_checks']['sambaAccount_userWorkstations'] = array('type' => 'regex_i', 'regex' => $this->regex_workstations,
+			'error_message' => $this->messages['workstations']);
+		$return['profile_checks']['sambaAccount_domain'] = array('type' => 'regex_i', 'regex' => $this->regex_domain,
+			'error_message' => $this->messages['domain']);
 		return $return;
 	}
 
@@ -121,6 +211,20 @@ class sambaAccount extends baseModule {
 	var $useunixpwd;
 	// Array of well known rids
 	var $rids;
+
+	/** regular expression for home directory */
+	var $regex_homedir = '^[\][\]([a-z0-9\\.%-])+([\]([a-z0-9\\.%äöüß-])+)+$';
+	/** regular expression for profile path */
+	var $regex_profilePath = '^([\][\]([a-zA-Z0-9\\.%-])+([\]([a-z0-9\\.%-])+)+)|([/][a-z]([a-z0-9\\._%-])*([/][a-z]([a-z0-9\\._%-])*)*)$';
+	/** regular expression for logon script */
+	var $regex_logonScript = '^([/])*([a-z0-9\\._%äöüß-])+([/]([a-z0-9\\._%äöüß-])+)*((\\.bat)|(\\.cmd))$';
+	/** regular expression for allowed workstations */
+	var $regex_workstations = '^([a-z0-9\\._-])+(,[a-z0-9\\._-])*$';
+	/** regular expression for domain name */
+	var $regex_domain = '^([a-z0-9_-])+$';
+
+	/** list of possible error messages */
+	var $messages = array();
 
 	/* $attribute['lmPassword'] and ntPassword can't accessed directly because it's enrcypted
 	* To read / write password function userPassword is needed
@@ -346,14 +450,12 @@ class sambaAccount extends baseModule {
 				if ($this->attributes['profiletPath'][0] != stripslashes($post['profilePath'])) $errors['profilePath'][] = array('INFO', _('Profile path'), _('Inserted user- or groupname in profilepath.'));
 				if ( !ereg('^([a-z]|[A-Z]|[0-9]|[\|]|[\#]|[\*]|[\,]|[\.]|[\;]|[\:]|[\_]|[\-]|[\+]|[\!]|[\%]|[\&]|[\/]|[\?]|[\{]|[\[]|[\(]|[\)]|[\]]|[\}])*$',
 					$this->lmPassword())) $errors['lmPassword'][] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
-				if ( (!$this->attributes['smbHome'][0]=='') && (!ereg('^[\][\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+([\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+)+$', $this->attributes['smbHome'][0])))
-						$errors['smbHome'][] = array('ERROR', _('Home path'), _('Home path is invalid.'));
-				if ( (!$this->attributes['scriptPath'][0]=='') && (!ereg('^([/])*([a-z]|[0-9]|[.]|[-]|[_]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+([a-z]|[0-9]|[.]|[-]|[_]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])*'.
-					'([/]([a-z]|[0-9]|[.]|[-]|[_]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+([a-z]|[0-9]|[.]|[-]|[_]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])*)*(([.][b][a][t])|([.][c][m][d]))$', $this->attributes['scriptPath'][0])))
-					$errors['scriptPath'][] = array('ERROR', _('Script path'), _('Script path is invalid!'));
-				if ( (!$this->attributes['profilePath'][0]=='') && (!ereg('^[/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*([/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*)*$', $this->attributes['profilePath'][0]))
-					&& (!ereg('^[\][\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+([\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+)+$', $this->attributes['profilePath'][0])))
-						$errors['profilePath'][] = array('ERROR', _('Profile path'), _('Profile path is invalid!'));
+				if ( (!$this->attributes['smbHome'][0]=='') && (!eregi($this->regex_homedir, $this->attributes['smbHome'][0])))
+						$errors['smbHome'][] = $this->messages['homedir'];
+				if ( (!$this->attributes['scriptPath'][0]=='') && (!eregi($this->regex_logonScript, $this->attributes['scriptPath'][0])))
+					$errors['scriptPath'][] = $this->messages['logonScript'];
+				if ( (!$this->attributes['profilePath'][0]=='') && (!eregi($this->regex_profilePath, $this->attributes['profilePath'][0])))
+						$errors['profilePath'][] = $this->messages['profilePath'];
 				}
 			else {
 				$smbHome = str_replace('$user', 'user', $this->attributes['smbHome'][0]);
@@ -376,8 +478,8 @@ class sambaAccount extends baseModule {
 				else $this->useunixpwd = false;
 			}
 
-		if ((!$this->attributes['domain'][0]=='') && !ereg('^([a-z]|[A-Z]|[0-9]|[-])+$', $this->attributes['domain'][0]))
-			$errors['domain'][] = array('ERROR', _('Domain name'), _('Domain name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and -.'));
+		if ((!$this->attributes['domain'][0]=='') && !eregi($this->regex_domain, $this->attributes['domain'][0]))
+			$errors['domain'][] = $this->messages['domain'];
 
 		if (is_array($errors)) return $errors;
 		if ($post['userWorkstations'])  return 'userWorkstations';
@@ -607,90 +709,6 @@ class sambaAccount extends baseModule {
 		return $return;
 		}
 
-	function get_profileOptions() {
-		$return = array();
-		if ($_SESSION[$this->base]->type=='user') {
-			// set Unix password for Samba
-			$return[] = array(
-				0 => array('kind' => 'text', 'text' => _('Use unix password') . ': '),
-				1 => array('kind' => 'input', 'name' => 'sambaAccount_useunixpwd', 'type' => 'checkbox', 'checked' => true),
-				2 => array('kind' => 'help', 'value' => 'TODO')
-				);
-			// set no password
-			$return[] = array(
-				0 => array('kind' => 'text', 'text' => _('Use no password') . ': '),
-				1 => array('kind' => 'input', 'name' => 'sambaAccount_acctFlagsN', 'type' => 'checkbox', 'checked' => false),
-				2 => array('kind' => 'help', 'value' => 'TODO')
-				);
-			// password expiry
-			$return[] = array(
-				0 => array('kind' => 'text', 'text' => _('Password does not expire') . ': '),
-				1 => array('kind' => 'input', 'name' => 'sambaAccount_acctFlagsX', 'type' => 'checkbox', 'checked' => true),
-				2 => array('kind' => 'help', 'value' => 'TODO')
-				);
-			// account deactivation
-			$return[] = array(
-				0 => array('kind' => 'text', 'text' => _('Account is deactivated') . ': '),
-				1 => array('kind' => 'input', 'name' => 'sambaAccount_acctFlagsD', 'type' => 'checkbox', 'checked' => false),
-				2 => array('kind' => 'help', 'value' => 'TODO')
-				);
-			// drive letter
-			$drives = array();
-			for ($i = 90; $i > 67; $i--) $drives[] = chr($i) . ':';
-			$return[] = array(
-				0 => array('kind' => 'text', 'text' => _('Home drive') . ': '),
-				1 => array('kind' => 'select', 'name' => 'sambaAccount_homeDrive', 'options' => $drives, 'options_selected' => array ('Z:')),
-				2 => array('kind' => 'help', 'value' => 'TODO')
-				);
-			// path to home directory
-			$return[] = array(
-				0 => array('kind' => 'text', 'text' => _('Home path') . ': '),
-				1 => array('kind' => 'input', 'type' => 'text', 'name' => 'sambaAccount_smbHome', 'size' => '20', 'maxlength' => '255', 'value' => ''),
-				2 => array('kind' => 'help', 'value' => 'TODO')
-				);
-			// path to profile
-			$return[] = array(
-				0 => array('kind' => 'text', 'text' => _('Profile path') . ': '),
-				1 => array('kind' => 'input', 'type' => 'text', 'name' => 'sambaAccount_profilePath', 'size' => '20', 'maxlength' => '255', 'value' => ''),
-				2 => array('kind' => 'help', 'value' => 'TODO')
-				);
-			// logon script
-			$return[] = array(
-				0 => array('kind' => 'text', 'text' => _('Logon script') . ': '),
-				1 => array('kind' => 'input', 'type' => 'text', 'name' => 'sambaAccount_scriptPath', 'size' => '20', 'maxlength' => '255', 'value' => ''),
-				2 => array('kind' => 'help', 'value' => 'TODO')
-				);
-			// allowed workstations
-			$return[] = array(
-				0 => array('kind' => 'text', 'text' => _('Samba workstations') . ': '),
-				1 => array('kind' => 'input', 'type' => 'text', 'name' => 'sambaAccount_userWorkstations', 'value' => ''),
-				2 => array('kind' => 'help', 'value' => 'TODO')
-				);
-			// Samba domain
-			$return[] = array(
-				0 => array('kind' => 'text', 'text' => _('Domain') . ': '),
-				1 => array('kind' => 'input', 'type' => 'text', 'name' => 'sambaAccount_domain', 'size' => '20', 'maxlength' => '255', 'value' => ''),
-				2 => array('kind' => 'help', 'value' => 'TODO')
-				);
-		}
-		elseif ($_SESSION[$this->base]->type=='user') {
-			// Samba domain
-			$return[] = array(
-				0 => array('kind' => 'text', 'text' => _('Domain') . ': '),
-				1 => array('kind' => 'input', 'type' => 'text', 'name' => 'sambaAccount_domain', 'size' => '20', 'maxlength' => '255', 'value' => ''),
-				2 => array('kind' => 'help', 'value' => 'TODO')
-				);
-		}
-		return $return;
-	}
-
-	// checks if the values of a new or modified profile are valid
-	// $scope: the account type (user, group, host, ...)
-	// $options: a hash array (name => value) containing the options
-	function check_profileOptions($options) {
-		return array();
-	}
-	
 	function get_pdfFields($account_type="user") {
 		return array(	'displayName',
 							'uid',
