@@ -43,7 +43,7 @@ session_save_path("../../sess");
 setlanguage();
 
 // check if button was pressed and if we have to save the setting or go back to login
-if ($_POST['back'] || $_POST['submitconf'] || $_POST['editmodules']){
+if (isset($_POST['back']) || isset($_POST['submitconf']) || isset($_POST['editmodules'])){
 	// save settings
 	if ($_POST['submitconf'] || $_POST['editmodules']){
 		// save HTTP-POST variables in session
@@ -87,7 +87,7 @@ if ($_POST['back'] || $_POST['submitconf'] || $_POST['editmodules']){
 }
 
 // get password if register_globals is off
-if ($_POST['passwd']) $passwd = $_POST['passwd'];
+if (isset($_POST['passwd'])) $passwd = $_POST['passwd'];
 if ($_GET["modulesback"] == "true") $passwd = $_SESSION['conf_passwd'];
 
 // check if password was entered

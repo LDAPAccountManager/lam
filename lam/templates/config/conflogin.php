@@ -89,7 +89,7 @@ echo $_SESSION['header'];
 			<tr><td style="border-style:none" >&nbsp;</td></tr>
 <?php
 	// print message if login was incorrect
-	if ($message) {  // $message is set by confmain.php (requires conflogin.php then)
+	if (isset($message)) {  // $message is set by confmain.php (requires conflogin.php then)
 		echo ("<tr><td style=\"border-style:none\" rowspan=\"2\"></td>" .
 			"<td style=\"border-style:none\" colspan=2 align=\"center\"><b><font color=red>" . $message . "</font></b></td>" .
 			"<td style=\"border-style:none\" rowspan=\"2\"></td></tr>");
