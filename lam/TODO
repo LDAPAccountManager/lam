@@ -6,5 +6,8 @@ stable
 0.5
 
 - check security
-- add install wizard
 
+0.4.2
+
+- add install wizard
+- remove MCrypt functions (use Blowfish)
