@@ -45,8 +45,6 @@ function StatusMessage($MessageTyp,$MessageHeadline,$MessageText,$MessageVariabl
 	$MessageHeadline = parseMessageString($MessageHeadline);
 	$MessageText = parseMessageString($MessageText);
 
-	//$MessageTyp = "<h1 " . $class . ">" . $MessageTyp . "</h1>"; // Format $MessageTyp
-
 	if (is_file("../graphics/error.png")) {
 		$MessageTyp = "<img src=\"../graphics/" . strtolower($MessageTyp) . ".png\" alt=\"" . $MessageTyp . "\" width=\"50\" height=\"50\">";
 	}
@@ -54,10 +52,9 @@ function StatusMessage($MessageTyp,$MessageHeadline,$MessageText,$MessageVariabl
 		$MessageTyp = "<img src=\"../../graphics/" . strtolower($MessageTyp) . ".png\" alt=\"" . $MessageTyp . "\" width=\"50\" height=\"50\">";
 	}
 
-	$MessageTyp = "<img src=\"" . $_SESSION['lamurl'] . "graphics/" . strtolower($MessageTyp) . ".png\" alt=\"" . $MessageTyp . "\" width=\"50\" height=\"50\">";
 	$MessageHeadline = "<h2 " . $class . ">" . $MessageHeadline . "</h2>"; // Format $MessageHeadline
 	$MessageText = "<p " . $class . ">" . $MessageText . "</p>"; // Format $MessageText
-	$format = "<div " . $class . "><br><table><tr><td>" . $MessageTyp . "</td><td>" . $MessageHeadline . $MessageText . "</td></tr></table><br></div>";
+	$format = "<div " . $class . ">\n<br>\n<table>\n<tr>\n<td>" . $MessageTyp . "</td>\n<td>" . $MessageHeadline . $MessageText . "</td>\n</tr>\n</table>\n<br>\n</div>\n";
 	for($i=0;$i<count($MessageVariables);$i++) {
 		$variables .= "," . $MessageVariables[$i];
 	}
