@@ -34,7 +34,7 @@ session_save_path('../../sess');
 @session_start();
 setlanguage();
 if (isset($_GET['DN'])) {
-	if ($_GET['DN']!='') {
+	if (isset($_GET['DN']) && $_GET['DN']!='') {
 		if (isset($_SESSION['account_old'])) unset($_SESSION['account_old']);
 		$DN = str_replace("\'", '',$_GET['DN']);
 		$_SESSION['account'] = loadgroup($DN);
