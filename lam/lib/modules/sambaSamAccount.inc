@@ -757,7 +757,7 @@ class sambaSamAccount extends baseModule {
 				$wrid=true;
 				}
 			else $options[] = _('Administrator');
-			if ($this->attributes['sambaSID'][0]==$SIM."-501") {
+			if ($this->attributes['sambaSID'][0]==$SID."-501") {
 				$selected[] = _('Guest');
 				$wrid=true;
 				}
