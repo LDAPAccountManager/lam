@@ -284,7 +284,7 @@ function getquotas($users) {
 		return $return;
 		}
 	else {
-		return -1;
+		return $users;
 		}
 	}
 
