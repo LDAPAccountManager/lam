@@ -14,7 +14,8 @@ Major-Changes:
 
 Package: ldap-account-manager
 Architecture: all
-Depends: php4 | php4-cgi, php4-ldap, php4-mhash, apache | apache-ssl | httpd, perl, wwwconfig-common, debconf
+Depends: php4 | php4-cgi, php4-ldap, apache | apache-ssl | httpd, perl, wwwconfig-common, debconf
+Recommends: php4-mhash
 Suggests: ldap-server, sudo, php4-mcrypt
 Conflicts: php4-apc
 Description: Webfrontend for managing Unix and Samba accounts in a LDAP directory
@@ -63,6 +64,7 @@ Install: sh
  yada install -data -into /usr/share/ldap-account-manager/templates/config templates/config/*.php
  yada install -data -into /usr/share/ldap-account-manager/templates/lists templates/lists/*.php
  yada install -data -into /usr/share/ldap-account-manager/templates/profedit templates/profedit/*.php
+ yada install -data -into /usr/share/ldap-account-manager/templates/confwiz templates/confwiz/*.php
  yada install -conffile -subdir ldap-account-manager -as apache.conf debian/lam.apache.conf
  yada install -doc -as changelog HISTORY
  yada install -doc -as changelog.Debian debian/changelog
