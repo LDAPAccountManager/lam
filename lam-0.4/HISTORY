@@ -1,3 +1,9 @@
+0.4.5
+  - fixed bugs:
+      StatusMessages with additional variables did not work
+      Samba hosts had unnecessary objectClass shadowAccount
+
+
 29.02.2004 0.4.4 (stable)
   - fixed bugs:
       plain posix groups could not be used as Samba 3 primary group
