@@ -291,7 +291,7 @@ switch ($select) {
 			$_SESSION['accounts'][$_SESSION['pointer']]->unix_password = base64_encode(mcrypt_encrypt(
 				MCRYPT_RIJNDAEL_256, $key, genpasswd(), MCRYPT_MODE_ECB, $iv));
 			$_SESSION['accounts'][$_SESSION['pointer']]->smb_password = $_SESSION['accounts'][$_SESSION['pointer']]->unix_password;
-			if ( time()-$time<(get_cfg_var('max_execution_time')-10)) {
+			if ( (time()-$time)<(get_cfg_var('max_execution_time')-10)) {
 				$error = createuser($_SESSION['accounts'][$_SESSION['pointer']]);
 				if ($error==1) $_SESSION['pointer']++;
 					else {

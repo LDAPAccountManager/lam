@@ -388,6 +388,7 @@ if ($select_local != 'pdf') {
 	if (is_array($errors))
 		for ($i=0; $i<sizeof($errors); $i++) StatusMessage($errors[$i][0], $errors[$i][1], $errors[$i][2]);
 	}
+//print_r($_SESSION['account']);
 
 switch ($select_local) { // Select which part of page will be loaded
 	// general = startpage, general account paramters
@@ -760,27 +761,27 @@ switch ($select_local) { // Select which part of page will be loaded
 					<a href="help.php?HelpNumber=433" target="lamhelp">'._('Help').'</a>
 					</td></tr>'."\n".'<tr><td>';
 				echo _('Script Path');
-				echo '</td>'."\n".'<td><input name="f_smb_scriptpath" type="text" size="20" maxlength="20" value="' . $_SESSION['account']->smb_scriptPath . '">
+				echo '</td>'."\n".'<td><input name="f_smb_scriptpath" type="text" size="20" maxlength="80" value="' . $_SESSION['account']->smb_scriptPath . '">
 					</td>'."\n".'<td>
 					<a href="help.php?HelpNumber=434" target="lamhelp">'._('Help').'</a>
 					</td></tr>'."\n".'<tr><td>';
 				echo _('Profile Path');
-				echo '</td>'."\n".'<td><input name="f_smb_profilePath" type="text" size="20" maxlength="20" value="' . $_SESSION['account']->smb_profilePath . '">
+				echo '</td>'."\n".'<td><input name="f_smb_profilePath" type="text" size="20" maxlength="80" value="' . $_SESSION['account']->smb_profilePath . '">
 					</td>'."\n".'<td>
 					<a href="help.php?HelpNumber=435" target="lamhelp">'._('Help').'</a>
 					</td></tr>'."\n".'<tr><td>';
 				echo _('User Workstations');
-				echo '</td>'."\n".'<td><input name="f_smb_smbuserworkstations" type="text" size="20" maxlength="20" value="' . $_SESSION['account']->smb_smbuserworkstations . '">
+				echo '</td>'."\n".'<td><input name="f_smb_smbuserworkstations" type="text" size="20" maxlength="80" value="' . $_SESSION['account']->smb_smbuserworkstations . '">
 					</td>'."\n".'<td>
 					<a href="help.php?HelpNumber=436" target="lamhelp">'._('Help').'</a>
 					</td></tr>'."\n".'<tr><td>';
 				echo _('smb Home');
-				echo '</td>'."\n".'<td><input name="f_smb_smbhome" type="text" size="20" maxlength="20" value="' . $_SESSION['account']->smb_smbhome . '">
+				echo '</td>'."\n".'<td><input name="f_smb_smbhome" type="text" size="20" maxlength="80" value="' . $_SESSION['account']->smb_smbhome . '">
 					</td>'."\n".'<td>
 					<a href="help.php?HelpNumber=437" target="lamhelp">'._('Help').'</a>
 					</td></tr>'."\n".'<tr><td>';
 				echo _('Domain');
-				echo '</td>'."\n".'<td><input name="f_smb_domain" type="text" size="20" maxlength="20" value="' . $_SESSION['account']->smb_domain . '">
+				echo '</td>'."\n".'<td><input name="f_smb_domain" type="text" size="20" maxlength="80" value="' . $_SESSION['account']->smb_domain . '">
 					</td>'."\n".'<td>
 					<a href="help.php?HelpNumber=438" target="lamhelp">'._('Help').'</a>
 					</td></tr>'."\n";
@@ -821,7 +822,7 @@ switch ($select_local) { // Select which part of page will be loaded
 					</td></tr>'."\n".'<tr><td>';
 					echo _('Windows Groupname');
 					echo '</td><td>
-					<input name="f_smb_domain" type="text" size="30" maxlength="30" value="' . $_SESSION['account']->smb_displayName . '">
+					<input name="f_smb_domain" type="text" size="30" maxlength="80" value="' . $_SESSION['account']->smb_displayName . '">
 					</td><td>
 					<a href="help.php?HelpNumber=465" target="lamhelp">'._('Help').'</a>
 					</td></tr>'."\n";
@@ -928,7 +929,7 @@ switch ($select_local) { // Select which part of page will be loaded
 			</td></tr>'."\n".'<tr><td>';
 		echo _('Postal address');
 		echo '</td>'."\n".'<td>
-			<input name="f_personal_postalAddress" type="text" size="30" maxlength="30" value="' . $_SESSION['account']->personal_postalAddress . '">
+			<input name="f_personal_postalAddress" type="text" size="30" maxlength="80" value="' . $_SESSION['account']->personal_postalAddress . '">
 			</td><td>
 			<a href="help.php?HelpNumber=452" target="lamhelp">'._('Help').'</a>
 			</td></tr>'."\n".'<tr><td>';
@@ -952,7 +953,7 @@ switch ($select_local) { // Select which part of page will be loaded
 			</td></tr>'."\n".'<tr><td>';
 		echo _('eMail Address');
 		echo '</td>'."\n".'<td>
-			<input name="f_personal_mail" type="text" size="30" maxlength="30" value="' . $_SESSION['account']->personal_mail . '">
+			<input name="f_personal_mail" type="text" size="30" maxlength="80" value="' . $_SESSION['account']->personal_mail . '">
 			</td><td>
 			<a href="help.php?HelpNumber=456" target="lamhelp">'._('Help').'</a>
 			</td></tr>'."\n".'<tr><td>
@@ -1008,7 +1009,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo '<tr><td>
 			<input name="back" type="submit" value="'; echo _('back'); echo '">
 			</td>'."\n".'<td>
-			</td>'."\n".'<td><input name="f_finish_safeProfile" type="text" size="30" maxlength="30">
+			</td>'."\n".'<td><input name="f_finish_safeProfile" type="text" size="30" maxlength="50">
 			<input name="save" type="submit" value="';
 		echo _('Save Profile');
 		echo '"><a href="help.php?HelpNumber=457" target="lamhelp">'._('Help').'</a>

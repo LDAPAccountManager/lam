@@ -345,10 +345,10 @@ function checksamba($values, $type) { // This function checks all samba account 
 			if ($values->smb_smbHome != $return->smb_smbHome) $errors[] = array('INFO', _('smbHome'), _('Inserted groupname in smbhome.'));
 			if ( !ereg('^([a-z]|[A-Z]|[0-9]|[\|]|[\#]|[\*]|[\,]|[\.]|[\;]|[\:]|[\_]|[\-]|[\+]|[\!]|[\%]|[\&]|[\/]|[\?]|[\{]|[\[]|[\(]|[\)]|[\]]|[\}])*$',
 				$values->smb_password)) $errors[] = array('ERROR', _('Password'), _('Password contents invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
-			if ( (!$return->smb_scriptPath=='') && (!ereg('^([/])*[a-z]([a-z]|[0-9]|[.]|[-]|[_])*([/][a-z]([a-z]|[0-9]|[.]|[-]|[_])*)*$', $return->smb_scriptPath)))
+			if ( (!$return->smb_scriptPath=='') && (!ereg('^([/])*[a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*([/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*)*$', $return->smb_scriptPath)))
 				$errors[] = array('ERROR', _('Scriptpath'), _('Scriptpath is invalid'));
-			if ( (!$return->smb_profilePath=='') && (!ereg('^[/][a-z]([a-z]|[0-9]|[.]|[-]|[_])*([/][a-z]([a-z]|[0-9]|[.]|[-]|[_])*)*$', $return->smb_profilePath))
-				&& (!ereg('^[\][\]([a-z]|[A-Z]|[0-9]|[.]|[-])+([\]([a-z]|[A-Z]|[0-9]|[.]|[-])+)+$', $return->smb_profilePath)))
+			if ( (!$return->smb_profilePath=='') && (!ereg('^[/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*([/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*)*$', $return->smb_profilePath))
+				&& (!ereg('^[\][\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+([\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+)+$', $return->smb_profilePath)))
 					$errors[] = array('ERROR', _('Profilepath'), _('ProfilePath is invalid.'));
 			if ( (!$return->smb_smbHome=='') && !ereg('^[\][\]([a-z]|[A-Z]|[0-9]|[.]|[-])+([\]([a-z]|[A-Z]|[0-9]|[.]|[-])+)+$', $return->smb_smbhome))
 				$errors[] = array('ERROR', _('smbHome'), _('smbHome is invalid.'));
@@ -566,13 +566,14 @@ function findgroups() { // Will return an array with all Groupnames found in LDA
 
 function getgid($groupname) { // Will return the the gid to an existing Groupname
 	// Check if group already exists
-	$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(), 'cn=' . $groupname, array('gidNumber'), 0);
+	$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(), 'ObjectClass=PosixGroup', array('gidNumber', 'cn'), 0);
 	$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
-	if ($entry) {
+	while ($entry) {
 		$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
-		if ($attr['gidNumber'][0]) return $attr['gidNumber'][0];
+		if (($attr['gidNumber'][0]) && ($attr['cn'][0]==$groupname)) return $attr['gidNumber'][0];
+		$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
 		}
-	else return -1;
+	return -1;
 	}
 
 
@@ -695,13 +696,14 @@ function loaduser($dn) { // Will load all needed values from an existing account
 		$return->unix_pwdexpire_mon = $date['mon'];
 		$return->unix_pwdexpire_yea = $date['year'];
 		}
-	if ($attr['pwdCanChange'][0]) $return->smb_pwdcanchange = $attr['pwdCanChange'][0];
 	if ($_SESSION['config']->samba3 == 'yes') {
 		if ($attr['sambaAcctFlags'][0]) {
 			if (strrpos($attr['sambaAcctFlags'][0], 'W')) $return->smb_flagsW=true;
 			if (strrpos($attr['sambaAcctFlags'][0], 'D')) $return->smb_flagsD=true;
 			if (strrpos($attr['sambaAcctFlags'][0], 'X')) $return->smb_flagsX=true;
 			}
+		if ($attr['sambaPwdCanChange'][0]) $return->smb_pwdcanchange = $attr['sambaPwdCanChange'][0];
+		if ($attr['sambaPwdCanChange'][0]<time()) $return->smb_pwdmustchange = 1;
 		if ($attr['sambaHomePath'][0]) $return->smb_smbhome = $attr['sambaHomePath'][0];
 		if ($attr['sambaHomeDrive'][0]) $return->smb_homedrive = $attr['sambaHomeDrive'][0];
 		if ($attr['sambaLogonScript'][0])  $return->smb_scriptPath = $attr['sambaLogonScript'][0];
@@ -716,6 +718,8 @@ function loaduser($dn) { // Will load all needed values from an existing account
 				if (strrpos($attr['acctFlags'][0], 'X')) $return->smb_flagsX=true;
 				}
 			if ($attr['smbHome'][0]) $return->smb_smbhome = $attr['smbHome'][0];
+			if ($attr['pwdCanChange'][0]) $return->smb_pwdcanchange = $attr['pwdCanChange'][0];
+			if ($attr['pwdCanChange'][0]<time()) $return->smb_pwdmustchange = 1;
 			if ($attr['homeDrive'][0]) $return->smb_homedrive = $attr['homeDrive'][0];
 			if ($attr['scriptPath'][0])  $return->smb_scriptPath = $attr['scriptPath'][0];
 			if ($attr['profilePath'][0]) $return->smb_profilePath = $attr['profilePath'][0];
@@ -785,13 +789,14 @@ function loadhost($dn) { // Will load all needed values from an existing account
 		$return->unix_pwdexpire_mon = $date['mon'];
 		$return->unix_pwdexpire_yea = $date['year'];
 		}
-	if ($attr['pwdCanChange'][0]) $return->smb_pwdcanchange = $attr['pwdCanChange'][0];
 	if ($_SESSION['config']->samba3 == 'yes') {
 		if ($attr['sambaAcctFlags'][0]) {
 			if (strrpos($attr['sambaAcctFlags'][0], 'W')) $return->smb_flagsW=true;
 			if (strrpos($attr['sambaAcctFlags'][0], 'D')) $return->smb_flagsD=true;
 			if (strrpos($attr['sambaAcctFlags'][0], 'X')) $return->smb_flagsX=true;
 			}
+		if ($attr['sambaPwdCanChange'][0]) $return->smb_pwdcanchange = $attr['sambaPwdCanChange'][0];
+		if ($attr['sambaPwdCanChange'][0]<time()) $return->smb_pwdmustchange = 1;
 		if ($attr['sambaDomainName'][0]) $return->smb_domain = $attr['sambaDomainName'][0];
 		}
 		else {
@@ -801,6 +806,8 @@ function loadhost($dn) { // Will load all needed values from an existing account
 				if (strrpos($attr['acctFlags'][0], 'X')) $return->smb_flagsX=true;
 				}
 			if ($attr['domain'][0]) $return->smb_domain = $attr['domain'][0];
+			if ($attr['pwdCanChange'][0]) $return->smb_pwdcanchange = $attr['pwdCanChange'][0];
+			if ($attr['pwdCanChange'][0]<time()) $return->smb_pwdmustchange = 1;
 			}
 	if ($attr['givenName'][0]) $return->general_givenname = $attr['givenName'][0];
 	if ($attr['sn'][0]) $return->general_surname = $attr['sn'][0];
@@ -875,7 +882,7 @@ function createuser($values) { // Will create the LDAP-Account
 		$attr['sambaSID'] = $_SESSION[config]->get_domainSID() . "-"  . (2 * $values->general_uidNumber + 1000); // sambaAccount_may
 		$attr['sambaPrimaryGroupSID'] = $_SESSION[config]->get_domainSID() . "-" . (2 * getgid($values->general_group) + 1001); // sambaAccount_req
 		if ($values->smb_pwdcanchange) $attr['sambaPwdCanChange'] = "1"; else $attr['sambaPwdCanChange'] = "0"; // sambaAccount_may
-		if ($values->smb_pwdmustchange) $attr['sambaPwdMustChange'] = "1"; else $attr['sambaPwdMustChange'] = "0"; // sambaAccount_may
+		if ($values->smb_pwdmustchange) $attr['sambaPwdMustChange'] = "1"; else $attr['sambaPwdMustChange'] = mktime(10,0,0, $values->unix_pwdexpire_mon, $values->unix_pwdexpire_day, $values->unix_pwdexpire_yea); // sambaAccount_may
 		$attr['sambaAcctFlags'] = smbflag(values); // sambaAccount_may
 		$attr['displayName'] = $values->general_gecos; // sambaAccount_may
 		if ($values->smb_smbhome!='') $attr['sambaHomePath'] = $values->smb_smbhome; // sambaAccount_may
@@ -898,7 +905,7 @@ function createuser($values) { // Will create the LDAP-Account
 		$attr['rid'] = (2 * $values->general_uidNumber + 1000); // sambaAccount_may
 		$attr['primaryGroupID'] = (2 * getgid($values->general_group) + 1001); // sambaAccount_req
 		if ($values->smb_pwdcanchange) $attr['pwdCanChange'] = "1"; else $attr['pwdCanChange'] = "0"; // sambaAccount_may
-		if ($values->smb_pwdmustchange) $attr['pwdMustChange'] = "1"; else $attr['pwdMustChange'] = "0"; // sambaAccount_may
+		if ($values->smb_pwdmustchange) $attr['pwdMustChange'] = "1"; else $attr['pwdMustChange'] = mktime(10,0,0, $values->unix_pwdexpire_mon, $values->unix_pwdexpire_day, $values->unix_pwdexpire_yea); // sambaAccount_may
 		$attr['acctFlags'] = smbflag(values); // sambaAccount_may
 		$attr['displayName'] = $values->general_gecos; // sambaAccount_may
 		if ($values->smb_smbhome!='') $attr['smbHome'] = $values->smb_smbhome; // sambaAccount_may
@@ -1036,10 +1043,9 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 				$attr['sambaLMPassword'] = exec('../lib/createntlm.pl lm ' . $values->smb_password);
 				$attr['sambaPwdLastSet'] = time(); // sambaAccount_may
 				}
-		if ($values->smb_pwdcanchange && $values_old->smb_pwdcanchange==0) $attr['sambaPwdCanChange'] = "1"; else $attr['sambaPwdCanChange'] = "0"; // sambaAccount_may
-		if ($values->smb_pwdcanchange==0 && $values_old->smb_pwdcanchange==1) $attr_rem['sambaPwdCanChange'] = "1"; else $attr['sambaPwdCanChange'] = "0"; // sambaAccount_may
-		if ($values->smb_pwdmustchange && $values->smb_pwdmustchange==0) $attr['sambaPwdMustChange'] = "1"; else $attr['sambaPwdMustChange'] = "0"; // sambaAccount_may
-		if ($values->smb_pwdmustchange==0 && $values->smb_pwdmustchange==1) $attr_rem['sambaPwdMustChange'] = "1"; else $attr['sambaPwdMustChange'] = "0"; // sambaAccount_may
+		if ($values->smb_pwdcanchange && $values_old->smb_pwdcanchange!=1) $attr['sambaPwdCanChange'] = "1"; else $attr['sambaPwdCanChange'] = "0"; // sambaAccount_may
+		if ($values->smb_pwdcanchange==0 && $values_old->smb_pwdcanchange==1) $attr_rem['sambaPwdCanChange'] = "1"; // sambaAccount_may
+		if ($values->smb_pwdmustchange) $attr['sambaPwdMustChange'] = "1"; else $attr['sambaPwdMustChange'] = mktime(10,0,0, $values->unix_pwdexpire_mon, $values->unix_pwdexpire_day, $values->unix_pwdexpire_yea); // sambaAccount_may
 		$attr['sambaAcctFlags'] = smbflag($values); // sambaAccount_may
 		if (($values->smb_smbhome!='') && ($values->smb_smbhome!=$values_old->smb_smbhome)) $attr['sambaHomePath'] = $values->smb_smbhome; // sambaAccount_may
 		if (($values->smb_smbhome=='') && ($values->smb_smbhome!=$values_old->smb_smbhome)) $attr_rem['sambaHomePath'] = $values_old->smb_smbhome; // sambaAccount_may
@@ -1067,10 +1073,9 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 				$attr['lmPassword'] = exec('../lib/createntlm.pl lm ' . $values->smb_password);
 				$attr['pwdLastSet'] = time(); // sambaAccount_may
 				}
-		if ($values->smb_pwdcanchange && $values_old->smb_pwdcanchange==0) $attr['pwdCanChange'] = "1"; else $attr['pwdCanChange'] = "0"; // sambaAccount_may
-		if ($values->smb_pwdcanchange==0 && $values_old->smb_pwdcanchange==1) $attr_rem['pwdCanChange'] = "1"; else $attr['pwdCanChange'] = "0"; // sambaAccount_may
-		if ($values->smb_pwdmustchange && $values->smb_pwdmustchange==0) $attr['pwdMustChange'] = "1"; else $attr['pwdMustChange'] = "0"; // sambaAccount_may
-		if ($values->smb_pwdmustchange==0 && $values->smb_pwdmustchange==1) $attr_rem['pwdMustChange'] = "1"; else $attr['pwdMustChange'] = "0"; // sambaAccount_may
+		if ($values->smb_pwdcanchange && $values_old->smb_pwdcanchange!=1) $attr['pwdCanChange'] = "1"; else $attr['pwdCanChange'] = "0"; // sambaAccount_may
+		if ($values->smb_pwdcanchange==0 && $values_old->smb_pwdcanchange==1) $attr_rem['pwdCanChange'] = "1"; // sambaAccount_may
+		if ($values->smb_pwdmustchange) $attr['pwdMustChange'] = "1"; else $attr['pwdMustChange'] = mktime(10,0,0, $values->unix_pwdexpire_mon, $values->unix_pwdexpire_day, $values->unix_pwdexpire_yea); // sambaAccount_may
 		$attr['acctFlags'] = smbflag($values); // sambaAccount_may
 		if (($values->smb_smbhome!='') && ($values->smb_smbhome!=$values_old->smb_smbhome)) $attr['smbHome'] = $values->smb_smbhome; // sambaAccount_may
 		if (($values->smb_smbhome=='') && ($values->smb_smbhome!=$values_old->smb_smbhome)) $attr_rem['smbHome'] = $values_old->smb_smbhome; // sambaAccount_may
@@ -1253,7 +1258,7 @@ function createhost($values) { // Will create the LDAP-Account
 		$attr['sambaSID'] = $_SESSION[config]->get_domainSID() . "-" . (2 * $values->general_uidNumber + 1000); // sambaAccount_may
 		$attr['sambaPrimaryGroupSID'] = $_SESSION[config]->get_domainSID() . "-" . (2 * getgid($values->general_group) + 1001); // sambaAccount_req
 		if ($values->smb_pwdcanchange) $attr['sambaPwdCanChange'] = "1"; else $attr['sambaPwdCanChange'] = "0"; // sambaAccount_may
-		if ($values->smb_pwdmustchange) $attr['sambaPwdMustChange'] = "1"; else $attr['sambaPwdMustChange'] = "0"; // sambaAccount_may
+		if ($values->smb_pwdmustchange) $attr['sambaPwdMustChange'] = "1"; else $attr['sambaPwdMustChange'] = mktime(10,0,0, $values->unix_pwdexpire_mon, $values->unix_pwdexpire_day, $values->unix_pwdexpire_yea); // sambaAccount_may
 		$attr['sambaAcctFlags'] = smbflag($values); // sambaAccount_may
 		$attr['displayName'] = $values->general_gecos; // sambaAccount_may
 		if ($values->smb_domain!='') $attr['sambaDomainName'] = $values->smb_domain; // sambaAccount_may
@@ -1271,7 +1276,7 @@ function createhost($values) { // Will create the LDAP-Account
 		$attr['rid'] = (2 * $values->general_uidNumber + 1000); // sambaAccount_may
 		$attr['primaryGroupID'] = (2 * getgid($values->general_group) + 1001); // sambaAccount_req
 		if ($values->smb_pwdcanchange) $attr['pwdCanChange'] = "1"; else $attr['pwdCanChange'] = "0"; // sambaAccount_may
-		if ($values->smb_pwdmustchange) $attr['pwdMustChange'] = "1"; else $attr['pwdMustChange'] = "0"; // sambaAccount_may
+		if ($values->smb_pwdmustchange) $attr['pwdMustChange'] = "1"; else $attr['pwdMustChange'] = mktime(10,0,0, $values->unix_pwdexpire_mon, $values->unix_pwdexpire_day, $values->unix_pwdexpire_yea); // sambaAccount_may
 		$attr['acctFlags'] = smbflag($values); // sambaAccount_may
 		$attr['displayName'] = $values->general_gecos; // sambaAccount_may
 		if ($values->smb_domain!='') $attr['domain'] = $values->smb_domain; // sambaAccount_may
@@ -1385,10 +1390,9 @@ function modifyhost($values,$values_old) { // Will modify the LDAP-Account
 				$attr['sambaPwdLastSet'] = time(); // sambaAccount_may
 				}
 		if ($values->general_gecos != $values_old->general_gecos) $attr['displayName'] = $values->general_gecos; // sambaAccount_may
-		if ($values->smb_pwdcanchange && $values_old->smb_pwdcanchange==0) $attr['sambaPwdCanChange'] = "1"; else $attr['sambaPwdCanChange'] = "0"; // sambaAccount_may
-		if ($values->smb_pwdcanchange==0 && $values_old->smb_pwdcanchange==1) $attr_rem['sambaPwdCanChange'] = "1"; else $attr['sambaPwdCanChange'] = "0"; // sambaAccount_may
-		if ($values->smb_pwdmustchange && $values->smb_pwdmustchange==0) $attr['sambaPwdMustChange'] = "1"; else $attr['sambaPwdMustChange'] = "0"; // sambaAccount_may
-		if ($values->smb_pwdmustchange==0 && $values->smb_pwdmustchange==1) $attr_rem['sambaPwdMustChange'] = "1"; else $attr['sambaPwdMustChange'] = "0"; // sambaAccount_may
+		if ($values->smb_pwdcanchange && $values_old->smb_pwdcanchange!=1) $attr['sambaPwdCanChange'] = "1"; else $attr['sambaPwdCanChange'] = "0"; // sambaAccount_may
+		if ($values->smb_pwdcanchange==0 && $values_old->smb_pwdcanchange==1) $attr_rem['sambaPwdCanChange'] = "1"; // sambaAccount_may
+		if ($values->smb_pwdmustchange) $attr['sambaPwdMustChange'] = "1"; else $attr['sambaPwdMustChange'] = mktime(10,0,0, $values->unix_pwdexpire_mon, $values->unix_pwdexpire_day, $values->unix_pwdexpire_yea); // sambaAccount_may
 		$attr['acctFlags'] = smbflag($values); // sambaAccount_may
 		if (($values->smb_domain!='') && ($values->smb_domain!=$values_old->smb_domain)) $attr['sambaDomainName'] = $values->smb_domain; // sambaAccount_may
 		if (($values->smb_domain=='') && ($values->smb_domain!=$values_old->smb_domain)) $attr_rem['sambaDomainName'] = $values_old->smb_domain; // sambaAccount_may
@@ -1406,10 +1410,9 @@ function modifyhost($values,$values_old) { // Will modify the LDAP-Account
 					$attr['pwdLastSet'] = time(); // sambaAccount_may
 					}
 		if ($values->general_gecos != $values_old->general_gecos) $attr['displayName'] = $values->general_gecos; // sambaAccount_may
-		if ($values->smb_pwdcanchange && $values_old->smb_pwdcanchange==0) $attr['pwdCanChange'] = "1"; else $attr['pwdCanChange'] = "0"; // sambaAccount_may
-		if ($values->smb_pwdcanchange==0 && $values_old->smb_pwdcanchange==1) $attr_rem['pwdCanChange'] = "1"; else $attr['pwdCanChange'] = "0"; // sambaAccount_may
-		if ($values->smb_pwdmustchange && $values->smb_pwdmustchange==0) $attr['pwdMustChange'] = "1"; else $attr['pwdMustChange'] = "0"; // sambaAccount_may
-		if ($values->smb_pwdmustchange==0 && $values->smb_pwdmustchange==1) $attr_rem['pwdMustChange'] = "1"; else $attr['pwdMustChange'] = "0"; // sambaAccount_may
+		if ($values->smb_pwdcanchange && $values_old->smb_pwdcanchange!=1) $attr['pwdCanChange'] = "1"; else $attr['pwdCanChange'] = "0"; // sambaAccount_may
+		if ($values->smb_pwdcanchange==0 && $values_old->smb_pwdcanchange==1) $attr_rem['pwdCanChange'] = "1"; // sambaAccount_may
+		if ($values->smb_pwdmustchange) $attr['pwdMustChange'] = "1"; else $attr['pwdMustChange'] = mktime(10,0,0, $values->unix_pwdexpire_mon, $values->unix_pwdexpire_day, $values->unix_pwdexpire_yea); // sambaAccount_may
 		$attr['acctFlags'] = smbflag($values); // sambaAccount_may
 		if (($values->smb_domain!='') && ($values->smb_domain!=$values_old->smb_domain)) $attr['domain'] = $values->smb_domain; // sambaAccount_may
 		if (($values->smb_domain=='') && ($values->smb_domain!=$values_old->smb_domain)) $attr_rem['domain'] = $values_old->smb_domain; // sambaAccount_may
