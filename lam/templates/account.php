@@ -303,15 +303,11 @@ switch ($select_local) {
 				echo _('Surname');
 				echo '</td><td>
 					<input name="f_general_surname" type="text" size="20" maxlength="20" value="' . $_SESSION['account']->general_surname . '">
-					</td><td>';
-				echo _('Can be left empty.');
-				echo '</td></tr><tr><td>';
+					</td></tr><tr><td>';
 				echo _('Given name');
 				echo '</td><td>
 					<input name="f_general_givenname" type="text" size="20" maxlength="20" value="' . $_SESSION['account']->general_givenname . '">
-					</td><td>';
-				echo _('Can be left empty.');
-				echo '</td></tr><tr><td>';
+					</td></tr><tr><td>';
 				echo _('Primary Group');
 				echo '</td><td><select name="f_general_group">';
 				foreach ($groups as $group) {
