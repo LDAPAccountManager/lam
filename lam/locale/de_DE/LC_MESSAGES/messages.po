@@ -1,0 +1,437 @@
+#$Id: listusers.php,v 1.2 2003/04/26 13:30:36 gruberroland Exp $
+#
+#  This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
+#  Copyright (C) 2003  Leonhard Walchshäusl
+#
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#  
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more detaexils.
+#  
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2003-05-02 13:05+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8-bit\n"
+
+msgid "<b>"
+msgstr ""
+
+msgid "Passwords are different!"
+msgstr "Die Passwörter stimmen nicht überein!"
+
+msgid "<b>Admins: </b>"
+msgstr "<b>Administratoren: </b>"
+
+msgid "<b>GroupSuffix: </b>"
+msgstr "Gruppen Suffix: "
+
+msgid "<b>HostSuffix: </b>"
+msgstr "Host Suffix: "
+
+msgid "<b>ServerURL: </b>"
+msgstr "Server URL:"
+
+msgid "<b>UserSuffix: </b>"
+msgstr "Benutzer Suffix"
+
+msgid "<b>grouplistAttributes: </b>"
+msgstr ""
+
+msgid "<b>hostlistAttributes: </b>"
+msgstr ""
+
+msgid "<b>maxGID: </b>"
+msgstr ""
+
+msgid "<b>maxMachine: </b>"
+msgstr ""
+
+msgid "<b>maxUID: </b>"
+msgstr ""
+
+msgid "<b>minGID: </b>"
+msgstr ""
+
+msgid "<b>minMachine: </b>"
+msgstr ""
+
+msgid "<b>minUID: </b>"
+msgstr ""
+
+msgid "<b>userlistAttributes: </b>"
+msgstr ""
+
+msgid "<br><font color=\"red\">Cannot open config file!</font>"
+msgstr ""
+
+msgid "<font color=\"red\"><b>"
+msgstr ""
+
+msgid "List of admin users is empty!"
+msgstr "Keine Administratoren gefunden!"
+
+msgid "MaxGID is empty!"
+msgstr "Variable MaxGID ist nicht gesetzt!"
+
+msgid "MaxMachine is empty!"
+msgstr "MaxMachine ist nicht gesetzt!"
+
+msgid "MaxUID is empty!"
+msgstr "MaxUID ist nicht gesetzt!"
+
+msgid "MinGID is empty!"
+msgstr "MinGID ist nicht gesetzt!"
+
+msgid "MinMachine is empty!"
+msgstr "MinMachine ist nicht gesetzt!"
+
+msgid "MinUID is empty!"
+msgstr "MinUID ist nicht gesetzt!"
+
+msgid "No attributes in group list!"
+msgstr "Keine Attributnamen in der Gruppenliste gesetzt!"
+
+msgid "No attributes in host list!"
+msgstr "Keine Attributnamen in der Hostliste gesetzt!"
+
+msgid "No attributes in user list!"
+msgstr "Keine Attributwerte in der Benutzerliste gesetzt!"
+
+msgid "Server Address is empty!"
+msgstr "Die Server Addresse ist nicht gesetzt!"
+
+msgid "UserSuffix is empty!"
+msgstr "UserSuffix ist nicht gesetzt!"
+
+msgid "Abort"
+msgstr "Abbrechen"
+
+msgid "Add new User"
+msgstr "Neuen Benutzer anlegen"
+
+msgid "Allowed Hosts"
+msgstr "Zugriffsberechtigte Hosts"
+
+msgid "Attributes in Group List:"
+msgstr "Attributnamen in der Gruppen Liste:"
+
+msgid "Attributes in Host List:"
+msgstr "Attributnamen in der Host Liste:"
+
+msgid "Attributes in User List:"
+msgstr "Attributnamen in der Benutzerliste:"
+
+msgid "Back to Login"
+msgstr "Zurück zum Login"
+
+msgid "Back to preferences..."
+msgstr "Zurück zu den Einstellungen"
+
+msgid "Config->set_Admins failed!"
+msgstr "Config->set_Admins fehlgeschlagen!"
+
+msgid "Config->set_Adminstring failed!"
+msgstr "Config->set_Adminstring fehlgeschlagen!"
+
+msgid "Config->set_GroupSuffix failed!"
+msgstr "Config->set_GroupSuffix fehlgeschlagen!"
+
+msgid "Config->set_HostSuffix failed!"
+msgstr "Config->set_HostSuffix fehlgeschlagen!"
+
+msgid "Config->set_Passwd failed!"
+msgstr "Config->set_Passwd fehlgeschlagen!"
+
+msgid "Config->set_ServerURL failed!"
+msgstr "Config->set_ServerURL fehlgeschlagen!"
+
+msgid "Config->set_UserSuffix failed!"
+msgstr "Config->set_UserSuffix fehlgeschlagen!"
+
+msgid "Config->set_grouplistAttributes failed!"
+msgstr "Config->set_grouplistAttributes fehlgeschlagen!"
+
+msgid "Config->set_hostlistAttributes failed!"
+msgstr "Config->set_hostlistAttributes fehlgeschlagen!"
+
+msgid "Config->set_maxGID failed!"
+msgstr "Config->set_maxGID fehlgeschlagen!"
+
+msgid "Config->set_maxMachine failed!"
+msgstr "Config->set_maxMachine fehlgeschlagen!"
+
+msgid "Config->set_maxUID failed!"
+msgstr "Config->set_maxUID fehlgeschlagen!"
+
+msgid "Config->set_minGID failed!"
+msgstr "Config->set_minGID fehlgeschlagen!"
+
+msgid "Config->set_minMachine failed!"
+msgstr "Config->set_minMachine fehlgeschlagen!"
+
+msgid "Config->set_minUID failed!"
+msgstr "Config->set_minUID fehlgeschlagen!"
+
+msgid "Config->set_userlistAttributes failed!"
+msgstr "Config->set_userlistAttributes fehlgeschlagen!"
+
+msgid "Configuration Login"
+msgstr "Login für die Einstellungen"
+
+msgid "Delete Group(s)"
+msgstr "Lösche Gruppe(n)"
+
+msgid "Delete Host(s)"
+msgstr "Lösche Host(s)"
+
+msgid "Delete selected User(s)"
+msgstr "Lösche selektierte(n) Benutzer"
+
+msgid "E-Mail"
+msgstr "E-Mail"
+
+msgid "Edit"
+msgstr "Editieren"
+
+msgid "Enter Username and Password for Account:"
+msgstr "Geben Sie Benutzernamen und Passwort ein:"
+
+msgid "First Name"
+msgstr "Vorname"
+
+msgid "GID Number"
+msgstr "GID Nummer"
+
+msgid "Group Description"
+msgstr "Gruppen Beschreibung"
+
+msgid "Group Member DNs"
+msgstr "Gruppenmitglieder DNS"
+
+msgid "Group Members"
+msgstr "Gruppenmitglieder"
+
+msgid "Group Name"
+msgstr "Gruppen Name"
+
+msgid "GroupSuffix"
+msgstr "GruppenSuffix"
+
+msgid "Groups"
+msgstr "Gruppen"
+
+msgid "Home Directory"
+msgstr "Home Verzeichnis"
+
+msgid "Host Description"
+msgstr "Host Beschreibung"
+
+msgid "Host Name"
+msgstr "Host Name"
+
+msgid "Host Username"
+msgstr "Host Benutzername"
+
+msgid "HostSuffix"
+msgstr "HostSuffix"
+
+msgid "Hosts"
+msgstr "Hosts"
+
+msgid "LDAP Account Manager -Login-"
+msgstr ""
+
+msgid "LDAP Account Manager Configuration"
+msgstr "LDAP Account Manager Einstellungen"
+
+msgid "LDAP Search failed! Please check your preferences. <br> No Groups found!"
+msgstr "LDAP Suche fehlgeschlagen! Bitte überprüfen Sie die Einstellungen. <br> Keine Gruppen gefunden!"
+
+msgid "LDAP Search failed! Please check your preferences. <br> No Samba Hosts found!"
+msgstr "LDAP Suche fehlgeschlagen! Bitte überprüfen Sie die Einstellungen. <br> Keine Hosts gefunden!"
+
+msgid "LDAP Search failed! Please check your preferences. <br> No Users found!"
+msgstr "LDAP Suche fehlgeschlagen! Bitte überprüfen Sie die Einstellungen. <br> Keine Benutzer gefunden!"
+
+msgid "Last Name"
+msgstr "Nachname"
+
+msgid "Ldap->Ldap failed!"
+msgstr "Ldap->Ldap fehlgeschlagen!"
+
+msgid "List of valid users"
+msgstr "Liste der berechtigten Benutzer"
+
+msgid "Login Shell"
+msgstr ""
+
+msgid "Login"
+msgstr ""
+
+msgid "Logout"
+msgstr ""
+
+msgid "Maximum GID number"
+msgstr "Maximalwert der GID Nummer"
+
+msgid "Maximum Machine number"
+msgstr "Maximalwert der Maschinen Nummer"
+
+msgid "Maximum UID number"
+msgstr ""
+
+msgid "Minimum GID number"
+msgstr ""
+
+msgid "Minimum Machine number"
+msgstr ""
+
+msgid "Minimum UID number"
+msgstr ""
+
+msgid "New Group"
+msgstr ""
+
+msgid "New Host"
+msgstr ""
+
+msgid "New Password"
+msgstr ""
+
+msgid "No Grous found!"
+msgstr ""
+
+msgid "No Samba Hosts found!"
+msgstr ""
+
+msgid "No Users found!"
+msgstr "Keine Benutzer gefunden!"
+
+msgid "No username was specified!"
+msgstr "Es wurde kein Benutzername angegeben!"
+
+msgid "Ok"
+msgstr ""
+
+msgid "Password changed!"
+msgstr "Passwort geändert!"
+
+msgid "Password to enter preferences:"
+msgstr "Passwort um die Einstellungen zu ändern:"
+
+msgid "Password:"
+msgstr "Passwort:"
+
+msgid "RID (Windows UID)"
+msgstr ""
+
+msgid "Reenter Password"
+msgstr "Passwort nochmal eingeben:"
+
+msgid "Reset"
+msgstr ""
+
+msgid ""
+"Server Address of LDAP server (e.g. ldap://localhost:389 or ldaps://"
+"localhost:636)"
+msgstr ""
+
+msgid "Server Address"
+msgstr ""
+
+msgid "Submit"
+msgstr "Abschicken"
+
+msgid "The following settings were saved:"
+msgstr "Die folgenden Einstellungen wurden gespeichert:"
+
+msgid ""
+"These are the minimum and maximum numbers to use for Samba hosts. <br> Do "
+"not use the same range as for user IDs."
+msgstr ""
+
+msgid "These are the minimum and maximum numbers to use for group IDs"
+msgstr ""
+
+msgid "These are the minimum and maximum numbers to use for user IDs"
+msgstr ""
+
+msgid ""
+"This is the list of attributes to show in the lists. The entries can either "
+"be predefined values (e.g. '#cn' or '#gidNumber') or individual ones (e.g. "
+"'cn:Group Name'). The entries are seperated by semicolons."
+msgstr ""
+
+msgid ""
+"This is the suffix from where to search for Samba hosts.<br>(e.g. "
+"ou=machines,dc=yourcompany,dc=com)"
+msgstr ""
+
+msgid ""
+"This is the suffix from where to search for groups.<br>(e.g. ou=group,"
+"dc=yourcompany,dc=com)"
+msgstr ""
+
+msgid ""
+"This is the suffix from where to search for users.<br>(e.g. ou=People,"
+"dc=yourcompany,dc=com)"
+msgstr ""
+
+msgid "UID Number"
+msgstr ""
+
+msgid "Unable to load lam.conf! "
+msgstr "Kann lam.conf nicht laden!"
+
+msgid "Unable to load profile! "
+msgstr "Kann das Profil nicht laden!"
+
+msgid "User ID"
+msgstr ""
+
+msgid "User Name"
+msgstr "Benutzername"
+
+msgid "UserSuffix"
+msgstr ""
+
+msgid "Username:"
+msgstr "Benutzername:"
+
+msgid ""
+"Usernames must be seperated by semicolons<br>(e.g. cn=admin,dc=yourcompany,"
+"dc=com;uid=root,ou=people,dc=yourcompany,dc=com)"
+msgstr ""
+
+msgid "Users"
+msgstr "Benutzer:"
+
+msgid "You are connecting to the server specified below:"
+msgstr "Sie werden mit dem unten angegebenen Server verbunden:"
+
+msgid "Your Language:"
+msgstr "Sprache:"
+
+msgid "description"
+msgstr "Beschreibung:"
+
+msgid "saveHostProfile: \\$account has wrong type!"
+msgstr ""
+
+msgid "saveUserProfile: \\$account has wrong type!"
+msgstr ""
