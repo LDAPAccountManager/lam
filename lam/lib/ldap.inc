@@ -53,21 +53,21 @@ class Ldap{
 		// construct arrays with known LDAP attributes
 		$this->ldapUserAttributes = array (
 			"uid" => _("User ID"),
-			"uidNumber" => _("UID number"),
-			"gidNumber" => _("GID number"),
+			"uidnumber" => _("UID number"),
+			"gidnumber" => _("GID number"),
 			"cn" => _("Username"),
 			"host" => _("Allowed hosts"),
-			"givenName" => _("First name"),
+			"givenname" => _("First name"),
 			"sn" => _("Last name"),
-			"homeDirectory" => _("Home directory"),
-			"loginShell" => _("Login shell"),
+			"homedirectory" => _("Home directory"),
+			"loginshell" => _("Login shell"),
 			"mail" => _("E-Mail"),
 			"gecos" => _("Description")
 			);
 		$this->ldapGroupAttributes = array (
 			"cn" => _("Group name"),
-			"gidNumber" => _("GID number"),
-			"memberUID" => _("Group members"),
+			"gidnumber" => _("GID number"),
+			"memberuid" => _("Group members"),
 			"member" => _("Group member DNs"),
 			"description" => _("Group description")
 			);

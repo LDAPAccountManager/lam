@@ -79,10 +79,11 @@ if ($_SESSION["config"]->get_MaxListEntries() <= 0)
      $max_pageentrys = $_SESSION["config"]->get_MaxListEntries();
 
 
+// generate column attributes and descriptions
 for ($i = 0; $i < sizeof($temp_array); $i++) {
   // if value is predifined, look up description in hash_table
   if (substr($temp_array[$i],0,1) == "#") {
-    $attr = substr($temp_array[$i],1);
+    $attr = strtolower(substr($temp_array[$i],1));
     $attr_array[$i] = $attr;
     $desc_array[] = strtoupper($hash_table[$attr]);
   }

@@ -1,4 +1,4 @@
-# $Id: messages.po,v 1.9 2003/08/14 13:21:11 gruberroland Exp $
+# $Id: messages.po,v 1.10 2003/08/14 15:28:06 gruberroland Exp $
 #
 #
 # LDAP Account Manager
@@ -2092,11 +2092,11 @@ msgstr "Suffix"
 #: ../templates/account.php:439 ../templates/masscreate.php:196
 #: ../templates/massdetail.php:97 ../help/help.inc:171 ../lib/account.inc:184
 msgid "Surname"
-msgstr "Vorname"
+msgstr "Nachname"
 
 #: ../lib/account.inc:184
 msgid "Surname contents invalid characters"
-msgstr "Vorname enthält ungültige Zeichen"
+msgstr "Nachname enthält ungültige Zeichen"
 
 #: ../help/help.inc:172
 msgid ""
