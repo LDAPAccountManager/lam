@@ -152,7 +152,7 @@ if ($_POST['submit']) {
 					</td>
 					<td>
 						<b>
-							<?php echo _("Add profile:"); ?>
+							<?php echo _("Add profile") . ":"; ?>
 							&nbsp
 						</b>
 						&nbsp <?php echo _("Profile name"); ?> :
@@ -190,13 +190,13 @@ if ($_POST['submit']) {
 						?>
 						</select>
 						<b>
-							<?php echo _("Rename profile to:"); ?>
+							<?php echo _("Rename profile to") . ":"; ?>
 							&nbsp
 						</b>
 						<input type="text" name="renfilename">
 					</td>
 					<td>
-						<a href="../help.php?HelpNumber=230" target="lamhelp"><?php echo _("Help"); ?></a>
+						<a href="../help.php?HelpNumber=231" target="lamhelp"><?php echo _("Help"); ?></a>
 					</td>
 				</tr>
 
@@ -221,7 +221,7 @@ if ($_POST['submit']) {
 						</b>
 					</td>
 					<td>
-						<a href="../help.php?HelpNumber=230" target="lamhelp"><?php echo _("Help"); ?></a>
+						<a href="../help.php?HelpNumber=232" target="lamhelp"><?php echo _("Help"); ?></a>
 					</td>
 				</tr>
 
@@ -246,7 +246,7 @@ if ($_POST['submit']) {
 						</b>
 					</td>
 					<td>
-						<a href="../help.php?HelpNumber=230" target="lamhelp"><?php echo _("Help"); ?></a>
+						<a href="../help.php?HelpNumber=233" target="lamhelp"><?php echo _("Help"); ?></a>
 					</td>
 				</tr>
 				<tr>
@@ -289,7 +289,7 @@ if ($_POST['submit']) {
 						</b>
 					</td>
 					<td>
-						<a href="../help.php?HelpNumber=230" target="lamhelp"><?php echo _("Help"); ?></a>
+						<a href="../help.php?HelpNumber=234" target="lamhelp"><?php echo _("Help"); ?></a>
 					</td>
 				</tr>
 
@@ -308,7 +308,7 @@ if ($_POST['submit']) {
 						<input type="password" name="masterpassword2">
 					</td>
 					<td>
-						<a href="../help.php?HelpNumber=230" target="lamhelp"><?php echo _("Help"); ?></a>
+						<a href="../help.php?HelpNumber=235" target="lamhelp"><?php echo _("Help"); ?></a>
 					</td>
 				</tr>
 
@@ -324,6 +324,8 @@ if ($_POST['submit']) {
 			<input type="password" name="passwd">
 			&nbsp
 			<input type="submit" name="submit" value=" <?php echo _("Submit"); ?> ">
+			&nbsp
+			<a href="../help.php?HelpNumber=236" target="lamhelp"><?php echo _("Help"); ?></a>
 
 		</form>
 		<p><br></p>

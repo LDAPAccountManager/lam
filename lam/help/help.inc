@@ -32,6 +32,7 @@ $helpArray = array (
 				// Roland Gruber
 				// configuration wizard
 				// configuration login
+				// config profile management
 				"200" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("Login"),
 					"Text" => _("Please enter the configuration password. This is NOT your LDAP password. It is stored in your .conf-file. If this is the first time you log in, enter \"lam\".")),
 				"201" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("Server address"),
@@ -103,6 +104,20 @@ $helpArray = array (
 						"</b>"),
 				"214" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("Cache timeout"),
 					"Text" => _("This is the time in minutes which LAM caches its LDAP searches. Shorter times will stress LDAP more but decrease the possibility that changes are not identified.")),
+				"230" => array ("ext" => "FALSE", "Headline" => _("Profile management") . " - " . _("Add profile"),
+					"Text" => _("Please enter the name of the new profile and the password to change its settings. Profile names may contain letters, numbers and -/_.")),
+				"231" => array ("ext" => "FALSE", "Headline" => _("Profile management") . " - " . _("Rename profile"),
+					"Text" => _("Please enter the new name of the profile. The name may contain letters, numbers and -/_.")),
+				"232" => array ("ext" => "FALSE", "Headline" => _("Profile management") . " - " . _("Delete profile"),
+					"Text" => _("This will delete the selected profile.")),
+				"233" => array ("ext" => "FALSE", "Headline" => _("Profile management") . " - " . _("Set profile password"),
+					"Text" => _("This changes the password of the selected profile.")),
+				"234" => array ("ext" => "FALSE", "Headline" => _("Profile management") . " - " . _("Change default profile"),
+					"Text" => _("This changes the profile which is selected by default at login.")),
+				"235" => array ("ext" => "FALSE", "Headline" => _("Profile management") . " - " . _("Change master password"),
+					"Text" => _("If you want to change your master configuration password, please enter it here.")),
+				"236" => array ("ext" => "FALSE", "Headline" => _("Profile management") . " - " . _("Master password"),
+					"Text" => _("Please enter the master configuration password. This is NOT your LDAP password. It is stored in your config.cfg file. If this is the first time you log in, enter \"lam\".")),
 				// 300 - 399
 				// Roland Gruber
 				// profile editor
