@@ -31,6 +31,7 @@ setlanguage();
 
 
 if ($_POST['backmain']) { // back to list page
+	if (isset($_SESSION['delete_dn'])) unset ($_SESSION['delete_dn']);
 	metaRefresh($_SESSION['lamurl']."templates/lists/list".$_POST['type5']."s.php");
 	die;
 	}
