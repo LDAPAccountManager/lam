@@ -172,23 +172,28 @@ echo "</title>\n".
 
 do { // X-Or, only one if() can be true
 	if ($_POST['next_members']) {
-		if (!isset($errors)) $select_local='groupmembers';
+		if (!is_array($errors)) $select_local='groupmembers';
+			else $select_local=$_POST['select'];
 		break;
 		}
 	if ($_POST['next_general']) {
-		if (!isset($errors)) $select_local='general';
+		if (!is_array($errors)) $select_local='general';
+			else $select_local=$_POST['select'];
 		break;
 		}
 	if ($_POST['next_samba']) {
-		if (!isset($errors)) $select_local='samba';
+		if (!is_array($errors)) $select_local='samba';
+			else $select_local=$_POST['select'];
 		break;
 		}
 	if ($_POST['next_quota']) {
-		if (!isset($errors)) $select_local='quota';
+		if (!is_array($errors)) $select_local='quota';
+			else $select_local=$_POST['select'];
 		break;
 		}
 	if ($_POST['next_final']) {
 		if (!isset($errors)) $select_local='final';
+			else $select_local=$_POST['select'];
 		break;
 		}
 	if ( $_POST['create'] ) { // Create-Button was pressed
@@ -260,7 +265,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		ldapreload('user');
 		echo "<input name=\"select\" type=\"hidden\" value=\"groupmembers\">\n";
 		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
-		echo "<br><fieldset class=\"groupedit-middle\"><legend class=\"groupedit-bright\"><b>";
+		echo "<table border=0><tr><td><fieldset class=\"groupedit-middle\"><legend class=\"groupedit-bright\"><b>";
 		echo _('Please select page:');
 		echo "</b></legend>\n";
 		echo "<input name=\"next_general\" type=\"submit\" value=\""; echo _('General'); echo "\">\n<br>";
@@ -269,8 +274,8 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "<input name=\"next_quota\" type=\"submit\""; if (!isset($_SESSION['config']->scriptPath)) echo " disabled ";
 		echo "value=\""; echo _('Quota'); echo "\">\n<br>";
 		echo "<input name=\"next_final\" type=\"submit\" value=\""; echo _('Final');
-		echo "\"></fieldset></td>\n<td>";
-		echo "<fieldset class=\"groupedit-bright\"><legend class=\"groupedit-bright\"><b>". _('Additional group members') . "</b></legend>\n";
+		echo "\"></fieldset></td></tr></table></td>\n<td>";
+		echo "<table border=0><tr><td><fieldset class=\"groupedit-bright\"><legend class=\"groupedit-bright\"><b>". _('Additional group members') . "</b></legend>\n";
 		echo "<table border=0 width=\"100%\">\n";
 		echo "<tr><td valign=\"top\"><fieldset class=\"groupedit-middle\"><legend class=\"groupedit-bright\">";
 		echo _('Group members');
@@ -289,7 +294,7 @@ switch ($select_local) { // Select which part of page will be loaded
 			if (is_array($temp)) {
 				echo "		<option>$temp[cn]</option>\n";
 				}
-		echo "</select></fieldset></td>\n</tr>\n</table>\n</fieldset>\n</tr>\n</table>\n";
+		echo "</select></fieldset></td>\n</tr>\n</table>\n</fieldset></td></tr></table>\n</td></tr>\n</table>\n";
 		break;
 
 	case 'general':
@@ -299,7 +304,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		// Show page info
 		echo "<input name=\"select\" type=\"hidden\" value=\"general\">\n";
 		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
-		echo "<br><fieldset class=\"groupedit-middle\"><legend class=\"groupedit-bright\"><b>";
+		echo "<table><tr><td><fieldset class=\"groupedit-middle\"><legend class=\"groupedit-bright\"><b>";
 		echo _('Please select page:');
 		echo "</b></legend>\n";
 		echo "<input name=\"next_general\" type=\"submit\" disabled value=\""; echo _('General'); echo "\">\n<br>";
@@ -308,7 +313,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "<input name=\"next_quota\" type=\"submit\""; if (!isset($_SESSION['config']->scriptPath)) echo " disabled ";
 		echo "value=\""; echo _('Quota'); echo "\">\n<br>";
 		echo "<input name=\"next_final\" type=\"submit\" value=\""; echo _('Final');
-		echo "\"></fieldset></td>\n<td>";
+		echo "\"></fieldset></td></tr></table></td>\n<td valign=\"top\">";
 		echo "<table border=0 width=\"100%\">\n<tr>\n<td>";
 		echo "<fieldset class=\"groupedit-bright\"><legend class=\"groupedit-bright\"><b>";
 		echo _("General properties");
@@ -356,7 +361,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		if ($_SESSION['config']->samba3 == 'yes') $samba3domains = $_SESSION['ldap']->search_domains($_SESSION[config]->get_domainSuffix());
 		echo "<input name=\"select\" type=\"hidden\" value=\"samba\">\n";
 		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
-		echo "<br><fieldset class=\"groupedit-middle\"><legend class=\"groupedit-bright\"><b>";
+		echo "<table border=0><tr><td><fieldset class=\"groupedit-middle\"><legend class=\"groupedit-bright\"><b>";
 		echo _('Please select page:');
 		echo "</b></legend>\n";
 		echo "<input name=\"next_general\" type=\"submit\" value=\""; echo _('General'); echo "\">\n<br>";
@@ -365,8 +370,8 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "<input name=\"next_quota\" type=\"submit\""; if (!isset($_SESSION['config']->scriptPath)) echo " disabled ";
 		echo "value=\""; echo _('Quota'); echo "\">\n<br>";
 		echo "<input name=\"next_final\" type=\"submit\" value=\""; echo _('Final');
-		echo "\"></fieldset></td>\n<td>";
-		echo "<fieldset class=\"groupedit-bright\"><legend class=\"groupedit-bright\"><b>"._('Samba properties')."</b></legend>\n";
+		echo "\"></fieldset></td></tr></table></td>\n<td valign=\"top\">";
+		echo "<table border=0><tr><td><fieldset class=\"groupedit-bright\"><legend class=\"groupedit-bright\"><b>"._('Samba properties')."</b></legend>\n";
 		echo "<table border=0 width=\"100%\"><tr><td>";
 		echo _('Windows groupname');
 		echo "</td>\n<td><select name=\"f_smb_mapgroup\">";
@@ -421,14 +426,14 @@ switch ($select_local) { // Select which part of page will be loaded
 			else echo '<option>' . $samba3domains[$i]->name. '</option>';
 			}
 		echo	'</select></td>'."\n".'<td><a href="../help.php?HelpNumber=467" target="lamhelp">'._('Help').'</a></td></tr>'."\n";
-		echo "</table>\n</fieldset>\n</tr>\n</table>\n";
+		echo "</table>\n</fieldset>\n</td></tr></table></td></tr>\n</table>\n";
 		break;
 
 	case 'quota':
 		// Quota Settings
 		echo "<input name=\"select\" type=\"hidden\" value=\"samba\">\n";
 		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
-		echo "<br><fieldset class=\"groupedit-middle\"><legend class=\"groupedit-bright\"><b>";
+		echo "<table border=0><tr><td><fieldset class=\"groupedit-middle\"><legend class=\"groupedit-bright\"><b>";
 		echo _('Please select page:');
 		echo "</b></legend>\n";
 		echo "<input name=\"next_general\" type=\"submit\" value=\""; echo _('General'); echo "\">\n<br>";
@@ -436,9 +441,9 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "<input name=\"next_samba\" type=\"submit\" value=\""; echo _('Samba'); echo "\">\n<br>";
 		echo "<input name=\"next_quota\" type=\"submit\" disabled value=\""; echo _('Quota'); echo "\">\n<br>";
 		echo "<input name=\"next_final\" type=\"submit\" value=\""; echo _('Final');
-		echo "\"></fieldset></td>\n<td>";
+		echo "\"></fieldset></td></tr></table></td>\n<td valign=\"top\">";
 		echo '<input name="select" type="hidden" value="quota">';
-		echo "<fieldset class=\"groupedit-bright\"><legend class=\"groupedit-bright\"><b>"._('Quota properties')."</b></legend>\n";
+		echo "<table border=0><tr><td><fieldset class=\"groupedit-bright\"><legend class=\"groupedit-bright\"><b>"._('Quota properties')."</b></legend>\n";
 		echo "<table border=0 width=\"100%\"><tr><td>";
 		echo _('Mountpoint'); echo '</td>'."\n".'<td>'; echo _('Used blocks'); echo '</td>'."\n".'<td>';
 		echo _('Soft block limit'); echo '</td>'."\n".'<td>'; echo _('Hard block limit'); echo '</td>'."\n".'<td>'; echo _('Grace block period');
@@ -461,7 +466,7 @@ switch ($select_local) { // Select which part of page will be loaded
 			echo '<td>'.$_SESSION['account']->quota[$i][8].'</td></tr>'; // inodes grace period
 			$i++;
 			}
-		echo "</table>\n</fieldset>\n</tr>\n</table>\n";
+		echo "</table>\n</fieldset>\n</td></tr></table></td></tr>\n</table>\n";
 		break;
 
 	case 'final':
@@ -469,7 +474,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo '<input name="select" type="hidden" value="final">';
 		echo "<input name=\"select\" type=\"hidden\" value=\"samba\">\n";
 		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
-		echo "<br><fieldset class=\"groupedit-middle\"><legend class=\"groupedit-bright\"><b>";
+		echo "<table><tr><td><fieldset class=\"groupedit-middle\"><legend class=\"groupedit-bright\"><b>";
 		echo _('Please select page:');
 		echo "</b></legend>\n";
 		echo "<input name=\"next_general\" type=\"submit\" value=\""; echo _('General'); echo "\">\n<br>";
@@ -478,11 +483,11 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "<input name=\"next_quota\" type=\"submit\""; if (!isset($_SESSION['config']->scriptPath)) echo " disabled ";
 		echo "value=\""; echo _('Quota'); echo "\">\n<br>";
 		echo "<input name=\"next_final\" type=\"submit\" disabled value=\""; echo _('Final');
-		echo "\"></fieldset></td>\n<td>";
+		echo "\"></fieldset></td></tr></table></td>\n<td valign=\"top\">";
 		echo "<table border=0 width=\"100%\">\n<tr>\n<td>";
-		echo "<fieldset class=\"groupedit-middle\"><legend class=\"groupedit-bright\">";
+		echo "<fieldset class=\"groupedit-middle\"><legend class=\"groupedit-bright\"><b>";
 		echo _("Save profile");
-		echo "</legend>\n<table border=0 width=\"100%\">\n<tr>\n<td>";
+		echo "</b></legend>\n<table border=0 width=\"100%\">\n<tr>\n<td>";
 		echo '<input name="f_finish_safeProfile" type="text" size="30" maxlength="50">';
 		echo '</td><td><input name="save" type="submit" value="';
 		echo _('Save profile');

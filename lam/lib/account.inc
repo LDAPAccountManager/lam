@@ -443,7 +443,7 @@ function checkquota($values) { // This function checks all quota paramters
 		$i++;
 		}
 	// Return values and errors
-	if (!$errors) return array($return);
+	if (!isset($errors)) return array($return);
 	 else return array($return, $errors);
 	}
 
@@ -461,7 +461,7 @@ function checkpersonal($values) {
 	if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $values->personal_title))  $errors[] = array('ERROR', _('Title'), _('Please enter a valid title!'));
 	if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $values->personal_employeeType))  $errors[] = array('ERROR', _('Employee type'), _('Please enter a valid employee type!'));
 	if ( !ereg('^([0-9]|[A-Z]|[a-z])*$', $values->personal_postalCode))  $errors[] = array('ERROR', _('Postal code'), _('Please enter a valid postal code!'));
-	if (!$errors) return array($return, '');
+	if (!isset($errors)) return array($return, '');
 	 else return array($return, $errors);
 	}
 

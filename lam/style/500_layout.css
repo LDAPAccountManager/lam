@@ -422,7 +422,7 @@ fieldset.groupedit-middle {
 }
 
 legend.groupedit-bright {
-  color:#7167bf;
+  color:blue;
 }
 
 fieldset.groupedit-dark {
@@ -430,7 +430,7 @@ fieldset.groupedit-dark {
 }
 
 legend.groupedit-dark {
-  color:#000000;
+  color:blue;
 }
 
 select.groupedit-bright {
@@ -448,7 +448,7 @@ fieldset.hostedit-bright {
 }
 
 legend.hostedit-bright {
-  color:#7167bf;
+  color:blue;
 }
 
 fieldset.hostedit-dark {
@@ -456,7 +456,7 @@ fieldset.hostedit-dark {
 }
 
 legend.hostedit-dark {
-  color:#000000;
+  color:blue;
 }
 
 select.hostedit-bright {

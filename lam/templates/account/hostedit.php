@@ -39,19 +39,24 @@ if (isset($_GET['DN'])) {
 		$DN = str_replace("\'", '',$_GET['DN']);
 		$_SESSION['account'] = loadhost($DN);
 		$_SESSION['account'] ->type = 'host';
+		$_SESSION['account']->smb_flagsW = 1;
 		$_SESSION['account_old'] = $_SESSION['account'];
+		$_SESSION['account']->unix_password='';
+		$_SESSION['account']->smb_password='';
 		$_SESSION['account']->general_dn = substr($_SESSION['account']->general_dn, strpos($_SESSION['account']->general_dn, ',')+1);
 		$_SESSION['final_changegids'] = '';
 		}
 	else {
 		$_SESSION['account'] = loadHostProfile('default');
 		$_SESSION['account'] ->type = 'host';
+		$_SESSION['account']->smb_flagsW = 1;
 		if (isset($_SESSION['account_old'])) unset($_SESSION['account_old']);
 		}
 	}
 else if (count($_POST)==0) { // Startcondition. groupedit.php was called from outside
 	$_SESSION['account'] = loadHostProfile('default');
 	$_SESSION['account'] ->type = 'host';
+	$_SESSION['account']->smb_flagsW = 1;
 	if (isset($_SESSION['account_old'])) unset($_SESSION['account_old']);
 	}
 
@@ -118,7 +123,7 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 		break;
 	}
 
-// Write HTML-Header and part of Table
+// Write HTML-Header
 echo $_SESSION['header'];
 echo "<html><head><title>";
 echo _("Create new Account");
@@ -129,15 +134,18 @@ echo "</title>\n".
 
 do { // X-Or, only one if() can be true
 	if ($_POST['next_general']) {
-		if (!isset($errors)) $select_local='general';
+		if (!is_array($errors)) $select_local='general';
+			else $select_local=$_POST['select'];
 		break;
 		}
 	if ($_POST['next_samba']) {
-		if (!isset($errors)) $select_local='samba';
+		if (!is_array($errors)) $select_local='samba';
+			else $select_local=$_POST['select'];
 		break;
 		}
 	if ($_POST['next_final']) {
-		if (!isset($errors)) $select_local='final';
+		if (!is_array($errors)) $select_local='final';
+			else $select_local=$_POST['select'];
 		break;
 		}
 	if ( $_POST['create'] ) { // Create-Button was pressed
@@ -211,13 +219,13 @@ switch ($select_local) { // Select which part of page will be loaded
 		// Show page info
 		echo '<input name="select" type="hidden" value="general">';
 		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
-		echo "<br><fieldset class=\"hostedit-dark\"><legend class=\"hostedit-bright\"><b>";
+		echo "<table><tr><td><fieldset class=\"hostedit-dark\"><legend class=\"hostedit-bright\"><b>";
 		echo _('Please select page:');
 		echo "</b></legend>\n";
 		echo "<input name=\"next_general\" type=\"submit\" disabled value=\""; echo _('General'); echo "\">\n<br>";
 		echo "<input name=\"next_samba\" type=\"submit\" value=\""; echo _('Samba'); echo "\">\n<br>";
 		echo "<input name=\"next_final\" type=\"submit\" value=\""; echo _('Final');
-		echo "\"></fieldset></td>\n<td>";
+		echo "\"></fieldset></td></tr></table></td>\n<td>";
 		echo "<table border=0 width=\"100%\">\n<tr>\n<td>";
 		echo "<fieldset class=\"hostedit-bright\"><legend class=\"hostedit-bright\"><b>";
 		echo _("General properties");
@@ -278,18 +286,17 @@ switch ($select_local) { // Select which part of page will be loaded
 	case 'samba':
 		// Samba Settings
 		if ($_SESSION['config']->samba3 == 'yes') $samba3domains = $_SESSION['ldap']->search_domains($_SESSION[config]->get_domainSuffix());
-		$_SESSION['account']->smb_flagsW = 1;
 		if ($_SESSION['account']->smb_password_no) echo '<input name="f_smb_password_no" type="hidden" value="1">';
 		echo '<input name="select" type="hidden" value="samba">';
 		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
-		echo "<br><fieldset class=\"hostedit-dark\"><legend class=\"hostedit-bright\"><b>";
+		echo "<table><tr><td><fieldset class=\"hostedit-dark\"><legend class=\"hostedit-bright\"><b>";
 		echo _('Please select page:');
 		echo "</b></legend>\n";
 		echo "<input name=\"next_general\" type=\"submit\" value=\""; echo _('General'); echo "\">\n<br>";
 		echo "<input name=\"next_samba\" type=\"submit\" disabled value=\""; echo _('Samba'); echo "\">\n<br>";
 		echo "<input name=\"next_final\" type=\"submit\" value=\""; echo _('Final');
-		echo "\"></fieldset></td>\n<td>";
-		echo "<fieldset class=\"hostedit-bright\"><legend class=\"hostedit-bright\"><b>"._('Samba properties')."</b></legend>\n";
+		echo "\"></fieldset></td></tr></table></td>\n<td>";
+		echo "<table border=0 width=\"100%\"><tr><td><fieldset class=\"hostedit-bright\"><legend class=\"hostedit-bright\"><b>"._('Samba properties')."</b></legend>\n";
 		echo "<table border=0 width=\"100%\"><tr><td>";
 		echo _('Password');
 		echo '</td><td>';
@@ -322,22 +329,22 @@ switch ($select_local) { // Select which part of page will be loaded
 			echo '</td>'."\n".'<td><input name="f_smb_domain" type="text" size="20" maxlength="80" value="' . $_SESSION['account']->smb_domain . '">';
 			}
 		echo	'</td>'."\n".'<td><a href="../help.php?HelpNumber=460" target="lamhelp">'._('Help').'</a></td></tr>'."\n";
-		echo "</table>\n</fieldset>\n</tr>\n</table>\n";
+		echo "</table>\n</fieldset>\n</td></tr></table></td></tr>\n</table>\n";
 		break;
 
 	case 'final':
 		// Final Settings
 		echo '<input name="select" type="hidden" value="final">';
 		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
-		echo "<br><fieldset class=\"hostedit-dark\"><legend class=\"hostedit-bright\"><b>";
+		echo "<table><tr><td><fieldset class=\"hostedit-dark\"><legend class=\"hostedit-bright\"><b>";
 		echo _('Please select page:');
 		echo "</b></legend>\n";
 		echo "<input name=\"next_general\" type=\"submit\" value=\""; echo _('General'); echo "\">\n<br>";
 		echo "<input name=\"next_samba\" type=\"submit\" value=\""; echo _('Samba'); echo "\">\n<br>";
 		echo "<input name=\"next_final\" type=\"submit\" disabled value=\""; echo _('Final');
-		echo "\"></fieldset></td>\n<td>";
+		echo "\"></fieldset></td></tr></table></td>\n<td>";
 		echo "<table border=0 width=\"100%\">\n<tr>\n<td>";
-		echo "<fieldset class=\"hostedit-dark\"><legend class=\"hostedit-bright\"><b>";
+		echo "<table border=0 width=\"100%\"><tr><td><fieldset class=\"hostedit-dark\"><legend class=\"hostedit-bright\"><b>";
 		echo _("Save profile");
 		echo "</b></legend>\n<table border=0 width=\"100%\">\n<tr>\n<td>";
 		echo '<input name="f_finish_safeProfile" type="text" size="30" maxlength="50">';
@@ -389,7 +396,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		if ($_SESSION['account_old']) echo _('Modify Account');
 		 else echo _('Create Account');
 		echo '">'."\n";
-		echo "</td></tr></table></fieldset>\n</td></tr></table>\n</tr></table>";
+		echo "</td></tr></table></fieldset>\n</td></tr></table></td></tr></table>\n</tr></table>";
 		break;
 	case 'finish':
 		// Final Settings
