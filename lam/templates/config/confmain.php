@@ -180,41 +180,41 @@ echo ("<td align=\"right\"><b>" . _("Maximum Machine number") . ": </b>".
 // Machine text
 echo ("<td><a href=\"../help.php?HelpNumber=205\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 
-echo ("</table>");
-echo ("</fieldset>");
-echo ("<br>");
+echo ("</table>\n");
+echo ("</fieldset>\n");
+echo ("<br>\n");
 
-echo ("<fieldset><legend><b>" . _("LDAP List settings") . "</b></legend>");
-echo ("<table align=\"left\" border=0>");
+echo ("<fieldset><legend><b>" . _("LDAP List settings") . "</b></legend>\n");
+echo ("<table align=\"left\" border=0>\n");
 
 // user list attributes
 echo ("<tr><td align=\"right\"><b>".
 	_("Attributes in User List:") . "</b></td>".
 	"<td><input size=50 type=\"text\" name=\"usrlstattr\" value=\"" . $conf->get_userlistAttributes() . "\"></td>");
-echo ("<td><a href=\"../help.php?HelpNumber=206\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>");
+echo ("<td><a href=\"../help.php?HelpNumber=206\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 // user list attributes
 echo ("<tr><td align=\"right\"><b>".
 	_("Attributes in Group List:") . "</b></td>".
 	"<td><input size=50 type=\"text\" name=\"grplstattr\" value=\"" . $conf->get_grouplistAttributes() . "\"></td>");
-echo ("<td><a href=\"../help.php?HelpNumber=206\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>");
+echo ("<td><a href=\"../help.php?HelpNumber=206\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 // user list attributes
 echo ("<tr><td align=\"right\"><b>".
 	_("Attributes in Host List:") . "</b></td>".
 	"<td><input size=50 type=\"text\" name=\"hstlstattr\" value=\"" . $conf->get_hostlistAttributes() . "\"></td>");
-echo ("<td><a href=\"../help.php?HelpNumber=206\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>");
+echo ("<td><a href=\"../help.php?HelpNumber=206\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 
-echo ("<tr><td colspan=3>&nbsp</td></tr>");
+echo ("<tr><td colspan=3>&nbsp</td></tr>\n");
 
 // maximum list entries
 echo ("<tr><td align=\"right\"><b>".
 	_("Maximum list entries") . ": </b></td>".
-	"<td><select name=\"maxlistentries\"><option selected>".$conf->get_MaxListEntries()."</option>");
-if ($conf->get_MaxListEntries() != 10) echo("<option>10</option>");
-if ($conf->get_MaxListEntries() != 20) echo("<option>20</option>");
-if ($conf->get_MaxListEntries() != 30) echo("<option>30</option>");
-if ($conf->get_MaxListEntries() != 50) echo("<option>50</option>");
-if ($conf->get_MaxListEntries() != 75) echo("<option>75</option>");
-if ($conf->get_MaxListEntries() != 100) echo("<option>100</option>");
+	"<td><select name=\"maxlistentries\">\n<option selected>".$conf->get_MaxListEntries()."</option>\n");
+if ($conf->get_MaxListEntries() != 10) echo("<option>10</option>\n");
+if ($conf->get_MaxListEntries() != 20) echo("<option>20</option>\n");
+if ($conf->get_MaxListEntries() != 30) echo("<option>30</option>\n");
+if ($conf->get_MaxListEntries() != 50) echo("<option>50</option>\n");
+if ($conf->get_MaxListEntries() != 75) echo("<option>75</option>\n");
+if ($conf->get_MaxListEntries() != 100) echo("<option>100</option>\n");
 echo ("</select></td>\n");
 echo ("<td><a href=\"../help.php?HelpNumber=208\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 
@@ -227,7 +227,7 @@ echo ("<table align=\"left\" border=0>\n");
 
 // language
 echo ("<tr>");
-echo ("<td><b>" . _("Default Language") . "</b></td>\n<td>");
+echo ("<td><b>" . _("Default Language") . "</b></td><td>\n");
 // read available languages
 $languagefile = "../../config/language.conf";
 if(is_file($languagefile))
@@ -289,7 +289,7 @@ echo ("<tr><td align=\"right\"><b>".
 echo ("<td><a href=\"../help.php?HelpNumber=207\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 echo ("</table>\n");
 
-echo ("<br><br><br>");
+echo ("<br><br><br>\n");
 
 echo ("<table align=\"left\" border=0>\n");
 // new password
@@ -302,12 +302,12 @@ echo ("<tr><td bgcolor=\"red\" align=\"right\"><b>".
 	_("Reenter Password") . ": </b></td>".
 	"<td bgcolor=\"red\" align=\"left\"><input type=\"password\" name=\"pass2\"></td></tr>\n");
 echo ("</table>\n");
-echo ("</fieldset>");
-echo ("<br>");
+echo ("</fieldset>\n");
+echo ("<br>\n");
 
 
 // buttons
-echo ("<table align=\"left\" border=0>");
+echo ("<table align=\"left\" border=0>\n");
 
 echo ("<tr><td align=\"left\"><pre>".
 	"<input type=\"submit\" name=\"submitconf\" value=\"" . _("Submit") . "\">".
