@@ -508,8 +508,6 @@ class accountContainer {
 			$this->load_account($this->dn_orig);
 			}
 		else {
-			//$function = '$result = $this->module[$this->order[$this->module[\'main\']->current_page]]->proccess_'.$this->module['main']->subpage.'($post);';
-			//eval ($function);
 			if ($this->current_page==0) {
 				if ($this->subpage=='attributes') {
 					$result = 0;
@@ -580,7 +578,7 @@ class accountContainer {
 						}
 					}
 				}
-				else $result = call_user_func(array(&$this->module[$this->order[$this->current_page]], 'proccess_'.$this->subpage), $post);
+				else $result = call_user_func(array(&$this->module[$this->order[$this->current_page]], 'proccess_'.$this->subpage), &$post);
 			}
 		if (is_string($result)) $this->subpage = $result;
 		if (is_int($result)) {
@@ -731,7 +729,7 @@ class accountContainer {
 					}
 				}
 			}
-		else $return = call_user_func(array($this->module[$this->order[$this->current_page]], 'display_html_'.$this->subpage), $post);
+		else $return = call_user_func(array($this->module[$this->order[$this->current_page]], 'display_html_'.$this->subpage), &$post);
 		$this->parse_html($this->order[$this->current_page], $return);
 		// Display rest of html-page
 		echo "</fieldset>\n";

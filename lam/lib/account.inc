@@ -420,39 +420,70 @@ class samba3domain {
 * It's much easier to handle them here than in every module
 * because many of them are used several times.
 **/
-function get_ereg($argument, $regexp) {
+function get_preg($argument, $regexp) {
 	// First we check "positive" cases
-	$eregexpr = '';
+	$pregexpr = '';
 	switch ($regexp) {
-		case "password":      $eregexpr = '^([a-z]|[A-Z]|[0-9]|[\|]|[\#]|[\*]|[\,]|[\.]|[\;]|[\:]|[\_]|[\-]|[\+]|[\!]|[\%]|[\&]|[\/]|[\?]|[\{]|[\[]|[\(]|[\)]|[\]]|[\}])*$'; break;
-		case "username":      $eregexpr = '^([a-z]|[A-Z]|[0-9]|[.]|[ ]|[-]|[_])+$'; break;
-		case "hostname":      $eregexpr = '^([a-z0-9\\.-])+(([,])+([ ])*([a-z0-9\\.-])+)*$'; break;
-		case "realname":      $eregexpr = ''; break;
-		case "telephone":     $eregexpr = '^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/]|[-])*$'; break;
-		case "email":         $eregexpr = '^(([0-9a-z\\._-])+[@]([0-9a-z-])+([.]([0-9a-z-])+)*)*$'; break;
-		case "street":        $eregexpr = '^([0-9a-z])*$'; break; // ereg broken
-		case "postalAddress": $eregexpr = '^([0-9a-z])*$'; break; // ereg broken
-		case "postalCode":    $eregexpr = '^([0-9a-z])*$'; break;
-		case "title":         $eregexpr = '^([0-9a-z])*$'; break; // ereg broken
-		case "employeeType":  $eregexpr = '^([0-9a-z])*$'; break; // ereg broken
-		case "homedir":       $eregexpr = '^[/]([a-z])([a-z0-9\\._-])*([/]([a-z\\$])([a-z0-9\\._-])*)*$'; break;
-		case "naturalnumber": $eregexpr = '^[0-9]+$'; break;
-		case "UNC":           $eregexpr = '^([\][\]([a-zA-Z0-9\\.%-])+([\]([a-z0-9\\.%-])+)+)|([/][a-z]([a-z0-9\\._%-])*([/][a-z]([a-z0-9\\._%-])*)*)$'; break;
-		case "logonscript":   $eregexpr = '^([/])*([a-z0-9])+([/]([a-z0-9])+)*((\\.bat)|(\\.cmd))$'; break;  // ereg broken
-		case "workstations":  $eregexpr = '^([a-z0-9\\._-])+(,[a-z0-9\\._-])*$'; break;
-		case "domainname":    $eregexpr = '^([a-z0-9_-])+$'; break;
-		case 'homepath':      $eregexpr = '[\][\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+([\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%]|[?]|[?]|[?]|[?]|[?]|[?]|[?])+)+$'; break;
-		case 'naturalnumber2': $eregexpr = '^(([-][1])|([0-9]*))$'; break;
+		case "password":	// fixme where do i get an exact regexp?
+					$pregexpr = '/^([[:alnum:]\\ \\|\\#\\*\\,\\.\\;\\:\\_\\+\\!\\%\\&\\/\\?\\{\\(\\)\\}-])*$/';
+					break;
+		case "groupname":	// first character must be a letter. All letters, numbers, space and ._- are allowed characters
+		case "username":	// first character must be a letter. All letters, numbers, space and ._- are allowed characters
+					$pregexpr = '/^[[:alpha:]]([[:alnum:]\\.\\ \\_-])*$/';
+					break;
+		case "hostname":	// first character must be letter, last must be $. Only normal letters, numbers and ._- are allowed
+					$pregexpr = '/^[a-zA-Z]([a-zA-Z0-9\\.\\_-])*\\$$/';
+					break;
+		case "realname":	// Allow all letters, space and  .-_
+					$pregexpr = '/^[[:alpha:]]([[:alpha:]\\.\\ \\_-])*$/';
+					break;
+		case "telephone":	// Allow numbers, space, brackets, /-+.
+					$pregexpr = '/^(\\+)*([0-9\\.\\ \\(\\)\\/-])*$/';
+					break;
+		case "email":
+					$pregexpr = '^(([0-9a-z\\._-])+[@]([0-9a-z-])+([.]([0-9a-z-])+)*)*$';
+					break;
+		case "street":		// Allow all letters, numbers, space and .-_
+					$pregexpr = '/^([[:alnum:]\\.\\ \\_-])*$/';
+					break;
+		case "postalAddress":	// Allow all letters, numbers, space and .-_
+		case "postalCode":		// Allow all letters, numbers, space and .-_
+		case "title":			// Allow all letters, numbers, space and .-_
+		case "employeeType":	// Allow all letters, numbers, space and .-_
+					$pregexpr = '/^([[:alnum:]\\.\\ \\_-])*$/';
+					break;
+		case "homedir":		// Homapath, /path/......
+					$pregexpr = '/^[/]([[:alnum:]\\.\\ \\_-)+([/]([[:alnum:]\\.\\ \\_-)+)*$/';
+					break;
+		case "digit":		// Normal number
+					$pregexpr = '/^[[:digit:]]*$/';
+					break;
+		case "UNC":			// UNC Path, e.g. \\server\share\folder\...
+					$pregexpr = '/^([\][\]([a-zA-Z0-9\\.-])+([\]([[:alnum:]\\.\\ \\_-])+)+)*$/';
+					break;
+		case "logonscript":	// path to login-script. normal unix file
+					$pregexpr = '/^(([/])*([[:alnum:]\\.\\ \\_-])+([/]([[:alnum:]\\.\\ \\_-])+)*((\\.bat)|(\\.cmd)))*$/';
+					break;
+		case "workstations":	// comma separated list with windows-hosts
+					$pregexpr = '/^(([a-zA-Z0-9\\.\\_-])+(,[a-zA-Z0-9\\.\\_-])*)*$/';
+					break;
+		case "domainname":		// Windows Domainname
+					$pregexpr = '/^([a-z0-9\\_-])+$/';
+					break;
+		case 'digit2':			// Same as digit but also -1
+					$pregexpr = '/^(([-][1])|([:digit:]*))$/';
+					break;
 	}
-	if ($eregexpr!='')
-		if (ereg($eregexpr, $argument)) return true;
+	if ($pregexpr!='')
+			if (preg_match($pregexpr, $argument)) return true;
+	
 	// Now we check "negative" cases, characters which are not allowed
-	$eregexpr = '';
+	$pregexpr = '';
 	switch ($regexp) {
-		case "password":      $eregexpr = '^([a-z]|[A-Z]|[0-9]|[\|]|[\#]|[\*]|[\,]|[\.]|[\;]|[\:]|[\_]|[\-]|[\+]|[\!]|[\%]|[\&]|[\/]|[\?]|[\{]|[\[]|[\(]|[\)]|[\]]|[\}])*$'; break;
+		case "dummy":      $pregexpr = '/^([a-z])*$/'; break;
 	}
-	if ($eregexpr!='')
-		if (!ereg($eregexpr, $argument)) return true;
+	if ($pregexpr!='')
+			if (!preg_match($pregexpr, $argument)) return true;
 	return false;
 }
 

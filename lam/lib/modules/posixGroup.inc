@@ -106,7 +106,7 @@ class posixGroup extends baseModule {
 	*/
 	function display_html_attributes($post) {
 		if ($this->attributes['userPassword'][0] != $this->orig['userPassword'][0]) $password=$this->userPassword();
-		else $password='';
+		else if ($this->attributes['userPassword'][0] != '') $password=$post['userPassword'];
 		if (!$profile) {
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _("Groupname").'*' ),
 			1 => array ( 'kind' => 'input', 'name' => 'cn', 'type' => 'text', 'size' => '20', 'maxlength' => '20', 'value' => $this->attributes['cn'][0]),
@@ -126,6 +126,7 @@ class posixGroup extends baseModule {
 			1 => array ( 'kind' => 'input', 'name' => 'userPassword', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => $password),
 			2 => array ( 'kind' => 'input', 'name' => 'genpass', 'type' => 'submit', 'value' => _('Generate password')));
 			if ($post['userPassword2']!='') $password2 = $post['userPassword2'];
+			 else $password2 = $password;
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Repeat password') ),
 			1 => array ( 'kind' => 'input', 'name' => 'userPassword2', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => $password2),
 			2 => array ('kind' => 'help', 'value' => 'userPassword'));
@@ -400,16 +401,20 @@ class posixGroup extends baseModule {
 		If (!$profile) {
 			if ($post['changegids']) $this->changegids=true;
 			else $this->changegids=false;
-			if (isset($post['userPassword'])) {
-				if ($post['userPassword'] != $post['userPassword2']) {
-					$errors['userPassword'][] = $this->errormessages['userPassword'][0];
-					unset ($post['userPassword2']);
+			if ($post['genpass']) {
+					$this->userPassword(genpasswd());
+					$post['userPassword2'] = '';
 				}
-				else $this->userPassword($post['userPassword']);
-				if (!ereg('^([a-z]|[A-Z]|[0-9]|[\|]|[\#]|[\*]|[\,]|[\.]|[\;]|[\:]|[\_]|[\-]|[\+]|[\!]|[\%]|[\&]|[\/]|[\?]|[\{]|[\[]|[\(]|[\)]|[\]]|[\}])*$', $this->userPassword()))
-				$errors['userPassword'][] = $this->errormessages['userPassword'][1];
-			}
-			if ($post['genpass']) $this->userPassword(genpasswd());
+				else {
+					if (isset($post['userPassword'])) {
+						if ($post['userPassword'] != $post['userPassword2']) {
+							$errors['userPassword'][] = $this->errormessages['userPassword'][0];
+						}
+						else $this->userPassword($post['userPassword']);
+						if (!get_preg($this->userPassword(), 'password'))
+							$errors['userPassword'][] = $this->errormessages['userPassword'][1];
+					}
+				}
 			if ($this->attributes['gidNumber'][0]!=$post['gidNumber'] || ($this->errors['gidNumber'][0]='ERROR')) {
 				// Check if GID is valid. If none value was entered, the next useable value will be inserted
 				// load min and may uidNumber
@@ -473,7 +478,7 @@ class posixGroup extends baseModule {
 				if (($this->attributes['cn'][0] != $post['cn']) &&  ereg('[A-Z]$', $post['cn']))
 				$errors['cn'][] = $this->errormessages['cn'][0];
 				// Check if Groupname contains only valid characters
-				if ( !ereg('^([a-z]|[A-Z]|[0-9]|[.]|[ ]|[-]|[_])+$', $this->attributes['cn'][0]))
+				if ( !get_preg($this->attributes['cn'][0],'groupname'))
 				$errors['cn'][] = $this->errormessages['cn'][2];
 				// Create automatic useraccount with number if original user already exists
 				// Reset name to original name if new name is in use
