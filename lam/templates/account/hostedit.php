@@ -100,7 +100,7 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 				}
 			// Create automatic Hostname with number if original user already exists
 			// Reset name to original name if new name is in use
-			if (ldapexists($_SESSION['account'], 'group', $_SESSION['account_old']) && is_object($_SESSION['account_old']))
+			if (ldapexists($_SESSION['account'], 'host', $_SESSION['account_old']) && is_object($_SESSION['account_old']))
 				$_SESSION['account']->general_username = $_SESSION['account_old']->general_username;
 			while ($temp = ldapexists($_SESSION['account'], 'host', $_SESSION['account_old'])) {
 				// get last character of username

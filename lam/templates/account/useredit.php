@@ -52,6 +52,7 @@ if (isset($_GET['DN'])) {
 		$_SESSION['account'] ->type = 'user';
 		$_SESSION['account']->smb_flagsW = 0;
 		if (isset($_SESSION['account_old'])) unset($_SESSION['account_old']);
+		$_SESSION['account_old'] = false;
 		}
 	}
 else if (count($_POST)==0) { // Startcondition. useredit.php was called from outside
@@ -59,6 +60,7 @@ else if (count($_POST)==0) { // Startcondition. useredit.php was called from out
 	$_SESSION['account'] ->type = 'user';
 	$_SESSION['account']->smb_flagsW = 0;
 	if (isset($_SESSION['account_old'])) unset($_SESSION['account_old']);
+	$_SESSION['account_old'] = false;
 	}
 
 
@@ -85,15 +87,72 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 			$_SESSION['account']->general_homedir = $_POST['f_general_homedir'];
 			$_SESSION['account']->general_shell = $_POST['f_general_shell'];
 			$_SESSION['account']->general_gecos = $_POST['f_general_gecos'];
-			// Check if values are OK and set automatic values.  if not error-variable will be set
-			if ($_SESSION['account_old']) list($values, $errors) = checkglobal($_SESSION['account'], $_SESSION['account']->type, $_SESSION['account_old']); // account.inc
-				else list($values, $errors) = checkglobal($_SESSION['account'], $_SESSION['account']->type); // account.inc
-			if (is_object($values)) {
-				while (list($key, $val) = each($values)) // Set only defined values
-					if (isset($val)) $_SESSION['account']->$key = $val;
-				}
-			}
 
+			// Check if Homedir is valid
+			$_SESSION['account']->general_homedir = str_replace('$group', $_SESSION['account']->general_group, $_SESSION['account']->general_homedir);
+			if ($_SESSION['account']->general_username != '')
+				$_SESSION['account']->general_homedir = str_replace('$user', $_SESSION['account']->general_username, $_SESSION['account']->general_homedir);
+			if ($_SESSION['account']->general_homedir != $_POST['f_general_homedir']) $errors[] = array('INFO', _('Home directory'), _('Replaced $user or $group in homedir.'));
+			if ( !ereg('^[/]([a-z]|[A-Z])([a-z]|[A-Z]|[0-9]|[.]|[-]|[_])*([/]([a-z]|[A-Z])([a-z]|[A-Z]|[0-9]|[.]|[-]|[_])*)*$', $_SESSION['account']->general_homedir ))
+				$errors[] = array('ERROR', _('Home directory'), _('Homedirectory contains invalid characters.'));
+			// Check if givenname is valid
+			if ( !ereg('^([a-z]|[A-Z]|[-]|[ ]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+$', $_SESSION['account']->general_givenname)) $errors[] = array('ERROR', _('Given name'), _('Given name contains invalid characters'));
+			// Check if surname is valid
+			if ( !ereg('^([a-z]|[A-Z]|[-]|[ ]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+$', $_SESSION['account']->general_surname)) $errors[] = array('ERROR', _('Surname'), _('Surname contains invalid characters'));
+			if ( ($_SESSION['account']->general_gecos=='') || ($_SESSION['account']->general_gecos==' ')) {
+				$_SESSION['account']->general_gecos = $_SESSION['account']->general_givenname . " " . $_SESSION['account']->general_surname ;
+				$errors[] = array('INFO', _('Gecos'), _('Inserted sur- and given name in gecos-field.'));
+				}
+			if ($_SESSION['account']->general_group=='') $errors[] = array('ERROR', _('Primary group'), _('No primary group defined!'));
+			// Check if Username contains only valid characters
+			if ( !ereg('^([a-z]|[0-9]|[.]|[-]|[_])*$', $_SESSION['account']->general_username))
+				$errors[] = array('ERROR', _('Username'), _('Username contains invalid characters. Valid characters are: a-z, 0-9 and .-_ !'));
+			// Check if user already exists
+			if (isset($_SESSION['account']->general_groupadd) && in_array($_SESSION['account']->general_group, $_SESSION['account']->general_groupadd)) {
+				for ($i=0; $i<count($_SESSION['account']->general_groupadd); $i++ )
+					if ($_SESSION['account']->general_groupadd[$i] == $_SESSION['account']->general_group) {
+						unset ($_SESSION['account']->general_groupadd[$i]);
+						$_SESSION['account']->general_groupadd = array_values($_SESSION['account']->general_groupadd);
+						}
+				}
+			// Create automatic useraccount with number if original user already exists
+			// Reset name to original name if new name is in use
+			if (ldapexists($_SESSION['account'], 'user', $_SESSION['account_old']) && is_object($_SESSION['account_old']))
+				$_SESSION['account']->general_username = $_SESSION['account_old']->general_username;
+			while ($temp = ldapexists($_SESSION['account'], 'user', $_SESSION['account_old'])) {
+				// get last character of username
+				$lastchar = substr($_SESSION['account']->general_username, strlen($_SESSION['account']->general_username)-1, 1);
+				// Last character is no number
+				if ( !ereg('^([0-9])+$', $lastchar))
+					$_SESSION['account']->general_username = $_SESSION['account']->general_username . '2';
+				 else {
+				 	$i=strlen($_SESSION['account']->general_username)-1;
+					$mark = false;
+				 	while (!$mark) {
+						if (ereg('^([0-9])+$',substr($_SESSION['account']->general_username, $i, strlen($_SESSION['account']->general_username)-$i))) $i--;
+							else $mark=true;
+						}
+					// increase last number with one
+					$firstchars = substr($_SESSION['account']->general_username, 0, $i+1);
+					$lastchars = substr($_SESSION['account']->general_username, $i+1, strlen($_SESSION['account']->general_username)-$i);
+					$_SESSION['account']->general_username = $firstchars . (intval($lastchars)+1);
+				 	}
+				}
+			if ($_SESSION['account']->general_username != $_POST['f_general_username']) $errors[] = array('WARN', _('Username'), _('Username in use. Selected next free username.'));
+
+			// Check if UID is valid. If none value was entered, the next useable value will be inserted
+			$_SESSION['account']->general_uidNumber = checkid($_SESSION['account'], 'user', $_SESSION['account_old']);
+			if (is_string($_SESSION['account']->general_uidNumber)) { // true if checkid has returned an error
+				$errors[] = array('ERROR', _('ID-Number'), $_SESSION['account']->general_uidNumber);
+				unset($_SESSION['account']->general_uidNumber);
+				}
+			// Check if Name-length is OK. minLength=3, maxLength=20
+			if ( !ereg('.{3,20}', $_SESSION['account']->general_username)) $errors[] = array('ERROR', _('Name'), _('Name must contain between 3 and 20 characters.'));
+			// Check if Name starts with letter
+			if ( !ereg('^([a-z]|[A-Z]).*$', $_SESSION['account']->general_username))
+				$errors[] = array('ERROR', _('Name'), _('Name contains invalid characters. First character must be a letter'));
+
+			}
 		break;
 	case 'unix':
 		// Write all general values into $_SESSION['account']
@@ -124,18 +183,28 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 			$select_local = 'unix';
 			}
 			// Check if values are OK and set automatic values. if not error-variable will be set
-			else $errors = checkunix($_SESSION['account'], $_SESSION['account']->type); // account.inc
+			else { // $errors = checkunix($_SESSION['account'], $_SESSION['account']->type); // account.inc
+				if ($_SESSION['account']->unix_password != '') {
+					$iv = base64_decode($_COOKIE["IV"]);
+					$key = base64_decode($_COOKIE["Key"]);
+					$password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($_SESSION['account']->unix_password), MCRYPT_MODE_ECB, $iv);
+					$password = str_replace(chr(00), '', $password);
+					}
+				if (!ereg('^([a-z]|[A-Z]|[0-9]|[\|]|[\#]|[\*]|[\,]|[\.]|[\;]|[\:]|[\_]|[\-]|[\+]|[\!]|[\%]|[\&]|[\/]|[\?]|[\{]|[\[]|[\(]|[\)]|[\]]|[\}])*$', $password))
+					$errors[] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
+				if ( !ereg('^([0-9])*$', $_SESSION['account']->unix_pwdminage))  $errors[] = array('ERROR', _('Password minage'), _('Password minage must be are natural number.'));
+				if ( $_SESSION['account']->unix_pwdminage > $_SESSION['account']->unix_pwdmaxage ) $errors[] = array('ERROR', _('Password maxage'), _('Password maxage must bigger as Password Minage.'));
+				if ( !ereg('^([0-9]*)$', $_SESSION['account']->unix_pwdmaxage)) $errors[] = array('ERROR', _('Password maxage'), _('Password maxage must be are natural number.'));
+				if ( !ereg('^(([-][1])|([0-9]*))$', $_SESSION['account']->unix_pwdallowlogin))
+					$errors[] = array('ERROR', _('Password Expire'), _('Password expire must be are natural number or -1.'));
+				if ( !ereg('^([0-9]*)$', $_SESSION['account']->unix_pwdwarn)) $errors[] = array('ERROR', _('Password warn'), _('Password warn must be are natural number.'));
+				if ((!$_SESSION['account']->unix_host=='') && !ereg('^([a-z]|[A-Z]|[0-9]|[.]|[-])+(([,])+([ ])*([a-z]|[A-Z]|[0-9]|[.]|[-])+)*$', $_SESSION['account']->unix_host))
+					$errors[] = array('ERROR', _('Unix workstations'), _('Unix workstations is invalid.'));
+				}
+
 		break;
 	case 'samba':
 		// Write all general values into $_SESSION['account']
-		if ($_POST['f_smb_password']) {
-			// Encrypt password
-			$iv = base64_decode($_COOKIE["IV"]);
-			$key = base64_decode($_COOKIE["Key"]);
-			$_SESSION['account']->smb_password = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, base64_decode($_COOKIE['Key']), $_POST['f_smb_password'],
-			MCRYPT_MODE_ECB, base64_decode($_COOKIE['IV'])));
-			}
-		 else $_SESSION['account']->smb_password = "";
 		$_SESSION['account']->smb_pwdcanchange = mktime($_POST['f_smb_pwdcanchange_s'], $_POST['f_smb_pwdcanchange_m'], $_POST['f_smb_pwdcanchange_h'],
 			$_POST['f_smb_pwdcanchange_mon'], $_POST['f_smb_pwdcanchange_day'], $_POST['f_smb_pwdcanchange_yea']);
 		$_SESSION['account']->smb_pwdmustchange = mktime($_POST['f_smb_pwdmustchange_s'], $_POST['f_smb_pwdmustchange_m'], $_POST['f_smb_pwdmustchange_h'],
@@ -149,6 +218,7 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 		$_SESSION['account']->smb_smbuserworkstations = $_POST['f_smb_smbuserworkstations'];
 		$_SESSION['account']->smb_smbhome = stripslashes($_POST['f_smb_smbhome']);
 		$_SESSION['account']->smb_profilePath = stripslashes($_POST['f_smb_profilePath']);
+		$_SESSION['account']->smb_displayName = $_POST['f_smb_displayName'];
 		if ($_POST['f_smb_flagsW']) $_SESSION['account']->smb_flagsW = true;
 			else $_SESSION['account']->smb_flagsW = false;
 		if ($_POST['f_smb_flagsD']) $_SESSION['account']->smb_flagsD = true;
@@ -168,36 +238,76 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 				else $_SESSION['account']->smb_domain = '';
 			}
 
-		switch ($_POST['f_smb_mapgroup']) {
-			case '*'._('Domain Guests'): $_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-" . '514'; break;
-			case '*'._('Domain Users'): $_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-" . '513'; break;
-			case '*'._('Domain Admins'): $_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-" . '512'; break;
-			case $_SESSION['account']->general_group:
-				if ($_SESSION['config']->samba3 == 'yes')
-					$_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-".
-						(2 * getgid($_SESSION['account']->general_group) + $_SESSION['account']->smb_domain->RIDbase +1);
-				else $_SESSION['account']->smb_mapgroup = (2 * getgid($_SESSION['account']->general_group) + 1001);
-				break;
-			case $_SESSION['account']->general_username:
-				if ($_SESSION['config']->samba3 == 'yes')
-					$_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-".
-						(2 * $_SESSION['account']->general_uidNumber + $_SESSION['account']->smb_domain->RIDbase +1);
-				else $_SESSION['account']->smb_mapgroup = (2 * $_SESSION['account']->general_uidNumber + 1001);
-				break;
+		if ($_SESSION['config']->samba3 == 'yes')
+			switch ($_POST['f_smb_mapgroup']) {
+				case '*'._('Domain Guests'): $_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-" . '514'; break;
+				case '*'._('Domain Users'): $_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-" . '513'; break;
+				case '*'._('Domain Admins'): $_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-" . '512'; break;
+				case $_SESSION['account']->general_group:
+						$_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-".
+							(2 * getgid($_SESSION['account']->general_group) + $_SESSION['account']->smb_domain->RIDbase +1);
+					break;
+				}
+		else
+			switch ($_POST['f_smb_mapgroup']) {
+				case '*'._('Domain Guests'): $_SESSION['account']->smb_mapgroup = '514'; break;
+				case '*'._('Domain Users'): $_SESSION['account']->smb_mapgroup = '513'; break;
+				case '*'._('Domain Admins'): $_SESSION['account']->smb_mapgroup = '512'; break;
+				case $_SESSION['account']->general_group:
+					$_SESSION['account']->smb_mapgroup = (2 * getgid($_SESSION['account']->general_group) + 1001);
+					break;
+				}
+
+
+		$smb_password = $_POST['f_smb_password'];
+
+		// Decrypt unix-password if needed password
+		$iv = base64_decode($_COOKIE["IV"]);
+		$key = base64_decode($_COOKIE["Key"]);
+		if (($values->smb_useunixpwd) &&($values->unix_password != '')) {
+			$smb_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($_SESSION['account']->unix_password), MCRYPT_MODE_ECB, $iv);
+			$smb_password = str_replace(chr(00), '', $smb_password);
 			}
-		// Reset password if reset button was pressed. Button only vissible if account should be modified
-		// Check if values are OK and set automatic values. if not error-variable will be set
-		list($values, $errors) = checksamba($_SESSION['account'], $_SESSION['account']->type); // account.inc
-		if (is_object($values)) {
-			while (list($key, $val) = each($values)) // Set only defined values
-				if (isset($val)) $_SESSION['account']->$key = $val;
+		// Check values
+		$_SESSION['account']->smb_scriptPath = str_replace('$user', $_SESSION['account']->general_username, $_SESSION['account']->smb_scriptPath);
+		$_SESSION['account']->smb_scriptPath = str_replace('$group', $_SESSION['account']->general_group, $_SESSION['account']->smb_scriptPath);
+		if ($_SESSION['account']->smb_scriptPath != $_POST['f_smb_scriptpath']) $errors[] = array('INFO', _('Script path'), _('Inserted user- or groupname in scriptpath.'));
+
+		$_SESSION['account']->smb_profilePath = str_replace('$user', $_SESSION['account']->general_username, $_SESSION['account']->smb_profilePath);
+		$_SESSION['account']->smb_profilePath = str_replace('$group', $_SESSION['account']->general_group, $_SESSION['account']->smb_profilePath);
+		if ($_SESSION['account']->smb_profilePath != $_POST['f_smb_profilePath']) $errors[] = array('INFO', _('Profile path'), _('Inserted user- or groupname in profilepath.'));
+
+		$_SESSION['account']->smb_smbhome = str_replace('$user', $_SESSION['account']->general_username, $_SESSION['account']->smb_smbhome);
+		$_SESSION['account']->smb_smbhome = str_replace('$group', $_SESSION['account']->general_group, $_SESSION['account']->smb_smbhome);
+		if ($_SESSION['account']->smb_smbhome != $_POST['f_smb_smbhome']) $errors[] = array('INFO', _('Home path'), _('Inserted user- or groupname in HomePath.'));
+
+		if ( (!$_SESSION['account']->smb_smbhome=='') && (!ereg('^[\][\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+([\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+)+$', $_SESSION['account']->smb_smbhome)))
+				$errors[] = array('ERROR', _('Home path'), _('Home path is invalid.'));
+		if ( !ereg('^([a-z]|[A-Z]|[0-9]|[\|]|[\#]|[\*]|[\,]|[\.]|[\;]|[\:]|[\_]|[\-]|[\+]|[\!]|[\%]|[\&]|[\/]|[\?]|[\{]|[\[]|[\(]|[\)]|[\]]|[\}])*$',
+			$smb_password)) $errors[] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
+		if ( (!$_SESSION['account']->smb_scriptPath=='') && (!ereg('^([/])*([a-z]|[0-9]|[.]|[-]|[_]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+([a-z]|[0-9]|[.]|[-]|[_]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])*'.
+			'([/]([a-z]|[0-9]|[.]|[-]|[_]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+([a-z]|[0-9]|[.]|[-]|[_]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])*)*$', $_SESSION['account']->smb_scriptPath)))
+			$errors[] = array('ERROR', _('Script path'), _('Script path is invalid!'));
+		if ( (!$_SESSION['account']->smb_profilePath=='') && (!ereg('^[/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*([/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*)*$', $_SESSION['account']->smb_profilePath))
+			&& (!ereg('^[\][\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+([\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+)+$', $_SESSION['account']->smb_profilePath)))
+				$errors[] = array('ERROR', _('Profile path'), _('Profile path is invalid!'));
+		if ((!$_SESSION['account']->smb_smbuserworkstations=='') && !ereg('^([a-z]|[A-Z]|[0-9]|[.]|[-])+(([,])+([a-z]|[A-Z]|[0-9]|[.]|[-])+)*$', $_SESSION['account']->smb_smbuserworkstations))
+			$errors[] = array('ERROR', _('Samba workstations'), _('Samba workstations are invalid!'));
+		if ((!$_SESSION['account']->smb_domain=='') && (!is_object($_SESSION['account']->smb_domain)) && !ereg('^([a-z]|[A-Z]|[0-9]|[-])+$', $_SESSION['account']->smb_domain))
+			$errors[] = array('ERROR', _('Domain name'), _('Domain name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and -.'));
+		if ($_SESSION['account']->smb_useunixpwd) $_SESSION['account']->smb_useunixpwd = 1; else $_SESSION['account']->smb_useunixpwd = 0;
+
+		if (($_SESSION['account']->smb_displayName=='') && isset($_SESSION['account']->general_gecos)) {
+			$_SESSION['account']->smb_displayName = $_SESSION['account']->general_gecos;
+			$errors[] = array('INFO', _('Display name'), _('Inserted gecos-field as display name.'));
 			}
 
-		if ($_POST['respass']) {
-			$_SESSION['account']->unix_password_no=true;
-			$_SESSION['account']->smb_password_no=true;
-			$select_local = 'samba';
+		if ($smb_password!='') {
+			// Encrypt password
+			$_SESSION['account']->smb_password = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $smb_password,
+			MCRYPT_MODE_ECB, $iv));
 			}
+
 		break;
 	case 'quota':
 		// Write all general values into $_SESSION['account']
@@ -207,16 +317,19 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 			$_SESSION['account']->quota[$i][3] = $_POST['f_quota_'.$i.'_3'];
 			$_SESSION['account']->quota[$i][6] = $_POST['f_quota_'.$i.'_6'];
 			$_SESSION['account']->quota[$i][7] = $_POST['f_quota_'.$i.'_7'];
+			// Check if values are OK and set automatic values. if not error-variable will be set
+			if (!ereg('^([0-9])*$', $_SESSION['account']->quota[$i][2]))
+				$errors[] = array('ERROR', _('Block soft quota'), _('Block soft quota contains invalid characters. Only natural numbers are allowed'));
+			if (!ereg('^([0-9])*$', $_SESSION['account']->quota[$i][3]))
+				$errors[] = array('ERROR', _('Block hard quota'), _('Block hard quota contains invalid characters. Only natural numbers are allowed'));
+			if (!ereg('^([0-9])*$', $_SESSION['account']->quota[$i][6]))
+				$errors[] = array('ERROR', _('Inode soft quota'), _('Inode soft quota contains invalid characters. Only natural numbers are allowed'));
+			if (!ereg('^([0-9])*$', $_SESSION['account']->quota[$i][7]))
+				$errors[] = array('ERROR', _('Inode hard quota'), _('Inode hard quota contains invalid characters. Only natural numbers are allowed'));
 			$i++;
 			}
-		// Check if values are OK and set automatic values. if not error-variable will be set
-		list($values, $errors) = checkquota($_SESSION['account'], $_SESSION['account']->type); // account.inc
-		if (is_object($values)) {
-			while (list($key, $val) = each($values)) // Set only defined values
-				if (isset($val)) $_SESSION['account']->$key = $val;
-			}
-		// Check which part Site should be displayed next
 		break;
+
 	case 'personal':
 		// Write all general values into $_SESSION['account']
 		$_SESSION['account']->personal_title = $_POST['f_personal_title'];
@@ -229,12 +342,17 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 		$_SESSION['account']->personal_postalAddress = $_POST['f_personal_postalAddress'];
 		$_SESSION['account']->personal_employeeType = $_POST['f_personal_employeeType'];
 		// Check if values are OK and set automatic values. if not error-variable will be set
-		list($values, $errors) = checkpersonal($_SESSION['account'], $_SESSION['account']->type); // account.inc
-		if (is_object($values)) {
-			while (list($key, $val) = each($values)) // Set only defined values
-				if (isset($val)) $_SESSION['account']->$key = $val;
-			}
+		if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/])*$', $_SESSION['account']->personal_telephoneNumber))  $errors[] = array('ERROR', _('Telephone number'), _('Please enter a valid telephone number!'));
+		if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/])*$', $_SESSION['account']->personal_mobileTelephoneNumber))  $errors[] = array('ERROR', _('Mobile number'), _('Please enter a valid mobile number!'));
+		if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/])*$', $_SESSION['account']->personal_facsimileTelephoneNumber))  $errors[] = array('ERROR', _('Fax number'), _('Please enter a valid fax number!'));
+		if ( !ereg('^(([0-9]|[A-Z]|[a-z]|[.]|[-]|[_])+[@]([0-9]|[A-Z]|[a-z]|[-])+([.]([0-9]|[A-Z]|[a-z]|[-])+)*)*$', $_SESSION['account']->personal_mail))  $errors[] = array('ERROR', _('eMail address'), _('Please enter a valid eMail address!'));
+		if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $_SESSION['account']->personal_street))  $errors[] = array('ERROR', _('Street'), _('Please enter a valid street name!'));
+		if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $_SESSION['account']->personal_postalAddress))  $errors[] = array('ERROR', _('Postal address'), _('Please enter a valid postal address!'));
+		if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $_SESSION['account']->personal_title))  $errors[] = array('ERROR', _('Title'), _('Please enter a valid title!'));
+		if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $_SESSION['account']->personal_employeeType))  $errors[] = array('ERROR', _('Employee type'), _('Please enter a valid employee type!'));
+		if ( !ereg('^([0-9]|[A-Z]|[a-z])*$', $_SESSION['account']->personal_postalCode))  $errors[] = array('ERROR', _('Postal code'), _('Please enter a valid postal code!'));
 		break;
+
 	case 'final':
 		// Write all general values into $_SESSION['account']
 		if ($_POST['f_final_changegids']) $_SESSION['final_changegids'] = $_POST['f_final_changegids'] ;
@@ -314,6 +432,22 @@ do { // X-Or, only one if() can be true
 			while (list($key, $val) = each($values)) // Set only defined values
 				if (isset($val)) $_SESSION['account']->$key = $val;
 			}
+		// insert autoreplace values
+		$_SESSION['account']->general_homedir = str_replace('$group', $_SESSION['account']->general_group, $_SESSION['account']->general_homedir);
+		if ($_SESSION['account']->general_username != '')
+			$_SESSION['account']->general_homedir = str_replace('$user', $_SESSION['account']->general_username, $_SESSION['account']->general_homedir);
+		$_SESSION['account']->smb_scriptPath = str_replace('$group', $_SESSION['account']->general_group, $_SESSION['account']->smb_scriptPath);
+		if ($_SESSION['account']->general_username != '')
+			$_SESSION['account']->smb_scriptPath = str_replace('$user', $_SESSION['account']->general_username, $_SESSION['account']->smb_scriptPath);
+
+		$_SESSION['account']->smb_profilePath = str_replace('$group', $_SESSION['account']->general_group, $_SESSION['account']->smb_profilePath);
+		if ($_SESSION['account']->general_username != '')
+			$_SESSION['account']->smb_profilePath = str_replace('$user', $_SESSION['account']->general_username, $_SESSION['account']->smb_profilePath);
+
+		$_SESSION['account']->smb_smbhome = str_replace('$group', $_SESSION['account']->general_group, $_SESSION['account']->smb_smbhome);
+		if ($_SESSION['account']->general_username != '')
+			$_SESSION['account']->smb_smbhome = str_replace('$user', $_SESSION['account']->general_username, $_SESSION['account']->smb_smbhome);
+
 		// select general page after group has been loaded
 		$select_local='general';
 		break;
@@ -345,7 +479,7 @@ if ($select_local != 'pdf') {
 		}
 	}
 
-// print_r($_SESSION['account']);
+ print_r($_SESSION['account']);
 // print_r($_POST);
 
 switch ($select_local) { // Select which part of page will be loaded
@@ -602,6 +736,10 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "<fieldset class=\"useredit-bright\"><legend class=\"useredit-bright\"><b>";
 		echo _("Samba properties");
 		echo "</b></legend>\n<table border=0 width=\"100%\">\n<tr>\n<td>";
+		echo _("Display name");
+		echo "</td>\n<td>".
+			"<input name=\"f_smb_displayName\" type=\"text\" size=\"30\" maxlength=\"50\" value=\"".$_SESSION['account']->smb_displayName."\">".
+			"</td>\n<td><a href=\"../help.php?HelpNumber=420\" target=\"lamhelp\">"._('Help')."</a></td>\n</tr>\n<tr>\n<td>";
 		echo _('Samba password');
 		echo '</td>'."\n".'<td><input name="f_smb_password" type="text" size="20" maxlength="20" value="' . $password . '">'.
 			'</td></tr>'."\n".'<tr><td>';
@@ -698,7 +836,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo '</td>'."\n".'<td><select name="f_smb_mapgroup" >';
 		if ($_SESSION['config']->samba3=='yes') {
 			if ( $_SESSION['account']->smb_mapgroup == $_SESSION['account']->smb_domain->SID . "-".
-			(2 * getgid($_SESSION['account']->general_group) + $values->smb_domain->RIDbase)) {
+			(2 * getgid($_SESSION['account']->general_group) + $values->smb_domain->RIDbase+1)) {
 				echo '<option selected> ';
 				echo $_SESSION['account']->general_group;
 				echo "</option>\n"; }
@@ -707,19 +845,6 @@ switch ($select_local) { // Select which part of page will be loaded
 				echo $_SESSION['account']->general_group;
 				echo "</option>\n";
 				}
-			}
-		else {
-			if ( $_SESSION['account']->smb_mapgroup == $_SESSION['account']->smb_domain->SID . "-".
-				(2 * getgid($_SESSION['account']->general_group) +1000)) {
-				echo '<option selected> ';
-				echo $_SESSION['account']->general_group;
-				echo "</option>\n"; }
-			 else {
-				echo '<option> ';
-				echo $_SESSION['account']->general_group;
-				echo "</option>\n";
-				}
-			}
 			if ( $_SESSION['account']->smb_mapgroup == $_SESSION['account']->smb_domain->SID . "-" . '514' ) {
 				echo '<option selected> *';
 				echo _('Domain Guests');
@@ -747,6 +872,45 @@ switch ($select_local) { // Select which part of page will be loaded
 				echo _('Domain Admins');
 				echo "</option>\n";
 				}
+			}
+		else {
+			if ( $_SESSION['account']->smb_mapgroup == (2 * getgid($_SESSION['account']->general_group) +1001)) {
+				echo '<option selected> ';
+				echo $_SESSION['account']->general_group;
+				echo "</option>\n"; }
+			 else {
+				echo '<option> ';
+				echo $_SESSION['account']->general_group;
+				echo "</option>\n";
+				}
+			if ( $_SESSION['account']->smb_mapgroup == '514' ) {
+				echo '<option selected> *';
+				echo _('Domain Guests');
+				echo "</option>\n"; }
+			 else {
+				echo '<option> *';
+				echo _('Domain Guests');
+				echo "</option>\n";
+				}
+			if ( $_SESSION['account']->smb_mapgroup == '513' ) {
+				echo '<option selected> *';
+				echo _('Domain Users');
+				echo "</option>\n"; }
+			 else {
+				echo '<option> *';
+				echo _('Domain Users');
+				echo "</option>\n";
+				}
+			if ( $_SESSION['account']->smb_mapgroup == '512' ) {
+				echo '<option selected> *';
+				echo _('Domain Admins');
+				echo "</option>\n"; }
+			 else {
+				echo '<option> *';
+				echo _('Domain Admins');
+				echo "</option>\n";
+				}
+			}
 		echo	'</select></td>'."\n".'<td>'.
 			'<a href="help.php?HelpNumber=464" target="lamhelp">'._('Help').'</a>'.
 			'</td></tr>'."\n".'<tr><td>';
@@ -909,7 +1073,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		if ($_SESSION['account_old']) echo _('Modify');
 		 else echo _('Create');
 		echo "</b></legend>\n";
-		echo "<table border=0 width=\"100%\"><tr><td>";
+		echo "<table border=0 width=\"100%\">";
 		if (($_SESSION['account_old']) && ($_SESSION['account']->general_uidNumber != $_SESSION['account_old']->general_uidNumber)) {
 			echo '<tr>';
 			StatusMessage ('INFO', _('UID-number has changed. You have to run the following command as root in order to change existing file-permissions:'),
@@ -922,36 +1086,61 @@ switch ($select_local) { // Select which part of page will be loaded
 			'mv ' . $_SESSION['account_old' ]->general_homedir . ' ' . $_SESSION['account']->general_homedir);
 			echo '</tr>'."\n";
 			}
+
+		$disabled = "";
+		if ($_SESSION['config']->samba3 == 'yes') {
+			if (!isset($_SESSION['account']->smb_domain)) { // Samba page nit viewd; can not create group because if missing options
+				$disabled = "disabled";
+				echo "<tr>";
+				StatusMessage("ERROR", _("Samba Options not set!"), _("Please check settings on samba page."));
+				echo "</tr>";
+				}
+			}
+		else {
+			$found = false;
+			if (strstr($_SESSION['account']->smb_scriptPath, '$group')) $found = true;
+			if (strstr($_SESSION['account']->smb_scriptPath, '$user')) $found = true;
+			if (strstr($_SESSION['account']->smb_profilePath, '$group')) $found = true;
+			if (strstr($_SESSION['account']->smb_profilePath, '$user')) $found = true;
+			if (strstr($_SESSION['account']->smb_smbhome, '$group')) $found = true;
+			if (strstr($_SESSION['account']->smb_smbhome, '$user')) $found = true;
+			if ($found) { // Samba page nit viewd; can not create group because if missing options
+				$disabled = "disabled";
+				echo "<tr>";
+				StatusMessage("ERROR", _("Samba Options not set!"), _("Please check settings on samba page."));
+				echo "</tr>";
+				}
+			}
+
 		if (isset($_SESSION['account_old']->general_objectClass)) {
 			if (!in_array('posixAccount', $_SESSION['account_old']->general_objectClass)) {
 				echo '<tr>';
-				StatusMessage('WARN', _('ObjectClass posixAccount not found.'), _('Have to recreate entry.'));
+				StatusMessage('WARN', _('ObjectClass posixAccount not found.'), _('Have to add objectClass posixAccount.'));
 				echo "</tr>\n";
 				}
 			if (!in_array('shadowAccount', $_SESSION['account_old']->general_objectClass)) {
 				echo '<tr>';
-				StatusMessage('WARN', _('ObjectClass shadowAccount.'), _('Have to recreate entry.'));
-				echo "</tr>\n";
-				}
-			if (!in_array('inetOrgPerson', $_SESSION['account_old']->general_objectClass)) {
-				echo '<tr>';
-				StatusMessage('WARN', _('ObjectClass inetOrgPerson not found.'), _('Have to recreate entry.'));
+				StatusMessage('WARN', _('ObjectClass shadowAccount.'), _('Have to add objectClass shadowAccount.'));
 				echo "</tr>\n";
 				}
 			if ($_SESSION['config']->samba3 == 'yes') {
 				if (!in_array('sambaSamAccount', $_SESSION['account_old']->general_objectClass)) {
 					echo '<tr>';
-					StatusMessage('WARN', _('ObjectClass sambaSamAccount not found.'), _('Have to recreate entry.'));
+					StatusMessage('WARN', _('ObjectClass sambaSamAccount not found.'), _('Have to add objectClass sambaSamAccount. USer with sambaAccount will be updated.'));
 					echo "</tr>\n";
 					}}
 				else
 				if (!in_array('sambaAccount', $_SESSION['account_old']->general_objectClass)) {
 					echo '<tr>';
-					StatusMessage('WARN', _('ObjectClass sambaAccount not found.'), _('Have to recreate entry.'));
+					StatusMessage('WARN', _('ObjectClass sambaAccount not found.'), _('Have to add objectClass sambaAccount. User with sambaSamAccount will be set back to sambaAccount.'));
 					echo "</tr>\n";
 					}
 			}
-		echo '<input name="create" type="submit" value="';
+
+
+
+
+		echo "<tr><td><input name=\"create\" $disabled type=\"submit\" value=\"";
 		if ($_SESSION['account_old']) echo _('Modify Account');
 		 else echo _('Create Account');
 		echo '">'."\n";
@@ -978,7 +1167,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		break;
 	case 'backmain':
 		// unregister sessionvar and select which list should be shown
-		echo '<tr><td><a href="lists/listusers.php">';
+		echo '<tr><td><a href="../lists/listusers.php">';
 		echo _('Please press here if meta-refresh didn\'t work.');
 		echo "</a></td></tr>\n";
 		if (isset($_SESSION['shelllist'])) unset($_SESSION['shelllist']);

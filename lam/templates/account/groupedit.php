@@ -156,15 +156,27 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 			if ($_POST['f_smb_domain'] == $domain->name)
 				$_SESSION['account']->smb_domain = $domain;
 		$_SESSION['account']->smb_displayName = $_POST['f_smb_displayName'];
-		switch ($_POST['f_smb_mapgroup']) {
-			case '*'._('Domain Guests'): $_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-" . '514'; break;
-			case '*'._('Domain Users'): $_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-" . '513'; break;
-			case '*'._('Domain Admins'): $_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-" . '512'; break;
-			case $_SESSION['account']->general_username:
-				$_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-".
-					(2 * getgid($_SESSION['account']->general_username) + $_SESSION['account']->smb_domain->RIDbase +1);
-				break;
-			}
+
+		if ($_SESSION['config']->samba3 == 'yes')
+			switch ($_POST['f_smb_mapgroup']) {
+				case '*'._('Domain Guests'): $_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-" . '514'; break;
+				case '*'._('Domain Users'): $_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-" . '513'; break;
+				case '*'._('Domain Admins'): $_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-" . '512'; break;
+				case $_SESSION['account']->general_username:
+						$_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-".
+							(2 * getgid($_SESSION['account']->general_username) + $_SESSION['account']->smb_domain->RIDbase +1);
+					break;
+				}
+		else
+			switch ($_POST['f_smb_mapgroup']) {
+				case '*'._('Domain Guests'): $_SESSION['account']->smb_mapgroup = '514'; break;
+				case '*'._('Domain Users'): $_SESSION['account']->smb_mapgroup = '513'; break;
+				case '*'._('Domain Admins'): $_SESSION['account']->smb_mapgroup = '512'; break;
+				case $_SESSION['account']->general_username:
+					$_SESSION['account']->smb_mapgroup = (2 * getgid($_SESSION['account']->general_username) + 1001);
+					break;
+				}
+
 		// Check if value is set
 		if (($_SESSION['account']->smb_displayName=='') && isset($_SESSION['account']->general_gecos)) {
 			$_SESSION['account']->smb_displayName = $_SESSION['account']->general_gecos;
@@ -181,12 +193,7 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 			$_SESSION['account']->quota[$i][3] = $_POST['f_quota_'.$i.'_3'];
 			$_SESSION['account']->quota[$i][6] = $_POST['f_quota_'.$i.'_6'];
 			$_SESSION['account']->quota[$i][7] = $_POST['f_quota_'.$i.'_7'];
-			$i++;
-			}
-
-		// Check if values are OK and set automatic values. if not error-variable will be set
-		$i=0;
-		while ($_SESSION['account']->quota[$i][0]) {
+			// Check if values are OK and set automatic values. if not error-variable will be set
 			if (!ereg('^([0-9])*$', $_SESSION['account']->quota[$i][2]))
 				$errors[] = array('ERROR', _('Block soft quota'), _('Block soft quota contains invalid characters. Only natural numbers are allowed'));
 			if (!ereg('^([0-9])*$', $_SESSION['account']->quota[$i][3]))
@@ -197,7 +204,6 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 				$errors[] = array('ERROR', _('Inode hard quota'), _('Inode hard quota contains invalid characters. Only natural numbers are allowed'));
 			$i++;
 			}
-
 		break;
 
 	case 'final':
@@ -439,42 +445,82 @@ switch ($select_local) { // Select which part of page will be loaded
 			"</td>\n<td><a href=\"../help.php?HelpNumber=420\" target=\"lamhelp\">"._('Help')."</a></td>\n</tr>\n<tr>\n<td>";
 		echo _('Windows groupname');
 		echo "</td>\n<td><select name=\"f_smb_mapgroup\">";
-		if ( $_SESSION['account']->smb_mapgroup == $_SESSION['account']->smb_domain->SID . "-".
-			(2 * $_SESSION['account']->uidNumber) + $values->smb_domain->RIDbase +1) {
-			echo '<option selected> ';
-			echo $_SESSION['account']->general_username;
-			echo "</option>\n"; }
-		 else {
-			echo '<option> ';
-			echo $_SESSION['account']->general_username;
-			echo "</option>\n";
+		if ($_SESSION['config']->samba3=='yes') {
+			if ( $_SESSION['account']->smb_mapgroup == $_SESSION['account']->smb_domain->SID . "-".
+			(2 * getgid($_SESSION['account']->general_username) + $values->smb_domain->RIDbase+1)) {
+				echo '<option selected> ';
+				echo $_SESSION['account']->general_username;
+				echo "</option>\n"; }
+			 else {
+				echo '<option> ';
+				echo $_SESSION['account']->general_username;
+				echo "</option>\n";
+				}
+			if ( $_SESSION['account']->smb_mapgroup == $_SESSION['account']->smb_domain->SID . "-" . '514' ) {
+				echo '<option selected> *';
+				echo _('Domain Guests');
+				echo "</option>\n"; }
+			 else {
+				echo '<option> *';
+				echo _('Domain Guests');
+				echo "</option>\n";
+				}
+			if ( $_SESSION['account']->smb_mapgroup == $_SESSION['account']->smb_domain->SID . "-" . '513' ) {
+				echo '<option selected> *';
+				echo _('Domain Users');
+				echo "</option>\n"; }
+			 else {
+				echo '<option> *';
+				echo _('Domain Users');
+				echo "</option>\n";
+				}
+			if ( $_SESSION['account']->smb_mapgroup == $_SESSION['account']->smb_domain->SID . "-" . '512' ) {
+				echo '<option selected> *';
+				echo _('Domain Admins');
+				echo "</option>\n"; }
+			 else {
+				echo '<option> *';
+				echo _('Domain Admins');
+				echo "</option>\n";
+				}
 			}
-		if ( $_SESSION['account']->smb_mapgroup == $_SESSION['account']->smb_domain->SID . "-" . '514' ) {
-			echo '<option selected> *';
-			echo _('Domain Guests');
-			echo "</option>\n"; }
-		 else {
-			echo '<option> *';
-			echo _('Domain Guests');
-			echo "</option>\n";
-			}
-		if ( $_SESSION['account']->smb_mapgroup == $_SESSION['account']->smb_domain->SID . "-" . '513' ) {
-			echo '<option selected> *';
-			echo _('Domain Users');
-			echo "</option>\n"; }
-		 else {
-			echo '<option> *';
-			echo _('Domain Users');
-			echo "</option>\n";
-			}
-		if ( $_SESSION['account']->smb_mapgroup == $_SESSION['account']->smb_domain->SID . "-" . '512' ) {
-			echo '<option selected> *';
-			echo _('Domain Admins');
-			echo "</option>\n"; }
-		 else {
-			echo '<option> *';
-			echo _('Domain Admins');
-			echo "</option>\n";
+		else {
+			if ( $_SESSION['account']->smb_mapgroup == (2 * getgid($_SESSION['account']->general_username) +1001)) {
+				echo '<option selected> ';
+				echo $_SESSION['account']->general_username;
+				echo "</option>\n"; }
+			 else {
+				echo '<option> ';
+				echo $_SESSION['account']->general_username;
+				echo "</option>\n";
+				}
+			if ( $_SESSION['account']->smb_mapgroup == '514' ) {
+				echo '<option selected> *';
+				echo _('Domain Guests');
+				echo "</option>\n"; }
+			 else {
+				echo '<option> *';
+				echo _('Domain Guests');
+				echo "</option>\n";
+				}
+			if ( $_SESSION['account']->smb_mapgroup == '513' ) {
+				echo '<option selected> *';
+				echo _('Domain Users');
+				echo "</option>\n"; }
+			 else {
+				echo '<option> *';
+				echo _('Domain Users');
+				echo "</option>\n";
+				}
+			if ( $_SESSION['account']->smb_mapgroup == '512' ) {
+				echo '<option selected> *';
+				echo _('Domain Admins');
+				echo "</option>\n"; }
+			 else {
+				echo '<option> *';
+				echo _('Domain Admins');
+				echo "</option>\n";
+				}
 			}
 		echo	"</select></td>\n<td>".
 			'<a href="../help.php?HelpNumber=464" target="lamhelp">'._('Help').'</a>'.
