@@ -250,7 +250,7 @@ class sambaGroupMapping extends baseModule {
 				'name' => 'sambaGroupMapping_rid',
 				'description' => _('Samba RID number'),
 				'help' => 'rid',
-				'example' => _('Domain_Admins')
+				'example' => _('Domain Admins')
 			),
 			array(
 				'name' => 'sambaGroupMapping_groupType',
