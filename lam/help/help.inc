@@ -26,7 +26,13 @@ $Id$
 $helpArray = array (
 				"101" => array ("ext" => "FALSE", "Headline" => _("Hilfetest 1"), "Text" => _("blablabla 1"), "SeeAlso" => "<a href=\"./help.php?HelpNumber=102\" target=\"_self\">102</a>"),
 				"102" => array ("ext" => "FALSE", "Headline" => _("Hilfetest 2"), "Text" => _("blablabla 2"), "SeeAlso" => ""),
-				"103" => array ("ext" => "TRUE", "Link" => "help/extFileExample.php")
+				"103" => array ("ext" => "TRUE", "Link" => "help/extFileExample.php"),
+				// configuration wizard (200 - 249)
+				// configuration login
+				"200" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard - Login"),
+					"Text" => _("Please enter the configuration password. This is NOT your LDAP password.".
+						" It is stored in lam.conf. If this is the first time you log in, enter \"lam\"."),
+					"SeeAlso" => "")
 /* This is a sample help entry. Just copy this line an modify the vakues between the [] brackets.
 	Help text is located in the array:
 		"[Helpnumber]" => array ("ext" => "FALSE", "Headline" => _("[Headline]"), "Text" => _("[Text]"), "SeeAlso" => "[SeeAlso link]"),

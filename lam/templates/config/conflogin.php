@@ -41,10 +41,18 @@ session_start();
 			<img src="../../graphics/banner.jpg" border=1></a>
 		</p>
 		<hr><br><br>
-		<b><p align="center"> <? echo _("Password to enter preferences:"); ?> </b></p>
 		<form action="confmain.php" method="post">
-			<p align="center"><input type="password" name="passwd">
-			<input type="submit" name="submit" value=<? echo _("Ok"); ?> ></p>
+		<table border=0 align="center">
+			<tr>
+				<td colspan=3><b><p align="center"> <? echo _("Password to enter preferences:"); ?> </b></p></td>
+			</tr>
+			<tr>
+				<td><p align="center"><input type="password" name="passwd"></td>
+				<td><input type="submit" name="submit" value= <? echo _("Ok"); ?> </td>
+				<td> <a href="../help.php?HelpNumber=200" target="lamhelp"><? echo _("Help") ?></a></td>
+				</p>
+			</tr>
+		</table>
 		</form>
 	</body>
 </html>
