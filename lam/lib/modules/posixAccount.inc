@@ -434,13 +434,14 @@ class posixAccount extends baseModule {
 		// get all additional groupmemberships
 		$dn_groups = $_SESSION['cache']->get_cache('memberUid', 'posixGroup', 'group');
 		if (is_array($dn_groups)) {
+			if (!is_array($this->groups)) $this->groups = array();
 			$DNs = array_keys($dn_groups);
 			foreach ($DNs as $DN) {
 				if (in_array($attr['uid'][0], $dn_groups[$DN])) {
 					$this->groups[] = substr($DN, 3, strpos($DN, ',')-3);
 				}
 			}
-			$this->groups = sort ($this->groups);
+			sort($this->groups);
 			$this->groups_orig = $this->groups;
 		}
 		// Delete password. We don't want to show an encrypted password because it makes no sense
