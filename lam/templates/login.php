@@ -268,7 +268,7 @@ if($_POST['action'] == "checklogin")
 		{
 			if($ldap->server)
 			{
-				$error_message = _("Wrong Password/Username  combination. Try again.");
+				$error_message = _("Wrong Password/Username combination. Try again.");
 				display_LoginPage($_SESSION['config'],""); // Username/password invalid. Return to login page.
 			}
 			else

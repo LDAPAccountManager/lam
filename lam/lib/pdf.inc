@@ -54,14 +54,15 @@ function createUserPDF($accounts) {
 		$pdfFile->Ln(6);
 		$pdfFile->setFont("times","",10);
 		$pdfFile->Cell(50,5,_("Title") . ":",0,0,"R",0);
+		$pdfFile->setFont("times","B",10);
+		$pdfFile->Cell(50,5,$account->personal_title,0,1,"L",0);
 		$pdfFile->setFont("times","",10);
 		$pdfFile->Cell(50,5,_("Surname") . ":",0,0,"R",0);
 		$pdfFile->setFont("times","B",10);
 		$pdfFile->Cell(50,5,$account->general_surname,0,1,"L",0);
 		$pdfFile->setFont("times","",10);
 		$pdfFile->Cell(50,5,_("Given name") . ":",0,0,"R",0);
-		$pdfFile->setFont("times","B",10);
-		$pdfFile->Cell(50,5,$account->personal_title,0,1,"L",0);
+		$pdfFile->Cell(50,5,$account->general_givenname,0,1,"L",0);
 		$pdfFile->setFont("times","",10);
 		$pdfFile->Cell(50,5,_("Street") . ":",0,0,"R",0);
 		$pdfFile->setFont("times","B",10);
@@ -74,7 +75,8 @@ function createUserPDF($accounts) {
 		$pdfFile->Cell(50,5,_("Postal address") . ":",0,0,"R",0);
 		$pdfFile->setFont("times","B",10);
 		$pdfFile->Cell(50,5,$account->personal_postalAddress,0,1,"L",0);
-		$pdfFile->Cell(50,5,_("E-Mail") . "::",0,0,"R",0);
+		$pdfFile->setFont("times","",10);
+		$pdfFile->Cell(50,5,_("E-Mail") . ":",0,0,"R",0);
 		$pdfFile->setFont("times","B",10);
 		$pdfFile->Cell(50,5,$account->personal_mail,0,1,"L",0);
 		$pdfFile->setFont("times","",10);
@@ -210,18 +212,18 @@ function createUserPDF($accounts) {
 		$pdfFile->setFont("times","B",10);
 		$quotas = $account->quota;
 		if(count($quotas)>0) {
-			$pdfFile->Cell(20,5,_("Mountpoint"),0,0,"L",0);
-			$pdfFile->Cell(20,5,_("Soft block"),0,0,"L",0);
-			$pdfFile->Cell(20,5,_("Soft inode"),0,0,"L",0);
-			$pdfFile->Cell(20,5,_("Hard block"),0,0,"L",0);
-			$pdfFile->Cell(20,5,_("Hard inode"),0,1,"L",0);
+			$pdfFile->Cell(30,5,_("Mountpoint"),0,0,"L",0);
+			$pdfFile->Cell(30,5,_("Soft block"),0,0,"L",0);
+			$pdfFile->Cell(30,5,_("Soft inode"),0,0,"L",0);
+			$pdfFile->Cell(30,5,_("Hard block"),0,0,"L",0);
+			$pdfFile->Cell(30,5,_("Hard inode"),0,1,"L",0);
 			for($j=0;$j<count($quotas);$j++) {
 				$pdfFile->Cell(50,5,"",0,0,"R",0);
-				$pdfFile->Cell(20,5,$quotas[$j][0],0,0,"L",0);
-				$pdfFile->Cell(20,5,$quotas[$j][2],0,0,"L",0);
-				$pdfFile->Cell(20,5,$quotas[$j][3],0,0,"L",0);
-				$pdfFile->Cell(20,5,$quotas[$j][6],0,0,"L",0);
-				$pdfFile->Cell(20,5,$quotas[$j][7],0,1,"L",0);
+				$pdfFile->Cell(30,5,$quotas[$j][0],0,0,"L",0);
+				$pdfFile->Cell(30,5,$quotas[$j][2],0,0,"L",0);
+				$pdfFile->Cell(30,5,$quotas[$j][3],0,0,"L",0);
+				$pdfFile->Cell(30,5,$quotas[$j][6],0,0,"L",0);
+				$pdfFile->Cell(30,5,$quotas[$j][7],0,1,"L",0);
 			}
 		}
 		else {
