@@ -13,6 +13,12 @@
   - new plugin for managing NIS mail aliases (RFE 1050036)
   - new plugin for managing mail routing with inetLocalMailRecipient (RFE 1092137)
 
+26.01.2005 0.4.8
+  - fixed bugs:
+      fixed IE fix ;-)
+      no more warnings for profiles with no additional groups set
+
+
 19.12.2004 0.4.7
   - added "*.exe" to Samba logon script regex (1081715)
   - fixed bugs:
