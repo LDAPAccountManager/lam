@@ -228,7 +228,7 @@ echo ("<table border=0>\n");
 
 // no Samba password
 echo ("<tr>\n");
-echo ("<td align=\"right\"><b>" . _("Set Samba Password") . ": </b></td>\n");
+echo ("<td align=\"right\"><b>" . _("Set Samba password") . ": </b></td>\n");
 echo ("<td><select name=\"smb_password_no\">\n");
 if ($acct->smb_password_no == "1") echo ("<option selected value=1>"._("no")."</option><option value=0>"._("yes")."</option>\n");
 else echo ("<option selected value=0>"._("yes")."</option><option value=1>"._("no")."</option>\n");

@@ -1,4 +1,4 @@
-# $Id: messages.po,v 1.5 2003/08/02 09:05:47 gruberroland Exp $
+# $Id: messages.po,v 1.6 2003/08/03 16:06:26 gruberroland Exp $
 #
 #
 # LDAP Account Manager
@@ -23,9 +23,9 @@ msgstr ""
 #: ../templates/ou_edit.php:160 ../templates/ou_edit.php:225
 #: ../templates/profedit/profiledelete.php:92
 #: ../templates/profedit/profiledelete.php:104
-#: ../templates/profedit/profilehost.php:106
+#: ../templates/profedit/profilehost.php:121
 #: ../templates/profedit/profilemain.php:193
-#: ../templates/profedit/profileuser.php:343
+#: ../templates/profedit/profileuser.php:368
 msgid "Abort"
 msgstr "Abbrechen"
 
@@ -42,10 +42,10 @@ msgid "Account expires on"
 msgstr ""
 
 #: ../templates/account.php:791 ../templates/account.php:919
-#: ../templates/profedit/profileuser.php:200 ../help/help.inc:169
+#: ../templates/profedit/profileuser.php:210 ../help/help.inc:169
 #: ../help/help.inc:250
 msgid "Account is deactivated"
-msgstr ""
+msgstr "Account deaktiviert"
 
 #: ../help/help.inc:251
 msgid "Account is deactivated."
@@ -57,7 +57,7 @@ msgstr "Neues Profil:"
 
 #: ../lib/account.inc:248
 msgid "Added $ to hostname."
-msgstr ""
+msgstr "$-Zeichen zum Hostnamen hinzugefügt."
 
 #: ../templates/account.php:452 ../templates/account.php:569
 #: ../help/help.inc:186
@@ -74,11 +74,11 @@ msgstr ""
 
 #: ../templates/domain.php:153 ../help/help.inc:339
 msgid "Algorithmic RID Base"
-msgstr ""
+msgstr "RID-Basisnummer"
 
 #: ../templates/domain.php:227
 msgid "Algorithmic RID base is not a number!"
-msgstr ""
+msgstr "RID-Basisnummer ist keine Zahl!"
 
 #: ../templates/masscreate.php:309
 msgid "All Users have been created"
@@ -135,16 +135,17 @@ msgstr "Zurück zum OU-Editor"
 #: ../templates/profedit/profilecreate.php:155
 #: ../templates/profedit/profilecreate.php:163
 #: ../templates/profedit/profilecreate.php:171
-#: ../templates/profedit/profilecreate.php:181
-#: ../templates/profedit/profilecreate.php:191
-#: ../templates/profedit/profilecreate.php:201
+#: ../templates/profedit/profilecreate.php:179
+#: ../templates/profedit/profilecreate.php:189
+#: ../templates/profedit/profilecreate.php:199
 #: ../templates/profedit/profilecreate.php:209
 #: ../templates/profedit/profilecreate.php:217
 #: ../templates/profedit/profilecreate.php:225
-#: ../templates/profedit/profilecreate.php:232
-#: ../templates/profedit/profilecreate.php:244
+#: ../templates/profedit/profilecreate.php:233
+#: ../templates/profedit/profilecreate.php:240
 #: ../templates/profedit/profilecreate.php:252
-#: ../templates/profedit/profilecreate.php:259
+#: ../templates/profedit/profilecreate.php:260
+#: ../templates/profedit/profilecreate.php:267
 #: ../templates/profedit/profiledelete.php:69
 #: ../templates/profedit/profiledelete.php:77
 #: ../templates/profedit/profiledelete.php:113
@@ -296,7 +297,7 @@ msgstr ""
 
 #: ../templates/config/profmanage.php:92
 msgid "Could not rename file!"
-msgstr ""
+msgstr "Konnte Datei nicht umbenennen!"
 
 #: ../templates/account.php:1036 ../templates/masscreate.php:276
 #: ../templates/initsuff.php:105
@@ -457,7 +458,7 @@ msgstr ""
 
 #: ../templates/account.php:824 ../templates/account.php:926
 #: ../templates/profedit/profilehost.php:82
-#: ../templates/profedit/profileuser.php:319 ../help/help.inc:143
+#: ../templates/profedit/profileuser.php:329 ../help/help.inc:143
 #: ../help/help.inc:175 ../help/help.inc:262
 msgid "Domain"
 msgstr "Domäne"
@@ -507,8 +508,8 @@ msgid ""
 "and -."
 msgstr ""
 
-#: ../templates/profedit/profilecreate.php:216
-#: ../templates/profedit/profilecreate.php:251 ../templates/domain.php:220
+#: ../templates/profedit/profilecreate.php:224
+#: ../templates/profedit/profilecreate.php:259 ../templates/domain.php:220
 msgid "Domain name is invalid!"
 msgstr "Domänenname ist ungültig!"
 
@@ -556,7 +557,7 @@ msgstr ""
 
 #: ../templates/login.php:254
 msgid "Empty Password submitted. Try again."
-msgstr ""
+msgstr "Das Passwort war leer. Bitte erneut eingeben."
 
 #: ../templates/login.php:103
 msgid "Enter Username and Password for Account:"
@@ -605,7 +606,7 @@ msgstr "Dateiupload"
 #: ../templates/lists/listgroups.php:173 ../templates/lists/listhosts.php:179
 #: ../templates/lists/listusers.php:195
 msgid "Filter"
-msgstr ""
+msgstr "Filtern"
 
 #: ../lib/ldap.inc:58
 msgid "First name"
@@ -792,8 +793,8 @@ msgstr ""
 #: ../templates/ou_edit.php:322 ../templates/ou_edit.php:335
 #: ../templates/ou_edit.php:355 ../templates/ou_edit.php:368
 #: ../templates/profedit/profilehost.php:74
-#: ../templates/profedit/profilehost.php:84
-#: ../templates/profedit/profilehost.php:98
+#: ../templates/profedit/profilehost.php:99
+#: ../templates/profedit/profilehost.php:113
 #: ../templates/profedit/profileuser.php:92
 #: ../templates/profedit/profileuser.php:104
 #: ../templates/profedit/profileuser.php:114
@@ -804,17 +805,18 @@ msgstr ""
 #: ../templates/profedit/profileuser.php:160
 #: ../templates/profedit/profileuser.php:167
 #: ../templates/profedit/profileuser.php:192
-#: ../templates/profedit/profileuser.php:205
-#: ../templates/profedit/profileuser.php:226
+#: ../templates/profedit/profileuser.php:202
+#: ../templates/profedit/profileuser.php:215
 #: ../templates/profedit/profileuser.php:236
 #: ../templates/profedit/profileuser.php:246
-#: ../templates/profedit/profileuser.php:280
-#: ../templates/profedit/profileuser.php:287
-#: ../templates/profedit/profileuser.php:294
-#: ../templates/profedit/profileuser.php:301
+#: ../templates/profedit/profileuser.php:256
+#: ../templates/profedit/profileuser.php:290
+#: ../templates/profedit/profileuser.php:297
+#: ../templates/profedit/profileuser.php:304
 #: ../templates/profedit/profileuser.php:311
 #: ../templates/profedit/profileuser.php:321
-#: ../templates/profedit/profileuser.php:335 ../templates/domain.php:85
+#: ../templates/profedit/profileuser.php:346
+#: ../templates/profedit/profileuser.php:360 ../templates/domain.php:85
 #: ../templates/domain.php:103 ../templates/domain.php:119
 #: ../templates/domain.php:130 ../templates/domain.php:138
 #: ../templates/domain.php:146 ../templates/domain.php:158
@@ -848,18 +850,18 @@ msgstr ""
 msgid "Home directory"
 msgstr "Heimatverzeichnis"
 
-#: ../templates/account.php:797 ../templates/profedit/profileuser.php:254
+#: ../templates/account.php:797 ../templates/profedit/profileuser.php:264
 #: ../help/help.inc:131 ../help/help.inc:252
 msgid "Home drive"
 msgstr "Heimatlaufwerk"
 
 #: ../templates/profedit/profilecreate.php:74
 msgid "Homedir is invalid!"
-msgstr ""
+msgstr "Heimatverzeichnis ist ungültig!"
 
 #: ../lib/account.inc:176
 msgid "Homedirectory contents invalid characters."
-msgstr ""
+msgstr "Heimatverzeichnis enthält ungültige Zeichen."
 
 #: ../templates/account.php:1125
 msgid "Host"
@@ -912,7 +914,7 @@ msgstr "HostSuffix"
 
 #: ../templates/config/confsave.php:102
 msgid "HostSuffix is invalid!"
-msgstr ""
+msgstr "Hostsuffix ist ungültig!"
 
 #: ../lib/account.inc:282
 msgid "Hostname allready in use. Selected next free hostname."
@@ -1076,7 +1078,7 @@ msgstr ""
 msgid "Invalid Value!"
 msgstr "Ungültiger Wert!"
 
-#: ../templates/profedit/profilecreate.php:224
+#: ../templates/profedit/profilecreate.php:232
 msgid "Invalid profile name!"
 msgstr "Ungültiger Profilname!"
 
@@ -1144,7 +1146,7 @@ msgstr "Attribute der Listen"
 
 #: ../templates/config/confsave.php:87
 msgid "List of admin users is empty or invalid!"
-msgstr ""
+msgstr "Liste der berechtigten Benutzer ist ungültig!"
 
 #: ../templates/config/confmain.php:318 ../lib/config.inc:453
 msgid "List of valid users"
@@ -1442,7 +1444,7 @@ msgstr "Passwort leer!"
 msgid "No primary group defined!"
 msgstr "Keine primäre Gruppe angegeben!"
 
-#: ../templates/profedit/profilecreate.php:263
+#: ../templates/profedit/profilecreate.php:271
 msgid "No type specified!"
 msgstr "Kein Typ angegeben!"
 
@@ -1587,7 +1589,7 @@ msgid ""
 "and #*,.;:_-+!$%&/|?{[()]}= !"
 msgstr ""
 
-#: ../templates/profedit/profileuser.php:241 ../help/help.inc:145
+#: ../templates/profedit/profileuser.php:251 ../help/help.inc:145
 #: ../help/help.inc:244
 msgid "Password does not expire"
 msgstr "Passwort läuft nicht ab"
@@ -1605,7 +1607,7 @@ msgstr ""
 msgid "Password expiry"
 msgstr ""
 
-#: ../templates/profedit/profilecreate.php:138
+#: ../templates/profedit/profilecreate.php:146
 msgid "Password expiry is not numeric!"
 msgstr ""
 
@@ -1637,7 +1639,7 @@ msgstr "Die Passwörter stimmen nicht überein!"
 msgid "Path to external script"
 msgstr "Pfad zum externen Script"
 
-#: ../templates/profedit/profileuser.php:285 ../help/help.inc:134
+#: ../templates/profedit/profileuser.php:295 ../help/help.inc:134
 msgid "Path to home directory"
 msgstr "Pfad zum Heimatverzeichnis"
 
@@ -1700,7 +1702,7 @@ msgid "Primary group"
 msgstr "Primäre Gruppe"
 
 #: ../templates/profedit/profilecreate.php:63
-#: ../templates/profedit/profilecreate.php:243
+#: ../templates/profedit/profilecreate.php:251
 msgid "Primary group name is invalid!"
 msgstr "Primäre Gruppe ist ungültig!"
 
@@ -1718,7 +1720,7 @@ msgstr ""
 #: ../help/help.inc:167 ../help/help.inc:169 ../help/help.inc:171
 #: ../help/help.inc:173 ../help/help.inc:175
 msgid "Profile Editor"
-msgstr ""
+msgstr "Profileditor"
 
 #: ../templates/config/profmanage.php:99
 msgid "Profile deleted."
@@ -1730,8 +1732,8 @@ msgid "Profile management"
 msgstr "Profilverwaltung"
 
 #: ../templates/config/profmanage.php:158
-#: ../templates/profedit/profilehost.php:96
-#: ../templates/profedit/profileuser.php:333 ../help/help.inc:171
+#: ../templates/profedit/profilehost.php:111
+#: ../templates/profedit/profileuser.php:358 ../help/help.inc:171
 msgid "Profile name"
 msgstr "Profilname"
 
@@ -1749,22 +1751,22 @@ msgstr "Profilpasswort"
 msgid "Profile passwords are different or empty!"
 msgstr "Die Passwörter stimmen nicht überein!"
 
-#: ../templates/account.php:809 ../templates/profedit/profileuser.php:292
+#: ../templates/account.php:809 ../templates/profedit/profileuser.php:302
 #: ../help/help.inc:137 ../help/help.inc:256 ../lib/account.inc:344
 #: ../lib/account.inc:346 ../lib/account.inc:357
 msgid "Profile path"
 msgstr "Profilpfad"
 
-#: ../templates/profedit/profilecreate.php:190
+#: ../templates/profedit/profilecreate.php:198
 msgid "Profile path is invalid!"
 msgstr "Profilpfad ist ungültig!"
 
 #: ../lib/account.inc:357
 msgid "Profile path is invalid."
-msgstr ""
+msgstr "Profilpfad ist ungültig."
 
-#: ../templates/profedit/profilecreate.php:230
-#: ../templates/profedit/profilecreate.php:257
+#: ../templates/profedit/profilecreate.php:238
+#: ../templates/profedit/profilecreate.php:265
 msgid "Profile was saved."
 msgstr "Profil wurde gespeichert."
 
@@ -1812,8 +1814,8 @@ msgid "Replaced $user or $group in homedir."
 msgstr ""
 
 #: ../templates/config/confmain.php:345
-#: ../templates/profedit/profilehost.php:105
-#: ../templates/profedit/profileuser.php:342 ../templates/domain.php:173
+#: ../templates/profedit/profilehost.php:120
+#: ../templates/profedit/profileuser.php:367 ../templates/domain.php:173
 msgid "Reset"
 msgstr "Zurücksetzen"
 
@@ -1853,17 +1855,17 @@ msgstr ""
 msgid "Samba Properties"
 msgstr ""
 
-#: ../templates/profedit/profileuser.php:216
+#: ../templates/profedit/profileuser.php:226
 msgid "Samba account"
 msgstr "Samba Account"
 
 #: ../help/help.inc:107
 msgid "Samba domain SID"
-msgstr ""
+msgstr "Samba-Domänen-SID"
 
-#: ../templates/profedit/profilecreate.php:180
+#: ../templates/profedit/profilecreate.php:188
 msgid "Samba home directory is invalid!"
-msgstr ""
+msgstr "Samba-Heimatverzeichnis ist ungültig!"
 
 #: ../templates/config/confmain.php:160
 msgid "Samba settings"
@@ -1871,26 +1873,26 @@ msgstr "Samba-Einstellungen"
 
 #: ../help/help.inc:102
 msgid "Samba version"
-msgstr ""
+msgstr "Samba-Version"
 
 #: ../templates/config/confsave.php:174
 msgid "Samba version is not defined!"
-msgstr ""
+msgstr "Samba-Version ist nicht definiert!"
 
 #: ../templates/account.php:814 ../help/help.inc:258 ../lib/account.inc:361
 msgid "Samba workstations"
 msgstr "Samba PCs"
 
-#: ../templates/profedit/profilecreate.php:208
+#: ../templates/profedit/profilecreate.php:216
 msgid "Samba workstations are invalid!"
-msgstr ""
+msgstr "Samba-Arbeitsstationen sind ungültig!"
 
 #: ../lib/account.inc:361
 msgid "Samba workstations is invalid."
 msgstr ""
 
-#: ../templates/profedit/profilehost.php:104
-#: ../templates/profedit/profileuser.php:341
+#: ../templates/profedit/profilehost.php:119
+#: ../templates/profedit/profileuser.php:366
 msgid "Save"
 msgstr "Speichern"
 
@@ -1902,14 +1904,14 @@ msgstr "Profil speichern"
 msgid "Save profile"
 msgstr "Profil speichern"
 
-#: ../templates/account.php:804 ../templates/profedit/profileuser.php:299
+#: ../templates/account.php:804 ../templates/profedit/profileuser.php:309
 #: ../help/help.inc:88 ../help/help.inc:139 ../help/help.inc:254
 #: ../lib/account.inc:340 ../lib/account.inc:342
 msgid "Script path"
 msgstr "Scriptpfad"
 
 #: ../templates/config/confsave.php:186
-#: ../templates/profedit/profilecreate.php:200
+#: ../templates/profedit/profilecreate.php:208
 msgid "Script path is invalid!"
 msgstr "Scriptpfad ist ungültig!"
 
@@ -1919,7 +1921,7 @@ msgstr ""
 
 #: ../help/help.inc:94
 msgid "Script server"
-msgstr ""
+msgstr "Scriptserver"
 
 #: ../templates/config/confsave.php:192
 msgid "Script server is invalid!"
@@ -1967,19 +1969,15 @@ msgstr "Server mit externem Script"
 msgid "Server settings"
 msgstr "Servereinstellungen"
 
-#: ../templates/profedit/profileuser.php:221
-msgid "Set Samba Password"
-msgstr ""
-
-#: ../help/help.inc:115
+#: ../templates/profedit/profileuser.php:231 ../help/help.inc:115
 msgid "Set Samba password"
-msgstr ""
+msgstr "Samba-Passwort setzen"
 
 #: ../templates/profedit/profileuser.php:134
 msgid "Set Unix Password"
-msgstr ""
+msgstr "Unix-Passwort setzen"
 
-#: ../templates/profedit/profileuser.php:231
+#: ../templates/profedit/profileuser.php:241
 msgid "Set Unix Password for Samba"
 msgstr ""
 
@@ -1989,7 +1987,7 @@ msgstr "Unix-Passwort setzen"
 
 #: ../help/help.inc:119
 msgid "Set Unix password for Samba"
-msgstr ""
+msgstr "Unix-Passwort für Samba setzen"
 
 #: ../templates/config/profmanage.php:245
 msgid "Set profile password"
@@ -2013,7 +2011,7 @@ msgstr ""
 
 #: ../templates/help.php:65
 msgid "Sorry no help number submitted."
-msgstr ""
+msgstr "Leider wurde keine Hilfenummer angegeben."
 
 #: ../templates/help.php:73
 msgid "Sorry this help number ({bold}"
@@ -2055,7 +2053,7 @@ msgstr "Vorname"
 
 #: ../lib/account.inc:180
 msgid "Surname contents invalid characters"
-msgstr ""
+msgstr "Vorname enthält ungültige Zeichen"
 
 #: ../templates/massdetail.php:99
 msgid "Surname*"
@@ -2083,11 +2081,11 @@ msgstr ""
 
 #: ../help/help.inc:332
 msgid "The SID of your Samba server. Get it with \"net getlocalsid\"."
-msgstr ""
+msgstr "Die Domänen-SID des Samba-Servers. Auszulesen mit \"net getlocalsid\"."
 
 #: ../help/help.inc:330
 msgid "The domain entry will be saved under this suffix."
-msgstr ""
+msgstr "Der Domäneneintrag wird unter diesem Suffix gespeichert."
 
 #: ../templates/config/confsave.php:235
 msgid "The following settings were saved to profile:"
@@ -2100,11 +2098,11 @@ msgstr "Folgende Suffixe fehlen in LDAP. LAM kann sie für Sie erstellen."
 
 #: ../help/help.inc:328
 msgid "The name of your Windows domain or workgroup."
-msgstr ""
+msgstr "Der Name ihrer Windows-Domäne oder Arbeitsgruppe."
 
 #: ../templates/config/confmain.php:99
 msgid "The password is invalid! Please try again."
-msgstr ""
+msgstr "Das Passwort ist falsch! Bitte erneut eingeben."
 
 #: ../templates/masscreate.php:270
 msgid "There are some errors."
@@ -2162,7 +2160,7 @@ msgstr ""
 
 #: ../help/help.inc:144 ../help/help.inc:176
 msgid "This is the Windows domain name."
-msgstr ""
+msgstr "Das ist der Name der Windows-Domäne."
 
 #: ../help/help.inc:89
 msgid ""
@@ -2237,12 +2235,12 @@ msgstr "Dieser Benutzer wurde nicht gefunden!"
 
 #: ../help/help.inc:324
 msgid "This will create a new organizational unit under the selected one."
-msgstr ""
+msgstr "Dies erzeugt eine neue Organizational Unit unterhalb der markierten."
 
 #: ../help/help.inc:326
 msgid ""
 "This will delete the selected organizational unit. The OU has to be empty."
-msgstr ""
+msgstr "Dies löscht die markierte Organizational Unit. Die OU muss leer sein."
 
 #: ../templates/account.php:973 ../templates/massdetail.php:123
 #: ../help/help.inc:282 ../help/help.inc:283
@@ -2304,12 +2302,12 @@ msgstr ""
 msgid "Unable to load configuration!"
 msgstr "Kann Konfiguration nicht laden!"
 
-#: ../lib/profiles.inc:178 ../lib/profiles.inc:182 ../lib/profiles.inc:218
-#: ../lib/profiles.inc:222
+#: ../lib/profiles.inc:182 ../lib/profiles.inc:186 ../lib/profiles.inc:222
+#: ../lib/profiles.inc:226
 msgid "Unable to load profile!"
 msgstr "Kann das Profil nicht laden!"
 
-#: ../lib/profiles.inc:280 ../lib/profiles.inc:310
+#: ../lib/profiles.inc:285 ../lib/profiles.inc:315
 msgid "Unable to save profile!"
 msgstr "Kann das Profil nicht speichern!"
 
@@ -2323,15 +2321,20 @@ msgstr "Unix-Einstellungen"
 
 #: ../templates/profedit/profileuser.php:80
 msgid "Unix account"
-msgstr ""
+msgstr "Unix-Account"
 
-#: ../templates/account.php:682 ../help/help.inc:318 ../lib/account.inc:318
+#: ../templates/account.php:682 ../templates/profedit/profileuser.php:200
+#: ../help/help.inc:318 ../lib/account.inc:318
 msgid "Unix workstations"
 msgstr "Arbeitsstationen"
 
+#: ../templates/profedit/profilecreate.php:130
+msgid "Unix workstations are invalid!"
+msgstr "Unix-Arbeitsstationen sind ungültig!"
+
 #: ../lib/account.inc:318
 msgid "Unix workstations is invalid."
-msgstr ""
+msgstr "Unix-Arbeitsstationen sind ungültig."
 
 #: ../templates/account.php:739
 msgid "Use Unix-Password"
@@ -2349,7 +2352,7 @@ msgstr ""
 
 #: ../help/help.inc:238 ../help/help.inc:239 ../help/help.inc:242
 msgid "Use no password"
-msgstr ""
+msgstr "Kein Passwort setzen"
 
 #: ../help/help.inc:243
 msgid "Use no password."
@@ -2373,7 +2376,7 @@ msgstr "Benutzer "
 
 #: ../lib/ldap.inc:53
 msgid "User ID"
-msgstr ""
+msgstr "Benutzer ID"
 
 #: ../templates/profedit/profilemain.php:107
 msgid "User Profiles"
@@ -2511,7 +2514,7 @@ msgstr ""
 
 #: ../help/help.inc:306
 msgid "Windows domain"
-msgstr ""
+msgstr "Windows-Domäne"
 
 #: ../help/help.inc:307
 msgid "Windows domain of host. Can be left empty."
@@ -2523,13 +2526,13 @@ msgstr "Windows-Gruppenname"
 
 #: ../templates/account.php:832 ../help/help.inc:314 ../help/help.inc:315
 msgid "Windows well known group"
-msgstr ""
+msgstr "Windows-Standardgruppe"
 
 #: ../help/help.inc:263
 msgid "Windows-Domain of user. Can be left empty."
 msgstr ""
 
-#: ../templates/profedit/profileuser.php:309
+#: ../templates/profedit/profileuser.php:319
 msgid "Workstations"
 msgstr "Arbeitsstationen"
 
@@ -2542,23 +2545,23 @@ msgstr ""
 msgid "Wrong or missing type!"
 msgstr "Falscher oder fehlender Typ!"
 
-#: ../templates/profedit/profilecreate.php:162
+#: ../templates/profedit/profilecreate.php:170
 msgid "Wrong parameter for Samba option: Account does not expire!"
 msgstr ""
 
-#: ../templates/profedit/profilecreate.php:146
+#: ../templates/profedit/profilecreate.php:154
 msgid "Wrong parameter for Samba option: Set Samba Password!"
 msgstr ""
 
-#: ../templates/profedit/profilecreate.php:154
+#: ../templates/profedit/profilecreate.php:162
 msgid "Wrong parameter for Samba option: Set Unix Password for Samba!"
 msgstr ""
 
-#: ../templates/profedit/profilecreate.php:170
+#: ../templates/profedit/profilecreate.php:178
 msgid "Wrong parameter for Samba option: home drive!"
 msgstr ""
 
-#: ../templates/profedit/profilecreate.php:130
+#: ../templates/profedit/profilecreate.php:138
 msgid "Wrong parameter for Unix account activation!"
 msgstr ""
 
@@ -2686,14 +2689,14 @@ msgstr "vor"
 
 #: ../templates/profedit/profileuser.php:136
 #: ../templates/profedit/profileuser.php:137
-#: ../templates/profedit/profileuser.php:202
-#: ../templates/profedit/profileuser.php:203
-#: ../templates/profedit/profileuser.php:223
-#: ../templates/profedit/profileuser.php:224
+#: ../templates/profedit/profileuser.php:212
+#: ../templates/profedit/profileuser.php:213
 #: ../templates/profedit/profileuser.php:233
 #: ../templates/profedit/profileuser.php:234
 #: ../templates/profedit/profileuser.php:243
 #: ../templates/profedit/profileuser.php:244
+#: ../templates/profedit/profileuser.php:253
+#: ../templates/profedit/profileuser.php:254
 msgid "no"
 msgstr "nein"
 
@@ -2719,11 +2722,11 @@ msgstr "erforderlich für Samba 3 Schema"
 msgid "row"
 msgstr "Reihe"
 
-#: ../lib/profiles.inc:297
+#: ../lib/profiles.inc:302
 msgid "saveHostProfile: account has wrong type!"
 msgstr ""
 
-#: ../lib/profiles.inc:232
+#: ../lib/profiles.inc:236
 msgid "saveUserProfile: account has wrong type!"
 msgstr ""
 
@@ -2754,14 +2757,14 @@ msgstr ""
 
 #: ../templates/profedit/profileuser.php:136
 #: ../templates/profedit/profileuser.php:137
-#: ../templates/profedit/profileuser.php:202
-#: ../templates/profedit/profileuser.php:203
-#: ../templates/profedit/profileuser.php:223
-#: ../templates/profedit/profileuser.php:224
+#: ../templates/profedit/profileuser.php:212
+#: ../templates/profedit/profileuser.php:213
 #: ../templates/profedit/profileuser.php:233
 #: ../templates/profedit/profileuser.php:234
 #: ../templates/profedit/profileuser.php:243
 #: ../templates/profedit/profileuser.php:244
+#: ../templates/profedit/profileuser.php:253
+#: ../templates/profedit/profileuser.php:254
 msgid "yes"
 msgstr "ja"
 
