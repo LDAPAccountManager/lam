@@ -210,6 +210,8 @@ switch ($_POST['select']) {
 		break;
 	case 'general':
 		if (!$_POST['load']) {
+			if (($account_new->general_username != $_POST['f_general_username']) &&  ereg('[A-Z]$', $_POST['f_general_username']))
+				$errors[] = array('WARN', _('Username'), _('You are using a capital letters. This can cause problems because user and uSer could have the same mail-address.'));
 			// Write all general values into $account_new if no profile should be loaded
 			$account_new->general_dn = $_POST['f_general_suffix'];
 			$account_new->general_username = $_POST['f_general_username'];
@@ -230,8 +232,8 @@ switch ($_POST['select']) {
 				}
 			if ($account_new->general_group=='') $errors[] = array('ERROR', _('Primary group'), _('No primary group defined!'));
 			// Check if Username contains only valid characters
-			if ( !ereg('^([a-z]|[0-9]|[.]|[-]|[_])*$', $account_new->general_username))
-				$errors[] = array('ERROR', _('Username'), _('Username contains invalid characters. Valid characters are: a-z, 0-9 and .-_ !'));
+			if ( !ereg('^([a-z]|[A-Z]|[0-9]|[.]|[-]|[_])*$', $account_new->general_username))
+				$errors[] = array('ERROR', _('Username'), _('Username contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
 			// Check if user already exists
 			// Remove primary group from additional groups if set.
 			if (isset($account_new->general_groupadd) && in_array($account_new->general_group, $account_new->general_groupadd)) {

@@ -161,6 +161,8 @@ switch ($_POST['select']) {
 		break;
 	case 'general':
 		if (!$_POST['load']) {
+			if (($account_new->general_username != $_POST['f_general_username']) &&  ereg('[A-Z]$', $_POST['f_general_username']))
+				$errors[] = array('WARN', _('Groupname'), _('You are using a capital letters. This can cause problems because user and uSer could have the same mail-address.'));
 			// Write all general attributes into $account_new if no profile should be loaded
 			$account_new->general_dn = $_POST['f_general_suffix'];
 			$account_new->general_username = $_POST['f_general_username'];
@@ -169,8 +171,8 @@ switch ($_POST['select']) {
 
 			// Check if values are OK and set automatic values.  if not error-variable will be set
 			// Check if Groupname contains only valid characters
-			if ( !ereg('^([a-z]|[0-9]|[.]|[-]|[_])*$', $account_new->general_username))
-				$errors[] = array('ERROR', _('Groupname'), _('Groupname contains invalid characters. Valid characters are: a-z, 0-9 and .-_ !'));
+			if ( !ereg('^([a-z]|[A-Z]|[0-9]|[.]|[-]|[_])*$', $account_new->general_username))
+				$errors[] = array('ERROR', _('Groupname'), _('Groupname contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
 			if ($account_new->general_gecos=='') {
 				$account_new->general_gecos = $account_new->general_username ;
 				$errors[] = array('INFO', _('Gecos'), _('Inserted groupname in gecos-field.'));
