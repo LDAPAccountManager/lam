@@ -356,7 +356,7 @@ if ($user_count != 0) {
 	echo ("<input type=\"submit\" name=\"del_user\" value=\"" . _("Delete user(s)") . "\">\n");
 	echo ("<br><br><br>\n");
 	echo "<fieldset><legend><b>PDF</b></legend>\n";
-	echo ("<b>" . _('PDF structure:') . "</b>&nbsp;&nbsp;<select name=\"pdf_structure\">\n");
+	echo ("<b>" . _('PDF structure') . ":</b>&nbsp;&nbsp;<select name=\"pdf_structure\">\n");
 	$pdf_structures = getAvailablePDFStructures('user');
 	foreach($pdf_structures as $pdf_structure) {
 		echo "<option value=\"" . $pdf_structure . "\"" . (($pdf_structure == 'default.xml') ? " selected" : "") . ">" . substr($pdf_structure,0,strlen($pdf_structure)-4) . "</option>";

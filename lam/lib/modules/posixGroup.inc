@@ -254,7 +254,7 @@ class posixGroup extends baseModule {
 		'descriptions' => array(
 		'posixGroup_minGID' => _("Minimum GID number for Unix groups"),
 		'posixGroup_maxGID' => _("Maximum GID number for Unix groups"),
-		'posixGroup_pwdHash' => _("Password hash type"),
+		'posixGroup_pwdHash' => _("Password hash type for Unix groups"),
 		)
 		);
 		// configuration checks

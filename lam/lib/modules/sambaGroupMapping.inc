@@ -336,7 +336,7 @@ class sambaGroupMapping extends baseModule {
 	function load_Messages() {
 		$this->messages['sambaSID'][0] = array('ERROR', _('Special Group'),sprintf( _('There can be only one group %s.'), $rids[$i]), 'sambaSID');
 		$this->messages['sambaSID'][1] = array('ERROR', _("Account %s") . " (sambaGroupMapping_domain): " . _("LAM was unable to find a Samba 3 domain with this name!"));  // third parameter must be set dynamically
-		$this->messages['groupType'][0] = array('ERROR', _("Account %s") . "(sambaGroupMapping_type): " . _("This is not a valid Samba 3 group type!"), _("Possible values:") . " %s");
+		$this->messages['groupType'][0] = array('ERROR', _("Account %s") . "(sambaGroupMapping_type): " . _("This is not a valid Samba 3 group type!"), _("Possible values") . ": %s");
 	}
 
 

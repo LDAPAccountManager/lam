@@ -38,7 +38,7 @@ class shadowAccount extends baseModule {
 		// error messages for input checks
 		$this->messages['shadowMin'][0] = array('ERROR', _('Password minage'), _('Password minage must be are natural number.'));
 		$this->messages['shadowMax'][0] = array('ERROR', _('Password maxage'), _('Password maxage must be are natural number.'));
-		$this->messages['inactive'][0] = array('ERROR', _('Password Expire'), _('Password expire must be are natural number or -1.'));
+		$this->messages['inactive'][0] = array('ERROR', _('Password expire'), _('Password expire must be are natural number or -1.'));
 		$this->messages['shadowWarning'][0] = array('ERROR', _('Password warn'), _('Password warn must be are natural number.'));
 		$this->messages['shadow_cmp'][0] = array('ERROR', _('Password maxage'), _('Password maxage must bigger as Password Minage.'));
 	}

@@ -456,7 +456,7 @@ function buildUploadAccounts($scope, $data, $ids) {
 		}
 		if ($newRound) continue;
 		// this point should never be reached, LAM was unable to find a correct module order
-		StatusMessage("ERROR", _("Internal Error: Unable to find correct module order."), "");
+		StatusMessage("ERROR", "Internal Error: Unable to find correct module order.", "");
 		return false;
 	}
 	// give raw data to modules
