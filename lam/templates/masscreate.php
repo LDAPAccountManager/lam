@@ -236,15 +236,46 @@ if ($select!='pdf') {
 			echo _('Mass Creation');
 			echo '</td></tr><tr><td>'."\n";
 			echo _('Please provide a csv-file with the following syntax. Values with * are required:');
-			echo '</td></tr><tr><td>'."\n";
-			echo _('Surname*,Givenname*,Username*,PrimaryGroup,Title,Mail,telephonenumber,');
-			echo '</td></tr><tr><td>'."\n";
-			echo _('mobileTelephoneNumber,facsimileNumber,street,postalCode,postalAddress,');
-			echo '</td></tr><tr><td>'."\n";
-			echo _('employeeType. If Primary group is not given it\'ll used from profile.');
+			echo '</td></tr></table>'.
+				'<form enctype="multipart/form-data" action="masscreate.php" method="post">'."\n".
+				'<table class="masscreate" width="100%">'.
+				'<tr><td>'."\n";
+			echo _('Surname').'*,';
+			echo '</td>'."\n".'<td>';
+			echo _('Given name').'*,';
+			echo '</td>'."\n".'<td>';
+			echo _('Username').'*,';
+			echo "</td>\n<td>";
+			echo _('Primary group').',';
+			echo '</td>'."\n".'<td>';
+			echo _('Title').',';
+			echo '</td>'."\n".'<td>';
+			echo _('eMail address').',';
+			echo '</td>'."\n".'<td>';
+			echo _('Telephone number').',';
+			echo '</td></tr>'."\n".'<tr><td>';
+			echo _('Mobile number').',';
+			echo '</td>'."\n".'<td>';
+			echo _('Fax number').',';
+			echo '</td>'."\n".'<td>';
+			echo _('Street').',';
+			echo '</td>'."\n".'<td>';
+			echo _('Postal code').',';
+			echo '</td>'."\n".'<td>';
+			echo _('Postal address').',';
+			echo '</td></tr>'."\n".'<tr><td>';
+			echo _('Employee type').' &lt;CR&gt;';
+			echo '</td></tr></table>'.
+				'<form enctype="multipart/form-data" action="masscreate.php" method="post">'."\n".
+				'<table class="masscreate" width="100%">'.
+				'<tr><td>'."\n";
+			echo _('If Primary group is not given it\'ll used from profile.');
 			echo '</td></tr><tr><td>'."\n";
 			echo _('If PrimaryGroup does not exist it will be created.');
-			echo '</td></tr><tr><td>'."\n";
+			echo '</td></tr></table>'.
+				'<form enctype="multipart/form-data" action="masscreate.php" method="post">'."\n".
+				'<table class="masscreate" width="100%">'.
+				'<tr><td>'."\n";
 			echo _('Select Profile:');
 			echo '</td><td><select name="f_selectprofile">'."\n";
 			foreach ($profilelist as $profile) echo '<option>' . $profile;
