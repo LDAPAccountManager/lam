@@ -61,7 +61,7 @@ function getAvailableModules($scope) {
 			$entry = substr($entry, 0, strpos('.'));
 			$eval = "$module = $entry::get_dependencies($scope)";
 			eval ($eval);
-			if ($module != -1) $return[] getModuleAlias($entry);
+			if ($module != -1) $return[] = getModuleAlias($entry);
 			}
 	return $return;
 	}
