@@ -81,8 +81,6 @@ class baseModule {
 	*/
 	function init($base) {
 		$this->base = $base;
-		// load error messages
-		$this->load_errorMessages();
 		// Create Arrays with ldap attributes
 		$this->attributes =& $_SESSION[$this->base]->get_module_attributes(get_class($this));
 		$this->orig =& $_SESSION[$this->base]->get_module_attributes(get_class($this), true);
@@ -142,11 +140,6 @@ class baseModule {
 		return $this->scope;
 	}
 
-	/**
-	* This function is needed to avoid error messages */
-	function load_errorMessages() {
-	}
-	
 	/**
 	* Returns true if this module fits for the current scope.
 	*
