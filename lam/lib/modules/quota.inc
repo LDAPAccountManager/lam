@@ -57,6 +57,8 @@ class quota extends baseModule {
 			// module dependencies
 			$return['dependencies'] = array('depends' => array('posixAccount'), 'conflicts' => array());
 		}
+		// available PDF fields
+		$return['PDF_fields'] =  array(	'quotas');
 		return $return;
 	}
 
@@ -371,10 +373,10 @@ class quota extends baseModule {
 		return $return;
 	}
 	
-	function get_pdfFields($account_type="user") {
-		return array(	'quotas');
-	}
-	
+	/*
+	 * (non-PHPDoc)
+	 * @see baseModule#get_pdfEntries
+	 */
 	function get_pdfEntries($account_type = "user") {
 		return array(	'quota_quotas' => array('<block><key>' . _('User quota') . '</key><td width="20%"><b>' . _('Mountpoint') . '</b></td><td width="20%"><b>' . _('Soft block') . '</b></td><td width="20%"><b>' . _('Soft inode') . '</b></td><td width="20%"><b>' . _('Hard block') . '</b></td><td width="20%"><b>' . _('Hard inode') . '</b></td></block>'));
 	}

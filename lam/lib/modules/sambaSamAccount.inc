@@ -97,6 +97,17 @@ class sambaSamAccount extends baseModule {
 			'error_message' => $this->messages['logonScript']);
 		$return['profile_checks']['sambaSamAccount_userWorkstations'] = array('type' => 'regex_i', 'regex' => $this->regex_workstations,
 			'error_message' => $this->messages['workstations']);
+		// available PDF fields
+		$return['PDF_fields'] = array(	'displayName',
+													'uid',
+													'sambaHomePath',
+													'sambaHomeDrive',
+													'sambaLogonScript',
+													'sambaProfilePath',
+													'sambaUserWorkstations',
+													'sambaDomainName',
+													'description',
+													'sambaPrimaryGroupSID');
 		return $return;
 	}
 
@@ -743,20 +754,11 @@ class sambaSamAccount extends baseModule {
 		}
 		return $return;
 	}
-
-	function get_pdfFields($account_type="user") {
-		return array(	'displayName',
-							'uid',
-							'sambaHomePath',
-							'sambaHomeDrive',
-							'sambaLogonScript',
-							'sambaProfilePath',
-							'sambaUserWorkstations',
-							'sambaDomainName',
-							'description',
-							'sambaPrimaryGroupSID');
-	}
 	
+	/*
+	 * (non-PHPDoc)
+	 * @see baseModule#get_pdfEntries
+	 */
 	function get_pdfEntries($account_type = "user") {
 		return array(	'sambaSamAccount_displayName' => array('<block><key>' . _('Display name') . '</key><value' . $this->attributes['displayName'][0] . '</value></block>'),
 							'sambaSamAccount_uid' => array('<block><key>' . _('Username') . '</key><value>' . $this->attributes['uid'][0] . '</value></block>'),

@@ -121,6 +121,11 @@ class posixGroup extends baseModule {
 			'required' => true, 'required_message' => $this->messages['maxGID'], 'error_message' => $this->messages['maxGID']);
 		$return['config_checks']['group']['cmpGID'] = array('type' => 'int_greater', 'cmp_name1' => 'posixGroup_maxGID',
 			'cmp_name2' => 'posixGroup_minGID', 'error_message' => $this->messages['cmpGID']);
+		// available PDF fields
+		$return['PDF_fields'] = array(	'cn',
+													'gidNumber',
+													'memberUid',
+													'description');
 		return $return;
 	}
 
@@ -631,13 +636,10 @@ class posixGroup extends baseModule {
 		return $return;
 		}
 
-	function get_pdfFields($account_type="user") {
-		return array(	'cn',
-							'gidNumber',
-							'memberUid',
-							'description');
-	}
-	
+	/*
+	 * (non-PHPDoc)
+	 * @see baseModule#get_pdfEntries
+	 */
 	function get_pdfEntries($account_type = "group") {
 		return array(	'posixGroup_cn' => array('<block><key>' . _('Groupname') . '</key><value>' . $this->attributes['cn'][0] . '</value></block>'),
 							'posixGroup_gidNumber' => array('<block><key>' . _('GID number') . '</key><value>' . $this->attributes['gidNumber'][0] . '</value></block>'),

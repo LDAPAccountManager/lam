@@ -307,6 +307,34 @@ class baseModule {
 		}
 		return $messages;
 	}
+	
+	/**
+	 * Returns an array with all fields available for this account type on the PDF
+	 * output. This method may be overwritten by subclasses or it may be used
+	 * by using entries in the $this->meta['PDF_fields'] array of the specific sub-
+	 * class.
+	 * 
+	 * @param string $scope account type
+	 * @return array list of available fields for PDF output
+	 */
+	function get_pdfFields($scope = 'user') {
+		return ((isset($this>meta['PDF_fields'])) ? $this->meta['PDF_fields'] : array());
+	}
+	
+	/**
+	 * Returns a hastable with all entries that may be printed out in the PDF. The
+	 * syntax of the hashtable is specified by the module specification and the
+	 * corresponding DTD. This method must be overwritten in case that there 
+	 * are non static things to be returned. The $this->meta['PDF_entries'] array
+	 * may be used when there is only static content.
+	 * 
+	 * @param string $scope account type
+	 * @return array hastable of entries for the PDF. Each entry is an array where
+	 * each entry is treated as a new line in the PDF.
+	 */
+	function get_pdf_entries($scope = 'user') {
+		return ((isset($this->meta['PDF_entries'])) ? $this->meta['PDF_entries'] : array());
+	}
 
 // TODO implement missing interface
 }

@@ -52,6 +52,8 @@ class account extends baseModule {
 		$return["alias"] = _('Account');
 		// module dependencies
 		$return['dependencies'] = array('depends' => array(), 'conflicts' => array('inetOrgPerson'));
+		// available PDF fields
+		$return['PDF_fields'] = array('description');
 		return $return;
 	}
 
@@ -195,11 +197,11 @@ class account extends baseModule {
 	function display_html_delete($post, $profile=false) {
 		return 0;
 		}
-
-	function get_pdfFields($account_type="user") {
-		return array(	'description');
-	}
 	
+	/*
+	 * (non-PHPDoc)
+	 * @see baseModule#get_pdfEntries
+	 */
 	function get_pdfEntries($account_type = "user") {
 		return array('account_description' => array('<block><key>' . _('Description') . '</key><value>' . $this->attributes['description'][0] . '</value></block>'));
 	}

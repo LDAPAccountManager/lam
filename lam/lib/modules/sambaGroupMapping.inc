@@ -67,6 +67,12 @@ class sambaGroupMapping extends baseModule {
 		$return["alias"] = _('Samba 3');
 		// module dependencies
 		$return['dependencies'] = array('depends' => array('posixGroup'), 'conflicts' => array());
+		// available PDF fields
+		$return['PDF_fields'] = array(	'gidNumber',
+													'sambaSID',
+													'displayName',
+													'sambaGroupType',
+													'description');
 		return $return;
 	}
 
@@ -319,15 +325,11 @@ class sambaGroupMapping extends baseModule {
 			2 => array('kind' => 'help', 'value' => 'sambaDomainName' ));
 		return $return;
 	}
-
-	function get_pdfFields($account_type="user") {
-		return array(	'gidNumber',
-							'sambaSID',
-							'displayName',
-							'sambaGroupType',
-							'description');
-	}
 	
+	/*
+	 * (non-PHPDoc)
+	 * @see baseModule#get_pdfEntries
+	 */
 	function get_pdfEntries($account_type = "User") {
 		return array(	'sambaGroupMapping_gidNumber' => array('<block><key>' . _('GID number') . '</key><value>' . $this->attributes['gidNumber'][0] . '</value></block>'),
 							'sambaGroupMapping_sambaSID' => array('<block><key>' . _('Windows group') . '</key><value>' . $this->attributes['sambaSID'][0] . '</value></block>'),

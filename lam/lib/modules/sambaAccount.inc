@@ -165,6 +165,16 @@ class sambaAccount extends baseModule {
 			'error_message' => $this->messages['workstations']);
 		$return['profile_checks']['sambaAccount_domain'] = array('type' => 'regex_i', 'regex' => $this->regex_domain,
 			'error_message' => $this->messages['domain']);
+		// available PDF fields
+		$return['PDF_fields'] = array(	'displayName',
+													'uid',
+													'smbHome',
+													'homeDrive',
+													'scriptPath',
+													'profilePath',
+													'userWorkstations',
+													'domain',
+													'description');
 		return $return;
 	}
 
@@ -710,19 +720,11 @@ class sambaAccount extends baseModule {
 
 		return $return;
 		}
-
-	function get_pdfFields($account_type="user") {
-		return array(	'displayName',
-							'uid',
-							'smbHome',
-							'homeDrive',
-							'scriptPath',
-							'profilePath',
-							'userWorkstations',
-							'domain',
-							'description');
-	}
 	
+	/*
+	 * (non-PHPDoc)
+	 * @see baseModule#get_pdfEntries
+	 */
 	function get_pdfEntries($account_type = "user") {
 		return array(	'sambaAccount_displayName' => array('<block><key>' . _('Display name') . '</key><value' . $this->attributes['displayName'][0] . '</value></block>'),
 							'sambaAccount_uid' => array('<block><key>' . _('Username') . '</key><value>' . $this->attributes['uid'][0] . '</value></block>'),

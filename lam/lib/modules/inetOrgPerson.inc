@@ -87,6 +87,21 @@ class inetOrgPerson extends baseModule {
 			'error_message' => $this->messages['title']);
 		$return['profile_checks']['inetOrgPerson_employeeType'] = array('type' => 'regex_i',
 			'regex' => $this->regex_employeeType, 'error_message' => $this->messages['employeeType']);
+		// available PDF fields
+		$return['PDF_fields'] = array(	'description',
+													'host',
+													'title',
+													'givenName',
+													'sn',
+													'employeeType',
+													'street',
+													'postalCode',
+													'postalAddress',
+													'telephoneNumber',
+													'mobileTelephoneNumber',
+													'facimilieTelefonNumber',
+													'mail');
+		
 		return $return;
 	}
 
@@ -363,22 +378,10 @@ class inetOrgPerson extends baseModule {
 		return 0;
 		}
 
-	function get_pdfFields($account_type = "user") {
-		return array(	'description',
-							'host',
-							'title',
-							'givenName',
-							'sn',
-							'employeeType',
-							'street',
-							'postalCode',
-							'postalAddress',
-							'telephoneNumber',
-							'mobileTelephoneNumber',
-							'facimilieTelefonNumber',
-							'mail');
-	}
-	
+	/*
+	 * (non-PHPDoc)
+	 * @see baseModule#get_pdfEntries
+	 */
 	function get_pdfEntries($account_type = "user") {
 		return array(	'inetOrgPerson_description' => array('<block><key>' . _('Description') . '</key><value>' . $this->attributes['description'][0] . '</value></block>'),
 							'inetOrgPerson_host' => array('<block><key>' . _('Unix workstations') . '</key><value>' . $this->attributes['host'][0] . '</value></block>'),

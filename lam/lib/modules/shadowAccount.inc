@@ -135,6 +135,13 @@ class shadowAccount extends baseModule {
 			'error_message' => $this->messages['inactive']);
 		$return['profile_checks']['shadowAccount_shadowWarning'] = array('type' => 'regex', 'regex' => $this->regex_number,
 			'error_message' => $this->messages['shadowWarning']);
+		// available PDF fields
+		$return['PDF_fields'] = array(	'shadowLastChange',
+													'shadowWarning',
+													'shadowInactive',
+													'shadowExpire',
+													'shadowFlag',
+													'description');
 		return $return;
 	}
 
@@ -328,15 +335,10 @@ class shadowAccount extends baseModule {
 		return 0;
 		}
 
-	function get_pdfFields($account_type="user") {
-		return array(	'shadowLastChange',
-							'shadowWarning',
-							'shadowInactive',
-							'shadowExpire',
-							'shadowFlag',
-							'description');
-	}
-	
+	/*
+	 * (non-PHPDoc)
+	 * @see baseModule#get_pdfEntries
+	 */
 	function get_pdfEntries($account_type = "user") {
 		return array(	'shadowAccount_shadowLastChange' => array('<block><key>' . _('Last shadow password change') . '</key><value>' . $this->attributes['shadowLastChange'][0] . '</value></block>'),
 							'shadowAccount_shadowWarning' => array('<block><key>' . _('Password warn') . '</key><value>' . $this->attributes['shadowWarn'][0] . '</value><block>'),
