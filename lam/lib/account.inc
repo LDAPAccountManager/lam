@@ -1439,8 +1439,8 @@ function createhost($values) { // Will create the LDAP-Account
 		$attr['sambaPwdCanChange'] = time(); // sambaAccount_may
 		$attr['sambaPwdMustChange'] = "1893452400"; // sambaAccount_may // anywhere in year 2030
 		$attr['sambaAcctFlags'] = smbflag($values); // sambaAccount_may
-		$attr['displayName'] = $values->general_gecos; // sambaAccount_may
-		if ($values->smb_domain!='') $attr['sambaDomainName'] = $values->smb_domain->name; // sambaAccount_may
+		$attr['displayName'] = utf8_encode($values->smb_displayName); // sambaAccount_may
+		$attr['sambaDomainName'] = $values->smb_domain->name; // sambaAccount_may
 		}
 	else {
 		$attr['objectClass'][2] = 'sambaAccount';
@@ -1452,7 +1452,7 @@ function createhost($values) { // Will create the LDAP-Account
 		$attr['pwdCanChange'] = time(); // sambaAccount_may
 		$attr['pwdMustChange'] = "1893452400"; // sambaAccount_may // anywhere in 2030
 		$attr['acctFlags'] = smbflag($values); // sambaAccount_may
-		$attr['displayName'] = $values->general_gecos; // sambaAccount_may
+		$attr['displayName'] = utf8_encode($values->smb_displayName); // sambaAccount_may
 		if ($values->smb_domain!='') $attr['domain'] = $values->smb_domain; // sambaAccount_may
 		}
 	$attr['objectClass'][3] = 'account';
@@ -1467,8 +1467,8 @@ function createhost($values) { // Will create the LDAP-Account
 
 	$attr['shadowLastChange'] = getdays(); // shadowAccount_may
 	$attr['loginShell'] = $values->general_shell; // posixAccount_may
-	$attr['gecos'] = $values->general_gecos; // posixAccount_may
-	$attr['description'] = $values->general_gecos; // posixAccount_may sambaAccount_may
+	$attr['gecos'] = utf8_encode($values->general_gecos); // posixAccount_may
+	$attr['description'] = utf8_encode($values->general_gecos); // posixAccount_may sambaAccount_may
 	if ($date!='') $attr['shadowExpire'] =  $date ; // shadowAccount_may
 	$success = ldap_add($_SESSION['ldap']->server(),$values->general_dn, $attr);
 	if (!$success) return 4;
@@ -1520,7 +1520,8 @@ function modifyhost($values,$values_old) { // Will modify the LDAP-Account
 		$attr['objectClass'][] = 'shadowAccount';
 		}
 
-	if (isset($attr_old['sambaSID'][0])) $attr_rem['sambaSID'] = $attr_old['sambaSID'][0];
+	if ($values->smb_displayName != $values_old->smb_displayName)
+		$attr['displayName'] = utf8_encode($values->smb_displayName);
 
 	// Add or convert samba attributes & object to samba 3
 	if (($_SESSION['config']->samba3 == 'yes') && (!in_array('sambaSamAccount', $values->general_objectClass))) {
@@ -1550,7 +1551,7 @@ function modifyhost($values,$values_old) { // Will modify the LDAP-Account
 		if (isset($attr_old['profilePath'][0])) $attr['sambaProfilePath'] = $attr_old['profilePath'][0];
 		if (isset($attr_old['userWorkstations'][0])) $attr['sambaUserWorkstations'] = $attr_old['userWorkstations'][0];
 		// Values used from account object
-		$attr['displayName'] = $values->smb_displayName; // sambaAccount_may
+		$attr['displayName'] = utf8_encode($values->smb_displayName); // sambaAccount_may
 		$attr['sambaAcctFlags'] = smbflag($values); // sambaAccount_may
 		$attr['sambaDomainName'] = $values->smb_domain->name; // sambaAccount_may
 		$attr['sambaSid'] = $values->smb_domain->SID . "-" . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase); // sambaAccount_may
@@ -1603,7 +1604,7 @@ function modifyhost($values,$values_old) { // Will modify the LDAP-Account
 		if (isset($attr_old['sambaProfilePath'][0])) $attr['profilePath'] = $attr_old['sambaProfilePath'][0];
 		if (isset($attr_old['sambaUserWorkstations'][0])) $attr['userWorkstations'] = $attr_old['sambaUserWorkstations'][0];
 		// Values used from account object
-		$attr['displayName'] = $values->smb_displayName; // sambaAccount_may
+		$attr['displayName'] = utf8_encode($values->smb_displayName); // sambaAccount_may
 		$attr['acctFlags'] = smbflag($values); // sambaAccount_may
 		if ($values->smb_domain!='') $attr['domain'] = $values->smb_domain; // sambaAccount_may
 		$attr['primaryGroupID'] = (2 * getgid($values->general_group) + 1001); // sambaAccount_req
@@ -1657,8 +1658,8 @@ function modifyhost($values,$values_old) { // Will modify the LDAP-Account
 		}
 
 	if ($values->general_gecos != $values_old->general_gecos) {
-		$attr['gecos'] = $values->general_gecos; // posixAccount_may
-		$attr['description'] = $values->general_gecos; // posixAccount_may sambaAccount_may
+		$attr['gecos'] = utf8_encode($values->general_gecos); // posixAccount_may
+		$attr['description'] = utf8_encode($values->general_gecos); // posixAccount_may sambaAccount_may
 		}
 
 
@@ -1742,10 +1743,8 @@ function modifygroup($values,$values_old) { // Will modify the LDAP-Group
 
 	if ($values->general_gecos != $values_old->general_gecos) $attr['description'] = utf8_encode($values->general_gecos);
 
-	if (($values->smb_displayName != $values_old->smb_displayName) && ($values->smb_displayName != ''))
+	if ($values->smb_displayName != $values_old->smb_displayName)
 		$attr['displayName'] = utf8_encode($values->smb_displayName);
-	if (($values->smb_displayName != $values_old->smb_displayName) && ($values->smb_displayName == ''))
-		$attr_rem['displayName'] = utf8_encode($values_old->smb_displayName);
 
 	if ($_SESSION['config']->samba3 =='yes') {
 		if ($values->smb_mapgroup != $values_old->smb_mapgroup)
