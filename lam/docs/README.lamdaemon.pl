@@ -36,11 +36,11 @@ thins to get it work.
    Th install them, run:
    perl -MCPAN -e shell
    install Quota
-   install Net::LDAP
    install Net::SSH::Perl
    Please answer all questions to describe your system
    Every additional needed module should be installed
    automaticly
+   LDAP isn't used in perl anymore 
 
    I installed Math::Pari, a needed module, by hand.
    I had many problems to install Math::Pari, a module needed

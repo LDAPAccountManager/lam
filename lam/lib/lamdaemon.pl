@@ -24,20 +24,11 @@
 ######################################################
 # Configure-Options
 # change only variables starting from here
-	# list of valid admins
-@admins = ('cn=Manager,dc=my-domain,dc=com',
-	    'uid=test,ou=people,dc=my-domain,dc=com');
-$server_ldap="127.0.0.1"; # IP or DNS of ldap-server
+
 $server_ssh="127.0.0.1"; # IP or DNS of host to create homedirs, quota, ....
 $server_ssh_ident = "/var/lib/wwwrun/.ssh/id_dsa"; # SSH-Key to use
 $path = "/srv/www/htdocs/lam/lib/lamdaemon.pl"; # path to ldap on remote-host
-$server_ldap_port='389'; # Port used from ldap
-$server_tls='no'; # Use TLS?
-$server_tls_verify='require'; # none,optional or require a valid server certificated
-$server_tls_clientcert=''; # path to client certificate
-$server_tls_clientkey=''; # path to client certificate
-$server_tls_decryptkey=''; # To to decrypt clientkey
-$server_tls_cafile='/etc/certificates/ca.cert'; # Path to CA-File
+
 $debug=true; # Show debug messages
 
 # Don't change anything below this line
@@ -45,7 +36,6 @@ $debug=true; # Show debug messages
 
 
 use Quota; # Needed to get and set quotas
-use Net::LDAP; # Needed to connect to ldap-server
 #use strict; # Use strict for security reasons
 
 @quota_grp;
@@ -93,141 +83,123 @@ sub get_fs { # Load mountpoints from mtab if enabled quotas
 
 
 if ($( == 0 ) {
-# Drop root Previleges
-($<, $>) = ($>, $<);
-foreach my $admin (@admins) { # Check if user is admin
-	if ($admin eq $vals[0]) { $found=true; }
-	}
-if ($found==true) {
-	# Connect to ldap-server and check if password is valid.
-	$ldap = Net::LDAP->new($server_ldap, port => $server_ldap_port, version => 3) or die ('Can\'t connect to ldapserver.');
-	if ($server_tls eq 'yes') {
-	    $mesg = $ldap->start_tls(
-		verify => $server_tls_verify,
-		clientcert => $server_tls_clientcert,
-		clientkey => $server_tls_clientkey,
-		decrypte => sub { $server_tls_decryptkey; },
-		cafile => $server_tls_cafile);
-	    }
-	$result = $ldap->bind (dn => $vals[0], password => $vals[1]) ;
-	$ldap->unbind(); # Close ldap connection.
-	if (!$result->code) { # password is valid
-		switch: {
-			# Get user information
-			if (($vals[5] eq 'u') || ($vals[3] eq 'home')) { @user = getpwnam($vals[2]); }
-				else { @user = getgrnam($vals[2]); }
-			$vals[3] eq 'home' && do {
-				switch2: {
-					$vals[4] eq 'add' && do {
-						# split homedir to set all directories below the last dir. to 755
-						my $path = $user[7];
-						$path =~ s,/(?:[^/]*)$,,;
-						($<, $>) = ($>, $<); # Get root privileges
-						if (! -e $path) {
-    						    system 'mkdir', '-m 755', '-p', $path; # Create paths to homedir
+	# Drop root Previleges
+	($<, $>) = ($>, $<);
+	switch: {
+		# Get user information
+		if (($vals[5] eq 'u') || ($vals[3] eq 'home')) { @user = getpwnam($vals[2]); }
+			else { @user = getgrnam($vals[2]); }
+		$vals[3] eq 'home' && do {
+			switch2: {
+				$vals[4] eq 'add' && do {
+					# split homedir to set all directories below the last dir. to 755
+					my $path = $user[7];
+					$path =~ s,/(?:[^/]*)$,,;
+					($<, $>) = ($>, $<); # Get root privileges
+					if (! -e $path) {
+						    system 'mkdir', '-m 755', '-p', $path; # Create paths to homedir
+					    }
+					if (! -e $user[7]) {
+					    system 'mkdir', '-m 755', $user[7]; # Create himdir itself
+					    system "cp -a /etc/skel/* /etc/skel/.[^.]* $user[7]"; # Copy /etc/sekl into homedir
+				    	    system 'chown', '-R', "$user[2]:$user[3]" , $user[7]; # Change owner to new user
+					    if (-e '/usr/sbin/useradd.local') {
+						    system '/usr/sbin/useradd.local', $user[0]; # run useradd-script
 						    }
-						if (! -e $user[7]) {
-						    system 'mkdir', '-m 755', $user[7]; # Create himdir itself
-						    system "cp -a /etc/skel/* /etc/skel/.[^.]* $user[7]"; # Copy /etc/sekl into homedir
-					    	    system 'chown', '-R', "$user[2]:$user[3]" , $user[7]; # Change owner to new user
-						    if (-e '/usr/sbin/useradd.local') {
-							    system '/usr/sbin/useradd.local', $user[0]; # run useradd-script
-							    }
-						    }
-						($<, $>) = ($>, $<); # Give up root previleges
-						last switch2;
-						};
-					$vals[4] eq 'rem' && do {
-						($<, $>) = ($>, $<); # Get root previliges
-						if (-d $user[7]) {
-						    system 'rm', '-R', $user[7]; # Delete Homedirectory
+					    }
+					($<, $>) = ($>, $<); # Give up root previleges
+					last switch2;
+					};
+				$vals[4] eq 'rem' && do {
+					($<, $>) = ($>, $<); # Get root previliges
+					if (-d $user[7]) {
+					    system 'rm', '-R', $user[7]; # Delete Homedirectory
+					    if (-e '/usr/sbin/userdel.local') {
 						    system '/usr/sbin/userdel.local', $user[0];
 						    }
-						($<, $>) = ($>, $<); # Give up root previleges
-						last switch2;
-						};
+					    }
+					($<, $>) = ($>, $<); # Give up root previleges
+					last switch2;
+					};
+				}
+			last switch;
+			};
+		$vals[3] eq 'quota' && do {
+			get_fs(); # Load list of devices with enabled quotas
+			# Store quota information in array
+			@quota_temp1 = split (':', $vals[6]);
+			$group=0;
+			$i=0;
+			while ($quota_temp1[$i]) {
+				$j=0;
+				@temp = split (',', $quota_temp1[$i]);
+				while ($temp[$j]) {
+					$quota[$i][$j] = $temp[$j];
+					$j++;
 					}
-				last switch;
-				};
-			$vals[3] eq 'quota' && do {
-				get_fs(); # Load list of devices with enabled quotas
-					# Store quota information in array
-				@quota_temp1 = split (':', $vals[6]);
-				$group=0;
-				$i=0;
-				while ($quota_temp1[$i]) {
-					$j=0;
-					@temp = split (',', $quota_temp1[$i]);
-					while ($temp[$j]) {
-						$quota[$i][$j] = $temp[$j];
-						$j++;
+				$i++;
+				}
+			if ($vals[5] eq 'u') { $group=false; } else {
+				$group=1;
+				@quota_usr = @quota_grp;
+				}
+			switch2: {
+				$vals[4] eq 'rem' && do {
+					$i=0;
+					($<, $>) = ($>, $<); # Get root privileges
+					while ($quota_usr[$i][0]) {
+						$dev = Quota::getqcarg($quota_usr[$i][1]);
+						$return = Quota::setqlim($dev,$user[2],0,0,0,0,1,$group);
+						$i++;
 						}
-					$i++;
-					}
-				if ($vals[5] eq 'u') { $group=false; } else {
-				    $group=1;
-				    @quota_usr = @quota_grp;
-				    }
-				switch2: {
-					$vals[4] eq 'rem' && do {
-						$i=0;
-						($<, $>) = ($>, $<); # Get root privileges
-						while ($quota_usr[$i][0]) {
+					($<, $>) = ($>, $<); # Give up root previleges
+					last switch2;
+					};
+				$vals[4] eq 'set' && do {
+					$i=0;
+					($<, $>) = ($>, $<); # Get root privileges
+					while ($quota_usr[$i][0]) {
+						$dev = Quota::getqcarg($quota[$i][0]);
+						$return = Quota::setqlim($dev,$user[2],$quota[$i][1],$quota[$i][2],$quota[$i][3],$quota[$i][4],1,$group);
+						$i++;
+						}
+					($<, $>) = ($>, $<); # Give up root previleges
+					last switch2;
+					};
+				$vals[4] eq 'get' && do {
+					$i=0;
+					($<, $>) = ($>, $<); # Get root privileges
+					while ($quota_usr[$i][0]) {
+						if ($vals[2]ne'+') {
 							$dev = Quota::getqcarg($quota_usr[$i][1]);
-							$return = Quota::setqlim($dev,$user[2],0,0,0,0,1,$group);
-							$i++;
-							}
-						($<, $>) = ($>, $<); # Give up root previleges
-						last switch2;
-						};
-					$vals[4] eq 'set' && do {
-						$i=0;
-						($<, $>) = ($>, $<); # Get root privileges
-						while ($quota_usr[$i][0]) {
-							$dev = Quota::getqcarg($quota[$i][0]);
-							$return = Quota::setqlim($dev,$user[2],$quota[$i][1],$quota[$i][2],$quota[$i][3],$quota[$i][4],1,$group);
-							$i++;
-							}
-						($<, $>) = ($>, $<); # Give up root previleges
-						last switch2;
-						};
-					$vals[4] eq 'get' && do {
-						$i=0;
-						($<, $>) = ($>, $<); # Get root privileges
-						while ($quota_usr[$i][0]) {
-							if ($vals[2]ne'+') {
-								$dev = Quota::getqcarg($quota_usr[$i][1]);
-								@temp = Quota::query($dev,$user[2],$group);
-								if ($temp[0]ne'') {
-    								    $return = "$quota_usr[$i][1],$temp[0],$temp[1],$temp[2],$temp[3],$temp[4],$temp[5],$temp[6],$temp[7]:$return";
-								    }
-								else { $return = "$quota_usr[$i][1],0,0,0,0,0,0,0,0:$return"; }
-								}
+							@temp = Quota::query($dev,$user[2],$group);
+							if ($temp[0]ne'') {
+								    $return = "$quota_usr[$i][1],$temp[0],$temp[1],$temp[2],$temp[3],$temp[4],$temp[5],$temp[6],$temp[7]:$return";
+							    }
 							else { $return = "$quota_usr[$i][1],0,0,0,0,0,0,0,0:$return"; }
-							$i++;
 							}
-						($<, $>) = ($>, $<); # Give up root previleges
-						last switch2;
-						};
-					}
-				last switch;
-				};
-			}
-		}
-	else { $return = "Invalid Password"; }
+						else { $return = "$quota_usr[$i][1],0,0,0,0,0,0,0,0:$return"; }
+						$i++;
+						}
+					($<, $>) = ($>, $<); # Give up root previleges
+					last switch2;
+					};
+				}
+			last switch;
+			};
+		last switch;
+		};
+	print "$return\n";
 	}
-else { $return = "Invalid User"; }
-print "$return\n";
-}
 else {
-    use Net::SSH::Perl;
-    @username = split (',', $vals[0]);
-    $username[0] =~ s/uid=//;
-    my $ssh = Net::SSH::Perl->new($server_ssh, options=>[
-	"IdentityFile $server_ssh_ident",
-	"UserKnownHostsFile /dev/null"
-	]);
-    $ssh->login($username[0], $vals[1]);
-    ($stdout, $stderr, $exit) = $ssh->cmd("sudo $path @ARGV");
-    print "$stdout";
-    }
+	use Net::SSH::Perl;
+	@username = split (',', $vals[0]);
+	$username[0] =~ s/uid=//;
+	my $ssh = Net::SSH::Perl->new($server_ssh, options=>[
+		"IdentityFile $server_ssh_ident",
+		"UserKnownHostsFile /dev/null"
+		]);
+	$ssh->login($username[0], $vals[1]);
+	($stdout, $stderr, $exit) = $ssh->cmd("sudo $path @ARGV");
+	print "$stdout";
+	}
