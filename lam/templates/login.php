@@ -138,144 +138,160 @@ function display_LoginPage($config_object,$profile)
 			echo "<br><br>";
 		}
 		?>
-		<form action="login.php" method="post">
-			<table width="650" align="center" border="2" rules="none" bgcolor="white">
-				<tr>
-					<td style="border-style:none" width="70" rowspan="9">
-						<img src="../graphics/lam.png" alt="Logo">
-					</td>
-					<td style="border-style:none" height="70" colspan="2" align="center">
-						<font color="darkblue"><b><big><?php echo _("Enter Username and Password for Account"); ?></big></b></font>
-					</td>
-					<td style="border-style:none" rowspan="9" width="70">
-						&nbsp;
-					</td>
-				</tr>
-				<tr>
-					<td style="border-style:none" height="35" align="right"><b>
-						<?php
-						echo _("Username") . ":";
-						?>
-					</b>&nbsp;&nbsp;</td>
-					<td style="border-style:none" height="35" align="left">
-						<select name="username" size="1" tabindex="0">
-						<?php
-						$admins = $config_object->get_Admins();
-						for($i = 0; $i < count($admins); $i++) {
-							$text = explode(",", $admins[$i]);
-							$text = explode("=", $text[0]);
-							?>
-							<option value="<?php echo $admins[$i]; ?>"><?php echo $text[1]; ?></option>
+		<table width="650" align="center" border="2" rules="none" bgcolor="white">
+			<tr>
+				<td style="border-style:none" width="70" rowspan="2">
+					<img src="../graphics/lam.png" alt="Logo">
+				</td>
+				<td width="580">
+					<form action="login.php" method="post">
+						<table width="580">
+							<tr>
+								<td style="border-style:none" height="70" colspan="2" align="center">
+									<font color="darkblue"><b><big><?php echo _("Enter Username and Password for Account"); ?></big></b></font>
+								</td>
+								<td style="border-style:none" rowspan="9" width="70">
+									&nbsp;
+								</td>
+							</tr>
+							<tr>
+								<td style="border-style:none" height="35" align="right"><b>
+									<?php
+									echo _("Username") . ":";
+									?>
+								</b>&nbsp;&nbsp;</td>
+								<td style="border-style:none" height="35" align="left">
+									<select name="username" size="1" tabindex="0">
+									<?php
+									$admins = $config_object->get_Admins();
+									for($i = 0; $i < count($admins); $i++) {
+										$text = explode(",", $admins[$i]);
+										$text = explode("=", $text[0]);
+										?>
+										<option value="<?php echo $admins[$i]; ?>"><?php echo $text[1]; ?></option>
+										<?php
+									}
+									?>
+									</select>
+								</td>
+							</tr>
+							<tr>
+								<td style="border-style:none" height="35" align="right"><b>
+									<?php
+									echo _("Password") . ":";
+									?>
+								</b>&nbsp;&nbsp;</td>
+								<td style="border-style:none" height="35" align="left">
+									<input type="password" name="passwd" tabindex="1">
+								</td>
+							</tr>
+							<tr>
 							<?php
-						}
-						?>
-						</select>
-					</td>
-				</tr>
-				<tr>
-					<td style="border-style:none" height="35" align="right"><b>
-						<?php
-						echo _("Password") . ":";
-						?>
-					</b>&nbsp;&nbsp;</td>
-					<td style="border-style:none" height="35" align="left">
-						<input type="password" name="passwd" tabindex="1">
-					</td>
-				</tr>
-				<tr>
-				<?php
-				if($message != "") {
-					?>
-					<td height="35" colspan="3" align="center">
-					<?php
-						echo $message;
-					?>
-					</td>
-					<?php
-				}
-				else
-				{
-					?>
-					<td style="border-style:none" align="right"><b>
-						<?php
-						echo _("Your Language") . ":";
-						?>
-					</b>&nbsp;&nbsp;</td>
-					<td style="border-style:none" height="35" align="left">
-						<select name="language" size="1" tabindex="2">
-						<?php
-						for($i = 0; $i < count($languages); $i++) {
-							if($languages[$i]["default"] == "YES") {
-							?>
-							<option selected value="<?php echo $languages[$i]["link"] . ":" . $languages[$i]["descr"]; ?>"><?php echo $languages[$i]["descr"]; ?></option>
-							<?php
+							if($message != "") {
+								?>
+								<td height="35" colspan="3" align="center">
+								<?php
+									echo $message;
+								?>
+								</td>
+								<?php
 							}
 							else
 							{
+								?>
+								<td style="border-style:none" align="right"><b>
+									<?php
+									echo _("Your Language") . ":";
+									?>
+								</b>&nbsp;&nbsp;</td>
+								<td style="border-style:none" height="35" align="left">
+									<select name="language" size="1" tabindex="2">
+									<?php
+									for($i = 0; $i < count($languages); $i++) {
+										if($languages[$i]["default"] == "YES") {
+										?>
+										<option selected value="<?php echo $languages[$i]["link"] . ":" . $languages[$i]["descr"]; ?>"><?php echo $languages[$i]["descr"]; ?></option>
+										<?php
+										}
+										else
+										{
+										?>
+										<option value="<?php echo $languages[$i]["link"] . ":" . $languages[$i]["descr"]; ?>"><?php echo $languages[$i]["descr"]; ?></option>
+										<?php
+										}
+									}
+									?>
+									</select>
+								</td>
+								<?php
+							}
 							?>
-							<option value="<?php echo $languages[$i]["link"] . ":" . $languages[$i]["descr"]; ?>"><?php echo $languages[$i]["descr"]; ?></option>
-							<?php
-							}
-						}
-						?>
-						</select>
-					</td>
-					<?php
-				}
-				?>
-				</tr>
-				<tr>
-					<td style="border-style:none" height="50" colspan="2" align="center">
-						<input name="checklogin" type="submit" value="<?php echo _("Login"); ?>" tabindex="3">
-					</td>
-				</tr>
-				<tr>
-					<td style="border-style:none" height="50" colspan="2" align="center">
-						<?php
-							if($error_message != "") {
-								echo "<font color=\"red\"><b>" . $error_message . "</b></font>";
-							}
-						?>
-					</td>
-				</tr>
-				<tr>
-					<td style="border-style:none" height="30" colspan="2">
-						<hr>
-						<b>
-						<?php
-						echo _("LDAP server") . ": ";
-						?></b>
-						<?php echo $config_object->get_ServerURL(); ?>
-					</td>
-				</tr>
-				<tr>
-				<td style="border-style:none" height="30"><b>
-					<?php
-					echo _("Configuration profile") . ": ";
-					if(!$_POST['profileChange']) {
-						$_POST['profile'] = $_SESSION['config']->file;
-					}
-					?></b>
-					<?php echo $_POST['profile']; ?>
+							</tr>
+							<tr>
+								<td style="border-style:none" height="50" colspan="2" align="center">
+									<input name="checklogin" type="hidden" value="checklogin">
+									<input name="submit" type="submit" value="<?php echo _("Login"); ?>" tabindex="3">
+								</td>
+							</tr>
+							<tr>
+								<td style="border-style:none" height="50" colspan="2" align="center">
+									<?php
+										if($error_message != "") {
+											echo "<font color=\"red\"><b>" . $error_message . "</b></font>";
+										}
+									?>
+								</td>
+							</tr>
+						</table>
+					</form>
 				</td>
-				<td style="border-style:none" height="30" align="right">
-					<select name="profile" size="1" tabindex="4">
-					<?php
-					for($i=0;$i<count($profiles);$i++) {
-						?>
-						<option value="<?php echo $profiles[$i]; ?>"><?php echo $profiles[$i]; ?></option>
-						<?php
-					}
-					?>
-					</select>
-					<input name="profileChange" type="submit" value="<?php echo _("Change Profile"); ?>" tabindex="5">
+			</tr>
+			<tr>
+				<td>
+					<form action="login.php" method="post">
+						<table width="580">
+							<tr>
+								<td style="border-style:none" height="30" colspan="2">
+									<hr>
+									<b>
+									<?php
+									echo _("LDAP server") . ": ";
+									?></b>
+									<?php echo $config_object->get_ServerURL(); ?>
+								</td>
+							</tr>
+							<tr>
+							<td style="border-style:none" height="30"><b>
+								<?php
+								echo _("Configuration profile") . ": ";
+								if(!$_POST['profileChange']) {
+									$_POST['profile'] = $_SESSION['config']->file;
+								}
+								?></b>
+								<?php echo $_POST['profile']; ?>
+							</td>
+							<td style="border-style:none" height="30" align="right">
+								<select name="profile" size="1" tabindex="4">
+								<?php
+								for($i=0;$i<count($profiles);$i++) {
+									?>
+									<option value="<?php echo $profiles[$i]; ?>"><?php echo $profiles[$i]; ?></option>
+									<?php
+								}
+								?>
+								</select>
+								<input name="profileChange" type="hidden" value="profileChange">
+								<input name="submit" type="submit" value="<?php echo _("Change Profile"); ?>" tabindex="5">
+							</td>
+							</tr>
+							<tr>
+								<td style="border-style:none" height="10" colspan="2"></td>
+							</tr>
+						</table>
+					</form>
 				</td>
-				</tr>
-				<tr>
-					<td style="border-style:none" height="10" colspan="2"></td>
-				</tr>
-			</table>
-		</form>
+			</tr>
+		</table>
 		<br><br>
 	</body>
 </html>
