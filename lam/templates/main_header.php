@@ -22,6 +22,13 @@ $Id$
 
 
 */
+include_once ("../lib/config.inc");
+
+// start session
+session_save_path("../sess");
+@session_start();
+
+setlanguage();
 
 echo ("<?xml version=\"1.0\" encoding=\"ISO-8859-15\"?>\n");
 echo ("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n");
@@ -38,8 +45,12 @@ echo ("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http:/
 <body>
 <table border=0 width="100%">
 	<tr>
-    	<td width="100" align="left"><a href="./profedit/profilemain.php" target="mainpart"><?php echo _("Profile Editor") ?></a></td>
-		<td rowspan=3 colspan=3 align="center">
+    	<td width="100" align="left"><a href="./profedit/profilemain.php" target="mainpart"><?php echo _("Profile Editor"); ?></a></td>
+		<?
+			// Samba 3 has more list views
+			if ($_SESSION['config']->get_samba3() == "yes") echo "<td rowspan=3 colspan=5 align=\"center\">\n";
+			else echo "<td rowspan=3 colspan=3 align=\"center\">\n";
+		?>
 			<a href="http://lam.sf.net" target="new_window"><img src="../graphics/banner.jpg" border=1 alt="LDAP Account Manager"></a>
 		</td>
 	<td width="100" align="right" height=20><a href="./logout.php" target="_top"><big><b><?php echo _("Logout") ?></b></big></a></td>
@@ -51,12 +62,30 @@ echo ("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http:/
 	<tr>
     	<td align="left"><a href="masscreate.php" target="mainpart"><?php echo _("File Upload") ?></a></td>
 	</tr>
-	<tr><td colspan=5>&nbsp;</td></tr>
+	<tr>
+		<?
+			// Samba 3 has more list views
+			if ($_SESSION['config']->get_samba3() == "yes") echo "<td colspan=7>&nbsp;</td>\n";
+			else echo "<td colspan=5>&nbsp;</td>\n";
+		?>
+	</tr>
 	<tr>
 		<td></td>
-		<td width="200" align="center"><a href="./lists/listusers.php" target="mainpart"> <?php echo _("Users");?> </a></td>
-		<td width="200" align="center"><a href="./lists/listgroups.php" target="mainpart"> <?php echo _("Groups");?> </a></td>
-		<td width="200" align="center"><a href="./lists/listhosts.php" target="mainpart"> <?php echo _("Hosts");?> </a></td>
+		<?
+			// Samba 3 has more list views
+			if ($_SESSION['config']->get_samba3() == "yes") {
+				echo '<td width="120" align="center"><a href="./lists/listmappings.php" target="mainpart">' . _("User/Group Mapping") . '</a></td>' . "\n";
+				echo '<td width="120" align="center"><a href="./lists/listdomains.php" target="mainpart">' . _("Domains") . '</a></td>' . "\n";
+				echo '<td width="120" align="center"><a href="./lists/listusers.php" target="mainpart">' . _("Users") . '</a></td>' . "\n";
+				echo '<td width="120" align="center"><a href="./lists/listgroups.php" target="mainpart">' . _("Groups") . '</a></td>' . "\n";
+				echo '<td width="120" align="center"><a href="./lists/listhosts.php" target="mainpart">' . _("Hosts") . '</a></td>' . "\n";
+			}
+			else {
+				echo '<td width="200" align="center"><a href="./lists/listusers.php" target="mainpart">' . _("Users") . '</a></td>' . "\n";
+				echo '<td width="200" align="center"><a href="./lists/listgroups.php" target="mainpart">' . _("Groups") . '</a></td>' . "\n";
+				echo '<td width="200" align="center"><a href="./lists/listhosts.php" target="mainpart">' . _("Hosts") . '</a></td>' . "\n";
+			}
+		?>
 		<td></td>
 	</tr>
 </table>

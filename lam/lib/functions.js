@@ -49,6 +49,7 @@ function user_click(list, box) {
 }
 
 
+
 // mouseOver function
 function group_over(list, box) {
 	cbox = document.getElementsByName(box)[0];
@@ -75,6 +76,7 @@ function group_click(list, box) {
 }
 
 
+
 // mouseOver function
 function host_over(list, box) {
 	cbox = document.getElementsByName(box)[0];
@@ -97,5 +99,32 @@ function host_click(list, box) {
 	else {
 		cbox.checked = true;
 		list.setAttribute('class','hostlist-checked', 0);
+	}
+}
+
+
+
+// mouseOver function
+function domain_over(list, box) {
+	cbox = document.getElementsByName(box)[0];
+	if (cbox.checked == false) list.setAttribute('class','domainlist-over', 0);
+}
+
+// mouseOut function
+function domain_out(list, box) {
+	cbox = document.getElementsByName(box)[0];
+	if (cbox.checked == false) list.setAttribute('class','domainlist', 0);
+}
+
+// onClick function
+function domain_click(list, box) {
+	cbox = document.getElementsByName(box)[0];
+	if (cbox.checked == true) {
+		cbox.checked = false;
+		list.setAttribute('class','domainlist-over', 0);
+	}
+	else {
+		cbox.checked = true;
+		list.setAttribute('class','domainlist-checked', 0);
 	}
 }

@@ -244,6 +244,63 @@ tr.hostlist-checked {
 }
 
 /**
+ * table style for domainlist.php
+ *
+ */
+
+/* */
+table.domainnav {
+  background-color:#a8ddbf;
+  border-width:1px;
+  border-style:solid;
+  border-color:#1d993e;
+}
+
+/* text in navigation bar */
+td.domainnav-text {
+  color:green;
+  font-family:Verdana,sans-serif;
+  font-size:12px;
+}
+
+/* color for active page digit */
+td.domainnav-activepage {
+ color:red;
+}
+
+/* table preferences */
+table.domainlist {
+  border-width:1px;
+  border-style:solid;
+  border-color:#1d993e;
+}
+
+/* color of entry rows */
+tr.domainlist {
+  background-color:#c9ddd2;
+}
+
+/* color of head row */
+tr.domainlist-head {
+  background-color:#a8ddbf;
+}
+
+/* color of sorted column in head row */
+th.domainlist-sort {
+  background-color:#c9ddd2;
+}
+
+/* color of rows on mouseOver */
+tr.domainlist-over {
+  background-color:#ffe265;
+}
+
+/* color of checked rows */
+tr.domainlist-checked {
+  background-color:#f27c71;
+}
+
+/**
  * table style for delete.php
  *
  */

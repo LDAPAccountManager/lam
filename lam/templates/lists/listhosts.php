@@ -77,7 +77,7 @@ $hash_table = $_SESSION["ldap"]->attributeHostArray();
 // get current page
 $page = $_GET["page"];
 if (!$page) $page = 1;
-// take maximum count of user entries shown on one page out of session
+// take maximum count of host entries shown on one page out of session
 if ($_SESSION["config"]->get_MaxListEntries() <= 0)
 	$max_pageentrys = 10;	// default setting, if not yet set
 else
