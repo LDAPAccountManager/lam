@@ -156,6 +156,10 @@ function loadUserProfile($profile) {
 					$acc->smb_flagsD = chop(substr($line, 12, strlen($line)-12));
 					continue;
 				}
+				if (substr($line, 0, 12) == "smb_flagsX: ") {
+					$acc->smb_flagsX = chop(substr($line, 12, strlen($line)-12));
+					continue;
+				}
 				if (substr($line, 0, 15) == "smb_homedrive: ") {
 					$acc->smb_homedrive = chop(substr($line, 15, strlen($line)-15));
 					continue;
@@ -419,6 +423,7 @@ function saveUserProfile($account, $profile) {
 		if (isset($account->smb_password_no)) fputs($file, "smb_password_no: " . $account->smb_password_no . "\n");
 		if (isset($account->smb_useunixpwd)) fputs($file, "smb_useunixpwd: " . $account->smb_useunixpwd . "\n");
 		if (isset($account->smb_flagsD)) fputs($file, "smb_flagsD: " . $account->smb_flagsD . "\n");
+		if (isset($account->smb_flagsX)) fputs($file, "smb_flagsX: " . $account->smb_flagsX . "\n");
 		if (isset($account->smb_homedrive)) fputs($file, "smb_homedrive: " . $account->smb_homedrive . "\n");
 		if (isset($account->smb_scriptPath)) fputs($file, "smb_scriptPath: " . $scriptPath . "\n");
 		if (isset($account->smb_profilePath)) fputs($file, "smb_profilePath: " . $profpath . "\n");

@@ -252,11 +252,21 @@ echo ("</tr>\n");
 // password expires
 echo ("<tr>\n");
 echo ("<td align=\"right\"><b>" . _("Password does not expire") . ": </b></td>\n");
+echo ("<td><select name=\"smb_flagsX\">\n");
+if ($acct->smb_flagsX == "0") echo ("<option selected value=0>"._("no")."</option><option value=1>"._("yes")."</option>\n");
+else echo ("<option selected value=1>"._("yes")."</option><option value=0>"._("no")."</option>\n");
+echo ("</select></td>\n");
+echo ("<td><a href=\"../help.php?HelpNumber=429\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
+echo ("</tr>\n");
+
+// account is disabled
+echo ("<tr>\n");
+echo ("<td align=\"right\"><b>" . _("Account is deactivated") . ": </b></td>\n");
 echo ("<td><select name=\"smb_flagsD\">\n");
 if ($acct->smb_flagsD == "0") echo ("<option selected value=0>"._("no")."</option><option value=1>"._("yes")."</option>\n");
 else echo ("<option selected value=1>"._("yes")."</option><option value=0>"._("no")."</option>\n");
 echo ("</select></td>\n");
-echo ("<td><a href=\"../help.php?HelpNumber=429\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
+echo ("<td><a href=\"../help.php?HelpNumber=432\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
 echo ("</tr>\n");
 
 // empty row

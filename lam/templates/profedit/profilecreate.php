@@ -171,6 +171,14 @@ if ($_GET['type'] == "user") {
 		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
+	if (($_POST['smb_flagsX'] == "1") || ($_POST['smb_flagsX'] == "0")) {
+		$acct->smb_flagsX = $_POST['smb_flagsX'];
+	}
+	else {
+		StatusMessage("ERROR", _("Wrong parameter for Samba option: Account is disabled!"), $_POST['smb_flagsX']);
+		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
+		exit;
+	}
 	if ($_POST['smb_homedrive'] && ereg("^[D-Z]:$", $_POST['smb_homedrive'])) {
 		$acct->smb_homedrive = $_POST['smb_homedrive'];
 	}
