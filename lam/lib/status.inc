@@ -46,7 +46,7 @@ function StatusMessage($MessageTyp,$MessageHeadline,$MessageText,$MessageVariabl
 	$MessageText = parseMessageString($MessageText);
 
 	//$MessageTyp = "<h1 " . $class . ">" . $MessageTyp . "</h1>"; // Format $MessageTyp
-	$MessageTyp = "<img src=\"" . $_SESSION['lampath'] . "graphics/" . strtolower($MessageTyp) . ".png\" alt=\"" . $MessageTyp . "\" width=\"50\" height=\"60\">";
+	$MessageTyp = "<img src=\"" . $_SESSION['lampath'] . "graphics/" . strtolower($MessageTyp) . ".png\" alt=\"" . $MessageTyp . "\" width=\"50\" height=\"50\">";
 	$MessageHeadline = "<h2 " . $class . ">" . $MessageHeadline . "</h2>"; // Format $MessageHeadline
 	$MessageText = "<p " . $class . ">" . $MessageText . "</p>"; // Format $MessageText
 	$format = "<div " . $class . "><br><table><tr><td>" . $MessageTyp . "</td><td>" . $MessageHeadline . $MessageText . "</td></tr></table><br></div>";
