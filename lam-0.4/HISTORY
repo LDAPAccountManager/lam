@@ -2,6 +2,7 @@
   - fixed bugs:
       password hashes were not disabled correctly
       street was copied to postal code on modify (938502)
+      underscore was not allowed for host names (934445)
 
 
 21.03.2004 0.4.5
