@@ -37,7 +37,6 @@ setlanguage();
 $_POST = $_POST + $_GET;
 
 $usr_units = $_SESSION['usr_units'];
-session_register('usr_units');
 
 // check if button was pressed and if we have to add/delete a user
 if ($_POST['new_user'] || $_POST['del_user']){
@@ -64,8 +63,8 @@ echo "</head><body>\n";
 echo "<script src=\"../../lib/functions.js\" type=\"text/javascript\" language=\"javascript\"></script>\n";
 
 // generate attribute-description table
-$attr_array;	// list of LDAP attributes to show
-$desc_array;	// list of descriptions for the attributes
+$attr_array = array();	// list of LDAP attributes to show
+$desc_array = array();	// list of descriptions for the attributes
 $attr_string = $_SESSION["config"]->get_userlistAttributes();
 $temp_array = explode(";", $attr_string);
 $hash_table = $_SESSION["ldap"]->attributeUserArray();
@@ -103,7 +102,6 @@ if (!$sortattrib)
 if ($_POST['usr_suffix']) $usr_suffix = $_POST['usr_suffix'];  // new suffix selected via combobox
 elseif ($_SESSION['usr_suffix']) $usr_suffix = $_SESSION['usr_suffix'];  // old suffix from session
 else $usr_suffix = $_SESSION["config"]->get_UserSuffix();  // default suffix
-session_register('usr_suffix');
 
 
 // generate search filter for sort links
@@ -138,27 +136,29 @@ $filter = $filter . ")";
 // read entries only from ldap server if not yet stored in session or if refresh
 // button is pressed or if filter is applied
 if ($_SESSION["userlist"] && $_GET["norefresh"]) {
-  usort ($_SESSION["userlist"], "cmp_array");
-  $userinfo = $_SESSION["userlist"];
-} else {
-  $attrs = $attr_array;
-  $sr = @ldap_search($_SESSION["ldap"]->server(),
-		     $usr_suffix,
-		     $filter, $attrs);
-  if ($sr) {
-    $userinfo = ldap_get_entries ($_SESSION["ldap"]->server, $sr);
-    ldap_free_result ($sr);
-    if ($userinfo["count"] == 0) StatusMessage("WARN", "", _("No Users found!"));
-
-    // delete first array entry which is "count"
-    array_shift($userinfo);
-    usort ($userinfo, "cmp_array");
-    $_SESSION["userlist"] = $userinfo;
-  }
-else
-  StatusMessage("ERROR", 
-		_("LDAP Search failed! Please check your preferences."),
-		_("No Users found!"));
+	usort ($_SESSION["userlist"], "cmp_array");
+	$userinfo = $_SESSION["userlist"];
+}
+else {
+	$attrs = $attr_array;
+	$sr = @ldap_search($_SESSION["ldap"]->server(), $usr_suffix, $filter, $attrs);
+	if (ldap_errno($_SESSION["ldap"]->server()) == 4) {
+		StatusMessage("WARN", _("LDAP sizelimit exceeded, not all entries are shown."), "See README.openldap to solve this problem.");
+	}
+	if ($sr) {
+		$userinfo = ldap_get_entries ($_SESSION["ldap"]->server, $sr);
+		ldap_free_result ($sr);
+		if ($userinfo["count"] == 0) StatusMessage("WARN", "", _("No Users found!"));
+			// delete first array entry which is "count"
+			array_shift($userinfo);
+			usort ($userinfo, "cmp_array");
+			$_SESSION["userlist"] = $userinfo;
+		}
+	else {
+		StatusMessage("ERROR",
+			_("LDAP Search failed! Please check your preferences."),
+			_("No Users found!"));
+	}
 }
 
 $user_count = sizeof ($_SESSION["userlist"]);
@@ -324,5 +324,9 @@ function cmp_array($a, $b) {
 	else if ($a[$sortattrib][0] == max($a[$sortattrib][0], $b[$sortattrib][0])) return 1;
 	else return -1;
 }
+
+// save variables to session
+$_SESSION['usr_units'] = $usr_units;
+$_SESSION['usr_suffix'] = $usr_suffix;
 
 ?>

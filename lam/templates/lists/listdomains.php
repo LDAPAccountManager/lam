@@ -39,9 +39,7 @@ $sort = $_GET['sort'];
 $_POST = $_POST + $_GET;
 
 $dom_info = $_SESSION['dom_info'];
-session_register('dom_info');
 $dom_units = $_SESSION['dom_units'];
-session_register('dom_units');
 
 // check if button was pressed and if we have to add/delete a domain
 if ($_POST['new_domain'] || $_POST['del_domain']){
@@ -77,8 +75,8 @@ else
 
 
 // generate attribute and description tables
-$attr_array;	// list of LDAP attributes to show
-$desc_array;	// list of descriptions for the attributes
+$attr_array = array();	// list of LDAP attributes to show
+$desc_array = array();	// list of descriptions for the attributes
 $attr_array[] = "sambaDomainName";
 $attr_array[] = "sambaSID";
 $attr_array[] = "dn";
@@ -90,15 +88,16 @@ $desc_array[] = "DN";
 if ($_POST['dom_suffix']) $dom_suffix = $_POST['dom_suffix'];  // new suffix selected via combobox
 elseif ($_SESSION['dom_suffix']) $dom_suffix = $_SESSION['dom_suffix'];  // old suffix from session
 else $dom_suffix = $_SESSION["config"]->get_DomainSuffix();  // default suffix
-session_register('dom_suffix');
 
+// first time page is shown
 if (! $_GET['norefresh']) {
 	// configure search filter
 	$filter = "(objectClass=sambaDomain)";
 	$attrs = $attr_array;
-	$sr = @ldap_search($_SESSION["ldap"]->server(),
-		$dom_suffix,
-		$filter, $attrs);
+	$sr = @ldap_search($_SESSION["ldap"]->server(), $dom_suffix, $filter, $attrs);
+	if (ldap_errno($_SESSION["ldap"]->server()) == 4) {
+		StatusMessage("WARN", _("LDAP sizelimit exceeded, not all entries are shown."), "See README.openldap to solve this problem.");
+	}
 	if ($sr) {
 		$dom_info = ldap_get_entries($_SESSION["ldap"]->server, $sr);
 		ldap_free_result($sr);
@@ -110,6 +109,7 @@ if (! $_GET['norefresh']) {
 	}
 	else StatusMessage("ERROR", _("LDAP Search failed! Please check your preferences."), _("No Samba Domains found!"));
 }
+// use search result from session
 else {
 	if (sizeof($dom_info) == 0) StatusMessage("WARN", "", _("No Samba Domains found!"));
 	// sort rows by sort column ($sort)
@@ -250,5 +250,11 @@ function cmp_array($a, $b) {
 	else if ($a[$sort][0] == max($a[$sort][0], $b[$sort][0])) return 1;
 	else return -1;
 }
+
+
+// save variables to session
+$_SESSION['dom_info'] = $dom_info;
+$_SESSION['dom_units'] = $dom_units;
+$_SESSION['dom_suffix'] = $dom_suffix;
 
 ?>

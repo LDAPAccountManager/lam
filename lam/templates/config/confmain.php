@@ -38,45 +38,40 @@ if ($_POST['back'] || $_POST['submitconf']){
 	if ($_POST['submitconf']){
 		// save HTTP-POST variables in session
 		// get data if register_globals is off
-		if ($_POST['passwd']) $passwd = $_POST['passwd'];
-		if ($_POST['passwd1']) $passwd1 = $_POST['passwd1'];
-		if ($_POST['passwd2']) $passwd2 = $_POST['passwd2'];
-		if ($_POST['serverurl']) $serverurl = $_POST['serverurl'];
-		if ($_POST['admins']) $admins = $_POST['admins'];
-		if ($_POST['suffusers']) $suffusers = $_POST['suffusers'];
-		if ($_POST['suffgroups']) $suffgroups = $_POST['suffgroups'];
-		if ($_POST['suffhosts']) $suffhosts = $_POST['suffhosts'];
-		if ($_POST['suffdomains']) $suffdomains = $_POST['suffdomains'];
+		if ($_POST['passwd']) $_SESSION['passwd'] = $_POST['passwd'];
+		if ($_POST['passwd1']) $_SESSION['passwd1'] = $_POST['passwd1'];
+		if ($_POST['passwd2']) $_SESSION['passwd2'] = $_POST['passwd2'];
+		if ($_POST['serverurl']) $_SESSION['serverurl'] = $_POST['serverurl'];
+		if ($_POST['admins']) $_SESSION['admins'] = $_POST['admins'];
+		if ($_POST['suffusers']) $_SESSION['suffusers'] = $_POST['suffusers'];
+		if ($_POST['suffgroups']) $_SESSION['suffgroups'] = $_POST['suffgroups'];
+		if ($_POST['suffhosts']) $_SESSION['suffhosts'] = $_POST['suffhosts'];
+		if ($_POST['suffdomains']) $_SESSION['suffdomains'] = $_POST['suffdomains'];
 //		if ($_POST['suffmap']) $suffmap = $_POST['suffmap'];
-		if ($_POST['minUID']) $minUID = $_POST['minUID'];
-		if ($_POST['maxUID']) $maxUID = $_POST['maxUID'];
-		if ($_POST['minGID']) $minGID = $_POST['minGID'];
-		if ($_POST['maxGID']) $maxGID = $_POST['maxGID'];
-		if ($_POST['minMach']) $minMach = $_POST['minMach'];
-		if ($_POST['maxMach']) $maxMach = $_POST['maxMach'];
-		if ($_POST['usrlstattr']) $usrlstattr = $_POST['usrlstattr'];
-		if ($_POST['grplstattr']) $grplstattr = $_POST['grplstattr'];
-		if ($_POST['hstlstattr']) $hstlstattr = $_POST['hstlstattr'];
-		if ($_POST['maxlistentries']) $maxlistentries = $_POST['maxlistentries'];
-		if ($_POST['lang']) $lang = $_POST['lang'];
-		if ($_POST['scriptpath']) $scriptpath = $_POST['scriptpath'];
-		if ($_POST['samba3']) $samba3 = $_POST['samba3'];
-		if ($_POST['domainSID']) $domainSID = $_POST['domainSID'];
-		if ($_POST['scriptpath']) $scriptpath = $_POST['scriptpath'];
-		else $scriptpath = "";
-		if ($_POST['scriptserver']) $scriptserver = $_POST['scriptserver'];
-		else $scriptserver = "";
-		if ($_POST['filename']) $filename = $_POST['filename'];
-		session_register('passwd', 'passwd1', 'passwd2', 'serverurl', 'admins', 'suffusers',
-			'suffgroups', 'suffhosts', 'suffdomains', 'minUID', 'maxUID', 'minGID',
-			'maxGID', 'minMach', 'maxMach', 'usrlstattr', 'grplstattr', 'hstlstattr', 'maxlistentries',
-			'lang', 'scriptpath', 'scriptserver', 'samba3', 'domainSID', 'filename');
+		if ($_POST['minUID']) $_SESSION['minUID'] = $_POST['minUID'];
+		if ($_POST['maxUID']) $_SESSION['maxUID'] = $_POST['maxUID'];
+		if ($_POST['minGID']) $_SESSION['minGID'] = $_POST['minGID'];
+		if ($_POST['maxGID']) $_SESSION['maxGID'] = $_POST['maxGID'];
+		if ($_POST['minMach']) $_SESSION['minMach'] = $_POST['minMach'];
+		if ($_POST['maxMach']) $_SESSION['maxMach'] = $_POST['maxMach'];
+		if ($_POST['usrlstattr']) $_SESSION['usrlstattr'] = $_POST['usrlstattr'];
+		if ($_POST['grplstattr']) $_SESSION['grplstattr'] = $_POST['grplstattr'];
+		if ($_POST['hstlstattr']) $_SESSION['hstlstattr'] = $_POST['hstlstattr'];
+		if ($_POST['maxlistentries']) $_SESSION['maxlistentries'] = $_POST['maxlistentries'];
+		if ($_POST['lang']) $_SESSION['lang'] = $_POST['lang'];
+		if ($_POST['samba3']) $_SESSION['samba3'] = $_POST['samba3'];
+		if ($_POST['domainSID']) $_SESSION['domainSID'] = $_POST['domainSID'];
+		if ($_POST['scriptpath']) $_SESSION['scriptpath'] = $_POST['scriptpath'];
+		else $_SESSION['scriptpath'] = "";
+		if ($_POST['scriptserver']) $_SESSION['scriptserver'] = $_POST['scriptserver'];
+		else $_SESSION['scriptserver'] = "";
+		if ($_POST['filename']) $_SESSION['filename'] = $_POST['filename'];
 		echo("<meta http-equiv=\"refresh\" content=\"0; URL=confsave.php\">");
 	}
 	// back to login
 	else if ($_POST['back']){
 		echo("<meta http-equiv=\"refresh\" content=\"0; URL=../login.php\">");
-		}
+	}
 	exit;
 }
 

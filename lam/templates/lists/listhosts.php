@@ -39,9 +39,7 @@ $sort = $_GET['sort'];
 $_POST = $_POST + $_GET;
 
 $hst_info = $_SESSION['hst_info'];
-session_register('hst_info');
 $hst_units = $_SESSION['hst_units'];
-session_register('hst_units');
 
 // check if button was pressed and if we have to add/delete a host
 if ($_POST['new_host'] || $_POST['del_host']){
@@ -67,8 +65,8 @@ echo "</head><body>\n";
 echo "<script src=\"../../lib/functions.js\" type=\"text/javascript\" language=\"javascript\"></script>\n";
 
 // generate attribute-description table
-$attr_array;	// list of LDAP attributes to show
-$desc_array;	// list of descriptions for the attributes
+$attr_array = array();	// list of LDAP attributes to show
+$desc_array = array();	// list of descriptions for the attributes
 $attr_string = $_SESSION["config"]->get_hostlistAttributes();
 $temp_array = explode(";", $attr_string);
 $hash_table = $_SESSION["ldap"]->attributeHostArray();
@@ -102,7 +100,6 @@ else {
 if ($_POST['hst_suffix']) $hst_suffix = $_POST['hst_suffix'];  // new suffix selected via combobox
 elseif ($_SESSION['hst_suffix']) $hst_suffix = $_SESSION['hst_suffix'];  // old suffix from session
 else $hst_suffix = $_SESSION["config"]->get_HostSuffix();  // default suffix
-session_register('hst_suffix');
 
 // generate search filter for sort links
 $searchfilter = "";
@@ -132,9 +129,10 @@ if (! $_GET['norefresh']) {
 	}
 	$filter = $filter . ")";
 	$attrs = $attr_array;
-	$sr = @ldap_search($_SESSION["ldap"]->server(),
-		$hst_suffix,
-		$filter, $attrs);
+	$sr = @ldap_search($_SESSION["ldap"]->server(), $hst_suffix, $filter, $attrs);
+	if (ldap_errno($_SESSION["ldap"]->server()) == 4) {
+		StatusMessage("WARN", _("LDAP sizelimit exceeded, not all entries are shown."), "See README.openldap to solve this problem.");
+	}
 	if ($sr) {
 		$hst_info = ldap_get_entries($_SESSION["ldap"]->server, $sr);
 		ldap_free_result($sr);
@@ -300,5 +298,10 @@ function cmp_array($a, $b) {
 	else if ($a[$sort][0] == max($a[$sort][0], $b[$sort][0])) return 1;
 	else return -1;
 }
+
+// save variables to session
+$_SESSION['hst_info'] = $hst_info;
+$_SESSION['hst_units'] = $hst_units;
+$_SESSION['hst_suffix'] = $hst_suffix;
 
 ?>
