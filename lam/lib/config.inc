@@ -175,7 +175,7 @@ class Config {
 	/**
 	* Loads preferences from config file
 	*
-	* @param $file Index number in config file array
+	* @param integer $file Index number in config file array
 	*/
 	function Config($file = 0) {
 		// load first profile if none is given
@@ -352,7 +352,7 @@ class Config {
 	/**
 	* Returns the server address as string
 	*
-	* @return server address
+	* @return string server address
 	*/
 	function get_ServerURL() {
 		return $this->ServerURL;
@@ -361,8 +361,8 @@ class Config {
 	/**
 	* Sets the server address
 	*
-	* @param $value new server address
-	* @return true if $value has correct format
+	* @param string $value new server address
+	* @return boolean true if $value has correct format
 	*/
 	function set_ServerURL($value) {
 		if (is_string($value)) $this->ServerURL = $value;
@@ -373,7 +373,7 @@ class Config {
 	/**
 	* Returns an array of string with all admin names
 	*
-	* @return the admin names
+	* @return array the admin names
 	*/
 	function get_Admins() {
 		return explode(";", $this->Admins);
@@ -382,7 +382,7 @@ class Config {
 	/**
 	* Returns all admin users seperated by semicolons
 	*
-	* @return the admin string
+	* @return string the admin string
 	*/
 	function get_Adminstring() {
 		return $this->Admins;
@@ -391,8 +391,8 @@ class Config {
 	/**
 	* Sets the admin string
 	*
-	* @param $value new admin string that contains all admin users seperated by semicolons
-	* @return true if $value has correct format
+	* @param string $value new admin string that contains all admin users seperated by semicolons
+	* @return boolean true if $value has correct format
 	*/
 	function set_Adminstring($value) {
 		if (is_string($value) &&
@@ -406,7 +406,7 @@ class Config {
 	/**
 	* Returns the password to access the preferences wizard
 	*
-	* @return the password
+	* @return string the password
 	*/
 	function get_Passwd() {
 		return $this->Passwd;
@@ -415,8 +415,8 @@ class Config {
 	/**
 	* Sets the preferences wizard password
 	*
-	* @param $value new password
-	* @return true if $value has correct format
+	* @param string $value new password
+	* @return boolean true if $value has correct format
 	*/
 	function set_Passwd($value) {
 		if (is_string($value)) $this->Passwd = $value;
@@ -427,7 +427,7 @@ class Config {
 	/**
 	* Returns the LDAP suffix where users are saved
 	*
-	* @return the user suffix
+	* @return string the user suffix
 	*/
 	function get_UserSuffix() {
 		return $this->usersuffix;
@@ -436,8 +436,8 @@ class Config {
 	/**
 	* Sets the LDAP suffix where users are saved
 	*
-	* @param $value new user suffix
-	* @return true if $value has correct format
+	* @param string $value new user suffix
+	* @return boolean true if $value has correct format
 	*/
 	function set_UserSuffix($value) {
 		if (is_string($value)) {
@@ -450,7 +450,7 @@ class Config {
 	/**
 	* returns the LDAP suffix where groups are saved
 	*
-	* @return the group suffix
+	* @return string the group suffix
 	*/
 	function get_GroupSuffix() {
 		return $this->groupsuffix;
@@ -459,8 +459,8 @@ class Config {
 	/**
 	* Sets the LDAP suffix where groups are saved
 	*
-	* @param $value new group suffix
-	* @return true if $value has correct format
+	* @param string $value new group suffix
+	* @return boolean true if $value has correct format
 	*/
 	function set_GroupSuffix($value) {
 		if (is_string($value)) {
@@ -473,7 +473,7 @@ class Config {
 	/**
 	* returns the LDAP suffix where hosts are saved
 	*
-	* @return the host suffix
+	* @return string the host suffix
 	*/
 	function get_HostSuffix() {
 		return $this->hostsuffix;
@@ -482,8 +482,8 @@ class Config {
 	/**
 	* Sets the LDAP suffix where hosts are saved
 	*
-	* @param $value new host suffix
-	* @return true if $value has correct format
+	* @param string $value new host suffix
+	* @return boolean true if $value has correct format
 	*/
 	function set_HostSuffix($value) {
 		if (! $value) $this->hostsuffix = "";
@@ -497,7 +497,7 @@ class Config {
 	/**
 	* Returns the LDAP suffix where domains are saved
 	*
-	* @return the domain suffix
+	* @return string the domain suffix
 	*/
 	function get_DomainSuffix() {
 		return $this->domainsuffix;
@@ -506,8 +506,8 @@ class Config {
 	/**
 	* Sets the LDAP suffix where domains are saved
 	*
-	* @param $value new domain suffix
-	* @return true if $value has correct format
+	* @param string $value new domain suffix
+	* @return boolean true if $value has correct format
 	*/
 	function set_DomainSuffix($value) {
 		if (!$value) $this->domainsuffix = "";
@@ -521,7 +521,7 @@ class Config {
 	/**
 	* Returns the list of attributes to show in user list
 	*
-	* @return the attribute list
+	* @return string the attribute list
 	*/
 	function get_userlistAttributes() {
 		return $this->userlistAttributes;
@@ -530,8 +530,8 @@ class Config {
 	/**
 	* Sets the list of attributes to show in user list
 	*
-	* @param $value new attribute string
-	* @return true if $value has correct format
+	* @param string $value new attribute string
+	* @return boolean true if $value has correct format
 	*/
 	function set_userlistAttributes($value) {
 		if (is_string($value) && eregi("^((#[^:;]+)|([^:;]*:[^:;]+))(;((#[^:;]+)|([^:;]*:[^:;]+)))*$", $value)) {
@@ -544,7 +544,7 @@ class Config {
 	/**
 	* Returns the list of attributes to show in group list
 	*
-	* @return the attribute list
+	* @return string the attribute list
 	*/
 	function get_grouplistAttributes() {
 		return $this->grouplistAttributes;
@@ -553,8 +553,8 @@ class Config {
 	/**
 	* Sets the list of attributes to show in group list
 	*
-	* @param $value new attribute string
-	* @return true if $value has correct format
+	* @param string $value new attribute string
+	* @return boolean true if $value has correct format
 	*/
 	function set_grouplistAttributes($value) {
 		if (is_string($value) && eregi("^((#[^:;]+)|([^:;]*:[^:;]+))(;((#[^:;]+)|([^:;]*:[^:;]+)))*$", $value)) {
@@ -567,7 +567,7 @@ class Config {
 	/**
 	* Returns the list of attributes to show in host list
 	*
-	* @return the attribute list
+	* @return string the attribute list
 	*/
 	function get_hostlistAttributes() {
 		return $this->hostlistAttributes;
@@ -576,8 +576,8 @@ class Config {
 	/**
 	* Sets the list of attributes to show in host list
 	*
-	* @param $value new attribute string
-	* @return true if $value has correct format
+	* @param string $value new attribute string
+	* @return boolean true if $value has correct format
 	*/
 	function set_hostlistAttributes($value) {
 		if (! $value && ($this->hostsuffix == "")) $this->hostlistAttributes = "";
@@ -591,7 +591,7 @@ class Config {
 	/**
 	* Returns the maximum number of rows in user/group/host lists
 	*
-	* @return maximum number
+	* @return integer maximum number
 	*/
 	function get_MaxListEntries() {
 		return $this->maxlistentries;
@@ -600,8 +600,8 @@ class Config {
 	/**
 	* Sets the maximum number of rows in user/group/host lists
 	*
-	* @param $value new attribute string
-	* @return true if $value has correct format
+	* @param integer $value new maximum value
+	* @return boolean true if $value has correct format
 	*/
 	function set_MaxListEntries ($value) {
 		if (is_numeric($value)) $this->maxlistentries = $value;
@@ -612,7 +612,7 @@ class Config {
 	/**
 	* Returns the default language string
 	*
-	* @return default language
+	* @return string default language
 	*/
 	function get_defaultLanguage() {
 		return $this->defaultLanguage;
@@ -621,8 +621,8 @@ class Config {
 	/**
 	* Sets the default language string
 	*
-	* @param $value new default language
-	* @return true if $value has correct format
+	* @param string $value new default language
+	* @return boolean true if $value has correct format
 	*/
 	function set_defaultLanguage($value) {
 		if (is_string($value)) $this->defaultLanguage = $value;
@@ -633,7 +633,7 @@ class Config {
 	/**
 	* Returns the path to the external script
 	*
-	* @return script path
+	* @return string script path
 	*/
 	function get_scriptPath() {
 		return $this->scriptPath;
@@ -642,8 +642,8 @@ class Config {
 	/**
 	* Sets the path to the external script
 	*
-	* @param $value new script path
-	* @return true if $value has correct format
+	* @param string $value new script path
+	* @return boolean true if $value has correct format
 	*/
 	function set_scriptPath($value) {
 		if (!$value) $this->scriptPath = ""; // optional parameter
@@ -655,7 +655,7 @@ class Config {
 	/**
 	* Returns the server of the external script
 	*
-	* @return script server
+	* @return string script server
 	*/
 	function get_scriptServer() {
 		return $this->scriptServer;
@@ -664,8 +664,8 @@ class Config {
 	/**
 	* Sets the server of the external script
 	*
-	* @param $value new script server
-	* @return true if $value has correct format
+	* @param string $value new script server
+	* @return boolean true if $value has correct format
 	*/
 	function set_scriptServer($value) {
 		if (!$value) $this->scriptServer = ""; // optional parameter
@@ -679,7 +679,7 @@ class Config {
 	/**
 	* Returns the LDAP cache timeout in minutes
 	*
-	* @return cache time
+	* @return integer cache time
 	*/
 	function get_cacheTimeout() {
 		if (isset($this->cachetimeout)) return $this->cachetimeout;
@@ -689,7 +689,7 @@ class Config {
 	/**
 	* Returns the LDAP cache timeout in seconds
 	*
-	* @return cache time
+	* @return integer cache time
 	*/
 	function get_cacheTimeoutSec() {
 		return $this->cachetimeout * 60;
@@ -698,8 +698,8 @@ class Config {
 	/**
 	* Sets the LDAP cache timeout in minutes (0,1,2,5,10,15)
 	*
-	* @param $value new cache timeout
-	* @return true if $value has correct format
+	* @param integer $value new cache timeout
+	* @return boolean true if $value has correct format
 	*/
 	function set_cacheTimeout($value) {
 		if (is_numeric($value) && ($value > -1)) {
@@ -712,7 +712,7 @@ class Config {
 	/**
 	* Returns an array of all selected user modules
 	*
-	* @return user modules
+	* @return array user modules
 	*/
 	function get_UserModules() {
 		$modules = explode(",", $this->usermodules);
@@ -728,8 +728,8 @@ class Config {
 	/**
 	* Sets the selected user modules
 	*
-	* @param $modules array with module names (not aliases!)
-	* @return true if $modules has correct format
+	* @param array $modules array with module names (not aliases!)
+	* @return boolean true if $modules has correct format
 	*/
 	function set_UserModules($modules) {
 		if (! is_array($modules)) return false;
@@ -746,7 +746,7 @@ class Config {
 	/**
 	* Returns an array of all selected group modules
 	*
-	* @return group modules
+	* @return array group modules
 	*/
 	function get_GroupModules() {
 		$modules = explode(",", $this->groupmodules);
@@ -762,8 +762,8 @@ class Config {
 	/**
 	* Sets the selected group modules
 	*
-	* @param $modules array with module names (not aliases!)
-	* @return true if $modules has correct format
+	* @param array $modules array with module names (not aliases!)
+	* @return boolean true if $modules has correct format
 	*/
 	function set_GroupModules($modules) {
 		if (! is_array($modules)) return false;
@@ -780,7 +780,7 @@ class Config {
 	/**
 	* Returns an array of all selected host modules
 	*
-	* @return host modules
+	* @return array host modules
 	*/
 	function get_HostModules() {
 		$modules = explode(",", $this->hostmodules);
@@ -796,8 +796,8 @@ class Config {
 	/**
 	* Sets the selected host modules
 	*
-	* @param $modules array with module names (not aliases!)
-	* @return true if $modules has correct format
+	* @param array $modules array with module names (not aliases!)
+	* @return boolean true if $modules has correct format
 	*/
 	function set_HostModules($modules) {
 		if (! is_array($modules)) return false;
@@ -815,7 +815,7 @@ class Config {
 	* Sets the settings for the account modules.
 	*
 	* @param array $settings list of module setting array(name => value)
-	* @return true if $settings has correct format
+	* @return boolean true if $settings has correct format
 	*/
 	function set_moduleSettings($settings) {
 		if (!is_array($settings)) return false;
