@@ -198,7 +198,8 @@ if ($_GET['type'] == "user") {
 		exit;
 	}
 	if (get_magic_quotes_gpc() == 1) $_POST['smb_profilepath'] = stripslashes($_POST['smb_profilepath']);
-	if ($_POST['smb_profilepath'] && eregi("^[\][\]([a-z0-9])+([\][a-z0-9_\\-\\$%]+)+$", $_POST['smb_profilepath'])) {
+	if ($_POST['smb_profilepath'] && (eregi("^[\][\]([a-z0-9])+([\][a-z0-9_\\-\\$%]+)+$", $_POST['smb_profilepath']) ||
+		eregi('^[/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*([/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*)*$', $_POST['smb_profilepath']))) {
 		$acct->smb_profilePath = $_POST['smb_profilepath'];
 	}
 	elseif ($_POST['smb_profilepath']) {
