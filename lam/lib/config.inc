@@ -31,8 +31,8 @@ function setlanguage() {
 		putenv("LANG=" . $language[1]);
 		setlocale(LC_ALL, $language[0]);
 		$locdir = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/locale";
-		bindtextdomain("lam", $locdir);
-		textdomain("lam");
+		bindtextdomain("messages", $locdir);
+		textdomain("messages");
 	}
 	else echo _("Language not defined in session!");
 }
