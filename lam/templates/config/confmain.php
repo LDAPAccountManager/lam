@@ -106,13 +106,11 @@ echo ("<form action=\"confmain.php\" method=\"post\">\n");
 echo ("<fieldset><legend><b>" . _("Server settings") . "</b></legend>");
 echo ("<table align=\"center\" border=\"0\">");
 // serverURL
-echo ("<tr><td width=\"20%\"><p align=\"right\"><b>" . _("Server Address") . ": </b></p></td>".
-	"<td width=\"30%\"><p align=\"left\">".
+echo ("<tr><td><p align=\"right\"><b>" . _("Server Address") . ": </b></p></td>".
+	"<td><p align=\"left\">".
 	"<input size=50 type=\"text\" name=\"serverurl\" value=\"" . $conf->get_ServerURL() . "\">".
 	"</td>\n");
-echo ("<td width=\"50%\"><p align=\"left\">".
-	 _("Server Address of LDAP server (e.g. ldap://localhost:389 or ldaps://localhost:636)").
-	 "</p></td></tr>\n");
+echo ("<td><a href=\"../help.php?HelpNumber=201\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 
 // new line
 echo ("<tr><td>&nbsp</td></tr>");
@@ -121,23 +119,17 @@ echo ("<tr><td>&nbsp</td></tr>");
 echo ("<tr><td><p align=\"right\"><b>".
 	_("UserSuffix") . ": </b></p></td>".
 	"<td><input size=50 type=\"text\" name=\"suffusers\" value=\"" . $conf->get_UserSuffix() . "\"></td>\n");
-echo ("<td><p align=\"left\">".
-	_("This is the suffix from where to search for users.<br>(e.g. ou=People,dc=yourcompany,dc=com)").
-	"</p></td></tr>\n");
+echo ("<td><a href=\"../help.php?HelpNumber=202\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 // group suffix
 echo ("<tr><td><p align=\"right\"><b>".
 	_("GroupSuffix") . ": </b></p></td>".
 	"<td><input size=50 type=\"text\" name=\"suffgroups\" value=\"" . $conf->get_GroupSuffix() . "\"></td>\n");
-echo ("<td><p align=\"left\">".
-	_("This is the suffix from where to search for groups.<br>(e.g. ou=group,dc=yourcompany,dc=com)").
-	"</p></td></tr>\n");
+echo ("<td><a href=\"../help.php?HelpNumber=202\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 // host suffix
 echo ("<tr><td><p align=\"right\"><b>".
 	_("HostSuffix") . ": </b></p></td>".
 	"<td><input size=50 type=\"text\" name=\"suffhosts\" value=\"" . $conf->get_HostSuffix() . "\"></td>\n");
-echo ("<td><p align=\"left\">".
-	_("This is the suffix from where to search for Samba hosts.<br>(e.g. ou=machines,dc=yourcompany,dc=com)").
-	"</p></td></tr>\n");
+echo ("<td><a href=\"../help.php?HelpNumber=202\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 
 echo ("</table>");
 echo ("</fieldset>");
@@ -148,36 +140,31 @@ echo ("<table align=\"center\" border=\"0\">");
 
 // minUID
 echo ("<tr><td align=\"right\"><b>".
-	_("Minimum UID number") . ": </b></td>".
-	"<td align=\"left\"><input size=6 type=\"text\" name=\"minUID\" value=\"" . $conf->get_minUID() . "\">\n");
+	_("Minimum UID number") . ": </b>".
+	"<input size=6 type=\"text\" name=\"minUID\" value=\"" . $conf->get_minUID() . "\"></td>\n");
 // maxUID
-echo ("&nbsp <b>" . _("Maximum UID number") . ": </b>".
+echo ("<td align=\"right\"><b>" . _("Maximum UID number") . ": </b>".
 	"<input size=6 type=\"text\" name=\"maxUID\" value=\"" . $conf->get_maxUID() . "\"></td>\n");
 // UID text
-echo ("<td><p align=\"left\">".
-	_("These are the minimum and maximum numbers to use for user IDs").
-	"</p></td></tr>\n");
+echo ("<td><a href=\"../help.php?HelpNumber=203\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 // minGID
 echo ("<tr><td align=\"right\"><b>".
-	_("Minimum GID number") . ": </b></td>".
-	"<td align=\"left\"><input size=6 type=\"text\" name=\"minGID\" value=\"" . $conf->get_minGID() . "\">\n");
+	_("Minimum GID number") . ": </b>".
+	"<input size=6 type=\"text\" name=\"minGID\" value=\"" . $conf->get_minGID() . "\"></td>\n");
 // maxGID
-echo ("&nbsp <b>" . _("Maximum GID number").": </b>".
+echo ("<td align=\"right\"><b>" . _("Maximum GID number").": </b>".
 	"<input size=6 type=\"text\" name=\"maxGID\" value=\"" . $conf->get_maxGID() . "\"></td>\n");
 // GID text
-echo ("<td><p align=\"left\">".
-	_("These are the minimum and maximum numbers to use for group IDs").
-	"</p></td></tr>\n");
+echo ("<td><a href=\"../help.php?HelpNumber=204\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 // minMach
 echo ("<tr><td align=\"right\"><b>".
-	_("Minimum Machine number") . ": </b></td>".
-	"<td align=\"left\"><input size=6 type=\"text\" name=\"minMach\" value=\"" . $conf->get_minMachine() . "\">\n");
+	_("Minimum Machine number") . ": </b>".
+	"<input size=6 type=\"text\" name=\"minMach\" value=\"" . $conf->get_minMachine() . "\"></td>\n");
 // maxMach
-echo ("&nbsp <b>" . _("Maximum Machine number") . ": </b>".
+echo ("<td align=\"right\"><b>" . _("Maximum Machine number") . ": </b>".
 	"<input size=6 type=\"text\" name=\"maxMach\" value=\"" . $conf->get_maxMachine() . "\"></td>\n");
 // Machine text
-echo ("<td><p align=\"left\">".
-	_("These are the minimum and maximum numbers to use for Samba hosts. <br> Do not use the same range as for user IDs.") . "</p></td></tr>\n");
+echo ("<td><a href=\"../help.php?HelpNumber=205\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 
 echo ("</table>");
 echo ("</fieldset>");
@@ -190,19 +177,17 @@ echo ("<table align=\"center\" border=\"0\">");
 echo ("<tr><td><p align=\"right\"><b>".
 	_("Attributes in User List:") . "</b></p></td>".
 	"<td><input size=50 type=\"text\" name=\"usrlstattr\" value=\"" . $conf->get_userlistAttributes() . "\"></td>");
-// list attributes description
-echo ("<td rowspan=3><p>".
-	_("This is the list of attributes to show in the lists. The entries can either be predefined values".
-	" (e.g. '#cn' or '#gidNumber') or individual ones (e.g. 'cn:Group Name'). The entries are seperated by semicolons.").
-	"</p></td></tr>");
+echo ("<td><a href=\"../help.php?HelpNumber=206\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>");
 // user list attributes
 echo ("<tr><td><p align=\"right\"><b>".
 	_("Attributes in Group List:") . "</b></p></td>".
-	"<td><input size=50 type=\"text\" name=\"grplstattr\" value=\"" . $conf->get_grouplistAttributes() . "\"></td></tr>");
+	"<td><input size=50 type=\"text\" name=\"grplstattr\" value=\"" . $conf->get_grouplistAttributes() . "\"></td>");
+echo ("<td><a href=\"../help.php?HelpNumber=206\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>");
 // user list attributes
 echo ("<tr><td><p align=\"right\"><b>".
 	_("Attributes in Host List:") . "</b></p></td>".
-	"<td><input size=50 type=\"text\" name=\"hstlstattr\" value=\"" . $conf->get_hostlistAttributes() . "\"></td></tr>");
+	"<td><input size=50 type=\"text\" name=\"hstlstattr\" value=\"" . $conf->get_hostlistAttributes() . "\"></td>");
+echo ("<td><a href=\"../help.php?HelpNumber=206\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>");
 // two new lines
 echo ("<tr><td>&nbsp</td></tr>");
 echo ("<tr><td>&nbsp</td></tr>");
@@ -210,14 +195,10 @@ echo ("<tr><td>&nbsp</td></tr>");
 echo ("<tr><td><p align=\"right\"><b>".
 	_("List of valid users") . ": </b></p></td>".
 	"<td><input size=50 type=\"text\" name=\"admins\" value=\"" . $conf->get_Adminstring() . "\"></td>\n");
-// admin list description
-echo ("<td><p align=\"left\">".
-	_("Usernames must be seperated by semicolons")."<br>".
-	_("(e.g. cn=admin,dc=yourcompany,dc=com;uid=root,ou=people,dc=yourcompany,dc=com)").
-	"</p></td></tr>\n");
+echo ("<td><a href=\"../help.php?HelpNumber=207\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 // maximum list entries
 echo ("<tr><td><p align=\"right\"><b>".
-	_("Maximum displayed entries") . ": </b></p></td>".
+	_("Maximum list entries") . ": </b></p></td>".
 	"<td><select name=\"maxlistentries\"><option selected>".$conf->get_MaxListEntries()."</option>");
 if ($conf->get_MaxListEntries() != 10) echo("<option>10</option>");
 if ($conf->get_MaxListEntries() != 20) echo("<option>20</option>");
@@ -226,10 +207,7 @@ if ($conf->get_MaxListEntries() != 50) echo("<option>50</option>");
 if ($conf->get_MaxListEntries() != 75) echo("<option>75</option>");
 if ($conf->get_MaxListEntries() != 100) echo("<option>100</option>");
 echo ("</select></td>\n");
-// maximum list entries description
-echo ("<td><p align=\"left\">".
-	_("This is the maximum count of entries which are displayed on one page of the user/host/group lists.").
-	"</p></td></tr>\n");
+echo ("<td><a href=\"../help.php?HelpNumber=208\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 
 echo ("</table>\n");
 echo ("</fieldset>\n");
@@ -268,7 +246,8 @@ else
 {
 	echo _("Unable to load available languages. For further instructions please contact the Admin of this site.\n");
 }
-echo ("</td></tr>\n");
+echo ("</td>\n");
+echo ("<td><a href=\"../help.php?HelpNumber=209\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 
 echo ("</table>\n");
 echo ("</fieldset>\n");
