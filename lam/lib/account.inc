@@ -192,13 +192,12 @@ function RndInt($Format){
 
 
 /* Whis function will return the quotas from the specified user If empty only filesystems with enabled quotas are returned
-* $type = 'user' or 'group'
-* $users = array of users or groupnames. If no user or groupname is defined,
+* $users = array of account objects. If $user is a string (user or group)
 *         an array with all quota-enabled partitions will be returned in this case all returned values are 0 exept mointpoint[x][0]
 */
-function getquotas($type,$users=array('+')) {
+function getquotas($users) {
 	// define new object
-	$return = new account();
+	$return = $users;
 	// get username and password of the current lam-admin
 	$ldap_q = $_SESSION['ldap']->decrypt();
 	/* $towrite has the following syntax:
@@ -210,6 +209,10 @@ function getquotas($type,$users=array('+')) {
 	/* scriptServer is the IP to remote-host to which lam should connect via ssh
 	* scriptPath is Path to lamdaemon.pl on remote system
 	*/
+	for($i=0; $i<count($return); $i++)
+		// put string to trasmit together
+		if ($return[$i]->general_username!='') $userstring .= $return[$i]->general_username." quota get ".$return[$i]->type."\n";
+			else $userstring .= "+ quota get ".$return[$i]->type."\n";
 	if (function_exists(proc_open)) {
 		// New Code, requires PHP 4.3
 		$descriptorspec = array(
@@ -226,30 +229,24 @@ function getquotas($type,$users=array('+')) {
 			* $pipes[1] is readable handle to child stdout
 			* any error is send to /dev/null
 			*/
-			foreach ($users as $user) {
-				// put string to trasmit together
-				$userstring = "$user quota get $type\n";
-				// Write one output-line for every user
-				fwrite($pipes[0], $userstring);
-				}
+			// Write one output-line for every user
+			fwrite($pipes[0], $userstring);
 			fclose($pipes[0]);
 			while (!feof($pipes[1])) {
 				$output = fgets($pipes[1], 1024);
-				if ($output!='') $vals5[] = $output;
+				if ($output!='') $output_array[] = $output;
 				}
 			fclose($pipes[1]);
 			$return_value = proc_close($process);
 			}
 		}
 	else { // PHP 4.3>
-		$input = "";
-		foreach ($users as $user) $input .= "$user quota get $type\n";
 		$command = escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".$towrite;
-		$pipe = popen("echo \"$input\"|$command" , 'r');
+		$pipe = popen("echo \"$userstring\"|$command" , 'r');
 		$output = '';
 		while(!feof($pipe)) {
 			$output .= fread($pipe, 1024);
-			if ($output!='') $vals5[] = $output;
+			if ($output!='') $output_array[] = $output;
 			}
 		pclose($pipe);
 		}
@@ -261,22 +258,29 @@ function getquotas($type,$users=array('+')) {
 	* mountpoint, used blocks, soft block limit, hard block limit, grace block period, used inodes,
 	* soft inode limit, hard inode limit, grace inode period
 	*/
-	if (is_array($vals5))
-		foreach ($vals5 as $vals3) {
-			$vals = explode(':', $vals3);
-			for ($i=0; $i<sizeof($vals)-1; $i++) {
-				$vals2 = explode(',', $vals[$i]);
-				for ($j=0; $j<sizeof($vals2); $j++) {
-					$return->quota[$i][$j] = $vals2[$j];
-					}
-				if ($return->quota[$i][4]<$time) $return->quota[$i][4] = '';
-					else $return->quota[$i][4] = strval(($return->quota[$i][4]-$time)/3600) .' '. _('hours');
-				if ($return->quota[$i][8]<$time) $return->quota[$i][8] = '';
-					else $return->quota[$i][8] = strval(($return->quota[$i][8]-$time)/3600) .' '. _('hours');
-				}
-			$return2[] = $return;
+	for ($i=0; $i<count($return); $i++) {
+		$all_quota = explode(':', $output_array[$i]);
+		for ($j=0; $j<sizeof($all_quota)-1; $j++) {
+			$single_quota = explode(',', $all_quota[$j]);
+			// unset not existing quotas from account-object
+			// collect all existing mountpoints in array
+			$real_quotas[] = $single_quota[0];
+			for ($k=0; $k<sizeof($single_quota); $k++)
+				$return[$i]->quota[$j][$k] = $single_quota[$k];
+			if ($return[$i]->quota[$j][4]<time()) $return[$i]->quota[$j][4] = '';
+				else $return[$i]->quota[$j][4] = strval(($return[$i]->quota[$j][4]-time())/3600) .' '. _('hours');
+			if ($return[$i]->quota[$j][8]<time()) $return[$i]->quota[$j][8] = '';
+				else $return[$i]->quota[$j][8] = strval(($return[$i]->quota[$j][8]-time())/3600) .' '. _('hours');
 			}
-	return $return2;
+		$j=0;
+		while (isset($return[$i]->quota[$j][0]))
+			// remove invalid quotas
+			if (!in_array($return[$i]->quota[$j][0], $real_quotas)) unset($return[$i]->quota[$j]);
+				else $j++;
+		// Beautify array, repair index
+		$return[$i]->quota = array_values($return[$i]->quota);
+		}
+	return $return;
 	}
 
 

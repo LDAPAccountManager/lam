@@ -173,37 +173,24 @@ switch ($select) {
 					// load quotas from profile and check if they are valid
 					if ($config_intern->scriptServer) {
 						// load quotas and check if quotas from profile are valid
-						$values = getquotas('group');
-						if (isset($group->quota[0])) {
-							 // check quotas from profile
-							$i=0;
-							// check quota settings, loop for every partition with quotas
-							while (isset($group->quota[$i])) {
-								// search if quotas from profile fit to a real quota
-								$found = (-1);
-								for ($j=0; $j<count($values[0]->quota); $j++)
-									if ($values[0]->quota[$j][0]==$group->quota[$i][0]) $found = $j;
-								// unset quota from profile if quotas (mointpoint) doesn't exists anymore
-								if ($found==-1) unset($group->quota[$i]);
-								else {
-									// Set missing part in quota-array
-									$group->quota[$i][1] = $values[0]->quota[$found][1];
-									$group->quota[$i][5] = $values[0]->quota[$found][5];
-									$group->quota[$i][4] = $values[0]->quota[$found][4];
-									$group->quota[$i][8] = $values[0]->quota[$found][8];
-									$i++;
-									}
+						$quotas = getquotas(array($group));
+						for ($i=0; $i<count($group->quota); $i++) $profile_quotas[] = $group->quota[$i][0];
+						for ($i=0; $i<count($quotas[0]->quota); $i++) {
+							$real_quotas[] = $quotas[0]->quota[$i][0];
+							if (is_array($profile_quotas)) {
+								if (!in_array($quotas[0]->quota[$i][0], $profile_quotas)) $group->quota[]=$quotas[0]->quota[$i];
 								}
-							// Beautify array, repair index
-							$group->quota = array_values($group->quota);
+							else $group->quota[]=$quotas[0]->quota[$i];
 							}
-						else { // No quotas saved in profile
-							// Display quotas for new users (Quota set to 0)
-							if (is_object($values[0])) {
-								while (list($key, $val) = each($values[0])) // Set only defined values
-								if (isset($val)) $group->$key = $val;
-								}
+						$j=0;
+						// delete not existing quotas
+						while (isset($group->quota[$j][0])) {
+							// remove invalid quotas
+							if (!in_array($group->quota[$j][0], $real_quotas)) unset($group->quota[$j]);
+								else $j++;
 							}
+						// Beautify array, repair index
+						$group->quota = array_values($group->quota);
 						}
 					// Get groupname from current user
 					$group->general_username=$_SESSION['accounts'][$_SESSION['pointer']]->general_group;
@@ -467,37 +454,24 @@ function loadfile() {
 		$profile->type = 'user';
 		if ($config_intern->scriptServer) {
 			// load quotas and check if quotas from profile are valid
-			$values = getquotas('user');
-			if (isset($profile->quota[0])) {
-				 // check quotas from profile
-				$i=0;
-				// check quota settings, loop for every partition with quotas
-				while (isset($profile->quota[$i])) {
-					// search if quotas from profile fit to a real quota
-					$found = (-1);
-					for ($j=0; $j<count($values[0]->quota); $j++)
-						if ($values[0]->quota[$j][0]==$profile->quota[$i][0]) $found = $j;
-					// unset quota from profile if quotas (mointpoint) doesn't exists anymore
-					if ($found==-1) unset($profile->quota[$i]);
-					else {
-						// Set missing part in quota-array
-						$profile->quota[$i][1] = $values[0]->quota[$found][1];
-						$profile->quota[$i][5] = $values[0]->quota[$found][5];
-						$profile->quota[$i][4] = $values[0]->quota[$found][4];
-						$profile->quota[$i][8] = $values[0]->quota[$found][8];
-						$i++;
-						}
+			$quotas = getquotas(array($profile));
+			for ($i=0; $i<count($profile->quota); $i++) $profile_quotas[] = $profile->quota[$i][0];
+			for ($i=0; $i<count($quotas[0]->quota); $i++) {
+				$real_quotas[] = $quotas[0]->quota[$i][0];
+				if (is_array($profile_quotas)) {
+					if (!in_array($quotas[0]->quota[$i][0], $profile_quotas)) $profile->quota[]=$quotas[0]->quota[$i];
 					}
-				// Beautify array, repair index
-				$profile->quota = array_values($profile->quota);
+				else $profile->quota[]=$quotas[0]->quota[$i];
 				}
-			else { // No quotas saved in profile
-				// Display quotas for new users (Quota set to 0)
-				if (is_object($values[0])) {
-					while (list($key, $val) = each($values[0])) // Set only defined values
-					if (isset($val)) $profile->$key = $val;
-					}
+			$j=0;
+			// delete not existing quotas
+			while (isset($profile->quota[$j][0])) {
+				// remove invalid quotas
+				if (!in_array($profile->quota[$j][0], $real_quotas)) unset($profile->quota[$j]);
+					else $j++;
 				}
+			// Beautify array, repair index
+			$profile->quota = array_values($profile->quota);
 			}
 		// Get keys to en/decrypt passwords
 		$iv = base64_decode($_COOKIE["IV"]);

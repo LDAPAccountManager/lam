@@ -89,7 +89,7 @@ if (isset($_GET['DN']) && $_GET['DN']!='') {
 	// Display general-page
 	$select_local = 'general';
 	}
-// Startcondition. useredit.php was called from outside to create a new group
+// Startcondition. useredit.php was called from outside to create a new user
  else if (count($_POST)==0) {
 	// Create new account object with settings from default profile
 	// Check if there are valid groups. Can not create user with no primary group
@@ -114,37 +114,24 @@ if (isset($_GET['DN']) && $_GET['DN']!='') {
 	$account_new ->type = 'user';
 	if ($config_intern->scriptServer) {
 		// load quotas and check if quotas from profile are valid
-		$values = getquotas('user');
-		if (isset($account_new->quota[0])) {
-			 // check quotas from profile
-			$i=0;
-			// check quota settings, loop for every partition with quotas
-			while (isset($account_new->quota[$i])) {
-				// search if quotas from profile fit to a real quota
-				$found = (-1);
-				for ($j=0; $j<count($values[0]->quota); $j++)
-					if ($values[0]->quota[$j][0]==$account_new->quota[$i][0]) $found = $j;
-				// unset quota from profile if quotas (mointpoint) doesn't exists anymore
-				if ($found==-1) unset($account_new->quota[$i]);
-				else {
-					// Set missing part in quota-array
-					$account_new->quota[$i][1] = $values[0]->quota[$found][1];
-					$account_new->quota[$i][5] = $values[0]->quota[$found][5];
-					$account_new->quota[$i][4] = $values[0]->quota[$found][4];
-					$account_new->quota[$i][8] = $values[0]->quota[$found][8];
-					$i++;
-					}
+		$quotas = getquotas(array($account_new));
+		for ($i=0; $i<count($account_new->quota); $i++) $profile_quotas[] = $account_new->quota[$i][0];
+		for ($i=0; $i<count($quotas[0]->quota); $i++) {
+			$real_quotas[] = $quotas[0]->quota[$i][0];
+			if (is_array($profile_quotas)) {
+				if (!in_array($quotas[0]->quota[$i][0], $profile_quotas)) $account_new->quota[]=$quotas[0]->quota[$i];
 				}
-			// Beautify array, repair index
-			$account_new->quota = array_values($account_new->quota);
+			else $account_new->quota[]=$quotas[0]->quota[$i];
 			}
-		else { // No quotas saved in profile
-			// Display quotas for new users (Quota set to 0)
-			if (is_object($values[0])) {
-				while (list($key, $val) = each($values[0])) // Set only defined values
-				if (isset($val)) $account_new->$key = $val;
-				}
+		$j=0;
+		// delete not existing quotas
+		while (isset($account_new->quota[$j][0])) {
+			// remove invalid quotas
+			if (!in_array($account_new->quota[$j][0], $real_quotas)) unset($account_new->quota[$j]);
+				else $j++;
 			}
+		// Beautify array, repair index
+		$account_new->quota = array_values($account_new->quota);
 		}
 	// Display general-page
 	$select_local = 'general';
@@ -518,15 +505,9 @@ switch ($_POST['select']) {
 		if ($_POST['outputpdf']) {
 			// Load quotas if not yet done because they are needed for the pdf-file
 			if ($config_intern->scriptServer && !isset($account_new->quota[0])) { // load quotas
-				$values = getquotas('user', array($account_old->general_username));
-				if (is_object($values[0])) {
-					while (list($key, $val) = each($values[0])) // Set only defined values
-						if (isset($val)) $account_new->$key = $val;
-					}
-				if (is_object($values[0]) && isset($account_old)) {
-					while (list($key, $val) = each($values[0])) // Set only defined values
-						if (isset($val)) $account_old->$key = $val;
-					}
+				$quotas = getquotas(array($account_old));
+				$account_new = $quotas[0];
+				$account_new->quota = $account_old->quota;
 				}
 			// Create / display PDf-file
 			createUserPDF(array($account_new));
@@ -689,37 +670,24 @@ do { // X-Or, only one if() can be true
 			$account_new->smb_smbhome = str_replace('$user', $account_new->general_username, $account_new->smb_smbhome);
 		if ($config_intern->scriptServer) {
 			// load quotas and check if quotas from profile are valid
-			$values = getquotas('user');
-			if (isset($account_new->quota[0])) {
-				 // check quotas from profile
-				$i=0;
-				// check quota settings, loop for every partition with quotas
-				while (isset($account_new->quota[$i])) {
-					// search if quotas from profile fit to a real quota
-					$found = (-1);
-					for ($j=0; $j<count($values->quota); $j++)
-						if ($values[0]->quota[$j][0]==$account_new->quota[$i][0]) $found = $j;
-					// unset quota from profile if quotas (mointpoint) doesn't exists anymore
-					if ($found==-1) unset($account_new->quota[$i]);
-					else {
-						// Set missing part in quota-array
-						$account_new->quota[$i][1] = $values[0]->quota[$found][1];
-						$account_new->quota[$i][5] = $values[0]->quota[$found][5];
-						$account_new->quota[$i][4] = $values[0]->quota[$found][4];
-						$account_new->quota[$i][8] = $values[0]->quota[$found][8];
-						$i++;
-						}
+			$quotas = getquotas(array($account_new));
+			for ($i=0; $i<count($account_new->quota); $i++) $profile_quotas[] = $account_new->quota[$i][0];
+			for ($i=0; $i<count($quotas[0]->quota); $i++) {
+				$real_quotas[] = $quotas[0]->quota[$i][0];
+				if (is_array($profile_quotas)) {
+					if (!in_array($quotas[0]->quota[$i][0], $profile_quotas)) $account_new->quota[]=$quotas[0]->quota[$i];
 					}
-				// Beautify array, repair index
-				$account_new->quota = array_values($account_new->quota);
+				else $account_new->quota[]=$quotas[0]->quota[$i];
 				}
-			else { // No quotas saved in profile
-				// Display quotas for new users (Quota set to 0)
-				if (is_object($values[0])) {
-					while (list($key, $val) = each($values[0])) // Set only defined values
-					if (isset($val)) $account_new->$key = $val;
-					}
+			$j=0;
+			// delete not existing quotas
+			while (isset($account_new->quota[$j][0])) {
+				// remove invalid quotas
+				if (!in_array($account_new->quota[$j][0], $real_quotas)) unset($account_new->quota[$j]);
+					else $j++;
 				}
+			// Beautify array, repair index
+			$account_new->quota = array_values($account_new->quota);
 			}
 		// select general page after group has been loaded
 		$select_local='general';
@@ -1410,15 +1378,8 @@ switch ($select_local) {
 		// Quota Settings
 		// Load quotas if not yet done
 		if ($config_intern->scriptServer && !isset($account_new->quota[0])) { // load quotas
-			$values = getquotas('user', array($account_old->general_username));
-			if (is_object($values[0])) {
-				while (list($key, $val) = each($values[0])) // Set only defined values
-					if (isset($val)) $account_new->$key = $val;
-				}
-			if (is_object($values[0]) && isset($account_old)) {
-				while (list($key, $val) = each($values[0])) // Set only defined values
-					if (isset($val)) $account_old->$key = $val;
-				}
+			$quotas = getquotas(array($account_old));
+			$account_new = $quotas[0];
 			}
 		echo "<input name=\"select\" type=\"hidden\" value=\"quota\">\n";
 		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
