@@ -81,6 +81,7 @@ convsave, confmain, conflogin:
 - conf_scriptserver: Eingabe von confmain
 - conf_filename: Dateiname des Profils
 - config_types: Hash Array mit Typen (text, select, ...) der verarbeiteten Optionen
+- config_scopes: Accounttypen für Module
 
 
 useredit:
