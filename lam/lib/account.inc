@@ -502,6 +502,9 @@ function get_preg($argument, $regexp) {
 		case 'DNSname':
 					$pregexpr = '/^[0-9a-zA-Z_-]+(\\.[0-9a-zA-Z_-]+)*$/';
 					break;
+		case 'nis_alias':
+					$pregexpr = '/^([[:alnum:]@\\.\\ \\_-])+$/u';
+					break;
 	}
 	if ($pregexpr!='')
 		if (preg_match($pregexpr, $argument)) {
