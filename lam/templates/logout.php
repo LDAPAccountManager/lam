@@ -1,4 +1,4 @@
-<?php 
+<?php
 /*
 $Id$
 
@@ -25,6 +25,8 @@ $Id$
 
 include_once("../lib/ldap.php");
 
+// start session
+session_save_path("../sess");
 @session_start();
 
 // close LDAP connection
