@@ -488,6 +488,9 @@ function get_preg($argument, $regexp) {
 		case 'macAddress':
 					$pregexpr = '/^[0-9a-fA-F]{2}(:[0-9a-fA-F]{2}){5}$/';
 					break;
+		case 'date':
+					$pregexpr = '/^((0[1-9])|([1-2][0-9])|30|31)\\-((0[1-9])|(1[1-2]))\\-[1-3][0-9][0-9][0-9]$/';
+					break;
 	}
 	if ($pregexpr!='')
 		if (preg_match($pregexpr, $argument)) {
