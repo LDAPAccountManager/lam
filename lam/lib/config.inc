@@ -403,7 +403,7 @@ class Config {
 
   // needs a string that contains all admin users seperated by semicolons
   function set_Adminstring($value) {
-    if (is_string($value) && eregi("^[a-z]*=[a-z]*(,[a-z]*=[a-z]*)*(;[a-z]*=[a-z]*(,[a-z]*=[a-z]*)*)*$", $value)) {
+    if (is_string($value) && eregi("^([a-z]|-)*=([a-z]|-)*(,([a-z]|-)*=([a-z]|-)*)*(;([a-z]|-)*=([a-z]|-)*(,([a-z]|-)*=([a-z]|-)*)*)*$", $value)) {
       $this->Adminstring = $value;
       $this->Admins = explode(";", $value);
     }
@@ -428,7 +428,7 @@ class Config {
 
   // sets the LDAP suffix where users are saved
   function set_UserSuffix($value) {
-    if (is_string($value) && (eregi("^(([a-z]|[0-9])*=([a-z]|[0-9])*)(,([a-z]|[0-9])*=([a-z]|[0-9])*)*$", $value))) {
+    if (is_string($value) && (eregi("^(([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)(,([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)*$", $value))) {
 		$this->Suff_users = $value;
 	}
     else StatusMessage("WARN", "", _("Config->set_UserSuffix failed!") . " " . $value);
@@ -441,7 +441,7 @@ class Config {
 
   // sets the LDAP suffix where groups are saved
   function set_GroupSuffix($value) {
-    if (is_string($value) && (eregi("^(([a-z]|[0-9])*=([a-z]|[0-9])*)(,([a-z]|[0-9])*=([a-z]|[0-9])*)*$", $value))) {
+    if (is_string($value) && (eregi("^(([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)(,([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)*$", $value))) {
 		$this->Suff_groups = $value;
 	}
 	else StatusMessage("WARN", "", _("Config->set_GroupSuffix failed!") . " " . $value);
@@ -454,7 +454,7 @@ class Config {
 
   // sets the LDAP suffix where hosts are saved
   function set_HostSuffix($value) {
-    if (is_string($value) && (eregi("^(([a-z]|[0-9])*=([a-z]|[0-9])*)(,([a-z]|[0-9])*=([a-z]|[0-9])*)*$", $value))) {
+    if (is_string($value) && (eregi("^(([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)(,([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)*$", $value))) {
 		$this->Suff_hosts = $value;
 	}
     else StatusMessage("WARN", "", _("Config->set_HostSuffix failed!") . " " . $value);
