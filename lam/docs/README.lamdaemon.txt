@@ -35,6 +35,12 @@ things to get it to work:
    If your Perl executable is not located in /usr/bin/perl you will have to edit
    the path in the first line of lamdaemon.pl.
 
+   Debian users can install Net::SSH:Perl with dh-make-perl:
+
+   apt-get install dh-make-perl
+   dh-make-perl --build --cpan Net::SSH::Perl
+   dpkg -i install libnet-ssh-perl_1.25-1_all.deb
+
 
 4. Test lamdaemon.pl
    There is a test-function in lamdaemon.pl. Please run lamdaemon.pl
