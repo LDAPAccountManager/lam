@@ -1987,9 +1987,8 @@ function modifyuser($values,$values_old,$uselamdaemon=true) { // Will modify the
 */
 function createhost($values) {
 	// These Objectclasses are needed for an host account
-	$attr['objectClass'][0] = 'posixAccount';
-	$attr['objectClass'][1] = 'shadowAccount';
-	$attr['objectClass'][2] = 'account';
+	$attr['objectClass'][] = 'posixAccount';
+	$attr['objectClass'][] = 'account';
 	// Create DN for new host account
 	$values->general_dn = 'uid=' . $values->general_username . ',' . $values->general_dn;
 	// Attributes which are required
@@ -2010,7 +2009,7 @@ function createhost($values) {
 	// Samba attributes
 	if ($_SESSION['config']->is_samba3()) {
 		// Add all attributes as samba3 objectclass
-		$attr['objectClass'][3] = 'sambaSamAccount';
+		$attr['objectClass'][] = 'sambaSamAccount';
 		// "Standard" password for new hosts
 		$attr['sambaNTPassword'] = '7DC46419FE56BD28F7587D05D06791D4';
 		$attr['sambaLMPassword'] = '206893E4C077CE5E27BCBF149915A329';
@@ -2024,7 +2023,7 @@ function createhost($values) {
 		}
 	else {
 		// Add all attributes as samba2.2 objectclass
-		$attr['objectClass'][3] = 'sambaAccount';
+		$attr['objectClass'][] = 'sambaAccount';
 		// "Standard" password for new hosts
 		$attr['ntPassword'] = '7DC46419FE56BD28F7587D05D06791D4';
 		$attr['lmPassword'] = '206893E4C077CE5E27BCBF149915A329';
@@ -2064,16 +2063,12 @@ function modifyhost($values,$values_old) {
 		$attr['objectClass'] = $values->general_objectClass;
 		$attr['objectClass'][] = 'posixAccount';
 		}
-	if (!in_array('shadowAccount', $values->general_objectClass)) {
-		if (!isset($attr['objectClass'])) $attr['objectClass'] = $values->general_objectClass;
-		$attr['objectClass'][] = 'shadowAccount';
-		}
 	// Create DN for new host account
 	$values->general_dn = 'uid=' . $values->general_username . ',' . $values->general_dn;
 
 	// Attributes which are required
 	if ($values->general_username != $values_old->general_username) {
-		$attr['cn'] = $values->general_username; // posixAccount_req shadowAccount_req sambaAccount_may
+		$attr['cn'] = $values->general_username; // posixAccount_req sambaAccount_may
 		$attr['uid'] = $values->general_username; // posixAccount_req
 		}
 	if ($values->general_uidNumber != $values_old->general_uidNumber) {
