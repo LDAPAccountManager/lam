@@ -86,12 +86,15 @@ foreach ($_SESSION['ldap']->search_units($rootsuffix) as $suffix) {
 if (sizeof($suffixes) > 0) {
 echo "<fieldset>\n<legend><b>" . _("LDAP suffix") . "</b></legend>\n";
 	echo _("LDAP suffix") . ":&nbsp;&nbsp;";
-	echo "<select>";
+	echo "<select tabindex=\"1\">";
 	for ($i = 0; $i < sizeof($suffixes); $i++) echo "<option>" . $suffixes[$i] . "</option>\n";
 	echo "</select>\n";
 	echo "&nbsp;&nbsp;<a href=../help.php?HelpNumber=TODO>" . _('Help') . "</a>\n";
 echo "</fieldset>\n<br>\n";
 }
+
+// index for tab order (1 is LDAP suffix)
+$tabindex = 2;
 
 // display module options
 $modules = array_keys($options);
@@ -148,6 +151,7 @@ echo ("</form></body></html>\n");
 * @param array $old_options a hash array with the values from the loaded profile
 */
 function print_option($values, $modulename, $old_options) {
+	global $tabindex;
 	switch ($values['kind']) {
 		// text value
 		case 'text':
@@ -161,7 +165,7 @@ function print_option($values, $modulename, $old_options) {
 		case 'input':
 			if (($values['type'] == 'text') || ($values['type'] == 'checkbox')) {
 				if ($values['type'] == 'text') {
-					$output = "<input type=\"text\" name=\"" . $values['name'] . "\"";
+					$output = "<input tabindex=\"$tabindex\" type=\"text\" name=\"" . $values['name'] . "\"";
 					if ($values['size']) $output .= " size=\"" . $values['size'] . "\"";
 					if ($values['maxlength']) $output .= " maxlength=\"" . $values['maxlength'] . "\"";
 					if (isset($old_options[$values['name']])) $output .= " value=\"" . $old_options[$values['name']][0] . "\"";
@@ -172,7 +176,7 @@ function print_option($values, $modulename, $old_options) {
 					$_SESSION['profile_types'][$values['name']] = "text";
 				}
 				elseif ($values['type'] == 'checkbox') {
-					$output = "<input type=\"checkbox\" name=\"" . $values['name'] . "\"";
+					$output = "<input tabindex=\"$tabindex\" type=\"checkbox\" name=\"" . $values['name'] . "\"";
 					if ($values['size']) $output .= " size=\"" . $values['size'] . "\"";
 					if ($values['maxlength']) $output .= " maxlength=\"" . $values['maxlength'] . "\"";
 					if ($values['disabled']) $output .= " disabled";
@@ -182,17 +186,18 @@ function print_option($values, $modulename, $old_options) {
 					echo $output;
 					$_SESSION['profile_types'][$values['name']] = "checkbox";
 				}
+				$tabindex++;
 			}
 			break;
 		// select box
 		case 'select':
 			if (! is_numeric($values['size'])) $values['size'] = 1;// correct size if needed
 			if ($values['multiple']) {
-				echo "<select name=\"" . $values['name'] . "[]\" size=\"" . $values['size'] . "\" multiple>\n";
+				echo "<select tabindex=\"$tabindex\" name=\"" . $values['name'] . "[]\" size=\"" . $values['size'] . "\" multiple>\n";
 				$_SESSION['profile_types'][$values['name']] = "multiselect";
 			}
 			else {
-				echo "<select name=\"" . $values['name'] . "\" size=\"" . $values['size'] . "\">\n";
+				echo "<select tabindex=\"$tabindex\" name=\"" . $values['name'] . "\" size=\"" . $values['size'] . "\">\n";
 				$_SESSION['profile_types'][$values['name']] = "select";
 			}
 			// option values
@@ -217,6 +222,7 @@ function print_option($values, $modulename, $old_options) {
 				}
 			}
 			echo "</select>\n";
+			$tabindex++;
 			break;
 		// subtable
 		case 'table':
