@@ -907,7 +907,6 @@ class accountContainer {
 
 	}
 
-/*
 // This class keeps all needed values for any account
 class account {
 	// Type : user | group | host
@@ -956,7 +955,6 @@ class account {
 					* mountpoint, used blocks, soft block limit, hard block limit, grace block period, used inodes,
 					* soft inode limit, hard inode limit, grace inode period
 					*/
-/*
 	// Personal Settings
 	var $personal_title;		// string title of user
 	var $personal_mail;		// string mailaddress of user
@@ -968,7 +966,6 @@ class account {
 	var $personal_postalAddress;	// string postal Address of user
 	var $personal_employeeType;	// string employe type of user
 	}
-*/
 
 
 
