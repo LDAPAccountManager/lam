@@ -586,6 +586,26 @@ class baseModule {
 		);
 	}
 
+	/**
+	* Dummy function for modules which use no special options on account deletion.
+	*
+	* @param $post The HTTP POST variables of the delete page
+	* @return List of LDAP operations, same as for save_attributes()
+	*/
+	function delete_attributes($post) {
+		return 0;
+	}
+
+	/**
+	* Dummy function for modules which do not print extra HTML code on account deletion.
+	*
+	* @param $post HTTP POST values
+	* @return meta HTML code
+	*/
+	function display_html_delete(&$post) {
+		return 0;
+	}
+
 }
 
 
