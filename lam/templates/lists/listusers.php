@@ -20,9 +20,6 @@ $Id$
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 */
-// must be put in config file ...
-// maximum count of user entries shown on one page
-$max_pageentrys = 3;
 
 include_once ("../../lib/config.inc");
 include_once("../../lib/ldap.inc");
@@ -63,6 +60,10 @@ $page = $_GET["page"];
 if (!$page)
      $page = 1;
 
+// maximum count of user entries shown on one page
+$max_pageentrys = $_SESSION["config"]->get_MaxListEntries();
+
+
 for ($i = 0; $i < sizeof($temp_array); $i++) {
   // if value is predifined, look up description in hash_table
   if (substr($temp_array[$i],0,1) == "#") {
@@ -92,12 +93,13 @@ for ($k = 0; $k < sizeof($desc_array); $k++) {
 $filter = $filter . ")";
 
 
+// read entries only from ldap server if not yet stored in session or if refresh
+// button is pressed or if filter is applied
 if ($_SESSION["userlist"] && !$_POST['refresh'] && !$_POST["apply_filter"]) {
   if ($_GET["sort"])
     usort ($_SESSION["userlist"], "cmp_array");
   $userinfo = $_SESSION["userlist"];
 } else {
-
   $attrs = $attr_array;
   $sr = @ldap_search($_SESSION["ldap"]->server(),
 		     $_SESSION["config"]->get_UserSuffix(),
@@ -117,22 +119,12 @@ if ($_SESSION["userlist"] && !$_POST['refresh'] && !$_POST["apply_filter"]) {
 	     "</b></font><br><br>");
 }
 
+$user_count = sizeof ($_SESSION["userlist"]);
+
 echo ("<form action=\"listusers.php\" method=\"post\">\n");
 
-
-
 // create navigation bar on top of user table
-echo ("<table border=\"0\">");
-echo ("<tr>");
-echo ("<td><input type=\"submit\" name=\"refresh\" value=\"" . _("Refresh") . "\"></td>");
-for ($i = 0; $i < (sizeof ($userinfo) / $max_pageentrys); $i++) {
-  if ($i == $page - 1)
-    echo ("<td>" . ($i + 1) . "</td>");
-  else
-    echo ("<td><a class=\"userlist\" href=\"listusers.php?page=" . ($i + 1) . 
-	  "\">" . ($i + 1) . "</a></td>");
-}
-echo ("</tr></table>");
+draw_navigation_bar ($user_count);
 echo ("<br />");
 
 // print user table header
@@ -200,6 +192,9 @@ for ($i = 0; $i < sizeof ($userinfo); $i++) { // ignore last entry in array whic
 echo ("</table>");
 
 echo ("<br />");
+draw_navigation_bar ($user_count);
+echo ("<br />");
+
 
 echo ("<table align=\"left\" border=\"0\">");
 echo ("<tr><td align=\"left\"><input type=\"submit\" name=\"new_user\" value=\"" . _("New User") . "\"></td>");
@@ -207,6 +202,42 @@ echo ("<td align=\"left\"><input type=\"submit\" name=\"del_user\" value=\"" . _
 echo ("</table>\n");
 echo ("</form>\n");
 echo "</body></html>\n";
+
+/** 
+ * @brief draws a navigation bar to switch between pages
+ * 
+ * 
+ * @return void
+ */
+function draw_navigation_bar ($user_count) {
+  global $max_pageentrys;
+  global $page;
+
+  echo ("<table width=\"100%\" border=\"0\" style=\"background-color:#DDDDDD\">");
+  echo ("<tr>");
+  echo ("<td style=\"color:#AAAAAA\"><input type=\"submit\" name=\"refresh\" value=\"" . _("Refresh") . "\">&nbsp;&nbsp;");
+  if ($page != 1)
+    echo ("<a align=\"right\" class=\"userlist\" href=\"listusers.php?page=" . ($page - 1) . "\"><=</a>");
+  else
+    echo ("<=");
+  echo ("&nbsp;");
+
+  if ($page < ($user_count / $max_pageentrys))
+    echo ("<a align=\"right\" class=\"userlist\" href=\"listusers.php?page=" . ($page + 1) . "\">=></a>");
+  else
+    echo ("=></td>");
+
+  echo ("<td style=\"color:darkred\" align=\"right\">");
+  for ($i = 0; $i < ($user_count / $max_pageentrys); $i++) {
+    if ($i == $page - 1)
+      echo ("&nbsp;" . ($i + 1));
+    else
+      echo ("&nbsp;<a align=\"right\" class=\"userlist\" href=\"listusers.php?page=" . ($i + 1) . 
+	    "\">" . ($i + 1) . "</a>");
+  }
+  echo ("</td></tr></table>");
+}
+
 
 // compare function used for usort-method
 // rows are sorted with the first attribute entry of the sort column
