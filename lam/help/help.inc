@@ -306,10 +306,8 @@ $helpArray = array (
 					"Text" => _("Suffix")),
 				"463" => array ("ext" => "FALSE", "Headline" => _("Suffix"),
 					"Text" => _("Suffix")),
-				"464" => array ("ext" => "FALSE", "Headline" => _("Windows well known group"),
-					"Text" => _("Windows well known group")),
-				"465" => array ("ext" => "FALSE", "Headline" => _("Windows groupname"),
-					"Text" => _("Windows groupname")),
+				"464" => array ("ext" => "FALSE", "Headline" => _("Windows groupname"),
+					"Text" => _("If you want to use a well known RID you can selcet a well known group.")),
 				"466" => array ("ext" => "FALSE", "Headline" => _("Unix workstations"),
 					"Text" => _("Komma-separated list of unix workstations the user is allowed to login. Empty means every workstation. Can be left empty.")),
 				// 600 - 699

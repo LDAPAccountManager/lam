@@ -64,7 +64,6 @@ class account { // This class keeps all needed values for any account
 	var $smb_flagsD;		// string (1|0) account is disabled? (user|host)
 	var $smb_flagsX;		// string (1|0) password doesn'T expire (user|host)
 	var $smb_mapgroup;		// decimal ID for groups
-	var $smb_displayName;		// GRoupname displayed by samba
 	// Quota Settins
 	var $quota;			// array[][] First array is an index for every chare with active quotas
 					// second array Contains values for every share:
@@ -871,7 +870,6 @@ function loadgroup($dn) { // Will load all needed values from an existing group
 		for ($i=0; $i<sizeof($samba3domains); $i++)
 			if ($SID == $samba3domains[$i]->SID) $return->smb_domain = $samba3domains[$i];
 		}
-	if (isset($attr['displayName'][0])) $return->smb_displayName = $attr['displayName'][0];
 	if ($_SESSION['config']->scriptServer) {
 		$values = getquotas('group',$return->general_username);
 		if (is_object($values)) {
@@ -1526,7 +1524,7 @@ function creategroup($values) { // Will create the LDAP-Group
 		$attr['objectClass'][1] = 'sambaGroupMapping';
 		$attr['sambaSID'] = $values->smb_mapgroup;
 		$attr['sambaGroupType'] = '2';
-		if ($values->smb_displayName) $attr['displayName'] = $values->smb_displayName;
+		if ($values->general_gecos) $attr['displayName'] = $values->general_gecos;
 		}
 	$success = ldap_add($_SESSION['ldap']->server(),$values->general_dn, $attr);
 	if ($_SESSION['config']->scriptServer) setquotas($values,'group');
@@ -1558,10 +1556,8 @@ function modifygroup($values,$values_old) { // Will modify the LDAP-Group
 	if ($_SESSION['config']->samba3 =='yes') {
 		if ($values->smb_mapgroup != $values_old->smb_mapgroup)
 			$attr['sambaSID'] = $values->smb_mapgroup;
-		if (($values->smb_displayName!='') && ($values->smb_displayName!=$values_old->smb_displayName))
-			$attr['displayName'] = $values->smb_displayName;
-		if (($values->smb_displayName=='') && ($values->smb_displayName!=$values_old->smb_displayName))
-			$attr_rem['displayName'] = $values->smb_displayName;
+		if ($values->general_gecos!=$values_old->general_gecos)
+			$attr['displayName'] = $values->general_gecos;
 		}
 	if ($attr_rem) {
 		$success = ldap_mod_del($_SESSION['ldap']->server(),$values_old->general_dn, $attr_rem);

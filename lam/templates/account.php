@@ -152,8 +152,6 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 			else $_SESSION['account']->smb_flagsD = false;
 		if ($_POST['f_smb_flagsX']) $_SESSION['account']->smb_flagsX = true;
 			else $_SESSION['account']->smb_flagsX = false;
-		if (isset($_POST['f_smb_displayName'])) $_SESSION['account']->smb_displayName = $_POST['f_smb_displayName'];
-			else $_SESSION['account']->smb_displayName = '';
 
 		if ($_SESSION['config']->samba3 == 'yes') {
 			$samba3domains = $_SESSION['ldap']->search_domains($_SESSION[config]->get_domainSuffix());
@@ -164,6 +162,7 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 			if ($_POST['f_smb_mapgroup'] == _('Domain Guests')) $_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-" . '514';
 			if ($_POST['f_smb_mapgroup'] == _('Domain Users')) $_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-" . '513';
 			if ($_POST['f_smb_mapgroup'] == _('Domain Admins')) $_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-" . '512';
+			if ($_POST['f_smb_mapgroup'] == $_SESSION['account']->general_username) $_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-" . $_SESSION['account']->general_uidNumber;
 			}
 		else {
 			if (isset($_POST['f_smb_domain'])) $_SESSION['account']->smb_domain = $_POST['f_smb_domain'];
@@ -787,7 +786,7 @@ switch ($select_local) { // Select which part of page will be loaded
 				echo	'</select></td>'."\n".'<td>'.
 					'<a href="help.php?HelpNumber=433" target="lamhelp">'._('Help').'</a>'.
 					'</td></tr>'."\n".'<tr><td>';
-				echo _('smb home');
+				echo _('Home path');
 				echo '</td>'."\n".'<td><input name="f_smb_smbhome" type="text" size="20" maxlength="80" value="' . $_SESSION['account']->smb_smbhome . '">'.
 					'</td>'."\n".'<td>'.
 					'<a href="help.php?HelpNumber=437" target="lamhelp">'._('Help').'</a>'.
@@ -826,8 +825,17 @@ switch ($select_local) { // Select which part of page will be loaded
 				break;
 			case 'group':
 				echo '<tr><td>';
-				echo _('Windows well known group');
+				echo _('Windows groupname');
 				echo '</td>'."\n".'<td><select name="f_smb_mapgroup" >';
+					if ( $_SESSION['account']->smb_mapgroup == $_SESSION['account']->smb_domain->SID . "-" . $_SESSION['account']->uidNumber ) {
+						echo '<option selected> ';
+						echo $_SESSION['account']->general_username;
+						echo "</option>\n"; }
+					 else {
+						echo '<option> ';
+						echo $_SESSION['account']->general_username;
+						echo "</option>\n";
+						}
 					if ( $_SESSION['account']->smb_mapgroup == $_SESSION['account']->smb_domain->SID . "-" . '514' ) {
 						echo '<option selected> ';
 						echo _('Domain Guests');
@@ -857,12 +865,6 @@ switch ($select_local) { // Select which part of page will be loaded
 						}
 				echo	'</select></td>'."\n".'<td>'.
 					'<a href="help.php?HelpNumber=464" target="lamhelp">'._('Help').'</a>'.
-					'</td></tr>'."\n".'<tr><td>';
-					echo _('Windows Groupname');
-					echo '</td><td>'.
-					'<input name="f_smb_displayName" type="text" size="30" maxlength="80" value="' . $_SESSION['account']->smb_displayName . '">'.
-					'</td><td>'.
-					'<a href="help.php?HelpNumber=465" target="lamhelp">'._('Help').'</a>'.
 					'</td></tr>'."\n".'<tr><td>';
 				echo _('Domain');
 				echo '</td><td><select name="f_smb_domain">';
