@@ -9,12 +9,12 @@ $Id$
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
   (at your option) any later version.
-  
+
   This program is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
-  
+
   You should have received a copy of the GNU General Public License
   along with this program; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -29,7 +29,7 @@ class Ldap{
 
   // object of Config to access preferences
   var $conf;
-	
+
   // server handle
   var $server;
 
@@ -134,6 +134,7 @@ class Ldap{
 
 	// returns an array with all organizational units under the given suffix
 	function search_units($suffix) {
+	$units = array();
 	$sr = @ldap_search($_SESSION["ldap"]->server(), $suffix, "objectClass=organizationalunit", array("DN"));
 	if ($sr) {
 		$units = ldap_get_entries($_SESSION["ldap"]->server, $sr);
@@ -141,10 +142,10 @@ class Ldap{
 		array_shift($units);
 		// remove sub arrays
 		for ($i = 0; $i < sizeof($units); $i++) $units[$i] = $units[$i]['dn'];
-		// add root suffix if needed
-		if (!in_array($suffix, $units)) {
-			array_push($units, $suffix);
-		}
+	}
+	// add root suffix if needed
+	if (!in_array($suffix, $units)) {
+		array_push($units, $suffix);
 	}
 	return $units;
 	}
@@ -153,20 +154,20 @@ class Ldap{
   function server() {
     return $this->server;
   }
-  
+
   // closes connection to LDAP server before serialization
   function __sleep() {
   	$this->close();
 	// define which attributes to save
 	return array("conf", "username", "password", "ldapUserAttributes", "ldapGroupAttributes", "ldapHostAttributes");
   }
-  
+
   // reconnects to LDAP server when deserialized
   function __wakeup() {
   	$data = $this->decrypt();
   	$this->connect($data[0], $data[1]);
   }
-  
+
   // encrypts username and password
   function encrypt($username, $password) {
 	// read key and iv from cookie
