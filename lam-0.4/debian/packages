@@ -57,6 +57,10 @@ Install: sh
  yada install -dir /usr/share/ldap-account-manager/locale
  yada install -dir /usr/share/ldap-account-manager/locale/de_DE
  yada install -data -into /usr/share/ldap-account-manager/locale/de_DE/LC_MESSAGES locale/de_DE/LC_MESSAGES/messages.?o
+ yada install -dir /usr/share/ldap-account-manager/locale/hu_HU
+ yada install -data -into /usr/share/ldap-account-manager/locale/hu_HU/LC_MESSAGES locale/hu_HU/LC_MESSAGES/messages.?o
+ yada install -dir /usr/share/ldap-account-manager/locale/ja_JP
+ yada install -data -into /usr/share/ldap-account-manager/locale/ja_JP/LC_MESSAGES locale/ja_JP/LC_MESSAGES/messages.?o
  yada install -data -into /var/lib/ldap-account-manager/sess sess/.htaccess
  yada install -data -into /usr/share/ldap-account-manager/style style/*.css
  yada install -data -into /usr/share/ldap-account-manager/templates templates/*.php
