@@ -5,10 +5,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: LAM 0.4.1\n"
+"Project-Id-Version: LAM 0.4.3\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de \n"
-"POT-Creation-Date: 2004-01-14 17:45+0200\n"
-"PO-Revision-Date: 2003-12-28 12:18+0200\n"
+"POT-Creation-Date: 2004-02-04 17:45+0200\n"
+"PO-Revision-Date: 2004-02-04 18:18+0200\n"
 "Last-Translator: Roland Gruber <post@rolandgruber.de>\n"
 "Language-Team: German <lam-public@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -102,7 +102,7 @@ msgstr "Erlaubte PCs"
 msgid "Allowed workstations"
 msgstr "Erlaubte PCs"
 
-#: ../templates/massdetail.php:282 ../templates/lists/listusers.php:354
+#: ../templates/massdetail.php:282 ../templates/lists/listusers.php:360
 msgid "Apply"
 msgstr "Ok"
 
@@ -339,7 +339,7 @@ msgstr "Kann keine Benutzer erstellen."
 msgid "Cancel"
 msgstr "Abbrechen"
 
-#: ../templates/login.php:307 ../templates/login.php:312
+#: ../templates/login.php:315 ../templates/login.php:320
 #: ../templates/confwiz/server.php:68 ../templates/confwiz/server.php:69
 msgid "Cannot connect to specified LDAP-Server. Please try again."
 msgstr ""
@@ -357,13 +357,13 @@ msgstr "Mobiltelefon"
 msgid "Change GID-Number of all users in group to new value"
 msgstr "Ändere die GID-Nummern aller Benutzer auf den neuen Wert"
 
-#: ../templates/login.php:264
+#: ../templates/login.php:266
 msgid "Change Profile"
 msgstr "Profil ändern"
 
-#: ../templates/lists/listdomains.php:192
-#: ../templates/lists/listgroups.php:302 ../templates/lists/listhosts.php:286
-#: ../templates/lists/listusers.php:342
+#: ../templates/lists/listdomains.php:194
+#: ../templates/lists/listgroups.php:307 ../templates/lists/listhosts.php:295
+#: ../templates/lists/listusers.php:348
 msgid "Change Suffix"
 msgstr "Suffix wechseln"
 
@@ -409,6 +409,10 @@ msgstr "Login für die Einstellungen"
 #: ../help/help.inc:105 ../help/help.inc:107
 msgid "Configuration Wizard"
 msgstr "Einstellungen"
+
+#: ../templates/login.php:249
+msgid "Configuration profile"
+msgstr "Einstellungsprofil"
 
 #: ../templates/confwiz/start.php:135
 msgid ""
@@ -489,27 +493,27 @@ msgstr "Account erstellen"
 msgid "Create PDF file"
 msgstr "PDF-Datei erstellen"
 
-#: ../templates/lists/listgroups.php:314
+#: ../templates/lists/listgroups.php:319
 msgid "Create PDF for all groups"
 msgstr "PDF-Datei für alle Gruppen erstellen"
 
-#: ../templates/lists/listhosts.php:299
+#: ../templates/lists/listhosts.php:308
 msgid "Create PDF for all hosts"
 msgstr "PDF-Datei für alle Hosts erstellen"
 
-#: ../templates/lists/listusers.php:368
+#: ../templates/lists/listusers.php:374
 msgid "Create PDF for all users"
 msgstr "PDF-Datei für alle Benutzer erstellen"
 
-#: ../templates/lists/listgroups.php:312
+#: ../templates/lists/listgroups.php:317
 msgid "Create PDF for selected group(s)"
 msgstr "PDF-Datei für ausgewählte Gruppe(n) erstellen"
 
-#: ../templates/lists/listhosts.php:297
+#: ../templates/lists/listhosts.php:306
 msgid "Create PDF for selected host(s)"
 msgstr "PDF-Datei für ausgewählte(n) Host(s) erstellen"
 
-#: ../templates/lists/listusers.php:366
+#: ../templates/lists/listusers.php:372
 msgid "Create PDF for selected user(s)"
 msgstr "PDF-Datei für ausgewählte(n) Benutzer erstellen"
 
@@ -604,7 +608,7 @@ msgstr "Löschen"
 msgid "Delete Account"
 msgstr "Lösche Account"
 
-#: ../templates/lists/listdomains.php:199
+#: ../templates/lists/listdomains.php:201
 msgid "Delete Domain(s)"
 msgstr "Lösche Domain(s)"
 
@@ -612,11 +616,11 @@ msgstr "Lösche Domain(s)"
 msgid "Delete Group Profile"
 msgstr "Lösche Gruppenprofil"
 
-#: ../templates/lists/listgroups.php:309
+#: ../templates/lists/listgroups.php:314
 msgid "Delete Group(s)"
 msgstr "Lösche Gruppe(n)"
 
-#: ../templates/lists/listhosts.php:294
+#: ../templates/lists/listhosts.php:303
 msgid "Delete Host(s)"
 msgstr "Lösche Host(s)"
 
@@ -659,7 +663,7 @@ msgstr "Organizational Unit löschen"
 msgid "Delete profile"
 msgstr "Lösche Profil"
 
-#: ../templates/delete.php:77 ../templates/lists/listusers.php:363
+#: ../templates/delete.php:77 ../templates/lists/listusers.php:369
 msgid "Delete user(s)"
 msgstr "Lösche Benutzer"
 
@@ -770,7 +774,7 @@ msgstr "Domänenadministratoren"
 msgid "Domain Guests"
 msgstr "Domänengäste"
 
-#: ../templates/domain.php:93 ../templates/lists/listdomains.php:84
+#: ../templates/domain.php:93 ../templates/lists/listdomains.php:86
 #: ../templates/confwiz/ldaptest.php:333 ../help/help.inc:296
 msgid "Domain SID"
 msgstr "Domänen-SID"
@@ -791,7 +795,7 @@ msgid "Domain Users"
 msgstr "Domänenbenutzer"
 
 #: ../templates/account/hostedit.php:212 ../templates/account/useredit.php:444
-#: ../templates/domain.php:77 ../templates/lists/listdomains.php:83
+#: ../templates/domain.php:77 ../templates/lists/listdomains.php:85
 #: ../templates/confwiz/ldaptest.php:320 ../help/help.inc:292
 msgid "Domain name"
 msgstr "Domänenname"
@@ -832,9 +836,9 @@ msgstr "Laufwerksbuchstabe, der als Heimatverzeichnis zugewiesen wird."
 msgid "E-Mail"
 msgstr "E-Mail"
 
-#: ../templates/lists/listdomains.php:153
-#: ../templates/lists/listgroups.php:234 ../templates/lists/listhosts.php:234
-#: ../templates/lists/listusers.php:291
+#: ../templates/lists/listdomains.php:155
+#: ../templates/lists/listgroups.php:239 ../templates/lists/listhosts.php:243
+#: ../templates/lists/listusers.php:297
 msgid "Edit"
 msgstr "Editieren"
 
@@ -869,11 +873,11 @@ msgstr "Angestelltentyp"
 msgid "Employee type: worker, student, nurse, ..."
 msgstr "Angestelltentyp: Arbeiter, Schüler, Krankenschwester, ..."
 
-#: ../templates/login.php:283
+#: ../templates/login.php:291
 msgid "Empty Password submitted. Try again."
 msgstr "Das Passwort war leer. Bitte erneut eingeben."
 
-#: ../templates/login.php:129
+#: ../templates/login.php:150
 msgid "Enter Username and Password for Account"
 msgstr "Geben Sie Benutzernamen und Passwort ein"
 
@@ -931,8 +935,8 @@ msgstr ""
 "Login ausgeführt wird. $%s und $%s werden mit Benutzer- und Gruppenname "
 "ersetzt."
 
-#: ../templates/lists/listgroups.php:203 ../templates/lists/listhosts.php:203
-#: ../templates/lists/listusers.php:248
+#: ../templates/lists/listgroups.php:208 ../templates/lists/listhosts.php:212
+#: ../templates/lists/listusers.php:254
 msgid "Filter"
 msgstr "Filtern"
 
@@ -1108,7 +1112,7 @@ msgstr "Gruppensuffix"
 msgid "Group(s)"
 msgstr "Gruppe(n)"
 
-#: ../templates/lists/listgroups.php:348
+#: ../templates/lists/listgroups.php:353
 msgid "Group(s) found"
 msgstr "Gruppe(n) gefunden"
 
@@ -1793,9 +1797,9 @@ msgstr "LDAP Account Manager Einstellungen"
 msgid "LDAP List settings"
 msgstr "LDAP Listeneinstellungen"
 
-#: ../templates/lists/listdomains.php:110
-#: ../templates/lists/listgroups.php:170 ../templates/lists/listhosts.php:170
-#: ../templates/lists/listusers.php:212
+#: ../templates/lists/listdomains.php:112
+#: ../templates/lists/listgroups.php:175 ../templates/lists/listhosts.php:179
+#: ../templates/lists/listusers.php:218
 msgid "LDAP Search failed! Please check your preferences."
 msgstr "LDAP Suche fehlgeschlagen! Bitte überprüfen Sie die Einstellungen."
 
@@ -1803,12 +1807,17 @@ msgstr "LDAP Suche fehlgeschlagen! Bitte überprüfen Sie die Einstellungen."
 msgid "LDAP admin DN"
 msgstr "LDAP Administrator-DN"
 
-#: ../templates/login.php:322 ../templates/confwiz/server.php:71
+#: ../templates/login.php:330 ../templates/confwiz/server.php:71
 msgid "LDAP error, server says:"
 msgstr "LDAP-Fehler, der Server meldet:"
 
-#: ../templates/lists/listdomains.php:99 ../templates/lists/listgroups.php:156
-#: ../templates/lists/listhosts.php:156 ../templates/lists/listusers.php:197
+#: ../templates/login.php:241
+msgid "LDAP server"
+msgstr "LDAP-Server"
+
+#: ../templates/lists/listdomains.php:101
+#: ../templates/lists/listgroups.php:161 ../templates/lists/listhosts.php:165
+#: ../templates/lists/listusers.php:203
 msgid "LDAP sizelimit exceeded, not all entries are shown."
 msgstr ""
 "LDAP Größenbeschränkung überschritten, es werden nicht alle Einträge "
@@ -1871,7 +1880,7 @@ msgstr "Profil laden"
 msgid "Load profile"
 msgstr "Profil laden"
 
-#: ../templates/login.php:227 ../templates/config/conflogin.php:72
+#: ../templates/login.php:232 ../templates/config/conflogin.php:72
 #: ../help/help.inc:36
 msgid "Login"
 msgstr "Login"
@@ -2072,15 +2081,15 @@ msgstr ""
 "Name, unter dem das Profil gespeichert wird. Falls ein Profil mit diesem "
 "Namen existiert wird es überschrieben."
 
-#: ../templates/lists/listdomains.php:198
+#: ../templates/lists/listdomains.php:200
 msgid "New Domain"
 msgstr "Neue Domäne"
 
-#: ../templates/lists/listgroups.php:307
+#: ../templates/lists/listgroups.php:312
 msgid "New Group"
 msgstr "Neue Gruppe"
 
-#: ../templates/lists/listhosts.php:292
+#: ../templates/lists/listhosts.php:301
 msgid "New Host"
 msgstr "Neuer Host"
 
@@ -2120,7 +2129,7 @@ msgstr "Neues Passwort wurde erfolgreich gesetzt."
 msgid "New profile created."
 msgstr "Neues Profil wurde erstellt."
 
-#: ../templates/lists/listusers.php:361
+#: ../templates/lists/listusers.php:367
 msgid "New user"
 msgstr "Neuer Benutzer"
 
@@ -2170,23 +2179,23 @@ msgstr "Nächste Gruppen-RID ist keine Zahl!"
 msgid "Next user RID is not a number!"
 msgstr "Nächste Benutzer-RID ist keine Zahl!"
 
-#: ../templates/lists/listgroups.php:161 ../templates/lists/listgroups.php:170
-#: ../templates/lists/listgroups.php:174
+#: ../templates/lists/listgroups.php:166 ../templates/lists/listgroups.php:175
+#: ../templates/lists/listgroups.php:179
 msgid "No Groups found!"
 msgstr "Keine Gruppen gefunden!"
 
-#: ../templates/lists/listdomains.php:104
-#: ../templates/lists/listdomains.php:110
-#: ../templates/lists/listdomains.php:114
+#: ../templates/lists/listdomains.php:106
+#: ../templates/lists/listdomains.php:112
+#: ../templates/lists/listdomains.php:116
 msgid "No Samba Domains found!"
 msgstr "Keine Samba Domänen gefunden!"
 
-#: ../templates/lists/listhosts.php:161 ../templates/lists/listhosts.php:170
-#: ../templates/lists/listhosts.php:174
+#: ../templates/lists/listhosts.php:170 ../templates/lists/listhosts.php:179
+#: ../templates/lists/listhosts.php:183
 msgid "No Samba Hosts found!"
 msgstr "Keine Samba Hosts gefunden!"
 
-#: ../templates/lists/listusers.php:202 ../templates/lists/listusers.php:213
+#: ../templates/lists/listusers.php:208 ../templates/lists/listusers.php:219
 msgid "No Users found!"
 msgstr "Keine Benutzer gefunden!"
 
@@ -2333,7 +2342,7 @@ msgstr "PDF-Text"
 #: ../templates/account/hostedit.php:391 ../templates/account/useredit.php:315
 #: ../templates/account/useredit.php:345 ../templates/account/useredit.php:412
 #: ../templates/account/useredit.php:436
-#: ../templates/account/useredit.php:1056 ../templates/login.php:171
+#: ../templates/account/useredit.php:1056 ../templates/login.php:180
 #: ../templates/confwiz/server.php:159 ../templates/confwiz/start.php:141
 msgid "Password"
 msgstr "Passwort"
@@ -2827,9 +2836,9 @@ msgstr "Neues Hauptpasswort erneut eingeben"
 msgid "Reenter profile password"
 msgstr "Profilpasswort erneut eingeben"
 
-#: ../templates/masscreate.php:337 ../templates/lists/listdomains.php:218
-#: ../templates/lists/listgroups.php:335 ../templates/lists/listhosts.php:320
-#: ../templates/lists/listusers.php:392
+#: ../templates/masscreate.php:337 ../templates/lists/listdomains.php:220
+#: ../templates/lists/listgroups.php:340 ../templates/lists/listhosts.php:329
+#: ../templates/lists/listusers.php:398
 msgid "Refresh"
 msgstr "Aktualisieren"
 
@@ -2901,7 +2910,7 @@ msgstr "Samba 3 Domänen-SID ist ungültig!"
 msgid "Samba 3.x schema"
 msgstr "Samba 3.x Schema"
 
-#: ../templates/lists/listdomains.php:231
+#: ../templates/lists/listdomains.php:233
 msgid "Samba Domain(s) found"
 msgstr "Samba-Domäne(n) gefunden"
 
@@ -2909,7 +2918,7 @@ msgstr "Samba-Domäne(n) gefunden"
 msgid "Samba Host Profiles"
 msgstr "Samba-Hostprofile"
 
-#: ../templates/lists/listhosts.php:333
+#: ../templates/lists/listhosts.php:342
 msgid "Samba Host(s) found"
 msgstr "Samba Host(s) gefunden"
 
@@ -3020,8 +3029,8 @@ msgstr "Sicherheitseinstellungen"
 msgid "See also"
 msgstr "Siehe auch"
 
-#: ../templates/lists/listgroups.php:275 ../templates/lists/listhosts.php:258
-#: ../templates/lists/listusers.php:316
+#: ../templates/lists/listgroups.php:280 ../templates/lists/listhosts.php:267
+#: ../templates/lists/listusers.php:322
 msgid "Select all"
 msgstr "Alle auswählen"
 
@@ -3163,9 +3172,9 @@ msgstr "Abschicken"
 
 #: ../templates/account/groupedit.php:606
 #: ../templates/account/hostedit.php:418 ../templates/account/useredit.php:996
-#: ../templates/domain.php:148 ../templates/lists/listdomains.php:185
-#: ../templates/lists/listgroups.php:295 ../templates/lists/listhosts.php:279
-#: ../templates/lists/listusers.php:335 ../templates/confwiz/ldaptest.php:384
+#: ../templates/domain.php:148 ../templates/lists/listdomains.php:187
+#: ../templates/lists/listgroups.php:300 ../templates/lists/listhosts.php:288
+#: ../templates/lists/listusers.php:341 ../templates/confwiz/ldaptest.php:384
 #: ../help/help.inc:271 ../help/help.inc:273 ../help/help.inc:275
 #: ../help/help.inc:294
 msgid "Suffix"
@@ -3460,7 +3469,7 @@ msgstr ""
 "Verwenden Sie /bin/false um den Login zu deaktivieren. Die Shellliste wird "
 "von lam/config/shells gelesen."
 
-#: ../templates/lists/listusers.php:349
+#: ../templates/lists/listusers.php:355
 msgid "Translate GID number to group name"
 msgstr "GID-Nummer als Gruppenname darstellen"
 
@@ -3698,7 +3707,7 @@ msgstr "Benutzer Quota"
 msgid "User suffix"
 msgstr "Benutzersuffix"
 
-#: ../templates/lists/listusers.php:405
+#: ../templates/lists/listusers.php:411
 msgid "User(s) found"
 msgstr "Benutzer gefunden"
 
@@ -3717,7 +3726,7 @@ msgstr "UserSuffix ist ungültig!"
 
 #: ../templates/account/useredit.php:223 ../templates/account/useredit.php:245
 #: ../templates/account/useredit.php:290 ../templates/account/useredit.php:937
-#: ../templates/login.php:148 ../templates/masscreate.php:363
+#: ../templates/login.php:159 ../templates/masscreate.php:363
 #: ../templates/masscreate.php:553 ../templates/masscreate.php:566
 #: ../templates/massdetail.php:95 ../templates/massdetail.php:144
 #: ../templates/massdetail.php:222 ../help/help.inc:139 ../lib/ldap.inc:196
@@ -3866,7 +3875,7 @@ msgstr "Windows-Domäne des Benutzers."
 msgid "Workstations"
 msgstr "Arbeitsstationen"
 
-#: ../templates/login.php:317 ../templates/confwiz/server.php:70
+#: ../templates/login.php:325 ../templates/confwiz/server.php:70
 msgid "Wrong Password/Username combination. Try again."
 msgstr "Falsche Benutzername/Passwort-Kombination. Bitte erneut eingeben."
 
@@ -3916,14 +3925,6 @@ msgstr "Falscher Parameter für deaktivierten Login!"
 msgid "Wrong profilename given."
 msgstr "Falscher Profilname angegeben."
 
-#: ../templates/login.php:236
-msgid "You are connecting to ServerURL"
-msgstr "Sie werden mit dem unten angegebenen Server verbunden"
-
-#: ../templates/login.php:248
-msgid "You are currently using Profile"
-msgstr "Sie verwenden folgendes Profil"
-
 #: ../templates/account/groupedit.php:157
 #: ../templates/account/hostedit.php:120 ../templates/account/useredit.php:223
 msgid ""
@@ -3945,7 +3946,7 @@ msgstr ""
 msgid "You have been logged off from LDAP Account Manager."
 msgstr "Sie wurden vom LDAP Account Manager abgemeldet."
 
-#: ../templates/login.php:197
+#: ../templates/login.php:204
 msgid "Your Language"
 msgstr "Sprache"
 
@@ -4056,3 +4057,4 @@ msgstr "saveUserProfile: account ist vom falschen Typ!"
 #: ../templates/profedit/profileuser.php:270
 msgid "yes"
 msgstr "ja"
+
