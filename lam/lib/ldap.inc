@@ -247,9 +247,9 @@ class Ldap{
 	// $suffix: search suffix
 	function search_units($suffix) {
 		$ret = array();
-		$sr = @ldap_search($_SESSION["ldap"]->server(), $suffix, "objectClass=organizationalunit", array("DN"));
+		$sr = @ldap_search($this->server(), $suffix, "objectClass=organizationalunit", array("DN"));
 		if ($sr) {
-			$units = ldap_get_entries($_SESSION["ldap"]->server, $sr);
+			$units = ldap_get_entries($this->server, $sr);
 			// extract Dns
 			for ($i = 0; $i < sizeof($units); $i++) {
 				if ($units[$i]['dn']) $ret[] = $units[$i]['dn'];
@@ -276,9 +276,9 @@ class Ldap{
 		$ret = array();
 		$attr = array("DN", "sambaDomainName", "sambaSID", "sambaNextRid", "sambaNextGroupRid",
 			"sambaNextUserRid", "sambaAlgorithmicRidBase");
-		$sr = @ldap_search($_SESSION["ldap"]->server(), $suffix, "objectClass=sambaDomain", $attr);
+		$sr = @ldap_search($this->server(), $suffix, "objectClass=sambaDomain", $attr);
 		if ($sr) {
-			$units = ldap_get_entries($_SESSION["ldap"]->server, $sr);
+			$units = ldap_get_entries($this->server, $sr);
 			// delete count entry
 			array_shift($units);
 			// extract attributes
