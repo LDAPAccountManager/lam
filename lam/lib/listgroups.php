@@ -9,18 +9,18 @@ $Id$
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
   (at your option) any later version.
-  
+
   This program is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more detaexils.
-  
+
   You should have received a copy of the GNU General Public License
   along with this program; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
   This code displays a list of all Samba hosts.
-  
+
 */
 include_once ('../config/config.php');
 include_once("ldap.php");
@@ -31,7 +31,28 @@ session_save_path("../sess");
 
 echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\" />";
 
-// Samba hosts have the attribute "sambaAccount" and end with "$"
+// generate attribute-description table
+$attr_array;	// list of LDAP attributes to show
+$desc_array;	// list of descriptions for the attributes
+$attr_string = $_SESSION["config"]->get_grouplistAttributes();
+$temp_array = explode(";", $attr_string);
+$hash_table = $_SESSION["ldap"]->attributeGroupArray();
+for ($i = 0; $i < sizeof($temp_array); $i++) {
+// if value is predifined, look up description in hash_table
+if (substr($temp_array[$i],0,1) == "#") {
+	$attr = substr($temp_array[$i],1);
+	$attr_array[$i] = $attr;
+	$desc_array[] = $hash_table[$attr];
+}
+// if not predefined, the attribute is seperated by a ":" from description
+else {
+	$attr = explode(":", $temp_array[$i]);
+	$attr_array[$i] = $attr[0];
+	$desc_array[$i] = $attr[1];
+}
+}
+
+// Groups have the attribute "posixGroup"
 $filter = "(objectClass=posixGroup)";
 $attrs = array("cn", "gidNumber", "memberUID", "description");
 $sr = @ldap_search($_SESSION["ldap"]->server(),
@@ -46,25 +67,24 @@ else echo ("<br><br><font color=\"red\"><b>" . _("No Groups found!") . "</b></fo
 // print host table header
 echo "<table width=\"100%\">\n";
 echo "<tr><th class=\"userlist\" width=12></th>";
-echo "<th class=\"userlist\">" . _("Grup Name") . "</th>";
-echo "<th class=\"userlist\">" . _("GID Number") . "</th>";
-echo "<th class=\"userlist\">" . _("Group Members") . "</th>";
-echo "<th class=\"userlist\">" . _("Description") . "</th>";
+// table header
+for ($k = 0; $k < sizeof($desc_array); $k++) {
+	echo "<th class=\"userlist\">" . $desc_array[$k] . "</th>";
+}
 echo "</tr>\n";
 echo ("<form action=\"../templates/account.php?type=group\" method=\"post\">\n");
 // print group list
 for ($i = 0; $i < sizeof($info)-1; $i++) { // ignore last entry in array which is "count"
 	echo("<tr><td class=\"userlist\"><input type=\"radio\" name=\"DN\" value=\"" . $info[$i]["dn"] . "\"></td>");
-	echo ("<td class=\"userlist\">" . $info[$i]["cn"][0] . "</td>");
-	echo ("<td class=\"userlist\">" . $info[$i]["gidnumber"][0] . "</td>");
-	// create list of group members
-	if (sizeof($info[$i]["memberuid"]) > 0) {
-		array_shift($info[$i]["memberuid"]); // delete count entry
-		$grouplist = implode("; ", $info[$i]["memberuid"]);
+	for ($k = 0; $k < sizeof($attr_array); $k++) {
+		echo ("<td class=\"userlist\">");
+		// print all attribute entries seperated by "; "
+		if (sizeof($info[$i][strtolower($attr_array[$k])]) > 0) {
+			array_shift($info[$i][strtolower($attr_array[$k])]);
+			echo implode("; ", $info[$i][strtolower($attr_array[$k])]);
+		}
+		echo ("</td>");
 	}
-	else $grouplist = "";
-	echo ("<td class=\"userlist\">" . $grouplist . "</td>");
-	echo ("<td class=\"userlist\">" . $info[$i]["description"][0] . "</td>");
 	echo("</tr>\n");
 }
 echo ("</table>");

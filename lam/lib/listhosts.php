@@ -31,9 +31,30 @@ session_save_path("../sess");
 
 echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\" />";
 
+// generate attribute-description table
+$attr_array;	// list of LDAP attributes to show
+$desc_array;	// list of descriptions for the attributes
+$attr_string = $_SESSION["config"]->get_hostlistAttributes();
+$temp_array = explode(";", $attr_string);
+$hash_table = $_SESSION["ldap"]->attributeHostArray();
+for ($i = 0; $i < sizeof($temp_array); $i++) {
+// if value is predifined, look up description in hash_table
+if (substr($temp_array[$i],0,1) == "#") {
+	$attr = substr($temp_array[$i],1);
+	$attr_array[$i] = $attr;
+	$desc_array[] = $hash_table[$attr];
+}
+// if not predefined, the attribute is seperated by a ":" from description
+else {
+	$attr = explode(":", $temp_array[$i]);
+	$attr_array[$i] = $attr[0];
+	$desc_array[$i] = $attr[1];
+}
+}
+
 // Samba hosts have the attribute "sambaAccount" and end with "$"
 $filter = "(&(objectClass=sambaAccount) (uid=*$))";
-$attrs = array("cn", "rid");
+$attrs = $attr_array;
 $sr = @ldap_search($_SESSION["ldap"]->server(),
 	$_SESSION["config"]->get_HostSuffix(),
 	$filter, $attrs);
@@ -47,14 +68,23 @@ echo ("<form action=\"../templates/account.php?type=host\" method=\"post\">\n");
 // print host table
 echo "<table width=\"100%\">\n";
 echo "<tr><th class=\"userlist\" width=12></th>";
-echo "<th class=\"userlist\">" . _("Host Name") . "</th>";
-echo "<th class=\"userlist\">RID</th>";
+// table header
+for ($k = 0; $k < sizeof($desc_array); $k++) {
+	echo "<th class=\"userlist\">" . $desc_array[$k] . "</th>";
+}
 echo "</tr>\n";
 // print host list
 for ($i = 0; $i < sizeof($info)-1; $i++) { // ignore last entry in array which is "count"
 	echo("<tr><td class=\"userlist\"><input type=\"radio\" name=\"DN\" value=\"" . $info[$i]["dn"] . "\"></td>");
-	echo ("<td class=\"userlist\">" . $info[$i]["cn"][0] . "</td>");
-	echo ("<td class=\"userlist\">" . $info[$i]["rid"][0] . "</td>");
+	for ($k = 0; $k < sizeof($attr_array); $k++) {
+		echo ("<td class=\"userlist\">");
+		// print all attribute entries seperated by "; "
+		if (sizeof($info[$i][strtolower($attr_array[$k])]) > 0) {
+			array_shift($info[$i][strtolower($attr_array[$k])]);
+			echo implode("; ", $info[$i][strtolower($attr_array[$k])]);
+		}
+		echo ("</td>");
+	}
 	echo("</tr>\n");
 }
 echo ("</table>");

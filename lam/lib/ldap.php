@@ -67,12 +67,14 @@ class Ldap{
 		"cn" => _("Group Name"),
 		"gidNumber" => _("GID Number"),
 		"memberUID" => _("Group Members"),
-		"member" => _("Group Member DNs")
+		"member" => _("Group Member DNs"),
+		"description" => _("Group Description")
 		);
 	$this->ldapHostAttributes = array (
-		"UID" => _("Host Username"),
+		"uid" => _("Host Username"),
 		"cn" => _("Host Name"),
-		"rid" => _("Windows UID")
+		"rid" => _("RID (Windows UID)"),
+		"description" => _("Host Description")
 		);
   }
 
@@ -164,7 +166,8 @@ class Ldap{
   // closes connection to LDAP server before serialization
   function __sleep() {
   	$this->close();
-	return array("conf", "username", "password");
+	// define which attributes to save
+	return array("conf", "username", "password", "ldapUserAttributes", "ldapGroupAttributes", "ldapHostAttributes");
   }
   
   // reconnects to LDAP server when deserialized
