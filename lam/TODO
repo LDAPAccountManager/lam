@@ -5,15 +5,13 @@ stable
 
 beta
 
-- add support for adding users with input file
 - translate to German
-- profile editor
 - check security
-- mass creation of users/groups/hosts
 - clean up code
-- Better error handling
 
-alpha
+alpha 2
 
 - improve status messages and help support
-- write Readme and Install files
+- profile editor
+- mass creation of users/groups/hosts
+- Better error handling
