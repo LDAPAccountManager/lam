@@ -160,7 +160,7 @@ class Ldap{
 		$ret = array();
 		$attr = array("DN", "sambaDomainName", "sambaSID", "sambaNextRid", "sambaNextGroupRid",
 			"sambaNextUserRid", "sambaAlgorithmicRidBase");
-		$sr = @ldap_search($_SESSION["ldap"]->server(), $suffix, "sambaDomainName=*", $attr);
+		$sr = @ldap_search($_SESSION["ldap"]->server(), $suffix, "objectClass=sambaDomain", $attr);
 		if ($sr) {
 			$units = ldap_get_entries($_SESSION["ldap"]->server, $sr);
 			// delete count entry
