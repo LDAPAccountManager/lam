@@ -141,6 +141,10 @@ echo ("<tr><td align=\"right\"><b>".
 	_("DomainSuffix") . " **: </b></td>".
 	"<td><input size=50 type=\"text\" name=\"suffdomains\" value=\"" . $conf->get_DomainSuffix() . "\"></td>\n");
 echo ("<td><a href=\"../help.php?HelpNumber=215\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
+
+// new line
+echo ("<tr><td colspan=3>&nbsp</td></tr>");
+
 // LDAP cache timeout
 echo ("<tr><td align=\"right\"><b>".
 	_("Cache timeout") . " *: </b></td>".
