@@ -812,12 +812,12 @@ switch ($select_local) {
 		echo "<table border=0 width=\"100%\">\n<tr>\n<td>";
 		echo "<fieldset class=\"groupedit-middle\"><legend class=\"groupedit-bright\"><b>";
 		echo _("Save profile");
-		echo "</b></legend>\n<table border=0 width=\"100%\">\n<tr>\n<td>";
+		echo "</b></legend>\n";
 		echo '<input name="f_finish_safeProfile" type="text" size="30" maxlength="50">';
-		echo "</td><td><input name=\"save\" type=\"submit\" $disabled value=\"";
+		echo "&nbsp;<input name=\"save\" type=\"submit\" $disabled value=\"";
 		echo _('Save profile');
-		echo '"></td><td><a href="../help.php?HelpNumber=457" target="lamhelp">'._('Help');
-		echo "</a></td>\n</tr>\n</table>\n</fieldset>\n</td></tr>\n<tr><td>\n";
+		echo '">&nbsp;<a href="../help.php?HelpNumber=457" target="lamhelp">'._('Help');
+		echo "</a>\n</fieldset>\n</td></tr>\n<tr><td>\n";
 		echo "<fieldset class=\"groupedit-bright\"><legend class=\"groupedit-bright\"><b>";
 		if ($account_old) echo _('Modify');
 		 else echo _('Create');
@@ -843,20 +843,17 @@ switch ($select_local) {
 		// Final Settings
 		echo '<input name="select" type="hidden" value="finish">';
 		echo "<fieldset class=\"groupedit-bright\"><legend class=\"groupedit-bright\"><b>"._('Note')."</b></legend>\n";
-		echo "<table border=0 width=\"100%\">";
-		echo '<tr><td>';
 		echo _('Group').' ';
 		echo $account_new->general_username;
 		if ($account_old) echo ' '._('has been modified').'.';
-		 else echo ' '._('has been created').'.';
-		echo '</td></tr>'."\n".'<tr><td>';
-		if (!$account_old)
-			{ echo' <input name="createagain" type="submit" value="'; echo _('Create another group'); echo '">'; }
-		echo '</td>'."\n".'<td>'.
-			'<input name="outputpdf" type="submit" value="'; echo _('Create PDF file'); echo '">'.
-			'</td>'."\n".'<td>'.
-			'<input name="backmain" type="submit" value="'; echo _('Back to group list'); echo '">'.
-			'</td></tr></table></fieldset'."\n";
+		else echo ' '._('has been created').'.';
+		echo "<br><br>";
+		if (!$account_old) {
+			echo '<input name="createagain" type="submit" value="'; echo _('Create another group'); echo '">';
+		}
+		echo '<input name="outputpdf" type="submit" value="'; echo _('Create PDF file'); echo '">'.
+			'&nbsp;<input name="backmain" type="submit" value="'; echo _('Back to group list'); echo '">'.
+			'</fieldset'."\n";
 		break;
 
 	}

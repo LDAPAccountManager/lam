@@ -1531,7 +1531,7 @@ switch ($select_local) {
 		echo "<input name=\"next_quota\" type=\"submit\""; if (!isset($config_intern->scriptPath)) echo " disabled ";
 		echo "value=\""; echo _('Quota'); echo "\">\n<br>";
 		echo "<input name=\"next_personal\" type=\"submit\" value=\""; echo _('Personal'); echo "\">\n<br>";
-		echo "<input name=\"next_final\" type=\"submit\" disabed value=\""; echo _('Final');
+		echo "<input name=\"next_final\" type=\"submit\" disabled value=\""; echo _('Final');
 		echo "\">";
 		if (isset($account_old)) {
 			echo "<br><br>";
@@ -1544,41 +1544,37 @@ switch ($select_local) {
 		echo "<table border=0 width=\"100%\">\n<tr>\n<td>";
 		echo "<table border=0 width=\"100%\"><tr><td><fieldset class=\"useredit-dark\"><legend class=\"useredit-bright\"><b>";
 		echo _("Save profile");
-		echo "</b></legend>\n<table border=0 width=\"100%\">\n<tr>\n<td>";
+		echo "</b></legend>\n";
 		echo '<input name="f_finish_safeProfile" type="text" size="30" maxlength="50">';
-		echo "</td><td><input name=\"save\" type=\"submit\" $disabled value=\"";
+		echo "&nbsp;<input name=\"save\" type=\"submit\" $disabled value=\"";
 		echo _('Save profile');
-		echo '"></td><td><a href="../help.php?HelpNumber=457" target="lamhelp">'._('Help');
-		echo "</a></td>\n</tr>\n</table>\n</fieldset>\n</td></tr>\n<tr><td>\n";
+		echo '">&nbsp;<a href="../help.php?HelpNumber=457" target="lamhelp">'._('Help');
+		echo "</a>\n</fieldset>\n</td></tr>\n<tr><td>\n";
 		echo "<fieldset class=\"useredit-bright\"><legend class=\"useredit-bright\"><b>";
 		if ($account_old) echo _('Modify');
 		 else echo _('Create');
 		echo "</b></legend>\n";
-		echo "<table border=0 width=\"100%\">";
-		echo "<tr><td><input name=\"create\" type=\"submit\" value=\"";
+		echo "<input name=\"create\" type=\"submit\" value=\"";
 		if ($account_old) echo _('Modify Account');
 		 else echo _('Create Account');
 		echo '">'."\n";
-		echo "</td></tr></table></fieldset>\n</td></tr></table></td></tr></table>\n</tr></table>";
+		echo "</fieldset>\n</td></tr></table></td></tr></table>\n</tr></table>";
 		break;
 	case 'finish':
 		// Final Settings
 		echo '<input name="select" type="hidden" value="finish">';
 		echo "<fieldset class=\"groupedit-bright\"><legend class=\"useredit-bright\"><b>"._('Note')."</b></legend>\n";
-		echo "<table border=0 width=\"100%\"><tr><td>";
-		echo '<tr><td>';
 		echo _('User ');
 		echo $account_new->general_username;
 		if ($account_old) echo ' '._('has been modified').'.';
 		 else echo ' '._('has been created').'.';
-		echo '</td></tr>'."\n".'<tr><td>';
-		if (!$account_old)
-			{ echo '<input name="createagain" type="submit" value="'; echo _('Create another user'); echo '">'; }
-		echo '</td>'."\n".'<td>'.
-			'<input name="outputpdf" type="submit" value="'; echo _('Create PDF file'); echo '">'.
-			'</td>'."\n".'<td>'.
-			'<input name="backmain" type="submit" value="'; echo _('Back to user list'); echo '">'.
-			'</td></tr></table></fieldset'."\n";
+		echo '<br><br>';
+		if (!$account_old) {
+			echo '<input name="createagain" type="submit" value="'; echo _('Create another user'); echo '">&nbsp;';
+		}
+		echo '<input name="outputpdf" type="submit" value="'; echo _('Create PDF file'); echo '">'.
+			'&nbsp;<input name="backmain" type="submit" value="'; echo _('Back to user list'); echo '">'.
+			'</fieldset'."\n";
 		break;
 	}
 

@@ -429,53 +429,47 @@ switch ($select_local) {
 			"</td>\n</tr>\n</table>";
 		echo _('Values with * are required');
 		echo "</fieldset>\n";
-		// Show fieldset where to save a new profile
-		echo "<fieldset class=\"hostedit-dark\"><legend class=\"hostedit-bright\"><b>";
-		echo _("Save profile");
-		echo "</b></legend>\n<table border=0 width=\"100%\">\n<tr>\n<td width=\"50%\">";
-		echo '<input name="f_finish_safeProfile" type="text" size="30" maxlength="50">';
-		echo '<input name="save" type="submit" value="';
-		echo _('Save profile');
-		echo '"></td><td width="30%"></td><td width="20%"><a href="../help.php?HelpNumber=457" target="lamhelp">'._('Help');
-		echo "</a></td>\n</tr>\n</table>\n</fieldset>";
 		// Show fieldset with modify, undo and back-button
 		echo "<fieldset class=\"hostedit-bright\"><legend class=\"hostedit-bright\"><b>";
 		if ($account_old) echo _('Modify');
 		 else echo _('Create');
 		echo "</b></legend>\n";
-		echo "<table border=0 width=\"100%\"><tr><td width=\"50%\">";
-		// display undo-button when editiing a host
+		// display undo-button when editing a host
 		if (isset($account_old)) {
 			echo "<input name=\"next_reset\" type=\"submit\" value=\""; echo _('Undo changes');
 			echo "\">\n";
 			}
-		echo "</td>\n<td width=\"30%\">";
-		echo '<input name="create" type="submit" value="';
+		echo '&nbsp;<input name="create" type="submit" value="';
 		if ($account_old) echo _('Modify Account');
-		 else echo _('Create Account');
-		echo "\">\n</td><td width=\"20%\">";
-		echo "</td></tr></table></fieldset>\n";
+		else echo _('Create Account');
+		echo "\">";
+		echo "</fieldset>\n";
+		// Show fieldset where to save a new profile
+		echo "<fieldset class=\"hostedit-dark\"><legend class=\"hostedit-bright\"><b>";
+		echo _("Save profile");
+		echo "</b></legend>\n<table border=0 width=\"100%\">\n<tr>\n<td width=\"50%\">";
+		echo '<input name="f_finish_safeProfile" type="text" size="30" maxlength="50">';
+		echo '&nbsp;<input name="save" type="submit" value="';
+		echo _('Save profile');
+		echo '"></td><td width="30%"></td><td width="20%"><a href="../help.php?HelpNumber=457" target="lamhelp">'._('Help');
+		echo "</a></td>\n</tr>\n</table>\n</fieldset>";
 		break;
 
 	case 'finish':
 		// Final Settings
 		echo '<input name="select" type="hidden" value="finish">';
 		echo "<fieldset class=\"hostedit-bright\"><legend class=\"hostedit-bright\"><b>"._('Note')."</b></legend>\n";
-		echo "<table border=0 width=\"100%\"><tr><td>";
-		echo '<tr><td>';
 		echo _('Host');
 		echo ' '.$account_new->general_username.' ';
 		if ($account_old) echo ' '._('has been modified').'.';
 		 else echo ' '._('has been created').'.';
-		echo '</td></tr>'."\n".'<tr><td>';
-		if (!$account_old)
-			{ echo '<input name="createagain" type="submit" value="'; echo _('Create another host'); echo '">'; }
-		echo '</td>'."\n".'<td>'.
-			'<input name="outputpdf" type="submit" value="'; echo _('Create PDF file'); echo '">'.
-			'</td>'."\n".'<td>'.
-			'<input name="backmain" type="submit" value="'; echo _('Back to host list'); echo '">'.
-			'</td></tr></table></fieldset'."\n";
-
+		echo '<br><br>';
+		if (!$account_old) {
+			echo '<input name="createagain" type="submit" value="'; echo _('Create another host'); echo '">';
+		}
+		echo '<input name="outputpdf" type="submit" value="'; echo _('Create PDF file'); echo '">'.
+			'&nbsp;<input name="backmain" type="submit" value="'; echo _('Back to host list'); echo '">'.
+			'</fieldset'."\n";
 		break;
 	}
 
