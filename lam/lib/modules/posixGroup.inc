@@ -256,19 +256,19 @@ class posixGroup extends baseModule {
 			'type' => 'ext_preg',
 			'regex' => 'digit',
 			'required' => true,
-			'required_message' => $this->errormessages['gidNumber'][5],
-			'error_message' => $this->errormessages['gidNumber'][5]);
+			'required_message' => $this->messages['gidNumber'][5],
+			'error_message' => $this->messages['gidNumber'][5]);
 		$return['config_checks']['group']['posixGroup_maxGID'] = array (
 			'type' => 'ext_preg',
 			'regex' => 'digit',
 			'required' => true,
-			'required_message' => $this->errormessages['gidNumber'][6],
-			'error_message' => $this->errormessages['gidNumber'][6]);
+			'required_message' => $this->messages['gidNumber'][6],
+			'error_message' => $this->messages['gidNumber'][6]);
 		$return['config_checks']['group']['cmpGID'] = array (
 			'type' => 'int_greater',
 			'cmp_name1' => 'posixGroup_maxGID',
 			'cmp_name2' => 'posixGroup_minGID',
-			'error_message' => $this->errormessages['gidNumber'][7]);
+			'error_message' => $this->messages['gidNumber'][7]);
 		// available PDF fields
 		$return['PDF_fields'] = array(	'cn',
 		'gidNumber',
