@@ -758,11 +758,6 @@ if (is_array($errors))
 
 // print_r($account_new);
 //print_r($account_old);
-//$_SESSION['cache'] = new cache();
-//$temp = new accountContainer('user');
-//$temp->add_objectClass('posixAccount');
-//$temp->load_account('uid=julia,ou=people,dc=my-domain,dc=com');
-//print_r($temp->module['posixAccount']->attributes);
 
 switch ($select_local) {
 	/* Select which part of page should be loaded and check values

@@ -46,35 +46,29 @@ $Id$
 
 class inetOrgPerson {
 	// Constructor
-	function inetOrgPerson(&$baseobject) {
+	function inetOrgPerson($base) {
 		/* Return an error if posixAccount should be created without
 		* base container
 		*/
-		if (!$baseobject) trigger_error(_('Please create a base object with $var = new accountContainer();'), E_USER_ERROR);
-		// Check if $baseobject is an array
-		if (!is_object($baseobject)) trigger_error(_('Please create a new module object with $accountContainer->add_objectClass(\'inetOrgPerson\');'), E_USER_ERROR);
+		if (!$base) trigger_error(_('Please create a base object with $var = new accountContainer();'), E_USER_ERROR);
+		if (!is_string($base)) trigger_error(_('Please create a new module object with $accountContainer->add_objectClass(\'inetOrgPerson\');'), E_USER_ERROR);
+		$this->base = $base;
 		// posixAccount is only a valid objectClass for user and host
-		if ($baseobject->get_type() != 'user') trigger_error(_('inetOrgPerson can only be used for users.'), E_USER_WARNING);
-		/* Create a reference to basearray so we can read all other modules
-		* php will avaois recousrion itself
-		*/
-		$this->base = &$baseobject;
-		// Add attributes which should be cached
-		//$_SESSION['cache']->add_cache(array ('user' => array('cn', 'uid'), 'host' => array('cn', 'uid') ));
+		if ($_SESSION[$this->base]->get_type() != 'user') trigger_error(_('inetOrgPerson can only be used for users.'), E_USER_WARNING);
 
 		// Add account type to object
 		$line=-1;
-		for ($i=0; $i<count($this->base->ldap->objectClasses) || $i==-1; $i++) {
-			if (strpos($this->base->ldap->objectClasses[$i], "NAME 'inetOrgPerson'")) $line = $i;
+		for ($i=0; $i<count($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses) || $i==-1; $i++) {
+			if (strpos($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$i], "NAME 'inetOrgPerson'")) $line = $i;
 			}
 		// Return error if objectClass isn't found
 		if ($line==-1) trigger_error (sprintf(_("ObjectClass %s required but not defined in ldap."), 'inetOrgPerson'), E_USER_WARNING);
 		// Add Array with all attributes and type
-		$baseobject->add_attributes ('inetOrgPerson');
+		$_SESSION[$this->base]->add_attributes ('inetOrgPerson');
 		// create array with must-attributes
 		// Get startposition in string
-		if (strpos($this->base->ldap->objectClasses[$line],  'MUST (')) {
-			$string_withtail = substr($this->base->ldap->objectClasses[$line], strpos($this->base->ldap->objectClasses[$line],  'MUST (')+6);
+		if (strpos($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line],  'MUST (')) {
+			$string_withtail = substr($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line], strpos($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line],  'MUST (')+6);
 			// Now we have a string with all must-attributes
 			$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
 			$string = trim($string);
@@ -85,8 +79,8 @@ class inetOrgPerson {
 			}
 		// create array with may-attributes
 		// Get startposition in string
-		if (strpos($this->base->ldap->objectClasses[$line],  'MAY (')) {
-			$string_withtail = substr($this->base->ldap->objectClasses[$line], strpos($this->base->ldap->objectClasses[$line],  'MAY (')+5);
+		if (strpos($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line],  'MAY (')) {
+			$string_withtail = substr($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line], strpos($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line],  'MAY (')+5);
 			// Now we have a string with all must-attributes
 			$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
 			$string = trim($string);
@@ -96,12 +90,12 @@ class inetOrgPerson {
 				}
 			}
 		// Get attributes of subclasses
-		while (strpos($this->base->ldap->objectClasses[$line], "SUP ")) {
-			$string_withtail = substr($this->base->ldap->objectClasses[$line], strpos($this->base->ldap->objectClasses[$line],  'SUP ')+4);
+		while (strpos($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line], "SUP ")) {
+			$string_withtail = substr($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line], strpos($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line],  'SUP ')+4);
 			$subclass = substr($string_withtail, 0, strpos($string_withtail, ' '));
 			// Add account type to object
-			for ($i=0; $i<count($this->base->ldap->objectClasses) || $i==-1; $i++) {
-				if (strpos($this->base->ldap->objectClasses[$i], "NAME '$subclass'")) $line = $i;
+			for ($i=0; $i<count($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses) || $i==-1; $i++) {
+				if (strpos($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$i], "NAME '$subclass'")) $line = $i;
 				}
 			// Return error if objectClass isn't found
 			// *** fixme, fix error message
@@ -109,8 +103,8 @@ class inetOrgPerson {
 
 			// create array with must-attributes
 			// Get startposition in string
-			if (strpos($this->base->ldap->objectClasses[$line],  'MUST (')) {
-				$string_withtail = substr($this->base->ldap->objectClasses[$line], strpos($this->base->ldap->objectClasses[$line],  'MUST (')+6);
+			if (strpos($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line],  'MUST (')) {
+				$string_withtail = substr($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line], strpos($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line],  'MUST (')+6);
 				// Now we have a string with all must-attributes
 				$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
 				$string = trim($string);
@@ -121,8 +115,8 @@ class inetOrgPerson {
 				}
 			// create array with may-attributes
 			// Get startposition in string
-			if (strpos($this->base->ldap->objectClasses[$line],  'MAY (')) {
-				$string_withtail = substr($this->base->ldap->objectClasses[$line], strpos($this->base->ldap->objectClasses[$line],  'MAY (')+5);
+			if (strpos($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line],  'MAY (')) {
+				$string_withtail = substr($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line], strpos($_SESSION[$_SESSION[$this->base]->ldap]->objectClasses[$line],  'MAY (')+5);
 				// Now we have a string with all must-attributes
 				$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
 				$string = trim($string);
@@ -133,7 +127,12 @@ class inetOrgPerson {
 				}
 			}
 		$this->orig = $this->attributes ;
+		$this->attributes['objectClass'][0] = 'inetOrgPerson';
+		if (isset($this->attributes['userPassword'])) unset($this->attributes['userPassword']);
 		$this->alias = _('inetOrgPerson');
+		// Add attributes which should be cached
+		$_SESSION[$_SESSION[$this->base]->cache]->add_cache(array ('user' => array('uid'), 'host' => array('uid')));
+
 		}
 
 	// Variables
@@ -160,23 +159,20 @@ class inetOrgPerson {
 	* new password will be stored encrypted
 	*/
 	function userPassword($newpassword=false) {
-		// Read existing password if set
-		if (!$newpassword) {
-			if ($this->attributes['userPassword'][0]!='') {
-				$iv = base64_decode($_COOKIE["IV"]);
-				$key = base64_decode($_COOKIE["Key"]);
-				$password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($this->attributes['userPassword'][0]), MCRYPT_MODE_ECB, $iv);
-				$password = str_replace(chr(00), '', $password);
-				return $password;
-				}
-			else return '';
-			}
-		// Write new password
-		else {
+		if (is_string($newpassword)) {
+			// Write new password
 			$iv = base64_decode($_COOKIE["IV"]);
 			$key = base64_decode($_COOKIE["Key"]);
 			$this->attributes['userPassword'][0] = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $newpassword, MCRYPT_MODE_ECB, $iv));
 			return 0;
+			}
+		else {
+			// Read existing password if set
+			$iv = base64_decode($_COOKIE["IV"]);
+			$key = base64_decode($_COOKIE["Key"]);
+			$password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($this->attributes['userPassword'][0]), MCRYPT_MODE_ECB, $iv);
+			$password = str_replace(chr(00), '', $password);
+			return $password;
 			}
 		}
 
@@ -188,59 +184,61 @@ class inetOrgPerson {
 
 	/* Write variables into object and do some regexp checks
 	*/
-	function proccess_attributes() {
+	function proccess_attributes($post) {
 		// Load attributes
-		if (($this->attributes['uid'] != $_POST['form_inetOrgPerson_uid']) &&  ereg('[A-Z]$', $_POST['form_inetOrgPerson_uid']))
+		if (($this->attributes['uid'][0] != $post['form_inetOrgPerson_uid']) &&  ereg('[A-Z]$', $post['form_inetOrgPerson_uid']))
 			$errors[] = array('WARN', _('Username'), _('You are using a capital letters. This can cause problems because windows isn\'t case-sensitive.'));
-		$this->attributes['uid'] = $_POST['form_inetOrgPerson_uid'];
-		$this->attributes['cn'] &= $this->attributes['uid'];
-		$this->attributes['description'] = $_POST['form_inetOrgPerson_description'];
-		$this->attributes['sn'] = $_POST['form_inetOrgPerson_sn'];
-		$this->attributes['givenName'] = $_POST['form_inetOrgPerson_givenName'];
-		$this->attributes['title'] = $_POST['form_inetOrgPerson_title'];
-		$this->attributes['mail'] = $_POST['form_inetOrgPerson_mail'];
-		$this->attributes['telephoneNumber'] = $_POST['form_inetOrgPerson_telephoneNumber'];
-		$this->attributes['mobileTelephoneNumber'] = $_POST['form_inetOrgPerson_mobileTelephoneNumber'];
-		$this->attributes['facsimileTelephoneNumber'] = $_POST['form_inetOrgPerson_facsimileTelephoneNumber'];
-		$this->attributes['street'] = $_POST['form_inetOrgPerson_street'];
-		$this->attributes['postalCode'] = $_POST['form_inetOrgPerson_postalCode'];
-		$this->attributes['postalAddress'] = $_POST['form_inetOrgPerson_postalAddress'];
-		$this->attributes['employeeType'] = $_POST['form_inetOrgPerson_employeeType'];
+		$this->attributes['uid'][0] = $post['form_inetOrgPerson_uid'];
+		$this->attributes['cn'][0] &= $this->attributes['uid'][0];
+		$this->attributes['description'][0] = $post['form_inetOrgPerson_description'];
+		$this->attributes['sn'][0] = $post['form_inetOrgPerson_sn'];
+		$this->attributes['givenName'][0] = $post['form_inetOrgPerson_givenName'];
+		$this->attributes['title'][0] = $post['form_inetOrgPerson_title'];
+		$this->attributes['mail'][0] = $post['form_inetOrgPerson_mail'];
+		$this->attributes['telephoneNumber'][0] = $post['form_inetOrgPerson_telephoneNumber'];
+		$this->attributes['mobileTelephoneNumber'][0] = $post['form_inetOrgPerson_mobileTelephoneNumber'];
+		$this->attributes['facsimileTelephoneNumber'][0] = $post['form_inetOrgPerson_facsimileTelephoneNumber'];
+		$this->attributes['street'][0] = $post['form_inetOrgPerson_street'];
+		$this->attributes['postalCode'][0] = $post['form_inetOrgPerson_postalCode'];
+		$this->attributes['postalAddress'][0] = $post['form_inetOrgPerson_postalAddress'];
+		$this->attributes['employeeType'][0] = $post['form_inetOrgPerson_employeeType'];
 
-		if ($_POST['form_inetOrgPerson_userPassword_no']) $this->userPassword_no=true;
+		if ($post['form_inetOrgPerson_userPassword_no']) $this->userPassword_no=true;
 			else $this->userPassword_no=false;
-		if ($_POST['form_inetOrgPerson_userPassword_lock']) $this->userPassword_lock=true;
+		if ($post['form_inetOrgPerson_userPassword_lock']) $this->userPassword_lock=true;
 			else $this->userPassword_lock=false;
-		if (isset($_POST['form_inetOrgPerson_userPassword'])) {
-			if ($_POST['form_inetOrgPerson_userPassword'] != $_POST['form_inetOrgPerson_userPassword2']) {
+		if (isset($post['form_inetOrgPerson_userPassword'])) {
+			if ($post['form_inetOrgPerson_userPassword'] != $post['form_inetOrgPerson_userPassword2']) {
 				$errors[] = array('ERROR', _('Password'), _('Please enter the same password in both password-fields.'));
-				unset ($_POST['form_inetOrgPerson_userPassword2']);
+				unset ($post['form_inetOrgPerson_userPassword2']);
 				}
-				else $this->userPassword($_POST['form_inetOrgPerson_userPassword']);
+				else $this->userPassword($post['form_inetOrgPerson_userPassword']);
 			}
-		if ($_POST['form_inetOrgPerson_genpass']) $this->userPassword(genpasswd());
+		if ($post['form_inetOrgPerson_genpass']) $this->userPassword(genpasswd());
 
 		// Check if givenname is valid
-		if ( !ereg('^([a-z]|[A-Z]|[-]|[ ]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+$', $this->attributes['givenName'])) $errors[] = array('ERROR', _('Given name'), _('Given name contains invalid characters'));
+		if ( !ereg('^([a-z]|[A-Z]|[-]|[ ]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+$', $this->attributes['givenName'][0])) $errors[] = array('ERROR', _('Given name'), _('Given name contains invalid characters'));
 		// Check if surname is valid
-		if ( !ereg('^([a-z]|[A-Z]|[-]|[ ]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+$', $this->attributes['sn'])) $errors[] = array('ERROR', _('Surname'), _('Surname contains invalid characters'));
+		if ( !ereg('^([a-z]|[A-Z]|[-]|[ ]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+$', $this->attributes['sn'][0])) $errors[] = array('ERROR', _('Surname'), _('Surname contains invalid characters'));
 		// Check if Username contains only valid characters
-		if ( !ereg('^([a-z]|[A-Z]|[0-9]|[.]|[-]|[_])*$', $this->attributes['uid']))
+		if ( !ereg('^([a-z]|[A-Z]|[0-9]|[.]|[-]|[_])+$', $this->attributes['uid'][0]))
 			$errors[] = array('ERROR', _('Username'), _('Username contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
 		// Create automatic useraccount with number if original user already exists
 		// Reset name to original name if new name is in use
 		// Set username back to original name if new username is in use
-		if ($this->base->cache->in_cache($this->attributes['uid'],'uid', '*')!=$this->orig['uid'] && ($this->orig['uid']!='')) $this->attributes['uid'] = $this->orig['uid'];
+		if ($_SESSION[$_SESSION[$this->base]->cache]->in_cache($this->attributes['uid'][0],'uid', '*')!=false && ($this->orig['uid'][0]!='')) {
+			$this->attributes['uid'][0] = $this->orig['uid'][0];
+			}
 		// Change uid to a new uid until a free uid is found
-		while ($this->base->cache->in_cache($this->attributes['uid'], 'uid', '*')) {
+		else while ($_SESSION[$_SESSION[$this->base]->cache]->in_cache($this->attributes['uid'][0], 'uid', '*')) {
 			// get last character of username
-			$lastchar = substr($this->attributes['uid'], strlen($this->attributes['uid'])-1, 1);
+			$lastchar = substr($this->attributes['uid'][0], strlen($this->attributes['uid'][0])-1, 1);
 			// Last character is no number
 			if ( !ereg('^([0-9])+$', $lastchar))
 				/* Last character is no number. Therefore we only have to
 				* add "2" to it.
 				*/
-				$this->attributes['uid'] = $this->attributes['uid'] . '2';
+				$this->attributes['uid'][0] = $this->attributes['uid'][0] . '2';
 			 else {
 				/* Last character is a number -> we have to increase the number until we've
 				* found a groupname with trailing number which is not in use.
@@ -248,34 +246,34 @@ class inetOrgPerson {
 				* $i will show us were we have to split groupname so we get a part
 				* with the groupname and a part with the trailing number
 				*/
-			 	$i=strlen($this->attributes['uid'])-1;
+				$i=strlen($this->attributes['uid'][0])-1;
 				$mark = false;
 				// Set $i to the last character which is a number in $account_new->general_username
-			 	while (!$mark) {
-					if (ereg('^([0-9])+$',substr($this->attributes['uid'], $i, strlen($this->attributes['uid'])-$i))) $i--;
+				while (!$mark) {
+					if (ereg('^([0-9])+$',substr($this->attributes['uid'][0], $i, strlen($this->attributes['uid'][0])-$i))) $i--;
 						else $mark=true;
 					}
 				// increase last number with one
-				$firstchars = substr($this->attributes['uid'], 0, $i+1);
-				$lastchars = substr($this->attributes['uid'], $i+1, strlen($this->attributes['uid'])-$i);
+				$firstchars = substr($this->attributes['uid'][0], 0, $i+1);
+				$lastchars = substr($this->attributes['uid'][0], $i+1, strlen($this->attributes['uid'][0])-$i);
 				// Put username together
-				$this->attributes['uid'] = $firstchars . (intval($lastchars)+1);
+				$this->attributes['uid'][0] = $firstchars . (intval($lastchars)+1);
 				}
 			}
 		// Show warning if lam has changed username
-		if ($this->attributes['uid'] != $_POST['form_inetOrgPerson_uid']) $errors[] = array('WARN', _('Username'), _('Username in use. Selected next free username.'));
+		if ($this->attributes['uid'][0] != $post['form_inetOrgPerson_uid']) $errors[] = array('WARN', _('Username'), _('Username in use. Selected next free username.'));
 		if (!ereg('^([a-z]|[A-Z]|[0-9]|[\|]|[\#]|[\*]|[\,]|[\.]|[\;]|[\:]|[\_]|[\-]|[\+]|[\!]|[\%]|[\&]|[\/]|[\?]|[\{]|[\[]|[\(]|[\)]|[\]]|[\}])*$', $this->userPassword()))
 			$errors[] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
 
-		if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/]|[-])*$', $this->attributes['telephoneNumber']))  $errors[] = array('ERROR', _('Telephone number'), _('Please enter a valid telephone number!'));
-		if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/]|[-])*$', $this->attributes['mobileTelephoneNumber']))  $errors[] = array('ERROR', _('Mobile number'), _('Please enter a valid mobile number!'));
-		if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/]|[-])*$', $this->attributes['facsimileTelephoneNumber']))  $errors[] = array('ERROR', _('Fax number'), _('Please enter a valid fax number!'));
-		if ( !ereg('^(([0-9]|[A-Z]|[a-z]|[.]|[-]|[_])+[@]([0-9]|[A-Z]|[a-z]|[-])+([.]([0-9]|[A-Z]|[a-z]|[-])+)*)*$', $this->attributes['mail']))  $errors[] = array('ERROR', _('eMail address'), _('Please enter a valid eMail address!'));
-		if ( !ereg('^([0-9]|[A-Z]|[a-z]|[-]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $this->attributes['street']))  $errors[] = array('ERROR', _('Street'), _('Please enter a valid street name!'));
-		if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $this->attributes['postalAddress']))  $errors[] = array('ERROR', _('Postal address'), _('Please enter a valid postal address!'));
-		if ( !ereg('^([0-9]|[A-Z]|[a-z]|[-]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $this->attributes['title']))  $errors[] = array('ERROR', _('Title'), _('Please enter a valid title!'));
-		if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $this->attributes['employeeType']))  $errors[] = array('ERROR', _('Employee type'), _('Please enter a valid employee type!'));
-		if ( !ereg('^([0-9]|[A-Z]|[a-z])*$', $this->attributes['personal_postalCode']))  $errors[] = array('ERROR', _('Postal code'), _('Please enter a valid postal code!'));
+		if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/]|[-])*$', $this->attributes['telephoneNumber'][0]))  $errors[] = array('ERROR', _('Telephone number'), _('Please enter a valid telephone number!'));
+		if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/]|[-])*$', $this->attributes['mobileTelephoneNumber'][0]))  $errors[] = array('ERROR', _('Mobile number'), _('Please enter a valid mobile number!'));
+		if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/]|[-])*$', $this->attributes['facsimileTelephoneNumber'][0]))  $errors[] = array('ERROR', _('Fax number'), _('Please enter a valid fax number!'));
+		if ( !ereg('^(([0-9]|[A-Z]|[a-z]|[.]|[-]|[_])+[@]([0-9]|[A-Z]|[a-z]|[-])+([.]([0-9]|[A-Z]|[a-z]|[-])+)*)*$', $this->attributes['mail'][0]))  $errors[] = array('ERROR', _('eMail address'), _('Please enter a valid eMail address!'));
+		if ( !ereg('^([0-9]|[A-Z]|[a-z]|[-]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $this->attributes['street'][0]))  $errors[] = array('ERROR', _('Street'), _('Please enter a valid street name!'));
+		if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $this->attributes['postalAddress'][0]))  $errors[] = array('ERROR', _('Postal address'), _('Please enter a valid postal address!'));
+		if ( !ereg('^([0-9]|[A-Z]|[a-z]|[-]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $this->attributes['title'][0]))  $errors[] = array('ERROR', _('Title'), _('Please enter a valid title!'));
+		if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $this->attributes['employeeType'][0]))  $errors[] = array('ERROR', _('Employee type'), _('Please enter a valid employee type!'));
+		if ( !ereg('^([0-9]|[A-Z]|[a-z])*$', $this->attributes['personal_postalCode'][0]))  $errors[] = array('ERROR', _('Postal code'), _('Please enter a valid postal code!'));
 		// Return error-messages
 		if (is_array($errors)) return $errors;
 		return 0;
@@ -294,14 +292,15 @@ class inetOrgPerson {
 		for ($i=0; $i<count($attr); $i++)
 			if (isset($attr[$i])) unset($attr[$i]);
 		foreach ($attributes as $attribute) {
-			if (isset($this->attributes[$attribute])) {
+			if (isset($this->orig[$attribute])) {
+				$this->orig[$attribute] = $attr[$attribute];
 				// decode as unicode
-				$this->attributes[$attribute] = $attr[$attribute];
-				for ($i=0; $i<count($this->attributes[$attribute]); $i++) $this->attributes[$attribute][$i] = utf8_decode ($this->attributes[$attribute][$i]);
+				for ($i=0; $i<count($this->orig[$attribute]); $i++) $this->orig[$attribute][$i] = utf8_decode ($this->orig[$attribute][$i]);
 				}
 			}
 		// Values are kept as copy so we can compare old attributes with new attributes
-		$this->orig = $this->attributes;
+		$this->orig['objectClass'][0] = 'inetOrgPerson';
+		$this->attributes = $this->orig;
 		$this->userPassword(''); // Remove old password so it won't displayed as hash
 		return 0;
 		}
@@ -316,59 +315,80 @@ class inetOrgPerson {
 	* remove are attributes which have to be removed from ldap entry
 	*/
 	function save_attributes() {
-		// Get list off all attributes
-		$attributes = $this->orig;
-		// Remove attributes which are not as easy to set
-		unset ($attributes['userPassword']);
 		// Get list of all "easy" attributes
-		$attr_names = array_keys($attributes);
-		foreach ($attr_names as $attr_name) {
-			if (count($this->attributes[$attr_name])!=0 && count($this->orig[$attr_name])==0) $return[$this->base['dn']]['add'][$attr_name] = $this->attributes[$attr_name];
-			if (count($this->attributes[$attr_name])!=0 && count($this->orig[$attr_name])!=0) {
-				// We have to check every single attribute
-				// Get attributes which should be added
-				$attributes = array_delete($this->orig[$attr_name], $this->attributes[$attr_name]);
-				// Encode as unicode
-				for ($i=0; $i<count($attributes); $i++) $attributes[$i] = utf8_encode ($attributes[$i]);
-				if (count($attributes)!=0) $return[$this->base['dn']]['add'][$attr_name] = $attributes;
-				// Get attributes which should be removed
-				$attributes = array_delete($this->attributes[$attr_name], $this->orig[$attr_name]);
-				// Encode as unicode
-				for ($i=0; $i<count($attributes); $i++) $attributes[$i] = utf8_encode ($attributes[$i]);
-				if (count($attributes)!=0) $return[$this->base['dn']]['remove'][$attr_name] = $attributes;
+		$attr_names = array_keys($this->attributes);
+		// Get attributes which should be added
+		for ($i=0; $i<count($attr_names); $i++) {
+			for ($j=0; $j<count($this->orig[$attr_names[$i]]); $j++) {
+				if (is_array($this->attributes[$attr_names[$i]])) {
+					if (!in_array($this->orig[$attr_names[$i]][$j], $this->attributes[$attr_names[$i]]))
+						if ($this->orig[$attr_names[$i]][$j]!='') $torem[$attr_names[$i]][] =utf8_encode($this->orig[$attr_names[$i]][$j]);
+					}
+				else if ($this->orig[$attr_names[$i]][$j]!='') $torem[$attr_names[$i]][] = utf8_encode($this->orig[$attr_names[$i]][$j]);
 				}
-			if (count($this->attributes[$attr_name])==0 && count($this->orig[$attr_name])!=0) $return[$this->base['dn']]['remove'][$attr_name] = $this->orig[$attr_name];
+			for ($j=0; $j<count($this->attributes[$attr_names[$i]]); $j++) {
+				if (is_array($this->orig[$attr_names[$i]])) {
+					if (!in_array($this->attributes[$attr_names[$i]][$j], $this->orig[$attr_names[$i]]))
+						if ($this->attributes[$attr_names[$i]][$j]!='') $toadd[$attr_names[$i]][] = utf8_encode($this->attributes[$attr_names[$i]][$j]);
+					}
+				else if ($this->attributes[$attr_names[$i]][$j]!='') $toadd[$attr_names[$i]][] = utf8_encode($this->attributes[$attr_names[$i]][$j]);
+				}
+			for ($j=0; $j<count($this->attributes[$attr_names[$i]]); $j++) {
+				if (is_array($this->orig[$attr_names[$i]]) && is_array($this->attributes[$attr_names[$i]])) {
+					if (($this->attributes[$attr_names[$i]][$j]==$this->orig[$attr_names[$i]][$j]) && $this->attributes[$attr_names[$i]][$j]!='')
+						$notchanged[$attr_names[$i]][] = utf8_encode($this->attributes[$attr_names[$i]][$j]);
+					}
+				}
 			}
+		// create modify wuth add and remove
+		if (is_array($toadd)) {
+			$attributes = array_keys($toadd);
+			for ($i=0; $i<count($attributes); $i++) {
+				if (isset($torem[$attributes[$i]])) {
+					// found modify entry
+					// Add unchanged attributes
+					if (isset($notchanged[$attributes[$i]])) $tomodify[$attributes[$i]] = $notchanged[$attributes[$i]];
+					$tomodify[$attributes[$i]] = array_merge_recursive($tomodify[$attributes[$i]], $toadd[$attributes[$i]]);
+						// unset attributes
+					if (isset($notchanged[$attributes[$i]])) unset($notchanged[$attributes[$i]]);
+					if (isset($toadd[$attributes[$i]])) unset($toadd[$attributes[$i]]);
+					if (isset($torem[$attributes[$i]])) unset($torem[$attributes[$i]]);
+					}
+				}
+			}
+
+		if (count($toadd)!=0) $return[$_SESSION[$this->base]->dn]['add'] = $toadd;
+		if (count($torem)!=0) $return[$_SESSION[$this->base]->dn]['remove'] = $torem;
+		if (count($tomodify)!=0) $return[$_SESSION[$this->base]->dn]['modify'] = $tomodify;
+		if (count($notchanged)!=0) $return[$_SESSION[$this->base]->dn]['notchanged'] = $notchanged;
 
 		// Set unix password
 		if (count($this->orig['userPassword'])==0) {
 			// New user or no old password set
 			if ($this->userPassword_no) {
-				$return[$this->base['dn']]['add']['userPassword'][0] = pwd_hash ('', !$this->userPassword_lock);
+				$return[$_SESSION[$this->base]->dn]['modify']['userPassword'][0] = pwd_hash ('', !$this->userPassword_lock);
 				}
-				else $return[$this->base['dn']]['add']['userPassword'][0] = utf8_encode(pwd_hash ($this->userPassword(), !$this->userPassword_lock));
+				else $return[$_SESSION[$this->base]->dn]['modify']['userPassword'][0] = utf8_encode(pwd_hash ($this->userPassword(), !$this->userPassword_lock));
 			}
 		else {
 			if ($this->userPassword()!='' || $this->userPassword_no) {
 				// Write new password
-				$return[$this->base['dn']]['remove']['userPassword'] = utf8_encode($this->orig['userPassword']);
-				if ($this->userPassword_no) $return[$this->base['dn']]['modify']['userPassword'][0] = pwd_hash ('', !$this->userPassword_lock);
-					else $return[$this->base['dn']]['modify']['userPassword'][0] = utf8_encode(pwd_hash ($this->userPassword(), !$this->userPassword_lock));
+				if ($this->userPassword_no) $return[$_SESSION[$this->base]->dn]['modify']['userPassword'][0] = pwd_hash ('', !$this->userPassword_lock);
+					else $return[$_SESSION[$this->base]->dn]['modify']['userPassword'][0] = utf8_encode(pwd_hash ($this->userPassword(), !$this->userPassword_lock));
 				}
 			else { // No new password but old password
 				// (un)lock password
-				if ($this->userPassword_lock == pwd_is_enabled($this->orig['userPassword'])) {
+				if ($this->userPassword_lock == pwd_is_enabled($this->orig['userPassword'][0])) {
 					// Split old password hash in {CRYPT} and password-hash
 					$i = 0;
-					while ($this->orig['userPassword']{$i} != '}') $i++;
-					$passwd = substr($this->orig['userPassword'], $i+1 );
-					$crypt = substr($this->orig['userPassword'], 0, $i+1 );
+					while ($this->orig['userPassword'][0]{$i} != '}') $i++;
+					$passwd = substr($this->orig['userPassword'][0], $i+1 );
+					$crypt = substr($this->orig['userPassword'][0], 0, $i+1 );
 					// remove trailing ! from password hash
 					if ($passwd{0} == '!') $passwd = substr($passwd, 1);
 					// Write new password
-					$return[$this->base['dn']]['remove']['userPassword'] = utf8_encode($this->orig['userPassword']);
-					if ($this->userPassword_lock) $return[$this->base['dn']]['modify']['userPassword'][0] = utf8_encode("$crypt!$passwd");
-					else $return[$this->base['dn']]['modify']['userPassword'][0] = utf8_encode("$crypt$passwd");
+					if ($this->userPassword_lock) $return[$_SESSION[$this->base]->dn]['modify']['userPassword'][0] = utf8_encode("$crypt!$passwd");
+					else $return[$_SESSION[$this->base]->dn]['modify']['userPassword'][0] = utf8_encode("$crypt$passwd");
 					}
 				}
 			}
@@ -389,7 +409,7 @@ class inetOrgPerson {
 	* to show a page with all attributes.
 	* It will output a complete html-table
 	*/
-	function display_html_attributes() {
+	function display_html_attributes($post) {
 
 		echo "<table border=0 width=\"100%\">\n<tr>\n";
 		echo '<td>' . _('Username') . "*</td>\n";
@@ -409,7 +429,7 @@ class inetOrgPerson {
 		echo "<tr>\n";
 		echo "<td>" . _('Repeat password') . "</td>\n";
 		echo "<td><input name=\"form_inetOrgPerson_userPassword2\" type=\"password\" size=\"20\" maxlength=\"20\" value=\"";
-			if (isset($_POST['form_inetOrgPerson_userPassword2'])) echo $_POST['form_posixAccount_userPassword2'];
+			if ($post['form_inetOrgPerson_userPassword2']!='') echo $post['form_posixAccount_userPassword2'];
 			else echo $this->userPassword();
 		echo "\"></td>\n";
 		echo "<td></td>\n";
@@ -423,8 +443,8 @@ class inetOrgPerson {
 		echo "</tr>\n";
 		echo "<tr>\n";
 		echo "<td>" . _('Lock password') . "</td>\n";
-		echo "<td><input name=\"form_inetOrgPerson_userPassword_no\" type=\"checkbox\"";
-			if ($this->userPassword_no) echo " checked ";
+		echo "<td><input name=\"form_inetOrgPerson_userPassword_lock\" type=\"checkbox\"";
+			if ($this->userPassword_lock) echo " checked ";
 			echo "></td>\n";
 		echo "<td><a href=\"../help.php?HelpNumber=426\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
 		echo "</tr>\n";
