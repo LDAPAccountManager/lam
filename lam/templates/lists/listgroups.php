@@ -89,7 +89,7 @@ if ($sr) {
 }
 else echo ("<br><br><font color=\"red\"><b>" . _("LDAP Search failed! Please check your preferences. <br> No Groups found!") . "</b></font><br><br>");
 
-echo ("<form action=\"listgroups.php?type=group\" method=\"post\">\n");
+echo ("<form action=\"listgroups.php\" method=\"post\">\n");
 
 // print group table header
 echo "<table rules=\"all\" class=\"grouplist\" width=\"100%\">\n";

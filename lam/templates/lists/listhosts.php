@@ -29,6 +29,23 @@ include_once("../../lib/ldap.inc");
 session_save_path("../../sess");
 @session_start();
 
+// check if button was pressed and if we have to add/delete a host
+if ($_POST['new_host'] || $_POST['del_host']){
+	// add new host
+	if ($_POST['new_host']){
+		echo("<meta http-equiv=\"refresh\" content=\"0; URL=../account.php?type=host\">");
+		exit;
+	}
+	// delete host(s)
+	if ($_POST['del_host']){
+		// search for checkboxes
+		$hosts = array_keys($_POST, "on");
+		$hoststr = implode(";", $hosts);
+		echo("<meta http-equiv=\"refresh\" content=\"0; URL=../delete.php?type=host&DN='$hoststr'\">");
+		}
+		exit;
+}
+
 echo "<html><head><title>listhosts</title>\n";
 echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
 echo "</head><body>\n";
@@ -72,7 +89,7 @@ if ($sr) {
 }
 else echo ("<br><br><font color=\"red\"><b>" . _("LDAP Search failed! Please check your preferences. <br> No Samba Hosts found!") . "</b></font><br><br>");
 
-echo ("<form action=\"../account.php?type=host\" method=\"post\">\n");
+echo ("<form action=\"listhosts.php\" method=\"post\">\n");
 
 // print host table header
 echo "<table rules=\"all\" class=\"hostlist\" width=\"100%\">\n";
@@ -106,8 +123,8 @@ for ($i = 0; $i < sizeof($info); $i++) {
 echo ("</table>");
 echo ("<p>&nbsp</p>\n");
 echo ("<table align=\"left\" border=\"0\">");
-echo ("<tr><td align=\"left\"><a href=\"../account.php?type=host\" target=\"_self\">" . _("New Host") . "</a>");
-echo ("&nbsp&nbsp&nbsp<a href=\"../delete.php?type=host\" target=\"_self\">" . _("Delete Host(s)") . "</a></td></tr>\n");
+echo ("<tr><td align=\"left\"><input type=\"submit\" name=\"new_host\" value=\"" . _("New Host") . "\"></td>");
+echo ("<td align=\"left\"><input type=\"submit\" name=\"del_host\" value=\"" . _("Delete Host(s)") . "\"></td></tr>");
 echo ("</table>\n");
 echo ("</form>\n");
 echo "</body></html>\n";
