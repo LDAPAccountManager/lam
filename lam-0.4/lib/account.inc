@@ -1545,14 +1545,20 @@ function modifyuser($values,$values_old,$uselamdaemon=true) { // Will modify the
 		if ($_SESSION['config']->is_samba3()) {
 			// We use samba 3 schema
 			// Change SID only if we don't use a well known SID
-			ldapreload('group');
-			foreach ($_SESSION['groupDN'] as $groupname) {
-				if ($groupname['cn'] == $values->general_group) {
-					if ($groupname['sambaSID']) $attr['sambaPrimaryGroupSID'] = $groupname['sambaSID'];
-					else {
-						// remove primaryGroupSID if new group has no SID
-						$attr['sambaPrimaryGroupSID'] = $values_old->smb_mapgroup;
-						$attr_rem['sambaPrimaryGroupSID'] = $values_old->smb_mapgroup;
+			$found = false;
+			if (substr($values->smb_mapgroup, sizeof($values->smb_mapgroup)-5, 4) == '-512') $found=true;
+			if (substr($values->smb_mapgroup, sizeof($values->smb_mapgroup)-5, 4) == '-513') $found=true;
+			if (substr($values->smb_mapgroup, sizeof($values->smb_mapgroup)-5, 4) == '-514') $found=true;
+			if (!$found) {
+				ldapreload('group');
+				foreach ($_SESSION['groupDN'] as $groupname) {
+					if ($groupname['cn'] == $values->general_group) {
+						if ($groupname['sambaSID']) $attr['sambaPrimaryGroupSID'] = $groupname['sambaSID'];
+						else {
+							// remove primaryGroupSID if new group has no SID
+							$attr['sambaPrimaryGroupSID'] = $values_old->smb_mapgroup;
+							$attr_rem['sambaPrimaryGroupSID'] = $values_old->smb_mapgroup;
+							}
 						}
 					}
 				}
@@ -1560,6 +1566,7 @@ function modifyuser($values,$values_old,$uselamdaemon=true) { // Will modify the
 		else {
 			// We use old samba 2.2 schema
 			// Change SID only if we don't use a well known SID
+			$found = false;
 			if ($values->smb_mapgroup== '512') $found=true;
 			if ($values->smb_mapgroup== '513') $found=true;
 			if ($values->smb_mapgroup== '514') $found=true;
@@ -1722,13 +1729,22 @@ function modifyuser($values,$values_old,$uselamdaemon=true) { // Will modify the
 				(2 * getgid($values->general_group) + $values->smb_domain->RIDbase+1);
 			}
 		if (($values->smb_mapgroup!='') && ($values->smb_mapgroup!=$values_old->smb_mapgroup)) {
-			ldapreload('group');
-			foreach ($_SESSION['groupDN'] as $groupname) {
-				if ($groupname['cn'] == $values->general_group) $attr['sambaPrimaryGroupSID'] = $groupname['sambaSID'];
+			$found = false;
+			if (substr($values->smb_mapgroup, sizeof($values->smb_mapgroup)-5, 4) == '-512') $found=true;
+			if (substr($values->smb_mapgroup, sizeof($values->smb_mapgroup)-5, 4) == '-513') $found=true;
+			if (substr($values->smb_mapgroup, sizeof($values->smb_mapgroup)-5, 4) == '-514') $found=true;
+			if (!$found) {  // use group SID
+				ldapreload('group');
+				foreach ($_SESSION['groupDN'] as $groupname) {
+					if ($groupname['cn'] == $values->general_group) $attr['sambaPrimaryGroupSID'] = $groupname['sambaSID'];
 				}
 			}
-		if ($values->smb_displayName != $values_old->smb_displayName) $attr['displayName'] = utf8_encode($values->smb_displayName); // sambaAccount_may
+			else {  // use special SID
+				$attr['sambaPrimaryGroupSID'] = $values->smb_mapgroup;
+			}
 		}
+		if ($values->smb_displayName != $values_old->smb_displayName) $attr['displayName'] = utf8_encode($values->smb_displayName); // sambaAccount_may
+	}
 	else {
 		// use old samba 2.2 objectclass
 		if (!in_array('sambaAccount', $values->general_objectClass)) {
