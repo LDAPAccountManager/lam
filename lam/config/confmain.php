@@ -101,7 +101,7 @@ echo ("<p>&nbsp</p>\n");
 echo ("<p>&nbsp</p>\n");
 echo ("<table align=\"left\" border=\"0\">");
 echo ("<tr><td align=\"left\"><pre><input type=\"submit\" name=\"submitconf\" value=\"" . _("Submit") . "\">     <input type=\"reset\" name=\"resetconf\" value=\"" . _("Reset") . "\">");
-echo ("<input type=\"button\" name=\"back\" value=\"Abort\" onClick=\"self.location.href='../templates/login.php'\"></pre></td></tr>\n");
+echo ("<input type=\"button\" name=\"back\" value=\"" . _("Abort") . "\" onClick=\"self.location.href='../templates/login.php'\"></pre></td></tr>\n");
 echo ("</table>\n");
 echo ("<input type=\"hidden\" name=\"passwd\" value=\"" . $passwd . "\"><br>\n");
 echo ("</form>\n");

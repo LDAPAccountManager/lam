@@ -43,18 +43,27 @@ if ($sr) {
 }
 else echo ("<br><br><font color=\"red\"><b>" . _("No Samba Hosts found!") . "</b></font><br><br>");
 
+echo ("<form action=\"../templates/account.php?type=host\" method=\"post\">\n");
 // print host table
 echo "<table width=\"100%\">\n";
-echo "<tr>";
+echo "<tr><th class=\"userlist\" width=12></th>";
 echo "<th class=\"userlist\">" . _("Host Name") . "</th>";
 echo "<th class=\"userlist\">RID</th>";
-echo "</tr>";
+echo "</tr>\n";
 // print host list
 for ($i = 0; $i < sizeof($info)-1; $i++) { // ignore last entry in array which is "count"
-	echo("<tr>");
+	echo("<tr><td class=\"userlist\"><input type=\"radio\" name=\"DN\" value=\"" . $info[$i]["dn"] . "\"></td>");
 	echo ("<td class=\"userlist\">" . $info[$i]["cn"][0] . "</td>");
 	echo ("<td class=\"userlist\">" . $info[$i]["rid"][0] . "</td>");
-	echo("</tr>");
+	echo("</tr>\n");
 }
 echo ("</table>");
+echo ("<p>&nbsp</p>\n");
+echo ("<p>&nbsp</p>\n");
+echo ("<table align=\"left\" border=\"0\">");
+echo ("<tr><td align=\"left\"><input type=\"submit\" name=\"edithost\" value=\"" . _("Edit Host") . "\">");
+echo ("&nbsp<input type=\"button\" name=\"newhost\" value=\"" . _("New Host") . "\" onClick=\"self.location.href='../templates/account.php?type=host'\">");
+echo ("&nbsp<input type=\"button\" name=\"delhost\" value=\"" . _("Delete Host") . "\" onClick=\"self.location.href='../templates/account.php?type=delete'\"></td></tr>\n");
+echo ("</table>\n");
+echo ("</form>\n");
 ?>

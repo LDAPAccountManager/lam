@@ -45,15 +45,16 @@ else echo ("<br><br><font color=\"red\"><b>" . _("No Groups found!") . "</b></fo
 
 // print host table header
 echo "<table width=\"100%\">\n";
-echo "<tr>";
+echo "<tr><th class=\"userlist\" width=12></th>";
 echo "<th class=\"userlist\">" . _("Grup Name") . "</th>";
 echo "<th class=\"userlist\">" . _("GID Number") . "</th>";
 echo "<th class=\"userlist\">" . _("Group Members") . "</th>";
 echo "<th class=\"userlist\">" . _("Description") . "</th>";
-echo "</tr>";
-// print host list
+echo "</tr>\n";
+echo ("<form action=\"../templates/account.php?type=group\" method=\"post\">\n");
+// print group list
 for ($i = 0; $i < sizeof($info)-1; $i++) { // ignore last entry in array which is "count"
-	echo("<tr>");
+	echo("<tr><td class=\"userlist\"><input type=\"radio\" name=\"DN\" value=\"" . $info[$i]["dn"] . "\"></td>");
 	echo ("<td class=\"userlist\">" . $info[$i]["cn"][0] . "</td>");
 	echo ("<td class=\"userlist\">" . $info[$i]["gidnumber"][0] . "</td>");
 	// create list of group members
@@ -64,7 +65,15 @@ for ($i = 0; $i < sizeof($info)-1; $i++) { // ignore last entry in array which i
 	else $grouplist = "";
 	echo ("<td class=\"userlist\">" . $grouplist . "</td>");
 	echo ("<td class=\"userlist\">" . $info[$i]["description"][0] . "</td>");
-	echo("</tr>");
+	echo("</tr>\n");
 }
 echo ("</table>");
+echo ("<p>&nbsp</p>\n");
+echo ("<p>&nbsp</p>\n");
+echo ("<table align=\"left\" border=\"0\">");
+echo ("<tr><td align=\"left\"><input type=\"submit\" name=\"editgroup\" value=\"" . _("Edit Group") . "\">");
+echo ("&nbsp<input type=\"button\" name=\"newgroup\" value=\"" . _("New Group") . "\" onClick=\"self.location.href='../templates/account.php?type=group'\">");
+echo ("&nbsp<input type=\"button\" name=\"delgroup\" value=\"" . _("Delete Group") . "\" onClick=\"self.location.href='../templates/account.php?type=delete'\"></td></tr>\n");
+echo ("</table>\n");
+echo ("</form>\n");
 ?>
