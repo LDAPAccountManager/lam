@@ -8,8 +8,8 @@ Installation Instructions for LAM
    - Apache webserver (SSL optional) with installed PHP-Module (PHP-Module with
      ldap, gettext, mcrypt, openldap)
    - Perl
-   - openldap (>2.0)
-   - a web browser :-)
+   - Openldap (>2.0)
+   - A web browser :-)
 
 
 2. Installation

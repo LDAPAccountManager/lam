@@ -9,7 +9,7 @@ LAM - Readme
   multiple organizational units. LAM supports the Samba 2.x schema and the
   Samba 3 schema.
 
-  alpha Release 0.2 - July 2003
+  alpha Release 0.3 - August 2003
   ------------------------------
   http://sourceforge.net/projects/lam/
 
@@ -34,13 +34,14 @@ LAM - Readme
 
   Requirements:
     PHP4
-    openldap (2.0 or greater)
-    a web-browser that supports CSS (Netscape 4.x is not recommended)
+    Openldap (2.0 or greater)
+    A web-browser that supports CSS (Netscape 4.x is not recommended)
 
   Summary:
     With LAM you can easily manage user, group and machine accounts stored in
-    a LDAP server over a web interface. At the moment it supports
-      - displaying the user/group/host entries
+    a LDAP server over a web interface. At the moment it supports:
+
+      - displaying the user/group/host/domain entries
       - deleting entries
       - adding new entries
       - editing entries
@@ -48,16 +49,25 @@ LAM - Readme
       - account profiles
       - access management
       - multiple configuration profiles
+      - OU Editor
+      - User creation via file upload
+      - Samba 2 and 3 schema support
 
   Important:
     The standard password to edit the configuration options is "lam".
-
 
   Download:
     You can get the newest version at http://sourceforge.net/projects/lam/
 
   Installation:
     Please see the INSTALL file.
+
+  Known Bugs:
+    - If you fill in the Unix workstations field the LDAP add/modify operation
+      may fail. This is because the host attribute is provided only by
+      objectClass account which conflicts with inetOrgPerson.
+      If you want to use host restrictions, add the host attribute to
+      inetOrgPerson in your schema file.
 
   Documentation:
     Basic documentation available in /docs
