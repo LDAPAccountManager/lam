@@ -1,3 +1,9 @@
+ldap-account-manager (0.4.7-1) unstable; urgency=low
+
+  * Updated to new upstream version 0.4.7.
+
+ -- Roland Gruber <post@rolandgruber.de>  Thu, 16 Dec 2004 21:06:58 +0100
+
 ldap-account-manager (0.4.6-3) unstable; urgency=low
 
   * Closes: #281781: syntax error in apache.conf fixed
