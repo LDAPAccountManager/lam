@@ -126,8 +126,9 @@ function display_LoginPage($config_object,$profile)
 					<td width="45%" align="left">
 						<select name="username" size="1">
 						<?php
-						for($i = 0; $i < count($config_object->Admins); $i++) {
-							$text = explode(",", $config_object->Admins[$i]);
+						$admin = $config_object->get_Admins();
+						for($i = 0; $i < count($admins); $i++) {
+							$text = explode(",", $admins[$i]);
 							$text = explode("=", $text[0]);
 							?>
 							<option value="<?php echo $config_object->Admins[$i]; ?>"><?php echo $text[1]; ?></option>
