@@ -29,9 +29,23 @@
  * edited by Roland Gruber <post@rolandgruber.de> for LAM
  *  - added encrypt/decrypt functions
  */
+
+/**
+* Blowfish encryption/decryption
+*
+* @package LDAP
+* @author Roland Gruber
+* @author Mike Cochrane
+*/
+
+/**
+* Encrypts the LDAP username and password before storing in session.
+*
+* @package LDAP
+*/
 class Cipher_blowfish {
 
-    /* Pi Array */
+    /** Pi Array */
     var $p = array(
             0x243F6A88, 0x85A308D3, 0x13198A2E, 0x03707344,
             0xA4093822, 0x299F31D0, 0x082EFA98, 0xEC4E6C89,
@@ -39,7 +53,7 @@ class Cipher_blowfish {
             0xC0AC29B7, 0xC97C50DD, 0x3F84D5B5, 0xB5470917,
             0x9216D5D9, 0x8979FB1B);
 
-    /* S Boxes */
+    /** S Boxes */
     var $s1 = array(
             0xD1310BA6, 0x98DFB5AC, 0x2FFD72DB, 0xD01ADFB7,
             0xB8E1AFED, 0x6A267E96, 0xBA7C9045, 0xF12C7F99,
@@ -105,6 +119,7 @@ class Cipher_blowfish {
             0x08BA6FB5, 0x571BE91F, 0xF296EC6B, 0x2A0DD915,
             0xB6636521, 0xE7B9F9B6, 0xFF34052E, 0xC5855664,
             0x53B02D5D, 0xA99F8FA1, 0x08BA4799, 0x6E85076A);
+    /** S Boxes */
     var $s2 = array(
             0x4B7A70E9, 0xB5B32944, 0xDB75092E, 0xC4192623,
             0xAD6EA6B0, 0x49A7DF7D, 0x9CEE60B8, 0x8FEDB266,
@@ -170,6 +185,7 @@ class Cipher_blowfish {
             0xDB73DBD3, 0x105588CD, 0x675FDA79, 0xE3674340,
             0xC5C43465, 0x713E38D8, 0x3D28F89E, 0xF16DFF20,
             0x153E21E7, 0x8FB03D4A, 0xE6E39F2B, 0xDB83ADF7);
+    /** S Boxes */
     var $s3 = array(
             0xE93D5A68, 0x948140F7, 0xF64C261C, 0x94692934,
             0x411520F7, 0x7602D4F7, 0xBCF46B2E, 0xD4A20068,
@@ -235,6 +251,7 @@ class Cipher_blowfish {
             0x1E50EF5E, 0xB161E6F8, 0xA28514D9, 0x6C51133C,
             0x6FD5C7E7, 0x56E14EC4, 0x362ABFCE, 0xDDC6C837,
             0xD79A3234, 0x92638212, 0x670EFA8E, 0x406000E0);
+    /** S Boxes */
     var $s4 = array(
             0x3A39CE37, 0xD3FAF5CF, 0xABC27737, 0x5AC52D1B,
             0x5CB0679E, 0x4FA33742, 0xD3822740, 0x99BC9BBE,
@@ -301,10 +318,10 @@ class Cipher_blowfish {
             0x90D4F869, 0xA65CDEA0, 0x3F09252D, 0xC208E69F,
             0xB74E6132, 0xCE77E25B, 0x578FDFE3, 0x3AC372E6);
 
-    /* The number of rounds to do */
+    /** The number of rounds to do */
     var $_rounds = 16;
 
-    /* Constructor */
+    /** Constructor */
     function Cipher_blowfish($params = null)
     {
     }
