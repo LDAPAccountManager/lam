@@ -210,6 +210,16 @@ function showMainPage($scope) {
 
 	echo "<table style=\"border-color: grey\" cellpadding=\"10\" border=\"2\" cellspacing=\"0\">\n";
 		echo "<tr>\n";
+			// DN attributes
+			$sampleCSV_head[] = "\"dn_suffix\"";
+			$sampleCSV_head[] = "\"dn_rdn\"";
+			echo "<td>\n";
+				echo "dn_suffix";
+			echo "</td>\n";
+			echo "<td>\n";
+				echo "dn_rdn";
+			echo "</td>\n";
+			// module attributes
 			for ($m = 0; $m < sizeof($modules); $m++) {
 				if (sizeof($columns[$modules[$m]]) < 1) continue;
 				for ($i = 0; $i < sizeof($columns[$modules[$m]]); $i++) {
@@ -221,6 +231,16 @@ function showMainPage($scope) {
 			}
 		echo "</tr>\n";
 		echo "<tr>\n";
+			// DN attributes
+			$sampleCSV_row[] = "\"" . call_user_func(array($_SESSION['config'], 'get_' . ucfirst($scope) . 'Suffix')) . "\"";
+			$sampleCSV_row[] = "\"" . array_shift(getRDNAttributes($scope)) . "\"";
+			echo "<td>\n";
+				echo call_user_func(array($_SESSION['config'], 'get_' . ucfirst($scope) . 'Suffix'));
+			echo "</td>\n";
+			echo "<td>\n";
+				echo array_shift(getRDNAttributes($scope));
+			echo "</td>\n";
+			// module attributes
 			for ($m = 0; $m < sizeof($modules); $m++) {
 				if (sizeof($columns[$modules[$m]]) < 1) continue;
 				for ($i = 0; $i < sizeof($columns[$modules[$m]]); $i++) {
