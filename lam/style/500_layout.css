@@ -33,9 +33,9 @@ h1,h2,h3,h4,p,ul,ol,li,div,td,th,address,blockquote,nobr,b,i {
 }
 
 
-/** 
+/**
  * table style for userlist.php
- *  
+ *
  */
 th.userlist {
   border-width:1px;
@@ -54,5 +54,51 @@ td.userlist {
   padding:4px;
   background-color:#E7F7E7;
   font-size:12px;
+}
+
+/**
+ * table style for grouplist.php
+ *
+ */
+th.grouplist {
+  border-width:1px;
+  border-style:solid;
+  border-color:#B7C7B7;
+  padding:10px;
+  background-color:#a8c3ff;
+  font-size:14px;
+  font-weight:bold;
+}
+
+td.grouplist {
+  border-width:1px;
+  border-style:solid;
+  border-color:#C7D7C7;
+  padding:4px;
+  background-color:#d6e3ff;
+  font-size:14px;
+}
+
+/**
+ * table style for hostlist.php
+ *
+ */
+th.hostlist {
+  border-width:1px;
+  border-style:solid;
+  border-color:#B7C7B7;
+  padding:10px;
+  background-color:#ffc4ba;
+  font-size:14px;
+  font-weight:bold;
+}
+
+td.hostlist {
+  border-width:1px;
+  border-style:solid;
+  border-color:#C7D7C7;
+  padding:4px;
+  background-color:#ffe2dd;
+  font-size:14px;
 }
 

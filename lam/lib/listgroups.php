@@ -67,18 +67,18 @@ else echo ("<br><br><font color=\"red\"><b>" . _("LDAP Search failed! Please che
 
 // print host table header
 echo "<table width=\"100%\">\n";
-echo "<tr><th class=\"userlist\" width=12></th>";
+echo "<tr><th class=\"grouplist\" width=12></th>";
 // table header
 for ($k = 0; $k < sizeof($desc_array); $k++) {
-	echo "<th class=\"userlist\">" . $desc_array[$k] . "</th>";
+	echo "<th class=\"grouplist\">" . $desc_array[$k] . "</th>";
 }
 echo "</tr>\n";
 echo ("<form action=\"../templates/account.php?type=group\" method=\"post\">\n");
 // print group list
 for ($i = 0; $i < sizeof($info)-1; $i++) { // ignore last entry in array which is "count"
-	echo("<tr><td class=\"userlist\"><input type=\"radio\" name=\"DN\" value=\"" . $info[$i]["dn"] . "\"></td>");
+	echo("<tr><td class=\"grouplist\"><input type=\"radio\" name=\"DN\" value=\"" . $info[$i]["dn"] . "\"></td>");
 	for ($k = 0; $k < sizeof($attr_array); $k++) {
-		echo ("<td class=\"userlist\">");
+		echo ("<td class=\"grouplist\">");
 		// print all attribute entries seperated by "; "
 		if (sizeof($info[$i][strtolower($attr_array[$k])]) > 0) {
 			array_shift($info[$i][strtolower($attr_array[$k])]);
