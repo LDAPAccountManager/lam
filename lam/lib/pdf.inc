@@ -139,13 +139,16 @@ function createModulePDF($accounts,$account_type="") {
 				// Get current entry
 				$value_entry = $entries[$name];
 				
-				// Loop over all rows of this entry (most of the time this will be just one)
-				foreach($value_entry as $line) {
-					// Substitue XML syntax with valid FPDF methods
-					$methods = processLine($line);
-					// Call every method
-					foreach($methods as $method) {
-						call_user_func_array(array(&$pdf,$method[0]),$method[1]);
+				// Print entry only when module sumitted values for it
+				if(is_array($value_entry)) {
+					// Loop over all rows of this entry (most of the time this will be just one)
+					foreach($value_entry as $line) {
+						// Substitue XML syntax with valid FPDF methods
+						$methods = processLine($line);
+						// Call every method
+						foreach($methods as $method) {
+							call_user_func_array(array(&$pdf,$method[0]),$method[1]);
+						}
 					}
 				}
 				$key = false;
