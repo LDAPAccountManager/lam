@@ -776,10 +776,12 @@ class posixGroup extends baseModule {
 		$minID = intval($this->moduleSettings['posixGroup_minGID'][0]);
 		$maxID = intval($this->moduleSettings['posixGroup_maxGID'][0]);
 		$dn_gids = $_SESSION['cache']->get_cache('gidNumber', 'posixGroup', '*');
-		// get_cache will return an array ( dn1 => array(uidnumber1), dn2 => array(uidnumber2), ... )
+		// get_cache will return an array ( dn1 => array(gidnumber1), dn2 => array(gidnumber2), ... )
 		$gids = array();
 		if(is_array($dn_gids)) {
-			foreach ($dn_gids as $gid) $gids[] = $gid[0];
+			foreach ($dn_gids as $gid) {
+				if (($gid[0] < $maxID) && ($gid[0] > $minID)) $gids[] = $gid[0];  // ignore GIDs > maxID and GIDs < minID
+			}
 			sort ($gids, SORT_NUMERIC);
 		}
 		for ($i = 0; $i < $count; $i++) {
