@@ -24,6 +24,9 @@ $Id$
 */
 include_once ('../config/config.php');
 include_once("ldap.php");
+
+// start session
+session_save_path("../sess");
 @session_start();
 
 echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\" />";
@@ -31,11 +34,14 @@ echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\" />
 // Samba hosts have the attribute "sambaAccount" and end with "$"
 $filter = "(&(objectClass=sambaAccount) (uid=*$))";
 $attrs = array("cn", "rid");
-$sr = ldap_search($_SESSION["ldap"]->server(),
+$sr = @ldap_search($_SESSION["ldap"]->server(),
 	$_SESSION["config"]->get_HostSuffix(),
 	$filter, $attrs);
-$info = ldap_get_entries($_SESSION["ldap"]->server, $sr);
-ldap_free_result($sr);
+if ($sr) {
+	$info = ldap_get_entries($_SESSION["ldap"]->server, $sr);
+	ldap_free_result($sr);
+}
+else echo ("<br><br><font color=\"red\"><b>" . _("No Samba Hosts found!") . "</b></font><br><br>");
 
 // print host table
 echo "<table width=\"100%\">\n";
