@@ -40,6 +40,9 @@ if (!$_SESSION['ldap'] || !$_SESSION['ldap']->server()) {
 	exit;
 }
 
+// empty list of attribute types
+$_SESSION['profile_types'] = array();
+
 // print header
 echo $_SESSION['header'];
 echo "<title></title>\n<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
@@ -110,7 +113,6 @@ echo ("</form></body></html>\n");
 // $module_name: The name of the module the options belong to
 // $old_profile: A hash array with the values from the loaded profile
 function print_option($values, $modulename, $old_profile) {
-		echo "<td>";
 			switch ($values['kind']) {
 				// text value
 				case 'text':
@@ -118,39 +120,46 @@ function print_option($values, $modulename, $old_profile) {
 					break;
 				// help link
 				case 'help':
-					echo "<a href=../help.php?module=$modulename&item=" . $values['value'] . ">" . _('Help') . "</a>\n";
+					echo "<a href=../help.php?module=$modulename&amp;module=" . $values['value'] . ">" . _('Help') . "</a>\n";
 					break;
 				// input field
 				case 'input':
 					if (($values['type'] == 'text') || ($values['type'] == 'checkbox')) {
 						if ($values['type'] == 'text') {
-							$output = "<input type=\"" . $values['type'] . " name=\"" . $values['name'];
+							$output = "<input type=\"" . $values['type'] . "\" name=\"" . $values['name'] . "\"";
 							if ($values['size']) $output .= " size=\"" . $values['size'] . "\"";
 							if ($values['maxlength']) $output .= " maxlength=\"" . $values['maxlength'] . "\"";
 							if (isset($old_profile[$values['name']])) $output .= " value=\"" . $old_profile[$values['name']][0] . "\"";
 							elseif ($values['value']) $output .= " value=\"" . $values['value'] . "\"";
 							if ($values['disabled']) $output .= " disabled";
-							$output .= "></td>\n";
+							$output .= ">\n";
 							echo $output;
+							$_SESSION['profile_types'][$values['name']] = "text";
 						}
 						elseif ($values['type'] == 'checkbox') {
-							$output = "<input type=\"" . $values['type'] . " name=\"" . $values['name'];
+							$output = "<input type=\"" . $values['type'] . "\" name=\"" . $values['name'] . "\"";
 							if ($values['size']) $output .= " size=\"" . $values['size'] . "\"";
 							if ($values['maxlength']) $output .= " maxlength=\"" . $values['maxlength'] . "\"";
 							if ($values['value']) $output .= " value=\"" . $values['value'] . "\"";
 							if ($values['disabled']) $output .= " disabled";
 							if (isset($old_profile[$values['name']]) && ($old_profile[$values['name']][0] == true)) $output .= " checked";
 							elseif ($values['checked']) $output .= " checked";
-							$output .= "></td>\n";
+							$output .= ">\n";
 							echo $output;
+							$_SESSION['profile_types'][$values['name']] = "checkbox";
 						}
 					}
 					break;
 				// select box
 				case 'select':
-					echo "<select name=\"" . $values['name'] . "\" size=\"" . $values['size'] . "\"";
-					if ($values['multiple']) $output .= " multiple";
-					echo "\">\n";
+					if ($values['multiple']) {
+						echo "<select name=\"" . $values['name'] . "[]\" size=\"" . $values['size'] . "\" multiple>\n";
+						$_SESSION['profile_types'][$values['name']] = "multiselect";
+					}
+					else {
+						echo "<select name=\"" . $values['name'] . "\" size=\"" . $values['size'] . "\">\n";
+						$_SESSION['profile_types'][$values['name']] = "select";
+					}
 					// option values
 					for ($i = 0; $i < sizeof($values['options']); $i++) {
 						// use values from old profile if given
@@ -174,11 +183,11 @@ function print_option($values, $modulename, $old_profile) {
 					}
 					echo "</select>\n";
 					break;
+				// print error message for invalid types
 				default:
-					echo "<td>" . _("Unrecognized type") . ": " . $values['kind'] . "</td>\n";
+					echo _("Unrecognized type") . ": " . $values['kind'] . "\n";
 					break;
 			}
-		echo "</td>";
 }
 
 ?>
