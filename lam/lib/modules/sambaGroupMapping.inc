@@ -229,8 +229,8 @@ class sambaGroupMapping extends baseModule {
 
 	/** this functin fills the error message array with messages
 	**/
-	function load_errorMessages() {
-		$this->errormessages['sambaSID'][0] = array('ERROR', _('Special Group'),sprintf( _('There can be only one group %s.'), $rids[$i]), 'sambaSID');
+	function load_Messages() {
+		$this->messages['sambaSID'][0] = array('ERROR', _('Special Group'),sprintf( _('There can be only one group %s.'), $rids[$i]), 'sambaSID');
 	}
 
 
@@ -290,7 +290,7 @@ class sambaGroupMapping extends baseModule {
 					$this->attributes['sambaSID'][0] = $SID."-".$this->rids[$rids[$i]];
 					// Do a check if special grou pis unique
 					if ($_SESSION['cache']->in_cache($SID."-".$this->rids[$rids[$i]], 'sambaSID', 'group'))
-						$errors[] = $this->errormessages['sambaSID'][0];
+						$errors[] = $this->messages['sambaSID'][0];
 					}
 				}
 			if (!$wrid) $this->attributes['sambaSID'][0] = $SID . "-" . ($_SESSION[$this->base]->module['posixGroup']->attributes['gidNumber'][0]*2+$RIDbase+1);

@@ -41,23 +41,27 @@ class inetOrgPerson extends baseModule {
 	* Creates a new inetOrgPerson object.
 	*/
 	function inetOrgPerson($scope) {
-	// error messages for input checks
-	$this->messages['host'] = array('ERROR', _('Unix workstations'), _('Unix workstations is invalid.'));
-	$this->messages['givenName'] = array('ERROR', _('Given name'), _('Given name contains invalid characters'));
-	$this->messages['surname'] = array('ERROR', _('Surname'), _('Surname contains invalid characters'));
-	$this->messages['telephoneNumber'] = array('ERROR', _('Telephone number'), _('Please enter a valid telephone number!'));
-	$this->messages['mobileTelephone'] = array('ERROR', _('Mobile number'), _('Please enter a valid mobile number!'));
-	$this->messages['facsimileNumber'] = array('ERROR', _('Fax number'), _('Please enter a valid fax number!'));
-	$this->messages['email'] = array('ERROR', _('eMail address'), _('Please enter a valid eMail address!'));
-	$this->messages['street'] = array('ERROR', _('Street'), _('Please enter a valid street name!'));
-	$this->messages['postalAddress'] = array('ERROR', _('Postal address'), _('Please enter a valid postal address!'));
-	$this->messages['postalCode'] = array('ERROR', _('Postal code'), _('Please enter a valid postal code!'));
-	$this->messages['title'] = array('ERROR', _('Title'), _('Please enter a valid title!'));
-	$this->messages['employeeType'] = array('ERROR', _('Employee type'), _('Please enter a valid employee type!'));
-	// call parent constructor
-	parent::baseModule($scope);
+		// call parent constructor
+		parent::baseModule($scope);
 	}
 
+	/** this functin fills the error message array with messages
+	**/
+	function load_Messages() {
+		$this->messages['host'][0] = array('ERROR', _('Unix workstations'), _('Unix workstations is invalid.'));
+		$this->messages['givenName'][0] = array('ERROR', _('Given name'), _('Given name contains invalid characters'));
+		$this->messages['surname'][0] = array('ERROR', _('Surname'), _('Surname contains invalid characters'));
+		$this->messages['telephoneNumber'][0] = array('ERROR', _('Telephone number'), _('Please enter a valid telephone number!'));
+		$this->messages['mobileTelephone'][0] = array('ERROR', _('Mobile number'), _('Please enter a valid mobile number!'));
+		$this->messages['facsimileNumber'][0] = array('ERROR', _('Fax number'), _('Please enter a valid fax number!'));
+		$this->messages['email'][0] = array('ERROR', _('eMail address'), _('Please enter a valid eMail address!'));
+		$this->messages['street'][0] = array('ERROR', _('Street'), _('Please enter a valid street name!'));
+		$this->messages['postalAddress'][0] = array('ERROR', _('Postal address'), _('Please enter a valid postal address!'));
+		$this->messages['postalCode'][0] = array('ERROR', _('Postal code'), _('Please enter a valid postal code!'));
+		$this->messages['title'][0] = array('ERROR', _('Title'), _('Please enter a valid title!'));
+		$this->messages['employeeType'][0] = array('ERROR', _('Employee type'), _('Please enter a valid employee type!'));
+	}	
+	
 	/**
 	* Returns meta data that is interpreted by parent class
 	*
@@ -83,10 +87,10 @@ class inetOrgPerson extends baseModule {
 				2 => array('kind' => 'help', 'value' => 'TODO'))
 		);
 		// profile checks
-		$return['profile_checks']['inetOrgPerson_title'] = array('type' => 'regex_i', 'regex' => $this->regex_title,
-			'error_message' => $this->messages['title']);
+		$return['profile_checks']['inetOrgPerson_title'] = array('type' => 'regex_i', 'regex' => 'title',
+			'error_message' => $this->messages['title'][0]);
 		$return['profile_checks']['inetOrgPerson_employeeType'] = array('type' => 'regex_i',
-			'regex' => $this->regex_employeeType, 'error_message' => $this->messages['employeeType']);
+			'regex' => 'employeeType', 'error_message' => $this->messages['employeeType'][0]);
 		// available PDF fields
 		$return['PDF_fields'] = array(	'description',
 													'host',
@@ -128,37 +132,6 @@ class inetOrgPerson extends baseModule {
 		parent::init($base);
 		}
 
-	// Variables
-	/** This variable contains all inetOrgPerson attributes */
-	var $attributes;
-	/**
-	* If an account was loaded all attributes are kept in this array
-	* to compare it with new changed attributes.
-	*/
-	var $orig;
-
-	/** regular expression for host name */
-	var $regex_host = '^([a-z0-9\\.-])+(([,])+([ ])*([a-z0-9\\.-])+)*$';
-	/** regular expression for first/last name */
-	var $regex_name = '^([a-z ��])+$';
-	/** regular expression for telephone numbers */
-	var $regex_telephoneNumber = '^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/]|[-])*$';
-	/** regular expression for e-mail */
-	var $regex_email = '^(([0-9a-z\\._-])+[@]([0-9a-z-])+([.]([0-9a-z-])+)*)*$';
-	/** regular expression for street names */
-	var $regex_street = '^([0-9a-z \\.��])*$';
-	/** regular expression for postal address */
-	var $regex_postalAddress = '^([0-9a-z \\.��])*$';
-	/** regular expression for postal codes */
-	var $regex_postalCode = '^([0-9a-z])*$';
-	/** regular expression for job titles */
-	var $regex_title = '^([0-9a-z \\.��])*$';
-	/** regular expression for employee types */
-	var $regex_employeeType = '^([0-9a-z \\.��])*$';
-
-	/** list of possible error messages */
-	var $messages = array();
-
 	/* This function returns true if all required attributes from other
 	* modules are set. This is required to prevent undefined states
 	*/
@@ -197,26 +170,7 @@ class inetOrgPerson extends baseModule {
 	* $attr is an array as it's retured from ldap_get_attributes
 	*/
 	function load_attributes($attr) {
-		// Load attributes which are displayed
-		// unset count entries
-		unset ($attr['count']);
-		$attributes = array_keys($attr);
-		foreach ($attributes as $attribute) unset ($attr[$attribute]['count']);
-		// unset double entries
-		for ($i=0; $i<count($attr); $i++)
-			if (isset($attr[$i])) unset($attr[$i]);
-		foreach ($attributes as $attribute) {
-			if (isset($this->attributes[$attribute])) {
-				// decode as unicode
-				$this->attributes[$attribute] = $attr[$attribute];
-				for ($i=0; $i<count($this->attributes[$attribute]); $i++) {
-					$this->attributes[$attribute][$i] = utf8_decode ($this->attributes[$attribute][$i]);
-					$this->orig[$attribute][$i] = utf8_decode ($this->attributes[$attribute][$i]);
-					}
-				}
-			}
-		// Add objectClass to orig because we don't want to add objectClass if it's already set
-		$this->orig['objectClass'][0] = 'inetOrgPerson';
+		$this->load_ldap_attributes($attr);
 		return 0;
 		}
 
@@ -265,8 +219,8 @@ class inetOrgPerson extends baseModule {
 		// handle host-attribute in on epice because it's not set by default
 		if (isset($this->attributes['host'])) {
 			$host = $post['host'];
-			if ((!$host=='') && !eregi($this->regex_host, $host))
-				$errors['host'][] = $this->messages['host'];
+			if (!get_preg($host,'unixhost'))
+				$errors['host'][] = $this->messages['host'][0];
 			$hosts = explode(" ", $host);
 			$this->attributes['host'] = array();
 			foreach ($hosts as $host)
@@ -275,18 +229,18 @@ class inetOrgPerson extends baseModule {
 
 		// Do some regex-checks and return error if attributes are set to wrong values
 		if (!$profile) {
-			if ( !eregi($this->regex_name, $this->attributes['givenName'][0])) $errors['givenName'][] = $this->messages['givenName'];
-			if ( !eregi($this->regex_name, $this->attributes['sn'][0])) $errors['sn'][] = $this->messages['surname'];
-			if ( !ereg($this->regex_telephoneNumber, $this->attributes['telephoneNumber'][0])) $errors['telephoneNumber'][] = $this->messages['telephoneNumber'];
-			if ( !ereg($this->regex_telephoneNumber, $this->attributes['mobileTelephoneNumber'][0])) $errors['mobileTelephoneNumber'][] = $this->messages['mobileTelephone'];
-			if ( !ereg($this->regex_telephoneNumber, $this->attributes['facsimileTelephoneNumber'][0])) $errors['facsimileTelephoneNumber'][] = $this->messages['facsimileNumber'];
-			if ( !eregi($this->regex_email, $this->attributes['mail'][0])) $errors['mail'][] = $this->messages['email'];
-			if ( !eregi($this->regex_street, $this->attributes['street'][0])) $errors['street'][] = $this->messages['street'];
-			if ( !eregi($this->regex_postalAddress, $this->attributes['postalAddress'][0])) $errors['postalAdress'][] = $this->messages['postalAddress'];
-			if ( !eregi($this->regex_postalCode, $this->attributes['personal_postalCode'][0])) $errors['personal_postalCode'][] = $this->messages['postalCode'];
+			if ( !get_preg($this->attributes['givenName'][0], 'realname')) $errors['givenName'][] = $this->messages['givenName'][0];
+			if ( !get_preg($this->attributes['sn'][0], 'realname')) $errors['sn'][] = $this->messages['surname'][0];
+			if ( !get_preg($this->attributes['telephoneNumber'][0], 'telephone')) $errors['telephoneNumber'][] = $this->messages['telephoneNumber'][0];
+			if ( !get_preg($this->attributes['mobileTelephoneNumber'][0], 'telephone')) $errors['mobileTelephoneNumber'][] = $this->messages['mobileTelephone'][0];
+			if ( !get_preg($this->attributes['facsimileTelephoneNumber'][0], 'telephone')) $errors['facsimileTelephoneNumber'][] = $this->messages['facsimileNumber'][0];
+			if ( !get_preg($this->attributes['mail'][0], 'email')) $errors['mail'][] = $this->messages['email'][0];
+			if ( !get_preg($this->attributes['street'][0], 'street')) $errors['street'][] = $this->messages['street'][0];
+			if ( !get_preg($this->attributes['postalAddress'][0], 'postalAddress')) $errors['postalAdress'][] = $this->messages['postalAddress'][0];
+			if ( !get_preg($this->attributes['personal_postalCode'][0], 'postalCode')) $errors['personal_postalCode'][] = $this->messages['postalCode'][0];
 			}
-		if ( !eregi($this->regex_title, $this->attributes['title'][0])) $errors['title'][] = $this->messages['title'];
-		if ( !eregi($this->regex_employeeType, $this->attributes['employeeType'][0])) $errors['employeeType'][] = $this->messages['employeeType'];
+		if ( !get_preg($this->attributes['title'][0], 'title')) $errors['title'][] = $this->messages['title'][0];
+		if ( !get_preg($this->attributes['employeeType'][0], 'employeeType')) $errors['employeeType'][] = $this->messages['employeeType'][0];
 		// Return error-messages
 		if (is_array($errors)) return $errors;
 		return 0;

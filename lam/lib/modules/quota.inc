@@ -27,17 +27,22 @@ class quota extends baseModule {
 	* Creates a new quota object.
 	*/
 	function quota($scope) {
-	// error messages for input checks
-	$this->messages['softblock'] = array('ERROR', _('Block soft quota'), _('Block soft quota contains invalid characters. Only natural numbers are allowed'));
-	$this->messages['hardblock'] = array('ERROR', _('Block hard quota'), _('Block hard quota contains invalid characters. Only natural numbers are allowed'));
-	$this->messages['softinode'] = array('ERROR', _('Inode soft quota'), _('Inode soft quota contains invalid characters. Only natural numbers are allowed'));
-	$this->messages['hardinode'] = array('ERROR', _('Inode hard quota'), _('Inode hard quota contains invalid characters. Only natural numbers are allowed'));
-	$this->messages['block_cmp'] = array('ERROR', _('Block quota'), _('Block soft quota must be smaller than block hard quota'));
-	$this->messages['inode_cmp'] = array('ERROR', _('Inode quota'), _('Inode soft quota must be smaller than inode hard quota'));
 	// call parent constructor
 	parent::baseModule($scope);
 	}
 
+	/** this functin fills the error message array with messages
+	**/
+	function load_Messages() {
+	// error messages for input checks
+	$this->messages['softblock'][0] = array('ERROR', _('Block soft quota'), _('Block soft quota contains invalid characters. Only natural numbers are allowed'));
+	$this->messages['hardblock'][0] = array('ERROR', _('Block hard quota'), _('Block hard quota contains invalid characters. Only natural numbers are allowed'));
+	$this->messages['softinode'][0] = array('ERROR', _('Inode soft quota'), _('Inode soft quota contains invalid characters. Only natural numbers are allowed'));
+	$this->messages['hardinode'][0] = array('ERROR', _('Inode hard quota'), _('Inode hard quota contains invalid characters. Only natural numbers are allowed'));
+	$this->messages['block_cmp'][0] = array('ERROR', _('Block quota'), _('Block soft quota must be smaller than block hard quota'));
+	$this->messages['inode_cmp'][0] = array('ERROR', _('Inode quota'), _('Inode soft quota must be smaller than inode hard quota'));
+	}
+	
 	/**
 	* Returns meta data that is interpreted by parent class
 	*
@@ -94,15 +99,7 @@ class quota extends baseModule {
 		}
 
 	// Variables
-
 	var $quota;
-
-	/** regular expression for quota values */
-	var $regex_quota = '^[0-9]*$';
-
-	/** list of possible error messages */
-	var $messages = array();
-
 
 	function module_ready() {
 		if (!isset($_SESSION['config']->scriptPath)) return $false;
@@ -240,18 +237,18 @@ class quota extends baseModule {
 			$this->quota[$i][6] = $post[$i . '_6'];
 			$this->quota[$i][7] = $post[$i . '_7'];
 			// Check if values are OK and set automatic values. if not error-variable will be set
-			if (!ereg($this->regex_quota, $this->quota[$i][2]))
-				$errors[$this->quota[$i][2]][] = $this->messages['softblock'];
-			if (!ereg($this->regex_quota, $this->quota[$i][3]))
-				$errors[$this->quota[$i][3]][] = $this->messages['hardblock'];
-			if (!ereg($this->regex_quota, $this->quota[$i][6]))
-				$errors[$this->quota[$i][6]][] = $this->messages['softinode'];
-			if (!ereg($this->regex_quota, $this->quota[$i][7]))
-				$errors[$this->quota[$i][7]][] = $this->messages['hardinode'];
+			if (!get_preg($this->quota[$i][2], 'digit'))
+				$errors[$this->quota[$i][2]][] = $this->messages['softblock'][0];
+			if (!get_preg($this->quota[$i][3], 'digit'))
+				$errors[$this->quota[$i][3]][] = $this->messages['hardblock'][0];
+			if (!get_preg($this->quota[$i][6], 'digit'))
+				$errors[$this->quota[$i][6]][] = $this->messages['softinode'][0];
+			if (!get_preg($this->quota[$i][7], 'digit'))
+				$errors[$this->quota[$i][7]][] = $this->messages['hardinode'][0];
 			if (intval($this->quota[$i][2]) > intval($this->quota[$i][3]))
-				$errors[$this->quota[$i][2]][] = $this->messages['block_cmp'];
+				$errors[$this->quota[$i][2]][] = $this->messages['block_cmp'][0];
 			if (intval($this->quota[$i][6]) > intval($this->quota[$i][7]))
-				$errors[$this->quota[$i][6]][] = $this->messages['inode_cmp'];
+				$errors[$this->quota[$i][6]][] = $this->messages['inode_cmp'][0];
 			$i++;
 			}
 
@@ -360,12 +357,12 @@ class quota extends baseModule {
 		$return = array();
 		$i = 0;
 		while (isset($options["quota_softblock_$i"])) {
-			if (!ereg($this->regex_quota, $options["quota_softblock_$i"][0])) $return[] = $this->messages['softblock'];
-			if (!ereg($this->regex_quota, $options["quota_hardblock_$i"][0])) $return[] = $this->messages['hardblock'];
-			if (!ereg($this->regex_quota, $options["quota_softinode_$i"][0])) $return[] = $this->messages['softinode'];
-			if (!ereg($this->regex_quota, $options["quota_hardinode_$i"][0])) $return[] = $this->messages['hardinode'];
-			if (intval($options["quota_softblock_$i"][0]) > $options["quota_hardblock_$i"][0]) $return[] = $this->messages['block_cmp'];
-			if (intval($options["quota_softinode_$i"][0]) > $options["quota_hardinode_$i"][0]) $return[] = $this->messages['inode_cmp'];
+			if (!get_preg($options["quota_softblock_$i"][0], 'digit')) $return[] = $this->messages['softblock'][0];
+			if (!get_preg($options["quota_hardblock_$i"][0], 'digit')) $return[] = $this->messages['hardblock'][0];
+			if (!get_preg($options["quota_softinode_$i"][0], 'digit')) $return[] = $this->messages['softinode'][0];
+			if (!get_preg($options["quota_hardinode_$i"][0], 'digit')) $return[] = $this->messages['hardinode'][0];
+			if (intval($options["quota_softblock_$i"][0]) > $options["quota_hardblock_$i"][0]) $return[] = $this->messages['block_cmp'][0];
+			if (intval($options["quota_softinode_$i"][0]) > $options["quota_hardinode_$i"][0]) $return[] = $this->messages['inode_cmp'][0];
 			$i++;
 		}
 		return $return;

@@ -90,6 +90,7 @@ class baseModule {
 			}
 		$objectClassName = substr($_SESSION['ldap']->objectClasses[$line], 6+strpos($_SESSION['ldap']->objectClasses[$line], "NAME '"), strlen(get_class($this)) );
 		$this->attributes['objectClass'][0] = $objectClassName;
+		$this->load_Messages();
 	}
 
 

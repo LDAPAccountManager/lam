@@ -20,38 +20,6 @@ $Id$
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-/* Session variables which are used:
-* $_SESSION['cacheAttributes']: This variable contains a list of attributes and their scope which should be cached
-*
-* Coockie variables which are used:
-* $_COOKIE["IV"], $_COOKIE["Key"]: Needed to en/decrypt passwords.
-*
-* Variables in basearray which are no objects:
-* type: Type of account. Can be user, group, host
-* attributes: List of all attributes, how to get them and are theiy required or optional
-* dn: current DN without uid= or cn=
-* dn_orig: old DN if account was loaded with uid= or cn=
-
-* External functions which are used
-* account.inc: findgroups, incache, get_cache, array_delete, getshells
-* ldap.inc: pwd_is_enabled, pwd_hash
-*/
-
-/* This class contains all sambaAccount LDAP attributes
-* and funtioncs required to deal with sambaAccount
-* sambaAccount can only be created when it should be added
-* to an array.
-* basearray is the same array sambaAccount should be added
-* to. If basearray is not given the constructor tries to
-* create an array with sambaAccount and all other required
-* objects.
-* Example: $user[] = new sambaAccount($user);
-*
-* In container array the following things have to exist:
-* account or inetOrgPerson object
-* type: 'user' or 'host'
-* 'attributes': this is a list of arrays with all ldap attributes wich are allowed for this account
-*/
 class sambaAccount extends baseModule {
 
 	/**
@@ -60,14 +28,27 @@ class sambaAccount extends baseModule {
 	* @param string $scope account type (user, group, host)
 	*/
 	function sambaAccount($scope) {
-	// error messages for input checks
-	$this->messages['homedir'] = array('ERROR', _('Home path'), _('Home path is invalid.'));
-	$this->messages['profilePath'] = array('ERROR', _('Profile path'), _('Profile path is invalid!'));
-	$this->messages['logonScript'] = array('ERROR', _('Script path'), _('Script path is invalid!'));
-	$this->messages['workstations'] = array('ERROR', _('Samba workstations'), _('Please enter a comma separated list of host names!'));
-	$this->messages['domain'] = array('ERROR', _('Domain name'), _('Domain name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and -.'));
 	// call parent constructor
 	parent::baseModule($scope);
+	}
+
+	/** this functin fills the error message array with messages
+	**/
+	function load_Messages() {
+		// error messages for input checks
+		$this->messages['homePath'][0] = array('ERROR', _('Home path'), _('Home path is invalid.'));
+		$this->messages['homePath'][1] = array('INFO', _('Home path'), _('Inserted user- or groupname in HomePath.'));
+		$this->messages['profilePath'][0] = array('ERROR', _('Profile path'), _('Profile path is invalid!'));
+		$this->messages['profilePath'][1] = array('INFO', _('Profile path'), _('Inserted user- or groupname in profilepath.'));
+		$this->messages['logonScript'][0] = array('ERROR', _('Script path'), _('Script path is invalid!'));
+		$this->messages['logonScript'][1] = array('INFO', _('Script path'), _('Inserted user- or groupname in scriptpath.'));
+		$this->messages['workstations'][0] = array('ERROR', _('Samba workstations'), _('Please enter a comma separated list of host names!'));
+		$this->messages['domain'][0] = array('ERROR', _('Domain name'), _('Domain name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and -.'));
+		$this->messages['lmPassword'][0] = array('ERROR', _('Password'), _('Please enter the same password in both password-fields.'));
+		$this->messages['lmPassword'][1] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
+		$this->messages['rid'][0] = array('ERROR', _('Special user'), _('There can be only one administrator per domain.'));
+		$this->messages['rid'][1] = array('ERROR', _('Special user'), _('There can be only one guest per domain.'));	
+	
 	}
 
 	/**
@@ -155,16 +136,16 @@ class sambaAccount extends baseModule {
 			2 => array('kind' => 'help', 'value' => 'TODO')
 			);
 		// profile checks
-		$return['profile_checks']['sambaAccount_smbhome'] = array('type' => 'regex_i', 'regex' => $this->regex_homedir,
-			'error_message' => $this->messages['homedir']);
-		$return['profile_checks']['sambaAccount_profilePath'] = array('type' => 'regex_i', 'regex' => $this->regex_profilePath,
-			'error_message' => $this->messages['profilePath']);
-		$return['profile_checks']['sambaAccount_scriptPath'] = array('type' => 'regex_i', 'regex' => $this->regex_logonScript,
-			'error_message' => $this->messages['logonScript']);
-		$return['profile_checks']['sambaAccount_userWorkstations'] = array('type' => 'regex_i', 'regex' => $this->regex_workstations,
-			'error_message' => $this->messages['workstations']);
-		$return['profile_checks']['sambaAccount_domain'] = array('type' => 'regex_i', 'regex' => $this->regex_domain,
-			'error_message' => $this->messages['domain']);
+		$return['profile_checks']['sambaAccount_smbhome'] = array('type' => 'regex_i', 'regex' => 'UNC',
+			'error_message' => $this->messages['homePath'][0]);
+		$return['profile_checks']['sambaAccount_profilePath'] = array('type' => 'regex_i', 'regex' => 'UNC',
+			'error_message' => $this->messages['profilePath'][0]);
+		$return['profile_checks']['sambaAccount_scriptPath'] = array('type' => 'regex_i', 'regex' => 'logonScript',
+			'error_message' => $this->messages['logonScript'][0]);
+		$return['profile_checks']['sambaAccount_userWorkstations'] = array('type' => 'regex_i', 'regex' => 'unixhost',
+			'error_message' => $this->messages['workstations'][0]);
+		$return['profile_checks']['sambaAccount_domain'] = array('type' => 'regex_i', 'regex' => 'domainname',
+			'error_message' => $this->messages['domain'][0]);
 		// available PDF fields
 		$return['PDF_fields'] = array(	'displayName',
 													'uid',
@@ -189,30 +170,10 @@ class sambaAccount extends baseModule {
 		}
 
 	// Variables
-	// This variable contains all inetOrgPerson attributes
-	var $attributes;
-	/* If an account was loaded all attributes are kept in this array
-	* to compare it with new changed attributes
-	*/
-	var $orig;
 	// use unix password as samba password?
 	var $useunixpwd;
 	// Array of well known rids
 	var $rids;
-
-	/** regular expression for home directory */
-	var $regex_homedir = '^[\][\]([a-z0-9\\.%-])+([\]([a-z0-9\\.%��\$-])+)+$';
-	/** regular expression for profile path */
-	var $regex_profilePath = '^([\][\]([a-zA-Z0-9\\.%-])+([\]([a-z0-9\\.%-])+)+)|([/][a-z]([a-z0-9\\._%-])*([/][a-z]([a-z0-9\\._%-])*)*)$';
-	/** regular expression for logon script */
-	var $regex_logonScript = '^([/])*([a-z0-9\\._%��])+([/]([a-z0-9\\._%��])+)*((\\.bat)|(\\.cmd))$';
-	/** regular expression for allowed workstations */
-	var $regex_workstations = '^([a-z0-9\\._-])+(,[a-z0-9\\._-])*$';
-	/** regular expression for domain name */
-	var $regex_domain = '^([a-z0-9_-])+$';
-
-	/** list of possible error messages */
-	var $messages = array();
 
 	/* $attribute['lmPassword'] and ntPassword can't accessed directly because it's enrcypted
 	* To read / write password function userPassword is needed
@@ -287,26 +248,7 @@ class sambaAccount extends baseModule {
 	* $attr is an array as it's retured from ldap_get_attributes
 	*/
 	function load_attributes($attr) {
-		// Load attributes which are displayed
-		// unset count entries
-		unset ($attr['count']);
-		$attributes = array_keys($attr);
-		foreach ($attributes as $attribute) unset ($attr[$attribute]['count']);
-		// unset double entries
-		for ($i=0; $i<count($attr); $i++)
-			if (isset($attr[$i])) unset($attr[$i]);
-		foreach ($attributes as $attribute) {
-			if (isset($this->attributes[$attribute])) {
-				// decode as unicode
-				$this->attributes[$attribute] = $attr[$attribute];
-				for ($i=0; $i<count($this->attributes[$attribute]); $i++) {
-					$this->attributes[$attribute][$i] = utf8_decode ($this->attributes[$attribute][$i]);
-					$this->orig[$attribute][$i] = utf8_decode ($this->attributes[$attribute][$i]);
-					}
-				}
-			}
-		// Values are kept as copy so we can compare old attributes with new attributes
-		$this->attributes['objectClass'][0] = 'sambaAccount';
+		$this->load_ldap_attributes($attr);
 		return 0;
 		}
 
@@ -410,7 +352,7 @@ class sambaAccount extends baseModule {
 
 				if (isset($post['lmPassword'])) {
 					if ($post['lmPassword'] != $post['lmPassword2']) {
-						$errors['lmPassword'][] = array('ERROR', _('Password'), _('Please enter the same password in both password-fields.'));
+						$errors['lmPassword'][] = $this->messages['lmPassword'][0];
 						unset ($post['lmPassword2']);
 						}
 						else $this->lmPassword($post['lmPassword']);
@@ -419,31 +361,30 @@ class sambaAccount extends baseModule {
 					$this->attributes['rid'][0] = "500";
 					// Do a check if an administrator already exists
 					if ($_SESSION['cache']->in_cache("500", 'rid', 'user')!=$_SESSION[$this->base]->dn_orig)
-						$errors['rid'][] = array('ERROR', _('Special user'), _('There can be only one administrator per domain.'));
+						$errors['rid'][] = $this->messages['rid'][0];
 					}
 				if ($post['rid']== _('Guest')) {
 					$this->attributes['rid'][0] = "501";
 					// Do a check if an administrator already exists
 					if ($_SESSION['cache']->in_cache("501", 'rid', 'user')!=$_SESSION[$this->base]->dn_orig)
-						$errors['rid'][] = array('ERROR', _('Special user'), _('There can be only one guest per domain.'));
+						$errors['rid'][] = $this->messages['rid'][1];
 					}
 				$this->attributes['smbHome'][0] = str_replace('$user', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['uid'][0], $this->attributes['smbHome'][0]);
 				$this->attributes['smbHome'][0] = str_replace('$group', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['gid'][0], $this->attributes['smbHome'][0]);
-				if ($this->attributes['smbHome'][0] != stripslashes($post['smbHome'])) $errors['smbHome'][] = array('INFO', _('Home path'), _('Inserted user- or groupname in HomePath.'));
+				if ($this->attributes['smbHome'][0] != stripslashes($post['smbHome'])) $errors['smbHome'][] = $this->messages['homePath'][1];
 				$this->attributes['scriptPath'][0] = str_replace('$user', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['uid'][0], $this->attributes['scriptPath'][0]);
 				$this->attributes['scriptPath'][0] = str_replace('$group', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['gid'][0], $this->attributes['scriptPath'][0]);
-				if ($this->attributes['scriptPath'][0] != stripslashes($post['scriptPath'])) $errors['scriptPath'][] = array('INFO', _('Script path'), _('Inserted user- or groupname in scriptpath.'));
+				if ($this->attributes['scriptPath'][0] != stripslashes($post['scriptPath'])) $errors['scriptPath'][] = $this->messages['logonScript'][1];
 				$this->attributes['profilePath'][0] = str_replace('$user', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['uid'][0], $this->attributes['profilePath'][0]);
 				$this->attributes['profilePath'][0] = str_replace('$group', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['gid'][0], $this->attributes['profilePath'][0]);
-				if ($this->attributes['profiletPath'][0] != stripslashes($post['profilePath'])) $errors['profilePath'][] = array('INFO', _('Profile path'), _('Inserted user- or groupname in profilepath.'));
-				if ( !ereg('^([a-z]|[A-Z]|[0-9]|[\|]|[\#]|[\*]|[\,]|[\.]|[\;]|[\:]|[\_]|[\-]|[\+]|[\!]|[\%]|[\&]|[\/]|[\?]|[\{]|[\[]|[\(]|[\)]|[\]]|[\}])*$',
-					$this->lmPassword())) $errors['lmPassword'][] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
-				if ( (!$this->attributes['smbHome'][0]=='') && (!eregi($this->regex_homedir, $this->attributes['smbHome'][0])))
-						$errors['smbHome'][] = $this->messages['homedir'];
-				if ( (!$this->attributes['scriptPath'][0]=='') && (!eregi($this->regex_logonScript, $this->attributes['scriptPath'][0])))
-					$errors['scriptPath'][] = $this->messages['logonScript'];
-				if ( (!$this->attributes['profilePath'][0]=='') && (!eregi($this->regex_profilePath, $this->attributes['profilePath'][0])))
-						$errors['profilePath'][] = $this->messages['profilePath'];
+				if ($this->attributes['profiletPath'][0] != stripslashes($post['profilePath'])) $errors['profilePath'][] = $this->messages['profilePath'][1];
+				if ( !get_preg($this->lmPassword(), 'passord')) $errors['lmPassword'][] = $this->messages['lmPassword'][1];
+				if ( (!$this->attributes['smbHome'][0]=='') && (!get_preg($this->attributes['smbHome'][0], 'UNC')))
+						$errors['smbHome'][] = $this->messages['homedir'][0];
+				if ( (!$this->attributes['scriptPath'][0]=='') && (!get_preg($this->attributes['scriptPath'][0], 'logonscript')))
+					$errors['scriptPath'][] = $this->messages['logonScript'][0];
+				if ( (!$this->attributes['profilePath'][0]=='') && (!get_preg($this->attributes['profilePath'][0], 'UNC')))
+						$errors['profilePath'][] = $this->messages['profilePath'][0];
 				}
 			else {
 				$smbHome = str_replace('$user', 'user', $this->attributes['smbHome'][0]);
@@ -452,22 +393,21 @@ class sambaAccount extends baseModule {
 				$scriptPath = str_replace('$group', 'group', $scriptPath);
 				$profilePath = str_replace('$user', 'user', $this->attributes['profilePath'][0]);
 				$profilePath = str_replace('$group', 'group', $profilePath);
-				if ( (!$smbHome=='') && (!ereg('^[\][\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+([\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%]|[�|[�|[�|[�|[]|[�|[�)+)+$', $smbHome)))
-						$errors['smbHome'][] = array('ERROR', _('Home path'), _('Home path is invalid.'));
-				if ( (!$scriptPath=='') && (!ereg('^([/])*([a-z]|[0-9]|[.]|[-]|[_]|[%]|[�|[�|[�|[�|[]|[�|[�)+([a-z]|[0-9]|[.]|[-]|[_]|[%]|[�|[�|[�|[�|[]|[�|[�)*'.
-					'([/]([a-z]|[0-9]|[.]|[-]|[_]|[%]|[�|[�|[�|[�|[]|[�|[�)+([a-z]|[0-9]|[.]|[-]|[_]|[%]|[�|[�|[�|[�|[]|[�|[�)*)*(([.][b][a][t])|([.][c][m][d]))$', $scriptPath)))
-					$errors['scriptPath'][] = array('ERROR', _('Script path'), _('Script path is invalid!'));
-				if ( (!$profilePath=='') && (!ereg('^[/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*([/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*)*$', $profilePath))
-					&& (!ereg('^[\][\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+([\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+)+$', $profilePath)))
-						$errors['profilePath'][] = array('ERROR', _('Profile path'), _('Profile path is invalid!'));
+				if ( (!$smbHome=='') && (!get_preg($smbHome, 'UNC')))
+						$errors['smbHome'][] = $this->messages['homePath'][0];
+				if ( (!$scriptPath=='') && (!get_preg($scriptPath, 'logonscript')))
+					$errors['scriptPath'][] = $this->messages['logonScript'][0];
+				if ( (!$profilePath=='') && (!get_preg('^[/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*([/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*)*$', $profilePath))
+					&& (!get_preg($profilePath, 'UNC')))
+						$errors['profilePath'][] = $this->messages['profilePath'][0];
 				}
 
 			if ($post['useunixpwd']) $this->useunixpwd = true;
 				else $this->useunixpwd = false;
 			}
 
-		if ((!$this->attributes['domain'][0]=='') && !eregi($this->regex_domain, $this->attributes['domain'][0]))
-			$errors['domain'][] = $this->messages['domain'];
+		if ((!$this->attributes['domain'][0]=='') && !get_preg($this->attributes['domain'][0], 'domainname'))
+			$errors['domain'][] = $this->messages['domain'][0];
 
 		if (is_array($errors)) return $errors;
 		if ($post['userWorkstations'])  return 'userWorkstations';
@@ -541,7 +481,7 @@ class sambaAccount extends baseModule {
 
 			if (!$profile) {
 				if ($this->attributes['lmPassword'][0] != $this->orig['lmPassword'][0]) $password=$this->lmPassword();
-					else $password='';
+				else if ($this->attributes['lmPassword'][0] != '') $password=$post['lmPassword'];
 				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Samba password') ),
 					1 => array ( 'kind' => 'input', 'name' => 'lmPassword', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => $password));
 				if ($post['lmPassword2']!='') $password2 = $post['lmPassword2'];

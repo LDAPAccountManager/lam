@@ -20,38 +20,6 @@ $Id$
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-/* Session variables which are used:
-* $_SESSION['cacheAttributes']: This variable contains a list of attributes and their scope which should be cached
-*
-* Coockie variables which are used:
-* $_COOKIE["IV"], $_COOKIE["Key"]: Needed to en/decrypt passwords.
-*
-* Variables in basearray which are no objects:
-* type: Type of account. Can be user, group, host
-* attributes: List of all attributes, how to get them and are theiy required or optional
-* dn: current DN without uid= or cn=
-* dn_orig: old DN if account was loaded with uid= or cn=
-
-* External functions which are used
-* account.inc: findgroups, incache, get_cache, array_delete, getshells
-* ldap.inc: pwd_is_enabled, pwd_hash
-*/
-
-/* This class contains all shadowAccount LDAP attributes
-* and funtioncs required to deal with shadowAccount
-* shadowAccount can only be created when it should be added
-* to an array.
-* basearray is the same array shadowAccount should be added
-* to. If basearray is not given the constructor tries to
-* create an array with shadowAccount and all other required
-* objects.
-* Example: $user[] = new shadowAccount($user);
-*
-* In container array the following things have to exist:
-* account or inetOrgPerson object
-* type: 'user' or 'host'
-* 'attributes': this is a list of arrays with all ldap attributes wich are allowed for this account
-*/
 class shadowAccount extends baseModule {
 
 	/**
@@ -60,16 +28,21 @@ class shadowAccount extends baseModule {
 	* @param string $scope account type (user, group, host)
 	*/
 	function shadowAccount($scope) {
-	// error messages for input checks
-	$this->messages['shadowMin'] = array('ERROR', _('Password minage'), _('Password minage must be are natural number.'));
-	$this->messages['shadowMax'] = array('ERROR', _('Password maxage'), _('Password maxage must be are natural number.'));
-	$this->messages['inactive'] = array('ERROR', _('Password Expire'), _('Password expire must be are natural number or -1.'));
-	$this->messages['shadowWarning'] = array('ERROR', _('Password warn'), _('Password warn must be are natural number.'));
-	$this->messages['shadow_cmp'] = array('ERROR', _('Password maxage'), _('Password maxage must bigger as Password Minage.'));
 	// call parent constructor
 	parent::baseModule($scope);
 	}
 
+	/** this functin fills the error message array with messages
+	**/
+	function load_Messages() {
+		// error messages for input checks
+		$this->messages['shadowMin'][0] = array('ERROR', _('Password minage'), _('Password minage must be are natural number.'));
+		$this->messages['shadowMax'][0] = array('ERROR', _('Password maxage'), _('Password maxage must be are natural number.'));
+		$this->messages['inactive'][0] = array('ERROR', _('Password Expire'), _('Password expire must be are natural number or -1.'));
+		$this->messages['shadowWarning'][0] = array('ERROR', _('Password warn'), _('Password warn must be are natural number.'));
+		$this->messages['shadow_cmp'][0] = array('ERROR', _('Password maxage'), _('Password maxage must bigger as Password Minage.'));
+	}
+	
 	/**
 	* Returns meta data that is interpreted by parent class
 	*
@@ -125,16 +98,16 @@ class shadowAccount extends baseModule {
 				2 => array('kind' => 'help', 'value' => 'TODO'))
 		);
 		// profile checks
-		$return['profile_checks']['shadowAccount_shadowMin'] = array('type' => 'regex', 'regex' => $this->regex_number,
-			'error_message' => $this->messages['shadowMin']);
-		$return['profile_checks']['shadowAccount_shadowMax'] = array('type' => 'regex', 'regex' => $this->regex_number,
-			'error_message' => $this->messages['shadowMax']);
+		$return['profile_checks']['shadowAccount_shadowMin'] = array('type' => 'regex', 'regex' => 'digit',
+			'error_message' => $this->messages['shadowMin'][0]);
+		$return['profile_checks']['shadowAccount_shadowMax'] = array('type' => 'regex', 'regex' => 'digit',
+			'error_message' => $this->messages['shadowMax'][0]);
 		$return['profile_checks']['shadowAccount_cmp'] = array('type' => 'int_greater', 'cmp_name1' => 'shadowAccount_shadowMax',
-			'cmp_name2' => 'shadowAccount_shadowMin', 'error_message' => $this->messages['shadow_cmp']);
-		$return['profile_checks']['shadowAccount_shadowInactive'] = array('type' => 'regex', 'regex' => $this->regex_inactive,
-			'error_message' => $this->messages['inactive']);
-		$return['profile_checks']['shadowAccount_shadowWarning'] = array('type' => 'regex', 'regex' => $this->regex_number,
-			'error_message' => $this->messages['shadowWarning']);
+			'cmp_name2' => 'shadowAccount_shadowMin', 'error_message' => $this->messages['shadow_cmp'][0]);
+		$return['profile_checks']['shadowAccount_shadowInactive'] = array('type' => 'regex', 'regex' => 'digit2',
+			'error_message' => $this->messages['inactive'][0]);
+		$return['profile_checks']['shadowAccount_shadowWarning'] = array('type' => 'regex', 'regex' => 'digit',
+			'error_message' => $this->messages['shadowWarning'][0]);
 		// available PDF fields
 		$return['PDF_fields'] = array(	'shadowLastChange',
 													'shadowWarning',
@@ -158,21 +131,6 @@ class shadowAccount extends baseModule {
 		parent::init($base);
 		}
 
-	// Variables
-	// This variable contains all inetOrgPerson attributes
-	var $attributes;
-	/* If an account was loaded all attributes are kept in this array
-	* to compare it with new changed attributes
-	*/
-	var $orig;
-
-	/** regular expression for numeric values */
-	var $regex_number = '^([0-9])*$';
-	/** regular expression for shasowInactive */
-	var $regex_inactive = '^(([-][1])|([0-9]*))$';
-
-	/** list of possible error messages */
-	var $messages = array();
 
 	function module_ready() {
 		return true;
@@ -207,26 +165,8 @@ class shadowAccount extends baseModule {
 	* $attr is an array as it's retured from ldap_get_attributes
 	*/
 	function load_attributes($attr) {
-		// Load attributes which are displayed
-		// unset count entries
-		unset ($attr['count']);
-		$attributes = array_keys($attr);
-		foreach ($attributes as $attribute) unset ($attr[$attribute]['count']);
-		// unset double entries
-		for ($i=0; $i<count($attr); $i++)
-			if (isset($attr[$i])) unset($attr[$i]);
-		foreach ($attributes as $attribute) {
-			if (isset($this->attributes[$attribute])) {
-				// decode as unicode
-				$this->attributes[$attribute] = $attr[$attribute];
-				for ($i=0; $i<count($this->attributes[$attribute]); $i++) {
-					$this->attributes[$attribute][$i] = utf8_decode ($this->attributes[$attribute][$i]);
-					$this->orig[$attribute][$i] = utf8_decode ($this->attributes[$attribute][$i]);
-					}
-				}
-			}
-		// Values are kept as copy so we can compare old attributes with new attributes
-		$this->attributes['objectClass'][0] = 'shadowAccount';
+		$this->load_ldap_attributes($attr);
+		return 0;
 		}
 
 	/* This function returns an array with 3 entries:
@@ -261,11 +201,11 @@ class shadowAccount extends baseModule {
 		$this->attributes['shadowExpire'][0] = intval(mktime(10, 0, 0, $post['shadowExpire_mon'],
 			$post['shadowExpire_day'], $post['shadowExpire_yea'])/3600/24);
 
-		if ( !ereg($this->regex_number, $this->attributes['shadowMin'][0]))  $errors['shadowMin'][] = $this->messages['shadowMin'];
-		if ( !ereg($this->regex_number, $this->attributes['shadowMax'][0])) $errors['shadowMax'][] = $this->messages['shadowMax'];
-		if ( $this->attributes['shadowMin'][0] > $this->attributes['shadowMax'][0]) $errors['shadowMin'][] = $this->messages['shadow_cmp'];
-		if ( !ereg($this->regex_inactive, $this->attributes['shadowInactive'][0])) $errors['shadowInactive'][] = $this->messages['inactive'];
-		if ( !ereg($this->regex_number, $this->attributes['shadowWarning'][0])) $errors['shadowWarning'][] = $this->messages['shadowWarning'];
+		if ( !get_preg($this->attributes['shadowMin'][0], 'digit'))  $errors['shadowMin'][] = $this->messages['shadowMin'][0];
+		if ( !get_preg($this->attributes['shadowMax'][0], 'digit')) $errors['shadowMax'][] = $this->messages['shadowMax'][0];
+		if ( $this->attributes['shadowMin'][0] > $this->attributes['shadowMax'][0]) $errors['shadowMin'][] = $this->messages['shadow_cmp'][0];
+		if ( !get_preg($this->attributes['shadowInactive'][0], 'digit2')) $errors['shadowInactive'][] = $this->messages['inactive'][0];
+		if ( !get_preg($this->attributes['shadowWarning'][0], 'digit')) $errors['shadowWarning'][] = $this->messages['shadowWarning'][0];
 		if (is_array($errors)) return $errors;
 		return 0;
 		}

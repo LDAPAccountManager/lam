@@ -37,8 +37,6 @@ class posixGroup extends baseModule {
 	* @param string $scope account type
 	*/
 	function posixGroup($scope) {
-		// load error messages
-		$this->load_errorMessages();
 		// call parent constructor
 		parent::baseModule($scope);
 	}
@@ -254,23 +252,42 @@ class posixGroup extends baseModule {
 		)
 		);
 		// configuration checks
-		$return['config_checks']['group']['posixGroup_minGID'] = array(
-			'type' => 'regex',
-			'regex' => '^[0-9]+$',
-			'required' => true,
-			'required_message' => $this->errormessages['gidNumber'][5],
-			'error_message' => $this->errormessages['gidNumber'][5]);
-		$return['config_checks']['group']['posixGroup_maxGID'] = array(
-			'type' => 'regex',
-			'regex' => '^[0-9]+$',
-			'required' => true,
-			'required_message' => $this->errormessages['gidNumber'][6],
-			'error_message' => $this->errormessages['gidNumber'][6]);
-		$return['config_checks']['group']['cmpGID'] = array(
-			'type' => 'int_greater',
-			'cmp_name1' => 'posixGroup_maxGID',
-			'cmp_name2' => 'posixGroup_minGID',
-			'error_message' => $this->errormessages['gidNumber'][7]);
+  $return['config_checks']['group']['posixGroup_minGID'] = array
+
+   'type' => 'regex'
+
+   'regex' => 'digit'
+
+   'required' => true
+
+   'required_message' => $this->errormessages['gidNumber'][5]
+
+   'error_message' => $this->errormessages['gidNumber'][5])
+
+  $return['config_checks']['group']['posixGroup_maxGID'] = array
+
+   'type' => 'regex'
+
+   'regex' => 'digit'
+
+   'required' => true
+
+   'required_message' => $this->errormessages['gidNumber'][6]
+
+   'error_message' => $this->errormessages['gidNumber'][6])
+
+  $return['config_checks']['group']['cmpGID'] = array
+
+   'type' => 'int_greater'
+
+   'cmp_name1' => 'posixGroup_maxGID'
+
+   'cmp_name2' => 'posixGroup_minGID'
+
+   'error_message' => $this->errormessages['gidNumber'][7])
+
+
+
 		// available PDF fields
 		$return['PDF_fields'] = array(	'cn',
 		'gidNumber',
@@ -390,19 +407,19 @@ class posixGroup extends baseModule {
 
 	/** this functin fills the error message array with messages
 	**/
-	function load_errorMessages() {
-		$this->errormessages['userPassword'][0] = array('ERROR', _('Password'), _('Please enter the same password in both password-fields.'));
-		$this->errormessages['userPassword'][1] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
-		$this->errormessages['gidNumber'][0] = array('INFO', _('GID number'), _('GID number has changed. Please select checkbox to change GID number of users and hosts.'));
-		$this->errormessages['gidNumber'][2] = array('WARN', _('ID-Number'), _('It is possible that this ID-number is reused. This can cause several problems because files with old permissions might still exist. To avoid this warning set maxUID to a higher value.'));
-		$this->errormessages['gidNumber'][3] = array('ERROR', _('ID-Number'), _('No free ID-Number!'));
-		$this->errormessages['gidNumber'][4] = array('ERROR', _('ID-Number'), _('ID is already in use'));
-		$this->errormessages['gidNumber'][5] = array('ERROR', _('Minimum GID number'), _('Minimum GID number is invalid or empty!'));
-		$this->errormessages['gidNumber'][6] = array('ERROR', _('Maximum GID number'), _('Maximum GID number is invalid or empty!'));
-		$this->errormessages['gidNumber'][7] = array('ERROR', _('Maximum GID number'), _('Maximum GID number must be greater than minimum GID number!'));
-		$this->errormessages['cn'][0] = array('WARN', _('Groupname'), _('You are using a capital letters. This can cause problems because windows isn\'t case-sensitive.'));
-		$this->errormessages['cn'][1] = array('WARN', _('Groupname'), _('Groupname in use. Selected next free groupname.'));
-		$this->errormessages['cn'][2] = array('ERROR', _('Groupname'), _('Groupname contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
+	function load_Messages() {
+		$this->messages['minGID'][0] = array('ERROR', _('Minimum GID number'), _('Minimum GID number is invalid or empty!'));
+		$this->messages['maxGID'][0] = array('ERROR', _('Maximum GID number'), _('Maximum GID number is invalid or empty!'));
+		$this->messages['cmpGID'][0] = array('ERROR', _('Maximum GID number'), _('Maximum GID number must be greater than minimum GID number!'));
+		$this->messages['userPassword'][0] = array('ERROR', _('Password'), _('Please enter the same password in both password-fields.'));
+		$this->messages['userPassword'][1] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
+		$this->messages['gidNumber'][0] = array('INFO', _('GID number'), _('GID number has changed. Please select checkbox to change GID number of users and hosts.'));
+		$this->messages['gidNumber'][2] = array('WARN', _('ID-Number'), _('It is possible that this ID-number is reused. This can cause several problems because files with old permissions might still exist. To avoid this warning set maxUID to a higher value.'));
+		$this->messages['gidNumber'][3] = array('ERROR', _('ID-Number'), _('No free ID-Number!'));
+		$this->messages['gidNumber'][4] = array('ERROR', _('ID-Number'), _('ID is already in use'));
+		$this->messages['cn'][0] = array('WARN', _('Groupname'), _('You are using a capital letters. This can cause problems because windows isn\'t case-sensitive.'));
+		$this->messages['cn'][1] = array('WARN', _('Groupname'), _('Groupname in use. Selected next free groupname.'));
+		$this->messages['cn'][2] = array('ERROR', _('Groupname'), _('Groupname contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
 		} 
 
 
@@ -451,11 +468,11 @@ class posixGroup extends baseModule {
 				else {
 					if (isset($post['userPassword'])) {
 						if ($post['userPassword'] != $post['userPassword2']) {
-							$errors['userPassword'][] = $this->errormessages['userPassword'][0];
+							$errors['userPassword'][] = $this->messages['userPassword'][0];
 						}
 						else $this->userPassword($post['userPassword']);
 						if (!get_preg($this->userPassword(), 'password'))
-							$errors['userPassword'][] = $this->errormessages['userPassword'][1];
+							$errors['userPassword'][] = $this->messages['userPassword'][1];
 					}
 				}
 			if ($this->attributes['gidNumber'][0]!=$post['gidNumber'] || ($this->errors['gidNumber'][0]='ERROR')) {
@@ -488,10 +505,10 @@ class posixGroup extends baseModule {
 							$i = intval($minID);
 							while (in_array($i, $gids)) $i++;
 							if ($i>$maxID)
-							$errors['gidNumber'][] = $this->errormessages['gidNumber'][3];
+							$errors['gidNumber'][] = $this->messages['gidNumber'][3];
 							else {
 								$this->attributes['gidNumber'][0] = $i;
-								$errors['gidNumber'][] = $this->errormessages['gidNumber'][2];
+								$errors['gidNumber'][] = $this->messages['gidNumber'][2];
 							}
 						}
 						else $this->attributes['gidNumber'][0] = $minID;
@@ -510,7 +527,7 @@ class posixGroup extends baseModule {
 						if ((in_array($this->attributes['gidNumber'][0], $gids)) && $this->orig['gidNumber'][0]=='') $errors['gidNumber'][] = array('ERROR', _('ID-Number'), _('ID is already in use'));
 						// id-number is in use, account is existing account and id-number is not used by itself
 						if ((in_array($this->attributes['gidNumber'][0], $gids)) && $this->orig['gidNumber'][0]!='' && ($this->orig['gidNumber'][0] != $this->attributes['gidNumber'][0]) ) {
-							$errors['gidNumber'][] = $this->errormessages['gidNumber'][4];
+							$errors['gidNumber'][] = $this->messages['gidNumber'][4];
 							$this->attributes['gidNumber'][0] = $this->orig['gidNumber'][0];
 						}
 					}
@@ -519,10 +536,10 @@ class posixGroup extends baseModule {
 			if ($this->attributes['cn'][0]!=$post['cn'] || ($this->errors['cn'][0]='ERROR')) {
 				$this->attributes['cn'][0] = $post['cn'];
 				if (($this->attributes['cn'][0] != $post['cn']) &&  ereg('[A-Z]$', $post['cn']))
-				$errors['cn'][] = $this->errormessages['cn'][0];
+				$errors['cn'][] = $this->messages['cn'][0];
 				// Check if Groupname contains only valid characters
 				if ( !get_preg($this->attributes['cn'][0],'groupname'))
-				$errors['cn'][] = $this->errormessages['cn'][2];
+				$errors['cn'][] = $this->messages['cn'][2];
 				// Create automatic useraccount with number if original user already exists
 				// Reset name to original name if new name is in use
 				// Set username back to original name if new username is in use
@@ -562,11 +579,11 @@ class posixGroup extends baseModule {
 				}
 				// Show warning if lam has changed username
 				if ($this->attributes['cn'][0] != $post['cn']) {
-					$errors['cn'][] = $this->errormessages['cn'][0];
+					$errors['cn'][] = $this->messages['cn'][0];
 				}
 			// show info when gidnumber has changed
 			if (($this->orig['gidNumber'][0]!=$this->attributes['gidNumber'][0]) && $this->orig['gidNumber'][0]!='' && $post['gidNumber']!=$this->attributes['gidNumber'][0])
-			$errors['gidNumber'][] = $this->errormessages['gidNumber'][0];
+			$errors['gidNumber'][] = $this->messages['gidNumber'][0];
 			}
 		}
 		// Return error-messages

@@ -20,23 +20,6 @@ $Id$
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-/*
-* Variables in basearray which are no objects:
-* type: Type of account. Can be user, group, host, domain
-* attributes: List of all attributes, how to get them and are theiy required or optional
-* dn: current DN without uid= or cn=
-* dn_orig: old DN if account was loaded with uid= or cn=
-*/
-
-
-/* This class contains all account LDAP attributes
-* and funtioncs required to deal with account
-* account can only be created when it should be added
-* to an array.
-* $base is the name of account_container in session
-*
-*/
-
 class account extends baseModule {
 
 	/**
@@ -64,15 +47,6 @@ class account extends baseModule {
 		// call parent init
 		parent::init($base);
 		}
-
-	// Variables
-	// This variable contains all account attributes
-	var $attributes;
-	/* If an account was loaded all attributes are kept in this array
-	* to compare it with new changed attributes
-	*/
-	var $orig;
-
 
 	/* This function returns true if all required attributes from other
 	* modules are set. This is required to prevent undefined states
@@ -110,26 +84,7 @@ class account extends baseModule {
 	* $attr is an array as it's retured from ldap_get_attributes
 	*/
 	function load_attributes($attr) {
-		// Load attributes which are displayed
-		// unset count entries
-		unset ($attr['count']);
-		$attributes = array_keys($attr);
-		foreach ($attributes as $attribute) unset ($attr[$attribute]['count']);
-		// unset double entries
-		for ($i=0; $i<count($attr); $i++)
-			if (isset($attr[$i])) unset($attr[$i]);
-		foreach ($attributes as $attribute) {
-			if (isset($this->attributes[$attribute])) {
-				// decode as unicode
-				$this->attributes[$attribute] = $attr[$attribute];
-				for ($i=0; $i<count($this->attributes[$attribute]); $i++) {
-					$this->attributes[$attribute][$i] = utf8_decode ($this->attributes[$attribute][$i]);
-					$this->orig[$attribute][$i] = utf8_decode ($this->attributes[$attribute][$i]);
-					}
-				}
-			}
-		// Add objectClass to orig because we don't want to add objectClass if it's already set
-		$this->orig['objectClass'][0] = 'account';
+		$this->load_ldap_attributes($attr);
 		return 0;
 		}
 

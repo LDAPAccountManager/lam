@@ -424,17 +424,17 @@ function get_preg($argument, $regexp) {
 	// First we check "positive" cases
 	$pregexpr = '';
 	switch ($regexp) {
-		case "password":	// fixme where do i get an exact regexp?
+		case 'password':	// fixme where do i get an exact regexp?
 					$pregexpr = '/^([[:alnum:]\\ \\|\\#\\*\\,\\.\\;\\:\\_\\+\\!\\%\\&\\/\\?\\{\\(\\)\\}-])*$/';
 					break;
-		case "groupname":	// first character must be a letter. All letters, numbers, space and ._- are allowed characters
-		case "username":	// first character must be a letter. All letters, numbers, space and ._- are allowed characters
+		case 'groupname':	// first character must be a letter. All letters, numbers, space and ._- are allowed characters
+		case 'username':	// first character must be a letter. All letters, numbers, space and ._- are allowed characters
 					$pregexpr = '/^[[:alpha:]]([[:alnum:]\\.\\ \\_-])*$/';
 					break;
-		case "hostname":	// first character must be letter, last must be $. Only normal letters, numbers and ._- are allowed
+		case 'hostname':	// first character must be letter, last must be $. Only normal letters, numbers and ._- are allowed
 					$pregexpr = '/^[a-zA-Z]([a-zA-Z0-9\\.\\_-])*\\$$/';
 					break;
-		case "realname":	// Allow all letters, space and  .-_
+		case 'realname':	// Allow all letters, space and  .-_
 					$pregexpr = '/^[[:alpha:]]([[:alpha:]\\.\\ \\_-])*$/';
 					break;
 		case "telephone":	// Allow numbers, space, brackets, /-+.
@@ -452,7 +452,7 @@ function get_preg($argument, $regexp) {
 		case "employeeType":	// Allow all letters, numbers, space and .-_
 					$pregexpr = '/^([[:alnum:]\\.\\ \\_-])*$/';
 					break;
-		case "homedir":		// Homapath, /path/......
+		case "homeDirectory":		// Homapath, /path/......
 					$pregexpr = '/^[/]([[:alnum:]\\.\\ \\_-)+([/]([[:alnum:]\\.\\ \\_-)+)*$/';
 					break;
 		case "digit":		// Normal number
@@ -468,7 +468,10 @@ function get_preg($argument, $regexp) {
 					$pregexpr = '/^(([a-zA-Z0-9\\.\\_-])+(,[a-zA-Z0-9\\.\\_-])*)*$/';
 					break;
 		case "domainname":		// Windows Domainname
-					$pregexpr = '/^([a-z0-9\\_-])+$/';
+					$pregexpr = '/^([a-z0-9\\.\\_-])+$/';
+					break;
+		case "unixhost":		// Unix hosts
+					$pregexpr = '/^([a-z0-9\\.\\_-])*$/';
 					break;
 		case 'digit2':			// Same as digit but also -1
 					$pregexpr = '/^(([-][1])|([:digit:]*))$/';
@@ -480,7 +483,15 @@ function get_preg($argument, $regexp) {
 	// Now we check "negative" cases, characters which are not allowed
 	$pregexpr = '';
 	switch ($regexp) {
-		case "dummy":      $pregexpr = '/^([a-z])*$/'; break;
+		case "!lower":
+			$pregexpr = '/[[:lower:]]/';
+			break;
+		case "!upper":
+			$pregexpr = '/[[:upper:]]/';
+			break;
+		case "!digit":
+			$pregexpr = '/[[:digit:]]/';
+			break;
 	}
 	if ($pregexpr!='')
 			if (!preg_match($pregexpr, $argument)) return true;

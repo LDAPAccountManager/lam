@@ -20,55 +20,44 @@ $Id$
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-/* Session variables which are used:
-* $_SESSION['cacheAttributes']: This variable contains a list of attributes and their scope which should be cached
-*
-* Coockie variables which are used:
-* $_COOKIE["IV"], $_COOKIE["Key"]: Needed to en/decrypt passwords.
-*
-* Variables in basearray which are no objects:
-* type: Type of account. Can be user, group, host
-* attributes: List of all attributes, how to get them and are theiy required or optional
-* dn: current DN without uid= or cn=
-* dn_orig: old DN if account was loaded with uid= or cn=
-
-* External functions which are used
-* account.inc: findgroups, incache, get_cache, array_delete, getshells
-* ldap.inc: pwd_is_enabled, pwd_hash
-*/
-
-/* This class contains all posixAccount LDAP attributes
-* and funtioncs required to deal with posixAccount
-* posixAccount can only be created when it should be added
-* to an array.
-* basearray is the same array posixAccount should be added
-* to. If basearray is not given the constructor tries to
-* create an array with posixAccount and all other required
-* objects.
-* Example: $user[] = new posixAccount($user);
-*
-* In container array the following things have to exist:
-* account or inetOrgPerson object
-* type: 'user' or 'host'
-* 'attributes': this is a list of arrays with all ldap attributes wich are allowed for this account
-*/
 class posixAccount extends baseModule {
 
 	/**
 	* Creates a new posixAccount object.
 	*/
 	function posixAccount($scope) {
-	// error messages for input checks
-	$this->messages['homedir'] = array('ERROR', _('Home directory'), _('Homedirectory contains invalid characters.'));
-	$this->messages['minUID'] = array('ERROR', _('Users') . ': &nbsp;' . _('Minimum UID number'), _("Minimum UID number is invalid!"));
-	$this->messages['maxUID'] = array('ERROR', _('Users') . ': &nbsp;' . _('Maximum UID number'), _("Maximum UID number is invalid!"));
-	$this->messages['minMachine'] = array('ERROR', _('Hosts') . ': &nbsp;' . _('Minimum UID number'), _("Minimum UID number is invalid!"));
-	$this->messages['maxMachine'] = array('ERROR', _('Hosts') . ': &nbsp;' . _('Maximum UID number'), _("Maximum UID number is invalid!"));
-	$this->messages['cmp_UID'] = array('ERROR', _('Users') . ': &nbsp;' . _('Maximum UID number'), _("Maximum UID number must be greater than minimum UID number!"));
-	$this->messages['cmp_Machine'] = array('ERROR', _('Hosts') . ': &nbsp;' . _('Maximum UID number'), _("Maximum UID number must be greater than minimum UID number!"));
-	$this->messages['cmp_both'] = array('ERROR', _('UID ranges'), _("The UID ranges for users and hosts overlap! This is a problem because LAM uses the highest UID in use + 1. Please set the minimum UID to equal values or use independent ranges."));
 	// call parent constructor
 	parent::baseModule($scope);
+	}
+
+	/** this functin fills the error message array with messages
+	**/
+	function load_Messages() {
+	// error messages for input checks
+	$this->messages['minUID'][0] = array('ERROR', _('Users') . ': &nbsp;' . _('Minimum UID number'), _("Minimum UID number is invalid!"));
+	$this->messages['maxUID'][0] = array('ERROR', _('Users') . ': &nbsp;' . _('Maximum UID number'), _("Maximum UID number is invalid!"));
+	$this->messages['minMachine'][0] = array('ERROR', _('Hosts') . ': &nbsp;' . _('Minimum UID number'), _("Minimum UID number is invalid!"));
+	$this->messages['maxMachine'][0] = array('ERROR', _('Hosts') . ': &nbsp;' . _('Maximum UID number'), _("Maximum UID number is invalid!"));
+	$this->messages['cmp_UID'][0] = array('ERROR', _('Users') . ': &nbsp;' . _('Maximum UID number'), _("Maximum UID number must be greater than minimum UID number!"));
+	$this->messages['cmp_Machine'][0] = array('ERROR', _('Hosts') . ': &nbsp;' . _('Maximum UID number'), _("Maximum UID number must be greater than minimum UID number!"));
+	$this->messages['cmp_both'][0] = array('ERROR', _('UID ranges'), _("The UID ranges for users and hosts overlap! This is a problem because LAM uses the highest UID in use + 1. Please set the minimum UID to equal values or use independent ranges."));
+	$this->messages['homeDirectory'][0] = array('ERROR', _('Home directory'), _('Homedirectory contains invalid characters.'));	
+	$this->messages['homeDirectory'][1] = array('INFO', _('Home directory'), _('Replaced $user or $group in homedir.'));	
+	$this->messages['homeDirectory'][2] = array('INFO', _('Home directory'), sprintf(_('Home directory changed. To keep home directory you have to run the following command as root: \'mv %s %s\''), $this->orig['homeDirectory'][0], $this->attributes['homeDirectory'][0]));	
+	$this->messages['gidNumber'][0] = array('INFO', _('GID number'), sprintf(_('GID number has changed. To keep file ownership you have to run the following command as root: \'find / -gid %s -uid %s -exec chgrp %s {} \;\''), $this->orig['gidNumber'][0], $this->orig['uidNumber'][0], $_SESSION['cache']->getgid($this->attribtues['gidNumber'][0])));
+	$this->messages['uidNumber'][0] = array('INFO', _('UID number'), sprintf(_('UID number has changed. To keep file ownership you have to run the following command as root: \'find / -uid %s -exec chown %s {} \;\''), $this->orig['uidNumber'][0], $this->attributes['uidNumber'][0]));
+	$this->messages['uidNumber'][1] = array('ERROR', _('ID-Number'), _('No free ID-Number!'));
+	$this->messages['uidNumber'][2] = array('WARN', _('ID-Number'), _('It is possible that this ID-number is reused. This can cause several problems because files with old permissions might still exist. To avoid this warning set maxUID to a higher value.'));
+	$this->messages['uidNumber'][3] = array('ERROR', _('ID-Number'), _('ID is already in use'));
+ 	$this->messages['userPassword'][0] = array('ERROR', _('Password'), _('Please enter the same password in both password-fields.')); 
+	$this->messages['userPassword'][1] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
+	$this->messages['uid'][0] = array('INFO', _('UID'), _('UID has changed. Do you want to change home directory?'));
+	$this->messages['uid'][1] = array('WARN', _('Username'), _('You are using a capital letters. This can cause problems because windows isn\'t case-sensitive.'));
+	$this->messages['uid'][2] = array('ERROR', _('Username'), _('Username contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
+	$this->messages['uid'][3] = array('WARN', _('Hostname'), _('You are using a capital letters. This can cause problems because windows isn\'t case-sensitive.'));
+	$this->messages['uid'][4] = array('ERROR', _('Hostname'), _('Hostname contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ ! Hostname must end with $ !'));
+	$this->messages['uid'][5] = array('WARN', _('Username'), _('Username in use. Selected next free username.'));
+	$this->messages['uid'][6] = array('WARN', _('Hostname'), _('Hostname in use. Selected next free hostname.'));
 	}
 
 	/**
@@ -96,8 +85,8 @@ class posixAccount extends baseModule {
 		// alias name
 		$return["alias"] = _("Unix");
 		// profile checks
-		$return['profile_checks']['posixAccount_homeDirectory'] = array('type' => 'regex_i', 'regex' => $this->regex_homedir,
-			'error_message' => $this->messages['homedir']);
+		$return['profile_checks']['posixAccount_homeDirectory'] = array('type' => 'regex_i', 'regex' => 'homeDirectory',
+			'error_message' => $this->messages['homeDirectory'][0]);
 		// configuration options
 		$return['config_options']['user'] = array(
 			array(
@@ -172,7 +161,6 @@ class posixAccount extends baseModule {
 		parent::init($base);
 		$groups = $_SESSION['cache']->findgroups(); // list of all groupnames
 		if (count($groups)==0) trigger_error(_('No groups found in ldap.'), E_USER_WARNING);
-
 		$this->createhomedir=false;
 		}
 
@@ -181,25 +169,12 @@ class posixAccount extends baseModule {
 	var $userPassword_no;
 	// Lock account?
 	var $userPassword_lock;
-
-	// This variable contains all inetOrgPerson attributes
-	var $attributes;
-	/* If an account was loaded all attributes are kept in this array
-	* to compare it with new changed attributes
-	*/
-	var $orig;
 	/* These two variables keep an array of groups the
 	* user is also member of.
 	*/
 	var $groups;
 	var $groups_orig;
 	var $createhomedir;
-
-	/** regular expression for home directory */
-	var $regex_homedir = '^[/]([a-z])([a-z0-9\\._-])*([/]([a-z\\$])([a-z0-9\\._-])*)*$';
-
-	/** list of possible error messages */
-	var $messages = array();
 
 	/* $attribute['userPassword'] can't accessed directly because it's enrcypted
 	* To read / write password function userPassword is needed
@@ -263,26 +238,7 @@ class posixAccount extends baseModule {
 	* $attr is an array as it's retured from ldap_get_attributes
 	*/
 	function load_attributes($attr) {
-		// Load attributes which are displayed
-		// unset count entries
-		unset ($attr['count']);
-		$attributes = array_keys($attr);
-		foreach ($attributes as $attribute) unset ($attr[$attribute]['count']);
-		// unset double entries
-		for ($i=0; $i<count($attr); $i++)
-			if (isset($attr[$i])) unset($attr[$i]);
-		foreach ($attributes as $attribute) {
-			if (isset($this->attributes[$attribute])) {
-				// decode as unicode
-				$this->attributes[$attribute] = $attr[$attribute];
-				for ($i=0; $i<count($this->attributes[$attribute]); $i++) {
-					$this->attributes[$attribute][$i] = utf8_decode ($this->attributes[$attribute][$i]);
-					$this->orig[$attribute][$i] = utf8_decode ($this->attributes[$attribute][$i]);
-					}
-				}
-			}
-		// Values are kept as copy so we can compare old attributes with new attributes
-		$this->attributes['objectClass'][0] = 'posixAccount';
+		$this->load_ldap_attributes($attr);
 
 		// get all additional groupmemberships
 		$dn_groups = $_SESSION['cache']->get_cache('memberUid', 'posixGroup', 'group');
@@ -418,13 +374,19 @@ class posixAccount extends baseModule {
 	*/
 	function proccess_attributes($post, $profile=false) {
 		if ($this->orig['uid'][0]!='' && $post['uid']!=$this->attributes['uid'][0])
-			$errors['uid'][] = array('INFO', _('UID'), _('UID has changed. Do you want to change home directory?'));
-		if ($this->orig['gidNumber'][0]!='' && $_SESSION['cache']->getgid($post['gidNumber'])!=$this->attributes['gidNumber'][0])
-			$errors['gidNumber'][] = array('INFO', _('GID number'), sprintf(_('GID number has changed. To keep file ownership you have to run the following command as root: \'find / -gid %s -uid %s -exec chgrp %s {} \;\''), $this->orig['gidNumber'][0], $this->orig['uidNumber'][0], $_SESSION['cache']->getgid($post['gidNumber'])));
-		if ($this->orig['uidNumber'][0]!='' && $post['uidNumber']!=$this->attributes['uidNumber'][0])
-			$errors['uidNumber'][] = array('INFO', _('UID number'), sprintf(_('UID number has changed. To keep file ownership you have to run the following command as root: \'find / -uid %s -exec chown %s {} \;\''), $this->orig['uidNumber'][0], $this->attributes['uidNumber'][0]));
-		if (isset($post['homeDirectory']) && $this->orig['homeDirectory'][0]!='' && $post['homeDirectory']!=$this->attributes['homeDirectory'][0])
-			$errors['homeDirectory'][] = array('INFO', _('Home directory'), sprintf(_('Home directory changed. To keep home directory you have to run the following command as root: \'mv %s %s\''), $this->orig['homeDirectory'][0], $this->attributes['homeDirectory'][0]));
+			$errors['uid'][] = $this->messages['uid'][0];
+		if ($this->orig['gidNumber'][0]!='' && $_SESSION['cache']->getgid($post['gidNumber'])!=$this->attributes['gidNumber'][0]) {
+			$this->load_errorMessage();
+			$errors['gidNumber'][] = $this->messages['gidNumber'][0];
+		}
+		if ($this->orig['uidNumber'][0]!='' && $post['uidNumber']!=$this->attributes['uidNumber'][0]) {
+			$this->load_errorMessage();
+			$errors['uidNumber'][] = $this->messages['uidNumber'][0];
+		}
+		if (isset($post['homeDirectory']) && $this->orig['homeDirectory'][0]!='' && $post['homeDirectory']!=$this->attributes['homeDirectory'][0]) {
+			$this->load_errorMessage();
+			$errors['homeDirectory'][] = $this->messages['homeDirectory'][2];
+		}
 
 		// Load attributes
 		$this->attributes['uid'][0] = $post['uid'];
@@ -441,14 +403,20 @@ class posixAccount extends baseModule {
 		if ($post['userPassword_lock']) $this->userPassword_lock=true;
 			else $this->userPassword_lock=false;
 		if (!$profile) {
-			if ($post['genpass']) $this->userPassword(genpasswd());
-				else if (isset($post['userPassword'])) {
-					if ($post['userPassword'] != $post['userPassword2']) {
-						$errors['userPassword'][] = array('ERROR', _('Password'), _('Please enter the same password in both password-fields.'));
-						unset ($post['userPassword2']);
+			if ($post['genpass']) {
+					$this->userPassword(genpasswd());
+					$post['userPassword2'] = '';
+				}
+				else {
+					if (isset($post['userPassword'])) {
+						if ($post['userPassword'] != $post['userPassword2']) {
+							$errors['userPassword'][] = $this->messages['userPassword'][0];
 						}
 						else $this->userPassword($post['userPassword']);
+						if (!get_preg($this->userPassword(), 'password'))
+							$errors['userPassword'][] = $this->messages['userPassword'][1];
 					}
+				}
 			
 			// Check if UID is valid. If none value was entered, the next useable value will be inserted
 			// load min and may uidNumber
@@ -482,10 +450,10 @@ class posixAccount extends baseModule {
 						$i = intval($minID);
 						while (in_array($i, $uids)) $i++;
 						if ($i>$maxID)
-							$errors['uidNumber'][] = array('ERROR', _('ID-Number'), _('No free ID-Number!'));
+							$errors['uidNumber'][] = $this->messages['uidNumber'][1];
 							else {
 								$this->attributes['uidNumber'][0] = $i;
-								$errors['uidNumber'][] = array('WARN', _('ID-Number'), _('It is possible that this ID-number is reused. This can cause several problems because files with old permissions might still exist. To avoid this warning set maxUID to a higher value.'));
+								$errors['uidNumber'][] = $this->messages['uidNumber'][2];
 								}
 						}
 					else $this->attributes['uidNumber'][0] = $minID;
@@ -504,15 +472,15 @@ class posixAccount extends baseModule {
 					if ((in_array($this->attributes['uidNumber'][0], $uids)) && $this->orig['uidNumber'][0]=='') $errors['uidNumber'][] = array('ERROR', _('ID-Number'), _('ID is already in use'));
 					// id-number is in use, account is existing account and id-number is not used by itself
 					if ((in_array($this->attributes['uidNumber'][0], $uids)) && $this->orig['uidNumber'][0]!='' && ($this->orig['uidNumber'][0] != $this->attributes['uidNumber'][0]) ) {
-						$errors['uidNumber'][] = array('ERROR', _('ID-Number'), _('ID is already in use'));
+						$errors['uidNumber'][] = $this->messages['uidNumber'][3];
 						$this->attributes['uidNumber'][0] = $this->orig['uidNumber'][0];
 						}
 					}
 				}
 			}
 		if ($_SESSION[$this->base]->type=='user') {
-			if (($this->attributes['uid'][0] != $post['uid']) &&  ereg('[A-Z]$', $post['uid']) && !$profile)
-				$errors['uid'][] = array('WARN', _('Username'), _('You are using a capital letters. This can cause problems because windows isn\'t case-sensitive.'));
+			if (($this->attributes['uid'][0] != $post['uid']) &&  !get_preg($post['uid'], '!upper') && !$profile)
+				$errors['uid'][] = $this->messages['uid'][1];
 			// Check if Homedir is valid
 			if (!$profile) {
 					$this->attributes['homeDirectory'][0] = str_replace('$group', $_SESSION['cache']->getgrnam($this->attributes['gidNumber'][0]), $this->attributes['homeDirectory'][0]);
@@ -520,19 +488,19 @@ class posixAccount extends baseModule {
 					$this->attributes['homeDirectory'][0] = str_replace('$user', $this->attributes['uid'][0], $this->attributes['homeDirectory'][0]);
 				if ($this->attributes['homeDirectory'][0] != $post['homeDirectory']) $errors['homeDirecotry'][] = array('INFO', _('Home directory'), _('Replaced $user or $group in homedir.'));
 				}
-			if ( !eregi($this->regex_homedir, $this->attributes['homeDirectory'][0] ))
-				$errors['homeDirecotry'][] = $this->messages['homedir'];
+			if ( !get_preg($this->attributes['homeDirectory'][0], 'homeDirectory' ))
+				$errors['homeDirecotry'][] = $this->messages['homeDirectory'][0];
 			// Check if Username contains only valid characters
-			if ( !ereg('^([a-z]|[A-Z]|[0-9]|[.]|[-]|[_])+$', $this->attributes['uid'][0]) && !$profile)
-				$errors['uid'][] = array('ERROR', _('Username'), _('Username contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
+			if ( !get_preg($this->attributes['uid'][0], 'username') && !$profile)
+				$errors['uid'][] = $this->messages['uid'][2];
 			}
 
 		if ($_SESSION[$this->base]->type=='host' && !$profile) {
-			if (($this->attributes['uid'][0] != $post['form_account_uid']) &&  ereg('[A-Z]$', $post['form_account_uid']))
-				$errors['uid'][] = array('WARN', _('Hostname'), _('You are using a capital letters. This can cause problems because windows isn\'t case-sensitive.'));
-			// Check if Username contains only valid characters
-			if ( !ereg('^([a-z]|[A-Z]|[0-9]|[.]|[-]|[_])+[$]$', $this->attributes['uid'][0]))
-				$errors['uid'][] = array('ERROR', _('Hostname'), _('Hostname contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ ! Hostname must end with $ !'));
+			if (($this->attributes['uid'][0] != $post['uid']) &&  !get_preg($post['uid'], '!upper'))
+				$errors['uid'][] = $this->messages['uid'][3];
+			// Check if Hostname contains only valid characters
+			if ( !get_preg($this->attributes['uid'][0], 'hostname'))
+				$errors['uid'][] = $this->messages['uid'][4];
 			}
 
 		// Create automatic useraccount with number if original user already exists
@@ -579,15 +547,15 @@ class posixAccount extends baseModule {
 		// Show warning if lam has changed username
 		if ($_SESSION[$this->base]->type=='user')
 			if ($this->attributes['uid'][0] != $post['uid']) {
-				$errors['uid'][] = array('WARN', _('Username'), _('Username in use. Selected next free username.'));
+				$errors['uid'][] = $this->messages['uid'][5];
 				}
 		if ($_SESSION[$this->base]->type=='host')
 			if ($this->attributes['uid'][0] != $post['uid']) {
-				$errors['uid'][] = array('WARN', _('Hostname'), _('Hostname in use. Selected next free hostname.'));
+				$errors['uid'][] = $this->messages['uid'][6];
 				}
-			if (!ereg('^([a-z]|[A-Z]|[0-9]|[\|]|[\#]|[\*]|[\,]|[\.]|[\;]|[\:]|[\_]|[\-]|[\+]|[\!]|[\%]|[\&]|[\/]|[\?]|[\{]|[\[]|[\(]|[\)]|[\]]|[\}])*$', $this->userPassword()))
-				$errors['userPassword'][] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
-			}
+		if (!get_preg($this->userPassword(), 'password'))
+				$errors['userPassword'][] = $this->messages['userPassword'][1];
+				}
 		// Return error-messages
 		if (is_array($errors)) return $errors;
 		// Go to additional group page when no error did ocour and button was pressed
@@ -626,7 +594,7 @@ class posixAccount extends baseModule {
 
 		if (!$profile) {
 			if ($this->attributes['userPassword'][0] != $this->orig['userPassword'][0]) $password=$this->userPassword();
-				else $password='';
+			else if ($this->attributes['userPassword'][0] != '') $password=$post['userPassword'];
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _("Username").'*' ),
 				1 => array ( 'kind' => 'input', 'name' => 'uid', 'type' => 'text', 'size' => '20', 'maxlength' => '20', 'value' => $this->attributes['uid'][0]),
 				2 => array ('kind' => 'help', 'value' => 'uid'));
@@ -792,15 +760,15 @@ class posixAccount extends baseModule {
 		if (in_array('user', $scopes)) {
 			// min/maxUID are required, check if they are numeric
 			if (!isset($options['posixAccount_minUID'][0]) || !ereg('^[0-9]+$', $options['posixAccount_minUID'][0])) {
-				$return[] = $this->messages['minUID'];
+				$return[] = $this->messages['minUID'][0];
 			}
 			if (!isset($options['posixAccount_maxUID'][0]) || !ereg('^[0-9]+$', $options['posixAccount_maxUID'][0])) {
-				$return[] = $this->messages['maxUID'];
+				$return[] = $this->messages['maxUID'][0];
 			}
 			// minUID < maxUID
 			if (isset($options['posixAccount_minUID'][0]) && isset($options['posixAccount_maxUID'][0])) {
 				if ($options['posixAccount_minUID'][0] > $options['posixAccount_maxUID'][0]) {
-					$return[] = $this->messages['cmp_UID'];
+					$return[] = $this->messages['cmp_UID'][0];
 				}
 			}
 		}
@@ -808,15 +776,15 @@ class posixAccount extends baseModule {
 		if (in_array('host', $scopes)) {
 			// min/maxUID are required, check if they are numeric
 			if (!isset($options['posixAccount_minMachine'][0]) || !ereg('^[0-9]+$', $options['posixAccount_minMachine'][0])) {
-				$return[] = $this->messages['minMachine'];
+				$return[] = $this->messages['minMachine'][0];
 			}
 			if (!isset($options['posixAccount_maxMachine'][0]) || !ereg('^[0-9]+$', $options['posixAccount_maxMachine'][0])) {
-				$return[] = $this->messages['maxMachine'];
+				$return[] = $this->messages['maxMachine'][0];
 			}
 			// minUID < maxUID
 			if (isset($options['posixAccount_minMachine'][0]) && isset($options['posixAccount_maxMachine'][0])) {
 				if ($options['posixAccount_minMachine'][0] > $options['posixAccount_maxMachine'][0]) {
-					$return[] = $this->messages['cmp_Machine'];
+					$return[] = $this->messages['cmp_Machine'][0];
 				}
 			}
 		}
@@ -826,11 +794,11 @@ class posixAccount extends baseModule {
 				isset($options['posixAccount_minMachine'][0]) && isset($options['posixAccount_maxMachine'][0])) {
 				if (($options['posixAccount_minMachine'][0] > $options['posixAccount_minUID'][0]) &&
 					($options['posixAccount_minMachine'][0] < $options['posixAccount_maxUID'][0])) {
-					$return[] = $this->messages['cmp_both'];
+					$return[] = $this->messages['cmp_both'][0];
 				}
 				if (($options['posixAccount_minUID'][0] > $options['posixAccount_minMachine'][0]) &&
 					($options['posixAccount_minUID'][0] < $options['posixAccount_maxMachine'][0])) {
-					$return[] = $this->messages['cmp_both'];
+					$return[] = $this->messages['cmp_both'][0];
 				}
 			}
 		}
