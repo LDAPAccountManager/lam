@@ -624,28 +624,13 @@ class posixAccount extends baseModule {
 			// No id-number given
 			if ($this->orig['uidNumber'][0]=='') {
 				// new account -> we have to find a free id-number
-				if (count($uids)!=0) {
-					// There are some uids
-					// Store highest id-number
-					$id = $uids[count($uids)-1];
-					// Return minimum allowed id-number if all found id-numbers are too low
-					if ($id < $minID) $this->attributes['uidNumber'][0] = $minID;
-					// Return higesht used id-number + 1 if it's still in valid range
-					if ($id < $maxID) $this->attributes['uidNumber'][0] = $id+1;
-					/* If this function is still running we have to fid a free id-number between
-					* the used id-numbers
-					*/
-					$i = intval($minID);
-					while (in_array($i, $uids)) $i++;
-					if ($i>$maxID)
-					$triggered_messages['uidNumber'][] = $this->messages['uidNumber'][1];
-					else {
-						$this->attributes['uidNumber'][0] = $i;
-						$triggered_messages['uidNumber'][] = $this->messages['uidNumber'][2];
-					}
+				$newUID = $this->getNextUIDs(1, $triggered_messages);
+				if (is_array($newUID)) {
+					$this->attributes['uidNumber'][0] = $newUID[0];
 				}
-				else $this->attributes['uidNumber'][0] = $minID;
-				// return minimum allowed id-number if no id-numbers are found
+				else {
+					$triggered_messages['uidNumber'][] = $this->messages['uidNumber'][3];
+				}
 			}
 			else $this->attributes['uidNumber'][0] = $this->orig['uidNumber'][0];
 			// old account -> return id-number which has been used
@@ -1071,12 +1056,13 @@ class posixAccount extends baseModule {
 	*/
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts) {
 		$triggered_messages = array();
+		$needAutoUID = array();
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			if (!in_array("posixAccount", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "posixAccount";
 			// UID
 			if ($rawAccounts[$i][$ids['posixAccount_uid']] == "") {
-				// TODO autoGID
-				$partialAccounts[$i]['uidNumber'] = 42;
+				// autoUID
+				$needAutoUID[] = $i;
 			}
 			elseif (get_preg($rawAccounts[$i][$ids['posixAccount_uid']], 'digit')) {
 				if (($this->get_scope() == 'user') &&
@@ -1217,6 +1203,19 @@ class posixAccount extends baseModule {
 				$partialAccounts[$i]['loginShell'] = '/bin/false';
 			}
 		}
+		// fill in autoUIDs
+		if (sizeof($needAutoUID) > 0) {
+			$errorsTemp = array();
+			$uids = $this->getNextUIDs(sizeof($needAutoUID), $errorsTemp);
+			if (is_array($uids)) {
+				for ($i = 0; $i < sizeof($needAutoUID); $i++) {
+					$partialAccounts[$i]['uidNumber'] = $uids[$i];
+				}
+			}
+			else {
+				$triggered_messages[] = $this->messages['uidNumber'][2];
+			}
+		}
 		return $triggered_messages;
 	}
 	
@@ -1264,6 +1263,11 @@ class posixAccount extends baseModule {
 			for ($i = 0; $i < sizeof($result); $i++) {
 				$temp['dn'][$result[$keys[$i]][0]] = $keys[$i];
 			}
+			return array(
+				'status' => 'inProgress',
+				'progress' => 0,
+				'errors' => array()
+			);
 		}
 		// add users to groups
 		elseif ($temp['counter'] < sizeof($temp['groups'])) {
@@ -1302,6 +1306,70 @@ class posixAccount extends baseModule {
 				'errors' => array()
 			);
 		}
+	}
+
+	/**
+	* Returns one or more free UID numbers.
+	*
+	* @param integer $count Number of needed free UIDs.
+	* @param array $triggered_messages list of error messages where errors can be added
+	* @return mixed Null if no UIDs are free else an array of free UIDs. 
+	*/
+	function getNextUIDs($count, &$triggered_messages) {
+		$ret = array();
+		if ($this->scope == "user") {
+			$minID = intval($this->moduleSettings['posixAccount_minUID'][0]);
+			$maxID = intval($this->moduleSettings['posixAccount_maxUID'][0]);
+		}
+		else {
+			$minID = intval($this->moduleSettings['posixAccount_minMachine'][0]);
+			$maxID = intval($this->moduleSettings['posixAccount_maxMachine'][0]);
+		}
+		$dn_uids = $_SESSION['cache']->get_cache('uidNumber', 'posixAccount', '*');
+		// get_cache will return an array ( dn1 => array(uidnumber1), dn2 => array(uidnumber2), ... )
+		$uids = array();
+		if(is_array($dn_uids)) {
+			foreach ($dn_uids as $uid) {
+				if (($uid[0] < $maxID) && ($uid[0] > $minID)) $uids[] = $uid[0];  // ignore UIDs > maxID and UIDs < minID
+			}
+			sort ($uids, SORT_NUMERIC);
+		}
+		for ($i = 0; $i < $count; $i++) {
+			if (count($uids) != 0) {
+				// there already are some uids
+				// store highest id-number
+				$id = $uids[count($uids)-1];
+				// Return minimum allowed id-number if all found id-numbers are too low
+				if ($id < $minID) {
+					$ret[] = $minID;
+					$uids[] = $minID;
+				}
+				// return highest used id-number + 1 if it's still in valid range
+				elseif ($id < $maxID) {
+					$ret[] = $id + 1;
+					$uids[] = $id + 1;
+				}
+				// find free numbers between existing ones
+				else {
+					$k = intval($minID);
+					while (in_array($k, $uids)) $k++;
+					if ($k > $maxID) return null;
+					else {
+						$ret[] = $k;
+						$uids[] = $k;
+						sort ($uids, SORT_NUMERIC);
+					}
+					// show warning message
+					$triggered_messages['uidNumber'][] = $this->messages['uidNumber'][2];
+				}
+			}
+			else {
+				// return minimum allowed id-number if no id-numbers are found
+				$ret[] = $minID;
+				$uids[] = $minID;
+			}
+		}
+		return $ret;
 	}
 
 }
