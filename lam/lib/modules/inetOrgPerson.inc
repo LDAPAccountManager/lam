@@ -20,22 +20,21 @@ $Id$
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-/*
-* Variables in basearray which are no objects:
-* type: Type of account. Can be user, group, host, domain
-* attributes: List of all attributes, how to get them and are theiy required or optional
-* dn: current DN without uid= or cn=
-* dn_orig: old DN if account was loaded with uid= or cn=
+/**
+* Manages the atrributes of object class inetOrgPerson.
+*
+* @package modules
+* @author Tilo Lutz
+* @author Roland Gruber
+* @author Michael Duergner
 */
 
-
-/* This class contains all account LDAP attributes
-* and funtioncs required to deal with inetOrgPerson
-* inetOrgPerson can only be created when it should be added
-* to an array.
-* $base is the name of account_container in session
+/**
+* This class contains all account LDAP attributes
+* and funtioncs required to deal with inetOrgPerson.
+*
+* @package modules
 */
-
 class inetOrgPerson extends baseModule {
 
 	/**
@@ -91,6 +90,11 @@ class inetOrgPerson extends baseModule {
 		return $return;
 	}
 
+	/**
+	* Initializes the module in its accountContainer
+	*
+	* @param string $base the name of account_container in session
+	*/
 	function init($base) {
 		// Get local copy of name of account_container in session
 		$this->base = $base;
@@ -110,26 +114,36 @@ class inetOrgPerson extends baseModule {
 		}
 
 	// Variables
-	// name of account_container in session so we can read other classes in account_container
+	/** name of account_container in session so we can read other classes in account_container */
 	var $base;
-	// This variable contains all inetOrgPerson attributes
+	/** This variable contains all inetOrgPerson attributes */
 	var $attributes;
-	/* If an account was loaded all attributes are kept in this array
-	* to compare it with new changed attributes
+	/**
+	* If an account was loaded all attributes are kept in this array
+	* to compare it with new changed attributes.
 	*/
 	var $orig;
-	
-	var $regex_host = '^([a-z]|[A-Z]|[0-9]|[.]|[-])+(([,])+([ ])*([a-z]|[A-Z]|[0-9]|[.]|[-])+)*$';
-	var $regex_givenName = '^([a-z]|[A-Z]|[-]|[ ]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+$';
-	var $regex_surname = '^([a-z]|[A-Z]|[-]|[ ]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+$';
+
+	/** regular expression for host name */
+	var $regex_host = '^([a-z0-9\\.-])+(([,])+([ ])*([a-z0-9\\.-])+)*$';
+	/** regular expression for first/last name */
+	var $regex_name = '^([a-z äöüß-])+$';
+	/** regular expression for telephone numbers */
 	var $regex_telephoneNumber = '^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/]|[-])*$';
-	var $regex_email = '^(([0-9]|[A-Z]|[a-z]|[.]|[-]|[_])+[@]([0-9]|[A-Z]|[a-z]|[-])+([.]([0-9]|[A-Z]|[a-z]|[-])+)*)*$';
-	var $regex_street = '^([0-9]|[A-Z]|[a-z]|[-]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$';
-	var $regex_postalAddress = '^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$';
-	var $regex_postalCode = '^([0-9]|[A-Z]|[a-z])*$';
-	var $regex_title = '^([0-9]|[A-Z]|[a-z]|[-]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$';
-	var $regex_employeeType = '^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$';
-	
+	/** regular expression for e-mail */
+	var $regex_email = '^(([0-9a-z\\._-])+[@]([0-9a-z-])+([.]([0-9a-z-])+)*)*$';
+	/** regular expression for street names */
+	var $regex_street = '^([0-9a-z \\.äöüß-])*$';
+	/** regular expression for postal address */
+	var $regex_postalAddress = '^([0-9a-z \\.äöüß-])*$';
+	/** regular expression for postal codes */
+	var $regex_postalCode = '^([0-9a-z])*$';
+	/** regular expression for job titles */
+	var $regex_title = '^([0-9a-z \\.äöüß-])*$';
+	/** regular expression for employee types */
+	var $regex_employeeType = '^([0-9a-z \\.äöüß-])*$';
+
+	/** list of possible error messages */
 	var $messages = array();
 
 	/* This function returns true if all required attributes from other
@@ -250,7 +264,7 @@ class inetOrgPerson extends baseModule {
 		// handle host-attribute in on epice because it's not set by default
 		if (isset($this->attributes['host'])) {
 			$host = $post['host'];
-			if ((!$host=='') && !ereg($this->regex_host, $host))
+			if ((!$host=='') && !eregi($this->regex_host, $host))
 				$errors['host'][] = $this->messages['host'];
 			$hosts = explode(" ", $host);
 			$this->attributes['host'] = array();
@@ -260,18 +274,18 @@ class inetOrgPerson extends baseModule {
 
 		// Do some regex-checks and return error if attributes are set to wrong values
 		if (!$profile) {
-			if ( !ereg($this->regex_givenName, $this->attributes['givenName'][0])) $errors['givenName'][] = $this->messages['givenName'];
-			if ( !ereg($this->regex_surname, $this->attributes['sn'][0])) $errors['sn'][] = $this->messages['surname'];
+			if ( !eregi($this->regex_name, $this->attributes['givenName'][0])) $errors['givenName'][] = $this->messages['givenName'];
+			if ( !eregi($this->regex_name, $this->attributes['sn'][0])) $errors['sn'][] = $this->messages['surname'];
 			if ( !ereg($this->regex_telephoneNumber, $this->attributes['telephoneNumber'][0]))  $errors['telephoneNumber'][] = $this->messages['telephoneNumber'];
 			if ( !ereg($this->regex_telephoneNumber, $this->attributes['mobileTelephoneNumber'][0]))  $errors['mobileTelephoneNumber'][] = $this->messages['mobileTelephone'];
 			if ( !ereg($this->regex_telephoneNumber, $this->attributes['facsimileTelephoneNumber'][0]))  $errors['facsimileTelephoneNumber'][] = $this->messages['facsimileNumber'];
-			if ( !ereg($this->regex_email, $this->attributes['mail'][0])) $this->messages['email'];
-			if ( !ereg($this->regex_street, $this->attributes['street'][0]))  $errors['street'][] = $this->messages['street'];
-			if ( !ereg($this->regex_postalAddress, $this->attributes['postalAddress'][0]))  $errors['postalAdress'][] = $this->messages['postalAddress'];
-			if ( !ereg($this->regex_postalCode, $this->attributes['personal_postalCode'][0]))  $errors['personal_postalCode'][] = $this->messages['postalCode'];
+			if ( !eregi($this->regex_email, $this->attributes['mail'][0])) $this->messages['email'];
+			if ( !eregi($this->regex_street, $this->attributes['street'][0]))  $errors['street'][] = $this->messages['street'];
+			if ( !eregi($this->regex_postalAddress, $this->attributes['postalAddress'][0]))  $errors['postalAdress'][] = $this->messages['postalAddress'];
+			if ( !eregi($this->regex_postalCode, $this->attributes['personal_postalCode'][0]))  $errors['personal_postalCode'][] = $this->messages['postalCode'];
 			}
-		if ( !ereg($this->regex_title, $this->attributes['title'][0]))  $errors['title'][] = $this->messages['title'];
-		if ( !ereg($this->regex_employeeType, $this->attributes['employeeType'][0]))  $errors['employeeType'][] = $this->messages['employeeType'];
+		if ( !eregi($this->regex_title, $this->attributes['title'][0]))  $errors['title'][] = $this->messages['title'];
+		if ( !eregi($this->regex_employeeType, $this->attributes['employeeType'][0]))  $errors['employeeType'][] = $this->messages['employeeType'];
 		// Return error-messages
 		if (is_array($errors)) return $errors;
 		return 0;
