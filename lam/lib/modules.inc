@@ -43,20 +43,12 @@ include_once("ldap.inc");
 /**
 * This includes all module files.
 */
-// Get Lampath, needed 4 includes
-$stay=0;
-$relative='';
-while ($stay<7) {
-	if (is_dir($relative.'lib/modules')) {
-		$dir = opendir($relative.'lib/modules');
-		while ($entry = readdir($dir))
-			if ((substr($entry, strlen($entry) - 4, 4) == '.inc') && is_file($relative.'lib/modules/'.$entry)) include_once ($relative.'lib/modules/'.$entry);
-		$stay=10;
-	}
-	else {
-		$stay++;
-		$relative .= '../';
-	}
+$modulesINC_dirname = substr(__FILE__, 0, strlen(__FILE__) - 12) . "/modules";
+$modulesINC_dir = dir($modulesINC_dirname);
+// get module names.
+while ($entry = $modulesINC_dir->read())
+if ((substr($entry, strlen($entry) - 4, 4) == '.inc') && is_file($modulesINC_dirname . '/'.$entry)) {
+	include_once($modulesINC_dirname . '/'.$entry);
 }
 
 /**
@@ -249,12 +241,12 @@ function check_module_conflicts($selected, $deps) {
 * @return array list of possible modules
 */
 function getAvailableModules($scope) {
-	global $relative;
+	$dirname = substr(__FILE__, 0, strlen(__FILE__) - 12) . "/modules";
+	$dir = dir($dirname);
 	$return = array();
 	// get module names.
-	$dir = opendir($relative . 'lib/modules');
-	while ($entry = readdir($dir))
-		if ((substr($entry, strlen($entry) - 4, 4) == '.inc') && is_file($relative . 'lib/modules/'.$entry)) {
+	while ($entry = $dir->read())
+		if ((substr($entry, strlen($entry) - 4, 4) == '.inc') && is_file($dirname . '/'.$entry)) {
 			$entry = substr($entry, 0, strpos($entry, '.'));
 			$temp = new $entry($scope);
 			if ($temp->can_manage()) $return[] = $entry;
