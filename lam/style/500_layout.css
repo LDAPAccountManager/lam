@@ -140,7 +140,7 @@ table.groupnav {
 td.groupnav_text {
   color:green;
   font-family:Verdana;
-  font-size:x-small;
+  font-size:10px;
 }
 
 /* color for active page digit */
@@ -197,7 +197,7 @@ table.hostnav {
 td.hostnav_text {
   color:green;
   font-family:Verdana;
-  font-size:x-small;
+  font-size:10px;
 }
 
 /* color for active page digit */
