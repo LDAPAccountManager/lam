@@ -193,7 +193,9 @@ if ($_GET['type'] == "user") {
 		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
-	if ($_POST['smb_smbhome'] && eregi("^[/]([a-z0-9])+([/][a-z0-9_\\-\\$]+)*$", $_POST['smb_smbhome'])) {
+	// replace double \'s with \
+	$_POST['smb_smbhome'] = str_replace('\\\\', '\\', $_POST['smb_smbhome']);
+	if ($_POST['smb_smbhome'] && eregi("^[\][\]([a-z0-9])+([\][a-z0-9_\\-\\$%]+)+$", $_POST['smb_smbhome'])) {
 		$acct->smb_smbhome = $_POST['smb_smbhome'];
 	}
 	elseif ($_POST['smb_smbhome']) {
@@ -201,7 +203,9 @@ if ($_GET['type'] == "user") {
 		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
-	if ($_POST['smb_profilepath'] && eregi("^[/]([a-z0-9])+([/][a-z0-9_\\-\\$]+)*$", $_POST['smb_profilepath'])) {
+	// replace double \'s with \
+	$_POST['smb_profilepath'] = str_replace('\\\\', '\\', $_POST['smb_profilepath']);
+	if ($_POST['smb_profilepath'] && eregi("^[\][\]([a-z0-9])+([\][a-z0-9_\\-\\$%]+)+$", $_POST['smb_profilepath'])) {
 		$acct->smb_profilePath = $_POST['smb_profilepath'];
 	}
 	elseif ($_POST['smb_profilepath']) {
@@ -209,7 +213,9 @@ if ($_GET['type'] == "user") {
 		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
-	if ($_POST['smb_scriptPath'] && eregi("^[/]([a-z0-9])+([/][a-z0-9_\\-\\$]+)*$", $_POST['smb_scriptPath'])) {
+	// replace double \'s with \
+	$_POST['smb_scriptPath'] = str_replace('\\\\', '\\', $_POST['smb_scriptPath']);
+	if ($_POST['smb_scriptPath'] && eregi("^[\][\]([a-z0-9])+([\][a-z0-9_\\-\\$%.]+)+$", $_POST['smb_scriptPath'])) {
 		$acct->smb_scriptPath = $_POST['smb_scriptPath'];
 	}
 	elseif ($_POST['smb_scriptPath']) {
