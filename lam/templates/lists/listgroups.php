@@ -38,6 +38,11 @@ $sort = $_GET['sort'];
 // copy HTTP-GET variables to HTTP-POST
 $_POST = $_POST + $_GET;
 
+$grp_info = $_SESSION['grp_info'];
+session_register('grp_info');
+$grp_units = $_SESSION['grp_units'];
+session_register('grp_units');
+
 // check if button was pressed and if we have to add/delete a group
 if ($_POST['new_group'] || $_POST['del_group']){
 	// add new group
@@ -104,42 +109,49 @@ session_register('grp_suffix');
 $searchfilter = "";
 for ($k = 0; $k < sizeof($desc_array); $k++) {
 	if ($_POST["filter" . strtolower($attr_array[$k])]) {
-		$searchfilter = $searchfilter . "&amp;filter" . strtolower($attr_array[$k]) . "='".
-			$_POST["filter" . strtolower($attr_array[$k])] . "'";
+		$searchfilter = $searchfilter . "&amp;filter" . strtolower($attr_array[$k]) . "=".
+			$_POST["filter" . strtolower($attr_array[$k])];
 	}
 }
 
-// configure search filter
-// Groups have the attribute "posixGroup"
-$filter = "(&(objectClass=posixGroup)";
-for ($k = 0; $k < sizeof($desc_array); $k++) {
-  if ($_POST["filter" . strtolower($attr_array[$k])])
-    $filter = $filter . "(" . strtolower($attr_array[$k]) . "=" .
-      $_POST["filter" . strtolower($attr_array[$k])] . ")";
-  else
-    $_POST["filter" . strtolower($attr_array[$k])] = "";
+if (! $_GET['norefresh']) {
+	// configure search filter
+	// Groups have the attribute "posixGroup"
+	$filter = "(&(objectClass=posixGroup)";
+	for ($k = 0; $k < sizeof($desc_array); $k++) {
+	if ($_POST["filter" . strtolower($attr_array[$k])])
+		$filter = $filter . "(" . strtolower($attr_array[$k]) . "=" .
+		$_POST["filter" . strtolower($attr_array[$k])] . ")";
+	else
+		$_POST["filter" . strtolower($attr_array[$k])] = "";
+	}
+	$filter = $filter . ")";
+	$attrs = $attr_array;
+	$sr = @ldap_search($_SESSION["ldap"]->server(),
+		$grp_suffix,
+		$filter, $attrs);
+	if ($sr) {
+		$grp_info = ldap_get_entries($_SESSION["ldap"]->server, $sr);
+		ldap_free_result($sr);
+		if ($grp_info["count"] == 0) StatusMessage("WARN", "", _("No Groups found!"));
+		// delete first array entry which is "count"
+		array_shift($grp_info);
+		// sort rows by sort column ($sort)
+		usort($grp_info, "cmp_array");
+	}
+	else StatusMessage("ERROR", _("LDAP Search failed! Please check your preferences."), _("No Groups found!"));
 }
-$filter = $filter . ")";
-$attrs = $attr_array;
-$sr = @ldap_search($_SESSION["ldap"]->server(),
-	$grp_suffix,
-	$filter, $attrs);
-if ($sr) {
-	$info = ldap_get_entries($_SESSION["ldap"]->server, $sr);
-	ldap_free_result($sr);
-	if ($info["count"] == 0) StatusMessage("WARN", "", _("No Groups found!"));
-	// delete first array entry which is "count"
-	array_shift($info);
+else {
+	if (sizeof($grp_info) == 0) StatusMessage("WARN", "", _("No Groups found!"));
 	// sort rows by sort column ($sort)
-	usort($info, "cmp_array");
+	if ($grp_info) usort($grp_info, "cmp_array");
 }
-else StatusMessage("ERROR", _("LDAP Search failed! Please check your preferences."), _("No Groups found!"));
 
 echo ("<form action=\"listgroups.php\" method=\"post\">\n");
 
 // draw navigation bar if group accounts were found
-if (sizeof($info) > 0) {
-draw_navigation_bar(sizeof($info));
+if (sizeof($grp_info) > 0) {
+draw_navigation_bar(sizeof($grp_info));
 echo ("<br>");
 }
 
@@ -150,10 +162,10 @@ echo "<tr class=\"grouplist-head\"><th width=22 height=34></th><th></th>";
 for ($k = 0; $k < sizeof($desc_array); $k++) {
 	if (strtolower($attr_array[$k]) == $sort) {
 		echo "<th class=\"grouplist-sort\"><a href=\"listgroups.php?".
-			"sort=" . strtolower($attr_array[$k]) . $searchfilter . "\">" . $desc_array[$k] . "</a></th>";
+			"sort=" . strtolower($attr_array[$k]) . $searchfilter . "&norefresh=y" . "\">" . $desc_array[$k] . "</a></th>";
 	}
 	else echo "<th><a href=\"listgroups.php?".
-		"sort=" . strtolower($attr_array[$k]) . $searchfilter . "\">" . $desc_array[$k] . "</a></th>";
+		"sort=" . strtolower($attr_array[$k]) . $searchfilter . "&norefresh=y" . "\">" . $desc_array[$k] . "</a></th>";
 }
 echo "</tr>\n";
 
@@ -172,41 +184,36 @@ echo "</tr>\n";
 
 // calculate which rows to show
 $table_begin = ($page - 1) * $max_pageentrys;
-if (($page * $max_pageentrys) > sizeof($info)) $table_end = sizeof($info);
+if (($page * $max_pageentrys) > sizeof($grp_info)) $table_end = sizeof($grp_info);
 else $table_end = ($page * $max_pageentrys);
 
 // print group list
 for ($i = $table_begin; $i < $table_end; $i++) {
-	echo("<tr class=\"grouplist\" onMouseOver=\"group_over(this, '" . $info[$i]["dn"] . "')\"" .
-								" onMouseOut=\"group_out(this, '" . $info[$i]["dn"] . "')\"" .
-								" onClick=\"group_click(this, '" . $info[$i]["dn"] . "')\"" .
-								" onDblClick=\"parent.frames[1].location.href='../account.php?type=group&amp;DN=" . $info[$i]["dn"] . "'\">" .
-								" <td height=22><input onClick=\"group_click(this, '" . $info[$i]["dn"] . "')\" type=\"checkbox\" name=\"" . $info[$i]["dn"] . "\"></td>" .
-								" <td align='center'><a href=\"../account.php?type=group&amp;DN='" . $info[$i]["dn"] . "'\">" . _("Edit") . "</a></td>");
+	echo("<tr class=\"grouplist\" onMouseOver=\"group_over(this, '" . $grp_info[$i]["dn"] . "')\"" .
+								" onMouseOut=\"group_out(this, '" . $grp_info[$i]["dn"] . "')\"" .
+								" onClick=\"group_click(this, '" . $grp_info[$i]["dn"] . "')\"" .
+								" onDblClick=\"parent.frames[1].location.href='../account.php?type=group&amp;DN=" . $grp_info[$i]["dn"] . "'\">" .
+								" <td height=22><input onClick=\"group_click(this, '" . $grp_info[$i]["dn"] . "')\" type=\"checkbox\" name=\"" . $grp_info[$i]["dn"] . "\"></td>" .
+								" <td align='center'><a href=\"../account.php?type=group&amp;DN='" . $grp_info[$i]["dn"] . "'\">" . _("Edit") . "</a></td>");
 	for ($k = 0; $k < sizeof($attr_array); $k++) {
 		echo ("<td>");
 		// print all attribute entries seperated by "; "
-		if (sizeof($info[$i][strtolower($attr_array[$k])]) > 0) {
+		if (sizeof($grp_info[$i][strtolower($attr_array[$k])]) > 0) {
 			// delete first array entry which is "count"
-			array_shift($info[$i][strtolower($attr_array[$k])]);
+			if (! $_GET['norefresh']) array_shift($grp_info[$i][strtolower($attr_array[$k])]);
 			// generate links for group members
 			if (strtolower($attr_array[$k]) == "memberuid") {
 				$linklist = array();
-				for ($d = 0; $d < sizeof($info[$i][strtolower($attr_array[$k])]); $d++) {
-					$user = $info[$i][strtolower($attr_array[$k])][$d]; // user name
-					$dn = $_SESSION["ldap"]->search_username($user); // DN entry
+				for ($d = 0; $d < sizeof($grp_info[$i][strtolower($attr_array[$k])]); $d++) {
+					$user = $grp_info[$i][strtolower($attr_array[$k])][$d]; // user name
 					// if user was found in LDAP make link, otherwise just print name
-					if ($dn) {
-						$linklist[$d] = "<a href=../account.php?type=user&amp;DN='" . $dn . "' >" .
-										$info[$i][strtolower($attr_array[$k])][$d] . "</a>";
-					}
-					else $linklist[$d] = $user;
+					$linklist[$d] = "<a href=userlink.php?user='" . $user . "' >" . $user . "</a>";
 				}
 				echo implode("; ", $linklist);
 			}
 			// print all other attributes
 			else {
-				echo implode("; ", $info[$i][strtolower($attr_array[$k])]);
+				echo implode("; ", $grp_info[$i][strtolower($attr_array[$k])]);
 			}
 		}
 		echo ("</td>");
@@ -217,35 +224,39 @@ echo ("</table>");
 echo ("<br>");
 
 // draw navigation bar if group accounts were found
-if (sizeof($info) > 0) {
-draw_navigation_bar(sizeof($info));
+if (sizeof($grp_info) > 0) {
+draw_navigation_bar(sizeof($grp_info));
 echo ("<br>\n");
 }
 
-// generate list of possible suffixes
-$sr = @ldap_search($_SESSION["ldap"]->server(),
-	$_SESSION["config"]->get_GroupSuffix(),
-	"objectClass=organizationalunit", array("DN"));
-if ($sr) {
-	$units = ldap_get_entries($_SESSION["ldap"]->server, $sr);
-	// delete first array entry which is "count"
-	array_shift($units);
-	// remove sub arrays
-	for ($i = 0; $i < sizeof($units); $i++) $units[$i] = $units[$i]['dn'];
-	// add root suffix from config
-	if (!in_array($_SESSION["config"]->get_GroupSuffix(), $units)) array_push($units, $_SESSION["config"]->get_GroupSuffix());
+if (! $_GET['norefresh']) {
+	// generate list of possible suffixes
+	$sr = @ldap_search($_SESSION["ldap"]->server(),
+		$_SESSION["config"]->get_GroupSuffix(),
+		"objectClass=organizationalunit", array("DN"));
+	if ($sr) {
+		$grp_units = ldap_get_entries($_SESSION["ldap"]->server, $sr);
+		// delete first array entry which is "count"
+		array_shift($grp_units);
+		// remove sub arrays
+		for ($i = 0; $i < sizeof($grp_units); $i++) $grp_units[$i] = $grp_units[$i]['dn'];
+		// add root suffix from config
+		if (!in_array($_SESSION["config"]->get_GroupSuffix(), $grp_units)) {
+			array_push($grp_units, $_SESSION["config"]->get_GroupSuffix());
+		}
+	}
 }
 
 echo ("<p align=\"left\">\n");
 echo ("<input type=\"submit\" name=\"new_group\" value=\"" . _("New Group") . "\">\n");
-if (sizeof($info) > 0) echo ("<input type=\"submit\" name=\"del_group\" value=\"" . _("Delete Group(s)") . "\">\n");
+if (sizeof($grp_info) > 0) echo ("<input type=\"submit\" name=\"del_group\" value=\"" . _("Delete Group(s)") . "\">\n");
 // print combobox with possible sub-DNs
-if (sizeof($units) > 1) {
+if (sizeof($grp_units) > 1) {
 echo ("&nbsp;&nbsp;&nbsp;&nbsp;<b>" . _("Suffix") . ": </b>");
 echo ("<select size=1 name=\"grp_suffix\">\n");
-for ($i = 0; $i < sizeof($units); $i++) {
-	if ($grp_suffix == $units[$i]) echo ("<option selected>" . $units[$i] . "</option>\n");
-	else echo("<option>" . $units[$i] . "</option>\n");
+for ($i = 0; $i < sizeof($grp_units); $i++) {
+	if ($grp_suffix == $grp_units[$i]) echo ("<option selected>" . $grp_units[$i] . "</option>\n");
+	else echo("<option>" . $grp_units[$i] . "</option>\n");
 }
 echo ("</select>\n");
 echo ("<input type=\"submit\" name=\"refresh\" value=\"" . _("Change Suffix") . "\">");

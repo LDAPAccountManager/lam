@@ -38,6 +38,11 @@ $sort = $_GET['sort'];
 // copy HTTP-GET variables to HTTP-POST
 $_POST = $_POST + $_GET;
 
+$hst_info = $_SESSION['hst_info'];
+session_register('hst_info');
+$hst_units = $_SESSION['hst_units'];
+session_register('hst_units');
+
 // check if button was pressed and if we have to add/delete a host
 if ($_POST['new_host'] || $_POST['del_host']){
 	// add new host
@@ -104,48 +109,55 @@ session_register('hst_suffix');
 $searchfilter = "";
 for ($k = 0; $k < sizeof($desc_array); $k++) {
 	if ($_POST["filter" . strtolower($attr_array[$k])]) {
-		$searchfilter = $searchfilter . "&amp;filter" . strtolower($attr_array[$k]) . "='".
-			$_POST["filter" . strtolower($attr_array[$k])] . "'";
+		$searchfilter = $searchfilter . "&amp;filter" . strtolower($attr_array[$k]) . "=".
+			$_POST["filter" . strtolower($attr_array[$k])];
 	}
 }
 
-// configure search filter
-if ($_SESSION['config']->get_samba3() == "yes") {
-	// Samba hosts have the attribute "sambaSamAccount" and end with "$"
-	$filter = "(&(objectClass=sambaSamAccount) (uid=*$)";
+if (! $_GET['norefresh']) {
+	// configure search filter
+	if ($_SESSION['config']->get_samba3() == "yes") {
+		// Samba hosts have the attribute "sambaSamAccount" and end with "$"
+		$filter = "(&(objectClass=sambaSamAccount) (uid=*$)";
+	}
+	else {
+		// Samba hosts have the attribute "sambaAccount" and end with "$"
+		$filter = "(&(objectClass=sambaAccount) (uid=*$)";
+	}
+	for ($k = 0; $k < sizeof($desc_array); $k++) {
+	if ($_POST["filter" . strtolower($attr_array[$k])])
+		$filter = $filter . "(" . strtolower($attr_array[$k]) . "=" .
+		$_POST["filter" . strtolower($attr_array[$k])] . ")";
+	else
+		$_POST["filter" . strtolower($attr_array[$k])] = "";
+	}
+	$filter = $filter . ")";
+	$attrs = $attr_array;
+	$sr = @ldap_search($_SESSION["ldap"]->server(),
+		$hst_suffix,
+		$filter, $attrs);
+	if ($sr) {
+		$hst_info = ldap_get_entries($_SESSION["ldap"]->server, $sr);
+		ldap_free_result($sr);
+		if ($hst_info["count"] == 0) StatusMessage("WARN", "", _("No Samba Hosts found!"));
+		// delete first array entry which is "count"
+		array_shift($hst_info);
+		// sort rows by sort column ($sort)
+		usort($hst_info, "cmp_array");
+	}
+	else StatusMessage("ERROR", _("LDAP Search failed! Please check your preferences."), _("No Samba Hosts found!"));
 }
 else {
-	// Samba hosts have the attribute "sambaAccount" and end with "$"
-	$filter = "(&(objectClass=sambaAccount) (uid=*$)";
-}
-for ($k = 0; $k < sizeof($desc_array); $k++) {
-  if ($_POST["filter" . strtolower($attr_array[$k])])
-    $filter = $filter . "(" . strtolower($attr_array[$k]) . "=" .
-      $_POST["filter" . strtolower($attr_array[$k])] . ")";
-  else
-    $_POST["filter" . strtolower($attr_array[$k])] = "";
-}
-$filter = $filter . ")";
-$attrs = $attr_array;
-$sr = @ldap_search($_SESSION["ldap"]->server(),
-	$hst_suffix,
-	$filter, $attrs);
-if ($sr) {
-	$info = ldap_get_entries($_SESSION["ldap"]->server, $sr);
-	ldap_free_result($sr);
-	if ($info["count"] == 0) StatusMessage("WARN", "", _("No Samba Hosts found!"));
-	// delete first array entry which is "count"
-	array_shift($info);
+	if (sizeof($hst_info) == 0) StatusMessage("WARN", "", _("No Hosts found!"));
 	// sort rows by sort column ($sort)
-	usort($info, "cmp_array");
+	if ($hst_info) usort($hst_info, "cmp_array");
 }
-else StatusMessage("ERROR", _("LDAP Search failed! Please check your preferences."), _("No Samba Hosts found!"));
 
 echo ("<form action=\"listhosts.php\" method=\"post\">\n");
 
 // draw navigation bar if host accounts were found
-if (sizeof($info) > 0) {
-draw_navigation_bar(sizeof($info));
+if (sizeof($hst_info) > 0) {
+draw_navigation_bar(sizeof($hst_info));
 echo ("<br>\n");
 }
 
@@ -156,10 +168,10 @@ echo "<tr class=\"hostlist-head\"><th width=22 height=34></th><th></th>";
 for ($k = 0; $k < sizeof($desc_array); $k++) {
 	if (strtolower($attr_array[$k]) == $sort) {
 		echo "<th class=\"hostlist-sort\"><a href=\"listhosts.php?".
-			"sort=" . strtolower($attr_array[$k]) . $searchfilter . "\">" . $desc_array[$k] . "</a></th>";
+			"sort=" . strtolower($attr_array[$k]) . $searchfilter . "&norefresh=y" . "\">" . $desc_array[$k] . "</a></th>";
 	}
 	else echo "<th><a href=\"listhosts.php?".
-		"sort=" . strtolower($attr_array[$k]) . $searchfilter . "\">" . $desc_array[$k] . "</a></th>";
+		"sort=" . strtolower($attr_array[$k]) . $searchfilter . "&norefresh=y" . "\">" . $desc_array[$k] . "</a></th>";
 }
 echo "</tr>\n";
 
@@ -178,24 +190,24 @@ echo "</tr>\n";
 
 // calculate which rows to show
 $table_begin = ($page - 1) * $max_pageentrys;
-if (($page * $max_pageentrys) > sizeof($info)) $table_end = sizeof($info);
+if (($page * $max_pageentrys) > sizeof($hst_info)) $table_end = sizeof($hst_info);
 else $table_end = ($page * $max_pageentrys);
 
 // print host list
 for ($i = $table_begin; $i < $table_end; $i++) {
-	echo("<tr class=\"hostlist\" onMouseOver=\"host_over(this, '" . $info[$i]["dn"] . "')\"" .
-								" onMouseOut=\"host_out(this, '" . $info[$i]["dn"] . "')\"" .
-								" onClick=\"host_click(this, '" . $info[$i]["dn"] . "')\"" .
-								" onDblClick=\"parent.frames[1].location.href='../account.php?type=host&amp;DN=" . $info[$i]["dn"] . "'\">" .
-								" <td height=22><input onClick=\"host_click(this, '" . $info[$i]["dn"] . "')\" type=\"checkbox\" name=\"" . $info[$i]["dn"] . "\"></td>" .
-								" <td align='center'><a href=\"../account.php?type=host&amp;DN='" . $info[$i]["dn"] . "'\">" . _("Edit") . "</a></td>");
+	echo("<tr class=\"hostlist\" onMouseOver=\"host_over(this, '" . $hst_info[$i]["dn"] . "')\"" .
+								" onMouseOut=\"host_out(this, '" . $hst_info[$i]["dn"] . "')\"" .
+								" onClick=\"host_click(this, '" . $hst_info[$i]["dn"] . "')\"" .
+								" onDblClick=\"parent.frames[1].location.href='../account.php?type=host&amp;DN=" . $hst_info[$i]["dn"] . "'\">" .
+								" <td height=22><input onClick=\"host_click(this, '" . $hst_info[$i]["dn"] . "')\" type=\"checkbox\" name=\"" . $hst_info[$i]["dn"] . "\"></td>" .
+								" <td align='center'><a href=\"../account.php?type=host&amp;DN='" . $hst_info[$i]["dn"] . "'\">" . _("Edit") . "</a></td>");
 	for ($k = 0; $k < sizeof($attr_array); $k++) {
 		echo ("<td>");
 		// print all attribute entries seperated by "; "
-		if (sizeof($info[$i][strtolower($attr_array[$k])]) > 0) {
+		if (sizeof($hst_info[$i][strtolower($attr_array[$k])]) > 0) {
 			// delete first array entry which is "count"
-			array_shift($info[$i][strtolower($attr_array[$k])]);
-			echo implode("; ", $info[$i][strtolower($attr_array[$k])]);
+			if (! $_GET['norefresh']) array_shift($hst_info[$i][strtolower($attr_array[$k])]);
+			echo implode("; ", $hst_info[$i][strtolower($attr_array[$k])]);
 		}
 		echo ("</td>");
 	}
@@ -206,35 +218,39 @@ echo ("</table>");
 echo ("<br>");
 
 // draw navigation bar if host accounts were found
-if (sizeof($info) > 0) {
-draw_navigation_bar(sizeof($info));
+if (sizeof($hst_info) > 0) {
+draw_navigation_bar(sizeof($hst_info));
 echo ("<br>\n");
 }
 
-// generate list of possible suffixes
-$sr = @ldap_search($_SESSION["ldap"]->server(),
-	$_SESSION["config"]->get_HostSuffix(),
-	"objectClass=organizationalunit", array("DN"));
-if ($sr) {
-	$units = ldap_get_entries($_SESSION["ldap"]->server, $sr);
-	// delete first array entry which is "count"
-	array_shift($units);
-	// remove sub arrays
-	for ($i = 0; $i < sizeof($units); $i++) $units[$i] = $units[$i]['dn'];
-	// add root suffix from config
-	if (!in_array($_SESSION["config"]->get_HostSuffix(), $units)) array_push($units, $_SESSION["config"]->get_HostSuffix());
+if (! $_GET['norefresh']) {
+	// generate list of possible suffixes
+	$sr = @ldap_search($_SESSION["ldap"]->server(),
+		$_SESSION["config"]->get_HostSuffix(),
+		"objectClass=organizationalunit", array("DN"));
+	if ($sr) {
+		$hst_units = ldap_get_entries($_SESSION["ldap"]->server, $sr);
+		// delete first array entry which is "count"
+		array_shift($hst_units);
+		// remove sub arrays
+		for ($i = 0; $i < sizeof($hst_units); $i++) $hst_units[$i] = $hst_units[$i]['dn'];
+		// add root suffix from config
+		if (!in_array($_SESSION["config"]->get_HostSuffix(), $hst_units)) {
+			array_push($hst_units, $_SESSION["config"]->get_HostSuffix());
+		}
+	}
 }
 
 echo ("<p align=\"left\">\n");
 echo ("<input type=\"submit\" name=\"new_host\" value=\"" . _("New Host") . "\">\n");
-if (sizeof($info) > 0) echo ("<input type=\"submit\" name=\"del_host\" value=\"" . _("Delete Host(s)") . "\">\n");
+if (sizeof($hst_info) > 0) echo ("<input type=\"submit\" name=\"del_host\" value=\"" . _("Delete Host(s)") . "\">\n");
 // print combobox with possible sub-DNs
-if (sizeof($units) > 1) {
+if (sizeof($hst_units) > 1) {
 echo ("&nbsp;&nbsp;&nbsp;&nbsp;<b>" . _("Suffix") . ": </b>");
 echo ("<select size=1 name=\"hst_suffix\">\n");
-for ($i = 0; $i < sizeof($units); $i++) {
-	if ($hst_suffix == $units[$i]) echo ("<option selected>" . $units[$i] . "</option>\n");
-	else echo("<option>" . $units[$i] . "</option>\n");
+for ($i = 0; $i < sizeof($hst_units); $i++) {
+	if ($hst_suffix == $hst_units[$i]) echo ("<option selected>" . $hst_units[$i] . "</option>\n");
+	else echo("<option>" . $hst_units[$i] . "</option>\n");
 }
 echo ("</select>\n");
 echo ("<input type=\"submit\" name=\"refresh\" value=\"" . _("Change Suffix") . "\">");
