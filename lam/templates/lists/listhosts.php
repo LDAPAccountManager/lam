@@ -289,12 +289,12 @@ if (sizeof($hst_info) > 0) {
 	echo ("<input type=\"submit\" name=\"del_host\" value=\"" . _("Delete Host(s)") . "\">\n");
 	echo ("<br><br><br>\n");
 	echo "<fieldset><legend><b>PDF</b></legend>\n";
-	echo ("<p>" . _('Select PDF structure to use:') . "&nbsp;&nbsp;<select name=\"pdf_structure\">\n");
+	echo ("<b>" . _('PDF structure:') . "</b>&nbsp;&nbsp;<select name=\"pdf_structure\">\n");
 	$pdf_structures = getAvailablePDFStructures('host');
 	foreach($pdf_structures as $pdf_structure) {
 		echo "<option value=\"" . $pdf_structure . "\"" . (($pdf_structure == 'default.xml') ? " selected" : "") . ">" . substr($pdf_structure,0,strlen($pdf_structure)-4) . "</option>";
 	}
-	echo "</select></p><br>\n";
+	echo "</select>&nbsp;&nbsp;&nbsp;&nbsp;\n";
 	echo ("<input type=\"submit\" name=\"pdf_host\" value=\"" . _("Create PDF for selected host(s)") . "\">\n");
 	echo "&nbsp;";
 	echo ("<input type=\"submit\" name=\"pdf_all\" value=\"" . _("Create PDF for all hosts") . "\">\n");
