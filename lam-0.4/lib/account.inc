@@ -1904,7 +1904,7 @@ function modifyuser($values,$values_old,$uselamdaemon=true) { // Will modify the
 					$i=0;
 					for ($i=0; $i<count($dn); $i++) {
 						if ($_SESSION['groupDN'][$dn]['memberUid'][$i] == $values->general_username) unset ($_SESSION['groupDN'][$dn]['memberUid'][$i]);
-						$_SESSION['groupDN'][$dn]['memberUid'][$i] = array_values($_SESSION['groupDN'][$dn]['memberUid'][$i]);
+						$_SESSION['groupDN'][$dn]['memberUid'][$i] = array_values($_SESSION['groupDN'][$dn]['memberUid']);
 						}
 					}
 				}

@@ -1,3 +1,8 @@
+
+  - fixed bugs:
+      fixed error messages when moving an user account
+
+
 26.01.2005 0.4.8
   - allow "%" at the beginning of Samba home/profile path (1107998)
   - fixed bugs:
