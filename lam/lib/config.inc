@@ -742,6 +742,11 @@ class Config {
 		return $this->cache_timeout;
 	}
 
+	// returns the LDAP cache timeout in seconds
+	function get_cacheTimeoutSec() {
+		return $this->cache_timeout * 60;
+	}
+
 	// sets the LDAP cache timeout in minutes
 	function set_cacheTimeout($value) {
 		if (is_numeric($value) && ($value > -1)) {
