@@ -23,7 +23,7 @@ $Id$
   LDAP Account Manager status messages.
 */
 
-function StatusMessage($MessageTyp,$MessageHeadline,$MessageText,$MessageVariables) {
+function StatusMessage($MessageTyp,$MessageHeadline,$MessageText,$MessageVariables = array()) {
 	/* Setting CSS-StyleSheet class depending on the $MessageTyp and rewriting $MessageTyp with a readable string. */
 	if($MessageTyp == "INFO") {
 		$class = "class=\"statusInfo\"";
