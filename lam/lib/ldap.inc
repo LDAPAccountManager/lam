@@ -160,6 +160,8 @@ class Ldap{
 	$username = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($this->username), MCRYPT_MODE_ECB, $iv);
 	$password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($this->password), MCRYPT_MODE_ECB, $iv);
   	$ret = array($username, $password);
+	$ret[0] = str_replace(chr(00), "", $ret[0]);
+	$ret[1] = str_replace(chr(00), "", $ret[1]);
 	return $ret;
   }
 
