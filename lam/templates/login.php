@@ -55,7 +55,7 @@ function display_LoginPage($config_object,$profile)
 	$_SESSION['language'] = $config_object->get_defaultLanguage();
 
 	$current_language = explode(":",$_SESSION['language']);
-	$_SESSION['header'] = "<?xml version=\"1.0\" encoding=\"" . $current_language[1] . "\"?>\n<!DOCTYPE>\n\n";
+	$_SESSION['header'] = "<?xml version=\"1.0\" encoding=\"" . $current_language[1] . "\"?>\n<!DOCTYPE>\n\n<html>\n	<head>\n		<meta http-equiv=\"content-type\" content=\"text/html; charset=" . $current_language[1] . "\">";
 
 	// loading available languages from language.conf file
 	$languagefile = "../config/language";
@@ -93,8 +93,6 @@ function display_LoginPage($config_object,$profile)
 
 	echo $_SESSION["header"];
 	?>
-<html>
-	<head>
 		<title>LDAP Account Manager -Login-</title>
 		<link rel="stylesheet" type="text/css" href="../style/layout.css">
 	</head>

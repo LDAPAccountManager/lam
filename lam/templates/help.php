@@ -39,8 +39,6 @@ function echoHTMLHead()
 {
 echo $_SESSION['header'];
 ?>
-<html>
-	<head>
 		<title>LDAP Account Manager Help Center</title>
 		<link rel="stylesheet" type="text/css" href="../style/layout.css">
 	</head>

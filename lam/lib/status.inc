@@ -46,6 +46,14 @@ function StatusMessage($MessageTyp,$MessageHeadline,$MessageText,$MessageVariabl
 	$MessageText = parseMessageString($MessageText);
 
 	//$MessageTyp = "<h1 " . $class . ">" . $MessageTyp . "</h1>"; // Format $MessageTyp
+
+	if (is_file("../graphics/error.png")) {
+		$MessageTyp = "<img src=\"../graphics/" . strtolower($MessageTyp) . ".png\" alt=\"" . $MessageTyp . "\" width=\"50\" height=\"50\">";
+	}
+	else {
+		$MessageTyp = "<img src=\"../../graphics/" . strtolower($MessageTyp) . ".png\" alt=\"" . $MessageTyp . "\" width=\"50\" height=\"50\">";
+	}
+
 	$MessageTyp = "<img src=\"" . $_SESSION['lamurl'] . "graphics/" . strtolower($MessageTyp) . ".png\" alt=\"" . $MessageTyp . "\" width=\"50\" height=\"50\">";
 	$MessageHeadline = "<h2 " . $class . ">" . $MessageHeadline . "</h2>"; // Format $MessageHeadline
 	$MessageText = "<p " . $class . ">" . $MessageText . "</p>"; // Format $MessageText
