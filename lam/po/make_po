@@ -8,5 +8,5 @@
 
 rm -f messages.po
 touch messages.po
-find ../ -name *.php -exec xgettext --keyword=_ -C -j -s {} \;
-find ../ -name *.inc -exec xgettext --keyword=_ -C -j -s {} \;
+find ../ -name *.php -exec xgettext --keyword=_ -L PHP -j -s {} \;
+find ../ -name *.inc -exec xgettext --keyword=_ -L PHP -j -s {} \;
