@@ -72,6 +72,7 @@ if (isset($_GET['DN']) && $_GET['DN']!='') {
 	$account_old =& $_SESSION['account_'.$varkey.'_account_old'];
 	// get "real" DN from variable
 	$DN = str_replace("\'", '',$_GET['DN']);
+	if ($_GET['DN'] == $DN) $DN = str_replace("'", '',$_GET['DN']);
 	// Load existing host
 	$account_new = loadhost($DN);
 	// Get a copy of original host
