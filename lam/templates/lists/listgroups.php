@@ -201,10 +201,12 @@ for ($i = $table_begin; $i < $table_end; $i++) {
 			if ((! $_GET['norefresh']) && (is_array($grp_info[$i][strtolower($attr_array[$k])]))) array_shift($grp_info[$i][strtolower($attr_array[$k])]);
 			// generate links for group members
 			if (strtolower($attr_array[$k]) == "memberuid") {
+				// sort array
+				sort($grp_info[$i][strtolower($attr_array[$k])]);
+				// make a link for each member of the group
 				$linklist = array();
 				for ($d = 0; $d < sizeof($grp_info[$i][strtolower($attr_array[$k])]); $d++) {
 					$user = $grp_info[$i][strtolower($attr_array[$k])][$d]; // user name
-					// make a link for each member of the group
 					$linklist[$d] = "<a href=\"userlink.php?user='" . $user . "' \">" . $user . "</a>";
 				}
 				echo implode("; ", $linklist);
@@ -212,9 +214,11 @@ for ($i = $table_begin; $i < $table_end; $i++) {
 			// print all other attributes
 			else {
 				if (is_array($grp_info[$i][strtolower($attr_array[$k])])) {
-					echo implode("; ", $grp_info[$i][strtolower($attr_array[$k])]);
+					// sort array
+					sort($grp_info[$i][strtolower($attr_array[$k])]);
+					echo utf8_decode(implode("; ", $grp_info[$i][strtolower($attr_array[$k])]));
 				}
-				else echo $grp_info[$i][strtolower($attr_array[$k])];
+				else echo utf8_decode($grp_info[$i][strtolower($attr_array[$k])]);
 			}
 		}
 		echo ("</td>");

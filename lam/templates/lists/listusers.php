@@ -270,6 +270,8 @@ if ($user_count != 0) {
 				if (is_array($userinfo[$i][strtolower($attr_array[$k])])) {
 					// delete first array entry which is "count"
 					array_shift($userinfo[$i][strtolower($attr_array[$k])]);
+					// sort array
+					sort($userinfo[$i][strtolower($attr_array[$k])]);
 					if (($trans_primary == "on") && (strtolower($attr_array[$k]) == "gidnumber")) {
 						// translate GID number to group name
 						if ($trans_primary_hash[$userinfo[$i][strtolower($attr_array[$k])][0]]) {

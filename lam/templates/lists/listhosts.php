@@ -204,8 +204,12 @@ for ($i = $table_begin; $i < $table_end; $i++) {
 		if (sizeof($hst_info[$i][strtolower($attr_array[$k])]) > 0) {
 			// delete first array entry which is "count"
 			if ((! $_GET['norefresh']) && (is_array($hst_info[$i][strtolower($attr_array[$k])]))) array_shift($hst_info[$i][strtolower($attr_array[$k])]);
-			if (is_array($hst_info[$i][strtolower($attr_array[$k])])) echo implode("; ", $hst_info[$i][strtolower($attr_array[$k])]);
-			else echo $hst_info[$i][strtolower($attr_array[$k])];
+			if (is_array($hst_info[$i][strtolower($attr_array[$k])])) {
+				// sort array
+				sort($hst_info[$i][strtolower($attr_array[$k])]);
+				echo utf8_decode(implode("; ", $hst_info[$i][strtolower($attr_array[$k])]));
+			}
+			else echo utf8_decode($hst_info[$i][strtolower($attr_array[$k])]);
 		}
 		echo ("</td>");
 	}
