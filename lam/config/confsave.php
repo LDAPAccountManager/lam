@@ -139,5 +139,6 @@ if ($pass1 != "") {
 $conf->save();
 echo ("<b>" . _("Saving the following settings:") . "</b><br><br>");
 $conf->printconf();
+echo ("<br><br><br><br><br><a href=\"../templates/login.php\" target=\"_top\">" . _("Back to Login") . "</a>");
 
 ?>
