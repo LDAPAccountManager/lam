@@ -69,7 +69,7 @@ function createUserPDF($accounts) {
 		$pdfFile->setFont("times","B",10);
 		$pdfFile->Cell(50,5,$account->personal_street,0,1,"L",0);
 		$pdfFile->setFont("times","",10);
-		$pdfFile->Cell(50,5,_("Postal code") . "::",0,0,"R",0);
+		$pdfFile->Cell(50,5,_("Postal code") . ":",0,0,"R",0);
 		$pdfFile->setFont("times","B",10);
 		$pdfFile->Cell(50,5,$account->personal_postalCode,0,1,"L",0);
 		$pdfFile->setFont("times","",10);
@@ -152,6 +152,10 @@ function createUserPDF($accounts) {
 		$pdfFile->Write(5,"- " . _("Windows User Settings") . ":");
 		$pdfFile->Ln(6);
 		$pdfFile->setFont("times","",10);
+		$pdfFile->Cell(50,5,_("Username") . ":",0,0,"R",0);
+		$pdfFile->setFont("times","B",10);
+		$pdfFile->Cell(50,5,$account->general_username,0,1,"L",0);
+		$pdfFile->setFont("times","",10);
 		if($account->smb_password_no == "1") {
 			$pdfFile->setFont("times","",10);
 			$pdfFile->Cell(50,5,_("Windows password") . ":",0,0,"R",0);
@@ -191,7 +195,7 @@ function createUserPDF($accounts) {
 		$pdfFile->setFont("times","B",10);
 		$pdfFile->Cell(50,5,$account->smb_smbuserworkstations,0,1,"L",0);
 		$pdfFile->setFont("times","",10);
-		$pdfFile->Cell(50,5,_("Windows home directory") . "::",0,0,"R",0);
+		$pdfFile->Cell(50,5,_("Windows home directory") . ":",0,0,"R",0);
 		$pdfFile->setFont("times","B",10);
 		$pdfFile->Cell(50,5,$account->smb_home,0,1,"L",0);
 		$pdfFile->setFont("times","",10);
