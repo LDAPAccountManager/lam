@@ -225,7 +225,7 @@ function showMainPage($scope) {
 * @param array $data field data from modules
 */
 function showColumnData($module, $data) {
-	if ($data['required']) {
+	if (isset($data['required']) && ($data['required'] == true)) {
 		echo "<font color=\"red\"><b>\n";
 			echo $data['description'];
 		echo "</b></font>\n";

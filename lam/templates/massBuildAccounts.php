@@ -108,7 +108,7 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 	$checkcolumns = array();
 	$columns = call_user_func_array('array_merge', $columns);
 	for ($i = 0; $i < sizeof($columns); $i++) {
-		if ($columns[$i]['required'] == true) {
+		if (isset($columns[$i]['required']) && ($columns[$i]['required'] == true)) {
 			if (isset($ids[$columns[$i]['name']])) $checkcolumns[] = $ids[$columns[$i]['name']];
 			else $errors[] = array(_("A required column is missing in your CSV file."), $columns[$i]['name']);
 		}
@@ -161,7 +161,7 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 		if ($accounts != false) {
 			// set DN
 			for ($i = 0; $i < sizeof($accounts); $i++) {
-				if (!isset($accounts[$i][$data[$i][$ids['dn_rdn']]])) $errors[] = array(_("Data field for RDN is empty for account $i!"), "");
+				if (!isset($accounts[$i][$data[$i][$ids['dn_rdn']]])) $errors[] = array(_('Account %s: dn_rdn'), _("Data field for RDN is empty!"), array($i));
 				// TODO check against list of possible RDN attributes
 				else {
 					$account_dn = $data[$i][$ids['dn_rdn']] . "=" . $accounts[$i][$data[$i][$ids['dn_rdn']]] . ",";
@@ -170,23 +170,29 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 					$accounts[$i]['dn'] = $account_dn;
 				}
 			}
-			// store accounts in session
-			$_SESSION['mass_accounts'] = $_SESSION['ldap']->encrypt(serialize($accounts));
-			$_SESSION['mass_counter'] = 0;
-			$_SESSION['mass_errors'] = array();
-			// show links for upload and LDIF export
-			echo "<h1 align=\"center\">" . _("LAM has checked your input and is now ready to create the accounts.") . "</h1>\n";
-			echo "<p>&nbsp;</p>\n";
-			echo "<p align=\"center\">\n";
-			echo "<table align=\"center\" width=\"80%\"><tr>\n";
-				echo "<td align=\"center\" width=\"50%\">\n";
-				echo "<a href=\"massDoUpload.php\"><b>" . _("Upload accounts to LDAP") . "</b></a>";
-				echo "</td>\n";
-				echo "<td align=\"center\" width=\"50%\">\n";
-				echo "<a href=\"massBuildAccounts.php?showldif=true\"><b>" . _("Show LDIF file") . "</b></a>";
-				echo "</td>\n";
-			echo "</tr></table>\n";
-			echo "</p>\n";
+			// print errors if DN could not be built
+			if (sizeof($errors) > 0) {
+				for ($i = 0; $i < sizeof($errors); $i++) StatusMessage("ERROR", $errors[$i][0], $errors[$i][1], $errors[$i][2]);
+			}
+			else {
+				// store accounts in session
+				$_SESSION['mass_accounts'] = $_SESSION['ldap']->encrypt(serialize($accounts));
+				$_SESSION['mass_counter'] = 0;
+				$_SESSION['mass_errors'] = array();
+				// show links for upload and LDIF export
+				echo "<h1 align=\"center\">" . _("LAM has checked your input and is now ready to create the accounts.") . "</h1>\n";
+				echo "<p>&nbsp;</p>\n";
+				echo "<p align=\"center\">\n";
+				echo "<table align=\"center\" width=\"80%\"><tr>\n";
+					echo "<td align=\"center\" width=\"50%\">\n";
+					echo "<a href=\"massDoUpload.php\"><b>" . _("Upload accounts to LDAP") . "</b></a>";
+					echo "</td>\n";
+					echo "<td align=\"center\" width=\"50%\">\n";
+					echo "<a href=\"massBuildAccounts.php?showldif=true\"><b>" . _("Show LDIF file") . "</b></a>";
+					echo "</td>\n";
+				echo "</tr></table>\n";
+				echo "</p>\n";
+			}
 		}
 	}
 }
