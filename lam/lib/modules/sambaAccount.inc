@@ -137,7 +137,7 @@ class sambaAccount extends baseModule {
 		}
 
 	function get_alias($scope) {
-		return _('sambaAccount');
+		return _('Samba 2');
 		}
 
 	function can_manage($scope) {

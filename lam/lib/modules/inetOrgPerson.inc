@@ -67,7 +67,7 @@ class inetOrgPerson extends baseModule {
 	var $orig;
 
 	function get_alias($scope) {
-		return _('inetOrgPerson');
+		return _('Personal');
 	}
 
 	function can_manage($scope) {

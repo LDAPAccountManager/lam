@@ -64,7 +64,7 @@ class account extends baseModule {
 	var $orig;
 
 	function get_alias($scope) {
-		return _('account');
+		return _('Account');
 	}
 
 	function can_manage($scope) {

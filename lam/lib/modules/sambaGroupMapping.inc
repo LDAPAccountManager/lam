@@ -94,7 +94,7 @@ class sambaGroupMapping extends baseModule {
 	var $rids;
 
 	function get_alias($scope) {
-		return _('sambaGroupMapping');
+		return _('Samba 3');
 		}
 
 	function can_manage($scope) {

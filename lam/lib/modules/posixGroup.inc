@@ -134,7 +134,7 @@ class posixGroup extends baseModule {
 		}
 
 	function get_alias($scope) {
-		return _('posixGroup');
+		return _('Unix');
 		}
 
 	function can_manage($scope) {

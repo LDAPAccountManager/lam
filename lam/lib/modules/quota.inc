@@ -68,7 +68,7 @@ class quota extends baseModule {
 	var $quota;
 
 	function get_alias($scope) {
-		return _('quota');
+		return _('Quota');
 		}
 
 	function can_manage($scope) {

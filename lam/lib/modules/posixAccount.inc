@@ -144,7 +144,7 @@ class posixAccount extends baseModule {
 		}
 
 	function get_alias($scope) {
-		return "posixAccount";
+		return "Unix";
 	}
 
 	function can_manage($scope) {

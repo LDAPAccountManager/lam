@@ -88,7 +88,7 @@ class shadowAccount extends baseModule {
 	var $orig;
 
 	function get_alias($scope) {
-		return _('shadowAccount');
+		return _('Shadow');
 		}
 
 	function can_manage($scope) {
