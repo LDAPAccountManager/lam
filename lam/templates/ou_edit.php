@@ -230,6 +230,71 @@ if ($_POST['submit']) {
 		}
 	}
 
+	// domain operations
+	// new domain ou
+	if ($_POST['type'] == "new_dom") {
+		// create ou if valid
+		if (eregi("^[a-z0-9_\\-]+$", $_POST['newsuff_d'])) {
+			// check if ou already exists
+			$new_dn = "ou=" . $_POST['newsuff_d'] . "," . $_POST['domsuff_n'];
+			if (!in_array(strtolower($new_dn), $_SESSION['ldap']->search_units($_POST['domsuff_n']))) {
+				// add new ou
+				$ou = array();
+				$ou['objectClass'] = "organizationalunit";
+				$ou['ou'] = $_POST['newsuff_d'];
+				$ret = @ldap_add($_SESSION['ldap']->server(), $new_dn, $ou);
+				if ($ret) {
+					$message = _("New OU created successfully.");
+				}
+				else {
+					$error = _("Unable to create new OU!");
+				}
+			}
+			else $error = _("OU already exists!");
+		}
+		// show errormessage if ou is invalid
+		else {
+			$error = _("OU is invalid!") . " " . $_POST['newsuff_d'];
+		}
+	}
+	// delete ou, user was sure
+	elseif (($_POST['type'] == "del_dom") && ($_POST['sure'])) {
+		$ret = @ldap_delete($_SESSION['ldap']->server(), $_POST['domsuff_d']);
+		if ($ret) {
+			$message = _("OU deleted successfully.");
+		}
+		else {
+			$error = _("Unable to delete OU!");
+		}
+	}
+	// do not delete ou
+	elseif (($_POST['type'] == "del_dom") && ($_POST['abort'])) {
+		display_main();
+		exit;
+	}
+	// ask if user is sure to delete
+	elseif ($_POST['type'] == "del_dom") {
+		// check for sub entries
+		$sr = @ldap_list($_SESSION['ldap']->server(), $_POST['domsuff_d'], "ObjectClass=*", array(""));
+		$info = @ldap_get_entries($_SESSION['ldap']->server(), $sr);
+		if ($sr && $info['count'] == 0) {
+			$text = "<br>\n" .
+				"<p><big><b>" . _("Do you really want to delete this OU?") . " </b></big>" . "\n" .
+				"<br>\n<p>" . $_POST['domsuff_d'] . "</p>\n" .
+				"<br>\n" .
+				"<form action=\"ou_edit.php?type=host\" method=\"post\">\n" .
+				"<input type=\"hidden\" name=\"type\" value=\"del_dom\">\n" .
+				"<input type=\"hidden\" name=\"submit\" value=\"submit\">\n" .
+				"<input type=\"hidden\" name=\"domsuff_d\" value=\"" . $_POST['domsuff_d'] . "\">\n" .
+				"<input type=\"submit\" name=\"sure\" value=\"" . _("Submit") . "\">\n" .
+				"<input type=\"submit\" name=\"abort\" value=\"" . _("Abort") . "\">\n" .
+				"</form>";
+		}
+		else {
+			$error = _("OU is not empty or invalid!");
+		}
+	}
+
 	// print header
 	echo $_SESSION['header'];
 	echo ("<html>\n");
@@ -261,6 +326,7 @@ function display_main() {
 	$usr_units = $_SESSION['ldap']->search_units($_SESSION["config"]->get_UserSuffix());
 	$grp_units = $_SESSION['ldap']->search_units($_SESSION["config"]->get_GroupSuffix());
 	$hst_units = $_SESSION['ldap']->search_units($_SESSION["config"]->get_HostSuffix());
+	$dom_units = $_SESSION['ldap']->search_units($_SESSION["config"]->get_DomainSuffix());
 
 	// display main page
 	echo $_SESSION['header'];
@@ -370,6 +436,41 @@ function display_main() {
 	echo ("</table>\n");
 	echo ("</fieldset>\n");
 	echo ("<br>\n");
+
+	// domain OUs
+	if ($_SESSION['config']->get_samba3() == "yes") {
+		echo ("<fieldset><legend><b>" . _("Domains") . "</b></legend>\n");
+		echo ("<table border=0>\n");
+		// new OU
+		echo ("<tr>\n");
+		echo ("<td><input type=radio name=\"type\" value=\"new_dom\"></td>\n");
+		echo ("<td><select size=1 name=domsuff_n>");
+		for ($i = 0; $i < sizeof($dom_units); $i++) {
+			echo ("<option>" . $dom_units[$i] . "</option>\n");
+		}
+		echo ("</select><td>\n");
+		echo ("<td><input type=text name=newsuff_d></td>\n");
+		echo ("<td><b>" . _("New organizational unit") . "</b></td>\n");
+		echo ("<td>&nbsp;</td>\n");
+		echo ("<td><a href=\"help.php?HelpNumber=601\" target=\"lamhelp\">". _("Help") ."</a></td>\n");
+		echo ("</tr>\n");
+		// delete OU
+		echo ("<tr>\n");
+		echo ("<td><input type=radio name=\"type\" value=\"del_dom\"></td>\n");
+		echo ("<td><select size=1 name=domsuff_d>");
+		for ($i = 0; $i < sizeof($dom_units); $i++) {
+			echo ("<option>" . $dom_units[$i] . "</option>\n");
+		}
+		echo ("</select><td>\n");
+		echo ("<td>&nbsp;</td>\n");
+		echo ("<td><b>" . _("Delete organizational unit") . "</b></td>\n");
+		echo ("<td>&nbsp;</td>\n");
+		echo ("<td><a href=\"help.php?HelpNumber=602\" target=\"lamhelp\">". _("Help") ."</a></td>\n");
+		echo ("</tr>\n");
+		echo ("</table>\n");
+		echo ("</fieldset>\n");
+		echo ("<br>\n");
+	}
 
 	echo ("<input type=\"submit\" name=\"submit\" value=\"" . _("Submit") . "\">");
 	echo ("</form>\n");
