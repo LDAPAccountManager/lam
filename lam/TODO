@@ -3,14 +3,14 @@ stable
 ???
 
 
-beta
+beta 2
 
 - check security
+
+beta 1
+
 - clean up code
+- complete German translation
 - improve status messages and help support
-
-alpha 3
-
-- improve mass creation of users/groups/hosts
-- translate to German
-- PDF support
+- improve design
+- write documentation
