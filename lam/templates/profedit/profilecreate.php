@@ -243,7 +243,7 @@ if ($_GET['type'] == "user") {
 	}
 	// save profile
 	saveUserProfile($acct, $profname);
-	echo ("<br><br><p align=\"center\"><big><b>" . _("Profile ") . $profname . _(" was saved.") . "</b></big></p>");
+	echo ("<br><br><p align=\"center\"><big><b>" . _("Profile $profname was saved.") . "</b></big></p>");
 	echo ("<br><p><a href=\"profilemain.php\">" . _("Back to profile editor") . "</a></p>");
 }
 
@@ -269,7 +269,7 @@ elseif ($_GET['type'] == "host") {
 	}
 	// save profile
 	saveHostProfile($acct, $profname);
-	echo ("<br><br><p align=\"center\"><big><b>" . _("Profile ") . $profname . _(" was saved.") . "</b></big></p>");
+	echo ("<br><br><p align=\"center\"><big><b>" . _("Profile $profname was saved.") . "</b></big></p>");
 	echo ("<br><p><a href=\"profilemain.php\">" . _("Back to profile editor") . "</a></p>");
 }
 

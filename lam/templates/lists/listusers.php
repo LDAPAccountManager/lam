@@ -115,7 +115,7 @@ session_register('usr_suffix');
 $searchfilter = "";
 for ($k = 0; $k < sizeof($desc_array); $k++) {
 	if ($_POST["filter" . strtolower($attr_array[$k])]) {
-		$searchfilter = $searchfilter . "&filter" . 
+		$searchfilter = $searchfilter . "&filter" .
 		  strtolower($attr_array[$k]) . "=".
 		  $_POST["filter" . strtolower($attr_array[$k])];
 	}
@@ -153,10 +153,7 @@ if ($_SESSION["userlist"] && $_GET["norefresh"]) {
   if ($sr) {
     $userinfo = ldap_get_entries ($_SESSION["ldap"]->server, $sr);
     ldap_free_result ($sr);
-    if ($userinfo["count"] == 0)
-      StatusMessage ("WARN", "",
-		     _("No User(s) found with applied search filter <") .
-		     $filter . ">");
+    if ($userinfo["count"] == 0) StatusMessage("WARN", "", _("No Users found!"));
 
     // delete first array entry which is "count"
     array_shift($userinfo);

@@ -296,7 +296,7 @@ function loadHostProfile($profile) {
 function saveUserProfile($account, $profile) {
 	if (!eregi("^([0-9]|[a-z]|-|_)*$", $profile)) exit;
 	if (!is_object($account)) {
-		StatusMessage("ERROR", "", _("saveUserProfile: \$account has wrong type!"));
+		StatusMessage("ERROR", "", _("saveUserProfile: account has wrong type!"));
 		exit;
 	}
 	$path = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/users/" . $profile . ".pru";
@@ -357,7 +357,7 @@ function saveGroupProfile($account, $profile) {
 function saveHostProfile($account, $profile) {
 	if (!eregi("^[0-9a-z\\-_]+$", $profile)) exit;
 	if (!is_object($account)) {
-		StatusMessage ("ERROR", "", _("saveHostProfile: \$account has wrong type!"));
+		StatusMessage ("ERROR", "", _("saveHostProfile: account has wrong type!"));
 		exit;
 	}
 	$path = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/hosts/" . $profile . ".prh";
