@@ -20,17 +20,26 @@ $Id$
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 
-	Interface between modules and other parts of LAM.
-
 */
 
+/**
+* Interface between modules and other parts of LAM.
+* 
+* @package modules
+* @author Tilo Lutz
+* @author Michael Duergner
+* @author Roland Gruber
+*/
+
+/** LDAP caches */
 include_once("cache.inc");
+/** some helper functions */
 include_once("account.inc");
 /** parent class of account modules */
 include_once("baseModule.inc");
 
-/* We have to include all modules
-* before start session
+/**
+* This includes all module files.
 */
 // Get Lampath, needed 4 includes
 $stay=0;
@@ -60,17 +69,24 @@ function getModuleAlias($name, $scope) {
 	return $module->get_alias();
 }
 
-// returns if the module is a base module
-// $name: the module name
-// $scope: the account type ("user", "group", "host")
+/**
+* Returns true if the module is a base module
+*
+* @param string $name the module name
+* @param string $scope the account type ("user", "group", "host")
+* @return boolean true if base module
+*/
 function is_base_module($name, $scope) {
 	$module = new $name($scope);
 	return $module->is_base_module();
 }
 
-// returns a LDAP filter used by the account lists
-// return value is of type "(...)"
-// $scope: the account type ("user", "group", "host")
+/**
+* Returns the LDAP filter used by the account lists
+*
+* @param string $scope the account type ("user", "group", "host")
+* @return string LDAP filter
+*/
 function get_ldap_filter($scope) {
 	$mods = getAvailableModules($scope);
 	$filters = array();
@@ -97,11 +113,16 @@ function get_ldap_filter($scope) {
 	else return "(&" . implode("", $filters['and']) . ")";
 }
 
-// returns a hash array (module name => dependencies) of all user module dependencies
-// dependencies contains an array with two sub arrays: depends, conflicts
-// the elements of depends are either module names or an array of module names (OR-case)
-// the elements of conflicts are module names
-// $scope: user, group, host, ....
+/**
+* Returns a hash array (module name => dependencies) of all user module dependencies
+*
+* "dependencies" contains an array with two sub arrays: depends, conflicts
+* <br>The elements of "depends" are either module names or an array of module names (OR-case).
+* <br>The elements of conflicts are module names.
+*
+* @param string $scope the account type (user, group, host)
+* @return array dependencies
+*/
 function getModulesDependencies($scope) {
 	$mods = getAvailableModules($scope);
 	$deps = array();
@@ -113,11 +134,14 @@ function getModulesDependencies($scope) {
 	}
 
 
-// checks if there are missing dependencies between modules
-// $selected is an array of selected module names
-// $deps is an array of module dependencies
-// returns false if no misssing dependency was found
-// returns an array of array(selected module, depending module) if missing dependencies were found
+/**
+* Checks if there are missing dependencies between modules.
+*
+* @param array $selected selected module names
+* @param array $deps module dependencies
+* @return mixed false if no misssing dependency was found,
+* otherwise an array of array(selected module, depending module) if missing dependencies were found
+*/
 function check_module_depends($selected, $deps) {
 	$ret = array();
 	for ($m = 0; $m < sizeof($selected); $m++) {  // check selected modules
@@ -151,11 +175,14 @@ function check_module_depends($selected, $deps) {
 	else return false;
 }
 
-// checks if there are conflicts between modules
-// $selected is an array of selected module names
-// $deps is an array of module dependencies
-// returns false if no conflict was found
-// returns an array of array(selected module, conflicting module) if conflicts were found
+/**
+* Checks if there are conflicts between modules
+*
+* @param array $selected selected module names
+* @param array $deps module dependencies
+* @return false if no conflict was found,
+* otherwise an array of array(selected module, conflicting module) if conflicts were found
+*/
 function check_module_conflicts($selected, $deps) {
 	$ret = array();
 	for ($m = 0; $m < sizeof($selected); $m++) {
@@ -189,7 +216,12 @@ function getAvailableModules($scope) {
 	return $return;
 }
 
-// $scope = user, group, host, ...
+/**
+* Returns the elements for the profile page.
+*
+* @param string $scope account type (user, group, host)
+* @return array profile elements
+*/
 function getProfileOptions($scope) {
 	// create new account container if needed
 	if (! isset($_SESSION["profile_account_$scope"])) {
@@ -200,9 +232,13 @@ function getProfileOptions($scope) {
 	return $_SESSION["profile_account_$scope"]->getProfileOptions();
 }
 
-// checks if the profile options are valid
-// $scope: user, group, host, ...
-// $options: an hash array containing all options (name => array(...))
+/**
+* Checks if the profile options are valid
+*
+* @param string $scope account type (user, group, host)
+* @param array $options hash array containing all options (name => array(...))
+* @return array list of error messages
+*/
 function checkProfileOptions($scope, $options) {
 	$return = array();
 	$modules = getAvailableModules($scope);
@@ -213,12 +249,23 @@ function checkProfileOptions($scope, $options) {
 	return $return;
 }
 
-// get the single help entry array for help identifier $helpID from module $module
+/**
+* Returns a help entry from an account module.
+*
+* @param string $helpID help identifier
+* @param string $module module name
+* @return array help entry
+*/
 function getHelp($module,$helpID) {
 	return call_user_func(array($module, "get_help"), $helpID);
 }
 
-// $scope = user, group, host, ...
+/**
+* Returns a list of available PDF entries.
+*
+* @param string $scope account type (user, group, host)
+* @return array PDF entries
+*/
 function getAvailablePDFFields($scope) {
 	// create new account container if needed
 	if (! isset($_SESSION["profile_account_$scope"])) {
@@ -229,7 +276,11 @@ function getAvailablePDFFields($scope) {
 	return $_SESSION["profile_account_$scope"]->getAvailablePDFFields();
 }
 
-
+/**
+* This class includes all modules and attributes of an account.
+*
+* @package modules
+*/
 class accountContainer {
 	// Constructor
 	function accountContainer($type, $base) {
