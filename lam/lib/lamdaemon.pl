@@ -203,7 +203,7 @@ else {
 		while (defined($input = <STDIN>)) {
 			$string[$i] .= $input;
 			$j++;
-			if ($j==30) {
+			if ($j==5) {
 				$j=0;
 				$i++;
 				}
@@ -211,8 +211,8 @@ else {
 		}
 	else { $argv = "*test\n"; }
 	my $ssh = Net::SSH::Perl->new($hostname, options=>[
-		"UserKnownHostsFile /dev/null"
-		]);
+		"UserKnownHostsFile /dev/null"],
+		protocol => "2,1" );
 	$ssh->login($username[0], $password);
 	foreach $string2 ( @string ) {
 		($stdout, $stderr, $exit) = $ssh->cmd("sudo $remotepath $argv", $string2);
