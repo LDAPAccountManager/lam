@@ -436,14 +436,14 @@ switch ($_POST['select']) {
 		$account_new->smb_smbhome = str_replace('$user', $account_new->general_username, $account_new->smb_smbhome);
 		$account_new->smb_smbhome = str_replace('$group', $account_new->general_group, $account_new->smb_smbhome);
 		if ($account_new->smb_smbhome != $_POST['f_smb_smbhome']) $errors[] = array('INFO', _('Home path'), _('Inserted user- or groupname in HomePath.'));
-		if ( (!$account_new->smb_smbhome=='') && (!ereg('^[\][\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+([\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+)+$', $account_new->smb_smbhome)))
+		if ( (!$account_new->smb_smbhome=='') && (!ereg('^(([\][\])|(%))([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+([\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+)+$', $account_new->smb_smbhome)))
 				$errors[] = array('ERROR', _('Home path'), _('Home path is invalid.'));
 		if ( !ereg('^([a-z]|[A-Z]|[0-9]|[\|]|[\#]|[\*]|[\,]|[\.]|[\;]|[\:]|[\_]|[\-]|[\+]|[\!]|[\%]|[\&]|[\/]|[\?]|[\{]|[\[]|[\(]|[\)]|[\]]|[\}])*$',
 			$smb_password)) $errors[] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
 		if ( (!$account_new->smb_scriptPath=='') && (!eregi('^([\\])*([a-z0-9\\._%äöüß-])+(\\\([a-z0-9\\._%äöüß-])+)*((\.bat)|(\.cmd)|(\.exe))$', $account_new->smb_scriptPath)))
 			$errors[] = array('ERROR', _('Logon script'), _('Logon script is invalid!'));
 		if ( (!$account_new->smb_profilePath=='') && (!eregi('^[/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*([/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*)*$', $account_new->smb_profilePath))
-			&& (!eregi('^[\][\]([a-z0-9_]|[.]|[-]|[%])+([\]([a-z0-9_]|[.]|[-]|[%])+)+$', $account_new->smb_profilePath)))
+			&& (!eregi('^(([\][\])|(%))([a-z0-9_]|[.]|[-]|[%])+([\]([a-z0-9_]|[.]|[-]|[%])+)+$', $account_new->smb_profilePath)))
 				$errors[] = array('ERROR', _('Profile path'), _('Profile path is invalid!'));
 		if ((!$account_new->smb_domain=='') && (!is_object($account_new->smb_domain)) && !ereg('^([a-z]|[A-Z]|[0-9]|[-])+$', $account_new->smb_domain))
 			$errors[] = array('ERROR', _('Domain name'), _('Domain name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and -.'));
