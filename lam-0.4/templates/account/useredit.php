@@ -1125,7 +1125,7 @@ switch ($select_local) {
 		if ($_SESSION['ldap']->supports_unix_hosts) {
 			echo '<tr><td>';
 			echo _('Unix workstations');
-			echo '</td>'."\n".'<td><input name="f_unix_host" type="text" size="20" maxlength="80" value="' . $account_new->unix_host . '">'.
+			echo '</td>'."\n".'<td><input name="f_unix_host" type="text" size="20" maxlength="200" value="' . $account_new->unix_host . '">'.
 				'</td>'."\n".'<td>'.
 				'<a href="../help.php?HelpNumber=466" target="lamhelp">'._('Help').
 				"</a></td>\n</tr>\n";
