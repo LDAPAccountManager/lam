@@ -39,8 +39,8 @@ $Id$
 		<table border="0" align="center" width="600">
 			<tr>
 				<td width="200"><p align="center"><a href="../lib/listusers.php" target="mainpart"> <? echo _("Users");?> </a></p></td>
-				<td width="200"><p align="center"> <? echo _("Groups") ?> </p></td>
-				<td width="200"><p align="center"> <? echo _("Samba Hosts") ?> </p></td>
+				<td width="200"><p align="center"><a href="../lib/listgroups.php" target="mainpart"> <? echo _("Groups");?> </a></p></td>
+				<td width="200"><p align="center"><a href="../lib/listhosts.php" target="mainpart"> <? echo _("Hosts");?> </a></p></td>
 			</tr>
 		</table>
 	</body>
