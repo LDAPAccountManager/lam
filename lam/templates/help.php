@@ -70,7 +70,8 @@ function displayHelp($helpNumber)
 	/* If submitted help number is not in help/help.inc print error message */
 	elseif(!array_key_exists($helpNumber,$helpArray))
 	{
-		$errorMessage = _("Sorry this help number ({bold}" . $helpNumber . "{endbold}) is not available.");
+		$reference = "({bold}" . $helpNumber . "{endbold})";
+		$errorMessage = _("Sorry this help number $reference is not available.");
 		echoHTMLHead();
 		statusMessage("ERROR","",$errorMessage);
 		echoHTMLFoot();

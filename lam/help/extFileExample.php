@@ -23,6 +23,6 @@ $Id$
   LDAP Account Manager example file for external help pages.
 */
 ?>
-<h1 class="help"><?php echo _("Hilfetest 3") ?></h1>
-<p class="help"><?php echo _("blablabla 3") ?></p>
-<p class="help"><?php echo _("See also: <a href=\"./help.php?HelpNumber=101\" target=\"_self\">101</a>") ?></p>
+<h1 class="help"><?php echo "Help test"; ?></h1>
+<p class="help"><?php echo "Some text descibing the error"; ?></p>
+<p class="help"><?php echo "Optionalle some links to referring help topics"; ?></p>

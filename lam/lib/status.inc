@@ -28,26 +28,26 @@ function StatusMessage($MessageTyp, $MessageHeadline, $MessageText)
 	/* Setting CSS-StyleSheet class depending on the $MessageTyp and rewriting $MessageTyp with a readable string. */
 	if($MessageTyp == "INFO")
 	{
-		$class = "class=\"status_info\"";
+		$class = "class=\"statusInfo\"";
 		$MessageTyp = _("Information");
 	}
 	elseif($MessageTyp == "WARN")
 	{
-		$class = "class=\"status_warn\"";
+		$class = "class=\"statusWarn\"";
 		$MessageTyp = _("Warning");
 	}
 	elseif($MessageTyp == "ERROR")
 	{
-		$class = "class=\"status_error\"";
+		$class = "class=\"statusError\"";
 		$MessageTyp = _("Error");
 	}
 	/* Set output-message, when none or false $MessageTyp is submitted. */
 	else
 	{
-		$class = "class=\"status_error\"";
+		$class = "class=\"statusError\"";
 		$MessageTyp = _("LAM Internal Error");
-		$MessageHeadline = _("Invalid/Missing Message Typ");
-		$MessageText = _("Please report this error to the Bug-Tracker at {link=http://lam.sf.net}LDAP Account Manager Development Team{endlink}. The error number is {bold}0001:Invalid/Missing Message Typ.{endbold} Thank you.");
+		$MessageHeadline = _("Invalid/Missing Message type");
+		$MessageText = _("Please report this error to the Bug-Tracker at {link=http://lam.sf.net}LDAP Account Manager Development Team{endlink}. The error number is {bold}0001:Invalid/Missing Message type.{endbold} Thank you.");
 	}
 
 	$MessageHeadline = parseMessageString($MessageHeadline);

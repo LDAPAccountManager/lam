@@ -98,7 +98,7 @@ function display_LoginPage($config_object,$profile)
 		</table>
 		<hr><br><br>
 		<p align="center">
-			<b><?php echo _("Enter Username and Password for Account:"); ?></b>
+			<b><?php echo _("Enter Username and Password for Account") . ":"; ?></b>
 		</p>
 		<?php
 		if($error_message != "") {
@@ -117,7 +117,7 @@ function display_LoginPage($config_object,$profile)
 				<tr>
 					<td width="45%" align="right">
 						<?php
-						echo _("Username:");
+						echo _("Username") . ":";
 						?>
 					</td>
 					<td width="10%">
@@ -139,7 +139,7 @@ function display_LoginPage($config_object,$profile)
 				<tr>
 					<td width="45%" align="right">
 						<?php
-						echo _("Password:");
+						echo _("Password") . ":";
 						?>
 					</td>
 					<td width="10%">
@@ -156,7 +156,7 @@ function display_LoginPage($config_object,$profile)
 					<?php
 						echo $message;
 					?>
-						<input type=\"hidden\" name=\"language\" value=\"english\">
+						<input type="hidden" name="language" value="english">
 					</td>
 					<?php
 				}
@@ -165,7 +165,7 @@ function display_LoginPage($config_object,$profile)
 					?>
 					<td width="45%" align="right">
 						<?php
-						echo _("Your Language:");
+						echo _("Your Language") . ":";
 						?>
 					</td>
 					<td width="10%">
@@ -204,7 +204,7 @@ function display_LoginPage($config_object,$profile)
 				<tr>
 					<td width="100%" align="center">
 						<?php
-						echo _("You are connecting to ServerURL: ");
+						echo _("You are connecting to ServerURL") . ": ";
 						?>
 						<b><?php echo $config_object->get_ServerURL(); ?></b>
 					</td>
@@ -216,7 +216,7 @@ function display_LoginPage($config_object,$profile)
 			<input type="hidden" name="action" value="profileChange">
 			<p align="center">
 				<?php
-				echo _("You are currently using Profile: ");
+				echo _("You are currently using Profile") . ": ";
 				if(!$_POST['profile']) {
 					$_POST['profile'] = $profile;
 				}
@@ -290,7 +290,6 @@ else
 
 	$default_Config = new CfgMain();
 	$default_Profile = $default_Config->default;
-	//echo "default_Profile=" . $default_Profile . "<br>";
 	$_SESSION["config"] = new Config($default_Profile); // Create new Config object
 
 	display_LoginPage($_SESSION["config"],$default_Profile); // Load Login page

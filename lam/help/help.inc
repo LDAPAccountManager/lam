@@ -27,10 +27,6 @@ $Id$
 $helpArray = array (
 				// 0 - 99
 				// any developer
-				// for testing purposes
-				"0" => array ("ext" => "FALSE", "Headline" => _("Hilfetest 1"), "Text" => _("blablabla 1"), "SeeAlso" => "<a href=\"./help.php?HelpNumber=02\" target=\"_self\">02</a>"),
-				"02" => array ("ext" => "FALSE", "Headline" => _("Hilfetest 2"), "Text" => _("blablabla 2"), "SeeAlso" => ""),
-				"03" => array ("ext" => "TRUE", "Link" => "extFileExample.php"),
 				// 200 - 299
 				// Roland Gruber
 				// configuration wizard
