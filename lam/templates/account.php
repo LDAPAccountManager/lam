@@ -257,7 +257,6 @@ echo '</title>
 	<tr><td></td></tr>';
 
 
-echo smbflag();
 
 if (!$select_local) $select_local='general';
 if ($_POST['createagain']) {
