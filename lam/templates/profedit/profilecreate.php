@@ -271,7 +271,7 @@ if ($_GET['type'] == "user") {
 		}
 	}
 
-	if ($_POST['profname'] && eregi("^[0-9a-z\\-_]+$", $_POST['profname'])) {
+	if ($_POST['profname'] && eregi("^[0-9a-z_\\-]+$", $_POST['profname'])) {
 		$profname = $_POST['profname'];
 	}
 	else {
@@ -336,7 +336,7 @@ elseif ($_GET['type'] == "group") {
 		}
 	}
 
-	if ($_POST['profname'] && eregi("^[0-9a-z\\-_]+$", $_POST['profname'])) {
+	if ($_POST['profname'] && eregi("^[0-9a-z_\\-]+$", $_POST['profname'])) {
 		$profname = $_POST['profname'];
 	}
 	else {
@@ -372,6 +372,14 @@ elseif ($_GET['type'] == "host") {
 	}
 	elseif ($_POST['smb_domain']) {
 		StatusMessage("ERROR", _("Domain name is invalid!"), $_POST['smb_domain']);
+		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
+		exit;
+	}
+	if ($_POST['profname'] && eregi("^[0-9a-z_\\-]+$", $_POST['profname'])) {
+		$profname = $_POST['profname'];
+	}
+	else {
+		StatusMessage("ERROR", _("Invalid profile name!"), $_POST['profname']);
 		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}

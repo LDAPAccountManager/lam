@@ -86,7 +86,7 @@ function getHostProfiles() {
 // $profile: name of the profile (without .pru)
 // the return value is an account object
 function loadUserProfile($profile) {
-	if (!eregi("^([0-9]|[a-z]|-|_)*$", $profile)) exit;
+	if (!eregi("^[0-9a-z_\\-]+$", $profile)) return false;
 	$acc = new account();
 	$file = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/users/" . $profile . ".pru";
 	if (is_file($file) == True) {
@@ -262,7 +262,7 @@ function loadUserProfile($profile) {
 // $profile: name of the group profile (without .prg)
 // the return value is an account object
 function loadGroupProfile($profile) {
-	if (!eregi("^([0-9]|[a-z]|-|_)*$", $profile)) exit;
+	if (!eregi("^[0-9a-z_\\-]+$", $profile)) return false;
 	$acc = new account();
 	$file = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/groups/" . $profile . ".prg";
 	if (is_file($file) == True) {
@@ -329,7 +329,7 @@ function loadGroupProfile($profile) {
 // $profile: name of the host profile (without .prh)
 // the return value is an account object
 function loadHostProfile($profile) {
-	if (!eregi("^([0-9]|[a-z]|-|_)*$", $profile)) exit;
+	if (!eregi("^[0-9a-z_\\-]+$", $profile)) return false;
 	$acc = new account();
 	$file = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/hosts/" . $profile . ".prh";
 	if (is_file($file) == True) {
@@ -386,7 +386,8 @@ function loadHostProfile($profile) {
 // $profile: name of the user profile (without .pru)
 // $account: account object which is saved
 function saveUserProfile($account, $profile) {
-	if (!eregi("^([0-9]|[a-z]|-|_)*$", $profile)) exit;
+	// check profile name
+	if (!eregi("^[0-9a-z_\\-]+$", $profile)) return false;
 	if (!is_object($account)) {
 		StatusMessage("ERROR", "", _("saveUserProfile: account has wrong type!"));
 		exit;
@@ -457,7 +458,8 @@ function saveUserProfile($account, $profile) {
 // $profile: name of the group profile (without .prg)
 // $account: account object which is saved
 function saveGroupProfile($account, $profile) {
-	if (!eregi("^([0-9]|[a-z]|-|_)*$", $profile)) exit;
+	// check profile name
+	if (!eregi("^[0-9a-z_\\-]+$", $profile)) return false;
 	if (!is_object($account)) {
 		StatusMessage("ERROR", "", _("saveGroupProfile: account has wrong type!"));
 		exit;
@@ -490,7 +492,8 @@ function saveGroupProfile($account, $profile) {
 // $profile: name of the host profile (without .prh)
 // $account: account object which is saved
 function saveHostProfile($account, $profile) {
-	if (!eregi("^[0-9a-z\\-_]+$", $profile)) exit;
+	// check profile name
+	if (!eregi("^[0-9a-z_\\-]+$", $profile)) return false;
 	if (!is_object($account)) {
 		StatusMessage ("ERROR", "", _("saveHostProfile: account has wrong type!"));
 		exit;
@@ -513,7 +516,7 @@ function saveHostProfile($account, $profile) {
 
 // deletes a user profile
 function delUserProfile($file) {
-	if (!eregi("^([0-9]|[a-z]|-|_)*$", $profile)) exit;
+	if (!eregi("^[0-9a-z_\\-]+$", $profile)) exit;
 	$prof = substr(__FILE__, 0, strlen(__FILE__) - 16) . "config/profiles/users/".$file.".pru";
 	if (is_file($prof)) {
 		return @unlink($prof);
@@ -522,7 +525,7 @@ function delUserProfile($file) {
 
 // deletes a group profile
 function delGroupProfile($file) {
-	if (!eregi("^([0-9]|[a-z]|-|_)*$", $profile)) exit;
+	if (!eregi("^[0-9a-z_\\-]+$", $profile)) exit;
 	$prof = substr(__FILE__, 0, strlen(__FILE__) - 16) . "config/profiles/groups/".$file.".prg";
 	if (is_file($prof)) {
 		return @unlink($prof);
@@ -531,7 +534,7 @@ function delGroupProfile($file) {
 
 // deletes a host profile
 function delHostProfile($file) {
-	if (!eregi("^([0-9]|[a-z]|-|_)*$", $profile)) exit;
+	if (!eregi("^[0-9a-z_\\-]+$", $profile)) exit;
 	$prof = substr(__FILE__, 0, strlen(__FILE__) - 16) . "config/profiles/hosts/".$file.".prh";
 	if (is_file($prof)) {
 		return @unlink($prof);
