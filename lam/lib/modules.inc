@@ -381,6 +381,7 @@ class accountContainer {
 		* types are: user, group, host
 		*/
 		// Check input variable
+		
 		if (!is_string($type)) trigger_error(_('Argument of accountContainer must be string.'), E_USER_ERROR);
 		if (!is_string($base)) trigger_error(_('Argument of accountContainer must be string.'), E_USER_ERROR);
 		// *** fixme use global variable to determine allowed types
@@ -508,7 +509,6 @@ class accountContainer {
 						}
 					}
 				}
-				//else $result = $_SESSION[$this->base]->module['posixGroup']->proccess_attributes($post);
 				else $result = call_user_func(array(&$this->module[$this->order[$this->current_page]], 'proccess_'.$this->subpage), $post);
 			}
 		if (is_string($result)) $this->subpage = $result;
@@ -544,6 +544,7 @@ class accountContainer {
 		echo "<td><fieldset class=\"".$this->type."edit-dark\"><legend class=\"".$this->type."edit-bright\"><b>";
 			echo _('Please select page:');
 			echo "</b></legend>\n";
+		$x=0;
 		if ($this->current_page==0) {
 			// print disabled button
 			echo "<input name=\"form_main_main\" type=\"submit\" value=\"";
@@ -564,14 +565,14 @@ class accountContainer {
 			if ($this->order[$i]==$this->order[$this->current_page] || !$this->module[$this->order[$i]]->module_ready() ) {
 				// print disabled button
 				echo "<input name=\"form_main_".$this->order[$i]."\" type=\"submit\" value=\"";
-				echo $this->module[$this->order[$i]]->get_alias($type);
+				echo $this->module[$this->order[$i]]->get_alias();
 				echo "\" disabled tabindex=$x>\n<br>";
 				$x++;
 				}
 			else {
 				// print normal button
 				echo "<input name=\"form_main_".$this->order[$i]."\" type=\"submit\" value=\"";
-				echo $this->module[$this->order[$i]]->get_alias($type);
+				echo $this->module[$this->order[$i]]->get_alias();
 				echo "\" tabindex=$x>\n<br>";
 				$x++;
 				}
@@ -590,18 +591,17 @@ class accountContainer {
 				echo "</b></legend>\n";
 			}
 		// display html-code from mdule
-		//$function = '$result = $this->module[$this->order[$this->module[\'main\']->current_page]]->display_html_'.$this->module['main']->subpage.'($post);';
-		//eval ($function);
 		if ($this->current_page==0) {
 			if ($this->subpage=='attributes')  {
 				$modules = array_keys($this->module);
+				$table = array();
 				if (!$profile) {
 					$disabled = false;
 					foreach ($modules as $module) {
 						if (!$this->module[$module]->module_complete()) {
 							$disabled = true;
 							$table[] = array ( 0 => array ( 'kind' => 'message', 'type' => 'ERROR', 'headline' =>  _('Check module'),
-								'text' => sprintf(_('Please set up all required attributes on %s page.'), $this->module[$module]->get_alias($this->type)) ));
+								'text' => sprintf(_('Please set up all required attributes on %s page.'), $this->module[$module]->get_alias()) ));
 							}		
 						}
 					}
@@ -720,7 +720,7 @@ class accountContainer {
 								echo ">\n";
 								echo "<fieldset>\n";
 								if ($input[$i][$j]['legend']!='') echo "<legend>" . $input[$i][$j]['legend'] . "</legend>\n";
-								$this->parse_html($module, $input[$i][$j]['value']);
+								$this->parse_html($module, $input[$i][$j]['value'], &$y, &$z);
 								echo "</fieldset>\n";
 								break;
 							case 'select':
@@ -752,7 +752,7 @@ class accountContainer {
 								echo "<td";
 								if ($input[$i][$j]['td']['valign']!='') echo ' valign="' . $input[$i][$j]['td']['valign'] .'"';
 								echo ">\n";
-								$this->parse_html($module, $input[$i][$j]['value'], $y, $z);
+								$this->parse_html($module, $input[$i][$j]['value'], &$y, &$z);
 								echo "</td>\n";
 								break;
 							case 'help':
@@ -890,8 +890,9 @@ class accountContainer {
 		for ($i=0; $i<count($_SESSION['ldap']->objectClasses) || $i==-1; $i++) {
 			if (strpos(strtolower($_SESSION['ldap']->objectClasses[$i]), strtolower("NAME '$objectClass'"))) $line = $i;
 			}
-		// Return error if objectClass isn't found
-		if ($line==-1) trigger_error (sprintf(_("ObjectClass %s required but not defined in ldap."), $objectClass), E_USER_WARNING);
+		// Return empty array if no objectClass wasn't found
+		if ($line==-1) return array();
+		//if ($line==-1) trigger_error (sprintf(_("ObjectClass %s required but not defined in ldap."), $objectClass), E_USER_WARNING);
 		// get casesensitive objectClass name
 		$objectClassName = substr($_SESSION['ldap']->objectClasses[$line], 6+strpos($_SESSION['ldap']->objectClasses[$line], "NAME '"), strlen($objectClass) );
 		if (strpos($_SESSION['ldap']->objectClasses[$line],  'MUST (')) {
@@ -952,8 +953,7 @@ class accountContainer {
 				}
 			}
 
-		
-		// Make references to attributes which are already in use
+		// make references with attibutes which are used by more than one module
 		$newattributes = array_keys($return);
 		$module = array_keys($this->module);
 		if (!$original) {
@@ -962,7 +962,7 @@ class accountContainer {
 			for ($i=0; $i<count($module); $i++) {
 				if ($module[$i]!=$objectClass)
 					foreach ($newattributes as $attribute)
-						if (isset($this->module[$module[$i]]->attributes[$attribute]))
+						if (isset($this->module[$module[$i]]->attributes[$attribute]) && ($attribute!='objectClass'))
 							$return[$attribute] =& $this->module[$module[$i]]->attributes[$attribute];
 				}
 			}
@@ -970,11 +970,11 @@ class accountContainer {
 			for ($i=0; $i<count($module); $i++) {
 				if ($module[$i]!=$objectClass)
 					foreach ($newattributes as $attribute)
-						if (isset($this->module[$module[$i]]->orig[$attribute]))
+						if (isset($this->module[$module[$i]]->orig[$attribute]) && ($attribute!='objectClass'))
 							$return[$attribute] =& $this->module[$module[$i]]->orig[$attribute];
 				}
 			}
-		$return['objectClass'][0] = $objectClassName;
+		$return['objectClass'] = array();
 		return $return;
 		}
 
@@ -990,9 +990,9 @@ class accountContainer {
 			for ($j=0; $j<count($orig[$attr_names[$i]]); $j++) {
 				if (is_array($attributes[$attr_names[$i]])) {
 					if (!in_array($orig[$attr_names[$i]][$j], $attributes[$attr_names[$i]]))
-						if ($orig[$attr_names[$i]][$j]!='') $torem[$attr_names[$i]][] =utf8_encode($orig[$attr_names[$i]][$j]);
+						if (($orig[$attr_names[$i]][$j]!='') && ($attr_names[$i]!='objectClass')) $torem[$attr_names[$i]][] =utf8_encode($orig[$attr_names[$i]][$j]);
 					}
-				else if ($orig[$attr_names[$i]][$j]!='') $torem[$attr_names[$i]][] = utf8_encode($orig[$attr_names[$i]][$j]);
+				else if (($orig[$attr_names[$i]][$j]!='') && ($attr_names[$i]!='objectClass')) $torem[$attr_names[$i]][] = utf8_encode($orig[$attr_names[$i]][$j]);
 				}
 			for ($j=0; $j<count($attributes[$attr_names[$i]]); $j++) {
 				if (is_array($orig[$attr_names[$i]])) {
@@ -1008,20 +1008,24 @@ class accountContainer {
 					}
 				}
 			}
-		// create modify wuth add and remove
+		// create modify with add and remove
 		if (is_array($toadd)) {
 			$attributes2 = array_keys($toadd);
 			for ($i=0; $i<count($attributes2); $i++) {
-				if (isset($torem[$attributes2[$i]])) {
-					// found modify entry
-					// Add unchanged attributes
-					// ***** fixme really neccesarry??????
-					if (isset($notchanged[$attributes2[$i]])) $tomodify[$attributes[$i]] = $notchanged[$attributes[$i]];
-					$tomodify[$attributes2[$i]] = array_merge_recursive($tomodify[$attributes2[$i]], $toadd[$attributes2[$i]]);
-						// unset attributes
-					if (isset($notchanged[$attributes2[$i]])) unset($notchanged[$attributes2[$i]]);
-					if (isset($toadd[$attributes2[$i]])) unset($toadd[$attributes2[$i]]);
-					if (isset($torem[$attributes2[$i]])) unset($torem[$attributes2[$i]]);
+				if (isset($torem[$attributes2[$i]]))
+					/* found modify entry
+					* Some ldap attributes must be set exactly one time.
+					* Adding or removing such an attribute wont't work
+					* because it would conflict with an ldap schema.
+					* Therefore when an attribute has only one entry
+					* and is set in $toadd and $torem this will be merged
+					* to $tomodify
+					*/
+					if ((count($toadd[$attributes2[$i]]==0)) && (count($torem[$attributes2[$i]]==0))) {
+						// found attribute which should only modified
+						$tomodify[$attributes2[$i]] = $toadd[$attributes2[$i]];
+						unset($toadd[$attributes2[$i]]);
+						unset($torem[$attributes2[$i]]);
 					}
 				}
 			}
@@ -1062,8 +1066,6 @@ class accountContainer {
 	* $dn is the dn of the account which should be loaded
 	*/
 	function load_account($dn) {
-		//$function = '$modules = $_SESSION['config']->get_'.ucfirst($this->type).'Modules();';
-		//eval ($function);
 		$modules = call_user_func(array($_SESSION['config'], 'get_'.ucfirst($this->type).'Modules'));
 		$search = substr($dn, 0, strpos($dn, ','));
 		$result = ldap_search($_SESSION['ldap']->server(), $dn, $search);
@@ -1078,6 +1080,9 @@ class accountContainer {
 				$this->module[$module]->init($this->base);
 			}
 			$this->module[$module]->load_attributes($attr);
+			$this->module[$module]->attributes['objectClass'] = array($module);
+			if (in_array($objectClassName, $attr['objectClass']))
+				$this->module[$module]->orig['objectClass'] = array($module);
 			}
 
 		// sortm modules and make all active because all required attributes should be set
@@ -1186,7 +1191,7 @@ class accountContainer {
 		return 0;
 		}
 
-	/* This function will load an account.
+	/* This function will save an account.
 	*/
 	function save_account() {
 		$module = array_keys ($this->module);

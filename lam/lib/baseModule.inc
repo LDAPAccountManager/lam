@@ -78,6 +78,12 @@ class baseModule {
 		// Create Arrays with ldap attributes
 		$this->attributes =& $_SESSION[$this->base]->get_module_attributes(get_class($this));
 		$this->orig =& $_SESSION[$this->base]->get_module_attributes(get_class($this), true);
+		$line=-1;
+		for ($i=0; $i<count($_SESSION['ldap']->objectClasses) || $i==-1; $i++) {
+			if (strpos(strtolower($_SESSION['ldap']->objectClasses[$i]), strtolower("NAME '".get_class($this)."'"))) $line = $i;
+			}
+		$objectClassName = substr($_SESSION['ldap']->objectClasses[$line], 6+strpos($_SESSION['ldap']->objectClasses[$line], "NAME '"), strlen(get_class($this)) );
+		$this->attributes['objectClass'][0] = $objectClassName;
 	}
 
 

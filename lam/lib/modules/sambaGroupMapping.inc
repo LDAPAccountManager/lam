@@ -209,8 +209,6 @@ class sambaGroupMapping extends baseModule {
 		if (!$wrid) $this->attributes['sambaSID'][0] == $SID."-".($_SESSION[$this->base]->module['posixGroup']->attributes['gidNumber'][0]*2+1+$RIDbase);
 		$return = $_SESSION[$this->base]->save_module_attributes($this->attributes, $this->orig);
 
-		// Add ObjectClass
-		$return[$_SESSION[$this->base]->dn]['notchanged']['objectClass'][0] = 'sambaGroupMapping';
 		return $return;
 		}
 
@@ -250,7 +248,7 @@ class sambaGroupMapping extends baseModule {
 						$errors[] = array('ERROR', _('Special Group'),sprintf( _('There can be only one group %s.'), $rids[$i]), 'sambaSID');
 					}
 				}
-			if (!$wrid) $this->attributes['sambaSID'][0] = $SID."-".($_SESSION[$this->base]->module['posixGroup']->attributes['gidNumber'][0]*2)+$RIDbase+1;
+			if (!$wrid) $this->attributes['sambaSID'][0] = $SID . "-" . ($_SESSION[$this->base]->module['posixGroup']->attributes['gidNumber'][0]*2+$RIDbase+1);
 			}
 
 		// Return error-messages
