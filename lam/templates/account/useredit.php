@@ -302,7 +302,11 @@ switch ($_POST['select']) {
 			// Encraypt password
 			$iv = base64_decode($_COOKIE["IV"]);
 			$key = base64_decode($_COOKIE["Key"]);
-			$account_new->unix_password = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $_POST['f_unix_password'], MCRYPT_MODE_ECB, $iv));
+			if ($_POST['f_unix_password'] != $_POST['f_unix_password2']) {
+				$errors[] = array('ERROR', _('Password'), _('Please enter the same password in both password-fields.'));
+				unset ($_POST['f_unix_password2']);
+				}
+				else $account_new->unix_password = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $_POST['f_unix_password'], MCRYPT_MODE_ECB, $iv));
 			}
 		 else $account_new->unix_password = '';
 		if ($_POST['f_unix_password_no']) $account_new->unix_password_no = true;
@@ -321,6 +325,7 @@ switch ($_POST['select']) {
 			$iv = base64_decode($_COOKIE["IV"]);
 			$key = base64_decode($_COOKIE["Key"]);
 			$account_new->unix_password = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, genpasswd(), MCRYPT_MODE_ECB, $iv));
+			unset ($_POST['f_unix_password2']);
 			// Keep unix-page acitve
 			$select_local = 'unix';
 			}
@@ -396,15 +401,23 @@ switch ($_POST['select']) {
 					break;
 				}
 			}
-		// Set samba password
-		$smb_password = $_POST['f_smb_password'];
-		// Decrypt unix-password if needed password
 		$iv = base64_decode($_COOKIE["IV"]);
 		$key = base64_decode($_COOKIE["Key"]);
+		// Set Samba password
+		if (isset($_POST['f_smb_password']) && !$account_new->smb_useunixpwd) {
+			// Encraypt password
+			if ($_POST['f_smb_password'] != $_POST['f_smb_password2']) {
+				$errors[] = array('ERROR', _('Password'), _('Please enter the same password in both password-fields.'));
+				unset ($_POST['f_smb_password2']);
+				}
+				else $account_new->smb_password = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $_POST['f_smb_password'], MCRYPT_MODE_ECB, $iv));
+			}
+		 	else $account_new->smb_password = '';
 		if ( ($account_new->smb_useunixpwd && !$account_old) || ($account_new->smb_useunixpwd && $account_new->unix_password!='') ) {
 			// Set Samba-Password to unix-password if option is set
 			$unix_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($account_new->unix_password), MCRYPT_MODE_ECB, $iv);
 			$smb_password = str_replace(chr(00), '', $unix_password);
+			$account_new->smb_password = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $smb_password, MCRYPT_MODE_ECB, $iv));
 			}
 		// Check values
 		$account_new->smb_scriptPath = str_replace('$user', $account_new->general_username, $account_new->smb_scriptPath);
@@ -433,12 +446,6 @@ switch ($_POST['select']) {
 			$account_new->smb_displayName = $account_new->general_gecos;
 			$errors[] = array('INFO', _('Display name'), _('Inserted gecos-field as display name.'));
 			}
-		if ($smb_password!='') {
-			// Encrypt password
-			$account_new->smb_password = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $smb_password,
-			MCRYPT_MODE_ECB, $iv));
-			}
-		else $account_new->smb_password = '';
 		break;
 	case 'quota':
 		// Write all general values into $account_new
@@ -1053,10 +1060,16 @@ switch ($select_local) {
 		echo "<table border=0 width=\"100%\"><tr><td>";
 		echo _('Password');
 		echo '</td>'."\n".'<td>'.
-			'<input name="f_unix_password" type="text" size="20" maxlength="20" value="' . $password . '">'.
+			'<input name="f_unix_password" type="password" size="20" maxlength="20" value="' . $password . '">'.
 			'</td>'."\n".'<td>'.
 			'<input name="genpass" type="submit" value="';
 		echo _('Generate password'); echo '"></td></tr><tr><td>';
+		echo _('Repeat password');
+		echo '</td>'."\n".'<td>'.
+			'<input name="f_unix_password2" type="password" size="20" maxlength="20" value="';
+		if (isset($_POST['f_unix_password2'])) echo $_POST['f_unix_password2'];
+			else echo $password;
+		echo '"></td>'."\n".'<td></td></tr><tr><td>';
 		echo _('Use no password');
 		echo '</td>'."\n".'<td><input name="f_unix_password_no" type="checkbox"';
 		if ($account_new->unix_password_no) echo ' checked ';
@@ -1172,8 +1185,14 @@ switch ($select_local) {
 			"<input name=\"f_smb_displayName\" type=\"text\" size=\"30\" maxlength=\"50\" value=\"".$account_new->smb_displayName."\">".
 			"</td>\n<td><a href=\""."../help.php?HelpNumber=420\" target=\"lamhelp\">"._('Help')."</a></td>\n</tr>\n<tr>\n<td>";
 		echo _('Samba password');
-		echo '</td>'."\n".'<td><input name="f_smb_password" type="text" size="20" maxlength="20" value="' . $password . '">'.
+		echo '</td>'."\n".'<td><input name="f_smb_password" type="password" size="20" maxlength="20" value="' . $password . '">'.
 			'</td></tr>'."\n".'<tr><td>';
+		echo _('Repeat password');
+		echo '</td>'."\n".'<td>'.
+			'<input name="f_smb_password2" type="password" size="20" maxlength="20" value="';
+		if (isset($_POST['f_smb_password2'])) echo $_POST['f_smb_password2'];
+			else echo $password;
+		echo '"></td>'."\n".'<td></td></tr><tr><td>';
 		echo _('Use unix password');
 		echo '</td><td><input name="f_smb_useunixpwd" type="checkbox"';
 		if ($account_new->smb_useunixpwd) echo ' checked ';
