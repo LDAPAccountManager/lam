@@ -67,7 +67,7 @@ class account {
 		return _('account');
 	}
 
-	function is_base_module() {
+	function is_base_module($scope) {
 		return false;
 	}
 

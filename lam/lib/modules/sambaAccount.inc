@@ -126,7 +126,7 @@ class sambaAccount {
 		return _('sambaAccount');
 		}
 
-	function is_base_module() {
+	function is_base_module($scope) {
 		return false;
 	}
 

@@ -70,7 +70,7 @@ class inetOrgPerson {
 		return _('inetOrgPerson');
 	}
 
-	function is_base_module() {
+	function is_base_module($scope) {
 		return false;
 	}
 

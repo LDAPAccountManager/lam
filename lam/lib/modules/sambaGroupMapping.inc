@@ -97,7 +97,7 @@ class sambaGroupMapping {
 		return _('sambaGroupMapping');
 		}
 
-	function is_base_module() {
+	function is_base_module($scope) {
 		return false;
 	}
 

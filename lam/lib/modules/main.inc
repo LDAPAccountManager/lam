@@ -67,7 +67,7 @@ class main {
 		return _('main');
 		}
 
-	function is_base_module() {
+	function is_base_module($scope) {
 		return false;
 	}
 

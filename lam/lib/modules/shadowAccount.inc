@@ -91,7 +91,7 @@ class shadowAccount {
 		return _('shadowAccount');
 		}
 
-	function is_base_module() {
+	function is_base_module($scope) {
 		return false;
 	}
 

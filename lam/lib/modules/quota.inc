@@ -71,7 +71,7 @@ class quota {
 		return _('quota');
 		}
 
-	function is_base_module() {
+	function is_base_module($scope) {
 		return false;
 	}
 

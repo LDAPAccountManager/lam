@@ -133,8 +133,14 @@ class posixAccount {
 		return "posixAccount";
 	}
 
-	function is_base_module() {
+	function is_base_module($scope) {
 		return true;
+	}
+
+	// returns an LDAP filter for the account lists
+	// $scope: the account type ("user", "group", "host")
+	function get_ldap_filter($scope) {
+		return "(objectClass=posixAccount)";
 	}
 
 	/* This function returns a list with all required modules
