@@ -5,10 +5,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: LAM 0.4.1\n"
+"Project-Id-Version: LAM 0.4.2\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de \n"
 "POT-Creation-Date: 2004-01-14 17:45+0200\n"
-"PO-Revision-Date: 2003-12-28 12:18+0200\n"
+"PO-Revision-Date: 2004-02-07 12:18+0200\n"
 "Last-Translator: Oota toshiya <ribbon@sourceforge.net>\n"
 "Language-Team: Japanese <ribbon@sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -102,7 +102,7 @@ msgstr "許可されるホスト"
 msgid "Allowed workstations"
 msgstr "許可されるPC"
 
-#: ../templates/massdetail.php:282 ../templates/lists/listusers.php:354
+#: ../templates/massdetail.php:282 ../templates/lists/listusers.php:360
 msgid "Apply"
 msgstr "適用"
 
@@ -221,7 +221,7 @@ msgstr "lamdaemonとPDF設定に戻る"
 msgid "Back to language and admin settings."
 msgstr "言語と管理設定に戻る"
 
-#: ../templates/confwiz/server2.php:88 ../templates/confwiz/server.php:85
+#: ../templates/confwiz/server.php:85 ../templates/confwiz/server2.php:88
 msgid "Back to last page"
 msgstr "最後のページに戻る"
 
@@ -280,8 +280,7 @@ msgstr "ハードquotaのブロック"
 msgid ""
 "Block hard quota contains invalid characters. Only natural numbers are "
 "allowed"
-msgstr ""
-"ハードquotaのブロックに不正な文字がある。自然数のみが有効"
+msgstr "ハードquotaのブロックに不正な文字がある。自然数のみが有効"
 
 #: ../templates/account/groupedit.php:260
 #: ../templates/account/useredit.php:462
@@ -297,8 +296,7 @@ msgstr "ソフトquotaのブロック"
 msgid ""
 "Block soft quota contains invalid characters. Only natural numbers are "
 "allowed"
-msgstr ""
-"ソフトquotaのブロックに不正な文字がある。自然数のみが有効"
+msgstr "ソフトquotaのブロックに不正な文字がある。自然数のみが有効"
 
 #: ../templates/config/confmain.php:163 ../templates/confwiz/server2.php:202
 #: ../help/help.inc:103 ../lib/config.inc:273
@@ -328,20 +326,19 @@ msgstr "ユーザが作成できない."
 #: ../templates/delete.php:115 ../templates/domain.php:177
 #: ../templates/domain.php:207 ../templates/initsuff.php:197
 #: ../templates/masscreate.php:122 ../templates/masscreate.php:253
-#: ../templates/masscreate.php:336 ../templates/confwiz/o_ranges.php:153
-#: ../templates/confwiz/o_daemon.php:142 ../templates/confwiz/ldaptest.php:209
+#: ../templates/masscreate.php:336 ../templates/confwiz/ldaptest.php:209
 #: ../templates/confwiz/ldaptest.php:402 ../templates/confwiz/ldaptest.php:491
-#: ../templates/confwiz/server2.php:236 ../templates/confwiz/o_lang.php:163
-#: ../templates/confwiz/server.php:197 ../templates/confwiz/o_lists.php:148
+#: ../templates/confwiz/o_daemon.php:142 ../templates/confwiz/o_lang.php:163
+#: ../templates/confwiz/o_lists.php:148 ../templates/confwiz/o_ranges.php:153
+#: ../templates/confwiz/server.php:197 ../templates/confwiz/server2.php:236
 #: ../templates/confwiz/start.php:182
 msgid "Cancel"
 msgstr "中止"
 
-#: ../templates/login.php:307 ../templates/login.php:312
+#: ../templates/login.php:315 ../templates/login.php:320
 #: ../templates/confwiz/server.php:68 ../templates/confwiz/server.php:69
 msgid "Cannot connect to specified LDAP-Server. Please try again."
-msgstr ""
-"指定されたLDAP-サーバに接続できない。再度実行せよ。"
+msgstr "指定されたLDAP-サーバに接続できない。再度実行せよ。"
 
 #: ../lib/config.inc:263 ../lib/config.inc:777
 msgid "Cannot open config file!"
@@ -355,13 +352,13 @@ msgstr "携帯電話番号"
 msgid "Change GID-Number of all users in group to new value"
 msgstr "グループ中のすべてのユーザのGID番号を新しい値に変更"
 
-#: ../templates/login.php:264
+#: ../templates/login.php:266
 msgid "Change Profile"
 msgstr "プロファイルの変更"
 
-#: ../templates/lists/listdomains.php:192
-#: ../templates/lists/listgroups.php:302 ../templates/lists/listhosts.php:286
-#: ../templates/lists/listusers.php:342
+#: ../templates/lists/listdomains.php:194
+#: ../templates/lists/listgroups.php:307 ../templates/lists/listhosts.php:295
+#: ../templates/lists/listusers.php:348
 msgid "Change Suffix"
 msgstr "サフィックスの変更"
 
@@ -387,8 +384,7 @@ msgstr "直接次のページに行かないならばここをクリック."
 
 #: ../help/help.inc:280
 msgid "Comma separated list of unix workstations the user is allowed to login."
-msgstr ""
-"PCのユーザのカンマ分離リストはログインの時に認められる??."
+msgstr "PCのユーザのカンマ分離リストはログインの時に認められる??."
 
 #: ../templates/delete.php:117
 msgid "Commit"
@@ -407,6 +403,10 @@ msgstr "構成設定ログイン"
 msgid "Configuration Wizard"
 msgstr "構成設定ウィザード"
 
+#: ../templates/login.php:249
+msgid "Configuration profile"
+msgstr "構成プロファイル"
+
 #: ../templates/confwiz/start.php:135
 msgid ""
 "Configuration profiles are protected with a password from unauthorised "
@@ -416,15 +416,15 @@ msgstr ""
 "パスワードの入力が必要。"
 
 #: ../templates/config/conflogin.php:118 ../templates/confwiz/final.php:46
-#: ../templates/confwiz/o_ranges.php:82 ../templates/confwiz/o_ranges.php:98
-#: ../templates/confwiz/o_daemon.php:73 ../templates/confwiz/o_daemon.php:89
 #: ../templates/confwiz/ldaptest.php:168 ../templates/confwiz/ldaptest.php:191
 #: ../templates/confwiz/ldaptest.php:278 ../templates/confwiz/ldaptest.php:302
 #: ../templates/confwiz/ldaptest.php:469 ../templates/confwiz/ldaptest.php:554
-#: ../templates/confwiz/server2.php:82 ../templates/confwiz/server2.php:107
+#: ../templates/confwiz/o_daemon.php:73 ../templates/confwiz/o_daemon.php:89
 #: ../templates/confwiz/o_lang.php:70 ../templates/confwiz/o_lang.php:86
-#: ../templates/confwiz/server.php:81 ../templates/confwiz/server.php:106
 #: ../templates/confwiz/o_lists.php:73 ../templates/confwiz/o_lists.php:89
+#: ../templates/confwiz/o_ranges.php:82 ../templates/confwiz/o_ranges.php:98
+#: ../templates/confwiz/server.php:81 ../templates/confwiz/server.php:106
+#: ../templates/confwiz/server2.php:82 ../templates/confwiz/server2.php:107
 #: ../templates/confwiz/start.php:73 ../templates/confwiz/start.php:95
 msgid "Configuration wizard"
 msgstr "構成設定ウィザード"
@@ -447,8 +447,7 @@ msgstr "ユーザを作成できない!"
 
 #: ../templates/delete.php:185
 msgid "Could not delete group. Still users in group:"
-msgstr ""
-"グループを削除できない。グループ中にユーザがいる:"
+msgstr "グループを削除できない。グループ中にユーザがいる:"
 
 #: ../templates/delete.php:189
 msgid "Could not delete group:"
@@ -486,27 +485,27 @@ msgstr "アカウント作成"
 msgid "Create PDF file"
 msgstr "PDFファイル作成"
 
-#: ../templates/lists/listgroups.php:314
+#: ../templates/lists/listgroups.php:319
 msgid "Create PDF for all groups"
 msgstr "すべてのグループのPDFファイル作成"
 
-#: ../templates/lists/listhosts.php:299
+#: ../templates/lists/listhosts.php:308
 msgid "Create PDF for all hosts"
 msgstr "すべてのホストのPDFファイル作成"
 
-#: ../templates/lists/listusers.php:368
+#: ../templates/lists/listusers.php:374
 msgid "Create PDF for all users"
 msgstr "すべてのユーザのPDFファイル作成"
 
-#: ../templates/lists/listgroups.php:312
+#: ../templates/lists/listgroups.php:317
 msgid "Create PDF for selected group(s)"
 msgstr "選択されたグループのPDFファイル作成"
 
-#: ../templates/lists/listhosts.php:297
+#: ../templates/lists/listhosts.php:306
 msgid "Create PDF for selected host(s)"
 msgstr "選択されたホストのPDFファイル作成"
 
-#: ../templates/lists/listusers.php:366
+#: ../templates/lists/listusers.php:372
 msgid "Create PDF for selected user(s)"
 msgstr "選択されたユーザのPDFファイル作成"
 
@@ -578,15 +577,16 @@ msgstr ""
 #: ../help/help.inc:205
 msgid "Date after the user must change his password. Format: DD-MM-YYYY"
 msgstr ""
-"ユーザの後の日付はそのユーザのパスワードを変更しなければならない。形式は: DD-MM-YYYY"
+"ユーザの後の日付はそのユーザのパスワードを変更しなければならない。形式は: DD-"
+"MM-YYYY"
 
 #: ../help/help.inc:171
 msgid ""
 "Days before password is to expire that user is warned of pending password "
 "expiration. If set value must be 0<."
 msgstr ""
-"パスワードの前の日付はパスワード満了の猶予をユーザが警告されているための"
-"ものである????。もしもその値を設定するなら0より小さくなければならない。"
+"パスワードの前の日付はパスワード満了の猶予をユーザが警告されているためのもの"
+"である????。もしもその値を設定するなら0より小さくなければならない。"
 
 #: ../templates/config/confmain.php:270 ../templates/confwiz/o_lang.php:108
 #: ../help/help.inc:84 ../lib/config.inc:289
@@ -601,7 +601,7 @@ msgstr "削除"
 msgid "Delete Account"
 msgstr "アカウント削除"
 
-#: ../templates/lists/listdomains.php:199
+#: ../templates/lists/listdomains.php:201
 msgid "Delete Domain(s)"
 msgstr "ドメインの削除"
 
@@ -609,11 +609,11 @@ msgstr "ドメインの削除"
 msgid "Delete Group Profile"
 msgstr "グループプログラムファイルの削除"
 
-#: ../templates/lists/listgroups.php:309
+#: ../templates/lists/listgroups.php:314
 msgid "Delete Group(s)"
 msgstr "グループの削除"
 
-#: ../templates/lists/listhosts.php:294
+#: ../templates/lists/listhosts.php:303
 msgid "Delete Host(s)"
 msgstr "ホストの削除"
 
@@ -656,7 +656,7 @@ msgstr "organizational unitを削除"
 msgid "Delete profile"
 msgstr "プロファイルを削除"
 
-#: ../templates/delete.php:77 ../templates/lists/listusers.php:363
+#: ../templates/delete.php:77 ../templates/lists/listusers.php:369
 msgid "Delete user(s)"
 msgstr "ユーザを削除"
 
@@ -767,8 +767,8 @@ msgstr "ドメイン管理者(Domain Admins)"
 msgid "Domain Guests"
 msgstr "ドメインゲスト(Domain Guests)"
 
-#: ../templates/domain.php:93 ../templates/lists/listdomains.php:84
-#: ../templates/confwiz/ldaptest.php:333 ../help/help.inc:296
+#: ../templates/domain.php:93 ../templates/confwiz/ldaptest.php:333
+#: ../templates/lists/listdomains.php:86 ../help/help.inc:296
 msgid "Domain SID"
 msgstr "ドメインのSID"
 
@@ -788,8 +788,8 @@ msgid "Domain Users"
 msgstr "ドメインユーザ(Domain Users)"
 
 #: ../templates/account/hostedit.php:212 ../templates/account/useredit.php:444
-#: ../templates/domain.php:77 ../templates/lists/listdomains.php:83
-#: ../templates/confwiz/ldaptest.php:320 ../help/help.inc:292
+#: ../templates/domain.php:77 ../templates/confwiz/ldaptest.php:320
+#: ../templates/lists/listdomains.php:85 ../help/help.inc:292
 msgid "Domain name"
 msgstr "ドメイン名"
 
@@ -798,13 +798,12 @@ msgid ""
 "Domain name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 "
 "and -."
 msgstr ""
-"ドメイン名には不正な文字がある。有効な文字は: a-z, A-Z, 0-9 "
-"と -である."
+"ドメイン名には不正な文字がある。有効な文字は: a-z, A-Z, 0-9 と -である."
 
-#: ../templates/domain.php:230 ../templates/profedit/profilecreate.php:233
+#: ../templates/domain.php:230 ../templates/confwiz/ldaptest.php:235
+#: ../templates/profedit/profilecreate.php:233
 #: ../templates/profedit/profilecreate.php:299
 #: ../templates/profedit/profilecreate.php:372
-#: ../templates/confwiz/ldaptest.php:235
 msgid "Domain name is invalid!"
 msgstr "ドメイン名が不正!"
 
@@ -829,9 +828,9 @@ msgstr "WindowsPCに割り当てられたドライブ名文字はホームディレクトリである??."
 msgid "E-Mail"
 msgstr "電子メール"
 
-#: ../templates/lists/listdomains.php:153
-#: ../templates/lists/listgroups.php:234 ../templates/lists/listhosts.php:234
-#: ../templates/lists/listusers.php:291
+#: ../templates/lists/listdomains.php:155
+#: ../templates/lists/listgroups.php:239 ../templates/lists/listhosts.php:243
+#: ../templates/lists/listusers.php:297
 msgid "Edit"
 msgstr "編集"
 
@@ -866,11 +865,11 @@ msgstr "職業"
 msgid "Employee type: worker, student, nurse, ..."
 msgstr "職業:会社員、学生、看護士、IT戦士 ..."
 
-#: ../templates/login.php:283
+#: ../templates/login.php:291
 msgid "Empty Password submitted. Try again."
 msgstr "空白のパスワードである。再度実行せよ."
 
-#: ../templates/login.php:129
+#: ../templates/login.php:150
 msgid "Enter Username and Password for Account"
 msgstr "アカウントに対するユーザ名とパスワードを入力"
 
@@ -924,11 +923,11 @@ msgid ""
 "Filename and -path relative to netlogon-share which should be executed on "
 "logon. $%s and $%s are replaced with user- and groupname."
 msgstr ""
-"ネットログオン共有への相対的な-パスとファイル名はログオンの時に実行される"
-"べきである。$%sと$%sはユーザとグループ名に置き換えられる。"
+"ネットログオン共有への相対的な-パスとファイル名はログオンの時に実行されるべき"
+"である。$%sと$%sはユーザとグループ名に置き換えられる。"
 
-#: ../templates/lists/listgroups.php:203 ../templates/lists/listhosts.php:203
-#: ../templates/lists/listusers.php:248
+#: ../templates/lists/listgroups.php:208 ../templates/lists/listhosts.php:212
+#: ../templates/lists/listusers.php:254
 msgid "Filter"
 msgstr "フィルタ"
 
@@ -966,8 +965,8 @@ msgid ""
 "GID-number has changed. You have to run the following command as root in "
 "order to change existing file-permissions:"
 msgstr ""
-"GID-番号が変更された。存在するファイルの属性を変更するために、rootで以下の"
-"コマンドを実行しなければならない:"
+"GID-番号が変更された。存在するファイルの属性を変更するために、rootで以下のコ"
+"マンドを実行しなければならない:"
 
 #: ../templates/account/groupedit.php:170
 #: ../templates/account/hostedit.php:186 ../templates/account/hostedit.php:386
@@ -1015,8 +1014,7 @@ msgstr "与えられた名前(Given name)に不正な文字がある"
 
 #: ../help/help.inc:193
 msgid "Given name of user. Only letters, - and spaces are allowed."
-msgstr ""
-"ユーザの与えられた名前。文字のみとスペースが有効."
+msgstr "ユーザの与えられた名前。文字のみとスペースが有効."
 
 #: ../templates/account/groupedit.php:758
 #: ../templates/account/useredit.php:1413 ../help/help.inc:233
@@ -1027,16 +1025,16 @@ msgstr "Grace block period"
 msgid ""
 "Grace block period. Most filesystems use a fixed maximum value of 7 days."
 msgstr ""
-"Grace block period. ほとんどのファイルシステムは固定された一週間の"
-"最大値を使う??"
+"Grace block period. ほとんどのファイルシステムは固定された一週間の最大値を使"
+"う??"
 
 #: ../help/help.inc:245
 msgid ""
 "Grace inode (files) period. Most filesystems use a fixed maximum value of 7 "
 "days."
 msgstr ""
-"Grace inode (files) period. ほとんどのファイルシステムは固定された一週間の"
-"最大値を使う??"
+"Grace inode (files) period. ほとんどのファイルシステムは固定された一週間の最"
+"大値を使う??"
 
 #: ../templates/account/groupedit.php:760
 #: ../templates/account/useredit.php:1415 ../help/help.inc:244
@@ -1094,8 +1092,8 @@ msgid ""
 msgstr ""
 "グループのグループ名は作成されるべきである。有効な文字は: a-z,0-9と.-である。"
 "Lamはgroupaddコマンドが認めないため、最初の文字に数字は使えない。Lamはいくつ"
-"かの問題が起きるため、文字A-Zは使えない。もしもグループ名がすでに使われて"
-"いたならば、グループ名は数字が補完される。次の自由な数字が使われる。"
+"かの問題が起きるため、文字A-Zは使えない。もしもグループ名がすでに使われていた"
+"ならば、グループ名は数字が補完される。次の自由な数字が使われる。"
 
 #: ../templates/masscreate.php:412 ../help/help.inc:188
 msgid "Group suffix"
@@ -1105,7 +1103,7 @@ msgstr "グループサフィックス"
 msgid "Group(s)"
 msgstr "グループ"
 
-#: ../templates/lists/listgroups.php:348
+#: ../templates/lists/listgroups.php:353
 msgid "Group(s) found"
 msgstr "グループが見つかった"
 
@@ -1127,8 +1125,7 @@ msgstr "グループ名"
 
 #: ../templates/account/groupedit.php:207
 msgid "Groupname already in use. Selected next free groupname."
-msgstr ""
-"グループ名がすでに使われている。次の自由なグループ名が選択された."
+msgstr "グループ名がすでに使われている。次の自由なグループ名が選択された."
 
 #: ../templates/account/groupedit.php:167
 msgid ""
@@ -1315,6 +1312,11 @@ msgstr "オブジェクトクラスshadowAccountを追加しなければならない."
 #: ../templates/config/profmanage.php:307
 #: ../templates/config/profmanage.php:330
 #: ../templates/config/profmanage.php:358
+#: ../templates/confwiz/ldaptest.php:325 ../templates/confwiz/ldaptest.php:338
+#: ../templates/confwiz/ldaptest.php:349 ../templates/confwiz/ldaptest.php:357
+#: ../templates/confwiz/ldaptest.php:365 ../templates/confwiz/ldaptest.php:376
+#: ../templates/confwiz/ldaptest.php:393 ../templates/confwiz/o_ranges.php:125
+#: ../templates/confwiz/o_ranges.php:134 ../templates/confwiz/o_ranges.php:143
 #: ../templates/profedit/profilegroup.php:84
 #: ../templates/profedit/profilegroup.php:106
 #: ../templates/profedit/profilegroup.php:107
@@ -1353,11 +1355,6 @@ msgstr "オブジェクトクラスshadowAccountを追加しなければならない."
 #: ../templates/profedit/profileuser.php:386
 #: ../templates/profedit/profileuser.php:387
 #: ../templates/profedit/profileuser.php:422
-#: ../templates/confwiz/o_ranges.php:125 ../templates/confwiz/o_ranges.php:134
-#: ../templates/confwiz/o_ranges.php:143 ../templates/confwiz/ldaptest.php:325
-#: ../templates/confwiz/ldaptest.php:338 ../templates/confwiz/ldaptest.php:349
-#: ../templates/confwiz/ldaptest.php:357 ../templates/confwiz/ldaptest.php:365
-#: ../templates/confwiz/ldaptest.php:376 ../templates/confwiz/ldaptest.php:393
 msgid "Help"
 msgstr "ヘルプ"
 
@@ -1442,12 +1439,11 @@ msgid ""
 "character is not $ it will be added. If hostname is already used hostname "
 "will be expanded with a number. The next free number will be used."
 msgstr ""
-"ホストのホスト名は作成されるべきである。有効な文字は: a-z, 0-9 と .-_$. "
-"Lamはuseraddコマンドが許可しないため、最初の文字に数字を許可しない。"
-"Lamはいくつかの問題を引き起こすため、大文字のA-Zを認めない。"
-"ホスト名は必ず $ で終わる。もしも最後の文字が $ でなければ追加される。"
-"もしもホスト名がすでに使われていれば、ホスト名に数字が補完される。次の"
-"自由な数字が使われる."
+"ホストのホスト名は作成されるべきである。有効な文字は: a-z, 0-9 と .-_$. Lamは"
+"useraddコマンドが許可しないため、最初の文字に数字を許可しない。Lamはいくつか"
+"の問題を引き起こすため、大文字のA-Zを認めない。ホスト名は必ず $ で終わる。も"
+"しも最後の文字が $ でなければ追加される。もしもホスト名がすでに使われていれ"
+"ば、ホスト名に数字が補完される。次の自由な数字が使われる."
 
 #: ../lib/ldap.inc:213
 msgid "Host username"
@@ -1468,16 +1464,14 @@ msgstr "ホスト名"
 
 #: ../templates/account/hostedit.php:177
 msgid "Hostname already in use. Selected next free hostname."
-msgstr ""
-"ホスト名がすでに使われている。次の自由なホスト名が選択された."
+msgstr "ホスト名がすでに使われている。次の自由なホスト名が選択された."
 
 #: ../templates/account/hostedit.php:137
 msgid ""
 "Hostname contains invalid characters. Valid characters are: a-z, A-Z, 0-9 "
 "and .-_ !"
 msgstr ""
-"ホスト名に不正な文字が含まれている。有効な文字は: a-z, A-Z, 0-9 "
-"と .-_."
+"ホスト名に不正な文字が含まれている。有効な文字は: a-z, A-Z, 0-9 と .-_."
 
 #: ../templates/main_header.php:75 ../templates/main_header.php:80
 #: ../templates/confwiz/o_lists.php:118 ../help/help.inc:75
@@ -1507,29 +1501,28 @@ msgid ""
 "If a not yet existing group is defined in csv-file, a new group in the "
 "selected group suffix will be created."
 msgstr ""
-"もしも、csvファイル中に存在ずるグループがまだ定義されていなければ、"
-"選択されたグループサフィックス中の新しいグループが作成される."
+"もしも、csvファイル中に存在ずるグループがまだ定義されていなければ、選択された"
+"グループサフィックス中の新しいグループが作成される."
 
 #: ../help/help.inc:268
 msgid ""
 "If a not yet existing group is defined in csv-file, a new group with the "
 "selected group profile will be created."
 msgstr ""
-"もしもcsvファイル中に存在するグループがまだ定義されていなければ、"
-"選択されたグループプロファイルの新しいグループが作成される."
+"もしもcsvファイル中に存在するグループがまだ定義されていなければ、選択されたグ"
+"ループプロファイルの新しいグループが作成される."
 
 #: ../help/help.inc:197
 msgid ""
 "If checked account will be deactivated by putting a ! before the encrypted "
 "password."
 msgstr ""
-"チェックした場合、暗号化したパスワードの前に ! をおくことによって"
-"アカウントは無効化される."
+"チェックした場合、暗号化したパスワードの前に ! をおくことによってアカウントは"
+"無効化される."
 
 #: ../help/help.inc:207
 msgid "If checked account will be deactivated. (Setting D-Flag)"
-msgstr "チェックした場合、(D-フラグをセットすることで)アカウントは"
-"無効化される"
+msgstr "チェックした場合、(D-フラグをセットすることで)アカウントは無効化される"
 
 #: ../help/help.inc:195
 msgid "If checked no password will be used."
@@ -1541,8 +1534,7 @@ msgstr "チェックした場合、パスワードは満了にならない(X-フラグをセット)"
 
 #: ../help/help.inc:199
 msgid "If checked unix password will also be used as samba password."
-msgstr ""
-"チェックした場合、sambaパスワードとしてもUNIXパスワードが使われる."
+msgstr "チェックした場合、sambaパスワードとしてもUNIXパスワードが使われる."
 
 #: ../help/help.inc:157
 #, php-format
@@ -1550,8 +1542,8 @@ msgid ""
 "If empty GID number will be generated automaticly. Valid values are between %"
 "s and %s."
 msgstr ""
-"もしも空白ならば、GID番号が自動的に生成される。有効な値は、"
-"%s と %s の間である."
+"もしも空白ならば、GID番号が自動的に生成される。有効な値は、%s と %s の間であ"
+"る."
 
 #: ../help/help.inc:142 ../help/help.inc:164
 #, php-format
@@ -1559,8 +1551,8 @@ msgid ""
 "If empty UID number will be generated automaticly. Valid values are between %"
 "s and %s."
 msgstr ""
-"もしも空白ならば、UID番号が自動的に生成される。有効な値は、"
-"%s と %s の間である."
+"もしも空白ならば、UID番号が自動的に生成される。有効な値は、%s と %s の間であ"
+"る."
 
 #: ../help/help.inc:187
 msgid ""
@@ -1568,22 +1560,22 @@ msgid ""
 "E.g. if a user is in group admin the user suffix will be ou=admin,+user "
 "suffix."
 msgstr ""
-"もしも選択した場合、ユーザはそのプライマリグループで拡張されたOUをもって"
-"追加される。たとえば、もしも、ユーザが group admin に所属しているならば、"
-"ユーザのサフィックスは、ou=admin,+ユーザのサフィックスになる。"
+"もしも選択した場合、ユーザはそのプライマリグループで拡張されたOUをもって追加"
+"される。たとえば、もしも、ユーザが group admin に所属しているならば、ユーザの"
+"サフィックスは、ou=admin,+ユーザのサフィックスになる。"
 
 #: ../help/help.inc:127
 msgid ""
 "If set to \"yes\" the Windows password will be the same as the Unix one."
 msgstr ""
-"もしも \"はい(yes)\" にセットされたならば、Windowsパスワードは"
-"UNIXのものと同じになる。"
+"もしも \"はい(yes)\" にセットされたならば、WindowsパスワードはUNIXのものと同"
+"じになる。"
 
 #: ../help/help.inc:131
 msgid "If set to \"yes\" the user will be able to change his Windows password."
 msgstr ""
-"もしも\"はい(yes)\" にセットされたならば、ユーザはWindowsパスワードを"
-"変更可能になる"
+"もしも\"はい(yes)\" にセットされたならば、ユーザはWindowsパスワードを変更可能"
+"になる"
 
 #: ../help/help.inc:129 ../help/help.inc:133
 msgid "If unsure say \"yes\" here."
@@ -1594,38 +1586,37 @@ msgid ""
 "If you use Samba 3.x with the new LDAP schema say \"yes\" here, otherwise "
 "\"no\"."
 msgstr ""
-"もしもSamba 3.x を新しいLDAPスキーマと共に使っているならば、ここで、"
-"\"はい(yes)\"と答え、それ以外の場合は \"いいえ(no)\"と答えなさい."
+"もしもSamba 3.x を新しいLDAPスキーマと共に使っているならば、ここで、\"はい"
+"(yes)\"と答え、それ以外の場合は \"いいえ(no)\"と答えなさい."
 
 #: ../templates/confwiz/o_lang.php:146
 msgid ""
 "If you want more than one user to login to LAM please enter its DN(s) here. "
 "Multiple entries are seperated by semicolons."
 msgstr ""
-"もしも、1人以上のユーザがLAMにログインしたいのであれば、ここで、そのDNを"
-"入力。複数のエントリは、セミコロンによって分離される。"
+"もしも、1人以上のユーザがLAMにログインしたいのであれば、ここで、そのDNを入"
+"力。複数のエントリは、セミコロンによって分離される。"
 
 #: ../help/help.inc:97
 msgid ""
 "If you want to change the current preferences password, please enter it here."
 msgstr ""
-"もしも、現在のプリファレンスのパスワードを変更したいのならば、それをここで"
-"入力。"
+"もしも、現在のプリファレンスのパスワードを変更したいのならば、それをここで入"
+"力。"
 
 #: ../help/help.inc:120
 msgid ""
 "If you want to change your master configuration password, please enter it "
 "here."
-msgstr ""
-"もしも、マスタ構成パスワードを変更したいのならば、それをここで入力。"
+msgstr "もしも、マスタ構成パスワードを変更したいのならば、それをここで入力。"
 
 #: ../templates/confwiz/o_lists.php:106
 msgid ""
 "If you want to input your own description it would look like this: "
 "\"attribute:description\"."
 msgstr ""
-"もしも、固有の記述を入力したいのならば、それは右記のようになる: "
-"\"属性:記述\"."
+"もしも、固有の記述を入力したいのならば、それは右記のようになる: \"属性:記述"
+"\"."
 
 #: ../templates/confwiz/o_daemon.php:105
 msgid ""
@@ -1638,8 +1629,8 @@ msgstr ""
 #: ../help/help.inc:278
 msgid "If you want to use a well known RID you can selcet a well known group."
 msgstr ""
-"もしも、よく知られたRIDを使いたいのであれば、よく知られた"
-"グループを選択できる??。"
+"もしも、よく知られたRIDを使いたいのであれば、よく知られたグループを選択でき"
+"る??。"
 
 #: ../templates/confwiz/ldaptest.php:490
 msgid "Ignore"
@@ -1663,8 +1654,7 @@ msgstr "Inode ハードquota"
 msgid ""
 "Inode hard quota contains invalid characters. Only natural numbers are "
 "allowed"
-msgstr ""
-"Inodeハードquotaに不正な文字が含まれている。数字のみ有効。"
+msgstr "Inodeハードquotaに不正な文字が含まれている。数字のみ有効。"
 
 #: ../templates/account/groupedit.php:264
 #: ../templates/account/useredit.php:466
@@ -1680,8 +1670,7 @@ msgstr "Inodeソフトquota"
 msgid ""
 "Inode soft quota contains invalid characters. Only natural numbers are "
 "allowed"
-msgstr ""
-"Inode ソフトquotaに不正な文字が含まれている。数字のみ有効。"
+msgstr "Inode ソフトquotaに不正な文字が含まれている。数字のみ有効。"
 
 #: ../templates/account/groupedit.php:246
 #: ../templates/account/useredit.php:448
@@ -1732,9 +1721,9 @@ msgid ""
 "problems because files with old permissions might still exist. To avoid this "
 "warning set maxUID to a higher value."
 msgstr ""
-"ID番号を再利用することは可能である。これは、古いパーミッションを持った"
-"ファイルがまだあるときにいくつかの問題を引き起こす。この警告を防ぐには、"
-"maxUIDをより大きな値に設定することである。"
+"ID番号を再利用することは可能である。これは、古いパーミッションを持ったファイ"
+"ルがまだあるときにいくつかの問題を引き起こす。この警告を防ぐには、maxUIDをよ"
+"り大きな値に設定することである。"
 
 #: ../templates/masscreate.php:286
 msgid "It will be created."
@@ -1750,23 +1739,23 @@ msgid ""
 "will stress LDAP more but decrease the possibility that changes are not "
 "identified."
 msgstr ""
-"LAMはLDAP検索をキャッシュするので、キャッシュの時間を設定することができる。"
-"短い時間を設定するとLDAPサーバに負荷を掛けるが、変更が認識されない可能性を"
-"低減できる。"
+"LAMはLDAP検索をキャッシュするので、キャッシュの時間を設定することができる。短"
+"い時間を設定するとLDAPサーバに負荷を掛けるが、変更が認識されない可能性を低減"
+"できる。"
 
 #: ../templates/confwiz/ldaptest.php:479
 msgid "LAM can create them for you or you have to create them manually later."
 msgstr ""
-"LAM はあなた向けにそれらを生成できるか、あるいは、後で、それらを手動で"
-"作成する必要がある??。"
+"LAM はあなた向けにそれらを生成できるか、あるいは、後で、それらを手動で作成す"
+"る必要がある??。"
 
 #: ../templates/confwiz/ldaptest.php:478
 msgid ""
 "LAM detected that one or more essential Samba groups are missing. They are "
 "listed below."
 msgstr ""
-"LAMは基本的な1つ以上のSambaのグループがないことを認識した。それは"
-"以下の通りである。"
+"LAMは基本的な1つ以上のSambaのグループがないことを認識した。それは以下の通りで"
+"ある。"
 
 #: ../templates/confwiz/server2.php:170 ../help/help.inc:106
 msgid ""
@@ -1776,8 +1765,8 @@ msgid ""
 "passwords."
 msgstr ""
 "LAMはユーザのパスワードのハッシュ値を生成するために、CRYPT、SHA、SSHA、MD5と"
-"SMD5をサポートする。SSHAとCRYPTは最も一般的であるが、CRYPTは8文字より大きい"
-"パスワードをサポートしない。平文のパスワードを使うことは推奨しない。"
+"SMD5をサポートする。SSHAとCRYPTは最も一般的であるが、CRYPTは8文字より大きいパ"
+"スワードをサポートしない。平文のパスワードを使うことは推奨しない。"
 
 #: ../help/help.inc:101
 msgid "LAM will not work if version is wrong!"
@@ -1791,9 +1780,9 @@ msgstr "LDAP アカウントマネージャ構成"
 msgid "LDAP List settings"
 msgstr "LDAP リスト設定"
 
-#: ../templates/lists/listdomains.php:110
-#: ../templates/lists/listgroups.php:170 ../templates/lists/listhosts.php:170
-#: ../templates/lists/listusers.php:212
+#: ../templates/lists/listdomains.php:112
+#: ../templates/lists/listgroups.php:175 ../templates/lists/listhosts.php:179
+#: ../templates/lists/listusers.php:218
 msgid "LDAP Search failed! Please check your preferences."
 msgstr "LDAP 検索失敗! プリファレンスの調査が必要"
 
@@ -1801,15 +1790,19 @@ msgstr "LDAP 検索失敗! プリファレンスの調査が必要"
 msgid "LDAP admin DN"
 msgstr "LDAP 管理者のDN"
 
-#: ../templates/login.php:322 ../templates/confwiz/server.php:71
+#: ../templates/login.php:330 ../templates/confwiz/server.php:71
 msgid "LDAP error, server says:"
 msgstr "LDAP エラー、サーバからのメッセージ:"
 
-#: ../templates/lists/listdomains.php:99 ../templates/lists/listgroups.php:156
-#: ../templates/lists/listhosts.php:156 ../templates/lists/listusers.php:197
+#: ../templates/login.php:241
+msgid "LDAP server"
+msgstr "LDAPサーバ"
+
+#: ../templates/lists/listdomains.php:101
+#: ../templates/lists/listgroups.php:161 ../templates/lists/listhosts.php:165
+#: ../templates/lists/listusers.php:203
 msgid "LDAP sizelimit exceeded, not all entries are shown."
-msgstr ""
-"LDAP サイズ制限に引っかかった。すべてのエントリは表示されない。"
+msgstr "LDAP サイズ制限に引っかかった。すべてのエントリは表示されない。"
 
 #: ../templates/confwiz/server2.php:227
 msgid "Lamdaemon settings and PDF text"
@@ -1848,8 +1841,8 @@ msgid ""
 "List of samba workstations the user is allowed to login. Empty means every "
 "workstation."
 msgstr ""
-"ユーザがログインできるSambaワークステーションのリスト。空白はすべての"
-"ワークステーションを意味する。"
+"ユーザがログインできるSambaワークステーションのリスト。空白はすべてのワークス"
+"テーションを意味する。"
 
 #: ../templates/config/confmain.php:343 ../templates/confwiz/o_lang.php:152
 #: ../lib/config.inc:292
@@ -1868,7 +1861,7 @@ msgstr "プロファイルのロード"
 msgid "Load profile"
 msgstr "プロファイルのロード"
 
-#: ../templates/login.php:227 ../templates/config/conflogin.php:72
+#: ../templates/login.php:232 ../templates/config/conflogin.php:72
 #: ../help/help.inc:36
 msgid "Login"
 msgstr "ログイン"
@@ -2052,8 +2045,7 @@ msgstr "名前"
 #: ../templates/account/hostedit.php:182 ../templates/account/useredit.php:307
 #: ../templates/masscreate.php:571 ../templates/massdetail.php:97
 msgid "Name contains invalid characters. First character must be a letter."
-msgstr ""
-"名前に不正な文字がある。最初の文字は英文字でなければならない."
+msgstr "名前に不正な文字がある。最初の文字は英文字でなければならない."
 
 #: ../templates/account/groupedit.php:214
 #: ../templates/account/hostedit.php:179 ../templates/account/useredit.php:304
@@ -2066,18 +2058,18 @@ msgid ""
 "Name under which the profile will be saved. If a profile with the same name "
 "exists, it will be overwritten."
 msgstr ""
-"プロファイルがセーブされる名前。もしも同じ名前のプロファイルがあるならば、"
-"上書きされる。"
+"プロファイルがセーブされる名前。もしも同じ名前のプロファイルがあるならば、上"
+"書きされる。"
 
-#: ../templates/lists/listdomains.php:198
+#: ../templates/lists/listdomains.php:200
 msgid "New Domain"
 msgstr "新しいドメイン"
 
-#: ../templates/lists/listgroups.php:307
+#: ../templates/lists/listgroups.php:312
 msgid "New Group"
 msgstr "新しいグループ"
 
-#: ../templates/lists/listhosts.php:292
+#: ../templates/lists/listhosts.php:301
 msgid "New Host"
 msgstr "新しいホスト"
 
@@ -2117,14 +2109,14 @@ msgstr "新しいパスワードが正しく設定された."
 msgid "New profile created."
 msgstr "新しいプロファイルが作成された."
 
-#: ../templates/lists/listusers.php:361
+#: ../templates/lists/listusers.php:367
 msgid "New user"
 msgstr "新しいユーザ"
 
-#: ../templates/masscreate.php:428 ../templates/confwiz/o_ranges.php:152
-#: ../templates/confwiz/o_daemon.php:141 ../templates/confwiz/server2.php:234
-#: ../templates/confwiz/o_lang.php:162 ../templates/confwiz/server.php:196
-#: ../templates/confwiz/o_lists.php:147 ../templates/confwiz/start.php:181
+#: ../templates/masscreate.php:428 ../templates/confwiz/o_daemon.php:141
+#: ../templates/confwiz/o_lang.php:162 ../templates/confwiz/o_lists.php:147
+#: ../templates/confwiz/o_ranges.php:152 ../templates/confwiz/server.php:196
+#: ../templates/confwiz/server2.php:234 ../templates/confwiz/start.php:181
 msgid "Next"
 msgstr "次"
 
@@ -2167,23 +2159,23 @@ msgstr "次のグループRIDは番号ではない!"
 msgid "Next user RID is not a number!"
 msgstr "次のユーザRIDは番号ではない!"
 
-#: ../templates/lists/listgroups.php:161 ../templates/lists/listgroups.php:170
-#: ../templates/lists/listgroups.php:174
+#: ../templates/lists/listgroups.php:166 ../templates/lists/listgroups.php:175
+#: ../templates/lists/listgroups.php:179
 msgid "No Groups found!"
 msgstr "グループが見つからない!"
 
-#: ../templates/lists/listdomains.php:104
-#: ../templates/lists/listdomains.php:110
-#: ../templates/lists/listdomains.php:114
+#: ../templates/lists/listdomains.php:106
+#: ../templates/lists/listdomains.php:112
+#: ../templates/lists/listdomains.php:116
 msgid "No Samba Domains found!"
 msgstr "Sambaドメインが見つからない!"
 
-#: ../templates/lists/listhosts.php:161 ../templates/lists/listhosts.php:170
-#: ../templates/lists/listhosts.php:174
+#: ../templates/lists/listhosts.php:170 ../templates/lists/listhosts.php:179
+#: ../templates/lists/listhosts.php:183
 msgid "No Samba Hosts found!"
 msgstr "Sambaホストが見つからない!"
 
-#: ../templates/lists/listusers.php:202 ../templates/lists/listusers.php:213
+#: ../templates/lists/listusers.php:208 ../templates/lists/listusers.php:219
 msgid "No Users found!"
 msgstr "ユーザが見つからない!"
 
@@ -2227,8 +2219,7 @@ msgstr "タイプが指定されていない!"
 
 #: ../lib/pdf.inc:252
 msgid "No user quotas defined or no quota support by filesystem."
-msgstr ""
-"ユーザquotaが定義されていないかファイルシステムにquotaサポートがない."
+msgstr "ユーザquotaが定義されていないかファイルシステムにquotaサポートがない."
 
 #: ../templates/delete.php:230
 msgid "No user(s) were deleted"
@@ -2243,24 +2234,23 @@ msgstr "ノート"
 #: ../help/help.inc:173
 msgid ""
 "Number of days a user can login even his password has expired. -1=always."
-msgstr ""
-"パスワードが満了になってもユーザがログインできる日数。-1は無期限"
+msgstr "パスワードが満了になってもユーザがログインできる日数。-1は無期限"
 
 #: ../help/help.inc:177
 msgid ""
 "Number of days a user has to wait until he\\'s allowed to change his "
 "password again. If set value must be 0<."
 msgstr ""
-"再度パスワードを変更できるまで待たなければならない日数。設定するならば"
-"0より大きくなければならない。"
+"再度パスワードを変更できるまで待たなければならない日数。設定するならば0より大"
+"きくなければならない。"
 
 #: ../help/help.inc:175
 msgid ""
 "Number of days after a user has to change his password again. If set value "
 "must be 0<."
 msgstr ""
-"再度パスワードを変更しなければならない日からの日数。設定するならば"
-"0より大きくなければならない。"
+"再度パスワードを変更しなければならない日からの日数。設定するならば0より大きく"
+"なければならない。"
 
 #: ../templates/ou_edit.php:58 ../templates/ou_edit.php:123
 #: ../templates/ou_edit.php:188 ../templates/ou_edit.php:253
@@ -2329,7 +2319,7 @@ msgstr "PDFテキスト"
 #: ../templates/account/hostedit.php:391 ../templates/account/useredit.php:315
 #: ../templates/account/useredit.php:345 ../templates/account/useredit.php:412
 #: ../templates/account/useredit.php:436
-#: ../templates/account/useredit.php:1056 ../templates/login.php:171
+#: ../templates/account/useredit.php:1056 ../templates/login.php:180
 #: ../templates/confwiz/server.php:159 ../templates/confwiz/start.php:141
 msgid "Password"
 msgstr "パスワード"
@@ -2347,8 +2337,8 @@ msgid ""
 "Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 "
 "and #*,.;:_-+!$%&/|?{[()]}= !"
 msgstr ""
-"パスワードに不正な文字がある。有効な文字は: a-z, A-Z, 0-9 と"
-" #*,.;:_-+!$%&/|?{[()]}= !"
+"パスワードに不正な文字がある。有効な文字は: a-z, A-Z, 0-9 と #*,.;:_-+!$%&/|?"
+"{[()]}= !"
 
 #: ../templates/account/useredit.php:1200
 #: ../templates/profedit/profileuser.php:257 ../help/help.inc:200
@@ -2432,8 +2422,8 @@ msgid ""
 "Path of the userprofile. Can be a local absolute path or a UNC-path (\\"
 "\\server\\share). $%s and $%s are replaced with user- and groupname."
 msgstr ""
-"ユーザプロファイルのパス。ローカル絶対パスか、UNCパス(\\\\サーバ"
-"\\共有). $%s と $%s はユーザとグループに置き換えられる."
+"ユーザプロファイルのパス。ローカル絶対パスか、UNCパス(\\\\サーバ\\共有). $%s "
+"と $%s はユーザとグループに置き換えられる."
 
 #: ../templates/config/confmain.php:315 ../templates/confwiz/o_daemon.php:117
 #: ../lib/config.inc:290
@@ -2555,24 +2545,22 @@ msgid ""
 "password. It is stored in your config.cfg file. If this is the first time "
 "you log in, enter \"lam\"."
 msgstr ""
-"マスタ構成パスワードを入力。これはLDAPパスワードとは異なる。これは"
-"config.cfgファイルに記録される。もしもこれが最初のログインならば、"
-" \"lam\" と入力."
+"マスタ構成パスワードを入力。これはLDAPパスワードとは異なる。これはconfig.cfg"
+"ファイルに記録される。もしもこれが最初のログインならば、 \"lam\" と入力."
 
 #: ../help/help.inc:110
 msgid ""
 "Please enter the name of the new profile and the password to change its "
 "settings. Profile names may contain letters, numbers and -/_."
 msgstr ""
-"その設定を変更するための新しいプロファイル名とパスワードを入力。"
-"プロファイル名は英文字、数字と -/_ を含められる."
+"その設定を変更するための新しいプロファイル名とパスワードを入力。プロファイル"
+"名は英文字、数字と -/_ を含められる."
 
 #: ../help/help.inc:112
 msgid ""
 "Please enter the new name of the profile. The name may contain letters, "
 "numbers and -/_."
-msgstr ""
-"新しいプロファイル名を入力。名前は英文字、数字と -/_ を含められる."
+msgstr "新しいプロファイル名を入力。名前は英文字、数字と -/_ を含められる."
 
 #: ../templates/account/useredit.php:315 ../templates/account/useredit.php:412
 msgid "Please enter the same password in both password-fields."
@@ -2582,27 +2570,23 @@ msgstr "2つのパスワード領域に同じパスワードを入力."
 msgid ""
 "Please enter the suffixes of your LDAP tree where LAM should store the "
 "accounts."
-msgstr ""
-"LAMがアカウントを格納するときのLDAP木のサフィックスを入力。"
+msgstr "LAMがアカウントを格納するときのLDAP木のサフィックスを入力。"
 
 #: ../templates/confwiz/o_lists.php:103
 msgid "Please enter which attributes should be displayed in the list views."
-msgstr ""
-"リストビュー中に表示されるべき属性を入力."
+msgstr "リストビュー中に表示されるべき属性を入力."
 
 #: ../templates/confwiz/start.php:162
 msgid ""
 "Please enter your configuration master password. This password is \"lam\" by "
 "default."
-msgstr ""
-"構成マスタパスワードを入力。このパスワードは既定値では\"lam\" である."
+msgstr "構成マスタパスワードを入力。このパスワードは既定値では\"lam\" である."
 
 #: ../templates/masscreate.php:355
 msgid ""
 "Please provide a csv-file with the following syntax. Values with * are "
 "required:"
-msgstr ""
-"以下の形式でCSVファイルを提供すること。*が付いた値は必須である:"
+msgstr "以下の形式でCSVファイルを提供すること。*が付いた値は必須である:"
 
 #: ../lib/status.inc:42
 msgid ""
@@ -2610,17 +2594,17 @@ msgid ""
 "Account Manager Development Team{endlink}. The error number is {bold}0001:"
 "Invalid/Missing Message type.{endbold} Thank you."
 msgstr ""
-"このエラーをバグトラッカー {link=http://lam.sf."
-"net}LDAP Account Manager 開発チーム{endlink}にレポートしてほしい。"
-"エラー番号は {bold}0001:不正/存在しないメッセージタイプ。{endbold}"
+"このエラーをバグトラッカー {link=http://lam.sf.net}LDAP Account Manager 開発"
+"チーム{endlink}にレポートしてほしい。エラー番号は {bold}0001:不正/存在しない"
+"メッセージタイプ。{endbold}"
 
 #: ../templates/confwiz/server2.php:222
 msgid ""
 "Please select here if you want to make additional changes to your "
 "configuration profile or if LAM should use default values."
 msgstr ""
-"もしも、構成プロファイルに追加の変更を行ないたいか、LAMが既定値の"
-"値を使うべき時かをここで選択。"
+"もしも、構成プロファイルに追加の変更を行ないたいか、LAMが既定値の値を使うべき"
+"時かをここで選択。"
 
 #: ../templates/account/groupedit.php:514
 #: ../templates/account/groupedit.php:571
@@ -2694,8 +2678,8 @@ msgid ""
 "Primary group has changed. You have to run the following command as root in "
 "order to change existing file-permissions:"
 msgstr ""
-"プライマリグループが変更された。存在するファイルのパーミッションを"
-"変更するために以下のコマンドをrootで実行しなければならない。"
+"プライマリグループが変更された。存在するファイルのパーミッションを変更するた"
+"めに以下のコマンドをrootで実行しなければならない。"
 
 #: ../templates/profedit/profilecreate.php:64
 #: ../templates/profedit/profilecreate.php:364
@@ -2723,11 +2707,10 @@ msgid "Profile management"
 msgstr "プロファイル管理"
 
 #: ../templates/config/profmanage.php:159
-#: ../templates/config/profmanage.php:206
+#: ../templates/config/profmanage.php:206 ../templates/confwiz/start.php:123
 #: ../templates/profedit/profilegroup.php:143
 #: ../templates/profedit/profilehost.php:112
-#: ../templates/profedit/profileuser.php:420
-#: ../templates/confwiz/start.php:123 ../help/help.inc:134
+#: ../templates/profedit/profileuser.php:420 ../help/help.inc:134
 msgid "Profile name"
 msgstr "プロファイル名"
 
@@ -2815,9 +2798,9 @@ msgstr "新しいマスタパスワードを再入力"
 msgid "Reenter profile password"
 msgstr "プロファイルパスワードを再入力"
 
-#: ../templates/masscreate.php:337 ../templates/lists/listdomains.php:218
-#: ../templates/lists/listgroups.php:335 ../templates/lists/listhosts.php:320
-#: ../templates/lists/listusers.php:392
+#: ../templates/masscreate.php:337 ../templates/lists/listdomains.php:220
+#: ../templates/lists/listgroups.php:340 ../templates/lists/listhosts.php:329
+#: ../templates/lists/listusers.php:398
 msgid "Refresh"
 msgstr "リフレッシュ"
 
@@ -2889,7 +2872,7 @@ msgstr "Samba 3 ドメインのSIDが不正!"
 msgid "Samba 3.x schema"
 msgstr "Samba 3.x スキーマ"
 
-#: ../templates/lists/listdomains.php:231
+#: ../templates/lists/listdomains.php:233
 msgid "Samba Domain(s) found"
 msgstr "Sambaドメインが見つかった"
 
@@ -2897,7 +2880,7 @@ msgstr "Sambaドメインが見つかった"
 msgid "Samba Host Profiles"
 msgstr "Sambaホストプロファイル"
 
-#: ../templates/lists/listhosts.php:333
+#: ../templates/lists/listhosts.php:342
 msgid "Samba Host(s) found"
 msgstr "Samba ホストが見つかった"
 
@@ -2983,8 +2966,8 @@ msgid "Script path"
 msgstr "スクリプトパス"
 
 #: ../templates/account/useredit.php:439 ../templates/config/confsave.php:181
-#: ../templates/profedit/profilecreate.php:217
 #: ../templates/confwiz/o_daemon.php:54
+#: ../templates/profedit/profilecreate.php:217
 msgid "Script path is invalid!"
 msgstr "スクリプトパスが不正!"
 
@@ -3008,8 +2991,8 @@ msgstr "セキュリティ設定"
 msgid "See also"
 msgstr "参照"
 
-#: ../templates/lists/listgroups.php:275 ../templates/lists/listhosts.php:258
-#: ../templates/lists/listusers.php:316
+#: ../templates/lists/listgroups.php:280 ../templates/lists/listhosts.php:267
+#: ../templates/lists/listusers.php:322
 msgid "Select all"
 msgstr "すべてを選択"
 
@@ -3151,11 +3134,11 @@ msgstr "更新(Submit)"
 
 #: ../templates/account/groupedit.php:606
 #: ../templates/account/hostedit.php:418 ../templates/account/useredit.php:996
-#: ../templates/domain.php:148 ../templates/lists/listdomains.php:185
-#: ../templates/lists/listgroups.php:295 ../templates/lists/listhosts.php:279
-#: ../templates/lists/listusers.php:335 ../templates/confwiz/ldaptest.php:384
-#: ../help/help.inc:271 ../help/help.inc:273 ../help/help.inc:275
-#: ../help/help.inc:294
+#: ../templates/domain.php:148 ../templates/confwiz/ldaptest.php:384
+#: ../templates/lists/listdomains.php:187
+#: ../templates/lists/listgroups.php:300 ../templates/lists/listhosts.php:288
+#: ../templates/lists/listusers.php:341 ../help/help.inc:271
+#: ../help/help.inc:273 ../help/help.inc:275 ../help/help.inc:294
 msgid "Suffix"
 msgstr "サフィックス"
 
@@ -3173,8 +3156,7 @@ msgstr "Surnameに不正な文字がある"
 
 #: ../help/help.inc:191
 msgid "Surname of user. Only letters, - and spaces are allowed."
-msgstr ""
-"ユーザのSurname。文字と - と空白のみ有効."
+msgstr "ユーザのSurname。文字と - と空白のみ有効."
 
 #: ../templates/account/useredit.php:484
 #: ../templates/account/useredit.php:1491 ../templates/masscreate.php:371
@@ -3244,8 +3226,8 @@ msgid ""
 "new group accounts. New group accounts will always get the highest number in "
 "use plus one."
 msgstr ""
-"新しいグループアカウントを作成する際に使われるグループIDの最小値と最大値。"
-"新しいグループアカウントは、いつでも既存のものの最大値+1となる."
+"新しいグループアカウントを作成する際に使われるグループIDの最小値と最大値。新"
+"しいグループアカウントは、いつでも既存のものの最大値+1となる."
 
 #: ../help/help.inc:61
 msgid ""
@@ -3254,9 +3236,9 @@ msgid ""
 "that of users. New host accounts will always get the highest number in use "
 "plus one."
 msgstr ""
-"Sambaホストのための新しいアカウントを作成する際に使われるマシンIDの"
-"最小値と最大値。範囲はユーザのものとは異ならなければならない。新しい"
-"ホストアカウントは、いつでも既存のものの最大値+1となる。"
+"Sambaホストのための新しいアカウントを作成する際に使われるマシンIDの最小値と最"
+"大値。範囲はユーザのものとは異ならなければならない。新しいホストアカウント"
+"は、いつでも既存のものの最大値+1となる。"
 
 #: ../help/help.inc:57
 msgid ""
@@ -3264,10 +3246,9 @@ msgid ""
 "new user accounts. The range should be different from that of machines. New "
 "user accounts will always get the highest number in use plus one."
 msgstr ""
-"新しいユーザアカウントを作成する際に使われるユーザIDの最小値と最大値。"
-"範囲はマシン(ホスト)のものとは異ならなければならない。新しいユーザ"
-"アカウントは、いつでも既存のものの最大値+1となる。"
-"plus 1."
+"新しいユーザアカウントを作成する際に使われるユーザIDの最小値と最大値。範囲は"
+"マシン(ホスト)のものとは異ならなければならない。新しいユーザアカウントは、い"
+"つでも既存のものの最大値+1となる。plus 1."
 
 #: ../templates/domain.php:235 ../templates/confwiz/ldaptest.php:231
 msgid "This Samba 3 domain is already present!"
@@ -3294,8 +3275,8 @@ msgid ""
 "This defines the language of the login window and sets this language as the "
 "default language. Users can change the language at login."
 msgstr ""
-"これは、ログインウィンドウの言語を定義し、この言語を既定値の言語として"
-"設定する。利用者はログイン時に言語を変更できる。"
+"これは、ログインウィンドウの言語を定義し、この言語を既定値の言語として設定す"
+"る。利用者はログイン時に言語を変更できる。"
 
 #: ../lib/pdf.inc:506 ../lib/pdf.inc:535 ../lib/pdf.inc:566
 msgid "This document was automatically created by LDAP Account Manager"
@@ -3306,16 +3287,16 @@ msgid ""
 "This is a list of valid DN entries of all users that are allowed to login to "
 "LDAP Account Manager. The user names have to be separated by semicolons."
 msgstr ""
-"これは、LDAP Account Manager にログイン可能なすべてのユーザの有効なDN"
-"エントリの一覧である。ユーザ名はセミコロンによって分離されなければならない。"
+"これは、LDAP Account Manager にログイン可能なすべてのユーザの有効なDNエントリ"
+"の一覧である。ユーザ名はセミコロンによって分離されなければならない。"
 
 #: ../help/help.inc:87
 msgid ""
 "This is the absolute path to an external script for setting quotas and "
 "creating home directories."
 msgstr ""
-"これは、ホームディレクトリを作成し、quotaを設定するための外部スクリプト"
-"の絶対パスである。"
+"これは、ホームディレクトリを作成し、quotaを設定するための外部スクリプトの絶対"
+"パスである。"
 
 #: ../help/help.inc:63
 msgid ""
@@ -3323,17 +3304,17 @@ msgid ""
 "entries can either be predefined values, \"#attribute\", or individual ones, "
 "\"attribute:description\". Several entries are seperated by semicolons."
 msgstr ""
-"これは、ユーザ/グループ/ホスト中に属性を表示するリストである。エントリは"
-"あらかじめ定義された値か、\"#属性\" か、特定のものか、\"属性:説明\"である。"
-"いくつかのエントリはセミコロンによって分離される。"
+"これは、ユーザ/グループ/ホスト中に属性を表示するリストである。エントリはあら"
+"かじめ定義された値か、\"#属性\" か、特定のものか、\"属性:説明\"である。いくつ"
+"かのエントリはセミコロンによって分離される。"
 
 #: ../help/help.inc:83
 msgid ""
 "This is the number of rows to show in the user/group/host list. If more "
 "entries are found the list will be split into several pages."
 msgstr ""
-"ユーザ/グループ/ホストリスト中に表示する行数である。もしもより多くの"
-"エントリがあるならば、リストは複数のページに分割される。"
+"ユーザ/グループ/ホストリスト中に表示する行数である。もしもより多くのエントリ"
+"があるならば、リストは複数のページに分割される。"
 
 #: ../help/help.inc:39
 msgid ""
@@ -3341,8 +3322,8 @@ msgid ""
 "LDAP connections and ldaps:// for encrypted (require server certificates) "
 "connections. The port value is optional."
 msgstr ""
-"これはLDAPサーバのアドレスである。ldap:// を標準的なLDAP接続に、ldaps:// を"
-"暗号化された(サーバ認証が必要)接続に使うこと。"
+"これはLDAPサーバのアドレスである。ldap:// を標準的なLDAP接続に、ldaps:// を暗"
+"号化された(サーバ認証が必要)接続に使うこと。"
 
 #: ../templates/confwiz/o_daemon.php:107
 msgid ""
@@ -3350,9 +3331,9 @@ msgid ""
 "Account Manager will make a SSH connection to this server with username and "
 "password provided at login."
 msgstr ""
-"これはlamdaemon.pl スクリプトが格納されるパスとサーバである。"
-"LDAP Account Manager はログイン時に提供されたユーザ名とパスワードでサーバに"
-"SSHセッションを張る。"
+"これはlamdaemon.pl スクリプトが格納されるパスとサーバである。LDAP Account "
+"Manager はログイン時に提供されたユーザ名とパスワードでサーバにSSHセッションを"
+"張る。"
 
 #: ../help/help.inc:92
 msgid ""
@@ -3360,8 +3341,8 @@ msgid ""
 "Manager will make a SSH connection to this server with username and password "
 "provided at login."
 msgstr ""
-"これはldapdaemonスクリプトが格納されるサーバである。LDAP Account Manager"
-"はログイン時に提供されたユーザ名とパスワードでサーバにSSH接続を行なう。"
+"これはldapdaemonスクリプトが格納されるサーバである。LDAP Account Managerはロ"
+"グイン時に提供されたユーザ名とパスワードでサーバにSSH接続を行なう。"
 
 #: ../help/help.inc:51
 msgid ""
@@ -3369,10 +3350,9 @@ msgid ""
 "entries. Only entries in these subtrees will be displayed in the user/group/"
 "host list. When creating a new accont this will be the DN where it is saved."
 msgstr ""
-"これは、ユーザ/グループ/ホストエントリを探すためのldap木のサフィックス"
-"である。このサブツリーのエントリのみがユーザ/グループ/ホストリストに表示"
-"される。新しいアカウントが作成されるときは、これはそれが保存されるDN"
-"になる。??"
+"これは、ユーザ/グループ/ホストエントリを探すためのldap木のサフィックスであ"
+"る。このサブツリーのエントリのみがユーザ/グループ/ホストリストに表示される。"
+"新しいアカウントが作成されるときは、これはそれが保存されるDNになる。??"
 
 #: ../help/help.inc:104
 msgid ""
@@ -3380,8 +3360,8 @@ msgid ""
 "times will stress LDAP more but decrease the possibility that changes are "
 "not identified."
 msgstr ""
-"これは、LDAP検索をLAMが受け取る時間である。より短い時間はLDAPにより負荷を"
-"かけるが、変更が識別されない可能性を減らす。"
+"これは、LDAP検索をLAMが受け取る時間である。より短い時間はLDAPにより負荷をかけ"
+"るが、変更が識別されない可能性を減らす。"
 
 #: ../templates/confwiz/o_daemon.php:127 ../help/help.inc:108
 msgid "This text will appear on top of every user PDF file."
@@ -3398,8 +3378,9 @@ msgstr "これは、選択されたものに、新しい organizational unit を作成する。"
 #: ../help/help.inc:291
 msgid ""
 "This will delete the selected organizational unit. The OU has to be empty."
-msgstr "これは、選択された organizational unitを削除するだろう。"
-"OUは空でなければならない。"
+msgstr ""
+"これは、選択された organizational unitを削除するだろう。OUは空でなければなら"
+"ない。"
 
 #: ../help/help.inc:114
 msgid "This will delete the selected profile."
@@ -3411,8 +3392,9 @@ msgid ""
 "same as in the profile editor. Profile names may contain the letters a-z, 0-"
 "9 and -_."
 msgstr ""
-"これは、現在のアカウントのプロファイルを作成する。保存された値は、プロファイル""エディタのものと同じである。プロファイル名は a-z, 0-9 と -_ を"
-"含むことができる。"
+"これは、現在のアカウントのプロファイルを作成する。保存された値は、プロファイ"
+"ルエディタのものと同じである。プロファイル名は a-z, 0-9 と -_ を含むことがで"
+"きる。"
 
 #: ../templates/account/useredit.php:490
 #: ../templates/account/useredit.php:1461 ../templates/masscreate.php:367
@@ -3429,18 +3411,17 @@ msgstr "ユーザの肩書(Mr,Msなど)."
 msgid ""
 "To connect to your LDAP server please enter now the DN of your "
 "administrative user and the password."
-msgstr ""
-"LDAPサーバに接続するために、管理者のユーザのDNとパスワードを入力"
+msgstr "LDAPサーバに接続するために、管理者のユーザのDNとパスワードを入力"
 
 #: ../help/help.inc:151
 msgid ""
 "To disable login use /bin/false. List of shells is read from lam/config/"
 "shells"
 msgstr ""
-"ログインを禁止するためには/bin/falseを使うこと。シェルの一覧は"
-" lam/config/shells にある。"
+"ログインを禁止するためには/bin/falseを使うこと。シェルの一覧は lam/config/"
+"shells にある。"
 
-#: ../templates/lists/listusers.php:349
+#: ../templates/lists/listusers.php:355
 msgid "Translate GID number to group name"
 msgstr "GID番号をグループ名に変換"
 
@@ -3459,8 +3440,8 @@ msgid ""
 "UID-number has changed. You have to run the following command as root in "
 "order to change existing file-permissions:"
 msgstr ""
-"UID番号が変更された。存在するファイルのパーミッションを変更するために、"
-"以下のコマンドをrootで実行する必要がある。"
+"UID番号が変更された。存在するファイルのパーミッションを変更するために、以下の"
+"コマンドをrootで実行する必要がある。"
 
 #: ../help/help.inc:219
 #, php-format
@@ -3468,8 +3449,8 @@ msgid ""
 "UNC-path (\\\\server\\share) of homedirectory. $%s and $%s are replaced with "
 "user- and groupname."
 msgstr ""
-"ホームディレクトリのUNCパス (\\\\サーバ\\共有)。$%s と $%s は"
-"ユーザ名とグループ名に変換される。"
+"ホームディレクトリのUNCパス (\\\\サーバ\\共有)。$%s と $%s はユーザ名とグルー"
+"プ名に変換される。"
 
 #: ../templates/ou_edit.php:55 ../templates/ou_edit.php:120
 #: ../templates/ou_edit.php:185 ../templates/ou_edit.php:250
@@ -3498,8 +3479,8 @@ msgid ""
 "Unable to load available languages. Setting English as default language. For "
 "further instructions please contact the Admin of this site."
 msgstr ""
-"有効な言語をロードできない。英語を既定値の言語とする。より詳しい説明は"
-"このサイトの管理者にコンタクトしてほしい。"
+"有効な言語をロードできない。英語を既定値の言語とする。より詳しい説明はこのサ"
+"イトの管理者にコンタクトしてほしい。"
 
 #: ../lib/config.inc:184 ../lib/config.inc:735
 msgid "Unable to load configuration!"
@@ -3589,8 +3570,7 @@ msgstr "Unixワークステーションが無効."
 msgid ""
 "Use it at your own risk and read the documentation for lamdaemon before you "
 "use it!"
-msgstr ""
-"使う前にlamdaemonのドキュメントを読み、あなたの責任で使うこと"
+msgstr "使う前にlamdaemonのドキュメントを読み、あなたの責任で使うこと"
 
 #: ../templates/account/useredit.php:1068
 #: ../templates/account/useredit.php:1194 ../help/help.inc:194
@@ -3612,8 +3592,7 @@ msgstr "使用したブロック。1000ブロックは通常1MB."
 
 #: ../help/help.inc:305
 msgid "Used for calculating RIDs from UID/GID. Do not change if unsure."
-msgstr ""
-"RIDs を UID/GID から計算するために使う。自信がないなら変更しないこと。"
+msgstr "RIDs を UID/GID から計算するために使う。自信がないなら変更しないこと。"
 
 #: ../templates/account/groupedit.php:759
 #: ../templates/account/useredit.php:1414 ../help/help.inc:236
@@ -3675,7 +3654,7 @@ msgstr "ユーザquota"
 msgid "User suffix"
 msgstr "ユーザサフィックス"
 
-#: ../templates/lists/listusers.php:405
+#: ../templates/lists/listusers.php:411
 msgid "User(s) found"
 msgstr "ユーザが見つかった"
 
@@ -3694,7 +3673,7 @@ msgstr "ユーザサフィックスが無効!"
 
 #: ../templates/account/useredit.php:223 ../templates/account/useredit.php:245
 #: ../templates/account/useredit.php:290 ../templates/account/useredit.php:937
-#: ../templates/login.php:148 ../templates/masscreate.php:363
+#: ../templates/login.php:159 ../templates/masscreate.php:363
 #: ../templates/masscreate.php:553 ../templates/masscreate.php:566
 #: ../templates/massdetail.php:95 ../templates/massdetail.php:144
 #: ../templates/massdetail.php:222 ../help/help.inc:139 ../lib/ldap.inc:196
@@ -3707,15 +3686,12 @@ msgstr "ユーザ名"
 msgid ""
 "Username contains invalid characters. Valid characters are: a-z, A-Z, 0-9 "
 "and .-_ !"
-msgstr ""
-"ユーザ名に不正な文字がある。有効な文字は: a-z, A-Z, 0-9 "
-"と .-_ !"
+msgstr "ユーザ名に不正な文字がある。有効な文字は: a-z, A-Z, 0-9 と .-_ !"
 
 #: ../templates/account/useredit.php:290 ../templates/masscreate.php:553
 #: ../templates/massdetail.php:144
 msgid "Username in use. Selected next free username."
-msgstr ""
-"ユーザ名が使われている。次の自由なユーザ名が選択された。"
+msgstr "ユーザ名が使われている。次の自由なユーザ名が選択された。"
 
 #: ../help/help.inc:140
 msgid ""
@@ -3727,12 +3703,12 @@ msgid ""
 "problems with usernames longer than 8 characters. You can not log in to "
 "Windows if username is longer than 16 characters."
 msgstr ""
-"作成されなければならないユーザ名が作成されるべきである。有効な文字は"
-": a-z, 0-9 と .-_である。LAMま、useraddが認めないために、最初の文字に数字を"
-"認めない。Lamはいくつかの問題を引き起こすため、大文字 A-Zを認めない。"
-"もしもユーザ名がすでに使われていたならば、ユーザ名は数字で拡張される。"
-"次の自由な番号が使われる。警告:古いシステムでは8文字より大きいユーザ名で"
-"問題が発生する。16文字より大きいユーザ名ではWindowsにはログオンできない。"
+"作成されなければならないユーザ名が作成されるべきである。有効な文字は: a-z, 0-"
+"9 と .-_である。LAMま、useraddが認めないために、最初の文字に数字を認めない。"
+"Lamはいくつかの問題を引き起こすため、大文字 A-Zを認めない。もしもユーザ名がす"
+"でに使われていたならば、ユーザ名は数字で拡張される。次の自由な番号が使われ"
+"る。警告:古いシステムでは8文字より大きいユーザ名で問題が発生する。16文字より"
+"大きいユーザ名ではWindowsにはログオンできない。"
 
 #: ../templates/main_header.php:73 ../templates/main_header.php:78
 #: ../templates/ou_edit.php:339 ../templates/confwiz/o_lists.php:112
@@ -3777,8 +3753,8 @@ msgid ""
 "When using ldaps:// be sure to use exactly the same IP/domain name as in "
 "your certificate!"
 msgstr ""
-"ldaps:// を使うときは認証情報中のものと、IP/ドメイン名が正確に一致する"
-"ものを使うこと。"
+"ldaps:// を使うときは認証情報中のものと、IP/ドメイン名が正確に一致するものを"
+"使うこと。"
 
 #: ../templates/confwiz/server.php:173
 msgid "Which Samba version do you use?"
@@ -3841,7 +3817,7 @@ msgstr "ユーザのWindowsドメイン."
 msgid "Workstations"
 msgstr "ワークステーション"
 
-#: ../templates/login.php:317 ../templates/confwiz/server.php:70
+#: ../templates/login.php:325 ../templates/confwiz/server.php:70
 msgid "Wrong Password/Username combination. Try again."
 msgstr "間違ったパスワード/ユーザ名の組み合わせ。再実行."
 
@@ -3891,36 +3867,28 @@ msgstr "間違ったログイン無効パラメータ!"
 msgid "Wrong profilename given."
 msgstr "間違ったプロファイル名が与えられた."
 
-#: ../templates/login.php:236
-msgid "You are connecting to ServerURL"
-msgstr "サーバURLに接続中"
-
-#: ../templates/login.php:248
-msgid "You are currently using Profile"
-msgstr "現在プロファイルを利用中"
-
 #: ../templates/account/groupedit.php:157
 #: ../templates/account/hostedit.php:120 ../templates/account/useredit.php:223
 msgid ""
 "You are using a capital letters. This can cause problems because not all "
 "programs are case-sensitive."
 msgstr ""
-"大文字を使っている。これはすべてのプログラムが大文字/小文字を区別するとは"
-"限らないため、問題を引き起こす。"
+"大文字を使っている。これはすべてのプログラムが大文字/小文字を区別するとは限ら"
+"ないため、問題を引き起こす。"
 
 #: ../help/help.inc:185
 msgid ""
 "You can select a previous defined profile here. This will set all fields to "
 "the profile values."
 msgstr ""
-"ここで、以前に定義したプロファイルを選択できる。これはプロファイルの価に"
-"すべてのフィールドを設定する。"
+"ここで、以前に定義したプロファイルを選択できる。これはプロファイルの価にすべ"
+"てのフィールドを設定する。"
 
 #: ../templates/logout.php:62
 msgid "You have been logged off from LDAP Account Manager."
 msgstr "LDAP Account Managerからログオフする必要がある。"
 
-#: ../templates/login.php:197
+#: ../templates/login.php:204
 msgid "Your Language"
 msgstr "言語"
 
@@ -3989,8 +3957,8 @@ msgid ""
 "ou=People,dc=yourcompany,dc=com will read and store all accounts in this "
 "subtree."
 msgstr ""
-"ou=People,dc=yourcompany,dc=com はこのサブツリーのすべてのアカウントを"
-"読み書きする。"
+"ou=People,dc=yourcompany,dc=com はこのサブツリーのすべてのアカウントを読み書"
+"きする。"
 
 #: ../templates/config/confmain.php:379
 msgid "required"
