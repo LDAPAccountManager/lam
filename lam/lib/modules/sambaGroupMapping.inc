@@ -81,7 +81,7 @@ class sambaGroupMapping extends baseModule {
 		for ($i = 0; $i < sizeof($domains); $i++) {
 			$nameToRIDBase[$domains[$i]->name] = $domains[$i]->RIDbase;
 		}
-		$errors = array();
+		$triggered_messages = array();
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// group type
 			if ($rawAccounts[$i][$ids['sambaGroupMapping_groupType']] != "") {
@@ -94,7 +94,7 @@ class sambaGroupMapping extends baseModule {
 				else {  // invalid type
 					$errMsg = $this->messages['groupType'][0];
 					array_push($errMsg, array($i, implode(", ", array_keys($this->sambaGroupTypes) + $this->sambaGroupTypes)));
-					$errors[] = $errMsg;
+					$triggered_messages[] = $errMsg;
 				}
 			}
 			else {
@@ -107,7 +107,7 @@ class sambaGroupMapping extends baseModule {
 				$errMsg = $this->messages['sambaSID'][1];
 				array_push($errMsg, $rawAccounts[$i][$ids['sambaGroupMapping_domain']]);
 				array_push($errMsg, $i);
-				$errors[] = $errMsg;
+				$triggered_messages[] = $errMsg;
 			}
 			else {
 				// RID
@@ -130,7 +130,7 @@ class sambaGroupMapping extends baseModule {
 				$partialAccounts[$i]['displayName'] = $rawAccounts[$i][$ids['sambaGroupMapping_name']];
 			}
 		}
-		return $errors;
+		return $triggered_messages;
 	}
 
 	function delete_attributes($post) {
@@ -142,7 +142,7 @@ class sambaGroupMapping extends baseModule {
 	* to show a page with all attributes.
 	* It will output a complete html-table
 	*/
-	function display_html_attributes($post, $profile=false) {
+	function display_html_attributes($post) {
 		// Get Domain SID from name
 		$sambaDomains = search_domains($_SESSION['config']->get_domainSuffix());
 		// Get Domain-SID from group SID
@@ -160,22 +160,20 @@ class sambaGroupMapping extends baseModule {
 			1 => array ( 'kind' => 'input', 'name' => 'displayName', 'type' => 'text', 'size' => '30', 'maxlength' => '50', 'value' => $this->attributes['displayName'][0]),
 			2 => array ( 'kind' => 'help', 'value' => 'displayName' ));
 
-		if (!$profile) {
-				$names = array_keys($this->rids);
-				$wrid=false;
-				for ($i=0; $i<count($names); $i++) {
-					if ($this->attributes['sambaSID'][0]==$SID."-".$this->rids[$names[$i]]) {
-						$selected[] = $names[$i];
-						$wrid=true;
-						}
-					else $options[] = $names[$i];
-					}
-				if ($wrid) $options[] = $_SESSION[$this->base]->module['posixGroup']->attributes['cn'][0];
-					else $selected[] = $_SESSION[$this->base]->module['posixGroup']->attributes['cn'][0];
-				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Windows group') ),
-					1 => array ( 'kind' => 'select', 'name' => 'sambaSID', 'options' => $options, 'options_selected' => $selected),
-					2 => array ( 'kind' => 'help', 'value' => 'sambaSID' ));
+		$names = array_keys($this->rids);
+		$wrid=false;
+		for ($i=0; $i<count($names); $i++) {
+			if ($this->attributes['sambaSID'][0]==$SID."-".$this->rids[$names[$i]]) {
+				$selected[] = $names[$i];
+				$wrid=true;
+				}
+			else $options[] = $names[$i];
 			}
+		if ($wrid) $options[] = $_SESSION[$this->base]->module['posixGroup']->attributes['cn'][0];
+			else $selected[] = $_SESSION[$this->base]->module['posixGroup']->attributes['cn'][0];
+		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Windows group') ),
+			1 => array ( 'kind' => 'select', 'name' => 'sambaSID', 'options' => $options, 'options_selected' => $selected),
+			2 => array ( 'kind' => 'help', 'value' => 'sambaSID' ));
 
 		$names = array_keys($this->sambaGroupTypes);
 		$selected = array( _('Domain Group') );
@@ -371,40 +369,40 @@ class sambaGroupMapping extends baseModule {
 
 	/* Write variables into object and do some regexp checks
 	*/
-	function proccess_attributes($post, $profile=false) {
+	function proccess_attributes($post) {
 		// Save attributes
 		$this->attributes['displayName'][0] = $post['displayName'];
 		$this->attributes['sambaGroupType'][0] = $this->sambaGroupTypes[$post['sambaGroupType']];
 
-		if (!$profile) {
-			// Get Domain SID from name
-			$sambaDomains = search_domains($_SESSION['config']->get_domainSuffix());
-			for ($i=0; $i<count($sambaDomains); $i++ )
-				if ($post['sambaDomainName'] == $sambaDomains[$i]->name) {
-					$SID = $sambaDomains[$i]->SID;
-					$RIDbase = $sambaDomain[$i]->RIDbase;
-					}
-
-			// Load attributes
-			$this->attributes['displayName'][0] = $post['displayName'];
-
-			$rids = array_keys($this->rids);
-			$wrid = false;
-			for ($i=0; $i<count($rids); $i++) {
-				if ($post['sambaSID'] == $rids[$i]) {
-					$wrid = true;
-					// Get Domain SID
-					$this->attributes['sambaSID'][0] = $SID."-".$this->rids[$rids[$i]];
-					// Do a check if special grou pis unique
-					if ($_SESSION['cache']->in_cache($SID."-".$this->rids[$rids[$i]], 'sambaSID', 'group'))
-						$errors[] = $this->messages['sambaSID'][0];
-					}
+		// Get Domain SID from name
+		$sambaDomains = search_domains($_SESSION['config']->get_domainSuffix());
+		for ($i=0; $i<count($sambaDomains); $i++ )
+			if ($post['sambaDomainName'] == $sambaDomains[$i]->name) {
+				$SID = $sambaDomains[$i]->SID;
+				$RIDbase = $sambaDomain[$i]->RIDbase;
 				}
-			if (!$wrid) $this->attributes['sambaSID'][0] = $SID . "-" . ($_SESSION[$this->base]->module['posixGroup']->attributes['gidNumber'][0]*2+$RIDbase+1);
+		// Load attributes
+		$this->attributes['displayName'][0] = $post['displayName'];
+		$rids = array_keys($this->rids);
+		$wrid = false;
+		for ($i=0; $i<count($rids); $i++) {
+			if ($post['sambaSID'] == $rids[$i]) {
+				$wrid = true;
+				// Get Domain SID
+				$this->attributes['sambaSID'][0] = $SID."-".$this->rids[$rids[$i]];
+				// Do a check if special grou pis unique
+				if ($_SESSION['cache']->in_cache($SID."-".$this->rids[$rids[$i]], 'sambaSID', 'group'))
+					$triggered_messages[] = $this->messages['sambaSID'][0];
+				}
 			}
+		if (!$wrid) $this->attributes['sambaSID'][0] = $SID . "-" . ($_SESSION[$this->base]->module['posixGroup']->attributes['gidNumber'][0]*2+$RIDbase+1);
 
 		// Return error-messages
-		if (is_array($errors)) return $errors;
+		if (count($triggered_messages)!=0) {
+			$this->triggered_messages = $triggered_messages;
+			return $triggered_messages;
+		}
+		else $this->triggered_messages = array();
 		return 0;
 		}
 

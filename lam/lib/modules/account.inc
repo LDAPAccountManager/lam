@@ -77,14 +77,6 @@ class account extends baseModule {
 		return array('attributes');
 		}
 
-	/* This function returns all ldap attributes
-	* which are part of account and returns
-	* also their values.
-	*/
-	function get_attributes() {
-		return $this->attributes;
-		}
-
 	/* This function loads all attributes into the object
 	* $attr is an array as it's retured from ldap_get_attributes
 	*/
@@ -114,7 +106,7 @@ class account extends baseModule {
 
 	/* Write variables into object and do some regexp checks
 	*/
-	function proccess_attributes($post, $profile=false) {
+	function proccess_attributes($post) {
 		// Load attributes
 		$this->attributes['description'][0] = $post['description'];
 		return 0;
@@ -124,7 +116,7 @@ class account extends baseModule {
 	* to show a page with all attributes.
 	* It will output a complete html-table
 	*/
-	function display_html_attributes($post, $profile=false) {
+	function display_html_attributes($post) {
 		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Description') ),
 			1 => array ( 'kind' => 'input', 'name' => 'description', 'type' => 'text', 'size' => '30',
 				'maxlength' => '255', 'value' => $this->attributes['description'][0] ),
@@ -133,7 +125,7 @@ class account extends baseModule {
 		return $return;
 		}
 
-	function display_html_delete($post, $profile=false) {
+	function display_html_delete($post) {
 		return 0;
 		}
 	

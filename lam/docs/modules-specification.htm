@@ -663,6 +663,11 @@ returns an array the array contains status<br>
 messages. First Index is the attribute which has triggered a message.
 Second index is an array containing<br>
 status message arrays.<br>
+This function must reset $this-&gt;triggered_messages when it wants to
+display
+status messages. This can be done with $this-&gt;triggered_messages =
+array();<br>
+<br>
 <br>
 <br>
 <h3>2.2.15. proccess_*<br>

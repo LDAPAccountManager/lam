@@ -164,14 +164,6 @@ class shadowAccount extends baseModule {
 		return array('attributes');
 		}
 
-	/* This function returns all ldap attributes
-	* which are part of shadowAccount and returns
-	* also their values.
-	*/
-	function get_attributes() {
-		return $this->attributes;
-		}
-
 	/* This function loads all attributes into the object
 	* $attr is an array as it's retured from ldap_get_attributes
 	*/
@@ -213,7 +205,7 @@ class shadowAccount extends baseModule {
 
 	/* Write variables into object and do some regexp checks
 	*/
-	function proccess_attributes($post, $profile=false) {
+	function proccess_attributes($post) {
 		// Load attributes
 		$this->attributes['shadowMin'][0] = $post['shadowMin'];
 		$this->attributes['shadowMax'][0] = $post['shadowMax'];
@@ -222,12 +214,16 @@ class shadowAccount extends baseModule {
 		$this->attributes['shadowExpire'][0] = intval(mktime(10, 0, 0, $post['shadowExpire_mon'],
 			$post['shadowExpire_day'], $post['shadowExpire_yea'])/3600/24);
 
-		if ( !get_preg($this->attributes['shadowMin'][0], 'digit'))  $errors['shadowMin'][] = $this->messages['shadowMin'][0];
-		if ( !get_preg($this->attributes['shadowMax'][0], 'digit')) $errors['shadowMax'][] = $this->messages['shadowMax'][0];
-		if ( $this->attributes['shadowMin'][0] > $this->attributes['shadowMax'][0]) $errors['shadowMin'][] = $this->messages['shadow_cmp'][0];
-		if ( !get_preg($this->attributes['shadowInactive'][0], 'digit2')) $errors['shadowInactive'][] = $this->messages['inactive'][0];
-		if ( !get_preg($this->attributes['shadowWarning'][0], 'digit')) $errors['shadowWarning'][] = $this->messages['shadowWarning'][0];
-		if (is_array($errors)) return $errors;
+		if ( !get_preg($this->attributes['shadowMin'][0], 'digit'))  $triggered_messages['shadowMin'][] = $this->messages['shadowMin'][0];
+		if ( !get_preg($this->attributes['shadowMax'][0], 'digit')) $triggered_messages['shadowMax'][] = $this->messages['shadowMax'][0];
+		if ( $this->attributes['shadowMin'][0] > $this->attributes['shadowMax'][0]) $triggered_messages['shadowMin'][] = $this->messages['shadow_cmp'][0];
+		if ( !get_preg($this->attributes['shadowInactive'][0], 'digit2')) $triggered_messages['shadowInactive'][] = $this->messages['inactive'][0];
+		if ( !get_preg($this->attributes['shadowWarning'][0], 'digit')) $triggered_messages['shadowWarning'][] = $this->messages['shadowWarning'][0];
+		if (count($triggered_messages)!=0) {
+			$this->triggered_messages = $triggered_messages;
+			return $triggered_messages;
+		}
+		else $this->triggered_messages = array();
 		return 0;
 		}
 
@@ -235,7 +231,7 @@ class shadowAccount extends baseModule {
 	* to show a page with all attributes.
 	* It will output a complete html-table
 	*/
-	function display_html_attributes($post, $profile=false) {
+	function display_html_attributes($post) {
 		// Use dd-mm-yyyy format of date because it's easier to read for humans
 		$date = getdate ($this->attributes['shadowExpire'][0]*3600*24);
 

@@ -175,8 +175,8 @@ class sambaAccount extends baseModule {
 	// Array of well known rids
 	var $rids;
 
-	/* $attribute['lmPassword'] and ntPassword can't accessed directly because it's enrcypted
-	* To read / write password function userPassword is needed
+	/* $attribute['lmPassword'] and $attribute['ntPassword'] can't accessed directly because it's enrcypted
+	* To read / write password function lmPassword is needed
 	* This function will return the unencrypted password when
 	* called without a variable
 	* If it's called with a new password, the
@@ -185,7 +185,9 @@ class sambaAccount extends baseModule {
 	function lmPassword($newpassword=false) {
 		if (is_string($newpassword)) {
 			// Write new password
-			$this->attributes['lmPassword'][0] = base64_encode($_SESSION['ldap']->encrypt($newpassword));
+			if ($newpassword=='')
+				$this->attributes['lmPassword'][0] = '';
+			else $this->attributes['lmPassword'][0] = base64_encode($_SESSION['ldap']->encrypt($newpassword));
 			return 0;
 			}
 		else {
@@ -303,7 +305,7 @@ class sambaAccount extends baseModule {
 
 	/* Write variables into object and do some regexp checks
 	*/
-	function proccess_attributes($post, $profile=false) {
+	function proccess_attributes($post) {
 		$this->attributes['domain'][0] = $post['domain'];
 		// Start character
 		$flag = "[";
@@ -320,7 +322,7 @@ class sambaAccount extends baseModule {
 		$flag = $flag. "]";
 		$this->attributes['acctFlags'][0] = $flag;
 
-		if ($_SESSION[$this->base]->type=='host' && !$profile) {
+		if ($_SESSION[$this->base]->type=='host') {
 			$this->attributes['primaryGroupID'][0] = $this->rids[_('Domain Computers')];
 			if ($post['ResetSambaPassword']) {
 				// *** fixme. What is the default password?
@@ -339,84 +341,86 @@ class sambaAccount extends baseModule {
 			$this->attributes['homeDrive'][0] = $post['homeDrive'];
 			$this->attributes['scriptPath'][0] = stripslashes($post['scriptPath']);
 			$this->attributes['profilePath'][0] = stripslashes($post['profilePath']);
-			if (!$profile) {
-				$rids = array_keys($this->rids);
-				$wrid = false;
-				for ($i=0; $i<count($rids); $i++) {
-					if ($post['primaryGroupID'] == $rids[$i]) {
-						$wrid = true;
-						$this->attributes['primaryGroupID'][0] = $this->rids[$rids[$i]];
-						}
+			$rids = array_keys($this->rids);
+			$wrid = false;
+			for ($i=0; $i<count($rids); $i++) {
+				if ($post['primaryGroupID'] == $rids[$i]) {
+					$wrid = true;
+					$this->attributes['primaryGroupID'][0] = $this->rids[$rids[$i]];
 					}
-				if (!$wrid) $this->attributes['primaryGroupID'][0] = ($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]*2)+1001;
-
-				if (isset($post['lmPassword'])) {
-					if ($post['lmPassword'] != $post['lmPassword2']) {
-						$errors['lmPassword'][] = $this->messages['lmPassword'][0];
-						unset ($post['lmPassword2']);
-						}
-						else $this->lmPassword($post['lmPassword']);
-					}
-				if ($post['rid']== _('Administrator')) {
-					$this->attributes['rid'][0] = "500";
-					// Do a check if an administrator already exists
-					if ($_SESSION['cache']->in_cache("500", 'rid', 'user')!=$_SESSION[$this->base]->dn_orig)
-						$errors['rid'][] = $this->messages['rid'][0];
-					}
-				if ($post['rid']== _('Guest')) {
-					$this->attributes['rid'][0] = "501";
-					// Do a check if an administrator already exists
-					if ($_SESSION['cache']->in_cache("501", 'rid', 'user')!=$_SESSION[$this->base]->dn_orig)
-						$errors['rid'][] = $this->messages['rid'][1];
-					}
-				$this->attributes['smbHome'][0] = str_replace('$user', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['uid'][0], $this->attributes['smbHome'][0]);
-				$this->attributes['smbHome'][0] = str_replace('$group', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['gid'][0], $this->attributes['smbHome'][0]);
-				if ($this->attributes['smbHome'][0] != stripslashes($post['smbHome'])) $errors['smbHome'][] = $this->messages['homePath'][1];
-				$this->attributes['scriptPath'][0] = str_replace('$user', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['uid'][0], $this->attributes['scriptPath'][0]);
-				$this->attributes['scriptPath'][0] = str_replace('$group', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['gid'][0], $this->attributes['scriptPath'][0]);
-				if ($this->attributes['scriptPath'][0] != stripslashes($post['scriptPath'])) $errors['scriptPath'][] = $this->messages['logonScript'][1];
-				$this->attributes['profilePath'][0] = str_replace('$user', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['uid'][0], $this->attributes['profilePath'][0]);
-				$this->attributes['profilePath'][0] = str_replace('$group', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['gid'][0], $this->attributes['profilePath'][0]);
-				if ($this->attributes['profiletPath'][0] != stripslashes($post['profilePath'])) $errors['profilePath'][] = $this->messages['profilePath'][1];
-				if ( !get_preg($this->lmPassword(), 'passord')) $errors['lmPassword'][] = $this->messages['lmPassword'][1];
-				if ( (!$this->attributes['smbHome'][0]=='') && (!get_preg($this->attributes['smbHome'][0], 'UNC')))
-						$errors['smbHome'][] = $this->messages['homedir'][0];
-				if ( (!$this->attributes['scriptPath'][0]=='') && (!get_preg($this->attributes['scriptPath'][0], 'logonscript')))
-					$errors['scriptPath'][] = $this->messages['logonScript'][0];
-				if ( (!$this->attributes['profilePath'][0]=='') && (!get_preg($this->attributes['profilePath'][0], 'UNC')))
-						$errors['profilePath'][] = $this->messages['profilePath'][0];
 				}
-			else {
-				$smbHome = str_replace('$user', 'user', $this->attributes['smbHome'][0]);
-				$smbHome = str_replace('$group', 'group', $smbHome);
-				$scriptPath = str_replace('$user', 'user', $this->attributes['scriptPath'][0]);
-				$scriptPath = str_replace('$group', 'group', $scriptPath);
-				$profilePath = str_replace('$user', 'user', $this->attributes['profilePath'][0]);
-				$profilePath = str_replace('$group', 'group', $profilePath);
-				if ( (!$smbHome=='') && (!get_preg($smbHome, 'UNC')))
-						$errors['smbHome'][] = $this->messages['homePath'][0];
-				if ( (!$scriptPath=='') && (!get_preg($scriptPath, 'logonscript')))
-					$errors['scriptPath'][] = $this->messages['logonScript'][0];
-				if ( (!$profilePath=='') && (!get_preg('^[/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*([/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*)*$', $profilePath))
-					&& (!get_preg($profilePath, 'UNC')))
-						$errors['profilePath'][] = $this->messages['profilePath'][0];
-				}
-
+			if (!$wrid) $this->attributes['primaryGroupID'][0] = ($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]*2)+1001;
 			if ($post['useunixpwd']) $this->useunixpwd = true;
 				else $this->useunixpwd = false;
+			if (isset($post['lmPassword'])) {
+				if ($post['lmPassword'] != $post['lmPassword2']) {
+					$triggered_messages['lmPassword'][] = $this->messages['lmPassword'][0];
+					unset ($post['lmPassword2']);
+					}
+				else {
+						if ( !get_preg($this->lmPassword(), 'password')) $triggered_messages['lmPassword'][] = $this->messages['lmPassword'][1];
+							else $this->lmPassword($post['lmPassword']);
+					}
+			}
+			if ($post['rid']== _('Administrator')) {
+				$this->attributes['rid'][0] = "500";
+				// Do a check if an administrator already exists
+				if ($_SESSION['cache']->in_cache("500", 'rid', 'user')!=$_SESSION[$this->base]->dn_orig)
+					$triggered_messages['rid'][] = $this->messages['rid'][0];
+				}
+			if ($post['rid']== _('Guest')) {
+				$this->attributes['rid'][0] = "501";
+				// Do a check if an administrator already exists
+				if ($_SESSION['cache']->in_cache("501", 'rid', 'user')!=$_SESSION[$this->base]->dn_orig)
+					$triggered_messages['rid'][] = $this->messages['rid'][1];
+				}
+			$this->attributes['smbHome'][0] = str_replace('$user', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['uid'][0], $this->attributes['smbHome'][0]);
+			$this->attributes['smbHome'][0] = str_replace('$group', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['gid'][0], $this->attributes['smbHome'][0]);
+			if ($this->attributes['smbHome'][0] != stripslashes($post['smbHome'])) $triggered_messages['smbHome'][] = $this->messages['homePath'][1];
+			$this->attributes['scriptPath'][0] = str_replace('$user', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['uid'][0], $this->attributes['scriptPath'][0]);
+			$this->attributes['scriptPath'][0] = str_replace('$group', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['gid'][0], $this->attributes['scriptPath'][0]);
+			if ($this->attributes['scriptPath'][0] != stripslashes($post['scriptPath'])) $triggered_messages['scriptPath'][] = $this->messages['logonScript'][1];
+			$this->attributes['profilePath'][0] = str_replace('$user', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['uid'][0], $this->attributes['profilePath'][0]);
+			$this->attributes['profilePath'][0] = str_replace('$group', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['gid'][0], $this->attributes['profilePath'][0]);
+			if ($this->attributes['profiletPath'][0] != stripslashes($post['profilePath'])) $triggered_messages['profilePath'][] = $this->messages['profilePath'][1];
+			if ( (!$this->attributes['smbHome'][0]=='') && (!get_preg($this->attributes['smbHome'][0], 'UNC')))
+					$triggered_messages['smbHome'][] = $this->messages['homedir'][0];
+			if ( (!$this->attributes['scriptPath'][0]=='') && (!get_preg($this->attributes['scriptPath'][0], 'logonscript')))
+				$triggered_messages['scriptPath'][] = $this->messages['logonScript'][0];
+			if ( (!$this->attributes['profilePath'][0]=='') && (!get_preg($this->attributes['profilePath'][0], 'UNC')))
+					$triggered_messages['profilePath'][] = $this->messages['profilePath'][0];
+			}
+		else {
+			$smbHome = str_replace('$user', 'user', $this->attributes['smbHome'][0]);
+			$smbHome = str_replace('$group', 'group', $smbHome);
+			$scriptPath = str_replace('$user', 'user', $this->attributes['scriptPath'][0]);
+			$scriptPath = str_replace('$group', 'group', $scriptPath);
+			$profilePath = str_replace('$user', 'user', $this->attributes['profilePath'][0]);
+			$profilePath = str_replace('$group', 'group', $profilePath);
+			if ( (!$smbHome=='') && (!get_preg($smbHome, 'UNC')))
+					$triggered_messages['smbHome'][] = $this->messages['homePath'][0];
+			if ( (!$scriptPath=='') && (!get_preg($scriptPath, 'logonscript')))
+				$triggered_messages['scriptPath'][] = $this->messages['logonScript'][0];
+			if ( (!$profilePath=='') && (!get_preg('^[/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*([/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*)*$', $profilePath))
+				&& (!get_preg($profilePath, 'UNC')))
+					$triggered_messages['profilePath'][] = $this->messages['profilePath'][0];
 			}
 
 		if ((!$this->attributes['domain'][0]=='') && !get_preg($this->attributes['domain'][0], 'domainname'))
-			$errors['domain'][] = $this->messages['domain'][0];
+			$triggered_messages['domain'][] = $this->messages['domain'][0];
 
-		if (is_array($errors)) return $errors;
+		if (count($triggered_messages)!=0) {
+			$this->triggered_messages = $triggered_messages;
+			return $triggered_messages;
+		}
+		else $this->triggered_messages = array();
 		if ($post['userWorkstations'])  return 'userWorkstations';
 		return 0;
 		}
 
 	/* Write variables into object and do some regexp checks
 	*/
-	function proccess_userWorkstations($post, $profile=false) {
+	function proccess_userWorkstations($post) {
 		// Load attributes
 		if ($_SESSION[$this->base]->type=='user') {
 			do { // X-Or, only one if() can be true
@@ -467,7 +471,7 @@ class sambaAccount extends baseModule {
 	* to show a page with all attributes.
 	* It will output a complete html-table
 	*/
-	function display_html_attributes($post, $profile=false) {
+	function display_html_attributes($post) {
 		if ($_SESSION[$this->base]->type=='user') {
 			$canchangedate = getdate($this->attributes['pwdCanChange'][0]);
 			$mustchangedate = getdate($this->attributes['pwdMustChange'][0]);
@@ -479,17 +483,13 @@ class sambaAccount extends baseModule {
 					5 => array ( 'kind' => 'input', 'name' => 'pwdMustChange_s', 'type' => 'hidden', 'value' => $mustchangedate['seconds']),
 					6 => array ( 'kind' => 'input', 'name' => 'acctFlagsU', 'type' => 'hidden', 'value' => 'true'));
 
-			if (!$profile) {
-				if ($this->attributes['lmPassword'][0] != $this->orig['lmPassword'][0]) $password=$this->lmPassword();
-				else if ($this->attributes['lmPassword'][0] != '') $password=$post['lmPassword'];
-				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Samba password') ),
-					1 => array ( 'kind' => 'input', 'name' => 'lmPassword', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => $password));
-				if ($post['lmPassword2']!='') $password2 = $post['lmPassword2'];
-				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Repeat password') ),
-					1 => array ( 'kind' => 'input', 'name' => 'lmPassword2', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => $password2),
-					2 => array ('kind' => 'help', 'value' => 'lmPassword'));
-				}
-
+			if ($post['lmPassword2']!='') $password2 = $post['lmPassword2'];
+			else $password2 = $this->lmPassword();
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Samba password') ),
+				1 => array ( 'kind' => 'input', 'name' => 'lmPassword', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => $this->lmPassword()));
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Repeat password') ),
+				1 => array ( 'kind' => 'input', 'name' => 'lmPassword2', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => $password2),
+				2 => array ('kind' => 'help', 'value' => 'lmPassword'));
 			if ($_SESSION[$this->base]->module['posixAccount']->orig['userPassword'][0] != $_SESSION[$this->base]->module['posixAccount']->attributes['userPassword'][0]) {
 				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Use unix password') ),
 					1 => array ( 'kind' => 'input', 'name' => 'useunixpwd', 'type' => 'checkbox', 'checked' => $this->useunixpwd, 'value' => true),
@@ -546,56 +546,50 @@ class sambaAccount extends baseModule {
 				1 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'userWorkstations', 'value' => _('Edit workstations')),
 				2 => array ( 'kind' => 'help', 'value' => 'userWorkstations' ));
 
-			if (!$profile) {
-				$names = array_keys($this->rids);
-				$wrid=false;
-				for ($i=0; $i<count($names); $i++) {
-					if ($this->attributes['primaryGroupID'][0]==$this->rids[$names[$i]]) {
-						$selected[] = $names[$i];
-						$wrid=true;
-						}
-					else $options[] = $names[$i];
-					}
-				if ($wrid) $options[] = $_SESSION['cache']->getgrnam($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]);
-					else $selected[] = $_SESSION['cache']->getgrnam($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]);
-				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Windows group') ),
-					1 => array ( 'kind' => 'select', 'name' => 'primaryGroupID', 'options' => $options, 'options_selected' => $selected),
-					2 => array ( 'kind' => 'help', 'value' => 'primaryGroupID' ));
-				// Display if group SID should be mapped to a well kown SID
-				$wrid=false;
-				if ($this->attributes['rid'][0]=="500") {
-					$selected[] = _('Administrator');
+			$names = array_keys($this->rids);
+			$wrid=false;
+			for ($i=0; $i<count($names); $i++) {
+				if ($this->attributes['primaryGroupID'][0]==$this->rids[$names[$i]]) {
+					$selected[] = $names[$i];
 					$wrid=true;
 					}
-				else $options[] = _('Administrator');
-				if ($this->attributes['rid'][0]=="501") {
-					$selected[] = _('Guest');
-					$wrid=true;
-					}
-				else $options[] = _('Guest');
-				if ($wrid) $options[] = _('Ordinary user');
-					else $selected[] = _('Ordinary user');
-				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Special user') ),
-					1 => array ( 'kind' => 'select', 'name' => 'rid', 'options' => $options, 'options_selected' => $selected),
-					2 => array ( 'kind' => 'help', 'value' => 'rid' ));
+				else $options[] = $names[$i];
 				}
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Domain') ),
-				1 => array ( 'kind' => 'input', 'type' => 'text', 'name' => 'domain', 'size' => '20', 'maxlength' => '255', 'value' => $this->attributes['domain'][0]),
-				2 => array ( 'kind' => 'help', 'value' => 'domain' ));
+			if ($wrid) $options[] = $_SESSION['cache']->getgrnam($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]);
+				else $selected[] = $_SESSION['cache']->getgrnam($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]);
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Windows group') ),
+				1 => array ( 'kind' => 'select', 'name' => 'primaryGroupID', 'options' => $options, 'options_selected' => $selected),
+				2 => array ( 'kind' => 'help', 'value' => 'primaryGroupID' ));
+			// Display if group SID should be mapped to a well kown SID
+			$wrid=false;
+			if ($this->attributes['rid'][0]=="500") {
+				$selected[] = _('Administrator');
+				$wrid=true;
+				}
+			else $options[] = _('Administrator');
+			if ($this->attributes['rid'][0]=="501") {
+				$selected[] = _('Guest');
+				$wrid=true;
+				}
+			else $options[] = _('Guest');
+			if ($wrid) $options[] = _('Ordinary user');
+				else $selected[] = _('Ordinary user');
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Special user') ),
+				1 => array ( 'kind' => 'select', 'name' => 'rid', 'options' => $options, 'options_selected' => $selected),
+				2 => array ( 'kind' => 'help', 'value' => 'rid' ));
 			}
-
+		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Domain') ),
+			1 => array ( 'kind' => 'input', 'type' => 'text', 'name' => 'domain', 'size' => '20', 'maxlength' => '255', 'value' => $this->attributes['domain'][0]),
+			2 => array ( 'kind' => 'help', 'value' => 'domain' ));
 		if ($_SESSION[$this->base]->type=='host') {
 			$return[] = array ( 0 => array ( 'kind' => 'input', 'name' => 'acctFlagsW', 'type' => 'hidden', 'value' => 'true' ));
-			if (!$profile) {
-				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Reset password') ),
-					1 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'ResetSambaPassword'),
-					2 => array ( 'kind' => 'help', 'value' => 'ResetSambaPassword' ));
-				}
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Domain') ),
-				1 => array ( 'kind' => 'input', 'type' => 'text', 'name' => 'domain', 'size' => '20', 'maxlength' => '255', 'value' => $this->attributes['domain'][0]),
-				2 => array ( 'kind' => 'help', 'value' => 'domain' ));
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Reset password') ),
+				1 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'ResetSambaPassword'),
+				2 => array ( 'kind' => 'help', 'value' => 'ResetSambaPassword' ));
 			}
-
+		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Domain') ),
+			1 => array ( 'kind' => 'input', 'type' => 'text', 'name' => 'domain', 'size' => '20', 'maxlength' => '255', 'value' => $this->attributes['domain'][0]),
+			2 => array ( 'kind' => 'help', 'value' => 'domain' ));
 		return $return;
 		}
 

@@ -398,16 +398,6 @@ class posixAccount extends baseModule {
 		return array('attributes', 'group');
 	}
 
-	/* This function returns all ldap attributes
-	* which are part of posixAccount and returns
-	* also their values.
-	*/
-	function get_attributes() {
-		$return = $this->attributes;
-		$return['userPassword'] = $this->userPassword();
-		return $return;
-	}
-
 	/* This function loads all attributes into the object
 	* $attr is an array as it's retured from ldap_get_attributes
 	*/
@@ -552,210 +542,205 @@ class posixAccount extends baseModule {
 
 	/* Write variables into object and do some regexp checks
 	*/
-	function proccess_attributes($post, $profile=false) {
+	function proccess_attributes($post) {
 		$this->attributes['homeDirectory'][0] = $post['homeDirectory'];
 		$this->attributes['loginShell'][0] = $post['loginShell'];
 		$this->attributes['gecos'][0] = $post['gecos'];
 		if ($post['createhomedir']) $this->createhomedir = true;
 		else $this->createhomedir = false;
-
-		if (!$profile) {
-			if ($this->orig['uid'][0]!='' && $post['uid']!=$this->attributes['uid'][0])
-			$errors['uid'][] = $this->messages['uid'][0];
-			if ($this->orig['gidNumber'][0]!='' && $_SESSION['cache']->getgid($post['gidNumber'])!=$this->attributes['gidNumber'][0])
-			$errors['gidNumber'][] = $this->dynamic_Message('gidNumber',0);
-			if ($this->orig['uidNumber'][0]!='' && $post['uidNumber']!=$this->attributes['uidNumber'][0])
-			$errors['uidNumber'][] = $this->dynamic_Message('uidNumber',0);
-			if (isset($post['homeDirectory']) && $this->orig['homeDirectory'][0]!='' && $post['homeDirectory']!=$this->attributes['homeDirectory'][0])
-			$errors['homeDirectory'][] = $this->dynamic_Message('homeDirectory',0);
-			// Load attributes
-			$this->attributes['uid'][0] = $post['uid'];
-			$this->attributes['cn'][0] = $this->attributes['uid'][0];
-			$this->attributes['uidNumber'][0] = $post['uidNumber'];
-			$this->attributes['gidNumber'][0] = $_SESSION['cache']->getgid($post['gidNumber']);
-			// Check if UID is valid. If none value was entered, the next useable value will be inserted
-			// load min and may uidNumber
-			if ($_SESSION[$this->base]->type=='user') {
-				$minID = intval($this->moduleSettings['posixAccount_minUID'][0]);
-				$maxID = intval($this->moduleSettings['posixAccount_maxUID'][0]);
-			}
-			if ($_SESSION[$this->base]->type=='host') {
-				$minID = intval($this->moduleSettings['posixAccount_minMachine'][0]);
-				$maxID = intval($this->moduleSettings['posixAccount_maxMachine'][0]);
-			}
-			$dn_uids = $_SESSION['cache']->get_cache('uidNumber', 'posixAccount', '*');
-			// get_cache will return an array ( dn1 => array(uidnumber1), dn2 => array(uidnumber2), ... )
-			if(is_array($dn_uids)) {
-				foreach ($dn_uids as $uid) $uids[] = $uid[0];
-				sort ($uids, SORT_NUMERIC);
-			}
-			if ($this->attributes['uidNumber'][0]=='') {
-				// No id-number given
-				if ($this->orig['uidNumber'][0]=='') {
-					// new account -> we have to find a free id-number
-					if (count($uids)!=0) {
-						// There are some uids
-						// Store highest id-number
-						$id = $uids[count($uids)-1];
-						// Return minimum allowed id-number if all found id-numbers are too low
-						if ($id < $minID) $this->attributes['uidNumber'][0] = $minID;
-						// Return higesht used id-number + 1 if it's still in valid range
-						if ($id < $maxID) $this->attributes['uidNumber'][0] = $id+1;
-						/* If this function is still running we have to fid a free id-number between
-						* the used id-numbers
-						*/
-						$i = intval($minID);
-						while (in_array($i, $uids)) $i++;
-						if ($i>$maxID)
-						$errors['uidNumber'][] = $this->messages['uidNumber'][1];
-						else {
-							$this->attributes['uidNumber'][0] = $i;
-							$errors['uidNumber'][] = $this->messages['uidNumber'][2];
-						}
-					}
-					else $this->attributes['uidNumber'][0] = $minID;
-					// return minimum allowed id-number if no id-numbers are found
-				}
-				else $this->attributes['uidNumber'][0] = $this->orig['uidNumber'][0];
-				// old account -> return id-number which has been used
-			}
-			else {
-				// Check manual ID
-				// id-number is out of valid range
-				if ( ($this->attributes['uidNumber'][0]!=$post['uidNumber']) && ($this->attributes['uidNumber'][0] < $minID || $this->attributes['uidNumber'][0] > $maxID)) $errors['uidNumber'][] = array('ERROR', _('ID-Number'), sprintf(_('Please enter a value between %s and %s!'), $minID, $maxID));
-				// $uids is allways an array but not if no entries were found
-				if (is_array($uids)) {
-					// id-number is in use and account is a new account
-					if ((in_array($this->attributes['uidNumber'][0], $uids)) && $this->orig['uidNumber'][0]=='') $errors['uidNumber'][] = array('ERROR', _('ID-Number'), _('ID is already in use'));
-					// id-number is in use, account is existing account and id-number is not used by itself
-					if ((in_array($this->attributes['uidNumber'][0], $uids)) && $this->orig['uidNumber'][0]!='' && ($this->orig['uidNumber'][0] != $this->attributes['uidNumber'][0]) ) {
-						$errors['uidNumber'][] = $this->messages['uidNumber'][3];
-						$this->attributes['uidNumber'][0] = $this->orig['uidNumber'][0];
+		if ($this->orig['uid'][0]!='' && $post['uid']!=$this->attributes['uid'][0])
+			$triggered_messages['uid'][] = $this->messages['uid'][0];
+		if ($this->orig['gidNumber'][0]!='' && $_SESSION['cache']->getgid($post['gidNumber'])!=$this->attributes['gidNumber'][0])
+			$triggered_messages['gidNumber'][] = $this->dynamic_Message('gidNumber',0);
+		if ($this->orig['uidNumber'][0]!='' && $post['uidNumber']!=$this->attributes['uidNumber'][0])
+			$triggered_messages['uidNumber'][] = $this->dynamic_Message('uidNumber',0);
+		if (isset($post['homeDirectory']) && $this->orig['homeDirectory'][0]!='' && $post['homeDirectory']!=$this->attributes['homeDirectory'][0])
+			$triggered_messages['homeDirectory'][] = $this->dynamic_Message('homeDirectory',0);
+		// Load attributes
+		$this->attributes['uid'][0] = $post['uid'];
+		$this->attributes['cn'][0] = $this->attributes['uid'][0];
+		$this->attributes['uidNumber'][0] = $post['uidNumber'];
+		$this->attributes['gidNumber'][0] = $_SESSION['cache']->getgid($post['gidNumber']);
+		// Check if UID is valid. If none value was entered, the next useable value will be inserted
+		// load min and may uidNumber
+		if ($_SESSION[$this->base]->type=='user') {
+			$minID = intval($this->moduleSettings['posixAccount_minUID'][0]);
+			$maxID = intval($this->moduleSettings['posixAccount_maxUID'][0]);
+		}
+		if ($_SESSION[$this->base]->type=='host') {
+			$minID = intval($this->moduleSettings['posixAccount_minMachine'][0]);
+			$maxID = intval($this->moduleSettings['posixAccount_maxMachine'][0]);
+		}
+		$dn_uids = $_SESSION['cache']->get_cache('uidNumber', 'posixAccount', '*');
+		// get_cache will return an array ( dn1 => array(uidnumber1), dn2 => array(uidnumber2), ... )
+		if(is_array($dn_uids)) {
+			foreach ($dn_uids as $uid) $uids[] = $uid[0];
+			sort ($uids, SORT_NUMERIC);
+		}
+		if ($this->attributes['uidNumber'][0]=='') {
+			// No id-number given
+			if ($this->orig['uidNumber'][0]=='') {
+				// new account -> we have to find a free id-number
+				if (count($uids)!=0) {
+					// There are some uids
+					// Store highest id-number
+					$id = $uids[count($uids)-1];
+					// Return minimum allowed id-number if all found id-numbers are too low
+					if ($id < $minID) $this->attributes['uidNumber'][0] = $minID;
+					// Return higesht used id-number + 1 if it's still in valid range
+					if ($id < $maxID) $this->attributes['uidNumber'][0] = $id+1;
+					/* If this function is still running we have to fid a free id-number between
+					* the used id-numbers
+					*/
+					$i = intval($minID);
+					while (in_array($i, $uids)) $i++;
+					if ($i>$maxID)
+					$triggered_messages['uidNumber'][] = $this->messages['uidNumber'][1];
+					else {
+						$this->attributes['uidNumber'][0] = $i;
+						$triggered_messages['uidNumber'][] = $this->messages['uidNumber'][2];
 					}
 				}
+				else $this->attributes['uidNumber'][0] = $minID;
+				// return minimum allowed id-number if no id-numbers are found
 			}
-			if ($_SESSION[$this->base]->type=='user') {
-				if (($this->attributes['uid'][0] != $post['uid']) &&  !get_preg($post['uid'], '!upper'))
-				$errors['uid'][] = $this->messages['uid'][1];
-				if ( !get_preg($this->attributes['homeDirectory'][0], 'homeDirectory' ))
-				$errors['homeDirecotry'][] = $this->messages['homeDirectory'][0];
+			else $this->attributes['uidNumber'][0] = $this->orig['uidNumber'][0];
+			// old account -> return id-number which has been used
+		}
+		else {
+			// Check manual ID
+			// id-number is out of valid range
+			if ( ($this->attributes['uidNumber'][0]!=$post['uidNumber']) && ($this->attributes['uidNumber'][0] < $minID || $this->attributes['uidNumber'][0] > $maxID)) $triggered_messages['uidNumber'][] = array('ERROR', _('ID-Number'), sprintf(_('Please enter a value between %s and %s!'), $minID, $maxID));
+			// $uids is allways an array but not if no entries were found
+			if (is_array($uids)) {
+				// id-number is in use and account is a new account
+				if ((in_array($this->attributes['uidNumber'][0], $uids)) && $this->orig['uidNumber'][0]=='') $triggered_messages['uidNumber'][] = array('ERROR', _('ID-Number'), _('ID is already in use'));
+				// id-number is in use, account is existing account and id-number is not used by itself
+				if ((in_array($this->attributes['uidNumber'][0], $uids)) && $this->orig['uidNumber'][0]!='' && ($this->orig['uidNumber'][0] != $this->attributes['uidNumber'][0]) ) {
+					$triggered_messages['uidNumber'][] = $this->messages['uidNumber'][3];
+					$this->attributes['uidNumber'][0] = $this->orig['uidNumber'][0];
+				}
 			}
-
+		}
+		if ($_SESSION[$this->base]->type=='user') {
+			if (($this->attributes['uid'][0] != $post['uid']) &&  !get_preg($post['uid'], '!upper'))
+			$triggered_messages['uid'][] = $this->messages['uid'][1];
+			if ( !get_preg($this->attributes['homeDirectory'][0], 'homeDirectory' ))
+			$triggered_messages['homeDirecotry'][] = $this->messages['homeDirectory'][0];
+		}
 			if (($post['userPassword_lock'] && $post['userPassword_invalid']) || ($post['userPassword_nopassword'] && $post['userPassword_invalid'])) {
-				// found invalid password parameter combination
-				$errors['userPassword'][] = $this->messages['userPassword'][3];
+			// found invalid password parameter combination
+			$triggered_messages['userPassword'][] = $this->messages['userPassword'][3];
+		}
+		else {
+			if ($post['userPassword_nopassword']) {
+				$this->userPassword_nopassword=true;
+				$this->userPassword_invalid=false;
+				$this->userPassword('');
+				$post['userPassword2'] = '';
+				if ($post['userPassword_lock'])
+					$this->userPassword_lock=true;
+				else $this->userPassword_lock=false;
 			}
 			else {
-				if ($post['userPassword_nopassword']) {
-					$this->userPassword_nopassword=true;
-					$this->userPassword_invalid=false;
+				$this->userPassword_nopassword=false;
+				if ($post['userPassword_invalid']) {
+					$this->userPassword_invalid=true;
+					$this->userPassword_lock=false;
 					$this->userPassword('');
 					$post['userPassword2'] = '';
-					if ($post['userPassword_lock'])
-						$this->userPassword_lock=true;
-					else $this->userPassword_lock=false;
 				}
 				else {
-					$this->userPassword_nopassword=false;
-					if ($post['userPassword_invalid']) {
-						$this->userPassword_invalid=true;
-						$this->userPassword_lock=false;
-						$this->userPassword('');
-						$post['userPassword2'] = '';
-					}
+					$this->userPassword_invalid=false;
+					if ($post['genpass']) $this->userPassword(genpasswd());
 					else {
-						$this->userPassword_invalid=false;
-						if ($post['genpass']) $this->userPassword(genpasswd());
-						else {
-							if ($post['userPassword'] != $post['userPassword2'])
-								$errors['userPassword'][] = $this->messages['userPassword'][0];
-							else $this->userPassword($post['userPassword']);
-							if (!get_preg($this->userPassword(), 'password'))
-								$errors['userPassword'][] = $this->messages['userPassword'][1];
-						}
-						if ($post['userPassword_lock']) $this->userPassword_lock=true;
-						else $this->userPassword_lock=false;
+						if ($post['userPassword'] != $post['userPassword2'])
+							$triggered_messages['userPassword'][] = $this->messages['userPassword'][0];
+						else $this->userPassword($post['userPassword']);
+						if (!get_preg($this->userPassword(), 'password'))
+							$triggered_messages['userPassword'][] = $this->messages['userPassword'][1];
 					}
+					if ($post['userPassword_lock']) $this->userPassword_lock=true;
+					else $this->userPassword_lock=false;
 				}
-							
-				if ($_SESSION[$this->base]->type=='user') {
-					$this->attributes['homeDirectory'][0] = str_replace('$group', $_SESSION['cache']->getgrnam($this->attributes['gidNumber'][0]), $this->attributes['homeDirectory'][0]);
-					if ($this->attributes['uid'][0] != '')
-					$this->attributes['homeDirectory'][0] = str_replace('$user', $this->attributes['uid'][0], $this->attributes['homeDirectory'][0]);
-					if ($this->attributes['homeDirectory'][0] != $post['homeDirectory']) $errors['homeDirecotry'][] = array('INFO', _('Home directory'), _('Replaced $user or $group in homedir.'));
-					// Check if Username contains only valid characters
-					if ( !get_preg($this->attributes['uid'][0], 'username') && !$profile)
-					$errors['uid'][] = $this->messages['uid'][2];
-				}
-				if ($_SESSION[$this->base]->type=='host') {
-					// Check if Hostname contains only valid characters
-					if ( !get_preg($this->attributes['uid'][0], 'hostname'))
-					$errors['uid'][] = $this->messages['uid'][4];
-				}
-				// Create automatic useraccount with number if original user already exists
-				// Reset name to original name if new name is in use
-				// Set username back to original name if new username is in use
-				if ($_SESSION['cache']->in_cache($this->attributes['uid'][0],'uid', '*') && ($this->orig['uid'][0]!=''))
-				$this->attributes['uid'][0] = $this->orig['uid'][0];
-				// Change uid to a new uid until a free uid is found
-				else
-				while ($_SESSION['cache']->in_cache($this->attributes['uid'][0], 'uid', '*')) {
-					if ($_SESSION[$this->base]->type=='host') $this->attributes['uid'][0] = substr($this->attributes['uid'][0], 0, -1);
-					// get last character of username
-					$lastchar = substr($this->attributes['uid'][0], strlen($this->attributes['uid'][0])-1, 1);
-					// Last character is no number
-					if ( !ereg('^([0-9])+$', $lastchar))
-					/* Last character is no number. Therefore we only have to
-					* add "2" to it.
-					*/
-					if ($_SESSION[$this->base]->type=='host') $this->attributes['uid'][0] = $this->attributes['uid'][0] . '2$';
-					else $this->attributes['uid'][0] = $this->attributes['uid'][0] . '2';
-					else {
-						/* Last character is a number -> we have to increase the number until we've
-						* found a groupname with trailing number which is not in use.
-						*
-						* $i will show us were we have to split groupname so we get a part
-						* with the groupname and a part with the trailing number
-						*/
-						$i=strlen($this->attributes['uid'][0])-1;
-						$mark = false;
-						// Set $i to the last character which is a number in $account_new->general_username
-						while (!$mark)
-						if (ereg('^([0-9])+$',substr($this->attributes['uid'][0], $i, strlen($this->attributes['uid'][0])-$i))) $i--;
-						else $mark=true;
-						// increase last number with one
-						$firstchars = substr($this->attributes['uid'][0], 0, $i+1);
-						$lastchars = substr($this->attributes['uid'][0], $i+1, strlen($this->attributes['uid'][0])-$i);
-						// Put username together
-						if ($_SESSION[$this->base]->type=='host') $this->attributes['uid'][0] = $firstchars . (intval($lastchars)+1)."$";
-						else $this->attributes['uid'][0] = $firstchars . (intval($lastchars)+1);
-					}
-				}
-				// Show warning if lam has changed username
-				if ($this->attributes['uid'][0] != $post['uid']) {
-					if ($_SESSION[$this->base]->type=='user')
-					$errors['uid'][] = $this->messages['uid'][5];
-					if ($_SESSION[$this->base]->type=='host')
-					$errors['uid'][] = $this->messages['uid'][6];
-				}
-				if (!get_preg($this->userPassword(), 'password'))
-				$errors['userPassword'][] = $this->messages['userPassword'][1];
 			}
+			if ($_SESSION[$this->base]->type=='user') {
+				$this->attributes['homeDirectory'][0] = str_replace('$group', $_SESSION['cache']->getgrnam($this->attributes['gidNumber'][0]), $this->attributes['homeDirectory'][0]);
+				if ($this->attributes['uid'][0] != '')
+				$this->attributes['homeDirectory'][0] = str_replace('$user', $this->attributes['uid'][0], $this->attributes['homeDirectory'][0]);
+				if ($this->attributes['homeDirectory'][0] != $post['homeDirectory']) $triggered_messages['homeDirecotry'][] = array('INFO', _('Home directory'), _('Replaced $user or $group in homedir.'));
+				// Check if Username contains only valid characters
+				if ( !get_preg($this->attributes['uid'][0], 'username') && !$profile)
+				$triggered_messages['uid'][] = $this->messages['uid'][2];
+			}
+			if ($_SESSION[$this->base]->type=='host') {
+				// Check if Hostname contains only valid characters
+				if ( !get_preg($this->attributes['uid'][0], 'hostname'))
+				$triggered_messages['uid'][] = $this->messages['uid'][4];
+			}
+			// Create automatic useraccount with number if original user already exists
+			// Reset name to original name if new name is in use
+			// Set username back to original name if new username is in use
+			if ($_SESSION['cache']->in_cache($this->attributes['uid'][0],'uid', '*') && ($this->orig['uid'][0]!=''))
+			$this->attributes['uid'][0] = $this->orig['uid'][0];
+			// Change uid to a new uid until a free uid is found
+			else
+			while ($_SESSION['cache']->in_cache($this->attributes['uid'][0], 'uid', '*')) {
+				if ($_SESSION[$this->base]->type=='host') $this->attributes['uid'][0] = substr($this->attributes['uid'][0], 0, -1);
+				// get last character of username
+				$lastchar = substr($this->attributes['uid'][0], strlen($this->attributes['uid'][0])-1, 1);
+				// Last character is no number
+				if ( !ereg('^([0-9])+$', $lastchar))
+				/* Last character is no number. Therefore we only have to
+				* add "2" to it.
+				*/
+				if ($_SESSION[$this->base]->type=='host') $this->attributes['uid'][0] = $this->attributes['uid'][0] . '2$';
+				else $this->attributes['uid'][0] = $this->attributes['uid'][0] . '2';
+				else {
+					/* Last character is a number -> we have to increase the number until we've
+					* found a groupname with trailing number which is not in use.
+					*
+					* $i will show us were we have to split groupname so we get a part
+					* with the groupname and a part with the trailing number
+					*/
+					$i=strlen($this->attributes['uid'][0])-1;
+					$mark = false;
+					// Set $i to the last character which is a number in $account_new->general_username
+					while (!$mark)
+					if (ereg('^([0-9])+$',substr($this->attributes['uid'][0], $i, strlen($this->attributes['uid'][0])-$i))) $i--;
+					else $mark=true;
+					// increase last number with one
+					$firstchars = substr($this->attributes['uid'][0], 0, $i+1);
+					$lastchars = substr($this->attributes['uid'][0], $i+1, strlen($this->attributes['uid'][0])-$i);
+					// Put username together
+					if ($_SESSION[$this->base]->type=='host') $this->attributes['uid'][0] = $firstchars . (intval($lastchars)+1)."$";
+					else $this->attributes['uid'][0] = $firstchars . (intval($lastchars)+1);
+				}
+			}
+			// Show warning if lam has changed username
+			if ($this->attributes['uid'][0] != $post['uid']) {
+				if ($_SESSION[$this->base]->type=='user')
+				$triggered_messages['uid'][] = $this->messages['uid'][5];
+			if ($_SESSION[$this->base]->type=='host')
+				$triggered_messages['uid'][] = $this->messages['uid'][6];
+			}
+			if (!get_preg($this->userPassword(), 'password'))
+			$triggered_messages['userPassword'][] = $this->messages['userPassword'][1];
 		}
-		// Return error-messages
-		if (count($errors)!=0) {
-			$this->errors = $errors;
-			return $errors;
-		}
-		else $this->errors = array();
-		// Go to additional group page when no error did ocour and button was pressed
-		if ($post['addgroup'])  return 'group';
-		return 0;
+	// Return error-messages
+	if (count($triggered_messages)!=0) {
+		$this->triggered_messages = $triggered_messages;
+		return $triggered_messages;
+	}
+	else $this->triggered_messages = array();
+	// Go to additional group page when no error did ocour and button was pressed
+	if ($post['addgroup'])  return 'group';
+	return 0;
 	}
 
 	/* Write variables into object and do some regexp checks
 	*/
-	function proccess_group($post, $profile=false) {
+	function proccess_group($post) {
 		do { // X-Or, only one if() can be true
 		if (isset($post['addgroups']) && isset($post['addgroups_button'])) { // Add groups to list
 		// Add new group
@@ -769,27 +754,25 @@ class posixAccount extends baseModule {
 		break;
 		}
 		} while(0);
-		if (isset($post['addgroups_button']) || isset($post['removegroups_button'])) return 'group';
-		if ($post['back']) return 'attributes';
-		return 0;
+	if (isset($post['addgroups_button']) || isset($post['removegroups_button'])) return 'group';
+	if ($post['back']) return 'attributes';
+	return 0;
 	}
 
 	/* This function will create the html-page
 	* to show a page with all attributes.
 	* It will output a complete html-table
 	*/
-	function display_html_attributes($post, $profile=false) {
+	function display_html_attributes($post) {
 		$groups = $_SESSION['cache']->findgroups(); // list of all groupnames
 		$shelllist = getshells(); // list of all valid shells
 
-		if (!$profile) {
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _("Username").'*' ),
-			1 => array ( 'kind' => 'input', 'name' => 'uid', 'type' => 'text', 'size' => '20', 'maxlength' => '20', 'value' => $this->attributes['uid'][0]),
-			2 => array ('kind' => 'help', 'value' => 'uid'));
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('UID number').'*' ),
-			1 => array ( 'kind' => 'input', 'name' => 'uidNumber', 'type' => 'text', 'size' => '6', 'maxlength' => '6', 'value' => $this->attributes['uidNumber'][0]),
-			2 => array ('kind' => 'help', 'value' => 'uidNumber'));
-		}
+		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _("Username").'*' ),
+		1 => array ( 'kind' => 'input', 'name' => 'uid', 'type' => 'text', 'size' => '20', 'maxlength' => '20', 'value' => $this->attributes['uid'][0]),
+		2 => array ('kind' => 'help', 'value' => 'uid'));
+		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('UID number').'*' ),
+		1 => array ( 'kind' => 'input', 'name' => 'uidNumber', 'type' => 'text', 'size' => '6', 'maxlength' => '6', 'value' => $this->attributes['uidNumber'][0]),
+		2 => array ('kind' => 'help', 'value' => 'uidNumber'));
 		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Gecos') ),
 		1 => array ( 'kind' => 'input', 'name' => 'gecos', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => $this->attributes['gecos'][0]),
 		2 => array ('kind' => 'help', 'value' => 'gecos'));
@@ -799,29 +782,25 @@ class posixAccount extends baseModule {
 		2 => array ('kind' => 'help', 'value' => 'gidNumber'));
 
 		if ($_SESSION[$this->base]->type=='user') {
-			if (!$profile) {
-				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Additional groups') ),
-				1 => array ( 'kind' => 'input', 'name' => 'addgroup', 'type' => 'submit', 'value' => _('Edit groups')),
-				2 => array ('kind' => 'help', 'value' => 'addgroup'));
-			}
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Additional groups') ),
+			1 => array ( 'kind' => 'input', 'name' => 'addgroup', 'type' => 'submit', 'value' => _('Edit groups')),
+			2 => array ('kind' => 'help', 'value' => 'addgroup'));
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Home directory').'*' ),
 			1 => array ( 'kind' => 'input', 'name' => 'homeDirectory', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => $this->attributes['homeDirectory'][0]),
 			2 => array ('kind' => 'help', 'value' => 'homeDirectory'));
-			if (!$profile) {
-				if ($this->orig['homeDirectory']=='' && isset($_SESSION['config']->scriptPath)) {
-					$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Create home directory') ),
-					1 => array ( 'kind' => 'input', 'name' => 'createhomedir', 'type' => 'checkbox', 'checked' => $this->createhomedir),
-					2 => array ('kind' => 'help', 'value' => 'createhomedir'));
+			if ($this->orig['homeDirectory']=='' && isset($_SESSION['config']->scriptPath)) {
+				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Create home directory') ),
+				1 => array ( 'kind' => 'input', 'name' => 'createhomedir', 'type' => 'checkbox', 'checked' => $this->createhomedir),
+				2 => array ('kind' => 'help', 'value' => 'createhomedir'));
 				}
-				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Password') ),
-				1 => array ( 'kind' => 'input', 'name' => 'userPassword', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => $this->userPassword()),
-				2 => array ( 'kind' => 'input', 'name' => 'genpass', 'type' => 'submit', 'value' => _('Generate password')));
-				if ($post['userPassword2']!='') $password2 = $post['userPassword2'];
-				else $password2 = $this->userPassword();
-				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Repeat password') ),
-				1 => array ( 'kind' => 'input', 'name' => 'userPassword2', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => $password2),
-				2 => array ('kind' => 'help', 'value' => 'userPassword'));
-			}
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Password') ),
+			1 => array ( 'kind' => 'input', 'name' => 'userPassword', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => $this->userPassword()),
+			2 => array ( 'kind' => 'input', 'name' => 'genpass', 'type' => 'submit', 'value' => _('Generate password')));
+			if ($post['userPassword2']!='') $password2 = $post['userPassword2'];
+			else $password2 = $this->userPassword();
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Repeat password') ),
+			1 => array ( 'kind' => 'input', 'name' => 'userPassword2', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => $password2),
+			2 => array ('kind' => 'help', 'value' => 'userPassword'));
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Set no password') ),
 			1 => array ( 'kind' => 'input', 'name' => 'userPassword_nopassword', 'type' => 'checkbox', 'checked' => $this->userPassword_nopassword),
 			2 => array ('kind' => 'help', 'value' => 'userPassword_nopassword'));
@@ -837,7 +816,6 @@ class posixAccount extends baseModule {
 			array ($this->attributes['loginShell'][0])),
 			2 => array ('kind' => 'help', 'value' => 'loginShell'));
 		}
-		return $return;
 	}
 
 	function display_html_delete($post) {
@@ -849,7 +827,7 @@ class posixAccount extends baseModule {
 		return $return;
 	}
 
-	function display_html_group($post, $profile=false) {
+	function display_html_group($post) {
 		// load list with all groups
 		$dn_groups = $_SESSION['cache']->get_cache('gidNumber', 'posixGroup', 'group');
 		$DNs = array_keys($dn_groups);
@@ -1012,7 +990,7 @@ class posixAccount extends baseModule {
 	* @return array list of error messages if any
 	*/
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts) {
-		$errors = array();
+		$triggered_messages = array();
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			if (!in_array("posixAccount", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "posixAccount";
 			// UID
@@ -1026,7 +1004,7 @@ class posixAccount extends baseModule {
 			else {
 				$errMsg = $this->messages['uidNumber'][8]; // TODO
 				array_push($errMsg, array($i));
-				$errors[] = $errMsg;
+				$triggered_messages[] = $errMsg;
 			}
 			// GID number
 			if (get_preg($rawAccounts[$i][$ids['posixAccount_group']], 'digit')) {
@@ -1040,7 +1018,7 @@ class posixAccount extends baseModule {
 			else {
 				$errMsg = $this->messages['gidNumber'][8]; // TODO
 				array_push($errMsg, array($i));
-				$errors[] = $errMsg;
+				$triggered_messages[] = $errMsg;
 			}
 			// GECOS // TODO fill default values
 			if (($rawAccounts[$i][$ids['posixAccount_gecos']] != "") && (get_preg($rawAccounts[$i][$ids['posixAccount_gecos']], 'gecos'))) {
@@ -1049,7 +1027,7 @@ class posixAccount extends baseModule {
 			else {
 				$errMsg = $this->messages['gecos'][1]; // TODO
 				array_push($errMsg, array($i));
-				$errors[] = $errMsg;
+				$triggered_messages[] = $errMsg;
 			}
 			// user specific attributes
 			if ($this->scope == 'user') {
@@ -1060,7 +1038,7 @@ class posixAccount extends baseModule {
 				else {
 					$errMsg = $this->messages['username'][1]; // TODO
 					array_push($errMsg, array($i));
-					$errors[] = $errMsg;
+					$triggered_messages[] = $errMsg;
 				}
 				// home directory
 				if ($rawAccounts[$i][$ids['posixAccount_homedir']] == "") {
@@ -1072,7 +1050,7 @@ class posixAccount extends baseModule {
 				else {
 					$errMsg = $this->messages['homedir'][8]; // TODO
 					array_push($errMsg, array($i));
-					$errors[] = $errMsg;
+					$triggered_messages[] = $errMsg;
 				}
 				// login shell
 				if ($rawAccounts[$i][$ids['posixAccount_shell']] == "") {
@@ -1084,7 +1062,7 @@ class posixAccount extends baseModule {
 				else {
 					$errMsg = $this->messages['loginshell'][8]; // TODO
 					array_push($errMsg, array($i));
-					$errors[] = $errMsg;
+					$triggered_messages[] = $errMsg;
 				}
 				$pwd_enabled = true;
 				// password enabled/disabled
@@ -1098,7 +1076,7 @@ class posixAccount extends baseModule {
 				else {
 					$errMsg = $this->messages['passwordDisabled'][8]; // TODO
 					array_push($errMsg, array($i));
-					$errors[] = $errMsg;
+					$triggered_messages[] = $errMsg;
 				}
 				// password
 				if (($rawAccounts[$i][$ids['posixAccount_password']] != "") && (get_preg($rawAccounts[$i][$ids['posixAccount_password']], 'password'))) {
@@ -1107,7 +1085,7 @@ class posixAccount extends baseModule {
 				else {
 					$errMsg = $this->messages['password'][8]; // TODO
 					array_push($errMsg, array($i));
-					$errors[] = $errMsg;
+					$triggered_messages[] = $errMsg;
 				}
 			}
 			// host specific attributes
@@ -1119,13 +1097,13 @@ class posixAccount extends baseModule {
 				else {
 					$errMsg = $this->messages['hostname'][1]; // TODO
 					array_push($errMsg, array($i));
-					$errors[] = $errMsg;
+					$triggered_messages[] = $errMsg;
 				}
 				$partialAccounts[$i]['homeDirectory'] = '/dev/null';
 				$partialAccounts[$i]['loginShell'] = '/bin/false';
 			}
 		}
-		return $errors;
+		return $triggered_messages;
 	}
 	
 }

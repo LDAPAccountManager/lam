@@ -258,14 +258,6 @@ class inetOrgPerson extends baseModule {
 		return array('attributes');
 		}
 
-	/* This function returns all ldap attributes
-	* which are part of inetOrgPerson and returns
-	* also their values.
-	*/
-	function get_attributes() {
-		return $this->attributes;
-		}
-
 	/* This function loads all attributes into the object
 	* $attr is an array as it's retured from ldap_get_attributes
 	*/
@@ -301,7 +293,7 @@ class inetOrgPerson extends baseModule {
 		return 0;
 		}
 
-	function proccess_attributes($post, $profile=false) {
+	function proccess_attributes($post) {
 		// Load attributes
 		$this->attributes['description'][0] = $post['description'];
 		$this->attributes['sn'][0] = $post['sn'];
@@ -320,7 +312,7 @@ class inetOrgPerson extends baseModule {
 		if (isset($this->attributes['host'])) {
 			$host = $post['host'];
 			if (!get_preg($host,'unixhost'))
-				$errors['host'][] = $this->messages['host'][0];
+				$triggered_messages['host'][] = $this->messages['host'][0];
 			$hosts = explode(" ", $host);
 			$this->attributes['host'] = array();
 			foreach ($hosts as $host)
@@ -328,21 +320,19 @@ class inetOrgPerson extends baseModule {
 			}
 
 		// Do some regex-checks and return error if attributes are set to wrong values
-		if (!$profile) {
-			if ( !get_preg($this->attributes['givenName'][0], 'realname')) $errors['givenName'][] = $this->messages['givenName'][0];
-			if ( !get_preg($this->attributes['sn'][0], 'realname')) $errors['sn'][] = $this->messages['surname'][0];
-			if ( !get_preg($this->attributes['telephoneNumber'][0], 'telephone')) $errors['telephoneNumber'][] = $this->messages['telephoneNumber'][0];
-			if ( !get_preg($this->attributes['mobileTelephoneNumber'][0], 'telephone')) $errors['mobileTelephoneNumber'][] = $this->messages['mobileTelephone'][0];
-			if ( !get_preg($this->attributes['facsimileTelephoneNumber'][0], 'telephone')) $errors['facsimileTelephoneNumber'][] = $this->messages['facsimileNumber'][0];
-			if ( !get_preg($this->attributes['mail'][0], 'email')) $errors['mail'][] = $this->messages['email'][0];
-			if ( !get_preg($this->attributes['street'][0], 'street')) $errors['street'][] = $this->messages['street'][0];
-			if ( !get_preg($this->attributes['postalAddress'][0], 'postalAddress')) $errors['postalAdress'][] = $this->messages['postalAddress'][0];
-			if ( !get_preg($this->attributes['personal_postalCode'][0], 'postalCode')) $errors['personal_postalCode'][] = $this->messages['postalCode'][0];
-			}
-		if ( !get_preg($this->attributes['title'][0], 'title')) $errors['title'][] = $this->messages['title'][0];
-		if ( !get_preg($this->attributes['employeeType'][0], 'employeeType')) $errors['employeeType'][] = $this->messages['employeeType'][0];
+		if ( !get_preg($this->attributes['givenName'][0], 'realname')) $triggered_messages['givenName'][] = $this->messages['givenName'][0];
+		if ( !get_preg($this->attributes['sn'][0], 'realname')) $triggered_messages['sn'][] = $this->messages['surname'][0];
+		if ( !get_preg($this->attributes['telephoneNumber'][0], 'telephone')) $triggered_messages['telephoneNumber'][] = $this->messages['telephoneNumber'][0];
+		if ( !get_preg($this->attributes['mobileTelephoneNumber'][0], 'telephone')) $triggered_messages['mobileTelephoneNumber'][] = $this->messages['mobileTelephone'][0];
+		if ( !get_preg($this->attributes['facsimileTelephoneNumber'][0], 'telephone')) $triggered_messages['facsimileTelephoneNumber'][] = $this->messages['facsimileNumber'][0];
+		if ( !get_preg($this->attributes['mail'][0], 'email')) $triggered_messages['mail'][] = $this->messages['email'][0];
+		if ( !get_preg($this->attributes['street'][0], 'street')) $triggered_messages['street'][] = $this->messages['street'][0];
+		if ( !get_preg($this->attributes['postalAddress'][0], 'postalAddress')) $triggered_messages['postalAdress'][] = $this->messages['postalAddress'][0];
+		if ( !get_preg($this->attributes['personal_postalCode'][0], 'postalCode')) $triggered_messages['personal_postalCode'][] = $this->messages['postalCode'][0];
+		if ( !get_preg($this->attributes['title'][0], 'title')) $triggered_messages['title'][] = $this->messages['title'][0];
+		if ( !get_preg($this->attributes['employeeType'][0], 'employeeType')) $triggered_messages['employeeType'][] = $this->messages['employeeType'][0];
 		// Return error-messages
-		if (is_array($errors)) return $errors;
+		if (is_array($triggered_messages)) return $triggered_messages;
 		return 0;
 		}
 
@@ -350,7 +340,7 @@ class inetOrgPerson extends baseModule {
 	* to show a page with all attributes.
 	* It will output a complete html-table
 	*/
-	function display_html_attributes($post, $profile=false) {
+	function display_html_attributes($post) {
 		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Description') ),
 			1 => array ( 'kind' => 'input', 'name' => 'description', 'type' => 'text', 'size' => '30',
 				'maxlength' => '255', 'value' => $this->attributes['description'][0] ),
@@ -367,54 +357,50 @@ class inetOrgPerson extends baseModule {
 			1 => array ( 'kind' => 'input', 'name' => 'title', 'type' => 'text', 'size' => '10',
 				'value' => $this->attributes['title'][0] ),
 			2 => array ('kind' => 'help', 'value' => 'title'));
-		if (!$profile) {
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('First name').'*' ),
-				1 => array ( 'kind' => 'input', 'name' => 'givenName', 'type' => 'text', 'size' => '30',
-					'maxlength' => '255', 'value' => $this->attributes['givenName'][0] ),
-				2 => array ('kind' => 'help', 'value' => 'givenName'));
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Last name').'*' ),
-				1 => array ( 'kind' => 'input', 'name' => 'sn', 'type' => 'text', 'size' => '30',
-					'maxlength' => '255', 'value' => $this->attributes['sn'][0] ),
-				2 => array ('kind' => 'help', 'value' => 'sn'));
-			}
+		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('First name').'*' ),
+			1 => array ( 'kind' => 'input', 'name' => 'givenName', 'type' => 'text', 'size' => '30',
+				'maxlength' => '255', 'value' => $this->attributes['givenName'][0] ),
+			2 => array ('kind' => 'help', 'value' => 'givenName'));
+		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Last name').'*' ),
+			1 => array ( 'kind' => 'input', 'name' => 'sn', 'type' => 'text', 'size' => '30',
+				'maxlength' => '255', 'value' => $this->attributes['sn'][0] ),
+			2 => array ('kind' => 'help', 'value' => 'sn'));
 		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Employee type') ),
 			1 => array ( 'kind' => 'input', 'name' => 'employeeType', 'type' => 'text', 'size' => '30',
 				'maxlength' => '255', 'value' => $this->attributes['employeeType'][0] ),
 			2 => array ('kind' => 'help', 'value' => 'employeeType'));
-		if (!$profile) {
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Street') ),
-				1 => array ( 'kind' => 'input', 'name' => 'street', 'type' => 'text', 'size' => '30',
-					'maxlength' => '255', 'value' => $this->attributes['street'][0] ),
-				2 => array ('kind' => 'help', 'value' => 'street'));
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Postal code') ),
-				1 => array ( 'kind' => 'input', 'name' => 'postalCode', 'type' => 'text', 'size' => '30',
-					'maxlength' => '255', 'value' => $this->attributes['postalCode'][0] ),
-				2 => array ('kind' => 'help', 'value' => 'postalCode'));
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Postal address') ),
-				1 => array ( 'kind' => 'input', 'name' => 'postalAddress', 'type' => 'text', 'size' => '30',
-					'maxlength' => '255', 'value' => $this->attributes['postalAddress'][0] ),
-				2 => array ('kind' => 'help', 'value' => 'postalAddress'));
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Telephone number') ),
-				1 => array ( 'kind' => 'input', 'name' => 'telephoneNumber', 'type' => 'text', 'size' => '30',
-					'maxlength' => '255', 'value' => $this->attributes['telephoneNumber'][0] ),
-				2 => array ('kind' => 'help', 'value' => 'telephoneNumber'));
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Mobile number') ),
-				1 => array ( 'kind' => 'input', 'name' => 'mobileTelephoneNumber', 'type' => 'text', 'size' => '30',
-					'maxlength' => '255', 'value' => $this->attributes['mobileTelephoneNumber'][0] ),
-				2 => array ('kind' => 'help', 'value' => 'mobileTelephoneNumber'));
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Fax number') ),
-				1 => array ( 'kind' => 'input', 'name' => 'facsimileTelephoneNumber', 'type' => 'text', 'size' => '30',
-					'maxlength' => '255', 'value' => $this->attributes['facsimileTelephoneNumber'][0] ),
-				2 => array ('kind' => 'help', 'value' => 'facsimileTelephoneNumber'));
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('eMail address') ),
-				1 => array ( 'kind' => 'input', 'name' => 'mail', 'type' => 'text', 'size' => '30',
-					'maxlength' => '255', 'value' => $this->attributes['mail'][0] ),
-				2 => array ('kind' => 'help', 'value' => 'mail'));
-			}
+		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Street') ),
+			1 => array ( 'kind' => 'input', 'name' => 'street', 'type' => 'text', 'size' => '30',
+				'maxlength' => '255', 'value' => $this->attributes['street'][0] ),
+			2 => array ('kind' => 'help', 'value' => 'street'));
+		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Postal code') ),
+			1 => array ( 'kind' => 'input', 'name' => 'postalCode', 'type' => 'text', 'size' => '30',
+				'maxlength' => '255', 'value' => $this->attributes['postalCode'][0] ),
+			2 => array ('kind' => 'help', 'value' => 'postalCode'));
+		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Postal address') ),
+			1 => array ( 'kind' => 'input', 'name' => 'postalAddress', 'type' => 'text', 'size' => '30',
+				'maxlength' => '255', 'value' => $this->attributes['postalAddress'][0] ),
+			2 => array ('kind' => 'help', 'value' => 'postalAddress'));
+		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Telephone number') ),
+			1 => array ( 'kind' => 'input', 'name' => 'telephoneNumber', 'type' => 'text', 'size' => '30',
+				'maxlength' => '255', 'value' => $this->attributes['telephoneNumber'][0] ),
+			2 => array ('kind' => 'help', 'value' => 'telephoneNumber'));
+		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Mobile number') ),
+			1 => array ( 'kind' => 'input', 'name' => 'mobileTelephoneNumber', 'type' => 'text', 'size' => '30',
+				'maxlength' => '255', 'value' => $this->attributes['mobileTelephoneNumber'][0] ),
+			2 => array ('kind' => 'help', 'value' => 'mobileTelephoneNumber'));
+		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Fax number') ),
+			1 => array ( 'kind' => 'input', 'name' => 'facsimileTelephoneNumber', 'type' => 'text', 'size' => '30',
+				'maxlength' => '255', 'value' => $this->attributes['facsimileTelephoneNumber'][0] ),
+			2 => array ('kind' => 'help', 'value' => 'facsimileTelephoneNumber'));
+		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('eMail address') ),
+			1 => array ( 'kind' => 'input', 'name' => 'mail', 'type' => 'text', 'size' => '30',
+				'maxlength' => '255', 'value' => $this->attributes['mail'][0] ),
+			2 => array ('kind' => 'help', 'value' => 'mail'));
 		return $return;
 		}
 
-	function display_html_delete($post, $profile=false) {
+	function display_html_delete($post) {
 		return 0;
 		}
 
@@ -447,7 +433,7 @@ class inetOrgPerson extends baseModule {
 	* @return array list of error messages if any
 	*/
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts) {
-		$errors = array();
+		$triggered_messages = array();
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			if (!in_array("inetOrgPerson", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "inetOrgPerson";
 			// last name
@@ -457,7 +443,7 @@ class inetOrgPerson extends baseModule {
 			else {
 				$errMsg = $this->messages['surname'][1];
 				array_push($errMsg, array($i));
-				$errors[] = $errMsg;
+				$triggered_messages[] = $errMsg;
 			}
 			// first name
 			if (($rawAccounts[$i][$ids['inetOrgPerson_firstName']] != "") && get_preg($rawAccounts[$i][$ids['inetOrgPerson_firstName']], 'realname')) {
@@ -466,7 +452,7 @@ class inetOrgPerson extends baseModule {
 			else {
 				$errMsg = $this->messages['givenName'][1];
 				array_push($errMsg, array($i));
-				$errors[] = $errMsg;
+				$triggered_messages[] = $errMsg;
 			}
 			// description
 			if ($rawAccounts[$i][$ids['inetOrgPerson_description']] != "") {
@@ -487,7 +473,7 @@ class inetOrgPerson extends baseModule {
 			else {
 				$errMsg = $this->messages['title'][1];
 				array_push($errMsg, array($i));
-				$errors[] = $errMsg;
+				$triggered_messages[] = $errMsg;
 			}
 			// employee type
 			if (($rawAccounts[$i][$ids['inetOrgPerson_type']] != "") && get_preg($rawAccounts[$i][$ids['inetOrgPerson_type']], 'employeeType')) {
@@ -496,7 +482,7 @@ class inetOrgPerson extends baseModule {
 			else {
 				$errMsg = $this->messages['employeeType'][1];
 				array_push($errMsg, array($i));
-				$errors[] = $errMsg;
+				$triggered_messages[] = $errMsg;
 			}
 			// street
 			if (($rawAccounts[$i][$ids['inetOrgPerson_street']] != "") && get_preg($rawAccounts[$i][$ids['inetOrgPerson_street']], 'street')) {
@@ -505,7 +491,7 @@ class inetOrgPerson extends baseModule {
 			else {
 				$errMsg = $this->messages['street'][1];
 				array_push($errMsg, array($i));
-				$errors[] = $errMsg;
+				$triggered_messages[] = $errMsg;
 			}
 			// postal code
 			if (($rawAccounts[$i][$ids['inetOrgPerson_postalCode']] != "") && get_preg($rawAccounts[$i][$ids['inetOrgPerson_postalCode']], 'postalCode')) {
@@ -514,7 +500,7 @@ class inetOrgPerson extends baseModule {
 			else {
 				$errMsg = $this->messages['postalCode'][1];
 				array_push($errMsg, array($i));
-				$errors[] = $errMsg;
+				$triggered_messages[] = $errMsg;
 			}
 			// postal address
 			if (($rawAccounts[$i][$ids['inetOrgPerson_address']] != "") && get_preg($rawAccounts[$i][$ids['inetOrgPerson_address']], 'postalAddress')) {
@@ -523,7 +509,7 @@ class inetOrgPerson extends baseModule {
 			else {
 				$errMsg = $this->messages['postalAddress'][1];
 				array_push($errMsg, array($i));
-				$errors[] = $errMsg;
+				$triggered_messages[] = $errMsg;
 			}
 			// telephone
 			if (($rawAccounts[$i][$ids['inetOrgPerson_telephone']] != "") && get_preg($rawAccounts[$i][$ids['inetOrgPerson_telephone']], 'telephone')) {
@@ -532,7 +518,7 @@ class inetOrgPerson extends baseModule {
 			else {
 				$errMsg = $this->messages['telephone'][1];
 				array_push($errMsg, array($i));
-				$errors[] = $errMsg;
+				$triggered_messages[] = $errMsg;
 			}
 			// mobile
 			if (($rawAccounts[$i][$ids['inetOrgPerson_mobile']] != "") && get_preg($rawAccounts[$i][$ids['inetOrgPerson_mobile']], 'telephone')) {
@@ -541,7 +527,7 @@ class inetOrgPerson extends baseModule {
 			else {
 				$errMsg = $this->messages['mobileTelephone'][1];
 				array_push($errMsg, array($i));
-				$errors[] = $errMsg;
+				$triggered_messages[] = $errMsg;
 			}
 			// facsimile
 			if (($rawAccounts[$i][$ids['inetOrgPerson_fax']] != "") && get_preg($rawAccounts[$i][$ids['inetOrgPerson_fax']], 'telephone')) {
@@ -550,7 +536,7 @@ class inetOrgPerson extends baseModule {
 			else {
 				$errMsg = $this->messages['facsimileNumber'][1];
 				array_push($errMsg, array($i));
-				$errors[] = $errMsg;
+				$triggered_messages[] = $errMsg;
 			}
 			// eMail
 			if (($rawAccounts[$i][$ids['inetOrgPerson_email']] != "") && get_preg($rawAccounts[$i][$ids['inetOrgPerson_email']], 'email')) {
@@ -559,7 +545,7 @@ class inetOrgPerson extends baseModule {
 			else {
 				$errMsg = $this->messages['email'][1];
 				array_push($errMsg, array($i));
-				$errors[] = $errMsg;
+				$triggered_messages[] = $errMsg;
 			}
 			// cn
 			if ($rawAccounts[$i][$ids['inetOrgPerson_cn']] != "") {
@@ -569,7 +555,7 @@ class inetOrgPerson extends baseModule {
 				else {
 					$errMsg = $this->messages['email'][1];
 					array_push($errMsg, array($i));
-					$errors[] = $errMsg;
+					$triggered_messages[] = $errMsg;
 				}
 			}
 			else {
@@ -581,7 +567,7 @@ class inetOrgPerson extends baseModule {
 				}
 			}
 		}
-		return $errors;
+		return $triggered_messages;
 	}
 
 	
