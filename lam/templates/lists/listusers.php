@@ -162,15 +162,8 @@ for ($k = 0; $k < sizeof($desc_array); $k++) {
 }
 
 // configure search filter
-// Users have the attribute "*"
-	if ($_SESSION['config']->is_samba3()) {
-		// Unix/Samba3 users do not have the attribute "sambaAccount" but "posixAccount" and do not end with "$"
-		$filter = "(&(objectClass=posixAccount) (!(objectClass=sambaAccount)) (!(uid=*$))";
-	}
-	else {
-		// Unix/Samba2 users do not have the attribute "sambaSamAccount" but "posixAccount" and do not end with "$"
-		$filter = "(&(objectClass=posixAccount) (!(objectClass=sambaSamAccount)) (!(uid=*$))";
-	}
+// Unix/Samba3 users have the attribute "posixAccount" and do not end with "$"
+$filter = "(&(objectClass=posixAccount) (!(uid=*$))";
 for ($k = 0; $k < sizeof($desc_array); $k++) {
   if ($_POST["filter" . strtolower($attr_array[$k])])
     $filter = $filter . "(" . strtolower($attr_array[$k]) . "=" .
