@@ -459,8 +459,6 @@ class accountContainer {
 		if (!in_array($type, getAvailableScopes())) trigger_error(_('Account type not recognized.'), E_USER_ERROR);
 		$this->type = $type;
 		$this->base = $base;
-		// Name of variables in session
-		$this->header2 = 'header';
 		// Set startpage
 		$this->current_page=0;
 		$this->subpage='attributes';
@@ -479,8 +477,6 @@ class accountContainer {
 	* of account. Current unix, group, host are supported
 	*/
 	var $type;
-	// Localized part of HTML-Header
-	var $header2;
 	var $module; // This is an array with all module objects
 	// DN of the account
 	var $dn;
@@ -587,13 +583,13 @@ class accountContainer {
 				$this->subpage='attributes';
 				}
 			else for ($i=1; $i<count($this->order); $i++ )
-				if ($post['form_main_'.$this->order[$i]]) {
+				if ($post['form_main_'.$this->order[$i]] && ($this->module[$this->order[$i]]->module_ready())) {
 					$this->current_page = $i;
 					$this->subpage='attributes';
 					}
 			}
 		// Write HTML-Code
-		echo $_SESSION[$this->header2];
+		echo $_SESSION['header'];
 		echo "<title>";
 		if ($this->dn_orig!='') echo _("Modify Account");
 			else echo _("Create new Account");
@@ -614,37 +610,19 @@ class accountContainer {
 			echo _('Please select page:');
 			echo "</b></legend>\n";
 		$x=0;
-		if ($this->current_page==0) {
-			// print disabled button
-			echo "<input name=\"form_main_main\" type=\"submit\" value=\"";
-			echo _('Main');
-			echo "\" disabled tabindex=$x>\n<br>";
-			$x++;
-			}
-		else {
-			// print normal button
-			echo "<input name=\"form_main_main\" type=\"submit\" value=\"";
-			echo _('Main');
-			echo "\" tabindex=$x>\n<br>";
-			$x++;
-			}
+		// print normal button
+		echo "<input name=\"form_main_main\" type=\"submit\" value=\"";
+		echo _('Main');
+		echo "\" tabindex=$x>\n<br>";
+		$x++;
 		// Loop for module
 		// $x is used to count up tabindex
 		for ($i=1; $i<count($this->order); $i++ ) {
-			if ($this->order[$i]==$this->order[$this->current_page] || !$this->module[$this->order[$i]]->module_ready() ) {
-				// print disabled button
-				echo "<input name=\"form_main_".$this->order[$i]."\" type=\"submit\" value=\"";
-				echo $this->module[$this->order[$i]]->get_alias();
-				echo "\" disabled tabindex=$x>\n<br>";
-				$x++;
-				}
-			else {
-				// print normal button
-				echo "<input name=\"form_main_".$this->order[$i]."\" type=\"submit\" value=\"";
-				echo $this->module[$this->order[$i]]->get_alias();
-				echo "\" tabindex=$x>\n<br>";
-				$x++;
-				}
+			// print normal button
+			echo "<input name=\"form_main_".$this->order[$i]."\" type=\"submit\" value=\"";
+			echo $this->module[$this->order[$i]]->get_alias();
+			echo "\" tabindex=$x>\n<br>";
+			$x++;
 			}
 		if ($this->dn_orig!='') echo "<input name=\"form_main_reset\" type=\"submit\" value=\"" . _('Reset changes') . "\"><br>\n";
 		echo "</fieldset></td></tr>\n";
