@@ -89,7 +89,7 @@ if (($_GET['action'] == "edit") || ($_GET['action'] == "new")) {
 						if ($_GET['action'] == "edit") {
 							echo $domain->name . "\n";
 						}
-						else echo "<input type=\"text\" name=\"dom_name\">\n";
+						else echo "<input tabindex=\"1\" type=\"text\" name=\"dom_name\">\n";
 					echo "</td>\n";
 					echo ("<td><a href=\"help.php?HelpNumber=651\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
 				echo "</tr>\n";
@@ -105,7 +105,7 @@ if (($_GET['action'] == "edit") || ($_GET['action'] == "new")) {
 						if ($_GET['action'] == "edit") {
 							echo $domain->SID . "\n";
 						}
-						else echo "<input type=\"text\" size=\"50\" name=\"dom_SID\">\n";
+						else echo "<input tabindex=\"2\" type=\"text\" size=\"50\" name=\"dom_SID\">\n";
 					echo "</td>\n";
 					echo ("<td><a href=\"help.php?HelpNumber=653\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
 				echo "</tr>\n";
@@ -116,7 +116,7 @@ if (($_GET['action'] == "edit") || ($_GET['action'] == "new")) {
 				echo "<tr>\n";
 					echo "<td><b>" . _("Next RID") . ": </b></td>\n";
 					echo "<td>\n";
-						echo "<input type=\"text\" name=\"dom_nextRID\" value=\"" . $domain->nextRID . "\">\n";
+						echo "<input tabindex=\"3\" type=\"text\" name=\"dom_nextRID\" value=\"" . $domain->nextRID . "\">\n";
 					echo "</td>\n";
 					echo ("<td><a href=\"help.php?HelpNumber=654\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
 				echo "</tr>\n";
@@ -124,7 +124,7 @@ if (($_GET['action'] == "edit") || ($_GET['action'] == "new")) {
 				echo "<tr>\n";
 					echo "<td><b>" . _("Next User RID") . ": </b></td>\n";
 					echo "<td>\n";
-						echo "<input type=\"text\" name=\"dom_nextUserRID\" value=\"" . $domain->nextUserRID . "\">\n";
+						echo "<input tabindex=\"4\" type=\"text\" name=\"dom_nextUserRID\" value=\"" . $domain->nextUserRID . "\">\n";
 					echo "</td>\n";
 					echo ("<td><a href=\"help.php?HelpNumber=655\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
 				echo "</tr>\n";
@@ -132,7 +132,7 @@ if (($_GET['action'] == "edit") || ($_GET['action'] == "new")) {
 				echo "<tr>\n";
 					echo "<td><b>" . _("Next Group RID") . ": </b></td>\n";
 					echo "<td>\n";
-						echo "<input type=\"text\" name=\"dom_nextGroupRID\" value=\"" . $domain->nextGroupRID . "\">\n";
+						echo "<input tabindex=\"5\" type=\"text\" name=\"dom_nextGroupRID\" value=\"" . $domain->nextGroupRID . "\">\n";
 					echo "</td>\n";
 					echo ("<td><a href=\"help.php?HelpNumber=656\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
 				echo "</tr>\n";
@@ -144,7 +144,7 @@ if (($_GET['action'] == "edit") || ($_GET['action'] == "new")) {
 					echo "<td><b>" . _("Algorithmic RID Base") . ": </b></td>\n";
 					echo "<td>\n";
 						if ($_GET['action'] == "edit") echo $domain->RIDbase . "\n";
-						else echo "<input type=\"text\" name=\"dom_RIDbase\" value=\"" . $domain->RIDbase . "\">\n";
+						else echo "<input tabindex=\"6\" type=\"text\" name=\"dom_RIDbase\" value=\"" . $domain->RIDbase . "\">\n";
 					echo "</td>\n";
 					echo ("<td><a href=\"help.php?HelpNumber=657\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
 				echo "</tr>\n";
@@ -157,7 +157,7 @@ if (($_GET['action'] == "edit") || ($_GET['action'] == "new")) {
 						echo "<b>" . _("Suffix") . ": </b>\n";
 					echo "</td>\n";
 					echo "<td>\n";
-						echo "<select name=\"dom_suffix\">\n";
+						echo "<select tabindex=\"7\" name=\"dom_suffix\">\n";
 						for ($i = 0; $i < sizeof($domsuff); $i++) {
 							if ($domsuff[$i] == $domain_suffix) echo "<option selected>" . $domain_suffix . "</option>\n";
 							else echo "<option>" . $domsuff[$i] . "</option>\n";
@@ -181,9 +181,9 @@ if (($_GET['action'] == "edit") || ($_GET['action'] == "new")) {
 		else echo "<input type=\"hidden\" name=\"add\" value=\"yes\">";
 		echo "<p>&nbsp;</p>\n";
 		echo "<p>\n";
-			echo "<input type=\"submit\" name=\"sub_save\" value=\"" . _("Submit") . "\">\n";
-			echo "<input type=\"reset\" value=\"" . _("Reset") . "\">\n";
-			echo "<input type=\"submit\" name=\"sub_back\" value=\"" . _("Cancel") . "\">\n";
+			echo "<input tabindex=\"8\" type=\"submit\" name=\"sub_save\" value=\"" . _("Submit") . "\">\n";
+			echo "<input tabindex=\"9\" type=\"reset\" value=\"" . _("Reset") . "\">\n";
+			echo "<input tabindex=\"10\" type=\"submit\" name=\"sub_back\" value=\"" . _("Cancel") . "\">\n";
 		echo "</p>\n";
 		echo "</form>\n";
 	echo "</body>\n";
