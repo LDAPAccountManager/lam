@@ -38,6 +38,10 @@ function createUserPDF($accounts) {
 	$pdfFile->setCreator("LDAP Account Manager (pdf.inc)");
 	for($i=0;$i<count($accounts);$i++) {
 		$account = $accounts[$i];
+		$iv = base64_decode($_COOKIE['IV']);
+		$key = base64_decode($_COOKIE['Key']);
+		$account->unix_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($account->unix_password), MCRYPT_MODE_ECB, $iv);
+		$account->unix_password = str_replace(chr(00), '', $account->unix_password);
 		$pdfFile->addPage();
 		// Print General settings
 		$pdfFile->setFont("arial","B",12);
@@ -73,10 +77,12 @@ function createUserPDF($accounts) {
 		$text = "";
 		$shells = $account->general_shell;
 		for($j=0;$j<count($shells);$j++) {
-			if($j == 1) {
+			if($j == 0 || count($shells) == 1) {
 				$text = $shells[$j];
 			}
-			$text .= ", " . $shells[$j];
+			else {
+				$text .= ", " . $shells[$j];
+			}
 		}
 		$pdfFile->setFont("times","B",10);
 		$pdfFile->Cell(50,5,$text,0,1,"L",0);
@@ -113,6 +119,8 @@ function createUserPDF($accounts) {
 		}
 		$pdfFile->Cell(50,5,$text,0,1,"L",0);
 		if($account->smb_useunixpwd == 0) {
+			$account->smb_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($account->smb_password), MCRYPT_MODE_ECB, $iv);
+			$account->smb_password = str_replace(chr(00), '', $account->smb_password);
 			$pdfFile->setFont("times","",10);
 			$pdfFile->Cell(50,5,_("Samba password") . ":",0,0,"R",0);
 			$pdfFile->setFont("times","B",10);
