@@ -32,6 +32,8 @@ class quota extends baseModule {
 		$return = array();
 		// manages user and group accounts
 		$return["account_types"] = array("user", "group");
+		// alias name
+		$return["alias"] = _('Quota');
 		return $return;
 	}
 
@@ -80,9 +82,6 @@ class quota extends baseModule {
 
 	var $quota;
 
-	function get_alias($scope) {
-		return _('Quota');
-		}
 
 	/* This function returns a list with all required modules
 	*/

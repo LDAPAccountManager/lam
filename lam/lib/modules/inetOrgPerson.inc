@@ -47,6 +47,8 @@ class inetOrgPerson extends baseModule {
 		$return = array();
 		// manages user accounts
 		$return["account_types"] = array("user");
+		// alias name
+		$return["alias"] = _('Personal');
 		return $return;
 	}
 
@@ -79,9 +81,6 @@ class inetOrgPerson extends baseModule {
 	*/
 	var $orig;
 
-	function get_alias($scope) {
-		return _('Personal');
-	}
 
 	/* This function returns a list with all required modules
 	*/

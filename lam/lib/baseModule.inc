@@ -105,6 +105,19 @@ class baseModule {
 		else return "";
 	}
 
+	/**
+	* Returns an alias name for the module.
+	*
+	* This alias is used in various places instead of the less descriptive class name.
+	* The alias also has less syntax restrictions and may contain spaces or special characters.
+	*
+	* @return string alias name
+	*/
+	function get_alias() {
+		if (isset($this->meta['alias'])) return $this->meta['alias'];
+		else return get_class($this);
+	}
+
 // TODO implement missing interface
 }
 

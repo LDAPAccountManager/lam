@@ -70,6 +70,8 @@ class posixAccount extends baseModule {
 			// LDAP filter
 			$return["ldap_filter"] = array('or' => "(objectClass=posixAccount)", 'and' => "(!(uid=*$))");
 		}
+		// alias name
+		$return["alias"] = _("Unix");
 		return $return;
 	}
 
@@ -127,6 +129,7 @@ class posixAccount extends baseModule {
 	var $groups_orig;
 	var $createhomedir;
 
+
 	/* $attribute['userPassword'] can't accessed directly because it's enrcypted
 	* To read / write password function userPassword is needed
 	* This function will return the unencrypted password when
@@ -148,10 +151,6 @@ class posixAccount extends baseModule {
 			else return '';
 			}
 		}
-
-	function get_alias($scope) {
-		return "Unix";
-	}
 
 	/* This function returns a list with all required modules
 	*/

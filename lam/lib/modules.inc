@@ -48,11 +48,16 @@ while ($stay<7) {
 		}
 	}
 
-// returns the alias name of a module
-// $name: the module name
-// $scope: the account type ("user", "group", "host")
+/**
+* Returns the alias name of a module
+*
+* @param string $name the module name
+* @param string $scope the account type ("user", "group", "host")
+* @return string alias name
+*/
 function getModuleAlias($name, $scope) {
-	return call_user_func(array($name, "get_alias"), $scope);
+	$module = new $name($scope);
+	return $module->get_alias();
 }
 
 // returns if the module is a base module

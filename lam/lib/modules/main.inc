@@ -54,6 +54,8 @@ class main extends baseModule {
 		$return = array();
 		// manages no accounts
 		$return["account_types"] = array();
+		// alias name
+		$return["alias"] = _('Main');
 		return $return;
 	}
 
@@ -76,9 +78,6 @@ class main extends baseModule {
 	// name of accountContainer so we can read other classes in accuontArray
 	var $base;
 
-	function get_alias($scope) {
-		return _('main');
-		}
 
 	/* This function returns a list with all required modules
 	*/

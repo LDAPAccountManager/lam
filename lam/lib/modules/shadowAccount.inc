@@ -63,6 +63,8 @@ class shadowAccount extends baseModule {
 		$return = array();
 		// manages user accounts
 		$return["account_types"] = array("user");
+		// alias name
+		$return["alias"] = _('Shadow');
 		return $return;
 	}
 
@@ -100,9 +102,6 @@ class shadowAccount extends baseModule {
 	*/
 	var $orig;
 
-	function get_alias($scope) {
-		return _('Shadow');
-		}
 
 	/* This function returns a list with all required modules
 	*/

@@ -63,6 +63,8 @@ class sambaGroupMapping extends baseModule {
 		$return = array();
 		// manages group accounts
 		$return["account_types"] = array("group");
+		// alias name
+		$return["alias"] = _('Samba 3');
 		return $return;
 	}
 
@@ -106,9 +108,6 @@ class sambaGroupMapping extends baseModule {
 	// Array of well known rids
 	var $rids;
 
-	function get_alias($scope) {
-		return _('Samba 3');
-		}
 
 	/* This function returns a list with all required modules
 	*/

@@ -69,6 +69,8 @@ class sambaSamAccount extends baseModule {
 			// LDAP filter
 			$return["ldap_filter"] = array('and' => '(uid=*$)', 'or' => "(objectClass=posixAccount)");
 		}
+		// alias name
+		$return["alias"] = _('Samba 3');
 		return $return;
 	}
 
@@ -118,6 +120,7 @@ class sambaSamAccount extends baseModule {
 	// Array of well known rids
 	var $rids;
 
+
 	/* $attribute['sambaLMPassword'] and sambaNTPassword can't accessed directly because it's enrcypted
 	* To read / write password function userPassword is needed
 	* This function will return the unencrypted password when
@@ -139,10 +142,6 @@ class sambaSamAccount extends baseModule {
 				}
 			else return '';
 			}
-		}
-
-	function get_alias($scope) {
-		return _('Samba 3');
 		}
 
 	/* This function returns a list with all required modules

@@ -69,6 +69,8 @@ class sambaAccount extends baseModule {
 			// LDAP filter
 			$return["ldap_filter"] = array('and' => '(uid=*$)', 'or' => "(objectClass=posixAccount)");
 		}
+		// alias name
+		$return["alias"] = _('Samba 2');
 		return $return;
 	}
 
@@ -139,10 +141,6 @@ class sambaAccount extends baseModule {
 				}
 			else return '';
 			}
-		}
-
-	function get_alias($scope) {
-		return _('Samba 2');
 		}
 
 	/* This function returns a list with all required modules

@@ -48,6 +48,8 @@ class account extends baseModule {
 		$return = array();
 		// manages host accounts
 		$return["account_types"] = array("host");
+		// alias name
+		$return["alias"] = _('Account');
 		return $return;
 	}
 
@@ -76,9 +78,6 @@ class account extends baseModule {
 	*/
 	var $orig;
 
-	function get_alias($scope) {
-		return _('Account');
-	}
 
 	/* This function returns a list with all required modules
 	*/

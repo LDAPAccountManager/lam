@@ -69,6 +69,8 @@ class posixGroup extends baseModule {
 			// LDAP filter
 			$return["ldap_filter"] = array('or' => "(objectClass=posixGroup)");
 		}
+		// alias name
+		$return["alias"] = _('Unix');
 		return $return;
 	}
 
@@ -98,6 +100,7 @@ class posixGroup extends baseModule {
 		$this->orig = $this->attributes ;
 		$this->changegids=false;
 		}
+
 
 	// Variables
 	// name of accountContainer so we can read other classes in accuontArray
@@ -136,10 +139,6 @@ class posixGroup extends baseModule {
 				}
 			else return '';
 			}
-		}
-
-	function get_alias($scope) {
-		return _('Unix');
 		}
 
 	/* This function returns a list with all required modules
