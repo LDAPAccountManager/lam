@@ -228,7 +228,8 @@ switch ($_POST['select']) {
 if ( $_POST['create'] ) { // Create-Button was pressed
 	switch ($_SESSION['type2']) {
 		case 'user':
-			$result = createuser(); // account.inc
+			if ($_SESSION['modify']==1) $result = modifyuser();
+			 else $result = createuser(); // account.inc
 			if ( $result==1 || $result==3 ) $select_local = 'finish';
 			break;
 		case 'group':
@@ -255,7 +256,6 @@ echo '</title>
 	if ($error != "0") StatusMessage('ERROR', _('Invalid Value!'), $error);
 	echo '<table rules="all" class="account" width="100%">
 	<tr><td></td></tr>';
-
 
 
 if (!$select_local) $select_local='general';
