@@ -113,8 +113,13 @@ class posixAccount extends baseModule {
 		// RDN attributes
 		$return["RDN"] = array("uid" => "normal", "cn" => "low");
 		// profile checks
-		$return['profile_checks']['posixAccount_homeDirectory'] = array('type' => 'regex_i', 'regex' => 'homeDirectory',
+		$return['profile_checks']['posixAccount_homeDirectory'] = array('type' => 'ext_preg', 'regex' => 'homeDirectory',
 		'error_message' => $this->messages['homeDirectory'][0]);
+		// profile mappings
+		$return['profile_mappings'] = array(
+			'posixAccount_homeDirectory' => 'homeDirectory',
+			'posixAccount_loginShell' => 'loginShell'
+		);
 		// configuration options
 		$return['config_options']['user'] = array(
 		array(
@@ -949,6 +954,36 @@ class posixAccount extends baseModule {
 			2 => array('kind' => 'help', 'value' => 'gidNumber', 'scope' => 'host'));
 		}
 		return $return;
+	}
+
+	/**
+	* Loads the values of an account profile into internal variables.
+	*
+	* @param array $profile hash array with profile values (identifier => value)
+	*/
+	function load_profile($profile) {
+		// profile mappings in meta data
+		parent::load_profile($profile);
+		// special profile options
+		// GID
+		if (isset($profile['posixAccount_primaryGroup'][0])) {
+			$gid = $_SESSION['cache']->getgid($profile['posixAccount_primaryGroup'][0]);
+			if (isset($gid)) {
+				$this->attributes['gidNumber'][0] = $gid;
+			}
+		}
+		// other group memberships
+		if (isset($profile['posixAccount_additionalGroup'][0])) {
+			$this->groups = $profile['posixAccount_additionalGroup'];
+		}
+		// no password
+		if (isset($profile['posixAccount_userPassword_no'][0])) {
+			$this->userPassword_nopassword = $profile['posixAccount_userPassword_no'][0];
+		}
+		// locked password
+		if (isset($profile['posixAccount_userPassword_lock'][0])) {
+			$this->userPassword_lock = $profile['posixAccount_userPassword_lock'][0];
+		}
 	}
 
 	/*

@@ -111,6 +111,12 @@ class inetOrgPerson extends baseModule {
 			'type' => 'ext_preg',
 			'regex' => 'employeeType',
 			'error_message' => $this->messages['employeeType'][0]);
+		// profile mappings
+		$return['profile_mappings'] = array(
+			'inetOrgPerson_title' => 'title',
+			'inetOrgPerson_employeeType' => 'employeeType'
+		);
+		// upload fields
 		$return['upload_columns'] = array(
 		array(
 		'name' => 'inetOrgPerson_cn',
