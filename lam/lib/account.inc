@@ -193,10 +193,10 @@ function RndInt($Format){
 
 /* Whis function will return the quotas from the specified user If empty only filesystems with enabled quotas are returned
 * $type = 'user' or 'group'
-* $user = user or groupname. If no user or groupname is defined,
+* $users = array of users or groupnames. If no user or groupname is defined,
 *         an array with all quota-enabled partitions will be returned in this case all returned values are 0 exept mointpoint[x][0]
 */
-function getquotas($type,$user='+') {
+function getquotas($type,$users=array('+')) {
 	// define new object
 	$return = new account();
 	// get username and password of the current lam-admin
@@ -205,13 +205,39 @@ function getquotas($type,$user='+') {
 	* admin-username, admin-password, account with quotas, 'quota', operation='get', type=user|group
 	* use escapeshellarg to make exec() shell-safe
 	*/
-	$towrite = escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]).' '.escapeshellarg($user).' quota get ';
-	if ($type=='user') $towrite = $towrite.'u';
-	 else $towrite = $towrite.'g';
+	$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." ".
+		escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]);
 	/* scriptServer is the IP to remote-host to which lam should connect via ssh
 	* scriptPath is Path to lamdaemon.pl on remote system
 	*/
-	exec("perl ".escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." ".$towrite, $vals, $status);
+	$descriptorspec = array(
+		0 => array("pipe", "r"), // stdin
+		1 => array("pipe", "w"), // stout
+		2 => array("file", "/dev/null", "a") // sterr
+		);
+	$process = proc_open(escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".$towrite,
+		$descriptorspec,
+		$pipes);
+	if (is_resource($process)) {
+		/* perl-script is running
+		* $pipes[0] is writeable handle to child stdin
+		* $pipes[1] is readable handle to child stdout
+		* any error is send to /dev/null
+		*/
+		foreach ($users as $user) {
+			// put string to trasmit together
+			$userstring = "$user quota get $type\n";
+			// Write one output-line for every user
+			fwrite($pipes[0], $userstring);
+			}
+		fclose($pipes[0]);
+		while (!feof($pipes[1])) {
+			$output = fgets($pipes[1], 1024);
+			if ($output!='') $vals5[] = $output;
+			}
+		fclose($pipes[1]);
+		$return_value = proc_close($process);
+		}
 	/* $vals is a string which contains a two dimensional array.
 	* We have to recreate it with explode
 	*
@@ -220,101 +246,158 @@ function getquotas($type,$user='+') {
 	* mountpoint, used blocks, soft block limit, hard block limit, grace block period, used inodes,
 	* soft inode limit, hard inode limit, grace inode period
 	*/
-	$vals = explode(':', $vals[0]);
-	for ($i=0; $i<sizeof($vals); $i++) {
-		$vals2 = explode(',', $vals[$i]);
-		for ($j=0; $j<sizeof($vals2); $j++) {
-			$return->quota[$i][$j] = $vals2[$j];
+	foreach ($vals5 as $vals3) {
+		$vals = explode(':', $vals3);
+		for ($i=0; $i<sizeof($vals)-1; $i++) {
+			$vals2 = explode(',', $vals[$i]);
+			for ($j=0; $j<sizeof($vals2); $j++) {
+				$return->quota[$i][$j] = $vals2[$j];
+				}
+			if ($return->quota[$i][4]<$time) $return->quota[$i][4] = '';
+				else $return->quota[$i][4] = strval(($return->quota[$i][4]-$time)/3600) .' '. _('hours');
+			if ($return->quota[$i][8]<$time) $return->quota[$i][8] = '';
+				else $return->quota[$i][8] = strval(($return->quota[$i][8]-$time)/3600) .' '. _('hours');
 			}
-		if ($return->quota[$i][4]<$time) $return->quota[$i][4] = '';
-			else $return->quota[$i][4] = strval(($return->quota[$i][4]-$time)/3600) .' '. _('hours');
-		if ($return->quota[$i][8]<$time) $return->quota[$i][8] = '';
-			else $return->quota[$i][8] = strval(($return->quota[$i][8]-$time)/3600) .' '. _('hours');
+		$return2[] = $return;
 		}
-	return $return;
+	return $return2;
 	}
 
 
 /* Whis function will set the quotas from the specified user.
-* $values = object account with quotas which should be set
-* $values_old = object account if set values and values_old will be compared. Quota will only be changed
+* $values2 = array of object account with quotas which should be set
+* $values2_old = array of object account if set values and values_old will be compared. Quota will only be changed
 *               if values differ
 */
-function setquotas($values,$values_old=false) {
+function setquotas($values2,$values2_old=false) {
 	// get username and password of the current lam-admin
 	$ldap_q = $_SESSION['ldap']->decrypt();
 	/* $towrite has the following syntax:
 	* admin-username, admin-password, account with quotas, 'quota', operation='set', type=user|group
 	* use escapeshellarg to make exec() shell-safe
 	*/
-	$towrite = escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]).' '.escapeshellarg($values->general_username).' quota set ';
-	if ($values->type=='user') $towrite = $towrite.'u ';
-	 else $towrite = $towrite.'g ';
-	$i=0;
-	/* Check wich quotas have changed
-	* Because we can not send an array to lamdaemon.pl we have to put all
-	* values in a string. ':' sepraeates the first array, ',' the second
-	*
-	* $values->quota[][] First array is an index for every chare with active quotas
-	* second array Contains values for every share:
-	* mountpoint, used blocks, soft block limit, hard block limit, grace block period, used inodes,
-	* soft inode limit, hard inode limit, grace inode period
-	*/
-	while ($values->quota[$i][0]) {
-		if ($values->quota[$i] != $values_old->quota[$i]) {
-			$quotastring = $quotastring. $values->quota[$i][0] .','.$values->quota[$i][2] .','.$values->quota[$i][3]
-			.','.$values->quota[$i][6] .','. $values->quota[$i][7] .':';
+	$towrite = escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".escapeshellarg($_SESSION['config']->scriptServer)." ".
+		escapeshellarg($_SESSION['config']->scriptPath)." ".escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]);
+	$descriptorspec = array(
+		0 => array("pipe", "r"), // stdin
+		1 => array("pipe", "w"), // stout
+		2 => array("file", "/dev/null", "a") // sterr
+		);
+	$process = proc_open(escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".$towrite,
+		$descriptorspec,
+		$pipes);
+	if (is_resource($process)) {
+		/* perl-script is running
+		* $pipes[0] is writeable handle to child stdin
+		* $pipes[1] is readable handle to child stdout
+		* any error is send to /dev/null
+		*/
+		foreach ($values2 as $values) {
+			$i=0;
+			/* Check wich quotas have changed
+			* Because we can not send an array to lamdaemon.pl we have to put all
+			* values in a string. ':' sepraeates the first array, ',' the second
+			*
+			* $values->quota[][] First array is an index for every chare with active quotas
+			* second array Contains values for every share:
+			* mountpoint, used blocks, soft block limit, hard block limit, grace block period, used inodes,
+			* soft inode limit, hard inode limit, grace inode period
+			*/
+			while ($values->quota[$i][0]) {
+				if ($values->quota[$i] != $values_old->quota[$i]) {
+					$quotastring = $quotastring. $values->quota[$i][0] .','.$values->quota[$i][2] .','.$values->quota[$i][3]
+					.','.$values->quota[$i][6] .','. $values->quota[$i][7] .':';
+					}
+				$i++;
+				}
+			$userstring = $values->general_username." quota set ".$values->type." ".$quotastring."\n";
+			// Write to stdin
+			fwrite($pipes[0], $userstring);
 			}
-		$i++;
 		}
-	$towrite = $towrite . escapeshellarg($quotastring);
-	/* scriptServer is the IP to remote-host to which lam should connect via ssh
-	* scriptPath is Path to lamdaemon.pl on remote system
-	* only run lamdaemon.pl if quotas are really set, $i!=0
-	*/
-	if ($i!=0) exec(("perl ".escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." ".$towrite), $vals);
+	fclose($pipes[0]);
+	fclose($pipes[1]);
+	$return_value = proc_close($process);
 	}
 
 
 /* Whis function will remove the quotas from the specified user.
-* $user = username of which quta should be deleted
+* $user = array of usernames of which quta should be deleted
 * $type = user or group
 * Delteing quotas means settings all values to 0 which means no quotas
 */
-function remquotas($user, $type) {
+function remquotas($users, $type) {
 	// get username and password of the current lam-admin
 	$ldap_q = $_SESSION['ldap']->decrypt();
 	/* $towrite has the following syntax:
 	* admin-username, admin-password, account with quotas, 'quota', operation='rem', type=user|group
 	* use escapeshellarg to make exec() shell-safe
 	*/
-	$towrite = escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]).' '.escapeshellarg($user).' quota rem ';
-	if ($type=='user') $towrite = $towrite.'u ';
-	 else $towrite = $towrite.'g ';
-	/* scriptServer is the IP to remote-host to which lam should connect via ssh
-	* scriptPath is Path to lamdaemon.pl on remote system
-	*/
-	exec(("perl ".escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." ".$towrite), $vals);
+	$towrite = escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".escapeshellarg($_SESSION['config']->scriptServer)." ".
+		escapeshellarg($_SESSION['config']->scriptPath)." ".escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]);
+	$descriptorspec = array(
+		0 => array("pipe", "r"), // stdin
+		1 => array("pipe", "w"), // stout
+		2 => array("file", "/dev/null", "a") // sterr
+		);
+	$process = proc_open(escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".$towrite,
+		$descriptorspec,
+		$pipes);
+	if (is_resource($process)) {
+		/* perl-script is running
+		* $pipes[0] is writeable handle to child stdin
+		* $pipes[1] is readable handle to child stdout
+		* any error is send to /dev/null
+		*/
+		foreach ($users as $user) {
+			$userstring = "$user quota rem $type\n";
+			// Write to stdin
+			fwrite($pipes[0], $userstring);
+			}
+		}
+	fclose($pipes[0]);
+	fclose($pipes[1]);
+	$return_value = proc_close($process);
 	}
 
 
 /* Create Homedirectory
 * lamdaemon.pl uses getpwnam on remote system to get homedir path.
 * Therefore ldap have to be used on remote system for user accounts
-* $user = username
+* $users = array of usernames
 */
-function addhomedir($user) {
+function addhomedir($users) {
 	// get username and password of the current lam-admin
 	$ldap_q = $_SESSION['ldap']->decrypt();
 	/* $towrite has the following syntax:
 	* admin-username, admin-password, owner of homedir, 'home', operation='add'
 	* use escapeshellarg to make exec() shell-safe
 	*/
-	$towrite = escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]).' '.escapeshellarg($user).' home add';
-	/* scriptServer is the IP to remote-host to which lam should connect via ssh
-	* scriptPath is Path to lamdaemon.pl on remote system
-	*/
-	exec(("perl ".escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." ".$towrite), $vals);
+	$towrite = escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".escapeshellarg($_SESSION['config']->scriptServer)." ".
+		escapeshellarg($_SESSION['config']->scriptPath)." ".escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]);
+	$descriptorspec = array(
+		0 => array("pipe", "r"), // stdin
+		1 => array("pipe", "w"), // stout
+		2 => array("file", "/dev/null", "a") // sterr
+		);
+	$process = proc_open(escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".$towrite,
+		$descriptorspec,
+		$pipes);
+	if (is_resource($process)) {
+		/* perl-script is running
+		* $pipes[0] is writeable handle to child stdin
+		* $pipes[1] is readable handle to child stdout
+		* any error is send to /dev/null
+		*/
+		foreach ($users as $user) {
+			$userstring = "$user home add\n";
+			// Write to stdin
+			fwrite($pipes[0], $userstring);
+			}
+		}
+	fclose($pipes[0]);
+	fclose($pipes[1]);
+	$return_value = proc_close($process);
 	}
 
 
@@ -323,20 +406,40 @@ function addhomedir($user) {
 * Therefore ldap have to be used on remote system for user accounts
 * This also means you have to remove the homedirectory before the
 * account is removed from ldap
-* $user = username
+* $users = array of usernames
 */
 function remhomedir($user) {
 	// get username and password of the current lam-admin
 	$ldap_q = $_SESSION['ldap']->decrypt();
 	/* $towrite has the following syntax:
-	* admin-username, admin-password, owner of homedir, 'home', operation='rem'
+	* admin-username, admin-password, owner of homedir, 'home', operation='add'
 	* use escapeshellarg to make exec() shell-safe
 	*/
-	$towrite = escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]).' '.escapeshellarg($user).' home rem';
-	/* scriptServer is the IP to remote-host to which lam should connect via ssh
-	* scriptPath is Path to lamdaemon.pl on remote system
-	*/
-	exec(("perl ".escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." ".$towrite), $vals);
+	$towrite = escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".escapeshellarg($_SESSION['config']->scriptServer)." ".
+		escapeshellarg($_SESSION['config']->scriptPath)." ".escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]);
+	$descriptorspec = array(
+		0 => array("pipe", "r"), // stdin
+		1 => array("pipe", "w"), // stout
+		2 => array("file", "/dev/null", "a") // sterr
+		);
+	$process = proc_open(escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".$towrite,
+		$descriptorspec,
+		$pipes);
+	if (is_resource($process)) {
+		/* perl-script is running
+		* $pipes[0] is writeable handle to child stdin
+		* $pipes[1] is readable handle to child stdout
+		* any error is send to /dev/null
+		*/
+		foreach ($users as $user) {
+			$userstring = "$user home rem\n";
+			// Write to stdin
+			fwrite($pipes[0], $userstring);
+			}
+		}
+	fclose($pipes[0]);
+	fclose($pipes[1]);
+	$return_value = proc_close($process);
 	}
 
 
@@ -1017,12 +1120,13 @@ function loadgroup($dn) {
 
 /* This function will create a new user acconut in ldap
 * $values is an account-object with all attributes of the user
+* if lamdaemon.pl is false no quotas are set. Usefull for massupload and deletion
 * return-value is an integer
 *       1 == Account has been created
 *       2 == Account already exists at different location
 *	4 == Error while creating Account
 */
-function createuser($values) {
+function createuser($values, $uselamdaemon=true) {
 	// These Objectclasses are needed for an user account
 	$attr['objectClass'][0] = 'posixAccount';
 	$attr['objectClass'][1] = 'shadowAccount';
@@ -1160,12 +1264,12 @@ function createuser($values) {
 	// Continue if now error did ocour
 	if (!$success) return 4;
 
-	if ($_SESSION['config']->scriptServer) {
+	if ($_SESSION['config']->scriptServer && $uselamdaemon) {
 		// lamdaemon.pl should be used
 		// Set quotas if quotas are used
-		if (is_array($values->quota)) setquotas($values);
+		if (is_array($values->quota)) setquotas(array($values));
 		// Create Homedirectory
-		addhomedir($values->general_username);
+		addhomedir(array($values->general_username));
 		}
 
 	// Add User to Additional Groups
@@ -1193,13 +1297,14 @@ function createuser($values) {
 /* This function will modify a user acconut in ldap
 * $values and $values_old are an account-object with all
 * attributes of the user.
+* if lamdaemon.pl is false no quotas are set. Usefull for massupload and deletion
 * Only attributes which have changed will be written
 * return-value is an integer
 *       2 == Account already exists at different location
 *       3 == Account has been modified
 *	5 == Error while modifying Account
 */
-function modifyuser($values,$values_old) { // Will modify the LDAP-Account
+function modifyuser($values,$values_old,$uselamdaemon=true) { // Will modify the LDAP-Account
 	// Add missing objectclasses to user
 	if (!in_array('posixAccount', $values->general_objectClass)) {
 		$attr['objectClass'] = $values->general_objectClass;
@@ -1631,7 +1736,7 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 		}
 
 	// Change quotas if quotas are set and lamdaemon.pl should be used
-	if ($_SESSION['config']->scriptServer && is_array($values->quota) ) setquotas($values,$values_old);
+	if ($_SESSION['config']->scriptServer && is_array($values->quota) && $uselamdaemon) setquotas(array($values),array($values_old));
 	//make required changes in cache-array
 	if ((isset($_SESSION['userDN']))) {
 		if ($values->general_dn != $values_old->general_dn) {
@@ -1958,12 +2063,13 @@ function modifyhost($values,$values_old) {
 
 /* This function will create a new group acconut in ldap
 * $values is an account-object with all attributes of the group
+* if lamdaemon.pl is false no quotas are set. Usefull for massupload and deletion
 * return-value is an integer
 *       1 == Account has been created
 *       2 == Account already exists at different location
 *	4 == Error while creating Account
 */
-function creategroup($values) {
+function creategroup($values, $uselamdaemon=true) {
 	// These Objectclasses are needed for an user account
 	$attr['objectClass'][0] = 'posixGroup';
 	// Create DN for new user account
@@ -1992,7 +2098,7 @@ function creategroup($values) {
 	// Continue if now error did ocour
 	if (!$success) return 4;
 	// lamdaemon.pl should be used. Set quotas if quotas are used
-	if ($_SESSION['config']->scriptServer && is_array($values->quota)) setquotas($values);
+	if ($_SESSION['config']->scriptServer && is_array($values->quota) && $uselamdaemon) setquotas(array($values));
 	// Add new group to cache-array
 	if ((isset($_SESSION['groupDN']))) {
 		$_SESSION['groupDN'][$values->general_dn]['cn'] = $values->general_username;
@@ -2005,13 +2111,14 @@ function creategroup($values) {
 /* This function will modify a group acconut in ldap
 * $values and $values_old are an account-object with all
 * attributes of the group.
+* if lamdaemon.pl is false no quotas are set. Usefull for massupload and deletion
 * Only attributes which have changed will be written
 * return-value is an integer
 *       2 == Account already exists at different location
 *       3 == Account has been modified
 *	5 == Error while modifying Account
 */
-function modifygroup($values,$values_old) {
+function modifygroup($values,$values_old, $uselamdaemon=true) {
 	// Add missing objectclasses to group
 	if (!in_array('posixGroup', $values->general_objectClass)) {
 		$attr['objectClass'] = $values->general_objectClass;
@@ -2101,7 +2208,7 @@ function modifygroup($values,$values_old) {
 		}
 
 	// Change quotas if quotas are set and lamdaemon.pl should be used
-	if ($_SESSION['config']->scriptServer && is_array($values->quota)) setquotas($values,$values_old);
+	if ($_SESSION['config']->scriptServer && is_array($values->quota) && $uselamdaemon) setquotas(array($values),array($values_old));
 	//make required changes in cache-array
 	if ((isset($_SESSION['groupDN']))) {
 		if ($values->general_dn != $values_old->general_dn) {

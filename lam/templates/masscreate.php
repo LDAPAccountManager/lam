@@ -174,23 +174,23 @@ switch ($select) {
 					if ($config_intern->scriptServer) {
 						// load quotas and check if quotas from profile are valid
 						$values = getquotas('group');
-						if (isset($$group->quota[0])) {
+						if (isset($group->quota[0])) {
 							 // check quotas from profile
 							$i=0;
 							// check quota settings, loop for every partition with quotas
-							while (isset($$group->quota[$i])) {
+							while (isset($group->quota[$i])) {
 								// search if quotas from profile fit to a real quota
 								$found = (-1);
-								for ($j=0; $j<count($values->quota); $j++)
-									if ($values->quota[$j][0]==$group->quota[$i][0]) $found = $j;
+								for ($j=0; $j<count($values[0]->quota); $j++)
+									if ($values[0]->quota[$j][0]==$group->quota[$i][0]) $found = $j;
 								// unset quota from profile if quotas (mointpoint) doesn't exists anymore
 								if ($found==-1) unset($group->quota[$i]);
 								else {
 									// Set missing part in quota-array
-									$group->quota[$i][1] = $values->quota[$found][1];
-									$group->quota[$i][5] = $values->quota[$found][5];
-									$group->quota[$i][4] = $values->quota[$found][4];
-									$group->quota[$i][8] = $values->quota[$found][8];
+									$group->quota[$i][1] = $values[0]->quota[$found][1];
+									$group->quota[$i][5] = $values[0]->quota[$found][5];
+									$group->quota[$i][4] = $values[0]->quota[$found][4];
+									$group->quota[$i][8] = $values[0]->quota[$found][8];
 									$i++;
 									}
 								}
@@ -199,8 +199,8 @@ switch ($select) {
 							}
 						else { // No quotas saved in profile
 							// Display quotas for new users (Quota set to 0)
-							if (is_object($values)) {
-								while (list($key, $val) = each($values)) // Set only defined values
+							if (is_object($values[0])) {
+								while (list($key, $val) = each($values[0])) // Set only defined values
 								if (isset($val)) $group->$key = $val;
 								}
 							}
@@ -245,7 +245,7 @@ switch ($select) {
 			$_SESSION['accounts'][$_SESSION['pointer']]->smb_password = $_SESSION['accounts'][$_SESSION['pointer']]->unix_password;
 				// Only create user if we have at least 5sec time to create the user
 			if ( (time()-$time)<(get_cfg_var('max_execution_time')-10)) {
-				$error = createuser($_SESSION['accounts'][$_SESSION['pointer']]);
+				$error = createuser($_SESSION['accounts'][$_SESSION['pointer']], false);
 					// Show error or success message
 					if ($error==1) {
 						$_SESSION['pointer']++;
@@ -271,6 +271,13 @@ switch ($select) {
 			echo "</fieldset>\n";
 			}
 		else {
+			// Write homedirs and quotas if needed
+			if ($_SESSION['config']->scriptServer) {
+				setquotas ($_SESSION['accounts']);
+				// Get array with new usernames
+				foreach ($_SESSION['accounts'] as $account) $users[] = $account->general_username;
+				addhomedir($users);
+				}
 			// Show success-page
 			echo '<tr><td>';
 			echo _('All Users have been created');
@@ -468,16 +475,16 @@ function loadfile() {
 				while (isset($profile->quota[$i])) {
 					// search if quotas from profile fit to a real quota
 					$found = (-1);
-					for ($j=0; $j<count($values->quota); $j++)
-						if ($values->quota[$j][0]==$profile->quota[$i][0]) $found = $j;
+					for ($j=0; $j<count($values[0]->quota); $j++)
+						if ($values[0]->quota[$j][0]==$profile->quota[$i][0]) $found = $j;
 					// unset quota from profile if quotas (mointpoint) doesn't exists anymore
 					if ($found==-1) unset($profile->quota[$i]);
 					else {
 						// Set missing part in quota-array
-						$profile->quota[$i][1] = $values->quota[$found][1];
-						$profile->quota[$i][5] = $values->quota[$found][5];
-						$profile->quota[$i][4] = $values->quota[$found][4];
-						$profile->quota[$i][8] = $values->quota[$found][8];
+						$profile->quota[$i][1] = $values[0]->quota[$found][1];
+						$profile->quota[$i][5] = $values[0]->quota[$found][5];
+						$profile->quota[$i][4] = $values[0]->quota[$found][4];
+						$profile->quota[$i][8] = $values[0]->quota[$found][8];
 						$i++;
 						}
 					}
@@ -486,8 +493,8 @@ function loadfile() {
 				}
 			else { // No quotas saved in profile
 				// Display quotas for new users (Quota set to 0)
-				if (is_object($values)) {
-					while (list($key, $val) = each($values)) // Set only defined values
+				if (is_object($values[0])) {
+					while (list($key, $val) = each($values[0])) // Set only defined values
 					if (isset($val)) $profile->$key = $val;
 					}
 				}

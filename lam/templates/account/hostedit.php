@@ -99,7 +99,7 @@ switch ($_POST['select']) {
 	case 'general':
 		if (!$_POST['load']) {
 			if (($account_new->general_username != $_POST['f_general_username']) &&  ereg('[A-Z]$', $_POST['f_general_username']))
-				$errors[] = array('WARN', _('Hostname'), _('You are using a capital letters. This can cause problems because user and uSer could have the same mail-address.'));
+				$errors[] = array('WARN', _('Hostname'), _('You are using a capital letters. This can cause problems because not all programs are case-sensitive.'));
 			// Write all general values into $account_new if no profile should be loaded
 			$account_new->general_dn = $_POST['f_general_suffix'];
 			$account_new->general_username = $_POST['f_general_username'];

@@ -151,9 +151,9 @@ if ($_POST['delete_yes']) {
 
 				if ($config_intern->scriptServer) {
 					// Remove homedir if required
-					if ($_POST['f_rem_home']) remhomedir($username);
+					if ($_POST['f_rem_home']) remhomedir(array($username));
 					// Remove quotas if lamdaemon.pl is used
-					if ($config_intern->scriptServer) remquotas($username, 'user');
+					if ($config_intern->scriptServer) remquotas(array($username), 'user');
 					}
 				// Search for groups which have memberUid set to username
 				$result = ldap_search($ldap_intern->server(), $config_intern->get_GroupSuffix(), "(&(objectClass=PosixGroup)(memberUid=$username))", array(''));
@@ -189,7 +189,7 @@ if ($_POST['delete_yes']) {
 				else {
 					// continue if no primary users are in group
 					// Remove quotas if lamdaemon.pl is used
-					if ($config_intern->scriptServer) remquotas($groupname, 'group');
+					if ($config_intern->scriptServer) remquotas(array($groupname), 'group');
 					// Delete group itself
 					$success = ldap_delete($ldap_intern->server(), $dn);
 					if (!$success) $error = _('Could not delete group:').' '.$dn;
