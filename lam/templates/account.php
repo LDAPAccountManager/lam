@@ -200,32 +200,29 @@ if ( $create ) { // Create-Button was pressed
 	switch ($_SESSION['type2']) {
 		case 'user':
 			$result = createuser(); // account.inc
-			if (1!=1) {//if ( $result==1 || $result==3 ) {
+			if ( $result==1 || $result==3 ) {
 				$_SESSION['account'] = "";
 				$_SESSION['account_old'] = "";
 				$_SESSION['account_temp'] = "";
-				$select = 'general';
-				// Dialog anzeigen, dass Benutzer angelegt wurde und fragen, ob Daten ausgedruckt werden sollen
+				$select = 'finish';
 				}
 			break;
 		case 'group':
 			$result = creategroup(); // account.inc
-			if (1!=1) {//if ( $result==1 || $result==3 ) {
+			if ( $result==1 || $result==3 ) {
 				$_SESSION['account'] = "";
 				$_SESSION['account_old'] = "";
 				$_SESSION['account_temp'] = "";
-				$select = 'general';
-				// Dialog anzeigen, dass Gruppe angelegt wurde und fragen, ob Daten ausgedruckt werden sollen
+				$select = 'finish';
 				}
 			break;
 		case 'host':
 			$result = createhost(); // account.inc
-			if (1!=1) {//if ( $result==1 || $result==3 ) {
+			if ( $result==1 || $result==3 ) {
 				$_SESSION['account'] = "";
 				$_SESSION['account_old'] = "";
 				$_SESSION['account_temp'] = "";
-				$select = 'general';
-				// Dialog anzeigen, dass host angelegt wurde und fragen, ob Daten ausgedruckt werden sollen
+				$select = 'finish';
 				}
 			break;
 		}
@@ -242,7 +239,8 @@ echo '</title>
 	<meta http-equiv="cache-control" content="no-cache">
 	<table rules="all" class="grouplist" width="100%">';
 if (!$select) $select='general';
-
+if ($createagain) $select='general';
+if ($backmain) $select='backmain';
 
 switch ($select) {
 	case 'general':
@@ -752,6 +750,66 @@ switch ($select) {
 		</td><td>
 		<input name="create" type="submit" value="'; echo _('Create Account'); echo '">
 		</td></tr>';
+		break;
+	case 'finish':
+		// Final Settings
+		echo '<input name="select" type="hidden" value="final">
+		<tr><td>';
+		echo _('Success');
+		echo '</td></tr>';
+		switch ( $_SESSION['type2'] ) {
+			case 'user' :
+				echo '<tr><td>';
+				echo _('User ');
+				echo $_SESSION['account']->general_username;
+				echo _('has been created');
+				echo '</td></tr>';
+				include('../config/print.php');
+				echo '<tr><td>
+				<input name="createagain" type="submit" value="'; echo _('Create another user'); echo '">
+				</td><td>
+				<a href  ="javascript:self.print();">';
+				echo _('Print');
+				echo '</a></td><td>
+				<input name="backmain" type="submit" value="'; echo _('Back to userlist'); echo '">
+				</td></tr>';
+				break;
+			case 'group' :
+				echo '<tr><td>';
+				echo _('Group ');
+				echo $_SESSION['account']->general_username;
+				echo _('has been created');
+				echo '</td></tr><tr><td>
+				<input name="createagain" type="submit" value="'; echo _('Create another group'); echo '">
+				</td><td></td><td>
+				<input name="backmain" type="submit" value="'; echo _('Back to grouplist'); echo '">
+				</td></tr>';
+				break;
+			case 'host' :
+				echo '<tr><td>';
+				echo _('Host ');
+				echo $_SESSION['account']->general_username;
+				echo _('has been created');
+				echo '</td></tr><tr><td>
+				<input name="createagain" type="submit" value="'; echo _('Create another host'); echo '">
+				</td><td></td><td>
+				<input name="backmain" type="submit" value="'; echo _('Back to hostlist'); echo '">
+				</td></tr>';
+				break;
+			}
+		break;
+	case 'backmain':
+		switch ( $_SESSION['type2'] ) {
+			case 'user' :
+				echo '<meta http-equiv="refresh" content="0; URL=lists/listusers.php">';
+				break;
+			case 'group' :
+				echo '<meta http-equiv="refresh" content="0; URL=lists/listgroups.php">';
+				break;
+			case 'host' :
+				echo '<meta http-equiv="refresh" content="0; URL=lists/listhosts.php">';
+				break;
+			}
 		break;
 	}
 
