@@ -90,7 +90,7 @@ for ($i = 0; $i < sizeof($info); $i++) {
 								" onMouseOut=\"host_out(this, '" . $info[$i]["dn"] . "')\"" .
 								" onClick=\"host_click(this, '" . $info[$i]["dn"] . "')\"" .
 								" onDblClick=parent.frames[2].location.href=\"../account.php?type=host&DN='" . $info[$i]["dn"] . "'\">" .
-								" <td height=22><input onClick=\"host_click(this, '" . $info[$i]["dn"] . "')\" type=\"checkbox\" name=\"" . $info[$i]["dn"] . "\"></td>" .
+								" <td height=22><input onClick=\"host_click(this, '" . $info[$i]["dn"] . "')\" type=\"checkbox\" name=\"DN='" . $info[$i]["dn"] . "'\"></td>" .
 								" <td align='center'><a href=\"../account.php?type=host&DN='" . $info[$i]["dn"] . "'\">" . _("Edit") . "</a></td>");
 	for ($k = 0; $k < sizeof($attr_array); $k++) {
 		echo ("<td>");
@@ -107,8 +107,8 @@ for ($i = 0; $i < sizeof($info); $i++) {
 echo ("</table>");
 echo ("<p>&nbsp</p>\n");
 echo ("<table align=\"left\" border=\"0\">");
-echo ("<tr><td align=\"left\"><a href=\"../account.php?type=host\" target=\"_self\"><big>" . _("New Host") . "</big></a>");
-echo ("&nbsp&nbsp&nbsp<a href=\"../account.php?type=delete\" target=\"_self\"><big>" . _("Delete Host(s)") . "</big></a></td></tr>\n");
+echo ("<tr><td align=\"left\"><a href=\"../account.php?type=host\" target=\"_self\">" . _("New Host") . "</a>");
+echo ("&nbsp&nbsp&nbsp<a href=\"../delete.php?type=host\" target=\"_self\">" . _("Delete Host(s)") . "</a></td></tr>\n");
 echo ("</table>\n");
 echo ("</form>\n");
 echo "</body></html>\n";
