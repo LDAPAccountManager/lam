@@ -84,9 +84,9 @@ for ($i = 0; $i < sizeof($info)-1; $i++) { // ignore last entry in array which i
 	echo("<tr class=\"hostlist\" onMouseOver=\"host_over(this, '" . $info[$i]["dn"] . "')\"" .
 								" onMouseOut=\"host_out(this, '" . $info[$i]["dn"] . "')\"" .
 								" onClick=\"host_click(this, '" . $info[$i]["dn"] . "')\"" .
-								" onDblClick=parent.frames[1].location.href=\"../templates/account.php?type=host,DN='" . $info[$i]["dn"] . "'\">" .
+								" onDblClick=parent.frames[1].location.href=\"../templates/account.php?type=host&DN='" . $info[$i]["dn"] . "'\">" .
 								" <td height=22><input onClick=\"host_click(this, '" . $info[$i]["dn"] . "')\" type=\"checkbox\" name=\"" . $info[$i]["dn"] . "\"></td>" .
-								" <td align='center'><a href=\"../templates/account.php?type=host,DN='" . $info[$i]["dn"] . "'\">" . _("Edit") . "</a></td>");
+								" <td align='center'><a href=\"../templates/account.php?type=host&DN='" . $info[$i]["dn"] . "'\">" . _("Edit") . "</a></td>");
 	for ($k = 0; $k < sizeof($attr_array); $k++) {
 		echo ("<td>");
 		// print all attribute entries seperated by "; "
