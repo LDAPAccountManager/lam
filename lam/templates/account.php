@@ -32,12 +32,12 @@ include_once('../lib/pdf.inc'); // Return a pdf-file
 
 
 $error = "0";
-initvars($_GET['type'], $_GET['DN']); // Initialize alle needed vars
+initvars($_GET['type'], $_GET['DN']); // Initialize all needed vars
 
 switch ($_POST['select']) {
 	case 'general':
 		if (!$_POST['load']) { // No Profile was loaded
-			// Write alle values in temporary object
+			// Write all values in temporary object
 			if ($_POST['f_general_username']) $_SESSION['account']->general_username = $_POST['f_general_username'];
 				else $_SESSION['account']->general_username = $_POST['f_general_username'];
 			if ($_POST['f_general_surname']) $_SESSION['account']->general_surname = $_POST['f_general_surname'];
@@ -71,7 +71,7 @@ switch ($_POST['select']) {
 			}
 		break;
 	case 'unix':
-		// Write alle values in temporary object
+		// Write all values in temporary object
 		if ($_POST['f_unix_password']) $_SESSION['account']->unix_password = $_POST['f_unix_password'];
 			else $_SESSION['account']->unix_password = '';
 		if ($_POST['genpass']) { $_SESSION['account']->unix_password = genpasswd(); }
@@ -103,7 +103,7 @@ switch ($_POST['select']) {
 		if ($_POST['back']) $select_local = 'general';
 		break;
 	case 'samba':
-		// Write alle values in temporary object
+		// Write all values in temporary object
 		if ($_POST['f_smb_password']) $_SESSION['account']->smb_password = $_POST['f_smb_password'];
 			else $_SESSION['account']->smb_password = "";
 		if ($_POST['f_smb_password_no']) $_SESSION['account']->smb_password_no = true;
@@ -662,7 +662,7 @@ switch ($select_local) {
 				echo _('Profile Path');
 				echo '</td><td><input name="f_smb_profilePath" type="text" size="20" maxlength="20" value="' . $_SESSION['account']->smb_profilePath . '">
 					</td><td>';
-				echo _('Path of the userprofile. Can be a local absolute path or a UNC-path (\\\\server\share). $user and $group are replaced with user- and groupname. Can be left empty.');
+				echo _('Path of the userprofile. Can be a local absolute path or a UNC-path (\\\\server\\share). $user and $group are replaced with user- and groupname. Can be left empty.');
 				echo '</td></tr><tr><td>';
 				echo _('User Workstations');
 				echo '</td><td><input name="f_smb_smbuserworkstations" type="text" size="20" maxlength="20" value="' . $_SESSION['account']->smb_smbuserworkstations . '">
@@ -672,7 +672,7 @@ switch ($select_local) {
 				echo _('smb Home');
 				echo '</td><td><input name="f_smb_smbhome" type="text" size="20" maxlength="20" value="' . $_SESSION['account']->smb_smbhome . '">
 					</td><td>';
-				echo _('UNC-path (\\\\server\share) of homedirectory. $user and $group are replaced with user- and groupname. Can be left empty.');
+				echo _('UNC-path (\\\\server\\share) of homedirectory. $user and $group are replaced with user- and groupname. Can be left empty.');
 				echo '</td></tr><tr><td>';
 				echo _('Domain');
 				echo '</td><td><input name="f_smb_domain" type="text" size="20" maxlength="20" value="' . $_SESSION['account']->smb_domain . '">

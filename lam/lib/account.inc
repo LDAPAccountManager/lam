@@ -398,8 +398,7 @@ function addhomedir($user) { // Create Homedirectory
 
 function remhomedir($user) { // Remove Homedirectory
 	$ldap_q = $_SESSION['ldap']->decrypt();
-	//$towrite = $ldap_q[0].' '.$ldap_q[1].' '.$user.' home rem';
-	$towrite = 'cn=Manager,dc=my-domain,dc=com secret '.$user.' home rem ';
+	$towrite = $ldap_q[0].' '.$ldap_q[1].' '.$user.' home rem';
 	exec("/usr/bin/ssh ".$_SESSION['config']->scriptServer." sudo ".$_SESSION['config']->scriptPath." $towrite", $vals);
 	}
 
@@ -591,7 +590,7 @@ function loaduser($dn) { // Will load all needed values from an existing account
 	if ($attr['title'][0]) $return->personal_title = $attr['title'][0];
 	if ($attr['mail'][0]) $return->personal_mail = $attr['mail'][0];
 	if ($attr['telephoneNumber'][0]) $return->personal_telephoneNumber = $attr['telephoneNumber'][0];
-	if ($attr['mobileTelephoneNumber'][0]) $return->personal_mobileTelephoneNumber = $attr['mobileTelephoneNumber'][0];
+	if ($attr['mobile'][0]) $return->personal_mobileTelephoneNumber = $attr['mobile'][0];
 	if ($attr['facsimileTelephoneNumber'][0]) $return->personal_facsimileTelephoneNumber = $attr['facsimileTelephoneNumber'][0];
 	if ($attr['street'][0]) $return->personal_street = $attr['street'][0];
 	if ($attr['postalCode'][0]) $return->personal_postalCode = $attr['postalCode'][0];
@@ -714,7 +713,7 @@ function createuser($values) { // Will create the LDAP-Account
 	if ($values->personal_title!='') $attr['title'] = $values->personal_title;
 	if ($values->personal_mail!='') $attr['mail'] = $values->personal_mail;
 	if ($values->personal_telephoneNumber!='') $attr['telephoneNumber'] = $values->personal_telephoneNumber;
-	if ($values->personal_mobileTelephoneNumber!='') $attr['mobileTelephoneNumber'] = $values->personal_mobileTelephoneNumber;
+	if ($values->personal_mobileTelephoneNumber!='') $attr['mobile'] = $values->personal_mobileTelephoneNumber;
 	if ($values->personal_facsimileTelephoneNumber!='') $attr['facsimileTelephoneNumber'] = $values->personal_facsimileTelephoneNumber;
 	if ($values->personal_street!='') $attr['street'] = $values->personal_street;
 	if ($values->personal_postalCode!='') $attr['postalCode'] = $values->personal_postalCode;
@@ -865,9 +864,9 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 	if (($values->personal_telephoneNumber != $values_old->personal_telephoneNumber) && ($values->personal_telephoneNumber ==''))
 		$attr_rem['telephoneNumber'] = $values_old->personal_telephoneNumber;
 	if (($values->personal_mobileTelephoneNumber != $values_old->personal_mobileTelephoneNumber) && ($values->personal_mobileTelephoneNumber!=''))
-		$attr['mobileTelephoneNumber'] = $values->personal_mobileTelephoneNumber;
+		$attr['mobiler'] = $values->personal_mobileTelephoneNumber;
 	if (($values->personal_mobileTelephoneNumber != $values_old->personal_mobileTelephoneNumber) && ($values->personal_mobileTelephoneNumber==''))
-		$attr_rem['mobileTelephoneNumber'] = $values_old->personal_mobileTelephoneNumber;
+		$attr_rem['mobile'] = $values_old->personal_mobileTelephoneNumber;
 	if (($values->personal_facsimileTelephoneNumber != $values_old->personal_facsimileTelephoneNumber) && ($values->personal_facsimileTelephoneNumber!=''))
 		$attr['facsimileTelephoneNumber'] = $values->personal_facsimileTelephoneNumber;
 	if (($values->personal_facsimileTelephoneNumber != $values_old->personal_facsimileTelephoneNumber) && ($values->personal_facsimileTelephoneNumber==''))
