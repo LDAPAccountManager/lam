@@ -197,7 +197,7 @@ $helpArray = array (
 				"438" => array ("ext" => "FALSE", "Headline" => _("Domain"),
 					"Text" => _("Windows-Domain of user."). ' '. _("Can be left empty.")),
 				"439" => array ("ext" => "FALSE", "Headline" => _("Mountpoint"),
-					"Text" => _("Mointpoint of device with enabled quotas.")),
+					"Text" => _("Mountpoint of device with enabled quotas.")),
 				"440" => array ("ext" => "FALSE", "Headline" => _("Used blocks"),
 					"Text" => _("Used blocks. 1000 blocks are usually 1MB")),
 				"441" => array ("ext" => "FALSE", "Headline" => _("Soft block limit"),
