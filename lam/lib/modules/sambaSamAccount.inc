@@ -208,7 +208,7 @@ class sambaSamAccount extends baseModule {
 
 	/*
 	*/
-	function get_help($id) {
+	function get_help($id,$scope) {
 		switch ($id) {
 			case "description":
 				return array ("ext" => "FALSE", "Headline" => _("Description"),

@@ -194,50 +194,6 @@ class inetOrgPerson extends baseModule {
 		return array('attributes');
 		}
 
-	/*
-	*/
-	/*function get_help($id) {
-		switch ($id) {
-			case 'description':
-				return array ("ext" => "FALSE", "Headline" => _("Gecos"), "Text" => _("Host description. If left empty host name will be used."));
-				break;
-			case 'title':
-				return array ("ext" => "FALSE", "Headline" => _("Title"), "Text" => _("Title of user, Mr., Ms., ..."));
-				break;
-			case 'givenName':
-				return array ("ext" => "FALSE", "Headline" => _("Given name"), "Text" => _("Given name of user. Only letters, - and spaces are allowed."));
-				break;
-			case 'sn':
-				return array ("ext" => "FALSE", "Headline" => _("Surname"), "Text" => _("Surname of user. Only letters, - and spaces are allowed."));
-				break;
-			case 'employeeType':
-				return array ("ext" => "FALSE", "Headline" => _("Employee type"), "Text" => _("Employee type: worker, student, nurse, ..."));
-				break;
-			case 'street':
-				return array ("ext" => "FALSE", "Headline" => _("Street"), "Text" => _("Street"));
-				break;
-			case 'postalCode':
-				return array ("ext" => "FALSE", "Headline" => _("Postal code"), "Text" => _("Postal code"));
-				break;
-			case 'postalAddress':
-				return array ("ext" => "FALSE", "Headline" => _("Postal address"), "Text" => _("Postal address, city"));
-				break;
-			case 'telephoneNumber':
-				return array ("ext" => "FALSE", "Headline" => _("Telephone number"), "Text" => _("Telephone number"));
-				break;
-			case 'mobileTelephoneNumber':
-				return array ("ext" => "FALSE", "Headline" => _("Mobile number"), "Text" => _("Mobile number"));
-				break;
-			case 'facsimileTelephoneNumber':
-				return array ("ext" => "FALSE", "Headline" => _("Fax number"), "Text" => _("Fax number"));
-				break;
-			case 'mail':
-				return array ("ext" => "FALSE", "Headline" => _("eMail address"), "Text" => _("eMail address"));
-				break;
-		}
-		return false;
-	}*/
-
 	/* This function returns all ldap attributes
 	* which are part of inetOrgPerson and returns
 	* also their values.

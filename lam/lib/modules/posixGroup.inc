@@ -257,39 +257,6 @@ class posixGroup extends baseModule {
 		return array('attributes', 'user');
 		}
 
-	/*
-	*/
-	/*function get_help($id) {
-		switch ($id) {
-			case "description":
-				return array ("ext" => "FALSE", "Headline" => _("Description"),
-					"Text" => _("Host Description."));
-				break;
-			case 'cn':
-				return array ("ext" => "FALSE", "Headline" => _("Groupname"), "Text" => _("Group name of the group which should be created. Valid characters are: a-z,0-9, .-_. Lam does not allow a number as first character because groupadd also does not allow it. Lam does not allow capital letters A-Z because it can cause several problems. If groupname is already used groupname will be expanded with a number. The next free number will be used."));
-				break;
-			case 'gidNumber':
-				return array ("ext" => "FALSE", "Headline" => _("GID number"), "Text" => _("If empty GID number will be generated automaticly depending on your configuration settings."));
-				break;
-			case 'description':
-				return array ("ext" => "FALSE", "Headline" => _("Gecos"), "Text" => _("Group description. If left empty group name will be used."));
-				break;
-			case 'adduser':
-				return array ("ext" => "FALSE", "Headline" => _("Group members"), "Text" => _("Users also being member of the current group."). ' '. _("Can be left empty."));
-				break;*/
-			/*case 'userPassword':
-				return ;
-				break;*/
-			/*case 'userPassword_no':
-				return array ("ext" => "FALSE", "Headline" => _("Use no password"), "Text" => _("If checked no password will be used."));
-				break;*/
-			/*case 'userPassword_lock':
-				return ;		
-				break;*/
-		/*}
-		return false;
-	}*/
-
 	/* This function returns all ldap attributes
 	* which are part of posixGroup and returns
 	* also their values.

@@ -313,8 +313,9 @@ function checkConfigOptions($scopes, $options) {
 * @param string $module module name
 * @return array help entry
 */
-function getHelp($module,$helpID) {
-	return call_user_func(array($module, "get_help"), $helpID);
+function getHelp($module,$helpID,$scope='') {
+	$moduleObject = new $module((($scope != '') ? $scope : 'none'));
+	return $moduleObject->get_help($helpID,$scope);
 }
 
 /**
@@ -758,7 +759,7 @@ class accountContainer {
 								echo "<td";
 								if ($input[$i][$j]['td']['valign']!='') echo ' valign="' . $input[$i][$j]['td']['valign'] .'"';
 								echo ">\n";
-								echo "<a href=../help.php?module=$module&item=". $input[$i][$j]['value'] . " target=\"help\" tabindex=$z>" . _('Help') . "</a></td>\n";
+								echo "<a href=../help.php?module=$module&item=". $input[$i][$j]['value'] . "&scope=" . $this->type . " target=\"help\" tabindex=$z>" . _('Help') . "</a></td>\n";
 								$z++;
 								break;
 							case 'message':
@@ -1363,6 +1364,13 @@ class accountContainer {
 		return $output_array;
 		}
 		
+		/**
+		 * 
+		 * 
+		 * @param string account_type
+		 *
+		 * @return 
+		 */
 		function get_pdfEntries($acount_type) {
 			$return = array();
 			while(($current = current($this->module)) != null) {
@@ -1373,11 +1381,14 @@ class accountContainer {
 			return $return;
 		}
 		
-		// Dummy implementation
+		/**
+		 * 
+		 * 
+		 * @return 
+		 */
 		function getAvailablePDFFields() {
 			$return = array();
 			foreach($this->module as $moduleName => $module) {
-				//echo "<pre>moduleName: $moduleName\n</pre>";
 				$return[$moduleName] = $module->get_pdfFields($this->type);
 			}
 			$return['main'] = array(	'dn');
@@ -1404,10 +1415,6 @@ class accountContainer {
 				$return[$moduleName] = $module->get_uploadColumns();
 			}
 			return $return;
-		}
-
-		function getHelp($module,$id) {
-			return $this->module[$module]->get_help($id);
 		}
 	}
 ?>

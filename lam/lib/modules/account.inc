@@ -103,17 +103,6 @@ class account extends baseModule {
 		return array('attributes');
 		}
 
-	/*
-	*/
-	/*function get_help($id) {
-		switch ($id) {
-			case "description":
-				return array ("ext" => "FALSE", "Headline" => _("Gecos"), "Text" => _("Host description. If left empty host name will be used."));
-				break;
-		}
-		return false;
-	}*/
-
 	/* This function returns all ldap attributes
 	* which are part of account and returns
 	* also their values.

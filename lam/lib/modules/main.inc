@@ -56,6 +56,12 @@ class main extends baseModule {
 		$return["account_types"] = array();
 		// alias name
 		$return["alias"] = _('Main');
+		// help Entries
+		$return['help'] = array (	'user'					=>	array(	'suffix'	=>	array ("ext" => "FALSE", "Headline" => _("Suffix"), "Text" => _("Position in ldap-tree where the user should be created."))),
+											'group'					=>	array(	'suffix'	=>	array ("ext" => "FALSE", "Headline" => _("Suffix"), "Text" => _("Position in ldap-tree where the group should be created."))),
+											'host'					=>	array(	'suffix'	=>	array ("ext" => "FALSE", "Headline" => _("Suffix"), "Text" => _("Position in ldap-tree where the host should be created."))),
+											'selectLoadProfile'	=>	array ("ext" => "FALSE", "Headline" => _("Load profile"), "Text" => _("You can select a previous defined profile here. This will set all fields to the profile values.")),
+											'saveProfile'			=>	array ("ext" => "FALSE", "Headline" => _("Save profile"), "Text" => _("This will make a profile of the current account. The saved values are the same as in the profile editor. Profile names may contain the letters a-z, 0-9 and -_.")));		
 		return $return;
 	}
 

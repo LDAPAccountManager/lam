@@ -162,23 +162,6 @@ class sambaGroupMapping extends baseModule {
 		return array('attributes');
 		}
 
-	/*
-	*/
-	/*function get_help($id) {
-		switch ($id) {
-			case 'displayName':
-				return array ("ext" => "FALSE", "Headline" => _("Display name"), "Text" => _("Windows clients will show display name as group description."));
-				break;
-			case 'sambaSID':
-				return array ("ext" => "FALSE", "Headline" => _("Windows groupname"), "Text" => _("If you want to use a well known RID you can selcet a well known group."));
-				break;
-			case 'sambaDomainName':
-				return array ("ext" => "FALSE", "Headline" => _("Domain"), "Text" => _("Windows-Domain of group."). ' '. _("Can be left empty."));
-				break;
-		}
-		return false;
-	}*/
-
 	/* This function returns all ldap attributes
 	* which are part of sambaGroupMapping and returns
 	* also their values.

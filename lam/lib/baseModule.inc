@@ -394,15 +394,17 @@ class baseModule {
 	 * This function return the help entry array for a specific help id. Normally this->meta can be used.
 	 * 
 	 * @param string $id The id string for the help entry needed.
+	 * @param string $scope The scope for which the help entry should be retrieved. May be empty when
+	 * there is now difference of the help entry depending on the actual scope.
 	 * 
 	 * @return array The desired help entry.
 	 */
-	function get_help($id) {
+	function get_help($id,$scope) {
 		if(isset($this->meta['help'][$id])) {
 			return $this->meta['help'][$id];
 		}
-		elseif(isset($this->meta['help'][$this->scope][$id])) {
-			return $this->meta['help'][$this->scope][$id];
+		elseif(isset($this->meta['help'][$scope][$id])) {
+			return $this->meta['help'][$scope][$id];
 		}
 		else {
 			return false;
