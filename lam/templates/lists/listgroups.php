@@ -64,15 +64,16 @@ if ($_POST['new_group'] || $_POST['del_group'] || $_POST['pdf_group'] || $_POST[
 	// PDF for selected groups
 	elseif ($_POST['pdf_group']){
 		// search for checkboxes
-		$hosts = array_keys($_POST, "on");
+		$groups = array_keys($_POST, "on");
 		$list = array();
 		// load groups from LDAP
-		for ($i = 0; $i < sizeof($hosts); $i++) {
-			$list[$i] = loadgroup($hosts[$i]);
+		for ($i = 0; $i < sizeof($groups); $i++) {
+			$_SESSION["accountPDF-$i"] = new accountContainer("group", "accountPDF-$i");
+			$_SESSION["accountPDF-$i"]->load_account($groups[$i]);
+			$list[$i] = $_SESSION["accountPDF-$i"];
 		}
 		if (sizeof($list) > 0) {
-			createGroupPDF($list);
-			if ($_SESSION['config']->get_scriptServer()) $list = getquotas($list);
+			createModulePDF($list, "group");
 			exit;
 		}
 	}
@@ -80,11 +81,12 @@ if ($_POST['new_group'] || $_POST['del_group'] || $_POST['pdf_group'] || $_POST[
 	elseif ($_POST['pdf_all']){
 		$list = array();
 		for ($i = 0; $i < sizeof($_SESSION['grp_info']); $i++) {
-			$list[$i] = loadgroup($_SESSION['grp_info'][$i]['dn']);
+			$_SESSION["accountPDF-$i"] = new accountContainer("group", "accountPDF-$i");
+			$_SESSION["accountPDF-$i"]->load_account($_SESSION['grp_info'][$i]['dn']);
+			$list[$i] = $_SESSION["accountPDF-$i"];
 		}
 		if (sizeof($list) > 0) {
-			createGroupPDF($list);
-			if ($_SESSION['config']->get_scriptServer()) $list = getquotas($list);
+			createModulePDF($list, "group");
 			exit;
 		}
 	}
