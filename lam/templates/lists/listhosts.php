@@ -116,12 +116,18 @@ else StatusMessage("ERROR", _("LDAP Search failed! Please check your preferences
 
 echo ("<form action=\"listhosts.php\" method=\"post\">\n");
 
+draw_navigation_bar(sizeof($info));
+echo ("<br>");
+
 // print host table header
 echo "<table rules=\"all\" class=\"hostlist\" width=\"100%\">\n";
 echo "<tr class=\"hostlist_head\"><th width=22 height=34></th><th></th>";
 // table header
 for ($k = 0; $k < sizeof($desc_array); $k++) {
-	echo "<th><a href=\"listhosts.php?list=" . strtolower($attr_array[$k]) . "\">" . $desc_array[$k] . "</a></th>";
+	if (strtolower($attr_array[$k]) == $list) {
+		echo "<th class=\"hostlist_sort\"><a href=\"listhosts.php?list=" . strtolower($attr_array[$k]) . "\">" . $desc_array[$k] . "</a></th>";
+	}
+	else echo "<th><a href=\"listhosts.php?list=" . strtolower($attr_array[$k]) . "\">" . $desc_array[$k] . "</a></th>";
 }
 echo "</tr>\n";
 
@@ -138,8 +144,13 @@ for ($k = 0; $k < sizeof ($desc_array); $k++) {
 }
 echo "</tr>\n";
 
+// calculate which rows to show
+$table_begin = ($page - 1) * $max_pageentrys;
+if (($page * $max_pageentrys) > sizeof($info)) $table_end = sizeof($info);
+else $table_end = ($page * $max_pageentrys);
+
 // print host list
-for ($i = 0; $i < sizeof($info); $i++) {
+for ($i = $table_begin; $i < $table_end; $i++) {
 	echo("<tr class=\"hostlist\" onMouseOver=\"host_over(this, '" . $info[$i]["dn"] . "')\"" .
 								" onMouseOut=\"host_out(this, '" . $info[$i]["dn"] . "')\"" .
 								" onClick=\"host_click(this, '" . $info[$i]["dn"] . "')\"" .
@@ -159,13 +170,54 @@ for ($i = 0; $i < sizeof($info); $i++) {
 	echo("</tr>\n");
 }
 echo ("</table>");
-echo ("<p>&nbsp</p>\n");
-echo ("<table align=\"left\" border=\"0\">");
-echo ("<tr><td align=\"left\"><input type=\"submit\" name=\"new_host\" value=\"" . _("New Host") . "\"></td>");
-echo ("<td align=\"left\"><input type=\"submit\" name=\"del_host\" value=\"" . _("Delete Host(s)") . "\"></td></tr>");
+
+echo ("<br>");
+
+draw_navigation_bar(sizeof($info));
+
+echo ("<br>\n");
+echo ("<table align=\"left\" border=\"0\">\n");
+echo ("<tr><td align=\"left\"><input type=\"submit\" name=\"new_host\" value=\"" . _("New Host") . "\"></td>\n");
+echo ("<td align=\"left\"><input type=\"submit\" name=\"del_host\" value=\"" . _("Delete Host(s)") . "\"></td></tr>\n");
 echo ("</table>\n");
 echo ("</form>\n");
 echo "</body></html>\n";
+
+/**
+ * @brief draws a navigation bar to switch between pages
+ *
+ *
+ * @return void
+ */
+function draw_navigation_bar ($count) {
+  global $max_pageentrys;
+  global $page;
+  global $list;
+
+  echo ("<table class=\"hostnav\" width=\"100%\" border=\"0\">\n");
+  echo ("<tr>\n");
+  echo ("<td><input type=\"submit\" name=\"refresh\" value=\"" . _("Refresh") . "\">&nbsp;&nbsp;");
+  if ($page != 1)
+    echo ("<a align=\"right\" class=\"userlist\" href=\"listhosts.php?page=" . ($page - 1) . "&list=" . $list . "\"><=</a>\n");
+  else
+    echo ("<=");
+  echo ("&nbsp;");
+
+  if ($page < ($count / $max_pageentrys))
+    echo ("<a align=\"right\" class=\"userlist\" href=\"listgrous.php?page=" . ($page + 1) . "&list=" . $list . "\">=></a>\n");
+  else
+    echo ("=></td>");
+
+  echo ("<td style=\"color:red\" align=\"right\">");
+  for ($i = 0; $i < ($count / $max_pageentrys); $i++) {
+    if ($i == $page - 1)
+      echo ("&nbsp;" . ($i + 1));
+    else
+      echo ("&nbsp;<a align=\"right\" class=\"userlist\" href=\"listhosts.php?page=" . ($i + 1) .
+	    "&list=" . $list . "\">" . ($i + 1) . "</a>\n");
+  }
+  echo ("</td></tr></table>\n");
+}
 
 // compare function used for usort-method
 // rows are sorted with the first attribute entry of the sort column

@@ -103,6 +103,14 @@ tr.userlist_checked {
  *
  */
 
+/* */
+table.groupnav {
+  background-color:#a8c3ff;
+  border-width:1px;
+  border-style:solid;
+  border-color:#7167bf;//#0050ff;
+}
+
 /* table preferences */
 table.grouplist {
   border-width:1px;
@@ -118,7 +126,11 @@ tr.grouplist {
 /* color of head row */
 tr.grouplist_head {
   background-color:#a8c3ff;
-  font-weight:bold;
+}
+
+/* color of sorted column in head row */
+th.grouplist_sort {
+  background-color:#d6e3ff;
 }
 
 /* color of rows on mouseOver */
@@ -136,6 +148,14 @@ tr.grouplist_checked {
  *
  */
 
+/* */
+table.hostnav {
+  background-color:#ffc4ba;
+  border-width:1px;
+  border-style:solid;
+  border-color:#911a1a;
+}
+
 /* table preferences */
 table.hostlist {
   border-width:1px;
@@ -151,7 +171,11 @@ tr.hostlist {
 /* color of head row */
 tr.hostlist_head {
   background-color:#ffc4ba;
-  font-weight:bold;
+}
+
+/* color of sorted column in head row */
+th.hostlist_sort {
+  background-color:#ffe2dd;
 }
 
 /* color of rows on mouseOver */

@@ -74,23 +74,22 @@ else
 	$max_pageentrys = $_SESSION["config"]->get_MaxListEntries();
 
 for ($i = 0; $i < sizeof($temp_array); $i++) {
-// if value is predifined, look up description in hash_table
-if (substr($temp_array[$i],0,1) == "#") {
-	$attr = substr($temp_array[$i],1);
-	$attr_array[$i] = $attr;
-	$desc_array[] = $hash_table[$attr];
-}
-// if not predefined, the attribute is seperated by a ":" from description
-else {
-	$attr = explode(":", $temp_array[$i]);
-	$attr_array[$i] = $attr[0];
-	$desc_array[$i] = $attr[1];
-}
+	// if value is predifined, look up description in hash_table
+	if (substr($temp_array[$i],0,1) == "#") {
+		$attr = substr($temp_array[$i],1);
+		$attr_array[$i] = $attr;
+		$desc_array[] = $hash_table[$attr];
+	}
+	// if not predefined, the attribute is seperated by a ":" from description
+	else {
+		$attr = explode(":", $temp_array[$i]);
+		$attr_array[$i] = $attr[0];
+		$desc_array[$i] = $attr[1];
+	}
 }
 
 // configure search filter
 // Groups have the attribute "posixGroup"
-$filter = "(objectClass=posixGroup)";
 $filter = "(&(objectClass=posixGroup)";
 for ($k = 0; $k < sizeof($desc_array); $k++) {
   if ($_POST["filter" . strtolower($attr_array[$k])])
@@ -117,12 +116,18 @@ else StatusMessage("ERROR", _("LDAP Search failed! Please check your preferences
 
 echo ("<form action=\"listgroups.php\" method=\"post\">\n");
 
+draw_navigation_bar(sizeof($info));
+echo ("<br>");
+
 // print group table header
 echo "<table rules=\"all\" class=\"grouplist\" width=\"100%\">\n";
 echo "<tr class=\"grouplist_head\"><th width=22 height=34></th><th></th>";
 // table header
 for ($k = 0; $k < sizeof($desc_array); $k++) {
-	echo "<th><a href=\"listgroups.php?list=" . strtolower($attr_array[$k]) . "\">" . $desc_array[$k] . "</a></th>";
+	if (strtolower($attr_array[$k]) == $list) {
+		echo "<th class=\"grouplist_sort\"><a href=\"listgroups.php?list=" . strtolower($attr_array[$k]) . "\">" . $desc_array[$k] . "</a></th>";
+	}
+	else echo "<th><a href=\"listgroups.php?list=" . strtolower($attr_array[$k]) . "\">" . $desc_array[$k] . "</a></th>";
 }
 echo "</tr>\n";
 
@@ -139,8 +144,13 @@ for ($k = 0; $k < sizeof ($desc_array); $k++) {
 }
 echo "</tr>\n";
 
+// calculate which rows to show
+$table_begin = ($page - 1) * $max_pageentrys;
+if (($page * $max_pageentrys) > sizeof($info)) $table_end = sizeof($info);
+else $table_end = ($page * $max_pageentrys);
+
 // print group list
-for ($i = 0; $i < sizeof($info); $i++) { // ignore last entry in array which is "count"
+for ($i = $table_begin; $i < $table_end; $i++) {
 	echo("<tr class=\"grouplist\" onMouseOver=\"group_over(this, '" . $info[$i]["dn"] . "')\"" .
 								" onMouseOut=\"group_out(this, '" . $info[$i]["dn"] . "')\"" .
 								" onClick=\"group_click(this, '" . $info[$i]["dn"] . "')\"" .
@@ -178,13 +188,53 @@ for ($i = 0; $i < sizeof($info); $i++) { // ignore last entry in array which is 
 	echo("</tr>\n");
 }
 echo ("</table>");
-echo ("<p>&nbsp</p>\n");
-echo ("<table align=\"left\" border=\"0\">");
-echo ("<tr><td align=\"left\"><input type=\"submit\" name=\"new_group\" value=\"" . _("New Group") . "\"></td>");
-echo ("<td align=\"left\"><input type=\"submit\" name=\"del_group\" value=\"" . _("Delete Group(s)") . "\"></td></tr>");
+echo ("<br>");
+
+draw_navigation_bar(sizeof($info));
+
+echo ("<br>\n");
+echo ("<table align=\"left\" border=\"0\"\n>");
+echo ("<tr><td align=\"left\"><input type=\"submit\" name=\"new_group\" value=\"" . _("New Group") . "\"></td>\n");
+echo ("<td align=\"left\"><input type=\"submit\" name=\"del_group\" value=\"" . _("Delete Group(s)") . "\"></td></tr>\n");
 echo ("</table>\n");
 echo ("</form>\n");
 echo "</body></html>\n";
+
+/**
+ * @brief draws a navigation bar to switch between pages
+ *
+ *
+ * @return void
+ */
+function draw_navigation_bar ($count) {
+  global $max_pageentrys;
+  global $page;
+  global $list;
+
+  echo ("<table class=\"groupnav\" width=\"100%\" border=\"0\">\n");
+  echo ("<tr>\n");
+  echo ("<td><input type=\"submit\" name=\"refresh\" value=\"" . _("Refresh") . "\">&nbsp;&nbsp;");
+  if ($page != 1)
+    echo ("<a align=\"right\" class=\"userlist\" href=\"listgroups.php?page=" . ($page - 1) . "&list=" . $list . "\"><=</a>\n");
+  else
+    echo ("<=");
+  echo ("&nbsp;");
+
+  if ($page < ($count / $max_pageentrys))
+    echo ("<a align=\"right\" class=\"userlist\" href=\"listgrous.php?page=" . ($page + 1) . "&list=" . $list . "\">=></a>\n");
+  else
+    echo ("=></td>");
+
+  echo ("<td style=\"color:red\" align=\"right\">");
+  for ($i = 0; $i < ($count / $max_pageentrys); $i++) {
+    if ($i == $page - 1)
+      echo ("&nbsp;" . ($i + 1));
+    else
+      echo ("&nbsp;<a align=\"right\" class=\"userlist\" href=\"listgroups.php?page=" . ($i + 1) .
+	    "&list=" . $list . "\">" . ($i + 1) . "</a>\n");
+  }
+  echo ("</td></tr></table>\n");
+}
 
 // compare function used for usort-method
 // rows are sorted with the first attribute entry of the sort column
