@@ -159,6 +159,7 @@ class Ldap{
 		$sr = @ldap_search($this->server(), $suffix, "objectClass=organizationalunit", array("DN"));
 		if ($sr) {
 			$units = ldap_get_entries($this->server, $sr);
+			unset($units['count']);
 			// extract Dns
 			for ($i = 0; $i < sizeof($units); $i++) {
 				if ($units[$i]['dn']) $ret[] = $units[$i]['dn'];

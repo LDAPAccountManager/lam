@@ -40,7 +40,7 @@ $Id$
 function listBuildFilter($post, $attributes) {
 	$filter = array();
 	for ($i = 0; $i < sizeof($attributes); $i++) {
-		if (eregi('^([0-9a-z_\\*\\$])+$', $_POST["filter" . strtolower($attributes[$i])])) {
+		if (isset($_POST["filter" . strtolower($attributes[$i])]) && eregi('^([0-9a-z_\\*\\$])+$', $_POST["filter" . strtolower($attributes[$i])])) {
 			$filter[$attributes[$i]]['original'] = $_POST["filter" . strtolower($attributes[$i])];
 			$filter[$attributes[$i]]['regex'] = $_POST["filter" . strtolower($attributes[$i])];
 			// replace special characters
@@ -212,11 +212,13 @@ function listPrintTableHeader($scope, $searchFilter, $desc_array, $attr_array, $
 	echo "</td>\n";
 	// print input boxes for filters
 	for ($k = 0; $k < sizeof ($desc_array); $k++) {
+		$value = "";
+		if (isset($_POST["filter" . strtolower($attr_array[$k])])) {
+			$value = " value=\"" . $_POST["filter" . strtolower($attr_array[$k])] . "\"";
+		}
 		echo "<td>";
-		echo ("<input type=\"text\" size=15 name=\"filter" . strtolower ($attr_array[$k]) .
-		"\" value=\"" . $_POST["filter" . strtolower($attr_array[$k])] . "\"" .
-		"title=\"" . _("Here you can input small filters (e.g. 'value' or 'v*').") . "\"" .
-		">");
+		echo ("<input type=\"text\" size=15 name=\"filter" . strtolower ($attr_array[$k]) ."\"" .
+		$value . "title=\"" . _("Here you can input small filters (e.g. 'value' or 'v*').") . "\">");
 		echo "</td>\n";
 	}
 	echo "</tr>\n";
@@ -229,14 +231,14 @@ function listPrintTableHeader($scope, $searchFilter, $desc_array, $attr_array, $
 */
 function listDoPost($scope) {
 	// check if button was pressed and if we have to add/delete an account
-	if ($_POST['new'] || $_POST['del'] || $_POST['pdf'] || $_POST['pdf_all']){
+	if (isset($_POST['new']) || isset($_POST['del']) || isset($_POST['pdf']) || isset($_POST['pdf_all'])){
 		// add new account
-		if ($_POST['new']){
+		if (isset($_POST['new'])){
 			metaRefresh("../account/edit.php?type=" . $scope);
 			exit;
 		}
 		// delete account(s)
-		elseif ($_POST['del']){
+		elseif (isset($_POST['del'])){
 			// search for checkboxes
 			$accounts = array_keys($_POST, "on");
 			$_SESSION['delete_dn'] = array();
@@ -249,7 +251,7 @@ function listDoPost($scope) {
 			}
 		}
 		// PDF for selected accounts
-		elseif ($_POST['pdf']){
+		elseif (isset($_POST['pdf'])){
 			$pdf_structure = $_POST['pdf_structure'];
 			// search for checkboxes
 			$accounts = array_keys($_POST, "on");
@@ -266,7 +268,7 @@ function listDoPost($scope) {
 			}
 		}
 		// PDF for all accounts
-		elseif ($_POST['pdf_all']){
+		elseif (isset($_POST['pdf_all'])){
 			$list = array();
 			for ($i = 0; $i < sizeof($_SESSION[$scope . 'info']); $i++) {
 				$_SESSION["accountPDF-$i"] = new accountContainer($scope, "accountPDF-$i");

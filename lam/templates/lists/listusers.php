@@ -56,12 +56,17 @@ $scope = 'user';
 // copy HTTP-GET variables to HTTP-POST
 $_POST = $_POST + $_GET;
 
+$refresh = true;
+if (isset($_GET['norefresh'])) $refresh = false;
+if (isset($_POST['refresh'])) $refresh = true;
+
 // check if primary group should be translated
-if ($_POST['trans_primary'] == "on") $trans_primary = "on";
+if (isset($_POST['trans_primary'])) $trans_primary = "on";
 else $trans_primary = "off";
-$trans_primary_hash = $_SESSION['trans_primary_hash'];
+if (isset($_SESSION['trans_primary_hash'])) $trans_primary_hash = $_SESSION['trans_primary_hash'];
+else $trans_primary_hash = array();
 // generate hash table for group translation
-if ($trans_primary == "on" && !$_GET["norefresh"]) {
+if ($trans_primary == "on" && ($refresh || (sizeof($trans_primary_hash) == 0))) {
 	$trans_primary_hash = array();
 	$suffix = $_SESSION['config']->get_groupSuffix();
 	$filter = "objectClass=posixGroup";
@@ -90,8 +95,9 @@ echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\"
 echo "</head><body>\n";
 echo "<script src=\"../../lib/functions.js\" type=\"text/javascript\" language=\"javascript\"></script>\n";
 
-$page = $_GET["page"];
-if (!$page) $page = 1;
+// get current page
+if (isset($_GET["page"])) $page = $_GET["page"];
+else $page = 1;
 
 // take maximum count of user entries shown on one page out of session
 if ($_SESSION["config"]->get_MaxListEntries() <= 0) {
@@ -124,9 +130,8 @@ for ($i = 0; $i < sizeof($temp_array); $i++) {
   }
 }
 
-$sort = $_GET["sort"];
-if (!$sort)
-     $sort = strtolower($attr_array[0]);
+if (isset($_GET["sort"])) $sort = $_GET["sort"];
+else $sort = strtolower($attr_array[0]);
 
 // check search suffix
 if ($_POST['usr_suffix']) $usr_suffix = $_POST['usr_suffix'];  // new suffix selected via combobox
@@ -137,10 +142,6 @@ else $usr_suffix = $_SESSION["config"]->get_UserSuffix();  // default suffix
 // configure search filter for LDAP
 $module_filter = get_ldap_filter("user");  // basic filter is provided by modules
 $filter = "(&" . $module_filter . ")";
-
-$refresh = true;
-if ($_GET['norefresh']) $refresh = false;
-if ($_POST['refresh']) $refresh = true;
 
 if ($refresh) {
 	$attrs = $attr_array;
@@ -212,7 +213,7 @@ if ($user_count != 0) {
 	if ($trans_primary == "on") {
 		// translate GIDs
 		for ($i = 0; $i < sizeof($info); $i++) {
-			if ($trans_primary_hash[$info[$i]['gidnumber'][0]]) {
+			if (isset($trans_primary_hash[$info[$i]['gidnumber'][0]])) {
 				$info[$i]['gidnumber'][0] = $trans_primary_hash[$info[$i]['gidnumber'][0]];
 			}
 		}
@@ -229,7 +230,7 @@ if ($user_count != 0) {
 			"onClick=\"user_click(this, '" . $i . "')\"\n" .
 			"onDblClick=\"parent.frames[1].location.href='../account/edit.php?type=user&amp;DN=" . $info[$i]['dn'] . "'\">\n");
 		// checkboxes if selectall = "yes"
-		if ($_GET['selectall'] == "yes") {
+		if (isset($_GET['selectall'])) {
 			echo "<td height=22 align=\"center\">\n<input onClick=\"user_click(this, '" . $i . "')\" type=\"checkbox\" name=\"" .
 				$i . "\" checked>\n</td>\n";
 		}
@@ -275,7 +276,7 @@ if ($user_count != 0) {
 	echo ("<br>");
 }
 
-if (! $_GET['norefresh']) {
+if ($refresh) {
 	// generate list of possible suffixes
 	$usr_units = $_SESSION['ldap']->search_units($_SESSION["config"]->get_UserSuffix());
 }

@@ -317,7 +317,7 @@ class posixAccount extends baseModule {
 				),
 				'homeDirectory' => array(
 					"Headline" => _("Home directory"),
-					"Text" => _("$user and $group are replaced with username or primary groupname.")
+					"Text" => _('$user and $group are replaced with username or primary groupname.')
 				),
 				/*'userPassword'		=>*/
 				'userPassword_no' => array(

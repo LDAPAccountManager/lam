@@ -47,9 +47,6 @@ setlanguage();
 
 $scope = 'domain';
 
-// get sorting column when register_globals is off
-$sort = $_GET['sort'];
-
 // copy HTTP-GET variables to HTTP-POST
 $_POST = $_POST + $_GET;
 
@@ -57,14 +54,14 @@ $info = $_SESSION[$scope . 'info'];
 $dom_units = $_SESSION['dom_units'];
 
 // check if button was pressed and if we have to add/delete a domain
-if ($_POST['new_domain'] || $_POST['del_domain']){
+if (isset($_POST['new_domain']) || isset($_POST['del_domain'])){
 	// add new domain
-	if ($_POST['new_domain']){
+	if (isset($_POST['new_domain'])){
 		metaRefresh("../domain.php?action=new");
 		exit;
 	}
 	// delete domain(s)
-	if ($_POST['del_domain']){
+	if (isset($_POST['del_domain'])){
 		// search for checkboxes
 		$domains = array_keys($_POST, "on");
 		$domainstr = implode(";", $domains);
@@ -82,8 +79,9 @@ echo "</head><body>\n";
 echo "<script src=\"../../lib/functions.js\" type=\"text/javascript\" language=\"javascript\"></script>\n";
 
 // get current page
-$page = $_GET["page"];
-if (!$page) $page = 1;
+if (isset($_GET["page"])) $page = $_GET["page"];
+else $page = 1;
+
 // take maximum count of domain entries shown on one page out of session
 if ($_SESSION["config"]->get_MaxListEntries() <= 0)
 	$max_page_entries = 10;	// default setting, if not yet set
@@ -101,14 +99,17 @@ $desc_array[] = strtoupper(_("Domain name"));
 $desc_array[] = strtoupper(_("Domain SID"));
 $desc_array[] = "DN";
 
+if (isset($_GET["sort"])) $sort = $_GET["sort"];
+else $sort = strtolower($attr_array[0]);
+
 // check search suffix
-if ($_POST['dom_suffix']) $dom_suffix = $_POST['dom_suffix'];  // new suffix selected via combobox
-elseif ($_SESSION['dom_suffix']) $dom_suffix = $_SESSION['dom_suffix'];  // old suffix from session
+if (isset($_POST['dom_suffix'])) $dom_suffix = $_POST['dom_suffix'];  // new suffix selected via combobox
+elseif (isset($_SESSION['dom_suffix'])) $dom_suffix = $_SESSION['dom_suffix'];  // old suffix from session
 else $dom_suffix = $_SESSION["config"]->get_DomainSuffix();  // default suffix
 
 $refresh = true;
-if ($_GET['norefresh']) $refresh = false;
-if ($_POST['refresh']) $refresh = true;
+if (isset($_GET['norefresh'])) $refresh = false;
+if (isset($_POST['refresh'])) $refresh = true;
 
 if ($refresh) {
 	// configure search filter
@@ -194,9 +195,9 @@ listDrawNavigationBar(sizeof($info), $max_page_entries, $page, $sort, '', "domai
 echo ("<br>\n");
 }
 
-if (! $_GET['norefresh']) {
+if ($refresh) {
 	// generate list of possible suffixes
-$dom_units = $_SESSION['ldap']->search_units($_SESSION["config"]->get_DomainSuffix());
+	$dom_units = $_SESSION['ldap']->search_units($_SESSION["config"]->get_DomainSuffix());
 }
 
 // print combobox with possible sub-DNs

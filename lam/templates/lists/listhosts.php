@@ -51,9 +51,6 @@ setlanguage();
 
 $scope = 'host';
 
-// get sorting column when register_globals is off
-$sort = $_GET['sort'];
-
 // copy HTTP-GET variables to HTTP-POST
 $_POST = $_POST + $_GET;
 
@@ -76,8 +73,9 @@ $temp_array = explode(";", $attr_string);
 $hash_table = listGetAttributeHostArray();
 
 // get current page
-$page = $_GET["page"];
-if (!$page) $page = 1;
+if (isset($_GET["page"])) $page = $_GET["page"];
+else $page = 1;
+
 // take maximum count of host entries shown on one page out of session
 if ($_SESSION["config"]->get_MaxListEntries() <= 0)
 	$max_page_entries = 10;	// default setting, if not yet set
@@ -86,21 +84,25 @@ else
 
 // generate column attributes and descriptions
 for ($i = 0; $i < sizeof($temp_array); $i++) {
-// if value is predifined, look up description in hash_table
-if (substr($temp_array[$i],0,1) == "#") {
-	$attr = strtolower(substr($temp_array[$i],1));
-	$attr_array[$i] = $attr;
-	if ($hash_table[$attr]) $desc_array[] = strtoupper($hash_table[$attr]);
-	else $desc_array[] = strtoupper($attr);
+	// if value is predifined, look up description in hash_table
+	if (substr($temp_array[$i],0,1) == "#") {
+		$attr = strtolower(substr($temp_array[$i],1));
+		$attr_array[$i] = $attr;
+		if ($hash_table[$attr]) $desc_array[] = strtoupper($hash_table[$attr]);
+		else $desc_array[] = strtoupper($attr);
+	}
+	// if not predefined, the attribute is seperated by a ":" from description
+	else {
+		$attr = explode(":", $temp_array[$i]);
+		$attr_array[$i] = $attr[0];
+		if ($attr[1]) $desc_array[$i] = strtoupper($attr[1]);
+		else $desc_array[$i] = strtoupper($attr[0]);
+	}
 }
-// if not predefined, the attribute is seperated by a ":" from description
-else {
-	$attr = explode(":", $temp_array[$i]);
-	$attr_array[$i] = $attr[0];
-	if ($attr[1]) $desc_array[$i] = strtoupper($attr[1]);
-	else $desc_array[$i] = strtoupper($attr[0]);
-}
-}
+
+// get sorting column
+if (isset($_GET["sort"])) $sort = $_GET["sort"];
+else $sort = strtolower($attr_array[0]);
 
 // check search suffix
 if ($_POST['hst_suffix']) $hst_suffix = $_POST['hst_suffix'];  // new suffix selected via combobox
@@ -108,8 +110,8 @@ elseif ($_SESSION['hst_suffix']) $hst_suffix = $_SESSION['hst_suffix'];  // old 
 else $hst_suffix = $_SESSION["config"]->get_HostSuffix();  // default suffix
 
 $refresh = true;
-if ($_GET['norefresh']) $refresh = false;
-if ($_POST['refresh']) $refresh = true;
+if (isset($_GET['norefresh'])) $refresh = false;
+if (isset($_POST['refresh'])) $refresh = true;
 
 if ($refresh) {
 	// configure search filter
@@ -180,7 +182,7 @@ if (sizeof($info) > 0) {
 									" onMouseOut=\"host_out(this, '" . $i . "')\"" .
 									" onClick=\"host_click(this, '" . $i . "')\"" .
 									" onDblClick=\"parent.frames[1].location.href='../account/edit.php?type=host&amp;DN=" . $info[$i]['dn'] . "'\">");
-		if ($_GET['selectall'] == "yes") {
+		if (isset($_GET['selectall'])) {
 		echo " <td height=22 align=\"center\"><input onClick=\"host_click(this, '" . $i . "')\"" .
 					" type=\"checkbox\" checked name=\"" . $i . "\"></td>";
 		}
@@ -225,9 +227,9 @@ listDrawNavigationBar(sizeof($info), $max_page_entries, $page, $sort, $searchFil
 echo ("<br>\n");
 }
 
-if (! $_GET['norefresh']) {
+if ($refresh) {
 	// generate list of possible suffixes
-$hst_units = $_SESSION['ldap']->search_units($_SESSION["config"]->get_HostSuffix());
+	$hst_units = $_SESSION['ldap']->search_units($_SESSION["config"]->get_HostSuffix());
 }
 
 // print combobox with possible sub-DNs

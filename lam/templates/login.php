@@ -33,7 +33,7 @@ function display_LoginPage($config_object,$profile)
 	global $error_message;
 	// generate 256 bit key and initialization vector for user/passwd-encryption
 	// check if we can use /dev/random otherwise use /dev/urandom or rand()
-	if(function_exists(mcrypt_create_iv)) {
+	if(function_exists('mcrypt_create_iv')) {
 		$key = @mcrypt_create_iv(32, MCRYPT_DEV_RANDOM);
 		if (! $key) $key = @mcrypt_create_iv(32, MCRYPT_DEV_URANDOM);
 		if (! $key) {

@@ -356,16 +356,16 @@ function pwd_is_enabled($hash) {
 		if ($sr) {
 			$units = ldap_get_entries($_SESSION['ldap']->server, $sr);
 			// delete count entry
-			array_shift($units);
+			unset($units['count']);
 			// extract attributes
 			for ($i = 0; $i < sizeof($units); $i++) {
 				$ret[$i] = new samba3domain();
 				$ret[$i]->dn = $units[$i]['dn'];
 				$ret[$i]->name = $units[$i]['sambadomainname'][0];
 				$ret[$i]->SID = $units[$i]['sambasid'][0];
-				$ret[$i]->nextRID = $units[$i]['sambanextrid'][0];
-				$ret[$i]->nextGroupRID = $units[$i]['sambanextgrouprid'][0];
-				$ret[$i]->nextUserRID = $units[$i]['sambanextuserrid'][0];
+				if (isset($units[$i]['sambanextrid'][0])) $ret[$i]->nextRID = $units[$i]['sambanextrid'][0];
+				if (isset($units[$i]['sambanextgrouprid'][0])) $ret[$i]->nextGroupRID = $units[$i]['sambanextgrouprid'][0];
+				if (isset($units[$i]['sambanextuserrid'][0])) $ret[$i]->nextUserRID = $units[$i]['sambanextuserrid'][0];
 				if (isset($units[$i]['sambaalgorithmicridbase'][0])) $ret[$i]->RIDbase = $units[$i]['sambaalgorithmicridbase'][0];
 			}
 			// sort array by domain name

@@ -51,9 +51,6 @@ setlanguage();
 
 $scope = 'group';
 
-// get sorting column when register_globals is off
-$sort = $_GET['sort'];
-
 // copy HTTP-GET variables to HTTP-POST
 $_POST = $_POST + $_GET;
 
@@ -76,8 +73,9 @@ $temp_array = explode(";", $attr_string);
 $hash_table = listGetAttributeGroupArray();
 
 // get current page
-$page = $_GET["page"];
-if (!$page) $page = 1;
+if (isset($_GET["page"])) $page = $_GET["page"];
+else $page = 1;
+
 // take maximum count of group entries shown on one page out of session
 if ($_SESSION["config"]->get_MaxListEntries() <= 0)
 	$max_page_entries = 10;	// default setting, if not yet set
@@ -102,14 +100,18 @@ for ($i = 0; $i < sizeof($temp_array); $i++) {
 	}
 }
 
+// get sorting column
+if (isset($_GET["sort"])) $sort = $_GET["sort"];
+else $sort = strtolower($attr_array[0]);
+
 // check search suffix
 if ($_POST['grp_suffix']) $grp_suffix = $_POST['grp_suffix'];  // new suffix selected via combobox
 elseif ($_SESSION['grp_suffix']) $grp_suffix = $_SESSION['grp_suffix'];  // old suffix from session
 else $grp_suffix = $_SESSION["config"]->get_GroupSuffix();  // default suffix
 
 $refresh = true;
-if ($_GET['norefresh']) $refresh = false;
-if ($_POST['refresh']) $refresh = true;
+if (isset($_GET['norefresh'])) $refresh = false;
+if (isset($_POST['refresh'])) $refresh = true;
 
 if ($refresh) {
 	// configure search filter
@@ -180,7 +182,7 @@ if (sizeof($info) > 0) {
 									" onMouseOut=\"group_out(this, '" . $i . "')\"" .
 									" onClick=\"group_click(this, '" . $i . "')\"" .
 									" onDblClick=\"parent.frames[1].location.href='../account/edit.php?type=group&amp;DN=" . $info[$i]['dn'] . "'\">");
-		if ($_GET['selectall'] == "yes") {
+		if (isset($_GET['selectall'])) {
 		echo " <td height=22 align=\"center\"><input onClick=\"group_click(this, '" . $i . "')\" type=\"checkbox\"" .
 			" name=\"" . $i . "\" checked></td>";
 		}
@@ -241,7 +243,7 @@ listDrawNavigationBar(sizeof($info), $max_page_entries, $page, $sort, $searchFil
 echo ("<br>\n");
 }
 
-if (! $_GET['norefresh']) {
+if ($refresh) {
 	// generate list of possible suffixes
 	$grp_units = $_SESSION['ldap']->search_units($_SESSION["config"]->get_GroupSuffix());
 }
