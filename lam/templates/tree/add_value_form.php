@@ -91,7 +91,7 @@ if( $is_object_class ) {
 <body>
 
 <h3 class="tree_title">
-	<?php echo _('Add new attribute:'); ?>
+	<?php echo _('Add new attribute'); ?>:
 	<b><?php echo htmlspecialchars($attr); ?></b> 
 </h3>
 <h3 class="tree_subtitle">
