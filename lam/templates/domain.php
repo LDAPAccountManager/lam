@@ -39,6 +39,8 @@ if (($_GET['action'] == "edit") || ($_GET['action'] == "new")) {
 	// get possible suffixes
 	$domsuff = $_SESSION['ldap']->search_units($_SESSION['config']->get_domainSuffix());
 	if ($_GET['action'] == "edit") {
+		// remove "\'"
+		$_GET['DN'] = str_replace("\\'", "", $_GET['DN']);
 		// load attributes from domain
 		for ($i = 0; $i < sizeof($domlist); $i++) {
 			if ($domlist[$i]->dn == $_GET['DN']) {
