@@ -945,7 +945,7 @@ function loaduser($dns) {
 	* output only the selcted users because searchfilter would be too big
 	*/
 	if (strlen($search)<1024) $result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_UserSuffix(), $search);
-		else $result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_UserSuffix());
+		else $result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_UserSuffix(), "uid=*");
 	$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 
 	// store smb_domain as samba3domain-Object
