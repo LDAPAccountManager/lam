@@ -69,7 +69,7 @@ class Config {
 	
 	// reloads preferences from ../config/lam.conf
 	function reload() {
-		$conffile = substr(__FILE__, 0, strlen(__FILE__) - 14) . "/config/lam.conf";
+		$conffile = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/config/lam.conf";
 		if (is_file($conffile) == True) {
 			$file = fopen($conffile, "r");
 			while (!feof($file)) {
