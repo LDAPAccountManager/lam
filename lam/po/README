@@ -1,0 +1,191 @@
+$Horde: horde/po/README,v 1.11 2002/03/24 13:35:14 jan Exp $
+
+Horde Translation Guide
+Copyright 2000-2002 Joris Braakman <jbraakman@yahoo.com>
+Copyright 2001-2002 Chuck Hagenbuch <chuck@horde.org>
+Copyright 2001-2002 Jan Schneider <jan@horde.org>
+
+Contents
+========
+- GNU gettext, PHP and Horde
+- Starting a new translation
+- Example messages header
+- Updating a existing translation
+- Debugging
+- Solaris
+- Changing the English standard texts
+
+
+GNU gettext, PHP and Horde
+--------------------------
+
+Horde uses GNU gettext for internationalization (i18n) and localization
+(l10n). The manual at http://www.gnu.org/manual/gettext/index.html is
+biased against C and using Emacs. This is more for Horde.
+
+There is a good explanation for PHP and gettext at:
+http://www.faqts.com/knowledge-base/view.phtml/aid/2953/fid/422
+
+People seem to like learning from examples better, so I have used
+dutch (nl_NL) as an example everywhere.
+
+
+Starting a new translation
+--------------------------
+
+- run xgettext.sh (in this directory - horde/po/), this generates a
+  messages.po file.
+- rename it to the language you are translating to, e.g. nl_NL.po
+- adjust the header of nl_NL.po, then remove the #, fuzzy line.
+  Emacs has support for .po files, but I used vi
+- translate, the time consuming part.
+- convert the nl_NL.po to horde.mo and put the file in place:
+$ make install
+Compiling locale nl_NL:
+261 translated messages, 21 untranslated messages.
+  ... done
+
+- modify the horde/config/lang.php to use nl_NL as the default language, if you
+  wish.
+- Make sure your language exists in the horde/config/lang.php file. Also, if
+  the translation uses a character set that isn't ascii, make sure the
+  appropriate charset is defined in $nls['charsets']. You should also define
+  an alias for the language because some browsers only send a two letter code
+  in their Accept-Charset header.
+
+And then it works.
+
+
+Example messages header
+-----------------------
+# Dutch translation for Horde.
+# Joris Braakman <jbraakman@yahoo.com>, 2000.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Horde 2.3\n"
+"POT-Creation-Date: 2000-08-14 10:30+0200\n"
+"PO-Revision-Date: 2000-08-14 17:17+02:00\n"
+"Last-Translator: Joris Braakman <jbraakman@yahoo.com>\n"
+"Language-Team: Dutch <dev@lists.horde.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Transfer-Encoding: 8-bit\n"
+
+
+Updating a existing translation
+-------------------------------
+As soon as you check out a new version you have to check the translations
+again, messages might have been changed after all. If you don't, you
+can get strange effects.  Information is cached every where so as a no
+brain solutions I sometimes also restart the webbrowser and webserver
+to make sure everything is fresh. msgmerge will mark translations that
+have changed a bit to fuzzy.
+
+If you want to update an existing translation and contribute it to the Horde
+project you should first contact the last translator to see if he is still
+working on it, doesn't have time to further maintain it or is even unreachable.
+
+- run xgettext.sh again, this generates a messages.po file.
+- merge it with the old .po file:
+$ msgmerge nl_NL.po messages.po > nl_NL-new.po
+
+- translate/update the strings that are new or have become fuzzy.
+- delete the '#, fuzzy' lines.
+- move the nl_NL-new.po to nl_NL.po
+- put the new translations in effect
+$ make install
+Compiling locale nl_NL:
+261 translated messages, 21 untranslated messages.
+  ... done
+
+
+Debugging
+---------
+Is this locale (nl_NL) installed at all?
+$ locale -a
+should list all locales installed on your system.
+
+On Debian not all locales may be enabled by default. Edit /etc/locale.gen and
+run locale-gen if you changed the list of enabled locales.
+
+Do you have any .mo files? Usually in /usr/share/locale/
+e.g. /usr/share/locale/nl/LC_MESSAGES/tar.mo
+
+Does gettext even work?
+Get a string to translate,
+$ strings /bin/tar | grep Memory
+Memory exhausted
+$ (LANG=nl_NL; LANGUAGE=nl_NL; LC_MESSAGES=nl_NL; gettext tar "Memory exhausted" )
+Geheugen uitgeput
+
+Does the local Horde file work?
+Assuming that you have put the translated Horde file in
+/data/www/horde/locale/nl_NL/LC_MESSAGES/horde.mo
+$ export TEXTDOMAINDIR=/data/www/horde/locale
+$ (LANG=nl_NL; LANGUAGE=nl_NL; LC_MESSAGES=nl_NL; gettext horde "Message" )
+Bericht
+
+Create a file in the horde directory, langtest.php:
+<?php
+setlocale(LC_MESSAGES, 'nl_NL');
+putenv('LANG=nl_NL');
+putenv('LANGUAGE=nl_NL');
+// use the tar test.
+echo dgettext('tar', 'Memory exhausted');
+echo '<br />';
+
+// Specify location of translation tables
+bindtextdomain('horde', './locale');
+
+// Choose domain
+textdomain('horde');
+
+// Print the already tested message
+echo _("Message");
+echo '<br />';
+
+// this should print the same.
+echo dgettext('horde', 'Message');
+
+?>
+
+OUTPUT web browser:
+Geheugen uitgeput
+Bericht
+Bericht
+
+
+Solaris
+-------
+Since the .mo files are binary, they are platform specific. You
+have to rerun make in all po directories.
+
+You have not installed the Supplementary Partial Locales (SUNWploc1) if
+you get:
+$ LANG=nl_NL
+couldn't set locale correctly
+
+This is what it should say.
+$ pkginfo | grep ploc
+system      SUNWploc       Partial Locales
+system      SUNWploc1      Supplementary Partial Locales
+
+The stuff is installed in /usr/lib/locale
+$ ls /usr/lib/locale/nl
+LC_COLLATE   LC_CTYPE     LC_MESSAGES  LC_MONETARY  LC_NUMERIC   LC_TIME      nl.so.1
+
+We assume that the Solaris gettext implementation is installed when we compile
+the translations. Thus the make process will fail if the installed gettext is
+from GNU. If anyone knows how to determine if the installed gettext is from
+Solaris or GNU on Solaris systems, please send us a note.
+
+
+Changing the English standard texts
+-----------------------------------
+You can also use gettext to change some of the English texts to your own taste.
+
+- Create a message.po file as described in "Starting a new translation"
+- Edit the msgstr entry of the strings you want to change. You can leave all
+  other msgstr entries empty.
+- Run "make install"
