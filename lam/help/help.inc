@@ -35,9 +35,9 @@ $helpArray = array (
 				// Roland Gruber
 				// configuration wizard
 				// configuration login
-				"200" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard - Login"),
+				"200" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("Login"),
 					"Text" => _("Please enter the configuration password. This is NOT your LDAP password. It is stored in your .conf-file. If this is the first time you log in, enter \"lam\".")),
-				"201" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard - Server Address"),
+				"201" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("Server address"),
 					"Text" => _("This is the Server Address of your LDAP server. Use ldap:// for standard LDAP connections and ldaps:// for encrypted (require server certificates) connections. The port value is optional.") .
 						"<br><br><b> " .
 						_("Examples") .
@@ -49,19 +49,19 @@ $helpArray = array (
 						_("Note") .
 						":</b><br><br>" .
 						_("When using ldaps:// be sure to use exactly the same IP/domain name as in your certificate!")),
-				"202" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard - User/Group/Host suffix"),
+				"202" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("User/Group/Host suffix"),
 					"Text" => _("This is the suffix of the LDAP tree from where to search for user/group/host entries. Only entries in these subtrees will be displayed in the user/group/host list. When creating a new accont this will be the DN where it is saved.") .
 						"<br><br><b>".
 						_("Examples").
 						":</b><br><br>".
 						_("ou=People,dc=yourcompany,dc=com will read and store all accounts in this subtree.")),
-				"203" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard - UID Number"),
+				"203" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("UID number"),
 					"Text" => _("These are the minimum and maximum numbers to use for user IDs when creating new user accounts. The range has to be different from that of machines. New user accounts will always get the highest number in use plus one.")),
-				"204" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard - GID Number"),
+				"204" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("GID number"),
 					"Text" => _("These are the minimum and maximum numbers to use for group IDs when creating new group accounts. New group accounts will always get the highest number in use plus one.")),
-				"205" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard - Machine Number"),
+				"205" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("Machine number"),
 					"Text" => _("These are the minimum and maximum numbers to use for machine IDs when creating new accounts for Samba hosts. The range has to be different from that of users. New host accounts will always get the highest number in use plus one.")),
-				"206" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard - List Attributes"),
+				"206" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("List attributes"),
 					"Text" => _("This is the list of attributes to show in the user/group/host list. The entries can either be predefined values, \"#value\", or individual ones, \"value:description\". Several entries are seperated by semicolons.") .
 						"<br><br><b>" .
 						_("Example") .
@@ -76,35 +76,35 @@ $helpArray = array (
 						"<br><b>" .
 						_("Hosts") .
 						": </b>#uid, #cn, #rid, #description"),
-				"207" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard - Valid Users"),
+				"207" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("Valid users"),
 					"Text" => _("This is a list of valid DN entries of all users that are allowed to login to LDAP Account Manager. The user names have to be separated by semicolons.") .
 						"<br><br><b>" .
 						_("Example") .
 						": </b>cn=admin,dc=yourdomain,dc=org;cn=manager,dc=yourdomain,dc=org"),
-				"208" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard - Maximum List Entries"),
+				"208" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("Maximum list entries"),
 					"Text" => _("This is the number of rows to show in the user/group/host list. If more entries are found the list will be split to several pages.")),
-				"209" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard - Default Language"),
+				"209" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("Default language"),
 					"Text" => _("Defines the language of the login window and is sets this language the default language. Users can change the language at login.")),
-				"210" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard - Script Path"),
+				"210" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("Script path"),
 					"Text" => _("This is the absolute path to an external script for setting quotas and creating home directories.").
 							"<br><br><b>".
 							_("Use it at your own risk and read the documentation for lamdaemon before you use it!").
 							"</b>",
 					"SeeAlso" => "<a href=\"./help.php?HelpNumber=210\" target=\"_self\">TODO link to lamdaemon doku</a>"),
-				"211" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard - Script Server"),
+				"211" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("Script server"),
 					"Text" => _("This is the server where the lamdaemon script is stored. LDAP Account Manager will make a SSH connection to this server with username and password provided at login.").
 						"<br><br><b>".
 						_("Use it at your own risk and read the documentation for lamdaemon before you use it!").
 						"</b>",
 					"SeeAlso" => "<a href=\"./help.php?HelpNumber=210\" target=\"_self\">TODO link to lamdaemon doku</a>"),
-				"212" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard - Change Password"),
+				"212" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("Change password"),
 					"Text" => _("If you want to change the current preferences password, please enter it here.")),
-				"213" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard - Samba version"),
+				"213" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("Samba version"),
 					"Text" => _("If you use Samba 3.x with the new LDAP schema say \"yes\" here, otherwise \"no\".").
 						"<br><br><b>".
 						_("LAM will not work if version is wrong!").
 						"</b>"),
-				"214" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard - Samba domain SID"),
+				"214" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("Samba domain SID"),
 					"Text" => _("If you use the new Samba 3.x schema enter your domain SID here.").
 						"<br><br>".
 						_("You can get your domain SID with this command:").
@@ -112,67 +112,67 @@ $helpArray = array (
 				// 300 - 399
 				// Roland Gruber
 				// profile editor
-				"300" => array ("ext" => "FALSE", "Headline" => _("Profile Editor - Set Samba Password"),
+				"300" => array ("ext" => "FALSE", "Headline" => _("Profile Editor") . " - " . _("Set Samba password"),
 					"Text" => _("If set to \"no\" the NT and LM passwords will be set to \"NO PASSWORD*****\" and the user will be unable to login.").
 						"<br><br>".
 						_("If unsure say \"yes\" here.")),
-				"301" => array ("ext" => "FALSE", "Headline" => _("Profile Editor - Set Unix Password for Samba"),
+				"301" => array ("ext" => "FALSE", "Headline" => _("Profile Editor") . " - " . _("Set Unix password for Samba"),
 					"Text" => _("If set to \"yes\" the Windows password will be the same as the Unix one.").
 						"<br><br>".
 						_("If unsure say \"yes\" here.")),
-				"302" => array ("ext" => "FALSE", "Headline" => _("Profile Editor - User can change password"),
+				"302" => array ("ext" => "FALSE", "Headline" => _("Profile Editor") . " - " . _("User can change password"),
 					"Text" => _("If set to \"yes\" the user will be able to change his Windows password.").
 						"<br><br>".
 						_("If unsure say \"yes\" here.")),
-				"303" => array ("ext" => "FALSE", "Headline" => _("Profile Editor - User must change password"),
+				"303" => array ("ext" => "FALSE", "Headline" => _("Profile Editor") . " - " . _("User must change password"),
 					"Text" => _("If set to \"yes\" the user will need to change his Windows password at next login.").
 						"<br><br>".
 						_("If unsure say \"no\" here.")),
-				"304" => array ("ext" => "FALSE", "Headline" => _("Profile Editor - Home drive"),
+				"304" => array ("ext" => "FALSE", "Headline" => _("Profile Editor") . " - " . _("Home drive"),
 					"Text" => _("This is the drive letter for the user's home drive. The home directory will be connected with this drive letter at login."),
 					"SeeAlso" => "<a href=\"./help.php?HelpNumber=305\" target=\"_self\">Path to home directory</a>"),
-				"305" => array ("ext" => "FALSE", "Headline" => _("Profile Editor - Path to home directory"),
+				"305" => array ("ext" => "FALSE", "Headline" => _("Profile Editor") . " - " . _("Path to home directory"),
 					"Text" => _("This is the path to the user's home directory. The home directory will be connected at login."),
 					"SeeAlso" => "<a href=\"./help.php?HelpNumber=304\" target=\"_self\">Home drive</a>"),
-				"306" => array ("ext" => "FALSE", "Headline" => _("Profile Editor - Profile path"),
+				"306" => array ("ext" => "FALSE", "Headline" => _("Profile Editor") . " - " . _("Profile path"),
 					"Text" => _("This is the path to the user's profile directory. If you do not want profiles to be saved on the server leave this empty.")),
-				"307" => array ("ext" => "FALSE", "Headline" => _("Profile Editor - Script path"),
+				"307" => array ("ext" => "FALSE", "Headline" => _("Profile Editor") . " - " . _("Script path"),
 					"Text" => _("This is the path to the logon script directory.")),
-				"308" => array ("ext" => "FALSE", "Headline" => _("Profile Editor - User Workstations"),
+				"308" => array ("ext" => "FALSE", "Headline" => _("Profile Editor") . " - " . _("User workstations"),
 					"Text" => _("These are the workstations on which the user is allowed to login. They have to be seperated by spaces (e.g. \"PC01 PC09 PC34\"). If the user is allowed to login on all workstations, leave this field empty.")),
-				"309" => array ("ext" => "FALSE", "Headline" => _("Profile Editor - Domain"),
+				"309" => array ("ext" => "FALSE", "Headline" => _("Profile Editor") . " - " . _("Domain"),
 					"Text" => _("This is the Windows domain name.")),
-				"310" => array ("ext" => "FALSE", "Headline" => _("Profile Editor - Password does not expire"),
+				"310" => array ("ext" => "FALSE", "Headline" => _("Profile Editor") . " - " . _("Password does not expire"),
 					"Text" => _("If set to 'true' the user will never have to change his password.")),
-				"330" => array ("ext" => "FALSE", "Headline" => _("Profile Editor - Primary group"),
+				"330" => array ("ext" => "FALSE", "Headline" => _("Profile Editor") . " - " . _("Primary group"),
 					"Text" => _("This is the user's primary group.")),
-				"331" => array ("ext" => "FALSE", "Headline" => _("Profile Editor - Additional groups"),
+				"331" => array ("ext" => "FALSE", "Headline" => _("Profile Editor") . " - " . _("Additional groups"),
 					"Text" => _("Other groups the user will be member of.")),
-				"332" => array ("ext" => "FALSE", "Headline" => _("Profile Editor - Home Directory"),
+				"332" => array ("ext" => "FALSE", "Headline" => _("Profile Editor") . " - " . _("Home directory"),
 					"Text" => _("This is the path to the user's Unix home directory.")),
-				"333" => array ("ext" => "FALSE", "Headline" => _("Profile Editor - Login Shell"),
+				"333" => array ("ext" => "FALSE", "Headline" => _("Profile Editor") . " - " . _("Login shell"),
 					"Text" => _("This is the user's login shell. Set to \"/bin/bash\" if unsure.")),
-				"334" => array ("ext" => "FALSE", "Headline" => _("Profile Editor - Set Unix Password"),
+				"334" => array ("ext" => "FALSE", "Headline" => _("Profile Editor") . " - " . _("Set Unix password"),
 					"Text" => _("If set to \"no\" the Unix password will not be set and the user will be unable to login.").
 						"<br><br>".
 						_("If unsure say \"yes\" here.")),
-				"335" => array ("ext" => "FALSE", "Headline" => _("Profile Editor - Password warning"),
+				"335" => array ("ext" => "FALSE", "Headline" => _("Profile Editor") . " - " . _("Password warning"),
 					"Text" => _("Number of days a user will be warned before his password expires.")),
-				"336" => array ("ext" => "FALSE", "Headline" => _("Profile Editor - Password expiry"),
+				"336" => array ("ext" => "FALSE", "Headline" => _("Profile Editor") . " - " . _("Password expiry"),
 					"Text" => _("Number of days a user will be able to login after his password expired.")),
-				"337" => array ("ext" => "FALSE", "Headline" => _("Profile Editor - Maximum password age"),
+				"337" => array ("ext" => "FALSE", "Headline" => _("Profile Editor") . " - " . _("Maximum password age"),
 					"Text" => _("Number of days after a user will be forced to change his password.")),
-				"338" => array ("ext" => "FALSE", "Headline" => _("Profile Editor - Minimum password age"),
+				"338" => array ("ext" => "FALSE", "Headline" => _("Profile Editor") . " - " . _("Minimum password age"),
 					"Text" => _("Number of days a user has to wait to change his password again.")),
-				"339" => array ("ext" => "FALSE", "Headline" => _("Profile Editor - Account expires on"),
+				"339" => array ("ext" => "FALSE", "Headline" => _("Profile Editor") . " - " . _("Account expires on"),
 					"Text" => _("After this date the user will no longer be able to login.")),
-				"340" => array ("ext" => "FALSE", "Headline" => _("Profile Editor - Account is deactivated"),
+				"340" => array ("ext" => "FALSE", "Headline" => _("Profile Editor") . " - " . _("Account is deactivated"),
 					"Text" => _("If set to \"yes\" the user will not be able to login. This does not affect the Windows account.")),
-				"360" => array ("ext" => "FALSE", "Headline" => _("Profile Editor - Profile Name"),
+				"360" => array ("ext" => "FALSE", "Headline" => _("Profile Editor") . " - " . _("Profile name"),
 					"Text" => _("Name under which the profile will be saved. If a profile with the same name exists, it will be overwritten.")),
-				"370" => array ("ext" => "FALSE", "Headline" => _("Profile Editor - Primary Group"),
+				"370" => array ("ext" => "FALSE", "Headline" => _("Profile Editor") . " - " . _("Primary group"),
 					"Text" => _("This is primary group for the Samba machine account.")),
-				"371" => array ("ext" => "FALSE", "Headline" => _("Profile Editor - Domain"),
+				"371" => array ("ext" => "FALSE", "Headline" => _("Profile Editor") . " - " . _("Domain"),
 					"Text" => _("This is the Windows domain name.")),
 				// 400 - 499
 				// Tilo Lutz
