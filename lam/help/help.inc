@@ -107,10 +107,6 @@ $helpArray = array (
 				// 300 - 399
 				// Roland Gruber
 				// profile editor
-				"300" => array ("ext" => "FALSE", "Headline" => _("Profile Editor") . " - " . _("Set Samba password"),
-					"Text" => _("If set to \"no\" the NT and LM passwords will be set to \"NO PASSWORD*****\" and the user will be unable to login.").
-						"<br><br>".
-						_("If unsure say \"yes\" here.")),
 				"301" => array ("ext" => "FALSE", "Headline" => _("Profile Editor") . " - " . _("Set Unix password for Samba"),
 					"Text" => _("If set to \"yes\" the Windows password will be the same as the Unix one.").
 						"<br><br>".
@@ -123,52 +119,8 @@ $helpArray = array (
 					"Text" => _("If set to \"yes\" the user will need to change his Windows password at next login.").
 						"<br><br>".
 						_("If unsure say \"no\" here.")),
-				"304" => array ("ext" => "FALSE", "Headline" => _("Profile Editor") . " - " . _("Home drive"),
-					"Text" => _("This is the drive letter for the user's home drive. The home directory will be connected with this drive letter at login."),
-					"SeeAlso" => "<a href=\"./help.php?HelpNumber=305\" target=\"_self\">Home path</a>"),
-				"305" => array ("ext" => "FALSE", "Headline" => _("Profile Editor") . " - " . _("Home path"),
-					"Text" => _("This is the path to the user's home directory. The home directory will be connected at login."),
-					"SeeAlso" => "<a href=\"./help.php?HelpNumber=304\" target=\"_self\">Home drive</a>"),
-				"306" => array ("ext" => "FALSE", "Headline" => _("Profile Editor") . " - " . _("Profile path"),
-					"Text" => _("This is the path to the user's profile directory. If you do not want profiles to be saved on the server leave this empty.")),
-				"307" => array ("ext" => "FALSE", "Headline" => _("Profile Editor") . " - " . _("Script path"),
-					"Text" => _("This is the path to the logon script directory.")),
-				"308" => array ("ext" => "FALSE", "Headline" => _("Profile Editor") . " - " . _("User workstations"),
-					"Text" => _("These are the workstations on which the user is allowed to login. They have to be seperated by spaces (e.g. \"PC01 PC09 PC34\"). If the user is allowed to login on all workstations, leave this field empty.")),
-				"309" => array ("ext" => "FALSE", "Headline" => _("Profile Editor") . " - " . _("Domain"),
-					"Text" => _("This is the Windows domain name.")),
-				"310" => array ("ext" => "FALSE", "Headline" => _("Profile Editor") . " - " . _("Password does not expire"),
-					"Text" => _("If set to 'true' the user will never have to change his password.")),
-				"330" => array ("ext" => "FALSE", "Headline" => _("Profile Editor") . " - " . _("Primary group"),
-					"Text" => _("This is the user's primary group.")),
-				"331" => array ("ext" => "FALSE", "Headline" => _("Profile Editor") . " - " . _("Additional groups"),
-					"Text" => _("Other groups the user will be member of.")),
-				"332" => array ("ext" => "FALSE", "Headline" => _("Profile Editor") . " - " . _("Home directory"),
-					"Text" => _("This is the path to the user's Unix home directory.")),
-				"333" => array ("ext" => "FALSE", "Headline" => _("Profile Editor") . " - " . _("Login shell"),
-					"Text" => _("This is the user's login shell. Set to \"/bin/bash\" if unsure.")),
-				"334" => array ("ext" => "FALSE", "Headline" => _("Profile Editor") . " - " . _("Set Unix password"),
-					"Text" => _("If set to \"no\" the Unix password will not be set and the user will be unable to login.").
-						"<br><br>".
-						_("If unsure say \"yes\" here.")),
-				"335" => array ("ext" => "FALSE", "Headline" => _("Profile Editor") . " - " . _("Password warning"),
-					"Text" => _("Number of days a user will be warned before his password expires.")),
-				"336" => array ("ext" => "FALSE", "Headline" => _("Profile Editor") . " - " . _("Password expiry"),
-					"Text" => _("Number of days a user will be able to login after his password expired.")),
-				"337" => array ("ext" => "FALSE", "Headline" => _("Profile Editor") . " - " . _("Maximum password age"),
-					"Text" => _("Number of days after a user will be forced to change his password.")),
-				"338" => array ("ext" => "FALSE", "Headline" => _("Profile Editor") . " - " . _("Minimum password age"),
-					"Text" => _("Number of days a user has to wait to change his password again.")),
-				"339" => array ("ext" => "FALSE", "Headline" => _("Profile Editor") . " - " . _("Account expires on"),
-					"Text" => _("After this date the user will no longer be able to login.")),
-				"340" => array ("ext" => "FALSE", "Headline" => _("Profile Editor") . " - " . _("Account is deactivated"),
-					"Text" => _("If set to \"yes\" the user will not be able to login. This does not affect the Windows account.")),
 				"360" => array ("ext" => "FALSE", "Headline" => _("Profile Editor") . " - " . _("Profile name"),
 					"Text" => _("Name under which the profile will be saved. If a profile with the same name exists, it will be overwritten.")),
-				"370" => array ("ext" => "FALSE", "Headline" => _("Profile Editor") . " - " . _("Primary group"),
-					"Text" => _("This is primary group for the Samba machine account.")),
-				"371" => array ("ext" => "FALSE", "Headline" => _("Profile Editor") . " - " . _("Domain"),
-					"Text" => _("This is the Windows domain name.")),
 				// 400 - 499
 				// Tilo Lutz
 				// account.php

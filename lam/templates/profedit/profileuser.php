@@ -89,7 +89,7 @@ for ($i = 0; $i < sizeof($groups); $i++) {
 	else echo ("<option>" . $groups[$i] . "</option>\n");
 }
 echo ("</select></td>\n");
-echo ("<td><a href=\"../help.php?HelpNumber=330\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
+echo ("<td><a href=\"../help.php?HelpNumber=406\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
 echo ("</tr>\n");
 
 // additional groups
@@ -101,7 +101,7 @@ for ($i = 0; $i < sizeof($groups); $i++) {
 	else echo ("<option>" . $groups[$i] . "</option>\n");
 }
 echo ("</select></td>\n");
-echo ("<td><a href=\"../help.php?HelpNumber=331\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
+echo ("<td><a href=\"../help.php?HelpNumber=402\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
 echo ("</tr>\n");
 
 // empty row
@@ -111,7 +111,7 @@ echo ("<tr><td>&nbsp</td><td>&nbsp</td><td>&nbsp</td></tr>\n");
 echo ("<tr>\n");
 echo ("<td align=\"right\"><b>" . _("Home Directory") . ": </b></td>\n");
 echo ("<td><input type=\"text\" value=\"" . $acct->general_homedir . "\" name=\"general_homedir\"></td>\n");
-echo ("<td><a href=\"../help.php?HelpNumber=332\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
+echo ("<td><a href=\"../help.php?HelpNumber=403\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
 echo ("</tr>\n");
 
 // login shell
@@ -123,7 +123,7 @@ for ($i = 0; $i < sizeof($shells); $i++) {
 	else echo ("<option>" . $shells[$i] . "</option>\n");
 }
 echo ("</select></td>\n");
-echo ("<td><a href=\"../help.php?HelpNumber=333\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
+echo ("<td><a href=\"../help.php?HelpNumber=405\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
 echo ("</tr>\n");
 
 // empty row
@@ -136,35 +136,35 @@ echo ("<td><select name=\"unix_password_no\">\n");
 if ($acct->unix_password_no == "1") echo ("<option selected value=1>"._("no")."</option><option value=0>"._("yes")."</option>\n");
 else echo ("<option selected value=0>"._("yes")."</option><option value=1>"._("no")."</option>\n");
 echo ("</select></td>\n");
-echo ("<td><a href=\"../help.php?HelpNumber=334\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
+echo ("<td><a href=\"../help.php?HelpNumber=426\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
 echo ("</tr>\n");
 
 // Unix: password expiry warn
 echo ("<tr>\n");
 echo ("<td align=\"right\"><b>" . _("Password warning") . ": </b></td>\n");
 echo ("<td><input type=\"text\" name=\"unix_pwdwarn\" value=\"" . $acct->unix_pwdwarn . "\"></td>\n");
-echo ("<td><a href=\"../help.php?HelpNumber=335\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
+echo ("<td><a href=\"../help.php?HelpNumber=414\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
 echo ("</tr>\n");
 
 // Unix: password expiry
 echo ("<tr>\n");
 echo ("<td align=\"right\"><b>" . _("Password expiry") . ": </b></td>\n");
 echo ("<td><input type=\"text\" name=\"unix_pwdallowlogin\" value=\"" . $acct->unix_pwdallowlogin . "\"></td>\n");
-echo ("<td><a href=\"../help.php?HelpNumber=336\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
+echo ("<td><a href=\"../help.php?HelpNumber=415\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
 echo ("</tr>\n");
 
 // maximum password age
 echo ("<tr>\n");
 echo ("<td align=\"right\"><b>" . _("Maximum password age") . ": </b></td>\n");
 echo ("<td><input type=\"text\" name=\"unix_pwdmaxage\" value=\"" . $acct->unix_pwdmaxage . "\"></td>\n");
-echo ("<td><a href=\"../help.php?HelpNumber=337\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
+echo ("<td><a href=\"../help.php?HelpNumber=416\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
 echo ("</tr>\n");
 
 // minimum password age
 echo ("<tr>\n");
 echo ("<td align=\"right\"><b>" . _("Minimum password age") . ": </b></td>\n");
 echo ("<td><input type=\"text\" name=\"unix_pwdminage\" value=\"" . $acct->unix_pwdminage . "\"></td>\n");
-echo ("<td><a href=\"../help.php?HelpNumber=338\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
+echo ("<td><a href=\"../help.php?HelpNumber=417\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
 echo ("</tr>\n");
 
 // password expire date
@@ -189,7 +189,7 @@ for ( $i=2003; $i<=2030; $i++ ) {
 	else echo "<option>$i</option>\n";
 }
 echo ("</select></td>");
-echo ("<td><a href=\"../help.php?HelpNumber=339\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
+echo ("<td><a href=\"../help.php?HelpNumber=418\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
 echo ("</tr>\n");
 
 // empty row
@@ -212,7 +212,7 @@ echo ("<td><select name=\"unix_deactivated\">\n");
 if ($acct->unix_deactivated == "1") echo ("<option selected value=1>"._("yes")."</option><option value=0>"._("no")."</option>\n");
 else echo ("<option selected value=0>"._("no")."</option><option value=1>"._("yes")."</option>\n");
 echo ("</select></td>\n");
-echo ("<td><a href=\"../help.php?HelpNumber=340\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
+echo ("<td><a href=\"../help.php?HelpNumber=427\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
 echo ("</tr>\n");
 
 
@@ -233,7 +233,7 @@ echo ("<td><select name=\"smb_password_no\">\n");
 if ($acct->smb_password_no == "1") echo ("<option selected value=1>"._("no")."</option><option value=0>"._("yes")."</option>\n");
 else echo ("<option selected value=0>"._("yes")."</option><option value=1>"._("no")."</option>\n");
 echo ("</select></td>\n");
-echo ("<td><a href=\"../help.php?HelpNumber=300\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
+echo ("<td><a href=\"../help.php?HelpNumber=426\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
 echo ("</tr>\n");
 
 // use Unix password as Samba password
@@ -253,7 +253,7 @@ echo ("<td><select name=\"smb_flagsD\">\n");
 if ($acct->smb_flagsD == "0") echo ("<option selected value=0>"._("no")."</option><option value=1>"._("yes")."</option>\n");
 else echo ("<option selected value=1>"._("yes")."</option><option value=0>"._("no")."</option>\n");
 echo ("</select></td>\n");
-echo ("<td><a href=\"../help.php?HelpNumber=310\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
+echo ("<td><a href=\"../help.php?HelpNumber=429\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
 echo ("</tr>\n");
 
 // empty row
@@ -287,28 +287,28 @@ if ($acct->smb_homedrive == "X:") echo "<option selected>X:</option>"; else echo
 if ($acct->smb_homedrive == "Y:") echo "<option selected>Y:</option>"; else echo "<option>Y:</option>\n";
 if ($acct->smb_homedrive == "Z:") echo "<option selected>Z:</option>"; else echo "<option>Z:</option>\n";
 echo ("</select></td>\n");
-echo ("<td><a href=\"../help.php?HelpNumber=304\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
+echo ("<td><a href=\"../help.php?HelpNumber=433\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
 echo ("</tr>\n");
 
 // path to home directory
 echo ("<tr>\n");
 echo ("<td align=\"right\"><b>" . _("Home path") . ": </b></td>\n");
 echo ("<td><input type=\"text\" value=\"" . $acct->smb_smbhome . "\" name=\"smb_smbhome\"></td>\n");
-echo ("<td><a href=\"../help.php?HelpNumber=305\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
+echo ("<td><a href=\"../help.php?HelpNumber=437\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
 echo ("</tr>\n");
 
 // path to profile
 echo ("<tr>\n");
 echo ("<td align=\"right\"><b>" . _("Profile path") . ": </b></td>\n");
 echo ("<td><input type=\"text\" value=\"" . $acct->smb_profilePath . "\" name=\"smb_profilepath\"></td>\n");
-echo ("<td><a href=\"../help.php?HelpNumber=306\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
+echo ("<td><a href=\"../help.php?HelpNumber=435\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
 echo ("</tr>\n");
 
 // path to logon scripts
 echo ("<tr>\n");
 echo ("<td align=\"right\"><b>" . _("Script path") . ": </b></td>\n");
 echo ("<td><input type=\"text\" value=\"" . $acct->smb_scriptPath . "\" name=\"smb_scriptPath\"></td>\n");
-echo ("<td><a href=\"../help.php?HelpNumber=307\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
+echo ("<td><a href=\"../help.php?HelpNumber=434\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
 echo ("</tr>\n");
 
 // empty row
@@ -318,7 +318,7 @@ echo ("<tr><td>&nbsp</td><td>&nbsp</td><td>&nbsp</td></tr>\n");
 echo ("<tr>\n");
 echo ("<td align=\"right\"><b>" . _("Workstations") . ": </b></td>\n");
 echo ("<td><input type=\"text\" value=\"" . $acct->smb_smbuserworkstations . "\" name=\"smb_smbuserworkstations\"></td>\n");
-echo ("<td><a href=\"../help.php?HelpNumber=308\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
+echo ("<td><a href=\"../help.php?HelpNumber=436\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
 echo ("</tr>\n");
 
 // empty row
@@ -343,7 +343,7 @@ if ($_SESSION['config']->get_samba3() == "yes") {
 else {
 	echo ("<td><input type=\"text\" value=\"" . $acct->smb_domain . "\" name=\"smb_domain\"></td>\n");
 }
-echo ("<td><a href=\"../help.php?HelpNumber=309\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
+echo ("<td><a href=\"../help.php?HelpNumber=438\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
 echo ("</tr>\n");
 
 echo ("</table>\n");

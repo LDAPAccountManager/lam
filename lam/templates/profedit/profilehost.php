@@ -71,7 +71,7 @@ for ($i = 0; $i < sizeof($groups); $i++) {
 	else echo ("<option>" . $groups[$i] . "</option>\n");
 }
 echo ("</select></td>\n");
-echo ("<td><a href=\"../help.php?HelpNumber=370\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
+echo ("<td><a href=\"../help.php?HelpNumber=412\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
 echo ("</tr>\n");
 
 // empty row
@@ -96,7 +96,7 @@ if ($_SESSION['config']->get_samba3() == "yes") {
 else {
 	echo ("<td><input type=\"text\" value=\"" . $acct->smb_domain . "\" name=\"smb_domain\"></td>\n");
 }
-echo ("<td><a href=\"../help.php?HelpNumber=371\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
+echo ("<td><a href=\"../help.php?HelpNumber=460\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
 echo ("</tr>\n");
 
 echo ("</table>\n");
