@@ -194,7 +194,7 @@ for ($k = 0; $k < sizeof($desc_array); $k++) {
 
 // configure search filter for LDAP
 $module_filter = get_ldap_filter("user");  // basic filter is provided by modules
-$filter = "(&(!(uid=*$))" . $module_filter;  // users do not end with "$"
+$filter = "(&" . $module_filter;  // users do not end with "$"
 for ($k = 0; $k < sizeof($desc_array); $k++) {
   if (eregi("^([0-9a-z_\\*\\+\\-])+$", $_POST["filter" . strtolower($attr_array[$k])]))
     $filter = $filter . "(" . strtolower($attr_array[$k]) . "=" .

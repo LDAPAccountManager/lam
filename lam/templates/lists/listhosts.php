@@ -160,7 +160,7 @@ for ($k = 0; $k < sizeof($desc_array); $k++) {
 if (! $_GET['norefresh']) {
 	// configure search filter
 	$module_filter = get_ldap_filter("host");  // basic filter is provided by modules
-	$filter = "(&(uid=*$)" . $module_filter;  // hosts end with "$"
+	$filter = "(&" . $module_filter;
 	for ($k = 0; $k < sizeof($desc_array); $k++) {
 	if (eregi("^([0-9a-z_\\*\\+\\-])+$", $_POST["filter" . strtolower($attr_array[$k])]))
 		$filter = $filter . "(" . strtolower($attr_array[$k]) . "=" .
