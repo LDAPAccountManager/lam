@@ -319,7 +319,7 @@ class sambaAccount extends baseModule {
 				"Text" => _("If checked Unix password will also be used as Samba password.")),
 			"pwdUnixUpload" => array(
 				"ext" => "FALSE", "Headline" => _("Use Unix password"),
-				"Text" => _("If set to true Unix password will also be used as Samba password.")),
+				"Text" => _("If set to \"true\" Unix password will also be used as Samba password.")),
 			"noPassword" => array(
 				"ext" => "FALSE", "Headline" => _("Use no password"),
 				"Text" => _("If checked no password will be used.")),
