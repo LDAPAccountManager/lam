@@ -35,10 +35,9 @@ $Id$
 include_once("cache.inc");
 /** some helper functions */
 include_once("account.inc");
+include_once("ldap.inc");
 /** parent class of account modules */
 include_once("baseModule.inc");
-/** access to LDAP server */
-include_once("ldap.inc");
 
 /**
 * This includes all module files.
@@ -343,32 +342,6 @@ function getAvailableScopes() {
 }
 
 /**
-* Returns an array containing all input columns for the file upload.
-*
-* Syntax:
-* <br> array(
-* <br>  string: name,  // fixed non-translated name which is used as column name (should be of format: <module name>_<column name>)
-* <br>  string: description,  // short descriptive name
-* <br>  string: help,  // help ID
-* <br>  string: example,  // example value
-* <br>  boolean: required  // true, if user must set a value for this column
-* <br> )
-*
-* @param string $scope account type
-* @return array column list
-*/
-function getUploadColumns($scope) {
-	// create new account container if needed
-	if (! isset($_SESSION["profile_account_$scope"])) {
-		$_SESSION["profile_account_$scope"] = new accountContainer($scope, "profile_account_$scope");
-		$_SESSION["profile_account_$scope"]->new_account();
-	}
-	// get options
-	return $_SESSION["profile_account_$scope"]->get_uploadColumns();
-}
-
-
-/**
 * This class includes all modules and attributes of an account.
 *
 * @package modules
@@ -388,11 +361,13 @@ class accountContainer {
 		$this->type = $type;
 		$this->base = $base;
 		// Name of variables in session
+		$this->ldap = 'ldap';
 		$this->config = 'config';
 		$this->cache = 'cache';
 		$this->header2 = 'header';
-		$this->module['main'] = new main($this->type);
-		$this->module['main']->init($this->base);
+		// Set startpage
+		$this->current_page=0;
+		$this->subpage='attributes';
 		// create cache if needed
 		if (!isset($_SESSION['cache'])) {
 			$_SESSION['cache'] = new cache();
@@ -420,33 +395,111 @@ class accountContainer {
 	var $order;
 	// name of accountContainer so we can read other classes in accuontArray
 	var $base;
+	// This variable stores the number of the current displayed page
+	var $current_page;
+	// This variable os set to the pagename of a subpage if it should be displayed
+	var $subpage;
 
+	
 	/* Get the type of account. Valid
 	* types are: user, group, host
 	*/
 	function get_type() {
 		return $this->type;
 		}
-
-	/* This function asks $this->module['main']
-	* what to do next
-	*/
+	
 	function continue_main($post) {
-		if ($this->module['main']->subpage=='') $this->module['main']->subpage='attributes';
+		if ($this->subpage=='') $this->subpage='attributes';
 		if ($post['form_main_reset']) {
 			$this->load_account($this->dn_orig);
 			}
 		else {
-			$function = '$result = $this->module[$this->order[$this->module[\'main\']->current_page]]->proccess_'.$this->module['main']->subpage.'($post);';
-			eval ($function);
-			}
-		if (is_string($result)) $this->module['main']->subpage = $result;
-		if (is_int($result))
-			for ($i=0; $i<count($this->order); $i++ )
-				if ($post['form_main_'.$this->order[$i]]) {
-					$this->module['main']->current_page = $i;
-					$this->module['main']->subpage='attributes';
+			//$function = '$result = $this->module[$this->order[$this->module[\'main\']->current_page]]->proccess_'.$this->module['main']->subpage.'($post);';
+			//eval ($function);
+			if ($this->current_page==0) {
+				if ($this->subpage=='attributes') {
+					$result = 0;
+					// change dn
+					if ($post['suffix']!='') $this->dn = $post['suffix'];
+						
+					// load profile
+					if ($post['selectLoadProfile'] && $post['loadProfile']) {
+						// *** fixme load*Profile must return array in the same way ldap_get_attributes does.
+						$function = '$newattributes = load'.ucfirst($scope).'Profile($post[\'selectLoadProfile\']);';
+						//eval($function);
+						$newattributes = call_user_func('load'.ucfirst($scope).'Profile', $post['selectLoadProfile']);
+						// pass newattributes to each module
+						$modules = array_keys($this->module);
+						foreach ($modules as $module) $this->module[$module]->load_attributes($newattributes);
+						$result = 0;
+						}
+					// save account
+					if ($post['create']) {
+						$errors = $this->save_account();
+						if (is_array($errors)) $result = array($errors);
+						// return name of subpage
+						$result = 'finish';
+						}
+					// save profile
+					if ($post['saveProfile']) {
+						if ($post['selectSaveProfile']=='') $errors['saveProfile'][] = array('ERROR', _('Save profile'), _('No profilename given.'));
+						else {
+							$function = 'save'.ucfirst($scope).'Profile();';
+							//eval($function);
+							call_user_func('save'.ucfirst($scope).'Profile');
+							if ($function) $errors['saveProfile'][] = array('INFO', _('Save profile'), _('New profile created.'));
+								else $errors['saveProfile'][] = array('ERROR', _('Save profile'), _('Wrong profilename given.'));
+							}
+						if (is_array($errors) && !$profile) $result = $errors;
+							else $result = 0;
+						}
 					}
+				if ($this->subpage=='finish') {
+					if ($post['createagain']) {
+						// Reset objects
+						$modules = array_keys($this->module);
+						foreach ($modules as $module)
+							if ($module!='main') unset($this->module[$module]);
+						// Reset accountContainer
+						$this->dn = '';
+						$this->dn_orig = '';
+						$this->attributes = array();
+						$this->order = array();
+						$this->current_page = 0;
+						$this->subpage = '';
+						// Add all required objects etc.
+						$this->new_account();
+						$result = 0;
+						}
+					if ($post['backmain']) {
+						// Return to *-list
+						// *** fixme unset accountContainer in session
+						metaRefresh("../lists/list".$this->type."s.php");
+						exit;
+						}
+					if ($post['outputpdf']) {
+						// Create / display PDf-file
+						$function = 'create'.ucfirst($this->type).'PDF(array($_SESSION[$this->base]));';
+						//eval($function);
+						call_user_func('create'.ucfirst($this->type).'PDF', array($_SESSION[$this->base]));
+						exit;
+						}
+					}
+				}
+				else $result = call_user_func(array($this->module[$this->order[$this->current_page]], 'proccess_'.$this->subpage), $post);
+			}
+		if (is_string($result)) $this->subpage = $result;
+		if (is_int($result)) {
+			if ($post['form_main_main']) {
+				$this->current_page = 0;
+				$this->subpage='attributes';
+				}
+			else for ($i=1; $i<count($this->order); $i++ )
+				if ($post['form_main_'.$this->order[$i]]) {
+					$this->current_page = $i;
+					$this->subpage='attributes';
+					}
+			}
 		// Write HTML-Code
 		echo $_SESSION[$this->header2];
 		echo "<title>";
@@ -464,17 +517,33 @@ class accountContainer {
 		// Create left module-menu
 		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
 		echo "<table><tr>";
+		
 		echo "<td><fieldset class=\"".$this->type."edit-dark\"><legend class=\"".$this->type."edit-bright\"><b>";
 			echo _('Please select page:');
 			echo "</b></legend>\n";
+		if ($this->current_page==0) {
+			// print disabled button
+			echo "<input name=\"form_main_main\" type=\"submit\" value=\"";
+			echo _('Main');
+			echo "\" disabled tabindex=$x>\n<br>";
+			$x++;
+			}
+		else {
+			// print normal button
+			echo "<input name=\"form_main_main\" type=\"submit\" value=\"";
+			echo _('Main');
+			echo "\" tabindex=$x>\n<br>";
+			$x++;
+			}
 		// Loop for module
 		// $x is used to count up tabindex
-		for ($i=0; $i<count($this->order); $i++ ) {
-			if ($this->order[$i]==$this->order[$this->module['main']->current_page] || !$this->module[$this->order[$i]]->module_ready() ) {
+		for ($i=1; $i<count($this->order); $i++ ) {
+			if ($this->order[$i]==$this->order[$this->current_page] || !$this->module[$this->order[$i]]->module_ready() ) {
 				// print disabled button
 				echo "<input name=\"form_main_".$this->order[$i]."\" type=\"submit\" value=\"";
 				echo $this->module[$this->order[$i]]->get_alias($type);
-				echo "\" disabled>\n<br>";
+				echo "\" disabled tabindex=$x>\n<br>";
+				$x++;
 				}
 			else {
 				// print normal button
@@ -487,13 +556,89 @@ class accountContainer {
 		if ($this->dn_orig!='') echo "<input name=\"form_main_reset\" type=\"submit\" value=\"" . _('Reset changes') . "\"><br>\n";
 		echo "</fieldset></td></tr>\n";
 		echo "</table></td>\n<td>";
-		echo "<td><fieldset class=\"".$this->type."edit-dark\"><legend class=\"".$this->type."edit-bright\"><b>";
-			echo $this->module[$this->order[$this->module['main']->current_page]]->get_alias($type);
+		if ($this->current_page==0) {
+			echo "<td><fieldset class=\"".$this->type."edit-dark\"><legend class=\"".$this->type."edit-bright\"><b>";
+			echo _('Main');
 			echo "</b></legend>\n";
+			}
+		else {
+			echo "<td><fieldset class=\"".$this->type."edit-dark\"><legend class=\"".$this->type."edit-bright\"><b>";
+				echo $this->module[$this->order[$this->current_page]]->get_alias($type);
+				echo "</b></legend>\n";
+			}
 		// display html-code from mdule
-		$function = '$result = $this->module[$this->order[$this->module[\'main\']->current_page]]->display_html_'.$this->module['main']->subpage.'($post);';
-		eval ($function);
-		$this->parse_html($this->order[$this->module['main']->current_page], $result);
+		//$function = '$result = $this->module[$this->order[$this->module[\'main\']->current_page]]->display_html_'.$this->module['main']->subpage.'($post);';
+		//eval ($function);
+		if ($this->current_page==0) {
+			if ($this->subpage=='attributes')  {
+				$modules = array_keys($this->module);
+				if (!$profile) {
+					$disabled = false;
+					foreach ($modules as $module) {
+						if (!$this->module[$module]->module_complete()) {
+							$disabled = true;
+							$table[] = array ( 0 => array ( 'kind' => 'message', 'type' => 'ERROR', 'headline' =>  _('Check module'),
+								'text' => sprintf(_('Please set up all required attributes on %s page.'), $this->module[$module]->get_alias($this->type)) ));
+							}		
+						}
+					}
+							
+				if (count($table)!=0) $return[] = array ( 0 => array ( 'kind' => 'table', 'value' => $table ) );
+				// loop through all suffixes
+				$rootsuffix = call_user_func(array($_SESSION['config'], 'get_' . ucfirst($this->type) . 'Suffix'));
+				foreach ($_SESSION[$this->ldap]->search_units($rootsuffix) as $suffix) {
+					if ($this->dn == $suffix) $option_selected = $suffix;
+					$suffixes[] = $suffix;
+					}
+				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Suffix') ),
+					1 => array ( 'kind' => 'select', 'name' => 'suffix', 'options' => $suffixes,
+						'option_selected' => array($option_selected) ),
+					2 => array ('kind' => 'help', 'value' => 'suffix'));
+		
+				if (!$profile) {
+					// Get list of profiles
+					$function = '$profilelist = get'.ucfirst($this->type).'Profiles();';
+					//eval($function);
+					$profilelist = call_user_func('get'.ucfirst($this->type).'Profiles');
+					if (count($profilelist)!=0) {
+						$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _("Load profile") ),
+							1 => array ( 'kind' => 'select', 'name' => 'selectLoadProfile', 'options' => $profilelist ),
+							2 => array ('kind' => 'help', 'value' => 'selectLoadProfile'));
+						}
+					$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _("Save profile") ),
+						1 => array ( 'kind' => 'table', 'value' => array ( 0 => array (
+							0 => array ( 'kind' => 'input', 'name' => 'selectSaveProfile', 'type' => 'text', 'size' => '30',
+								'maxlength' => '255', ),
+							1 => array ('kind' => 'input', 'name' => 'saveProfile', 'type' => 'submit',
+								'value' => _('Save profile'), 'disabled' => $disabled))) ),
+						2 => array ('kind' => 'help', 'value' => 'saveProfile'));
+					if ($this->dn_orig!='') $text = _('Modify Account');
+						else $text = _('Create Account');
+					$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => $text ),
+						1 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'create', 'value' => $text ),
+						2 => array ('kind' => 'help', 'value' => 'create'));
+					}
+				}
+			if ($this->subpage=='finish')  {
+				// Show success message
+				if ($this->dn_orig=='') $kind = _('created');
+					else $kind = _('modified');
+				$text = sprintf(_('%s has been %s.'), ucfirst($this->type), $kind);
+				if (!$profile) {
+					$return[] = array ( 0 => array ( 'kind' => 'message', 'type' => 'INFO', 'headline' =>  _('LDAP operation successful.'),
+						'text' => $text ));
+		
+					$return[] = array ( 0 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'createagain',
+							'value' => sprintf(_('Create another %s'), $this->type) ),
+						1 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'outputpdf',
+							'value' => _('Create PDF file') ),
+						2 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'backmain',
+							'value' => sprintf (_('Back to %s list'), $this->type) ));
+					}
+				}
+			}
+		else $return = call_user_func(array($this->module[$this->order[$this->current_page]], 'display_html_'.$this->subpage), $post);
+		$this->parse_html($this->order[$this->current_page], $return);
 		// Display rest of html-page
 		echo "</fieldset>\n";
 		echo "</td></tr></table>\n";
@@ -617,15 +762,15 @@ class accountContainer {
 	function add_attributes($objectClass) {
 		// loop through every existing objectlass and select current objectClass
 		$line=-1;
-		for ($i=0; $i<count($_SESSION['ldap']->objectClasses) || $i==-1; $i++) {
-			if (strpos($_SESSION['ldap']->objectClasses[$i], "NAME '$objectClass'")) $line = $i;
+		for ($i=0; $i<count($_SESSION[$this->ldap]->objectClasses) || $i==-1; $i++) {
+			if (strpos($_SESSION[$this->ldap]->objectClasses[$i], "NAME '$objectClass'")) $line = $i;
 			}
 		// Return error if objectClass isn't found
 		if ($line==-1) trigger_error (sprintf(_("objectClass %s required but not defined in ldap."), $objectClass), E_USER_WARNING);
 		// create array with must-attributes
 		// Get startposition in string
-		if (strpos($_SESSION['ldap']->objectClasses[$line],  'MUST (')) {
-			$string_withtail = substr($_SESSION['ldap']->objectClasses[$line], strpos($_SESSION['ldap']->objectClasses[$line],  'MUST (')+6);
+		if (strpos($_SESSION[$this->ldap]->objectClasses[$line],  'MUST (')) {
+			$string_withtail = substr($_SESSION[$this->ldap]->objectClasses[$line], strpos($_SESSION[$this->ldap]->objectClasses[$line],  'MUST (')+6);
 			// Now we have a string with all must-attributes
 			$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
 			$string = trim($string);
@@ -638,8 +783,8 @@ class accountContainer {
 			}
 		// create array with may-attributes
 		// Get startposition in string
-		if (strpos($_SESSION['ldap']->objectClasses[$line],  'MAY (')) {
-			$string_withtail = substr($_SESSION['ldap']->objectClasses[$line], strpos($_SESSION['ldap']->objectClasses[$line],  'MAY (')+5);
+		if (strpos($_SESSION[$this->ldap]->objectClasses[$line],  'MAY (')) {
+			$string_withtail = substr($_SESSION[$this->ldap]->objectClasses[$line], strpos($_SESSION[$this->ldap]->objectClasses[$line],  'MAY (')+5);
 			// Now we have a string with all must-attributes
 			$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
 			$string = trim($string);
@@ -651,19 +796,19 @@ class accountContainer {
 				}
 			}
 		// Get attributes of subclasses
-		while (strpos($_SESSION['ldap']->objectClasses[$line], "SUP ")) {
-			$string_withtail = substr($_SESSION['ldap']->objectClasses[$line], strpos($_SESSION['ldap']->objectClasses[$line],  'SUP ')+4);
+		while (strpos($_SESSION[$this->ldap]->objectClasses[$line], "SUP ")) {
+			$string_withtail = substr($_SESSION[$this->ldap]->objectClasses[$line], strpos($_SESSION[$this->ldap]->objectClasses[$line],  'SUP ')+4);
 			$subclass = substr($string_withtail, 0, strpos($string_withtail, ' '));
 			// Add account type to object
-			for ($i=0; $i<count($_SESSION['ldap']->objectClasses) || $i==-1; $i++) {
-				if (strpos($_SESSION['ldap']->objectClasses[$i], "NAME '$subclass'")) $line = $i;
+			for ($i=0; $i<count($_SESSION[$this->ldap]->objectClasses) || $i==-1; $i++) {
+				if (strpos($_SESSION[$this->ldap]->objectClasses[$i], "NAME '$subclass'")) $line = $i;
 				}
 			// Return error if objectClass isn't found
 			if ($line==-1) trigger_error (sprintf(_("objectClass %s required but not defined in ldap."), $objectClass), E_USER_WARNING);
 			// create array with must-attributes
 			// Get startposition in string
-			if (strpos($_SESSION['ldap']->objectClasses[$line],  'MUST (')) {
-				$string_withtail = substr($_SESSION['ldap']->objectClasses[$line], strpos($_SESSION['ldap']->objectClasses[$line],  'MUST (')+6);
+			if (strpos($_SESSION[$this->ldap]->objectClasses[$line],  'MUST (')) {
+				$string_withtail = substr($_SESSION[$this->ldap]->objectClasses[$line], strpos($_SESSION[$this->ldap]->objectClasses[$line],  'MUST (')+6);
 				// Now we have a string with all must-attributes
 				$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
 				$string = trim($string);
@@ -676,8 +821,8 @@ class accountContainer {
 				}
 			// create array with may-attributes
 			// Get startposition in string
-			if (strpos($_SESSION['ldap']->objectClasses[$line],  'MAY (')) {
-				$string_withtail = substr($_SESSION['ldap']->objectClasses[$line], strpos($_SESSION['ldap']->objectClasses[$line],  'MAY (')+5);
+			if (strpos($_SESSION[$this->ldap]->objectClasses[$line],  'MAY (')) {
+				$string_withtail = substr($_SESSION[$this->ldap]->objectClasses[$line], strpos($_SESSION[$this->ldap]->objectClasses[$line],  'MAY (')+5);
 				// Now we have a string with all must-attributes
 				$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
 				$string = trim($string);
@@ -716,13 +861,13 @@ class accountContainer {
 	function get_module_attributes($objectClass) {
 		// Add account type to object
 		$line=-1;
-		for ($i=0; $i<count($_SESSION['ldap']->objectClasses); $i++) {
-			if (strpos($_SESSION['ldap']->objectClasses[$i], "NAME '$objectClass'")) $line = $i;
+		for ($i=0; $i<count($_SESSION[$this->ldap]->objectClasses) || $i==-1; $i++) {
+			if (strpos($_SESSION[$this->ldap]->objectClasses[$i], "NAME '$objectClass'")) $line = $i;
 			}
 		// Return error if objectClass isn't found
 		if ($line==-1) trigger_error (sprintf(_("ObjectClass %s required but not defined in ldap."), $objectClass), E_USER_WARNING);
-		if (strpos($_SESSION['ldap']->objectClasses[$line],  'MUST (')) {
-			$string_withtail = substr($_SESSION['ldap']->objectClasses[$line], strpos($_SESSION['ldap']->objectClasses[$line],  'MUST (')+6);
+		if (strpos($_SESSION[$this->ldap]->objectClasses[$line],  'MUST (')) {
+			$string_withtail = substr($_SESSION[$this->ldap]->objectClasses[$line], strpos($_SESSION[$this->ldap]->objectClasses[$line],  'MUST (')+6);
 			// Now we have a string with all must-attributes
 			$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
 			$string = trim($string);
@@ -733,8 +878,8 @@ class accountContainer {
 			}
 		// create array with may-attributes
 		// Get startposition in string
-		if (strpos($_SESSION['ldap']->objectClasses[$line],  'MAY (')) {
-			$string_withtail = substr($_SESSION['ldap']->objectClasses[$line], strpos($_SESSION['ldap']->objectClasses[$line],  'MAY (')+5);
+		if (strpos($_SESSION[$this->ldap]->objectClasses[$line],  'MAY (')) {
+			$string_withtail = substr($_SESSION[$this->ldap]->objectClasses[$line], strpos($_SESSION[$this->ldap]->objectClasses[$line],  'MAY (')+5);
 			// Now we have a string with all must-attributes
 			$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
 			$string = trim($string);
@@ -744,19 +889,19 @@ class accountContainer {
 				}
 			}
 		// Get attributes of subclasses
-		while (strpos($_SESSION['ldap']->objectClasses[$line], "SUP ")) {
-			$string_withtail = substr($_SESSION['ldap']->objectClasses[$line], strpos($_SESSION['ldap']->objectClasses[$line],  'SUP ')+4);
+		while (strpos($_SESSION[$this->ldap]->objectClasses[$line], "SUP ")) {
+			$string_withtail = substr($_SESSION[$this->ldap]->objectClasses[$line], strpos($_SESSION[$this->ldap]->objectClasses[$line],  'SUP ')+4);
 			$subclass = substr($string_withtail, 0, strpos($string_withtail, ' '));
 			// Add account type to object
-			for ($i=0; $i<count($_SESSION['ldap']->objectClasses) || $i==-1; $i++) {
-				if (strpos($_SESSION['ldap']->objectClasses[$i], "NAME '$subclass'")) $line = $i;
+			for ($i=0; $i<count($_SESSION[$this->ldap]->objectClasses) || $i==-1; $i++) {
+				if (strpos($_SESSION[$this->ldap]->objectClasses[$i], "NAME '$subclass'")) $line = $i;
 				}
 			// Return error if objectClass isn't found
 			if ($line==-1) trigger_error (sprintf(_("ObjectClass %s required but not defined in ldap."), $subclass), E_USER_WARNING);
 			// create array with must-attributes
 			// Get startposition in string
-			if (strpos($_SESSION['ldap']->objectClasses[$line],  'MUST (')) {
-				$string_withtail = substr($_SESSION['ldap']->objectClasses[$line], strpos($_SESSION['ldap']->objectClasses[$line],  'MUST (')+6);
+			if (strpos($_SESSION[$this->ldap]->objectClasses[$line],  'MUST (')) {
+				$string_withtail = substr($_SESSION[$this->ldap]->objectClasses[$line], strpos($_SESSION[$this->ldap]->objectClasses[$line],  'MUST (')+6);
 				// Now we have a string with all must-attributes
 				$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
 				$string = trim($string);
@@ -767,8 +912,8 @@ class accountContainer {
 				}
 			// create array with may-attributes
 			// Get startposition in string
-			if (strpos($_SESSION['ldap']->objectClasses[$line],  'MAY (')) {
-				$string_withtail = substr($_SESSION['ldap']->objectClasses[$line], strpos($_SESSION['ldap']->objectClasses[$line],  'MAY (')+5);
+			if (strpos($_SESSION[$this->ldap]->objectClasses[$line],  'MAY (')) {
+				$string_withtail = substr($_SESSION[$this->ldap]->objectClasses[$line], strpos($_SESSION[$this->ldap]->objectClasses[$line],  'MAY (')+5);
 				// Now we have a string with all must-attributes
 				$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
 				$string = trim($string);
@@ -865,14 +1010,15 @@ class accountContainer {
 	* $dn is the dn of the account which should be loaded
 	*/
 	function load_account($dn) {
-		$function = '$modules = $_SESSION[$this->config]->get_'.ucfirst($this->type).'Modules();';
-		eval ($function);
+		//$function = '$modules = $_SESSION[$this->config]->get_'.ucfirst($this->type).'Modules();';
+		//eval ($function);
+		$modules = call_user_func(array($_SESSION[$this->config], 'get_'.ucfirst($this->type).'Modules'));
 		$search = substr($dn, 0, strpos($dn, ','));
-		$result = ldap_search($_SESSION['ldap']->server(), $dn, $search);
-		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
+		$result = ldap_search($_SESSION[$this->ldap]->server(), $dn, $search);
+		$entry = ldap_first_entry($_SESSION[$this->ldap]->server(), $result);
 		$this->dn = substr($dn, strpos($dn, ',')+1);
 		$this->dn_orig = $dn;
-		$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
+		$attr = ldap_get_attributes($_SESSION[$this->ldap]->server(), $entry);
 				
 		foreach ($modules as $module) {
 			if (!isset($this->module[$module])) {
@@ -902,7 +1048,7 @@ class accountContainer {
 				}
 			}
 		// Write Module-Order in variable
-		$this->order = $order;
+		$this->order = array_merge ('main' ,$order);
 		return 0;
 		}
 
@@ -981,7 +1127,7 @@ class accountContainer {
 				}
 			}
 		// Write Module-Order in variable
-		$this->order = $order;
+		$this->order = array_merge ('main' ,$order);
 		// *** fixme load*Profile must return array in the same way ldap_get_attributes does.
 		$function = '$newattributes = load'.ucfirst($this->type).'Profile(\'default\');';
 		//eval($function);
@@ -1010,12 +1156,13 @@ class accountContainer {
 					}
 				}
 			}
-
+		print $this->dn;
+		print $this->dn_orig;
+		print_r($attributes);
 		// Complete dn with uid or cn=
 		if ($this->type=='group') $search = 'cn';
 			else $search = 'uid';
 		$added = false;
-		print_r($attributes);
 		foreach ($attributes as $DN) {
 			if (isset($DN['modify'][$search][0]) && !$added) {
 				$attributes[$search.'='.$DN['modify'][$search][0].','.$this->dn] = $attributes[$this->dn];
@@ -1059,10 +1206,10 @@ class accountContainer {
 				if ($this->dn_orig!='') {
 					// merge attributes together
 					$attr = array_merge_recursive($attributes[$this->dn]['add'], $attributes[$this->dn]['notchanged'], $attributes[$this->dn]['modify']);
-					$success = @ldap_add($_SESSION['ldap']->server(), $this->dn, $attr);
+					$success = @ldap_add($_SESSION[$this->ldap]->server(), $this->dn, $attr);
 					if ($success) {
 						$_SESSION[$this->cache]->update_cache($this->$dn, 'add', $attr);
-						$success = @ldap_delete($_SESSION['ldap']->server(), $this->dn_orig);
+						$success = @ldap_delete($_SESSION[$this->ldap]->server(), $this->dn_orig);
 						if (!$success) {
 							$errors[] = array('ERROR', 'LDAP', sprintf(_('Was unable to delete dn: %s.'), $this->dn_orig));
 							$stopprocessing = true;
@@ -1077,8 +1224,10 @@ class accountContainer {
 					}
 				// create complete new dn
 				else {
+		print "XXXXXXXX";
 					$attr = array_merge_recursive($attributes[$this->dn]['add'], $attributes[$this->dn]['notchanged'], $attributes[$this->dn]['modify']);
-					$success = @ldap_add($_SESSION['ldap']->server(), $this->dn, $attributes[$this->dn]['add']);
+					print_r($attribtues);
+					$success = ldap_add($_SESSION[$this->ldap]->server(), $this->dn, $attributes[$this->dn]['add']);
 					if (!$success) {
 						$errors[] = array('ERROR', 'LDAP', sprintf(_('Was unable to create dn: %s. This is possible a bug. Please check your ldap logs and send a bug report if it is a possible bug.'), $this->dn));
 						$stopprocessing = true;
@@ -1094,7 +1243,7 @@ class accountContainer {
 			if (!$stopprocessing) {
 				// modify attributes
 				if (isset($attributes[$DNs[$i]]['modify']) && !$stopprocessing) {
-					$success = @ldap_mod_replace($_SESSION['ldap']->server(), $DNs[$i], $attributes[$DNs[$i]]['modify']);
+					$success = @ldap_mod_replace($_SESSION[$this->ldap]->server(), $DNs[$i], $attributes[$DNs[$i]]['modify']);
 					if (!$success) {
 						$errors[] = array('ERROR', 'LDAP', sprintf(_('Was unable to modify attribtues from dn: %s. This is possible a bug. Please check your ldap logs and send a bug report if it is a possible bug.'), $DNs[$i]));
 						$stopprocessing = true;
@@ -1104,7 +1253,7 @@ class accountContainer {
 					}
 				// add attributes
 				if (isset($attributes[$DNs[$i]]['add']) && !$stopprocessing) {
-					$success = @ldap_mod_add($_SESSION['ldap']->server(), $DNs[$i], $attributes[$DNs[$i]]['add']);
+					$success = @ldap_mod_add($_SESSION[$this->ldap]->server(), $DNs[$i], $attributes[$DNs[$i]]['add']);
 					if (!$success) {
 						$errors[] = array('ERROR', 'LDAP', sprintf(_('Was unable to add attribtues to dn: %s. This is possible a bug. Please check your ldap logs and send a bug report if it is a possible bug.'), $DNs[$i]));
 						$stopprocessing = true;
@@ -1114,7 +1263,7 @@ class accountContainer {
 					}
 				// removce attributes
 				if (isset($attributes[$DNs[$i]]['remove']) && !$stopprocessing) {
-					$success = @ldap_mod_del($_SESSION['ldap']->server(), $DNs[$i], $attributes[$DNs[$i]]['remove']);
+					$success = @ldap_mod_del($_SESSION[$this->ldap]->server(), $DNs[$i], $attributes[$DNs[$i]]['remove']);
 					if (!$success) {
 						$errors[] = array('ERROR', 'LDAP', sprintf(_('Was unable to remove attribtues from dn: %s. This is possible a bug. Please check your ldap logs and send a bug report if it is a possible bug.'), $DNs[$i]));
 						$stopprocessing = true;
@@ -1146,7 +1295,7 @@ class accountContainer {
 
 	function lamdaemon($commands) {
 		// get username and password of the current lam-admin
-		$ldap_q = $_SESSION['ldap']->decrypt_login();
+		$ldap_q = $_SESSION[$this->ldap]->decrypt_login();
 		/* $towrite has the following syntax:
 		* admin-username, admin-password, owner of homedir, 'home', operation='add'
 		* use escapeshellarg to make exec() shell-safe
@@ -1201,6 +1350,7 @@ class accountContainer {
 				$return = array_merge($return,$current->get_pdfEntries($account_type));
 				next($this->module);
 			}
+			$return = array_merge($return,array(	'main_dn' => array('<block><key>' . _('DN') . '</key><value>' . $this->dn . '</value></block>')));
 			return $return;
 		}
 		
@@ -1211,30 +1361,8 @@ class accountContainer {
 				//echo "<pre>moduleName: $moduleName\n</pre>";
 				$return[$moduleName] = $module->get_pdfFields($this->type);
 			}
+			$return['main'] = array(	'dn');
 			return $return;
 		}
-
-		/**
-		* Returns an array containing all input columns for the file upload.
-		*
-		* Syntax:
-		* <br> array(
-		* <br>  string: name,  // fixed non-translated name which is used as column name (should be of format: <module name>_<column name>)
-		* <br>  string: description,  // short descriptive name
-		* <br>  string: help,  // help ID
-		* <br>  string: example,  // example value
-		* <br>  boolean: required  // true, if user must set a value for this column
-		* <br> )
-		*
-		* @return array column list
-		*/
-		function get_uploadColumns() {
-			$return = array();
-			foreach($this->module as $moduleName => $module) {
-				$return[$moduleName] = $module->get_uploadColumns();
-			}
-			return $return;
-		}
-
 	}
 ?>
