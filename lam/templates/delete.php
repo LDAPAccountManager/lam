@@ -100,11 +100,11 @@ if ($_POST['delete_yes']) {
 					$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
 					}
 				$success = ldap_delete($_SESSION['ldap']->server(), $dn);
-				if (!$success) $error = _('Could not delete user: ').$dn;
+				if (!$success) $error = _('Could not delete user:').' '.$dn;
 				break;
 			case 'host':
 				$success = ldap_delete($_SESSION['ldap']->server(), $dn);
-				if (!$success) $error = _('Could not delete host: ').$dn;
+				if (!$success) $error = _('Could not delete host:').' '.$dn;
 				break;
 			case 'group':
 				$temp=explode(',', $dn);
@@ -113,17 +113,17 @@ if ($_POST['delete_yes']) {
 				$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 				while ($entry) {
 					$attr2 = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
-					if ($attr2['gidNumber']==getgid($groupname)) $error = _('Could not delete group. Still users in group: ').$dn;
+					if ($attr2['gidNumber']==getgid($groupname)) $error = _('Could not delete group. Still users in group:').' '.$dn;
 					$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
 					}
 				if (!$error) {
 					if ($_SESSION['config']->scriptServer) remquotas($groupname, $_POST['type5']);
 					$success = ldap_delete($_SESSION['ldap']->server(), $dn);
-					if (!$success) $error = _('Could not delete group: ').$dn;
+					if (!$success) $error = _('Could not delete group:').' '.$dn;
 					}
 				break;
 			}
-		if (!$error) echo $dn. _(' deleted.');
+		if (!$error) echo $dn.' '. _('deleted').'.';
 		 else echo $error;
 		echo '</td></tr>'."\n".'<tr><td>';
 		}

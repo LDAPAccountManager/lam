@@ -189,12 +189,12 @@ switch ($select) {
 		for ($i=0; $i<sizeof($groups); $i++)
 			if ($_SESSION['accounts'][$i]->general_group!='')
 				StatusMessage('INFO', _('Group ').
-					$_SESSION['accounts'][$i]->general_group._(' not found!'), _('It will be created.'));
+					$_SESSION['accounts'][$i]->general_group.' '._('not found!'), _('It will be created.'));
 		if ($_FILES['userfile']['size']>0) {
 			fclose($handle);
 			unlink($_FILES['userfile']['tmp_name']);
 			}
-		echo '<tr><td>'._('row').'</td><td>'. _('Surname'). '</td><td>'. _('Givenname'). '</td><td>'. _('Username'). '</td><td>'. _('Primary Group'). '</td><td>'.
+		echo '<tr><td>'._('row').'</td><td>'. _('Surname'). '</td><td>'. _('Given name'). '</td><td>'. _('User name'). '</td><td>'. _('Primary group'). '</td><td>'.
 			_('Details'). '</td><td>' . _('Warnings'). '</td><td>' . _('Errors') . '</td></tr>';
 		for ($row=0; $row<sizeof($_SESSION['accounts']); $row++) { // loops for every row
 			echo '<tr><td>'.$row.'</td><td>'.
@@ -267,7 +267,7 @@ switch ($select) {
 			for ($j=0; $j<sizeof($_SESSION['errors'][$i]); $j++)
 				if ($_SESSION['errors'][$i][$j][0] == 'INFO') $nowarn=false;
 		echo '<br>';
-		if (!$noerrors) { echo '<tr><td>'. _('There are some errors!!') . '</td></tr>'; }
+		if (!$noerrors) { echo '<tr><td>'. _('There are some errors.') . '</td></tr>'; }
 		if (!$nowarn) { echo '<tr><td>'. _('There are some warnings.') . '</td></tr>'; }
 		echo '</table><br><table class="masscreate" width="100%">'.
 			'<tr><td><input name="back" type="submit" value="'; echo _('Back'); echo '">';
@@ -297,7 +297,7 @@ switch ($select) {
 				if ($error==1) $_SESSION['pointer']++;
 					else {
 					$stay = false;
-					StatusMessage('ERROR', _('Could not create user'), _('Was unable to create ').$_SESSION['accounts'][$row]->general_username);
+					StatusMessage('ERROR', _('Could not create user'), _('Was unable to create').' '.$_SESSION['accounts'][$row]->general_username);
 					}
 				}
 				else $stay=false;
@@ -309,7 +309,7 @@ switch ($select) {
 			echo _('All Users have been created');
 			echo '</td></tr><tr><td>';
 			echo '<tr><td><input name="cancel" type="submit" value="'; echo _('Mainmenu'); echo '">';
-			echo '</td><td></td><td><input name="pdf" type="submit" value="'; echo _('Create PDF-File'); echo '">';
+			echo '</td><td></td><td><input name="pdf" type="submit" value="'; echo _('Create PDF file'); echo '">';
 			echo '</td></tr>';
 			}
 		break;

@@ -413,7 +413,7 @@ switch ($select_local) { // Select which part of page will be loaded
 				$profilelist = getUserProfiles();
 				// Create HTML-page
 				echo '<tr><td>';
-				echo _('Username*');
+				echo _('Username').'*';
 				echo "</td>\n<td>".
 					'<input name="f_general_username" type="text" size="20" maxlength="20" value="' . $_SESSION['account']->general_username . '">'.
 					'</td><td>'.
@@ -425,19 +425,19 @@ switch ($select_local) { // Select which part of page will be loaded
 					'</td>'."\n".'<td>'.
 					'<a href="help.php?HelpNumber=401" target="lamhelp">'._('Help').'</a>'.
 					'</td></tr>'."\n".'<tr><td>';
-				echo _('Surname*');
+				echo _('Surname').'*';
 				echo '</td>'."\n".'<td>'.
 					'<input name="f_general_surname" type="text" size="20" maxlength="20" value="' . $_SESSION['account']->general_surname . '">'.
 					'</td><td>'.
 					'<a href="help.php?HelpNumber=424" target="lamhelp">'._('Help').'</a>'.
 					'</td></tr>'."\n".'<tr><td>';
-				echo _('Given name*');
+				echo _('Given name').'*';
 				echo '</td>'."\n".'<td>'.
 					'<input name="f_general_givenname" type="text" size="20" maxlength="20" value="' . $_SESSION['account']->general_givenname . '">'.
 					'</td>'."\n".'<td>'.
 					'<a href="help.php?HelpNumber=425" target="lamhelp">'._('Help').'</a>'.
 					'</td>'."\n".'</tr>'."\n".'<tr><td>';
-				echo _('Primary Group*');
+				echo _('Primary group').'*';
 				echo '</td>'."\n".'<td><select name="f_general_group">';
 				// loop trough existing groups
 				foreach ($groups as $group) {
@@ -460,7 +460,7 @@ switch ($select_local) { // Select which part of page will be loaded
 				echo	'</select></td>'."\n".'<td>'.
 					'<a href="help.php?HelpNumber=402" target="lamhelp">'._('Help').'</a>'.
 					'</td></tr>'."\n".'<tr><td>';
-				echo _('Home Directory*');
+				echo _('Home Directory').'*';
 				echo '</td>'."\n".'<td><input name="f_general_homedir" type="text" size="30" value="' . $_SESSION['account']->general_homedir . '">'.
 					'</td>'."\n".'<td>'.
 					'<a href="help.php?HelpNumber=403" target="lamhelp">'._('Help').'</a>'.
@@ -470,7 +470,7 @@ switch ($select_local) { // Select which part of page will be loaded
 					'</td>'."\n".'<td>'.
 					'<a href="help.php?HelpNumber=404" target="lamhelp">'._('Help').'</a>'.
 					'</td></tr>'."\n".'<tr><td>';
-				echo _('Login Shell*');
+				echo _('Login shell').'*';
 				echo '</td>'."\n".'<td><select name="f_general_shell" >';
 					// loop through shells
 					foreach ($_SESSION['shelllist'] as $shell)
@@ -503,7 +503,7 @@ switch ($select_local) { // Select which part of page will be loaded
 				$profilelist = getGroupProfiles();
 				// Create HTML-page
 				echo '<tr><td>';
-				echo _('Groupname*');
+				echo _('Groupname').'*';
 				echo '</td>'."\n".'<td>'.
 					'<input name="f_general_username" type="text" size="20" maxlength="20" value="' . $_SESSION['account']->general_username . '">'.
 					'</td><td>'.
@@ -543,7 +543,7 @@ switch ($select_local) { // Select which part of page will be loaded
 				$profilelist = getHostProfiles();
 				// Create HTML-page
 				echo '<tr><td>';
-				echo _('Hostname*');
+				echo _('Host name').'*';
 				echo '</td>'."\n".'<td>'.
 					'<input name="f_general_username" type="text" size="20" maxlength="20" value="' . $_SESSION['account']->general_username . '">'.
 					'</td><td>'.
@@ -555,7 +555,7 @@ switch ($select_local) { // Select which part of page will be loaded
 					'</td>'."\n".'<td>'.
 					'<a href="help.php?HelpNumber=411" target="lamhelp">'._('Help').'</a>'.
 					'</td></tr>'."\n".'<tr><td>';
-				echo _('Primary Group*');
+				echo _('Primary group').'*';
 				echo '</td>'."\n".'<td><select name="f_general_group">';
 				foreach ($groups as $group) {
 					if ($_SESSION['account']->general_group == $group) echo '<option selected>' . $group. '</option>';
@@ -762,7 +762,7 @@ switch ($select_local) { // Select which part of page will be loaded
 				echo '</select></td>'."\n".'<td>';
 				echo	'<a href="help.php?HelpNumber=430" target="lamhelp">'._('Help').'</a>'.
 					'</td></tr>'."\n".'<tr><td>';
-				echo _('User must change Password');
+				echo _('User must change password');
 				echo '</td>'."\n".'<td><select name="f_smb_pwdmustchange_day">';
 				for ( $i=1; $i<=31; $i++ ) {
 					if ($mustchangedate['mday']==$i) echo "<option selected> $i". '</option>';
@@ -781,35 +781,35 @@ switch ($select_local) { // Select which part of page will be loaded
 				echo '</select></td>'."\n".'<td>';
 				echo	'<a href="help.php?HelpNumber=431" target="lamhelp">'._('Help').'</a>'.
 					'</td></tr>'."\n".'<tr><td>';
-				echo _('Accout is deactivated');
+				echo _('Account is deactivated');
 				echo '</td>'."\n".'<td><input name="f_smb_flagsD" type="checkbox"';
 				if ($_SESSION['account']->smb_flagsD) echo ' checked ';
 				echo '></td>'."\n".'<td>'.
 					'<a href="help.php?HelpNumber=432" target="lamhelp">'._('Help').'</a>'.
 					'</td></tr>'."\n".'<tr><td>';
-				echo _('Home Drive');
+				echo _('Home drive');
 				echo '</td>'."\n".'<td><select name="f_smb_homedrive" >';
 					for ($i=68; $i<91; $i++)
 						if ($_SESSION['account']->smb_homedrive== chr($i).':') echo '<option selected> '.chr($i).':</option>'; else echo '<option> '.chr($i).':</option>';
 				echo	'</select></td>'."\n".'<td>'.
 					'<a href="help.php?HelpNumber=433" target="lamhelp">'._('Help').'</a>'.
 					'</td></tr>'."\n".'<tr><td>';
-				echo _('Script Path');
+				echo _('Script path');
 				echo '</td>'."\n".'<td><input name="f_smb_scriptpath" type="text" size="20" maxlength="80" value="' . $_SESSION['account']->smb_scriptPath . '">'.
 					'</td>'."\n".'<td>'.
 					'<a href="help.php?HelpNumber=434" target="lamhelp">'._('Help').'</a>'.
 					'</td></tr>'."\n".'<tr><td>';
-				echo _('Profile Path');
+				echo _('Profile path');
 				echo '</td>'."\n".'<td><input name="f_smb_profilePath" type="text" size="20" maxlength="80" value="' . $_SESSION['account']->smb_profilePath . '">'.
 					'</td>'."\n".'<td>'.
 					'<a href="help.php?HelpNumber=435" target="lamhelp">'._('Help').'</a>'.
 					'</td></tr>'."\n".'<tr><td>';
-				echo _('User Workstations');
+				echo _('User workstations');
 				echo '</td>'."\n".'<td><input name="f_smb_smbuserworkstations" type="text" size="20" maxlength="80" value="' . $_SESSION['account']->smb_smbuserworkstations . '">'.
 					'</td>'."\n".'<td>'.
 					'<a href="help.php?HelpNumber=436" target="lamhelp">'._('Help').'</a>'.
 					'</td></tr>'."\n".'<tr><td>';
-				echo _('smb Home');
+				echo _('smb home');
 				echo '</td>'."\n".'<td><input name="f_smb_smbhome" type="text" size="20" maxlength="80" value="' . $_SESSION['account']->smb_smbhome . '">'.
 					'</td>'."\n".'<td>'.
 					'<a href="help.php?HelpNumber=437" target="lamhelp">'._('Help').'</a>'.
@@ -909,7 +909,7 @@ switch ($select_local) { // Select which part of page will be loaded
 				echo '</select></td>'."\n".'<td>';
 				echo	'<a href="help.php?HelpNumber=431" target="lamhelp">'._('Help').'</a>'.
 					'</td></tr>'."\n".'<tr><td>';
-				echo _('Accout is deactivated');
+				echo _('Account is deactivated');
 				echo '</td>'."\n".'<td><input name="f_smb_flagsD" type="checkbox"';
 				if ($_SESSION['account']->smb_flagsD) echo ' checked ';
 				echo '></td><td>'.
@@ -1090,40 +1090,40 @@ switch ($select_local) { // Select which part of page will be loaded
 				echo '<tr><td>';
 				echo _('User ');
 				echo $_SESSION['account']->general_username;
-				if ($_SESSION['account_old']) echo _(' has been modified. ');
-				 else echo _(' has been created. ');
+				if ($_SESSION['account_old']) echo ' '._('has been modified').'.';
+				 else echo ' '._('has been created').'.';
 				if (!$_SESSION['account_old'])
 					{ echo '<input name="createagain" type="submit" value="'; echo _('Create another user'); echo '">'; }
 				echo '</td>'."\n".'<td>'.
-					'<input name="outputpdf" type="submit" value="'; echo _('Create PDF-file'); echo '">'.
+					'<input name="outputpdf" type="submit" value="'; echo _('Create PDF file'); echo '">'.
 					'</td>'."\n".'<td>'.
-					'<input name="backmain" type="submit" value="'; echo _('Back to userlist'); echo '">'.
+					'<input name="backmain" type="submit" value="'; echo _('Back to user list'); echo '">'.
 					'</td></tr>'."\n";
 				break;
 			case 'group' :
 				echo '<tr><td>';
 				echo _('Group ');
 				echo $_SESSION['account']->general_username;
-				if ($_SESSION['account_old']) echo _(' has been modified. ');
-				 else echo _(' has been created. ');
+				if ($_SESSION['account_old']) echo ' '._('has been modified').'.';
+				 else echo ' '._('has been created').'.';
 				echo '</td></tr>'."\n".'<tr><td>';
 				if (!$_SESSION['account_old'])
 					{ echo' <input name="createagain" type="submit" value="'; echo _('Create another group'); echo '">'; }
 				echo '</td><td></td><td>'.
-					'<input name="backmain" type="submit" value="'; echo _('Back to grouplist'); echo '">'.
+					'<input name="backmain" type="submit" value="'; echo _('Back to group list'); echo '">'.
 					'</td></tr>'."\n";
 				break;
 			case 'host' :
 				echo '<tr><td>';
-				echo _('Host ');
-				echo $_SESSION['account']->general_username;
-				if ($_SESSION['account_old']) echo _(' has been modified. ');
-				 else echo _(' has been created. ');
+				echo _('Host');
+				echo ' '.$_SESSION['account']->general_username.' ';
+				if ($_SESSION['account_old']) echo ' '._('has been modified').'.';
+				 else echo ' '._('has been created').'.';
 				echo '</td></tr>'."\n".'<tr><td>';
 				if (!$_SESSION['account_old'])
 					{ echo '<input name="createagain" type="submit" value="'; echo _('Create another host'); echo '">'; }
 				echo '</td><td>'."\n".'</td><td>'.
-					'<input name="backmain" type="submit" value="'; echo _('Back to hostlist'); echo '">'.
+					'<input name="backmain" type="submit" value="'; echo _('Back to host list'); echo '">'.
 					'</td></tr>'."\n";
 				break;
 			}

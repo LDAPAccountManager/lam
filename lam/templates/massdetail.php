@@ -114,7 +114,7 @@ switch ($select) {
 			'</td><td>'.
 			'<a href="help.php?HelpNumber=400" target="lamhelp">'._('Help').'</a>'.
 			'</td></tr>'."\n".'<tr><td>';
-		echo _('Primary Group*');
+		echo _('Primary group*');
 		echo "</td>\n<td>".
 			'<input name="f_general_group" type="text" size="20" maxlength="20" value="' . $_SESSION['accounts'][$row]->general_group . '">'.
 			'</td><td>'.
@@ -174,8 +174,8 @@ switch ($select) {
 			'</td><td>'.
 			'<a href="help.php?HelpNumber=456" target="lamhelp">'._('Help').'</a>'.
 			'</td></tr><br>';
-		echo '<tr><td><input name="apply" type="submit" value="'; echo _('Apply Changes'); echo '"></td><td></td><td>';
-		echo '<input name="undo" type="submit" value="'; echo _('Undo last Changes'); echo '"></td></tr>';
+		echo '<tr><td><input name="apply" type="submit" value="'; echo _('Apply'); echo '"></td><td></td><td>';
+		echo '<input name="undo" type="submit" value="'; echo _('Undo'); echo '"></td></tr>';
 
 		break;
 	}

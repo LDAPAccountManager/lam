@@ -173,18 +173,18 @@ function checkglobal($values, $type, $values_old=false) { // This functions chec
 			$return->general_homedir = str_replace('$group', $values->general_group, $values->general_homedir);
 			if ($values->general_username != '')
 				$return->general_homedir = str_replace('$user', $values->general_username, $values->general_homedir);
-			if ($return->general_homedir != $values->general_homedir) $errors[] = array('INFO', _('Homedir'), _('Replaced $user or $group in homedir.'));
+			if ($return->general_homedir != $values->general_homedir) $errors[] = array('INFO', _('Home Directory'), _('Replaced $user or $group in homedir.'));
 			if ( !ereg('^[/]([a-z]|[A-Z])([a-z]|[A-Z]|[0-9]|[.]|[-]|[_])*([/]([a-z]|[A-Z])([a-z]|[A-Z]|[0-9]|[.]|[-]|[_])*)*$', $return->general_homedir ))
-				$errors[] = array('ERROR', _('Homedir'), _('Homedirectory contents invalid characters.'));
+				$errors[] = array('ERROR', _('Home Directory'), _('Homedirectory contents invalid characters.'));
 			// Check if givenname is valid
-			if ( !ereg('^([a-z]|[A-Z])+$', $values->general_givenname)) $errors[] = array('ERROR', _('Givenname'), _('Givenname contents invalid characters'));
+			if ( !ereg('^([a-z]|[A-Z])+$', $values->general_givenname)) $errors[] = array('ERROR', _('Given name'), _('Givenname contents invalid characters'));
 			// Check if surname is valid
 			if ( !ereg('^([a-z]|[A-Z])+$', $values->general_surname)) $errors[] = array('ERROR', _('Surname'), _('Surname contents invalid characters'));
 			if ( ($values->general_gecos=='') || ($values->general_gecos==' ')) {
 				$return->general_gecos = $values->general_givenname . " " . $values->general_surname ;
 				$errors[] = array('INFO', _('Gecos'), _('Inserted sur- and givenname in gecos-field.'));
 				}
-			if ($values->general_group=='') $errors[] = array('ERROR', _('Primary Group'), _('No primary Group defined!'));
+			if ($values->general_group=='') $errors[] = array('ERROR', _('Primary group'), _('No primary group defined!'));
 			// Check if Username contents only valid characters
 			if ( !ereg('^([a-z]|[0-9]|[.]|[-]|[_])*$', $values->general_username))
 				$errors[] = array('ERROR', _('Username'), _('Username contents invalid characters. Valid characters are: a-z, 0-9 and .-_ !'));
@@ -247,12 +247,12 @@ function checkglobal($values, $type, $values_old=false) { // This functions chec
 		case 'host' :
 			if ( substr($values->general_username, strlen($values->general_username)-1, strlen($values->general_username)) != '$' ) {
 				$values->general_username = $values->general_username . '$';
-				$errors[] = array('WARN', _('Hostname'), _('Added $ to hostname.'));
+				$errors[] = array('WARN', _('Host name'), _('Added $ to hostname.'));
 				}
 			$return->general_username = $values->general_username;
 			// Check if Hostname contents only valid characters
 			if ( !ereg('^([a-z]|[0-9]|[.]|[-]|[$])*$', $values->general_username))
-				$errors[] = array('ERROR', _('Hostname'), _('Hostname contents invalid characters. Valid characters are: a-z, 0-9 and .-_ !'));
+				$errors[] = array('ERROR', _('Host name'), _('Hostname contents invalid characters. Valid characters are: a-z, 0-9 and .-_ !'));
 			// Check if Hostname already exists
 			$return->general_homedir = '/dev/null';
 			$return->general_shell = '/bin/false';
@@ -281,7 +281,7 @@ function checkglobal($values, $type, $values_old=false) { // This functions chec
 					$return->general_username = $firstchars . (intval($lastchars)+1). '$';
 				 	}
 				}
-			if ($values->general_username != $return->general_username) $errors[] = array('WARN', _('Hostname'), _('Hostname allready in use. Selected next free hostname.'));
+			if ($values->general_username != $return->general_username) $errors[] = array('WARN', _('Host name'), _('Hostname allready in use. Selected next free hostname.'));
 			break;
 		}
 	// Check if UID is valid. If none value was entered, the next useable value will be inserted
@@ -337,31 +337,31 @@ function checksamba($values, $type) { // This function checks all samba account 
 	switch ($type) {
 		case 'user' :
 			$return->smb_scriptPath = str_replace('$user', $values->general_username, $values->smb_scriptPath);
-			if ($values->smb_scriptPath != $return->smb_scriptPath) $errors[] = array('INFO', _('Scriptpath'), _('Inserted username in scriptpath.'));
+			if ($values->smb_scriptPath != $return->smb_scriptPath) $errors[] = array('INFO', _('Script path'), _('Inserted username in scriptpath.'));
 			$return->smb_scriptPath = str_replace('$group', $values->general_group, $return->smb_scriptPath);
-			if ($values->smb_scriptPath != $return->smb_scriptPath) $errors[] = array('INFO', _('Scriptpath'), _('Inserted groupname in scriptpath.'));
+			if ($values->smb_scriptPath != $return->smb_scriptPath) $errors[] = array('INFO', _('Script path'), _('Inserted groupname in scriptpath.'));
 			$return->smb_profilePath = str_replace('$user', $values->general_username, $values->smb_profilePath);
-			if ($values->smb_profilePath != $return->smb_profilePath) $errors[] = array('INFO', _('Profilepath'), _('Inserted username in profilepath.'));
+			if ($values->smb_profilePath != $return->smb_profilePath) $errors[] = array('INFO', _('Profile path'), _('Inserted username in profilepath.'));
 			$return->smb_profilePath = str_replace('$group', $return->general_group, $return->smb_profilePath);
-			if ($values->smb_profilePath != $return->smb_profilePath) $errors[] = array('INFO', _('Profilepath'), _('Inserted groupname in profilepath.'));
+			if ($values->smb_profilePath != $return->smb_profilePath) $errors[] = array('INFO', _('Profile path'), _('Inserted groupname in profilepath.'));
 			$return->smb_smbHome = str_replace('$user', $values->general_username, $values->smb_smbHome);
-			if ($values->smb_smbHome != $return->smb_smbHome) $errors[] = array('INFO', _('smbHome'), _('Inserted username in smbhome.'));
+			if ($values->smb_smbHome != $return->smb_smbHome) $errors[] = array('INFO', _('smb home'), _('Inserted username in smbhome.'));
 			$return->smb_smbHome = str_replace('$group', $return->general_group, $return->smb_smbHome);
-			if ($values->smb_smbHome != $return->smb_smbHome) $errors[] = array('INFO', _('smbHome'), _('Inserted groupname in smbhome.'));
+			if ($values->smb_smbHome != $return->smb_smbHome) $errors[] = array('INFO', _('smb home'), _('Inserted groupname in smbhome.'));
 			if ( !ereg('^([a-z]|[A-Z]|[0-9]|[\|]|[\#]|[\*]|[\,]|[\.]|[\;]|[\:]|[\_]|[\-]|[\+]|[\!]|[\%]|[\&]|[\/]|[\?]|[\{]|[\[]|[\(]|[\)]|[\]]|[\}])*$',
 				$values->smb_password)) $errors[] = array('ERROR', _('Password'), _('Password contents invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
 			if ( (!$return->smb_scriptPath=='') && (!ereg('^([/])*[a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*([/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*)*$', $return->smb_scriptPath)))
-				$errors[] = array('ERROR', _('Scriptpath'), _('Scriptpath is invalid'));
+				$errors[] = array('ERROR', _('Scriptpath'), _('Script path is invalid.'));
 			if ( (!$return->smb_profilePath=='') && (!ereg('^[/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*([/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*)*$', $return->smb_profilePath))
 				&& (!ereg('^[\][\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+([\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+)+$', $return->smb_profilePath)))
-					$errors[] = array('ERROR', _('Profilepath'), _('ProfilePath is invalid.'));
+					$errors[] = array('ERROR', _('Profile path'), _('Profile path is invalid.'));
 			if ( (!$return->smb_smbHome=='') && !ereg('^[\][\]([a-z]|[A-Z]|[0-9]|[.]|[-])+([\]([a-z]|[A-Z]|[0-9]|[.]|[-])+)+$', $return->smb_smbhome))
-				$errors[] = array('ERROR', _('smbHome'), _('smbHome is invalid.'));
+				$errors[] = array('ERROR', _('smb home'), _('smb home is invalid.'));
 			if ((!$values->smb_smbuserworkstations=='') && !ereg('^([a-z]|[A-Z]|[0-9]|[.]|[-])+(([,])+([a-z]|[A-Z]|[0-9]|[.]|[-])+)*$', $values->smb_smbuserworkstations))
-				$errors[] = array('ERROR', _('User Workstations'), _('User Workstations is invalid.'));
+				$errors[] = array('ERROR', _('User workstations'), _('User workstations is invalid.'));
 			$return->smb_flagsW = 0;
 			if ((!$values->smb_domain=='') && !ereg('^([a-z]|[A-Z]|[0-9]|[-])+$', $values->smb_domain))
-				$errors[] = array('ERROR', _('Domain Name'), _('Domain Name contents invalid characters. Valid characters are: a-z, A-Z, 0-9 and -.'));
+				$errors[] = array('ERROR', _('Domain name'), _('Domain name contents invalid characters. Valid characters are: a-z, A-Z, 0-9 and -.'));
 			if ($values->smb_useunixpwd) $return->smb_useunixpwd = 1; else $return->smb_useunixpwd = 0;
 			if ($values->smb_password) {
 				// Encrypt password
@@ -494,9 +494,9 @@ function getquotas($type,$user='+') { // Whis function will return the quotas fr
 			$return->quota[$i][$j] = $vals2[$j];
 			}
 		if ($return->quota[$i][4]<$time) $return->quota[$i][4] = '';
-			else $return->quota[$i][4] = strval(($return->quota[$i][4]-$time)/3600) . _(' hours');
+			else $return->quota[$i][4] = strval(($return->quota[$i][4]-$time)/3600) .' '. _('hours');
 		if ($return->quota[$i][8]<$time) $return->quota[$i][8] = '';
-			else $return->quota[$i][8] = strval(($return->quota[$i][8]-$time)/3600) . _(' hours');
+			else $return->quota[$i][8] = strval(($return->quota[$i][8]-$time)/3600) .' '. _('hours');
 		}
 	return $return;
 	}
@@ -558,8 +558,8 @@ function ldapexists($values, $type, $values_old=false) { // This function will s
 	$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 	if ($entry) $dn = (ldap_get_dn($_SESSION['ldap']->server(), $entry));
 	if ($dn) {
-		if ($values_old->general_username != $values->general_username) return _($type . ' already exists!');
-		if (!$values_old) return  _($type . ' already exists!');
+		if ($values_old->general_username != $values->general_username) return $type .' '. _('already exists!');
+		if (!$values_old) return  $type .' '. _('already exists!');
 		}
 	return 0;
 	}
@@ -645,10 +645,11 @@ function checkid($values, $type, $values_old=false) { // if value is empty will 
 	$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 	if ($entry) { // Entry with same ID found
 		$dn = (ldap_get_dn($_SESSION['ldap']->server(), $entry));
-		if (!$values_old) return _('ID is used from ' . $dn . ' !');
-		 else if ($dn!=$values_old->general_dn) return _('ID is used from ' . $dn . ' !');
+		$string = _('ID is used from') .' '. $dn . ' !';
+		if (!$values_old) return $string;
+		 else if ($dn!=$values_old->general_dn) return $string;
 		 }
-	if ( $values->general_uidNumber < $minID || $values->general_uidNumber > $maxID) return _('Please enter a value between '. $minID . ' and ' . $maxID . '!');
+	if ( $values->general_uidNumber < $minID || $values->general_uidNumber > $maxID) return _('Please enter a value between').' '. $minID .' '. _('and') .' '. $maxID . '!';
 	return intval($values->general_uidNumber);
 	}
 
