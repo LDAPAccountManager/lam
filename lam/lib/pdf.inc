@@ -434,12 +434,12 @@ function createHostPDF($accounts) {
 // $accounts: array of account
 function createGroupPDF($accounts) {
 	// Start PDF file
-	$pdfFile = new lamHostPDF();
+	$pdfFile = new lamGroupPDF();
 	$pdfFile->Open();
 	// Write some information into the PDF file
 	$pdfFile->setFont("arial","",12);
 	$pdfFile->setTitle("LDAP Account Manager");
-	$pdfFile->setSubject(_("Samba-Host information page"));
+	$pdfFile->setSubject(_("Group information page"));
 	$pdfFile->setAuthor("LDAP Account Manager Devel-Team -Roland Gruber-");
 	$pdfFile->setCreator("LDAP Account Manager (pdf.inc)");
 	// print host accounts
