@@ -28,6 +28,7 @@ include_once ("../../lib/status.inc");
 include_once("../../lib/account.inc");
 include_once("../../lib/pdf.inc");
 include_once("../../lib/modules.inc");
+include_once("../../lib/lists.inc");
 
 // start session
 session_save_path("../../sess");
@@ -170,7 +171,7 @@ if (! $_GET['norefresh']) {
 		// delete first array entry which is "count"
 		array_shift($grp_info);
 		// sort rows by sort column ($sort)
-		usort($grp_info, "cmp_array");
+		$grp_info = listSort($sort, $attr_array, $grp_info);
 	}
 	else {
 		$grp_info = array();
@@ -181,7 +182,7 @@ if (! $_GET['norefresh']) {
 else {
 	if (sizeof($grp_info) == 0) StatusMessage("WARN", "", _("No Groups found!"));
 	// sort rows by sort column ($sort)
-	if ($grp_info) usort($grp_info, "cmp_array");
+	if ($grp_info) $grp_info =listSort($sort, $attr_array, $grp_info);
 }
 
 echo ("<form action=\"listgroups.php\" method=\"post\">\n");
@@ -365,28 +366,6 @@ function draw_navigation_bar ($count) {
 	    "&amp;sort=" . $sort . "\">" . ($i + 1) . "</a>\n");
   }
   echo ("</td></tr></table>\n");
-}
-
-// compare function used for usort-method
-// rows are sorted with the first attribute entry of the sort column
-// if objects have attributes with multiple values the others are ignored
-function cmp_array($a, $b) {
-	// sort specifies the sort column
-	global $sort;
-	global $attr_array;
-	// sort by first column if no attribute is given
-	if (!$sort) $sort = strtolower($attr_array[0]);
-	if ($sort != "dn") {
-		// sort by first attribute with name $sort
-		if ($a[$sort][0] == $b[$sort][0]) return 0;
-		else if ($a[$sort][0] == max($a[$sort][0], $b[$sort][0])) return 1;
-		else return -1;
-	}
-	else {
-		if ($a[$sort] == $b[$sort]) return 0;
-		else if ($a[$sort] == max($a[$sort], $b[$sort])) return 1;
-		else return -1;
-	}
 }
 
 // save variables to session

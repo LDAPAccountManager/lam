@@ -27,6 +27,7 @@ include_once("../../lib/ldap.inc");
 include_once("../../lib/pdf.inc");
 include_once("../../lib/account.inc");
 include_once("../../lib/modules.inc");
+include_once("../../lib/lists.inc");
 
 // used to display status messages
 include_once ("../../lib/status.inc");
@@ -157,9 +158,9 @@ for ($i = 0; $i < sizeof($temp_array); $i++) {
   }
 }
 
-$sortattrib = $_GET["sortattrib"];
-if (!$sortattrib)
-     $sortattrib = strtolower($attr_array[0]);
+$sort = $_GET["sortattrib"];
+if (!$sort)
+     $sort = strtolower($attr_array[0]);
 
 // check search suffix
 if ($_POST['usr_suffix']) $usr_suffix = $_POST['usr_suffix'];  // new suffix selected via combobox
@@ -192,7 +193,7 @@ $filter = $filter . ")";
 // read entries only from ldap server if not yet stored in session or if refresh
 // button is pressed or if filter is applied
 if ($_SESSION["userlist"] && $_GET["norefresh"]) {
-	usort ($_SESSION["userlist"], "cmp_array");
+	$_SESSION["userlist"] = listSort($sort, $attr_array, $_SESSION["userlist"]);
 	$userinfo = $_SESSION["userlist"];
 }
 else {
@@ -207,7 +208,7 @@ else {
 		if ($userinfo["count"] == 0) StatusMessage("WARN", "", _("No Users found!"));
 			// delete first array entry which is "count"
 			array_shift($userinfo);
-			usort ($userinfo, "cmp_array");
+			$userinfo = listSort($sort, $attr_array, $userinfo);
 			$_SESSION["userlist"] = $userinfo;
 		}
 	else {
@@ -239,7 +240,7 @@ if ($user_count != 0) {
   echo "<tr class=\"userlist-head\"><th width=22 height=34></th><th></th>\n";
   // table header
   for ($k = 0; $k < sizeof ($desc_array); $k++) {
-    if ($sortattrib == strtolower($attr_array[$k]))
+    if ($sort == strtolower($attr_array[$k]))
       echo "<th class=\"userlist-activecolumn\">\n";
     else
       echo "<th>\n";
@@ -272,8 +273,8 @@ if ($user_count != 0) {
 			}
 		}
 		// resort if needed
-		if ($sortattrib == "gidnumber") {
-			usort ($userinfo, "cmp_array");
+		if ($sort == "gidnumber") {
+			$userinfo = listSort($sort, $attr_array, $userinfo);
 		}
 	}
 	// print user list
@@ -316,7 +317,7 @@ if ($user_count != 0) {
 	$colspan = sizeof($attr_array) + 1;
 	echo "<tr class=\"userlist\">\n";
 	echo "<td align=\"center\"><img src=\"../../graphics/select.png\" alt=\"select all\"></td>\n";
-	echo "<td colspan=$colspan>&nbsp;<a href=\"listusers.php?norefresh=1&amp;page=" . $page . "&amp;sortattrib=" . $sortattrib .
+	echo "<td colspan=$colspan>&nbsp;<a href=\"listusers.php?norefresh=1&amp;page=" . $page . "&amp;sortattrib=" . $sort .
 		$searchfilter . "&amp;trans_primary=" . $trans_primary . "&amp;selectall=yes\">" .
 		"<font color=\"black\"><b>" . _("Select all") . "</b></font></a></td>\n";
 	echo "</tr>\n";
@@ -388,7 +389,7 @@ echo "</body></html>\n";
 function draw_navigation_bar ($user_count) {
 	global $max_pageentrys;
 	global $page;
-	global $sortattrib;
+	global $sort;
 	global $searchfilter;
 	global $trans_primary;
 
@@ -397,13 +398,13 @@ function draw_navigation_bar ($user_count) {
 	echo ("<td class=\"userlist-navbar\">\n<input type=\"submit\" name=\"refresh\" value=\"" . _("Refresh") . "\">\n&nbsp;&nbsp;");
 	if ($page != 1)
 		echo ("<a class=\"userlist\" href=\"listusers.php?norefresh=1&amp;page=" .
-			($page - 1) . "&amp;sortattrib=" . $sortattrib . $searchfilter . "&amp;trans_primary=" . $trans_primary . "\">&lt;=</a>\n");
+			($page - 1) . "&amp;sortattrib=" . $sort . $searchfilter . "&amp;trans_primary=" . $trans_primary . "\">&lt;=</a>\n");
 	else echo ("&lt;=");
 	echo ("&nbsp;");
 
 	if ($page < ($user_count / $max_pageentrys))
 		echo ("<a class=\"userlist\" href=\"listusers.php?norefresh=1&amp;page=" .
-			($page + 1) . "&amp;sortattrib=" . $sortattrib . $searchfilter . "&amp;trans_primary=" . $trans_primary . "\">=&gt;</a>\n");
+			($page + 1) . "&amp;sortattrib=" . $sort . $searchfilter . "&amp;trans_primary=" . $trans_primary . "\">=&gt;</a>\n");
 	else echo ("=&gt;");
 	echo ("</td>\n");
 	echo ("<td class=\"userlist-navbartext\">\n");
@@ -415,34 +416,12 @@ function draw_navigation_bar ($user_count) {
 	for ($i = 0; $i < ($user_count / $max_pageentrys); $i++) {
 		if ($i == $page - 1) echo ("&nbsp;" . ($i + 1));
 		else echo ("&nbsp;<a class=\"userlist\" href=\"listusers.php?norefresh=1&amp;page=" .
-				($i + 1) . "&amp;sortattrib=" . $sortattrib . $searchfilter . "&amp;trans_primary=" . $trans_primary .
+				($i + 1) . "&amp;sortattrib=" . $sort . $searchfilter . "&amp;trans_primary=" . $trans_primary .
 				"\">" . ($i + 1) . "</a>\n");
 	}
 	echo ("</td></tr>\n</table>\n");
 }
 
-
-// compare function used for usort-method
-// rows are sorted with the first attribute entry of the sort column
-// if objects have attributes with multiple values the others are ignored
-function cmp_array($a, $b) {
-	// sortattrib specifies the sort column
-	global $sortattrib;
-	global $attr_array;
-	// sort by first attribute with name $sortattrib
-	if (!$sortattrib) $sortattrib = strtolower($attr_array[0]);
-	if ($sortattrib != "dn") {
-		// sort by first column if no attribute is given
-		if ($a[$sortattrib][0] == $b[$sortattrib][0]) return 0;
-		else if ($a[$sortattrib][0] == max($a[$sortattrib][0], $b[$sortattrib][0])) return 1;
-		else return -1;
-	}
-	else {
-		if ($a[$sortattrib] == $b[$sortattrib]) return 0;
-		else if ($a[$sortattrib] == max($a[$sortattrib], $b[$sortattrib])) return 1;
-		else return -1;
-	}
-}
 
 // save variables to session
 $_SESSION['usr_units'] = $usr_units;
