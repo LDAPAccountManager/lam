@@ -60,54 +60,7 @@ $_POST = $_POST + $_GET;
 $info = $_SESSION[$scope . 'info'];
 $hst_units = $_SESSION['hst_units'];
 
-// check if button was pressed and if we have to add/delete a host
-if ($_POST['new_host'] || $_POST['del_host'] || $_POST['pdf_host'] || $_POST['pdf_all']){
-	// add new host
-	if ($_POST['new_host']){
-		metaRefresh("../account/edit.php?type=host");
-		exit;
-	}
-	// delete host(s)
-	elseif ($_POST['del_host']){
-		// search for checkboxes
-		$hosts = array_keys($_POST, "on");
-		$_SESSION['delete_dn'] = $hosts;
-		if (sizeof($hosts) > 0) {
-			metaRefresh("../delete.php?type=host");
-			exit;
-		}
-	}
-	// PDF for selected hosts
-	elseif ($_POST['pdf_host']){
-		$pdf_structure = $_POST['pdf_structure'];
-		// search for checkboxes
-		$hosts = array_keys($_POST, "on");
-		$list = array();
-		// load hosts from LDAP
-		for ($i = 0; $i < sizeof($hosts); $i++) {
-			$_SESSION["accountPDF-$i"] = new accountContainer("host", "accountPDF-$i");
-			$_SESSION["accountPDF-$i"]->load_account($hosts[$i]);
-			$list[$i] = $_SESSION["accountPDF-$i"];
-		}
-		if (sizeof($list) > 0) {
-			createModulePDF($list,$pdf_structure);
-			exit;
-		}
-	}
-	// PDF for all hosts
-	elseif ($_POST['pdf_all']){
-		$list = array();
-		for ($i = 0; $i < sizeof($_SESSION[$scope . 'info']); $i++) {
-			$_SESSION["accountPDF-$i"] = new accountContainer("host", "accountPDF-$i");
-			$_SESSION["accountPDF-$i"]->load_account($_SESSION[$scope . 'info'][$i]['dn']);
-			$list[$i] = $_SESSION["accountPDF-$i"];
-		}
-		if (sizeof($list) > 0) {
-			createModulePDF($list,$_POST['pdf_structure']);
-			exit;
-		}
-	}
-}
+listDoPost($scope);
 
 echo $_SESSION['header'];
 echo "<title>listhosts</title>\n";
@@ -290,9 +243,9 @@ echo ("<p>&nbsp;</p>\n");
 }
 
 // add/delete/PDF buttons
-echo ("<input type=\"submit\" name=\"new_host\" value=\"" . _("New Host") . "\">\n");
+echo ("<input type=\"submit\" name=\"new\" value=\"" . _("New Host") . "\">\n");
 if (sizeof($info) > 0) {
-	echo ("<input type=\"submit\" name=\"del_host\" value=\"" . _("Delete Host(s)") . "\">\n");
+	echo ("<input type=\"submit\" name=\"del\" value=\"" . _("Delete Host(s)") . "\">\n");
 	echo ("<br><br><br>\n");
 	echo "<fieldset><legend><b>PDF</b></legend>\n";
 	echo ("<b>" . _('PDF structure') . ":</b>&nbsp;&nbsp;<select name=\"pdf_structure\">\n");
@@ -301,7 +254,7 @@ if (sizeof($info) > 0) {
 		echo "<option value=\"" . $pdf_structure . "\"" . (($pdf_structure == 'default.xml') ? " selected" : "") . ">" . substr($pdf_structure,0,strlen($pdf_structure)-4) . "</option>";
 	}
 	echo "</select>&nbsp;&nbsp;&nbsp;&nbsp;\n";
-	echo ("<input type=\"submit\" name=\"pdf_host\" value=\"" . _("Create PDF for selected host(s)") . "\">\n");
+	echo ("<input type=\"submit\" name=\"pdf\" value=\"" . _("Create PDF for selected host(s)") . "\">\n");
 	echo "&nbsp;";
 	echo ("<input type=\"submit\" name=\"pdf_all\" value=\"" . _("Create PDF for all hosts") . "\">\n");
 	echo "</fieldset>";

@@ -222,6 +222,62 @@ function listPrintTableHeader($scope, $searchFilter, $desc_array, $attr_array, $
 	echo "</tr>\n";
 }
 
+/**
+* Manages all POST actions (e.g. button pressed) for the account lists.
+*
+* @param string $scope account type
+*/
+function listDoPost($scope) {
+	// check if button was pressed and if we have to add/delete an account
+	if ($_POST['new'] || $_POST['del'] || $_POST['pdf'] || $_POST['pdf_all']){
+		// add new account
+		if ($_POST['new']){
+			metaRefresh("../account/edit.php?type=" . $scope);
+			exit;
+		}
+		// delete account(s)
+		elseif ($_POST['del']){
+			// search for checkboxes
+			$accounts = array_keys($_POST, "on");
+			$_SESSION['delete_dn'] = $accounts;
+			if (sizeof($accounts) > 0) {
+				metaRefresh("../delete.php?type=" . $scope);
+				exit;
+			}
+		}
+		// PDF for selected accounts
+		elseif ($_POST['pdf']){
+			$pdf_structure = $_POST['pdf_structure'];
+			// search for checkboxes
+			$accounts = array_keys($_POST, "on");
+			$list = array();
+			// load accounts from LDAP
+			for ($i = 0; $i < sizeof($accounts); $i++) {
+				$_SESSION["accountPDF-$i"] = new accountContainer($scope, "accountPDF-$i");
+				$_SESSION["accountPDF-$i"]->load_account($accounts[$i]);
+				$list[$i] = $_SESSION["accountPDF-$i"];
+			}
+			if (sizeof($list) > 0) {
+				createModulePDF($list,$pdf_structure);
+				exit;
+			}
+		}
+		// PDF for all accounts
+		elseif ($_POST['pdf_all']){
+			$list = array();
+			for ($i = 0; $i < sizeof($_SESSION[$scope . 'info']); $i++) {
+				$_SESSION["accountPDF-$i"] = new accountContainer($scope, "accountPDF-$i");
+				$_SESSION["accountPDF-$i"]->load_account($_SESSION[$scope . 'info'][$i]['dn']);
+				$list[$i] = $_SESSION["accountPDF-$i"];
+			}
+			if (sizeof($list) > 0) {
+				createModulePDF($list,$_POST['pdf_structure']);
+				exit;
+			}
+		}
+	}
+}
+
 
 /**
 * Returns the LDAP attribute names and their description for the user list

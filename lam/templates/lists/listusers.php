@@ -81,58 +81,7 @@ if ($trans_primary == "on" && !$_GET["norefresh"]) {
 $info = $_SESSION[$scope . 'info'];
 $usr_units = $_SESSION['usr_units'];
 
-// check if button was pressed and if we have to add/delete a user or create a PDF
-if ($_POST['new_user'] || $_POST['del_user'] || $_POST['pdf_user'] || $_POST['pdf_all']){
-	// add new user
-	if ($_POST['new_user']){
-		metaRefresh("../account/edit.php?type=user");
-		exit;
-	}
-	// delete user(s)
-	elseif ($_POST['del_user']){
-		// search for checkboxes
-		while ($entry = @array_pop($_POST)) {
-			if (eregi("^uid=.*$", $entry)) $users[] = $entry;
-		}
-		$_SESSION['delete_dn'] = $users;
-		if (sizeof($users) > 0) {
-			metaRefresh("../delete.php?type=user");
-			exit;
-		}
-	}
-	// PDF for selected users
-	elseif ($_POST['pdf_user']){
-		$pdf_structure = $_POST['pdf_structure'];
-		// search for checkboxes
-		while ($entry = @array_pop($_POST)) {
-			if (eregi("^uid=.*$", $entry)) $users[] = $entry;
-		}
-		$list = array();
-		// load users from LDAP
-		for ($i = 0; $i < sizeof($users); $i++) {
-			$_SESSION["accountPDF-$i"] = new accountContainer("user", "accountPDF-$i");
-			$_SESSION["accountPDF-$i"]->load_account($users[$i]);
-			$list[$i] = $_SESSION["accountPDF-$i"];
-		}
-		if (sizeof($list) > 0) {
-			createModulePDF($list,$pdf_structure);
-			exit;
-		}
-	}
-	// PDF for all users
-	elseif ($_POST['pdf_all']){
-		$list = array();
-		for ($i = 0; $i < sizeof($_SESSION[$scope . 'info']); $i++) {
-			$_SESSION["accountPDF-$i"] = new accountContainer("user", "accountPDF-$i");
-			$_SESSION["accountPDF-$i"]->load_account($_SESSION[$scope . 'info'][$i]['dn']);
-			$list[$i] = $_SESSION["accountPDF-$i"];
-		}
-		if (sizeof($list) > 0) {
-			createModulePDF($list,$_POST['pdf_structure']);
-			exit;
-		}
-	}
-}
+listDoPost($scope);
 
 echo $_SESSION['header'];
 
@@ -278,11 +227,11 @@ if ($user_count != 0) {
 		// checkboxes if selectall = "yes"
 		if ($_GET['selectall'] == "yes") {
 			echo "<td height=22 align=\"center\">\n<input onClick=\"user_click(this, '" . $info[$i]["dn"] . "')\" type=\"checkbox\" name=\"" .
-				$info[$i]["dn"] . "\" value=\"" . $info[$i]["dn"] . "\" checked>\n</td>\n";
+				$info[$i]["dn"] . "\" checked>\n</td>\n";
 		}
 		else {
 			echo "<td height=22 align=\"center\">\n<input onClick=\"user_click(this, '" . $info[$i]["dn"] . "')\" type=\"checkbox\" name=\"" .
-				$info[$i]["dn"] . "\" value=\"" . $info[$i]["dn"] . "\">\n</td>\n";
+				$info[$i]["dn"] . "\">\n</td>\n";
 		}
 		echo ("<td align='center'>\n<a href=\"../account/edit.php?type=user&amp;DN='" . $info[$i]["dn"] . "'\">" .
 			_("Edit") . "</a>\n</td>\n");
@@ -356,9 +305,9 @@ if (in_array("gidnumber", $attr_array)) {
 echo ("<p>&nbsp;</p>\n");
 
 // new/delete/PDF buttons
-echo ("<input type=\"submit\" name=\"new_user\" value=\"" . _("New user") . "\">\n");
+echo ("<input type=\"submit\" name=\"new\" value=\"" . _("New user") . "\">\n");
 if ($user_count != 0) {
-	echo ("<input type=\"submit\" name=\"del_user\" value=\"" . _("Delete user(s)") . "\">\n");
+	echo ("<input type=\"submit\" name=\"del\" value=\"" . _("Delete user(s)") . "\">\n");
 	echo ("<br><br><br>\n");
 	echo "<fieldset><legend><b>PDF</b></legend>\n";
 	echo ("<b>" . _('PDF structure') . ":</b>&nbsp;&nbsp;<select name=\"pdf_structure\">\n");
@@ -367,7 +316,7 @@ if ($user_count != 0) {
 		echo "<option value=\"" . $pdf_structure . "\"" . (($pdf_structure == 'default.xml') ? " selected" : "") . ">" . substr($pdf_structure,0,strlen($pdf_structure)-4) . "</option>";
 	}
 	echo "</select>&nbsp;&nbsp;&nbsp;&nbsp;\n";
-	echo ("<input type=\"submit\" name=\"pdf_user\" value=\"" . _("Create PDF for selected user(s)") . "\">\n");
+	echo ("<input type=\"submit\" name=\"pdf\" value=\"" . _("Create PDF for selected user(s)") . "\">\n");
 	echo "&nbsp;";
 	echo ("<input type=\"submit\" name=\"pdf_all\" value=\"" . _("Create PDF for all users") . "\">\n");
 	echo "</fieldset>";

@@ -60,54 +60,7 @@ $_POST = $_POST + $_GET;
 $info = $_SESSION[$scope . 'info'];
 $grp_units = $_SESSION['grp_units'];
 
-// check if button was pressed and if we have to add/delete a group
-if ($_POST['new_group'] || $_POST['del_group'] || $_POST['pdf_group'] || $_POST['pdf_all']){
-	// add new group
-	if ($_POST['new_group']){
-		metaRefresh("../account/edit.php?type=group");
-		exit;
-	}
-	// delete group(s)
-	elseif ($_POST['del_group']){
-		// search for checkboxes
-		$groups = array_keys($_POST, "on");
-		$_SESSION['delete_dn'] = $groups;
-		if (sizeof($groups) > 0) {
-			metaRefresh("../delete.php?type=group");
-			exit;
-		}
-	}
-	// PDF for selected groups
-	elseif ($_POST['pdf_group']){
-		$pdf_structure = $_POST['pdf_structure'];
-		// search for checkboxes
-		$groups = array_keys($_POST, "on");
-		$list = array();
-		// load groups from LDAP
-		for ($i = 0; $i < sizeof($groups); $i++) {
-			$_SESSION["accountPDF-$i"] = new accountContainer("group", "accountPDF-$i");
-			$_SESSION["accountPDF-$i"]->load_account($groups[$i]);
-			$list[$i] = $_SESSION["accountPDF-$i"];
-		}
-		if (sizeof($list) > 0) {
-			createModulePDF($list,$pdf_structure);
-			exit;
-		}
-	}
-	// PDF for all groups
-	elseif ($_POST['pdf_all']){
-		$list = array();
-		for ($i = 0; $i < sizeof($_SESSION[$scope . 'info']); $i++) {
-			$_SESSION["accountPDF-$i"] = new accountContainer("group", "accountPDF-$i");
-			$_SESSION["accountPDF-$i"]->load_account($_SESSION[$scope . 'info'][$i]['dn']);
-			$list[$i] = $_SESSION["accountPDF-$i"];
-		}
-		if (sizeof($list) > 0) {
-			createModulePDF($list,$_POST['pdf_structure']);
-			exit;
-		}
-	}
-}
+listDoPost($scope);
 
 echo $_SESSION['header'];
 echo "<title>listgroups</title>\n";
@@ -305,9 +258,9 @@ if (sizeof($grp_units) > 1) {
 	echo ("<p>&nbsp;</p>\n");
 }
 
-echo ("<input type=\"submit\" name=\"new_group\" value=\"" . _("New Group") . "\">\n");
+echo ("<input type=\"submit\" name=\"new\" value=\"" . _("New Group") . "\">\n");
 if (sizeof($info) > 0) {
-	echo ("<input type=\"submit\" name=\"del_group\" value=\"" . _("Delete Group(s)") . "\">\n");
+	echo ("<input type=\"submit\" name=\"del\" value=\"" . _("Delete Group(s)") . "\">\n");
 	echo ("<br><br><br>\n");
 	echo "<fieldset><legend><b>PDF</b></legend>\n";
 	echo ("<b>" . _('PDF structure') . ":</b>&nbsp;&nbsp;<select name=\"pdf_structure\">\n");
@@ -316,7 +269,7 @@ if (sizeof($info) > 0) {
 		echo "<option value=\"" . $pdf_structure . "\"" . (($pdf_structure == 'default.xml') ? " selected" : "") . ">" . substr($pdf_structure,0,strlen($pdf_structure)-4) . "</option>";
 	}
 	echo "</select>&nbsp;&nbsp;&nbsp;&nbsp;\n";
-	echo ("<input type=\"submit\" name=\"pdf_group\" value=\"" . _("Create PDF for selected group(s)") . "\">\n");
+	echo ("<input type=\"submit\" name=\"pdf\" value=\"" . _("Create PDF for selected group(s)") . "\">\n");
 	echo "&nbsp;";
 	echo ("<input type=\"submit\" name=\"pdf_all\" value=\"" . _("Create PDF for all groups") . "\">\n");
 	echo "</fieldset>";
