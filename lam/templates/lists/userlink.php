@@ -19,7 +19,7 @@ $Id$
   along with this program; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-  This page will redirect to account.php if the given user is valid.
+  This page will redirect to account/useredit.php if the given user is valid.
   It is called from listgroups.php via the memberUID links.
 
 */
@@ -40,8 +40,8 @@ $user = str_replace("\'", '',$user);
 $dn = $_SESSION['ldap']->search_username($user);
 
 if ($dn) {
-	// redirect to account.php
-	metaRefresh("../account.php?type=user&amp;DN='$dn'");
+	// redirect to account/useredit.php
+	metaRefresh("../account/useredit.php?type=user&amp;DN='$dn'");
 
 }
 else {
