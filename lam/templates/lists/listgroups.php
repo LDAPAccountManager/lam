@@ -45,7 +45,7 @@ $grp_units = $_SESSION['grp_units'];
 if ($_POST['new_group'] || $_POST['del_group']){
 	// add new group
 	if ($_POST['new_group']){
-		metaRefresh("../account.php?type=group");
+		metaRefresh("../account/groupedit.php");
 		exit;
 	}
 	// delete group(s)
@@ -189,10 +189,10 @@ for ($i = $table_begin; $i < $table_end; $i++) {
 	echo("<tr class=\"grouplist\" onMouseOver=\"group_over(this, '" . $grp_info[$i]["dn"] . "')\"" .
 								" onMouseOut=\"group_out(this, '" . $grp_info[$i]["dn"] . "')\"" .
 								" onClick=\"group_click(this, '" . $grp_info[$i]["dn"] . "')\"" .
-								" onDblClick=\"parent.frames[1].location.href='../account.php?type=group&amp;DN=" . $grp_info[$i]["dn"] . "'\">" .
+								" onDblClick=\"parent.frames[1].location.href='../account/groupedit.php?DN=" . $grp_info[$i]["dn"] . "'\">" .
 								" <td height=22><input onClick=\"group_click(this, '" . $grp_info[$i]["dn"] . "')\" type=\"checkbox\" name=\"" . $grp_info[$i]["dn"] . "\"></td>" .
 								" <td align='center'><a href=\"../groupmembers.php?DN='" . $grp_info[$i]["dn"] . "'\">" . _("Members") . "</a>" .
-									"<hr><a href=\"../account.php?type=group&amp;DN='" . $grp_info[$i]["dn"] . "'\">" . _("Edit") . "</a></td>");
+									"<hr><a href=\"../account/groupedit.php?DN='" . $grp_info[$i]["dn"] . "'\">" . _("Edit") . "</a></td>");
 	for ($k = 0; $k < sizeof($attr_array); $k++) {
 		echo ("<td>");
 		// print all attribute entries seperated by "; "

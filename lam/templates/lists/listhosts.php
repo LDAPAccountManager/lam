@@ -45,7 +45,7 @@ $hst_units = $_SESSION['hst_units'];
 if ($_POST['new_host'] || $_POST['del_host']){
 	// add new host
 	if ($_POST['new_host']){
-		metaRefresh("../account.php?type=host");
+		metaRefresh("../account/hostedit.php");
 		exit;
 	}
 	// delete host(s)
@@ -195,9 +195,9 @@ for ($i = $table_begin; $i < $table_end; $i++) {
 	echo("<tr class=\"hostlist\" onMouseOver=\"host_over(this, '" . $hst_info[$i]["dn"] . "')\"" .
 								" onMouseOut=\"host_out(this, '" . $hst_info[$i]["dn"] . "')\"" .
 								" onClick=\"host_click(this, '" . $hst_info[$i]["dn"] . "')\"" .
-								" onDblClick=\"parent.frames[1].location.href='../account.php?type=host&amp;DN=" . $hst_info[$i]["dn"] . "'\">" .
+								" onDblClick=\"parent.frames[1].location.href='../account/hostedit.php?DN=" . $hst_info[$i]["dn"] . "'\">" .
 								" <td height=22><input onClick=\"host_click(this, '" . $hst_info[$i]["dn"] . "')\" type=\"checkbox\" name=\"" . $hst_info[$i]["dn"] . "\"></td>" .
-								" <td align='center'><a href=\"../account.php?type=host&amp;DN='" . $hst_info[$i]["dn"] . "'\">" . _("Edit") . "</a></td>");
+								" <td align='center'><a href=\"../account/hostedit.php?DN='" . $hst_info[$i]["dn"] . "'\">" . _("Edit") . "</a></td>");
 	for ($k = 0; $k < sizeof($attr_array); $k++) {
 		echo ("<td>");
 		// print all attribute entries seperated by "; "
