@@ -24,7 +24,7 @@ $Id$
 /**
 * Manages deletion of profiles.
 *
-* @package Profiles
+* @package profiles
 * @author Roland Gruber
 */
 

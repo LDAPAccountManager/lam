@@ -22,9 +22,9 @@ $Id$
 */
 
 /**
-* This file provides functions to load and save account profiles for users/groups/hosts.
+* This file provides functions to load and save account profiles.
 *
-* @package configuration
+* @package profiles
 * @author Roland Gruber
 */
 

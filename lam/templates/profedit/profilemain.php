@@ -24,7 +24,7 @@ $Id$
 /**
 * This is the main window of the profile editor.
 *
-* @package Profiles
+* @package profiles
 * @author Roland Gruber
 */
 

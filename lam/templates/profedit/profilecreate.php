@@ -24,7 +24,7 @@ $Id$
 /**
 * Saves new/modified profiles.
 *
-* @package Profiles
+* @package profiles
 * @author Roland Gruber
 */
 
