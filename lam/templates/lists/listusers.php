@@ -82,11 +82,15 @@ for ($i = 0; $i < sizeof($temp_array); $i++) {
   }
 }
 
+$sortattrib = $_GET["sortattrib"];
+if (!$sortattrib)
+     $sortattrib = strtolower($attr_array[0]);
+
+
 // configure search filter
 // Users have the attribute "*"
 $filter = "(&(&(|(objectClass=posixAccount) (objectClass=sambaAccount)) (!(uid=*$)))";
 for ($k = 0; $k < sizeof($desc_array); $k++) {
-
   if ($_POST["filter" . strtolower($attr_array[$k])])
     $filter = $filter . "(" . strtolower($attr_array[$k]) . "=" .
       $_POST["filter" . strtolower($attr_array[$k])] . ")";
@@ -99,7 +103,7 @@ $filter = $filter . ")";
 // read entries only from ldap server if not yet stored in session or if refresh
 // button is pressed or if filter is applied
 if ($_SESSION["userlist"] && !$_POST['refresh'] && !$_POST["apply_filter"]) {
-  if ($_GET["sort"])
+  if ($_GET["sort"] == 1)
     usort ($_SESSION["userlist"], "cmp_array");
   $userinfo = $_SESSION["userlist"];
 } else {
@@ -135,7 +139,11 @@ echo "<table rules=\"all\" class=\"userlist\" width=\"100%\">\n";
 echo "<tr class=\"userlist_head\"><th width=22 height=34></th><th></th>";
 // table header
 for ($k = 0; $k < sizeof ($desc_array); $k++) {
-  echo "<th><a class=\"userlist\" href=\"listusers.php?sort=1&list=" . 
+  if ($sortattrib == strtolower($attr_array[$k]))
+    echo "<th style=\"background-color:#DDDDAC\">";
+  else
+    echo "<th>";
+  echo "<a class=\"userlist\" href=\"listusers.php?sort=1&sortattrib=" . 
     strtolower($attr_array[$k]) . "\">" . 
     $desc_array[$k] . "</a></th>";
 }
@@ -143,7 +151,8 @@ echo "</tr>\n";
 echo "<tr class=\"test\"><th width=22 height=34></th><th>";
 echo "<input type=\"submit\" name=\"apply_filter\" value=\"" . _("Apply") . "\">";
 echo "</th>";
-// table header
+
+// print input boxes for filters
 for ($k = 0; $k < sizeof ($desc_array); $k++) {
   echo "<th>";
   echo ("<input type=\"text\" name=\"filter" . strtolower ($attr_array[$k]) . 
@@ -171,7 +180,8 @@ for ($i = 0; $i < sizeof ($userinfo); $i++) { // ignore last entry in array whic
       // generate links for user members
       if (strtolower($attr_array[$k]) == "memberuid") {
 	$linklist = array();
-	for ($d = 0; $d < sizeof($userinfo[$i][strtolower($attr_array[$k])]); $d++) {
+	for ($d = 0; $d < sizeof($userinfo[$i][strtolower($attr_array[$k])]);
+	     $d++) {
 	  $user = $userinfo[$i][strtolower($attr_array[$k])][$d]; // user name
 	  $dn = $_SESSION["ldap"]->search_username($user); // DN entry
 	  // if user was found in LDAP make link, otherwise just print name
@@ -215,18 +225,19 @@ echo "</body></html>\n";
 function draw_navigation_bar ($user_count) {
   global $max_pageentrys;
   global $page;
+  global $sortattrib;
 
   echo ("<table width=\"100%\" border=\"0\" style=\"background-color:#DDDDDD\">");
   echo ("<tr>");
   echo ("<td style=\"color:#AAAAAA\"><input type=\"submit\" name=\"refresh\" value=\"" . _("Refresh") . "\">&nbsp;&nbsp;");
   if ($page != 1)
-    echo ("<a align=\"right\" class=\"userlist\" href=\"listusers.php?page=" . ($page - 1) . "\"><=</a>");
+    echo ("<a align=\"right\" class=\"userlist\" href=\"listusers.php?page=" . ($page - 1) . "&sortattrib=" . $sortattrib . "\"><=</a>");
   else
     echo ("<=");
   echo ("&nbsp;");
 
   if ($page < ($user_count / $max_pageentrys))
-    echo ("<a align=\"right\" class=\"userlist\" href=\"listusers.php?page=" . ($page + 1) . "\">=></a>");
+    echo ("<a align=\"right\" class=\"userlist\" href=\"listusers.php?page=" . ($page + 1) . "&sortattrib=" . $sortattrib . "\">=></a>");
   else
     echo ("=></td>");
 
@@ -236,7 +247,7 @@ function draw_navigation_bar ($user_count) {
       echo ("&nbsp;" . ($i + 1));
     else
       echo ("&nbsp;<a align=\"right\" class=\"userlist\" href=\"listusers.php?page=" . ($i + 1) . 
-	    "\">" . ($i + 1) . "</a>");
+	    "&sortattrib=" . $sortattrib . "\">" . ($i + 1) . "</a>");
   }
   echo ("</td></tr></table>");
 }
@@ -246,13 +257,13 @@ function draw_navigation_bar ($user_count) {
 // rows are sorted with the first attribute entry of the sort column
 // if objects have attributes with multiple values the others are ignored
 function cmp_array($a, $b) {
-  // list specifies the sort column
-  global $list;
+  // sortattrib specifies the sort column
+  global $sortattrib;
   global $attr_array;
-  // sort by first attribute with name $list
-  if (!$list) $list = strtolower($attr_array[0]);
-  if ($a[$list][0] == $b[$list][0]) return 0;
-  else if ($a[$list][0] == max($a[$list][0], $b[$list][0])) return 1;
+  // sort by first attribute with name $sortattrib
+  if ($a[$sortattrib][0] == $b[$sortattrib][0]) return 0;
+  else if ($a[$sortattrib][0] == 
+	   max($a[$sortattrib][0], $b[$sortattrib][0])) return 1;
   else return -1;
 }
 
