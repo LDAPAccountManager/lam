@@ -60,8 +60,11 @@ $page = $_GET["page"];
 if (!$page)
      $page = 1;
 
-// maximum count of user entries shown on one page
-$max_pageentrys = $_SESSION["config"]->get_MaxListEntries();
+// take maximum count of user entries shown on one page out of session
+if ($_SESSION["config"]->get_MaxListEntries() <= 0)
+     $max_pageentrys = 10;	// default setting, if not yet set
+     else
+     $max_pageentrys = $_SESSION["config"]->get_MaxListEntries();
 
 
 for ($i = 0; $i < sizeof($temp_array); $i++) {
@@ -103,7 +106,7 @@ if ($_SESSION["userlist"] && !$_POST['refresh'] && !$_POST["apply_filter"]) {
   $attrs = $attr_array;
   $sr = @ldap_search($_SESSION["ldap"]->server(),
 		     $_SESSION["config"]->get_UserSuffix(),
-		     $filter, $attrs, 0, 1000);
+		     $filter, $attrs);
   if ($sr) {
     $userinfo = ldap_get_entries ($_SESSION["ldap"]->server, $sr);
     ldap_free_result ($sr);
