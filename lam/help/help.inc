@@ -255,8 +255,8 @@ $helpArray = array (
 					"Text" => _("Filename and -path relative to netlogon-share which should be executed on logon. $user and $group are replaced with user- and groupname. Can be left empty.")),
 				"435" => array ("ext" => "FALSE", "Headline" => _("Profile path"),
 					"Text" => _("Path of the userprofile. Can be a local absolute path or a UNC-path (\\\\server\\share). $user and $group are replaced with user- and groupname. Can be left empty.")),
-				"436" => array ("ext" => "FALSE", "Headline" => _("User workstations"),
-					"Text" => _("Komma-separated list of workstations the user is allowed to login. Empty means every workstation. Can be left empty.")),
+				"436" => array ("ext" => "FALSE", "Headline" => _("Samba workstations"),
+					"Text" => _("Komma-separated list of samba workstations the user is allowed to login. Empty means every workstation. Can be left empty.")),
 				"437" => array ("ext" => "FALSE", "Headline" => _("smb home"),
 					"Text" => _("UNC-path (\\\\server\\share) of homedirectory. $user and $group are replaced with user- and groupname. Can be left empty.")),
 				"438" => array ("ext" => "FALSE", "Headline" => _("Domain"),
@@ -315,6 +315,8 @@ $helpArray = array (
 					"Text" => _("Windows well known group")),
 				"465" => array ("ext" => "FALSE", "Headline" => _("Windows groupname"),
 					"Text" => _("Windows groupname")),
+				"466" => array ("ext" => "FALSE", "Headline" => _("Unix workstations"),
+					"Text" => _("Komma-separated list of unix workstations the user is allowed to login. Empty means every workstation. Can be left empty.")),
 				// 600 - 699
 				// Roland Gruber
 				// OU-editor, domain page

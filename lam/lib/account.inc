@@ -44,11 +44,9 @@ class account { // This class keeps all needed values for any account
 	var $unix_pwdmaxage;		// string Number of days after a user has to change his password again Value must be 0<. (user|host)
 	var $unix_pwdminage;		// string Number of days a user has to wait until he\'s allowed to change his password again. Value must be 0<. (user|host)
 	var $unix_pwdexpire;	// string days since 1.1.1970 the account expires (user|host)
-	//var $unix_pwdexpire_day;	// string (1-31), day the account expires (user|host)
-	//var $unix_pwdexpire_mon;	// string (1-12) month the account expires (user|host)
-	//var $unix_pwdexpire_yea;	// string (2003-2030) year the account expires (user|host)
 	var $unix_deactivated;		// string (1|0) account deactivated? (user|host)
 	var $unix_shadowLastChange;	// string, contains the days since 1.1.1970 the password has been changed last time (user|host)
+	var $unix_host;			// list of unix hosts the user is allowed to log in
 	// Samba Account
 	var $smb_password;		// string for samba-password (user|host)
 	var $smb_password_no;		// string (1|0) set samba-password to none (user|host)
@@ -316,6 +314,8 @@ function checkunix($values, $type) { // This function checks all unix account pa
 	if ( !ereg('^(([-][1])|([0-9]*))$', $values->unix_pwdallowlogin))
 		$errors[] = array('ERROR', _('Password Expire'), _('Password Expire must be are natural number or -1.'));
 	if ( !ereg('^([0-9]*)$', $values->unix_pwdwarn)) $errors[] = array('ERROR', _('Password Warn'), _('Password Warn must be are natural number.'));
+	if ((!$values->unix_host=='') && !ereg('^([a-z]|[A-Z]|[0-9]|[.]|[-])+(([,])+([a-z]|[A-Z]|[0-9]|[.]|[-])+)*$', $values->unix_host))
+		$errors[] = array('ERROR', _('Unix workstations'), _('Unix workstations is invalid.'));
 	return $errors;
 	}
 
@@ -358,7 +358,7 @@ function checksamba($values, $type) { // This function checks all samba account 
 			if ( (!$return->smb_smbHome=='') && !ereg('^[\][\]([a-z]|[A-Z]|[0-9]|[.]|[-])+([\]([a-z]|[A-Z]|[0-9]|[.]|[-])+)+$', $return->smb_smbhome))
 				$errors[] = array('ERROR', _('smb home'), _('smb home is invalid.'));
 			if ((!$values->smb_smbuserworkstations=='') && !ereg('^([a-z]|[A-Z]|[0-9]|[.]|[-])+(([,])+([a-z]|[A-Z]|[0-9]|[.]|[-])+)*$', $values->smb_smbuserworkstations))
-				$errors[] = array('ERROR', _('User workstations'), _('User workstations is invalid.'));
+				$errors[] = array('ERROR', _('Samba workstations'), _('Samba workstations is invalid.'));
 			$return->smb_flagsW = 0;
 			if ((!$values->smb_domain=='') && !ereg('^([a-z]|[A-Z]|[0-9]|[-])+$', $values->smb_domain))
 				$errors[] = array('ERROR', _('Domain name'), _('Domain name contents invalid characters. Valid characters are: a-z, A-Z, 0-9 and -.'));
@@ -704,6 +704,7 @@ function loaduser($dn) { // Will load all needed values from an existing account
 	if (isset($attr['shadowWarning'][0])) $return->unix_pwdwarn = $attr['shadowWarning'][0];
 	if (isset($attr['shadowInactive'][0])) $return->unix_pwdallowlogin = $attr['shadowInactive'][0];
 	if (isset($attr['shadowExpire'][0])) $return->unix_pwdexpire = $attr['shadowExpire'][0]*86400;
+	if (isset($attr['host'][0])) $return->unix_host = $attr['host'][0];
 	if ($_SESSION['config']->samba3 == 'yes') {
 		if (isset($attr['sambaAcctFlags'][0])) {
 			if (strrpos($attr['sambaAcctFlags'][0], 'W')) $return->smb_flagsW=true;
@@ -920,6 +921,7 @@ function createuser($values) { // Will create the LDAP-Account
 		if ($values->smb_domain!='') $attr['domain'] = $values->smb_domain; // sambaAccount_may
 		}
 	$attr['objectClass'][3] = 'inetOrgPerson';
+	$attr['objectClass'][4] = 'account';
 	$attr['cn'] = $values->general_username; // posixAccount_req shadowAccount_req sambaAccount_may
 	$attr['uid'] = $values->general_username; // posixAccount_req
 	$attr['uidNumber'] = $values->general_uidNumber; // posixAccount_req
@@ -943,6 +945,7 @@ function createuser($values) { // Will create the LDAP-Account
 	$attr['gecos'] = $values->general_gecos; // posixAccount_may
 	$attr['description'] = $values->general_gecos; // posixAccount_may sambaAccount_may
 
+	if ($values->unix_host!='') $attr['host'] = $values->unix_host; // account_may
 	if ($values->unix_pwdminage!='') $attr['shadowMin'] = $values->unix_pwdminage; // shadowAccount_may
 	if ($values->unix_pwdmaxage!='') $attr['shadowMax'] = $values->unix_pwdmaxage; // shadowAccount_may
 	if ($values->unix_pwdwarn!='') $attr['shadowWarning'] = $values->unix_pwdwarn; // shadowAccount_may
@@ -1099,6 +1102,8 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 		$attr['gecos'] = $values->general_gecos; // posixAccount_may
 		$attr['description'] = $values->general_gecos; // posixAccount_may sambaAccount_may
 		}
+	if (($values->unix_host != $values_old->unix_host) && ($values->unix_host !=''))
+		$attr['host'] = $values->unix_host; // shadowAccount_may
 	if (($values->unix_pwdminage != $values_old->unix_pwdminage) && ($values->unix_pwdminage !=''))
 		$attr['shadowMin'] = $values->unix_pwdminage; // shadowAccount_may
 	if (($values->unix_pwdminage != $values_old->unix_pwdminage) && ($values->unix_pwdminage ==''))

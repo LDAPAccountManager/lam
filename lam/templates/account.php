@@ -97,6 +97,8 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 			else $_SESSION['account']->unix_pwdmaxage = '';
 		if (isset($_POST['f_unix_pwdminage'])) $_SESSION['account']->unix_pwdminage = $_POST['f_unix_pwdminage'];
 			else $_SESSION['account']->unix_pwdminage = '';
+		if (isset($_POST['f_unix_host'])) $_SESSION['account']->unix_host = $_POST['f_unix_host'];
+			else $_SESSION['account']->unix_host = '';
 		if (isset($_POST['f_unix_pwdexpire_mon'])) $_SESSION['account']->unix_pwdexpire = mktime(10, 0, 0, $_POST['f_unix_pwdexpire_mon'],
 			$_POST['f_unix_pwdexpire_day'], $_POST['f_unix_pwdexpire_yea']);
 		if ($_POST['f_unix_deactivated']) $_SESSION['account']->unix_deactivated = $_POST['f_unix_deactivated'];
@@ -676,9 +678,14 @@ switch ($select_local) { // Select which part of page will be loaded
 				if ($_SESSION['account']->unix_deactivated) echo ' checked ';
 				echo '></td>'."\n".'<td>'.
 				'<a href="help.php?HelpNumber=427" target="lamhelp">'._('Help').'</a>'.
-				'</td></tr><tr><td>';
-					echo _('Values with * are required');
-					echo '</td></tr>'."\n".'<tr><td>';
+				'</td></tr>'."\n".'<tr><td>';
+				echo _('Unix workstations');
+				echo '</td>'."\n".'<td><input name="f_unix_host" type="text" size="20" maxlength="80" value="' . $_SESSION['account']->unix_host . '">'.
+					'</td>'."\n".'<td>'.
+					'<a href="help.php?HelpNumber=466" target="lamhelp">'._('Help').'</a>'.
+					'</td></tr>'."\n".'<tr><td>';
+				echo _('Values with * are required');
+				echo '</td></tr>'."\n".'<tr><td>';
 				break;
 			case 'host' :
 				echo '<input name="f_unix_password_no" type="hidden" value="';
@@ -804,7 +811,7 @@ switch ($select_local) { // Select which part of page will be loaded
 					'</td>'."\n".'<td>'.
 					'<a href="help.php?HelpNumber=435" target="lamhelp">'._('Help').'</a>'.
 					'</td></tr>'."\n".'<tr><td>';
-				echo _('User workstations');
+				echo _('Samba workstations');
 				echo '</td>'."\n".'<td><input name="f_smb_smbuserworkstations" type="text" size="20" maxlength="80" value="' . $_SESSION['account']->smb_smbuserworkstations . '">'.
 					'</td>'."\n".'<td>'.
 					'<a href="help.php?HelpNumber=436" target="lamhelp">'._('Help').'</a>'.
