@@ -90,9 +90,6 @@ class Config {
   // string: password to edit preferences
   var $Passwd;
 
-  // single line with the names of all admin users
-  var $Adminstring;
-
   // suffix for users
   var $usersuffix;
 
@@ -138,23 +135,25 @@ class Config {
   // name of configuration file
   var $file;
 
-  // constructor, loads preferences from config file
-  function Config($file=0) {
-    if (!is_string($file)) {
-		$profiles = getConfigProfiles();
-		$file = $profiles[0];
+	// list of all settings in config file
+	var $settings = array("ServerURL", "Passwd", "Admins", "usersuffix", "groupsuffix", "hostsuffix",
+		"domainsuffix", "MinUID", "MaxUID", "MinGID", "MaxGID", "MinMachine", "MaxMachine",
+		"userlistAttributes", "grouplistAttributes", "hostlistAttributes", "maxlistentries",
+		"defaultLanguage", "scriptPath", "scriptServer", "samba3", "cachetimeout");
+
+
+	// constructor, loads preferences from config file
+	function Config($file=0) {
+		if (!is_string($file)) {
+			$profiles = getConfigProfiles();
+			$file = $profiles[0];
+		}
+		$this->file = $file;
+		$this->reload();
 	}
-	$this->file = $file;
-    $this->reload();
-  }
 
 	// reloads preferences from config file
 	function reload() {
-		// list of all settings in config file
-		$settings = array("ServerURL", "Passwd", "Adminstring", "usersuffix", "groupsuffix", "hostsuffix",
-			"domainsuffix", "minuid", "maxuid", "mingid", "maxgid", "minmachine", "maxmachine",
-			"userlistattributes", "grouplistattributes", "hostlistattributes", "maxlistentries",
-			"defaultlanguage", "scriptpath", "scriptServer", "samba3", "cachetimeout");
 		$conffile = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/config/" . $this->file . ".conf";
 		if (is_file($conffile) == True) {
 			$file = fopen($conffile, "r");
@@ -162,95 +161,13 @@ class Config {
 				$line = fgets($file, 1024);
 				if (($line == "\n")||($line[0] == "#")) continue; // ignore comments
 				// search keywords
-				if (strtolower(substr($line, 0, 11)) == "serverurl: ") {
-				$this->ServerURL = chop(substr($line, 11, strlen($line)-11));
-				continue;
-				}
-				if (strtolower(substr($line, 0, 8)) == "passwd: ") {
-				$this->Passwd = chop(substr($line, 8, strlen($line)-8));
-				continue;
-				}
-				if (strtolower(substr($line, 0, 8)) == "admins: ") {
-				$adminstr = chop(substr($line, 8, strlen($line)-8));
-				$this->Adminstring = $adminstr;
-				$this->Admins = explode(";", $adminstr);
-				continue;
-				}
-				if (strtolower(substr($line, 0, 12)) == "usersuffix: ") {
-				$this->usersuffix = chop(substr($line, 12, strlen($line)-12));
-				continue;
-				}
-				if (strtolower(substr($line, 0, 13)) == "groupsuffix: ") {
-				$this->groupsuffix = chop(substr($line, 13, strlen($line)-13));
-				continue;
-				}
-				if (strtolower(substr($line, 0, 12)) == "hostsuffix: ") {
-				$this->hostsuffix = chop(substr($line, 12, strlen($line)-12));
-				continue;
-				}
-				if (strtolower(substr($line, 0, 14)) == "domainsuffix: ") {
-				$this->domainsuffix = chop(substr($line, 14, strlen($line)-14));
-				continue;
-				}
-				if (strtolower(substr($line, 0, 8)) == "minuid: ") {
-				$this->MinUID = chop(substr($line, 8, strlen($line)-8));
-				continue;
-				}
-				if (strtolower(substr($line, 0, 8)) == "maxuid: ") {
-				$this->MaxUID = chop(substr($line, 8, strlen($line)-8));
-				continue;
-				}
-				if (strtolower(substr($line, 0, 8)) == "mingid: ") {
-				$this->MinGID = chop(substr($line, 8, strlen($line)-8));
-				continue;
-				}
-				if (strtolower(substr($line, 0, 8)) == "maxgid: ") {
-				$this->MaxGID = chop(substr($line, 8, strlen($line)-8));
-				continue;
-				}
-				if (strtolower(substr($line, 0, 12)) == "minmachine: ") {
-				$this->MinMachine = chop(substr($line, 12, strlen($line)-12));
-				continue;
-				}
-				if (strtolower(substr($line, 0, 12)) == "maxmachine: ") {
-				$this->MaxMachine = chop(substr($line, 12, strlen($line)-12));
-				continue;
-				}
-				if (strtolower(substr($line, 0, 20)) == "userlistattributes: ") {
-				$this->userlistAttributes = chop(substr($line, 20, strlen($line)-20));
-				continue;
-				}
-				if (strtolower(substr($line, 0, 21)) == "grouplistattributes: ") {
-				$this->grouplistAttributes = chop(substr($line, 21, strlen($line)-21));
-				continue;
-				}
-				if (strtolower(substr($line, 0, 20)) == "hostlistattributes: ") {
-				$this->hostlistAttributes = chop(substr($line, 20, strlen($line)-20));
-				continue;
-				}
-				if (strtolower(substr($line, 0, 16)) == "maxlistentries: ") {
-				$this->maxlistentries = chop(substr($line, 16, strlen($line)-16));
-				continue;
-				}
-				if (strtolower(substr($line, 0, 17)) == "defaultlanguage: ") {
-				$this->defaultLanguage = chop(substr($line, 17, strlen($line)-17));
-				continue;
-				}
-				if (strtolower(substr($line, 0, 12)) == "scriptpath: ") {
-				$this->scriptPath = chop(substr($line, 12, strlen($line)-12));
-				continue;
-				}
-				if (strtolower(substr($line, 0, 14)) == "scriptserver: ") {
-				$this->scriptServer = chop(substr($line, 14, strlen($line)-14));
-				continue;
-				}
-				if (strtolower(substr($line, 0, 8)) == "samba3: ") {
-				$this->samba3 = strtolower(chop(substr($line, 8, strlen($line)-8)));
-				continue;
-				}
-				if (strtolower(substr($line, 0, 14)) == "cachetimeout: ") {
-				$this->cachetimeout = chop(substr($line, 14, strlen($line)-14));
-				continue;
+				for ($i = 0; $i < sizeof($this->settings); $i++) {
+					$keyword = $this->settings[$i];
+					$keylen = strlen($keyword);
+					if (strtolower(substr($line, 0, $keylen + 2)) == strtolower($keyword . ": ")) {
+						$this->$keyword = chop(substr($line, $keylen + 2, strlen($line) - $keylen -2));
+						break;
+					}
 				}
 			}
 			fclose($file);
@@ -264,11 +181,6 @@ class Config {
 	function save() {
 		$conffile = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/config/" . $this->file . ".conf";
 		if (is_file($conffile) == True) {
-			// booleans to check if value was already saved
-			$save_serverURL = $save_passwd = $save_admins = $save_suffusr = $save_suffgrp = $save_suffhst =
-			$save_minUID = $save_maxUID = $save_minGID = $save_maxGID = $save_minMach = $save_maxMach =
-			$save_usrlstatrr =  $save_grplstatrr = $save_hstlstatrr = $save_maxlstent = $save_deflang =
-			$save_scriptPath = $save_scriptServer = $save_samba3 = $save_suffdom = $save_cachetime = False;
 			$file = fopen($conffile, "r");
 			$file_array = array();
 			// read config file
@@ -277,135 +189,36 @@ class Config {
 			}
 			fclose($file);
 			// generate new configuration file
+			$saved = array();	// includes all settings which have been saved
 			for ($i = 0; $i < sizeof($file_array); $i++) {
-				if (($file_array[$i] == "\n")||($file_array[$i][0] == "#")) continue; // ignore comments
+				$line = trim($file_array[$i]);
+				if (($line == "\n")||($line[0] == "#")) continue; // ignore comments
 				// search for keywords
-				if (strtolower(substr($file_array[$i], 0, 11)) == "serverurl: ") {
-					$file_array[$i] = "serverURL: " . $this->ServerURL . "\n";
-					$save_serverURL = True;
-					continue;
-				}
-				if (strtolower(substr($file_array[$i], 0, 8)) == "passwd: ") {
-					$file_array[$i] = "passwd: " . $this->Passwd . "\n";
-					$save_passwd = True;
-					continue;
-				}
-				if (strtolower(substr($file_array[$i], 0, 8)) == "admins: ") {
-					$file_array[$i] = "admins: " . $this->Adminstring . "\n";
-					$save_admins = True;
-					continue;
-				}
-				if (strtolower(substr($file_array[$i], 0, 12)) == "usersuffix: ") {
-					$file_array[$i] = "usersuffix: " . $this->usersuffix . "\n";
-					$save_suffusr = True;
-					continue;
-				}
-				if (strtolower(substr($file_array[$i], 0, 13)) == "groupsuffix: ") {
-					$file_array[$i] = "groupsuffix: " . $this->groupsuffix . "\n";
-					$save_suffgrp = True;
-					continue;
-				}
-				if (strtolower(substr($file_array[$i], 0, 12)) == "hostsuffix: ") {
-					$file_array[$i] = "hostsuffix: " . $this->hostsuffix . "\n";
-					$save_suffhst = True;
-					continue;
-				}
-				if (strtolower(substr($file_array[$i], 0, 14)) == "domainsuffix: ") {
-					$file_array[$i] = "domainsuffix: " . $this->domainsuffix . "\n";
-					$save_suffdom = True;
-					continue;
-				}
-				if (strtolower(substr($file_array[$i], 0, 8)) == "minuid: ") {
-					$file_array[$i] = "minUID: " . $this->MinUID . "\n";
-					$save_minUID = True;
-					continue;
-				}
-				if (strtolower(substr($file_array[$i], 0, 8)) == "maxuid: ") {
-					$file_array[$i] = "maxUID: " . $this->MaxUID . "\n";
-					$save_maxUID = True;
-					continue;
-				}
-				if (strtolower(substr($file_array[$i], 0, 8)) == "mingid: ") {
-					$file_array[$i] = "minGID: " . $this->MinGID . "\n";
-					$save_minGID = True;
-					continue;
-				}
-				if (strtolower(substr($file_array[$i], 0, 8)) == "maxgid: ") {
-					$file_array[$i] = "maxGID: " . $this->MaxGID . "\n";
-					$save_maxGID = True;
-					continue;
-				}
-				if (strtolower(substr($file_array[$i], 0, 12)) == "minmachine: ") {
-					$file_array[$i] = "minMachine: " . $this->MinMachine . "\n";
-					$save_minMach = True;
-					continue;
-				}
-				if (strtolower(substr($file_array[$i], 0, 12)) == "maxmachine: ") {
-					$file_array[$i] = "maxMachine: " . $this->MaxMachine . "\n";
-					$save_maxMach = True;
-					continue;
-				}
-				if (strtolower(substr($file_array[$i], 0, 20)) == "userlistattributes: ") {
-					$file_array[$i] = "userlistAttributes: " . $this->userlistAttributes . "\n";
-					$save_usrlstattr = True;
-					continue;
-				}
-				if (strtolower(substr($file_array[$i], 0, 21)) == "grouplistattributes: ") {
-					$file_array[$i] = "grouplistAttributes: " . $this->grouplistAttributes . "\n";
-					$save_grplstattr = True;
-					continue;
-				}
-				if (strtolower(substr($file_array[$i], 0, 20)) == "hostlistattributes: ") {
-					$file_array[$i] = "hostlistAttributes: " . $this->hostlistAttributes . "\n";
-					$save_hstlstattr = True;
-					continue;
-				}
-				if (strtolower(substr($file_array[$i], 0, 16)) == "maxlistentries: ") {
-					$file_array[$i] = "maxlistentries: " . $this->maxlistentries . "\n";
-					$save_maxlstent = True;
-					continue;
-				}
-				if (strtolower(substr($file_array[$i], 0, 17)) == "defaultlanguage: ") {
-					$file_array[$i] = "defaultLanguage: " . $this->defaultLanguage . "\n";
-					$save_deflang = True;
-					continue;
-				}
-				if (strtolower(substr($file_array[$i], 0, 12)) == "scriptpath: ") {
-					$file_array[$i] = "scriptPath: " . $this->scriptPath . "\n";
-					$save_scriptPath = True;
-					continue;
-				}
-				if (strtolower(substr($file_array[$i], 0, 14)) == "scriptserver: ") {
-					$file_array[$i] = "scriptServer: " . $this->scriptServer . "\n";
-					$save_scriptServer = True;
-					continue;
-				}
-				if (strtolower(substr($file_array[$i], 0, 8)) == "samba3: ") {
-					$file_array[$i] = "samba3: " . $this->samba3 . "\n";
-					$save_samba3 = True;
-					continue;
-				}
-				if (strtolower(substr($file_array[$i], 0, 14)) == "cachetimeout: ") {
-					$file_array[$i] = "cacheTimeout: " . $this->cachetimeout . "\n";
-					$save_cachetime = True;
-					continue;
+				for ($k = 0; $k < sizeof($this->settings); $k++) {
+					$keyword = $this->settings[$k];
+					$keylen = strlen($keyword);
+					if (strtolower(substr($line, 0, $keylen + 2)) == $keyword . ": ") {
+						$file_array[$i] = $keyword . ": " . $this->$keyword . "\n";
+						$saved[] = $keyword;	// mark keyword as saved
+						break;
+					}
 				}
 			}
 			// check if we have to add new entries (e.g. if user upgraded LAM and has an old config file)
-			if (!$save_serverURL == True) array_push($file_array, "\n\n# server address (e.g. ldap://localhost:389 or ldaps://localhost:636)\n" . "serverURL: " . $this->ServerURL . "\n");
-			if (!$save_passwd == True) array_push($file_array, "\n\n# password to change these preferences via webfrontend\n" . "passwd: " . $this->Passwd . "\n");
-			if (!$save_admins == True) array_push($file_array, "\n\n# list of users who are allowed to use LDAP Account Manager\n" .
+			if (!in_array("ServerURL", $saved)) array_push($file_array, "\n\n# server address (e.g. ldap://localhost:389 or ldaps://localhost:636)\n" . "serverURL: " . $this->ServerURL . "\n");
+			if (!in_array("Passwd", $saved)) array_push($file_array, "\n\n# password to change these preferences via webfrontend\n" . "passwd: " . $this->Passwd . "\n");
+			if (!in_array("Admins", $saved)) array_push($file_array, "\n\n# list of users who are allowed to use LDAP Account Manager\n" .
 								"# names have to be seperated by semicolons\n" .
-								"# e.g. admins: cn=admin,dc=yourdomain,dc=org;cn=root,dc=yourdomain,dc=org\n" . "admins: " . $this->Adminstring . "\n");
-			if (!$save_suffusr == True) array_push($file_array, "\n\n# suffix of users\n" .
+								"# e.g. admins: cn=admin,dc=yourdomain,dc=org;cn=root,dc=yourdomain,dc=org\n" . "admins: " . $this->Admins . "\n");
+			if (!in_array("usersuffix", $saved)) array_push($file_array, "\n\n# suffix of users\n" .
 								"# e.g. ou=People,dc=yourdomain,dc=org\n" . "usersuffix: " . $this->usersuffix . "\n");
-			if (!$save_suffgrp == True) array_push($file_array, "\n\n# suffix of groups\n" .
+			if (!in_array("groupsuffix", $saved)) array_push($file_array, "\n\n# suffix of groups\n" .
 								"# e.g. ou=Groups,dc=yourdomain,dc=org\n" . "groupsuffix: " . $this->groupsuffix . "\n");
-			if (!$save_suffhst == True) array_push($file_array, "\n\n# suffix of Samba hosts\n" .
+			if (!in_array("hostsuffix", $saved)) array_push($file_array, "\n\n# suffix of Samba hosts\n" .
 								"# e.g. ou=machines,dc=yourdomain,dc=org\n" . "hostsuffix: " . $this->hostsuffix . "\n");
-			if (!$save_suffdom == True) array_push($file_array, "\n\n# suffix of Samba 3 domains\n" .
+			if (!in_array("domainsuffix", $saved)) array_push($file_array, "\n\n# suffix of Samba 3 domains\n" .
 								"# e.g. ou=domains,dc=yourdomain,dc=org\n" . "domainsuffix: " . $this->domainsuffix . "\n");
-			if (!$save_minUID == True) array_push($file_array, "\n\n# minimum UID number\n" . "minUID: " . $this->MinUID . "\n");
+			if (!in_array("MinUID", $saved)) array_push($file_array, "\n\n# minimum UID number\n" . "minUID: " . $this->MinUID . "\n");
 			if (!$save_maxUID == True) array_push($file_array, "\n\n# maximum UID number\n" . "maxUID: " . $this->MaxUID . "\n");
 			if (!$save_minGID == True) array_push($file_array, "\n\n# minimum GID number\n" . "minGID: " . $this->MinGID . "\n");
 			if (!$save_maxGID == True) array_push($file_array, "\n\n# maximum GID number\n" . "maxGID: " . $this->MaxGID . "\n");
@@ -457,7 +270,7 @@ class Config {
 		echo "<b>" . _("Default language") . ": </b>" . $this->defaultLanguage . "<br>";
 		echo "<b>" . _("Path to external script") . ": </b>" . $this->scriptPath . "<br>";
 		echo "<b>" . _("Server of external script") . ": </b>" . $this->scriptServer . "<br>";
-		echo "<b>" . _("List of valid users") . ": </b>" . $this->Adminstring;
+		echo "<b>" . _("List of valid users") . ": </b>" . $this->Admins;
 	}
 
 	// functions to read/write preferences
@@ -476,20 +289,19 @@ class Config {
 
 	// returns an array of string with all admin names
 	function get_Admins() {
-		return explode(";", $this->Adminstring);
+		return explode(";", $this->Admins);
 	}
 
 	// returns all admin users seperated by semicolons
 	function get_Adminstring() {
-		return $this->Adminstring;
+		return $this->Admins;
 	}
 
 	// needs a string that contains all admin users seperated by semicolons
 	function set_Adminstring($value) {
 		if (is_string($value) &&
 		eregi("^([a-z0-9]|-)+=([a-z0-9]|-)+(,([a-z0-9]|-)+=([a-z0-9]|-)+)+(;([a-z0-9]|-)+=([a-z0-9]|-)+(,([a-z0-9]|-)+=([a-z0-9]|-)+)+)*$", $value)) {
-			$this->Adminstring = $value;
-			$this->Admins = explode(";", $value);
+			$this->Admins = $value;
 		}
 		else return false;
 		return true;
