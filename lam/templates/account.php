@@ -233,11 +233,13 @@ if ( $_POST['create'] ) { // Create-Button was pressed
 			if ( $result==1 || $result==3 ) $select_local = 'finish';
 			break;
 		case 'group':
-			$result = creategroup(); // account.inc
+			if ($_SESSION['modify']==1) $result = modifygroup();
+			 else $result = creategroup(); // account.inc
 			if ( $result==1 || $result==3 ) $select_local = 'finish';
 			break;
 		case 'host':
-			$result = createhost(); // account.inc
+			if ($_SESSION['modify']==1) $result = modifyhost();
+			 else $result = createhost(); // account.inc
 			if ( $result==1 || $result==3 ) $select_local = 'finish';
 			break;
 		}

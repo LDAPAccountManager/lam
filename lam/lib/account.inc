@@ -977,35 +977,13 @@ function createhost() { // Will create the LDAP-Account
 	$attr['homeDirectory'] = $_SESSION['account']->general_homedir; // posixAccount_req
 
 	// posixAccount_may shadowAccount_may
-	if ($_SESSION['modify']==1) {
-		$password_old = str_replace('{CRYPT}', '',$_SESSION['account_old']->unix_password);
-		if (substr($password_old,0,1) == '!' ) $password_old = substr($password_old,1,strlen($password_old));
-		if ($_SESSION['account']->unix_password=='') {
-			if ($_SESSION['account']->unix_password_no) $password_old = '';
-			if ($_SESSION['account']->unix_deactivated) $attr['userPassword'] = '{CRYPT}!' . $password_old;
-			else $attr['userPassword'] = '{CRYPT}' . $password_old;
-			$attr['shadowLastChange'] =  $_SESSION['account_old']->unix_shadowLastChange; // shadowAccount_may
-			}
-		 else {
-			if ($_SESSION['account']->unix_deactivated) $attr['userPassword'] = '{CRYPT}!' . crypt($_SESSION['account']->unix_password);
-			else $attr['userPassword'] = '{CRYPT}' . crypt($_SESSION['account']->unix_password);
-			$attr['shadowLastChange'] = getdays(); // shadowAccount_may
-			}
-		if ($_SESSION['account']->smb_password!='') {
-			$attr['ntPassword'] = exec('../lib/createntlm.pl nt ' . $_SESSION['account']->smb_password);
-			$attr['lmPassword'] = exec('../lib/createntlm.pl lm ' . $_SESSION['account']->smb_password);
-			$attr['pwdLastSet'] = time(); // sambaAccount_may
-			}
-		}
-	 else {
-		if ($_SESSION['account']->unix_password_no) $_SESSION['account']->unix_password = '';
-		if ($_SESSION['account']->unix_deactivated) $attr['userPassword'] = '{CRYPT}!' . crypt($_SESSION['account']->unix_password);
-		else $attr['userPassword'] = '{CRYPT}' . crypt($_SESSION['account']->unix_password);
-		$attr['shadowLastChange'] = getdays(); // shadowAccount_may
-		$attr['ntPassword'] = exec('../lib/createntlm.pl nt ' . $_SESSION['account']->smb_password);
-		$attr['lmPassword'] = exec('../lib/createntlm.pl lm ' . $_SESSION['account']->smb_password);
-		$attr['pwdLastSet'] = time(); // sambaAccount_may
-		}
+	if ($_SESSION['account']->unix_password_no) $_SESSION['account']->unix_password = '';
+	if ($_SESSION['account']->unix_deactivated) $attr['userPassword'] = '{CRYPT}!' . crypt($_SESSION['account']->unix_password);
+	else $attr['userPassword'] = '{CRYPT}' . crypt($_SESSION['account']->unix_password);
+	$attr['shadowLastChange'] = getdays(); // shadowAccount_may
+	$attr['ntPassword'] = exec('../lib/createntlm.pl nt ' . $_SESSION['account']->smb_password);
+	$attr['lmPassword'] = exec('../lib/createntlm.pl lm ' . $_SESSION['account']->smb_password);
+	$attr['pwdLastSet'] = time(); // sambaAccount_may
 	if ($_SESSION['account']->smb_password_no) {
 		$attr['ntPassword'] = 'NO PASSWORD*****';
 		$attr['lmPassword'] = 'NO PASSWORD*****';
@@ -1027,81 +1005,158 @@ function createhost() { // Will create the LDAP-Account
 	$attr['acctFlags'] = smbflag(); // sambaAccount_may
 	$attr['displayName'] = $_SESSION['account']->general_gecos; // sambaAccount_may
 	if ($_SESSION['account']->smb_domain!='') $attr['domain'] = $_SESSION['account']->smb_domain; // sambaAccount_may
+	$success = ldap_add($_SESSION['ldap']->server(),$_SESSION['account']->general_dn, $attr);
+	if (!$success) return 4;
+	// Add host to groups
+	$result = ldap_search($_SESSION['ldap']->server(), 'cn='.$_SESSION['account']->general_group.','.$_SESSION['config']->get_GroupSuffix(), "objectclass=posixGroup");
+	$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
+	$group = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
+	if ($group['memberUid']) array_shift($group['memberUid']);
+	if (! in_array($_SESSION['account']->general_username, $group)) {
+		$toadd['memberUid'] = $_SESSION['account']->general_username;
+		$success = ldap_mod_add($_SESSION['ldap']->server(), 'cn='.$_SESSION['account']->general_group.','.$_SESSION['config']->get_GroupSuffix(), $toadd);
+		}
+	if (!$success) return 4;
+	// Add Host to Additional Groups
+	if ($_SESSION['account']->general_groupadd)
+		foreach ($_SESSION['account']->general_groupadd as $group2) {
+			$result = ldap_search($_SESSION['ldap']->server(), 'cn='.$group2.','.$_SESSION['config']->get_GroupSuffix(), "objectclass=posixGroup");
+			$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
+			$group = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
+			if ($group['memberUid']) array_shift($group['memberUid']);
+			if (! in_array($_SESSION['account']->general_username, $group['memberUid'])) {
+				$toadd['memberUid'] = $_SESSION['account']->general_username;
+				$success = ldap_mod_add($_SESSION['ldap']->server(), 'cn='.$group2.','.$_SESSION['config']->get_GroupSuffix(), $toadd);
+				}
+			if (!$success) return 4;
+			}
+	return 1;
+	}
 
-	if ( $_SESSION['modify'] == 1 ) {
-		if ($_SESSION['account']->general_username == $_SESSION['account_old']->general_username) // Hostname hasn't changed
-			$success = ldap_modify($_SESSION['ldap']->server(),$_SESSION['account']->general_dn, $attr);
-			else {
-				$success = ldap_add($_SESSION['ldap']->server(),$_SESSION['account']->general_dn, $attr);
-				if ($success) ldap_delete($_SESSION['ldap']->server(),$_SESSION['account_old']->general_dn);
-				}
-		if (!$success) return 5;
-		// Write Groupmemberchips
-		if ($_SESSION['account']->general_groupadd) {
-			$allgroups = $_SESSION['account']->general_groupadd;
-			if (!in_array($_SESSION['account']->general_group, $allgroups)) $allgroups[] = $_SESSION['account']->general_group;
-			}
-		 else $allgroups[0] = $_SESSION['account']->general_group;
-		$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(), 'objectClass=PosixGroup');
-		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
-		while ($entry) {
-			$modifygroup=0;
-			$attr2 = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
-			if ($attr2['memberUid']) {
-				array_shift($attr2['memberUid']);
-				foreach ($attr2['memberUid'] as $nam) {
-					if ( ($nam==$_SESSION['account']->general_username) && !in_array($nam, $allgroups)) {
-						$todelete['memberUid'] = $nam;
-						$success = ldap_mod_del($_SESSION['ldap']->server(), ldap_get_dn($_SESSION['ldap']->server(), $entry) ,$todelete);
-						}
-					}
-				if (!in_array($_SESSION['account']->general_username, $attr2['memberUid']) && in_array($attr2['cn'][0], $allgroups)) {
-					$toadd['memberUid'] = $attr2['memberUid'];
-					$toadd['memberUid'][] = $_SESSION['account']->general_username;
-					$success = ldap_mod_replace($_SESSION['ldap']->server(), ldap_get_dn($_SESSION['ldap']->server(), $entry),  $toadd);
-					}
-				}
-			 else {
-			 	if (in_array($attr2['cn'][0], $allgroups)) {
-					$toadd['memberUid'] = $_SESSION['account']->general_username;
-					$success = ldap_mod_add($_SESSION['ldap']->server(), ldap_get_dn($_SESSION['ldap']->server(), $entry),  $toadd);
-					}
-			 	}
-			$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
-			}
-		if (!$success) return 5;
-		return 3;
+function modifyhost() { // Will modify the LDAP-Account
+	// 2 == Account allready exists at different location
+	// 3 == Account has been modified
+	// 5 == Error while modifying Account
+	// Value stored in shadowExpire, days since 1.1.1970
+	$date = mktime(10,0,0, $_SESSION['account']->unix_pwdexpire_mon, $_SESSION['account']->unix_pwdexpire_day, $_SESSION['account']->unix_pwdexpire_yea) / 86400 ;
+	settype($date, 'integer');
+	$_SESSION['account']->general_dn = 'uid=' . $_SESSION['account']->general_username . ',' . $_SESSION['config']->get_UserSuffix();
+	if ($_SESSION['account']->general_username != $_SESSION['account_old']->general_username) {
+		$attr['cn'] = $_SESSION['account']->general_username; // posixAccount_req shadowAccount_req sambaAccount_may
+		$attr['uid'] = $_SESSION['account']->general_username; // posixAccount_req
+		}
+	if ($_SESSION['account']->general_uidNumber != $_SESSION['account_old']->general_uidNumber) {
+		$attr['uidNumber'] = $_SESSION['account']->general_uidNumber; // posixAccount_req
+		$attr['rid'] = (2 * $_SESSION['account']->general_uidNumber + 1000); // sambaAccount_may
+		}
+	if ($_SESSION['account']->general_group != $_SESSION['account_old']->general_group) {
+		$attr['gidNumber'] = getgid($_SESSION['account']->general_group); // posixAccount_req
+		$attr['PrimaryGroupID'] = (2 * getgid($_SESSION['account']->general_group) + 1001); // sambaAccount_req
+		}
+	if ($_SESSION['account']->general_homedir != $_SESSION['account_old']->general_homedir)
+		$attr['homeDirectory'] = $_SESSION['account']->general_homedir; // posixAccount_req
+	// posixAccount_may shadowAccount_may
+	$password_old = str_replace('{CRYPT}', '',$_SESSION['account_old']->unix_password);
+	if (substr($password_old,0,1) == '!' ) $password_old = substr($password_old,1,strlen($password_old));
+	if ($_SESSION['account']->unix_password=='') {
+		if ($_SESSION['account']->unix_password_no) $password_old = '';
+		if ($_SESSION['account']->unix_deactivated) $attr['userPassword'] = '{CRYPT}!' . $password_old;
+		else $attr['userPassword'] = '{CRYPT}' . $password_old;
+		$attr['shadowLastChange'] =  $_SESSION['account_old']->unix_shadowLastChange; // shadowAccount_may
 		}
 	 else {
-		// Write a new entry if host doesn't exists
-		$success = ldap_add($_SESSION['ldap']->server(),$_SESSION['account']->general_dn, $attr);
-		if (!$success) return 4;
-		// Add host to groups
-		$result = ldap_search($_SESSION['ldap']->server(), 'cn='.$_SESSION['account']->general_group.','.$_SESSION['config']->get_GroupSuffix(), "objectclass=posixGroup");
-		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
-		$group = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
-		if ($group['memberUid']) array_shift($group['memberUid']);
-		if (! in_array($_SESSION['account']->general_username, $group)) {
-			$toadd['memberUid'] = $_SESSION['account']->general_username;
-			$success = ldap_mod_add($_SESSION['ldap']->server(), 'cn='.$_SESSION['account']->general_group.','.$_SESSION['config']->get_GroupSuffix(), $toadd);
-			}
-		if (!$success) return 4;
-		// Add Host to Additional Groups
-		if ($_SESSION['account']->general_groupadd)
-			foreach ($_SESSION['account']->general_groupadd as $group2) {
-				$result = ldap_search($_SESSION['ldap']->server(), 'cn='.$group2.','.$_SESSION['config']->get_GroupSuffix(), "objectclass=posixGroup");
-				$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
-				$group = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
-				if ($group['memberUid']) array_shift($group['memberUid']);
-				if (! in_array($_SESSION['account']->general_username, $group['memberUid'])) {
-					$toadd['memberUid'] = $_SESSION['account']->general_username;
-					$success = ldap_mod_add($_SESSION['ldap']->server(), 'cn='.$group2.','.$_SESSION['config']->get_GroupSuffix(), $toadd);
-					}
-				if (!$success) return 4;
-			}
-		return 1;
+		if ($_SESSION['account']->unix_deactivated) $attr['userPassword'] = '{CRYPT}!' . crypt($_SESSION['account']->unix_password);
+		else $attr['userPassword'] = '{CRYPT}' . crypt($_SESSION['account']->unix_password);
+		$attr['shadowLastChange'] = getdays(); // shadowAccount_may
 		}
+	if ($_SESSION['account']->smb_password_no) {
+		$attr['ntPassword'] = 'NO PASSWORD*****';
+		$attr['lmPassword'] = 'NO PASSWORD*****';
+		$attr['pwdLastSet'] = time(); // sambaAccount_may
+		}
+	 else
+		if ($_SESSION['account']->smb_password!='') {
+			$attr['ntPassword'] = exec('../lib/createntlm.pl nt ' . $_SESSION['account']->smb_password);
+			$attr['lmPassword'] = exec('../lib/createntlm.pl lm ' . $_SESSION['account']->smb_password);
+			$attr['pwdLastSet'] = time(); // sambaAccount_may
+			}
+	if ($_SESSION['account']->general_shell != $_SESSION['account_old']->general_shell)
+		$attr['loginShell'] = $_SESSION['account']->general_shell; // posixAccount_may
+	if ($_SESSION['account']->general_gecos != $_SESSION['account_old']->general_gecos) {
+		$attr['gecos'] = $_SESSION['account']->general_gecos; // posixAccount_may
+		$attr['description'] = $_SESSION['account']->general_gecos; // posixAccount_may sambaAccount_may
+		$attr['displayName'] = $_SESSION['account']->general_gecos; // sambaAccount_may
+		}
+	if ($_SESSION['account']->general_pwdminage != $_SESSION['account_old']->general_pwdminage)
+		$attr['shadowMin'] = $_SESSION['account']->unix_pwdminage; // shadowAccount_may
+	if ($_SESSION['account']->general_pwdmaxage != $_SESSION['account_old']->general_pwdmaxage)
+		$attr['shadowMax'] = $_SESSION['account']->unix_pwdmaxage; // shadowAccount_may
+	if ($_SESSION['account']->general_pwdwarn != $_SESSION['account_old']->general_pwdwarn)
+		$attr['shadowWarning'] = $_SESSION['account']->unix_pwdwarn; // shadowAccount_may
+	if ($_SESSION['account']->general_pwdallowlogin != $_SESSION['account_old']->general_pwdallowlogin)
+		$attr['shadowInactive'] = $_SESSION['account']->unix_pwdallowlogin; // shadowAccount_may
+	if (($_SESSION['account']->unix_pwdexpire_day = $date['mday']!=$_SESSION['account_old']->unix_pwdexpire_day = $date['mday']) ||
+		($_SESSION['account']->unix_pwdexpire_mon = $date['mon'] != $_SESSION['account_old']->unix_pwdexpire_mon = $date['mon']) ||
+		($_SESSION['account']->unix_pwdexpire_yea = $date['year'] != $_SESSION['account']->unix_pwdexpire_yea = $date['year']))
+			$attr['shadowExpire'] =  $date ; // shadowAccount_may
+	if ($_SESSION['account']->smb_pwdcanchange && $_SESSION['account_old']->smb_pwdcanchange==0) $attr['pwdCanChange'] = "1"; else $attr['pwdCanChange'] = "0"; // sambaAccount_may
+	if ($_SESSION['account']->smb_pwdcanchange==0 && $_SESSION['account_old']->smb_pwdcanchange==1) $attr_rem['pwdCanChange'] = "1"; else $attr['pwdCanChange'] = "0"; // sambaAccount_may
+	if ($_SESSION['account']->smb_pwdmustchange && $_SESSION['account']->smb_pwdmustchange==0) $attr['pwdMustChange'] = "1"; else $attr['pwdMustChange'] = "0"; // sambaAccount_may
+	if ($_SESSION['account']->smb_pwdmustchange==0 && $_SESSION['account']->smb_pwdmustchange==1) $attr_rem['pwdMustChange'] = "1"; else $attr['pwdMustChange'] = "0"; // sambaAccount_may
+	$attr['acctFlags'] = smbflag(); // sambaAccount_may
+	if (($_SESSION['account']->smb_domain!='') && ($_SESSION['account']->smb_domain!=$_SESSION['account_old']->smb_domain)) $attr['domain'] = $_SESSION['account']->smb_domain; // sambaAccount_may
+	if (($_SESSION['account']->smb_domain=='') && ($_SESSION['account']->smb_domain!=$_SESSION['account_old']->smb_domain)) $attr_rem['domain'] = $_SESSION['account_old']->smb_domain; // sambaAccount_may
+
+	if ($attr_rem) $success = ldap_mod_del($_SESSION['ldap']->server(),$_SESSION['account']->general_dn, $attr_rem);
+	if (!$success) return 5;
+	if ($_SESSION['account']->general_username == $_SESSION['account_old']->general_username) // Username hasn't changed
+		$success = ldap_modify($_SESSION['ldap']->server(),$_SESSION['account']->general_dn, $attr);
+			else {
+				$result = ldap_search($_SESSION['ldap']->server(), $dn, "objectclass=PosixAccount");
+				$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
+				$attr_old = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
+				$success = ldap_add($_SESSION['ldap']->server(),$_SESSION['account']->general_dn, $attr_old);
+				if ($success) $success = ldap_delete($_SESSION['ldap']->server(),$_SESSION['account_old']->general_dn);
+				if ($success) $success = ldap_mod_replace($_SESSION['ldap']->server(),$_SESSION['account']->general_dn, $attr);
+				}
+	if (!$success) return 5;
+	// Write Groupmemberchips
+	if ($_SESSION['account']->general_groupadd) {
+		$allgroups = $_SESSION['account']->general_groupadd;
+		if (!in_array($_SESSION['account']->general_group, $allgroups)) $allgroups[] = $_SESSION['account']->general_group;
+		}
+	 else $allgroups[0] = $_SESSION['account']->general_group;
+	$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(), 'objectClass=PosixGroup');
+	$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
+	while ($entry) {
+		$modifygroup=0;
+		$attr2 = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
+		if ($attr2['memberUid']) {
+			array_shift($attr2['memberUid']);
+			foreach ($attr2['memberUid'] as $nam) {
+				if ( ($nam==$_SESSION['account']->general_username) && !in_array($nam, $allgroups)) {
+					$todelete['memberUid'] = $nam;
+					$success = ldap_mod_del($_SESSION['ldap']->server(), ldap_get_dn($_SESSION['ldap']->server(), $entry) ,$todelete);
+					}
+				}
+			if (!in_array($_SESSION['account']->general_username, $attr2['memberUid']) && in_array($attr2['cn'][0], $allgroups)) {
+				$toadd['memberUid'] = $attr2['memberUid'];
+				$toadd['memberUid'][] = $_SESSION['account']->general_username;
+				$success = ldap_mod_replace($_SESSION['ldap']->server(), ldap_get_dn($_SESSION['ldap']->server(), $entry),  $toadd);
+				}
+			}
+		 else {
+			if (in_array($attr2['cn'][0], $allgroups)) {
+				$toadd['memberUid'] = $_SESSION['account']->general_username;
+				$success = ldap_mod_add($_SESSION['ldap']->server(), ldap_get_dn($_SESSION['ldap']->server(), $entry),  $toadd);
+				}
+			}
+		$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
+		}
+	if (!$success) return 5;
+	return 3;
 	}
+
 
 
 function creategroup() { // Will create the LDAP-Group
@@ -1116,34 +1171,44 @@ function creategroup() { // Will create the LDAP-Group
 	$attr['gidNumber'] = $_SESSION['account']->general_uidNumber;
 	$attr['description'] = $_SESSION['account']->general_gecos;
 	if ($_SESSION['account']->general_memeberUid) $attr['memberUid'] = $_SESSION['account']->general_memberUid;
-	if ( $_SESSION['modify']==0 ) { // Write a new entry if group doesn't exists
-		$success = ldap_add($_SESSION['ldap']->server(),$_SESSION['account']->general_dn, $attr);
-		if ($_SESSION['config']->scriptServer) setquotas($attr['uid'][0]);
-		if ($success) return 1;
-		else return 4;
-		}
-	 else { // Modify an Existing entry
-		if ($_SESSION['account']->general_username == $_SESSION['account_old']->general_username) // Groupname hasn't changed
-			$success = ldap_modify($_SESSION['ldap']->server(),$_SESSION['account']->general_dn, $attr);
-			else {
-				$success = ldap_add($_SESSION['ldap']->server(),$_SESSION['account']->general_dn, $attr);
-				if ($success) ldap_delete($_SESSION['ldap']->server(),$_SESSION['account_old']->general_dn);
-				}
-			echo "draussen";
-		if ( $_SESSION['final_changegids']==true ) {
-			echo "drin";
-			$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_UserSuffix(), 'gidNumber=' . $_SESSION['account_old']->general_uidNumber, array('gidNumber'));
-			$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
-			while ($entry) {
-				$user['gidNumber'][0] = $_SESSION['account']->general_uidNumber;
-				ldap_modify($_SESSION['ldap']->server(), ldap_get_dn($_SESSION['ldap']->server(), $entry), $user);
-				$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
-				}
-			}
-		if ($_SESSION['config']->scriptServer) setquotas($attr['uid'][0]);
-		if ($success) return 3;
-		else return 5;
-		}
+	$success = ldap_add($_SESSION['ldap']->server(),$_SESSION['account']->general_dn, $attr);
+	if ($_SESSION['config']->scriptServer) setquotas($attr['uid'][0]);
+	if ($success) return 1;
+	else return 4;
 	}
+
+function modifygroup() { // Will modify the LDAP-Group
+	// 2 == Group allready exists at different location
+	// 3 == Group has been modified
+	// 5 == Error while modifying Group
+	$_SESSION['account']->general_dn = 'cn=' . $_SESSION['account']->general_username . ',' . $_SESSION['config']->get_GroupSuffix();
+	if ($_SESSION['account']->general_username != $_SESSION['account_old']->general_username) $attr['cn'] = $_SESSION['account']->general_username;
+	if ($_SESSION['account']->general_uidNumber != $_SESSION['account_old']->general_uidNumber) $attr['gidNumber'] = $_SESSION['account']->general_uidNumber;
+	if ($_SESSION['account']->general_gecos != $_SESSION['account_old']->general_gecos) $attr['description'] = $_SESSION['account']->general_gecos;
+	if ($_SESSION['account']->general_memeberUid != $_SESSION['account_old']->general_memberUid) $attr['memberUid'] = $_SESSION['account']->general_memberUid;
+	if ($_SESSION['account']->general_username == $_SESSION['account_old']->general_username) // Groupname hasn't changed
+		$success = ldap_mod_replace($_SESSION['ldap']->server(),$_SESSION['account']->general_dn, $attr);
+	else {
+		$result = ldap_search($_SESSION['ldap']->server(), $dn, "objectclass=PosixGroup");
+		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
+		$attr_old = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
+		$success = ldap_add($_SESSION['ldap']->server(),$_SESSION['account']->general_dn, $attr_old);
+		if ($success) ldap_delete($_SESSION['ldap']->server(),$_SESSION['account_old']->general_dn);
+		if ($success) $success = ldap_mod_replace($_SESSION['ldap']->server(),$_SESSION['account']->general_dn, $attr);
+		}
+	if ( $_SESSION['final_changegids']==true ) {
+		$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_UserSuffix(), 'gidNumber=' . $_SESSION['account_old']->general_uidNumber, array('gidNumber'));
+		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
+		while ($entry) {
+			$user['gidNumber'][0] = $_SESSION['account']->general_uidNumber;
+			ldap_modify($_SESSION['ldap']->server(), ldap_get_dn($_SESSION['ldap']->server(), $entry), $user);
+			$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
+			}
+		}
+	if ($_SESSION['config']->scriptServer) setquotas($attr['uid'][0]);
+	if ($success) return 3;
+	else return 5;
+	}
+
 
 ?>
