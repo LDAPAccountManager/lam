@@ -754,29 +754,8 @@ switch ($select_local) { // Select which part of page will be loaded
 					</td></tr>'."\n".'<tr><td>';
 				echo _('Home Drive');
 				echo '</td>'."\n".'<td><select name="f_smb_homedrive" >';
-					if ( $_SESSION['account']->smb_homedrive == 'D:' ) echo '<option selected> D:</option>'; else echo '<option> D:</option>';
-					if ( $_SESSION['account']->smb_homedrive == 'E:' ) echo '<option selected> E:</option>'; else echo '<option> E:</option>';
-					if ( $_SESSION['account']->smb_homedrive == 'F:' ) echo '<option selected> F:</option>'; else echo '<option> F:</option>';
-					if ( $_SESSION['account']->smb_homedrive == 'G:' ) echo '<option selected> G:</option>'; else echo '<option> G:</option>';
-					if ( $_SESSION['account']->smb_homedrive == 'H:' ) echo '<option selected> H:</option>'; else echo '<option> H:</option>';
-					if ( $_SESSION['account']->smb_homedrive == 'I:' ) echo '<option selected> I:</option>'; else echo '<option> I:</option>';
-					if ( $_SESSION['account']->smb_homedrive == 'J:' ) echo '<option selected> J:</option>'; else echo '<option> J:</option>';
-					if ( $_SESSION['account']->smb_homedrive == 'K:' ) echo '<option selected> K:</option>'; else echo '<option> K:</option>';
-					if ( $_SESSION['account']->smb_homedrive == 'L:' ) echo '<option selected> L:</option>'; else echo '<option> L:</option>';
-					if ( $_SESSION['account']->smb_homedrive == 'M:' ) echo '<option selected> M:</option>'; else echo '<option> M:</option>';
-					if ( $_SESSION['account']->smb_homedrive == 'N:' ) echo '<option selected> N:</option>'; else echo '<option> N:</option>';
-					if ( $_SESSION['account']->smb_homedrive == 'O:' ) echo '<option selected> O:</option>'; else echo '<option> O:</option>';
-					if ( $_SESSION['account']->smb_homedrive == 'P:' ) echo '<option selected> P:</option>'; else echo '<option> P:</option>';
-					if ( $_SESSION['account']->smb_homedrive == 'Q:' ) echo '<option selected> Q:</option>'; else echo '<option> Q:</option>';
-					if ( $_SESSION['account']->smb_homedrive == 'R:' ) echo '<option selected> R:</option>'; else echo '<option> R:</option>';
-					if ( $_SESSION['account']->smb_homedrive == 'S:' ) echo '<option selected> S:</option>'; else echo '<option> S:</option>';
-					if ( $_SESSION['account']->smb_homedrive == 'T:' ) echo '<option selected> T:</option>'; else echo '<option> T:</option>';
-					if ( $_SESSION['account']->smb_homedrive == 'U:' ) echo '<option selected> U:</option>'; else echo '<option> U:</option>';
-					if ( $_SESSION['account']->smb_homedrive == 'V:' ) echo '<option selected> V:</option>'; else echo '<option> V:</option>';
-					if ( $_SESSION['account']->smb_homedrive == 'W:' ) echo '<option selected> W:</option>'; else echo '<option> W:</option>';
-					if ( $_SESSION['account']->smb_homedrive == 'X:' ) echo '<option selected> X:</option>'; else echo '<option> X:</option>';
-					if ( $_SESSION['account']->smb_homedrive == 'Y:' ) echo '<option selected> Y:</option>'; else echo '<option> Y:</option>';
-					if ( $_SESSION['account']->smb_homedrive == 'Z:' ) echo '<option selected> Z:</option>'; else echo '<option> Z:</option>';
+					for ($i=68; $i<91; $i++)
+						if ($_SESSION['account']->smb_homedrive== chr($i).':') echo '<option selected> '.chr($i).':</option>'; else echo '<option> '.chr($i).':</option>';
 				echo	'</select></td>'."\n".'<td>
 					<a href="help.php?HelpNumber=433" target="lamhelp">'._('Help').'</a>
 					</td></tr>'."\n".'<tr><td>';
