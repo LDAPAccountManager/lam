@@ -855,10 +855,11 @@ class posixAccount extends baseModule {
 	}
 
 	function display_html_delete(&$post) {
-		if ($_SESSION[$this->base]->type=='user' && isset($_SESSION['config']->scriptPath)) {
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Delete home directory') ),
-			1 => array ( 'kind' => 'input', 'name' => 'deletehomedir', 'type' => 'checkbox'),
-			2 => array ('kind' => 'help', 'value' => 'deletehomedir'));
+		if ($this->scope == 'user' && isset($_SESSION['config']->scriptPath)) {
+			$return[] = array (
+				0 => array('kind' => 'text', 'text' => _('Delete home directory')),
+				1 => array('kind' => 'input', 'name' => 'deletehomedir', 'type' => 'checkbox'),
+				2 => array('kind' => 'help', 'value' => 'deletehomedir'));
 		}
 		return $return;
 	}
