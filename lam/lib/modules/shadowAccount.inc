@@ -36,11 +36,17 @@ class shadowAccount extends baseModule {
 	**/
 	function load_Messages() {
 		// error messages for input checks
-		$this->messages['shadowMin'][0] = array('ERROR', _('Password minage'), _('Password minage must be are natural number.'));
-		$this->messages['shadowMax'][0] = array('ERROR', _('Password maxage'), _('Password maxage must be are natural number.'));
+		$this->messages['shadowMin'][0] = array('ERROR', _('Password minage'), _('Password minimum age must be are natural number.'));
+		$this->messages['shadowMin'][1] = array('ERROR', _('Account %s:') . ' shadowAccount_minAge', _('Password minimum age must be are natural number.'));
+		$this->messages['shadowMax'][0] = array('ERROR', _('Password maxage'), _('Password maximum age must be are natural number.'));
+		$this->messages['shadowMax'][1] = array('ERROR', _('Account %s:') . ' shadowAccount_maxAge', _('Password maximum age must be are natural number.'));
 		$this->messages['inactive'][0] = array('ERROR', _('Password expire'), _('Password expire must be are natural number or -1.'));
-		$this->messages['shadowWarning'][0] = array('ERROR', _('Password warn'), _('Password warn must be are natural number.'));
-		$this->messages['shadow_cmp'][0] = array('ERROR', _('Password maxage'), _('Password maxage must bigger as Password Minage.'));
+		$this->messages['inactive'][1] = array('ERROR', _('Account %s:') . ' shadowAccount_ignoreExpire', _('Password expire must be are natural number or -1.'));
+		$this->messages['shadowWarning'][0] = array('ERROR', _('Password warning'), _('Password warning must be are natural number.'));
+		$this->messages['shadowWarning'][1] = array('ERROR', _('Account %s:') . ' shadowAccount_warning', _('Password warning must be are natural number.'));
+		$this->messages['shadow_cmp'][0] = array('ERROR', _('Password maxage'), _('Password maximum age must be bigger as password minimum age.'));
+		$this->messages['shadow_cmp'][1] = array('ERROR',  _('Account %s:') . ' shadowAccount_min/maxAge', _('Password maximum age must be bigger as password minimum age.'));
+		$this->messages['shadow_expireDate'][0] = array('ERROR',  _('Account %s:') . ' shadowAccount_expireDate', _('The expiration date is invalid.'));
 	}
 	
 	/**
@@ -64,7 +70,7 @@ class shadowAccount extends baseModule {
 		$return['profile_options'] = array(
 			// password warning
 			array(
-				0 => array('kind' => 'text', 'text' => _('Password warn')),
+				0 => array('kind' => 'text', 'text' => _('Password warning')),
 				1 => array('kind' => 'input', 'name' => 'shadowAccount_shadowWarning', 'type' => 'text', 'size' => '4', 'maxlength' => '4', 'value' => ""),
 				2 => array('kind' => 'help', 'value' => 'TODO')),
 			// password expiration
@@ -84,7 +90,7 @@ class shadowAccount extends baseModule {
 				2 => array('kind' => 'help', 'value' => 'TODO')),
 			// expiration date
 			array(
-				0 => array('kind' => 'text', 'text' => _('Expire day')),
+				0 => array('kind' => 'text', 'text' => _('Expire date')),
 				1 => array('kind' => 'table', 'value' => array(
 					0 => array (
 						0 => array('kind' => 'select', 'name' => 'shadowAccount_shadowExpire_day',
@@ -131,7 +137,7 @@ class shadowAccount extends baseModule {
 		// help Entries
 		$return['help'] = array (
 			'shadowWarning' => array (
-				"Headline" => _("Password warn"),
+				"Headline" => _("Password warning"),
 				"Text" => _("Days before password is to expire that user is warned of pending password expiration. If set value must be 0<."). ' '. _("Can be left empty.")
 			),
 			'shadowInactive' => array (
@@ -151,7 +157,39 @@ class shadowAccount extends baseModule {
 				"Text" => _("Account expire date. Format: DD-MM-YYYY")
 			)
 		);
-		
+		// upload fields
+		$return['upload_columns'] = array(
+			array(
+				'name' => 'shadowAccount_warning',
+				'description' => _('Password warning'),
+				'help' => 'shadowWarning',
+				'example' => '14'
+			),
+			array(
+				'name' => 'shadowAccount_ignoreExpire',
+				'description' => _('Password expiration ignored'),
+				'help' => 'shadowInactive',
+				'example' => '7'
+			),
+			array(
+				'name' => 'shadowAccount_minAge',
+				'description' => _('Minimum password age'),
+				'help' => 'shadowMin',
+				'example' => '1'
+			),
+			array(
+				'name' => 'shadowAccount_maxAge',
+				'description' => _('Maximum password age'),
+				'help' => 'shadowMax',
+				'example' => '365'
+			),
+			array(
+				'name' => 'shadowAccount_expireDay',
+				'description' => _('Expire date'),
+				'help' => 'shadowExpire',
+				'example' => '17-07-2011'
+			)
+		);
 		return $return;
 	}
 
@@ -254,7 +292,7 @@ class shadowAccount extends baseModule {
 		// Use dd-mm-yyyy format of date because it's easier to read for humans
 		$date = getdate ($this->attributes['shadowExpire'][0]*3600*24);
 
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Password warn') ),
+		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Password warning') ),
 			1 => array ( 'kind' => 'input', 'name' => 'shadowWarning', 'type' => 'text', 'size' => '4', 'maxlength' => '4', 'value' => $this->attributes['shadowWarning'][0] ),
 			2 => array ( 'kind' => 'help', 'value' => 'shadowWarning' ));
 		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Password expire') ),
@@ -270,7 +308,7 @@ class shadowAccount extends baseModule {
 		for ( $i=1; $i<=31; $i++ ) $mday[] = $i;
 		for ( $i=1; $i<=12; $i++ ) $mon[] = $i;
 		for ( $i=2003; $i<=2030; $i++ ) $year[] = $i;
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Expire day') ),
+		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Expire date') ),
 			1 => array ( 'kind' => 'table', 'value' => array ( 0 => array ( 0 => array ( 'kind' => 'select', 'name' => 'shadowExpire_day',
 					'options' => $mday, 'options_selected' => $date['mday']),
 				1 => array ( 'kind' => 'select', 'name' => 'shadowExpire_mon',
@@ -292,11 +330,92 @@ class shadowAccount extends baseModule {
 	 */
 	function get_pdfEntries($account_type = "user") {
 		return array(	'shadowAccount_shadowLastChange' => array('<block><key>' . _('Last password change') . '</key><value>' . $this->attributes['shadowLastChange'][0] . '</value></block>'),
-							'shadowAccount_shadowWarning' => array('<block><key>' . _('Password warn') . '</key><value>' . $this->attributes['shadowWarn'][0] . '</value><block>'),
+							'shadowAccount_shadowWarning' => array('<block><key>' . _('Password warning') . '</key><value>' . $this->attributes['shadowWarn'][0] . '</value><block>'),
 							'shadowAccount_shadowInactive' => array('<block><key>' . _('Account inactive') . '</key><value>' . $this->attributes['shadowInactive'][0] . '</value></block>'),
 							'shadowAccount_shadowExpire' => array('<block><key>' . _('Password expire') . '</key><value>' . date('d. m. Y',$this->attributes['shadowExpire'][0]) . '</value></block>'),
 							'shadowAccount_shadowFlag' => array('<block><key>' . _('Shadow flag') . '</key><value>' . $this->attributes['shadowFlag'][0] . '</value></bock>'),
 							'shadowAccount_description' => array('<block><key>' . _('Description') . '</key><value>' . $this->attributes['description'][0] . '</value></block>'));
+	}
+
+	/**
+	* In this function the LDAP account is built up.
+	*
+	* @param array $rawAccounts list of hash arrays (name => value) from user input
+	* @param array $partialAccounts list of hash arrays (name => value) which are later added to LDAP
+	* @param array $ids list of IDs for column position (e.g. "posixAccount_uid" => 5)
+	* @return array list of error messages if any
+	*/
+	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts) {
+		$messages = array();
+		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
+			// add object class
+			if (!in_array("shadowAccount", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "shadowAccount";
+			// password warning
+			if ($rawAccounts[$i][$ids['shadowAccount_warning']] != '') {
+				if (get_preg($rawAccounts[$i][$ids['shadowAccount_warning']], 'digit')) {
+					$partialAccounts[$i]['shadowWarning'][] = $rawAccounts[$i][$ids['shadowAccount_warning']];
+				}
+				else {
+					$errMsg = $this->messages['shadowWarning'][1];
+					array_push($errMsg, array($i));
+					$messages[] = $errMsg;
+				}
+			}
+			// password expire ignoration
+			if ($rawAccounts[$i][$ids['shadowAccount_ignoreExpire']] != '') {
+				if (get_preg($rawAccounts[$i][$ids['shadowAccount_ignoreExpire']], 'digit2')) {
+					$partialAccounts[$i]['shadowInactive'][] = $rawAccounts[$i][$ids['shadowAccount_ignoreExpire']];
+				}
+				else {
+					$errMsg = $this->messages['inactive'][1];
+					array_push($errMsg, array($i));
+					$messages[] = $errMsg;
+				}
+			}
+			// password minAge
+			if ($rawAccounts[$i][$ids['shadowAccount_minAge']] != '') {
+				if (get_preg($rawAccounts[$i][$ids['shadowAccount_minAge']], 'digit')) {
+					$partialAccounts[$i]['shadowMin'][] = $rawAccounts[$i][$ids['shadowAccount_minAge']];
+				}
+				else {
+					$errMsg = $this->messages['shadowMin'][1];
+					array_push($errMsg, array($i));
+					$messages[] = $errMsg;
+				}
+			}
+			// password maxAge
+			if ($rawAccounts[$i][$ids['shadowAccount_maxAge']] != '') {
+				if (get_preg($rawAccounts[$i][$ids['shadowAccount_maxAge']], 'digit')) {
+					$partialAccounts[$i]['shadowMax'][] = $rawAccounts[$i][$ids['shadowAccount_maxAge']];
+				}
+				else {
+					$errMsg = $this->messages['shadowMax'][1];
+					array_push($errMsg, array($i));
+					$messages[] = $errMsg;
+				}
+			}
+			// minAge <= maxAge
+			if ((($rawAccounts[$i][$ids['shadowAccount_minAge']] != '') || ($rawAccounts[$i][$ids['shadowAccount_maxAge']] != '')) &&  // if at least one is set
+			(($rawAccounts[$i][$ids['shadowAccount_minAge']] == '') || ($rawAccounts[$i][$ids['shadowAccount_maxAge']] == '') || (  // and one is not set
+			($rawAccounts[$i][$ids['shadowAccount_minAge']] > $rawAccounts[$i][$ids['shadowAccount_maxAge']])))) {  // or minAge > maxAge
+				$errMsg = $this->messages['shadow_cmp'][1];
+				array_push($errMsg, array($i));
+				$messages[] = $errMsg;
+			}
+			// expiration date
+			if ($rawAccounts[$i][$ids['shadowAccount_expireDay']] != '') {
+				if (get_preg($rawAccounts[$i][$ids['shadowAccount_expireDay']], 'date')) {
+					$parts = explode('-', $rawAccounts[$i][$ids['shadowAccount_expireDay']]);
+					$partialAccounts[$i]['shadowExpire'][] = intval(mktime(10, 0, 0, $parts[1], $parts[0], $parts[2])/3600/24);
+				}
+				else {
+					$errMsg = $this->messages['shadow_expireDate'][0];
+					array_push($errMsg, array($i));
+					$messages[] = $errMsg;
+				}
+			}
+		}
+		return $messages;
 	}
 
 }
