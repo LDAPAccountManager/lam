@@ -474,12 +474,12 @@ function buildUploadAccounts($scope, $data, $ids) {
 		$module = new $ordered[$i]($scope);
 		$errors = $module->build_uploadAccounts($data, $ids, $partialAccounts);
 		if (sizeof($errors) > 0) {
-			$errors[] = array("ERROR", _("Upload was stopped after errors in $module module!"), "");
+			$errors[] = array("ERROR", _("Upload was stopped after errors in %s module!"), "", array($module->get_alias()));
 			break;
 		}
 	}
 	if (sizeof($errors) > 0) {
-		for ($i = 0; $i < (($i < sizeof($errors)) || ($i > 49)); $i++) call_user_func_array("StatusMessage", $errors[$i]);
+		for ($i = 0; (($i < sizeof($errors)) || ($i > 49)); $i++) call_user_func_array("StatusMessage", $errors[$i]);
 		return false;
 	}
 	else return $partialAccounts;
