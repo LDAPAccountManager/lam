@@ -55,7 +55,11 @@ function display_LoginPage($config_object,$profile)
 	$_SESSION['language'] = $config_object->get_defaultLanguage();
 
 	$current_language = explode(":",$_SESSION['language']);
-	$_SESSION['header'] = "<?xml version=\"1.0\" encoding=\"" . $current_language[1] . "\"?>\n<!DOCTYPE>\n\n<html>\n	<head>\n		<meta http-equiv=\"content-type\" content=\"text/html; charset=" . $current_language[1] . "\">\n		<meta http-equiv=\"pragma\" content=\"no-cache\">\n		<meta http-equiv=\"cache-control\" content=\"no-cache\">";
+	$_SESSION['header'] = "<?xml version=\"1.0\" encoding=\"" . $current_language[1] . "\"?>\n";
+	$_SESSION['header'] .= "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd\">\n\n";
+	$_SESSION['header'] .= "<html>\n<head>\n";
+	$_SESSION['header'] .= "<meta http-equiv=\"content-type\" content=\"text/html; charset=" . $current_language[1] . "\">\n";
+	$_SESSION['header'] .= "<meta http-equiv=\"pragma\" content=\"no-cache\">\n		<meta http-equiv=\"cache-control\" content=\"no-cache\">";
 
 	// loading available languages from language.conf file
 	$languagefile = "../config/language";
@@ -289,7 +293,11 @@ if($_POST['action'] == "checklogin")
 			$_SESSION['loggedIn'] = true;
 			$_SESSION['language'] = $_POST['language']; // Write selected language in session
 			$current_language = explode(":",$_SESSION['language']);
-			$_SESSION['header'] = "<?xml version=\"1.0\" encoding=\"" . $current_language[1] . "\"?>\n<!DOCTYPE>\n\n<html>\n	<head>\n		<meta http-equiv=\"content-type\" content=\"text/html; charset=" . $current_language[1] . "\">\n		<meta http-equiv=\"pragma\" content=\"no-cache\">\n		<meta http-equiv=\"cache-control\" content=\"no-cache\">";
+			$_SESSION['header'] = "<?xml version=\"1.0\" encoding=\"" . $current_language[1] . "\"?>\n";
+			$_SESSION['header'] .= "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd\">\n\n";
+			$_SESSION['header'] .= "<html>\n<head>\n";
+			$_SESSION['header'] .= "<meta http-equiv=\"content-type\" content=\"text/html; charset=" . $current_language[1] . "\">\n";
+			$_SESSION['header'] .= "<meta http-equiv=\"pragma\" content=\"no-cache\">\n		<meta http-equiv=\"cache-control\" content=\"no-cache\">";
 
 			include("./main.php"); // Load main frame
 		}
