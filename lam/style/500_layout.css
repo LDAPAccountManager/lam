@@ -53,6 +53,12 @@ font-weight:bold;
 background-color:#CCCCFF;
 }
 
+fieldset {
+color:darkgreen;
+background-color:#EEEEEE;
+}
+
+
 
 /**
  * table style for userlist.php
