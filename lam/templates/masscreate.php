@@ -238,10 +238,10 @@ function showColumnData($module, $data) {
 	echo "<br>\n";
 	echo "<ul>\n";
 		echo "<li>\n";
-			echo "<b>" . _("Identifier:") . "</b> " . $data['name'] . "\n";
+			echo "<b>" . _("Identifier") . ":</b> " . $data['name'] . "\n";
 		echo "</li>\n";
 		echo "<li>\n";
-			echo "<b>" . _("Example value:") . "</b> " . $data['example'] . "\n";
+			echo "<b>" . _("Example value") . ":</b> " . $data['example'] . "\n";
 		echo "</li>\n";
 		echo "<li>\n";
 			echo "<a href=\"help.php?module=" . $module . "&amp;HelpNumber=" . $data['help'] . "\" target=\"lamhelp\">" . _("Help") . "</a>\n";
