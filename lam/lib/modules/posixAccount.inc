@@ -151,7 +151,7 @@ class posixAccount {
 	* error checkings
 	*/
 	function pages() {
-		return array('attributes', 'groups');
+		return array('attributes', 'group');
 		}
 
 	/*

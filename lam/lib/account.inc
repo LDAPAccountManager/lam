@@ -772,20 +772,22 @@ class accountContainer {
 	*/
 	function check_attributes() {
 		$return = array();
-		// get named list of attributes
-		$attributes = array_keys($this->attributes);
-		for ($i=0; $i<count($attributes); $i++) {
-			$singleattribute = array_keys ($this->attributes[$attributes[$i]]);
-			for ($j=0; $j<count($singleattribute); $j++) {
-				// found attribute which must be set
-				if ($this->attributes[$attributes[$i]][$singleattribute[$j]]=='MUST') {
-					// Check if attribute is set
-					if ($this->module[$singleattribute[$j]]->attributes[$attributes[$i]]=='')
-						if (!in_array($singleattribute[$j], $return)) $return[] = $singleattribute[$j];
+		if (is_array($this->attributes)) {
+			// get named list of attributes
+			$attributes = array_keys($this->attributes);
+			for ($i=0; $i<count($attributes); $i++) {
+				$singleattribute = array_keys ($this->attributes[$attributes[$i]]);
+				for ($j=0; $j<count($singleattribute); $j++) {
+					// found attribute which must be set
+					if ($this->attributes[$attributes[$i]][$singleattribute[$j]]=='MUST') {
+						// Check if attribute is set
+						if ($this->module[$singleattribute[$j]]->attributes[$attributes[$i]]=='')
+							if (!in_array($singleattribute[$j], $return)) $return[] = $singleattribute[$j];
+						}
 					}
 				}
+			return $return;
 			}
-		return $return;
 		}
 
 	/* This function adds an objectClass class (module) to accountContainer
@@ -852,6 +854,39 @@ class accountContainer {
 		// Write Module-Order in variable
 		$this->order = $order;
 		return 0;
+		}
+
+	function display_profile($post) {
+		$return = array();
+		$post = array();
+		$module = array_keys ($this->module);
+		foreach ($module as $singlemodule) {
+			// get list of display functions.
+			$list = $this->module[$singlemodule]->pages();
+			foreach ($list as $item) {
+				$function = 'display_html_' . $item;
+				$page = $this->module[$singlemodule]->$function($post,true);
+				//eval($function);
+				$return = array_merge($return, $page);
+				}
+			}
+		return $return;
+		}
+
+	function process_profile($post) {
+		$return = array();
+		$module = array_keys ($this->module);
+		foreach ($module as $singlemodule) {
+			// get list of display functions.
+			$list = $this->module[$singlemodule]->pages();
+			foreach ($list as $item) {
+				$function = 'display_html_' . $item;
+				$page = $this->module[$singlemodule]->$function($post,true);
+				//eval($function);
+				$return = array_merge($return, $page);
+				}
+			}
+		return $return;
 		}
 
 	/* This function will prepare the object
