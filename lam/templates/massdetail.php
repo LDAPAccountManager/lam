@@ -23,8 +23,12 @@ $Id$
   LDAP Account Manager displays table for creating or modifying accounts in LDAP
 */
 
-include_once('../lib/account.inc'); // File with custom functions
+include_once('../lib/account.inc'); // File with all account-funtions
 include_once('../lib/config.inc'); // File with configure-functions
+include_once('../lib/profiles.inc'); // functions to load and save profiles
+include_once('../lib/status.inc'); // Return error-message
+include_once('../lib/pdf.inc'); // Return a pdf-file
+include_once('../lib/ldap.inc'); // LDAP-functions
 
 session_save_path('../sess');
 @session_start();
@@ -60,43 +64,45 @@ if ($_POST['apply']) {
 	// Check if username is valid
 	if ( !ereg('^([a-z]|[0-9]|[.]|[-]|[_])*$', $_POST['f_general_username']))
 		$errors[] = array('ERROR', _('Username'), _('Username contains invalid characters. Valid characters are: a-z, 0-9 and .-_ !'));
+	else if ( !ereg('^([a-z]|[A-Z]).*$', $_POST['f_general_username']))
+		$errors[] = array('ERROR', _('Name'), _('Name contains invalid characters. First character must be a letter'));
 	else {
 		$_SESSION['accounts'][$row]->general_username = $_POST['f_general_username'];
 		// Check if user already exists
-		if (isset($_SESSION['account'][$row]->general_groupadd) && in_array($_SESSION['account'][$row]->general_group, $_SESSION['account'][$row]->general_groupadd)) {
-			for ($i=0; $i<count($_SESSION['account'][$row]->general_groupadd); $i++ )
-				if ($_SESSION['account'][$row]->general_groupadd[$i] == $_SESSION['account'][$row]->general_group) {
-					unset ($_SESSION['account'][$row]->general_groupadd[$i]);
-					$_SESSION['account'][$row]->general_groupadd = array_values($_SESSION['account'][$row]->general_groupadd);
+		if (isset($_SESSION['accounts'][$row]->general_groupadd) && in_array($_SESSION['accounts'][$row]->general_group, $_SESSION['accounts'][$row]->general_groupadd)) {
+			for ($i=0; $i<count($_SESSION['accounts'][$row]->general_groupadd); $i++ )
+				if ($_SESSION['accounts'][$row]->general_groupadd[$i] == $_SESSION['accounts'][$row]->general_group) {
+					unset ($_SESSION['accounts'][$row]->general_groupadd[$i]);
+					$_SESSION['accounts'][$row]->general_groupadd = array_values($_SESSION['accounts'][$row]->general_groupadd);
 					}
 			}
 		// Create automatic useraccount with number if original user already exists
 		// Reset name to original name if new name is in use
-		while ($temp = ldapexists($_SESSION['account'][$row], 'user')) {
+		while ($temp = ldapexists($_SESSION['accounts'][$row], 'user')) {
 			// get last character of username
-			$lastchar = substr($_SESSION['account'][$row]->general_username, strlen($_SESSION['account'][$row]->general_username)-1, 1);
+			$lastchar = substr($_SESSION['accounts'][$row]->general_username, strlen($_SESSION['accounts'][$row]->general_username)-1, 1);
 			// Last character is no number
 			if ( !ereg('^([0-9])+$', $lastchar))
-				$_SESSION['account'][$row]->general_username = $_SESSION['account'][$row]->general_username . '2';
+				$_SESSION['accounts'][$row]->general_username = $_SESSION['accounts'][$row]->general_username . '2';
 			 else {
-			 	$i=strlen($_SESSION['account'][$row]->general_username)-1;
+			 	$i=strlen($_SESSION['accounts'][$row]->general_username)-1;
 				$mark = false;
 			 	while (!$mark) {
-					if (ereg('^([0-9])+$',substr($_SESSION['account'][$row]->general_username, $i, strlen($_SESSION['account'][$row]->general_username)-$i))) $i--;
+					if (ereg('^([0-9])+$',substr($_SESSION['accounts'][$row]->general_username, $i, strlen($_SESSION['accounts'][$row]->general_username)-$i))) $i--;
 						else $mark=true;
 					}
 				// increase last number with one
-				$firstchars = substr($_SESSION['account'][$row]->general_username, 0, $i+1);
-				$lastchars = substr($_SESSION['account'][$row]->general_username, $i+1, strlen($_SESSION['account'][$row]->general_username)-$i);
-				$_SESSION['account'][$row]->general_username = $firstchars . (intval($lastchars)+1);
+				$firstchars = substr($_SESSION['accounts'][$row]->general_username, 0, $i+1);
+				$lastchars = substr($_SESSION['accounts'][$row]->general_username, $i+1, strlen($_SESSION['accounts'][$row]->general_username)-$i);
+				$_SESSION['accounts'][$row]->general_username = $firstchars . (intval($lastchars)+1);
 			 	}
 			}
 		}
 	// check if group is valid
 	if ($_POST['f_general_group']!='') $_SESSION['accounts'][$row]->general_group = $_POST['f_general_group'];
-		else $errors[] = array('Error', _('Primary group'), _('No primary group defined.'));
-	if (in_array($_POST['f_general_group'], findgroups)) $_SESSION['accounts'][$row]->general_group = $_POST['f_general_group'];
-		else $errors[] = array('Warning', _('Primary group'), _('Primary group does not exist. Will create group automaticly.'));
+		else $errors[] = array('ERROR', _('Primary group'), _('No primary group defined.'));
+	if (in_array($_POST['f_general_group'], findgroups())) $_SESSION['accounts'][$row]->general_group = $_POST['f_general_group'];
+		else $errors[] = array('WARN', _('Primary group'), _('Primary group does not exist. Will create group automaticly.'));
 	if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $_POST['f_personal_title']))  $errors[] = array('ERROR', _('Title'), _('Please enter a valid title!'));
 		else $_SESSION['accounts'][$row]->personal_title = $_POST['f_personal_title'];
 	if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $_POST['f_personal_employeeType']))  $errors[] = array('ERROR', _('Employee type'), _('Please enter a valid employee type!'));
@@ -177,7 +183,7 @@ switch ($select) {
 		echo _('Title');
 		echo '</td>'."\n".'<td>'.
 			'<input name="f_personal_title" type="text" size="10" maxlength="10" value="' . $_SESSION['accounts'][$row]->personal_title . '"> ';
-		echo $_SESSION['account']->general_surname . ' ' . $_SESSION['account']->general_givenname . '</td><td>'.
+		echo $_SESSION['accounts']->general_surname . ' ' . $_SESSION['accounts']->general_givenname . '</td><td>'.
 			'<a href="help.php?HelpNumber=448" target="lamhelp">'._('Help').'</a>'.
 			'</td></tr>'."\n".'<tr><td>';
 		echo _('Employee type');

@@ -736,7 +736,6 @@ function createuser($values) { // Will create the LDAP-Account
 	// 2 == Account already exists at different location
 	// 1 == Account has been created
 	// 4 == Error while creating Account
-
 	// values stored in shadowExpire, days since 1.1.1970
 	if ($values->unix_pwdexpire) {
 		$date = $values->unix_pwdexpire / 86400 ;
@@ -769,13 +768,18 @@ function createuser($values) { // Will create the LDAP-Account
 			$attr['sambaPwdLastSet'] = time(); // sambaAccount_may
 			}
 		else {
-			$attr['sambaNTPassword'] = exec('../../lib/createntlm.pl nt ' . $values->smb_password);
-			$attr['sambaLMPassword'] = exec('../../lib/createntlm.pl lm ' . $values->smb_password);
+			if (file_exists('../../lib/createntlm.pl')) { // masscreate.php is at a different relative path
+				$attr['sambaNTPassword'] = exec('../../lib/createntlm.pl nt ' . $values->smb_password);
+				$attr['sambaLMPassword'] = exec('../../lib/createntlm.pl lm ' . $values->smb_password);
+				}
+			else {
+				$attr['sambaNTPassword'] = exec('../lib/createntlm.pl nt ' . $values->smb_password);
+				$attr['sambaLMPassword'] = exec('../lib/createntlm.pl lm ' . $values->smb_password);
+				}
 			$attr['sambaPwdLastSet'] = time(); // sambaAccount_may
 			}
 		$attr['sambaSID'] = $values->smb_domain->SID . "-"  . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase); // sambaAccount_may
-		$attr['sambaPrimaryGroupSID'] = $values->smb_mapgroup; // sambaAccount_req
-
+		if ($values->smb_mapgroup!='') $attr['sambaPrimaryGroupSID'] = $values->smb_mapgroup; // sambaAccount_req
 		if ($values->smb_pwdcanchange!='') $attr['sambaPwdCanChange'] = $values->smb_pwdcanchange; // sambaAccount_may
 			else $attr['sambaPwdCanChange'] = time(); // sambaAccount_may
 		if ($values->smb_pwdmustchange!='') $attr['sambaPwdMustChange'] = $values->smb_pwdmustchange; // sambaAccount_may

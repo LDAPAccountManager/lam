@@ -612,7 +612,8 @@ switch ($select_local) { // Select which part of page will be loaded
 			foreach ($profilelist as $profile) echo "	<option>$profile</option>\n";
 			echo "</select>\n".
 				"<input name=\"load\" type=\"submit\" value=\""; echo _('Load Profile');
-			echo "\"></td>\n</tr>\n</table>\n</fieldset>\n";
+			echo "\"></td><td><a href=\"../help.php?HelpNumber=421\" target=\"lamhelp\">";
+			echo _('Help')."</a></td>\n</tr>\n</table>\n</fieldset>\n";
 			}
 		echo "</td></tr>\n</table>\n</td></tr></table>\n";
 
@@ -1057,6 +1058,12 @@ switch ($select_local) { // Select which part of page will be loaded
 		break;
 	case 'final':
 		// Final Settings
+		$disabled = "";
+		if ($_SESSION['config']->samba3 == 'yes') {
+			if (!isset($_SESSION['account']->smb_domain)) { // Samba page nit viewd; can not create group because if missing options
+				$disabled = "disabled";
+				}
+			}
 		echo '<input name="select" type="hidden" value="final">';
 		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
 		echo "<table><tr><td><fieldset class=\"useredit-dark\"><legend class=\"useredit-bright\"><b>";
@@ -1075,7 +1082,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo _("Save profile");
 		echo "</b></legend>\n<table border=0 width=\"100%\">\n<tr>\n<td>";
 		echo '<input name="f_finish_safeProfile" type="text" size="30" maxlength="50">';
-		echo '</td><td><input name="save" type="submit" value="';
+		echo "</td><td><input name=\"save\" type=\"submit\" $disabled value=\"";
 		echo _('Save profile');
 		echo '"></td><td><a href="../help.php?HelpNumber=457" target="lamhelp">'._('Help');
 		echo "</a></td>\n</tr>\n</table>\n</fieldset>\n</td></tr>\n<tr><td>\n";
@@ -1097,15 +1104,12 @@ switch ($select_local) { // Select which part of page will be loaded
 			echo '</tr>'."\n";
 			}
 
-		$disabled = "";
-		if ($_SESSION['config']->samba3 == 'yes') {
-			if (!isset($_SESSION['account']->smb_domain)) { // Samba page nit viewd; can not create group because if missing options
-				$disabled = "disabled";
-				echo "<tr>";
-				StatusMessage("ERROR", _("Samba Options not set!"), _("Please check settings on samba page."));
-				echo "</tr>";
-				}
+		if ($disabled=='disabled') { // Samba page nit viewd; can not create group because if missing options
+			echo "<tr>";
+			StatusMessage("ERROR", _("Samba Options not set!"), _("Please check settings on samba page."));
+			echo "</tr>";
 			}
+
 		else {
 			$found = false;
 			if (strstr($_SESSION['account']->smb_scriptPath, '$group')) $found = true;

@@ -583,6 +583,12 @@ switch ($select_local) { // Select which part of page will be loaded
 
 	case 'final':
 		// Final Settings
+		$disabled = "";
+		if ($_SESSION['config']->samba3 == 'yes') {
+			if (!isset($_SESSION['account']->smb_domain)) { // Samba page nit viewd; can not create group because if missing options
+				$disabled = "disabled";
+				}
+			}
 		echo '<input name="select" type="hidden" value="final">';
 		echo "<input name=\"select\" type=\"hidden\" value=\"final\">\n";
 		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
@@ -603,7 +609,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo _("Save profile");
 		echo "</b></legend>\n<table border=0 width=\"100%\">\n<tr>\n<td>";
 		echo '<input name="f_finish_safeProfile" type="text" size="30" maxlength="50">';
-		echo '</td><td><input name="save" type="submit" value="';
+		echo "</td><td><input name=\"save\" type=\"submit\" $disabled value=\"";
 		echo _('Save profile');
 		echo '"></td><td><a href="../help.php?HelpNumber=457" target="lamhelp">'._('Help');
 		echo "</a></td>\n</tr>\n</table>\n</fieldset>\n</td></tr>\n<tr><td>\n";
@@ -624,9 +630,7 @@ switch ($select_local) { // Select which part of page will be loaded
 			echo _('Change GID-Number of all users in group to new value');
 			echo '</td></tr>'."\n";
 			}
-		$disabled = "";
-		if ((!isset($_SESSION['account']->smb_domain)) && ($_SESSION['config']->samba3 == 'yes')) { // Samba page nit viewd; can not create group because if missing options
-			$disabled = "disabled";
+		if ($disabled == "disabled") { // Samba page nit viewd; can not create group because if missing options
 			echo "<tr>";
 			StatusMessage("ERROR", _("Samba Options not set!"), _("Please check settings on samba page."));
 			echo "</tr>";

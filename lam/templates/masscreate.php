@@ -69,8 +69,9 @@ if ($select!='pdf') {
 			echo '<meta http-equiv="refresh" content="1; URL=lists/listusers.php">'."\n".
 				'</head><body>'."\n".
 				'<form enctype="multipart/form-data" action="masscreate.php" method="post">'."\n".
-				'<table class="masscreate" width="100%">'.
-				'<tr><td></td></tr>'."\n";
+				'<a href="lists/listusers.php">';
+			echo _('Please press here if meta-refresh didn\'t work.');
+			echo "</a>\n";
 			break;
 		case 'create':
 			if ($_SESSION['pointer'] < sizeof($_SESSION['accounts'])) {
@@ -79,11 +80,9 @@ if ($select!='pdf') {
 				}
 			echo	'</head><body>'."\n".
 				'<form enctype="multipart/form-data" action="masscreate.php" method="post">'."\n".
-				'<table class="masscreate" width="100%">'.
-				'<tr><td></td></tr>'."\n";
-			echo	'<tr><td>';
-			echo	_('Creating users. Please stand by.');
-			echo	'</td></tr>'."\n";
+				"<fieldset class=\"useredit-bright\"><legend class=\"useredit-bright\"><b>";
+				echo _('Creating users. Please stand by ....');
+				echo "</b></legend>\n<table border=0 width=\"100%\">\n";
 			$stay=true;
 			while (($_SESSION['pointer'] < sizeof($_SESSION['accounts'])) && $stay) {
 				if ($_SESSION['accounts'][$_SESSION['pointer']]->general_username!='') {
@@ -123,7 +122,8 @@ if ($select!='pdf') {
 				echo _('Please press here if meta-refresh didn\'t work.');
 				echo '</a></td></tr>'."\n";
 				echo '<tr><td><input name="cancel" type="submit" value="'; echo _('Cancel');
-				echo '"></td></tr>';
+				echo '"></td></tr></table>';
+				echo "</fieldset>\n";
 				}
 			else {
 				echo '<tr><td>';
@@ -131,7 +131,7 @@ if ($select!='pdf') {
 				echo '</td></tr>'."\n".'<tr><td>';
 				echo '<tr><td><input name="cancel" type="submit" value="'; echo _('User list'); echo '">';
 				echo '</td><td></td><td><input name="pdf" type="submit" value="'; echo _('Create PDF file'); echo '">';
-				echo '</td></tr>'."\n";
+				echo '</td></tr></table>'."\n</fieldset>\n";
 				if ( isset($_SESSION['pointer'])) unset($_SESSION['pointer']);
 				if ( isset($_SESSION['errors'])) unset($_SESSION['errors']);
 				}
@@ -143,10 +143,9 @@ if ($select!='pdf') {
 				echo '<meta http-equiv="refresh" content="2; URL=masscreate.php?list2">'."\n".
 					'</head><body>'."\n".
 					'<form enctype="multipart/form-data" action="masscreate.php" method="post">'."\n".
-					'<table class="masscreate" width="100%">'.
-					'<tr><td><a href="masscreate.php?list2">';
+					'<a href="masscreate.php?list2">';
 				echo _('Please press here if meta-refresh didn\'t work.');
-				echo "</a></td></tr>\n";
+				echo "</a>\n";
 				}
 			else {
 				//echo '<meta http-equiv="refresh" content="2; URL=masscreate.php?list2">'."\n".
@@ -160,21 +159,21 @@ if ($select!='pdf') {
 				echo _('Cancel');
 				echo '</a></td><td><a href="masscreate.php?list2">';
 				echo _('Contiune');
-				echo "</a></td></tr>\n";
+				echo "</a></td></tr></table>\n";
 				}
 			break;
 		case 'list2':
 			echo	'</head><body>'."\n".
 				'<form enctype="multipart/form-data" action="masscreate.php" method="post">'."\n".
-				'<table class="masscreate" width="100%">'.
-				'<tr><td></td></tr>'."\n".
-				'<tr><td>';
+				'<table border=0 width="100%">';
+				for ($i=0; $i<sizeof($groups); $i++)
+					if ($_SESSION['accounts'][$i]->general_group!='')
+						StatusMessage('INFO', _('Group').' '.
+							$_SESSION['accounts'][$i]->general_group.' '._('not found!'), _('It will be created.'));
+			echo "</table>\n".
+				"<fieldset class=\"useredit-bright\"><legend class=\"useredit-bright\"><b>";
 			echo _('Confirm List');
-			echo '</td></tr>'."\n";
-			for ($i=0; $i<sizeof($groups); $i++)
-				if ($_SESSION['accounts'][$i]->general_group!='')
-					StatusMessage('INFO', _('Group').' '.
-						$_SESSION['accounts'][$i]->general_group.' '._('not found!'), _('It will be created.'));
+			echo "</b></legend>\n<table border=0 width=\"100%\">\n";
 			echo '<tr><td>'._('row').'</td>'."\n".'<td>'. _('Surname'). '</td>'."\n".'<td>'. _('Given name'). '</td>'."\n".'<td>'. _('User name'). '</td>'."\n".'<td>'. _('Primary group'). '</td>'."\n".'<td>'.
 				_('Details'). '</td>'."\n".'<td>' . _('Infos'). '</td>'."\n".'<td>' . _('Warnings'). '</td>'."\n".'<td>' . _('Errors') . '</td>'."\n".'</tr>'."\n";
 			if (!isset($_SESSION['rowstart'])) $_SESSION['rowstart'] = 0;
@@ -215,12 +214,15 @@ if ($select!='pdf') {
 			echo '<br>';
 			if (!$noerrors) { echo '<tr><td>'. _('There are some errors.') . '</td></tr>'."\n"; }
 			if (!$nowarn) { echo '<tr><td>'. _('There are some warnings.') . '</td></tr>'."\n"; }
-			echo '</table><br><table class="masscreate" width="100%">'.
+			echo '</table></fieldset>';
+			echo "<fieldset class=\"useredit-bright\"><legend class=\"useredit-bright\"><b>";
+			echo _('Please select page');
+			echo "</b></legend>\n<table border=0 width=\"100%\">\n".
 				'<tr><td><input name="back" type="submit" value="'; echo _('Back');
 			echo '"></td><td><input name="cancel" type="submit" value="'; echo _('Cancel');
 			echo '"></td><td><input name="list2" type="submit" value="'; echo _('Refresh'); echo '">';
 			if ($noerrors) { echo '</td><td><input name="create" type="submit" value="'; echo _('Create'); echo '">'; }
-			echo '</td></tr>'."\n";
+			echo '</td></tr>'."\n"."</table>\n</fieldset>";
 			break;
 		case 'main':
 			if ( isset($_SESSION['accounts'])) unset($_SESSION['accounts']);
@@ -230,15 +232,12 @@ if ($select!='pdf') {
 			$profilelist = getUserProfiles();
 			echo	'</head><body>'."\n".
 				'<form enctype="multipart/form-data" action="masscreate.php" method="post">'."\n".
-				'<table class="masscreate" width="100%">'.
-				'<tr><td></td></tr>'."\n".
-				'<tr><td><input name="select" type="hidden" value="main">';
+				"<fieldset class=\"useredit-bright\"><legend class=\"useredit-bright\"><b>";
 			echo _('Mass Creation');
-			echo '</td></tr><tr><td>'."\n";
+			echo "</b></legend>\n<table border=0 width=\"100%\">\n<tr>\n<td>";
 			echo _('Please provide a csv-file with the following syntax. Values with * are required:');
 			echo '</td></tr></table>'.
-				'<form enctype="multipart/form-data" action="masscreate.php" method="post">'."\n".
-				'<table class="masscreate" width="100%">'.
+				'<table class="masscreate" width="100%" border=1>'.
 				'<tr><td>'."\n";
 			echo _('Surname').'*,';
 			echo '</td>'."\n".'<td>';
@@ -263,24 +262,25 @@ if ($select!='pdf') {
 			echo _('Postal code').',';
 			echo '</td>'."\n".'<td>';
 			echo _('Postal address').',';
-			echo '</td></tr>'."\n".'<tr><td>';
-			echo _('Employee type').' &lt;CR&gt;';
-			echo '</td></tr></table>'.
-				'<form enctype="multipart/form-data" action="masscreate.php" method="post">'."\n".
-				'<table class="masscreate" width="100%">'.
-				'<tr><td>'."\n";
+			echo '</td>'."\n".'<td>';
+			echo _('Employee type');
+			echo '</td><td>&lt;CR&gt;';
+			echo '</td></tr></table>';
+			echo "<br>";
 			echo _('If Primary group is not given it\'ll used from profile.');
-			echo '</td></tr><tr><td>'."\n";
-			echo _('If PrimaryGroup does not exist it will be created.');
-			echo '</td></tr></table>'.
-				'<form enctype="multipart/form-data" action="masscreate.php" method="post">'."\n".
-				'<table class="masscreate" width="100%">'.
+			echo "<br>";
+			echo _('If Primary group does not exist it will be created.');
+			echo "</fieldset>\n";
+			echo "<fieldset class=\"useredit-bright\"><legend class=\"useredit-bright\"><b>";
+			echo _('Select settings');
+			echo "</b></legend>\n<table class=\"masscreate\" width=\"100%\">".
 				'<tr><td>'."\n";
 			echo _('Select Profile:');
 			echo '</td><td><select name="f_selectprofile">'."\n";
 			foreach ($profilelist as $profile) echo '<option>' . $profile;
-			echo '</select>'.
-				'</td></tr>'."\n".'<tr><td>';
+			echo '</select>';
+			echo "</td>\n<td><a href=\"help.php?HelpNumber=421\" target=\"lamhelp\">";
+			echo _('Help')."</a></td>\n</tr>\n<tr><td>";
 			echo _('Suffix'); echo '</td><td><select name="f_general_suffix">';
 			foreach ($_SESSION['ldap']->search_units($_SESSION['config']->get_UserSuffix()) as $suffix)
 				echo '<option>' . $suffix. '</option>';
@@ -289,11 +289,11 @@ if ($select!='pdf') {
 				'<input type="hidden" name="MAX_FILE_SIZE" value="100000">';
 			echo _('Select file:');
 			echo '</td><td><input name="userfile" type="file"></td></tr>'."\n".
-				'<tr><td><input name="tolist" type="submit" value="'; echo _('Commit'); echo '">'."\n".
-				'</td></tr>'."\n";
+				'<tr><td></td><td><input name="tolist" type="submit" value="'; echo _('Next'); echo '">'."\n".
+				'</td><td></td></tr>'."\n"."</table>\n</fieldset>\n";
 			break;
 		}
-	echo '</table></form></body></html>';
+	echo '</form></body></html>';
 	}
 
 
@@ -325,11 +325,15 @@ function loadfile() {
 			$_SESSION['accounts'][$row]->smb_password=$_SESSION['accounts'][$row]->unix_password;
 			}
 		}
+
 	for ($row2=0; $row2<sizeof($_SESSION['accounts']); $row2++) { // loops for every row
 		// Check for double entries in $_SESSION['accounts']
+		print $row2."<br>";
 		if ($row2<401) {
 			for ($i=$row2+1; $i<sizeof($_SESSION['accounts']); $i++ ) {
 				if ($_SESSION['accounts'][$row2]->general_username == $_SESSION['accounts'][$i]->general_username) { // Found user with same name
+					print $row2."-".$i."<br>";
+					print $_SESSION['accounts'][$row2]->general_username ."-". $_SESSION['accounts'][$i]->general_username ."<br>"; // Found user with same name
 					// get last character of username
 					if (!is_numeric($_SESSION['accounts'][$i]->general_username{strlen($_SESSION['accounts'][$i]->general_username)-1}))
 					$_SESSION['accounts'][$i]->general_username = $_SESSION['accounts'][$i]->general_username . '2';
@@ -352,117 +356,122 @@ function loadfile() {
 						$_SESSION['accounts'][$i]->general_username = $first . $second;
 						}
 					}
+					print $_SESSION['accounts'][$row2]->general_username ."-". $_SESSION['accounts'][$i]->general_username ."<br>"; // Found user with same name
 				}
 			if ($values->general_username != $return->general_username) $error[] = array('WARN', _('Username'), _('Username in use. Selected next free username.'));
 			$_SESSION['errors'][$row2] = array_merge($_SESSION['errors'][$row2], $error);
 			// Check if Homedir is valid
-			$_SESSION['account'][$row2]->general_homedir = str_replace('$group', $_SESSION['account'][$row2]->general_group, $_SESSION['account'][$row2]->general_homedir);
-			if ($_SESSION['account'][$row2]->general_username != '')
-				$_SESSION['account'][$row2]->general_homedir = str_replace('$user', $_SESSION['account'][$row2]->general_username, $_SESSION['account'][$row2]->general_homedir);
-			if ( !ereg('^[/]([a-z]|[A-Z])([a-z]|[A-Z]|[0-9]|[.]|[-]|[_])*([/]([a-z]|[A-Z])([a-z]|[A-Z]|[0-9]|[.]|[-]|[_])*)*$', $_SESSION['account'][$row2]->general_homedir ))
+			$_SESSION['accounts'][$row2]->general_homedir = str_replace('$group', $_SESSION['accounts'][$row2]->general_group, $_SESSION['accounts'][$row2]->general_homedir);
+			if ($_SESSION['accounts'][$row2]->general_username != '')
+				$_SESSION['accounts'][$row2]->general_homedir = str_replace('$user', $_SESSION['accounts'][$row2]->general_username, $_SESSION['accounts'][$row2]->general_homedir);
+			if ( !ereg('^[/]([a-z]|[A-Z])([a-z]|[A-Z]|[0-9]|[.]|[-]|[_])*([/]([a-z]|[A-Z])([a-z]|[A-Z]|[0-9]|[.]|[-]|[_])*)*$', $_SESSION['accounts'][$row2]->general_homedir ))
 				$errors[] = array('ERROR', _('Home directory'), _('Homedirectory contains invalid characters.'));
 			// Check if givenname is valid
-			if ( !ereg('^([a-z]|[A-Z]|[-]|[ ]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+$', $_SESSION['account'][$row2]->general_givenname)) $errors[] = array('ERROR', _('Given name'), _('Given name contains invalid characters'));
+			if ( !ereg('^([a-z]|[A-Z]|[-]|[ ]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+$', $_SESSION['accounts'][$row2]->general_givenname)) $errors[] = array('ERROR', _('Given name'), _('Given name contains invalid characters'));
 			// Check if surname is valid
-			if ( !ereg('^([a-z]|[A-Z]|[-]|[ ]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+$', $_SESSION['account'][$row2]->general_surname)) $errors[] = array('ERROR', _('Surname'), _('Surname contains invalid characters'));
-			if ( ($_SESSION['account'][$row2]->general_gecos=='') || ($_SESSION['account'][$row2]->general_gecos==' ')) {
-				$_SESSION['account'][$row2]->general_gecos = $_SESSION['account'][$row2]->general_givenname . " " . $_SESSION['account'][$row2]->general_surname ;
+			if ( !ereg('^([a-z]|[A-Z]|[-]|[ ]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+$', $_SESSION['accounts'][$row2]->general_surname)) $errors[] = array('ERROR', _('Surname'), _('Surname contains invalid characters'));
+			if ( ($_SESSION['accounts'][$row2]->general_gecos=='') || ($_SESSION['accounts'][$row2]->general_gecos==' ')) {
+				$_SESSION['accounts'][$row2]->general_gecos = $_SESSION['accounts'][$row2]->general_givenname . " " . $_SESSION['accounts'][$row2]->general_surname ;
 				$errors[] = array('INFO', _('Gecos'), _('Inserted sur- and given name in gecos-field.'));
 				}
-			if ($_SESSION['account'][$row2]->general_group=='') $errors[] = array('ERROR', _('Primary group'), _('No primary group defined!'));
+			if ($_SESSION['accounts'][$row2]->general_group=='') $errors[] = array('ERROR', _('Primary group'), _('No primary group defined!'));
 			// Check if Username contains only valid characters
-			if ( !ereg('^([a-z]|[0-9]|[.]|[-]|[_])*$', $_SESSION['account'][$row2]->general_username))
+			if ( !ereg('^([a-z]|[0-9]|[.]|[-]|[_])*$', $_SESSION['accounts'][$row2]->general_username))
 				$errors[] = array('ERROR', _('Username'), _('Username contains invalid characters. Valid characters are: a-z, 0-9 and .-_ !'));
 			// Check if user already exists
-			if (isset($_SESSION['account'][$row2]->general_groupadd) && in_array($_SESSION['account'][$row2]->general_group, $_SESSION['account'][$row2]->general_groupadd)) {
-				for ($i=0; $i<count($_SESSION['account'][$row2]->general_groupadd); $i++ )
-					if ($_SESSION['account'][$row2]->general_groupadd[$i] == $_SESSION['account'][$row2]->general_group) {
-						unset ($_SESSION['account'][$row2]->general_groupadd[$i]);
-						$_SESSION['account'][$row2]->general_groupadd = array_values($_SESSION['account'][$row2]->general_groupadd);
+			if (isset($_SESSION['accounts'][$row2]->general_groupadd) && in_array($_SESSION['accounts'][$row2]->general_group, $_SESSION['accounts'][$row2]->general_groupadd)) {
+				for ($i=0; $i<count($_SESSION['accounts'][$row2]->general_groupadd); $i++ )
+					if ($_SESSION['accounts'][$row2]->general_groupadd[$i] == $_SESSION['accounts'][$row2]->general_group) {
+						unset ($_SESSION['accounts'][$row2]->general_groupadd[$i]);
+						$_SESSION['accounts'][$row2]->general_groupadd = array_values($_SESSION['accounts'][$row2]->general_groupadd);
 						}
 				}
 			// Create automatic useraccount with number if original user already exists
 			// Reset name to original name if new name is in use
-			while ($temp = ldapexists($_SESSION['account'][$row2], 'user')) {
+			while ($temp = ldapexists($_SESSION['accounts'][$row2], 'user')) {
 				// get last character of username
-				$lastchar = substr($_SESSION['account'][$row2]->general_username, strlen($_SESSION['account'][$row2]->general_username)-1, 1);
+				$lastchar = substr($_SESSION['accounts'][$row2]->general_username, strlen($_SESSION['accounts'][$row2]->general_username)-1, 1);
 				// Last character is no number
 				if ( !ereg('^([0-9])+$', $lastchar))
-					$_SESSION['account'][$row2]->general_username = $_SESSION['account'][$row2]->general_username . '2';
+					$_SESSION['accounts'][$row2]->general_username = $_SESSION['accounts'][$row2]->general_username . '2';
 				 else {
-				 	$i=strlen($_SESSION['account'][$row2]->general_username)-1;
+				 	$i=strlen($_SESSION['accounts'][$row2]->general_username)-1;
 					$mark = false;
 				 	while (!$mark) {
-						if (ereg('^([0-9])+$',substr($_SESSION['account'][$row2]->general_username, $i, strlen($_SESSION['account'][$row2]->general_username)-$i))) $i--;
+						if (ereg('^([0-9])+$',substr($_SESSION['accounts'][$row2]->general_username, $i, strlen($_SESSION['accounts'][$row2]->general_username)-$i))) $i--;
 							else $mark=true;
 						}
 					// increase last number with one
-					$firstchars = substr($_SESSION['account'][$row2]->general_username, 0, $i+1);
-					$lastchars = substr($_SESSION['account'][$row2]->general_username, $i+1, strlen($_SESSION['account'][$row2]->general_username)-$i);
-					$_SESSION['account'][$row2]->general_username = $firstchars . (intval($lastchars)+1);
-				 	}
+					$firstchars = substr($_SESSION['accounts'][$row2]->general_username, 0, $i+1);
+					$lastchars = substr($_SESSION['accounts'][$row2]->general_username, $i+1, strlen($_SESSION['accounts'][$row2]->general_username)-$i);
+					$_SESSION['accounts'][$row2]->general_username = $firstchars . (intval($lastchars)+1);
+					}
 				}
 
 			// Check if UID is valid. If none value was entered, the next useable value will be inserted
-			$_SESSION['account'][$row2]->general_uidNumber = checkid($_SESSION['account'][$row2], 'user');
-			if (is_string($_SESSION['account'][$row2]->general_uidNumber)) { // true if checkid has returned an error
-				$errors[] = array('ERROR', _('ID-Number'), $_SESSION['account'][$row2]->general_uidNumber);
-				unset($_SESSION['account'][$row2]->general_uidNumber);
+			//$_SESSION['accounts'][$row2]->general_uidNumber = '';
+			if (is_object($_SESSION['accounts'][$row2-1])) $_SESSION['accounts'][$row2]->general_uidNumber = $_SESSION['accounts'][$row2-1]->general_uidNumber+1;
+			$_SESSION['accounts'][$row2]->general_uidNumber = checkid($_SESSION['accounts'][$row2], 'user');
+			while (is_string($_SESSION['accounts'][$row2]->general_uidNumber)) { // true if checkid has returned an error
+				$_SESSION['accounts'][$row2]->general_uidNumber = $_SESSION['accounts'][$row2]->general_uidNumber+1;
+				unset($_SESSION['accounts'][$row2]->general_uidNumber);
+				$_SESSION['accounts'][$row2]->general_uidNumber = checkid($_SESSION['accounts'][$row2], 'user');
 				}
+
 			// Check if Name-length is OK. minLength=3, maxLength=20
-			if ( !ereg('.{3,20}', $_SESSION['account'][$row2]->general_username)) $errors[] = array('ERROR', _('Name'), _('Name must contain between 3 and 20 characters.'));
+			if ( !ereg('.{3,20}', $_SESSION['accounts'][$row2]->general_username)) $errors[] = array('ERROR', _('Name'), _('Name must contain between 3 and 20 characters.'));
 			// Check if Name starts with letter
-			if ( !ereg('^([a-z]|[A-Z]).*$', $_SESSION['account'][$row2]->general_username))
+			if ( !ereg('^([a-z]|[A-Z]).*$', $_SESSION['accounts'][$row2]->general_username))
 				$errors[] = array('ERROR', _('Name'), _('Name contains invalid characters. First character must be a letter'));
 			$_SESSION['errors'][$row2] = array_merge($_SESSION['errors'][$row2], $errors);
 			if (isset($errors)) unset ($errors);
 
-			if ($_SESSION['account'][$row2]->unix_password != '') {
+			if ($_SESSION['accounts'][$row2]->unix_password != '') {
 				$iv = base64_decode($_COOKIE["IV"]);
 				$key = base64_decode($_COOKIE["Key"]);
-				$password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($_SESSION['account'][$row2]->unix_password), MCRYPT_MODE_ECB, $iv);
+				$password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($_SESSION['accounts'][$row2]->unix_password), MCRYPT_MODE_ECB, $iv);
 				$password = str_replace(chr(00), '', $password);
 				}
 			if (!ereg('^([a-z]|[A-Z]|[0-9]|[\|]|[\#]|[\*]|[\,]|[\.]|[\;]|[\:]|[\_]|[\-]|[\+]|[\!]|[\%]|[\&]|[\/]|[\?]|[\{]|[\[]|[\(]|[\)]|[\]]|[\}])*$', $password))
 				$errors[] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
-			if ( !ereg('^([0-9])*$', $_SESSION['account'][$row2]->unix_pwdminage))  $errors[] = array('ERROR', _('Password minage'), _('Password minage must be are natural number.'));
-			if ( $_SESSION['account'][$row2]->unix_pwdminage > $_SESSION['account'][$row2]->unix_pwdmaxage ) $errors[] = array('ERROR', _('Password maxage'), _('Password maxage must bigger as Password Minage.'));
-			if ( !ereg('^([0-9]*)$', $_SESSION['account'][$row2]->unix_pwdmaxage)) $errors[] = array('ERROR', _('Password maxage'), _('Password maxage must be are natural number.'));
-			if ( !ereg('^(([-][1])|([0-9]*))$', $_SESSION['account'][$row2]->unix_pwdallowlogin))
+			if ( !ereg('^([0-9])*$', $_SESSION['accounts'][$row2]->unix_pwdminage))  $errors[] = array('ERROR', _('Password minage'), _('Password minage must be are natural number.'));
+			if ( $_SESSION['accounts'][$row2]->unix_pwdminage > $_SESSION['accounts'][$row2]->unix_pwdmaxage ) $errors[] = array('ERROR', _('Password maxage'), _('Password maxage must bigger as Password Minage.'));
+			if ( !ereg('^([0-9]*)$', $_SESSION['accounts'][$row2]->unix_pwdmaxage)) $errors[] = array('ERROR', _('Password maxage'), _('Password maxage must be are natural number.'));
+			if ( !ereg('^(([-][1])|([0-9]*))$', $_SESSION['accounts'][$row2]->unix_pwdallowlogin))
 				$errors[] = array('ERROR', _('Password Expire'), _('Password expire must be are natural number or -1.'));
-			if ( !ereg('^([0-9]*)$', $_SESSION['account'][$row2]->unix_pwdwarn)) $errors[] = array('ERROR', _('Password warn'), _('Password warn must be are natural number.'));
-			if ((!$_SESSION['account'][$row2]->unix_host=='') && !ereg('^([a-z]|[A-Z]|[0-9]|[.]|[-])+(([,])+([ ])*([a-z]|[A-Z]|[0-9]|[.]|[-])+)*$', $_SESSION['account']->unix_host))
+			if ( !ereg('^([0-9]*)$', $_SESSION['accounts'][$row2]->unix_pwdwarn)) $errors[] = array('ERROR', _('Password warn'), _('Password warn must be are natural number.'));
+			if ((!$_SESSION['accounts'][$row2]->unix_host=='') && !ereg('^([a-z]|[A-Z]|[0-9]|[.]|[-])+(([,])+([ ])*([a-z]|[A-Z]|[0-9]|[.]|[-])+)*$', $_SESSION['accounts']->unix_host))
 				$errors[] = array('ERROR', _('Unix workstations'), _('Unix workstations is invalid.'));
 			$_SESSION['errors'][$row2] = array_merge($_SESSION['errors'][$row2], $errors);
 			if (isset($errors)) unset ($errors);
 
-			$_SESSION['account'][$row2]->smb_displayName = $_SESSION['account'][$row2]->general_gecos;
+			$_SESSION['accounts'][$row2]->smb_displayName = $_SESSION['accounts'][$row2]->general_gecos;
 
 			$i=0;
-			while ($_SESSION['account'][$row2]->quota[$i][0]) {
+			while ($_SESSION['accounts'][$row2]->quota[$i][0]) {
 				// Check if values are OK and set automatic values. if not error-variable will be set
-				if (!ereg('^([0-9])*$', $_SESSION['account'][$row2]->quota[$i][2]))
+				if (!ereg('^([0-9])*$', $_SESSION['accounts'][$row2]->quota[$i][2]))
 					$errors[] = array('ERROR', _('Block soft quota'), _('Block soft quota contains invalid characters. Only natural numbers are allowed'));
-				if (!ereg('^([0-9])*$', $_SESSION['account'][$row2]->quota[$i][3]))
+				if (!ereg('^([0-9])*$', $_SESSION['accounts'][$row2]->quota[$i][3]))
 					$errors[] = array('ERROR', _('Block hard quota'), _('Block hard quota contains invalid characters. Only natural numbers are allowed'));
-				if (!ereg('^([0-9])*$', $_SESSION['account'][$row2]->quota[$i][6]))
+				if (!ereg('^([0-9])*$', $_SESSION['accounts'][$row2]->quota[$i][6]))
 					$errors[] = array('ERROR', _('Inode soft quota'), _('Inode soft quota contains invalid characters. Only natural numbers are allowed'));
-				if (!ereg('^([0-9])*$', $_SESSION['account'][$row2]->quota[$i][7]))
+				if (!ereg('^([0-9])*$', $_SESSION['accounts'][$row2]->quota[$i][7]))
 					$errors[] = array('ERROR', _('Inode hard quota'), _('Inode hard quota contains invalid characters. Only natural numbers are allowed'));
 				$i++;
 				}
 			$_SESSION['errors'][$row2] = array_merge($_SESSION['errors'][$row2], $errors);
 			if (isset($errors)) unset ($errors);
 
-			if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/])*$', $_SESSION['account'][$row2]->personal_telephoneNumber))  $errors[] = array('ERROR', _('Telephone number'), _('Please enter a valid telephone number!'));
-			if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/])*$', $_SESSION['account'][$row2]->personal_mobileTelephoneNumber))  $errors[] = array('ERROR', _('Mobile number'), _('Please enter a valid mobile number!'));
-			if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/])*$', $_SESSION['account'][$row2]->personal_facsimileTelephoneNumber))  $errors[] = array('ERROR', _('Fax number'), _('Please enter a valid fax number!'));
-			if ( !ereg('^(([0-9]|[A-Z]|[a-z]|[.]|[-]|[_])+[@]([0-9]|[A-Z]|[a-z]|[-])+([.]([0-9]|[A-Z]|[a-z]|[-])+)*)*$', $_SESSION['account'][$row2]->personal_mail))  $errors[] = array('ERROR', _('eMail address'), _('Please enter a valid eMail address!'));
-			if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $_SESSION['account'][$row2]->personal_street))  $errors[] = array('ERROR', _('Street'), _('Please enter a valid street name!'));
-			if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $_SESSION['account'][$row2]->personal_postalAddress))  $errors[] = array('ERROR', _('Postal address'), _('Please enter a valid postal address!'));
-			if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $_SESSION['account'][$row2]->personal_title))  $errors[] = array('ERROR', _('Title'), _('Please enter a valid title!'));
-			if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $_SESSION['account'][$row2]->personal_employeeType))  $errors[] = array('ERROR', _('Employee type'), _('Please enter a valid employee type!'));
-			if ( !ereg('^([0-9]|[A-Z]|[a-z])*$', $_SESSION['account']->personal_postalCode))  $errors[] = array('ERROR', _('Postal code'), _('Please enter a valid postal code!'));
+			if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/])*$', $_SESSION['accounts'][$row2]->personal_telephoneNumber))  $errors[] = array('ERROR', _('Telephone number'), _('Please enter a valid telephone number!'));
+			if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/])*$', $_SESSION['accounts'][$row2]->personal_mobileTelephoneNumber))  $errors[] = array('ERROR', _('Mobile number'), _('Please enter a valid mobile number!'));
+			if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/])*$', $_SESSION['accounts'][$row2]->personal_facsimileTelephoneNumber))  $errors[] = array('ERROR', _('Fax number'), _('Please enter a valid fax number!'));
+			if ( !ereg('^(([0-9]|[A-Z]|[a-z]|[.]|[-]|[_])+[@]([0-9]|[A-Z]|[a-z]|[-])+([.]([0-9]|[A-Z]|[a-z]|[-])+)*)*$', $_SESSION['accounts'][$row2]->personal_mail))  $errors[] = array('ERROR', _('eMail address'), _('Please enter a valid eMail address!'));
+			if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $_SESSION['accounts'][$row2]->personal_street))  $errors[] = array('ERROR', _('Street'), _('Please enter a valid street name!'));
+			if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $_SESSION['accounts'][$row2]->personal_postalAddress))  $errors[] = array('ERROR', _('Postal address'), _('Please enter a valid postal address!'));
+			if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $_SESSION['accounts'][$row2]->personal_title))  $errors[] = array('ERROR', _('Title'), _('Please enter a valid title!'));
+			if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $_SESSION['accounts'][$row2]->personal_employeeType))  $errors[] = array('ERROR', _('Employee type'), _('Please enter a valid employee type!'));
+			if ( !ereg('^([0-9]|[A-Z]|[a-z])*$', $_SESSION['accounts']->personal_postalCode))  $errors[] = array('ERROR', _('Postal code'), _('Please enter a valid postal code!'));
 			$_SESSION['errors'][$row2] = array_merge($_SESSION['errors'][$row2], $errors);
 			if (isset($errors)) unset ($errors);
 
