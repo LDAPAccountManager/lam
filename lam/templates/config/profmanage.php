@@ -67,14 +67,14 @@ if ($_POST['submit']) {
 			// check profile password
 			if ($_POST['addpassword'] && $_POST['addpassword2'] && ($_POST['addpassword'] == $_POST['addpassword2'])) {
 				// create new profile file
-				@touch("../../config/" . $_POST['addprofile'] . ".conf");
+				@copy("../../config/lam.conf_sample", "../../config/" . $_POST['addprofile'] . ".conf");
 				@chmod ("../../config/" . $_POST['addprofile'] . ".conf", 0600);
-				$file = fopen("../../config/" . $_POST['addprofile'] . ".conf", "w");
+				$file = is_file("../../config/" . $_POST['addprofile'] . ".conf");
 				if ($file) {
-					$input = "# password to change these preferences via webfrontend\n";
-					$input = $input . "passwd: " . $_POST['addpassword'] . "\n\n";
-					fwrite ($file, $input);
-					fclose($file);
+					// load as config and write new password
+					$conf = new Config($_POST['addprofile']);
+					$conf->Passwd = $_POST['addpassword'];
+					$conf->save();
 					$msg = _("Created new profile.");
 				}
 				else $error = _("Unable to create new profile!");
