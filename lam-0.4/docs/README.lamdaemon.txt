@@ -59,6 +59,11 @@ things to get it to work:
      Net::SSH::Perl successfully installed.
      Perl quota module successfully installed.
      If you have not seen any error lamdaemon.pl should be set up successfully.
+ 
+ 
+   !!! Attention !!!
+   Your password in LDAP has to be hashed with CRYPT. If you use something like SSHA
+   you will probably get "Access denied.".
 
 
 Now everything should work fine.
