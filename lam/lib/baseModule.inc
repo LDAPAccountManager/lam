@@ -70,8 +70,15 @@ class baseModule {
 	*/
 	function baseModule($scope) {
 		$this->scope = $scope;
+		$this->load_Messages();
 		$this->meta = $this->get_metaData();
 		if (isset($_SESSION['config'])) $this->moduleSettings = $_SESSION['config']->get_moduleSettings();
+	}
+
+	/**
+	* This function fills the $messages variable with output messages from this module.
+	*/
+	function load_Messages() {
 	}
 
 	/**
@@ -90,7 +97,6 @@ class baseModule {
 			}
 		$objectClassName = substr($_SESSION['ldap']->objectClasses[$line], 6+strpos($_SESSION['ldap']->objectClasses[$line], "NAME '"), strlen(get_class($this)) );
 		$this->attributes['objectClass'][0] = $objectClassName;
-		$this->load_Messages();
 	}
 
 
