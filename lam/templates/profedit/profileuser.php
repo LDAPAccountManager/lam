@@ -317,7 +317,22 @@ echo ("<tr><td>&nbsp</td><td>&nbsp</td><td>&nbsp</td></tr>\n");
 // domain
 echo ("<tr>\n");
 echo ("<td align=\"right\"><b>" . _("Domain") . ": </b></td>\n");
-echo ("<td><input type=\"text\" value=\"" . $acct->smb_domain . "\" name=\"smb_domain\"></td>\n");
+if ($_SESSION['config']->get_samba3() == "yes") {
+	echo "<td><select name=\"smb_domain\">\n";
+	$doms = $_SESSION['ldap']->search_domains($_SESSION['config']->get_DomainSuffix());
+	for ($i = 0; $i < sizeof($doms); $i++) {
+		if (strtolower($acct->smb_domain) == strtolower($doms[$i]->name)) {
+			echo ("<option selected>" . $acct->smb_domain . "</option>\n");
+		}
+		else {
+			echo ("<option>" . $doms[$i]->name . "</option>\n");
+		}
+	}
+	echo "</select></td>\n";
+}
+else {
+	echo ("<td><input type=\"text\" value=\"" . $acct->smb_domain . "\" name=\"smb_domain\"></td>\n");
+}
 echo ("<td><a href=\"../help.php?HelpNumber=309\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
 echo ("</tr>\n");
 

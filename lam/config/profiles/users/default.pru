@@ -4,8 +4,8 @@ unix_password_no: 0
 unix_pwdwarn: 10
 unix_pwdallowlogin: 10
 unix_pwdminage: 1
-unix_pwdmaxage: 180
-unix_pwdexpire: 1262300400
+unix_pwdmaxage: 365
+unix_pwdexpire: 1893452400
 unix_deactivated: 0
 smb_password_no: 0
 smb_useunixpwd: 1

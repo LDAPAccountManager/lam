@@ -104,7 +104,7 @@ class Ldap{
 
 	// closes connection to server
 	function close() {
-		if (isset($this->server)) ldap_close($this->server);
+		@ldap_close($this->server);
 	}
 
 	// searches LDAP for a specific user name
