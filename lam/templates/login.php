@@ -132,6 +132,11 @@ function display_LoginPage($config_object,$profile)
 			StatusMessage("ERROR", "Your PHP has no LDAP support!", "Please install the LDAP extension for PHP.");
 			echo "<br><br>";
 		}
+		// check if PHP has gettext support
+		if (! function_exists('gettext')) {
+			StatusMessage("ERROR", "Your PHP has no gettext support!", "Please install gettext and recompile PHP is compiled without gettext support.");
+			echo "<br><br>";
+		}
 		?>
 		<form action="login.php" method="post">
 			<table width="650" align="center" border="2" rules="none" bgcolor="white">
