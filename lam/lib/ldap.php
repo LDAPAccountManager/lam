@@ -154,7 +154,21 @@ class Ldap{
   function close() {
     ldap_close($this->server);
   }
-	
+
+  // searches LDAP for a specific user name
+  // and returns its DN entry
+  function search_username($name) {
+    // users have the attribute "posixAccount" or "sambaAccount" and uid $name
+    $filter = "(&(|(objectClass=posixAccount) (objectClass=sambaAccount)) (uid=$name))";
+    $attrs = array();
+    $sr = ldap_search($this->server, $this->conf->get_UserSuffix(), $filter, $attrs);
+    $info = ldap_get_entries($this->server, $sr);
+	// return only first DN entry
+	$ret = $info[0]["dn"];
+    ldap_free_result($sr);
+    return $ret;
+  }
+
   // returns the LDAP connection handle
   function server() {
     return $this->server;

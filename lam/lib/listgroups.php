@@ -29,7 +29,7 @@ include_once("ldap.php");
 session_save_path("../sess");
 @session_start();
 
-echo "<html><head><title>hjhj</title>\n";
+echo "<html><head><title>listgroups</title>\n";
 echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">\n";
 echo "</head><body>\n";
 echo "<script src=\"./functions.js\" type=\"text/javascript\" language=\"javascript\"></script>\n";
@@ -92,7 +92,25 @@ for ($i = 0; $i < sizeof($info)-1; $i++) { // ignore last entry in array which i
 		// print all attribute entries seperated by "; "
 		if (sizeof($info[$i][strtolower($attr_array[$k])]) > 0) {
 			array_shift($info[$i][strtolower($attr_array[$k])]);
-			echo implode("; ", $info[$i][strtolower($attr_array[$k])]);
+			// generate links for group members
+			if (strtolower($attr_array[$k]) == "memberuid") {
+				$linklist = array();
+				for ($d = 0; $d < sizeof($info[$i][strtolower($attr_array[$k])]); $d++) {
+					$user = $info[$i][strtolower($attr_array[$k])][$d]; // user name
+					$dn = $_SESSION["ldap"]->search_username($user); // DN entry
+					// if user was found in LDAP make link, otherwise just print name
+					if ($dn) {
+						$linklist[$d] = "<a href=../templates/account.php?type=user&DN=\"" . $dn . "\" >" .
+										$info[$i][strtolower($attr_array[$k])][$d] . "</a>";
+					}
+					else $linklist[$d] = $user;
+				}
+				echo implode("; ", $linklist);
+			}
+			// print all other attributes
+			else {
+				echo implode("; ", $info[$i][strtolower($attr_array[$k])]);
+			}
 		}
 		echo ("</td>");
 	}
