@@ -302,8 +302,8 @@ class main {
 		return $return;
 	}
 	
-	function get_pdfEntries($account_type = "User") {
-		return array();
+	function get_pdfEntries($account_type = "user") {
+		return array(	'main_dn' => array('<block><key>' . _('DN') . '</key><value>' . $_SESSION[$this->base]->dn . '</value></block>'));
 	}
 
 	}

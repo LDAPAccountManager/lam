@@ -24,7 +24,7 @@ $Id$
 */
 
 define('FPDF_FONTPATH','font/');
-define('LAMPDF_LINEWIDTH',149);
+define('LAMPDF_LINEWIDTH',190);
 include_once("fpdf.php");
 //include_once('include.inc');
 include_once('xml_parser.inc');
@@ -69,14 +69,14 @@ function createModulePDF($accounts,$account_type="") {
 			// We have a new section to start
 			if($entry['tag'] == "SECTION" && $entry['type'] == "open") {
 				$name = $entry['attributes']['NAME'];
-				if(preg_match("/^\_[a-z]+/",$name)) {
-					$section_headline = $entries[ucwords(substr($name,1))][0];
+				if(preg_match("/^\_[a-zA-Z\_]+/",$name)) {
+					$section_headline = $entries[$name][0];
 				}
 				else {
-					$section_headline = $name;
+					$section_headline = '- ' . _($name);
 				}
 				$pdf->setFont("arial","B",12);
-				$pdf->Write(5,"- " . _($section_headline) . ":");
+				$pdf->Write(5,$section_headline . ":");
 				$pdf->Ln(6);
 			}
 			// We have a section to end
@@ -143,6 +143,7 @@ function createModulePDF($accounts,$account_type="") {
 				if(is_array($value_entry)) {
 					// Loop over all rows of this entry (most of the time this will be just one)
 					foreach($value_entry as $line) {
+						echo "line: " . $line . "<br>\n";
 						// Substitue XML syntax with valid FPDF methods
 						$methods = processLine($line);
 						// Call every method
@@ -167,7 +168,7 @@ function createModulePDF($accounts,$account_type="") {
 	// Save PDF
 	$pdf->Output($filename);
 	// Output meta refresh to pdf-file
-	metaRefresh($filename);
+	//metaRefresh($filename);
 	// Return relative path of pdf-file
 	return $filename;
 }
@@ -268,7 +269,7 @@ function processFormatTags($line,$style) {
 	// PCRE matching a <u> tag
 	$u_pattern = '/(.*)<u>(.+)<\/u>(.*)/';
 	// Replacement pattern when one of the above pattern matched
-	$replace = "\${1}\${2}\${3}";
+	$replace = "\$1\$2\$3";
 	
 	if(preg_match($i_pattern,$line,$matches)) {
 		$style .= "I";

@@ -2,58 +2,57 @@
 	<pdf type="user">
 		<text name="User" />
 		<section name="Personal User Infos">
-			<entry name="title" />
-			<entry name="givenName" />
-			<entry name="sn" />
-			<entry name="street" />
-			<entry name="postalCode" />
-			<entry name="postalAddress" />
-			<entry name="mail" />
-			<entry name="telephoneNumber" />
-			<entry name="mobileTelephoneNumber" />
-			<entry name="facsimileTelephoneNumber" />
+			<entry name="inetOrgPerson_title" />
+			<entry name="inetOrgPerson_givenName" />
+			<entry name="inetOrgPerson_sn" />
+			<entry name="inetOrgPerson_street" />
+			<entry name="inetOrgPerson_postalCode" />
+			<entry name="inetOrgPerson_postalAddress" />
+			<entry name="inetOrgPerson_mail" />
+			<entry name="inetOrgPerson_telephoneNumber" />
+			<entry name="inetOrgPerson_mobileTelephoneNumber" />
+			<entry name="inetOrgPerson_facsimileTelephoneNumber" />
 		</section>
 		<section name="Unix User Settings">
-			<entry name="uid" />
-			<entry name="userPassword" />
-			<entry name="primaryGroup" />
-			<entry name="additionalGroups" />
-			<entry name="homeDirectory" />
-			<entry name="loginShell" />
-			<entry name="Password expire" />
-			<entry name="host" />
+			<entry name="posixAccount_uid" />
+			<entry name="posixAccount_userPassword" />
+			<entry name="posixAccount_primaryGroup" />
+			<entry name="posixAccount_additionalGroups" />
+			<entry name="posixAccount_homeDirectory" />
+			<entry name="posixAccount_loginShell" />
+			<entry name="shadowAccount_shadowExpire" />
+			<entry name="inetOrgPerson_host" />
 		</section>
 		<section name="Windows User Settings">
-			<entry name="uid" />
-			<entry name="Windows password" />
-			<entry name="sambaHomeDrive" />
-			<entry name="sambaLogonScript" />
-			<entry name="sambaProfilePath" />
-			<entry name="sambaUserWorkstations" />
-			<entry name="sambaHomePath" />
-			<entry name="sambaDomainName" /> 
+			<entry name="sambaAccount_uid" />
+			<entry name="sambaAccount_password" />
+			<entry name="sambaAccount_homeDrive" />
+			<entry name="sambaAccount_scriptPath" />
+			<entry name="sambaAccount_smbHome" />
+			<entry name="sambaAccount_userWorkstations" />
+			<entry name="sambaAccount_homePath" />
+			<entry name="sambaAccount_domain" /> 
 		</section>
 		<section name="Quota Settings">
-			<entry name="User quotas" />
+			<entry name="quota_quotas" />
 		</section>
 	</pdf>
 	<pdf type="group">
-		<section name="_name">
-			<entry name="description" />
-			<entry name="Display name" />
-			<entry name="GID" />
+		<section name="_posixGroup_cn">
+			<entry name="posixGroup_description" />
+			<entry name="posixGroup_gidNumber" />
 			<entry name="Domain" />
-			<entry name="DN" />
-			<entry name="Members" />
+			<entry name="main_dn" />
+			<entry name="posixGroup_memberUid" />
 		</section>
 	</pdf>
 	<pdf type="host">
-		<section name="_name">
-			<entry name="description" />
-			<entry name="UID" />
-			<entry name="Primary group" />
-			<entry name="Domain" />
-			<entry name="DN" />
+		<section name="_posixAccount_uid">
+			<entry name="posixAccount_description" />
+			<entry name="posixAccount_uidNumber" />
+			<entry name="posixAccount_primaryGroup" />
+			<entry name="sambaAccount_domain" />
+			<entry name="main_dn" />
 		</section>
 	</pdf>
 </settings>

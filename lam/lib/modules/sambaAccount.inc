@@ -690,8 +690,18 @@ class sambaAccount {
 		return array();
 	}
 	
-	function get_pdfEntries($account_type = "User") {
-		return array();
+	function get_pdfEntries($account_type = "user") {
+		echo "sambaAccount:\n";
+		print_r($this->attributes);
+		return array(	'sambaAccount_displayName' => array('<block><key>' . _('Display name') . '</key><value' . $this->attributes['displayName'][0] . '</value></block>'),
+							'sambaAccount_uid' => array('<block><key>' . _('Username') . '</key><value>' . $this->attributes['uid'][0] . '</value></block>'),
+							'sambaAccount_smbHome' => array('<block><key>' . _('Home path') . '</key><value>' . $this->attributes['smbHome'][0] . '</value></block>'),
+							'sambaAccount_homeDrive' => array('<block><key>' . _('Home drive') . '</key><value>' . $this->attributes['homePath'][0] . '</value></block>'),
+							'sambaAccount_scriptPath' => array('<block><key>' . _('Logon script') . '</key><value>' . $this->attributes['scriptPath'][0] . '</value></block>'),
+							'sambaAccount_profilePath' => array('<block><key>' . _('Profile path') . '</key><value>' . $this->attributes['profilePath'][0] . '</value></block>'),
+							'sambaAccount_userWorkstations' => array('<block><key>' . _('Samba workstations') . '</key><value>' . $this->attributes['userWorkstations'][0] . '</value></block>'),
+							'sambaAccount_domain' => array('<block><key>' . _('Domain') . '</key><value>' . $this->attributes['domain'][0] . '</value></block>'),
+							'sambaAccount_description' => array('<block><key>' . _('Description') . '</key><value>' . $this->attributes['description'][0] . '</value></block>'));
 	}
 
 }
