@@ -87,10 +87,15 @@ switch ($select) {
 			if ($_SESSION['errors'][$row][$i][0] == 'ERROR')
 				StatusMessage('ERROR', _('Invalid Value!'), $_SESSION['errors'][$row][$i][2]);
 		break;
-	case 'warn':
+	case 'info':
 		for ($i=0; $i<sizeof($_SESSION['errors'][$row]); $i++)
 			if ($_SESSION['errors'][$row][$i][0] == 'INFO')
 				StatusMessage('INFO', _('Check values.'), $_SESSION['errors'][$row][$i][2]);
+		break;
+	case 'warn':
+		for ($i=0; $i<sizeof($_SESSION['errors'][$row]); $i++)
+			if ($_SESSION['errors'][$row][$i][0] == 'WARN')
+				StatusMessage('WARN', _('Check values.'), $_SESSION['errors'][$row][$i][2]);
 		break;
 	case 'detail':
 		echo '<tr><td>';

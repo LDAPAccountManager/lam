@@ -1686,9 +1686,9 @@ function creategroup($values) { // Will create the LDAP-Group
 	$attr['gidNumber'] = $values->general_uidNumber;
 	$attr['description'] = $values->general_gecos;
 	if ($values->general_memeberUid) $attr['memberUid'] = $values->general_memberUid;
-	if ($_SESSION['config']->samba3 =='yes') {
-		$attr['objectClass'][1] = 'sambaGroupMapping';
+	if ($_SESSION['config']->samba3 =='yes' && (isset($values->smb_mapgroup))) {
 		$attr['sambaSID'] = $values->smb_mapgroup;
+		$attr['objectClass'][1] = 'sambaGroupMapping';
 		$attr['sambaGroupType'] = '2';
 		if ($values->general_gecos) $attr['displayName'] = $values->general_gecos;
 		}
