@@ -28,6 +28,11 @@ class sambaSamAccount extends baseModule {
 	* @param string $scope account type (user, group, host)
 	*/
 	function sambaSamAccount($scope) {
+	// List of well known rids
+	$this->rids = array(
+		_('Domain Admins') => 512, _('Domain Users') => 513, _('Domain Guests') => 514,
+		_('Domain Computers') => 515, _('Domain Controllers') => 516, _('Domain Certificate Admins') => 517,
+		_('Domain Schema Admins') => 518, _('Domain Enterprise Admins') => 519, _('Domain Policy Admins') => 520);
 	// call parent constructor
 	parent::baseModule($scope);
 	}
@@ -38,15 +43,32 @@ class sambaSamAccount extends baseModule {
 		// error messages for input checks
 		$this->messages['homePath'][0] = array('ERROR', _('Home path'), _('Home path is invalid.'));
 		$this->messages['homePath'][1] = array('INFO', _('Home path'), _('Inserted user- or groupname in HomePath.'));
+		$this->messages['homePath'][2] = array('ERROR', _('Account %s:') . ' sambaSamAccount_homePath', _('Home path is invalid.'));
 		$this->messages['profilePath'][0] = array('ERROR', _('Profile path'), _('Profile path is invalid!'));
 		$this->messages['profilePath'][1] = array('INFO', _('Profile path'), _('Inserted user- or groupname in profilepath.'));
+		$this->messages['profilePath'][2] = array('ERROR', _('Account %s:') . ' sambaSamAccount_profilePath', _('Profile path is invalid!'));
 		$this->messages['logonScript'][0] = array('ERROR', _('Script path'), _('Script path is invalid!'));
 		$this->messages['logonScript'][1] = array('INFO', _('Script path'), _('Inserted user- or groupname in scriptpath.'));
+		$this->messages['logonScript'][2] = array('ERROR', _('Account %s:') . ' sambaSamAccount_logonScript', _('Logon script is invalid!'));
 		$this->messages['workstations'][0] = array('ERROR', _('Samba workstations'), _('Please enter a comma separated list of host names!'));
+		$this->messages['workstations'][1] = array('ERROR', _('Account %s:') . ' sambaSamAccount_workstations', _('Please enter a comma separated list of host names!'));
 		$this->messages['sambaLMPassword'][0] = array('ERROR', _('Password'), _('Please enter the same password in both password-fields.'));
 		$this->messages['sambaLMPassword'][1] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
+		$this->messages['sambaLMPassword'][2] = array('ERROR', _('Account %s:') . ' sambaSamAccount_password', _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
 		$this->messages['rid'][0] = array('ERROR', _('Special user'), _('There can be only one administrator per domain.'));
 		$this->messages['rid'][1] = array('ERROR', _('Special user'), _('There can be only one guest per domain.'));
+		$this->messages['rid'][2] = array('ERROR', _('Account %s:') . ' sambaSamAccount_rid', _('Please enter a RID number or the name of a special account!'));
+		$this->messages['displayName'][0] = array('ERROR', _('Account %s:') . ' sambaSamAccount_displayName', _('Please enter a valid display name!'));
+		$this->messages['pwdUnix'][0] = array('ERROR', _('Account %s:') . ' sambaSamAccount_pwdUnix', _('This value can only be \"true\" or \"false\"!'));
+		$this->messages['noPassword'][0] = array('ERROR', _('Account %s:') . ' sambaSamAccount_noPassword', _('This value can only be \"true\" or \"false\"!'));
+		$this->messages['noExpire'][0] = array('ERROR', _('Account %s:') . ' sambaSamAccount_noExpire', _('This value can only be \"true\" or \"false\"!'));
+		$this->messages['deactivated'][0] = array('ERROR', _('Account %s:') . ' sambaSamAccount_deactivated', _('This value can only be \"true\" or \"false\"!'));
+		$this->messages['pwdCanChange'][0] = array('ERROR', _('Account %s:') . ' sambaSamAccount_pwdCanChange', _('Please enter a valid date in format DD-MM-YYYY.'));
+		$this->messages['pwdMustChange'][0] = array('ERROR', _('Account %s:') . ' sambaSamAccount_pwdMustChange', _('Please enter a valid date in format DD-MM-YYYY.'));
+		$this->messages['homeDrive'][0] = array('ERROR', _('Account %s:') . ' sambaSamAccount_homeDrive', _('Please enter a valid drive letter.'));
+		$this->messages['domain'][0] = array('ERROR', _('Account %s:') . ' sambaSamAccount_domain', _('LAM was unable to find a domain with this name!'));
+		$this->messages['logonHours'][0] = array('ERROR', _('Account %s:') . ' sambaSamAccount_logonHours', _('The format of the logon hours field is invalid!'));
+		$this->messages['group'][0] = array('ERROR', _('Account %s:') . ' sambaSamAccount_group', _('Please enter a valid group name!'));
 	}
 	
 	/**
@@ -111,7 +133,7 @@ class sambaSamAccount extends baseModule {
 				"Text" => _("If checked Unix password will also be used as Samba password.")),
 			"pwdUnixUpload" => array(
 				"ext" => "FALSE", "Headline" => _("Use Unix password"),
-				"Text" => _("If set to true Unix password will also be used as Samba password.")),
+				"Text" => _("If set to \"true\" Unix password will also be used as Samba password.")),
 			"noPassword" => array(
 				"ext" => "FALSE", "Headline" => _("Use no password"),
 				"Text" => _("If checked no password will be used.")),
@@ -156,13 +178,156 @@ class sambaSamAccount extends baseModule {
 			"groupUpload" => array(
 				"ext" => "FALSE", "Headline" => _("Windows primary group SID"),
 				"Text" => _("This is the SID of the user's primary Windows group.")),
-			"specialUser" => array(
-				"ext" => "FALSE", "Headline" => _("Special user"),
-				"Text" => _("If you want to create domain administrators or other special users use this option.")),
+			"ridUpload" => array(
+				"ext" => "FALSE", "Headline" => _("Samba RID"),
+				"Text" => _("This is the relative ID number for your Windows account. You can either enter a number or one of these special accounts: %s. If you leave this empty LAM will use: uidNumber*2 + sambaAlgorithmicRidBase."),
+				"variables" => implode(", ", $this->rids)),
 			"domain" => array(
 				"ext" => "FALSE", "Headline" => _("Domain"),
-				"Text" => _("Windows domain name of account."))
+				"Text" => _("Windows domain name of account.")),
+			"logonHoursUpload" => array(
+				"ext" => "FALSE", "Headline" => _("Logon hours"),
+				"Text" => _("This option defines the allowed logon hours for this account. The format is the same as for the LDAP attribute. The 24*7 hours are represented as 168 bit which are saved as 21 hex (21*8 = 168) values. The first bit represents Sunday 0:00 - 0:59 in GMT."))
 		);
+		// upload dependencies
+		$return['upload_preDepends'] = array('posixAccount', 'inetOrgPerson');
+		// upload options
+		if ($this->get_scope() == "user") {
+			$return['upload_columns'] = array(
+				array(
+					'name' => 'sambaSamAccount_domain',
+					'description' => _('Domain'),
+					'required' => true,
+					'help' => 'domain',
+					'example' => _('mydomain')
+				),
+				array(
+					'name' => 'sambaSamAccount_displayName',
+					'description' => _('Display name'),
+					'help' => 'displayName',
+					'example' => _('Steve Miller')
+				),
+				array(
+					'name' => 'sambaSamAccount_password',
+					'description' => _('Password'),
+					'help' => 'password',
+					'example' => _('secret')
+				),
+				array(
+					'name' => 'sambaSamAccount_pwdUnix',
+					'description' => _('Use Unix password'),
+					'help' => 'pwdUnixUpload',
+					'default' => 'true',
+					'values' => 'true, false',
+					'example' => 'true'
+				),
+				array(
+					'name' => 'sambaSamAccount_noPassword',
+					'description' => _('Use no password'),
+					'help' => 'noPasswordUpload',
+					'default' => 'false',
+					'values' => 'true, false',
+					'example' => 'false'
+				),
+				array(
+					'name' => 'sambaSamAccount_noExpire',
+					'description' => _('Password does not expire'),
+					'help' => 'noExpireUpload',
+					'default' => 'true',
+					'values' => 'true, false',
+					'example' => 'true'
+				),
+				array(
+					'name' => 'sambaSamAccount_deactivated',
+					'description' => _('Account is deactivated'),
+					'help' => 'deactivatedUpload',
+					'default' => 'false',
+					'values' => 'true, false',
+					'example' => 'false'
+				),
+				array(
+					'name' => 'sambaSamAccount_pwdCanChange',
+					'description' => _('User can change password'),
+					'help' => 'pwdCanChange',
+					'default' => '31-12-2030',
+					'example' => '15-11-2006'
+				),
+				array(
+					'name' => 'sambaSamAccount_pwdMustChange',
+					'description' => _('User must change password'),
+					'help' => 'pwdMustChange',
+					'default' => '31-12-2030',
+					'example' => '15-10-2006'
+				),
+				array(
+					'name' => 'sambaSamAccount_homeDrive',
+					'description' => _('Home drive'),
+					'help' => 'homeDrive',
+					'example' => 'k:'
+				),
+				array(
+					'name' => 'sambaSamAccount_homePath',
+					'description' => _('Home path'),
+					'help' => 'homePath',
+					'example' => _('\\\\server\\homes\\smiller')
+				),
+				array(
+					'name' => 'sambaSamAccount_profilePath',
+					'description' => _('Profile path'),
+					'help' => 'profilePath',
+					'example' => _('\\\\server\\profiles\\smiller')
+				),
+				array(
+					'name' => 'sambaSamAccount_logonScript',
+					'description' => _('Logon script'),
+					'help' => 'scriptPath',
+					'example' => 'logon.bat'
+				),
+				array(
+					'name' => 'sambaSamAccount_workstations',
+					'description' => _('Samba workstations'),
+					'help' => 'workstations',
+					'example' => 'PC01,PC02,PC03'
+				),
+				array(
+					'name' => 'sambaSamAccount_group',
+					'description' => _('Windows group'),
+					'help' => 'groupUpload',
+					'example' => _('mygroup'),
+					'default' => 'Domain Users'
+				),
+				array(
+					'name' => 'sambaSamAccount_rid',
+					'description' => _('Samba RID'),
+					'help' => 'ridUpload',
+					'example' => '1235',
+					'default' => '&lt;uidNumber&gt;*2 + &lt;sambaAlgorithmicRidBase&gt;'
+				),
+				array(
+					'name' => 'sambaSamAccount_logonHours',
+					'description' => _('Logon hours'),
+					'help' => 'logonHoursUpload',
+					'example' => 'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF'
+				)
+			);
+		}
+		elseif ($this->get_scope() == "host") {
+			$return['upload_columns'] = array(
+				array(
+					'name' => 'sambaSamAccount_domain',
+					'description' => _('Domain'),
+					'help' => 'domain',
+					'example' => _('mydomain')
+				),
+				array(
+					'name' => 'sambaSamAccount_rid',
+					'description' => _('Samba RID'),
+					'help' => 'ridUploadHost', //todo
+					'example' => '1235',
+					'default' => '&lt;uidNumber&gt;*2 + &lt;sambaAlgorithmicRidBase&gt;'
+				)
+			);
+		}
 		return $return;
 	}
 
@@ -171,9 +336,6 @@ class sambaSamAccount extends baseModule {
 		// call parent init
 		parent::init($base);
 		$this->useunixpwd=false;
-		// List of well known rids
-		$this->rids = array ( _('Domain Admins') => 512, _('Domain Users') => 513, _('Domain Guests') => 514, _('Domain Computers') => 515, _('Domain Controllers') => 516,
-			_('Domain Certificate Admins') => 517, _('Domain Schema Admins') => 518, _('Domain Enterprise Admins') => 519, _('Domain Policy Admins') => 520 );
 		}
 
 	// Variables
@@ -760,6 +922,286 @@ class sambaSamAccount extends baseModule {
 							'sambaSamAccount_sambaDomainName' => array('<block><key>' . _('Domain') . '</key><value>' . $this->attributes['sambaDomainName'][0] . '</value></block>'),
 							'sambaSamAccount_description' => array('<block><key>' . _('Description') . '</key><value>' . $this->attributes['description'][0] . '</value></block>'),
 							'sambaSamAccount_sambaPrimaryGroupSID' => array('<block><key>' . _('Windows group') . '</key><value>' . $this->attributes['sambaPrimaryGroupSID'][0] . '</value></block>'));
+	}
+
+	/**
+	* In this function the LDAP account is built up.
+	*
+	* @param array $rawAccounts list of hash arrays (name => value) from user input
+	* @param array $partialAccounts list of hash arrays (name => value) which are later added to LDAP
+	* @param array $ids list of IDs for column position (e.g. "posixAccount_uid" => 5)
+	* @return array list of error messages if any
+	*/
+	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts) {
+		$triggered_messages = array();
+		// get list of Samba 3 domains
+		$domains = search_domains($_SESSION['config']->get_DomainSuffix());
+		// get list of Unix groups and their sambaSID + gidNumber
+		$groups = $_SESSION['cache']->get_cache('cn', 'posixGroup', 'group');
+		$groups_SID = $_SESSION['cache']->get_cache('sambaSID', 'sambaGroupMapping', 'group');
+		$groups_gid = $_SESSION['cache']->get_cache('gidNumber', 'posixGroup', 'group');
+		$groups_k = array_keys($groups);
+		for ($i = 0; $i < sizeof($groups_k); $i++) {
+			$groups[$groups_k[$i]] = array('cn' => $groups[$groups_k[$i]][0]);
+			if (isset($groups_SID[$groups_k[$i]][0])) $groups[$groups_k[$i]]['SID'] = $groups_SID[$groups_k[$i]][0];
+			if (isset($groups_gid[$groups_k[$i]][0])) $groups[$groups_k[$i]]['gid'] = $groups_gid[$groups_k[$i]][0];
+		}
+		$groups_cn = array();
+		for ($i = 0; $i < sizeof($groups_k); $i++) {
+			$groups_cn[$groups[$groups_k[$i]]['cn']] = $groups[$groups_k[$i]];
+		}
+		if ($this->get_scope() == 'user') {
+			for ($i = 0; $i < sizeof($rawAccounts); $i++) {
+				if (!in_array("sambaSamAccount", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "sambaSamAccount";
+				// displayName
+				if ($rawAccounts[$i][$ids['sambaSamAccount_displayName']] != "") {
+					if (get_preg($rawAccounts[$i][$ids['sambaSamAccount_displayName']], 'realname')) {
+						$partialAccounts[$i]['displayName'] = $rawAccounts[$i][$ids['sambaSamAccount_displayName']];
+					}
+					else {
+						$errMsg = $this->messages['displayName'][0];
+						array_push($errMsg, array($i));
+						$triggered_messages[] = $errMsg;
+					}
+				}
+				// password
+				if (!get_preg($rawAccounts[$i][$ids['sambaSamAccount_password']], 'password')) {
+					$errMsg = $this->messages['sambaLMPassword'][2];
+					array_push($errMsg, array($i));
+					$triggered_messages[] = $errMsg;
+				}
+				// use Unix password
+				if ($rawAccounts[$i][$ids['sambaSamAccount_pwdUnix']] == "") {  // default: use Unix
+					$partialAccounts[$i]['sambaLMPassword'] = lmPassword($partialAccounts[$i]['userPassword']);
+					$partialAccounts[$i]['sambaNTPassword'] = ntPassword($partialAccounts[$i]['userPassword']);
+				}
+				elseif (in_array($rawAccounts[$i][$ids['sambaSamAccount_pwdUnix']], array('true', 'false'))) {
+					if ($rawAccounts[$i][$ids['sambaSamAccount_pwdUnix']] == 'true') {  // use Unix
+						$partialAccounts[$i]['sambaLMPassword'] = lmPassword($partialAccounts[$i]['userPassword']);
+						$partialAccounts[$i]['sambaNTPassword'] = ntPassword($partialAccounts[$i]['userPassword']);
+					}
+					else {  // use given password
+						$partialAccounts[$i]['sambaLMPassword'] = lmPassword($rawAccounts[$i][$ids['sambaSamAccount_password']]);
+						$partialAccounts[$i]['sambaNTPassword'] = ntPassword($rawAccounts[$i][$ids['sambaSamAccount_password']]);
+					}
+				}
+				else {
+					$errMsg = $this->messages['pwdUnix'][0];
+					array_push($errMsg, array($i));
+					$triggered_messages[] = $errMsg;
+				}
+				// use no password
+				if ($rawAccounts[$i][$ids['sambaSamAccount_noPassword']] != "") {
+					if (in_array($rawAccounts[$i][$ids['sambaSamAccount_noPassword']], array('true', 'false'))) {
+						if ($rawAccounts[$i][$ids['sambaSamAccount_noPassword']] == 'true') {
+							$partialAccounts[$i]['sambaLMPassword'] = 'NO PASSWORD*****';
+							$partialAccounts[$i]['sambaNTPassword'] = 'NO PASSWORD*****';
+						}
+					}
+					else {
+						$errMsg = $this->messages['noPassword'][0];
+						array_push($errMsg, array($i));
+						$triggered_messages[] = $errMsg;
+					}
+				}
+				// account flags
+				$flag_expire = false;
+				$flag_deactivated = false;
+				// password does not expire
+				if ($rawAccounts[$i][$ids['sambaSamAccount_noExpire']] != "") {
+					if (in_array($rawAccounts[$i][$ids['sambaSamAccount_noExpire']], array('true', 'false'))) {
+						if ($rawAccounts[$i][$ids['sambaSamAccount_noExpire']] == 'false') {
+							$flag_expire = true;
+						}
+					}
+					else {
+						$errMsg = $this->messages['noExpire'][0];
+						array_push($errMsg, array($i));
+						$triggered_messages[] = $errMsg;
+					}
+				}
+				// account is deactivated
+				if ($rawAccounts[$i][$ids['sambaSamAccount_deactivated']] != "") {
+					if (in_array($rawAccounts[$i][$ids['sambaSamAccount_deactivated']], array('true', 'false'))) {
+						if ($rawAccounts[$i][$ids['sambaSamAccount_deactivated']] == 'true') {
+							$flag_deactivated = true;
+						}
+					}
+					else {
+						$errMsg = $this->messages['deactivated'][0];
+						array_push($errMsg, array($i));
+						$triggered_messages[] = $errMsg;
+					}
+				}
+				// set flags
+				$flags = "[";
+				if ($flag_deactivated) $flags = $flags . "D";
+				if (!$flag_expire) $flags = $flags . "X";
+				$flags = $flags . "U";
+				// Expand string to fixed length
+				$flags = str_pad($flags, 12);
+				// End character
+				$flags = $flags . "]";
+				$partialAccounts[$i]['sambaAcctFlags'] = $flags;
+				// passsword can be changed
+				if ($rawAccounts[$i][$ids['sambaSamAccount_pwdCanChange']] != "") {
+					if (get_preg($rawAccounts[$i][$ids['sambaSamAccount_pwdCanChange']], 'date')) {
+						$parts = explode("-", $rawAccounts[$i][$ids['sambaSamAccount_pwdCanChange']]);
+						$time = mktime(0, 0, 0, $parts[1], $parts[0], $parts[2]);
+						$partialAccounts[$i]['sambaPwdCanChange'] = $time;
+					}
+					else {
+						$errMsg = $this->messages['pwdCanChange'][0];
+						array_push($errMsg, array($i));
+						$triggered_messages[] = $errMsg;
+					}
+				}
+				// passsword must be changed
+				if ($rawAccounts[$i][$ids['sambaSamAccount_pwdMustChange']] != "") {
+					if (get_preg($rawAccounts[$i][$ids['sambaSamAccount_pwdMustChange']], 'date')) {
+						$parts = explode("-", $rawAccounts[$i][$ids['sambaSamAccount_pwdMustChange']]);
+						$time = mktime(0, 0, 0, $parts[1], $parts[0], $parts[2]);
+						$partialAccounts[$i]['sambaPwdMustChange'] = $time;
+					}
+					else {
+						$errMsg = $this->messages['pwdMustChange'][0];
+						array_push($errMsg, array($i));
+						$triggered_messages[] = $errMsg;
+					}
+				}
+				// home drive
+				if ($rawAccounts[$i][$ids['sambaSamAccount_homeDrive']] != "") {
+					if (eregi("[d-z]:", $rawAccounts[$i][$ids['sambaSamAccount_homeDrive']])) {
+						$partialAccounts[$i]['sambaHomeDrive'] = $rawAccounts[$i][$ids['sambaSamAccount_homeDrive']];
+					}
+					else {
+						$errMsg = $this->messages['homeDrive'][0];
+						array_push($errMsg, array($i));
+						$triggered_messages[] = $errMsg;
+					}
+				}
+				// home path
+				if ($rawAccounts[$i][$ids['sambaSamAccount_homePath']] != "") {
+					if (get_preg($rawAccounts[$i][$ids['sambaSamAccount_homePath']], 'UNC')) {
+						$partialAccounts[$i]['sambaHomePath'] = $rawAccounts[$i][$ids['sambaSamAccount_homePath']];
+					}
+					else {
+						$errMsg = $this->messages['homePath'][2];
+						array_push($errMsg, array($i));
+						$triggered_messages[] = $errMsg;
+					}
+				}
+				// profile path
+				if ($rawAccounts[$i][$ids['sambaSamAccount_profilePath']] != "") {
+					if (get_preg($rawAccounts[$i][$ids['sambaSamAccount_profilePath']], 'UNC')) {
+						$partialAccounts[$i]['sambaProfilePath'] = $rawAccounts[$i][$ids['sambaSamAccount_profilePath']];
+					}
+					else {
+						$errMsg = $this->messages['profilePath'][2];
+						array_push($errMsg, array($i));
+						$triggered_messages[] = $errMsg;
+					}
+				}
+				// logon script
+				if ($rawAccounts[$i][$ids['sambaSamAccount_logonScript']] != "") {
+					if (get_preg($rawAccounts[$i][$ids['sambaSamAccount_logonScript']], 'logonscript')) {
+						$partialAccounts[$i]['sambaLogonScript'] = $rawAccounts[$i][$ids['sambaSamAccount_logonScript']];
+					}
+					else {
+						$errMsg = $this->messages['logonScript'][2];
+						array_push($errMsg, array($i));
+						$triggered_messages[] = $errMsg;
+					}
+				}
+				// workstations
+				if ($rawAccounts[$i][$ids['sambaSamAccount_workstations']] != "") {
+					if (get_preg($rawAccounts[$i][$ids['sambaSamAccount_workstations']], 'workstations')) {
+						$partialAccounts[$i]['sambaUserWorkstations'] = $rawAccounts[$i][$ids['sambaSamAccount_workstations']];
+					}
+					else {
+						$errMsg = $this->messages['workstations'][1];
+						array_push($errMsg, array($i));
+						$triggered_messages[] = $errMsg;
+					}
+				}
+				// domain
+				$domIndex = -1;
+				for ($d = 0; $d < sizeof($domains); $d++) {
+					if ($domains[$d]->name == $rawAccounts[$i][$ids['sambaSamAccount_domain']]) {
+						$domIndex = $d;
+						break;
+					}
+				}
+				if ($domIndex > -1) {
+					$partialAccounts[$i]['sambaDomainName'] = $domains[$domIndex]->name;
+					$partialAccounts[$i]['sambaSID'] = $domains[$domIndex]->SID;
+				}
+				else {
+					$errMsg = $this->messages['domain'][0];
+					array_push($errMsg, array($i));
+					$triggered_messages[] = $errMsg;
+				}
+				// group
+				if ($rawAccounts[$i][$ids['sambaSamAccount_group']] != "") {
+					if (get_preg($rawAccounts[$i][$ids['sambaSamAccount_group']], 'groupname')
+					&& (isset($groups_cn[$rawAccounts[$i][$ids['sambaSamAccount_group']]]))) {
+						if (isset($groups_cn[$rawAccounts[$i][$ids['sambaSamAccount_group']]]['SID'])) {
+							$partialAccounts[$i]['sambaPrimaryGroupSID'] = $groups_cn[$rawAccounts[$i][$ids['sambaSamAccount_group']]]['SID'];
+						}
+						else {
+							$partialAccounts[$i]['sambaPrimaryGroupSID'] = $domains[$domIndex]->SID . '-' . 
+							($groups_cn[$rawAccounts[$i][$ids['sambaSamAccount_group']]]['gid'] * 2 + 
+							 $domains[$domIndex]->RIDbase + 1);
+						}
+					}
+					elseif (in_array($rawAccounts[$i][$ids['sambaSamAccount_group']], array_keys($this->rids))) {
+						$partialAccounts[$i]['sambaPrimaryGroupSID'] = $domains[$domIndex]->SID . '-' . $this->rids[$rawAccounts[$i][$ids['sambaSamAccount_group']]];
+					}
+					else {
+						$errMsg = $this->messages['group'][0];
+						array_push($errMsg, array($i));
+						$triggered_messages[] = $errMsg;
+					}
+				}
+				else {
+					// default domain users
+					$partialAccounts[$i]['sambaPrimaryGroupSID'] = $domains[$domIndex]->SID . '-' . $this->rids['Domain Users'];
+				}
+				// special user
+				if ($rawAccounts[$i][$ids['sambaSamAccount_rid']] != "") {
+					if (in_array($rawAccounts[$i][$ids['sambaSamAccount_rid']], array_keys($this->rids))) {
+						$partialAccounts[$i]['sambaSID'] .= '-' . $this->rids[$rawAccounts[$i][$ids['sambaSamAccount_rid']]];
+					}
+					elseif (get_preg($rawAccounts[$i][$ids['sambaSamAccount_rid']], 'digit')) {
+						$partialAccounts[$i]['sambaSID'] .= '-' . $rawAccounts[$i][$ids['sambaSamAccount_rid']];
+					}
+					else {
+						$errMsg = $this->messages['rid'][2];
+						array_push($errMsg, array($i));
+						$triggered_messages[] = $errMsg;
+					}
+				}
+				else {
+					// default RID uid*2 + RIDBase
+					$partialAccounts[$i]['sambaSID'] .= '-' . ($partialAccounts[$i]['uidNumber']*2 + $domains[$domIndex]->RIDbase);
+				}
+				// logon hours
+				if ($rawAccounts[$i][$ids['sambaSamAccount_logonHours']] != "") {
+					if (get_preg($rawAccounts[$i][$ids['sambaSamAccount_logonHours']], 'sambaLogonHours')) {
+						$partialAccounts[$i]['sambaLogonHours'] = $rawAccounts[$i][$ids['sambaSamAccount_logonHours']];
+					}
+					else {
+						$errMsg = $this->messages['logonHours'][0];
+						array_push($errMsg, array($i));
+						$triggered_messages[] = $errMsg;
+					}
+				}
+				else {
+					$partialAccounts[$i]['sambaLogonHours'] = "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
+				}
+			}
+		}
+		return $triggered_messages;
 	}
 
 }
