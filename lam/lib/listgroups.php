@@ -137,8 +137,9 @@ echo "</body></html>\n";
 function cmp_array($a, $b) {
 	// list specifies the sort column
 	global $list;
+	global $attr_array;
 	// sort by first attribute with name $list
-	if (!$list) $list = 0;
+	if (!$list) $list = strtolower($attr_array[0]);
 	if ($a[$list][0] == $b[$list][0]) return 0;
 	else if ($a[$list][0] == max($a[$list][0], $b[$list][0])) return 1;
 	else return -1;
