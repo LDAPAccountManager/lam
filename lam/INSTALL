@@ -20,18 +20,17 @@ Installation Instructions for LAM
    * Copy files into the html-file scope of the webserver. For example
      /apache/htdocs.
 
-   * Set appropriate file permissions for /lam/sess and /lam/profiles.
+   * Set appropriate file permissions for /lam/sess and /lam/config (with subdirectories).
      Both directories must have write permissions set for the specified apache
      web user. The perl files in /lam/lib must be set executable. (See also
-     readme.lamdeamon.pl)
+     docs/readme.lamdeamon.pl)
 
-   * Configure lam.conf. Either use the web interface with the link
-     "Configuration Login" (start file is /lam/index.html)
-     or configure LAM manually. (The default password to edit the
-     options is "lam")
+   * Configure config.cfg and create a configuration profile.
+     Copy config.cfg_sample to config.cfg and set the master password and default
+     profile.
+     Then use the web interface with the link "Configuration Login" (start file is /lam/index.html)
+     or configure LAM manually. (The default password to edit the options is "lam")
+
      - Manually:
        A default config file can be found in /lam/config/lam.conf_sample.
        Change the necessary entries and rename it to /lam/config/lam.conf.
-
-
-3. Troubleshooting

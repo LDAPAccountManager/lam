@@ -2,13 +2,14 @@
 LAM - Readme
 ============
 
-  A set of PHP-scripts to administrate entries of a LDAP server. User, group and
-  samba accounts can be displayed, searched, filtered, added, removed and edited
-  over an easy to use web interface. Even the configuration options are
-  embedded in the interface. Access to the interface is routed through the LDAP
-  server.
+  A set of PHP-scripts to administrate Unix and Samba accounts in a LDAP server.
+  LAM runs on any webserver with PHP4 support and connects to your LDAP server
+  unencrypted or via SSL.
+  The application manages accounts for users, groups and Samba hosts in
+  multiple organizational units. LAM supports the Samba 2.x schema and the
+  Samba 3 schema.
 
-  alpha Release 0.1 - May 2003
+  alpha Release 0.2 - July 2003
   ------------------------------
   http://sourceforge.net/projects/lam/
 
@@ -37,14 +38,16 @@ LAM - Readme
     a web-browser that supports CSS (Netscape 4.x is not recommended)
 
   Summary:
-    with LAM you can easily manage user, group and machine accounts stored in
+    With LAM you can easily manage user, group and machine accounts stored in
     a LDAP server over a web interface. At the moment it supports
-      -displaying the user/group/host entries
-      -deleting entries
-      -adding new entries
-      -editing entries
-      -filtering and sorting
-      -access management
+      - displaying the user/group/host entries
+      - deleting entries
+      - adding new entries
+      - editing entries
+      - filtering and sorting
+      - account profiles
+      - access management
+      - multiple configuration profiles
 
   Important:
     The standard password to edit the configuration options is "lam".
