@@ -365,9 +365,14 @@ switch ($_POST['select']) {
 		if ($_POST['f_smb_useunixpwd']) $account_new->smb_useunixpwd = true;
 			else $account_new->smb_useunixpwd = false;
 		$account_new->smb_homedrive = $_POST['f_smb_homedrive'];
+		if (get_magic_quotes_gpc() == 1) {
+			$_POST['f_smb_smbhome'] = stripslashes($_POST['f_smb_smbhome']);
+			$_POST['f_smb_profilePath'] = stripslashes($_POST['f_smb_profilePath']);
+			$_POST['f_smb_scriptpath'] = stripslashes($_POST['f_smb_scriptpath']);
+		}
 		$account_new->smb_scriptPath = $_POST['f_smb_scriptpath'];
-		$account_new->smb_smbhome = stripslashes($_POST['f_smb_smbhome']);
-		$account_new->smb_profilePath = stripslashes($_POST['f_smb_profilePath']);
+		$account_new->smb_smbhome = $_POST['f_smb_smbhome'];
+		$account_new->smb_profilePath = $_POST['f_smb_profilePath'];
 		$account_new->smb_displayName = $_POST['f_smb_displayName'];
 		if ($_POST['f_smb_flagsD']) $account_new->smb_flags['D'] = true;
 			else $account_new->smb_flags['D'] = false;
@@ -424,21 +429,20 @@ switch ($_POST['select']) {
 		// Check values
 		$account_new->smb_scriptPath = str_replace('$user', $account_new->general_username, $account_new->smb_scriptPath);
 		$account_new->smb_scriptPath = str_replace('$group', $account_new->general_group, $account_new->smb_scriptPath);
-		if ($account_new->smb_scriptPath != $_POST['f_smb_scriptpath']) $errors[] = array('INFO', _('Script path'), _('Inserted user- or groupname in scriptpath.'));
+		if ($account_new->smb_scriptPath != $_POST['f_smb_scriptpath']) $errors[] = array('INFO', _('Logon script'), _('Inserted user- or groupname in scriptpath.'));
 		$account_new->smb_profilePath = str_replace('$user', $account_new->general_username, $account_new->smb_profilePath);
 		$account_new->smb_profilePath = str_replace('$group', $account_new->general_group, $account_new->smb_profilePath);
-		if ($account_new->smb_profilePath != stripslashes($_POST['f_smb_profilePath'])) $errors[] = array('INFO', _('Profile path'), _('Inserted user- or groupname in profilepath.'));
+		if ($account_new->smb_profilePath != $_POST['f_smb_profilePath']) $errors[] = array('INFO', _('Profile path'), _('Inserted user- or groupname in profilepath.'));
 		$account_new->smb_smbhome = str_replace('$user', $account_new->general_username, $account_new->smb_smbhome);
 		$account_new->smb_smbhome = str_replace('$group', $account_new->general_group, $account_new->smb_smbhome);
-		if ($account_new->smb_smbhome != stripslashes($_POST['f_smb_smbhome'])) $errors[] = array('INFO', _('Home path'), _('Inserted user- or groupname in HomePath.'));
+		if ($account_new->smb_smbhome != $_POST['f_smb_smbhome']) $errors[] = array('INFO', _('Home path'), _('Inserted user- or groupname in HomePath.'));
 		if ( (!$account_new->smb_smbhome=='') && (!ereg('^[\][\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+([\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+)+$', $account_new->smb_smbhome)))
 				$errors[] = array('ERROR', _('Home path'), _('Home path is invalid.'));
 		if ( !ereg('^([a-z]|[A-Z]|[0-9]|[\|]|[\#]|[\*]|[\,]|[\.]|[\;]|[\:]|[\_]|[\-]|[\+]|[\!]|[\%]|[\&]|[\/]|[\?]|[\{]|[\[]|[\(]|[\)]|[\]]|[\}])*$',
 			$smb_password)) $errors[] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
-		if ( (!$account_new->smb_scriptPath=='') && (!ereg('^([/])*([a-z]|[0-9]|[.]|[-]|[_]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+([a-z]|[0-9]|[.]|[-]|[_]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])*'.
-			'([/]([a-z]|[0-9]|[.]|[-]|[_]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+([a-z]|[0-9]|[.]|[-]|[_]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])*)*(([.][b][a][t])|([.][c][m][d]))$', $account_new->smb_scriptPath)))
-			$errors[] = array('ERROR', _('Script path'), _('Script path is invalid!'));
-		if ( (!$account_new->smb_profilePath=='') && (!ereg('^[/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*([/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*)*$', $account_new->smb_profilePath))
+		if ( (!$account_new->smb_scriptPath=='') && (!eregi('^([\\])*([a-z0-9\\._%äöüß-])+(\\\([a-z0-9\\._%äöüß-])+)*((\.bat)|(\.cmd))$', $account_new->smb_scriptPath)))
+			$errors[] = array('ERROR', _('Logon script'), _('Logon script is invalid!'));
+		if ( (!$account_new->smb_profilePath=='') && (!eregi('^[/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*([/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*)*$', $account_new->smb_profilePath))
 			&& (!ereg('^[\][\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+([\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+)+$', $account_new->smb_profilePath)))
 				$errors[] = array('ERROR', _('Profile path'), _('Profile path is invalid!'));
 		if ((!$account_new->smb_domain=='') && (!is_object($account_new->smb_domain)) && !ereg('^([a-z]|[A-Z]|[0-9]|[-])+$', $account_new->smb_domain))
@@ -1265,7 +1269,7 @@ switch ($select_local) {
 			'</td>'."\n".'<td>'.
 			'<a href="../help.php?HelpNumber=435" target="lamhelp">'._('Help').'</a>'.
 			'</td></tr>'."\n".'<tr><td>';
-		echo _('Script path');
+		echo _('Logon script');
 		echo '</td>'."\n".'<td><input name="f_smb_scriptpath" type="text" size="20" maxlength="80" value="' . $account_new->smb_scriptPath . '">'.
 		'</td>'."\n".'<td>'.
 			'<a href="../help.php?HelpNumber=434" target="lamhelp">'._('Help').'</a>'.
