@@ -54,7 +54,7 @@ if ($_POST['backmain']) {
 
 // Print header and part of body
 echo $header_intern;
-echo '<html><head><title>';
+echo '<title>';
 echo _('Delete Account');
 echo '</title>'."\n".
 	'<link rel="stylesheet" type="text/css" href="../style/layout.css">'."\n".

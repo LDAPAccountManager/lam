@@ -165,7 +165,7 @@ if ($_POST['apply']) {
 	}
 
 // Print header and part of body
-echo	'<html><head><title>';
+echo	'<title>';
 echo _('Create new accounts');
 echo '</title>'.
 	'<link rel="stylesheet" type="text/css" href="../style/layout.css">'.

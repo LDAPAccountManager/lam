@@ -87,7 +87,6 @@ else if (count($_POST)==0) {
 	if (count($groups)==0) {
 		// Write HTML-Header
 		echo $header_intern;
-		echo "<html><head>";
 		echo "<title>";
 		echo _("Create new Account");
 		echo "</title>\n".
@@ -308,7 +307,7 @@ if (!isset($select_local)) $select_local = 'general';
 
 // Write HTML-Header
 echo $header_intern;
-echo "<html><head><title>";
+echo "<title>";
 echo _("Create new Account");
 echo "</title>\n".
 	"<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n".

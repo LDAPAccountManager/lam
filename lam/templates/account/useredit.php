@@ -97,7 +97,6 @@ if (isset($_GET['DN']) && $_GET['DN']!='') {
 	if (count($groups)==0) {
 		// Write HTML-Header
 		echo $header_intern;
-		echo "<html><head>";
 		echo "<title>";
 		echo _("Create new Account");
 		echo "</title>\n".
@@ -754,7 +753,6 @@ do { // X-Or, only one if() can be true
 
 // Write HTML-Header
 echo $header_intern;
-echo "<html><head>";
 echo "<title>";
 echo _("Create new Account");
 echo "</title>\n".

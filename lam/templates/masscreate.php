@@ -106,7 +106,7 @@ switch ($select) {
 			* 400 in csv-file will be ignored
 			*/
 			echo $_SESSION['header'];
-			echo '<html><head><title>';
+			echo '<title>';
 			echo _('Create new Accounts');
 			echo '</title>'."\n".
 				'<link rel="stylesheet" type="text/css" href="../style/layout.css">'."\n".
@@ -131,7 +131,7 @@ switch ($select) {
 
 // Write HTML-Header
 echo $_SESSION['header'];
-echo '<html><head><title>';
+echo '<title>';
 echo _('Create new Accounts');
 echo '</title>'."\n".
 	'<link rel="stylesheet" type="text/css" href="../style/layout.css">'."\n".

@@ -459,7 +459,7 @@ do { // X-Or, only one if() can be true
 
 // Write HTML-Header
 echo $header_intern;
-echo "<html><head><title>";
+echo "<title>";
 echo _("Create new Account");
 echo "</title>\n".
 	"<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n".
