@@ -427,12 +427,17 @@ function buildUploadAccounts($scope, $data, $ids) {
 	for ($i = 0; $i < sizeof($data); $i++) $partialAccounts[$i]['objectClasses'] = array();
 	for ($i = 0; $i < sizeof($ordered); $i++) {
 		$module = new $ordered[$i]($scope);
-		$errors = $module->build_uploadAccounts($data, $ids, &$partialAccounts);
-		if (sizeof($errors) > 0) break;
+		$errors = $module->build_uploadAccounts($data, $ids, $partialAccounts);
+		if (sizeof($errors) > 0) {
+			$errors[] = array("ERROR", _("Upload was stopped after errors in $module module!"), "");
+			break;
+		}
 	}
-	print_r($partialAccounts);
-	print_r($errors);
-	return $return;
+	if (sizeof($errors) > 0) {
+		for ($i = 0; $i < (($i < sizeof($errors)) || ($i > 49)); $i++) call_user_func_array("StatusMessage", $errors[$i]);
+		return false;
+	}
+	else return $partialAccounts;
 }
 
 /**
