@@ -47,14 +47,28 @@ class sambaAccount extends baseModule {
 		$this->messages['homePath'][1] = array('INFO', _('Home path'), _('Inserted user- or groupname in HomePath.'));
 		$this->messages['profilePath'][0] = array('ERROR', _('Profile path'), _('Profile path is invalid!'));
 		$this->messages['profilePath'][1] = array('INFO', _('Profile path'), _('Inserted user- or groupname in profilepath.'));
-		$this->messages['logonScript'][0] = array('ERROR', _('Script path'), _('Script path is invalid!'));
-		$this->messages['logonScript'][1] = array('INFO', _('Script path'), _('Inserted user- or groupname in scriptpath.'));
+		$this->messages['logonScript'][0] = array('ERROR', _('Logon script'), _('Logon script is invalid!'));
+		$this->messages['logonScript'][1] = array('INFO', _('Logon script'), _('Inserted user- or groupname in logon script.'));
+		$this->messages['logonScript'][2] = array('ERROR', _('Account %s:') . ' sambaAccount_logonScript', _('Logon script is invalid!'));
 		$this->messages['workstations'][0] = array('ERROR', _('Samba workstations'), _('Please enter a comma separated list of host names!'));
+		$this->messages['workstations'][1] = array('ERROR', _('Account %s:') . ' sambaAccount_workstations', _('Please enter a comma separated list of host names!'));
 		$this->messages['domain'][0] = array('ERROR', _('Domain name'), _('Domain name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and -.'));
+		$this->messages['domain'][1] = array('ERROR', _('Account %s:') . ' sambaAccount_domain', _('Domain name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and -.'));
 		$this->messages['lmPassword'][0] = array('ERROR', _('Password'), _('Please enter the same password in both password-fields.'));
 		$this->messages['lmPassword'][1] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
+		$this->messages['lmPassword'][2] = array('ERROR', _('Account %s:') . ' sambaAccount_password', _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
 		$this->messages['rid'][0] = array('ERROR', _('Special user'), _('There can be only one administrator per domain.'));
 		$this->messages['rid'][1] = array('ERROR', _('Special user'), _('There can be only one guest per domain.'));	
+		$this->messages['displayName'][0] = array('ERROR', _('Account %s:') . ' sambaAccount_displayName', _('Please enter a valid display name!'));
+		$this->messages['pwdUnix'][0] = array('ERROR', _('Account %s:') . ' sambaAccount_pwdUnix', _('This value can only be \"true\" or \"false\"!'));
+		$this->messages['noPassword'][0] = array('ERROR', _('Account %s:') . ' sambaAccount_noPassword', _('This value can only be \"true\" or \"false\"!'));
+		$this->messages['noExpire'][0] = array('ERROR', _('Account %s:') . ' sambaAccount_noExpire', _('This value can only be \"true\" or \"false\"!'));
+		$this->messages['deactivated'][0] = array('ERROR', _('Account %s:') . ' sambaAccount_deactivated', _('This value can only be \"true\" or \"false\"!'));
+		$this->messages['pwdCanChange'][0] = array('ERROR', _('Account %s:') . ' sambaAccount_pwdCanChange', _('Please enter a valid date in format DD-MM-YYYY.'));
+		$this->messages['pwdMustChange'][0] = array('ERROR', _('Account %s:') . ' sambaAccount_pwdMustChange', _('Please enter a valid date in format DD-MM-YYYY.'));
+		$this->messages['homeDrive'][0] = array('ERROR', _('Account %s:') . ' sambaAccount_homeDrive', _('Please enter a valid drive letter.'));
+		$this->messages['group'][0] = array('ERROR', _('Account %s:') . ' sambaAccount_group', _('Please enter a valid group RID.'));
+		$this->messages['specialUser'][0] = array('ERROR', _('Account %s:') . ' sambaAccount_specialUser', _('Please enter a valid special user name.'));
 	
 	}
 
@@ -247,22 +261,23 @@ class sambaAccount extends baseModule {
 					'example' => '\\server\profiles\smiller'
 				),
 				array(
-					'name' => 'sambaAccount_scriptPath',
-					'description' => _('Script path'),
+					'name' => 'sambaAccount_logonScript',
+					'description' => _('Logon script'),
 					'help' => 'scriptPath',
 					'example' => 'logon.bat'
 				),
 				array(
 					'name' => 'sambaAccount_workstations',
 					'description' => _('Samba workstations'),
-					'help' => 'workstationsUpload',
+					'help' => 'workstations',
 					'example' => 'PC01,PC02,PC03'
 				),
 				array(
 					'name' => 'sambaAccount_group',
 					'description' => _('Windows group'),
 					'help' => 'groupUpload',
-					'example' => '1234'
+					'example' => '1235',
+					'default' => '&lt;gidNumber&gt;*2 + 1001'
 				),
 				array(
 					'name' => 'sambaAccount_specialUser',
@@ -338,13 +353,10 @@ class sambaAccount extends baseModule {
 				"Text" => _("Path of the user profile. Can be a local absolute path or a UNC-path (\\\\server\\share). $%s and $%s are replaced with user- and groupname."). ' '. _("Can be left empty."),
 				"variables" => array('user', 'group')),
 			"scriptPath" => array(
-				"ext" => "FALSE", "Headline" => _("Script path"),
+				"ext" => "FALSE", "Headline" => _("Logon script"),
 				"Text" => _("Filename and -path relative to netlogon-share which should be executed on logon. $%s and $%s are replaced with user- and groupname."). ' '. _("Can be left empty."),
 				"variables" => array('user', 'group')),
 			"workstations" => array(
-				"ext" => "FALSE", "Headline" => _("Samba workstations"),
-				"Text" => _("List of Samba workstations the user is allowed to login. Empty means every workstation."). ' '. _("Can be left empty.")),
-			"workstationsUpload" => array(
 				"ext" => "FALSE", "Headline" => _("Samba workstations"),
 				"Text" => _("Comma separated list of Samba workstations the user is allowed to login. Empty means every workstation."). ' '. _("Can be left empty.")),
 			"group" => array(
@@ -728,7 +740,7 @@ class sambaAccount extends baseModule {
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Profile path') ),
 				1 => array ( 'kind' => 'input', 'type' => 'text', 'name' => 'profilePath', 'size' => '20', 'maxlength' => '255', 'value' => $this->attributes['profilePath'][0]),
 				2 => array ( 'kind' => 'help', 'value' => 'profilePath' ));
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Script path') ),
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Logon script') ),
 				1 => array ( 'kind' => 'input', 'type' => 'text', 'name' => 'scriptPath', 'size' => '20', 'maxlength' => '255', 'value' => $this->attributes['scriptPath'][0]),
 				2 => array ( 'kind' => 'help', 'value' => 'scriptPath' ));
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Samba workstations') ),
@@ -834,6 +846,234 @@ class sambaAccount extends baseModule {
 							'sambaAccount_userWorkstations' => array('<block><key>' . _('Samba workstations') . '</key><value>' . $this->attributes['userWorkstations'][0] . '</value></block>'),
 							'sambaAccount_domain' => array('<block><key>' . _('Domain') . '</key><value>' . $this->attributes['domain'][0] . '</value></block>'),
 							'sambaAccount_description' => array('<block><key>' . _('Description') . '</key><value>' . $this->attributes['description'][0] . '</value></block>'));
+	}
+
+	/**
+	* In this function the LDAP account is built up.
+	*
+	* @param array $rawAccounts list of hash arrays (name => value) from user input
+	* @param array $partialAccounts list of hash arrays (name => value) which are later added to LDAP
+	* @param array $ids list of IDs for column position (e.g. "posixAccount_uid" => 5)
+	* @return array list of error messages if any
+	*/
+	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts) {
+		$triggered_messages = array();
+		if ($this->get_scope() == 'user') {
+			for ($i = 0; $i < sizeof($rawAccounts); $i++) {
+				if (!in_array("sambaAccount", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "sambaAccount";
+				// displayName
+				if (get_preg($rawAccounts[$i][$ids['sambaAccount_displayName']], 'realname')) {
+					$partialAccounts[$i]['displayName'] = $rawAccounts[$i][$ids['sambaAccount_displayName']];
+				}
+				else {
+					$errMsg = $this->messages['displayName'][0];
+					array_push($errMsg, array($i));
+					$triggered_messages[] = $errMsg;
+				}
+				// password
+				if (!get_preg($rawAccounts[$i][$ids['sambaAccount_password']], 'password')) {
+					$errMsg = $this->messages['lmPassword'][2];
+					array_push($errMsg, array($i));
+					$triggered_messages[] = $errMsg;
+				}
+				// use Unix password
+				if ($rawAccounts[$i][$ids['sambaAccount_pwdUnix']] == "") {  // default: use Unix
+					$partialAccounts[$i]['lmPassword'] = lmPassword($partialAccounts[$i]['userPassword']);
+					$partialAccounts[$i]['ntPassword'] = ntPassword($partialAccounts[$i]['userPassword']);
+				}
+				elseif (in_array($rawAccounts[$i][$ids['sambaAccount_pwdUnix']], array('true', 'false'))) {
+					if ($rawAccounts[$i][$ids['sambaAccount_pwdUnix']] == 'true') {  // use Unix
+						$partialAccounts[$i]['lmPassword'] = lmPassword($partialAccounts[$i]['userPassword']);
+						$partialAccounts[$i]['ntPassword'] = ntPassword($partialAccounts[$i]['userPassword']);
+					}
+					else {  // use given password
+						$partialAccounts[$i]['lmPassword'] = lmPassword($rawAccounts[$i][$ids['sambaAccount_password']]);
+						$partialAccounts[$i]['ntPassword'] = ntPassword($rawAccounts[$i][$ids['sambaAccount_password']]);
+					}
+				}
+				else {
+					$errMsg = $this->messages['pwdUnix'][0];
+					array_push($errMsg, array($i));
+					$triggered_messages[] = $errMsg;
+				}
+				// use no password
+				if ($rawAccounts[$i][$ids['sambaAccount_noPassword']] != "") {
+					if (in_array($rawAccounts[$i][$ids['sambaAccount_noPassword']], array('true', 'false'))) {
+						if ($rawAccounts[$i][$ids['sambaAccount_noPassword']] == 'true') {
+							$partialAccounts[$i]['lmPassword'] = 'NO PASSWORD*****';
+							$partialAccounts[$i]['ntPassword'] = 'NO PASSWORD*****';
+						}
+					}
+					else {
+						$errMsg = $this->messages['noPassword'][0];
+						array_push($errMsg, array($i));
+						$triggered_messages[] = $errMsg;
+					}
+				}
+				// account flags
+				$flag_expire = false;
+				$flag_deactivated = false;
+				// password does not expire
+				if ($rawAccounts[$i][$ids['sambaAccount_noExpire']] != "") {
+					if (in_array($rawAccounts[$i][$ids['sambaAccount_noExpire']], array('true', 'false'))) {
+						if ($rawAccounts[$i][$ids['sambaAccount_noExpire']] == 'false') {
+							$flag_expire = true;
+						}
+					}
+					else {
+						$errMsg = $this->messages['noExpire'][0];
+						array_push($errMsg, array($i));
+						$triggered_messages[] = $errMsg;
+					}
+				}
+				// account is deactivated
+				if ($rawAccounts[$i][$ids['sambaAccount_deactivated']] != "") {
+					if (in_array($rawAccounts[$i][$ids['sambaAccount_deactivated']], array('true', 'false'))) {
+						if ($rawAccounts[$i][$ids['sambaAccount_deactivated']] == 'true') {
+							$flag_deactivated = true;
+						}
+					}
+					else {
+						$errMsg = $this->messages['deactivated'][0];
+						array_push($errMsg, array($i));
+						$triggered_messages[] = $errMsg;
+					}
+				}
+				// set flags
+				$flags = "[";
+				if ($flag_deactivated) $flags = $flags . "D";
+				if (!$flag_expire) $flags = $flags . "X";
+				$flags = $flags . "U";
+				// Expand string to fixed length
+				$flags = str_pad($flags, 12);
+				// End character
+				$flags = $flags . "]";
+				$partialAccounts[$i]['acctFlags'] = $flags;
+				// passsword can be changed
+				if ($rawAccounts[$i][$ids['sambaAccount_pwdCanChange']] != "") {
+					if (get_preg($rawAccounts[$i][$ids['sambaAccount_pwdCanChange']], 'date')) {
+						$parts = explode("-", $rawAccounts[$i][$ids['sambaAccount_pwdCanChange']]);
+						$time = mktime(0, 0, 0, $parts[1], $parts[0], $parts[2]);
+						$partialAccounts[$i]['pwdCanChange'] = $time;
+					}
+					else {
+						$errMsg = $this->messages['pwdCanChange'][0];
+						array_push($errMsg, array($i));
+						$triggered_messages[] = $errMsg;
+					}
+				}
+				// passsword must be changed
+				if ($rawAccounts[$i][$ids['sambaAccount_pwdMustChange']] != "") {
+					if (get_preg($rawAccounts[$i][$ids['sambaAccount_pwdMustChange']], 'date')) {
+						$parts = explode("-", $rawAccounts[$i][$ids['sambaAccount_pwdMustChange']]);
+						$time = mktime(0, 0, 0, $parts[1], $parts[0], $parts[2]);
+						$partialAccounts[$i]['pwdMustChange'] = $time;
+					}
+					else {
+						$errMsg = $this->messages['pwdMustChange'][0];
+						array_push($errMsg, array($i));
+						$triggered_messages[] = $errMsg;
+					}
+				}
+				// home drive
+				if ($rawAccounts[$i][$ids['sambaAccount_homeDrive']] != "") {
+					if (eregi("[d-z]:", $rawAccounts[$i][$ids['sambaAccount_homeDrive']])) {
+						$partialAccounts[$i]['homeDrive'] = $rawAccounts[$i][$ids['sambaAccount_homeDrive']];
+					}
+					else {
+						$errMsg = $this->messages['homeDrive'][0];
+						array_push($errMsg, array($i));
+						$triggered_messages[] = $errMsg;
+					}
+				}
+				// home path
+				if ($rawAccounts[$i][$ids['sambaAccount_homePath']] != "") {
+					if (get_preg($rawAccounts[$i][$ids['sambaAccount_homePath']], 'UNC')) {
+						$partialAccounts[$i]['smbHome'] = $rawAccounts[$i][$ids['sambaAccount_homePath']];
+					}
+					else {
+						$errMsg = $this->messages['homePath'][0];
+						array_push($errMsg, array($i));
+						$triggered_messages[] = $errMsg;
+					}
+				}
+				// profile path
+				if ($rawAccounts[$i][$ids['sambaAccount_profilePath']] != "") {
+					if (get_preg($rawAccounts[$i][$ids['sambaAccount_profilePath']], 'UNC')) {
+						$partialAccounts[$i]['profilePath'] = $rawAccounts[$i][$ids['sambaAccount_profilePath']];
+					}
+					else {
+						$errMsg = $this->messages['profilePath'][0];
+						array_push($errMsg, array($i));
+						$triggered_messages[] = $errMsg;
+					}
+				}
+				// logon script
+				if ($rawAccounts[$i][$ids['sambaAccount_logonScript']] != "") {
+					if (get_preg($rawAccounts[$i][$ids['sambaAccount_logonScript']], 'logonscript')) {
+						$partialAccounts[$i]['scriptPath'] = $rawAccounts[$i][$ids['sambaAccount_logonScript']];
+					}
+					else {
+						$errMsg = $this->messages['logonScript'][2];
+						array_push($errMsg, array($i));
+						$triggered_messages[] = $errMsg;
+					}
+				}
+				// workstations
+				if ($rawAccounts[$i][$ids['sambaAccount_workstations']] != "") {
+					if (get_preg($rawAccounts[$i][$ids['sambaAccount_workstations']], 'workstations')) {
+						$partialAccounts[$i]['userWorkstations'] = $rawAccounts[$i][$ids['sambaAccount_workstations']];
+					}
+					else {
+						$errMsg = $this->messages['workstations'][1];
+						array_push($errMsg, array($i));
+						$triggered_messages[] = $errMsg;
+					}
+				}
+				// group
+				if ($rawAccounts[$i][$ids['sambaAccount_group']] != "") {
+					if (get_preg($rawAccounts[$i][$ids['sambaAccount_group']], 'digit')) {
+						$partialAccounts[$i]['primaryGroupID'] = $rawAccounts[$i][$ids['sambaAccount_group']];
+					}
+					else {
+						$errMsg = $this->messages['group'][0];
+						array_push($errMsg, array($i));
+						$triggered_messages[] = $errMsg;
+					}
+				}
+				else {
+					// default GID*2 + 1001
+					$partialAccounts[$i]['primaryGroupID'] = $partialAccounts[$i]['gidNumber']*2 + 1001;
+				}
+				// domain
+				if ($rawAccounts[$i][$ids['sambaAccount_domain']] != "") {
+					if (get_preg($rawAccounts[$i][$ids['sambaAccount_domain']], 'domainname')) {
+						$partialAccounts[$i]['domain'] = $rawAccounts[$i][$ids['sambaAccount_domain']];
+					}
+					else {
+						$errMsg = $this->messages['domain'][1];
+						array_push($errMsg, array($i));
+						$triggered_messages[] = $errMsg;
+					}
+				}
+				// special user
+				if ($rawAccounts[$i][$ids['sambaAccount_specialUser']] != "") {
+					if (in_array($rawAccounts[$i][$ids['sambaAccount_specialUser']], array_keys($this->rids))) {
+						$partialAccounts[$i]['rid'] = $this->rids[$rawAccounts[$i][$ids['sambaAccount_specialUser']]];
+					}
+					else {
+						$errMsg = $this->messages['specialUser'][0];
+						array_push($errMsg, array($i));
+						$triggered_messages[] = $errMsg;
+					}
+				}
+				else {
+					// default RID uid*2 + 1000
+					$partialAccounts[$i]['rid'] = $partialAccounts[$i]['uidNumber']*2 + 1000;
+				}
+			}
+		}
+		return $triggered_messages;
 	}
 
 }
