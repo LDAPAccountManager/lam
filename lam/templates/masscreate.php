@@ -86,7 +86,7 @@ switch ($select) {
 	*/
 	case 'cancel' :
 		// go back to user list page
-		metaRefresh($_SESSION['lamurl']."templates/lists/listusers.php");
+		metaRefresh("lists/listusers.php");
 		// Stop script
 		die;
 		break;
@@ -95,7 +95,7 @@ switch ($select) {
 			// Do Refresh to masscreate.php itself if csv-file was loaded successfully
 			$_SESSION['group_suffix'] = $_POST['f_group_suffix'];
 			$_SESSION['group_selectprofile'] =  $_POST['f_selectgroupprofile'];
-			metaRefresh($_SESSION['lamurl']."templates/masscreate.php?list2");
+			metaRefresh("masscreate.php?list2=true");
 			// Stop script
 			die;
 			}
@@ -120,7 +120,7 @@ switch ($select) {
 			echo '</td></tr>'."\n";
 			echo '<tr><td><a href="lists/listusers.php">';
 			echo _('Cancel');
-			echo '</a></td><td><a href="masscreate.php?list2">';
+			echo '</a></td><td><a href="masscreate.php?list2=true">';
 			echo _('Contiune');
 			echo "</a></td></tr></table>\n";
 			// Stop script
@@ -134,7 +134,7 @@ echo $_SESSION['header'];
 echo '<html><head><title>';
 echo _('Create new Accounts');
 echo '</title>'."\n".
-	'<link rel="stylesheet" type="text/css" href="'.$_SESSION['lamurl'].'style/layout.css">'."\n".
+	'<link rel="stylesheet" type="text/css" href="../style/layout.css">'."\n".
 	'<meta http-equiv="pragma" content="no-cache">'."\n".
 	'<meta http-equiv="cache-control" content="no-cache">'."\n";
 
@@ -152,7 +152,7 @@ switch ($select) {
 		*/
 		if ($_SESSION['pointer'] < sizeof($_SESSION['accounts'])) {
 			$refresh = get_cfg_var('max_execution_time')-5;
-			echo '<meta http-equiv="refresh" content="'.$refresh.'; URL=masscreate.php?create">'."\n";
+			echo '<meta http-equiv="refresh" content="'.$refresh.'; URL=masscreate.php?create=true">'."\n";
 			}
 		// Display start of body
 		echo	'</head><body>'."\n".
@@ -263,7 +263,7 @@ switch ($select) {
 			}
 		if (!$stay) {
 			// Display rest of meta-refreh page if there are still users to create
-			echo '<tr><td><a href="masscreate.php?create">';
+			echo '<tr><td><a href="masscreate.php?create=true">';
 			echo _('Please press here if meta-refresh didn\'t work.');
 			echo '</a></td></tr>'."\n";
 			echo '<tr><td><input name="cancel" type="submit" value="'; echo _('Cancel');
