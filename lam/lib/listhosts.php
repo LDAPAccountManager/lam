@@ -61,8 +61,9 @@ $sr = @ldap_search($_SESSION["ldap"]->server(),
 if ($sr) {
 	$info = ldap_get_entries($_SESSION["ldap"]->server, $sr);
 	ldap_free_result($sr);
+	if ($info["count"] == 0) echo ("<br><br><font color=\"red\"><b>" . _("No Samba Hosts found!") . "</b></font><br><br>");
 }
-else echo ("<br><br><font color=\"red\"><b>" . _("No Samba Hosts found!") . "</b></font><br><br>");
+else echo ("<br><br><font color=\"red\"><b>" . _("LDAP Search failed! Please check your preferences. <br> No Samba Hosts found!") . "</b></font><br><br>");
 
 echo ("<form action=\"../templates/account.php?type=host\" method=\"post\">\n");
 // print host table

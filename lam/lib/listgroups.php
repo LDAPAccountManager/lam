@@ -61,8 +61,9 @@ $sr = @ldap_search($_SESSION["ldap"]->server(),
 if ($sr) {
 	$info = ldap_get_entries($_SESSION["ldap"]->server, $sr);
 	ldap_free_result($sr);
+	if ($info["count"] == 0) echo ("<br><br><font color=\"red\"><b>" . _("No Grous found!") . "</b></font><br><br>");
 }
-else echo ("<br><br><font color=\"red\"><b>" . _("No Groups found!") . "</b></font><br><br>");
+else echo ("<br><br><font color=\"red\"><b>" . _("LDAP Search failed! Please check your preferences. <br> No Groups found!") . "</b></font><br><br>");
 
 // print host table header
 echo "<table width=\"100%\">\n";
