@@ -1,0 +1,11 @@
+general_group: staff
+general_homedir: /home/$user
+general_shell: /bin/bash
+unix_pwdwarn: 10
+unix_pwdallowlogin: 10
+unix_pwdminage: 1
+unix_pwdmaxage: 180
+smb_useunixpwd: 1
+smb_pwdcanchange: 1
+smb_homedrive: U:
+smb_smbuserworkstations: *
