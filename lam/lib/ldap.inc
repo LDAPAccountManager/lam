@@ -154,6 +154,7 @@ class Ldap{
 	if (!$found) {
 		$ret[] = $suffix;
 	}
+	usort($ret, array($this,"cmp_array"));
 	return $ret;
 	}
 
@@ -175,52 +176,79 @@ class Ldap{
   	$this->connect($data[0], $data[1]);
   }
 
-  // encrypts username and password
-  function encrypt($username, $password) {
-	// read key and iv from cookie
-	$iv = base64_decode($_COOKIE["IV"]);
-	$key = base64_decode($_COOKIE["Key"]);
-	// encrypt username and password
-	$this->username = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $username, MCRYPT_MODE_ECB, $iv));
-	$this->password = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $password, MCRYPT_MODE_ECB, $iv));
-  }
+	// encrypts username and password
+	function encrypt($username, $password) {
+		// read key and iv from cookie
+		$iv = base64_decode($_COOKIE["IV"]);
+		$key = base64_decode($_COOKIE["Key"]);
+		// encrypt username and password
+		$this->username = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $username, MCRYPT_MODE_ECB, $iv));
+		$this->password = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $password, MCRYPT_MODE_ECB, $iv));
+	}
 
-  // decrypts username and password
-  function decrypt() {
-  	// read key and iv from cookie
-	$iv = base64_decode($_COOKIE["IV"]);
-	$key = base64_decode($_COOKIE["Key"]);
-	// decrypt username and password
-	$username = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($this->username), MCRYPT_MODE_ECB, $iv);
-	$password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($this->password), MCRYPT_MODE_ECB, $iv);
-  	$ret = array($username, $password);
-	$ret[0] = str_replace(chr(00), "", $ret[0]);
-	$ret[1] = str_replace(chr(00), "", $ret[1]);
-	return $ret;
-  }
+	// decrypts username and password
+	function decrypt() {
+		// read key and iv from cookie
+		$iv = base64_decode($_COOKIE["IV"]);
+		$key = base64_decode($_COOKIE["Key"]);
+		// decrypt username and password
+		$username = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($this->username), MCRYPT_MODE_ECB, $iv);
+		$password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($this->password), MCRYPT_MODE_ECB, $iv);
+		$ret = array($username, $password);
+		$ret[0] = str_replace(chr(00), "", $ret[0]);
+		$ret[1] = str_replace(chr(00), "", $ret[1]);
+		return $ret;
+	}
 
-  // closes connection to LDAP server and deletes encrypted username/password
-  function destroy() {
-  	$this->close();
-	$this->username="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
-	$this->password="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
-  }
+	// closes connection to LDAP server and deletes encrypted username/password
+	function destroy() {
+		$this->close();
+		$this->username="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
+		$this->password="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
+	}
 
-  // returns an array that contains LDAP attribute names and their description
-  function attributeUserArray() {
-  	return $this->ldapUserAttributes;
-  }
+	// returns an array that contains LDAP attribute names and their description
+	function attributeUserArray() {
+		return $this->ldapUserAttributes;
+	}
 
-  // returns an array that contains LDAP attribute names and their description
-  function attributeGroupArray() {
-  	return $this->ldapGroupAttributes;
-  }
+	// returns an array that contains LDAP attribute names and their description
+	function attributeGroupArray() {
+		return $this->ldapGroupAttributes;
+	}
 
-  // returns an array that contains LDAP attribute names and their description
-  function attributeHostArray() {
-  	return $this->ldapHostAttributes;
-  }
+	// returns an array that contains LDAP attribute names and their description
+	function attributeHostArray() {
+		return $this->ldapHostAttributes;
+	}
 
+
+	// helper function to sort the unit DNs
+	function cmp_array($a, $b) {
+		// split DNs
+		$array_a = explode(",", $a);
+		$array_b = explode(",", $b);
+		$len_a = sizeof($array_a);
+		$len_b = sizeof($array_b);
+		// check how many parts to compare
+		$len = min($len_a, $len_b);
+		// compare from last part on
+		for ($i = 0; $i < $len; $i++) {
+			// get parts to compare
+			$part_a = strtolower($array_a[$len_a - $i - 1]);
+			$part_b = strtolower($array_b[$len_b - $i - 1]);
+			// compare parts
+			if ($part_a == $part_b) { // part is identical
+				if ($i == ($len - 1)) {
+					if ($len_a > $len_b) return 1;
+					elseif ($len_a < $len_b) return -1;
+					else return 0; // DNs are identical
+				}
+			}
+			elseif ($part_a == max($part_a, $part_b)) return 1;
+			else return -1;
+		}
+	}
 }
 
 
