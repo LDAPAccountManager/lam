@@ -132,11 +132,11 @@ if ($_POST['delete_yes']) {
 			echo "</b></legend>\n";
 			break;
 		}
+	// Store kind of DNs
 	echo '<input name="type" type="hidden" value="'.$_POST['type'].'">';
 	echo "<br><table border=0 >\n";
-	// Store kind of DNs
+	// Loop for every DN which should be deleted
 	foreach ($delete_dn as $dn) {
-		// Loop for every DN which should be deleted
 		switch ($_POST['type']) {
 			case 'user':
 				// Get username from DN
@@ -152,7 +152,13 @@ if ($_POST['delete_yes']) {
 					$success = ldap_mod_del($ldap_intern->server(), ldap_get_dn($ldap_intern->server(), $entry) , array('memberUid' => $username));
 					// *** fixme add error-message if memberUid couldn't be deleted
 					$entry = ldap_next_entry($ldap_intern->server(), $entry);
-					}
+				}
+				if ($config_intern->scriptServer && isset($username)) {
+					// Remove homedir if required
+					if ($_POST['f_rem_home']) remhomedir($username);
+					// Remove quotas if lamdaemon.pl is used
+					remquotas($username, 'user');
+				}
 				// Delete user itself
 				$success = ldap_delete($ldap_intern->server(), $dn);
 				if (!$success) $error = _('Could not delete user:').' '.$dn;
@@ -178,17 +184,15 @@ if ($_POST['delete_yes']) {
 				// Print error if still users in group
 				if (!$result) $error = _('Could not delete group. Still users in group:').' '.$dn;
 				else {
+					// Remove quotas if lamdaemon.pl is used
+					if ($config_intern->scriptServer && isset($groupname)) {
+						remquotas($groupname, 'group');
+					}
 					// Delete group itself
 					$success = ldap_delete($ldap_intern->server(), $dn);
 					if (!$success) $error = _('Could not delete group:').' '.$dn;
 					}
 				break;
-			}
-		if ($config_intern->scriptServer && isset($usernames)) {
-			// Remove homedir if required
-			if ($_POST['f_rem_home']) remhomedir($usernames);
-			// Remove quotas if lamdaemon.pl is used
-			remquotas($usernames, 'user');
 			}
 		// Remove DNs from cache-array
 		if ($success && isset($_SESSION[$_POST['type'].'DN'][$dn])) unset($_SESSION[$_POST['type'].'DN'][$dn]);
