@@ -23,6 +23,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 class posixGroup extends baseModule {
 
+	// Variables
+	// Use a unix password?
+	var $userPassword_no;
+	// Lock account?
+	var $userPassword_lock;
+	// change gids of users and hosts?
+	var $changegids;
+
 	/**
 	* Creates a new posixGroup object.
 	*/
@@ -35,22 +43,166 @@ class posixGroup extends baseModule {
 		parent::baseModule($scope);
 	}
 
-	/** this functin fills the error message array with messages
-	**/
-	function loadErrorMessages() {
-		//$this->errormessages['minGID'][0] = array('ERROR', _('Minimum GID number'), _('Minimum GID number is invalid or empty!'));
-		//$this->errormessages['maxGID'][0] = array('ERROR', _('Maximum GID number'), _('Maximum GID number is invalid or empty!'));
-		//$this->errormessages['cmpGID'][1] = array('ERROR', _('Maximum GID number'), _('Maximum GID number must be greater than minimum GID number!'));
-		$this->errormessages['userPassword'][0] = array('ERROR', _('Password'), _('Please enter the same password in both password-fields.'));
-		$this->errormessages['userPassword'][1] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
-		$this->errormessages['gidNumber'][0] = array('INFO', _('GID number'), _('GID number has changed. Please select checkbox to change GID number of users and hosts.'));
-		$this->errormessages['gidNumber'][2] = array('WARN', _('ID-Number'), _('It is possible that this ID-number is reused. This can cause several problems because files with old permissions might still exist. To avoid this warning set maxUID to a higher value.'));
-		$this->errormessages['gidNumber'][3] = array('ERROR', _('ID-Number'), _('No free ID-Number!'));
-		$this->errormessages['gidNumber'][4] = array('ERROR', _('ID-Number'), _('ID is already in use'));
-		$this->errormessages['cn'][0] = array('WARN', _('Groupname'), _('You are using a capital letters. This can cause problems because windows isn\'t case-sensitive.'));
-		$this->errormessages['cn'][1] = array('WARN', _('Groupname'), _('Groupname in use. Selected next free groupname.'));
-		$this->errormessages['cn'][2] = array('ERROR', _('Groupname'), _('Groupname contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
-		} 
+
+	/**
+	* In this function the LDAP account is built up.
+	*
+	* @param array $rawAccounts list of hash arrays (name => value) from user input
+	* @param array $partialAccounts list of hash arrays (name => value) which are later added to LDAP
+	* @param array $ids list of IDs for column position (e.g. "posixAccount_uid" => 5)
+	* @return array list of error messages if any
+	*/
+	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts) {
+		$errors = array();
+		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
+			if (!in_array("posixGroup", $partialAccounts[$i]['objectClasses'])) $partialAccounts[$i]['objectClasses'][] = "posixGroup";
+			if (eregi(".*", $rawAccounts[$i][$ids['posixGroup_cn']])) {  // TODO use real regex for group name
+				$partialAccounts[$i]['cn'] = $rawAccounts[$i][$ids['posixGroup_cn']];
+			}
+			if ($rawAccounts[$i][$ids['posixGroup_gid']] == "") {
+				// TODO autoGID
+				$partialAccounts[$i]['gidNumber'] = 42;
+			}
+			elseif (eregi(".*", $rawAccounts[$i][$ids['posixGroup_gid']])) {  // TODO use real regex for group name
+				$partialAccounts[$i]['gidNumber'] = $rawAccounts[$i][$ids['posixGroup_gid']];
+			}
+			if ($rawAccounts[$i][$ids['posixGroup_description']] == "") {
+				$partialAccounts[$i]['description'] = $partialAccounts[$i]['cn'];
+			}
+			elseif (eregi(".*", $rawAccounts[$i][$ids['posixGroup_description']])) {  // TODO use real regex for group name
+				$partialAccounts[$i]['description'] = $rawAccounts[$i][$ids['posixGroup_description']];
+			}
+			if ($rawAccounts[$i][$ids['posixGroup_members']] != "") {
+				if (eregi(".*", $rawAccounts[$i][$ids['posixGroup_members']])) {  // TODO use real regex for group name
+					$partialAccounts[$i]['memberUid'] = explode(",", $rawAccounts[$i][$ids['posixGroup_members']]);
+				}
+				else {
+					$errors[] = array(); // TODO error message
+				}
+			}
+			if ($rawAccounts[$i][$ids['posixGroup_password']] != "") {
+				if (eregi(".*", $rawAccounts[$i][$ids['posixGroup_password']])) {  // TODO use real regex for group name
+					$partialAccounts[$i]['password'] = pwd_hash($rawAccounts[$i][$ids['posixGroup_password']], true, $this->moduleSettings['posixAccount_pwdHash'][0]);
+				}
+				else {
+					$errors[] = array(); // TODO error message
+				}
+			}
+		}
+		return $errors;
+	}
+
+
+	function delete_attributes($post) {
+		if ($_SESSION['cache']->in_cache($this->attributes['gidNumber'][0], 'gidNumber', 'user'))
+		$return[$_SESSION[$this->base]->dn]['errors'][] = array ('ERROR', _('Primary groupmembers'), _('There are still primary members in group.'));
+		return $return;
+	}
+
+
+	/* This function will create the html-page
+	* to show a page with all attributes.
+	* It will output a complete html-table
+	*/
+	function display_html_attributes($post) {
+		if ($this->attributes['userPassword'][0] != $this->orig['userPassword'][0]) $password=$this->userPassword();
+		else $password='';
+		if (!$profile) {
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _("Groupname").'*' ),
+			1 => array ( 'kind' => 'input', 'name' => 'cn', 'type' => 'text', 'size' => '20', 'maxlength' => '20', 'value' => $this->attributes['cn'][0]),
+			2 => array ('kind' => 'help', 'value' => 'cn'));
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('GID number').'*' ),
+			1 => array ( 'kind' => 'input', 'name' => 'gidNumber', 'type' => 'text', 'size' => '6', 'maxlength' => '6', 'value' => $this->attributes['gidNumber'][0]),
+			2 => array ('kind' => 'help', 'value' => 'gidNumber'));
+		}
+		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Description') ),
+		1 => array ( 'kind' => 'input', 'name' => 'description', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => $this->attributes['description'][0]),
+		2 => array ('kind' => 'help', 'value' => 'description'));
+		if (!$profile) {
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _("Group members").'*' ),
+			1 => array ( 'kind' => 'input', 'name' => 'adduser', 'type' => 'submit', 'value' => _('Edit groups')),
+			2 => array ('kind' => 'help', 'value' => 'adduser'));
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Password') ),
+			1 => array ( 'kind' => 'input', 'name' => 'userPassword', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => $password),
+			2 => array ( 'kind' => 'input', 'name' => 'genpass', 'type' => 'submit', 'value' => _('Generate password')));
+			if ($post['userPassword2']!='') $password2 = $post['userPassword2'];
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Repeat password') ),
+			1 => array ( 'kind' => 'input', 'name' => 'userPassword2', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => $password2),
+			2 => array ('kind' => 'help', 'value' => 'userPassword'));
+		}
+		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Use no password') ),
+		1 => array ( 'kind' => 'input', 'name' => 'userPassword_no', 'type' => 'checkbox', 'checked' => $this->userPassword_no),
+		2 => array ('kind' => 'help', 'value' => 'userPassword_no'));
+		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Lock password') ),
+		1 => array ( 'kind' => 'input', 'name' => 'userPassword_lock', 'type' => 'checkbox', 'checked' => $this->userPassword_lock),
+		2 => array ('kind' => 'help', 'value' => 'userPassword_lock'));
+		if ($this->attributes['gidNumber'][0]!=$this->orig['gidNumber'][0] && $this->orig['gidNumber'][0]!='' && !$profile) {
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Change GID number of users and hosts') ),
+			1 => array ( 'kind' => 'input', 'name' => 'changegids', 'type' => 'checkbox', 'checked' => $this->changegids),
+			2 => array ('kind' => 'help', 'value' => 'changegids'));
+		}
+		return $return;
+	}
+
+
+	function display_html_delete($post) {
+		// Get list of primary groupmembers.
+		return 0;
+	}
+
+
+	function display_html_user($post, $profile=false) {
+		// load list with all groups
+		$dn_users = $_SESSION['cache']->get_cache('uid', 'posixAccount', 'user');
+		if (is_array($dn_users)) {
+			foreach ($dn_users as $user) $users[] = $user[0];
+			// sort groups
+			sort($users, SORT_STRING);
+			// remove groups the user is member of from grouplist
+			$users = array_delete($this->attributes['memberUid'], $users);
+			// Remove primary group from grouplist
+			$users_dn = $_SESSION['cache']->get_cache('gidNumber', 'posixAccount', 'user');
+			$DNs = array_keys($users_dn);
+			for ($i=0; $i<count($DNs); $i++) {
+				if ($users_dn[$DNs[$i]][0]==$this->attributes['gidNumber'][0]) {
+					$thisuser = substr($DNs[$i], 4, strpos($DNs[$i], ",")-4);
+					if (in_array($thisuser, $users)) {
+						$users = @array_flip($users);
+						unset($users[$thisuser]);
+						$users = @array_flip($users);
+					}
+				}
+			}
+			// sort users
+			sort($users);
+		}
+		$return[] = array ( 0 => array ( 'kind' => 'fieldset', 'legend' => _("Group members"), 'value' =>
+		array ( 0 => array ( 0 => array ('kind' => 'fieldset', 'td' => array ('valign' => 'top'), 'legend' => _("Selected users"), 'value' =>
+		array ( 0 => array ( 0 => array ( 'kind' => 'select', 'name' => 'removeusers[]', 'size' => '15', 'multiple', 'options' => $this->attributes['memberUid'])))),
+		1 => array ( 'kind' => 'table', 'value' => array ( 0 => array ( 0 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'addusers_button',
+		'value' => '<=')), 1 => array ( 0 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'removeusers_button', 'value' => '=>' )),
+		2 => array ( 0 => array ( 'kind' => 'help', 'value' => 'adduser' )))),
+		2 => array ('kind' => 'fieldset', 'td' => array ('valign' => 'top'), 'legend' => _("Available users"), 'value' =>
+		array ( 0 => array ( 0 => array ( 'kind' => 'select', 'name' => 'addusers[]', 'size' => '15', 'multiple', 'options' => $users))))
+		))));
+
+		$return[] = array ( 0 => array ( 'kind' => 'input', 'name' => 'toattributes' ,'type' => 'submit', 'value' => _('Back') ),
+		1 => array ( 'kind' => 'text'),
+		2 => array ('kind' => 'text'));
+		return $return;
+	}
+
+
+	/** This function returns all ldap attributes
+	* which are part of posixGroup and returns
+	* also their values.
+	*/
+	function get_attributes() {
+		$return = $this->attributes;
+		$return['userPassword'] = $this->userPassword();
+		return $return;
+	}
+
 	
 	/**
 	* Returns meta data that is interpreted by parent class
@@ -162,7 +314,20 @@ class posixGroup extends baseModule {
 		return $return;
 	}
 
-	// Constructor
+
+	/*
+	* (non-PHPDoc)
+	* @see baseModule#get_pdfEntries
+	*/
+	function get_pdfEntries($account_type = "group") {
+		return array(	'posixGroup_cn' => array('<block><key>' . _('Groupname') . '</key><value>' . $this->attributes['cn'][0] . '</value></block>'),
+		'posixGroup_gidNumber' => array('<block><key>' . _('GID number') . '</key><value>' . $this->attributes['gidNumber'][0] . '</value></block>'),
+		'posixGroup_memberUid' => array('<block><key>' . _('Group members') . '</key><value>' . $this->attributes['memberUid'][0] . '</value></block>'),
+		'posixGroup_description' => array('<block><key>' . _('Description') . '</key><value>' . $this->attributes['description'][0] . '</value></block>'));
+	}
+
+
+	/** This functin will be called when the module will be loaded **/
 	function init($base) {
 		// call parent init
 		parent::init($base);
@@ -170,39 +335,33 @@ class posixGroup extends baseModule {
 	}
 
 
-	// Variables
-	// Use a unix password?
-	var $userPassword_no;
-	// Lock account?
-	var $userPassword_lock;
-	// change gids of users and hosts?
-	var $changegids;
-
-	/** $attribute['userPassword'] can't accessed directly because it's enrcypted
-	* To read / write password function userPassword is needed
-	* This function will return the unencrypted password when
-	* called without a variable
-	* If it's called with a new password, the
-	* new password will be stored encrypted
+	/* This function loads all attributes into the object
+	* $attr is an array as it's retured from ldap_get_attributes
 	*/
-	function userPassword($newpassword=false) {
-		if (is_string($newpassword)) {
-			// Write new password
-			$this->attributes['userPassword'][0] = base64_encode($_SESSION['ldap']->encrypt($newpassword));
-			return 0;
-		}
-		else {
-			if ($this->attributes['userPassword'][0]!='') {
-				// Read existing password if set
-				return $_SESSION['ldap']->decrypt(base64_decode($this->attributes['userPassword'][0]));
-			}
-			else return '';
-		}
+	function load_attributes($attr) {
+		$this->load_ldap_attributes($attr);
+		return 0;
 	}
 
-	function module_ready() {
-		return true;
-	}
+
+	/** this functin fills the error message array with messages
+	**/
+	function load_errorMessages() {
+		// *** fixme really neccesarry for posixGroup?
+		//$this->errormessages['minGID'][0] = array('ERROR', _('Minimum GID number'), _('Minimum GID number is invalid or empty!'));
+		//$this->errormessages['maxGID'][0] = array('ERROR', _('Maximum GID number'), _('Maximum GID number is invalid or empty!'));
+		//$this->errormessages['cmpGID'][1] = array('ERROR', _('Maximum GID number'), _('Maximum GID number must be greater than minimum GID number!'));
+		$this->errormessages['userPassword'][0] = array('ERROR', _('Password'), _('Please enter the same password in both password-fields.'));
+		$this->errormessages['userPassword'][1] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
+		$this->errormessages['gidNumber'][0] = array('INFO', _('GID number'), _('GID number has changed. Please select checkbox to change GID number of users and hosts.'));
+		$this->errormessages['gidNumber'][2] = array('WARN', _('ID-Number'), _('It is possible that this ID-number is reused. This can cause several problems because files with old permissions might still exist. To avoid this warning set maxUID to a higher value.'));
+		$this->errormessages['gidNumber'][3] = array('ERROR', _('ID-Number'), _('No free ID-Number!'));
+		$this->errormessages['gidNumber'][4] = array('ERROR', _('ID-Number'), _('ID is already in use'));
+		$this->errormessages['cn'][0] = array('WARN', _('Groupname'), _('You are using a capital letters. This can cause problems because windows isn\'t case-sensitive.'));
+		$this->errormessages['cn'][1] = array('WARN', _('Groupname'), _('Groupname in use. Selected next free groupname.'));
+		$this->errormessages['cn'][2] = array('ERROR', _('Groupname'), _('Groupname contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
+		} 
+
 
 	/* This functions return true
 	* if all needed settings are done
@@ -214,6 +373,12 @@ class posixGroup extends baseModule {
 		return true;
 	}
 
+
+	function module_ready() {
+		return true;
+	}
+
+
 	/* This function returns a list of all html-pages in module
 	* This is usefull for mass upload and pdf-files
 	* because lam can walk trough all pages itself and do some
@@ -223,143 +388,6 @@ class posixGroup extends baseModule {
 		return array('attributes', 'user');
 	}
 
-	/* This function returns all ldap attributes
-	* which are part of posixGroup and returns
-	* also their values.
-	*/
-	function get_attributes() {
-		$return = $this->attributes;
-		$return['userPassword'] = $this->userPassword();
-		return $return;
-	}
-
-	/* This function loads all attributes into the object
-	* $attr is an array as it's retured from ldap_get_attributes
-	*/
-	function load_attributes($attr) {
-		$this->load_ldap_attributes($attr);
-		return 0;
-	}
-
-	/* This function returns an array with 3 entries:
-	* array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
-	* DN is the DN to change. It may be possible to change several DNs,
-	* e.g. create a new user and add him to some groups via attribute memberUid
-	* add are attributes which have to be added to ldap entry
-	* remove are attributes which have to be removed from ldap entry
-	* modify are attributes which have to been modified in ldap entry
-	*/
-	function save_attributes() {
-		$return = $_SESSION[$this->base]->save_module_attributes($this->attributes, $this->orig);
-		if (isset($return[$_SESSION[$this->base]->dn]['modify']['userPassword']))
-		unset($return[$_SESSION[$this->base]->dn]['modify']['userPassword']);
-		// Set unix password
-		if (count($this->orig['userPassword'])==0) {
-			// New user or no old password set
-			if ($this->userPassword_no) {
-				$return[$_SESSION[$this->base]->dn]['modify']['userPassword'][0] = pwd_hash('', !$this->userPassword_lock, $this->moduleSettings['posixGroup_pwdHash'][0]);
-			}
-			else $return[$_SESSION[$this->base]->dn]['modify']['userPassword'][0] = utf8_encode(pwd_hash($this->userPassword(), !$this->userPassword_lock, $this->moduleSettings['posixGroup_pwdHash'][0]));
-		}
-		else {
-			if (($this->attributes['userPassword'][0] != $this->orig['userPassword'][0] && $this->userPassword()!='' ) || $this->userPassword_no) {
-				// Write new password
-				if ($this->userPassword_no) $return[$_SESSION[$this->base]->dn]['modify']['userPassword'][0] = pwd_hash('', !$this->userPassword_lock, $this->moduleSettings['posixGroup_pwdHash'][0]);
-				else $return[$_SESSION[$this->base]->dn]['modify']['userPassword'][0] = utf8_encode(pwd_hash($this->userPassword(), !$this->userPassword_lock, $this->moduleSettings['posixGroup_pwdHash'][0]));
-			}
-			else { // No new password but old password
-			// (un)lock password
-			if ($this->userPassword_lock == pwd_is_enabled($this->orig['userPassword'][0])) {
-				// Split old password hash in {CRYPT} and password-hash
-				$i = 0;
-				while ($this->orig['userPassword'][0]{$i} != '}') $i++;
-				$passwd = substr($this->orig['userPassword'][0], $i+1 );
-				$crypt = substr($this->orig['userPassword'][0], 0, $i+1 );
-				// remove trailing ! from password hash
-				if ($passwd{0} == '!') $passwd = substr($passwd, 1);
-				// Write new password
-				if ($this->userPassword_lock) $return[$_SESSION[$this->base]->dn]['modify']['userPassword'][0] = utf8_encode("$crypt!$passwd");
-				else $return[$_SESSION[$this->base]->dn]['modify']['userPassword'][0] = utf8_encode("$crypt$passwd");
-			}
-			}
-		}
-
-		// Remove primary group from users from memberUid
-		$users_dn = $_SESSION['cache']->get_cache('gidNumber', 'posixAccount', 'user');
-		if (is_array($users_dn)) {
-			$DNs = array_keys($users_dn);
-			for ($i=0; $i<count($DNs); $i++) {
-				if ($users_dn[$DNs[$i]][0]==$this->attributes['gidNumber'][0]) {
-					$thisuser = substr($DNs[$i], 4, strpos($DNs[$i], ",")-4);
-					if (@in_array($thisuser, $this->attribtues['memberUid'])) {
-						$this->attribtues['memberUid'] = @array_flip($this->attribtues['memberUid']);
-						unset($this->attribtues['memberUid'][$thisuser]);
-						$this->attribtues['memberUid'] = @array_flip($this->attribtues['memberUid']);
-					}
-				}
-			}
-		}
-
-		// Change gids of users and hosts?
-		if ($this->changegids) {
-			// get gidNumber
-			$line=-1;
-			for ($i=0; $i<count($_SESSION['ldap']->objectClasses) || $i==-1; $i++) {
-				if (strpos($_SESSION['ldap']->objectClasses[$i], "NAME 'posixAccount'")) $line = $i;
-			}
-			if ($line!=-1) {
-				$result = $_SESSION['cache']->get_cache('gidNumber', 'posixAccount', '*');
-				if (is_array($result)) {
-					$DNs = array_keys($result);
-					for ($i=0; $i<count($DNs); $i++)
-					if ($result[$DNs[$i]][0] == $this->orig['gidNumber'][0]) $return[$DNs[$i]]['modify']['gidNumber'][0] = $this->attributes['gidNumber'][0];
-				}
-			}
-			// change primaryGroupID
-			$line=-1;
-			for ($i=0; $i<count($_SESSION['ldap']->objectClasses) || $i==-1; $i++) {
-				if (strpos($_SESSION['ldap']->objectClasses[$i], "NAME 'sambaAccount'")) $line = $i;
-			}
-			if ($line!=-1) {
-				$result = $_SESSION['cache']->get_cache('primaryGroupID', 'sambaAccount', '*');
-				if (is_array($result)) {
-					$DNs = array_keys($result);
-					for ($i=0; $i<count($DNs); $i++) {
-						if ($result[$DNs[$i]][0] == $this->orig['gidNumber'][0]*2+1001 ) $return[$DNs[$i]]['modify']['PrimaryGroupID'][0] = $this->attributes['gidNumber'][0]*2+1001;
-					}
-				}
-			}
-			// change sambaPrimaryGroupSID
-			$line=-1;
-			for ($i=0; $i<count($_SESSION['ldap']->objectClasses) || $i==-1; $i++) {
-				if (strpos($_SESSION['ldap']->objectClasses[$i], "NAME 'sambaSamAccount'")) $line = $i;
-			}
-			if ($line!=-1) {
-				$result = $_SESSION['cache']->get_cache('sambaPrimaryGroupSID', 'sambaSamAccount', '*');
-				if (is_array($result)) {
-					$DNs = array_keys($result);
-					for ($i=0; $i<count($DNs); $i++) {
-						// Get Domain SID from name
-						$sambaDomains = search_domains($_SESSION['config']->get_domainSuffix());
-						// Get Domain-SID from group SID
-						$domainSID = substr($result[$DNs[$i]], 0, strrpos($result[$DNs[$i]], "-"));
-						for ($i=0; $i<count($sambaDomains); $i++ )
-						if ($domainSID==$sambaDomains[$i]->SID)
-						$RIDbase = $sambaDomains[$i]->RIDbase;
-						if ($result[$DNs[$i]][0] == $SID . "-" . $this->orig['gidNumber'][0]*2+1+$RIDbase ) $return[$DNs[$i]]['modify']['sambaPrimaryGroupSID'][0] = $SID . "-" . $this->attributes['gidNumber'][0]*2+1+$RIDbase;
-					}
-				}
-			}
-		}
-
-		return $return;
-	}
-
-	function delete_attributes($post) {
-		if ($_SESSION['cache']->in_cache($this->attributes['gidNumber'][0], 'gidNumber', 'user'))
-		$return[$_SESSION[$this->base]->dn]['errors'][] = array ('ERROR', _('Primary groupmembers'), _('There are still primary members in group.'));
-		return $return;
-	}
 
 	/* Write variables into object and do some regexp checks
 	*/
@@ -505,6 +533,7 @@ class posixGroup extends baseModule {
 		return 0;
 	}
 
+
 	/* Write variables into object and do some regexp checks
 	*/
 	function proccess_user($post, $profile=false) {
@@ -530,155 +559,143 @@ class posixGroup extends baseModule {
 		return 0;
 	}
 
-	/* This function will create the html-page
-	* to show a page with all attributes.
-	* It will output a complete html-table
+
+	/* This function returns an array with 3 entries:
+	* array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
+	* DN is the DN to change. It may be possible to change several DNs,
+	* e.g. create a new user and add him to some groups via attribute memberUid
+	* add are attributes which have to be added to ldap entry
+	* remove are attributes which have to be removed from ldap entry
+	* modify are attributes which have to been modified in ldap entry
 	*/
-	function display_html_attributes($post) {
-		if ($this->attributes['userPassword'][0] != $this->orig['userPassword'][0]) $password=$this->userPassword();
-		else $password='';
-		if (!$profile) {
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _("Groupname").'*' ),
-			1 => array ( 'kind' => 'input', 'name' => 'cn', 'type' => 'text', 'size' => '20', 'maxlength' => '20', 'value' => $this->attributes['cn'][0]),
-			2 => array ('kind' => 'help', 'value' => 'cn'));
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('GID number').'*' ),
-			1 => array ( 'kind' => 'input', 'name' => 'gidNumber', 'type' => 'text', 'size' => '6', 'maxlength' => '6', 'value' => $this->attributes['gidNumber'][0]),
-			2 => array ('kind' => 'help', 'value' => 'gidNumber'));
+	function save_attributes() {
+		$return = $_SESSION[$this->base]->save_module_attributes($this->attributes, $this->orig);
+		if (isset($return[$_SESSION[$this->base]->dn]['modify']['userPassword']))
+		unset($return[$_SESSION[$this->base]->dn]['modify']['userPassword']);
+		// Set unix password
+		if (count($this->orig['userPassword'])==0) {
+			// New user or no old password set
+			if ($this->userPassword_no) {
+				$return[$_SESSION[$this->base]->dn]['modify']['userPassword'][0] = pwd_hash('', !$this->userPassword_lock, $this->moduleSettings['posixGroup_pwdHash'][0]);
+			}
+			else $return[$_SESSION[$this->base]->dn]['modify']['userPassword'][0] = utf8_encode(pwd_hash($this->userPassword(), !$this->userPassword_lock, $this->moduleSettings['posixGroup_pwdHash'][0]));
 		}
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Description') ),
-		1 => array ( 'kind' => 'input', 'name' => 'description', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => $this->attributes['description'][0]),
-		2 => array ('kind' => 'help', 'value' => 'description'));
-		if (!$profile) {
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _("Group members").'*' ),
-			1 => array ( 'kind' => 'input', 'name' => 'adduser', 'type' => 'submit', 'value' => _('Edit groups')),
-			2 => array ('kind' => 'help', 'value' => 'adduser'));
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Password') ),
-			1 => array ( 'kind' => 'input', 'name' => 'userPassword', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => $password),
-			2 => array ( 'kind' => 'input', 'name' => 'genpass', 'type' => 'submit', 'value' => _('Generate password')));
-			if ($post['userPassword2']!='') $password2 = $post['userPassword2'];
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Repeat password') ),
-			1 => array ( 'kind' => 'input', 'name' => 'userPassword2', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => $password2),
-			2 => array ('kind' => 'help', 'value' => 'userPassword'));
+		else {
+			if (($this->attributes['userPassword'][0] != $this->orig['userPassword'][0] && $this->userPassword()!='' ) || $this->userPassword_no) {
+				// Write new password
+				if ($this->userPassword_no) $return[$_SESSION[$this->base]->dn]['modify']['userPassword'][0] = pwd_hash('', !$this->userPassword_lock, $this->moduleSettings['posixGroup_pwdHash'][0]);
+				else $return[$_SESSION[$this->base]->dn]['modify']['userPassword'][0] = utf8_encode(pwd_hash($this->userPassword(), !$this->userPassword_lock, $this->moduleSettings['posixGroup_pwdHash'][0]));
+			}
+			else { // No new password but old password
+			// (un)lock password
+			if ($this->userPassword_lock == pwd_is_enabled($this->orig['userPassword'][0])) {
+				// Split old password hash in {CRYPT} and password-hash
+				$i = 0;
+				while ($this->orig['userPassword'][0]{$i} != '}') $i++;
+				$passwd = substr($this->orig['userPassword'][0], $i+1 );
+				$crypt = substr($this->orig['userPassword'][0], 0, $i+1 );
+				// remove trailing ! from password hash
+				if ($passwd{0} == '!') $passwd = substr($passwd, 1);
+				// Write new password
+				if ($this->userPassword_lock) $return[$_SESSION[$this->base]->dn]['modify']['userPassword'][0] = utf8_encode("$crypt!$passwd");
+				else $return[$_SESSION[$this->base]->dn]['modify']['userPassword'][0] = utf8_encode("$crypt$passwd");
+			}
+			}
 		}
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Use no password') ),
-		1 => array ( 'kind' => 'input', 'name' => 'userPassword_no', 'type' => 'checkbox', 'checked' => $this->userPassword_no),
-		2 => array ('kind' => 'help', 'value' => 'userPassword_no'));
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Lock password') ),
-		1 => array ( 'kind' => 'input', 'name' => 'userPassword_lock', 'type' => 'checkbox', 'checked' => $this->userPassword_lock),
-		2 => array ('kind' => 'help', 'value' => 'userPassword_lock'));
-		if ($this->attributes['gidNumber'][0]!=$this->orig['gidNumber'][0] && $this->orig['gidNumber'][0]!='' && !$profile) {
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Change GID number of users and hosts') ),
-			1 => array ( 'kind' => 'input', 'name' => 'changegids', 'type' => 'checkbox', 'checked' => $this->changegids),
-			2 => array ('kind' => 'help', 'value' => 'changegids'));
-		}
-		return $return;
-	}
 
-	function display_html_delete($post) {
-		// Get list of primary groupmembers.
-		return 0;
-	}
-
-	function display_html_user($post, $profile=false) {
-		// load list with all groups
-		$dn_users = $_SESSION['cache']->get_cache('uid', 'posixAccount', 'user');
-		if (is_array($dn_users)) {
-			foreach ($dn_users as $user) $users[] = $user[0];
-			// sort groups
-			sort($users, SORT_STRING);
-			// remove groups the user is member of from grouplist
-			$users = array_delete($this->attributes['memberUid'], $users);
-			// Remove primary group from grouplist
-			$users_dn = $_SESSION['cache']->get_cache('gidNumber', 'posixAccount', 'user');
+		// Remove primary group from users from memberUid
+		$users_dn = $_SESSION['cache']->get_cache('gidNumber', 'posixAccount', 'user');
+		if (is_array($users_dn)) {
 			$DNs = array_keys($users_dn);
 			for ($i=0; $i<count($DNs); $i++) {
 				if ($users_dn[$DNs[$i]][0]==$this->attributes['gidNumber'][0]) {
 					$thisuser = substr($DNs[$i], 4, strpos($DNs[$i], ",")-4);
-					if (in_array($thisuser, $users)) {
-						$users = @array_flip($users);
-						unset($users[$thisuser]);
-						$users = @array_flip($users);
+					if (@in_array($thisuser, $this->attribtues['memberUid'])) {
+						$this->attribtues['memberUid'] = @array_flip($this->attribtues['memberUid']);
+						unset($this->attribtues['memberUid'][$thisuser]);
+						$this->attribtues['memberUid'] = @array_flip($this->attribtues['memberUid']);
 					}
 				}
 			}
-			// sort users
-			sort($users);
 		}
-		$return[] = array ( 0 => array ( 'kind' => 'fieldset', 'legend' => _("Group members"), 'value' =>
-		array ( 0 => array ( 0 => array ('kind' => 'fieldset', 'td' => array ('valign' => 'top'), 'legend' => _("Selected users"), 'value' =>
-		array ( 0 => array ( 0 => array ( 'kind' => 'select', 'name' => 'removeusers[]', 'size' => '15', 'multiple', 'options' => $this->attributes['memberUid'])))),
-		1 => array ( 'kind' => 'table', 'value' => array ( 0 => array ( 0 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'addusers_button',
-		'value' => '<=')), 1 => array ( 0 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'removeusers_button', 'value' => '=>' )),
-		2 => array ( 0 => array ( 'kind' => 'help', 'value' => 'adduser' )))),
-		2 => array ('kind' => 'fieldset', 'td' => array ('valign' => 'top'), 'legend' => _("Available users"), 'value' =>
-		array ( 0 => array ( 0 => array ( 'kind' => 'select', 'name' => 'addusers[]', 'size' => '15', 'multiple', 'options' => $users))))
-		))));
 
-		$return[] = array ( 0 => array ( 'kind' => 'input', 'name' => 'toattributes' ,'type' => 'submit', 'value' => _('Back') ),
-		1 => array ( 'kind' => 'text'),
-		2 => array ('kind' => 'text'));
+
+		// Change gids of users and hosts?
+		if ($this->changegids) {
+			// get gidNumber
+			$line=-1;
+			for ($i=0; $i<count($_SESSION['ldap']->objectClasses) || $i==-1; $i++) {
+				if (strpos($_SESSION['ldap']->objectClasses[$i], "NAME 'posixAccount'")) $line = $i;
+			}
+			if ($line!=-1) {
+				$result = $_SESSION['cache']->get_cache('gidNumber', 'posixAccount', '*');
+				if (is_array($result)) {
+					$DNs = array_keys($result);
+					for ($i=0; $i<count($DNs); $i++)
+					if ($result[$DNs[$i]][0] == $this->orig['gidNumber'][0]) $return[$DNs[$i]]['modify']['gidNumber'][0] = $this->attributes['gidNumber'][0];
+				}
+			}
+			// change primaryGroupID
+			$line=-1;
+			for ($i=0; $i<count($_SESSION['ldap']->objectClasses) || $i==-1; $i++) {
+				if (strpos($_SESSION['ldap']->objectClasses[$i], "NAME 'sambaAccount'")) $line = $i;
+			}
+			if ($line!=-1) {
+				$result = $_SESSION['cache']->get_cache('primaryGroupID', 'sambaAccount', '*');
+				if (is_array($result)) {
+					$DNs = array_keys($result);
+					for ($i=0; $i<count($DNs); $i++) {
+						if ($result[$DNs[$i]][0] == $this->orig['gidNumber'][0]*2+1001 ) $return[$DNs[$i]]['modify']['PrimaryGroupID'][0] = $this->attributes['gidNumber'][0]*2+1001;
+					}
+				}
+			}
+			// change sambaPrimaryGroupSID
+			$line=-1;
+			for ($i=0; $i<count($_SESSION['ldap']->objectClasses) || $i==-1; $i++) {
+				if (strpos($_SESSION['ldap']->objectClasses[$i], "NAME 'sambaSamAccount'")) $line = $i;
+			}
+			if ($line!=-1) {
+				$result = $_SESSION['cache']->get_cache('sambaPrimaryGroupSID', 'sambaSamAccount', '*');
+				if (is_array($result)) {
+					$DNs = array_keys($result);
+					for ($i=0; $i<count($DNs); $i++) {
+						// Get Domain SID from name
+						$sambaDomains = search_domains($_SESSION['config']->get_domainSuffix());
+						// Get Domain-SID from group SID
+						$domainSID = substr($result[$DNs[$i]], 0, strrpos($result[$DNs[$i]], "-"));
+						for ($i=0; $i<count($sambaDomains); $i++ )
+						if ($domainSID==$sambaDomains[$i]->SID)
+						$RIDbase = $sambaDomains[$i]->RIDbase;
+						if ($result[$DNs[$i]][0] == $SID . "-" . $this->orig['gidNumber'][0]*2+1+$RIDbase ) $return[$DNs[$i]]['modify']['sambaPrimaryGroupSID'][0] = $SID . "-" . $this->attributes['gidNumber'][0]*2+1+$RIDbase;
+					}
+				}
+			}
+		}
 		return $return;
 	}
 
-	/*
-	* (non-PHPDoc)
-	* @see baseModule#get_pdfEntries
-	*/
-	function get_pdfEntries($account_type = "group") {
-		return array(	'posixGroup_cn' => array('<block><key>' . _('Groupname') . '</key><value>' . $this->attributes['cn'][0] . '</value></block>'),
-		'posixGroup_gidNumber' => array('<block><key>' . _('GID number') . '</key><value>' . $this->attributes['gidNumber'][0] . '</value></block>'),
-		'posixGroup_memberUid' => array('<block><key>' . _('Group members') . '</key><value>' . $this->attributes['memberUid'][0] . '</value></block>'),
-		'posixGroup_description' => array('<block><key>' . _('Description') . '</key><value>' . $this->attributes['description'][0] . '</value></block>'));
-	}
 
-	/**
-	* In this function the LDAP account is built up.
-	*
-	* @param array $rawAccounts list of hash arrays (name => value) from user input
-	* @param array $partialAccounts list of hash arrays (name => value) which are later added to LDAP
-	* @param array $ids list of IDs for column position (e.g. "posixAccount_uid" => 5)
-	* @return array list of error messages if any
+	/** $attribute['userPassword'] can't accessed directly because it's enrcypted
+	* To read / write password function userPassword is needed
+	* This function will return the unencrypted password when
+	* called without a variable
+	* If it's called with a new password, the
+	* new password will be stored encrypted
 	*/
-	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts) {
-		$errors = array();
-		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
-			if (!in_array("posixGroup", $partialAccounts[$i]['objectClasses'])) $partialAccounts[$i]['objectClasses'][] = "posixGroup";
-			if (eregi(".*", $rawAccounts[$i][$ids['posixGroup_cn']])) {  // TODO use real regex for group name
-				$partialAccounts[$i]['cn'] = $rawAccounts[$i][$ids['posixGroup_cn']];
-			}
-			if ($rawAccounts[$i][$ids['posixGroup_gid']] == "") {
-				// TODO autoGID
-				$partialAccounts[$i]['gidNumber'] = 42;
-			}
-			elseif (eregi(".*", $rawAccounts[$i][$ids['posixGroup_gid']])) {  // TODO use real regex for group name
-				$partialAccounts[$i]['gidNumber'] = $rawAccounts[$i][$ids['posixGroup_gid']];
-			}
-			if ($rawAccounts[$i][$ids['posixGroup_description']] == "") {
-				$partialAccounts[$i]['description'] = $partialAccounts[$i]['cn'];
-			}
-			elseif (eregi(".*", $rawAccounts[$i][$ids['posixGroup_description']])) {  // TODO use real regex for group name
-				$partialAccounts[$i]['description'] = $rawAccounts[$i][$ids['posixGroup_description']];
-			}
-			if ($rawAccounts[$i][$ids['posixGroup_members']] != "") {
-				if (eregi(".*", $rawAccounts[$i][$ids['posixGroup_members']])) {  // TODO use real regex for group name
-					$partialAccounts[$i]['memberUid'] = explode(",", $rawAccounts[$i][$ids['posixGroup_members']]);
-				}
-				else {
-					$errors[] = array(); // TODO error message
-				}
-			}
-			if ($rawAccounts[$i][$ids['posixGroup_password']] != "") {
-				if (eregi(".*", $rawAccounts[$i][$ids['posixGroup_password']])) {  // TODO use real regex for group name
-					$partialAccounts[$i]['password'] = pwd_hash($rawAccounts[$i][$ids['posixGroup_password']], true, $this->moduleSettings['posixAccount_pwdHash'][0]);
-				}
-				else {
-					$errors[] = array(); // TODO error message
-				}
-			}
+	function userPassword($newpassword=false) {
+		if (is_string($newpassword)) {
+			// Write new password
+			$this->attributes['userPassword'][0] = base64_encode($_SESSION['ldap']->encrypt($newpassword));
+			return 0;
 		}
-		return $errors;
+		else {
+			if ($this->attributes['userPassword'][0]!='') {
+				// Read existing password if set
+				return $_SESSION['ldap']->decrypt(base64_decode($this->attributes['userPassword'][0]));
+			}
+			else return '';
+		}
 	}
-
 }
 
 ?>
