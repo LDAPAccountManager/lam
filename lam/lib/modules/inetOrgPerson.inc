@@ -71,6 +71,7 @@ class inetOrgPerson extends baseModule {
 		$this->messages['title'][1] = array('ERROR', _('Account %s: inetOrgPerson_title'), _('Please enter a valid title!'));
 		$this->messages['employeeType'][0] = array('ERROR', _('Employee type'), _('Please enter a valid employee type!'));
 		$this->messages['employeeType'][1] = array('ERROR', _('Account %s: inetOrgPerson_type'), _('Please enter a valid employee type!'));
+		$this->messages['cn'][0] = array('ERROR', _('Account %s: inetOrgPerson_cn'), _('Please enter a valid common name!'));
 	}	
 	
 	/**
@@ -131,7 +132,7 @@ class inetOrgPerson extends baseModule {
 		),
 		array(
 		'name' => 'inetOrgPerson_description',
-		'description' => _('Desription'),
+		'description' => _('Description'),
 		'help' => 'description',
 		'example' => _('Temp, contract until december')
 		),
@@ -157,7 +158,7 @@ class inetOrgPerson extends baseModule {
 		'name' => 'inetOrgPerson_postalCode',
 		'description' => _('Postal code'),
 		'help' => 'postalCode',
-		'example' => _('12345')
+		'example' => '12345'
 		),
 		array(
 		'name' => 'inetOrgPerson_address',
@@ -169,19 +170,19 @@ class inetOrgPerson extends baseModule {
 		'name' => 'inetOrgPerson_telephone',
 		'description' => _('Telephone number'),
 		'help' => 'telephoneNumber',
-		'example' => _('123-123-1234')
+		'example' => '123-123-1234'
 		),
 		array(
 		'name' => 'inetOrgPerson_mobile',
 		'description' => _('Mobile number'),
 		'help' => 'mobileTelephoneNumber',
-		'example' => _('123-123-1234')
+		'example' => '123-123-1234'
 		),
 		array(
 		'name' => 'inetOrgPerson_fax',
 		'description' => _('Fax number'),
 		'help' => 'facsimileTelephoneNumber',
-		'example' => _('123-123-1234')
+		'example' => '123-123-1234'
 		),
 		array(
 		'name' => 'inetOrgPerson_email',
@@ -553,7 +554,7 @@ class inetOrgPerson extends baseModule {
 					$partialAccounts[$i]['cn'] = $rawAccounts[$i][$ids['inetOrgPerson_cn']];
 				}
 				else {
-					$errMsg = $this->messages['email'][1];
+					$errMsg = $this->messages['cn'][0];
 					array_push($errMsg, array($i));
 					$triggered_messages[] = $errMsg;
 				}
