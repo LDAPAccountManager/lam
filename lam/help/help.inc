@@ -139,7 +139,9 @@ $helpArray = array (
 				"400" => array ("ext" => "FALSE", "Headline" => _("Username"),
 					"Text" => _("Username of the user which should be created. Valid characters are: a-z,0-9, .-_. Lam doesn't allow a number as first
 					 character because useradd also does not allow it. Lam doesn't allow capital letters A-Z because it
-					 can cause several problems. If username is allready used username will expanded with a number. The next free number will be used.")),
+					 can cause several problems. If username is allready used username will expanded with a number. The next free number will be used.
+					 Warning: Older systems have problems with usernames longer than 8 characters. You can't log in to Windows if username is longer than 16
+					 characters.")),
 				"401" => array ("ext" => "FALSE", "Headline" => _("UID number"),
 					"Text" => _("If empty UID number will be generated automaticly. Valid values are between").' '.$_SESSION['config']->get_minUID().' '._("and").' '.$_SESSION['config']->get_maxUID()."."),
 				"402" => array ("ext" => "FALSE", "Headline" => _("Additional groups"),

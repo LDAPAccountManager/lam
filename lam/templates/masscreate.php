@@ -354,7 +354,7 @@ if ($select!='pdf') {
 				echo '<option>' . $suffix. '</option>';
 			echo '</select></td>'."\n".'<td><a href="help.php?HelpNumber=423" target="lamhelp">'._('Help').'</a>'.
 				'</td></tr><tr><td>'."\n";
-			echo _('Select group profile:');
+			echo _('Select group profile');
 			echo '</td><td><select name="f_selectgroupprofile">'."\n";
 			foreach (getGroupProfiles() as $profile) echo '<option>' . $profile;
 			echo '</select>';
