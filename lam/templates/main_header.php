@@ -33,7 +33,7 @@ setlanguage();
 echo $_SESSION['header'];
 
 // number of list views (users, groups, ...)
-$lists = 3;
+$lists = 2;
 if ($_SESSION['config']->get_Hostsuffix() != "") $lists++;
 
 ?>
@@ -46,16 +46,7 @@ if ($_SESSION['config']->get_Hostsuffix() != "") $lists++;
 <table border=0 width="100%">
 	<tr>
 		<td width="200">
-			<table width="200">
-				<tr>
-			    	<td width="100" align="left"><a href="./profedit/profilemain.php" target="mainpart"><?php echo _("Profile Editor"); ?></a></td>
-    				<td width="100" align="left"><a href="./pdfedit/pdfmain.php" target="mainpart"><?php echo _("PDF editor") ?></a></td>
-				</tr>
-				<tr>
-    				<td align="left"><a href="ou_edit.php" target="mainpart"><?php echo _("OU-Editor") ?></a></td>
-    				<td align="left"><a href="masscreate.php" target="mainpart"><?php echo _("File Upload") ?></a></td>
-				</tr>
-			</table>
+			<a href="tools.php" target="mainpart"><?php echo _("Tools") ?></a>
 		</td>
 		<?php
 			echo "<td colspan=$lists align=\"center\">\n";
@@ -73,7 +64,6 @@ if ($_SESSION['config']->get_Hostsuffix() != "") $lists++;
 	<tr>
 		<td></td>
 		<?php
-			echo '<td width="120" align="center"><a href="./lists/listdomains.php" target="mainpart"><big>' . _("Domains") . '</big></a></td>' . "\n";
 			echo '<td width="120" align="center"><a href="./lists/listusers.php" target="mainpart"><big>' . _("Users") . '</big></a></td>' . "\n";
 			echo '<td width="120" align="center"><a href="./lists/listgroups.php" target="mainpart"><big>' . _("Groups") . '</big></a></td>' . "\n";
 			if ($_SESSION['config']->get_Hostsuffix() != "") {
