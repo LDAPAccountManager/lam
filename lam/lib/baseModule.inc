@@ -152,6 +152,8 @@ class baseModule {
 				if ($this->meta['profile_checks'][$identifiers[$i]]['required'] && ($options[$identifiers[$i]][0] == '')) {
 					$messages[] = $this->meta['profile_checks'][$identifiers[$i]]['required_message'];
 				}
+				// ignore empty fileds
+				if ($options[$identifiers[$i]][0] == '') continue;
 				// check by regular expression (case insensitive)
 				if ($this->meta['profile_checks'][$identifiers[$i]]['type'] == 'regex_i') {
 					if (! eregi($this->meta['profile_checks'][$identifiers[$i]]['regex'], $options[$identifiers[$i]][0])) {
