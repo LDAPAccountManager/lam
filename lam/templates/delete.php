@@ -90,9 +90,10 @@ if ($_GET['type']) {
 	echo "<br>\n";
 	// Print delete rows from modules
 	echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
-	$modules = array_keys($_SESSION['account']->module);
-	for ($i=0; $i<count($modules); $i++) {
-		$_SESSION['account']->module[$modules[$i]]->display_html_delete($_POST);
+	$modules = $_SESSION['config']->get_AccountModules($_GET['type']);
+	foreach ($modules as $module) {
+		$module = new $module($_GET['type']);
+		$module->display_html_delete($_POST);
 	}
 	echo "</table>\n";
 	echo "<br>\n";
