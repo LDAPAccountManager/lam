@@ -29,7 +29,10 @@ include_once("ldap.php");
 session_save_path("../sess");
 @session_start();
 
-echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\" />";
+echo "<html><head><title>hjhj</title>";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">\n";
+echo "</head><body bgcolor=\"#F4F4F4\">\n";
+echo "<script src=\"./functions.js\" type=\"text/javascript\" language=\"javascript\"></script>\n";
 
 // generate attribute-description table
 $attr_array;	// list of LDAP attributes to show
@@ -65,20 +68,25 @@ if ($sr) {
 }
 else echo ("<br><br><font color=\"red\"><b>" . _("LDAP Search failed! Please check your preferences. <br> No Groups found!") . "</b></font><br><br>");
 
+echo ("<form action=\"../templates/account.php?type=group\" method=\"post\">\n");
+
 // print host table header
-echo "<table width=\"100%\">\n";
-echo "<tr><th class=\"grouplist\" width=12></th>";
+echo "<table rules='all' class=\"grouplist\" width=\"100%\">\n";
+echo "<tr class=\"grouplist_head\"><th width=22 height=34></th><th></th>";
 // table header
 for ($k = 0; $k < sizeof($desc_array); $k++) {
-	echo "<th class=\"grouplist\">" . $desc_array[$k] . "</th>";
+	echo "<th>" . $desc_array[$k] . "</th>";
 }
 echo "</tr>\n";
-echo ("<form action=\"../templates/account.php?type=group\" method=\"post\">\n");
 // print group list
 for ($i = 0; $i < sizeof($info)-1; $i++) { // ignore last entry in array which is "count"
-	echo("<tr><td class=\"grouplist\"><input type=\"radio\" name=\"DN\" value=\"" . $info[$i]["dn"] . "\"></td>");
+	echo("<tr class=\"grouplist\" onMouseOver=\"group_over(this, '" . $info[$i]["dn"] . "')\"" .
+								"onMouseOut=\"group_out(this, '" . $info[$i]["dn"] . "')\"" .
+								"onClick=\"group_click(this, '" . $info[$i]["dn"] . "')\">" .
+								"<td height=22><input type=\"checkbox\" name=\"" . $info[$i]["dn"] . "\"></td>" .
+								"<td align='center'><a href=\"../templates/account.php?type=group,DN='" . $info[$i]["dn"] . "'\">" . _("Edit") . "</a></td>");
 	for ($k = 0; $k < sizeof($attr_array); $k++) {
-		echo ("<td class=\"grouplist\">");
+		echo ("<td>");
 		// print all attribute entries seperated by "; "
 		if (sizeof($info[$i][strtolower($attr_array[$k])]) > 0) {
 			array_shift($info[$i][strtolower($attr_array[$k])]);
@@ -90,11 +98,10 @@ for ($i = 0; $i < sizeof($info)-1; $i++) { // ignore last entry in array which i
 }
 echo ("</table>");
 echo ("<p>&nbsp</p>\n");
-echo ("<p>&nbsp</p>\n");
 echo ("<table align=\"left\" border=\"0\">");
-echo ("<tr><td align=\"left\"><input type=\"submit\" name=\"editgroup\" value=\"" . _("Edit Group") . "\">");
-echo ("&nbsp<input type=\"button\" name=\"newgroup\" value=\"" . _("New Group") . "\" onClick=\"self.location.href='../templates/account.php?type=group'\">");
-echo ("&nbsp<input type=\"button\" name=\"delgroup\" value=\"" . _("Delete Group") . "\" onClick=\"self.location.href='../templates/account.php?type=delete'\"></td></tr>\n");
+echo ("<tr><td align=\"left\"><input type=\"button\" name=\"newgroup\" value=\"" . _("New Group") . "\" onClick=\"self.location.href='../templates/account.php?type=group'\">");
+echo ("&nbsp<input type=\"button\" name=\"delgroup\" value=\"" . _("Delete Group(s)") . "\" onClick=\"self.location.href='../templates/account.php?type=delete'\"></td></tr>\n");
 echo ("</table>\n");
 echo ("</form>\n");
+echo "</body></html>\n";
 ?>

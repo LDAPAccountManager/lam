@@ -96,23 +96,34 @@ text-decoration:none;
  * table style for grouplist.php
  *
  */
-th.grouplist {
+
+/* table preferences */
+table.grouplist {
   border-width:1px;
   border-style:solid;
-  border-color:#B7C7B7;
-  padding:10px;
-  background-color:#a8c3ff;
+  border-color:#7167bf;
   font-size:14px;
+}
+
+/* color of entry rows */
+tr.grouplist {
+  background-color:#d6e3ff;
+}
+
+/* color of head row */
+tr.grouplist_head {
+  background-color:#a8c3ff;
   font-weight:bold;
 }
 
-td.grouplist {
-  border-width:1px;
-  border-style:solid;
-  border-color:#C7D7C7;
-  padding:4px;
-  background-color:#d6e3ff;
-  font-size:14px;
+/* color of rows on mouseOver */
+tr.grouplist_over {
+  background-color:#C7E7C7;
+}
+
+/* color of checked rows */
+tr.grouplist_checked {
+  background-color:#f27c71;
 }
 
 /**

@@ -522,3 +522,82 @@ function onKeyDownArrowsHandler(e) {
     }
     e.returnValue = false;
 }
+
+// functions for row checking and mouseOver effects
+
+// mouseOver function
+function user_over(list, box) {
+	cbox = document.getElementsByName(box)[0];
+	if (cbox.checked == false) list.setAttribute('class','userlist_over', 0);
+}
+
+// mouseOut function
+function user_out(list, box) {
+	cbox = document.getElementsByName(box)[0];
+	if (cbox.checked == false) list.setAttribute('class','userlist', 0);
+}
+
+// onClick function
+function user_click(list, box) {
+	cbox = document.getElementsByName(box)[0];
+	if (cbox.checked == true) {
+		cbox.checked = false;
+		list.setAttribute('class','userlist_over', 0);
+	}
+	else {
+		cbox.checked = true;
+		list.setAttribute('class','userlist_checked', 0);
+	}
+}
+
+
+// mouseOver function
+function group_over(list, box) {
+	cbox = document.getElementsByName(box)[0];
+	if (cbox.checked == false) list.setAttribute('class','grouplist_over', 0);
+}
+
+// mouseOut function
+function group_out(list, box) {
+	cbox = document.getElementsByName(box)[0];
+	if (cbox.checked == false) list.setAttribute('class','grouplist', 0);
+}
+
+// onClick function
+function group_click(list, box) {
+	cbox = document.getElementsByName(box)[0];
+	if (cbox.checked == true) {
+		cbox.checked = false;
+		list.setAttribute('class','grouplist_over', 0);
+	}
+	else {
+		cbox.checked = true;
+		list.setAttribute('class','grouplist_checked', 0);
+	}
+}
+
+
+// mouseOver function
+function host_over(list, box) {
+	cbox = document.getElementsByName(box)[0];
+	if (cbox.checked == false) list.setAttribute('class','hostlist_over', 0);
+}
+
+// mouseOut function
+function host_out(list, box) {
+	cbox = document.getElementsByName(box)[0];
+	if (cbox.checked == false) list.setAttribute('class','hostlist', 0);
+}
+
+// onClick function
+function host_click(list, box) {
+	cbox = document.getElementsByName(box)[0];
+	if (cbox.checked == true) {
+		cbox.checked = false;
+		list.setAttribute('class','hostlist_over', 0);
+	}
+	else {
+		cbox.checked = true;
+		list.setAttribute('class','hostlist_checked', 0);
+	}
+}
