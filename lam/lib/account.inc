@@ -59,16 +59,6 @@ function getshells() {
 * fixme ***
 * In order to map all non-ascii characters this function should be changed
 */
-function replace_umlaut($text) {
-	$aTranslate = array("�"=>"ae", "�"=>"Ae",
-		"�"=>"oe", "�"=>"Oe",
-		"�"=>"ue", "�"=>"Ue",
-		"�"=>"ss"
-		);
-	return strtr($text, $aTranslate);
-	}
-
-
 /* This function will return all values from $array without values of $values
 * $values, $array and $return are arrays
 */

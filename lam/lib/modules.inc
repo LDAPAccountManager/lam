@@ -1326,6 +1326,11 @@ class accountContainer {
 					}
 				}
 			}
+		/* We have to some string checks now. Not every ldap attributes allow utf8
+		 * strings. Therefore we do a syntax check here and change utf8 strings to ascci
+		 * strings. Only "7bit" ascci is allowed
+		*/
+		// TODO how do we interact with the user and show him what has been changed
 		// Complete dn with uid or cn=
 		if ($this->type=='group') $search = 'cn';
 			else $search = 'uid';

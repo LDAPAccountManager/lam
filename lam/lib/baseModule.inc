@@ -63,6 +63,9 @@ class baseModule {
 	/** contains all error messages of a module */
 	var $messages;
 
+	/** contains syntax of all */
+	var $syntax;
+
 	/**
 	* Creates a new base module class
 	*
@@ -507,6 +510,47 @@ class baseModule {
 		}
 	}
 
+	function input_check() {
+		/* We have to some string checks now. Not every ldap attributes allow utf8
+		 * strings. Therefore we do a syntax check here and change utf8 strings to ascci
+		 * strings. Only "7bit" ascci is allowed
+		 * We check als the max length as defined in ldap.
+		*/
+		// Do a check for every ldap attribute
+		$attributes = array_keys($this->attributes);
+		for ($i=0; $i<count($attributes); $i++) {
+			if ($_SESSION['ldap']->attributes[$attributes[$i]]['SYNTAX']=='1.3.6.1.4.1.1466.115.121.1.36') {
+				// found numeric attribute
+				for ($j=0; $j<count($this->attributes[$attributes[$i]]); $j++)
+					if ($this->attributes[$attributes[$i]][$j]!=intval($this->attributes[$attributes[$i]][$j])) {
+					$this->attributes[$attributes[$i]][$j] = intval($this->attributes[$attributes[$i]][$j]);
+					$messages[$attributes[$i]] = array('WARN', _($attributes[$i]), _('Changed value %s because only numeric values are allowed.'));
+					}
+			}
+			else if ($_SESSION['ldap']->attributes[$attributes[$i]]['SYNTAX']=='1.3.6.1.4.1.1466.115.121.1.26' ||
+				$_SESSION['ldap']->attributes[$attributes[$i]]['SYNTAX']=='1.3.6.1.4.1.1466.115.121.1.44' ||
+				$_SESSION['ldap']->attributes[$attributes[$i]]['SYNTAX']=='1.3.6.1.4.1.1466.115.121.1.11') {
+				// found "7bit" ascii attribute
+				// convert utf8 in us-ascii
+				$convert = array ( 'ä' => 'ae', 'Ä' => 'Ae', 'ö' => 'Oe', 'ü' => 'ue', 'Ü' => 'ue',
+					'ß' => 'ss', 'é' => 'e', 'è' => 'e', 'ô' => 'o'
+					);
+				$index = array_keys($convert);
+				for ($j=0; $j<count($this->attributes[$attributes[$i]]); $j++)
+					for ($k=0; $k<count($index); $k++) {
+						$temp = str_replace($index[$k], $convert[$index[$k]], $this->attributes[$attributes[$i]][$j]);
+						if ($temp!=$this->attributes[$attributes[$i]][$j]) {
+							$this->attributes[$attributes[$i]][$j] = $temp;						
+							$messages[$attributes[$i]][] = array('WARN', _($attributes[$i]), _('Changed value s because only US-ASCII allowed.')); //, array($attributes[$i]));
+						}
+					}
+			}
+		// TODO length check
+		}
+	if (count($messages)!=0) return $messages;
+		else return 0;
+	}
+	
 	/**
 	* This function executes one post upload action.
 	*

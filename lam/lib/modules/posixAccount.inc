@@ -753,6 +753,10 @@ class posixAccount extends baseModule {
 			if (!get_preg($this->userPassword(), 'password'))
 			$triggered_messages['userPassword'][] = $this->messages['userPassword'][1];
 		}
+	
+	$temp = $this->input_check();
+	// TODO is this really OK?
+	if (is_array($temp)) $triggered_messages = array_merge_recursive($triggered_messages, $temp);
 	// Return error-messages
 	if (count($triggered_messages)!=0) {
 		$this->triggered_messages = $triggered_messages;
@@ -844,6 +848,7 @@ class posixAccount extends baseModule {
 			array ($this->attributes['loginShell'][0])),
 			2 => array ('kind' => 'help', 'value' => 'loginShell'));
 		}
+	return $return;
 	}
 
 	function display_html_delete($post) {

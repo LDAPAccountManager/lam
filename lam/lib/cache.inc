@@ -294,6 +294,7 @@ class cache {
 		$dn_groups = $_SESSION['cache']->get_cache('gidNumber', 'posixGroup', 'group');
 		$DNs = array_keys($dn_groups);
 		foreach ($DNs as $DN) {
+			// TODO doesn't work when groupname is part of DN
 			if (strpos($DN, $groupname))
 				return $dn_groups[$DN][0];
 			}

@@ -64,6 +64,8 @@ class Ldap{
 
 	/** Array with all objectClass strings from the LDAP server */
 	var $objectClasses;
+	/** Array with all attribute strings from the LDAP server */
+	var $attributes;
 
 	// Capabilities of the LDAP server
 	/** Host attribute in inetOrgPerson */
@@ -182,11 +184,82 @@ class Ldap{
 			if ($info) {
 				$this->objectClasses = $info[0]['objectclasses'];
 				array_shift($this->objectClasses);
-				return;
 			}
 		}
 		// if search failed save empty result
-		$this->objectClasses = array();
+		else $this->objectClasses = array();
+
+		// read from default cn
+		$sr = @ldap_read($this->server, 'cn=subschema', '(objectClass=*)', array('attributetypes'));
+		// if default was not correct check different cn
+		if (!$sr) $sr = @ldap_read($this->server, 'cn=schema', '(objectClass=*)', array('attributetypes'));
+		if ($sr) {
+			// get search result and save it
+			$info = @ldap_get_entries($this->server,$sr);
+			if ($info) {
+				$attributes = $info[0]['attributetypes'];
+				array_shift($attributes);
+			}
+		}
+		// build Attribute list
+		for ($i=0; $i<count($attributes); $i++) {
+			// TODO: is it save to use while in lower code?
+			// find oid of attribute
+			$start = 0;
+			while (!get_preg($attributes[$i][$start], 'digit')) $start++;
+			$end = $start;
+			while ($attributes[$i][$end+1] != ' ') $end++; // find limiter
+			$values['oid'] = substr($attributes[$i], $start, $end-$start);
+			// find DESC of attribute			
+			$start = strpos($attributes[$i], 'DESC');
+			if ($start) {
+				$start = $start + 6;
+				$end = $start;
+				while ($attributes[$i][$end]!='\'') $end++; // find limiter
+				$values['DESC'] = substr($attributes[$i], $start, $end-$start);
+			}
+			// find SYNTAX of attribute			
+			$start = strpos($attributes[$i], 'SYNTAX');
+			if ($start) {
+				$start = $start + 7;
+				$end = $start;
+				while ($attributes[$i][$end]!='{' && $attributes[$i][$end]!=' ') $end++; // find limiter
+				$values['SYNTAX'] = substr($attributes[$i], $start, $end-$start);
+			}
+			// find length of attribute			
+			$start = strpos($attributes[$i], 'SYNTAX');
+			if ($start) {
+				$start = $start + 8;
+				while ($attributes[$i][$start]!='{' && $attributes[$i][$start]!=' ') $start++; // find limiter
+				if ($attributes[$i][$start]=='{') {
+					$end = $start;
+					while ($attributes[$i][$end]!='}') $end++; // find limiter
+					$values['LENGTH'] = substr($attributes[$i], $start, $end-$start);
+				}
+			}
+			$start = strpos($attributes[$i], "NAME") + 6;
+			if ($attributes[$i][$start-1]=='(') {
+				// found multiple possible names
+				$start = $start +2;
+				$count = 1;
+				// repeat until all names are found
+				while ($attributes[$i][$start-1]!=')') {
+					// search for end
+					$end = $start;
+					while ($attributes[$i][$end]!='\'') $end++; // find limiter
+					$count++;
+					$name = substr($attributes[$i], $start, $end-$start);
+					$this->attributes[$name] = $values;
+					$start = $end + 3;
+				}
+			}
+			else {
+				$end = $start;
+				while ($attributes[$i][$end]!='\'') $end++;
+				$name = substr($attributes[$i], $start, $end-$start);
+				$this->attributes[$name] = $values;
+			}
+		}
 	}
 
 	/** Updates the capabilities values (var $supports_*) */
@@ -214,7 +287,7 @@ class Ldap{
 		$this->close();
 		// define which attributes to save
 		return array("conf", "username", "password", "ldapUserAttributes", "ldapGroupAttributes",
-			"ldapHostAttributes", "objectClasses", "supports_unix_hosts", "supports_samba2_schema",
+			"ldapHostAttributes", "objectClasses", "attributes", "supports_unix_hosts", "supports_samba2_schema",
 			"supports_samba3_schema", "rand");
 	}
 
