@@ -304,29 +304,29 @@ function saveUserProfile($account, $profile) {
 		$smbhome = str_replace($account->general_group, "\$group", $smbhome);
 	}
 	// write attributes
-	if ($account->general_group) fputs($file, "general_group: " . $account->general_group . "\n");
-	if ($account->general_groupadd) fputs($file, "general_groupadd: " . implode(";", $account->general_groupadd) . "\n");
-	if ($account->general_homedir) fputs($file, "general_homedir: " . $homedir . "\n");
-	if ($account->general_shell) fputs($file, "general_shell: " . $account->general_shell . "\n");
-	if ($account->unix_password_no) fputs($file, "unix_password_no: " . $account->unix_password_no . "\n");
-	if ($account->unix_pwdwarn) fputs($file, "unix_pwdwarn: " . $account->unix_pwdwarn . "\n");
-	if ($account->unix_pwdallowlogin) fputs($file, "unix_pwdallowlogin: " . $account->unix_pwdallowlogin . "\n");
-	if ($account->unix_pwdminage) fputs($file, "unix_pwdminage: " . $account->unix_pwdminage . "\n");
-	if ($account->unix_pwdmaxage) fputs($file, "unix_pwdmaxage: " . $account->unix_pwdmaxage . "\n");
-	if ($account->unix_pwdexpire_day) fputs($file, "unix_pwdexpire_day: " . $account->unix_pwdexpire_day . "\n");
-	if ($account->unix_pwdexpire_mon) fputs($file, "unix_pwdexpire_mon: " . $account->unix_pwdexpire_mon . "\n");
-	if ($account->unix_pwdexpire_yea) fputs($file, "unix_pwdexpire_yea: " . $account->unix_pwdexpire_yea . "\n");
-	if ($account->unix_deactivated) fputs($file, "unix_deactivated: " . $account->unix_deactivated . "\n");
-	if ($account->smb_password_no) fputs($file, "smb_password_no: " . $account->smb_password_no . "\n");
-	if ($account->smb_useunixpwd) fputs($file, "smb_useunixpwd: " . $account->smb_useunixpwd . "\n");
-	if ($account->smb_pwdcanchange) fputs($file, "smb_pwdcanchange: " . $account->smb_pwdcanchange . "\n");
-	if ($account->smb_pwdmustchange) fputs($file, "smb_pwdmustchange: " . $account->smb_pwdmustchange . "\n");
-	if ($account->smb_homedrive) fputs($file, "smb_homedrive: " . $account->smb_homedrive . "\n");
-	if ($account->smb_scriptpath) fputs($file, "smb_scriptpath: " . $scriptpath . "\n");
-	if ($account->smb_profilePath) fputs($file, "smb_profilePath: " . $profpath . "\n");
-	if ($account->smb_smbuserworkstations) fputs($file, "smb_smbuserworkstations: " . $account->smb_smbuserworkstations . "\n");
-	if ($account->smb_smbhome) fputs($file, "smb_smbhome: " . $smbhome . "\n");
-	if ($account->smb_domain) fputs($file, "smb_domain: " . $account->smb_domain . "\n");
+	if (isset($account->general_group)) fputs($file, "general_group: " . $account->general_group . "\n");
+	if (isset($account->general_groupadd)) fputs($file, "general_groupadd: " . implode(";", $account->general_groupadd) . "\n");
+	if (isset($account->general_homedir)) fputs($file, "general_homedir: " . $homedir . "\n");
+	if (isset($account->general_shell)) fputs($file, "general_shell: " . $account->general_shell . "\n");
+	if (isset($account->unix_password_no)) fputs($file, "unix_password_no: " . $account->unix_password_no . "\n");
+	if (isset($account->unix_pwdwarn)) fputs($file, "unix_pwdwarn: " . $account->unix_pwdwarn . "\n");
+	if (isset($account->unix_pwdallowlogin)) fputs($file, "unix_pwdallowlogin: " . $account->unix_pwdallowlogin . "\n");
+	if (isset($account->unix_pwdminage)) fputs($file, "unix_pwdminage: " . $account->unix_pwdminage . "\n");
+	if (isset($account->unix_pwdmaxage)) fputs($file, "unix_pwdmaxage: " . $account->unix_pwdmaxage . "\n");
+	if (isset($account->unix_pwdexpire_day)) fputs($file, "unix_pwdexpire_day: " . $account->unix_pwdexpire_day . "\n");
+	if (isset($account->unix_pwdexpire_mon)) fputs($file, "unix_pwdexpire_mon: " . $account->unix_pwdexpire_mon . "\n");
+	if (isset($account->unix_pwdexpire_yea)) fputs($file, "unix_pwdexpire_yea: " . $account->unix_pwdexpire_yea . "\n");
+	if (isset($account->unix_deactivated)) fputs($file, "unix_deactivated: " . $account->unix_deactivated . "\n");
+	if (isset($account->smb_password_no)) fputs($file, "smb_password_no: " . $account->smb_password_no . "\n");
+	if (isset($account->smb_useunixpwd)) fputs($file, "smb_useunixpwd: " . $account->smb_useunixpwd . "\n");
+	if (isset($account->smb_pwdcanchange)) fputs($file, "smb_pwdcanchange: " . $account->smb_pwdcanchange . "\n");
+	if (isset($account->smb_pwdmustchange)) fputs($file, "smb_pwdmustchange: " . $account->smb_pwdmustchange . "\n");
+	if (isset($account->smb_homedrive)) fputs($file, "smb_homedrive: " . $account->smb_homedrive . "\n");
+	if (isset($account->smb_scriptpath)) fputs($file, "smb_scriptpath: " . $scriptpath . "\n");
+	if (isset($account->smb_profilePath)) fputs($file, "smb_profilePath: " . $profpath . "\n");
+	if (isset($account->smb_smbuserworkstations)) fputs($file, "smb_smbuserworkstations: " . $account->smb_smbuserworkstations . "\n");
+	if (isset($account->smb_smbhome)) fputs($file, "smb_smbhome: " . $smbhome . "\n");
+	if (isset($account->smb_domain)) fputs($file, "smb_domain: " . $account->smb_domain . "\n");
 	// close file
 	fclose($file);
 }
@@ -340,27 +340,27 @@ function saveGroupProfile($account, $profile) {
 // saves an account object to an host profile with name $profile (without .prh)
 // file is created, if needed
 function saveHostProfile($account, $profile) {
-	if (!eregi("^([0-9]|[a-z]|-|_)*$", $profile)) exit;
+	if (!eregi("^[0-9a-z\\-_]+$", $profile)) exit;
 	if (!is_object($account)) {echo _("saveHostProfile: \$account has wrong type!"); exit;}
 	$path = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/hosts/" . $profile . ".prh";
 	$file = fopen($path, "w");
 	// write attributes
-	if ($account->general_group) fputs($file, "general_group: " . $account->general_group . "\n");
-	if ($account->general_groupadd) fputs($file, "general_groupadd: " . implode(";", $account->general_groupadd) . "\n");
-	if ($account->unix_password_no) fputs($file, "unix_password_no: " . $account->unix_password_no . "\n");
-	if ($account->unix_pwdwarn) fputs($file, "unix_pwdwarn: " . $account->unix_pwdwarn . "\n");
-	if ($account->unix_pwdallowlogin) fputs($file, "unix_pwdallowlogin: " . $account->unix_pwdallowlogin . "\n");
-	if ($account->unix_pwdminage) fputs($file, "unix_pwdminage: " . $account->unix_pwdminage . "\n");
-	if ($account->unix_pwdmaxage) fputs($file, "unix_pwdmaxage: " . $account->unix_pwdmaxage . "\n");
-	if ($account->unix_pwdexpire_day) fputs($file, "unix_pwdexpire_day: " . $account->unix_pwdexpire_day . "\n");
-	if ($account->unix_pwdexpire_mon) fputs($file, "unix_pwdexpire_mon: " . $account->unix_pwdexpire_mon . "\n");
-	if ($account->unix_pwdexpire_yea) fputs($file, "unix_pwdexpire_yea: " . $account->unix_pwdexpire_yea . "\n");
-	if ($account->unix_deactivated) fputs($file, "unix_deactivated: " . $account->unix_deactivated . "\n");
-	if ($account->smb_password_no) fputs($file, "smb_password_no: " . $account->smb_password_no . "\n");
-	if ($account->smb_useunixpwd) fputs($file, "smb_useunixpwd: " . $account->smb_useunixpwd . "\n");
-	if ($account->smb_pwdcanchange) fputs($file, "smb_pwdcanchange: " . $account->smb_pwdcanchange . "\n");
-	if ($account->smb_pwdmustchange) fputs($file, "smb_pwdmustchange: " . $account->smb_pwdmustchange . "\n");
-	if ($account->smb_domain) fputs($file, "smb_domain: " . $account->smb_domain . "\n");
+	if (isset($account->general_group)) fputs($file, "general_group: " . $account->general_group . "\n");
+	if (isset($account->general_groupadd)) fputs($file, "general_groupadd: " . implode(";", $account->general_groupadd) . "\n");
+	if (isset($account->unix_password_no)) fputs($file, "unix_password_no: " . $account->unix_password_no . "\n");
+	if (isset($account->unix_pwdwarn)) fputs($file, "unix_pwdwarn: " . $account->unix_pwdwarn . "\n");
+	if (isset($account->unix_pwdallowlogin)) fputs($file, "unix_pwdallowlogin: " . $account->unix_pwdallowlogin . "\n");
+	if (isset($account->unix_pwdminage)) fputs($file, "unix_pwdminage: " . $account->unix_pwdminage . "\n");
+	if (isset($account->unix_pwdmaxage)) fputs($file, "unix_pwdmaxage: " . $account->unix_pwdmaxage . "\n");
+	if (isset($account->unix_pwdexpire_day)) fputs($file, "unix_pwdexpire_day: " . $account->unix_pwdexpire_day . "\n");
+	if (isset($account->unix_pwdexpire_mon)) fputs($file, "unix_pwdexpire_mon: " . $account->unix_pwdexpire_mon . "\n");
+	if (isset($account->unix_pwdexpire_yea)) fputs($file, "unix_pwdexpire_yea: " . $account->unix_pwdexpire_yea . "\n");
+	if (isset($account->unix_deactivated)) fputs($file, "unix_deactivated: " . $account->unix_deactivated . "\n");
+	if (isset($account->smb_password_no)) fputs($file, "smb_password_no: " . $account->smb_password_no . "\n");
+	if (isset($account->smb_useunixpwd)) fputs($file, "smb_useunixpwd: " . $account->smb_useunixpwd . "\n");
+	if (isset($account->smb_pwdcanchange)) fputs($file, "smb_pwdcanchange: " . $account->smb_pwdcanchange . "\n");
+	if (isset($account->smb_pwdmustchange)) fputs($file, "smb_pwdmustchange: " . $account->smb_pwdmustchange . "\n");
+	if (isset($account->smb_domain)) fputs($file, "smb_domain: " . $account->smb_domain . "\n");
 	// close file
 	fclose($file);
 }
