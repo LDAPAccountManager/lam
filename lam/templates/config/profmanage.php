@@ -148,7 +148,7 @@ if ($_POST['submit']) {
 			<table cellspacing=0 border=0>
 
 				<!-- add profile -->
-				<tr bgcolor="#dbdbdb">
+				<tr bgcolor="#dbdbff">
 					<td>
 						<input type="radio" name="action" value="add" checked>
 					</td>
@@ -165,7 +165,7 @@ if ($_POST['submit']) {
 						<a href="../help.php?HelpNumber=230" target="lamhelp"><?php echo _("Help"); ?></a>
 					</td>
 				</tr>
-				<tr bgcolor="#dbdbdb">
+				<tr bgcolor="#dbdbff">
 					<td>&nbsp;</td>
 					<td>&nbsp;</td>
 					<td align="right">
@@ -174,7 +174,7 @@ if ($_POST['submit']) {
 					</td>
 					<td></td>
 				</tr>
-				<tr bgcolor="#dbdbdb">
+				<tr bgcolor="#dbdbff">
 					<td>&nbsp;</td>
 					<td>&nbsp;</td>
 					<td align="right">
@@ -189,7 +189,7 @@ if ($_POST['submit']) {
 				</tr>
 
 				<!-- rename profile -->
-				<tr bgcolor="#dbdbdb">
+				<tr bgcolor="#dbdbff">
 					<td>
 						<input type="radio" name="action" value="rename">
 					</td>
@@ -218,7 +218,7 @@ if ($_POST['submit']) {
 				</tr>
 
 				<!-- delete profile -->
-				<tr bgcolor="#dbdbdb">
+				<tr bgcolor="#dbdbff">
 					<td>
 						<input type="radio" name="action" value="delete">
 					</td>
@@ -243,7 +243,7 @@ if ($_POST['submit']) {
 				</tr>
 
 				<!-- set profile password -->
-				<tr bgcolor="#dbdbdb">
+				<tr bgcolor="#dbdbff">
 					<td>
 						<input type="radio" name="action" value="setpass">
 					</td>
@@ -266,7 +266,7 @@ if ($_POST['submit']) {
 						<a href="../help.php?HelpNumber=233" target="lamhelp"><?php echo _("Help"); ?></a>
 					</td>
 				</tr>
-				<tr bgcolor="#dbdbdb">
+				<tr bgcolor="#dbdbff">
 					<td>&nbsp;</td>
 					<td>&nbsp;</td>
 					<td align="right">
@@ -284,11 +284,11 @@ if ($_POST['submit']) {
 				</tr>
 
 				<!-- change default profile -->
-				<tr bgcolor="#dbdbdb">
+				<tr bgcolor="#dbdbff">
 					<td>
 						<input type="radio" name="action" value="setdefault">
 					</td>
-					<td colspan=2>
+					<td>
 						<select size=1 name="defaultfilename">
 						<?php
 							$files = getConfigProfiles();
@@ -304,6 +304,7 @@ if ($_POST['submit']) {
 							<?php echo _("Change default profile"); ?>
 						</b>
 					</td>
+					<td>&nbsp;</td>
 					<td>&nbsp;
 						<a href="../help.php?HelpNumber=234" target="lamhelp"><?php echo _("Help"); ?></a>
 					</td>
@@ -314,7 +315,7 @@ if ($_POST['submit']) {
 				</tr>
 
 				<!-- set master password -->
-				<tr bgcolor="#dbdbdb">
+				<tr bgcolor="#dbdbff">
 					<td>
 						<input type="radio" name="action" value="setmasterpass">
 					</td>
@@ -331,7 +332,7 @@ if ($_POST['submit']) {
 						<a href="../help.php?HelpNumber=235" target="lamhelp"><?php echo _("Help"); ?></a>
 					</td>
 				</tr>
-				<tr bgcolor="#dbdbdb">
+				<tr bgcolor="#dbdbff">
 					<td>&nbsp;</td>
 					<td>&nbsp;</td>
 					<td align="right">
