@@ -25,12 +25,29 @@ $Id$
 
 include_once('../lib/account.inc'); // File with all account-funtions
 include_once('../lib/config.inc'); // File with configure-functions
-include_once('../lib/ldap.inc'); // LDAP-functions
 include_once('../lib/profiles.inc'); // functions to load and save profiles
 include_once('../lib/status.inc'); // Return error-message
 include_once('../lib/pdf.inc'); // Return a pdf-file
-
+include_once('../lib/ldap.inc'); // LDAP-functions
 initvars($_GET['type'], $_GET['DN']); // Initialize all needed vars
+
+	// returns an array with all organizational units under the given suffix
+	function search_units($suffix) {
+	$sr = @ldap_search($_SESSION["ldap"]->server(), $suffix, "objectClass=organizationalunit", array("DN"));
+	if ($sr) {
+		$units = ldap_get_entries($_SESSION["ldap"]->server, $sr);
+		// delete first array entry which is "count"
+		array_shift($units);
+		// remove sub arrays
+		for ($i = 0; $i < sizeof($units); $i++) $units[$i] = $units[$i]['dn'];
+		// add root suffix if needed
+		if (!in_array($suffix, $units)) {
+			array_push($units, $suffix);
+		}
+	}
+	return $units;
+	}
+
 
 switch ($_POST['select']) { // Select which part of page should be loaded and check values
 	// general = startpage, general account paramters
@@ -44,6 +61,7 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 	case 'general':
 		// Write all general values into $_SESSION['account'] if no profile should be loaded
 		if (!$_POST['load']) {
+			$_SESSION['account']->general_dn = $_POST['f_general_suffix'];
 			if ($_POST['f_general_username']) $_SESSION['account']->general_username = $_POST['f_general_username'];
 				else $_SESSION['account']->general_username = $_POST['f_general_username'];
 			if ($_POST['f_general_surname']) $_SESSION['account']->general_surname = $_POST['f_general_surname'];
@@ -465,6 +483,16 @@ switch ($select_local) { // Select which part of page will be loaded
 				echo '</select></td>'."\n".'<td>
 					<a href="help.php?HelpNumber=405" target="lamhelp">'._('Help').'</a>
 					</td></tr>'."\n".'<tr><td>';
+				echo _('Suffix'); echo '</td><td><select name="f_general_suffix">';
+				foreach (search_units($_SESSION['config']->get_UserSuffix()) as $suffix) {
+					if ($_SESSION['account']->general_dn) {
+						if ($_SESSION['account']->general_dn == $suffix) echo '<option selected>' . $suffix;
+						else echo '<option>' . $suffix;
+						}
+					else echo '<option>' . $suffix;
+					}
+				echo '</select></td><td><a href="help.php?HelpNumber=461" target="lamhelp">'._('Help').'</a>
+					</td></tr><tr><td>';
 					echo _('Values with * are required');
 					echo '</td></tr><tr><td><select name="f_general_selectprofile">';
 				// loop through profiles
@@ -494,6 +522,16 @@ switch ($select_local) { // Select which part of page will be loaded
 				echo '</td>'."\n".'<td><input name="f_general_gecos" type="text" size="30" value="' . $_SESSION['account']->general_gecos . '">
 					</td>'."\n".'<td>
 					<a href="help.php?HelpNumber=409" target="lamhelp">'._('Help').'</a>
+					</td></tr><tr><td>';
+				echo _('Suffix'); echo '</td><td><select name="f_general_suffix">';
+				foreach (search_units($_SESSION['config']->get_UserSuffix()) as $suffix) {
+					if ($_SESSION['account']->general_dn) {
+						if ($_SESSION['account']->general_dn == $suffix) echo '<option selected>' . $suffix;
+						else echo '<option>' . $suffix;
+						}
+					else echo '<option>' . $suffix;
+					}
+				echo '</select></td><td><a href="help.php?HelpNumber=462" target="lamhelp">'._('Help').'</a>
 					</td></tr><tr><td>';
 					echo _('Values with * are required');
 					echo '</td></tr>'."\n".'<tr><td><select name="f_general_selectprofile" >';
@@ -544,6 +582,16 @@ switch ($select_local) { // Select which part of page will be loaded
 				echo '</td><td><input name="f_general_gecos" type="text" size="30" value="' . $_SESSION['account']->general_gecos . '">
 					</td>'."\n".'<td>
 					<a href="help.php?HelpNumber=413" target="lamhelp">'._('Help').'</a>
+					</td></tr><tr><td>';
+				echo _('Suffix'); echo '</td><td><select name="f_general_suffix">';
+				foreach (search_units($_SESSION['config']->get_UserSuffix()) as $suffix) {
+					if ($_SESSION['account']->general_dn) {
+						if ($_SESSION['account']->general_dn == $suffix) echo '<option selected>' . $suffix;
+						else echo '<option>' . $suffix;
+						}
+					else echo '<option>' . $suffix;
+					}
+				echo '</select></td><td><a href="help.php?HelpNumber=463" target="lamhelp">'._('Help').'</a>
 					</td></tr><tr><td>';
 					echo _('Values with * are required');
 					echo '</td></tr>'."\n".'<tr><td><select name="f_general_selectprofile">';

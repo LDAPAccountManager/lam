@@ -283,7 +283,13 @@ $helpArray = array (
 				"459" => array ("ext" => "FALSE", "Headline" => _("Host must change Password"),
 					"Text" => _("Host must change Password")),
 				"460" => array ("ext" => "FALSE", "Headline" => _("Windows Domain"),
-					"Text" => _("Windows Domain of host. Can be left empty."))
+					"Text" => _("Windows Domain of host. Can be left empty.")),
+				"461" => array ("ext" => "FALSE", "Headline" => _("Suffix"),
+					"Text" => _("Suffix")),
+				"462" => array ("ext" => "FALSE", "Headline" => _("Suffix"),
+					"Text" => _("Suffix")),
+				"463" => array ("ext" => "FALSE", "Headline" => _("Suffix"),
+					"Text" => _("Suffix"))
 /* This is a sample help entry. Just copy this line an modify the vakues between the [] brackets.
 	Help text is located in the array:
 		"[Helpnumber]" => array ("ext" => "FALSE", "Headline" => _("[Headline]"), "Text" => _("[Text]"), "SeeAlso" => "[SeeAlso link]"),
