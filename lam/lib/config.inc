@@ -320,7 +320,7 @@ class Config {
 			$m_settings = array_keys($this->moduleSettings);
 			for ($i = 0; $i < sizeof($m_settings); $i++) {
 				if (!in_array($m_settings[$i], $mod_saved)) {
-					array_push($file_array, "modules: " . $m_settings[$i] . ": " . $this->moduleSettings[$m_settings[$i]] . "\n");
+					array_push($file_array, "modules: " . $m_settings[$i] . ": " . implode("+::+", $this->moduleSettings[$m_settings[$i]]) . "\n");
 				}
 			}
 			$file = fopen($conffile, "w");
