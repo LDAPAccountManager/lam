@@ -50,7 +50,7 @@ if ($_POST['new_host'] || $_POST['del_host']){
 		// search for checkboxes
 		$hosts = array_keys($_POST, "on");
 		$hoststr = implode(";", $hosts);
-		echo("<meta http-equiv=\"refresh\" content=\"0; URL=../delete.php?type=host&DN='$hoststr'\">");
+		echo("<meta http-equiv=\"refresh\" content=\"0; URL=../delete.php?type=host&amp;DN='$hoststr'\">");
 		}
 		exit;
 }
@@ -135,11 +135,11 @@ echo ("<br>");
 
 // print host table header
 echo "<table rules=\"all\" class=\"hostlist\" width=\"100%\">\n";
-echo "<tr class=\"hostlist_head\"><th width=22 height=34></th><th></th>";
+echo "<tr class=\"hostlist-head\"><th width=22 height=34></th><th></th>";
 // table header
 for ($k = 0; $k < sizeof($desc_array); $k++) {
 	if (strtolower($attr_array[$k]) == $sort) {
-		echo "<th class=\"hostlist_sort\"><a href=\"listhosts.php?".
+		echo "<th class=\"hostlist-sort\"><a href=\"listhosts.php?".
 			"sort=" . strtolower($attr_array[$k]) . $searchfilter . "\">" . $desc_array[$k] . "</a></th>";
 	}
 	else echo "<th><a href=\"listhosts.php?".
@@ -170,9 +170,9 @@ for ($i = $table_begin; $i < $table_end; $i++) {
 	echo("<tr class=\"hostlist\" onMouseOver=\"host_over(this, '" . $info[$i]["dn"] . "')\"" .
 								" onMouseOut=\"host_out(this, '" . $info[$i]["dn"] . "')\"" .
 								" onClick=\"host_click(this, '" . $info[$i]["dn"] . "')\"" .
-								" onDblClick=parent.frames[1].location.href=\"../account.php?type=host&DN='" . $info[$i]["dn"] . "'\">" .
+								" onDblClick=parent.frames[1].location.href=\"../account.php?type=host&amp;DN='" . $info[$i]["dn"] . "'\">" .
 								" <td height=22><input onClick=\"host_click(this, '" . $info[$i]["dn"] . "')\" type=\"checkbox\" name=\"" . $info[$i]["dn"] . "\"></td>" .
-								" <td align='center'><a href=\"../account.php?type=host&DN='" . $info[$i]["dn"] . "'\">" . _("Edit") . "</a></td>");
+								" <td align='center'><a href=\"../account.php?type=host&amp;DN='" . $info[$i]["dn"] . "'\">" . _("Edit") . "</a></td>");
 	for ($k = 0; $k < sizeof($attr_array); $k++) {
 		echo ("<td>");
 		// print all attribute entries seperated by "; "
@@ -215,17 +215,17 @@ function draw_navigation_bar ($count) {
   echo ("<tr>\n");
   echo ("<td><input type=\"submit\" name=\"refresh\" value=\"" . _("Refresh") . "\">&nbsp;&nbsp;");
   if ($page != 1)
-    echo ("<a href=\"listhosts.php?page=" . ($page - 1) . "&sort=" . $sort . $searchfilter . "\">&lt;=</a>\n");
+    echo ("<a href=\"listhosts.php?page=" . ($page - 1) . "&amp;sort=" . $sort . $searchfilter . "\">&lt;=</a>\n");
   else
     echo ("&lt;=");
   echo ("&nbsp;");
 
   if ($page < ($count / $max_pageentrys))
-    echo ("<a href=\"listhosts.php?page=" . ($page + 1) . "&sort=" . $sort . $searchfilter . "\">=&gt;</a>\n");
+    echo ("<a href=\"listhosts.php?page=" . ($page + 1) . "&amp;sort=" . $sort . $searchfilter . "\">=&gt;</a>\n");
   else
     echo ("=&gt;</td>");
 
-  echo ("<td class=\"hostnav_text\">");
+  echo ("<td class=\"hostnav-text\">");
   echo "&nbsp;" . $count . " " .  _("Samba Host(s) found");
   echo ("</td>");
 
@@ -235,7 +235,7 @@ function draw_navigation_bar ($count) {
       echo ("&nbsp;" . ($i + 1));
     else
       echo ("&nbsp;<a href=\"listhosts.php?page=" . ($i + 1) .
-	    "&sort=" . $sort . "\">" . ($i + 1) . "</a>\n");
+	    "&amp;sort=" . $sort . "\">" . ($i + 1) . "</a>\n");
   }
   echo ("</td></tr></table>\n");
 }

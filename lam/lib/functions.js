@@ -52,7 +52,7 @@ function user_click(list, box) {
 // mouseOver function
 function group_over(list, box) {
 	cbox = document.getElementsByName(box)[0];
-	if (cbox.checked == false) list.setAttribute('class','grouplist_over', 0);
+	if (cbox.checked == false) list.setAttribute('class','grouplist-over', 0);
 }
 
 // mouseOut function
@@ -66,11 +66,11 @@ function group_click(list, box) {
 	cbox = document.getElementsByName(box)[0];
 	if (cbox.checked == true) {
 		cbox.checked = false;
-		list.setAttribute('class','grouplist_over', 0);
+		list.setAttribute('class','grouplist-over', 0);
 	}
 	else {
 		cbox.checked = true;
-		list.setAttribute('class','grouplist_checked', 0);
+		list.setAttribute('class','grouplist-checked', 0);
 	}
 }
 
@@ -78,7 +78,7 @@ function group_click(list, box) {
 // mouseOver function
 function host_over(list, box) {
 	cbox = document.getElementsByName(box)[0];
-	if (cbox.checked == false) list.setAttribute('class','hostlist_over', 0);
+	if (cbox.checked == false) list.setAttribute('class','hostlist-over', 0);
 }
 
 // mouseOut function
@@ -92,10 +92,10 @@ function host_click(list, box) {
 	cbox = document.getElementsByName(box)[0];
 	if (cbox.checked == true) {
 		cbox.checked = false;
-		list.setAttribute('class','hostlist_over', 0);
+		list.setAttribute('class','hostlist-over', 0);
 	}
 	else {
 		cbox.checked = true;
-		list.setAttribute('class','hostlist_checked', 0);
+		list.setAttribute('class','hostlist-checked', 0);
 	}
 }

@@ -140,14 +140,14 @@ table.groupnav {
 }
 
 /* text in navigation bar */
-td.groupnav_text {
+td.groupnav-text {
   color:green;
   font-family:Verdana;
   font-size:10px;
 }
 
 /* color for active page digit */
-td.groupnav_activepage {
+td.groupnav-activepage {
  color:red;
 }
 
@@ -164,22 +164,22 @@ tr.grouplist {
 }
 
 /* color of head row */
-tr.grouplist_head {
+tr.grouplist-head {
   background-color:#a8c3ff;
 }
 
 /* color of sorted column in head row */
-th.grouplist_sort {
+th.grouplist-sort {
   background-color:#d6e3ff;
 }
 
 /* color of rows on mouseOver */
-tr.grouplist_over {
+tr.grouplist-over {
   background-color:#C7E7C7;
 }
 
 /* color of checked rows */
-tr.grouplist_checked {
+tr.grouplist-checked {
   background-color:#f27c71;
 }
 
@@ -197,14 +197,14 @@ table.hostnav {
 }
 
 /* text in navigation bar */
-td.hostnav_text {
+td.hostnav-text {
   color:green;
   font-family:Verdana;
   font-size:10px;
 }
 
 /* color for active page digit */
-td.hostnav_activepage {
+td.hostnav-activepage {
  color:red;
 }
 
@@ -221,22 +221,22 @@ tr.hostlist {
 }
 
 /* color of head row */
-tr.hostlist_head {
+tr.hostlist-head {
   background-color:#ffc4ba;
 }
 
 /* color of sorted column in head row */
-th.hostlist_sort {
+th.hostlist-sort {
   background-color:#ffe2dd;
 }
 
 /* color of rows on mouseOver */
-tr.hostlist_over {
+tr.hostlist-over {
   background-color:#ffe265;
 }
 
 /* color of checked rows */
-tr.hostlist_checked {
+tr.hostlist-checked {
   background-color:#f27c71;
 }
 

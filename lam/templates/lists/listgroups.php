@@ -50,7 +50,7 @@ if ($_POST['new_group'] || $_POST['del_group']){
 		// search for checkboxes
 		$groups = array_keys($_POST, "on");
 		$groupstr = implode(";", $groups);
-		echo("<meta http-equiv=\"refresh\" content=\"0; URL=../delete.php?type=group&DN='$groupstr'\">");
+		echo("<meta http-equiv=\"refresh\" content=\"0; URL=../delete.php?type=group&amp;DN='$groupstr'\">");
 		}
 		exit;
 }
@@ -135,11 +135,11 @@ echo ("<br>");
 
 // print group table header
 echo "<table rules=\"all\" class=\"grouplist\" width=\"100%\">\n";
-echo "<tr class=\"grouplist_head\"><th width=22 height=34></th><th></th>";
+echo "<tr class=\"grouplist-head\"><th width=22 height=34></th><th></th>";
 // table header
 for ($k = 0; $k < sizeof($desc_array); $k++) {
 	if (strtolower($attr_array[$k]) == $sort) {
-		echo "<th class=\"grouplist_sort\"><a href=\"listgroups.php?".
+		echo "<th class=\"grouplist-sort\"><a href=\"listgroups.php?".
 			"sort=" . strtolower($attr_array[$k]) . $searchfilter . "\">" . $desc_array[$k] . "</a></th>";
 	}
 	else echo "<th><a href=\"listgroups.php?".
@@ -170,9 +170,9 @@ for ($i = $table_begin; $i < $table_end; $i++) {
 	echo("<tr class=\"grouplist\" onMouseOver=\"group_over(this, '" . $info[$i]["dn"] . "')\"" .
 								" onMouseOut=\"group_out(this, '" . $info[$i]["dn"] . "')\"" .
 								" onClick=\"group_click(this, '" . $info[$i]["dn"] . "')\"" .
-								" onDblClick=parent.frames[1].location.href=\"../account.php?type=group&DN='" . $info[$i]["dn"] . "'\">" .
+								" onDblClick=parent.frames[1].location.href=\"../account.php?type=group&amp;DN='" . $info[$i]["dn"] . "'\">" .
 								" <td height=22><input onClick=\"group_click(this, '" . $info[$i]["dn"] . "')\" type=\"checkbox\" name=\"" . $info[$i]["dn"] . "\"></td>" .
-								" <td align='center'><a href=\"../account.php?type=group&DN='" . $info[$i]["dn"] . "'\">" . _("Edit") . "</a></td>");
+								" <td align='center'><a href=\"../account.php?type=group&amp;DN='" . $info[$i]["dn"] . "'\">" . _("Edit") . "</a></td>");
 	for ($k = 0; $k < sizeof($attr_array); $k++) {
 		echo ("<td>");
 		// print all attribute entries seperated by "; "
@@ -187,7 +187,7 @@ for ($i = $table_begin; $i < $table_end; $i++) {
 					$dn = $_SESSION["ldap"]->search_username($user); // DN entry
 					// if user was found in LDAP make link, otherwise just print name
 					if ($dn) {
-						$linklist[$d] = "<a href=../account.php?type=user&DN='" . $dn . "' >" .
+						$linklist[$d] = "<a href=../account.php?type=user&amp;DN='" . $dn . "' >" .
 										$info[$i][strtolower($attr_array[$k])][$d] . "</a>";
 					}
 					else $linklist[$d] = $user;
@@ -232,27 +232,27 @@ function draw_navigation_bar ($count) {
   echo ("<tr>\n");
   echo ("<td><input type=\"submit\" name=\"refresh\" value=\"" . _("Refresh") . "\">&nbsp;&nbsp;");
   if ($page != 1)
-    echo ("<a href=\"listgroups.php?page=" . ($page - 1) . "&sort=" . $sort . $searchfilter . "\">&lt;=</a>\n");
+    echo ("<a href=\"listgroups.php?page=" . ($page - 1) . "&amp;sort=" . $sort . $searchfilter . "\">&lt;=</a>\n");
   else
     echo ("&lt;=");
   echo ("&nbsp;");
 
   if ($page < ($count / $max_pageentrys))
-    echo ("<a href=\"listgroups.php?page=" . ($page + 1) . "&sort=" . $sort . $searchfilter . "\">=&gt;</a>\n");
+    echo ("<a href=\"listgroups.php?page=" . ($page + 1) . "&amp;sort=" . $sort . $searchfilter . "\">=&gt;</a>\n");
   else
     echo ("=&gt;</td>");
 
-  echo ("<td class=\"groupnav_text\">");
+  echo ("<td class=\"groupnav-text\">");
   echo "&nbsp;" . $count . " " .  _("Group(s) found");
   echo ("</td>");
 
-  echo ("<td class=\"groupnav_activepage\" align=\"right\">");
+  echo ("<td class=\"groupnav-activepage\" align=\"right\">");
   for ($i = 0; $i < ($count / $max_pageentrys); $i++) {
     if ($i == $page - 1)
       echo ("&nbsp;" . ($i + 1));
     else
       echo ("&nbsp;<a href=\"listgroups.php?page=" . ($i + 1) .
-	    "&sort=" . $sort . "\">" . ($i + 1) . "</a>\n");
+	    "&amp;sort=" . $sort . "\">" . ($i + 1) . "</a>\n");
   }
   echo ("</td></tr></table>\n");
 }
