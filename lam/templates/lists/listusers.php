@@ -67,7 +67,6 @@ if ($_POST['new_user'] || $_POST['del_user'] || $_POST['pdf_user'] || $_POST['pd
 	// add new user
 	if ($_POST['new_user']){
 		metaRefresh("../account/useredit.php?type=user");
-		exit;
 	}
 	// delete user(s)
 	elseif ($_POST['del_user']){
@@ -348,13 +347,17 @@ if (in_array("gidnumber", $attr_array)) {
 
 echo ("<p>&nbsp;</p>\n");
 
+// new/delete/PDF buttons
 echo ("<p align=\"left\">\n");
 echo ("<input type=\"submit\" name=\"new_user\" value=\"" . _("New user") . "\">\n");
 if ($user_count != 0) {
 	echo ("<input type=\"submit\" name=\"del_user\" value=\"" . _("Delete user(s)") . "\">\n");
-	echo ("<br><br>\n");
+	echo ("<br><br><br>\n");
+	echo "<fieldset><legend><b>PDF</b></legend>\n";
 	echo ("<input type=\"submit\" name=\"pdf_user\" value=\"" . _("Create PDF for selected user(s)") . "\">\n");
+	echo "&nbsp;";
 	echo ("<input type=\"submit\" name=\"pdf_all\" value=\"" . _("Create PDF for all users") . "\">\n");
+	echo "</fieldset>";
 }
 echo ("</p>\n");
 

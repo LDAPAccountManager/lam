@@ -25,6 +25,8 @@ $Id$
 include_once ("../../lib/config.inc");
 include_once ("../../lib/ldap.inc");
 include_once ("../../lib/status.inc");
+include_once("../../lib/account.inc");
+include_once("../../lib/pdf.inc");
 
 // start session
 session_save_path("../../sess");
@@ -42,20 +44,38 @@ $hst_info = $_SESSION['hst_info'];
 $hst_units = $_SESSION['hst_units'];
 
 // check if button was pressed and if we have to add/delete a host
-if ($_POST['new_host'] || $_POST['del_host']){
+if ($_POST['new_host'] || $_POST['del_host'] || $_POST['pdf_host'] || $_POST['pdf_all']){
 	// add new host
 	if ($_POST['new_host']){
 		metaRefresh("../account/hostedit.php");
-		exit;
 	}
 	// delete host(s)
-	if ($_POST['del_host']){
+	elseif ($_POST['del_host']){
 		// search for checkboxes
 		$hosts = array_keys($_POST, "on");
 		$_SESSION['delete_dn'] = $hosts;
 		metaRefresh("../delete.php?type=host");
 		}
-		exit;
+	// PDF for selected hosts
+	elseif ($_POST['pdf_host']){
+		// search for checkboxes
+		$hosts = array_keys($_POST, "on");
+		$list = array();
+		// load hosts from LDAP
+		for ($i = 0; $i < sizeof($hosts); $i++) {
+			$list[$i] = loadhost($hosts[$i]);
+		}
+		if (sizeof($list) > 0) createHostPDF($list);
+	}
+	// PDF for all users
+	elseif ($_POST['pdf_all']){
+		$list = array();
+		for ($i = 0; $i < sizeof($_SESSION['hst_info']); $i++) {
+			$list[$i] = loadhost($_SESSION['hst_info'][$i]['dn']);
+		}
+		if (sizeof($list) > 0) createHostPDF($list);
+	}
+	exit;
 }
 
 echo $_SESSION['header'];
@@ -268,9 +288,18 @@ echo ("</p>\n");
 echo ("<p>&nbsp;</p>\n");
 }
 
+// add/delete/PDF buttons
 echo ("<p align=\"left\">\n");
 echo ("<input type=\"submit\" name=\"new_host\" value=\"" . _("New Host") . "\">\n");
-if (sizeof($hst_info) > 0) echo ("<input type=\"submit\" name=\"del_host\" value=\"" . _("Delete Host(s)") . "\">\n");
+if (sizeof($hst_info) > 0) {
+	echo ("<input type=\"submit\" name=\"del_host\" value=\"" . _("Delete Host(s)") . "\">\n");
+	echo ("<br><br><br>\n");
+	echo "<fieldset><legend><b>PDF</b></legend>\n";
+	echo ("<input type=\"submit\" name=\"pdf_host\" value=\"" . _("Create PDF for selected host(s)") . "\">\n");
+	echo "&nbsp;";
+	echo ("<input type=\"submit\" name=\"pdf_all\" value=\"" . _("Create PDF for all hosts") . "\">\n");
+	echo "</fieldset>";
+}
 echo ("</p>\n");
 
 echo ("</form>\n");

@@ -256,9 +256,163 @@ function createUserPDF($accounts) {
 	    }
 	}
 	closedir($h);
-	
+
 	// Close PDF
 	$pdfFile->Close();
+	// use timestamp as filename so it should be unique.
+	$time = time();
+	$filename = $relpath. $time .'.pdf';
+	$fileurl = $_SESSION['lamurl'].'templates/getpdf.php?&f='.$_SESSION['lampath'] .'tmp/'. $time .'.pdf';
+	// Save PDF
+	$pdfFile->Output($filename);
+
+	// Create redirector page
+
+
+	echo $_SESSION['header'];
+	echo "<html><head><title>";
+	echo _("PDF File");
+	echo "</title>\n".
+		"<link rel=\"stylesheet\" type=\"text/css\" href=\"".$_SESSION['lamurl']."style/layout.css\">\n".
+		"<meta http-equiv=\"pragma\" content=\"no-cache\">\n".
+		"<meta http-equiv=\"cache-control\" content=\"no-cache\">\n".
+		"<meta http-equiv=\"refresh\" content=\"2; URL=$fileurl\">\n".
+		"</head><body>\n".
+		"<a href=\"$fileurl\">";
+	echo _('Please press here if meta-refresh didn\'t work.');
+	echo "</a></body></html>";
+
+	return 0; // 0 means everything successful; page(s) printed
+}
+
+// creates a PDF with host accounts
+// $accounts: array of account
+function createHostPDF($accounts) {
+	// Start PDF file
+	$pdfFile = new lamHostPDF();
+	$pdfFile->Open();
+	// Write some information into the PDF file
+	$pdfFile->setFont("arial","",12);
+	$pdfFile->setTitle("LDAP Account Manager");
+	$pdfFile->setSubject(_("Samba-Host information page"));
+	$pdfFile->setAuthor("LDAP Account Manager Devel-Team -Roland Gruber-");
+	$pdfFile->setCreator("LDAP Account Manager (pdf.inc)");
+	// print host accounts
+	$pdfFile->addPage();
+	$k = 0;  // used to count the already printed accounts per page
+	for($i = 0; $i < count($accounts); $i++) {
+		$k++;
+		$account = $accounts[$i];
+		$ypos = $pdfFile->GetY();
+		$pdfFile->setFont("times","B",16);
+		$pdfFile->Write(5,$account->general_username);
+		$pdfFile->Ln(8);
+		$pdfFile->setFont("times","",10);
+		$pdfFile->Write(5,_("Description") . ": ");
+		$pdfFile->setFont("times","B",10);
+		$pdfFile->Write(5,$account->general_gecos);
+		$pdfFile->Ln(5);
+		$pdfFile->setFont("times","",10);
+		$pdfFile->Write(5,_("UID") . ": ");
+		$pdfFile->setFont("times","B",10);
+		$pdfFile->Write(5,$account->general_uidNumber);
+		$pdfFile->Ln(5);
+		$pdfFile->setFont("times","",10);
+		$pdfFile->Write(5,_("Primary group") . ": ");
+		$pdfFile->setFont("times","B",10);
+		$pdfFile->Write(5,$account->general_group);
+		$pdfFile->Ln(5);
+		$pdfFile->setFont("times","",10);
+		$pdfFile->Write(5,_("Domain") . ": ");
+		$pdfFile->setFont("times","B",10);
+		unset($domain);
+		if (is_string($account->smb_domain)) {
+			$domain = $account->smb_domain;
+		}
+		else {
+			$domain = $account->smb_domain->name;
+		}
+		$pdfFile->Write(5,$domain);
+		$pdfFile->Ln(5);
+		$pdfFile->setFont("times","",10);
+		$pdfFile->Write(5,_("DN") . ": ");
+		$pdfFile->setFont("times","B",9);
+		$pdfFile->Write(5,$account->general_dn);
+		// print second column
+		if ($accounts[$i+1]) {
+			$k++;
+			$i++;
+			$account = $accounts[$i];
+			$pdfFile->SetY($ypos);
+			$pdfFile->SetX(115);
+			$pdfFile->setFont("times","B",16);
+			$pdfFile->Write(5,$account->general_username);
+			$pdfFile->Ln(7);
+			$pdfFile->SetX(115);
+			$pdfFile->setFont("times","",10);
+			$pdfFile->Write(5,_("Description") . ": ");
+			$pdfFile->setFont("times","B",10);
+			$pdfFile->Write(5,$account->general_gecos);
+			$pdfFile->Ln(5);
+			$pdfFile->SetX(115);
+			$pdfFile->setFont("times","",10);
+			$pdfFile->Write(5,_("UID") . ": ");
+			$pdfFile->setFont("times","B",10);
+			$pdfFile->Write(5,$account->general_uidNumber);
+			$pdfFile->Ln(5);
+			$pdfFile->SetX(115);
+			$pdfFile->setFont("times","",10);
+			$pdfFile->Write(5,_("Primary group") . ": ");
+			$pdfFile->setFont("times","B",10);
+			$pdfFile->Write(5,$account->general_group);
+			$pdfFile->Ln(5);
+			$pdfFile->SetX(115);
+			$pdfFile->setFont("times","",10);
+			$pdfFile->Write(5,_("Domain") . ": ");
+			$pdfFile->setFont("times","B",10);
+			unset($domain);
+			if (is_string($account->smb_domain)) {
+				$domain = $account->smb_domain;
+			}
+			else {
+				$domain = $account->smb_domain->name;
+			}
+			$pdfFile->Write(5,$domain);
+			$pdfFile->Ln(5);
+			$pdfFile->SetX(115);
+			$pdfFile->setFont("times","",10);
+			$pdfFile->Write(5,_("DN") . ": ");
+			$pdfFile->setFont("times","B",9);
+			$pdfFile->Write(5,$account->general_dn);
+		}
+		// space between two rows
+		if ($i < count($accounts) - 1) {
+			$pdfFile->Ln(12);
+		}
+		// new page after twelve accounts
+		if ($k == 12) {
+			$k = 0;
+			$pdfFile->addPage();
+		}
+	}
+
+	// Close PDF
+	$pdfFile->Close();
+
+	// Delete old PDF older than 3 min
+	$relpath = $_SESSION['lampath'].'tmp/';
+
+	$t=time();
+	$h=opendir("$relpath");
+	while ($file=readdir($h)) {
+    	    if (substr($file, -4)=='.pdf') {
+    		$path = $relpath.$file;
+    		if ($t-filemtime($path)>180)
+		@unlink($path);
+	    }
+	}
+	closedir($h);
+
 	// use timestamp as filename so it should be unique.
 	$time = time();
 	$filename = $relpath. $time .'.pdf';
@@ -309,5 +463,35 @@ class lamPDF extends FPDF {
 		$this->Line(10,282,200,282);
 		$this->SetY(285);
 		$this->Cell(0,5,_("This document was automatically created by LDAP Account Manager"),0,0,"C",0);
+	}
+}
+
+// lamHostPDF class || For defining own a Header and Footer
+class lamHostPDF extends FPDF {
+	// Print page header
+	function header() {
+		$imageFile = substr(__FILE__,0,strlen(__FILE__)- 11) . "graphics/printLogo.jpg";
+		$this->Image($imageFile,10,10,50,20,"JPG");
+		$this->SetFont("arial","B",22);
+		$this->Cell(170,5,"LDAP Account Manager",0,1,"R",0);
+		$this->Ln(3);
+		$this->SetFont("times","",14);
+		$this->Cell(170,5,"-" . _("Samba-Host information page") . "-",0,0,"R",0);
+		$this->SetLineWidth(0.8);
+		$this->Line(10,35,200,35);
+		$this->Line(10,37,200,37);
+		$this->SetY(45);
+	}
+
+	// Print page footer
+	function footer() {
+		$this->SetLineWidth(0.8);
+		$this->Line(10,280,200,280);
+		$this->Line(10,282,200,282);
+		$this->SetY(285);
+		$this->SetFont("arial","B",12);
+		$this->Cell(0,5,_("This document was automatically created by LDAP Account Manager"),0,0,"C",0);
+		$this->SetFont("arial","",12);
+		$this->Cell(0,5,$this->PageNo(),0,1,"R",0);
 	}
 }
