@@ -202,15 +202,6 @@ function getquotas($users) {
 		else $return[0] = $users;
 	// get username and password of the current lam-admin
 	$ldap_q = $_SESSION['ldap']->decrypt_login();
-	/* $towrite has the following syntax:
-	* admin-username, admin-password, account with quotas, 'quota', operation='get', type=user|group
-	* use escapeshellarg to make exec() shell-safe
-	*/
-	$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." ".
-		escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]);
-	/* scriptServer is the IP to remote-host to which lam should connect via ssh
-	* scriptPath is Path to lamdaemon.pl on remote system
-	*/
 	if (is_array($return)) {
 		for($i=0; $i<count($return); $i++)
 			// put string to trasmit together
@@ -219,6 +210,7 @@ function getquotas($users) {
 		}
 	if (function_exists(proc_open)) {
 		// New Code, requires PHP 4.3
+		$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." - -";
 		$descriptorspec = array(
 			0 => array("pipe", "r"), // stdin
 			1 => array("pipe", "w"), // stout
@@ -233,6 +225,9 @@ function getquotas($users) {
 			* $pipes[1] is readable handle to child stdout
 			* any error is send to /dev/null
 			*/
+			// user+passwd
+			fwrite($pipes[0], $ldap_q[0] . "\n");
+			fwrite($pipes[0], $ldap_q[1] . "\n");
 			// Write one output-line for every user
 			fwrite($pipes[0], $userstring);
 			fclose($pipes[0]);
@@ -245,6 +240,8 @@ function getquotas($users) {
 			}
 		}
 	else { // PHP 4.3>
+		$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." ".
+			escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]);
 		$command = escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".$towrite;
 		$pipe = popen("echo \"$userstring\"|$command" , 'r');
 		while(!feof($pipe)) {
@@ -300,12 +297,6 @@ function getquotas($users) {
 function setquotas($values2) {
 	// get username and password of the current lam-admin
 	$ldap_q = $_SESSION['ldap']->decrypt_login();
-	/* $towrite has the following syntax:
-	* admin-username, admin-password, account with quotas, 'quota', operation='set', type=user|group
-	* use escapeshellarg to make exec() shell-safe
-	*/
-	$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." ".
-		escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]);
 
 	/* Check wich quotas have changed
 	* Because we can not send an array to lamdaemon.pl we have to put all
@@ -342,6 +333,7 @@ function setquotas($values2) {
 
 	if (function_exists(proc_open)) {
 		// New Code, requires PHP 4.3
+		$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." - -";
 		$descriptorspec = array(
 			0 => array("pipe", "r"), // stdin
 			1 => array("pipe", "w"), // stout
@@ -356,6 +348,9 @@ function setquotas($values2) {
 			* $pipes[1] is readable handle to child stdout
 			* any error is send to /dev/null
 			*/
+			// user+passwd
+			fwrite($pipes[0], $ldap_q[0] . "\n");
+			fwrite($pipes[0], $ldap_q[1] . "\n");
 			// Write to stdin
 			fwrite($pipes[0], $userstring);
 			}
@@ -368,6 +363,8 @@ function setquotas($values2) {
 		proc_close($process);
 		}
 	else { // PHP 4.3>
+		$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." ".
+			escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]);
 		$command = escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".$towrite;
 		$pipe = popen("echo \"$userstring\"|$command" , 'r');
 		while(!feof($pipe)) {
@@ -391,12 +388,6 @@ function setquotas($values2) {
 function remquotas($users, $type) {
 	// get username and password of the current lam-admin
 	$ldap_q = $_SESSION['ldap']->decrypt_login();
-	/* $towrite has the following syntax:
-	* admin-username, admin-password, account with quotas, 'quota', operation='rem', type=user|group
-	* use escapeshellarg to make exec() shell-safe
-	*/
-	$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." ".
-		escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]);
 
 	if (is_array($users)) {
 		foreach ($users as $user) {
@@ -407,6 +398,7 @@ function remquotas($users, $type) {
 
 	if (function_exists(proc_open)) {
 		// New Code, requires PHP 4.3
+		$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." - -";
 		$descriptorspec = array(
 			0 => array("pipe", "r"), // stdin
 			1 => array("pipe", "w"), // stout
@@ -421,6 +413,9 @@ function remquotas($users, $type) {
 			* $pipes[1] is readable handle to child stdout
 			* any error is send to /dev/null
 			*/
+			// user+passwd
+			fwrite($pipes[0], $ldap_q[0] . "\n");
+			fwrite($pipes[0], $ldap_q[1] . "\n");
 			// Write to stdin
 			fwrite($pipes[0], $userstring);
 			}
@@ -433,6 +428,8 @@ function remquotas($users, $type) {
 		proc_close($process);
 		}
 	else { // PHP 4.3>
+		$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." ".
+			escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]);
 		$command = escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".$towrite;
 		$pipe = popen("echo \"$userstring\"|$command" , 'r');
 		while(!feof($pipe)) {
@@ -456,12 +453,6 @@ function remquotas($users, $type) {
 function addhomedir($users) {
 	// get username and password of the current lam-admin
 	$ldap_q = $_SESSION['ldap']->decrypt_login();
-	/* $towrite has the following syntax:
-	* admin-username, admin-password, owner of homedir, 'home', operation='add'
-	* use escapeshellarg to make exec() shell-safe
-	*/
-	$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." ".
-		escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]);
 
 	if (is_array($users)) {
 		foreach ($users as $user) {
@@ -472,6 +463,7 @@ function addhomedir($users) {
 
 	if (function_exists(proc_open)) {
 		// New Code, requires PHP 4.3
+		$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." - -";
 		$descriptorspec = array(
 			0 => array("pipe", "r"), // stdin
 			1 => array("pipe", "w"), // stout
@@ -486,6 +478,9 @@ function addhomedir($users) {
 			* $pipes[1] is readable handle to child stdout
 			* any error is send to /dev/null
 			*/
+			// user+passwd
+			fwrite($pipes[0], $ldap_q[0] . "\n");
+			fwrite($pipes[0], $ldap_q[1] . "\n");
 			// Write to stdin
 			fwrite($pipes[0], $userstring);
 			}
@@ -498,6 +493,8 @@ function addhomedir($users) {
 		proc_close($process);
 		}
 	else { // PHP 4.3>
+		$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." ".
+			escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]);
 		$command = escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".$towrite;
 		$pipe = popen("echo \"$userstring\"|$command" , 'r');
 		while(!feof($pipe)) {
@@ -522,12 +519,6 @@ function addhomedir($users) {
 function remhomedir($users) {
 	// get username and password of the current lam-admin
 	$ldap_q = $_SESSION['ldap']->decrypt_login();
-	/* $towrite has the following syntax:
-	* admin-username, admin-password, owner of homedir, 'home', operation='add'
-	* use escapeshellarg to make exec() shell-safe
-	*/
-	$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." ".
-		escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]);
 
 	if (is_array($users)) {
 		foreach ($users as $user) {
@@ -538,6 +529,7 @@ function remhomedir($users) {
 
 	if (function_exists(proc_open)) {
 		// New Code, requires PHP 4.3
+		$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." - -";
 		$descriptorspec = array(
 			0 => array("pipe", "r"), // stdin
 			1 => array("pipe", "w"), // stout
@@ -552,6 +544,9 @@ function remhomedir($users) {
 			* $pipes[1] is readable handle to child stdout
 			* any error is send to /dev/null
 			*/
+			// user+passwd
+			fwrite($pipes[0], $ldap_q[0] . "\n");
+			fwrite($pipes[0], $ldap_q[1] . "\n");
 			// Write to stdin
 			fwrite($pipes[0], $userstring);
 			}
@@ -564,6 +559,8 @@ function remhomedir($users) {
 		proc_close($process);
 		}
 	else { // PHP 4.3>
+		$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." ".
+			escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]);
 		$command = escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".$towrite;
 		$pipe = popen("echo \"$userstring\"|$command" , 'r');
 		while(!feof($pipe)) {
