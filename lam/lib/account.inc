@@ -2661,7 +2661,7 @@ function creategroup($values, $uselamdaemon=true) {
 		if ($values->smb_displayName) $attr['displayName'] = utf8_encode($values->smb_displayName);
 		}
 	// Write additional group members
-	if (is_array($values->unix_memberUid)) $attr['memberUid'][] = $values->unix_memberUid;
+	if (is_array($values->unix_memberUid)) $attr['memberUid'] = $values->unix_memberUid;
 	// Create LDAP group account
 	$success = ldap_add($_SESSION['ldap']->server(),$values->general_dn, $attr);
 	// Continue if now error did ocour
