@@ -45,7 +45,7 @@ class cache {
 	*/
 	function add_cache($attributes) {
 		// Check input variable
-		$allowed_types = array ( 'user', 'group', 'host', '*' );
+		$allowed_types = array ( 'user', 'group', 'host', 'domain', '*' );
 		if (!is_array($attributes)) trigger_error(_('Argument of add_cache must be : array ( scope => array(attribute1(string), attribute2(string), ..), scope => ... ).'), E_USER_ERROR);
 		foreach ($attributes as $attribute) {
 			if (!is_array($attribute)) trigger_error(_('Argument of add_cache must be : array ( scope => array(attribute1(string), attribute2(string), ..), scope => ... ).'), E_USER_ERROR);
@@ -73,7 +73,7 @@ class cache {
 	function get_cache($attribute, $objectClass, $singlescope) {
 		$this->refresh_cache();
 		// Check input variables
-		$allowed_types = array ( 'user', 'group', 'host', '*' );
+		$allowed_types = array ( 'user', 'group', 'host', 'domain', '*' );
 		if (!in_array($singlescope, $allowed_types)) trigger_error(sprintf(_('Invalid scope. Valid scopes are %s.'), implode(" ", $allowed_types)), E_USER_ERROR);
 		$line=-1;
 		for ($i=0; $i<count($_SESSION['ldap']->objectClasses) || $i==-1; $i++) {
@@ -139,7 +139,7 @@ class cache {
 	function in_cache($value, $attribute, $singlescope) {
 		$this->refresh_cache();
 		// Check input variables
-		$allowed_types = array ( 'user', 'group', 'host', '*' );
+		$allowed_types = array ( 'user', 'group', 'host', 'domain', '*' );
 		if (!in_array($singlescope, $allowed_types)) trigger_error(sprintf(_('Invalid scope. Valid scopes are %s.'), implode(" ", $allowed_types)), E_USER_ERROR);
 		// Create list of all allowed attributes
 		for ($i=0; $i<count($this->ldap->objectClasses); $i++ ) {
@@ -235,7 +235,7 @@ class cache {
 	* made without refrehing the complete cache
 	*/
 	function update_cache($dn, $attributes, $singlescope) {
-		$allowed_types = array ( 'user', 'group', 'host', '*' );
+		$allowed_types = array ( 'user', 'group', 'host', 'domain', '*' );
 		if (!in_array($singlescope, $allowed_types)) trigger_error(sprintf(_('Invalid scope. Valid scopes are %s.'), implode(" ", $allowed_types)), E_USER_ERROR);
 		// Everything seems to be OK, start processing data
 		$this->refresh_cache();
@@ -247,212 +247,43 @@ class cache {
 			}
 		}
 
-	}
-
-/* Main-Module. Contains basic module functions have to be loaded first
-* It also chooses which page to show.
-*/
-class main {
-	// This variable stores the number of the current displayed page
-	var $current_page;
-	// This variable os set to the pagename of a subpage if it should be displayed
-	var $subpage;
-	// name of accountContainer so we can read other classes in accuontArray
-	var $base;
-	// Alias Name. This name is shown in the menu instead of main
-	var $alias;
-
-	function main($base) {
-		$this->current_page = 0;
-		$this->subpage = '';
-		/* Create a reference to basearray so we can read all other modules
-		* php will avaois recousrion itself
-		*/
-		$this->base = $base;
-		$this->alias = _('main');
-		}
-
-	/* This function returns a list with all required modules
+	/* This function will return the gidNumber to an existing groupname
+	* gidNumbers are taken from cache-array
 	*/
-	function dependencies() {
-		return array();
-		}
-
-	function module_ready() {
-		return true;
-		}
-
-	function display_html_attributes($post) {
-		$function = '$profilelist = get'.ucfirst($_SESSION[$this->base]->type).'Profiles();';
-		eval($function);
-		$modules = $_SESSION[$this->base]->check_attributes();
-		if (count($modules)!=0) {
-			$disabled = 'disabled';
-			for ($i=0; $i<count($modules); $i++) StatusMessage('ERROR', _('Check module'), sprintf(_('Please set up all required attributes on %s page'), $_SESSION[$this->base]->module[$modules[$i]]->alias));
+	function getgid($groupname) {
+		$dn_groups = $_SESSION['cache']->get_cache('gidNumber', 'posixGroup', 'group');
+		$DNs = array_keys($dn_groups);
+		foreach ($DNs as $DN) {
+			if (strpos($DN, $groupname))
+				return $dn_groups[$DN][0];
 			}
-			else $disabled = '';
-
-		echo "<table border=0 width=\"100%\">\n";
-		echo "<tr>\n";
-		echo "<td>" . _('Suffix') . "</td>\n";
-		echo "<td><select name=\"form_main_suffix\">";
-		// loop through all suffixes
-		$function = '$suffix = $_SESSION[$_SESSION[$this->base]->config]->get_'.ucfirst($_SESSION[$this->base]->type).'Suffix();';
-		eval($function);
-		foreach ($_SESSION[$_SESSION[$this->base]->ldap]->search_units($suffix) as $suffix) {
-			if ($_SESSION[$this->base]->dn) {
-				if ($_SESSION[$this->base]->dn == $suffix) echo "<option selected>$suffix</option>\n";
-				else echo "<option>$suffix</option>\n";
-				}
-			else echo "<option>$suffix</option>\n";
-			}
-		echo "</select></td>\n";
-		echo "<td><a href=\"../help.php?HelpNumber=461\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-		echo "</tr>\n";
-
-		// Show fieldset with list of all user profiles
-		if (count($profilelist)!=0) {
-			echo "<tr>\n";
-			echo "<td>" . _("Load profile") . "</td>\n";
-			echo "<td><select name=\"form_main_selectLoadProfile\">";
-				foreach ($profilelist as $profile) echo "<option>$profile</option>\n";
-			echo "</select>\n";
-			echo "<input name=\"form_main_loadProfile\" type=\"submit\" value=\"" . _('Load Profile') . "\"></td>\n";
-			echo "<td><a href=\"../help.php?HelpNumber=421\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-			echo "</tr>\n";
-			}
-
-		echo "<tr>\n";
-		echo "<td>" . _("Save profile") . "</td>\n";
-		echo "<td><input name=\"form_main_selectSaveProfile\" type=\"text\" size=\"30\" maxlength=\"50\">\n";
-			echo "<input name=\"form_main_saveProfile\" type=\"submit\" value=\"" . _('Save profile') . "\" $disabled ></td>\n";
-		echo "<td><a href=\"../help.php?HelpNumber=457\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-		echo "</tr>\n";
-
-		echo "<tr>\n";
-		echo "<td><input name=\"form_main_create\" type=\"submit\" value=\"";
-			if ($_SESSION[$this->base]->dn_orig!='') echo _('Modify Account');
-	 			else echo _('Create Account');
-			echo "\" $disabled ></td>\n";
-		echo "</tr>\n";
-
-		echo "</table>\n";
-		return 0;
 		}
 
 
-	/* This page will be shown if an account
-	* has been saved
+	/* This function will return an array with all groupnames
+	* found in ldap. Groupnames are taken from cache-array.
 	*/
-	function display_html_finish($post) {
-		// Show success message
-		if ($_SESSION[$this->base]->dn_orig=='') $kind = _('created');
-			else $kind = _('modified');
-		$text = sprintf(_('%s has been %s.'), ucfirst($_SESSION[$this->base]->type), $kind);
-		StatusMessage('INFO', _('LDAP operation successful.'), $text);
-
-		// Show rest of page
-		echo "<table border=0 width=\"100%\">\n";
-		echo "<tr>\n";
-		if ($_SESSION[$this->base]->dn_orig=='') {
-			echo "<td><input name=\"form_main_createagain\" type=\"submit\" value=\"";
-				echo sprintf(_('Create another %s'), $_SESSION[$this->base]->type);
-				echo "\"></td>\n";
-			}
-		echo "<td><input name=\"form_main_outputpdf\" type=\"submit\" value=\"" . _('Create PDF file') . "\"></td>\n";
-		echo "<td><input name=\"form_main_backmain\" type=\"submit\" value=\"";
-			echo sprintf (_('Back to %s list'), $_SESSION[$this->base]->type);
-			echo "\"></td>\n";
-		echo "</tr>\n";
-		echo "</table>\n";
-		return 0;
+	function findgroups() {
+		$dn_groups = $_SESSION['cache']->get_cache('cn', 'posixGroup', 'group');
+		$DNs = array_keys($dn_groups);
+		foreach ($DNs as $DN)
+			$return[] = $dn_groups[$DN][0];
+		return $return;
 		}
 
-	/* Write variables into object and do some regexp checks
+
+	/* This function will return the groupname to an existing gidNumber
+	* groupnames are taken from cache-array
 	*/
-	function proccess_finish($post) {
-		if ($post['form_main_createagain']) {
-			// Reset objects
-			$modules = array_keys($_SESSION[$this->base]->module);
-			foreach ($modules as $module)
-				if ($module!='main') unset($_SESSION[$this->base]->module[$module]);
-			// Reset accountContainer
-			$_SESSION[$this->base]->dn = '';
-			$_SESSION[$this->base]->dn_orig = '';
-			$_SESSION[$this->base]->attributes = array();
-			$_SESSION[$this->base]->order = array();
-			$this->current_page = 0;
-			$this->subpage = '';
-			// Add all required objects etc.
-			$_SESSION[$this->base]->new_account();
-			return 0;
+	function getgrnam($gidNumber) {
+		$dn_groups = $_SESSION['cache']->get_cache('gidNumber', 'posixGroup', 'group');
+		$DNs = array_keys($dn_groups);
+		foreach ($DNs as $DN) {
+			if ($dn_groups[$DN][0]==$gidNumber)
+				$return = substr($DN, 3, strpos($DN, ',')-3);
 			}
-		if ($post['form_main_backmain']) {
-			// Return to *-list
-			// *** fixme unset accountContainer in session
-			metaRefresh("../lists/list".$_SESSION[$this->base]->type."s.php");
-			exit;
-			}
-		if ($post['form_main_outputpdf']) {
-			// Create / display PDf-file
-			$function = 'create'.ucfirst($_SESSION[$this->base]->type).'PDF(array($_SESSION[$this->base]));';
-			eval($function);
-			exit;
-			}
+		return $return;
 		}
-
-	/* Write variables into object and do some regexp checks
-	*/
-	function proccess_attributes($post) {
-		// change dn
-		if ($post['form_main_suffix']!='') $_SESSION[$this->base]->dn = $post['form_main_suffix'];
-		// load profile
-		if ($post['form_main_selectLoadProfile'] && $post['form_main_loadProfile']) {
-			// *** fixme load*Profile must return array in the same way ldap_get_attributes does.
-			$function = '$newattributes = load'.ucfirst($scope).'Profile($post[\'form_main_selectLoadProfile\']);';
-			eval($function);
-			// pass newattributes to each module
-			$modules = array_keys($_SESSION[$this->base]->module);
-			foreach ($modules as $module) $_SESSION[$this->base]->module[$module]->load_attributes($newattributes);
-			return 0;
-			}
-		// save account
-		if ($post['form_main_create']) {
-			$success = $_SESSION[$this->base]->save_account();
-			if (is_array($success)) return array($success);
-			// return name of subpage
-			return 'finish';
-			}
-		// save profile
-		if ($post['form_main_saveProfile']) {
-			if ($post['form_main_selectSaveProfile']=='') $errors[] = array('ERROR', _('Save profile'), _('No profilename given.'));
-			else {
-				$function = 'save'.ucfirst($scope).'Profile();';
-				eval($function);
-				if ($function) $errors[] = array('INFO', _('Save profile'), _('New profile created.'));
-					else $errors[] = array('ERROR', _('Save profile'), _('Wrong profilename given.'));
-				}
-			if (is_array($errors)) return $errors;
-				else return 0;
-			}
-		return 0;
-		}
-
-	// Dummy functions to make module compatible
-	function load_attributes($attr) {
-		return 0;
-		}
-
-	// Dummy functions to make module compatible
-	function save_attributes() {
-		return array();
-		}
-
-	// Dummy functions to make module compatible
-	function get_attributes() {
-		return array();
-		}
-
 
 	}
 
@@ -467,7 +298,7 @@ class accountContainer {
 		if (!is_string($type)) trigger_error(_('Argument of accountContainer must be string.'), E_USER_ERROR);
 		if (!is_string($base)) trigger_error(_('Argument of accountContainer must be string.'), E_USER_ERROR);
 		// *** fixme use global variable to determine allowed types
-		$allowed_types = array ( 'user', 'group', 'host' );
+		$allowed_types = array ( 'user', 'group', 'host', 'domain' );
 		if (!in_array($type, $allowed_types)) trigger_error(_('Account type not recognized.'), E_USER_ERROR);
 		$this->type = $type;
 		$this->base = $base;
@@ -647,8 +478,6 @@ class accountContainer {
 					}
 				}
 			}
-
-
 		}
 
 	/* This function return ldap attributes
@@ -737,6 +566,7 @@ class accountContainer {
 					}
 				}
 			}
+		$this->add_attributes($objectClass);
 		return $return;
 		}
 
@@ -846,15 +676,20 @@ class accountContainer {
 		$this->dn_orig = $dn;
 		$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
 		if (isset($attr['objectClass']['count'])) unset($attr['objectClass']['count']);
-		// Add objects
-		foreach ($attr['objectClass'] as $objectClass) $this->add_objectClass($objectClass);
 		// load attributes
-		foreach ($attr['objectClass'] as $objectClass)
+		foreach ($attr['objectClass'] as $objectClass) {
+			$this->add_objectClass($objectClass);
 			if (isset($this->module[$objectClass])) $this->module[$objectClass]->load_attributes($attr);
+			}
+		$this->module['quota'] = new quota($this->base);
+		$this->module['quota']->load_attributes($attr);
+
+
 		// sortm modules and make all active because all required attributes should be set
 		$module = array_keys ($this->module);
 		$modulelist = array();
 		// *** fixme add modules from config which should be used but not yet in loaded account
+		// *** fixme how to handle non ldap modules?
 
 		// loop until all modules are in order.
 		// We don't want to loop forever
@@ -1006,7 +841,7 @@ class accountContainer {
 				}
 			}
 		foreach ($attributes as $DN)
-			if (is_array($DN['lamdaemon'])) $this->lamdaemon($DN['lamdaemon']);
+			if (is_array($DN['lamdaemon']['command'])) $this->lamdaemon($DN['lamdaemon']['command']);
 
 		return 0;
 		}
@@ -1020,11 +855,7 @@ class accountContainer {
 		*/
 		$towrite = escapeshellarg($_SESSION[$this->config]->scriptServer)." ".escapeshellarg($_SESSION[$this->config]->scriptPath)." ".
 			escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]);
-		if (is_array($users)) {
-			foreach ($users as $user) {
-				$userstring .= "$user home add\n";
-				}
-			}
+
 		$userstring = implode ("\n", $commands);
 		if (function_exists(proc_open)) {
 			// New Code, requires PHP 4.3
@@ -1068,8 +899,7 @@ class accountContainer {
 
 	}
 
-
-
+/*
 // This class keeps all needed values for any account
 class account {
 	// Type : user | group | host
@@ -1118,6 +948,7 @@ class account {
 					* mountpoint, used blocks, soft block limit, hard block limit, grace block period, used inodes,
 					* soft inode limit, hard inode limit, grace inode period
 					*/
+/*
 	// Personal Settings
 	var $personal_title;		// string title of user
 	var $personal_mail;		// string mailaddress of user
@@ -1129,7 +960,7 @@ class account {
 	var $personal_postalAddress;	// string postal Address of user
 	var $personal_employeeType;	// string employe type of user
 	}
-
+*/
 
 /* Return a list of all shells listed in ../config/shells
 * Normally ../config/shells is a symbolic link to /etc/shells
@@ -1172,12 +1003,13 @@ function replace_umlaut($text) {
 function array_delete($values, $array) {
 	// Loop for every entry and check if it should be removed
 	if (is_array($array)) {
+		$return = array();
 		foreach ($array as $array_value)
 			if (!@in_array($array_value, $values))
 				$return[] = $array_value;
 		return $return;
 		}
-	else return 0;
+	else return array();
 	}
 
 

@@ -22,13 +22,10 @@ $Id$
 
 /*
 * Variables in basearray which are no objects:
-* type: Type of account. Can be user, group, host
+* type: Type of account. Can be user, group, host, domain
 * attributes: List of all attributes, how to get them and are theiy required or optional
 * dn: current DN without uid= or cn=
 * dn_orig: old DN if account was loaded with uid= or cn=
-
-* External functions which are used
-* account.inc:
 */
 
 
@@ -36,38 +33,33 @@ $Id$
 * and funtioncs required to deal with account
 * account can only be created when it should be added
 * to an array.
-* basearray is the same array account should be added
-* to. If basearray is not given the constructor tries to
-* create an array with account and all other required
-* objects.
-* Example: $user[] = new account($user);
+* $base is the name of account_container in session
 *
 */
 
 class account {
 	// Constructor
 	function account($base) {
-		/* Return an error if posixAccount should be created without
-		* base container
-		*/
+		// Get local copy of name of account_container in session
+		$this->base = $base;
+		// Do some error checks
 		if (!$base) trigger_error(_('Please create a base object with $var = new accountContainer();'), E_USER_ERROR);
 		if (!is_string($base)) trigger_error(_('Please create a new module object with $accountContainer->add_objectClass(\'account\');'), E_USER_ERROR);
-		$this->base = $base;
-		// account is only a valid objectClass for users
 		if ($_SESSION[$this->base]->get_type() != 'host') trigger_error(_('account can only be used for hosts.'), E_USER_WARNING);
-		// Add Array with all attributes and type
+		// load attribtues which are used in account objectClass
 		$this->attributes = $_SESSION[$this->base]->get_module_attributes('account');
-		$_SESSION[$this->base]->add_attributes ('account');
+		// Create copy of attributes
 		$this->orig = $this->attributes ;
+		// Add objectClass to attributes
 		$this->attributes['objectClass'][0] = 'account';
-		// unset userPassword because we handle it separat.
+		// Set aliasname
 		$this->alias = _('account');
 		}
 
 	// Variables
-	// Alias Name. This name is shown in the menu instead of posixAccount
+	// Alias Name. This name is shown in the menu instead of 'account'
 	var $alias;
-	// reference to base-array so we can read other classes in basearray
+	// name of account_container in session so we can read other classes in account_container
 	var $base;
 	// This variable contains all account attributes
 	var $attributes;
@@ -82,16 +74,29 @@ class account {
 		return array('main');
 		}
 
+	/* This function returns true if all required attributes from other
+	* modules are set. This is required to prevent undefined states
+	*/
 	function module_ready() {
 		return true;
 		}
+
+
+	/* This function returns a list of all html-pages in module
+	* This is usefull for mass upload and pdf-files
+	* because lam can walk trough all pages itself and do some
+	* error checkings
+	*/
+	function pages() {
+		return array('attributes');
+		}
+
 
 	/* Write variables into object and do some regexp checks
 	*/
 	function proccess_attributes($post) {
 		// Load attributes
 		$this->attributes['description'][0] = $post['form_account_description'];
-
 		return 0;
 		}
 
@@ -99,7 +104,6 @@ class account {
 	* $attr is an array as it's retured from ldap_get_attributes
 	*/
 	function load_attributes($attr) {
-		// Load attributes which are displayed
 		// unset count entries
 		unset ($attr['count']);
 		$attributes = array_keys($attr);
@@ -107,6 +111,7 @@ class account {
 		// unset double entries
 		for ($i=0; $i<count($attr); $i++)
 			if (isset($attr[$i])) unset($attr[$i]);
+		// load attribtues
 		foreach ($attributes as $attribute) {
 			if (isset($this->orig[$attribute])) {
 				$this->orig[$attribute] = $attr[$attribute];
@@ -114,24 +119,25 @@ class account {
 				for ($i=0; $i<count($this->orig[$attribute]); $i++) $this->orig[$attribute][$i] = utf8_decode ($this->orig[$attribute][$i]);
 				}
 			}
-		// Values are kept as copy so we can compare old attributes with new attributes
+		// Add objectClass to orig because we don't want to add objectClass if it's already set
 		$this->orig['objectClass'][0] = 'account';
+		// Values are kept as copy so we can compare old attributes with new attributes
 		$this->attributes = $this->orig;
 		return 0;
 		}
 
-
-
-	/* This function returns an array with 3 entries:
-	* array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
+	/* This function returns an array with 4 entries:
+	* array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr), 'lamdaemon' => array(cmds)), DN2 .... )
 	* DN is the DN to change. It may be possible to change several DNs,
 	* e.g. create a new user and add him to some groups via attribute memberUid
 	* add are attributes which have to be added to ldap entry
 	* remove are attributes which have to be removed from ldap entry
+	* lamdaemon are lamdaemon commands to modify homedir, quotas, ...
 	*/
 	function save_attributes() {
+		// Get easy attributes
 		$return = $_SESSION[$this->base]->save_module_attributes($this->attributes, $this->orig);
-
+		// Return attributes
 		return $return;
 		}
 
@@ -158,9 +164,6 @@ class account {
 		return 0;
 		}
 
-
 	}
-
-
 
 ?>

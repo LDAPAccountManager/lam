@@ -216,13 +216,13 @@ class sambaSamAccount {
 			if ($post['form_sambaSamAccount_sambaSID']== _('Administrator')) {
 				$this->attributes['sambaSID'][0] = $SID."-500";
 				// Do a check if an administrator already exists
-				if ($_SESSION[$_SESSION[$this->base]->cache]->in_cache($SID."-500", 'sambaSID', 'user'))
+				if ($_SESSION[$_SESSION[$this->base]->cache]->in_cache($SID."-500", 'sambaSID', 'user')!=$_SESSION[$this->base]->dn_orig)
 					$errors[] = array('ERROR', _('Special user'), _('There can be only one administrator per domain.'));
 				}
 			if ($post['form_sambaSamAccount_sambaSID']== _('Guest')) {
 				$this->attributes['sambaSID'][0] = $SID."-501";
 				// Do a check if an administrator already exists
-				if ($_SESSION[$_SESSION[$this->base]->cache]->in_cache($SID."-501", 'sambaSID', 'user'))
+				if ($_SESSION[$_SESSION[$this->base]->cache]->in_cache($SID."-501", 'sambaSID', 'user')!=$_SESSION[$this->base]->dn_orig)
 					$errors[] = array('ERROR', _('Special user'), _('There can be only one guest per domain.'));
 				}
 			// Check values
@@ -349,6 +349,13 @@ class sambaSamAccount {
 		if ($this->attributes['sambaSID'][0] == $SID."-500") $special = true;
 		if ($this->attributes['sambaSID'][0] == $SID."-501") $special = true;
 		if (!$special) $this->attributes['sambaSID'][0] == $SID."-".($_SESSION[$this->base]->module['posixAccount']->attributes['uidNumber'][0]*2+$RIDbase);
+		$rids = array_keys($this->rids);
+		$wrid = false;
+		for ($i=0; $i<count($rids); $i++)
+			if ($this->attributes['sambaPrimaryGroupSID'][0] == $SID . "-" . $rids[$i])
+				$wrid = true;
+		if (!$wrid) $this->attributes['sambaPrimaryGroupSID'][0] = $SID."-".($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]*2)+$RIDbase+1;
+
 
 		$return = $_SESSION[$this->base]->save_module_attributes($this->attributes, $this->orig);
 		// Set password
@@ -525,8 +532,8 @@ class sambaSamAccount {
 						}
 					else echo "<option>" . $names[$i] . "</option>";
 					}
-				if ($wrid) echo "<option>" . getgrnam($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]) . "</option>";
-					else echo "<option selected>" . getgrnam($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]) . "</option>";
+				if ($wrid) echo "<option>" . $_SESSION[$_SESSION[$this->base]->cache]->getgrnam($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]) . "</option>";
+					else echo "<option selected>" . $_SESSION[$_SESSION[$this->base]->cache]->getgrnam($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]) . "</option>";
 				echo	"</select></td>\n";
 			echo "<td><a href=\"../help.php?HelpNumber=464\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
 			echo "</tr>\n";

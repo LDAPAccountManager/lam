@@ -22,51 +22,43 @@ $Id$
 
 /*
 * Variables in basearray which are no objects:
-* type: Type of account. Can be user, group, host
+* type: Type of account. Can be user, group, host, domain
 * attributes: List of all attributes, how to get them and are theiy required or optional
 * dn: current DN without uid= or cn=
 * dn_orig: old DN if account was loaded with uid= or cn=
-
-* External functions which are used
-* account.inc:
 */
 
 
-/* This class contains all inetOrgPerson LDAP attributes
+/* This class contains all account LDAP attributes
 * and funtioncs required to deal with inetOrgPerson
 * inetOrgPerson can only be created when it should be added
 * to an array.
-* basearray is the same array inetOrgPerson should be added
-* to. If basearray is not given the constructor tries to
-* create an array with inetOrgPerson and all other required
-* objects.
-* Example: $user[] = new inetOrgPerson($user);
-*
+* $base is the name of account_container in session
 */
 
 class inetOrgPerson {
 	// Constructor
 	function inetOrgPerson($base) {
-		/* Return an error if posixAccount should be created without
-		* base container
-		*/
+		// Get local copy of name of account_container in session
+		$this->base = $base;
+		// Do some error checks
 		if (!$base) trigger_error(_('Please create a base object with $var = new accountContainer();'), E_USER_ERROR);
 		if (!is_string($base)) trigger_error(_('Please create a new module object with $accountContainer->add_objectClass(\'inetOrgPerson\');'), E_USER_ERROR);
-		$this->base = $base;
-		// inetOrgPerson is only a valid objectClass for users
-		if ($_SESSION[$this->base]->get_type() != 'user') trigger_error(_('inetOrgPerson can only be used for users.'), E_USER_WARNING);
-		// Add Array with all attributes and type
+		if ($_SESSION[$this->base]->type != 'user') trigger_error(_('inetOrgPerson can only be used for users.'), E_USER_WARNING);
+		// load attribtues which are used in inetOrgPerson objectClass
 		$this->attributes = $_SESSION[$this->base]->get_module_attributes('inetOrgPerson');
-		$_SESSION[$this->base]->add_attributes ('inetOrgPerson');
+		// Create copy of attributes
 		$this->orig = $this->attributes ;
+		// Add objectClass to attributes
 		$this->attributes['objectClass'][0] = 'inetOrgPerson';
+		// Set aliasname
 		$this->alias = _('inetOrgPerson');
 		}
 
 	// Variables
 	// Alias Name. This name is shown in the menu instead of posixAccount
 	var $alias;
-	// reference to base-array so we can read other classes in basearray
+	// name of account_container in session so we can read other classes in account_container
 	var $base;
 	// This variable contains all inetOrgPerson attributes
 	var $attributes;
@@ -82,9 +74,22 @@ class inetOrgPerson {
 		return array('main');
 		}
 
+	/* This function returns true if all required attributes from other
+	* modules are set. This is required to prevent undefined states
+	*/
 	function module_ready() {
 		return true;
 		}
+
+	/* This function returns a list of all html-pages in module
+	* This is usefull for mass upload and pdf-files
+	* because lam can walk trough all pages itself and do some
+	* error checkings
+	*/
+	function pages() {
+		return array('attributes');
+		}
+
 
 	/* Write variables into object and do some regexp checks
 	*/
@@ -103,30 +108,29 @@ class inetOrgPerson {
 		$this->attributes['postalAddress'][0] = $post['form_inetOrgPerson_postalAddress'];
 		$this->attributes['employeeType'][0] = $post['form_inetOrgPerson_employeeType'];
 
+		// handle host-attribute in on epice because it's not set by default
 		if (isset($this->attributes['host'])) {
 			$host = $post['form_inetOrgPerson_host'];
 			if ((!$host=='') && !ereg('^([a-z]|[A-Z]|[0-9]|[.]|[-])+(([,])+([ ])*([a-z]|[A-Z]|[0-9]|[.]|[-])+)*$', $host))
-				$errors[] = array('ERROR', _('Unix workstations'), _('Unix workstations is invalid.'));
+				$errors[] = array('ERROR', _('Unix workstations'), _('Unix workstations is invalid.'), 'host');
 			$hosts = explode(" ", $host);
 			$this->attributes['host'] = array();
 			foreach ($hosts as $host)
 				if ($host!="") $this->attributes['host'][] = $host;
 			}
 
-		// Check if givenname is valid
-		if ( !ereg('^([a-z]|[A-Z]|[-]|[ ]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+$', $this->attributes['givenName'][0])) $errors[] = array('ERROR', _('Given name'), _('Given name contains invalid characters'));
-		// Check if surname is valid
-		if ( !ereg('^([a-z]|[A-Z]|[-]|[ ]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+$', $this->attributes['sn'][0])) $errors[] = array('ERROR', _('Surname'), _('Surname contains invalid characters'));
-
-		if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/]|[-])*$', $this->attributes['telephoneNumber'][0]))  $errors[] = array('ERROR', _('Telephone number'), _('Please enter a valid telephone number!'));
-		if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/]|[-])*$', $this->attributes['mobileTelephoneNumber'][0]))  $errors[] = array('ERROR', _('Mobile number'), _('Please enter a valid mobile number!'));
-		if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/]|[-])*$', $this->attributes['facsimileTelephoneNumber'][0]))  $errors[] = array('ERROR', _('Fax number'), _('Please enter a valid fax number!'));
-		if ( !ereg('^(([0-9]|[A-Z]|[a-z]|[.]|[-]|[_])+[@]([0-9]|[A-Z]|[a-z]|[-])+([.]([0-9]|[A-Z]|[a-z]|[-])+)*)*$', $this->attributes['mail'][0]))  $errors[] = array('ERROR', _('eMail address'), _('Please enter a valid eMail address!'));
-		if ( !ereg('^([0-9]|[A-Z]|[a-z]|[-]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $this->attributes['street'][0]))  $errors[] = array('ERROR', _('Street'), _('Please enter a valid street name!'));
-		if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $this->attributes['postalAddress'][0]))  $errors[] = array('ERROR', _('Postal address'), _('Please enter a valid postal address!'));
-		if ( !ereg('^([0-9]|[A-Z]|[a-z]|[-]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $this->attributes['title'][0]))  $errors[] = array('ERROR', _('Title'), _('Please enter a valid title!'));
-		if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $this->attributes['employeeType'][0]))  $errors[] = array('ERROR', _('Employee type'), _('Please enter a valid employee type!'));
-		if ( !ereg('^([0-9]|[A-Z]|[a-z])*$', $this->attributes['personal_postalCode'][0]))  $errors[] = array('ERROR', _('Postal code'), _('Please enter a valid postal code!'));
+		// Do some regex-checks and return error if attributes are set to wrong values
+		if ( !ereg('^([a-z]|[A-Z]|[-]|[ ]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+$', $this->attributes['givenName'][0])) $errors[] = array('ERROR', _('Given name'), _('Given name contains invalid characters'), 'givenname');
+		if ( !ereg('^([a-z]|[A-Z]|[-]|[ ]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+$', $this->attributes['sn'][0])) $errors[] = array('ERROR', _('Surname'), _('Surname contains invalid characters'), 'sn');
+		if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/]|[-])*$', $this->attributes['telephoneNumber'][0]))  $errors[] = array('ERROR', _('Telephone number'), _('Please enter a valid telephone number!'), 'telephoneNumber');
+		if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/]|[-])*$', $this->attributes['mobileTelephoneNumber'][0]))  $errors[] = array('ERROR', _('Mobile number'), _('Please enter a valid mobile number!'), 'mobileTelephoneNumber');
+		if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/]|[-])*$', $this->attributes['facsimileTelephoneNumber'][0]))  $errors[] = array('ERROR', _('Fax number'), _('Please enter a valid fax number!'), 'facsimileTelephoneNumber');
+		if ( !ereg('^(([0-9]|[A-Z]|[a-z]|[.]|[-]|[_])+[@]([0-9]|[A-Z]|[a-z]|[-])+([.]([0-9]|[A-Z]|[a-z]|[-])+)*)*$', $this->attributes['mail'][0]))  $errors[] = array('ERROR', _('eMail address'), _('Please enter a valid eMail address!'), 'mail');
+		if ( !ereg('^([0-9]|[A-Z]|[a-z]|[-]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $this->attributes['street'][0]))  $errors[] = array('ERROR', _('Street'), _('Please enter a valid street name!'), 'street');
+		if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $this->attributes['postalAddress'][0]))  $errors[] = array('ERROR', _('Postal address'), _('Please enter a valid postal address!'), 'postalAdress');
+		if ( !ereg('^([0-9]|[A-Z]|[a-z]|[-]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $this->attributes['title'][0]))  $errors[] = array('ERROR', _('Title'), _('Please enter a valid title!'), 'title');
+		if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $this->attributes['employeeType'][0]))  $errors[] = array('ERROR', _('Employee type'), _('Please enter a valid employee type!'), 'employeeType');
+		if ( !ereg('^([0-9]|[A-Z]|[a-z])*$', $this->attributes['personal_postalCode'][0]))  $errors[] = array('ERROR', _('Postal code'), _('Please enter a valid postal code!'), 'personal_postalCode');
 		// Return error-messages
 		if (is_array($errors)) return $errors;
 		return 0;
@@ -136,7 +140,6 @@ class inetOrgPerson {
 	* $attr is an array as it's retured from ldap_get_attributes
 	*/
 	function load_attributes($attr) {
-		// Load attributes which are displayed
 		// unset count entries
 		unset ($attr['count']);
 		$attributes = array_keys($attr);
@@ -144,6 +147,7 @@ class inetOrgPerson {
 		// unset double entries
 		for ($i=0; $i<count($attr); $i++)
 			if (isset($attr[$i])) unset($attr[$i]);
+		// load attribtues
 		foreach ($attributes as $attribute) {
 			if (isset($this->orig[$attribute])) {
 				$this->orig[$attribute] = $attr[$attribute];
@@ -151,25 +155,31 @@ class inetOrgPerson {
 				for ($i=0; $i<count($this->orig[$attribute]); $i++) $this->orig[$attribute][$i] = utf8_decode ($this->orig[$attribute][$i]);
 				}
 			}
-		// Values are kept as copy so we can compare old attributes with new attributes
+		// Add objectClass to orig because we don't want to add objectClass if it's already set
 		$this->orig['objectClass'][0] = 'inetOrgPerson';
+		// Values are kept as copy so we can compare old attributes with new attributes
 		$this->attributes = $this->orig;
 		return 0;
 		}
 
 
 
-	/* This function returns an array with 3 entries:
-	* array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
+	/* This function returns an array with 4 entries:
+	* array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr), 'lamdaemon' => array(cmds)), DN2 .... )
 	* DN is the DN to change. It may be possible to change several DNs,
 	* e.g. create a new user and add him to some groups via attribute memberUid
 	* add are attributes which have to be added to ldap entry
 	* remove are attributes which have to be removed from ldap entry
+	* lamdaemon are lamdaemon commands to modify homedir, quotas, ...
 	*/
 	function save_attributes() {
+		// Get easy attributes
 		$return = $_SESSION[$this->base]->save_module_attributes($this->attributes, $this->orig);
+		// unset password. First we hanlde userPassword with posixAccount, second we hanlde it completly separat
+		// because it en/decrypted in session
 		if (isset($return[$_SESSION[$this->base]->dn]['modify']['userPassword']))
 			unset($return[$_SESSION[$this->base]->dn]['modify']['userPassword']);
+		// Return attributes
 		return $return;
 		}
 
@@ -262,9 +272,6 @@ class inetOrgPerson {
 		return 0;
 		}
 
-
 	}
-
-
 
 ?>

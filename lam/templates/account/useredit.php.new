@@ -40,8 +40,6 @@ $dir = opendir('../../lib/modules');
 while ($entry = readdir($dir))
 	if (is_file('../../lib/modules/'.$entry)) include_once ('../../lib/modules/'.$entry);
 
-
-
 // Start session
 session_save_path('../../sess');
 @session_start();
