@@ -84,11 +84,11 @@ if ($_SESSION['config']->get_samba3() == "yes") {
 	echo "<td><select name=\"smb_domain\">\n";
 	$doms = $_SESSION['ldap']->search_domains($_SESSION['config']->get_DomainSuffix());
 	for ($i = 0; $i < sizeof($doms); $i++) {
-		if (strtolower($acct->smb_domain) == strtolower($doms[$i]->name)) {
-			echo ("<option selected>" . $acct->smb_domain . "</option>\n");
+		if (strtolower($acct->smb_domain->name) == strtolower($doms[$i]->name)) {
+			echo ("<option selected value=\"" . $act->smb_domain->dn . "\">" . $acct->smb_domain->name . "</option>\n");
 		}
 		else {
-			echo ("<option>" . $doms[$i]->name . "</option>\n");
+			echo ("<option value=\"" . $doms[$i]->dn . "\">" . $doms[$i]->name . "</option>\n");
 		}
 	}
 	echo "</select></td>\n";

@@ -25,6 +25,7 @@ $Id$
 
 include_once("config.inc");
 include_once("account.inc");
+include_once("ldap.inc");
 
 
 // returns an array of String with all available user profiles (without .pru)
@@ -172,7 +173,28 @@ function loadUserProfile($profile) {
 					continue;
 				}
 				if (substr($line, 0, 12) == "smb_domain: ") {
-					$acc->smb_domain = chop(substr($line, 12, strlen($line)-12));
+					if ($_SESSION['config']->get_samba3() == "yes") {
+						$dn = chop(substr($line, 12, strlen($line)-12));
+						// load domain object
+						$dom = new samba3domain();
+						$sr = @ldap_search($_SESSION['ldap']->server, $dn, "objectClass=sambaDomain");
+						if ($sr) {
+							$info = @ldap_get_entries($_SESSION['ldap']->server, $sr);
+							if ($info) {
+								// get domain attributes
+								@array_shift($info);
+								$dom->dn = $dn;
+								$dom->name = $info[0]['sambadomainname'][0];
+								$dom->SID = $info[0]['sambaSID'][0];
+								$dom->nextRID = $info[0]['sambanextrid'][0];
+								$dom->nextUserRID = $info[0]['sambanextuserrid'][0];
+								$dom->nextGroupRID = $info[0]['sambanextgrouprid'][0];
+								if (isset($dom->RIDbase)) $dom->RIDbase = $info[0]['sambaalgorithmicridbase'][0];
+							}
+						}
+						$acc->smb_domain = $dom;
+					}
+					else $acc->smb_domain = chop(substr($line, 12, strlen($line)-12));
 					continue;
 				}
 			}
@@ -212,7 +234,28 @@ function loadHostProfile($profile) {
 					continue;
 				}
 				if (substr($line, 0, 12) == "smb_domain: ") {
-					$acc->smb_domain = chop(substr($line, 12, strlen($line)-12));
+					if ($_SESSION['config']->get_samba3() == "yes") {
+						$dn = chop(substr($line, 12, strlen($line)-12));
+						// load domain object
+						$dom = new samba3domain();
+						$sr = @ldap_search($_SESSION['ldap']->server, $dn, "objectClass=sambaDomain");
+						if ($sr) {
+							$info = @ldap_get_entries($_SESSION['ldap']->server, $sr);
+							if ($info) {
+								// get domain attributes
+								@array_shift($info);
+								$dom->dn = $dn;
+								$dom->name = $info[0]['sambadomainname'][0];
+								$dom->SID = $info[0]['sambaSID'][0];
+								$dom->nextRID = $info[0]['sambanextrid'][0];
+								$dom->nextUserRID = $info[0]['sambanextuserrid'][0];
+								$dom->nextGroupRID = $info[0]['sambanextgrouprid'][0];
+								if (isset($dom->RIDbase)) $dom->RIDbase = $info[0]['sambaalgorithmicridbase'][0];
+							}
+						}
+						$acc->smb_domain = $dom;
+					}
+					else $acc->smb_domain = chop(substr($line, 12, strlen($line)-12));
 					continue;
 				}
 			}

@@ -217,7 +217,7 @@ if ($_GET['type'] == "user") {
 		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
-	if ($_POST['smb_domain'] && eregi("^[a-z0-9_\\-]+$", $_POST['smb_domain'])) {
+	if ($_POST['smb_domain'] && is_string($_POST['smb_domain'])) {
 		$acct->smb_domain = $_POST['smb_domain'];
 	}
 	elseif ($_POST['smb_domain']) {
@@ -252,7 +252,7 @@ elseif ($_GET['type'] == "host") {
 		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
-	if ($_POST['smb_domain'] && eregi("^[a-z0-9_\\-]+$", $_POST['smb_domain'])) {
+	if ($_POST['smb_domain'] && is_string($_POST['smb_domain'])) {
 		$acct->smb_domain = $_POST['smb_domain'];
 	}
 	elseif ($_POST['smb_domain']) {
