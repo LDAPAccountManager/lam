@@ -14,7 +14,7 @@ Major-Changes:
 
 Package: ldap-account-manager
 Architecture: all
-Depends: php4 | php4-cgi, php4-ldap, apache | apache-ssl | httpd, perl, wwwconfig-common, debconf
+Depends: php4 | php4-cgi | libapache2-mod-php4, php4-ldap, apache | apache-ssl | httpd, perl, wwwconfig-common, debconf
 Recommends: php4-mhash
 Suggests: ldap-server, sudo, php4-mcrypt
 Conflicts: php4-apc
@@ -95,11 +95,22 @@ Templates:
   LAM will add an alias to your httpd.conf which allows you to
   access LAM at http(s)://localhost/lam. If you want an alias other than
   "lam" please specify it here.
+ .
+ Template: ldap-account-manager/passwd
+ Type: string
+ Default: lam
+ Description: Enter master configuration password (clear text):
+  The configuration profiles are secured by a master password.
+  You will need it to create and delete profiles. As default it is
+  set to "lam" and can be changed directly in LAM. But you can also
+  change it now.
 Config: bash
  db_subst "ldap-account-manager/webserver" "webserver" "Apache" || true
  db_input medium "ldap-account-manager/webserver" || true
  db_go
  db_input low "ldap-account-manager/alias" || true
+ db_go
+ db_input low "ldap-account-manager/passwd" || true
  db_go
 Preinst: bash
  if [ ! -d /var/lib/ldap-account-manager ]; then \
@@ -130,6 +141,9 @@ Postinst: bash
      alias="$RET"
 	 perl -pi -e "s/Alias \/.* \/usr\/share\/ldap-account-manager/Alias \/$alias \/usr\/share\/ldap-account-manager/g"\
          /etc/ldap-account-manager/apache.conf
+     db_get "ldap-account-manager/passwd"
+     passwd="$RET"
+	 perl -pi -e "s/password: .*/password: $passwd/g" /etc/ldap-account-manager/config.cfg
      db_get "ldap-account-manager/webserver"
      webserver="$RET"
      case "$webserver" in
