@@ -36,6 +36,17 @@ class sambaGroupMapping extends baseModule {
 	function sambaGroupMapping($scope) {
 		// load error messages
 		$this->load_errorMessages();
+		$this->rids = array(
+			_('Domain Admins') => 512,
+			_('Domain Users') => 513,
+			_('Domain Guests') => 514,
+			_('Domain Computers') => 515,
+			_('Domain Controllers') => 516,
+			_('Domain Certificate Admins') => 517,
+			_('Domain Schema Admins') => 518,
+			_('Domain Enterprise Admins') => 519,
+			_('Domain Policy Admins') => 520);
+
 		// call parent constructor
 		parent::baseModule($scope);
 	}
@@ -128,30 +139,44 @@ class sambaGroupMapping extends baseModule {
 			array(
 				'name' => 'sambaGroupMapping_domain',
 				'description' => _('Samba 3 domain name'),
-				'help' => 'TODO',
+				'help' => 'sambaDomainName',
 				'example' => _('domain1'),
 				'required' => true
 			),
 			array(
 				'name' => 'sambaGroupMapping_name',
 				'description' => _('Samba 3 display name'),
-				'help' => 'TODO',
+				'help' => 'displayName',
 				'example' => _('Domain administrators'),
 				'required' => false
 			),
 			array(
 				'name' => 'sambaGroupMapping_rid',
-				'description' => _('Samba 3 rid number'),
-				'help' => 'TODO',
+				'description' => _('Samba 3 RID number'),
+				'help' => 'rid',
 				'example' => 'DOMAIN_ADMINS',
 				'required' => false
 			)
 		);
 		$return['upload_preDepends'] = array('posixGroup');
 		// help Entries
-		$return['help'] = array (	'displayName'				=>	array ("ext" => "FALSE", "Headline" => _("Display name"), "Text" => _("Windows clients will show display name as group description.")),
-											'sambaSID'				=>	array ("ext" => "FALSE", "Headline" => _("Windows groupname"), "Text" => _("If you want to use a well known RID you can selcet a well known group.")),
-											'sambaDomainName'	=>	array ("ext" => "FALSE", "Headline" => _("Domain"), "Text" => _("Windows-Domain of group."). ' '. _("Can be left empty.")));
+		$return['help'] = array(
+			'displayName' => array(
+				"ext" => "FALSE",
+				"Headline" => _("Display name"),
+				"Text" => _("This is the group name which will be shown in Windows.")),
+			'sambaSID' => array(
+				"ext" => "FALSE",
+				"Headline" => _("Windows groupname"),
+				"Text" => _("If you want to use a well known RID you can selcet a well known group.")),
+			'rid' => array(
+				"ext" => "FALSE",
+				"Headline" => _("Samba RID number"),
+				"Text" => _("This is the relative ID (similar to UID on Unix) for Windows accounts. If you leave this empty LAM will calculate the RID from the UID. This can be either a number or the name of a special group:") . ' ' . implode(array_keys($this->rids))),
+			'sambaDomainName' => array(
+				"ext" => "FALSE",
+				"Headline" => _("Domain"),
+				"Text" => _("Windows-Domain name of group."). ' '. _("Can be left empty.")));
 		
 		return $return;
 	}
@@ -191,15 +216,6 @@ class sambaGroupMapping extends baseModule {
 			2 => array('kind' => 'help', 'value' => 'sambaDomainName' ));
 		return $return;
 	}
-
-
-	// Constructor
-	function init($base) {
-		// call parent init
-		parent::init($base);
-		$this->rids = array ( _('Domain Admins') => 512, _('Domain Users') => 513, _('Domain Guests') => 514, _('Domain Computers') => 515, _('Domain Controllers') => 516,
-			_('Domain Certificate Admins') => 517, _('Domain Schema Admins') => 518, _('Domain Enterprise Admins') => 519, _('Domain Policy Admins') => 520 );
-		}
 
 
 	/* This function loads all attributes into the object
