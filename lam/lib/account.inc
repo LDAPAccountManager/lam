@@ -957,7 +957,7 @@ function loaduser($dn) {
 	if (isset($attr['title'][0])) $return->personal_title = utf8_decode($attr['title'][0]);
 	if (isset($attr['mail'][0])) $return->personal_mail = utf8_decode($attr['mail'][0]);
 	if (isset($attr['telephoneNumber'][0])) $return->personal_telephoneNumber = utf8_decode($attr['telephoneNumber'][0]);
-	if (isset($attr['mobilemobileTelephoneNumber'][0])) $return->personal_mobileTelephoneNumber = utf8_decode($attr['mobilemobileTelephoneNumber'][0]);
+	if (isset($attr['mobileTelephoneNumber'][0])) $return->personal_mobileTelephoneNumber = utf8_decode($attr['mobileTelephoneNumber'][0]);
 		else 	if (isset($attr['mobile'][0])) $return->personal_mobileTelephoneNumber = utf8_decode($attr['mobile'][0]);
 	if (isset($attr['facsimileTelephoneNumber'][0])) $return->personal_facsimileTelephoneNumber = utf8_decode($attr['facsimileTelephoneNumber'][0]);
 	if (isset($attr['street'][0])) $return->personal_street = utf8_decode($attr['street'][0]);
@@ -1349,7 +1349,7 @@ function createuser($values, $uselamdaemon=true) {
 	if ($values->personal_title!='') $attr['title'] = utf8_encode($values->personal_title);
 	if ($values->personal_mail!='') $attr['mail'] = utf8_encode($values->personal_mail);
 	if ($values->personal_telephoneNumber!='') $attr['telephoneNumber'] = utf8_encode($values->personal_telephoneNumber);
-	if ($values->personal_mobileTelephoneNumber!='') $attr['mobilemobileTelephoneNumber'] = utf8_encode($values->personal_mobileTelephoneNumber);
+	if ($values->personal_mobileTelephoneNumber!='') $attr['mobileTelephoneNumber'] = utf8_encode($values->personal_mobileTelephoneNumber);
 	if ($values->personal_facsimileTelephoneNumber!='') $attr['facsimileTelephoneNumber'] = utf8_encode($values->personal_facsimileTelephoneNumber);
 	if ($values->personal_street!='') $attr['street'] = utf8_encode($values->personal_street);
 	if ($values->personal_postalCode!='') $attr['postalCode'] = utf8_encode($values->personal_postalCode);
@@ -1727,7 +1727,7 @@ function modifyuser($values,$values_old,$uselamdaemon=true) { // Will modify the
 	if (($values->personal_mobileTelephoneNumber != $values_old->personal_mobileTelephoneNumber) && ($values->personal_mobileTelephoneNumber!=''))
 		$attr['mobileTelephoneNumber'] = utf8_encode($values->personal_mobileTelephoneNumber);
 	if (($values->personal_mobileTelephoneNumber != $values_old->personal_mobileTelephoneNumber) && ($values->personal_mobileTelephoneNumber==''))
-		$attr_rem['mobilemobileTelephoneNumber'] = utf8_encode($values_old->personal_mobileTelephoneNumber);
+		$attr_rem['mobileTelephoneNumber'] = utf8_encode($values_old->personal_mobileTelephoneNumber);
 	if (($values->personal_facsimileTelephoneNumber != $values_old->personal_facsimileTelephoneNumber) && ($values->personal_facsimileTelephoneNumber!=''))
 		$attr['facsimileTelephoneNumber'] = utf8_encode($values->personal_facsimileTelephoneNumber);
 	if (($values->personal_facsimileTelephoneNumber != $values_old->personal_facsimileTelephoneNumber) && ($values->personal_facsimileTelephoneNumber==''))
