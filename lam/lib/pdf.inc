@@ -41,6 +41,12 @@ function createModulePDF($accounts,$account_type="") {
 		$_SESSION['pdf_structure'] = getStructure();
 	}
 	
+	// Get account type from account container if none was specified or
+	// if it is different to the submitted or previous stored
+	if($account_type == "" || $account_type != $accounts[0]->get_type()) {
+		$account_type = $accounts[0]->get_type();
+	}
+	
 	// The decimal separator must be a dot in order to write pdf-files
 	setlocale(LC_NUMERIC, "C");
 	
@@ -49,12 +55,6 @@ function createModulePDF($accounts,$account_type="") {
 	
 	// Loop over each account and add a new page in the PDF file for it 
 	foreach($accounts as $account) {
-		// Get account type from account container if none was specified or
-		// if it is different to the submitted or previous stored
-		if($account_type == "" || $account_type != $account->get_type()) {
-			$account_type = $account->get_type();
-		}
-		
 		// Get PDF structure from session
 		$structure = $_SESSION['pdf_structure'][$account_type];
 		
@@ -775,13 +775,13 @@ class lamPDF extends FPDF {
 		
 		// Decide which PDF file type we shall use
 		switch($account_type) {
-			case "User":
+			case "user":
 				$subject = _("User information page");
 				break;
-			case "Group":
+			case "group":
 				$subject = _("Group information page");
 				break;
-			case "Host":
+			case "host":
 				$subject = _("Samba-Host information page");
 				break;
 		}
