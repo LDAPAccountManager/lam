@@ -31,7 +31,7 @@ session_save_path('../sess');
 
 echo $_SESSION['account'];
 echo	'<html><head><title>';
-echo _('Create new Accounts');
+echo _('Create new accounts');
 echo '</title>'.
 	'<link rel="stylesheet" type="text/css" href="../style/layout.css">'.
 	'<meta http-equiv="pragma" content="no-cache">'.
@@ -94,25 +94,25 @@ switch ($select) {
 		break;
 	case 'detail':
 		echo '<tr><td>';
-		echo _('Surname*');
+		echo _('Surname').'*';
 		echo '</td>'."\n".'<td>'.
 			'<input name="f_general_surname" type="text" size="20" maxlength="20" value="' . $_SESSION['accounts'][$row]->general_surname . '">'.
 			'</td><td>'.
 			'<a href="help.php?HelpNumber=424" target="lamhelp">'._('Help').'</a>'.
 			'</td></tr>'."\n".'<tr><td>';
-		echo _('Given name*');
+		echo _('Given name').'*';
 		echo '</td>'."\n".'<td>'.
 			'<input name="f_general_givenname" type="text" size="20" maxlength="20" value="' . $_SESSION['accounts'][$row]->general_givenname . '">'.
 			'</td>'."\n".'<td>'.
 			'<a href="help.php?HelpNumber=425" target="lamhelp">'._('Help').'</a>'.
 			'</td></tr>'."\n".'<tr><td>';
-		echo _('Username*');
+		echo _('Username').'*';
 		echo "</td>\n<td>".
 			'<input name="f_general_username" type="text" size="20" maxlength="20" value="' . $_SESSION['accounts'][$row]->general_username . '">'.
 			'</td><td>'.
 			'<a href="help.php?HelpNumber=400" target="lamhelp">'._('Help').'</a>'.
 			'</td></tr>'."\n".'<tr><td>';
-		echo _('Primary group*');
+		echo _('Primary group').'*';
 		echo "</td>\n<td>".
 			'<input name="f_general_group" type="text" size="20" maxlength="20" value="' . $_SESSION['accounts'][$row]->general_group . '">'.
 			'</td><td>'.
@@ -124,7 +124,7 @@ switch ($select) {
 		echo $_SESSION['account']->general_surname . ' ' . $_SESSION['account']->general_givenname . '</td><td>'.
 			'<a href="help.php?HelpNumber=448" target="lamhelp">'._('Help').'</a>'.
 			'</td></tr>'."\n".'<tr><td>';
-		echo _('Employee Type');
+		echo _('Employee type');
 		echo '</td>'."\n".'<td>'.
 			'<input name="f_personal_employeeType" type="text" size="30" maxlength="30" value="' . $_SESSION['accounts'][$row]->personal_employeeType . '">'.
 			'</td><td>'.
@@ -148,25 +148,25 @@ switch ($select) {
 			'</td><td>'.
 			'<a href="help.php?HelpNumber=452" target="lamhelp">'._('Help').'</a>'.
 			'</td></tr>'."\n".'<tr><td>';
-		echo _('Telephone Number');
+		echo _('Telephone number');
 		echo '</td>'."\n".'<td>'.
 			'<input name="f_personal_telephoneNumber" type="text" size="30" maxlength="30" value="' . $_SESSION['accounts'][$row]->personal_telephoneNumber . '">'.
 			'</td><td>'.
 			'<a href="help.php?HelpNumber=453" target="lamhelp">'._('Help').'</a>'.
 			'</td></tr>'."\n".'<tr><td>';
-		echo _('Mobile Phonenumber');
+		echo _('Mobile number');
 		echo '</td>'."\n".'<td>'.
 			'<input name="f_personal_mobileTelephoneNumber" type="text" size="30" maxlength="30" value="' . $_SESSION['accounts'][$row]->personal_mobileTelephoneNumber . '">'.
 			'</td><td>'.
 			'<a href="help.php?HelpNumber=454" target="lamhelp">'._('Help').'</a>'.
 			'</td></tr>'."\n".'<tr><td>';
-		echo _('Facsimile Number');
+		echo _('Fax number');
 		echo '</td>'."\n".'<td>'.
 			'<input name="f_personal_facsimileTelephoneNumber" type="text" size="30" maxlength="30" value="' . $_SESSION['accounts'][$row]->personal_facsimileTelephoneNumber . '">'.
 			'</td><td>'.
 			'<a href="help.php?HelpNumber=455" target="lamhelp">'._('Help').'</a>'.
 			'</td></tr>'."\n".'<tr><td>';
-		echo _('eMail Address');
+		echo _('eMail address');
 		echo '</td>'."\n".'<td>'.
 			'<input name="f_personal_mail" type="text" size="30" maxlength="30" value="' . $_SESSION['accounts'][$row]->personal_mail . '">'.
 			'</td><td>'.

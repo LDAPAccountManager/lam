@@ -731,7 +731,7 @@ switch ($select_local) { // Select which part of page will be loaded
 				echo '></td>'."\n".'<td>'.
 					'<a href="help.php?HelpNumber=426" target="lamhelp">'._('Help').'</a>'.
 					'</td></tr>'."\n".'<tr><td>';
-				echo _('Password does not expire.');
+				echo _('Password does not expire');
 				echo '</td>'."\n".'<td><input name="f_smb_flagsX" type="checkbox"';
 				if ($_SESSION['account']->smb_flagsX) echo ' checked ';
 				echo '></td>'."\n".'<td>'.
