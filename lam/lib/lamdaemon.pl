@@ -68,9 +68,6 @@ sub get_fs { # Load mountpoints from mtab if enabled quotas
 	}
 
 # ***************** Check values
-
-
-
 if ($( == 0 ) {
 	# Drop root Previleges
 	($<, $>) = ($>, $<);
@@ -187,9 +184,8 @@ else {
 	@username = split (',', $ARGV[0]);
 	$username[0] =~ s/uid=//;
 	my $ssh = Net::SSH::Perl->new($hostname, options=>[
-		#"IdentityFile /var/lib/wwwrun/.ssh/id_dsa",
-		"UserKnownHostsFile /dev/null"
-		]);
+	    "UserKnownHostsFile /dev/null"
+	    ]);
 	$ssh->login($username[0], $ARGV[1]);
 	($stdout, $stderr, $exit) = $ssh->cmd("sudo $remotepath @ARGV");
 	print "$stdout";

@@ -172,12 +172,7 @@ echo '</title>'.
 	'<meta http-equiv="pragma" content="no-cache">'.
 	'<meta http-equiv="cache-control" content="no-cache">'.
 	'</head><body>'.
-	'<form enctype="multipart/form-data" action="massdetail.php" method="post">'.
-	'<table class="massdetail" width="100%">';
-// Store variabled in $_POST
-echo '<tr><td><input name="type" type="hidden" value="'.$select.'"></td></tr>';
-echo '<tr><td><input name="row" type="hidden" value="'.$row.'"></td></tr>';
-
+	'<form enctype="multipart/form-data" action="massdetail.php" method="post">';
 // Display errir-messages
 if (is_array($errors2))
 	for ($i=0; $i<sizeof($errors2); $i++) StatusMessage($errors2[$i][0], $errors2[$i][1], $errors2[$i][2]);
@@ -207,6 +202,10 @@ switch ($select) {
 				StatusMessage('WARN', _('Check values.'), $_SESSION['errors'][$row][$i][2]);
 		break;
 	case 'detail':
+		echo '<table class="massdetail" width="100%">';
+		// Store variabled in $_POST
+		echo '<tr><td><input name="type" type="hidden" value="'.$select.'"></td></tr>';
+		echo '<tr><td><input name="row" type="hidden" value="'.$row.'"></td></tr>';
 		echo '<tr><td>';
 		echo _('Surname').'*';
 		echo '</td>'."\n".'<td>'.

@@ -48,21 +48,14 @@ thins to get it work.
      "OPTIMIZE = -O1 --pipe".
    * run make
    * run make install
-   
-4. Set up ssh
-   The ssh connection is done to remote hast as the user your
-   webserver is running as. In my case it's wwwrun.
-   You have to connect one time to remote host because in most
-   cases the host key has to added.
-   This can be done by connecting to remote host and confirm the
-   question about host authenticity.
-   Example (as root):
-   su wwwrun
-   ssh -l $admin-user $remotehost
-   Confirm all questions.
-   Exit the connection and connect again. You shouldn't be asked
-   about enything.  
 
+4. Set up ssh
+   On my System, Suse 9.0 I had to set usePAM no in /etc/ssh/sshd_config
+   to get lamdaemon.pl work
+   I had some problems to log in with ssh if the password hash of the
+   admin-user was encrypted with {SSHA}. I had to change encryption
+   for admin-accounts to {CRYPT} to get ssh work.
+   
 Now everything should work fine
 
 This is a very incomplete Documention for Alpha-Release only.

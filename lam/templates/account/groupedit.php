@@ -345,7 +345,7 @@ do { // X-Or, only one if() can be true
 			$errors[] = array('INFO', _('GID-number has changed. You have to run the following command as root in order to change existing file-permissions:'),
 			'find / -gid ' . $account_old->general_uidNumber . ' -exec chgrp ' . $account_new->general_uidNumber . ' {} \;');
 		// Go from final to next page if no error did ocour
-		if (!$stay)) $select_local='final';
+		if (!$stay) $select_local='final';
 			else $select_local=$_POST['select'];
 		break;
 		}

@@ -203,14 +203,16 @@ function getquotas($type,$user='+') {
 	$ldap_q = $_SESSION['ldap']->decrypt();
 	/* $towrite has the following syntax:
 	* admin-username, admin-password, account with quotas, 'quota', operation='get', type=user|group
+	* use escapeshellarg to make exec() shell-safe
 	*/
-	$towrite = $ldap_q[0].' '.$ldap_q[1].' '.$user.' quota get ';
+	$towrite = escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]).' '.escapeshellarg($user).' quota get ';
 	if ($type=='user') $towrite = $towrite.'u';
 	 else $towrite = $towrite.'g';
 	/* scriptServer is the IP to remote-host to which lam should connect via ssh
 	* scriptPath is Path to lamdaemon.pl on remote system
 	*/
-	exec("perl ".$_SESSION['lampath']."lib/lamdaemon.pl ".$_SESSION['config']->scriptServer ." ".$_SESSION['config']->scriptPath." ".$towrite, $vals, $status);
+	exec("perl ".escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." ".$towrite, $vals, $status);
+	print("perl ".escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." ".$towrite);
 	/* $vals is a string which contains a two dimensional array.
 	* We have to recreate it with explode
 	*
@@ -244,8 +246,9 @@ function setquotas($values,$values_old=false) {
 	$ldap_q = $_SESSION['ldap']->decrypt();
 	/* $towrite has the following syntax:
 	* admin-username, admin-password, account with quotas, 'quota', operation='set', type=user|group
+	* use escapeshellarg to make exec() shell-safe
 	*/
-	$towrite = $ldap_q[0].' '.$ldap_q[1].' '.$values->general_username.' quota set ';
+	$towrite = escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]).' '.escapeshellarg($values->general_username).' quota set ';
 	if ($values->type=='user') $towrite = $towrite.'u ';
 	 else $towrite = $towrite.'g ';
 	$i=0;
@@ -260,16 +263,17 @@ function setquotas($values,$values_old=false) {
 	*/
 	while ($values->quota[$i][0]) {
 		if ($values->quota[$i] != $values_old->quota[$i]) {
-			$towrite = $towrite. $values->quota[$i][0] .','.$values->quota[$i][2] .','.$values->quota[$i][3]
+			$quotastring = $quotastring. $values->quota[$i][0] .','.$values->quota[$i][2] .','.$values->quota[$i][3]
 			.','.$values->quota[$i][6] .','. $values->quota[$i][7] .':';
 			}
 		$i++;
 		}
+	$towrite = $towrite . escapeshellarg($quotastring);
 	/* scriptServer is the IP to remote-host to which lam should connect via ssh
 	* scriptPath is Path to lamdaemon.pl on remote system
 	* only run lamdaemon.pl if quotas are really set, $i!=0
 	*/
-	if ($i!=0) exec(("perl ".$_SESSION['lampath']."lib/lamdaemon.pl ".$_SESSION['config']->scriptServer ." ".$_SESSION['config']->scriptPath." ".$towrite), $vals);
+	if ($i!=0) exec(("perl ".escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." ".$towrite), $vals);
 	}
 
 
@@ -283,14 +287,15 @@ function remquotas($user, $type) {
 	$ldap_q = $_SESSION['ldap']->decrypt();
 	/* $towrite has the following syntax:
 	* admin-username, admin-password, account with quotas, 'quota', operation='rem', type=user|group
+	* use escapeshellarg to make exec() shell-safe
 	*/
-	$towrite = $ldap_q[0].' '.$ldap_q[1].' '.$user.' quota rem ';
+	$towrite = escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]).' '.escapeshellarg($user).' quota rem ';
 	if ($type=='user') $towrite = $towrite.'u ';
 	 else $towrite = $towrite.'g ';
 	/* scriptServer is the IP to remote-host to which lam should connect via ssh
 	* scriptPath is Path to lamdaemon.pl on remote system
 	*/
-	exec(("perl ".$_SESSION['lampath']."lib/lamdaemon.pl ".$_SESSION['config']->scriptServer ." ".$_SESSION['config']->scriptPath." ".$towrite), $vals);
+	exec(("perl ".escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." ".$towrite), $vals);
 	}
 
 
@@ -304,12 +309,13 @@ function addhomedir($user) {
 	$ldap_q = $_SESSION['ldap']->decrypt();
 	/* $towrite has the following syntax:
 	* admin-username, admin-password, owner of homedir, 'home', operation='add'
+	* use escapeshellarg to make exec() shell-safe
 	*/
-	$towrite = $ldap_q[0].' '.$ldap_q[1].' '.$user.' home add';
+	$towrite = escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]).' '.escapeshellarg($user).' home add';
 	/* scriptServer is the IP to remote-host to which lam should connect via ssh
 	* scriptPath is Path to lamdaemon.pl on remote system
 	*/
-	exec(("perl ".$_SESSION['lampath']."lib/lamdaemon.pl ".$_SESSION['config']->scriptServer ." ".$_SESSION['config']->scriptPath." ".$towrite), $vals);
+	exec(("perl ".escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." ".$towrite), $vals);
 	}
 
 
@@ -325,12 +331,13 @@ function remhomedir($user) {
 	$ldap_q = $_SESSION['ldap']->decrypt();
 	/* $towrite has the following syntax:
 	* admin-username, admin-password, owner of homedir, 'home', operation='rem'
+	* use escapeshellarg to make exec() shell-safe
 	*/
-	$towrite = $ldap_q[0].' '.$ldap_q[1].' '.$user.' home rem';
+	$towrite = escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]).' '.escapeshellarg($user).' home rem';
 	/* scriptServer is the IP to remote-host to which lam should connect via ssh
 	* scriptPath is Path to lamdaemon.pl on remote system
 	*/
-	exec(("perl ".$_SESSION['lampath']."lib/lamdaemon.pl ".$_SESSION['config']->scriptServer ." ".$_SESSION['config']->scriptPath." ".$towrite), $vals);
+	exec(("perl ".escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." ".$towrite), $vals);
 	}
 
 
@@ -1087,9 +1094,10 @@ function createuser($values) {
 			$attr['sambaLMPassword'] = 'NO PASSWORD*****';
 			}
 		else {
+			// use escapeshellarg() to make command shell-secure
 			// Set samba-passwords with external perl-script
-			$attr['sambaNTPassword'] = exec(($_SESSION['lampath'].'lib/createntlm.pl nt ' . $values->smb_password));
-			$attr['sambaLMPassword'] = exec(($_SESSION['lampath'].'lib/createntlm.pl lm ' . $values->smb_password));
+			$attr['sambaNTPassword'] = exec(escapeshellarg($_SESSION['lampath'].'lib/createntlm.pl')." nt ".escapeshellarg($values->smb_password));
+			$attr['sambaLMPassword'] = exec(escapeshellarg($_SESSION['lampath'].'lib/createntlm.pl')." lm ".escapeshellarg($values->smb_password));
 			}
 		$attr['sambaPwdLastSet'] = time();
 		// Generate SID
@@ -1118,9 +1126,10 @@ function createuser($values) {
 			$attr['lmPassword'] = 'NO PASSWORD*****';
 			}
 		else {
+			// use escapeshellarg() to make command shell-secure
 			// Set samba-passwords with external perl-script
-			$attr['ntPassword'] = exec(($_SESSION['lampath'].'lib/createntlm.pl nt ' . $values->smb_password));
-			$attr['lmPassword'] = exec(($_SESSION['lampath'].'lib/createntlm.pl lm ' . $values->smb_password));
+			$attr['ntPassword'] = exec(escapeshellarg($_SESSION['lampath'].'lib/createntlm.pl')." nt ".escapeshellarg($values->smb_password));
+			$attr['lmPassword'] = exec(escapeshellarg($_SESSION['lampath'].'lib/createntlm.pl')." lm ".escapeshellarg($values->smb_password));
 			}
 		$attr['pwdLastSet'] = time();
 		// Generate pseudo SID
@@ -1286,7 +1295,7 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 		$attr_rem['shadowInactive'] = $values_old->unix_pwdallowlogin; // shadowAccount_may
 		}
 	// Check if shadow expire has changed
-	if ($values->unix_pwdexpire != $values_old->unix_pwdexpire) $attr['shadowExpire'] = $values->unix_pwdexpire / 86400 ;
+	if ($values->unix_pwdexpire != $values_old->unix_pwdexpire) $attr['shadowExpire'] = intval($values->unix_pwdexpire / 86400) ;
 	// Set unix password
 	if ($values->unix_password=='') {
 		// $values->unix_password=='' means use old password
@@ -1390,9 +1399,10 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 			}
 		 else
 			if ($values->smb_password!='') {
-				// Set new samba password
-				$attr['sambaNTPassword'] = exec(($_SESSION['lampath'].'lib/createntlm.pl nt ' . $values->smb_password));
-				$attr['sambaLMPassword'] = exec(($_SESSION['lampath'].'lib/createntlm.pl lm ' . $values->smb_password));
+				// use escapeshellarg() to make command shell-secure
+				// Set samba-passwords with external perl-script
+				$attr['sambaNTPassword'] = exec(escapeshellarg($_SESSION['lampath'].'lib/createntlm.pl')." nt ".escapeshellarg($values->smb_password));
+				$attr['sambaLMPassword'] = exec(escapeshellarg($_SESSION['lampath'].'lib/createntlm.pl')." lm ".escapeshellarg($values->smb_password));
 				$attr['sambaPwdLastSet'] = time(); // sambaAccount_may
 				}
 		// Check which Samba-Attributes have changed
@@ -1477,9 +1487,10 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 			}
 		 else
 			if ($values->smb_password!='') {
-				// Set new samba password
-				$attr['ntPassword'] = exec(($_SESSION['lampath'].'lib/createntlm.pl nt ' . $values->smb_password));
-				$attr['lmPassword'] = exec(($_SESSION['lampath'].'lib/createntlm.pl lm ' . $values->smb_password));
+				// use escapeshellarg() to make command shell-secure
+				// Set samba-passwords with external perl-script
+				$attr['ntPassword'] = exec(escapeshellarg($_SESSION['lampath'].'lib/createntlm.pl')." nt ".escapeshellarg($values->smb_password));
+				$attr['lmPassword'] = exec(escapeshellarg($_SESSION['lampath'].'lib/createntlm.pl')." lm ".escapeshellarg($values->smb_password));
 				$attr['pwdLastSet'] = time(); // sambaAccount_may
 				}
 		// Check which Samba-Attributes have changed
