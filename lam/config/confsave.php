@@ -41,13 +41,8 @@ if ($passwd != $conf->get_Passwd()) {
 echo ("<p align=\"center\"><a href=\"http://lam.sf.net\" target=\"new_window\"><img src=\"../graphics/banner.jpg\" border=1></a></p><hr><br><br>");
 
 // check new preferences
-if (chop($host) == "") {
-	echo _("<font color=\"red\"><b>" . _("Hostname is empty!") . "</b></font>");
-	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
-	exit;
-}
-if (chop($port) == "") {
-	echo _("<font color=\"red\"><b>" . _("Portnumber is empty!") . "</b></font>");
+if (chop($serverurl) == "") {
+	echo _("<font color=\"red\"><b>" . _("Server Address is empty!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
@@ -96,16 +91,6 @@ if (chop($maxMach) == "") {
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
-if (chop($defShell) == "") {
-	echo _("<font color=\"red\"><b>" . _("Default shell is empty!") . "</b></font>");
-	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
-	exit;
-}
-if (chop($shellList) == "") {
-	echo _("<font color=\"red\"><b>" . _("Shell list is empty!") . "</b></font>");
-	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
-	exit;
-}
 if (chop($usrlstattr) == "") {
 	echo _("<font color=\"red\"><b>" . _("No attributes in user list!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
@@ -123,11 +108,8 @@ if (chop($hstlstattr) == "") {
 }
 
 // set new preferences
-$conf->set_Host($host);
-$conf->set_Port($port);
+$conf->set_ServerURL($serverurl);
 $conf->set_Adminstring($admins);
-if ($ssl == "on") $conf->set_SSL("True");
-else $conf->set_SSL("False");
 $conf->set_UserSuffix($suffusers);
 $conf->set_GroupSuffix($suffgroups);
 $conf->set_HostSuffix($suffhosts);
@@ -137,8 +119,6 @@ $conf->set_minGID($minGID);
 $conf->set_maxGID($maxGID);
 $conf->set_minMachine($minMach);
 $conf->set_maxMachine($maxMach);
-$conf->set_defaultShell($defShell);
-$conf->set_shellList($shellList);
 $conf->set_userlistAttributes($usrlstattr);
 $conf->set_grouplistAttributes($grplstattr);
 $conf->set_hostlistAttributes($hstlstattr);

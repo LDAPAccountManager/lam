@@ -28,16 +28,9 @@ $Id$
 
 class Config {
 
-	// string: can be "True" or "False"
-	//         use SSL-connection?
-	var $SSL;
-	
-	// string: hostname
-	var $Host;
-	
-	// string: port number
-	var $Port;
-	
+	// server address (e.g. ldap://127.0.0.1:389)
+	var $ServerURL;
+
 	// array of strings: users with admin rights
 	var $Admins;
 	
@@ -69,10 +62,6 @@ class Config {
 	var $grouplistAttributes;
 	var $hostlistAttributes;
 
-	// default shell and list of possible shells
-	var $DefaultShell;
-	var $ShellList;
-
 	// constructor, loads preferences from ../lam.conf
 	function Config() {
 		$this->reload();
@@ -87,16 +76,8 @@ class Config {
 				$line = fgets($file, 1024);
 				if (($line == "\n")||($line[0] == "#")) continue; // ignore comments
 				// search keywords
-				if (substr($line, 0, 5) == "ssl: ") {
-					$this->SSL = chop(substr($line, 5, strlen($line)-5));
-					continue;
-				}
-				if (substr($line, 0, 6) == "host: ") {
-					$this->Host = chop(substr($line, 6, strlen($line)-6));
-					continue;
-				}
-				if (substr($line, 0, 6) == "port: ") {
-					$this->Port = chop(substr($line, 6, strlen($line)-6));
+				if (substr($line, 0, 11) == "serverURL: ") {
+					$this->ServerURL = chop(substr($line, 11, strlen($line)-11));
 					continue;
 				}
 				if (substr($line, 0, 8) == "passwd: ") {
@@ -145,14 +126,6 @@ class Config {
 					$this->MaxMachine = chop(substr($line, 12, strlen($line)-12));
 					continue;
 				}
-				if (substr($line, 0, 14) == "defaultShell: ") {
-					$this->DefaultShell = chop(substr($line, 14, strlen($line)-14));
-					continue;
-				}
-				if (substr($line, 0, 11) == "shellList: ") {
-					$this->ShellList = chop(substr($line, 11, strlen($line)-11));
-					continue;
-				}
 				if (substr($line, 0, 20) == "userlistAttributes: ") {
 					$this->userlistAttributes = chop(substr($line, 20, strlen($line)-20));
 					continue;
@@ -178,9 +151,9 @@ class Config {
 		$conffile = "../lam.conf";
 		if (is_file($conffile) == True) {
 			// booleans to check if value was already saved
-			$save_ssl = $save_host = $save_port = $save_passwd = $save_admins = $save_suffusr = $save_suffgrp = $save_suffhst =
-				$save_minUID = $save_maxUID = $save_minGID = $save_maxGID = $save_minMach = $save_maxMach = $save_defShell =
-				$save_shellList = $save_usrlstatrr =  $save_grplstatrr = $save_hstlstatrr = False;
+			$save_serverURL = $save_passwd = $save_admins = $save_suffusr = $save_suffgrp = $save_suffhst =
+				$save_minUID = $save_maxUID = $save_minGID = $save_maxGID = $save_minMach = $save_maxMach =
+				$save_usrlstatrr =  $save_grplstatrr = $save_hstlstatrr = False;
 			$file = fopen($conffile, "r");
 			$file_array = array();
 			while (!feof($file)) {
@@ -190,19 +163,9 @@ class Config {
 			for ($i = 0; $i < sizeof($file_array); $i++) {
 				if (($file_array[$i] == "\n")||($file_array[$i][0] == "#")) continue; // ignore comments
 				// search for keywords
-				if (substr($file_array[$i], 0, 5) == "ssl: ") {
-					$file_array[$i] = "ssl: " . $this->SSL . "\n";
-					$save_ssl = True;
-					continue;
-				}
-				if (substr($file_array[$i], 0, 6) == "host: ") {
-					$file_array[$i] = "host: " . $this->Host . "\n";
-					$save_host = True;
-					continue;
-				}
-				if (substr($file_array[$i], 0, 6) == "port: ") {
-					$file_array[$i] = "port: " . $this->Port . "\n";
-					$save_port = True;
+				if (substr($file_array[$i], 0, 11) == "serverURL: ") {
+					$file_array[$i] = "serverURL: " . $this->ServerURL . "\n";
+					$save_serverURL = True;
 					continue;
 				}
 				if (substr($file_array[$i], 0, 8) == "passwd: ") {
@@ -260,16 +223,6 @@ class Config {
 					$save_maxMach = True;
 					continue;
 				}
-				if (substr($file_array[$i], 0, 14) == "defaultShell: ") {
-					$file_array[$i] = "defaultShell: " . $this->DefaultShell . "\n";
-					$save_defShell = True;
-					continue;
-				}
-				if (substr($file_array[$i], 0, 11) == "shellList: ") {
-					$file_array[$i] = "shellList: " . $this->ShellList . "\n";
-					$save_shellList = True;
-					continue;
-				}
 				if (substr($file_array[$i], 0, 20) == "userlistAttributes: ") {
 					$file_array[$i] = "userlistAttributes: " . $this->userlistAttributes . "\n";
 					$save_usrlstattr = True;
@@ -287,11 +240,9 @@ class Config {
 				}
 			}
 			// check if we have to add new entries (e.g. if user upgraded LAM and has an old lam.conf)
-			if (!$save_ssl == True) array_push($file_array, "\n\n# use SSL to connect, can be True or False\n" . "ssl: " . $this->SSL);
-			if (!$save_host == True) array_push($file_array, "\n\n# hostname of LDAP server (e.g localhost)\n" . "host: " . $this->Host);
-			if (!$save_port == True) array_push($file_array, "\n\n# portnumber of LDAP server (default 389)\n" . "port: " . $this->Port);
+			if (!$save_serverURL == True) array_push($file_array, "\n\n# server address (e.g. ldap://localhost:389 or ldaps://localhost:636)\n" . "serverURL: " . $this->ServerURL);
 			if (!$save_passwd == True) array_push($file_array, "\n\n# password to change these preferences via webfrontend\n" . "passwd: " . $this->Passwd);
-			if (!$save_admins == True) array_push($file_array, "\n\n# list of users who are allowed to use LDAP Account Manager\n" . 
+			if (!$save_admins == True) array_push($file_array, "\n\n# list of users who are allowed to use LDAP Account Manager\n" .
 				"# names have to be seperated by semicolons\n" . 
 				"# e.g. admins: cn=admin,dc=yourdomain,dc=org;cn=root,dc=yourdomain,dc=org\n" . "admins: " . $this->Admins);
 			if (!$save_suffusr == True) array_push($file_array, "\n\n# suffix of users\n" . 
@@ -306,8 +257,6 @@ class Config {
 			if (!$save_maxGID == True) array_push($file_array, "\n\n# maximum GID number\n" . "maxGID: " . $this->MaxGID);
 			if (!$save_minMach == True) array_push($file_array, "\n\n# minimum UID number for Samba hosts\n" . "minMachine: " . $this->MinMachine);
 			if (!$save_maxMach == True) array_push($file_array, "\n\n# maximum UID number for Samba hosts\n" . "maxMachine: " . $this->MaxMachine);
-			if (!$save_defShell == True) array_push($file_array, "\n\n# default shell when creating new user\n" . "defaultShell: " . $this->DefaultShell);
-			if (!$save_shellList == True) array_push($file_array, "\n\n# list of possible shells\n# values have to be seperated by semicolons\n" . "shellList: " . $this->ShellList);
 			if (!$save_usrlstattr == True) array_push($file_array, "\n\n# list of attributes to show in user list\n# entries can either be predefined values (e.g. '#cn' or '#uid')" .
 			"\n# or individual ones (e.g. 'uid:User ID' or 'host:Host Name')\n# values have to be seperated by semicolons\n" . "userlistAttributes: " . $this->userlistAttributes);
 			if (!$save_grplstattr == True) array_push($file_array, "\n\n# list of attributes to show in group list\n# entries can either be predefined values (e.g. '#cn' or '#gidNumber')" .
@@ -328,9 +277,7 @@ class Config {
 
 	// prints current preferences
 	function printconf() {
-		echo _("<b>SSL: </b>" ) . $this->SSL . "<br>";
-		echo _("<b>Host: </b>") . $this->Host . "<br>";
-		echo _("<b>Port: </b>") . $this->Port . "<br>";
+		echo _("<b>ServerURL: </b>") . $this->ServerURL . "<br>";
 		echo _("<b>Admins: </b>") . $this->Adminstring . "<br>";
 		echo _("<b>UserSuffix: </b>") . $this->Suff_users . "<br>";
 		echo _("<b>GroupSuffix: </b>") . $this->Suff_groups . "<br>";
@@ -343,44 +290,20 @@ class Config {
 		echo _("<b>maxMachine: </b>") . $this->MaxMachine . "<br>";
 		echo _("<b>userlistAttributes: </b>") . $this->userlistAttributes . "<br>";
 		echo _("<b>grouplistAttributes: </b>") . $this->grouplistAttributes . "<br>";
-		echo _("<b>hostlistAttributes: </b>") . $this->hostlistAttributes . "<br>";
-		echo _("<b>Default Shell: </b>") . $this->DefaultShell . "<br>";
-		echo _("<b>Shell list: </b>") . $this->ShellList;
+		echo _("<b>hostlistAttributes: </b>") . $this->hostlistAttributes;
 	}
 
 // functions to read/write preferences
 	
-	// returns a string that can be "True" or "False"
-	function get_SSL() {
-		return $this->SSL;
+	// returns the server address as string
+	function get_ServerURL() {
+		return $this->ServerURL;
 	}
-	
-	// accepts only strings that are either "True" or "False"
-	function set_SSL($value) {
-		if (($value == "True") || ($value == "False")) $this->SSL = $value;
-		else echo _("Config->set_SSL failed!");
-	}
-	
-	// returns the hostname
-	function get_Host() {
-		return $this->Host;
-	}
-	
-	// sets the hostname
-	function set_Host($value) {
-		if (is_string($value)) $this->Host = $value;
-		else echo _("Config->set_Host failed!");
-	}
-	
-	// returns the port number as string
-	function get_Port() {
-		return $this->Port;
-	}
-	
-	// sets the portnumber
-	function set_Port($value) {
-		if (is_numeric($value)) $this->Port = $value;
-		else echo _("Config->set_Port failed!");
+
+	// sets the server address
+	function set_ServerURL($value) {
+		if (is_string($value)) $this->ServerURL = $value;
+		else echo _("Config->set_ServerURL failed!");
 	}
 	
 	// returns an array of string with all admin names
@@ -527,28 +450,6 @@ class Config {
 		else echo _("Config->set_maxMachine failed!");
 	}
 	
-	// returns the default shell to use when creating new users
-	function get_defaultShell() {
-	return $this->DefaultShell;
-	}
-	
-	// sets the default shell to use when creating new users
-	function set_defaultShell($value) {
-		if (is_string($value)) $this->DefaultShell = $value;
-		else echo _("Config->set_shellList failed!");
-	}
-
-	// returns a list of possible shells when creating new users
-	function get_shellList() {
-	return $this->ShellList;
-	}
-
-	// sets the list of possible shells when creating new users
-	function set_shellList($value) {
-		if (is_string($value)) $this->ShellList = $value;
-		else echo _("Config->set_shellList failed!");
-	}
-
 	// returns the list of attributes to show in user list
 	function get_userlistAttributes() {
 	return $this->userlistAttributes;
