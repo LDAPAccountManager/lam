@@ -59,8 +59,6 @@ if ($_POST['back'] || $_POST['submitconf'] || $_POST['editmodules']){
 		$_SESSION['conf_suffdomains'] = $_POST['suffdomains'];
 		$_SESSION['conf_minUID'] = $_POST['minUID'];
 		$_SESSION['conf_maxUID'] = $_POST['maxUID'];
-		$_SESSION['conf_minGID'] = $_POST['minGID'];
-		$_SESSION['conf_maxGID'] = $_POST['maxGID'];
 		$_SESSION['conf_minMach'] = $_POST['minMach'];
 		$_SESSION['conf_maxMach'] = $_POST['maxMach'];
 		$_SESSION['conf_usrlstattr'] = $_POST['usrlstattr'];
@@ -131,8 +129,6 @@ if ($_GET["modulesback"] == "true") {
 	$conf->set_DomainSuffix($_SESSION['conf_suffdomains']);
 	$conf->set_minUID($_SESSION['conf_minUID']);
 	$conf->set_maxUID($_SESSION['conf_maxUID']);
-	$conf->set_minGID($_SESSION['conf_minGID']);
-	$conf->set_maxGID($_SESSION['conf_maxGID']);
 	$conf->set_minMachine($_SESSION['conf_minMach']);
 	$conf->set_maxMachine($_SESSION['conf_maxMach']);
 	$conf->set_userlistAttributes($_SESSION['conf_usrlstattr']);
@@ -314,16 +310,6 @@ echo ("<td align=\"right\"><b>" . _("Maximum UID number") . " *: </b>".
 	"<input size=6 type=\"text\" name=\"maxUID\" value=\"" . $conf->get_maxUID() . "\"></td>\n");
 // UID text
 echo ("<td><a href=\"../help.php?HelpNumber=203\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
-// minGID
-echo ("<tr><td align=\"right\"><b>".
-	_("Minimum GID number") . " *: </b>".
-	"<input size=6 type=\"text\" name=\"minGID\" value=\"" . $conf->get_minGID() . "\"></td>\n");
-echo "<td>&nbsp;&nbsp;&nbsp;</td>\n";
-// maxGID
-echo ("<td align=\"right\"><b>" . _("Maximum GID number")." *: </b>".
-	"<input size=6 type=\"text\" name=\"maxGID\" value=\"" . $conf->get_maxGID() . "\"></td>\n");
-// GID text
-echo ("<td><a href=\"../help.php?HelpNumber=204\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 // minMach
 echo ("<tr><td align=\"right\"><b>".
 	_("Minimum Machine number") . " **: </b>".

@@ -55,6 +55,18 @@ $Id$
 class posixGroup extends baseModule {
 
 	/**
+	* Creates a new posixGroup object.
+	*/
+	function posixGroup($scope) {
+	// error messages for input checks
+	$this->messages['minGID'] = array('ERROR', _('Minimum GID number'), _('Minimum GID number is invalid or empty!'));
+	$this->messages['maxGID'] = array('ERROR', _('Maximum GID number'), _('Maximum GID number is invalid or empty!'));
+	$this->messages['cmpGID'] = array('ERROR', _('Maximum GID number'), _('Maximum GID number must be greater than minimum GID number!'));
+	// call parent constructor
+	parent::baseModule($scope);
+	}
+
+	/**
 	* Returns meta data that is interpreted by parent class
 	*
 	* @return array array with meta data
@@ -73,6 +85,31 @@ class posixGroup extends baseModule {
 		$return["alias"] = _('Unix');
 		// module dependencies
 		$return['dependencies'] = array('depends' => array(), 'conflicts' => array('inetOrgPerson', 'account', 'sambaDomain'));
+		// configuration options
+		$return['config_options']['group'] = array(
+			array(
+				0 => array('kind' => 'text', 'text' => '<b>' . _('Minimum GID number') . " *: </b>"),
+				1 => array('kind' => 'input', 'name' => 'posixGroup_minGID', 'type' => 'text', 'size' => '10', 'maxlength' => '255'),
+				2 => array('kind' => 'text', 'value' => '&nbsp;'),
+				3 => array('kind' => 'text', 'text' => '<b>' . _('Maximum GID number') . " *: </b>"),
+				4 => array('kind' => 'input', 'name' => 'posixGroup_maxGID', 'type' => 'text', 'size' => '10', 'maxlength' => '255'),
+				5 => array('kind' => 'help', 'value' => 'TODO'))
+		);
+		// configuration descriptions
+		$return['config_descriptions'] = array(
+			'legend' => _("GID ranges for Unix groups"),
+			'descriptions' => array(
+				'posixGroup_minGID' => "Minimum GID number for Unix groups",
+				'posixGroup_maxGID' => "Maximum GID number for Unix groups",
+			)
+		);
+		// configuration checks
+		$return['config_checks']['group']['posixGroup_minGID'] = array('type' => 'regex', 'regex' => '^[0-9]+$',
+			'required' => true, 'required_message' => $this->messages['minGID'], 'error_message' => $this->messages['minGID']);
+		$return['config_checks']['group']['posixGroup_maxGID'] = array('type' => 'regex', 'regex' => '^[0-9]+$',
+			'required' => true, 'required_message' => $this->messages['maxGID'], 'error_message' => $this->messages['maxGID']);
+		$return['config_checks']['group']['cmpGID'] = array('type' => 'int_greater', 'cmp_name1' => 'posixGroup_maxGID',
+			'cmp_name2' => 'posixGroup_minGID', 'error_message' => $this->messages['cmpGID']);
 		return $return;
 	}
 
@@ -357,8 +394,8 @@ class posixGroup extends baseModule {
 
 			// Check if UID is valid. If none value was entered, the next useable value will be inserted
 			// load min and may uidNumber
-			$minID = intval($_SESSION[$_SESSION[$this->base]->config]->get_minGID());
-			$maxID = intval($_SESSION[$_SESSION[$this->base]->config]->get_maxGID());
+			$minID = intval($this->moduleSettings['posixGroup_minGID'][0]);
+			$maxID = intval($this->moduleSettings['posixGroup_maxGID'][0]);
 			$dn_gids = $_SESSION[$_SESSION[$this->base]->cache]->get_cache('gidNumber', 'posixGroup', '*');
 			// get_cache will return an array ( dn1 => array(uidnumber1), dn2 => array(uidnumber2), ... )
 			foreach ($dn_gids as $gid) $gids[] = $gid[0];

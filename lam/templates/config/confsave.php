@@ -54,8 +54,6 @@ $suffhosts = $_SESSION['conf_suffhosts'];
 $suffdomains = $_SESSION['conf_suffdomains'];
 $minUID = $_SESSION['conf_minUID'];
 $maxUID = $_SESSION['conf_maxUID'];
-$minGID = $_SESSION['conf_minGID'];
-$maxGID = $_SESSION['conf_maxGID'];
 $minMach = $_SESSION['conf_minMach'];
 $maxMach = $_SESSION['conf_maxMach'];
 $usrlstattr = $_SESSION['conf_usrlstattr'];
@@ -128,16 +126,6 @@ if (!$conf->set_minUID($minUID)) {
 }
 if (!$conf->set_maxUID($maxUID)) {
 	echo ("<font color=\"red\"><b>" . _("Maximum UID number is invalid!") . "</b></font>");
-	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
-	exit;
-}
-if (!$conf->set_minGID($minGID)) {
-	echo ("<font color=\"red\"><b>" . _("Minimum GID number is invalid!") . "</b></font>");
-	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
-	exit;
-}
-if (!$conf->set_maxGID($maxGID)) {
-	echo ("<font color=\"red\"><b>" . _("Maximum GID number is invalid!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
@@ -297,8 +285,6 @@ unset($_SESSION['conf_suffhosts']);
 unset($_SESSION['conf_suffdomains']);
 unset($_SESSION['conf_minUID']);
 unset($_SESSION['conf_maxUID']);
-unset($_SESSION['conf_minGID']);
-unset($_SESSION['conf_maxGID']);
 unset($_SESSION['conf_minMach']);
 unset($_SESSION['conf_maxMach']);
 unset($_SESSION['conf_usrlstattr']);

@@ -52,8 +52,6 @@ unset($_SESSION['conf_suffgroups']);
 unset($_SESSION['conf_suffhosts']);
 unset($_SESSION['conf_minUID']);
 unset($_SESSION['conf_maxUID']);
-unset($_SESSION['conf_minGID']);
-unset($_SESSION['conf_maxGID']);
 unset($_SESSION['conf_minMach']);
 unset($_SESSION['conf_maxMach']);
 unset($_SESSION['conf_usrlstattr']);

@@ -45,6 +45,9 @@ class baseModule {
 	/** the account type of this module (user, group, host) */
 	var $scope;
 
+	/** configuration settings of all modules */
+	var $moduleSettings;
+
 	/**
 	* Creates a new base module class
 	*
@@ -53,6 +56,7 @@ class baseModule {
 	function baseModule($scope) {
 		$this->scope = $scope;
 		$this->meta = $this->get_metaData();
+		if (isset($_SESSION['config'])) $this->moduleSettings = $_SESSION['config']->get_moduleSettings();
 	}
 
 	/**

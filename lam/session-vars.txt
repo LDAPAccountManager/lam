@@ -68,8 +68,6 @@ convsave, confmain, conflogin:
 - conf_suffdomains: Eingabe von confmain
 - conf_minUID: Eingabe von confmain
 - conf_maxUID: Eingabe von confmain
-- conf_minGID: Eingabe von confmain
-- conf_maxGID: Eingabe von confmain
 - conf_minMach: Eingabe von confmain
 - conf_maxMach: Eingabe von confmain
 - conf_usrlstattr: Eingabe von confmain

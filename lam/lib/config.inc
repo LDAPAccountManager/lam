@@ -123,10 +123,6 @@ class Config {
 	var $MinUID;
 	/** Maximum UID number for users */
 	var $MaxUID;
-	/** Minimum GID number for groups */
-	var $MinGID;
-	/** Maximum GID number for groups */
-	var $MaxGID;
 	/** Minimum UID number for Samba hosts */
 	var $MinMachine;
 	/** Maximum UID number for Samba hosts */
@@ -183,7 +179,7 @@ class Config {
 
 	/** List of all settings in config file */
 	var $settings = array("ServerURL", "Passwd", "Admins", "usersuffix", "groupsuffix", "hostsuffix",
-		"domainsuffix", "MinUID", "MaxUID", "MinGID", "MaxGID", "MinMachine", "MaxMachine",
+		"domainsuffix", "MinUID", "MaxUID", "MinMachine", "MaxMachine",
 		"userlistAttributes", "grouplistAttributes", "hostlistAttributes", "maxlistentries",
 		"defaultLanguage", "scriptPath", "scriptServer", "cachetimeout", "pwdhash",
 		"usermodules", "groupmodules", "hostmodules", "modules");
@@ -269,6 +265,7 @@ class Config {
 							$option = substr($line, $keylen + 2, strlen($line) - $keylen - 2);
 							$pos = strpos($option, ":");
 							$name = substr($option, 0, $pos);
+							if (!isset($this->moduleSettings[$name])) continue;
 							$file_array[$i] = "modules: " . $name . ": " . implode("+::+", $this->moduleSettings[$name]) . "\n";
 							$mod_saved[] = $name;	// mark keyword as saved
 						}
@@ -297,8 +294,6 @@ class Config {
 								"# e.g. ou=domains,dc=yourdomain,dc=org\n" . "domainsuffix: " . $this->domainsuffix . "\n");
 			if (!in_array("MinUID", $saved)) array_push($file_array, "\n\n# minimum UID number\n" . "minUID: " . $this->MinUID . "\n");
 			if (!in_array("MaxUID", $saved)) array_push($file_array, "\n\n# maximum UID number\n" . "maxUID: " . $this->MaxUID . "\n");
-			if (!in_array("MinGID", $saved)) array_push($file_array, "\n\n# minimum GID number\n" . "minGID: " . $this->MinGID . "\n");
-			if (!in_array("MaxGID", $saved)) array_push($file_array, "\n\n# maximum GID number\n" . "maxGID: " . $this->MaxGID . "\n");
 			if (!in_array("MinMachine", $saved)) array_push($file_array, "\n\n# minimum UID number for Samba hosts\n" . "minMachine: " . $this->MinMachine . "\n");
 			if (!in_array("MaxMachine", $saved)) array_push($file_array, "\n\n# maximum UID number for Samba hosts\n" . "maxMachine: " . $this->MaxMachine . "\n");
 			if (!in_array("userlistAttributes", $saved)) array_push($file_array, "\n\n# list of attributes to show in user list\n# entries can either be predefined values (e.g. '#cn' or '#uid')" .
@@ -347,8 +342,6 @@ class Config {
 		echo "<b>" . _("DomainSuffix") . ": </b>" . $this->domainsuffix . "<br>\n";
 		echo "<b>" . _("Minimum UID number") . ": </b>" . $this->MinUID . "<br>\n";
 		echo "<b>" . _("Maximum UID number") . ": </b>" . $this->MaxUID . "<br>\n";
-		echo "<b>" . _("Minimum GID number") . ": </b>" . $this->MinGID . "<br>\n";
-		echo "<b>" . _("Maximum GID number") . ": </b>" . $this->MaxGID . "<br>\n";
 		echo "<b>" . _("Minimum Machine number") . ": </b>" . $this->MinMachine . "<br>\n";
 		echo "<b>" . _("Maximum Machine number") . ": </b>" . $this->MaxMachine . "<br>\n";
 		echo "<b>" . _("Attributes in User List") . ": </b>" . $this->userlistAttributes . "<br>\n";
@@ -586,48 +579,6 @@ class Config {
 	*/
 	function set_maxUID($value) {
 		if (is_numeric($value)) $this->MaxUID = $value;
-		else return false;
-		return true;
-	}
-
-	/**
-	* Returns the minimum GID to use when creating new groups
-	*
-	* @return the minimum GID number
-	*/
-	function get_minGID() {
-		return $this->MinGID;
-	}
-
-	/**
-	* Sets the minimum GID to use when creating new groups
-	*
-	* @param $value new minimum GID number
-	* @return true if $value has correct format
-	*/
-	function set_minGID($value) {
-		if (is_numeric($value)) $this->MinGID = $value;
-		else return false;
-		return true;
-	}
-
-	/**
-	* Returns the maximum GID to use when creating new groups
-	*
-	* @return the maximum GID number
-	*/
-	function get_maxGID() {
-		return $this->MaxGID;
-	}
-
-	/**
-	* Sets the maximum GID to use when creating new groups
-	*
-	* @param $value new maximum GID number
-	* @return true if $value has correct format
-	*/
-	function set_maxGID($value) {
-		if (is_numeric($value)) $this->MaxGID = $value;
 		else return false;
 		return true;
 	}
