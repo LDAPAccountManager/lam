@@ -80,6 +80,7 @@ convsave, confmain, conflogin:
 - conf_scriptpath: Eingabe von confmain
 - conf_scriptserver: Eingabe von confmain
 - conf_filename: Dateiname des Profils
+- config_types: Hash Array mit Typen (text, select, ...) der verarbeiteten Optionen
 
 
 useredit:
