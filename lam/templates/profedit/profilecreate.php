@@ -249,7 +249,28 @@ if ($_GET['type'] == "user") {
 
 // save host profile
 elseif ($_GET['type'] == "host") {
-
+	$acct = new account();
+	// check input
+	if ($_POST['general_group'] && eregi("^[a-z]([a-z0-9_\\-])*$", $_POST['general_group'])) {
+		$acct->general_group = $_POST['general_group'];
+		}
+	else {
+		StatusMessage("ERROR", "", _("Primary group name is invalid!") . " " . $_POST['general_group']);
+		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to profile editor...") . "</a>");
+		exit;
+	}
+	if ($_POST['smb_domain'] && eregi("^[a-z0-9_\\-]+$", $_POST['smb_domain'])) {
+		$acct->smb_domain = $_POST['smb_domain'];
+	}
+	elseif ($_POST['smb_domain']) {
+		StatusMessage("ERROR", "", _("Domain name is invalid!") . " " . $_POST['smb_domain']);
+		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to profile editor...") . "</a>");
+		exit;
+	}
+	// save profile
+	saveHostProfile($acct, $profname);
+	echo ("<br><br><p align=\"center\"><big><b>" . _("Profile ") . $profname . _(" was saved.") . "</b></big></p>");
+	echo ("<br><p><a href=\"profilemain.php\">" . _("Back to profile editor") . "</a></p>");
 }
 
 // error: no or wrong type
