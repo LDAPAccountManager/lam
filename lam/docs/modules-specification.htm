@@ -508,6 +508,254 @@ all values of this column must be different values <span
   </li>
 </ul>
 <br>
+<h3>2.2.9. dynamic_Message<br>
+</h3>
+<br>
+<table style="text-align: left; width: 349px; height: 50px;" border="0"
+ cellspacing="2" cellpadding="2">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204); text-align: center;"><span
+ style="font-weight: bold;">function dynamic_Message($attribute, $id)</span><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+This function is only needed when a status message contains strings
+with variables.<br>
+<span style="font-weight: bold;">$attribute</span> is the attribute the
+message is corresponding to.<br>
+<span style="font-weight: bold;">$id</span> selects the exact message.<br>
+<br>
+Returnis an array as expected from StatusMessage().<br>
+<br>
+<h3>2.2.10. load_Messages<br>
+</h3>
+<br>
+<table style="text-align: left; width: 280px; height: 50px;" border="0"
+ cellspacing="2" cellpadding="2">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204); text-align: center;"><span
+ style="font-weight: bold;">function load_Messages()</span><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+This function is fills the array $this-&gt;messages. First Index (x) is
+the attribute the message is corresponding to.<br>
+Second Index (y) selects the exact message. Third Index (z) contains an
+array as expected from StatusMessage().<br>
+$this-&gt;messages[x][y][z]<br>
+<br>
+<h3>2.2.11. load_attributes<br>
+</h3>
+<br>
+<table style="text-align: left; width: 280px; height: 50px;" border="0"
+ cellspacing="2" cellpadding="2">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204); text-align: center;"><span
+ style="font-weight: bold;">function load_attributes($attr)</span><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+This function loads attributes when an account should be loaded.<br>
+<span style="font-weight: bold;">$attr</span> is an array like the
+array returned by get_ldap_attributes(dn of account) but without count
+indicees.<br>
+If all attributes are very simple are part of the dn of account it's
+possible to just call $this-&gt;load_ldap_attributes($attr)<br>
+which is part of baseModule.<br>
+The function load_ldap_attributes loads all attributes which fit to the
+objectClass of the module.<br>
+This function has t be expanded when attributes have to be loaded from
+a different DN or handled completly<br>
+separat.<br>
+<br>
+<h3>2.2.12. save_attributes<br>
+</h3>
+<br>
+<table style="text-align: left; width: 280px; height: 50px;" border="0"
+ cellspacing="2" cellpadding="2">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204); text-align: center;"><span
+ style="font-weight: bold;">function save_attributes()</span><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+This function returns an array with changes which should be saved. If
+all attributes are very simple are part of<br>
+the dn of account it's possible to just call
+$this-&gt;save_ldap_attributes($this-&gt;attributes, $this-&gt;orig).<br>
+The return array has the following syntax: First index is the ldap dn
+which should be changed. Second<br>
+index is the kind of modification. Possible values are: 'add',
+'modify', 'notchanged', 'remove'.<br>
+Third index is the attribute which should be changes. Fourth index is
+an array with all values of<br>
+an attribute.<br>
+<span style="font-weight: bold;"></span>If you want to call lamdaemon
+first index is 'lamdaemon'. Second index is 'command'. Third index is
+the command<br>
+itself which should be executed by lamdaemon.<br>
+<br>
+<h3>2.2.13. delete_attributes<br>
+</h3>
+<br>
+<table style="text-align: left; width: 280px; height: 50px;" border="0"
+ cellspacing="2" cellpadding="2">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204); text-align: center;"><span
+ style="font-weight: bold;">function delete_attributes($post)</span><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+This function returns an array with the same syntax as
+save_attributes().<br>
+<span style="font-weight: bold;">$post</span> is the $_POST array. It
+is needed t interact with the user.<br>
+<br>
+<br>
+<h3>2.2.14. proccess_attributes<br>
+</h3>
+<br>
+<table style="text-align: left; width: 386px; height: 50px;" border="0"
+ cellspacing="2" cellpadding="2">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204); text-align: center;"><span
+ style="font-weight: bold;">function proccess_attributes($post)</span><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+This function proccesses user inputs. It checks user inputs. It also
+saves changes in attributes.<br>
+<span style="font-weight: bold;">$post</span> is the $_POST
+array.&nbsp; Some attributes ar not part of a profile, e.g. uidNumber.
+If $profile<br>
+is true attributes wich are not part of a profile won't be checked.<br>
+LDAP attributes have to be stored in $this-&gt;attributes array. First
+index is the attribute name. Second<br>
+index is an array of values of an attribute.<br>
+This functions can return three different variables. When 0 is returned
+everything is ok. When a string is<br>
+returned the string is the name of a subpage of the module. If it
+returns an array the array contains status<br>
+messages. First Index is the attribute which has triggered a message.
+Second index is an array containing<br>
+status message arrays.<br>
+<br>
+<br>
+<h3>2.2.15. proccess_*<br>
+</h3>
+<br>
+<table style="text-align: left; width: 346px; height: 50px;" border="0"
+ cellspacing="2" cellpadding="2">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204); text-align: center;"><span
+ style="font-weight: bold;">function proccess_*($post)</span><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+This function has the exact behavoir like proccess_attributes function.
+* is the name of the subpage which<br>
+should be proccessed.<br>
+<span style="font-weight: bold;">$post</span> is the $_POST array. It
+is needed t interact with the user.<br>
+<br>
+<br>
+<h3>2.2.16. display_html_attributes($post)<br>
+</h3>
+<br>
+<table style="text-align: left; width: 346px; height: 50px;" border="0"
+ cellspacing="2" cellpadding="2">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204); text-align: center;"><span
+ style="font-weight: bold;">function display_html_attributes($post)</span><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+This function creates meta HTML code. The code is the page the module
+wants to display.<br>
+Return is an array of meta HTML code.<br>
+<span style="font-weight: bold;">$post</span> is the $_POST array. It
+is needed t interact with the user.<br>
+<br>
+<br>
+<h3>2.2.17. display_html_*($post)<br>
+</h3>
+<br>
+<table style="text-align: left; width: 346px; height: 50px;" border="0"
+ cellspacing="2" cellpadding="2">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204); text-align: center;"><span
+ style="font-weight: bold;">function display_html_*($post)</span><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+This function has the exact behavoir like display_html_attributes(). *
+is the name of the subpage which<br>
+should be displayed.<br>
+<span style="font-weight: bold;">$post</span> is the $_POST array. It
+is needed t interact with the user.<br>
+<br>
+<span style="font-weight: bold;"><br>
+</span>
+<h3>2.2.16. display_html_delete($post)<br>
+</h3>
+<br>
+<table style="text-align: left; width: 346px; height: 50px;" border="0"
+ cellspacing="2" cellpadding="2">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204); text-align: center;"><span
+ style="font-weight: bold;">function display_html_delete($post)</span><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+This function creates meta HTML code. The code will be displayed when
+an account should be deleted.<br>
+This is needed to interact, e.g. should the home directory be deleted?<br>
+The output of all modules is displayed on a single page.<br>
+Return is an array of meta HTML code.<br>
+<span style="font-weight: bold;">$post</span> is the $_POST array. It
+is needed t interact with the user.<br>
+<br>
+<br>
 <br>
 <span style="font-weight: bold;">*: These functions do not need to be
 implemented if meta data is supplied. See 6 for a list of meta data

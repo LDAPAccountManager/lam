@@ -533,7 +533,7 @@ class posixAccount extends baseModule {
 				}
 			}
 		}
-
+		// fixme TODO lamdeamon without DN
 		if ($this->createhomedir) $return[$_SESSION[$this->base]->dn]['lamdaemon']['command'][] = $this->attributes['uid'][0] . " home add";
 		return $return;
 	}
