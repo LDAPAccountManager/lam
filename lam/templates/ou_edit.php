@@ -378,7 +378,7 @@ function display_main() {
 	// new OU
 	echo ("<tr>\n");
 	echo ("<td><input type=radio name=\"type\" value=\"new_grp\"></td>\n");
-	echo ("<td><b>" . _("New organizational unit") . "</b></td>\n");
+	echo ("<td><b>" . _("New organizational unit") . ":</b></td>\n");
 	echo ("<td>&nbsp;</td>\n");
 	echo ("<td><select size=1 name=groupsuff_n>");
 	for ($i = 0; $i < sizeof($grp_units); $i++) {
@@ -391,7 +391,7 @@ function display_main() {
 	// delete OU
 	echo ("<tr>\n");
 	echo ("<td><input type=radio name=\"type\" value=\"del_grp\"></td>\n");
-	echo ("<td><b>" . _("Delete organizational unit") . "</b></td>\n");
+	echo ("<td><b>" . _("Delete organizational unit") . ":</b></td>\n");
 	echo ("<td>&nbsp;</td>\n");
 	echo ("<td><select size=1 name=groupsuff_d>");
 	for ($i = 0; $i < sizeof($grp_units); $i++) {
@@ -411,7 +411,7 @@ function display_main() {
 	// new OU
 	echo ("<tr>\n");
 	echo ("<td><input type=radio name=\"type\" value=\"new_hst\"></td>\n");
-	echo ("<td><b>" . _("New organizational unit") . "</b></td>\n");
+	echo ("<td><b>" . _("New organizational unit") . ":</b></td>\n");
 	echo ("<td>&nbsp;</td>\n");
 	echo ("<td><select size=1 name=hostsuff_n>");
 	for ($i = 0; $i < sizeof($hst_units); $i++) {
@@ -424,7 +424,7 @@ function display_main() {
 	// delete OU
 	echo ("<tr>\n");
 	echo ("<td><input type=radio name=\"type\" value=\"del_hst\"></td>\n");
-	echo ("<td><b>" . _("Delete organizational unit") . "</b></td>\n");
+	echo ("<td><b>" . _("Delete organizational unit") . ":</b></td>\n");
 	echo ("<td>&nbsp;</td>\n");
 	echo ("<td><select size=1 name=hostsuff_d>");
 	for ($i = 0; $i < sizeof($hst_units); $i++) {
@@ -445,7 +445,7 @@ function display_main() {
 		// new OU
 		echo ("<tr>\n");
 		echo ("<td><input type=radio name=\"type\" value=\"new_dom\"></td>\n");
-		echo ("<td><b>" . _("New organizational unit") . "</b></td>\n");
+		echo ("<td><b>" . _("New organizational unit") . ":</b></td>\n");
 		echo ("<td>&nbsp;</td>\n");
 		echo ("<td><select size=1 name=domsuff_n>");
 		for ($i = 0; $i < sizeof($dom_units); $i++) {
@@ -458,7 +458,7 @@ function display_main() {
 		// delete OU
 		echo ("<tr>\n");
 		echo ("<td><input type=radio name=\"type\" value=\"del_dom\"></td>\n");
-		echo ("<td><b>" . _("Delete organizational unit") . "</b></td>\n");
+		echo ("<td><b>" . _("Delete organizational unit") . ":</b></td>\n");
 		echo ("<td>&nbsp;</td>\n");
 		echo ("<td><select size=1 name=domsuff_d>");
 		for ($i = 0; $i < sizeof($dom_units); $i++) {
