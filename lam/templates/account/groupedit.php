@@ -370,6 +370,10 @@ switch ($select_local) { // Select which part of page will be loaded
 	// finish = page shown after account has been created/modified
 	case 'groupmembers':
 		ldapreload('user');
+		$temp2 = $_SESSION['userDN'];
+		unset($temp2[0]);
+		foreach ($temp2 as $temp) $users[] = $temp['cn'];
+		sort($users, SORT_STRING);
 		echo "<input name=\"select\" type=\"hidden\" value=\"groupmembers\">\n";
 		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
 		echo "<table border=0><tr><td><fieldset class=\"groupedit-middle\"><legend class=\"groupedit-bright\"><b>";
@@ -411,12 +415,10 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "<td valign=\"top\"><fieldset class=\"groupedit-middle\"><legend class=\"groupedit-bright\">";
 		echo _('Available users');
 		echo "</legend>\n";
-		if (count($_SESSION['userDN'])!=0) {
+		if (count($users)!=0) {
 			echo "<select name=\"users[]\" size=15 multiple class=\"groupedit-bright\">\n";
-			foreach ($_SESSION['userDN'] as $temp)
-				if (is_array($temp)) {
-					echo "		<option>$temp[cn]</option>\n";
-					}
+			foreach ($users as $temp)
+				echo "		<option>$temp</option>\n";
 			echo "</select>\n";
 			}
 		echo "</fieldset></td>\n</tr>\n</table>\n</fieldset></td></tr></table>\n</td></tr>\n</table>\n";

@@ -335,18 +335,18 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 
 		$_SESSION['account']->smb_profilePath = str_replace('$user', $_SESSION['account']->general_username, $_SESSION['account']->smb_profilePath);
 		$_SESSION['account']->smb_profilePath = str_replace('$group', $_SESSION['account']->general_group, $_SESSION['account']->smb_profilePath);
-		if ($_SESSION['account']->smb_profilePath != $_POST['f_smb_profilePath']) $errors[] = array('INFO', _('Profile path'), _('Inserted user- or groupname in profilepath.'));
+		if ($_SESSION['account']->smb_profilePath != stripslashes($_POST['f_smb_profilePath'])) $errors[] = array('INFO', _('Profile path'), _('Inserted user- or groupname in profilepath.'));
 
 		$_SESSION['account']->smb_smbhome = str_replace('$user', $_SESSION['account']->general_username, $_SESSION['account']->smb_smbhome);
 		$_SESSION['account']->smb_smbhome = str_replace('$group', $_SESSION['account']->general_group, $_SESSION['account']->smb_smbhome);
-		if ($_SESSION['account']->smb_smbhome != $_POST['f_smb_smbhome']) $errors[] = array('INFO', _('Home path'), _('Inserted user- or groupname in HomePath.'));
+		if ($_SESSION['account']->smb_smbhome != stripslashes($_POST['f_smb_smbhome'])) $errors[] = array('INFO', _('Home path'), _('Inserted user- or groupname in HomePath.'));
 
 		if ( (!$_SESSION['account']->smb_smbhome=='') && (!ereg('^[\][\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+([\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+)+$', $_SESSION['account']->smb_smbhome)))
 				$errors[] = array('ERROR', _('Home path'), _('Home path is invalid.'));
 		if ( !ereg('^([a-z]|[A-Z]|[0-9]|[\|]|[\#]|[\*]|[\,]|[\.]|[\;]|[\:]|[\_]|[\-]|[\+]|[\!]|[\%]|[\&]|[\/]|[\?]|[\{]|[\[]|[\(]|[\)]|[\]]|[\}])*$',
 			$smb_password)) $errors[] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
 		if ( (!$_SESSION['account']->smb_scriptPath=='') && (!ereg('^([/])*([a-z]|[0-9]|[.]|[-]|[_]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+([a-z]|[0-9]|[.]|[-]|[_]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])*'.
-			'([/]([a-z]|[0-9]|[.]|[-]|[_]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+([a-z]|[0-9]|[.]|[-]|[_]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])*)*$', $_SESSION['account']->smb_scriptPath)))
+			'([/]([a-z]|[0-9]|[.]|[-]|[_]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+([a-z]|[0-9]|[.]|[-]|[_]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])*)*(([.][b][a][t])|([.][c][m][d]))$', $_SESSION['account']->smb_scriptPath)))
 			$errors[] = array('ERROR', _('Script path'), _('Script path is invalid!'));
 		if ( (!$_SESSION['account']->smb_profilePath=='') && (!ereg('^[/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*([/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*)*$', $_SESSION['account']->smb_profilePath))
 			&& (!ereg('^[\][\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+([\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+)+$', $_SESSION['account']->smb_profilePath)))
@@ -606,6 +606,10 @@ switch ($select_local) { // Select which part of page will be loaded
 
 	case 'workstations':
 		ldapreload('host');
+		$temp2 = $_SESSION['hostDN'];
+		unset($temp2[0]);
+		foreach ($temp2 as $temp) $hosts[] = $temp['cn'];
+		sort($hosts, SORT_STRING);
 		// get workstation array
 		$temp = str_replace(' ', '', $_SESSION['account']->smb_smbuserworkstations);
 		$workstations = explode (',', $temp);
@@ -652,12 +656,11 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "<td valign=\"top\"><fieldset class=\"useredit-bright\"><legend class=\"useredit-bright\">";
 		echo _('Available workstations');
 		echo "</legend>\n";
-		if (count($_SESSION['hostDN'])!=0) {
+		if (count($hosts)!=0) {
 			echo "<select name=\"hosts[]\" size=15 multiple class=\"useredit-bright\">\n";
-			foreach ($_SESSION['hostDN'] as $temp)
-				if (is_array($temp)) {
-					$temp[cn] = str_replace("$", '',$temp[cn]);
-					echo "		<option>$temp[cn]</option>\n";
+			foreach ($hosts as $temp) {
+					$temp = str_replace("$", '',$temp);
+					echo "		<option>$temp</option>\n";
 					}
 			echo "</select>\n";
 			}

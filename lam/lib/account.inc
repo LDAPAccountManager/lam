@@ -969,19 +969,19 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 	// old password code
 	$password_old = str_replace('{CRYPT}', '',$values_old->unix_password);
 	if (substr($password_old,0,1) == '!' ) $password_old = substr($password_old,1,strlen($password_old));
-	if ($values->unix_password=='') {
-		if ($values->unix_password_no) {
-			$password_old = '';
-			$attr['shadowLastChange'] = getdays(); // shadowAccount_may
-			}
-		if ($values->unix_deactivated) $attr['userPassword'] = '{CRYPT}!' . $password_old;
-		else $attr['userPassword'] = '{CRYPT}' . $password_old;
-		}
-	 else {
-		if ($values->unix_deactivated) $attr['userPassword'] = '{CRYPT}!' . crypt($values->unix_password);
-		else $attr['userPassword'] = '{CRYPT}' . crypt($values->unix_password);
-		$attr['shadowLastChange'] = getdays(); // shadowAccount_may
-		}
+       if ($values->unix_password=='') {
+                if ($values->unix_password_no) {
+                        $password_old = '';
+                        $attr['shadowLastChange'] = getdays(); // shadowAccount_may
+                        }
+                if ($values->unix_deactivated && !$values_old->unix_deactivated) $attr['userPassword'] = '{CRYPT}!' . $password_old;
+                if (!$values->unix_deactivated && $values_old->unix_deactivated) $attr['userPassword'] = '{CRYPT}' . $password_old;
+                }
+         else {
+                if ($values->unix_deactivated) $attr['userPassword'] = '{CRYPT}!' . crypt($values->unix_password);
+                else $attr['userPassword'] = '{CRYPT}' . crypt($values->unix_password);
+                $attr['shadowLastChange'] = getdays(); // shadowAccount_may
+                }
 
 	if ($_SESSION['config']->is_samba3()) {
 		if ($values->smb_password_no) {
