@@ -35,7 +35,7 @@ $sr = ldap_search($_SESSION["ldap"]->server(),
 	$_SESSION["config"]->get_HostSuffix(),
 	$filter, $attrs);
 $info = ldap_get_entries($_SESSION["ldap"]->server, $sr);
-ldap_free_result($sr);
+//ldap_free_result($sr);
 
 // print host table
 echo "<table width=\"100%\">\n";
@@ -43,10 +43,11 @@ echo "<tr>";
 echo "<th class=\"userlist\">" . _("Host Name") . "</th>";
 echo "<th class=\"userlist\">RID</th>";
 echo "</tr>";
-for ($i = 0; $i < sizeof($info); $i++) {
+// print host list
+for ($i = 0; $i < sizeof($info)-1; $i++) { // ignore last entry in array which is "count"
 	echo("<tr>");
-	echo ("<td class=\"userlist\">" . $info["cn"][$i] . "</td>");
-	echo ("<td class=\"userlist\">" . $info["rid"][$i] . "</td>");
+	echo ("<td class=\"userlist\">" . $info[$i]["cn"][0] . "</td>");
+	echo ("<td class=\"userlist\">" . $info[$i]["rid"][0] . "</td>");
 	echo("</tr>");
 }
 echo ("</table>");
