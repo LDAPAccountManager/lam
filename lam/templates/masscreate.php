@@ -76,7 +76,7 @@ switch ($select) {
 if ($select!='pdf') {
 	echo	'</head><body>
 		<form enctype="multipart/form-data" action="masscreate.php" method="post">';
-	echo '<table rules="all" class="masscreate" width="100%">
+	echo '<table class="masscreate" width="100%">
 		<tr><td></td></tr>';
 	}
 

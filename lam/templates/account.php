@@ -240,7 +240,7 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 	case 'finish':
 		// Check if pdf-file should be created
 		if ($_POST['outputpdf']) {
-			createpdf($_SESSION['account']);
+			createpdf(array($_SESSION['account']));
 			$select_local = 'pdf';
 			}
 		break;
@@ -363,7 +363,7 @@ if ($select_local != 'pdf') {
 	echo "</head><body>\n";
 	echo "<form action=\"account.php\" method=\"post\">\n";
 	if ($error != "0") StatusMessage("ERROR", _("Invalid Value!"), $error);
-	echo "<table rules=\"all\" class=\"account\" width=\"100%\">\n";
+	echo "<table class=\"account\" width=\"100%\">\n";
 	}
 
 

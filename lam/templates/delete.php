@@ -40,7 +40,7 @@ echo '</title>'."\n".'
 	</head>'."\n".'
 	<body>'."\n".'
 	<form action="delete.php" method="post">'."\n".'
-	<table rules="all" class="delete" width="100%">'."\n".'
+	<table class="delete" width="100%">'."\n".'
 	<tr><td>';
 
 if ($_GET['type']) {
