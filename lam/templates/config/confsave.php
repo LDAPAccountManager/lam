@@ -91,7 +91,7 @@ if (!$conf->set_ServerURL($serverurl)) {
 	exit;
 }
 if (!$conf->set_cacheTimeout($cachetimeout)) {
-	echo ("<font color=\"red\"><b>" . _("Cache timeout is empty!") . "</b></font>");
+	echo ("<font color=\"red\"><b>" . _("Cache timeout is invalid!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
