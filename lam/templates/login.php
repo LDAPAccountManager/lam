@@ -80,149 +80,166 @@ function display_LoginPage($config_object,$profile)
 
 	setlanguage(); // setting correct language
 
-	echo $_SESSION["header"] . "
-		<html>
-			<head>
-				<title>
-					";
-	echo "LDAP Account Manager -Login-";
-	echo "
-				</title>
-				<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">
-			</head>
-			<body>
-				<p align=\"center\"><a href=\"http://lam.sf.net\" target=\"_blank\"><img src=\"../graphics/banner.jpg\" border=\"1\"></a></p>
-			<table width=\"100%\" border=\"0\">
+	echo $_SESSION["header"];
+	?>
+<html>
+	<head>
+		<title>LDAP Account Manager -Login-</title>
+		<link rel="stylesheet" type="text/css" href="../style/layout.css">
+	</head>
+	<body>
+		<p align="center">
+			<a href="http://lam.sf.net" target="_blank"><img src="../graphics/banner.jpg" border="1"></a>
+		</p>
+		<table width="100%" border="0">
+			<tr>
+				<td width="100%" align="right">
+					<a href="./config/conflogin.php" target="_self"><?php echo _("Configuration Login"); ?></a>
+				</td>
+			</tr>
+		</table>
+		<hr><br><br>
+		<p align="center">
+			<b><?php echo _("Enter Username and Password for Account:"); ?></b>
+		</p>
+		<?php
+		if($error_message != "") {
+		?>
+		<p align="center">
+			<?php
+			echo $error_message;
+			?>
+		</p>
+		<?php
+		}
+		?>
+		<form action="login.php" method="post">
+			<input type="hidden" name="action" value="checklogin">
+			<table width="500" align="center" border="0">
 				<tr>
-					<td width=\"100%\" align=\"right\">
-						<a href=\"./config/conflogin.php\" target=\"_self\">";
-						 echo _("Configuration Login");
-	echo "
-						</a>
+					<td width="45%" align="right">
+						<?php
+						echo _("Username:");
+						?>
+					</td>
+					<td width="10%">
+					</td>
+					<td width="45%" align="left">
+						<select name="username" size="1">
+						<?php
+						for($i = 0; $i < count($config_object->Admins); $i++) {
+							$text = explode(",", $config_object->Admins[$i]);
+							$text = explode("=", $text[0]);
+							?>
+							<option value="<?php echo $config_object->Admins[$i]; ?>"><?php echo $text[1]; ?></option>
+							<?php
+						}
+						?>
+						</select>
 					</td>
 				</tr>
-			</table>
-			<hr><br><br>
-			<p align=\"center\"><b>";
-			echo _("Enter Username and Password for Account:");
-	echo "
-			</b></p>";
-			if($error_message != "")
-				{
-					echo "<p align=\"center\">";
-					echo $error_message;
-					echo "</p>";
+				<tr>
+					<td width="45%" align="right">
+						<?php
+						echo _("Password:");
+						?>
+					</td>
+					<td width="10%">
+					</td>
+					<td width="45%" align="left">
+						<input type="password" name="passwd">
+					</td>
+				</tr>
+				<tr>
+				<?php
+				if($message != "") {
+					?>
+					<td width="100%" colspan="3" align="center">
+					<?php
+						echo $message;
+					?>
+						<input type=\"hidden\" name=\"language\" value=\"english\">
+					</td>
+					<?php
 				}
-	echo "
-				<form action=\"login.php\" method=\"post\">
-					<input type=\"hidden\" name=\"action\" value=\"checklogin\">
-					<table width=\"500\" align=\"center\" border=\"0\">
-						<tr>
-							<td width=\"45%\" align=\"right\">";
-								echo _("Username:");
-	echo "
-							</td>
-							<td width=\"10%\">
-							</td>
-							<td width=\"45%\" align=\"left\">
-								<select name=\"username\" size=\"1\">";
-								for($i = 0; $i < count($config_object->Admins); $i++)
-								{
-									$text = explode(",", $config_object->Admins[$i]);
-									$text = explode("=", $text[0]);
-									echo "<option value=\"" . $config_object->Admins[$i] . "\">" . $text[1] . "</option>";
-								}
-	echo "
-								</select>
-							</td>
-						</tr>
-						<tr>
-							<td width=\"45%\" align=\"right\">";
-								echo _("Password:");
-	echo "
-							</td>
-							<td width=\"10%\">
-							</td>
-							<td width=\"45%\" align=\"left\">
-								<input type=\"password\" name=\"passwd\">
-							</td>
-						</tr>
-						<tr>";
-							if($message != "")
-							{
-	echo "					<td width=\"100%\" colspan=\"3\" align=\"center\">";
-								echo $message;
-	echo "						<input type=\"hidden\" name=\"language\" value=\"english\">
-							</td>";
+				else
+				{
+					?>
+					<td width="45%" align="right">
+						<?php
+						echo _("Your Language:");
+						?>
+					</td>
+					<td width="10%">
+					</td>
+					<td width="45%" align="left">
+						<select name="language" size="1">
+						<?php
+						for($i = 0; $i < count($languages); $i++) {
+							if($languages[$i]["default"] == "YES") {
+							?>
+							<option selected value="<?php echo $languages[$i]["link"] . ":" . $languages[$i]["descr"]; ?>"><?php echo $languages[$i]["descr"]; ?></option>
+							<?php
 							}
 							else
 							{
-	echo "					<td width=\"45%\" align=\"right\">";
-								echo _("Your Language:");
-	echo "
-							</td>
-							<td width=\"10%\">
-							</td>
-							<td width=\"45%\" align=\"left\">
-								<select name=\"language\" size=\"1\">";
-								for($i = 0; $i < count($languages); $i++)
-								{
-									if($languages[$i]["default"] == "YES")
-									{
-										echo "<option selected value=\"" . $languages[$i]["link"] . ":" . $languages[$i]["descr"] . "\">" . $languages[$i]["descr"] . "</option>";
-									}
-									else
-									{
-										echo "<option value=\"" . $languages[$i]["link"] . ":" . $languages[$i]["descr"] . "\">" . $languages[$i]["descr"] . "</option>";
-									}
-								}
-	echo "						</select>
-							</td>";
+							?>
+							<option value="<?php echo $languages[$i]["link"] . ":" . $languages[$i]["descr"]; ?>"><?php echo $languages[$i]["descr"]; ?></option>
+							<?php
 							}
-	echo "
-						</tr>
-						<tr>
-							<td width=\"100%\" colspan=\"3\" align=\"center\">
-								<input type=\"submit\" name=\"submit\" value=\"";
-								echo _("Login") . "\">";
-	echo "
-							</td>
-						</tr>
-					</table>
-					<br><br>
-					<table width=\"345\" align=\"center\" bgcolor=\"#C7E7C7\" border=\"0\">
-						<tr>
-							<td width=\"100%\" align=\"center\">";
-								echo _("You are connecting to ServerURL: ");
-	echo "						<b>";
-								echo $config_object->get_ServerURL();
-	echo "
-								</b></td>
-						</tr>
-					</table>
-				</form>
-				<br><br>
-				<form action=\"" . $PHP_SELF . "\" method=\"post\" enctype=\"plain/text\">
-					<input type=\"hidden\" name=\"action\" value=\"profileChange\">
-					<p align=\"center\">";
-	echo _("You are currently using Profile: ");
-	if(!$_POST['profile']) {
-		$_POST['profile'] = $profile;
-	}
-	echo "<b>" . $_POST['profile'] . "</b>";
-	echo "
-					<br><select name=\"profile\" size=\"1\">";
-	for($i=0;$i<count($profiles);$i++) {
-		echo "			<option value=\"" . $profiles[$i] . "\">" . $profiles[$i] . "</option>";
-	}
-	echo "			</select>
-					<input type=\"submit\" value=\"";
-	echo _("Change Profile");
-	echo "\">
-					</p>
-				</form>
-			</body>
-		</html>";
+						}
+						?>
+						</select>
+					</td>
+					<?php
+				}
+				?>
+				</tr>
+				<tr>
+					<td width="100%" colspan="3" align="center">
+						<input type="submit" name="submit" value="<?php echo _("Login"); ?>">
+					</td>
+				</tr>
+			</table>
+			<br><br>
+			<table width="345" align="center" bgcolor="#C7E7C7" border="0">
+				<tr>
+					<td width="100%" align="center">
+						<?php
+						echo _("You are connecting to ServerURL: ");
+						?>
+						<b><?php echo $config_object->get_ServerURL(); ?></b>
+					</td>
+				</tr>
+			</table>
+		</form>
+		<br><br>
+		<form action="./login.php" method="post" enctype="plain/text">
+			<input type="hidden" name="action" value="profileChange">
+			<p align="center">
+				<?php
+				echo _("You are currently using Profile: ");
+				if(!$_POST['profile']) {
+					$_POST['profile'] = $profile;
+				}
+				?>
+				<b><?php echo $_POST['profile']; ?></b>
+				<br>
+				<select name="profile" size="1">
+				<?php
+				for($i=0;$i<count($profiles);$i++) {
+					?>
+					<option value="<?php echo $profiles[$i]; ?>"><?php echo $profiles[$i]; ?></option>
+					<?php
+				}
+				?>
+				</select>
+				<input type="submit" value="<?php echo _("Change Profile"); ?>">
+			</p>
+		</form>
+	</body>
+</html>
+<?php
 }
 
 // checking if the submitted username/password is correct.
