@@ -1,0 +1,58 @@
+<settings type="pdf">
+	<pdf type="User">
+		<text name="User" />
+		<section name="Personal User Infos">
+			<entry name="Title" />
+			<entry name="Surname" />
+			<entry name="Given name" />
+			<entry name="Street" />
+			<entry name="Postal code" />
+			<entry name="Postal address" />
+			<entry name="E-Mail" />
+			<entry name="Phone" />
+			<entry name="Cellular phone" />
+			<entry name="Facsimile" />
+		</section>
+		<section name="Unix User Settings">
+			<entry name="Username" />
+			<entry name="Unix password" />
+			<entry name="Group(s)" />
+			<entry name="Home directory" />
+			<entry name="Login shell" />
+			<entry name="Password expire" />
+			<entry name="Login at host(s)" />
+		</section>
+		<section name="Windows User Settings">
+			<entry name="Username" />
+			<entry name="Windows password" />
+			<entry name="Home drive" />
+			<entry name="Script path" />
+			<entry name="Profile path" />
+			<entry name="Login at workstation(s)" />
+			<entry name="Windows home directory" />
+			<entry name="Windows domain" /> 
+		</section>
+		<section name="Quota Settings">
+			<entry name="User quotas" />
+		</section>
+	</pdf>
+	<pdf type="Group">
+		<section name="_name">
+			<entry name="Description" />
+			<entry name="Display name" />
+			<entry name="GID" />
+			<entry name="Domain" />
+			<entry name="DN" />
+			<entry name="Members" />
+		</section>
+	</pdf>
+	<pdf type="Host">
+		<section name="_name">
+			<entry name="Description" />
+			<entry name="UID" />
+			<entry name="Primary group" />
+			<entry name="Domain" />
+			<entry name="DN" />
+		</section>
+	</pdf>
+</settings>
