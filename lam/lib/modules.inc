@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
-  Copyright (C) 2003-04  Roland Gruber
+  Copyright (C) 2003 - 2004  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -73,31 +73,34 @@ function getModuleAlias($name) {
 
 // returns a hash array (module name => dependencies) of all user module dependencies
 // dependencies contains an array with two sub arrays: depends, conflicts
-// the elements of depends/conflicts are either module names or an array of module names (OR-case)
+// the elements of depends are either module names or an array of module names (OR-case)
+// the elements of conflicts are module names
 function getUserModuleDependencies() {
-	return array("um1" => array("depends" => "um4"),
-		"um2" => array("depends" => "um4", "conflicts" => "um1"),
-		"um3" => array("conflicts" => "um1"),
+	return array("um1" => array("depends" => array("um4")),
+		"um2" => array("depends" => array("um4", array("um1", "um3"))),
+		"um3" => array("conflicts" => array("um1")),
 		"um4" => array());
 }
 
 // returns a hash array (module name => dependencies) of all group module dependencies
 // dependencies contains an array with two sub arrays: depends, conflicts
-// the elements of depends/conflicts are either module names or an array of module names (OR-case)
+// the elements of depends are either module names or an array of module names (OR-case)
+// the elements of conflicts are module names
 function getGroupModuleDependencies() {
-	return array("gm1" => array("depends" => "gm4"),
-		"gm2" => array("depends" => "gm4", "conflicts" => "gm1"),
-		"gm3" => array("conflicts" => "gm1"),
+	return array("gm1" => array("depends" => array("gm4")),
+		"gm2" => array("depends" => array("gm4"), "conflicts" => array("gm1")),
+		"gm3" => array("conflicts" => array("gm1")),
 		"gm4" => array());
 }
 
 // returns a hash array (module name => dependencies) of all host module dependencies
 // dependencies contains an array with two sub arrays: depends, conflicts
-// the elements of depends/conflicts are either module names or an array of module names (OR-case)
+// the elements of depends are either module names or an array of module names (OR-case)
+// the elements of conflicts are module names
 function getHostModuleDependencies() {
-	return array("hm1" => array("depends" => "hm4"),
-		"hm2" => array("depends" => "hm4", "conflicts" => "hm1"),
-		"hm3" => array("conflicts" => "hm1"),
+	return array("hm1" => array("depends" => array("hm4")),
+		"hm2" => array("depends" => array("hm4"), "conflicts" => array("hm1")),
+		"hm3" => array("conflicts" => array("hm1")),
 		"hm4" => array());
 }
 
