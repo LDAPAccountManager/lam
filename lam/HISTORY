@@ -1,3 +1,61 @@
+??? 0.5-alpha1
+  - new modular architecture
+   -> possibility to create Unix-only accounts
+   -> plugins for more objectClasses planned
+   -> enhanced PDF output
+   -> enhanced file upload
+   -> enhanced editor for account profiles
+   -> dynamic configuration options (based on modules)
+  - all pages in UTF-8
+  - added developer documentation
+  - PHPDoc formated comments
+
+  - fixed bugs:
+      fixed doctype of main frame
+      removed syntax check for LDAP suffixes
+      fixed IE bug at login
+
+
+26.05.2004 0.4.6
+  - fixed bugs:
+      password hashes were not disabled correctly
+      street was copied to postal code on modify (938502)
+      underscore was not allowed for host names (934445)
+      deleting postal address or facsimile number failed (948616)
+      TLS error handling (958497)
+      smaller fixes on personal settings page
+
+
+21.03.2004 0.4.5
+  - added French translation
+  - fixed bugs:
+      StatusMessages with additional variables did not work
+      Samba hosts had unnecessary objectClass shadowAccount (910084)
+      Samba host passwords were still wrong
+      LAM had problems with non-standard spelled object classes (907636)
+      Perl scripts did not work if Perl is not installed in /usr/bin/perl (913554)
+      problems when cn!=uid (915041)
+      home directories were not deleted by lamdaemon.pl (913552)
+
+
+29.02.2004 0.4.4 (stable)
+  - fixed bugs:
+      plain posix groups could not be used as Samba 3 primary group
+      if magic_quotes_gpc in php.ini is was set to "Off", several pages did not work
+      some smaller bugs in mass upload
+      Samba hash values for hosts were not correct
+      Unix passwords could be disabled but not reenabled
+      fixed problem with eval() in status.inc (894433)
+
+
+08.02.2004 0.4.3
+  - new login layout
+  - added Hungarian and Japanese translations
+  - fixed bugs:
+      Samba paswords were sometimes empty for new users (892272)
+      links in list views may not work with web servers other than Apache
+
+
 21.01.2004 0.4.2
   - added config wizard
   - MHash is only needed for PHP < 4.3
