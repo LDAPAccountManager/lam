@@ -49,6 +49,20 @@ if (!isset($_SESSION['loggedIn'])) {
 // Set correct language, codepages, ....
 setlanguage();
 
+// show CSV if requested
+if (isset($_GET['getCSV'])) {
+	//download file
+	if(isset($HTTP_SERVER_VARS['HTTP_USER_AGENT']) and strpos($HTTP_SERVER_VARS['HTTP_USER_AGENT'],'MSIE')) {
+		Header('Content-Type: application/force-download');
+	}
+	else {
+		Header('Content-Type: text/plain');
+	}
+	Header('Content-disposition: attachment; filename=lam.csv');
+	echo $_SESSION['mass_csv'];
+	exit;
+}
+
 echo $_SESSION['header'];
 echo "<title>account upload</title>\n";
 echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">\n";
@@ -122,9 +136,9 @@ function showMainPage($scope) {
 
 	// DN options
 	echo "<fieldset>\n<legend><b>" . _("DN settings") . "</b></legend>\n";
-	echo "<table>\n";
+	echo "<table width=\"100%\">\n";
 		echo "<tr>\n";
-			echo "<td>\n";
+			echo "<td width=\"50%\">\n";
 			echo "<b>" . _("DN suffix") . "</b>\n";
 			echo "<br>\n";
 				echo "<ul>\n";
@@ -135,7 +149,7 @@ function showMainPage($scope) {
 					echo "</li>\n";
 				echo "</ul>\n";
 			echo "</td>\n";
-			echo "<td>\n";
+			echo "<td width=\"50%\">\n";
 			echo "<b><font color=\"red\">" . _("RDN identifier") . "</font></b>\n";
 			echo "<br>\n";
 				echo "<ul>\n";
@@ -159,26 +173,26 @@ function showMainPage($scope) {
 	for ($m = 0; $m < sizeof($modules); $m++) {
 		if (sizeof($columns[$modules[$m]]) < 1) continue;
 		echo "<fieldset>\n<legend><b>" . getModuleAlias($modules[$m], $scope) . "</b></legend>\n";
-		echo "<table>\n";
+		echo "<table width=\"100%\">\n";
 		for ($i = 0; $i < sizeof($columns[$modules[$m]]); $i++) {
 			echo "<tr>\n";
-				echo "<td>\n";
+				echo "<td width=\"33%\">\n";
 					showColumnData($modules[$m], $columns[$modules[$m]][$i]);
 				echo "</td>\n";
 				$i++;
 				if ($i < sizeof($columns[$modules[$m]])) {
-					echo "<td>\n";
+					echo "<td width=\"33%\">\n";
 						showColumnData($modules[$m], $columns[$modules[$m]][$i]);
 					echo "</td>\n";
 					$i++;
 					if ($i < sizeof($columns[$modules[$m]])) {
-						echo "<td>\n";
+						echo "<td width=\"33%\">\n";
 							showColumnData($modules[$m], $columns[$modules[$m]][$i]);
 						echo "</td>\n";
 					}
-					else echo "<td></td>"; // empty cell if no more fields
+					else echo "<td width=\"33%\"></td>"; // empty cell if no more fields
 				}
-				else echo "<td></td>"; // empty cell if no more fields
+				else echo "<td width=\"33%\"></td><td width=\"33%\"></td>"; // empty cell if no more fields
 			echo "</tr>\n";
 		}
 		echo "</table>\n";
@@ -187,7 +201,10 @@ function showMainPage($scope) {
 
 	echo "<p>&nbsp;</p>\n";
 
-	// print table example
+	// print table example and build sample CSV
+	$sampleCSV = "";
+	$sampleCSV_head = array();
+	$sampleCSV_row = array();
 	echo "<big><b>" . _("This is an example how it would look in your spreadsheet program before you convert to CSV:") . "</b></big>\n";
 
 	echo "<table style=\"border-color: grey\" cellpadding=\"10\" border=\"2\" cellspacing=\"0\">\n";
@@ -195,6 +212,7 @@ function showMainPage($scope) {
 			for ($m = 0; $m < sizeof($modules); $m++) {
 				if (sizeof($columns[$modules[$m]]) < 1) continue;
 				for ($i = 0; $i < sizeof($columns[$modules[$m]]); $i++) {
+					$sampleCSV_head[] = "\"" . $columns[$modules[$m]][$i]['name'] . "\"";
 					echo "<td>\n";
 						echo $columns[$modules[$m]][$i]['name'];
 					echo "</td>\n";
@@ -205,6 +223,7 @@ function showMainPage($scope) {
 			for ($m = 0; $m < sizeof($modules); $m++) {
 				if (sizeof($columns[$modules[$m]]) < 1) continue;
 				for ($i = 0; $i < sizeof($columns[$modules[$m]]); $i++) {
+					$sampleCSV_row[] = "\"" . $columns[$modules[$m]][$i]['example'] . "\"";
 					echo "<td>\n";
 						echo $columns[$modules[$m]][$i]['example'];
 					echo "</td>\n";
@@ -212,6 +231,15 @@ function showMainPage($scope) {
 			}
 		echo "</tr>\n";
 	echo "</table>\n";
+	$sampleCSV = implode(",", $sampleCSV_head) . "\n" . implode(",", $sampleCSV_row) . "\n";
+	$_SESSION['mass_csv'] = $sampleCSV;
+	
+	// link to CSV sample
+	echo "<p>\n";
+	echo "<br><br>\n";
+	echo "<a href=\"masscreate.php?getCSV=1\"><b>" . _("Download sample CSV file") . "</b></a>\n";
+	echo "<br><br>\n";
+	echo "<p>\n";
 
 	echo "</body>\n";
 	echo "</html>\n";
@@ -240,6 +268,11 @@ function showColumnData($module, $data) {
 		echo "<li>\n";
 			echo "<b>" . _("Identifier") . ":</b> " . $data['name'] . "\n";
 		echo "</li>\n";
+		if (isset($data['values'])) {
+			echo "<li>\n";
+				echo "<b>" . _("Possible values") . ":</b> " . $data['values'] . "\n";
+			echo "</li>\n";
+		}
 		echo "<li>\n";
 			echo "<b>" . _("Example value") . ":</b> " . $data['example'] . "\n";
 		echo "</li>\n";
