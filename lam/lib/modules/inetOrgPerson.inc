@@ -110,6 +110,13 @@ class inetOrgPerson extends baseModule {
 			'error_message' => $this->messages['employeeType'][0]);
 		$return['upload_columns'] = array(
 		array(
+		'name' => 'inetOrgPerson_cn',
+		'description' => _('Common name'),
+		'help' => 'cn',
+		'example' => _('Steve Miller'),
+		'default' => '<i>&lt;inetOrgPerson_firstName&gt; &lt;inetOrgPerson_lastName&gt;</i>'
+		),
+		array(
 		'name' => 'inetOrgPerson_firstName',
 		'description' => _('First Name'),
 		'help' => 'givenName',
@@ -181,12 +188,6 @@ class inetOrgPerson extends baseModule {
 		'description' => _('eMail address'),
 		'help' => 'mail',
 		'example' => _('user@company.com')
-		),
-		array(
-		'name' => 'inetOrgPerson_cn',
-		'description' => _('Common name'),
-		'help' => 'cn',
-		'example' => _('Steve Miller')
 		)
 		);
 		// TODO unix workstations for upload
