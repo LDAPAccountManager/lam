@@ -20,79 +20,14 @@ $Id$
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 
-  LDAP Account Manager checking login datas.
+  LDAP Account Manager display help pages.
 */
 
 session_save_path("../sess"); // Set session save path
 @session_start(); // Start LDAP Account Manager session
 
-include_once("../lib/status.inc");
-
-/* Read help/help.txt, build $helpArray and add $helpArray to session
-Return true if file exists, false else */
-function readHelpFile()
-{
-	global $helpArray;
-	$helpFile = "../help/help.txt";
-	if(is_file($helpFile))
-	{
-		$file = fopen($helpFile, "r");
-		$i = 1;
-		while(!feof($file))
-		{
-			$line = trim(fgets($file,8192));
-			if(substr($line,0,1) == "#")
-			{
-				echo "continue";
-				continue;
-			}
-			if($i == 1)
-			{
-				$helpNumber = $line;
-				$i++;
-			}
-			elseif($i == 2)
-			{
-				$helpArray[$helpNumber]['Headline'] = $line;
-				$i++;
-			}
-			elseif($i == 3)
-			{
-				$helpArray[$helpNumber]['Text'] = $line;
-				$i++;
-			}
-			elseif($i == 4)
-			{
-				$helpArray[$helpNumber]['SeeAlso'] = $line;
-				$i = 1;
-			}
-		}
-		session_register("helpArray");
-		return true;
-	}
-	return false;
-}
-
-/* Test if $helpArray is in session, if yes load it, if no try readHelpFile. If that fails define error message and return false, true else. */
-function getHelpArray()
-{
-	global $helpArray, $errorMessage;
-	if(session_is_registered('helpArray'))
-	{session_register("helpArray");
-
-		$helpArray = $_SESSION['helpArray'];
-		return true;
-	}
-	elseif(readHelpFile())
-	{
-		return true;
-	}
-	else
-	{
-		$errorMessage = _("Couldn't read {bold}help/help.txt{endbold}. No topics available.");
-		return false;
-	}
-}
+include_once("../lib/status.inc"); // Include lib/status.php which provides statusMessage()
+include_once("../help/help.inc"); // Include help/help.inc which provides $helpArray where the help pages are stored
 
 /* Print HTML head */
 function echoHTMLHead()
@@ -119,8 +54,7 @@ function echoHTMLFoot()
 /* Print help site */
 function displayHelp($helpNumber)
 {
-	global $helpArray, $errorMessage;
-	$loadArray = getHelpArray();
+	global $helpArray;
 	/* If no help number was submitted print error message */
 	if($helpNumber == "")
 	{
@@ -129,28 +63,37 @@ function displayHelp($helpNumber)
 		statusMessage("ERROR","",$errorMessage);
 		echoHTMLFoot();
 	}
-	/* If submitted help number was not submitted print error message */
-	elseif($loadArray && !array_key_exists($helpNumber,$helpArray))
+	/* If submitted help number is not in help/help.inc print error message */
+	elseif(!array_key_exists($helpNumber,$helpArray))
 	{
 		$errorMessage = _("Sorry this help number ({bold}" . $helpNumber . "{endbold}) is not available.");
 		echoHTMLHead();
 		statusMessage("ERROR","",$errorMessage);
 		echoHTMLFoot();
 	}
-	/* Print help site if getHelpArray was successful */
-	elseif($loadArray)
+	/* Print help site out of $helpArray */
+	elseif($helpArray[$helpNumber]["ext"] == "FALSE")
 	{
 		echoHTMLHead();
 		echo "		<h1 class=\"help\">" . $helpArray[$helpNumber]['Headline'] . "</h1>\n";
 		echo "		<p class=\"help\">" . $helpArray[$helpNumber]['Text'] . "</p>\n";
-		echo "		<p class=\"help\">See also: " . $helpArray[$helpNumber]['SeeAlso'] . "</p>\n";
+		if($helpArray[$helpNumber]["SeeAlso"] <> "")
+		{
+			echo "		<p class=\"help\">See also: " . $helpArray[$helpNumber]['SeeAlso'] . "</p>\n";
+		}
 		echoHTMLFoot();
 	}
-	/* Print the error messages of errors that occured before */
+	/* Load external help page */
+	elseif($helpArray[$helpNumber]["ext"] == "TRUE")
+	{
+		echoHTMLHead();
+		include_once("../" . $helpArray[$helpNumber]["Link"]);
+		echoHTMLFoot();
+	}
+	/* Print empty page in all other cases */
 	else
 	{
 		echoHTMLHead();
-		statusMessage("ERROR","",$errorMessage);
 		echoHTMLFoot();
 	}
 }
