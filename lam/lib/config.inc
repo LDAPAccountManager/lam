@@ -137,6 +137,9 @@ class Config {
   // password hash algorithm
   var $pwdhash;
 
+  // text to include in user PDF files
+  var $pdftext;
+
   // name of configuration file
   var $file;
 
@@ -181,6 +184,14 @@ class Config {
 		}
 		else {
 			StatusMessage("ERROR", "", _("Unable to load configuration!") . " (" . $conffile . ")");
+		}
+		// load user PDF text
+		$pdffile = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/config/pdf/" . $this->file . ".txt";
+		if (is_file($pdffile) == True) {
+			$pdfstring = @file($pdffile);
+			$pdfstring = @implode("", $pdfstring);
+			if ($pdfstring) $this->pdftext = $pdfstring;
+			else $this->pdftext = "";
 		}
 	}
 
