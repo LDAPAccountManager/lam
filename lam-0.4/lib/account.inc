@@ -1017,6 +1017,16 @@ function loaduser($dns) {
 				$j++;
 				}
 
+			// fix misspelled object classes
+			$j = 0;
+			while (isset($attr['objectClass'][$j])) {
+				if (strtolower($attr['objectClass'][$j]) == "inetorgperson") $attr['objectClass'][$j] = "inetOrgPerson";
+				else if (strtolower($attr['objectClass'][$j]) == "posixaccount") $attr['objectClass'][$j] = "posixAccount";
+				else if (strtolower($attr['objectClass'][$j]) == "sambaaccount") $attr['objectClass'][$j] = "sambaAccount";
+				else if (strtolower($attr['objectClass'][$j]) == "sambasamaccount") $attr['objectClass'][$j] = "sambaSamAccount";
+				else if (strtolower($attr['objectClass'][$j]) == "shadowaccount") $attr['objectClass'][$j] = "shadowAccount";
+				$j++;
+			}
 			// load objectclasses
 			$j=0;
 			while (isset($attr['objectClass'][$j])) {
@@ -1154,6 +1164,15 @@ function loadhost($dn) {
 	// Set host samba flags
 	$return->smb_flags['W'] = true;
 	$return->smb_flags['X'] = true;
+	// fix misspelled object classes
+	$j = 0;
+	while (isset($attr['objectClass'][$j])) {
+		if (strtolower($attr['objectClass'][$j]) == "account") $attr['objectClass'][$j] = "account";
+		else if (strtolower($attr['objectClass'][$j]) == "posixaccount") $attr['objectClass'][$j] = "posixAccount";
+		else if (strtolower($attr['objectClass'][$j]) == "sambaaccount") $attr['objectClass'][$j] = "sambaAccount";
+		else if (strtolower($attr['objectClass'][$j]) == "sambasamaccount") $attr['objectClass'][$j] = "sambaSamAccount";
+		$j++;
+	}
 	// load objectclasses
 	$i=0;
 	while (isset($attr['objectClass'][$i])) {
@@ -1257,6 +1276,13 @@ function loadgroup($dn) {
 	* Some values don't have to be set. These are only loaded if they are set
 	*/
 
+	// fix misspelled object classes
+	$j = 0;
+	while (isset($attr['objectClass'][$j])) {
+		if (strtolower($attr['objectClass'][$j]) == "posixgroup") $attr['objectClass'][$j] = "posixGroup";
+		else if (strtolower($attr['objectClass'][$j]) == "sambagroupmapping") $attr['objectClass'][$j] = "sambaGroupMapping";
+		$j++;
+	}
 	// load objectclasses
 	$i=0;
 	while (isset($attr['objectClass'][$i])) {
