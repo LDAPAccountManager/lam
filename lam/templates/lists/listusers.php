@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
-  Copyright (C) 2003  Leonhard Walchshäusl
+  Copyright (C) 2003  Roland Gruber, Leonhard Walchshäusl
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -125,11 +125,11 @@ for ($k = 0; $k < sizeof($desc_array); $k++) {
 // Users have the attribute "*"
 	if ($_SESSION['config']->get_samba3() == "yes") {
 		// Samba users have the attribute "sambaSamAccount" and end with "$"
-		$filter = "(&(&(|(objectClass=posixAccount) (objectClass=sambaSamAccount)) (!(uid=*$)))";
+		$filter = "(&(objectClass=sambaSamAccount) (!(uid=*$))";
 	}
 	else {
 		// Samba users have the attribute "sambaAccount" and end with "$"
-		$filter = "(&(&(|(objectClass=posixAccount) (objectClass=sambaAccount)) (!(uid=*$)))";
+		$filter = "(&(objectClass=sambaAccount) (!(uid=*$))";
 	}
 for ($k = 0; $k < sizeof($desc_array); $k++) {
   if ($_POST["filter" . strtolower($attr_array[$k])])
@@ -165,7 +165,7 @@ if ($_SESSION["userlist"] && $_GET["norefresh"]) {
   }
 else
   StatusMessage("ERROR", 
-		_("LDAP Search failed! Please check your preferences."), 
+		_("LDAP Search failed! Please check your preferences."),
 		_("No Groups found!"));
 }
 
@@ -186,27 +186,27 @@ if ($user_count != 0) {
   echo "<table rules=\"all\" class=\"userlist\" width=\"100%\">\n";
 
 
-  echo "<tr class=\"userlist_head\"><th width=22 height=34></th><th></th>\n";
+  echo "<tr class=\"userlist-head\"><th width=22 height=34></th><th></th>\n";
   // table header
   for ($k = 0; $k < sizeof ($desc_array); $k++) {
     if ($sortattrib == strtolower($attr_array[$k]))
-      echo "<th class=\"userlist_activecolumn\">\n";
+      echo "<th class=\"userlist-activecolumn\">\n";
     else
       echo "<th>\n";
     echo "<a class=\"userlist\" href=\"listusers.php?norefresh=1&amp;sortattrib=" .
-      strtolower($attr_array[$k]) . $searchfilter . "\">" . 
+      strtolower($attr_array[$k]) . $searchfilter . "\">" .
       $desc_array[$k] . "</a></th>\n";
   }
   echo "</tr>\n";
 
-  echo "<tr class=\"test\"><th width=22 height=34></th><th>\n";
+  echo "<tr class=\"userlist\"><th width=22 height=34></th><th>\n";
   echo "<input type=\"submit\" name=\"apply_filter\" value=\"" . _("Apply") . "\">";
   echo "</th>\n";
 
   // print input boxes for filters
   for ($k = 0; $k < sizeof ($desc_array); $k++) {
     echo "<th>";
-    echo ("<input type=\"text\" name=\"filter" . strtolower ($attr_array[$k]) . 
+    echo ("<input type=\"text\" name=\"filter" . strtolower ($attr_array[$k]) .
 	  "\" value=\"" . $_POST["filter" . strtolower($attr_array[$k])] . "\">");
     echo "</th>";
   }
@@ -214,8 +214,8 @@ if ($user_count != 0) {
 
 if ($user_count != 0) {
   // print user list
-  $userinfo = array_slice ($userinfo, ($page - 1) * $max_pageentrys, 
-			   $max_pageentrys); 
+  $userinfo = array_slice ($userinfo, ($page - 1) * $max_pageentrys,
+			   $max_pageentrys);
   for ($i = 0; $i < sizeof ($userinfo); $i++) { // ignore last entry in array which is "count"
     echo("<tr class=\"userlist\" onMouseOver=\"user_over(this, '" . $userinfo[$i]["dn"] . "')\"" .
 	 " onMouseOut=\"user_out(this, '" . $userinfo[$i]["dn"] . "')\"" .
@@ -283,9 +283,9 @@ function draw_navigation_bar ($user_count) {
   global $sortattrib;
   global $searchfilter;
 
-  echo ("<table class=\"userlist_navbar\" width=\"100%\" border=\"0\"\n");
+  echo ("<table class=\"userlist-navbar\" width=\"100%\" border=\"0\"\n");
   echo ("<tr>");
-  echo ("<td class=\"userlist_navbar\"><input type=\"submit\" name=\"refresh\" value=\"" . _("Refresh") . "\">&nbsp;&nbsp;");
+  echo ("<td class=\"userlist-navbar\"><input type=\"submit\" name=\"refresh\" value=\"" . _("Refresh") . "\">&nbsp;&nbsp;");
   if ($page != 1)
     echo ("<a class=\"userlist\" href=\"listusers.php?norefresh=1&amp;page=" .
 	  ($page - 1) . "&amp;sortattrib=" . $sortattrib .
@@ -300,12 +300,12 @@ function draw_navigation_bar ($user_count) {
   else
     echo ("=&gt;");
   echo ("</td>");
-  echo ("<td class=\"userlist_navbartext\">");
+  echo ("<td class=\"userlist-navbartext\">");
   echo "&nbsp;" . $user_count . " " .  _("Users found");
   echo ("</td>");
 
 
-  echo ("<td class=\"userlist_activepage\" align=\"right\">");
+  echo ("<td class=\"userlist-activepage\" align=\"right\">");
   for ($i = 0; $i < ($user_count / $max_pageentrys); $i++) {
     if ($i == $page - 1)
       echo ("&nbsp;" . ($i + 1));

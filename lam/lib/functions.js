@@ -26,7 +26,7 @@ $Id$
 // mouseOver function
 function user_over(list, box) {
 	cbox = document.getElementsByName(box)[0];
-	if (cbox.checked == false) list.setAttribute('class','userlist_over', 0);
+	if (cbox.checked == false) list.setAttribute('class','userlist-over', 0);
 }
 
 // mouseOut function
@@ -40,11 +40,11 @@ function user_click(list, box) {
 	cbox = document.getElementsByName(box)[0];
 	if (cbox.checked == true) {
 		cbox.checked = false;
-		list.setAttribute('class','userlist_over', 0);
+		list.setAttribute('class','userlist-over', 0);
 	}
 	else {
 		cbox.checked = true;
-		list.setAttribute('class','userlist_checked', 0);
+		list.setAttribute('class','userlist-checked', 0);
 	}
 }
 
