@@ -28,6 +28,9 @@ $Id$
 session_save_path("../../sess");
 session_start();
 
+// get password if register_globals is off
+if ($_POST['passwd']) $passwd = $_POST['passwd'];
+
 // check if password was entered
 // if not: load login page
 if (! $passwd) {

@@ -9,19 +9,19 @@ $Id$
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
   (at your option) any later version.
-  
+
   This program is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
-  
+
   You should have received a copy of the GNU General Public License
   along with this program; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-  
+
   confsave saves the new preferences to lam.conf
-  
+
 */
 
 // start session
@@ -31,7 +31,26 @@ session_start();
 include_once ('../../lib/config.inc');
 $conf = new Config();
 
-// check if password is correct 
+// get data if register_globals is off
+if ($_POST['passwd']) $passwd = $_POST['passwd'];
+if ($_POST['passwd1']) $passwd1 = $_POST['passwd1'];
+if ($_POST['passwd2']) $passwd2 = $_POST['passwd2'];
+if ($_POST['serverurl']) $serverurl = $_POST['serverurl'];
+if ($_POST['admins']) $admins = $_POST['admins'];
+if ($_POST['suffusers']) $suffusers = $_POST['suffusers'];
+if ($_POST['suffgroups']) $suffgroups = $_POST['suffgroups'];
+if ($_POST['suffhosts']) $suffhosts = $_POST['suffhosts'];
+if ($_POST['minUID']) $minUID = $_POST['minUID'];
+if ($_POST['maxUID']) $maxUID = $_POST['maxUID'];
+if ($_POST['minGID']) $minGID = $_POST['minGID'];
+if ($_POST['maxGID']) $maxGID = $_POST['maxGID'];
+if ($_POST['minMach']) $minMach = $_POST['minMach'];
+if ($_POST['maxMach']) $maxMach = $_POST['maxMach'];
+if ($_POST['usrlstattr']) $usrlstattr = $_POST['usrlstattr'];
+if ($_POST['grplstattr']) $grplstattr = $_POST['grplstattr'];
+if ($_POST['hstlstattr']) $hstlstattr = $_POST['hstlstattr'];
+
+// check if password is correct
 // if not: load login page
 if ($passwd != $conf->get_Passwd()) {
 	require('conflogin.php');
