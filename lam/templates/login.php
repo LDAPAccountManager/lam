@@ -262,7 +262,6 @@ if($_POST['action'] == "checklogin")
 			$current_language = explode(":",$_SESSION['language']);
 			$_SESSION['header'] = "<?xml version=\"1.0\" encoding=\"" . $current_language[1] . "\"?>\n<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n\n";
 
-
 			include("./main.php"); // Load main frame
 		}
 		else
@@ -289,6 +288,14 @@ elseif($_POST['action'] == "profileChange") {
 // Load login page
 else
 {
+
+	$_SESSION['lampath'] = realpath('../') . "/";
+	$protocol = explode("/",$_SERVER['SERVER_PROTOCOL']);
+	$protocol = strToLower($protocol[0]) . "://";
+	$_SESSION['lamurl'] = $protocol . $_SERVER['SERVER_NAME'] . $_SERVER['SCRIPT_NAME'];
+	$_SESSION['lamurl'] = substr($_SESSION['lamurl'],0,strlen($_SESSION['lamurl'])-19);
+	echo "lampath=" . $_SESSION['lampath'] . "<br>";
+	echo "lamurl=" . $_SESSION['lamurl'] . "<br>";
 
 	$default_Config = new CfgMain();
 	$default_Profile = $default_Config->default;
