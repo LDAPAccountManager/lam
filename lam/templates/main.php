@@ -52,7 +52,9 @@ if ($conf->Suff_map && ($conf->Suff_map != "")) {
 	if (!$res) $new_suffs[] = $conf->Suff_map;
 }
 
-$doms = $_SESSION['ldap']->search_domains($_SESSION['config']->get_domainSuffix());
+if ($_SESSION['config']->get_samba3() == "yes") {
+	$doms = $_SESSION['ldap']->search_domains($_SESSION['config']->get_domainSuffix());
+}
 
 echo $_SESSION['header'];
 echo ("<html>\n");
@@ -65,7 +67,7 @@ echo ("<frame src=\"./main_header.php\" name=\"head\" frameborder=\"0\" scrollin
 // display page to add suffixes or add domain, if needed
 if (sizeof($new_suffs) > 0) echo ("<frame src=\"initsuff.php?suffs='" . implode(";", $new_suffs) .
 	"'\" name=\"mainpart\" frameborder=\"0\" scrolling=\"yes\">\n");
-elseif (sizeof($doms) < 1) {
+elseif (($_SESSION['config']->get_samba3() == "yes") && (sizeof($doms) < 1)) {
 	$_SESSION['domain_message'] = _("No domains found, please create one.");
 	echo ("<frame src=\"domain.php?action=new\" name=\"mainpart\" frameborder=\"0\" scrolling=\"yes\">\n");
 }
