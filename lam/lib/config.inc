@@ -133,7 +133,7 @@ class Config {
   var $samba3;
 
   // LDAP cache timeout
-  var $cache_timeout;
+  var $cachetimeout;
 
   // name of configuration file
   var $file;
@@ -151,7 +151,7 @@ class Config {
 	// reloads preferences from config file
 	function reload() {
 		// list of all settings in config file
-		$settings = array("ServerURL", "Passwd", "Admins", "usersuffix", "groupsuffix", "hostsuffix",
+		$settings = array("ServerURL", "Passwd", "Adminstring", "usersuffix", "groupsuffix", "hostsuffix",
 			"domainsuffix", "minuid", "maxuid", "mingid", "maxgid", "minmachine", "maxmachine",
 			"userlistattributes", "grouplistattributes", "hostlistattributes", "maxlistentries",
 			"defaultlanguage", "scriptpath", "scriptServer", "samba3", "cachetimeout");
@@ -249,7 +249,7 @@ class Config {
 				continue;
 				}
 				if (strtolower(substr($line, 0, 14)) == "cachetimeout: ") {
-				$this->cache_timeout = chop(substr($line, 14, strlen($line)-14));
+				$this->cachetimeout = chop(substr($line, 14, strlen($line)-14));
 				continue;
 				}
 			}
@@ -386,7 +386,7 @@ class Config {
 					continue;
 				}
 				if (strtolower(substr($file_array[$i], 0, 14)) == "cachetimeout: ") {
-					$file_array[$i] = "cacheTimeout: " . $this->cache_timeout . "\n";
+					$file_array[$i] = "cacheTimeout: " . $this->cachetimeout . "\n";
 					$save_cachetime = True;
 					continue;
 				}
@@ -422,7 +422,7 @@ class Config {
 			if (!$save_scriptPath == True) array_push($file_array, "\n\n# Path to external Script\n" . "scriptPath: " . $this->scriptPath . "\n");
 			if (!$save_scriptServer == True) array_push($file_array, "\n\n# Server of external Script\n" . "scriptServer: " . $this->scriptServer . "\n");
 			if (!$save_samba3 == True) array_push($file_array, "\n\n# Set to \"yes\" only if you use the new Samba 3.x schema.\n" . "samba3: " . $this->samba3 . "\n");
-			if (!$save_cachetime == True) array_push($file_array, "\n\n# Number of minutes LAM caches LDAP searches.\n" . "cacheTimeout: " . $this->cache_timeout . "\n");
+			if (!$save_cachetime == True) array_push($file_array, "\n\n# Number of minutes LAM caches LDAP searches.\n" . "cacheTimeout: " . $this->cachetimeout . "\n");
 			$file = fopen($conffile, "w");
 			if ($file) {
 				for ($i = 0; $i < sizeof($file_array); $i++) fputs($file, $file_array[$i]);
@@ -438,7 +438,7 @@ class Config {
 	// prints current preferences
 	function printconf() {
 		echo "<b>" . _("Server address") . ": </b>" . $this->ServerURL . "<br>";
-		echo "<b>" . _("Cache timeout") . ": </b>" . $this->cache_timeout . "<br>";
+		echo "<b>" . _("Cache timeout") . ": </b>" . $this->cachetimeout . "<br>";
 		echo "<b>" . _("Samba 3.x schema") . ": </b>" . $this->samba3 . "<br>";
 		echo "<b>" . _("UserSuffix") . ": </b>" . $this->Suff_users . "<br>";
 		echo "<b>" . _("GroupSuffix") . ": </b>" . $this->Suff_groups . "<br>";
@@ -752,18 +752,18 @@ class Config {
 
 	// returns the LDAP cache timeout in minutes
 	function get_cacheTimeout() {
-		return $this->cache_timeout;
+		return $this->cachetimeout;
 	}
 
 	// returns the LDAP cache timeout in seconds
 	function get_cacheTimeoutSec() {
-		return $this->cache_timeout * 60;
+		return $this->cachetimeout * 60;
 	}
 
 	// sets the LDAP cache timeout in minutes
 	function set_cacheTimeout($value) {
 		if (is_numeric($value) && ($value > -1)) {
-			$this->cache_timeout = $value;
+			$this->cachetimeout = $value;
 		}
 		else return false;
 		return true;

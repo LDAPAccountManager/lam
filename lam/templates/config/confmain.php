@@ -42,7 +42,7 @@ if ($_POST['back'] || $_POST['submitconf']){
 		if ($_POST['passwd1']) $_SESSION['passwd1'] = $_POST['passwd1'];
 		if ($_POST['passwd2']) $_SESSION['passwd2'] = $_POST['passwd2'];
 		if ($_POST['serverurl']) $_SESSION['serverurl'] = $_POST['serverurl'];
-		if (isset($_POST['cache_timeout'])) $_SESSION['cache_timeout'] = $_POST['cache_timeout'];
+		if (isset($_POST['cachetimeout'])) $_SESSION['cachetimeout'] = $_POST['cachetimeout'];
 		if ($_POST['admins']) $_SESSION['admins'] = $_POST['admins'];
 		if ($_POST['suffusers']) $_SESSION['suffusers'] = $_POST['suffusers'];
 		if ($_POST['suffgroups']) $_SESSION['suffgroups'] = $_POST['suffgroups'];
@@ -148,7 +148,7 @@ echo ("<tr><td colspan=3>&nbsp</td></tr>");
 // LDAP cache timeout
 echo ("<tr><td align=\"right\"><b>".
 	_("Cache timeout") . " *: </b></td>".
-	"<td><select name=\"cache_timeout\">\n<option selected>".$conf->get_cacheTimeout()."</option>\n");
+	"<td><select name=\"cachetimeout\">\n<option selected>".$conf->get_cacheTimeout()."</option>\n");
 if ($conf->get_cacheTimeout() != 0) echo("<option>0</option>\n");
 if ($conf->get_cacheTimeout() != 1) echo("<option>1</option>\n");
 if ($conf->get_cacheTimeout() != 2) echo("<option>2</option>\n");

@@ -32,7 +32,7 @@ echo ("<br><br><big><b> Starting Test...</b></big><br><br>");
 // now all prferences are loaded
 echo ("Loading preferences...");
 $ServerURL = $conf->get_ServerURL();
-$cache_timeout = $conf->get_cacheTimeout();
+$cachetimeout = $conf->get_cacheTimeout();
 $Passwd = $conf->get_Passwd();
 $Adminstring = $conf->get_Adminstring();
 $Suff_users = $conf->get_UserSuffix();
@@ -109,7 +109,7 @@ echo ("done<br>");
 // restore old values
 echo ("Restoring old preferences...");
 $conf2->set_ServerURL($ServerURL);
-$conf2->set_cacheTimeout($cache_timeout);
+$conf2->set_cacheTimeout($cachetimeout);
 $conf2->set_Passwd($Passwd);
 $conf2->set_Adminstring($Adminstring);
 $conf2->set_UserSuffix($Suff_users);

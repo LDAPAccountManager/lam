@@ -38,7 +38,7 @@ if ($_SESSION['passwd']) $passwd = $_SESSION['passwd'];
 if ($_SESSION['passwd1']) $passwd1 = $_SESSION['passwd1'];
 if ($_SESSION['passwd2']) $passwd2 = $_SESSION['passwd2'];
 if ($_SESSION['serverurl']) $serverurl = $_SESSION['serverurl'];
-if (isset($_SESSION['cache_timeout'])) $cache_timeout = $_SESSION['cache_timeout'];
+if (isset($_SESSION['cachetimeout'])) $cachetimeout = $_SESSION['cachetimeout'];
 if ($_SESSION['admins']) $admins = $_SESSION['admins'];
 if ($_SESSION['suffusers']) $suffusers = $_SESSION['suffusers'];
 if ($_SESSION['suffgroups']) $suffgroups = $_SESSION['suffgroups'];
@@ -82,7 +82,7 @@ if (!$serverurl) {
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
-if (!isset($cache_timeout) || !(is_numeric($cache_timeout)) || !($cache_timeout > -1)) {
+if (!isset($cachetimeout) || !(is_numeric($cachetimeout)) || !($cachetimeout > -1)) {
 	echo ("<font color=\"red\"><b>" . _("Cache timeout is empty!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
@@ -189,7 +189,7 @@ if ($scriptserver && !is_string($scriptserver)) {
 
 // set new preferences
 $conf->set_ServerURL($serverurl);
-$conf->set_cacheTimeout($cache_timeout);
+$conf->set_cacheTimeout($cachetimeout);
 $conf->set_Adminstring($admins);
 $conf->set_UserSuffix($suffusers);
 $conf->set_GroupSuffix($suffgroups);
@@ -235,7 +235,7 @@ unset($_SESSION['passwd']);
 unset($_SESSION['passwd1']);
 unset($_SESSION['passwd2']);
 unset($_SESSION['serverurl']);
-unset($_SESSION['cache_timeout']);
+unset($_SESSION['cachetimeout']);
 unset($_SESSION['admins']);
 unset($_SESSION['suffusers']);
 unset($_SESSION['suffgroups']);
