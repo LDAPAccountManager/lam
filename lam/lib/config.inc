@@ -139,93 +139,93 @@ class Config {
 	$line = fgets($file, 1024);
 	if (($line == "\n")||($line[0] == "#")) continue; // ignore comments
 	// search keywords
-	if (substr($line, 0, 11) == "serverURL: ") {
+	if (strtolower(substr($line, 0, 11)) == "serverurl: ") {
 	  $this->ServerURL = chop(substr($line, 11, strlen($line)-11));
 	  continue;
 	}
-	if (substr($line, 0, 8) == "passwd: ") {
+	if (strtolower(substr($line, 0, 8)) == "passwd: ") {
 	  $this->Passwd = chop(substr($line, 8, strlen($line)-8));
 	  continue;
 	}
-	if (substr($line, 0, 8) == "admins: ") {
+	if (strtolower(substr($line, 0, 8)) == "admins: ") {
 	  $adminstr = chop(substr($line, 8, strlen($line)-8));
 	  $this->Adminstring = $adminstr;
 	  $this->Admins = explode(";", $adminstr);
 	  continue;
 	}
-	if (substr($line, 0, 12) == "usersuffix: ") {
+	if (strtolower(substr($line, 0, 12)) == "usersuffix: ") {
 	  $this->Suff_users = chop(substr($line, 12, strlen($line)-12));
 	  continue;
 	}
-	if (substr($line, 0, 13) == "groupsuffix: ") {
+	if (strtolower(substr($line, 0, 13)) == "groupsuffix: ") {
 	  $this->Suff_groups = chop(substr($line, 13, strlen($line)-13));
 	  continue;
 	}
-	if (substr($line, 0, 12) == "hostsuffix: ") {
+	if (strtolower(substr($line, 0, 12)) == "hostsuffix: ") {
 	  $this->Suff_hosts = chop(substr($line, 12, strlen($line)-12));
 	  continue;
 	}
-	if (substr($line, 0, 14) == "domainsuffix: ") {
+	if (strtolower(substr($line, 0, 14)) == "domainsuffix: ") {
 	  $this->Suff_domains = chop(substr($line, 14, strlen($line)-14));
 	  continue;
 	}
-	if (substr($line, 0, 8) == "minUID: ") {
+	if (strtolower(substr($line, 0, 8)) == "minuid: ") {
 	  $this->MinUID = chop(substr($line, 8, strlen($line)-8));
 	  continue;
 	}
-	if (substr($line, 0, 8) == "maxUID: ") {
+	if (strtolower(substr($line, 0, 8)) == "maxuid: ") {
 	  $this->MaxUID = chop(substr($line, 8, strlen($line)-8));
 	  continue;
 	}
-	if (substr($line, 0, 8) == "minGID: ") {
+	if (strtolower(substr($line, 0, 8)) == "mingid: ") {
 	  $this->MinGID = chop(substr($line, 8, strlen($line)-8));
 	  continue;
 	}
-	if (substr($line, 0, 8) == "maxGID: ") {
+	if (strtolower(substr($line, 0, 8)) == "maxgid: ") {
 	  $this->MaxGID = chop(substr($line, 8, strlen($line)-8));
 	  continue;
 	}
-	if (substr($line, 0, 12) == "minMachine: ") {
+	if (strtolower(substr($line, 0, 12)) == "minmachine: ") {
 	  $this->MinMachine = chop(substr($line, 12, strlen($line)-12));
 	  continue;
 	}
-	if (substr($line, 0, 12) == "maxMachine: ") {
+	if (strtolower(substr($line, 0, 12)) == "maxmachine: ") {
 	  $this->MaxMachine = chop(substr($line, 12, strlen($line)-12));
 	  continue;
 	}
-	if (substr($line, 0, 20) == "userlistAttributes: ") {
+	if (strtolower(substr($line, 0, 20)) == "userlistattributes: ") {
 	  $this->userlistAttributes = chop(substr($line, 20, strlen($line)-20));
 	  continue;
 	}
-	if (substr($line, 0, 21) == "grouplistAttributes: ") {
+	if (strtolower(substr($line, 0, 21)) == "grouplistattributes: ") {
 	  $this->grouplistAttributes = chop(substr($line, 21, strlen($line)-21));
 	  continue;
 	}
-	if (substr($line, 0, 20) == "hostlistAttributes: ") {
+	if (strtolower(substr($line, 0, 20)) == "hostlistattributes: ") {
 	  $this->hostlistAttributes = chop(substr($line, 20, strlen($line)-20));
 	  continue;
 	}
-	if (substr($line, 0, 16) == "maxlistentries: ") {
+	if (strtolower(substr($line, 0, 16)) == "maxlistentries: ") {
 	  $this->maxlistentries = chop(substr($line, 16, strlen($line)-16));
 	  continue;
 	}
-	if (substr($line, 0, 17) == "defaultLanguage: ") {
+	if (strtolower(substr($line, 0, 17)) == "defaultlanguage: ") {
 	  $this->defaultLanguage = chop(substr($line, 17, strlen($line)-17));
 	  continue;
 	}
-	if (substr($line, 0, 12) == "scriptPath: ") {
+	if (strtolower(substr($line, 0, 12)) == "scriptpath: ") {
 	  $this->scriptPath = chop(substr($line, 12, strlen($line)-12));
 	  continue;
 	}
-	if (substr($line, 0, 14) == "scriptServer: ") {
+	if (strtolower(substr($line, 0, 14)) == "scriptserver: ") {
 	  $this->scriptServer = chop(substr($line, 14, strlen($line)-14));
 	  continue;
 	}
-	if (substr($line, 0, 8) == "samba3: ") {
-	  $this->samba3 = chop(substr($line, 8, strlen($line)-8));
+	if (strtolower(substr($line, 0, 8)) == "samba3: ") {
+	  $this->samba3 = strtolower(chop(substr($line, 8, strlen($line)-8)));
 	  continue;
 	}
-	if (substr($line, 0, 14) == "cacheTimeout: ") {
+	if (strtolower(substr($line, 0, 14)) == "cachetimeout: ") {
 	  $this->cache_timeout = chop(substr($line, 14, strlen($line)-14));
 	  continue;
 	}
@@ -257,112 +257,112 @@ class Config {
 			for ($i = 0; $i < sizeof($file_array); $i++) {
 				if (($file_array[$i] == "\n")||($file_array[$i][0] == "#")) continue; // ignore comments
 				// search for keywords
-				if (substr($file_array[$i], 0, 11) == "serverURL: ") {
+				if (strtolower(substr($file_array[$i], 0, 11)) == "serverurl: ") {
 					$file_array[$i] = "serverURL: " . $this->ServerURL . "\n";
 					$save_serverURL = True;
 					continue;
 				}
-				if (substr($file_array[$i], 0, 8) == "passwd: ") {
+				if (strtolower(substr($file_array[$i], 0, 8)) == "passwd: ") {
 					$file_array[$i] = "passwd: " . $this->Passwd . "\n";
 					$save_passwd = True;
 					continue;
 				}
-				if (substr($file_array[$i], 0, 8) == "admins: ") {
+				if (strtolower(substr($file_array[$i], 0, 8)) == "admins: ") {
 					$file_array[$i] = "admins: " . $this->Adminstring . "\n";
 					$save_admins = True;
 					continue;
 				}
-				if (substr($file_array[$i], 0, 12) == "usersuffix: ") {
+				if (strtolower(substr($file_array[$i], 0, 12)) == "usersuffix: ") {
 					$file_array[$i] = "usersuffix: " . $this->Suff_users . "\n";
 					$save_suffusr = True;
 					continue;
 				}
-				if (substr($file_array[$i], 0, 13) == "groupsuffix: ") {
+				if (strtolower(substr($file_array[$i], 0, 13)) == "groupsuffix: ") {
 					$file_array[$i] = "groupsuffix: " . $this->Suff_groups . "\n";
 					$save_suffgrp = True;
 					continue;
 				}
-				if (substr($file_array[$i], 0, 12) == "hostsuffix: ") {
+				if (strtolower(substr($file_array[$i], 0, 12)) == "hostsuffix: ") {
 					$file_array[$i] = "hostsuffix: " . $this->Suff_hosts . "\n";
 					$save_suffhst = True;
 					continue;
 				}
-				if (substr($file_array[$i], 0, 14) == "domainsuffix: ") {
+				if (strtolower(substr($file_array[$i], 0, 14)) == "domainsuffix: ") {
 					$file_array[$i] = "domainsuffix: " . $this->Suff_domains . "\n";
 					$save_suffdom = True;
 					continue;
 				}
-				if (substr($file_array[$i], 0, 8) == "minUID: ") {
+				if (strtolower(substr($file_array[$i], 0, 8)) == "minuid: ") {
 					$file_array[$i] = "minUID: " . $this->MinUID . "\n";
 					$save_minUID = True;
 					continue;
 				}
-				if (substr($file_array[$i], 0, 8) == "maxUID: ") {
+				if (strtolower(substr($file_array[$i], 0, 8)) == "maxuid: ") {
 					$file_array[$i] = "maxUID: " . $this->MaxUID . "\n";
 					$save_maxUID = True;
 					continue;
 				}
-				if (substr($file_array[$i], 0, 8) == "minGID: ") {
+				if (strtolower(substr($file_array[$i], 0, 8)) == "mingid: ") {
 					$file_array[$i] = "minGID: " . $this->MinGID . "\n";
 					$save_minGID = True;
 					continue;
 				}
-				if (substr($file_array[$i], 0, 8) == "maxGID: ") {
+				if (strtolower(substr($file_array[$i], 0, 8)) == "maxgid: ") {
 					$file_array[$i] = "maxGID: " . $this->MaxGID . "\n";
 					$save_maxGID = True;
 					continue;
 				}
-				if (substr($file_array[$i], 0, 12) == "minMachine: ") {
+				if (strtolower(substr($file_array[$i], 0, 12)) == "minmachine: ") {
 					$file_array[$i] = "minMachine: " . $this->MinMachine . "\n";
 					$save_minMach = True;
 					continue;
 				}
-				if (substr($file_array[$i], 0, 12) == "maxMachine: ") {
+				if (strtolower(substr($file_array[$i], 0, 12)) == "maxmachine: ") {
 					$file_array[$i] = "maxMachine: " . $this->MaxMachine . "\n";
 					$save_maxMach = True;
 					continue;
 				}
-				if (substr($file_array[$i], 0, 20) == "userlistAttributes: ") {
+				if (strtolower(substr($file_array[$i], 0, 20)) == "userlistattributes: ") {
 					$file_array[$i] = "userlistAttributes: " . $this->userlistAttributes . "\n";
 					$save_usrlstattr = True;
 					continue;
 				}
-				if (substr($file_array[$i], 0, 21) == "grouplistAttributes: ") {
+				if (strtolower(substr($file_array[$i], 0, 21)) == "grouplistattributes: ") {
 					$file_array[$i] = "grouplistAttributes: " . $this->grouplistAttributes . "\n";
 					$save_grplstattr = True;
 					continue;
 				}
-				if (substr($file_array[$i], 0, 20) == "hostlistAttributes: ") {
+				if (strtolower(substr($file_array[$i], 0, 20)) == "hostlistattributes: ") {
 					$file_array[$i] = "hostlistAttributes: " . $this->hostlistAttributes . "\n";
 					$save_hstlstattr = True;
 					continue;
 				}
-				if (substr($file_array[$i], 0, 16) == "maxlistentries: ") {
+				if (strtolower(substr($file_array[$i], 0, 16)) == "maxlistentries: ") {
 					$file_array[$i] = "maxlistentries: " . $this->maxlistentries . "\n";
 					$save_maxlstent = True;
 					continue;
 				}
-				if (substr($file_array[$i], 0, 17) == "defaultLanguage: ") {
+				if (strtolower(substr($file_array[$i], 0, 17)) == "defaultlanguage: ") {
 					$file_array[$i] = "defaultLanguage: " . $this->defaultLanguage . "\n";
 					$save_deflang = True;
 					continue;
 				}
-				if (substr($file_array[$i], 0, 12) == "scriptPath: ") {
+				if (strtolower(substr($file_array[$i], 0, 12)) == "scriptpath: ") {
 					$file_array[$i] = "scriptPath: " . $this->scriptPath . "\n";
 					$save_scriptPath = True;
 					continue;
 				}
-				if (substr($file_array[$i], 0, 14) == "scriptServer: ") {
+				if (strtolower(substr($file_array[$i], 0, 14)) == "scriptserver: ") {
 					$file_array[$i] = "scriptServer: " . $this->scriptServer . "\n";
 					$save_scriptServer = True;
 					continue;
 				}
-				if (substr($file_array[$i], 0, 8) == "samba3: ") {
+				if (strtolower(substr($file_array[$i], 0, 8)) == "samba3: ") {
 					$file_array[$i] = "samba3: " . $this->samba3 . "\n";
 					$save_samba3 = True;
 					continue;
 				}
-				if (substr($file_array[$i], 0, 14) == "cacheTimeout: ") {
+				if (strtolower(substr($file_array[$i], 0, 14)) == "cachetimeout: ") {
 					$file_array[$i] = "cacheTimeout: " . $this->cache_timeout . "\n";
 					$save_cachetime = True;
 					continue;
