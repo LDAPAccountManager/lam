@@ -239,7 +239,10 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 		break;
 	case 'finish':
 		// Check if pdf-file should be created
-		if ($_POST['outputpdf']) createpdf($_SESSION['account']);
+		if ($_POST['outputpdf']) {
+			createpdf($_SESSION['account']);
+			$select_local = 'pdf';
+			}
 		break;
 	}
 
@@ -284,16 +287,18 @@ if ($_POST['load']) $select_local='load';
 if ($_POST['save']) $select_local='save';
 
 
-// Write HTML-Header and part of Table
-echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"
-       \"http://www.w3.org/TR/html4/loose.dtd\">\n";
-echo "<html><head><title>";
-echo _("Create new Account");
-echo "</title>\n
-	<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">\n
-	<meta http-equiv=\"pragma\" content=\"no-cache\">\n
-	<meta http-equiv=\"cache-control\" content=\"no-cache\">\n
-	<meta http-equiv=\"Content-Type\" content=\"text/html; charset=ISO-8859-1\">";
+if ($select_local != 'pdf') {
+	// Write HTML-Header and part of Table
+	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"
+		\"http://www.w3.org/TR/html4/loose.dtd\">\n";
+	echo "<html><head><title>";
+	echo _("Create new Account");
+	echo "</title>\n
+		<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">\n
+		<meta http-equiv=\"pragma\" content=\"no-cache\">\n
+		<meta http-equiv=\"cache-control\" content=\"no-cache\">\n
+		<meta http-equiv=\"Content-Type\" content=\"text/html; charset=ISO-8859-1\">";
+	}
 
 switch ($select_local) {
 	// backmain = back to lists
@@ -353,10 +358,13 @@ switch ($select_local) {
 		break;
 	}
 
+
+if ($select_local != 'pdf') {
 	echo "</head><body>\n";
 	echo "<form action=\"account.php\" method=\"post\">\n";
 	if ($error != "0") StatusMessage("ERROR", _("Invalid Value!"), $error);
 	echo "<table rules=\"all\" class=\"account\" width=\"100%\">\n";
+	}
 
 
 switch ($select_local) { // Select which part of page will be loaded
@@ -1009,5 +1017,5 @@ switch ($select_local) { // Select which part of page will be loaded
 	}
 
 // Print end of HTML-Page
-echo '</table></form></body></html>';
+if ($select_local != 'pdf') echo '</table></form></body></html>';
 ?>

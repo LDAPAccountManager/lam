@@ -769,7 +769,7 @@ function createuser($values) { // Will create the LDAP-Account
 		addhomedir($values->general_username);
 		}
 	// Add User to Additional Groups
-	if ($values->general_groupadd)
+	if ($values->general_groupadd[0])
 		foreach ($values->general_groupadd as $group2) {
 			$result = ldap_search($_SESSION['ldap']->server(), 'cn='.$group2.','.$_SESSION['config']->get_GroupSuffix(), "objectclass=posixGroup");
 			$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
@@ -1013,7 +1013,7 @@ function createhost($values) { // Will create the LDAP-Account
 	$success = ldap_add($_SESSION['ldap']->server(),$values->general_dn, $attr);
 	if (!$success) return 4;
 	// Add Host to Additional Groups
-	if ($values->general_groupadd)
+	if ($values->general_groupadd[0])
 		foreach ($values->general_groupadd as $group2) {
 			$result = ldap_search($_SESSION['ldap']->server(), 'cn='.$group2.','.$_SESSION['config']->get_GroupSuffix(), "objectclass=posixGroup");
 			$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);

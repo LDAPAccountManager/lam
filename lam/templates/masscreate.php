@@ -38,21 +38,26 @@ if ($_POST['tolist'] && ($_FILES['userfile']['size']>0)) $select = 'list';
 if ($_POST['back']) $select = 'main';
 if ($_POST['cancel']) $select = 'cancel';
 if ($_POST['create']) $select = 'create';
-if ($_POST['pdf']) createpdf($_SESSION['accounts']);
+if ($_POST['pdf']) {
+	createpdf($_SESSION['accounts']);
+	$select='pdf';
+	}
 if (!$select && !$_SESSION['pointer']) $select='main';
 if (!$select && $_SESSION['pointer']) $select='create';
 
 
-// Write HTML-Header and part of Table
-echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-       "http://www.w3.org/TR/html4/loose.dtd">';
-echo '<html><head><title>';
-echo _('Create new Accounts');
-echo '</title>
-	<link rel="stylesheet" type="text/css" href="../style/layout.css">
-	<meta http-equiv="pragma" content="no-cache">
-	<meta http-equiv="cache-control" content="no-cache">
-	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">';
+if ($select!='pdf') {
+	// Write HTML-Header and part of Table
+	echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+		"http://www.w3.org/TR/html4/loose.dtd">';
+	echo '<html><head><title>';
+	echo _('Create new Accounts');
+	echo '</title>
+		<link rel="stylesheet" type="text/css" href="../style/layout.css">
+		<meta http-equiv="pragma" content="no-cache">
+		<meta http-equiv="cache-control" content="no-cache">
+		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">';
+	}
 
 switch ($select) {
 	case 'cancel':
@@ -68,10 +73,12 @@ switch ($select) {
 		break;
 	}
 
-echo	'</head><body>
-	<form enctype="multipart/form-data" action="masscreate.php" method="post">';
+if ($select!='pdf') {
+	echo	'</head><body>
+		<form enctype="multipart/form-data" action="masscreate.php" method="post">';
 	echo '<table rules="all" class="masscreate" width="100%">
-	<tr><td></td></tr>';
+		<tr><td></td></tr>';
+	}
 
 switch ($select) {
 	case 'main':
@@ -228,5 +235,5 @@ switch ($select) {
 	}
 
 
-echo '</table></form></body></html>';
+if ($select!='pdf') echo '</table></form></body></html>';
 ?>
