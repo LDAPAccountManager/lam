@@ -23,6 +23,7 @@ $Id$
   LDAP Account Manager help topics.
 */
 
+setlanguage();
 
 $helpArray = array (
 				// 0 - 99
