@@ -272,7 +272,7 @@ elseif ($_POST['sub_save']) {
 		if (@ldap_add($_SESSION['ldap']->server(), $DN, $attr)) {
 			StatusMessage("INFO", "Domain has been created.", $DN);
 		}
-		else StatusMessage("ERROR", "", "Failed to add domain!" . "\n<br>" .  ldap_error($_SESSION['ldap']->server()));
+		else StatusMessage("ERROR", "", _("Failed to add domain!") . "\n<br>" .  ldap_error($_SESSION['ldap']->server()));
 	}
 	echo "<p>&nbsp;</p>\n";
 	echo "<p><a href=\"lists/listdomains.php\">" . _("Back to domain list") . "</a></p>\n";
