@@ -66,7 +66,7 @@ background-color:#EEEEEE;
 
 
 /**
- * table style for userlist.php
+ * style for userlist.php
  *
  */
 
@@ -97,6 +97,32 @@ tr.userlist_over {
 tr.userlist_checked {
   background-color:#FFCCCC;
 }
+
+/* color for active page digit */
+td.userlist_activepage {
+ color:violet;
+}
+
+/* style of navigation bar */
+td.userlist_navbar {
+ color:#AAAAAA;
+}
+
+table.userlist_navbar {
+  background-color:#DDDDDD;
+}
+
+td.userlist_navbartext {
+  color:green;
+  font-family:Verdana;
+  font-size:10px;
+}
+
+/* style of active column */
+th.userlist_activecolumn {
+  background-color:#DDDDAC;
+}
+
 
 /**
  * table style for grouplist.php
