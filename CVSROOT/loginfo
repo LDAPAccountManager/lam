@@ -24,3 +24,6 @@
 #DEFAULT (echo ""; id; echo %s; date; cat) >> $CVSROOT/CVSROOT/commitlog
 # or
 #DEFAULT (echo ""; id; echo %{sVv}; date; cat) >> $CVSROOT/CVSROOT/commitlog
+#
+# commit messages for lam-cvs
+DEFAULT /cvsroot/sitedocs/CVSROOT/cvstools/syncmail %{sVv} lam-cvs@lists.sourceforge.net
