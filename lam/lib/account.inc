@@ -533,11 +533,7 @@ function getgrnam($gidNumber) {
 	while (!isset($return) && isset($_SESSION['groupDN'][$groupDN_local[$i]]['uidNumber'])) {
 		if ($_SESSION['groupDN'][$groupDN_local[$i]]['uidNumber'] == $gidNumber) {
 			// We've found the correct entry. Now we need the groupname
-			// Get end position (',')
-			$end = strpos($groupDN_local[$i], ',');
-			// start position is allways 3 (cn=...)
-			// Get groupname from dn
-			$return = substr($groupDN_local[$i], 3, $end-3);
+			$return = $_SESSION['groupDN'][$groupDN_local[$i]]['cn'];
 			}
 		// Increase loop-variable if entry wasn't found
 		else $i++;
@@ -703,7 +699,7 @@ function loaduser($dn) {
 	$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
 
 	// Set user samba flag
-	$account_new->smb_flagsW = 0;
+	$account_new->smb_flagsW = false;
 	/* Write attributes into $return.
 	* Some values don't have to be set. These are only loaded if they are set
 	*/
@@ -794,11 +790,11 @@ function loaduser($dn) {
 		if (isset($attr['sambaDomainName'][0])) $return->smb_domain = $attr['sambaDomainName'][0];
 		if (isset($attr['sambaNTPassword'][0]))  $return->smb_password = $attr['sambaNTPassword'][0];
 		if (isset($attr['sambaDomainName'][0])) {
-			if ($_SESSION['config']->samba3=='yes') {
+			if ($_SESSION['config']->is_samba3()) {
 				// store smb_domain as samba3domain-Object
 				$samba3domains = $_SESSION['ldap']->search_domains($_SESSION[config]->get_domainSuffix());
 				$i=0;
-				while (!isset($return->smb_domain) && (count($samba3domains)-1<$i)) {
+				while (!isset($return->smb_domain) && (count($samba3domains)>$i)) {
 					if ($attr['sambaDomainName'][0] == $samba3domains[$i]->name)
 						$return->smb_domain = $samba3domains[$i];
 					else $i++;
@@ -808,7 +804,7 @@ function loaduser($dn) {
 			if (!isset($return->smb_domain)) $return->smb_domain = $attr['sambaDomainName'];
 			}
 		if (isset($attr['sambaPrimaryGroupSID'][0])) {
-			if ($_SESSION['config']->samba3=='yes')
+			if ($_SESSION['config']->is_samba3())
 				// store "real" SID if we want to save user as samba3 entry
 				$return->smb_mapgroup = $attr['sambaPrimaryGroupSID'][0];
 				// store "calculated" id if we want to save user as samba2.2 entry
@@ -835,11 +831,11 @@ function loaduser($dn) {
 		if (isset($attr['profilePath'][0])) $return->smb_profilePath = $attr['profilePath'][0];
 		if (isset($attr['userWorkstations'][0])) $return->smb_smbuserworkstations = $attr['userWorkstations'][0];
 		if (isset($attr['domain'][0])) {
-			if ($_SESSION['config']->samba3=='yes') {
+			if ($_SESSION['config']->is_samba3()) {
 				// store smb_domain as samba3domain-Object
 				$samba3domains = $_SESSION['ldap']->search_domains($_SESSION[config]->get_domainSuffix());
 				$i=0;
-				while (!isset($return->smb_domain) && (count($samba3domains)-1<$i)) {
+				while (!isset($return->smb_domain) && (count($samba3domains)>$i)) {
 					if ($attr['domain'][0] == $samba3domains[$i]->name)
 						$return->smb_domain = $samba3domains[$i];
 					else $i++;
@@ -849,7 +845,7 @@ function loaduser($dn) {
 			if (!isset($return->smb_domain)) $return->smb_domain = $attr['domain'];
 			}
 		if (isset($attr['primaryGroupID'][0])) {
-			if ($_SESSION['config']->samba3=='yes')
+			if ($_SESSION['config']->is_samba3())
 				// store "real" SID if we want to save user as samba3 entry
 				$return->smb_mapgroup = $return->smb_domain->SID. '-' . (2*$attr['primaryGroupID'][0]+1);
 				// store "calculated" id if we want to save user as samba2.2 entry
@@ -877,8 +873,8 @@ function loadhost($dn) {
 	$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
 
 	// Set host samba flags
-	$return->smb_flagsW = 1;
-	$return->smb_flagsX = 1;
+	$return->smb_flagsW = true;
+	$return->smb_flagsX = true;
 	// load objectclasses
 	$i=0;
 	while (isset($attr['objectClass'][$i])) {
@@ -906,11 +902,11 @@ function loadhost($dn) {
 			// Because the "D"-Flag is ignored for hosts it has been removed
 			}
 		if (isset($attr['sambaDomainName'][0])) {
-			if ($_SESSION['config']->samba3=='yes') {
+			if ($_SESSION['config']->is_samba3()) {
 				// store smb_domain as samba3domain-Object
 				$samba3domains = $_SESSION['ldap']->search_domains($_SESSION[config]->get_domainSuffix());
 				$i=0;
-				while (!isset($return->smb_domain) && (count($samba3domains)-1<$i)) {
+				while (!isset($return->smb_domain) && (count($samba3domains)>$i)) {
 					if ($attr['sambaDomainName'][0] == $samba3domains[$i]->name)
 						$return->smb_domain = $samba3domains[$i];
 					else $i++;
@@ -920,7 +916,7 @@ function loadhost($dn) {
 			if (!isset($return->smb_domain)) $return->smb_domain = $attr['sambaDomainName'];
 			}
 		if (isset($attr['sambaPrimaryGroupSID'][0])) {
-			if ($_SESSION['config']->samba3=='yes')
+			if ($_SESSION['config']->is_samba3())
 				// store "real" SID if we want to save user as samba3 entry
 				$return->smb_mapgroup = $attr['sambaPrimaryGroupSID'][0];
 				// store "calculated" id if we want to save user as samba2.2 entry
@@ -939,11 +935,11 @@ function loadhost($dn) {
 			// Because the "D"-Flag is ignored for hosts it has been removed
 			}
 		if (isset($attr['domain'][0])) {
-			if ($_SESSION['config']->samba3=='yes') {
+			if ($_SESSION['config']->is_samba3()) {
 				// store smb_domain as samba3domain-Object
 				$samba3domains = $_SESSION['ldap']->search_domains($_SESSION[config]->get_domainSuffix());
 				$i=0;
-				while (!isset($return->smb_domain) && (count($samba3domains)-1<$i)) {
+				while (!isset($return->smb_domain) && (count($samba3domains)>$i)) {
 					if ($attr['domain'][0] == $samba3domains[$i]->name)
 						$return->smb_domain = $samba3domains[$i];
 					else $i++;
@@ -953,7 +949,7 @@ function loadhost($dn) {
 			if (!isset($return->smb_domain)) $return->smb_domain = $attr['domain'];
 			}
 		if (isset($attr['primaryGroupID'][0])) {
-			if ($_SESSION['config']->samba3=='yes')
+			if ($_SESSION['config']->is_samba3())
 				// store "real" SID if we want to save user as samba3 entry
 				$return->smb_mapgroup = $return->smb_domain->SID. '-' . (2*$attr['primaryGroupID'][0]+1);
 				// store "calculated" id if we want to save user as samba2.2 entry
@@ -1009,7 +1005,7 @@ function loadgroup($dn) {
 		$SID = $temp[0].'-'.$temp[1].'-'.$temp[2].'-'.$temp[3].'-'.$temp[4].'-'.$temp[5].'-'.$temp[6];
 		$samba3domains = $_SESSION['ldap']->search_domains($_SESSION[config]->get_domainSuffix());
 		$i=0;
-		while (!isset($return->smb_domain) && (count($samba3domains)-1<$i)) {
+		while (!isset($return->smb_domain) && (count($samba3domains)>$i)) {
 			if ($SID == $samba3domains[$i]->SID)
 				$return->smb_domain = $samba3domains[$i];
 			else $i++;
@@ -1054,7 +1050,7 @@ function createuser($values) {
 	$attr['givenName'] = utf8_encode($values->general_givenname);
 	$attr['sn'] = utf8_encode($values->general_surname);
 	// values stored in shadowExpire, days since 1.1.1970
-	$attr['shadowExpire'] =  $values->unix_pwdexpire / 86400 ;
+	if (isset($values->unix_pwdexpire)) $attr['shadowExpire'] =  intval($values->unix_pwdexpire / 86400) ;
 
 	/* Write unix attributes into $attr array
 	* Some values don't have to be set. These are only loaded if they are set
@@ -1969,7 +1965,8 @@ function creategroup($values) {
 	*/
 	if ($values->general_gecos) $attr['description'] = utf8_encode($values->general_gecos);
 	// Samba 3 attributes
-	if ($_SESSION['config']->samba3 =='yes') {
+	// $values->smb_mapgroup is not set if creategroup is called from masscreate.php
+	if ($_SESSION['config']->is_samba3() && isset($values->smb_mapgroup)) {
 		$attr['sambaSID'] = $values->smb_mapgroup;
 		$attr['objectClass'][1] = 'sambaGroupMapping';
 		$attr['sambaGroupType'] = '2';
@@ -2027,7 +2024,7 @@ function modifygroup($values,$values_old) {
 	if ($values->smb_displayName != $values_old->smb_displayName)
 		$attr['displayName'] = utf8_encode($values->smb_displayName);
 	// Samba 3.0 attributes
-	if ($_SESSION['config']->samba3 =='yes') {
+	if ($_SESSION['config']->is_samba3()) {
 		if ($values->smb_mapgroup != $values_old->smb_mapgroup)
 			$attr['sambaSID'] = $values->smb_mapgroup;
 		}

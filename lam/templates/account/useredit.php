@@ -226,6 +226,7 @@ switch ($_POST['select']) {
 			if ( !ereg('^([a-z]|[0-9]|[.]|[-]|[_])*$', $account_new->general_username))
 				$errors[] = array('ERROR', _('Username'), _('Username contains invalid characters. Valid characters are: a-z, 0-9 and .-_ !'));
 			// Check if user already exists
+			// Remove primary group from additional groups if set.
 			if (isset($account_new->general_groupadd) && in_array($account_new->general_group, $account_new->general_groupadd)) {
 				for ($i=0; $i<count($account_new->general_groupadd); $i++ )
 					if ($account_new->general_groupadd[$i] == $account_new->general_group) {
@@ -1251,7 +1252,7 @@ switch ($select_local) {
 		echo _('Windows groupname');
 		echo '</td>'."\n".'<td><select name="f_smb_mapgroup" >';
 		// Display if group SID should be mapped to a well kown SID
-		if ($config_intern->samba3=='yes') {
+		if ($config_intern->is_samba3()) {
 			if ( $account_new->smb_mapgroup == $account_new->smb_domain->SID . "-".
 			(2 * getgid($account_new->general_group) + $values->smb_domain->RIDbase+1)) {
 				echo '<option selected> ';

@@ -23,6 +23,7 @@ $Id$
   LDAP Account Manager displays table for creating or modifying accounts in LDAP
 */
 
+// include all needed files
 include_once('../lib/account.inc'); // File with all account-funtions
 include_once('../lib/config.inc'); // File with configure-functions
 include_once('../lib/profiles.inc'); // functions to load and save profiles
@@ -33,30 +34,49 @@ include_once('../lib/ldap.inc'); // LDAP-functions
 // Start Session
 session_save_path('../sess');
 @session_start();
+// Set correct language, codepages, ....
+setlanguage();
 
-// Print header and part of body
-echo	'<html><head><title>';
-echo _('Create new accounts');
-echo '</title>'.
-	'<link rel="stylesheet" type="text/css" href="../style/layout.css">'.
-	'<meta http-equiv="pragma" content="no-cache">'.
-	'<meta http-equiv="cache-control" content="no-cache">'.
-	'</head><body>'.
-	'<form enctype="multipart/form-data" action="massdetail.php" method="post">'.
-	'<table class="massdetail" width="100%">';
-
+// Startcondition massdetail.php was called from masscreate.php
 if (isset($_GET)) {
+	// $row the the position of the useraccount in an array of account-objects
 	$row = $_GET['row'];
+	/* $select chooses which kind of page should be displayed
+	* detail = Show settings which are individuel for every user. These
+	*          settings can be changed
+	* info = Show all infos about user
+	* warn = Show all warning about user
+	* error = Show all errors about user
+	*/
 	$select = $_GET['type'];
+	// Get Copy of current account so we can undo all settings
+	if ($select=='detail') $_SESSION['accounts_backup'] = $_SESSION['accounts'][$row];
 	}
-if ($_POST) {
+// massdetail.php was called from itself
+else if (isset($_POST)) {
+	// $row the the position of the useraccount in an array of account-objects
 	$row = $_POST['row'];
+	/* $select chooses which kind of page should be displayed
+	* detail = Show settings which are individuel for every user. These
+	*          settings can be changed
+	* info = Show all infos about user
+	* warn = Show all warning about user
+	* error = Show all errors about user
+	*/
 	$select = $_POST['type'];
 	}
 
+// Undo-Button was pressed.
+if ($_POST['undo']) {
+	$_SESSION['accounts'][$row] = $_SESSION['accounts_backup'];
+	$errors2[] = array('INFO', _('Undo'), _('All changes were reseted'));
+	$select = 'detail';
+	}
+
+// Apply-Button was pressed.
 if ($_POST['apply']) {
-
-
+	// Show Detail-page
+	$select = 'detail';
 	// Check if surname is valid
 	if ( !ereg('^([a-z]|[A-Z]|[-]|[ ]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+$', $_POST['f_general_surname'])) $errors2[] = array('ERROR', _('Surname'), _('Surname contains invalid characters'));
 		else $_SESSION['accounts'][$row]->general_surname = $_POST['f_general_surname'];
@@ -69,42 +89,54 @@ if ($_POST['apply']) {
 	else if ( !ereg('^([a-z]|[A-Z]).*$', $_POST['f_general_username']))
 		$errors2[] = array('ERROR', _('Name'), _('Name contains invalid characters. First character must be a letter'));
 	else {
+		// Create Array with all users in ldap and in array
+		// Validate cache-array
+		ldapreload('user');
+		// Get List with all existing usernames
+		foreach ($_SESSION['userDN'] as $user_array) $users[] = $user_array['cn'];
+		// Get List with all users in array
+		foreach ($_SESSION['accounts'] as $user_array) $users[] = $user_array->general_username;
+		// unset old username in user-array
+		$users = @array_flip($users);
+		unset ($users[$_SESSION['accounts'][$row]->general_username]);
+		$users = array_flip($users);
+		// Store new username
 		$_SESSION['accounts'][$row]->general_username = $_POST['f_general_username'];
-		// Check if user already exists
-		if (isset($_SESSION['accounts'][$row]->general_groupadd) && in_array($_SESSION['accounts'][$row]->general_group, $_SESSION['accounts'][$row]->general_groupadd)) {
-			for ($i=0; $i<count($_SESSION['accounts'][$row]->general_groupadd); $i++ )
-				if ($_SESSION['accounts'][$row]->general_groupadd[$i] == $_SESSION['accounts'][$row]->general_group) {
-					unset ($_SESSION['accounts'][$row]->general_groupadd[$i]);
-					$_SESSION['accounts'][$row]->general_groupadd = array_values($_SESSION['accounts'][$row]->general_groupadd);
-					}
-			}
-		// Create automatic useraccount with number if original user already exists
-		// Reset name to original name if new name is in use
-		while ($temp = ldapexists($_SESSION['accounts'][$row])) {
+			// Set all usernames to unique usernames
+		while (in_array($_SESSION['accounts'][$row2]->general_username, $users)) {
 			// get last character of username
-			$lastchar = substr($_SESSION['accounts'][$row]->general_username, strlen($_SESSION['accounts'][$row]->general_username)-1, 1);
+			$lastchar = substr($_SESSION['accounts'][$row2]->general_username, strlen($_SESSION['accounts'][$row2]->general_username)-1, 1);
 			// Last character is no number
 			if ( !ereg('^([0-9])+$', $lastchar))
-				$_SESSION['accounts'][$row]->general_username = $_SESSION['accounts'][$row]->general_username . '2';
+				/* Last character is no number. Therefore we only have to
+				* add "2" to it.
+				*/
+				$_SESSION['accounts'][$row2]->general_username = $_SESSION['accounts'][$row2]->general_username . '2';
 			 else {
-			 	$i=strlen($_SESSION['accounts'][$row]->general_username)-1;
+				/* Last character is a number -> we have to increase the number until we've
+				* found a groupname with trailing number which is not in use.
+				*
+				* $i will show us were we have to split groupname so we get a part
+				* with the groupname and a part with the trailing number
+				*/
+			 	$i=strlen($_SESSION['accounts'][$row2]->general_username)-1;
 				$mark = false;
+				// Set $i to the last character which is a number in $account_new->general_username
 			 	while (!$mark) {
-					if (ereg('^([0-9])+$',substr($_SESSION['accounts'][$row]->general_username, $i, strlen($_SESSION['accounts'][$row]->general_username)-$i))) $i--;
+					if (ereg('^([0-9])+$',substr($_SESSION['accounts'][$row2]->general_username, $i, strlen($_SESSION['accounts'][$row2]->general_username)-$i))) $i--;
 						else $mark=true;
 					}
 				// increase last number with one
-				$firstchars = substr($_SESSION['accounts'][$row]->general_username, 0, $i+1);
-				$lastchars = substr($_SESSION['accounts'][$row]->general_username, $i+1, strlen($_SESSION['accounts'][$row]->general_username)-$i);
-				$_SESSION['accounts'][$row]->general_username = $firstchars . (intval($lastchars)+1);
+				$firstchars = substr($_SESSION['accounts'][$row2]->general_username, 0, $i+1);
+				$lastchars = substr($_SESSION['accounts'][$row2]->general_username, $i+1, strlen($_SESSION['accounts'][$row2]->general_username)-$i);
+				// Put username together
+				$_SESSION['accounts'][$row2]->general_username = $firstchars . (intval($lastchars)+1);
 			 	}
 			}
+			// Show warning if lam has changed username
+			if ($_SESSION['accounts'][$row2]->general_username != $_POST['f_general_username']) $errors2[] = array('WARN', _('Username'), _('Username in use. Selected next free username.'));
 		}
-	// check if group is valid
-	if ($_POST['f_general_group']!='') $_SESSION['accounts'][$row]->general_group = $_POST['f_general_group'];
-		else $errors2[] = array('ERROR', _('Primary group'), _('No primary group defined.'));
-	if (in_array($_POST['f_general_group'], findgroups())) $_SESSION['accounts'][$row]->general_group = $_POST['f_general_group'];
-		else $errors2[] = array('WARN', _('Primary group'), _('Primary group does not exist. Will create group automaticly.'));
+	// Check personal settings
 	if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $_POST['f_personal_title']))  $errors2[] = array('ERROR', _('Title'), _('Please enter a valid title!'));
 		else $_SESSION['accounts'][$row]->personal_title = $_POST['f_personal_title'];
 	if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $_POST['f_personal_employeeType']))  $errors2[] = array('ERROR', _('Employee type'), _('Please enter a valid employee type!'));
@@ -119,42 +151,53 @@ if ($_POST['apply']) {
 		else $_SESSION['accounts'][$row]->personal_telephoneNumber = $_POST['f_personal_telephoneNumber'];
 	if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/])*$', $_POST['f_personal_mobileTelephoneNumber']))  $errors2[] = array('ERROR', _('Mobile number'), _('Please enter a valid mobile number!'));
 		else $_SESSION['accounts'][$row]->personal_mobileTelephoneNumber = $_POST['f_personal_mobileTelephoneNumber'];
-
 	if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/])*$', $_POST['f_personal_facsimileTelephoneNumber']))  $errors2[] = array('ERROR', _('Fax number'), _('Please enter a valid fax number!'));
 		else $_SESSION['accounts'][$row]->personal_facsimileTelephoneNumber = $_POST['f_personal_facsimileTelephoneNumber'];
 	if ( !ereg('^(([0-9]|[A-Z]|[a-z]|[.]|[-]|[_])+[@]([0-9]|[A-Z]|[a-z]|[-])+([.]([0-9]|[A-Z]|[a-z]|[-])+)*)*$', $_POST['f_personal_mail']))  $errors2[] = array('ERROR', _('eMail address'), _('Please enter a valid eMail address!'));
 		else $_SESSION['accounts'][$row]->personal_mail = $_POST['f_personal_mail'];
-
 	}
 
+// Print header and part of body
+echo	'<html><head><title>';
+echo _('Create new accounts');
+echo '</title>'.
+	'<link rel="stylesheet" type="text/css" href="../style/layout.css">'.
+	'<meta http-equiv="pragma" content="no-cache">'.
+	'<meta http-equiv="cache-control" content="no-cache">'.
+	'</head><body>'.
+	'<form enctype="multipart/form-data" action="massdetail.php" method="post">'.
+	'<table class="massdetail" width="100%">';
+// Store variabled in $_POST
 echo '<tr><td><input name="type" type="hidden" value="'.$select.'"></td></tr>';
 echo '<tr><td><input name="row" type="hidden" value="'.$row.'"></td></tr>';
 
-if (is_array($errors2)) {
-	for ($i=0; $i<sizeof($errors2); $i++) {
-		StatusMessage($errors2[$i][0], $errors2[$i][1], $errors2[$i][2]);
-		}
-	}
+// Display errir-messages
+if (is_array($errors2))
+	for ($i=0; $i<sizeof($errors2); $i++) StatusMessage($errors2[$i][0], $errors2[$i][1], $errors2[$i][2]);
 
 
 switch ($select) {
+	/* $select chooses which kind of page should be displayed
+	* detail = Show settings which are individuel for every user. These
+	*          settings can be changed
+	* info = Show all infos about user
+	* warn = Show all warning about user
+	* error = Show all errors about user
+	*/
 	case 'error':
 		for ($i=0; $i<sizeof($_SESSION['errors'][$row]); $i++)
-			if ($_SESSION['errors'][$row][$i][0] == 'ERROR') {
+			if ($_SESSION['errors'][$row][$i][0] == 'ERROR')
 				StatusMessage('ERROR', _('Invalid Value!'), $_SESSION['errors'][$row][$i][2]);
-				}
 		break;
 	case 'info':
 		for ($i=0; $i<sizeof($_SESSION['errors'][$row]); $i++)
-			if ($_SESSION['errors'][$row][$i][0] == 'INFO') {
+			if ($_SESSION['errors'][$row][$i][0] == 'INFO')
 				StatusMessage('INFO', _('Check values.'), $_SESSION['errors'][$row][$i][2]);
-				}
 		break;
 	case 'warn':
 		for ($i=0; $i<sizeof($_SESSION['errors'][$row]); $i++)
-			if ($_SESSION['errors'][$row][$i][0] == 'WARN') {
+			if ($_SESSION['errors'][$row][$i][0] == 'WARN')
 				StatusMessage('WARN', _('Check values.'), $_SESSION['errors'][$row][$i][2]);
-				}
 		break;
 	case 'detail':
 		echo '<tr><td>';
@@ -232,10 +275,9 @@ switch ($select) {
 			'</td></tr><br>';
 		echo '<tr><td><input name="apply" type="submit" value="'; echo _('Apply'); echo '"></td><td></td><td>';
 		echo '<input name="undo" type="submit" value="'; echo _('Undo'); echo '"></td></tr>';
-
 		break;
 	}
 
-
+// Print end of HTML-Page
 echo '</table></form></body></html>';
 ?>
