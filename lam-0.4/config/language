@@ -12,4 +12,6 @@ de_DE:ISO-8859-15:Deutsch (Deutschland)
 # Hungarian Language
 hu_HU:ISO-8859-2:Hungary (Magyar)
 
+# Japanese Language
+ja_JP.eucJP:EUC-JP:Japanese (EUC)
 
