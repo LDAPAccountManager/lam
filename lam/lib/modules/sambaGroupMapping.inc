@@ -228,39 +228,41 @@ class sambaGroupMapping extends baseModule {
 		);
 		// upload fields
 		// search existing Samba 3 domains
-		if ($_SESSION['loggedIn']) $domains = search_domains($_SESSION['config']->get_domainSuffix());
-		$domainNames = array();
-		for ($i = 0; $i < sizeof($domains); $i++) $domainNames[] = $domains[$i]->name;
-		$return['upload_columns'] = array(
-			array(
-				'name' => 'sambaGroupMapping_domain',
-				'description' => _('Samba domain name'),
-				'help' => 'sambaDomainName',
-				'example' => $domainNames[0],
-				'values' => implode(", ", $domainNames),
-				'required' => true
-			),
-			array(
-				'name' => 'sambaGroupMapping_name',
-				'description' => _('Samba display name'),
-				'help' => 'displayName',
-				'example' => _('Domain administrators')
-			),
-			array(
-				'name' => 'sambaGroupMapping_rid',
-				'description' => _('Samba RID number'),
-				'help' => 'rid',
-				'example' => _('Domain Admins')
-			),
-			array(
-				'name' => 'sambaGroupMapping_groupType',
-				'description' => _('Samba group type'),
-				'help' => 'type',
-				'values' => implode(", ", array_keys($this->sambaGroupTypes) + $this->sambaGroupTypes),
-				'example' => '2'
-			)
-		);
-		$return['upload_preDepends'] = array('posixGroup');
+		if ($_SESSION['loggedIn']) {
+			$domains = search_domains($_SESSION['config']->get_domainSuffix());
+			$domainNames = array();
+			for ($i = 0; $i < sizeof($domains); $i++) $domainNames[] = $domains[$i]->name;
+			$return['upload_columns'] = array(
+				array(
+					'name' => 'sambaGroupMapping_domain',
+					'description' => _('Samba domain name'),
+					'help' => 'sambaDomainName',
+					'example' => $domainNames[0],
+					'values' => implode(", ", $domainNames),
+					'required' => true
+				),
+				array(
+					'name' => 'sambaGroupMapping_name',
+					'description' => _('Samba display name'),
+					'help' => 'displayName',
+					'example' => _('Domain administrators')
+				),
+				array(
+					'name' => 'sambaGroupMapping_rid',
+					'description' => _('Samba RID number'),
+					'help' => 'rid',
+					'example' => _('Domain Admins')
+				),
+				array(
+					'name' => 'sambaGroupMapping_groupType',
+					'description' => _('Samba group type'),
+					'help' => 'type',
+					'values' => implode(", ", array_keys($this->sambaGroupTypes) + $this->sambaGroupTypes),
+					'example' => '2'
+				)
+			);
+			$return['upload_preDepends'] = array('posixGroup');
+		}
 		// help Entries
 		$return['help'] = array(
 			'displayName' => array(
