@@ -55,7 +55,7 @@ class posixGroup extends baseModule {
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts) {
 		$errors = array();
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
-			if (!in_array("posixGroup", $partialAccounts[$i]['objectClasses'])) $partialAccounts[$i]['objectClasses'][] = "posixGroup";
+			if (!in_array("posixGroup", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "posixGroup";
 			if (eregi(".*", $rawAccounts[$i][$ids['posixGroup_cn']])) {  // TODO use real regex for group name
 				$partialAccounts[$i]['cn'] = $rawAccounts[$i][$ids['posixGroup_cn']];
 			}
