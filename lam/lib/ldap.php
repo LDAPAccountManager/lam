@@ -61,21 +61,6 @@ class Ldap{
     return $ret;
   }
 
-  // returns an array of strings with the DN entries of all groups
-  // $base is optional and specifies the root from where to search for entries
-  function getGroups($base = "") {
-    if ($base == "") $base = $this->conf->get_GroupSuffix(); 
-    // groups have the attribute "posixGroup"
-    $filter = "(objectClass=posixGroup)";
-    $attrs = array();
-    $sr = ldap_search($this->server, $base, $filter, $attrs);
-    $info = ldap_get_entries($this->server, $sr);
-    $ret = array();
-    for ($i = 0; $i < $info["count"]; $i++) $ret[$i] = $info[$i]["dn"];
-    ldap_free_result($sr);
-    return $ret;
-  }
-  
   // connects to the server using the given username and password
   // $base is optional and specifies the root from where to search for entries
   // if connect succeeds the server handle is returned
