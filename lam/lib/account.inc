@@ -192,12 +192,14 @@ function RndInt($Format){
 
 
 /* Whis function will return the quotas from the specified user If empty only filesystems with enabled quotas are returned
-* $users = array of account objects.
+* $users = array of account objects., return-value is an array of account objects
+* if $users is account object return values is also an account object
 *        An array with all quota-enabled partitions will be returned in this case all returned values are 0 exept mointpoint[x][0]
 */
 function getquotas($users) {
 	// define new object
-	$return = $users;
+	if (is_array($users)) $return = $users;
+		else $return[0] = $users;
 	// get username and password of the current lam-admin
 	$ldap_q = $_SESSION['ldap']->decrypt();
 	/* $towrite has the following syntax:
@@ -209,10 +211,12 @@ function getquotas($users) {
 	/* scriptServer is the IP to remote-host to which lam should connect via ssh
 	* scriptPath is Path to lamdaemon.pl on remote system
 	*/
-	for($i=0; $i<count($return); $i++)
-		// put string to trasmit together
-		if ($return[$i]->general_username!='') $userstring .= $return[$i]->general_username." quota get ".$return[$i]->type."\n";
-			else $userstring .= "+ quota get ".$return[$i]->type."\n";
+	if (is_array($return)) {
+		for($i=0; $i<count($return); $i++)
+			// put string to trasmit together
+			if ($return[$i]->general_username!='') $userstring .= $return[$i]->general_username." quota get ".$return[$i]->type."\n";
+				else $userstring .= "+ quota get ".$return[$i]->type."\n";
+		}
 	if (function_exists(proc_open)) {
 		// New Code, requires PHP 4.3
 		$descriptorspec = array(
@@ -237,7 +241,7 @@ function getquotas($users) {
 				if ($output!='') $output_array[] = $output;
 				}
 			fclose($pipes[1]);
-			$return_value = proc_close($process);
+			proc_close($process);
 			}
 		}
 	else { // PHP 4.3>
@@ -281,7 +285,8 @@ function getquotas($users) {
 			// Beautify array, repair index
 			if (is_array($return[$i]->quota)) $return[$i]->quota = array_values($return[$i]->quota);
 			}
-		return $return;
+		if (is_array($users)) return $return;
+			else return $return[0];
 		}
 	else {
 		return $users;
@@ -290,8 +295,7 @@ function getquotas($users) {
 
 /* Whis function will set the quotas from the specified user.
 * $values2 = array of object account with quotas which should be set
-* $values2_old = array of object account if set values and values_old will be compared. Quota will only be changed
-*               if values differ
+*  $values2 can also be an account object
 */
 function setquotas($values2) {
 	// get username and password of the current lam-admin
@@ -302,6 +306,40 @@ function setquotas($values2) {
 	*/
 	$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." ".
 		escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]);
+
+	/* Check wich quotas have changed
+	* Because we can not send an array to lamdaemon.pl we have to put all
+	* values in a string. ':' sepraeates the first array, ',' the second
+	*
+	* $values->quota[][] First array is an index for every chare with active quotas
+	* second array Contains values for every share:
+	* mountpoint, used blocks, soft block limit, hard block limit, grace block period, used inodes,
+	* soft inode limit, hard inode limit, grace inode period
+	*
+	* run only once if no array is given
+	*
+	*/
+	if (is_array($values2)) {
+		foreach ($values2 as $values) {
+			$i=0;
+			while ($values->quota[$i][0]) {
+				$quotastring = $quotastring. $values->quota[$i][0] .','.$values->quota[$i][2] .','.$values->quota[$i][3]
+					.','.$values->quota[$i][6] .','. $values->quota[$i][7] .':';
+				$i++;
+				}
+			$userstring .= $values->general_username." quota set ".$values->type." ".$quotastring."\n";
+			}
+		}
+	else {
+		$i=0;
+		while ($values2->quota[$i][0]) {
+			$quotastring = $quotastring. $values2->quota[$i][0] .','.$values2->quota[$i][2] .','.$values2->quota[$i][3]
+				.','.$values2->quota[$i][6] .','. $values2->quota[$i][7] .':';
+			$i++;
+			}
+		$userstring = $values2->general_username." quota set ".$values2->type." ".$quotastring."\n";
+		}
+
 	if (function_exists(proc_open)) {
 		// New Code, requires PHP 4.3
 		$descriptorspec = array(
@@ -318,67 +356,35 @@ function setquotas($values2) {
 			* $pipes[1] is readable handle to child stdout
 			* any error is send to /dev/null
 			*/
-			foreach ($values2 as $values) {
-				$i=0;
-				/* Check wich quotas have changed
-				* Because we can not send an array to lamdaemon.pl we have to put all
-				* values in a string. ':' sepraeates the first array, ',' the second
-				*
-				* $values->quota[][] First array is an index for every chare with active quotas
-				* second array Contains values for every share:
-				* mountpoint, used blocks, soft block limit, hard block limit, grace block period, used inodes,
-				* soft inode limit, hard inode limit, grace inode period
-				*/
-				while ($values->quota[$i][0]) {
-					if ($values->quota[$i] != $values_old->quota[$i]) {
-						$quotastring = $quotastring. $values->quota[$i][0] .','.$values->quota[$i][2] .','.$values->quota[$i][3]
-						.','.$values->quota[$i][6] .','. $values->quota[$i][7] .':';
-						}
-					$i++;
-					}
-				$userstring = $values->general_username." quota set ".$values->type." ".$quotastring."\n";
-				// Write to stdin
-				fwrite($pipes[0], $userstring);
-				}
+			// Write to stdin
+			fwrite($pipes[0], $userstring);
 			}
 		fclose($pipes[0]);
+		while (!feof($pipes[1])) {
+			$output = fgets($pipes[1], 1024);
+			if ($output!='') $output_array[] = $output;
+			}
 		fclose($pipes[1]);
-		$return_value = proc_close($process);
+		proc_close($process);
 		}
 	else { // PHP 4.3>
-		$input = "";
-		foreach ($values2 as $values) {
-			$i=0;
-			/* Check wich quotas have changed
-			* Because we can not send an array to lamdaemon.pl we have to put all
-			* values in a string. ':' sepraeates the first array, ',' the second
-			*
-			* $values->quota[][] First array is an index for every chare with active quotas
-			* second array Contains values for every share:
-			* mountpoint, used blocks, soft block limit, hard block limit, grace block period, used inodes,
-			* soft inode limit, hard inode limit, grace inode period
-			*/
-			while ($values->quota[$i][0]) {
-				if ($values->quota[$i] != $values_old->quota[$i]) {
-					$quotastring = $quotastring. $values->quota[$i][0] .','.$values->quota[$i][2] .','.$values->quota[$i][3]
-					.','.$values->quota[$i][6] .','. $values->quota[$i][7] .':';
-					}
-				$i++;
-				}
-			$input .= $values->general_username." quota set ".$values->type." ".$quotastring."\n";
-			}
 		$command = escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".$towrite;
-		$pipe = popen("echo \"$input\"|$command" , 'r');
+		$pipe = popen("echo \"$userstring\"|$command" , 'r');
 		while(!feof($pipe)) {
-			$return[] = fgets($pipe, 1024);
+			//$output .= fread($pipe, 1024);
+			$output = fgets($pipe, 1024);
+			if ($output!='') $output_array[] = $output;
 			}
 		pclose($pipe);
 		}
+	if (is_array($values2)) return $output_array;
+		else return $output_array[0];
 	}
 
 
 /* Whis function will remove the quotas from the specified user.
-* $user = array of usernames of which quta should be deleted
+* $users = array of usernames of which quta should be deleted
+* $users can also be a string (single user)
 * $type = user or group
 * Delteing quotas means settings all values to 0 which means no quotas
 */
@@ -391,6 +397,14 @@ function remquotas($users, $type) {
 	*/
 	$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." ".
 		escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]);
+
+	if (is_array($users)) {
+		foreach ($users as $user) {
+			$userstring .= "$user quota rem $type\n";
+			}
+		}
+	else $userstring = "$users quota rem $type\n";
+
 	if (function_exists(proc_open)) {
 		// New Code, requires PHP 4.3
 		$descriptorspec = array(
@@ -407,27 +421,29 @@ function remquotas($users, $type) {
 			* $pipes[1] is readable handle to child stdout
 			* any error is send to /dev/null
 			*/
-			foreach ($users as $user) {
-				$userstring = "$user quota rem $type\n";
-				// Write to stdin
-				fwrite($pipes[0], $userstring);
-				}
+			// Write to stdin
+			fwrite($pipes[0], $userstring);
 			}
 		fclose($pipes[0]);
+		while (!feof($pipes[1])) {
+			$output = fgets($pipes[1], 1024);
+			if ($output!='') $output_array[] = $output;
+			}
 		fclose($pipes[1]);
-		$return_value = proc_close($process);
+		proc_close($process);
 		}
 	else { // PHP 4.3>
-		$input = "";
-		foreach ($users as $user) $userstring .= "$user quota rem $type\n";
 		$command = escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".$towrite;
-		$pipe = popen("echo \"$input\"|$command" , 'r');
-		$output = '';
+		$pipe = popen("echo \"$userstring\"|$command" , 'r');
 		while(!feof($pipe)) {
-			$return[] = fgets($pipe, 1024);
+			//$output .= fread($pipe, 1024);
+			$output = fgets($pipe, 1024);
+			if ($output!='') $output_array[] = $output;
 			}
 		pclose($pipe);
 		}
+	if (is_array($values2)) return $output_array;
+		else return $output_array[0];
 	}
 
 
@@ -435,6 +451,7 @@ function remquotas($users, $type) {
 * lamdaemon.pl uses getpwnam on remote system to get homedir path.
 * Therefore ldap have to be used on remote system for user accounts
 * $users = array of usernames
+* $users can also be a string (single user)
 */
 function addhomedir($users) {
 	// get username and password of the current lam-admin
@@ -445,6 +462,14 @@ function addhomedir($users) {
 	*/
 	$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." ".
 		escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]);
+
+	if (is_array($users)) {
+		foreach ($users as $user) {
+			$userstring .= "$user home add\n";
+			}
+		}
+	else $userstring = "$users home add\n";
+
 	if (function_exists(proc_open)) {
 		// New Code, requires PHP 4.3
 		$descriptorspec = array(
@@ -461,27 +486,29 @@ function addhomedir($users) {
 			* $pipes[1] is readable handle to child stdout
 			* any error is send to /dev/null
 			*/
-			foreach ($users as $user) {
-				$userstring = "$user home add\n";
-				// Write to stdin
-				fwrite($pipes[0], $userstring);
-				}
+			// Write to stdin
+			fwrite($pipes[0], $userstring);
 			}
 		fclose($pipes[0]);
+		while (!feof($pipes[1])) {
+			$output = fgets($pipes[1], 1024);
+			if ($output!='') $output_array[] = $output;
+			}
 		fclose($pipes[1]);
-		$return_value = proc_close($process);
+		proc_close($process);
 		}
 	else { // PHP 4.3>
-		$input = "";
-		foreach ($users as $user) $userstring .= "$user home add\n";
 		$command = escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".$towrite;
-		$pipe = popen("echo \"$input\"|$command" , 'r');
-		$output = '';
+		$pipe = popen("echo \"$userstring\"|$command" , 'r');
 		while(!feof($pipe)) {
-			$return[] = fread($pipe, 1024);
+			//$output .= fread($pipe, 1024);
+			$output = fgets($pipe, 1024);
+			if ($output!='') $output_array[] = $output;
 			}
 		pclose($pipe);
 		}
+	if (is_array($values2)) return $output_array;
+		else return $output_array[0];
 	}
 
 /* Remove Homedirectory
@@ -490,6 +517,7 @@ function addhomedir($users) {
 * This also means you have to remove the homedirectory before the
 * account is removed from ldap
 * $users = array of usernames
+* $users can also be a string (single user)
 */
 function remhomedir($users) {
 	// get username and password of the current lam-admin
@@ -500,6 +528,14 @@ function remhomedir($users) {
 	*/
 	$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." ".
 		escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]);
+
+	if (is_array($users)) {
+		foreach ($users as $user) {
+			$userstring .= "$user home rem\n";
+			}
+		}
+	else $userstring = "$users home rem\n";
+
 	if (function_exists(proc_open)) {
 		// New Code, requires PHP 4.3
 		$descriptorspec = array(
@@ -516,27 +552,29 @@ function remhomedir($users) {
 			* $pipes[1] is readable handle to child stdout
 			* any error is send to /dev/null
 			*/
-			foreach ($users as $user) {
-				$userstring = "$user home rem\n";
-				// Write to stdin
-				fwrite($pipes[0], $userstring);
-				}
+			// Write to stdin
+			fwrite($pipes[0], $userstring);
 			}
 		fclose($pipes[0]);
+		while (!feof($pipes[1])) {
+			$output = fgets($pipes[1], 1024);
+			if ($output!='') $output_array[] = $output;
+			}
 		fclose($pipes[1]);
-		$return_value = proc_close($process);
+		proc_close($process);
 		}
 	else { // PHP 4.3>
-		$input = "";
-		foreach ($users as $user) $userstring .= "$user home rem\n";
 		$command = escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".$towrite;
-		$pipe = popen("echo \"$input\"|$command" , 'r');
-		$output = '';
+		$pipe = popen("echo \"$userstring\"|$command" , 'r');
 		while(!feof($pipe)) {
-			$return[] = fgets($pipe, 1024);
+			//$output .= fread($pipe, 1024);
+			$output = fgets($pipe, 1024);
+			if ($output!='') $output_array[] = $output;
 			}
 		pclose($pipe);
 		}
+	if (is_array($values2)) return $output_array;
+		else return $output_array[0];
 	}
 
 
@@ -886,174 +924,199 @@ function smbflag($values) {
 
 
 /* This function will load all needed values from an existing user account
-* $dn is the dn(string) of the user which should be loaded
-* return-value is an account-object
+* $dns is an array of  dns(string) of the users which should be loaded
+* return-value is an array of account-objects
+* $dns can also be an string. Then return-value is a single string too
 */
-function loaduser($dn) {
-	// Create new object
-	$return = new account();
-	// Set type of account
-	$return->type='user';
+function loaduser($dns) {
 	// Load userattributes from ldap
-	$result = ldap_search($_SESSION['ldap']->server(), $dn, "objectclass=PosixAccount");
+	//$result = ldap_search($_SESSION['ldap']->server(), $dn, "objectclass=PosixAccount");
+	// Get uid=$user from DN
+	// Put ldapsearch together
+	if (is_array($dns)) {
+		foreach ($dns as $dn)
+			$uids[] = substr($dn, 0, strpos($dn, ','));
+		$search = "(|";
+		foreach ($uids as $uid) $search .= "($uid)";
+		$search .= ")";
+		}
+	else $search = substr($dns, 0, strpos($dns, ','));
+	// search for users
+	$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_UserSuffix(), $search);
 	$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
-	$return->general_dn = ldap_get_dn($_SESSION['ldap']->server(), $entry);
-	$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
-
-	// Set user samba flag
-	$account_new->smb_flagsW = false;
-	/* Write attributes into $return.
-	* Some values don't have to be set. These are only loaded if they are set
-	*/
-	$return->general_username = $attr['uid'][0];
-	$return->general_uidNumber = $attr['uidNumber'][0];
-	$return->general_homedir = $attr['homeDirectory'][0];
-	if (isset($attr['shadowLastChange'][0])) $return->unix_shadowLastChange = $attr['shadowLastChange'][0];
-	if (isset($attr['loginShell'][0])) $return->general_shell = $attr['loginShell'][0];
-	if (isset($attr['gecos'][0])) $return->general_gecos = utf8_decode($attr['gecos'][0]);
-
-	// get groupname
-	$return->general_group = getgrnam($attr['gidNumber'][0]);
-
-	// get all additional groupmemberships
-	// load all groups which have memberUid set to the username which should be loaded
-	$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(), "memberUid=".$attr['uid'][0], array('cn'));
-	$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
-	// loop for every group
+	// loop for every found user
+	$i=0;
 	while ($entry) {
-		$attr2 = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
-		// Add groupnames to array
-		if ($attr2['cn'][0]!=$return->general_group) $return->general_groupadd[]=$attr2['cn'][0];
+		// Only load user if it should be loaded
+		if (is_array($dns)) {
+			if (in_array(ldap_get_dn($_SESSION['ldap']->server(), $entry), $dns)) $continue=true;
+				else $continue=false;
+			}
+		else $continue=true;
+		if ($continue) {
+			// Create new object
+			$return[$i] = new account();
+			// Set type of account
+			$return[$i]->type='user';
+			// Set user samba flag
+			$return[$i]->smb_flagsW = false;
+			$return[$i]->general_dn = ldap_get_dn($_SESSION['ldap']->server(), $entry);
+			$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
+			/* Write attributes into $return.
+			* Some values don't have to be set. These are only loaded if they are set
+			*/
+			$return[$i]->general_username = $attr['uid'][0];
+			$return[$i]->general_uidNumber = $attr['uidNumber'][0];
+			$return[$i]->general_homedir = $attr['homeDirectory'][0];
+			if (isset($attr['shadowLastChange'][0])) $return[$i]->unix_shadowLastChange = $attr['shadowLastChange'][0];
+			if (isset($attr['loginShell'][0])) $return[$i]->general_shell = $attr['loginShell'][0];
+			if (isset($attr['gecos'][0])) $return[$i]->general_gecos = utf8_decode($attr['gecos'][0]);
+
+			// get groupname
+			$return[$i]->general_group = getgrnam($attr['gidNumber'][0]);
+
+			// get all additional groupmemberships
+			// load all groups which have memberUid set to the username which should be loaded
+			$result2 = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(), "memberUid=".$attr['uid'][0], array('cn'));
+			$entry2 = ldap_first_entry($_SESSION['ldap']->server(), $result2);
+			// loop for every group
+			while ($entry2) {
+				$attr2 = ldap_get_attributes($_SESSION['ldap']->server(), $entry2);
+				// Add groupnames to array
+				if ($attr2['cn'][0]!=$return[$i]->general_group) $return[$i]->general_groupadd[]=$attr2['cn'][0];
+				$entry2 = ldap_next_entry($_SESSION['ldap']->server(), $entry2);
+				}
+
+			/* Write attributes into $return.
+			* Some values don't have to be set. These are only loaded if they are set
+			*/
+			if (isset($attr['shadowMin'][0])) $return[$i]->unix_pwdminage = $attr['shadowMin'][0];
+			if (isset($attr['shadowMax'][0])) $return[$i]->unix_pwdmaxage = $attr['shadowMax'][0];
+			if (isset($attr['shadowWarning'][0])) $return[$i]->unix_pwdwarn = $attr['shadowWarning'][0];
+			if (isset($attr['shadowInactive'][0])) $return[$i]->unix_pwdallowlogin = $attr['shadowInactive'][0];
+			if (isset($attr['shadowExpire'][0])) $return[$i]->unix_pwdexpire = $attr['shadowExpire'][0]*86400;
+
+			// load hosts attributes if set
+			$j=0;
+			while (isset($attr['host'][$j])) {
+				if ($j==0) $return[$i]->unix_host = $attr['host'][$j];
+					else $return[$i]->unix_host = $return[$i]->unix_host . ', ' . $attr['host'][$j];
+				$j++;
+				}
+
+			// load objectclasses
+			$j=0;
+			while (isset($attr['objectClass'][$j])) {
+				$return[$i]->general_objectClass[$j] = $attr['objectClass'][$j];
+				$j++;
+				}
+
+			// load personal settings
+			if (isset($attr['givenName'][0])) $return[$i]->general_givenname = utf8_decode($attr['givenName'][0]);
+			if (isset($attr['sn'][0])) $return[$i]->general_surname = utf8_decode($attr['sn'][0]);
+			if (isset($attr['title'][0])) $return[$i]->personal_title = utf8_decode($attr['title'][0]);
+			if (isset($attr['mail'][0])) $return[$i]->personal_mail = utf8_decode($attr['mail'][0]);
+			if (isset($attr['telephoneNumber'][0])) $return[$i]->personal_telephoneNumber = utf8_decode($attr['telephoneNumber'][0]);
+			if (isset($attr['mobileTelephoneNumber'][0])) $return[$i]->personal_mobileTelephoneNumber = utf8_decode($attr['mobileTelephoneNumber'][0]);
+				else 	if (isset($attr['mobile'][0])) $return[$i]->personal_mobileTelephoneNumber = utf8_decode($attr['mobile'][0]);
+			if (isset($attr['facsimileTelephoneNumber'][0])) $return[$i]->personal_facsimileTelephoneNumber = utf8_decode($attr['facsimileTelephoneNumber'][0]);
+			if (isset($attr['street'][0])) $return[$i]->personal_street = utf8_decode($attr['street'][0]);
+			if (isset($attr['postalCode'][0])) $return[$i]->personal_postalCode = utf8_decode($attr['postalCode'][0]);
+			if (isset($attr['postalAddress'][0])) $return[$i]->personal_postalAddress = utf8_decode($attr['postalAddress'][0]);
+			if (isset($attr['employeeType'][0])) $return[$i]->personal_employeeType = utf8_decode($attr['employeeType'][0]);
+
+			if (isset($attr['userPassword'][0])) {
+				$return[$i]->unix_password = $attr['userPassword'][0];
+				$return[$i]->unix_deactivated=!pwd_is_enabled($attr['userPassword'][0]);
+				}
+			if (isset($attr['displayName'][0])) $return[$i]->smb_displayName = utf8_decode($attr['displayName'][0]);
+
+			// sambaSamAccount (Samba3) is used.
+			if (in_array('sambaSamAccount', $attr['objectClass'])) {
+				/* Write attributes into $return.
+				* Some values don't have to be set. These are only loaded if they are set
+				*/
+				if (isset($attr['sambaAcctFlags'][0])) {
+					if (strrpos($attr['sambaAcctFlags'][0], 'D')) $return[$i]->smb_flagsD=true;
+					if (strrpos($attr['sambaAcctFlags'][0], 'X')) $return[$i]->smb_flagsX=true;
+					}
+				if (isset($attr['sambaPwdCanChange'][0])) $return[$i]->smb_pwdcanchange = $attr['sambaPwdCanChange'][0];
+				if (isset($attr['sambaPwdMustChange'][0])) $return[$i]->smb_pwdmustchange = $attr['sambaPwdMustChange'][0];
+				if (isset($attr['sambaHomePath'][0])) $return[$i]->smb_smbhome = utf8_decode($attr['sambaHomePath'][0]);
+				if (isset($attr['sambaHomeDrive'][0])) $return[$i]->smb_homedrive = $attr['sambaHomeDrive'][0];
+				if (isset($attr['sambaLogonScript'][0]))  $return[$i]->smb_scriptPath = utf8_decode($attr['sambaLogonScript'][0]);
+				if (isset($attr['sambaProfilePath'][0])) $return[$i]->smb_profilePath = $attr['sambaProfilePath'][0];
+				if (isset($attr['sambaUserWorkstations'][0])) $return[$i]->smb_smbuserworkstations = $attr['sambaUserWorkstations'][0];
+				if (isset($attr['sambaNTPassword'][0]))  $return[$i]->smb_password = $attr['sambaNTPassword'][0];
+				if (isset($attr['sambaDomainName'][0])) {
+					if ($_SESSION['config']->is_samba3()) {
+						// store smb_domain as samba3domain-Object
+						$samba3domains = $_SESSION['ldap']->search_domains($_SESSION[config]->get_domainSuffix());
+						$j=0;
+						while (!isset($return[$i]->smb_domain) && (count($samba3domains)>$j)) {
+							if ($attr['sambaDomainName'][0] == $samba3domains[$j]->name)
+								$return[$i]->smb_domain = $samba3domains[$j];
+							else $j++;
+							}
+						}
+					// store smb_domain as string
+					if (!isset($return[$i]->smb_domain)) $return[$i]->smb_domain = $attr['sambaDomainName'];
+					}
+				if (isset($attr['sambaPrimaryGroupSID'][0])) {
+					if ($_SESSION['config']->is_samba3())
+						// store "real" SID if we want to save user as samba3 entry
+						$return[$i]->smb_mapgroup = $attr['sambaPrimaryGroupSID'][0];
+						// store "calculated" id if we want to save user as samba2.2 entry
+						else $return[$i]->smb_mapgroup = 2*$attr['gidNumber'][0]+1001;
+					}
+				}
+
+			// sambaSamAccount (Samba2.2) is used.
+			// second argument should prevent samba3 settings to be overwritten from samba 2.2 settings
+			if ( (in_array('sambaAccount', $attr['objectClass'])) && (!$_SESSION['config']->is_samba3() || !isset($return[$i]->smb_domain))) {
+				if (isset($attr['acctFlags'][0])) {
+					if (strrpos($attr['acctFlags'][0], 'D')) $return[$i]->smb_flagsD=true;
+					if (strrpos($attr['acctFlags'][0], 'X')) $return[$i]->smb_flagsX=true;
+					}
+				if (isset($attr['ntPassword'][0]))  $return[$i]->smb_password = $attr['ntPassword'][0];
+				if (isset($attr['smbHome'][0])) $return[$i]->smb_smbhome = utf8_decode($attr['smbHome'][0]);
+				if (isset($attr['pwdCanChange'][0])) $return[$i]->smb_pwdcanchange = $attr['pwdCanChange'][0];
+				if (isset($attr['pwdMustChange'][0])) $return[$i]->smb_pwdmustchange = $attr['pwdMustChange'][0];
+				if (isset($attr['homeDrive'][0])) $return[$i]->smb_homedrive = $attr['homeDrive'][0];
+				if (isset($attr['scriptPath'][0]))  $return[$i]->smb_scriptPath = utf8_decode($attr['scriptPath'][0]);
+				if (isset($attr['profilePath'][0])) $return[$i]->smb_profilePath = $attr['profilePath'][0];
+				if (isset($attr['userWorkstations'][0])) $return[$i]->smb_smbuserworkstations = $attr['userWorkstations'][0];
+				if (isset($attr['domain'][0])) {
+					if ($_SESSION['config']->is_samba3()) {
+						// store smb_domain as samba3domain-Object
+						$samba3domains = $_SESSION['ldap']->search_domains($_SESSION[config]->get_domainSuffix());
+						$j=0;
+						while (!isset($return[$i]->smb_domain) && (count($samba3domains)>$j)) {
+							if ($attr['domain'][0] == $samba3domains[$j]->name)
+								$return[$i]->smb_domain = $samba3domains[$j];
+							else $j++;
+							}
+						}
+					// store smb_domain as string
+					if (!isset($return[$i]->smb_domain)) $return[$i]->smb_domain = $attr['domain'];
+					}
+				if (isset($attr['primaryGroupID'][0])) {
+					if ($_SESSION['config']->is_samba3())
+						// store "real" SID if we want to save user as samba3 entry
+						$return[$i]->smb_mapgroup = $return[$i]->smb_domain->SID. '-' . (2*$attr['primaryGroupID'][0]+1);
+						// store "calculated" id if we want to save user as samba2.2 entry
+						else $return[$i]->smb_mapgroup = $attr['primaryGroupID'][0];
+					}
+				}
+			}
+		$i++;
 		$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
 		}
 
-	/* Write attributes into $return.
-	* Some values don't have to be set. These are only loaded if they are set
-	*/
-	if (isset($attr['shadowMin'][0])) $return->unix_pwdminage = $attr['shadowMin'][0];
-	if (isset($attr['shadowMax'][0])) $return->unix_pwdmaxage = $attr['shadowMax'][0];
-	if (isset($attr['shadowWarning'][0])) $return->unix_pwdwarn = $attr['shadowWarning'][0];
-	if (isset($attr['shadowInactive'][0])) $return->unix_pwdallowlogin = $attr['shadowInactive'][0];
-	if (isset($attr['shadowExpire'][0])) $return->unix_pwdexpire = $attr['shadowExpire'][0]*86400;
-
-	// load hosts attributes if set
-	$i=0;
-	while (isset($attr['host'][$i])) {
-		if ($i==0) $return->unix_host = $attr['host'][$i];
-			else $return->unix_host = $return->unix_host . ', ' . $attr['host'][$i];
-		$i++;
-		}
-
-	// load objectclasses
-	$i=0;
-	while (isset($attr['objectClass'][$i])) {
-		$return->general_objectClass[$i] = $attr['objectClass'][$i];
-		$i++;
-		}
-
-	// load personal settings
-	if (isset($attr['givenName'][0])) $return->general_givenname = utf8_decode($attr['givenName'][0]);
-	if (isset($attr['sn'][0])) $return->general_surname = utf8_decode($attr['sn'][0]);
-	if (isset($attr['title'][0])) $return->personal_title = utf8_decode($attr['title'][0]);
-	if (isset($attr['mail'][0])) $return->personal_mail = utf8_decode($attr['mail'][0]);
-	if (isset($attr['telephoneNumber'][0])) $return->personal_telephoneNumber = utf8_decode($attr['telephoneNumber'][0]);
-	if (isset($attr['mobileTelephoneNumber'][0])) $return->personal_mobileTelephoneNumber = utf8_decode($attr['mobileTelephoneNumber'][0]);
-		else 	if (isset($attr['mobile'][0])) $return->personal_mobileTelephoneNumber = utf8_decode($attr['mobile'][0]);
-	if (isset($attr['facsimileTelephoneNumber'][0])) $return->personal_facsimileTelephoneNumber = utf8_decode($attr['facsimileTelephoneNumber'][0]);
-	if (isset($attr['street'][0])) $return->personal_street = utf8_decode($attr['street'][0]);
-	if (isset($attr['postalCode'][0])) $return->personal_postalCode = utf8_decode($attr['postalCode'][0]);
-	if (isset($attr['postalAddress'][0])) $return->personal_postalAddress = utf8_decode($attr['postalAddress'][0]);
-	if (isset($attr['employeeType'][0])) $return->personal_employeeType = utf8_decode($attr['employeeType'][0]);
-
-	if (isset($attr['userPassword'][0])) {
-		$return->unix_password = $attr['userPassword'][0];
-		$return->unix_deactivated=!pwd_is_enabled($attr['userPassword'][0]);
-		}
-	if (isset($attr['displayName'][0])) $return->smb_displayName = utf8_decode($attr['displayName'][0]);
-
-	// sambaSamAccount (Samba3) is used.
-	if (in_array('sambaSamAccount', $attr['objectClass'])) {
-		/* Write attributes into $return.
-		* Some values don't have to be set. These are only loaded if they are set
-		*/
-		if (isset($attr['sambaAcctFlags'][0])) {
-			// a user is no workstation
-			$return->smb_flagsW=false;
-			if (strrpos($attr['sambaAcctFlags'][0], 'D')) $return->smb_flagsD=true;
-			if (strrpos($attr['sambaAcctFlags'][0], 'X')) $return->smb_flagsX=true;
-			}
-		if (isset($attr['sambaPwdCanChange'][0])) $return->smb_pwdcanchange = $attr['sambaPwdCanChange'][0];
-		if (isset($attr['sambaPwdMustChange'][0])) $return->smb_pwdmustchange = $attr['sambaPwdMustChange'][0];
-		if (isset($attr['sambaHomePath'][0])) $return->smb_smbhome = utf8_decode($attr['sambaHomePath'][0]);
-		if (isset($attr['sambaHomeDrive'][0])) $return->smb_homedrive = $attr['sambaHomeDrive'][0];
-		if (isset($attr['sambaLogonScript'][0]))  $return->smb_scriptPath = utf8_decode($attr['sambaLogonScript'][0]);
-		if (isset($attr['sambaProfilePath'][0])) $return->smb_profilePath = $attr['sambaProfilePath'][0];
-		if (isset($attr['sambaUserWorkstations'][0])) $return->smb_smbuserworkstations = $attr['sambaUserWorkstations'][0];
-		if (isset($attr['sambaNTPassword'][0]))  $return->smb_password = $attr['sambaNTPassword'][0];
-		if (isset($attr['sambaDomainName'][0])) {
-			if ($_SESSION['config']->is_samba3()) {
-				// store smb_domain as samba3domain-Object
-				$samba3domains = $_SESSION['ldap']->search_domains($_SESSION[config]->get_domainSuffix());
-				$i=0;
-				while (!isset($return->smb_domain) && (count($samba3domains)>$i)) {
-					if ($attr['sambaDomainName'][0] == $samba3domains[$i]->name)
-						$return->smb_domain = $samba3domains[$i];
-					else $i++;
-					}
-				}
-			// store smb_domain as string
-			if (!isset($return->smb_domain)) $return->smb_domain = $attr['sambaDomainName'];
-			}
-		if (isset($attr['sambaPrimaryGroupSID'][0])) {
-			if ($_SESSION['config']->is_samba3())
-				// store "real" SID if we want to save user as samba3 entry
-				$return->smb_mapgroup = $attr['sambaPrimaryGroupSID'][0];
-				// store "calculated" id if we want to save user as samba2.2 entry
-				else $return->smb_mapgroup = 2*$attr['gidNumber'][0]+1001;
-			}
-		// return value to prevent loaded values to be overwritten from old samba 2.2 attributes
-		if ($_SESSION['config']->is_samba3()) return $return;
-		}
-
-	// sambaSamAccount (Samba2.2) is used.
-	if (in_array('sambaAccount', $attr['objectClass'])) {
-		if (isset($attr['acctFlags'][0])) {
-			// a user is no workstation
-			$return->smb_flagsW=false;
-			if (strrpos($attr['acctFlags'][0], 'D')) $return->smb_flagsD=true;
-			if (strrpos($attr['acctFlags'][0], 'X')) $return->smb_flagsX=true;
-			}
-		if (isset($attr['ntPassword'][0]))  $return->smb_password = $attr['ntPassword'][0];
-		if (isset($attr['smbHome'][0])) $return->smb_smbhome = utf8_decode($attr['smbHome'][0]);
-		if (isset($attr['pwdCanChange'][0])) $return->smb_pwdcanchange = $attr['pwdCanChange'][0];
-		if (isset($attr['pwdMustChange'][0])) $return->smb_pwdmustchange = $attr['pwdMustChange'][0];
-		if (isset($attr['homeDrive'][0])) $return->smb_homedrive = $attr['homeDrive'][0];
-		if (isset($attr['scriptPath'][0]))  $return->smb_scriptPath = utf8_decode($attr['scriptPath'][0]);
-		if (isset($attr['profilePath'][0])) $return->smb_profilePath = $attr['profilePath'][0];
-		if (isset($attr['userWorkstations'][0])) $return->smb_smbuserworkstations = $attr['userWorkstations'][0];
-		if (isset($attr['domain'][0])) {
-			if ($_SESSION['config']->is_samba3()) {
-				// store smb_domain as samba3domain-Object
-				$samba3domains = $_SESSION['ldap']->search_domains($_SESSION[config]->get_domainSuffix());
-				$i=0;
-				while (!isset($return->smb_domain) && (count($samba3domains)>$i)) {
-					if ($attr['domain'][0] == $samba3domains[$i]->name)
-						$return->smb_domain = $samba3domains[$i];
-					else $i++;
-					}
-				}
-			// store smb_domain as string
-			if (!isset($return->smb_domain)) $return->smb_domain = $attr['domain'];
-			}
-		if (isset($attr['primaryGroupID'][0])) {
-			if ($_SESSION['config']->is_samba3())
-				// store "real" SID if we want to save user as samba3 entry
-				$return->smb_mapgroup = $return->smb_domain->SID. '-' . (2*$attr['primaryGroupID'][0]+1);
-				// store "calculated" id if we want to save user as samba2.2 entry
-				else $return->smb_mapgroup = $attr['primaryGroupID'][0];
-			}
-		}
-	return $return;
+	// Return array if $dns is an array
+	// else return string
+	if (is_array($dns)) return $return;
+		else return $return[0];
 	}
 
 

@@ -113,14 +113,14 @@ if (isset($_GET['DN']) && $_GET['DN']!='') {
 	$account_new ->type = 'user';
 	if ($config_intern->scriptServer) {
 		// load quotas and check if quotas from profile are valid
-		$quotas = getquotas(array($account_new));
+		$quotas = getquotas($account_new);
 		for ($i=0; $i<count($account_new->quota); $i++) $profile_quotas[] = $account_new->quota[$i][0];
-		for ($i=0; $i<count($quotas[0]->quota); $i++) {
-			$real_quotas[] = $quotas[0]->quota[$i][0];
+		for ($i=0; $i<count($quotas->quota); $i++) {
+			$real_quotas[] = $quotas->quota[$i][0];
 			if (is_array($profile_quotas)) {
-				if (!in_array($quotas[0]->quota[$i][0], $profile_quotas)) $account_new->quota[]=$quotas[0]->quota[$i];
+				if (!in_array($quotas->quota[$i][0], $profile_quotas)) $account_new->quota[]=$quotas->quota[$i];
 				}
-			else $account_new->quota[]=$quotas[0]->quota[$i];
+			else $account_new->quota[]=$quotas->quota[$i];
 			}
 		$j=0;
 		// delete not existing quotas
@@ -509,8 +509,9 @@ switch ($_POST['select']) {
 		if ($_POST['outputpdf']) {
 			// Load quotas if not yet done because they are needed for the pdf-file
 			if ($config_intern->scriptServer && !isset($account_new->quota[0])) { // load quotas
-				$quotas = getquotas(array($account_old));
-				$account_new->quota = $quotas[0]->quota;
+				$temp = getquotas($account_old);
+				$account_new->quota = $temp->quota;
+				unset($temp);
 				}
 			// Create / display PDf-file
 			createUserPDF(array($account_new));
@@ -673,15 +674,15 @@ do { // X-Or, only one if() can be true
 			$account_new->smb_smbhome = str_replace('$user', $account_new->general_username, $account_new->smb_smbhome);
 		if ($config_intern->scriptServer) {
 			// load quotas and check if quotas from profile are valid
-			if (isset($account_old)) $quotas = getquotas(array($account_old));
-				else $quotas = getquotas(array($account_new));
+			if (isset($account_old)) $quotas = getquotas($account_old);
+				else $quotas = getquotas($account_new);
 			for ($i=0; $i<count($account_new->quota); $i++) $profile_quotas[] = $account_new->quota[$i][0];
-			for ($i=0; $i<count($quotas[0]->quota); $i++) {
-				$real_quotas[] = $quotas[0]->quota[$i][0];
+			for ($i=0; $i<count($quotas->quota); $i++) {
+				$real_quotas[] = $quotas->quota[$i][0];
 				if (is_array($profile_quotas)) {
-					if (!in_array($quotas[0]->quota[$i][0], $profile_quotas)) $account_new->quota[]=$quotas[0]->quota[$i];
+					if (!in_array($quotas->quota[$i][0], $profile_quotas)) $account_new->quota[]=$quotas->quota[$i];
 					}
-				else $account_new->quota[]=$quotas[0]->quota[$i];
+				else $account_new->quota[]=$quotas->quota[$i];
 				}
 			$j=0;
 			// delete not existing quotas
@@ -695,12 +696,12 @@ do { // X-Or, only one if() can be true
 			// Set used blocks
 			if (isset($account_old)) {
 				for ($i=0; $i<count($account_new->quota); $i++)
-					for ($j=0; $j<count($quotas[0]->quota); $j++)
-						if ($quotas[0]->quota[$j][0] == $account_new->quota[$i][0]) {
-							$account_new->quota[$i][1] = $quotas[0]->quota[$i][1];
-							$account_new->quota[$i][4] = $quotas[0]->quota[$i][4];
-							$account_new->quota[$i][5] = $quotas[0]->quota[$i][5];
-							$account_new->quota[$i][8] = $quotas[0]->quota[$i][8];
+					for ($j=0; $j<count($quotas->quota); $j++)
+						if ($quotas->quota[$j][0] == $account_new->quota[$i][0]) {
+							$account_new->quota[$i][1] = $quotas->quota[$i][1];
+							$account_new->quota[$i][4] = $quotas->quota[$i][4];
+							$account_new->quota[$i][5] = $quotas->quota[$i][5];
+							$account_new->quota[$i][8] = $quotas->quota[$i][8];
 							}
 				}
 			else for ($i=0; $i<count($account_new->quota); $i++) {
@@ -1395,9 +1396,10 @@ switch ($select_local) {
 	case 'quota':
 		// Quota Settings
 		// Load quotas if not yet done
-		if ($config_intern->scriptServer && !isset($account_new->quota[0])) { // load quotas
-			$quotas = getquotas(array($account_old));
-			$account_new->quota = $quotas[0]->quota;
+		if (($config_intern->scriptServer) && !isset($account_new->quota[0])) { // load quotas
+			$temp = getquotas($account_old);
+			$account_new->quota = $temp->quota;
+			unset ($temp);
 			}
 		echo "<input name=\"select\" type=\"hidden\" value=\"quota\">\n";
 		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
