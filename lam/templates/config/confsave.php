@@ -59,6 +59,7 @@ $scriptpath = $_SESSION['conf_scriptpath'];
 $scriptserver = $_SESSION['conf_scriptserver'];
 $samba3 = $_SESSION['conf_samba3'];
 $pwdhash = $_SESSION['conf_pwdhash'];
+$pdftext = $_SESSION['conf_pdf_usertext'];
 $filename = $_SESSION['conf_filename'];
 
 // check if password is correct
@@ -70,7 +71,7 @@ if ($passwd != $conf->get_Passwd()) {
 
 echo $_SESSION['header'];
 
-echo "<html><head><title>listusers</title>\n";
+echo "<title>listusers</title>\n";
 echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
 echo "<meta http-equiv=\"pragma\" content=\"no-cache\">\n";
 echo "<meta http-equiv=\"cache-control\" content=\"no-cache\">\n";
@@ -196,6 +197,11 @@ if (!$conf->set_pwdhash($pwdhash)) {
 	exit;
 }
 
+if (!$conf->set_pdftext($pdftext)) {
+	echo ("<font color=\"red\"><b>" . _("PDF text is invalid!") . "</b></font>");
+	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
+	exit;
+}
 
 
 // check if password was changed
@@ -245,6 +251,7 @@ unset($_SESSION['conf_scriptpath']);
 unset($_SESSION['conf_scriptserver']);
 unset($_SESSION['conf_samba3']);
 unset($_SESSION['conf_pwdhash']);
+unset($_SESSION['conf_pdf_usertext']);
 unset($_SESSION['conf_filename']);
 
 ?>

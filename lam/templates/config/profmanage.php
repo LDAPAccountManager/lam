@@ -36,8 +36,6 @@ echo $_SESSION['header'];
 
 ?>
 
-<html>
-	<head>
 		<title>
 			<?php
 				echo _("Profile management");

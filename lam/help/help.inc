@@ -106,6 +106,8 @@ $helpArray = array (
 					"Text" => _("This is the time in minutes which LAM caches its LDAP searches. Shorter times will stress LDAP more but decrease the possibility that changes are not identified.")),
 				"215" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("Password hash type"),
 					"Text" => _("LAM supports CRYPT, SHA, SSHA, MD5 and SMD5 to generate the hash value of an user password. SSHA and CRYPT are the most common but CRYPT does not support passwords greater than 8 letters. We do not recommend to use plain text passwords.")),
+				"216" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("Text for user PDF"),
+					"Text" => _("This text will appear on top of every user PDF file.")),
 				"230" => array ("ext" => "FALSE", "Headline" => _("Profile management") . " - " . _("Add profile"),
 					"Text" => _("Please enter the name of the new profile and the password to change its settings. Profile names may contain letters, numbers and -/_.")),
 				"231" => array ("ext" => "FALSE", "Headline" => _("Profile management") . " - " . _("Rename profile"),

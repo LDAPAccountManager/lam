@@ -291,7 +291,8 @@ class Config {
 		echo "<b>" . _("Default language") . ": </b>" . $this->defaultLanguage . "<br>";
 		echo "<b>" . _("Path to external script") . ": </b>" . $this->scriptPath . "<br>";
 		echo "<b>" . _("Server of external script") . ": </b>" . $this->scriptServer . "<br>";
-		echo "<b>" . _("List of valid users") . ": </b>" . $this->Admins;
+		echo "<b>" . _("List of valid users") . ": </b>" . $this->Admins . "<br><br>";
+		echo "<b>" . _("Text for user PDF") . ": </b>" . $this->get_pdftext();
 	}
 
 	// functions to read/write preferences
@@ -676,14 +677,11 @@ class Config {
 	function set_pdftext($value) {
 		if (is_string($value)) {
 			$pdffile = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/config/pdf/" . $this->file . ".txt";
-			if (is_file($pdffile)) {
-				$file = @fopen($pdffile, "w");
-				if ($file) {
-					@fputs($file, $value);
-					fclose($file);
-					$this->pdftext = $value;
-				}
-				else return false;
+			$file = @fopen($pdffile, "w");
+			if ($file) {
+				@fputs($file, $value);
+				fclose($file);
+				$this->pdftext = $value;
 			}
 			else return false;
 			$this->pdftext = $value;

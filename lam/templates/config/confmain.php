@@ -62,6 +62,7 @@ if ($_POST['back'] || $_POST['submitconf']){
 		$_SESSION['conf_pwdhash'] = $_POST['pwdhash'];
 		$_SESSION['conf_scriptpath'] = $_POST['scriptpath'];
 		$_SESSION['conf_scriptserver'] = $_POST['scriptserver'];
+		$_SESSION['conf_pdf_usertext'] = $_POST['pdf_usertext'];
 		$_SESSION['conf_filename'] = $_POST['filename'];
 		metaRefresh("confsave.php");
 	}
@@ -95,8 +96,6 @@ if (!(($conf->get_Passwd()) == $passwd)) {
 
 echo $_SESSION['header'];
 
-echo ("<html>\n");
-echo ("<head>\n");
 echo ("<title>" . _("LDAP Account Manager Configuration") . "</title>\n");
 echo ("<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n");
 echo "<meta http-equiv=\"pragma\" content=\"no-cache\">\n";
@@ -303,12 +302,13 @@ echo ("<td><a href=\"../help.php?HelpNumber=209\" target=\"lamhelp\">" . _("Help
 
 echo ("</table>\n");
 echo ("</fieldset>\n");
+
 echo ("<p></p>\n");
 
+// script settings
 echo ("<fieldset><legend><b>" . _("Script settings") . "</b></legend>\n");
 echo ("<table border=0>\n");
 
-// script settings
 echo ("<tr><td align=\"right\"><b>".
 	_("Path to external script") . ": </b></td>".
 	"<td><input size=50 type=\"text\" name=\"scriptpath\" value=\"" . $conf->get_scriptPath() . "\"></td>\n");
@@ -320,6 +320,21 @@ echo ("<td><a href=\"../help.php?HelpNumber=211\" target=\"lamhelp\">" . _("Help
 
 echo ("</table>\n");
 echo ("</fieldset>\n");
+
+echo ("<p></p>\n");
+
+// PDF settings
+echo ("<fieldset><legend><b>" . _("PDF settings") . "</b></legend>\n");
+echo ("<table border=0>\n");
+
+echo ("<tr><td align=\"right\"><b>".
+	_("Text for user PDF") . ": </b></td>".
+	"<td><textarea name=\"pdf_usertext\" cols=\"80\" rows=\"5\">" . $conf->get_pdftext() . "</textarea></td>\n");
+echo ("<td><a href=\"../help.php?HelpNumber=216\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
+
+echo ("</table>\n");
+echo ("</fieldset>\n");
+
 echo ("<p></p>\n");
 
 // security setings

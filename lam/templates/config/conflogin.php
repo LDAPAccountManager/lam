@@ -62,8 +62,6 @@ echo $_SESSION['header'];
 
 ?>
 
-<html>
-	<head>
 		<title>
 			<?php
 				echo _("Login");
