@@ -89,7 +89,30 @@ $helpArray = array (
 					"Text" => _("If you want to change the current preferences password, please enter it here.")),
 				"213" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard - Samba version"),
 					"Text" => _("If you use Samba 3.x with the new LDAP schema say \"yes\" here, otherwise \"no\".".
-						"<br><br><b>LAM will not work if version is wrong!</b>"))
+						"<br><br><b>LAM will not work if version is wrong!</b>")),
+				// 300 - 399
+				// Roland Gruber
+				// profile editor
+				"300" => array ("ext" => "FALSE", "Headline" => _("Profile Editor - Set Samba Password"),
+					"Text" => _("If set to \"no\" the NT and LM passwords will be set to \"NO PASSWORD*****\" and the user will be unable to login.".
+						"<br><br>If unsure say \"yes\" here.")),
+				"301" => array ("ext" => "FALSE", "Headline" => _("Profile Editor - Set Unix Password for Samba"),
+					"Text" => _("If set to \"yes\" the Windows password will be the same as the Unix one.".
+						"<br><br>If unsure say \"yes\" here.")),
+				"302" => array ("ext" => "FALSE", "Headline" => _("Profile Editor - User can change password"),
+					"Text" => _("If set to \"yes\" the user will be able to change his Windows password.".
+						"<br><br>If unsure say \"yes\" here.")),
+				"303" => array ("ext" => "FALSE", "Headline" => _("Profile Editor - User must change password"),
+					"Text" => _("If set to \"yes\" the user will need to change his Windows password at next login.".
+						"<br><br>If unsure say \"no\" here.")),
+				"304" => array ("ext" => "FALSE", "Headline" => _("Profile Editor - Home drive"),
+					"Text" => _("This is the drive letter for the user's home drive. The home directory will be connected with this drive letter at login."),
+					"SeeAlso" => "<a href=\"./help.php?HelpNumber=305\" target=\"_self\">Path to home directory</a>"),
+				"305" => array ("ext" => "FALSE", "Headline" => _("Profile Editor - Path to home directory"),
+					"Text" => _("This is the path to the user's home directory. The home directory will be connected at login."),
+					"SeeAlso" => "<a href=\"./help.php?HelpNumber=304\" target=\"_self\">Home drive</a>"),
+				"360" => array ("ext" => "FALSE", "Headline" => _("Profile Editor - Profile Name"),
+					"Text" => _("Name under which the profile will be saved. If a profile with the same name exists, it will be overwritten."))
 /* This is a sample help entry. Just copy this line an modify the vakues between the [] brackets.
 	Help text is located in the array:
 		"[Helpnumber]" => array ("ext" => "FALSE", "Headline" => _("[Headline]"), "Text" => _("[Text]"), "SeeAlso" => "[SeeAlso link]"),
