@@ -144,6 +144,7 @@ function showMainPage($scope) {
 				echo "<ul>\n";
 					echo "<li><b>" . _("Identifier") . ":</b> " . "dn_suffix</li>\n";
 					echo "<li><b>" . _("Example value") . ":</b> " . "ou=accounts,dc=yourdomain,dc=org</li>\n";
+					echo "<li><b>" . _("Default value") . ":</b> " . call_user_func(array($_SESSION['config'], 'get_' . ucfirst($scope) . 'Suffix')) . "</li>\n";
 					echo "<li>\n";
 						echo "<a href=\"help.php?HelpNumber=361\" target=\"lamhelp\">" . _("Help") . "</a>\n";
 					echo "</li>\n";
@@ -154,7 +155,7 @@ function showMainPage($scope) {
 			echo "<br>\n";
 				echo "<ul>\n";
 					echo "<li><b>" . _("Identifier") . ":</b> " . "dn_rdn</li>\n";
-					echo "<li><b>" . _("Possible values") . ":</b> " . "uid, cn, sambaSID</li>\n";  // TODO fill with correct values
+					echo "<li><b>" . _("Possible values") . ":</b> " . implode(", ", getRDNAttributes($scope)) . "</li>\n";
 					echo "<li><b>" . _("Example value") . ":</b> " . "uid</li>\n";
 					echo "<li>\n";
 						echo "<a href=\"help.php?HelpNumber=301\" target=\"lamhelp\">" . _("Help") . "</a>\n";
@@ -276,6 +277,11 @@ function showColumnData($module, $data) {
 		echo "<li>\n";
 			echo "<b>" . _("Example value") . ":</b> " . $data['example'] . "\n";
 		echo "</li>\n";
+		if (isset($data['default'])) {
+			echo "<li>\n";
+				echo "<b>" . _("Default value") . ":</b> " . $data['default'] . "\n";
+			echo "</li>\n";
+		}
 		echo "<li>\n";
 			echo "<a href=\"help.php?module=" . $module . "&amp;HelpNumber=" . $data['help'] . "\" target=\"lamhelp\">" . _("Help") . "</a>\n";
 		echo "</li>\n";
