@@ -76,7 +76,7 @@ function listSort($sort, $attr_array, $info) {
 
 
 /**
-* @brief draws a navigation bar to switch between pages
+* Draws a navigation bar to switch between pages
 *
 * @param integer $count number of account entries
 * @param integer $max_page_entries maximum number of account per page
@@ -124,6 +124,58 @@ function listDrawNavigationBar($count, $max_page_entries, $page, $sort, $searchF
 	echo("</td></tr></table>\n");
 }
 
+
+/**
+* Returns the LDAP attribute names and their description for the user list
+*
+* @return array list of LDAP attributes and descriptions
+*/
+function listGetAttributeUserArray() {
+	return array (
+		"uid" => _("User ID"),
+		"uidnumber" => _("UID number"),
+		"gidnumber" => _("GID number"),
+		"cn" => _("Username"),
+		"host" => _("Allowed hosts"),
+		"givenname" => _("First name"),
+		"sn" => _("Last name"),
+		"homedirectory" => _("Home directory"),
+		"loginshell" => _("Login shell"),
+		"mail" => _("E-Mail"),
+		"gecos" => _("Description")
+		);
+}
+
+/**
+* Returns the LDAP attribute names and their description for the group list
+*
+* @return array list of LDAP attributes and descriptions
+*/
+function listGetAttributeGroupArray() {
+	return array (
+		"cn" => _("Group name"),
+		"gidnumber" => _("GID number"),
+		"memberuid" => _("Group members"),
+		"member" => _("Group member DNs"),
+		"description" => _("Group description")
+		);
+}
+
+/**
+* Returns the LDAP attribute names and their description for the host list
+*
+* @return array list of LDAP attributes and descriptions
+*/
+function listGetAttributeHostArray() {
+	return array (
+		"uid" => _("Host username"),
+		"cn" => _("Host name"),
+		"rid" => _("RID (Windows UID)"),
+		"description" => _("Host description"),
+		"uidnumber" => _("UID number"),
+		"gidnumber" => _("GID number")
+		);
+}
 
 
 ?>

@@ -22,15 +22,28 @@ $Id$
 
 */
 
+
+/**
+* This page displays a list of all users.
+*
+* @package lists
+* @author Roland Gruber
+*/
+
+
+/** Access to configuration options */
 include_once ("../../lib/config.inc");
-include_once("../../lib/ldap.inc");
+/** Access to LDAP connection */
+include_once ("../../lib/ldap.inc");
+/** Used to print status messages */
+include_once ("../../lib/status.inc");
+/** Used to create PDF files */
 include_once("../../lib/pdf.inc");
-include_once("../../lib/account.inc");
+/** Access to account modules */
 include_once("../../lib/modules.inc");
+/** Basic list functions */
 include_once("../../lib/lists.inc");
 
-// used to display status messages
-include_once ("../../lib/status.inc");
 
 // start session
 session_save_path("../../sess");
@@ -138,7 +151,7 @@ $attr_array = array();	// list of LDAP attributes to show
 $desc_array = array();	// list of descriptions for the attributes
 $attr_string = $_SESSION["config"]->get_userlistAttributes();
 $temp_array = explode(";", $attr_string);
-$hash_table = $_SESSION["ldap"]->attributeUserArray();
+$hash_table = listGetAttributeUserArray();
 
 // generate column attributes and descriptions
 for ($i = 0; $i < sizeof($temp_array); $i++) {

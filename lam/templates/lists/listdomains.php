@@ -19,12 +19,24 @@ $Id$
   along with this program; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-  This code displays a list of all Samba domains.
-
 */
+
+
+/**
+* This page displays a list of all Samba domains.
+*
+* @package lists
+* @author Roland Gruber
+*/
+
+
+/** Access to configuration options */
 include_once("../../lib/config.inc");
+/** Access to LDAP connection */
 include_once("../../lib/ldap.inc");
+/** Used to print status messages */
 include_once("../../lib/status.inc");
+/** Basic list functions */
 include_once("../../lib/lists.inc");
 
 // start session

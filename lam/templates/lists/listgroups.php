@@ -19,15 +19,28 @@ $Id$
   along with this program; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-  This code displays a list of all groups.
-
 */
+
+
+/**
+* This page displays a list of all groups.
+*
+* @package lists
+* @author Roland Gruber
+*/
+
+
+/** Access to configuration options */
 include_once ("../../lib/config.inc");
+/** Access to LDAP connection */
 include_once ("../../lib/ldap.inc");
+/** Used to print status messages */
 include_once ("../../lib/status.inc");
-include_once("../../lib/account.inc");
+/** Used to create PDF files */
 include_once("../../lib/pdf.inc");
+/** Access to account modules */
 include_once("../../lib/modules.inc");
+/** Basic list functions */
 include_once("../../lib/lists.inc");
 
 // start session
@@ -104,7 +117,7 @@ $attr_array = array();	// list of LDAP attributes to show
 $desc_array = array();	// list of descriptions for the attributes
 $attr_string = $_SESSION["config"]->get_grouplistAttributes();
 $temp_array = explode(";", $attr_string);
-$hash_table = $_SESSION["ldap"]->attributeGroupArray();
+$hash_table = listGetAttributeGroupArray();
 
 // get current page
 $page = $_GET["page"];

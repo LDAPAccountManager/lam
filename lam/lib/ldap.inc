@@ -220,13 +220,6 @@ class Ldap{
 	/** LDAP password used for bind */
 	var $password;
 
-	/** Contains LDAP attributes for user list and their descriptions */
-	var $ldapUserAttributes;
-	/** Contains LDAP attributes for group list and their descriptions */
-	var $ldapGroupAttributes;
-	/** Contains LDAP attributes for host list and their descriptions */
-	var $ldapHostAttributes;
-
 	/** Array with all objectClass strings from the LDAP server */
 	var $objectClasses;
 
@@ -248,35 +241,6 @@ class Ldap{
 		setlanguage();
 		if (is_object($config)) $this->conf = $config;
 		else return false;
-		// construct arrays with known LDAP attributes
-		$this->ldapUserAttributes = array (
-			"uid" => _("User ID"),
-			"uidnumber" => _("UID number"),
-			"gidnumber" => _("GID number"),
-			"cn" => _("Username"),
-			"host" => _("Allowed hosts"),
-			"givenname" => _("First name"),
-			"sn" => _("Last name"),
-			"homedirectory" => _("Home directory"),
-			"loginshell" => _("Login shell"),
-			"mail" => _("E-Mail"),
-			"gecos" => _("Description")
-			);
-		$this->ldapGroupAttributes = array (
-			"cn" => _("Group name"),
-			"gidnumber" => _("GID number"),
-			"memberuid" => _("Group members"),
-			"member" => _("Group member DNs"),
-			"description" => _("Group description")
-			);
-		$this->ldapHostAttributes = array (
-			"uid" => _("Host username"),
-			"cn" => _("Host name"),
-			"rid" => _("RID (Windows UID)"),
-			"description" => _("Host description"),
-			"uidnumber" => _("UID number"),
-			"gidnumber" => _("GID number")
-			);
 		mt_srand((double)microtime()*1000000);
 		$this->rand = mt_rand();
 		return true;
@@ -580,33 +544,6 @@ class Ldap{
 		$this->close();
 		$this->username="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
 		$this->password="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
-	}
-
-	/**
-	* Returns the LDAP attribute names and their description for the user list
-	*
-	* @return array list of LDAP attributes and descriptions
-	*/
-	function attributeUserArray() {
-		return $this->ldapUserAttributes;
-	}
-
-	/**
-	* Returns the LDAP attribute names and their description for the group list
-	*
-	* @return array list of LDAP attributes and descriptions
-	*/
-	function attributeGroupArray() {
-		return $this->ldapGroupAttributes;
-	}
-
-	/**
-	* Returns the LDAP attribute names and their description for the host list
-	*
-	* @return array list of LDAP attributes and descriptions
-	*/
-	function attributeHostArray() {
-		return $this->ldapHostAttributes;
 	}
 
 
