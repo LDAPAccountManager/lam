@@ -56,16 +56,16 @@ if ($_POST['apply']) {
 
 
 	// Check if surname is valid
-	if ( !ereg('^([a-z]|[A-Z]|[-]|[ ]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+$', $_POST['f_general_surname'])) $errors[] = array('ERROR', _('Surname'), _('Surname contains invalid characters'));
+	if ( !ereg('^([a-z]|[A-Z]|[-]|[ ]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+$', $_POST['f_general_surname'])) $errors2[] = array('ERROR', _('Surname'), _('Surname contains invalid characters'));
 		else $_SESSION['accounts'][$row]->general_surname = $_POST['f_general_surname'];
 	// Check if givenname is valid
-	if ( !ereg('^([a-z]|[A-Z]|[-]|[ ]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+$', $_POST['f_general_givenname'])) $errors[] = array('ERROR', _('Given name'), _('Given name contains invalid characters'));
+	if ( !ereg('^([a-z]|[A-Z]|[-]|[ ]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+$', $_POST['f_general_givenname'])) $errors2[] = array('ERROR', _('Given name'), _('Given name contains invalid characters'));
 		else $_SESSION['accounts'][$row]->general_givenname = $_POST['f_general_givenname'];
 	// Check if username is valid
 	if ( !ereg('^([a-z]|[0-9]|[.]|[-]|[_])*$', $_POST['f_general_username']))
-		$errors[] = array('ERROR', _('Username'), _('Username contains invalid characters. Valid characters are: a-z, 0-9 and .-_ !'));
+		$errors2[] = array('ERROR', _('Username'), _('Username contains invalid characters. Valid characters are: a-z, 0-9 and .-_ !'));
 	else if ( !ereg('^([a-z]|[A-Z]).*$', $_POST['f_general_username']))
-		$errors[] = array('ERROR', _('Name'), _('Name contains invalid characters. First character must be a letter'));
+		$errors2[] = array('ERROR', _('Name'), _('Name contains invalid characters. First character must be a letter'));
 	else {
 		$_SESSION['accounts'][$row]->general_username = $_POST['f_general_username'];
 		// Check if user already exists
@@ -100,27 +100,27 @@ if ($_POST['apply']) {
 		}
 	// check if group is valid
 	if ($_POST['f_general_group']!='') $_SESSION['accounts'][$row]->general_group = $_POST['f_general_group'];
-		else $errors[] = array('ERROR', _('Primary group'), _('No primary group defined.'));
+		else $errors2[] = array('ERROR', _('Primary group'), _('No primary group defined.'));
 	if (in_array($_POST['f_general_group'], findgroups())) $_SESSION['accounts'][$row]->general_group = $_POST['f_general_group'];
-		else $errors[] = array('WARN', _('Primary group'), _('Primary group does not exist. Will create group automaticly.'));
-	if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $_POST['f_personal_title']))  $errors[] = array('ERROR', _('Title'), _('Please enter a valid title!'));
+		else $errors2[] = array('WARN', _('Primary group'), _('Primary group does not exist. Will create group automaticly.'));
+	if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $_POST['f_personal_title']))  $errors2[] = array('ERROR', _('Title'), _('Please enter a valid title!'));
 		else $_SESSION['accounts'][$row]->personal_title = $_POST['f_personal_title'];
-	if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $_POST['f_personal_employeeType']))  $errors[] = array('ERROR', _('Employee type'), _('Please enter a valid employee type!'));
+	if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $_POST['f_personal_employeeType']))  $errors2[] = array('ERROR', _('Employee type'), _('Please enter a valid employee type!'));
 		else $_SESSION['accounts'][$row]->personal_employeeType = $_POST['f_personal_employeeType'];
-	if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $_POST['f_personal_street']))  $errors[] = array('ERROR', _('Street'), _('Please enter a valid street name!'));
+	if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $_POST['f_personal_street']))  $errors2[] = array('ERROR', _('Street'), _('Please enter a valid street name!'));
 		else $_SESSION['accounts'][$row]->personal_street = $_POST['f_personal_street'];
-	if ( !ereg('^([0-9]|[A-Z]|[a-z])*$', $_POST['f_personal_postalCode']))  $errors[] = array('ERROR', _('Postal code'), _('Please enter a valid postal code!'));
+	if ( !ereg('^([0-9]|[A-Z]|[a-z])*$', $_POST['f_personal_postalCode']))  $errors2[] = array('ERROR', _('Postal code'), _('Please enter a valid postal code!'));
 		else $_SESSION['accounts'][$row]->personal_postalCode = $_POST['f_personal_postalCode'];
-	if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $_POST['f_personal_postalAddress']))  $errors[] = array('ERROR', _('Postal address'), _('Please enter a valid postal address!'));
+	if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $_POST['f_personal_postalAddress']))  $errors2[] = array('ERROR', _('Postal address'), _('Please enter a valid postal address!'));
 		else $_SESSION['accounts'][$row]->personal_postalAddress = $_POST['f_personal_postalAddress'];
-	if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/])*$', $_POST['f_personal_telephoneNumber']))  $errors[] = array('ERROR', _('Telephone number'), _('Please enter a valid telephone number!'));
+	if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/])*$', $_POST['f_personal_telephoneNumber']))  $errors2[] = array('ERROR', _('Telephone number'), _('Please enter a valid telephone number!'));
 		else $_SESSION['accounts'][$row]->personal_telephoneNumber = $_POST['f_personal_telephoneNumber'];
-	if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/])*$', $_POST['f_personal_mobileTelephoneNumber']))  $errors[] = array('ERROR', _('Mobile number'), _('Please enter a valid mobile number!'));
+	if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/])*$', $_POST['f_personal_mobileTelephoneNumber']))  $errors2[] = array('ERROR', _('Mobile number'), _('Please enter a valid mobile number!'));
 		else $_SESSION['accounts'][$row]->personal_mobileTelephoneNumber = $_POST['f_personal_mobileTelephoneNumber'];
 
-	if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/])*$', $_POST['f_personal_facsimileTelephoneNumber']))  $errors[] = array('ERROR', _('Fax number'), _('Please enter a valid fax number!'));
+	if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/])*$', $_POST['f_personal_facsimileTelephoneNumber']))  $errors2[] = array('ERROR', _('Fax number'), _('Please enter a valid fax number!'));
 		else $_SESSION['accounts'][$row]->personal_facsimileTelephoneNumber = $_POST['f_personal_facsimileTelephoneNumber'];
-	if ( !ereg('^(([0-9]|[A-Z]|[a-z]|[.]|[-]|[_])+[@]([0-9]|[A-Z]|[a-z]|[-])+([.]([0-9]|[A-Z]|[a-z]|[-])+)*)*$', $_POST['f_personal_mail']))  $errors[] = array('ERROR', _('eMail address'), _('Please enter a valid eMail address!'));
+	if ( !ereg('^(([0-9]|[A-Z]|[a-z]|[.]|[-]|[_])+[@]([0-9]|[A-Z]|[a-z]|[-])+([.]([0-9]|[A-Z]|[a-z]|[-])+)*)*$', $_POST['f_personal_mail']))  $errors2[] = array('ERROR', _('eMail address'), _('Please enter a valid eMail address!'));
 		else $_SESSION['accounts'][$row]->personal_mail = $_POST['f_personal_mail'];
 
 	}
@@ -128,9 +128,9 @@ if ($_POST['apply']) {
 echo '<tr><td><input name="type" type="hidden" value="'.$select.'"></td></tr>';
 echo '<tr><td><input name="row" type="hidden" value="'.$row.'"></td></tr>';
 
-if (is_array($errors)) {
-	for ($i=0; $i<sizeof($errors); $i++) {
-		StatusMessage($errors[$i][0], $errors[$i][1], $errors[$i][2]);
+if (is_array($errors2)) {
+	for ($i=0; $i<sizeof($errors2); $i++) {
+		StatusMessage($errors2[$i][0], $errors2[$i][1], $errors2[$i][2]);
 		}
 	}
 
