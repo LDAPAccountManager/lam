@@ -102,7 +102,6 @@ function createUserPDF($accounts) {
 		$pdfFile->setFont("times","B",10);
 		$pdfFile->Cell(50,5,$account->general_username,0,1,"L",0);
 		$pdfFile->setFont("times","",10);
-		$pdfFile->Cell(50,5,_("Unix password") . ":",0,0,"R",0);
 		if($account->unix_password_no == "1") {
 			$pdfFile->setFont("times","",10);
 			$pdfFile->Cell(50,5,_("Unix password") . ":",0,0,"R",0);
@@ -152,7 +151,6 @@ function createUserPDF($accounts) {
 		$pdfFile->Write(5,"- " . _("Windows User Settings") . ":");
 		$pdfFile->Ln(6);
 		$pdfFile->setFont("times","",10);
-		$pdfFile->Cell(50,5,_("Samba password") . ":",0,0,"R",0);
 		if($account->smb_password_no == "1") {
 			$pdfFile->setFont("times","",10);
 			$pdfFile->Cell(50,5,_("Windows password") . ":",0,0,"R",0);
