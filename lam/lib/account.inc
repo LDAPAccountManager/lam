@@ -54,7 +54,7 @@ class cache {
 			}
 		$scopes = array_keys($attributes);
 		foreach ($scopes as $scope) {
-			if (!@in_array($scope, $allowed_types)) trigger_error(sprintf(_('Invalid scope. Valid scopes are $s.'), implode(" ", $allowed_types)), E_USER_ERROR);
+			if (!@in_array($scope, $allowed_types)) trigger_error(sprintf(_('Invalid scope. Valid scopes are %s.'), implode(" ", $allowed_types)), E_USER_ERROR);
 			}
 		// Everything seems to be OK, start processing data
 		foreach ($scopes as $scope) {
@@ -76,7 +76,7 @@ class cache {
 			if (strpos($_SESSION['ldap']->objectClasses[$i], "NAME '$objectClass'")) $line = $i;
 			}
 		// Return error if objectClass isn't found
-		if ($line==-1) trigger_error (_("objectClass $objectClass required but not defined in ldap."), E_USER_WARNING);
+		if ($line==-1) trigger_error (sprintf(_("objectClass %s required but not defined in ldap."), $objectClass), E_USER_WARNING);
 		// Everything seems to be OK, start processing data
 		$this->refresh_cache();
 		if ($singlescope == '*') $scopes = $allowed_types;
@@ -231,7 +231,7 @@ class accountContainer {
 	var $type;
 	var $lampath; // reference to lampath from Session
 	var $ldap; // This is a reference to the ldap class in session
-	var $modules; // This is an array with all module objects
+	var $module; // This is an array with all module objects
 
 	/* Get the type of account. Valid
 	* types are: user, group, host
@@ -249,7 +249,7 @@ class accountContainer {
 			if (strpos($this->ldap->objectClasses[$i], "NAME '$objectClass'")) $line = $i;
 			}
 		// Return error if objectClass isn't found
-		if ($line==-1) trigger_error (_("objectClass objectClass required but not defined in ldap."), E_USER_WARNING);
+		if ($line==-1) trigger_error (sprintf(_("objectClass %s required but not defined in ldap."), $objectClass), E_USER_WARNING);
 		// create array with must-attributes
 		// Get startposition in string
 		if (strpos($this->ldap->objectClasses[$line],  'MUST (')) {
@@ -288,7 +288,7 @@ class accountContainer {
 				if (strpos($this->ldap->objectClasses[$i], "NAME '$subclass'")) $line = $i;
 				}
 			// Return error if objectClass isn't found
-			if ($line==-1) trigger_error (_("objectClass objectClass required but not defined in ldap."), E_USER_WARNING);
+			if ($line==-1) trigger_error (sprintf(_("objectClass %s required but not defined in ldap."), $objectClass), E_USER_WARNING);
 
 			// create array with must-attributes
 			// Get startposition in string
@@ -348,12 +348,12 @@ class accountContainer {
 			if (strpos($_SESSION['ldap']->objectClasses[$i], "NAME '$objectClass'")) $line = $i;
 			}
 		// Return error if objectClass isn't found
-		if ($line==-1) trigger_error (_("objectClass objectClass required but not defined in ldap."), E_USER_WARNING);
+		if ($line==-1) trigger_error (_("objectClass $objectClass required but not defined in ldap."), E_USER_WARNING);
 		else {
 			// Add module if it exists
 			if (filetype($this->lampath."/lib/modules/".$objectClass.".inc") == 'file') {
 				include_once ($this->lampath."/lib/modules/".$objectClass.".inc");
-				$this->modules[] = new $objectClass($this);
+				$this->module[$objectClass] = new $objectClass($this);
 				}
 			}
 		return 0;
