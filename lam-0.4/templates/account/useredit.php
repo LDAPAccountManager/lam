@@ -1564,10 +1564,12 @@ switch ($select_local) {
 		// Final Settings
 		echo '<input name="select" type="hidden" value="finish">';
 		echo "<fieldset class=\"groupedit-bright\"><legend class=\"useredit-bright\"><b>"._('Note')."</b></legend>\n";
-		echo _('User ');
-		echo $account_new->general_username;
-		if ($account_old) echo ' '._('has been modified').'.';
-		 else echo ' '._('has been created').'.';
+		if ($account_old) {
+			printf(_("User %s has been modified."), $account_new->general_username);
+		}
+		else {
+			printf(_("User %s has been created."), $account_new->general_username);
+		}
 		echo '<br><br>';
 		if (!$account_old) {
 			echo '<input name="createagain" type="submit" value="'; echo _('Create another user'); echo '">&nbsp;';
