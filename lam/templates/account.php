@@ -309,6 +309,7 @@ if ($select_local != 'pdf') {
 		<meta http-equiv=\"Content-Type\" content=\"text/html; charset=ISO-8859-15\">";
 	}
 
+
 switch ($select_local) {
 	// backmain = back to lists
 	// load = load profile
@@ -468,7 +469,8 @@ switch ($select_local) { // Select which part of page will be loaded
 				echo _('Suffix'); echo '</td><td><select name="f_general_suffix">';
 				foreach ($_SESSION['ldap']->search_units($_SESSION['config']->get_UserSuffix()) as $suffix) {
 					if ($_SESSION['account']->general_dn) {
-						if ($_SESSION['account']->general_dn == $suffix) echo '<option selected>' . $suffix. '</option>';
+						if ($_SESSION['account']->general_dn == $suffix)
+							echo '<option selected>' . $suffix. '</option>';
 						else echo '<option>' . $suffix. '</option>';
 						}
 					else echo '<option>' . $suffix. '</option>';
@@ -508,7 +510,8 @@ switch ($select_local) { // Select which part of page will be loaded
 				echo _('Suffix'); echo '</td><td><select name="f_general_suffix">';
 				foreach ($_SESSION['ldap']->search_units($_SESSION['config']->get_GroupSuffix()) as $suffix) {
 					if ($_SESSION['account']->general_dn) {
-						if ($_SESSION['account']->general_dn == $suffix) echo '<option selected>' . $suffix. '</option>';
+						if ($_SESSION['account']->general_dn == $suffix)
+							echo '<option selected>' . $suffix. '</option>';
 						else echo '<option>' . $suffix. '</option>';
 						}
 					else echo '<option>' . $suffix. '</option>';
@@ -568,7 +571,8 @@ switch ($select_local) { // Select which part of page will be loaded
 				echo _('Suffix'); echo '</td><td><select name="f_general_suffix">';
 				foreach ($_SESSION['ldap']->search_units($_SESSION['config']->get_HostSuffix()) as $suffix) {
 					if ($_SESSION['account']->general_dn) {
-						if ($_SESSION['account']->general_dn == $suffix) echo '<option selected>' . $suffix. '</option>';
+						if ($_SESSION['account']->general_dn == $suffix)
+							echo '<option selected>' . $suffix. '</option>';
 						else echo '<option>' . $suffix. '</option>';
 						}
 					else echo '<option>' . $suffix. '</option>';

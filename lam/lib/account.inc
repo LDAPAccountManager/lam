@@ -104,10 +104,12 @@ function initvars($type=false,$DN=false) { // This function registers all needes
 						$_SESSION['account_old'] = $_SESSION['account'];
 						$_SESSION['account']->unix_password='';
 						$_SESSION['account']->smb_password='';
+						$_SESSION['account']->general_dn = substr($_SESSION['account']->general_dn, strpos($_SESSION['account']->general_dn, ',')+1);
 						break;
 					case 'group':
 						$_SESSION['account'] = loadgroup($DN);
 						$_SESSION['account_old'] = $_SESSION['account'];
+						$_SESSION['account']->general_dn = substr($_SESSION['account']->general_dn, strpos($_SESSION['account']->general_dn, ',')+1);
 						if (!session_is_registered('final_changegids')) session_register('final_changegids');
 							else $_SESSION['final_changegids'] = '';
 						break;
@@ -116,6 +118,7 @@ function initvars($type=false,$DN=false) { // This function registers all needes
 						$_SESSION['account_old'] = $_SESSION['account'];
 						$_SESSION['account']->unix_password='';
 						$_SESSION['account']->smb_password='';
+						$_SESSION['account']->general_dn = substr($_SESSION['account']->general_dn, strpos($_SESSION['account']->general_dn, ',')+1);
 						break;
 					}
 			}
@@ -372,7 +375,7 @@ function checksamba($values, $type) { // This function checks all samba account 
 	}
 
 function checkquota($values) { // This function checks all quota paramters
-	$return = new account();
+	$return = $values;
 	$i=0;
 	while ($values->quota[$i][0]) {
 		if (!$values->quota[$i][2]) $return->quota[$i][2] = 0;
@@ -651,7 +654,7 @@ function loaduser($dn) { // Will load all needed values from an existing account
 	$return = new account();
 	$result = ldap_search($_SESSION['ldap']->server(), $dn, "objectclass=PosixAccount");
 	$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
-	$return->general_dn = (ldap_get_dn($_SESSION['ldap']->server(), $entry));
+	$return->general_dn = ldap_get_dn($_SESSION['ldap']->server(), $entry);
 	$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
 	if ($attr['uid'][0]) $return->general_username = $attr['uid'][0];
 	if ($attr['uidNumber'][0]) $return->general_uidNumber = $attr['uidNumber'][0];
@@ -1143,15 +1146,21 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 	if ($values->general_surname!=$values_old->general_surname) $attr['sn'] = $values->general_surname;
 
 	if ($attr_rem) {
-			$success = ldap_mod_del($_SESSION['ldap']->server(),$values->general_dn, $attr_rem);
+			$success = ldap_mod_del($_SESSION['ldap']->server(),$values_old->general_dn, $attr_rem);
 			if (!$success) return 5;
 			}
-	if ($values->general_username == $values_old->general_username) // Username hasn't changed
+	if ($values->general_dn == $values_old->general_dn) // Username hasn't changed
 		$success = ldap_modify($_SESSION['ldap']->server(),$values->general_dn, $attr);
 			else {
-				$result = ldap_search($_SESSION['ldap']->server(), $dn, "objectclass=PosixAccount");
+				$result = ldap_search($_SESSION['ldap']->server(), $values_old->general_dn, "objectclass=PosixAccount");
 				$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 				$attr_old = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
+				// remove "count" from array
+				unset($attr_old['count']);
+				for ($i=0; $i < sizeof($attr_old); $i++) unset($attr_old[$i]);
+				$keys = array_keys($attr_old);
+				for ($i=0; $i < sizeof($keys); $i++)
+					unset($attr_old[$keys[$i]]['count']);
 				$success = ldap_add($_SESSION['ldap']->server(),$values->general_dn, $attr_old);
 				if ($success) $success = ldap_delete($_SESSION['ldap']->server(),$values_old->general_dn);
 				if ($success) $success = ldap_mod_replace($_SESSION['ldap']->server(),$values->general_dn, $attr);
@@ -1422,15 +1431,21 @@ function modifyhost($values,$values_old) { // Will modify the LDAP-Account
 	if (($date != $date_old) && !$date) $attr_rem['shadowExpire'] =  $date_old ; // shadowAccount_may
 
 	if ($attr_rem) {
-		$success = ldap_mod_del($_SESSION['ldap']->server(),$values->general_dn, $attr_rem);
+		$success = ldap_mod_del($_SESSION['ldap']->server(),$values_old->general_dn, $attr_rem);
 		if (!$success) return 5;
 		}
-	if ($values->general_username == $values_old->general_username) // Hostname hasn't changed
+	if ($values->general_dn == $values_old->general_dn) // Hostname hasn't changed
 		$success = ldap_modify($_SESSION['ldap']->server(),$values->general_dn, $attr);
 	else {
 		$result = ldap_search($_SESSION['ldap']->server(), $dn, "objectclass=PosixAccount");
 		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 		$attr_old = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
+		// remove "count" from array
+		unset($attr_old['count']);
+		for ($i=0; $i < sizeof($attr_old); $i++) unset($attr_old[$i]);
+		$keys = array_keys($attr_old);
+		for ($i=0; $i < sizeof($keys); $i++)
+			unset($attr_old[$keys[$i]]['count']);
 		$success = ldap_add($_SESSION['ldap']->server(),$values->general_dn, $attr_old);
 		if ($success) $success = ldap_delete($_SESSION['ldap']->server(),$values_old->general_dn);
 		if ($success) $success = ldap_mod_replace($_SESSION['ldap']->server(),$values->general_dn, $attr);
@@ -1522,12 +1537,18 @@ function modifygroup($values,$values_old) { // Will modify the LDAP-Group
 	if ($values->general_uidNumber != $values_old->general_uidNumber) $attr['gidNumber'] = $values->general_uidNumber;
 	if ($values->general_gecos != $values_old->general_gecos) $attr['description'] = $values->general_gecos;
 	if ($values->general_memeberUid != $values_old->general_memberUid) $attr['memberUid'] = $values->general_memberUid;
-	if ($values->general_username == $values_old->general_username) // Groupname hasn't changed
+	if ($values->general_dn == $values_old->general_dn) // Groupname hasn't changed
 		$success = ldap_mod_replace($_SESSION['ldap']->server(),$values->general_dn, $attr);
 	else {
 		$result = ldap_search($_SESSION['ldap']->server(), $dn, "objectclass=PosixGroup");
 		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 		$attr_old = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
+		// remove "count" from array
+		unset($attr_old['count']);
+		for ($i=0; $i < sizeof($attr_old); $i++) unset($attr_old[$i]);
+		$keys = array_keys($attr_old);
+		for ($i=0; $i < sizeof($keys); $i++)
+			unset($attr_old[$keys[$i]]['count']);
 		$success = ldap_add($_SESSION['ldap']->server(),$values->general_dn, $attr_old);
 		if ($success) ldap_delete($_SESSION['ldap']->server(),$values_old->general_dn);
 		if ($success) $success = ldap_mod_replace($_SESSION['ldap']->server(),$values->general_dn, $attr);

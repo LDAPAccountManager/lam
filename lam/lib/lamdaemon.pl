@@ -148,7 +148,7 @@ if ($found==true) {
 						$i=0;
 						($<, $>) = ($>, $<); # Get root privileges
 						while ($quota_usr[$i][0]) {
-							$dev = Quota::getqcarg($quota_usr[$i][0]);
+							$dev = Quota::getqcarg($quota_usr[$i][1]);
 							print "$user[2]\n";
 							$return = Quota::setqlim($dev,$user[2],0,0,0,0,1,$group);
 							$i++;
@@ -160,7 +160,7 @@ if ($found==true) {
 						$i=0;
 						($<, $>) = ($>, $<); # Get root privileges
 						while ($quota_usr[$i][0]) {
-							$dev = Quota::getqcarg($quota[$i][0]);
+							$dev = Quota::getqcarg($quota[$i][1]);
 							$return = Quota::setqlim($dev,$user[2],$quota[$i][1],$quota[$i][2],$quota[$i][3],$quota[$i][4],1,$group);
 							$i++;
 							}
@@ -172,9 +172,12 @@ if ($found==true) {
 						($<, $>) = ($>, $<); # Get root privileges
 						while ($quota_usr[$i][0]) {
 							if ($vals[2]ne'+') {
-								$dev = Quota::getqcarg($quota_usr[$i][0]);
+								$dev = Quota::getqcarg($quota_usr[$i][1]);
 								@temp = Quota::query($dev,$user[2],$group);
-								$return = "$quota_usr[$i][1],$temp[0],$temp[1],$temp[2],$temp[3],$temp[4],$temp[5],$temp[6],$temp[7]:$return";
+								if ($temp[0]) {
+    								    $return = "$quota_usr[$i][1],$temp[0],$temp[1],$temp[2],$temp[3],$temp[4],$temp[5],$temp[6],$temp[7]:$return";
+								    }
+								else { $return = "$quota_usr[$i][1],0,0,0,0,0,0,0,0:$return"; }
 								}
 							else { $return = "$quota_usr[$i][1],0,0,0,0,0,0,0,0:$return"; }
 							$i++;
