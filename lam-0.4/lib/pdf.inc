@@ -144,10 +144,13 @@ function createUserPDF($accounts) {
 		}
 		$pdfFile->setFont("times","B",10);
 		$pdfFile->Cell(50,5,_("Group(s)") . ":",0,0,"R",0);
-		$text = $account->general_group;
-		$groups = $account->general_groupadd;
-		for($j=0;$j<count($groups);$j++) {
-			$text .= ", " . $groups[$j];
+		if ($account->general_group != -1) {
+			$text = $account->general_group;
+			if (sizeof($account->general_groupadd) > 0) $text .= ", " . implode(", ", $account->general_groupadd);
+		}
+		else {
+			$text = "";
+			if (sizeof($account->general_groupadd) > 0) $text = implode(", ", $account->general_groupadd);
 		}
 		$pdfFile->setFont("times","",10);
 		$pdfFile->Cell(50,5,$text,0,1,"L",0);
@@ -306,7 +309,7 @@ function createHostPDF($accounts) {
 		$pdfFile->setFont("times","B",10);
 		$pdfFile->Write(5,_("Primary group") . ": ");
 		$pdfFile->setFont("times","",10);
-		$pdfFile->Write(5,$account->general_group);
+		if ($account->general_group != -1) $pdfFile->Write(5,$account->general_group);
 		$pdfFile->Ln(5);
 		$pdfFile->setFont("times","B",10);
 		$pdfFile->Write(5,_("Domain") . ": ");
