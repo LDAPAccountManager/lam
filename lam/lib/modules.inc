@@ -587,8 +587,7 @@ class accountContainer {
 					if ($post['createagain']) {
 						// Reset objects
 						$modules = array_keys($this->module);
-						foreach ($modules as $module)
-							if ($module!='main') unset($this->module[$module]);
+						foreach ($modules as $module) unset($this->module[$module]);
 						// Reset accountContainer
 						$this->dn = '';
 						$this->dn_orig = '';
