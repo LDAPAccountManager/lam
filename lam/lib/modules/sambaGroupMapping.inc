@@ -83,9 +83,23 @@ class sambaGroupMapping extends baseModule {
 		}
 		$errors = array();
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
-			// group type is always 2
-			// TODO
-			$partialAccounts[$i]['sambaGroupType'] = "2";
+			// group type
+			if ($rawAccounts[$i][$ids['sambaGroupMapping_groupType']] != "") {
+				if (in_array($rawAccounts[$i][$ids['sambaGroupMapping_groupType']], $this->sambaGroupTypes)) {  // number given
+					$partialAccounts[$i]['sambaGroupType'] = $rawAccounts[$i][$ids['sambaGroupMapping_groupType']];
+				}
+				elseif (in_array($rawAccounts[$i][$ids['sambaGroupMapping_groupType']], array_keys($this->sambaGroupTypes))) {  // description given
+					$partialAccounts[$i]['sambaGroupType'] = $this->sambaGroupTypes[$rawAccounts[$i][$ids['sambaGroupMapping_groupType']]];
+				}
+				else {  // invalid type
+					$errMsg = $this->messages['groupType'][0];
+					array_push($errMsg, array($i, implode(", ", array_keys($this->sambaGroupTypes) + $this->sambaGroupTypes)));
+					$errors[] = $errMsg;
+				}
+			}
+			else {
+				$partialAccounts[$i]['sambaGroupType'] = "2";  // 2 is the default (domain group)
+			}
 			if (!in_array("sambaGroupMapping", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "sambaGroupMapping";
 			// SID
 			$domSID = $nameToSID[$rawAccounts[$i][$ids['sambaGroupMapping_domain']]];
@@ -218,22 +232,26 @@ class sambaGroupMapping extends baseModule {
 				'name' => 'sambaGroupMapping_domain',
 				'description' => _('Samba 3 domain name'),
 				'help' => 'sambaDomainName',
-				'example' => _('domain1'),
+				'example' => _('Domain1'),
 				'required' => true
 			),
 			array(
 				'name' => 'sambaGroupMapping_name',
 				'description' => _('Samba 3 display name'),
 				'help' => 'displayName',
-				'example' => _('Domain administrators'),
-				'required' => false
+				'example' => _('Domain administrators')
 			),
 			array(
 				'name' => 'sambaGroupMapping_rid',
 				'description' => _('Samba 3 RID number'),
 				'help' => 'rid',
-				'example' => 'DOMAIN_ADMINS',
-				'required' => false
+				'example' => _('DOMAIN_ADMINS')
+			),
+			array(
+				'name' => 'sambaGroupMapping_groupType',
+				'description' => _('Samba 3 group type'),
+				'help' => 'type',
+				'example' => '2'
 			)
 		);
 		$return['upload_preDepends'] = array('posixGroup');
@@ -254,7 +272,11 @@ class sambaGroupMapping extends baseModule {
 			'sambaDomainName' => array(
 				"ext" => "FALSE",
 				"Headline" => _("Domain"),
-				"Text" => _("Windows-Domain name of group."). ' '. _("Can be left empty.")));
+				"Text" => _("Windows-Domain name of group."). ' '. _("Can be left empty.")),
+			'type' => array(
+				"ext" => "FALSE",
+				"Headline" => _("Samba group type"),
+				"Text" => _("Windows group type.") . "<br><br><b>" . _("Possible values: ") . "</b>" . implode(", ", array_keys($this->sambaGroupTypes) + $this->sambaGroupTypes)));
 		
 		return $return;
 	}
@@ -310,6 +332,7 @@ class sambaGroupMapping extends baseModule {
 	function load_Messages() {
 		$this->messages['sambaSID'][0] = array('ERROR', _('Special Group'),sprintf( _('There can be only one group %s.'), $rids[$i]), 'sambaSID');
 		$this->messages['sambaSID'][1] = array('ERROR', _("Account %s (sambaGroupMapping_domain): LAM was unable to find a Samba 3 domain with this name!"));  // third parameter must be set dynamically
+		$this->messages['groupType'][0] = array('ERROR', _("Account %s (sambaGroupMapping_type): This is not a valid Samba 3 group type!"), _("Possible values:") . " %s");
 	}
 
 
