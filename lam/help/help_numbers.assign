@@ -12,4 +12,5 @@ Help numbers should only be used if they are assigned in this file to avoid doub
 300 - 399: Roland Gruber: profil editor
 400 - 499: Tilo Lutz: account.php
 500 - 599: Tilo Lutz: Masscreate and Massdelete
-600 -: unassigned
+600 - 699: Roland Gruber: OU-Editor
+700 -: unassigned
