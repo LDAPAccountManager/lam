@@ -125,6 +125,13 @@ class shadowAccount extends baseModule {
 			'type' => 'ext_preg',
 			'regex' => 'digit',
 			'error_message' => $this->messages['shadowWarning'][0]);
+		// profile mappings
+		$return['profile_mappings'] = array(
+			'shadowAccount_shadowWarning' => 'shadowWarning',
+			'shadowAccount_shadowInactive' => 'shadowInactive',
+			'shadowAccount_shadowMin' => 'shadowMin',
+			'shadowAccount_shadowMax' => 'shadowMax'
+		);
 		// available PDF fields
 		$return['PDF_fields'] = array(
 			'shadowLastChange',
@@ -416,6 +423,23 @@ class shadowAccount extends baseModule {
 		return $messages;
 	}
 
+	/**
+	* Loads the values of an account profile into internal variables.
+	*
+	* @param array $profile hash array with profile values (identifier => value)
+	*/
+	function load_profile($profile) {
+		// profile mappings in meta data
+		parent::load_profile($profile);
+		// special profile options
+		// expiration date
+		if (isset($profile['shadowAccount_shadowExpire_day'][0]) && ($profile['shadowAccount_shadowExpire_day'][0] != "")) {
+			$date = intval(mktime(10, 0, 0, $profile['shadowAccount_shadowExpire_mon'][0],
+				$profile['shadowAccount_shadowExpire_day'][0], $profile['shadowAccount_shadowExpire_yea'][0])/3600/24);
+			$this->attributes['shadowExpire'][0] = $date;
+		}
+	}
+	
 }
 
 ?>
