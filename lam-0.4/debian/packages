@@ -67,7 +67,7 @@ Depends: php4 | php4-cgi | libapache2-mod-php4, php4-ldap, apache | apache-ssl |
 Recommends: php4-mhash
 Suggests: ldap-server, sudo, php4-mcrypt
 Conflicts: php4-apc
-Description: Webfrontend for managing Unix and Samba accounts in a LDAP directory
+Description: webfrontend for managing Unix and Samba accounts in a LDAP directory
  LDAP Account Manager (LAM) runs on an existing webserver. LAM
  supports LDAP connections via SSL and TLS. It uses the
  Samba 2.x or Samba 3 schema and manages user, group and host
