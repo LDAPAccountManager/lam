@@ -63,15 +63,15 @@ echo ("<form action=\"confmodules.php\" method=\"post\">\n");
 echo "<p align=\"center\"><big><b>" . _("Module selection") . "</b></big><br><br></p>";
 
 // module dependencies
-$user_deps = getUserModuleDependencies();
-$group_deps = getGroupModuleDependencies();
-$host_deps = getHostModuleDependencies();
+$user_deps = getModulesDependencies('user');
+$group_deps = getModulesDependencies('group');
+$host_deps = getModulesDependencies('host');
 
 // user modules
 $selected_users = array();
 $selected_users = $_SESSION['conf_usermodules'];
 $available_users = array();
-$available_users = getAvailableUserModules();
+$available_users = getAvailableModules('user');
 $no_conflicts_user = true;
 $no_depends_user = true;
 
@@ -98,7 +98,7 @@ elseif ($_POST['user_available'] && ($_POST['user_add'])) {
 $selected_groups = array();
 $selected_groups = $_SESSION['conf_groupmodules'];
 $available_groups = array();
-$available_groups = getAvailableGroupModules();
+$available_groups = getAvailableModules('group');
 $no_conflicts_group = true;
 $no_depends_group = true;
 
@@ -125,7 +125,7 @@ elseif ($_POST['group_available'] && ($_POST['group_add'])) {
 $selected_hosts = array();
 $selected_hosts = $_SESSION['conf_hostmodules'];
 $available_hosts = array();
-$available_hosts = getAvailableHostModules();
+$available_hosts = getAvailableModules('host');
 $no_conflicts_host = true;
 $no_depends_host = true;
 
