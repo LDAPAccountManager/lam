@@ -89,13 +89,15 @@ function initvars($type=false,$DN=false) { // This function registers all needes
 	@session_start();
 	if ($type) {
 		if (session_is_registered("type2")) session_unregister("type2");
-		 else session_register("type2"); // $type2 stores the kind of account (User|Group|Host)
+		 session_register("type2"); // $type2 stores the kind of account (User|Group|Host)
 		$_SESSION['type2'] = $type;
 		if (session_is_registered("shelllist")) session_unregister("shelllist");
-		 else session_register("shelllist"); // $shelllist contains all shells defined in /etc/shells
+		 session_register("shelllist"); // $shelllist contains all shells defined in /etc/shells
 		$_SESSION['shelllist'] = getshells(); // Write List of all valid shells in variable
 		if (session_is_registered("account")) session_unregister("account");
-		 else session_register("account"); // The new Accout properties are stored here
+		 session_register("account"); // The new Accout properties are stored here
+		if (session_is_registered("errors")) session_unregister("errors");
+		 session_register("errors"); // $type2 stores the kind of account (User|Group|Host)
 		if ($DN) {
 			if (session_is_registered("account_old")) session_unregister("account_old");
 			else session_register("account_old"); // Only valid if an account should be modified. It'll contains the existing account properties
@@ -358,8 +360,6 @@ function checksamba($values, $type) { // This function checks all samba account 
 			if ((!$values->smb_domain=='') && !ereg('^([a-z]|[A-Z]|[0-9]|[-])+$', $values->smb_domain))
 				$errors[] = array('ERROR', _('Domain Name'), _('Domain Name contents invalid characters. Valid characters are: a-z, A-Z, 0-9 and -.'));
 			if ($values->smb_useunixpwd) $return->smb_useunixpwd = 1; else $return->smb_useunixpwd = 0;
-			if ($values->smb_pwdcanchange) $return->smb_pwdcanchange = 1; else $return->smb_pwdcanchange = 0;
-			if ($values->smb_pwdmustchange) $return->smb_pwdmustchange = 1; else $return->smb_pwdmustchange = 0;
 			if ($values->smb_password) {
 				// Encrypt password
 				$return->smb_password = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $values->smb_password,
@@ -373,8 +373,6 @@ function checksamba($values, $type) { // This function checks all samba account 
 			if ((!$values->smb_domain=='') && !ereg('^([a-z]|[A-Z]|[0-9]|[-])+$', $values->smb_domain))
 				$errors[] = array('ERROR', _('Domain Name'), _('Domain Name contents invalid characters. Valid characters are: a-z, A-Z, 0-9 and -.'));
 			if ($values->smb_useunixpwd) $return->smb_useunixpwd = 1; else $return->smb_useunixpwd = 0;
-			if ($values->smb_pwdcanchange) $return->smb_pwdcanchange = 1; else $return->smb_pwdcanchange = 0;
-			if ($values->smb_pwdmustchange) $return->smb_pwdmustchange = 1; else $return->smb_pwdmustchange = 0;
 			if ($values->smb_password) {
 				// Encrypt password
 				$return->smb_password = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $values->smb_password,

@@ -64,6 +64,7 @@ switch ($select) {
 	case 'cancel':
 		if ( session_is_registered("accounts")) session_unregister("accounts");
 		if ( session_is_registered("pointer")) session_unregister("pointer");
+		if ( session_is_registered("errors")) session_unregister("errors");
 		echo '<meta http-equiv="refresh" content="0; URL=lists/listusers.php">';
 		break;
 	case 'create':

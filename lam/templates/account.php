@@ -133,14 +133,14 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 			MCRYPT_MODE_ECB, base64_decode($_COOKIE['IV'])));
 			}
 		 else $_SESSION['account']->smb_password = "";
+		$_SESSION['account']->smb_pwdcanchange = mktime($_POST['f_smb_pwdcanchange_s'], $_POST['f_smb_pwdcanchange_m'], $_POST['f_smb_pwdcanchange_h'],
+			$_POST['f_smb_pwdcanchange_mon'], $_POST['f_smb_pwdcanchange_day'], $_POST['f_smb_pwdcanchange_yea']);
+		$_SESSION['account']->smb_pwdmustchange = mktime($_POST['f_smb_pwdmustchange_s'], $_POST['f_smb_pwdmustchange_m'], $_POST['f_smb_pwdmustchange_h'],
+			$_POST['f_smb_pwdmustchange_mon'], $_POST['f_smb_pwdmustchange_day'], $_POST['f_smb_pwdmustchange_yea']);
 		if ($_POST['f_smb_password_no']) $_SESSION['account']->smb_password_no = true;
 			else $_SESSION['account']->smb_password_no = false;
 		if ($_POST['f_smb_useunixpwd']) $_SESSION['account']->smb_useunixpwd = $_POST['f_smb_useunixpwd'];
 			else $_SESSION['account']->smb_useunixpwd = false;
-		if ($_POST['f_smb_pwdcanchange']) $_SESSION['account']->smb_pwdcanchange = $_POST['f_smb_pwdcanchange'];
-			else $_SESSION['account']->smb_pwdcanchange = false;
-		if ($_POST['f_smb_pwdmustchange']) $_SESSION['account']->smb_pwdmustchange = $_POST['f_smb_pwdmustchange'];
-			else $_SESSION['account']->smb_pwdmustchange = false;
 		if ($_POST['f_smb_homedrive']) $_SESSION['account']->smb_homedrive = $_POST['f_smb_homedrive'];
 		if ($_POST['f_smb_scriptpath']) $_SESSION['account']->smb_scriptPath = $_POST['f_smb_scriptpath'];
 			else $_SESSION['account']->smb_scriptPath = '';
@@ -321,7 +321,6 @@ if ($select_local != 'pdf') {
 		<meta http-equiv=\"Content-Type\" content=\"text/html; charset=ISO-8859-15\">";
 	}
 
-
 switch ($select_local) {
 	// backmain = back to lists
 	// load = load profile
@@ -389,6 +388,7 @@ if ($select_local != 'pdf') {
 		for ($i=0; $i<sizeof($errors); $i++) StatusMessage($errors[$i][0], $errors[$i][1], $errors[$i][2]);
 	}
 //print_r($_SESSION['account']);
+//print_r($_POST);
 
 switch ($select_local) { // Select which part of page will be loaded
 	// general = startpage, general account paramters
@@ -714,8 +714,16 @@ switch ($select_local) { // Select which part of page will be loaded
 		switch ( $_SESSION['type2'] ) {
 			case 'user':
 				// Set Account is samba-workstation to false
+				$canchangedate = getdate($_SESSION['account']->smb_pwdcanchange);
+				$mustchangedate = getdate($_SESSION['account']->smb_pwdmustchange);
 				$_SESSION['account']->smb_flagsW = 0;
 				echo '<tr><td>';
+				echo	'<input name="f_smb_pwdcanchange_h" type="hidden" value="'.$canchangedate['hours'].'">
+					<input name="f_smb_pwdcanchange_m" type="hidden" value="'.$canchangedate['minutes'].'">
+					<input name="f_smb_pwdcanchange_s" type="hidden" value="'.$canchangedate['seconds'].'">
+					<input name="f_smb_pwdmustchange_h" type="hidden" value="'.$mustchangedate['hours'].'">
+					<input name="f_smb_pwdmustchange_m" type="hidden" value="'.$mustchangedate['minutes'].'">
+					<input name="f_smb_pwdmustchange_s" type="hidden" value="'.$mustchangedate['seconds'].'">';
 				echo _('Samba Password');
 				echo '</td>'."\n".'<td><input name="f_smb_password" type="text" size="20" maxlength="20" value="' . $password . '">
 					</td>'."\n".'<td><input name="f_smb_useunixpwd" type="checkbox"';
@@ -736,16 +744,42 @@ switch ($select_local) { // Select which part of page will be loaded
 					<a href="help.php?HelpNumber=429" target="lamhelp">'._('Help').'</a>
 					</td></tr>'."\n".'<tr><td>';
 				echo _('User can change Password');
-				echo '</td>'."\n".'<td><input name="f_smb_pwdcanchange" type="checkbox"';
-				if ($_SESSION['account']->smb_pwdcanchange) echo ' checked ';
-				echo '></td>'."\n".'<td>
-					<a href="help.php?HelpNumber=430" target="lamhelp">'._('Help').'</a>
+				echo '</td>'."\n".'<td><select name="f_smb_pwdcanchange_day">';
+				for ( $i=1; $i<=31; $i++ ) {
+					if ($canchangedate['mday']==$i) echo "<option selected> $i". '</option>';
+					else echo "<option> $i". '</option>';
+					}
+				echo '</select><select name="f_smb_pwdcanchange_mon">';
+				for ( $i=1; $i<=12; $i++ ) {
+					if ($canchangedate['mon'] == $i) echo "<option selected> $i". '</option>';
+					else echo "<option> $i". '</option>';
+					}
+				echo '</select><select name="f_smb_pwdcanchange_yea">';
+				for ( $i=2003; $i<=2030; $i++ ) {
+					if ($canchangedate['year']==$i) echo "<option selected> $i". '</option>';
+					else echo "<option> $i". '</option>';
+					}
+				echo '</select></td>'."\n".'<td>';
+				echo	'<a href="help.php?HelpNumber=430" target="lamhelp">'._('Help').'</a>
 					</td></tr>'."\n".'<tr><td>';
 				echo _('User must change Password');
-				echo '</td>'."\n".'<td><input name="f_smb_pwdmustchange" type="checkbox"';
-				if ($_SESSION['account']->smb_pwdmustchange) echo ' checked ';
-				echo '></td>'."\n".'<td>
-					<a href="help.php?HelpNumber=431" target="lamhelp">'._('Help').'</a>
+				echo '</td>'."\n".'<td><select name="f_smb_pwdmustchange_day">';
+				for ( $i=1; $i<=31; $i++ ) {
+					if ($mustchangedate['mday']==$i) echo "<option selected> $i". '</option>';
+					else echo "<option> $i". '</option>';
+					}
+				echo '</select><select name="f_smb_pwdmustchange_mon">';
+				for ( $i=1; $i<=12; $i++ ) {
+					if ($mustchangedate['mon'] == $i) echo "<option selected> $i". '</option>';
+					else echo "<option> $i". '</option>';
+					}
+				echo '</select><select name="f_smb_pwdmustchange_yea">';
+				for ( $i=2003; $i<=2030; $i++ ) {
+					if ($mustchangedate['year']==$i) echo "<option selected> $i". '</option>';
+					else echo "<option> $i". '</option>';
+					}
+				echo '</select></td>'."\n".'<td>';
+				echo	'<a href="help.php?HelpNumber=431" target="lamhelp">'._('Help').'</a>
 					</td></tr>'."\n".'<tr><td>';
 				echo _('Accout is deactivated');
 				echo '</td>'."\n".'<td><input name="f_smb_flagsD" type="checkbox"';
@@ -838,16 +872,42 @@ switch ($select_local) { // Select which part of page will be loaded
 					<a href="help.php?HelpNumber=429" target="lamhelp">'._('Help').'</a>
 					</td></tr>'."\n".'<tr><td>';
 				echo _('Host can change Password');
-				echo '</td>'."\n".'<td><input name="f_smb_pwdcanchange" type="checkbox"';
-				if ($_SESSION['account']->smb_pwdcanchange) echo ' checked ';
-				echo '></td><td>
-					<a href="help.php?HelpNumber=458" target="lamhelp">'._('Help').'</a>
+				echo '</td>'."\n".'<td><select name="f_smb_pwdcanchange_day">';
+				for ( $i=1; $i<=31; $i++ ) {
+					if ($canchangedate['mday']==$i) echo "<option selected> $i". '</option>';
+					else echo "<option> $i". '</option>';
+					}
+				echo '</select><select name="f_smb_pwdcanchange_mon">';
+				for ( $i=1; $i<=12; $i++ ) {
+					if ($canchangedate['mon'] == $i) echo "<option selected> $i". '</option>';
+					else echo "<option> $i". '</option>';
+					}
+				echo '</select><select name="f_smb_pwdcanchange_yea">';
+				for ( $i=2003; $i<=2030; $i++ ) {
+					if ($canchangedate['year']==$i) echo "<option selected> $i". '</option>';
+					else echo "<option> $i". '</option>';
+					}
+				echo '</select></td>'."\n".'<td>';
+				echo	'<a href="help.php?HelpNumber=430" target="lamhelp">'._('Help').'</a>
 					</td></tr>'."\n".'<tr><td>';
 				echo _('Host must change Password');
-				echo '</td>'."\n".'<td><input name="f_smb_pwdmustchange" type="checkbox"';
-				if ($_SESSION['account']->smb_pwdmustchange) echo ' checked ';
-				echo '></td><td>
-					<a href="help.php?HelpNumber=459" target="lamhelp">'._('Help').'</a>
+				echo '</td>'."\n".'<td><select name="f_smb_pwdmustchange_day">';
+				for ( $i=1; $i<=31; $i++ ) {
+					if ($mustchangedate['mday']==$i) echo "<option selected> $i". '</option>';
+					else echo "<option> $i". '</option>';
+					}
+				echo '</select><select name="f_smb_pwdmustchange_mon">';
+				for ( $i=1; $i<=12; $i++ ) {
+					if ($mustchangedate['mon'] == $i) echo "<option selected> $i". '</option>';
+					else echo "<option> $i". '</option>';
+					}
+				echo '</select><select name="f_smb_pwdmustchange_yea">';
+				for ( $i=2003; $i<=2030; $i++ ) {
+					if ($mustchangedate['year']==$i) echo "<option selected> $i". '</option>';
+					else echo "<option> $i". '</option>';
+					}
+				echo '</select></td>'."\n".'<td>';
+				echo	'<a href="help.php?HelpNumber=431" target="lamhelp">'._('Help').'</a>
 					</td></tr>'."\n".'<tr><td>';
 				echo _('Accout is deactivated');
 				echo '</td>'."\n".'<td><input name="f_smb_flagsD" type="checkbox"';
