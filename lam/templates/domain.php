@@ -194,17 +194,19 @@ elseif ($_GET['action'] == "delete") {
 	echo "</head>\n";
 	echo "<body>\n";
 		echo "<p>&nbsp;</p>\n";
-		echo "<p><b><font color=\"red\">" . _("Delete domain(s)?") . "</font></b></p>\n";
+		echo "<fieldset class=\"domedit\"><legend class=\"domedit\"><b>" . _("Delete domain(s)") . "</b></legend>\n";
+		echo "<p><b>" . _("Do you really want to delete domain(s):") . "</b></p>\n";
 		echo "<p>&nbsp;</p>\n";
 		for ($i = 0; $i < sizeof($DNs); $i++) {
-			echo "<p><b>" . $DNs[$i] . "</b></p>\n";
+			echo "<p>" . $DNs[$i] . "</p>\n";
 		}
 	echo "<p>&nbsp;</p>\n";
 	echo "<form action=\"domain.php\" method=\"post\">\n";
 		echo "<input type=\"hidden\" name=\"delDN\" value=\"" . implode(";", $DNs) . "\">\n";
 		echo "<input type=\"submit\" name=\"sub_delete\" value=\"" . _("Delete") . "\">\n";
 		echo "<input type=\"submit\" name=\"sub_back\" value=\"" . _("Cancel") . "\">\n";
-	echo "</form>";
+	echo "</form>\n";
+	echo "</fieldset>\n";
 	echo "</body>\n";
 	echo "</html>\n";
 }
