@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: messages\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de \n"
 "POT-Creation-Date: 2004-01-14 17:45+0200\n"
-"PO-Revision-Date: 2004-11-07 14:24+0100\n"
+"PO-Revision-Date: 2004-11-10 14:57+0100\n"
 "Last-Translator: Roland Gruber <post@rolandgruber.de>\n"
 "Language-Team: Deutsch <lam-i18n@lists.sourceforge.org>\n"
 "MIME-Version: 1.0\n"
@@ -52,7 +52,7 @@ msgstr "In der CSV-Datei fehlt eine benötigte Spalte."
 #: ../templates/ou_edit.php:225 ../templates/ou_edit.php:290
 #: ../templates/config/confmodules.php:499
 #: ../templates/config/confmain.php:422 ../templates/pdfedit/pdfdelete.php:82
-#: ../templates/pdfedit/pdfpage.php:841 ../templates/pdfedit/pdfmain.php:144
+#: ../templates/pdfedit/pdfpage.php:834 ../templates/pdfedit/pdfmain.php:144
 #: ../templates/profedit/profiledelete.php:86
 #: ../templates/profedit/profiledelete.php:98
 #: ../templates/profedit/profiledelete.php:110
@@ -74,6 +74,9 @@ msgstr "Account"
 #: ../lib/modules/posixAccount.inc:86 ../lib/modules/posixAccount.inc:87
 #: ../lib/modules/posixAccount.inc:88 ../lib/modules/sambaGroupMapping.inc:341
 #: ../lib/modules/sambaGroupMapping.inc:342
+#: ../lib/modules/shadowAccount.inc:40 ../lib/modules/shadowAccount.inc:42
+#: ../lib/modules/shadowAccount.inc:44 ../lib/modules/shadowAccount.inc:46
+#: ../lib/modules/shadowAccount.inc:48 ../lib/modules/shadowAccount.inc:49
 #: ../lib/modules/inetOrgPerson.inc:53 ../lib/modules/inetOrgPerson.inc:55
 #: ../lib/modules/inetOrgPerson.inc:57 ../lib/modules/inetOrgPerson.inc:59
 #: ../lib/modules/inetOrgPerson.inc:61 ../lib/modules/inetOrgPerson.inc:63
@@ -88,11 +91,15 @@ msgstr "Account %s:"
 msgid "Account creation via file upload"
 msgstr "Erstellung von Accounts mittels Dateiupload"
 
-#: ../lib/modules/shadowAccount.inc:151 ../help/help.inc:171
+#: ../lib/modules/shadowAccount.inc:156
+msgid "Account expiration date. Format: DD-MM-YYYY"
+msgstr "Account-Ablaufdatum im Format: TT-MM-JJJJ"
+
+#: ../help/help.inc:171
 msgid "Account expire date. Format: DD-MM-YYYY"
 msgstr "Account-Ablaufdatum im Format: TT-MM-JJJJ"
 
-#: ../lib/modules/shadowAccount.inc:296
+#: ../lib/modules/shadowAccount.inc:333
 msgid "Account inactive"
 msgstr "Account ist deaktiviert"
 
@@ -198,7 +205,7 @@ msgstr "Attributnamen in der Hostliste"
 msgid "Attributes in User List"
 msgstr "Attributnamen in der Benutzerliste"
 
-#: ../templates/pdfedit/pdfpage.php:859
+#: ../templates/pdfedit/pdfpage.php:852
 msgid "Available PDF fields"
 msgstr "Verfügbare PDF-Felder"
 
@@ -343,8 +350,8 @@ msgstr "Cache Zeitbegrenzung ist ungültig!"
 
 #: ../lib/modules/posixGroup.inc:336 ../lib/modules/posixAccount.inc:331
 #: ../lib/modules/sambaGroupMapping.inc:280
-#: ../lib/modules/shadowAccount.inc:135 ../lib/modules/shadowAccount.inc:139
-#: ../lib/modules/shadowAccount.inc:143 ../lib/modules/shadowAccount.inc:147
+#: ../lib/modules/shadowAccount.inc:140 ../lib/modules/shadowAccount.inc:144
+#: ../lib/modules/shadowAccount.inc:148 ../lib/modules/shadowAccount.inc:152
 #: ../help/help.inc:139 ../help/help.inc:163 ../help/help.inc:165
 #: ../help/help.inc:167 ../help/help.inc:169 ../help/help.inc:201
 #: ../help/help.inc:204 ../help/help.inc:207 ../help/help.inc:209
@@ -554,7 +561,7 @@ msgstr "Datum, nach dem der Benutzer sein Passwort ändern kann. Format: TT-MM-J
 msgid "Date after the user must change his password. Format: DD-MM-YYYY"
 msgstr "Datum, nach dem der Benutzer sein Passwort ändern muss. Format: TT-MM-JJJJ"
 
-#: ../lib/modules/shadowAccount.inc:135 ../help/help.inc:163
+#: ../lib/modules/shadowAccount.inc:140 ../help/help.inc:163
 msgid ""
 "Days before password is to expire that user is warned of pending password "
 "expiration. If set value must be 0<."
@@ -657,7 +664,7 @@ msgstr "Lösche. Bitte haben Sie ein wenig Geduld..."
 #: ../lib/modules/sambaSamAccount.inc:176
 #: ../lib/modules/sambaSamAccount.inc:708 ../lib/modules/posixAccount.inc:267
 #: ../lib/modules/sambaGroupMapping.inc:301
-#: ../lib/modules/shadowAccount.inc:299 ../lib/modules/inetOrgPerson.inc:135
+#: ../lib/modules/shadowAccount.inc:335 ../lib/modules/inetOrgPerson.inc:135
 #: ../lib/modules/inetOrgPerson.inc:393 ../lib/modules/inetOrgPerson.inc:461
 #: ../lib/lists.inc:187
 msgid "Description"
@@ -901,12 +908,13 @@ msgstr "Beispiele"
 msgid "Expand suffix with primary groupname"
 msgstr "Suffix um primäre Gruppe erweitern"
 
-#: ../lib/modules/shadowAccount.inc:150 ../help/help.inc:170
-msgid "Expire date"
+#: ../lib/modules/shadowAccount.inc:93 ../lib/modules/shadowAccount.inc:155
+#: ../lib/modules/shadowAccount.inc:187 ../lib/modules/shadowAccount.inc:310
+msgid "Expiration date"
 msgstr "Ablaufdatum"
 
-#: ../lib/modules/shadowAccount.inc:87 ../lib/modules/shadowAccount.inc:273
-msgid "Expire day"
+#: ../help/help.inc:170
+msgid "Expire date"
 msgstr "Ablaufdatum"
 
 #: ../templates/domain.php:287
@@ -1187,7 +1195,7 @@ msgstr "Höhe"
 #: ../templates/config/confmain.php:358 ../templates/config/confmain.php:373
 #: ../templates/config/confmain.php:378 ../templates/config/confmain.php:392
 #: ../templates/config/confmain.php:402 ../templates/config/confmain.php:468
-#: ../templates/config/conflogin.php:126 ../templates/pdfedit/pdfpage.php:818
+#: ../templates/config/conflogin.php:126 ../templates/pdfedit/pdfpage.php:811
 #: ../templates/profedit/profilepage.php:90
 #: ../templates/profedit/profilepage.php:129
 #: ../templates/profedit/profilepage.php:166 ../lib/modules.inc:883
@@ -1196,7 +1204,9 @@ msgstr "Hilfe"
 
 #: ../templates/masscreate.php:83
 msgid "Here you can create multiple accounts by providing a CSV file."
-msgstr "Hier können Sie mehrere Accounts mittels einer CSV-formatierten Datei erstellen."
+msgstr ""
+"Hier können Sie mehrere Accounts mittels einer CSV-formatierten Datei "
+"erstellen."
 
 #: ../lib/lists.inc:162
 msgid "Here you can input small filters (e.g. 'value' or 'v*')."
@@ -1623,7 +1633,7 @@ msgstr "Nachname enthält ungültige Zeichen!"
 msgid "Last name of user. Only letters, - and spaces are allowed."
 msgstr "Nachname des Benutzers. Es sind nur Buchstaben, - und Leerzeichen erlaubt."
 
-#: ../lib/modules/shadowAccount.inc:294
+#: ../lib/modules/shadowAccount.inc:331
 msgid "Last password change"
 msgstr "Letzte Passwortänderung"
 
@@ -1788,8 +1798,9 @@ msgstr "Die maximale UID-Nummer muss größer sein als die minimale UID-Nummer!"
 msgid "Maximum list entries"
 msgstr "Maximale Listeneinträge"
 
-#: ../lib/modules/shadowAccount.inc:82 ../lib/modules/shadowAccount.inc:146
-#: ../lib/modules/shadowAccount.inc:266 ../help/help.inc:166
+#: ../lib/modules/shadowAccount.inc:88 ../lib/modules/shadowAccount.inc:151
+#: ../lib/modules/shadowAccount.inc:181 ../lib/modules/shadowAccount.inc:303
+#: ../help/help.inc:166
 msgid "Maximum password age"
 msgstr "Maximales Passwortalter"
 
@@ -1826,8 +1837,9 @@ msgstr "Minimale UID-Nummer für Unix-Accounts (Benutzer)"
 msgid "Minimum UID number is invalid!"
 msgstr "Minimale UID-Nummer ist ungültig!"
 
-#: ../lib/modules/shadowAccount.inc:77 ../lib/modules/shadowAccount.inc:142
-#: ../lib/modules/shadowAccount.inc:263 ../help/help.inc:168
+#: ../lib/modules/shadowAccount.inc:83 ../lib/modules/shadowAccount.inc:147
+#: ../lib/modules/shadowAccount.inc:175 ../lib/modules/shadowAccount.inc:300
+#: ../help/help.inc:168
 msgid "Minimum password age"
 msgstr "Minimales Passwortalter"
 
@@ -2036,13 +2048,13 @@ msgstr "Kein statischer Text angegeben"
 msgid "Note"
 msgstr "Hinweis"
 
-#: ../lib/modules/shadowAccount.inc:139 ../help/help.inc:165
+#: ../lib/modules/shadowAccount.inc:144 ../help/help.inc:165
 msgid "Number of days a user can login even his password has expired. -1=always."
 msgstr ""
 "Anzahl der Tage, in denen sich ein Benutzer anmelden kann, obwohl sein "
 "Passwort bereits abgelaufen ist. -1 = immer."
 
-#: ../lib/modules/shadowAccount.inc:143 ../help/help.inc:169
+#: ../lib/modules/shadowAccount.inc:148 ../help/help.inc:169
 msgid ""
 "Number of days a user has to wait until he\\'s allowed to change his "
 "password again. If set value must be 0<."
@@ -2050,7 +2062,7 @@ msgstr ""
 "Anzahl Tage, die ein Benutzer warten muss bevor er sein Passwort ändern "
 "darf. Wert muss >0 sein."
 
-#: ../lib/modules/shadowAccount.inc:147 ../help/help.inc:167
+#: ../lib/modules/shadowAccount.inc:152 ../help/help.inc:167
 msgid ""
 "Number of days after a user has to change his password again. If set value "
 "must be 0<."
@@ -2155,15 +2167,19 @@ msgstr ""
 msgid "Password does not expire"
 msgstr "Passwort läuft nicht ab"
 
-#: ../lib/modules/shadowAccount.inc:41 ../lib/modules/shadowAccount.inc:72
-#: ../lib/modules/shadowAccount.inc:138 ../lib/modules/shadowAccount.inc:260
-#: ../lib/modules/shadowAccount.inc:297 ../help/help.inc:164
-msgid "Password expire"
+#: ../lib/modules/shadowAccount.inc:43 ../lib/modules/shadowAccount.inc:78
+#: ../lib/modules/shadowAccount.inc:143 ../lib/modules/shadowAccount.inc:169
+#: ../lib/modules/shadowAccount.inc:297 ../lib/modules/shadowAccount.inc:334
+msgid "Password expiration"
 msgstr "Passwortablauf"
 
-#: ../lib/modules/shadowAccount.inc:41
-msgid "Password expire must be are natural number or -1."
+#: ../lib/modules/shadowAccount.inc:43 ../lib/modules/shadowAccount.inc:44
+msgid "Password expiration must be are natural number or -1."
 msgstr "Passwortablauf muss eine natürliche Zahl oder -1 sein."
+
+#: ../help/help.inc:164
+msgid "Password expire"
+msgstr "Passwortablauf"
 
 #: ../lib/modules/posixGroup.inc:243 ../lib/modules/posixGroup.inc:356
 #: ../lib/modules/posixAccount.inc:141 ../lib/modules/posixAccount.inc:295
@@ -2178,34 +2194,38 @@ msgstr "Passwort-Hashtyp für Unix-Accounts"
 msgid "Password hash type for Unix groups"
 msgstr "Passwort-Hashtyp für Unix-Gruppen"
 
-#: ../lib/modules/shadowAccount.inc:40 ../lib/modules/shadowAccount.inc:43
+#: ../lib/modules/shadowAccount.inc:41 ../lib/modules/shadowAccount.inc:47
 msgid "Password maxage"
 msgstr "Maximales Passwortalter"
 
-#: ../lib/modules/shadowAccount.inc:40
-msgid "Password maxage must be are natural number."
+#: ../lib/modules/shadowAccount.inc:41 ../lib/modules/shadowAccount.inc:42
+msgid "Password maximum age must be are natural number."
 msgstr "Maximales Passwortalter muss eine natürliche Zahl sein."
 
-#: ../lib/modules/shadowAccount.inc:43
-msgid "Password maxage must bigger as Password Minage."
+#: ../lib/modules/shadowAccount.inc:47 ../lib/modules/shadowAccount.inc:48
+msgid "Password maximum age must be bigger as password minimum age."
 msgstr "Maximales Passwortalter muss größer als minimales Passwortalter sein."
 
 #: ../lib/modules/shadowAccount.inc:39
 msgid "Password minage"
 msgstr "Minimales Passwortalter"
 
-#: ../lib/modules/shadowAccount.inc:39
-msgid "Password minage must be are natural number."
+#: ../lib/modules/shadowAccount.inc:39 ../lib/modules/shadowAccount.inc:40
+msgid "Password minimum age must be are natural number."
 msgstr "Minimales Passwortalter muss eine natürliche Zahl sein."
 
-#: ../lib/modules/shadowAccount.inc:42 ../lib/modules/shadowAccount.inc:67
-#: ../lib/modules/shadowAccount.inc:134 ../lib/modules/shadowAccount.inc:257
-#: ../lib/modules/shadowAccount.inc:295 ../help/help.inc:162
+#: ../help/help.inc:162
 msgid "Password warn"
 msgstr "Passwortwarnung"
 
-#: ../lib/modules/shadowAccount.inc:42
-msgid "Password warn must be are natural number."
+#: ../lib/modules/shadowAccount.inc:45 ../lib/modules/shadowAccount.inc:73
+#: ../lib/modules/shadowAccount.inc:139 ../lib/modules/shadowAccount.inc:163
+#: ../lib/modules/shadowAccount.inc:294 ../lib/modules/shadowAccount.inc:332
+msgid "Password warning"
+msgstr "Passwortwarnung"
+
+#: ../lib/modules/shadowAccount.inc:45 ../lib/modules/shadowAccount.inc:46
+msgid "Password warning must be are natural number."
 msgstr "Passwortwarnung muss eine natürliche Zahl sein."
 
 #: ../templates/config/confsave.php:234
@@ -2594,7 +2614,7 @@ msgstr "Samba PCs"
 msgid "Samba-Host information page"
 msgstr "Samba-Host-Informationen"
 
-#: ../templates/pdfedit/pdfpage.php:838
+#: ../templates/pdfedit/pdfpage.php:831
 #: ../templates/profedit/profilepage.php:136
 msgid "Save"
 msgstr "Speichern"
@@ -2721,13 +2741,9 @@ msgstr "Profilpasswort setzen"
 msgid "Sets the group password."
 msgstr "Setzt das Gruppenpasswort."
 
-#: ../lib/modules/shadowAccount.inc:56
+#: ../lib/modules/shadowAccount.inc:62
 msgid "Shadow"
 msgstr "Shadow"
-
-#: ../lib/modules/shadowAccount.inc:298
-msgid "Shadow flag"
-msgstr ""
 
 #: ../templates/massBuildAccounts.php:196
 msgid "Show LDIF file"
@@ -2815,7 +2831,7 @@ msgstr "Hans Müller,Raum 2.14,123-123-1234,123-123-1234"
 msgid "Street"
 msgstr "Straße"
 
-#: ../templates/pdfedit/pdfpage.php:812
+#: ../templates/pdfedit/pdfpage.php:805
 msgid "Structure name"
 msgstr "Name der Struktur"
 
@@ -2825,7 +2841,7 @@ msgstr "Name der Struktur"
 #: ../templates/config/profmanage.php:373
 #: ../templates/config/confmodules.php:496
 #: ../templates/config/confmain.php:418 ../templates/pdfedit/pdfdelete.php:81
-#: ../templates/pdfedit/pdfpage.php:804 ../templates/pdfedit/pdfmain.php:143
+#: ../templates/pdfedit/pdfpage.php:797 ../templates/pdfedit/pdfmain.php:143
 #: ../templates/profedit/profiledelete.php:85
 #: ../templates/profedit/profiledelete.php:97
 #: ../templates/profedit/profiledelete.php:109
@@ -2888,6 +2904,10 @@ msgstr ""
 #: ../help/help.inc:243
 msgid "The domain entry will be saved under this suffix."
 msgstr "Der Domäneneintrag wird unter diesem Suffix gespeichert."
+
+#: ../lib/modules/shadowAccount.inc:49
+msgid "The expiration date is invalid."
+msgstr "Das Ablaufdatum ist ungültig."
 
 #: ../templates/config/confsave.php:246
 msgid "The following settings were saved to profile:"
@@ -3603,10 +3623,6 @@ msgstr "Windows-Domäne der Gruppe."
 #: ../help/help.inc:212
 msgid "Windows-Domain of user."
 msgstr "Windows-Domäne des Benutzers."
-
-#: ../templates/pdfedit/pdfpage.php:784
-msgid "Write your text in the field below."
-msgstr ""
 
 #: ../templates/login.php:331
 msgid "Wrong Password/Username combination. Try again."

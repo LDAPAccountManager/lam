@@ -40,8 +40,8 @@ class shadowAccount extends baseModule {
 		$this->messages['shadowMin'][1] = array('ERROR', _('Account %s:') . ' shadowAccount_minAge', _('Password minimum age must be are natural number.'));
 		$this->messages['shadowMax'][0] = array('ERROR', _('Password maxage'), _('Password maximum age must be are natural number.'));
 		$this->messages['shadowMax'][1] = array('ERROR', _('Account %s:') . ' shadowAccount_maxAge', _('Password maximum age must be are natural number.'));
-		$this->messages['inactive'][0] = array('ERROR', _('Password expire'), _('Password expire must be are natural number or -1.'));
-		$this->messages['inactive'][1] = array('ERROR', _('Account %s:') . ' shadowAccount_ignoreExpire', _('Password expire must be are natural number or -1.'));
+		$this->messages['inactive'][0] = array('ERROR', _('Password expiration'), _('Password expiration must be are natural number or -1.'));
+		$this->messages['inactive'][1] = array('ERROR', _('Account %s:') . ' shadowAccount_ignoreExpire', _('Password expiration must be are natural number or -1.'));
 		$this->messages['shadowWarning'][0] = array('ERROR', _('Password warning'), _('Password warning must be are natural number.'));
 		$this->messages['shadowWarning'][1] = array('ERROR', _('Account %s:') . ' shadowAccount_warning', _('Password warning must be are natural number.'));
 		$this->messages['shadow_cmp'][0] = array('ERROR', _('Password maxage'), _('Password maximum age must be bigger as password minimum age.'));
@@ -75,7 +75,7 @@ class shadowAccount extends baseModule {
 				2 => array('kind' => 'help', 'value' => 'TODO')),
 			// password expiration
 			array(
-				0 => array('kind' => 'text', 'text' => _('Password expire')),
+				0 => array('kind' => 'text', 'text' => _('Password expiration')),
 				1 => array('kind' => 'input', 'name' => 'shadowAccount_shadowInactive', 'type' => 'text', 'size' => '4', 'maxlength' => '4', 'value' => ""),
 				2 => array('kind' => 'help', 'value' => 'TODO')),
 			// minimum password age
@@ -90,7 +90,7 @@ class shadowAccount extends baseModule {
 				2 => array('kind' => 'help', 'value' => 'TODO')),
 			// expiration date
 			array(
-				0 => array('kind' => 'text', 'text' => _('Expire date')),
+				0 => array('kind' => 'text', 'text' => _('Expiration date')),
 				1 => array('kind' => 'table', 'value' => array(
 					0 => array (
 						0 => array('kind' => 'select', 'name' => 'shadowAccount_shadowExpire_day',
@@ -131,7 +131,6 @@ class shadowAccount extends baseModule {
 			'shadowWarning',
 			'shadowInactive',
 			'shadowExpire',
-			'shadowFlag',
 			'description'
 		);
 		// help Entries
@@ -141,7 +140,7 @@ class shadowAccount extends baseModule {
 				"Text" => _("Days before password is to expire that user is warned of pending password expiration. If set value must be 0<."). ' '. _("Can be left empty.")
 			),
 			'shadowInactive' => array (
-				"Headline" => _("Password expire"),
+				"Headline" => _("Password expiration"),
 				"Text" => _("Number of days a user can login even his password has expired. -1=always."). ' '. _("Can be left empty.")
 			),
 			'shadowMin' => array (
@@ -153,8 +152,8 @@ class shadowAccount extends baseModule {
 				"Text" => _("Number of days after a user has to change his password again. If set value must be 0<."). ' '. _("Can be left empty.")
 			),
 			'shadowExpire' => array (
-				"Headline" => _("Expire date"),
-				"Text" => _("Account expire date. Format: DD-MM-YYYY")
+				"Headline" => _("Expiration date"),
+				"Text" => _("Account expiration date. Format: DD-MM-YYYY")
 			)
 		);
 		// upload fields
@@ -166,8 +165,8 @@ class shadowAccount extends baseModule {
 				'example' => '14'
 			),
 			array(
-				'name' => 'shadowAccount_ignoreExpire',
-				'description' => _('Password expiration ignored'),
+				'name' => 'shadowAccount_expiration',
+				'description' => _('Password expiration'),
 				'help' => 'shadowInactive',
 				'example' => '7'
 			),
@@ -184,8 +183,8 @@ class shadowAccount extends baseModule {
 				'example' => '365'
 			),
 			array(
-				'name' => 'shadowAccount_expireDay',
-				'description' => _('Expire date'),
+				'name' => 'shadowAccount_expireDate',
+				'description' => _('Expiration date'),
 				'help' => 'shadowExpire',
 				'example' => '17-07-2011'
 			)
@@ -295,7 +294,7 @@ class shadowAccount extends baseModule {
 		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Password warning') ),
 			1 => array ( 'kind' => 'input', 'name' => 'shadowWarning', 'type' => 'text', 'size' => '4', 'maxlength' => '4', 'value' => $this->attributes['shadowWarning'][0] ),
 			2 => array ( 'kind' => 'help', 'value' => 'shadowWarning' ));
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Password expire') ),
+		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Password expiration') ),
 			1 => array ( 'kind' => 'input', 'name' => 'shadowInactive', 'type' => 'text', 'size' => '4', 'maxlength' => '4', 'value' => $this->attributes['shadowInactive'][0] ),
 			2 => array ( 'kind' => 'help', 'value' => 'shadowInactive' ));
 		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Minimum password age') ),
@@ -308,7 +307,7 @@ class shadowAccount extends baseModule {
 		for ( $i=1; $i<=31; $i++ ) $mday[] = $i;
 		for ( $i=1; $i<=12; $i++ ) $mon[] = $i;
 		for ( $i=2003; $i<=2030; $i++ ) $year[] = $i;
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Expire date') ),
+		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Expiration date') ),
 			1 => array ( 'kind' => 'table', 'value' => array ( 0 => array ( 0 => array ( 'kind' => 'select', 'name' => 'shadowExpire_day',
 					'options' => $mday, 'options_selected' => $date['mday']),
 				1 => array ( 'kind' => 'select', 'name' => 'shadowExpire_mon',
@@ -332,7 +331,7 @@ class shadowAccount extends baseModule {
 		return array(	'shadowAccount_shadowLastChange' => array('<block><key>' . _('Last password change') . '</key><value>' . $this->attributes['shadowLastChange'][0] . '</value></block>'),
 							'shadowAccount_shadowWarning' => array('<block><key>' . _('Password warning') . '</key><value>' . $this->attributes['shadowWarn'][0] . '</value><block>'),
 							'shadowAccount_shadowInactive' => array('<block><key>' . _('Account inactive') . '</key><value>' . $this->attributes['shadowInactive'][0] . '</value></block>'),
-							'shadowAccount_shadowExpire' => array('<block><key>' . _('Password expire') . '</key><value>' . date('d. m. Y',$this->attributes['shadowExpire'][0]) . '</value></block>'),
+							'shadowAccount_shadowExpire' => array('<block><key>' . _('Password expiration') . '</key><value>' . date('d. m. Y',$this->attributes['shadowExpire'][0]) . '</value></block>'),
 							'shadowAccount_description' => array('<block><key>' . _('Description') . '</key><value>' . $this->attributes['description'][0] . '</value></block>'));
 	}
 
