@@ -944,9 +944,13 @@ function loaduser($dns) {
 	/* if string is langer then 1024 characters we have to search for all users and
 	* output only the selcted users because searchfilter would be too big
 	*/
-	if (strlen($search<1024)) $result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_UserSuffix(), $search);
+	if (strlen($search)<1024) $result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_UserSuffix(), $search);
 		else $result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_UserSuffix());
 	$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
+
+	// store smb_domain as samba3domain-Object
+	if ($_SESSION['config']->is_samba3()) $samba3domains = $_SESSION['ldap']->search_domains($_SESSION[config]->get_domainSuffix());
+
 	// loop for every found user
 	$i=0;
 	while ($entry) {
@@ -1053,8 +1057,6 @@ function loaduser($dns) {
 				if (isset($attr['sambaNTPassword'][0]))  $return[$i]->smb_password = $attr['sambaNTPassword'][0];
 				if (isset($attr['sambaDomainName'][0])) {
 					if ($_SESSION['config']->is_samba3()) {
-						// store smb_domain as samba3domain-Object
-						$samba3domains = $_SESSION['ldap']->search_domains($_SESSION[config]->get_domainSuffix());
 						$j=0;
 						while (!isset($return[$i]->smb_domain) && (count($samba3domains)>$j)) {
 							if ($attr['sambaDomainName'][0] == $samba3domains[$j]->name)
@@ -1091,8 +1093,6 @@ function loaduser($dns) {
 				if (isset($attr['userWorkstations'][0])) $return[$i]->smb_smbuserworkstations = $attr['userWorkstations'][0];
 				if (isset($attr['domain'][0])) {
 					if ($_SESSION['config']->is_samba3()) {
-						// store smb_domain as samba3domain-Object
-						$samba3domains = $_SESSION['ldap']->search_domains($_SESSION[config]->get_domainSuffix());
 						$j=0;
 						while (!isset($return[$i]->smb_domain) && (count($samba3domains)>$j)) {
 							if ($attr['domain'][0] == $samba3domains[$j]->name)
