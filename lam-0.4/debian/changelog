@@ -1,3 +1,9 @@
+ldap-account-manager (0.4.9-2) unstable; urgency=low
+
+  * Closes: #300007: fixed typo
+
+ -- Roland Gruber <post@rolandgruber.de>  Thu,  17 Mar 2005 19:20:29 +0100
+
 ldap-account-manager (0.4.9-1) unstable; urgency=low
 
   * Updated to new upstream release

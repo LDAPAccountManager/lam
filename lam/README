@@ -2,7 +2,7 @@
 LAM - Readme
 ============
 
-  A set of PHP-scripts to administrate Unix and Samba accounts in a LDAP server.
+  A set of PHP-scripts to administrate Unix and Samba accounts in an LDAP server.
   LAM runs on any webserver with PHP4 support and connects to your LDAP server
   unencrypted or via SSL.
   The application manages accounts for users, groups and Samba hosts in
