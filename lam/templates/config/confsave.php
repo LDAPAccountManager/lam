@@ -42,6 +42,8 @@ if ($_SESSION['admins']) $admins = $_SESSION['admins'];
 if ($_SESSION['suffusers']) $suffusers = $_SESSION['suffusers'];
 if ($_SESSION['suffgroups']) $suffgroups = $_SESSION['suffgroups'];
 if ($_SESSION['suffhosts']) $suffhosts = $_SESSION['suffhosts'];
+if ($_SESSION['suffdomains']) $suffdomains = $_SESSION['suffdomains'];
+if ($_SESSION['suffmap']) $suffmap = $_SESSION['suffmap'];
 if ($_SESSION['minUID']) $minUID = $_SESSION['minUID'];
 if ($_SESSION['maxUID']) $maxUID = $_SESSION['maxUID'];
 if ($_SESSION['minGID']) $minGID = $_SESSION['minGID'];
@@ -82,73 +84,83 @@ if (!$serverurl) {
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
-if (!$admins) {
-	echo ("<font color=\"red\"><b>" . _("List of admin users is empty!") . "</b></font>");
+if (!$admins || !eregi("^([a-z0-9]|-)+=([a-z0-9]|-)+(,([a-z0-9]|-)+=([a-z0-9]|-)+)+(;([a-z0-9]|-)+=([a-z0-9]|-)+(,([a-z0-9]|-)+=([a-z0-9]|-)+)+)*$", $admins)) {
+	echo ("<font color=\"red\"><b>" . _("List of admin users is empty or invalid!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
-if (!$suffusers) {
-	echo ("<font color=\"red\"><b>" . _("UserSuffix is empty!") . "</b></font>");
+if (!$suffusers || !eregi("^(([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)(,([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)*$", $suffusers)) {
+	echo ("<font color=\"red\"><b>" . _("UserSuffix is invalid!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
-if (!$suffgroups) {
-	echo ("<font color=\"red\"><b>" . _("UserSuffix is empty!") . "</b></font>");
+if (!$suffgroups || !eregi("^(([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)(,([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)*$", $suffgroups)) {
+	echo ("<font color=\"red\"><b>" . _("UserSuffix is invalid!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
-if (!$suffhosts) {
-	echo ("<font color=\"red\"><b>" . _("HostSuffix is empty!") . "</b></font>");
+if (!$suffhosts || !eregi("^(([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)(,([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)*$", $suffhosts)) {
+	echo ("<font color=\"red\"><b>" . _("HostSuffix is invalid!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
-if (!$minUID) {
-	echo ("<font color=\"red\"><b>" . _("MinUID is empty!") . "</b></font>");
+if (($samba3 == "yes") && !eregi("^(([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)(,([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)*$", $suffdomains)) {
+	echo ("<font color=\"red\"><b>" . _("DomainSuffix is invalid!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
-if (!$maxUID) {
-	echo ("<font color=\"red\"><b>" . _("MaxUID is empty!") . "</b></font>");
+if ($suffmap && !eregi("^(([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)(,([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)*$", $suffmap)) {
+	echo ("<font color=\"red\"><b>" . _("MappingSuffix is invalid!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
-if (!$minGID) {
-	echo ("<font color=\"red\"><b>" . _("MinGID is empty!") . "</b></font>");
+if (!$minUID || !is_numeric($minUID)) {
+	echo ("<font color=\"red\"><b>" . _("MinUID is invalid!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
-if (!$maxGID) {
-	echo ("<font color=\"red\"><b>" . _("MaxGID is empty!") . "</b></font>");
+if (!$maxUID || !is_numeric($maxUID)) {
+	echo ("<font color=\"red\"><b>" . _("MaxUID is invalid!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
-if (!$minMach) {
-	echo ("<font color=\"red\"><b>" . _("MinMachine is empty!") . "</b></font>");
+if (!$minGID || !is_numeric($minGID)) {
+	echo ("<font color=\"red\"><b>" . _("MinGID is invalid!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
-if (!$maxMach) {
-	echo ("<font color=\"red\"><b>" . _("MaxMachine is empty!") . "</b></font>");
+if (!$maxGID || !is_numeric($maxGID)) {
+	echo ("<font color=\"red\"><b>" . _("MaxGID is invalid!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
-if (!$usrlstattr) {
-	echo ("<font color=\"red\"><b>" . _("No attributes in user list!") . "</b></font>");
+if (!$minMach || !is_numeric($minMach)) {
+	echo ("<font color=\"red\"><b>" . _("MinMachine is invalid!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
-if (!$grplstattr) {
-	echo ("<font color=\"red\"><b>" . _("No attributes in group list!") . "</b></font>");
+if (!$maxMach || !is_numeric($maxMach)) {
+	echo ("<font color=\"red\"><b>" . _("MaxMachine is invalid!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
-if (!$hstlstattr) {
-	echo ("<font color=\"red\"><b>" . _("No attributes in host list!") . "</b></font>");
+if (!$usrlstattr || !eregi("^((#[a-z]*)|([a-z]*:[a-z*]))(;((#[a-z]*)|([a-z]*:[a-z]*)))*$", $usrlstattr)) {
+	echo ("<font color=\"red\"><b>" . _("User list attributes are invalid!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
-if (!$maxlistentries) {
-	echo ("<font color=\"red\"><b>" . _("Max list entries is empty!") . "</b></font>");
+if (!$grplstattr || !eregi("^((#[a-z]*)|([a-z]*:[a-z*]))(;((#[a-z]*)|([a-z]*:[a-z]*)))*$", $grplstattr)) {
+	echo ("<font color=\"red\"><b>" . _("Group list attributes are invalid!") . "</b></font>");
+	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
+	exit;
+}
+if (!$hstlstattr || !eregi("^((#[a-z]*)|([a-z]*:[a-z*]))(;((#[a-z]*)|([a-z]*:[a-z]*)))*$", $hstlstattr)) {
+	echo ("<font color=\"red\"><b>" . _("Host list attributes are invalidUser list attributes are invalid!") . "</b></font>");
+	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
+	exit;
+}
+if (!$maxlistentries || !is_numeric($maxlistentries)) {
+	echo ("<font color=\"red\"><b>" . _("Max list entries is invalid!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
@@ -165,8 +177,20 @@ if (!$samba3) {
 	exit;
 }
 
-if (($samba3 == "yes") && (!$domainSID)) {
-	echo ("<font color=\"red\"><b>" . _("Samba 3 needs a domain SID!") . "</b></font>");
+if (($samba3 == "yes") && !eregi("^S-[0-9]-[0-9]-[0-9]{2,2}-[0-9]*-[0-9]*-[0-9]*$", $domainSID)) {
+	echo ("<font color=\"red\"><b>" . _("Samba 3 domain SID is invalid!") . "</b></font>");
+	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
+	exit;
+}
+
+if ($scriptpath && !eregi("^/[a-z0-9_\\-]+(/[a-z0-9_\\-]+)+$", $scriptpath)) {
+	echo ("<font color=\"red\"><b>" . _("Script path is invalid!") . "</b></font>");
+	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
+	exit;
+}
+
+if ($scriptserver && !is_string($scriptserver)) {
+	echo ("<font color=\"red\"><b>" . _("Script server is invalid!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
@@ -177,6 +201,8 @@ $conf->set_Adminstring($admins);
 $conf->set_UserSuffix($suffusers);
 $conf->set_GroupSuffix($suffgroups);
 $conf->set_HostSuffix($suffhosts);
+$conf->set_DomainSuffix($suffdomains);
+$conf->set_MapSuffix($suffmap);
 $conf->set_minUID($minUID);
 $conf->set_maxUID($maxUID);
 $conf->set_minGID($minGID);
@@ -190,11 +216,8 @@ $conf->set_MaxListEntries($maxlistentries);
 $conf->set_defaultLanguage($lang);
 $conf->set_samba3($samba3);
 $conf->set_domainSID($domainSID);
-// optional
-if ($_SESSION['scriptpath']) $conf->set_scriptpath($scriptpath);
-else $conf->set_scriptpath("");
-if ($_SESSION['scriptserver']) $conf->set_scriptserver($scriptserver);
-else $conf->set_scriptserver("");
+$conf->set_scriptpath($scriptpath);
+$conf->set_scriptserver($scriptserver);
 
 
 
@@ -225,6 +248,8 @@ session_unregister('admins');
 session_unregister('suffusers');
 session_unregister('suffgroups');
 session_unregister('suffhosts');
+session_unregister('suffdomains');
+session_unregister('suffmap');
 session_unregister('minUID');
 session_unregister('maxUID');
 session_unregister('minGID');

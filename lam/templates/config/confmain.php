@@ -46,6 +46,8 @@ if ($_POST['back'] || $_POST['submitconf']){
 		if ($_POST['suffusers']) $suffusers = $_POST['suffusers'];
 		if ($_POST['suffgroups']) $suffgroups = $_POST['suffgroups'];
 		if ($_POST['suffhosts']) $suffhosts = $_POST['suffhosts'];
+		if ($_POST['suffdomains']) $suffdomains = $_POST['suffdomains'];
+		if ($_POST['suffmap']) $suffmap = $_POST['suffmap'];
 		if ($_POST['minUID']) $minUID = $_POST['minUID'];
 		if ($_POST['maxUID']) $maxUID = $_POST['maxUID'];
 		if ($_POST['minGID']) $minGID = $_POST['minGID'];
@@ -66,9 +68,9 @@ if ($_POST['back'] || $_POST['submitconf']){
 		else $scriptserver = "";
 		if ($_POST['filename']) $filename = $_POST['filename'];
 		session_register('passwd', 'passwd1', 'passwd2', 'serverurl', 'admins', 'suffusers',
-			'suffgroups', 'suffhosts', 'minUID', 'maxUID', 'minGID', 'maxGID', 'minMach',
-			'maxMach', 'usrlstattr', 'grplstattr', 'hstlstattr', 'maxlistentries', 'lang',
-			'scriptpath', 'scriptserver', 'samba3', 'domainSID', 'filename');
+			'suffgroups', 'suffhosts', 'suffdomains', 'suffmap', 'minUID', 'maxUID', 'minGID',
+			'maxGID', 'minMach', 'maxMach', 'usrlstattr', 'grplstattr', 'hstlstattr', 'maxlistentries',
+			'lang', 'scriptpath', 'scriptserver', 'samba3', 'domainSID', 'filename');
 		echo("<meta http-equiv=\"refresh\" content=\"0; URL=confsave.php\">");
 	}
 	// back to login
@@ -117,7 +119,7 @@ echo ("<form action=\"confmain.php\" method=\"post\">\n");
 echo ("<fieldset><legend><b>" . _("Server settings") . "</b></legend>");
 echo ("<table border=0>");
 // serverURL
-echo ("<tr><td align=\"right\"><b>" . _("Server Address") . ": </b></td>".
+echo ("<tr><td align=\"right\"><b>" . _("Server Address") . " *: </b></td>".
 	"<td align=\"left\">".
 	"<input size=50 type=\"text\" name=\"serverurl\" value=\"" . $conf->get_ServerURL() . "\">".
 	"</td>\n");
@@ -128,19 +130,29 @@ echo ("<tr><td colspan=3>&nbsp</td></tr>");
 
 // user suffix
 echo ("<tr><td align=\"right\"><b>".
-	_("UserSuffix") . ": </b></td>".
+	_("UserSuffix") . " *: </b></td>".
 	"<td><input size=50 type=\"text\" name=\"suffusers\" value=\"" . $conf->get_UserSuffix() . "\"></td>\n");
 echo ("<td><a href=\"../help.php?HelpNumber=202\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 // group suffix
 echo ("<tr><td align=\"right\"><b>".
-	_("GroupSuffix") . ": </b></td>".
+	_("GroupSuffix") . " *: </b></td>".
 	"<td><input size=50 type=\"text\" name=\"suffgroups\" value=\"" . $conf->get_GroupSuffix() . "\"></td>\n");
 echo ("<td><a href=\"../help.php?HelpNumber=202\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 // host suffix
 echo ("<tr><td align=\"right\"><b>".
-	_("HostSuffix") . ": </b></td>".
+	_("HostSuffix") . " *: </b></td>".
 	"<td><input size=50 type=\"text\" name=\"suffhosts\" value=\"" . $conf->get_HostSuffix() . "\"></td>\n");
 echo ("<td><a href=\"../help.php?HelpNumber=202\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
+// domain suffix
+echo ("<tr><td align=\"right\"><b>".
+	_("DomainSuffix") . " **: </b></td>".
+	"<td><input size=50 type=\"text\" name=\"suffdomains\" value=\"" . $conf->get_DomainSuffix() . "\"></td>\n");
+echo ("<td><a href=\"../help.php?HelpNumber=215\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
+// mapping suffix
+echo ("<tr><td align=\"right\"><b>".
+	_("MappingSuffix") . ": </b></td>".
+	"<td><input size=50 type=\"text\" name=\"suffmap\" value=\"" . $conf->get_MapSuffix() . "\"></td>\n");
+echo ("<td><a href=\"../help.php?HelpNumber=216\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 
 echo ("</table>");
 echo ("</fieldset>");
@@ -161,7 +173,7 @@ echo ("<tr><td colspan=3>&nbsp</td></tr>");
 
 // Samba domain SID
 echo ("<tr><td align=\"right\"><b>".
-	_("Domain SID (Samba 3 only)") . ": </b></td>".
+	_("Domain SID") . " **: </b></td>".
 	"<td><input size=50 type=\"text\" name=\"domainSID\" value=\"" . $conf->get_domainSID() . "\"></td>\n");
 echo ("<td><a href=\"../help.php?HelpNumber=214\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 
@@ -174,28 +186,28 @@ echo ("<table border=0>");
 
 // minUID
 echo ("<tr><td align=\"right\"><b>".
-	_("Minimum UID number") . ": </b>".
+	_("Minimum UID number") . " *: </b>".
 	"<input size=6 type=\"text\" name=\"minUID\" value=\"" . $conf->get_minUID() . "\"></td>\n");
 // maxUID
-echo ("<td align=\"right\"><b>" . _("Maximum UID number") . ": </b>".
+echo ("<td align=\"right\"><b>" . _("Maximum UID number") . " *: </b>".
 	"<input size=6 type=\"text\" name=\"maxUID\" value=\"" . $conf->get_maxUID() . "\"></td>\n");
 // UID text
 echo ("<td><a href=\"../help.php?HelpNumber=203\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 // minGID
 echo ("<tr><td align=\"right\"><b>".
-	_("Minimum GID number") . ": </b>".
+	_("Minimum GID number") . " *: </b>".
 	"<input size=6 type=\"text\" name=\"minGID\" value=\"" . $conf->get_minGID() . "\"></td>\n");
 // maxGID
-echo ("<td align=\"right\"><b>" . _("Maximum GID number").": </b>".
+echo ("<td align=\"right\"><b>" . _("Maximum GID number")." *: </b>".
 	"<input size=6 type=\"text\" name=\"maxGID\" value=\"" . $conf->get_maxGID() . "\"></td>\n");
 // GID text
 echo ("<td><a href=\"../help.php?HelpNumber=204\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 // minMach
 echo ("<tr><td align=\"right\"><b>".
-	_("Minimum Machine number") . ": </b>".
+	_("Minimum Machine number") . " *: </b>".
 	"<input size=6 type=\"text\" name=\"minMach\" value=\"" . $conf->get_minMachine() . "\"></td>\n");
 // maxMach
-echo ("<td align=\"right\"><b>" . _("Maximum Machine number") . ": </b>".
+echo ("<td align=\"right\"><b>" . _("Maximum Machine number") . " *: </b>".
 	"<input size=6 type=\"text\" name=\"maxMach\" value=\"" . $conf->get_maxMachine() . "\"></td>\n");
 // Machine text
 echo ("<td><a href=\"../help.php?HelpNumber=205\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
@@ -209,17 +221,17 @@ echo ("<table border=0>\n");
 
 // user list attributes
 echo ("<tr><td align=\"right\"><b>".
-	_("Attributes in User List") . ":</b></td>".
+	_("Attributes in User List") . " *:</b></td>".
 	"<td><input size=50 type=\"text\" name=\"usrlstattr\" value=\"" . $conf->get_userlistAttributes() . "\"></td>");
 echo ("<td><a href=\"../help.php?HelpNumber=206\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 // user list attributes
 echo ("<tr><td align=\"right\"><b>".
-	_("Attributes in Group List") . ":</b></td>".
+	_("Attributes in Group List") . " *:</b></td>".
 	"<td><input size=50 type=\"text\" name=\"grplstattr\" value=\"" . $conf->get_grouplistAttributes() . "\"></td>");
 echo ("<td><a href=\"../help.php?HelpNumber=206\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 // user list attributes
 echo ("<tr><td align=\"right\"><b>".
-	_("Attributes in Host List") . ":</b></td>".
+	_("Attributes in Host List") . " *:</b></td>".
 	"<td><input size=50 type=\"text\" name=\"hstlstattr\" value=\"" . $conf->get_hostlistAttributes() . "\"></td>");
 echo ("<td><a href=\"../help.php?HelpNumber=206\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 
@@ -227,7 +239,7 @@ echo ("<tr><td colspan=3>&nbsp</td></tr>\n");
 
 // maximum list entries
 echo ("<tr><td align=\"right\"><b>".
-	_("Maximum list entries") . ": </b></td>".
+	_("Maximum list entries") . " *: </b></td>".
 	"<td><select name=\"maxlistentries\">\n<option selected>".$conf->get_MaxListEntries()."</option>\n");
 if ($conf->get_MaxListEntries() != 10) echo("<option>10</option>\n");
 if ($conf->get_MaxListEntries() != 20) echo("<option>20</option>\n");
@@ -247,7 +259,7 @@ echo ("<table border=0>\n");
 
 // language
 echo ("<tr>");
-echo ("<td><b>" . _("Default Language") . "</b></td><td>\n");
+echo ("<td><b>" . _("Default Language") . ":</b></td><td>\n");
 // read available languages
 $languagefile = "../../config/language";
 if(is_file($languagefile))
@@ -304,7 +316,7 @@ echo ("<fieldset><legend><b>" . _("Security settings") . "</b></legend>\n");
 echo ("<table border=0>\n");
 // admin list
 echo ("<tr><td align=\"right\"><b>".
-	_("List of valid users") . ": </b></td>".
+	_("List of valid users") . " *: </b></td>".
 	"<td colspan=2><input size=50 type=\"text\" name=\"admins\" value=\"" . $conf->get_Adminstring() . "\"></td>\n");
 echo ("<td><a href=\"../help.php?HelpNumber=207\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 echo ("</table>\n");
@@ -339,6 +351,9 @@ echo ("></pre></td></tr>\n");
 echo ("</table>\n");
 
 echo ("<p></p>");
+
+echo ("<p>* = ". _("required") . "</p>");
+echo ("<p>** = ". _("required for Samba 3 schema") . "</p>");
 
 // password for configuration
 echo ("<p><input type=\"hidden\" name=\"passwd\" value=\"" . $passwd . "\"></p>\n");

@@ -494,7 +494,7 @@ class Config {
   // needs a string that contains all admin users seperated by semicolons
   function set_Adminstring($value) {
     if (is_string($value) &&
-		ereg("^([a-zA-Z0-9]|-)+=([a-zA-Z0-9]|-)+(,([a-zA-Z0-9]|-)+=([a-zA-Z0-9]|-)+)+(;([a-zA-Z0-9]|-)+=([a-zA-Z0-9]|-)+(,([a-zA-Z0-9]|-)+=([a-zA-Z0-9]|-)+)+)*$", $value)) {
+		eregi("^([a-z0-9]|-)+=([a-z0-9]|-)+(,([a-z0-9]|-)+=([a-z0-9]|-)+)+(;([a-z0-9]|-)+=([a-z0-9]|-)+(,([a-z0-9]|-)+=([a-z0-9]|-)+)+)*$", $value)) {
       $this->Adminstring = $value;
       $this->Admins = explode(";", $value);
     }
@@ -713,8 +713,8 @@ class Config {
 
   // sets the path to the external script
   function set_scriptPath($value) {
-	if (!$value) $value = ""; // optional parameter
-    if (is_string($value) && eregi("^()|(/([a-z]|[0-9]|-|_|/)*)$", $value)) $this->scriptPath = $value;
+	if (!$value) $this->scriptPath = ""; // optional parameter
+    elseif (is_string($value) && eregi("^/([a-z0-9_\\-])+(/([a-z0-9_\\-])+)+$", $value)) $this->scriptPath = $value;
     else StatusMessage("WARN", "", _("Config->set_scriptPath failed!") . " (" . $value . ")");
   }
 
@@ -726,7 +726,7 @@ class Config {
   // sets the server of the external script
   function set_scriptServer($value) {
 	if (!$value) $value = ""; // optional parameter
-    if (is_string($value) && (eregi("^[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}$", $value) || $value == "")) {
+    if (is_string($value)) {
 		$this->scriptServer = $value;
 	}
     else StatusMessage("WARN", "", _("Config->set_scriptServer failed!") . " (" . $value . ")");
