@@ -526,6 +526,127 @@ function doUploadPostActions($scope, $data, $ids, $failed) {
 	return $return;
 }
 
+/**
+* Takes a list of meta-HTML elements and prints the equivalent HTML output.
+*
+* @param string $module Name of account module
+* @param array $input List of meta-HTML elements
+* @param array $values List of values which override the defaults in $input (name => value)
+* @param boolean $restricted If true then no buttons will be displayed
+* @param integer $tabindex Start value of tabulator index for input fields
+* @param integer $tabindexLink Start value of tabulator index for links
+*/
+function parseHtml($module, $input, $values, $restricted, &$tabindex, &$tabindexLink) {
+	if (is_array($input)) {
+		echo "<table>\n";
+		for ($i=0; $i<count($input); $i++) {	// $i = row number
+			// Draw column
+			echo "<tr>\n";
+			for ($j=0; $j<count($input[$i]); $j++ ) {	// $j = column number
+				// Draw cell
+				echo "<td";
+				if (isset($input[$i][$j]['td']['align'])) echo " align=\"" . $input[$i][$j]['td']['align'] . "\"";
+				if (isset($input[$i][$j]['td']['valign'])) echo " valign=\"" . $input[$i][$j]['td']['valign'] . "\"";
+				if (isset($input[$i][$j]['td']['colspan'])) echo " colspan=\"" . $input[$i][$j]['td']['colspan'] . "\"";
+				if (isset($input[$i][$j]['td']['rowspan'])) echo " rowspan=\"" . $input[$i][$j]['td']['rowspan'] . "\"";
+				echo ">\n";
+				switch ($input[$i][$j]['kind']) {
+					// plain text
+					case 'text':
+						echo $input[$i][$j]['text'];
+						break;
+					// input fields
+					case 'input':
+						if ($restricted && ($input[$i][$j]['type'] == "submit")) break;	// no buttons in restricted mode
+						$output = "<input";
+						if ($input[$i][$j]['name']!='') $output .= ' name="' . $input[$i][$j]['name'] . '"';
+						if ($input[$i][$j]['type']!='') $output .= ' type="' . $input[$i][$j]['type'] . '"';
+						if ($input[$i][$j]['size']!='') $output .= ' size="' . $input[$i][$j]['size'] . '"';
+						if ($input[$i][$j]['maxlength']!='') $output .= ' maxlength="' . $input[$i][$j]['maxlength'] . '"';
+						if ($input[$i][$j]['value']!='') $output .= ' value="' . $input[$i][$j]['value'] . '"';
+						if ($input[$i][$j]['disabled']) $output .= ' disabled';
+						// Show taborder
+						else {
+							$output .= " tabindex=$tabindex";
+							$tabindex++;
+						}
+						if ($input[$i][$j]['checked']) $output .= ' checked';
+						$output .= ">";
+						echo $output;
+						break;
+					// inner fieldset
+					case 'fieldset':
+						echo "<fieldset>\n";
+						if ($input[$i][$j]['legend']!='') echo "<legend>" . $input[$i][$j]['legend'] . "</legend>\n";
+						parseHtml($module, $input[$i][$j]['value'], $values, $restricted, $tabindex, $tabindexLink);
+						echo "</fieldset>\n";
+						break;
+					// selection
+					case 'select':
+						if (!is_array($input[$i][$j]['options'])) $input[$i][$j]['options'] = array ( $input[$i][$j]['options'] );
+						if (isset($input[$i][$j]['options_selected'])) {
+							if (!is_array($input[$i][$j]['options_selected'])) {
+								// one selected element
+								$input[$i][$j]['options_selected'] = array ( $input[$i][$j]['options_selected'] );
+							}
+						}
+						else {
+							$input[$i][$j]['options_selected'] = array();
+						}
+						echo "<select name=\"" . $input[$i][$j]['name'] . '"';
+						if (isset($input[$i][$j]['multiple'])) echo ' multiple';
+						if (isset($input[$i][$j]['size'])) echo ' size="' . $input[$i][$j]['size'] . '"';
+						// Show taborder
+						echo " tabindex=$tabindex";
+						$tabindex++;
+						echo ">\n";
+						// merge both option arrays and sort them.
+						$options = array_merge ($input[$i][$j]['options'], $input[$i][$j]['options_selected'] );
+						$options = array_unique($options);
+						if (get_preg($options[0], 'digit'))  sort($options, SORT_NUMERIC);
+						else sort($options, SORT_STRING);
+						foreach ($options as $option) {
+							if ($option!='') {
+								if (in_array($option, $input[$i][$j]['options_selected'])) echo "<option selected>" . $option . "</option>\n";
+								else echo "<option>" . $option . "</option>\n";
+							}
+						}
+						echo "</select>\n";
+						break;
+					// sub table
+					case 'table':
+						parseHtml($module, $input[$i][$j]['value'], $values, $restricted, $tabindex, $tabindexLink);
+						break;
+					// help link
+					case 'help':
+						echo "<a href=../help.php?module=$module&amp;HelpNumber=". $input[$i][$j]['value'] . "&amp;scope=" . $this->type . " target=\"help\" tabindex=$tabindexLink>" . _('Help') . "</a>\n";
+						$tabindexLink++;
+						break;
+					// status message
+					case 'message':
+						StatusMessage($input[$i][$j]['type'], $input[$i][$j]['headline'], $input[$i][$j]['text']);
+						break;
+					// image
+					case 'image':
+						echo "<img ";
+						if (isset($input[$i][$j]['path'])) echo 'src="' . $input[$i][$j]['path'] . '" ';
+						if (isset($input[$i][$j]['width'])) echo 'width="' . $input[$i][$j]['width'] . '" ';
+						if (isset($input[$i][$j]['height'])) echo 'height="' . $input[$i][$j]['height'] . '" ';
+						if (isset($input[$i][$j]['alt'])) echo 'alt="' . $input[$i][$j]['alt'] . '" ';
+						echo ">\n";
+						break;
+					// error, unknown type
+					default:
+						echo "Unrecognized type: " . $input[$i][$j]['kind'] . "\n";
+						break;
+				}
+			}
+			echo "</td>\n";
+			echo "</tr>\n";
+		}
+	}
+	echo "</table>\n";
+}
 
 /**
 * This class includes all modules and attributes of an account.
@@ -769,7 +890,7 @@ class accountContainer {
 		else $return = call_user_func(array($this->module[$this->order[$this->current_page]], 'display_html_'.$this->subpage), $post);
 		$y = 5000;
 		$z = 10000;
-		$this->parse_html($this->order[$this->current_page], $return, $y, $z);
+		parseHtml($this->order[$this->current_page], $return, array(), false, $y, $z);
 		// Display rest of html-page
 		echo "</fieldset>\n";
 		echo "</td></tr></table>\n";
@@ -777,124 +898,6 @@ class accountContainer {
 		echo "</body>\n";
 		echo "</html>\n";
 		return 0;
-		}
-
-	function parse_html($module, $input, &$y, &$z) {
-		/* $y and $z are used to change the the taborder.
-		*  Unfortunatly we don't now how many taborders we need
-		*  Every link also help needs a taborder.
-		*  Therefore we start with taborder=10000 for help
-		*  and taborder=5000 for input fields
-		*  taborder starts at 5000 because we need also some
-		*  taborders for the side bar.
-		*/
-		if (is_array($input)) {
-			echo "<table>\n";
-			for ($i=0; $i<count($input); $i++) {
-				// Draw column
-				echo "<tr>\n";
-				for ($j=0; $j<count($input[$i]); $j++ ) {
-					// Draw raw
-					switch ($input[$i][$j]['kind']) {
-							case 'text':
-								echo "<td";
-								if (isset($input[$i][$j]['td']) && $input[$i][$j]['td']['valign'] != '') echo ' valign="' . $input[$i][$j]['td']['valign'] .'"';
-								echo ">\n";
-								echo $input[$i][$j]['text'] . "</td>\n";
-								break;
-							case 'input':
-								echo "<td";
-								if ($input[$i][$j]['td']['valign']!='') echo ' valign="' . $input[$i][$j]['td']['valign'] .'"';
-								echo ">\n";
-								$output = "<input";
-								if ($input[$i][$j]['name']!='') $output .= ' name="' . $input[$i][$j]['name'] . '"';
-								if ($input[$i][$j]['type']!='') $output .= ' type="' . $input[$i][$j]['type'] . '"';
-								if ($input[$i][$j]['size']!='') $output .= ' size="' . $input[$i][$j]['size'] . '"';
-								if ($input[$i][$j]['maxlength']!='') $output .= ' maxlength="' . $input[$i][$j]['maxlength'] . '"';
-								if ($input[$i][$j]['value']!='') $output .= ' value="' . $input[$i][$j]['value'] . '"';
-								if ($input[$i][$j]['disabled']) $output .= ' disabled';
-									// Show taborder
-									else {
-										$output .= " tabindex=$y";
-										$y++;
-										}
-								if ($input[$i][$j]['checked']) $output .= ' checked';
-								$output .= "></td>\n";
-								echo $output;
-								break;
-							case 'fieldset':
-								echo "<td";
-								if ($input[$i][$j]['td']['valign']!='') echo ' valign="' . $input[$i][$j]['td']['valign'] .'"';
-								echo ">\n";
-								echo "<fieldset>\n";
-								if ($input[$i][$j]['legend']!='') echo "<legend>" . $input[$i][$j]['legend'] . "</legend>\n";
-								$this->parse_html($module, $input[$i][$j]['value'], $y, $z);
-								echo "</fieldset>\n";
-								break;
-							case 'select':
-								if (!is_array($input[$i][$j]['options'])) $input[$i][$j]['options'] = array ( $input[$i][$j]['options'] );
-								if (isset($input[$i][$j]['options_selected'])) {
-									if (!is_array($input[$i][$j]['options_selected'])) {
-										// one selected element
-										$input[$i][$j]['options_selected'] = array ( $input[$i][$j]['options_selected'] );
-									}
-								}
-								else {
-									$input[$i][$j]['options_selected'] = array();
-								}
-								echo "<td";
-								if ($input[$i][$j]['td']['valign']!='') echo ' valign="' . $input[$i][$j]['td']['valign'] .'"';
-								echo ">\n";
-								echo "<select name=\"" . $input[$i][$j]['name'] . '"';
-								if (isset($input[$i][$j]['multiple'])) echo ' multiple';
-								if (isset($input[$i][$j]['size'])) echo ' size="' . $input[$i][$j]['size'] . '"';
-								// Show taborder
-								echo " tabindex=$y";
-								$y++;
-								echo ">\n";
-								// merge both option arrays and sort them.
-								$options = array_merge ($input[$i][$j]['options'], $input[$i][$j]['options_selected'] );
-								$options = array_unique($options);
-								if (get_preg($options[0], 'digit'))  sort($options, SORT_NUMERIC);
-									else sort($options, SORT_STRING);
-								foreach ($options as $option) {
-									if ($option!='') {
-										if (in_array($option, $input[$i][$j]['options_selected'])) echo "<option selected>" . $option . "</option>\n";
-											else echo "<option>" . $option . "</option>\n";
-										}
-									}
-								echo "</select></td>\n";
-								break;
-							case 'table':
-								echo "<td";
-								if ($input[$i][$j]['td']['valign']!='') echo ' valign="' . $input[$i][$j]['td']['valign'] .'"';
-								echo ">\n";
-								$this->parse_html($module, $input[$i][$j]['value'], $y, $z);
-								echo "</td>\n";
-								break;
-							case 'help':
-								echo "<td";
-								if ($input[$i][$j]['td']['valign']!='') echo ' valign="' . $input[$i][$j]['td']['valign'] .'"';
-								echo ">\n";
-								echo "<a href=../help.php?module=$module&HelpNumber=". $input[$i][$j]['value'] . "&scope=" . $this->type . " target=\"help\" tabindex=$z>" . _('Help') . "</a></td>\n";
-								$z++;
-								break;
-							case 'message':
-								echo "<td";
-								if ($input[$i][$j]['td']['valign']!='') echo ' valign="' . $input[$i][$j]['td']['valign'] .'"';
-								echo ">\n";
-								StatusMessage($input[$i][$j]['type'], $input[$i][$j]['headline'], $input[$i][$j]['text']);
-								echo "</td>\n";
-								break;
-							default:
-								echo "<td>Unrecognized type: " . $input[$i][$j]['kind'] . "</td>\n";
-								break;
-						}
-					}
-				echo "</tr>\n";
-				}
-			}
-		echo "</table>\n";
 		}
 
 	/* Add attributes to variable. Syntax is array( attribute = array ( objectClass1 => MUST|MAX, objectClass2 => MUST|MAY ), ... )
