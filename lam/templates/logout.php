@@ -35,15 +35,17 @@ session_save_path("../sess");
 @session_start();
 
 // close LDAP connection
-$_SESSION["ldap"]->destroy();
+@$_SESSION["ldap"]->destroy();
 
-// destroy session
-session_destroy();
-
-// print logout message
+setlanguage();
 
 echo $_SESSION['header'];
 
+// destroy session
+session_destroy();
+unset($_SESSION);
+
+// print logout message
 ?>
 
 <html>
