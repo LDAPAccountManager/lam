@@ -48,6 +48,11 @@ class account extends baseModule {
 		parent::init($base);
 		}
 
+	/** this functin fills the error message array with messages
+	**/
+	function load_Messages() {
+	}
+
 	/* This function returns true if all required attributes from other
 	* modules are set. This is required to prevent undefined states
 	*/
