@@ -34,8 +34,9 @@ session_save_path("../sess");
 setlanguage();
 
 // check if user already pressed button
-if ($_POST['new_suff'] || $_POST['cancel']) {
-	if ($_POST['new_suff']) {
+if ($_POST['add_suff'] || $_POST['cancel']) {
+	if ($_POST['add_suff']) {
+	$fail = array();
 	$new_suff = $_POST['new_suff'];
 	$new_suff = str_replace("\\'", "", $new_suff);
 	$new_suff = explode(";", $new_suff);
@@ -48,6 +49,7 @@ if ($_POST['new_suff'] || $_POST['cancel']) {
 			array_shift($tmp);
 			$end = implode(",", $tmp);
 			if ($name[0] != "ou") {
+				$fail[] = $suff;
 				continue;
 			}
 			else {
@@ -56,11 +58,28 @@ if ($_POST['new_suff'] || $_POST['cancel']) {
 				$attr['objectClass'] = "organizationalunit";
 				$attr['ou'] = $name;
 				$dn = "ou=" . $name . "," . $end;
-				@ldap_add($_SESSION['ldap']->server(), $dn, $attr);
+				if (!@ldap_add($_SESSION['ldap']->server(), $dn, $attr)) $fail[] = $suff;
 			}
 		}
 	}
-	echo "<meta http-equiv=\"refresh\" content=\"0; lists/listusers.php\">";
+	echo $_SESSION['header'];
+	echo "<html>\n";
+	echo "<head><title>initsuff</title></head>\n";
+	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">\n";
+	echo "<body>\n";
+	// print error/success messages
+	if ($_POST['add_suff']) {
+		if (sizeof($fail) > 0) {
+			for ($i = 0; $i < sizeof($fail); $i++) {
+				StatusMessage("ERROR", _("Failed to create entry!"), $fail[$i]);
+			}
+		}
+		else StatusMessage("INFO", "", _("All changes were successful."));
+	}
+	else StatusMessage("INFO", "", _("No changes were made."));
+	echo "<p>&nbsp;</p>\n";
+	echo "<a href=\"lists/listusers.php\">" . _("User list") . "</a>\n";
+	echo "</body></html>\n";
 	exit;
 }
 
