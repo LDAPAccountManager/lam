@@ -44,21 +44,44 @@ while ($stay<7) {
 	}
 
 // returns the alias name of a module
+// $name: the module name
+// $scope: the account type ("user", "group", "host")
 function getModuleAlias($name, $scope) {
 	return call_user_func(array($name, "get_alias"), $scope);
 }
 
 // returns if the module is a base module
+// $name: the module name
+// $scope: the account type ("user", "group", "host")
 function is_base_module($name, $scope) {
 	return call_user_func(array($name, "is_base_module"), $scope);
+}
+
+// returns a LDAP filter used by the account lists
+// return value is of type "(...)"
+// $scope: the account type ("user", "group", "host")
+function get_ldap_filter($scope) {
+	$mods = getAvailableModules($scope);
+	$filters = array();
+	for ($i = 0; $i < sizeof($mods); $i++) {
+		if (is_base_module($mods[$i], $scope)) {
+			$filters[] = call_user_func(array($mods[$i], "get_ldap_filter"), $scope);
+		}
+	}
+	if (sizeof($filters) < 2) {
+		return $filters[0];
+	}
+	else {
+		return "(&" . implode("", $filters) . ")";
+	}
 }
 
 // returns a hash array (module name => dependencies) of all user module dependencies
 // dependencies contains an array with two sub arrays: depends, conflicts
 // the elements of depends are either module names or an array of module names (OR-case)
 // the elements of conflicts are module names
+// $scope: user, group, host, ....
 function getModulesDependencies($scope) {
-	// scope = suer, group, host, ....
 	// get module names.
 	$dir = opendir('../../lib/modules');
 	while ($entry = readdir($dir))
