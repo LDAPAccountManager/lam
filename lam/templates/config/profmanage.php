@@ -51,7 +51,7 @@ echo $_SESSION['header'];
 		</p>
 		<hr><br>
 
-<?
+<?php
 
 // check if submit button was pressed
 if ($_POST['submit']) {

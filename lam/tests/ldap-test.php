@@ -54,7 +54,7 @@ else {
 <html>
 	<head>
 		<title>
-		<?
+		<?php
 		echo ("Login");
 		?>
 		</title>

@@ -104,7 +104,7 @@ echo $_SESSION['header'];
 		<!-- user profile options -->
 		<fieldset>
 			<legend>
-				<b><? echo _("User Profiles"); ?></b>
+				<b><?php echo _("User Profiles"); ?></b>
 			</legend>
 			<table border=0>
 				<!-- new user profile -->
@@ -112,7 +112,7 @@ echo $_SESSION['header'];
 					<td>
 						<input type="radio" name="profile" value="newuser" checked>
 					</td>
-					<td colspan=2><? echo _("Create a new User Profile"); ?></td>
+					<td colspan=2><?php echo _("Create a new User Profile"); ?></td>
 				</tr>
 				<!-- edit user profile -->
 				<tr>
@@ -121,10 +121,10 @@ echo $_SESSION['header'];
 					</td>
 					<td>
 						<select name="e_user" size=1>
-							<? echo $userprofiles ?>
+							<?php echo $userprofiles ?>
 						</select>
 					</td>
-					<td><? echo _("Edit User Profile"); ?></td>
+					<td><?php echo _("Edit User Profile"); ?></td>
 				</tr>
 				<!-- delete user profile -->
 				<tr>
@@ -133,10 +133,10 @@ echo $_SESSION['header'];
 					</td>
 					<td>
 						<select name="d_user" size=1>
-							<? echo $userprofiles ?>
+							<?php echo $userprofiles ?>
 						</select>
 					</td>
-					<td><? echo _("Delete User Profile"); ?></td>
+					<td><?php echo _("Delete User Profile"); ?></td>
 				</tr>
 			</table>
 		</fieldset>
@@ -146,7 +146,7 @@ echo $_SESSION['header'];
 		<!-- host profile options -->
 		<fieldset>
 			<legend>
-				<b><? echo _("Samba Host Profiles"); ?></b>
+				<b><?php echo _("Samba Host Profiles"); ?></b>
 			</legend>
 			<table border=0>
 				<!-- new host profile -->
@@ -154,7 +154,7 @@ echo $_SESSION['header'];
 					<td>
 						<input type="radio" name="profile" value="newhost">
 					</td>
-					<td colspan=2><? echo _("Create a new Samba Host Profile"); ?></td>
+					<td colspan=2><?php echo _("Create a new Samba Host Profile"); ?></td>
 				</tr>
 				<!-- edit host profile -->
 				<tr>
@@ -163,10 +163,10 @@ echo $_SESSION['header'];
 					</td>
 					<td>
 						<select name="e_host" size=1>
-							<? echo $hostprofiles ?>
+							<?php echo $hostprofiles ?>
 						</select>
 					</td>
-					<td><? echo _("Edit Samba Host Profile"); ?></td>
+					<td><?php echo _("Edit Samba Host Profile"); ?></td>
 				</tr>
 				<!-- delete host profile -->
 				<tr>
@@ -175,10 +175,10 @@ echo $_SESSION['header'];
 					</td>
 					<td>
 						<select name="d_host" size=1>
-							<? echo $hostprofiles ?>
+							<?php echo $hostprofiles ?>
 						</select>
 					</td>
-					<td><? echo _("Delete Samba Host Profile"); ?></td>
+					<td><?php echo _("Delete Samba Host Profile"); ?></td>
 				</tr>
 			</table>
 		</fieldset>
@@ -189,8 +189,8 @@ echo $_SESSION['header'];
 		<p>
 		<input type="hidden" name="forward" value="yes">
 
-		<input type="submit" name="submit" value="<? echo _("Submit"); ?>">
-		<input type="submit" name="abort" value="<? echo _("Abort"); ?>">
+		<input type="submit" name="submit" value="<?php echo _("Submit"); ?>">
+		<input type="submit" name="abort" value="<?php echo _("Abort"); ?>">
 		</p>
 
 		</form>
