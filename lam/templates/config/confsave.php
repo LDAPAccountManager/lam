@@ -121,32 +121,32 @@ if (!$conf->set_DomainSuffix($suffdomains)) {
 	exit;
 }
 if (!$conf->set_minUID($minUID)) {
-	echo ("<font color=\"red\"><b>" . _("MinUID is invalid!") . "</b></font>");
+	echo ("<font color=\"red\"><b>" . _("Minimum UID number is invalid!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
 if (!$conf->set_maxUID($maxUID)) {
-	echo ("<font color=\"red\"><b>" . _("MaxUID is invalid!") . "</b></font>");
+	echo ("<font color=\"red\"><b>" . _("Maximum UID number is invalid!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
 if (!$conf->set_minGID($minGID)) {
-	echo ("<font color=\"red\"><b>" . _("MinGID is invalid!") . "</b></font>");
+	echo ("<font color=\"red\"><b>" . _("Minimum GID number is invalid!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
 if (!$conf->set_maxGID($maxGID)) {
-	echo ("<font color=\"red\"><b>" . _("MaxGID is invalid!") . "</b></font>");
+	echo ("<font color=\"red\"><b>" . _("Maximum GID number is invalid!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
 if (!$conf->set_minMachine($minMach)) {
-	echo ("<font color=\"red\"><b>" . _("MinMachine is invalid!") . "</b></font>");
+	echo ("<font color=\"red\"><b>" . _("Minimum Machine number is invalid!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
 if (!$conf->set_maxMachine($maxMach)) {
-	echo ("<font color=\"red\"><b>" . _("MaxMachine is invalid!") . "</b></font>");
+	echo ("<font color=\"red\"><b>" . _("Maximum Machine number is invalid!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
