@@ -87,9 +87,8 @@ function getModulesDependencies($scope) {
 	while ($entry = readdir($dir))
 		if (is_file('../../lib/modules/'.$entry)) {
 			$entry = substr($entry, 0, strpos($entry, '.'));
-			$eval = '$module = '.$entry."::get_dependencies(".$scope.");";
-			eval ($eval);
-			if ($module != -1) $return[$entry] = $module;
+			$deps = call_user_func(array($entry, "get_dependencies"), $scope);
+			if ($deps != -1) $return[$entry] = $deps;
 			}
 	return $return;
 	}
@@ -165,13 +164,15 @@ function getAvailableModules($scope) {
 	}
 
 // $scope = user, group, host, ...
-function getProfileOptions($scope, $post=false) {
-	if (!isset($_SESSION['profile_account'])) {
-		// create new object
-		$_SESSION['profile_account'] = new accountContainer($scope, 'profile_account');
-		$_SESSION['profile_account']->new_account();
+function getProfileOptions($scope) {
+	// get module names.
+	$dir = opendir('../../lib/modules');
+	while ($entry = readdir($dir))
+		if (is_file('../../lib/modules/'.$entry)) {
+			$entry = substr($entry, 0, strpos($entry, '.'));
+			if (call_user_func(array($entry, "can_manage"), $scope)) $return[$entry] = call_user_func(array($entry, "get_profileOptions"), $scope);
 		}
-	return $_SESSION['profile_account']->display_profile($post);
+	return $return;
 	}
 
 function checkProfileOptions($scope, $post) {
@@ -692,6 +693,7 @@ class accountContainer {
 		return 0;
 		}
 
+	// TODO function can be removed?
 	function display_profile($post) {
 		$return = array();
 		$post = array();
