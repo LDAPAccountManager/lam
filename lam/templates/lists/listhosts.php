@@ -67,7 +67,7 @@ if ($_POST['new_host'] || $_POST['del_host'] || $_POST['pdf_host'] || $_POST['pd
 		}
 		if (sizeof($list) > 0) createHostPDF($list);
 	}
-	// PDF for all users
+	// PDF for all hosts
 	elseif ($_POST['pdf_all']){
 		$list = array();
 		for ($i = 0; $i < sizeof($_SESSION['hst_info']); $i++) {

@@ -25,6 +25,8 @@ $Id$
 include_once ("../../lib/config.inc");
 include_once ("../../lib/ldap.inc");
 include_once ("../../lib/status.inc");
+include_once("../../lib/account.inc");
+include_once("../../lib/pdf.inc");
 
 // start session
 session_save_path("../../sess");
@@ -42,20 +44,38 @@ $grp_info = $_SESSION['grp_info'];
 $grp_units = $_SESSION['grp_units'];
 
 // check if button was pressed and if we have to add/delete a group
-if ($_POST['new_group'] || $_POST['del_group']){
+if ($_POST['new_group'] || $_POST['del_group'] || $_POST['pdf_group'] || $_POST['pdf_all']){
 	// add new group
 	if ($_POST['new_group']){
 		metaRefresh("../account/groupedit.php");
-		exit;
 	}
 	// delete group(s)
-	if ($_POST['del_group']){
+	elseif ($_POST['del_group']){
 		// search for checkboxes
 		$groups = array_keys($_POST, "on");
 		$_SESSION['delete_dn'] = $groups;
 		metaRefresh("../delete.php?type=group");
+	}
+	// PDF for selected groups
+	elseif ($_POST['pdf_group']){
+		// search for checkboxes
+		$hosts = array_keys($_POST, "on");
+		$list = array();
+		// load groups from LDAP
+		for ($i = 0; $i < sizeof($hosts); $i++) {
+			$list[$i] = loadgroup($hosts[$i]);
 		}
-		exit;
+		if (sizeof($list) > 0) createGroupPDF($list);
+	}
+	// PDF for all groups
+	elseif ($_POST['pdf_all']){
+		$list = array();
+		for ($i = 0; $i < sizeof($_SESSION['grp_info']); $i++) {
+			$list[$i] = loadgroup($_SESSION['grp_info'][$i]['dn']);
+		}
+		if (sizeof($list) > 0) createGroupPDF($list);
+	}
+	exit;
 }
 
 echo $_SESSION['header'];
@@ -280,7 +300,15 @@ if (sizeof($grp_units) > 1) {
 
 echo ("<p align=\"left\">\n");
 echo ("<input type=\"submit\" name=\"new_group\" value=\"" . _("New Group") . "\">\n");
-if (sizeof($grp_info) > 0) echo ("<input type=\"submit\" name=\"del_group\" value=\"" . _("Delete Group(s)") . "\">\n");
+if (sizeof($grp_info) > 0) {
+	echo ("<input type=\"submit\" name=\"del_group\" value=\"" . _("Delete Group(s)") . "\">\n");
+	echo ("<br><br><br>\n");
+	echo "<fieldset><legend><b>PDF</b></legend>\n";
+	echo ("<input type=\"submit\" name=\"pdf_group\" value=\"" . _("Create PDF for selected group(s)") . "\">\n");
+	echo "&nbsp;";
+	echo ("<input type=\"submit\" name=\"pdf_all\" value=\"" . _("Create PDF for all groups") . "\">\n");
+	echo "</fieldset>";
+}
 echo ("</p>\n");
 
 echo ("</form>\n");
