@@ -19,12 +19,20 @@ $Id$
   along with this program; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-  Creates main suffixes if they are missing.
-
 */
 
+/**
+* Creates main suffixes if they are missing.
+*
+* @author Roland Gruber
+* @package main
+*/
+
+/** access to configuration settings */
 include_once ("../lib/config.inc");
+/** LDAP access */
 include_once ("../lib/ldap.inc");
+/** status messages */
 include_once ("../lib/status.inc");
 
 // start session
