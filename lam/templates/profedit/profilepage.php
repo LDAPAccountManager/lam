@@ -112,7 +112,7 @@ for ($m = 0; $m < sizeof($modules); $m++) {
 				if (isset($options[$modules[$m]][$l][$o]['colspan'])) echo " colspan=\"" . $options[$modules[$m]][$l][$o]['colspan'] . "\"";
 				if (isset($options[$modules[$m]][$l][$o]['rowspan'])) echo " rowspan=\"" . $options[$modules[$m]][$l][$o]['rowspan'] . "\"";
 				echo ">";
-				print_option($options[$modules[$m]][$l][$o], $modules[$m], $old_options);
+				print_option($options[$modules[$m]][$l][$o], $modules[$m], $old_options, $tabindex);
 				echo "</td>\n";
 			}
 			echo "</tr>\n";
@@ -153,9 +153,9 @@ echo ("</form></body></html>\n");
 * @param array $values an array formated as module option
 * @param string $module_name the name of the module the options belong to
 * @param array $old_options a hash array with the values from the loaded profile
+* @param integer $tabindex current value for tabulator order
 */
-function print_option($values, $modulename, $old_options) {
-	global $tabindex;
+function print_option($values, $modulename, $old_options, &$tabindex) {
 	switch ($values['kind']) {
 		// text value
 		case 'text':
@@ -235,7 +235,7 @@ function print_option($values, $modulename, $old_options) {
 				echo "<tr>\n";
 				for ($o = 0; $o < sizeof($values['value'][$l]); $o++) {  // line parts
 					echo "<td>";
-					print_option($values['value'][$l][$o], $values['value'], $old_options);
+					print_option($values['value'][$l][$o], $values['value'], $old_options, $tabindex);
 					echo "</td>\n";
 				}
 				echo "</tr>\n";
