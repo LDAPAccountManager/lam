@@ -438,7 +438,7 @@ function display_main() {
 	echo ("<br>\n");
 
 	// domain OUs
-	if ($_SESSION['config']->get_samba3() == "yes") {
+	if ($_SESSION['config']->is_samba3()) {
 		echo ("<fieldset><legend><b>" . _("Domains") . "</b></legend>\n");
 		echo ("<table border=0>\n");
 		// new OU

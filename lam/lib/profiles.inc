@@ -173,7 +173,7 @@ function loadUserProfile($profile) {
 					continue;
 				}
 				if (substr($line, 0, 12) == "smb_domain: ") {
-					if ($_SESSION['config']->get_samba3() == "yes") {
+					if ($_SESSION['config']->is_samba3()) {
 						$dn = chop(substr($line, 12, strlen($line)-12));
 						// load domain object
 						$dom = new samba3domain();
@@ -234,7 +234,7 @@ function loadHostProfile($profile) {
 					continue;
 				}
 				if (substr($line, 0, 12) == "smb_domain: ") {
-					if ($_SESSION['config']->get_samba3() == "yes") {
+					if ($_SESSION['config']->is_samba3()) {
 						$dn = chop(substr($line, 12, strlen($line)-12));
 						// load domain object
 						$dom = new samba3domain();

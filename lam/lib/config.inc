@@ -148,112 +148,117 @@ class Config {
     $this->reload();
   }
 
-  // reloads preferences from config file
-  function reload() {
-    $conffile = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/config/" . $this->file . ".conf";
-    if (is_file($conffile) == True) {
-      $file = fopen($conffile, "r");
-      while (!feof($file)) {
-	$line = fgets($file, 1024);
-	if (($line == "\n")||($line[0] == "#")) continue; // ignore comments
-	// search keywords
-	if (strtolower(substr($line, 0, 11)) == "serverurl: ") {
-	  $this->ServerURL = chop(substr($line, 11, strlen($line)-11));
-	  continue;
+	// reloads preferences from config file
+	function reload() {
+		// list of all settings in config file
+		$settings = array("ServerURL", "Passwd", "Admins", "usersuffix", "groupsuffix", "hostsuffix",
+			"domainsuffix", "minuid", "maxuid", "mingid", "maxgid", "minmachine", "maxmachine",
+			"userlistattributes", "grouplistattributes", "hostlistattributes", "maxlistentries",
+			"defaultlanguage", "scriptpath", "scriptServer", "samba3", "cachetimeout");
+		$conffile = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/config/" . $this->file . ".conf";
+		if (is_file($conffile) == True) {
+			$file = fopen($conffile, "r");
+			while (!feof($file)) {
+				$line = fgets($file, 1024);
+				if (($line == "\n")||($line[0] == "#")) continue; // ignore comments
+				// search keywords
+				if (strtolower(substr($line, 0, 11)) == "serverurl: ") {
+				$this->ServerURL = chop(substr($line, 11, strlen($line)-11));
+				continue;
+				}
+				if (strtolower(substr($line, 0, 8)) == "passwd: ") {
+				$this->Passwd = chop(substr($line, 8, strlen($line)-8));
+				continue;
+				}
+				if (strtolower(substr($line, 0, 8)) == "admins: ") {
+				$adminstr = chop(substr($line, 8, strlen($line)-8));
+				$this->Adminstring = $adminstr;
+				$this->Admins = explode(";", $adminstr);
+				continue;
+				}
+				if (strtolower(substr($line, 0, 12)) == "usersuffix: ") {
+				$this->Suff_users = chop(substr($line, 12, strlen($line)-12));
+				continue;
+				}
+				if (strtolower(substr($line, 0, 13)) == "groupsuffix: ") {
+				$this->Suff_groups = chop(substr($line, 13, strlen($line)-13));
+				continue;
+				}
+				if (strtolower(substr($line, 0, 12)) == "hostsuffix: ") {
+				$this->Suff_hosts = chop(substr($line, 12, strlen($line)-12));
+				continue;
+				}
+				if (strtolower(substr($line, 0, 14)) == "domainsuffix: ") {
+				$this->Suff_domains = chop(substr($line, 14, strlen($line)-14));
+				continue;
+				}
+				if (strtolower(substr($line, 0, 8)) == "minuid: ") {
+				$this->MinUID = chop(substr($line, 8, strlen($line)-8));
+				continue;
+				}
+				if (strtolower(substr($line, 0, 8)) == "maxuid: ") {
+				$this->MaxUID = chop(substr($line, 8, strlen($line)-8));
+				continue;
+				}
+				if (strtolower(substr($line, 0, 8)) == "mingid: ") {
+				$this->MinGID = chop(substr($line, 8, strlen($line)-8));
+				continue;
+				}
+				if (strtolower(substr($line, 0, 8)) == "maxgid: ") {
+				$this->MaxGID = chop(substr($line, 8, strlen($line)-8));
+				continue;
+				}
+				if (strtolower(substr($line, 0, 12)) == "minmachine: ") {
+				$this->MinMachine = chop(substr($line, 12, strlen($line)-12));
+				continue;
+				}
+				if (strtolower(substr($line, 0, 12)) == "maxmachine: ") {
+				$this->MaxMachine = chop(substr($line, 12, strlen($line)-12));
+				continue;
+				}
+				if (strtolower(substr($line, 0, 20)) == "userlistattributes: ") {
+				$this->userlistAttributes = chop(substr($line, 20, strlen($line)-20));
+				continue;
+				}
+				if (strtolower(substr($line, 0, 21)) == "grouplistattributes: ") {
+				$this->grouplistAttributes = chop(substr($line, 21, strlen($line)-21));
+				continue;
+				}
+				if (strtolower(substr($line, 0, 20)) == "hostlistattributes: ") {
+				$this->hostlistAttributes = chop(substr($line, 20, strlen($line)-20));
+				continue;
+				}
+				if (strtolower(substr($line, 0, 16)) == "maxlistentries: ") {
+				$this->maxlistentries = chop(substr($line, 16, strlen($line)-16));
+				continue;
+				}
+				if (strtolower(substr($line, 0, 17)) == "defaultlanguage: ") {
+				$this->defaultLanguage = chop(substr($line, 17, strlen($line)-17));
+				continue;
+				}
+				if (strtolower(substr($line, 0, 12)) == "scriptpath: ") {
+				$this->scriptPath = chop(substr($line, 12, strlen($line)-12));
+				continue;
+				}
+				if (strtolower(substr($line, 0, 14)) == "scriptserver: ") {
+				$this->scriptServer = chop(substr($line, 14, strlen($line)-14));
+				continue;
+				}
+				if (strtolower(substr($line, 0, 8)) == "samba3: ") {
+				$this->samba3 = strtolower(chop(substr($line, 8, strlen($line)-8)));
+				continue;
+				}
+				if (strtolower(substr($line, 0, 14)) == "cachetimeout: ") {
+				$this->cache_timeout = chop(substr($line, 14, strlen($line)-14));
+				continue;
+				}
+			}
+			fclose($file);
+		}
+		else {
+			StatusMessage("ERROR", "", _("Unable to load configuration!") . " (" . $conffile . ")");
+		}
 	}
-	if (strtolower(substr($line, 0, 8)) == "passwd: ") {
-	  $this->Passwd = chop(substr($line, 8, strlen($line)-8));
-	  continue;
-	}
-	if (strtolower(substr($line, 0, 8)) == "admins: ") {
-	  $adminstr = chop(substr($line, 8, strlen($line)-8));
-	  $this->Adminstring = $adminstr;
-	  $this->Admins = explode(";", $adminstr);
-	  continue;
-	}
-	if (strtolower(substr($line, 0, 12)) == "usersuffix: ") {
-	  $this->Suff_users = chop(substr($line, 12, strlen($line)-12));
-	  continue;
-	}
-	if (strtolower(substr($line, 0, 13)) == "groupsuffix: ") {
-	  $this->Suff_groups = chop(substr($line, 13, strlen($line)-13));
-	  continue;
-	}
-	if (strtolower(substr($line, 0, 12)) == "hostsuffix: ") {
-	  $this->Suff_hosts = chop(substr($line, 12, strlen($line)-12));
-	  continue;
-	}
-	if (strtolower(substr($line, 0, 14)) == "domainsuffix: ") {
-	  $this->Suff_domains = chop(substr($line, 14, strlen($line)-14));
-	  continue;
-	}
-	if (strtolower(substr($line, 0, 8)) == "minuid: ") {
-	  $this->MinUID = chop(substr($line, 8, strlen($line)-8));
-	  continue;
-	}
-	if (strtolower(substr($line, 0, 8)) == "maxuid: ") {
-	  $this->MaxUID = chop(substr($line, 8, strlen($line)-8));
-	  continue;
-	}
-	if (strtolower(substr($line, 0, 8)) == "mingid: ") {
-	  $this->MinGID = chop(substr($line, 8, strlen($line)-8));
-	  continue;
-	}
-	if (strtolower(substr($line, 0, 8)) == "maxgid: ") {
-	  $this->MaxGID = chop(substr($line, 8, strlen($line)-8));
-	  continue;
-	}
-	if (strtolower(substr($line, 0, 12)) == "minmachine: ") {
-	  $this->MinMachine = chop(substr($line, 12, strlen($line)-12));
-	  continue;
-	}
-	if (strtolower(substr($line, 0, 12)) == "maxmachine: ") {
-	  $this->MaxMachine = chop(substr($line, 12, strlen($line)-12));
-	  continue;
-	}
-	if (strtolower(substr($line, 0, 20)) == "userlistattributes: ") {
-	  $this->userlistAttributes = chop(substr($line, 20, strlen($line)-20));
-	  continue;
-	}
-	if (strtolower(substr($line, 0, 21)) == "grouplistattributes: ") {
-	  $this->grouplistAttributes = chop(substr($line, 21, strlen($line)-21));
-	  continue;
-	}
-	if (strtolower(substr($line, 0, 20)) == "hostlistattributes: ") {
-	  $this->hostlistAttributes = chop(substr($line, 20, strlen($line)-20));
-	  continue;
-	}
-	if (strtolower(substr($line, 0, 16)) == "maxlistentries: ") {
-	  $this->maxlistentries = chop(substr($line, 16, strlen($line)-16));
-	  continue;
-	}
-	if (strtolower(substr($line, 0, 17)) == "defaultlanguage: ") {
-	  $this->defaultLanguage = chop(substr($line, 17, strlen($line)-17));
-	  continue;
-	}
-	if (strtolower(substr($line, 0, 12)) == "scriptpath: ") {
-	  $this->scriptPath = chop(substr($line, 12, strlen($line)-12));
-	  continue;
-	}
-	if (strtolower(substr($line, 0, 14)) == "scriptserver: ") {
-	  $this->scriptServer = chop(substr($line, 14, strlen($line)-14));
-	  continue;
-	}
-	if (strtolower(substr($line, 0, 8)) == "samba3: ") {
-	  $this->samba3 = strtolower(chop(substr($line, 8, strlen($line)-8)));
-	  continue;
-	}
-	if (strtolower(substr($line, 0, 14)) == "cachetimeout: ") {
-	  $this->cache_timeout = chop(substr($line, 14, strlen($line)-14));
-	  continue;
-	}
-      }
-      fclose($file);
-    }
-    else {
-      StatusMessage("ERROR", "", _("Unable to load configuration!") . " (" . $conffile . ")");
-    }
-  }
 
 	// saves preferences to config file
 	function save() {
@@ -471,23 +476,7 @@ class Config {
 
 	// returns an array of string with all admin names
 	function get_Admins() {
-		return $this->Admins;
-	}
-
-	// needs an array of string containing all admin users
-	function set_Admins($value) {
-		if (is_array($value)) { // check if $value is array of strings
-			$b = true;
-			for($i = 0; $i < sizeof($value); $i++){
-				if (is_string($value[$i]) == false) {
-					$b = false;
-					break;
-				}
-			}
-			if ($b) $this->Admins = $value;
-		}
-		else return false;
-		return true;
+		return explode(";", $this->Adminstring);
 	}
 
 	// returns all admin users seperated by semicolons
@@ -744,6 +733,12 @@ class Config {
 	// returns "yes" if Samba 3.x schema is used, otherwise "no"
 	function get_samba3() {
 		return $this->samba3;
+	}
+
+	// returns true if Samba 3, else false
+	function is_samba3() {
+		if ($this->samba3 == "yes") return true;
+		else return false;
 	}
 
 	// set Samba version: "yes" means 3.x schema, "no" means 2.2.x schema

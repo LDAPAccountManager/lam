@@ -171,7 +171,7 @@ if ($sr) {
 			echo "<td>\n";
 				// search available users
 				$DN = $_SESSION['config']->get_UserSuffix();
-				if ($_SESSION['config']->get_samba3() == "yes") {
+				if ($_SESSION['config']->is_samba3()) {
 					$filter = "(&(objectClass=posixAccount)(objectClass=sambaSamAccount))";
 				}
 				else $filter = "(&(objectClass=posixAccount)(objectClass=sambaAccount))";

@@ -163,7 +163,7 @@ for ($k = 0; $k < sizeof($desc_array); $k++) {
 
 // configure search filter
 // Users have the attribute "*"
-	if ($_SESSION['config']->get_samba3() == "yes") {
+	if ($_SESSION['config']->is_samba3()) {
 		// Samba users have the attribute "sambaSamAccount" and end with "$"
 		$filter = "(&(objectClass=sambaSamAccount) (!(uid=*$))";
 	}

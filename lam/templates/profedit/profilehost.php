@@ -80,7 +80,7 @@ echo ("<tr><td>&nbsp</td><td>&nbsp</td><td>&nbsp</td></tr>\n");
 // domain
 echo ("<tr>\n");
 echo ("<td align=\"right\"><b>" . _("Domain") . ": </b></td>\n");
-if ($_SESSION['config']->get_samba3() == "yes") {
+if ($_SESSION['config']->is_samba3()) {
 	echo "<td><select name=\"smb_domain\">\n";
 	$doms = $_SESSION['ldap']->search_domains($_SESSION['config']->get_DomainSuffix());
 	for ($i = 0; $i < sizeof($doms); $i++) {

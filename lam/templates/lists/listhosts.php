@@ -112,7 +112,7 @@ for ($k = 0; $k < sizeof($desc_array); $k++) {
 
 if (! $_GET['norefresh']) {
 	// configure search filter
-	if ($_SESSION['config']->get_samba3() == "yes") {
+	if ($_SESSION['config']->is_samba3()) {
 		// Samba hosts have the attribute "sambaSamAccount" and end with "$"
 		$filter = "(&(objectClass=sambaSamAccount) (uid=*$)";
 	}

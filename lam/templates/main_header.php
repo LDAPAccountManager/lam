@@ -47,7 +47,7 @@ echo $_SESSION['header'];
     	<td width="100" align="left"><a href="./profedit/profilemain.php" target="mainpart"><?php echo _("Profile Editor"); ?></a></td>
 		<?php
 			// Samba 3 has more list views
-			if ($_SESSION['config']->get_samba3() == "yes") echo "<td rowspan=3 colspan=4 align=\"center\">\n";
+			if ($_SESSION['config']->is_samba3()) echo "<td rowspan=3 colspan=4 align=\"center\">\n";
 			else echo "<td rowspan=3 colspan=3 align=\"center\">\n";
 		?>
 			<a href="http://lam.sf.net" target="new_window"><img src="../graphics/banner.jpg" border=1 alt="LDAP Account Manager"></a>
@@ -64,7 +64,7 @@ echo $_SESSION['header'];
 	<tr>
 		<?php
 			// Samba 3 has more list views
-			if ($_SESSION['config']->get_samba3() == "yes") echo "<td colspan=6>&nbsp;</td>\n";
+			if ($_SESSION['config']->is_samba3()) echo "<td colspan=6>&nbsp;</td>\n";
 			else echo "<td colspan=5>&nbsp;</td>\n";
 		?>
 	</tr>
@@ -72,7 +72,7 @@ echo $_SESSION['header'];
 		<td></td>
 		<?php
 			// Samba 3 has more list views
-			if ($_SESSION['config']->get_samba3() == "yes") {
+			if ($_SESSION['config']->is_samba3()) {
 				echo '<td width="120" align="center"><a href="./lists/listdomains.php" target="mainpart">' . _("Domains") . '</a></td>' . "\n";
 				echo '<td width="120" align="center"><a href="./lists/listusers.php" target="mainpart">' . _("Users") . '</a></td>' . "\n";
 				echo '<td width="120" align="center"><a href="./lists/listgroups.php" target="mainpart">' . _("Groups") . '</a></td>' . "\n";
