@@ -38,7 +38,7 @@ $account->general_homedir = "/home/m/mamu1";
 $account->general_shell = array("/bin/bash","/bin/sh");
 $account->unix_password = "secret1";
 $account->unix_password_no = "1";
-$account->smb_password_no = "1";
+$account->smb_flags['N'] = "1";
 array_push($accounts,$account);
 $account = new Account();
 $account->type = "user";

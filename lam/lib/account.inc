@@ -53,7 +53,6 @@ class account {
 	var $unix_host;			// list of unix hosts the user is allowed to log in
 	// Samba Account
 	var $smb_password;		// string for samba-password (user|host)
-	var $smb_password_no;		// string (1|0) set samba-password to none (user|host)
 	var $smb_useunixpwd;		// string (1|0) use unix-password as samba-password (user|host)
 	var $smb_pwdcanchange;		// string unix-timestamp user/host is able to change password (user|host)
 	var $smb_pwdmustchange;		// string unix-timestamp user/host has to change password at next login (user|host)
@@ -63,9 +62,7 @@ class account {
 	var $smb_smbuserworkstations;	// string comma-separated list of workstations (user)
 	var $smb_smbhome;		// string Home-Share (\\server\home) (user)
 	var $smb_domain;		// string Domain of (user|host) or samba3domain-Object
-	var $smb_flagsW;		// string (1|0) account is host? (user|host)
-	var $smb_flagsD;		// string (1|0) account is disabled? (user|host)
-	var $smb_flagsX;		// string (1|0) password doesn't expire (user|host)
+	var $smb_flags;			// array of acctFlags, ( {'W'] => 0, ['X'] => 1, ......
 	var $smb_mapgroup;		// decimal ID for groups
 	var $smb_displayName;		// string, description, similar to gecos-field.
 	// Quota Settins
@@ -910,17 +907,19 @@ function getdays() {
 
 /* This function creates all attributes stored in attrFlags. It's the same
 * syntax used in smbpasswd
-* $values is an account-object
+* $values is an array of samba flags as defined in account object
 * Return value is a string
 */
-function smbflag($values) {
+function smbflag($input) {
 	// Start character
 	$flag = "[";
 	// Add Options
-	if ($values->smb_flagsW) $flag = $flag . "W"; else $flag = $flag . "U";
-	if ($values->smb_flagsD) $flag = $flag . "D";
-	if ($values->smb_flagsX) $flag = $flag . "X";
-	if ($values->smb_password_no) $flag = $flag . "N";
+	if ($input['W']) $flag .= "W"; else $flag .= "U";
+	if ($input['D']) $flag .= "D";
+	if ($input['X']) $flag .= "X";
+	if ($input['N']) $flag .= "N";
+	if ($input['S']) $flag .= "S";
+	if ($input['H']) $flag .= "H";
 	// Expand string to fixed length
 	$flag = str_pad($flag, 12);
 	// End character
@@ -972,7 +971,7 @@ function loaduser($dns) {
 			// Set type of account
 			$return[$i]->type='user';
 			// Set user samba flag
-			$return[$i]->smb_flagsW = false;
+			$return[$i]->smb_flags['W'] = false;
 			$return[$i]->general_dn = ldap_get_dn($_SESSION['ldap']->server(), $entry);
 			$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
 			/* Write attributes into $return.
@@ -1046,9 +1045,11 @@ function loaduser($dns) {
 				* Some values don't have to be set. These are only loaded if they are set
 				*/
 				if (isset($attr['sambaAcctFlags'][0])) {
-					if (strrpos($attr['sambaAcctFlags'][0], 'D')) $return[$i]->smb_flagsD=true;
-					if (strrpos($attr['sambaAcctFlags'][0], 'X')) $return[$i]->smb_flagsX=true;
-					if (strrpos($attr['sambaAcctFlags'][0], 'N')) $return[$i]->smb_password_no=true;
+					if (strrpos($attr['sambaAcctFlags'][0], 'D')) $return[$i]->smb_flags['D']=true;
+					if (strrpos($attr['sambaAcctFlags'][0], 'X')) $return[$i]->smb_flags['X']=true;
+					if (strrpos($attr['sambaAcctFlags'][0], 'N')) $return[$i]->smb_flags['N']=true;
+					if (strrpos($attr['sambaAcctFlags'][0], 'S')) $return[$i]->smb_flags['S']=true;
+					if (strrpos($attr['sambaAcctFlags'][0], 'H')) $return[$i]->smb_flags['H']=true;
 					}
 				if (isset($attr['sambaPwdCanChange'][0])) $return[$i]->smb_pwdcanchange = $attr['sambaPwdCanChange'][0];
 				if (isset($attr['sambaPwdMustChange'][0])) $return[$i]->smb_pwdmustchange = $attr['sambaPwdMustChange'][0];
@@ -1083,9 +1084,11 @@ function loaduser($dns) {
 			// second argument should prevent samba3 settings to be overwritten from samba 2.2 settings
 			if ( (in_array('sambaAccount', $attr['objectClass'])) && (!$_SESSION['config']->is_samba3() || !isset($return[$i]->smb_domain))) {
 				if (isset($attr['acctFlags'][0])) {
-					if (strrpos($attr['acctFlags'][0], 'D')) $return[$i]->smb_flagsD=true;
-					if (strrpos($attr['acctFlags'][0], 'X')) $return[$i]->smb_flagsX=true;
-					if (strrpos($attr['acctFlags'][0], 'N')) $return[$i]->smb_password_no=true;
+					if (strrpos($attr['acctFlags'][0], 'D')) $return[$i]->smb_flags['D']=true;
+					if (strrpos($attr['acctFlags'][0], 'X')) $return[$i]->smb_flags['X']=true;
+					if (strrpos($attr['acctFlags'][0], 'N')) $return[$i]->smb_flags['N']=true;
+					if (strrpos($attr['acctFlags'][0], 'S')) $return[$i]->smb_flags['S']=true;
+					if (strrpos($attr['acctFlags'][0], 'H')) $return[$i]->smb_flags['H']=true;
 					}
 				if (isset($attr['ntPassword'][0]))  $return[$i]->smb_password = $attr['ntPassword'][0];
 				if (isset($attr['smbHome'][0])) $return[$i]->smb_smbhome = utf8_decode($attr['smbHome'][0]);
@@ -1144,8 +1147,8 @@ function loadhost($dn) {
 	$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
 
 	// Set host samba flags
-	$return->smb_flagsW = true;
-	$return->smb_flagsX = true;
+	$return->smb_flags['W'] = true;
+	$return->smb_flags['X'] = true;
 	// load objectclasses
 	$i=0;
 	while (isset($attr['objectClass'][$i])) {
@@ -1167,8 +1170,8 @@ function loadhost($dn) {
 		*/
 		if (isset($attr['sambaAcctFlags'][0])) {
 			// we load a workstation
-			$return->smb_flagsW=true;
-			if (strrpos($attr['sambaAcctFlags'][0], 'X')) $return->smb_flagsX=true;
+			$return->smb_flags['W']=true;
+			if (strrpos($attr['sambaAcctFlags'][0], 'X')) $return->smb_flags['X']=true;
 			// Because the "D"-Flag is ignored for hosts it has been removed
 			}
 		if (isset($attr['sambaDomainName'][0])) {
@@ -1200,8 +1203,8 @@ function loadhost($dn) {
 	if (in_array('sambaAccount', $attr['objectClass'])) {
 		if (isset($attr['acctFlags'][0])) {
 			// we load a workstation
-			$return->smb_flagsW=true;
-			if (strrpos($attr['acctFlags'][0], 'X')) $return->smb_flagsX=true;
+			$return->smb_flags['W']=true;
+			if (strrpos($attr['acctFlags'][0], 'X')) $return->smb_flags['X']=true;
 			// Because the "D"-Flag is ignored for hosts it has been removed
 			}
 		if (isset($attr['domain'][0])) {
@@ -1352,7 +1355,7 @@ function createuser($values, $uselamdaemon=true) {
 	if ($_SESSION['config']->is_samba3()) {
 		// Add all attributes as samba3 objectclass
 		$attr['objectClass'][3] = 'sambaSamAccount';
-		if ($values->smb_password_no) {
+		if ($values->smb_flags['N']) {
 			// Don't set samba-passwords
 			$attr['sambaNTPassword'] = 'NO PASSWORD*****';
 			$attr['sambaLMPassword'] = 'NO PASSWORD*****';
@@ -1372,7 +1375,7 @@ function createuser($values, $uselamdaemon=true) {
 			else $attr['sambaPwdCanChange'] = time(); // sambaAccount_may
 		if ($values->smb_pwdmustchange!='') $attr['sambaPwdMustChange'] = $values->smb_pwdmustchange; // sambaAccount_may
 			else $attr['sambaPwdMustChange'] = time() + 1000000000; // sambaAccount_may
-		$attr['sambaAcctFlags'] = smbflag($values); // sambaAccount_may
+		$attr['sambaAcctFlags'] = smbflag($values->smb_flags); // sambaAccount_may
 		$attr['displayName'] = $values->general_gecos; // sambaAccount_may
 		if ($values->smb_smbhome!='') $attr['sambaHomePath'] = utf8_encode($values->smb_smbhome); // sambaAccount_may
 		if ($values->smb_homedrive!='') $attr['sambaHomeDrive'] = $values->smb_homedrive; // sambaAccount_may
@@ -1384,7 +1387,7 @@ function createuser($values, $uselamdaemon=true) {
 	else {
 		// Add all attributes as samba2.2 objectclass
 		$attr['objectClass'][3] = 'sambaAccount';
-		if ($values->smb_password_no) {
+		if ($values->smb_flags['N']) {
 			// Don't set samba-passwords
 			$attr['ntPassword'] = 'NO PASSWORD*****';
 			$attr['lmPassword'] = 'NO PASSWORD*****';
@@ -1404,7 +1407,7 @@ function createuser($values, $uselamdaemon=true) {
 		if ($values->smb_pwdmustchange!='') $attr['pwdMustChange'] = $values->smb_pwdmustchange; // sambaAccount_may
 			else $attr['pwdMustChange'] = time() + 1000000000; // sambaAccount_may
 		$attr['pwdMustChange'] = $values->smb_pwdmustchange; // sambaAccount_may
-		$attr['acctFlags'] = smbflag($values); // sambaAccount_may
+		$attr['acctFlags'] = smbflag($values->smbflags); // sambaAccount_may
 		$attr['displayName'] = $values->general_gecos; // sambaAccount_may
 		if ($values->smb_smbhome!='') $attr['smbHome'] = utf8_encode($values->smb_smbhome); // sambaAccount_may
 		if ($values->smb_homedrive!='') $attr['homeDrive'] = $values->smb_homedrive; // sambaAccount_may
@@ -1633,7 +1636,7 @@ function modifyuser($values,$values_old,$uselamdaemon=true) { // Will modify the
 			if (isset($attr_old['userWorkstations'][0])) $attr['sambaUserWorkstations'] = $attr_old['userWorkstations'][0];
 			// Values used from account object
 			$attr['displayName'] = utf8_encode($values->smb_displayName); // sambaAccount_may
-			$attr['sambaAcctFlags'] = smbflag($values); // sambaAccount_may
+			$attr['sambaAcctFlags'] = smbflag($values->flags); // sambaAccount_may
 			$attr['sambaDomainName'] = $values->smb_domain->name; // sambaAccount_may
 			$attr['sambaSid'] = $values->smb_domain->SID . "-" . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase); // sambaAccount_may
 			$attr['sambaPrimaryGroupSID'] = $values->smb_mapgroup; // sambaAccount_req
@@ -1657,7 +1660,7 @@ function modifyuser($values,$values_old,$uselamdaemon=true) { // Will modify the
 			if (isset($attr_old['rid'][0])) $attr_rem['rid'] = $attr_old['rid'][0];
 			}
 		// Set all changed values
-		if ($values->smb_password_no) {
+		if ($values->smb_flags['N']) {
 			// use no samba Password
 			$attr['sambaNTPassword'] = 'NO PASSWORD*****';
 			$attr['sambaLMPassword'] = 'NO PASSWORD*****';
@@ -1674,7 +1677,7 @@ function modifyuser($values,$values_old,$uselamdaemon=true) { // Will modify the
 		// Check which Samba-Attributes have changed
 		if ($values->smb_pwdcanchange != $values_old->smb_pwdcanchange) $attr['sambaPwdCanChange'] = $values->smb_pwdcanchange; // sambaAccount_may
 		if ($values->smb_pwdmustchange != $values_old->smb_pwdmustchange) $attr['sambaPwdMustChange'] = $values->smb_pwdmustchange; // sambaAccount_may
-		if (smbflag($values) != smbflag($values_old)) $attr['sambaAcctFlags'] = smbflag($values); // sambaAccount_may
+		if (smbflag($values->smb_flags) != smbflag($values_old->smb_flags)) $attr['sambaAcctFlags'] = smbflag($values->smb_flags); // sambaAccount_may
 		if (($values->smb_smbhome!='') && ($values->smb_smbhome!=$values_old->smb_smbhome)) $attr['sambaHomePath'] = utf8_encode($values->smb_smbhome); // sambaAccount_may
 		if (($values->smb_smbhome=='') && ($values->smb_smbhome!=$values_old->smb_smbhome)) $attr_rem['sambaHomePath'] = utf8_encode($values_old->smb_smbhome); // sambaAccount_may
 		if (($values->smb_homedrive!='') && ($values->smb_homedrive!=$values_old->smb_homedrive)) $attr['sambaHomeDrive'] = $values->smb_homedrive; // sambaAccount_may
@@ -1725,7 +1728,7 @@ function modifyuser($values,$values_old,$uselamdaemon=true) { // Will modify the
 			if (isset($attr_old['sambaUserWorkstations'][0])) $attr['userWorkstations'] = $attr_old['sambaUserWorkstations'][0];
 			// Values used from account object
 			$attr['displayName'] = utf8_encode($values->smb_displayName); // sambaAccount_may
-			$attr['acctFlags'] = smbflag($values); // sambaAccount_may
+			$attr['acctFlags'] = smbflag($values->smb_flags); // sambaAccount_may
 			if ($values->smb_domain!='') $attr['domain'] = $values->smb_domain; // sambaAccount_may
 			$attr['primaryGroupID'] = $values->smb_mapgroup; // sambaAccount_req
 			$attr['rid'] = (2 * $values->general_uidNumber + 1000); // sambaAccount_may
@@ -1749,7 +1752,7 @@ function modifyuser($values,$values_old,$uselamdaemon=true) { // Will modify the
 			if (isset($attr_old['sambaSID'][0])) $attr_rem['sambaSID'] = $attr_old['sambaSID'][0];
 			}
 		// Set all changed values
-		if ($values->smb_password_no) {
+		if ($values->smb_flags['N']) {
 			// use no samba Password
 			$attr['ntPassword'] = 'NO PASSWORD*****';
 			$attr['lmPassword'] = 'NO PASSWORD*****';
@@ -1766,7 +1769,7 @@ function modifyuser($values,$values_old,$uselamdaemon=true) { // Will modify the
 		// Check which Samba-Attributes have changed
 		if ($values->smb_pwdcanchange != $values_old->smb_pwdcanchange) $attr['pwdCanChange'] = $values->smb_pwdcanchange; // sambaAccount_may
 		if ($values->smb_pwdmustchange != $values_old->smb_pwdmustchange) $attr['pwdMustChange'] = $values->smb_pwdmustchange; // sambaAccount_may
-		if (smbflag($values) != smbflag($values_old)) $attr['acctFlags'] = smbflag($values); // sambaAccount_may
+		if (smbflag($values->smb_flags) != smbflag($values_old->smb_flags)) $attr['acctFlags'] = smbflag($values->smb_flags); // sambaAccount_may
 		if (($values->smb_smbhome!='') && ($values->smb_smbhome!=$values_old->smb_smbhome)) $attr['smbHome'] = utf8_encode($values->smb_smbhome); // sambaAccount_may
 		if (($values->smb_smbhome=='') && ($values->smb_smbhome!=$values_old->smb_smbhome)) $attr_rem['smbHome'] = utf8_encode($values_old->smb_smbhome); // sambaAccount_may
 		if (($values->smb_homedrive!='') && ($values->smb_homedrive!=$values_old->smb_homedrive)) $attr['homeDrive'] = $values->smb_homedrive; // sambaAccount_may
@@ -1904,7 +1907,6 @@ function modifyuser($values,$values_old,$uselamdaemon=true) { // Will modify the
 		if ($attr2['memberUid']) {
 			// Remove user from groups he's not member anymore
 			if (@in_array($values->general_username, $attr2['memberUid']) && !@in_array($attr2['cn'][0],$values->general_groupadd)) {
-				print "1";
 				$dn = ldap_get_dn($_SESSION['ldap']->server(), $entry);
 				$success = ldap_mod_del($_SESSION['ldap']->server(), $dn ,array('memberUid' => $values->general_username));
 				if (!$success) return 5;
@@ -2010,7 +2012,7 @@ function createhost($values) {
 		$attr['sambaPrimaryGroupSID'] = $values->smb_domain->SID . "-515"; // sambaAccount_req
 		$attr['sambaPwdCanChange'] = time(); // sambaAccount_may
 		$attr['sambaPwdMustChange'] = "1893452400"; // sambaAccount_may // anywhere in year 2030
-		$attr['sambaAcctFlags'] = smbflag($values); // sambaAccount_may
+		$attr['sambaAcctFlags'] = smbflag($values->smb_flags); // sambaAccount_may
 		$attr['sambaDomainName'] = $values->smb_domain->name; // sambaAccount_may
 		}
 	else {
@@ -2024,7 +2026,7 @@ function createhost($values) {
 		$attr['primaryGroupID'] = (2 * getgid($values->general_group) + 1001); // sambaAccount_req
 		$attr['pwdCanChange'] = time(); // sambaAccount_may
 		$attr['pwdMustChange'] = "1893452400"; // sambaAccount_may // anywhere in 2030
-		$attr['acctFlags'] = smbflag($values); // sambaAccount_may
+		$attr['acctFlags'] = smbflag($values->smb_flags); // sambaAccount_may
 		if ($values->smb_domain!='') $attr['domain'] = $values->smb_domain; // sambaAccount_may
 		}
 
@@ -2124,7 +2126,7 @@ function modifyhost($values,$values_old) {
 			if (isset($attr_old['userWorkstations'][0])) $attr['sambaUserWorkstations'] = $attr_old['userWorkstations'][0];
 			// Values used from account object
 			$attr['displayName'] = utf8_encode($values->smb_displayName); // sambaAccount_may
-			$attr['sambaAcctFlags'] = smbflag($values); // sambaAccount_may
+			$attr['sambaAcctFlags'] = smbflag($values->smb_flags); // sambaAccount_may
 			$attr['sambaDomainName'] = $values->smb_domain->name; // sambaAccount_may
 			$attr['sambaSid'] = $values->smb_domain->SID . "-" . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase); // sambaAccount_may
 			$attr['sambaPrimaryGroupSID'] = $values->smb_domain->SID . "-" . (2 * getgid($values->general_group) + $values->smb_domain->RIDbase +1); // sambaAccount_req
@@ -2148,7 +2150,7 @@ function modifyhost($values,$values_old) {
 			if (isset($attr_old['rid'][0])) $attr_rem['rid'] = $attr_old['rid'][0];
 			}
 		// Reset password
-		if ($values->smb_password_no) {
+		if ($values->smb_flags['N']) {
 			// "Standard" password for new hosts
 			$attr['sambaNTPassword'] = '0CB6948805F797BF2A82807973B89537';
 			$attr['sambaLMPassword'] = '01FC5A6BE7BC6929AAD3B435B51404EE';
@@ -2192,7 +2194,7 @@ function modifyhost($values,$values_old) {
 			if (isset($attr_old['sambaUserWorkstations'][0])) $attr['userWorkstations'] = $attr_old['sambaUserWorkstations'][0];
 			// Values used from account object
 			$attr['displayName'] = utf8_encode($values->smb_displayName); // sambaAccount_may
-			$attr['acctFlags'] = smbflag($values); // sambaAccount_may
+			$attr['acctFlags'] = smbflag($values->smb_flags); // sambaAccount_may
 			if ($values->smb_domain!='') $attr['domain'] = $values->smb_domain; // sambaAccount_may
 			$attr['primaryGroupID'] = (2 * getgid($values->general_group) + 1001); // sambaAccount_req
 			$attr['rid'] = (2 * $values->general_uidNumber + 1000); // sambaAccount_may
@@ -2215,7 +2217,7 @@ function modifyhost($values,$values_old) {
 			if (isset($attr_old['sambaDomainName'][0])) $attr_rem['sambaDomainName'] = $attr_old['sambaDomainName'][0];
 			if (isset($attr_old['sambaSID'][0])) $attr_rem['sambaSID'] = $attr_old['sambaSID'][0];
 			}
-		if ($values->smb_password_no) {
+		if ($values->smb_flags['N']) {
 			// "Standard" password for new hosts
 			$attr['ntPassword'] = '0CB6948805F797BF2A82807973B89537';
 			$attr['lmPassword'] = '01FC5A6BE7BC6929AAD3B435B51404EE';

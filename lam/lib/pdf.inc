@@ -184,7 +184,7 @@ function createUserPDF($accounts) {
 		$pdfFile->Cell(50,5,_("Username") . ":",0,0,"R",0);
 		$pdfFile->setFont("times","",10);
 		$pdfFile->Cell(50,5,$account->general_username,0,1,"L",0);
-		if($account->smb_password_no == "1") {
+		if($account->smb_flags['N']) {
 			$pdfFile->setFont("times","B",10);
 			$pdfFile->Cell(50,5,_("Windows password") . ":",0,0,"R",0);
 			$pdfFile->setFont("times","",10);

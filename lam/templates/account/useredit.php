@@ -366,8 +366,8 @@ switch ($_POST['select']) {
 			$_POST['f_smb_pwdcanchange_mon'], $_POST['f_smb_pwdcanchange_day'], $_POST['f_smb_pwdcanchange_yea']);
 		$account_new->smb_pwdmustchange = mktime($_POST['f_smb_pwdmustchange_s'], $_POST['f_smb_pwdmustchange_m'], $_POST['f_smb_pwdmustchange_h'],
 			$_POST['f_smb_pwdmustchange_mon'], $_POST['f_smb_pwdmustchange_day'], $_POST['f_smb_pwdmustchange_yea']);
-		if ($_POST['f_smb_password_no']) $account_new->smb_password_no = true;
-			else $account_new->smb_password_no = false;
+		if ($_POST['f_smb_flagsN']) $account_new->smb_flags['N'] = true;
+			else $account_new->smb_flags['N'] = false;
 		if ($_POST['f_smb_useunixpwd']) $account_new->smb_useunixpwd = true;
 			else $account_new->smb_useunixpwd = false;
 		$account_new->smb_homedrive = $_POST['f_smb_homedrive'];
@@ -375,10 +375,10 @@ switch ($_POST['select']) {
 		$account_new->smb_smbhome = stripslashes($_POST['f_smb_smbhome']);
 		$account_new->smb_profilePath = stripslashes($_POST['f_smb_profilePath']);
 		$account_new->smb_displayName = $_POST['f_smb_displayName'];
-		if ($_POST['f_smb_flagsD']) $account_new->smb_flagsD = true;
-			else $account_new->smb_flagsD = false;
-		if ($_POST['f_smb_flagsX']) $account_new->smb_flagsX = true;
-			else $account_new->smb_flagsX = false;
+		if ($_POST['f_smb_flagsD']) $account_new->smb_flags['D'] = true;
+			else $account_new->smb_flags['D'] = false;
+		if ($_POST['f_smb_flagsX']) $account_new->smb_flags['X'] = true;
+			else $account_new->smb_flags['X'] = false;
 
 		if ($config_intern->is_samba3()) {
 			// samba 3 uses object with SID and domainname
@@ -1206,14 +1206,14 @@ switch ($select_local) {
 			'<a href="../help.php?HelpNumber=428" target="lamhelp">'._('Help').'</a>';
 		echo '</td></tr>'."\n".'<tr><td>';
 		echo _('Use no password');
-		echo '</td>'."\n".'<td><input name="f_smb_password_no" type="checkbox"';
-		if ($account_new->smb_password_no) echo ' checked ';
+		echo '</td>'."\n".'<td><input name="f_smb_flagsN" type="checkbox"';
+		if ($account_new->smb_flags['N']) echo ' checked ';
 		echo '></td>'."\n".'<td>'.
 			'<a href="../help.php?HelpNumber=426" target="lamhelp">'._('Help').'</a>'.
 			'</td></tr>'."\n".'<tr><td>';
 		echo _('Password does not expire');
 		echo '</td>'."\n".'<td><input name="f_smb_flagsX" type="checkbox"';
-		if ($account_new->smb_flagsX) echo ' checked ';
+		if ($account_new->smb_flags['X']) echo ' checked ';
 		echo '></td>'."\n".'<td>'.
 			'<a href="../help.php?HelpNumber=429" target="lamhelp">'._('Help').'</a>'.
 			'</td></tr>'."\n".'<tr><td>';
@@ -1257,7 +1257,7 @@ switch ($select_local) {
 			'</td></tr>'."\n".'<tr><td>';
 		echo _('Account is deactivated');
 		echo '</td>'."\n".'<td><input name="f_smb_flagsD" type="checkbox"';
-		if ($account_new->smb_flagsD) echo ' checked ';
+		if ($account_new->smb_flags['D']) echo ' checked ';
 		echo '></td>'."\n".'<td>'.
 			'<a href="../help.php?HelpNumber=432" target="lamhelp">'._('Help').'</a>'.
 			'</td></tr>'."\n".'<tr><td>';

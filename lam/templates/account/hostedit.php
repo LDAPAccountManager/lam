@@ -102,8 +102,8 @@ else if (count($_POST)==0) {
 		}
 	$account_new = loadHostProfile('default');
 	$account_new ->type = 'host';
-	$account_new->smb_flagsW = 1;
-	$account_new->smb_flagsX = 1;
+	$account_new->smb_flags['W'] = 1;
+	$account_new->smb_flags['X'] = 1;
 	$account_new->general_homedir = '/dev/null';
 	$account_new->general_shell = '/bin/false';
 	}
@@ -214,7 +214,7 @@ switch ($_POST['select']) {
 			// Reset password if reset button was pressed. Button only vissible if account should be modified
 			if ($_POST['respass']) {
 				$account_new->unix_password_no=true;
-				$account_new->smb_password_no=true;
+				$account_new->smb_flags['N']=true;
 				}
 			}
 		// Check Objectclasses. Display Warning if objectclasses don'T fot
@@ -341,7 +341,7 @@ switch ($select_local) {
 		if ($config_intern->is_samba3()) $samba3domains = $ldap_intern->search_domains($config_intern->get_domainSuffix());
 
 		// Why this ?? fixme
-		if ($account_new->smb_password_no) echo '<input name="f_smb_password_no" type="hidden" value="1">';
+		if ($account_new->smb_flags['N']) echo '<input name="f_smb_flagsN" type="hidden" value="1">';
 
 
 		// Show page info
