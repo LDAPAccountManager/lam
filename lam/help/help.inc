@@ -118,16 +118,10 @@ $helpArray = array (
 				// 300 - 399
 				// Roland Gruber
 				// profile editor
-				"301" => array ("ext" => "FALSE", "Headline" => _("Profile Editor") . " - " . _("Set Unix password for Samba"),
-					"Text" => _("If set to \"yes\" the Windows password will be the same as the Unix one.").
-						"<br><br>".
-						_("If unsure say \"yes\" here.")),
-				"302" => array ("ext" => "FALSE", "Headline" => _("Profile Editor") . " - " . _("User can change password"),
-					"Text" => _("If set to \"yes\" the user will be able to change his Windows password.").
-						"<br><br>".
-						_("If unsure say \"yes\" here.")),
-				"360" => array ("ext" => "FALSE", "Headline" => _("Profile Editor") . " - " . _("Profile name"),
+				"360" => array ("ext" => "FALSE", "Headline" => _("Profile name"),
 					"Text" => _("Name under which the profile will be saved. If a profile with the same name exists, it will be overwritten.")),
+				"361" => array ("ext" => "FALSE", "Headline" => _("DN Suffix"),
+					"Text" => _("The new account will be saved under this LDAP suffix.")),
 				// 400 - 499
 				// Tilo Lutz
 				// account.php

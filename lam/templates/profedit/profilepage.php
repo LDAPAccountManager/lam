@@ -89,7 +89,7 @@ echo "<fieldset>\n<legend><b>" . _("LDAP suffix") . "</b></legend>\n";
 	echo "<select tabindex=\"1\">";
 	for ($i = 0; $i < sizeof($suffixes); $i++) echo "<option>" . $suffixes[$i] . "</option>\n";
 	echo "</select>\n";
-	echo "&nbsp;&nbsp;<a href=../help.php?HelpNumber=TODO>" . _('Help') . "</a>\n";
+	echo "&nbsp;&nbsp;<a href=../help.php?HelpNumber=\"361\">" . _('Help') . "</a>\n";
 echo "</fieldset>\n<br>\n";
 }
 
