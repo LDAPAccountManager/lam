@@ -42,13 +42,24 @@ if (!$select) $select='main';
 
 
 // Write HTML-Header and part of Table
+echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+       "http://www.w3.org/TR/html4/loose.dtd">';
 echo '<html><head><title>';
 echo _('Create new Accounts');
 echo '</title>
 	<link rel="stylesheet" type="text/css" href="../style/layout.css">
 	<meta http-equiv="pragma" content="no-cache">
 	<meta http-equiv="cache-control" content="no-cache">
-	</head><body>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">';
+
+switch ($select) {
+	case 'cancel':
+		if ( session_is_registered("accounts")) session_unregister("accounts");
+		echo '<meta http-equiv="refresh" content="0; URL=lists/listusers.php">';
+		break;
+	}
+
+echo	'</head><body>
 	<form enctype="multipart/form-data" action="masscreate.php" method="post">';
 	echo '<table rules="all" class="masscreate" width="100%">
 	<tr><td></td></tr>';
@@ -58,8 +69,7 @@ switch ($select) {
 		if ( session_is_registered("accounts")) session_unregister("accounts");
 		session_register("accounts");
 		$profilelist = getUserProfiles();
-		echo '<input name="select" type="hidden" value="main">';
-		echo '<tr><td>';
+		echo '<tr><td><input name="select" type="hidden" value="main">';
 		echo _('Mass Creation');
 		echo '</td></tr><tr><td>';
 		echo _('Please provide a csv-file with the following syntax. Values with * are required:');
@@ -112,6 +122,7 @@ switch ($select) {
 			if (is_object($values)) {
 				while (list($key, $val) = each($values)) // Set only defined values
 					if ($val) $_SESSION['accounts'][$row]->$key = $val;
+				$_SESSION['accounts'][$row]->general_uidNumber="";
 				}
 				else $error = $values;
 			if (!$error) {
@@ -170,10 +181,6 @@ switch ($select) {
 		echo '</td><td><input name="cancel" type="submit" value="'; echo _('Cancel'); echo '">';
 		echo '</td><td><input name="create" type="submit" value="'; echo _('Create'); echo '">';
 		break;
-	case 'cancel':
-		if ( session_is_registered("accounts")) session_unregister("accounts");
-		echo '<meta http-equiv="refresh" content="0; URL=lists/listusers.php">';
-		break;
 	case 'create':
 		$row=0;
 		$stay=true;
@@ -185,6 +192,7 @@ switch ($select) {
 				$group->general_gecos=$_SESSION['accounts'][$row]->general_group;
 				creategroup($group);
 				}
+			$_SESSION['accounts'][$row]->general_uidNumber = checkid($_SESSION['accounts'][$row], 'user');
 			$error = createuser($_SESSION['accounts'][$row]);
 			if ($error==1) $row++;
 				else {
@@ -204,5 +212,5 @@ switch ($select) {
 	}
 
 
-echo '</form></body></html>';
+echo '</table></form></body></html>';
 ?>

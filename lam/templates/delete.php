@@ -28,14 +28,16 @@ include_once('../lib/config.inc');
 session_save_path('../sess');
 @session_start();
 
-
+echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+       "http://www.w3.org/TR/html4/loose.dtd">';
 echo '<html><head><title>';
 echo _('Delete Account');
 echo '</title>
-	</head>
 	<link rel="stylesheet" type="text/css" href="../style/layout.css">
 	<meta http-equiv="pragma" content="no-cache">
 	<meta http-equiv="cache-control" content="no-cache">
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+	</head>
 	<body>
 	<form action="delete.php" method="post">
 	<table rules="all" class="delete" width="100%">
@@ -58,7 +60,7 @@ if ($_GET['type']) {
 		}
 	echo '</td></tr>';
 	foreach ($DN2 as $dn) echo '<tr><td>'.$dn.'</td></tr>';
-	echo '<br><tr><td>
+	echo '<tr><td><br></td></tr><tr><td>
 	<input name="delete_yes" type="submit" value="';
 	echo _('Commit'); echo '"></td><td></td><td>
 	<input name="delete_no" type="submit" value="';
@@ -121,5 +123,5 @@ if ($_POST['delete_yes']) {
 if ($_POST['delete_no']) echo _('Nothing was deleted.');
 
 echo '</td></tr>';
-echo '</form></body></html>';
+echo '</table></form></body></html>';
 ?>

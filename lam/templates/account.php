@@ -245,20 +245,6 @@ if ( $_POST['create'] ) { // Create-Button was pressed
 	}
 
 
-// Write HTML-Header and part of Table
-echo '<html><head><title>';
-echo _('Create new Account');
-echo '</title>
-	<link rel="stylesheet" type="text/css" href="../style/layout.css">
-	<meta http-equiv="pragma" content="no-cache">
-	<meta http-equiv="cache-control" content="no-cache">
-	</head><body>
-	<form action="account.php" method="post">';
-	if ($error != "0") StatusMessage('ERROR', _('Invalid Value!'), $error);
-	echo '<table rules="all" class="account" width="100%">
-	<tr><td></td></tr>';
-
-
 if (!$select_local) $select_local='general';
 if ($_POST['createagain']) {
 	$select_local='general';
@@ -272,13 +258,78 @@ if ($_POST['load']) $select_local='load';
 if ($_POST['save']) $select_local='save';
 
 
+// Write HTML-Header and part of Table
+echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+       "http://www.w3.org/TR/html4/loose.dtd">';
+echo '<html><head><title>';
+echo _('Create new Account');
+echo '</title>
+	<link rel="stylesheet" type="text/css" href="../style/layout.css">
+	<meta http-equiv="pragma" content="no-cache">
+	<meta http-equiv="cache-control" content="no-cache">
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">';
+
+switch ($select_local) {
+	case 'backmain':
+		if (session_is_registered("shelllist")) session_unregister("shelllist");
+		if (session_is_registered("account")) session_unregister("account");
+		if (session_is_registered("account_old")) session_unregister("account_old");
+		switch ( $_SESSION['type2'] ) {
+			case 'user' :
+				if (session_is_registered("type2")) session_unregister("type2");
+				echo '<meta http-equiv="refresh" content="0; URL=lists/listusers.php">';
+				break;
+			case 'group' :
+				if (session_is_registered("type2")) session_unregister("type2");
+				echo '<meta http-equiv="refresh" content="0; URL=lists/listgroups.php">';
+				break;
+			case 'host' :
+				if (session_is_registered("type2")) session_unregister("type2");
+				echo '<meta http-equiv="refresh" content="0; URL=lists/listhosts.php">';
+				break;
+			}
+		break;
+	case 'load':
+		switch ( $_SESSION['type2'] ) {
+			case 'user':
+				$_SESSION['account'] = loadUserProfile($_POST['f_general_selectprofile']);
+				break;
+			case 'host':
+				$_SESSION['account'] = loadHostProfile($_POST['f_general_selectprofile']);
+				break;
+			case 'group':
+				$_SESSION['account'] = loadGroupProfile($_POST['f_general_selectprofile']);
+				break;
+			}
+		$select_local='general';
+		break;
+	case 'save':
+		switch ( $_SESSION['type2'] ) {
+			case 'user':
+				saveUserProfile($_SESSION['account'], $_POST['f_finish_safeProfile']);
+			break;
+			case 'host':
+				saveHostProfile($_SESSION['account'], $_POST['f_finish_safeProfile']);
+			break;
+			case 'group':
+				saveGroupProfile($_SESSION['account'], $_POST['f_finish_safeProfile']);
+			break;
+			}
+		$select_local='final';
+		break;
+	}
+
+	echo '</head><body>
+	<form action="account.php" method="post">';
+	if ($error != "0") StatusMessage('ERROR', _('Invalid Value!'), $error);
+	echo '<table rules="all" class="account" width="100%">';
+
+
 switch ($select_local) {
 	case 'general':
 		// General Account Settings
 		$groups = findgroups();
-		echo '
-		<input name="select" type="hidden" value="general">
-		<tr><td>';
+		echo '<tr><td><input name="select" type="hidden" value="general">';
 		echo _('General Properties');
 		echo '</td></tr>';
 		switch ( $_SESSION['type2'] ) {
@@ -309,7 +360,7 @@ switch ($select_local) {
 					if ($_SESSION['account']->general_group == $group) echo '<option selected>' . $group;
 					else echo '<option>' . $group;
 					 }
-				echo '</td></tr><tr><td>';
+				echo '</select></td></tr><tr><td>';
 				echo _('Additional Groupmembership');
 				echo '</td><td><select name="f_general_groupadd[]" size="3" multiple>';
 				foreach ($groups as $group) {
@@ -362,7 +413,7 @@ switch ($select_local) {
 				echo '</td><td><input name="f_general_gecos" type="text" size="30" value="' . $_SESSION['account']->general_gecos . '">
 					</td><td>';
 				echo _('User descriptopn. If left empty groupname will be used.');
-				echo '</td></tr><tr><td><select name="f_general_selectprofile">';
+				echo '</td></tr><tr><td><select name="f_general_selectprofile" >';
 				foreach ($profilelist as $profile) echo '<option>' . $profile;
 				echo '</select>
 				<input name="load" type="submit" value="'; echo _('Load Profile'); echo '">
@@ -387,7 +438,7 @@ switch ($select_local) {
 					if ($_SESSION['account']->general_group == $group) echo '<option selected>' . $group;
 					else echo '<option>' . $group;
 					 }
-				echo '</td></tr><tr><td>';
+				echo '</select></td></tr><tr><td>';
 				echo _('Additional Groupmembership');
 				echo '</td><td><select name="f_general_groupadd[]" size="3" multiple>';
 				foreach ($groups as $group) {
@@ -417,8 +468,9 @@ switch ($select_local) {
 		break;
 	case 'unix':
 		// Unix Password Settings
-		echo '<input name="select" type="hidden" value="unix">';
-		echo '<tr><td>Unix Properties</td></tr>';
+		echo '<tr><td><input name="select" type="hidden" value="unix">';
+		echo _('Unix Properties');
+		echo '</td></tr>';
 		switch ( $_SESSION['type2'] ) {
 			case 'user' :
 				echo '<tr><td>';
@@ -542,8 +594,7 @@ switch ($select_local) {
 		break;
 	case 'samba':
 		// Samba Settings
-		echo '<input name="select" type="hidden" value="samba">';
-		echo '<tr><td>'; echo _('Samba Properties'); echo '</td></tr>';
+		echo '<tr><td><input name="select" type="hidden" value="samba">'; echo _('Samba Properties'); echo '</td></tr>';
 		switch ( $_SESSION['type2'] ) {
 			case 'user':
 				echo '<tr><td>';
@@ -665,7 +716,7 @@ switch ($select_local) {
 		break;
 	case 'quota':
 		// Quota Settings
-		echo '<input name="select" type="hidden" value="quota"><tr><td>';
+		echo '<tr><td><input name="select" type="hidden" value="quota">';
 		echo _('Quota Properties');
 		echo '</td></tr><tr><td>'; echo _('Mointpoint'); echo '</td><td>'; echo _('used blocks'); echo '</td><td>';
 		echo _('soft block limit'); echo '</td><td>'; echo _('hard block limit'); echo '</td><td>'; echo _('grace block period');
@@ -691,8 +742,7 @@ switch ($select_local) {
 		break;
 	case 'personal':
 		// Personal Settings
-		echo '<input name="select" type="hidden" value="personal">
-		<tr><td>';
+		echo '<tr><td><input name="select" type="hidden" value="personal">';
 		echo _('Personal Properties');
 		echo '</td></tr><tr><td>';
 		echo _('Title');
@@ -740,8 +790,7 @@ switch ($select_local) {
 		break;
 	case 'final':
 		// Final Settings
-		echo '<input name="select" type="hidden" value="final">
-		<tr><td>';
+		echo '<tr><td><input name="select" type="hidden" value="final">';
 		if ($_SESSION['account_old']) echo _('Modify');
 		 else echo _('Create');
 		echo '</td></tr>';
@@ -786,12 +835,10 @@ switch ($select_local) {
 		echo '<tr><td>';
 		echo '<input name="back" type="submit" value="'; echo _('back'); echo '">
 		</td><td>';
-		if (($_SESSION['type2']=='user') || ($_SESSION['type2']=='host')) {
-			echo '</td><td><input name="f_finish_safeProfile" type="text" size="30" maxlength="30">
-				<input name="save" type="submit" value="';
-			echo _('Save Profile');
-			echo '">';
-			}
+		echo '</td><td><input name="f_finish_safeProfile" type="text" size="30" maxlength="30">
+			<input name="save" type="submit" value="';
+		echo _('Save Profile');
+		echo '">';
 		echo '</td><td>
 		<input name="create" type="submit" value="';
 		if ($_SESSION['account_old']) echo _('Modify Account');
@@ -801,8 +848,7 @@ switch ($select_local) {
 		break;
 	case 'finish':
 		// Final Settings
-		echo '<input name="select" type="hidden" value="finish">
-		<tr><td>';
+		echo '<tr><td><input name="select" type="hidden" value="finish">';
 		echo _('Success');
 		echo '</td></tr>';
 		switch ( $_SESSION['type2'] ) {
@@ -848,52 +894,8 @@ switch ($select_local) {
 				break;
 			}
 		break;
-	case 'backmain':
-		if (session_is_registered("shelllist")) session_unregister("shelllist");
-		if (session_is_registered("account")) session_unregister("account");
-		if (session_is_registered("account_old")) session_unregister("account_old");
-		switch ( $_SESSION['type2'] ) {
-			case 'user' :
-				if (session_is_registered("type2")) session_unregister("type2");
-				echo '<meta http-equiv="refresh" content="0; URL=lists/listusers.php">';
-				break;
-			case 'group' :
-				if (session_is_registered("type2")) session_unregister("type2");
-				echo '<meta http-equiv="refresh" content="0; URL=lists/listgroups.php">';
-				break;
-			case 'host' :
-				if (session_is_registered("type2")) session_unregister("type2");
-				echo '<meta http-equiv="refresh" content="0; URL=lists/listhosts.php">';
-				break;
-			}
-		break;
-	case 'load':
-		switch ( $_SESSION['type2'] ) {
-			case 'user':
-				$_SESSION['account'] = loadUserProfile($_POST['f_general_selectprofile']);
-				break;
-			case 'host':
-				$_SESSION['account'] = loadHostProfile($_POST['f_general_selectprofile']);
-				break;
-			case 'group':
-				$_SESSION['account'] = loadGroupProfile($_POST['f_general_selectprofile']);
-				break;
-			}
-		echo '<meta http-equiv="refresh" content="0; URL=account.php">';
-		break;
-	case 'save':
-		switch ( $_SESSION['type2'] ) {
-			case 'user':
-				saveUserProfile($_SESSION['account'], $f_finish_safeProfile);
-			break;
-			case 'host':
-				saveHostProfile($_SESSION['account'], $f_finish_safeProfile);
-			break;
-			}
-		echo '<meta http-equiv="refresh" content="0; URL=account.php?select=final">';
-		break;
 	}
 
 // Print end of HTML-Page
-echo '</form></body></html>';
+echo '</table></form></body></html>';
 ?>

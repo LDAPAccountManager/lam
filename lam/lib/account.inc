@@ -117,7 +117,6 @@ function initvars($type=false,$DN=false) { // This function registers all needes
 			}
 		 else {
 			if (session_is_registered("account_old")) session_unregister("account_old");
-			if ( (($type=='user')||($type=='group')) && ($_SESSION['config']->scriptServer)) $_SESSION['account'] = getquotas($type);
 			switch ($type) {
 				case 'user':
 						$_SESSION['account'] = loadUserProfile('default');
@@ -128,6 +127,13 @@ function initvars($type=false,$DN=false) { // This function registers all needes
 				case 'host':
 						$_SESSION['account'] = loadHostProfile('default');
 					break;
+				}
+			if ( (($type=='user')||($type=='group')) && ($_SESSION['config']->scriptServer)) {
+				$values = getquotas($type);
+				if (is_object($values)) {
+					while (list($key, $val) = each($values)) // Set only defined values
+						if ($val) $_SESSION['account']->$key = $val;
+					}
 				}
 			}
 		}
@@ -594,6 +600,13 @@ function loaduser($dn) { // Will load all needed values from an existing account
 	if (substr(str_replace('{CRYPT}', '',$attr['userPassword'][0]),0,1) == '!' ) $return->unix_deactivated=true;
 	if ($attr['userPassword'][0]) $return->unix_password = $attr['userPassword'][0];
 	if ($attr['ntPassword'][0])  $return->smb_password = $attr['ntPassword'][0];
+	if ($_SESSION['config']->scriptServer) {
+		$values = getquotas('user',$return->general_username);
+		if (is_object($values)) {
+			while (list($key, $val) = each($values)) // Set only defined values
+				if ($val) $return->$key = $val;
+			}
+		}
 	return $return;
 	}
 
@@ -667,6 +680,13 @@ function loadgroup($dn) { // Will load all needed values from an existing group
 	if ($attr['memberUid']) $return->general_memberUid = $attr['memberUid'];
 	if (is_array($return->general_memberUid)) array_shift($return->general_memberUid);
 	$return->general_dn = $dn;
+	if ($_SESSION['config']->scriptServer) {
+		$values = getquotas('group',$return->general_username);
+		if (is_object($values)) {
+			while (list($key, $val) = each($values)) // Set only defined values
+				if ($val) $return->$key = $val;
+			}
+		}
 	return $return;
 	}
 
@@ -777,7 +797,7 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 	// Value stored in shadowExpire, days since 1.1.1970
 	$date = mktime(10,0,0, $values->unix_pwdexpire_mon, $values->unix_pwdexpire_day, $values->unix_pwdexpire_yea) / 86400 ;
 	settype($date, 'integer');
-	$values->general_dn = 'uid=' . $values->general_username . ',' . $values->get_UserSuffix();
+	$values->general_dn = 'uid=' . $values->general_username . ',' . $_SESSION['config']->get_UserSuffix();
 	if ($values->general_username != $values_old->general_username) {
 		$attr['cn'] = $values->general_username; // posixAccount_req shadowAccount_req sambaAccount_may
 		$attr['uid'] = $values->general_username; // posixAccount_req
@@ -876,7 +896,7 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 	if ($values->smb_pwdcanchange==0 && $values_old->smb_pwdcanchange==1) $attr_rem['pwdCanChange'] = "1"; else $attr['pwdCanChange'] = "0"; // sambaAccount_may
 	if ($values->smb_pwdmustchange && $values->smb_pwdmustchange==0) $attr['pwdMustChange'] = "1"; else $attr['pwdMustChange'] = "0"; // sambaAccount_may
 	if ($values->smb_pwdmustchange==0 && $values->smb_pwdmustchange==1) $attr_rem['pwdMustChange'] = "1"; else $attr['pwdMustChange'] = "0"; // sambaAccount_may
-	$attr['acctFlags'] = smbflag(); // sambaAccount_may
+	$attr['acctFlags'] = smbflag($values); // sambaAccount_may
 	if (($values->smb_smbhome!='') && ($values->smb_smbhome!=$values_old->smb_smbhome)) $attr['smbHome'] = $values->smb_smbhome; // sambaAccount_may
 	if (($values->smb_smbhome=='') && ($values->smb_smbhome!=$values_old->smb_smbhome)) $attr_rem['smbHome'] = $values_old->smb_smbhome; // sambaAccount_may
 	if (($values->smb_homedrive!='') && ($values->smb_homedrive!=$values_old->smb_homedrive)) $attr['homeDrive'] = $values->smb_homedrive; // sambaAccount_may
