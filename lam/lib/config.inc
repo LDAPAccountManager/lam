@@ -697,7 +697,7 @@ class Config {
 		$value = "";
 		$this->domainSID = $value;
 	}
-    elseif (is_string($value) && eregi("^S-[0-9]-[0-9]-[0-9]{2,2}-[0-9]{10,10}-[0-9]{10,10}-[0-9]{10,10}$", $value)) {
+    elseif (is_string($value) && eregi("^S-[0-9]-[0-9]-[0-9]{2,2}-[0-9]*-[0-9]*-[0-9]*$", $value)) {
 		$this->domainSID = $value;
 	}
     else StatusMessage("WARN", "", _("Config->set_domainSID failed!") . " (" . $value . ")");
