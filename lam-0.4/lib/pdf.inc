@@ -136,7 +136,7 @@ function createUserPDF($accounts) {
 		elseif($account->unix_password == "") {
 		}
 		else {
-			$account->unix_password = $_SESSION['ldap']->decrypt(base64_decode($account->unix_password));
+//			$account->unix_password = $_SESSION['ldap']->decrypt(base64_decode($account->unix_password));
 			$pdfFile->setFont("times","B",10);
 			$pdfFile->Cell(50,5,_("Unix password") . ":",0,0,"R",0);
 			$pdfFile->setFont("times","",10);
