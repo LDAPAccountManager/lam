@@ -378,13 +378,13 @@ class sambaSamAccount extends baseModule {
 				if ($post['sambaSID']== _('Administrator')) {
 					$this->attributes['sambaSID'][0] = $SID."-500";
 					// Do a check if an administrator already exists
-					if ($_SESSION[$_SESSION[$this->base]->cache]->in_cache($SID."-500", 'sambaSID', 'user')!=$_SESSION[$this->base]->dn_orig)
+					if ($_SESSION['cache']->in_cache($SID."-500", 'sambaSID', 'user')!=$_SESSION[$this->base]->dn_orig)
 						$errors['sambaSID'][] = array('ERROR', _('Special user'), _('There can be only one administrator per domain.'));
 					}
 				if ($post['sambaSID']== _('Guest')) {
 					$this->attributes['sambaSID'][0] = $SID."-501";
 					// Do a check if an administrator already exists
-					if ($_SESSION[$_SESSION[$this->base]->cache]->in_cache($SID."-501", 'sambaSID', 'user')!=$_SESSION[$this->base]->dn_orig)
+					if ($_SESSION['cache']->in_cache($SID."-501", 'sambaSID', 'user')!=$_SESSION[$this->base]->dn_orig)
 						$errors['sambaSID'][] = array('ERROR', _('Special user'), _('There can be only one guest per domain.'));
 					}
 				// Check values
@@ -578,8 +578,8 @@ class sambaSamAccount extends baseModule {
 						}
 					else $options[] = $names[$i];
 					}
-				if ($wrid) $options[] = $_SESSION[$_SESSION[$this->base]->cache]->getgrnam($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]);
-					else $selected[] = $_SESSION[$_SESSION[$this->base]->cache]->getgrnam($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]);
+				if ($wrid) $options[] = $_SESSION['cache']->getgrnam($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]);
+					else $selected[] = $_SESSION['cache']->getgrnam($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]);
 				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Windows group') ),
 					1 => array ( 'kind' => 'select', 'name' => 'sambaPrimaryGroupSID', 'options' => $options, 'options_selected' => $selected),
 					2 => array ( 'kind' => 'help', 'value' => 'sambaPrimaryGroupSID' ));
@@ -630,7 +630,7 @@ class sambaSamAccount extends baseModule {
 	function display_html_sambaUserWorkstations($post, $profile=false) {
 		if ($_SESSION[$this->base]->type=='user') {
 			// Get list of all hosts.
-			$result = $_SESSION[$_SESSION[$this->base]->cache]->get_cache('uid', 'sambaSamAccount', 'host');
+			$result = $_SESSION['cache']->get_cache('uid', 'sambaSamAccount', 'host');
 			if (is_array($result)) {
 				foreach ($result as $host) $availableUserWorkstations[] = str_replace("$", '', $host[0]);
 				sort($availableUserWorkstations, SORT_STRING);

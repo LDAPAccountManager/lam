@@ -202,7 +202,7 @@ class cache {
 				// Get Scope
 				//$function = '$suffix = $this->config->get_'.ucfirst($scope).'Suffix();';
 				If ($scope != '*') //eval($function);
-					$suffix = call_user_func(array($this->config, 'get_'.ucfirst($scope).'Suffix'));
+					$suffix = call_user_func(array(&$this->config, 'get_'.ucfirst($scope).'Suffix'));
 					else $suffix = '';
 				// Get Data from ldap
 				$search = $this->attributes[$scope];
@@ -243,7 +243,7 @@ class cache {
 				$function = '$suffix = $$this->config->get_'.ucfirst($allowed_types[$i]).'Suffix();';
 				// *** fixme, where is get_DomainSuffix
 				If ($scope != '*') //eval($function);
-					$suffix = call_user_func(array($this->config, 'get_'.ucfirst($allowed_types[$i]).'Suffix'));
+					$suffix = call_user_func(array(&$this->config, 'get_'.ucfirst($allowed_types[$i]).'Suffix'));
 					else $suffix = '';
 				if (substr($suffix, $dn)) $singlescope = $allowed_types[$i];
 				}
@@ -256,7 +256,7 @@ class cache {
 			//$function = '$suffix = $this->config->get_'.ucfirst($scope).'Suffix();';
 			//eval($function);
 			if ($scope!='*') {
-				$suffix = call_user_func(array($this->config, 'get_'.ucfirst($scope).'Suffix'));
+				$suffix = call_user_func(array(&$this->config, 'get_'.ucfirst($scope).'Suffix'));
 				if (strpos($dn, $suffix)) $singlescope = $scope;
 				}
 			}

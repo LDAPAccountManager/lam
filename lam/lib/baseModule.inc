@@ -51,6 +51,12 @@ class baseModule {
 	/** name of parent accountContainer ($_SESSION[$base]) */
 	var $base;
 
+	/** contains all ldap attributes which should be written */
+	var $attributes;
+	
+	/** contains all ldap attributes which are loaded from ldap */
+	var $orig;
+
 	/**
 	* Creates a new base module class
 	*
@@ -69,6 +75,9 @@ class baseModule {
 	*/
 	function init($base) {
 		$this->base = $base;
+		// Create Arrays with ldap attributes
+		$this->attributes =& $_SESSION[$this->base]->get_module_attributes(get_class($this));
+		$this->orig =& $_SESSION[$this->base]->get_module_attributes(get_class($this), true);
 	}
 
 

@@ -259,7 +259,7 @@ class sambaGroupMapping extends baseModule {
 					// Get Domain SID
 					$this->attributes['sambaSID'][0] = $SID."-".$this->rids[$rids[$i]];
 					// Do a check if special grou pis unique
-					if ($_SESSION[$_SESSION[$this->base]->cache]->in_cache($SID."-".$this->rids[$rids[$i]], 'sambaSID', 'group'))
+					if ($_SESSION['cache']->in_cache($SID."-".$this->rids[$rids[$i]], 'sambaSID', 'group'))
 						$errors[] = array('ERROR', _('Special Group'),sprintf( _('There can be only one group %s.'), $rids[$i]), 'sambaSID');
 					}
 				}

@@ -20,23 +20,6 @@ $Id$
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-/* Session variables which are used:
-* $_SESSION['cacheAttributes']: This variable contains a list of attributes and their scope which should be cached
-*
-* Coockie variables which are used:
-* $_COOKIE["IV"], $_COOKIE["Key"]: Needed to en/decrypt passwords.
-*
-* Variables in basearray which are no objects:
-* type: Type of account. Can be user, group, host
-* attributes: List of all attributes, how to get them and are theiy required or optional
-* dn: current DN without uid= or cn=
-* dn_orig: old DN if account was loaded with uid= or cn=
-
-* External functions which are used
-* account.inc: findgroups, incache, get_cache, array_delete, getshells
-* ldap.inc: pwd_is_enabled, pwd_hash
-*/
-
 /* This class contains all posixGroup LDAP attributes
 * and funtioncs required to deal with posixGroup
 * posixGroup can only be created when it should be added
@@ -180,21 +163,8 @@ class posixGroup extends baseModule {
 	function init($base) {
 		// call parent init
 		parent::init($base);
-		// Add Array with all attributes and type
-		$this->attributes = $_SESSION[$this->base]->get_module_attributes('posixGroup');
-		$this->orig = $this->attributes;
-		// Make references to attributes which already esists in ldap
-		$newattributes = array_keys($this->attributes);
-		$module = array_keys($_SESSION[$this->base]->module);
-		// fixme *** do we have to unset module posixAccuont itself
-		for ($i=0; $i<count($module); $i++) {
-			if ($module[$i]!='posixGroup')
-				foreach ($newattributes as $attribute)
-					if (isset($_SESSION[$this->base]->module[$module[$i]]->attributes[$attribute])) {
-						$this->attributes[$attribute] =& $_SESSION[$this->base]->module[$module[$i]]->attributes[$attribute];
-						$this->orig[$attribute] =& $_SESSION[$this->base]->module[$module[$i]]->orig[$attribute];
-						}
-			}
+		$this->attributes =& $_SESSION[$this->base]->get_module_attributes('posixGroup');
+		$this->orig =& $_SESSION[$this->base]->get_module_attributes('posixGroup', true);
 		$this->changegids=false;
 		}
 
@@ -206,13 +176,6 @@ class posixGroup extends baseModule {
 	var $userPassword_lock;
 	// change gids of users and hosts?
 	var $changegids;
-
-	// This variable contains all inetOrgPerson attributes
-	var $attributes;
-	/* If an account was loaded all attributes are kept in this array
-	* to compare it with new changed attributes
-	*/
-	var $orig;
 
 	/* $attribute['userPassword'] can't accessed directly because it's enrcypted
 	* To read / write password function userPassword is needed
@@ -341,7 +304,7 @@ class posixGroup extends baseModule {
 			}
 
 		// Remove primary group from users from memberUid
-		$users_dn = $_SESSION[$_SESSION[$this->base]->cache]->get_cache('gidNumber', 'posixAccount', 'user');
+		$users_dn = $_SESSION['cache']->get_cache('gidNumber', 'posixAccount', 'user');
 		if (is_array($users_dn)) {
 			$DNs = array_keys($users_dn);
 			for ($i=0; $i<count($DNs); $i++) {
@@ -364,7 +327,7 @@ class posixGroup extends baseModule {
 				if (strpos($_SESSION['ldap']->objectClasses[$i], "NAME 'posixAccount'")) $line = $i;
 				}
 			if ($line!=-1) {
-				$result = $_SESSION[$_SESSION[$this->base]->cache]->get_cache('gidNumber', 'posixAccount', '*');
+				$result = $_SESSION['cache']->get_cache('gidNumber', 'posixAccount', '*');
 				$DNs = array_keys($result);
 				for ($i=0; $i<count($DNs); $i++)
 					if ($result[$DNs[$i]][0] == $this->orig['gidNumber'][0]) $return[$DNs[$i]]['modify']['gidNumber'][0] = $this->attributes['gidNumber'][0];
@@ -375,7 +338,7 @@ class posixGroup extends baseModule {
 				if (strpos($_SESSION['ldap']->objectClasses[$i], "NAME 'sambaAccount'")) $line = $i;
 				}
 			if ($line!=-1) {
-				$result = $_SESSION[$_SESSION[$this->base]->cache]->get_cache('primaryGroupID', 'sambaAccount', '*');
+				$result = $_SESSION['cache']->get_cache('primaryGroupID', 'sambaAccount', '*');
 				$DNs = array_keys($result);
 				for ($i=0; $i<count($DNs); $i++) {
 					if ($result[$DNs[$i]][0] == $this->orig['gidNumber'][0]*2+1001 ) $return[$DNs[$i]]['modify']['PrimaryGroupID'][0] = $this->attributes['gidNumber'][0]*2+1001;
@@ -387,7 +350,7 @@ class posixGroup extends baseModule {
 				if (strpos($_SESSION['ldap']->objectClasses[$i], "NAME 'sambaSamAccount'")) $line = $i;
 				}
 			if ($line!=-1) {
-				$result = $_SESSION[$_SESSION[$this->base]->cache]->get_cache('sambaPrimaryGroupSID', 'sambaSamAccount', '*');
+				$result = $_SESSION['cache']->get_cache('sambaPrimaryGroupSID', 'sambaSamAccount', '*');
 				$DNs = array_keys($result);
 				for ($i=0; $i<count($DNs); $i++) {
 					// Get Domain SID from name
@@ -408,7 +371,7 @@ class posixGroup extends baseModule {
 		}
 
 	function delete_attributes($post) {
-		if ($_SESSION[$_SESSION[$this->base]->cache]->in_cache($this->attributes['gidNumber'][0], 'gidNumber', 'user'))
+		if ($_SESSION['cache']->in_cache($this->attributes['gidNumber'][0], 'gidNumber', 'user'))
 			$return[$_SESSION[$this->base]->dn]['errors'][] = array ('ERROR', _('Primary groupmembers'), _('There are still primary members in group.'));
 		return $return;
 		}
@@ -420,8 +383,7 @@ class posixGroup extends baseModule {
 			$errors['gidNumber'][] = array('INFO', _('GID number'), _('GID number has changed. Please select checkbox to change GID number of users and hosts.'));
 
 		// Load attributes
-		//$this->attributes['cn'][0] = $post['cn'];
-		$_SESSION['account']->module['posixGroup']->attributes['cn'][0] = $post['cn'];
+		$this->attributes['cn'][0] = $post['cn'];
 		$this->attributes['gidNumber'][0] = $post['gidNumber'];
 		$this->attributes['description'][0] = $post['description'];
 		if ($post['userPassword_no']) $this->userPassword_no=true;
@@ -445,7 +407,7 @@ class posixGroup extends baseModule {
 			// load min and may uidNumber
 			$minID = intval($this->moduleSettings['posixGroup_minGID'][0]);
 			$maxID = intval($this->moduleSettings['posixGroup_maxGID'][0]);
-			$dn_gids = $_SESSION[$_SESSION[$this->base]->cache]->get_cache('gidNumber', 'posixGroup', '*');
+			$dn_gids = $_SESSION['cache']->get_cache('gidNumber', 'posixGroup', '*');
 			// get_cache will return an array ( dn1 => array(uidnumber1), dn2 => array(uidnumber2), ... )
 			if(is_array($dn_gids)) {
 				foreach ($dn_gids as $gid) $gids[] = $gid[0];
@@ -506,11 +468,11 @@ class posixGroup extends baseModule {
 			// Create automatic useraccount with number if original user already exists
 			// Reset name to original name if new name is in use
 			// Set username back to original name if new username is in use
-			if ($_SESSION[$_SESSION[$this->base]->cache]->in_cache($this->attributes['cn'][0],'cn', '*')!=false && ($this->orig['cn'][0]!='')) {
+			if ($_SESSION['cache']->in_cache($this->attributes['cn'][0],'cn', '*')!=false && ($this->orig['cn'][0]!='')) {
 				$this->attributes['cn'][0] = $this->orig['cn'][0];
 				}
 			// Change uid to a new uid until a free uid is found
-			else while ($_SESSION[$_SESSION[$this->base]->cache]->in_cache($this->attributes['cn'][0], 'cn', '*')) {
+			else while ($_SESSION['cache']->in_cache($this->attributes['cn'][0], 'cn', '*')) {
 				// get last character of username
 				$lastchar = substr($this->attributes['cn'][0], strlen($this->attributes['cn'][0])-1, 1);
 				// Last character is no number
@@ -633,7 +595,7 @@ class posixGroup extends baseModule {
 
 	function display_html_user($post, $profile=false) {
 		// load list with all groups
-		$dn_users = $_SESSION[$_SESSION[$this->base]->cache]->get_cache('uid', 'posixAccount', 'user');
+		$dn_users = $_SESSION['cache']->get_cache('uid', 'posixAccount', 'user');
 		if (is_array($dn_users)) {
 			foreach ($dn_users as $user) $users[] = $user[0];
 			// sort groups
@@ -641,7 +603,7 @@ class posixGroup extends baseModule {
 			// remove groups the user is member of from grouplist
 			$users = array_delete($this->attributes['memberUid'], $users);
 			// Remove primary group from grouplist
-			$users_dn = $_SESSION[$_SESSION[$this->base]->cache]->get_cache('gidNumber', 'posixAccount', 'user');
+			$users_dn = $_SESSION['cache']->get_cache('gidNumber', 'posixAccount', 'user');
 			$DNs = array_keys($users_dn);
 			for ($i=0; $i<count($DNs); $i++) {
 				if ($users_dn[$DNs[$i]][0]==$this->attributes['gidNumber'][0]) {

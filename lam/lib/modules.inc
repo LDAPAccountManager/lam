@@ -388,7 +388,6 @@ class accountContainer {
 		$this->type = $type;
 		$this->base = $base;
 		// Name of variables in session
-		$this->cache = 'cache';
 		$this->header2 = 'header';
 		// Set startpage
 		$this->current_page=0;
@@ -509,7 +508,8 @@ class accountContainer {
 						}
 					}
 				}
-				else $result = call_user_func(array($this->module[$this->order[$this->current_page]], 'proccess_'.$this->subpage), $post);
+				//else $result = $_SESSION[$this->base]->module['posixGroup']->proccess_attributes($post);
+				else $result = call_user_func(array(&$this->module[$this->order[$this->current_page]], 'proccess_'.$this->subpage), $post);
 			}
 		if (is_string($result)) $this->subpage = $result;
 		if (is_int($result)) {
@@ -608,7 +608,7 @@ class accountContainer {
 							
 				if (count($table)!=0) $return[] = array ( 0 => array ( 'kind' => 'table', 'value' => $table ) );
 				// loop through all suffixes
-				$rootsuffix = call_user_func(array($_SESSION['config'], 'get_' . ucfirst($this->type) . 'Suffix'));
+				$rootsuffix = call_user_func(array(&$_SESSION['config'], 'get_' . ucfirst($this->type) . 'Suffix'));
 				foreach ($_SESSION['ldap']->search_units($rootsuffix) as $suffix) {
 					if ($this->dn == $suffix) $option_selected = $suffix;
 					$suffixes[] = $suffix;
@@ -786,7 +786,7 @@ class accountContainer {
 		// loop through every existing objectlass and select current objectClass
 		$line=-1;
 		for ($i=0; $i<count($_SESSION['ldap']->objectClasses) || $i==-1; $i++) {
-			if (strpos($_SESSION['ldap']->objectClasses[$i], "NAME '$objectClass'")) $line = $i;
+			if (strpos(strtolower($_SESSION['ldap']->objectClasses[$i]), strtolower("NAME '$objectClass'"))) $line = $i;
 			}
 		// Return error if objectClass isn't found
 		if ($line==-1) trigger_error (sprintf(_("objectClass %s required but not defined in ldap."), $objectClass), E_USER_WARNING);
@@ -877,15 +877,18 @@ class accountContainer {
 		}
 
 		
-	/* This function return ldap attributes which are uses by $objectClass
-	* Syntax is get_attributes($objectClass)
-	* Return is an array with all allowed attributes
+	/* This function returns all ldap attributes in an array which are used by $objectClass
+	* ldap attributs already in use by another objectClass are passed as reference.
+	* Therefore this function must be called as reference: $result =& ..get_module_attributes
+	*
+	* if original is true referencees will be set to original attributes. This are the original attributes
+	* when an ldap entry is loaded.
 	*/
-	function get_module_attributes($objectClass) {
+	function get_module_attributes($objectClass, $original=false) {
 		// Add account type to object
 		$line=-1;
 		for ($i=0; $i<count($_SESSION['ldap']->objectClasses) || $i==-1; $i++) {
-			if (strpos($_SESSION['ldap']->objectClasses[$i], "NAME '$objectClass'")) $line = $i;
+			if (strpos(strtolower($_SESSION['ldap']->objectClasses[$i]), strtolower("NAME '$objectClass'"))) $line = $i;
 			}
 		// Return error if objectClass isn't found
 		if ($line==-1) trigger_error (sprintf(_("ObjectClass %s required but not defined in ldap."), $objectClass), E_USER_WARNING);
@@ -946,8 +949,31 @@ class accountContainer {
 					}
 				}
 			}
-		$this->add_attributes($objectClass);
-		return $return;
+
+		
+		// Make references to attributes which are already in use
+		$newattributes = array_keys($return);
+		$module = array_keys($this->module);
+		if (!$original) {
+			// Only add attributes when original is false. We don't want to add them twice
+			$this->add_attributes($objectClass);
+			for ($i=0; $i<count($module); $i++) {
+				if ($module[$i]!=$objectClass)
+					foreach ($newattributes as $attribute)
+						if (isset($this->module[$module[$i]]->attributes[$attribute]))
+							$return[$attribute] =& $this->module[$module[$i]]->attributes[$attribute];
+				}
+			}
+		else {		
+			for ($i=0; $i<count($module); $i++) {
+				if ($module[$i]!=$objectClass)
+					foreach ($newattributes as $attribute)
+						if (isset($this->module[$module[$i]]->orig[$attribute]))
+							$return[$attribute] =& $this->module[$module[$i]]->orig[$attribute];
+				}
+			}
+
+			return $return;
 		}
 
 	/* This function return ldap attributes which are uses by $objectClass
@@ -987,6 +1013,7 @@ class accountContainer {
 				if (isset($torem[$attributes2[$i]])) {
 					// found modify entry
 					// Add unchanged attributes
+					// ***** fixme really neccesarry??????
 					if (isset($notchanged[$attributes2[$i]])) $tomodify[$attributes[$i]] = $notchanged[$attributes[$i]];
 					$tomodify[$attributes2[$i]] = array_merge_recursive($tomodify[$attributes2[$i]], $toadd[$attributes2[$i]]);
 						// unset attributes
@@ -1229,14 +1256,14 @@ class accountContainer {
 					$attr = array_merge_recursive($attributes[$this->dn]['add'], $attributes[$this->dn]['notchanged'], $attributes[$this->dn]['modify']);
 					$success = ldap_add($_SESSION['ldap']->server(), $this->dn, $attr);
 					if ($success) {
-						$_SESSION[$this->cache]->update_cache($this->$dn, 'add', $attr);
+						$_SESSION['cache']->update_cache($this->$dn, 'add', $attr);
 						$success = ldap_delete($_SESSION['ldap']->server(), $this->dn_orig);
 						if (!$success) {
 							$errors[] = array('ERROR', 'LDAP', sprintf(_('Was unable to delete dn: %s.'), $this->dn_orig));
 							$stopprocessing = true;
 							}
 						if ($success)
-							$_SESSION[$this->cache]->update_cache($this->$dn, 'delete_dn');
+							$_SESSION['cache']->update_cache($this->$dn, 'delete_dn');
 						}
 					if (!$success) {
 						$errors[] = array('ERROR', 'LDAP', sprintf(_('Was unable to create dn: %s. This is possible a bug. Please check your ldap logs and send a bug report if it is a possible bug.'), $this->dn));
@@ -1252,7 +1279,7 @@ class accountContainer {
 						$stopprocessing = true;
 						}
 					else
-						$_SESSION[$this->cache]->update_cache($this->$dn, 'add', $attr);
+						$_SESSION['cache']->update_cache($this->$dn, 'add', $attr);
 					}
 				unset($attributes[$this->dn]);
 				}
@@ -1268,7 +1295,7 @@ class accountContainer {
 						$stopprocessing = true;
 						}
 					else
-						$_SESSION[$this->cache]->update_cache($this->$dn, 'modify', $attributes[$this->dn]['modify']);
+						$_SESSION['cache']->update_cache($this->$dn, 'modify', $attributes[$this->dn]['modify']);
 					}
 				// add attributes
 				if (isset($attributes[$DNs[$i]]['add']) && !$stopprocessing) {
@@ -1278,7 +1305,7 @@ class accountContainer {
 						$stopprocessing = true;
 						}
 					else
-						$_SESSION[$this->cache]->update_cache($this->$dn, 'add', $attributes[$this->dn]['add']);
+						$_SESSION['cache']->update_cache($this->$dn, 'add', $attributes[$this->dn]['add']);
 					}
 				// removce attributes
 				if (isset($attributes[$DNs[$i]]['remove']) && !$stopprocessing) {
@@ -1288,7 +1315,7 @@ class accountContainer {
 						$stopprocessing = true;
 						}
 					else
-						$_SESSION[$this->cache]->update_cache($this->$dn, 'remove', $attributes[$this->dn]['remove']);
+						$_SESSION['cache']->update_cache($this->$dn, 'remove', $attributes[$this->dn]['remove']);
 					}
 				}
 			}

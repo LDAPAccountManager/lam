@@ -174,7 +174,7 @@ class posixAccount extends baseModule {
 		$this->orig = $_SESSION[$this->base]->get_module_attributes('posixAccount');
 		$this->attributes = $_SESSION[$this->base]->get_module_attributes('posixAccount');
 
-		$groups = $_SESSION[$_SESSION[$this->base]->cache]->findgroups(); // list of all groupnames
+		$groups = $_SESSION['cache']->findgroups(); // list of all groupnames
 		if (count($groups)==0) trigger_error(_('No groups found in ldap.'), E_USER_WARNING);
 
 		// Make references to attributes which already esists in ldap
@@ -297,7 +297,7 @@ class posixAccount extends baseModule {
 		$this->attributes['objectClass'][0] = 'posixAccount';
 
 		// get all additional groupmemberships
-		$dn_groups = $_SESSION[$_SESSION[$this->base]->cache]->get_cache('memberUid', 'posixGroup', 'group');
+		$dn_groups = $_SESSION['cache']->get_cache('memberUid', 'posixGroup', 'group');
 		$DNs = array_keys($dn_groups);
 		foreach ($DNs as $DN) {
 			if (in_array($attr['uid'][0], $dn_groups[$DN])) {
@@ -350,13 +350,13 @@ class posixAccount extends baseModule {
 
 		// Remove primary group from additional groups
 		for ($i=0; $i<count($this->groups); $i++) {
-			if ($this->groups[$i]==$_SESSION[$_SESSION[$this->base]->cache]->getgrnam($this->attributes['gidNumber'][0])) unset($this->groups[$i]);
+			if ($this->groups[$i]==$_SESSION['cache']->getgrnam($this->attributes['gidNumber'][0])) unset($this->groups[$i]);
 			}
 
 		// Set additional group memberships
 		if ($this->orig['uid'][0]!='' && $this->attributes['uid'][0]!=$this->orig['uid'][0]) {
 			// remove old memberships
-			$dn_groups = $_SESSION[$_SESSION[$this->base]->cache]->get_cache('memberUid', 'posixGroup', 'group');
+			$dn_groups = $_SESSION['cache']->get_cache('memberUid', 'posixGroup', 'group');
 			$DNs = array_keys($dn_groups);
 			foreach ($DNs as $DN)
 				if (in_array($this->orig['uid'][0], $dn_groups[$DN]))
@@ -375,7 +375,7 @@ class posixAccount extends baseModule {
 					//There are some old groups.
 					$add = array_delete($this->groups_orig, $this->groups);
 					$remove = array_delete($this->groups, $this->groups_orig);
-					$dn_cns = $_SESSION[$_SESSION[$this->base]->cache]->get_cache('cn', 'posixGroup', 'group');
+					$dn_cns = $_SESSION['cache']->get_cache('cn', 'posixGroup', 'group');
 					// get_cache will return an array ( dn1 => array(cn1), dn2 => array(cn2), ... )
 					$DNs = array_keys($dn_cns);
 					foreach ($DNs as $DN) {
@@ -385,11 +385,11 @@ class posixAccount extends baseModule {
 							if (in_array($dn_cns[$DN][0], $remove)) $return[$DN]['remove']['memberUid'] = $this->attributes['uid'][0];
 						}
 					// primary group mut also be removed if it has changed after setting additional groups
-					if (in_array($_SESSION[$_SESSION[$this->base]->cache]->getgrnam($this->attributes['gidNumber'][0]), $this->groups_orig)) $return[$DN]['remove']['memberUid'] = $this->attributes['uid'];
+					if (in_array($_SESSION['cache']->getgrnam($this->attributes['gidNumber'][0]), $this->groups_orig)) $return[$DN]['remove']['memberUid'] = $this->attributes['uid'];
 					}
 				else {
 					// Add user to every group
-					$dn_cns = $_SESSION[$_SESSION[$this->base]->cache]->get_cache('cn', 'posixGroup', 'group');
+					$dn_cns = $_SESSION['cache']->get_cache('cn', 'posixGroup', 'group');
 					// get_cache will return an array ( dn1 => array(cn1), dn2 => array(cn2), ... )
 					$DNs = array_keys($dn_cns);
 					foreach ($DNs as $DN) {
@@ -400,7 +400,7 @@ class posixAccount extends baseModule {
 			else {
 				if (is_array($this->groups_orig)) {
 					//There are some old groups which have to be removed
-					$dn_cns = $_SESSION[$_SESSION[$this->base]->cache]->get_cache('cn', 'posixGroup', 'group');
+					$dn_cns = $_SESSION['cache']->get_cache('cn', 'posixGroup', 'group');
 					// get_cache will return an array ( dn1 => array(cn1), dn2 => array(cn2), ... )
 					$DNs = array_keys($dn_cns);
 					foreach ($DNs as $DN) {
@@ -417,7 +417,7 @@ class posixAccount extends baseModule {
 	function delete_attributes($post) {
 		$return = array();
 		// remove memberUids if set
-		$groups = $_SESSION[$_SESSION[$this->base]->cache]->get_cache('memberUid', 'posixGroup', 'group');
+		$groups = $_SESSION['cache']->get_cache('memberUid', 'posixGroup', 'group');
 		$DNs = array_keys($groups);
 		for ($i=0; $i<count($DNs); $i++) {
 			if (in_array($this->attributes['uid'][0], $groups[$DNs[$i]])) $return[$DNs[$i]]['remove']['memberUid'][] = $this->attributes['uid'][0];
@@ -431,8 +431,8 @@ class posixAccount extends baseModule {
 	function proccess_attributes($post, $profile=false) {
 		if ($this->orig['uid'][0]!='' && $post['uid']!=$this->attributes['uid'][0])
 			$errors['uid'][] = array('INFO', _('UID'), _('UID has changed. Do you want to change home directory?'));
-		if ($this->orig['gidNumber'][0]!='' && $_SESSION[$_SESSION[$this->base]->cache]->getgid($post['gidNumber'])!=$this->attributes['gidNumber'][0])
-			$errors['gidNumber'][] = array('INFO', _('GID number'), sprintf(_('GID number has changed. To keep file ownership you have to run the following command as root: \'find / -gid %s -uid %s -exec chgrp %s {} \;\''), $this->orig['gidNumber'][0], $this->orig['uidNumber'][0], $_SESSION[$_SESSION[$this->base]->cache]->getgid($post['gidNumber'])));
+		if ($this->orig['gidNumber'][0]!='' && $_SESSION['cache']->getgid($post['gidNumber'])!=$this->attributes['gidNumber'][0])
+			$errors['gidNumber'][] = array('INFO', _('GID number'), sprintf(_('GID number has changed. To keep file ownership you have to run the following command as root: \'find / -gid %s -uid %s -exec chgrp %s {} \;\''), $this->orig['gidNumber'][0], $this->orig['uidNumber'][0], $_SESSION['cache']->getgid($post['gidNumber'])));
 		if ($this->orig['uidNumber'][0]!='' && $post['uidNumber']!=$this->attributes['uidNumber'][0])
 			$errors['uidNumber'][] = array('INFO', _('UID number'), sprintf(_('UID number has changed. To keep file ownership you have to run the following command as root: \'find / -uid %s -exec chown %s {} \;\''), $this->orig['uidNumber'][0], $this->attributes['uidNumber'][0]));
 		if (isset($post['homeDirectory']) && $this->orig['homeDirectory'][0]!='' && $post['homeDirectory']!=$this->attributes['homeDirectory'][0])
@@ -442,7 +442,7 @@ class posixAccount extends baseModule {
 		$this->attributes['uid'][0] = $post['uid'];
 		$this->attributes['cn'][0] = $this->attributes['uid'][0];
 		$this->attributes['uidNumber'][0] = $post['uidNumber'];
-		$this->attributes['gidNumber'][0] = $_SESSION[$_SESSION[$this->base]->cache]->getgid($post['gidNumber']);
+		$this->attributes['gidNumber'][0] = $_SESSION['cache']->getgid($post['gidNumber']);
 		$this->attributes['homeDirectory'][0] = $post['homeDirectory'];
 		$this->attributes['loginShell'][0] = $post['loginShell'];
 		$this->attributes['gecos'][0] = $post['gecos'];
@@ -472,7 +472,7 @@ class posixAccount extends baseModule {
 				$minID = intval($this->moduleSettings['posixAccount_minMachine'][0]);
 				$maxID = intval($this->moduleSettings['posixAccount_maxMachine'][0]);
 				}
-			$dn_uids = $_SESSION[$_SESSION[$this->base]->cache]->get_cache('uidNumber', 'posixAccount', '*');
+			$dn_uids = $_SESSION['cache']->get_cache('uidNumber', 'posixAccount', '*');
 			// get_cache will return an array ( dn1 => array(uidnumber1), dn2 => array(uidnumber2), ... )
 			foreach ($dn_uids as $uid) $uids[] = $uid[0];
 			if(is_array($uids)) sort ($uids, SORT_NUMERIC);
@@ -527,7 +527,7 @@ class posixAccount extends baseModule {
 				$errors['uid'][] = array('WARN', _('Username'), _('You are using a capital letters. This can cause problems because windows isn\'t case-sensitive.'));
 			// Check if Homedir is valid
 			if (!$profile) {
-					$this->attributes['homeDirectory'][0] = str_replace('$group', $_SESSION[$_SESSION[$this->base]->cache]->getgrnam($this->attributes['gidNumber'][0]), $this->attributes['homeDirectory'][0]);
+					$this->attributes['homeDirectory'][0] = str_replace('$group', $_SESSION['cache']->getgrnam($this->attributes['gidNumber'][0]), $this->attributes['homeDirectory'][0]);
 				if ($this->attributes['uid'][0] != '')
 					$this->attributes['homeDirectory'][0] = str_replace('$user', $this->attributes['uid'][0], $this->attributes['homeDirectory'][0]);
 				if ($this->attributes['homeDirectory'][0] != $post['homeDirectory']) $errors['homeDirecotry'][] = array('INFO', _('Home directory'), _('Replaced $user or $group in homedir.'));
@@ -551,11 +551,11 @@ class posixAccount extends baseModule {
 		// Reset name to original name if new name is in use
 		// Set username back to original name if new username is in use
 		if (!$profile) {
-			if ($_SESSION[$_SESSION[$this->base]->cache]->in_cache($this->attributes['uid'][0],'uid', '*')!=false && ($this->orig['uid'][0]!='')) {
+			if ($_SESSION['cache']->in_cache($this->attributes['uid'][0],'uid', '*')!=false && ($this->orig['uid'][0]!='')) {
 				$this->attributes['uid'][0] = $this->orig['uid'][0];
 				}
 			// Change uid to a new uid until a free uid is found
-			else while ($_SESSION[$_SESSION[$this->base]->cache]->in_cache($this->attributes['uid'][0], 'uid', '*')) {
+			else while ($_SESSION['cache']->in_cache($this->attributes['uid'][0], 'uid', '*')) {
 				if ($_SESSION[$this->base]->type=='host') $this->attributes['uid'][0] = substr($this->attributes['uid'][0], 0, -1);
 					// get last character of username
 				$lastchar = substr($this->attributes['uid'][0], strlen($this->attributes['uid'][0])-1, 1);
@@ -633,7 +633,7 @@ class posixAccount extends baseModule {
 	* It will output a complete html-table
 	*/
 	function display_html_attributes($post, $profile=false) {
-		$groups = $_SESSION[$_SESSION[$this->base]->cache]->findgroups(); // list of all groupnames
+		$groups = $_SESSION['cache']->findgroups(); // list of all groupnames
 		$shelllist = getshells(); // list of all valid shells
 
 		if (!$profile) {
@@ -651,7 +651,7 @@ class posixAccount extends baseModule {
 			2 => array ('kind' => 'help', 'value' => 'gecos'));
 		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Primary group').'*' ),
 			1 => array ( 'kind' => 'select', 'name' => 'gidNumber', 'options' => $groups, 'options_selected' =>
-				array ($_SESSION[$_SESSION[$this->base]->cache]->getgrnam($this->attributes['gidNumber'][0]))),
+				array ($_SESSION['cache']->getgrnam($this->attributes['gidNumber'][0]))),
 			2 => array ('kind' => 'help', 'value' => 'gidNumber'));
 
 		if ($_SESSION[$this->base]->type=='user') {
@@ -704,14 +704,14 @@ class posixAccount extends baseModule {
 
 	function display_html_group($post, $profile=false) {
 		// load list with all groups
-		$dn_groups = $_SESSION[$_SESSION[$this->base]->cache]->get_cache('gidNumber', 'posixGroup', 'group');
+		$dn_groups = $_SESSION['cache']->get_cache('gidNumber', 'posixGroup', 'group');
 		$DNs = array_keys($dn_groups);
 		foreach ($DNs as $DN)
 			$groups[] = substr($DN, 3, strpos($DN, ',')-3);
 		// remove groups the user is member of from grouplist
 		$groups = array_delete($this->groups, $groups);
 		// Remove primary group from grouplist
-		$group = $_SESSION[$_SESSION[$this->base]->cache]->getgrnam($this->attributes['gidNumber'][0]);
+		$group = $_SESSION['cache']->getgrnam($this->attributes['gidNumber'][0]);
 		$groups = array_flip($groups);
 		unset ($groups[$group]);
 		$groups = array_flip($groups);
@@ -738,7 +738,7 @@ class posixAccount extends baseModule {
 	function get_profileOptions() {
 		$return = array();
 		if ($_SESSION[$this->base]->type=='user') {
-			$groups = $_SESSION[$_SESSION[$this->base]->cache]->findgroups(); // list of all groupnames
+			$groups = $_SESSION['cache']->findgroups(); // list of all groupnames
 			$shelllist = getshells(); // list of all valid shells
 			// primary Unix group
 			$return[] = array(0 => array('kind' => 'text', 'text' => _('Primary group') . ": "),
@@ -778,7 +778,7 @@ class posixAccount extends baseModule {
 							'posixAccount_uidNumber' => array('<block><key>' . _('UID number') . '</key><value>' . $this->attributes['uidNumber'][0] . '</value></block>'),
 							'posixAccount_gidNumber' => array('<block><key>' . _('GID number') . '</key><value>' . $this->attributes['gidNumber'][0] . '</value></block>'),
 							'posixAccount_gecos' => array('<block><key>' . _('Gecos') . '</key><value>' . $this->attributes['gecos'][0] . '</value></block>'),
-							'posixAccount_primaryGroup' => array('<block><key>' . _('Primary group') . '</key><value>' . $_SESSION[$_SESSION[$this->base]->cache]->getgrnam($this->attributes['gidNumber'][0]) . '</value></block>'),
+							'posixAccount_primaryGroup' => array('<block><key>' . _('Primary group') . '</key><value>' . $_SESSION['cache']->getgrnam($this->attributes['gidNumber'][0]) . '</value></block>'),
 							'posixAccount_additionalGroups' => array('<block><key>' . _('Additional groups') . '</key><value>' . '</value></block>'),
 							'posixAccount_homeDirectory' => array('<block><key>' . _('Home directory') . '</key><value>' . $this->attributes['homeDirectory'][0] . '</value></block>'),
 							'posixAccount_userPassword' => array('<block><key>' . _('Password') . '</key><value>' . $this->attributes['userPassword'][0] . '</value></block>'),
