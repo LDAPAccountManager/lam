@@ -1836,7 +1836,7 @@ function modifyuser($values,$values_old,$uselamdaemon=true) { // Will modify the
 	if (($values->personal_facsimileTelephoneNumber != $values_old->personal_facsimileTelephoneNumber) && ($values->personal_facsimileTelephoneNumber!=''))
 		$attr['facsimileTelephoneNumber'] = utf8_encode($values->personal_facsimileTelephoneNumber);
 	if (($values->personal_facsimileTelephoneNumber != $values_old->personal_facsimileTelephoneNumber) && ($values->personal_facsimileTelephoneNumber==''))
-		$attr_rem['facsimileTelephoneNumber'] = utf8_encode($values_old->personal_facsimileTelephoneNumber);
+		$attr_rem['facsimileTelephoneNumber'] = array();
 	if (($values->personal_street != $values_old->personal_street) && ($values->personal_street!=''))
 		$attr['street'] = utf8_encode($values->personal_street);
 	if (($values->personal_street != $values_old->personal_street) && ($values->personal_street==''))
@@ -1848,7 +1848,7 @@ function modifyuser($values,$values_old,$uselamdaemon=true) { // Will modify the
 	if (($values->personal_postalAddress != $values_old->personal_postalAddress) && ($values->personal_postalAddress!=''))
 		$attr['postalAddress'] = utf8_encode($values->personal_postalAddress);
 	if (($values->personal_postalAddress != $values_old->personal_postalAddress) && ($values->personal_postalAddress==''))
-		$attr_rem['postalAddress'] = utf8_encode($values_old->personal_postalAddress);
+		$attr_rem['postalAddress'] = array();
 	if (($values->personal_employeeType != $values_old->personal_employeeType) && ($values->personal_employeeType!=''))
 		$attr['employeeType'] = utf8_encode($values->personal_employeeType);
 	if (($values->personal_employeeType != $values_old->personal_employeeType) && ($values->personal_employeeType==''))
