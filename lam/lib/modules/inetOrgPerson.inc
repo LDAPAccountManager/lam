@@ -102,6 +102,7 @@ class inetOrgPerson {
 	* $attr is an array as it's retured from ldap_get_attributes
 	*/
 	function load_attributes($attr) {
+		// Load attributes which are displayed
 		// unset count entries
 		unset ($attr['count']);
 		$attributes = array_keys($attr);
@@ -109,18 +110,18 @@ class inetOrgPerson {
 		// unset double entries
 		for ($i=0; $i<count($attr); $i++)
 			if (isset($attr[$i])) unset($attr[$i]);
-		// load attribtues
 		foreach ($attributes as $attribute) {
-			if (isset($this->orig[$attribute])) {
-				$this->orig[$attribute] = $attr[$attribute];
+			if (isset($this->attributes[$attribute])) {
 				// decode as unicode
-				for ($i=0; $i<count($this->orig[$attribute]); $i++) $this->orig[$attribute][$i] = utf8_decode ($this->orig[$attribute][$i]);
+				$this->attributes[$attribute] = $attr[$attribute];
+				for ($i=0; $i<count($this->attributes[$attribute]); $i++) {
+					$this->attributes[$attribute][$i] = utf8_decode ($this->attributes[$attribute][$i]);
+					$this->orig[$attribute][$i] = utf8_decode ($this->attributes[$attribute][$i]);
+					}
 				}
 			}
 		// Add objectClass to orig because we don't want to add objectClass if it's already set
 		$this->orig['objectClass'][0] = 'inetOrgPerson';
-		// Values are kept as copy so we can compare old attributes with new attributes
-		$this->attributes = $this->orig;
 		return 0;
 		}
 

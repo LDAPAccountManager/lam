@@ -181,13 +181,14 @@ class sambaAccount {
 			if (isset($this->attributes[$attribute])) {
 				// decode as unicode
 				$this->attributes[$attribute] = $attr[$attribute];
-				for ($i=0; $i<count($this->attributes[$attribute]); $i++) $this->attributes[$attribute][$i] = utf8_decode ($this->attributes[$attribute][$i]);
+				for ($i=0; $i<count($this->attributes[$attribute]); $i++) {
+					$this->attributes[$attribute][$i] = utf8_decode ($this->attributes[$attribute][$i]);
+					$this->orig[$attribute][$i] = utf8_decode ($this->attributes[$attribute][$i]);
+					}
 				}
 			}
 		// Values are kept as copy so we can compare old attributes with new attributes
 		$this->attributes['objectClass'][0] = 'sambaAccount';
-		$this->orig = $this->attributes;
-		$this->lmPassword(''); // Remove old password so it won't displayed as hash
 		return 0;
 		}
 

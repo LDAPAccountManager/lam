@@ -47,9 +47,8 @@ class account {
 		if (!is_string($base)) trigger_error(_('Please create a new module object with $accountContainer->add_objectClass(\'account\');'), E_USER_ERROR);
 		if ($_SESSION[$this->base]->get_type() != 'host') trigger_error(_('account can only be used for hosts.'), E_USER_WARNING);
 		// load attribtues which are used in account objectClass
+		$this->orig = $_SESSION[$this->base]->get_module_attributes('account');
 		$this->attributes = $_SESSION[$this->base]->get_module_attributes('account');
-		// Create copy of attributes
-		$this->orig = $this->attributes ;
 		// Add objectClass to attributes
 		$this->attributes['objectClass'][0] = 'account';
 		}
@@ -103,6 +102,7 @@ class account {
 	* $attr is an array as it's retured from ldap_get_attributes
 	*/
 	function load_attributes($attr) {
+		// Load attributes which are displayed
 		// unset count entries
 		unset ($attr['count']);
 		$attributes = array_keys($attr);
@@ -110,18 +110,18 @@ class account {
 		// unset double entries
 		for ($i=0; $i<count($attr); $i++)
 			if (isset($attr[$i])) unset($attr[$i]);
-		// load attribtues
 		foreach ($attributes as $attribute) {
-			if (isset($this->orig[$attribute])) {
-				$this->orig[$attribute] = $attr[$attribute];
+			if (isset($this->attributes[$attribute])) {
 				// decode as unicode
-				for ($i=0; $i<count($this->orig[$attribute]); $i++) $this->orig[$attribute][$i] = utf8_decode ($this->orig[$attribute][$i]);
+				$this->attributes[$attribute] = $attr[$attribute];
+				for ($i=0; $i<count($this->attributes[$attribute]); $i++) {
+					$this->attributes[$attribute][$i] = utf8_decode ($this->attributes[$attribute][$i]);
+					$this->orig[$attribute][$i] = utf8_decode ($this->attributes[$attribute][$i]);
+					}
 				}
 			}
 		// Add objectClass to orig because we don't want to add objectClass if it's already set
 		$this->orig['objectClass'][0] = 'account';
-		// Values are kept as copy so we can compare old attributes with new attributes
-		$this->attributes = $this->orig;
 		return 0;
 		}
 

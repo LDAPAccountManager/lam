@@ -69,8 +69,8 @@ class posixAccount {
 		if (!isset($_SESSION[$this->base]->module['inetOrgPerson']) && $_SESSION[$this->base]->type=='user') $_SESSION[$this->base]->add_objectClass('inetOrgPerson');
 		if (!isset($_SESSION[$this->base]->module['account']) && $_SESSION[$this->base]->type=='host') $_SESSION[$this->base]->add_objectClass('account');
 		// Add Array with all attributes and type
+		$this->orig = $_SESSION[$this->base]->get_module_attributes('posixAccount');
 		$this->attributes = $_SESSION[$this->base]->get_module_attributes('posixAccount');
-		$_SESSION[$this->base]->add_attributes ('posixAccount');
 
 		$this->alias = _('posixAccount');
 		$groups = $_SESSION[$_SESSION[$this->base]->cache]->findgroups(); // list of all groupnames
@@ -83,7 +83,6 @@ class posixAccount {
 			foreach ($newattributes as $attribute)
 				if (isset($_SESSION[$this->base]->module[$module[$i]]->attributes[$attribute])) $this->attributes[$attribute] =& $_SESSION[$this->base]->module[$module[$i]]->attributes[$attribute];
 			}
-		$this->orig = $this->attributes ;
 		$this->attributes['objectClass'][0] = 'posixAccount';
 		$this->createhomedir=false;
 		}
@@ -191,12 +190,14 @@ class posixAccount {
 			if (isset($this->attributes[$attribute])) {
 				// decode as unicode
 				$this->attributes[$attribute] = $attr[$attribute];
-				for ($i=0; $i<count($this->attributes[$attribute]); $i++) $this->attributes[$attribute][$i] = utf8_decode ($this->attributes[$attribute][$i]);
+				for ($i=0; $i<count($this->attributes[$attribute]); $i++) {
+					$this->attributes[$attribute][$i] = utf8_decode ($this->attributes[$attribute][$i]);
+					$this->orig[$attribute][$i] = utf8_decode ($this->attributes[$attribute][$i]);
+					}
 				}
 			}
 		// Values are kept as copy so we can compare old attributes with new attributes
 		$this->attributes['objectClass'][0] = 'posixAccount';
-		$this->orig = $this->attributes;
 
 		// get all additional groupmemberships
 		$dn_groups = $_SESSION[$_SESSION[$this->base]->cache]->get_cache('memberUid', 'posixGroup', 'group');
@@ -535,9 +536,6 @@ class posixAccount {
 	* It will output a complete html-table
 	*/
 	function display_html_attributes($post) {
-		print_r($this->attributes);
-		print "<br>";
-		print_r($this->attributes);
 		$groups = $_SESSION[$_SESSION[$this->base]->cache]->findgroups(); // list of all groupnames
 		$shelllist = getshells(); // list of all valid shells
 		if ($this->attributes['userPassword'][0] != $this->orig['userPassword'][0]) $password=$this->userPassword();
