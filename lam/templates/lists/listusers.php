@@ -87,7 +87,7 @@ for ($i = 0; $i < sizeof($info); $i++) { // ignore last entry in array which is 
 	echo("<tr class=\"userlist\" onMouseOver=\"user_over(this, '" . $info[$i]["dn"] . "')\"" .
 								" onMouseOut=\"user_out(this, '" . $info[$i]["dn"] . "')\"" .
 								" onClick=\"user_click(this, '" . $info[$i]["dn"] . "')\"" .
-								" onDblClick=parent.frames[2].location.href=\"../account.php?type=user&DN='" . $info[$i]["dn"] . "'\">" .
+								" onDblClick=parent.frames[1].location.href=\"../account.php?type=user&DN='" . $info[$i]["dn"] . "'\">" .
 								" <td height=22><input onClick=\"user_click(this, '" . $info[$i]["dn"] . "')\" type=\"checkbox\" name=\"" . $info[$i]["dn"] . "\"></td>" .
 								" <td align='center'><a href=\"../account.php?type=user&DN='" . $info[$i]["dn"] . "'\">" . _("Edit") . "</a></td>");
 	for ($k = 0; $k < sizeof($attr_array); $k++) {
