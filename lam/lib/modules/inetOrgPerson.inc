@@ -46,23 +46,21 @@ $Id$
 
 class inetOrgPerson {
 	// Constructor
-	function inetOrgPerson(&$basearray) {
+	function inetOrgPerson(&$baseobject) {
 		/* Return an error if posixAccount should be created without
 		* base container
 		*/
-		if (!$basearray) trigger_error(_('Please create a new object with $array[] = new posixAccount($array);'), E_USER_ERROR);
-		// Check if $basearray is an array
-		if (!is_object($basearray)) trigger_error(_('Please create a new module object with $accountContainer->add_objectClass(\'inetOrgPerson\');'), E_USER_ERROR);
+		if (!$baseobject) trigger_error(_('Please create a base object with $var = new accountContainer();'), E_USER_ERROR);
+		// Check if $baseobject is an array
+		if (!is_object($baseobject)) trigger_error(_('Please create a new module object with $accountContainer->add_objectClass(\'inetOrgPerson\');'), E_USER_ERROR);
 		// posixAccount is only a valid objectClass for user and host
-		if ($basearray->get_type() != 'user') trigger_error(_('inetOrgPerson can only be used for users.'), E_USER_WARNING);
+		if ($baseobject->get_type() != 'user') trigger_error(_('inetOrgPerson can only be used for users.'), E_USER_WARNING);
 		/* Create a reference to basearray so we can read all other modules
 		* php will avaois recousrion itself
 		*/
-		$this->base = &$basearray;
+		$this->base = &$baseobject;
 		// Add attributes which should be cached
-		$_SESSION['cache']->add_cache(array ('user' => array('cn', 'uid'), 'host' => array('cn', 'uid') ));
-		// Add Array with all attributes and type
-		$basearray->add_attributes ('inetOrgPerson');
+		//$_SESSION['cache']->add_cache(array ('user' => array('cn', 'uid'), 'host' => array('cn', 'uid') ));
 
 		// Add account type to object
 		$line=-1;
@@ -70,7 +68,9 @@ class inetOrgPerson {
 			if (strpos($this->base->ldap->objectClasses[$i], "NAME 'inetOrgPerson'")) $line = $i;
 			}
 		// Return error if objectClass isn't found
-		if ($line==-1) trigger_error (_("objectClass objectClass required but not defined in ldap."), E_USER_WARNING);
+		if ($line==-1) trigger_error (sprintf(_("ObjectClass %s required but not defined in ldap."), 'inetOrgPerson'), E_USER_WARNING);
+		// Add Array with all attributes and type
+		$baseobject->add_attributes ('inetOrgPerson');
 		// create array with must-attributes
 		// Get startposition in string
 		if (strpos($this->base->ldap->objectClasses[$line],  'MUST (')) {
@@ -104,6 +104,7 @@ class inetOrgPerson {
 				if (strpos($this->base->ldap->objectClasses[$i], "NAME '$subclass'")) $line = $i;
 				}
 			// Return error if objectClass isn't found
+			// *** fixme, fix error message
 			if ($line==-1) trigger_error (_("objectClass objectClass required but not defined in ldap."), E_USER_WARNING);
 
 			// create array with must-attributes
@@ -182,8 +183,7 @@ class inetOrgPerson {
 	/* This function returns a list with all required modules
 	*/
 	function dependencies() {
-		// return error if unsupported type is used
-		return array();
+		return array('main');
 		}
 
 	/* Write variables into object and do some regexp checks
@@ -207,9 +207,9 @@ class inetOrgPerson {
 		$this->attributes['postalAddress'] = $_POST['form_inetOrgPerson_postalAddress'];
 		$this->attributes['employeeType'] = $_POST['form_inetOrgPerson_employeeType'];
 
-		if ($_POST['form_inetOrgPerson_userPassword_no']; $this->userPassword_no=true;
+		if ($_POST['form_inetOrgPerson_userPassword_no']) $this->userPassword_no=true;
 			else $this->userPassword_no=false;
-		if ($_POST['form_inetOrgPerson_userPassword_lock']; $this->userPassword_lock=true;
+		if ($_POST['form_inetOrgPerson_userPassword_lock']) $this->userPassword_lock=true;
 			else $this->userPassword_lock=false;
 		if (isset($_POST['form_inetOrgPerson_userPassword'])) {
 			if ($_POST['form_inetOrgPerson_userPassword'] != $_POST['form_inetOrgPerson_userPassword2']) {
@@ -230,9 +230,9 @@ class inetOrgPerson {
 		// Create automatic useraccount with number if original user already exists
 		// Reset name to original name if new name is in use
 		// Set username back to original name if new username is in use
-		if (incache($this->attributes['uid'],'uid', '*')!=$this->orig['uid'] && ($this->orig['uid']!='')) $this->attributes['uid'] = $this->orig['uid'];
+		if ($this->base->cache->in_cache($this->attributes['uid'],'uid', '*')!=$this->orig['uid'] && ($this->orig['uid']!='')) $this->attributes['uid'] = $this->orig['uid'];
 		// Change uid to a new uid until a free uid is found
-		while (incache($this->attributes['uid'], 'uid', '*')) {
+		while ($this->base->cache->in_cache($this->attributes['uid'], 'uid', '*')) {
 			// get last character of username
 			$lastchar = substr($this->attributes['uid'], strlen($this->attributes['uid'])-1, 1);
 			// Last character is no number
@@ -296,8 +296,8 @@ class inetOrgPerson {
 		foreach ($attributes as $attribute) {
 			if (isset($this->attributes[$attribute])) {
 				// decode as unicode
-				for ($i=0; $i<count($this->attributes[$attribute]); $i++) $this->attributes[$attribute][$i] = utf8_decode ($this->attributes[$attribute][$i]);
 				$this->attributes[$attribute] = $attr[$attribute];
+				for ($i=0; $i<count($this->attributes[$attribute]); $i++) $this->attributes[$attribute][$i] = utf8_decode ($this->attributes[$attribute][$i]);
 				}
 			}
 		// Values are kept as copy so we can compare old attributes with new attributes
@@ -323,17 +323,16 @@ class inetOrgPerson {
 		// Get list of all "easy" attributes
 		$attr_names = array_keys($attributes);
 		foreach ($attr_names as $attr_name) {
-			// *** fixme, encode as unicode
 			if (count($this->attributes[$attr_name])!=0 && count($this->orig[$attr_name])==0) $return[$this->base['dn']]['add'][$attr_name] = $this->attributes[$attr_name];
 			if (count($this->attributes[$attr_name])!=0 && count($this->orig[$attr_name])!=0) {
 				// We have to check every single attribute
 				// Get attributes which should be added
-				$attributes = ldap_delete($this->orig[$attr_name], $this->attributes[$attr_name]);
+				$attributes = array_delete($this->orig[$attr_name], $this->attributes[$attr_name]);
 				// Encode as unicode
 				for ($i=0; $i<count($attributes); $i++) $attributes[$i] = utf8_encode ($attributes[$i]);
 				if (count($attributes)!=0) $return[$this->base['dn']]['add'][$attr_name] = $attributes;
 				// Get attributes which should be removed
-				$attributes = ldap_delete($this->attributes[$attr_name], $this->orig[$attr_name]);
+				$attributes = array_delete($this->attributes[$attr_name], $this->orig[$attr_name]);
 				// Encode as unicode
 				for ($i=0; $i<count($attributes); $i++) $attributes[$i] = utf8_encode ($attributes[$i]);
 				if (count($attributes)!=0) $return[$this->base['dn']]['remove'][$attr_name] = $attributes;
@@ -373,6 +372,7 @@ class inetOrgPerson {
 					}
 				}
 			}
+		return $return;
 		}
 
 	/* This function returns all ldap attributes

@@ -33,14 +33,9 @@ $Id$
 * dn_orig: old DN if account was loaded with uid= or cn=
 
 * External functions which are used
-* account.inc: findgroups, incache, getcache, array_delete, getshells
+* account.inc: findgroups, incache, get_cache, array_delete, getshells
 * ldap.inc: pwd_is_enabled, pwd_hash
 */
-
-// *** fixme, start session if not yet done
-// *** fixme set language if not yet done
-include_once('../ldap.inc');
-include_once('../account.inc');
 
 /* This class contains all posixAccount LDAP attributes
 * and funtioncs required to deal with posixAccount
@@ -59,112 +54,130 @@ include_once('../account.inc');
 */
 class posixAccount {
 	// Constructor
-	function posixAccount(&$basearray=false) {
+	function posixAccount(&$baseobject) {
 		/* Return an error if posixAccount should be created without
 		* base container
 		*/
-		if (!$basearray) die _('Please create a new object with $array[] = new posixAccount($array);');
-		// Check if $basearray is an array
-		if (!is_array($basearray)) die _('Please create a new object with $array[] = new posixAccount($array);');
+		if (!$baseobject) trigger_error(_('Please create a base object with $var = new accountContainer();'), E_USER_ERROR);
+		// Check if $baseobject is an array
+		if (!is_object($baseobject)) trigger_error(_('Please create a new module object with $accountContainer->add_objectClass(\'posixAccount\');'), E_USER_ERROR);
 		// posixAccount is only a valid objectClass for user and host
-		if !($basearray['type'] == 'host' || $basearray['type'] == 'user') die _('posixAccount can only be used for users and hosts.');
+		if (!($baseobject->get_type() == 'user' || $baseobject->get_type() != 'host')) trigger_error(_('posixAccount can only be used for users or hosts.'), E_USER_WARNING);
 		/* Create a reference to basearray so we can read all other modules
 		* php will avaois recousrion itself
 		*/
-		$this->base = &$basearray;
+		$this->base = &$baseobject;
 		/* Check if ldap conatiner is in array and set type
 		* users are using inetOrgPerson-, hosts account-container
 		*/
-		foreach ($basearray as $singleobject) {
-			if (is_a($singleobject, 'account') && $basearray['type'] == 'host') $found = true;
-			if (is_a($singleobject, 'inetOrgPerson') && $basearray['type'] == 'user') $found = true;
+		if (!isset($this->base->module['inetOrgPerson']) && $this->base->type=='user') $this->base->add_objectClass('inetOrgPerson');
+		if (!isset($this->base->module['account']) && $this->base->type=='host') $this->base->add_objectClass('account');
+		// Add account type to object
+		$line=-1;
+		for ($i=0; $i<count($this->base->ldap->objectClasses) || $i==-1; $i++) {
+			if (strpos($this->base->ldap->objectClasses[$i], "NAME 'posixAccount'")) $line = $i;
 			}
-		// Add needed objectClasses if not yet in array
-		if (!$found) {
-			if ($basearray['type']=='user') {
-				if (class_exists('inetOrgPerson')) $basearray[] = new inetOrgPerson($basearray);
-					else die _('Objectclass inetOrgPerson not found.');
-				}
-			if ($basearray['type']=='host') {
-				if (class_exists('account')) $basearray[] = new account($basearray);
-					else die _('Objectclass account not found.');
+		// Return error if objectClass isn't found
+		if ($line==-1) trigger_error (sprintf(_("ObjectClass %s required but not defined in ldap."), 'posixAccount'), E_USER_WARNING);
+		// Add Array with all attributes and type
+		$baseobject->add_attributes ('posixAccount');
+		// create array with must-attributes
+		// Get startposition in string
+		if (strpos($this->base->ldap->objectClasses[$line],  'MUST (')) {
+			$string_withtail = substr($this->base->ldap->objectClasses[$line], strpos($this->base->ldap->objectClasses[$line],  'MUST (')+6);
+			// Now we have a string with all must-attributes
+			$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
+			$string = trim($string);
+			// Ad must
+			foreach (explode(" $ ", $string) as $attribute) {
+				$this->attributes[$attribute] = '';
 				}
 			}
+		// create array with may-attributes
+		// Get startposition in string
+		if (strpos($this->base->ldap->objectClasses[$line],  'MAY (')) {
+			$string_withtail = substr($this->base->ldap->objectClasses[$line], strpos($this->base->ldap->objectClasses[$line],  'MAY (')+5);
+			// Now we have a string with all must-attributes
+			$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
+			$string = trim($string);
+			// Ad may
+			foreach (explode(" $ ", $string) as $attribute) {
+				$this->attributes[$attribute] = '';
+				}
+			}
+		// Get attributes of subclasses
+		while (strpos($this->base->ldap->objectClasses[$line], "SUP ")) {
+			$string_withtail = substr($this->base->ldap->objectClasses[$line], strpos($this->base->ldap->objectClasses[$line],  'SUP ')+4);
+			$subclass = substr($string_withtail, 0, strpos($string_withtail, ' '));
+			// Add account type to object
+			for ($i=0; $i<count($this->base->ldap->objectClasses) || $i==-1; $i++) {
+				if (strpos($this->base->ldap->objectClasses[$i], "NAME '$subclass'")) $line = $i;
+				}
+			// Return error if objectClass isn't found
+			// *** fixme, fix error message
+			if ($line==-1) trigger_error (_("objectClass objectClass required but not defined in ldap."), E_USER_WARNING);
+
+			// create array with must-attributes
+			// Get startposition in string
+			if (strpos($this->base->ldap->objectClasses[$line],  'MUST (')) {
+				$string_withtail = substr($this->base->ldap->objectClasses[$line], strpos($this->base->ldap->objectClasses[$line],  'MUST (')+6);
+				// Now we have a string with all must-attributes
+				$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
+				$string = trim($string);
+				// Ad must
+				foreach (explode(" $ ", $string) as $attribute) {
+					$this->attributes[$attribute] = '';
+					}
+				}
+			// create array with may-attributes
+			// Get startposition in string
+			if (strpos($this->base->ldap->objectClasses[$line],  'MAY (')) {
+				$string_withtail = substr($this->base->ldap->objectClasses[$line], strpos($this->base->ldap->objectClasses[$line],  'MAY (')+5);
+				// Now we have a string with all must-attributes
+				$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
+				$string = trim($string);
+				// Ad may
+				foreach (explode(" $ ", $string) as $attribute) {
+					$this->attributes[$attribute] = '';
+					}
+				}
+			}
+		$this->alias = _('posixAccount');
+		// Add attributes which should be cached
+		$_SESSION['cache']->add_cache(array ('user' => array('cn', 'uid', 'uidNumber'), 'host' => array('cn', 'uid', 'uidNumber'), 'group' => array('cn', 'memberUid')));
 		/* Check if at least one group does exist in ldap
 		*/
 		$groups = findgroups(); // list of all groupnames
-		if (count($groups)==0) die _('Please create a group first.');
-		/* This array contains all attributes which have to be cached for performance
-		* reasons.
-		*/
-		$_SESSION['cacheAttributes'] = array_merge ($_SESSION['cacheAttributes'], array ('user' => array('cn', 'uid', 'uidNumber'), 'host' => array('cn', 'uid', 'uidNumber') )  );
-		// unique array
-		$_SESSION['cacheAttributes'] = array_unique ($_SESSION['cacheAttributes']);
-		// Array with all attributes and type
-		$basearray['attributes'] = array_merge ($basearray['attributes'], array ( 0 => array('cn', 'string', 'must'), 1 => array('uid', 'string', 'must'), 2 => array('uidNumber', 'string', 'must'), 3 => array('gidNumber', 'string', 'must'),
-			4 => array('homeDirectory', 'string', 'must'), 5 => array('loginShell', 'string', 'may'), 6 => array('gecos', 'string', 'may'), 7 => array('description', 'string', 'may'),
-			8 => array('userPassword', 'function', 'may'), 9 => array('userPassword_no', 'boolean', 'may'), 10 => array('userPassword_lock', 'boolean', 'may') ));
-		// unique array
-		$basearray['attributes'] = array_unique($basearray['attributes']);
-		// Add account type to object
-		$orig = array(  'uid' => '', 'uidNumber' => '', 'gidNumber' => '', 'homeDirectory' => '', 'loginShell' => '', 'gecos' => '',
-			'description' => '', 'enc_userPassword' => '', 'groups' => array() );
-		$this->alias = _('posixAccount');
+		if (count($groups)==0) trigger_error(_('No groups found in ldap.'), E_USER_WARNING);
+
+		// Make references to attributes which already esists in ldap
+		$newattributes = array_keys($this->attributes);
+		$module = array_keys($this->base->module);
+		// fixme *** do we have to unset module posixAccuont itself
+		for ($i=0; $i<count($module); $i++) {
+			foreach ($newattributes as $attribute)
+				if (isset($this->base->module[$module[$i]]->attributes[$attribute])) $this->attributes[$attribute] = &$this->base->module[$module[$i]]->attributes[$attribute];
+			}
+		$this->orig = $this->attributes ;
 		}
 
 	// Variables
 	// Alias Name. This name is shown in the menu instead of posixAccount
 	var $alias;
-	// original name is userPassword. This variable is used to store the encrypted password
-	var $enc_userPassword;
 	// reference to base-array so we can read other classes in basearray
 	var $base;
-	// Use a unix password?
-	var $userPassword_no;
-	// Lock account?
-	var $userPassword_lock;
-	// Array with all groups the user should also be member of
-	var $groups;
-	// LDAP attributes
-	// These attributes have to be set in ldap
-	var $uid;
-	var $uidNumber;
-	var $gidNumber;
-	var $homeDirectory;
-	// These attributes doesn't have to be set in ldap
-	var $loginShell;
-	var $gecos;
-	var $description;
-	/* This function will return the unencrypted password when
-	* called without a variable
-	* If it's called with a new password, the
-	* new password will be stored encrypted
-	*/
-	function userPassword($newpassword='') {
-		// Read existing password if set
-		if ($newpassword='') {
-			if ($this->enc_userPassword != '') {
-				$iv = base64_decode($_COOKIE["IV"]);
-				$key = base64_decode($_COOKIE["Key"]);
-				$password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($this->enc_userPassword), MCRYPT_MODE_ECB, $iv);
-				$password = str_replace(chr(00), '', $password);
-				return $password;
-				}
-			else return '';
-			}
-		// Write new password
-		else {
-			$iv = base64_decode($_COOKIE["IV"]);
-			$key = base64_decode($_COOKIE["Key"]);
-			$this->enc_userPassword = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $newpassword, MCRYPT_MODE_ECB, $iv));
-			return 0;
-			}
-		}
 
+	// This variable contains all inetOrgPerson attributes
+	var $attributes;
 	/* If an account was loaded all attributes are kept in this array
 	* to compare it with new changed attributes
 	*/
 	var $orig;
+	/* These two variables keep an array of groups the
+	* user is also member of.
+	*/
+	var $groups;
+	var $groups_orig;
 
 	/* This function returns a list with all required modules
 	*/
@@ -179,75 +192,11 @@ class posixAccount {
 	*/
 	function proccess_attributes() {
 		// Load attributes
-		$this->uid = $_POST['form_posixAccount_uid'];
-		if ($this->base['type']=='user') $this->uid &= $this->base['inetOrgPerson']->cn;
-		if ($this->base['type']=='host') $this->uid &= $this->base['account']->cn;
-		$this->uidNumber = $_POST['form_posixAccount_uidNumber'];
-		$this->gidNumber = getgrnam($_POST['form_posixAccount_gidNumber']);
-		$this->homeDirectory = $_POST['form_posixAccount_homeDirectory'];
-		$this->loginShell = $_POST['form_posixAccount_loginShell'];
-		$this->gecos = $_POST['form_posixAccount_gecos'];
-		$this->description = $_POST['form_posixAccount_description'];
-		if ($_POST['form_posixAccount_userPassword_no']; $this->userPassword_no=true;
-			else $this->userPassword_no=false;
-		if ($_POST['form_posixAccount_userPassword_lock']; $this->userPassword_lock=true;
-			else $this->userPassword_lock=false;
-		if (isset($_POST['form_posixAccount_userPassword'])) {
-			if ($_POST['form_posixAccount_userPassword'] != $_POST['form_posixAccount_userPassword2']) {
-				$errors[] = array('ERROR', _('Password'), _('Please enter the same password in both password-fields.'));
-				unset ($_POST['form_posixAccount_userPassword2']);
-				}
-				else $this->userPassword($_POST['form_posixAccount_userPassword']);
-			}
-		if ($_POST['form_posixAccount_genpass']) $this->userPassword(genpasswd());
-
-		// Check if Username contains only valid characters
-		if ( !ereg('^([a-z]|[A-Z]|[0-9]|[.]|[-]|[_])*$', $this->uid))
-			$errors[] = array('ERROR', _('Username'), _('Username contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
-
-		// Create automatic useraccount with number if original user already exists
-		// Reset name to original name if new name is in use
-		// *** fixme make incache modularized. Incache will return the found attribute
-		// Set username back to original name if new username is in use
-		if (incache($this->uid,'uid', '*')!=$this->orig['uid'] && ($this->orig['uid']!='')) $this->uid = $this->orig['uid'];
-		// Change uid to a new uid until a free uid is found
-		while (incache($this->uid, 'uid', '*')) {
-			// Remove "$" at end of hostname if type is host
-			if ($this->base['type']=='host') $this->uid = substr($this->uid, 0, $this->uid-1);
-			// get last character of username
-			$lastchar = substr($this->uid, strlen($this->uid)-1, 1);
-			// Last character is no number
-			if ( !ereg('^([0-9])+$', $lastchar))
-				/* Last character is no number. Therefore we only have to
-				* add "2" to it.
-				*/
-				if ($this->base['type']=='host') $this->uid = $this->uid . '2$';
-				 else $this->uid = $this->uid . '2';
-			 else {
-				/* Last character is a number -> we have to increase the number until we've
-				* found a groupname with trailing number which is not in use.
-				*
-				* $i will show us were we have to split groupname so we get a part
-				* with the groupname and a part with the trailing number
-				*/
-			 	$i=strlen($this->uid)-1;
-				$mark = false;
-				// Set $i to the last character which is a number in $account_new->general_username
-			 	while (!$mark) {
-					if (ereg('^([0-9])+$',substr($this->uid, $i, strlen($this->uid)-$i))) $i--;
-						else $mark=true;
-					}
-				// increase last number with one
-				$firstchars = substr($this->uid, 0, $i+1);
-				$lastchars = substr($this->uid, $i+1, strlen($this->uid)-$i);
-				// Put username together
-				$this->uid = $firstchars . (intval($lastchars)+1);
-				// Add $ name if type is host
-				if ($this->base['type']=='host') $this->uid .= '$';
-				}
-			}
-		// Show warning if lam has changed username
-		if ($this->uid != $_POST['form_posixAccount_uid']) $errors[] = array('WARN', _('Username'), _('Username in use. Selected next free username.'));
+		$this->attributes['uidNumber'] = $_POST['form_posixAccount_uidNumber'];
+		$this->attributes['gidNumber'] = getgrnam($_POST['form_posixAccount_gidNumber']);
+		$this->attributes['homeDirectory'] = $_POST['form_posixAccount_homeDirectory'];
+		$this->attributes['loginShell'] = $_POST['form_posixAccount_loginShell'];
+		$this->attributes['gecos'] = $_POST['form_posixAccount_gecos'];
 
 		// Check if UID is valid. If none value was entered, the next useable value will be inserted
 		// load min and may uidNumber
@@ -259,12 +208,11 @@ class posixAccount {
 			$minID = intval($_SESSION['config']->get_minMachine());
 			$maxID = intval($_SESSION['config']->get_maxMachine());
 			}
-		// *** fixme create getcache function
-		$dn_uids = getcache('uidNumber', 'posixAccount', '*');
-		// getcache will return an array ( dn1 => array(uidnumber1), dn2 => array(uidnumber2), ... )
+		$dn_uids = $this->base->cache->get_cache('uidNumber', 'posixAccount', '*');
+		// get_cache will return an array ( dn1 => array(uidnumber1), dn2 => array(uidnumber2), ... )
 		foreach ($dn_uids as $uid) $uids[] = $uid[0];
 		if(is_array($uids)) sort ($uids, SORT_NUMERIC);
-		if ($this->uidNumber=='') {
+		if ($this->attributes['uidNumber']=='') {
 			// No id-number given
 			if ($this->orig['uidNumber']=='') {
 				// new account -> we have to find a free id-number
@@ -273,58 +221,50 @@ class posixAccount {
 					// Store highest id-number
 					$id = $uids[count($uids)-1];
 					// Return minimum allowed id-number if all found id-numbers are too low
-					if ($id < $minID) $this->uidNumber = $minID;
+					if ($id < $minID) $this->attributes['uidNumber'] = $minID;
 					// Return higesht used id-number + 1 if it's still in valid range
-					if ($id < $maxID) $this->uidNumber = $id+1;
+					if ($id < $maxID) $this->attributes['uidNumber'] = $id+1;
 					/* If this function is still running we have to fid a free id-number between
 					* the used id-numbers
 					*/
 					$i = intval($minID);
 					while (in_array($i, $uids)) $i++;
 					if ($i>$maxID)
-						$errors[] = array('ERROR', _('ID-Number'), _('No free ID-Number!')))));
+						$errors[] = array('ERROR', _('ID-Number'), _('No free ID-Number!'));
 						else {
-							$this->uidNumber = $i;
+							$this->attributes['uidNumber'] = $i;
 							$errors[] = array('WARN', _('ID-Number'), _('It is possible that this ID-number is reused. This can cause several problems because files with old permissions might still exist. To avoid this warning set maxUID to a higher value.'));
 							}
 					}
-				else $this->uidNumber = $minID;
+				else $this->attributes['uidNumber'] = $minID;
 				// return minimum allowed id-number if no id-numbers are found
 				}
-			else $this->uidNumber = $this->orig['uidNumber'];
+			else $this->attributes['uidNumber'] = $this->orig['uidNumber'];
 			// old account -> return id-number which has been used
 			}
 		else {
 			// Check manual ID
 			// id-number is out of valid range
-			if ( $this->uidNumber < $minID || $this->uidNumber > $maxID) $errors[] = array('ERROR', _('ID-Number'), sprintf(_('Please enter a value between %s and %s!'), $minID, $maxID));
+			if ( $this->attributes['uidNumber'] < $minID || $this->attributes['uidNumber'] > $maxID) $errors[] = array('ERROR', _('ID-Number'), sprintf(_('Please enter a value between %s and %s!'), $minID, $maxID));
 			// $uids is allways an array but not if no entries were found
 			if (is_array($uids)) {
 				// id-number is in use and account is a new account
-				if ((in_array($this->uidNumber, $uids)) && $this->orig['uidNumber']=='') $errors[] = array('ERROR', _('ID-Number'), _('ID is already in use'));
+				if ((in_array($this->attributes['uidNumber'], $uids)) && $this->orig['uidNumber']=='') $errors[] = array('ERROR', _('ID-Number'), _('ID is already in use'));
 				// id-number is in use, account is existing account and id-number is not used by itself
-				if ((in_array($this->uidNumber, $uids)) && $this->orig['uidNumber']!='' && ($this->orig['uidNumber'] != $this->uidNumber) ) {
+				if ((in_array($this->attributes['uidNumber'], $uids)) && $this->orig['uidNumber']!='' && ($this->orig['uidNumber'] != $this->attributes['uidNumber']) ) {
 					$errors[] = array('ERROR', _('ID-Number'), _('ID is already in use'));
-					$this->uidNumber = $this->orig['uidNumber'];
+					$this->attributes['uidNumber'] = $this->orig['uidNumber'];
 					}
 				}
 			}
 
 		// Check if Homedir is valid
-		$this->homeDirectory = str_replace('$group', getgrnam($this->gidNumber), $this->homeDirectory);
-		if ($this->uid != '')
-			$this->homeDirectory = str_replace('$user', $this->uid, $this->homeDirectory);
-		if ($this->homeDirectory != $_POST['form_posixAccount_homeDirectory']) $errors[] = array('INFO', _('Home directory'), _('Replaced $user or $group in homedir.'));
-		if ( !ereg('^[/]([a-z]|[A-Z])([a-z]|[A-Z]|[0-9]|[.]|[-]|[_])*([/]([a-z]|[A-Z])([a-z]|[A-Z]|[0-9]|[.]|[-]|[_])*)*$', $this->homeDirectory ))
+		$this->attributes['homeDirectory'] = str_replace('$group', getgrnam($this->attributes['gidNumber']), $this->attributes['homeDirectory']);
+		if ($this->attributes['uid'] != '')
+			$this->attributes['homeDirectory'] = str_replace('$user', $this->attributes['uid'], $this->attributes['homeDirectory']);
+		if ($this->attributes['homeDirectory'] != $_POST['form_posixAccount_homeDirectory']) $errors[] = array('INFO', _('Home directory'), _('Replaced $user or $group in homedir.'));
+		if ( !ereg('^[/]([a-z]|[A-Z])([a-z]|[A-Z]|[0-9]|[.]|[-]|[_])*([/]([a-z]|[A-Z])([a-z]|[A-Z]|[0-9]|[.]|[-]|[_])*)*$', $this->attributes['homeDirectory'] ))
 			$errors[] = array('ERROR', _('Home directory'), _('Homedirectory contains invalid characters.'));
-		// Check if Name-length is OK. minLength=3, maxLength=20
-		if ( !ereg('.{3,20}', $this->uid)) $errors[] = array('ERROR', _('Name'), _('Name must contain between 3 and 20 characters.'));
-		// Check if Name starts with letter
-		if ( !ereg('^([a-z]|[A-Z]).*$', $this->uid))
-			$errors[] = array('ERROR', _('Name'), _('Name contains invalid characters. First character must be a letter'));
-		// Check if password is OK
-		if (!ereg('^([a-z]|[A-Z]|[0-9]|[\|]|[\#]|[\*]|[\,]|[\.]|[\;]|[\:]|[\_]|[\-]|[\+]|[\!]|[\%]|[\&]|[\/]|[\?]|[\{]|[\[]|[\(]|[\)]|[\]]|[\}])*$', $this->userPassword()))
-			$errors[] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
 		// Return error-messages
 		if (is_array($errors)) return $errors;
 		// Go to additional group page when no error did ocour and button was pressed
@@ -338,7 +278,7 @@ class posixAccount {
 		do { // X-Or, only one if() can be true
 			if (isset($_POST['form_posixAccount_addgroups']) && isset($_POST['form_posixAccount_addgroups_button'])) { // Add groups to list
 				// Add new group
-				$this->groups = @array_merge($this->groups, $_POST['allgroups']);
+				$this->groups = @array_merge($this->groups, $_POST['form_posixAccount_addgroups']);
 				// remove doubles
 				$this->groups = @array_flip($this->groups);
 				array_unique($this->groups);
@@ -353,7 +293,7 @@ class posixAccount {
 				}
 			} while(0);
 		if (isset($_POST['form_posixAccount_addgroups_button']) || isset($_POST['form_posixAccount_removegroups_button'])) return 'group';
-		if ($_POST['form_posixAccount_toattributes'] return 'attributes';
+		if ($_POST['form_posixAccount_toattributes']) return 'attributes';
 		return 0;
 		}
 
@@ -363,41 +303,30 @@ class posixAccount {
 	*/
 	function load_attributes($attr) {
 		// Load attributes which are displayed
+		// unset count entries
+		unset ($attr['count']);
+		$attributes = array_keys($attr);
+		foreach ($attributes as $attribute) unset ($attr[$attribute]['count']);
+		// unset double entries
+		for ($i=0; $i<count($attr); $i++)
+			if (isset($attr[$i])) unset($attr[$i]);
+		foreach ($attributes as $attribute) {
+			if (isset($this->attributes[$attribute])) {
+				// decode as unicode
+				$this->attributes[$attribute] = $attr[$attribute];
+				for ($i=0; $i<count($this->attributes[$attribute]); $i++) $this->attributes[$attribute][$i] = utf8_decode ($this->attributes[$attribute][$i]);
+				}
+			}
 		// Values are kept as copy so we can compare old attributes with new attributes
-		$this->cn = $attr['cn'][0];
-		$this->orig['cn'] = $attr['cn'][0];
-		$this->uid = $attr['uid'][0];
-		$this->orig['uid'] = $attr['uid'][0];
-		$this->uidNumber = $attr['uidNumber'][0];
-		$this->orig['uidNumber'] = $attr['uidNumber'][0];
-		$this->gidNumber = $attr['gidNumber'][0];
-		$this->orig['gidNumber'] = $attr['gidNumber'][0];
-		$this->homeDirectory = $attr['homeDirectory'][0];
-		$this->orig['homeDirectory'] = $attr['homeDirectory'][0];
-		if (isset($attr['loginShell'][0])) {
-			$this->loginShell = $attr['loginShell'][0];
-			$this->orig['loginShell'] = $attr['loginShell'][0];
-			}
-		if (isset($attr['gecos'][0])) {
-			$this->gecos = $attr['gecos'][0];
-			$this->orig['gecos'] = $attr['gecos'][0];
-			}
-		if (isset($attr['description'][0])) {
-			$this->gecos = $attr['description'][0];
-			$this->orig['description'] = $attr['description'][0];
-			}
-		if (isset($attr['userPassword'][0])) {
-			$this->orig['enc_userPassword'] = $attr['userPassword'][0];
-			}
-		$this->userPassword_lock=!pwd_is_enabled($attr['userPassword'][0]);
+		$this->orig = $this->attributes;
 		// get all additional groupmemberships
-		$dn_groups = getcache('memberUid', 'posixGroup', 'group');
+		$dn_groups = $this->base->cache->get_cache('memberUid', 'posixGroup', 'group');
 		$DNs = array_keys($dn_groups);
 		foreach ($DNs as $DN) {
 			if (in_array($attr['uid'], $dn_groups[$DN]))
 				$this->groups[] = substr($DN, 3, strpos($DN, ',')-1);
 			}
-		$this->orig['groups'] = $this->groups;
+		$this->groups_orig = $this->groups;
 		return 0;
 		}
 
@@ -412,114 +341,81 @@ class posixAccount {
 	* modify are attributes which have to been modified in ldap entry
 	*/
 	function save_attributes() {
-		/* Exmaples
-		* Add new attribute
-		* if ($this->cn!='' && $this->orig['cn']=='') $return[$this->base['dn']]['add']['cn'] = $this->cn;
-		* Modify existing attribute
-		* if ($this->cn!='' && $this->orig['cn']!='') $return[$this->base['dn']]['modify']['cn'] = $this->cn;
-		* Remove existing attribute
-		* if ($this->cn=='' && $this->orig['cn']!='') $return[$this->base['dn']]['remove']['cn'] = $this->cn;
-		*/
-
 		// Get list off all attributes
 		$attributes = $this->orig;
-		// Remove attributes which are not as easy to set
-		unset ($attributes['enc_userPassword']);
-		unset ($attributes['groups']);
 		// Get list of all "easy" attributes
 		$attr_names = array_keys($attributes);
 		foreach ($attr_names as $attr_name) {
-			if ($this->$attr_name!='' && $this->orig[$attr_name]=='') $return[$this->base['dn']]['add'][$attr_name] = $this->cn;
-			if ($this->$attr_name!='' && $this->orig[$attr_name]!='') $return[$this->base['dn']]['modify'][$attr_name] = $this->cn;
-			if ($this->$attr_name=='' && $this->orig[$attr_name]!='') $return[$this->base['dn']]['remove'][$attr_name] = $this->cn;
+			if (count($this->attributes[$attr_name])!=0 && count($this->orig[$attr_name])==0) $return[$this->base['dn']]['add'][$attr_name] = $this->attributes[$attr_name];
+			if (count($this->attributes[$attr_name])!=0 && count($this->orig[$attr_name])!=0) {
+				// We have to check every single attribute
+				// Get attributes which should be added
+				$attributes = array_delete($this->orig[$attr_name], $this->attributes[$attr_name]);
+				// Encode as unicode
+				for ($i=0; $i<count($attributes); $i++) $attributes[$i] = utf8_encode ($attributes[$i]);
+				if (count($attributes)!=0) $return[$this->base['dn']]['add'][$attr_name] = $attributes;
+				// Get attributes which should be removed
+				$attributes = array_delete($this->attributes[$attr_name], $this->orig[$attr_name]);
+				// Encode as unicode
+				for ($i=0; $i<count($attributes); $i++) $attributes[$i] = utf8_encode ($attributes[$i]);
+				if (count($attributes)!=0) $return[$this->base['dn']]['remove'][$attr_name] = $attributes;
+				}
+			if (count($this->attributes[$attr_name])==0 && count($this->orig[$attr_name])!=0) $return[$this->base['dn']]['remove'][$attr_name] = $this->orig[$attr_name];
 			}
 
-		// Set unix password
-		if ($this->orig['enc_userPassword']=='') {
-			// New user or no old password set
-			if ($this->userPassword_no) $return[$this->base['dn']]['modify']['userPassword'] = pwd_hash ('', !$this->userPassword_lock);
-				else $return[$this->base['dn']]['modify']['userPassword'] = pwd_hash ($this->userPassword(), !$this->userPassword_lock);
+		// Remove primary group from additional groups
+		for ($i=0; $i<count($this->groups); $i++) {
+			if ($this->groups[$i]==getgrnam($this->attributes['gidNumber'])) unset($this->groups[$i]);
 			}
-		else {
-			if ($this->userPassword()!='' || $this->userPassword_no) {
-				// Write new password
-				if ($this->userPassword_no) $return[$this->base['dn']]['modify']['userPassword'] = pwd_hash ('', !$this->userPassword_lock);
-					else $return[$this->base['dn']]['modify']['userPassword'] = pwd_hash ($this->userPassword(), !$this->userPassword_lock);
-				}
-			else { // No new password but old password
-				// (un)lock password
-				if ($this->userPassword_lock == pwd_is_enabled($this->orig['enc_userPassword'])) {
-					// Split old password hash in {CRYPT} and password-hash
-					$i = 0;
-					while ($this->orig['enc_userPassword']{$i} != '}') $i++;
-					$passwd = substr($this->orig['enc_userPassword'], $i+1 );
-					$crypt = substr($this->orig['enc_userPassword'], 0, $i+1 );
-					// remove trailing ! from password hash
-					if ($passwd{0} == '!') $passwd = substr($passwd, 1);
-					// Write new password
-					if ($this->userPassword_lock) $return[$this->base['dn']]['modify']['userPassword'] = "$crypt!$passwd";
-					else $return[$this->base['dn']]['modify']['userPassword'] = "$crypt$passwd";
-					}
-				}
-			}
+
 		// Set additional group memberships
 		if (is_array($this->groups)) {
 			// There are some additional groups defined
-			if (is_array($this->orig['groups']) {
+			if (is_array($this->groups_orig)) {
 				//There are some old groups.
-				$add = array_delete($this->orig['groups'], $this->groups);
-				$remove = array_delete($this->groups, $this->orig['groups']);
-				$dn_cns = getcache('cn', 'posixGroup', 'group');
-				// getcache will return an array ( dn1 => array(cn1), dn2 => array(cn2), ... )
+				$add = array_delete($this->groups_orig, $this->groups);
+				$remove = array_delete($this->groups, $this->groups_orig);
+				$dn_cns = $this->base->cache->get_cache('cn', 'posixGroup', 'group');
+				// get_cache will return an array ( dn1 => array(cn1), dn2 => array(cn2), ... )
 				$DNs = array_keys($dn_cns);
 				foreach ($DNs as $DN) {
-					if (in_array($dn_cns[$DN], $add)) $return[$DN]]['add']['memberUid'] = $this->uid;
-					if (in_array($dn_cns[$DN], $remove)) $return[$DN]]['remove']['memberUid'] = $this->uid;
+					if (in_array($dn_cns[$DN], $add)) $return[$DN]['add']['memberUid'] = $this->attributes['uid'];
+					if (in_array($dn_cns[$DN], $remove)) $return[$DN]['remove']['memberUid'] = $this->attributes['uid'];
 					}
+				// primary group mut also be removed if it has changed after setting additional groups
+				if (in_array(getgrnam($this->attributes['gidNumber']), $this->groups_orig)) $return[$DN]['remove']['memberUid'] = $this->attributes['uid'];
 				}
 			else {
 				// Add user to every group
-				$dn_cns = getcache('cn', 'posixGroup', 'group');
-				// getcache will return an array ( dn1 => array(cn1), dn2 => array(cn2), ... )
+				$dn_cns = $this->base->cache->get_cache('cn', 'posixGroup', 'group');
+				// get_cache will return an array ( dn1 => array(cn1), dn2 => array(cn2), ... )
 				$DNs = array_keys($dn_cns);
 				foreach ($DNs as $DN) {
-					if (in_array($dn_cns[$DN], $this->groups)) $return[$DN]]['add']['memberUid'] = $this->uid;
+					if (in_array($dn_cns[$DN], $this->groups)) $return[$DN]['add']['memberUid'] = $this->attributes['uid'];
 					}
 				}
 			}
 		else {
-			if (is_array($this->orig['groups'])) {
+			if (is_array($this->groups_orig)) {
 				//There are some old groups which have to be removed
-				$dn_cns = getcache('cn', 'posixGroup', 'group');
-				// getcache will return an array ( dn1 => array(cn1), dn2 => array(cn2), ... )
+				$dn_cns = $this->base->cache->get_cache('cn', 'posixGroup', 'group');
+				// get_cache will return an array ( dn1 => array(cn1), dn2 => array(cn2), ... )
 				$DNs = array_keys($dn_cns);
 				foreach ($DNs as $DN) {
-					if (in_array($dn_cns[$DN], $this->orig['groups'])) $return[$DN]]['remove']['memberUid'] = $this->uid;
+					if (in_array($dn_cns[$DN], $this->orig['groups'])) $return[$DN]['remove']['memberUid'] = $this->attributes['uid'];
 					}
 				}
 			}
+		return $return;
 		}
+
 
 	/* This function returns all ldap attributes
 	* which are part of posixAccount and returns
 	* also their values.
 	*/
 	function get_attributes() {
-		if ($userPassword_no) $return['userPassword'] = '';
-			else $return['userPassword'] = $this->userPassword();
-		$return['cn'] = $this->cn;
-		$return['uid'] = $this->uid;
-		$return['uidNumber'] = $this->uidNumber;
-		$return['gidNumber'] = $this->gidNumber;
-		$return['homeDirectory'] = $this->homeDirectory;
-		$return['loginShell'] = $this->loginShell;
-		$return['gecos'] = $this->gecos;
-		$return['description'] = $this->description;
-		// Not really ldap attributes but return values may be required
-		$return['groups'] = $this->groups;
-		if ($userPassword_lock) $return['userPasswordLocked'] = true;
-			else $return['userPasswordLocked'] = false;
-		return $return;
+		return $this->attributes;
 		}
 
 	/* This function will create the html-page
@@ -531,13 +427,8 @@ class posixAccount {
 		$shelllist = getshells(); // list of all valid shells
 
 		echo "<table border=0 width=\"100%\">\n<tr>\n";
-		echo '<td>' . _('Username') . "*</td>\n";
-		echo "<td><input name=\"form_posixAccount_uid\" type=\"text\" size=\"20\" maxlength=\"20\" value=\"$this->uid\"></td>\n";
-		echo "<td><a href=\"../help.php?HelpNumber=400\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-		echo "</tr>\n";
-		echo "<tr>\n";
 		echo "<td>" . _('UID number') . "</td>\n";
-		echo "<td><input name=\"form_posixAccout_uidNumber\" type=\"text\" size=\"6\" maxlength=\"6\" value=\"$this->uidNumber\"></td>\n";
+		echo "<td><input name=\"form_posixAccout_uidNumber\" type=\"text\" size=\"6\" maxlength=\"6\" value=\"".$this->attributes['uidNumber']."\"></td>\n";
 		echo "<td><a href=\"../help.php?HelpNumber=401\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
 		echo "</tr>\n";
 		echo "<tr>\n";
@@ -545,7 +436,7 @@ class posixAccount {
 		echo "<td><select name=\"form_posixAccount_group\">";
 		// loop trough existing groups
 		foreach ($groups as $group)
-			if (getgrnam($this->gidNumber) == $group) echo "<option selected> $group </option>\n";
+			if (getgrnam($this->attributes['gidNumber']) == $group) echo "<option selected> $group </option>\n";
 				else echo "<option> $group </option>\n";
 		echo "</select></td>\n";
 		echo "<td><a href=\"../help.php?HelpNumber=406\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
@@ -558,18 +449,13 @@ class posixAccount {
 			echo "</tr>\n";
 			echo "<tr>\n";
 			echo "<td>" . _('Home directory') . "*</td>\n";
-			echo "<td><input name=\"form_posixAccount_homeDirectory\" type=\"text\" size=\"30\" maxlength=\"255\" value=\"$this->homeDirectory\"></td>\n";
+			echo "<td><input name=\"form_posixAccount_homeDirectory\" type=\"text\" size=\"30\" maxlength=\"255\" value=\"".$this->attributes['homeDirectory']."\"></td>\n";
 			echo "<td><a href=\"../help.php?HelpNumber=403\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
 			echo "</tr>\n";
 			}
 		echo "<tr>\n";
 		echo "<td>" . _('Gecos') . "</td>\n";
-		echo "<td><input name=\"form_posixAccount_gecos\" type=\"text\" size=\"30\" maxlength=\"255\" value=\"$this->gecos\"></td>\n";
-		echo "<td><a href=\"../help.php?HelpNumber=404\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-		echo "</tr>\n";
-		echo "<tr>\n";
-		echo "<td>" . _('Description') . "</td>\n";
-		echo "<td><input name=\"form_posixAccount_description\" type=\"text\" size=\"30\" maxlength=\"255\" value=\"$this->description\"></td>\n";
+		echo "<td><input name=\"form_posixAccount_gecos\" type=\"text\" size=\"30\" maxlength=\"255\" value=\"".$this->attributes['gecos']."\"></td>\n";
 		echo "<td><a href=\"../help.php?HelpNumber=404\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
 		echo "</tr>\n";
 		if ($this->base['type']=='user') {
@@ -579,32 +465,12 @@ class posixAccount {
 				echo "<td><select name=\"form_posixAccount_loginShell\">";
 				// loop through shells
 				foreach ($shelllist as $shell)
-					if ($this->loginShell==trim($shell)) echo "<option selected> $shell </option>\n";
+					if ($this->attributes['loginShell']==trim($shell)) echo "<option selected> $shell </option>\n";
 							else echo "<option> $shell </option>\n";
 				echo "</select></td>\n";
 				echo "<td><a href=\"../help.php?HelpNumber=405\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
 				echo "</tr>\n";
 				}
-			echo "<tr>\n";
-			echo "<td>" . _('Password') . "</td>\n";
-			echo "<td><input name=\"form_posixAccount_userPassword\" type=\"password\" size=\"20\" maxlength=\"20\" value=\"$this->userPassword()\"></td>\n";
-			echo "<td><input name=\"form_posixAccount_genpass\" type=\"submit\" value=\"" . _('Generate password') . "\"></td>\n";
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td>" . _('Repeat password') . "</td>\n";
-			echo "<td><input name=\"form_posixAccount_userPassword2\" type=\"password\" size=\"20\" maxlength=\"20\" value=\"";
-				if (isset($_POST['form_posixAccount_userPassword2'])) echo $_POST['form_posixAccount_userPassword2'];
-				else echo $this->userPassword();
-			echo "\"></td>\n";
-			echo "<td></td>\n";
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td>" . _('Use no password') . "</td>\n";
-			echo "<td><input name=\"form_posixAccount_userPassword_no\" type=\"checkbox\"";
-				if ($this->userPassword_no) echo " checked ";
-				echo "></td>\n";
-			echo "<td><a href=\"../help.php?HelpNumber=426\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-			echo "</tr>\n";
 			}
 		echo "</table>\n";
 		return 0;
@@ -612,16 +478,15 @@ class posixAccount {
 
 	function display_html_group() {
 		// load list with all groups
-		$dn_groups = getcache('uidNumber', 'posixGroup', 'group');
+		$dn_groups = $this->base->cache->get_cache('uidNumber', 'posixGroup', 'group');
 		foreach ($dn_groups as $group) $groups[] = $group[0];
 		// sort groups
 		sort($groups, SORT_STRING);
 		// remove groups the user is member of from grouplist
 		$groups = array_delete($this->groups, $groups);
-		// *** fixme primary group mut also be removed if it has changed after setting additional groups
 		// Remove primary group from grouplist
 		$groups = array_flip($groups);
-		if (isset($groups[getgrnam($this->gidNumber)])) unset ($groups[getgrnam($this->gidNumber)]);
+		if (isset($groups[getgrnam($this->attributes['gidNumber'])])) unset ($groups[getgrnam($this->attributes['gidNumber'])]);
 		$groups = array_flip($groups);
 
 		echo "<table border=0 width=\"100%\">\n<tr>\n";

@@ -202,6 +202,100 @@ class cache {
 
 	}
 
+/* Main-Module. Contains basic module functions have to be loaded first
+* It also chooses which page to show.
+*/
+class main {
+	// This variable stores the number of the current displayed page
+	var $current_page;
+	// This variable os set to the pagename of a subpage if it should be displayed
+	var $subpage;
+	// reference to base-array so we can read other classes in basearray
+	var $base;
+	// Localized part of HTML-Header
+	var $header;
+
+	function main() {
+		$this->current_page = 0;
+		$this->subpage = '';
+		/* Create a reference to basearray so we can read all other modules
+		* php will avaois recousrion itself
+		*/
+		$this->base = &$baseobject;
+		$this->header = &$_SESSION['header'];
+		}
+
+	/* This function returns a list with all required modules
+	*/
+	function dependencies() {
+		return array();
+		}
+
+	/* This function will process transmitted data
+	* and decides which page show next.
+	*/
+	function main_continue() {
+		// Which data should be processed?
+		if ($this->subpage=='') $this->subpage='attributes';
+		$function = '$result = $this->base->module[$this->base->order[$this->current_page]]->process_'.$this->subpage.'($_POST);';
+		eval ($function);
+		if (is_string($return)) $this->subpage = $return;
+		if (is_int($return)) {
+			for ($i=0; $i<count($this->base->order); $i++ ) {
+				if ($_POST['form_main_'.$this->base->order[$i]]) $this->current_page = $i;
+				}
+			$this->subpage='attributes';
+			}
+
+		// Write HTML-Code
+		echo $this->header;
+		echo "<title>";
+		echo _("Create new Account");
+		echo "</title>\n";
+		echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
+		echo "</head><body>\n";
+		echo "<form action=\"useredit.php\" method=\"post\">\n";
+		// Display errir-messages
+		if (is_array($result))
+			for ($i=0; $i<sizeof($result); $i++) StatusMessage($result[$i][0], $result[$i][1], $result[$i][2]);
+
+		// Create left module-menu
+		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
+		echo "<table><tr>";
+		echo "<td><fieldset class=\"useredit-dark\"><legend class=\"useredit-bright\"><b>";
+			echo _('Please select page:');
+			echo "</b></legend>\n";
+		// Loop for module
+		for ($i=0; $i<count($this->base->order); $i++ ) {
+			if ($this->base->order[$i]==$this->base->order[$this->current_page]) {
+				// print disabled button
+				echo "<input name=\"form_main_".$this->base->order[$i]."\" type=\"submit\" value=\"";
+				echo $this->base->module[$this->base->order[$i]]->alias;
+				echo " disabled\">\n<br>";
+				}
+			else {
+				// print normal button
+				echo "<input name=\"form_main_".$this->base->order[$i]."\" type=\"submit\" value=\"";
+				echo $this->base->module[$this->base->order[$i]]->alias;
+				echo "\">\n<br>";
+				}
+			}
+		// *** Fixme add reset-button
+		echo "</fieldset></td></tr>\n";
+		echo "</table></td>\n<td>";
+		// display html-code from mdule
+		$function = '$result = $this->base->module[$this->base->order[$this->current_page]]->display_html_'.$this->subpage.'($_POST);';
+		eval ($function);
+		// Display rest of html-page
+		echo "</td></tr></table>\n";
+		echo "</form>\n";
+		echo "</body>\n";
+		echo "</html>\n";
+		}
+
+
+
+	}
 
 
 class accountContainer {
@@ -218,6 +312,8 @@ class accountContainer {
 		$this->type = $type;
 		$this->lampath = &$_SESSION['lampath'];
 		$this->ldap = &$_SESSION['ldap'];
+		$this->cache = &$_SESSION['cache'];
+		$this->module['main'] = new main($this);
 		return 0;
 		}
 
@@ -232,12 +328,25 @@ class accountContainer {
 	var $lampath; // reference to lampath from Session
 	var $ldap; // This is a reference to the ldap class in session
 	var $module; // This is an array with all module objects
+	// DN of the account
+	var $dn;
+	var $dn_orig;
+	// this are stores the module order
+	var $order;
 
 	/* Get the type of account. Valid
 	* types are: user, group, host
 	*/
 	function get_type() {
 		return $this->type;
+		}
+
+	/* This function asks $this->module['main']
+	* what to do next
+	*/
+	function continue_main() {
+		$this->module['main']->main_continue();
+		return 0;
 		}
 
 	/* Add attributes to variable. Syntax is array( attribute = array ( objectClass1 => MUST|MAX, objectClass2 => MUST|MAY ), ... )
@@ -351,12 +460,86 @@ class accountContainer {
 		if ($line==-1) trigger_error (_("objectClass $objectClass required but not defined in ldap."), E_USER_WARNING);
 		else {
 			// Add module if it exists
-			if (filetype($this->lampath."/lib/modules/".$objectClass.".inc") == 'file') {
+			if (file_exists($this->lampath."/lib/modules/".$objectClass.".inc") == 'file') {
 				include_once ($this->lampath."/lib/modules/".$objectClass.".inc");
 				$this->module[$objectClass] = new $objectClass($this);
 				}
+			else trigger_error (_("objectClass $objectClass required but no module found."), E_USER_WARNING);
 			}
 		return 0;
+		}
+
+	/* This function will load an account.
+	* $dn is the dn of the account which should be loaded
+	*/
+	function load_account($dn) {
+		$search = substr($dn, 0, strpos($dn, ','));
+		$result = ldap_search($this->ldap->server(), $dn, $search);
+		$entry = ldap_first_entry($this->ldap->server(), $result);
+		$this->dn = substr($dn, strpos($dn, ',')+1);
+		$this->dn_orig = $dn;
+		$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
+		if (isset($attr['objectClass']['count'])) unset($attr['objectClass']['count']);
+		// Add objects
+		foreach ($attr['objectClass'] as $objectClass) $this->add_objectClass($objectClass);
+		// load attributes
+		foreach ($attr['objectClass'] as $objectClass) if (isset($this->module[$objectClass])) $this->module[$objectClass]->load_attributes($attr);
+		// sortm modules and make all active because all required attributes should be set
+		$module = array_keys ($this->module);
+		$modulelist = array();
+		// *** fixme add modules from config which should be used but not yet in loaded account
+
+		// loop until all modules are in order.
+		// We don't want to loop forever
+		$remain = count($module) * count($module);
+		while ( (count($module) != count($modulelist)) && ($remain!=0) ) {
+			$remain--;
+			foreach ($module as $moduleitem) {
+				$required = $this->module[$moduleitem]->dependencies;
+				$everything_found = true;
+				if (is_array($required))
+					foreach ($required as $requireditem)
+						if (!in_array($reuquireditem, $modulelist)) $everthing_found = false;
+				if ($everything_found) $modulelist[] = $moduleitem;
+				}
+			}
+		// Write Module-Order in variable
+		$this->order = $modulelist;
+		return 0;
+		}
+
+	/* This function will prepare the object
+	* for a new account
+	*/
+	function new_account() {
+		$modulelist = array();
+		// *** fixme add modules from config which should be used but not yet in loaded account
+		$module = array_keys ($this->module);
+
+		// loop until all modules are in order.
+		// We don't want to loop forever
+		$remain = count($module) * count($module);
+		while ( (count($module) != count($modulelist)) && ($remain!=0) ) {
+			$remain--;
+			foreach ($module as $moduleitem) {
+				$required = $this->module[$moduleitem]->dependencies;
+				$everything_found = true;
+				if (is_array($required))
+					foreach ($required as $requireditem)
+						if (!in_array($reuquireditem, $modulelist)) $everthing_found = false;
+				if ($everything_found) $modulelist[] = $moduleitem;
+				}
+			}
+		// Write Module-Order in variable
+		$this->order = $modulelist;
+		return 0;
+		}
+
+	/* This function will load an account.
+	* $dn is the dn of the account which should be loaded
+	*/
+	function save_account() {
+
 		}
 
 	}
