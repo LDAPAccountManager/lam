@@ -225,8 +225,8 @@ function createUserPDF($accounts) {
 		$pdfFile->setFont("times","B",10);
 		$pdfFile->Cell(50,5,_("Windows Domain") . ":",0,0,"R",0);
 		$pdfFile->setFont("times","",10);
-		if($_SESSION['config']->get_samba3() == "yes") $pdfFile->Cell(50,5,$account->smb_domain->name,0,1,"L",0);
-		else $pdfFile->Cell(50,5,$account->smb_domain,0,1,"L",0);
+//		if($_SESSION['config']->get_samba3() == "yes") $pdfFile->Cell(50,5,$account->smb_domain->name,0,1,"L",0);
+//		else $pdfFile->Cell(50,5,$account->smb_domain,0,1,"L",0);
 // Print Quota settings
 		$pdfFile->Ln(9);
 		$pdfFile->setFont("arial","B",12);
