@@ -1,35 +1,34 @@
-# $Id: messages.po,v 1.24 2003/12/12 15:43:03 gruberroland Exp $
+# $Id: messages.po,v 1.25 2003/12/12 18:49:00 gruberroland Exp $
 #
 #
 # LDAP Account Manager
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: LAM 0.3\n"
+"Project-Id-Version: LAM 0.4.1\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de \n"
-"POT-Creation-Date: 2003-07-29 19:45+0200\n"
-"PO-Revision-Date: 2003-07-29 19:45+0200\n"
-"Last-Translator: Roland Gruber <mail@rolandgruber.de>\n"
+"POT-Creation-Date: 2003-12-28 12:18+0200\n"
+"PO-Revision-Date: 2003-12-28 12:18+0200\n"
+"Last-Translator: Roland Gruber <post@rolandgruber.de>\n"
 "Language-Team: German <lam-public@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-15\n"
 "Content-Transfer-Encoding: 8-bit\n"
 
-#: ../lib/account.inc:1059 ../lib/account.inc:1064
+#: ../lib/account.inc:1595 ../lib/account.inc:1600
 #, php-format
 msgid "%s already exists!"
 msgstr "%s besteht schon!"
 
-#: ../templates/config/confmain.php:371
-#: ../templates/profedit/profilegroup.php:153
+#: ../templates/config/confmain.php:371 ../templates/ou_edit.php:95
+#: ../templates/ou_edit.php:160 ../templates/ou_edit.php:225
+#: ../templates/ou_edit.php:290 ../templates/profedit/profilegroup.php:153
 #: ../templates/profedit/profiledelete.php:98
 #: ../templates/profedit/profiledelete.php:110
 #: ../templates/profedit/profiledelete.php:122
 #: ../templates/profedit/profilehost.php:122
 #: ../templates/profedit/profileuser.php:430
-#: ../templates/profedit/profilemain.php:262 ../templates/ou_edit.php:95
-#: ../templates/ou_edit.php:160 ../templates/ou_edit.php:225
-#: ../templates/ou_edit.php:290
+#: ../templates/profedit/profilemain.php:262
 msgid "Abort"
 msgstr "Abbrechen"
 
@@ -51,7 +50,7 @@ msgstr "Account läuft ab am"
 msgid "Account is deactivated"
 msgstr "Account deaktiviert"
 
-#: ../lib/account.inc:217
+#: ../lib/account.inc:302
 msgid "Account type not recognized."
 msgstr "Accounttyp wurde nicht erkannt."
 
@@ -101,21 +100,21 @@ msgstr "Erlaubte PCs"
 msgid "Allowed workstations"
 msgstr "Erlaubte PCs"
 
-#: ../templates/lists/listusers.php:354 ../templates/massdetail.php:282
+#: ../templates/massdetail.php:282 ../templates/lists/listusers.php:354
 msgid "Apply"
 msgstr "Ok"
 
-#: ../lib/account.inc:214
+#: ../lib/account.inc:298 ../lib/account.inc:299
 msgid "Argument of accountContainer must be string."
 msgstr "Argument für accountContainer muss vom Typ String sein."
 
-#: ../lib/account.inc:48 ../lib/account.inc:50 ../lib/account.inc:52
+#: ../lib/account.inc:49 ../lib/account.inc:51 ../lib/account.inc:53
 msgid ""
 "Argument of add_cache must be : array ( scope => array(attribute1(string), "
 "attribute2(string), ..), scope => ... )."
 msgstr ""
 
-#: ../lib/account.inc:128
+#: ../lib/account.inc:105 ../lib/account.inc:164
 msgid "Attribute not defined in LDAP."
 msgstr "Attribut wird von LDAP nicht unterstützt."
 
@@ -143,8 +142,8 @@ msgstr "Verfügbare Benutzer"
 msgid "Available workstations"
 msgstr "Verfügbare PCs"
 
-#: ../templates/account/useredit.php:839 ../templates/account/useredit.php:912
-#: ../templates/masscreate.php:338
+#: ../templates/masscreate.php:338 ../templates/account/useredit.php:839
+#: ../templates/account/useredit.php:912
 msgid "Back"
 msgstr "Zurück"
 
@@ -205,13 +204,13 @@ msgstr "Zurück zum Profileditor"
 msgid "Back to domain list"
 msgstr "Zurück zur Domänenliste"
 
-#: ../templates/lists/userlink.php:55 ../templates/account/groupedit.php:857
 #: ../templates/delete.php:212 ../templates/delete.php:248
+#: ../templates/lists/userlink.php:55 ../templates/account/groupedit.php:857
 msgid "Back to group list"
 msgstr "Zurück zur Gruppenliste"
 
-#: ../templates/account/hostedit.php:475 ../templates/delete.php:215
-#: ../templates/delete.php:240
+#: ../templates/delete.php:215 ../templates/delete.php:240
+#: ../templates/account/hostedit.php:475
 msgid "Back to host list"
 msgstr "Zurück zur Hostliste"
 
@@ -238,8 +237,8 @@ msgstr "Zurück zu den Einstellungen"
 msgid "Back to profile login"
 msgstr "Zurück zum Konfigurationslogin"
 
-#: ../templates/account/useredit.php:1590 ../templates/delete.php:209
-#: ../templates/delete.php:232
+#: ../templates/delete.php:209 ../templates/delete.php:232
+#: ../templates/account/useredit.php:1590
 msgid "Back to user list"
 msgstr "Zurück zur Benutzerliste"
 
@@ -426,10 +425,10 @@ msgstr "Konnte folgenden Benutzer nicht löschen:"
 msgid "Could not rename file!"
 msgstr "Konnte Datei nicht umbenennen!"
 
+#: ../templates/masscreate.php:341 ../templates/initsuff.php:192
 #: ../templates/account/groupedit.php:822
 #: ../templates/account/hostedit.php:443
-#: ../templates/account/useredit.php:1565 ../templates/masscreate.php:341
-#: ../templates/initsuff.php:192
+#: ../templates/account/useredit.php:1565
 msgid "Create"
 msgstr "Erstellen"
 
@@ -439,9 +438,9 @@ msgstr "Erstellen"
 msgid "Create Account"
 msgstr "Account erstellen"
 
-#: ../templates/account/groupedit.php:855
+#: ../templates/masscreate.php:273 ../templates/account/groupedit.php:855
 #: ../templates/account/hostedit.php:473
-#: ../templates/account/useredit.php:1588 ../templates/masscreate.php:273
+#: ../templates/account/useredit.php:1588
 msgid "Create PDF file"
 msgstr "PDF-Datei erstellen"
 
@@ -495,7 +494,7 @@ msgstr "Weiteren Benutzer anlegen"
 
 #: ../templates/account/groupedit.php:450 ../templates/account/hostedit.php:91
 #: ../templates/account/hostedit.php:311 ../templates/account/useredit.php:100
-#: ../templates/account/useredit.php:746
+#: ../templates/account/useredit.php:746 ../lib/account.inc:360
 msgid "Create new Account"
 msgstr "Neuen Account anlegen"
 
@@ -623,7 +622,7 @@ msgstr "Organizational Unit löschen"
 msgid "Delete profile"
 msgstr "Lösche Profil"
 
-#: ../templates/lists/listusers.php:363 ../templates/delete.php:77
+#: ../templates/delete.php:77 ../templates/lists/listusers.php:363
 msgid "Delete user(s)"
 msgstr "Lösche Benutzer"
 
@@ -754,8 +753,8 @@ msgstr "Domäneneinstellungen"
 msgid "Domain Users"
 msgstr "Domänenbenutzer"
 
-#: ../templates/lists/listdomains.php:83 ../templates/account/hostedit.php:212
-#: ../templates/account/useredit.php:454 ../templates/domain.php:77
+#: ../templates/lists/listdomains.php:83 ../templates/domain.php:77
+#: ../templates/account/hostedit.php:212 ../templates/account/useredit.php:454
 #: ../help/help.inc:291
 msgid "Domain name"
 msgstr "Domänenname"
@@ -820,10 +819,10 @@ msgstr "Gruppen ändern"
 msgid "Edit workstations"
 msgstr "Arbeitsstationen ändern"
 
+#: ../templates/masscreate.php:386 ../templates/masscreate.php:586
+#: ../templates/massdetail.php:149 ../templates/massdetail.php:234
 #: ../templates/account/useredit.php:501
-#: ../templates/account/useredit.php:1482 ../templates/masscreate.php:386
-#: ../templates/masscreate.php:586 ../templates/massdetail.php:149
-#: ../templates/massdetail.php:234 ../help/help.inc:248
+#: ../templates/account/useredit.php:1482 ../help/help.inc:248
 msgid "Employee type"
 msgstr "Angestelltentyp"
 
@@ -871,10 +870,11 @@ msgstr "Konnte Domäne nicht erstellen!"
 msgid "Failed to create entry!"
 msgstr "Konnte Eintrag nicht erstellen!"
 
+#: ../templates/masscreate.php:378 ../templates/masscreate.php:581
+#: ../templates/massdetail.php:161 ../templates/massdetail.php:270
 #: ../templates/account/useredit.php:496
-#: ../templates/account/useredit.php:1518 ../templates/masscreate.php:378
-#: ../templates/masscreate.php:581 ../templates/massdetail.php:161
-#: ../templates/massdetail.php:270 ../help/help.inc:260 ../help/help.inc:261
+#: ../templates/account/useredit.php:1518 ../help/help.inc:260
+#: ../help/help.inc:261
 msgid "Fax number"
 msgstr "Faxnummer"
 
@@ -933,11 +933,10 @@ msgstr ""
 "GID-Nummer hat sich geändert. Sie müssen folgenden Befehl als root "
 "ausführen, um die Dateirechte zu ändern:"
 
-#: ../templates/account/groupedit.php:170
+#: ../templates/masscreate.php:566 ../templates/account/groupedit.php:170
 #: ../templates/account/hostedit.php:186 ../templates/account/hostedit.php:386
 #: ../templates/account/useredit.php:240 ../templates/account/useredit.php:991
-#: ../templates/masscreate.php:566 ../help/help.inc:150 ../help/help.inc:161
-#: ../help/help.inc:170
+#: ../help/help.inc:150 ../help/help.inc:161 ../help/help.inc:170
 msgid "Gecos"
 msgstr "Beschreibung"
 
@@ -965,15 +964,15 @@ msgstr "Allgemeine Eigenschaften"
 msgid "Generate password"
 msgstr "Passwort generieren"
 
-#: ../templates/account/useredit.php:235 ../templates/masscreate.php:294
-#: ../templates/masscreate.php:364 ../templates/masscreate.php:561
-#: ../templates/massdetail.php:91 ../templates/massdetail.php:216
+#: ../templates/masscreate.php:294 ../templates/masscreate.php:364
+#: ../templates/masscreate.php:561 ../templates/massdetail.php:91
+#: ../templates/massdetail.php:216 ../templates/account/useredit.php:235
 #: ../help/help.inc:194 ../lib/pdf.inc:94
 msgid "Given name"
 msgstr "Vorname"
 
-#: ../templates/account/useredit.php:235 ../templates/masscreate.php:561
-#: ../templates/massdetail.php:91
+#: ../templates/masscreate.php:561 ../templates/massdetail.php:91
+#: ../templates/account/useredit.php:235
 msgid "Given name contains invalid characters"
 msgstr "Vorname enthält ungültige Zeichen"
 
@@ -1005,7 +1004,7 @@ msgstr ""
 msgid "Grace inode period"
 msgstr "Inode-Frist"
 
-#: ../templates/account/groupedit.php:847 ../templates/masscreate.php:289
+#: ../templates/masscreate.php:289 ../templates/account/groupedit.php:847
 msgid "Group"
 msgstr "Gruppe"
 
@@ -1194,7 +1193,19 @@ msgstr "ObjectClass shadowAccount muss hinzugefügt werden."
 #: ../templates/config/profmanage.php:264
 #: ../templates/config/profmanage.php:307
 #: ../templates/config/profmanage.php:330
-#: ../templates/config/profmanage.php:358
+#: ../templates/config/profmanage.php:358 ../templates/masscreate.php:404
+#: ../templates/masscreate.php:409 ../templates/masscreate.php:414
+#: ../templates/masscreate.php:419 ../templates/masscreate.php:427
+#: ../templates/ou_edit.php:352 ../templates/ou_edit.php:365
+#: ../templates/ou_edit.php:385 ../templates/ou_edit.php:398
+#: ../templates/ou_edit.php:418 ../templates/ou_edit.php:431
+#: ../templates/ou_edit.php:452 ../templates/ou_edit.php:465
+#: ../templates/massdetail.php:214 ../templates/massdetail.php:220
+#: ../templates/massdetail.php:226 ../templates/massdetail.php:232
+#: ../templates/massdetail.php:238 ../templates/massdetail.php:244
+#: ../templates/massdetail.php:250 ../templates/massdetail.php:256
+#: ../templates/massdetail.php:262 ../templates/massdetail.php:268
+#: ../templates/massdetail.php:274 ../templates/massdetail.php:280
 #: ../templates/profedit/profilegroup.php:84
 #: ../templates/profedit/profilegroup.php:106
 #: ../templates/profedit/profilegroup.php:107
@@ -1232,7 +1243,10 @@ msgstr "ObjectClass shadowAccount muss hinzugefügt werden."
 #: ../templates/profedit/profileuser.php:385
 #: ../templates/profedit/profileuser.php:386
 #: ../templates/profedit/profileuser.php:387
-#: ../templates/profedit/profileuser.php:422
+#: ../templates/profedit/profileuser.php:422 ../templates/domain.php:85
+#: ../templates/domain.php:101 ../templates/domain.php:112
+#: ../templates/domain.php:120 ../templates/domain.php:128
+#: ../templates/domain.php:140 ../templates/domain.php:158
 #: ../templates/account/groupedit.php:550
 #: ../templates/account/groupedit.php:598
 #: ../templates/account/groupedit.php:601
@@ -1296,23 +1310,7 @@ msgstr "ObjectClass shadowAccount muss hinzugefügt werden."
 #: ../templates/account/useredit.php:1516
 #: ../templates/account/useredit.php:1522
 #: ../templates/account/useredit.php:1528
-#: ../templates/account/useredit.php:1561 ../templates/masscreate.php:404
-#: ../templates/masscreate.php:409 ../templates/masscreate.php:414
-#: ../templates/masscreate.php:419 ../templates/masscreate.php:427
-#: ../templates/ou_edit.php:352 ../templates/ou_edit.php:365
-#: ../templates/ou_edit.php:385 ../templates/ou_edit.php:398
-#: ../templates/ou_edit.php:418 ../templates/ou_edit.php:431
-#: ../templates/ou_edit.php:452 ../templates/ou_edit.php:465
-#: ../templates/massdetail.php:214 ../templates/massdetail.php:220
-#: ../templates/massdetail.php:226 ../templates/massdetail.php:232
-#: ../templates/massdetail.php:238 ../templates/massdetail.php:244
-#: ../templates/massdetail.php:250 ../templates/massdetail.php:256
-#: ../templates/massdetail.php:262 ../templates/massdetail.php:268
-#: ../templates/massdetail.php:274 ../templates/massdetail.php:280
-#: ../templates/domain.php:85 ../templates/domain.php:101
-#: ../templates/domain.php:112 ../templates/domain.php:120
-#: ../templates/domain.php:128 ../templates/domain.php:140
-#: ../templates/domain.php:158
+#: ../templates/account/useredit.php:1561
 msgid "Help"
 msgstr "Hilfe"
 
@@ -1437,12 +1435,12 @@ msgstr ""
 msgid "Hosts"
 msgstr "Hosts"
 
-#: ../lib/account.inc:1231 ../lib/account.inc:1234
+#: ../lib/account.inc:1767 ../lib/account.inc:1770
 msgid "ID is already in use"
 msgstr "ID wird bereits verwendet"
 
-#: ../lib/account.inc:1215 ../lib/account.inc:1216 ../lib/account.inc:1227
-#: ../lib/account.inc:1231 ../lib/account.inc:1234
+#: ../lib/account.inc:1751 ../lib/account.inc:1752 ../lib/account.inc:1763
+#: ../lib/account.inc:1767 ../lib/account.inc:1770
 msgid "ID-Number"
 msgstr "ID-Nummer"
 
@@ -1617,7 +1615,7 @@ msgstr "Gruppenname wurde in Beschreibung eingefügt."
 msgid "Inserted hostname in gecos-field."
 msgstr "Hostname wurde in Beschreibung eingefügt."
 
-#: ../templates/account/useredit.php:240 ../templates/masscreate.php:566
+#: ../templates/masscreate.php:566 ../templates/account/useredit.php:240
 msgid "Inserted sur- and given name in gecos-field."
 msgstr "Vor- und Nachname wurden in Beschreibung eingefügt."
 
@@ -1643,8 +1641,8 @@ msgstr "Ungültiger Wert!"
 msgid "Invalid profile name!"
 msgstr "Ungültiger Profilname!"
 
-#: ../lib/account.inc:57 ../lib/account.inc:73 ../lib/account.inc:107
-#: ../lib/account.inc:192
+#: ../lib/account.inc:58 ../lib/account.inc:77 ../lib/account.inc:143
+#: ../lib/account.inc:239
 #, php-format
 msgid "Invalid scope. Valid scopes are %s."
 msgstr ""
@@ -1653,7 +1651,7 @@ msgstr ""
 msgid "Invalid/Missing Message type"
 msgstr "Ungültiger/Fehlender Nachrichtentyp"
 
-#: ../lib/account.inc:1216
+#: ../lib/account.inc:1752
 msgid ""
 "It is possible that this ID-number is reused. This can cause several "
 "problems because files with old permissions might still exist. To avoid this "
@@ -1824,29 +1822,29 @@ msgstr "Maximal 400 Benutzer erlaubt. Zusätzliche Benutzer werden ignoriert."
 msgid "Max list entries is invalid!"
 msgstr "Maximale Listeneinträge ist ungültig!"
 
-#: ../templates/config/confsave.php:139
-msgid "MaxGID is invalid!"
-msgstr "Variable MaxGID ist ungültig!"
-
-#: ../templates/config/confsave.php:149
-msgid "MaxMachine is invalid!"
-msgstr "MaxMachine ist ungültig!"
-
-#: ../templates/config/confsave.php:129
-msgid "MaxUID is invalid!"
-msgstr "MaxUID ist ungültig!"
-
 #: ../templates/config/confmain.php:209 ../lib/config.inc:282
 msgid "Maximum GID number"
-msgstr "Maximalwert der GID Nummer"
+msgstr "Maximale GID-Nummer"
+
+#: ../templates/config/confsave.php:139
+msgid "Maximum GID number is invalid!"
+msgstr "Maximale GID-Nummer ist ungültig!"
 
 #: ../templates/config/confmain.php:218 ../lib/config.inc:284
 msgid "Maximum Machine number"
-msgstr "Maximalwert der Maschinen Nummer"
+msgstr "Maximale Maschinen-Nummer"
+
+#: ../templates/config/confsave.php:149
+msgid "Maximum Machine number is invalid!"
+msgstr "Maximale Maschinen-Nummer ist ungültig!"
 
 #: ../templates/config/confmain.php:200 ../lib/config.inc:280
 msgid "Maximum UID number"
 msgstr "Maximale UID-Nummer"
+
+#: ../templates/config/confsave.php:129
+msgid "Maximum UID number is invalid!"
+msgstr "Maximale UID-Nummer ist ungültig!"
 
 #: ../templates/config/confmain.php:250 ../help/help.inc:82
 #: ../lib/config.inc:288
@@ -1866,39 +1864,40 @@ msgstr "Maximales Passwortalter"
 msgid "Members"
 msgstr "Mitglieder"
 
-#: ../templates/config/confsave.php:134
-msgid "MinGID is invalid!"
-msgstr "MinGID ist ungültig!"
-
-#: ../templates/config/confsave.php:144
-msgid "MinMachine is invalid!"
-msgstr "MinMachine ist ungültig!"
-
-#: ../templates/config/confsave.php:124
-msgid "MinUID is invalid!"
-msgstr "MinUID ist ungültig!"
-
 #: ../templates/config/confmain.php:206 ../lib/config.inc:281
 msgid "Minimum GID number"
-msgstr "Minimale UID-Nummer"
+msgstr "Minimale GID-Nummer"
+
+#: ../templates/config/confsave.php:134
+msgid "Minimum GID number is invalid!"
+msgstr "Minimale GID-Nummer ist ungültig!"
 
 #: ../templates/config/confmain.php:215 ../lib/config.inc:283
 msgid "Minimum Machine number"
-msgstr "Minimale GID-Nummer"
+msgstr "Minimale Maschienen-Nummer"
+
+#: ../templates/config/confsave.php:144
+msgid "Minimum Machine number is invalid!"
+msgstr "Minimale Maschienen-Nummer ist ungültig!"
 
 #: ../templates/config/confmain.php:197 ../lib/config.inc:279
 msgid "Minimum UID number"
 msgstr "Minimale UID-Nummer"
+
+#: ../templates/config/confsave.php:124
+msgid "Minimum UID number is invalid!"
+msgstr "Minimale UID-Nummer ist ungültig!"
 
 #: ../templates/profedit/profileuser.php:173
 #: ../templates/account/useredit.php:1101 ../help/help.inc:178
 msgid "Minimum password age"
 msgstr "Minimales Passwortalter"
 
+#: ../templates/masscreate.php:376 ../templates/masscreate.php:580
+#: ../templates/massdetail.php:159 ../templates/massdetail.php:264
 #: ../templates/account/useredit.php:495
-#: ../templates/account/useredit.php:1512 ../templates/masscreate.php:376
-#: ../templates/masscreate.php:580 ../templates/massdetail.php:159
-#: ../templates/massdetail.php:264 ../help/help.inc:258 ../help/help.inc:259
+#: ../templates/account/useredit.php:1512 ../help/help.inc:258
+#: ../help/help.inc:259
 msgid "Mobile number"
 msgstr "Mobil"
 
@@ -1926,25 +1925,23 @@ msgstr "Mountpunkt"
 msgid "Mountpoint of device with enabled quotas."
 msgstr "Mountpunkt des Dateisystems mit aktivierten Quota."
 
-#: ../templates/account/groupedit.php:214
+#: ../templates/masscreate.php:574 ../templates/masscreate.php:577
+#: ../templates/massdetail.php:97 ../templates/account/groupedit.php:214
 #: ../templates/account/groupedit.php:217
 #: ../templates/account/hostedit.php:179 ../templates/account/hostedit.php:182
 #: ../templates/account/useredit.php:304 ../templates/account/useredit.php:307
-#: ../templates/masscreate.php:574 ../templates/masscreate.php:577
-#: ../templates/massdetail.php:97
 msgid "Name"
 msgstr "Name"
 
+#: ../templates/masscreate.php:577 ../templates/massdetail.php:97
 #: ../templates/account/groupedit.php:217
 #: ../templates/account/hostedit.php:182 ../templates/account/useredit.php:307
-#: ../templates/masscreate.php:577 ../templates/massdetail.php:97
 msgid "Name contains invalid characters. First character must be a letter."
 msgstr ""
 "Name enthält ungültige Zeichen. Das erste Zeichen muss ein Buchstabe sein."
 
-#: ../templates/account/groupedit.php:214
+#: ../templates/masscreate.php:574 ../templates/account/groupedit.php:214
 #: ../templates/account/hostedit.php:179 ../templates/account/useredit.php:304
-#: ../templates/masscreate.php:574
 msgid "Name must contain between 3 and 20 characters."
 msgstr "Name muss zwischen 3 und 20 Zeichen enthalten."
 
@@ -2076,7 +2073,7 @@ msgstr "Keine Änderungen vorgenommen."
 msgid "No domains found, please create one."
 msgstr "Keine Domänen gefunden, bitte erstellen Sie eine."
 
-#: ../lib/account.inc:1215
+#: ../lib/account.inc:1751
 msgid "No free ID-Number!"
 msgstr "Keine ID-Nummer mehr frei!"
 
@@ -2092,7 +2089,7 @@ msgstr "Es wurde nichts gelöscht"
 msgid "No password was entered!"
 msgstr "Passwort leer!"
 
-#: ../templates/account/useredit.php:242 ../templates/masscreate.php:569
+#: ../templates/masscreate.php:569 ../templates/account/useredit.php:242
 msgid "No primary group defined!"
 msgstr "Keine primäre Gruppe angegeben!"
 
@@ -2167,6 +2164,10 @@ msgstr "OU ist nicht leer oder ungültig!"
 msgid "OU-Editor"
 msgstr "OU-Editor"
 
+#: ../lib/account.inc:511 ../lib/account.inc:543
+msgid "ObjectClass %s required but not defined in ldap."
+msgstr "ObjectClass %s ist erforderlich aber nicht in LDAP definiert."
+
 #: ../templates/account/hostedit.php:222 ../templates/account/useredit.php:590
 msgid "ObjectClass posixAccount not found."
 msgstr "ObjectClass posixAccount wurde nicht gefunden."
@@ -2199,10 +2200,10 @@ msgstr "Ok"
 msgid "PDF settings"
 msgstr "PDF-Einstellungen"
 
-#: ../templates/account/hostedit.php:391 ../templates/account/useredit.php:317
-#: ../templates/account/useredit.php:352 ../templates/account/useredit.php:421
-#: ../templates/account/useredit.php:446
-#: ../templates/account/useredit.php:1068 ../templates/login.php:171
+#: ../templates/login.php:171 ../templates/account/hostedit.php:391
+#: ../templates/account/useredit.php:317 ../templates/account/useredit.php:352
+#: ../templates/account/useredit.php:421 ../templates/account/useredit.php:446
+#: ../templates/account/useredit.php:1068
 msgid "Password"
 msgstr "Passwort"
 
@@ -2342,52 +2343,52 @@ msgstr "Bitte überprüfen Sie die Samba-Einstellungen."
 msgid "Please create a group first."
 msgstr "Bitte legen Sie zuerst eine Gruppe an."
 
-#: ../templates/account/useredit.php:497 ../templates/masscreate.php:582
-#: ../templates/massdetail.php:163
+#: ../templates/masscreate.php:582 ../templates/massdetail.php:163
+#: ../templates/account/useredit.php:497
 msgid "Please enter a valid eMail address!"
 msgstr "Bitte geben Sie eine gültige e-mail Adresse ein!"
 
-#: ../templates/account/useredit.php:501 ../templates/masscreate.php:586
-#: ../templates/massdetail.php:149
+#: ../templates/masscreate.php:586 ../templates/massdetail.php:149
+#: ../templates/account/useredit.php:501
 msgid "Please enter a valid employee type!"
 msgstr "Bitte geben Sie einen gültigen Angestelltentyp ein!"
 
-#: ../templates/account/useredit.php:496 ../templates/masscreate.php:581
-#: ../templates/massdetail.php:161
+#: ../templates/masscreate.php:581 ../templates/massdetail.php:161
+#: ../templates/account/useredit.php:496
 msgid "Please enter a valid fax number!"
 msgstr "Bitte geben Sie eine gültige Faxnummer ein!"
 
-#: ../templates/account/useredit.php:495 ../templates/masscreate.php:580
-#: ../templates/massdetail.php:159
+#: ../templates/masscreate.php:580 ../templates/massdetail.php:159
+#: ../templates/account/useredit.php:495
 msgid "Please enter a valid mobile number!"
 msgstr "Bitte geben Sie eine gültige Mobiltelefonnummer ein!"
 
-#: ../templates/account/useredit.php:499 ../templates/masscreate.php:584
-#: ../templates/massdetail.php:155
+#: ../templates/masscreate.php:584 ../templates/massdetail.php:155
+#: ../templates/account/useredit.php:499
 msgid "Please enter a valid postal address!"
 msgstr "Bitte geben Sie eine gültige Anschrift ein!"
 
-#: ../templates/account/useredit.php:502 ../templates/masscreate.php:587
-#: ../templates/massdetail.php:153
+#: ../templates/masscreate.php:587 ../templates/massdetail.php:153
+#: ../templates/account/useredit.php:502
 msgid "Please enter a valid postal code!"
 msgstr "Bitte geben Sie eine gültige Postleitzahl ein!"
 
-#: ../templates/account/useredit.php:498 ../templates/masscreate.php:583
-#: ../templates/massdetail.php:151
+#: ../templates/masscreate.php:583 ../templates/massdetail.php:151
+#: ../templates/account/useredit.php:498
 msgid "Please enter a valid street name!"
 msgstr "Bitte geben Sie einen gültigen Straßennamen ein!"
 
-#: ../templates/account/useredit.php:494 ../templates/masscreate.php:579
-#: ../templates/massdetail.php:157
+#: ../templates/masscreate.php:579 ../templates/massdetail.php:157
+#: ../templates/account/useredit.php:494
 msgid "Please enter a valid telephone number!"
 msgstr "Bitte geben Sie eine gültige Telefonnummer ein!"
 
-#: ../templates/account/useredit.php:500 ../templates/masscreate.php:585
-#: ../templates/massdetail.php:147
+#: ../templates/masscreate.php:585 ../templates/massdetail.php:147
+#: ../templates/account/useredit.php:500
 msgid "Please enter a valid title!"
 msgstr "Bitte geben Sie einen gültigen Titel ein!"
 
-#: ../lib/account.inc:1227
+#: ../lib/account.inc:1763
 #, php-format
 msgid "Please enter a value between %s and %s!"
 msgstr "Bitte geben Sie einen Wert zwischen %s und %s ein!"
@@ -2454,7 +2455,7 @@ msgstr ""
 "net}LDAP Account Manager Entwickler-Teams{endlink}. Die Fehlernummer ist "
 "{bold}0001:Fehlerhafter/Fehlender Nachrichtentyp.{endbold} Danke."
 
-#: ../templates/account/groupedit.php:514
+#: ../templates/masscreate.php:336 ../templates/account/groupedit.php:514
 #: ../templates/account/groupedit.php:571
 #: ../templates/account/groupedit.php:641
 #: ../templates/account/groupedit.php:735
@@ -2465,7 +2466,7 @@ msgstr ""
 #: ../templates/account/useredit.php:1168
 #: ../templates/account/useredit.php:1408
 #: ../templates/account/useredit.php:1456
-#: ../templates/account/useredit.php:1536 ../templates/masscreate.php:336
+#: ../templates/account/useredit.php:1536 ../lib/account.inc:373
 msgid "Please select page:"
 msgstr "Bitte Seite wählen:"
 
@@ -2481,10 +2482,11 @@ msgstr "Position im LDAP-Baum, wo der Host erstellt werden soll."
 msgid "Position in ldap-tree where the user should be created."
 msgstr "Position im LDAP-Baum, wo der Benutzer erstellt werden soll."
 
+#: ../templates/masscreate.php:384 ../templates/masscreate.php:584
+#: ../templates/massdetail.php:155 ../templates/massdetail.php:252
 #: ../templates/account/useredit.php:499
-#: ../templates/account/useredit.php:1500 ../templates/masscreate.php:384
-#: ../templates/masscreate.php:584 ../templates/massdetail.php:155
-#: ../templates/massdetail.php:252 ../help/help.inc:254 ../lib/pdf.inc:106
+#: ../templates/account/useredit.php:1500 ../help/help.inc:254
+#: ../lib/pdf.inc:106
 msgid "Postal address"
 msgstr "Anschrift"
 
@@ -2492,11 +2494,11 @@ msgstr "Anschrift"
 msgid "Postal address, city"
 msgstr "Bitte geben Sie hier die Anschrift ein."
 
+#: ../templates/masscreate.php:382 ../templates/masscreate.php:587
+#: ../templates/massdetail.php:153 ../templates/massdetail.php:246
 #: ../templates/account/useredit.php:502
-#: ../templates/account/useredit.php:1494 ../templates/masscreate.php:382
-#: ../templates/masscreate.php:587 ../templates/massdetail.php:153
-#: ../templates/massdetail.php:246 ../help/help.inc:252 ../help/help.inc:253
-#: ../lib/pdf.inc:102
+#: ../templates/account/useredit.php:1494 ../help/help.inc:252
+#: ../help/help.inc:253 ../lib/pdf.inc:102
 msgid "Postal code"
 msgstr "Postleitzahl"
 
@@ -2504,13 +2506,12 @@ msgstr "Postleitzahl"
 msgid "Predefined values"
 msgstr "Vordefinierte Werte"
 
-#: ../templates/profedit/profilehost.php:68
+#: ../templates/masscreate.php:294 ../templates/masscreate.php:368
+#: ../templates/masscreate.php:569 ../templates/profedit/profilehost.php:68
 #: ../templates/profedit/profileuser.php:93
 #: ../templates/account/hostedit.php:377 ../templates/account/useredit.php:242
-#: ../templates/account/useredit.php:970 ../templates/masscreate.php:294
-#: ../templates/masscreate.php:368 ../templates/masscreate.php:569
-#: ../help/help.inc:154 ../help/help.inc:168 ../lib/pdf.inc:314
-#: ../lib/pdf.inc:358
+#: ../templates/account/useredit.php:970 ../help/help.inc:154
+#: ../help/help.inc:168 ../lib/pdf.inc:314 ../lib/pdf.inc:358
 msgid "Primary group"
 msgstr "Primäre Gruppe"
 
@@ -2634,9 +2635,9 @@ msgstr "Neues Hauptpasswort erneut eingeben"
 msgid "Reenter profile password"
 msgstr "Profilpasswort erneut eingeben"
 
-#: ../templates/lists/listdomains.php:218
+#: ../templates/masscreate.php:340 ../templates/lists/listdomains.php:218
 #: ../templates/lists/listgroups.php:335 ../templates/lists/listhosts.php:320
-#: ../templates/lists/listusers.php:392 ../templates/masscreate.php:340
+#: ../templates/lists/listusers.php:392
 msgid "Refresh"
 msgstr "Aktualisieren"
 
@@ -2943,44 +2944,43 @@ msgstr "Leider wurde keine Hilfenummer angegeben."
 msgid "Sorry this help number ({bold}%d{endbold}) is not available."
 msgstr "Diese Hilfenummer ist leider nicht verfügbar: {bold}%d{endbold}"
 
+#: ../templates/masscreate.php:380 ../templates/masscreate.php:583
+#: ../templates/massdetail.php:151 ../templates/massdetail.php:240
 #: ../templates/account/useredit.php:498
-#: ../templates/account/useredit.php:1488 ../templates/masscreate.php:380
-#: ../templates/masscreate.php:583 ../templates/massdetail.php:151
-#: ../templates/massdetail.php:240 ../help/help.inc:250 ../help/help.inc:251
-#: ../lib/pdf.inc:98
+#: ../templates/account/useredit.php:1488 ../help/help.inc:250
+#: ../help/help.inc:251 ../lib/pdf.inc:98
 msgid "Street"
 msgstr "Straße"
 
 #: ../templates/config/confmain.php:369 ../templates/config/profmanage.php:356
-#: ../templates/profedit/profiledelete.php:97
+#: ../templates/ou_edit.php:94 ../templates/ou_edit.php:159
+#: ../templates/ou_edit.php:224 ../templates/ou_edit.php:289
+#: ../templates/ou_edit.php:472 ../templates/profedit/profiledelete.php:97
 #: ../templates/profedit/profiledelete.php:109
 #: ../templates/profedit/profiledelete.php:121
-#: ../templates/profedit/profilemain.php:261 ../templates/ou_edit.php:94
-#: ../templates/ou_edit.php:159 ../templates/ou_edit.php:224
-#: ../templates/ou_edit.php:289 ../templates/ou_edit.php:472
-#: ../templates/domain.php:175
+#: ../templates/profedit/profilemain.php:261 ../templates/domain.php:175
 msgid "Submit"
 msgstr "Abschicken"
 
 #: ../templates/lists/listdomains.php:185
 #: ../templates/lists/listgroups.php:295 ../templates/lists/listhosts.php:279
-#: ../templates/lists/listusers.php:335 ../templates/account/groupedit.php:606
+#: ../templates/lists/listusers.php:335 ../templates/domain.php:148
+#: ../templates/account/groupedit.php:606
 #: ../templates/account/hostedit.php:418
-#: ../templates/account/useredit.php:1005 ../templates/domain.php:148
-#: ../help/help.inc:270 ../help/help.inc:272 ../help/help.inc:274
-#: ../help/help.inc:293
+#: ../templates/account/useredit.php:1005 ../help/help.inc:270
+#: ../help/help.inc:272 ../help/help.inc:274 ../help/help.inc:293
 msgid "Suffix"
 msgstr "Suffix"
 
-#: ../templates/account/useredit.php:237 ../templates/masscreate.php:294
-#: ../templates/masscreate.php:362 ../templates/masscreate.php:563
-#: ../templates/massdetail.php:88 ../templates/massdetail.php:210
+#: ../templates/masscreate.php:294 ../templates/masscreate.php:362
+#: ../templates/masscreate.php:563 ../templates/massdetail.php:88
+#: ../templates/massdetail.php:210 ../templates/account/useredit.php:237
 #: ../help/help.inc:192 ../lib/pdf.inc:90
 msgid "Surname"
 msgstr "Nachname"
 
-#: ../templates/account/useredit.php:237 ../templates/masscreate.php:563
-#: ../templates/massdetail.php:88
+#: ../templates/masscreate.php:563 ../templates/massdetail.php:88
+#: ../templates/account/useredit.php:237
 msgid "Surname contains invalid characters"
 msgstr "Nachname enthält ungültige Zeichen"
 
@@ -2989,10 +2989,11 @@ msgid "Surname of user. Only letters, - and spaces are allowed."
 msgstr ""
 "Nachname des Benutzers. Es sind nur Buchstaben, - und Leerzeichen erlaubt."
 
+#: ../templates/masscreate.php:374 ../templates/masscreate.php:579
+#: ../templates/massdetail.php:157 ../templates/massdetail.php:258
 #: ../templates/account/useredit.php:494
-#: ../templates/account/useredit.php:1506 ../templates/masscreate.php:374
-#: ../templates/masscreate.php:579 ../templates/massdetail.php:157
-#: ../templates/massdetail.php:258 ../help/help.inc:256 ../help/help.inc:257
+#: ../templates/account/useredit.php:1506 ../help/help.inc:256
+#: ../help/help.inc:257
 msgid "Telephone number"
 msgstr "Telefonnummer"
 
@@ -3198,10 +3199,11 @@ msgstr ""
 "selben Werte wie im Profileditor gespeichert. Profilnamen dürfen die "
 "Buchstaben a-z, 0-9 und -_ enthalten."
 
+#: ../templates/masscreate.php:370 ../templates/masscreate.php:585
+#: ../templates/massdetail.php:147 ../templates/massdetail.php:228
 #: ../templates/account/useredit.php:500
-#: ../templates/account/useredit.php:1476 ../templates/masscreate.php:370
-#: ../templates/masscreate.php:585 ../templates/massdetail.php:147
-#: ../templates/massdetail.php:228 ../help/help.inc:246 ../lib/pdf.inc:86
+#: ../templates/account/useredit.php:1476 ../help/help.inc:246
+#: ../lib/pdf.inc:86
 msgid "Title"
 msgstr "Titel"
 
@@ -3292,6 +3294,7 @@ msgstr "Kann das Profil nicht laden!"
 msgid "Unable to save profile!"
 msgstr "Kann das Profil nicht speichern!"
 
+#: ../templates/massdetail.php:79 ../templates/massdetail.php:283
 #: ../templates/account/groupedit.php:530
 #: ../templates/account/groupedit.php:587
 #: ../templates/account/groupedit.php:654
@@ -3303,8 +3306,7 @@ msgstr "Kann das Profil nicht speichern!"
 #: ../templates/account/useredit.php:1182
 #: ../templates/account/useredit.php:1421
 #: ../templates/account/useredit.php:1470
-#: ../templates/account/useredit.php:1550 ../templates/massdetail.php:79
-#: ../templates/massdetail.php:283
+#: ../templates/account/useredit.php:1550
 msgid "Undo"
 msgstr "Rückgängig"
 
@@ -3468,18 +3470,18 @@ msgstr "Benutzersuffix"
 msgid "UserSuffix is invalid!"
 msgstr "UserSuffix ist ungültig!"
 
-#: ../templates/account/useredit.php:223 ../templates/account/useredit.php:245
-#: ../templates/account/useredit.php:290 ../templates/account/useredit.php:946
 #: ../templates/login.php:148 ../templates/masscreate.php:366
 #: ../templates/masscreate.php:559 ../templates/masscreate.php:572
 #: ../templates/massdetail.php:95 ../templates/massdetail.php:144
-#: ../templates/massdetail.php:222 ../help/help.inc:141 ../lib/ldap.inc:153
-#: ../lib/pdf.inc:132 ../lib/pdf.inc:184
+#: ../templates/massdetail.php:222 ../templates/account/useredit.php:223
+#: ../templates/account/useredit.php:245 ../templates/account/useredit.php:290
+#: ../templates/account/useredit.php:946 ../help/help.inc:141
+#: ../lib/ldap.inc:153 ../lib/pdf.inc:132 ../lib/pdf.inc:184
 msgid "Username"
 msgstr "Benutzername"
 
-#: ../templates/account/useredit.php:245 ../templates/masscreate.php:572
-#: ../templates/massdetail.php:95
+#: ../templates/masscreate.php:572 ../templates/massdetail.php:95
+#: ../templates/account/useredit.php:245
 msgid ""
 "Username contains invalid characters. Valid characters are: a-z, A-Z, 0-9 "
 "and .-_ !"
@@ -3487,8 +3489,8 @@ msgstr ""
 "Benutzername enthält ungültige Zeichen. Gültige Zeichen sind: a-z, A-Z, 0-9 "
 "und .-_ !"
 
-#: ../templates/account/useredit.php:290 ../templates/masscreate.php:559
-#: ../templates/massdetail.php:144
+#: ../templates/masscreate.php:559 ../templates/massdetail.php:144
+#: ../templates/account/useredit.php:290
 msgid "Username in use. Selected next free username."
 msgstr ""
 "Der Benutzername ist bereits vorhanden, der nächste freie Name wurde "
@@ -3540,10 +3542,42 @@ msgstr "Felder mit * müssen ausgefüllt werden"
 msgid "Warnings"
 msgstr "Warnungen"
 
+#: ../lib/account.inc:835
+#, php-format
+msgid ""
+"Was unable to add attribtues to dn: %s. This is possible a bug. Please check "
+"your ldap logs and send a bug report if it is a possible bug."
+msgstr "Konnte keine Attribute zur DN %s hinzufügen. Dies könnte ein Bug sein. Bitte überprüfen Sie ihre LDAP-Logdateien und senden uns bei Bedarf einen Bug-Report."
+
 #: ../templates/masscreate.php:214 ../templates/masscreate.php:245
 #, php-format
 msgid "Was unable to create %s."
 msgstr "Konnte %s nicht erstellen."
+
+#: ../lib/account.inc:815 ../lib/account.inc:821
+#, php-format
+msgid ""
+"Was unable to create dn: %s. This is possible a bug. Please check your ldap "
+"logs and send a bug report if it is a possible bug."
+msgstr "Konnte DN %s nicht erstellen. Dies könnte ein Bug sein. Bitte überprüfen Sie ihre LDAP-Logdateien und senden uns bei Bedarf einen Bug-Report."
+
+#: ../lib/account.inc:813
+msgid "Was unable to delete dn: %s."
+msgstr "Konnte die DN %s nicht löschen."
+
+#: ../lib/account.inc:830
+#, php-format
+msgid ""
+"Was unable to modify attribtues from dn: %s. This is possible a bug. Please "
+"check your ldap logs and send a bug report if it is a possible bug."
+msgstr "Konnte die Attribute der DN %s nicht ändern. Dies könnte ein Bug sein. Bitte überprüfen Sie ihre LDAP-Logdateien und senden uns bei Bedarf einen Bug-Report."
+
+#: ../lib/account.inc:840
+#, php-format
+msgid ""
+"Was unable to remove attribtues from dn: %s. This is possible a bug. Please "
+"check your ldap logs and send a bug report if it is a possible bug."
+msgstr "Konnte keine Attribute der DN %s löschen. Dies könnte ein Bug sein. Bitte überprüfen Sie ihre LDAP-Logdateien und senden uns bei Bedarf einen Bug-Report."
 
 #: ../help/help.inc:49
 msgid ""
@@ -3693,10 +3727,11 @@ msgstr "Sprache"
 msgid "deleted"
 msgstr "gelöscht"
 
+#: ../templates/masscreate.php:372 ../templates/masscreate.php:582
+#: ../templates/massdetail.php:163 ../templates/massdetail.php:276
 #: ../templates/account/useredit.php:497
-#: ../templates/account/useredit.php:1524 ../templates/masscreate.php:372
-#: ../templates/masscreate.php:582 ../templates/massdetail.php:163
-#: ../templates/massdetail.php:276 ../help/help.inc:262 ../help/help.inc:263
+#: ../templates/account/useredit.php:1524 ../help/help.inc:262
+#: ../help/help.inc:263
 msgid "eMail address"
 msgstr "E-Mail Adresse"
 
@@ -3712,7 +3747,7 @@ msgstr "wurde erstellt"
 msgid "has been modified"
 msgstr "wurde geändert"
 
-#: ../lib/account.inc:613 ../lib/account.inc:615
+#: ../lib/account.inc:1149 ../lib/account.inc:1151
 msgid "hours"
 msgstr "Stunden"
 
@@ -3750,10 +3785,10 @@ msgstr "nein"
 msgid "not found!"
 msgstr "nicht gefunden!"
 
-#: ../lib/account.inc:79 ../lib/account.inc:252 ../lib/account.inc:291
+#: ../lib/account.inc:83 ../lib/account.inc:413 ../lib/account.inc:451
 #, php-format
 msgid "objectClass %s required but not defined in ldap."
-msgstr ""
+msgstr "ObjectClass %s ist erforderlich, aber nicht in LDAP definiert."
 
 #: ../help/help.inc:55
 msgid ""
@@ -3802,3 +3837,8 @@ msgstr "saveUserProfile: account ist vom falschen Typ!"
 msgid "yes"
 msgstr "ja"
 
+#~ msgid "MaxMachine is invalid!"
+#~ msgstr "MaxMachine ist ungültig!"
+
+#~ msgid "MinMachine is invalid!"
+#~ msgstr "MinMachine ist ungültig!"
