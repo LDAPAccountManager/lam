@@ -24,25 +24,38 @@ $Id$
 */
 
 // include all needed files
-include_once('../lib/account.inc'); // File with custom functions
+include_once('../lib/account.inc'); // File with all account-funtions
 include_once('../lib/config.inc'); // File with configure-functions
-include_once('../lib/ldap.inc'); // LDAP-functions
 include_once('../lib/profiles.inc'); // functions to load and save profiles
 include_once('../lib/status.inc'); // Return error-message
 include_once('../lib/pdf.inc'); // Return a pdf-file
+include_once('../lib/ldap.inc'); // LDAP-functions
 
-// Start Session
+/* We have to include all modules
+* before start session
+* *** fixme I would prefer loading them dynamic but
+* i don't know how to to this
+*/
+$dir = opendir('../lib/modules');
+while ($entry = readdir($dir))
+	if (is_file('../lib/modules/'.$entry)) include_once ('../lib/modules/'.$entry);
+
+// Start session
 session_save_path('../sess');
 @session_start();
 
 // Redirect to startpage if user is not loged in
 if (!isset($_SESSION['loggedIn'])) {
 	metaRefresh("login.php");
-	die;
+	exit;
 	}
 
 // Set correct language, codepages, ....
 setlanguage();
+
+if (!isset($_SESSION['cache'])) {
+	$_SESSION['cache'] = new cache();
+	}
 
 /* Save current time in $time. We need $time to check out how
 * long masscreate.php is running. To avoid max. execution time
@@ -54,12 +67,17 @@ $time=time();
 * from masscreate.php itself via meta refresh
 */
 if (count($_POST)==0) {
-	// Go to page which shows all users
-	if (isset($_GET['list2'])) $select = 'list2';
-	// (Continue) to create users
-	else if (isset($_GET['create'])) $select='create';
-	// Display mainpage if nothing else should be displayed
-	else $select='main';
+	// Register new account_container
+	$_SESSION['account'] = new accountContainer('user', 'account');
+	// load profile
+
+	// Find out list of attribtues which must be set put not allready covered by profile
+
+	// Print first HTML-Page
+	echo $_SESSION['header'];
+	echo "<title>" . _('Create new Accounts') . "</title>\n";
+	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">\n";
+
 	}
 else {
 	/* Check loaded attributed in $_SESSION['accounts'] if file was loaded and

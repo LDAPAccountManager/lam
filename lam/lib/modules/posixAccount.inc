@@ -159,6 +159,11 @@ class posixAccount {
 		return array('attributes', 'groups');
 		}
 
+	function profile_attributes() {
+		// array of attribtues wich are unique and not allowed to store in profile
+		array unique_attributes ( 'user' => array ('cn', 'rid', 'uid', 'uidNumber', 'userPassword')  );
+		}
+
 	/* This function returns all ldap attributes
 	* which are part of posixAccount and returns
 	* also their values.
@@ -322,9 +327,9 @@ class posixAccount {
 		$groups = $_SESSION[$_SESSION[$this->base]->cache]->get_cache('memberUid', 'posixGroup', 'group');
 		$DNs = array_keys($groups);
 		for ($i=0; $i<count($DNs); $i++) {
-			if (in_array($this->attributes['uid'][0], $groups[$DNs[$i]])) $return[$DNs[$i]]['remove']['memberUid'] = $this->attributes['uid'][0];
+			if (in_array($this->attributes['uid'][0], $groups[$DNs[$i]])) $return[$DNs[$i]]['remove']['memberUid'][] = $this->attributes['uid'][0];
 			}
-		if ($post['deletehomedir']) $return[$_SESSION[$this->base]->dn]['lamdaemon']['command'][] = $this->attributes['uid'][0] . " home rem";
+		if ($post['deletehomedir']) $return[$_SESSION[$this->base]->dn_orig]['lamdaemon']['command'][] = $this->attributes['uid'][0] . " home rem";
 		return $return;
 		}
 
@@ -627,7 +632,7 @@ class posixAccount {
 	function display_html_delete($post) {
 		if ($_SESSION[$this->base]->type=='user' && isset($_SESSION[$_SESSION[$this->base]->config]->scriptPath)) {
 			echo "<tr>\n";
-			echo "<td>" . _('Delete home directory') . "*</td>\n";
+			echo "<td>" . _('Delete home directory') . "</td>\n";
 			echo "<td><input name=\"deletehomedir\" type=\"checkbox\"></td>\n";
 			echo "<tr>\n";
 			}

@@ -179,7 +179,7 @@ class quota {
 			}
 		if ($_SESSION[$this->base]->type=='user') $id = $_SESSION[$this->base]->module['posixAccount']->attributes['uid'][0];
 		if ($_SESSION[$this->base]->type=='group') $id = $_SESSION[$this->base]->module['posixGroup']->attributes['cn'][0];
-		$return[$_SESSION[$this->base]->dn]['lamdaemon']['command'][] = $id . " quota set " . $_SESSION[$this->base]->type . " $quotastring\n";
+		$return[$_SESSION[$this->base]->dn_orig]['lamdaemon']['command'][] = $id . " quota set " . $_SESSION[$this->base]->type . " $quotastring\n";
 		return $return;
 		}
 
@@ -262,6 +262,10 @@ class quota {
 			$i++;
 			}
 		echo "</table>\n";
+		return 0;
+		}
+
+	function display_html_delete($post) {
 		return 0;
 		}
 

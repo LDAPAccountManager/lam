@@ -149,8 +149,7 @@ class inetOrgPerson {
 	*/
 
 	function delete_attributes($post) {
-		$return = array();
-		return $return;
+		return 0;
 		}
 
 	function proccess_attributes($post) {

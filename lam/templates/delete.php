@@ -23,233 +23,225 @@ $Id$
   LDAP Account Manager Delete user, hosts or groups
 */
 
-include_once('../lib/ldap.inc');
-include_once('../lib/account.inc');
-include_once('../lib/config.inc');
-// start session
+
+// include all needed files
+include_once('../lib/account.inc'); // File with all account-funtions
+include_once('../lib/config.inc'); // File with configure-functions
+include_once('../lib/profiles.inc'); // functions to load and save profiles
+include_once('../lib/status.inc'); // Return error-message
+include_once('../lib/pdf.inc'); // Return a pdf-file
+include_once('../lib/ldap.inc'); // LDAP-functions
+
+/* We have to include all modules
+* before start session
+* *** fixme I would prefer loading them dynamic but
+* i don't know how to to this
+*/
+$dir = opendir('../lib/modules');
+while ($entry = readdir($dir))
+	if (is_file('../lib/modules/'.$entry)) include_once ('../lib/modules/'.$entry);
+
+// Start session
 session_save_path('../sess');
 @session_start();
+
 // Redirect to startpage if user is not loged in
 if (!isset($_SESSION['loggedIn'])) {
 	metaRefresh("login.php");
-	die;
+	exit;
 	}
 
-// set language
+// Set correct language, codepages, ....
 setlanguage();
 
-// use references because session-vars can change in future
-$ldap_intern =& $_SESSION['ldap'];
-$header_intern =& $_SESSION['header'];
-$config_intern =& $_SESSION['config'];
-$delete_dn =& $_SESSION['delete_dn'];
-
-if ($_POST['backmain']) {
-	// back to list page
-	if (isset($_SESSION['delete_dn'])) unset ($_SESSION['delete_dn']);
-	metaRefresh("lists/list".$_POST['type']."s.php");
-	// stop script because we don't want to reate invalid html-code
-	die;
+if (!isset($_SESSION['cache'])) {
+	$_SESSION['cache'] = new cache();
 	}
-
-// Print header and part of body
-echo $header_intern;
-echo '<title>';
-echo _('Delete Account');
-echo '</title>'."\n".
-	'<link rel="stylesheet" type="text/css" href="../style/layout.css">'."\n".
-	'<meta http-equiv="pragma" content="no-cache">'."\n".
-	'<meta http-equiv="cache-control" content="no-cache">'."\n".
-	'</head>'."\n".
-	'<body>'."\n".
-	'<form action="delete.php" method="post">'."\n";
-
-
 if ($_GET['type']) {
-	// $_GET['type'] is true if delete.php was called from *list.php
-	// Store $_GET['type'] as $_POST['type']
-	// Replace wrong chars from Session
-	echo '<input name="type" type="hidden" value="'.$_GET['type'].'">';
-	switch ($_GET['type']) {
-		// Select which layout and text should be displayed
-		case 'user':
-			echo "<fieldset class=\"useredit-bright\"><legend class=\"useredit-bright\"><b>";
-			echo _('Delete user(s)');
-			echo "</b></legend>\n";
-			echo '<b>'._('Do you really want to delete user(s):').'</b>';
-			break;
-		case 'host':
-			echo "<fieldset class=\"hostedit-bright\"><legend class=\"hostedit-bright\"><b>";
-			echo _('Delete host(s)');
-			echo "</b></legend>\n";
-			echo '<b>'._('Do you really want to delete host(s):').'</b>';
-			break;
-		case 'group':
-			echo "<fieldset class=\"groupedit-bright\"><legend class=\"groupedit-bright\"><b>";
-			echo _('Delete group(s)');
-			echo "</b></legend>\n";
-			echo '<b>'._('Do you really want to delete group(s):').'</b>';
-			break;
+	// Create account list
+	foreach ($_SESSION['delete_dn'] as $dn) {
+		$start = strpos ($dn, "=")+1;
+		$end = strpos ($dn, ",");
+		$users[] = substr($dn, $start, $end-$start);
 		}
+
+	//load account
+	$_SESSION['account'] = new accountContainer($_GET['type'], 'account');
+	$_SESSION['account']->load_account($_SESSION['delete_dn'][0]);
+	// Show HTML Page
+	echo $_SESSION['header'];
+	echo "<title>";
+	echo _("Delete Account");
+	echo "</title>\n";
+	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">\n";
+	echo "</head><body>\n";
+	echo "<form action=\"delete.php\" method=\"post\">\n";
+	echo "<fieldset class=\"".$_GET['type']."edit-dark\"><legend class=\"".$_GET['type']."edit-bright\"><b>";
+		echo _('Please confirm:');
+		echo "</b></legend>\n";
+	echo "<input name=\"type\" type=\"hidden\" value=\"" . $_GET['type'] . "\">\n";
+	echo sprintf(_("Do you really want to remove the following %ss?\n"), $_GET['type']);
 	echo "<br>\n";
-	// display all DNs in a tables
-	echo "<table border=0 width=\"100%\">\n";
-	foreach ($delete_dn as $dn) echo '<tr><td>'.$dn.'</td></tr>';
+	echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
+	for ($i=0; $i<count($users); $i++) {
+		echo "<tr>\n";
+		echo "<td>" . sprintf(_('%sname:'), ucfirst($_GET['type'])) . " $users[$i]</td>\n";
+		echo "<td>" . _('DN:') . " " . $_SESSION['delete_dn'][$i] . "</td>\n";
+		echo "</tr>\n";
+		}
 	echo "</table>\n";
-
-	// Ask if lam should delete homedirs if users are deleted and lamdaemon.pl is in use
-	if (($_GET['type']== user) && $config_intern->scriptServer) {
-		echo "<br>\n";
-		echo "<table border=0>\n";
-		echo '<tr><td>';
-		echo _('Delete also Homedirectories');
-		echo '</td>'."\n".'<td><input name="f_rem_home" type="checkbox">'.
-			'</td></tr>'."\n";
-		echo "</table>\n";
+	echo "<br>\n";
+	// Print delete rows from modules
+	echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
+	$modules = array_keys($_SESSION['account']->module);
+	for ($i=0; $i<count($modules); $i++) {
+		$_SESSION['account']->module[$modules[$i]]->display_html_delete($_POST);
 		}
-
-	// Print buttons
-	echo "<br><table border=0>\n";
-	echo '<tr><td>'.
-		'<input name="delete_no" type="submit" value="';
-	echo _('Cancel'); echo '"></td><td></td><td>'.
-		'<input name="delete_yes" type="submit" value="';
-	echo _('Commit'); echo '"></td></tr>';
-	echo "</table></fieldset>\n";
+	echo "</table>\n";
+	echo "<br>\n";
+	echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
+	echo "<td><input name=\"delete\" type=\"submit\" value=\"" . _('Delete') . "\"></td>\n";
+	echo "<td><input name=\"cancel\" type=\"submit\" value=\"" . _('Cancel') . "\"></td>\n";
+	echo "</table>\n";
+	echo "</fieldset>\n";
+	echo "</form>\n";
+	echo "</body>\n";
+	echo "</html>\n";
 	}
 
+if ($_POST['cancel']) {
+	if (isset($_SESSION['delete_dn'])) unset($_SESSION['delete_dn']);
+	metaRefresh("lists/list" . $_POST['type'] . "s.php");
+	}
 
-if ($_POST['delete_yes']) {
-	// deletion has been confirmed.
-	switch ($_POST['type']) {
-		case 'user':
-			echo "<fieldset class=\"useredit-bright\"><legend class=\"useredit-bright\"><b>";
-			echo _('Deleting user(s)...');
-			echo "</b></legend>\n";
-			break;
-		case 'host':
-			echo "<fieldset class=\"hostedit-bright\"><legend class=\"hostedit-bright\"><b>";
-			echo _('Deleting host(s)...');
-			echo "</b></legend>\n";
-			break;
-		case 'group':
-			echo "<fieldset class=\"groupedit-bright\"><legend class=\"groupedit-bright\"><b>";
-			echo _('Deleting group(s)...');
-			echo "</b></legend>\n";
-			break;
-		}
-	echo '<input name="type" type="hidden" value="'.$_POST['type'].'">';
-	echo "<br><table border=0 >\n";
-	// Store kind of DNs
-	foreach ($delete_dn as $dn) {
-		// Loop for every DN which should be deleted
-		switch ($_POST['type']) {
-			case 'user':
-				// Get username from DN
-				$temp=explode(',', $dn);
-				$username = str_replace('uid=', '', $temp[0]);
-				// Fill array with groupnames
-				$usernames[] = $username;
-				// Search for groups which have memberUid set to username
-				$result = ldap_search($ldap_intern->server(), $config_intern->get_GroupSuffix(), "(&(objectClass=PosixGroup)(memberUid=$username))", array(''));
-				$entry = ldap_first_entry($ldap_intern->server(), $result);
-				// loop for every found group and remove membership
-				while ($entry) {
-					$success = ldap_mod_del($ldap_intern->server(), ldap_get_dn($ldap_intern->server(), $entry) , array('memberUid' => $username));
-					// *** fixme add error-message if memberUid couldn't be deleted
-					$entry = ldap_next_entry($ldap_intern->server(), $entry);
+if ($_POST['delete']) {
+	// Show HTML Page
+	echo $_SESSION['header'];
+	echo "<title>";
+	echo _("Delete Account");
+	echo "</title>\n";
+	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">\n";
+	echo "</head><body>\n";
+	echo "<form action=\"delete.php\" method=\"post\">\n";
+	echo "<input name=\"type\" type=\"hidden\" value=\"" . $_POST['type'] . "\">\n";
+	echo "<fieldset class=\"".$_POST['type']."edit-dark\"><legend class=\"".$_POST['type']."edit-bright\"><b>";
+		echo _('Deleting. Please stand by ...');
+		echo "</b></legend>\n";
+
+	echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
+	// Delete dns
+	for ($m=0; $m<count($_SESSION['delete_dn']); $m++) {
+		// Set to true if an real error has happened
+		$stopprocessing = false;
+		// First load DN.
+		$_SESSION['account']->load_account($_SESSION['delete_dn'][$m]);
+		// get commands and changes of each attribute
+		$module = array_keys ($_SESSION['account']->module);
+		$attributes = array();
+		$errors = array();
+		// load attributes
+		foreach ($module as $singlemodule) {
+			// load changes
+			$temp = $_SESSION['account']->module[$singlemodule]->delete_attributes($_POST);
+			if (is_array($temp)) {
+				// merge changes
+				$DNs = array_keys($temp);
+				// *** fixme don't include references
+				$attributes = array_merge_recursive($temp, $attributes);
+				for ($i=0; $i<count($DNs); $i++) {
+					$ops = array_keys($temp[$DNs[$i]]);
+					for ($j=0; $j<count($ops); $j++) {
+						$attrs = array_keys($temp[$DNs[$i]][$ops[$j]]);
+						for ($k=0; $k<count($attrs); $k++)
+							$attributes[$DNs[$i]][$ops[$j]][$attrs[$k]] = array_unique($attributes[$DNs[$i]][$ops[$j]][$attrs[$k]]);
+						}
 					}
-				// Delete user itself
-				$success = ldap_delete($ldap_intern->server(), $dn);
-				if (!$success) $error = _('Could not delete user:').' '.$dn;
-				break;
-			case 'host':
-				// Delete host itself
-				$success = ldap_delete($ldap_intern->server(), $dn);
-				if (!$success) $error = _('Could not delete host:').' '.$dn;
-				break;
-			case 'group':
-				/* First we have to check if any user uses $group
-				* as primary group. It's not allowed to delete a
-				* group if it still contains primaty members
-				*/
-				$temp=explode(',', $dn);
-				$groupname = str_replace('cn=', '', $temp[0]);
-				// Fill array with groupnames
-				$usernames[] = $groupname;
-				// Get group GIDNumber
-				$groupgid = getgid($groupname);
-				// Search for users which have gid set to current gid
-				$result = ldap_search($ldap_intern->server(), $config_intern->get_UserSuffix(), "gidNumber=$groupgid", array(''));
-				// Print error if still users in group
-				if (!$result) $error = _('Could not delete group. Still users in group:').' '.$dn;
-				else {
-					// Delete group itself
-					$success = ldap_delete($ldap_intern->server(), $dn);
-					if (!$success) $error = _('Could not delete group:').' '.$dn;
+				}
+			}
+		$DNs = array_keys($attributes);
+		for ($i=0; $i<count($DNs); $i++) {
+			if (isset($attributes[$DNs[$i]]['errors'])) {
+				foreach ($attributes[$DNs[$i]]['errors'] as $singleerror) {
+					$errors[] = $singleerror;
+					if ($singleerror[0] = 'ERROR') $stopprocessing = true;
 					}
-				break;
+				}
+			if (!$stopprocessing) {
+				// modify attributes
+				if (isset($attributes[$DNs[$i]]['modify']) && !$stopprocessing) {
+					$success = @ldap_mod_replace($_SESSION[$_SESSION['account']->ldap]->server(), $DNs[$i], $attributes[$DNs[$i]]['modify']);
+					if (!$success) {
+						$errors[] = array ('ERROR', 'LDAP', sprintf(_('Was unable to modify attribtues from dn: %s. This is possible a bug. Please check your ldap logs and send a bug report if it is a possible bug.'), $DNs[$i]));
+						$stopprocessing = true;
+						}
+					else
+						$_SESSION['cache']->update_cache($DNs[$i], 'modify', $attributes[$DNs[$i]]['modify']);
+					}
+				// add attributes
+				if (isset($attributes[$DNs[$i]]['add']) && !$stopprocessing) {
+					$success = @ldap_mod_add($_SESSION[$_SESSION['account']->ldap]->server(), $DNs[$i], $attributes[$DNs[$i]]['add']);
+					if (!$success) {
+						$errors[] = array ('ERROR', 'LDAP', sprintf(_('Was unable to add attribtues to dn: %s. This is possible a bug. Please check your ldap logs and send a bug report if it is a possible bug.'), $DNs[$i]));
+						$stopprocessing = true;
+						}
+					else
+						$_SESSION['cache']->update_cache($DNs[$i], 'add', $attributes[$DNs[$i]]['add']);
+					}
+				// removce attributes
+				if (isset($attributes[$DNs[$i]]['remove']) && !$stopprocessing) {
+					$success = @ldap_mod_del($_SESSION[$_SESSION['account']->ldap]->server(), $DNs[$i], $attributes[$DNs[$i]]['remove']);
+					if (!$success) {
+						$errors[] = array ('ERROR', 'LDAP', sprintf(_('Was unable to remove attribtues from dn: %s. This is possible a bug. Please check your ldap logs and send a bug report if it is a possible bug.'), $DNs[$i]));
+						$stopprocessing = true;
+						}
+					else
+						$_SESSION['cache']->update_cache($DNs[$i], 'remove', $attributes[$DNs[$i]]['remove']);
+					}
+				}
 			}
-		if ($config_intern->scriptServer && isset($usernames)) {
-			// Remove homedir if required
-			if ($_POST['f_rem_home']) remhomedir($usernames);
-			// Remove quotas if lamdaemon.pl is used
-			remquotas($usernames, 'user');
+		if (!$stopprocessing) {
+			foreach ($attributes as $DN) {
+				if (is_array($DN['lamdaemon']['command'])) $result = $_SESSION['account']->lamdaemon($DN['lamdaemon']['command']);
+				// Error somewhere in lamdaemon
+				foreach ($result as $singleresult) {
+					if (is_array($singleresult)) {
+						if ($singleresult[0] = 'ERROR') $stopprocessing = true;
+						$temparray[0] = $singleresult[0];
+						$temparray[1] = _($singleresult[1]);
+						$temparray[2] = _($singleresult[2]);
+						}
+					}
+				}
 			}
-		// Remove DNs from cache-array
-		if ($success && isset($_SESSION[$_POST['type'].'DN'][$dn])) unset($_SESSION[$_POST['type'].'DN'][$dn]);
-		// Display success or error-message
-		if (!$error) echo "<tr><td><b>$dn ". _('deleted').".</b></td></tr>\n";
-		 else echo "<tr><td><b>$error</b></td></tr>\n";
+		if (!$stopprocessing) {
+			$success = @ldap_delete($_SESSION[$_SESSION['account']->ldap]->server(), $_SESSION['delete_dn'][$m]);
+			if (!$success) $errors[] = array ('ERROR', 'LDAP', sprintf(_('Was unable to remove attribtues from dn: %s. This is possible a bug. Please check your ldap logs and send a bug report if it is a possible bug.'), $DNs[$i]));
+			else
+				$_SESSION['cache']->update_cache($_SESSION['delete_dn'][$m], 'delete_dn');
+			}
+		if (!$stopprocessing) {
+			echo "<tr>\n";
+			echo "<td>" . sprintf(_('Deleted DN: %s'), $_SESSION['delete_dn'][$m]) . "</td>\n";
+			echo "</tr>\n";
+			foreach ($errors as $error) StatusMessage($error[0], $error[1], $error[2]);
+			}
+		else {
+			echo "<tr>\n";
+			echo "<td>" . sprintf(_('Error while deleting DN: %s'), $_SESSION['delete_dn'][$m]) . "</td>\n";
+			echo "</tr>\n";
+			foreach ($errors as $error) StatusMessage($error[0], $error[1], $error[2]);
+			}
 		}
-	echo "</table><br>\n";
-	switch ($_POST['type']) {
-		// Select which page should be displayd if back-button will be pressed
-		case 'user':
-			echo '<input name="backmain" type="submit" value="'; echo _('Back to user list'); echo '">';
-			break;
-		case 'group':
-			echo '<input name="backmain" type="submit" value="'; echo _('Back to group list'); echo '">';
-			break;
-		case 'host':
-			echo '<input name="backmain" type="submit" value="'; echo _('Back to host list'); echo '">';
-			break;
-		}
-	echo "<br></fieldset>\n";
+	echo "</table>\n";
+	echo "<br>\n";
+	echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
+	echo "<td><input name=\"cancel\" type=\"submit\" value=\"" . _('Back to list') . "\"></td>\n";
+	echo "</table>\n";
+	echo "</fieldset>\n";
+	echo "</form>\n";
+	echo "</body>\n";
+	echo "</html>\n";
+
 	}
 
-if ($_POST['delete_no']) {
-	// Delete no accounts
-	echo '<input name="type" type="hidden" value="'.$_POST['type'].'">';
-	switch ($_POST['type']) {
-		// Select which page should be displayd if back-button will be pressed
-		case 'user':
-			echo "<fieldset class=\"useredit-bright\"><legend class=\"useredit-bright\"><b>";
-			echo _('Deleting user(s) canceled.');
-			echo "</b></legend>\n";
-			echo _('No user(s) were deleted');
-			echo "<br>";
-			echo '<input name="backmain" type="submit" value="'; echo _('Back to user list'); echo '">';
-			break;
-		case 'host':
-			echo "<fieldset class=\"hostedit-bright\"><legend class=\"hostedit-bright\"><b>";
-			echo _('Deleting host(s) canceled.');
-			echo "</b></legend>\n";
-			echo _('No host(s) were deleted');
-			echo "<br>";
-			echo '<input name="backmain" type="submit" value="'; echo _('Back to host list'); echo '">';
-			break;
-		case 'group':
-			echo "<fieldset class=\"groupedit-bright\"><legend class=\"groupedit-bright\"><b>";
-			echo _('Deleting group(s) canceled.');
-			echo "</b></legend>\n";
-			echo _('No group(s) were deleted');
-			echo "<br>";
-			echo '<input name="backmain" type="submit" value="'; echo _('Back to group list'); echo '">';
-			break;
-		}
-	echo "<br></fieldset>\n";
-	}
-
-echo '</form></body></html>'."\n";
 ?>

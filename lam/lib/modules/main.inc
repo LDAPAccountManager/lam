@@ -102,8 +102,7 @@ class main {
 		}
 
 	function delete_attributes($post) {
-		$return = array();
-		return $return;
+		return 0;
 		}
 
 	/* Write variables into object and do some regexp checks
@@ -123,8 +122,8 @@ class main {
 			}
 		// save account
 		if ($post['create']) {
-			$success = $_SESSION[$this->base]->save_account();
-			if (is_array($success)) return array($success);
+			$errors = $_SESSION[$this->base]->save_account();
+			if (is_array($errors)) return array($errors);
 			// return name of subpage
 			return 'finish';
 			}

@@ -292,7 +292,8 @@ class posixGroup {
 		}
 
 	function delete_attributes($post) {
-		$return = array();
+		if ($_SESSION[$_SESSION[$this->base]->cache]->in_cache($this->attributes['gidNumber'][0], 'gidNumber', 'user'))
+			$return[$_SESSION[$this->base]->dn]['errors'][] = array ('ERROR', _('Primary groupmembers'), _('There are still primary members in group.'));
 		return $return;
 		}
 
@@ -528,6 +529,7 @@ class posixGroup {
 		}
 
 	function display_html_delete($post) {
+		// Get list of primary groupmembers.
 		return 0;
 		}
 

@@ -234,18 +234,50 @@ class cache {
 	/* This function update the cache when changes were
 	* made without refrehing the complete cache
 	*/
-	function update_cache($dn, $attributes, $singlescope) {
+	function update_cache($dn, $mode, $attributes=false) {
+		$allowed_modes = array ( 'add', 'remove', 'modify', 'delete_dn' );
 		$allowed_types = array ( 'user', 'group', 'host', 'domain', '*' );
 		if (!in_array($singlescope, $allowed_types)) trigger_error(sprintf(_('Invalid scope. Valid scopes are %s.'), implode(" ", $allowed_types)), E_USER_ERROR);
+		if (!in_array($mode, $allowed_modes)) trigger_error(sprintf(_('Invalid mode. Valid modes are %s.'), implode(" ", $allowed_modes)), E_USER_ERROR);
 		// Everything seems to be OK, start processing data
+		// Get Scope
+		foreach ($allowed_types as $scope) {
+			$function = '$suffix = $this->config->get_'.ucfirst($scope).'Suffix();';
+			eval($function);
+			if (strpos($dn, $suffix)) $singlescope = $scope;
+			}
+		if (!isset($singlescope)) trigger_error(sprintf(_('Invalid dn: %s. DN not covered by any suffix.'), $dn), E_USER_WARN);
+		// Refresh Cache
 		$this->refresh_cache();
-		if (isset($this->ldapcache[$singlescope][$dn])) unset($this->ldapcache[$singlescope][$dn]);
-		$attrnames = array_keys ($this->attributes[$singlescope]);
-		foreach ($attrnames as $name) {
-			if (is_string($attributes[$name])) $this->ldapcache[$singlescope][$dn][$name][] = $attributes[$name];
-			if (is_array($attributes[$name])) $this->ldapcache[$singlescope][$dn][$name] = $attributes[$name];
+		if (is_array($attributes))
+			switch ($mode) {
+				case 'add':
+					$list = array_keys($attributes);
+					for ($i=0; $i<count($list); $i++)
+						foreach ($attributes[$list[$i]] as $attribute)
+							$this->ldapcache[$singlescope][$dn][$list[$i]][] = $attributes[$list[$i]];
+					break;
+				case 'remove':
+					$list = array_keys($attributes);
+					for ($i=0; $i<count($list); $i++)
+						foreach ($attributes[$list[$i]] as $attribute)
+							if (isset($this->ldapcache[$singlescope][$dn][$list[$i]][$attributes[$list[$i]]]))
+								unset($this->ldapcache[$singlescope][$dn][$list[$i]][$attributes[$list[$i]]]);
+					break;
+				case 'modify':
+					$list = array_keys($attributes);
+					for ($i=0; $i<count($list); $i++) {
+						if (isset($this->ldapcache[$singlescope][$dn][$list[$i]])) unset($this->ldapcache[$singlescope][$dn][$list[$i]]);
+						foreach ($attributes[$list[$i]] as $attribute)
+							$this->ldapcache[$singlescope][$dn][$list[$i]][] = $attributes[$list[$i]];
+						}
+				}
+		else {
+			if ($mode=='delete_dn')
+				if (isset($this->ldapcache[$singlescope][$dn])) unset($this->ldapcache[$singlescope][$dn]);
 			}
 		}
+
 
 	/* This function will return the gidNumber to an existing groupname
 	* gidNumbers are taken from cache-array
@@ -809,48 +841,104 @@ class accountContainer {
 			unset ($attributes[$this->dn]);
 			$this->dn = $this->dn_orig;
 			}
+		// Set to true if an real error has happened
+		$stopprocessing = false;
 		// Add new DN
-		if ($this->dn != $this->dn_orig) {
-			// move existing DN
-			if ($this->dn_orig!='') {
-				// merge attributes together
-				$attr = array_merge_recursive($attributes[$this->dn]['add'], $attributes[$this->dn]['notchanged'], $attributes[$this->dn]['modify']);
-				$success = @ldap_add($_SESSION[$this->ldap]->server(), $this->dn, $attr);
-				if ($success) {
-					$success = @ldap_delete($_SESSION[$this->ldap]->server(), $this->dn_orig);
-					if (!$success) return array('ERROR', 'LDAP', sprintf(_('Was unable to delete dn: %s.'), $this->dn_orig));
+		if (isset($attributes[$DNs[$i]]['errors'])) {
+			foreach ($attributes[$DNs[$i]]['errors'] as $singleerror) {
+				$errors[] = $singleerror;
+				if ($singleerror[0] = 'ERROR') $stopprocessing = true;
+				}
+			}
+		// fixme *** ad update_cache after every ldap-change
+
+		if (!$stopprocessing) {
+			if ($this->dn != $this->dn_orig) {
+				// move existing DN
+				if ($this->dn_orig!='') {
+					// merge attributes together
+					$attr = array_merge_recursive($attributes[$this->dn]['add'], $attributes[$this->dn]['notchanged'], $attributes[$this->dn]['modify']);
+					$success = @ldap_add($_SESSION[$this->ldap]->server(), $this->dn, $attr);
+					if ($success) {
+						$_SESSION[$this->cache]->update_cache($this->$dn, 'add', $attr);
+						$success = @ldap_delete($_SESSION[$this->ldap]->server(), $this->dn_orig);
+						if (!$success) {
+							$errors[] = array('ERROR', 'LDAP', sprintf(_('Was unable to delete dn: %s.'), $this->dn_orig));
+							$stopprocessing = true;
+							}
+						if ($success)
+							$_SESSION[$this->cache]->update_cache($this->$dn, 'delete_dn');
+						}
+					if (!$success) {
+						$errors[] = array('ERROR', 'LDAP', sprintf(_('Was unable to create dn: %s. This is possible a bug. Please check your ldap logs and send a bug report if it is a possible bug.'), $this->dn));
+						$stopprocessing = true;
+						}
 					}
-				if (!$success) return array('ERROR', 'LDAP', sprintf(_('Was unable to create dn: %s. This is possible a bug. Please check your ldap logs and send a bug report if it is a possible bug.'), $this->dn));
+				// create complete new dn
+				else {
+					$attr = array_merge_recursive($attributes[$this->dn]['add'], $attributes[$this->dn]['notchanged'], $attributes[$this->dn]['modify']);
+					$success = @ldap_add($_SESSION[$this->ldap]->server(), $this->dn, $attributes[$this->dn]['add']);
+					if (!$success) {
+						$errors[] = array('ERROR', 'LDAP', sprintf(_('Was unable to create dn: %s. This is possible a bug. Please check your ldap logs and send a bug report if it is a possible bug.'), $this->dn));
+						$stopprocessing = true;
+						}
+					else
+						$_SESSION[$this->cache]->update_cache($this->$dn, 'add', $attributes[$this->dn]['add']);
+					}
+				unset($attributes[$this->dn]);
 				}
-			// create complete new dn
-			else {
-				$attr = array_merge_recursive($attributes[$this->dn]['add'], $attributes[$this->dn]['notchanged'], $attributes[$this->dn]['modify']);
-				$success = @ldap_add($_SESSION[$this->ldap]->server(), $this->dn, $attributes[$this->dn]['add']);
-				if (!$success) return array('ERROR', 'LDAP', sprintf(_('Was unable to create dn: %s. This is possible a bug. Please check your ldap logs and send a bug report if it is a possible bug.'), $this->dn));
-				}
-			unset($attributes[$this->dn]);
 			}
 		$DNs = array_keys($attributes);
 		for ($i=0; $i<count($DNs); $i++) {
-			// modify attributes
-			if (isset($attributes[$DNs[$i]]['modify'])) {
-				$success = @ldap_mod_replace($_SESSION[$this->ldap]->server(), $DNs[$i], $attributes[$DNs[$i]]['modify']);
-				if (!$success) return array('ERROR', 'LDAP', sprintf(_('Was unable to modify attribtues from dn: %s. This is possible a bug. Please check your ldap logs and send a bug report if it is a possible bug.'), $DNs[$i]));
-				}
-			// add attributes
-			if (isset($attributes[$DNs[$i]]['add'])) {
-				$success = @ldap_mod_add($_SESSION[$this->ldap]->server(), $DNs[$i], $attributes[$DNs[$i]]['add']);
-				if (!$success) return array('ERROR', 'LDAP', sprintf(_('Was unable to add attribtues to dn: %s. This is possible a bug. Please check your ldap logs and send a bug report if it is a possible bug.'), $DNs[$i]));
-				}
-			// removce attributes
-			if (isset($attributes[$DNs[$i]]['remove'])) {
-				$success = @ldap_mod_del($_SESSION[$this->ldap]->server(), $DNs[$i], $attributes[$DNs[$i]]['remove']);
-				if (!$success) return array('ERROR', 'LDAP', sprintf(_('Was unable to remove attribtues from dn: %s. This is possible a bug. Please check your ldap logs and send a bug report if it is a possible bug.'), $DNs[$i]));
+			if (!$stopprocessing) {
+				// modify attributes
+				if (isset($attributes[$DNs[$i]]['modify']) && !$stopprocessing) {
+					$success = @ldap_mod_replace($_SESSION[$this->ldap]->server(), $DNs[$i], $attributes[$DNs[$i]]['modify']);
+					if (!$success) {
+						$errors[] = array('ERROR', 'LDAP', sprintf(_('Was unable to modify attribtues from dn: %s. This is possible a bug. Please check your ldap logs and send a bug report if it is a possible bug.'), $DNs[$i]));
+						$stopprocessing = true;
+						}
+					else
+						$_SESSION[$this->cache]->update_cache($this->$dn, 'modify', $attributes[$this->dn]['modify']);
+					}
+				// add attributes
+				if (isset($attributes[$DNs[$i]]['add']) && !$stopprocessing) {
+					$success = @ldap_mod_add($_SESSION[$this->ldap]->server(), $DNs[$i], $attributes[$DNs[$i]]['add']);
+					if (!$success) {
+						$errors[] = array('ERROR', 'LDAP', sprintf(_('Was unable to add attribtues to dn: %s. This is possible a bug. Please check your ldap logs and send a bug report if it is a possible bug.'), $DNs[$i]));
+						$stopprocessing = true;
+						}
+					else
+						$_SESSION[$this->cache]->update_cache($this->$dn, 'add', $attributes[$this->dn]['add']);
+					}
+				// removce attributes
+				if (isset($attributes[$DNs[$i]]['remove']) && !$stopprocessing) {
+					$success = @ldap_mod_del($_SESSION[$this->ldap]->server(), $DNs[$i], $attributes[$DNs[$i]]['remove']);
+					if (!$success) {
+						$errors[] = array('ERROR', 'LDAP', sprintf(_('Was unable to remove attribtues from dn: %s. This is possible a bug. Please check your ldap logs and send a bug report if it is a possible bug.'), $DNs[$i]));
+						$stopprocessing = true;
+						}
+					else
+						$_SESSION[$this->cache]->update_cache($this->$dn, 'remove', $attributes[$this->dn]['remove']);
+					}
 				}
 			}
-		foreach ($attributes as $DN)
-			if (is_array($DN['lamdaemon']['command'])) $this->lamdaemon($DN['lamdaemon']['command']);
 
+		if (!$stopprocessing) {
+			foreach ($attributes as $DN) {
+				if (is_array($DN['lamdaemon']['command'])) $result = $this->lamdaemon($DN['lamdaemon']['command']);
+				// Error somewhere in lamdaemon
+				foreach ($result as $singleresult) {
+					if (is_array($singleresult)) {
+						if ($singleresult[0] = 'ERROR') $stopprocessing = true;
+						$temparray[0] = $singleresult[0];
+						$temparray[1] = _($singleresult[1]);
+						$temparray[2] = _($singleresult[2]);
+						}
+					}
+				}
+			}
+		if (count($errors)!=0) return $errors;
 		return 0;
 		}
 
