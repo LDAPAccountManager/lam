@@ -31,23 +31,6 @@ include_once('../lib/pdf.inc'); // Return a pdf-file
 include_once('../lib/ldap.inc'); // LDAP-functions
 initvars($_GET['type'], $_GET['DN']); // Initialize all needed vars
 
-	// returns an array with all organizational units under the given suffix
-	function search_units($suffix) {
-	$sr = @ldap_search($_SESSION["ldap"]->server(), $suffix, "objectClass=organizationalunit", array("DN"));
-	if ($sr) {
-		$units = ldap_get_entries($_SESSION["ldap"]->server, $sr);
-		// delete first array entry which is "count"
-		array_shift($units);
-		// remove sub arrays
-		for ($i = 0; $i < sizeof($units); $i++) $units[$i] = $units[$i]['dn'];
-		// add root suffix if needed
-		if (!in_array($suffix, $units)) {
-			array_push($units, $suffix);
-		}
-	}
-	return $units;
-	}
-
 
 switch ($_POST['select']) { // Select which part of page should be loaded and check values
 	// general = startpage, general account paramters
@@ -444,8 +427,8 @@ switch ($select_local) { // Select which part of page will be loaded
 				echo '</td>'."\n".'<td><select name="f_general_group">';
 				// loop trough existing groups
 				foreach ($groups as $group) {
-					if ($_SESSION['account']->general_group == $group) echo '<option selected>' . $group;
-					else echo '<option>' . $group;
+					if ($_SESSION['account']->general_group == $group) echo '<option selected>' . $group. '</option>';
+					else echo '<option>' . $group. '</option>';
 					 }
 				echo '</select></td><td>
 					<a href="help.php?HelpNumber=406" target="lamhelp">'._('Help').'</a>
@@ -455,10 +438,10 @@ switch ($select_local) { // Select which part of page will be loaded
 				// loop though existing groups for additional groups
 				foreach ($groups as $group) {
 					if ($_SESSION['account']->general_groupadd) {
-						if (in_array($group, $_SESSION['account']->general_groupadd)) echo '<option selected>'.$group;
-						else echo '<option>'.$group;
+						if (in_array($group, $_SESSION['account']->general_groupadd)) echo '<option selected>'.$group. '</option>';
+						else echo '<option>'.$group. '</option>';
 						}
-					else echo '<option>'.$group;
+					else echo '<option>'.$group. '</option>';
 					}
 				echo	'</select></td>'."\n".'<td>
 					<a href="help.php?HelpNumber=402" target="lamhelp">'._('Help').'</a>
@@ -477,25 +460,25 @@ switch ($select_local) { // Select which part of page will be loaded
 				echo '</td>'."\n".'<td><select name="f_general_shell" >';
 					// loop through shells
 					foreach ($_SESSION['shelllist'] as $shell)
-						if ($_SESSION['account']->general_shell==trim($shell)) echo '<option selected>'.$shell;
-							else echo '<option>'.$shell;
+						if ($_SESSION['account']->general_shell==trim($shell)) echo '<option selected>'.$shell. '</option>';
+							else echo '<option>'.$shell. '</option>';
 				echo '</select></td>'."\n".'<td>
 					<a href="help.php?HelpNumber=405" target="lamhelp">'._('Help').'</a>
 					</td></tr>'."\n".'<tr><td>';
 				echo _('Suffix'); echo '</td><td><select name="f_general_suffix">';
 				foreach (search_units($_SESSION['config']->get_UserSuffix()) as $suffix) {
 					if ($_SESSION['account']->general_dn) {
-						if ($_SESSION['account']->general_dn == $suffix) echo '<option selected>' . $suffix;
-						else echo '<option>' . $suffix;
+						if ($_SESSION['account']->general_dn == $suffix) echo '<option selected>' . $suffix. '</option>';
+						else echo '<option>' . $suffix. '</option>';
 						}
-					else echo '<option>' . $suffix;
+					else echo '<option>' . $suffix. '</option>';
 					}
 				echo '</select></td><td><a href="help.php?HelpNumber=461" target="lamhelp">'._('Help').'</a>
 					</td></tr><tr><td>';
 					echo _('Values with * are required');
 					echo '</td></tr><tr><td><select name="f_general_selectprofile">';
 				// loop through profiles
-				foreach ($profilelist as $profile) echo '<option>' . $profile;
+				foreach ($profilelist as $profile) echo '<option>' . $profile. '</option>';
 				echo '</select>
 					<input name="load" type="submit" value="'; echo _('Load Profile'); echo '">
 					</td>'."\n".'<td>';
@@ -523,18 +506,18 @@ switch ($select_local) { // Select which part of page will be loaded
 					<a href="help.php?HelpNumber=409" target="lamhelp">'._('Help').'</a>
 					</td></tr><tr><td>';
 				echo _('Suffix'); echo '</td><td><select name="f_general_suffix">';
-				foreach (search_units($_SESSION['config']->get_UserSuffix()) as $suffix) {
+				foreach (search_units($_SESSION['config']->get_GroupSuffix()) as $suffix) {
 					if ($_SESSION['account']->general_dn) {
-						if ($_SESSION['account']->general_dn == $suffix) echo '<option selected>' . $suffix;
-						else echo '<option>' . $suffix;
+						if ($_SESSION['account']->general_dn == $suffix) echo '<option selected>' . $suffix. '</option>';
+						else echo '<option>' . $suffix. '</option>';
 						}
-					else echo '<option>' . $suffix;
+					else echo '<option>' . $suffix. '</option>';
 					}
 				echo '</select></td><td><a href="help.php?HelpNumber=462" target="lamhelp">'._('Help').'</a>
 					</td></tr><tr><td>';
 					echo _('Values with * are required');
 					echo '</td></tr>'."\n".'<tr><td><select name="f_general_selectprofile" >';
-				foreach ($profilelist as $profile) echo '<option>' . $profile;
+				foreach ($profilelist as $profile) echo '<option>' . $profile. '</option>';
 				echo '</select>
 					<input name="load" type="submit" value="'; echo _('Load Profile'); echo '">
 					</td>'."\n".'<td>';
@@ -559,8 +542,8 @@ switch ($select_local) { // Select which part of page will be loaded
 				echo _('Primary Group*');
 				echo '</td>'."\n".'<td><select name="f_general_group">';
 				foreach ($groups as $group) {
-					if ($_SESSION['account']->general_group == $group) echo '<option selected>' . $group;
-					else echo '<option>' . $group;
+					if ($_SESSION['account']->general_group == $group) echo '<option selected>' . $group. '</option>';
+					else echo '<option>' . $group. '</option>';
 					 }
 				echo '</select></td><td>
 					<a href="help.php?HelpNumber=412" target="lamhelp">'._('Help').'</a>
@@ -569,10 +552,10 @@ switch ($select_local) { // Select which part of page will be loaded
 				echo '</td>'."\n".'<td><select name="f_general_groupadd[]" size="3" multiple>';
 				foreach ($groups as $group) {
 					if ($_SESSION['account']->general_groupadd) {
-						if (in_array($group, $_SESSION['account']->general_groupadd)) echo '<option selected>'.$group;
-						else echo '<option>'.$group;
+						if (in_array($group, $_SESSION['account']->general_groupadd)) echo '<option selected>'.$group. '</option>';
+						else echo '<option>'.$group. '</option>';
 						}
-					else echo '<option>'.$group;
+					else echo '<option>'.$group. '</option>';
 					}
 				echo	'</select></td>'."\n".'<td>
 					<a href="help.php?HelpNumber=402" target="lamhelp">'._('Help').'</a>
@@ -583,18 +566,18 @@ switch ($select_local) { // Select which part of page will be loaded
 					<a href="help.php?HelpNumber=413" target="lamhelp">'._('Help').'</a>
 					</td></tr><tr><td>';
 				echo _('Suffix'); echo '</td><td><select name="f_general_suffix">';
-				foreach (search_units($_SESSION['config']->get_UserSuffix()) as $suffix) {
+				foreach (search_units($_SESSION['config']->get_HostSuffix()) as $suffix) {
 					if ($_SESSION['account']->general_dn) {
-						if ($_SESSION['account']->general_dn == $suffix) echo '<option selected>' . $suffix;
-						else echo '<option>' . $suffix;
+						if ($_SESSION['account']->general_dn == $suffix) echo '<option selected>' . $suffix. '</option>';
+						else echo '<option>' . $suffix. '</option>';
 						}
-					else echo '<option>' . $suffix;
+					else echo '<option>' . $suffix. '</option>';
 					}
 				echo '</select></td><td><a href="help.php?HelpNumber=463" target="lamhelp">'._('Help').'</a>
 					</td></tr><tr><td>';
 					echo _('Values with * are required');
 					echo '</td></tr>'."\n".'<tr><td><select name="f_general_selectprofile">';
-				foreach ($profilelist as $profile) echo '<option>' . $profile;
+				foreach ($profilelist as $profile) echo '<option>' . $profile. '</option>';
 				echo '</select>
 					<input name="load" type="submit" value="'; echo _('Load Profile'); echo '">
 					</td>'."\n".'<td>';
@@ -655,18 +638,18 @@ switch ($select_local) { // Select which part of page will be loaded
 				echo _('Expire Date');
 				echo '</td>'."\n".'<td><select name="f_unix_pwdexpire_day">';
 				for ( $i=1; $i<=31; $i++ ) {
-					if ($_SESSION['account']->unix_pwdexpire_day==$i) echo "<option selected> $i";
-					else echo "<option> $i";
+					if ($_SESSION['account']->unix_pwdexpire_day==$i) echo "<option selected> $i". '</option>';
+					else echo "<option> $i". '</option>';
 					}
 				echo '</select><select name="f_unix_pwdexpire_mon">';
 				for ( $i=1; $i<=12; $i++ ) {
-					if ($_SESSION['account']->unix_pwdexpire_mon == $i) echo "<option selected> $i";
-					else echo "<option> $i";
+					if ($_SESSION['account']->unix_pwdexpire_mon == $i) echo "<option selected> $i". '</option>';
+					else echo "<option> $i". '</option>';
 					}
 				echo '</select><select name="f_unix_pwdexpire_yea">';
 				for ( $i=2003; $i<=2030; $i++ ) {
-					if ($_SESSION['account']->unix_pwdexpire_yea==$i) echo "<option selected> $i";
-					else echo "<option> $i";
+					if ($_SESSION['account']->unix_pwdexpire_yea==$i) echo "<option selected> $i". '</option>';
+					else echo "<option> $i". '</option>';
 					}
 				echo '</select></td>'."\n".'<td>
 					<a href="help.php?HelpNumber=418" target="lamhelp">'._('Help').'</a>
@@ -755,29 +738,29 @@ switch ($select_local) { // Select which part of page will be loaded
 					</td></tr>'."\n".'<tr><td>';
 				echo _('Home Drive');
 				echo '</td>'."\n".'<td><select name="f_smb_homedrive" >';
-					if ( $_SESSION['account']->smb_homedrive == 'D:' ) echo '<option selected> D:'; else echo '<option> D:';
-					if ( $_SESSION['account']->smb_homedrive == 'E:' ) echo '<option selected> E:'; else echo '<option> E:';
-					if ( $_SESSION['account']->smb_homedrive == 'F:' ) echo '<option selected> F:'; else echo '<option> F:';
-					if ( $_SESSION['account']->smb_homedrive == 'G:' ) echo '<option selected> G:'; else echo '<option> G:';
-					if ( $_SESSION['account']->smb_homedrive == 'H:' ) echo '<option selected> H:'; else echo '<option> H:';
-					if ( $_SESSION['account']->smb_homedrive == 'I:' ) echo '<option selected> I:'; else echo '<option> I:';
-					if ( $_SESSION['account']->smb_homedrive == 'J:' ) echo '<option selected> J:'; else echo '<option> J:';
-					if ( $_SESSION['account']->smb_homedrive == 'K:' ) echo '<option selected> K:'; else echo '<option> K:';
-					if ( $_SESSION['account']->smb_homedrive == 'L:' ) echo '<option selected> L:'; else echo '<option> L:';
-					if ( $_SESSION['account']->smb_homedrive == 'M:' ) echo '<option selected> M:'; else echo '<option> M:';
-					if ( $_SESSION['account']->smb_homedrive == 'N:' ) echo '<option selected> N:'; else echo '<option> N:';
-					if ( $_SESSION['account']->smb_homedrive == 'O:' ) echo '<option selected> O:'; else echo '<option> O:';
-					if ( $_SESSION['account']->smb_homedrive == 'P:' ) echo '<option selected> P:'; else echo '<option> P:';
-					if ( $_SESSION['account']->smb_homedrive == 'Q:' ) echo '<option selected> Q:'; else echo '<option> Q:';
-					if ( $_SESSION['account']->smb_homedrive == 'R:' ) echo '<option selected> R:'; else echo '<option> R:';
-					if ( $_SESSION['account']->smb_homedrive == 'S:' ) echo '<option selected> S:'; else echo '<option> S:';
-					if ( $_SESSION['account']->smb_homedrive == 'T:' ) echo '<option selected> T:'; else echo '<option> T:';
-					if ( $_SESSION['account']->smb_homedrive == 'U:' ) echo '<option selected> U:'; else echo '<option> U:';
-					if ( $_SESSION['account']->smb_homedrive == 'V:' ) echo '<option selected> V:'; else echo '<option> V:';
-					if ( $_SESSION['account']->smb_homedrive == 'W:' ) echo '<option selected> W:'; else echo '<option> W:';
-					if ( $_SESSION['account']->smb_homedrive == 'X:' ) echo '<option selected> X:'; else echo '<option> X:';
-					if ( $_SESSION['account']->smb_homedrive == 'Y:' ) echo '<option selected> Y:'; else echo '<option> Y:';
-					if ( $_SESSION['account']->smb_homedrive == 'Z:' ) echo '<option selected> Z:'; else echo '<option> Z:';
+					if ( $_SESSION['account']->smb_homedrive == 'D:' ) echo '<option selected> D:</option>'; else echo '<option> D:</option>';
+					if ( $_SESSION['account']->smb_homedrive == 'E:' ) echo '<option selected> E:</option>'; else echo '<option> E:</option>';
+					if ( $_SESSION['account']->smb_homedrive == 'F:' ) echo '<option selected> F:</option>'; else echo '<option> F:</option>';
+					if ( $_SESSION['account']->smb_homedrive == 'G:' ) echo '<option selected> G:</option>'; else echo '<option> G:</option>';
+					if ( $_SESSION['account']->smb_homedrive == 'H:' ) echo '<option selected> H:</option>'; else echo '<option> H:</option>';
+					if ( $_SESSION['account']->smb_homedrive == 'I:' ) echo '<option selected> I:</option>'; else echo '<option> I:</option>';
+					if ( $_SESSION['account']->smb_homedrive == 'J:' ) echo '<option selected> J:</option>'; else echo '<option> J:</option>';
+					if ( $_SESSION['account']->smb_homedrive == 'K:' ) echo '<option selected> K:</option>'; else echo '<option> K:</option>';
+					if ( $_SESSION['account']->smb_homedrive == 'L:' ) echo '<option selected> L:</option>'; else echo '<option> L:</option>';
+					if ( $_SESSION['account']->smb_homedrive == 'M:' ) echo '<option selected> M:</option>'; else echo '<option> M:</option>';
+					if ( $_SESSION['account']->smb_homedrive == 'N:' ) echo '<option selected> N:</option>'; else echo '<option> N:</option>';
+					if ( $_SESSION['account']->smb_homedrive == 'O:' ) echo '<option selected> O:</option>'; else echo '<option> O:</option>';
+					if ( $_SESSION['account']->smb_homedrive == 'P:' ) echo '<option selected> P:</option>'; else echo '<option> P:</option>';
+					if ( $_SESSION['account']->smb_homedrive == 'Q:' ) echo '<option selected> Q:</option>'; else echo '<option> Q:</option>';
+					if ( $_SESSION['account']->smb_homedrive == 'R:' ) echo '<option selected> R:</option>'; else echo '<option> R:</option>';
+					if ( $_SESSION['account']->smb_homedrive == 'S:' ) echo '<option selected> S:</option>'; else echo '<option> S:</option>';
+					if ( $_SESSION['account']->smb_homedrive == 'T:' ) echo '<option selected> T:</option>'; else echo '<option> T:</option>';
+					if ( $_SESSION['account']->smb_homedrive == 'U:' ) echo '<option selected> U:</option>'; else echo '<option> U:</option>';
+					if ( $_SESSION['account']->smb_homedrive == 'V:' ) echo '<option selected> V:</option>'; else echo '<option> V:</option>';
+					if ( $_SESSION['account']->smb_homedrive == 'W:' ) echo '<option selected> W:</option>'; else echo '<option> W:</option>';
+					if ( $_SESSION['account']->smb_homedrive == 'X:' ) echo '<option selected> X:</option>'; else echo '<option> X:</option>';
+					if ( $_SESSION['account']->smb_homedrive == 'Y:' ) echo '<option selected> Y:</option>'; else echo '<option> Y:</option>';
+					if ( $_SESSION['account']->smb_homedrive == 'Z:' ) echo '<option selected> Z:</option>'; else echo '<option> Z:</option>';
 				echo	'</select></td>'."\n".'<td>
 					<a href="help.php?HelpNumber=433" target="lamhelp">'._('Help').'</a>
 					</td></tr>'."\n".'<tr><td>';
