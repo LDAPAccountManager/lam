@@ -86,7 +86,11 @@ for ($m = 0; $m < sizeof($modules); $m++) {
 		for ($l = 0; $l < sizeof($options[$modules[$m]]); $l++) {  // option lines
 			echo "<tr>\n";
 			for ($o = 0; $o < sizeof($options[$modules[$m]][$l]); $o++) {  // line parts
-				echo "<td>";
+				echo "<td";
+				if (isset($options[$modules[$m]][$l][$o]['align'])) echo " align=\"" . $options[$modules[$m]][$l][$o]['align'] . "\"";
+				if (isset($options[$modules[$m]][$l][$o]['colspan'])) echo " colspan=\"" . $options[$modules[$m]][$l][$o]['colspan'] . "\"";
+				if (isset($options[$modules[$m]][$l][$o]['rowspan'])) echo " rowspan=\"" . $options[$modules[$m]][$l][$o]['rowspan'] . "\"";
+				echo ">";
 				print_option($options[$modules[$m]][$l][$o], $modules[$m], $old_options);
 				echo "</td>\n";
 			}
@@ -94,10 +98,10 @@ for ($m = 0; $m < sizeof($modules); $m++) {
 		}
 		echo "</table>\n";
 	echo "</fieldset>\n";
+	echo "<br>";
 }
 
 // profile name and submit/abort buttons
-echo "<p>&nbsp;</p>";
 echo ("<table border=0>\n");
 echo ("<tr>\n");
 echo ("<td><b>" . _("Profile name") . ":</b></td>\n");
@@ -164,6 +168,7 @@ function print_option($values, $modulename, $old_options) {
 			break;
 		// select box
 		case 'select':
+			if (! is_numeric($values['size'])) $values['size'] = 1;// correct size if needed
 			if ($values['multiple']) {
 				echo "<select name=\"" . $values['name'] . "[]\" size=\"" . $values['size'] . "\" multiple>\n";
 				$_SESSION['profile_types'][$values['name']] = "multiselect";
