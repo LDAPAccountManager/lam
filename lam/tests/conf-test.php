@@ -20,7 +20,7 @@ $Id$
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 	This test reads all preferences from lam.conf. Then it writes new values and verifies
-	if they were written. At last the old values are restored.  
+	if they were written. At last the old values are restored.
 */
 
 include ("../config/config.php");
@@ -30,9 +30,7 @@ $conf->printconf();
 echo ("<br><br><big><b> Starting Test...</b></big><br><br>");
 // now all prferences are loaded
 echo ("Loading preferences...");
-$SSL = $conf->get_SSL();
-$Host = $conf->get_Host();
-$Port = $conf->get_Port();
+$ServerURL = $conf->get_ServerURL();
 $Admins = $conf->get_Admins();
 $Passwd = $conf->get_Passwd();
 $Adminstring = $conf->get_Adminstring();
@@ -45,18 +43,13 @@ $MinGID = $conf->get_minGID();
 $MaxGID = $conf->get_maxGID();
 $MinMachine = $conf->get_minMachine();
 $MaxMachine = $conf->get_maxMachine();
-$DefaultShell = $conf->get_defaultShell();
-$ShellList = $conf->get_shellList();
 $userlistAttributes = $conf->get_userlistAttributes();
 $grouplistAttributes = $conf->get_grouplistAttributes();
 $hostlistAttributes = $conf->get_hostlistAttributes();
 echo ("done<br>");
 // next we modify them and save lam.conf
 echo ("Changing preferences...");
-if ($conf->get_SSL == "True") $conf->set_SSL("False");
-else $conf->set_SSL("True");
-$conf->set_Host("ldap://test.org");
-$conf->set_Port("11223344");
+$conf->set_ServerURL("ldap://123.345.678.123:777");
 $conf->set_Admins(array("uid=test,o=test,dc=org","uid=root,o=test2,c=de"));
 $conf->set_Passwd("123456abcde");
 $conf->set_Adminstring("uid=test,o=test,dc=org;uid=root,o=test2,c=de");
@@ -69,8 +62,6 @@ $conf->set_minGID("253");
 $conf->set_maxGID("1234");
 $conf->set_minMachine("3");
 $conf->set_maxMachine("47");
-$conf->set_defaultShell("/usr/bin/test");
-$conf->set_shellList("/usr/bin/test;/usr/bin/false");
 $conf->set_userlistAttributes("#uid;#cn");
 $conf->set_grouplistAttributes("#gidNumber;#cn;#memberUID");
 $conf->set_hostlistAttributes("#cn;#uid;#description");
@@ -79,9 +70,7 @@ echo ("done<br>");
 // at last all preferences are read from lam.conf and compared
 echo ("Loading and comparing...");
 $conf = new Config();
-if ($conf->get_SSL() == $SSL) echo ("<br><font color=\"#FF0000\">Saving SSL failed!</font><br>");
-if ($conf->get_Host() != "ldap://test.org") echo ("<br><font color=\"#FF0000\">Saving host failed!</font><br>");
-if ($conf->get_Port() != "11223344") echo ("<br><font color=\"#FF0000\">Saving port failed!</font><br>");
+if ($conf->get_ServerURL() != "ldap://123.345.678.123:777") echo ("<br><font color=\"#FF0000\">Saving ServerURL failed!</font><br>");
 $adm_arr = $conf->get_Admins();
 if ($adm_arr[0] != "uid=test,o=test,dc=org") echo ("<br><font color=\"#FF0000\">Saving admins failed!" . $adm_arr[0] . "</font><br>");
 if ($adm_arr[1] != "uid=root,o=test2,c=de") echo ("<br><font color=\"#FF0000\">Saving admins failed!</font><br>");
@@ -96,17 +85,13 @@ if ($conf->get_minGID() != "253") echo ("<br><font color=\"#FF0000\">Saving minG
 if ($conf->get_maxGID() != "1234") echo ("<br><font color=\"#FF0000\">Saving maxGID failed!</font><br>");
 if ($conf->get_minMachine() != "3") echo ("<br><font color=\"#FF0000\">Saving maxMachine failed!</font><br>");
 if ($conf->get_maxMachine() != "47") echo ("<br><font color=\"#FF0000\">Saving minMachine failed!</font><br>");
-if ($conf->get_defaultShell() != "/usr/bin/test") echo ("<br><font color=\"#FF0000\">Saving default shell failed!</font><br>");
-if ($conf->get_shellList() != "/usr/bin/test;/usr/bin/false") echo ("<br><font color=\"#FF0000\">Saving shellList failed!</font><br>");
 if ($conf->get_userlistAttributes() != "#uid;#cn") echo ("<br><font color=\"#FF0000\">Saving userlistAttributes failed!</font><br>");
 if ($conf->get_grouplistAttributes() != "#gidNumber;#cn;#memberUID") echo ("<br><font color=\"#FF0000\">Saving grouplistAttributes failed!</font><br>");
 if ($conf->get_hostlistAttributes() != "#cn;#uid;#description") echo ("<br><font color=\"#FF0000\">Saving hostlistAttributes failed!</font><br>");
 echo ("done<br>");
 // restore old values
 echo ("Restoring old preferences...");
-$conf->set_SSL($SSL);
-$conf->set_Host($Host);
-$conf->set_Port($Port);
+$conf->set_ServerURL($ServerURL);
 $conf->set_Admins($Admins);
 $conf->set_Passwd($Passwd);
 $conf->set_Adminstring($Adminstring);
@@ -119,8 +104,6 @@ $conf->set_minGID($MinGID);
 $conf->set_maxGID($MaxGID);
 $conf->set_minMachine($MinMachine);
 $conf->set_maxMachine($MaxMachine);
-$conf->set_defaultShell($DefaultShell);
-$conf->set_shellList($ShellList);
 $conf->set_userlistAttributes($userlistAttributes);
 $conf->set_grouplistAttributes($grouplistAttributes);
 $conf->set_hostlistAttributes($hostlistAttributes);
@@ -131,4 +114,4 @@ echo ("<br><b><font color=\"#00C000\">Test is complete.</font></b>");
 echo ("<br><br><b> Current Config</b><br><br>");
 $conf->printconf();
 
-?> 
+?>
