@@ -44,11 +44,14 @@ while ($stay<7) {
 	}
 
 // returns the alias name of a module
-function getModuleAlias($name) {
-	$eval = '$return = '.$name.'::get_alias();';
-	eval ($eval);
-	return $return;
-	}
+function getModuleAlias($name, $scope) {
+	return call_user_func(array($name, "get_alias"), $scope);
+}
+
+// returns if the module is a base module
+function is_base_module($name, $scope) {
+	return call_user_func(array($name, "is_base_module"), $scope);
+}
 
 // returns a hash array (module name => dependencies) of all user module dependencies
 // dependencies contains an array with two sub arrays: depends, conflicts
@@ -69,6 +72,62 @@ function getModulesDependencies($scope) {
 	}
 
 
+// checks if there are missing dependencies between modules
+// $selected is an array of selected module names
+// $deps is an array of module dependencies
+// returns false if no misssing dependency was found
+// returns an array of array(selected module, depending module) if missing dependencies were found
+function check_module_depends($selected, $deps) {
+	$ret = array();
+	for ($m = 0; $m < sizeof($selected); $m++) {  // check selected modules
+		for ($i = 0; $i < sizeof($deps[$selected[$m]]['depends']); $i++) {  // check dependencies of module
+			// check if we have OR-combined modules
+			if (is_array($deps[$selected[$m]]['depends'][$i])) {
+				// one of the elements is needed
+				$found = false;
+				$depends = $deps[$selected[$m]]['depends'][$i];
+				for ($d = 0; $d < sizeof($depends); $d++) {
+					if (in_array($depends[$d], $selected)) {
+						$found = true;
+						break;
+					}
+				}
+				if (! $found) {
+					// missing dependency, add to return value
+					$ret[] = array($selected[$m], implode(" || ", $depends));
+				}
+			}
+			else {
+				// single dependency
+				if (! in_array($deps[$selected[$m]]['depends'][$i], $selected)) {
+					// missing dependency, add to return value
+					$ret[] = array($selected[$m], $deps[$selected[$m]]['depends'][$i]);
+				}
+			}
+		}
+	}
+	if (sizeof($ret) > 0) return $ret;
+	else return false;
+}
+
+// checks if there are conflicts between modules
+// $selected is an array of selected module names
+// $deps is an array of module dependencies
+// returns false if no conflict was found
+// returns an array of array(selected module, conflicting module) if conflicts were found
+function check_module_conflicts($selected, $deps) {
+	$ret = array();
+	for ($m = 0; $m < sizeof($selected); $m++) {
+		for ($i = 0; $i < sizeof($deps[$selected[$m]]['conflicts']); $i++) {
+			if (in_array($deps[$selected[$m]]['conflicts'][$i], $selected)) {
+				$ret[] = array($selected[$m], $deps[$selected[$m]]['conflicts'][$i]);
+			}
+		}
+	}
+	if (sizeof($ret) > 0) return $ret;
+	else return false;
+}
+
 // returns an array with all available user module names
 function getAvailableModules($scope) {
 	// scope = suer, group, host, ....
@@ -79,7 +138,7 @@ function getAvailableModules($scope) {
 			$entry = substr($entry, 0, strpos($entry, '.'));
 			$eval = '$module = '.$entry."::get_dependencies(".$scope.");";
 			eval ($eval);
-			if ($module != -1) $return[] = getModuleAlias($entry);
+			if ($module != -1) $return[] = getModuleAlias($entry, $scope);
 			}
 	return $return;
 	}
@@ -103,7 +162,7 @@ function checkProfileOptions($scope, $post) {
 		}
 	return $_SESSION['profile_account']->process_profile($post);
 	}
-	
+
 
 class accountContainer {
 	// Constructor
@@ -575,7 +634,7 @@ class accountContainer {
 	*/
 	function load_account($dn) {
 		$function = '$modules = $_SESSION[$this->config]->get_'.ucfirst($this->type).'Modules();';
-		eval ($function); 
+		eval ($function);
 		$search = substr($dn, 0, strpos($dn, ','));
 		$result = ldap_search($_SESSION[$this->ldap]->server(), $dn, $search);
 		$entry = ldap_first_entry($_SESSION[$this->ldap]->server(), $result);
@@ -652,7 +711,7 @@ class accountContainer {
 	*/
 	function new_account() {
 		$function = '$modules = $_SESSION[$this->config]->get_'.ucfirst($this->type).'Modules();';
-		eval ($function); 
+		eval ($function);
 		foreach ($modules as $module) $this->module[$module] = new $module($this->base);
 
 		$module = array_keys ($this->module);
