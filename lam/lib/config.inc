@@ -94,16 +94,16 @@ class Config {
   var $Adminstring;
 
   // suffix for users
-  var $Suff_users;
+  var $usersuffix;
 
   // suffix for groups
-  var $Suff_groups;
+  var $groupsuffix;
 
   // suffix for Samba hosts
-  var $Suff_hosts;
+  var $hostsuffix;
 
   // suffix for domains (Samba 3)
-  var $Suff_domains;
+  var $domainsuffix;
 
   // minimum/maximum numbers for UID, GID and UID of Samba Hosts
   var $MinUID;
@@ -177,19 +177,19 @@ class Config {
 				continue;
 				}
 				if (strtolower(substr($line, 0, 12)) == "usersuffix: ") {
-				$this->Suff_users = chop(substr($line, 12, strlen($line)-12));
+				$this->usersuffix = chop(substr($line, 12, strlen($line)-12));
 				continue;
 				}
 				if (strtolower(substr($line, 0, 13)) == "groupsuffix: ") {
-				$this->Suff_groups = chop(substr($line, 13, strlen($line)-13));
+				$this->groupsuffix = chop(substr($line, 13, strlen($line)-13));
 				continue;
 				}
 				if (strtolower(substr($line, 0, 12)) == "hostsuffix: ") {
-				$this->Suff_hosts = chop(substr($line, 12, strlen($line)-12));
+				$this->hostsuffix = chop(substr($line, 12, strlen($line)-12));
 				continue;
 				}
 				if (strtolower(substr($line, 0, 14)) == "domainsuffix: ") {
-				$this->Suff_domains = chop(substr($line, 14, strlen($line)-14));
+				$this->domainsuffix = chop(substr($line, 14, strlen($line)-14));
 				continue;
 				}
 				if (strtolower(substr($line, 0, 8)) == "minuid: ") {
@@ -296,22 +296,22 @@ class Config {
 					continue;
 				}
 				if (strtolower(substr($file_array[$i], 0, 12)) == "usersuffix: ") {
-					$file_array[$i] = "usersuffix: " . $this->Suff_users . "\n";
+					$file_array[$i] = "usersuffix: " . $this->usersuffix . "\n";
 					$save_suffusr = True;
 					continue;
 				}
 				if (strtolower(substr($file_array[$i], 0, 13)) == "groupsuffix: ") {
-					$file_array[$i] = "groupsuffix: " . $this->Suff_groups . "\n";
+					$file_array[$i] = "groupsuffix: " . $this->groupsuffix . "\n";
 					$save_suffgrp = True;
 					continue;
 				}
 				if (strtolower(substr($file_array[$i], 0, 12)) == "hostsuffix: ") {
-					$file_array[$i] = "hostsuffix: " . $this->Suff_hosts . "\n";
+					$file_array[$i] = "hostsuffix: " . $this->hostsuffix . "\n";
 					$save_suffhst = True;
 					continue;
 				}
 				if (strtolower(substr($file_array[$i], 0, 14)) == "domainsuffix: ") {
-					$file_array[$i] = "domainsuffix: " . $this->Suff_domains . "\n";
+					$file_array[$i] = "domainsuffix: " . $this->domainsuffix . "\n";
 					$save_suffdom = True;
 					continue;
 				}
@@ -398,13 +398,13 @@ class Config {
 								"# names have to be seperated by semicolons\n" .
 								"# e.g. admins: cn=admin,dc=yourdomain,dc=org;cn=root,dc=yourdomain,dc=org\n" . "admins: " . $this->Adminstring . "\n");
 			if (!$save_suffusr == True) array_push($file_array, "\n\n# suffix of users\n" .
-								"# e.g. ou=People,dc=yourdomain,dc=org\n" . "usersuffix: " . $this->Suff_users . "\n");
+								"# e.g. ou=People,dc=yourdomain,dc=org\n" . "usersuffix: " . $this->usersuffix . "\n");
 			if (!$save_suffgrp == True) array_push($file_array, "\n\n# suffix of groups\n" .
-								"# e.g. ou=Groups,dc=yourdomain,dc=org\n" . "groupsuffix: " . $this->Suff_groups . "\n");
+								"# e.g. ou=Groups,dc=yourdomain,dc=org\n" . "groupsuffix: " . $this->groupsuffix . "\n");
 			if (!$save_suffhst == True) array_push($file_array, "\n\n# suffix of Samba hosts\n" .
-								"# e.g. ou=machines,dc=yourdomain,dc=org\n" . "hostsuffix: " . $this->Suff_hosts . "\n");
+								"# e.g. ou=machines,dc=yourdomain,dc=org\n" . "hostsuffix: " . $this->hostsuffix . "\n");
 			if (!$save_suffdom == True) array_push($file_array, "\n\n# suffix of Samba 3 domains\n" .
-								"# e.g. ou=domains,dc=yourdomain,dc=org\n" . "domainsuffix: " . $this->Suff_domains . "\n");
+								"# e.g. ou=domains,dc=yourdomain,dc=org\n" . "domainsuffix: " . $this->domainsuffix . "\n");
 			if (!$save_minUID == True) array_push($file_array, "\n\n# minimum UID number\n" . "minUID: " . $this->MinUID . "\n");
 			if (!$save_maxUID == True) array_push($file_array, "\n\n# maximum UID number\n" . "maxUID: " . $this->MaxUID . "\n");
 			if (!$save_minGID == True) array_push($file_array, "\n\n# minimum GID number\n" . "minGID: " . $this->MinGID . "\n");
@@ -440,10 +440,10 @@ class Config {
 		echo "<b>" . _("Server address") . ": </b>" . $this->ServerURL . "<br>";
 		echo "<b>" . _("Cache timeout") . ": </b>" . $this->cachetimeout . "<br>";
 		echo "<b>" . _("Samba 3.x schema") . ": </b>" . $this->samba3 . "<br>";
-		echo "<b>" . _("UserSuffix") . ": </b>" . $this->Suff_users . "<br>";
-		echo "<b>" . _("GroupSuffix") . ": </b>" . $this->Suff_groups . "<br>";
-		echo "<b>" . _("HostSuffix") . ": </b>" . $this->Suff_hosts . "<br>";
-		echo "<b>" . _("DomainSuffix") . ": </b>" . $this->Suff_domains . "<br>";
+		echo "<b>" . _("UserSuffix") . ": </b>" . $this->usersuffix . "<br>";
+		echo "<b>" . _("GroupSuffix") . ": </b>" . $this->groupsuffix . "<br>";
+		echo "<b>" . _("HostSuffix") . ": </b>" . $this->hostsuffix . "<br>";
+		echo "<b>" . _("DomainSuffix") . ": </b>" . $this->domainsuffix . "<br>";
 		echo "<b>" . _("Minimum UID number") . ": </b>" . $this->MinUID . "<br>";
 		echo "<b>" . _("Maximum UID number") . ": </b>" . $this->MaxUID . "<br>";
 		echo "<b>" . _("Minimum GID number") . ": </b>" . $this->MinGID . "<br>";
@@ -509,13 +509,13 @@ class Config {
 
 	// returns the LDAP suffix where users are saved
 	function get_UserSuffix() {
-		return $this->Suff_users;
+		return $this->usersuffix;
 	}
 
 	// sets the LDAP suffix where users are saved
 	function set_UserSuffix($value) {
 		if (is_string($value) && (eregi("^(([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)(,([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)*$", $value))) {
-			$this->Suff_users = $value;
+			$this->usersuffix = $value;
 		}
 		else return false;
 		return true;
@@ -523,13 +523,13 @@ class Config {
 
 	// returns the LDAP suffix where groups are saved
 	function get_GroupSuffix() {
-		return $this->Suff_groups;
+		return $this->groupsuffix;
 	}
 
 	// sets the LDAP suffix where groups are saved
 	function set_GroupSuffix($value) {
 		if (is_string($value) && (eregi("^(([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)(,([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)*$", $value))) {
-			$this->Suff_groups = $value;
+			$this->groupsuffix = $value;
 		}
 		else return false;
 		return true;
@@ -537,13 +537,13 @@ class Config {
 
 	// returns the LDAP suffix where hosts are saved
 	function get_HostSuffix() {
-		return $this->Suff_hosts;
+		return $this->hostsuffix;
 	}
 
 	// sets the LDAP suffix where hosts are saved
 	function set_HostSuffix($value) {
 		if (is_string($value) && (eregi("^(([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)(,([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)*$", $value))) {
-		$this->Suff_hosts = $value;
+		$this->hostsuffix = $value;
 	}
 		else return false;
 		return true;
@@ -551,14 +551,14 @@ class Config {
 
 	// returns the LDAP suffix where domains are saved
 	function get_DomainSuffix() {
-		return $this->Suff_domains;
+		return $this->domainsuffix;
 	}
 
 	// sets the LDAP suffix where domains are saved
 	function set_DomainSuffix($value) {
-		if (!$value && ($this->get_Samba3() == "no")) $this->Suff_domains = "";
+		if (!$value && ($this->get_Samba3() == "no")) $this->domainsuffix = "";
 		elseif (is_string($value) && (eregi("^(([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)(,([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)*$", $value))) {
-			$this->Suff_domains = $value;
+			$this->domainsuffix = $value;
 		}
 		else return false;
 		return true;
