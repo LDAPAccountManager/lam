@@ -621,7 +621,7 @@ class sambaSamAccount {
 		return $return;
 		}
 
-	function get_profileOptions($scope) {
+	function get_profileOptions() {
 		$return = array();
 		// TODO fill in correct groups
 		$return[] = array(0 => array('kind' => 'text', 'text' => _('Domain')),

@@ -24,6 +24,8 @@ $Id$
 
 */
 
+include_once("cache.inc");
+
 /* We have to include all modules
 * before start session
 */
@@ -165,15 +167,14 @@ function getAvailableModules($scope) {
 
 // $scope = user, group, host, ...
 function getProfileOptions($scope) {
-	// get module names.
-	$dir = opendir('../../lib/modules');
-	while ($entry = readdir($dir))
-		if (is_file('../../lib/modules/'.$entry)) {
-			$entry = substr($entry, 0, strpos($entry, '.'));
-			if (call_user_func(array($entry, "can_manage"), $scope)) $return[$entry] = call_user_func(array($entry, "get_profileOptions"), $scope);
-		}
-	return $return;
+	// create new account container if needed
+	if (! isset($_SESSION["profile_account_$scope"])) {
+		$_SESSION["profile_account_$scope"] = new accountContainer($scope, "profile_account_$scope");
+		$_SESSION["profile_account_$scope"]->new_account();
 	}
+	// get options
+	return $_SESSION["profile_account_$scope"]->getProfileOptions();
+}
 
 // checks if the profile options are valid
 // $scope: user, group, host, ...
@@ -224,7 +225,7 @@ class accountContainer {
 	/* This variale stores the type
 	* of account. Current unix, group, host are supported
 	*/
-	var $scope;
+	var $type;
 	var $ldap; // This is a reference to the ldap class in session
 	var $config; // This is a reference to the config class in session
 	// Localized part of HTML-Header
@@ -701,25 +702,17 @@ class accountContainer {
 		return 0;
 		}
 
-	// TODO function can be removed?
-	function display_profile($post) {
+	/**
+	* Returns an hash array containing all profile options
+	*/
+	function getProfileOptions() {
 		$return = array();
-		$post = array();
-		$module = array_keys ($this->module);
-		foreach ($module as $singlemodule) {
-			// get list of display functions.
-			$list = $this->module[$singlemodule]->pages();
-			foreach ($list as $item) {
-				$function = 'display_html_' . $item;
-				$page = $this->module[$singlemodule]->$function($post,true);
-				//eval($function);
-				foreach ( $page as $item )
-					$return[$singlemodule][] = $item;
-				//$return = array_merge($return, $page);
-				}
-			}
-		return $return;
+		$modules = array_keys($this->module);
+		foreach ($modules as $singlemodule) {
+			$return[$singlemodule] = $this->module[$singlemodule]->get_profileOptions();
 		}
+		return $return;
+	}
 
 	// TODO remove this function?
 	function proccess_profile($post) {
@@ -742,8 +735,8 @@ class accountContainer {
 	* for a new account
 	*/
 	function new_account() {
-		$function = '$modules = $_SESSION[$this->config]->get_'.ucfirst($this->type).'Modules();';
-		eval ($function);
+		$temp = ucfirst($this->type);
+		$modules = call_user_func(array(&$_SESSION['config'], 'get_' . $temp . 'Modules'));
 		foreach ($modules as $module) $this->module[$module] = new $module($this->base);
 
 		$module = array_keys ($this->module);

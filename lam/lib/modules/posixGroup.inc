@@ -585,7 +585,7 @@ class posixGroup {
 		return $return;
 		}
 
-	function get_profileOptions($scope) {
+	function get_profileOptions() {
 		$return = array();
 			$return[] = array (0 => array ( 'kind' => 'text', 'text' => _("Groupname")),
 				1 => array ('kind' => 'input', 'name' => 'cn', 'type' => 'text', 'size' => '20', 'maxlength' => '20'),

@@ -256,7 +256,7 @@ class shadowAccount {
 		return 0;
 		}
 
-	function get_profileOptions($scope) {
+	function get_profileOptions() {
 		$return = array();
 		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Password warn') ),
 			1 => array ( 'kind' => 'input', 'name' => 'shadowWarning', 'type' => 'text', 'size' => '4', 'maxlength' => '4', 'value' => $this->attributes['shadowWarning'][0] ),

@@ -286,6 +286,10 @@ class main {
 		return $return;
 		}
 
+	function get_profileOptions() {
+		return array();
+	}
+
 	}
 
 ?>

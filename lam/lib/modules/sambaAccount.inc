@@ -606,7 +606,7 @@ class sambaAccount {
 		return $return;
 		}
 
-	function get_profileOptions($scope) {
+	function get_profileOptions() {
 		$return = array();
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Domain') ),
 				1 => array ( 'kind' => 'input', 'type' => 'text', 'name' => 'domain', 'size' => '20', 'maxlength' => '255', 'value' => $this->attributes['domain'][0]),

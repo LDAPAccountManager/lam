@@ -198,8 +198,8 @@ class account {
 		return 0;
 		}
 
-	function get_profileOptions($scope) {
-		if ($scope == "host") return array();
+	function get_profileOptions() {
+		return array();
 	}
 
 	// checks if the values of a new or modified profile are valid
