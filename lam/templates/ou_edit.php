@@ -64,20 +64,12 @@ if ($_POST['submit']) {
 	}
 	// delete ou, user was sure
 	elseif (($_POST['type'] == "del_usr") && ($_POST['sure'])) {
-		// check for sub entries
-		$sr = ldap_list($_SESSION['ldap']->server(), $_POST['usersuff_d'], "ObjectClass=*", array(""));
-		$info = ldap_get_entries($_SESSION['ldap']->server(), $sr);
-		if ($info['count'] == 0) {
-			$ret = @ldap_delete($_SESSION['ldap']->server(), $_POST['usersuff_d']);
-			if ($ret) {
-				$message = _("OU deleted successfully.");
-			}
-			else {
-				$error = _("Unable to delete OU!");
-			}
+		$ret = @ldap_delete($_SESSION['ldap']->server(), $_POST['usersuff_d']);
+		if ($ret) {
+			$message = _("OU deleted successfully.");
 		}
 		else {
-			$error = _("OU is not empty!");
+			$error = _("Unable to delete OU!");
 		}
 	}
 	// do not delete ou
@@ -88,9 +80,9 @@ if ($_POST['submit']) {
 	// ask if user is sure to delete
 	elseif ($_POST['type'] == "del_usr") {
 		// check for sub entries
-		$sr = ldap_list($_SESSION['ldap']->server(), $_POST['usersuff_d'], "ObjectClass=*", array(""));
-		$info = ldap_get_entries($_SESSION['ldap']->server(), $sr);
-		if ($info['count'] == 0) {
+		$sr = @ldap_list($_SESSION['ldap']->server(), $_POST['usersuff_d'], "ObjectClass=*", array(""));
+		$info = @ldap_get_entries($_SESSION['ldap']->server(), $sr);
+		if ($sr && $info['count'] == 0) {
 			$text = "<br>\n" .
 				"<p><big><b>" . _("Do you really want to delete this OU?") . " </b></big>" . "\n" .
 				"<br>\n<p>" . $_POST['usersuff_d'] . "</p>\n" .
@@ -104,7 +96,7 @@ if ($_POST['submit']) {
 				"</form>";
 		}
 		else {
-			$error = _("OU is not empty!");
+			$error = _("OU is not empty or invalid!");
 		}
 	}
 
@@ -137,20 +129,12 @@ if ($_POST['submit']) {
 	}
 	// delete ou, user was sure
 	elseif (($_POST['type'] == "del_grp") && ($_POST['sure'])) {
-		// check for sub entries
-		$sr = ldap_list($_SESSION['ldap']->server(), $_POST['groupsuff_d'], "ObjectClass=*", array(""));
-		$info = ldap_get_entries($_SESSION['ldap']->server(), $sr);
-		if ($info['count'] == 0) {
-			$ret = @ldap_delete($_SESSION['ldap']->server(), $_POST['groupsuff_d']);
-			if ($ret) {
-				$message = _("OU deleted successfully.");
-			}
-			else {
-				$error = _("Unable to delete OU!");
-			}
+		$ret = @ldap_delete($_SESSION['ldap']->server(), $_POST['groupsuff_d']);
+		if ($ret) {
+			$message = _("OU deleted successfully.");
 		}
 		else {
-			$error = _("OU is not empty!");
+			$error = _("Unable to delete OU!");
 		}
 	}
 	// do not delete ou
@@ -161,9 +145,9 @@ if ($_POST['submit']) {
 	// ask if user is sure to delete
 	elseif ($_POST['type'] == "del_grp") {
 		// check for sub entries
-		$sr = ldap_list($_SESSION['ldap']->server(), $_POST['groupsuff_d'], "ObjectClass=*", array(""));
-		$info = ldap_get_entries($_SESSION['ldap']->server(), $sr);
-		if ($info['count'] == 0) {
+		$sr = @ldap_list($_SESSION['ldap']->server(), $_POST['groupsuff_d'], "ObjectClass=*", array(""));
+		$info = @ldap_get_entries($_SESSION['ldap']->server(), $sr);
+		if ($sr && $info['count'] == 0) {
 			$text = "<br>\n" .
 				"<p><big><b>" . _("Do you really want to delete this OU?") . " </b></big>" . "\n" .
 				"<br>\n<p>" . $_POST['groupsuff_d'] . "</p>\n" .
@@ -177,7 +161,7 @@ if ($_POST['submit']) {
 				"</form>";
 		}
 		else {
-			$error = _("OU is not empty!");
+			$error = _("OU is not empty or invalid!");
 		}
 	}
 
@@ -210,20 +194,12 @@ if ($_POST['submit']) {
 	}
 	// delete ou, user was sure
 	elseif (($_POST['type'] == "del_hst") && ($_POST['sure'])) {
-		// check for sub entries
-		$sr = ldap_list($_SESSION['ldap']->server(), $_POST['hostsuff_d'], "ObjectClass=*", array(""));
-		$info = ldap_get_entries($_SESSION['ldap']->server(), $sr);
-		if ($info['count'] == 0) {
-			$ret = @ldap_delete($_SESSION['ldap']->server(), $_POST['hostsuff_d']);
-			if ($ret) {
-				$message = _("OU deleted successfully.");
-			}
-			else {
-				$error = _("Unable to delete OU!");
-			}
+		$ret = @ldap_delete($_SESSION['ldap']->server(), $_POST['hostsuff_d']);
+		if ($ret) {
+			$message = _("OU deleted successfully.");
 		}
 		else {
-			$error = _("OU is not empty!");
+			$error = _("Unable to delete OU!");
 		}
 	}
 	// do not delete ou
@@ -234,9 +210,9 @@ if ($_POST['submit']) {
 	// ask if user is sure to delete
 	elseif ($_POST['type'] == "del_hst") {
 		// check for sub entries
-		$sr = ldap_list($_SESSION['ldap']->server(), $_POST['hostsuff_d'], "ObjectClass=*", array(""));
-		$info = ldap_get_entries($_SESSION['ldap']->server(), $sr);
-		if ($info['count'] == 0) {
+		$sr = @ldap_list($_SESSION['ldap']->server(), $_POST['hostsuff_d'], "ObjectClass=*", array(""));
+		$info = @ldap_get_entries($_SESSION['ldap']->server(), $sr);
+		if ($sr && $info['count'] == 0) {
 			$text = "<br>\n" .
 				"<p><big><b>" . _("Do you really want to delete this OU?") . " </b></big>" . "\n" .
 				"<br>\n<p>" . $_POST['hostsuff_d'] . "</p>\n" .
@@ -250,7 +226,7 @@ if ($_POST['submit']) {
 				"</form>";
 		}
 		else {
-			$error = _("OU is not empty!");
+			$error = _("OU is not empty or invalid!");
 		}
 	}
 
