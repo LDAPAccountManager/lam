@@ -209,7 +209,12 @@ function saveUserProfile($attributes, $profile) {
   	// write attributes
 		$keys = array_keys($attributes);
 		for ($i = 0; $i < sizeof($keys); $i++) {
-			$line = $keys[$i] . ": " . implode("+::+", $attributes[$keys[$i]]) . "\n";
+			if (isset($attributes[$keys[$i]])) {
+				$line = $keys[$i] . ": " . implode("+::+", $attributes[$keys[$i]]) . "\n";
+			}
+			else {
+				$line = $keys[$i] . ": ";
+			}
 			fputs($file, $line);
 		}
 		// close file
