@@ -108,16 +108,20 @@ quota module is no base module as it needs posixAccount.<br>
   </tbody>
 </table>
 <br>
-Returns a string that can be used as part of a LDAP filter. Usually
+Returns an array('or' =&gt; '...', 'and' =&gt; '...') that is used to
+build the LDAP filter. Usually
 used to filter object classes.<br>
 <span style="font-weight: bold;">$scope</span> is the account type
 ("user", "group", "host" at this time).<br>
 <br>
-All filter parts of the base modules are combined with OR and used to
-find the accounts for the lists.<br>
+All "or" filter parts of the base modules are combined with OR and then
+combined with the "and" parts.<br>
+The resulting LDAP filter will look like this:
+(&amp;(|(OR1)(OR2)(OR3))(AND1)(AND2)(AND3))<br>
 <br>
 <span style="font-weight: bold;">Example: <span
- style="font-style: italic;">return "(objectClass=posixAccount)"</span></span><br>
+ style="font-style: italic;">return "('or' =&gt;
+'objectClass=posixAccount', 'and' =&gt; '(!(uid=*$))')"</span></span><br>
 <br>
 <span style="font-weight: bold; color: rgb(255, 0, 0);">This function
 is only used for base modules. Standard modules do not need to
@@ -314,12 +318,13 @@ If no errors occured the function returns an empty array.<span
 This function is called when a PDF is to be created.<br>
 <span style="font-weight: bold;">$scope</span> is the account type
 ("user", "group", "host" at this time).<br>
-It returns the fields which are printed in the PDF file for the specified 
-account type. At the monent there is no (easy) possibility for the user to 
-decide which fields are to be displayed. Perhaps there will be a PDF config 
-tool in future releases where you can offer the user to decide which fields are 
-to be displayed on the PDF file. The format of the array to be returned is 
-described in section 5. "PDF syntax".<br>
+It returns the fields which are printed in the PDF file for the
+specified account type. At the monent there is no (easy) possibility
+for the user to decide which fields are to be displayed. Perhaps there
+will be a PDF config tool in future releases where you can offer the
+user to decide which fields are to be displayed on the PDF file. The
+format of the array to be returned is described in section 5. "PDF
+syntax".<br>
 <br>
 <h3><br>
 </h3>

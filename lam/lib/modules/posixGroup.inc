@@ -135,13 +135,14 @@ class posixGroup {
 	// returns an LDAP filter for the account lists
 	// $scope: the account type ("user", "group", "host")
 	function get_ldap_filter($scope) {
-		return "(objectClass=posixGroup)";
+		if ($scope == "group") return array('or' => "(objectClass=posixGroup)");
+		else return false;
 	}
 
 	/* This function returns a list with all required modules
 	*/
 	function get_dependencies($scope) {
-		if ($scope=='group') return array('require' => array('main'), 'conflict' => array('inetOrgPerson', 'account', 'sambaDomain') );
+		if ($scope=='group') return array('depends' => array(), 'conflicts' => array('inetOrgPerson', 'account', 'sambaDomain') );
 		return -1;
 		}
 

@@ -79,7 +79,7 @@ class account {
 	/* This function returns a list with all required modules
 	*/
 	function get_dependencies($scope) {
-		if ($scope=='host') return array('require' => array('main'), 'conflict' => array('inetOrgPerson', 'posixGroup', 'sambaDomain') );
+		if ($scope=='host') return array('depends' => array(), 'conflicts' => array('inetOrgPerson', 'posixGroup', 'sambaDomain') );
 		return -1;
 		}
 

@@ -103,7 +103,7 @@ class shadowAccount {
 	/* This function returns a list with all required modules
 	*/
 	function get_dependencies($scope) {
-		if ($scope=='user') return array('require' => array('inetOrgPerson'), 'conflict' => array() );
+		if ($scope=='user') return array('depends' => array('inetOrgPerson'), 'conflicts' => array() );
 		return -1;
 		}
 

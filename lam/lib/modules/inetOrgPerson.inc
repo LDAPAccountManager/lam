@@ -82,7 +82,7 @@ class inetOrgPerson {
 	/* This function returns a list with all required modules
 	*/
 	function get_dependencies($scope) {
-		if ($scope=='user') return array('require' => array('main', 'posixAccount'), 'conflict' => array('account', 'posixGroup', 'sambaDomain') );
+		if ($scope=='user') return array('depends' => array('posixAccount'), 'conflicts' => array('account', 'posixGroup', 'sambaDomain') );
 		return -1;
 		}
 

@@ -78,7 +78,7 @@ class main {
 	/* This function returns a list with all required modules
 	*/
 	function get_dependencies($scope) {
-		return array('require' => array(), 'conflict' => array() );
+		return array('depends' => array(), 'conflicts' => array() );
 		}
 
 	function module_ready() {

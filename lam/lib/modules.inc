@@ -37,7 +37,7 @@ while ($stay<7) {
 	if (is_dir($relative.'lib/modules')) {
 		$dir = opendir($relative.'lib/modules');
 		while ($entry = readdir($dir))
-			if (is_file($relative.'lib/modules/'.$entry)) include_once ($relative.'lib/modules/'.$entry);
+			if ((substr($entry, strlen($entry) - 4, 4) == '.inc') && is_file($relative.'lib/modules/'.$entry)) include_once ($relative.'lib/modules/'.$entry);
 		$stay=10;
 		}
 	else {
@@ -66,17 +66,26 @@ function is_base_module($name, $scope) {
 function get_ldap_filter($scope) {
 	$mods = getAvailableModules($scope);
 	$filters = array();
+	$orFilter = '';
 	for ($i = 0; $i < sizeof($mods); $i++) {
 		if (is_base_module($mods[$i], $scope)) {
-			$filters[] = call_user_func(array($mods[$i], "get_ldap_filter"), $scope);
+			$modinfo = call_user_func(array($mods[$i], "get_ldap_filter"), $scope);
+			if (isset($modinfo['or'])) $filters['or'][] = $modinfo['or'];
+			if (isset($modinfo['and'])) $filters['and'][] = $modinfo['and'];
 		}
 	}
-	if (sizeof($filters) < 2) {
-		return $filters[0];
+	// build OR filter
+	if (sizeof($filters['or']) == 1) {
+		$orFilter = $filters['or'][0];
 	}
-	else {
-		return "(&" . implode("", $filters) . ")";
+	elseif (sizeof($filters['or']) > 1) {
+		$orFilter = "(|" . implode("", $filters['or']) . ")";
 	}
+	// add built OR filter to AND filters
+	if ($orFilter != '') $filters['and'][] = $orFilter;
+	// collapse AND filters
+	if (sizeof($filters['and']) < 2) return $filters['and'][0];
+	else return "(&" . implode("", $filters['and']) . ")";
 }
 
 // returns a hash array (module name => dependencies) of all user module dependencies
@@ -85,15 +94,12 @@ function get_ldap_filter($scope) {
 // the elements of conflicts are module names
 // $scope: user, group, host, ....
 function getModulesDependencies($scope) {
-	global $relative;
-	// get module names.
-	$dir = opendir($relative . 'lib/modules');
-	while ($entry = readdir($dir))
-		if (is_file($relative . 'lib/modules/'.$entry)) {
-			$entry = substr($entry, 0, strpos($entry, '.'));
-			$deps = call_user_func(array($entry, "get_dependencies"), $scope);
-			if ($deps != -1) $return[$entry] = $deps;
-			}
+	$mods = getAvailableModules($scope);
+	$deps = array();
+	for ($i = 0; $i < sizeof($mods); $i++) {
+		$deps = call_user_func(array($mods[$i], "get_dependencies"), $scope);
+		if ($deps != -1) $return[$mods[$i]] = $deps;
+	}
 	return $return;
 	}
 
@@ -162,7 +168,7 @@ function getAvailableModules($scope) {
 	// get module names.
 	$dir = opendir($relative . 'lib/modules');
 	while ($entry = readdir($dir))
-		if (is_file($relative . 'lib/modules/'.$entry)) {
+		if ((substr($entry, strlen($entry) - 4, 4) == '.inc') && is_file($relative . 'lib/modules/'.$entry)) {
 			$entry = substr($entry, 0, strpos($entry, '.'));
 			if (call_user_func(array($entry, "can_manage"), $scope)) $return[] = $entry;
 		}

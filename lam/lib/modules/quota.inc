@@ -84,8 +84,8 @@ class quota {
 	/* This function returns a list with all required modules
 	*/
 	function get_dependencies($scope) {
-		if ($scope=='group') return array('require' => array('posixGroup'), 'conflict' => array() );
-		if ($scope=='user') return array('require' => array('posixAccount'), 'conflict' => array() );
+		if ($scope=='group') return array('depends' => array('posixGroup'), 'conflicts' => array() );
+		if ($scope=='user') return array('depends' => array('posixAccount'), 'conflicts' => array() );
 		return -1;
 		}
 

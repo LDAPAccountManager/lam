@@ -109,7 +109,7 @@ class sambaGroupMapping {
 	/* This function returns a list with all required modules
 	*/
 	function get_dependencies($scope) {
-		if ($scope=='group') return array('require' => array('posixGroup'), 'conflict' => array() );
+		if ($scope=='group') return array('depends' => array('posixGroup'), 'conflicts' => array() );
 		return -1;
 		}
 

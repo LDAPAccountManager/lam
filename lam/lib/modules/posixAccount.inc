@@ -140,20 +140,22 @@ class posixAccount {
 	}
 
 	function is_base_module($scope) {
-		return true;
+		if ($scope == "user") return true;
+		else return false;
 	}
 
 	// returns an LDAP filter for the account lists
 	// $scope: the account type ("user", "group", "host")
 	function get_ldap_filter($scope) {
-		return "(objectClass=posixAccount)";
+		if ($scope == "user") return array('or' => "(objectClass=posixAccount)", 'and' => "(!(uid=*$))");
+		else return false;
 	}
 
 	/* This function returns a list with all required modules
 	*/
 	function get_dependencies($scope) {
-		if ($scope=='host') return array('require' => array('account'), 'conflict' => array() );
-		if ($scope=='user') return array('require' => array('inetOrgPerson'), 'conflict' => array() );
+		if ($scope=='host') return array('depends' => array('account'), 'conflicts' => array() );
+		if ($scope=='user') return array('depends' => array('inetOrgPerson'), 'conflicts' => array() );
 		return -1;
 		}
 
