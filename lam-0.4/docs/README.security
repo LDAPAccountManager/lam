@@ -25,7 +25,7 @@
 4. LDAP-password protection
 
    Your LDAP-password is stored encrypted in the session file. The key and IV to decrypt
-   it are stored in two cookies. We use AES to encrypt the passwort.
+   it are stored in two cookies. We use MCrypt/AES or Blowfish to encrypt the password.
 
 
 5. Protection of new user passwords
