@@ -330,9 +330,9 @@ function display_main() {
 	echo ("<form action=\"ou_edit.php?type=user\" method=\"post\">\n");
 
 	// user OUs
-	if ($_SESSION["config"]->get_UserSuffix() != "") {
+	if ($_SESSION["config"]->get_Suffix('user') != "") {
 		// generate lists of possible suffixes
-		$usr_units = $_SESSION['ldap']->search_units($_SESSION["config"]->get_UserSuffix());
+		$usr_units = $_SESSION['ldap']->search_units($_SESSION["config"]->get_Suffix('user'));
 		echo ("<fieldset><legend><b>" . _("Users") . "</b></legend>\n");
 		echo ("<table border=0>\n");
 		// new OU
@@ -367,9 +367,9 @@ function display_main() {
 	}
 
 	// group OUs
-	if ($_SESSION["config"]->get_GroupSuffix() != "") {
+	if ($_SESSION["config"]->get_Suffix('group') != "") {
 		// generate lists of possible suffixes
-		$grp_units = $_SESSION['ldap']->search_units($_SESSION["config"]->get_GroupSuffix());
+		$grp_units = $_SESSION['ldap']->search_units($_SESSION["config"]->get_Suffix('group'));
 		echo ("<fieldset><legend><b>" . _("Groups") . "</b></legend>\n");
 		echo ("<table border=0>\n");
 		// new OU
@@ -404,9 +404,9 @@ function display_main() {
 	}
 
 	// host OUs
-	if ($_SESSION["config"]->get_HostSuffix() != "") {
+	if ($_SESSION["config"]->get_Suffix('host') != "") {
 		// generate lists of possible suffixes
-		$hst_units = $_SESSION['ldap']->search_units($_SESSION["config"]->get_HostSuffix());
+		$hst_units = $_SESSION['ldap']->search_units($_SESSION["config"]->get_Suffix('host'));
 		echo ("<fieldset><legend><b>" . _("Samba Hosts") . "</b></legend>\n");
 		echo ("<table border=0>\n");
 		// new OU
@@ -441,9 +441,9 @@ function display_main() {
 	}
 
 	// domain OUs
-	if ($_SESSION["config"]->get_DomainSuffix() != "") {
+	if ($_SESSION["config"]->get_Suffix('domain') != "") {
 		// generate lists of possible suffixes
-		$dom_units = $_SESSION['ldap']->search_units($_SESSION["config"]->get_DomainSuffix());
+		$dom_units = $_SESSION['ldap']->search_units($_SESSION["config"]->get_Suffix('domain'));
 		echo ("<fieldset><legend><b>" . _("Domains") . "</b></legend>\n");
 		echo ("<table border=0>\n");
 		// new OU

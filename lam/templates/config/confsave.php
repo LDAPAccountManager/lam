@@ -103,22 +103,22 @@ if (!$conf->set_Adminstring($admins)) {
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
-if (!$conf->set_UserSuffix($suffusers)) {
+if (!$conf->set_Suffix('user', $suffusers)) {
 	echo ("<font color=\"red\"><b>" . _("UserSuffix is invalid!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
-if (!$conf->set_GroupSuffix($suffgroups)) {
+if (!$conf->set_Suffix('group', $suffgroups)) {
 	echo ("<font color=\"red\"><b>" . _("GroupSuffix is invalid!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
-if (!$conf->set_HostSuffix($suffhosts)) {
+if (!$conf->set_Suffix('host', $suffhosts)) {
 	echo ("<font color=\"red\"><b>" . _("HostSuffix is invalid!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
-if (!$conf->set_DomainSuffix($suffdomains)) {
+if (!$conf->set_Suffix('domain', $suffdomains)) {
 	echo ("<font color=\"red\"><b>" . _("DomainSuffix is invalid!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;

@@ -75,7 +75,7 @@ echo ("<form action=\"profilecreate.php?type=$type\" method=\"post\">\n");
 
 // suffix box
 // get root suffix
-$rootsuffix = call_user_func(array($_SESSION['config'], 'get_' . ucfirst($type) . 'Suffix'));
+$rootsuffix = $_SESSION['config']->get_Suffix($type);
 // get subsuffixes
 $suffixes = array();
 foreach ($_SESSION['ldap']->search_units($rootsuffix) as $suffix) {

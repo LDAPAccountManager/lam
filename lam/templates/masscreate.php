@@ -144,7 +144,7 @@ function showMainPage($scope) {
 				echo "<ul>\n";
 					echo "<li><b>" . _("Identifier") . ":</b> " . "dn_suffix</li>\n";
 					echo "<li><b>" . _("Example value") . ":</b> " . "ou=accounts,dc=yourdomain,dc=org</li>\n";
-					echo "<li><b>" . _("Default value") . ":</b> " . call_user_func(array($_SESSION['config'], 'get_' . ucfirst($scope) . 'Suffix')) . "</li>\n";
+					echo "<li><b>" . _("Default value") . ":</b> " . $_SESSION['config']->get_Suffix($scope) . "</li>\n";
 					echo "<li>\n";
 						echo "<a href=\"help.php?HelpNumber=361\" target=\"lamhelp\">" . _("Help") . "</a>\n";
 					echo "</li>\n";
@@ -232,10 +232,10 @@ function showMainPage($scope) {
 		echo "</tr>\n";
 		echo "<tr>\n";
 			// DN attributes
-			$sampleCSV_row[] = "\"" . call_user_func(array($_SESSION['config'], 'get_' . ucfirst($scope) . 'Suffix')) . "\"";
+			$sampleCSV_row[] = "\"" . $_SESSION['config']->get_Suffix($scope) . "\"";
 			$sampleCSV_row[] = "\"" . array_shift(getRDNAttributes($scope)) . "\"";
 			echo "<td>\n";
-				echo call_user_func(array($_SESSION['config'], 'get_' . ucfirst($scope) . 'Suffix'));
+				echo $_SESSION['config']->get_Suffix($scope);
 			echo "</td>\n";
 			echo "<td>\n";
 				echo array_shift(getRDNAttributes($scope));

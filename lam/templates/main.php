@@ -41,32 +41,32 @@ $startPage = "";
 // check if all suffixes in conf-file exist
 $conf = $_SESSION['config'];
 $new_suffs = array();
-if ($conf->get_UserSuffix() && ($conf->get_UserSuffix() != "")) {
+if ($conf->get_Suffix('user') && ($conf->get_Suffix('user') != "")) {
 	$startPage = "./lists/listusers.php";
-	$info = @ldap_search($_SESSION['ldap']->server, $conf->get_UserSuffix(), "", array());
+	$info = @ldap_search($_SESSION['ldap']->server, $conf->get_Suffix('user'), "", array());
 	$res = @ldap_get_entries($_SESSION['ldap']->server, $info);
-	if (!$res && !in_array($conf->get_UserSuffix(), $new_suffs)) $new_suffs[] = $conf->get_UserSuffix();
+	if (!$res && !in_array($conf->get_Suffix('user'), $new_suffs)) $new_suffs[] = $conf->get_Suffix('user');
 }
-if ($conf->get_GroupSuffix() && ($conf->get_GroupSuffix() != "")) {
+if ($conf->get_Suffix('group') && ($conf->get_Suffix('group') != "")) {
 	if ($startPage == "") {
 		$startPage = "./lists/listgroups.php";
 	}
-	$info = @ldap_search($_SESSION['ldap']->server, $conf->get_GroupSuffix(), "", array());
+	$info = @ldap_search($_SESSION['ldap']->server, $conf->get_Suffix('group'), "", array());
 	$res = @ldap_get_entries($_SESSION['ldap']->server, $info);
-	if (!$res && !in_array($conf->get_GroupSuffix(), $new_suffs)) $new_suffs[] = $conf->get_GroupSuffix();
+	if (!$res && !in_array($conf->get_Suffix('group'), $new_suffs)) $new_suffs[] = $conf->get_Suffix('group');
 }
-if ($conf->get_HostSuffix() && ($conf->get_HostSuffix() != "")) {
+if ($conf->get_Suffix('host') && ($conf->get_Suffix('host') != "")) {
 	if ($startPage == "") {
 		$startPage = "./lists/listhosts.php";
 	}
-	$info = @ldap_search($_SESSION['ldap']->server, $conf->get_HostSuffix(), "", array());
+	$info = @ldap_search($_SESSION['ldap']->server, $conf->get_Suffix('host'), "", array());
 	$res = @ldap_get_entries($_SESSION['ldap']->server, $info);
-	if (!$res && !in_array($conf->get_HostSuffix(), $new_suffs)) $new_suffs[] = $conf->get_HostSuffix();
+	if (!$res && !in_array($conf->get_Suffix('host'), $new_suffs)) $new_suffs[] = $conf->get_Suffix('host');
 }
-if ($conf->get_DomainSuffix() && ($conf->get_DomainSuffix() != "")) {
-	$info = @ldap_search($_SESSION['ldap']->server, $conf->get_DomainSuffix(), "", array());
+if ($conf->get_Suffix('domain') && ($conf->get_Suffix('domain') != "")) {
+	$info = @ldap_search($_SESSION['ldap']->server, $conf->get_Suffix('domain'), "", array());
 	$res = @ldap_get_entries($_SESSION['ldap']->server, $info);
-	if (!$res && !in_array($conf->get_DomainSuffix(), $new_suffs)) $new_suffs[] = $conf->get_DomainSuffix();
+	if (!$res && !in_array($conf->get_Suffix('domain'), $new_suffs)) $new_suffs[] = $conf->get_Suffix('domain');
 }
 
 // get encoding

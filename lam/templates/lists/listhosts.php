@@ -108,7 +108,7 @@ else $sort = strtolower($attr_array[0]);
 // check search suffix
 if ($_POST['suffix']) $suffix = $_POST['suffix'];  // new suffix selected via combobox
 elseif ($_SESSION[$scope . '_suffix']) $suffix = $_SESSION[$scope . '_suffix'];  // old suffix from session
-else $suffix = $_SESSION["config"]->get_HostSuffix();  // default suffix
+else $suffix = $_SESSION["config"]->get_Suffix($scope);  // default suffix
 
 $refresh = true;
 if (isset($_GET['norefresh'])) $refresh = false;
@@ -230,7 +230,7 @@ echo ("<br>\n");
 
 if ($refresh) {
 	// generate list of possible suffixes
-	$units = $_SESSION['ldap']->search_units($_SESSION["config"]->get_HostSuffix());
+	$units = $_SESSION['ldap']->search_units($_SESSION["config"]->get_Suffix($scope));
 }
 
 // print combobox with possible sub-DNs

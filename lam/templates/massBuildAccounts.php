@@ -165,7 +165,7 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 				// TODO check against list of possible RDN attributes
 				else {
 					$account_dn = $data[$i][$ids['dn_rdn']] . "=" . $accounts[$i][$data[$i][$ids['dn_rdn']]] . ",";
-					if ($data[$i][$ids['dn_suffix']] == "") $account_dn = $account_dn . call_user_func(array($_SESSION['config'], "get_" . ucfirst($_POST['scope']) . "Suffix"));
+					if ($data[$i][$ids['dn_suffix']] == "") $account_dn = $account_dn . $_SESSION['config']->get_Suffix($_POST['scope']);
 					else $account_dn = $account_dn . $data[$i][$ids['dn_suffix']];
 					$accounts[$i]['dn'] = $account_dn;
 				}

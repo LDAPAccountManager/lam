@@ -45,9 +45,9 @@ setlanguage();
 // add/edit domain
 if (($_GET['action'] == "edit") || ($_GET['action'] == "new")) {
 	// get list of domains
-	$domlist = search_domains($_SESSION['config']->get_domainSuffix());
+	$domlist = search_domains($_SESSION['config']->get_Suffix('domain'));
 	// get possible suffixes
-	$domsuff = $_SESSION['ldap']->search_units($_SESSION['config']->get_domainSuffix());
+	$domsuff = $_SESSION['ldap']->search_units($_SESSION['config']->get_Suffix('domain'));
 	if ($_GET['action'] == "edit") {
 		// remove "\'"
 		$_GET['DN'] = str_replace("\\", "", $_GET['DN']);
@@ -66,7 +66,7 @@ if (($_GET['action'] == "edit") || ($_GET['action'] == "new")) {
 	}
 	else {
 		$domain = new samba3domain();
-		$domain_suffix = $_SESSION['config']->get_domainSuffix();
+		$domain_suffix = $_SESSION['config']->get_Suffix('domain');
 	}
 	// display page
 	echo $_SESSION['header'];
@@ -233,7 +233,7 @@ elseif ($_POST['sub_save']) {
 	echo "<body>\n";
 	// check input
 	if ($_POST['add']) { // check for existing domains
-		$suffix = $_SESSION['config']->get_DomainSuffix();
+		$suffix = $_SESSION['config']->get_Suffix('domain');
 		$server = $_SESSION['ldap']->server;
 		$filter = "(|(sambasid=" . $_POST['dom_SID'] . ")(sambadomainname=" . $_POST['dom_name'] . "))";
 		$sr = @ldap_search($server, $suffix, $filter, array());

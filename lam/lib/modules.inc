@@ -720,7 +720,7 @@ class accountContainer {
 							
 			if (count($table)!=0) $return[] = array ( 0 => array ( 'kind' => 'table', 'value' => $table ) );
 			// loop through all suffixes
-			$rootsuffix = call_user_func(array($_SESSION['config'], 'get_' . ucfirst($this->type) . 'Suffix'));
+			$rootsuffix = $_SESSION['config']->get_Suffix($this->type);
 			foreach ($_SESSION['ldap']->search_units($rootsuffix) as $suffix) {
 				if ($this->dn == $suffix) $option_selected = $suffix;
 				$suffixes[] = $suffix;

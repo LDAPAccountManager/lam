@@ -443,7 +443,7 @@ class sambaSamAccount extends baseModule {
 		* it's psssible uidNumber has changed
 		*/
 		// Get Domain SID from name
-		$sambaDomains = search_domains($_SESSION['config']->get_domainSuffix());
+		$sambaDomains = search_domains($_SESSION['config']->get_Suffix('domain'));
 		for ($i=0; $i<count($sambaDomains); $i++ )
 			if ($this->attributes['sambaDomainName'][0] == $sambaDomains[$i]->name) {
 				$SID = $sambaDomains[$i]->SID;
@@ -502,7 +502,7 @@ class sambaSamAccount extends baseModule {
 		// Save attributes
 		$this->attributes['sambaDomainName'][0] = $post['sambaDomainName'];
 		// Get Domain SID from name
-		$sambaDomains = search_domains($_SESSION['config']->get_domainSuffix());
+		$sambaDomains = search_domains($_SESSION['config']->get_Suffix('domain'));
 		for ($i=0; $i<count($sambaDomains); $i++ )
 			if ($this->attributes['sambaDomainName'][0] == $sambaDomains[$i]->name) {
 				$SID = $sambaDomains[$i]->SID;
@@ -692,7 +692,7 @@ class sambaSamAccount extends baseModule {
 	*/
 	function display_html_attributes(&$post) {
 		// Get Domain SID from name
-		$sambaDomains = search_domains($_SESSION['config']->get_domainSuffix());
+		$sambaDomains = search_domains($_SESSION['config']->get_Suffix('domain'));
 		for ($i=0; $i<count($sambaDomains); $i++ ) {
 			$sambaDomainNames[] = $sambaDomains[$i]->name;
 			if ($this->attributes['sambaDomainName'][0] == $sambaDomains[$i]->name)
@@ -917,7 +917,7 @@ class sambaSamAccount extends baseModule {
 				2 => array('kind' => 'help', 'value' => 'workstations')
 				);
 			// domains
-			$sambaDomains = search_domains($_SESSION['config']->get_domainSuffix());
+			$sambaDomains = search_domains($_SESSION['config']->get_Suffix('domain'));
 			$sambaDomainNames = array();
 			for ($i = 0; $i < count($sambaDomains); $i++) {
 				$sambaDomainNames[] = $sambaDomains[$i]->name;
@@ -930,7 +930,7 @@ class sambaSamAccount extends baseModule {
 		}
 		elseif ($this->get_scope() == 'host') {
 			// domains
-			$sambaDomains = search_domains($_SESSION['config']->get_domainSuffix());
+			$sambaDomains = search_domains($_SESSION['config']->get_Suffix('domain'));
 			$sambaDomainNames = array();
 			for ($i = 0; $i < count($sambaDomains); $i++) {
 				$sambaDomainNames[] = $sambaDomains[$i]->name;
@@ -1011,7 +1011,7 @@ class sambaSamAccount extends baseModule {
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts) {
 		$triggered_messages = array();
 		// get list of Samba 3 domains
-		$domains = search_domains($_SESSION['config']->get_DomainSuffix());
+		$domains = search_domains($_SESSION['config']->get_Suffix('domain'));
 		// get list of Unix groups and their sambaSID + gidNumber
 		$groups = $_SESSION['cache']->get_cache('cn', 'posixGroup', 'group');
 		$groups_SID = $_SESSION['cache']->get_cache('sambaSID', 'sambaGroupMapping', 'group');

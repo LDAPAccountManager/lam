@@ -56,7 +56,7 @@ $tools[] = array(
 	);
 
 // Samba 3 domains
-if ($_SESSION['config']->get_DomainSuffix() && ($_SESSION['config']->get_DomainSuffix() != "")) {
+if ($_SESSION['config']->get_Suffix('domain') && ($_SESSION['config']->get_Suffix('domain') != "")) {
 $tools[] = array(
 		"name" => _("Samba 3 domains"),
 		"description" => _("Manages Samba 3 domain accounts."),

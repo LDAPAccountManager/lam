@@ -41,9 +41,9 @@ echo $_SESSION['header'];
 
 // number of list views (users, groups, ...)
 $lists = 0;
-if ($_SESSION['config']->get_Usersuffix() != "") $lists++;
-if ($_SESSION['config']->get_Groupsuffix() != "") $lists++;
-if ($_SESSION['config']->get_Hostsuffix() != "") $lists++;
+if ($_SESSION['config']->get_Suffix('user') != "") $lists++;
+if ($_SESSION['config']->get_Suffix('group') != "") $lists++;
+if ($_SESSION['config']->get_Suffix('host') != "") $lists++;
 if ($_SESSION['config']->get_Suffix('tree') != "") $lists++;
 
 ?>
@@ -77,13 +77,13 @@ if ($_SESSION['config']->get_Suffix('tree') != "") $lists++;
 			if ($_SESSION['config']->get_Suffix('tree') != "") {
 				echo '<td width="120" align="center"><a href="./tree/tree_view.php" target="mainpart"><big>' . _("Tree view") . '</big></a></td>' . "\n";
 			}
-			if ($_SESSION['config']->get_Usersuffix() != "") {
+			if ($_SESSION['config']->get_Suffix('user') != "") {
 				echo '<td width="120" align="center"><a href="./lists/listusers.php" target="mainpart"><big>' . _("Users") . '</big></a></td>' . "\n";
 			}
-			if ($_SESSION['config']->get_Groupsuffix() != "") {
+			if ($_SESSION['config']->get_Suffix('group') != "") {
 				echo '<td width="120" align="center"><a href="./lists/listgroups.php" target="mainpart"><big>' . _("Groups") . '</big></a></td>' . "\n";
 			}
-			if ($_SESSION['config']->get_Hostsuffix() != "") {
+			if ($_SESSION['config']->get_Suffix('host') != "") {
 				echo '<td width="120" align="center"><a href="./lists/listhosts.php" target="mainpart"><big>' . _("Hosts") . '</big></a></td>' . "\n";
 			}
 		?>

@@ -119,10 +119,10 @@ if (isset($_GET["modulesback"])) {
 	$conf->set_ServerURL($_SESSION['conf_serverurl']);
 	$conf->set_cacheTimeout($_SESSION['conf_cachetimeout']);
 	$conf->set_Adminstring($_SESSION['conf_admins']);
-	$conf->set_UserSuffix($_SESSION['conf_suffusers']);
-	$conf->set_GroupSuffix($_SESSION['conf_suffgroups']);
-	$conf->set_HostSuffix($_SESSION['conf_suffhosts']);
-	$conf->set_DomainSuffix($_SESSION['conf_suffdomains']);
+	$conf->set_Suffix('user', $_SESSION['conf_suffusers']);
+	$conf->set_Suffix('group', $_SESSION['conf_suffgroups']);
+	$conf->set_Suffix('host', $_SESSION['conf_suffhosts']);
+	$conf->set_Suffix('domain', $_SESSION['conf_suffdomains']);
 	$conf->set_Suffix('tree', $_SESSION['conf_sufftree']);
 	$conf->set_userlistAttributes($_SESSION['conf_usrlstattr']);
 	$conf->set_grouplistAttributes($_SESSION['conf_grplstattr']);
@@ -170,25 +170,25 @@ echo ("<tr><td colspan=3>&nbsp</td></tr>");
 // user suffix
 echo ("<tr><td align=\"right\"><b>".
 	_("UserSuffix") . ": </b></td>".
-	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"suffusers\" value=\"" . $conf->get_UserSuffix() . "\"></td>\n");
+	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"suffusers\" value=\"" . $conf->get_Suffix('user') . "\"></td>\n");
 echo ("<td><a href=\"../help.php?HelpNumber=202\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 $tabindex++;
 // group suffix
 echo ("<tr><td align=\"right\"><b>".
 	_("GroupSuffix") . ": </b></td>".
-	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"suffgroups\" value=\"" . $conf->get_GroupSuffix() . "\"></td>\n");
+	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"suffgroups\" value=\"" . $conf->get_Suffix('group') . "\"></td>\n");
 echo ("<td><a href=\"../help.php?HelpNumber=202\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 $tabindex++;
 // host suffix
 echo ("<tr><td align=\"right\"><b>".
 	_("HostSuffix") . ": </b></td>".
-	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"suffhosts\" value=\"" . $conf->get_HostSuffix() . "\"></td>\n");
+	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"suffhosts\" value=\"" . $conf->get_Suffix('host') . "\"></td>\n");
 echo ("<td><a href=\"../help.php?HelpNumber=202\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 $tabindex++;
 // domain suffix
 echo ("<tr><td align=\"right\"><b>".
 	_("DomainSuffix") . " **: </b></td>".
-	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"suffdomains\" value=\"" . $conf->get_DomainSuffix() . "\"></td>\n");
+	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"suffdomains\" value=\"" . $conf->get_Suffix('domain') . "\"></td>\n");
 echo ("<td><a href=\"../help.php?HelpNumber=202\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 $tabindex++;
 // tree suffix

@@ -68,7 +68,7 @@ else $trans_primary_hash = array();
 // generate hash table for group translation
 if ($trans_primary == "on" && ($refresh || (sizeof($trans_primary_hash) == 0))) {
 	$trans_primary_hash = array();
-	$grp_suffix = $_SESSION['config']->get_groupSuffix();
+	$grp_suffix = $_SESSION['config']->get_Suffix('group');
 	$filter = "objectClass=posixGroup";
 	$attrs = array("cn", "gidNumber");
 	$sr = @ldap_search($_SESSION["ldap"]->server(), $grp_suffix, $filter, $attrs);
@@ -137,7 +137,7 @@ else $sort = strtolower($attr_array[0]);
 // check search suffix
 if (isset($_POST['suffix'])) $suffix = $_POST['suffix'];  // new suffix selected via combobox
 elseif (isset($_SESSION[$scope . '_suffix'])) $suffix = $_SESSION[$scope . '_suffix'];  // old suffix from session
-else $suffix = $_SESSION["config"]->get_UserSuffix();  // default suffix
+else $suffix = $_SESSION["config"]->get_Suffix($scope);  // default suffix
 
 
 // configure search filter for LDAP
@@ -277,7 +277,7 @@ if (sizeof($info) != 0) {
 
 if ($refresh) {
 	// generate list of possible suffixes
-	$units = $_SESSION['ldap']->search_units($_SESSION["config"]->get_UserSuffix());
+	$units = $_SESSION['ldap']->search_units($_SESSION["config"]->get_Suffix($scope));
 }
 
 // print combobox with possible sub-DNs
