@@ -460,16 +460,16 @@ function get_preg($argument, $regexp) {
 					$pregexpr = '/^([[:alnum:]\\.\\ \\_-])*$/';
 					break;
 		case "homeDirectory":		// Homapath, /path/......
-					$pregexpr = '/^[/]([[:alnum:]\\.\\ \\_-)+([/]([[:alnum:]\\.\\ \\_-)+)*$/';
+					$pregexpr = '/^([\/]([[:alnum:]\\.\\ \\_-])+)+$/';
 					break;
 		case "digit":		// Normal number
 					$pregexpr = '/^[[:digit:]]*$/';
 					break;
 		case "UNC":			// UNC Path, e.g. \\server\share\folder\...
-					$pregexpr = '/^([\][\]([a-zA-Z0-9\\.-])+([\]([[:alnum:]\\.\\ \\_-])+)+)*$/';
+					$pregexpr = '/^([\\\][\\\]([a-zA-Z0-9\\.-])+)([\\\]([[:alnum:]\\.\\ \\_-])+)+$/';
 					break;
 		case "logonscript":	// path to login-script. normal unix file
-					$pregexpr = '/^(([/])*([[:alnum:]\\.\\ \\_-])+([/]([[:alnum:]\\.\\ \\_-])+)*((\\.bat)|(\\.cmd)))*$/';
+					$pregexpr = '/^(([\/])*([[:alnum:]\\.\\ \\_-])+([\/]([[:alnum:]\\.\\ \\_-])+)*((\\.bat)|(\\.cmd)))*$/';
 					break;
 		case "workstations":	// comma separated list with windows-hosts
 					$pregexpr = '/^(([a-zA-Z0-9\\.\\_-])+(,[a-zA-Z0-9\\.\\_-])*)*$/';
@@ -481,11 +481,11 @@ function get_preg($argument, $regexp) {
 					$pregexpr = '/^([a-z0-9\\.\\_-])*$/';
 					break;
 		case 'digit2':			// Same as digit but also -1
-					$pregexpr = '/^(([-][1])|([:digit:]*))$/';
+					$pregexpr = '/^(([-][1])|([[:digit:]]*))$/';
 					break;
 	}
 	if ($pregexpr!='')
-			if (preg_match($pregexpr, $argument)) return true;
+		if (preg_match($pregexpr, $argument)) return true;
 	
 	// Now we check "negative" cases, characters which are not allowed
 	$pregexpr = '';

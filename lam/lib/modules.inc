@@ -827,7 +827,8 @@ class accountContainer {
 								// merge both option arrays and sort them.
 								$options = array_merge ($input[$i][$j]['options'], $input[$i][$j]['options_selected'] );
 								$options = array_unique($options);
-								sort($options, SORT_NUMERIC);
+								if (get_preg($options[0], 'digit'))  sort($options, SORT_NUMERIC);
+									else sort($options, SORT_STRING);
 								foreach ($options as $option) {
 									if ($option!='') {
 										if (in_array($option, $input[$i][$j]['options_selected'])) echo "<option selected>" . $option . "</option>\n";

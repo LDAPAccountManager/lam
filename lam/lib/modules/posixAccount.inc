@@ -315,6 +315,7 @@ class posixAccount extends baseModule {
 				$this->groups[] = substr($DN, 3, strpos($DN, ',')-3);
 				}
 			}
+		$this->groups = sort ($this->groups);
 		$this->groups_orig = $this->groups;
 		return 0;
 		}
@@ -491,8 +492,10 @@ class posixAccount extends baseModule {
 				}
 			$dn_uids = $_SESSION['cache']->get_cache('uidNumber', 'posixAccount', '*');
 			// get_cache will return an array ( dn1 => array(uidnumber1), dn2 => array(uidnumber2), ... )
-			foreach ($dn_uids as $uid) $uids[] = $uid[0];
-			if(is_array($uids)) sort ($uids, SORT_NUMERIC);
+			if(is_array($dn_uids)) {
+				foreach ($dn_uids as $uid) $uids[] = $uid[0];
+				sort ($uids, SORT_NUMERIC);
+			}
 			if ($this->attributes['uidNumber'][0]=='') {
 				// No id-number given
 				if ($this->orig['uidNumber'][0]=='') {
