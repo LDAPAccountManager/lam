@@ -1,4 +1,3 @@
-$Id$
 
 LAM - Readme
 ============
@@ -9,7 +8,7 @@ LAM - Readme
   embedded in the interface. Access to the interface is routed through the LDAP
   server.
 
-  alpha Release 0.0.1 - May 2003
+  alpha Release 0.1 - May 2003
   ------------------------------
   http://sourceforge.net/projects/lam/
 
@@ -39,7 +38,7 @@ LAM - Readme
 
   Summary:
     with LAM you can easily manage user, group and machine accounts stored in
-    the LDAP server over a web interface. In the moment it supports
+    a LDAP server over a web interface. At the moment it supports
       -displaying the user/group/host entries
       -deleting entries
       -adding new entries
