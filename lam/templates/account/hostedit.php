@@ -36,13 +36,11 @@ setlanguage();
 
 if (!isset($_POST['varkey'])) $varkey = session_id().time();
 	else $varkey = $_POST['varkey'];
-
 if (!isset($_SESSION['account_'.$varkey.'_account_new'])) $_SESSION['account_'.$varkey.'_account_new'] = new account();
-if (!isset($_SESSION['account_'.$varkey.'_account_old'])) $_SESSION['account_'.$varkey.'_account_old'] = new account();
 
 // Register Session-Variables with references so we don't net to change to complete code if names changes
 $account_new =& $_SESSION['account_'.$varkey.'_account_new'];
-if (isset($_SESSION['account_'.$varkey.'_account_old'])) $account_old =& $_SESSION['account_'.$varkey.'_account_old'];
+if (is_object($_SESSION['account_'.$varkey.'_account_old'])) $account_old =& $_SESSION['account_'.$varkey.'_account_old'];
 
 $ldap_intern =& $_SESSION['ldap'];
 $config_intern =& $_SESSION['config'];
@@ -51,23 +49,21 @@ $header_intern =& $_SESSION['header'];
 
 
 
-if (isset($_GET['DN'])) {
-	if (isset($_GET['DN']) && $_GET['DN']!='') {
-		if (isset($_SESSION['account_'.$varkey.'_account_old'])) {
-			unset($account_old);
-			unset($_SESSION['account_'.$varkey.'_account_old']);
-			$_SESSION['account_'.$varkey.'_account_old'] = new account();
-			$account_old =& $_SESSION['account_'.$varkey.'_account_old'];
-			}
-		$DN = str_replace("\'", '',$_GET['DN']);
-		$account_new = loadhost($DN);
-		$account_new->smb_flagsW = 1;
-		$account_new->smb_flagsX = 1;
-		$account_old = $account_new;
-		// Store only DN without uid=$name
-		$account_new->general_dn = substr($account_new->general_dn, strpos($account_new->general_dn, ',')+1);
-		$_SESSION['final_changegids'] = '';
+if (isset($_GET['DN']) && $_GET['DN']!='') {
+	if (isset($_SESSION['account_'.$varkey.'_account_old'])) {
+		unset($account_old);
+		unset($_SESSION['account_'.$varkey.'_account_old']);
 		}
+	$_SESSION['account_'.$varkey.'_account_old'] = new account();
+	$account_old =& $_SESSION['account_'.$varkey.'_account_old'];
+	$DN = str_replace("\'", '',$_GET['DN']);
+	$account_new = loadhost($DN);
+	$account_new->smb_flagsW = 1;
+	$account_new->smb_flagsX = 1;
+	$account_old = $account_new;
+	// Store only DN without uid=$name
+	$account_new->general_dn = substr($account_new->general_dn, strpos($account_new->general_dn, ',')+1);
+	$_SESSION['final_changegids'] = '';
 	}
 else if (count($_POST)==0) { // Startcondition. hostedit.php was called from outside
 	$account_new = loadHostProfile('default');

@@ -38,13 +38,12 @@ if (!isset($_POST['varkey'])) $varkey = session_id().time();
 	else $varkey = $_POST['varkey'];
 
 if (!isset($_SESSION['account_'.$varkey.'_account_new'])) $_SESSION['account_'.$varkey.'_account_new'] = new account();
-if (!isset($_SESSION['account_'.$varkey.'_account_old'])) $_SESSION['account_'.$varkey.'_account_old'] = new account();
 if (!isset($_SESSION['account_'.$varkey.'_final_changegids'])) $_SESSION['account_'.$varkey.'_final_changegids'] = '';
 
 // Register Session-Variables with references so we don't net to change to complete code if names changes
 $account_new =& $_SESSION['account_'.$varkey.'_account_new'];
 $final_changegids =& $_SESSION['account_'.$varkey.'_final_changegids'];
-if (isset($_SESSION['account_'.$varkey.'_account_old'])) $account_old =& $_SESSION['account_'.$varkey.'_account_old'];
+if (is_object($_SESSION['account_'.$varkey.'_account_old'])) $account_old =& $_SESSION['account_'.$varkey.'_account_old'];
 
 $ldap_intern =& $_SESSION['ldap'];
 $config_intern =& $_SESSION['config'];
@@ -55,21 +54,20 @@ $userDN_intern =& $_SESSION['userDN'];
 if (isset($_POST['select'])) $select =& $_POST['select'];
 if (isset($_POST['load'])) $load =& $_POST['load'];
 
-if (isset($_GET['DN'])) {
-	if (isset($_GET['DN']) && $_GET['DN']!='') {
-		if (isset($_SESSION['account_'.$varkey.'_account_old'])) {
-			unset($account_old);
-			unset($_SESSION['account_'.$varkey.'_account_old']);
-			$_SESSION['account_'.$varkey.'_account_old'] = new account();
-			$account_old =& $_SESSION['account_'.$varkey.'_account_old'];
-			}
-		$DN = str_replace("\'", '',$_GET['DN']);
-		$account_new = loadgroup($DN);
-		$account_old = $account_new;
-		$account_new->general_dn = substr($account_new->general_dn, strpos($account_new->general_dn, ',')+1);
-		$final_changegids = '';
+if (isset($_GET['DN']) && $_GET['DN']!='') {
+	if (isset($_SESSION['account_'.$varkey.'_account_old'])) {
+		unset($account_old);
+		unset($_SESSION['account_'.$varkey.'_account_old']);
 		}
+	$_SESSION['account_'.$varkey.'_account_old'] = new account();
+	$account_old =& $_SESSION['account_'.$varkey.'_account_old'];
+	$DN = str_replace("\'", '',$_GET['DN']);
+	$account_new = loadgroup($DN);
+	$account_old = $account_new;
+	$account_new->general_dn = substr($account_new->general_dn, strpos($account_new->general_dn, ',')+1);
+	$final_changegids = '';
 	}
+
 else if (count($_POST)==0) { // Startcondition. groupedit.php was called from outside
 	$account_new = loadGroupProfile('default');
 	$account_new ->type = 'group';

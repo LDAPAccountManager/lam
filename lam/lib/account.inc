@@ -1604,6 +1604,8 @@ function creategroup($values) { // Will create the LDAP-Group
 		$attr['sambaGroupType'] = '2';
 		if ($values->smb_displayName) $attr['displayName'] = utf8_encode($values->smb_displayName);
 		}
+	foreach ($values->unix_memberUid as $user)
+		$attr['memberUid'][] = $user;
 	$success = ldap_add($_SESSION['ldap']->server(),$values->general_dn, $attr);
 	if ($_SESSION['config']->scriptServer) setquotas($values,'group');
 	if ($success) {
