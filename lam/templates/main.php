@@ -53,7 +53,17 @@ if ($conf->get_DomainSuffix() && ($conf->get_DomainSuffix() != "")) {
 	if (!$res && !in_array($conf->get_DomainSuffix(), $new_suffs)) $new_suffs[] = $conf->get_DomainSuffix();
 }
 
-echo $_SESSION['header'];
+// get encoding
+$lang = explode(":",$_SESSION['language']);
+$lang = $lang[1];
+
+echo "<?xml version=\"1.0\" encoding=\"$lang\"?>\n";
+echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Frameset//EN\" \"http://www.w3.org/TR/html4/frameset.dtd\">\n";
+echo "<html>\n";
+echo "<head>\n";
+echo "<meta http-equiv=\"content-type\" content=\"text/html; charset=$lang\">\n";
+echo "<meta http-equiv=\"pragma\" content=\"no-cache\">\n";
+echo "<meta http-equiv=\"cache-control\" content=\"no-cache\">\n";
 echo ("<title>LDAP Account Manager</title>\n");
 echo ("<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">");
 echo ("</head>\n");
