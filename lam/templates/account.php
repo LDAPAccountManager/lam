@@ -1034,33 +1034,35 @@ switch ($select_local) { // Select which part of page will be loaded
 					'mv ' . $_SESSION['account_old' ]->general_homedir . ' ' . $_SESSION['account']->general_homedir);
 					echo '</tr>'."\n";
 					}
-				if (!in_array('posixAccount', $_SESSION['account_old']->general_objectClass)) {
-					echo '<tr>';
-					StatusMessage('WARN', _('ObjectClass doesn\'t fit.'), _('Have to recreate entry.'));
-					echo "</tr>\n";
-					}
-				if (!in_array('shadowAccount', $_SESSION['account_old']->general_objectClass)) {
-					echo '<tr>';
-					StatusMessage('WARN', _('ObjectClass doesn\'t fit.'), _('Have to recreate entry.'));
-					echo "</tr>\n";
-					}
-				if (!in_array('inetOrgPerson', $_SESSION['account_old']->general_objectClass)) {
-					echo '<tr>';
-					StatusMessage('WARN', _('ObjectClass doesn\'t fit.'), _('Have to recreate entry.'));
-					echo "</tr>\n";
-					}
-				if ($_SESSION['config']->samba3 == 'yes') {
-					if (!in_array('sambaSamAccount', $_SESSION['account_old']->general_objectClass)) {
-						echo '<tr>';
-						StatusMessage('WARN', _('ObjectClass doesn\'t fit.'), _('Have to recreate entry.'));
-						echo "</tr>\n";
-						}}
-					else
-					if (!in_array('sambaAccount', $_SESSION['account_old']->general_objectClass)) {
+				if (isset($_SESSION['account_old']->general_objectClass)) {
+					if (!in_array('posixAccount', $_SESSION['account_old']->general_objectClass)) {
 						echo '<tr>';
 						StatusMessage('WARN', _('ObjectClass doesn\'t fit.'), _('Have to recreate entry.'));
 						echo "</tr>\n";
 						}
+					if (!in_array('shadowAccount', $_SESSION['account_old']->general_objectClass)) {
+						echo '<tr>';
+						StatusMessage('WARN', _('ObjectClass doesn\'t fit.'), _('Have to recreate entry.'));
+						echo "</tr>\n";
+						}
+					if (!in_array('inetOrgPerson', $_SESSION['account_old']->general_objectClass)) {
+						echo '<tr>';
+						StatusMessage('WARN', _('ObjectClass doesn\'t fit.'), _('Have to recreate entry.'));
+						echo "</tr>\n";
+						}
+					if ($_SESSION['config']->samba3 == 'yes') {
+						if (!in_array('sambaSamAccount', $_SESSION['account_old']->general_objectClass)) {
+							echo '<tr>';
+							StatusMessage('WARN', _('ObjectClass doesn\'t fit.'), _('Have to recreate entry.'));
+							echo "</tr>\n";
+							}}
+						else
+						if (!in_array('sambaAccount', $_SESSION['account_old']->general_objectClass)) {
+							echo '<tr>';
+							StatusMessage('WARN', _('ObjectClass doesn\'t fit.'), _('Have to recreate entry.'));
+							echo "</tr>\n";
+							}
+					}
 				break;
 			case 'group' :
 				if (($_SESSION['account_old']) && ($_SESSION['account']->general_uidNumber != $_SESSION['account_old']->general_uidNumber)) {
@@ -1075,15 +1077,17 @@ switch ($select_local) { // Select which part of page will be loaded
 					echo _('Change GID-Number of all users in group to new value');
 					echo '</td></tr>'."\n";
 					}
-				if (($_SESSION['config']->samba3 == 'yes') && (!in_array('sambaGroupMapping', $_SESSION['account_old']->general_objectClass))) {
-					echo '<tr>';
-					StatusMessage('WARN', _('ObjectClass doesn\'t fit.'), _('Have to recreate entry.'));
-					echo "</tr>\n";
-					}
-				if (!in_array('posixGroup', $_SESSION['account_old']->general_objectClass)) {
-					echo '<tr>';
-					StatusMessage('WARN', _('ObjectClass doesn\'t fit.'), _('Have to recreate entry.'));
-					echo "</tr>\n";
+				if (isset($_SESSION['account_old']->general_objectClass)) {
+					if (($_SESSION['config']->samba3 == 'yes') && (!in_array('sambaGroupMapping', $_SESSION['account_old']->general_objectClass))) {
+						echo '<tr>';
+						StatusMessage('WARN', _('ObjectClass doesn\'t fit.'), _('Have to recreate entry.'));
+						echo "</tr>\n";
+						}
+					if (!in_array('posixGroup', $_SESSION['account_old']->general_objectClass)) {
+						echo '<tr>';
+						StatusMessage('WARN', _('ObjectClass doesn\'t fit.'), _('Have to recreate entry.'));
+						echo "</tr>\n";
+						}
 					}
 				break;
 			case 'host':
@@ -1093,33 +1097,35 @@ switch ($select_local) { // Select which part of page will be loaded
 					'find / -gid ' . $_SESSION['account_old' ]->general_uidNumber . ' -exec chown ' . $_SESSION['account']->general_uidNumber . ' {} \;');
 					echo '</tr>'."\n";
 					}
-				if (!in_array('posixAccount', $_SESSION['account_old']->general_objectClass)) {
-					echo '<tr>';
-					StatusMessage('WARN', _('ObjectClass doesn\'t fit.'), _('Have to recreate entry.'));
-					echo "</tr>\n";
-					}
-				if (!in_array('shadowAccount', $_SESSION['account_old']->general_objectClass)) {
-					echo '<tr>';
-					StatusMessage('WARN', _('ObjectClass doesn\'t fit.'), _('Have to recreate entry.'));
-					echo "</tr>\n";
-					}
-				if (!in_array('account', $_SESSION['account_old']->general_objectClass)) {
-					echo '<tr>';
-					StatusMessage('WARN', _('ObjectClass doesn\'t fit.'), _('Have to recreate entry.'));
-					echo "</tr>\n";
-					}
-				if ($_SESSION['config']->samba3 == 'yes') {
-					if (!in_array('sambaSamAccount', $_SESSION['account_old']->general_objectClass)) {
-						echo '<tr>';
-						StatusMessage('WARN', _('ObjectClass doesn\'t fit.'), _('Have to recreate entry.'));
-						echo "</tr>\n";
-						}}
-					else
-					if (!in_array('sambaAccount', $_SESSION['account_old']->general_objectClass)) {
+				if (isset($_SESSION['account_old']->general_objectClass)) {
+					if (!in_array('posixAccount', $_SESSION['account_old']->general_objectClass)) {
 						echo '<tr>';
 						StatusMessage('WARN', _('ObjectClass doesn\'t fit.'), _('Have to recreate entry.'));
 						echo "</tr>\n";
 						}
+					if (!in_array('shadowAccount', $_SESSION['account_old']->general_objectClass)) {
+						echo '<tr>';
+						StatusMessage('WARN', _('ObjectClass doesn\'t fit.'), _('Have to recreate entry.'));
+						echo "</tr>\n";
+						}
+					if (!in_array('account', $_SESSION['account_old']->general_objectClass)) {
+						echo '<tr>';
+						StatusMessage('WARN', _('ObjectClass doesn\'t fit.'), _('Have to recreate entry.'));
+						echo "</tr>\n";
+						}
+					if ($_SESSION['config']->samba3 == 'yes') {
+						if (!in_array('sambaSamAccount', $_SESSION['account_old']->general_objectClass)) {
+							echo '<tr>';
+							StatusMessage('WARN', _('ObjectClass doesn\'t fit.'), _('Have to recreate entry.'));
+							echo "</tr>\n";
+							}}
+						else
+						if (!in_array('sambaAccount', $_SESSION['account_old']->general_objectClass)) {
+							echo '<tr>';
+							StatusMessage('WARN', _('ObjectClass doesn\'t fit.'), _('Have to recreate entry.'));
+							echo "</tr>\n";
+							}
+					}
 				break;
 			}
 		echo '<tr><td>'.
