@@ -4,13 +4,13 @@
 # Normally you don't have to edit this file manually. It is modified automatically when you add a new language in the Configuration-Site.
 
 # Englisch Language
-en_GB:ISO-8859-1:English (Great Britain)
+en_GB:UTF-8:English (Great Britain)
 
 # German Language
-de_DE:ISO-8859-15:Deutsch (Deutschland)
+de_DE:UTF-8:Deutsch (Deutschland)
 
 # Hungarian Language
-hu_HU:ISO-8859-2:Magyar (Magyarorszag)
+hu_HU:UTF-8:Magyar (Magyarorszag)
 
 # Japanese Language
 ja_JP.eucJP:EUC-JP:Japanese (EUC)

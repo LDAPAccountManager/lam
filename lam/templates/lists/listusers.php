@@ -291,9 +291,9 @@ if ($user_count != 0) {
 					// sort array
 					sort($userinfo[$i][strtolower($attr_array[$k])]);
 					// print all attribute entries seperated by "; "
-					echo utf8_decode(implode("; ", $userinfo[$i][strtolower($attr_array[$k])])) . "\n";
+					echo implode("; ", $userinfo[$i][strtolower($attr_array[$k])]) . "\n";
 				}
-				else echo utf8_decode($userinfo[$i][strtolower($attr_array[$k])]) . "\n";
+				else echo $userinfo[$i][strtolower($attr_array[$k])] . "\n";
 			}
 		echo ("</td>\n");
 		}

@@ -1037,21 +1037,21 @@ class accountContainer {
 			for ($j=0; $j<count($orig[$attr_names[$i]]); $j++) {
 				if (is_array($attributes[$attr_names[$i]])) {
 					if (!in_array($orig[$attr_names[$i]][$j], $attributes[$attr_names[$i]]))
-						if (($orig[$attr_names[$i]][$j]!='') && ($attr_names[$i]!='objectClass')) $torem[$attr_names[$i]][] =utf8_encode($orig[$attr_names[$i]][$j]);
+						if (($orig[$attr_names[$i]][$j]!='') && ($attr_names[$i]!='objectClass')) $torem[$attr_names[$i]][] = $orig[$attr_names[$i]][$j];
 					}
-				else if (($orig[$attr_names[$i]][$j]!='') && ($attr_names[$i]!='objectClass')) $torem[$attr_names[$i]][] = utf8_encode($orig[$attr_names[$i]][$j]);
+				else if (($orig[$attr_names[$i]][$j]!='') && ($attr_names[$i]!='objectClass')) $torem[$attr_names[$i]][] = $orig[$attr_names[$i]][$j];
 				}
 			for ($j=0; $j<count($attributes[$attr_names[$i]]); $j++) {
 				if (is_array($orig[$attr_names[$i]])) {
 					if (!in_array($attributes[$attr_names[$i]][$j], $orig[$attr_names[$i]]))
-						if ($attributes[$attr_names[$i]][$j]!='') $toadd[$attr_names[$i]][] = utf8_encode($attributes[$attr_names[$i]][$j]);
+						if ($attributes[$attr_names[$i]][$j]!='') $toadd[$attr_names[$i]][] = $attributes[$attr_names[$i]][$j];
 					}
-				else if ($attributes[$attr_names[$i]][$j]!='') $toadd[$attr_names[$i]][] = utf8_encode($attributes[$attr_names[$i]][$j]);
+				else if ($attributes[$attr_names[$i]][$j]!='') $toadd[$attr_names[$i]][] = $attributes[$attr_names[$i]][$j];
 				}
 			for ($j=0; $j<count($attributes[$attr_names[$i]]); $j++) {
 				if (is_array($orig[$attr_names[$i]]) && is_array($attributes[$attr_names[$i]])) {
 					if (($attributes[$attr_names[$i]][$j]==$orig[$attr_names[$i]][$j]) && $attributes[$attr_names[$i]][$j]!='')
-						$notchanged[$attr_names[$i]][] = utf8_encode($attributes[$attr_names[$i]][$j]);
+						$notchanged[$attr_names[$i]][] = $attributes[$attr_names[$i]][$j];
 					}
 				}
 			}

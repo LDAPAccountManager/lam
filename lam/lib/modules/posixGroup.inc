@@ -632,13 +632,13 @@ class posixGroup extends baseModule {
 			if ($this->userPassword_no) {
 				$return[$_SESSION[$this->base]->dn]['modify']['userPassword'][0] = pwd_hash('', !$this->userPassword_lock, $this->moduleSettings['posixGroup_pwdHash'][0]);
 			}
-			else $return[$_SESSION[$this->base]->dn]['modify']['userPassword'][0] = utf8_encode(pwd_hash($this->userPassword(), !$this->userPassword_lock, $this->moduleSettings['posixGroup_pwdHash'][0]));
+			else $return[$_SESSION[$this->base]->dn]['modify']['userPassword'][0] = pwd_hash($this->userPassword(), !$this->userPassword_lock, $this->moduleSettings['posixGroup_pwdHash'][0]);
 		}
 		else {
 			if (($this->attributes['userPassword'][0] != $this->orig['userPassword'][0] && $this->userPassword()!='' ) || $this->userPassword_no) {
 				// Write new password
 				if ($this->userPassword_no) $return[$_SESSION[$this->base]->dn]['modify']['userPassword'][0] = pwd_hash('', !$this->userPassword_lock, $this->moduleSettings['posixGroup_pwdHash'][0]);
-				else $return[$_SESSION[$this->base]->dn]['modify']['userPassword'][0] = utf8_encode(pwd_hash($this->userPassword(), !$this->userPassword_lock, $this->moduleSettings['posixGroup_pwdHash'][0]));
+				else $return[$_SESSION[$this->base]->dn]['modify']['userPassword'][0] = pwd_hash($this->userPassword(), !$this->userPassword_lock, $this->moduleSettings['posixGroup_pwdHash'][0]);
 			}
 			else { // No new password but old password
 			// (un)lock password
@@ -651,8 +651,8 @@ class posixGroup extends baseModule {
 				// remove trailing ! from password hash
 				if ($passwd{0} == '!') $passwd = substr($passwd, 1);
 				// Write new password
-				if ($this->userPassword_lock) $return[$_SESSION[$this->base]->dn]['modify']['userPassword'][0] = utf8_encode("$crypt!$passwd");
-				else $return[$_SESSION[$this->base]->dn]['modify']['userPassword'][0] = utf8_encode("$crypt$passwd");
+				if ($this->userPassword_lock) $return[$_SESSION[$this->base]->dn]['modify']['userPassword'][0] = "$crypt!$passwd";
+				else $return[$_SESSION[$this->base]->dn]['modify']['userPassword'][0] = "$crypt$passwd";
 			}
 			}
 		}

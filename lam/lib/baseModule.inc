@@ -117,10 +117,7 @@ class baseModule {
 			if (isset($this->attributes[$attribute])) {
 				// decode as unicode
 				$this->attributes[$attribute] = $attr[$attribute];
-				for ($i=0; $i<count($this->attributes[$attribute]); $i++) {
-					$this->attributes[$attribute][$i] = utf8_decode ($this->attributes[$attribute][$i]);
-					$this->orig[$attribute][$i] = utf8_decode ($this->attributes[$attribute][$i]);
-				}
+				$this->orig[$attribute] = $attr[$attribute];
 			}
 		}
 		$this->attributes['objectClass'] = $objectClassName;

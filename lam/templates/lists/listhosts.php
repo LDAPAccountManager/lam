@@ -240,9 +240,9 @@ if (sizeof($hst_info) > 0) {
 				if (is_array($hst_info[$i][strtolower($attr_array[$k])])) {
 					// sort array
 					sort($hst_info[$i][strtolower($attr_array[$k])]);
-					echo utf8_decode(implode("; ", $hst_info[$i][strtolower($attr_array[$k])]));
+					echo implode("; ", $hst_info[$i][strtolower($attr_array[$k])]);
 				}
-				else echo utf8_decode($hst_info[$i][strtolower($attr_array[$k])]);
+				else echo $hst_info[$i][strtolower($attr_array[$k])];
 			}
 			echo ("</td>");
 		}

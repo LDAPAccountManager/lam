@@ -256,9 +256,9 @@ if (sizeof($grp_info) > 0) {
 						unset($grp_info[$i][strtolower($attr_array[$k])]['count']);
 						// sort array
 						sort($grp_info[$i][strtolower($attr_array[$k])]);
-						echo utf8_decode(implode("; ", $grp_info[$i][strtolower($attr_array[$k])]));
+						echo implode("; ", $grp_info[$i][strtolower($attr_array[$k])]);
 					}
-					else echo utf8_decode($grp_info[$i][strtolower($attr_array[$k])]);
+					else echo $grp_info[$i][strtolower($attr_array[$k])];
 				}
 			}
 			echo ("</td>");

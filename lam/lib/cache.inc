@@ -221,9 +221,6 @@ class cache {
 					// Write new cache entry
 					$addcache = $attr;
 					unset ($addcache['objectClass']);
-					foreach ($addcache as $temp)
-						foreach ($temp as $temp2)
-							$temp2 = utf8_decode($temp2);
 					if (count($addcache)!=0) $this->ldapcache[$scope][$dn] = $attr;
 					$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
 					}
@@ -311,7 +308,7 @@ class cache {
 		if (is_array($dn_groups)) {
 			$DNs = array_keys($dn_groups);
 			foreach ($DNs as $DN)
-				$return[] = utf8_decode($dn_groups[$DN][0]);
+				$return[] = $dn_groups[$DN][0];
 			return $return;
 			}
 		return array();
@@ -327,7 +324,7 @@ class cache {
 			$DNs = array_keys($dn_groups);
 			foreach ($DNs as $DN) {
 				if ($dn_groups[$DN][0]==$gidNumber)
-					$return = utf8_decode(substr($DN, 3, strpos($DN, ',')-3));
+					$return = substr($DN, 3, strpos($DN, ',')-3);
 				}
 			return $return;
 			}

@@ -49,7 +49,7 @@ hostlistAttributes: #cn;#description;#uidNumber;#gidNumber
 maxlistentries: 30
 
 # default language (a line from config/language)
-defaultLanguage: en_GB:ISO-8859-1:English (Britain)
+defaultLanguage: en_GB:UTF-8:English (Britain)
 
 # Path to external Script
 scriptPath: 
