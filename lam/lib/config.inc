@@ -429,7 +429,7 @@ class Config {
 
   // prints current preferences
   function printconf() {
-    echo "<b>" . _("Server Address") . ": </b>" . $this->ServerURL . "<br>";
+    echo "<b>" . _("Server address") . ": </b>" . $this->ServerURL . "<br>";
     echo "<b>" . _("Samba 3.x schema") . ": </b>" . $this->samba3 . "<br>";
     echo "<b>" . _("Domain SID") . ": </b>" . $this->domainSID . "<br>";
     echo "<b>" . _("UserSuffix") . ": </b>" . $this->Suff_users . "<br>";
@@ -447,7 +447,7 @@ class Config {
     echo "<b>" . _("Attributes in Group List") . ": </b>" . $this->grouplistAttributes . "<br>";
     echo "<b>" . _("Attributes in Host List") . ": </b>" . $this->hostlistAttributes . "<br>";
     echo "<b>" . _("Maximum list entries") . ": </b>" . $this->maxlistentries . "<br>";
-    echo "<b>" . _("Default Language") . ": </b>" . $this->defaultLanguage . "<br>";
+    echo "<b>" . _("Default language") . ": </b>" . $this->defaultLanguage . "<br>";
     echo "<b>" . _("Path to external script") . ": </b>" . $this->scriptPath . "<br>";
     echo "<b>" . _("Server of external script") . ": </b>" . $this->scriptServer . "<br>";
     echo "<b>" . _("List of valid users") . ": </b>" . $this->Adminstring;

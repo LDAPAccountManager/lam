@@ -258,7 +258,7 @@ echo ("<table border=0>\n");
 
 // language
 echo ("<tr>");
-echo ("<td><b>" . _("Default Language") . ":</b></td><td>\n");
+echo ("<td><b>" . _("Default language") . ":</b></td><td>\n");
 // read available languages
 $languagefile = "../../config/language";
 if(is_file($languagefile))

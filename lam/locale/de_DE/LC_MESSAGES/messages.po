@@ -1,9 +1,8 @@
-# $Id: messages.po,v 1.2 2003/07/29 20:46:45 gruberroland Exp $
+# $Id: messages.po,v 1.3 2003/07/30 14:34:33 gruberroland Exp $
 #
 #
 # LDAP Account Manager
 #
-
 msgid ""
 msgstr ""
 "Project-Id-Version: LAM 0.3\n"
@@ -73,11 +72,12 @@ msgstr ""
 msgid "Account expire date."
 msgstr ""
 
-#: ../templates/profedit/profileuser.php:169
+#: ../templates/profedit/profileuser.php:169 ../help/help.inc:167
 msgid "Account expires on"
 msgstr ""
 
-#: ../templates/profedit/profileuser.php:197 ../help/help.inc:250
+#: ../templates/profedit/profileuser.php:197 ../help/help.inc:169
+#: ../help/help.inc:250
 msgid "Account is deactivated"
 msgstr ""
 
@@ -91,7 +91,7 @@ msgstr ""
 
 #: ../templates/config/profmanage.php:155
 msgid "Add profile:"
-msgstr ""
+msgstr "Neues Profil:"
 
 #: ../lib/account.inc:250
 msgid "Added $ to hostname."
@@ -102,7 +102,7 @@ msgstr ""
 msgid "Additional Groupmembership"
 msgstr ""
 
-#: ../templates/profedit/profileuser.php:94
+#: ../templates/profedit/profileuser.php:94 ../help/help.inc:149
 msgid "Additional groups"
 msgstr ""
 
@@ -110,11 +110,11 @@ msgstr ""
 msgid "After this date the user will no longer be able to login."
 msgstr ""
 
-#: ../templates/domain.php:147
+#: ../templates/domain.php:153 ../help/help.inc:337
 msgid "Algorithmic RID Base"
 msgstr ""
 
-#: ../templates/domain.php:220
+#: ../templates/domain.php:227
 msgid "Algorithmic RID base is not a number!"
 msgstr ""
 
@@ -127,13 +127,13 @@ msgid "All changes were successful."
 msgstr ""
 
 #: ../lib/ldap.inc:57
-msgid "Allowed Hosts"
+msgid "Allowed hosts"
 msgstr "Erlaubte PCs"
 
 #: ../templates/lists/listgroups.php:173 ../templates/lists/listhosts.php:179
 #: ../templates/lists/listusers.php:195
 msgid "Apply"
-msgstr ""
+msgstr "Ok"
 
 #: ../templates/massdetail.php:177
 msgid "Apply Changes"
@@ -153,16 +153,16 @@ msgstr "Attributnamen in der Benutzerliste"
 
 #: ../templates/masscreate.php:273
 msgid "Back"
-msgstr ""
+msgstr "Zurück"
 
 #: ../templates/config/conflogin.php:125 ../templates/config/confsave.php:237
-#: ../templates/logout.php:63 ../lib/ldap.inc:91
+#: ../templates/logout.php:63
 msgid "Back to Login"
 msgstr "Zurück zum Login"
 
 #: ../templates/ou_edit.php:246 ../templates/ou_edit.php:250
 msgid "Back to OU-Editor"
-msgstr ""
+msgstr "Zurück zum OU-Editor"
 
 #: ../templates/profedit/profilecreate.php:61
 #: ../templates/profedit/profilecreate.php:72
@@ -192,11 +192,11 @@ msgstr ""
 #: ../templates/profedit/profiledelete.php:74
 #: ../templates/profedit/profiledelete.php:110
 msgid "Back to Profile Editor"
-msgstr ""
+msgstr "Zurück zum Profileditor"
 
-#: ../templates/domain.php:258 ../templates/domain.php:286
+#: ../templates/domain.php:265 ../templates/domain.php:293
 msgid "Back to domain list"
-msgstr ""
+msgstr "Zurück zur Domänenliste"
 
 #: ../templates/lists/userlink.php:55
 msgid "Back to group list"
@@ -226,11 +226,11 @@ msgstr "Zurück zu den Einstellungen"
 
 #: ../templates/config/profmanage.php:333
 msgid "Back to profile login"
-msgstr ""
+msgstr "Zurück zum Konfigurationslogin"
 
 #: ../templates/account.php:1100
 msgid "Back to userlist"
-msgstr ""
+msgstr "Zurück zur Benutzerliste"
 
 #: ../lib/account.inc:403
 msgid "Block hard quota"
@@ -257,8 +257,8 @@ msgid "Can be left empty. Hold the CTRL-key to (de)select multiple groups."
 msgstr ""
 
 #: ../templates/delete.php:71 ../templates/masscreate.php:274
-#: ../templates/masscreate.php:305 ../templates/domain.php:167
-#: ../templates/domain.php:197 ../templates/initsuff.php:106
+#: ../templates/masscreate.php:305 ../templates/domain.php:174
+#: ../templates/domain.php:204 ../templates/initsuff.php:106
 msgid "Cancel"
 msgstr ""
 
@@ -266,9 +266,9 @@ msgstr ""
 msgid "Cannot connect to specified LDAP-Server. Try again."
 msgstr ""
 
-#: ../lib/config.inc:424 ../lib/config.inc:847
+#: ../lib/config.inc:424 ../lib/config.inc:871
 msgid "Cannot open config file!"
-msgstr ""
+msgstr "Kann Konfigurationsdatei nicht öffnen!"
 
 #: ../templates/account.php:1056
 msgid "Change GID-Number of all users in group to new value"
@@ -276,21 +276,25 @@ msgstr ""
 
 #: ../templates/login.php:237
 msgid "Change Profile"
-msgstr ""
+msgstr "Profil ändern"
 
 #: ../templates/lists/listdomains.php:194
 #: ../templates/lists/listgroups.php:251 ../templates/lists/listhosts.php:243
 #: ../templates/lists/listusers.php:259
 msgid "Change Suffix"
-msgstr ""
+msgstr "Suffix wechseln"
 
 #: ../templates/config/profmanage.php:288
 msgid "Change default profile"
-msgstr ""
+msgstr "Standardprofil wechseln"
 
 #: ../templates/config/profmanage.php:303
 msgid "Change master password"
-msgstr ""
+msgstr "Hauptpasswort ändern"
+
+#: ../help/help.inc:100
+msgid "Change password"
+msgstr "Passwort ändern"
 
 #: ../templates/massdetail.php:95
 msgid "Check Value."
@@ -298,167 +302,19 @@ msgstr ""
 
 #: ../templates/delete.php:73 ../templates/masscreate.php:127
 msgid "Commit"
-msgstr ""
-
-#: ../lib/config.inc:486
-msgid "Config->set_Admins failed!"
-msgstr "Config->set_Admins fehlgeschlagen!"
-
-#: ../lib/config.inc:501
-msgid "Config->set_Adminstring failed!"
-msgstr "Config->set_Adminstring fehlgeschlagen!"
-
-#: ../lib/config.inc:565
-msgid "Config->set_DomainSuffix failed!"
-msgstr "Config->set_DomainSuffix fehlgeschlagen!"
-
-#: ../lib/config.inc:538
-msgid "Config->set_GroupSuffix failed!"
-msgstr "Config->set_GroupSuffix fehlgeschlagen!"
-
-#: ../lib/config.inc:551
-msgid "Config->set_HostSuffix failed!"
-msgstr "Config->set_HostSuffix fehlgeschlagen!"
-
-#: ../lib/config.inc:579
-msgid "Config->set_MappingSuffix failed!"
-msgstr "Config->set_MappingSuffix fehlgeschlagen!"
-
-#: ../lib/config.inc:695
-msgid "Config->set_MaxListEntries failed!"
-msgstr ""
-
-#: ../lib/config.inc:512
-msgid "Config->set_Passwd failed!"
-msgstr "Config->set_Passwd fehlgeschlagen!"
-
-#: ../lib/config.inc:466
-msgid "Config->set_ServerURL failed!"
-msgstr "Config->set_ServerURL fehlgeschlagen!"
-
-#: ../lib/config.inc:525
-msgid "Config->set_UserSuffix failed!"
-msgstr "Config->set_UserSuffix fehlgeschlagen!"
-
-#: ../lib/config.inc:706
-msgid "Config->set_defaultLanguage failed!"
-msgstr ""
-
-#: ../lib/config.inc:761
-msgid "Config->set_domainSID failed!"
-msgstr ""
-
-#: ../lib/config.inc:671
-msgid "Config->set_grouplistAttributes failed!"
-msgstr "Config->set_grouplistAttributes fehlgeschlagen!"
-
-#: ../lib/config.inc:684
-msgid "Config->set_hostlistAttributes failed!"
-msgstr "Config->set_hostlistAttributes fehlgeschlagen!"
-
-#: ../lib/config.inc:623
-msgid "Config->set_maxGID failed!"
-msgstr "Config->set_maxGID fehlgeschlagen!"
-
-#: ../lib/config.inc:645
-msgid "Config->set_maxMachine failed!"
-msgstr "Config->set_maxMachine fehlgeschlagen!"
-
-#: ../lib/config.inc:601
-msgid "Config->set_maxUID failed!"
-msgstr "Config->set_maxUID fehlgeschlagen!"
-
-#: ../lib/config.inc:612
-msgid "Config->set_minGID failed!"
-msgstr "Config->set_minGID fehlgeschlagen!"
-
-#: ../lib/config.inc:634
-msgid "Config->set_minMachine failed!"
-msgstr "Config->set_minMachine fehlgeschlagen!"
-
-#: ../lib/config.inc:590
-msgid "Config->set_minUID failed!"
-msgstr "Config->set_minUID fehlgeschlagen!"
-
-#: ../lib/config.inc:745
-msgid "Config->set_samba3 failed!"
-msgstr ""
-
-#: ../lib/config.inc:718
-msgid "Config->set_scriptPath failed!"
-msgstr ""
-
-#: ../lib/config.inc:732
-msgid "Config->set_scriptServer failed!"
-msgstr ""
-
-#: ../lib/config.inc:658
-msgid "Config->set_userlistAttributes failed!"
-msgstr "Config->set_userlistAttributes fehlgeschlagen!"
+msgstr "Ok"
 
 #: ../templates/login.php:97
 msgid "Configuration Login"
 msgstr "Login für die Einstellungen"
 
-#: ../help/help.inc:100
-msgid "Configuration Wizard - Change Password"
-msgstr ""
-
-#: ../help/help.inc:86
-msgid "Configuration Wizard - Default Language"
-msgstr ""
-
-#: ../help/help.inc:60
-msgid "Configuration Wizard - GID Number"
-msgstr ""
-
-#: ../help/help.inc:64
-msgid "Configuration Wizard - List Attributes"
-msgstr ""
-
-#: ../help/help.inc:38
-msgid "Configuration Wizard - Login"
-msgstr ""
-
-#: ../help/help.inc:62
-msgid "Configuration Wizard - Machine Number"
-msgstr ""
-
-#: ../help/help.inc:84
-msgid "Configuration Wizard - Maximum List Entries"
-msgstr ""
-
-#: ../help/help.inc:107
-msgid "Configuration Wizard - Samba domain SID"
-msgstr ""
-
-#: ../help/help.inc:102
-msgid "Configuration Wizard - Samba version"
-msgstr ""
-
-#: ../help/help.inc:88
-msgid "Configuration Wizard - Script Path"
-msgstr ""
-
-#: ../help/help.inc:94
-msgid "Configuration Wizard - Script Server"
-msgstr ""
-
-#: ../help/help.inc:40
-msgid "Configuration Wizard - Server Address"
-msgstr ""
-
-#: ../help/help.inc:58
-msgid "Configuration Wizard - UID Number"
-msgstr ""
-
-#: ../help/help.inc:52
-msgid "Configuration Wizard - User/Group/Host suffix"
-msgstr ""
-
-#: ../help/help.inc:79
-msgid "Configuration Wizard - Valid Users"
-msgstr ""
+#: ../help/help.inc:38 ../help/help.inc:40 ../help/help.inc:52
+#: ../help/help.inc:58 ../help/help.inc:60 ../help/help.inc:62
+#: ../help/help.inc:64 ../help/help.inc:79 ../help/help.inc:84
+#: ../help/help.inc:86 ../help/help.inc:88 ../help/help.inc:94
+#: ../help/help.inc:100 ../help/help.inc:102 ../help/help.inc:107
+msgid "Configuration Wizard"
+msgstr "Einstellungen"
 
 #: ../templates/masscreate.php:134
 msgid "Confirm List"
@@ -495,7 +351,7 @@ msgstr ""
 
 #: ../templates/account.php:1079
 msgid "Create Account"
-msgstr ""
+msgstr "Account erstellen"
 
 #: ../templates/masscreate.php:312
 msgid "Create PDF-File"
@@ -507,35 +363,35 @@ msgstr ""
 
 #: ../templates/profedit/profilemain.php:154
 msgid "Create a new Samba Host Profile"
-msgstr ""
+msgstr "Neues Samba-Hostprofil erstellen"
 
 #: ../templates/profedit/profilemain.php:112
 msgid "Create a new User Profile"
-msgstr ""
+msgstr "Neues Benutzerprofil erstellen"
 
 #: ../templates/account.php:1111
 msgid "Create another group"
-msgstr ""
+msgstr "Weitere Gruppe anlegen"
 
 #: ../templates/account.php:1124
 msgid "Create another host"
-msgstr ""
+msgstr "Weiteren Host anlegen"
 
 #: ../templates/account.php:1096
 msgid "Create another user"
-msgstr ""
+msgstr "Weiteren Benutzer anlegen"
 
 #: ../templates/account.php:315
 msgid "Create new Account"
-msgstr ""
+msgstr "Neuen Account anlegen"
 
 #: ../templates/masscreate.php:55 ../templates/massdetail.php:35
 msgid "Create new Accounts"
-msgstr ""
+msgstr "Neue Accounts anlegen"
 
 #: ../templates/config/profmanage.php:77
 msgid "Created new profile."
-msgstr ""
+msgstr "Neues Profil wurde erstellt."
 
 #: ../help/help.inc:225
 msgid ""
@@ -553,13 +409,17 @@ msgstr ""
 msgid "Default Language"
 msgstr ""
 
+#: ../help/help.inc:86
+msgid "Default language"
+msgstr "Standardsprache"
+
 #: ../help/help.inc:87
 msgid ""
 "Defines the language of the login window and is sets this language the "
 "default language. Users can change the language at login."
 msgstr ""
 
-#: ../templates/domain.php:196
+#: ../templates/domain.php:203
 msgid "Delete"
 msgstr "Löschen"
 
@@ -581,12 +441,12 @@ msgstr "Lösche Host(s)"
 
 #: ../templates/profedit/profilemain.php:178
 msgid "Delete Samba Host Profile"
-msgstr ""
+msgstr "Samba-Hostprofil löschen"
 
 #: ../templates/profedit/profiledelete.php:42
 #: ../templates/profedit/profilemain.php:136
 msgid "Delete User Profile"
-msgstr ""
+msgstr "Benutzerprofil löschen"
 
 #: ../templates/lists/listusers.php:249
 msgid "Delete User(s)"
@@ -594,20 +454,20 @@ msgstr "Lösche Benutzer(s)"
 
 #: ../templates/delete.php:65
 msgid "Delete also Homedirectories"
-msgstr ""
+msgstr "Heimatverzeichnisse mitlöschen"
 
-#: ../templates/domain.php:188
+#: ../templates/domain.php:195
 msgid "Delete domain(s)?"
 msgstr "Lösche Domäne(n)"
 
 #: ../templates/profedit/profiledelete.php:73
 msgid "Delete operation canceled."
-msgstr ""
+msgstr "Löschoperation abgebrochen."
 
 #: ../templates/ou_edit.php:300 ../templates/ou_edit.php:333
-#: ../templates/ou_edit.php:366
+#: ../templates/ou_edit.php:366 ../help/help.inc:323
 msgid "Delete organizational unit"
-msgstr ""
+msgstr "Organizational Unit löschen"
 
 #: ../templates/config/profmanage.php:220
 msgid "Delete profile"
@@ -615,12 +475,16 @@ msgstr "Lösche Profil"
 
 #: ../templates/profedit/profiledelete.php:53
 #: ../templates/profedit/profiledelete.php:60
-msgid "Deleted profile: "
-msgstr ""
+msgid "Deleted profile:"
+msgstr "Gelöschtes Profil:"
+
+#: ../lib/ldap.inc:63
+msgid "Description"
+msgstr "Beschreibung"
 
 #: ../templates/masscreate.php:198
 msgid "Details"
-msgstr ""
+msgstr "Details"
 
 #: ../templates/delete.php:58
 msgid "Do you really want to delete group(s):"
@@ -633,12 +497,12 @@ msgstr ""
 #: ../templates/ou_edit.php:87 ../templates/ou_edit.php:152
 #: ../templates/ou_edit.php:217
 msgid "Do you really want to delete this OU?"
-msgstr ""
+msgstr "Soll diese OU gelöscht werden?"
 
 #: ../templates/profedit/profiledelete.php:84
 #: ../templates/profedit/profiledelete.php:96
 msgid "Do you really want to delete this profile?"
-msgstr ""
+msgstr "Soll dieses Profil gelöscht werden?"
 
 #: ../templates/delete.php:52
 msgid "Do you really want to delete user(s):"
@@ -646,9 +510,10 @@ msgstr ""
 
 #: ../templates/account.php:817 ../templates/account.php:919
 #: ../templates/profedit/profilehost.php:79
-#: ../templates/profedit/profileuser.php:316 ../help/help.inc:262
+#: ../templates/profedit/profileuser.php:316 ../help/help.inc:143
+#: ../help/help.inc:175 ../help/help.inc:262
 msgid "Domain"
-msgstr ""
+msgstr "Domäne"
 
 #: ../templates/account.php:162 ../templates/account.php:847
 #: ../templates/account.php:851
@@ -660,8 +525,7 @@ msgstr ""
 msgid "Domain Guests"
 msgstr ""
 
-#: ../templates/lists/listdomains.php:85 ../lib/account.inc:364
-#: ../lib/account.inc:377
+#: ../lib/account.inc:364 ../lib/account.inc:377
 msgid "Domain Name"
 msgstr ""
 
@@ -672,29 +536,26 @@ msgid ""
 msgstr ""
 
 #: ../templates/config/confmain.php:175 ../templates/lists/listdomains.php:86
-#: ../templates/domain.php:109
+#: ../templates/domain.php:111 ../help/help.inc:329 ../lib/config.inc:434
 msgid "Domain SID"
-msgstr ""
-
-#: ../lib/config.inc:434
-msgid "Domain SID (Samba 3 only)"
-msgstr ""
+msgstr "Domänen-SID"
 
 #: ../templates/domain.php:72
 msgid "Domain Settings"
-msgstr ""
+msgstr "Domäneneinstellungen"
 
 #: ../templates/account.php:161 ../templates/account.php:838
 #: ../templates/account.php:842
 msgid "Domain Users"
 msgstr ""
 
-#: ../templates/domain.php:77
+#: ../templates/lists/listdomains.php:85 ../templates/domain.php:77
+#: ../help/help.inc:325
 msgid "Domain name"
-msgstr ""
+msgstr "Domänenname"
 
 #: ../templates/profedit/profilecreate.php:213
-#: ../templates/profedit/profilecreate.php:247 ../templates/domain.php:213
+#: ../templates/profedit/profilecreate.php:247 ../templates/domain.php:220
 msgid "Domain name is invalid!"
 msgstr ""
 
@@ -783,12 +644,15 @@ msgid "File Upload"
 msgstr ""
 
 #: ../lib/ldap.inc:58
-msgid "First Name"
+msgid "First name"
 msgstr "Vorname"
 
-#: ../templates/account.php:512 ../help/help.inc:200 ../lib/ldap.inc:55
-#: ../lib/ldap.inc:67
+#: ../templates/account.php:512 ../help/help.inc:200
 msgid "GID Number"
+msgstr "GID Nummer"
+
+#: ../help/help.inc:60 ../lib/ldap.inc:55 ../lib/ldap.inc:67
+msgid "GID number"
 msgstr "GID Nummer"
 
 #: ../templates/account.php:1049
@@ -830,20 +694,8 @@ msgid "Group "
 msgstr ""
 
 #: ../lib/ldap.inc:70
-msgid "Group Description"
-msgstr "Gruppen Beschreibung"
-
-#: ../lib/ldap.inc:69
-msgid "Group Member DNs"
-msgstr "DNs der Gruppenmitglieder"
-
-#: ../lib/ldap.inc:68
-msgid "Group Members"
-msgstr "Gruppenmitglieder"
-
-#: ../lib/ldap.inc:66
-msgid "Group Name"
-msgstr "Gruppenname"
+msgid "Group description"
+msgstr "Gruppenbeschreibung"
 
 #: ../help/help.inc:203
 msgid "Group descriptopn. If left empty groupname will be used."
@@ -852,6 +704,18 @@ msgstr ""
 #: ../templates/config/confsave.php:152
 msgid "Group list attributes are invalid!"
 msgstr ""
+
+#: ../lib/ldap.inc:69
+msgid "Group member DNs"
+msgstr "DNs der Gruppenmitglieder"
+
+#: ../lib/ldap.inc:68
+msgid "Group members"
+msgstr "Gruppenmitglieder"
+
+#: ../lib/ldap.inc:66
+msgid "Group name"
+msgstr "Gruppenname"
 
 #: ../templates/lists/listgroups.php:284
 msgid "Group(s) found"
@@ -987,9 +851,12 @@ msgstr ""
 #: ../templates/profedit/profileuser.php:298
 #: ../templates/profedit/profileuser.php:308
 #: ../templates/profedit/profileuser.php:318
-#: ../templates/profedit/profileuser.php:332
+#: ../templates/profedit/profileuser.php:332 ../templates/domain.php:85
+#: ../templates/domain.php:103 ../templates/domain.php:119
+#: ../templates/domain.php:130 ../templates/domain.php:138
+#: ../templates/domain.php:146 ../templates/domain.php:158
 msgid "Help"
-msgstr ""
+msgstr "Hilfe"
 
 #: ../help/help.inc:31
 msgid "Hilfetest 1"
@@ -1004,7 +871,6 @@ msgid "Hilfetest 3"
 msgstr ""
 
 #: ../templates/profedit/profileuser.php:109 ../help/help.inc:188
-#: ../lib/ldap.inc:60
 msgid "Home Directory"
 msgstr "Home Verzeichnis"
 
@@ -1022,7 +888,11 @@ msgstr "Home-Verzeichnis"
 msgid "Home Drive"
 msgstr "Home-Laufwerk"
 
-#: ../templates/profedit/profileuser.php:251
+#: ../help/help.inc:151 ../lib/ldap.inc:60
+msgid "Home directory"
+msgstr "Heimatverzeichnis"
+
+#: ../templates/profedit/profileuser.php:251 ../help/help.inc:131
 msgid "Home drive"
 msgstr ""
 
@@ -1042,18 +912,6 @@ msgstr ""
 msgid "Host "
 msgstr "Host "
 
-#: ../lib/ldap.inc:76
-msgid "Host Description"
-msgstr "Host Beschreibung"
-
-#: ../lib/ldap.inc:74
-msgid "Host Name"
-msgstr "Hostname"
-
-#: ../lib/ldap.inc:73
-msgid "Host Username"
-msgstr "Host Benutzername"
-
 #: ../templates/profedit/profilehost.php:59
 msgid "Host attributes"
 msgstr ""
@@ -1062,17 +920,29 @@ msgstr ""
 msgid "Host can change Password"
 msgstr ""
 
+#: ../lib/ldap.inc:76
+msgid "Host description"
+msgstr "Hostbeschreibung"
+
 #: ../help/help.inc:213
 msgid "Host descriptopn. If left empty hostname will be used."
 msgstr ""
 
 #: ../templates/config/confsave.php:157
-msgid "Host list attributes are invalidUser list attributes are invalid!"
-msgstr ""
+msgid "Host list attributes are invalid!"
+msgstr "Attribute der Hostliste sind ungültig!"
 
 #: ../templates/account.php:893 ../help/help.inc:304 ../help/help.inc:305
 msgid "Host must change Password"
 msgstr ""
+
+#: ../lib/ldap.inc:74
+msgid "Host name"
+msgstr "Hostname"
+
+#: ../lib/ldap.inc:73
+msgid "Host username"
+msgstr "Host Benutzername"
 
 #: ../templates/config/confmain.php:142 ../lib/config.inc:437
 msgid "HostSuffix"
@@ -1306,12 +1176,12 @@ msgid "Language settings"
 msgstr ""
 
 #: ../lib/ldap.inc:59
-msgid "Last Name"
+msgid "Last name"
 msgstr "Nachname"
 
-#: ../lib/ldap.inc:50
-msgid "Ldap->Ldap failed!"
-msgstr "Ldap->Ldap fehlgeschlagen!"
+#: ../help/help.inc:64
+msgid "List attributes"
+msgstr ""
 
 #: ../templates/config/confsave.php:87
 msgid "List of admin users is empty or invalid!"
@@ -1327,10 +1197,11 @@ msgid "Load Profile"
 msgstr ""
 
 #: ../templates/config/conflogin.php:69 ../templates/login.php:200
+#: ../help/help.inc:38
 msgid "Login"
 msgstr ""
 
-#: ../templates/profedit/profileuser.php:116 ../lib/ldap.inc:61
+#: ../templates/profedit/profileuser.php:116
 msgid "Login Shell"
 msgstr ""
 
@@ -1338,13 +1209,17 @@ msgstr ""
 msgid "Login Shell*"
 msgstr ""
 
-#: ../help/help.inc:192
+#: ../help/help.inc:153 ../help/help.inc:192 ../lib/ldap.inc:61
 msgid "Login shell"
 msgstr ""
 
 #: ../templates/logout.php:52 ../templates/main_header.php:55
 msgid "Logout"
 msgstr ""
+
+#: ../help/help.inc:62
+msgid "Machine number"
+msgstr "Maschinennummer"
 
 #: ../templates/masscreate.php:311
 msgid "Mainmenu"
@@ -1410,11 +1285,12 @@ msgstr ""
 msgid "Maximum UID number"
 msgstr ""
 
-#: ../templates/config/confmain.php:241 ../lib/config.inc:449
+#: ../templates/config/confmain.php:241 ../help/help.inc:84
+#: ../lib/config.inc:449
 msgid "Maximum list entries"
 msgstr ""
 
-#: ../templates/profedit/profileuser.php:155
+#: ../templates/profedit/profileuser.php:155 ../help/help.inc:163
 msgid "Maximum password age"
 msgstr ""
 
@@ -1446,7 +1322,7 @@ msgstr ""
 msgid "Minimum UID number"
 msgstr ""
 
-#: ../templates/profedit/profileuser.php:162
+#: ../templates/profedit/profileuser.php:162 ../help/help.inc:165
 msgid "Minimum password age"
 msgstr ""
 
@@ -1527,7 +1403,7 @@ msgid "New master password:"
 msgstr ""
 
 #: ../templates/ou_edit.php:287 ../templates/ou_edit.php:320
-#: ../templates/ou_edit.php:353
+#: ../templates/ou_edit.php:353 ../help/help.inc:321
 msgid "New organizational unit"
 msgstr ""
 
@@ -1535,27 +1411,39 @@ msgstr ""
 msgid "New password set successfully."
 msgstr ""
 
-#: ../templates/domain.php:137
+#: ../templates/domain.php:142 ../help/help.inc:335
 msgid "Next Group RID"
 msgstr ""
 
-#: ../templates/domain.php:123
+#: ../templates/domain.php:126 ../help/help.inc:331
 msgid "Next RID"
 msgstr ""
 
-#: ../templates/domain.php:217
+#: ../templates/domain.php:224
 msgid "Next RID is not a number!"
 msgstr ""
 
-#: ../templates/domain.php:130
+#: ../help/help.inc:332
+msgid "Next RID to use when creating accounts."
+msgstr ""
+
+#: ../help/help.inc:336
+msgid "Next RID to use when creating groups."
+msgstr ""
+
+#: ../help/help.inc:334
+msgid "Next RID to use when creating user accounts."
+msgstr ""
+
+#: ../templates/domain.php:134 ../help/help.inc:333
 msgid "Next User RID"
 msgstr ""
 
-#: ../templates/domain.php:219
+#: ../templates/domain.php:226
 msgid "Next group RID is not a number!"
 msgstr ""
 
-#: ../templates/domain.php:218
+#: ../templates/domain.php:225
 msgid "Next user RID is not a number!"
 msgstr ""
 
@@ -1597,10 +1485,6 @@ msgstr ""
 
 #: ../templates/profedit/profilecreate.php:258
 msgid "No type specified!"
-msgstr ""
-
-#: ../lib/ldap.inc:90
-msgid "No username was specified or password is empty!"
 msgstr ""
 
 #: ../help/help.inc:49
@@ -1685,13 +1569,9 @@ msgstr ""
 msgid "OU is not empty or invalid!"
 msgstr ""
 
-#: ../help/help.inc:323
-msgid "OU-Editor - Delete organizational unit"
-msgstr ""
-
-#: ../help/help.inc:321
-msgid "OU-Editor - New organizational unit"
-msgstr ""
+#: ../help/help.inc:321 ../help/help.inc:323
+msgid "OU-Editor"
+msgstr "OU-Editor"
 
 #: ../templates/config/conflogin.php:106
 msgid "Ok"
@@ -1754,7 +1634,7 @@ msgid ""
 "and #*,.;:_-+!$%&/|?{[()]}= !"
 msgstr ""
 
-#: ../templates/profedit/profileuser.php:238
+#: ../templates/profedit/profileuser.php:238 ../help/help.inc:145
 msgid "Password does not expire"
 msgstr ""
 
@@ -1767,7 +1647,7 @@ msgstr ""
 msgid "Password doesn't expire."
 msgstr ""
 
-#: ../templates/profedit/profileuser.php:148
+#: ../templates/profedit/profileuser.php:148 ../help/help.inc:161
 msgid "Password expiry"
 msgstr ""
 
@@ -1783,7 +1663,7 @@ msgstr ""
 msgid "Password minimum age is not numeric!"
 msgstr ""
 
-#: ../templates/profedit/profileuser.php:141
+#: ../templates/profedit/profileuser.php:141 ../help/help.inc:159
 msgid "Password warning"
 msgstr ""
 
@@ -1799,7 +1679,7 @@ msgstr "Die Passwörter stimmen nicht überein!"
 msgid "Path to external script"
 msgstr ""
 
-#: ../templates/profedit/profileuser.php:282
+#: ../templates/profedit/profileuser.php:282 ../help/help.inc:134
 msgid "Path to home directory"
 msgstr ""
 
@@ -1870,7 +1750,8 @@ msgid "Primary Group*"
 msgstr ""
 
 #: ../templates/profedit/profilehost.php:64
-#: ../templates/profedit/profileuser.php:82
+#: ../templates/profedit/profileuser.php:82 ../help/help.inc:147
+#: ../help/help.inc:173
 msgid "Primary group"
 msgstr ""
 
@@ -1879,104 +1760,16 @@ msgstr ""
 msgid "Primary group name is invalid!"
 msgstr ""
 
-#: ../templates/main_header.php:47
+#: ../templates/main_header.php:47 ../help/help.inc:115 ../help/help.inc:119
+#: ../help/help.inc:123 ../help/help.inc:127 ../help/help.inc:131
+#: ../help/help.inc:134 ../help/help.inc:137 ../help/help.inc:139
+#: ../help/help.inc:141 ../help/help.inc:143 ../help/help.inc:145
+#: ../help/help.inc:147 ../help/help.inc:149 ../help/help.inc:151
+#: ../help/help.inc:153 ../help/help.inc:155 ../help/help.inc:159
+#: ../help/help.inc:161 ../help/help.inc:163 ../help/help.inc:165
+#: ../help/help.inc:167 ../help/help.inc:169 ../help/help.inc:171
+#: ../help/help.inc:173 ../help/help.inc:175
 msgid "Profile Editor"
-msgstr ""
-
-#: ../help/help.inc:167
-msgid "Profile Editor - Account expires on"
-msgstr ""
-
-#: ../help/help.inc:169
-msgid "Profile Editor - Account is deactivated"
-msgstr ""
-
-#: ../help/help.inc:149
-msgid "Profile Editor - Additional groups"
-msgstr ""
-
-#: ../help/help.inc:143 ../help/help.inc:175
-msgid "Profile Editor - Domain"
-msgstr ""
-
-#: ../help/help.inc:151
-msgid "Profile Editor - Home Directory"
-msgstr ""
-
-#: ../help/help.inc:131
-msgid "Profile Editor - Home drive"
-msgstr ""
-
-#: ../help/help.inc:153
-msgid "Profile Editor - Login Shell"
-msgstr ""
-
-#: ../help/help.inc:163
-msgid "Profile Editor - Maximum password age"
-msgstr ""
-
-#: ../help/help.inc:165
-msgid "Profile Editor - Minimum password age"
-msgstr ""
-
-#: ../help/help.inc:145
-msgid "Profile Editor - Password does not expire"
-msgstr ""
-
-#: ../help/help.inc:161
-msgid "Profile Editor - Password expiry"
-msgstr ""
-
-#: ../help/help.inc:159
-msgid "Profile Editor - Password warning"
-msgstr ""
-
-#: ../help/help.inc:134
-msgid "Profile Editor - Path to home directory"
-msgstr ""
-
-#: ../help/help.inc:173
-msgid "Profile Editor - Primary Group"
-msgstr ""
-
-#: ../help/help.inc:147
-msgid "Profile Editor - Primary group"
-msgstr ""
-
-#: ../help/help.inc:171
-msgid "Profile Editor - Profile Name"
-msgstr ""
-
-#: ../help/help.inc:137
-msgid "Profile Editor - Profile path"
-msgstr ""
-
-#: ../help/help.inc:139
-msgid "Profile Editor - Script path"
-msgstr ""
-
-#: ../help/help.inc:115
-msgid "Profile Editor - Set Samba Password"
-msgstr ""
-
-#: ../help/help.inc:155
-msgid "Profile Editor - Set Unix Password"
-msgstr ""
-
-#: ../help/help.inc:119
-msgid "Profile Editor - Set Unix Password for Samba"
-msgstr ""
-
-#: ../help/help.inc:141
-msgid "Profile Editor - User Workstations"
-msgstr ""
-
-#: ../help/help.inc:123
-msgid "Profile Editor - User can change password"
-msgstr ""
-
-#: ../help/help.inc:127
-msgid "Profile Editor - User must change password"
 msgstr ""
 
 #: ../templates/config/profmanage.php:144
@@ -1997,7 +1790,7 @@ msgstr ""
 
 #: ../templates/config/profmanage.php:158
 #: ../templates/profedit/profilehost.php:93
-#: ../templates/profedit/profileuser.php:330
+#: ../templates/profedit/profileuser.php:330 ../help/help.inc:171
 msgid "Profile name"
 msgstr ""
 
@@ -2015,7 +1808,7 @@ msgstr ""
 msgid "Profile passwords are different or empty!"
 msgstr "Die Passwörter stimmen nicht überein!"
 
-#: ../templates/profedit/profileuser.php:289
+#: ../templates/profedit/profileuser.php:289 ../help/help.inc:137
 msgid "Profile path"
 msgstr ""
 
@@ -2076,7 +1869,7 @@ msgstr ""
 
 #: ../templates/config/confmain.php:345
 #: ../templates/profedit/profilehost.php:102
-#: ../templates/profedit/profileuser.php:339 ../templates/domain.php:166
+#: ../templates/profedit/profileuser.php:339 ../templates/domain.php:173
 msgid "Reset"
 msgstr ""
 
@@ -2084,7 +1877,7 @@ msgstr ""
 msgid "Reset Password"
 msgstr ""
 
-#: ../templates/config/confsave.php:180 ../templates/domain.php:215
+#: ../templates/config/confsave.php:180 ../templates/domain.php:222
 msgid "Samba 3 domain SID is invalid!"
 msgstr ""
 
@@ -2120,12 +1913,20 @@ msgstr ""
 msgid "Samba account"
 msgstr ""
 
+#: ../help/help.inc:107
+msgid "Samba domain SID"
+msgstr ""
+
 #: ../templates/profedit/profilecreate.php:177
 msgid "Samba home directory is invalid!"
 msgstr ""
 
 #: ../templates/config/confmain.php:160
 msgid "Samba settings"
+msgstr ""
+
+#: ../help/help.inc:102
+msgid "Samba version"
 msgstr ""
 
 #: ../templates/config/confsave.php:174
@@ -2149,13 +1950,18 @@ msgstr ""
 msgid "Script Path"
 msgstr ""
 
-#: ../templates/profedit/profileuser.php:296
+#: ../templates/profedit/profileuser.php:296 ../help/help.inc:88
+#: ../help/help.inc:139
 msgid "Script path"
 msgstr ""
 
 #: ../templates/config/confsave.php:186
 #: ../templates/profedit/profilecreate.php:197
 msgid "Script path is invalid!"
+msgstr ""
+
+#: ../help/help.inc:94
+msgid "Script server"
 msgstr ""
 
 #: ../templates/config/confsave.php:192
@@ -2199,6 +2005,10 @@ msgstr ""
 msgid "Server Address is empty!"
 msgstr "Die Server Addresse ist nicht gesetzt!"
 
+#: ../help/help.inc:40
+msgid "Server address"
+msgstr "Serveraddresse"
+
 #: ../templates/config/confmain.php:305 ../lib/config.inc:452
 msgid "Server of external script"
 msgstr ""
@@ -2211,12 +2021,24 @@ msgstr ""
 msgid "Set Samba Password"
 msgstr ""
 
+#: ../help/help.inc:115
+msgid "Set Samba password"
+msgstr ""
+
 #: ../templates/profedit/profileuser.php:131
 msgid "Set Unix Password"
 msgstr ""
 
 #: ../templates/profedit/profileuser.php:228
 msgid "Set Unix Password for Samba"
+msgstr ""
+
+#: ../help/help.inc:155
+msgid "Set Unix password"
+msgstr "Unix-Passwort setzen"
+
+#: ../help/help.inc:119
+msgid "Set Unix password for Samba"
 msgstr ""
 
 #: ../templates/config/profmanage.php:245
@@ -2257,7 +2079,7 @@ msgstr ""
 #: ../templates/ou_edit.php:224 ../templates/ou_edit.php:374
 #: ../templates/profedit/profiledelete.php:88
 #: ../templates/profedit/profiledelete.php:100
-#: ../templates/profedit/profilemain.php:189 ../templates/domain.php:165
+#: ../templates/profedit/profilemain.php:189 ../templates/domain.php:172
 msgid "Submit"
 msgstr "Abschicken"
 
@@ -2269,9 +2091,10 @@ msgstr ""
 #: ../templates/account.php:584 ../templates/masscreate.php:113
 #: ../templates/lists/listdomains.php:187
 #: ../templates/lists/listgroups.php:244 ../templates/lists/listhosts.php:236
-#: ../templates/lists/listusers.php:252 ../templates/domain.php:92
+#: ../templates/lists/listusers.php:252 ../templates/domain.php:93
 #: ../help/help.inc:308 ../help/help.inc:309 ../help/help.inc:310
 #: ../help/help.inc:311 ../help/help.inc:312 ../help/help.inc:313
+#: ../help/help.inc:327
 msgid "Suffix"
 msgstr "Suffix"
 
@@ -2305,6 +2128,14 @@ msgstr ""
 msgid "The Prmary Group the host should be member of."
 msgstr ""
 
+#: ../help/help.inc:330
+msgid "The SID of your Samba server. Get it with \"net getlocalsid\"."
+msgstr ""
+
+#: ../help/help.inc:328
+msgid "The domain entry will be saved under this suffix."
+msgstr ""
+
 #: ../templates/config/confsave.php:235
 msgid "The following settings were saved to profile:"
 msgstr "Die folgenden Einstellungen wurden gespeichert:"
@@ -2312,6 +2143,10 @@ msgstr "Die folgenden Einstellungen wurden gespeichert:"
 #: ../templates/initsuff.php:96
 msgid ""
 "The following suffix(es) are missing in LDAP. LAM can create them for you."
+msgstr ""
+
+#: ../help/help.inc:326
+msgid "The name of your Windows domain or workgroup."
 msgstr ""
 
 #: ../templates/config/confmain.php:99
@@ -2465,9 +2300,13 @@ msgid "To disable login use /bin/false."
 msgstr ""
 
 #: ../templates/account.php:422 ../templates/account.php:552
-#: ../help/help.inc:184 ../help/help.inc:208 ../lib/ldap.inc:54
+#: ../help/help.inc:184 ../help/help.inc:208
 msgid "UID Number"
 msgstr ""
+
+#: ../help/help.inc:58 ../lib/ldap.inc:54
+msgid "UID number"
+msgstr "UID Nummer"
 
 #: ../templates/account.php:1035 ../templates/account.php:1063
 msgid ""
@@ -2490,19 +2329,10 @@ msgid "Unable to delete OU!"
 msgstr ""
 
 #: ../templates/config/profmanage.php:101
-msgid "Unable to delete profile!"
-msgstr "Kann das Profil nicht löschen!"
-
 #: ../templates/profedit/profiledelete.php:51
 #: ../templates/profedit/profiledelete.php:58
-msgid "Unable to delete profile! "
-msgstr "Kann das Profil nicht löschen! "
-
-#: ../templates/config/confmain.php:287
-msgid ""
-"Unable to load available languages. For further instructions please contact "
-"the Admin of this site.\n"
-msgstr ""
+msgid "Unable to delete profile!"
+msgstr "Kann das Profil nicht löschen!"
 
 #: ../templates/login.php:76
 msgid ""
@@ -2510,13 +2340,19 @@ msgid ""
 "further instructions please contact the Admin of this site."
 msgstr ""
 
-#: ../lib/config.inc:243 ../lib/config.inc:805
+#: ../templates/config/confmain.php:287
+msgid ""
+"Unable to load available languages. Setting English as default language. For "
+"further instructions please contact the Admin of this site.\n"
+msgstr ""
+
+#: ../lib/config.inc:243 ../lib/config.inc:829
 msgid "Unable to load configuration!"
 msgstr "Kann Konfiguration nicht laden!"
 
 #: ../lib/profiles.inc:178 ../lib/profiles.inc:182 ../lib/profiles.inc:218
 #: ../lib/profiles.inc:222
-msgid "Unable to load profile! "
+msgid "Unable to load profile!"
 msgstr "Kann das Profil nicht laden!"
 
 #: ../templates/massdetail.php:178
@@ -2562,6 +2398,10 @@ msgstr ""
 msgid "Used blocks."
 msgstr ""
 
+#: ../help/help.inc:338
+msgid "Used for calculating RIDs from UID/GID. Do not change if unsure."
+msgstr ""
+
 #: ../templates/account.php:1091
 msgid "User "
 msgstr "Benutzer "
@@ -2569,10 +2409,6 @@ msgstr "Benutzer "
 #: ../lib/ldap.inc:53
 msgid "User ID"
 msgstr ""
-
-#: ../lib/ldap.inc:56
-msgid "User Name"
-msgstr "Benutzername"
 
 #: ../templates/profedit/profilemain.php:104
 msgid "User Profiles"
@@ -2590,7 +2426,7 @@ msgstr ""
 msgid "User can change Password"
 msgstr ""
 
-#: ../help/help.inc:246
+#: ../help/help.inc:123 ../help/help.inc:246
 msgid "User can change password"
 msgstr ""
 
@@ -2614,12 +2450,16 @@ msgstr ""
 msgid "User must change Password"
 msgstr ""
 
-#: ../help/help.inc:248
+#: ../help/help.inc:127 ../help/help.inc:248
 msgid "User must change password"
 msgstr ""
 
 #: ../help/help.inc:249
 msgid "User must change password."
+msgstr ""
+
+#: ../help/help.inc:141
+msgid "User workstations"
 msgstr ""
 
 #: ../templates/lists/listusers.php:296
@@ -2629,6 +2469,10 @@ msgstr ""
 #: ../templates/main_header.php:76
 msgid "User/Group Mapping"
 msgstr ""
+
+#: ../help/help.inc:52
+msgid "User/Group/Host suffix"
+msgstr "Benutzer-/Gruppen-/Hostsuffix"
 
 #: ../templates/config/confmain.php:132 ../lib/config.inc:435
 msgid "UserSuffix"
@@ -2640,6 +2484,7 @@ msgstr "UserSuffix ist ungültig!"
 
 #: ../templates/masscreate.php:197 ../templates/masscreate.php:248
 #: ../help/help.inc:180 ../lib/account.inc:190 ../lib/account.inc:213
+#: ../lib/ldap.inc:56
 msgid "Username"
 msgstr "Benutzername"
 
@@ -2679,6 +2524,10 @@ msgstr "Benutzername:"
 #: ../templates/ou_edit.php:276 ../help/help.inc:71
 msgid "Users"
 msgstr "Benutzer:"
+
+#: ../help/help.inc:79
+msgid "Valid users"
+msgstr "Berechtigte Benutzer"
 
 #: ../templates/account.php:493 ../templates/account.php:534
 #: ../templates/account.php:595 ../templates/account.php:680
@@ -2737,7 +2586,7 @@ msgstr ""
 
 #: ../templates/profedit/profiledelete.php:64
 #: ../templates/profedit/profiledelete.php:109
-msgid "Wrong or missing type! "
+msgid "Wrong or missing type!"
 msgstr ""
 
 #: ../templates/profedit/profilecreate.php:159
@@ -2781,7 +2630,7 @@ msgid "You are currently using Profile: "
 msgstr ""
 
 #: ../help/help.inc:110
-msgid "You can get your domain SID with this command: "
+msgid "You can get your domain SID with this command:"
 msgstr ""
 
 #: ../templates/login.php:170
@@ -2805,10 +2654,6 @@ msgstr ""
 #: ../help/extFileExample.php:27
 msgid "blablabla 3"
 msgstr ""
-
-#: ../lib/ldap.inc:63
-msgid "description"
-msgstr "Beschreibung"
 
 #: ../templates/account.php:1014 ../templates/massdetail.php:171
 #: ../help/help.inc:298 ../help/help.inc:299
