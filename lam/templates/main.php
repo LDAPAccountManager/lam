@@ -29,7 +29,7 @@ echo ("<title>LDAP Account Manager</title>\n");
 echo ("<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\" />");
 echo ("</head>\n");
 echo ("<frameset rows=\"130,*\">\n");
-echo ("<frame src=\"./main_header.php\" name=\"head\" frameborder=\"0\" scrolling=\"no\">\n");
+echo ("<frame src=\"./main_header.php\" name=\"head\" frameborder=\"0\" scrolling=\"no\" noresize>\n");
 echo ("<frame src=\"./lists/listusers.php\" name=\"mainpart\" frameborder=\"0\" scrolling=\"yes\">\n");
 echo ("<noframes>\n");
 echo ("This page requires a browser that can show frames!\n");
