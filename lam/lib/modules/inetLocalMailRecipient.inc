@@ -80,6 +80,10 @@ class inetLocalMailRecipient extends baseModule {
 			'type' => 'ext_preg',
 			'regex' => 'DNSname',
 			'error_message' => $this->messages['host'][0]);
+		// profile mappings
+		$return['profile_mappings'] = array(
+			'inetLocalMailRecipient_host' => 'mailHost'
+		);
 		// upload fields
 		$return['upload_columns'] = array(
 			array(
@@ -232,7 +236,7 @@ class inetLocalMailRecipient extends baseModule {
 		if (isset($post['routingAdr']) && ($post['routingAdr'] != "")) {
 			// check if address has correct format
 			if (get_preg($post['routingAdr'], 'email')) {
-				$this->attributes['mailRoutingAddress'][] = $post['routingAdr'];
+				$this->attributes['mailRoutingAddress'][0] = $post['routingAdr'];
 			}
 			else {
 					$message = $this->messages['routingAdr'][0];
@@ -244,7 +248,7 @@ class inetLocalMailRecipient extends baseModule {
 		if (isset($post['host']) && ($post['host'] != "")) {
 			// check if address has correct format
 			if (get_preg($post['host'], 'DNSname')) {
-				$this->attributes['mailHost'][] = $post['host'];
+				$this->attributes['mailHost'][0] = $post['host'];
 			}
 			else {
 					$message = $this->messages['host'][0];

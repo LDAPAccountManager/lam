@@ -597,11 +597,10 @@ class accountContainer {
 						
 					// load profile
 					if ($post['selectLoadProfile'] && $post['loadProfile']) {
-						// *** fixme load*Profile must return array in the same way ldap_get_attributes does.
-						$newattributes = loadAccountProfile($post['selectLoadProfile'], $scope);
-						// pass newattributes to each module
+						$profile = loadAccountProfile($post['selectLoadProfile'], $this->type);
+						// pass profile to each module
 						$modules = array_keys($this->module);
-						foreach ($modules as $module) $this->module[$module]->load_attributes($newattributes);
+						foreach ($modules as $module) $this->module[$module]->load_profile($profile);
 						$result = 0;
 						}
 					// save account
@@ -610,17 +609,6 @@ class accountContainer {
 						if (is_array($errors)) $result = array($errors);
 						// return name of subpage
 						$result = 'finish';
-						}
-					// save profile
-					if ($post['saveProfile']) {
-						if ($post['selectSaveProfile']=='') $errors['saveProfile'][] = array('ERROR', _('Save profile'), _('No profilename given.'));
-						else {
-							//saveAccountProfile($scope); // TODO missing parameters, remove?
-							if ($function) $errors['saveProfile'][] = array('INFO', _('Save profile'), _('New profile created.'));
-								else $errors['saveProfile'][] = array('ERROR', _('Save profile'), _('Wrong profilename given.'));
-							}
-						if (is_array($errors)) $result = $errors;
-							else $result = 0;
 						}
 					}
 				if ($this->subpage=='finish') {
@@ -747,17 +735,15 @@ class accountContainer {
 				// Get list of profiles
 				$profilelist = getAccountProfiles($this->type);
 				if (count($profilelist)!=0) {
-					$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _("Load profile") ),
-						1 => array ( 'kind' => 'select', 'name' => 'selectLoadProfile', 'options' => $profilelist ),
-						2 => array ('kind' => 'help', 'value' => 'selectLoadProfile'));
-					}
-				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _("Save profile") ),
-					1 => array ( 'kind' => 'table', 'value' => array ( 0 => array (
-						0 => array ( 'kind' => 'input', 'name' => 'selectSaveProfile', 'type' => 'text', 'size' => '30',
-							'maxlength' => '255', ),
-						1 => array ('kind' => 'input', 'name' => 'saveProfile', 'type' => 'submit',
-							'value' => _('Save profile'), 'disabled' => $disabled))) ),
-					2 => array ('kind' => 'help', 'value' => 'saveProfile'));
+					$return[] = array(
+						0 => array('kind' => 'text', 'text' => _("Load profile")),
+						1 => array('kind' => 'table', 'value' => array(0 => array(
+							0 => array('kind' => 'select', 'name' => 'selectLoadProfile', 'options' => $profilelist),
+							1 => array('kind' => 'input', 'type' => 'submit', 'name' => 'loadProfile', 'value' => _('Load profile'))
+						)),
+						2 => array('kind' => 'help', 'value' => 'selectLoadProfile'))
+					);
+				}
 				if ($this->dn_orig!='') $text = _('Modify Account');
 					else $text = _('Create Account');
 				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => $text ),

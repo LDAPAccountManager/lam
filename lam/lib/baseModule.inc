@@ -306,6 +306,22 @@ class baseModule {
 	}
 
 	/**
+	* Loads the values of an account profile into internal variables.
+	*
+	* @param array $profile hash array with profile values (identifier => value)
+	*/
+	function load_profile($profile) {
+		if (isset($this->meta['profile_mappings'])) {
+			$identifiers = array_keys($this->meta['profile_mappings']);
+			for ($i = 0; $i < sizeof($identifiers); $i++) {
+				if (isset($profile[$identifiers[$i]])) {
+					$this->attributes[$this->meta['profile_mappings'][$identifiers[$i]]] = $profile[$identifiers[$i]];
+				}
+			}
+		}
+	}
+	
+	/**
 	* Returns a list of elements for the configuration.
 	*
 	* @param array $scopes account types (user, group, host)
