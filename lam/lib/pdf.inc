@@ -69,13 +69,15 @@ function createUserPDF($accounts) {
 				$info_string = str_replace('$'.$value, $sub_array, $info_string);
 				}
 			}
+		// Split string in array
+		$info_array = explode("\n", $info_string);
 		$pdfFile->setFont("arial","B",12);
 		$pdfFile->Write(5,"- " . _("User Information") . ":");
 		$pdfFile->Ln(6);
 		$pdfFile->setFont("times","",10);
-		$pdfFile->Cell(50,5,$info_string,0,1,"L",0);
-		$pdfFile->Ln(9);
-
+		foreach ($info_array as $info)
+			$pdfFile->Cell(50,5,$info,0,1,"L",0);
+		$pdfFile->Ln(6);
 // Print Personal settings
 		$pdfFile->setFont("arial","B",12);
 		$pdfFile->Write(5,"- " . _("Personal User Infos") . ":");

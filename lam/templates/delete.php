@@ -44,7 +44,6 @@ $header_intern =& $_SESSION['header'];
 $config_intern =& $_SESSION['config'];
 $delete_dn =& $_SESSION['delete_dn'];
 
-
 if ($_POST['backmain']) {
 	// back to list page
 	if (isset($_SESSION['delete_dn'])) unset ($_SESSION['delete_dn']);
@@ -69,6 +68,8 @@ echo '</title>'."\n".
 if ($_GET['type']) {
 	// $_GET['type'] is true if delete.php was called from *list.php
 	// Store $_GET['type'] as $_POST['type']
+	// Replace wrong chars from Session
+	for ($i=0; $i<count($delete_dn); $i++) $delete_dn[$i] = str_replace("_", " ", $delete_dn[$i]);
 	echo '<input name="type" type="hidden" value="'.$_GET['type'].'">';
 	switch ($_GET['type']) {
 		// Select which layout and text should be displayed

@@ -104,7 +104,7 @@ if (isset($_GET['DN']) && $_GET['DN']!='') {
 			"<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n".
 			"<meta http-equiv=\"pragma\" content=\"no-cache\">\n".
 			"<meta http-equiv=\"cache-control\" content=\"no-cache\">\n".
-			"</head><body>\n".
+			"</head><body>\n";
 		// Display errir-messages
 		StatusMessage("ERROR", _("Can not create any users."),_("Please create a group first."));
 		echo "<a href=../lists/listusers.php>"._("Back to userlist")."</a>\n";

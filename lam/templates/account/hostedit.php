@@ -94,9 +94,10 @@ else if (count($_POST)==0) {
 			"<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n".
 			"<meta http-equiv=\"pragma\" content=\"no-cache\">\n".
 			"<meta http-equiv=\"cache-control\" content=\"no-cache\">\n".
-			"</head><body>\n".
+			"</head><body>\n";
 		// Display errir-messages
 		StatusMessage("ERROR", _("Can not create any hosts."),_("Please create a group first."));
+		echo "<a href=../lists/listhosts.php>"._("Back to hostlist")."</a>\n";
 		echo "</body></html>";
 		die;
 		}

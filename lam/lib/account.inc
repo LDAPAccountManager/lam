@@ -210,33 +210,48 @@ function getquotas($type,$users=array('+')) {
 	/* scriptServer is the IP to remote-host to which lam should connect via ssh
 	* scriptPath is Path to lamdaemon.pl on remote system
 	*/
-	$descriptorspec = array(
-		0 => array("pipe", "r"), // stdin
-		1 => array("pipe", "w"), // stout
-		2 => array("file", "/dev/null", "a") // sterr
-		);
-	$process = proc_open(escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".$towrite,
-		$descriptorspec,
-		$pipes);
-	if (is_resource($process)) {
-		/* perl-script is running
-		* $pipes[0] is writeable handle to child stdin
-		* $pipes[1] is readable handle to child stdout
-		* any error is send to /dev/null
-		*/
-		foreach ($users as $user) {
-			// put string to trasmit together
-			$userstring = "$user quota get $type\n";
-			// Write one output-line for every user
-			fwrite($pipes[0], $userstring);
+	if (function_exists(proc_open)) {
+		// New Code, requires PHP 4.3
+		$descriptorspec = array(
+			0 => array("pipe", "r"), // stdin
+			1 => array("pipe", "w"), // stout
+			2 => array("file", "/dev/null", "a") // sterr
+			);
+		$process = proc_open(escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".$towrite,
+			$descriptorspec,
+			$pipes);
+		if (is_resource($process)) {
+			/* perl-script is running
+			* $pipes[0] is writeable handle to child stdin
+			* $pipes[1] is readable handle to child stdout
+			* any error is send to /dev/null
+			*/
+			foreach ($users as $user) {
+				// put string to trasmit together
+				$userstring = "$user quota get $type\n";
+				// Write one output-line for every user
+				fwrite($pipes[0], $userstring);
+				}
+			fclose($pipes[0]);
+			while (!feof($pipes[1])) {
+				$output = fgets($pipes[1], 1024);
+				if ($output!='') $vals5[] = $output;
+				}
+			fclose($pipes[1]);
+			$return_value = proc_close($process);
 			}
-		fclose($pipes[0]);
-		while (!feof($pipes[1])) {
-			$output = fgets($pipes[1], 1024);
+		}
+	else { // PHP 4.3>
+		$input = "";
+		foreach ($users as $user) $input .= "$user quota get $type\n";
+		$command = escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".$towrite;
+		$pipe = popen("echo \"$input\"|$command" , 'r');
+		$output = '';
+		while(!feof($pipe)) {
+			$output .= fread($pipe, 1024);
 			if ($output!='') $vals5[] = $output;
 			}
-		fclose($pipes[1]);
-		$return_value = proc_close($process);
+		pclose($pipe);
 		}
 	/* $vals is a string which contains a two dimensional array.
 	* We have to recreate it with explode
@@ -246,20 +261,21 @@ function getquotas($type,$users=array('+')) {
 	* mountpoint, used blocks, soft block limit, hard block limit, grace block period, used inodes,
 	* soft inode limit, hard inode limit, grace inode period
 	*/
-	foreach ($vals5 as $vals3) {
-		$vals = explode(':', $vals3);
-		for ($i=0; $i<sizeof($vals)-1; $i++) {
-			$vals2 = explode(',', $vals[$i]);
-			for ($j=0; $j<sizeof($vals2); $j++) {
-				$return->quota[$i][$j] = $vals2[$j];
+	if (is_array($vals5))
+		foreach ($vals5 as $vals3) {
+			$vals = explode(':', $vals3);
+			for ($i=0; $i<sizeof($vals)-1; $i++) {
+				$vals2 = explode(',', $vals[$i]);
+				for ($j=0; $j<sizeof($vals2); $j++) {
+					$return->quota[$i][$j] = $vals2[$j];
+					}
+				if ($return->quota[$i][4]<$time) $return->quota[$i][4] = '';
+					else $return->quota[$i][4] = strval(($return->quota[$i][4]-$time)/3600) .' '. _('hours');
+				if ($return->quota[$i][8]<$time) $return->quota[$i][8] = '';
+					else $return->quota[$i][8] = strval(($return->quota[$i][8]-$time)/3600) .' '. _('hours');
 				}
-			if ($return->quota[$i][4]<$time) $return->quota[$i][4] = '';
-				else $return->quota[$i][4] = strval(($return->quota[$i][4]-$time)/3600) .' '. _('hours');
-			if ($return->quota[$i][8]<$time) $return->quota[$i][8] = '';
-				else $return->quota[$i][8] = strval(($return->quota[$i][8]-$time)/3600) .' '. _('hours');
+			$return2[] = $return;
 			}
-		$return2[] = $return;
-		}
 	return $return2;
 	}
 
@@ -278,20 +294,51 @@ function setquotas($values2,$values2_old=false) {
 	*/
 	$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." ".
 		escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]);
-	$descriptorspec = array(
-		0 => array("pipe", "r"), // stdin
-		1 => array("pipe", "w"), // stout
-		2 => array("file", "/dev/null", "a") // sterr
-		);
-	$process = proc_open(escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".$towrite,
-		$descriptorspec,
-		$pipes);
-	if (is_resource($process)) {
-		/* perl-script is running
-		* $pipes[0] is writeable handle to child stdin
-		* $pipes[1] is readable handle to child stdout
-		* any error is send to /dev/null
-		*/
+	if (function_exists(proc_open)) {
+		// New Code, requires PHP 4.3
+		$descriptorspec = array(
+			0 => array("pipe", "r"), // stdin
+			1 => array("pipe", "w"), // stout
+			2 => array("file", "/dev/null", "a") // sterr
+			);
+		$process = proc_open(escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".$towrite,
+			$descriptorspec,
+			$pipes);
+		if (is_resource($process)) {
+			/* perl-script is running
+			* $pipes[0] is writeable handle to child stdin
+			* $pipes[1] is readable handle to child stdout
+			* any error is send to /dev/null
+			*/
+			foreach ($values2 as $values) {
+				$i=0;
+				/* Check wich quotas have changed
+				* Because we can not send an array to lamdaemon.pl we have to put all
+				* values in a string. ':' sepraeates the first array, ',' the second
+				*
+				* $values->quota[][] First array is an index for every chare with active quotas
+				* second array Contains values for every share:
+				* mountpoint, used blocks, soft block limit, hard block limit, grace block period, used inodes,
+				* soft inode limit, hard inode limit, grace inode period
+				*/
+				while ($values->quota[$i][0]) {
+					if ($values->quota[$i] != $values_old->quota[$i]) {
+						$quotastring = $quotastring. $values->quota[$i][0] .','.$values->quota[$i][2] .','.$values->quota[$i][3]
+						.','.$values->quota[$i][6] .','. $values->quota[$i][7] .':';
+						}
+					$i++;
+					}
+				$userstring = $values->general_username." quota set ".$values->type." ".$quotastring."\n";
+				// Write to stdin
+				fwrite($pipes[0], $userstring);
+				}
+			}
+		fclose($pipes[0]);
+		fclose($pipes[1]);
+		$return_value = proc_close($process);
+		}
+	else { // PHP 4.3>
+		$input = "";
 		foreach ($values2 as $values) {
 			$i=0;
 			/* Check wich quotas have changed
@@ -310,14 +357,15 @@ function setquotas($values2,$values2_old=false) {
 					}
 				$i++;
 				}
-			$userstring = $values->general_username." quota set ".$values->type." ".$quotastring."\n";
-			// Write to stdin
-			fwrite($pipes[0], $userstring);
+			$input .= $values->general_username." quota set ".$values->type." ".$quotastring."\n";
 			}
+		$command = escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".$towrite;
+		$pipe = popen("echo \"$input\"|$command" , 'r');
+		while(!feof($pipe)) {
+			$return[] = fread($pipe, 1024);
+			}
+		pclose($pipe);
 		}
-	fclose($pipes[0]);
-	fclose($pipes[1]);
-	$return_value = proc_close($process);
 	}
 
 
@@ -335,29 +383,43 @@ function remquotas($users, $type) {
 	*/
 	$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." ".
 		escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]);
-	$descriptorspec = array(
-		0 => array("pipe", "r"), // stdin
-		1 => array("pipe", "w"), // stout
-		2 => array("file", "/dev/null", "a") // sterr
-		);
-	$process = proc_open(escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".$towrite,
-		$descriptorspec,
-		$pipes);
-	if (is_resource($process)) {
-		/* perl-script is running
-		* $pipes[0] is writeable handle to child stdin
-		* $pipes[1] is readable handle to child stdout
-		* any error is send to /dev/null
-		*/
-		foreach ($users as $user) {
-			$userstring = "$user quota rem $type\n";
-			// Write to stdin
-			fwrite($pipes[0], $userstring);
+	if (function_exists(proc_open)) {
+		// New Code, requires PHP 4.3
+		$descriptorspec = array(
+			0 => array("pipe", "r"), // stdin
+			1 => array("pipe", "w"), // stout
+			2 => array("file", "/dev/null", "a") // sterr
+			);
+		$process = proc_open(escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".$towrite,
+			$descriptorspec,
+			$pipes);
+		if (is_resource($process)) {
+			/* perl-script is running
+			* $pipes[0] is writeable handle to child stdin
+			* $pipes[1] is readable handle to child stdout
+			* any error is send to /dev/null
+			*/
+			foreach ($users as $user) {
+				$userstring = "$user quota rem $type\n";
+				// Write to stdin
+				fwrite($pipes[0], $userstring);
+				}
 			}
+		fclose($pipes[0]);
+		fclose($pipes[1]);
+		$return_value = proc_close($process);
 		}
-	fclose($pipes[0]);
-	fclose($pipes[1]);
-	$return_value = proc_close($process);
+	else { // PHP 4.3>
+		$input = "";
+		foreach ($users as $user) $userstring .= "$user quota rem $type\n";
+		$command = escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".$towrite;
+		$pipe = popen("echo \"$input\"|$command" , 'r');
+		$output = '';
+		while(!feof($pipe)) {
+			$return[] = fread($pipe, 1024);
+			}
+		pclose($pipe);
+		}
 	}
 
 
@@ -375,31 +437,44 @@ function addhomedir($users) {
 	*/
 	$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." ".
 		escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]);
-	$descriptorspec = array(
-		0 => array("pipe", "r"), // stdin
-		1 => array("pipe", "w"), // stout
-		2 => array("file", "/dev/null", "a") // sterr
-		);
-	$process = proc_open(escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".$towrite,
-		$descriptorspec,
-		$pipes);
-	if (is_resource($process)) {
-		/* perl-script is running
-		* $pipes[0] is writeable handle to child stdin
-		* $pipes[1] is readable handle to child stdout
-		* any error is send to /dev/null
-		*/
-		foreach ($users as $user) {
-			$userstring = "$user home add\n";
-			// Write to stdin
-			fwrite($pipes[0], $userstring);
+	if (function_exists(proc_open)) {
+		// New Code, requires PHP 4.3
+		$descriptorspec = array(
+			0 => array("pipe", "r"), // stdin
+			1 => array("pipe", "w"), // stout
+			2 => array("file", "/dev/null", "a") // sterr
+			);
+		$process = proc_open(escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".$towrite,
+			$descriptorspec,
+			$pipes);
+		if (is_resource($process)) {
+			/* perl-script is running
+			* $pipes[0] is writeable handle to child stdin
+			* $pipes[1] is readable handle to child stdout
+			* any error is send to /dev/null
+			*/
+			foreach ($users as $user) {
+				$userstring = "$user home add\n";
+				// Write to stdin
+				fwrite($pipes[0], $userstring);
+				}
 			}
+		fclose($pipes[0]);
+		fclose($pipes[1]);
+		$return_value = proc_close($process);
 		}
-	fclose($pipes[0]);
-	fclose($pipes[1]);
-	$return_value = proc_close($process);
+	else { // PHP 4.3>
+		$input = "";
+		foreach ($users as $user) $userstring .= "$user home add\n";
+		$command = escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".$towrite;
+		$pipe = popen("echo \"$input\"|$command" , 'r');
+		$output = '';
+		while(!feof($pipe)) {
+			$return[] = fread($pipe, 1024);
+			}
+		pclose($pipe);
+		}
 	}
-
 
 /* Remove Homedirectory
 * lamdaemon.pl uses getpwnam on remote system to get homedir path.
@@ -417,29 +492,43 @@ function remhomedir($users) {
 	*/
 	$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." ".
 		escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]);
-	$descriptorspec = array(
-		0 => array("pipe", "r"), // stdin
-		1 => array("pipe", "w"), // stout
-		2 => array("file", "/dev/null", "a") // sterr
-		);
-	$process = proc_open(escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".$towrite,
-		$descriptorspec,
-		$pipes);
-	if (is_resource($process)) {
-		/* perl-script is running
-		* $pipes[0] is writeable handle to child stdin
-		* $pipes[1] is readable handle to child stdout
-		* any error is send to /dev/null
-		*/
-		foreach ($users as $user) {
-			$userstring = "$user home rem\n";
-			// Write to stdin
-			fwrite($pipes[0], $userstring);
+	if (function_exists(proc_open)) {
+		// New Code, requires PHP 4.3
+		$descriptorspec = array(
+			0 => array("pipe", "r"), // stdin
+			1 => array("pipe", "w"), // stout
+			2 => array("file", "/dev/null", "a") // sterr
+			);
+		$process = proc_open(escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".$towrite,
+			$descriptorspec,
+			$pipes);
+		if (is_resource($process)) {
+			/* perl-script is running
+			* $pipes[0] is writeable handle to child stdin
+			* $pipes[1] is readable handle to child stdout
+			* any error is send to /dev/null
+			*/
+			foreach ($users as $user) {
+				$userstring = "$user home rem\n";
+				// Write to stdin
+				fwrite($pipes[0], $userstring);
+				}
 			}
+		fclose($pipes[0]);
+		fclose($pipes[1]);
+		$return_value = proc_close($process);
 		}
-	fclose($pipes[0]);
-	fclose($pipes[1]);
-	$return_value = proc_close($process);
+	else { // PHP 4.3>
+		$input = "";
+		foreach ($users as $user) $userstring .= "$user home rem\n";
+		$command = escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".$towrite;
+		$pipe = popen("echo \"$input\"|$command" , 'r');
+		$output = '';
+		while(!feof($pipe)) {
+			$return[] = fread($pipe, 1024);
+			}
+		pclose($pipe);
+		}
 	}
 
 
@@ -471,10 +560,10 @@ function ldapreload($type) {
 				// insert timestamp in array
 				$_SESSION['userDN'][0] = time();
 				// Search 4 values which should be cached
-				$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_UserSuffix(),
+				$result = @ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_UserSuffix(),
 					'(&(objectClass=posixAccount)(!(uid=*$)))', array('cn', 'uidNumber'), 0);
 				// Write search result in array
-				$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
+				$entry = @ldap_first_entry($_SESSION['ldap']->server(), $result);
 				while ($entry) {
 					$dn = (ldap_get_dn($_SESSION['ldap']->server(), $entry));
 					$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
@@ -494,10 +583,10 @@ function ldapreload($type) {
 				// insert timestamp in array
 				$_SESSION['groupDN'][0] = time();
 				// Search 4 values which should be cached
-				$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(),
+				$result = @ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(),
 					'objectClass=posixGroup', array('gidNumber', 'cn'), 0);
 				// Write search result in array
-				$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
+				$entry = @ldap_first_entry($_SESSION['ldap']->server(), $result);
 				while ($entry) {
 					$dn = (ldap_get_dn($_SESSION['ldap']->server(), $entry));
 					$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
@@ -517,10 +606,10 @@ function ldapreload($type) {
 				// insert timestamp in array
 				$_SESSION['hostDN'][0] = time();
 				// Search 4 values which should be cached
-				$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_HostSuffix(),
+				$result = @ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_HostSuffix(),
 					'(&(objectClass=posixAccount)(uid=*$))', array('cn', 'uidNumber'), 0);
 				// Write search result in array
-				$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
+				$entry = @ldap_first_entry($_SESSION['ldap']->server(), $result);
 				while ($entry) {
 					$dn = (ldap_get_dn($_SESSION['ldap']->server(), $entry));
 					$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
