@@ -106,7 +106,7 @@ for ($i = 0; $i < sizeof($info); $i++) { // ignore last entry in array which is 
 					$dn = $_SESSION["ldap"]->search_username($user); // DN entry
 					// if user was found in LDAP make link, otherwise just print name
 					if ($dn) {
-						$linklist[$d] = "<a href=../account.php?type=user&DN=\"" . $dn . "\" >" .
+						$linklist[$d] = "<a href=../account.php?type=user&DN='" . $dn . "' >" .
 										$info[$i][strtolower($attr_array[$k])][$d] . "</a>";
 					}
 					else $linklist[$d] = $user;
