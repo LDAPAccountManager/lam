@@ -30,6 +30,9 @@ $Id$
 * @package modules
 */
 
+/** Needed to calculate Samba passwords */
+include_once("createntlm.inc");
+
 
 /* Return a list of all shells listed in ../config/shells
 * Normally ../config/shells is a symbolic link to /etc/shells
@@ -164,7 +167,8 @@ function smbflag($input) {
 * @return string password hash
 */
 function lmPassword($password) {
-	return exec(escapeshellarg($_SESSION['lampath'] . 'lib/createntlm.pl') . " lm " . escapeshellarg($password));
+	$hash = new smbHash();
+	return $hash->lmhash($password);
 }
 
 /**
@@ -174,7 +178,8 @@ function lmPassword($password) {
 * @return string password hash
 */
 function ntPassword($password) {
-	return exec(escapeshellarg($_SESSION['lampath'] . 'lib/createntlm.pl') . " nt " . escapeshellarg($password));
+	$hash = new smbHash();
+	return $hash->nthash($password);
 }
 
 
