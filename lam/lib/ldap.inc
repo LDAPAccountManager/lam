@@ -77,6 +77,7 @@ function pwd_hash($password, $enabled=true) {
 
 // marks an password hash as enabled
 // and returns the new hash string
+// hash: hash value to enable
 function pwd_enable($hash) {
 	// check if password is disabled
 	if ((substr($hash, 0, 1) == "!") || ((substr($hash, 0, 1) == "*"))) {
@@ -89,6 +90,7 @@ function pwd_enable($hash) {
 
 // marks an password hash as disabled
 // and returns the new hash string
+// hash: hash value to disable
 function pwd_disable($hash) {
 	// check if already disabled
 	if ((substr($hash, 0, 1) == "!") || ((substr($hash, 0, 1) == "*"))) {
@@ -127,7 +129,7 @@ class Ldap{
 	var $ldapHostAttributes;
 
 	// constructor
-	// $config has to be an object of Config (../config/config.php)
+	// $config: an object of Config (../config/config.php)
 	function Ldap($config) {
 		setlanguage();
 		if (is_object($config)) $this->conf = $config;
@@ -165,8 +167,9 @@ class Ldap{
 	}
 
 	// connects to the server using the given username and password
-	// $base is optional and specifies the root from where to search for entries
 	// if connect succeeds the server handle is returned
+	// $user: user name
+	// $passwd: password
 	function connect($user, $passwd) {
 		// close any prior connection
 		@$this->close();
@@ -190,7 +193,6 @@ class Ldap{
 					ldap_set_option($this->server, LDAP_OPT_PROTOCOL_VERSION, 3);
 				}
 			}
-			//echo ldap_error($this->server) . " | " . ldap_errno($this->server);
 			$bind = @ldap_bind($this->server, $user, $passwd);
 			if ($bind) {
 				// return server handle
@@ -206,6 +208,7 @@ class Ldap{
 
 	// searches LDAP for a specific user name
 	// and returns its DN entry
+	// $name: user name
 	function search_username($name) {
 		$filter = "(uid=$name)";
 		$attrs = array();
@@ -220,6 +223,7 @@ class Ldap{
 	}
 
 	// returns an array with all organizational units under the given suffix
+	// $suffix: search suffix
 	function search_units($suffix) {
 		$ret = array();
 		$sr = @ldap_search($_SESSION["ldap"]->server(), $suffix, "objectClass=organizationalunit", array("DN"));
@@ -246,6 +250,7 @@ class Ldap{
 	}
 
 	// returns an array with all Samba 3 domain entries under the given suffix
+	// $suffix: search suffix
 	function search_domains($suffix) {
 		$ret = array();
 		$attr = array("DN", "sambaDomainName", "sambaSID", "sambaNextRid", "sambaNextGroupRid",
@@ -291,6 +296,8 @@ class Ldap{
 	}
 
 	// encrypts username and password
+	// $username: LDAP user name
+	// $password: LDAP password
 	function encrypt($username, $password) {
 		// read key and iv from cookie
 		$iv = base64_decode($_COOKIE["IV"]);
@@ -301,6 +308,9 @@ class Ldap{
 	}
 
 	// decrypts username and password
+	// returns an array
+	// return[0]: user name
+	// return[1]: password
 	function decrypt() {
 		// read key and iv from cookie
 		$iv = base64_decode($_COOKIE["IV"]);
