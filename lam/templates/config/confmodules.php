@@ -76,6 +76,7 @@ for ($i = 0; $i < sizeof($selected_users_temp); $i++) {
 }
 $no_conflicts_user = true;
 $no_depends_user = true;
+$no_missing_basemodule_user = true;
 
 // remove modules from selection
 if ($_POST['user_selected'] && ($_POST['user_remove'])) {
@@ -109,6 +110,7 @@ for ($i = 0; $i < sizeof($selected_groups_temp); $i++) {
 }
 $no_conflicts_group = true;
 $no_depends_group = true;
+$no_missing_basemodule_group = true;
 
 // remove modules from selection
 if ($_POST['group_selected'] && ($_POST['group_remove'])) {
@@ -142,6 +144,7 @@ for ($i = 0; $i < sizeof($selected_hosts_temp); $i++) {
 }
 $no_conflicts_host = true;
 $no_depends_host = true;
+$no_missing_basemodule_host = true;
 
 // remove modules from selection
 if ($_POST['host_selected'] && ($_POST['host_remove'])) {
@@ -256,6 +259,7 @@ for ($i = 0; $i < sizeof($selected_users); $i++) {
 	}
 }
 if (! $found) {
+	$no_missing_basemodule_user = false;
 	echo "<p>\n";
 			echo "<font color=\"red\"><b>" . _("No base module selected!") . "</b></font><br>\n";
 	echo "<p>\n";
@@ -358,6 +362,7 @@ for ($i = 0; $i < sizeof($selected_groups); $i++) {
 	}
 }
 if (! $found) {
+	$no_missing_basemodule_group = false;
 	echo "<p>\n";
 			echo "<font color=\"red\"><b>" . _("No base module selected!") . "</b></font><br>\n";
 	echo "<p>\n";
@@ -460,6 +465,7 @@ for ($i = 0; $i < sizeof($selected_hosts); $i++) {
 	}
 }
 if (! $found) {
+	$no_missing_basemodule_host = false;
 	echo "<p>\n";
 			echo "<font color=\"red\"><b>" . _("No base module selected!") . "</b></font><br>\n";
 	echo "<p>\n";
@@ -471,7 +477,9 @@ echo "</fieldset>\n";
 // submit buttons
 echo "<p>\n";
 	// disable button if there are conflicts/depends
-	if ($no_conflicts_user && $no_conflicts_group && $no_conflicts_host && $no_depends_user && $no_depends_group && $no_depends_host) {
+	if ($no_conflicts_user && $no_depends_user && $no_missing_basemodule_user &&
+		$no_conflicts_group && $no_depends_group && $no_missing_basemodule_group &&
+		$no_conflicts_host && $no_depends_host && $no_missing_basemodule_host) {
 		echo "<input type=\"submit\" value=\"Submit\" name=\"submit\">\n";
 	}
 	else {
