@@ -112,7 +112,7 @@ class posixGroup extends baseModule {
 
 	function delete_attributes($post) {
 		if ($_SESSION['cache']->in_cache($this->attributes['gidNumber'][0], 'gidNumber', 'user'))
-		$return[$_SESSION[$this->base]->dn]['errors'][] = array ('ERROR', _('Primary groupmembers'), _('There are still primary members in group.'));
+		$return[$_SESSION[$this->base]->dn]['errors'][] = array ('ERROR', _('Primary group'), _('There are still users who have this group as their primary group.'));
 		return $return;
 	}
 
@@ -333,11 +333,11 @@ class posixGroup extends baseModule {
 			),
 			'members' => array(
 				"Headline" => _("Group members"),
-				"Text" => _("Users also being member of the current group."). ' '. _("Can be left empty.")
+				"Text" => _("Users who are member of the current group."). ' '. _("Can be left empty.")
 			),
 			'upload_members' => array(
 				"Headline" => _("Group members"),
-				"Text" => _("Users also being member of the current group. Users are separated by semicolons.")
+				"Text" => _("Users who will become member of the current group. User names are separated by semicolons.")
 			),
 			'password' => array(
 				"Headline" => _("Group password"),

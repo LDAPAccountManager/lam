@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: messages\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de \n"
 "POT-Creation-Date: 2004-01-14 17:45+0200\n"
-"PO-Revision-Date: 2004-11-07 00:19+0100\n"
+"PO-Revision-Date: 2004-11-07 14:24+0100\n"
 "Last-Translator: Roland Gruber <post@rolandgruber.de>\n"
 "Language-Team: Deutsch <lam-i18n@lists.sourceforge.org>\n"
 "MIME-Version: 1.0\n"
@@ -1194,6 +1194,10 @@ msgstr "Höhe"
 msgid "Help"
 msgstr "Hilfe"
 
+#: ../templates/masscreate.php:83
+msgid "Here you can create multiple accounts by providing a CSV file."
+msgstr "Hier können Sie mehrere Accounts mittels einer CSV-formatierten Datei erstellen."
+
 #: ../lib/lists.inc:162
 msgid "Here you can input small filters (e.g. 'value' or 'v*')."
 msgstr "Hier können Sie kleinere Filter angeben (z.B. 'wert' oder 'w*')."
@@ -2234,9 +2238,8 @@ msgid "Please enter a comma separated list of host names!"
 msgstr "Bitte geben Sie eine Liste von Hostnamen, getrennt durch Kommata, ein!"
 
 #: ../lib/modules/inetOrgPerson.inc:74
-#, fuzzy
 msgid "Please enter a valid common name!"
-msgstr "Bitte geben Sie eine gültige Mobiltelefonnummer ein!"
+msgstr "Bitte geben Sie einen gültigen allgemeinen Namen ein!"
 
 #: ../lib/modules/inetOrgPerson.inc:62 ../lib/modules/inetOrgPerson.inc:63
 msgid "Please enter a valid eMail address!"
@@ -2330,6 +2333,9 @@ msgid ""
 "first row must be filled with the column identifiers. The following rows "
 "represent one account for each row."
 msgstr ""
+"Bitte erstellen Sie eine CSV-formatierte Datei mit Ihren Accountdaten. Die "
+"Zellen der ersten Zeile müssen mit den Spaltenbezeichnern gefüllt werden. "
+"Alle nachfolgenden Zeilen repräsentieren jeweils einen Account."
 
 #: ../lib/status.inc:62
 msgid ""
@@ -2405,17 +2411,13 @@ msgstr "Vordefinierte Werte"
 msgid "President"
 msgstr "Präsident"
 
-#: ../lib/modules/posixAccount.inc:181 ../lib/modules/posixAccount.inc:248
-#: ../lib/modules/posixAccount.inc:312 ../lib/modules/posixAccount.inc:344
-#: ../lib/modules/posixAccount.inc:825 ../lib/modules/posixAccount.inc:921
-#: ../lib/modules/posixAccount.inc:949 ../lib/modules/posixAccount.inc:965
-#: ../help/help.inc:146 ../help/help.inc:158
+#: ../lib/modules/posixGroup.inc:115 ../lib/modules/posixAccount.inc:181
+#: ../lib/modules/posixAccount.inc:248 ../lib/modules/posixAccount.inc:312
+#: ../lib/modules/posixAccount.inc:344 ../lib/modules/posixAccount.inc:825
+#: ../lib/modules/posixAccount.inc:921 ../lib/modules/posixAccount.inc:949
+#: ../lib/modules/posixAccount.inc:965 ../help/help.inc:146
+#: ../help/help.inc:158
 msgid "Primary group"
-msgstr "Primäre Gruppe"
-
-#: ../lib/modules/posixGroup.inc:115
-#, fuzzy
-msgid "Primary groupmembers"
 msgstr "Primäre Gruppe"
 
 #: ../templates/config/profmanage.php:106
@@ -2927,9 +2929,8 @@ msgid "The static text must contain at least one character."
 msgstr "Der statische Text muss mindestens ein Zeichen enthalten."
 
 #: ../lib/modules/posixGroup.inc:115
-#, fuzzy
-msgid "There are still primary members in group."
-msgstr "Benutzer die Mitglieder der Gruppe sind."
+msgid "There are still users who have this group as their primary group."
+msgstr "Es gibt noch Benutzer, deren primäre Gruppe diese Gruppe ist."
 
 #: ../lib/modules/sambaAccount.inc:49 ../lib/modules/sambaSamAccount.inc:48
 msgid "There can be only one administrator per domain."
@@ -3502,16 +3503,21 @@ msgstr ""
 msgid "Users"
 msgstr "Benutzer"
 
-#: ../lib/modules/posixGroup.inc:336 ../help/help.inc:232
+#: ../help/help.inc:232
 msgid "Users also being member of the current group."
 msgstr "Benutzer die Mitglieder der Gruppe sind."
 
+#: ../lib/modules/posixGroup.inc:336
+msgid "Users who are member of the current group."
+msgstr "Benutzer die Mitglieder der aktuellen Gruppe sind."
+
 #: ../lib/modules/posixGroup.inc:340
-#, fuzzy
 msgid ""
-"Users also being member of the current group. Users are separated by "
-"semicolons."
-msgstr "Benutzer die Mitglieder der Gruppe sind."
+"Users who will become member of the current group. User names are separated "
+"by semicolons."
+msgstr ""
+"Benutzer die Mitglieder der aktuellen Gruppe werden. Benutzernamen werden "
+"durch Komma getrennt."
 
 #: ../help/help.inc:173
 msgid "Users wich are also members of group."

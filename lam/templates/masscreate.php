@@ -80,7 +80,7 @@ else {
 	echo "<p>&nbsp;</p>\n";
 	
 	echo "<p>\n";
-		echo "Here you can create multiple accounts by providing a CSV file.";
+		echo _("Here you can create multiple accounts by providing a CSV file.");
 	echo "</p>\n";
 	
 	echo "<p>&nbsp;</p>\n";
