@@ -614,6 +614,13 @@ class sambaAccount {
 		return $return;
 	}
 
+	// checks if the values of a new or modified profile are valid
+	// $scope: the account type (user, group, host, ...)
+	// $options: a hash array (name => value) containing the options
+	function check_profileOptions($scope, $options) {
+		return array();
+	}
+
 }
 
 ?>

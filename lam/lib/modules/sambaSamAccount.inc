@@ -625,9 +625,16 @@ class sambaSamAccount {
 		$return = array();
 		// TODO fill in correct groups
 		$return[] = array(0 => array('kind' => 'text', 'text' => _('Domain')),
-			1 => array('kind' => 'select', 'name' => 'sambaDomainName', 'options' => $sambaDomainNames),
+			1 => array('kind' => 'select', 'name' => 'sambaDomainName', 'options' => $sambaDomainNames, 'size' => 1, 'options' => array("d1", "d2"), 'options_selected' => array()),
 			2 => array('kind' => 'help', 'value' => 'sambaDomainName' ));
 		return $return;
+	}
+
+	// checks if the values of a new or modified profile are valid
+	// $scope: the account type (user, group, host, ...)
+	// $options: a hash array (name => value) containing the options
+	function check_profileOptions($scope, $options) {
+		return array();
 	}
 
 }
