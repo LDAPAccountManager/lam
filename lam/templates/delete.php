@@ -23,26 +23,27 @@ $Id$
   LDAP Account Manager Delete user, hosts or groups
 */
 include_once('../lib/ldap.inc');
-
+include_once('../lib/config.inc');
+session_save_path('../sess');
+@session_start();
 
 
 echo '<html><head><title>';
 echo _('Delete Account');
 echo '</title>
-	<link rel="stylesheet" type="text/css" href="../style/delete.css">
 	</head><body>
+	<link rel="stylesheet" type="text/css" href="../style/delete.css">
 	<form action="account.php" method="get">
 	<meta http-equiv="pragma" content="no-cache">
 	<meta http-equiv="cache-control" content="no-cache">
 	<table rules="all" class="delete" width="100%">
 	<tr><td>';
 
-if ($type) {
-	$DN = split("[\?&]", $QUERY_STRING);
-	array_shift($DN);
-	foreach ($DN as $dn) {
-		$dn = str_replace("\'", '',$dn);
 
+if ($type) {
+	$DN = str_replace("\'", '',$DN);
+	$DN2 = explode(";", $DN);
+	foreach ($DN2 as $dn) {
 		switch ($type) {
 			case 'user':
 				$success = ldap_delete($_SESSION['ldap']->server(), $dn);
@@ -50,18 +51,25 @@ if ($type) {
 				break;
 			case 'host':
 				$success = ldap_delete($_SESSION['ldap']->server(), $dn);
-				if (!$success) $error = _('Could not delete user: ').$dn;
+				if (!$success) $error = _('Could not delete host: ').$dn;
 				break;
 			case 'group':
-				$entry = ldap_read($_SESSION['ldap']->server(), $dn, "");
-				if (!$entry) $error = _('Could not delete group: ').$dn;
+				$result = ldap_search($_SESSION['ldap']->server(), $dn, 'objectClass=*');
+				if (!$result) $error = _('Could not delete group: ').$dn;
+				$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 				$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
 				if ($attr['memberUid']) $error = _('Could not delete group. Still users in group: ').$dn;
+				    else {
+					$success = ldap_delete($_SESSION['ldap']->server(), $dn);
+					if (!$success) $error = _('Could not delete user: ').$dn;
+					}
 				break;
 			}
-		if (!$error) echo $dn. _('deleted.');
+		if (!$error) echo $dn. _(' deleted.');
+		 else echo $error;
 		echo '</td></tr><tr><td>';
 		}
 	}
+echo '</td></tr>';
 echo '</form></body></html>';
 ?>
