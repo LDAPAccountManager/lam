@@ -78,7 +78,7 @@ if ($_POST['apply']) {
 			}
 		// Create automatic useraccount with number if original user already exists
 		// Reset name to original name if new name is in use
-		while ($temp = ldapexists($_SESSION['accounts'][$row], 'user')) {
+		while ($temp = ldapexists($_SESSION['accounts'][$row])) {
 			// get last character of username
 			$lastchar = substr($_SESSION['accounts'][$row]->general_username, strlen($_SESSION['accounts'][$row]->general_username)-1, 1);
 			// Last character is no number

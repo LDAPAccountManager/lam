@@ -169,6 +169,7 @@ if ($_POST['delete_yes'] && !$_POST['backmain']) {
 					}
 				break;
 			}
+		if ($success && isset($_SESSION[$_POST['type5'].'DN'][$dn])) unset($_SESSION[$_POST['type5'].'DN'][$dn]);
 		if (!$error) echo "<tr><td><b>$dn ". _('deleted').".</b></td></tr>\n";
 		 else echo "<tr><td><b>$error</b></td></tr>\n";
 		}

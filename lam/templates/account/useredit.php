@@ -227,9 +227,9 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 				}
 			// Create automatic useraccount with number if original user already exists
 			// Reset name to original name if new name is in use
-			if (ldapexists($account_new, 'user', $account_old) && is_object($account_old))
+			if (ldapexists($account_new, $account_old) && is_object($account_old))
 				$account_new->general_username = $account_old->general_username;
-			while ($temp = ldapexists($account_new, 'user', $account_old)) {
+			while ($temp = ldapexists($account_new, $account_old)) {
 				// get last character of username
 				$lastchar = substr($account_new->general_username, strlen($account_new->general_username)-1, 1);
 				// Last character is no number
@@ -251,7 +251,7 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 			if ($account_new->general_username != $_POST['f_general_username']) $errors[] = array('WARN', _('Username'), _('Username in use. Selected next free username.'));
 
 			// Check if UID is valid. If none value was entered, the next useable value will be inserted
-			$account_new->general_uidNumber = checkid($account_new, 'user', $account_old);
+			$account_new->general_uidNumber = checkid($account_new, $account_old);
 			if (is_string($account_new->general_uidNumber)) { // true if checkid has returned an error
 				$errors[] = array('ERROR', _('ID-Number'), $account_new->general_uidNumber);
 				if (isset($account_old)) $account_new->general_uidNumber = $account_old->general_uidNumber;

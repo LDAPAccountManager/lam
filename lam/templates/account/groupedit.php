@@ -151,9 +151,9 @@ switch ($select) { // Select which part of page should be loaded and check value
 				}
 			// Create automatic groupaccount with number if original group already exists
 			// Reset name to original name if new name is in use
-			if (ldapexists($account_new, 'group', $account_old) && is_object($account_old))
+			if (ldapexists($account_new, $account_old) && is_object($account_old))
 				$account_new->general_username = $account_old->general_username;
-			while ($temp = ldapexists($account_new, 'group', $account_old)) {
+			while ($temp = ldapexists($account_new, $account_old)) {
 				// get last character of username
 				$lastchar = substr($account_new->general_username, strlen($account_new->general_username)-1, 1);
 				// Last character is no number
@@ -175,7 +175,7 @@ switch ($select) { // Select which part of page should be loaded and check value
 			if ($account_new->general_username != $_POST['f_general_username']) $errors[] = array('WARN', _('Groupname'), _('Groupname already in use. Selected next free groupname.'));
 
 			// Check if UID is valid. If none value was entered, the next useable value will be inserted
-			$account_new->general_uidNumber = checkid($account_new, 'group', $account_old);
+			$account_new->general_uidNumber = checkid($account_new, $account_old);
 			if (is_string($account_new->general_uidNumber)) { // true if checkid has returned an error
 				$errors[] = array('ERROR', _('ID-Number'), $account_new->general_uidNumber);
 				if (isset($account_old)) $account_new->general_uidNumber = $account_old->general_uidNumber;
@@ -410,7 +410,6 @@ if (is_array($errors)) {
 	}
 
 // print_r($account_old);
-
 switch ($select_local) { // Select which part of page will be loaded
 	// general = startpage, general account paramters
 	// unix = page with all shadow-options and password
@@ -425,7 +424,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		$temp2 = $userDN_intern;
 		unset($temp2[0]);
 		foreach ($temp2 as $temp) $users[] = $temp['cn'];
-		sort($users, SORT_STRING);
+		if (is_array($users)) sort($users, SORT_STRING);
 		$users = array_delete($account_new->unix_memberUid, $users);
 		echo "<input name=\"select\" type=\"hidden\" value=\"groupmembers\">\n";
 		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
@@ -468,7 +467,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "<td valign=\"top\"><fieldset class=\"groupedit-middle\"><legend class=\"groupedit-bright\">";
 		echo _('Available users');
 		echo "</legend>\n";
-		if (count($users)!=0) {
+		if ((count($users)!=0) && is_array($users)) {
 			echo "<select name=\"users[]\" size=15 multiple class=\"groupedit-bright\">\n";
 			foreach ($users as $temp)
 				echo "		<option>$temp</option>\n";
@@ -659,16 +658,20 @@ switch ($select_local) { // Select which part of page will be loaded
 			'<a href="../help.php?HelpNumber=464" target="lamhelp">'._('Help').'</a>'.
 			'</td></tr>'."\n".'<tr><td>';
 		echo _('Domain');
-		echo '</td><td><select name="f_smb_domain">';
-		for ($i=0; $i<sizeof($samba3domains); $i++) {
-			if ($account_new->smb_domain->name) {
-				if ($account_new->smb_domain->name == $samba3domains[$i]->name)
-					echo '<option selected>' . $samba3domains[$i]->name. '</option>';
+		echo '</td><td>';
+		if (count($samba3domains)!=0) {
+			echo '<select name="f_smb_domain">';
+			for ($i=0; $i<sizeof($samba3domains); $i++) {
+				if ($account_new->smb_domain->name) {
+					if ($account_new->smb_domain->name == $samba3domains[$i]->name)
+						echo '<option selected>' . $samba3domains[$i]->name. '</option>';
+					else echo '<option>' . $samba3domains[$i]->name. '</option>';
+					}
 				else echo '<option>' . $samba3domains[$i]->name. '</option>';
 				}
-			else echo '<option>' . $samba3domains[$i]->name. '</option>';
+			echo	'</select>';
 			}
-		echo	'</select></td>'."\n".'<td><a href="../help.php?HelpNumber=467" target="lamhelp">'._('Help').'</a></td></tr>'."\n";
+		echo "</td>\n<td><a href=\"../help.php?HelpNumber=467\" target=\"lamhelp\">"._('Help')."</a></td></tr>\n";
 		echo "</table>\n</fieldset>\n</td></tr></table></td></tr>\n</table>\n";
 		break;
 

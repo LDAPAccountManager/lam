@@ -119,7 +119,7 @@ if ($select!='pdf') {
 					$_SESSION['accounts'][$_SESSION['pointer']]->general_homedir = str_replace('$user', $_SESSION['accounts'][$_SESSION['pointer']]->general_username, $_SESSION['accounts'][$_SESSION['pointer']]->general_homedir);
 
 				// Set uid number
-				$_SESSION['accounts'][$_SESSION['pointer']]->general_uidNumber = checkid($_SESSION['accounts'][$_SESSION['pointer']], 'user');
+				$_SESSION['accounts'][$_SESSION['pointer']]->general_uidNumber = checkid($_SESSION['accounts'][$_SESSION['pointer']]);
 
 				$_SESSION['accounts'][$_SESSION['pointer']]->smb_scriptPath = str_replace('$user', $_SESSION['accounts'][$_SESSION['pointer']]->general_username, $_SESSION['accounts'][$_SESSION['pointer']]->smb_scriptPath);
 				$_SESSION['accounts'][$_SESSION['pointer']]->smb_scriptPath = str_replace('$group', $_SESSION['accounts'][$_SESSION['pointer']]->general_group, $_SESSION['accounts'][$_SESSION['pointer']]->smb_scriptPath);
@@ -163,7 +163,7 @@ if ($select!='pdf') {
 							}
 
 						$group->general_username=$_SESSION['accounts'][$_SESSION['pointer']]->general_group;
-						$group->general_uidNumber=checkid($_SESSION['accounts'][$_SESSION['pointer']], 'group');
+						$group->general_uidNumber=checkid($_SESSION['accounts'][$_SESSION['pointer']]);
 						$group->general_gecos=$_SESSION['accounts'][$_SESSION['pointer']]->general_group;
 						$group->general_dn=$_SESSION['group_suffix'];
 						$error = creategroup($group);
@@ -179,7 +179,7 @@ if ($select!='pdf') {
 							}
 						}
 
-					$_SESSION['accounts'][$_SESSION['pointer']]->general_uidNumber = checkid($_SESSION['accounts'][$_SESSION['pointer']], 'user');
+					$_SESSION['accounts'][$_SESSION['pointer']]->general_uidNumber = checkid($_SESSION['accounts'][$_SESSION['pointer']]);
 					$iv = base64_decode($_COOKIE["IV"]);
 					$key = base64_decode($_COOKIE["Key"]);
 					$_SESSION['accounts'][$_SESSION['pointer']]->unix_password = base64_encode(mcrypt_encrypt(
@@ -446,7 +446,7 @@ function loadfile() {
 
 	// check if account allready exists
 	for ($i=0; $i<sizeof($_SESSION['accounts']); $i++) { // loops for every row
-		while ($temp = ldapexists($_SESSION['accounts'][$i], 'user')) {
+		while ($temp = ldapexists($_SESSION['accounts'][$i])) {
 			// Get interger-end of string hello456 -> hello + 456
 			$start = strlen($_SESSION['accounts'][$i]->general_username)-1;
 			while (is_numeric(substr($_SESSION['accounts'][$i]->general_username, $start))) $start--;
@@ -475,7 +475,7 @@ function loadfile() {
 						$second = intval(substr($_SESSION['accounts'][$i]->general_username, $start+1))+1;
 						$_SESSION['accounts'][$i]->general_username = $first . $second;
 						}
-					while ($temp = ldapexists($_SESSION['accounts'][$i], 'user')) {
+					while ($temp = ldapexists($_SESSION['accounts'][$i])) {
 						// Get interger-end of string hello456 -> hello + 456
 						$start = strlen($_SESSION['accounts'][$i]->general_username)-1;
 						while (is_numeric(substr($_SESSION['accounts'][$i]->general_username, $start))) $start--;
@@ -503,7 +503,7 @@ function loadfile() {
 
 			// Create automatic useraccount with number if original user already exists
 			// Reset name to original name if new name is in use
-			while ($temp = ldapexists($_SESSION['accounts'][$row2], 'user')) {
+			while ($temp = ldapexists($_SESSION['accounts'][$row2])) {
 				// get last character of username
 				$lastchar = substr($_SESSION['accounts'][$row2]->general_username, strlen($_SESSION['accounts'][$row2]->general_username)-1, 1);
 				// Last character is no number
