@@ -252,26 +252,23 @@ class posixGroup extends baseModule {
 		)
 		);
 		// configuration checks
-  $return['config_checks']['group']['posixGroup_minGID'] = array (
-   'type' => 'regex',
-   'regex' => 'digit',
-   'required' => true,
-   'required_message' => $this->errormessages['gidNumber'][5],
-   'error_message' => $this->errormessages['gidNumber'][5]);
-
-  $return['config_checks']['group']['posixGroup_maxGID'] = array (
-   'type' => 'regex',
-   'regex' => 'digit',
-   'required' => true,
-   'required_message' => $this->errormessages['gidNumber'][6],
-   'error_message' => $this->errormessages['gidNumber'][6]);
-
-  $return['config_checks']['group']['cmpGID'] = array (
-   'type' => 'int_greater',
-   'cmp_name1' => 'posixGroup_maxGID',
-   'cmp_name2' => 'posixGroup_minGID',
-   'error_message' => $this->errormessages['gidNumber'][7]);
-
+		$return['config_checks']['group']['posixGroup_minGID'] = array (
+			'type' => 'ext_preg',
+			'regex' => 'digit',
+			'required' => true,
+			'required_message' => $this->errormessages['gidNumber'][5],
+			'error_message' => $this->errormessages['gidNumber'][5]);
+		$return['config_checks']['group']['posixGroup_maxGID'] = array (
+			'type' => 'ext_preg',
+			'regex' => 'digit',
+			'required' => true,
+			'required_message' => $this->errormessages['gidNumber'][6],
+			'error_message' => $this->errormessages['gidNumber'][6]);
+		$return['config_checks']['group']['cmpGID'] = array (
+			'type' => 'int_greater',
+			'cmp_name1' => 'posixGroup_maxGID',
+			'cmp_name2' => 'posixGroup_minGID',
+			'error_message' => $this->errormessages['gidNumber'][7]);
 		// available PDF fields
 		$return['PDF_fields'] = array(	'cn',
 		'gidNumber',
@@ -392,15 +389,15 @@ class posixGroup extends baseModule {
 	/** this functin fills the error message array with messages
 	**/
 	function load_Messages() {
-		$this->messages['minGID'][0] = array('ERROR', _('Minimum GID number'), _('Minimum GID number is invalid or empty!'));
-		$this->messages['maxGID'][0] = array('ERROR', _('Maximum GID number'), _('Maximum GID number is invalid or empty!'));
-		$this->messages['cmpGID'][0] = array('ERROR', _('Maximum GID number'), _('Maximum GID number must be greater than minimum GID number!'));
 		$this->messages['userPassword'][0] = array('ERROR', _('Password'), _('Please enter the same password in both password-fields.'));
 		$this->messages['userPassword'][1] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
 		$this->messages['gidNumber'][0] = array('INFO', _('GID number'), _('GID number has changed. Please select checkbox to change GID number of users and hosts.'));
 		$this->messages['gidNumber'][2] = array('WARN', _('ID-Number'), _('It is possible that this ID-number is reused. This can cause several problems because files with old permissions might still exist. To avoid this warning set maxUID to a higher value.'));
 		$this->messages['gidNumber'][3] = array('ERROR', _('ID-Number'), _('No free ID-Number!'));
 		$this->messages['gidNumber'][4] = array('ERROR', _('ID-Number'), _('ID is already in use'));
+		$this->messages['gidNumber'][5] = array('ERROR', _('Minimum GID number'), _('Minimum GID number is invalid or empty!'));
+		$this->messages['gidNumber'][6] = array('ERROR', _('Maximum GID number'), _('Maximum GID number is invalid or empty!'));
+		$this->messages['gidNumber'][7] = array('ERROR', _('Maximum GID number'), _('Maximum GID number must be greater than minimum GID number!'));
 		$this->messages['cn'][0] = array('WARN', _('Groupname'), _('You are using a capital letters. This can cause problems because windows isn\'t case-sensitive.'));
 		$this->messages['cn'][1] = array('WARN', _('Groupname'), _('Groupname in use. Selected next free groupname.'));
 		$this->messages['cn'][2] = array('ERROR', _('Groupname'), _('Groupname contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
