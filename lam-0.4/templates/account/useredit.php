@@ -292,7 +292,7 @@ switch ($_POST['select']) {
 			$account_new->general_homedir = str_replace('$group', $account_new->general_group, $account_new->general_homedir);
 			if ($account_new->general_username != '')
 				$account_new->general_homedir = str_replace('$user', $account_new->general_username, $account_new->general_homedir);
-			if ($account_new->general_homedir != $_POST['f_general_homedir']) $errors[] = array('INFO', _('Home directory'), _('Replaced $user or $group in homedir.'));
+			if ($account_new->general_homedir != $_POST['f_general_homedir']) $errors[] = array('INFO', _('Home directory'), _('Replaced $%s or $%s in homedir.'), array('user', 'group'));
 			if ( !ereg('^[/]([a-z]|[A-Z])([a-z]|[A-Z]|[0-9]|[.]|[-]|[_])*([/]([a-z]|[A-Z])([a-z]|[A-Z]|[0-9]|[.]|[-]|[_])*)*$', $account_new->general_homedir ))
 				$errors[] = array('ERROR', _('Home directory'), _('Homedirectory contains invalid characters.'));
 			// Check if UID is valid. If none value was entered, the next useable value will be inserted
@@ -743,8 +743,9 @@ echo "</title>\n".
 	"<input name=\"varkey\" type=\"hidden\" value=\"".$varkey."\">\n";
 
 // Display errir-messages
-if (is_array($errors))
-	for ($i=0; $i<sizeof($errors); $i++) StatusMessage($errors[$i][0], $errors[$i][1], $errors[$i][2]);
+if (is_array($errors)) {
+	for ($i=0; $i<sizeof($errors); $i++) StatusMessage($errors[$i][0], $errors[$i][1], $errors[$i][2], $errors[$i][3]);
+}
 
 // print_r($account_new);
 //print_r($account_old);
