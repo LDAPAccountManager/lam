@@ -361,9 +361,7 @@ function RndInt($Format){
 
 function getquotas($user='+') { // Whis function will return the quotas from the specified user If empty only filesystems with enabled quotas are returned
 	$ldap_q = $_SESSION['ldap']->decrypt();
-	// *****************
-	//$towrite = $ldap_q[0].' '.$ldap_q[1].' '.$user.' quota get ';
-	$towrite = 'cn=Manager,dc=my-domain,dc=com secret '.$user.' quota get ';
+	$towrite = $ldap_q[0].' '.$ldap_q[1].' '.$user.' quota get ';
 	if ($_SESSION['type2']=='user') $towrite = $towrite.'u';
 	 else $towrite = $towrite.'g';
 	exec("/usr/bin/ssh ".$_SESSION['config']->scriptServer." sudo ".$_SESSION['config']->scriptPath." $towrite", $vals);
@@ -382,8 +380,7 @@ function getquotas($user='+') { // Whis function will return the quotas from the
 
 function setquotas($user) { // Whis function will set the quotas from the specified user.
 	$ldap_q = $_SESSION['ldap']->decrypt();
-	//$towrite = $ldap_q[0].' '.$ldap_q[1].' '.$user.' quota set ';
-	$towrite = 'cn=Manager,dc=my-domain,dc=com secret '.$user.' quota set ';
+	$towrite = $ldap_q[0].' '.$ldap_q[1].' '.$user.' quota set ';
 	if ($_SESSION['type2']=='user') $towrite = $towrite.'u ';
 	 else $towrite = $towrite.'g ';
 	$i=0;
@@ -399,8 +396,7 @@ function setquotas($user) { // Whis function will set the quotas from the specif
 
 function remquotas($user, $kind) { // Whis function will remove the quotas from the specified user.
 	$ldap_q = $_SESSION['ldap']->decrypt();
-	//$towrite = $ldap_q[0].' '.$ldap_q[1].' '.$user.' quota set ';
-	$towrite = 'cn=Manager,dc=my-domain,dc=com secret '.$user.' quota rem ';
+	$towrite = $ldap_q[0].' '.$ldap_q[1].' '.$user.' quota set ';
 	if ($_SESSION['type2']=='user') $towrite = $towrite.'u ';
 	 else $towrite = $towrite.'g ';
 	exec("/usr/bin/ssh ".$_SESSION['config']->scriptServer." sudo ".$_SESSION['config']->scriptPath." $towrite", $vals);
@@ -409,8 +405,7 @@ function remquotas($user, $kind) { // Whis function will remove the quotas from 
 
 function addhomedir($user) { // Create Homedirectory
 	$ldap_q = $_SESSION['ldap']->decrypt();
-	//$towrite = $ldap_q[0].' '.$ldap_q[1].' '.$user.' home add';
-	$towrite = 'cn=Manager,dc=my-domain,dc=com secret '.$user.' home add ';
+	$towrite = $ldap_q[0].' '.$ldap_q[1].' '.$user.' home add';
 	exec("/usr/bin/ssh ".$_SESSION['config']->scriptServer." sudo ".$_SESSION['config']->scriptPath." $towrite", $vals);
 	}
 
