@@ -107,7 +107,7 @@ if (!$sortattrib)
 // check search suffix
 if ($_POST['usr_suffix']) $usr_suffix = $_POST['usr_suffix'];  // new suffix selected via combobox
 elseif ($_SESSION['usr_suffix']) $usr_suffix = $_SESSION['usr_suffix'];  // old suffix from session
-else $usr_suffix = $_SESSION["config"]->get_GroupSuffix();  // default suffix
+else $usr_suffix = $_SESSION["config"]->get_UserSuffix();  // default suffix
 session_register('usr_suffix');
 
 
@@ -166,7 +166,7 @@ if ($_SESSION["userlist"] && $_GET["norefresh"]) {
 else
   StatusMessage("ERROR", 
 		_("LDAP Search failed! Please check your preferences."),
-		_("No Groups found!"));
+		_("No Users found!"));
 }
 
 $user_count = sizeof ($_SESSION["userlist"]);
@@ -301,7 +301,7 @@ function draw_navigation_bar ($user_count) {
     echo ("=&gt;");
   echo ("</td>");
   echo ("<td class=\"userlist-navbartext\">");
-  echo "&nbsp;" . $user_count . " " .  _("Users found");
+  echo "&nbsp;" . $user_count . " " .  _("User(s) found");
   echo ("</td>");
 
 
