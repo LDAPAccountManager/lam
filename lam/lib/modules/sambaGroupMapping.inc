@@ -357,7 +357,7 @@ class sambaGroupMapping extends baseModule {
 	/** this functin fills the error message array with messages
 	**/
 	function load_Messages() {
-		$this->messages['sambaSID'][0] = array('ERROR', _('Special Group'),sprintf( _('There can be only one group %s.'), $rids[$i]), 'sambaSID');
+		$this->messages['sambaSID'][0] = array('ERROR', _('There can be only one group of this type.'));  // third parameter must be set dynamically
 		$this->messages['sambaSID'][1] = array('ERROR', _("Account %s:") . " (sambaGroupMapping_domain): " . _("LAM was unable to find a Samba 3 domain with this name!"));  // third parameter must be set dynamically
 		$this->messages['groupType'][0] = array('ERROR', _("Account %s:") . " (sambaGroupMapping_type): " . _("This is not a valid Samba 3 group type!"), _("Possible values") . ": %s");
 	}
@@ -413,11 +413,14 @@ class sambaGroupMapping extends baseModule {
 				$wrid = true;
 				// Get Domain SID
 				$this->attributes['sambaSID'][0] = $SID."-".$this->rids[$rids[$i]];
-				// Do a check if special grou pis unique
-				if ($_SESSION['cache']->in_cache($SID."-".$this->rids[$rids[$i]], 'sambaSID', 'group'))
-					$triggered_messages[] = $this->messages['sambaSID'][0];
+				// Do a check if special group is unique
+				if ($_SESSION['cache']->in_cache($SID."-".$this->rids[$rids[$i]], 'sambaSID', 'group')) {
+					$message = $this->messages['sambaSID'][0];
+					$message[] = $rids[$i];
+					$triggered_messages['sambaSID'][] = $message;
 				}
 			}
+		}
 		if (!$wrid) $this->attributes['sambaSID'][0] = $SID . "-" . ($_SESSION[$this->base]->module['posixGroup']->attributes['gidNumber'][0]*2+$RIDbase+1);
 
 		// Return error-messages
