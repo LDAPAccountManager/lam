@@ -84,6 +84,12 @@ class Config {
   // suffix for Samba hosts
   var $Suff_hosts;
 
+  // suffix for domains (Samba 3)
+  var $Suff_domains;
+
+  // suffix for user/group mappings (Samba 3)
+  var $Suff_map;
+
   // minimum/maximum numbers for UID, GID and UID of Samba Hosts
   var $MinUID;
   var $MaxUID;
@@ -162,6 +168,14 @@ class Config {
 	  $this->Suff_hosts = chop(substr($line, 12, strlen($line)-12));
 	  continue;
 	}
+	if (substr($line, 0, 14) == "domainsuffix: ") {
+	  $this->Suff_domains = chop(substr($line, 14, strlen($line)-14));
+	  continue;
+	}
+	if (substr($line, 0, 11) == "mapsuffix: ") {
+	  $this->Suff_map = chop(substr($line, 11, strlen($line)-11));
+	  continue;
+	}
 	if (substr($line, 0, 8) == "minUID: ") {
 	  $this->MinUID = chop(substr($line, 8, strlen($line)-8));
 	  continue;
@@ -238,7 +252,8 @@ class Config {
       $save_serverURL = $save_passwd = $save_admins = $save_suffusr = $save_suffgrp = $save_suffhst =
 	$save_minUID = $save_maxUID = $save_minGID = $save_maxGID = $save_minMach = $save_maxMach =
 	$save_usrlstatrr =  $save_grplstatrr = $save_hstlstatrr = $save_maxlstent = $save_deflang =
-	$save_scriptPath = $save_scriptServer = $save_samba3 = $save_domainSID = False;
+	$save_scriptPath = $save_scriptServer = $save_samba3 = $save_domainSID = $save_suffdom =
+	$save_suffmap = False;
 	$file = fopen($conffile, "r");
 	$file_array = array();
 	// read config file
@@ -278,6 +293,16 @@ class Config {
 		if (substr($file_array[$i], 0, 12) == "hostsuffix: ") {
 			$file_array[$i] = "hostsuffix: " . $this->Suff_hosts . "\n";
 			$save_suffhst = True;
+			continue;
+		}
+		if (substr($file_array[$i], 0, 14) == "domainsuffix: ") {
+			$file_array[$i] = "domainsuffix: " . $this->Suff_domains . "\n";
+			$save_suffdom = True;
+			continue;
+		}
+		if (substr($file_array[$i], 0, 11) == "mapsuffix: ") {
+			$file_array[$i] = "mapsuffix: " . $this->Suff_map . "\n";
+			$save_suffmap = True;
 			continue;
 		}
 		if (substr($file_array[$i], 0, 8) == "minUID: ") {
@@ -368,6 +393,10 @@ class Config {
 					     "# e.g. ou=Groups,dc=yourdomain,dc=org\n" . "groupsuffix: " . $this->Suff_groups . "\n");
 	if (!$save_suffhst == True) array_push($file_array, "\n\n# suffix of Samba hosts\n" .
 					     "# e.g. ou=machines,dc=yourdomain,dc=org\n" . "hostsuffix: " . $this->Suff_hosts . "\n");
+	if (!$save_suffdom == True) array_push($file_array, "\n\n# suffix of Samba 3 domains\n" .
+					     "# e.g. ou=domains,dc=yourdomain,dc=org\n" . "domainsuffix: " . $this->Suff_domains . "\n");
+	if (!$save_suffmap == True) array_push($file_array, "\n\n# suffix of Samba 3 user/group mappings\n" .
+					     "# e.g. ou=mappings,dc=yourdomain,dc=org\n" . "mapsuffix: " . $this->Suff_map . "\n");
 	if (!$save_minUID == True) array_push($file_array, "\n\n# minimum UID number\n" . "minUID: " . $this->MinUID . "\n");
 	if (!$save_maxUID == True) array_push($file_array, "\n\n# maximum UID number\n" . "maxUID: " . $this->MaxUID . "\n");
 	if (!$save_minGID == True) array_push($file_array, "\n\n# minimum GID number\n" . "minGID: " . $this->MinGID . "\n");
@@ -406,6 +435,8 @@ class Config {
     echo "<b>" . _("UserSuffix") . ": </b>" . $this->Suff_users . "<br>";
     echo "<b>" . _("GroupSuffix") . ": </b>" . $this->Suff_groups . "<br>";
     echo "<b>" . _("HostSuffix") . ": </b>" . $this->Suff_hosts . "<br>";
+    echo "<b>" . _("DomainSuffix") . ": </b>" . $this->Suff_domains . "<br>";
+    echo "<b>" . _("MappingSuffix") . ": </b>" . $this->Suff_map . "<br>";
     echo "<b>" . _("Minimum UID number") . ": </b>" . $this->MinUID . "<br>";
     echo "<b>" . _("Maximum UID number") . ": </b>" . $this->MaxUID . "<br>";
     echo "<b>" . _("Minimum GID number") . ": </b>" . $this->MinGID . "<br>";
@@ -507,18 +538,46 @@ class Config {
 	else StatusMessage("WARN", "", _("Config->set_GroupSuffix failed!") . " (" . $value . ")");
   }
 
-  // returns the LDAP suffix where hosts are saved
-  function get_HostSuffix() {
-    return $this->Suff_hosts;
-  }
+	// returns the LDAP suffix where hosts are saved
+	function get_HostSuffix() {
+		return $this->Suff_hosts;
+	}
 
-  // sets the LDAP suffix where hosts are saved
-  function set_HostSuffix($value) {
-    if (is_string($value) && (eregi("^(([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)(,([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)*$", $value))) {
+	// sets the LDAP suffix where hosts are saved
+	function set_HostSuffix($value) {
+		if (is_string($value) && (eregi("^(([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)(,([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)*$", $value))) {
 		$this->Suff_hosts = $value;
 	}
-    else StatusMessage("WARN", "", _("Config->set_HostSuffix failed!") . " (" . $value . ")");
-  }
+		else StatusMessage("WARN", "", _("Config->set_HostSuffix failed!") . " (" . $value . ")");
+	}
+
+	// returns the LDAP suffix where domains are saved
+	function get_DomainSuffix() {
+		return $this->Suff_domains;
+	}
+
+	// sets the LDAP suffix where domains are saved
+	function set_DomainSuffix($value) {
+		if (!$value && ($this->get_Samba3() == "no")) $this->Suff_domains = "";
+		elseif (is_string($value) && (eregi("^(([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)(,([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)*$", $value))) {
+			$this->Suff_domains = $value;
+		}
+		else StatusMessage("WARN", "", _("Config->set_DomainSuffix failed!") . " (" . $value . ")");
+	}
+
+	// returns the LDAP suffix where mappings are saved
+	function get_MapSuffix() {
+		return $this->Suff_map;
+	}
+
+	// sets the LDAP suffix where mappings are saved
+	function set_MapSuffix($value) {
+		if (!$value) $this->Suff_map = ""; // optional parameter
+		elseif (is_string($value) && (eregi("^(([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)(,([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)*$", $value))) {
+			$this->Suff_map = $value;
+		}
+		else StatusMessage("WARN", "", _("Config->set_MappingSuffix failed!") . " (" . $value . ")");
+	}
 
   // returns the minimum UID to use when creating new users
   function get_minUID() {
@@ -694,8 +753,7 @@ class Config {
   // sets the Samba domain SID (Samba 3 only)
   function set_domainSID($value) {
 	if (!$value) { // optional parameter
-		$value = "";
-		$this->domainSID = $value;
+		$this->domainSID = "";
 	}
     elseif (is_string($value) && eregi("^S-[0-9]-[0-9]-[0-9]{2,2}-[0-9]*-[0-9]*-[0-9]*$", $value)) {
 		$this->domainSID = $value;

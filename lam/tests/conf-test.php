@@ -24,7 +24,7 @@ $Id$
 */
 
 include ("../lib/config.inc");
-$conf = new Config('default');
+$conf = new Config();
 echo "<html><head><title></title><link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\"></head><body>";
 echo ("<b> Current Config</b><br><br>");
 $conf->printconf();
@@ -38,6 +38,8 @@ $Adminstring = $conf->get_Adminstring();
 $Suff_users = $conf->get_UserSuffix();
 $Suff_groups = $conf->get_GroupSuffix();
 $Suff_hosts = $conf->get_HostSuffix();
+$Suff_domains = $conf->get_DomainSuffix();
+$Suff_map = $conf->get_MapSuffix();
 $MinUID = $conf->get_minUID();
 $MaxUID = $conf->get_maxUID();
 $MinGID = $conf->get_minGID();
@@ -63,6 +65,8 @@ $conf->set_Adminstring("uid=test,o=test,dc=org;uid=root,o=test2,c=de");
 $conf->set_UserSuffix("ou=test,o=test,c=de");
 $conf->set_GroupSuffix("ou=testgrp,o=test,c=de");
 $conf->set_HostSuffix("ou=testhst,o=test,c=de");
+$conf->set_DomainSuffix("ou=testdom,o=test,c=de");
+$conf->set_MapSuffix("ou=testmap,o=test,c=de");
 $conf->set_minUID("25");
 $conf->set_maxUID("254");
 $conf->set_minGID("253");
@@ -92,6 +96,8 @@ if ($conf->get_Adminstring() != "uid=test,o=test,dc=org;uid=root,o=test2,c=de") 
 if ($conf->get_UserSuffix() != "ou=test,o=test,c=de") echo ("<br><font color=\"#FF0000\">Saving user suffix failed!</font><br>");
 if ($conf->get_GroupSuffix() != "ou=testgrp,o=test,c=de") echo ("<br><font color=\"#FF0000\">Saving group suffix failed!</font><br>");
 if ($conf->get_HostSuffix() != "ou=testhst,o=test,c=de") echo ("<br><font color=\"#FF0000\">Saving host suffix failed!</font><br>");
+if ($conf->get_DomainSuffix() != "ou=testdom,o=test,c=de") echo ("<br><font color=\"#FF0000\">Saving domain suffix failed!</font><br>");
+if ($conf->get_MapSuffix() != "ou=testmap,o=test,c=de") echo ("<br><font color=\"#FF0000\">Saving mapping suffix failed!</font><br>");
 if ($conf->get_minUID() != "25") echo ("<br><font color=\"#FF0000\">Saving minUID failed!</font><br>");
 if ($conf->get_maxUID() != "254") echo ("<br><font color=\"#FF0000\">Saving maxUID failed!</font><br>");
 if ($conf->get_minGID() != "253") echo ("<br><font color=\"#FF0000\">Saving minGID failed!</font><br>");
@@ -117,6 +123,8 @@ $conf->set_Adminstring($Adminstring);
 $conf->set_UserSuffix($Suff_users);
 $conf->set_GroupSuffix($Suff_groups);
 $conf->set_HostSuffix($Suff_hosts);
+$conf->set_DomainSuffix($Suff_domains);
+$conf->set_MapSuffix($Suff_map);
 $conf->set_minUID($MinUID);
 $conf->set_maxUID($MaxUID);
 $conf->set_minGID($MinGID);
