@@ -55,6 +55,16 @@ $Id$
 class posixAccount extends baseModule {
 
 	/**
+	* Creates a new posixAccount object.
+	*/
+	function posixAccount($scope) {
+	// error messages for input checks
+	$this->messages['homedir'] = array('ERROR', _('Home directory'), _('Homedirectory contains invalid characters.'));
+	// call parent constructor
+	parent::baseModule($scope);
+	}
+
+	/**
 	* Returns meta data that is interpreted by parent class
 	*
 	* @return array array with meta data
@@ -78,6 +88,9 @@ class posixAccount extends baseModule {
 		}
 		// alias name
 		$return["alias"] = _("Unix");
+		// profile checks
+		$return['profile_checks']['posixAccount_homeDirectory'] = array('type' => 'regex_i', 'regex' => $this->regex_homedir,
+			'error_message' => $this->messages['homedir']);
 		return $return;
 	}
 
@@ -135,6 +148,11 @@ class posixAccount extends baseModule {
 	var $groups_orig;
 	var $createhomedir;
 
+	/** regular expression for home directory */
+	var $regex_homedir = '^[/]([a-z])([a-z0-9\\._-])*([/]([a-z\\$])([a-z0-9\\._-])*)*$';
+
+	/** list of possible error messages */
+	var $messages = array();
 
 	/* $attribute['userPassword'] can't accessed directly because it's enrcypted
 	* To read / write password function userPassword is needed
@@ -467,8 +485,8 @@ class posixAccount extends baseModule {
 					$this->attributes['homeDirectory'][0] = str_replace('$user', $this->attributes['uid'][0], $this->attributes['homeDirectory'][0]);
 				if ($this->attributes['homeDirectory'][0] != $post['homeDirectory']) $errors['homeDirecotry'][] = array('INFO', _('Home directory'), _('Replaced $user or $group in homedir.'));
 				}
-			if ( !ereg('^[/]([a-z]|[A-Z])([a-z]|[A-Z]|[0-9]|[.]|[-]|[_])*([/]([a-z]|[A-Z])([a-z]|[A-Z]|[0-9]|[.]|[-]|[_])*)*$', $this->attributes['homeDirectory'][0] ))
-				$errors['homeDirecotry'][] = array('ERROR', _('Home directory'), _('Homedirectory contains invalid characters.'), 'homeDirectory');
+			if ( !eregi($this->regex_homedir, $this->attributes['homeDirectory'][0] ))
+				$errors['homeDirecotry'][] = $this->messages['homedir'];
 			// Check if Username contains only valid characters
 			if ( !ereg('^([a-z]|[A-Z]|[0-9]|[.]|[-]|[_])+$', $this->attributes['uid'][0]) && !$profile)
 				$errors['uid'][] = array('ERROR', _('Username'), _('Username contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
@@ -704,13 +722,6 @@ class posixAccount extends baseModule {
 		return $return;
 	}
 
-	// checks if the values of a new or modified profile are valid
-	// $scope: the account type (user, group, host, ...)
-	// $options: a hash array (name => value) containing the options
-	function check_profileOptions($options) {
-		return array();
-	}
-	
 	function get_pdfFields($account_type="user") {
 		return array(	'uid',
 							'uidNumber',
