@@ -93,8 +93,14 @@ function registervars() { // This function registers all needes session-varibale
 	}
 
 function getshells() { // Return a list of all shells listed in /etc/shells
-	$shells =  file('/etc/shells');
-	foreach ($shells as $shell) chop($shell);
+	$shells =  file('../config/shells');
+	$i=0;
+	while ($shells[$i]) {
+		// ******** Fixme remove everthing starting from # and every empty line
+		chop($shells[$i]);
+		trim($shells[$i]);
+		$i++;
+		}
 	return $shells;
 	}
 
@@ -103,6 +109,19 @@ function checkglobal() { // This functions checks all global account parameters
 	$error = "0";
 	switch ( $_SESSION['type2'] ) {
 		case 'user' :
+			if ( ($_SESSION['account_temp']->general_gecos=='') || ($_SESSION['account_temp']->general_gecos==' ')) $_SESSION['account_temp']->general_gecos = $_SESSION['account_temp']->general_givenname . " " . $_SESSION['account_temp']->general_surname ;
+			// Check if Homedir is valid
+			if ($_SESSION['account_temp']->general_username != '')
+				$_SESSION['account_temp']->general_homedir = str_replace('$user', $_SESSION['account_temp']->general_username, $_SESSION['account_temp']->general_homedir);
+			$_SESSION['account_temp']->general_homedir = str_replace('$group', $_SESSION['account_temp']->general_group, $_SESSION['account_temp']->general_homedir);
+			if ( !ereg('^[/][a-z]([a-z]|[0-9]|[.]|[-]|[_])*([/][a-z]([a-z]|[0-9]|[.]|[-]|[_])*)*$', $_SESSION['account_temp']->general_homedir )) $error = _('Homedirectory contents invalid characters.');
+			// Check if givenname is valid
+			if ( !ereg('^([a-z]|[A-Z])*$', $_SESSION['account_temp']->givenname)) $error = _('Givenname contents invalid characters');
+			// Check if surname is valid
+			if ( !ereg('^([a-z]|[A-Z])*$', $_SESSION['account_temp']->surname)) $error = _('Surname contents invalid characters');
+			// Check if UID is valid. If none value was entered, the next useable value will be inserted
+			$temp = checkid();
+			if ($temp) $error = $temp;
 			// Check if Username-length is OK. minLength=3, maxLength=20
 			if ( !ereg('.{3,20}', $_SESSION['account_temp']->general_username))   $error = _('Username must content between 3 and 20 characters.');
 			// Check if Username starts with letter
@@ -111,18 +130,6 @@ function checkglobal() { // This functions checks all global account parameters
 			if ( !ereg('^([a-z]|[0-9]|[.]|[-]|[_])*$', $_SESSION['account_temp']->general_username)) $error = _('Username contents invalid characters. Valid characters are: a-z, 0-9 and .-_ !');
 			// Check if user already exists
 			$temp = ldapexists();
-			if ($temp) $error = $temp;
-			// Check if surname is valid
-			if ( !ereg('^([a-z]|[A-Z])*$', $_SESSION['account_temp']->surname)) $error = _('Surname contents invalid characters');
-			// Check if givenname is valid
-			if ( !ereg('^([a-z]|[A-Z])*$', $_SESSION['account_temp']->givenname)) $error = _('Givenname contents invalid characters');
-			// Check if Homedir is valid
-			$_SESSION['account_temp']->general_homedir = str_replace('$user', $_SESSION['account_temp']->general_username, $_SESSION['account_temp']->general_homedir);
-			$_SESSION['account_temp']->general_homedir = str_replace('$group', $_SESSION['account_temp']->general_group, $_SESSION['account_temp']->general_homedir);
-			if ( !ereg('^[/][a-z]([a-z]|[0-9]|[.]|[-]|[_])*([/][a-z]([a-z]|[0-9]|[.]|[-]|[_])*)*$', $_SESSION['account_temp']->general_homedir )) $error = _('Homedirectory contents invalid characters.');
-			if ($_SESSION['account_temp']->general_gecos=='') $_SESSION['account_temp']->general_gecos = $_SESSION['account_temp']->general_givenname . " " . $_SESSION['account_temp']->general_surname ;
-			// Check if UID is valid. If none value was entered, the next useable value will be inserted
-			$temp = checkid();
 			if ($temp) $error = $temp;
 			break;
 		case 'group' :
@@ -177,17 +184,17 @@ function checkunix() { // This function checks all unix account paramters
 	$error = "0";
 	switch ( $_SESSION['type2'] ) {
 		case 'user' :
-			// Sonderzeichen |#*,.;:_-+!$%&/|?{[()]} ****************************************************
-			if ( !ereg('^([a-z]|[A-Z]|[0-9])*$', $_SESSION['account_temp']->unix_password)) $error = _('Password contents invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !');
-			if ($_SESSION['account_temp']->unix_pwdwarn=='') $error = _('No value for Password Warn.');
-			if ( !ereg('^([1-9]+)([0-9]*)$', $_SESSION['account_temp']->unix_pwdwarn))  $error = _('Password Warn must be are natural number.');
-			if ($_SESSION['account_temp']->unix_pwdallowlogin=='') $error = _('No value for Password Expire.');
-			if ( !ereg('^(([-][1])|([0-9]*))$', $_SESSION['account_temp']->unix_pwdallowlogin))  $error = _('Password Expire must be are natural number or -1.');
-			if ($_SESSION['account_temp']->unix_pwdmaxage=='') $error = _('No value for Password Maxage.');
-			if ( !ereg('^([1-9]+)([0-9]*)$', $_SESSION['account_temp']->unix_pwdmaxage))  $error = _('Password Maxage must be are natural number.');
-			if ($_SESSION['account_temp']->unix_pwdminage=='') $error = _('No value for Password Minage.');
 			if ( !ereg('^([0-9]*)$', $_SESSION['account_temp']->unix_pwdminage))  $error = _('Password Minage must be are natural number.');
 			if ( $_SESSION['account_temp']->unix_pwdminage > $_SESSION['account_temp']->unix_pwdmaxage ) $error = _('Password Maxage must bigger as Password Minage.');
+			if ( !ereg('^([1-9]+)([0-9]*)$', $_SESSION['account_temp']->unix_pwdmaxage))  $error = _('Password Maxage must be are natural number.');
+			if ($_SESSION['account_temp']->unix_pwdminage=='') $error = _('No value for Password Minage.');
+			if ( !ereg('^(([-][1])|([0-9]*))$', $_SESSION['account_temp']->unix_pwdallowlogin))  $error = _('Password Expire must be are natural number or -1.');
+			if ($_SESSION['account_temp']->unix_pwdmaxage=='') $error = _('No value for Password Maxage.');
+			if ( !ereg('^([1-9]+)([0-9]*)$', $_SESSION['account_temp']->unix_pwdwarn))  $error = _('Password Warn must be are natural number.');
+			if ($_SESSION['account_temp']->unix_pwdallowlogin=='') $error = _('No value for Password Expire.');
+			if ( !ereg('^([a-z]|[A-Z]|[0-9]|[\|]|[\#]|[\*]|[\,]|[\.]|[\;]|[\:]|[\_]|[\-]|[\+]|[\!]|[\%]|[\&]|[\/]|[\?]|[\{]|[\[]|[\(]|[\)]|[\]]|[\}])*$',
+				$_SESSION['account_temp']->unix_password)) $error = _('Password contents invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !');
+			if ($_SESSION['account_temp']->unix_pwdwarn=='') $error = _('No value for Password Warn.');
 			break;
 		case 'host' :
 			// Sonderzeichen |#*,.;:_-+!$%&/|?{[()]} ****************************************************
@@ -228,8 +235,8 @@ function checksamba() { // This function checks all samba account paramters
 			$_SESSION['account_temp']->smb_profilePath = str_replace('$group', $_SESSION['account_temp']->general_group, $_SESSION['account_temp']->smb_profilePath);
 			$_SESSION['account_temp']->smb_smbHome = str_replace('$user', $_SESSION['account_temp']->general_username, $_SESSION['account_temp']->smb_smbHome);
 			$_SESSION['account_temp']->smb_smbHome = str_replace('$group', $_SESSION['account_temp']->general_group, $_SESSION['account_temp']->smb_smbHome);
-			// Sonderzeichen |#*,.;:_-+!$%&/|?{[()]} ****************************************************
-			if ( !ereg('^([a-z]|[A-Z]|[0-9])*$', $_SESSION['account_temp']->smb_password)) $error = _('Password contents invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !');
+			if ( !ereg('^([a-z]|[A-Z]|[0-9]|[\|]|[\#]|[\*]|[\,]|[\.]|[\;]|[\:]|[\_]|[\-]|[\+]|[\!]|[\%]|[\&]|[\/]|[\?]|[\{]|[\[]|[\(]|[\)]|[\]]|[\}])*$',
+				$_SESSION['account_temp']->smb_password)) $error = _('Password contents invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !');
 			if ( (!$_SESSION['account_temp']->smb_scriptpath=='') && (!ereg('^([/])*[a-z]([a-z]|[0-9]|[.]|[-]|[_])*([/][a-z]([a-z]|[0-9]|[.]|[-]|[_])*)*$', $_SESSION['account_temp']->smb_scriptpath))) $error = _('Scriptpath is invalid');
 			if ( (!$_SESSION['account_temp']->smb_profilePath=='') && (!ereg('^[/][a-z]([a-z]|[0-9]|[.]|[-]|[_])*([/][a-z]([a-z]|[0-9]|[.]|[-]|[_])*)*$', $_SESSION['account_temp']->smb_profilePath)) && (!ereg('^[\][\]([a-z]|[A-Z]|[0-9]|[.]|[-])+([\]([a-z]|[A-Z]|[0-9]|[.]|[-])+)+$', $_SESSION['account_temp']->smb_profilePath))) $error = _('ProfilePath is invalid.');
 			if ( (!$_SESSION['account_temp']->smb_smbHome=='') && !ereg('^[\][\]([a-z]|[A-Z]|[0-9]|[.]|[-])+([\]([a-z]|[A-Z]|[0-9]|[.]|[-])+)+$', $_SESSION['account_temp']->smb_smbhome)) $error = _('smbHome is invalid.');
@@ -353,52 +360,55 @@ function RndInt($Format){
 
 function getquotas($user='+') { // Whis function will return the quotas from the specified user If empty only filesystems with enabled quotas are returned
 	$ldap_q = $_SESSION['ldap']->decrypt();
-	$towrite = $ldap_q[0].' '.$ldap_q[1].' '.$user.' quota get ';
+	// *****************
+	//$towrite = $ldap_q[0].' '.$ldap_q[1].' '.$user.' quota get ';
+	$towrite = 'cn=Manager,dc=my-domain,dc=com secret '.$user.' quota get ';
 	if ($_SESSION['type2']=='user') $towrite = $towrite.'u';
 	 else $towrite = $towrite.'g';
 	exec("/usr/bin/ssh ".$_SESSION['config']->scriptServer." sudo ".$_SESSION['config']->scriptPath." $towrite", $vals);
-	$vals = explode(';', $vals[0]);
-	while ($vals[$i]) {
+	$vals = explode(':', $vals[0]);
+	for ($i=0; $i<sizeof($vals); $i++) {
 		$vals2 = explode(',', $vals[$i]);
-		$j=0;
-		while ($vals2[$j]) {
+		for ($j=0; $j<sizeof($vals2); $j++) {
 			$_SESSION['account']->quota[$i][$j] = $vals2[$j];
-			$j++;
 			}
 		if ($_SESSION['account']->quota[$i][4]<$time) $_SESSION['account']->quota[$i][4] = '';
-			else $_SESSION['account']->quota[$i][4] = strval(($_SESSION['account']->quota[$i][4]-$time)/3600) . _('hours');
+			else $_SESSION['account']->quota[$i][4] = strval(($_SESSION['account']->quota[$i][4]-$time)/3600) . _(' hours');
 		if ($_SESSION['account']->quota[$i][8]<$time) $_SESSION['account']->quota[$i][8] = '';
-			else $_SESSION['account']->quota[$i][8] = strval(($_SESSION['account']->quota[$i][8]-$time)/3600) . _('hours');
-		$i++;
+			else $_SESSION['account']->quota[$i][8] = strval(($_SESSION['account']->quota[$i][8]-$time)/3600) . _(' hours');
 		}
 	}
 
 function setquotas($user) { // Whis function will set the quotas from the specified user.
 	$ldap_q = $_SESSION['ldap']->decrypt();
-	$towrite = $ldap_q[0].' '.$ldap_q[1].' '.$user.' quota set ';
+	//$towrite = $ldap_q[0].' '.$ldap_q[1].' '.$user.' quota set ';
+	$towrite = 'cn=Manager,dc=my-domain,dc=com secret '.$user.' quota set ';
 	if ($_SESSION['type2']=='user') $towrite = $towrite.'u ';
 	 else $towrite = $towrite.'g ';
 	$i=0;
 	while ($_SESSION['account']->quota[$i][0]) {
 		if ($_SESSION['account']->quota[$i] != $_SESSION['account_old']->quota[$i]) {
 			$towrite = $towrite. $_SESSION['account']->quota[$i][0] .','.$_SESSION['account']->quota[$i][2] .','.$_SESSION['account']->quota[$i][3]
-			.','.$_SESSION['account']->quota[$i][6] .','. $_SESSION['account']->quota[$i][7] .';'.
+			.','.$_SESSION['account']->quota[$i][6] .','. $_SESSION['account']->quota[$i][7] .':'.
 			$i++;
 			}
 		}
+	echo("/usr/bin/ssh ".$_SESSION['config']->scriptServer." sudo ".$_SESSION['config']->scriptPath." $towrite");
 	if ($i!=0) exec("/usr/bin/ssh ".$_SESSION['config']->scriptServer." sudo ".$_SESSION['config']->scriptPath." $towrite", $vals);
 	}
 
 
 function addhomedir($user) { // Create Homedirectory
 	$ldap_q = $_SESSION['ldap']->decrypt();
-	$towrite = $ldap_q[0].' '.$ldap_q[1].' '.$user.' home add';
+	//$towrite = $ldap_q[0].' '.$ldap_q[1].' '.$user.' home add';
+	$towrite = 'cn=Manager,dc=my-domain,dc=com secret '.$user.' home add ';
 	exec("/usr/bin/ssh ".$_SESSION['config']->scriptServer." sudo ".$_SESSION['config']->scriptPath." $towrite", $vals);
 	}
 
 function remhomedir($user) { // Remove Homedirectory
 	$ldap_q = $_SESSION['ldap']->decrypt();
-	$towrite = $ldap_q[0].' '.$ldap_q[1].' '.$user.' home rem';
+	//$towrite = $ldap_q[0].' '.$ldap_q[1].' '.$user.' home rem';
+	$towrite = 'cn=Manager,dc=my-domain,dc=com secret '.$user.' home rem ';
 	exec("/usr/bin/ssh ".$_SESSION['config']->scriptServer." sudo ".$_SESSION['config']->scriptPath." $towrite", $vals);
 	}
 
@@ -516,7 +526,10 @@ function loaduser($dn) { // Will load all needed values from an existing account
 	$result = ldap_search($_SESSION['ldap']->server(), $dn, "objectclass=PosixAccount");
 	$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 	$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
-	if ($attr['uid'][0]) $_SESSION['account']->general_username = $attr['uid'][0];
+	if ($attr['uid'][0]) {
+		$_SESSION['account']->general_username = $attr['uid'][0];
+		if ($_SESSION['config']->scriptServer) getquotas($attr['uid'][0]);
+		}
 	if ($attr['uidNumber'][0]) $_SESSION['account']->general_uidNumber = $attr['uidNumber'][0];
 	if ($attr['homeDirectory'][0]) $_SESSION['account']->general_homedir = $attr['homeDirectory'][0];
 	if ($attr['shadowLastChange'][0]) $_SESSION['account']->unix_shadowLastChange = $attr['shadowLastChange'][0];
@@ -638,7 +651,10 @@ function loadgroup($dn) { // Will load all needed values from an existing group
 	$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
 	if ($attr['gidNumber'][0]) $_SESSION['account']->general_uidNumber = $attr['gidNumber'][0];
 	if ($attr['description'][0]) $_SESSION['account']->general_gecos = $attr['description'][0];
-	if ($attr['cn'][0]) $_SESSION['account']->general_username = $attr['cn'][0];
+	if ($attr['cn'][0]) {
+		$_SESSION['account']->general_username = $attr['cn'][0];
+		if ($_SESSION['config']->scriptServer) getquotas($attr['cn'][0]);
+		}
 	if ($attr['memberUid']) $_SESSION['account']->general_memberUid = $attr['memberUid'];
 	if (is_array($_SESSION['account']->general_memberUid)) array_shift($_SESSION['account']->general_memberUid);
 	$_SESSION['account']->general_dn = $dn;
@@ -776,14 +792,18 @@ function createuser() { // Will create the LDAP-Account
 			 	}
 			$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
 			}
+		if ($_SESSION['config']->scriptServer) setquotas($_SESSION['account']->general_username);
 		if (!$success) return 5;
-		if ($_SESSION['config']->scriptServer) setquotas($attr['uid'][0]);
 		return 3;
 		}
 	 else {
 		// Write a new entry if user doesn't exists
 		$success = ldap_add($_SESSION['ldap']->server(),$_SESSION['account']->general_dn, $attr);
 		if (!$success) return 4;
+		if ($_SESSION['config']->scriptServer) {
+			setquotas($_SESSION['account']->general_username);
+			addhomedir($_SESSION['account']->general_username);
+			}
 		// Add user to groups
 		$result = ldap_search($_SESSION['ldap']->server(), 'cn='.$_SESSION['account']->general_group.','.$_SESSION['config']->get_GroupSuffix(), "objectclass=posixGroup", array('memberUid'));
 		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
@@ -806,10 +826,6 @@ function createuser() { // Will create the LDAP-Account
 					$success = ldap_mod_add($_SESSION['ldap']->server(), 'cn='.$group2.','.$_SESSION['config']->get_GroupSuffix(), $toadd);
 					}
 				if (!$success) return 4;
-			}
-		if ($_SESSION['config']->scriptServer) {
-			setquotas($attr['uid'][0]);
-			addhomedir($attr['uid'][0]);
 			}
 		return 1;
 		}

@@ -30,7 +30,7 @@
 	# list of valid admins
 @admins = ('cn=Manager,dc=my-domain,dc=com');
 $server="127.0.0.1"; # IP or DNS of ldap-server
-$server_port='387'; # Port used from ldap
+$server_port='389'; # Port used from ldap
 $server_ssl='no'; # Use SSL? ************* Not working yet
 $debug=true; # Show debug messages
 
@@ -109,8 +109,8 @@ if ($found==true) {
 						($<, $>) = ($>, $<); # Get root privileges
 						system 'mkdir', '-m 755 -p', $patch; # Create paths to homedir
 						system 'mkdir', '-m 700', $user[7]; # Create himdir itself
-						system 'cp', '-a', '/etc/skel/', $user[7]; # Copy /etc/sekl into homedir
-						system 'chown', '-R', $user[2], $user[3] , $user[7]; # Change owner to new user
+						system 'cp', '-a', '/etc/skel/*', $user[7]; # Copy /etc/sekl into homedir
+						system 'chown', '-R', "$user[2]:$user[3]" , $user[7]; # Change owner to new user
 						system '/usr/sbin/useradd.local', $user[0]; # run useradd-script
 						($<, $>) = ($>, $<); # Give up root previleges
 						last switch2;
@@ -128,7 +128,7 @@ if ($found==true) {
 			$vals[3] eq 'quota' && do {
 				get_fs(); # Load list of devices with enabled quotas
 					# Store quota information in array
-				@quota_temp1 = split (';', $vals[6]);
+				@quota_temp1 = split (':', $vals[6]);
 				$i=0;
 				while ($quota_temp1[$i]) {
 					$j=0;
@@ -158,9 +158,9 @@ if ($found==true) {
 						while ($quota_usr[$i][0]) {
 							if ($vals[2]ne'+') {
 								@temp = Quota::query($quota_usr[$i][0],$user[2],$group);
-								$return = "$quota_usr[$i][1],$temp[0],$temp[1],$temp[2],$temp[3],$temp[4],$temp[5],$temp[6],$temp[7];$return";
+								$return = "$quota_usr[$i][1],$temp[0],$temp[1],$temp[2],$temp[3],$temp[4],$temp[5],$temp[6],$temp[7]:$return";
 								}
-							else { $return = "$quota_usr[$i][1],0,0,0,0,0,0,0,0;$return"; }
+							else { $return = "$quota_usr[$i][1],0,0,0,0,0,0,0,0:$return"; }
 							$i++;
 							}
 						($<, $>) = ($>, $<); # Give up root previleges

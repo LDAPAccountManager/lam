@@ -25,7 +25,7 @@ thins to get it work.
    * Check if the user your webserver is running as does
      also exists on remote-host
    * Copy the content of ~/.ssh/id_dsa.pub from the system
-     LDAP Account manager into ~/.ssh/known_hosts on the
+     LDAP Account manager into ~/.ssh/authorized_keys on the
      remote machine
    * Connect to the remote server via ssh $remotehost
      Answer the next question with yes if the remote key is

@@ -23,6 +23,7 @@ $Id$
   LDAP Account Manager Delete user, hosts or groups
 */
 include_once('../lib/ldap.inc');
+include_once('../lib/account.inc');
 include_once('../lib/config.inc');
 session_save_path('../sess');
 @session_start();
@@ -70,6 +71,11 @@ if ($_POST['delete_yes']) {
 			case 'user':
 				$success = ldap_delete($_SESSION['ldap']->server(), $dn);
 				if (!$success) $error = _('Could not delete user: ').$dn;
+					else {
+						$temp=explode(',', $dn);
+						$username = str_replace('cn=', '', $temp[0]);
+						if ($_SESSION['config']->scriptServer) remhomedir($username);
+						}
 				break;
 			case 'host':
 				$success = ldap_delete($_SESSION['ldap']->server(), $dn);

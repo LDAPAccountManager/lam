@@ -29,6 +29,8 @@ include_once('../lib/ldap.inc'); // LDAP-functions
 include_once('../lib/profiles.inc'); // functions to load and save profiles
 include_once('../lib/status.inc'); // Return error-message
 
+
+
 registervars(); // Register all needed variables in session and register session
 $error = "0";
 if ( $_GET['type'] ) { // Type is true if account.php was called from Users/Group/Hosts-List
@@ -38,7 +40,7 @@ if ( $_GET['type'] ) { // Type is true if account.php was called from Users/Grou
 	$_SESSION['account_temp'] = ""; // Delete $_SESSION['account_temp'] because values are now invalid
 	$_SESSION['modify'] = 0; // Set modify back to false
 	$_SESSION['shelllist'] = getshells(); // Write List of all valid shells in variable
-	//if (($_GET['type']=='user')||($_GET['type']=='group')) getquotas();
+	if ((($_GET['type']=='user')||($_GET['type']=='group')) && ($_SESSION['config']->scriptServer)) getquotas();
 	}
 
 if ( $_GET['DN'] ) { // $DN is true if an entry should be modified and account.php was called from Users/Group/Host-List
@@ -53,31 +55,33 @@ if ( $_GET['DN'] ) { // $DN is true if an entry should be modified and account.p
 
 switch ($_POST['select']) {
 	case 'general':
-		// Write alle values in temporary object
-		if ($_POST['f_general_username']) $_SESSION['account_temp']->general_username = $_POST['f_general_username'];
-			else $_SESSION['account_temp']->general_username = $_POST['f_general_username'];
-		if ($_POST['f_general_surname']) $_SESSION['account_temp']->general_surname = $_POST['f_general_surname'];
-			else $_SESSION['account_temp']->general_surname = "";
-		if ($_POST['f_general_givenname']) $_SESSION['account_temp']->general_givenname = $_POST['f_general_givenname'];
-			else $_SESSION['account_temp']->general_givenname = "";
-		if ($_POST['f_general_uidNumber']) $_SESSION['account_temp']->general_uidNumber = $_POST['f_general_uidNumber'];
-			else $_SESSION['account_temp']->general_uidNumber = "";
-		if ($_POST['f_general_group']) $_SESSION['account_temp']->general_group = $_POST['f_general_group'];
-		if ($_POST['f_general_groupadd']) $_SESSION['account_temp']->general_groupadd = $_POST['f_general_groupadd'];
-		if ($_POST['f_general_homedir']) $_SESSION['account_temp']->general_homedir = $_POST['f_general_homedir'];
-			else $_SESSION['account_temp']->general_homedir = "";
-		if ($_POST['f_general_shell']) $_SESSION['account_temp']->general_shell = $_POST['f_general_shell'];
-		if ($_POST['f_general_gecos']) $_SESSION['account_temp']->general_gecos = $_POST['f_general_gecos'];
-			else $_SESSION['account_temp']->general_gecos = "";
-		// Check Values
-		$error = checkglobal(); // account.inc
-		// Check which part Site should be displayd
-		if ($_POST['next'] && ($error=="0"))
-			switch ($_SESSION['type2']) {
-				case 'user': $select_local = 'unix'; break;
-				case 'group': $select_local = 'quota'; break;
-				case 'host': $select_local = 'unix'; break;
-				}
+		if (!$_POST['load']) { // No Profile was loaded
+			// Write alle values in temporary object
+			if ($_POST['f_general_username']) $_SESSION['account_temp']->general_username = $_POST['f_general_username'];
+				else $_SESSION['account_temp']->general_username = $_POST['f_general_username'];
+			if ($_POST['f_general_surname']) $_SESSION['account_temp']->general_surname = $_POST['f_general_surname'];
+				else $_SESSION['account_temp']->general_surname = "";
+			if ($_POST['f_general_givenname']) $_SESSION['account_temp']->general_givenname = $_POST['f_general_givenname'];
+				else $_SESSION['account_temp']->general_givenname = "";
+			if ($_POST['f_general_uidNumber']) $_SESSION['account_temp']->general_uidNumber = $_POST['f_general_uidNumber'];
+				else $_SESSION['account_temp']->general_uidNumber = "";
+			if ($_POST['f_general_group']) $_SESSION['account_temp']->general_group = $_POST['f_general_group'];
+				if ($_POST['f_general_groupadd']) $_SESSION['account_temp']->general_groupadd = $_POST['f_general_groupadd'];
+			if ($_POST['f_general_homedir']) $_SESSION['account_temp']->general_homedir = $_POST['f_general_homedir'];
+				else $_SESSION['account_temp']->general_homedir = "";
+			if ($_POST['f_general_shell']) $_SESSION['account_temp']->general_shell = $_POST['f_general_shell'];
+			if ($_POST['f_general_gecos']) $_SESSION['account_temp']->general_gecos = $_POST['f_general_gecos'];
+				else $_SESSION['account_temp']->general_gecos = "";
+			// Check Values
+			$error = checkglobal(); // account.inc
+			// Check which part Site should be displayd
+			if ($_POST['next'] && ($error=="0"))
+				switch ($_SESSION['type2']) {
+					case 'user': $select_local = 'unix'; break;
+					case 'group': $select_local = 'quota'; break;
+					case 'host': $select_local = 'unix'; break;
+					}
+			}
 		break;
 	case 'unix':
 		// Write alle values in temporary object
@@ -102,9 +106,10 @@ switch ($_POST['select']) {
 		// Check Values
 		$error = checkunix(); // account.inc
 		// Check which part Site should be displayd
-		if ($_POST['back'] && ($error=="0")) $select_local = 'general';
 		if ($_POST['genpass']) $select_local = 'unix';
-		if ($_POST['next'] && ($error=="0")) $select_local = 'samba';
+		if (($_POST['next']) && ($error=="0")) $select_local = 'samba';
+			else $select_local = 'unix';
+		if ($_POST['back']) $select_local = 'general';
 		break;
 	case 'samba':
 		// Write alle values in temporary object
@@ -138,12 +143,15 @@ switch ($_POST['select']) {
 		// Check Values
 		$error = checksamba(); // account.inc
 		// Check which part Site should be displayd
-		if ($_POST['back'] && ($error=="0")) $select_local = 'unix';
-		if ($_POST['next'] && ($error=="0"))
-			switch ($_SESSION['type2']) {
-				case 'user': $select_local = 'quota'; break;
-				case 'host': $select_local = 'final'; break;
-				}
+		if ($_POST['back']) $select_local = 'unix';
+		if ($_POST['next']) {
+			if ($error=="0")
+				switch ($_SESSION['type2']) {
+					case 'user': $select_local = 'quota'; break;
+					case 'host': $select_local = 'final'; break;
+					}
+				else $select_local = 'samba';
+			}
 		break;
 	case 'quota':
 		$i=0;
@@ -156,16 +164,19 @@ switch ($_POST['select']) {
 			}
 		$error = checkquota();
 		// Check which part Site should be displayd
-		if ($_POST['back'] && ($error=="0"))
+		if ($_POST['back'])
 			switch ($_SESSION['type2']) {
 				case 'user': $select_local = 'samba'; break;
 				case 'group': $select_local = 'general'; break;
 				}
-		if ($_POST['next'] && ($error=="0"))
-			switch ($_SESSION['type2']) {
-				case 'user': $select_local = 'personal'; break;
-				case 'group': $select_local = 'final'; break;
-				}
+		if ($_POST['next']) {
+			if ($error=="0")
+				switch ($_SESSION['type2']) {
+					case 'user': $select_local = 'personal'; break;
+					case 'group': $select_local = 'final'; break;
+					}
+				else $select_local = 'quota';
+			}
 		break;
 	case 'personal':
 		if ($_POST['f_personal_title']) $_SESSION['account_temp']->personal_title = $_POST['f_personal_title'];
@@ -221,6 +232,7 @@ if ( $_POST['create'] ) { // Create-Button was pressed
 		}
 	}
 
+
 // Write HTML-Header and part of Table
 echo '<html><head><title>';
 echo _('Create new Account');
@@ -252,8 +264,6 @@ if ($_POST['backmain']) {
 if ($_POST['load']) $select_local='load';
 if ($_POST['save']) $select_local='save';
 
-
-getquotas();
 
 switch ($select_local) {
 	case 'general':
@@ -322,8 +332,8 @@ switch ($select_local) {
 				echo _('Login Shell');
 				echo '</td><td><select name="f_general_shell" >';
 					foreach ($_SESSION['shelllist'] as $shell)
-						if ($_SESSION['account']->general_shell==$shell) echo '<option selected> '.$shell;
-							else echo '<option> '.$shell;
+						if ($_SESSION['account']->general_shell==trim($shell)) echo '<option selected>'.$shell;
+							else echo '<option>'.$shell;
 				echo	'</select></td><td>';
 				echo _('To disable login use /bin/false.');
 				echo '</td></tr><tr><td><select name="f_general_selectprofile">';
@@ -333,6 +343,7 @@ switch ($select_local) {
 				</td><td>';
 				break;
 			case 'group':
+				$profilelist = getGroupProfiles();
 				echo '<tr><td>';
 				echo _('Groupname');
 				echo '</td><td>
@@ -348,7 +359,11 @@ switch ($select_local) {
 				echo '</td><td><input name="f_general_gecos" type="text" size="30" value="' . $_SESSION['account']->general_gecos . '">
 					</td><td>';
 				echo _('User descriptopn. If left empty groupname will be used.');
-				echo '</td></tr>';
+				echo '</td></tr><tr><td><select name="f_general_selectprofile">';
+				foreach ($profilelist as $profile) echo '<option>' . $profile;
+				echo '</select>
+				<input name="load" type="submit" value="'; echo _('Load Profile'); echo '">
+				</td><td>';
 				break;
 			case 'host':
 				$profilelist = getHostProfiles();
@@ -851,13 +866,18 @@ switch ($select_local) {
 	case 'load':
 		switch ( $_SESSION['type2'] ) {
 			case 'user':
-				$_SESSION['account'] = loadUserProfile($f_general_selectprofile);
+				$_SESSION['account'] = loadUserProfile($_POST['f_general_selectprofile']);
+				if ($_SESSION['config']->scriptServer) getquotas();
 				break;
 			case 'host':
-				$_SESSION['account'] = loadHostProfile($f_general_selectprofile);
+				$_SESSION['account'] = loadHostProfile($_POST['f_general_selectprofile']);
+				break;
+			case 'group':
+				$_SESSION['account'] = loadGroupProfile($_POST['f_general_selectprofile']);
+				if ($_SESSION['config']->scriptServer) getquotas();
 				break;
 			}
-		echo '<meta http-equiv="refresh" content="2; URL=account.php">';
+		echo '<meta http-equiv="refresh" content="0; URL=account.php">';
 		break;
 	case 'save':
 		switch ( $_SESSION['type2'] ) {
