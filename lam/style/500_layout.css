@@ -20,14 +20,15 @@ $Id$
 
 */
 
-// CSS layout for LAM
+/* CSS layout for LAM */
 
 
 /**
  * global page layout
  *
  */
-h1,h2,h3,h4,p,ul,ol,li,div,td,th,address,blockquote,nobr,b,i {
+
+h1,h2,h3,h4,p,ul,ol,li,div,td,th,address,blockquote,b,i {
   font-family:Arial,Verdana,sans-serif;
 }
 
@@ -35,7 +36,7 @@ body {
   background-color:#F5F5F5;
 }
 
-/// links
+/* links */
 a {
 color:blue;
 text-decoration:underline;
@@ -52,7 +53,7 @@ text-decoration:none;
 }
 
 form { }
-input { 
+input {
 font-weight:bold;
 background-color:#CCCCFF;
 }
@@ -62,7 +63,7 @@ background-color:#EEEEEE;
 }
 
 legend {
-color:darkgreen;
+color:green;
 }
 
 

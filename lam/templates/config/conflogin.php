@@ -19,7 +19,7 @@ $Id$
   along with this program; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-  
+
   Login page to change the preferences.
 */
 
@@ -27,7 +27,7 @@ $Id$
 session_save_path("../../sess");
 session_start();
 
-echo ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+echo ("<?xml version=\"1.0\" encoding=\"ISO-8859-15\"?>");
 echo ("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">");
 
 ?>
