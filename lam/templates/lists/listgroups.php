@@ -234,21 +234,26 @@ if (! $_GET['norefresh']) {
 	$grp_units = $_SESSION['ldap']->search_units($_SESSION["config"]->get_GroupSuffix());
 }
 
+// print combobox with possible sub-DNs
+if (sizeof($grp_units) > 1) {
+	echo ("<p align=\"left\">\n");
+	echo ("<b>" . _("Suffix") . ": </b>");
+	echo ("<select size=1 name=\"grp_suffix\">\n");
+	for ($i = 0; $i < sizeof($grp_units); $i++) {
+		if ($grp_suffix == $grp_units[$i]) echo ("<option selected>" . $grp_units[$i] . "</option>\n");
+		else echo("<option>" . $grp_units[$i] . "</option>\n");
+	}
+	echo ("</select>\n");
+	echo ("<input type=\"submit\" name=\"refresh\" value=\"" . _("Change Suffix") . "\">");
+	echo ("</p>\n");
+	echo ("<p>&nbsp;</p>\n");
+}
+
 echo ("<p align=\"left\">\n");
 echo ("<input type=\"submit\" name=\"new_group\" value=\"" . _("New Group") . "\">\n");
 if (sizeof($grp_info) > 0) echo ("<input type=\"submit\" name=\"del_group\" value=\"" . _("Delete Group(s)") . "\">\n");
-// print combobox with possible sub-DNs
-if (sizeof($grp_units) > 1) {
-echo ("&nbsp;&nbsp;&nbsp;&nbsp;<b>" . _("Suffix") . ": </b>");
-echo ("<select size=1 name=\"grp_suffix\">\n");
-for ($i = 0; $i < sizeof($grp_units); $i++) {
-	if ($grp_suffix == $grp_units[$i]) echo ("<option selected>" . $grp_units[$i] . "</option>\n");
-	else echo("<option>" . $grp_units[$i] . "</option>\n");
-}
-echo ("</select>\n");
-echo ("<input type=\"submit\" name=\"refresh\" value=\"" . _("Change Suffix") . "\">");
-}
 echo ("</p>\n");
+
 echo ("</form>\n");
 echo "</body></html>\n";
 

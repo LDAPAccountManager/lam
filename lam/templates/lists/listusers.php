@@ -36,6 +36,28 @@ setlanguage();
 // copy HTTP-GET variables to HTTP-POST
 $_POST = $_POST + $_GET;
 
+// check if primary group should be translated
+if ($_POST['trans_primary'] == "on") $trans_primary = "on";
+else $trans_primary = "off";
+$trans_primary_hash = $_SESSION['trans_primary_hash'];
+// generate hash table for group translation
+if ($trans_primary == "on" && !$_GET["norefresh"]) {
+	$trans_primary_hash = array();
+	$suffix = $_SESSION['config']->get_groupSuffix();
+	$filter = "objectClass=posixGroup";
+	$attrs = array("cn", "gidNumber");
+	$sr = @ldap_search($_SESSION["ldap"]->server(), $suffix, $filter, $attrs);
+	if ($sr) {
+		$info = @ldap_get_entries($_SESSION["ldap"]->server(), $sr);
+		array_shift($info); // delete count entry
+		for ($i = 0; $i < sizeof($info); $i++) {
+			$trans_primary_hash[$info[$i]['gidnumber'][0]] = $info[$i]['cn'][0];
+		}
+		$_SESSION['trans_primary_hash'] = $trans_primary_hash;
+	}
+}
+
+
 $usr_units = $_SESSION['usr_units'];
 
 // check if button was pressed and if we have to add/delete a user
@@ -62,22 +84,21 @@ echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\"
 echo "</head><body>\n";
 echo "<script src=\"../../lib/functions.js\" type=\"text/javascript\" language=\"javascript\"></script>\n";
 
+$page = $_GET["page"];
+if (!$page) $page = 1;
+
+// take maximum count of user entries shown on one page out of session
+if ($_SESSION["config"]->get_MaxListEntries() <= 0) {
+	$max_pageentrys = 10;	// default setting, if not yet set
+}
+else $max_pageentrys = $_SESSION["config"]->get_MaxListEntries();
+
 // generate attribute-description table
 $attr_array = array();	// list of LDAP attributes to show
 $desc_array = array();	// list of descriptions for the attributes
 $attr_string = $_SESSION["config"]->get_userlistAttributes();
 $temp_array = explode(";", $attr_string);
 $hash_table = $_SESSION["ldap"]->attributeUserArray();
-$page = $_GET["page"];
-if (!$page)
-     $page = 1;
-
-// take maximum count of user entries shown on one page out of session
-if ($_SESSION["config"]->get_MaxListEntries() <= 0)
-     $max_pageentrys = 10;	// default setting, if not yet set
-     else
-     $max_pageentrys = $_SESSION["config"]->get_MaxListEntries();
-
 
 // generate column attributes and descriptions
 for ($i = 0; $i < sizeof($temp_array); $i++) {
@@ -187,7 +208,7 @@ if ($user_count != 0) {
     else
       echo "<th>\n";
     echo "<a class=\"userlist\" href=\"listusers.php?norefresh=1&amp;sortattrib=" .
-      strtolower($attr_array[$k]) . $searchfilter . "\">" .
+      strtolower($attr_array[$k]) . $searchfilter . "&trans_primary=" . $trans_primary . "\">" .
       $desc_array[$k] . "</a></th>\n";
   }
   echo "</tr>\n";
@@ -219,12 +240,19 @@ if ($user_count != 0) {
 			_("Edit") . "</a>\n</td>\n");
 		for ($k = 0; $k < sizeof($attr_array); $k++) {
 			echo ("<td>\n");
-			// print all attribute entries seperated by "; "
+			// print attribute values
 			if (sizeof($userinfo[$i][strtolower($attr_array[$k])]) > 0) {
-				// delete first array entry which is "count"
 				if (is_array($userinfo[$i][strtolower($attr_array[$k])])) {
+					// delete first array entry which is "count"
 					array_shift($userinfo[$i][strtolower($attr_array[$k])]);
-					echo utf8_decode(implode("; ", $userinfo[$i][strtolower($attr_array[$k])])) . "\n";
+					if (($trans_primary == "on") && (strtolower($attr_array[$k]) == "gidnumber")) {
+						// translate GID number to group name
+						if ($trans_primary_hash[$userinfo[$i][strtolower($attr_array[$k])][0]]) {
+							echo $trans_primary_hash[$userinfo[$i][strtolower($attr_array[$k])][0]];
+						}
+					}
+					// print all attribute entries seperated by "; "
+					else echo utf8_decode(implode("; ", $userinfo[$i][strtolower($attr_array[$k])])) . "\n";
 				}
 				else echo utf8_decode($userinfo[$i][strtolower($attr_array[$k])]) . "\n";
 			}
@@ -246,22 +274,41 @@ if (! $_GET['norefresh']) {
 	$usr_units = $_SESSION['ldap']->search_units($_SESSION["config"]->get_UserSuffix());
 }
 
+// print combobox with possible sub-DNs
+if (sizeof($usr_units) > 1) {
+	echo ("<p align=\"left\">\n");
+	echo ("<b>" . _("Suffix") . ": </b>");
+	echo ("<select size=1 name=\"usr_suffix\">\n");
+	for ($i = 0; $i < sizeof($usr_units); $i++) {
+		if ($usr_suffix == $usr_units[$i]) echo ("<option selected>" . $usr_units[$i] . "</option>\n");
+		else echo("<option>" . $usr_units[$i] . "</option>\n");
+	}
+	echo ("</select>\n");
+	echo ("<input type=\"submit\" name=\"refresh\" value=\"" . _("Change Suffix") . "\">");
+	echo ("</p>\n");
+}
+
+// show translate GID to group name box if there is a column with gidnumber
+if (in_array("gidnumber", $attr_array)) {
+	echo "<p align=\"left\">\n";
+	echo "<b>" . _("Translate GID number to group name") . ": </b>";
+	if ($trans_primary == "on") {
+		echo "<input type=\"checkbox\" name=\"trans_primary\" checked>";
+	}
+	else echo "<input type=\"checkbox\" name=\"trans_primary\">";
+	echo ("&nbsp;&nbsp;<input type=\"submit\" name=\"apply\" value=\"" . _("Apply") . "\">");
+	echo "</p>\n";
+}
+
+echo ("<p>&nbsp;</p>\n");
+
 echo ("<p align=\"left\">\n");
 echo ("<input type=\"submit\" name=\"new_user\" value=\"" . _("New User") . "\">\n");
 if ($user_count != 0) echo ("<input type=\"submit\" name=\"del_user\" value=\"" . _("Delete User(s)") . "\">\n");
-// print combobox with possible sub-DNs
-if (sizeof($usr_units) > 1) {
-echo ("&nbsp;&nbsp;&nbsp;&nbsp;<b>" . _("Suffix") . ": </b>");
-echo ("<select size=1 name=\"usr_suffix\">\n");
-for ($i = 0; $i < sizeof($usr_units); $i++) {
-	if ($usr_suffix == $usr_units[$i]) echo ("<option selected>" . $usr_units[$i] . "</option>\n");
-	else echo("<option>" . $usr_units[$i] . "</option>\n");
-}
-echo ("</select>\n");
-echo ("<input type=\"submit\" name=\"refresh\" value=\"" . _("Change Suffix") . "\">");
-}
-
 echo ("</p>\n");
+
+echo ("<p>&nbsp;</p>\n");
+
 echo ("</form>\n");
 echo "</body></html>\n";
 
@@ -276,19 +323,20 @@ function draw_navigation_bar ($user_count) {
 	global $page;
 	global $sortattrib;
 	global $searchfilter;
+	global $trans_primary;
 
 	echo ("<table class=\"userlist-navbar\" width=\"100%\" border=\"0\"\n");
 	echo ("<tr>\n");
 	echo ("<td class=\"userlist-navbar\">\n<input type=\"submit\" name=\"refresh\" value=\"" . _("Refresh") . "\">\n&nbsp;&nbsp;");
 	if ($page != 1)
 		echo ("<a class=\"userlist\" href=\"listusers.php?norefresh=1&amp;page=" .
-			($page - 1) . "&amp;sortattrib=" . $sortattrib . $searchfilter . "\">&lt;=</a>\n");
+			($page - 1) . "&amp;sortattrib=" . $sortattrib . $searchfilter . "&trans_primary=" . $trans_primary . "\">&lt;=</a>\n");
 	else echo ("&lt;=");
 	echo ("&nbsp;");
 
 	if ($page < ($user_count / $max_pageentrys))
 		echo ("<a class=\"userlist\" href=\"listusers.php?norefresh=1&amp;page=" .
-			($page + 1) . "&amp;sortattrib=" . $sortattrib . $searchfilter . "\">=&gt;</a>\n");
+			($page + 1) . "&amp;sortattrib=" . $sortattrib . $searchfilter . "&trans_primary=" . $trans_primary . "\">=&gt;</a>\n");
 	else echo ("=&gt;");
 	echo ("</td>\n");
 	echo ("<td class=\"userlist-navbartext\">\n");
@@ -300,7 +348,7 @@ function draw_navigation_bar ($user_count) {
 	for ($i = 0; $i < ($user_count / $max_pageentrys); $i++) {
 		if ($i == $page - 1) echo ("&nbsp;" . ($i + 1));
 		else echo ("&nbsp;<a class=\"userlist\" href=\"listusers.php?norefresh=1&amp;page=" .
-				($i + 1) . "&amp;sortattrib=" . $sortattrib . $searchfilter .
+				($i + 1) . "&amp;sortattrib=" . $sortattrib . $searchfilter . "&trans_primary=" . $trans_primary .
 				"\">" . ($i + 1) . "</a>\n");
 	}
 	echo ("</td></tr>\n</table>\n");

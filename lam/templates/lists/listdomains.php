@@ -179,21 +179,26 @@ if (! $_GET['norefresh']) {
 $dom_units = $_SESSION['ldap']->search_units($_SESSION["config"]->get_DomainSuffix());
 }
 
+// print combobox with possible sub-DNs
+if (sizeof($dom_units) > 1) {
+	echo ("<p align=\"left\">\n");
+	echo ("<b>" . _("Suffix") . ": </b>");
+	echo ("<select size=1 name=\"dom_suffix\">\n");
+	for ($i = 0; $i < sizeof($dom_units); $i++) {
+		if ($dom_suffix == $dom_units[$i]) echo ("<option selected>" . $dom_units[$i] . "</option>\n");
+		else echo("<option>" . $dom_units[$i] . "</option>\n");
+	}
+	echo ("</select>\n");
+	echo ("<input type=\"submit\" name=\"refresh\" value=\"" . _("Change Suffix") . "\">");
+	echo ("</p>\n");
+	echo ("<p>&nbsp;</p>\n");
+}
+
 echo ("<p align=\"left\">\n");
 echo ("<input type=\"submit\" name=\"new_domain\" value=\"" . _("New Domain") . "\">\n");
 if (sizeof($dom_info) > 0) echo ("<input type=\"submit\" name=\"del_domain\" value=\"" . _("Delete Domain(s)") . "\">\n");
-// print combobox with possible sub-DNs
-if (sizeof($dom_units) > 1) {
-echo ("&nbsp;&nbsp;&nbsp;&nbsp;<b>" . _("Suffix") . ": </b>");
-echo ("<select size=1 name=\"dom_suffix\">\n");
-for ($i = 0; $i < sizeof($dom_units); $i++) {
-	if ($dom_suffix == $dom_units[$i]) echo ("<option selected>" . $dom_units[$i] . "</option>\n");
-	else echo("<option>" . $dom_units[$i] . "</option>\n");
-}
-echo ("</select>\n");
-echo ("<input type=\"submit\" name=\"refresh\" value=\"" . _("Change Suffix") . "\">");
-}
 echo ("</p>\n");
+
 echo ("</form>\n");
 echo "</body></html>\n";
 

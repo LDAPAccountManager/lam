@@ -226,12 +226,10 @@ if (! $_GET['norefresh']) {
 $hst_units = $_SESSION['ldap']->search_units($_SESSION["config"]->get_HostSuffix());
 }
 
-echo ("<p align=\"left\">\n");
-echo ("<input type=\"submit\" name=\"new_host\" value=\"" . _("New Host") . "\">\n");
-if (sizeof($hst_info) > 0) echo ("<input type=\"submit\" name=\"del_host\" value=\"" . _("Delete Host(s)") . "\">\n");
 // print combobox with possible sub-DNs
 if (sizeof($hst_units) > 1) {
-echo ("&nbsp;&nbsp;&nbsp;&nbsp;<b>" . _("Suffix") . ": </b>");
+echo ("<p align=\"left\">\n");
+echo ("<b>" . _("Suffix") . ": </b>");
 echo ("<select size=1 name=\"hst_suffix\">\n");
 for ($i = 0; $i < sizeof($hst_units); $i++) {
 	if ($hst_suffix == $hst_units[$i]) echo ("<option selected>" . $hst_units[$i] . "</option>\n");
@@ -239,8 +237,15 @@ for ($i = 0; $i < sizeof($hst_units); $i++) {
 }
 echo ("</select>\n");
 echo ("<input type=\"submit\" name=\"refresh\" value=\"" . _("Change Suffix") . "\">");
-}
 echo ("</p>\n");
+echo ("<p>&nbsp;</p>\n");
+}
+
+echo ("<p align=\"left\">\n");
+echo ("<input type=\"submit\" name=\"new_host\" value=\"" . _("New Host") . "\">\n");
+if (sizeof($hst_info) > 0) echo ("<input type=\"submit\" name=\"del_host\" value=\"" . _("Delete Host(s)") . "\">\n");
+echo ("</p>\n");
+
 echo ("</form>\n");
 echo "</body></html>\n";
 
