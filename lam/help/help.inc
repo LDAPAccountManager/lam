@@ -217,7 +217,7 @@ $helpArray = array (
 				"435" => array ("ext" => "FALSE", "Headline" => _("Profile path"),
 					"Text" => _("Path of the userprofile. Can be a local absolute path or a UNC-path (\\\\server\\share). \$user and \$group are replaced with user- and groupname."). ' '. _("Can be left empty.")),
 				"436" => array ("ext" => "FALSE", "Headline" => _("Samba workstations"),
-					"Text" => _("Comma separated list of samba workstations the user is allowed to login. Empty means every workstation."). ' '. _("Can be left empty.")),
+					"Text" => _("List of samba workstations the user is allowed to login. Empty means every workstation."). ' '. _("Can be left empty.")),
 				"437" => array ("ext" => "FALSE", "Headline" => _("Home path"),
 					"Text" => _("UNC-path (\\\\server\\share) of homedirectory. \$user and \$group are replaced with user- and groupname."). ' '. _("Can be left empty.")),
 				"438" => array ("ext" => "FALSE", "Headline" => _("Domain"),

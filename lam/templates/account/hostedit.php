@@ -189,6 +189,15 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 	case 'final':
 		$select_local = 'final';
 		break;
+
+	case 'finish':
+		// Check if pdf-file should be created
+		if ($_POST['outputpdf']) {
+			createHostPDF(array($account_new));
+			die;
+			}
+		break;
+
 	}
 
 
@@ -513,9 +522,12 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo '</td></tr>'."\n".'<tr><td>';
 		if (!$account_old)
 			{ echo '<input name="createagain" type="submit" value="'; echo _('Create another host'); echo '">'; }
-		echo '</td><td>'."\n".'</td><td>'.
+		echo '</td>'."\n".'<td>'.
+			'<input name="outputpdf" type="submit" value="'; echo _('Create PDF file'); echo '">'.
+			'</td>'."\n".'<td>'.
 			'<input name="backmain" type="submit" value="'; echo _('Back to host list'); echo '">'.
 			'</td></tr></table></fieldset'."\n";
+
 		break;
 	}
 

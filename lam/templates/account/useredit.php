@@ -127,14 +127,13 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 		do { // X-Or, only one if() can be true
 			if (isset($_POST['allgroups']) && isset($_POST['add'])) { // Add users to list
 				// Add new user
-				$account_new->general_groupadd = array_merge($account_new->general_groupadd, $_POST['allgroups']);
+				$account_new->general_groupadd = @array_merge($account_new->general_groupadd, $_POST['allgroups']);
 				// remove doubles
-				$account_new->general_groupadd = array_flip($account_new->general_groupadd);
+				$account_new->general_groupadd = @array_flip($account_new->general_groupadd);
 				array_unique($account_new->general_groupadd);
-				$account_new->general_groupadd = array_flip($account_new->general_groupadd);
+				$account_new->general_groupadd = @array_flip($account_new->general_groupadd);
 				// sort user
 				sort($account_new->general_groupadd);
-				// display groupmembers page
 				break;
 				}
 			if (isset($_POST['selectedgroups']) && isset($_POST['remove'])) { // remove users fromlist
@@ -195,8 +194,6 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 			$account_new->general_givenname = $_POST['f_general_givenname'];
 			$account_new->general_uidNumber = $_POST['f_general_uidNumber'];
 			$account_new->general_group = $_POST['f_general_group'];
-			if (isset($_POST['f_general_groupadd'])) $account_new->general_groupadd = $_POST['f_general_groupadd'];
-				else $account_new->general_groupadd = array('');
 			$account_new->general_homedir = $_POST['f_general_homedir'];
 			$account_new->general_shell = $_POST['f_general_shell'];
 			$account_new->general_gecos = $_POST['f_general_gecos'];
@@ -723,7 +720,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "<td align=\"center\" width=\"10%\"><input type=\"submit\" name=\"add\" value=\"<=\">";
 		echo " ";
 		echo "<input type=\"submit\" name=\"remove\" value=\"=>\"><br><br>";
-		echo "<a href=\""."../help.php?HelpNumber=XXX\" target=\"lamhelp\">"._('Help-XX')."</a></td>\n";
+		echo "<a href=\""."../help.php?HelpNumber=436\" target=\"lamhelp\">"._('Help')."</a></td>\n";
 		echo "<td valign=\"top\"><fieldset class=\"useredit-bright\"><legend class=\"useredit-bright\">";
 		echo _('Available workstations');
 		echo "</legend>\n";
@@ -744,6 +741,9 @@ switch ($select_local) { // Select which part of page will be loaded
 		foreach ($temp2 as $temp) $groups[] = $temp['cn'];
 		sort($groups, SORT_STRING);
 		$groups = array_delete($account_new->general_groupadd, $groups);
+		$groups = array_flip($groups);
+		unset ($groups[$account_new->general_group]);
+		$groups = array_flip($groups);
 
 		echo '<input name="select" type="hidden" value="groups">';
 		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
@@ -783,7 +783,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "<td align=\"center\" width=\"10%\"><input type=\"submit\" name=\"add\" value=\"<=\">";
 		echo " ";
 		echo "<input type=\"submit\" name=\"remove\" value=\"=>\"><br><br>";
-		echo "<a href=\""."../help.php?HelpNumber=XXX\" target=\"lamhelp\">"._('Help-XX')."</a></td>\n";
+		echo "<a href=\""."../help.php?HelpNumber=402\" target=\"lamhelp\">"._('Help')."</a></td>\n";
 		echo "<td valign=\"top\"><fieldset class=\"useredit-bright\"><legend class=\"useredit-bright\">";
 		echo _('Available groups');
 		echo "</legend>\n";

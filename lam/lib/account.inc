@@ -111,7 +111,7 @@ function replace_umlaut($text) { // This function will replace umlates with ascc
 
 function array_delete($values, $array) { // This function will return all values from $array without values of $values
 	foreach ($array as $array_value)
-		if (!in_array($array_value, $values))
+		if (!@in_array($array_value, $values))
 			$return[] = $array_value;
 	return $return;
 	}
@@ -180,7 +180,7 @@ function getquotas($type,$user='+') { // Whis function will return the quotas fr
 	$towrite = $ldap_q[0].' '.$ldap_q[1].' '.$user.' quota get ';
 	if ($type=='user') $towrite = $towrite.'u';
 	 else $towrite = $towrite.'g';
-	exec("perl ".$_SESSION['lampath']."lib/lamdaemon.pl ".$_SESSION['config']->scriptServer ." ".$_SESSION['config']->scriptPath." ".$towrite, $vals, $status);
+	exec(escapeshellarg("perl ".$_SESSION['lampath']."lib/lamdaemon.pl ".$_SESSION['config']->scriptServer ." ".$_SESSION['config']->scriptPath." ".$towrite), $vals, $status);
 	$vals = explode(':', $vals[0]);
 	for ($i=0; $i<sizeof($vals); $i++) {
 		$vals2 = explode(',', $vals[$i]);
@@ -212,7 +212,7 @@ function setquotas($values,$type,$values_old=false) { // Whis function will set 
 			}
 		$i++;
 		}
-	if ($i!=0) exec("perl ".$_SESSION['lampath']."lib/lamdaemon.pl ".$_SESSION['config']->scriptServer ." ".$_SESSION['config']->scriptPath." ".$towrite, $vals);
+	if ($i!=0) exec(escapeshellarg("perl ".$_SESSION['lampath']."lib/lamdaemon.pl ".$_SESSION['config']->scriptServer ." ".$_SESSION['config']->scriptPath." ".$towrite), $vals);
 	}
 
 function remquotas($user, $type) { // Whis function will remove the quotas from the specified user.
@@ -223,7 +223,7 @@ function remquotas($user, $type) { // Whis function will remove the quotas from 
 	if ($type=='user') $towrite = $towrite.'u ';
 	 else $towrite = $towrite.'g ';
 
-	exec("perl ".$_SESSION['lampath']."lib/lamdaemon.pl ".$_SESSION['config']->scriptServer ." ".$_SESSION['config']->scriptPath." ".$towrite, $vals);
+	exec(escapeshellarg("perl ".$_SESSION['lampath']."lib/lamdaemon.pl ".$_SESSION['config']->scriptServer ." ".$_SESSION['config']->scriptPath." ".$towrite), $vals);
 	}
 
 
@@ -232,7 +232,7 @@ function addhomedir($user) { // Create Homedirectory
 	// all other needed vars are taken from remotesystem getusrnam
 	$ldap_q = $_SESSION['ldap']->decrypt();
 	$towrite = $ldap_q[0].' '.$ldap_q[1].' '.$user.' home add';
-	exec("perl ".$_SESSION['lampath']."lib/lamdaemon.pl ".$_SESSION['config']->scriptServer ." ".$_SESSION['config']->scriptPath." ".$towrite, $vals);
+	exec(escapeshellarg("perl ".$_SESSION['lampath']."lib/lamdaemon.pl ".$_SESSION['config']->scriptServer ." ".$_SESSION['config']->scriptPath." ".$towrite), $vals);
 	}
 
 function remhomedir($user) { // Remove Homedirectory
@@ -240,7 +240,7 @@ function remhomedir($user) { // Remove Homedirectory
 	// all other needed vars are taken from remotesystem getusrnam
 	$ldap_q = $_SESSION['ldap']->decrypt();
 	$towrite = $ldap_q[0].' '.$ldap_q[1].' '.$user.' home rem';
-	exec("perl ".$_SESSION['lampath']."lib/lamdaemon.pl ".$_SESSION['config']->scriptServer ." ".$_SESSION['config']->scriptPath." ".$towrite, $vals);
+	exec(escapeshellarg("perl ".$_SESSION['lampath']."lib/lamdaemon.pl ".$_SESSION['config']->scriptServer ." ".$_SESSION['config']->scriptPath." ".$towrite), $vals);
 	}
 
 function ldapreload($type) { // This function will load an array th cache ldap-requests
@@ -445,14 +445,10 @@ function checkid($values, $type, $values_old=false) { // if value is empty will 
 						if ($id < $maxID) return intval($id);
 						}
 					}
-
-				$id=$minID;
-				while ($values->general_uidNumber=='') {
-					if ($keys3[$id]>$maxID) return _('No free ID-Number!');
-					// if !=1, we've found an unused id
-					if ($keys3[$id+1]-$keys3[$id]!=1) return intval($keys3[$id]+1);
-					$id++;
-					}
+				$i = intval($minID);
+				while (in_array($i, $keys3)) $i++;
+				if ($i>$maxID) return _('No free ID-Number!');
+					else return $i;
 				}
 			 else $useID = $minID;
 			return intval($useID);
@@ -554,10 +550,11 @@ function loaduser($dn) { // Will load all needed values from an existing account
 	if (isset($attr['postalCode'][0])) $return->personal_postalCode = utf8_decode($attr['postalCode'][0]);
 	if (isset($attr['postalAddress'][0])) $return->personal_postalAddress = utf8_decode($attr['postalAddress'][0]);
 	if (isset($attr['employeeType'][0])) $return->personal_employeeType = utf8_decode($attr['employeeType'][0]);
-	if ( ereg('^[{]([A-Z]|[a-z]|[0-9])+[}][!]', $attr['userPassword'][0])) $return->unix_deactivated=true;
 
-	if (isset($attr['userPassword'][0])) $return->unix_password = $attr['userPassword'][0];
-
+	if (isset($attr['userPassword'][0])) {
+		$return->unix_password = $attr['userPassword'][0];
+		$return->unix_deactivated=$_SESSION['ldap']->pwd_is_enabled($attr['userPassword'][0]);
+		}
 	if (isset($attr['displayName'][0])) $return->smb_displayName = utf8_decode($attr['displayName'][0]);
 
 	if (in_array('sambaSamAccount', $attr['objectClass'])) {
@@ -647,7 +644,10 @@ function loadhost($dn) { // Will load all needed values from an existing account
 	if (isset($attr['uidNumber'][0])) $return->general_uidNumber = $attr['uidNumber'][0];
 	if (isset($attr['gecos'][0])) $return->general_gecos = utf8_decode($attr['gecos'][0]);
 	if (isset($attr['displayName'][0])) $return->smb_displayName = utf8_decode($attr['displayName'][0]);
-	if (isset($attr['userPassword'][0])) $return->unix_password = $attr['userPassword'][0];
+	if (isset($attr['userPassword'][0])) {
+		$return->unix_password = $attr['userPassword'][0];
+		$return->unix_deactivated=$_SESSION['ldap']->pwd_is_enabled($attr['userPassword'][0]);
+		}
 
 	// Get Groupname
 	if (isset($attr['gidNumber'][0])) {
@@ -784,8 +784,8 @@ function createuser($values) { // Will create the LDAP-Account
 			}
 		else {
 			if (file_exists($_SESSION['lampath'].'lib/createntlm.pl')) { // masscreate.php is at a different relative path
-				$attr['sambaNTPassword'] = exec($_SESSION['lampath'].'lib/createntlm.pl nt ' . $values->smb_password);
-				$attr['sambaLMPassword'] = exec($_SESSION['lampath'].'lib/createntlm.pl lm ' . $values->smb_password);
+				$attr['sambaNTPassword'] = exec(escapeshellarg($_SESSION['lampath'].'lib/createntlm.pl nt ' . $values->smb_password));
+				$attr['sambaLMPassword'] = exec(escapeshellarg($_SESSION['lampath'].'lib/createntlm.pl lm ' . $values->smb_password));
 				}
 			$attr['sambaPwdLastSet'] = time(); // sambaAccount_may
 			}
@@ -812,8 +812,8 @@ function createuser($values) { // Will create the LDAP-Account
 			$attr['pwdLastSet'] = time(); // sambaAccount_may
 			}
 		else {
-			$attr['ntPassword'] = exec($_SESSION['lampath'].'lib/createntlm.pl nt ' . $values->smb_password);
-			$attr['lmPassword'] = exec($_SESSION['lampath'].'lib/createntlm.pl lm ' . $values->smb_password);
+			$attr['ntPassword'] = exec(escapeshellarg($_SESSION['lampath'].'lib/createntlm.pl nt ' . $values->smb_password));
+			$attr['lmPassword'] = exec(escapeshellarg($_SESSION['lampath'].'lib/createntlm.pl lm ' . $values->smb_password));
 			$attr['pwdLastSet'] = time(); // sambaAccount_may
 			}
 		$attr['rid'] = (2 * $values->general_uidNumber + 1000); // sambaAccount_may
@@ -993,8 +993,8 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 			}
 		 else
 			if ($values->smb_password!='') {
-				$attr['sambaNTPassword'] = exec($_SESSION['lampath'].'lib/createntlm.pl nt ' . $values->smb_password);
-				$attr['sambaLMPassword'] = exec($_SESSION['lampath'].'lib/createntlm.pl lm ' . $values->smb_password);
+				$attr['sambaNTPassword'] = exec(escapeshellarg($_SESSION['lampath'].'lib/createntlm.pl nt ' . $values->smb_password));
+				$attr['sambaLMPassword'] = exec(escapeshellarg($_SESSION['lampath'].'lib/createntlm.pl lm ' . $values->smb_password));
 				$attr['sambaPwdLastSet'] = time(); // sambaAccount_may
 				}
 		if ($values->smb_pwdcanchange != $values_old->smb_pwdcanchange) $attr['sambaPwdCanChange'] = $values->smb_pwdcanchange; // sambaAccount_may
@@ -1024,8 +1024,8 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 			}
 		 else
 			if ($values->smb_password!='') {
-				$attr['ntPassword'] = exec($_SESSION['lampath'].'lib/createntlm.pl nt ' . $values->smb_password);
-				$attr['lmPassword'] = exec($_SESSION['lampath'].'lib/createntlm.pl lm ' . $values->smb_password);
+				$attr['ntPassword'] = exec(escapeshellarg($_SESSION['lampath'].'lib/createntlm.pl nt ' . $values->smb_password));
+				$attr['lmPassword'] = exec(escapeshellarg($_SESSION['lampath'].'lib/createntlm.pl lm ' . $values->smb_password));
 				$attr['pwdLastSet'] = time(); // sambaAccount_may
 				}
 		if ($values->smb_pwdcanchange != $values_old->smb_pwdcanchange) $attr['pwdCanChange'] = $values->smb_pwdcanchange; // sambaAccount_may
@@ -1265,8 +1265,8 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 					unset($attr_old[$keys[$i]]['count']);
 				$success = ldap_add($_SESSION['ldap']->server(),$values->general_dn, $attr_old);
 				if ($success) $success = ldap_delete($_SESSION['ldap']->server(),$values_old->general_dn);
+				if (!$success) return 5;
 				}
-	if (!$success) return 5;
 	// Write Groupmemberchips
 	$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(), 'objectClass=PosixGroup', array('memberUid', 'cn'));
 	$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
@@ -1282,7 +1282,7 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 					if (!$success) return 5;
 					}
 				}
-			if (!in_array($values->general_username, $attr2['memberUid']) && in_array($attr2['cn'][0], $values->general_groupadd) && ($attr2['cn'][0]!=$values->general_group)) {
+			if (!@in_array($values->general_username, $attr2['memberUid']) && @in_array($attr2['cn'][0], $values->general_groupadd) && ($attr2['cn'][0]!=$values->general_group)) {
 				$toadd['memberUid'] = $attr2['memberUid'];
 				$toadd['memberUid'][] = $values->general_username;
 				$success = ldap_mod_replace($_SESSION['ldap']->server(), ldap_get_dn($_SESSION['ldap']->server(), $entry),  $toadd);

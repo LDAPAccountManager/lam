@@ -252,6 +252,25 @@ switch ($select) { // Select which part of page should be loaded and check value
 		if ($_POST['f_final_changegids']) $final_changegids = $_POST['f_final_changegids'] ;
 		break;
 
+	case 'finish':
+		// Check if pdf-file should be created
+		if ($_POST['outputpdf']) {
+			// Quota Settings
+			if ($config_intern->scriptServer && !isset($account_new->quota[0])) { // load quotas
+				$values = getquotas('group', $account_old->general_username);
+				if (is_object($values)) {
+					while (list($key, $val) = each($values)) // Set only defined values
+						if (isset($val)) $account_new->$key = $val;
+					}
+				if (is_object($values) && isset($account_old)) {
+					while (list($key, $val) = each($values)) // Set only defined values
+						if (isset($val)) $account_old->$key = $val;
+					}
+				}
+			createGroupPDF(array($account_new));
+			die;
+			}
+		break;
 	}
 
 
@@ -430,7 +449,7 @@ switch ($select_local) { // Select which part of page will be loaded
 			echo "\">\n";
 			}
 		echo "</fieldset></td></tr></table></td>\n<td>";
-		echo "<table border=0><tr><td><fieldset class=\"groupedit-bright\"><legend class=\"groupedit-bright\"><b>". _('Additional group members') . "</b></legend>\n";
+		echo "<table border=0 width=\"100%\"><tr><td><fieldset class=\"groupedit-bright\"><legend class=\"groupedit-bright\"><b>". _('Additional group members') . "</b></legend>\n";
 		echo "<table border=0 width=\"100%\">\n";
 		echo "<tr><td valign=\"top\"><fieldset class=\"groupedit-middle\"><legend class=\"groupedit-bright\">";
 		echo _('Group members');
@@ -812,7 +831,9 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo '</td></tr>'."\n".'<tr><td>';
 		if (!$account_old)
 			{ echo' <input name="createagain" type="submit" value="'; echo _('Create another group'); echo '">'; }
-		echo '</td><td></td><td>'.
+		echo '</td>'."\n".'<td>'.
+			'<input name="outputpdf" type="submit" value="'; echo _('Create PDF file'); echo '">'.
+			'</td>'."\n".'<td>'.
 			'<input name="backmain" type="submit" value="'; echo _('Back to group list'); echo '">'.
 			'</td></tr></table></fieldset'."\n";
 		break;
