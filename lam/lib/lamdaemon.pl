@@ -197,9 +197,16 @@ else {
 	$username[0] =~ s/uid=//;
 	$password = $ARGV[1];
 	# Put all transfered lines in one string
+	$i = 0;
+	$j = 0;
 	if ($ARGV[2] ne "*test") {
 		while (defined($input = <STDIN>)) {
-			$string = $string. $input;
+			$string[$i] .= $input;
+			$j++;
+			if ($j==30) {
+				$j=0;
+				$i++;
+				}
 			}
 		}
 	else { $argv = "*test\n"; }
@@ -207,6 +214,8 @@ else {
 		"UserKnownHostsFile /dev/null"
 		]);
 	$ssh->login($username[0], $password);
-	($stdout, $stderr, $exit) = $ssh->cmd("sudo $remotepath $argv", $string);
-	print "$stdout";
+	foreach $string2 ( @string ) {
+		($stdout, $stderr, $exit) = $ssh->cmd("sudo $remotepath $argv", $string2);
+		print "$stdout";
+		}
 	}

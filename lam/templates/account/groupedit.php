@@ -460,7 +460,7 @@ echo "</title>\n".
 if (is_array($errors))
 	for ($i=0; $i<sizeof($errors); $i++) StatusMessage($errors[$i][0], $errors[$i][1], $errors[$i][2]);
 
-// print_r($account_old);
+// print_r($account_new);
 
 
 switch ($select_local) {
