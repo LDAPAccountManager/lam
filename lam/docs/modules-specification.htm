@@ -422,11 +422,9 @@ Fields marked <b>REQUIRED</b> are neccessary under any circumstances. Fields mar
 <b>OPTIONAL</b> may be left out when not needed.<br>
 There are basically two different types of help entries that can be used. Internal help entries, that 
 means the headline, text, etc is included in the help entry or external help entries, that means the help 
-entry has only a reference pointing to a HTML/PHP page that offers the help entry. <br>
+entry has only a reference pointing to a HTML/PHP page that offers the help entry.
 <br>
-<h3><br>
-</h3>
-<h2>4.1. Internal help entries</h2>
+<h3><br>4.1. Internal help entries</h3>
 <span style="font-weight: bold;">ext</span> <span style="font-style: italic;">(REQUIRED)</span> 
 <br>Must be <b>FALSE</b> in this case.
 <br><br>
@@ -440,6 +438,23 @@ placeholder for variables passed to this help entry. The placeholder must follow
 placeholder defined by the PHP <b>printf</b> function. HTML/CSS elements are allowed here as long 
 as they follow the XHTML1.0 Strict specification.
 <br><br>
+<span style="font-weight: bold;">Variables</span> <span style="font-style: italic;">(OPTIONAL)</span> 
+<br>An array of variables used as arguments for the formated string submitted in the <b>Text</b> 
+field. This may be but must not be an assiciated array where each argument to be passed on is a 
+single row in the array. This array may only consist of types that can be passed as arguments to PHP's 
+<b>printf</b> function. 
+<br><br>
+<span style="font-weight: bold;">SeeAlso</span> <span style="font-style: italic;">(OPTIONAL)</span> 
+<br>An array of references to anonther related subjects. Each row of the array must contain a field 
+called "text" with the text that should be displayed and may contain a field called "link" which is used 
+as value for the href attribute of a HTML <a> tag when set.
 <br>
+<h3><br>4.2. External help entries</h3>
+<span style="font-weight: bold;">ext</span> <span style="font-style: italic;">(REQUIRED)</span> 
+<br>Must be <b>TRUE</b> in this case.
+<br><br>
+<span style="font-weight: bold;">Link</span> <span style="font-style: italic;">(REQUIRED)</span> 
+<br>The complete filename of the file stored under the help/ directory which should be displayed 
+when this help entry is called.
 </body>
 </html>

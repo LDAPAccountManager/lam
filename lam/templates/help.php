@@ -68,7 +68,7 @@ function displayHelp($helpEntry) {
 	else
 	{
 		$helpVariables = array();
-		while($current = current($helpEntry['variables'])) {
+		while($current = current($helpEntry['Variables'])) {
 			array_push($helpVariables,$current);
 			next($helpEntry['variables']);
 		}
@@ -77,9 +77,10 @@ function displayHelp($helpEntry) {
 		$format = "		<p class=\"help\">" . $helpEntry['Text'] . "</p>\n";
 		array_unshift($helpVariables,$format);
 		call_user_func_array("printf",$helpVariables);
-		if($helpEntry["SeeAlso"] <> "")
+		while($current = current($helpEntry["SeeAlso"]))
 		{
-			echo "		<p class=\"help\">" . _("See also") . ": " . $helpEntry['SeeAlso'] . "</p>\n";
+			echo "		<p class=\"help\">" . ((isset($current['link']) ? "<a class=\"helpSeeAlso\" href=\"" . $current['link']"\">" : "") . _("See also") . ": " . $current['text'] . ((isset($current['link'])) ? "</a>" : "") . "</p>\n";
+			next($helpEntry["SeeAlso"]);
 		}
 		echoHTMLFoot();
 	}
