@@ -366,13 +366,13 @@ class inetLocalMailRecipient extends baseModule {
 	function get_pdfEntries() {
 		$return = array();
 		if (isset($this->attributes['mailRoutingAddress'][0])) {
-			$return['inetLocalMailRecipient_routingAdr'] = '<block><key>' . _('Routing address') . '</key><value>' . implode(', ', $this->attributes['mailRoutingAddress']) . '</value></block>';
+			$return['inetLocalMailRecipient_routingAdr'] = '<block><key>' . _('Routing address') . '</key><value>' . $this->attributes['mailRoutingAddress'][0] . '</value></block>';
 		}
 		if (sizeof($this->attributes['mailLocalAddress']) > 0) {
 			$return['inetLocalMailRecipient_localAdr'] = '<block><key>' . _('Local address list') . '</key><value>' . implode(', ', $this->attributes['mailLocalAddress']) . '</value></block>';
 		}
 		if (isset($this->attributes['mailHost'][0])) {
-			$return['inetLocalMailRecipient_host'] = '<block><key>' . _('Mail server') . '</key><value>' . implode(', ', $this->attributes['mailHost']) . '</value></block>';
+			$return['inetLocalMailRecipient_host'] = '<block><key>' . _('Mail server') . '</key><value>' . $this->attributes['mailHost'][0] . '</value></block>';
 		}
 		return $return;
 	}
