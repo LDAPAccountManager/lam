@@ -9,7 +9,10 @@
 en_GB.utf8:UTF-8:English (Great Britain)
 
 # Spanish
-es_ES.utf8:UTF-8:Spanish (Spain)
+es_ES.utf8:UTF-8:Español (España)
+
+# Catalan
+ca_ES.utf8:UTF-8:Català (Catalunya)
 
 # French
 fr_FR.utf8:UTF-8:Français (France)
