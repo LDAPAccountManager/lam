@@ -787,25 +787,25 @@ switch ($select_local) { // Select which part of page will be loaded
 				echo	'</select></td>'."\n".'<td>'.
 					'<a href="help.php?HelpNumber=433" target="lamhelp">'._('Help').'</a>'.
 					'</td></tr>'."\n".'<tr><td>';
-				echo _('Script path');
-				echo '</td>'."\n".'<td><input name="f_smb_scriptpath" type="text" size="20" maxlength="80" value="' . $_SESSION['account']->smb_scriptPath . '">'.
+				echo _('smb home');
+				echo '</td>'."\n".'<td><input name="f_smb_smbhome" type="text" size="20" maxlength="80" value="' . $_SESSION['account']->smb_smbhome . '">'.
 					'</td>'."\n".'<td>'.
-					'<a href="help.php?HelpNumber=434" target="lamhelp">'._('Help').'</a>'.
+					'<a href="help.php?HelpNumber=437" target="lamhelp">'._('Help').'</a>'.
 					'</td></tr>'."\n".'<tr><td>';
 				echo _('Profile path');
 				echo '</td>'."\n".'<td><input name="f_smb_profilePath" type="text" size="20" maxlength="80" value="' . $_SESSION['account']->smb_profilePath . '">'.
 					'</td>'."\n".'<td>'.
 					'<a href="help.php?HelpNumber=435" target="lamhelp">'._('Help').'</a>'.
 					'</td></tr>'."\n".'<tr><td>';
+				echo _('Script path');
+				echo '</td>'."\n".'<td><input name="f_smb_scriptpath" type="text" size="20" maxlength="80" value="' . $_SESSION['account']->smb_scriptPath . '">'.
+					'</td>'."\n".'<td>'.
+					'<a href="help.php?HelpNumber=434" target="lamhelp">'._('Help').'</a>'.
+					'</td></tr>'."\n".'<tr><td>';
 				echo _('Samba workstations');
 				echo '</td>'."\n".'<td><input name="f_smb_smbuserworkstations" type="text" size="20" maxlength="80" value="' . $_SESSION['account']->smb_smbuserworkstations . '">'.
 					'</td>'."\n".'<td>'.
 					'<a href="help.php?HelpNumber=436" target="lamhelp">'._('Help').'</a>'.
-					'</td></tr>'."\n".'<tr><td>';
-				echo _('smb home');
-				echo '</td>'."\n".'<td><input name="f_smb_smbhome" type="text" size="20" maxlength="80" value="' . $_SESSION['account']->smb_smbhome . '">'.
-					'</td>'."\n".'<td>'.
-					'<a href="help.php?HelpNumber=437" target="lamhelp">'._('Help').'</a>'.
 					'</td></tr>'."\n".'<tr><td>';
 				echo _('Domain');
 				if ($_SESSION['config']->samba3 == 'yes') {
