@@ -206,9 +206,8 @@ function checkunix() { // This function checks all unix account paramters
 			if ($_SESSION['account_temp']->unix_pwdmaxage=='') $error = _('No value for Password Maxage.');
 			if ( !ereg('^([1-9]+)([0-9]*)$', $_SESSION['account_temp']->unix_pwdwarn))  $error = _('Password Warn must be are natural number.');
 			if ($_SESSION['account_temp']->unix_pwdallowlogin=='') $error = _('No value for Password Expire.');
-			if ( !ereg('^([a-z]|[A-Z]|[0-9]|[\|]|[\#]|[\*]|[\,]|[\.]|[\;]|[\:]|[\_]|[\-]|[\+]|[\!]|[\%]|[\&]|[\/]|[\?]|[\{]|[\[]|[\(]|[\)]|[\]]|[\}])*$',
-				$_SESSION['account_temp']->unix_password)) $error = _('Password contents invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !');
 			if ($_SESSION['account_temp']->unix_pwdwarn=='') $error = _('No value for Password Warn.');
+			$_SESSION['account_temp']->unix_password = '';
 			break;
 		}
 	// Write Values from Webpage to Session-Variables
@@ -247,8 +246,7 @@ function checksamba() { // This function checks all samba account paramters
 			break;
 		case 'host' :
 			if ( (!$_SESSION['account_temp']->smb_domain=='') && !ereg('^([a-z]|[A-Z]|[0-9]|[-])+$', $_SESSION['account_temp']->smb_domain)) $error = _('Domain Name contents invalid characters. Valid characters are: a-z, A-Z, 0-9 and -.');
-			if ( !ereg('^([a-z]|[A-Z]|[0-9]|[\|]|[\#]|[\*]|[\,]|[\.]|[\;]|[\:]|[\_]|[\-]|[\+]|[\!]|[\%]|[\&]|[\/]|[\?]|[\{]|[\[]|[\(]|[\)]|[\]]|[\}])*$',
-				$_SESSION['account_temp']->smb_password)) $error = _('Password contents invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !');
+			$_SESSION['account_temp']->smb_password = $_SESSION['account_temp']->unix_password;
 			$_SESSION['account_temp']->smb_flagsW = 1;
 			break;
 		}
@@ -691,10 +689,10 @@ function createuser() { // Will create the LDAP-Account
 
 	// All Values need for an user-account
 	// General Objectclasses
-	$attr['objectClass'][0] = 'inetOrgPerson';
-	$attr['objectClass'][1] = 'posixAccount';
-	$attr['objectClass'][2] = 'shadowAccount';
-	$attr['objectClass'][3] = 'sambaAccount';
+	$attr['objectClass'][0] = 'posixAccount';
+	$attr['objectClass'][1] = 'shadowAccount';
+	$attr['objectClass'][2] = 'sambaAccount';
+	$attr['objectClass'][3] = 'inetOrgPerson';
 	$attr['cn'] = $_SESSION['account']->general_username; // posixAccount_req shadowAccount_req sambaAccount_may
 	$attr['uid'] = $_SESSION['account']->general_username; // posixAccount_req
 	$attr['uidNumber'] = $_SESSION['account']->general_uidNumber; // posixAccount_req
@@ -817,6 +815,7 @@ function createuser() { // Will create the LDAP-Account
 	 else {
 		// Write a new entry if user doesn't exists
 		$success = ldap_add($_SESSION['ldap']->server(),$_SESSION['account']->general_dn, $attr);
+		if (!$success) return 4;
 		if ($_SESSION['config']->scriptServer) {
 			setquotas($_SESSION['account']->general_username);
 			addhomedir($_SESSION['account']->general_username);
@@ -848,29 +847,29 @@ function createuser() { // Will create the LDAP-Account
 		}
 	}
 
-function createhost() { // Will create the LDAP-Host
-	// 2 == Host allready exists at different location
-	// 1 == Host has been created
-	// 3 == Host has been modified
-	// 4 == Error while creating Host
-	// 5 == Error while modifying Host
-
+function createhost() { // Will create the LDAP-Account
+	// 2 == Account allready exists at different location
+	// 1 == Account has been created
+	// 3 == Account has been modified
+	// 4 == Error while creating Account
+	// 5 == Error while modifying Account
 	// Value stored in shadowExpire, days since 1.1.1970
 	$date = mktime(10,0,0, $_SESSION['account']->unix_pwdexpire_mon, $_SESSION['account']->unix_pwdexpire_day, $_SESSION['account']->unix_pwdexpire_yea) / 86400 ;
 	settype($date, 'integer');
 	$_SESSION['account']->general_dn = 'uid=' . $_SESSION['account']->general_username . ',' . $_SESSION['config']->get_HostSuffix();
 
-	// All Values needed for an user-account
+	// All Values need for an host-account
 	// General Objectclasses
-	$attr['objectClass'][0] = 'top';
-	$attr['objectClass'][1] = 'posixAccount';
-	$attr['objectClass'][2] = 'shadowAccount';
-	$attr['objectClass'][3] = 'sambaAccount';
+	$attr['objectClass'][0] = 'posixAccount';
+	$attr['objectClass'][1] = 'shadowAccount';
+	$attr['objectClass'][2] = 'sambaAccount';
+	$attr['objectClass'][3] = 'account';
 	$attr['cn'] = $_SESSION['account']->general_username; // posixAccount_req shadowAccount_req sambaAccount_may
 	$attr['uid'] = $_SESSION['account']->general_username; // posixAccount_req
 	$attr['uidNumber'] = $_SESSION['account']->general_uidNumber; // posixAccount_req
 	$attr['gidNumber'] = getgid($_SESSION['account']->general_group); // posixAccount_req
 	$attr['homeDirectory'] = $_SESSION['account']->general_homedir; // posixAccount_req
+
 	// posixAccount_may shadowAccount_may
 	if ($_SESSION['modify']==1) {
 		$password_old = str_replace('{CRYPT}', '',$_SESSION['account_old']->unix_password);
@@ -887,8 +886,8 @@ function createhost() { // Will create the LDAP-Host
 			$attr['shadowLastChange'] = getdays(); // shadowAccount_may
 			}
 		if ($_SESSION['account']->smb_password!='') {
-			$attr['ntPassword'] = exec('../lib/createntlm.pl nt' . $_SESSION['account']->smb_password);
-			$attr['lmPassword'] = exec('../lib/createntlm.pl lm' . $_SESSION['account']->smb_password);
+			$attr['ntPassword'] = exec('../lib/createntlm.pl nt ' . $_SESSION['account']->smb_password);
+			$attr['lmPassword'] = exec('../lib/createntlm.pl lm ' . $_SESSION['account']->smb_password);
 			$attr['pwdLastSet'] = time(); // sambaAccount_may
 			}
 		}
@@ -897,8 +896,8 @@ function createhost() { // Will create the LDAP-Host
 		if ($_SESSION['account']->unix_deactivated) $attr['userPassword'] = '{CRYPT}!' . crypt($_SESSION['account']->unix_password);
 		else $attr['userPassword'] = '{CRYPT}' . crypt($_SESSION['account']->unix_password);
 		$attr['shadowLastChange'] = getdays(); // shadowAccount_may
-		$attr['ntPassword'] = exec('../lib/createntlm.pl nt' . $_SESSION['account']->smb_password);
-		$attr['lmPassword'] = exec('../lib/createntlm.pl lm' . $_SESSION['account']->smb_password);
+		$attr['ntPassword'] = exec('../lib/createntlm.pl nt ' . $_SESSION['account']->smb_password);
+		$attr['lmPassword'] = exec('../lib/createntlm.pl lm ' . $_SESSION['account']->smb_password);
 		$attr['pwdLastSet'] = time(); // sambaAccount_may
 		}
 	if ($_SESSION['account']->smb_password_no) {
@@ -909,6 +908,7 @@ function createhost() { // Will create the LDAP-Host
 	$attr['loginShell'] = $_SESSION['account']->general_shell; // posixAccount_may
 	$attr['gecos'] = $_SESSION['account']->general_gecos; // posixAccount_may
 	$attr['description'] = $_SESSION['account']->general_gecos; // posixAccount_may sambaAccount_may
+
 	$attr['shadowMin'] = $_SESSION['account']->unix_pwdminage; // shadowAccount_may
 	$attr['shadowMax'] = $_SESSION['account']->unix_pwdmaxage; // shadowAccount_may
 	$attr['shadowWarning'] = $_SESSION['account']->unix_pwdwarn; // shadowAccount_may
@@ -920,16 +920,17 @@ function createhost() { // Will create the LDAP-Host
 	if ($_SESSION['account']->smb_pwdmustchange) $attr['pwdMustChange'] = "1"; else $attr['pwdMustChange'] = "0"; // sambaAccount_may
 	$attr['acctFlags'] = smbflag(); // sambaAccount_may
 	$attr['displayName'] = $_SESSION['account']->general_gecos; // sambaAccount_may
-	$attr['domain'] = $_SESSION['account']->smb_domain; // sambaAccount_may
+	if ($_SESSION['account']->smb_domain!='') $attr['domain'] = $_SESSION['account']->smb_domain; // sambaAccount_may
 
 	if ( $_SESSION['modify'] == 1 ) {
-		if ($_SESSION['account']->general_username == $_SESSION['account_old']->general_username) // Username hasn't changed
+		if ($_SESSION['account']->general_username == $_SESSION['account_old']->general_username) // Hostname hasn't changed
 			$success = ldap_modify($_SESSION['ldap']->server(),$_SESSION['account']->general_dn, $attr);
 			else {
 				$success = ldap_add($_SESSION['ldap']->server(),$_SESSION['account']->general_dn, $attr);
 				if ($success) ldap_delete($_SESSION['ldap']->server(),$_SESSION['account_old']->general_dn);
 				}
 		if (!$success) return 5;
+		// Write Groupmemberchips
 		if ($_SESSION['account']->general_groupadd) {
 			$allgroups = $_SESSION['account']->general_groupadd;
 			if (!in_array($_SESSION['account']->general_group, $allgroups)) $allgroups[] = $_SESSION['account']->general_group;
@@ -966,15 +967,15 @@ function createhost() { // Will create the LDAP-Host
 		return 3;
 		}
 	 else {
-		// Write a new entry if user doesn't exists
+		// Write a new entry if host doesn't exists
 		$success = ldap_add($_SESSION['ldap']->server(),$_SESSION['account']->general_dn, $attr);
 		if (!$success) return 4;
-		// Add Host to groups
+		// Add host to groups
 		$result = ldap_search($_SESSION['ldap']->server(), 'cn='.$_SESSION['account']->general_group.','.$_SESSION['config']->get_GroupSuffix(), "objectclass=posixGroup");
 		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 		$group = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
 		if ($group['memberUid']) array_shift($group['memberUid']);
-		if (! in_array($_SESSION['account']->general_username, $group['memberUid'])) {
+		if (! in_array($_SESSION['account']->general_username, $group)) {
 			$toadd['memberUid'] = $_SESSION['account']->general_username;
 			$success = ldap_mod_add($_SESSION['ldap']->server(), 'cn='.$_SESSION['account']->general_group.','.$_SESSION['config']->get_GroupSuffix(), $toadd);
 			}

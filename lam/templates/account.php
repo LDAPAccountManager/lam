@@ -111,6 +111,12 @@ switch ($_POST['select']) {
 		$error = checkunix(); // account.inc
 		// Check which part Site should be displayd
 		if ($_POST['genpass']) $select_local = 'unix';
+		if ($_POST['respass']) {
+			$_SESSION['account_temp']->unix_password_no=1;
+			$_SESSION['account_temp']->smb_password_no=1;
+			$_SESSION['account']->unix_password_no=1;
+			$_SESSION['account']->smb_password_no=1;
+			}
 		if (($_POST['next']) && ($error=="0")) $select_local = 'samba';
 			else $select_local = 'unix';
 		if ($_POST['back']) $select_local = 'general';
@@ -480,32 +486,29 @@ switch ($select_local) {
 				echo '></td></tr>';
 				break;
 			case 'host' :
+				echo '<input name="f_unix_password_no" type="hidden" value="'.$_SESSION['account']->unix_password_no.'">';
 				echo '<tr><td>';
 				echo _('Password');
-				echo '</td><td>
-					<input name="f_unix_password" type="text" size="20" maxlength="20" value="' . $_SESSION['account']->unix_password . '">
-					</td><td>
-					<input name="genpass" type="submit" value="';
-				echo _('Generate Password'); echo '">
-					</td></tr><tr><td>';
-				echo _('Use no Password.');
-				echo '</td><td><input name="f_unix_password_no" type="checkbox"';
-				if ($_SESSION['account']->unix_password_no) echo ' checked ';
-				echo '></td></tr><tr><td>';
+				echo '</td><td></td><td>';
+				if ($_SESSION['modify']==1) {
+					echo '<input name="respass" type="submit" value="';
+					echo _('Reset Password'); echo '">';
+					}
+				echo '</td></tr><tr><td>';
 				echo _('Password Warn');
 				echo '</td><td><input name="f_unix_pwdwarn" type="text" size="4" maxlength="4" value="' . $_SESSION['account']->unix_pwdwarn . '">
 					</td><td>';
-				echo _('Number of days a user will be warned when password will expire. Value must be 0<.');
+				echo _('Number of host a user will be warned when password will expire. Value must be 0<.');
 				echo	'</td></tr><tr><td>';
 				echo _('Password Expire');
 				echo '</td><td><input name="f_unix_pwdallowlogin" type="text" size="4" maxlength="4" value="' . $_SESSION['account']->unix_pwdallowlogin . '">
 					</td><td>';
-				echo _('Number of days a user can login even his password has expired. -1=always');
+				echo _('Number of days a host can login even his password has expired. -1=always');
 				echo '</td></tr><tr><td>';
 				echo _('Maximum Passwordage');
 				echo '</td><td><input name="f_unix_pwdmaxage" type="text" size="5" maxlength="5" value="' . $_SESSION['account']->unix_pwdmaxage . '">
 					</td><td>';
-				echo _('Number of days after a user has to change his password again Value must be 0<.');
+				echo _('Number of days after a host has to change his password again Value must be 0< and should be higher as the value on client-side.');
 				echo '</td></tr><tr><td>';
 				echo _('Minimum Passwordage');
 				echo '</td><td><input name="f_unix_pwdminage" type="text" size="4" maxlength="4" value="' . $_SESSION['account']->unix_pwdminage . '">
@@ -633,18 +636,8 @@ switch ($select_local) {
 				echo '</td></tr>';
 				break;
 			case 'host':
+				echo '<input name="f_smb_password_no" type="hidden" value="'.$_SESSION['account']->unix_password_no.'">';
 				echo '<tr><td>';
-				echo _('Samba Password');
-				echo '</td><td><input name="f_smb_password" type="text" size="20" maxlength="20" value="' . $_SESSION['account']->smb_password . '">
-				</td><td><input name="f_smb_useunixpwd" type="checkbox"';
-				if ($_SESSION['account']->smb_useunixpwd) echo ' checked ';
-				echo '>';
-				echo _('Use Unix-Password');
-				echo '</td></tr><tr><td>';
-				echo _('Use no Password.');
-				echo '</td><td><input name="f_smb_password_no" type="checkbox"';
-				if ($_SESSION['account']->smb_password_no) echo ' checked ';
-				echo '></td></tr><tr><td>';
 				echo _('Password doesn\'t expire.');
 				echo '</td><td><input name="f_smb_flagsX" type="checkbox"';
 				if ($_SESSION['account']->smb_flagsX) echo ' checked ';
