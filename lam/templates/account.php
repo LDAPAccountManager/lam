@@ -53,24 +53,24 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 				else $_SESSION['account']->general_givenname = "";
 			if (isset($_POST['f_general_uidNumber'])) $_SESSION['account']->general_uidNumber = $_POST['f_general_uidNumber'];
 				else $_SESSION['account']->general_uidNumber = "";
-			if (isset($_POST['f_general_group'])) $_SESSION['account']->general_group = $_POST['f_general_group'];
+			$_SESSION['account']->general_group = $_POST['f_general_group'];
 			if (isset($_POST['f_general_groupadd'])) $_SESSION['account']->general_groupadd = $_POST['f_general_groupadd'];
 				else $_SESSION['account']->general_groupadd = array('');
 			if (isset($_POST['f_general_homedir'])) $_SESSION['account']->general_homedir = $_POST['f_general_homedir'];
 				else $_SESSION['account']->general_homedir = "";
-			if (isset($_POST['f_general_shell'])) $_SESSION['account']->general_shell = $_POST['f_general_shell'];
+			$_SESSION['account']->general_shell = $_POST['f_general_shell'];
 			if (isset($_POST['f_general_gecos'])) $_SESSION['account']->general_gecos = $_POST['f_general_gecos'];
 				else $_SESSION['account']->general_gecos = "";
 			// Check if values are OK and set automatic values.  if not error-variable will be set
-			if ($_SESSION['account_old']) list($values, $errors) = checkglobal($_SESSION['account'], $_SESSION['type2'], $_SESSION['account_old']); // account.inc
-				else list($values, $errors) = checkglobal($_SESSION['account'], $_SESSION['type2']); // account.inc
+			if ($_SESSION['account_old']) list($values, $errors) = checkglobal($_SESSION['account'], $_SESSION['account']->type, $_SESSION['account_old']); // account.inc
+				else list($values, $errors) = checkglobal($_SESSION['account'], $_SESSION['account']->type); // account.inc
 			if (is_object($values)) {
 				while (list($key, $val) = each($values)) // Set only defined values
 					if ($val) $_SESSION['account']->$key = $val;
 				}
 			// Check which part Site should be displayed next
 			if ($_POST['next'] && ($errors==''))
-				switch ($_SESSION['type2']) {
+				switch ($_SESSION['account']->type) {
 					case 'user': $select_local = 'unix'; break;
 					case 'group': if ($_SESSION['config']->samba3=='yes') $select_local = 'samba';
 						else $select_local = 'quota'; break;
@@ -99,7 +99,7 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 			else $_SESSION['account']->unix_pwdminage = '';
 		if (isset($_POST['f_unix_host'])) $_SESSION['account']->unix_host = $_POST['f_unix_host'];
 			else $_SESSION['account']->unix_host = '';
-		if (isset($_POST['f_unix_pwdexpire_mon'])) $_SESSION['account']->unix_pwdexpire = mktime(10, 0, 0, $_POST['f_unix_pwdexpire_mon'],
+		$_SESSION['account']->unix_pwdexpire = mktime(10, 0, 0, $_POST['f_unix_pwdexpire_mon'],
 			$_POST['f_unix_pwdexpire_day'], $_POST['f_unix_pwdexpire_yea']);
 		if ($_POST['f_unix_deactivated']) $_SESSION['account']->unix_deactivated = $_POST['f_unix_deactivated'];
 			else $_SESSION['account']->unix_deactivated = false;
@@ -112,7 +112,7 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 			$select_local = 'unix';
 			}
 			// Check if values are OK and set automatic values. if not error-variable will be set
-			else $errors = checkunix($_SESSION['account'], $_SESSION['type2']); // account.inc
+			else $errors = checkunix($_SESSION['account'], $_SESSION['account']->type); // account.inc
 		// Check which part Site should be displayd
 		// Check which part Site should be displayed next
 		if ($_POST['back']) $select_local = 'general';
@@ -159,31 +159,46 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 				if ($_POST['f_smb_domain'] == $samba3domains[$i]->name) {
 					$_SESSION['account']->smb_domain = $samba3domains[$i];
 					}
-			if ($_POST['f_smb_mapgroup'] == _('Domain Guests')) $_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-" . '514';
-			if ($_POST['f_smb_mapgroup'] == _('Domain Users')) $_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-" . '513';
-			if ($_POST['f_smb_mapgroup'] == _('Domain Admins')) $_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-" . '512';
-			if ($_POST['f_smb_mapgroup'] == $_SESSION['account']->general_username) $_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-" . $_SESSION['account']->general_uidNumber;
+			switch ($_POST['f_smb_mapgroup']) {
+				case '*'._('Domain Guests'): $_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-" . '514'; break;
+				case '*'._('Domain Users'): $_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-" . '513'; break;
+				case '*'._('Domain Admins'): $_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-" . '512'; break;
+				case $_SESSION['account']->general_username:
+					if ($_SESSION['config']->samba3 == 'yes') {
+						if ($_SESSION['account']->type == 'group') $_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-".
+							(2 * $_SESSION['account']->general_uidNumber + $values->smb_domain->RIDbase +1);
+						else $_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-".
+							(2 * getgid($_SESSION['account']->general_group) + $values->smb_domain->RIDbase);
+						}
+					else {
+						if ($_SESSION['account']->type == 'group') $_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-".
+							(2 * $_SESSION['account']->general_uidNumber +1001);
+						else $_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-".
+							(2 * getgid($_SESSION['account']->general_group) +1000);
+						}
+					break;
+				}
 			}
 		else {
 			if (isset($_POST['f_smb_domain'])) $_SESSION['account']->smb_domain = $_POST['f_smb_domain'];
-				else $_SESSION['account']->smb_domain = false;
+				else $_SESSION['account']->smb_domain = '';
 			}
 		// Reset password if reset button was pressed. Button only vissible if account should be modified
 		// Check if values are OK and set automatic values. if not error-variable will be set
-		list($values, $errors) = checksamba($_SESSION['account'], $_SESSION['type2']); // account.inc
+		list($values, $errors) = checksamba($_SESSION['account'], $_SESSION['account']->type); // account.inc
 		if (is_object($values)) {
 			while (list($key, $val) = each($values)) // Set only defined values
 				if ($val) $_SESSION['account']->$key = $val;
 			}
 		// Check which part Site should be displayed next
 		if ($_POST['back'])
-			switch ($_SESSION['type2']) {
+			switch ($_SESSION['account']->type) {
 				case 'user': $select_local = 'unix'; break;
 				case 'group': $select_local = 'general'; break;
 				}
 		else if ($_POST['next'])
 			if($errors=='')
-				switch ($_SESSION['type2']) {
+				switch ($_SESSION['account']->type) {
 					case 'user': $select_local = 'quota'; break;
 					case 'group': $select_local = 'quota'; break;
 					case 'host': $select_local = 'final'; break;
@@ -206,21 +221,21 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 			$i++;
 			}
 		// Check if values are OK and set automatic values. if not error-variable will be set
-		list($values, $errors) = checkquota($_SESSION['account'], $_SESSION['type2']); // account.inc
+		list($values, $errors) = checkquota($_SESSION['account'], $_SESSION['account']->type); // account.inc
 		if (is_object($values)) {
 			while (list($key, $val) = each($values)) // Set only defined values
 				if ($val) $_SESSION['account']->$key = $val;
 			}
 		// Check which part Site should be displayed next
 		if ($_POST['back'])
-			switch ($_SESSION['type2']) {
+			switch ($_SESSION['account']->type) {
 				case 'user': $select_local = 'samba'; break;
 				case 'group': if ($_SESSION['config']->samba3=='yes') $select_local = 'samba';
 					else $select_local = 'general'; break;
 				}
 		else if ($_POST['next'])
 			if ($errors=='')
-				switch ($_SESSION['type2']) {
+				switch ($_SESSION['account']->type) {
 					case 'user': $select_local = 'personal'; break;
 					case 'group': $select_local = 'final'; break;
 					}
@@ -247,7 +262,7 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 		if (isset($_POST['f_personal_employeeType'])) $_SESSION['account']->personal_employeeType = $_POST['f_personal_employeeType'];
 			else $_SESSION['account']->personal_employeeType = "";
 		// Check if values are OK and set automatic values. if not error-variable will be set
-		list($values, $errors) = checkpersonal($_SESSION['account'], $_SESSION['type2']); // account.inc
+		list($values, $errors) = checkpersonal($_SESSION['account'], $_SESSION['account']->type); // account.inc
 		if (is_object($values)) {
 			while (list($key, $val) = each($values)) // Set only defined values
 				if ($val) $_SESSION['account']->$key = $val;
@@ -263,7 +278,7 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 		if ($_POST['f_final_changegids']) $_SESSION['final_changegids'] = $_POST['f_final_changegids'] ;
 		// Check which part Site should be displayed next
 		if ($_POST['back'])
-			switch ($_SESSION['type2']) {
+			switch ($_SESSION['account']->type) {
 				case 'user': $select_local = 'personal'; break;
 				case 'group': $select_local = 'quota'; break;
 				case 'host': $select_local = 'samba'; break;
@@ -282,21 +297,24 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 
 if ( $_POST['create'] ) { // Create-Button was pressed
 	// Create or modify an account
-	switch ($_SESSION['type2']) {
+	switch ($_SESSION['account']->type) {
 		case 'user':
 			if ($_SESSION['account_old']) $result = modifyuser($_SESSION['account'],$_SESSION['account_old']);
 			 else $result = createuser($_SESSION['account']); // account.inc
 			if ( $result==1 || $result==3 ) $select_local = 'finish';
+				else $select_local = 'final';
 			break;
 		case 'group':
 			if ($_SESSION['account_old']) $result = modifygroup($_SESSION['account'],$_SESSION['account_old']);
 			 else $result = creategroup($_SESSION['account']); // account.inc
 			if ( $result==1 || $result==3 ) $select_local = 'finish';
+				else $select_local = 'final';
 			break;
 		case 'host':
 			if ($_SESSION['account_old']) $result = modifyhost($_SESSION['account'],$_SESSION['account_old']);
 			 else $result = createhost($_SESSION['account']); // account.inc
 			if ( $result==1 || $result==3 ) $select_local = 'finish';
+				else $select_local = 'final';
 			break;
 		}
 	}
@@ -309,14 +327,20 @@ if ($_POST['createagain']) {
 	$select_local='general';
 	$_SESSION['account']="";
 	}
-// Set selected page to backmain (Back to main listmenu)
-if ($_POST['backmain']) {
-	$select_local='backmain';
+	// Set selected page to backmain (Back to main listmenu)
+else {
+	if ($_POST['backmain']) {
+		$select_local='backmain';
+		}
+	else {
+		// Set selected page to load (load profile)
+		if ($_POST['load']) $select_local='load';
+		else {
+			// Set selected page to save (save profile)
+			if ($_POST['save']) $select_local='save';
+			}
+		}
 	}
-// Set selected page to load (load profile)
-if ($_POST['load']) $select_local='load';
-// Set selected page to save (save profile)
-if ($_POST['save']) $select_local='save';
 
 
 if ($select_local != 'pdf') {
@@ -336,28 +360,24 @@ switch ($select_local) {
 	// save = save profile
 	case 'backmain':
 		// unregister sessionvar and select which list should be shown
-		if (session_is_registered("shelllist")) session_unregister("shelllist");
-		if (session_is_registered("account")) session_unregister("account");
-		if (session_is_registered("account_old")) session_unregister("account_old");
-		switch ( $_SESSION['type2'] ) {
+		switch ( $_SESSION['account']->type ) {
 			case 'user' :
-				if (session_is_registered("type2")) session_unregister("type2");
 				echo "<meta http-equiv=\"refresh\" content=\"2; URL=lists/listusers.php\">\n";
 				break;
 			case 'group' :
-
-				if (session_is_registered("type2")) session_unregister("type2");
 				echo "<meta http-equiv=\"refresh\" content=\"2; URL=lists/listgroups.php\">\n";
 				break;
 			case 'host' :
-				if (session_is_registered("type2")) session_unregister("type2");
 				echo "<meta http-equiv=\"refresh\" content=\"2; URL=lists/listhosts.php\">\n";
 				break;
 			}
+		if (isset($_SESSION['shelllist'])) unset($_SESSION['shelllist']);
+		if (isset($_SESSION['account'])) unset($_SESSION['account']);
+		if (isset($_SESSION['account_old'])) unset($_SESSION['account_old']);
 		break;
 	case 'load':
 		// load profile
-		switch ( $_SESSION['type2'] ) {
+		switch ( $_SESSION['account']->type ) {
 			case 'user':
 				$_SESSION['account'] = loadUserProfile($_POST['f_general_selectprofile']);
 				break;
@@ -373,7 +393,7 @@ switch ($select_local) {
 		break;
 	case 'save':
 		// save profile
-		switch ( $_SESSION['type2'] ) {
+		switch ( $_SESSION['account']->type ) {
 			case 'user':
 				saveUserProfile($_SESSION['account'], $_POST['f_finish_safeProfile']);
 			break;
@@ -418,7 +438,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo '<tr><td><input name="select" type="hidden" value="general">';
 		echo _('General properties');
 		echo "</td></tr>\n";
-		switch ( $_SESSION['type2'] ) {
+		switch ( $_SESSION['account']->type ) {
 			case 'user':
 				// load list of profiles
 				$profilelist = getUserProfiles();
@@ -616,7 +636,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo '<tr><td><input name="select" type="hidden" value="unix">';
 		echo _('Unix properties');
 		echo '</td></tr>'."\n".'';
-		switch ( $_SESSION['type2'] ) {
+		switch ( $_SESSION['account']->type ) {
 			case 'user' :
 				echo '<tr><td>';
 				echo _('Password');
@@ -703,7 +723,7 @@ switch ($select_local) { // Select which part of page will be loaded
 			$password = str_replace(chr(00), '', $password);
 			}
 		if ($_SESSION['config']->samba3 == 'yes') $samba3domains = $_SESSION['ldap']->search_domains($_SESSION[config]->get_domainSuffix());
-		switch ( $_SESSION['type2'] ) {
+		switch ( $_SESSION['account']->type ) {
 			case 'user':
 				// Set Account is samba-workstation to false
 				$canchangedate = getdate($_SESSION['account']->smb_pwdcanchange);
@@ -808,6 +828,62 @@ switch ($select_local) { // Select which part of page will be loaded
 					'</td>'."\n".'<td>'.
 					'<a href="help.php?HelpNumber=436" target="lamhelp">'._('Help').'</a>'.
 					'</td></tr>'."\n".'<tr><td>';
+				echo _('Windows groupname');
+				echo '</td>'."\n".'<td><select name="f_smb_mapgroup" >';
+				if ($_SESSION['config']->samba3=='yes') {
+					if ( $_SESSION['account']->smb_mapgroup == $_SESSION['account']->smb_domain->SID . "-".
+						(2 * getgid($_SESSION['account']->general_group) + $values->smb_domain->RIDbase)) {
+						echo '<option selected> ';
+						echo $_SESSION['account']->general_group;
+						echo "</option>\n"; }
+					 else {
+						echo '<option> ';
+						echo $_SESSION['account']->general_group;
+						echo "</option>\n";
+						}
+					}
+				else {
+					if ( $_SESSION['account']->smb_mapgroup == $_SESSION['account']->smb_domain->SID . "-".
+						(2 * getgid($_SESSION['account']->general_group) +1000)) {
+						echo '<option selected> ';
+						echo $_SESSION['account']->general_group;
+						echo "</option>\n"; }
+					 else {
+						echo '<option> ';
+						echo $_SESSION['account']->general_group;
+						echo "</option>\n";
+						}
+					}
+					if ( $_SESSION['account']->smb_mapgroup == $_SESSION['account']->smb_domain->SID . "-" . '514' ) {
+						echo '<option selected> *';
+						echo _('Domain Guests');
+						echo "</option>\n"; }
+					 else {
+						echo '<option> *';
+						echo _('Domain Guests');
+						echo "</option>\n";
+						}
+					if ( $_SESSION['account']->smb_mapgroup == $_SESSION['account']->smb_domain->SID . "-" . '513' ) {
+						echo '<option selected> *';
+						echo _('Domain Users');
+						echo "</option>\n"; }
+					 else {
+						echo '<option> *';
+						echo _('Domain Users');
+						echo "</option>\n";
+						}
+					if ( $_SESSION['account']->smb_mapgroup == $_SESSION['account']->smb_domain->SID . "-" . '512' ) {
+						echo '<option selected> *';
+						echo _('Domain Admins');
+						echo "</option>\n"; }
+					 else {
+						echo '<option> *';
+						echo _('Domain Admins');
+						echo "</option>\n";
+						}
+				echo	'</select></td>'."\n".'<td>'.
+					'<a href="help.php?HelpNumber=464" target="lamhelp">'._('Help').'</a>'.
+					'</td></tr>'."\n".'<tr><td>';
 				echo _('Domain');
 				if ($_SESSION['config']->samba3 == 'yes') {
 					echo '</td><td><select name="f_smb_domain">';
@@ -829,7 +905,8 @@ switch ($select_local) { // Select which part of page will be loaded
 				echo '<tr><td>';
 				echo _('Windows groupname');
 				echo '</td>'."\n".'<td><select name="f_smb_mapgroup" >';
-					if ( $_SESSION['account']->smb_mapgroup == $_SESSION['account']->smb_domain->SID . "-" . $_SESSION['account']->uidNumber ) {
+					if ( $_SESSION['account']->smb_mapgroup == $_SESSION['account']->smb_domain->SID . "-".
+						(2 * $_SESSION['account']->uidNumber) + $values->smb_domain->RIDbase +1) {
 						echo '<option selected> ';
 						echo $_SESSION['account']->general_username;
 						echo "</option>\n"; }
@@ -1025,7 +1102,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		if ($_SESSION['account_old']) echo _('Modify');
 		 else echo _('Create');
 		echo '</td></tr>'."\n";
-		switch ( $_SESSION['type2'] ) {
+		switch ( $_SESSION['account']->type ) {
 			case 'user' :
 				if (($_SESSION['account_old']) && ($_SESSION['account']->general_uidNumber != $_SESSION['account_old']->general_uidNumber)) {
 					echo '<tr>';
@@ -1152,7 +1229,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo '<tr><td><input name="select" type="hidden" value="finish">';
 		echo _('Success');
 		echo '</td></tr>'."\n";
-		switch ( $_SESSION['type2'] ) {
+		switch ( $_SESSION['account']->type ) {
 			case 'user' :
 				echo '<tr><td>';
 				echo _('User ');
