@@ -9,6 +9,9 @@
   - all pages in UTF-8
   - added developer documentation
   - PHPDoc formated comments
+  - new plugin for managing MAC addresses (RFE 926017)
+  - new plugin for managing NIS mail aliases (RFE 1050036)
+  - new plugin for managing mail routing with inetLocalMailRecipient (RFE 1092137)
 
 19.12.2004 0.4.7
   - added "*.exe" to Samba logon script regex (1081715)
