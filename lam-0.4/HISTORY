@@ -7,6 +7,7 @@
       fixed encoding in HTTP header
       passwords with "'" are now handled correctly at login (1081460)
       fixed Samba flags if multiple hosts were created
+      updated .htaccess files to be compatible with newer Apache versions
 
 
 26.05.2004 0.4.6
