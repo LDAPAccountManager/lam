@@ -27,10 +27,38 @@ include_once("../../lib/ldap.inc");
 session_save_path("../../sess");
 @session_start();
 
+// check if button was pressed and if we have to add/delete a user
+if ($_POST['new_user'] || $_POST['del_user']){
+	// add new user
+	if ($_POST['new_user']){
+		echo("<meta http-equiv=\"refresh\" content=\"0; URL=../account.php?type=user\">");
+		exit;
+	}
+	// delete user(s)
+	if ($_POST['del_user']){
+		// search for checkboxes
+		$users = array_keys($_POST, "on");
+		$userstr = implode(";", $users);
+		echo("<meta http-equiv=\"refresh\" content=\"0; URL=../delete.php?type=user&DN='$userstr'\">");
+		}
+		exit;
+}
+
+
 echo "<html><head><title>listusers</title>\n";
 echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
 echo "</head><body>\n";
 echo "<script src=\"../../lib/functions.js\" type=\"text/javascript\" language=\"javascript\"></script>\n";
+
+
+		putenv("LANG=de_DE");
+		putenv("LANGUAGE=de_DE");
+		setlocale(LC_MESSAGES, "de_DE");
+		setlocale(LC_ALL, "de_DE");
+		bindtextdomain("messages", "../locale");
+		textdomain("messages");
+
+
 
 // generate attribute-description table
 $attr_array;	// list of LDAP attributes to show
@@ -58,7 +86,7 @@ $filter = "(&(|(objectClass=posixAccount) (objectClass=sambaAccount)) (!(uid=*$)
 $attrs = $attr_array;
 $sr = @ldap_search($_SESSION["ldap"]->server(),
 	$_SESSION["config"]->get_UserSuffix(),
-	$filter, $attrs);
+	$filter, $attrs, 0, 1000);
 if ($sr) {
 	$info = ldap_get_entries($_SESSION["ldap"]->server, $sr);
 	ldap_free_result($sr);
@@ -66,7 +94,7 @@ if ($sr) {
 }
 else echo ("<br><br><font color=\"red\"><b>" . _("LDAP Search failed! Please check your preferences. <br> No Users found!") . "</b></font><br><br>");
 
-echo ("<form action=\"../account.php?type=user\" method=\"post\">\n");
+echo ("<form action=\"listusers.php\" method=\"post\">\n");
 
 // delete first array entry which is "count"
 array_shift($info);
@@ -123,8 +151,8 @@ for ($i = 0; $i < sizeof($info); $i++) { // ignore last entry in array which is 
 echo ("</table>");
 echo ("<p>&nbsp</p>\n");
 echo ("<table align=\"left\" border=\"0\">");
-echo ("<tr><td align=\"left\"><a href=\"../account.php?type=user\" target=\"_self\">" . _("Add new User") . "</a>");
-echo ("&nbsp&nbsp&nbsp<a href=\"../account.php?type=delete\" target=\"_self\">" . _("Delete selected User(s)") . "</a></td></tr>\n");
+echo ("<tr><td align=\"left\"><input type=\"submit\" name=\"new_user\" value=\"" . _("New User") . "\"></td>");
+echo ("<td align=\"left\"><input type=\"submit\" name=\"del_user\" value=\"" . _("Delete User(s)") . "\"></td></tr>");
 echo ("</table>\n");
 echo ("</form>\n");
 echo "</body></html>\n";
