@@ -188,14 +188,9 @@ echo ("<tr><td><p align=\"right\"><b>".
 	_("Attributes in Host List:") . "</b></p></td>".
 	"<td><input size=50 type=\"text\" name=\"hstlstattr\" value=\"" . $conf->get_hostlistAttributes() . "\"></td>");
 echo ("<td><a href=\"../help.php?HelpNumber=206\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>");
-// two new lines
+
 echo ("<tr><td>&nbsp</td></tr>");
-echo ("<tr><td>&nbsp</td></tr>");
-// admin list
-echo ("<tr><td><p align=\"right\"><b>".
-	_("List of valid users") . ": </b></p></td>".
-	"<td><input size=50 type=\"text\" name=\"admins\" value=\"" . $conf->get_Adminstring() . "\"></td>\n");
-echo ("<td><a href=\"../help.php?HelpNumber=207\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
+
 // maximum list entries
 echo ("<tr><td><p align=\"right\"><b>".
 	_("Maximum list entries") . ": </b></p></td>".
@@ -272,6 +267,16 @@ echo ("<br>\n");
 
 
 echo ("<fieldset><legend><b>" . _("Security settings") . "</b></legend>\n");
+echo ("<table align=\"left\" border=\"0\">\n");
+// admin list
+echo ("<tr><td><p align=\"right\"><b>".
+	_("List of valid users") . ": </b></p></td>".
+	"<td colspan=2><input size=50 type=\"text\" name=\"admins\" value=\"" . $conf->get_Adminstring() . "\"></td>\n");
+echo ("<td><a href=\"../help.php?HelpNumber=207\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
+echo ("</table>\n");
+
+echo ("<br><br><br>");
+
 echo ("<table align=\"left\" border=\"0\">\n");
 // new password
 echo ("<tr><td bgcolor=\"red\" align=\"right\"><b>".
