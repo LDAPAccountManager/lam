@@ -27,7 +27,7 @@ $Id$
 
 <html>
 <head>
-<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\" />
+<link rel="stylesheet" type="text/css" href="../style/layout.css" />
 
 </head>
 <body>

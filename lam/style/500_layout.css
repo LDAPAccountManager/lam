@@ -39,15 +39,11 @@ body {
 /// links
 a {
 color:darkblue;
-font-size:18px;
-font-weight:normal;
-text-decoration:underline;
+text-decoration:none;
 }
 
 a:hover {
-color:lightblue;
-font-size:18px;
-font-weight:normal;
+color:red;
 text-decoration:none;
 }
 
@@ -56,41 +52,34 @@ text-decoration:none;
  * table style for userlist.php
  *
  */
-th.userlist {
+
+/* table preferences */
+table.userlist {
   border-width:1px;
   border-style:solid;
-  border-color:#B7C7B7;
-  padding:10px;
-  background-color:#C7E7C7;
-  font-size:14px;
+  border-color:#000000;
+}
+
+/* color of entry rows */
+tr.userlist {
+  background-color:#FFFFEE;
+}
+
+/* color of head row */
+tr.userlist_head {
+  background-color:#FFFFAA;
   font-weight:bold;
 }
 
-td.userlist {
-  border-width:1px;
-  border-style:solid;
-  border-color:#C7D7C7;
-  padding:4px;
-  background-color:#DDDDDD;
-  bgcolor:#DDDDDD;
-  font-size:14px;
+/* color of rows on mouseOver */
+tr.userlist_over {
+  background-color:#CCCCFF;
 }
 
-/// links of userlist
-a {
-color:darkblue;
-font-size:14px;
-font-weight:normal;
-text-decoration:underline;
+/* color of checked rows */
+tr.userlist_checked {
+  background-color:#FFCCCC;
 }
-
-a:hover {
-color:red;
-font-size:14px;
-font-weight:normal;
-text-decoration:none;
-}
-
 
 /**
  * table style for grouplist.php
@@ -102,7 +91,6 @@ table.grouplist {
   border-width:1px;
   border-style:solid;
   border-color:#7167bf;
-  font-size:14px;
 }
 
 /* color of entry rows */
@@ -136,7 +124,6 @@ table.hostlist {
   border-width:1px;
   border-style:solid;
   border-color:#911a1a;
-  font-size:14px;
 }
 
 /* color of entry rows */
