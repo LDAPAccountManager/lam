@@ -102,13 +102,13 @@ echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\"
 echo ("</head>\n");
 echo ("<body>\n");
 echo ("<p align=\"center\"><a href=\"http://lam.sf.net\" target=\"new_window\">".
-	"<img src=\"../../graphics/banner.jpg\" border=1 alt=\"LDAP Account Manager\"></a></p><hr><br><br>\n");
+	"<img src=\"../../graphics/banner.jpg\" border=1 alt=\"LDAP Account Manager\"></a></p>\n<hr>\n<p></p>\n");
 
 // display formular
 echo ("<form action=\"confmain.php\" method=\"post\">\n");
 
 echo ("<fieldset><legend><b>" . _("Server settings") . "</b></legend>");
-echo ("<table align=\"left\" border=0>");
+echo ("<table border=0>");
 // serverURL
 echo ("<tr><td align=\"right\"><b>" . _("Server Address") . ": </b></td>".
 	"<td align=\"left\">".
@@ -147,10 +147,10 @@ echo ("<td><a href=\"../help.php?HelpNumber=213\" target=\"lamhelp\">" . _("Help
 
 echo ("</table>");
 echo ("</fieldset>");
-echo ("<br>");
+echo ("<p></p>");
 
 echo ("<fieldset><legend><b>" . _("Ranges") . "</b></legend>");
-echo ("<table align=\"left\" border=0>");
+echo ("<table border=0>");
 
 // minUID
 echo ("<tr><td align=\"right\"><b>".
@@ -182,10 +182,10 @@ echo ("<td><a href=\"../help.php?HelpNumber=205\" target=\"lamhelp\">" . _("Help
 
 echo ("</table>\n");
 echo ("</fieldset>\n");
-echo ("<br>\n");
+echo ("<p></p>\n");
 
 echo ("<fieldset><legend><b>" . _("LDAP List settings") . "</b></legend>\n");
-echo ("<table align=\"left\" border=0>\n");
+echo ("<table border=0>\n");
 
 // user list attributes
 echo ("<tr><td align=\"right\"><b>".
@@ -220,10 +220,10 @@ echo ("<td><a href=\"../help.php?HelpNumber=208\" target=\"lamhelp\">" . _("Help
 
 echo ("</table>\n");
 echo ("</fieldset>\n");
-echo ("<br>\n");
+echo ("<p></p>\n");
 
 echo ("<fieldset><legend><b>" . _("Language settings") . "</b></legend>\n");
-echo ("<table align=\"left\" border=0>\n");
+echo ("<table border=0>\n");
 
 // language
 echo ("<tr>");
@@ -260,10 +260,10 @@ echo ("<td><a href=\"../help.php?HelpNumber=209\" target=\"lamhelp\">" . _("Help
 
 echo ("</table>\n");
 echo ("</fieldset>\n");
-echo ("<br>\n");
+echo ("<p></p>\n");
 
 echo ("<fieldset><legend><b>" . _("Script settings") . "</b></legend>\n");
-echo ("<table align=\"left\" border=0>\n");
+echo ("<table border=0>\n");
 
 // script settings
 echo ("<tr><td align=\"right\"><b>".
@@ -277,11 +277,11 @@ echo ("<td><a href=\"../help.php?HelpNumber=211\" target=\"lamhelp\">" . _("Help
 
 echo ("</table>\n");
 echo ("</fieldset>\n");
-echo ("<br>\n");
+echo ("<p></p>\n");
 
 
 echo ("<fieldset><legend><b>" . _("Security settings") . "</b></legend>\n");
-echo ("<table align=\"left\" border=0>\n");
+echo ("<table border=0>\n");
 // admin list
 echo ("<tr><td align=\"right\"><b>".
 	_("List of valid users") . ": </b></td>".
@@ -289,9 +289,9 @@ echo ("<tr><td align=\"right\"><b>".
 echo ("<td><a href=\"../help.php?HelpNumber=207\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 echo ("</table>\n");
 
-echo ("<br><br><br>\n");
+echo ("<p></p>\n");
 
-echo ("<table align=\"left\" border=0>\n");
+echo ("<table border=0>\n");
 // new password
 echo ("<tr><td bgcolor=\"red\" align=\"right\"><b>".
 	_("New Password") . ": </b></td>".
@@ -303,11 +303,11 @@ echo ("<tr><td bgcolor=\"red\" align=\"right\"><b>".
 	"<td bgcolor=\"red\" align=\"left\"><input type=\"password\" name=\"pass2\"></td></tr>\n");
 echo ("</table>\n");
 echo ("</fieldset>\n");
-echo ("<br>\n");
+echo ("<p></p>\n");
 
 
 // buttons
-echo ("<table align=\"left\" border=0>\n");
+echo ("<table border=0>\n");
 
 echo ("<tr><td align=\"left\"><pre>".
 	"<input type=\"submit\" name=\"submitconf\" value=\"" . _("Submit") . "\">".
@@ -318,8 +318,10 @@ echo ("></pre></td></tr>\n");
 
 echo ("</table>\n");
 
+echo ("<p></p>");
+
 // password for configuration
-echo ("<input type=\"hidden\" name=\"passwd\" value=\"" . $passwd . "\"><br>\n");
+echo ("<p><input type=\"hidden\" name=\"passwd\" value=\"" . $passwd . "\"></p>\n");
 
 echo ("</form>\n");
 echo ("</body>\n");
