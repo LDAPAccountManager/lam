@@ -71,14 +71,18 @@ if ($_POST['new_user'] || $_POST['del_user'] || $_POST['pdf_user'] || $_POST['pd
 	// delete user(s)
 	elseif ($_POST['del_user']){
 		// search for checkboxes
-		$users = array_keys($_POST, "on");
+		while ($entry = @array_pop($_POST)) {
+			if (eregi("^uid=.*$", $entry)) $users[] = $entry;
+		}
 		$_SESSION['delete_dn'] = $users;
 		metaRefresh("../delete.php?type=user");
 	}
 	// PDF for selected users
 	elseif ($_POST['pdf_user']){
 		// search for checkboxes
-		$users = array_keys($_POST, "on");
+		while ($entry = @array_pop($_POST)) {
+			if (eregi("^uid=.*$", $entry)) $users[] = $entry;
+		}
 		$list = array();
 		// load users from LDAP
 		for ($i = 0; $i < sizeof($users); $i++) {
@@ -86,7 +90,11 @@ if ($_POST['new_user'] || $_POST['del_user'] || $_POST['pdf_user'] || $_POST['pd
 			$list[$i]->unix_password = "";
 			$list[$i]->smb_password = "";
 		}
-		if (sizeof($list) > 0) createUserPDF($list);
+		if (sizeof($list) > 0) {
+			$list = quotas($list);
+			if ($list) createUserPDF($list);
+			else StatusMessage("ERROR", _("Unable to get quota information!"), "");
+		}
 	}
 	// PDF for all users
 	elseif ($_POST['pdf_all']){
@@ -96,7 +104,11 @@ if ($_POST['new_user'] || $_POST['del_user'] || $_POST['pdf_user'] || $_POST['pd
 			$list[$i]->unix_password = "";
 			$list[$i]->smb_password = "";
 		}
-		if (sizeof($list) > 0) createUserPDF($list);
+		if (sizeof($list) > 0) {
+			$list = quotas($list);
+			if ($list) createUserPDF($list);
+			else StatusMessage("ERROR", _("Unable to get quota information!"), "");
+		}
 	}
 	exit;
 }
@@ -270,14 +282,14 @@ if ($user_count != 0) {
 			"onMouseOut=\"user_out(this, '" . $userinfo[$i]["dn"] . "')\"\n" .
 			"onClick=\"user_click(this, '" . $userinfo[$i]["dn"] . "')\"\n" .
 			"onDblClick=\"parent.frames[1].location.href='../account/useredit.php?type=user&amp;DN=" . $userinfo[$i]["dn"] . "'\">\n");
-		// check boxes if selectall = "yes"
+		// checkboxes if selectall = "yes"
 		if ($_GET['selectall'] == "yes") {
 			echo "<td height=22 align=\"center\">\n<input onClick=\"user_click(this, '" . $userinfo[$i]["dn"] . "')\" type=\"checkbox\" name=\"" .
-				$userinfo[$i]["dn"] . "\" checked>\n</td>\n";
+				$userinfo[$i]["dn"] . "\" value=\"" . $userinfo[$i]["dn"] . "\" checked>\n</td>\n";
 		}
 		else {
 			echo "<td height=22 align=\"center\">\n<input onClick=\"user_click(this, '" . $userinfo[$i]["dn"] . "')\" type=\"checkbox\" name=\"" .
-				$userinfo[$i]["dn"] . "\">\n</td>\n";
+				$userinfo[$i]["dn"] . "\" value=\"" . $userinfo[$i]["dn"] . "\">\n</td>\n";
 		}
 		echo ("<td align='center'>\n<a href=\"../account/useredit.php?type=user&amp;DN='" . $userinfo[$i]["dn"] . "'\">" .
 			_("Edit") . "</a>\n</td>\n");
@@ -350,7 +362,6 @@ if (in_array("gidnumber", $attr_array)) {
 echo ("<p>&nbsp;</p>\n");
 
 // new/delete/PDF buttons
-echo ("<p align=\"left\">\n");
 echo ("<input type=\"submit\" name=\"new_user\" value=\"" . _("New user") . "\">\n");
 if ($user_count != 0) {
 	echo ("<input type=\"submit\" name=\"del_user\" value=\"" . _("Delete user(s)") . "\">\n");
@@ -361,7 +372,6 @@ if ($user_count != 0) {
 	echo ("<input type=\"submit\" name=\"pdf_all\" value=\"" . _("Create PDF for all users") . "\">\n");
 	echo "</fieldset>";
 }
-echo ("</p>\n");
 
 echo ("<p>&nbsp;</p>\n");
 
@@ -432,6 +442,24 @@ function cmp_array($a, $b) {
 		else return -1;
 	}
 }
+
+// takes an array of account and fill the accounts with quota information
+function quotas($list) {
+	if (! is_array($list)) return false;
+	for ($i = 0; $i < sizeof($list); $i++) {
+		$usernames[] = $list[$i]->general_username;
+	}
+	$data = getquotas("user", $usernames);
+	if (sizeof($data) != sizeof($list)) {
+		return false;
+	}
+	for ($i = 0; $i < sizeof($data); $i++) {
+		$ret[$i] = $list[$i];
+		$ret[$i]->quota = $data[$i]->quota;
+	}
+	return $ret;
+}
+
 
 // save variables to session
 $_SESSION['usr_units'] = $usr_units;
