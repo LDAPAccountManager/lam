@@ -88,7 +88,7 @@ if (isset($_POST['back']) || isset($_POST['submitconf']) || isset($_POST['editmo
 
 // get password if register_globals is off
 if (isset($_POST['passwd'])) $passwd = $_POST['passwd'];
-if ($_GET["modulesback"] == "true") $passwd = $_SESSION['conf_passwd'];
+if (isset($_GET["modulesback"])) $passwd = $_SESSION['conf_passwd'];
 
 // check if password was entered
 // if not: load login page
@@ -100,7 +100,7 @@ if (! $passwd) {
 }
 
 $filename = $_POST['filename'];
-if ($_GET["modulesback"] == "true") $filename = $_SESSION['conf_filename'];
+if (isset($_GET["modulesback"])) $filename = $_SESSION['conf_filename'];
 $conf = new Config($filename);
 
 // check if password is valid
@@ -113,7 +113,7 @@ if (!(($conf->get_Passwd()) == $passwd)) {
 }
 
 // check if user comes from modules page
-if ($_GET["modulesback"] == "true") {
+if (isset($_GET["modulesback"])) {
 	// load config values from session
 	$conf->set_ServerURL($_SESSION['conf_serverurl']);
 	$conf->set_cacheTimeout($_SESSION['conf_cachetimeout']);
