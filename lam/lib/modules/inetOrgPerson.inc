@@ -90,6 +90,18 @@ class inetOrgPerson {
 		return array('attributes');
 		}
 
+	/*
+	*/
+	function get_help($id) {
+		switch ($id) {
+			case "description":
+				return array ("ext" => "FALSE", "Headline" => _("Description"),
+					"Text" => _("Host Description."));
+				break;
+			}
+		return false;
+		}
+
 	/* This function returns all ldap attributes
 	* which are part of inetOrgPerson and returns
 	* also their values.
@@ -152,7 +164,7 @@ class inetOrgPerson {
 		return 0;
 		}
 
-	function proccess_attributes($post) {
+	function proccess_attributes($post, $profile=false) {
 		// Load attributes
 		$this->attributes['description'][0] = $post['description'];
 		$this->attributes['sn'][0] = $post['sn'];
@@ -179,17 +191,19 @@ class inetOrgPerson {
 			}
 
 		// Do some regex-checks and return error if attributes are set to wrong values
-		if ( !ereg('^([a-z]|[A-Z]|[-]|[ ]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+$', $this->attributes['givenName'][0])) $errors[] = array('ERROR', _('Given name'), _('Given name contains invalid characters'), 'givenName');
-		if ( !ereg('^([a-z]|[A-Z]|[-]|[ ]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+$', $this->attributes['sn'][0])) $errors[] = array('ERROR', _('Surname'), _('Surname contains invalid characters'), 'sn');
-		if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/]|[-])*$', $this->attributes['telephoneNumber'][0]))  $errors[] = array('ERROR', _('Telephone number'), _('Please enter a valid telephone number!'), 'telephoneNumber');
-		if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/]|[-])*$', $this->attributes['mobileTelephoneNumber'][0]))  $errors[] = array('ERROR', _('Mobile number'), _('Please enter a valid mobile number!'), 'mobileTelephoneNumber');
-		if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/]|[-])*$', $this->attributes['facsimileTelephoneNumber'][0]))  $errors[] = array('ERROR', _('Fax number'), _('Please enter a valid fax number!'), 'facsimileTelephoneNumber');
-		if ( !ereg('^(([0-9]|[A-Z]|[a-z]|[.]|[-]|[_])+[@]([0-9]|[A-Z]|[a-z]|[-])+([.]([0-9]|[A-Z]|[a-z]|[-])+)*)*$', $this->attributes['mail'][0]))  $errors[] = array('ERROR', _('eMail address'), _('Please enter a valid eMail address!'), 'mail');
-		if ( !ereg('^([0-9]|[A-Z]|[a-z]|[-]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $this->attributes['street'][0]))  $errors[] = array('ERROR', _('Street'), _('Please enter a valid street name!'), 'street');
-		if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $this->attributes['postalAddress'][0]))  $errors[] = array('ERROR', _('Postal address'), _('Please enter a valid postal address!'), 'postalAdress');
+		if (!$profile) {
+			if ( !ereg('^([a-z]|[A-Z]|[-]|[ ]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+$', $this->attributes['givenName'][0])) $errors[] = array('ERROR', _('Given name'), _('Given name contains invalid characters'), 'givenName');
+			if ( !ereg('^([a-z]|[A-Z]|[-]|[ ]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+$', $this->attributes['sn'][0])) $errors[] = array('ERROR', _('Surname'), _('Surname contains invalid characters'), 'sn');
+			if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/]|[-])*$', $this->attributes['telephoneNumber'][0]))  $errors[] = array('ERROR', _('Telephone number'), _('Please enter a valid telephone number!'), 'telephoneNumber');
+			if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/]|[-])*$', $this->attributes['mobileTelephoneNumber'][0]))  $errors[] = array('ERROR', _('Mobile number'), _('Please enter a valid mobile number!'), 'mobileTelephoneNumber');
+			if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/]|[-])*$', $this->attributes['facsimileTelephoneNumber'][0]))  $errors[] = array('ERROR', _('Fax number'), _('Please enter a valid fax number!'), 'facsimileTelephoneNumber');
+			if ( !ereg('^(([0-9]|[A-Z]|[a-z]|[.]|[-]|[_])+[@]([0-9]|[A-Z]|[a-z]|[-])+([.]([0-9]|[A-Z]|[a-z]|[-])+)*)*$', $this->attributes['mail'][0]))  $errors[] = array('ERROR', _('eMail address'), _('Please enter a valid eMail address!'), 'mail');
+			if ( !ereg('^([0-9]|[A-Z]|[a-z]|[-]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $this->attributes['street'][0]))  $errors[] = array('ERROR', _('Street'), _('Please enter a valid street name!'), 'street');
+			if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $this->attributes['postalAddress'][0]))  $errors[] = array('ERROR', _('Postal address'), _('Please enter a valid postal address!'), 'postalAdress');
+			if ( !ereg('^([0-9]|[A-Z]|[a-z])*$', $this->attributes['personal_postalCode'][0]))  $errors[] = array('ERROR', _('Postal code'), _('Please enter a valid postal code!'), 'personal_postalCode');
+			}
 		if ( !ereg('^([0-9]|[A-Z]|[a-z]|[-]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $this->attributes['title'][0]))  $errors[] = array('ERROR', _('Title'), _('Please enter a valid title!'), 'title');
 		if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $this->attributes['employeeType'][0]))  $errors[] = array('ERROR', _('Employee type'), _('Please enter a valid employee type!'), 'employeeType');
-		if ( !ereg('^([0-9]|[A-Z]|[a-z])*$', $this->attributes['personal_postalCode'][0]))  $errors[] = array('ERROR', _('Postal code'), _('Please enter a valid postal code!'), 'personal_postalCode');
 		// Return error-messages
 		if (is_array($errors)) return $errors;
 		return 0;
@@ -199,83 +213,71 @@ class inetOrgPerson {
 	* to show a page with all attributes.
 	* It will output a complete html-table
 	*/
-	function display_html_attributes($post) {
-		echo "<table border=0 width=\"100%\">\n";
-		echo "<tr>\n";
-		echo "<td>" . _('Description') . "</td>\n";
-		echo "<td><input name=\"description\" type=\"text\" size=\"30\" maxlength=\"255\" value=\"".$this->attributes['description'][0]."\"></td>\n";
-		echo "<td><a href=\"../help.php?HelpNumber=404\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-		echo "</tr>\n";
+	function display_html_attributes($post, $profile=false) {
+		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Description') ),
+			1 => array ( 'kind' => 'input', 'name' => 'description', 'type' => 'text', 'size' => '30',
+				'maxlength' => '255', 'value' => $this->attributes['description'][0] ),
+			2 => array ('kind' => 'help', 'value' => 'description'));
 		if (isset($this->attributes['host'])) {
-			echo "<tr>\n";
-			echo "<td>" . _('Unix workstations') . "</td>\n";
-			echo "<td><input name=\"host\" type=\"text\" size=\"20\" maxlength=\"80\" value=\"";
 			if (is_array($this->attributes['host']))
-				foreach ($this->attributes['host'] as $host) echo $host." ";
-			echo "\"></td>\n";
-			echo "<td><a href=\"../help.php?HelpNumber=466\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-			echo "</tr>\n";
+				foreach ($this->attributes['host'] as $host) $hostvalue .= $host." ";
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Unix workstations') ),
+				1 => array ( 'kind' => 'input', 'name' => 'host', 'type' => 'text', 'size' => '20',
+					'maxlength' => '255', 'value' => $hostvalues ),
+				2 => array ('kind' => 'help', 'value' => 'host'));
 			}
-		echo "<tr>\n";
-		echo "<td>" . _('Title') . "</td>\n";
-		echo "<td><input name=\"title\" type=\"text\" size=\"10\" maxlength=\"10\" value=\"".$this->attributes['title'][0]."\"></td>\n";
-		echo "<td><a href=\"../help.php?HelpNumber=448\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-		echo "</tr>\n";
-		echo "<tr>\n";
-		echo "<td>" . _('First name') . "*</td>\n" ;
-		echo "<td><input name=\"givenName\" type=\"text\" size=\"20\" maxlength=\"20\" value=\"".$this->attributes['givenName'][0]."\"></td>\n";
-		echo "<td><a href=\"../help.php?HelpNumber=425\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-		echo "</tr>\n";
-		echo "<tr>\n";
-		echo "<td>" . _('Last name') . "*</td>\n";
-		echo "<td><input name=\"sn\" type=\"text\" size=\"20\" maxlength=\"50\" value=\"".$this->attributes['sn'][0]."\"></td>\n";
-		echo "<td><a href=\"../help.php?HelpNumber=424\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-		echo "</tr>\n";
-		echo "<tr>\n";
-		echo "<td>" . _('Employee type') . "</td>\n";
-		echo "<td><input name=\"employeeType\" type=\"text\" size=\"30\" maxlength=\"30\" value=\"".$this->attributes['employeeType'][0]."\"></td>\n";
-		echo "<td><a href=\"../help.php?HelpNumber=449\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-		echo "</tr>\n";
-		echo "<tr>\n";
-		echo "<td>" . _('Street') . "</td>\n";
-		echo "<td><input name=\"street\" type=\"text\" size=\"30\" maxlength=\"50\" value=\"".$this->attributes['street'][0]."\"></td>\n";
-		echo "<td><a href=\"../help.php?HelpNumber=450\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-		echo "</tr>\n";
-		echo "<tr>\n";
-		echo "<td>" . _('Postal code') . "</td>\n";
-		echo "<td><input name=\"postalCode\" type=\"text\" size=\"5\" maxlength=\"5\" value=\"".$this->attributes['postalCode'][0]."\"></td>\n";
-		echo "<td><a href=\"../help.php?HelpNumber=451\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-		echo "</tr>\n";
-		echo "<tr>\n";
-		echo "<td>" . _('Postal address') . "</td>\n";
-		echo "<td><input name=\"postalAddress\" type=\"text\" size=\"30\" maxlength=\"80\" value=\"".$this->attributes['postalAddress'][0]."\"></td>\n";
-		echo "<td><a href=\"../help.php?HelpNumber=452\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-		echo "</tr>\n";
-		echo "<tr>\n";
-		echo "<td>" . _('Telephone number') . "</td>\n";
-		echo "<td><input name=\"telephoneNumber\" type=\"text\" size=\"30\" maxlength=\"30\" value=\"".$this->attributes['telephoneNumber'][0]."\"></td>\n";
-		echo "<td><a href=\"../help.php?HelpNumber=453\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-		echo "</tr>\n";
-		echo "<tr>\n";
-		echo "<td>" . _('Mobile number') . "</td>\n";
-		echo "<td><input name=\"mobileTelephoneNumber\" type=\"text\" size=\"30\" maxlength=\"30\" value=\"".$this->attributes['mobileTelephoneNumber'][0]."\"></td>\n";
-		echo "<td><a href=\"../help.php?HelpNumber=454\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-		echo "</tr>\n";
-		echo "<tr>\n";
-		echo "<td>" . _('Fax number') . "</td>\n";
-		echo "<td><input name=\"facsimileTelephoneNumber\" type=\"text\" size=\"30\" maxlength=\"30\" value=\"".$this->attributes['facsimileTelephoneNumber'][0]."\"></td>\n";
-		echo "<td><a href=\"../help.php?HelpNumber=455\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-		echo "</tr>\n";
-		echo "<tr>\n";
-		echo "<td>" . _('eMail address') . "</td>\n";
-		echo "<td><input name=\"mail\" type=\"text\" size=\"30\" maxlength=\"80\" value=\"".$this->attributes['mail'][0]."\"></td>\n";
-		echo "<td><a href=\"../help.php?HelpNumber=456\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-		echo "</tr>\n";
-		echo "</table>\n";
-		return 0;
+		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Title') ),
+			1 => array ( 'kind' => 'input', 'name' => 'title', 'type' => 'text', 'size' => '10',
+				'maxlength' => '10', 'value' => $this->attributes['title'][0] ),
+			2 => array ('kind' => 'help', 'value' => 'title'));
+		if (!$profile) {
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('First name').'*' ),
+				1 => array ( 'kind' => 'input', 'name' => 'givenName', 'type' => 'text', 'size' => '30',
+					'maxlength' => '255', 'value' => $this->attributes['givenName'][0] ),
+				2 => array ('kind' => 'help', 'value' => 'givenName'));
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Last name').'*' ),
+				1 => array ( 'kind' => 'input', 'name' => 'sn', 'type' => 'text', 'size' => '30',
+					'maxlength' => '255', 'value' => $this->attributes['sn'][0] ),
+				2 => array ('kind' => 'help', 'value' => 'sn'));
+			}
+		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Employee type') ),
+			1 => array ( 'kind' => 'input', 'name' => 'employeeType', 'type' => 'text', 'size' => '30',
+				'maxlength' => '255', 'value' => $this->attributes['employeeType'][0] ),
+			2 => array ('kind' => 'help', 'value' => 'employeeType'));
+		if (!$profile) {
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Street') ),
+				1 => array ( 'kind' => 'input', 'name' => 'street', 'type' => 'text', 'size' => '30',
+					'maxlength' => '255', 'value' => $this->attributes['street'][0] ),
+				2 => array ('kind' => 'help', 'value' => 'street'));
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Postal code') ),
+				1 => array ( 'kind' => 'input', 'name' => 'postalCode', 'type' => 'text', 'size' => '30',
+					'maxlength' => '255', 'value' => $this->attributes['postalCode'][0] ),
+				2 => array ('kind' => 'help', 'value' => 'postalCode'));
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Postal address') ),
+				1 => array ( 'kind' => 'input', 'name' => 'postalAddress', 'type' => 'text', 'size' => '30',
+					'maxlength' => '255', 'value' => $this->attributes['postalAddress'][0] ),
+				2 => array ('kind' => 'help', 'value' => 'postalAddress'));
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Telephone number') ),
+				1 => array ( 'kind' => 'input', 'name' => 'telephoneNumber', 'type' => 'text', 'size' => '30',
+					'maxlength' => '255', 'value' => $this->attributes['telephoneNumber'][0] ),
+				2 => array ('kind' => 'help', 'value' => 'telephoneNumber'));
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Mobile number') ),
+				1 => array ( 'kind' => 'input', 'name' => 'mobileTelephoneNumber', 'type' => 'text', 'size' => '30',
+					'maxlength' => '255', 'value' => $this->attributes['mobileTelephoneNumber'][0] ),
+				2 => array ('kind' => 'help', 'value' => 'mobileTelephoneNumber'));
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Fax number') ),
+				1 => array ( 'kind' => 'input', 'name' => 'facsimileTelephoneNumber', 'type' => 'text', 'size' => '30',
+					'maxlength' => '255', 'value' => $this->attributes['facsimileTelephoneNumber'][0] ),
+				2 => array ('kind' => 'help', 'value' => 'facsimileTelephoneNumber'));
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('eMail address') ),
+				1 => array ( 'kind' => 'input', 'name' => 'mail', 'type' => 'text', 'size' => '30',
+					'maxlength' => '255', 'value' => $this->attributes['mail'][0] ),
+				2 => array ('kind' => 'help', 'value' => 'mail'));
+			}
+		return $return;
 		}
 
-	function display_html_delete($post) {
+	function display_html_delete($post, $profile=false) {
 		return 0;
 		}
 	}

@@ -531,111 +531,74 @@ class posixAccount {
 	* to show a page with all attributes.
 	* It will output a complete html-table
 	*/
-	function display_html_attributes($post) {
+	function display_html_attributes($post, $profile=false) {
 		$groups = $_SESSION[$_SESSION[$this->base]->cache]->findgroups(); // list of all groupnames
 		$shelllist = getshells(); // list of all valid shells
 		if ($this->attributes['userPassword'][0] != $this->orig['userPassword'][0]) $password=$this->userPassword();
 			else $password='';
-		echo "<table border=0 width=\"100%\">\n";
-		echo "<tr>\n";
-		echo '<td>' . _('Username') . "*</td>\n";
-		echo "<td><input name=\"uid\" type=\"text\" size=\"20\" maxlength=\"20\" value=\"".$this->attributes['uid'][0]."\"></td>\n";
-		echo "<td><a href=\"../help.php?HelpNumber=400\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-		echo "</tr>\n";
-		echo "<tr>\n";
-		echo "<td>" . _('UID number') ."</td>\n";
-		echo "<td><input name=\"uidNumber\" type=\"text\" size=\"6\" maxlength=\"6\" value=\"".$this->attributes['uidNumber'][0]."\"></td>\n";
-		echo "<td><a href=\"../help.php?HelpNumber=401\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-		echo "</tr>\n";
-		echo "<tr>\n";
-		echo "<td>" . _('Gecos') . "</td>\n";
-		echo "<td><input name=\"gecos\" type=\"text\" size=\"30\" maxlength=\"255\" value=\"".$this->attributes['gecos'][0]."\"></td>\n";
-		echo "<td><a href=\"../help.php?HelpNumber=404\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-		echo "</tr>\n";
-		echo "<tr>\n";
-		echo "<td>" . _('Primary group') . "*</td>\n";
-		echo "<td><select name=\"gidNumber\">";
-		// loop trough existing groups
-		foreach ($groups as $group)
-			if ($_SESSION[$_SESSION[$this->base]->cache]->getgrnam($this->attributes['gidNumber'][0]) == $group) echo "<option selected> $group </option>\n";
-				else echo "<option> $group </option>\n";
-		echo "</select></td>\n";
-		echo "<td><a href=\"../help.php?HelpNumber=406\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-		echo "</tr>\n";
-		if ($_SESSION[$this->base]->type=='user') {
-			echo "<tr>\n";
-			echo "<td>" . _('Additional groups') . "</td>\n";
-			echo "<td><input name=\"addgroup\" type=\"submit\" value=\"" . _('Edit groups') . "\"></td>\n";
-			echo "<td><a href=\"../help.php?HelpNumber=402\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td>" . _('Home directory') . "*</td>\n";
-			echo "<td><input name=\"homeDirectory\" type=\"text\" size=\"30\" maxlength=\"255\" value=\"".$this->attributes['homeDirectory'][0]."\"></td>\n";
-			echo "<td><a href=\"../help.php?HelpNumber=403\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-			echo "</tr>\n";
-			if ($this->orig['homeDirectory']=='' && isset($_SESSION[$_SESSION[$this->base]->config]->scriptPath)) {
-				echo "<tr>\n";
-				echo "<td>" . _('Create home directory') . "*</td>\n";
-				echo "<td><input name=\"createhomedir\" type=\"checkbox\"";
-					if ($this->createhomedir) echo " checked ";
-					echo "></td>\n";
-				echo "<tr>\n";
-				}
-			echo "<tr>\n";
-			echo "<td>" . _('Password') . "</td>\n";
-			echo "<td><input name=\"userPassword\" type=\"password\" size=\"20\" maxlength=\"20\" value=\"$password\"></td>\n";
-			echo "<td><input name=\"genpass\" type=\"submit\" value=\"" . _('Generate password') . "\"></td>\n";
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td>" . _('Repeat password') . "</td>\n";
-			echo "<td><input name=\"userPassword2\" type=\"password\" size=\"20\" maxlength=\"20\" value=\"";
-				if ($post['userPassword2']!='') echo $post['userPassword2'];
-				else echo $password;
-			echo "\"></td>\n";
-			echo "<td></td>\n";
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td>" . _('Use no password') . "</td>\n";
-			echo "<td><input name=\"userPassword_no\" type=\"checkbox\"";
-				if ($this->userPassword_no) echo " checked ";
-				echo "></td>\n";
-			echo "<td><a href=\"../help.php?HelpNumber=426\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td>" . _('Lock password') . "</td>\n";
-			echo "<td><input name=\"userPassword_lock\" type=\"checkbox\"";
-				if ($this->userPassword_lock) echo " checked ";
-				echo "></td>\n";
-			echo "<td><a href=\"../help.php?HelpNumber=426\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-			echo "</tr>\n";
-			if (count($shelllist)!=0) {
-				echo "<tr>\n";
-				echo "<td>" . _('Login shell') . "*</td>\n";
-				echo "<td><select name=\"loginShell\">";
-				// loop through shells
-				foreach ($shelllist as $shell)
-					if ($this->attributes['loginShell'][0]==trim($shell)) echo "<option selected> $shell </option>\n";
-							else echo "<option> $shell </option>\n";
-				echo "</select></td>\n";
-				echo "<td><a href=\"../help.php?HelpNumber=405\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-				echo "</tr>\n";
-				}
+
+		if (!$profile) {
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _("Username").'*' ),
+				1 => array ( 'kind' => 'input', 'name' => 'uid', 'type' => 'text', 'size' => '20', 'maxlength' => '20', 'value' => $this->attributes['uid'][0]),
+				2 => array ('kind' => 'help', 'value' => 'uid'));
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('UID number').'*' ),
+				1 => array ( 'kind' => 'input', 'name' => 'uidNumber', 'type' => 'text', 'size' => '6', 'maxlength' => '6', 'value' => $this->attributes['uidNumber'][0]),
+				2 => array ('kind' => 'help', 'value' => 'uidNumber'));
 			}
-		echo "</table>\n";
-		return 0;
+		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Gecos') ),
+			1 => array ( 'kind' => 'input', 'name' => 'gecos', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => $this->attributes['gecos'][0]),
+			2 => array ('kind' => 'help', 'value' => 'gecos'));
+		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Primary group').'*' ),
+			1 => array ( 'kind' => 'select', 'name' => 'gidNumber', 'options' => $groups, 'options_selected' =>
+				array ($_SESSION[$_SESSION[$this->base]->cache]->getgrnam($this->attributes['gidNumber'][0]))),
+			2 => array ('kind' => 'help', 'value' => 'gidNumber'));
+
+		if ($_SESSION[$this->base]->type=='user') {
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Additional groups') ),
+				1 => array ( 'kind' => 'input', 'name' => 'addgroup', 'type' => 'submit', 'value' => _('Edit groups')),
+				2 => array ('kind' => 'help', 'value' => 'addgroup'));
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Home directory').'*' ),
+				1 => array ( 'kind' => 'input', 'name' => 'homeDirectory', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => $this->attributes['homeDirectory'][0]),
+				2 => array ('kind' => 'help', 'value' => 'homeDirectory'));
+			if (!$profile) {
+				if ($this->orig['homeDirectory']=='' && isset($_SESSION[$_SESSION[$this->base]->config]->scriptPath)) {
+					$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Create home directory') ),
+						1 => array ( 'kind' => 'input', 'name' => 'createhomedir', 'type' => 'checkbox', 'checked' => $this->createhomedir),
+						2 => array ('kind' => 'help', 'value' => 'createhomedir'));
+					}
+				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Password') ),
+					1 => array ( 'kind' => 'input', 'name' => 'userPassword', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => $password),
+					2 => array ( 'kind' => 'input', 'name' => 'genpass', 'type' => 'submit', 'value' => _('Generate password')));
+				if ($post['userPassword2']!='') $password2 = $post['userPassword2'];
+				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Repeat password') ),
+					1 => array ( 'kind' => 'input', 'name' => 'userPassword2', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => $password2),
+					2 => array ('kind' => 'help', 'value' => 'userPassword'));
+				}
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Use no password') ),
+				1 => array ( 'kind' => 'input', 'name' => 'userPassword_no', 'type' => 'checkbox', 'checked' => $this->userPassword_no),
+				2 => array ('kind' => 'help', 'value' => 'userPassword_no'));
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Lock password') ),
+				1 => array ( 'kind' => 'input', 'name' => 'userPassword_lock', 'type' => 'checkbox', 'checked' => $this->userPassword_lock),
+				2 => array ('kind' => 'help', 'value' => 'userPassword_lock'));
+			if (count($shelllist)!=0)
+				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Login shell').'*' ),
+					1 => array ( 'kind' => 'select', 'name' => 'loginShell', 'options' => $shelllist, 'options_selected' =>
+						array ($this->attributes['loginShell'][0])),
+					2 => array ('kind' => 'help', 'value' => 'loginShell'));
+			}
+		return $return;
 		}
 
 	function display_html_delete($post) {
 		if ($_SESSION[$this->base]->type=='user' && isset($_SESSION[$_SESSION[$this->base]->config]->scriptPath)) {
-			echo "<tr>\n";
-			echo "<td>" . _('Delete home directory') . "</td>\n";
-			echo "<td><input name=\"deletehomedir\" type=\"checkbox\"></td>\n";
-			echo "<tr>\n";
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Delete home directory') ),
+				1 => array ( 'kind' => 'input', 'name' => 'deletehomedir', 'type' => 'checkbox'),
+				2 => array ('kind' => 'help', 'value' => 'deletehomedir'));
 			}
-		return 0;
+		return $return;
 		}
 
-	function display_html_group($post) {
+	function display_html_group($post, $profile=false) {
 		// load list with all groups
 		$dn_groups = $_SESSION[$_SESSION[$this->base]->cache]->get_cache('gidNumber', 'posixGroup', 'group');
 		$DNs = array_keys($dn_groups);
@@ -649,42 +612,21 @@ class posixAccount {
 		$groups = array_flip($groups);
 		if (isset($groups[$_SESSION[$_SESSION[$this->base]->cache]->getgrnam($this->attributes['gidNumber'])])) unset ($groups[$_SESSION[$_SESSION[$this->base]->cache]->getgrnam($this->attributes['gidNumber'])]);
 		$groups = array_flip($groups);
-		echo "<table border=0 width=\"100%\">\n<tr>\n";
-		echo "<td><fieldset class=\"".$_SESSION[$this->base]->type."edit-bright\">";
-			echo "<legend class=\"".$_SESSION[$this->base]->type."edit-bright\"><b>" . _("Additional groups") . "</b></legend>\n";
-			echo "<table border=0 width=\"100%\">\n<tr>\n";
-				echo "<td valign=\"top\">";
-				echo "<fieldset class=\"".$_SESSION[$this->base]->type."edit-bright\">";
-				echo "<legend class=\"".$_SESSION[$this->base]->type."edit-bright\">" . _("Selected groups") . "</legend>\n";
-					// Show all groups the user is additional member of
-					if (count($this->groups)!=0) {
-						echo "<select name=\"removegroups[]\" class=\"".$_SESSION[$this->base]->type."edit-bright\" size=15 multiple>\n";
-						for ($i=0; $i<count($this->groups); $i++)
-							echo "<option>" . $this->groups[$i] . "</option>\n";
-						echo "</select>\n";
-						}
-					echo "</fieldset></td>\n";
-				echo "<td align=\"center\" width=\"10%\"><input type=\"submit\" name=\"addgroups_button\" value=\"<=\">";
-				echo " ";
-				echo "<input type=\"submit\" name=\"removegroups_button\" value=\"=>\"><br><br>";
-				echo "<a href=\""."../help.php?HelpNumber=402\" target=\"lamhelp\">"._('Help')."</a></td>\n";
-				echo "<td valign=\"top\">\n";
-				echo "<fieldset class=\"".$_SESSION[$this->base]->type."edit-bright\">";
-				echo "<legend class=\"".$_SESSION[$this->base]->type."edit-bright\">" . _('Available groups') . "</legend>\n";
-					// show all groups expect these the user is member of
-					if (count($groups)!=0) {
-						echo "<select name=\"addgroups[]\" size=15 multiple class=\"".$_SESSION[$this->base]->type."edit-bright\">\n";
-						for ($i=0; $i<count($groups); $i++)
-							echo "<option> $groups[$i] </option>\n";
-						echo "</select>\n";
-						}
-					echo "</fieldset></td>\n";
-				echo "</tr>\n";
-				echo "</table>\n";
-			echo "<input name=\"toattributes\" type=\"submit\" value=\""; echo _('Back'); echo "\">\n";
-			echo "</fieldset>\n";
-		echo "</td></tr></table>\n";
-		return 0;
+
+		$return[] = array ( 0 => array ( 'kind' => 'fieldset', 'legend' => _("Additional groups"), 'value' =>
+			array ( 0 => array ( 0 => array ('kind' => 'fieldset', 'td' => array ('valign' => 'top'), 'legend' => _("Selected groups"), 'value' =>
+				array ( 0 => array ( 0 => array ( 'kind' => 'select', 'name' => 'removegroups[]', 'size' => '15', 'multiple', 'options' => $this->groups)))),
+			1 => array ( 'kind' => 'table', 'value' => array ( 0 => array ( 0 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'addgroups_button',
+				'value' => '<=')), 1 => array ( 0 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'removegroups_button', 'value' => '=>' )),
+				2 => array ( 0 => array ( 'kind' => 'help', 'value' => 'addgroup' )))),
+			2 => array ('kind' => 'fieldset', 'td' => array ('valign' => 'top'), 'legend' => _("Available groups"), 'value' =>
+				array ( 0 => array ( 0 => array ( 'kind' => 'select', 'name' => 'addgroups[]', 'size' => '15', 'multiple', 'options' => $groups))))
+				))));
+
+		$return[] = array ( 0 => array ( 'kind' => 'input', 'type' => 'submit', 'value' => _('Back') ),
+			1 => array ( 'kind' => 'text'),
+			2 => array ('kind' => 'text'));
+		return $return;
 		}
 
 

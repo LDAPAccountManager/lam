@@ -86,6 +86,18 @@ class main {
 		return array('attributes', 'finish');
 		}
 
+	/*
+	*/
+	function get_help($id) {
+		switch ($id) {
+			case "description":
+				return array ("ext" => "FALSE", "Headline" => _("Description"),
+					"Text" => _("Host Description."));
+				break;
+			}
+		return false;
+		}
+
 	// Dummy functions to make module compatible
 	function get_attributes() {
 		return array();
@@ -107,7 +119,7 @@ class main {
 
 	/* Write variables into object and do some regexp checks
 	*/
-	function proccess_attributes($post) {
+	function proccess_attributes($post, $profile=false) {
 		// change dn
 		if ($post['suffix']!='') $_SESSION[$this->base]->dn = $post['suffix'];
 		// load profile
@@ -136,7 +148,7 @@ class main {
 				if ($function) $errors[] = array('INFO', _('Save profile'), _('New profile created.'));
 					else $errors[] = array('ERROR', _('Save profile'), _('Wrong profilename given.'));
 				}
-			if (is_array($errors)) return $errors;
+			if (is_array($errors) && !$profile) return $errors;
 				else return 0;
 			}
 		return 0;
@@ -144,7 +156,7 @@ class main {
 
 	/* Write variables into object and do some regexp checks
 	*/
-	function proccess_finish($post) {
+	function proccess_finish($post, $profile=false) {
 		if ($post['createagain']) {
 			// Reset objects
 			$modules = array_keys($_SESSION[$this->base]->module);
@@ -175,93 +187,84 @@ class main {
 			}
 		}
 
-	function display_html_attributes($post) {
-		// Get list of profiles
-		$function = '$profilelist = get'.ucfirst($_SESSION[$this->base]->type).'Profiles();';
-		eval($function);
+	function display_html_attributes($post, $profile=false) {
 		$modules = $_SESSION[$this->base]->check_attributes();
 		if (count($modules)!=0) {
-			$disabled = 'disabled';
+			$disabled = false;
 			// Show reason why module is disabled
-			for ($i=0; $i<count($modules); $i++) StatusMessage('ERROR', _('Check module'), sprintf(_('Please set up all required attributes on %s page'), $_SESSION[$this->base]->module[$modules[$i]]->alias));
+			for ($i=0; $i<count($modules); $i++)
+				$return[] = array ( 0 => array ( 'kind' => 'message', 'type' => 'ERROR', 'headline' =>  _('Check module'),
+					'text' => sprintf(_('Please set up all required attributes on %s page'), $_SESSION[$this->base]->module[$modules[$i]]->alias) ));
 			}
-			else $disabled = '';
+			else $disabled = true;
 
-		echo "<table border=0 width=\"100%\">\n";
-		echo "<tr>\n";
-		echo "<td>" . _('Suffix') . "</td>\n";
-		echo "<td><select name=\"suffix\">";
 		// loop through all suffixes
 		$function = '$suffix = $_SESSION[$_SESSION[$this->base]->config]->get_'.ucfirst($_SESSION[$this->base]->type).'Suffix();';
 		eval($function);
 		foreach ($_SESSION[$_SESSION[$this->base]->ldap]->search_units($suffix) as $suffix) {
 			if ($_SESSION[$this->base]->dn) {
-				if ($_SESSION[$this->base]->dn == $suffix) echo "<option selected>$suffix</option>\n";
-				else echo "<option>$suffix</option>\n";
+				if ($_SESSION[$this->base]->dn == $suffix) $option_selected = $suffix;
+				else $suffixes[] = $suffix;
 				}
-			else echo "<option>$suffix</option>\n";
+			else $suffixes[] = $suffix;
 			}
-		echo "</select></td>\n";
-		echo "<td><a href=\"../help.php?HelpNumber=461\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-		echo "</tr>\n";
+		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Suffix') ),
+			1 => array ( 'kind' => 'select', 'name' => 'suffix', 'options' => $suffixes,
+				'option_selected' => $selected_suffix ),
+			2 => array ('kind' => 'help', 'value' => 'suffix'));
 
-		// Show fieldset with list of all user profiles
-		if (count($profilelist)!=0) {
-			echo "<tr>\n";
-			echo "<td>" . _("Load profile") . "</td>\n";
-			echo "<td><select name=\"selectLoadProfile\">";
-				foreach ($profilelist as $profile) echo "<option>$profile</option>\n";
-			echo "</select>\n";
-			echo "<input name=\"loadProfile\" type=\"submit\" value=\"" . _('Load Profile') . "\"></td>\n";
-			echo "<td><a href=\"../help.php?HelpNumber=421\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-			echo "</tr>\n";
+		if (!$profile) {
+			// Get list of profiles
+			$function = '$profilelist = get'.ucfirst($_SESSION[$this->base]->type).'Profiles();';
+			eval($function);
+			if (count($profilelist)!=0) {
+				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _("Load profile") ),
+					1 => array ( 'kind' => 'select', 'name' => 'selectLoadProfile', 'options' => $profilelist ),
+					2 => array ('kind' => 'help', 'value' => 'selectLoadProfile'));
+				}
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _("Save profile") ),
+				1 => array ( 'kind' => 'table', 'value' => array ( 0 => array (
+					0 => array ( 'kind' => 'input', 'name' => 'selectSaveProfile', 'type' => 'text', 'size' => '30',
+						'maxlength' => '255', ),
+					1 => array ('kind' => 'input', 'name' => 'saveProfile', 'type' => 'submit',
+						'value' => _('Save profile'), 'disabled' => $disabled))) ),
+				2 => array ('kind' => 'help', 'value' => 'saveProfile'));
 			}
 
-		echo "<tr>\n";
-		echo "<td>" . _("Save profile") . "</td>\n";
-		echo "<td><input name=\"selectSaveProfile\" type=\"text\" size=\"30\" maxlength=\"50\">\n";
-			echo "<input name=\"saveProfile\" type=\"submit\" value=\"" . _('Save profile') . "\" $disabled ></td>\n";
-		echo "<td><a href=\"../help.php?HelpNumber=457\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-		echo "</tr>\n";
-		echo "<tr>\n";
-		echo "<td><input name=\"create\" type=\"submit\" value=\"";
-			if ($_SESSION[$this->base]->dn_orig!='') echo _('Modify Account');
-	 			else echo _('Create Account');
-			echo "\" $disabled ></td>\n";
-		echo "</tr>\n";
-		echo "</table>\n";
-		return 0;
+		if ($_SESSION[$this->base]->dn_orig!='') $text = _('Modify Account');
+ 			else $text = _('Create Account');
+		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => $text ),
+			1 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'create', 'value' => $text ),
+			2 => array ('kind' => 'help', 'value' => 'create'));
+		return $return;
 		}
 
-	function display_html_delete($post) {
+	function display_html_delete($post, $profile=false) {
 		return 0;
 		}
 
 	/* This page will be shown if an account
 	* has been saved
 	*/
-	function display_html_finish($post) {
+	function display_html_finish($post, $profile=false) {
 		// Show success message
 		if ($_SESSION[$this->base]->dn_orig=='') $kind = _('created');
 			else $kind = _('modified');
 		$text = sprintf(_('%s has been %s.'), ucfirst($_SESSION[$this->base]->type), $kind);
-		StatusMessage('INFO', _('LDAP operation successful.'), $text);
 
-		// Show rest of page
-		echo "<table border=0 width=\"100%\">\n";
-		echo "<tr>\n";
-		if ($_SESSION[$this->base]->dn_orig=='') {
-			echo "<td><input name=\"createagain\" type=\"submit\" value=\"";
-				echo sprintf(_('Create another %s'), $_SESSION[$this->base]->type);
-				echo "\"></td>\n";
+		if (!$profile) {
+			$return[] = array ( 0 => array ( 'kind' => 'message', 'type' => 'INFO', 'headline' =>  _('LDAP operation successful.'),
+				'text' => $text ));
+
+			$return[] = array ( 0 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'createagain',
+					'value' => sprintf(_('Create another %s'), $_SESSION[$this->base]->type) ),
+				1 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'outputpdf',
+					'value' => _('Create PDF file') ),
+				2 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'backmain',
+					'value' => sprintf (_('Back to %s list'), $_SESSION[$this->base]->type) ));
 			}
-		echo "<td><input name=\"outputpdf\" type=\"submit\" value=\"" . _('Create PDF file') . "\"></td>\n";
-		echo "<td><input name=\"backmain\" type=\"submit\" value=\"";
-			echo sprintf (_('Back to %s list'), $_SESSION[$this->base]->type);
-			echo "\"></td>\n";
-		echo "</tr>\n";
-		echo "</table>\n";
-		return 0;
+
+		return $return;
 		}
 
 	}

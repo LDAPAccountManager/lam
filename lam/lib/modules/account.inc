@@ -158,7 +158,7 @@ class account {
 
 	/* Write variables into object and do some regexp checks
 	*/
-	function proccess_attributes($post) {
+	function proccess_attributes($post, $profile=false) {
 		// Load attributes
 		$this->attributes['description'][0] = $post['description'];
 		return 0;
@@ -168,18 +168,16 @@ class account {
 	* to show a page with all attributes.
 	* It will output a complete html-table
 	*/
-	function display_html_attributes($post) {
-		echo "<table border=0 width=\"100%\">\n<tr>\n";
-		echo "<tr>\n";
-		echo "<td>" . _('Description') . "</td>\n";
-		echo "<td><input name=\"description\" type=\"text\" size=\"30\" maxlength=\"255\" value=\"".$this->attributes['description'][0]."\"></td>\n";
-		echo "<td><a href=\"../help.php?HelpNumber=description&module=account\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-		echo "</tr>\n";
-		echo "</table>\n";
-		return 0;
+	function display_html_attributes($post, $profile=false) {
+		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Description') ),
+			1 => array ( 'kind' => 'input', 'name' => 'description', 'type' => 'text', 'size' => '30',
+				'maxlength' => '255', 'value' => $this->attributes['description'][0] ),
+			2 => array ('kind' => 'help', 'value' => 'description'));
+
+		return $return;
 		}
 
-	function display_html_delete($post) {
+	function display_html_delete($post, $profile=false) {
 		return 0;
 		}
 

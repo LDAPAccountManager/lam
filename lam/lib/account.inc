@@ -443,6 +443,9 @@ class accountContainer {
 		// display html-code from mdule
 		$function = '$result = $this->module[$this->order[$this->module[\'main\']->current_page]]->display_html_'.$this->module['main']->subpage.'($post);';
 		eval ($function);
+		echo "<table>\n";
+		$this->parse_html($this->order[$this->module['main']->current_page], $result);
+		echo "</table>\n";
 		// Display rest of html-page
 		echo "</fieldset>\n";
 		echo "</td></tr></table>\n";
@@ -450,6 +453,89 @@ class accountContainer {
 		echo "</body>\n";
 		echo "</html>\n";
 		return 0;
+		}
+
+	function parse_html($module, $input) {
+		if (is_array($input)) {
+			for ($i=0; $i<count($input); $i++) {
+				// Draw column
+				echo "<tr>\n";
+				for ($j=0; $j<count($input[$i]); $j++ ) {
+					// draw raw
+					switch ($input[$i][$j]['kind']) {
+							case 'text':
+								echo "<td";
+								if ($input[$i][$j]['td']['valign']!='') echo ' valign="' . $input[$i][$j]['td']['valign'] .'"';
+								echo ">\n";
+								echo $input[$i][$j]['text'] . "<td>\n";
+								break;
+							case 'input':
+								echo "<td";
+								if ($input[$i][$j]['td']['valign']!='') echo ' valign="' . $input[$i][$j]['td']['valign'] .'"';
+								echo ">\n";
+								$output = "<input";
+								if ($input[$i][$j]['name']!='') $output .= ' name="' . $input[$i][$j]['name'] . '"';
+								if ($input[$i][$j]['type']!='') $output .= ' type="' . $input[$i][$j]['type'] . '"';
+								if ($input[$i][$j]['size']!='') $output .= ' size="' . $input[$i][$j]['size'] . '"';
+								if ($input[$i][$j]['maxlength']!='') $output .= ' maxlength="' . $input[$i][$j]['maxlength'] . '"';
+								if ($input[$i][$j]['value']!='') $output .= ' value="' . $input[$i][$j]['value'] . '"';
+								if (isset($input[$i][$j]['disabled'])) $output .= ' disabled';
+								if (isset($input[$i][$j]['checked'])) $output .= ' checked';
+								$output .= "></td>\n";
+								echo $output;
+								break;
+							case 'fieldset':
+								echo "<td";
+								if ($input[$i][$j]['td']['valign']!='') echo ' valign="' . $input[$i][$j]['td']['valign'] .'"';
+								echo ">\n";
+								echo "<fieldset>\n";
+								if ($input[$i][$j]['legend']!='') echo "<legend>" . $input[$i][$j]['legend'] . "</legend>\n";
+								echo "<table>\n";
+								$this->parse_html($module, $input[$i][$j]['value']);
+								echo "</table>\n";
+								echo "</fieldset>\n";
+								break;
+							case 'select':
+								echo "<td";
+								if ($input[$i][$j]['td']['valign']!='') echo ' valign="' . $input[$i][$j]['td']['valign'] .'"';
+								echo ">\n";
+								echo "<select name=\"" . $input[$i][$j]['name'] . '"';
+								if ($input[$i][$j]['multiple']) echo ' multiple';
+								if ($input[$i][$j]['size']) echo ' size="' . $input[$i][$j]['size'] . '"';
+								echo ">\n";
+								// merge both option arrays and sort them.
+								$options = array_merge ($input[$i][$j]['options'], $input[$i][$j]['options_selected'] );
+								$options = array_unique($options);
+								sort($options, SORT_STRING);
+								foreach ($options as $option) {
+									if (in_array($option, $input[$i][$j]['options_selected'])) echo "<option selected>" . $option . "</option>\n";
+										else echo "<option>" . $option . "</option>\n";
+									}
+								echo "</select></td>\n";
+								break;
+							case 'table':
+								echo "<td";
+								if ($input[$i][$j]['td']['valign']!='') echo ' valign="' . $input[$i][$j]['td']['valign'] .'"';
+								echo ">\n";
+								echo "<table>\n";
+								$this->parse_html($module, $input[$i][$j]['value']);
+								echo "</table>\n";
+								echo "</td>\n";
+								break;
+							case 'help':
+								echo "<td";
+								if ($input[$i][$j]['td']['valign']!='') echo ' valign="' . $input[$i][$j]['td']['valign'] .'"';
+								echo ">\n";
+								echo "<a href=../help.php?module=$module&item=$input[$i][$j]['value']>" . _('Help') . "</a></td>\n";
+								break;
+							default:
+								echo "<td>Unrecognized type: " . $input[$i][$j]['kind'] . "</td>\n";
+								break;
+						}
+					}
+				echo "</tr>\n";
+				}
+			}
 		}
 
 	/* Add attributes to variable. Syntax is array( attribute = array ( objectClass1 => MUST|MAX, objectClass2 => MUST|MAY ), ... )
@@ -1005,67 +1091,6 @@ class accountContainer {
 		}
 
 	}
-/*
-// This class keeps all needed values for any account
-class account {
-	// Type : user | group | host
-	var $type;
-	// General Settings
-	var $general_objectClass;	// Array, contains old objectclasses of loaded account
-	var $general_username;		// string Username, Hostname or Groupname
-	var $general_uidNumber;		// string UIDNumber(user|host) GIDNumber(group) only natural numbers allowed
-	var $general_surname;		// string Surname (user)
-	var $general_givenname;		// string Givenname (user)
-	var $general_dn;		// string DN
-	var $general_group;		// string Primary group (user|host)
-	var $general_groupadd;		// array(string) Addititional Groups (user) is member of
-	var $general_homedir;		// atring Homedirectoy (user) For host it's hardcoded to/dev/null
-	var $general_shell;		// array(string) list off all valid shells (user) hosts are hard-wired to /bin/false
-	var $general_gecos;		// string, gecos-field (user|group|host)
-	// Unix Password Settings
-	var $unix_memberUid;		// array Stores all users which are member of group but is not primary group (group)
-	var $unix_password;		// string for unix-password (user|host)
-	var $unix_password_no;		// string (0|1) set unix-password to none (user|host)
-	var $unix_pwdwarn;		// string number of days a user is warned before password expires (user|host) value must be a natural number (user|host)
-	var $unix_pwdallowlogin;	// string number of days a user can login even his password has expired (user) muste be a natural number or 0 or -1 (user|host)
-	var $unix_pwdmaxage;		// string Number of days after a user has to change his password again Value must be 0<. (user|host)
-	var $unix_pwdminage;		// string Number of days a user has to wait until he\'s allowed to change his password again. Value must be 0<. (user|host)
-	var $unix_pwdexpire;	// string days since 1.1.1970 the account expires (user|host)
-	var $unix_deactivated;		// string (1|0) account deactivated? (user|host)
-	var $unix_shadowLastChange;	// string, contains the days since 1.1.1970 the password has been changed last time (user|host)
-	var $unix_host;			// list of unix hosts the user is allowed to log in
-	// Samba Account
-	var $smb_password;		// string for samba-password (user|host)
-	var $smb_useunixpwd;		// string (1|0) use unix-password as samba-password (user|host)
-	var $smb_pwdcanchange;		// string unix-timestamp user/host is able to change password (user|host)
-	var $smb_pwdmustchange;		// string unix-timestamp user/host has to change password at next login (user|host)
-	var $smb_homedrive;		// string Homedrive (C:, D:, ...) (user)
-	var $smb_scriptPath;		// string ScriptPath (\\server\loginscript) (user)
-	var $smb_profilePath;		// string profilePAth (\\server\profilepath) (user)
-	var $smb_smbuserworkstations;	// string comma-separated list of workstations (user)
-	var $smb_smbhome;		// string Home-Share (\\server\home) (user)
-	var $smb_domain;		// string Domain of (user|host) or samba3domain-Object
-	var $smb_flags;			// array of acctFlags, ( {'W'] => 0, ['X'] => 1, ......
-	var $smb_mapgroup;		// decimal ID for groups
-	var $smb_displayName;		// string, description, similar to gecos-field.
-	// Quota Settins
-	var $quota;			/* array[][] First array is an index for every chare with active quotas
-					* second array Contains values for every share:
-					* mountpoint, used blocks, soft block limit, hard block limit, grace block period, used inodes,
-					* soft inode limit, hard inode limit, grace inode period
-					*/
-/*	// Personal Settings
-	var $personal_title;		// string title of user
-	var $personal_mail;		// string mailaddress of user
-	var $personal_telephoneNumber;	// string telephonenumber of user
-	var $personal_mobileTelephoneNumber; // string mobile umber of user
-	var $personal_facsimileTelephoneNumber; // strinf fax-number of user
-	var $personal_street;		// stirng streetname of user
-	var $personal_postalCode;	// string postal code of user
-	var $personal_postalAddress;	// string postal Address of user
-	var $personal_employeeType;	// string employe type of user
-	}
-*/
 
 
 /* Return a list of all shells listed in ../config/shells
@@ -1173,391 +1198,6 @@ function RndInt($Format){
 	} // END RndInt() FUNCTION
 
 
-/* Whis function will return the quotas from the specified user If empty only filesystems with enabled quotas are returned
-* $users = array of account objects., return-value is an array of account objects
-* if $users is account object return values is also an account object
-*        An array with all quota-enabled partitions will be returned in this case all returned values are 0 exept mointpoint[x][0]
-*/
-function getquotas($users) {
-	// define new object
-	if (is_array($users)) $return = $users;
-		else $return[0] = $users;
-	// get username and password of the current lam-admin
-	$ldap_q = $_SESSION['ldap']->decrypt_login();
-	/* $towrite has the following syntax:
-	* admin-username, admin-password, account with quotas, 'quota', operation='get', type=user|group
-	* use escapeshellarg to make exec() shell-safe
-	*/
-	$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." ".
-		escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]);
-	/* scriptServer is the IP to remote-host to which lam should connect via ssh
-	* scriptPath is Path to lamdaemon.pl on remote system
-	*/
-	if (is_array($return)) {
-		for($i=0; $i<count($return); $i++)
-			// put string to trasmit together
-			if ($return[$i]->general_username!='') $userstring .= $return[$i]->general_username." quota get ".$return[$i]->type."\n";
-				else $userstring .= "+ quota get ".$return[$i]->type."\n";
-		}
-	if (function_exists(proc_open)) {
-		// New Code, requires PHP 4.3
-		$descriptorspec = array(
-			0 => array("pipe", "r"), // stdin
-			1 => array("pipe", "w"), // stout
-			2 => array("file", "/dev/null", "a") // sterr
-			);
-		$process = proc_open(escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".$towrite,
-			$descriptorspec,
-			$pipes);
-		if (is_resource($process)) {
-			/* perl-script is running
-			* $pipes[0] is writeable handle to child stdin
-			* $pipes[1] is readable handle to child stdout
-			* any error is send to /dev/null
-			*/
-			// Write one output-line for every user
-			fwrite($pipes[0], $userstring);
-			fclose($pipes[0]);
-			while (!feof($pipes[1])) {
-				$output = fgets($pipes[1], 1024);
-				if ($output!='') $output_array[] = $output;
-				}
-			fclose($pipes[1]);
-			proc_close($process);
-			}
-		}
-	else { // PHP 4.3>
-		$command = escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".$towrite;
-		$pipe = popen("echo \"$userstring\"|$command" , 'r');
-		while(!feof($pipe)) {
-			//$output .= fread($pipe, 1024);
-			$output = fgets($pipe, 1024);
-			if ($output!='') $output_array[] = $output;
-			}
-		pclose($pipe);
-		}
-	/* $vals is a string which contains a two dimensional array.
-	* We have to recreate it with explode
-	*
-	* $return->quota[][] First array is an index for every chare with active quotas
-	* second array Contains values for every share:
-	* mountpoint, used blocks, soft block limit, hard block limit, grace block period, used inodes,
-	* soft inode limit, hard inode limit, grace inode period
-	*/
-	if (is_array($output_array)) {
-		for ($i=0; $i<count($return); $i++) {
-			$all_quota = explode(':', $output_array[$i]);
-			for ($j=0; $j<sizeof($all_quota)-1; $j++) {
-				$single_quota = explode(',', $all_quota[$j]);
-				// unset not existing quotas from account-object
-				// collect all existing mountpoints in array
-				$real_quotas[] = $single_quota[0];
-				for ($k=0; $k<sizeof($single_quota); $k++)
-					$return[$i]->quota[$j][$k] = $single_quota[$k];
-				if ($return[$i]->quota[$j][4]<time()) $return[$i]->quota[$j][4] = '';
-					else $return[$i]->quota[$j][4] = strval(intval(($return[$i]->quota[$j][4]-time())/3600)) .' '. _('hours');
-				if ($return[$i]->quota[$j][8]<time()) $return[$i]->quota[$j][8] = '';
-					else $return[$i]->quota[$j][8] = strval(intval(($return[$i]->quota[$j][8]-time())/3600)) .' '. _('hours');
-				}
-			$j=0;
-			while (isset($return[$i]->quota[$j][0]))
-				// remove invalid quotas
-				if (!in_array($return[$i]->quota[$j][0], $real_quotas)) unset($return[$i]->quota[$j]);
-					else $j++;
-			// Beautify array, repair index
-			if (is_array($return[$i]->quota)) $return[$i]->quota = array_values($return[$i]->quota);
-			}
-		if (is_array($users)) return $return;
-			else return $return[0];
-		}
-	else {
-		return $users;
-		}
-	}
-
-/* Whis function will set the quotas from the specified user.
-* $values2 = array of object account with quotas which should be set
-*  $values2 can also be an account object
-*/
-function setquotas($values2) {
-	// get username and password of the current lam-admin
-	$ldap_q = $_SESSION['ldap']->decrypt_login();
-	/* $towrite has the following syntax:
-	* admin-username, admin-password, account with quotas, 'quota', operation='set', type=user|group
-	* use escapeshellarg to make exec() shell-safe
-	*/
-	$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." ".
-		escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]);
-
-	/* Check wich quotas have changed
-	* Because we can not send an array to lamdaemon.pl we have to put all
-	* values in a string. ':' sepraeates the first array, ',' the second
-	*
-	* $values->quota[][] First array is an index for every chare with active quotas
-	* second array Contains values for every share:
-	* mountpoint, used blocks, soft block limit, hard block limit, grace block period, used inodes,
-	* soft inode limit, hard inode limit, grace inode period
-	*
-	* run only once if no array is given
-	*
-	*/
-	if (is_array($values2)) {
-		foreach ($values2 as $values) {
-			$i=0;
-			while ($values->quota[$i][0]) {
-				$quotastring = $quotastring. $values->quota[$i][0] .','.$values->quota[$i][2] .','.$values->quota[$i][3]
-					.','.$values->quota[$i][6] .','. $values->quota[$i][7] .':';
-				$i++;
-				}
-			$userstring .= $values->general_username." quota set ".$values->type." ".$quotastring."\n";
-			}
-		}
-	else {
-		$i=0;
-		while ($values2->quota[$i][0]) {
-			$quotastring = $quotastring. $values2->quota[$i][0] .','.$values2->quota[$i][2] .','.$values2->quota[$i][3]
-				.','.$values2->quota[$i][6] .','. $values2->quota[$i][7] .':';
-			$i++;
-			}
-		$userstring = $values2->general_username." quota set ".$values2->type." ".$quotastring."\n";
-		}
-
-	if (function_exists(proc_open)) {
-		// New Code, requires PHP 4.3
-		$descriptorspec = array(
-			0 => array("pipe", "r"), // stdin
-			1 => array("pipe", "w"), // stout
-			2 => array("file", "/dev/null", "a") // sterr
-			);
-		$process = proc_open(escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".$towrite,
-			$descriptorspec,
-			$pipes);
-		if (is_resource($process)) {
-			/* perl-script is running
-			* $pipes[0] is writeable handle to child stdin
-			* $pipes[1] is readable handle to child stdout
-			* any error is send to /dev/null
-			*/
-			// Write to stdin
-			fwrite($pipes[0], $userstring);
-			}
-		fclose($pipes[0]);
-		while (!feof($pipes[1])) {
-			$output = fgets($pipes[1], 1024);
-			if ($output!='') $output_array[] = $output;
-			}
-		fclose($pipes[1]);
-		proc_close($process);
-		}
-	else { // PHP 4.3>
-		$command = escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".$towrite;
-		$pipe = popen("echo \"$userstring\"|$command" , 'r');
-		while(!feof($pipe)) {
-			//$output .= fread($pipe, 1024);
-			$output = fgets($pipe, 1024);
-			if ($output!='') $output_array[] = $output;
-			}
-		pclose($pipe);
-		}
-	if (is_array($values2)) return $output_array;
-		else return $output_array[0];
-	}
-
-
-/* Whis function will remove the quotas from the specified user.
-* $users = array of usernames of which quta should be deleted
-* $users can also be a string (single user)
-* $type = user or group
-* Delteing quotas means settings all values to 0 which means no quotas
-*/
-function remquotas($users, $type) {
-	// get username and password of the current lam-admin
-	$ldap_q = $_SESSION['ldap']->decrypt_login();
-	/* $towrite has the following syntax:
-	* admin-username, admin-password, account with quotas, 'quota', operation='rem', type=user|group
-	* use escapeshellarg to make exec() shell-safe
-	*/
-	$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." ".
-		escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]);
-
-	if (is_array($users)) {
-		foreach ($users as $user) {
-			$userstring .= "$user quota rem $type\n";
-			}
-		}
-	else $userstring = "$users quota rem $type\n";
-
-	if (function_exists(proc_open)) {
-		// New Code, requires PHP 4.3
-		$descriptorspec = array(
-			0 => array("pipe", "r"), // stdin
-			1 => array("pipe", "w"), // stout
-			2 => array("file", "/dev/null", "a") // sterr
-			);
-		$process = proc_open(escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".$towrite,
-			$descriptorspec,
-			$pipes);
-		if (is_resource($process)) {
-			/* perl-script is running
-			* $pipes[0] is writeable handle to child stdin
-			* $pipes[1] is readable handle to child stdout
-			* any error is send to /dev/null
-			*/
-			// Write to stdin
-			fwrite($pipes[0], $userstring);
-			}
-		fclose($pipes[0]);
-		while (!feof($pipes[1])) {
-			$output = fgets($pipes[1], 1024);
-			if ($output!='') $output_array[] = $output;
-			}
-		fclose($pipes[1]);
-		proc_close($process);
-		}
-	else { // PHP 4.3>
-		$command = escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".$towrite;
-		$pipe = popen("echo \"$userstring\"|$command" , 'r');
-		while(!feof($pipe)) {
-			//$output .= fread($pipe, 1024);
-			$output = fgets($pipe, 1024);
-			if ($output!='') $output_array[] = $output;
-			}
-		pclose($pipe);
-		}
-	if (is_array($values2)) return $output_array;
-		else return $output_array[0];
-	}
-
-
-/* Create Homedirectory
-* lamdaemon.pl uses getpwnam on remote system to get homedir path.
-* Therefore ldap have to be used on remote system for user accounts
-* $users = array of usernames
-* $users can also be a string (single user)
-*/
-function addhomedir($users) {
-	// get username and password of the current lam-admin
-	$ldap_q = $_SESSION['ldap']->decrypt_login();
-	/* $towrite has the following syntax:
-	* admin-username, admin-password, owner of homedir, 'home', operation='add'
-	* use escapeshellarg to make exec() shell-safe
-	*/
-	$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." ".
-		escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]);
-
-	if (is_array($users)) {
-		foreach ($users as $user) {
-			$userstring .= "$user home add\n";
-			}
-		}
-	else $userstring = "$users home add\n";
-
-	if (function_exists(proc_open)) {
-		// New Code, requires PHP 4.3
-		$descriptorspec = array(
-			0 => array("pipe", "r"), // stdin
-			1 => array("pipe", "w"), // stout
-			2 => array("file", "/dev/null", "a") // sterr
-			);
-		$process = proc_open(escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".$towrite,
-			$descriptorspec,
-			$pipes);
-		if (is_resource($process)) {
-			/* perl-script is running
-			* $pipes[0] is writeable handle to child stdin
-			* $pipes[1] is readable handle to child stdout
-			* any error is send to /dev/null
-			*/
-			// Write to stdin
-			fwrite($pipes[0], $userstring);
-			}
-		fclose($pipes[0]);
-		while (!feof($pipes[1])) {
-			$output = fgets($pipes[1], 1024);
-			if ($output!='') $output_array[] = $output;
-			}
-		fclose($pipes[1]);
-		proc_close($process);
-		}
-	else { // PHP 4.3>
-		$command = escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".$towrite;
-		$pipe = popen("echo \"$userstring\"|$command" , 'r');
-		while(!feof($pipe)) {
-			//$output .= fread($pipe, 1024);
-			$output = fgets($pipe, 1024);
-			if ($output!='') $output_array[] = $output;
-			}
-		pclose($pipe);
-		}
-	if (is_array($values2)) return $output_array;
-		else return $output_array[0];
-	}
-
-/* Remove Homedirectory
-* lamdaemon.pl uses getpwnam on remote system to get homedir path.
-* Therefore ldap have to be used on remote system for user accounts
-* This also means you have to remove the homedirectory before the
-* account is removed from ldap
-* $users = array of usernames
-* $users can also be a string (single user)
-*/
-function remhomedir($users) {
-	// get username and password of the current lam-admin
-	$ldap_q = $_SESSION['ldap']->decrypt_login();
-	/* $towrite has the following syntax:
-	* admin-username, admin-password, owner of homedir, 'home', operation='add'
-	* use escapeshellarg to make exec() shell-safe
-	*/
-	$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." ".
-		escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]);
-
-	if (is_array($users)) {
-		foreach ($users as $user) {
-			$userstring .= "$user home rem\n";
-			}
-		}
-	else $userstring = "$users home rem\n";
-
-	if (function_exists(proc_open)) {
-		// New Code, requires PHP 4.3
-		$descriptorspec = array(
-			0 => array("pipe", "r"), // stdin
-			1 => array("pipe", "w"), // stout
-			2 => array("file", "/dev/null", "a") // sterr
-			);
-		$process = proc_open(escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".$towrite,
-			$descriptorspec,
-			$pipes);
-		if (is_resource($process)) {
-			/* perl-script is running
-			* $pipes[0] is writeable handle to child stdin
-			* $pipes[1] is readable handle to child stdout
-			* any error is send to /dev/null
-			*/
-			// Write to stdin
-			fwrite($pipes[0], $userstring);
-			}
-		fclose($pipes[0]);
-		while (!feof($pipes[1])) {
-			$output = fgets($pipes[1], 1024);
-			if ($output!='') $output_array[] = $output;
-			}
-		fclose($pipes[1]);
-		proc_close($process);
-		}
-	else { // PHP 4.3>
-		$command = escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".$towrite;
-		$pipe = popen("echo \"$userstring\"|$command" , 'r');
-		while(!feof($pipe)) {
-			//$output .= fread($pipe, 1024);
-			$output = fgets($pipe, 1024);
-			if ($output!='') $output_array[] = $output;
-			}
-		pclose($pipe);
-		}
-	if (is_array($values2)) return $output_array;
-		else return $output_array[0];
-	}
 
 
 /* This function maintains the ldap-cache which is used to reduce ldap requests
