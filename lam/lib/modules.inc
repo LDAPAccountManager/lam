@@ -735,7 +735,7 @@ class accountContainer {
 								echo "<td";
 								if ($input[$i][$j]['td']['valign']!='') echo ' valign="' . $input[$i][$j]['td']['valign'] .'"';
 								echo ">\n";
-								echo "<a href=../help.php?module=$module&item=". $input[$i][$j]['value'] . " tabindex=$z>" . _('Help') . "</a></td>\n";
+								echo "<a href=../help.php?module=$module&item=". $input[$i][$j]['value'] . " target=\"help\" tabindex=$z>" . _('Help') . "</a></td>\n";
 								$z++;
 								break;
 							case 'message':
