@@ -134,21 +134,20 @@ class Ldap{
 
 	// returns an array with all organizational units under the given suffix
 	function search_units($suffix) {
-	$units = array();
+	$ret = array();
 	$sr = @ldap_search($_SESSION["ldap"]->server(), $suffix, "objectClass=organizationalunit", array("DN"));
 	if ($sr) {
 		$units = ldap_get_entries($_SESSION["ldap"]->server, $sr);
-		// delete first array entry which is "count"
-		array_shift($units);
-		// remove sub arrays
-		for ($i = 0; $i < sizeof($units); $i++) $units[$i] = $units[$i]['dn'];
+		// extract Dns
+		for ($i = 0; $i < sizeof($units); $i++) {
+			if ($units[$i]['dn']) $ret[] = $units[$i]['dn'];
+		}
 	}
 	// add root suffix if needed
-	if (!in_array($suffix, $units)) {
-		if (sizeof($units) > 0) array_push($units, $suffix);
-		else $units[0] = $suffix;
+	if (!in_array($suffix, $ret)) {
+		$ret[] = $suffix;
 	}
-	return $units;
+	return $ret;
 	}
 
   // returns the LDAP connection handle
