@@ -161,12 +161,21 @@ class sambaAccount extends baseModule {
 			'error_message' => $this->messages['homePath'][0]);
 		$return['profile_checks']['sambaAccount_profilePath'] = array('type' => 'ext_preg', 'regex' => 'UNC',
 			'error_message' => $this->messages['profilePath'][0]);
-		$return['profile_checks']['sambaAccount_scriptPath'] = array('type' => 'ext_preg', 'regex' => 'logonScript',
+		$return['profile_checks']['sambaAccount_scriptPath'] = array('type' => 'ext_preg', 'regex' => 'logonscript',
 			'error_message' => $this->messages['logonScript'][0]);
 		$return['profile_checks']['sambaAccount_userWorkstations'] = array('type' => 'ext_preg', 'regex' => 'unixhost',
 			'error_message' => $this->messages['workstations'][0]);
 		$return['profile_checks']['sambaAccount_domain'] = array('type' => 'ext_preg', 'regex' => 'domainname',
 			'error_message' => $this->messages['domain'][0]);
+		// profile mappings
+		$return['profile_mappings'] = array(
+			'sambaAccount_homeDrive' => 'homeDrive',
+			'sambaAccount_smbhome' => 'smbHome',
+			'sambaAccount_profilePath' => 'profilePath',
+			'sambaAccount_scriptPath' => 'scriptPath',
+			'sambaAccount_userWorkstations' => 'userWorkstations',
+			'sambaAccount_domain' => 'domain'
+		);
 		// available PDF fields
 		$return['PDF_fields'] = array(
 			'displayName',
@@ -376,13 +385,23 @@ class sambaAccount extends baseModule {
 	function init($base) {
 		// call parent init
 		parent::init($base);
-		$this->useunixpwd=false;
+		$this->useunixpwd = false;
+		$this->noexpire = true;
+		$this->nopwd = false;
+		$this->deactivated = false;
 		}
 
 	// Variables
-	// use unix password as samba password?
+	/** use unix password as samba password? */
 	var $useunixpwd;
-	// Array of well known rids
+	/** use no password? */
+	var $nopwd;
+	/** password does not expire? */
+	var $noexpire;
+	/** account deactivated? */
+	var $deactivated;
+	
+	/** Array of well known rids */
 	var $rids;
 
 	/* $attribute['lmPassword'] and $attribute['ntPassword'] can't accessed directly because it's enrcypted
@@ -449,6 +468,9 @@ class sambaAccount extends baseModule {
 	*/
 	function load_attributes($attr) {
 		$this->load_ldap_attributes($attr);
+		if (strpos($this->attributes['acctFlags'][0], "D")) $this->deactivated = true;
+		if (strpos($this->attributes['acctFlags'][0], "N")) $this->nopwd = true;
+		if (strpos($this->attributes['acctFlags'][0], "X")) $this->noexpire = true;
 		return 0;
 		}
 
@@ -507,9 +529,27 @@ class sambaAccount extends baseModule {
 		$this->attributes['domain'][0] = $post['domain'];
 		// Start character
 		$flag = "[";
-		if ($post['acctFlagsD']) $flag .= "D";
-		if ($post['acctFlagsX']) $flag .= "X";
-		if ($post['acctFlagsN']) $flag .= "N";
+		if ($post['acctFlagsD']) {
+			$flag .= "D";
+			$this->deactivated = true;
+		}
+		else {
+			$this->deactivated = false;
+		}
+		if ($post['acctFlagsX']) {
+			$flag .= "X";
+			$this->noexpire = true;
+		}
+		else {
+			$this->noexpire = false;
+		}
+		if ($post['acctFlagsN']) {
+			$flag .= "N";
+			$this->nopwd = true;
+		}
+		else {
+			$this->nopwd = false;
+		}
 		if ($post['acctFlagsS']) $flag .= "S";
 		if ($post['acctFlagsH']) $flag .= "H";
 		if ($post['acctFlagsW']) $flag .= "W";
@@ -693,20 +733,14 @@ class sambaAccount extends baseModule {
 					1 => array ( 'kind' => 'input', 'name' => 'useunixpwd', 'type' => 'checkbox', 'checked' => $this->useunixpwd, 'value' => true),
 					2 => array ('kind' => 'help', 'value' => 'useunixpwd'));
 				}
-			$checked = false;
-			if (strpos($this->attributes['acctFlags'][0], "N")) $checked = true;
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Use no password') ),
-				1 => array ( 'kind' => 'input', 'name' => 'acctFlagsN', 'type' => 'checkbox', 'checked' => $checked),
+				1 => array ( 'kind' => 'input', 'name' => 'acctFlagsN', 'type' => 'checkbox', 'checked' => $this->nopwd),
 				2 => array ('kind' => 'help', 'value' => 'acctFlagsN'));
-			$checked = false;
-			if (strpos($this->attributes['acctFlags'][0], "X")) $checked = true;
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Password does not expire') ),
-				1 => array ( 'kind' => 'input', 'name' => 'acctFlagsX', 'type' => 'checkbox', 'checked' => $checked),
+				1 => array ( 'kind' => 'input', 'name' => 'acctFlagsX', 'type' => 'checkbox', 'checked' => $this->noexpire),
 				2 => array ('kind' => 'help', 'value' => 'acctFlagsX'));
-			$checked = false;
-			if (strpos($this->attributes['acctFlags'][0], "D")) $checked = true;
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Account is deactivated') ),
-				1 => array ( 'kind' => 'input', 'name' => 'acctFlagsD', 'type' => 'checkbox', 'checked' => $checked),
+				1 => array ( 'kind' => 'input', 'name' => 'acctFlagsD', 'type' => 'checkbox', 'checked' => $this->deactivated),
 				2 => array ('kind' => 'help', 'value' => 'acctFlagsD'));
 			for ( $i=1; $i<=31; $i++ ) $mday[] = $i;
 			for ( $i=1; $i<=12; $i++ ) $mon[] = $i;
@@ -1098,6 +1132,46 @@ class sambaAccount extends baseModule {
 		return $triggered_messages;
 	}
 
+	/**
+	* Loads the values of an account profile into internal variables.
+	*
+	* @param array $profile hash array with profile values (identifier => value)
+	*/
+	function load_profile($profile) {
+		// profile mappings in meta data
+		parent::load_profile($profile);
+		// special profile options
+		// use Unix password
+		if ($profile['sambaAccount_useunixpwd'][0] == "true") {
+			$this->useunixpwd = true;
+		}
+		elseif ($profile['sambaAccount_useunixpwd'][0] == "false") {
+			$this->useunixpwd = false;
+		}
+		// use no password
+		if ($profile['sambaAccount_acctFlagsN'][0] == "true") {
+			$this->nopwd = true;
+		}
+		elseif ($profile['sambaAccount_acctFlagsN'][0] == "false") {
+			$this->nopwd = false;
+		}
+		// password expiration
+		if ($profile['sambaAccount_acctFlagsX'][0] == "true") {
+			$this->noexpire = true;
+		}
+		elseif ($profile['sambaAccount_acctFlagsX'][0] == "false") {
+			$this->noexpire = false;
+		}
+		// use no password
+		if ($profile['sambaAccount_acctFlagsD'][0] == "true") {
+			$this->deactivated = true;
+		}
+		elseif ($profile['sambaAccount_acctFlagsD'][0] == "false") {
+			$this->deactivated = false;
+		}
+	}
+	
+	
 }
 
 ?>

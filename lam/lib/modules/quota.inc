@@ -362,10 +362,10 @@ class quota extends baseModule {
 		for ($i = 0; $i < sizeof($dirs); $i++) {
 			$return[] = array(
 				0 => array('kind' => 'text', 'text' => $dirs[$i], 'align' => 'left'),
-				1 => array('kind' => 'input', 'type' => 'text', 'text' => "", 'align' => 'center', 'size' => '12', 'name' => "quota_softblock_$i"),
-				2 => array('kind' => 'input', 'type' => 'text', 'text' => "", 'align' => 'center', 'size' => '12', 'name' => "quota_hardblock_$i"),
-				3 => array('kind' => 'input', 'type' => 'text', 'text' => "", 'align' => 'center', 'size' => '12', 'name' => "quota_softinode_$i"),
-				4 => array('kind' => 'input', 'type' => 'text', 'text' => "", 'align' => 'center', 'size' => '12', 'name' => "quota_hardinode_$i"),
+				1 => array('kind' => 'input', 'type' => 'text', 'align' => 'center', 'size' => '12', 'name' => "quota_softblock_" . $dirs[$i]),
+				2 => array('kind' => 'input', 'type' => 'text', 'align' => 'center', 'size' => '12', 'name' => "quota_hardblock_" . $dirs[$i]),
+				3 => array('kind' => 'input', 'type' => 'text', 'align' => 'center', 'size' => '12', 'name' => "quota_softinode_" . $dirs[$i]),
+				4 => array('kind' => 'input', 'type' => 'text', 'align' => 'center', 'size' => '12', 'name' => "quota_hardinode_" . $dirs[$i]),
 			);
 		}
 		return $return;
@@ -379,19 +379,41 @@ class quota extends baseModule {
 	*/
 	function check_profileOptions($options) {
 		$return = array();
-		$i = 0;
-		while (isset($options["quota_softblock_$i"])) {
-			if (!get_preg($options["quota_softblock_$i"][0], 'digit')) $return[] = $this->messages['softblock'][0];
-			if (!get_preg($options["quota_hardblock_$i"][0], 'digit')) $return[] = $this->messages['hardblock'][0];
-			if (!get_preg($options["quota_softinode_$i"][0], 'digit')) $return[] = $this->messages['softinode'][0];
-			if (!get_preg($options["quota_hardinode_$i"][0], 'digit')) $return[] = $this->messages['hardinode'][0];
-			if (intval($options["quota_softblock_$i"][0]) > $options["quota_hardblock_$i"][0]) $return[] = $this->messages['block_cmp'][0];
-			if (intval($options["quota_softinode_$i"][0]) > $options["quota_hardinode_$i"][0]) $return[] = $this->messages['inode_cmp'][0];
+		// Get quotas
+		$quotas = lamdaemon(array("+ quota get " . $this->get_scope()));
+		$dirs = split(":", $quotas[0]);
+		array_pop($dirs); // remove empty element at the end
+		for ($i = 0; $i < sizeof($dirs); $i++) {
+			$dirs[$i] = split(",", $dirs[$i]);
+			$dirs[$i] = $dirs[$i][0];
+		}
+		for ($i = 0; $i < sizeof($dirs); $i++) {
+			if (!get_preg($options["quota_softblock_" . $dirs[$i]][0], 'digit')) $return[] = $this->messages['softblock'][0];
+			if (!get_preg($options["quota_hardblock_" . $dirs[$i]][0], 'digit')) $return[] = $this->messages['hardblock'][0];
+			if (!get_preg($options["quota_softinode_" . $dirs[$i]][0], 'digit')) $return[] = $this->messages['softinode'][0];
+			if (!get_preg($options["quota_hardinode_" . $dirs[$i]][0], 'digit')) $return[] = $this->messages['hardinode'][0];
+			if (intval($options["quota_softblock_" . $dirs[$i]][0]) >= $options["quota_hardblock_$i"][0]) $return[] = $this->messages['block_cmp'][0];
+			if (intval($options["quota_softinode_" . $dirs[$i]][0]) >= $options["quota_hardinode_$i"][0]) $return[] = $this->messages['inode_cmp'][0];
 			$i++;
 		}
 		return $return;
 	}
 	
+	/**
+	* Loads the values of an account profile into internal variables.
+	*
+	* @param array $profile hash array with profile values (identifier => value)
+	*/
+	function load_profile($profile) {
+		for ($i = 0; $i < sizeof($this->quota); $i++) {
+			$dir = $this->quota[$i][0];
+			if (isset($profile["quota_softblock_" . $dir])) $this->quota[$i][2] = $profile["quota_softblock_" . $dir][0];
+			if (isset($profile["quota_hardblock_" . $dir])) $this->quota[$i][3] = $profile["quota_hardblock_" . $dir][0];
+			if (isset($profile["quota_softinode_" . $dir])) $this->quota[$i][6] = $profile["quota_softinode_" . $dir][0];
+			if (isset($profile["quota_hardinode_" . $dir])) $this->quota[$i][7] = $profile["quota_hardinode_" . $dir][0];
+		}
+	}
+
 	/*
 	 * (non-PHPDoc)
 	 * @see baseModule#get_pdfEntries
