@@ -567,7 +567,7 @@ class accountContainer {
 							if ($function) $errors['saveProfile'][] = array('INFO', _('Save profile'), _('New profile created.'));
 								else $errors['saveProfile'][] = array('ERROR', _('Save profile'), _('Wrong profilename given.'));
 							}
-						if (is_array($errors) && !$profile) $result = $errors;
+						if (is_array($errors)) $result = $errors;
 							else $result = 0;
 						}
 					}
@@ -670,69 +670,63 @@ class accountContainer {
 			if ($this->subpage=='attributes')  {
 				$modules = array_keys($this->module);
 				$table = array();
-				if (!$profile) {
-					$disabled = false;
-					foreach ($modules as $module) {
-						if (!$this->module[$module]->module_complete()) {
-							$disabled = true;
-							$table[] = array ( 0 => array ( 'kind' => 'message', 'type' => 'ERROR', 'headline' =>  _('Check module'),
-								'text' => sprintf(_('Please set up all required attributes on %s page.'), $this->module[$module]->get_alias()) ));
-							}		
-						}
-					}
-							
-				if (count($table)!=0) $return[] = array ( 0 => array ( 'kind' => 'table', 'value' => $table ) );
-				// loop through all suffixes
-				$rootsuffix = call_user_func(array(&$_SESSION['config'], 'get_' . ucfirst($this->type) . 'Suffix'));
-				foreach ($_SESSION['ldap']->search_units($rootsuffix) as $suffix) {
-					if ($this->dn == $suffix) $option_selected = $suffix;
-					$suffixes[] = $suffix;
-					}
-				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Suffix') ),
-					1 => array ( 'kind' => 'select', 'name' => 'suffix', 'options' => $suffixes,
-						'option_selected' => array($option_selected) ),
-					2 => array ('kind' => 'help', 'value' => 'suffix'));
-		
-				if (!$profile) {
-					// Get list of profiles
-					$profilelist = getAccountProfiles($this->type);
-					if (count($profilelist)!=0) {
-						$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _("Load profile") ),
-							1 => array ( 'kind' => 'select', 'name' => 'selectLoadProfile', 'options' => $profilelist ),
-							2 => array ('kind' => 'help', 'value' => 'selectLoadProfile'));
-						}
-					$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _("Save profile") ),
-						1 => array ( 'kind' => 'table', 'value' => array ( 0 => array (
-							0 => array ( 'kind' => 'input', 'name' => 'selectSaveProfile', 'type' => 'text', 'size' => '30',
-								'maxlength' => '255', ),
-							1 => array ('kind' => 'input', 'name' => 'saveProfile', 'type' => 'submit',
-								'value' => _('Save profile'), 'disabled' => $disabled))) ),
-						2 => array ('kind' => 'help', 'value' => 'saveProfile'));
-					if ($this->dn_orig!='') $text = _('Modify Account');
-						else $text = _('Create Account');
-					$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => $text ),
-						1 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'create', 'value' => $text ),
-						2 => array ('kind' => 'help', 'value' => 'create'));
+				$disabled = false;
+				foreach ($modules as $module) {
+					if (!$this->module[$module]->module_complete()) {
+						$disabled = true;
+						$table[] = array ( 0 => array ( 'kind' => 'message', 'type' => 'ERROR', 'headline' =>  _('Check module'),
+							'text' => sprintf(_('Please set up all required attributes on %s page.'), $this->module[$module]->get_alias()) ));
+						}		
 					}
 				}
+							
+			if (count($table)!=0) $return[] = array ( 0 => array ( 'kind' => 'table', 'value' => $table ) );
+			// loop through all suffixes
+			$rootsuffix = call_user_func(array(&$_SESSION['config'], 'get_' . ucfirst($this->type) . 'Suffix'));
+			foreach ($_SESSION['ldap']->search_units($rootsuffix) as $suffix) {
+				if ($this->dn == $suffix) $option_selected = $suffix;
+				$suffixes[] = $suffix;
+				}
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Suffix') ),
+				1 => array ( 'kind' => 'select', 'name' => 'suffix', 'options' => $suffixes,
+					'option_selected' => array($option_selected) ),
+				2 => array ('kind' => 'help', 'value' => 'suffix'));
+	
+				// Get list of profiles
+				$profilelist = getAccountProfiles($this->type);
+				if (count($profilelist)!=0) {
+					$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _("Load profile") ),
+						1 => array ( 'kind' => 'select', 'name' => 'selectLoadProfile', 'options' => $profilelist ),
+						2 => array ('kind' => 'help', 'value' => 'selectLoadProfile'));
+					}
+				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _("Save profile") ),
+					1 => array ( 'kind' => 'table', 'value' => array ( 0 => array (
+						0 => array ( 'kind' => 'input', 'name' => 'selectSaveProfile', 'type' => 'text', 'size' => '30',
+							'maxlength' => '255', ),
+						1 => array ('kind' => 'input', 'name' => 'saveProfile', 'type' => 'submit',
+							'value' => _('Save profile'), 'disabled' => $disabled))) ),
+					2 => array ('kind' => 'help', 'value' => 'saveProfile'));
+				if ($this->dn_orig!='') $text = _('Modify Account');
+					else $text = _('Create Account');
+				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => $text ),
+					1 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'create', 'value' => $text ),
+					2 => array ('kind' => 'help', 'value' => 'create'));
 			if ($this->subpage=='finish')  {
 				// Show success message
 				if ($this->dn_orig=='') $kind = _('created');
 					else $kind = _('modified');
 				$text = sprintf(_('%s has been %s.'), ucfirst($this->type), $kind);
-				if (!$profile) {
-					$return[] = array ( 0 => array ( 'kind' => 'message', 'type' => 'INFO', 'headline' =>  _('LDAP operation successful.'),
-						'text' => $text ));
-		
-					$return[] = array ( 0 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'createagain',
-							'value' => sprintf(_('Create another %s'), $this->type) ),
-						1 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'outputpdf',
-							'value' => _('Create PDF file') ),
-						2 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'backmain',
-							'value' => sprintf (_('Back to %s list'), $this->type) ));
-					}
+				$return[] = array ( 0 => array ( 'kind' => 'message', 'type' => 'INFO', 'headline' =>  _('LDAP operation successful.'),
+					'text' => $text ));
+	
+				$return[] = array ( 0 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'createagain',
+						'value' => sprintf(_('Create another %s'), $this->type) ),
+					1 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'outputpdf',
+						'value' => _('Create PDF file') ),
+					2 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'backmain',
+						'value' => sprintf (_('Back to %s list'), $this->type) ));
 				}
-			}
+		}
 		else $return = call_user_func(array($this->module[$this->order[$this->current_page]], 'display_html_'.$this->subpage), &$post);
 		$this->parse_html($this->order[$this->current_page], $return);
 		// Display rest of html-page
