@@ -28,6 +28,8 @@ Installation Instructions for LAM
                  You can find samba.schema in the Samba tarball (examples/LDAP).
                  Add this file to your slapd.conf to get LAM working.
 
+   OpenLDAP + Suse: Do not use the rfc2307bis.schema but nis.schema instead.
+
 
 2. Installation
 
