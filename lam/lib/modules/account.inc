@@ -48,6 +48,32 @@ class account extends baseModule {
 				)
 			)
 		);
+		// upload columns
+		if ($_SESSION['loggedIn']) {
+			if ($this->get_scope() == 'user') {
+				$return['upload_columns'][] = array(
+	                'name' => 'account_hosts',
+	                'description' => _('Host list'),
+	                'help' => 'host'
+				);
+			}
+			$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
+			if (!in_array('posixAccount', $modules)) {
+				$return['upload_columns'][] = array(
+	                'name' => 'account_uid',
+	                'description' => _('User name'),
+	                'help' => 'uid',
+	                'required' => true
+				);
+				$return['upload_columns'] = array(
+					array(
+	                'name' => 'account_description',
+	                'description' => _('Description'),
+	                'help' => 'description'
+					)
+				);
+			}
+		}
 		return $return;
 	}
 
@@ -144,6 +170,44 @@ class account extends baseModule {
 	 */
 	function get_pdfEntries($account_type = "user") {
 		return array('account_description' => array('<block><key>' . _('Description') . '</key><value>' . $this->attributes['description'][0] . '</value></block>'));
+	}
+
+	/**
+	* In this function the LDAP account is built up.
+	*
+	* @param array $rawAccounts list of hash arrays (name => value) from user input
+	* @param array $partialAccounts list of hash arrays (name => value) which are later added to LDAP
+	* @param array $ids list of IDs for column position (e.g. "posixAccount_uid" => 5)
+	* @return array list of error messages if any
+	*/
+	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts) {
+		$messages = array();
+		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
+			// add object class
+			if (!in_array("account", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "account";
+			$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
+			if (!in_array('posixAccount', $modules)) {
+				// description
+				if ($rawAccounts[$i][$ids['account_description']] && ($rawAccounts[$i][$ids['account_description']] != '')) { 
+					$partialAccounts[$i]['description'] = $rawAccounts[$i][$ids['account_description']];
+				}
+				else {
+					$partialAccounts[$i]['description'] = $rawAccounts[$i][$ids['account_uid']];
+				}
+				// user name
+				if (get_preg($rawAccounts[$i][$ids['account_uid']], 'username')) {
+					$partialAccounts[$i]['uid'] = $rawAccounts[$i][$ids['account_uid']];
+				}
+				else {
+					$errMsg = $this->messages['uid'][7];
+					array_push($errMsg, array($i));
+					$triggered_messages[] = $errMsg;
+				}
+			}
+			if ($this->get_scope() == 'user') {
+			}
+		}
+		return $messages;
 	}
 
 }

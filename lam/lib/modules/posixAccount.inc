@@ -258,6 +258,17 @@ class posixAccount extends baseModule {
 			)
 			);
 		}
+		if ($_SESSION['loggedIn']) {
+			$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
+			if (!in_array('inetOrgPerson', $modules)) {
+				$return['upload_columns'][] =
+					array(
+						'name' => 'posixAccount_description',
+						'description' => _('Description'),
+						'help' => 'description'
+					);
+			}
+		}
 		// available PDF fields
 		$return['PDF_fields'] = array(
 			'uid',
@@ -1139,17 +1150,35 @@ class posixAccount extends baseModule {
 					array_push($errMsg, array($i));
 					$triggered_messages[] = $errMsg;
 				}
+				// description
+				$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
+				if (!in_array('inetOrgPerson', $modules)) {
+					if ($rawAccounts[$i][$ids['posixAccount_description']] && ($rawAccounts[$i][$ids['posixAccount_description']] != '')) { 
+						$partialAccounts[$i]['description'] = $rawAccounts[$i][$ids['posixAccount_description']];
+					}
+					else {
+						$partialAccounts[$i]['description'] = $rawAccounts[$i][$ids['posixAccount_hostName']];
+					}
+				}
 			}
 			// host specific attributes
 			elseif ($this->scope == 'host') {
 				// host name
 				if (get_preg($rawAccounts[$i][$ids['posixAccount_hostName']], 'hostname')) {
 					$partialAccounts[$i]['uid'] = $rawAccounts[$i][$ids['posixAccount_hostName']];
+					$partialAccounts[$i]['cn'] = $rawAccounts[$i][$ids['posixAccount_hostName']];
 				}
 				else {
 					$errMsg = $this->messages['uid'][8];
 					array_push($errMsg, array($i));
 					$triggered_messages[] = $errMsg;
+				}
+				// description
+				if ($rawAccounts[$i][$ids['posixAccount_description']] && ($rawAccounts[$i][$ids['posixAccount_description']] != '')) { 
+					$partialAccounts[$i]['description'] = $rawAccounts[$i][$ids['posixAccount_description']];
+				}
+				else {
+					$partialAccounts[$i]['description'] = $rawAccounts[$i][$ids['posixAccount_hostName']];
 				}
 				$partialAccounts[$i]['homeDirectory'] = '/dev/null';
 				$partialAccounts[$i]['loginShell'] = '/bin/false';
