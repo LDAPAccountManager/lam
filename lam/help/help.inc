@@ -260,7 +260,7 @@ $helpArray = array (
 				"456" => array ("ext" => "FALSE", "Headline" => _("eMail address"),
 					"Text" => _("eMail address")),
 				"457" => array ("ext" => "FALSE", "Headline" => _("Save profile"),
-					"Text" => _("This will make a profile of the current account. Profile names may contain the letters a-z, 0-9 and -_.")),
+					"Text" => _("This will make a profile of the current account. The saved values are the same as in the profile editor. Profile names may contain the letters a-z, 0-9 and -_.")),
 				"458" => array ("ext" => "FALSE", "Headline" => _("Select group profile"),
 					"Text" => _("If a not yet existing group is defined in csv-file, a new group with the selected group profile will be created.")),
 				"460" => array ("ext" => "FALSE", "Headline" => _("Windows domain"),
