@@ -381,7 +381,11 @@ class sambaAccount extends baseModule {
 		return $return;
 	}
 
-	// Constructor
+	/**
+	* Initializes the module after it became part of an accountContainer
+	*
+	* @param string $base the name of the accountContainer object ($_SESSION[$base])
+	*/
 	function init($base) {
 		// call parent init
 		parent::init($base);
@@ -525,7 +529,7 @@ class sambaAccount extends baseModule {
 
 	/* Write variables into object and do some regexp checks
 	*/
-	function proccess_attributes($post) {
+	function proccess_attributes(&$post) {
 		$this->attributes['domain'][0] = $post['domain'];
 		// Start character
 		$flag = "[";
@@ -658,7 +662,7 @@ class sambaAccount extends baseModule {
 
 	/* Write variables into object and do some regexp checks
 	*/
-	function proccess_userWorkstations($post) {
+	function proccess_userWorkstations(&$post) {
 		// Load attributes
 		if ($_SESSION[$this->base]->type=='user') {
 			do { // X-Or, only one if() can be true
@@ -709,7 +713,7 @@ class sambaAccount extends baseModule {
 	* to show a page with all attributes.
 	* It will output a complete html-table
 	*/
-	function display_html_attributes($post) {
+	function display_html_attributes(&$post) {
 		if ($_SESSION[$this->base]->type=='user') {
 			$canchangedate = getdate($this->attributes['pwdCanChange'][0]);
 			$mustchangedate = getdate($this->attributes['pwdMustChange'][0]);
@@ -825,7 +829,7 @@ class sambaAccount extends baseModule {
 		return $return;
 		}
 
-	function display_html_delete($post) {
+	function display_html_delete(&$post) {
 		return 0;
 		}
 
@@ -833,7 +837,7 @@ class sambaAccount extends baseModule {
 	* to show a page with all attributes.
 	* It will output a complete html-table
 	*/
-	function display_html_userWorkstations($post) {
+	function display_html_userWorkstations(&$post) {
 		if ($_SESSION[$this->base]->type=='user') {
 			// Get list of all hosts.
 			$result = $_SESSION['cache']->get_cache('uid', 'sambaAccount', 'host');

@@ -49,7 +49,7 @@ class xmlParser {
 	 */
 	function xmlParser() {
 		$this->xmlParser = xml_parser_create();
-		xml_set_object($this->xmlParser,&$this);
+		xml_set_object($this->xmlParser,$this);
 		xml_parser_set_option($this->xmlParser, XML_OPTION_CASE_FOLDING, 1);
 		xml_parser_set_option($this->xmlParser, XML_OPTION_SKIP_WHITE, 1);
 	}

@@ -268,7 +268,7 @@ class shadowAccount extends baseModule {
 
 	/* Write variables into object and do some regexp checks
 	*/
-	function proccess_attributes($post) {
+	function proccess_attributes(&$post) {
 		// Load attributes
 		$this->attributes['shadowMin'][0] = $post['shadowMin'];
 		$this->attributes['shadowMax'][0] = $post['shadowMax'];
@@ -294,7 +294,7 @@ class shadowAccount extends baseModule {
 	* to show a page with all attributes.
 	* It will output a complete html-table
 	*/
-	function display_html_attributes($post) {
+	function display_html_attributes(&$post) {
 		// Use dd-mm-yyyy format of date because it's easier to read for humans
 		$date = getdate ($this->attributes['shadowExpire'][0]*3600*24);
 
@@ -326,7 +326,7 @@ class shadowAccount extends baseModule {
 		return $return;
 		}
 
-	function display_html_delete($post) {
+	function display_html_delete(&$post) {
 		return 0;
 		}
 

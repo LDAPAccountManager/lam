@@ -640,7 +640,7 @@ class accountContainer {
 						}
 					}
 				}
-				else $result = call_user_func(array(&$this->module[$this->order[$this->current_page]], 'proccess_'.$this->subpage), &$post);
+				else $result = call_user_func(array(&$this->module[$this->order[$this->current_page]], 'proccess_'.$this->subpage), $post);
 			}
 		if (is_string($result)) $this->subpage = $result;
 		if (is_int($result)) {
@@ -720,7 +720,7 @@ class accountContainer {
 							
 			if (count($table)!=0) $return[] = array ( 0 => array ( 'kind' => 'table', 'value' => $table ) );
 			// loop through all suffixes
-			$rootsuffix = call_user_func(array(&$_SESSION['config'], 'get_' . ucfirst($this->type) . 'Suffix'));
+			$rootsuffix = call_user_func(array($_SESSION['config'], 'get_' . ucfirst($this->type) . 'Suffix'));
 			foreach ($_SESSION['ldap']->search_units($rootsuffix) as $suffix) {
 				if ($this->dn == $suffix) $option_selected = $suffix;
 				$suffixes[] = $suffix;
@@ -766,8 +766,10 @@ class accountContainer {
 						'value' => _('Back to account list')));
 				}
 		}
-		else $return = call_user_func(array($this->module[$this->order[$this->current_page]], 'display_html_'.$this->subpage), &$post);
-		$this->parse_html($this->order[$this->current_page], $return);
+		else $return = call_user_func(array($this->module[$this->order[$this->current_page]], 'display_html_'.$this->subpage), $post);
+		$y = 5000;
+		$z = 10000;
+		$this->parse_html($this->order[$this->current_page], $return, $y, $z);
 		// Display rest of html-page
 		echo "</fieldset>\n";
 		echo "</td></tr></table>\n";
@@ -777,7 +779,7 @@ class accountContainer {
 		return 0;
 		}
 
-	function parse_html($module, $input, $y=5000, $z=10000) {
+	function parse_html($module, $input, &$y, &$z) {
 		/* $y and $z are used to change the the taborder.
 		*  Unfortunatly we don't now how many taborders we need
 		*  Every link also help needs a taborder.
@@ -826,7 +828,7 @@ class accountContainer {
 								echo ">\n";
 								echo "<fieldset>\n";
 								if ($input[$i][$j]['legend']!='') echo "<legend>" . $input[$i][$j]['legend'] . "</legend>\n";
-								$this->parse_html($module, $input[$i][$j]['value'], &$y, &$z);
+								$this->parse_html($module, $input[$i][$j]['value'], $y, $z);
 								echo "</fieldset>\n";
 								break;
 							case 'select':
@@ -859,7 +861,7 @@ class accountContainer {
 								echo "<td";
 								if ($input[$i][$j]['td']['valign']!='') echo ' valign="' . $input[$i][$j]['td']['valign'] .'"';
 								echo ">\n";
-								$this->parse_html($module, $input[$i][$j]['value'], &$y, &$z);
+								$this->parse_html($module, $input[$i][$j]['value'], $y, $z);
 								echo "</td>\n";
 								break;
 							case 'help':
@@ -1247,7 +1249,7 @@ class accountContainer {
 
 
 	// TODO remove this function?
-	function proccess_profile($post) {
+	function proccess_profile(&$post) {
 		$return = array();
 		$module = array_keys ($this->module);
 		foreach ($module as $singlemodule) {

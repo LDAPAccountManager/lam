@@ -248,7 +248,7 @@ class quota extends baseModule {
 
 	/* Write variables into object and do some regexp checks
 	*/
-	function proccess_attributes($post) {
+	function proccess_attributes(&$post) {
 		// Write all general values into $account_new
 		$i=0;
 		// loop for every mointpoint with quotas
@@ -286,7 +286,7 @@ class quota extends baseModule {
 	* to show a page with all attributes.
 	* It will output a complete html-table
 	*/
-	function display_html_attributes($post) {
+	function display_html_attributes(&$post) {
 
 		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Mountpoint') ),
 				1 => array ( 'kind' => 'text', 'text' => _('Used blocks') ),
@@ -325,7 +325,7 @@ class quota extends baseModule {
 		return $return;
 		}
 
-	function display_html_delete($post) {
+	function display_html_delete(&$post) {
 		return 0;
 		}
 

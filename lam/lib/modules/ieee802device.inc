@@ -138,7 +138,7 @@ class ieee802Device extends baseModule {
 	*
 	* @param array $post HTTP-POST values
 	*/
-	function display_html_attributes($post) {
+	function display_html_attributes(&$post) {
 		$return = array();
 		// list current MACs
 		for ($i = 0; $i < sizeof($this->attributes['macAddress']); $i++) {
@@ -163,7 +163,7 @@ class ieee802Device extends baseModule {
 	*
 	* @param array $post HTTP-POST values
 	*/
-	function proccess_attributes($post) {
+	function proccess_attributes(&$post) {
 		$this->triggered_messages = array();
 		$this->attributes['macAddress'] = array();
 		// check old MACs

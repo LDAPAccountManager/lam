@@ -142,7 +142,7 @@ class sambaGroupMapping extends baseModule {
 	* to show a page with all attributes.
 	* It will output a complete html-table
 	*/
-	function display_html_attributes($post) {
+	function display_html_attributes(&$post) {
 		// Get Domain SID from name
 		$sambaDomains = search_domains($_SESSION['config']->get_domainSuffix());
 		// Get Domain-SID from group SID
@@ -191,7 +191,7 @@ class sambaGroupMapping extends baseModule {
 		return $return;
 		}
 
-	function display_html_delete($post) {
+	function display_html_delete(&$post) {
 		return 0;
 		}
 
@@ -390,7 +390,7 @@ class sambaGroupMapping extends baseModule {
 
 	/* Write variables into object and do some regexp checks
 	*/
-	function proccess_attributes($post) {
+	function proccess_attributes(&$post) {
 		// Save attributes
 		$this->attributes['displayName'][0] = $post['displayName'];
 		$this->attributes['sambaGroupType'][0] = $this->sambaGroupTypes[$post['sambaGroupType']];

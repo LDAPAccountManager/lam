@@ -162,7 +162,7 @@ class nisMailAlias extends baseModule {
 	*
 	* @param array $post HTTP-POST values
 	*/
-	function display_html_attributes($post) {
+	function display_html_attributes(&$post) {
 		$return = array();
 		// alias name
 		$return[] = array(
@@ -192,7 +192,7 @@ class nisMailAlias extends baseModule {
 	*
 	* @param array $post HTTP-POST values
 	*/
-	function proccess_attributes($post) {
+	function proccess_attributes(&$post) {
 		$this->triggered_messages = array();
 		$this->attributes['cn'] = array();
 		$this->attributes['rfc822MailMember'] = array();

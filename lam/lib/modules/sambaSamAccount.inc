@@ -498,7 +498,7 @@ class sambaSamAccount extends baseModule {
 
 	/* Write variables into object and do some regexp checks
 	*/
-	function proccess_attributes($post) {
+	function proccess_attributes(&$post) {
 		// Save attributes
 		$this->attributes['sambaDomainName'][0] = $post['sambaDomainName'];
 		// Get Domain SID from name
@@ -639,7 +639,7 @@ class sambaSamAccount extends baseModule {
 
 	/* Write variables into object and do some regexp checks
 	*/
-	function proccess_sambaUserWorkstations($post) {
+	function proccess_sambaUserWorkstations(&$post) {
 		// Load attributes
 		if ($_SESSION[$this->base]->type=='user') {
 			do { // X-Or, only one if() can be true
@@ -690,7 +690,7 @@ class sambaSamAccount extends baseModule {
 	* to show a page with all attributes.
 	* It will output a complete html-table
 	*/
-	function display_html_attributes($post) {
+	function display_html_attributes(&$post) {
 		// Get Domain SID from name
 		$sambaDomains = search_domains($_SESSION['config']->get_domainSuffix());
 		for ($i=0; $i<count($sambaDomains); $i++ ) {
@@ -815,7 +815,7 @@ class sambaSamAccount extends baseModule {
 		return $return;
 		}
 
-	function display_html_delete($post) {
+	function display_html_delete(&$post) {
 		return 0;
 		}
 
@@ -823,7 +823,7 @@ class sambaSamAccount extends baseModule {
 	* to show a page with all attributes.
 	* It will output a complete html-table
 	*/
-	function display_html_sambaUserWorkstations($post) {
+	function display_html_sambaUserWorkstations(&$post) {
 		if ($_SESSION[$this->base]->type=='user') {
 			// Get list of all hosts.
 			$result = $_SESSION['cache']->get_cache('uid', 'sambaSamAccount', 'host');

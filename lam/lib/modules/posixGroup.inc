@@ -121,7 +121,7 @@ class posixGroup extends baseModule {
 	* to show a page with all attributes.
 	* It will output a complete html-table
 	*/
-	function display_html_attributes($post) {
+	function display_html_attributes(&$post) {
 		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _("Groupname").'*' ),
 		1 => array ( 'kind' => 'input', 'name' => 'cn', 'type' => 'text', 'size' => '20', 'maxlength' => '20', 'value' => $this->attributes['cn'][0]),
 		2 => array ('kind' => 'help', 'value' => 'cn'));
@@ -159,13 +159,13 @@ class posixGroup extends baseModule {
 	}
 
 
-	function display_html_delete($post) {
+	function display_html_delete(&$post) {
 		// Get list of primary groupmembers.
 		return 0;
 	}
 
 
-	function display_html_user($post) {
+	function display_html_user(&$post) {
 		// load list with all groups
 		$dn_users = $_SESSION['cache']->get_cache('uid', 'posixAccount', 'user');
 		if (is_array($dn_users)) {
@@ -441,7 +441,7 @@ class posixGroup extends baseModule {
 
 	/* Write variables into object and do some regexp checks
 	*/
-	function proccess_attributes($post) {
+	function proccess_attributes(&$post) {
 		$this->attributes['description'][0] = $post['description'];
 
 		if (($post['userPassword_lock'] && $post['userPassword_invalid']) || ($post['userPassword_nopassword'] && $post['userPassword_invalid'])) {
@@ -607,7 +607,7 @@ class posixGroup extends baseModule {
 
 	/* Write variables into object and do some regexp checks
 	*/
-	function proccess_user($post) {
+	function proccess_user(&$post) {
 		do { // X-Or, only one if() can be true
 		if (isset($post['addusers']) && isset($post['addusers_button'])) { // Add groups to list
 		// Add new user

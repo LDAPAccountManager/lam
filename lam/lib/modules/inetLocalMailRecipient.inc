@@ -192,7 +192,7 @@ class inetLocalMailRecipient extends baseModule {
 	*
 	* @param array $post HTTP-POST values
 	*/
-	function display_html_attributes($post) {
+	function display_html_attributes(&$post) {
 		$return = array();
 		// mail routing address
 		$return[] = array(
@@ -227,7 +227,7 @@ class inetLocalMailRecipient extends baseModule {
 	*
 	* @param array $post HTTP-POST values
 	*/
-	function proccess_attributes($post) {
+	function proccess_attributes(&$post) {
 		$this->triggered_messages = array();
 		$this->attributes['mailRoutingAddress'] = array();
 		$this->attributes['mailLocalAddress'] = array();

@@ -350,7 +350,7 @@ class inetOrgPerson extends baseModule {
 		return 0;
 		}
 
-	function proccess_attributes($post) {
+	function proccess_attributes(&$post) {
 		// Load attributes
 		$this->attributes['description'][0] = $post['description'];
 		$this->attributes['sn'][0] = $post['sn'];
@@ -397,7 +397,7 @@ class inetOrgPerson extends baseModule {
 	* to show a page with all attributes.
 	* It will output a complete html-table
 	*/
-	function display_html_attributes($post) {
+	function display_html_attributes(&$post) {
 		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Description') ),
 			1 => array ( 'kind' => 'input', 'name' => 'description', 'type' => 'text', 'size' => '30',
 				'maxlength' => '255', 'value' => $this->attributes['description'][0] ),
@@ -457,7 +457,7 @@ class inetOrgPerson extends baseModule {
 		return $return;
 		}
 
-	function display_html_delete($post) {
+	function display_html_delete(&$post) {
 		return 0;
 		}
 

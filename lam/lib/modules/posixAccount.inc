@@ -585,7 +585,7 @@ class posixAccount extends baseModule {
 
 	/* Write variables into object and do some regexp checks
 	*/
-	function proccess_attributes($post) {
+	function proccess_attributes(&$post) {
 		$this->attributes['homeDirectory'][0] = $post['homeDirectory'];
 		$this->attributes['loginShell'][0] = $post['loginShell'];
 		if (isset($post['gecos'])) $this->attributes['gecos'][0] = $post['gecos'];
@@ -787,7 +787,7 @@ class posixAccount extends baseModule {
 
 	/* Write variables into object and do some regexp checks
 	*/
-	function proccess_group($post) {
+	function proccess_group(&$post) {
 		do { // X-Or, only one if() can be true
 		if (isset($post['addgroups']) && isset($post['addgroups_button'])) { // Add groups to list
 		// Add new group
@@ -810,7 +810,7 @@ class posixAccount extends baseModule {
 	* to show a page with all attributes.
 	* It will output a complete html-table
 	*/
-	function display_html_attributes($post) {
+	function display_html_attributes(&$post) {
 		$groups = $_SESSION['cache']->findgroups(); // list of all groupnames
 		$shelllist = getshells(); // list of all valid shells
 
@@ -868,7 +868,7 @@ class posixAccount extends baseModule {
 	return $return;
 	}
 
-	function display_html_delete($post) {
+	function display_html_delete(&$post) {
 		if ($_SESSION[$this->base]->type=='user' && isset($_SESSION['config']->scriptPath)) {
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Delete home directory') ),
 			1 => array ( 'kind' => 'input', 'name' => 'deletehomedir', 'type' => 'checkbox'),
@@ -877,7 +877,7 @@ class posixAccount extends baseModule {
 		return $return;
 	}
 
-	function display_html_group($post) {
+	function display_html_group(&$post) {
 		// load list with all groups
 		$dn_groups = $_SESSION['cache']->get_cache('gidNumber', 'posixGroup', 'group');
 		$DNs = array_keys($dn_groups);

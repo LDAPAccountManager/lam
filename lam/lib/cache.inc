@@ -197,7 +197,7 @@ class cache {
 			foreach ($scopes as $scope) {
 				// Get Scope
 				If ($scope != '*')
-					$suffix = call_user_func(array(&$_SESSION['config'], 'get_'.ucfirst($scope).'Suffix'));
+					$suffix = call_user_func(array($_SESSION['config'], 'get_'.ucfirst($scope).'Suffix'));
 					else $suffix = '';
 				// Get Data from ldap
 				$search = $this->attributes[$scope];
@@ -239,7 +239,7 @@ class cache {
 			if ($allowed_types[$i]!='*') {
 				// *** fixme, where is get_DomainSuffix
 				If ($scope != '*')
-					$suffix = call_user_func(array(&$_SESSION['config'], 'get_'.ucfirst($allowed_types[$i]).'Suffix'));
+					$suffix = call_user_func(array($_SESSION['config'], 'get_'.ucfirst($allowed_types[$i]).'Suffix'));
 					else $suffix = '';
 				if (substr($suffix, $dn)) $singlescope = $allowed_types[$i];
 				}
@@ -250,7 +250,7 @@ class cache {
 		// Get Scope
 		foreach ($allowed_types as $scope) {
 			if ($scope!='*') {
-				$suffix = call_user_func(array(&$_SESSION['config'], 'get_'.ucfirst($scope).'Suffix'));
+				$suffix = call_user_func(array($_SESSION['config'], 'get_'.ucfirst($scope).'Suffix'));
 				if (strpos($dn, $suffix)) $singlescope = $scope;
 				}
 			}
