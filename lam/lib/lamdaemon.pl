@@ -21,16 +21,17 @@
 #
 #
 #  LDAP Account Manager daemon to create and delete homedirecotries and quotas
-# Drop root Previleges
-($<, $>) = ($>, $<);
-
 ######################################################
 # Configure-Options
 # change only variables starting from here
 	# list of valid admins
 @admins = ('cn=Manager,dc=my-domain,dc=com');
-$server="127.0.0.1"; # IP or DNS of ldap-server
-$server_port='389'; # Port used from ldap
+$server_ldap="127.0.0.1"; # IP or DNS of ldap-server
+$server_ssh="127.0.0.1"; # IP or DNS of host to create homedirs, quota, ....
+$server_ssh_ident = "/var/lib/wwwrun/.ssh/id_dsa";
+$server_ssh_known = "/var/lib/wwwrun/.ssh/knownhosts";
+
+$server_ldap_port='389'; # Port used from ldap
 $server_tls='no'; # Use TLS?
 $server_tls_verify='require'; # none,optional or require a valid server certificated
 $server_tls_clientcert=''; # path to client certificate
@@ -90,14 +91,16 @@ sub get_fs { # Load mountpoints from mtab if enabled quotas
 # ***************** Check values
 
 
-#if ($debug == true) { print "Input values: @vals\n"; }
 
+if ($( == 0 ) {
+# Drop root Previleges
+($<, $>) = ($>, $<);
 foreach my $admin (@admins) { # Check if user is admin
 	if ($admin eq $vals[0]) { $found=true; }
 	}
 if ($found==true) {
 	# Connect to ldap-server and check if password is valid.
-	$ldap = Net::LDAP->new($server, port => $server_port, version => 3) or die ('Can\'t connect to ldapserver.');
+	$ldap = Net::LDAP->new($server_ldap, port => $server_ldap_port, version => 3) or die ('Can\'t connect to ldapserver.');
 	if ($server_tls eq 'yes') {
 	    $mesg = $ldap->start_tls(
 		verify => $server_tls_verify,
@@ -213,3 +216,17 @@ if ($found==true) {
 	}
 else { $return = "Invalid User"; }
 print "$return\n";
+}
+else {
+    use Net::SSH::Perl;
+    @username = split (',', $vals[0]);
+    $username[0] =~ s/uid=//;
+    my $ssh = Net::SSH::Perl->new($server_ssh, options=>[
+	"IdentityFile $server_ssh_ident",
+	"UserKnownHostsFile $server_ssh_known"
+	]);
+    $ssh->login($username[0], $vals[1]);
+    #$path = "/srv/www/htdocs/lam/lib/lamdaemon.pl";
+    ($stdout, $stderr, $exit) = $ssh->cmd("sudo $0 @ARGV");
+    print "$stdout";
+    }
