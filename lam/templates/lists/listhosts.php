@@ -47,7 +47,7 @@ $hst_units = $_SESSION['hst_units'];
 if ($_POST['new_host'] || $_POST['del_host'] || $_POST['pdf_host'] || $_POST['pdf_all']){
 	// add new host
 	if ($_POST['new_host']){
-		metaRefresh("../account/hostedit.php");
+		metaRefresh("../account/edit.php?type=host");
 		exit;
 	}
 	// delete host(s)
@@ -231,7 +231,7 @@ if (sizeof($hst_info) > 0) {
 		echo("<tr class=\"hostlist\" onMouseOver=\"host_over(this, '" . $hst_info[$i]["dn"] . "')\"" .
 									" onMouseOut=\"host_out(this, '" . $hst_info[$i]["dn"] . "')\"" .
 									" onClick=\"host_click(this, '" . $hst_info[$i]["dn"] . "')\"" .
-									" onDblClick=\"parent.frames[1].location.href='../account/hostedit.php?DN=" . $hst_info[$i]["dn"] . "'\">");
+									" onDblClick=\"parent.frames[1].location.href='../account/edit.php?type=host&amp;DN=" . $hst_info[$i]["dn"] . "'\">");
 		if ($_GET['selectall'] == "yes") {
 		echo " <td height=22 align=\"center\"><input onClick=\"host_click(this, '" . $hst_info[$i]["dn"] . "')\"" .
 					" type=\"checkbox\" checked name=\"" . $hst_info[$i]["dn"] . "\"></td>";
@@ -240,7 +240,7 @@ if (sizeof($hst_info) > 0) {
 		echo " <td height=22 align=\"center\"><input onClick=\"host_click(this, '" . $hst_info[$i]["dn"] . "')\"" .
 					" type=\"checkbox\" name=\"" . $hst_info[$i]["dn"] . "\"></td>";
 		}
-		echo (" <td align='center'><a href=\"../account/hostedit.php?DN='" . $hst_info[$i]["dn"] . "'\">" . _("Edit") . "</a></td>");
+		echo (" <td align='center'><a href=\"../account/edit.php?type=host&amp;DN='" . $hst_info[$i]["dn"] . "'\">" . _("Edit") . "</a></td>");
 		for ($k = 0; $k < sizeof($attr_array); $k++) {
 			echo ("<td>");
 			// print all attribute entries seperated by "; "

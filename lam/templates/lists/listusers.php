@@ -67,7 +67,7 @@ $usr_units = $_SESSION['usr_units'];
 if ($_POST['new_user'] || $_POST['del_user'] || $_POST['pdf_user'] || $_POST['pdf_all']){
 	// add new user
 	if ($_POST['new_user']){
-		metaRefresh("../account/useredit.php?type=user");
+		metaRefresh("../account/edit.php?type=user");
 		exit;
 	}
 	// delete user(s)
@@ -283,7 +283,7 @@ if ($user_count != 0) {
 		echo("<tr class=\"userlist\"\nonMouseOver=\"user_over(this, '" . $userinfo[$i]["dn"] . "')\"\n" .
 			"onMouseOut=\"user_out(this, '" . $userinfo[$i]["dn"] . "')\"\n" .
 			"onClick=\"user_click(this, '" . $userinfo[$i]["dn"] . "')\"\n" .
-			"onDblClick=\"parent.frames[1].location.href='../account/useredit.php?type=user&amp;DN=" . $userinfo[$i]["dn"] . "'\">\n");
+			"onDblClick=\"parent.frames[1].location.href='../account/edit.php?type=user&amp;DN=" . $userinfo[$i]["dn"] . "'\">\n");
 		// checkboxes if selectall = "yes"
 		if ($_GET['selectall'] == "yes") {
 			echo "<td height=22 align=\"center\">\n<input onClick=\"user_click(this, '" . $userinfo[$i]["dn"] . "')\" type=\"checkbox\" name=\"" .
@@ -293,7 +293,7 @@ if ($user_count != 0) {
 			echo "<td height=22 align=\"center\">\n<input onClick=\"user_click(this, '" . $userinfo[$i]["dn"] . "')\" type=\"checkbox\" name=\"" .
 				$userinfo[$i]["dn"] . "\" value=\"" . $userinfo[$i]["dn"] . "\">\n</td>\n";
 		}
-		echo ("<td align='center'>\n<a href=\"../account/useredit.php?type=user&amp;DN='" . $userinfo[$i]["dn"] . "'\">" .
+		echo ("<td align='center'>\n<a href=\"../account/edit.php?type=user&amp;DN='" . $userinfo[$i]["dn"] . "'\">" .
 			_("Edit") . "</a>\n</td>\n");
 		for ($k = 0; $k < sizeof($attr_array); $k++) {
 			echo ("<td>\n");
