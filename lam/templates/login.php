@@ -42,7 +42,7 @@ if($action == "checklogin")
 		textdomain("lam");
 
 		include("./main.php");
-
+		
 		session_register("ldap"); // Register $ldap object in session
 		session_register("language"); // Register $language in session
 	}
@@ -64,7 +64,7 @@ if($action == "checklogin")
 else
 {
 	// Starting LDAP Account Manager session
-	session_name("LDAP Account Manager");
+	//session_name("LDAP Account Manager");
 	session_start();
 
 	session_register("config"); // Register $config object in session
