@@ -31,7 +31,7 @@ session_start();
 include_once ('../../lib/config.inc');
 $conf = new Config();
 
-// get data if register_globals is off
+// get data from session
 if ($_SESSION['passwd']) $passwd = $_SESSION['passwd'];
 if ($_SESSION['passwd1']) $passwd1 = $_SESSION['passwd1'];
 if ($_SESSION['passwd2']) $passwd2 = $_SESSION['passwd2'];
@@ -74,95 +74,95 @@ echo ("<p align=\"center\"><a href=\"http://lam.sf.net\" target=\"new_window\">"
 	"<img src=\"../../graphics/banner.jpg\" border=1 alt=\"LDAP Account Manager\"></a></p><hr><br><br>");
 
 // check new preferences
-if (chop($serverurl) == "") {
+if (!$serverurl) {
 	echo _("<font color=\"red\"><b>" . _("Server Address is empty!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
-if (chop($admins) == "") {
+if (!$admins) {
 	echo _("<font color=\"red\"><b>" . _("List of admin users is empty!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
-if (chop($suffusers) == "") {
+if (!$suffusers) {
 	echo _("<font color=\"red\"><b>" . _("UserSuffix is empty!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
-if (chop($suffgroups) == "") {
+if (!$suffgroups) {
 	echo _("<font color=\"red\"><b>" . _("UserSuffix is empty!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
-if (chop($suffhosts) == "") {
+if (!$suffhosts) {
 	echo _("<font color=\"red\"><b>" . _("HostSuffix is empty!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
-if (chop($minUID) == "") {
+if (!$minUID) {
 	echo _("<font color=\"red\"><b>" . _("MinUID is empty!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
-if (chop($maxUID) == "") {
+if (!$maxUID) {
 	echo _("<font color=\"red\"><b>" . _("MaxUID is empty!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
-if (chop($minGID) == "") {
+if (!$minGID) {
 	echo _("<font color=\"red\"><b>" . _("MinGID is empty!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
-if (chop($maxGID) == "") {
+if (!$maxGID) {
 	echo _("<font color=\"red\"><b>" . _("MaxGID is empty!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
-if (chop($minMach) == "") {
+if (!$minMach) {
 	echo _("<font color=\"red\"><b>" . _("MinMachine is empty!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
-if (chop($maxMach) == "") {
+if (!$maxMach) {
 	echo _("<font color=\"red\"><b>" . _("MaxMachine is empty!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
-if (chop($usrlstattr) == "") {
+if (!$usrlstattr) {
 	echo _("<font color=\"red\"><b>" . _("No attributes in user list!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
-if (chop($grplstattr) == "") {
+if (!$grplstattr) {
 	echo _("<font color=\"red\"><b>" . _("No attributes in group list!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
-if (chop($hstlstattr) == "") {
+if (!$hstlstattr) {
 	echo _("<font color=\"red\"><b>" . _("No attributes in host list!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
-if (chop($maxlistentries) == "") {
+if (!$maxlistentries) {
 	echo _("<font color=\"red\"><b>" . _("Max list entries is empty!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
 
-if (chop($language) == "") {
+if (!$language) {
 	echo _("<font color=\"red\"><b>" . _("Language is not defined!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
 
-if (chop($samba3) == "") {
+if (!$samba3) {
 	echo _("<font color=\"red\"><b>" . _("Samba version is not defined!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
 
-if ((chop($samba3) == "yes") && (($domainSID == "") || (!$domainSID))) {
+if (($samba3 == "yes") && (!$domainSID)) {
 	echo _("<font color=\"red\"><b>" . _("Samba 3 needs a domain SID!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;

@@ -25,7 +25,7 @@ $Id$
 
 // start session
 session_save_path("../../sess");
-session_start();
+@session_start();
 
 echo ("<?xml version=\"1.0\" encoding=\"ISO-8859-15\"?>");
 echo ("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">");
@@ -35,30 +35,30 @@ echo ("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http:/
 <html>
 	<head>
 		<title>
-			<?
+			<?php
 				echo _("Login");
 			?>
 		</title>
 		<link rel="stylesheet" type="text/css" href="../../style/layout.css">
 	</head>
 	<body>
-		<p align="center"><a href="http://lam.sf.net" target="new_window">
+		<p align="center"><a href="http://lam.sf.net" target="_blank">
 			<img src="../../graphics/banner.jpg" border=1 alt="LDAP Account Manager"></a>
 		</p>
 		<hr><br><br>
 		<form action="confmain.php" method="post">
 		<table border=0 align="center">
 			<tr>
-				<td colspan=3 align="center"><b> <? echo _("Password to enter preferences:"); ?> </b></td>
+				<td colspan=3 align="center"><b> <?php echo _("Password to enter preferences:"); ?> </b></td>
 			</tr>
-<?
+<?php
 	// print message if login was incorrect
 	if ($message) echo ("<tr><td colspan=3 align=\"center\"><font color=red>" . $message . "</font></td></tr>");
 ?>
 			<tr>
 				<td align="center"><input type="password" name="passwd"></td>
-				<td><input type="submit" name="submit" value= <? echo _("Ok"); ?> </td>
-				<td><a href="../help.php?HelpNumber=200" target="lamhelp"><? echo _("Help") ?></a></td>
+				<td><input type="submit" name="submit" value= <?php echo _("Ok"); ?> </td>
+				<td><a href="../help.php?HelpNumber=200" target="lamhelp"><?php echo _("Help") ?></a></td>
 			</tr>
 		</table>
 		</form>

@@ -84,108 +84,113 @@ function loadUserProfile($profile) {
 	$acc = new account();
 	$file = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/users/" . $profile . ".pru";
 	if (is_file($file) == True) {
-		$file = fopen($file, "r");
-		while (!feof($file)) {
-			$line = fgets($file, 1024);
-			if (($line == "\n")||($line[0] == "#")) continue; // ignore comments
-			// search keywords
-			if (substr($line, 0, 15) == "general_group: ") {
-				$acc->general_group = chop(substr($line, 15, strlen($line)-15));
-				continue;
+		$file = @fopen($file, "r");
+		if ($file) {
+			while (!feof($file)) {
+				$line = fgets($file, 1024);
+				if (($line == "\n")||($line[0] == "#")) continue; // ignore comments
+				// search keywords
+				if (substr($line, 0, 15) == "general_group: ") {
+					$acc->general_group = chop(substr($line, 15, strlen($line)-15));
+					continue;
+				}
+				if (substr($line, 0, 18) == "general_groupadd: ") {
+					$acc->general_groupadd = explode(";", chop(substr($line, 18, strlen($line)-18)));
+					continue;
+				}
+				if (substr($line, 0, 17) == "general_homedir: ") {
+					$acc->general_homedir = chop(substr($line, 17, strlen($line)-17));
+					continue;
+				}
+				if (substr($line, 0, 15) == "general_shell: ") {
+					$acc->general_shell = chop(substr($line, 15, strlen($line)-15));
+					continue;
+				}
+				if (substr($line, 0, 18) == "unix_password_no: ") {
+					$acc->unix_password_no = chop(substr($line, 18, strlen($line)-18));
+					continue;
+				}
+				if (substr($line, 0, 14) == "unix_pwdwarn: ") {
+					$acc->unix_pwdwarn = chop(substr($line, 14, strlen($line)-14));
+					continue;
+				}
+				if (substr($line, 0, 20) == "unix_pwdallowlogin: ") {
+					$acc->unix_pwdallowlogin = chop(substr($line, 20, strlen($line)-20));
+					continue;
+				}
+				if (substr($line, 0, 16) == "unix_pwdminage: ") {
+					$acc->unix_pwdminage = chop(substr($line, 16, strlen($line)-16));
+					continue;
+				}
+				if (substr($line, 0, 16) == "unix_pwdmaxage: ") {
+					$acc->unix_pwdmaxage = chop(substr($line, 16, strlen($line)-16));
+					continue;
+				}
+				if (substr($line, 0, 20) == "unix_pwdexpire_day: ") {
+					$acc->unix_pwdexpire_day = chop(substr($line, 20, strlen($line)-20));
+					continue;
+				}
+				if (substr($line, 0, 20) == "unix_pwdexpire_mon: ") {
+					$acc->unix_pwdexpire_mon = chop(substr($line, 20, strlen($line)-20));
+					continue;
+				}
+				if (substr($line, 0, 20) == "unix_pwdexpire_yea: ") {
+					$acc->unix_pwdexpire_yea = chop(substr($line, 20, strlen($line)-20));
+					continue;
+				}
+				if (substr($line, 0, 18) == "unix_deactivated: ") {
+					$acc->unix_deactivated = chop(substr($line, 18, strlen($line)-18));
+					continue;
+				}
+				if (substr($line, 0, 17) == "smb_password_no: ") {
+					$acc->smb_password_no = chop(substr($line, 17, strlen($line)-17));
+					continue;
+				}
+				if (substr($line, 0, 16) == "smb_useunixpwd: ") {
+					$acc->smb_useunixpwd = chop(substr($line, 16, strlen($line)-16));
+					continue;
+				}
+				if (substr($line, 0, 18) == "smb_pwdcanchange: ") {
+					$acc->smb_pwdcanchange = chop(substr($line, 18, strlen($line)-18));
+					continue;
+				}
+				if (substr($line, 0, 19) == "smb_pwdmustchange: ") {
+					$acc->smb_pwdmustchange = chop(substr($line, 19, strlen($line)-19));
+					continue;
+				}
+				if (substr($line, 0, 15) == "smb_homedrive: ") {
+					$acc->smb_homedrive = chop(substr($line, 15, strlen($line)-15));
+					continue;
+				}
+				if (substr($line, 0, 16) == "smb_scriptPath: ") {
+					$acc->smb_scriptPath = chop(substr($line, 16, strlen($line)-16));
+					continue;
+				}
+				if (substr($line, 0, 17) == "smb_profilePath: ") {
+					$acc->smb_profilePath = chop(substr($line, 17, strlen($line)-17));
+					continue;
+				}
+				if (substr($line, 0, 25) == "smb_smbuserworkstations: ") {
+					$acc->smb_smbuserworkstations = chop(substr($line, 25, strlen($line)-25));
+					continue;
+				}
+				if (substr($line, 0, 13) == "smb_smbhome: ") {
+					$acc->smb_smbhome = chop(substr($line, 13, strlen($line)-13));
+					continue;
+				}
+				if (substr($line, 0, 12) == "smb_domain: ") {
+					$acc->smb_domain = chop(substr($line, 12, strlen($line)-12));
+					continue;
+				}
 			}
-			if (substr($line, 0, 18) == "general_groupadd: ") {
-				$acc->general_groupadd = explode(";", chop(substr($line, 18, strlen($line)-18)));
-				continue;
-			}
-			if (substr($line, 0, 17) == "general_homedir: ") {
-				$acc->general_homedir = chop(substr($line, 17, strlen($line)-17));
-				continue;
-			}
-			if (substr($line, 0, 15) == "general_shell: ") {
-				$acc->general_shell = chop(substr($line, 15, strlen($line)-15));
-				continue;
-			}
-			if (substr($line, 0, 18) == "unix_password_no: ") {
-				$acc->unix_password_no = chop(substr($line, 18, strlen($line)-18));
-				continue;
-			}
-			if (substr($line, 0, 14) == "unix_pwdwarn: ") {
-				$acc->unix_pwdwarn = chop(substr($line, 14, strlen($line)-14));
-				continue;
-			}
-			if (substr($line, 0, 20) == "unix_pwdallowlogin: ") {
-				$acc->unix_pwdallowlogin = chop(substr($line, 20, strlen($line)-20));
-				continue;
-			}
-			if (substr($line, 0, 16) == "unix_pwdminage: ") {
-				$acc->unix_pwdminage = chop(substr($line, 16, strlen($line)-16));
-				continue;
-			}
-			if (substr($line, 0, 16) == "unix_pwdmaxage: ") {
-				$acc->unix_pwdmaxage = chop(substr($line, 16, strlen($line)-16));
-				continue;
-			}
-			if (substr($line, 0, 20) == "unix_pwdexpire_day: ") {
-				$acc->unix_pwdexpire_day = chop(substr($line, 20, strlen($line)-20));
-				continue;
-			}
-			if (substr($line, 0, 20) == "unix_pwdexpire_mon: ") {
-				$acc->unix_pwdexpire_mon = chop(substr($line, 20, strlen($line)-20));
-				continue;
-			}
-			if (substr($line, 0, 20) == "unix_pwdexpire_yea: ") {
-				$acc->unix_pwdexpire_yea = chop(substr($line, 20, strlen($line)-20));
-				continue;
-			}
-			if (substr($line, 0, 18) == "unix_deactivated: ") {
-				$acc->unix_deactivated = chop(substr($line, 18, strlen($line)-18));
-				continue;
-			}
-			if (substr($line, 0, 17) == "smb_password_no: ") {
-				$acc->smb_password_no = chop(substr($line, 17, strlen($line)-17));
-				continue;
-			}
-			if (substr($line, 0, 16) == "smb_useunixpwd: ") {
-				$acc->smb_useunixpwd = chop(substr($line, 16, strlen($line)-16));
-				continue;
-			}
-			if (substr($line, 0, 18) == "smb_pwdcanchange: ") {
-				$acc->smb_pwdcanchange = chop(substr($line, 18, strlen($line)-18));
-				continue;
-			}
-			if (substr($line, 0, 19) == "smb_pwdmustchange: ") {
-				$acc->smb_pwdmustchange = chop(substr($line, 19, strlen($line)-19));
-				continue;
-			}
-			if (substr($line, 0, 15) == "smb_homedrive: ") {
-				$acc->smb_homedrive = chop(substr($line, 15, strlen($line)-15));
-				continue;
-			}
-			if (substr($line, 0, 16) == "smb_scriptPath: ") {
-				$acc->smb_scriptPath = chop(substr($line, 16, strlen($line)-16));
-				continue;
-			}
-			if (substr($line, 0, 17) == "smb_profilePath: ") {
-				$acc->smb_profilePath = chop(substr($line, 17, strlen($line)-17));
-				continue;
-			}
-			if (substr($line, 0, 25) == "smb_smbuserworkstations: ") {
-				$acc->smb_smbuserworkstations = chop(substr($line, 25, strlen($line)-25));
-				continue;
-			}
-			if (substr($line, 0, 13) == "smb_smbhome: ") {
-				$acc->smb_smbhome = chop(substr($line, 13, strlen($line)-13));
-				continue;
-			}
-			if (substr($line, 0, 12) == "smb_domain: ") {
-				$acc->smb_domain = chop(substr($line, 12, strlen($line)-12));
-				continue;
-			}
+			fclose($file);
 		}
-		fclose($file);
+		else {
+			StatusMessage("ERROR", "", _("Unable to load profile! ") . $file);
+		}
 	}
 	else {
-		echo _("Unable to load profile! ") . $file ; echo "<br>";
+		StatusMessage("ERROR", "", _("Unable to load profile! ") . $file);
 	}
 	return $acc;
 }
@@ -203,80 +208,85 @@ function loadHostProfile($profile) {
 	$acc = new account();
 	$file = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/hosts/" . $profile . ".prh";
 	if (is_file($file) == True) {
-		$file = fopen($file, "r");
-		while (!feof($file)) {
-			$line = fgets($file, 1024);
-			if (($line == "\n")||($line[0] == "#")) continue; // ignore comments
-			// search keywords
-			if (substr($line, 0, 15) == "general_group: ") {
-				$acc->general_group = chop(substr($line, 15, strlen($line)-15));
-				continue;
+		$file = @fopen($file, "r");
+		if ($file) {
+			while (!feof($file)) {
+				$line = fgets($file, 1024);
+				if (($line == "\n")||($line[0] == "#")) continue; // ignore comments
+				// search keywords
+				if (substr($line, 0, 15) == "general_group: ") {
+					$acc->general_group = chop(substr($line, 15, strlen($line)-15));
+					continue;
+				}
+				if (substr($line, 0, 18) == "general_groupadd: ") {
+					$acc->general_groupadd = explode(";", chop(substr($line, 18, strlen($line)-18)));
+					continue;
+				}
+				if (substr($line, 0, 18) == "unix_password_no: ") {
+					$acc->unix_password_no = chop(substr($line, 18, strlen($line)-18));
+					continue;
+				}
+				if (substr($line, 0, 14) == "unix_pwdwarn: ") {
+					$acc->unix_pwdwarn = chop(substr($line, 14, strlen($line)-14));
+					continue;
+				}
+				if (substr($line, 0, 20) == "unix_pwdallowlogin: ") {
+					$acc->unix_pwdallowlogin = chop(substr($line, 20, strlen($line)-20));
+					continue;
+				}
+				if (substr($line, 0, 16) == "unix_pwdminage: ") {
+					$acc->unix_pwdminage = chop(substr($line, 16, strlen($line)-16));
+					continue;
+				}
+				if (substr($line, 0, 16) == "unix_pwdmaxage: ") {
+					$acc->unix_pwdmaxage = chop(substr($line, 16, strlen($line)-16));
+					continue;
+				}
+				if (substr($line, 0, 20) == "unix_pwdexpire_day: ") {
+					$acc->unix_pwdexpire_day = chop(substr($line, 20, strlen($line)-20));
+					continue;
+				}
+				if (substr($line, 0, 20) == "unix_pwdexpire_mon: ") {
+					$acc->unix_pwdexpire_mon = chop(substr($line, 20, strlen($line)-20));
+					continue;
+				}
+				if (substr($line, 0, 20) == "unix_pwdexpire_yea: ") {
+					$acc->unix_pwdexpire_yea = chop(substr($line, 20, strlen($line)-20));
+					continue;
+				}
+				if (substr($line, 0, 18) == "unix_deactivated: ") {
+					$acc->unix_deactivated = chop(substr($line, 18, strlen($line)-18));
+					continue;
+				}
+				if (substr($line, 0, 17) == "smb_password_no: ") {
+					$acc->smb_password_no = chop(substr($line, 17, strlen($line)-17));
+					continue;
+				}
+				if (substr($line, 0, 16) == "smb_useunixpwd: ") {
+					$acc->smb_useunixpwd = chop(substr($line, 16, strlen($line)-16));
+					continue;
+				}
+				if (substr($line, 0, 18) == "smb_pwdcanchange: ") {
+					$acc->smb_pwdcanchange = chop(substr($line, 18, strlen($line)-18));
+					continue;
+				}
+				if (substr($line, 0, 19) == "smb_pwdmustchange: ") {
+					$acc->smb_pwdmustchange = chop(substr($line, 19, strlen($line)-19));
+					continue;
+				}
+				if (substr($line, 0, 12) == "smb_domain: ") {
+					$acc->smb_domain = chop(substr($line, 12, strlen($line)-12));
+					continue;
+				}
 			}
-			if (substr($line, 0, 18) == "general_groupadd: ") {
-				$acc->general_groupadd = explode(";", chop(substr($line, 18, strlen($line)-18)));
-				continue;
-			}
-			if (substr($line, 0, 18) == "unix_password_no: ") {
-				$acc->unix_password_no = chop(substr($line, 18, strlen($line)-18));
-				continue;
-			}
-			if (substr($line, 0, 14) == "unix_pwdwarn: ") {
-				$acc->unix_pwdwarn = chop(substr($line, 14, strlen($line)-14));
-				continue;
-			}
-			if (substr($line, 0, 20) == "unix_pwdallowlogin: ") {
-				$acc->unix_pwdallowlogin = chop(substr($line, 20, strlen($line)-20));
-				continue;
-			}
-			if (substr($line, 0, 16) == "unix_pwdminage: ") {
-				$acc->unix_pwdminage = chop(substr($line, 16, strlen($line)-16));
-				continue;
-			}
-			if (substr($line, 0, 16) == "unix_pwdmaxage: ") {
-				$acc->unix_pwdmaxage = chop(substr($line, 16, strlen($line)-16));
-				continue;
-			}
-			if (substr($line, 0, 20) == "unix_pwdexpire_day: ") {
-				$acc->unix_pwdexpire_day = chop(substr($line, 20, strlen($line)-20));
-				continue;
-			}
-			if (substr($line, 0, 20) == "unix_pwdexpire_mon: ") {
-				$acc->unix_pwdexpire_mon = chop(substr($line, 20, strlen($line)-20));
-				continue;
-			}
-			if (substr($line, 0, 20) == "unix_pwdexpire_yea: ") {
-				$acc->unix_pwdexpire_yea = chop(substr($line, 20, strlen($line)-20));
-				continue;
-			}
-			if (substr($line, 0, 18) == "unix_deactivated: ") {
-				$acc->unix_deactivated = chop(substr($line, 18, strlen($line)-18));
-				continue;
-			}
-			if (substr($line, 0, 17) == "smb_password_no: ") {
-				$acc->smb_password_no = chop(substr($line, 17, strlen($line)-17));
-				continue;
-			}
-			if (substr($line, 0, 16) == "smb_useunixpwd: ") {
-				$acc->smb_useunixpwd = chop(substr($line, 16, strlen($line)-16));
-				continue;
-			}
-			if (substr($line, 0, 18) == "smb_pwdcanchange: ") {
-				$acc->smb_pwdcanchange = chop(substr($line, 18, strlen($line)-18));
-				continue;
-			}
-			if (substr($line, 0, 19) == "smb_pwdmustchange: ") {
-				$acc->smb_pwdmustchange = chop(substr($line, 19, strlen($line)-19));
-				continue;
-			}
-			if (substr($line, 0, 12) == "smb_domain: ") {
-				$acc->smb_domain = chop(substr($line, 12, strlen($line)-12));
-				continue;
-			}
+			fclose($file);
 		}
-		fclose($file);
+		else {
+			StatusMessage("ERROR", "", _("Unable to load profile! ") . $file);
+		}
 	}
 	else {
-		echo _("Unable to load profile! ") . $file ; echo "<br>";
+		StatusMessage("ERROR", "", _("Unable to load profile! ") . $file);
 	}
 	return $acc;
 }
@@ -285,7 +295,10 @@ function loadHostProfile($profile) {
 // file is created, if needed
 function saveUserProfile($account, $profile) {
 	if (!eregi("^([0-9]|[a-z]|-|_)*$", $profile)) exit;
-	if (!is_object($account)) {echo _("saveUserProfile: \$account has wrong type!"); exit;}
+	if (!is_object($account)) {
+		StatusMessage("ERROR", "", _("saveUserProfile: \$account has wrong type!"));
+		exit;
+	}
 	$path = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/users/" . $profile . ".pru";
 	$file = fopen($path, "w");
 	// replace user and group names
@@ -343,7 +356,10 @@ function saveGroupProfile($account, $profile) {
 // file is created, if needed
 function saveHostProfile($account, $profile) {
 	if (!eregi("^[0-9a-z\\-_]+$", $profile)) exit;
-	if (!is_object($account)) {echo _("saveHostProfile: \$account has wrong type!"); exit;}
+	if (!is_object($account)) {
+		StatusMessage ("ERROR", "", _("saveHostProfile: \$account has wrong type!"));
+		exit;
+	}
 	$path = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/hosts/" . $profile . ".prh";
 	$file = fopen($path, "w");
 	// write attributes

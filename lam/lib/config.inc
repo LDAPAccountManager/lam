@@ -197,7 +197,7 @@ class Config {
       fclose($file);
     }
     else {
-      StatusMessage("ERROR", "", _("Unable to load lam.conf! ") . $conffile);
+      StatusMessage("ERROR", "", _("Unable to load lam.conf!") . " (" . $conffile . ")");
     }
   }
 
@@ -210,162 +210,164 @@ class Config {
 	$save_minUID = $save_maxUID = $save_minGID = $save_maxGID = $save_minMach = $save_maxMach =
 	$save_usrlstatrr =  $save_grplstatrr = $save_hstlstatrr = $save_maxlstent = $save_deflang =
 	$save_scriptPath = $save_scriptServer = $save_samba3 = $save_domainSID = False;
-      $file = fopen($conffile, "r");
-      $file_array = array();
-      while (!feof($file)) {
-	array_push($file_array, fgets($file, 1024));
-      }
-      fclose($file);
-      for ($i = 0; $i < sizeof($file_array); $i++) {
-	if (($file_array[$i] == "\n")||($file_array[$i][0] == "#")) continue; // ignore comments
-	// search for keywords
-	if (substr($file_array[$i], 0, 11) == "serverURL: ") {
-	  $file_array[$i] = "serverURL: " . $this->ServerURL . "\n";
-	  $save_serverURL = True;
-	  continue;
+	$file = fopen($conffile, "r");
+	$file_array = array();
+	// read lam.conf
+	while (!feof($file)) {
+		array_push($file_array, fgets($file, 1024));
 	}
-	if (substr($file_array[$i], 0, 8) == "passwd: ") {
-	  $file_array[$i] = "passwd: " . $this->Passwd . "\n";
-	  $save_passwd = True;
-	  continue;
+	fclose($file);
+	// generate new lam.conf
+	for ($i = 0; $i < sizeof($file_array); $i++) {
+		if (($file_array[$i] == "\n")||($file_array[$i][0] == "#")) continue; // ignore comments
+		// search for keywords
+		if (substr($file_array[$i], 0, 11) == "serverURL: ") {
+			$file_array[$i] = "serverURL: " . $this->ServerURL . "\n";
+			$save_serverURL = True;
+			continue;
+		}
+		if (substr($file_array[$i], 0, 8) == "passwd: ") {
+			$file_array[$i] = "passwd: " . $this->Passwd . "\n";
+			$save_passwd = True;
+			continue;
+		}
+		if (substr($file_array[$i], 0, 8) == "admins: ") {
+			$file_array[$i] = "admins: " . implode(";", $this->Admins) . "\n";
+			$save_admins = True;
+			continue;
+		}
+		if (substr($file_array[$i], 0, 12) == "usersuffix: ") {
+			$file_array[$i] = "usersuffix: " . $this->Suff_users . "\n";
+			$save_suffusr = True;
+			continue;
+		}
+		if (substr($file_array[$i], 0, 13) == "groupsuffix: ") {
+			$file_array[$i] = "groupsuffix: " . $this->Suff_groups . "\n";
+			$save_suffgrp = True;
+			continue;
+		}
+		if (substr($file_array[$i], 0, 12) == "hostsuffix: ") {
+			$file_array[$i] = "hostsuffix: " . $this->Suff_hosts . "\n";
+			$save_suffhst = True;
+			continue;
+		}
+		if (substr($file_array[$i], 0, 8) == "minUID: ") {
+			$file_array[$i] = "minUID: " . $this->MinUID . "\n";
+			$save_minUID = True;
+			continue;
+		}
+		if (substr($file_array[$i], 0, 8) == "maxUID: ") {
+			$file_array[$i] = "maxUID: " . $this->MaxUID . "\n";
+			$save_maxUID = True;
+			continue;
+		}
+		if (substr($file_array[$i], 0, 8) == "minGID: ") {
+			$file_array[$i] = "minGID: " . $this->MinGID . "\n";
+			$save_minGID = True;
+			continue;
+		}
+		if (substr($file_array[$i], 0, 8) == "maxGID: ") {
+			$file_array[$i] = "maxGID: " . $this->MaxGID . "\n";
+			$save_maxGID = True;
+			continue;
+		}
+		if (substr($file_array[$i], 0, 12) == "minMachine: ") {
+			$file_array[$i] = "minMachine: " . $this->MinMachine . "\n";
+			$save_minMach = True;
+			continue;
+		}
+		if (substr($file_array[$i], 0, 12) == "maxMachine: ") {
+			$file_array[$i] = "maxMachine: " . $this->MaxMachine . "\n";
+			$save_maxMach = True;
+			continue;
+		}
+		if (substr($file_array[$i], 0, 20) == "userlistAttributes: ") {
+			$file_array[$i] = "userlistAttributes: " . $this->userlistAttributes . "\n";
+			$save_usrlstattr = True;
+			continue;
+		}
+		if (substr($file_array[$i], 0, 21) == "grouplistAttributes: ") {
+			$file_array[$i] = "grouplistAttributes: " . $this->grouplistAttributes . "\n";
+			$save_grplstattr = True;
+			continue;
+		}
+		if (substr($file_array[$i], 0, 20) == "hostlistAttributes: ") {
+			$file_array[$i] = "hostlistAttributes: " . $this->hostlistAttributes . "\n";
+			$save_hstlstattr = True;
+			continue;
+		}
+		if (substr($file_array[$i], 0, 16) == "maxlistentries: ") {
+			$file_array[$i] = "maxlistentries: " . $this->maxlistentries . "\n";
+			$save_maxlstent = True;
+			continue;
+		}
+		if (substr($file_array[$i], 0, 17) == "defaultLanguage: ") {
+			$file_array[$i] = "defaultLanguage: " . $this->defaultLanguage . "\n";
+			$save_deflang = True;
+			continue;
+		}
+		if (substr($file_array[$i], 0, 12) == "scriptPath: ") {
+			$file_array[$i] = "scriptPath: " . $this->scriptPath . "\n";
+			$save_scriptPath = True;
+			continue;
+		}
+		if (substr($file_array[$i], 0, 14) == "scriptServer: ") {
+			$file_array[$i] = "scriptServer: " . $this->scriptServer . "\n";
+			$save_scriptServer = True;
+			continue;
+		}
+		if (substr($file_array[$i], 0, 8) == "samba3: ") {
+			$file_array[$i] = "samba3: " . $this->samba3 . "\n";
+			$save_samba3 = True;
+			continue;
+		}
+		if (substr($file_array[$i], 0, 11) == "domainSID: ") {
+			$file_array[$i] = "domainSID: " . $this->domainSID . "\n";
+			$save_domainSID = True;
+			continue;
+		}
 	}
-	if (substr($file_array[$i], 0, 8) == "admins: ") {
-	  $file_array[$i] = "admins: " . implode(";", $this->Admins) . "\n";
-	  $save_admins = True;
-	  continue;
-	}
-	if (substr($file_array[$i], 0, 12) == "usersuffix: ") {
-	  $file_array[$i] = "usersuffix: " . $this->Suff_users . "\n";
-	  $save_suffusr = True;
-	  continue;
-	}
-	if (substr($file_array[$i], 0, 13) == "groupsuffix: ") {
-	  $file_array[$i] = "groupsuffix: " . $this->Suff_groups . "\n";
-	  $save_suffgrp = True;
-	  continue;
-	}
-	if (substr($file_array[$i], 0, 12) == "hostsuffix: ") {
-	  $file_array[$i] = "hostsuffix: " . $this->Suff_hosts . "\n";
-	  $save_suffhst = True;
-	  continue;
-	}
-	if (substr($file_array[$i], 0, 8) == "minUID: ") {
-	  $file_array[$i] = "minUID: " . $this->MinUID . "\n";
-	  $save_minUID = True;
-	  continue;
-	}
-	if (substr($file_array[$i], 0, 8) == "maxUID: ") {
-	  $file_array[$i] = "maxUID: " . $this->MaxUID . "\n";
-	  $save_maxUID = True;
-	  continue;
-	}
-	if (substr($file_array[$i], 0, 8) == "minGID: ") {
-	  $file_array[$i] = "minGID: " . $this->MinGID . "\n";
-	  $save_minGID = True;
-	  continue;
-	}
-	if (substr($file_array[$i], 0, 8) == "maxGID: ") {
-	  $file_array[$i] = "maxGID: " . $this->MaxGID . "\n";
-	  $save_maxGID = True;
-	  continue;
-	}
-	if (substr($file_array[$i], 0, 12) == "minMachine: ") {
-	  $file_array[$i] = "minMachine: " . $this->MinMachine . "\n";
-	  $save_minMach = True;
-	  continue;
-	}
-	if (substr($file_array[$i], 0, 12) == "maxMachine: ") {
-	  $file_array[$i] = "maxMachine: " . $this->MaxMachine . "\n";
-	  $save_maxMach = True;
-	  continue;
-	}
-	if (substr($file_array[$i], 0, 20) == "userlistAttributes: ") {
-	  $file_array[$i] = "userlistAttributes: " . $this->userlistAttributes . "\n";
-	  $save_usrlstattr = True;
-	  continue;
-	}
-	if (substr($file_array[$i], 0, 21) == "grouplistAttributes: ") {
-	  $file_array[$i] = "grouplistAttributes: " . $this->grouplistAttributes . "\n";
-	  $save_grplstattr = True;
-	  continue;
-	}
-	if (substr($file_array[$i], 0, 20) == "hostlistAttributes: ") {
-	  $file_array[$i] = "hostlistAttributes: " . $this->hostlistAttributes . "\n";
-	  $save_hstlstattr = True;
-	  continue;
-	}
-	if (substr($file_array[$i], 0, 16) == "maxlistentries: ") {
-	  $file_array[$i] = "maxlistentries: " . $this->maxlistentries . "\n";
-	  $save_maxlstent = True;
-	  continue;
-	}
-	if (substr($file_array[$i], 0, 17) == "defaultLanguage: ") {
-	  $file_array[$i] = "defaultLanguage: " . $this->defaultLanguage . "\n";
-	  $save_deflang = True;
-	  continue;
-	}
-	if (substr($file_array[$i], 0, 12) == "scriptPath: ") {
-	  $file_array[$i] = "scriptPath: " . $this->scriptPath . "\n";
-	  $save_scriptPath = True;
-	  continue;
-	}
-	if (substr($file_array[$i], 0, 14) == "scriptServer: ") {
-	  $file_array[$i] = "scriptServer: " . $this->scriptServer . "\n";
-	  $save_scriptServer = True;
-	  continue;
-	}
-	if (substr($file_array[$i], 0, 8) == "samba3: ") {
-	  $file_array[$i] = "samba3: " . $this->samba3 . "\n";
-	  $save_samba3 = True;
-	  continue;
-	}
-	if (substr($file_array[$i], 0, 11) == "domainSID: ") {
-	  $file_array[$i] = "domainSID: " . $this->domainSID . "\n";
-	  $save_domainSID = True;
-	  continue;
-	}
-      }
-      // check if we have to add new entries (e.g. if user upgraded LAM and has an old lam.conf)
-      if (!$save_serverURL == True) array_push($file_array, "\n\n# server address (e.g. ldap://localhost:389 or ldaps://localhost:636)\n" . "serverURL: " . $this->ServerURL);
-      if (!$save_passwd == True) array_push($file_array, "\n\n# password to change these preferences via webfrontend\n" . "passwd: " . $this->Passwd);
-      if (!$save_admins == True) array_push($file_array, "\n\n# list of users who are allowed to use LDAP Account Manager\n" .
+	// check if we have to add new entries (e.g. if user upgraded LAM and has an old lam.conf)
+	if (!$save_serverURL == True) array_push($file_array, "\n\n# server address (e.g. ldap://localhost:389 or ldaps://localhost:636)\n" . "serverURL: " . $this->ServerURL);
+	if (!$save_passwd == True) array_push($file_array, "\n\n# password to change these preferences via webfrontend\n" . "passwd: " . $this->Passwd);
+	if (!$save_admins == True) array_push($file_array, "\n\n# list of users who are allowed to use LDAP Account Manager\n" .
 					    "# names have to be seperated by semicolons\n" .
 					    "# e.g. admins: cn=admin,dc=yourdomain,dc=org;cn=root,dc=yourdomain,dc=org\n" . "admins: " . $this->Admins);
-      if (!$save_suffusr == True) array_push($file_array, "\n\n# suffix of users\n" .
+	if (!$save_suffusr == True) array_push($file_array, "\n\n# suffix of users\n" .
 					     "# e.g. ou=People,dc=yourdomain,dc=org\n" . "usersuffix: " . $this->Suff_users);
-      if (!$save_suffgrp == True) array_push($file_array, "\n\n# suffix of groups\n" .
+	if (!$save_suffgrp == True) array_push($file_array, "\n\n# suffix of groups\n" .
 					     "# e.g. ou=Groups,dc=yourdomain,dc=org\n" . "groupsuffix: " . $this->Suff_groups);
-      if (!$save_suffhst == True) array_push($file_array, "\n\n# suffix of Samba hosts\n" .
+	if (!$save_suffhst == True) array_push($file_array, "\n\n# suffix of Samba hosts\n" .
 					     "# e.g. ou=machines,dc=yourdomain,dc=org\n" . "hostsuffix: " . $this->Suff_hosts);
-      if (!$save_minUID == True) array_push($file_array, "\n\n# minimum UID number\n" . "minUID: " . $this->MinUID);
-      if (!$save_maxUID == True) array_push($file_array, "\n\n# maximum UID number\n" . "maxUID: " . $this->MaxUID);
-      if (!$save_minGID == True) array_push($file_array, "\n\n# minimum GID number\n" . "minGID: " . $this->MinGID);
-      if (!$save_maxGID == True) array_push($file_array, "\n\n# maximum GID number\n" . "maxGID: " . $this->MaxGID);
-      if (!$save_minMach == True) array_push($file_array, "\n\n# minimum UID number for Samba hosts\n" . "minMachine: " . $this->MinMachine);
-      if (!$save_maxMach == True) array_push($file_array, "\n\n# maximum UID number for Samba hosts\n" . "maxMachine: " . $this->MaxMachine);
-      if (!$save_usrlstattr == True) array_push($file_array, "\n\n# list of attributes to show in user list\n# entries can either be predefined values (e.g. '#cn' or '#uid')" .
+	if (!$save_minUID == True) array_push($file_array, "\n\n# minimum UID number\n" . "minUID: " . $this->MinUID);
+	if (!$save_maxUID == True) array_push($file_array, "\n\n# maximum UID number\n" . "maxUID: " . $this->MaxUID);
+	if (!$save_minGID == True) array_push($file_array, "\n\n# minimum GID number\n" . "minGID: " . $this->MinGID);
+	if (!$save_maxGID == True) array_push($file_array, "\n\n# maximum GID number\n" . "maxGID: " . $this->MaxGID);
+	if (!$save_minMach == True) array_push($file_array, "\n\n# minimum UID number for Samba hosts\n" . "minMachine: " . $this->MinMachine);
+	if (!$save_maxMach == True) array_push($file_array, "\n\n# maximum UID number for Samba hosts\n" . "maxMachine: " . $this->MaxMachine);
+	if (!$save_usrlstattr == True) array_push($file_array, "\n\n# list of attributes to show in user list\n# entries can either be predefined values (e.g. '#cn' or '#uid')" .
 						"\n# or individual ones (e.g. 'uid:User ID' or 'host:Host Name')\n# values have to be seperated by semicolons\n" . "userlistAttributes: " . $this->userlistAttributes);
-      if (!$save_grplstattr == True) array_push($file_array, "\n\n# list of attributes to show in group list\n# entries can either be predefined values (e.g. '#cn' or '#gidNumber')" .
+	if (!$save_grplstattr == True) array_push($file_array, "\n\n# list of attributes to show in group list\n# entries can either be predefined values (e.g. '#cn' or '#gidNumber')" .
 						"\n# or individual ones (e.g. 'cn:Group Name')\n# values have to be seperated by semicolons\n" . "grouplistAttributes: " . $this->grouplistAttributes);
-      if (!$save_hstlstattr == True) array_push($file_array, "\n\n# list of attributes to show in host list\n# entries can either be predefined values (e.g. '#cn' or '#uid')" .
+	if (!$save_hstlstattr == True) array_push($file_array, "\n\n# list of attributes to show in host list\n# entries can either be predefined values (e.g. '#cn' or '#uid')" .
 						"\n# or individual ones (e.g. 'cn:Host Name')\n# values have to be seperated by semicolons\n" . "hostlistAttributes: " . $this->hostlistAttributes);
-      if (!$save_maxlstent == True) array_push($file_array, "\n\n# maximum number of rows to show in user/group/host lists\n" . "maxlistentries: " . $this->maxlistentries);
-      if (!$save_deflang == True) array_push($file_array, "\n\n# default language (a line from language.conf)\n" . "defaultLanguage: " . $this->defaultLanguage);
-      if (!$save_scriptPath == True) array_push($file_array, "\n\n# Path to external Script\n" . "scriptPath: " . $this->scriptPath);
-      if (!$save_scriptServer == True) array_push($file_array, "\n\n# Server of external Script\n" . "scriptServer: " . $this->scriptServer);
-      if (!$save_samba3 == True) array_push($file_array, "\n\n# Set to \"yes\" only if you use the new Samba 3.x schema.\n" . "samba3: " . $this->samba3);
-      if (!$save_domainSID == True) array_push($file_array, "\n\n# Samba 3 domain SID. Set only if you use the new Samba 3.x schema.\n" . "domainSID: " . $this->domainSID);
-      $file = fopen($conffile, "w");
-      if ($file) {
-	for ($i = 0; $i < sizeof($file_array); $i++) fputs($file, $file_array[$i]);
-	fclose($file);
-      }
+	if (!$save_maxlstent == True) array_push($file_array, "\n\n# maximum number of rows to show in user/group/host lists\n" . "maxlistentries: " . $this->maxlistentries);
+	if (!$save_deflang == True) array_push($file_array, "\n\n# default language (a line from language.conf)\n" . "defaultLanguage: " . $this->defaultLanguage);
+	if (!$save_scriptPath == True) array_push($file_array, "\n\n# Path to external Script\n" . "scriptPath: " . $this->scriptPath);
+	if (!$save_scriptServer == True) array_push($file_array, "\n\n# Server of external Script\n" . "scriptServer: " . $this->scriptServer);
+	if (!$save_samba3 == True) array_push($file_array, "\n\n# Set to \"yes\" only if you use the new Samba 3.x schema.\n" . "samba3: " . $this->samba3);
+	if (!$save_domainSID == True) array_push($file_array, "\n\n# Samba 3 domain SID. Set only if you use the new Samba 3.x schema.\n" . "domainSID: " . $this->domainSID);
+	$file = fopen($conffile, "w");
+	if ($file) {
+		for ($i = 0; $i < sizeof($file_array); $i++) fputs($file, $file_array[$i]);
+		fclose($file);
+	}
 	else {
-		StatusMessage("ERROR", "", _("Cannot open config file!"));
+		StatusMessage("ERROR", "", _("Cannot open config file!") . " (" . $conffile . ")");
 		exit;
 	}
-    }
-  }
+	}
+}
 
   // prints current preferences
   function printconf() {
@@ -401,7 +403,7 @@ class Config {
   // sets the server address
   function set_ServerURL($value) {
     if (is_string($value)) $this->ServerURL = $value;
-    else StatusMessage("WARN", "", _("Config->set_ServerURL failed!") . " " . $value . " " . $value);
+    else StatusMessage("WARN", "", _("Config->set_ServerURL failed!") . " (" . $value . ")");
   }
 
   // returns an array of string with all admin names
@@ -421,7 +423,7 @@ class Config {
       }
       if ($b) $this->Admins = $value;
     }
-    else StatusMessage("WARN", "", _("Config->set_Admins failed!") . " " . $value);
+    else StatusMessage("WARN", "", _("Config->set_Admins failed!") . " (" . $value . ")");
   }
 
   // returns all admin users seperated by semicolons
@@ -436,7 +438,7 @@ class Config {
       $this->Adminstring = $value;
       $this->Admins = explode(";", $value);
     }
-    else StatusMessage("WARN", "", _("Config->set_Adminstring failed!") . " " . $value);
+    else StatusMessage("WARN", "", _("Config->set_Adminstring failed!") . " (" . $value . ")");
   }
 
   // returns the password to access the preferences wizard
@@ -447,7 +449,7 @@ class Config {
   // sets the preferences wizard password
   function set_Passwd($value) {
     if (is_string($value)) $this->Passwd = $value;
-    else StatusMessage("WARN", "", _("Config->set_Passwd failed!") . " " . $value);
+    else StatusMessage("WARN", "", _("Config->set_Passwd failed!") . " (" . $value . ")");
   }
 
   // returns the LDAP suffix where users are saved
@@ -460,7 +462,7 @@ class Config {
     if (is_string($value) && (eregi("^(([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)(,([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)*$", $value))) {
 		$this->Suff_users = $value;
 	}
-    else StatusMessage("WARN", "", _("Config->set_UserSuffix failed!") . " " . $value);
+    else StatusMessage("WARN", "", _("Config->set_UserSuffix failed!") . " (" . $value . ")");
   }
 
   // returns the LDAP suffix where groups are saved
@@ -473,7 +475,7 @@ class Config {
     if (is_string($value) && (eregi("^(([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)(,([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)*$", $value))) {
 		$this->Suff_groups = $value;
 	}
-	else StatusMessage("WARN", "", _("Config->set_GroupSuffix failed!") . " " . $value);
+	else StatusMessage("WARN", "", _("Config->set_GroupSuffix failed!") . " (" . $value . ")");
   }
 
   // returns the LDAP suffix where hosts are saved
@@ -486,7 +488,7 @@ class Config {
     if (is_string($value) && (eregi("^(([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)(,([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)*$", $value))) {
 		$this->Suff_hosts = $value;
 	}
-    else StatusMessage("WARN", "", _("Config->set_HostSuffix failed!") . " " . $value);
+    else StatusMessage("WARN", "", _("Config->set_HostSuffix failed!") . " (" . $value . ")");
   }
 
   // returns the minimum UID to use when creating new users
@@ -497,7 +499,7 @@ class Config {
   // sets the minimum UID to use when creating new users
   function set_minUID($value) {
     if (is_numeric($value)) $this->MinUID = $value;
-    else StatusMessage("WARN", "", _("Config->set_minUID failed!") . " " . $value);
+    else StatusMessage("WARN", "", _("Config->set_minUID failed!") . " (" . $value . ")");
   }
 
   // returns the maximum UID to use when creating new users
@@ -508,7 +510,7 @@ class Config {
   // sets the maximum UID to use when creating new users
   function set_maxUID($value) {
     if (is_numeric($value)) $this->MaxUID = $value;
-    else StatusMessage("WARN", "", _("Config->set_maxUID failed!") . " " . $value);
+    else StatusMessage("WARN", "", _("Config->set_maxUID failed!") . " (" . $value . ")");
   }
 
   // returns the minimum GID to use when creating new groups
@@ -519,7 +521,7 @@ class Config {
   // sets the minimum GID to use when creating new groups
   function set_minGID($value) {
     if (is_numeric($value)) $this->MinGID = $value;
-    else StatusMessage("WARN", "", _("Config->set_minGID failed!") . " " . $value);
+    else StatusMessage("WARN", "", _("Config->set_minGID failed!") . " (" . $value . ")");
   }
 
   // returns the maximum GID to use when creating new groups
@@ -530,7 +532,7 @@ class Config {
   // sets the maximum GID to use when creating new groups
   function set_maxGID($value) {
     if (is_numeric($value)) $this->MaxGID = $value;
-    else StatusMessage("WARN", "", _("Config->set_maxGID failed!") . " " . $value);
+    else StatusMessage("WARN", "", _("Config->set_maxGID failed!") . " (" . $value . ")");
   }
 
   // returns the minimum UID to use when creating new Samba hosts
@@ -541,7 +543,7 @@ class Config {
   // sets the minimum UID to use when creating new Samba hosts
   function set_minMachine($value) {
     if (is_numeric($value)) $this->MinMachine = $value;
-    else StatusMessage("WARN", "", _("Config->set_minMachine failed!") . " " . $value);
+    else StatusMessage("WARN", "", _("Config->set_minMachine failed!") . " (" . $value . ")");
   }
 
   // returns the maximum UID to use when creating new Samba hosts
@@ -552,7 +554,7 @@ class Config {
   // sets the maximum UID to use when creating new Samba hosts
   function set_maxMachine($value) {
     if (is_numeric($value)) $this->MaxMachine = $value;
-    else StatusMessage("WARN", "", _("Config->set_maxMachine failed!") . " " . $value);
+    else StatusMessage("WARN", "", _("Config->set_maxMachine failed!") . " (" . $value . ")");
   }
 
   // returns the list of attributes to show in user list
@@ -565,7 +567,7 @@ class Config {
     if (is_string($value) && eregi("^((#[a-z]*)|([a-z]*:[a-z*]))(;((#[a-z]*)|([a-z]*:[a-z]*)))*$", $value)) {
 		$this->userlistAttributes = $value;
 	}
-    else StatusMessage("WARN", "", _("Config->set_userlistAttributes failed!") . " " . $value);
+    else StatusMessage("WARN", "", _("Config->set_userlistAttributes failed!") . " (" . $value . ")");
   }
 
   // returns the list of attributes to show in group list
@@ -578,7 +580,7 @@ class Config {
     if (is_string($value) && eregi("^((#[a-z]*)|([a-z]*:[a-z*]))(;((#[a-z]*)|([a-z]*:[a-z]*)))*$", $value)) {
     	$this->grouplistAttributes = $value;
 	}
-    else StatusMessage("WARN", "", _("Config->set_grouplistAttributes failed!") . " " . $value);
+    else StatusMessage("WARN", "", _("Config->set_grouplistAttributes failed!") . " (" . $value . ")");
   }
 
   // returns the list of attributes to show in host list
@@ -591,7 +593,7 @@ class Config {
     if (is_string($value) && eregi("^((#[a-z]*)|([a-z]*:[a-z*]))(;((#[a-z]*)|([a-z]*:[a-z]*)))*$", $value)) {
     	$this->hostlistAttributes = $value;
 	}
-    else StatusMessage("WARN", "", _("Config->set_hostlistAttributes failed!") . " " . $value);
+    else StatusMessage("WARN", "", _("Config->set_hostlistAttributes failed!") . " (" . $value . ")");
   }
 
   // returns the maximum number of rows in user/group/host lists
@@ -613,7 +615,7 @@ class Config {
   // sets the default language string
   function set_defaultLanguage($value) {
     if (is_string($value)) $this->defaultLanguage = $value;
-    else StatusMessage("WARN", "", _("Config->set_defaultLanguage failed!") . " " . $value);
+    else StatusMessage("WARN", "", _("Config->set_defaultLanguage failed!") . " (" . $value . ")");
   }
 
   // returns the path to the external script
@@ -625,7 +627,7 @@ class Config {
   function set_scriptPath($value) {
 	if (!$value) $value = ""; // optional parameter
     if (is_string($value) && eregi("^()|(/([a-z]|[0-9]|-|_|/)*)$", $value)) $this->scriptPath = $value;
-    else StatusMessage("WARN", "", _("Config->set_scriptPath failed!") . " " . $value);
+    else StatusMessage("WARN", "", _("Config->set_scriptPath failed!") . " (" . $value . ")");
   }
 
   // returns the server of the external script
@@ -639,7 +641,7 @@ class Config {
     if (is_string($value) && (eregi("^[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}$", $value) || $value == "")) {
 		$this->scriptServer = $value;
 	}
-    else StatusMessage("WARN", "", _("Config->set_scriptServer failed!") . " " . $value);
+    else StatusMessage("WARN", "", _("Config->set_scriptServer failed!") . " (" . $value . ")");
   }
 
   // returns "yes" if Samba 3.x schema is used, otherwise "no"
@@ -652,7 +654,7 @@ class Config {
     if (is_string($value) && eregi("^(yes|no)$", $value)) {
 		$this->samba3 = $value;
 	}
-    else StatusMessage("WARN", "", _("Config->set_samba3 failed!") . " " . $value);
+    else StatusMessage("WARN", "", _("Config->set_samba3 failed!") . " (" . $value . ")");
   }
 
   // returns the Samba domain SID (Samba 3 only)
@@ -662,11 +664,14 @@ class Config {
 
   // sets the Samba domain SID (Samba 3 only)
   function set_domainSID($value) {
-	if (!$value) $value = ""; // optional parameter
-    if (is_string($value) && eregi("^(S-[0-9]-[0-9]-[0-9]{2,2}-[0-9]{10,10}-[0-9]{10,10}-[0-9]{10,10})|()$", $value)) {
+	if (!$value) { // optional parameter
+		$value = "";
 		$this->domainSID = $value;
 	}
-    else StatusMessage("WARN", "", _("Config->set_domainSID failed!") . " " . $value);
+    elseif (is_string($value) && eregi("^S-[0-9]-[0-9]-[0-9]{2,2}-[0-9]{10,10}-[0-9]{10,10}-[0-9]{10,10}$", $value)) {
+		$this->domainSID = $value;
+	}
+    else StatusMessage("WARN", "", _("Config->set_domainSID failed!") . " (" . $value . ")");
   }
 
 

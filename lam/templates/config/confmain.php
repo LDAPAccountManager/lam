@@ -28,7 +28,7 @@ include_once ("../../lib/config.inc");
 
 // start session
 session_save_path("../../sess");
-session_start();
+@session_start();
 
 // check if button was pressed and if we have to save the setting or go back to login
 if ($_POST['back'] || $_POST['submitconf']){
@@ -102,7 +102,7 @@ echo ("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http:/
 echo ("<html>\n");
 echo ("<head>\n");
 echo ("<title>" . _("LDAP Account Manager Configuration") . "</title>\n");
-echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
+echo ("<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n");
 echo ("</head>\n");
 echo ("<body>\n");
 echo ("<p align=\"center\"><a href=\"http://lam.sf.net\" target=\"new_window\">".
@@ -296,7 +296,7 @@ echo ("</table>\n");
 echo ("</fieldset>\n");
 echo ("<p></p>\n");
 
-
+// security setings
 echo ("<fieldset><legend><b>" . _("Security settings") . "</b></legend>\n");
 echo ("<table border=0>\n");
 // admin list
