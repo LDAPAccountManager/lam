@@ -9,17 +9,18 @@ Alle:
 
 
 massdetail:
-- accounts:
-- errors:
+- accounts: Array aus account-Objekten
+- errors:  Array aus Fehlermeldungen. Index ist gleich Index von accounts
 
 
 masscreate:
-- accounts:
-- pointer:
-- errors:
-- group_suffix:
-- group_selectprofile:
-- rowstart:
+- accounts: Array aus account-Objekten
+- pointer: Zeigt auf den aktuellen Startpunkt, ab dem Benutzer angelegt werden sollen.
+           Noetig, da mit Meta-Refreshs gearbeitet werden muss
+- errors:  Array aus Fehlermeldungen. Index ist gleich Index von accounts
+- group_suffix: Suffix, unter welchem eine Gruppe bei Bedarf angelegt wird
+- group_selectprofile: Profil, mit dem eine Gruppe bei Bedarf angelegt werden soll
+- rowstart: ??? nicht mehr benutzt
 
 
 main:
@@ -84,11 +85,11 @@ convsave, confmain, conflogin:
 
 
 useredit:
-- shellist:
-- account_old:
-- account:
-- final_changegids:
-- hostDN:
+- shellist: Array mit allen shells
+- account_old: Object account. Hier wird beim laden eines Accounts alle alten Werte zwischengespeichert 
+- account: Object account. Hier wird der aktuelle Eintrag gespeichert
+- final_changegids: boolean. Wenn gesetzt, werden die gids in ldap angepasst
+- hostDN: Array mit allen hosts.
 
 
 account.php:
@@ -96,7 +97,7 @@ account.php:
 wird nicht mehr verwendet?
 
 
-hostedit:
+hostedit: s.o.
 - account:
 - account_old:
 - final_changegids:
@@ -107,18 +108,19 @@ groupedit:
 - account:
 - account_old:
 - final_changeids:
-- userDN:
-- Account: ???
+- userDN: Array mit allen Benutzern
+- Account: ??? Tipfehler
 
 
 account.inc:
-- userDN:
-- groupDN:
-- hostDN:
-- account:
-- final_changeids:
+- userDN: array mit allen Benutzern
+- groupDN: array mit allen Gruppen
+- hostDN: array mit allen Gruppen
+- account: s.o.
+- final_changeids: s.o.
 
-
+delete.php
+- delete_dn :  Liste der DNs, die gelscht werden sollen.
 
 
 

@@ -535,7 +535,7 @@ function loaduser($dn) { // Will load all needed values from an existing account
 	if (isset($attr['postalAddress'][0])) $return->personal_postalAddress = utf8_decode($attr['postalAddress'][0]);
 	if (isset($attr['employeeType'][0])) $return->personal_employeeType = utf8_decode($attr['employeeType'][0]);
 	// New password code. should work with every kind of encryption ({CRYPT}, {SHA}
-	if ( ereg('^[{]([A-Z]|[a-z]|[0-9])+([}!])+', $attr['userPassword'][0])) $return->unix_deactivated=true;
+	if ( ereg('^[{]([A-Z]|[a-z]|[0-9])+[}][!]', $attr['userPassword'][0])) $return->unix_deactivated=true;
 	// next line is old code
 	//if (substr(str_replace('{CRYPT}', '',$attr['userPassword'][0]),0,1) == '!' ) $return->unix_deactivated=true;
 

@@ -169,14 +169,6 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 		break;
 	}
 
-// Write HTML-Header
-echo $_SESSION['header'];
-echo "<html><head><title>";
-echo _("Create new Account");
-echo "</title>\n".
-	"<link rel=\"stylesheet\" type=\"text/css\" href=\"".$_SESSION['lamurl']."style/layout.css\">\n".
-	"<meta http-equiv=\"pragma\" content=\"no-cache\">\n".
-	"<meta http-equiv=\"cache-control\" content=\"no-cache\">\n";
 
 do { // X-Or, only one if() can be true
 	if ($_POST['next_general']) {
@@ -241,15 +233,23 @@ do { // X-Or, only one if() can be true
 		break;
 		}
 	if ($_POST['backmain']) {
-		echo "<meta http-equiv=\"refresh\" content=\"2; URL=".$_SESSION['lamurl']."templates/lists/listhosts.php\">\n";
-		$select_local='backmain';
+		metaRefresh($_SESSION['lamurl']."templates/lists/listhosts.php");
+		die;
 		break;
 		}
 	if (!$select_local) $select_local='general';
 	} while(0);
 
-echo "</head><body>\n";
-echo "<form action=\"hostedit.php\" method=\"post\">\n";
+// Write HTML-Header
+echo $_SESSION['header'];
+echo "<html><head><title>";
+echo _("Create new Account");
+echo "</title>\n".
+	"<link rel=\"stylesheet\" type=\"text/css\" href=\"".$_SESSION['lamurl']."style/layout.css\">\n".
+	"<meta http-equiv=\"pragma\" content=\"no-cache\">\n".
+	"<meta http-equiv=\"cache-control\" content=\"no-cache\">\n".
+	"</head><body>\n".
+	"<form action=\"hostedit.php\" method=\"post\">\n";
 
 if (is_array($errors)) {
 	echo "<table class=\"account\" width=\"100%\">\n";

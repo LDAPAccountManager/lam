@@ -53,6 +53,43 @@ else {
 	}
 
 if ($select!='pdf') {
+	switch ($select) {
+		case 'cancel' : // go back to user list page
+			metaRefresh($_SESSION['lamurl']."templates/lists/listusers.php");
+			die;
+			break;
+		case 'list' : // refreh to masscreate
+			if (!is_array($accounts)) $accounts = array();
+			$groups = array();
+			if (loadfile()) {
+				$_SESSION['group_suffix'] = $_POST['f_group_suffix'];
+				$_SESSION['group_selectprofile'] =  $_POST['f_selectgroupprofile'];
+				metaRefresh($_SESSION['lamurl']."templates/masscreate.php?list2");
+				die;
+				}
+			else {
+				echo $_SESSION['header'];
+				echo '<html><head><title>';
+				echo _('Create new Accounts');
+				echo '</title>'."\n".
+					'<link rel="stylesheet" type="text/css" href="'.$_SESSION['lamurl'].'style/layout.css">'."\n".
+					'<meta http-equiv="pragma" content="no-cache">'."\n".
+					'<meta http-equiv="cache-control" content="no-cache">'."\n";
+				echo	'</head><body>'."\n".
+					'<form enctype="multipart/form-data" action="masscreate.php" method="post">'."\n".
+					'<table class="masscreate" width="100%">'.
+					'<tr><td>';
+				echo _('Max 400 users allowed. Ignored additional users.');
+				echo '</td></tr>'."\n";
+				echo '<tr><td><a href="lists/listusers.php">';
+				echo _('Cancel');
+				echo '</a></td><td><a href="masscreate.php?list2">';
+				echo _('Contiune');
+				echo "</a></td></tr></table>\n";
+				}
+			break;
+		}
+
 	// Write HTML-Header and part of Table
 	echo $_SESSION['header'];
 	echo '<html><head><title>';
@@ -62,19 +99,6 @@ if ($select!='pdf') {
 		'<meta http-equiv="pragma" content="no-cache">'."\n".
 		'<meta http-equiv="cache-control" content="no-cache">'."\n";
 	switch ($select) {
-		case 'cancel':
-			if ( isset($_SESSION['accounts'])) unset($_SESSION['accounts']);
-			if ( isset($_SESSION['pointer'])) unset($_SESSION['pointer']);
-			if ( isset($_SESSION['errors'])) unset($_SESSION['errors']);
-			if ( isset($_SESSION['group_suffix'])) unset($_SESSION['group_suffix']);
-			if ( isset($_SESSION['group_selectprofile'])) unset($_SESSION['group_selectprofile']);
-			echo '<meta http-equiv="refresh" content="1; URL=lists/listusers.php">'."\n".
-				'</head><body>'."\n".
-				'<form enctype="multipart/form-data" action="masscreate.php" method="post">'."\n".
-				'<a href="lists/listusers.php">';
-			echo _('Please press here if meta-refresh didn\'t work.');
-			echo "</a>\n";
-			break;
 		case 'create':
 			if ($_SESSION['pointer'] < sizeof($_SESSION['accounts'])) {
 				$refresh = get_cfg_var('max_execution_time')-5;
@@ -199,35 +223,6 @@ if ($select!='pdf') {
 				if ( isset($_SESSION['group_selectprofile'])) unset($_SESSION['group_selectprofile']);
 				}
 			break;
-		case 'list':
-			if (!is_array($accounts)) $accounts = array();
-			$groups = array();
-			if (loadfile()) {
-				echo '<meta http-equiv="refresh" content="2; URL=masscreate.php?list2">'."\n".
-					'</head><body>'."\n".
-					'<form enctype="multipart/form-data" action="masscreate.php" method="post">'."\n".
-					'<a href="masscreate.php?list2">';
-				echo _('Please press here if meta-refresh didn\'t work.');
-				echo "</a>\n";
-			$_SESSION['group_suffix'] = $_POST['f_group_suffix'];
-			$_SESSION['group_selectprofile'] =  $_POST['f_selectgroupprofile'];
-
-				}
-			else {
-				//echo '<meta http-equiv="refresh" content="2; URL=masscreate.php?list2">'."\n".
-				echo	'</head><body>'."\n".
-					'<form enctype="multipart/form-data" action="masscreate.php" method="post">'."\n".
-					'<table class="masscreate" width="100%">'.
-					'<tr><td>';
-				echo _('Max 400 users allowed. Ignored additional users.');
-				echo '</td></tr>'."\n";
-				echo '<tr><td><a href="lists/listusers.php">';
-				echo _('Cancel');
-				echo '</a></td><td><a href="masscreate.php?list2">';
-				echo _('Contiune');
-				echo "</a></td></tr></table>\n";
-				}
-			break;
 		case 'list2':
 			echo	'</head><body>'."\n".
 				'<form enctype="multipart/form-data" action="masscreate.php" method="post">'."\n".
@@ -242,9 +237,6 @@ if ($select!='pdf') {
 			echo "</b></legend>\n<table border=0 width=\"100%\">\n";
 			echo '<tr><td>'._('row').'</td>'."\n".'<td>'. _('Surname'). '</td>'."\n".'<td>'. _('Given name'). '</td>'."\n".'<td>'. _('User name'). '</td>'."\n".'<td>'. _('Primary group'). '</td>'."\n".'<td>'.
 				_('Details'). '</td>'."\n".'<td>' . _('Infos'). '</td>'."\n".'<td>' . _('Warnings'). '</td>'."\n".'<td>' . _('Errors') . '</td>'."\n".'</tr>'."\n";
-			if (!isset($_SESSION['rowstart'])) $_SESSION['rowstart'] = 0;
-			//if (sizeof($_SESSION['accounts'])<($_SESSION['rowstart']+10)) $end = sizeof($_SESSION['accounts']);
-			//	else $end = $_SESSION['rowstart']+10;
 			$end = sizeof($_SESSION['accounts']);
 			for ($row=0; $row<$end; $row++) { // loops for every row
 				echo '<tr><td>'.$row.'</td>'."\n".'<td>'.
@@ -252,21 +244,21 @@ if ($select!='pdf') {
 					$_SESSION['accounts'][$row]->general_givenname.'</td>'."\n".'<td>'.
 					$_SESSION['accounts'][$row]->general_username.'</td>'."\n".'<td>'.
 					$_SESSION['accounts'][$row]->general_group.'</td>'."\n".'<td>'.
-					'<a target=_blank href="massdetail.php?row='.$row.'&type=detail">'._('Show Details.').'</a></td>'."\n".'<td>';
+					'<a target=_blank href="massdetail.php?row='.$row.'&amp;type=detail">'._('Show Details.').'</a></td>'."\n".'<td>';
 					$found=false;
 					for ($i=0; $i<sizeof($_SESSION['errors'][$row]); $i++)
 						if ($_SESSION['errors'][$row][$i][0] == 'INFO') $found=true;
-					if ($found) echo '<a target="massdetail" href="massdetail.php?row='.$row.'&type=info">'._('Show Infos.').'</a>';
+					if ($found) echo '<a target="massdetail" href="massdetail.php?row='.$row.'&amp;type=info">'._('Show Infos.').'</a>';
 					echo '</td>'."\n".'<td>';
 					$found=false;
 					for ($i=0; $i<sizeof($_SESSION['errors'][$row]); $i++)
 						if ($_SESSION['errors'][$row][$i][0] == 'WARN') $found=true;
-					if ($found) echo '<a target="massdetail" href="massdetail.php?row='.$row.'&type=warn">'._('Show Warnings.').'</a>';
+					if ($found) echo '<a target="massdetail" href="massdetail.php?row='.$row.'&amp;type=warn">'._('Show Warnings.').'</a>';
 					echo '</td>'."\n".'<td>';
 					$found=false;
 					for ($i=0; $i<sizeof($_SESSION['errors'][$row]); $i++)
 						if ($_SESSION['errors'][$row][$i][0] == 'ERROR') $found=true;
-					if ($found) echo '<a target="massdetail" href="massdetail.php?row='.$row.'&type=error">'._('Show Errors.').'</a>';
+					if ($found) echo '<a target="massdetail" href="massdetail.php?row='.$row.'&amp;type=error">'._('Show Errors.').'</a>';
 					echo '</td></tr>'."\n";
 				}
 			$noerrors=true;

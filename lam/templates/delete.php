@@ -29,34 +29,25 @@ session_save_path('../sess');
 @session_start();
 setlanguage();
 
+
+if ($_POST['backmain']) { // back to list page
+	metaRefresh($_SESSION['lamurl']."templates/lists/list".$_POST['type5']."s.php");
+	die;
+	}
+
 echo $_SESSION['header'];
 echo '<html><head><title>';
 echo _('Delete Account');
 echo '</title>'."\n".
 	'<link rel="stylesheet" type="text/css" href="'.$_SESSION['lamurl'].'style/layout.css">'."\n".
 	'<meta http-equiv="pragma" content="no-cache">'."\n".
-	'<meta http-equiv="cache-control" content="no-cache">'."\n";
-
-if ($_POST['backmain'])
-	switch ( $_POST['type5'] ) {
-		case 'user' :
-			echo "<meta http-equiv=\"refresh\" content=\"2; URL=lists/listusers.php\">\n";
-			break;
-		case 'group' :
-			echo "<meta http-equiv=\"refresh\" content=\"2; URL=lists/listgroups.php\">\n";
-			break;
-		case 'host' :
-			echo "<meta http-equiv=\"refresh\" content=\"2; URL=lists/listhosts.php\">\n";
-			break;
-			}
-echo '</head>'."\n".
+	'<meta http-equiv="cache-control" content="no-cache">'."\n".
+	'</head>'."\n".
 	'<body>'."\n".
 	'<form action="delete.php" method="post">'."\n";
 
 if ($_GET['type']) {
-	$DN2 = explode(";", str_replace("\'", '',$_GET['DN']));
-	echo '<input name="type5" type="hidden" value="'.$_GET['type'].'">';
-	echo '<input name="DN" type="hidden" value="'.$_GET['DN'].'">';
+	//$DN2 = explode(";", str_replace("\'", '',$_GET['DN']));
 	switch ($_GET['type']) {
 		case 'user':
 			echo "<fieldset class=\"useredit-bright\"><legend class=\"useredit-bright\"><b>";
@@ -78,7 +69,7 @@ if ($_GET['type']) {
 			break;
 		}
 	echo "<table border=0 width=\"100%\">\n";
-	foreach ($DN2 as $dn) echo '<tr><td>'.$dn.'</td></tr>';
+	foreach ($_SESSION['delete_dn'] as $dn) echo '<tr><td>'.$dn.'</td></tr>';
 	echo "</table>\n";
 	if (($_GET['type']== user) && $_SESSION['config']->scriptServer) {
 		echo "<table border=0 width=\"100%\">\n";
@@ -119,8 +110,7 @@ if ($_POST['delete_yes'] && !$_POST['backmain']) {
 			break;
 		}
 	echo "<br><table border=0 width=\"100%\">\n";
-	$DN2 = explode(";", str_replace("\\", '',str_replace("\'", '',$_POST['DN'])));
-	foreach ($DN2 as $dn) {
+	foreach ($_SESSION['delete_dn'] as $dn) {
 		echo '<input name="type5" type="hidden" value="'.$_POST['type5'].'">';
 		switch ($_POST['type5']) {
 			case 'user':
@@ -220,23 +210,5 @@ if ($_POST['delete_no']) {
 
 	}
 
-if ($_POST['backmain'])
-	switch ( $_POST['type5'] ) {
-		case 'user' :
-			echo '<a href="lists/listusers.php">';
-			echo _('Please press here if meta-refresh didn\'t work.');
-			echo "</a>\n";
-			break;
-		case 'group' :
-			echo '<a href="lists/listgroups.php">';
-			echo _('Please press here if meta-refresh didn\'t work.');
-			echo "</a>\n";
-			break;
-		case 'host' :
-			echo '<a href="lists/listhosts.php">';
-			echo _('Please press here if meta-refresh didn\'t work.');
-			echo "</a>\n";
-			break;
-			}
 echo '</form></body></html>'."\n";
 ?>

@@ -226,14 +226,6 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 
 	}
 
-// Write HTML-Header and part of Table
-echo $_SESSION['header'];
-echo "<html><head><title>";
-echo _("Create new Account");
-echo "</title>\n".
-	"<link rel=\"stylesheet\" type=\"text/css\" href=\"".$_SESSION['lamurl']."style/layout.css\">\n".
-	"<meta http-equiv=\"pragma\" content=\"no-cache\">\n".
-	"<meta http-equiv=\"cache-control\" content=\"no-cache\">\n";
 
 do { // X-Or, only one if() can be true
 	if ($_POST['next_members']) {
@@ -286,8 +278,8 @@ do { // X-Or, only one if() can be true
 		break;
 		}
 	if ($_POST['backmain']) {
-		$select_local='backmain';
-		echo "<meta http-equiv=\"refresh\" content=\"2; URL=".$_SESSION['lamurl']."templates/lists/listgroups.php\">\n";
+		metaRefresh($_SESSION['lamurl']."templates/lists/listgroups.php");
+		die;
 		break;
 		}
 	if ($_POST['load']) {
@@ -348,8 +340,16 @@ do { // X-Or, only one if() can be true
 	if (!$select_local) $select_local='general';
 	} while(0);
 
-echo "</head><body>\n";
-echo "<form action=\"groupedit.php\" method=\"post\">\n";
+// Write HTML-Header
+echo $_SESSION['header'];
+echo "<html><head><title>";
+echo _("Create new Account");
+echo "</title>\n".
+	"<link rel=\"stylesheet\" type=\"text/css\" href=\"".$_SESSION['lamurl']."style/layout.css\">\n".
+	"<meta http-equiv=\"pragma\" content=\"no-cache\">\n".
+	"<meta http-equiv=\"cache-control\" content=\"no-cache\">\n".
+	"</head><body>\n".
+	"<form action=\"groupedit.php\" method=\"post\">\n";
 
 if (is_array($errors)) {
 	echo "<table class=\"groupedit\" width=\"100%\">\n";
@@ -765,7 +765,7 @@ switch ($select_local) { // Select which part of page will be loaded
 
 	case 'finish':
 		// Final Settings
-		if (($_SESSION['config']->samba3 =='yes') && !isset($_SESSION['Account']->smb_mapgroup)) $disabled = 'disabled';
+		if (($_SESSION['config']->samba3 =='yes') && !isset($_SESSION['account']->smb_mapgroup)) $disabled = 'disabled';
 			else $disabled = '';
 		echo '<input name="select" type="hidden" value="finish">';
 		echo "<fieldset class=\"groupedit-bright\"><legend class=\"groupedit-bright\"><b>"._('Success')."</b></legend>\n";
