@@ -322,7 +322,7 @@ echo "<table border=0 width=\"100%\">\n";
 						if (! in_array($available_groups[$i], $selected_groups)) {  // display non-selected modules
 							if (is_base_module($available_groups[$i], "group")) {  // mark base modules
 								echo "<option value=\"" . $available_groups[$i] . "\">";
-								echo $available_users[$i] . "(" . getModuleAlias($available_groups[$i], "group") .  ")(" . _("base module") . ")";
+								echo $available_groups[$i] . "(" . getModuleAlias($available_groups[$i], "group") .  ")(" . _("base module") . ")";
 								echo "</option>\n";
 							}
 							else {
@@ -490,7 +490,7 @@ echo "<p>\n";
 	if ($no_conflicts_user && $no_depends_user && $no_missing_basemodule_user &&
 		$no_conflicts_group && $no_depends_group && $no_missing_basemodule_group &&
 		$no_conflicts_host && $no_depends_host && $no_missing_basemodule_host) {
-		echo "<input type=\"submit\" value=\"Submit\" name=\"submit\">\n";
+		echo "<input type=\"submit\" value=\"" . _("Submit") . "\" name=\"submit\">\n";
 	}
 	else {
 		echo "<input type=\"submit\" value=\"" . _("Submit") . "\" name=\"submit\" disabled>\n";
