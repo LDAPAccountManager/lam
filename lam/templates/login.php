@@ -34,9 +34,6 @@ if($action == "checklogin")
 	$result = $ldap->connect($username,$passwd);
 	if($result == True) // Username/password correct. Doing some configuration and loading main Frame.
 	{
-		session_register("ldap"); // Register $ldap object in session
-		session_register("language"); // Register $language in session
-
 		// setting language
 		$language = explode(":", $language);
 		putenv("LANG=" . $language[1]);
@@ -45,6 +42,9 @@ if($action == "checklogin")
 		textdomain("lam");
 
 		include("./main.php");
+
+		session_register("ldap"); // Register $ldap object in session
+		session_register("language"); // Register $language in session
 	}
 	else
 	{
