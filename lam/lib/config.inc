@@ -38,16 +38,16 @@ include_once("modules.inc");
 * Sets language settings for automatic translation
 */
 function setlanguage() {
-	if ($_SESSION['language']) {
-		$language = explode(":", $_SESSION['language']);
-		putenv("LANG=" . $language[0]);  // e.g. LANG=de_DE
-		setlocale(LC_ALL, $language[0]);  // set LC_ALL to de_DE
-		$locdir = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/locale";  // set path to translations
-		bindtextdomain("messages", $locdir);
-		textdomain("messages");
-		header("Content-type: text/html; charset=" . $language[1], true);
+	if (!isset($_SESSION['language'])) {
+		$_SESSION['language'] = "en_GB.utf8:UTF-8:English (Great Britain)";
 	}
-	else echo _("Language not defined in session!");
+	$language = explode(":", $_SESSION['language']);
+	putenv("LANG=" . $language[0]);  // e.g. LANG=de_DE
+	setlocale(LC_ALL, $language[0]);  // set LC_ALL to de_DE
+	$locdir = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/locale";  // set path to translations
+	bindtextdomain("messages", $locdir);
+	textdomain("messages");
+	header("Content-type: text/html; charset=" . $language[1], true);
 }
 
 /**
