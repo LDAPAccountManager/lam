@@ -19,11 +19,20 @@ $Id$
   along with this program; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-  This page will redirect to account/edit.php if the given user is valid.
-  It is called from listgroups.php via the memberUID links.
-
 */
+
+/**
+* This page will redirect to account/edit.php if the given user is valid.
+*
+* It is called from listgroups.php via the memberUID links.
+*
+* @package lists
+* @author Roland Gruber
+*/
+
+/** Needed to find DNs of users */
 include_once ("../../lib/ldap.inc");
+/** Used to display error messages */
 include_once ("../../lib/status.inc");
 
 // start session
