@@ -13,7 +13,11 @@ masscreate:
 - mass_counter: aktuelle Position im Account-Array
 - mass_errors: Fehlermeldungen beim Upload
 - mass_csv: CSV-Datei als Vorlage für Upload
-
+- mass_failed: Liste der Accounts, die nicht erzeugt werden konnten
+- mass_postActions: temporäre Daten für den Upload
+- mass_data: Eingabedaten
+- mass_ids: Tabelle Spaltenname => Spaltennummer
+- mass_scope: Account-Typ
 
 main:
 - domain_message: Wird auf der "neue Domain" Seite ausgegeben, wenn keine Domäne gefunden wurde

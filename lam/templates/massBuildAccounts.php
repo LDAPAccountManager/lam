@@ -179,6 +179,11 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 				$_SESSION['mass_accounts'] = $_SESSION['ldap']->encrypt(serialize($accounts));
 				$_SESSION['mass_counter'] = 0;
 				$_SESSION['mass_errors'] = array();
+				$_SESSION['mass_failed'] = array();
+				$_SESSION['mass_postActions'] = array();
+				$_SESSION['mass_data'] = $_SESSION['ldap']->encrypt(serialize($data));
+				$_SESSION['mass_ids'] = $ids;
+				$_SESSION['mass_scope'] = $_POST['scope'];
 				// show links for upload and LDIF export
 				echo "<h1 align=\"center\">" . _("LAM has checked your input and is now ready to create the accounts.") . "</h1>\n";
 				echo "<p>&nbsp;</p>\n";

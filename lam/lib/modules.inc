@@ -480,6 +480,53 @@ function buildUploadAccounts($scope, $data, $ids) {
 }
 
 /**
+* This function executes one post upload action.
+*
+* @param string $scope account type
+* @param array $data array containing one account in each element
+* @param array $ids array(<column_name> => <column number>)
+* @param array $failed list of accounts which were not created successfully
+* @return array current status
+* <br> array (
+* <br>  'status' => 'finished' | 'inProgress'
+* <br>  'module' => <name of active module>
+* <br>  'progress' => 0..100
+* <br>  'errors' => array (<array of parameters for StatusMessage>)
+* <br> )
+*/
+function doUploadPostActions($scope, $data, $ids, $failed) {
+	// check if function is called the first time
+	if (! isset($_SESSION['mass_postActions']['remainingModules'])) {
+		// make list of remaining modules
+		$moduleList = $_SESSION['config']->get_AccountModules($scope);
+		$_SESSION['mass_postActions']['remainingModules'] = $moduleList;
+	}
+	$activeModule = $_SESSION['mass_postActions']['remainingModules'][0];
+	// initialize temporary variable
+	if (!isset($_SESSION['mass_postActions'][$activeModule])) {
+		$_SESSION['mass_postActions'][$activeModule] = array();
+	}
+	// let first module do one post action
+	$module = new $activeModule($scope);
+	$return = $module->doUploadPostActions($data, $ids, $failed, $_SESSION['mass_postActions'][$activeModule]);
+	// remove active module from list if already finished
+	if ($return['status'] == 'finished') {
+		unset($_SESSION['mass_postActions']['remainingModules'][0]);
+		$_SESSION['mass_postActions']['remainingModules'] = array_values($_SESSION['mass_postActions']['remainingModules']);
+	}
+	// update status and return back to upload page
+	$return['module'] = $activeModule;
+	if (sizeof($_SESSION['mass_postActions']['remainingModules']) > 0) {
+		$return['status'] = 'inProgress';
+	}
+	else {
+		$return['status'] = 'finished';
+	}
+	return $return;
+}
+
+
+/**
 * This class includes all modules and attributes of an account.
 *
 * @package modules

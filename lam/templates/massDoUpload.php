@@ -57,7 +57,7 @@ echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">\n
 
 // create accounts
 $accounts = unserialize($_SESSION['ldap']->decrypt($_SESSION['mass_accounts']));
-if ($_SESSION['mass_counter'] < sizeof($accounts)) {
+if (($_SESSION['mass_counter'] < sizeof($accounts)) || !isset($_SESSION['mass_postActions']['finished'])) {
 	$maxTime = get_cfg_var('max_execution_time') - 5;
 	$refreshTime = get_cfg_var('max_execution_time') + 1;
 	$startTime = time();
@@ -69,6 +69,7 @@ if ($_SESSION['mass_counter'] < sizeof($accounts)) {
 	echo "<td bgcolor=\"grey\" width=\"" . (100 - (($_SESSION['mass_counter'] * 100) / sizeof($accounts))) . "%\">&nbsp;</td></tr>\n";
 	echo "</table>";
 	flush();  // send HTML to browser
+	// add accounts to LDAP
 	while (($_SESSION['mass_counter'] < sizeof($accounts)) && ($startTime + $maxTime > time())) {
 		// create accounts as long as max_execution_time is not near
 		$attrs = $accounts[$_SESSION['mass_counter']];
@@ -82,8 +83,31 @@ if ($_SESSION['mass_counter'] < sizeof($accounts)) {
 				ldap_errno($_SESSION[ldap]->server) . ": " . ldap_error($_SESSION[ldap]->server),
 				array($_SESSION['mass_counter']));
 			$_SESSION['mass_errors'][] = $errorMessage;
+			$_SESSION['mass_failed'][] = $_SESSION['mass_counter'];
 		}
 		$_SESSION['mass_counter']++;
+	}
+	// do post upload actions
+	if ($_SESSION['mass_counter'] >= sizeof($accounts)) {
+		$data = unserialize($_SESSION['ldap']->decrypt($_SESSION['mass_data']));
+		$return  = doUploadPostActions($_SESSION['mass_scope'], $data, $_SESSION['mass_ids'], $failed);
+		if ($return['status'] == 'finished') {
+			$_SESSION['mass_postActions']['finished'] = true;
+		}
+		for ($i = 0; $i < sizeof($return['errors']); $i++) $_SESSION['mass_errors'][] = $return['errors'][$i];
+		echo "<h1>" . _("Additional tasks for module: ") . $return['module'] . "</h1>\n";
+		echo "<table align=\"center\" width=\"80%\" style=\"border-color: grey\" border=\"2\" cellspacing=\"0\" rules=\"none\">\n";
+		echo "<tr><td bgcolor=\"blue\" width=\"" . $return['progress'] . "%\">&nbsp;</td>";
+		echo "<td bgcolor=\"grey\" width=\"" . (100 - $return['progress']) . "%\">&nbsp;</td></tr>\n";
+		echo "</table>";
+		flush();
+		while (!isset($_SESSION['mass_postActions']['finished']) && ($startTime + $maxTime > time())) {
+			$return  = doUploadPostActions($_SESSION['mass_scope'], $data, $_SESSION['mass_ids'], $failed);
+			if ($return['status'] == 'finished') {
+				$_SESSION['mass_postActions']['finished'] = true;
+			}
+			for ($i = 0; $i < sizeof($return['errors']); $i++) $_SESSION['mass_errors'][] = $return['errors'][$i];
+		}
 	}
 	echo "</body></html>";
 }
