@@ -229,7 +229,7 @@ class sambaGroupMapping extends baseModule {
 			'rid' => array(
 				"ext" => "FALSE",
 				"Headline" => _("Samba RID number"),
-				"Text" => _("This is the relative ID (similar to UID on Unix) for Windows accounts. If you leave this empty LAM will calculate the RID from the UID. This can be either a number or the name of a special group:") . ' ' . implode(array_keys($this->rids))),
+				"Text" => _("This is the relative ID (similar to UID on Unix) for Windows accounts. If you leave this empty LAM will calculate the RID from the UID. This can be either a number or the name of a special group:") . ' ' . implode(", ", array_keys($this->rids))),
 			'sambaDomainName' => array(
 				"ext" => "FALSE",
 				"Headline" => _("Domain"),
