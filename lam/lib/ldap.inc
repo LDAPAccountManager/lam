@@ -113,12 +113,14 @@ class Ldap{
     // users have the attribute "posixAccount" or "sambaAccount" and uid $name
     $filter = "(&(|(objectClass=posixAccount) (objectClass=sambaAccount)) (uid=$name))";
     $attrs = array();
-    $sr = ldap_search($this->server, $this->conf->get_UserSuffix(), $filter, $attrs);
-    $info = ldap_get_entries($this->server, $sr);
-	// return only first DN entry
-	$ret = $info[0]["dn"];
-    ldap_free_result($sr);
-    return $ret;
+    $sr = @ldap_search($this->server, $this->conf->get_UserSuffix(), $filter, $attrs);
+    if ($sr) {
+		$info = ldap_get_entries($this->server, $sr);
+		// return only first DN entry
+		$ret = $info[0]["dn"];
+		ldap_free_result($sr);
+		return $ret;
+	}
   }
 
   // returns the LDAP connection handle
