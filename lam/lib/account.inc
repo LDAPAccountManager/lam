@@ -602,7 +602,7 @@ function findgroups() {
 	foreach ($groups as $group) {
 		$return[] = $group['cn'];
 		}
-	sort ($return, SORT_STRING);
+	if (is_array($return)) sort ($return, SORT_STRING);
 	return $return;
 	}
 

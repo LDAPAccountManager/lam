@@ -107,6 +107,7 @@ if (isset($_GET['DN']) && $_GET['DN']!='') {
 			"</head><body>\n".
 		// Display errir-messages
 		StatusMessage("ERROR", _("Can not create any users."),_("Please create a group first."));
+		echo "<a href=../lists/listusers.php>"._("Back to userlist")."</a>\n";
 		echo "</body></html>";
 		die;
 		}
