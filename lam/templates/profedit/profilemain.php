@@ -53,7 +53,7 @@ if ($_POST['forward'] == "yes") {
 		}
 		// edit user profile
 		elseif($_POST['profile'] == "edituser") {
-			metaRefresh("profileuser.php?type=user&amp;edit=" . $_POST['e_user']);
+			metaRefresh("profilepage.php?type=user&amp;edit=" . $_POST['e_user']);
 		}
 		// delete user profile
 		elseif($_POST['profile'] == "deluser") {
@@ -62,11 +62,11 @@ if ($_POST['forward'] == "yes") {
 		if ($_SESSION['config']->is_samba3() || $_SESSION['config']->get_scriptPath()) {
 			// create new group profile
 			if ($_POST['profile'] == "newgroup") {
-				metaRefresh("profilegroup.php");
+				metaRefresh("profilepage.php?type=group");
 			}
 			// edit group profile
 			elseif($_POST['profile'] == "editgroup") {
-				metaRefresh("profilegroup.php?edit=" . $_POST['e_group']);
+				metaRefresh("profilepage.php?type=group&amp;edit=" . $_POST['e_group']);
 			}
 			// delete group profile
 			elseif($_POST['profile'] == "delgroup") {
@@ -75,11 +75,11 @@ if ($_POST['forward'] == "yes") {
 		}
 		// create new host profile
 		if ($_POST['profile'] == "newhost") {
-			metaRefresh("profilehost.php");
+			metaRefresh("profilepage.php?type=host");
 		}
 		// edit host profile
 		elseif($_POST['profile'] == "edithost") {
-			metaRefresh("profilehost.php?edit=" . $_POST['e_host']);
+			metaRefresh("profilepage.php?type=host&amp;edit=" . $_POST['e_host']);
 		}
 		// delete user profile
 		elseif($_POST['profile'] == "delhost") {
