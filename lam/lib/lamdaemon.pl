@@ -165,7 +165,7 @@ if ($( == 0 ) { # we are root
 							$i=0;
 							($<, $>) = ($>, $<); # Get root privileges
 							while ($quota_usr[$i][0]) {
-								if ($vals[2]ne'+') {
+								if ($vals[0]ne'+') {
 									$dev = Quota::getqcarg($quota_usr[$i][1]);
 									@temp = Quota::query($dev,$user[2],$group);
 									if ($temp[0]ne'') {
