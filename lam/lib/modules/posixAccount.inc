@@ -67,7 +67,7 @@ class posixAccount extends baseModule {
 		$this->messages['uidNumber'][1] = array('ERROR', _('ID-Number'), _('No free ID-Number!'));
 		$this->messages['uidNumber'][2] = array('WARN', _('ID-Number'), _('It is possible that this ID-number is reused. This can cause several problems because files with old permissions might still exist. To avoid this warning set maxUID to a higher value.'));
 		$this->messages['uidNumber'][3] = array('ERROR', _('ID-Number'), _('ID is already in use'));
-		$this->messages['uidNumber'][4] = array('ERROR', _('Account %s: posixAccount_uid'), _('UID must be a number. It has to be inside the UID range which is defined in your configuration profile.'));
+		$this->messages['uidNumber'][4] = array('ERROR', _('Account %s:') . ' posixAccount_uid', _('UID must be a number. It has to be inside the UID range which is defined in your configuration profile.'));
 		$this->messages['userPassword'][0] = array('ERROR', _('Password'), _('Please enter the same password in both password-fields.'));
 		$this->messages['userPassword'][1] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
 		$this->messages['userPassword'][3] = array('ERROR', _('Password'), _('You cannot use this password options at the same time.'));
@@ -83,7 +83,7 @@ class posixAccount extends baseModule {
 		$this->messages['uid'][8] = array('ERROR', _('Account %s:') . ' posixAccount_hostName', _('Hostname contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
 		$this->messages['gidNumber'][0] = array('ERROR', _('Account %s:') . ' posixAccount_group', _('LAM was unable to find a group with this name!'));
 		$this->messages['gidNumber'][1] = array('ERROR', _('Account %s:') . ' posixAccount_group', _('This GID number is invalid! Please provide either a number or a group name.'));
-		$this->messages['gecos'][0] = array('ERROR', _('Account %s:') . ' posixAccount_gecos', _('This GECOS value is invalid!'));
+		$this->messages['gecos'][0] = array('ERROR', _('Account %s:') . ' posixAccount_gecos', _('This gecos value is invalid!'));
 		$this->messages['shell'][0] = array('ERROR', _('Account %s:') . ' posixAccount_shell', _('This login shell is invalid!'));
 		$this->messages['passwordDisabled'][0] = array('ERROR', _('Account %s:') . ' posixAccount_passwordDisabled', _('This value can only be \"true\" or \"false\".'));
 	}
@@ -154,7 +154,7 @@ class posixAccount extends baseModule {
 			'posixAccount_maxUID' => _("Maximum UID number for Unix accounts (users)"),
 			'posixAccount_minMachine' => _("Minimum UID number for Unix accounts (hosts)"),
 			'posixAccount_maxMachine' => _("Maximum UID number for Unix accounts (hosts)"),
-			'posixAccount_pwdHash' => _("Password hash type"),
+			'posixAccount_pwdHash' => _("Password hash type for Unix accounts"),
 		)
 		);
 		// upload
@@ -174,7 +174,7 @@ class posixAccount extends baseModule {
 				'name' => 'posixAccount_uid',
 				'description' => _('UID number'),
 				'help' => 'uid', // TODO
-				'example' => _('1234')
+				'example' => '1234'
 			),
 			array(
 				'name' => 'posixAccount_group',
@@ -200,7 +200,7 @@ class posixAccount extends baseModule {
 				'name' => 'posixAccount_shell',
 				'description' => _('Login shell'),
 				'help' => 'shell', // TODO
-				'example' => _('/bin/bash'),
+				'example' => '/bin/bash',
 				'values' => implode(", ", getshells()),
 				'default' => '/bin/bash'
 			),
@@ -220,7 +220,7 @@ class posixAccount extends baseModule {
 			),
 			array(
 				'name' => 'posixAccount_gecos',
-				'description' => _('GECOS'),
+				'description' => _('Gecos'),
 				'help' => 'gecos',
 				'example' => _('Steve Miller,Room 2.14,123-123-1234,123-123-1234')
 			)
@@ -241,7 +241,7 @@ class posixAccount extends baseModule {
 				'name' => 'posixAccount_uid',
 				'description' => _('UID number'),
 				'help' => 'uid', // TODO
-				'example' => _('1234')
+				'example' => '1234'
 			),
 			array(
 				'name' => 'posixAccount_group',
@@ -252,7 +252,7 @@ class posixAccount extends baseModule {
 			),
 			array(
 				'name' => 'posixAccount_gecos',
-				'description' => _('GECOS'),
+				'description' => _('Gecos'),
 				'help' => 'gecos',
 				'example' => _('pc01,Room 2.34')
 			)
@@ -947,7 +947,7 @@ class posixAccount extends baseModule {
 		'posixAccount_additionalGroups' => array('<block><key>' . _('Additional groups') . '</key><value>' . '</value></block>'),
 		'posixAccount_homeDirectory' => array('<block><key>' . _('Home directory') . '</key><value>' . $this->attributes['homeDirectory'][0] . '</value></block>'),
 		'posixAccount_userPassword' => array('<block><key>' . _('Password') . '</key><value>' . $this->attributes['userPassword'][0] . '</value></block>'),
-		'posixAccount_loginShell' => array('<block><key>' . _('Login Shell') . '</key><value>' . $this->attributes['loginShell'][0] . '</value></block>'),
+		'posixAccount_loginShell' => array('<block><key>' . _('Login shell') . '</key><value>' . $this->attributes['loginShell'][0] . '</value></block>'),
 		);
 	}
 
@@ -1143,6 +1143,44 @@ class posixAccount extends baseModule {
 		return $triggered_messages;
 	}
 	
+	/**
+	* This function executes one post upload action.
+	*
+	* @param array $data array containing one account in each element
+	* @param array $ids array(<column_name> => <column number>)
+	* @param array $failed list of accounts which were not created successfully
+	* @param array $temp variable to store temporary data between two post actions
+	* @return array current status
+	* <br> array (
+	* <br>  'status' => 'finished' | 'inProgress'
+	* <br>  'progress' => 0..100
+	* <br>  'errors' => array (<array of parameters for StatusMessage>)
+	* <br> )
+	*/
+	function doUploadPostActions($data, $ids, $failed, &$temp) {
+		// on first call generate list of ldap operations
+		if (!isset($temp['counter'])) {
+			$temp['counter'] = 0;
+			$col = $ids['posixAccount_additionalGroups'];
+			for ($i = 0; $i < sizeof($data); $i++) {
+				if ($data[$i][$col] != "") {
+					$groups = explode(",", $data[$i][$col]);
+					for ($g = 0; $g < sizeof($groups); $g++) {
+						$temp['groups'][$groups[$g]][] = $data[$i][$ids['posixAccount_userName']];
+					}
+				}
+			}
+			return array(
+				'status' => 'inProgress',
+				'progress' => 0,
+				'errors' => array()
+			);
+		}
+		else {
+		// TODO ldap_add()
+		}
+	}
+
 }
 
 ?>
