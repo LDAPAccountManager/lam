@@ -1370,10 +1370,11 @@ function createuser($values, $uselamdaemon=true) {
 		// Generate SID
 		$attr['sambaSID'] = $values->smb_domain->SID . "-"  . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase); // sambaAccount_may
 
-		//if ($values->smb_mapgroup!='') $attr['sambaPrimaryGroupSID'] = $values->smb_mapgroup; // sambaAccount_req
 		ldapreload('group');
 		foreach ($_SESSION['groupDN'] as $groupname) {
-			if ($groupname['cn'] == $values->general_group) $attr['sambaPrimaryGroupSID'] = $groupname['sambaSID'];
+			if ($groupname['cn'] == $values->general_group) {
+				if ($groupname['sambaSID']) $attr['sambaPrimaryGroupSID'] = $groupname['sambaSID'];
+				}
 			}
 		if ($values->smb_pwdcanchange!='') $attr['sambaPwdCanChange'] = $values->smb_pwdcanchange; // sambaAccount_may
 			else $attr['sambaPwdCanChange'] = time(); // sambaAccount_may
@@ -1520,7 +1521,14 @@ function modifyuser($values,$values_old,$uselamdaemon=true) { // Will modify the
 			// Change SID only if we don't use a well known SID
 			ldapreload('group');
 			foreach ($_SESSION['groupDN'] as $groupname) {
-				if ($groupname['cn'] == $values->general_group) $attr['sambaPrimaryGroupSID'] = $groupname['sambaSID'];
+				if ($groupname['cn'] == $values->general_group) {
+					if ($groupname['sambaSID']) $attr['sambaPrimaryGroupSID'] = $groupname['sambaSID'];
+					else {
+						// remove primaryGroupSID if new group has no SID
+						$attr['sambaPrimaryGroupSID'] = $values_old->smb_mapgroup;
+						$attr_rem['sambaPrimaryGroupSID'] = $values_old->smb_mapgroup;
+						}
+					}
 				}
 			}
 		else {
