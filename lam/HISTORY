@@ -1,8 +1,14 @@
-??? Beta2
+??? 0.4.1
+
+  - better error handling at login
+  - support spaces in DNs
+  - PDF text for users
+  - fixed bug with SMD5 passwords
+  - create missing OUs recursivly
 
 
+29.10.2003 0.4 (Beta1)
 
-29.10.2003 Beta1
   - improved design
   - improved documentation
   - Fixed possible error which could delete entries if objectclass didn't fit
@@ -12,7 +18,8 @@
   - PDF output for groups and hosts
 
 
-31.08.2003 Alpha 3
+31.08.2003 0.3 (Alpha 3)
+
   - Samba 3 support
   - manage Samba 3 domains
   - multiple configuration files
@@ -20,7 +27,7 @@
   - better mass creation
 
 
-04.07.2003 Alpha 2
+04.07.2003 0.2 (Alpha 2)
 
   - support for multiple OUs + OU-Editor
   - account creation via file upload
@@ -29,6 +36,6 @@
   - fixed a lot of bugs
 
 
-23.05.2003 Alpha 1
+23.05.2003 0.1 (Alpha 1)
 
   Initial release
