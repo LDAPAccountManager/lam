@@ -260,6 +260,9 @@ do { // X-Or, only one if() can be true
 		$_SESSION['account_'.$varkey.'_account_new'] = loadHostProfile('default');
 		$account_new =& $_SESSION['account_'.$varkey.'_account_new'];
 		$account_new ->type = 'host';
+		$account_new->smb_flags['W'] = 1;
+		$account_new->general_homedir = '/dev/null';
+		$account_new->general_shell = '/bin/false';
 		break;
 		}
 	// Load Profile and reset all attributes to settings in profile
