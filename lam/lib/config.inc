@@ -664,6 +664,34 @@ class Config {
 		return true;
 	}
 
+	// returns text for user PDF files
+	function get_pdftext() {
+		if ($this->pdftext) return $this->pdftext;
+		else return "";
+	}
+
+	// set the text for user PDF files
+	// $value: string containing the text
+	// returns true if $value has correct format and could be saved
+	function set_pdftext($value) {
+		if (is_string($value)) {
+			$pdffile = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/config/pdf/" . $this->file . ".txt";
+			if (is_file($pdffile)) {
+				$file = @fopen($pdffile, "w");
+				if ($file) {
+					@fputs($file, $value);
+					fclose($file);
+					$this->pdftext = $value;
+				}
+				else return false;
+			}
+			else return false;
+			$this->pdftext = $value;
+		}
+		else return false;
+		return true;
+	}
+
 }
 
 /*
