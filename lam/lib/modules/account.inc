@@ -44,7 +44,7 @@ class account {
 		$this->base = $base;
 		// Do some error checks
 		if (!$base) trigger_error(_('Please create a base object with $var = new accountContainer();'), E_USER_ERROR);
-		if (!is_string($base)) trigger_error(_('Please create a new module object with $accountContainer->add_objectClass(\'account\');'), E_USER_ERROR);
+		if (!is_string($base)) trigger_error(_('Please create a new module object in an accountContainer object first.'), E_USER_ERROR);
 		if ($_SESSION[$this->base]->get_type() != 'host') trigger_error(_('account can only be used for hosts.'), E_USER_WARNING);
 		// load attribtues which are used in account objectClass
 		$this->orig = $_SESSION[$this->base]->get_module_attributes('account');

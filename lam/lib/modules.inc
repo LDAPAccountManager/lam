@@ -582,9 +582,9 @@ class accountContainer {
 		$this->dn = substr($dn, strpos($dn, ',')+1);
 		$this->dn_orig = $dn;
 		$attr = ldap_get_attributes($_SESSION[$this->ldap]->server(), $entry);
-		
+				
 		foreach ($modules as $module) {
-			$this->module[$module] = new $module($this->base);
+			if (!isset($this->module[$module])) $this->module[$module] = new $module($this->base);
 			$this->module[$module]->load_attributes($attr);
 			}
 

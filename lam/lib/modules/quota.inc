@@ -26,14 +26,14 @@ class quota {
 	function quota($base) {
 		$this->base = $base;
 		if (!$base) trigger_error(_('Please create a base object with $var = new accountContainer();'), E_USER_ERROR);
-		if (!is_string($base)) trigger_error(_('Please create a new module object with $accountContainer->add_objectClass(\'quota\');'), E_USER_ERROR);
+		if (!is_string($base)) trigger_error(_('Please create a new module in an accountContainer object first.'), E_USER_ERROR);
 		// quota is only a valid objectClass for user and host
 		if (!($_SESSION[$this->base]->get_type() == 'user') && !($_SESSION[$this->base]->get_type() == 'group')) trigger_error(_('quota can only be used for users or groups.'), E_USER_WARNING);
 		/* Check if ldap conatiner is in array and set type
 		* users are using inetOrgPerson-, hosts account-container
 		*/
-		if (!isset($_SESSION[$this->base]->module['posixAccount']) && $_SESSION[$this->base]->type=='user') $_SESSION[$this->base]->add_objectClass('posixAccount');
-		if (!isset($_SESSION[$this->base]->module['posixGroup']) && $_SESSION[$this->base]->type=='group') $_SESSION[$this->base]->add_objectClass('posixGroup');
+		if (!isset($_SESSION[$this->base]->module['posixAccount']) && $_SESSION[$this->base]->type=='user') $_SESSION[$this->base]->modules['posixAccount'] = new posixGroup($this->base);
+		if (!isset($_SESSION[$this->base]->module['posixGroup']) && $_SESSION[$this->base]->type=='group') $_SESSION[$this->base]->modules['posixGroup'] = new posixGroup($this->base);
 		// Get basic quotas for new account
 		$output_array = $_SESSION[$this->base]->lamdaemon(array("+ quota get " . $_SESSION[$this->base]->type));
 		// process quotas

@@ -43,14 +43,15 @@ class inetOrgPerson {
 		$this->base = $base;
 		// Do some error checks
 		if (!$base) trigger_error(_('Please create a base object with $var = new accountContainer();'), E_USER_ERROR);
-		if (!is_string($base)) trigger_error(_('Please create a new module object with $accountContainer->add_objectClass(\'inetOrgPerson\');'), E_USER_ERROR);
+		if (!is_string($base)) trigger_error(_('Please create a new module in an accountContainer object first.'), E_USER_ERROR);
 		if ($_SESSION[$this->base]->type != 'user') trigger_error(_('inetOrgPerson can only be used for users.'), E_USER_WARNING);
 		// load attribtues which are used in inetOrgPerson objectClass
 		// unset attributes which are "must" but not in this module
 		// cn will be set to uid in module posixAccount
 		// Therefore module posixAccount is required an cn will be removed from main index in account_container
 		// Create copy of attributes
-		$this->orig = $this->attributes ;
+		$this->orig = $_SESSION[$this->base]->get_module_attributes('inetOrgPerson');
+		$this->attributes = $_SESSION[$this->base]->get_module_attributes('inetOrgPerson');
 		// Add objectClass to attributes
 		$this->attributes['objectClass'][0] = 'inetOrgPerson';
 		}

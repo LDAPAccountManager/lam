@@ -59,7 +59,7 @@ class posixGroup {
 		* base container
 		*/
 		if (!$base) trigger_error(_('Please create a base object with $var = new accountContainer();'), E_USER_ERROR);
-		if (!is_string($base)) trigger_error(_('Please create a new module object with $accountContainer->add_objectClass(\'posixGroup\');'), E_USER_ERROR);
+		if (!is_string($base)) trigger_error(_('Please create a new module object in an accountContainer object first.'), E_USER_ERROR);
 		$this->base = $base;
 		// posixGroup is only a valid objectClass for user and host
 		if ($_SESSION[$this->base]->get_type() != 'group') trigger_error(_('posixGroup can only be used for groups.'), E_USER_WARNING);
