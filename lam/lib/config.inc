@@ -189,13 +189,7 @@ class Config {
 
   // saves preferences to ../config/lam.conf
   function save() {
-    // Get path of lam.conf
-    $path = getcwd();
-    $path = explode("/", substr($path,1));
-    for($i = 0; $i <= array_search("lam", $path); $i++) {
-      $conffile .= "/" . $path[$i];
-    }
-    $conffile .= "/config/lam.conf";
+    $conffile = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/config/lam.conf";
     if (is_file($conffile) == True) {
       // booleans to check if value was already saved
       $save_serverURL = $save_passwd = $save_admins = $save_suffusr = $save_suffgrp = $save_suffhst =
