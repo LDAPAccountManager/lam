@@ -346,6 +346,21 @@ class Ldap{
 		// change random number
 		mt_srand($this->rand + (microtime() * 1000000));
 		$this->rand = mt_rand();
+		// delete PDF files which are older than 10 min
+		if (isset($_SESSION['lampath'])) {
+			$relpath = $_SESSION['lampath'] . 'tmp/';
+			$time = time();
+			$dir = @opendir($relpath);
+			while ($file = @readdir($dir)) {
+					if (substr($file, -4) == '.pdf') {
+					$path = $relpath . $file;
+					if ($time - filemtime($path) > 600) {
+						@unlink($path);
+					}
+				}
+			}
+			@closedir($h);
+		}
 	}
 
 	// encrypts username and password
