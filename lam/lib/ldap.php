@@ -24,9 +24,6 @@ $Id$
 // ldap.php provides basic functions to connect to the OpenLDAP server and get lists of users and groups.
 include_once("../config/config.php");
 
-// class representing local user entry with attributes of ldap user entry
-include_once("userentry.php");
-
 class Ldap{
 
   // object of Config to access preferences
