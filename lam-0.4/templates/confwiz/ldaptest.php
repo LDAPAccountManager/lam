@@ -138,8 +138,12 @@ if (sizeof($new_suffs) > 0) {
 								}
 								else {  // add root entry
 									$attr = array();
-									$attr['objectClass'] = 'organization';
+									$attr['objectClass'][] = 'organization';
 									$attr[$headarray[0]] = $headarray[1];
+									if ($headarray[0] == "dc") {
+										$attr['o'] = $headarray[1];
+										$attr['objectClass'][] = 'dcObject';
+									}
 									$dn = $subsuffs[$k];
 									if (!@ldap_add($_SESSION['confwiz_ldap']->server(), $dn, $attr)) {
 										$fail[] = $suff;
