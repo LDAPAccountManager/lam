@@ -239,7 +239,10 @@ function listDoPost($scope) {
 		elseif ($_POST['del']){
 			// search for checkboxes
 			$accounts = array_keys($_POST, "on");
-			$_SESSION['delete_dn'] = $accounts;
+			$_SESSION['delete_dn'] = array();
+			for ($i = 0; $i < sizeof($accounts); $i++) {
+				$_SESSION['delete_dn'][] = $_SESSION[$scope . 'info'][$accounts[$i]]['dn'];
+			}
 			if (sizeof($accounts) > 0) {
 				metaRefresh("../delete.php?type=" . $scope);
 				exit;
@@ -254,7 +257,7 @@ function listDoPost($scope) {
 			// load accounts from LDAP
 			for ($i = 0; $i < sizeof($accounts); $i++) {
 				$_SESSION["accountPDF-$i"] = new accountContainer($scope, "accountPDF-$i");
-				$_SESSION["accountPDF-$i"]->load_account($accounts[$i]);
+				$_SESSION["accountPDF-$i"]->load_account($_SESSION[$scope . 'info'][$accounts[$i]]['dn']);
 				$list[$i] = $_SESSION["accountPDF-$i"];
 			}
 			if (sizeof($list) > 0) {

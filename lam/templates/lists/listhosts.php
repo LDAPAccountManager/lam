@@ -139,7 +139,10 @@ $filter = listBuildFilter($_POST, $attr_array);
 $info = listFilterAccounts($info, $filter);
 if (sizeof($info) == 0) StatusMessage("WARN", "", _("No hosts found!"));
 // sort rows by sort column ($sort)
-if ($info) $info = listSort($sort, $attr_array, $info);
+if ($info) {
+	$info = listSort($sort, $attr_array, $info);
+	$_SESSION[$scope . 'info'] = $info;
+}
 
 // build filter URL
 $searchFilter = array();
@@ -173,19 +176,19 @@ else $table_end = ($page * $max_page_entries);
 if (sizeof($info) > 0) {
 	// print host list
 	for ($i = $table_begin; $i < $table_end; $i++) {
-		echo("<tr class=\"hostlist\" onMouseOver=\"host_over(this, '" . $info[$i]["dn"] . "')\"" .
-									" onMouseOut=\"host_out(this, '" . $info[$i]["dn"] . "')\"" .
-									" onClick=\"host_click(this, '" . $info[$i]["dn"] . "')\"" .
-									" onDblClick=\"parent.frames[1].location.href='../account/edit.php?type=host&amp;DN=" . $info[$i]["dn"] . "'\">");
+		echo("<tr class=\"hostlist\" onMouseOver=\"host_over(this, '" . $i . "')\"" .
+									" onMouseOut=\"host_out(this, '" . $i . "')\"" .
+									" onClick=\"host_click(this, '" . $i . "')\"" .
+									" onDblClick=\"parent.frames[1].location.href='../account/edit.php?type=host&amp;DN=" . $i . "'\">");
 		if ($_GET['selectall'] == "yes") {
-		echo " <td height=22 align=\"center\"><input onClick=\"host_click(this, '" . $info[$i]["dn"] . "')\"" .
-					" type=\"checkbox\" checked name=\"" . $info[$i]["dn"] . "\"></td>";
+		echo " <td height=22 align=\"center\"><input onClick=\"host_click(this, '" . $i . "')\"" .
+					" type=\"checkbox\" checked name=\"" . $i . "\"></td>";
 		}
 		else {
-		echo " <td height=22 align=\"center\"><input onClick=\"host_click(this, '" . $info[$i]["dn"] . "')\"" .
-					" type=\"checkbox\" name=\"" . $info[$i]["dn"] . "\"></td>";
+		echo " <td height=22 align=\"center\"><input onClick=\"host_click(this, '" . $i . "')\"" .
+					" type=\"checkbox\" name=\"" . $i . "\"></td>";
 		}
-		echo (" <td align='center'><a href=\"../account/edit.php?type=host&amp;DN='" . $info[$i]["dn"] . "'\">" . _("Edit") . "</a></td>");
+		echo (" <td align='center'><a href=\"../account/edit.php?type=host&amp;DN='" . $i . "'\">" . _("Edit") . "</a></td>");
 		for ($k = 0; $k < sizeof($attr_array); $k++) {
 			echo ("<td>");
 			// print all attribute entries seperated by "; "

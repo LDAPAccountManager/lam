@@ -169,7 +169,10 @@ $filter = listBuildFilter($_POST, $attr_array);
 $info = listFilterAccounts($info, $filter);
 if (sizeof($info) == 0) StatusMessage("WARN", "", _("No users found!"));
 // sort rows by sort column ($sort)
-if ($info) $info = listSort($sort, $attr_array, $info);
+if ($info) {
+	$info = listSort($sort, $attr_array, $info);
+	$_SESSION[$scope . 'info'] = $info;
+}
 
 // build filter URL
 $searchFilter = array();
@@ -216,24 +219,25 @@ if ($user_count != 0) {
 		// resort if needed
 		if ($sort == "gidnumber") {
 			$info = listSort($sort, $attr_array, $info);
+			$_SESSION[$scope . 'info'] = $info;
 		}
 	}
 	// print user list
-	for ($i = $table_begin; $i < $table_end; $i++) { // ignore last entry in array which is "count"
-		echo("<tr class=\"userlist\"\nonMouseOver=\"user_over(this, '" . $info[$i]["dn"] . "')\"\n" .
-			"onMouseOut=\"user_out(this, '" . $info[$i]["dn"] . "')\"\n" .
-			"onClick=\"user_click(this, '" . $info[$i]["dn"] . "')\"\n" .
-			"onDblClick=\"parent.frames[1].location.href='../account/edit.php?type=user&amp;DN=" . $info[$i]["dn"] . "'\">\n");
+	for ($i = $table_begin; $i < $table_end; $i++) {
+		echo("<tr class=\"userlist\"\nonMouseOver=\"user_over(this, '" . $i . "')\"\n" .
+			"onMouseOut=\"user_out(this, '" . $i . "')\"\n" .
+			"onClick=\"user_click(this, '" . $i . "')\"\n" .
+			"onDblClick=\"parent.frames[1].location.href='../account/edit.php?type=user&amp;DN=" . $i . "'\">\n");
 		// checkboxes if selectall = "yes"
 		if ($_GET['selectall'] == "yes") {
-			echo "<td height=22 align=\"center\">\n<input onClick=\"user_click(this, '" . $info[$i]["dn"] . "')\" type=\"checkbox\" name=\"" .
-				$info[$i]["dn"] . "\" checked>\n</td>\n";
+			echo "<td height=22 align=\"center\">\n<input onClick=\"user_click(this, '" . $i . "')\" type=\"checkbox\" name=\"" .
+				$i . "\" checked>\n</td>\n";
 		}
 		else {
-			echo "<td height=22 align=\"center\">\n<input onClick=\"user_click(this, '" . $info[$i]["dn"] . "')\" type=\"checkbox\" name=\"" .
-				$info[$i]["dn"] . "\">\n</td>\n";
+			echo "<td height=22 align=\"center\">\n<input onClick=\"user_click(this, '" . $i . "')\" type=\"checkbox\" name=\"" .
+				$i . "\">\n</td>\n";
 		}
-		echo ("<td align='center'>\n<a href=\"../account/edit.php?type=user&amp;DN='" . $info[$i]["dn"] . "'\">" .
+		echo ("<td align='center'>\n<a href=\"../account/edit.php?type=user&amp;DN='" . $i . "'\">" .
 			_("Edit") . "</a>\n</td>\n");
 		for ($k = 0; $k < sizeof($attr_array); $k++) {
 			echo ("<td>\n");
