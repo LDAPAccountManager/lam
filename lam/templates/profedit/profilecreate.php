@@ -113,27 +113,11 @@ if ($_GET['type'] == "user") {
 		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
-	if ($_POST['unix_pwdexpire_day'] && is_numeric($_POST['unix_pwdexpire_day'])) {
-		$acct->unix_pwdexpire_day = $_POST['unix_pwdexpire_day'];
+	if (is_numeric($_POST['unix_pwdexpire_day']) && is_numeric($_POST['unix_pwdexpire_mon']) && is_numeric($_POST['unix_pwdexpire_yea'])) {
+		$acct->unix_pwdexpire = mktime(0, 0, 0, $_POST['unix_pwdexpire_mon'], $_POST['unix_pwdexpire_day'], $_POST['unix_pwdexpire_yea']);
 	}
 	else {
-		StatusMessage("ERROR", "", _("Wrong parameter for password expiry day!") . " " . $_POST['unix_pwdexpire_day']);
-		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
-		exit;
-	}
-	if ($_POST['unix_pwdexpire_mon'] && is_numeric($_POST['unix_pwdexpire_mon'])) {
-		$acct->unix_pwdexpire_mon = $_POST['unix_pwdexpire_mon'];
-	}
-	else {
-		StatusMessage("ERROR", "", _("Wrong parameter for password expiry month!") . " " . $_POST['unix_pwdexpire_mon']);
-		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
-		exit;
-	}
-	if ($_POST['unix_pwdexpire_yea'] && is_numeric($_POST['unix_pwdexpire_yea'])) {
-		$acct->unix_pwdexpire_yea = $_POST['unix_pwdexpire_yea'];
-	}
-	else {
-		StatusMessage("ERROR", "", _("Wrong parameter for password expiry year!") . " " . $_POST['unix_pwdexpire_yea']);
+		StatusMessage("ERROR", "", _("Wrong parameter for Unix password expiry!"));
 		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
@@ -157,7 +141,7 @@ if ($_GET['type'] == "user") {
 		$acct->smb_password_no = $_POST['smb_password_no'];
 	}
 	else {
-		StatusMessage("ERROR", "", _("Wrong parameter for Samba option: no password!") . " " . $_POST['smb_password_no']);
+		StatusMessage("ERROR", "", _("Wrong parameter for Samba option: Set Samba Password!") . " " . $_POST['smb_password_no']);
 		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
@@ -165,11 +149,19 @@ if ($_GET['type'] == "user") {
 		$acct->smb_useunixpwd = $_POST['smb_useunixpwd'];
 	}
 	else {
-		StatusMessage("ERROR", "", _("Wrong parameter for Samba option: use Unix password!") . " " . $_POST['smb_useunixpwd']);
+		StatusMessage("ERROR", "", _("Wrong parameter for Samba option: Set Unix Password for Samba!") . " " . $_POST['smb_useunixpwd']);
 		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
-	if (($_POST['smb_pwdcanchange'] == "1") || ($_POST['smb_pwdcanchange'] == "0")) {
+	if (($_POST['smb_flagsD'] == "1") || ($_POST['smb_flagsD'] == "0")) {
+		$acct->smb_flagsD = $_POST['smb_flagsD'];
+	}
+	else {
+		StatusMessage("ERROR", "", _("Wrong parameter for Samba option: Account does not expire!") . " " . $_POST['smb_flagsD']);
+		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
+		exit;
+	}
+	if (!$_POST['smb_pwdcanchange'] || is_numeric($_POST['smb_pwdcanchange'])) {
 		$acct->smb_pwdcanchange = $_POST['smb_pwdcanchange'];
 	}
 	else {
@@ -177,7 +169,7 @@ if ($_GET['type'] == "user") {
 		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
-	if (($_POST['smb_pwdmustchange'] == "1") || ($_POST['smb_pwdmustchange'] == "0")) {
+	if (!$_POST['smb_pwdmustchange'] || is_numeric($_POST['smb_pwdmustchange'])) {
 		$acct->smb_pwdmustchange = $_POST['smb_pwdmustchange'];
 	}
 	else {

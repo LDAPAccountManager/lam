@@ -55,11 +55,20 @@ for ($i = 0; $i < sizeof($shelllist); $i++) {
 
 // check if profile should be edited
 if ($_GET['edit']) {
-	$acct = loadUserProfile($_GET['edit']);
+	$acct = loadUserProfile($_GET['edit'], False);
 }
 
 // search available groups
 $groups = findgroups();
+
+// calculate date for unix password expiry
+if ($acct->unix_pwdexpire) {
+$tstamp = $acct->unix_pwdexpire;
+$tdate = date(dmY, $acct->unix_pwdexpire);
+$unix_pwdexpire_day = substr($tdate, 0, 2);
+$unix_pwdexpire_mon = substr($tdate, 2, 2);
+$unix_pwdexpire_yea = substr($tdate, 4, 4);
+}
 
 // display formular
 echo ("<form action=\"profilecreate.php?type=user\" method=\"post\">\n");
@@ -162,19 +171,19 @@ echo ("<td align=\"right\"><b>" . _("Account expires on") . ": </b></td>\n");
 echo ("<td>\n");
 echo ("<select name=\"unix_pwdexpire_day\">\n");
 for ( $i=1; $i<=31; $i++ ) {
-	if ($acct->unix_pwdexpire_day == $i) echo "<option selected>$i</option>\n";
+	if ($unix_pwdexpire_day == $i) echo "<option selected>$i</option>\n";
 	else echo "<option>$i</option>\n";
 }
 echo ("</select>\n");
 echo ("<select name=\"unix_pwdexpire_mon\">\n");
 for ( $i=1; $i<=12; $i++ ) {
-	if ($acct->unix_pwdexpire_mon == $i) echo "<option selected>$i</option>\n";
+	if ($unix_pwdexpire_mon == $i) echo "<option selected>$i</option>\n";
 	else echo "<option>$i</option>\n";
 }
 echo ("</select>\n");
 echo ("<select name=\"unix_pwdexpire_yea\">");
 for ( $i=2003; $i<=2030; $i++ ) {
-	if ($acct->unix_pwdexpire_yea == $i) echo "<option selected>$i</option>\n";
+	if ($unix_pwdexpire_yea == $i) echo "<option selected>$i</option>\n";
 	else echo "<option>$i</option>\n";
 }
 echo ("</select></td>");
@@ -225,23 +234,31 @@ echo ("</select></td>\n");
 echo ("<td><a href=\"../help.php?HelpNumber=301\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
 echo ("</tr>\n");
 
+// password expires
+echo ("<tr>\n");
+echo ("<td align=\"right\"><b>" . _("Password does not expire") . ": </b></td>\n");
+echo ("<td><select name=\"smb_flagsD\">\n");
+if ($acct->smb_flagsD == "0") echo ("<option selected value=0>"._("no")."</option><option value=1>"._("yes")."</option>\n");
+else echo ("<option selected value=1>"._("yes")."</option><option value=0>"._("no")."</option>\n");
+echo ("</select></td>\n");
+echo ("<td><a href=\"../help.php?HelpNumber=302\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
+echo ("</tr>\n");
+
 // user can change his password
 echo ("<tr>\n");
 echo ("<td align=\"right\"><b>" . _("User can change password") . ": </b></td>\n");
-echo ("<td><select name=\"smb_pwdcanchange\">\n");
-if ($acct->smb_pwdcanchange == "0") echo ("<option selected value=0>"._("no")."</option><option value=1>"._("yes")."</option>\n");
-else echo ("<option selected value=1>"._("yes")."</option><option value=0>"._("no")."</option>\n");
-echo ("</select></td>\n");
+echo ("<td>\n");
+echo ("<input type=\"text\" name=\"smb_pwdcanchange\" value=\"" . $acct->smb_pwdcanchange . "\">\n");
+echo ("</td>\n");
 echo ("<td><a href=\"../help.php?HelpNumber=302\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
 echo ("</tr>\n");
 
 // user must change his password
 echo ("<tr>\n");
 echo ("<td align=\"right\"><b>" . _("User must change password") . ": </b></td>\n");
-echo ("<td><select name=\"smb_pwdmustchange\">\n");
-if ($acct->smb_pwdmustchange == "1") echo ("<option selected value=1>"._("yes")."</option><option value=0>"._("no")."</option>\n");
-else echo ("<option selected value=0>"._("no")."</option><option value=1>"._("yes")."</option>\n");
-echo ("</select></td>\n");
+echo ("<td>\n");
+echo ("<input type=\"text\" name=\"smb_pwdmustchange\" value=\"" . $acct->smb_pwdmustchange . "\">\n");
+echo ("</td>\n");
 echo ("<td><a href=\"../help.php?HelpNumber=303\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
 echo ("</tr>\n");
 

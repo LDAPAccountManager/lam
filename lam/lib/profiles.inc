@@ -79,7 +79,8 @@ function getHostProfiles() {
 
 // loads an user profile with name $profile (without .pru)
 // the return value is an account object
-function loadUserProfile($profile) {
+// if $timestamps is true, smb_pwdcanchange and smb_pwdmustchange are returned as timestamp
+function loadUserProfile($profile, $timestamps=True) {
 	if (!eregi("^([0-9]|[a-z]|-|_)*$", $profile)) exit;
 	$acc = new account();
 	$file = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/users/" . $profile . ".pru";
@@ -126,16 +127,8 @@ function loadUserProfile($profile) {
 					$acc->unix_pwdmaxage = chop(substr($line, 16, strlen($line)-16));
 					continue;
 				}
-				if (substr($line, 0, 20) == "unix_pwdexpire_day: ") {
-					$acc->unix_pwdexpire_day = chop(substr($line, 20, strlen($line)-20));
-					continue;
-				}
-				if (substr($line, 0, 20) == "unix_pwdexpire_mon: ") {
-					$acc->unix_pwdexpire_mon = chop(substr($line, 20, strlen($line)-20));
-					continue;
-				}
-				if (substr($line, 0, 20) == "unix_pwdexpire_yea: ") {
-					$acc->unix_pwdexpire_yea = chop(substr($line, 20, strlen($line)-20));
+				if (substr($line, 0, 16) == "unix_pwdexpire: ") {
+					$acc->unix_pwdexpire = chop(substr($line, 16, strlen($line)-16));
 					continue;
 				}
 				if (substr($line, 0, 18) == "unix_deactivated: ") {
@@ -148,6 +141,10 @@ function loadUserProfile($profile) {
 				}
 				if (substr($line, 0, 16) == "smb_useunixpwd: ") {
 					$acc->smb_useunixpwd = chop(substr($line, 16, strlen($line)-16));
+					continue;
+				}
+				if (substr($line, 0, 12) == "smb_flagsD: ") {
+					$acc->smb_flagsD = chop(substr($line, 12, strlen($line)-12));
 					continue;
 				}
 				if (substr($line, 0, 18) == "smb_pwdcanchange: ") {
@@ -184,6 +181,11 @@ function loadUserProfile($profile) {
 				}
 			}
 			fclose($file);
+			// set timestamps if needed
+			if ($timestamps) {
+				$acct->smb_pwdcanchange = ($acct->smb_pwdcanchange * 86400) + time();
+				$acct->smb_pwdmustchange = ($acct->smb_pwdmustchange * 86400) + time();
+			}
 		}
 		else {
 			StatusMessage("ERROR", "", _("Unable to load profile! ") . $file);
@@ -216,62 +218,6 @@ function loadHostProfile($profile) {
 				// search keywords
 				if (substr($line, 0, 15) == "general_group: ") {
 					$acc->general_group = chop(substr($line, 15, strlen($line)-15));
-					continue;
-				}
-				if (substr($line, 0, 18) == "general_groupadd: ") {
-					$acc->general_groupadd = explode(";", chop(substr($line, 18, strlen($line)-18)));
-					continue;
-				}
-				if (substr($line, 0, 18) == "unix_password_no: ") {
-					$acc->unix_password_no = chop(substr($line, 18, strlen($line)-18));
-					continue;
-				}
-				if (substr($line, 0, 14) == "unix_pwdwarn: ") {
-					$acc->unix_pwdwarn = chop(substr($line, 14, strlen($line)-14));
-					continue;
-				}
-				if (substr($line, 0, 20) == "unix_pwdallowlogin: ") {
-					$acc->unix_pwdallowlogin = chop(substr($line, 20, strlen($line)-20));
-					continue;
-				}
-				if (substr($line, 0, 16) == "unix_pwdminage: ") {
-					$acc->unix_pwdminage = chop(substr($line, 16, strlen($line)-16));
-					continue;
-				}
-				if (substr($line, 0, 16) == "unix_pwdmaxage: ") {
-					$acc->unix_pwdmaxage = chop(substr($line, 16, strlen($line)-16));
-					continue;
-				}
-				if (substr($line, 0, 20) == "unix_pwdexpire_day: ") {
-					$acc->unix_pwdexpire_day = chop(substr($line, 20, strlen($line)-20));
-					continue;
-				}
-				if (substr($line, 0, 20) == "unix_pwdexpire_mon: ") {
-					$acc->unix_pwdexpire_mon = chop(substr($line, 20, strlen($line)-20));
-					continue;
-				}
-				if (substr($line, 0, 20) == "unix_pwdexpire_yea: ") {
-					$acc->unix_pwdexpire_yea = chop(substr($line, 20, strlen($line)-20));
-					continue;
-				}
-				if (substr($line, 0, 18) == "unix_deactivated: ") {
-					$acc->unix_deactivated = chop(substr($line, 18, strlen($line)-18));
-					continue;
-				}
-				if (substr($line, 0, 17) == "smb_password_no: ") {
-					$acc->smb_password_no = chop(substr($line, 17, strlen($line)-17));
-					continue;
-				}
-				if (substr($line, 0, 16) == "smb_useunixpwd: ") {
-					$acc->smb_useunixpwd = chop(substr($line, 16, strlen($line)-16));
-					continue;
-				}
-				if (substr($line, 0, 18) == "smb_pwdcanchange: ") {
-					$acc->smb_pwdcanchange = chop(substr($line, 18, strlen($line)-18));
-					continue;
-				}
-				if (substr($line, 0, 19) == "smb_pwdmustchange: ") {
-					$acc->smb_pwdmustchange = chop(substr($line, 19, strlen($line)-19));
 					continue;
 				}
 				if (substr($line, 0, 12) == "smb_domain: ") {
@@ -328,12 +274,11 @@ function saveUserProfile($account, $profile) {
 	if (isset($account->unix_pwdallowlogin)) fputs($file, "unix_pwdallowlogin: " . $account->unix_pwdallowlogin . "\n");
 	if (isset($account->unix_pwdminage)) fputs($file, "unix_pwdminage: " . $account->unix_pwdminage . "\n");
 	if (isset($account->unix_pwdmaxage)) fputs($file, "unix_pwdmaxage: " . $account->unix_pwdmaxage . "\n");
-	if (isset($account->unix_pwdexpire_day)) fputs($file, "unix_pwdexpire_day: " . $account->unix_pwdexpire_day . "\n");
-	if (isset($account->unix_pwdexpire_mon)) fputs($file, "unix_pwdexpire_mon: " . $account->unix_pwdexpire_mon . "\n");
-	if (isset($account->unix_pwdexpire_yea)) fputs($file, "unix_pwdexpire_yea: " . $account->unix_pwdexpire_yea . "\n");
+	if (isset($account->unix_pwdexpire)) fputs($file, "unix_pwdexpire: " . $account->unix_pwdexpire . "\n");
 	if (isset($account->unix_deactivated)) fputs($file, "unix_deactivated: " . $account->unix_deactivated . "\n");
 	if (isset($account->smb_password_no)) fputs($file, "smb_password_no: " . $account->smb_password_no . "\n");
 	if (isset($account->smb_useunixpwd)) fputs($file, "smb_useunixpwd: " . $account->smb_useunixpwd . "\n");
+	if (isset($account->smb_flagsD)) fputs($file, "smb_flagsD: " . $account->smb_flagsD . "\n");
 	if (isset($account->smb_pwdcanchange)) fputs($file, "smb_pwdcanchange: " . $account->smb_pwdcanchange . "\n");
 	if (isset($account->smb_pwdmustchange)) fputs($file, "smb_pwdmustchange: " . $account->smb_pwdmustchange . "\n");
 	if (isset($account->smb_homedrive)) fputs($file, "smb_homedrive: " . $account->smb_homedrive . "\n");
@@ -364,20 +309,6 @@ function saveHostProfile($account, $profile) {
 	$file = fopen($path, "w");
 	// write attributes
 	if (isset($account->general_group)) fputs($file, "general_group: " . $account->general_group . "\n");
-	if (isset($account->general_groupadd)) fputs($file, "general_groupadd: " . implode(";", $account->general_groupadd) . "\n");
-	if (isset($account->unix_password_no)) fputs($file, "unix_password_no: " . $account->unix_password_no . "\n");
-	if (isset($account->unix_pwdwarn)) fputs($file, "unix_pwdwarn: " . $account->unix_pwdwarn . "\n");
-	if (isset($account->unix_pwdallowlogin)) fputs($file, "unix_pwdallowlogin: " . $account->unix_pwdallowlogin . "\n");
-	if (isset($account->unix_pwdminage)) fputs($file, "unix_pwdminage: " . $account->unix_pwdminage . "\n");
-	if (isset($account->unix_pwdmaxage)) fputs($file, "unix_pwdmaxage: " . $account->unix_pwdmaxage . "\n");
-	if (isset($account->unix_pwdexpire_day)) fputs($file, "unix_pwdexpire_day: " . $account->unix_pwdexpire_day . "\n");
-	if (isset($account->unix_pwdexpire_mon)) fputs($file, "unix_pwdexpire_mon: " . $account->unix_pwdexpire_mon . "\n");
-	if (isset($account->unix_pwdexpire_yea)) fputs($file, "unix_pwdexpire_yea: " . $account->unix_pwdexpire_yea . "\n");
-	if (isset($account->unix_deactivated)) fputs($file, "unix_deactivated: " . $account->unix_deactivated . "\n");
-	if (isset($account->smb_password_no)) fputs($file, "smb_password_no: " . $account->smb_password_no . "\n");
-	if (isset($account->smb_useunixpwd)) fputs($file, "smb_useunixpwd: " . $account->smb_useunixpwd . "\n");
-	if (isset($account->smb_pwdcanchange)) fputs($file, "smb_pwdcanchange: " . $account->smb_pwdcanchange . "\n");
-	if (isset($account->smb_pwdmustchange)) fputs($file, "smb_pwdmustchange: " . $account->smb_pwdmustchange . "\n");
 	if (isset($account->smb_domain)) fputs($file, "smb_domain: " . $account->smb_domain . "\n");
 	// close file
 	fclose($file);
