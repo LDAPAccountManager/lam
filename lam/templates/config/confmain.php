@@ -131,9 +131,9 @@ if (isset($_GET["modulesback"])) {
 	$conf->set_scriptserver($_SESSION['conf_scriptserver']);
 	// check if modules were edited
 	if ($_GET["moduleschanged"] == "true") {
-		$conf->set_UserModules($_SESSION['conf_usermodules']);
-		$conf->set_GroupModules($_SESSION['conf_groupmodules']);
-		$conf->set_HostModules($_SESSION['conf_hostmodules']);
+		$conf->set_AccountModules($_SESSION['conf_usermodules'], 'user');
+		$conf->set_AccountModules($_SESSION['conf_groupmodules'], 'group');
+		$conf->set_AccountModules($_SESSION['conf_hostmodules'], 'host');
 	}
 }
 
@@ -216,9 +216,9 @@ echo ("<fieldset><legend><b>" . _("Account modules") . "</b></legend>");
 echo ("<table border=0>");
 
 // Account modules
-echo "<tr><td><b>" . _("User modules") . ": </b>" . implode(", ", $conf->get_UserModules()) . "</td></tr>\n";
-echo "<tr><td><b>" . _("Group modules") . ": </b>" . implode(", ", $conf->get_GroupModules()) . "</td></tr>\n";
-echo "<tr><td><b>" . _("Host modules") . ": </b>" . implode(", ", $conf->get_HostModules()) . "</td></tr>\n";
+echo "<tr><td><b>" . _("User modules") . ": </b>" . implode(", ", $conf->get_AccountModules('user')) . "</td></tr>\n";
+echo "<tr><td><b>" . _("Group modules") . ": </b>" . implode(", ", $conf->get_AccountModules('group')) . "</td></tr>\n";
+echo "<tr><td><b>" . _("Host modules") . ": </b>" . implode(", ", $conf->get_AccountModules('host')) . "</td></tr>\n";
 echo "<tr><td>&nbsp;</td></tr>\n";
 echo "<tr><td><input tabindex=\"$tabindex\" type=\"submit\" name=\"editmodules\" value=\"" . _("Edit modules") . "\">&nbsp;&nbsp;" .
 	"<a href=\"../help.php?HelpNumber=217\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n";
@@ -234,11 +234,11 @@ echo ("<p></p>");
 
 // get list of scopes of modules
 $scopes = array();
-$mods = $conf->get_UserModules();
+$mods = $conf->get_AccountModules('user');
 for ($i = 0; $i < sizeof($mods); $i++) $scopes[$mods[$i]][] = 'user';
-$mods = $conf->get_GroupModules();
+$mods = $conf->get_AccountModules('group');
 for ($i = 0; $i < sizeof($mods); $i++) $scopes[$mods[$i]][] = 'group';
-$mods = $conf->get_HostModules();
+$mods = $conf->get_AccountModules('host');
 for ($i = 0; $i < sizeof($mods); $i++) $scopes[$mods[$i]][] = 'host';
 
 // get module options
@@ -439,9 +439,9 @@ echo ("<p><input type=\"hidden\" name=\"passwd\" value=\"" . $passwd . "\"></p>\
 echo ("<p><input type=\"hidden\" name=\"filename\" value=\"" . $filename . "\"></p>\n");
 
 // modules
-echo ("<p><input type=\"hidden\" name=\"usermodules\" value=\"" . implode(",", $conf->get_UserModules()) . "\"></p>\n");
-echo ("<p><input type=\"hidden\" name=\"groupmodules\" value=\"" . implode(",", $conf->get_GroupModules()) . "\"></p>\n");
-echo ("<p><input type=\"hidden\" name=\"hostmodules\" value=\"" . implode(",", $conf->get_HostModules()) . "\"></p>\n");
+echo ("<p><input type=\"hidden\" name=\"usermodules\" value=\"" . implode(",", $conf->get_AccountModules('user')) . "\"></p>\n");
+echo ("<p><input type=\"hidden\" name=\"groupmodules\" value=\"" . implode(",", $conf->get_AccountModules('group')) . "\"></p>\n");
+echo ("<p><input type=\"hidden\" name=\"hostmodules\" value=\"" . implode(",", $conf->get_AccountModules('host')) . "\"></p>\n");
 
 echo ("</form>\n");
 echo ("</body>\n");

@@ -161,19 +161,19 @@ if (!$conf->set_scriptserver($scriptserver)) {
 	exit;
 }
 
-if (! $conf->set_UserModules($_SESSION['conf_usermodules'])) {
+if (! $conf->set_AccountModules($_SESSION['conf_usermodules'], 'user')) {
 	echo ("<font color=\"red\"><b>" . _("Saving user modules failed!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
 
-if (! $conf->set_GroupModules($_SESSION['conf_groupmodules'])) {
+if (! $conf->set_AccountModules($_SESSION['conf_groupmodules'], 'group')) {
 	echo ("<font color=\"red\"><b>" . _("Saving group modules failed!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
 
-if (! $conf->set_HostModules($_SESSION['conf_hostmodules'])) {
+if (! $conf->set_AccountModules($_SESSION['conf_hostmodules'], 'host')) {
 	echo ("<font color=\"red\"><b>" . _("Saving host modules failed!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;

@@ -419,6 +419,7 @@ function buildUploadAccounts($scope, $data, $ids) {
 	$unOrdered = getAvailableModules($scope);
 	$ordered = array();
 	$predepends = array();
+	// get dependencies
 	for ($i = 0; $i < sizeof($unOrdered); $i++) {
 		$mod = new $unOrdered[$i]($scope);
 		$predepends[$unOrdered[$i]] = $mod->get_uploadPreDepends();
@@ -1134,7 +1135,7 @@ class accountContainer {
 	* $dn is the dn of the account which should be loaded
 	*/
 	function load_account($dn) {
-		$modules = call_user_func(array($_SESSION['config'], 'get_'.ucfirst($this->type).'Modules'));
+		$modules = $_SESSION['config']->get_AccountModules($this->type);
 		$search = substr($dn, 0, strpos($dn, ','));
 		$result = ldap_search($_SESSION['ldap']->server(), $dn, $search);
 		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
@@ -1223,8 +1224,7 @@ class accountContainer {
 	* for a new account
 	*/
 	function new_account() {
-		$temp = ucfirst($this->type);
-		$modules = call_user_func(array(&$_SESSION['config'], 'get_' . $temp . 'Modules'));
+		$modules = $_SESSION['config']->get_AccountModules($this->type);
 		foreach ($modules as $module) {
 			$this->module[$module] = new $module($this->type);
 			$this->module[$module]->init($this->base);

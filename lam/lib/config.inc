@@ -723,89 +723,59 @@ class Config {
 	}
 
 	/**
-	* Returns an array of all selected user modules
+	* Returns an array of all selected account modules
 	*
+	* @param string $scope account type
 	* @return array user modules
 	*/
-	function get_UserModules() {
-		return explode(",", $this->usermodules);
+	function get_AccountModules($scope) {
+		switch ($scope) {
+			case 'user':
+				return explode(",", $this->usermodules);
+				break;		
+			case 'group':
+				return explode(",", $this->groupmodules);
+				break;		
+			case 'host':
+				return explode(",", $this->hostmodules);
+				break;		
+			default:
+				return array();
+				break;
+		}
+		
 	}
 
 	/**
-	* Sets the selected user modules
+	* Sets the selected account modules
 	*
 	* @param array $modules array with module names (not aliases!)
+	* @param string $scope account type
 	* @return boolean true if $modules has correct format
 	*/
-	function set_UserModules($modules) {
+	function set_AccountModules($modules, $scope) {
 		if (! is_array($modules)) return false;
 		// check module names
-		$available = getAvailableModules('user');
+		$available = getAvailableModules($scope);
 		for ($i = 0; $i < sizeof($modules); $i++) {
 			if (! in_array($modules[$i], $available)) return false;
 		}
 		// check depends/conflicts
-		if (check_module_conflicts($modules, getModulesDependencies('user')) != false) return false;
-		if (check_module_depends($modules, getModulesDependencies('user')) != false) return false;
-		$this->usermodules = implode(",", $modules);
-		return true;
-	}
-
-	/**
-	* Returns an array of all selected group modules
-	*
-	* @return array group modules
-	*/
-	function get_GroupModules() {
-		return explode(",", $this->groupmodules);
-	}
-
-	/**
-	* Sets the selected group modules
-	*
-	* @param array $modules array with module names (not aliases!)
-	* @return boolean true if $modules has correct format
-	*/
-	function set_GroupModules($modules) {
-		if (! is_array($modules)) return false;
-		// check module names
-		$available = getAvailableModules('group');
-		for ($i = 0; $i < sizeof($modules); $i++) {
-			if (! in_array($modules[$i], $available)) return false;
+		if (check_module_conflicts($modules, getModulesDependencies($scope)) != false) return false;
+		if (check_module_depends($modules, getModulesDependencies($scope)) != false) return false;
+		switch ($scope) {
+			case 'user':
+				$this->usermodules = implode(",", $modules);
+				break;		
+			case 'group':
+				$this->groupmodules = implode(",", $modules);
+				break;		
+			case 'host':
+				$this->hostmodules = implode(",", $modules);
+				break;		
+			default:
+				break;
 		}
-		// check depends/conflicts
-		if (check_module_conflicts($modules, getModulesDependencies('group')) != false) return false;
-		if (check_module_depends($modules, getModulesDependencies('group')) != false) return false;
-		$this->groupmodules = implode(",", $modules);
-		return true;
-	}
-
-	/**
-	* Returns an array of all selected host modules
-	*
-	* @return array host modules
-	*/
-	function get_HostModules() {
-		return explode(",", $this->hostmodules);
-	}
-
-	/**
-	* Sets the selected host modules
-	*
-	* @param array $modules array with module names (not aliases!)
-	* @return boolean true if $modules has correct format
-	*/
-	function set_HostModules($modules) {
-		if (! is_array($modules)) return false;
-		// check module names
-		$available = getAvailableModules('host');
-		for ($i = 0; $i < sizeof($modules); $i++) {
-			if (! in_array($modules[$i], $available)) return false;
-		}
-		// check depends/conflicts
-		if (check_module_conflicts($modules, getModulesDependencies('host')) != false) return false;
-		if (check_module_depends($modules, getModulesDependencies('host')) != false) return false;
-		$this->hostmodules = implode(",", $modules);
 		return true;
 	}
 
