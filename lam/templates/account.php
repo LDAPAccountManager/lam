@@ -370,9 +370,6 @@ switch ($select_local) {
 				echo "<meta http-equiv=\"refresh\" content=\"2; URL=lists/listhosts.php\">\n";
 				break;
 			}
-		if (isset($_SESSION['shelllist'])) unset($_SESSION['shelllist']);
-		if (isset($_SESSION['account'])) unset($_SESSION['account']);
-		if (isset($_SESSION['account_old'])) unset($_SESSION['account_old']);
 		break;
 	case 'load':
 		// load profile
@@ -407,7 +404,6 @@ switch ($select_local) {
 		$select_local='final';
 		break;
 	}
-
 
 if ($select_local != 'pdf') {
 	echo "</head><body>\n";
@@ -894,6 +890,7 @@ switch ($select_local) { // Select which part of page will be loaded
 							}
 						else echo '<option>' . $samba3domains[$i]->name. '</option>';
 						}
+					echo '</select>';
 					}
 				else {
 					echo '</td>'."\n".'<td><input name="f_smb_domain" type="text" size="20" maxlength="80" value="' . $_SESSION['account']->smb_domain . '">';
@@ -954,16 +951,16 @@ switch ($select_local) { // Select which part of page will be loaded
 						}
 					else echo '<option>' . $samba3domains[$i]->name. '</option>';
 					}
-				echo	'</td>'."\n".'<td><a href="help.php?HelpNumber=467" target="lamhelp">'._('Help').'</a></td></tr>'."\n";
+				echo	'</select></td>'."\n".'<td><a href="help.php?HelpNumber=467" target="lamhelp">'._('Help').'</a></td></tr>'."\n";
 				break;
 			case 'host':
 				// set smb_flgasW true because account is host
+				echo '<tr><td>';
 				$_SESSION['account']->smb_flagsW = 1;
 				if ($_SESSION['account']->smb_password_no) echo '<input name="f_smb_password_no" type="hidden" value="1l">';
 				echo '<input name="f_unix_password_no" type="hidden" value="';
 				if ($_SESSION['account']->unix_password_no) echo 'checked';
 				echo  '">';
-				echo '<tr><td>';
 				echo _('Password');
 				echo '</td><td>';
 				if ($_SESSION['account_old']) {
@@ -989,6 +986,7 @@ switch ($select_local) { // Select which part of page will be loaded
 							}
 						else echo '<option>' . $samba3domains[$i]->name. '</option>';
 						}
+					echo '</select>';
 					}
 				else {
 					echo '</td>'."\n".'<td><input name="f_smb_domain" type="text" size="20" maxlength="80" value="' . $_SESSION['account']->smb_domain . '">';
@@ -1271,8 +1269,32 @@ switch ($select_local) { // Select which part of page will be loaded
 				break;
 			}
 		break;
+	case 'backmain':
+		// unregister sessionvar and select which list should be shown
+		switch ( $_SESSION['account']->type ) {
+			case 'user' :
+				echo '<tr><td><a href="lists/listusers.php">';
+				echo _('Please press here if meta-refresh didn\'t work.');
+				echo "</a></td></tr>\n";
+				break;
+			case 'group' :
+				echo '<tr><td><a href="lists/listgroups.php">';
+				echo _('Please press here if meta-refresh didn\'t work.');
+				echo "</a></td></tr>\n";
+				break;
+			case 'host' :
+				echo '<tr><td><a href="lists/listhosts.php">';
+				echo _('Please press here if meta-refresh didn\'t work.');
+				echo "</a></td></tr>\n";
+				break;
+			}
+		if (isset($_SESSION['shelllist'])) unset($_SESSION['shelllist']);
+		if (isset($_SESSION['account'])) unset($_SESSION['account']);
+		if (isset($_SESSION['account_old'])) unset($_SESSION['account_old']);
+		break;
 	}
 
 // Print end of HTML-Page
-if ($select_local != 'pdf') echo '</table></form></body></html>';
+if ($select_local != 'pdf')
+	echo '</table></form></body></html>';
 ?>

@@ -97,9 +97,9 @@ switch ($select) {
 		echo '</td></tr><tr><td>';
 		echo _('mobileTelephoneNumber,facsimileNumber,street,postalCode,postalAddress,');
 		echo '</td></tr><tr><td>';
-		echo _('employeeType. If PrimaryGroup is not given it\'ll used from profile.');
+		echo _('employeeType. If Primary group is not given it\'ll used from profile.');
 		echo '</td></tr><tr><td>';
-		echo _('If PrimaryGroup doesn\'t exist it will be created.');
+		echo _('If PrimaryGroup does not exist it will be created.');
 		echo '</td></tr><tr><td>';
 		echo _('Select Profile:');
 		echo '</td><td><select name="f_selectprofile">';
@@ -294,7 +294,7 @@ switch ($select) {
 				if ($error==1) $_SESSION['pointer']++;
 					else {
 					$stay = false;
-					StatusMessage('ERROR', _('Could not create user'), _('Was unable to create').' '.$_SESSION['accounts'][$row]->general_username);
+					StatusMessage('ERROR', _('Could not create user!'), sprintf (_('Was unable to create %s.'), $_SESSION['accounts'][$row]->general_username));
 					}
 				}
 				else $stay=false;

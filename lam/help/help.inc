@@ -128,7 +128,7 @@ $helpArray = array (
 					 can cause several problems. If username is allready used username will expanded with a number. The next free number will be used.")),
 				"401" => array ("ext" => "FALSE", "Headline" => _("UID number"),
 					"Text" => _("If empty UID number will be generated automaticly. Valid values are between").' '.$_SESSION['config']->get_minUID().' '._("and").' '.$_SESSION['config']->get_maxUID()."."),
-				"402" => array ("ext" => "FALSE", "Headline" => _("Additional Groups"),
+				"402" => array ("ext" => "FALSE", "Headline" => _("Additional groups"),
 					"Text" => _("Hold the CTRL-key to (de)select multiple groups."). ' '. _("Can be left empty.")),
 				"403" => array ("ext" => "FALSE", "Headline" => _("Home directory"),
 					"Text" => _("$user and $group are replaced with username or primary groupname.")),
@@ -251,7 +251,7 @@ $helpArray = array (
 				"464" => array ("ext" => "FALSE", "Headline" => _("Windows groupname"),
 					"Text" => _("If you want to use a well known RID you can selcet a well known group.")),
 				"466" => array ("ext" => "FALSE", "Headline" => _("Unix workstations"),
-					"Text" => _("Comma separated list of unix workstations the user is allowed to login. Empty means every workstation."). ' '. _("Can be left empty.")),
+					"Text" => _("Comma separated list of unix workstations the user is allowed to login."). ' '. _("Can be left empty.")),
 				"467" => array ("ext" => "FALSE", "Headline" => _("Domain"),
 					"Text" => _("Windows-Domain of group."). ' '. _("Can be left empty.")),
 				// 600 - 699
