@@ -173,7 +173,7 @@ function print_option($values, $modulename, $old_options) {
 				}
 				// use default values if not in profile
 				else {
-					if (in_array($values['options'][$i], $values['options_selected'])) {
+					if (is_array($values['options_selected']) && in_array($values['options'][$i], $values['options_selected'])) {
 						echo "<option selected>" . $values['options'][$i] . "</option>\n";
 					}
 					else {
