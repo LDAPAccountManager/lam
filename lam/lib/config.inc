@@ -45,6 +45,7 @@ function setlanguage() {
 		$locdir = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/locale";  // set path to translations
 		bindtextdomain("messages", $locdir);
 		textdomain("messages");
+		header("Content-type: text/html; charset=" . $language[1], true);
 	}
 	else echo _("Language not defined in session!");
 }
