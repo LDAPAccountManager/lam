@@ -26,7 +26,8 @@ class sambaGroupMapping extends baseModule {
 	// Variables
 	/** Array of well known RIDs */
 	var $rids;
-
+	/** Array of sambaGroupTypes */
+	var $sambaGroupTypes;
 	
 	/**
 	* Creates a new module for Samba 3 groups.
@@ -46,6 +47,15 @@ class sambaGroupMapping extends baseModule {
 			_('Domain Enterprise Admins') => 519,
 			_('Domain Policy Admins') => 520);
 
+		$this->sambaGroupTypes = array (
+			_('User') => 1,
+			_('Domain Group') => 2,
+			_('Domain') => 3,
+			_('Local Group') => 4,
+			_('Builtin Group') => 5,
+			_('Deleted Account') => 6,
+			_('Ivalid Account') => 7
+			);
 		// call parent constructor
 		parent::baseModule($scope);
 	}
@@ -74,6 +84,7 @@ class sambaGroupMapping extends baseModule {
 		$errors = array();
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// group type is always 2
+			// TODO
 			$partialAccounts[$i]['sambaGroupType'] = "2";
 			if (!in_array("sambaGroupMapping", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "sambaGroupMapping";
 			// SID
@@ -121,7 +132,8 @@ class sambaGroupMapping extends baseModule {
 		// Get Domain SID from name
 		$sambaDomains = search_domains($_SESSION['config']->get_domainSuffix());
 		// Get Domain-SID from group SID
-		$domainSID = substr($this->attributes['sambaSID'][0], 0, strrpos($this->attributes['sambaSID'][0], "-"));
+		if ($this->attributes['sambaSID'][0]!='')
+			$domainSID = substr($this->atttributes['sambaSID'][0], 0, strrpos($this->attributes['sambaSID'][0], "-"));
 		for ($i=0; $i<count($sambaDomains); $i++ ) {
 			// List with all valid domains
 			$sambaDomainNames[] = $sambaDomains[$i]->name;
@@ -151,6 +163,15 @@ class sambaGroupMapping extends baseModule {
 					2 => array ( 'kind' => 'help', 'value' => 'sambaSID' ));
 			}
 
+		$names = array_keys($this->sambaGroupTypes);
+		$selected = array( _('Domain Group') );
+		for ($i=0; $i<count($names); $i++) {
+			if ($this->attributes['sambaGroupType'][0]==$this->sambaGroupTypes[$names[$i]])
+				$selected = array( $names[$i] );
+				}
+		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Group type') ),
+			1 => array ( 'kind' => 'select', 'name' => 'sambaGroupType', 'options' => $names , 'options_selected' => $selected ),
+			2 => array ( 'kind' => 'help', 'value' => 'sambaDomainName' ));
 		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Domain') ),
 			1 => array ( 'kind' => 'select', 'name' => 'sambaDomainName', 'options' => $sambaDomainNames, 'options_selected' => array ( $sel_domain ) ),
 			2 => array ( 'kind' => 'help', 'value' => 'sambaDomainName' ));
@@ -322,9 +343,9 @@ class sambaGroupMapping extends baseModule {
 	/* Write variables into object and do some regexp checks
 	*/
 	function proccess_attributes($post, $profile=false) {
-		// Load attributes
+		// Save attributes
 		$this->attributes['displayName'][0] = $post['displayName'];
-		$this->attributes['sambaGroupType'][0] = 2;
+		$this->attributes['sambaGroupType'][0] = $this->sambaGroupTypes[$post['sambaGroupType']];
 
 		if (!$profile) {
 			// Get Domain SID from name
@@ -337,7 +358,6 @@ class sambaGroupMapping extends baseModule {
 
 			// Load attributes
 			$this->attributes['displayName'][0] = $post['displayName'];
-			$this->attributes['sambaGroupType'][0] = 2;
 
 			$rids = array_keys($this->rids);
 			$wrid = false;
