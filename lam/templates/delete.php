@@ -49,6 +49,7 @@ echo '</title>'."\n".
 
 if ($_GET['type']) {
 	//$DN2 = explode(";", str_replace("\'", '',$_GET['DN']));
+	echo '<input name="type5" type="hidden" value="'.$_GET['type'].'">';
 	switch ($_GET['type']) {
 		case 'user':
 			echo "<fieldset class=\"useredit-bright\"><legend class=\"useredit-bright\"><b>";
@@ -69,11 +70,13 @@ if ($_GET['type']) {
 			echo _('<b>Do you really want to delete group(s):</b>');
 			break;
 		}
+	echo "<br>\n";
 	echo "<table border=0 width=\"100%\">\n";
 	foreach ($_SESSION['delete_dn'] as $dn) echo '<tr><td>'.$dn.'</td></tr>';
 	echo "</table>\n";
 	if (($_GET['type']== user) && $_SESSION['config']->scriptServer) {
-		echo "<table border=0 width=\"100%\">\n";
+		echo "<br>\n";
+		echo "<table border=0>\n";
 		echo '<tr><td>';
 		echo _('Delete also Homedirectories');
 		echo '</td>'."\n".'<td><input name="f_rem_home" type="checkbox">'.
@@ -81,7 +84,7 @@ if ($_GET['type']) {
 		echo "</table>\n";
 		}
 
-	echo "<br><table border=0 width=\"100%\">\n";
+	echo "<br><table border=0>\n";
 	echo '<tr><td>'.
 		'<input name="delete_no" type="submit" value="';
 	echo _('Cancel'); echo '"></td><td></td><td>'.
@@ -110,9 +113,9 @@ if ($_POST['delete_yes'] && !$_POST['backmain']) {
 			echo "</b></legend>\n";
 			break;
 		}
-	echo "<br><table border=0 width=\"100%\">\n";
+	echo "<br><table border=0 >\n";
+	echo '<input name="type5" type="hidden" value="'.$_POST['type5'].'">';
 	foreach ($_SESSION['delete_dn'] as $dn) {
-		echo '<input name="type5" type="hidden" value="'.$_POST['type5'].'">';
 		switch ($_POST['type5']) {
 			case 'user':
 				$temp=explode(',', $dn);

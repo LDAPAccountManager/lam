@@ -419,6 +419,18 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 	case 'finish':
 		// Check if pdf-file should be created
 		if ($_POST['outputpdf']) {
+			// Quota Settings
+			if (!isset($_SESSION['account']->quota[0])) { // load quotas
+				$values = getquotas('user', $_SESSION['account_old']->general_username);
+				if (is_object($values)) {
+					while (list($key, $val) = each($values)) // Set only defined values
+						if (isset($val)) $_SESSION['account']->$key = $val;
+					}
+				if (is_object($values) && isset($_SESSION['account_old'])) {
+					while (list($key, $val) = each($values)) // Set only defined values
+						if (isset($val)) $_SESSION['account_old']->$key = $val;
+					}
+				}
 			createUserPDF(array($_SESSION['account']));
 			$select_local = 'pdf';
 			}
