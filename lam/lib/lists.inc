@@ -69,6 +69,8 @@ function listSort($sort, $attr_array, $info) {
 		}
 	}
 
+	if (!is_array($attr_array)) return $info;
+	if (!is_string($sort)) return $info;
 	// sort and return account list
 	usort($info, "cmp_array");
 	return $info;
