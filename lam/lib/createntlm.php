@@ -24,13 +24,12 @@ $Id$
 /**
 * This class provides functions to calculate Samba NT and LM hashes.
 *
-* The code is a conversion from createntlm.pl (Benjamin Kuit) and smbdes.c (Andrew Tridgell).
+* The code is a conversion from createntlm.pl (Benjamin Kuit) and smbdes.c/md4.c (Andrew Tridgell).
 *
 * @author Roland Gruber
 *
 * @package modules
 */
-
 
 /**
 * Calculates NT and LM hashes.
@@ -246,13 +245,13 @@ var $sbox = array(array(array(14,  4, 13,  1,  2, 15, 11,  8,  3, 10,  6, 12,  5
 	}
 
 	function str_to_key($str) {
-		$key[0] = $str[0] >> 1;
-		$key[1] = (($str[0]&0x01)<<6) | ($str[1]>>2);
-		$key[2] = (($str[1]&0x03)<<5) | ($str[2]>>3);
-		$key[3] = (($str[2]&0x07)<<4) | ($str[3]>>4);
-		$key[4] = (($str[3]&0x0F)<<3) | ($str[4]>>5);
-		$key[5] = (($str[4]&0x1F)<<2) | ($str[5]>>6);
-		$key[6] = (($str[5]&0x3F)<<1) | ($str[6]>>7);
+		$key[0] = $this->unsigned_shift_r($str[0], 1);
+		$key[1] = (($str[0]&0x01)<<6) | $this->unsigned_shift_r($str[1], 2);
+		$key[2] = (($str[1]&0x03)<<5) | $this->unsigned_shift_r($str[2], 3);
+		$key[3] = (($str[2]&0x07)<<4) | $this->unsigned_shift_r($str[3], 4);
+		$key[4] = (($str[3]&0x0F)<<3) | $this->unsigned_shift_r($str[4], 5);
+		$key[5] = (($str[4]&0x1F)<<2) | $this->unsigned_shift_r($str[5], 6);
+		$key[6] = (($str[5]&0x3F)<<1) | $this->unsigned_shift_r($str[6], 7);
 		$key[7] = $str[6]&0x7F;
 		for ($i = 0; $i < 8; $i++) {
 			$key[$i] = ($key[$i] << 1);
@@ -314,6 +313,206 @@ var $sbox = array(array(array(14,  4, 13,  1,  2, 15, 11,  8,  3, 10,  6, 12,  5
 		}
 		return join("", $p16);
 	}
+
+	/**
+	* Calculates the NT hash of a given password.
+	*
+	* @param string $password password
+	* @return string hash value
+	*/
+	function nthash($password = "") {
+		$password = substr($password,0,128);
+		$password2 = "";
+		for ($i = 0; $i < strlen($password); $i++) $password2 .= $password[$i] . chr(0);
+		$password = $password2;
+		$hex = $this->mdfour($password);
+		for ($i = 0; $i < sizeof($hex); $i++) {
+			$hex[$i] = sprintf("%02X", $hex[$i]);
+		}
+		return join("", $hex);
+	}
+
+	# Support functions
+	# Ported from SAMBA/source/lib/md4.c:F,G and H respectfully
+	function F($X, $Y, $Z) {
+		return ($X&$Y) | ((~$X)&$Z);
+	}
+
+	function G($X, $Y, $Z) {
+		return ($X&$Y) | ($X&$Z) | ($Y&$Z);
+	}
+	
+	function H($X, $Y, $Z) {
+		return $X^$Y^$Z;
+	}
+
+	# Ported from SAMBA/source/lib/md4.c:mdfour
+	function mdfour($in) {
+		$in = unpack("C*",$in);
+		$in = array_values($in);
+		$b = sizeof($in) * 8;
+		$A = array(0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476);
+		while (sizeof($in) > 64 ) {
+			$M = $this->copy64($in);
+			$this->mdfour64($A[0], $A[1], $A[2], $A[3], $M);
+			$new_in = array();
+			for ($i = 64; $i < sizeof($in); $i++) $new_in[] = $in[$i];
+			$in = $new_in;
+		}
+		$buf = $in;
+		$buf[] = 0x80;
+		for ($i = sizeof($buf) - 1; $i < 127; $i++) $buf[] = 0;
+		if ( sizeof($in) <= 55 ) {
+			$temp = $this->copy4($b);
+			$buf[56] = $temp[0];
+			$buf[57] = $temp[1];
+			$buf[58] = $temp[2];
+			$buf[59] = $temp[3];
+			$M = $this->copy64($buf);
+			$this->mdfour64($A[0], $A[1], $A[2], $A[3], $M);
+		}
+		else {
+			$temp = $this->copy4($b);
+			$buf[120] = $temp[0];
+			$buf[121] = $temp[1];
+			$buf[122] = $temp[2];
+			$buf[123] = $temp[3];
+			$M = $this->copy64($buf);
+			$this->mdfour64($A[0], $A[1], $A[2], $A[3], $M);
+			$temp = array();
+			for ($i = 64; $i < sizeof($buf); $i++) $temp[] = $buf[$i];
+			$M = $this->copy64($temp);
+			$this->mdfour64($A[0], $A[1], $A[2], $A[3], $M);
+		}
+		$out = array();
+		$temp = $this->copy4($A[0]);
+		for ($i = 0; $i < 4; $i++) $out[] = $temp[$i];
+		$temp = $this->copy4($A[1]);
+		for ($i = 0; $i < 4; $i++) $out[] = $temp[$i];
+		$temp = $this->copy4($A[2]);
+		for ($i = 0; $i < 4; $i++) $out[] = $temp[$i];
+		$temp = $this->copy4($A[3]);
+		for ($i = 0; $i < 4; $i++) $out[] = $temp[$i];
+		return $out;
+	}
+
+	# Ported from SAMBA/source/lib/md4.c:copy4
+	function copy4($x) {
+		$out = array();
+		$out[0] = $x&0xFF;
+		$out[1] = $this->unsigned_shift_r($x, 8)&0xFF;
+		$out[2] = $this->unsigned_shift_r($x, 16)&0xFF;
+		$out[3] = $this->unsigned_shift_r($x, 24)&0xFF;
+		return $out;
+	}
+
+	# Ported from SAMBA/source/lib/md4.c:copy64
+	function copy64($in) {
+		for ($i = 0; $i < 16; $i++) {
+			$M[$i] = ($in[$i*4+3]<<24) | ($in[$i*4+2]<<16) | ($in[$i*4+1]<<8) | ($in[$i*4+0]<<0);
+		}
+		return $M;
+	}
+
+	# Ported from SAMBA/source/lib/md4.c:mdfour64
+	function mdfour64(&$A, &$B, &$C, &$D, $M) {
+		$X = array();
+		for ($i = 0; $i < 16; $i++) $X[] = $M[$i];
+		$AA=$A;
+		$BB=$B;
+		$CC=$C;
+		$DD=$D;
+		$this->ROUND1($A,$B,$C,$D,  0,  3, $X);
+		$this->ROUND1($D,$A,$B,$C,  1,  7, $X);
+		$this->ROUND1($C,$D,$A,$B,  2, 11, $X);
+		$this->ROUND1($B,$C,$D,$A,  3, 19, $X);
+		$this->ROUND1($A,$B,$C,$D,  4,  3, $X);  $this->ROUND1($D,$A,$B,$C,  5,  7, $X);
+		$this->ROUND1($C,$D,$A,$B,  6, 11, $X);  $this->ROUND1($B,$C,$D,$A,  7, 19, $X);
+		$this->ROUND1($A,$B,$C,$D,  8,  3, $X);  $this->ROUND1($D,$A,$B,$C,  9,  7, $X);
+		$this->ROUND1($C,$D,$A,$B, 10, 11, $X);  $this->ROUND1($B,$C,$D,$A, 11, 19, $X);
+		$this->ROUND1($A,$B,$C,$D, 12,  3, $X);  $this->ROUND1($D,$A,$B,$C, 13,  7, $X);
+		$this->ROUND1($C,$D,$A,$B, 14, 11, $X);  $this->ROUND1($B,$C,$D,$A, 15, 19, $X);
+		$this->ROUND2($A,$B,$C,$D,  0,  3, $X);  $this->ROUND2($D,$A,$B,$C,  4,  5, $X);
+		$this->ROUND2($C,$D,$A,$B,  8,  9, $X);  $this->ROUND2($B,$C,$D,$A, 12, 13, $X);
+		$this->ROUND2($A,$B,$C,$D,  1,  3, $X);  $this->ROUND2($D,$A,$B,$C,  5,  5, $X);
+		$this->ROUND2($C,$D,$A,$B,  9,  9, $X);  $this->ROUND2($B,$C,$D,$A, 13, 13, $X);
+		$this->ROUND2($A,$B,$C,$D,  2,  3, $X);  $this->ROUND2($D,$A,$B,$C,  6,  5, $X);
+		$this->ROUND2($C,$D,$A,$B, 10,  9, $X);  $this->ROUND2($B,$C,$D,$A, 14, 13, $X);
+		$this->ROUND2($A,$B,$C,$D,  3,  3, $X);  $this->ROUND2($D,$A,$B,$C,  7,  5, $X);
+		$this->ROUND2($C,$D,$A,$B, 11,  9, $X);  $this->ROUND2($B,$C,$D,$A, 15, 13, $X);
+		$this->ROUND3($A,$B,$C,$D,  0,  3, $X);  $this->ROUND3($D,$A,$B,$C,  8,  9, $X);
+		$this->ROUND3($C,$D,$A,$B,  4, 11, $X);  $this->ROUND3($B,$C,$D,$A, 12, 15, $X);
+		$this->ROUND3($A,$B,$C,$D,  2,  3, $X);  $this->ROUND3($D,$A,$B,$C, 10,  9, $X);
+		$this->ROUND3($C,$D,$A,$B,  6, 11, $X);  $this->ROUND3($B,$C,$D,$A, 14, 15, $X);
+		$this->ROUND3($A,$B,$C,$D,  1,  3, $X);  $this->ROUND3($D,$A,$B,$C,  9,  9, $X);
+		$this->ROUND3($C,$D,$A,$B,  5, 11, $X);  $this->ROUND3($B,$C,$D,$A, 13, 15, $X);
+		$this->ROUND3($A,$B,$C,$D,  3,  3, $X);  $this->ROUND3($D,$A,$B,$C, 11,  9, $X);
+		$this->ROUND3($C,$D,$A,$B,  7, 11, $X);  $this->ROUND3($B,$C,$D,$A, 15, 15, $X);
+		
+		$A = $this->add32(array($A, $AA)); $B = $this->add32(array($B, $BB));
+		$C = $this->add32(array($C, $CC)); $D = $this->add32(array($D, $DD));
+	}
+
+	# Needed? because perl seems to choke on overflowing when doing bitwise
+	# operations on numbers larger than 32 bits. Well, it did on my machine =)
+	function add32($v) {
+		for ($i = 0; $i < sizeof($v); $i++) {
+			$v[$i] = array($this->unsigned_shift_r(($v[$i]&0xffff0000), 16), ($v[$i]&0xffff));
+		}
+		for ($i = 0; $i < sizeof($v); $i++) {
+			$sum[0] += $v[$i][0];
+			$sum[1] += $v[$i][1];
+		}
+		$sum[0] += ($sum[1]&0xffff0000)>>16;
+		$sum[1] &= 0xffff;
+		$sum[0] &= 0xffff;
+		$ret = ($sum[0]<<16) | $sum[1];
+		return $ret;
+	}
+
+	# Ported from SAMBA/source/lib/md4.c:ROUND1
+	function ROUND1(&$a,$b,$c,$d,$k,$s,$X) {
+		$a = $this->md4lshift($this->add32(array($a, $this->F($b,$c,$d), $X[$k])), $s);
+		return $a;
+	}
+
+	# Ported from SAMBA/source/lib/md4.c:ROUND2
+	function ROUND2(&$a,$b,$c,$d,$k,$s,$X) {
+		$a = $this->md4lshift($this->add32(array($a, $this->G($b,$c,$d), $X[$k] + 0x5A827999)), $s);
+		return $a;
+	}
+
+	# Ported from SAMBA/source/lib/md4.c:ROUND3
+	function ROUND3(&$a,$b,$c,$d,$k,$s,$X) {
+		$a = $this->md4lshift($this->add32(array($a + $this->H($b,$c,$d) + $X[$k] + 0x6ED9EBA1)), $s);
+		return $a;
+	}
+
+	# Ported from SAMBA/source/lib/md4.c:lshift
+	# Renamed to prevent clash with SAMBA/source/libsmb/smbdes.c:lshift
+	function md4lshift($x, $s) {
+		$x &= 0xFFFFFFFF;
+		return ((($x<<$s)&0xFFFFFFFF) | $this->unsigned_shift_r($x, (32-$s)));
+	}
+
+	/**
+	* Unsigned shift operation for 32bit values.
+	*
+	* PHP 4 only supports signed shifts by default.
+	*/
+	function unsigned_shift_r($a, $b) { 
+		$z = 0x80000000; 
+		if ($z & $a) { 
+			$a = ($a >> 1); 
+			$a &= (~$z); 
+			$a |= 0x40000000; 
+			$a = ($a >> ($b - 1)); 
+		} 
+		else { 
+			$a = ($a >> $b); 
+		} 
+		return $a; 
+	} 
 
 }
 
