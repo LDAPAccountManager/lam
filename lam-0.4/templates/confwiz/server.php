@@ -120,7 +120,7 @@ echo "<form action=\"server.php\" method=\"post\">\n";
 	echo "<tr>\n";
 		echo "<td colspan=2>\n";
 			echo _("Please enter the URL of your LDAP server.") . "<br><br><b>" .
-					 _("Examples") . ":</b><br><br>ldap://myserver.mydomain.org<br>ldaps:myserver.mydomain.org<br>localhost:389" . "\n";
+					 _("Examples") . ":</b><br><br>ldap://myserver.mydomain.org<br>ldaps://myserver.mydomain.org<br>localhost:389" . "\n";
 		echo "</td>\n";
 	echo "</tr>\n";
 	echo "<tr><td colspan=2>&nbsp;</td></tr>\n";

@@ -100,11 +100,12 @@ echo "<body>\n";
 echo "<form action=\"o_daemon.php\" method=\"post\">\n";
 	echo "<p>&nbsp;</p>\n";
 
-// lamdaemon
+	// lamdaemon
+	echo "<p><b>Lamdaemon.pl:</b></p>\n";
 	echo "<p>" . _("If you want to manage quotas and homedirectories with LAM you need to setup lamdaemon.pl.") .
-								"<br><br>" .
+								"<br>" .
 								_("This is the server and path where the lamdaemon.pl script is stored. LDAP Account Manager will make a SSH connection to this server with username and password provided at login.") .
-								"<br><br><b>" . _("Use it at your own risk and read the documentation for lamdaemon before you use it!") . "</b><br><br></p>\n";
+								"<br><br><font color=red>" . _("Use it at your own risk and read the documentation for lamdaemon before you use it!") . "</font><br><br></p>\n";
 
 	echo ("<table border=0>");
 
@@ -121,14 +122,14 @@ echo ("</tr>\n");
 
 	echo "<p><br></p>\n";
 
-// PDF text
+	// PDF text
+	echo "<p><b>" . _("PDF text") . ":</b></p>\n";
 	echo "<p>" . _("This text will appear on top of every user PDF file.") . "</p>\n";
 
 	echo ("<table border=0>");
 
-echo ("<tr><td align=\"right\"><b>".
-	_("Text for user PDF") . ": </b></td>".
-	"<td><textarea name=\"pdf_usertext\" cols=\"80\" rows=\"5\">" . $_SESSION['confwiz_config']->get_pdftext() . "</textarea></td>\n");
+echo "<tr>";
+	echo "<td><textarea name=\"pdf_usertext\" cols=\"80\" rows=\"5\">" . $_SESSION['confwiz_config']->get_pdftext() . "</textarea></td>\n";
 echo ("</tr>\n");
 
 	echo "</table>\n";

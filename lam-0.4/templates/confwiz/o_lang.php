@@ -98,8 +98,8 @@ echo "<form action=\"o_lang.php\" method=\"post\">\n";
 	echo "<p>&nbsp;</p>\n";
 
 	// language
-	echo "<p>" . _("Please select your prefered language.") . "<br>\n";
-	echo _("This defines the language of the login window and sets this language as the default language. Users can change the language at login.") .
+	echo "<p><b>" . _("Please select your prefered language.") . "</b></p>\n";
+	echo "<p>" . _("This defines the language of the login window and sets this language as the default language. Users can change the language at login.") .
 				"<br><br></p>\n";
 
 	echo ("<table border=0>");
@@ -141,7 +141,8 @@ echo "<form action=\"o_lang.php\" method=\"post\">\n";
 	echo "<p><br></p>\n";
 	echo "<p><br></p>\n";
 
-// admin users
+	// admin users
+	echo "<p><b>" . _("Valid users:") . "</b></p>\n";
 	echo "<p>" . _("If you want more than one user to login to LAM please enter its DN(s) here. Multiple entries are seperated by semicolons.") . "</p>\n";
 	echo "<p><b>" . _("Example") . ": </b>cn=admin,dc=yourdomain,dc=org;cn=manager,dc=yourdomain,dc=org<br><br></p>\n";
 
