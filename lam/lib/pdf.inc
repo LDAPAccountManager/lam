@@ -26,17 +26,10 @@ $Id$
 define('FPDF_FONTPATH', 'font/');
 include_once("fpdf.php");
 
+
 function createUserPDF($accounts) {
-
-// Check if all submitted accounts are user accounts
-	for($i=0;$i<count($accounts);$i++) {
-		$account = $accounts[$i];
-//		if($account->type <> "user") {
-//			return 2; // 2 means non user account submitted for createUserPDF()
-//		}
-	}
-
-
+// The decimal separator must be a dot in order to write pdf-files
+	setlocale(LC_NUMERIC, "C");
 // Start PDF file
 	$pdfFile = new lamPDF();
 	$pdfFile->Open();
@@ -44,14 +37,45 @@ function createUserPDF($accounts) {
 	$pdfFile->setFont("arial","",12);
 	$pdfFile->setTitle("LDAP Account Manager");
 	$pdfFile->setSubject(_("User information page"));
-	$pdfFile->setAuthor("LDAP Account Manager Devel-Team -Michael Drgner-");
+	$pdfFile->setAuthor("LDAP Account Manager Devel-Team -Michael Duergner-");
 	$pdfFile->setCreator("LDAP Account Manager (pdf.inc)");
 // Loop for every sumbitted account and print its values on a extra page
-	for($i=0;$i<count($accounts);$i++) {
-		$account = $accounts[$i];
+	foreach ($accounts as $account) {
 		$iv = base64_decode($_COOKIE['IV']);
 		$key = base64_decode($_COOKIE['Key']);
 		$pdfFile->addPage();
+		// Load string with additional information from session
+		$info_string = $_SESSION['config']->pdf_customtext;
+		// Print individuall text.
+		// Get all allowed vairables from account-object
+		$values = get_object_vars($account);
+		$values = array_keys($values);
+		// Replace $varstring in string with variable
+		foreach ($values as $value) {
+			// replace string
+			if (is_string($account->$value)) $info_string = str_replace('$'.$value, $account->$value, $info_string);
+			// replace object
+			else if (is_object($account->$value)) {
+				$values2 = get_object_vars($account->$value);
+				$values2 = array_keys($values2);
+				foreach ($values2 as $value2) {
+					$info_string = str_replace('$'.$value.'->'.$value2, $account->$value->$value2, $info_string);
+					}
+				}
+			// replace array
+			else if (is_array($account->$value)) {
+				foreach ($account->$value as $sub_array2) $sub_array .= $sub_array2.", ";
+				$sub_array = substr($sub_array, 0, -2);
+				$info_string = str_replace('$'.$value, $sub_array, $info_string);
+				}
+			}
+		$pdfFile->setFont("arial","B",12);
+		$pdfFile->Write(5,"- " . _("User Information") . ":");
+		$pdfFile->Ln(6);
+		$pdfFile->setFont("times","",10);
+		$pdfFile->Cell(50,5,$info_string,0,1,"L",0);
+		$pdfFile->Ln(9);
+
 // Print Personal settings
 		$pdfFile->setFont("arial","B",12);
 		$pdfFile->Write(5,"- " . _("Personal User Infos") . ":");
@@ -203,10 +227,8 @@ function createUserPDF($accounts) {
 		$pdfFile->setFont("times","B",10);
 		$pdfFile->Cell(50,5,_("Windows Domain") . ":",0,0,"R",0);
 		$pdfFile->setFont("times","",10);
-		if($_SESSION['config']->get_samba3() == "yes") {
-			$account->smb_domain = $account->smb_domain->name;
-		}
-		$pdfFile->Cell(50,5,$account->smb_domain,0,1,"L",0);
+		if($_SESSION['config']->get_samba3() == "yes") $pdfFile->Cell(50,5,$account->smb_domain->name,0,1,"L",0);
+		else $pdfFile->Cell(50,5,$account->smb_domain,0,1,"L",0);
 // Print Quota settings
 		$pdfFile->Ln(9);
 		$pdfFile->setFont("arial","B",12);
@@ -236,7 +258,6 @@ function createUserPDF($accounts) {
 		}
 		$pdfFile->Ln(9);
 	}
-
 	// Close PDF
 	$pdfFile->Close();
 	// Get relative url path
@@ -256,6 +277,8 @@ function createUserPDF($accounts) {
 // creates a PDF with host accounts
 // $accounts: array of account
 function createHostPDF($accounts) {
+	// The decimal separator must be a dot in order to write pdf-files
+	setlocale(LC_NUMERIC, "C");
 	// Start PDF file
 	$pdfFile = new lamHostPDF();
 	$pdfFile->Open();
@@ -383,6 +406,8 @@ function createHostPDF($accounts) {
 // creates a PDF with groups
 // $accounts: array of account
 function createGroupPDF($accounts) {
+	// The decimal separator must be a dot in order to write pdf-files
+	setlocale(LC_NUMERIC, "C");
 	// Start PDF file
 	$pdfFile = new lamGroupPDF();
 	$pdfFile->Open();
