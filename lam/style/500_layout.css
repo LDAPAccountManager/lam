@@ -29,7 +29,26 @@ $Id$
  */
 h1,h2,h3,h4,p,ul,ol,li,div,td,th,address,blockquote,nobr,b,i {
   font-family:Arial,Verdana,sans-serif;
-  font-size:12px;
+  font-size:14px;
+}
+
+body {
+  background-color:#F5F5F5;
+}
+
+/// links
+a {
+color:darkblue;
+font-size:18px;
+font-weight:normal;
+text-decoration:underline;
+}
+
+a:hover {
+color:lightblue;
+font-size:18px;
+font-weight:normal;
+text-decoration:none;
 }
 
 
@@ -43,7 +62,7 @@ th.userlist {
   border-color:#B7C7B7;
   padding:10px;
   background-color:#C7E7C7;
-  font-size:12px;
+  font-size:14px;
   font-weight:bold;
 }
 
@@ -52,9 +71,26 @@ td.userlist {
   border-style:solid;
   border-color:#C7D7C7;
   padding:4px;
-  background-color:#E7F7E7;
-  font-size:12px;
+  background-color:#DDDDDD;
+  bgcolor:#DDDDDD;
+  font-size:14px;
 }
+
+/// links of userlist
+a {
+color:darkblue;
+font-size:14px;
+font-weight:normal;
+text-decoration:underline;
+}
+
+a:hover {
+color:red;
+font-size:14px;
+font-weight:normal;
+text-decoration:none;
+}
+
 
 /**
  * table style for grouplist.php
