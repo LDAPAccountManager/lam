@@ -149,10 +149,13 @@ class posixAccount extends baseModule {
 													'userPassword',
 													'loginShell');
 		// help Entries
-		$return['help'] = array (	'uid'							=>	array ("ext" => "FALSE", "Headline" => _("Username"), "Text" => _("Username of the user who should be created. Valid characters are: a-z,0-9, .-_. Lam does not allow a number as first character because useradd also does not allow it. Lam does not allow capital letters A-Z because it can cause several problems. If username is already used username will be expanded with a number. The next free number will be used. Warning: Older systems have problems with usernames longer than 8 characters. You can not log in to Windows if username is longer than 16 characters.")),
+		$return['help'] = array (	'user'						=>	array(	'uid'				=>	array ("ext" => "FALSE", "Headline" => _("Username"), "Text" => _("Username of the user who should be created. Valid characters are: a-z,0-9, .-_. Lam does not allow a number as first character because useradd also does not allow it. Lam does not allow capital letters A-Z because it can cause several problems. If username is already used username will be expanded with a number. The next free number will be used. Warning: Older systems have problems with usernames longer than 8 characters. You can not log in to Windows if username is longer than 16 characters.")),
+																								'gecos'			=>	array ("ext" => "FALSE", "Headline" => _("Gecos"), "Text" => _("User description. If left empty sur- and give name will be used.")),
+																								'gidNumber'	=>	array ("ext" => "FALSE", "Headline" => _("Primary group"), "Text" => _("The Primary Group the user should be member of."))),
+											'host'						=>	array(	'uid'				=>	array ("ext" => "FALSE", "Headline" => _("Host name"), "Text" => _("Host name of the host which should be created. Valid characters are: a-z,0-9, .-_$. Lam does not allow a number as first character because useradd also does not allow it. Lam does not allow capital letters A-Z because it can cause several problems. Hostnames are always ending with $. If last character is not $ it will be added. If hostname is already used hostname will be expanded with a number. The next free number will be used.")),
+																								'gecos'			=>	array ("ext" => "FALSE", "Headline" => _("Gecos"), "Text" => _("Host description. If left empty host name will be used.")),
+																								'gidNumber'	=>	array ("ext" => "FALSE", "Headline" => _("Primary group"), "Text" => _("The Primary group the host should be member of."))),
 											'uidNumber'				=>	array ("ext" => "FALSE", "Headline" => _("UID number"), "Text" => _("If empty UID number will be generated automaticly.")),
-											'gecos'						=>	array ("ext" => "FALSE", "Headline" => _("Gecos"), "Text" => _("User description. If left empty sur- and give name will be used.")),
-											'gidNumber'				=>	array ("ext" => "FALSE", "Headline" => _("Primary group"), "Text" => _("The Primary Group the user should be member of.")),
 											'addgroup'					=>	array ("ext" => "FALSE", "Headline" => _("Additional groups"), "Text" => _("Hold the CTRL-key to (de)select multiple groups."). ' '. _("Can be left empty.")),
 											'homeDirectory'			=>	array ("ext" => "FALSE", "Headline" => _("Home directory"), "Text" => _("$user and $group are replaced with username or primary groupname.")),
 											/*'userPassword'		=>*/
@@ -260,7 +263,7 @@ class posixAccount extends baseModule {
 
 	/*
 	*/
-	function get_help($id) {
+	/*function get_help($id) {
 		switch ($id) {
 			case 'uid':
 				return array ("ext" => "FALSE", "Headline" => _("Username"), "Text" => _("Username of the user who should be created. Valid characters are: a-z,0-9, .-_. Lam does not allow a number as first character because useradd also does not allow it. Lam does not allow capital letters A-Z because it can cause several problems. If username is already used username will be expanded with a number. The next free number will be used. Warning: Older systems have problems with usernames longer than 8 characters. You can not log in to Windows if username is longer than 16 characters."));
@@ -279,22 +282,22 @@ class posixAccount extends baseModule {
 				break;
 			case 'homeDirectory':
 				return array ("ext" => "FALSE", "Headline" => _("Home directory"), "Text" => _("$user and $group are replaced with username or primary groupname."));
-				break;
+				break;*/
 			/*case 'userPassword':
-				return ;*/
-				break;
-			case 'userPassword_no':
+				return ;
+				break;*/
+			/*case 'userPassword_no':
 				return array ("ext" => "FALSE", "Headline" => _("Use no password"), "Text" => _("If checked no password will be used."));
-				break;
+				break;*/
 			/*case 'userPassword_lock':
-				return ;*/
-				break;
-			case 'loginShell':
+				return ;
+				break;*/
+			/*case 'loginShell':
 				return array ("ext" => "FALSE", "Headline" => _("Login shell"), "Text" => _("To disable login use /bin/false. List of shells is read from lam/config/shells"));	
 				break;
 		}
 		return false;
-	}
+	}*/
 
 	/* This function returns all ldap attributes
 	* which are part of posixAccount and returns

@@ -164,7 +164,7 @@ class sambaGroupMapping extends baseModule {
 
 	/*
 	*/
-	function get_help($id) {
+	/*function get_help($id) {
 		switch ($id) {
 			case 'displayName':
 				return array ("ext" => "FALSE", "Headline" => _("Display name"), "Text" => _("Windows clients will show display name as group description."));
@@ -177,7 +177,7 @@ class sambaGroupMapping extends baseModule {
 				break;
 		}
 		return false;
-	}
+	}*/
 
 	/* This function returns all ldap attributes
 	* which are part of sambaGroupMapping and returns

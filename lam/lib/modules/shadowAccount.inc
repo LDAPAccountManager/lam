@@ -209,7 +209,7 @@ class shadowAccount extends baseModule {
 
 	/*
 	*/
-	function get_help($id) {
+	/*function get_help($id) {
 		switch ($id) {
 			case 'shadowWarning':
 				return array ("ext" => "FALSE", "Headline" => _("Password warn"), "Text" => _("Days before password is to expire that user is warned of pending password expiration. If set value must be 0<."). ' '. _("Can be left empty."));
@@ -228,7 +228,7 @@ class shadowAccount extends baseModule {
 				break;
 		}
 		return false;
-	}
+	}*/
 
 	/* This function returns all ldap attributes
 	* which are part of shadowAccount and returns

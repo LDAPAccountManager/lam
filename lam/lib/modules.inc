@@ -1360,5 +1360,9 @@ class accountContainer {
 			$return['main'] = array(	'dn');
 			return $return;
 		}
+		
+		function getHelp($module,$id) {
+			return $this->module[$module]->get_help($id);
+		}
 	}
 ?>

@@ -97,7 +97,8 @@ $helpEntry = array();
 
 if(isset($_GET['module'])) {
 	include_once("../lib/modules.inc");
-	$helpEntry = getHelp($_GET['module'],$_GET['item']);
+	//$helpEntry = getHelp($_GET['module'],$_GET['item']);
+	$helpEntry = $_SESSION['account']->getHelp($_GET['module'],$_GET['item']);
 	if(!$helpEntry) {
 		$variables = array();
 		array_push($variables,$_GET['item']);

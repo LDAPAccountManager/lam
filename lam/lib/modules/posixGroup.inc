@@ -259,7 +259,7 @@ class posixGroup extends baseModule {
 
 	/*
 	*/
-	function get_help($id) {
+	/*function get_help($id) {
 		switch ($id) {
 			case "description":
 				return array ("ext" => "FALSE", "Headline" => _("Description"),
@@ -276,19 +276,19 @@ class posixGroup extends baseModule {
 				break;
 			case 'adduser':
 				return array ("ext" => "FALSE", "Headline" => _("Group members"), "Text" => _("Users also being member of the current group."). ' '. _("Can be left empty."));
-				break;
+				break;*/
 			/*case 'userPassword':
 				return ;
 				break;*/
-			case 'userPassword_no':
+			/*case 'userPassword_no':
 				return array ("ext" => "FALSE", "Headline" => _("Use no password"), "Text" => _("If checked no password will be used."));
-				break;
+				break;*/
 			/*case 'userPassword_lock':
 				return ;		
 				break;*/
-		}
+		/*}
 		return false;
-	}
+	}*/
 
 	/* This function returns all ldap attributes
 	* which are part of posixGroup and returns

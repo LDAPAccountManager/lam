@@ -401,6 +401,9 @@ class baseModule {
 		if(isset($this->meta['help'][$id])) {
 			return $this->meta['help'][$id];
 		}
+		elseif(isset($this->meta['help'][$this->scope][$id])) {
+			return $this->meta['help'][$this->scope][$id];
+		}
 		else {
 			return false;
 		}
