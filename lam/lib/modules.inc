@@ -261,13 +261,13 @@ function getAvailableModules($scope) {
 * @return array profile elements
 */
 function getProfileOptions($scope) {
-	// create new account container if needed
-	if (! isset($_SESSION["profile_account_$scope"])) {
-		$_SESSION["profile_account_$scope"] = new accountContainer($scope, "profile_account_$scope");
-		$_SESSION["profile_account_$scope"]->new_account();
+	$mods = $_SESSION['config']->get_AccountModules($scope);
+	$return = array();
+	for ($i = 0; $i < sizeof($mods); $i++) {
+		$module = new $mods[$i]($scope);
+		$return[$mods[$i]] = $module->get_profileOptions();
 	}
-	// get options
-	return $_SESSION["profile_account_$scope"]->getProfileOptions();
+	return $return;
 }
 
 /**
@@ -278,13 +278,14 @@ function getProfileOptions($scope) {
 * @return array list of error messages
 */
 function checkProfileOptions($scope, $options) {
-	// create new account container if needed
-	if (! isset($_SESSION["profile_account_$scope"])) {
-		$_SESSION["profile_account_$scope"] = new accountContainer($scope, "profile_account_$scope");
-		$_SESSION["profile_account_$scope"]->new_account();
+	$mods = $_SESSION['config']->get_AccountModules($scope);
+	$return = array();
+	for ($i = 0; $i < sizeof($mods); $i++) {
+		$module = new $mods[$i]($scope);
+		$temp = $module->check_profileOptions($options);
+		$return = array_merge($return, $temp);
 	}
-	// get options
-	return $_SESSION["profile_account_$scope"]->checkProfileOptions($options);
+	return $return;
 }
 
 /**
@@ -395,13 +396,13 @@ function getAvailableScopes() {
 * @return array column list
 */
 function getUploadColumns($scope) {
-	// create new account container if needed
-	if (! isset($_SESSION["profile_account_$scope"])) {
-		$_SESSION["profile_account_$scope"] = new accountContainer($scope, "profile_account_$scope");
-		$_SESSION["profile_account_$scope"]->new_account();
+	$mods = $_SESSION['config']->get_AccountModules($scope);
+	$return = array();
+	for ($i = 0; $i < sizeof($mods); $i++) {
+		$module = new $mods[$i]($scope);
+		$return[$mods[$i]] = $module->get_uploadColumns();
 	}
-	// get options
-	return $_SESSION["profile_account_$scope"]->get_uploadColumns();
+	return $return;
 }
 
 /**
@@ -1223,33 +1224,6 @@ class accountContainer {
 		return 0;
 		}
 
-	/**
-	* Returns an hash array containing all profile options
-	*/
-	function getProfileOptions() {
-		$return = array();
-		$modules = array_keys($this->module);
-		foreach ($modules as $singlemodule) {
-			$return[$singlemodule] = $this->module[$singlemodule]->get_profileOptions();
-		}
-		return $return;
-	}
-
-	/**
-	* Checks the input values of an account profile.
-	*
-	* @param array $options list of input values
-	* @return array list of error messages
-	*/
-	function checkProfileOptions($options) {
-		$return = array();
-		$modules = array_keys($this->module);
-		foreach ($modules as $singlemodule) {
-			$temp = $this->module[$singlemodule]->check_profileOptions($options);
-			$return = array_merge($return, $temp);
-		}
-		return $return;
-	}
 
 	// TODO remove this function?
 	function proccess_profile($post) {
@@ -1544,28 +1518,6 @@ class accountContainer {
 				$return[$moduleName] = $module->get_pdfFields($this->type);
 			}
 			$return['main'] = array(	'dn');
-			return $return;
-		}
-
-		/**
-		* Returns an array containing all input columns for the file upload.
-		*
-		* Syntax:
-		* <br> array(
-		* <br>  string: name,  // fixed non-translated name which is used as column name (should be of format: <module name>_<column name>)
-		* <br>  string: description,  // short descriptive name
-		* <br>  string: help,  // help ID
-		* <br>  string: example,  // example value
-		* <br>  boolean: required  // true, if user must set a value for this column
-		* <br> )
-		*
-		* @return array column list
-		*/
-		function get_uploadColumns() {
-			$return = array();
-			foreach($this->module as $moduleName => $module) {
-				$return[$moduleName] = $module->get_uploadColumns();
-			}
 			return $return;
 		}
 	}
