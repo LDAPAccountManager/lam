@@ -59,10 +59,8 @@ if ($_POST['new_domain'] || $_POST['del_domain']){
 }
 
 echo $_SESSION['header'];
-echo "<html><head><title>listdomains</title>\n";
+echo "<title>listdomains</title>\n";
 echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
-echo "<meta http-equiv=\"pragma\" content=\"no-cache\">\n";
-echo "<meta http-equiv=\"cache-control\" content=\"no-cache\">\n";
 echo "</head><body>\n";
 echo "<script src=\"../../lib/functions.js\" type=\"text/javascript\" language=\"javascript\"></script>\n";
 

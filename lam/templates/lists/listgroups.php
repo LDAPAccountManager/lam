@@ -85,10 +85,8 @@ if ($_POST['new_group'] || $_POST['del_group'] || $_POST['pdf_group'] || $_POST[
 }
 
 echo $_SESSION['header'];
-echo "<html><head><title>listgroups</title>\n";
+echo "<title>listgroups</title>\n";
 echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
-echo "<meta http-equiv=\"pragma\" content=\"no-cache\">\n";
-echo "<meta http-equiv=\"cache-control\" content=\"no-cache\">\n";
 echo "</head><body>\n";
 echo "<script src=\"../../lib/functions.js\" type=\"text/javascript\" language=\"javascript\"></script>\n";
 

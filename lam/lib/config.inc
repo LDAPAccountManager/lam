@@ -61,10 +61,8 @@ function getConfigProfiles() {
 // $page is the URL of the target page
 function metaRefresh($page) {
 	echo $_SESSION['header'];
-	echo "<html>\n";
-	echo "<head>\n";
-	echo "<title></title>\n";
 	echo "<meta http-equiv=\"refresh\" content=\"0; URL=" . $page . "\">\n";
+	echo "<title></title>\n";
 	echo "</head>\n";
 	echo "<body>\n";
 	// print link if refresh does not work

@@ -297,8 +297,6 @@ if ($_POST['submit']) {
 
 	// print header
 	echo $_SESSION['header'];
-	echo ("<html>\n");
-	echo ("<head>\n");
 	echo ("<title>OU-Editor</title>\n");
 	echo ("<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">\n");
 	echo ("</head>\n");
@@ -330,12 +328,8 @@ function display_main() {
 
 	// display main page
 	echo $_SESSION['header'];
-	echo ("<html>\n");
-	echo ("<head>\n");
 	echo ("<title>OU-Editor</title>\n");
 	echo ("<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">\n");
-	echo "<meta http-equiv=\"pragma\" content=\"no-cache\">\n";
-	echo "<meta http-equiv=\"cache-control\" content=\"no-cache\">\n";
 	echo ("</head>\n");
 	echo ("<body>\n");
 	echo ("<br>\n");

@@ -125,8 +125,7 @@ if ($_POST['add_suff'] || $_POST['cancel']) {
 		}
 	}
 	echo $_SESSION['header'];
-	echo "<html>\n";
-	echo "<head><title>initsuff</title>\n";
+	echo "<title>initsuff</title>\n";
 	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">\n";
 	echo "</head>\n<body>\n";
 	// print error/success messages
@@ -177,7 +176,7 @@ $new_suff = str_replace("\\'", "", $new_suff);
 $new_suff = explode(";", $new_suff);
 
 echo $_SESSION['header'];
-echo "<html><head><title>initsuff</title>\n";
+echo "<title>initsuff</title>\n";
 echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">\n";
 echo "</head><body>\n";
 	echo "<p>&nbsp;</p>\n";

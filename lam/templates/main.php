@@ -52,8 +52,6 @@ if ($_SESSION['config']->is_samba3()) {
 }
 
 echo $_SESSION['header'];
-echo ("<html>\n");
-echo ("<head>\n");
 echo ("<title>LDAP Account Manager</title>\n");
 echo ("<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">");
 echo ("</head>\n");

@@ -31,12 +31,8 @@ session_save_path("../sess");
 setlanguage();
 
 echo $_SESSION['header'];
-
 ?>
 
-<html>
-
-<head>
 	<title></title>
 	<link rel="stylesheet" type="text/css" href="../style/layout.css">
 </head>

@@ -73,8 +73,6 @@ echo $_SESSION['header'];
 
 echo "<title>listusers</title>\n";
 echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
-echo "<meta http-equiv=\"pragma\" content=\"no-cache\">\n";
-echo "<meta http-equiv=\"cache-control\" content=\"no-cache\">\n";
 echo "</head><body>\n";
 
 echo ("<p align=\"center\"><a href=\"http://lam.sf.net\" target=\"new_window\">".

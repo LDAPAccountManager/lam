@@ -48,8 +48,6 @@ unset($_SESSION);
 // print logout message
 ?>
 
-<html>
-	<head>
 	<title>
 		<?php echo _("Logout"); ?>
 	</title>
