@@ -158,7 +158,9 @@ function listPrintTableHeader($scope, $searchFilter, $desc_array, $attr_array, $
 	for ($k = 0; $k < sizeof ($desc_array); $k++) {
 		echo "<td>";
 		echo ("<input type=\"text\" size=15 name=\"filter" . strtolower ($attr_array[$k]) .
-		"\" value=\"" . $_POST["filter" . strtolower($attr_array[$k])] . "\">");
+		"\" value=\"" . $_POST["filter" . strtolower($attr_array[$k])] . "\"" .
+		"title=\"" . _("Here you can input small filters (e.g. 'value' or 'v*').") . "\"" .
+		">");
 		echo "</td>\n";
 	}
 	echo "</tr>\n";
