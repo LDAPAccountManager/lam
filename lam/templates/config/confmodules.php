@@ -189,7 +189,7 @@ echo "<table border=0 width=\"100%\">\n";
 				echo "<select class=\"useredit-bright\" name=\"user_selected[]\" size=5 multiple>\n";
 					for ($i = 0; $i < sizeof($selected_users); $i++) {
 						if (in_array($selected_users[$i], $available_users)) {  // selected modules must be available
-							if (is_base_module($selected_users[$i])) {  // mark base modules
+							if (is_base_module($selected_users[$i], "user")) {  // mark base modules
 								echo "<option value=\"" . $selected_users[$i] . "\">";
 								echo $selected_users[$i] . "(" . getModuleAlias($selected_users[$i], "user") .  ")(" . _("base module") . ")";
 								echo "</option>\n";
@@ -217,7 +217,7 @@ echo "<table border=0 width=\"100%\">\n";
 				echo "<select class=\"useredit-bright\" name=\"user_available[]\" size=5 multiple>\n";
 					for ($i = 0; $i < sizeof($available_users); $i++) {
 						if (! in_array($available_users[$i], $selected_users)) {  // display non-selected modules
-							if (is_base_module($available_users[$i])) {  // mark base modules
+							if (is_base_module($available_users[$i], "user")) {  // mark base modules
 								echo "<option value=\"" . $available_users[$i] . "\">";
 								echo $available_users[$i] . "(" . getModuleAlias($available_users[$i], "user") .  ")(" . _("base module") . ")";
 								echo "</option>\n";
@@ -292,7 +292,7 @@ echo "<table border=0 width=\"100%\">\n";
 				echo "<select class=\"groupedit-bright\" name=\"group_selected[]\" size=5 multiple>\n";
 					for ($i = 0; $i < sizeof($selected_groups); $i++) {
 						if (in_array($selected_groups[$i], $available_groups)) {  // selected modules must be available
-							if (is_base_module($selected_groups[$i])) {  // mark base modules
+							if (is_base_module($selected_groups[$i], "group")) {  // mark base modules
 								echo "<option value=\"" . $selected_groups[$i] . "\">";
 								echo $selected_groups[$i] . "(" . getModuleAlias($selected_groups[$i], "group") .  ")(" . _("base module") . ")";
 								echo "</option>\n";
@@ -320,7 +320,7 @@ echo "<table border=0 width=\"100%\">\n";
 				echo "<select class=\"groupedit-bright\" name=\"group_available[]\" size=5 multiple>\n";
 					for ($i = 0; $i < sizeof($available_groups); $i++) {
 						if (! in_array($available_groups[$i], $selected_groups)) {  // display non-selected modules
-							if (is_base_module($available_groups[$i])) {  // mark base modules
+							if (is_base_module($available_groups[$i], "group")) {  // mark base modules
 								echo "<option value=\"" . $available_groups[$i] . "\">";
 								echo $available_users[$i] . "(" . getModuleAlias($available_groups[$i], "group") .  ")(" . _("base module") . ")";
 								echo "</option>\n";
@@ -395,7 +395,7 @@ echo "<table border=0 width=\"100%\">\n";
 				echo "<select class=\"hostedit-bright\" name=\"host_selected[]\" size=5 multiple>\n";
 					for ($i = 0; $i < sizeof($selected_hosts); $i++) {
 						if (in_array($selected_hosts[$i], $available_hosts)) {  // selected modules must be available
-							if (is_base_module($selected_hosts[$i])) {  // mark base modules
+							if (is_base_module($selected_hosts[$i], "host")) {  // mark base modules
 								echo "<option value=\"" . $selected_hosts[$i] . "\">";
 								echo $selected_hosts[$i] . "(" . getModuleAlias($selected_hosts[$i], "host") .  ")(" . _("base module") . ")";
 								echo "</option>\n";
@@ -423,7 +423,7 @@ echo "<table border=0 width=\"100%\">\n";
 				echo "<select class=\"hostedit-bright\" name=\"host_available[]\" size=5 multiple>\n";
 					for ($i = 0; $i < sizeof($available_hosts); $i++) {
 						if (! in_array($available_hosts[$i], $selected_hosts)) {  // display non-selected modules
-							if (is_base_module($available_hosts[$i])) {  // mark base modules
+							if (is_base_module($available_hosts[$i], "host")) {  // mark base modules
 								echo "<option value=\"" . $available_hosts[$i] . "\">";
 								echo $available_hosts[$i] . "(" . getModuleAlias($available_hosts[$i], "host") .  ")(" . _("base module") . ")";
 								echo "</option>\n";
