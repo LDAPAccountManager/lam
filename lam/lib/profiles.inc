@@ -80,7 +80,7 @@ function getHostProfiles() {
 // loads an user profile with name $profile (without .pru)
 // the return value is an account object
 // if $timestamps is true, smb_pwdcanchange and smb_pwdmustchange are returned as timestamp
-function loadUserProfile($profile, $timestamps=True) {
+function loadUserProfile($profile) {
 	if (!eregi("^([0-9]|[a-z]|-|_)*$", $profile)) exit;
 	$acc = new account();
 	$file = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/users/" . $profile . ".pru";
@@ -147,14 +147,6 @@ function loadUserProfile($profile, $timestamps=True) {
 					$acc->smb_flagsD = chop(substr($line, 12, strlen($line)-12));
 					continue;
 				}
-				if (substr($line, 0, 18) == "smb_pwdcanchange: ") {
-					$acc->smb_pwdcanchange = chop(substr($line, 18, strlen($line)-18));
-					continue;
-				}
-				if (substr($line, 0, 19) == "smb_pwdmustchange: ") {
-					$acc->smb_pwdmustchange = chop(substr($line, 19, strlen($line)-19));
-					continue;
-				}
 				if (substr($line, 0, 15) == "smb_homedrive: ") {
 					$acc->smb_homedrive = chop(substr($line, 15, strlen($line)-15));
 					continue;
@@ -181,11 +173,6 @@ function loadUserProfile($profile, $timestamps=True) {
 				}
 			}
 			fclose($file);
-			// set timestamps if needed
-			if ($timestamps) {
-				$acct->smb_pwdcanchange = ($acct->smb_pwdcanchange * 86400) + time();
-				$acct->smb_pwdmustchange = ($acct->smb_pwdmustchange * 86400) + time();
-			}
 		}
 		else {
 			StatusMessage("ERROR", "", _("Unable to load profile! ") . $file);
@@ -279,8 +266,6 @@ function saveUserProfile($account, $profile) {
 	if (isset($account->smb_password_no)) fputs($file, "smb_password_no: " . $account->smb_password_no . "\n");
 	if (isset($account->smb_useunixpwd)) fputs($file, "smb_useunixpwd: " . $account->smb_useunixpwd . "\n");
 	if (isset($account->smb_flagsD)) fputs($file, "smb_flagsD: " . $account->smb_flagsD . "\n");
-	if (isset($account->smb_pwdcanchange)) fputs($file, "smb_pwdcanchange: " . $account->smb_pwdcanchange . "\n");
-	if (isset($account->smb_pwdmustchange)) fputs($file, "smb_pwdmustchange: " . $account->smb_pwdmustchange . "\n");
 	if (isset($account->smb_homedrive)) fputs($file, "smb_homedrive: " . $account->smb_homedrive . "\n");
 	if (isset($account->smb_scriptPath)) fputs($file, "smb_scriptPath: " . $scriptPath . "\n");
 	if (isset($account->smb_profilePath)) fputs($file, "smb_profilePath: " . $profpath . "\n");

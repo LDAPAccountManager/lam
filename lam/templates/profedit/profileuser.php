@@ -55,7 +55,7 @@ for ($i = 0; $i < sizeof($shelllist); $i++) {
 
 // check if profile should be edited
 if ($_GET['edit']) {
-	$acct = loadUserProfile($_GET['edit'], False);
+	$acct = loadUserProfile($_GET['edit']);
 }
 
 // search available groups
@@ -242,24 +242,6 @@ if ($acct->smb_flagsD == "0") echo ("<option selected value=0>"._("no")."</optio
 else echo ("<option selected value=1>"._("yes")."</option><option value=0>"._("no")."</option>\n");
 echo ("</select></td>\n");
 echo ("<td><a href=\"../help.php?HelpNumber=310\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
-echo ("</tr>\n");
-
-// user can change his password
-echo ("<tr>\n");
-echo ("<td align=\"right\"><b>" . _("User can change password") . ": </b></td>\n");
-echo ("<td>\n");
-echo ("<input type=\"text\" name=\"smb_pwdcanchange\" value=\"" . $acct->smb_pwdcanchange . "\">\n");
-echo ("</td>\n");
-echo ("<td><a href=\"../help.php?HelpNumber=302\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
-echo ("</tr>\n");
-
-// user must change his password
-echo ("<tr>\n");
-echo ("<td align=\"right\"><b>" . _("User must change password") . ": </b></td>\n");
-echo ("<td>\n");
-echo ("<input type=\"text\" name=\"smb_pwdmustchange\" value=\"" . $acct->smb_pwdmustchange . "\">\n");
-echo ("</td>\n");
-echo ("<td><a href=\"../help.php?HelpNumber=303\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
 echo ("</tr>\n");
 
 // empty row

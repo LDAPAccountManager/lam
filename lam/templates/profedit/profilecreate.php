@@ -161,22 +161,6 @@ if ($_GET['type'] == "user") {
 		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
-	if (!$_POST['smb_pwdcanchange'] || is_numeric($_POST['smb_pwdcanchange'])) {
-		$acct->smb_pwdcanchange = $_POST['smb_pwdcanchange'];
-	}
-	else {
-		StatusMessage("ERROR", "", _("Wrong parameter for Samba option: user can change password!") . " " . $_POST['smb_pwdcanchange']);
-		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
-		exit;
-	}
-	if (!$_POST['smb_pwdmustchange'] || is_numeric($_POST['smb_pwdmustchange'])) {
-		$acct->smb_pwdmustchange = $_POST['smb_pwdmustchange'];
-	}
-	else {
-		StatusMessage("ERROR", "", _("Wrong parameter for Samba option: user must change password!") . " " . $_POST['smb_pwdmustchange']);
-		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
-		exit;
-	}
 	if ($_POST['smb_homedrive'] && ereg("^[D-Z]:$", $_POST['smb_homedrive'])) {
 		$acct->smb_homedrive = $_POST['smb_homedrive'];
 	}

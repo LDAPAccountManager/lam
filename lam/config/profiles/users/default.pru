@@ -5,12 +5,9 @@ unix_pwdwarn: 10
 unix_pwdallowlogin: 10
 unix_pwdminage: 1
 unix_pwdmaxage: 180
-unix_pwdexpire_day: 1
-unix_pwdexpire_mon: 1
-unix_pwdexpire_yea: 2010
+unix_pwdexpire: 1262300400
 unix_deactivated: 0
 smb_password_no: 0
 smb_useunixpwd: 1
-smb_pwdcanchange: 1
-smb_pwdmustchange: 0
+smb_flagsD: 1
 smb_homedrive: U:
