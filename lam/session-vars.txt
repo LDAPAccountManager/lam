@@ -79,7 +79,6 @@ convsave, confmain, conflogin:
 - conf_lang: Eingabe von confmain
 - conf_scriptpath: Eingabe von confmain
 - conf_scriptserver: Eingabe von confmain
-- conf_samba3: Eingabe von confmain
 - conf_filename: Dateiname des Profils
 
 
