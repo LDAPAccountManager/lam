@@ -24,6 +24,9 @@ $Id$
 include_once ("../../lib/config.inc");
 include_once("../../lib/ldap.inc");
 
+// used to display status messages
+include_once ("../../lib/status.inc");
+
 // start session
 session_save_path("../../sess");
 @session_start();
@@ -95,7 +98,7 @@ for ($k = 0; $k < sizeof($desc_array); $k++) {
     $filter = $filter . "(" . strtolower($attr_array[$k]) . "=" .
       $_POST["filter" . strtolower($attr_array[$k])] . ")";
   else
-    $_POST["filter" . strtolower($attr_array[$k])] = "*";
+    $_POST["filter" . strtolower($attr_array[$k])] = "";
 }
 $filter = $filter . ")";
 
@@ -114,16 +117,16 @@ if ($_SESSION["userlist"] && !$_POST['refresh'] && !$_POST["apply_filter"]) {
   if ($sr) {
     $userinfo = ldap_get_entries ($_SESSION["ldap"]->server, $sr);
     ldap_free_result ($sr);
-    if ($userinfo["count"] == 0) echo ("<br><br><font color=\"red\"><b>" . 
-				   _("No Users found!") . 
-				   "</b></font><br><br>");
-    // delete first array entry which is "count"
+    if ($userinfo["count"] == 0)
+      StatusMessage("WARN", "", _("No Users found!"));
+
     array_shift($userinfo);
     $_SESSION["userlist"] = $userinfo;
   }
-  else echo ("<br><br><font color=\"red\"><b>" . 
-	     _("LDAP Search failed! Please check your preferences. <br> No Users found!") . 
-	     "</b></font><br><br>");
+else 
+  StatusMessage("ERROR", 
+		_("LDAP Search failed! Please check your preferences."), 
+		_("No Groups found!"));
 }
 
 $user_count = sizeof ($_SESSION["userlist"]);
@@ -136,21 +139,21 @@ echo ("<br />");
 
 // print user table header
 echo "<table rules=\"all\" class=\"userlist\" width=\"100%\">\n";
-echo "<tr class=\"userlist_head\"><th width=22 height=34></th><th></th>";
+echo "<tr class=\"userlist_head\"><th width=22 height=34></th><th></th>\n";
 // table header
 for ($k = 0; $k < sizeof ($desc_array); $k++) {
   if ($sortattrib == strtolower($attr_array[$k]))
-    echo "<th style=\"background-color:#DDDDAC\">";
+    echo "<th style=\"background-color:#DDDDAC\">\n";
   else
-    echo "<th>";
+    echo "<th>\n";
   echo "<a class=\"userlist\" href=\"listusers.php?sort=1&sortattrib=" . 
     strtolower($attr_array[$k]) . "\">" . 
-    $desc_array[$k] . "</a></th>";
+    $desc_array[$k] . "</a></th>\n";
 }
 echo "</tr>\n";
-echo "<tr class=\"test\"><th width=22 height=34></th><th>";
+echo "<tr class=\"test\"><th width=22 height=34></th><th>\n";
 echo "<input type=\"submit\" name=\"apply_filter\" value=\"" . _("Apply") . "\">";
-echo "</th>";
+echo "</th>\n";
 
 // print input boxes for filters
 for ($k = 0; $k < sizeof ($desc_array); $k++) {
@@ -170,38 +173,21 @@ for ($i = 0; $i < sizeof ($userinfo); $i++) { // ignore last entry in array whic
        " onClick=\"user_click(this, '" . $userinfo[$i]["dn"] . "')\"" .
        " onDblClick=parent.frames[1].location.href=\"../account.php?type=user&DN='" . $userinfo[$i]["dn"] . "'\">" .
        " <td height=22><input onClick=\"user_click(this, '" . $userinfo[$i]["dn"] . "')\" type=\"checkbox\" name=\"" . $userinfo[$i]["dn"] . "\"></td>" .
-       " <td align='center'><a href=\"../account.php?type=user&DN='" . $userinfo[$i]["dn"] . "'\">" . _("Edit") . "</a></td>");
+       " <td align='center'><a href=\"../account.php?type=user&DN='" . $userinfo[$i]["dn"] . "'\">" . _("Edit") . "</a></td>\n");
   for ($k = 0; $k < sizeof($attr_array); $k++) {
-    echo ("<td>");
+    echo ("<td>\n");
     // print all attribute entries seperated by "; "
     if (sizeof($userinfo[$i][strtolower($attr_array[$k])]) > 0) {
       // delete first array entry which is "count"
       array_shift($userinfo[$i][strtolower($attr_array[$k])]);
-      // generate links for user members
-      if (strtolower($attr_array[$k]) == "memberuid") {
-	$linklist = array();
-	for ($d = 0; $d < sizeof($userinfo[$i][strtolower($attr_array[$k])]);
-	     $d++) {
-	  $user = $userinfo[$i][strtolower($attr_array[$k])][$d]; // user name
-	  $dn = $_SESSION["ldap"]->search_username($user); // DN entry
-	  // if user was found in LDAP make link, otherwise just print name
-	  if ($dn) {
-	    $linklist[$d] = "<a href=../account.php?type=user&DN=\"" . $dn . "\" >" .
-	      $userinfo[$i][strtolower($attr_array[$k])][$d] . "</a>";
-	  }
-	  else $linklist[$d] = $user;
-	}
-	echo implode("; ", $linklist);
-      }
       // print all other attributes
-      else {
-	echo implode("; ", $userinfo[$i][strtolower($attr_array[$k])]);
-      }
+      echo implode("; ", $userinfo[$i][strtolower($attr_array[$k])]);
     }
-    echo ("</td>");
   }
-  echo("</tr>\n");
+  echo ("</td>");
 }
+echo("</tr>\n");
+
 echo ("</table>");
 
 echo ("<br />");
@@ -227,26 +213,29 @@ function draw_navigation_bar ($user_count) {
   global $page;
   global $sortattrib;
 
-  echo ("<table width=\"100%\" border=\"0\" style=\"background-color:#DDDDDD\">");
+  echo ("<table width=\"100%\" border=\"0\" style=\"background-color:#DDDDDD\">\n");
   echo ("<tr>");
   echo ("<td style=\"color:#AAAAAA\"><input type=\"submit\" name=\"refresh\" value=\"" . _("Refresh") . "\">&nbsp;&nbsp;");
   if ($page != 1)
-    echo ("<a align=\"right\" class=\"userlist\" href=\"listusers.php?page=" . ($page - 1) . "&sortattrib=" . $sortattrib . "\"><=</a>");
+    echo ("<a class=\"userlist\" href=\"listusers.php?page=" . 
+	  ($page - 1) . "&sortattrib=" . $sortattrib . "\">&lt;=</a>");
   else
-    echo ("<=");
+    echo ("&lt;=");
   echo ("&nbsp;");
 
   if ($page < ($user_count / $max_pageentrys))
-    echo ("<a align=\"right\" class=\"userlist\" href=\"listusers.php?page=" . ($page + 1) . "&sortattrib=" . $sortattrib . "\">=></a>");
+    echo ("<a class=\"userlist\" href=\"listusers.php?page=" . 
+	  ($page + 1) . "&sortattrib=" . $sortattrib . "\">=&gt;</a>");
   else
-    echo ("=></td>");
+    echo ("=&gt;</td>");
 
   echo ("<td style=\"color:darkred\" align=\"right\">");
   for ($i = 0; $i < ($user_count / $max_pageentrys); $i++) {
     if ($i == $page - 1)
       echo ("&nbsp;" . ($i + 1));
     else
-      echo ("&nbsp;<a align=\"right\" class=\"userlist\" href=\"listusers.php?page=" . ($i + 1) . 
+      echo ("&nbsp;<a class=\"userlist\" href=\"listusers.php?page=" . 
+	    ($i + 1) . 
 	    "&sortattrib=" . $sortattrib . "\">" . ($i + 1) . "</a>");
   }
   echo ("</td></tr></table>");
