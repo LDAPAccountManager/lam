@@ -23,11 +23,39 @@ $Id$
   LDAP Account Manager displays table for creating or modifying accounts in LDAP
 */
 
-include_once('../../lib/include.inc');
+/**
+* Displays the account detail page.
+*
+* @package modules
+* @author Tilo Lutz
+*/
+
+/** configuration options */
+include_once('../../lib/config.inc');
+/** functions to load and save profiles */
+include_once('../../lib/profiles.inc');
+/** Return error-message */
+include_once('../../lib/status.inc');
+/** Return a pdf-file */
+include_once('../../lib/pdf.inc');
+/** module functions */
+include_once('../../lib/modules.inc');
+
+// Start session
+session_save_path('../../sess');
+@session_start();
+
+// Redirect to startpage if user is not loged in
+if (!isset($_SESSION['loggedIn'])) {
+	metaRefresh("../login.php");
+	exit;
+	}
+
+// Set correct language, codepages, ....
+setlanguage();
 
 if ($_GET['DN']) {
 	//load account
-	if ($_GET['DN'] == $DN) $DN = str_replace("'", '',$_GET['DN']);
 	$DN = str_replace("\'", '', $_GET['DN']);
 	$type = str_replace("\'", '', $_GET['type']);
 	if ($_GET['type'] == $type) $type = str_replace("'", '',$_GET['type']);
