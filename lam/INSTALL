@@ -7,7 +7,7 @@ Installation Instructions for LAM
 
    - Apache webserver (SSL optional) with installed PHP-Module (PHP-Module with
      ldap, gettext, mcrypt+mhash optional)
-   - Perl
+   - Perl (optional, needed only for lamdaemon)
    - OpenLDAP (>2.0)
    - A web browser :-)
 
@@ -36,7 +36,7 @@ Installation Instructions for LAM
      - lam/sess: write permission for apache user
      - lam/tmp: write permission for apache user
      - lam/config (with subdirectories): write permission for apache user
-     - lam/lib: perl files must be set executable (See also
+     - lam/lib: lamdaemon.pl must be set executable (See also
        docs/readme.lamdeamon.txt)
 
    * Configure config.cfg and create a configuration profile.
