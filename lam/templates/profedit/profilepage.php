@@ -142,7 +142,7 @@ function print_option($values, $modulename, $old_options) {
 					if ($values['size']) $output .= " size=\"" . $values['size'] . "\"";
 					if ($values['maxlength']) $output .= " maxlength=\"" . $values['maxlength'] . "\"";
 					if ($values['disabled']) $output .= " disabled";
-					if (isset($old_options[$values['name']]) && ($old_options[$values['name']][0] == true)) $output .= " checked";
+					if (isset($old_options[$values['name']]) && ($old_options[$values['name']][0] == 'true')) $output .= " checked";
 					elseif ($values['checked']) $output .= " checked";
 					$output .= ">\n";
 					echo $output;
@@ -183,6 +183,20 @@ function print_option($values, $modulename, $old_options) {
 			}
 			echo "</select>\n";
 			break;
+		// subtable
+		case 'table':
+			echo "<table>\n";
+			for ($l = 0; $l < sizeof($values['value']); $l++) {  // option lines
+				echo "<tr>\n";
+				for ($o = 0; $o < sizeof($values['value'][$l]); $o++) {  // line parts
+					echo "<td>";
+					print_option($values['value'][$l][$o], $values['value'], $old_options);
+					echo "</td>\n";
+				}
+				echo "</tr>\n";
+			}
+			echo "</table>\n";
+		break;
 		// print error message for invalid types
 		default:
 			echo _("Unrecognized type") . ": " . $values['kind'] . "\n";
