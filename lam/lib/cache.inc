@@ -211,7 +211,9 @@ class cache {
 					// unset every count entry
 					unset ($attr['count']);
 					$attributes = array_keys($attr);
-					foreach ($attributes as $attribute) unset ($attr[$attribute]['count']);
+					foreach ($attributes as $attribute) {
+						unset ($attr[$attribute]['count']);
+					}
 					// unset double entries
 					for ($i=0; $i<count($attr); $i++) {
 						if (isset($attr[$i])) unset($attr[$i]);
@@ -219,6 +221,9 @@ class cache {
 					// Write new cache entry
 					$addcache = $attr;
 					unset ($addcache['objectClass']);
+					foreach ($addcache as $temp)
+						foreach ($temp as $temp2)
+							$temp2 = utf8_decode($temp2);
 					if (count($addcache)!=0) $this->ldapcache[$scope][$dn] = $attr;
 					$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
 					}
@@ -306,7 +311,7 @@ class cache {
 		if (is_array($dn_groups)) {
 			$DNs = array_keys($dn_groups);
 			foreach ($DNs as $DN)
-				$return[] = $dn_groups[$DN][0];
+				$return[] = utf8_decode($dn_groups[$DN][0]);
 			return $return;
 			}
 		return array();
@@ -322,7 +327,7 @@ class cache {
 			$DNs = array_keys($dn_groups);
 			foreach ($DNs as $DN) {
 				if ($dn_groups[$DN][0]==$gidNumber)
-					$return = substr($DN, 3, strpos($DN, ',')-3);
+					$return = utf8_decode(substr($DN, 3, strpos($DN, ',')-3));
 				}
 			return $return;
 			}
