@@ -7,7 +7,6 @@ Maintainer: Roland Gruber <post@rolandgruber.de>
 Standards-Version: 3.6.1
 Home-Page: <URL:http://lam.sf.net>
 Description: Webfrontend to manage Samba and Unix accounts
-Origin: debian
 Copyright: GPL
  Copyright 2003 - 2004 Tilo Lutz, Roland Gruber, Michael Duergner, Leo Walchshaeusel
 Major-Changes:
