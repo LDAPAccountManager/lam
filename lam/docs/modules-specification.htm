@@ -1,8 +1,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-  <meta http-equiv="content-type"
- content="text/html; charset=ISO-8859-15">
+  <meta content="text/html; charset=ISO-8859-15"
+ http-equiv="content-type">
   <title>Module specification</title>
 </head>
 <body>
@@ -28,8 +28,8 @@ allowed to call other static functions.<br>
 </h3>
 <h3>2.1.1. can_manage</h3>
 <br>
-<table style="text-align: left; width: 300px;" border="0"
- cellspacing="2" cellpadding="2">
+<table cellpadding="2" cellspacing="2" border="0"
+ style="text-align: left; width: 300px;">
   <tbody>
     <tr>
       <td
@@ -49,8 +49,8 @@ the account type ("user", "group", "host" at this time).<br>
 <br>
 <h3>2.1.2. get_alias</h3>
 <br>
-<table cellpadding="2" cellspacing="2" border="0"
- style="text-align: left; width: 300px;">
+<table style="text-align: left; width: 300px;" border="0"
+ cellspacing="2" cellpadding="2">
   <tbody>
     <tr>
       <td
@@ -71,8 +71,8 @@ the account type ("user", "group", "host" at this time).<br>
 <br>
 <h3>2.1.3. is_base_module</h3>
 <br>
-<table cellpadding="2" cellspacing="2" border="0"
- style="text-align: left; width: 300px; height: 30px;">
+<table style="text-align: left; width: 300px; height: 30px;" border="0"
+ cellspacing="2" cellpadding="2">
   <tbody>
     <tr>
       <td
@@ -96,8 +96,8 @@ quota module is no base module as it needs posixAccount.<br>
 <br>
 <h3>2.1.4. get_ldap_filter</h3>
 <br>
-<table cellpadding="2" cellspacing="2" border="0"
- style="text-align: left; width: 300px; height: 30px;">
+<table style="text-align: left; width: 300px; height: 30px;" border="0"
+ cellspacing="2" cellpadding="2">
   <tbody>
     <tr>
       <td
@@ -125,8 +125,8 @@ implement it.</span><br>
 <br>
 <h3>2.1.5. get_dependencies</h3>
 <br>
-<table style="text-align: left; width: 300px; font-weight: bold;"
- border="0" cellspacing="2" cellpadding="2">
+<table cellpadding="2" cellspacing="2" border="0"
+ style="text-align: left; width: 300px; font-weight: bold;">
   <tbody>
     <tr>
       <td
@@ -158,8 +158,8 @@ your module depends on one of these modules.<br>
 <br>
 <h3>2.1.6. get_profileOptions</h3>
 <br>
-<table cellpadding="2" cellspacing="2" border="0"
- style="text-align: left; width: 300px; height: 30px;">
+<table style="text-align: left; width: 300px; height: 30px;" border="0"
+ cellspacing="2" cellpadding="2">
   <tbody>
     <tr>
       <td
@@ -179,13 +179,17 @@ The return value is an array that contains <span
  style="font-weight: bold;">meta HTML code</span>.<br>
 <br>
 The type "fieldset" is not allowed here.<br>
+The <span style="font-style: italic;">name</span> attributes are used
+as keywords to load and save profiles. We recommend to use the module
+name as prefix for them (e.g. posixAccount_homeDirectory) to avoid
+naming confilcts.<br>
 <br>
 <br>
 <h3>2.2. Class functions</h3>
 <h3>2.2.1. Constructor</h3>
 <br>
-<table style="text-align: left; width: 300px; height: 30px;" border="0"
- cellspacing="2" cellpadding="2">
+<table cellpadding="2" cellspacing="2" border="0"
+ style="text-align: left; width: 300px; height: 30px;">
   <tbody>
     <tr>
       <td
@@ -204,8 +208,8 @@ several helper functions.<br>
 <br>
 <h3>2.2.2. module_ready</h3>
 <br>
-<table style="text-align: left; width: 300px; height: 30px;" border="0"
- cellspacing="2" cellpadding="2">
+<table cellpadding="2" cellspacing="2" border="0"
+ style="text-align: left; width: 300px; height: 30px;">
   <tbody>
     <tr>
       <td
@@ -223,8 +227,8 @@ your module accepts input, otherwise <span style="font-weight: bold;">false</spa
 <br>
 <h3>2.2.3. module_complete</h3>
 <br>
-<table cellpadding="2" cellspacing="2" border="0"
- style="text-align: left; width: 300px; height: 30px;">
+<table style="text-align: left; width: 300px; height: 30px;" border="0"
+ cellspacing="2" cellpadding="2">
   <tbody>
     <tr>
       <td
