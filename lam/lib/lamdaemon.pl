@@ -31,7 +31,12 @@
 @admins = ('cn=Manager,dc=my-domain,dc=com');
 $server="127.0.0.1"; # IP or DNS of ldap-server
 $server_port='389'; # Port used from ldap
-$server_tls='no'; # Use TLS? ************* Not working yet
+$server_tls='no'; # Use TLS?
+$server_tls_verify='require'; # none,optional or require a valid server certificated
+$server_tls_clientcert=''; # path to client certificate
+$server_tls_clientkey=''; # path to client certificate
+$server_tls_decryptkey=''; # To to decrypt clientkey
+$server_tls_cafile=''; # Path to CA-File
 $debug=true; # Show debug messages
 
 # Don't change anything below this line
@@ -92,7 +97,15 @@ foreach my $admin (@admins) { # Check if user is admin
 	}
 if ($found==true) {
 	# Connect to ldap-server and check if password is valid.
-	$ldap = Net::LDAP->new($server, port => $server_port) or die ('Can\'t connect to ldapserver.');
+	$ldap = Net::LDAP->new($server, port => $server_port, version => 3) or die ('Can\'t connect to ldapserver.');
+	if ($server_tls eq 'yes') {
+	    $mesg = $ldap->start_tls(
+		verify => $server_tls_verify,
+		clientcert => $server_tls_clientcert,
+		clientkey => $server_tls_clientkey,
+		decrypte => sub { $server_tls_decryptkey; },
+		cafile => $server_tls_cafile);
+	    }
 	$result = $ldap->bind (dn => $vals[0], password => $vals[1]) ;
 	$ldap->unbind(); # Close ldap connection.
 	if (!$result->code) { # password is valid
@@ -109,7 +122,9 @@ if ($found==true) {
 						($<, $>) = ($>, $<); # Get root privileges
 						if (! -e $path) {
     						    system 'mkdir', '-m 755', '-p', $path; # Create paths to homedir
-						    system 'mkdir', '-m 700', $user[7]; # Create himdir itself
+						    }
+						if (! -e $user[7]) {
+						    system 'mkdir', '-m 755', $user[7]; # Create himdir itself
 						    system "cp -a /etc/skel/* /etc/skel/.[^.]* $user[7]"; # Copy /etc/sekl into homedir
 					    	    system 'chown', '-R', "$user[2]:$user[3]" , $user[7]; # Change owner to new user
 						    system '/usr/sbin/useradd.local', $user[0]; # run useradd-script

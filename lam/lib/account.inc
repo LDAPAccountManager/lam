@@ -171,7 +171,7 @@ function checkglobal($values, $type, $values_old=false) { // This functions chec
 			// Check if Homedir is valid
 			$return->general_homedir = str_replace('$group', $values->general_group, $values->general_homedir);
 			if ($values->general_username != '')
-				$return->general_homedir = str_replace('$user', $values->general_username, $values->general_homedir);
+				$return->general_homedir = str_replace('$user', $values->general_username, $return->general_homedir);
 			if ($return->general_homedir != $values->general_homedir) $errors[] = array('INFO', _('Home Directory'), _('Replaced $user or $group in homedir.'));
 			if ( !ereg('^[/]([a-z]|[A-Z])([a-z]|[A-Z]|[0-9]|[.]|[-]|[_])*([/]([a-z]|[A-Z])([a-z]|[A-Z]|[0-9]|[.]|[-]|[_])*)*$', $return->general_homedir ))
 				$errors[] = array('ERROR', _('Home Directory'), _('Homedirectory contents invalid characters.'));
@@ -315,7 +315,7 @@ function checkunix($values, $type) { // This function checks all unix account pa
 	if ( !ereg('^(([-][1])|([0-9]*))$', $values->unix_pwdallowlogin))
 		$errors[] = array('ERROR', _('Password Expire'), _('Password Expire must be are natural number or -1.'));
 	if ( !ereg('^([0-9]*)$', $values->unix_pwdwarn)) $errors[] = array('ERROR', _('Password Warn'), _('Password Warn must be are natural number.'));
-	if ((!$values->unix_host=='') && !ereg('^([a-z]|[A-Z]|[0-9]|[.]|[-])+(([,])+([a-z]|[A-Z]|[0-9]|[.]|[-])+)*$', $values->unix_host))
+	if ((!$values->unix_host=='') && !ereg('^([a-z]|[A-Z]|[0-9]|[.]|[-])+(([,])+([ ])*([a-z]|[A-Z]|[0-9]|[.]|[-])+)*$', $values->unix_host))
 		$errors[] = array('ERROR', _('Unix workstations'), _('Unix workstations is invalid.'));
 	return $errors;
 	}
@@ -706,7 +706,12 @@ function loaduser($dn) { // Will load all needed values from an existing account
 	if (isset($attr['shadowWarning'][0])) $return->unix_pwdwarn = $attr['shadowWarning'][0];
 	if (isset($attr['shadowInactive'][0])) $return->unix_pwdallowlogin = $attr['shadowInactive'][0];
 	if (isset($attr['shadowExpire'][0])) $return->unix_pwdexpire = $attr['shadowExpire'][0]*86400;
-	if (isset($attr['host'][0])) $return->unix_host = $attr['host'][0];
+	$i=0;
+	while (isset($attr['host'][$i])) {
+		if ($i==0) $return->unix_host = $attr['host'][$i];
+			else $return->unix_host = $return->unix_host . ', ' . $attr['host'][$i];
+		$i++;
+		}
 	if ($_SESSION['config']->samba3 == 'yes') {
 		if (isset($attr['sambaAcctFlags'][0])) {
 			if (strrpos($attr['sambaAcctFlags'][0], 'W')) $return->smb_flagsW=true;
@@ -947,7 +952,13 @@ function createuser($values) { // Will create the LDAP-Account
 	$attr['gecos'] = $values->general_gecos; // posixAccount_may
 	$attr['description'] = $values->general_gecos; // posixAccount_may sambaAccount_may
 
-	if ($values->unix_host!='') $attr['host'] = $values->unix_host; // account_may
+	$values->unix_host = str_replace(' ', '', $values->unix_host);
+	$hosts = explode (',', $values->unix_host);
+	$i=0;
+	while(isset($hosts[$i])) {
+		$attr['host'][$i] = $hosts[$i];
+		$i++;
+		}
 	if ($values->unix_pwdminage!='') $attr['shadowMin'] = $values->unix_pwdminage; // shadowAccount_may
 	if ($values->unix_pwdmaxage!='') $attr['shadowMax'] = $values->unix_pwdmaxage; // shadowAccount_may
 	if ($values->unix_pwdwarn!='') $attr['shadowWarning'] = $values->unix_pwdwarn; // shadowAccount_may
@@ -1104,8 +1115,37 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 		$attr['gecos'] = $values->general_gecos; // posixAccount_may
 		$attr['description'] = $values->general_gecos; // posixAccount_may sambaAccount_may
 		}
-	if (($values->unix_host != $values_old->unix_host) && ($values->unix_host !=''))
-		$attr['host'] = $values->unix_host; // shadowAccount_may
+
+	if (($values->unix_host != $values_old->unix_host)) {
+		$values->unix_host = str_replace(' ', '', $values->unix_host);
+		$hosts = explode (',', $values->unix_host);
+		$values_old->unix_host = str_replace(' ', '', $values_old->unix_host);
+		$hosts_old = explode (',', $values_old->unix_host);
+		$i=0;
+		while (isset($hosts[$i])) {
+			if ( in_array($hosts[$i], $hosts_old) ) unset ($hosts[$i]);
+				else $i++;
+			}
+		}
+	$i=0;
+	$j=0;
+	while(isset($hosts[$i])) {
+		if ($hosts[$i]!='') {
+			$attr['host'][$j] = $hosts[$i];
+			$j++;
+			}
+		$i++;
+		}
+	$i=0;
+	$j=0;
+	while(isset($hosts_old[$i])) {
+		if ($hosts_old[$i]!='') {
+			$attr_rem['host'][$j] = $hosts_old[$i];
+			$j++;
+			}
+		$i++;
+		}
+
 	if (($values->unix_pwdminage != $values_old->unix_pwdminage) && ($values->unix_pwdminage !=''))
 		$attr['shadowMin'] = $values->unix_pwdminage; // shadowAccount_may
 	if (($values->unix_pwdminage != $values_old->unix_pwdminage) && ($values->unix_pwdminage ==''))
