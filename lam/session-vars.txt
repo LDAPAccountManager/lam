@@ -122,8 +122,8 @@ delete.php
 - delete_dn :  Liste der DNs, die gelscht werden sollen.
 
 
-
-
+confwiz/*.php
+- confwiz_config: Config-Objekt mit Optionen
 
 
 
