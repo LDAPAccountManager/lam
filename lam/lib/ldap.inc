@@ -26,6 +26,80 @@ $Id$
 include_once("config.inc");
 
 
+// returns the hash value of a plain text password
+// the hash algorithm depends on the configuration file
+// $password: the password string
+// $enabled: marks the hash as enabled/disabled (e.g. by prefixing "!")
+function pwd_hash($password, $enabled=true) {
+	// hash password with algorithm from config file
+	$hash = "";
+	switch ($_SESSION['config']->get_pwdhash()) {
+		case 'CRYPT':
+			$hash = "{crypt}" . crypt($password);
+			break;
+		case 'MD5':
+			$hash = "{MD5}" . base64_encode(mHash(MHASH_MD5, $password));
+			break;
+		case 'SMD5':
+			$salt = mhash_keygen_s2k(MHASH_MD5, $password, substr(pack("h*", md5(mt_rand())), 0, 8), 4);
+			$hash = base64_encode(mHash(MHASH_SMD5, $password . $salt) . $salt);
+			$hash = "{SMD5}" . $hash;
+			break;
+		case 'SHA':
+			$hash = base64_encode(mHash(MHASH_SHA1, $password));
+			$hash = "{SHA}" . $hash;
+			break;
+		case 'SSHA':
+			$salt = mhash_keygen_s2k(MHASH_SHA1, $password, substr(pack("h*", md5(mt_rand())), 0, 8), 4);
+			$hash = base64_encode(mHash(MHASH_SHA1, $password . $salt) . $salt);
+			$hash = "{SSHA}" . $hash;
+			break;
+		// use SSHA if the setting is invalid
+		default:
+			$salt = mhash_keygen_s2k(MHASH_SHA1, $password, substr(pack("h*", md5(mt_rand())), 0, 8), 4);
+			$hash = base64_encode(mHash(MHASH_SHA1, $password . $salt) . $salt);
+			$hash = "{SSHA}" . $hash;
+		break;
+	}
+	// enable/disable password
+	if (! $enabled) return "!" . $hash;
+	else return $hash;
+}
+
+
+// marks an password hash as enabled
+// and returns the new hash string
+function pwd_enable($hash) {
+	// check if password is disabled
+	if ((substr($hash, 0, 1) == "!") || ((substr($hash, 0, 1) == "*"))) {
+		return substr($hash, 1, strlen($hash));
+	}
+	else {
+		return $hash;
+	}
+}
+
+// marks an password hash as disabled
+// and returns the new hash string
+function pwd_disable($hash) {
+	// check if already disabled
+	if ((substr($hash, 0, 1) == "!") || ((substr($hash, 0, 1) == "*"))) {
+		return $hash;
+	}
+	else {
+		return "!" . $hash;
+	}
+}
+
+// checks if a password hash is enabled/disabled
+// returns true if the password is marked as enabled
+function pwd_is_enabled($hash) {
+	// disabled passwords have a "!" or "*" at the beginning
+	if ((substr($hash, 0, 1) == "!") || ((substr($hash, 0, 1) == "*"))) return false;
+	else return true;
+}
+
+
 // manages connection to LDAP and several helper functions
 class Ldap{
 
