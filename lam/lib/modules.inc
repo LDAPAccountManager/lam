@@ -724,8 +724,8 @@ class accountContainer {
 				foreach ($modules as $module) {
 					if (!$this->module[$module]->module_complete()) {
 						$disabled = true;
-						$table[] = array ( 0 => array ( 'kind' => 'message', 'type' => 'ERROR', 'headline' =>  _('Check module'),
-							'text' => sprintf(_('Please set up all required attributes on %s page.'), $this->module[$module]->get_alias()) ));
+						$table[] = array ( 0 => array ( 'kind' => 'message', 'type' => 'ERROR', 'headline' =>  _('Some required information is missing'),
+							'text' => sprintf(_('Please set up all required attributes on page: %s'), $this->module[$module]->get_alias()) ));
 						}		
 					}
 				}
@@ -763,18 +763,21 @@ class accountContainer {
 					2 => array ('kind' => 'help', 'value' => 'create'));
 			if ($this->subpage=='finish')  {
 				// Show success message
-				if ($this->dn_orig=='') $kind = _('created');
-					else $kind = _('modified');
-				$text = sprintf(_('%s has been %s.'), ucfirst($this->type), $kind);
+				if ($this->dn_orig == '') {
+					$text = _("Account was created successfully.");
+				}
+				else {
+					$text = _("Account was modified successfully.");
+				}
 				$return[] = array ( 0 => array ( 'kind' => 'message', 'type' => 'INFO', 'headline' =>  _('LDAP operation successful.'),
 					'text' => $text ));
 	
 				$return[] = array ( 0 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'createagain',
-						'value' => sprintf(_('Create another %s'), $this->type) ),
+						'value' => _('Create another account')),
 					1 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'outputpdf',
 						'value' => _('Create PDF file') ),
 					2 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'backmain',
-						'value' => sprintf (_('Back to %s list'), $this->type) ));
+						'value' => _('Back to account list')));
 				}
 		}
 		else $return = call_user_func(array($this->module[$this->order[$this->current_page]], 'display_html_'.$this->subpage), &$post);
@@ -1044,7 +1047,7 @@ class accountContainer {
 				if (strpos($_SESSION['ldap']->objectClasses[$i], "NAME '$subclass'")) $line = $i;
 				}
 			// Return error if objectClass isn't found
-			if ($line==-1) trigger_error (sprintf(_("ObjectClass %s required but not defined in ldap."), $subclass), E_USER_WARNING);
+			if ($line==-1) trigger_error (sprintf(_("ObjectClass %s required but not defined in LDAP."), $subclass), E_USER_WARNING);
 			// create array with must-attributes
 			// Get startposition in string
 			if (strpos($_SESSION['ldap']->objectClasses[$line],  'MUST (')) {
@@ -1358,7 +1361,7 @@ class accountContainer {
 						$_SESSION['cache']->update_cache($this->$dn, 'add', $attr);
 						$success = ldap_delete($_SESSION['ldap']->server(), $this->dn_orig);
 						if (!$success) {
-							$errors[] = array('ERROR', 'LDAP', sprintf(_('Was unable to delete dn: %s.'), $this->dn_orig));
+							$errors[] = array('ERROR', 'LDAP', sprintf(_('Was unable to delete DN: %s.'), $this->dn_orig));
 							$stopprocessing = true;
 							}
 						if ($success)

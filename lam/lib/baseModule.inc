@@ -63,9 +63,6 @@ class baseModule {
 	/** contains all error messages of a module */
 	var $messages;
 
-	/** contains syntax of all */
-	var $syntax;
-
 	/**
 	* Creates a new base module class
 	*
@@ -541,7 +538,7 @@ class baseModule {
 						$temp = str_replace($index[$k], $convert[$index[$k]], $this->attributes[$attributes[$i]][$j]);
 						if ($temp!=$this->attributes[$attributes[$i]][$j]) {
 							$this->attributes[$attributes[$i]][$j] = $temp;						
-							$messages[$attributes[$i]][] = array('WARN', _($attributes[$i]), _('Changed value s because only US-ASCII allowed.')); //, array($attributes[$i]));
+							$messages[$attributes[$i]][] = array('WARN', _($attributes[$i]), _('Changed value because only ASCII characters are allowed.'));
 						}
 					}
 			}

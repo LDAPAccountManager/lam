@@ -70,7 +70,7 @@ class cache {
 		$this->refresh_cache();
 		// Check input variables
 		$allowed_types = array ( 'user', 'group', 'host', 'domain', '*' );
-		if (!in_array($singlescope, $allowed_types)) trigger_error(sprintf(_('Invalid scope. Valid scopes are %s.'), implode(" ", $allowed_types)), E_USER_ERROR);
+		if (!in_array($singlescope, $allowed_types)) trigger_error(sprintf('Invalid scope. Valid scopes are %s.', implode(" ", $allowed_types)), E_USER_ERROR);
 		$line=-1;
 		for ($i=0; $i<count($_SESSION['ldap']->objectClasses) || $i==-1; $i++) {
 			if (strpos($_SESSION['ldap']->objectClasses[$i], "NAME '$objectClass'")) $line = $i;
@@ -136,7 +136,7 @@ class cache {
 		$this->refresh_cache();
 		// Check input variables
 		$allowed_types = array ( 'user', 'group', 'host', 'domain', '*' );
-		if (!in_array($singlescope, $allowed_types)) trigger_error(sprintf(_('Invalid scope. Valid scopes are %s.'), implode(" ", $allowed_types)), E_USER_ERROR);
+		if (!in_array($singlescope, $allowed_types)) trigger_error(sprintf('Invalid scope. Valid scopes are %s.', implode(" ", $allowed_types)), E_USER_ERROR);
 		// Create list of all allowed attributes
 		for ($i=0; $i<count($_SESSION['ldap']->objectClasses); $i++ ) {
 			if (strpos($_SESSION['ldap']->objectClasses[$i],  'MUST (')) {
@@ -244,8 +244,8 @@ class cache {
 				if (substr($suffix, $dn)) $singlescope = $allowed_types[$i];
 				}
 			}
-		if (!in_array($singlescope, $allowed_types)) trigger_error(sprintf(_('Invalid scope. Valid scopes are %s.'), implode(" ", $allowed_types)), E_USER_ERROR);
-		if (!in_array($mode, $allowed_modes)) trigger_error(sprintf(_('Invalid mode. Valid modes are %s.'), implode(" ", $allowed_modes)), E_USER_ERROR);
+		if (!in_array($singlescope, $allowed_types)) trigger_error(sprintf('Invalid scope. Valid scopes are %s.', implode(" ", $allowed_types)), E_USER_ERROR);
+		if (!in_array($mode, $allowed_modes)) trigger_error(sprintf('Invalid mode. Valid modes are %s.', implode(" ", $allowed_modes)), E_USER_ERROR);
 		// Everything seems to be OK, start processing data
 		// Get Scope
 		foreach ($allowed_types as $scope) {
@@ -254,7 +254,7 @@ class cache {
 				if (strpos($dn, $suffix)) $singlescope = $scope;
 				}
 			}
-		if (!isset($singlescope)) trigger_error(sprintf(_('Invalid dn: %s. DN not covered by any suffix.'), $dn), E_USER_WARN);
+		if (!isset($singlescope)) trigger_error(sprintf('Invalid dn: %s. DN not covered by any suffix.', $dn), E_USER_WARN);
 		// Refresh Cache
 		$this->refresh_cache();
 		if (is_array($attributes))

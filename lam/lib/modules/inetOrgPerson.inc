@@ -220,12 +220,12 @@ class inetOrgPerson extends baseModule {
 					"Text" => _("Title of user, Mr., Ms., ...")
 				),
 				'givenName' => array (
-					"Headline" => _("Given name"),
-					"Text" => _("Given name of user. Only letters, - and spaces are allowed.")
+					"Headline" => _("First name"),
+					"Text" => _("First name of user. Only letters, - and spaces are allowed.")
 				),
 				'sn' => array (
-					"Headline" => _("Surname"),
-					"Text" => _("Surname of user. Only letters, - and spaces are allowed.")
+					"Headline" => _("Last name"),
+					"Text" => _("Last name of user. Only letters, - and spaces are allowed.")
 				),
 				'employeeType' => array (
 					"Headline" => _("Employee type"),

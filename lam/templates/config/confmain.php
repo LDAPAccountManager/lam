@@ -546,7 +546,7 @@ function print_option($values, $modulename, $old_options, &$tabindex) {
 		break;
 		// print error message for invalid types
 		default:
-			echo _("Unrecognized type") . ": " . $values['kind'] . "\n";
+			echo "Unrecognized type" . ": " . $values['kind'] . "\n";
 			break;
 	}
 }

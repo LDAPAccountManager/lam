@@ -120,7 +120,7 @@ function displayHelp($helpEntry,$helpVariables) {
 /* If no help number was submitted print error message */
 if(!isset($_GET['HelpNumber']))
 {
-	$errorMessage = _("Sorry no help number submitted.");
+	$errorMessage = "Sorry no help number submitted.";
 	echoHTMLHead();
 	statusMessage("ERROR","",$errorMessage);
 	echoHTMLFoot();

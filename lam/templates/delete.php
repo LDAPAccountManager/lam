@@ -80,12 +80,12 @@ if ($_GET['type']) {
 		echo _('Please confirm:');
 		echo "</b></legend>\n";
 	echo "<input name=\"type\" type=\"hidden\" value=\"" . $_GET['type'] . "\">\n";
-	echo sprintf(_("Do you really want to remove the following %ss?\n"), $_GET['type']);
+	echo _("Do you really want to remove the following accounts?");
 	echo "<br>\n";
 	echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
 	for ($i=0; $i<count($users); $i++) {
 		echo "<tr>\n";
-		echo "<td>" . sprintf(_('%sname:'), ucfirst($_GET['type'])) . " $users[$i]</td>\n";
+		echo "<td>" . _("Account name:") . " $users[$i]</td>\n";
 		echo "<td>" . _('DN') . " " . $_SESSION['delete_dn'][$i] . "</td>\n";
 		echo "</tr>\n";
 		}

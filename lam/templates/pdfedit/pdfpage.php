@@ -426,7 +426,7 @@ echo $_SESSION['header'];
 					<td width="100%" colspan="3" align="center">
 						<fieldset>
 							<legend>
-								<b><?php echo _('Overall page settings'); ?></b>
+								<b><?php echo _('Page settings'); ?></b>
 							</legend>
 							<table width="100%">
 								<tr>
