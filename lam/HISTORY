@@ -10,10 +10,16 @@
   - added developer documentation
   - PHPDoc formated comments
 
+19.12.2004 0.4.7
+  - added "*.exe" to Samba logon script regex (1081715)
   - fixed bugs:
       fixed doctype of main frame
       removed syntax check for LDAP suffixes
       fixed IE bug at login
+      fixed encoding in HTTP header
+      passwords with "'" are now handled correctly at login (1081460)
+      fixed Samba flags if multiple hosts were created
+      updated .htaccess files to be compatible with newer Apache versions
 
 
 26.05.2004 0.4.6
