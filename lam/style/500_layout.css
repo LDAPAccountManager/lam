@@ -129,7 +129,7 @@ td.usernav-text {
 }
 
 /* style of active column */
-th.userlist-activecolumn {
+th.userlist-sort {
   background-color:#fffde2;
 }
 

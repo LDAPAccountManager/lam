@@ -207,32 +207,8 @@ listDrawNavigationBar(sizeof($grp_info), $max_page_entries, $page, $sort, $searc
 echo ("<br>");
 }
 
-// print group table header
-echo "<table rules=\"all\" class=\"grouplist\" width=\"100%\">\n";
-echo "<tr class=\"grouplist-head\"><th width=22 height=34></th><th></th>";
-// table header
-for ($k = 0; $k < sizeof($desc_array); $k++) {
-	if (strtolower($attr_array[$k]) == $sort) {
-		echo "<th class=\"grouplist-sort\"><a href=\"listgroups.php?".
-			"sort=" . strtolower($attr_array[$k]) . $searchFilter . "&amp;norefresh=y" . "\">" . $desc_array[$k] . "</a></th>";
-	}
-	else echo "<th><a href=\"listgroups.php?".
-		"sort=" . strtolower($attr_array[$k]) . $searchFilter . "&amp;norefresh=y" . "\">" . $desc_array[$k] . "</a></th>";
-}
-echo "</tr>\n";
-
-// print filter row
-echo "<tr align=\"center\" class=\"grouplist\"><td width=22 height=34></td><td>";
-echo "<input type=\"submit\" name=\"apply_filter\" value=\"" . _("Filter") . "\">";
-echo "</td>";
-// print input boxes for filters
-for ($k = 0; $k < sizeof ($desc_array); $k++) {
-  echo "<td>";
-  echo ("<input type=\"text\" size=15 name=\"filter" . strtolower ($attr_array[$k]) .
-	"\" value=\"" . $_POST["filter" . strtolower($attr_array[$k])] . "\">");
-  echo "</td>";
-}
-echo "</tr>\n";
+// account table head
+listPrintTableHeader("group", $searchFilter, $desc_array, $attr_array, $_POST, $sort);
 
 // calculate which rows to show
 $table_begin = ($page - 1) * $max_page_entries;

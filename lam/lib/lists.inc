@@ -107,7 +107,6 @@ function listDrawNavigationBar($count, $max_page_entries, $page, $sort, $searchF
 	}
 
 	echo("<td class=\"" . $scope . "nav-text\">");
-	//echo"&nbsp;" . $count . " " .  _("Group(s) found");
 	echo"&nbsp;";
 	printf($text, $count);
 	echo("</td>");
@@ -122,6 +121,45 @@ function listDrawNavigationBar($count, $max_page_entries, $page, $sort, $searchF
 		}
 	}
 	echo("</td></tr></table>\n");
+}
+
+/**
+* Prints the attribute and filter row at the account table head
+*
+* @param string $scope account type (user, group, host)
+* @param string $searchFilter search filter for hyperlinks
+* @param array $desc_array list of attribute descriptions
+* @param array $attr_array list of attribute names
+* @param array $_POST HTTP-POST values
+* @param string $sort sort attribute
+*/
+function listPrintTableHeader($scope, $searchFilter, $desc_array, $attr_array, $_POST, $sort) {
+	// print table header
+	echo "<table rules=\"all\" class=\"" . $scope . "list\" width=\"100%\">\n";
+	echo "<tr class=\"" . $scope . "list-head\">\n<th width=22 height=34></th>\n<th></th>\n";
+	// table header
+	for ($k = 0; $k < sizeof($desc_array); $k++) {
+		if (strtolower($attr_array[$k]) == $sort) {
+			echo "<th class=\"" . $scope . "list-sort\"><a href=\"list" . $scope . "s.php?".
+				"sort=" . strtolower($attr_array[$k]) . $searchFilter . "&amp;norefresh=y" . "\">" . $desc_array[$k] . "</a></th>\n";
+		}
+		else echo "<th><a href=\"list" . $scope . "s.php?".
+			"sort=" . strtolower($attr_array[$k]) . $searchFilter . "&amp;norefresh=y" . "\">" . $desc_array[$k] . "</a></th>\n";
+	}
+	echo "</tr>\n";
+	
+	// print filter row
+	echo "<tr align=\"center\" class=\"" . $scope . "list\">\n<td width=22 height=34></td>\n<td>";
+	echo "<input type=\"submit\" name=\"apply_filter\" value=\"" . _("Filter") . "\">";
+	echo "</td>\n";
+	// print input boxes for filters
+	for ($k = 0; $k < sizeof ($desc_array); $k++) {
+		echo "<td>";
+		echo ("<input type=\"text\" size=15 name=\"filter" . strtolower ($attr_array[$k]) .
+		"\" value=\"" . $_POST["filter" . strtolower($attr_array[$k])] . "\">");
+		echo "</td>\n";
+	}
+	echo "</tr>\n";
 }
 
 

@@ -246,35 +246,8 @@ if ($user_count != 0) {
 	echo ("<br />");
 }
 
-  // print user table header
-  echo "<table rules=\"all\" class=\"userlist\" width=\"100%\">\n";
-
-
-  echo "<tr class=\"userlist-head\"><th width=22 height=34></th><th></th>\n";
-  // table header
-  for ($k = 0; $k < sizeof ($desc_array); $k++) {
-    if ($sort == strtolower($attr_array[$k]))
-      echo "<th class=\"userlist-activecolumn\">\n";
-    else
-      echo "<th>\n";
-    echo "<a class=\"userlist\" href=\"listusers.php?norefresh=1&amp;sort=" .
-      strtolower($attr_array[$k]) . $searchFilter . "&amp;trans_primary=" . $trans_primary . "\">" .
-      $desc_array[$k] . "</a></th>\n";
-  }
-  echo "</tr>\n";
-
-  echo "<tr class=\"userlist\"><th width=22 height=34></th>\n<th>\n";
-  echo "<input type=\"submit\" name=\"apply_filter\" value=\"" . _("Filter") . "\">\n";
-  echo "</th>\n";
-
-  // print input boxes for filters
-  for ($k = 0; $k < sizeof ($desc_array); $k++) {
-    echo "<th>\n";
-    echo ("<input type=\"text\" size=15 name=\"filter" . strtolower ($attr_array[$k]) .
-	  "\" value=\"" . $_POST["filter" . strtolower($attr_array[$k])] . "\">\n");
-    echo "</th>\n";
-  }
-  echo "</tr>\n";
+// account table head
+listPrintTableHeader("user", $searchFilter . "&amp;trans_primary=" . $trans_primary, $desc_array, $attr_array, $_POST, $sort);
 
 if ($user_count != 0) {
 	// translate GIDs and resort array if selected
