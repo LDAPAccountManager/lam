@@ -53,6 +53,7 @@ if ($_SESSION['maxlistentries']) $maxlistentries = $_SESSION['maxlistentries'];
 if ($_SESSION['language']) $language = $_SESSION['language'];
 if ($_SESSION['scriptpath']) $scriptpath = $_SESSION['scriptpath'];
 if ($_SESSION['scriptserver']) $scriptserver = $_SESSION['scriptserver'];
+if ($_SESSION['samba3']) $samba3 = $_SESSION['samba3'];
 
 // check if password is correct
 // if not: load login page
@@ -151,6 +152,12 @@ if (chop($language) == "") {
 	exit;
 }
 
+if (chop($samba3) == "") {
+	echo _("<font color=\"red\"><b>" . _("Samba version is not defined!") . "</b></font>");
+	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
+	exit;
+}
+
 // set new preferences
 $conf->set_ServerURL($serverurl);
 $conf->set_Adminstring($admins);
@@ -168,6 +175,7 @@ $conf->set_grouplistAttributes($grplstattr);
 $conf->set_hostlistAttributes($hstlstattr);
 $conf->set_MaxListEntries($maxlistentries);
 $conf->set_defaultLanguage($language);
+$conf->set_samba3($samba3);
 // optional
 if ($_SESSION['scriptpath']) $conf->set_scriptpath($scriptpath);
 else $conf->set_scriptpath("");
@@ -216,5 +224,6 @@ unset($_SESSION['maxlistentries']);
 unset($_SESSION['language']);
 unset($_SESSION['scriptpath']);
 unset($_SESSION['scriptserver']);
+unset($_SESSION['samba3']);
 
 ?>

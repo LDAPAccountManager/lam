@@ -86,7 +86,10 @@ $helpArray = array (
 						"<br><br><b>Use it at your own risk and read the documentation for lamdaemon before you use it!</b>"),
 						"SeeAlso" => "<a href=\"./help.php?HelpNumber=210\" target=\"_self\">TODO link to lamdaemon doku</a>"),
 				"212" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard - Change Password"),
-					"Text" => _("If you want to change the current preferences password, please enter it here."))
+					"Text" => _("If you want to change the current preferences password, please enter it here.")),
+				"213" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard - Samba version"),
+					"Text" => _("If you use Samba 3.x with the new LDAP schema say \"yes\" here, otherwise \"no\".".
+						"<br><br><b>LAM will not work if version is wrong!</b>"))
 /* This is a sample help entry. Just copy this line an modify the vakues between the [] brackets.
 	Help text is located in the array:
 		"[Helpnumber]" => array ("ext" => "FALSE", "Headline" => _("[Headline]"), "Text" => _("[Text]"), "SeeAlso" => "[SeeAlso link]"),

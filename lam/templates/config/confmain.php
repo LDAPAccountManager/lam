@@ -56,13 +56,14 @@ if ($_POST['back'] || $_POST['submitconf']){
 		if ($_POST['maxlistentries']) $maxlistentries = $_POST['maxlistentries'];
 		if ($_POST['language']) $language = $_POST['language'];
 		if ($_POST['scriptpath']) $scriptpath = $_POST['scriptpath'];
+		if ($_POST['samba3']) $samba3 = $_POST['samba3'];
 		else $scriptpath = "";
 		if ($_POST['scriptserver']) $scriptserver = $_POST['scriptserver'];
 		else $scriptserver = "";
 		session_register('passwd', 'passwd1', 'passwd2', 'serverurl', 'admins', 'suffusers',
 			'suffgroups', 'suffhosts', 'minUID', 'maxUID', 'minGID', 'maxGID', 'minMach',
 			'maxMach', 'usrlstattr', 'grplstattr', 'hstlstattr', 'maxlistentries', 'language',
-			'scriptpath', 'scriptserver');
+			'scriptpath', 'scriptserver', 'samba3');
 		echo("<meta http-equiv=\"refresh\" content=\"0; URL=confsave.php\">");
 	}
 	// back to login
@@ -130,6 +131,16 @@ echo ("<tr><td><p align=\"right\"><b>".
 	_("HostSuffix") . ": </b></p></td>".
 	"<td><input size=50 type=\"text\" name=\"suffhosts\" value=\"" . $conf->get_HostSuffix() . "\"></td>\n");
 echo ("<td><a href=\"../help.php?HelpNumber=202\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
+
+// new line
+echo ("<tr><td>&nbsp</td></tr>");
+
+// Samba version
+echo ("<tr><td><p align=\"right\"><b>".
+	_("Samba 3.x schema") . ": </b></p></td><td><select name=\"samba3\">\n");
+if ($conf->get_samba3() == "no") echo ("<option>no</option><option>yes</option></td>");
+elseif ($conf->get_samba3() == "yes") echo ("<option>yes</option><option>no</option></td>");
+echo ("<td><a href=\"../help.php?HelpNumber=213\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 
 echo ("</table>");
 echo ("</fieldset>");

@@ -64,3 +64,6 @@ scriptPath:
 
 # Server of external Script
 scriptServer:
+
+# Set to "yes" only if you use the new Samba 3.x schema.
+samba3: no

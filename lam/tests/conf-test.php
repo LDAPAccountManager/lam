@@ -25,6 +25,7 @@ $Id$
 
 include ("../lib/config.inc");
 $conf = new Config();
+echo "<html><head><title></title><link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\"></head><body>";
 echo ("<b> Current Config</b><br><br>");
 $conf->printconf();
 echo ("<br><br><big><b> Starting Test...</b></big><br><br>");
@@ -50,6 +51,7 @@ $maxlistentries = $conf->get_maxlistentries();
 $defaultlanguage = $conf->get_defaultlanguage();
 $scriptpath = $conf->get_scriptPath();
 $scriptServer = $conf->get_scriptServer();
+$samba3 = $conf->get_samba3();
 echo ("done<br>");
 // next we modify them and save lam.conf
 echo ("Changing preferences...");
@@ -73,6 +75,7 @@ $conf->set_maxlistentries("54");
 $conf->set_defaultlanguage("de_AT:iso639_de:Deutsch (Oesterreich)");
 $conf->set_scriptPath("/var/www/lam/lib/script");
 $conf->set_scriptServer("127.0.0.1");
+$conf->set_samba3("yes");
 $conf->save();
 echo ("done<br>");
 // at last all preferences are read from lam.conf and compared
@@ -100,6 +103,7 @@ if ($conf->get_maxlistentries() != "54") echo ("<br><font color=\"#FF0000\">Savi
 if ($conf->get_defaultlanguage() != "de_AT:iso639_de:Deutsch (Oesterreich)") echo ("<br><font color=\"#FF0000\">Saving default language failed!</font><br>");
 if ($conf->get_scriptPath() != "/var/www/lam/lib/script") echo ("<br><font color=\"#FF0000\">Saving script path failed!</font><br>");
 if ($conf->get_scriptServer() != "127.0.0.1") echo ("<br><font color=\"#FF0000\">Saving script server failed!</font><br>");
+if ($conf->get_samba3() != "yes") echo ("<br><font color=\"#FF0000\">Saving samba3 failed!</font><br>");
 echo ("done<br>");
 // restore old values
 echo ("Restoring old preferences...");
@@ -123,6 +127,7 @@ $conf->set_maxlistentries($maxlistentries);
 $conf->set_defaultLanguage($defaultlanguage);
 $conf->set_scriptPath($scriptpath);
 $conf->set_scriptServer($scriptserver);
+$conf->set_samba3($samba3);
 $conf->save();
 echo ("done<br>");
 // finished

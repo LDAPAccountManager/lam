@@ -87,6 +87,9 @@ class Config {
   var $scriptPath;
   var $scriptServer;
 
+  // if "yes" use the new LDAP schema for Samba 3.x
+  var $samba3;
+
   // constructor, loads preferences from ../config/lam.conf
   function Config() {
     $this->reload();
@@ -179,6 +182,10 @@ class Config {
 	  $this->scriptServer = chop(substr($line, 14, strlen($line)-14));
 	  continue;
 	}
+	if (substr($line, 0, 8) == "samba3: ") {
+	  $this->samba3 = chop(substr($line, 8, strlen($line)-8));
+	  continue;
+	}
       }
       fclose($file);
     }
@@ -195,7 +202,7 @@ class Config {
       $save_serverURL = $save_passwd = $save_admins = $save_suffusr = $save_suffgrp = $save_suffhst =
 	$save_minUID = $save_maxUID = $save_minGID = $save_maxGID = $save_minMach = $save_maxMach =
 	$save_usrlstatrr =  $save_grplstatrr = $save_hstlstatrr = $save_maxlstent = $save_deflang =
-	$save_scriptPath = $save_scriptServer = False;
+	$save_scriptPath = $save_scriptServer = $save_samba3 = False;
       $file = fopen($conffile, "r");
       $file_array = array();
       while (!feof($file)) {
@@ -300,6 +307,11 @@ class Config {
 	  $save_scriptServer = True;
 	  continue;
 	}
+	if (substr($file_array[$i], 0, 8) == "samba3: ") {
+	  $file_array[$i] = "samba3: " . $this->samba3 . "\n";
+	  $save_samba3 = True;
+	  continue;
+	}
       }
       // check if we have to add new entries (e.g. if user upgraded LAM and has an old lam.conf)
       if (!$save_serverURL == True) array_push($file_array, "\n\n# server address (e.g. ldap://localhost:389 or ldaps://localhost:636)\n" . "serverURL: " . $this->ServerURL);
@@ -329,6 +341,7 @@ class Config {
       if (!$save_deflang == True) array_push($file_array, "\n\n# default language (a line from language.conf)\n" . "defaultLanguage: " . $this->defaultLanguage);
       if (!$save_scriptPath == True) array_push($file_array, "\n\n# Path to external Script\n" . "scriptPath: " . $this->scriptPath);
       if (!$save_scriptServer == True) array_push($file_array, "\n\n# Server of external Script\n" . "scriptServer: " . $this->scriptServer);
+      if (!$save_samba3 == True) array_push($file_array, "\n\n# Set to \"yes\" only if you use the new Samba 3.x schema.\n" . "samba3: " . $this->samba3);
       $file = fopen($conffile, "w");
       if ($file) {
 	for ($i = 0; $i < sizeof($file_array); $i++) fputs($file, $file_array[$i]);
@@ -344,7 +357,7 @@ class Config {
   // prints current preferences
   function printconf() {
     echo _("<b>ServerURL: </b>") . $this->ServerURL . "<br>";
-    echo _("<b>Admins: </b>") . $this->Adminstring . "<br>";
+    echo _("<b>Samba3: </b>") . $this->samba3 . "<br>";
     echo _("<b>UserSuffix: </b>") . $this->Suff_users . "<br>";
     echo _("<b>GroupSuffix: </b>") . $this->Suff_groups . "<br>";
     echo _("<b>HostSuffix: </b>") . $this->Suff_hosts . "<br>";
@@ -360,7 +373,8 @@ class Config {
     echo _("<b>maxlistentries: </b>") . $this->maxlistentries . "<br>";
     echo _("<b>defaultLanguage: </b>") . $this->defaultLanguage . "<br>";
     echo _("<b>scriptPath: </b>") . $this->scriptPath . "<br>";
-    echo _("<b>scriptServer: </b>") . $this->scriptServer;
+    echo _("<b>scriptServer: </b>") . $this->scriptServer . "<br>";
+    echo _("<b>Admins: </b>") . $this->Adminstring;
   }
 
   // functions to read/write preferences
@@ -403,7 +417,8 @@ class Config {
 
   // needs a string that contains all admin users seperated by semicolons
   function set_Adminstring($value) {
-    if (is_string($value) && eregi("^([a-z]|-)*=([a-z]|-)*(,([a-z]|-)*=([a-z]|-)*)*(;([a-z]|-)*=([a-z]|-)*(,([a-z]|-)*=([a-z]|-)*)*)*$", $value)) {
+    if (is_string($value) &&
+		ereg("^([a-zA-Z0-9]|-)+=([a-zA-Z0-9]|-)+(,([a-zA-Z0-9]|-)+=([a-zA-Z0-9]|-)+)+(;([a-zA-Z0-9]|-)+=([a-zA-Z0-9]|-)+(,([a-zA-Z0-9]|-)+=([a-zA-Z0-9]|-)+)+)*$", $value)) {
       $this->Adminstring = $value;
       $this->Admins = explode(";", $value);
     }
@@ -607,10 +622,23 @@ class Config {
   // sets the server of the external script
   function set_scriptServer($value) {
 	if (!$value) $value = ""; // optional parameter
-    if (is_string($value) && (eregi("^([0-9]{3}.[0-9]{3}.[0-9]{3}.[0-9]{3})$", $value) || $value == "")) {
+    if (is_string($value) && (eregi("^[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}$", $value) || $value == "")) {
 		$this->scriptServer = $value;
 	}
     else StatusMessage("WARN", "", _("Config->set_scriptServer failed!") . " " . $value);
+  }
+
+  // returns "yes" if Samba 3.x schema is used, otherwise "no"
+  function get_samba3() {
+    return $this->samba3;
+  }
+
+  // set Samba version: "yes" means 3.x schema, "no" means 2.2.x schema
+  function set_samba3($value) {
+    if (is_string($value) && eregi("^(yes|no)$", $value)) {
+		$this->samba3 = $value;
+	}
+    else StatusMessage("WARN", "", _("Config->set_samba3 failed!") . " " . $value);
   }
 
 
