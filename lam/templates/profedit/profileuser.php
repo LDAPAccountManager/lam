@@ -40,6 +40,11 @@ if (!$_SESSION['ldap'] || !$_SESSION['ldap']->server()) {
 	exit;
 }
 
+// load quota list
+if ($_SESSION['config']->get_scriptPath()) {
+	$acct_q = getquotas("user");
+}
+
 // print header
 echo $_SESSION['header'];
 echo ("<html><head>\n<title></title>\n<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n</head><body><br>\n");
@@ -220,8 +225,6 @@ echo ("</table>\n");
 echo ("</fieldset>\n");
 echo ("<br>");
 
-
-
 // Samba part
 echo ("<fieldset><legend><b>" . _("Samba account") . "</b></legend>\n");
 echo ("<table border=0>\n");
@@ -349,6 +352,52 @@ echo ("</tr>\n");
 echo ("</table>\n");
 echo ("</fieldset>\n");
 
+
+// Quota settings if script is given
+if ($_SESSION['config']->get_scriptPath()) {
+	echo ("<br>");
+	echo "<fieldset><legend><b>"._('Quota properties')."</b></legend>\n";
+	echo "<table border=0>\n";
+	// description line
+	echo "<tr>\n";
+	echo "<td align=\"center\"><b>" . _('Mountpoint') . "</b>&nbsp;&nbsp;</td>\n";
+	echo "<td align=\"center\"><b>" . _('Soft block limit') . "</b>&nbsp;&nbsp;</td>\n";
+	echo "<td align=\"center\"><b>" . _('Hard block limit') . "</b>&nbsp;&nbsp;</td>\n";
+	echo "<td align=\"center\"><b>" . _('Soft inode limit') . "</b>&nbsp;&nbsp;</td>\n";
+	echo "<td align=\"center\"><b>" . _('Hard inode limit') . "</b>&nbsp;&nbsp;</td>\n";
+	echo "</tr>\n";
+	// help line
+	echo "<tr><td align=\"center\"><a href=\"../help.php?HelpNumber=439\" target=\"lamhelp\">"._('Help').'</a></td>'."\n".
+		"<td align=\"center\"><a href=\"../help.php?HelpNumber=441\" target=\"lamhelp\">"._('Help').'</a></td>'."\n".
+		"<td align=\"center\"><a href=\"../help.php?HelpNumber=442\" target=\"lamhelp\">"._('Help').'</a></td>'."\n".
+		"<td align=\"center\"><a href=\"../help.php?HelpNumber=445\" target=\"lamhelp\">"._('Help').'</a></td>'."\n".
+		"<td align=\"center\"><a href=\"../help.php?HelpNumber=446\" target=\"lamhelp\">"._('Help').'</a></td>'."\n".
+		'</tr>'."\n";
+	// quota settings
+	for ($i = 0; $i < (sizeof($acct_q->quota) - 1); $i++) {
+		// load values from profile
+		for ($k = 0; $k < sizeof($acct->quota); $k++) {
+			// check for equal mountpoints
+			if ($acct->quota[$k][0] == $acct_q->quota[$i][0]) {
+				$acct_q->quota[$i][2] = $acct->quota[$i][2];
+				$acct_q->quota[$i][3] = $acct->quota[$i][3];
+				$acct_q->quota[$i][6] = $acct->quota[$i][6];
+				$acct_q->quota[$i][7] = $acct->quota[$i][7];
+			}
+		}
+		echo "<tr>\n";
+		echo '<td>' . $acct_q->quota[$i][0] . "<input type=\"hidden\" name=\"f_quota_" . $i . "_0\" value=\"" . $acct_q->quota[$i][0] . "\"></td>\n"; // mountpoint
+		echo '<td align="center"><input name="f_quota_' . $i . '_2" type="text" size="12" maxlength="20" value="' . $acct_q->quota[$i][2] . "\"></td>\n"; // blocks soft limit
+		echo '<td align="center"><input name="f_quota_' . $i . '_3" type="text" size="12" maxlength="20" value="' . $acct_q->quota[$i][3] . "\"></td>\n"; // blocks hard limit
+		echo '<td align="center"><input name="f_quota_' . $i . '_6" type="text" size="12" maxlength="20" value="' . $acct_q->quota[$i][6] . "\"></td>\n"; // inodes soft limit
+		echo '<td align="center"><input name="f_quota_' . $i . '_7" type="text" size="12" maxlength="20" value="' . $acct_q->quota[$i][7] . "\"></td>\n"; // inodes hard limit
+		echo "</tr>\n";
+	}
+	echo "</table>\n";
+	// save number of mountpoints
+	echo "<input type=\"hidden\" name=\"quotacount\" value=\"" . (sizeof($acct_q->quota) - 1) . "\">\n";
+	echo "</fieldset>\n";
+}
 
 echo ("<br><br>\n");
 

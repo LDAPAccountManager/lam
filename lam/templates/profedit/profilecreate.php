@@ -225,6 +225,41 @@ if ($_GET['type'] == "user") {
 		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
+
+	// check quota settings if script is given
+	if ($_SESSION['config']->get_scriptPath()) {
+		if ($_POST['quotacount'] && ($_POST['quotacount'] > 0)) {
+			for ($i = 0; $i < $_POST['quotacount']; $i++) {
+				$acct->quota[$i][0] = $_POST['f_quota_'.$i.'_0'];
+				$acct->quota[$i][2] = $_POST['f_quota_'.$i.'_2'];
+				$acct->quota[$i][3] = $_POST['f_quota_'.$i.'_3'];
+				$acct->quota[$i][6] = $_POST['f_quota_'.$i.'_6'];
+				$acct->quota[$i][7] = $_POST['f_quota_'.$i.'_7'];
+				// Check if values are OK
+				if (!ereg('^([0-9])*$', $acct->quota[$i][2])) {
+					StatusMessage('ERROR', _('Block soft quota'), _('Block soft quota contains invalid characters. Only natural numbers are allowed'));
+					echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
+					exit;
+				}
+				if (!ereg('^([0-9])*$', $acct->quota[$i][3])) {
+					StatusMessage('ERROR', _('Block hard quota'), _('Block hard quota contains invalid characters. Only natural numbers are allowed'));
+					echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
+					exit;
+				}
+				if (!ereg('^([0-9])*$', $acct->quota[$i][6])) {
+					StatusMessage('ERROR', _('Inode soft quota'), _('Inode soft quota contains invalid characters. Only natural numbers are allowed'));
+					echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
+					exit;
+				}
+				if (!ereg('^([0-9])*$', $acct->quota[$i][7])) {
+					StatusMessage('ERROR', _('Inode hard quota'), _('Inode hard quota contains invalid characters. Only natural numbers are allowed'));
+					echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
+					exit;
+				}
+			}
+		}
+	}
+
 	if ($_POST['profname'] && eregi("^[0-9a-z\\-_]+$", $_POST['profname'])) {
 		$profname = $_POST['profname'];
 	}
@@ -233,12 +268,16 @@ if ($_GET['type'] == "user") {
 		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
+
 	// save profile
 	if (saveUserProfile($acct, $profname)) {
-		echo StatusMessage("INFO", _("Profile was saved."), $profname);
+		StatusMessage("INFO", _("Profile was saved."), $profname);
 	}
+	else StatusMessage("ERROR", _("Unable to save profile!"), $profname);
+
 	echo ("<br><p><a href=\"profilemain.php\">" . _("Back to Profile Editor") . "</a></p>");
 }
+
 
 // save host profile
 elseif ($_GET['type'] == "host") {

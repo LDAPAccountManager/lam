@@ -197,6 +197,21 @@ function loadUserProfile($profile) {
 					else $acc->smb_domain = chop(substr($line, 12, strlen($line)-12));
 					continue;
 				}
+				if (substr($line, 0, 7) == "quota: ") {
+					$acc->quota = chop(substr($line, 7, strlen($line)-7));
+					// split mountpoints
+					$acc->quota = explode(";", $acc->quota);
+					// split attributes
+					for ($i = 0; $i < sizeof($acc->quota); $i++) {
+						$temp = explode(",", $acc->quota[$i]);
+						$acc->quota[$i] = array();
+						$acc->quota[$i][0] = $temp[0];
+						$acc->quota[$i][2] = $temp[1];
+						$acc->quota[$i][3] = $temp[2];
+						$acc->quota[$i][6] = $temp[3];
+						$acc->quota[$i][7] = $temp[4];
+					}
+				}
 			}
 			fclose($file);
 		}
@@ -321,6 +336,14 @@ function saveUserProfile($account, $profile) {
 		if (isset($account->smb_smbuserworkstations)) fputs($file, "smb_smbuserworkstations: " . $account->smb_smbuserworkstations . "\n");
 		if (isset($account->smb_smbhome)) fputs($file, "smb_smbhome: " . $smbhome . "\n");
 		if (isset($account->smb_domain)) fputs($file, "smb_domain: " . $account->smb_domain . "\n");
+		if (isset($account->quota)) {
+			// convert array to string
+			for ($i = 0; $i < sizeof($account->quota); $i++) {
+				$account->quota[$i] = implode(",", $account->quota[$i]);
+			}
+			$temp = implode(";", $account->quota);
+			fputs($file, "quota: " . $temp . "\n");
+		}
 		// close file
 		fclose($file);
 	}
