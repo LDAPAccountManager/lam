@@ -164,7 +164,7 @@ switch ($select) {
 		break;
 	case 'create':
 		$row=0;
-		while ($row < sizeof($_SESSION['accounts']  $row!=-1) {
+		while ($row < sizeof($_SESSION['accounts']) || $row!=-1) {
 			if (getgid($_SESSION['accounts'][$row]->general_group)==-1) {
 				$group = new account();
 				$group->general_username=$_SESSION['accounts'][$row]->general_group;
@@ -177,15 +177,17 @@ switch ($select) {
 				else {
 				$row = -1;
 				StatusMessage('ERROR', _('Could not create user'), _('Was unable to create ').$_SESSION['accounts'][$row]->general_username);
+				}
 			}
-		if ($row=-1) echo '<tr><td><input name="cancel" type="submit" value="'; echo _('Cancel'); echo '">';
+		if ($row=-1) { echo '<tr><td><input name="cancel" type="submit" value="'; echo _('Cancel'); echo '">'; }
 			else {
 			echo '<tr><td>';
 			echo _('All Users have been created');
 			echo '</td></tr><tr><td>';
 			echo '<tr><td><input name="cancel" type="submit" value="'; echo _('Mainmenu'); echo '">';
 			echo '<tr><td><input name="pdf" type="submit" value="'; echo _('Create PDF-File'); echo '">';
-			break;
+			}
+		break;
 	}
 
 
