@@ -30,7 +30,7 @@ echo ("<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\" /
 echo ("</head>\n");
 echo ("<frameset rows=\"130,*\">\n");
 echo ("<frame src=\"./main_header.php\" name=\"head\" frameborder=\"0\" scrolling=\"no\">\n");
-echo ("<frame src=\"../lib/listhosts.php\" name=\"mainpart\" frameborder=\"0\" scrolling=\"no\">\n");
+echo ("<frame src=\"../lib/listusers.php\" name=\"mainpart\" frameborder=\"0\" scrolling=\"yes\">\n");
 echo ("<noframes>\n");
 echo ("This page requires a browser that can show frames!\n");
 echo ("</noframes>\n");
