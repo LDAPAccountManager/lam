@@ -1,4 +1,4 @@
-??? 0.4.2
+21.01.2004 0.4.2
   - added config wizard
   - MHash is only needed for PHP < 4.3
   - use Blowfish for encryption instead of MCrypt
