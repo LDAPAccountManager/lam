@@ -69,7 +69,6 @@ if ($_POST['forward'] == "yes") {
 			echo("<meta http-equiv=\"refresh\" content=\"0; URL=profiledelete.php?type=host&del=" . $_POST['host'] . "\">");
 		}
 	}
-	print_r($_POST);
 	exit;
 }
 
@@ -95,16 +94,7 @@ for ($i = 0; $i < sizeof($hstprof); $i++) {
 		<link rel="stylesheet" type="text/css" href="../../style/layout.css">
 	</head>
 	<body>
-		<p align="center">
-			<a href="http://lam.sf.net" target="new_window">
-				<img src="../../graphics/banner.jpg" border=1 alt="LDAP Account Manager">
-			</a>
-		</p>
-		<hr>
-
 		<br>
-		<br>
-
 		<form action="profilemain.php" method="post">
 
 		<!-- user profile options -->

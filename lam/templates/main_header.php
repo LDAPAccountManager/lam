@@ -35,7 +35,8 @@ $Id$
   <tr>
     <td width="100"></td>
     <td><p align="center"><a href="http://lam.sf.net" target="new_window"><img src="../graphics/banner.jpg" border=1></a></p></td>
-    <td width="100"><p align="right"><a href="./logout.php" target="_top"><? echo _("Logout") ?></a></p><br></td>
+    <td width="100"><p align="right"><a href="./logout.php" target="_top"><? echo _("Logout") ?></a></p>
+    <p align="right"><a href="./profedit/profilemain.php" target="mainpart"><? echo _("Profile Editor") ?></a></p></td>
   </tr>
 </table>
 <br>

@@ -40,9 +40,7 @@ if (!$_SESSION['ldap'] || !$_SESSION['ldap']->server()) {
 echo ("<html>");
 echo ("<head><title>" . _("Delete User Profile") . "</title>\n");
 echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
-echo ("</head><body>");
-echo ("<p align=\"center\"><a href=\"http://lam.sf.net\" target=\"new_window\">");
-	echo ("<img src=\"../../graphics/banner.jpg\" border=1 alt=\"LDAP Account Manager\"></a></p><hr><br><br>\n");
+echo ("</head><body><br>");
 
 // check if admin has submited delete operation
 if ($_POST['submit']) {
