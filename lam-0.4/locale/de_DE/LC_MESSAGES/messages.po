@@ -7,21 +7,21 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: LAM 0.4.5\n"
+"Project-Id-Version: LDAP Account Manager 0.4.6\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de \n"
 "POT-Creation-Date: 2004-01-14 17:45+0200\n"
-"PO-Revision-Date: 2004-03-11 15:24+0100\n"
+"PO-Revision-Date: 2004-05-19 19:02+0200\n"
 "Last-Translator: Roland Gruber <post@rolandgruber.de>\n"
 "Language-Team: Deutsch <lam-i18n@lists.sourceforge.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-15\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.3.1\n"
 
 #: ../help/help.inc:147
+
 msgid "$%s and $%s are replaced with username or primary groupname."
-msgstr ""
-"$%s und $%s werden "
-"durch Benutzer- und Gruppenname ersetzt."
+msgstr "$%s und $%s werden durch Benutzer- und Gruppenname ersetzt."
 
 #: ../lib/account.inc:722 ../lib/account.inc:727
 #, php-format
@@ -102,7 +102,7 @@ msgstr "Alle Änderungen wurden zurückgesetzt."
 msgid "All changes were successful."
 msgstr "Alle Änderungen waren erfolgreich."
 
-#: ../lib/ldap.inc:197
+#: ../lib/ldap.inc:220
 msgid "Allowed hosts"
 msgstr "Erlaubte PCs"
 
@@ -176,27 +176,27 @@ msgstr "Zurück zum OU-Editor"
 #: ../templates/profedit/profilecreate.php:180
 #: ../templates/profedit/profilecreate.php:188
 #: ../templates/profedit/profilecreate.php:197
-#: ../templates/profedit/profilecreate.php:206
-#: ../templates/profedit/profilecreate.php:215
-#: ../templates/profedit/profilecreate.php:223
-#: ../templates/profedit/profilecreate.php:231
-#: ../templates/profedit/profilecreate.php:247
-#: ../templates/profedit/profilecreate.php:252
-#: ../templates/profedit/profilecreate.php:257
-#: ../templates/profedit/profilecreate.php:262
-#: ../templates/profedit/profilecreate.php:274
-#: ../templates/profedit/profilecreate.php:284
-#: ../templates/profedit/profilecreate.php:297
-#: ../templates/profedit/profilecreate.php:312
-#: ../templates/profedit/profilecreate.php:317
-#: ../templates/profedit/profilecreate.php:322
-#: ../templates/profedit/profilecreate.php:327
-#: ../templates/profedit/profilecreate.php:339
-#: ../templates/profedit/profilecreate.php:349
-#: ../templates/profedit/profilecreate.php:362
-#: ../templates/profedit/profilecreate.php:370
-#: ../templates/profedit/profilecreate.php:378
-#: ../templates/profedit/profilecreate.php:385
+#: ../templates/profedit/profilecreate.php:207
+#: ../templates/profedit/profilecreate.php:216
+#: ../templates/profedit/profilecreate.php:224
+#: ../templates/profedit/profilecreate.php:232
+#: ../templates/profedit/profilecreate.php:248
+#: ../templates/profedit/profilecreate.php:253
+#: ../templates/profedit/profilecreate.php:258
+#: ../templates/profedit/profilecreate.php:263
+#: ../templates/profedit/profilecreate.php:275
+#: ../templates/profedit/profilecreate.php:285
+#: ../templates/profedit/profilecreate.php:298
+#: ../templates/profedit/profilecreate.php:313
+#: ../templates/profedit/profilecreate.php:318
+#: ../templates/profedit/profilecreate.php:323
+#: ../templates/profedit/profilecreate.php:328
+#: ../templates/profedit/profilecreate.php:340
+#: ../templates/profedit/profilecreate.php:350
+#: ../templates/profedit/profilecreate.php:363
+#: ../templates/profedit/profilecreate.php:371
+#: ../templates/profedit/profilecreate.php:379
+#: ../templates/profedit/profilecreate.php:387
 #: ../templates/profedit/profiledelete.php:75
 #: ../templates/profedit/profiledelete.php:83
 #: ../templates/profedit/profiledelete.php:131
@@ -207,13 +207,13 @@ msgstr "Zurück zum Profileditor"
 msgid "Back to domain list"
 msgstr "Zurück zur Domänenliste"
 
-#: ../templates/account/groupedit.php:857 ../templates/delete.php:206
-#: ../templates/delete.php:242 ../templates/lists/userlink.php:56
+#: ../templates/account/groupedit.php:857 ../templates/delete.php:210
+#: ../templates/delete.php:246 ../templates/lists/userlink.php:56
 msgid "Back to group list"
 msgstr "Zurück zur Gruppenliste"
 
-#: ../templates/account/hostedit.php:471 ../templates/delete.php:209
-#: ../templates/delete.php:234
+#: ../templates/account/hostedit.php:471 ../templates/delete.php:213
+#: ../templates/delete.php:238
 msgid "Back to host list"
 msgstr "Zurück zur Hostliste"
 
@@ -265,8 +265,8 @@ msgstr "Zurück zu den Bereichseinstellungen"
 msgid "Back to server settings"
 msgstr "Zurück zu den Servereinstellungen"
 
-#: ../templates/account/useredit.php:1578 ../templates/delete.php:203
-#: ../templates/delete.php:226
+#: ../templates/account/useredit.php:1578 ../templates/delete.php:207
+#: ../templates/delete.php:230
 msgid "Back to user list"
 msgstr "Zurück zur Benutzerliste"
 
@@ -276,15 +276,15 @@ msgstr "Zurück zur Benutzerliste"
 
 #: ../templates/account/groupedit.php:263
 #: ../templates/account/useredit.php:469
-#: ../templates/profedit/profilecreate.php:251
-#: ../templates/profedit/profilecreate.php:316
+#: ../templates/profedit/profilecreate.php:252
+#: ../templates/profedit/profilecreate.php:317
 msgid "Block hard quota"
 msgstr "hartes Block-Quota"
 
 #: ../templates/account/groupedit.php:263
 #: ../templates/account/useredit.php:469
-#: ../templates/profedit/profilecreate.php:251
-#: ../templates/profedit/profilecreate.php:316
+#: ../templates/profedit/profilecreate.php:252
+#: ../templates/profedit/profilecreate.php:317
 msgid ""
 "Block hard quota contains invalid characters. Only natural numbers are "
 "allowed"
@@ -294,15 +294,15 @@ msgstr ""
 
 #: ../templates/account/groupedit.php:261
 #: ../templates/account/useredit.php:467
-#: ../templates/profedit/profilecreate.php:246
-#: ../templates/profedit/profilecreate.php:311
+#: ../templates/profedit/profilecreate.php:247
+#: ../templates/profedit/profilecreate.php:312
 msgid "Block soft quota"
 msgstr "weiches Block-Quota"
 
 #: ../templates/account/groupedit.php:261
 #: ../templates/account/useredit.php:467
-#: ../templates/profedit/profilecreate.php:246
-#: ../templates/profedit/profilecreate.php:311
+#: ../templates/profedit/profilecreate.php:247
+#: ../templates/profedit/profilecreate.php:312
 msgid ""
 "Block soft quota contains invalid characters. Only natural numbers are "
 "allowed"
@@ -459,19 +459,19 @@ msgstr "Konnte Gruppe nicht erstellen!"
 msgid "Could not create user!"
 msgstr "Konnte Benutzer nicht erstellen!"
 
-#: ../templates/delete.php:179
+#: ../templates/delete.php:185
 msgid "Could not delete group. Still users in group:"
 msgstr "Konnte Gruppe nicht löschen. Es befinden sich noch Benutzer in der Gruppe:"
 
-#: ../templates/delete.php:183
+#: ../templates/delete.php:193
 msgid "Could not delete group:"
 msgstr "Konnte folgende Gruppe nicht löschen:"
 
-#: ../templates/delete.php:163
+#: ../templates/delete.php:169
 msgid "Could not delete host:"
 msgstr "Konnte folgenden Host nicht löschen:"
 
-#: ../templates/delete.php:158
+#: ../templates/delete.php:164
 msgid "Could not delete user:"
 msgstr "Konnte folgenden Benutzer nicht löschen:"
 
@@ -677,7 +677,7 @@ msgstr "Lösche Benutzer"
 msgid "Deleted profile:"
 msgstr "Gelöschtes Profil:"
 
-#: ../templates/delete.php:238
+#: ../templates/delete.php:242
 msgid "Deleting group(s) canceled."
 msgstr "Löschoperation abgebrochen."
 
@@ -685,7 +685,7 @@ msgstr "Löschoperation abgebrochen."
 msgid "Deleting group(s)..."
 msgstr "Lösche Gruppe(n)..."
 
-#: ../templates/delete.php:230
+#: ../templates/delete.php:234
 msgid "Deleting host(s) canceled."
 msgstr "Löschoperation abgebrochen."
 
@@ -693,7 +693,7 @@ msgstr "Löschoperation abgebrochen."
 msgid "Deleting host(s)..."
 msgstr "Lösche Host(s)..."
 
-#: ../templates/delete.php:222
+#: ../templates/delete.php:226
 msgid "Deleting user(s) canceled."
 msgstr "Löschoperation abgebrochen."
 
@@ -701,7 +701,7 @@ msgstr "Löschoperation abgebrochen."
 msgid "Deleting user(s)..."
 msgstr "Lösche Benutzer..."
 
-#: ../templates/account/groupedit.php:604 ../lib/ldap.inc:203
+#: ../templates/account/groupedit.php:604 ../lib/ldap.inc:226
 #: ../lib/pdf.inc:300 ../lib/pdf.inc:342 ../lib/pdf.inc:428
 msgid "Description"
 msgstr "Beschreibung"
@@ -820,9 +820,9 @@ msgstr ""
 "Domänenname enthält ungültige Zeichen. Gültige Zeichen sind: a-z, A-Z, 0-9 "
 "und -."
 
-#: ../templates/domain.php:232 ../templates/profedit/profilecreate.php:230
-#: ../templates/profedit/profilecreate.php:296
-#: ../templates/profedit/profilecreate.php:369
+#: ../templates/domain.php:232 ../templates/profedit/profilecreate.php:231
+#: ../templates/profedit/profilecreate.php:297
+#: ../templates/profedit/profilecreate.php:370
 #: ../templates/confwiz/ldaptest.php:235
 msgid "Domain name is invalid!"
 msgstr "Domänenname ist ungültig!"
@@ -844,7 +844,7 @@ msgstr "Domänen"
 msgid "Driveletter assigned on windows workstations as homedirectory."
 msgstr "Laufwerksbuchstabe, der als Heimatverzeichnis zugewiesen wird."
 
-#: ../lib/ldap.inc:202 ../lib/pdf.inc:105
+#: ../lib/ldap.inc:225 ../lib/pdf.inc:105
 msgid "E-Mail"
 msgstr "E-Mail"
 
@@ -882,8 +882,8 @@ msgid "Employee type"
 msgstr "Angestelltentyp"
 
 #: ../help/help.inc:251
-msgid "Employee type: worker, student, nurse, ..."
-msgstr "Angestelltentyp: Arbeiter, Schüler, Krankenschwester, ..."
+msgid "Employee type: Contractor, Employee, Intern, Temp, External, ..."
+msgstr "Angestelltentyp: Angestellter, Extern, Aushilfskraft, ..."
 
 #: ../templates/login.php:287
 msgid "Empty Password submitted. Try again."
@@ -971,7 +971,7 @@ msgstr "Filtern"
 msgid "Final"
 msgstr "Abschluss"
 
-#: ../templates/account/useredit.php:954 ../lib/ldap.inc:198
+#: ../templates/account/useredit.php:954 ../lib/ldap.inc:221
 msgid "First name"
 msgstr "Vorname"
 
@@ -980,8 +980,8 @@ msgid "GID"
 msgstr "Gruppen ID"
 
 #: ../templates/account/groupedit.php:600 ../help/help.inc:58
-#: ../help/help.inc:157 ../lib/ldap.inc:195 ../lib/ldap.inc:207
-#: ../lib/ldap.inc:218
+#: ../help/help.inc:157 ../lib/ldap.inc:218 ../lib/ldap.inc:230
+#: ../lib/ldap.inc:241
 msgid "GID number"
 msgstr "GID Nummer"
 
@@ -1083,7 +1083,7 @@ msgstr "Gruppenprofile"
 msgid "Group SID"
 msgstr "Gruppen-SID"
 
-#: ../lib/ldap.inc:210
+#: ../lib/ldap.inc:233
 msgid "Group description"
 msgstr "Gruppenbeschreibung"
 
@@ -1099,16 +1099,16 @@ msgstr "Gruppeninformationen"
 msgid "Group list attributes are invalid!"
 msgstr "Attribute der Gruppenliste sind ungültig!"
 
-#: ../lib/ldap.inc:209
+#: ../lib/ldap.inc:232
 msgid "Group member DNs"
 msgstr "DNs der Gruppenmitglieder"
 
 #: ../templates/account/groupedit.php:538 ../help/help.inc:181
-#: ../help/help.inc:284 ../lib/ldap.inc:208
+#: ../help/help.inc:284 ../lib/ldap.inc:231
 msgid "Group members"
 msgstr "Gruppenmitglieder"
 
-#: ../lib/ldap.inc:206
+#: ../lib/ldap.inc:229
 msgid "Group name"
 msgstr "Gruppenname"
 
@@ -1410,7 +1410,7 @@ msgstr ""
 
 #: ../templates/account/useredit.php:296 ../templates/account/useredit.php:298
 #: ../templates/account/useredit.php:982 ../help/help.inc:146
-#: ../lib/ldap.inc:200
+#: ../lib/ldap.inc:223
 msgid "Home directory"
 msgstr "Heimatverzeichnis"
 
@@ -1452,7 +1452,7 @@ msgstr "Host %s wurde geändert."
 msgid "Host attributes"
 msgstr "Hostattribute"
 
-#: ../lib/ldap.inc:216
+#: ../lib/ldap.inc:239
 msgid "Host description"
 msgstr "Hostbeschreibung"
 
@@ -1466,7 +1466,7 @@ msgstr "Attribute der Hostliste sind ungültig!"
 
 #: ../templates/account/hostedit.php:131 ../templates/account/hostedit.php:137
 #: ../templates/account/hostedit.php:177 ../templates/account/hostedit.php:364
-#: ../help/help.inc:162 ../lib/ldap.inc:214
+#: ../help/help.inc:162 ../lib/ldap.inc:237
 msgid "Host name"
 msgstr "Hostname"
 
@@ -1485,7 +1485,7 @@ msgstr ""
 "ebenfalls nicht erlaubt. Sollte der Hostname schon in Verwendung sein wird "
 "eine Zahl angehängt."
 
-#: ../lib/ldap.inc:213
+#: ../lib/ldap.inc:236
 msgid "Host username"
 msgstr "Host Benutzername"
 
@@ -1674,15 +1674,15 @@ msgstr "Informationen"
 
 #: ../templates/account/groupedit.php:267
 #: ../templates/account/useredit.php:473
-#: ../templates/profedit/profilecreate.php:261
-#: ../templates/profedit/profilecreate.php:326
+#: ../templates/profedit/profilecreate.php:262
+#: ../templates/profedit/profilecreate.php:327
 msgid "Inode hard quota"
 msgstr "hartes Inode-Quota"
 
 #: ../templates/account/groupedit.php:267
 #: ../templates/account/useredit.php:473
-#: ../templates/profedit/profilecreate.php:261
-#: ../templates/profedit/profilecreate.php:326
+#: ../templates/profedit/profilecreate.php:262
+#: ../templates/profedit/profilecreate.php:327
 msgid ""
 "Inode hard quota contains invalid characters. Only natural numbers are "
 "allowed"
@@ -1692,15 +1692,15 @@ msgstr ""
 
 #: ../templates/account/groupedit.php:265
 #: ../templates/account/useredit.php:471
-#: ../templates/profedit/profilecreate.php:256
-#: ../templates/profedit/profilecreate.php:321
+#: ../templates/profedit/profilecreate.php:257
+#: ../templates/profedit/profilecreate.php:322
 msgid "Inode soft quota"
 msgstr "weiches Inode-Quota"
 
 #: ../templates/account/groupedit.php:265
 #: ../templates/account/useredit.php:471
-#: ../templates/profedit/profilecreate.php:256
-#: ../templates/profedit/profilecreate.php:321
+#: ../templates/profedit/profilecreate.php:257
+#: ../templates/profedit/profilecreate.php:322
 msgid ""
 "Inode soft quota contains invalid characters. Only natural numbers are "
 "allowed"
@@ -1741,9 +1741,9 @@ msgstr "Benutzer- oder Gruppenname wurde in Scriptpfad eingefügt."
 msgid "Invalid Value!"
 msgstr "Ungültiger Wert!"
 
-#: ../templates/profedit/profilecreate.php:273
-#: ../templates/profedit/profilecreate.php:338
-#: ../templates/profedit/profilecreate.php:377
+#: ../templates/profedit/profilecreate.php:274
+#: ../templates/profedit/profilecreate.php:339
+#: ../templates/profedit/profilecreate.php:378
 msgid "Invalid profile name!"
 msgstr "Ungültiger Profilname!"
 
@@ -1765,6 +1765,17 @@ msgstr ""
 #: ../templates/masscreate.php:279
 msgid "It will be created."
 msgstr "Sie wird erstellt."
+
+#: ../templates/account/useredit.php:495
+#: ../templates/account/useredit.php:1466 ../templates/masscreate.php:361
+#: ../templates/masscreate.php:574 ../templates/massdetail.php:140
+#: ../templates/massdetail.php:220 ../help/help.inc:248
+msgid "Job title"
+msgstr "Berufsbezeichnung"
+
+#: ../help/help.inc:249
+msgid "Job title of user, Vice President, ..."
+msgstr "Berufsbezeichnung des Benutzers (Präsident, Abteilungsleiter, etc.)."
 
 #: ../lib/status.inc:40
 msgid "LAM Internal Error"
@@ -1864,7 +1875,7 @@ msgstr "Sprache ist nicht in Session gespeichert!"
 msgid "Language settings"
 msgstr "Spacheinstellungen"
 
-#: ../templates/account/useredit.php:960 ../lib/ldap.inc:199
+#: ../templates/account/useredit.php:960 ../lib/ldap.inc:222
 msgid "Last name"
 msgstr "Nachname"
 
@@ -1920,7 +1931,7 @@ msgstr "Login auf Arbeitsstation(en)"
 
 #: ../templates/account/useredit.php:992
 #: ../templates/profedit/profileuser.php:127 ../help/help.inc:151
-#: ../lib/ldap.inc:201
+#: ../lib/ldap.inc:224
 msgid "Login shell"
 msgstr "Login Shell"
 
@@ -1932,7 +1943,7 @@ msgid "Logon script"
 msgstr "Anmeldeskript"
 
 #: ../templates/account/useredit.php:444 ../templates/config/confsave.php:181
-#: ../templates/profedit/profilecreate.php:214
+#: ../templates/profedit/profilecreate.php:215
 msgid "Logon script is invalid!"
 msgstr "Anmeldeskript ist ungültig!"
 
@@ -2240,11 +2251,11 @@ msgstr "Keine Domänen gefunden, bitte erstellen Sie eine."
 msgid "No free ID-Number!"
 msgstr "Keine ID-Nummer mehr frei!"
 
-#: ../templates/delete.php:240
+#: ../templates/delete.php:244
 msgid "No group(s) were deleted"
 msgstr "Es wurde nichts gelöscht"
 
-#: ../templates/delete.php:232
+#: ../templates/delete.php:236
 msgid "No host(s) were deleted"
 msgstr "Es wurde nichts gelöscht"
 
@@ -2261,7 +2272,7 @@ msgstr "Keine primäre Gruppe angegeben!"
 msgid "No profilename given."
 msgstr "Kein Profilname angegeben."
 
-#: ../templates/profedit/profilecreate.php:389
+#: ../templates/profedit/profilecreate.php:391
 msgid "No type specified!"
 msgstr "Kein Typ angegeben!"
 
@@ -2269,7 +2280,7 @@ msgstr "Kein Typ angegeben!"
 msgid "No user quotas defined or no quota support by filesystem."
 msgstr "Keine Benutzerquotas definiert oder keine Quotaunterstützung aktiviert."
 
-#: ../templates/delete.php:224
+#: ../templates/delete.php:228
 msgid "No user(s) were deleted"
 msgstr "Kein Benutzer wurde gelöscht"
 
@@ -2533,6 +2544,11 @@ msgstr "Bitte geben Sie einen gültigen Angestelltentyp ein!"
 msgid "Please enter a valid fax number!"
 msgstr "Bitte geben Sie eine gültige Faxnummer ein!"
 
+#: ../templates/account/useredit.php:495 ../templates/masscreate.php:574
+#: ../templates/massdetail.php:140
+msgid "Please enter a valid job title!"
+msgstr "Bitte geben Sie eine gültige Berufsbezeichnung ein!"
+
 #: ../templates/account/useredit.php:490 ../templates/masscreate.php:569
 #: ../templates/massdetail.php:152
 msgid "Please enter a valid mobile number!"
@@ -2557,11 +2573,6 @@ msgstr "Bitte geben Sie einen gültigen Straßennamen ein!"
 #: ../templates/massdetail.php:150
 msgid "Please enter a valid telephone number!"
 msgstr "Bitte geben Sie eine gültige Telefonnummer ein!"
-
-#: ../templates/account/useredit.php:495 ../templates/masscreate.php:574
-#: ../templates/massdetail.php:140
-msgid "Please enter a valid title!"
-msgstr "Bitte geben Sie einen gültigen Titel ein!"
 
 #: ../lib/account.inc:890
 #, php-format
@@ -2745,7 +2756,7 @@ msgstr ""
 "ausführen, um die Dateirechte zu ändern:"
 
 #: ../templates/profedit/profilecreate.php:64
-#: ../templates/profedit/profilecreate.php:361
+#: ../templates/profedit/profilecreate.php:362
 msgid "Primary group name is invalid!"
 msgstr "Primäre Gruppe ist ungültig!"
 
@@ -2801,13 +2812,13 @@ msgid "Profile path"
 msgstr "Profilpfad"
 
 #: ../templates/account/useredit.php:447
-#: ../templates/profedit/profilecreate.php:205
+#: ../templates/profedit/profilecreate.php:206
 msgid "Profile path is invalid!"
 msgstr "Profilpfad ist ungültig!"
 
-#: ../templates/profedit/profilecreate.php:280
-#: ../templates/profedit/profilecreate.php:345
-#: ../templates/profedit/profilecreate.php:383
+#: ../templates/profedit/profilecreate.php:281
+#: ../templates/profedit/profilecreate.php:346
+#: ../templates/profedit/profilecreate.php:384
 msgid "Profile was saved."
 msgstr "Profil wurde gespeichert."
 
@@ -2837,7 +2848,7 @@ msgstr "Quota-Einstellungen"
 msgid "Quota properties"
 msgstr "Quota-Einstellungen"
 
-#: ../lib/ldap.inc:215
+#: ../lib/ldap.inc:238
 msgid "RID (Windows UID)"
 msgstr "RID (Windows UID)"
 
@@ -2990,7 +3001,7 @@ msgstr "Samba-Version ist nicht definiert!"
 msgid "Samba workstations"
 msgstr "Samba PCs"
 
-#: ../templates/profedit/profilecreate.php:222
+#: ../templates/profedit/profilecreate.php:223
 msgid "Samba workstations are invalid!"
 msgstr "Samba-Arbeitsstationen sind ungültig!"
 
@@ -3466,16 +3477,9 @@ msgstr ""
 "selben Werte wie im Profileditor gespeichert. Profilnamen dürfen die "
 "Buchstaben a-z, 0-9 und -_ enthalten."
 
-#: ../templates/account/useredit.php:495
-#: ../templates/account/useredit.php:1466 ../templates/masscreate.php:361
-#: ../templates/masscreate.php:574 ../templates/massdetail.php:140
-#: ../templates/massdetail.php:220 ../help/help.inc:248 ../lib/pdf.inc:81
+#: ../lib/pdf.inc:81
 msgid "Title"
 msgstr "Titel"
-
-#: ../help/help.inc:249
-msgid "Title of user, Mr., Ms., ..."
-msgstr "Titel des Benutzers (Herr, Frau, Dr., etc.)."
 
 #: ../templates/confwiz/server.php:144
 msgid ""
@@ -3503,7 +3507,7 @@ msgstr "Benutzer ID"
 
 #: ../templates/account/hostedit.php:370 ../templates/account/useredit.php:948
 #: ../help/help.inc:56 ../help/help.inc:141 ../help/help.inc:164
-#: ../lib/ldap.inc:194 ../lib/ldap.inc:217
+#: ../lib/ldap.inc:217 ../lib/ldap.inc:240
 msgid "UID number"
 msgstr "UID Nummer"
 
@@ -3568,8 +3572,9 @@ msgstr "Kann Konfiguration nicht laden!"
 msgid "Unable to load profile!"
 msgstr "Kann das Profil nicht laden!"
 
-#: ../templates/profedit/profilecreate.php:282
-#: ../templates/profedit/profilecreate.php:347 ../lib/profiles.inc:451
+#: ../templates/profedit/profilecreate.php:283
+#: ../templates/profedit/profilecreate.php:348
+#: ../templates/profedit/profilecreate.php:386 ../lib/profiles.inc:451
 #: ../lib/profiles.inc:486 ../lib/profiles.inc:514
 msgid "Unable to save profile!"
 msgstr "Kann das Profil nicht speichern!"
@@ -3694,7 +3699,7 @@ msgstr "Benutzer %s wurde erstellt."
 msgid "User %s has been modified."
 msgstr "Benutzer %s wurde geändert."
 
-#: ../lib/ldap.inc:193
+#: ../lib/ldap.inc:216
 msgid "User ID"
 msgstr "Benutzer ID"
 
@@ -3763,7 +3768,7 @@ msgstr "UserSuffix ist ungültig!"
 #: ../templates/login.php:148 ../templates/masscreate.php:357
 #: ../templates/masscreate.php:545 ../templates/masscreate.php:561
 #: ../templates/massdetail.php:88 ../templates/massdetail.php:136
-#: ../templates/massdetail.php:214 ../help/help.inc:139 ../lib/ldap.inc:196
+#: ../templates/massdetail.php:214 ../help/help.inc:139 ../lib/ldap.inc:219
 #: ../lib/pdf.inc:127 ../lib/pdf.inc:181
 msgid "Username"
 msgstr "Benutzername"
@@ -3984,7 +3989,7 @@ msgstr "Sie wurden vom LDAP Account Manager abgemeldet."
 msgid "Your Language"
 msgstr "Sprache"
 
-#: ../templates/delete.php:196
+#: ../templates/delete.php:200
 msgid "deleted"
 msgstr "gelöscht"
 
@@ -4078,4 +4083,5 @@ msgstr "saveUserProfile: account ist vom falschen Typ!"
 #: ../templates/profedit/profileuser.php:270
 msgid "yes"
 msgstr "ja"
+
 
