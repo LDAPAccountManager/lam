@@ -55,7 +55,7 @@ $scope = 'group';
 $_POST = $_POST + $_GET;
 
 $info = $_SESSION[$scope . 'info'];
-$grp_units = $_SESSION['grp_units'];
+$units = $_SESSION[$scope . '_units'];
 
 listDoPost($scope);
 
@@ -63,7 +63,8 @@ echo $_SESSION['header'];
 echo "<title>listgroups</title>\n";
 echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
 echo "</head><body>\n";
-echo "<script src=\"../../lib/functions.js\" type=\"text/javascript\" language=\"javascript\"></script>\n";
+
+listPrintJavaScript();
 
 // generate attribute-description table
 $attr_array = array();	// list of LDAP attributes to show
@@ -105,9 +106,9 @@ if (isset($_GET["sort"])) $sort = $_GET["sort"];
 else $sort = strtolower($attr_array[0]);
 
 // check search suffix
-if ($_POST['grp_suffix']) $grp_suffix = $_POST['grp_suffix'];  // new suffix selected via combobox
-elseif ($_SESSION['grp_suffix']) $grp_suffix = $_SESSION['grp_suffix'];  // old suffix from session
-else $grp_suffix = $_SESSION["config"]->get_GroupSuffix();  // default suffix
+if ($_POST['suffix']) $suffix = $_POST['suffix'];  // new suffix selected via combobox
+elseif ($_SESSION[$scope . '_suffix']) $suffix = $_SESSION[$scope . '_suffix'];  // old suffix from session
+else $suffix = $_SESSION["config"]->get_GroupSuffix();  // default suffix
 
 $refresh = true;
 if (isset($_GET['norefresh'])) $refresh = false;
@@ -115,10 +116,10 @@ if (isset($_POST['refresh'])) $refresh = true;
 
 if ($refresh) {
 	// configure search filter
-	$module_filter = get_ldap_filter("group");  // basic filter is provided by modules
+	$module_filter = get_ldap_filter($scope);  // basic filter is provided by modules
 	$filter = "(&" . $module_filter . ")";
 	$attrs = $attr_array;
-	$sr = @ldap_search($_SESSION["ldap"]->server(), $grp_suffix, $filter, $attrs);
+	$sr = @ldap_search($_SESSION["ldap"]->server(), $suffix, $filter, $attrs);
 	if (ldap_errno($_SESSION["ldap"]->server()) == 4) {
 		StatusMessage("WARN", _("LDAP sizelimit exceeded, not all entries are shown."), _("See README.openldap.txt to solve this problem."));
 	}
@@ -163,12 +164,12 @@ echo ("<form action=\"listgroups.php?norefresh=true\" method=\"post\">\n");
 
 // draw navigation bar if group accounts were found
 if (sizeof($info) > 0) {
-listDrawNavigationBar(sizeof($info), $max_page_entries, $page, $sort, $searchFilter, "group", _("%s group(s) found"));
+listDrawNavigationBar(sizeof($info), $max_page_entries, $page, $sort, $searchFilter, $scope, _("%s group(s) found"));
 echo ("<br>");
 }
 
 // account table head
-listPrintTableHeader("group", $searchFilter, $desc_array, $attr_array, $_POST, $sort);
+listPrintTableHeader($scope, $searchFilter, $desc_array, $attr_array, $_POST, $sort);
 
 // calculate which rows to show
 $table_begin = ($page - 1) * $max_page_entries;
@@ -178,16 +179,16 @@ else $table_end = ($page * $max_page_entries);
 if (sizeof($info) > 0) {
 	// print group list
 	for ($i = $table_begin; $i < $table_end; $i++) {
-		echo("<tr class=\"grouplist\" onMouseOver=\"group_over(this, '" . $i . "')\"" .
-									" onMouseOut=\"group_out(this, '" . $i . "')\"" .
-									" onClick=\"group_click(this, '" . $i . "')\"" .
+		echo("<tr class=\"grouplist\" onMouseOver=\"list_over(this, '" . $i . "', '" . $scope . "')\"" .
+									" onMouseOut=\"list_out(this, '" . $i . "', '" . $scope . "')\"" .
+									" onClick=\"list_click(this, '" . $i . "', '" . $scope . "')\"" .
 									" onDblClick=\"parent.frames[1].location.href='../account/edit.php?type=group&amp;DN=" . $info[$i]['dn'] . "'\">");
 		if (isset($_GET['selectall'])) {
-		echo " <td height=22 align=\"center\"><input onClick=\"group_click(this, '" . $i . "')\" type=\"checkbox\"" .
+		echo " <td height=22 align=\"center\"><input onClick=\"list_click(this, '" . $i . "', '" . $scope . "')\" type=\"checkbox\"" .
 			" name=\"" . $i . "\" checked></td>";
 		}
 		else {
-		echo " <td height=22 align=\"center\"><input onClick=\"group_click(this, '" . $i . "')\" type=\"checkbox\"" .
+		echo " <td height=22 align=\"center\"><input onClick=\"list_click(this, '" . $i . "', '" . $scope . "')\" type=\"checkbox\"" .
 			" name=\"" . $i . "\"></td>";
 		}
 		echo (" <td align='center'><a href=\"../account/edit.php?type=group&amp;DN='" . $info[$i]['dn'] . "'\">" . _("Edit") . "</a></td>");
@@ -239,29 +240,17 @@ echo ("<br>");
 
 // draw navigation bar if group accounts were found
 if (sizeof($info) > 0) {
-listDrawNavigationBar(sizeof($info), $max_page_entries, $page, $sort, $searchFilter, "group", _("%s group(s) found"));
+listDrawNavigationBar(sizeof($info), $max_page_entries, $page, $sort, $searchFilter, $scope, _("%s group(s) found"));
 echo ("<br>\n");
 }
 
 if ($refresh) {
 	// generate list of possible suffixes
-	$grp_units = $_SESSION['ldap']->search_units($_SESSION["config"]->get_GroupSuffix());
+	$units = $_SESSION['ldap']->search_units($_SESSION["config"]->get_GroupSuffix());
 }
 
 // print combobox with possible sub-DNs
-if (sizeof($grp_units) > 1) {
-	echo ("<p align=\"left\">\n");
-	echo ("<b>" . _("Suffix") . ": </b>");
-	echo ("<select size=1 name=\"grp_suffix\">\n");
-	for ($i = 0; $i < sizeof($grp_units); $i++) {
-		if ($grp_suffix == $grp_units[$i]) echo ("<option selected>" . $grp_units[$i] . "</option>\n");
-		else echo("<option>" . $grp_units[$i] . "</option>\n");
-	}
-	echo ("</select>\n");
-	echo ("<input type=\"submit\" name=\"refresh\" value=\"" . _("Change Suffix") . "\">");
-	echo ("</p>\n");
-	echo ("<p>&nbsp;</p>\n");
-}
+listShowOUSelection($units, $suffix);
 
 echo ("<input type=\"submit\" name=\"new\" value=\"" . _("New Group") . "\">\n");
 if (sizeof($info) > 0) {
@@ -269,7 +258,7 @@ if (sizeof($info) > 0) {
 	echo ("<br><br><br>\n");
 	echo "<fieldset><legend><b>PDF</b></legend>\n";
 	echo ("<b>" . _('PDF structure') . ":</b>&nbsp;&nbsp;<select name=\"pdf_structure\">\n");
-	$pdf_structures = getAvailablePDFStructures('group');
+	$pdf_structures = getAvailablePDFStructures($scope);
 	foreach($pdf_structures as $pdf_structure) {
 		echo "<option value=\"" . $pdf_structure . "\"" . (($pdf_structure == 'default.xml') ? " selected" : "") . ">" . substr($pdf_structure,0,strlen($pdf_structure)-4) . "</option>";
 	}
@@ -284,7 +273,7 @@ echo ("</form>\n");
 echo "</body></html>\n";
 
 // save variables to session
-$_SESSION['grp_units'] = $grp_units;
-$_SESSION['grp_suffix'] = $grp_suffix;
+$_SESSION[$scope . '_units'] = $units;
+$_SESSION[$scope . '_suffix'] = $suffix;
 
 ?>

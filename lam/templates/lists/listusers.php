@@ -68,10 +68,10 @@ else $trans_primary_hash = array();
 // generate hash table for group translation
 if ($trans_primary == "on" && ($refresh || (sizeof($trans_primary_hash) == 0))) {
 	$trans_primary_hash = array();
-	$suffix = $_SESSION['config']->get_groupSuffix();
+	$grp_suffix = $_SESSION['config']->get_groupSuffix();
 	$filter = "objectClass=posixGroup";
 	$attrs = array("cn", "gidNumber");
-	$sr = @ldap_search($_SESSION["ldap"]->server(), $suffix, $filter, $attrs);
+	$sr = @ldap_search($_SESSION["ldap"]->server(), $grp_suffix, $filter, $attrs);
 	if ($sr) {
 		$info = @ldap_get_entries($_SESSION["ldap"]->server(), $sr);
 		unset($info['count']); // delete count entry
@@ -83,8 +83,8 @@ if ($trans_primary == "on" && ($refresh || (sizeof($trans_primary_hash) == 0))) 
 }
 
 
-$info = $_SESSION[$scope . 'info'];
-$usr_units = $_SESSION['usr_units'];
+if (isset($_SESSION[$scope . 'info'])) $info = $_SESSION[$scope . 'info'];
+if (isset($_SESSION[$scope . '_units'])) $units = $_SESSION[$scope . '_units'];
 
 listDoPost($scope);
 
@@ -93,7 +93,8 @@ echo $_SESSION['header'];
 echo "<title>listusers</title>\n";
 echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
 echo "</head><body>\n";
-echo "<script src=\"../../lib/functions.js\" type=\"text/javascript\" language=\"javascript\"></script>\n";
+
+listPrintJavaScript();
 
 // get current page
 if (isset($_GET["page"])) $page = $_GET["page"];
@@ -134,18 +135,18 @@ if (isset($_GET["sort"])) $sort = $_GET["sort"];
 else $sort = strtolower($attr_array[0]);
 
 // check search suffix
-if ($_POST['usr_suffix']) $usr_suffix = $_POST['usr_suffix'];  // new suffix selected via combobox
-elseif ($_SESSION['usr_suffix']) $usr_suffix = $_SESSION['usr_suffix'];  // old suffix from session
-else $usr_suffix = $_SESSION["config"]->get_UserSuffix();  // default suffix
+if (isset($_POST['suffix'])) $suffix = $_POST['suffix'];  // new suffix selected via combobox
+elseif (isset($_SESSION[$scope . '_suffix'])) $suffix = $_SESSION[$scope . '_suffix'];  // old suffix from session
+else $suffix = $_SESSION["config"]->get_UserSuffix();  // default suffix
 
 
 // configure search filter for LDAP
-$module_filter = get_ldap_filter("user");  // basic filter is provided by modules
+$module_filter = get_ldap_filter($scope);  // basic filter is provided by modules
 $filter = "(&" . $module_filter . ")";
 
 if ($refresh) {
 	$attrs = $attr_array;
-	$sr = @ldap_search($_SESSION["ldap"]->server(), $usr_suffix, $filter, $attrs);
+	$sr = @ldap_search($_SESSION["ldap"]->server(), $suffix, $filter, $attrs);
 	if (ldap_errno($_SESSION["ldap"]->server()) == 4) {
 		StatusMessage("WARN", _("LDAP sizelimit exceeded, not all entries are shown."), _("See README.openldap.txt to solve this problem."));
 	}
@@ -188,27 +189,25 @@ else {
 	$searchFilter = "";
 }
 
-$user_count = sizeof($info);
-
 echo ("<form action=\"listusers.php?norefresh=true\" method=\"post\">\n");
 
 // display table only if users exist in LDAP
-if ($user_count != 0) {
+if (sizeof($info) != 0) {
 	// create navigation bar on top of user table
-	listDrawNavigationBar($user_count, $max_page_entries, $page, $sort,
-		$searchFilter . "&amp;trans_primary=" . $trans_primary, "user", _("%s user(s) found"));
+	listDrawNavigationBar(sizeof($info), $max_page_entries, $page, $sort,
+		$searchFilter . "&amp;trans_primary=" . $trans_primary, $scope, _("%s user(s) found"));
 	echo ("<br />");
 }
 
 // account table head
-listPrintTableHeader("user", $searchFilter . "&amp;trans_primary=" . $trans_primary, $desc_array, $attr_array, $_POST, $sort);
+listPrintTableHeader($scope, $searchFilter . "&amp;trans_primary=" . $trans_primary, $desc_array, $attr_array, $_POST, $sort);
 
 // calculate which rows to show
 $table_begin = ($page - 1) * $max_page_entries;
 if (($page * $max_page_entries) > sizeof($info)) $table_end = sizeof($info);
 else $table_end = ($page * $max_page_entries);
 
-if ($user_count != 0) {
+if (sizeof($info) != 0) {
 	// translate GIDs and resort array if selected
 	if ($trans_primary == "on") {
 		// translate GIDs
@@ -225,17 +224,17 @@ if ($user_count != 0) {
 	}
 	// print user list
 	for ($i = $table_begin; $i < $table_end; $i++) {
-		echo("<tr class=\"userlist\"\nonMouseOver=\"user_over(this, '" . $i . "')\"\n" .
-			"onMouseOut=\"user_out(this, '" . $i . "')\"\n" .
-			"onClick=\"user_click(this, '" . $i . "')\"\n" .
+		echo("<tr class=\"userlist\"\nonMouseOver=\"list_over(this, '" . $i . "', '" . $scope . "')\"\n" .
+			"onMouseOut=\"list_out(this, '" . $i . "', '" . $scope . "')\"\n" .
+			"onClick=\"list_click(this, '" . $i . "', '" . $scope . "')\"\n" .
 			"onDblClick=\"parent.frames[1].location.href='../account/edit.php?type=user&amp;DN=" . $info[$i]['dn'] . "'\">\n");
 		// checkboxes if selectall = "yes"
 		if (isset($_GET['selectall'])) {
-			echo "<td height=22 align=\"center\">\n<input onClick=\"user_click(this, '" . $i . "')\" type=\"checkbox\" name=\"" .
+			echo "<td height=22 align=\"center\">\n<input onClick=\"list_click(this, '" . $i . "', '" . $scope . "')\" type=\"checkbox\" name=\"" .
 				$i . "\" checked>\n</td>\n";
 		}
 		else {
-			echo "<td height=22 align=\"center\">\n<input onClick=\"user_click(this, '" . $i . "')\" type=\"checkbox\" name=\"" .
+			echo "<td height=22 align=\"center\">\n<input onClick=\"list_click(this, '" . $i . "', '" . $scope . "')\" type=\"checkbox\" name=\"" .
 				$i . "\">\n</td>\n";
 		}
 		echo ("<td align='center'>\n<a href=\"../account/edit.php?type=user&amp;DN='" . $info[$i]['dn'] . "'\">" .
@@ -270,30 +269,19 @@ if ($user_count != 0) {
 echo ("</table>\n");
 
 echo ("<br>");
-if ($user_count != 0) {
-	listDrawNavigationBar($user_count, $max_page_entries, $page, $sort,
-		$searchFilter . "&amp;trans_primary=" . $trans_primary, "user", _("%s user(s) found"));
+if (sizeof($info) != 0) {
+	listDrawNavigationBar(sizeof($info), $max_page_entries, $page, $sort,
+		$searchFilter . "&amp;trans_primary=" . $trans_primary, $scope, _("%s user(s) found"));
 	echo ("<br>");
 }
 
 if ($refresh) {
 	// generate list of possible suffixes
-	$usr_units = $_SESSION['ldap']->search_units($_SESSION["config"]->get_UserSuffix());
+	$units = $_SESSION['ldap']->search_units($_SESSION["config"]->get_UserSuffix());
 }
 
 // print combobox with possible sub-DNs
-if (sizeof($usr_units) > 1) {
-	echo ("<p align=\"left\">\n");
-	echo ("<b>" . _("Suffix") . ": </b>");
-	echo ("<select size=1 name=\"usr_suffix\">\n");
-	for ($i = 0; $i < sizeof($usr_units); $i++) {
-		if ($usr_suffix == $usr_units[$i]) echo ("<option selected>" . $usr_units[$i] . "</option>\n");
-		else echo("<option>" . $usr_units[$i] . "</option>\n");
-	}
-	echo ("</select>\n");
-	echo ("<input type=\"submit\" name=\"refresh\" value=\"" . _("Change Suffix") . "\">");
-	echo ("</p>\n");
-}
+listShowOUSelection($units, $suffix);
 
 // show translate GID to group name box if there is a column with gidnumber
 if (in_array("gidnumber", $attr_array)) {
@@ -311,12 +299,12 @@ echo ("<p>&nbsp;</p>\n");
 
 // new/delete/PDF buttons
 echo ("<input type=\"submit\" name=\"new\" value=\"" . _("New user") . "\">\n");
-if ($user_count != 0) {
+if (sizeof($info) != 0) {
 	echo ("<input type=\"submit\" name=\"del\" value=\"" . _("Delete user(s)") . "\">\n");
 	echo ("<br><br><br>\n");
 	echo "<fieldset><legend><b>PDF</b></legend>\n";
 	echo ("<b>" . _('PDF structure') . ":</b>&nbsp;&nbsp;<select name=\"pdf_structure\">\n");
-	$pdf_structures = getAvailablePDFStructures('user');
+	$pdf_structures = getAvailablePDFStructures($scope);
 	foreach($pdf_structures as $pdf_structure) {
 		echo "<option value=\"" . $pdf_structure . "\"" . (($pdf_structure == 'default.xml') ? " selected" : "") . ">" . substr($pdf_structure,0,strlen($pdf_structure)-4) . "</option>";
 	}
@@ -334,7 +322,7 @@ echo "</body></html>\n";
 
 
 // save variables to session
-$_SESSION['usr_units'] = $usr_units;
-$_SESSION['usr_suffix'] = $usr_suffix;
+$_SESSION[$scope . '_units'] = $units;
+$_SESSION[$scope . '_suffix'] = $suffix;
 
 ?>

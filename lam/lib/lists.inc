@@ -336,5 +336,59 @@ function listGetAttributeHostArray() {
 		);
 }
 
+/**
+* Prints a combobox with possible sub-DNs.
+*
+* @param array $units list of OUs
+* @param string $suffix current LDAP suffix
+*/
+function listShowOUSelection($units, $suffix) {
+	if (sizeof($units) > 1) {
+		echo ("<p align=\"left\">\n");
+		echo ("<b>" . _("Suffix") . ": </b>");
+		echo ("<select size=1 name=\"suffix\">\n");
+		for ($i = 0; $i < sizeof($units); $i++) {
+			if ($suffix == $units[$i]) echo ("<option selected>" . $units[$i] . "</option>\n");
+			else echo("<option>" . $units[$i] . "</option>\n");
+		}
+		echo ("</select>\n");
+		echo ("<input type=\"submit\" name=\"refresh\" value=\"" . _("Change suffix") . "\">");
+		echo ("</p>\n");
+	}
+}
+
+/**
+* Prints JavaScript code needed for mouse-over effects.
+*/
+function listPrintJavaScript() {
+	echo "<script type=\"text/javascript\" language=\"javascript\">\n";
+	echo "<!--\n";
+	// mouseOver function
+	echo "function list_over(list, box, scope) {\n";
+		echo "cbox = document.getElementsByName(box)[0];\n";
+		echo "if (cbox.checked == false) list.setAttribute('class', scope + 'list-over', 0);\n";
+	echo "}";
+	
+	// mouseOut function
+	echo "function list_out(list, box, scope) {\n";
+		echo "cbox = document.getElementsByName(box)[0];\n";
+		echo "if (cbox.checked == false) list.setAttribute('class', scope + 'list', 0);\n";
+	echo "}\n";
+	
+	// onClick function
+	echo "function list_click(list, box, scope) {\n";
+		echo "cbox = document.getElementsByName(box)[0];\n";
+		echo "if (cbox.checked == true) {\n";
+			echo "cbox.checked = false;\n";
+			echo "list.setAttribute('class', scope + 'list-over', 0);\n";
+		echo "}\n";
+		echo "else {\n";
+			echo "cbox.checked = true;\n";
+			echo "list.setAttribute('class', scope + 'list-checked', 0);\n";
+		echo "}\n";
+	echo "}\n";
+	echo "//-->\n";
+	echo "</script>\n";
+}
 
 ?>

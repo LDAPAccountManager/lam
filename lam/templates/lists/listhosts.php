@@ -55,7 +55,7 @@ $scope = 'host';
 $_POST = $_POST + $_GET;
 
 $info = $_SESSION[$scope . 'info'];
-$hst_units = $_SESSION['hst_units'];
+$units = $_SESSION[$scope . '_units'];
 
 listDoPost($scope);
 
@@ -63,7 +63,8 @@ echo $_SESSION['header'];
 echo "<title>listhosts</title>\n";
 echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
 echo "</head><body>\n";
-echo "<script src=\"../../lib/functions.js\" type=\"text/javascript\" language=\"javascript\"></script>\n";
+
+listPrintJavaScript();
 
 // generate attribute-description table
 $attr_array = array();	// list of LDAP attributes to show
@@ -105,9 +106,9 @@ if (isset($_GET["sort"])) $sort = $_GET["sort"];
 else $sort = strtolower($attr_array[0]);
 
 // check search suffix
-if ($_POST['hst_suffix']) $hst_suffix = $_POST['hst_suffix'];  // new suffix selected via combobox
-elseif ($_SESSION['hst_suffix']) $hst_suffix = $_SESSION['hst_suffix'];  // old suffix from session
-else $hst_suffix = $_SESSION["config"]->get_HostSuffix();  // default suffix
+if ($_POST['suffix']) $suffix = $_POST['suffix'];  // new suffix selected via combobox
+elseif ($_SESSION[$scope . '_suffix']) $suffix = $_SESSION[$scope . '_suffix'];  // old suffix from session
+else $suffix = $_SESSION["config"]->get_HostSuffix();  // default suffix
 
 $refresh = true;
 if (isset($_GET['norefresh'])) $refresh = false;
@@ -118,7 +119,7 @@ if ($refresh) {
 	$module_filter = get_ldap_filter("host");  // basic filter is provided by modules
 	$filter = "(&" . $module_filter  . ")";
 	$attrs = $attr_array;
-	$sr = @ldap_search($_SESSION["ldap"]->server(), $hst_suffix, $filter, $attrs);
+	$sr = @ldap_search($_SESSION["ldap"]->server(), $suffix, $filter, $attrs);
 	if (ldap_errno($_SESSION["ldap"]->server()) == 4) {
 		StatusMessage("WARN", _("LDAP sizelimit exceeded, not all entries are shown."), _("See README.openldap.txt to solve this problem."));
 	}
@@ -178,16 +179,16 @@ else $table_end = ($page * $max_page_entries);
 if (sizeof($info) > 0) {
 	// print host list
 	for ($i = $table_begin; $i < $table_end; $i++) {
-		echo("<tr class=\"hostlist\" onMouseOver=\"host_over(this, '" . $i . "')\"" .
-									" onMouseOut=\"host_out(this, '" . $i . "')\"" .
-									" onClick=\"host_click(this, '" . $i . "')\"" .
+		echo("<tr class=\"hostlist\" onMouseOver=\"list_over(this, '" . $i . "', '" . $scope . "')\"" .
+									" onMouseOut=\"list_out(this, '" . $i . "', '" . $scope . "')\"" .
+									" onClick=\"list_click(this, '" . $i . "', '" . $scope . "')\"" .
 									" onDblClick=\"parent.frames[1].location.href='../account/edit.php?type=host&amp;DN=" . $info[$i]['dn'] . "'\">");
 		if (isset($_GET['selectall'])) {
-		echo " <td height=22 align=\"center\"><input onClick=\"host_click(this, '" . $i . "')\"" .
+		echo " <td height=22 align=\"center\"><input onClick=\"list_click(this, '" . $i . "', '" . $scope . "')\"" .
 					" type=\"checkbox\" checked name=\"" . $i . "\"></td>";
 		}
 		else {
-		echo " <td height=22 align=\"center\"><input onClick=\"host_click(this, '" . $i . "')\"" .
+		echo " <td height=22 align=\"center\"><input onClick=\"list_click(this, '" . $i . "', '" . $scope . "')\"" .
 					" type=\"checkbox\" name=\"" . $i . "\"></td>";
 		}
 		echo (" <td align='center'><a href=\"../account/edit.php?type=host&amp;DN='" . $info[$i]['dn'] . "'\">" . _("Edit") . "</a></td>");
@@ -229,23 +230,11 @@ echo ("<br>\n");
 
 if ($refresh) {
 	// generate list of possible suffixes
-	$hst_units = $_SESSION['ldap']->search_units($_SESSION["config"]->get_HostSuffix());
+	$units = $_SESSION['ldap']->search_units($_SESSION["config"]->get_HostSuffix());
 }
 
 // print combobox with possible sub-DNs
-if (sizeof($hst_units) > 1) {
-echo ("<p align=\"left\">\n");
-echo ("<b>" . _("Suffix") . ": </b>");
-echo ("<select size=1 name=\"hst_suffix\">\n");
-for ($i = 0; $i < sizeof($hst_units); $i++) {
-	if ($hst_suffix == $hst_units[$i]) echo ("<option selected>" . $hst_units[$i] . "</option>\n");
-	else echo("<option>" . $hst_units[$i] . "</option>\n");
-}
-echo ("</select>\n");
-echo ("<input type=\"submit\" name=\"refresh\" value=\"" . _("Change Suffix") . "\">");
-echo ("</p>\n");
-echo ("<p>&nbsp;</p>\n");
-}
+listShowOUSelection($units, $suffix);
 
 // add/delete/PDF buttons
 echo ("<input type=\"submit\" name=\"new\" value=\"" . _("New Host") . "\">\n");
@@ -269,7 +258,7 @@ echo ("</form>\n");
 echo "</body></html>\n";
 
 // save variables to session
-$_SESSION['hst_units'] = $hst_units;
-$_SESSION['hst_suffix'] = $hst_suffix;
+$_SESSION[$scope . '_units'] = $units;
+$_SESSION[$scope . '_suffix'] = $suffix;
 
 ?>

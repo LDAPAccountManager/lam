@@ -51,17 +51,17 @@ $scope = 'domain';
 $_POST = $_POST + $_GET;
 
 $info = $_SESSION[$scope . 'info'];
-$dom_units = $_SESSION['dom_units'];
+$units = $_SESSION[$scope . '_units'];
 
 // check if button was pressed and if we have to add/delete a domain
-if (isset($_POST['new_domain']) || isset($_POST['del_domain'])){
+if (isset($_POST['new']) || isset($_POST['del'])){
 	// add new domain
-	if (isset($_POST['new_domain'])){
+	if (isset($_POST['new'])){
 		metaRefresh("../domain.php?action=new");
 		exit;
 	}
 	// delete domain(s)
-	if (isset($_POST['del_domain'])){
+	if (isset($_POST['del'])){
 		// search for checkboxes
 		$domains = array_keys($_POST, "on");
 		$domainstr = implode(";", $domains);
@@ -76,7 +76,8 @@ echo $_SESSION['header'];
 echo "<title>listdomains</title>\n";
 echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
 echo "</head><body>\n";
-echo "<script src=\"../../lib/functions.js\" type=\"text/javascript\" language=\"javascript\"></script>\n";
+
+listPrintJavaScript();
 
 // get current page
 if (isset($_GET["page"])) $page = $_GET["page"];
@@ -103,9 +104,9 @@ if (isset($_GET["sort"])) $sort = $_GET["sort"];
 else $sort = strtolower($attr_array[0]);
 
 // check search suffix
-if (isset($_POST['dom_suffix'])) $dom_suffix = $_POST['dom_suffix'];  // new suffix selected via combobox
-elseif (isset($_SESSION['dom_suffix'])) $dom_suffix = $_SESSION['dom_suffix'];  // old suffix from session
-else $dom_suffix = $_SESSION["config"]->get_DomainSuffix();  // default suffix
+if (isset($_POST['suffix'])) $suffix = $_POST['suffix'];  // new suffix selected via combobox
+elseif (isset($_SESSION[$scope . '_suffix'])) $suffix = $_SESSION[$scope . '_suffix'];  // old suffix from session
+else $suffix = $_SESSION["config"]->get_DomainSuffix();  // default suffix
 
 $refresh = true;
 if (isset($_GET['norefresh'])) $refresh = false;
@@ -115,7 +116,7 @@ if ($refresh) {
 	// configure search filter
 	$filter = "(objectClass=sambaDomain)";
 	$attrs = $attr_array;
-	$sr = @ldap_search($_SESSION["ldap"]->server(), $dom_suffix, $filter, $attrs);
+	$sr = @ldap_search($_SESSION["ldap"]->server(), $suffix, $filter, $attrs);
 	if (ldap_errno($_SESSION["ldap"]->server()) == 4) {
 		StatusMessage("WARN", _("LDAP sizelimit exceeded, not all entries are shown."), _("See README.openldap.txt to solve this problem."));
 	}
@@ -166,11 +167,11 @@ else $table_end = ($page * $max_page_entries);
 
 // print domain list
 for ($i = $table_begin; $i < $table_end; $i++) {
-	echo("<tr class=\"domainlist\" onMouseOver=\"domain_over(this, '" . $info[$i]["dn"] . "')\"" .
-								" onMouseOut=\"domain_out(this, '" . $info[$i]["dn"] . "')\"" .
-								" onClick=\"domain_click(this, '" . $info[$i]["dn"] . "')\"" .
+	echo("<tr class=\"domainlist\" onMouseOver=\"list_over(this, '" . $info[$i]["dn"] . "', '" . $scope . "')\"" .
+								" onMouseOut=\"list_out(this, '" . $info[$i]["dn"] . "', '" . $scope . "')\"" .
+								" onClick=\"list_click(this, '" . $info[$i]["dn"] . "', '" . $scope . "')\"" .
 								" onDblClick=\"parent.frames[1].location.href='../domain.php?action=edit&amp;DN=" . $info[$i]["dn"] . "'\">" .
-								" <td height=22 align=\"center\"><input onClick=\"domain_click(this, '" . $info[$i]["dn"] . "')\" type=\"checkbox\" name=\"" . $info[$i]["dn"] . "\"></td>" .
+								" <td height=22 align=\"center\"><input onClick=\"list_click(this, '" . $info[$i]["dn"] . "', '" . $scope . "')\" type=\"checkbox\" name=\"" . $info[$i]["dn"] . "\"></td>" .
 								" <td align='center'><a href=\"../domain.php?action=edit&amp;DN='" . $info[$i]["dn"] . "'\">" . _("Edit") . "</a></td>");
 	for ($k = 0; $k < sizeof($attr_array); $k++) {
 		echo ("<td>");
@@ -197,27 +198,15 @@ echo ("<br>\n");
 
 if ($refresh) {
 	// generate list of possible suffixes
-	$dom_units = $_SESSION['ldap']->search_units($_SESSION["config"]->get_DomainSuffix());
+	$units = $_SESSION['ldap']->search_units($_SESSION["config"]->get_DomainSuffix());
 }
 
 // print combobox with possible sub-DNs
-if (sizeof($dom_units) > 1) {
-	echo ("<p align=\"left\">\n");
-	echo ("<b>" . _("Suffix") . ": </b>");
-	echo ("<select size=1 name=\"dom_suffix\">\n");
-	for ($i = 0; $i < sizeof($dom_units); $i++) {
-		if ($dom_suffix == $dom_units[$i]) echo ("<option selected>" . $dom_units[$i] . "</option>\n");
-		else echo("<option>" . $dom_units[$i] . "</option>\n");
-	}
-	echo ("</select>\n");
-	echo ("<input type=\"submit\" name=\"refresh\" value=\"" . _("Change Suffix") . "\">");
-	echo ("</p>\n");
-	echo ("<p>&nbsp;</p>\n");
-}
+listShowOUSelection($units, $suffix);
 
 echo ("<p align=\"left\">\n");
-echo ("<input type=\"submit\" name=\"new_domain\" value=\"" . _("New Domain") . "\">\n");
-if (sizeof($info) > 0) echo ("<input type=\"submit\" name=\"del_domain\" value=\"" . _("Delete Domain(s)") . "\">\n");
+echo ("<input type=\"submit\" name=\"new\" value=\"" . _("New Domain") . "\">\n");
+if (sizeof($info) > 0) echo ("<input type=\"submit\" name=\"del\" value=\"" . _("Delete Domain(s)") . "\">\n");
 echo ("</p>\n");
 
 echo ("</form>\n");
@@ -227,7 +216,7 @@ echo "</body></html>\n";
 
 // save variables to session
 $_SESSION[$scope . 'info'] = $info;
-$_SESSION['dom_units'] = $dom_units;
-$_SESSION['dom_suffix'] = $dom_suffix;
+$_SESSION[$scope . '_units'] = $units;
+$_SESSION[$scope . '_suffix'] = $suffix;
 
 ?>
