@@ -22,41 +22,50 @@ $Id$
 
   LDAP Account Manager Delete user, hosts or groups
 */
+
 include_once('../lib/ldap.inc');
 include_once('../lib/account.inc');
 include_once('../lib/config.inc');
+// start session
 session_save_path('../sess');
 @session_start();
+// set language
 setlanguage();
 
+// use references because session-vars can change in future
 $ldap_intern =& $_SESSION['ldap'];
 $header_intern =& $_SESSION['header'];
-$lamurl_intern =& $_SESSION['lamurl'];
 $config_intern =& $_SESSION['config'];
 $delete_dn =& $_SESSION['delete_dn'];
 
 
-if ($_POST['backmain']) { // back to list page
+if ($_POST['backmain']) {
+	// back to list page
 	if (isset($_SESSION['delete_dn'])) unset ($_SESSION['delete_dn']);
-	metaRefresh($lamurl_intern."templates/lists/list".$_POST['type5']."s.php");
+	metaRefresh("lists/list".$_POST['type']."s.php");
+	// stop script because we don't want to reate invalid html-code
 	die;
 	}
 
+// Print header and part of body
 echo $header_intern;
 echo '<html><head><title>';
 echo _('Delete Account');
 echo '</title>'."\n".
-	'<link rel="stylesheet" type="text/css" href="'.$lamurl_intern.'style/layout.css">'."\n".
+	'<link rel="stylesheet" type="text/css" href="../style/layout.css">'."\n".
 	'<meta http-equiv="pragma" content="no-cache">'."\n".
 	'<meta http-equiv="cache-control" content="no-cache">'."\n".
 	'</head>'."\n".
 	'<body>'."\n".
 	'<form action="delete.php" method="post">'."\n";
 
+
 if ($_GET['type']) {
-	//$DN2 = explode(";", str_replace("\'", '',$_GET['DN']));
-	echo '<input name="type5" type="hidden" value="'.$_GET['type'].'">';
+	// $_GET['type'] is true if delete.php was called from *list.php
+	// Store $_GET['type'] as $_POST['type']
+	echo '<input name="type" type="hidden" value="'.$_GET['type'].'">';
 	switch ($_GET['type']) {
+		// Select which layout and text should be displayed
 		case 'user':
 			echo "<fieldset class=\"useredit-bright\"><legend class=\"useredit-bright\"><b>";
 			echo _('Delete user(s)');
@@ -77,9 +86,12 @@ if ($_GET['type']) {
 			break;
 		}
 	echo "<br>\n";
+	// display all DNs in a tables
 	echo "<table border=0 width=\"100%\">\n";
 	foreach ($delete_dn as $dn) echo '<tr><td>'.$dn.'</td></tr>';
 	echo "</table>\n";
+
+	// Ask if lam should delete homedirs if users are deleted and lamdaemon.pl is in use
 	if (($_GET['type']== user) && $config_intern->scriptServer) {
 		echo "<br>\n";
 		echo "<table border=0>\n";
@@ -90,6 +102,7 @@ if ($_GET['type']) {
 		echo "</table>\n";
 		}
 
+	// Print buttons
 	echo "<br><table border=0>\n";
 	echo '<tr><td>'.
 		'<input name="delete_no" type="submit" value="';
@@ -100,9 +113,9 @@ if ($_GET['type']) {
 	}
 
 
-if ($_POST['delete_yes'] && !$_POST['backmain']) {
-
-	switch ($_POST['type5']) {
+if ($_POST['delete_yes']) {
+	// deletion has been confirmed.
+	switch ($_POST['type']) {
 		case 'user':
 			echo "<fieldset class=\"useredit-bright\"><legend class=\"useredit-bright\"><b>";
 			echo _('Deleting user(s)...');
@@ -119,62 +132,74 @@ if ($_POST['delete_yes'] && !$_POST['backmain']) {
 			echo "</b></legend>\n";
 			break;
 		}
+	echo '<input name="type" type="hidden" value="'.$_POST['type'].'">';
 	echo "<br><table border=0 >\n";
-	echo '<input name="type5" type="hidden" value="'.$_POST['type5'].'">';
+	// Store kind of DNs
 	foreach ($delete_dn as $dn) {
-		switch ($_POST['type5']) {
+		// Loop for every DN which should be deleted
+		switch ($_POST['type']) {
 			case 'user':
+				// Get username from DN
 				$temp=explode(',', $dn);
 				$username = str_replace('uid=', '', $temp[0]);
+
 				if ($config_intern->scriptServer) {
+					// Remove homedir if required
 					if ($_POST['f_rem_home']) remhomedir($username);
-					remquotas($username, $_POST['type5']);
+					// Remove quotas if lamdaemon.pl is used
+					if ($config_intern->scriptServer) remquotas($username, 'user');
 					}
-				$result = ldap_search($ldap_intern->server(), $config_intern->get_GroupSuffix(), 'objectClass=PosixGroup', array('memberUid'));
+				// Search for groups which have memberUid set to username
+				$result = ldap_search($ldap_intern->server(), $config_intern->get_GroupSuffix(), "(&(objectClass=PosixGroup)(memberUid=$username))", array(''));
 				$entry = ldap_first_entry($ldap_intern->server(), $result);
+				// loop for every found group and remove membership
 				while ($entry) {
-					$attr2 = ldap_get_attributes($ldap_intern->server(), $entry);
-					if ($attr2['memberUid']) {
-						array_shift($attr2['memberUid']);
-						foreach ($attr2['memberUid'] as $nam) {
-							if ($nam==$username) {
-								$todelete['memberUid'] = $nam;
-								$success = ldap_mod_del($ldap_intern->server(), ldap_get_dn($ldap_intern->server(), $entry) ,$todelete);
-								}
-							}
-						}
+					$success = ldap_mod_del($ldap_intern->server(), ldap_get_dn($ldap_intern->server(), $entry) , array('memberUid' => $username));
+					// *** fixme add error-message if memberUid couldn't be deleted
 					$entry = ldap_next_entry($ldap_intern->server(), $entry);
 					}
+				// Delete user itself
 				$success = ldap_delete($ldap_intern->server(), $dn);
 				if (!$success) $error = _('Could not delete user:').' '.$dn;
 				break;
 			case 'host':
+				// Delete host itself
 				$success = ldap_delete($ldap_intern->server(), $dn);
 				if (!$success) $error = _('Could not delete host:').' '.$dn;
 				break;
 			case 'group':
+				/* First we have to check if any user uses $group
+				* as primary group. It's not allowed to delete a
+				* group if it still contains primaty members
+				*/
 				$temp=explode(',', $dn);
 				$groupname = str_replace('cn=', '', $temp[0]);
-				$result = ldap_search($ldap_intern->server(), $dn, 'objectClass=*', array('gidNumber'));
+				// Get group GIDNumber
+				$groupgid = getgid($groupname);
+				// Search for users which have gid set to current gid
+				$result = ldap_search($ldap_intern->server(), $dn, "gidNumber=$groupgid", array(''));
 				$entry = ldap_first_entry($ldap_intern->server(), $result);
-				while ($entry) {
-					$attr2 = ldap_get_attributes($ldap_intern->server(), $entry);
-					if ($attr2['gidNumber']==getgid($groupname)) $error = _('Could not delete group. Still users in group:').' '.$dn;
-					$entry = ldap_next_entry($ldap_intern->server(), $entry);
-					}
-				if (!$error) {
-					if ($config_intern->scriptServer) remquotas($groupname, $_POST['type5']);
+				// Print error if still users in group
+				if ($entry) $error = _('Could not delete group. Still users in group:').' '.$dn;
+				else {
+					// continue if no primary users are in group
+					// Remove quotas if lamdaemon.pl is used
+					if ($config_intern->scriptServer) remquotas($groupname, 'group');
+					// Delete group itself
 					$success = ldap_delete($ldap_intern->server(), $dn);
 					if (!$success) $error = _('Could not delete group:').' '.$dn;
 					}
 				break;
 			}
-		if ($success && isset($_SESSION[$_POST['type5'].'DN'][$dn])) unset($_SESSION[$_POST['type5'].'DN'][$dn]);
+		// Remove DNs from cache-array
+		if ($success && isset($_SESSION[$_POST['type'].'DN'][$dn])) unset($_SESSION[$_POST['type'].'DN'][$dn]);
+		// Display success or error-message
 		if (!$error) echo "<tr><td><b>$dn ". _('deleted').".</b></td></tr>\n";
 		 else echo "<tr><td><b>$error</b></td></tr>\n";
 		}
 	echo "</table><br>\n";
-	switch ($_POST['type5']) {
+	switch ($_POST['type']) {
+		// Select which page should be displayd if back-button will be pressed
 		case 'user':
 			echo '<input name="backmain" type="submit" value="'; echo _('Back to user list'); echo '">';
 			break;
@@ -185,11 +210,13 @@ if ($_POST['delete_yes'] && !$_POST['backmain']) {
 			echo '<input name="backmain" type="submit" value="'; echo _('Back to host list'); echo '">';
 			break;
 		}
-	echo "</fieldset>\n";
+	echo "<br></fieldset>\n";
 	}
 
 if ($_POST['delete_no']) {
-	switch ($_POST['type5']) {
+	// Delete no accounts
+	switch ($_POST['type']) {
+		// Select which page should be displayd if back-button will be pressed
 		case 'user':
 			echo "<fieldset class=\"useredit-bright\"><legend class=\"useredit-bright\"><b>";
 			echo _('Deleting user(s) canceled.');
@@ -197,7 +224,6 @@ if ($_POST['delete_no']) {
 			echo _('No user(s) were deleted');
 			echo "<br>";
 			echo '<input name="backmain" type="submit" value="'; echo _('Back to user list'); echo '">';
-			echo "</fieldset>\n";
 			break;
 		case 'host':
 			echo "<fieldset class=\"hostedit-bright\"><legend class=\"hostedit-bright\"><b>";
@@ -206,7 +232,6 @@ if ($_POST['delete_no']) {
 			echo _('No host(s) were deleted');
 			echo "<br>";
 			echo '<input name="backmain" type="submit" value="'; echo _('Back to host list'); echo '">';
-			echo "</fieldset>\n";
 			break;
 		case 'group':
 			echo "<fieldset class=\"groupedit-bright\"><legend class=\"groupedit-bright\"><b>";
@@ -215,10 +240,9 @@ if ($_POST['delete_no']) {
 			echo _('No group(s) were deleted');
 			echo "<br>";
 			echo '<input name="backmain" type="submit" value="'; echo _('Back to group list'); echo '">';
-			echo "</fieldset>\n";
 			break;
 		}
-
+	echo "<br></fieldset>\n";
 	}
 
 echo '</form></body></html>'."\n";

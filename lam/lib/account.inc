@@ -69,10 +69,11 @@ class account {
 	var $smb_mapgroup;		// decimal ID for groups
 	var $smb_displayName;		// string, description, similar to gecos-field.
 	// Quota Settins
-	var $quota;			// array[][] First array is an index for every chare with active quotas
-					// second array Contains values for every share:
-					// mountpoint, used blocks, soft block limit, hard block limit, grace block period, used inodes,
-					// soft inode limit, hard inode limit, grace inode period
+	var $quota;			/* array[][] First array is an index for every chare with active quotas
+					* second array Contains values for every share:
+					* mountpoint, used blocks, soft block limit, hard block limit, grace block period, used inodes,
+					* soft inode limit, hard inode limit, grace inode period
+					*/
 	// Personal Settings
 	var $personal_title;		// string title of user
 	var $personal_mail;		// string mailaddress of user
@@ -515,6 +516,37 @@ function getgid($groupname) {
 	return -1;
 	}
 
+/* This function will return the groupname to an existing gidNumber
+* groupnames are taken from cache-array
+*/
+function getgrnam($gidNumber) {
+	// Validate cache-array
+	ldapreload('group');
+	// Get copy of cache-array
+	$groupDN_local = $_SESSION['groupDN'];
+	// Remove timestamp stored in [0]
+	unset ($groupDN_local[0]);
+	// Now we only have an array with DNs
+	$groupDN_local = array_keys($groupDN_local);
+	$i=0;
+	// Loop until we've found the right uidNumber
+	while (!isset($return) && isset($_SESSION['groupDN'][$groupDN_local[$i]]['uidNumber'])) {
+		if ($_SESSION['groupDN'][$groupDN_local[$i]]['uidNumber'] == $gidNumber) {
+			// We've found the correct entry. Now we need the groupname
+			// Get end position (',')
+			$end = strpos($groupDN_local[$i], ',');
+			// start position is allways 3 (cn=...)
+			// Get groupname from dn
+			$return = substr($groupDN_local[$i], 3, $end-3);
+			}
+		// Increase loop-variable if entry wasn't found
+		else $i++;
+		}
+	// Set $return to -1 if no group was found
+	if (!isset($return)) $return = -1;
+	return $return;
+	}
+
 
 /* This function will return an unuesed id-number if $values->general_uidNumber is not set and $values_old is false
 * If values_old is true and $values->general_uidNumber is not set the original id-number is returned
@@ -525,6 +557,16 @@ function getgid($groupname) {
 */
 function checkid($values, $values_old=false) {
 	switch ($values->type) {
+		case 'group':
+			// Validate cache-array
+			ldapreload('group');
+			// Load all needed variables from session
+			$minID = intval($_SESSION['config']->get_MinGID());
+			$maxID = intval($_SESSION['config']->get_MaxGID());
+			$suffix = $_SESSION['config']->get_GroupSuffix();
+			// Get copy of cache-array
+			$temp = $_SESSION['groupDN'];
+			break;
 		case 'user':
 			/* Validate cache-array
 			* Because users and hosts are using the same id-numbers we have to merge
@@ -545,16 +587,6 @@ function checkid($values, $values_old=false) {
 			 foreach ($temp as $key) $uids[] = $key['uidNumber'];
 			$temp = $_SESSION['hostDN'];
 			break;
-		case 'group':
-			// Validate cache-array
-			ldapreload('group');
-			// Load all needed variables from session
-			$minID = intval($_SESSION['config']->get_MinGID());
-			$maxID = intval($_SESSION['config']->get_MaxGID());
-			$suffix = $_SESSION['config']->get_GroupSuffix();
-			// Get copy of cache-array
-			$temp = $_SESSION['groupDN'];
-			break;
 		case 'host':
 			/* Validate cache-array
 			* Because users and hosts are using the same id-numbers we have to merge
@@ -563,8 +595,8 @@ function checkid($values, $values_old=false) {
 			ldapreload('user');
 			ldapreload('host');
 			// Load all needed variables from session
-			$minID = intval($_SESSION['config']->get_minUID());
-			$maxID = intval($_SESSION['config']->get_maxUID());
+			$minID = intval($_SESSION['config']->get_minMachine());
+			$maxID = intval($_SESSION['config']->get_maxMachine());
 			$suffix = $_SESSION['config']->get_UserSuffix();
 			// load and merge arrays
 
@@ -591,10 +623,10 @@ function checkid($values, $values_old=false) {
 				// There are some uids
 				// Store highest id-number
 				$id = $uids[count($uids)-1];
-				// Return higesht used id-number + 1 if it's still in valid range
-				if ($id < $maxID) return intval($id)+1;
 				// Return minimum allowed id-number if all found id-numbers are too low
 				if ($id < $minID) return intval($minID);
+				// Return higesht used id-number + 1 if it's still in valid range
+				if ($id < $maxID) return intval($id)+1;
 				/* If this function is still running we have to fid a free id-number between
 				* the used id-numbers
 				*/
@@ -655,7 +687,7 @@ function smbflag($values) {
 	}
 
 
-/* This function will load all needed values from an existing account
+/* This function will load all needed values from an existing user account
 * $dn is the dn(string) of the user which should be loaded
 * return-value is an account-object
 */
@@ -681,28 +713,7 @@ function loaduser($dn) {
 	if (isset($attr['gecos'][0])) $return->general_gecos = utf8_decode($attr['gecos'][0]);
 
 	// get groupname
-	// Validate cache-array
-	ldapreload('group');
-	// Get copy of cache-array
-	$groupDN_local = $_SESSION['groupDN'];
-	// Remove timestamp stored in [0]
-	unset ($groupDN_local[0]);
-	// Now we only have an array with DNs
-	$groupDN_local = array_keys($groupDN_local);
-	$i=0;
-	// Loop until we've found the right uidNumber
-	while (!isset($return->general_group) && isset($_SESSION['groupDN'][$groupDN_local[$i]]['uidNumber'])) {
-		if ($_SESSION['groupDN'][$groupDN_local[$i]]['uidNumber'] == $attr['gidNumber'][0]) {
-			// We've found the correct entry. Now we need the groupname
-			// Get end position (',')
-			$end = strpos($groupDN_local[$i], ',');
-			// start position is allways 3 (cn=...)
-			// Get groupname from dn
-			$return->general_group = substr($groupDN_local[$i], 3, $end-3);
-			}
-		// Increase loop-variable if entry wasn't found
-		else $i++;
-		}
+	$return->general_group = getgrnam($attr['gidNumber'][0]);
 
 	// get all additional groupmemberships
 	// load all groups which have memberUid set to the username which should be loaded
@@ -756,7 +767,7 @@ function loaduser($dn) {
 
 	if (isset($attr['userPassword'][0])) {
 		$return->unix_password = $attr['userPassword'][0];
-		$return->unix_deactivated=pwd_is_enabled($attr['userPassword'][0]);
+		$return->unix_deactivated=!pwd_is_enabled($attr['userPassword'][0]);
 		}
 	if (isset($attr['displayName'][0])) $return->smb_displayName = utf8_decode($attr['displayName'][0]);
 
@@ -785,16 +796,14 @@ function loaduser($dn) {
 				// store smb_domain as samba3domain-Object
 				$samba3domains = $_SESSION['ldap']->search_domains($_SESSION[config]->get_domainSuffix());
 				$i=0;
-				while ($i!=-1) {
-					if ($attr['sambaDomainName'][0] == $samba3domains[$i]->name) {
+				while (!isset($return->smb_domain) && (count($samba3domains)-1<$i)) {
+					if ($attr['sambaDomainName'][0] == $samba3domains[$i]->name)
 						$return->smb_domain = $samba3domains[$i];
-						$i = -1;
-						}
 					else $i++;
 					}
 				}
 			// store smb_domain as string
-			else $return->smb_domain = $attr['sambaDomainName'];
+			if (!isset($return->smb_domain)) $return->smb_domain = $attr['sambaDomainName'];
 			}
 		if (isset($attr['sambaPrimaryGroupSID'][0])) {
 			if ($_SESSION['config']->samba3=='yes')
@@ -810,6 +819,7 @@ function loaduser($dn) {
 	// sambaSamAccount (Samba2.2) is used.
 	if (in_array('sambaAccount', $attr['objectClass'])) {
 		if (isset($attr['acctFlags'][0])) {
+			// a user is no workstation
 			$return->smb_flagsW=false;
 			if (strrpos($attr['acctFlags'][0], 'D')) $return->smb_flagsD=true;
 			if (strrpos($attr['acctFlags'][0], 'X')) $return->smb_flagsX=true;
@@ -826,11 +836,15 @@ function loaduser($dn) {
 			if ($_SESSION['config']->samba3=='yes') {
 				// store smb_domain as samba3domain-Object
 				$samba3domains = $_SESSION['ldap']->search_domains($_SESSION[config]->get_domainSuffix());
-				for ($i=0; $i<sizeof($samba3domains); $i++)
-					if ($attr['domain'][0] == $samba3domains[$i]->name) $return->smb_domain = $samba3domains[$i];
+				$i=0;
+				while (!isset($return->smb_domain) && (count($samba3domains)-1<$i)) {
+					if ($attr['domain'][0] == $samba3domains[$i]->name)
+						$return->smb_domain = $samba3domains[$i];
+					else $i++;
+					}
 				}
-				// store smb_domain as string
-			else $return->smb_domain = $attr['domain'][0];
+			// store smb_domain as string
+			if (!isset($return->smb_domain)) $return->smb_domain = $attr['domain'];
 			}
 		if (isset($attr['primaryGroupID'][0])) {
 			if ($_SESSION['config']->samba3=='yes')
@@ -845,83 +859,99 @@ function loaduser($dn) {
 
 
 
-function loadhost($dn) { // Will load all needed values from an existing account
+/* This function will load all needed values from an existing host account
+* $dn is the dn(string) of the host which should be loaded
+* return-value is an account-object
+*/
+function loadhost($dn) {
+	// Create new object
 	$return = new account();
+	// Set type of account
 	$return->type='host';
+	// Load hostattributes from ldap
 	$result = ldap_search($_SESSION['ldap']->server(), $dn, "objectclass=PosixAccount");
 	$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 	$return->general_dn = (ldap_get_dn($_SESSION['ldap']->server(), $entry));
 	$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
+
+	// load objectclasses
 	$i=0;
 	while (isset($attr['objectClass'][$i])) {
 		$return->general_objectClass[$i] = $attr['objectClass'][$i];
 		$i++;
 		}
-	if (isset($attr['uid'][0])) $return->general_username = $attr['uid'][0];
-	if (isset($attr['uidNumber'][0])) $return->general_uidNumber = $attr['uidNumber'][0];
+
+	$return->general_username = $attr['uid'][0];
+	$return->general_uidNumber = $attr['uidNumber'][0];
 	if (isset($attr['gecos'][0])) $return->general_gecos = utf8_decode($attr['gecos'][0]);
 	if (isset($attr['displayName'][0])) $return->smb_displayName = utf8_decode($attr['displayName'][0]);
-	if (isset($attr['userPassword'][0])) {
-		$return->unix_password = $attr['userPassword'][0];
-		$return->unix_deactivated=pwd_is_enabled($attr['userPassword'][0]);
-		}
 
 	// Get Groupname
-	if (isset($attr['gidNumber'][0])) {
-		$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(), "objectclass=PosixGroup", array('gidNumber', 'cn'));
-		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
-		while ($entry) {
-			$attr2 = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
-			if ($attr2['gidNumber'][0]==$attr['gidNumber'][0]) $return->general_group = $attr2['cn'][0];
-			$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
-			}
-		}
+	$return->general_group = getgrnam($attr['gidNumber'][0]);
 
-	if (isset($attr['displayName'][0])) $return->smb_displayName = utf8_decode($attr['displayName'][0]);
-
-	// load samba3 attributes
+	// sambaSamAccount (Samba3) is used.
 	if (in_array('sambaSamAccount', $attr['objectClass'])) {
+		/* Write attributes into $return.
+		* Some values don't have to be set. These are only loaded if they are set
+		*/
 		if (isset($attr['sambaAcctFlags'][0])) {
-			if (strrpos($attr['sambaAcctFlags'][0], 'W')) $return->smb_flagsW=true;
-			if (strrpos($attr['sambaAcctFlags'][0], 'D')) $return->smb_flagsD=true;
+			// we load a workstation
+			$return->smb_flagsW=true;
 			if (strrpos($attr['sambaAcctFlags'][0], 'X')) $return->smb_flagsX=true;
+			// Because the "D"-Flag is ignored for hosts it has been removed
 			}
 		if (isset($attr['sambaDomainName'][0])) {
 			if ($_SESSION['config']->samba3=='yes') {
+				// store smb_domain as samba3domain-Object
 				$samba3domains = $_SESSION['ldap']->search_domains($_SESSION[config]->get_domainSuffix());
-				for ($i=0; $i<sizeof($samba3domains); $i++)
-					if ($attr['sambaDomainName'][0] == $samba3domains[$i]->name) $return->smb_domain = $samba3domains[$i];
+				$i=0;
+				while (!isset($return->smb_domain) && (count($samba3domains)-1<$i)) {
+					if ($attr['sambaDomainName'][0] == $samba3domains[$i]->name)
+						$return->smb_domain = $samba3domains[$i];
+					else $i++;
+					}
 				}
-			else {
-				$return->smb_domain = $attr['sambaDomainName'];
-				}
+			// store smb_domain as string
+			if (!isset($return->smb_domain)) $return->smb_domain = $attr['sambaDomainName'];
 			}
 		if (isset($attr['sambaPrimaryGroupSID'][0])) {
 			if ($_SESSION['config']->samba3=='yes')
+				// store "real" SID if we want to save user as samba3 entry
 				$return->smb_mapgroup = $attr['sambaPrimaryGroupSID'][0];
+				// store "calculated" id if we want to save user as samba2.2 entry
 				else $return->smb_mapgroup = 2*$attr['gidNumber'][0]+1001;
 			}
 		// return value to prevent loaded values to be overwritten from old samba 2.2 attributes
 		if ($_SESSION['config']->is_samba3()) return $return;
 		}
-	// load samba 2.2 attributes
+
+	// sambaSamAccount (Samba2.2) is used.
 	if (in_array('sambaAccount', $attr['objectClass'])) {
 		if (isset($attr['acctFlags'][0])) {
-			if (strrpos($attr['acctFlags'][0], 'W')) $return->smb_flagsW=true;
-			if (strrpos($attr['acctFlags'][0], 'D')) $return->smb_flagsD=true;
+			// we load a workstation
+			$return->smb_flagsW=true;
 			if (strrpos($attr['acctFlags'][0], 'X')) $return->smb_flagsX=true;
+			// Because the "D"-Flag is ignored for hosts it has been removed
 			}
 		if (isset($attr['domain'][0])) {
 			if ($_SESSION['config']->samba3=='yes') {
+				// store smb_domain as samba3domain-Object
 				$samba3domains = $_SESSION['ldap']->search_domains($_SESSION[config]->get_domainSuffix());
-				for ($i=0; $i<sizeof($samba3domains); $i++)
-					if ($attr['domain'][0] == $samba3domains[$i]->name) $return->smb_domain = $samba3domains[$i];
+				$i=0;
+				while (!isset($return->smb_domain) && (count($samba3domains)-1<$i)) {
+					if ($attr['domain'][0] == $samba3domains[$i]->name)
+						$return->smb_domain = $samba3domains[$i];
+					else $i++;
+					}
 				}
-			else $return->smb_domain = $attr['domain'][0];
+			// store smb_domain as string
+			if (!isset($return->smb_domain)) $return->smb_domain = $attr['domain'];
 			}
 		if (isset($attr['primaryGroupID'][0])) {
 			if ($_SESSION['config']->samba3=='yes')
+				// store "real" SID if we want to save user as samba3 entry
 				$return->smb_mapgroup = $return->smb_domain->SID. '-' . (2*$attr['primaryGroupID'][0]+1);
+				// store "calculated" id if we want to save user as samba2.2 entry
 				else $return->smb_mapgroup = $attr['primaryGroupID'][0];
 			}
 		}
@@ -929,54 +959,76 @@ function loadhost($dn) { // Will load all needed values from an existing account
 	}
 
 
-function loadgroup($dn) { // Will load all needed values from an existing group
+/* This function will load all needed values from an existing group account
+* $dn is the dn(string) of the group which should be loaded
+* return-value is an account-object
+*/
+function loadgroup($dn) {
+	// Create new object
 	$return = new account();
+	// Set type of account
+	$return->type='group';
+	// Load userattributes from ldap
 	$result = ldap_search($_SESSION['ldap']->server(), $dn, "objectclass=PosixGroup");
 	$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 	$return->general_dn = (ldap_get_dn($_SESSION['ldap']->server(), $entry));
 	$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
-	// Load values into account object
+
+	/* Write attributes into $return.
+	* Some values don't have to be set. These are only loaded if they are set
+	*/
+
+	// load objectclasses
 	$i=0;
 	while (isset($attr['objectClass'][$i])) {
 		$return->general_objectClass[$i] = $attr['objectClass'][$i];
 		$i++;
 		}
+	// Load Users which are also members of group
 	$i=0;
 	while (isset($attr['memberUid'][$i])) {
 		$return->unix_memberUid[$i] = $attr['memberUid'][$i];
 		$i++;
 		}
-	if (isset($attr['gidNumber'][0])) $return->general_uidNumber = $attr['gidNumber'][0];
+
+	$return->general_uidNumber = $attr['gidNumber'][0];
+	$return->general_username = $attr['cn'][0];
 	if (isset($attr['description'][0])) $return->general_gecos = utf8_decode($attr['description'][0]);
-	if (isset($attr['cn'][0])) $return->general_username = $attr['cn'][0];
-	if (isset($attr['sambaSID'][0])) { // Samba3 Samba 2.0 don't have any objects 4 groups
+
+	if (isset($attr['sambaSID'][0])) {
+		// Samba3 Samba 2.2 don't have any objects for groups
 		$return->smb_mapgroup = $attr['sambaSID'][0];
 		if (isset($attr['displayName'][0])) $return->smb_displayName = utf8_decode($attr['displayName'][0]);
 		// extract SID from sambaSID to find domain
 		$temp = explode('-', $attr['sambaSID'][0]);
 		$SID = $temp[0].'-'.$temp[1].'-'.$temp[2].'-'.$temp[3].'-'.$temp[4].'-'.$temp[5].'-'.$temp[6];
 		$samba3domains = $_SESSION['ldap']->search_domains($_SESSION[config]->get_domainSuffix());
-		for ($i=0; $i<sizeof($samba3domains); $i++)
-			if ($SID == $samba3domains[$i]->SID) $return->smb_domain = $samba3domains[$i];
+		$i=0;
+		while (!isset($return->smb_domain) && (count($samba3domains)-1<$i)) {
+			if ($SID == $samba3domains[$i]->SID)
+				$return->smb_domain = $samba3domains[$i];
+			else $i++;
+			}
 		}
-	$return->type='group';
 	return $return;
 	}
 
 
-function createuser($values) { // Will create the LDAP-Account
-	// 2 == Account already exists at different location
-	// 1 == Account has been created
-	// 4 == Error while creating Account
-	// values stored in shadowExpire, days since 1.1.1970
-	if ($values->unix_pwdexpire) {
-		$date = $values->unix_pwdexpire / 86400 ;
-		settype($date, 'integer');
-		}
-
+/* This function will create a new user acconut in ldap
+* $values is an account-object with all attributes of the user
+* return-value is an integer
+*       1 == Account has been created
+*       2 == Account already exists at different location
+*	4 == Error while creating Account
+*/
+function createuser($values) {
+	// These Objectclasses are needed for an user account
+	$attr['objectClass'][0] = 'posixAccount';
+	$attr['objectClass'][1] = 'shadowAccount';
+	$attr['objectClass'][2] = 'inetOrgPerson';
+	// Create DN for new user account
 	$values->general_dn = 'uid=' . $values->general_username . ',' . $values->general_dn;
-
-	// decrypt password
+	// decrypt password because we don't want to store them unencrypted in session
 	$iv = base64_decode($_COOKIE["IV"]);
 	$key = base64_decode($_COOKIE["Key"]);
 	if ($values->unix_password != '') {
@@ -988,25 +1040,60 @@ function createuser($values) { // Will create the LDAP-Account
 		$values->smb_password = str_replace(chr(00), '', $values->smb_password);
 		}
 
-	// All Values need for an user-account
-	// General Objectclasses
-	$attr['objectClass'][0] = 'posixAccount';
-	$attr['objectClass'][1] = 'shadowAccount';
+	// Attributes which are required
+	$attr['cn'] = $values->general_username;
+	$attr['uid'] = $values->general_username;
+	$attr['uidNumber'] = $values->general_uidNumber;
+	$attr['gidNumber'] = getgid($values->general_group);
+	$attr['homeDirectory'] = $values->general_homedir;
+	$attr['givenName'] = utf8_encode($values->general_givenname);
+	$attr['sn'] = utf8_encode($values->general_surname);
+	// values stored in shadowExpire, days since 1.1.1970
+	$attr['shadowExpire'] =  $values->unix_pwdexpire / 86400 ;
+
+	/* Write unix attributes into $attr array
+	* Some values don't have to be set. These are only loaded if they are set
+	*/
+	$attr['loginShell'] = $values->general_shell; // posixAccount_may
+	$attr['gecos'] = utf8_encode(replace_umlaut($values->general_gecos)); // posixAccount_may
+	$attr['description'] = utf8_encode($values->general_gecos); // posixAccount_may sambaAccount_may
+	if ($values->unix_pwdminage!='') $attr['shadowMin'] = $values->unix_pwdminage; // shadowAccount_may
+	if ($values->unix_pwdmaxage!='') $attr['shadowMax'] = $values->unix_pwdmaxage; // shadowAccount_may
+	if ($values->unix_pwdwarn!='') $attr['shadowWarning'] = $values->unix_pwdwarn; // shadowAccount_may
+	if ($values->unix_pwdallowlogin!='') $attr['shadowInactive'] = $values->unix_pwdallowlogin; // shadowAccount_may
+	// Set unix password
+	$attr['shadowLastChange'] = getdays(); // shadowAccount_may
+	if ($values->unix_password_no) $values->unix_password = '';
+	if ($values->unix_deactivated) $attr['userPassword'] = pwd_hash($values->unix_password, false);
+	    else $attr['userPassword'] = pwd_hash($values->unix_password);
+
+	// explode host-string and save every allowed host as separate attribute
+	$values->unix_host = str_replace(' ', '', $values->unix_host);
+	$hosts = explode (',', $values->unix_host);
+	$i=0;
+	while(isset($hosts[$i])) {
+		if ($hosts[$i]!='') $attr['host'][$i] = $hosts[$i];
+		$i++;
+		}
+
+	// Samba attributes
 	if ($_SESSION['config']->is_samba3()) {
-		$attr['objectClass'][2] = 'sambaSamAccount';
+		// Add all attributes as samba3 objectclass
+		$attr['objectClass'][3] = 'sambaSamAccount';
 		if ($values->smb_password_no) {
+			// Don't set samba-passwords
 			$attr['sambaNTPassword'] = 'NO PASSWORD*****';
 			$attr['sambaLMPassword'] = 'NO PASSWORD*****';
-			$attr['sambaPwdLastSet'] = time(); // sambaAccount_may
 			}
 		else {
-			if (file_exists($_SESSION['lampath'].'lib/createntlm.pl')) { // masscreate.php is at a different relative path
-				$attr['sambaNTPassword'] = exec(($_SESSION['lampath'].'lib/createntlm.pl nt ' . $values->smb_password));
-				$attr['sambaLMPassword'] = exec(($_SESSION['lampath'].'lib/createntlm.pl lm ' . $values->smb_password));
-				}
-			$attr['sambaPwdLastSet'] = time(); // sambaAccount_may
+			// Set samba-passwords with external perl-script
+			$attr['sambaNTPassword'] = exec(($_SESSION['lampath'].'lib/createntlm.pl nt ' . $values->smb_password));
+			$attr['sambaLMPassword'] = exec(($_SESSION['lampath'].'lib/createntlm.pl lm ' . $values->smb_password));
 			}
+		$attr['sambaPwdLastSet'] = time();
+		// Generate SID
 		$attr['sambaSID'] = $values->smb_domain->SID . "-"  . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase); // sambaAccount_may
+
 		if ($values->smb_mapgroup!='') $attr['sambaPrimaryGroupSID'] = $values->smb_mapgroup; // sambaAccount_req
 		if ($values->smb_pwdcanchange!='') $attr['sambaPwdCanChange'] = $values->smb_pwdcanchange; // sambaAccount_may
 			else $attr['sambaPwdCanChange'] = time(); // sambaAccount_may
@@ -1022,17 +1109,20 @@ function createuser($values) { // Will create the LDAP-Account
 		if ($values->smb_domain!='') $attr['sambaDomainName'] = $values->smb_domain->name; // sambaAccount_may
 		}
 	else {
-		$attr['objectClass'][2] = 'sambaAccount';
+		// Add all attributes as samba2.2 objectclass
+		$attr['objectClass'][3] = 'sambaAccount';
 		if ($values->smb_password_no) {
+			// Don't set samba-passwords
 			$attr['ntPassword'] = 'NO PASSWORD*****';
 			$attr['lmPassword'] = 'NO PASSWORD*****';
-			$attr['pwdLastSet'] = time(); // sambaAccount_may
 			}
 		else {
+			// Set samba-passwords with external perl-script
 			$attr['ntPassword'] = exec(($_SESSION['lampath'].'lib/createntlm.pl nt ' . $values->smb_password));
 			$attr['lmPassword'] = exec(($_SESSION['lampath'].'lib/createntlm.pl lm ' . $values->smb_password));
-			$attr['pwdLastSet'] = time(); // sambaAccount_may
 			}
+		$attr['pwdLastSet'] = time();
+		// Generate pseudo SID
 		$attr['rid'] = (2 * $values->general_uidNumber + 1000); // sambaAccount_may
 		$attr['primaryGroupID'] = $values->smb_mapgroup; // sambaAccount_req
 		if ($values->smb_pwdcanchange!='') $attr['pwdCanChange'] = $values->smb_pwdcanchange; // sambaAccount_may
@@ -1049,13 +1139,9 @@ function createuser($values) { // Will create the LDAP-Account
 		if ($values->smb_smbuserworkstations!='') $attr['userWorkstations'] = $values->smb_smbuserworkstations; // sambaAccount_may
 		if ($values->smb_domain!='') $attr['domain'] = $values->smb_domain; // sambaAccount_may
 		}
-	$attr['objectClass'][3] = 'inetOrgPerson';
+	$attr['displayName'] = utf8_encode($values->smb_displayName); // sambaAccount_may
 
-	$attr['cn'] = $values->general_username; // posixAccount_req shadowAccount_req sambaAccount_may
-	$attr['uid'] = $values->general_username; // posixAccount_req
-	$attr['uidNumber'] = $values->general_uidNumber; // posixAccount_req
-	$attr['gidNumber'] = getgid($values->general_group); // posixAccount_req
-	$attr['homeDirectory'] = $values->general_homedir; // posixAccount_req
+	// personal attributes
 	if ($values->personal_title!='') $attr['title'] = utf8_encode($values->personal_title);
 	if ($values->personal_mail!='') $attr['mail'] = utf8_encode($values->personal_mail);
 	if ($values->personal_telephoneNumber!='') $attr['telephoneNumber'] = utf8_encode($values->personal_telephoneNumber);
@@ -1065,75 +1151,66 @@ function createuser($values) { // Will create the LDAP-Account
 	if ($values->personal_postalCode!='') $attr['postalCode'] = utf8_encode($values->personal_postalCode);
 	if ($values->personal_postalAddress!='') $attr['postalAddress'] = utf8_encode($values->personal_postalAddress);
 	if ($values->personal_employeeType!='') $attr['employeeType'] = utf8_encode($values->personal_employeeType);
-	// posixAccount_may shadowAccount_may
-	if ($values->unix_password_no) $values->unix_password = '';
-	if ($values->unix_deactivated) $attr['userPassword'] = pwd_hash($values->unix_password, false);
-	    else $attr['userPassword'] = pwd_hash($values->unix_password);
-	$attr['shadowLastChange'] = getdays(); // shadowAccount_may
-	$attr['loginShell'] = $values->general_shell; // posixAccount_may
-	$attr['gecos'] = utf8_encode(replace_umlaut($values->general_gecos)); // posixAccount_may
-	$attr['description'] = utf8_encode($values->general_gecos); // posixAccount_may sambaAccount_may
-	$attr['displayName'] = utf8_encode($values->smb_displayName); // sambaAccount_may
 
-	$values->unix_host = str_replace(' ', '', $values->unix_host);
-	$hosts = explode (',', $values->unix_host);
-	$i=0;
-	while(isset($hosts[$i])) {
-		if ($hosts[$i]!='') $attr['host'][$i] = $hosts[$i];
-		$i++;
-		}
-	if ($values->unix_pwdminage!='') $attr['shadowMin'] = $values->unix_pwdminage; // shadowAccount_may
-	if ($values->unix_pwdmaxage!='') $attr['shadowMax'] = $values->unix_pwdmaxage; // shadowAccount_may
-	if ($values->unix_pwdwarn!='') $attr['shadowWarning'] = $values->unix_pwdwarn; // shadowAccount_may
-	if ($values->unix_pwdallowlogin!='') $attr['shadowInactive'] = $values->unix_pwdallowlogin; // shadowAccount_may
-	if ($date) $attr['shadowExpire'] =  $date ; // shadowAccount_may
-
-	if ($values->general_givenname!='') $attr['givenName'] = utf8_encode($values->general_givenname);
-	if ($values->general_surname!='') $attr['sn'] = utf8_encode($values->general_surname);
-
+	// Create LDAP user account
 	$success = ldap_add($_SESSION['ldap']->server(),$values->general_dn, $attr);
+	// Continue if now error did ocour
 	if (!$success) return 4;
+
 	if ($_SESSION['config']->scriptServer) {
+		// lamdaemon.pl should be used
+		// Set quotas if quotas are used
 		if (is_array($values->quota)) setquotas($values);
+		// Create Homedirectory
 		addhomedir($values->general_username);
 		}
+
 	// Add User to Additional Groups
 	if ($values->general_groupadd[0])
+		// Loop for every group
 		foreach ($values->general_groupadd as $group2) {
-			$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(), "(&(objectclass=posixGroup)(cn=$group2))", array('memberUid'));
+			// Search for group in LDAP
+			$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(), "(&(objectclass=posixGroup)(cn=$group2))", array(''));
 			$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
-			$group = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
+			// Get DN
 			$dn = (ldap_get_dn($_SESSION['ldap']->server(), $entry));
-			if ($group['memberUid']) array_shift($group['memberUid']);
-			if (! @in_array($values->general_username, $group['memberUid'])) {
-				$toadd['memberUid'] = $values->general_username;
-				$success = ldap_mod_add($_SESSION['ldap']->server(), $dn, $toadd);
-				}
+			// Add user to group
+			$success = ldap_mod_add($_SESSION['ldap']->server(), $dn, array('memberUid' => $values->general_username));
 			if (!$success) return 4;
 		}
+	// Add new user to cache-array
 	if ((isset($_SESSION['userDN']))) {
 		$_SESSION['userDN'][$values->general_dn]['cn'] = $values->general_username;
 		$_SESSION['userDN'][$values->general_dn]['uidNumber'] = $values->general_uidNumber;
 		}
+	// Everything is OK, return 1
 	return 1;
 	}
 
+/* This function will modify a user acconut in ldap
+* $values and $values_old are an account-object with all
+* attributes of the user.
+* Only attributes which have changed will be written
+* return-value is an integer
+*       2 == Account already exists at different location
+*       3 == Account has been modified
+*	5 == Error while modifying Account
+*/
 function modifyuser($values,$values_old) { // Will modify the LDAP-Account
-	// 2 == Account already exists at different location
-	// 3 == Account has been modified
-	// 5 == Error while modifying Account
-	// Value stored in shadowExpire, days since 1.1.1970
-	// decrypt password
+	// Add missing objectclasses to user
+	if (!in_array('posixAccount', $values->general_objectClass)) {
+		$attr['objectClass'] = $values->general_objectClass;
+		$attr['objectClass'][] = 'posixAccount';
+		}
+	if (!in_array('shadowAccount', $values->general_objectClass)) {
+		if (!isset($attr['objectClass'])) $attr['objectClass'] = $values->general_objectClass;
+		$attr['objectClass'][] = 'shadowAccount';
+		}
+	// Create DN for new user account
+	$values->general_dn = 'uid=' . $values->general_username . ',' . $values->general_dn;
+	// decrypt password because we don't want to store them unencrypted in session
 	$iv = base64_decode($_COOKIE["IV"]);
 	$key = base64_decode($_COOKIE["Key"]);
-	if ($values->unix_pwdexpire) {
-		$date = $values->unix_pwdexpire / 86400 ;
-		settype($date, 'integer');
-		}
-	if ($values_old->unix_pwdexpire) {
-		$date_old = $values_old->unix_pwdexpire / 86400 ;
-		settype($date_old, 'integer');
-		}
 	if ($values->unix_password != '') {
 		$values->unix_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($values->unix_password), MCRYPT_MODE_ECB, $iv);
 		$values->unix_password = str_replace(chr(00), '', $values->unix_password);
@@ -1142,24 +1219,26 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 		$values->smb_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($values->smb_password), MCRYPT_MODE_ECB, $iv);
 		$values->smb_password = str_replace(chr(00), '', $values->smb_password);
 		}
-	if ($values->unix_pwdexpire_mon) {
-		$date = mktime(10,0,0, $values->unix_pwdexpire_mon, $values->unix_pwdexpire_day, $values->unix_pwdexpire_yea) / 86400 ;
-		settype($date, 'integer');
-		}
-	$values->general_dn = 'uid=' . $values->general_username . ',' . $values->general_dn;
+
+
+	// Attributes which are required
 	if ($values->general_username != $values_old->general_username) {
-		$attr['cn'] = $values->general_username; // posixAccount_req shadowAccount_req sambaAccount_may
-		$attr['uid'] = $values->general_username; // posixAccount_req
+		$attr['cn'] = $values->general_username;
+		$attr['uid'] = $values->general_username;
 		}
 	if ($values->general_uidNumber != $values_old->general_uidNumber) {
-		$attr['uidNumber'] = $values->general_uidNumber; // posixAccount_req
-		if ($_SESSION['config']->is_samba3()) $attr['sambaSid'] = $values->smb_domain->SID . "-" . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase); // sambaAccount_may
-			else $attr['rid'] = (2 * $values->general_uidNumber + 1000); // sambaAccount_may
+		$attr['uidNumber'] = $values->general_uidNumber;
+		// Because sambaSid(rid) is related to uidNumber we have to change it if uidNumbaer has changed
+		if ($_SESSION['config']->is_samba3())
+			$attr['sambaSid'] = $values->smb_domain->SID . "-" . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase);
+		else $attr['rid'] = (2 * $values->general_uidNumber + 1000);
 		}
 	if ($values->general_group != $values_old->general_group) {
-		$attr['gidNumber'] = getgid($values->general_group); // posixAccount_req
-		$change = false;
+		$attr['gidNumber'] = getgid($values->general_group);
+		// Because primaryGroup(S)ID is related to gidNumber we have to change it if gidNumber has changed
 		if ($_SESSION['config']->is_samba3()) {
+			// We use samba 3 schema
+			// Change SID only if we don't use a well known SID
 			if ($values->smb_mapgroup==$_SESSION['account']->smb_domain->SID . '-512') $found=true;
 			if ($values->smb_mapgroup==$_SESSION['account']->smb_domain->SID . '-513') $found=true;
 			if ($values->smb_mapgroup==$_SESSION['account']->smb_domain->SID . '-514') $found=true;
@@ -1167,53 +1246,155 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 				(2 * getgid($_SESSION['account']->general_group) + $values->smb_domain->RIDbase+1);
 			}
 		else {
+			// We use old samba 2.2 schema
+			// Change SID only if we don't use a well known SID
 			if ($values->smb_mapgroup== '512') $found=true;
 			if ($values->smb_mapgroup== '513') $found=true;
 			if ($values->smb_mapgroup== '514') $found=true;
 			if (!$found) $attr['primaryGroupID'] = (2 * getgid($_SESSION['account']->general_group) + 1001);
 			}
 		}
-
 	if ($values->general_homedir != $values_old->general_homedir)
-		$attr['homeDirectory'] = $values->general_homedir; // posixAccount_req
-	// posixAccount_may shadowAccount_may
+		$attr['homeDirectory'] = $values->general_homedir;
+	if ($values->general_givenname!=$values_old->general_givenname) $attr['givenName'] = utf8_encode($values->general_givenname);
+	if ($values->general_surname!=$values_old->general_surname) $attr['sn'] = utf8_encode($values->general_surname);
 
-	// Set new password
+	/* Write unix attributes into $attr array
+	* Some values don't have to be set. These are only loaded if they are set
+	*/
+	if ($values->general_shell != $values_old->general_shell)
+		$attr['loginShell'] = $values->general_shell;
+	if ($values->general_gecos != $values_old->general_gecos) {
+		$attr['gecos'] = utf8_encode(replace_umlaut($values->general_gecos));
+		$attr['description'] = utf8_encode($values->general_gecos);
+	if (($values->unix_pwdminage != $values_old->unix_pwdminage) && ($values->unix_pwdminage !=''))
+		$attr['shadowMin'] = $values->unix_pwdminage; // shadowAccount_may
+	if (($values->unix_pwdminage != $values_old->unix_pwdminage) && ($values->unix_pwdminage ==''))
+		$attr_rem['shadowMin'] = $values_old->unix_pwdminage; // shadowAccount_may
+	if (($values->unix_pwdmaxage != $values_old->unix_pwdmaxage) && ($values->unix_pwdmaxage !=''))
+		$attr['shadowMax'] = $values->unix_pwdmaxage; // shadowAccount_may
+	if (($values->unix_pwdmaxage != $values_old->unix_pwdmaxage) && ($values->unix_pwdmaxage ==''))
+		$attr_rem['shadowMax'] = $values_old->unix_pwdmaxage; // shadowAccount_may
+	if (($values->unix_pwdwarn != $values_old->unix_pwdwarn) && ($values->unix_pwdwarn !=''))
+		$attr['shadowWarning'] = $values->unix_pwdwarn; // shadowAccount_may
+	if (($values->unix_pwdwarn != $values_old->unix_pwdwarn) && ($values->general_pwdwarn ==''))
+		$attr_rem['shadowWarning'] = $values_old->unix_pwdwarn; // shadowAccount_may
+	if (($values->unix_pwdallowlogin != $values_old->unix_pwdallowlogin) && ($values->unix_pwdallowlogin !=''))
+		$attr['shadowInactive'] = $values->unix_pwdallowlogin; // shadowAccount_may
+	if (($values->unix_pwdallowlogin != $values_old->unix_pwdallowlogin) && ($values->unix_pwdallowlogin ==''))
+		$attr_rem['shadowInactive'] = $values_old->unix_pwdallowlogin; // shadowAccount_may
+		}
+	// Check if shadow expire has changed
+	if ($values->unix_pwdexpire != $values_old->unix_pwdexpire) $attr['shadowExpire'] = $values->unix_pwdexpire / 86400 ;
+	// Set unix password
 	if ($values->unix_password=='') {
+		// $values->unix_password=='' means use old password
 		if ($values->unix_deactivated != $values_old->unix_deactivated) {
+			// (de)activate password
+			// Split old password hash in {CRYPT} and password-hash
 			$i = 0;
 			while ($values_old->unix_password{$i} != '}') $i++;
 			$passwd = substr($values_old->unix_password, $i+1 );
 			$crypt = substr($values_old->unix_password, 0, $i+1 );
+			// remove trailing ! from password hash
 			if ($passwd{0} == '!') $passwd = substr($passwd, 1);
+			// Write new password
 			if ($values->unix_deactivated) $attr['userPassword'] = $crypt.'!'.$passwd;
 				else $attr['userPassword'] = $crypt.$passwd;
 			}
 		if ($values->unix_password_no) {
+			// use no password
 			if ($values->unix_deactivated) $attr['userPassword'] = pwd_hash('', false);
 				else $attr['userPassword'] = pwd_hash('');
 			$attr['shadowLastChange'] = getdays(); // shadowAccount_may
 			}
 		}
 	else {
+		// Set new password
 		if ($values->unix_password_no) $values->unix_password = '';
 		if ($values->unix_deactivated) $attr['userPassword'] = pwd_hash($values->unix_password, false);
 		else $attr['userPassword'] = pwd_hash($values->unix_password);
 		$attr['shadowLastChange'] = getdays(); // shadowAccount_may
 		}
+	// explode host-string and save every allowed host as separate attribute
+	if (($values->unix_host != $values_old->unix_host)) {
+		$values->unix_host = str_replace(' ', '', $values->unix_host);
+		$host = explode (',', $values->unix_host);
+		$values_old->unix_host = str_replace(' ', '', $values_old->unix_host);
+		$host_old = explode (',', $values_old->unix_host);
+		if ($host[0]=='') $attr_rem['host'] = $host_old;
+		 else if ($host[0]!='') $attr['host'] = $host;
+		}
 
+	// Samba attributes
 	if ($_SESSION['config']->is_samba3()) {
+		if (!in_array('sambaSamAccount', $values->general_objectClass)) {
+			// We have to convert sambaAccount Objectclass to sambaSamAccount objectclass
+			if (!isset($attr['objectClass'])) $attr['objectClass'] = $values->general_objectClass;
+			$attr['objectClass'][] = 'sambaSamAccount';
+			// unset old sambaAccount objectClass
+			for ($i=0; $i<count($attr['objectClass']); $i++)
+				if ($attr['objectClass'][$i]=='sambaAccount') unset($attr['objectClass'][$i]);
+			$attr['objectClass'] = array_values($attr['objectClass']);
+			// Set correct values for new objectclass
+			// Load old samba-values not stored in account object
+			$result = ldap_search($_SESSION['ldap']->server(), $values_old->general_dn, "objectclass=PosixAccount");
+			$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
+			$attr_old = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
+			// Add new attributed
+			if (isset($attr_old['lmPassword'][0])) $attr['sambaLMPassword'] = $attr_old['lmPassword'][0];
+			if (isset($attr_old['ntPassword'][0])) $attr['sambaNTPassword'] = $attr_old['ntPassword'][0];
+			if (isset($attr_old['pwdLastSet'][0])) $attr['sambaPwdLastSet'] = $attr_old['pwdLastSet'][0];
+			if (isset($attr_old['logonTime'][0])) $attr['sambaLogonTime'] = $attr_old['logonTime'][0];
+			if (isset($attr_old['logoffTime'][0])) $attr['sambaLogoffTime'] = $attr_old['logoffTime'][0];
+			if (isset($attr_old['kickoffTime'][0])) $attr['sambaKickoffTime'] = $attr_old['kickoffTime'][0];
+			if (isset($attr_old['pwdCanChange'][0])) $attr['sambaPwdCanChange'] = $attr_old['pwdCanChange'][0];
+			if (isset($attr_old['pwdMustChange'][0])) $attr['sambaPwdMustChange'] = $attr_old['pwdMustChange'][0];
+			if (isset($attr_old['smbHome'][0])) $attr['sambaHomePath'] = $attr_old['smbHome'][0];
+			if (isset($attr_old['homeDrive'][0])) $attr['sambaHomeDrive'] = $attr_old['homeDrive'][0];
+			if (isset($attr_old['scriptPath'][0])) $attr['sambaLogonScript'] = $attr_old['scriptPath'][0];
+			if (isset($attr_old['profilePath'][0])) $attr['sambaProfilePath'] = $attr_old['profilePath'][0];
+			if (isset($attr_old['userWorkstations'][0])) $attr['sambaUserWorkstations'] = $attr_old['userWorkstations'][0];
+			// Values used from account object
+			$attr['displayName'] = utf8_encode($values->smb_displayName); // sambaAccount_may
+			$attr['sambaAcctFlags'] = smbflag($values); // sambaAccount_may
+			$attr['sambaDomainName'] = $values->smb_domain->name; // sambaAccount_may
+			$attr['sambaSid'] = $values->smb_domain->SID . "-" . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase); // sambaAccount_may
+			$attr['sambaPrimaryGroupSID'] = $values->smb_mapgroup; // sambaAccount_req
+			// remove old attributes
+			if (in_array('sambaAccount', $attr_old['objectClass'])) $attr_rem['objectClass'] = 'sambaAccount';
+			if (isset($attr_old['lmPassword'][0])) $attr_rem['lmPassword'] = $attr_old['lmPassword'][0];
+			if (isset($attr_old['ntPassword'][0])) $attr_rem['ntPassword'] = $attr_old['ntPassword'][0];
+			if (isset($attr_old['pwdLastSet'][0])) $attr_rem['pwdLastSet'] = $attr_old['pwdLastSet'][0];
+			if (isset($attr_old['logonTime'][0])) $attr_rem['logonTime'] = $attr_old['logonTime'][0];
+			if (isset($attr_old['kickoffTime'][0])) $attr_rem['kickoffTime'] = $attr_old['kickoffTime'][0];
+			if (isset($attr_old['pwdCanChange'][0])) $attr_rem['pwdCanChange'] = $attr_old['pwdCanChange'][0];
+			if (isset($attr_old['pwdMustChange'][0])) $attr_rem['pwdMustChange'] = $attr_old['pwdMustChange'][0];
+			if (isset($attr_old['smbHome'][0])) $attr_rem['smbHome'] = $attr_old['smbHome'][0];
+			if (isset($attr_old['acctFlags'][0])) $attr_rem['acctFlags'] = $attr_old['acctFlags'][0];
+			if (isset($attr_old['homeDrive'][0])) $attr_rem['homeDrive'] = $attr_old['homeDrive'][0];
+			if (isset($attr_old['scriptPath'][0])) $attr_rem['scriptPath'] = $attr_old['scriptPath'][0];
+			if (isset($attr_old['profilePath'][0])) $attr_rem['profilePath'] = $attr_old['profilePath'][0];
+			if (isset($attr_old['userWorkstations'][0])) $attr_rem['userWorkstations'] = $attr_old['userWorkstations'][0];
+			if (isset($attr_old['primaryGroupID'][0])) $attr_rem['primaryGroupID'] = $attr_old['primaryGroupID'][0];
+			if (isset($attr_old['domain'][0])) $attr_rem['domain'] = $attr_old['domain'][0];
+			if (isset($attr_old['rid'][0])) $attr_rem['rid'] = $attr_old['rid'][0];
+			}
+		// Set all changed values
 		if ($values->smb_password_no) {
+			// use no samba Password
 			$attr['sambaNTPassword'] = 'NO PASSWORD*****';
 			$attr['sambaLMPassword'] = 'NO PASSWORD*****';
 			$attr['sambaPwdLastSet'] = time(); // sambaAccount_may
 			}
 		 else
 			if ($values->smb_password!='') {
+				// Set new samba password
 				$attr['sambaNTPassword'] = exec(($_SESSION['lampath'].'lib/createntlm.pl nt ' . $values->smb_password));
 				$attr['sambaLMPassword'] = exec(($_SESSION['lampath'].'lib/createntlm.pl lm ' . $values->smb_password));
 				$attr['sambaPwdLastSet'] = time(); // sambaAccount_may
 				}
+		// Check which Samba-Attributes have changed
 		if ($values->smb_pwdcanchange != $values_old->smb_pwdcanchange) $attr['sambaPwdCanChange'] = $values->smb_pwdcanchange; // sambaAccount_may
 		if ($values->smb_pwdmustchange != $values_old->smb_pwdmustchange) $attr['sambaPwdMustChange'] = $values->smb_pwdmustchange; // sambaAccount_may
 		if (smbflag($values) != smbflag($values_old)) $attr['sambaAcctFlags'] = smbflag($values); // sambaAccount_may
@@ -1234,17 +1415,73 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 		if ($values->smb_displayName != $values_old->smb_displayName) $attr['displayName'] = utf8_encode($values->smb_displayName); // sambaAccount_may
 		}
 	else {
+		// use old samba 2.2 objectclass
+		if (!in_array('sambaAccount', $values->general_objectClass)) {
+			// Add or convert samba attributes & object to samba 2.2
+			if (!isset($attr['objectClass'])) $attr['objectClass'] = $values->general_objectClass;
+			$attr['objectClass'][] = 'sambaAccount';
+			// unset old sambaAccount objectClass
+			for ($i=0; $i<count($attr['objectClass']); $i++)
+				if ($attr['objectClass'][$i]=='sambaSamAccount') unset($attr['objectClass'][$i]);
+			$attr['objectClass'] = array_values($attr['objectClass']);
+			// Set correct values for new objectclass
+			// Load old samba-values not stored in account object
+			$result = ldap_search($_SESSION['ldap']->server(), $values_old->general_dn, "objectclass=PosixAccount");
+			$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
+			$attr_old = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
+			if (isset($attr_old['sambaLMPassword'][0])) $attr['lmPassword'] = $attr_old['sambaLMPassword'][0];
+			if (isset($attr_old['sambaNTPassword'][0])) $attr['ntPassword'] = $attr_old['sambaNTPassword'][0];
+			if (isset($attr_old['sambaPwdLastSet'][0])) $attr['pwdLastSet'] = $attr_old['sambaPwdLastSet'][0];
+			if (isset($attr_old['sambaLogonTime'][0])) $attr['logonTime'] = $attr_old['sambaLogonTime'][0];
+			if (isset($attr_old['sambaLogoffTime'][0])) $attr['logoffTime'] = $attr_old['sambaLogoffTime'][0];
+			if (isset($attr_old['sambaKickoffTime'][0])) $attr['kickoffTime'] = $attr_old['sambaKickoffTime'][0];
+			if (isset($attr_old['sambaPwdCanChange'][0])) $attr['pwdCanChange'] = $attr_old['sambaPwdCanChange'][0];
+			if (isset($attr_old['sambaPwdMustChange'][0])) $attr['pwdMustChange'] = $attr_old['sambaPwdMustChange'][0];
+			if (isset($attr_old['sambaHomePath'][0])) $attr['smbHome'] = $attr_old['sambaHomePath'][0];
+			if (isset($attr_old['sambaHomeDrive'][0])) $attr['homeDrive'] = $attr_old['sambaHomeDrive'][0];
+			if (isset($attr_old['sambaLogonScript'][0])) $attr['scriptPath'] = $attr_old['sambaLogonScript'][0];
+			if (isset($attr_old['sambaProfilePath'][0])) $attr['profilePath'] = $attr_old['sambaProfilePath'][0];
+			if (isset($attr_old['sambaUserWorkstations'][0])) $attr['userWorkstations'] = $attr_old['sambaUserWorkstations'][0];
+			// Values used from account object
+			$attr['displayName'] = utf8_encode($values->smb_displayName); // sambaAccount_may
+			$attr['acctFlags'] = smbflag($values); // sambaAccount_may
+			if ($values->smb_domain!='') $attr['domain'] = $values->smb_domain; // sambaAccount_may
+			$attr['primaryGroupID'] = $values->smb_mapgroup; // sambaAccount_req
+			$attr['rid'] = (2 * $values->general_uidNumber + 1000); // sambaAccount_may
+			// remove old attributes
+			if (in_array('sambaSamAccount', $attr_old['objectClass'])) $attr_rem['objectClass'] = 'sambaSamAccount';
+			if (isset($attr_old['sambaLMPassword'][0])) $attr_rem['sambaLMPassword'] = $attr_old['sambaLMPassword'][0];
+			if (isset($attr_old['sambaNTPassword'][0])) $attr_rem['sambaNTPassword'] = $attr_old['sambaNTPassword'][0];
+			if (isset($attr_old['sambaPwdLastSet'][0])) $attr_rem['sambaPwdLastSet'] = $attr_old['sambaPwdLastSet'][0];
+			if (isset($attr_old['sambaLogonTime'][0])) $attr_rem['sambaLogonTime'] = $attr_old['sambaLogonTime'][0];
+			if (isset($attr_old['sambaKickoffTime'][0])) $attr_rem['sambaKickoffTime'] = $attr_old['sambaKickoffTime'][0];
+			if (isset($attr_old['sambaPwdCanChange'][0])) $attr_rem['sambaPwdCanChange'] = $attr_old['sambaPwdCanChange'][0];
+			if (isset($attr_old['sambaPwdMustChange'][0])) $attr_rem['sambaPwdMustChange'] = $attr_old['sambaPwdMustChange'][0];
+			if (isset($attr_old['sambaHomePath'][0])) $attr_rem['sambaHomePath'] = $attr_old['sambaHomePAth'][0];
+			if (isset($attr_old['sambaAcctFlags'][0])) $attr_rem['sambaAcctFlags'] = $attr_old['sambaAcctFlags'][0];
+			if (isset($attr_old['sambaHomeDrive'][0])) $attr_rem['sambaHomeDrive'] = $attr_old['sambaHomeDrive'][0];
+			if (isset($attr_old['sambaLogonScript'][0])) $attr_rem['sambaLogonScript'] = $attr_old['sambaLogonScript'][0];
+			if (isset($attr_old['sambaProfilePath'][0])) $attr_rem['sambaProfilePath'] = $attr_old['sambaProfilePath'][0];
+			if (isset($attr_old['sambaUserWorkstations'][0])) $attr_rem['sambaUserWorkstations'] = $attr_old['sambaUserWorkstations'][0];
+			if (isset($attr_old['sambaPrimaryGroupID'][0])) $attr_rem['sambaPrimaryGroupID'] = $attr_old['sambaPrimaryGroupID'][0];
+			if (isset($attr_old['sambaDomainName'][0])) $attr_rem['sambaDomainName'] = $attr_old['sambaDomainName'][0];
+			if (isset($attr_old['sambaSID'][0])) $attr_rem['sambaSID'] = $attr_old['sambaSID'][0];
+			}
+		// Set all changed values
 		if ($values->smb_password_no) {
+			// use no samba Password
 			$attr['ntPassword'] = 'NO PASSWORD*****';
 			$attr['lmPassword'] = 'NO PASSWORD*****';
-			$attr['pwdLastSet'] = time(); // sambaAccount_may
+			$attr['pwdLastSet'] = time();
 			}
 		 else
 			if ($values->smb_password!='') {
+				// Set new samba password
 				$attr['ntPassword'] = exec(($_SESSION['lampath'].'lib/createntlm.pl nt ' . $values->smb_password));
 				$attr['lmPassword'] = exec(($_SESSION['lampath'].'lib/createntlm.pl lm ' . $values->smb_password));
 				$attr['pwdLastSet'] = time(); // sambaAccount_may
 				}
+		// Check which Samba-Attributes have changed
 		if ($values->smb_pwdcanchange != $values_old->smb_pwdcanchange) $attr['pwdCanChange'] = $values->smb_pwdcanchange; // sambaAccount_may
 		if ($values->smb_pwdmustchange != $values_old->smb_pwdmustchange) $attr['pwdMustChange'] = $values->smb_pwdmustchange; // sambaAccount_may
 		if (smbflag($values) != smbflag($values_old)) $attr['acctFlags'] = smbflag($values); // sambaAccount_may
@@ -1265,40 +1502,7 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 		if ($values->smb_displayName != $values_old->smb_displayName) $attr['displayName'] = utf8_encode($values->smb_displayName); // sambaAccount_may
 		}
 
-	if ($values->general_shell != $values_old->general_shell)
-		$attr['loginShell'] = $values->general_shell; // posixAccount_may
-	if ($values->general_gecos != $values_old->general_gecos) {
-		$attr['gecos'] = utf8_encode(replace_umlaut($values->general_gecos)); // posixAccount_may
-		$attr['description'] = utf8_encode($values->general_gecos); // posixAccount_may sambaAccount_may
-		}
-
-	if (($values->unix_host != $values_old->unix_host)) {
-		$values->unix_host = str_replace(' ', '', $values->unix_host);
-		$host = explode (',', $values->unix_host);
-		$values_old->unix_host = str_replace(' ', '', $values_old->unix_host);
-		$host_old = explode (',', $values_old->unix_host);
-		if ($host[0]=='') $attr_rem['host'] = $host_old;
-		 else if ($host[0]!='') $attr['host'] = $host;
-		}
-
-	if (($values->unix_pwdminage != $values_old->unix_pwdminage) && ($values->unix_pwdminage !=''))
-		$attr['shadowMin'] = $values->unix_pwdminage; // shadowAccount_may
-	if (($values->unix_pwdminage != $values_old->unix_pwdminage) && ($values->unix_pwdminage ==''))
-		$attr_rem['shadowMin'] = $values_old->unix_pwdminage; // shadowAccount_may
-	if (($values->unix_pwdmaxage != $values_old->unix_pwdmaxage) && ($values->unix_pwdmaxage !=''))
-		$attr['shadowMax'] = $values->unix_pwdmaxage; // shadowAccount_may
-	if (($values->unix_pwdmaxage != $values_old->unix_pwdmaxage) && ($values->unix_pwdmaxage ==''))
-		$attr_rem['shadowMax'] = $values_old->unix_pwdmaxage; // shadowAccount_may
-	if (($values->unix_pwdwarn != $values_old->unix_pwdwarn) && ($values->unix_pwdwarn !=''))
-		$attr['shadowWarning'] = $values->unix_pwdwarn; // shadowAccount_may
-	if (($values->unix_pwdwarn != $values_old->unix_pwdwarn) && ($values->general_pwdwarn ==''))
-		$attr_rem['shadowWarning'] = $values_old->unix_pwdwarn; // shadowAccount_may
-	if (($values->unix_pwdallowlogin != $values_old->unix_pwdallowlogin) && ($values->unix_pwdallowlogin !=''))
-		$attr['shadowInactive'] = $values->unix_pwdallowlogin; // shadowAccount_may
-	if (($values->unix_pwdallowlogin != $values_old->unix_pwdallowlogin) && ($values->unix_pwdallowlogin ==''))
-		$attr_rem['shadowInactive'] = $values_old->unix_pwdallowlogin; // shadowAccount_may
-	if (($date != $date_old) && $date) $attr['shadowExpire'] =  $date ; // shadowAccount_may
-	if (($date != $date_old) && !$date) $attr_rem['shadowExpire'] =  $date_old ; // shadowAccount_may
+	// Check which personal attributes have changed
 	if (($values->personal_title != $values_old->personal_title) && ($values->personal_title != ''))
 		$attr['title'] = utf8_encode($values->personal_title);
 	if (($values->personal_title != $values_old->personal_title) && ($values->personal_title == ''))
@@ -1335,187 +1539,85 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 		$attr['employeeType'] = utf8_encode($values->personal_employeeType);
 	if (($values->personal_employeeType != $values_old->personal_employeeType) && ($values->personal_employeeType==''))
 		$attr_rem['employeeType'] = utf8_encode($values_old->personal_employeeType);
-	if (($values->unix_pwdexpire_day = $date['mday']!=$values_old->unix_pwdexpire_day = $date['mday']) ||
-		($values->unix_pwdexpire_mon = $date['mon'] != $values_old->unix_pwdexpire_mon = $date['mon']) ||
-		($values->unix_pwdexpire_yea = $date['year'] != $values->unix_pwdexpire_yea = $date['year']))
-			$attr['shadowExpire'] =  $date ; // shadowAccount_may
-	if ($values->general_givenname!=$values_old->general_givenname) $attr['givenName'] = utf8_encode($values->general_givenname);
-	if ($values->general_surname!=$values_old->general_surname) $attr['sn'] = utf8_encode($values->general_surname);
-
-	// Add missing objectclasses to group
-	if (!in_array('posixAccount', $values->general_objectClass)) {
-		$attr['objectClass'] = $values->general_objectClass;
-		$attr['objectClass'][] = 'posixAccount';
-		}
-	if (!in_array('shadowAccount', $values->general_objectClass)) {
-		if (!isset($attr['objectClass'])) $attr['objectClass'] = $values->general_objectClass;
-		$attr['objectClass'][] = 'shadowAccount';
-		}
-
-
-	// Add or convert samba attributes & object to samba 3
-	if (($_SESSION['config']->is_samba3()) && (!in_array('sambaSamAccount', $values->general_objectClass))) {
-		if (!isset($attr['objectClass'])) $attr['objectClass'] = $values->general_objectClass;
-		$attr['objectClass'][] = 'sambaSamAccount';
-		// unset old sambaAccount objectClass
-		for ($i=0; $i<count($attr['objectClass']); $i++)
-			if ($attr['objectClass'][$i]=='sambaAccount') unset($attr['objectClass'][$i]);
-		$attr['objectClass'] = array_values($attr['objectClass']);
-		// Set correct values for new objectclass
-		// Load old samba-values not stored in account object
-		$result = ldap_search($_SESSION['ldap']->server(), $dn, "objectclass=PosixAccount");
-		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
-		$return->general_dn = (ldap_get_dn($_SESSION['ldap']->server(), $entry));
-		$attr_old = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
-		if (isset($attr_old['lmPassword'][0])) $attr['sambaLMPassword'] = $attr_old['lmPassword'][0];
-		if (isset($attr_old['ntPassword'][0])) $attr['sambaNTPassword'] = $attr_old['ntPassword'][0];
-		if (isset($attr_old['pwdLastSet'][0])) $attr['sambaPwdLastSet'] = $attr_old['pwdLastSet'][0];
-		if (isset($attr_old['logonTime'][0])) $attr['sambaLogonTime'] = $attr_old['logonTime'][0];
-		if (isset($attr_old['logoffTime'][0])) $attr['sambaLogoffTime'] = $attr_old['logoffTime'][0];
-		if (isset($attr_old['kickoffTime'][0])) $attr['sambaKickoffTime'] = $attr_old['kickoffTime'][0];
-		if (isset($attr_old['pwdCanChange'][0])) $attr['sambaPwdCanChange'] = $attr_old['pwdCanChange'][0];
-		if (isset($attr_old['pwdMustChange'][0])) $attr['sambaPwdMustChange'] = $attr_old['pwdMustChange'][0];
-		if (isset($attr_old['smbHome'][0])) $attr['sambaHomePath'] = $attr_old['smbHome'][0];
-		if (isset($attr_old['homeDrive'][0])) $attr['sambaHomeDrive'] = $attr_old['homeDrive'][0];
-		if (isset($attr_old['scriptPath'][0])) $attr['sambaLogonScript'] = $attr_old['scriptPath'][0];
-		if (isset($attr_old['profilePath'][0])) $attr['sambaProfilePath'] = $attr_old['profilePath'][0];
-		if (isset($attr_old['userWorkstations'][0])) $attr['sambaUserWorkstations'] = $attr_old['userWorkstations'][0];
-		// Values used from account object
-		$attr['displayName'] = utf8_encode($values->smb_displayName); // sambaAccount_may
-		$attr['sambaAcctFlags'] = smbflag($values); // sambaAccount_may
-		$attr['sambaDomainName'] = $values->smb_domain->name; // sambaAccount_may
-		$attr['sambaSid'] = $values->smb_domain->SID . "-" . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase); // sambaAccount_may
-		$attr['sambaPrimaryGroupSID'] = $values->smb_mapgroup; // sambaAccount_req
-		// remove old attributes
-		if (in_array('sambaAccount', $attr_old['objectClass'])) $attr_rem['objectClass'] = 'sambaAccount';
-		if (isset($attr_old['lmPassword'][0])) $attr_rem['lmPassword'] = $attr_old['lmPassword'][0];
-		if (isset($attr_old['ntPassword'][0])) $attr_rem['ntPassword'] = $attr_old['ntPassword'][0];
-		if (isset($attr_old['pwdLastSet'][0])) $attr_rem['pwdLastSet'] = $attr_old['pwdLastSet'][0];
-		if (isset($attr_old['logonTime'][0])) $attr_rem['logonTime'] = $attr_old['logonTime'][0];
-		if (isset($attr_old['kickoffTime'][0])) $attr_rem['kickoffTime'] = $attr_old['kickoffTime'][0];
-		if (isset($attr_old['pwdCanChange'][0])) $attr_rem['pwdCanChange'] = $attr_old['pwdCanChange'][0];
-		if (isset($attr_old['pwdMustChange'][0])) $attr_rem['pwdMustChange'] = $attr_old['pwdMustChange'][0];
-		if (isset($attr_old['smbHome'][0])) $attr_rem['smbHome'] = $attr_old['smbHome'][0];
-		if (isset($attr_old['acctFlags'][0])) $attr_rem['acctFlags'] = $attr_old['acctFlags'][0];
-		if (isset($attr_old['homeDrive'][0])) $attr_rem['homeDrive'] = $attr_old['homeDrive'][0];
-		if (isset($attr_old['scriptPath'][0])) $attr_rem['scriptPath'] = $attr_old['scriptPath'][0];
-		if (isset($attr_old['profilePath'][0])) $attr_rem['profilePath'] = $attr_old['profilePath'][0];
-		if (isset($attr_old['userWorkstations'][0])) $attr_rem['userWorkstations'] = $attr_old['userWorkstations'][0];
-		if (isset($attr_old['primaryGroupID'][0])) $attr_rem['primaryGroupID'] = $attr_old['primaryGroupID'][0];
-		if (isset($attr_old['domain'][0])) $attr_rem['domain'] = $attr_old['domain'][0];
-		if (isset($attr_old['rid'][0])) $attr_rem['rid'] = $attr_old['rid'][0];
-		}
-
-	// Add or convert samba attributes & object to samba 2.2
-	if (($_SESSION['config']->samba3 == 'no') && (!in_array('sambaAccount', $values->general_objectClass))) {
-		if (!isset($attr['objectClass'])) $attr['objectClass'] = $values->general_objectClass;
-		$attr['objectClass'][] = 'sambaAccount';
-		// unset old sambaAccount objectClass
-		for ($i=0; $i<count($attr['objectClass']); $i++)
-			if ($attr['objectClass'][$i]=='sambaSamAccount') unset($attr['objectClass'][$i]);
-		$attr['objectClass'] = array_values($attr['objectClass']);
-		// Set correct values for new objectclass
-		// Load old samba-values not stored in account object
-		$result = ldap_search($_SESSION['ldap']->server(), $dn, "objectclass=PosixAccount");
-		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
-		$return->general_dn = (ldap_get_dn($_SESSION['ldap']->server(), $entry));
-		$attr_old = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
-		if (isset($attr_old['sambaLMPassword'][0])) $attr['lmPassword'] = $attr_old['sambaLMPassword'][0];
-		if (isset($attr_old['sambaNTPassword'][0])) $attr['ntPassword'] = $attr_old['sambaNTPassword'][0];
-		if (isset($attr_old['sambaPwdLastSet'][0])) $attr['pwdLastSet'] = $attr_old['sambaPwdLastSet'][0];
-		if (isset($attr_old['sambaLogonTime'][0])) $attr['logonTime'] = $attr_old['sambaLogonTime'][0];
-		if (isset($attr_old['sambaLogoffTime'][0])) $attr['logoffTime'] = $attr_old['sambaLogoffTime'][0];
-		if (isset($attr_old['sambaKickoffTime'][0])) $attr['kickoffTime'] = $attr_old['sambaKickoffTime'][0];
-		if (isset($attr_old['sambaPwdCanChange'][0])) $attr['pwdCanChange'] = $attr_old['sambaPwdCanChange'][0];
-		if (isset($attr_old['sambaPwdMustChange'][0])) $attr['pwdMustChange'] = $attr_old['sambaPwdMustChange'][0];
-		if (isset($attr_old['sambaHomePath'][0])) $attr['smbHome'] = $attr_old['sambaHomePath'][0];
-		if (isset($attr_old['sambaHomeDrive'][0])) $attr['homeDrive'] = $attr_old['sambaHomeDrive'][0];
-		if (isset($attr_old['sambaLogonScript'][0])) $attr['scriptPath'] = $attr_old['sambaLogonScript'][0];
-		if (isset($attr_old['sambaProfilePath'][0])) $attr['profilePath'] = $attr_old['sambaProfilePath'][0];
-		if (isset($attr_old['sambaUserWorkstations'][0])) $attr['userWorkstations'] = $attr_old['sambaUserWorkstations'][0];
-		// Values used from account object
-		$attr['displayName'] = utf8_encode($values->smb_displayName); // sambaAccount_may
-		$attr['acctFlags'] = smbflag($values); // sambaAccount_may
-		if ($values->smb_domain!='') $attr['domain'] = $values->smb_domain; // sambaAccount_may
-		$attr['primaryGroupID'] = $values->smb_mapgroup; // sambaAccount_req
-		$attr['rid'] = (2 * $values->general_uidNumber + 1000); // sambaAccount_may
-
-		// remove old attributes
-		if (in_array('sambaSamAccount', $attr_old['objectClass'])) $attr_rem['objectClass'] = 'sambaSamAccount';
-		if (isset($attr_old['sambaLMPassword'][0])) $attr_rem['sambaLMPassword'] = $attr_old['sambaLMPassword'][0];
-		if (isset($attr_old['sambaNTPassword'][0])) $attr_rem['sambaNTPassword'] = $attr_old['sambaNTPassword'][0];
-		if (isset($attr_old['sambaPwdLastSet'][0])) $attr_rem['sambaPwdLastSet'] = $attr_old['sambaPwdLastSet'][0];
-		if (isset($attr_old['sambaLogonTime'][0])) $attr_rem['sambaLogonTime'] = $attr_old['sambaLogonTime'][0];
-		if (isset($attr_old['sambaKickoffTime'][0])) $attr_rem['sambaKickoffTime'] = $attr_old['sambaKickoffTime'][0];
-		if (isset($attr_old['sambaPwdCanChange'][0])) $attr_rem['sambaPwdCanChange'] = $attr_old['sambaPwdCanChange'][0];
-		if (isset($attr_old['sambaPwdMustChange'][0])) $attr_rem['sambaPwdMustChange'] = $attr_old['sambaPwdMustChange'][0];
-		if (isset($attr_old['sambaHomePath'][0])) $attr_rem['sambaHomePath'] = $attr_old['sambaHomePAth'][0];
-		if (isset($attr_old['sambaAcctFlags'][0])) $attr_rem['sambaAcctFlags'] = $attr_old['sambaAcctFlags'][0];
-		if (isset($attr_old['sambaHomeDrive'][0])) $attr_rem['sambaHomeDrive'] = $attr_old['sambaHomeDrive'][0];
-		if (isset($attr_old['sambaLogonScript'][0])) $attr_rem['sambaLogonScript'] = $attr_old['sambaLogonScript'][0];
-		if (isset($attr_old['sambaProfilePath'][0])) $attr_rem['sambaProfilePath'] = $attr_old['sambaProfilePath'][0];
-		if (isset($attr_old['sambaUserWorkstations'][0])) $attr_rem['sambaUserWorkstations'] = $attr_old['sambaUserWorkstations'][0];
-		if (isset($attr_old['sambaPrimaryGroupID'][0])) $attr_rem['sambaPrimaryGroupID'] = $attr_old['sambaPrimaryGroupID'][0];
-		if (isset($attr_old['sambaDomainName'][0])) $attr_rem['sambaDomainName'] = $attr_old['sambaDomainName'][0];
-		if (isset($attr_old['sambaSID'][0])) $attr_rem['sambaSID'] = $attr_old['sambaSID'][0];
-		}
-
-
 
 	if ($attr_rem) {
-			$success = ldap_mod_del($_SESSION['ldap']->server(),$values_old->general_dn, $attr_rem);
-			if (!$success) return 5;
+		// Remove old attributes which are no longer in use
+		$success = ldap_mod_del($_SESSION['ldap']->server(),$values_old->general_dn, $attr_rem);
+		if (!$success) return 5;
+		}
+
+	if ($values->general_dn != $values_old->general_dn) {
+		// Account should be moved to a new location
+		// Load old account
+		$result = ldap_search($_SESSION['ldap']->server(), $values_old->general_dn, "objectclass=PosixAccount");
+		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
+		$attr_old = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
+		// remove "count" from array
+		unset($attr_old['count']);
+		for ($i=0; $i < sizeof($attr_old); $i++) unset($attr_old[$i]);
+		$keys = array_keys($attr_old);
+		for ($i=0; $i < sizeof($keys); $i++)
+			unset($attr_old[$keys[$i]]['count']);
+		// Change uid to new uid. Else ldap won't create the new entry
+		$attr_old['uid'][0] = $values->general_username;
+		// Create account at new location
+		$success = ldap_add($_SESSION['ldap']->server(),$values->general_dn, $attr_old);
+		// remove old account
+		if ($success) $success = ldap_delete($_SESSION['ldap']->server(),$values_old->general_dn);
+		if (!$success) return 5;
+		// Remove all memberUid entries. The new entries will be added again
+		// Search for groups which have memberUid set to username
+		$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(), "(&(objectClass=PosixGroup)(memberUid=$values_old->general_username))", array(''));
+		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
+		// loop for every found group and remove membership
+		while ($entry) {
+			$success = ldap_mod_del($_SESSION['ldap']->server(), ldap_get_dn($_SESSION['ldap']->server(), $entry) , array('memberUid' => $values_old->general_username));
+			// *** fixme add error-message if memberUid couldn't be deleted
+			$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
 			}
+		}
+
 	if ($attr) {
-		$success = ldap_modify($_SESSION['ldap']->server(),$values_old->general_dn, $attr);
-			if (!$success) return 5;
-			}
-	if ($values->general_dn != $values_old->general_dn) { // Username hasn't changed
-				$result = ldap_search($_SESSION['ldap']->server(), $values_old->general_dn, "objectclass=PosixAccount");
-				$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
-				$attr_old = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
-				// remove "count" from array
-				unset($attr_old['count']);
-				for ($i=0; $i < sizeof($attr_old); $i++) unset($attr_old[$i]);
-				$keys = array_keys($attr_old);
-				for ($i=0; $i < sizeof($keys); $i++)
-					unset($attr_old[$keys[$i]]['count']);
-				$success = ldap_add($_SESSION['ldap']->server(),$values->general_dn, $attr_old);
-				if ($success) $success = ldap_delete($_SESSION['ldap']->server(),$values_old->general_dn);
-				if (!$success) return 5;
-				}
-	// Write Groupmemberchips
+		// Change or add new attributes
+		$success = ldap_modify($_SESSION['ldap']->server(),$values->general_dn, $attr);
+		if (!$success) return 5;
+		}
+
+	// Write additional groupmemberchips
+	// Get a list with all groups
 	$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(), 'objectClass=PosixGroup', array('memberUid', 'cn'));
 	$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 	while ($entry) {
 		$modifygroup=0;
 		$attr2 = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
+		// Remove "count" from array
+		if (is_array($attr2['memberUid'])) array_shift($attr2['memberUid']);
+		array_shift($attr2['cn']);
 		if ($attr2['memberUid']) {
-			array_shift($attr2['memberUid']);
-			foreach ($attr2['memberUid'] as $nam) {
-				if ( ($nam==$values->general_username) && !in_array($attr2['cn'][0], $values->general_groupadd)) {
-					$todelete['memberUid'] = $nam;
-					$success = ldap_mod_del($_SESSION['ldap']->server(), ldap_get_dn($_SESSION['ldap']->server(), $entry) ,$todelete);
-					if (!$success) return 5;
-					}
+			// Remove user from groups he's not member anymore
+			if (@in_array($values->general_username, $attr2['memberUid']) && !@in_array($attr2['cn'][0],$values->general_groupadd)) {
+				$success = ldap_mod_del($_SESSION['ldap']->server(), ldap_get_dn($_SESSION['ldap']->server(), $entry) ,array('memberUid' => $values->general_username));
+				if (!$success) return 5;
 				}
-			if (!@in_array($values->general_username, $attr2['memberUid']) && @in_array($attr2['cn'][0], $values->general_groupadd) && ($attr2['cn'][0]!=$values->general_group)) {
-				$toadd['memberUid'] = $attr2['memberUid'];
-				$toadd['memberUid'][] = $values->general_username;
-				$success = ldap_mod_replace($_SESSION['ldap']->server(), ldap_get_dn($_SESSION['ldap']->server(), $entry),  $toadd);
+			// Add user to groups
+			if (!@in_array($values->general_username, $attr2['memberUid']) && @in_array($attr2['cn'][0],$values->general_groupadd)) {
+				$success = ldap_mod_add($_SESSION['ldap']->server(), ldap_get_dn($_SESSION['ldap']->server(), $entry) ,array('memberUid' => $values->general_username));
 				if (!$success) return 5;
 				}
 			}
-		 else {
-			if (in_array($attr2['cn'][0], $values->general_groupadd) && ($attr2['cn'][0]!=$values->general_group)) {
-				$toadd['memberUid'] = $values->general_username;
-				$success = ldap_mod_add($_SESSION['ldap']->server(), ldap_get_dn($_SESSION['ldap']->server(), $entry),  $toadd);
+		else {
+			// Add user to groups
+			if (@in_array($attr2['cn'][0],$values->general_groupadd)) {
+				$success = ldap_mod_add($_SESSION['ldap']->server(), ldap_get_dn($_SESSION['ldap']->server(), $entry) ,array('memberUid' => $values->general_username));
 				if (!$success) return 5;
 				}
 			}
 		$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
 		}
+
+	// Change quotas if quotas are set and lamdaemon.pl should be used
 	if ($_SESSION['config']->scriptServer && is_array($values->quota) ) setquotas($values,$values_old);
+	//make required changes in cache-array
 	if ((isset($_SESSION['userDN']))) {
 		if ($values->general_dn != $values_old->general_dn) {
 			unset ($_SESSION['userDN'][$values_old->general_dn]);
@@ -1523,28 +1625,46 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 		$_SESSION['userDN'][$values->general_dn]['cn'] = $values->general_username;
 		$_SESSION['userDN'][$values->general_dn]['uidNumber'] = $values->general_uidNumber;
 		}
+	// Return 3 if everything has worked fine
 	return 3;
 	}
 
 
-
-function createhost($values) { // Will create the LDAP-Account
-	// 2 == Account already exists at different location
-	// 1 == Account has been created
-	// 3 == Account has been modified
-	// 4 == Error while creating Account
-	// 5 == Error while modifying Account
-	// Value stored in shadowExpire, days since 1.1.1970
-
-	$values->general_dn = 'uid=' . $values->general_username . ',' . $values->general_dn;
-
-	// All Values need for an host-account
-	// General Objectclasses
+/* This function will create a new host acconut in ldap
+* $values is an account-object with all attributes of the host
+* return-value is an integer
+*       1 == Account has been created
+*       2 == Account already exists at different location
+*	4 == Error while creating Account
+*/
+function createhost($values) {
+	// These Objectclasses are needed for an host account
 	$attr['objectClass'][0] = 'posixAccount';
 	$attr['objectClass'][1] = 'shadowAccount';
+	$attr['objectClass'][2] = 'account';
+	// Create DN for new host account
+	$values->general_dn = 'uid=' . $values->general_username . ',' . $values->general_dn;
+	// Attributes which are required
+	$attr['cn'] = $values->general_username;
+	$attr['uid'] = $values->general_username;
+	$attr['uidNumber'] = $values->general_uidNumber;
+	$attr['gidNumber'] = getgid($values->general_group);
+	$attr['homeDirectory'] = "/dev/null";
 
+	/* Write unix attributes into $attr array
+	* Some values don't have to be set. These are only loaded if they are set
+	*/
+	$attr['loginShell'] = "/bin/false";
+	$attr['gecos'] = utf8_encode(replace_umlaut($values->general_gecos));
+	$attr['description'] = utf8_encode($values->general_gecos);
+	// Set unix password
+	$attr['userPassword'] = pwd_hash('');
+	$attr['shadowLastChange'] = getdays();
+
+	// Samba attributes
 	if ($_SESSION['config']->is_samba3()) {
-		$attr['objectClass'][2] = 'sambaSamAccount';
+		// Add all attributes as samba3 objectclass
+		$attr['objectClass'][3] = 'sambaSamAccount';
 		$attr['sambaNTPassword'] = 'NO PASSWORD*****';
 		$attr['sambaLMPassword'] = 'NO PASSWORD*****';
 		$attr['sambaPwdLastSet'] = time(); // sambaAccount_may
@@ -1557,7 +1677,8 @@ function createhost($values) { // Will create the LDAP-Account
 		$attr['sambaDomainName'] = $values->smb_domain->name; // sambaAccount_may
 		}
 	else {
-		$attr['objectClass'][2] = 'sambaAccount';
+		// Add all attributes as samba2.2 objectclass
+		$attr['objectClass'][3] = 'sambaAccount';
 		$attr['ntPassword'] = 'NO PASSWORD*****';
 		$attr['lmPassword'] = 'NO PASSWORD*****';
 		$attr['pwdLastSet'] = time(); // sambaAccount_may
@@ -1569,23 +1690,12 @@ function createhost($values) { // Will create the LDAP-Account
 		$attr['displayName'] = utf8_encode($values->smb_displayName); // sambaAccount_may
 		if ($values->smb_domain!='') $attr['domain'] = $values->smb_domain; // sambaAccount_may
 		}
-	$attr['objectClass'][3] = 'account';
-	$attr['cn'] = $values->general_username; // posixAccount_req shadowAccount_req sambaAccount_may
-	$attr['uid'] = $values->general_username; // posixAccount_req
-	$attr['uidNumber'] = $values->general_uidNumber; // posixAccount_req
-	$attr['gidNumber'] = getgid($values->general_group); // posixAccount_req
-	$attr['homeDirectory'] = $values->general_homedir; // posixAccount_req
 
-	if ($values->smb_flagsD) $attr['userPassword'] = pwd_hash('', false);
-	else $attr['userPassword'] = pwd_hash('');
-
-	$attr['shadowLastChange'] = getdays(); // shadowAccount_may
-	$attr['loginShell'] = $values->general_shell; // posixAccount_may
-	$attr['gecos'] = utf8_encode(replace_umlaut($values->general_gecos)); // posixAccount_may
-	$attr['description'] = utf8_encode($values->general_gecos); // posixAccount_may sambaAccount_may
-	if ($date!='') $attr['shadowExpire'] =  $date ; // shadowAccount_may
+	// Create LDAP user account
 	$success = ldap_add($_SESSION['ldap']->server(),$values->general_dn, $attr);
+	// Continue if now error did ocour
 	if (!$success) return 4;
+	// Add new host to cache-array
 	if ((isset($_SESSION['hostDN']))) {
 		$_SESSION['hostDN'][$values->general_dn]['cn'] = $values->general_username;
 		$_SESSION['hostDN'][$values->general_dn]['uidNumber'] = $values->general_uidNumber;
@@ -1593,55 +1703,17 @@ function createhost($values) { // Will create the LDAP-Account
 	return 1;
 	}
 
-function modifyhost($values,$values_old) { // Will modify the LDAP-Account
-	// 2 == Account already exists at different location
-	// 3 == Account has been modified
-	// 5 == Error while modifying Account
-	// Value stored in shadowExpire, days since 1.1.1970
-	$values->general_dn = 'uid=' . $values->general_username . ',' . $values->general_dn;
-	if ($values->general_username != $values_old->general_username) {
-		$attr['cn'] = $values->general_username; // posixAccount_req shadowAccount_req sambaAccount_may
-		$attr['uid'] = $values->general_username; // posixAccount_req
-		}
-	if ($values->general_uidNumber != $values_old->general_uidNumber) {
-		$attr['uidNumber'] = $values->general_uidNumber; // posixAccount_req
-		if ($_SESSION['config']->is_samba3()) $attr['sambaSid'] = $values->smb_domain->SID . "-" . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase); // sambaAccount_may
-			else $attr['rid'] = (2 * $values->general_uidNumber + 1000); // sambaAccount_may
-		}
-	if ($values->general_group != $values_old->general_group) {
-		$attr['gidNumber'] = getgid($values->general_group); // posixAccount_req
-		$change = false;
-		if ($_SESSION['config']->is_samba3()) {
-			if ($values->smb_mapgroup==$_SESSION['account']->smb_domain->SID . '-512') $found=true;
-			if ($values->smb_mapgroup==$_SESSION['account']->smb_domain->SID . '-513') $found=true;
-			if ($values->smb_mapgroup==$_SESSION['account']->smb_domain->SID . '-514') $found=true;
-			if (!$found) $attr['sambaPrimaryGroupSID'] = $_SESSION['account']->smb_domain->SID . "-".
-				(2 * getgid($_SESSION['account']->general_group) + $values->smb_domain->RIDbase+1);
-			}
-		else {
-			if ($values->smb_mapgroup== '512') $found=true;
-			if ($values->smb_mapgroup== '513') $found=true;
-			if ($values->smb_mapgroup== '514') $found=true;
-			if (!$found) $attr['primaryGroupID'] = (2 * getgid($_SESSION['account']->general_group) + 1001);
-			}
-		}
-
-	if ($values->smb_flagsD != $values_old->smb_flagsD) {
-		$i = 0;
-		while ($values_old->unix_password{$i} != '}') $i++;
-		$passwd = substr($values_old->unix_password, $i+1 );
-		$crypt = substr($values_old->unix_password, 0, $i+1 );
-		if ($passwd{0} == '!') $passwd = substr($passwd, 1);
-		if ($values->smb_flagsD ) $attr['userPassword'] = $crypt.'!'.$passwd;
-			else $attr['userPassword'] = $crypt.$passwd;
-		}
-	if ($values->smb_password_no) {
-		if ($values->smb_flagsD) $attr['userPassword'] = pwd_hash('', false);
-			else $attr['userPassword'] = pwd_hash('');
-		$attr['shadowLastChange'] = getdays(); // shadowAccount_may
-		}
-
-	// Add missing objectclasses to group
+/* This function will modify a host acconut in ldap
+* $values and $values_old are an account-object with all
+* attributes of the host.
+* Only attributes which have changed will be written
+* return-value is an integer
+*       2 == Account already exists at different location
+*       3 == Account has been modified
+*	5 == Error while modifying Account
+*/
+function modifyhost($values,$values_old) {
+	// Add missing objectclasses to host
 	if (!in_array('posixAccount', $values->general_objectClass)) {
 		$attr['objectClass'] = $values->general_objectClass;
 		$attr['objectClass'][] = 'posixAccount';
@@ -1650,118 +1722,102 @@ function modifyhost($values,$values_old) { // Will modify the LDAP-Account
 		if (!isset($attr['objectClass'])) $attr['objectClass'] = $values->general_objectClass;
 		$attr['objectClass'][] = 'shadowAccount';
 		}
+	// Create DN for new host account
+	$values->general_dn = 'uid=' . $values->general_username . ',' . $values->general_dn;
 
+	// Attributes which are required
+	if ($values->general_username != $values_old->general_username) {
+		$attr['cn'] = $values->general_username; // posixAccount_req shadowAccount_req sambaAccount_may
+		$attr['uid'] = $values->general_username; // posixAccount_req
+		}
+	if ($values->general_uidNumber != $values_old->general_uidNumber) {
+		$attr['uidNumber'] = $values->general_uidNumber;
+		// Because sambaSid(rid) is related to uidNumber we have to change it if uidNumbaer has changed
+		if ($_SESSION['config']->is_samba3())
+			$attr['sambaSid'] = $values->smb_domain->SID . "-" . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase);
+		else $attr['rid'] = (2 * $values->general_uidNumber + 1000);
+		}
+	if ($values->general_group != $values_old->general_group) {
+		$attr['gidNumber'] = getgid($values->general_group);
+		// Because primaryGroup(S)ID is related to gidNumber we have to change it if gidNumber has changed
+		if ($_SESSION['config']->is_samba3())
+			// We use samba 3 schema
+			$attr['sambaPrimaryGroupSID'] = $_SESSION['account']->smb_domain->SID . "-".
+				(2 * getgid($_SESSION['account']->general_group) + $values->smb_domain->RIDbase+1);
+		else
+			// We use old samba 2.2 schema
+			$attr['primaryGroupID'] = (2 * getgid($_SESSION['account']->general_group) + 1001);
+		}
+	/* Write unix attributes into $attr array
+	* Some values don't have to be set. These are only loaded if they are set
+	*/
+	if ($values->general_gecos != $values_old->general_gecos) {
+		$attr['gecos'] = utf8_encode(replace_umlaut($values->general_gecos)); // posixAccount_may
+		$attr['description'] = utf8_encode($values->general_gecos); // posixAccount_may sambaAccount_may
+		}
 	if ($values->smb_displayName != $values_old->smb_displayName)
 		$attr['displayName'] = utf8_encode($values->smb_displayName);
 
-	// Add or convert samba attributes & object to samba 3
-	if (($_SESSION['config']->is_samba3()) && (!in_array('sambaSamAccount', $values->general_objectClass))) {
-		if (!isset($attr['objectClass'])) $attr['objectClass'] = $values->general_objectClass;
-		$attr['objectClass'][] = 'sambaSamAccount';
-		// unset old sambaAccount objectClass
-		for ($i=0; $i<count($attr['objectClass']); $i++)
-			if ($attr['objectClass'][$i]=='sambaAccount') unset($attr['objectClass'][$i]);
-		$attr['objectClass'] = array_values($attr['objectClass']);
-		// Set correct values for new objectclass
-		// Load old samba-values not stored in account object
-		$result = ldap_search($_SESSION['ldap']->server(), $dn, "objectclass=PosixAccount");
-		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
-		$return->general_dn = (ldap_get_dn($_SESSION['ldap']->server(), $entry));
-		$attr_old = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
-		if (isset($attr_old['lmPassword'][0])) $attr['sambaLMPassword'] = $attr_old['lmPassword'][0];
-		if (isset($attr_old['ntPassword'][0])) $attr['sambaNTPassword'] = $attr_old['ntPassword'][0];
-		if (isset($attr_old['pwdLastSet'][0])) $attr['sambaPwdLastSet'] = $attr_old['pwdLastSet'][0];
-		if (isset($attr_old['logonTime'][0])) $attr['sambaLogonTime'] = $attr_old['logonTime'][0];
-		if (isset($attr_old['logoffTime'][0])) $attr['sambaLogoffTime'] = $attr_old['logoffTime'][0];
-		if (isset($attr_old['kickoffTime'][0])) $attr['sambaKickoffTime'] = $attr_old['kickoffTime'][0];
-		if (isset($attr_old['pwdCanChange'][0])) $attr['sambaPwdCanChange'] = $attr_old['pwdCanChange'][0];
-		if (isset($attr_old['pwdMustChange'][0])) $attr['sambaPwdMustChange'] = $attr_old['pwdMustChange'][0];
-		if (isset($attr_old['smbHome'][0])) $attr['sambaHomePath'] = $attr_old['smbHome'][0];
-		if (isset($attr_old['homeDrive'][0])) $attr['sambaHomeDrive'] = $attr_old['homeDrive'][0];
-		if (isset($attr_old['scriptPath'][0])) $attr['sambaLogonScript'] = $attr_old['scriptPath'][0];
-		if (isset($attr_old['profilePath'][0])) $attr['sambaProfilePath'] = $attr_old['profilePath'][0];
-		if (isset($attr_old['userWorkstations'][0])) $attr['sambaUserWorkstations'] = $attr_old['userWorkstations'][0];
-		// Values used from account object
-		$attr['displayName'] = utf8_encode($values->smb_displayName); // sambaAccount_may
-		$attr['sambaAcctFlags'] = smbflag($values); // sambaAccount_may
-		$attr['sambaDomainName'] = $values->smb_domain->name; // sambaAccount_may
-		$attr['sambaSid'] = $values->smb_domain->SID . "-" . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase); // sambaAccount_may
-		$attr['sambaPrimaryGroupSID'] = $values->smb_domain->SID . "-" . (2 * getgid($values->general_group) + $values->smb_domain->RIDbase +1); // sambaAccount_req
-		// remove old attributes
-		if (in_array('sambaAccount', $attr_old['objectClass'])) $attr_rem['objectClass'] = 'sambaAccount';
-		if (isset($attr_old['lmPassword'][0])) $attr_rem['lmPassword'] = $attr_old['lmPassword'][0];
-		if (isset($attr_old['ntPassword'][0])) $attr_rem['ntPassword'] = $attr_old['ntPassword'][0];
-		if (isset($attr_old['pwdLastSet'][0])) $attr_rem['pwdLastSet'] = $attr_old['pwdLastSet'][0];
-		if (isset($attr_old['logonTime'][0])) $attr_rem['logonTime'] = $attr_old['logonTime'][0];
-		if (isset($attr_old['kickoffTime'][0])) $attr_rem['kickoffTime'] = $attr_old['kickoffTime'][0];
-		if (isset($attr_old['pwdCanChange'][0])) $attr_rem['pwdCanChange'] = $attr_old['pwdCanChange'][0];
-		if (isset($attr_old['pwdMustChange'][0])) $attr_rem['pwdMustChange'] = $attr_old['pwdMustChange'][0];
-		if (isset($attr_old['smbHome'][0])) $attr_rem['smbHome'] = $attr_old['smbHome'][0];
-		if (isset($attr_old['acctFlags'][0])) $attr_rem['acctFlags'] = $attr_old['acctFlags'][0];
-		if (isset($attr_old['homeDrive'][0])) $attr_rem['homeDrive'] = $attr_old['homeDrive'][0];
-		if (isset($attr_old['scriptPath'][0])) $attr_rem['scriptPath'] = $attr_old['scriptPath'][0];
-		if (isset($attr_old['profilePath'][0])) $attr_rem['profilePath'] = $attr_old['profilePath'][0];
-		if (isset($attr_old['userWorkstations'][0])) $attr_rem['userWorkstations'] = $attr_old['userWorkstations'][0];
-		if (isset($attr_old['primaryGroupID'][0])) $attr_rem['primaryGroupID'] = $attr_old['primaryGroupID'][0];
-		if (isset($attr_old['domain'][0])) $attr_rem['domain'] = $attr_old['domain'][0];
-		if (isset($attr_old['rid'][0])) $attr_rem['rid'] = $attr_old['rid'][0];
+	// Set unix password
+	if ($values->smb_password_no) {
+		$attr['userPassword'] = pwd_hash('');
+		$attr['shadowLastChange'] = getdays(); // shadowAccount_may
 		}
 
-	// Add or convert samba attributes & object to samba 2.2
-	if (($_SESSION['config']->samba3 == 'no') && (!in_array('sambaAccount', $values->general_objectClass))) {
-		if (!isset($attr['objectClass'])) $attr['objectClass'] = $values->general_objectClass;
-		$attr['objectClass'][] = 'sambaAccount';
-		// unset old sambaAccount objectClass
-		for ($i=0; $i<count($attr['objectClass']); $i++)
-			if ($attr['objectClass'][$i]=='sambaSamAccount') unset($attr['objectClass'][$i]);
-		$attr['objectClass'] = array_values($attr['objectClass']);
-		// Set correct values for new objectclass
-		// Load old samba-values not stored in account object
-		$result = ldap_search($_SESSION['ldap']->server(), $dn, "objectclass=PosixAccount");
-		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
-		$return->general_dn = (ldap_get_dn($_SESSION['ldap']->server(), $entry));
-		$attr_old = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
-		if (isset($attr_old['sambaLMPassword'][0])) $attr['lmPassword'] = $attr_old['sambaLMPassword'][0];
-		if (isset($attr_old['sambaNTPassword'][0])) $attr['ntPassword'] = $attr_old['sambaNTPassword'][0];
-		if (isset($attr_old['sambaPwdLastSet'][0])) $attr['pwdLastSet'] = $attr_old['sambaPwdLastSet'][0];
-		if (isset($attr_old['sambaLogonTime'][0])) $attr['logonTime'] = $attr_old['sambaLogonTime'][0];
-		if (isset($attr_old['sambaLogoffTime'][0])) $attr['logoffTime'] = $attr_old['sambaLogoffTime'][0];
-		if (isset($attr_old['sambaKickoffTime'][0])) $attr['kickoffTime'] = $attr_old['sambaKickoffTime'][0];
-		if (isset($attr_old['sambaPwdCanChange'][0])) $attr['pwdCanChange'] = $attr_old['sambaPwdCanChange'][0];
-		if (isset($attr_old['sambaPwdMustChange'][0])) $attr['pwdMustChange'] = $attr_old['sambaPwdMustChange'][0];
-		if (isset($attr_old['sambaHomePath'][0])) $attr['smbHome'] = $attr_old['sambaHomePath'][0];
-		if (isset($attr_old['sambaHomeDrive'][0])) $attr['homeDrive'] = $attr_old['sambaHomeDrive'][0];
-		if (isset($attr_old['sambaLogonScript'][0])) $attr['scriptPath'] = $attr_old['sambaLogonScript'][0];
-		if (isset($attr_old['sambaProfilePath'][0])) $attr['profilePath'] = $attr_old['sambaProfilePath'][0];
-		if (isset($attr_old['sambaUserWorkstations'][0])) $attr['userWorkstations'] = $attr_old['sambaUserWorkstations'][0];
-		// Values used from account object
-		$attr['displayName'] = utf8_encode($values->smb_displayName); // sambaAccount_may
-		$attr['acctFlags'] = smbflag($values); // sambaAccount_may
-		if ($values->smb_domain!='') $attr['domain'] = $values->smb_domain; // sambaAccount_may
-		$attr['primaryGroupID'] = (2 * getgid($values->general_group) + 1001); // sambaAccount_req
-		$attr['rid'] = (2 * $values->general_uidNumber + 1000); // sambaAccount_may
-
-		// remove old attributes
-		if (in_array('sambaSamAccount', $attr_old['objectClass'])) $attr_rem['objectClass'] = 'sambaSamAccount';
-		if (isset($attr_old['sambaLMPassword'][0])) $attr_rem['sambaLMPassword'] = $attr_old['sambaLMPassword'][0];
-		if (isset($attr_old['sambaNTPassword'][0])) $attr_rem['sambaNTPassword'] = $attr_old['sambaNTPassword'][0];
-		if (isset($attr_old['sambaPwdLastSet'][0])) $attr_rem['sambaPwdLastSet'] = $attr_old['sambaPwdLastSet'][0];
-		if (isset($attr_old['sambaLogonTime'][0])) $attr_rem['sambaLogonTime'] = $attr_old['sambaLogonTime'][0];
-		if (isset($attr_old['sambaKickoffTime'][0])) $attr_rem['sambaKickoffTime'] = $attr_old['sambaKickoffTime'][0];
-		if (isset($attr_old['sambaPwdCanChange'][0])) $attr_rem['sambaPwdCanChange'] = $attr_old['sambaPwdCanChange'][0];
-		if (isset($attr_old['sambaPwdMustChange'][0])) $attr_rem['sambaPwdMustChange'] = $attr_old['sambaPwdMustChange'][0];
-		if (isset($attr_old['sambaHomePath'][0])) $attr_rem['sambaHomePath'] = $attr_old['sambaHomePAth'][0];
-		if (isset($attr_old['sambaAcctFlags'][0])) $attr_rem['sambaAcctFlags'] = $attr_old['sambaAcctFlags'][0];
-		if (isset($attr_old['sambaHomeDrive'][0])) $attr_rem['sambaHomeDrive'] = $attr_old['sambaHomeDrive'][0];
-		if (isset($attr_old['sambaLogonScript'][0])) $attr_rem['sambaLogonScript'] = $attr_old['sambaLogonScript'][0];
-		if (isset($attr_old['sambaProfilePath'][0])) $attr_rem['sambaProfilePath'] = $attr_old['sambaProfilePath'][0];
-		if (isset($attr_old['sambaUserWorkstations'][0])) $attr_rem['sambaUserWorkstations'] = $attr_old['sambaUserWorkstations'][0];
-		if (isset($attr_old['sambaPrimaryGroupID'][0])) $attr_rem['sambaPrimaryGroupID'] = $attr_old['sambaPrimaryGroupID'][0];
-		if (isset($attr_old['sambaDomainName'][0])) $attr_rem['sambaDomainName'] = $attr_old['sambaDomainName'][0];
-		if (isset($attr_old['sambaSID'][0])) $attr_rem['sambaSID'] = $attr_old['sambaSID'][0];
-		}
-
+	// Samba attributes
 	if ($_SESSION['config']->is_samba3()) {
+		if (!in_array('sambaSamAccount', $values->general_objectClass)) {
+			// We have to convert sambaAccount Objectclass to sambaSamAccount objectclass
+			if (!isset($attr['objectClass'])) $attr['objectClass'] = $values->general_objectClass;
+			$attr['objectClass'][] = 'sambaSamAccount';
+			// unset old sambaAccount objectClass
+			for ($i=0; $i<count($attr['objectClass']); $i++)
+				if ($attr['objectClass'][$i]=='sambaAccount') unset($attr['objectClass'][$i]);
+			$attr['objectClass'] = array_values($attr['objectClass']);
+			// Set correct values for new objectclass
+			// Load old samba-values not stored in account object
+			$result = ldap_search($_SESSION['ldap']->server(), $values_old->general_dn, "objectclass=PosixAccount");
+			$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
+			$return->general_dn = (ldap_get_dn($_SESSION['ldap']->server(), $entry));
+			$attr_old = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
+			if (isset($attr_old['lmPassword'][0])) $attr['sambaLMPassword'] = $attr_old['lmPassword'][0];
+			if (isset($attr_old['ntPassword'][0])) $attr['sambaNTPassword'] = $attr_old['ntPassword'][0];
+			if (isset($attr_old['pwdLastSet'][0])) $attr['sambaPwdLastSet'] = $attr_old['pwdLastSet'][0];
+			if (isset($attr_old['logonTime'][0])) $attr['sambaLogonTime'] = $attr_old['logonTime'][0];
+			if (isset($attr_old['logoffTime'][0])) $attr['sambaLogoffTime'] = $attr_old['logoffTime'][0];
+			if (isset($attr_old['kickoffTime'][0])) $attr['sambaKickoffTime'] = $attr_old['kickoffTime'][0];
+			if (isset($attr_old['pwdCanChange'][0])) $attr['sambaPwdCanChange'] = $attr_old['pwdCanChange'][0];
+			if (isset($attr_old['pwdMustChange'][0])) $attr['sambaPwdMustChange'] = $attr_old['pwdMustChange'][0];
+			if (isset($attr_old['smbHome'][0])) $attr['sambaHomePath'] = $attr_old['smbHome'][0];
+			if (isset($attr_old['homeDrive'][0])) $attr['sambaHomeDrive'] = $attr_old['homeDrive'][0];
+			if (isset($attr_old['scriptPath'][0])) $attr['sambaLogonScript'] = $attr_old['scriptPath'][0];
+			if (isset($attr_old['profilePath'][0])) $attr['sambaProfilePath'] = $attr_old['profilePath'][0];
+			if (isset($attr_old['userWorkstations'][0])) $attr['sambaUserWorkstations'] = $attr_old['userWorkstations'][0];
+			// Values used from account object
+			$attr['displayName'] = utf8_encode($values->smb_displayName); // sambaAccount_may
+			$attr['sambaAcctFlags'] = smbflag($values); // sambaAccount_may
+			$attr['sambaDomainName'] = $values->smb_domain->name; // sambaAccount_may
+			$attr['sambaSid'] = $values->smb_domain->SID . "-" . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase); // sambaAccount_may
+			$attr['sambaPrimaryGroupSID'] = $values->smb_domain->SID . "-" . (2 * getgid($values->general_group) + $values->smb_domain->RIDbase +1); // sambaAccount_req
+			// remove old attributes
+			if (in_array('sambaAccount', $attr_old['objectClass'])) $attr_rem['objectClass'] = 'sambaAccount';
+			if (isset($attr_old['lmPassword'][0])) $attr_rem['lmPassword'] = $attr_old['lmPassword'][0];
+			if (isset($attr_old['ntPassword'][0])) $attr_rem['ntPassword'] = $attr_old['ntPassword'][0];
+			if (isset($attr_old['pwdLastSet'][0])) $attr_rem['pwdLastSet'] = $attr_old['pwdLastSet'][0];
+			if (isset($attr_old['logonTime'][0])) $attr_rem['logonTime'] = $attr_old['logonTime'][0];
+			if (isset($attr_old['kickoffTime'][0])) $attr_rem['kickoffTime'] = $attr_old['kickoffTime'][0];
+			if (isset($attr_old['pwdCanChange'][0])) $attr_rem['pwdCanChange'] = $attr_old['pwdCanChange'][0];
+			if (isset($attr_old['pwdMustChange'][0])) $attr_rem['pwdMustChange'] = $attr_old['pwdMustChange'][0];
+			if (isset($attr_old['smbHome'][0])) $attr_rem['smbHome'] = $attr_old['smbHome'][0];
+			if (isset($attr_old['acctFlags'][0])) $attr_rem['acctFlags'] = $attr_old['acctFlags'][0];
+			if (isset($attr_old['homeDrive'][0])) $attr_rem['homeDrive'] = $attr_old['homeDrive'][0];
+			if (isset($attr_old['scriptPath'][0])) $attr_rem['scriptPath'] = $attr_old['scriptPath'][0];
+			if (isset($attr_old['profilePath'][0])) $attr_rem['profilePath'] = $attr_old['profilePath'][0];
+			if (isset($attr_old['userWorkstations'][0])) $attr_rem['userWorkstations'] = $attr_old['userWorkstations'][0];
+			if (isset($attr_old['primaryGroupID'][0])) $attr_rem['primaryGroupID'] = $attr_old['primaryGroupID'][0];
+			if (isset($attr_old['domain'][0])) $attr_rem['domain'] = $attr_old['domain'][0];
+			if (isset($attr_old['rid'][0])) $attr_rem['rid'] = $attr_old['rid'][0];
+			}
 		// Reset password
 		if ($values->smb_password_no) {
 			$attr['sambaNTPassword'] = 'NO PASSWORD*****';
@@ -1770,11 +1826,62 @@ function modifyhost($values,$values_old) { // Will modify the LDAP-Account
 			$attr['userPassword'] = '';
 			$attr['shadowLastChange'] = getdays();
 			}
-		if (smbflag($values) != smbflag($values_old)) $attr['sambaAcctFlags'] = smbflag($values); // sambaAccount_may
 		if ($values->smb_domain->name!=$values_old->smb_domain->name) $attr['sambaDomainName'] = $values->smb_domain->name; // sambaAccount_may
 		}
-	// samba 2.2
 	else {
+		// use old samba 2.2 objectclass
+		if (!in_array('sambaAccount', $values->general_objectClass)) {
+			// Add or convert samba attributes & object to samba 2.2
+			if (!isset($attr['objectClass'])) $attr['objectClass'] = $values->general_objectClass;
+			$attr['objectClass'][] = 'sambaAccount';
+			// unset old sambaAccount objectClass
+			for ($i=0; $i<count($attr['objectClass']); $i++)
+				if ($attr['objectClass'][$i]=='sambaSamAccount') unset($attr['objectClass'][$i]);
+			$attr['objectClass'] = array_values($attr['objectClass']);
+			// Set correct values for new objectclass
+			// Load old samba-values not stored in account object
+			$result = ldap_search($_SESSION['ldap']->server(), $values_old->general_dn, "objectclass=PosixAccount");
+			$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
+			$return->general_dn = (ldap_get_dn($_SESSION['ldap']->server(), $entry));
+			$attr_old = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
+			if (isset($attr_old['sambaLMPassword'][0])) $attr['lmPassword'] = $attr_old['sambaLMPassword'][0];
+			if (isset($attr_old['sambaNTPassword'][0])) $attr['ntPassword'] = $attr_old['sambaNTPassword'][0];
+			if (isset($attr_old['sambaPwdLastSet'][0])) $attr['pwdLastSet'] = $attr_old['sambaPwdLastSet'][0];
+			if (isset($attr_old['sambaLogonTime'][0])) $attr['logonTime'] = $attr_old['sambaLogonTime'][0];
+			if (isset($attr_old['sambaLogoffTime'][0])) $attr['logoffTime'] = $attr_old['sambaLogoffTime'][0];
+			if (isset($attr_old['sambaKickoffTime'][0])) $attr['kickoffTime'] = $attr_old['sambaKickoffTime'][0];
+			if (isset($attr_old['sambaPwdCanChange'][0])) $attr['pwdCanChange'] = $attr_old['sambaPwdCanChange'][0];
+			if (isset($attr_old['sambaPwdMustChange'][0])) $attr['pwdMustChange'] = $attr_old['sambaPwdMustChange'][0];
+			if (isset($attr_old['sambaHomePath'][0])) $attr['smbHome'] = $attr_old['sambaHomePath'][0];
+			if (isset($attr_old['sambaHomeDrive'][0])) $attr['homeDrive'] = $attr_old['sambaHomeDrive'][0];
+			if (isset($attr_old['sambaLogonScript'][0])) $attr['scriptPath'] = $attr_old['sambaLogonScript'][0];
+			if (isset($attr_old['sambaProfilePath'][0])) $attr['profilePath'] = $attr_old['sambaProfilePath'][0];
+			if (isset($attr_old['sambaUserWorkstations'][0])) $attr['userWorkstations'] = $attr_old['sambaUserWorkstations'][0];
+			// Values used from account object
+			$attr['displayName'] = utf8_encode($values->smb_displayName); // sambaAccount_may
+			$attr['acctFlags'] = smbflag($values); // sambaAccount_may
+			if ($values->smb_domain!='') $attr['domain'] = $values->smb_domain; // sambaAccount_may
+			$attr['primaryGroupID'] = (2 * getgid($values->general_group) + 1001); // sambaAccount_req
+			$attr['rid'] = (2 * $values->general_uidNumber + 1000); // sambaAccount_may
+			// remove old attributes
+			if (in_array('sambaSamAccount', $attr_old['objectClass'])) $attr_rem['objectClass'] = 'sambaSamAccount';
+			if (isset($attr_old['sambaLMPassword'][0])) $attr_rem['sambaLMPassword'] = $attr_old['sambaLMPassword'][0];
+			if (isset($attr_old['sambaNTPassword'][0])) $attr_rem['sambaNTPassword'] = $attr_old['sambaNTPassword'][0];
+			if (isset($attr_old['sambaPwdLastSet'][0])) $attr_rem['sambaPwdLastSet'] = $attr_old['sambaPwdLastSet'][0];
+			if (isset($attr_old['sambaLogonTime'][0])) $attr_rem['sambaLogonTime'] = $attr_old['sambaLogonTime'][0];
+			if (isset($attr_old['sambaKickoffTime'][0])) $attr_rem['sambaKickoffTime'] = $attr_old['sambaKickoffTime'][0];
+			if (isset($attr_old['sambaPwdCanChange'][0])) $attr_rem['sambaPwdCanChange'] = $attr_old['sambaPwdCanChange'][0];
+			if (isset($attr_old['sambaPwdMustChange'][0])) $attr_rem['sambaPwdMustChange'] = $attr_old['sambaPwdMustChange'][0];
+			if (isset($attr_old['sambaHomePath'][0])) $attr_rem['sambaHomePath'] = $attr_old['sambaHomePAth'][0];
+			if (isset($attr_old['sambaAcctFlags'][0])) $attr_rem['sambaAcctFlags'] = $attr_old['sambaAcctFlags'][0];
+			if (isset($attr_old['sambaHomeDrive'][0])) $attr_rem['sambaHomeDrive'] = $attr_old['sambaHomeDrive'][0];
+			if (isset($attr_old['sambaLogonScript'][0])) $attr_rem['sambaLogonScript'] = $attr_old['sambaLogonScript'][0];
+			if (isset($attr_old['sambaProfilePath'][0])) $attr_rem['sambaProfilePath'] = $attr_old['sambaProfilePath'][0];
+			if (isset($attr_old['sambaUserWorkstations'][0])) $attr_rem['sambaUserWorkstations'] = $attr_old['sambaUserWorkstations'][0];
+			if (isset($attr_old['sambaPrimaryGroupID'][0])) $attr_rem['sambaPrimaryGroupID'] = $attr_old['sambaPrimaryGroupID'][0];
+			if (isset($attr_old['sambaDomainName'][0])) $attr_rem['sambaDomainName'] = $attr_old['sambaDomainName'][0];
+			if (isset($attr_old['sambaSID'][0])) $attr_rem['sambaSID'] = $attr_old['sambaSID'][0];
+			}
 		if ($values->smb_password_no) {
 			$attr['ntPassword'] = 'NO PASSWORD*****';
 			$attr['lmPassword'] = 'NO PASSWORD*****';
@@ -1783,26 +1890,19 @@ function modifyhost($values,$values_old) { // Will modify the LDAP-Account
 			$attr['shadowLastChange'] = getdays();
 			}
 		if (isset($attr_old['sambaSID'][0])) $attr_rem['sambaSID'] = $attr_old['sambaSID'][0];
-		if (smbflag($values) != smbflag($values_old)) $attr['acctFlags'] = smbflag($values); // sambaAccount_may
 		if (($values->smb_domain!='') && ($values->smb_domain!=$values_old->smb_domain)) $attr['domain'] = $values->smb_domain; // sambaAccount_may
 		if (($values->smb_domain=='') && ($values->smb_domain!=$values_old->smb_domain)) $attr_rem['domain'] = $values_old->smb_domain; // sambaAccount_may
 		}
 
-	if ($values->general_gecos != $values_old->general_gecos) {
-		$attr['gecos'] = utf8_encode(replace_umlaut($values->general_gecos)); // posixAccount_may
-		$attr['description'] = utf8_encode($values->general_gecos); // posixAccount_may sambaAccount_may
-		}
-
-
 	if ($attr_rem) {
+		// Remove old attributes which are no longer in use
 		$success = ldap_mod_del($_SESSION['ldap']->server(),$values_old->general_dn, $attr_rem);
 		if (!$success) return 5;
 		}
-	if ($attr) {
-		$success = ldap_modify($_SESSION['ldap']->server(),$values_old->general_dn, $attr);
-		if (!$success) return 5;
-		}
-	if ($values->general_dn != $values_old->general_dn) {// Hostname hasn't changed
+
+	if ($values->general_dn != $values_old->general_dn) {
+		// Account should be moved to a new location
+		// Load old account
 		$result = ldap_search($_SESSION['ldap']->server(), $values_old->general_dn, "objectclass=PosixAccount");
 		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 		$attr_old = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
@@ -1812,10 +1912,21 @@ function modifyhost($values,$values_old) { // Will modify the LDAP-Account
 		$keys = array_keys($attr_old);
 		for ($i=0; $i < sizeof($keys); $i++)
 			unset($attr_old[$keys[$i]]['count']);
+		// Change uid to new uid. Else ldap won't create the new entry
+		$attr_old['uid'][0] = $values->general_username;
+		// Create account at new location
 		$success = ldap_add($_SESSION['ldap']->server(),$values->general_dn, $attr_old);
+		// remove old account
 		if ($success) $success = ldap_delete($_SESSION['ldap']->server(),$values_old->general_dn);
 		if (!$success) return 5;
 		}
+
+	if ($attr) {
+		// Change or add new attributes
+		$success = ldap_modify($_SESSION['ldap']->server(),$values_old->general_dn, $attr);
+		if (!$success) return 5;
+		}
+	//make required changes in cache-array
 	if ((isset($_SESSION['hostDN']))) {
 		if ($values->general_dn != $values_old->general_dn) {
 			unset ($_SESSION['hostDN'][$values_old->general_dn]);
@@ -1823,34 +1934,48 @@ function modifyhost($values,$values_old) { // Will modify the LDAP-Account
 		$_SESSION['hostDN'][$values->general_dn]['cn'] = $values->general_username;
 		$_SESSION['hostDN'][$values->general_dn]['uidNumber'] = $values->general_uidNumber;
 		}
+	// Return 3 if everything has worked fine
 	return 3;
 	}
 
 
-
-function creategroup($values) { // Will create the LDAP-Group
-	// 2 == Group already exists at different location
-	// 1 == Group has been created
-	// 3 == Group has been modified
-	// 4 == Error while creating Group
-	// 5 == Error while modifying Group
-	$values->general_dn = 'cn=' . $values->general_username . ',' . $values->general_dn;
+/* This function will create a new group acconut in ldap
+* $values is an account-object with all attributes of the group
+* return-value is an integer
+*       1 == Account has been created
+*       2 == Account already exists at different location
+*	4 == Error while creating Account
+*/
+function creategroup($values) {
+	// These Objectclasses are needed for an user account
 	$attr['objectClass'][0] = 'posixGroup';
+	// Create DN for new user account
+	$values->general_dn = 'cn=' . $values->general_username . ',' . $values->general_dn;
+	// Attributes which are required
 	$attr['cn'] = $values->general_username;
 	$attr['gidNumber'] = $values->general_uidNumber;
+
+	/* Write unix attributes into $attr array
+	* Some values don't have to be set. These are only loaded if they are set
+	*/
 	if ($values->general_gecos) $attr['description'] = utf8_encode($values->general_gecos);
+	// Samba 3 attributes
 	if ($_SESSION['config']->samba3 =='yes') {
 		$attr['sambaSID'] = $values->smb_mapgroup;
 		$attr['objectClass'][1] = 'sambaGroupMapping';
 		$attr['sambaGroupType'] = '2';
 		if ($values->smb_displayName) $attr['displayName'] = utf8_encode($values->smb_displayName);
 		}
+	// Write additional group members
 	if (is_array($values->unix_memberUid)) foreach ($values->unix_memberUid as $user)
 		$attr['memberUid'][] = $user;
+	// Create LDAP group account
 	$success = ldap_add($_SESSION['ldap']->server(),$values->general_dn, $attr);
+	// Continue if now error did ocour
 	if (!$success) return 4;
+	// lamdaemon.pl should be used. Set quotas if quotas are used
 	if ($_SESSION['config']->scriptServer && is_array($values->quota)) setquotas($values);
-	// Add entry to cache-array
+	// Add new group to cache-array
 	if ((isset($_SESSION['groupDN']))) {
 		$_SESSION['groupDN'][$values->general_dn]['cn'] = $values->general_username;
 		$_SESSION['groupDN'][$values->general_dn]['uidNumber'] = $values->general_uidNumber;
@@ -1858,36 +1983,17 @@ function creategroup($values) { // Will create the LDAP-Group
 	return 1;
 	}
 
-function modifygroup($values,$values_old) { // Will modify the LDAP-Group
-	// 2 == Group already exists at different location
-	// 3 == Group has been modified
-	// 5 == Error while modifying Group
-	$values->general_dn = 'cn=' . $values->general_username . ',' . $values->general_dn;
 
-	if ($values->general_username != $values_old->general_username) $attr['cn'] = $values->general_username;
-	// Set correct SID if UID was changed
-	if ($values->general_uidNumber != $values_old->general_uidNumber) {
-		$attr['uidNumber'] = $values->general_uidNumber; // posixAccount_req
-		if ($_SESSION['config']->is_samba3()) $attr['sambaSid'] = $values->smb_domain->SID . "-" . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase +1); // sambaAccount_may
-			else $attr['rid'] = (2 * $values->general_uidNumber + 1001); // sambaAccount_may
-		}
-
-	if ($values->general_gecos != $values_old->general_gecos) $attr['description'] = utf8_encode($values->general_gecos);
-
-	if ($values->smb_displayName != $values_old->smb_displayName)
-		$attr['displayName'] = utf8_encode($values->smb_displayName);
-
-	if ($_SESSION['config']->samba3 =='yes') {
-		if ($values->smb_mapgroup != $values_old->smb_mapgroup)
-			$attr['sambaSID'] = $values->smb_mapgroup;
-		}
-
-	if (($values->unix_memberUid != $values_old->unix_memberUid)) {
-		if (count($values->unix_memberUid)==0) $attr_rem['memberUid'] = $values_old->unix_memberUid;
-		 else $attr['memberUid'] = $values->unix_memberUid;
-		}
-
-
+/* This function will modify a group acconut in ldap
+* $values and $values_old are an account-object with all
+* attributes of the group.
+* Only attributes which have changed will be written
+* return-value is an integer
+*       2 == Account already exists at different location
+*       3 == Account has been modified
+*	5 == Error while modifying Account
+*/
+function modifygroup($values,$values_old) {
 	// Add missing objectclasses to group
 	if (!in_array('posixGroup', $values->general_objectClass)) {
 		$attr['objectClass'] = $values->general_objectClass;
@@ -1898,18 +2004,39 @@ function modifygroup($values,$values_old) { // Will modify the LDAP-Group
 		$attr['objectClass'][] = 'sambaGroupMapping';
 		$attr['sambaGroupType'] = '2';
 		}
+	// Create DN for new group account
+	$values->general_dn = 'cn=' . $values->general_username . ',' . $values->general_dn;
 
-	if ($attr_rem) { // Remove attributes not longer valid
+	// Attributes which are required
+	if ($values->general_username != $values_old->general_username) $attr['cn'] = $values->general_username;
+	if ($values->general_uidNumber != $values_old->general_uidNumber) {
+		$attr['uidNumber'] = $values->general_uidNumber;
+		// Set correct SID if UID was changed
+		if ($_SESSION['config']->is_samba3()) $attr['sambaSid'] = $values->smb_domain->SID . "-" . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase +1);
+		}
+	if ($values->general_gecos != $values_old->general_gecos) $attr['description'] = utf8_encode($values->general_gecos);
+	if ($values->smb_displayName != $values_old->smb_displayName)
+		$attr['displayName'] = utf8_encode($values->smb_displayName);
+	// Samba 3.0 attributes
+	if ($_SESSION['config']->samba3 =='yes') {
+		if ($values->smb_mapgroup != $values_old->smb_mapgroup)
+			$attr['sambaSID'] = $values->smb_mapgroup;
+		}
+	// Write Additional group members
+	if (($values->unix_memberUid != $values_old->unix_memberUid)) {
+		if (count($values->unix_memberUid)==0) $attr_rem['memberUid'] = $values_old->unix_memberUid;
+		 else $attr['memberUid'] = $values->unix_memberUid;
+		}
+
+	if ($attr_rem) {
+		// Remove attributes which are no longer in use
 		$success = ldap_mod_del($_SESSION['ldap']->server(),$values_old->general_dn, $attr_rem);
 		if (!$success) return 5;
 		}
 
-	if ($attr) { // Add /replace new attributes
-		$success = ldap_modify($_SESSION['ldap']->server(),$values->general_dn, $attr);
-		if (!$success) return 5;
-		}
-
-	if ($values->general_dn != $values_old->general_dn) {// Groupname hasn't changed
+	if ($values->general_dn != $values_old->general_dn) {
+		// Account should be moved to a new location
+		// Load old account
 		$result = ldap_search($_SESSION['ldap']->server(), $values_old->general_dn, "objectclass=PosixGroup");
 		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 		$attr_old = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
@@ -1919,30 +2046,44 @@ function modifygroup($values,$values_old) { // Will modify the LDAP-Group
 		$keys = array_keys($attr_old);
 		for ($i=0; $i < sizeof($keys); $i++)
 			unset($attr_old[$keys[$i]]['count']);
+		// Change cn to new cn. Else ldap won't create the new entry
+		$attr_old['cn'][0] = $values->general_username;
+		// Create account at new location
 		$success = ldap_add($_SESSION['ldap']->server(),$values->general_dn, $attr_old);
-		if ($success) ldap_delete($_SESSION['ldap']->server(),$values_old->general_dn);
-		if ($success) $success = ldap_mod_replace($_SESSION['ldap']->server(),$values->general_dn, $attr);
+		// remove old account
+		if ($success) $success = ldap_delete($_SESSION['ldap']->server(),$values_old->general_dn);
 		if (!$success) return 5;
 		}
 
-	if ( $_SESSION['final_changegids']==true ) { // Chnage GIDs of all users which are member of group
-		$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_UserSuffix(), 'gidNumber=' . $values_old->general_uidNumber, array('gidNumber'));
+	if ($attr) {
+		// Change or add new attributes
+		$success = ldap_modify($_SESSION['ldap']->server(),$values->general_dn, $attr);
+		if (!$success) return 5;
+		}
+
+	// Chnage GIDs of all users which are member of group
+	if ( $_SESSION['final_changegids']==true ) {
+		$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_UserSuffix(), 'gidNumber=' . $values_old->general_uidNumber, array(''));
 		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 		while ($entry) {
 			$user['gidNumber'][0] = $values->general_uidNumber;
 			$success =ldap_modify($_SESSION['ldap']->server(), ldap_get_dn($_SESSION['ldap']->server(), $entry), $user);
+			if (!$success) return 5;
 			$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
 			}
 		}
-	if (!$success) return 5;
+
+	// Change quotas if quotas are set and lamdaemon.pl should be used
 	if ($_SESSION['config']->scriptServer && is_array($values->quota)) setquotas($values,$values_old);
-	if ((isset($_SESSION['groupDN']))) { // refresh group-cache array
+	//make required changes in cache-array
+	if ((isset($_SESSION['groupDN']))) {
 		if ($values->general_dn != $values_old->general_dn) {
 			unset ($_SESSION['groupDN'][$values_old->general_dn]);
 			}
 		$_SESSION['groupDN'][$values->general_dn]['cn'] = $values->general_username;
 		$_SESSION['groupDN'][$values->general_dn]['uidNumber'] = $values->general_uidNumber;
 		}
+	// Return 3 if everything has worked fine
 	return 3;
 	}
 

@@ -285,11 +285,8 @@ echo "</title>\n".
 	"<form action=\"hostedit.php\" method=\"post\">\n".
 	"<input name=\"varkey\" type=\"hidden\" value=\"".$varkey."\">\n";
 
-if (is_array($errors)) {
-	echo "<table class=\"account\" width=\"100%\">\n";
+if (is_array($errors))
 	for ($i=0; $i<sizeof($errors); $i++) StatusMessage($errors[$i][0], $errors[$i][1], $errors[$i][2]);
-	echo "</table>";
-	}
 
 
 // print_r($account_new);
@@ -418,13 +415,6 @@ switch ($select_local) { // Select which part of page will be loaded
 			echo '<input name="respass" type="submit" value="';
 			echo _('Reset password'); echo '">';
 			}
-		echo '</td></tr>'."\n".'<tr><td>';
-		echo _('Account is deactivated');
-		echo '</td>'."\n".'<td><input name="f_smb_flagsD" type="checkbox"';
-		if ($account_new->smb_flagsD) echo ' checked ';
-		echo '></td><td>'.
-			'<a href="../help.php?HelpNumber=432" target="lamhelp">'._('Help').'</a>'.
-			'</td></tr>'."\n".'<tr><td>';
 		echo '</td></tr>'."\n".'<tr><td>';
 		echo _('Domain');
 		if ($config_intern->is_samba3()) {

@@ -403,11 +403,8 @@ echo "</title>\n".
 	"<form action=\"groupedit.php\" method=\"post\">\n".
 	"<input name=\"varkey\" type=\"hidden\" value=\"".$varkey."\">\n";
 
-if (is_array($errors)) {
-	echo "<table class=\"groupedit\" width=\"100%\">\n";
+if (is_array($errors))
 	for ($i=0; $i<sizeof($errors); $i++) StatusMessage($errors[$i][0], $errors[$i][1], $errors[$i][2]);
-	echo "</table>";
-	}
 
 // print_r($account_old);
 switch ($select_local) { // Select which part of page will be loaded
@@ -426,6 +423,19 @@ switch ($select_local) { // Select which part of page will be loaded
 		foreach ($temp2 as $temp) $users[] = $temp['cn'];
 		if (is_array($users)) sort($users, SORT_STRING);
 		$users = array_delete($account_new->unix_memberUid, $users);
+		if (isset($account_old->general_uidNumber))
+			$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_UserSuffix(), "(&(objectClass=PosixAccount)(gidNumber=$account_old->general_uidNumber))", array('cn'));
+		else $result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_UserSuffix(), "(&(objectClass=PosixAccount)(gidNumber=$account_new->general_uidNumber))", array('cn'));
+		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
+		while ($entry) {
+			$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
+			if (isset($attr['cn'][0])) {
+				$users = @array_flip($users);
+				unset ($users[$attr['cn'][0]]);
+				$users = @array_flip($users);
+				}
+			$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
+			}
 		echo "<input name=\"select\" type=\"hidden\" value=\"groupmembers\">\n";
 		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
 		echo "<table border=0><tr><td><fieldset class=\"groupedit-middle\"><legend class=\"groupedit-bright\"><b>";

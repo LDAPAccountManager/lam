@@ -653,11 +653,8 @@ echo "</title>\n".
 	"<form action=\"useredit.php\" method=\"post\">\n".
 	"<input name=\"varkey\" type=\"hidden\" value=\"".$varkey."\">\n";
 
-if (is_array($errors)) {
-	echo "<table class=\"account\" width=\"100%\">\n";
+if (is_array($errors))
 	for ($i=0; $i<sizeof($errors); $i++) StatusMessage($errors[$i][0], $errors[$i][1], $errors[$i][2]);
-	echo "</table>";
-	}
 
 // print_r($account_new);
 // print_r($_POST);

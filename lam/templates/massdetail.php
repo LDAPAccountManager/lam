@@ -30,20 +30,22 @@ include_once('../lib/status.inc'); // Return error-message
 include_once('../lib/pdf.inc'); // Return a pdf-file
 include_once('../lib/ldap.inc'); // LDAP-functions
 
+// Start Session
 session_save_path('../sess');
 @session_start();
 
+// Print header and part of body
 echo	'<html><head><title>';
 echo _('Create new accounts');
 echo '</title>'.
-	'<link rel="stylesheet" type="text/css" href="'.$_SESSION['lamurl'].'style/layout.css">'.
+	'<link rel="stylesheet" type="text/css" href="../style/layout.css">'.
 	'<meta http-equiv="pragma" content="no-cache">'.
 	'<meta http-equiv="cache-control" content="no-cache">'.
 	'</head><body>'.
 	'<form enctype="multipart/form-data" action="massdetail.php" method="post">'.
 	'<table class="massdetail" width="100%">';
 
-if ($_GET) {
+if (isset($_GET)) {
 	$row = $_GET['row'];
 	$select = $_GET['type'];
 	}
