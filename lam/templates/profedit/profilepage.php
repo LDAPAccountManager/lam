@@ -56,7 +56,7 @@ if (!(($type == 'user') || ($type == 'group') || ($type == 'host'))) meta_refres
 $options = getProfileOptions($type);
 
 // load old profile if needed
-$old_profile = array();
+$old_options = array();
 if ($_GET['edit']) {
 	if ($type == "user") $old_options = loadUserProfile($_GET['edit']);
 	else if ($type == "group") $old_options = loadGroupProfile($_GET['edit']);
@@ -78,7 +78,7 @@ for ($m = 0; $m < sizeof($modules); $m++) {
 			echo "<tr>\n";
 			for ($o = 0; $o < sizeof($options[$modules[$m]][$l]); $o++) {  // line parts
 				echo "<td>";
-				print_option($options[$modules[$m]][$l][$o], $modules[$m], $old_profile);
+				print_option($options[$modules[$m]][$l][$o], $modules[$m], $old_options);
 				echo "</td>\n";
 			}
 			echo "</tr>\n";
@@ -105,89 +105,89 @@ echo ("<input type=\"submit\" name=\"abort\" value=\"" . _("Abort") . "\"></td>\
 echo ("<td>&nbsp</td>");
 echo ("</tr>\n");
 echo ("</table>\n");
+echo "<input type=\"hidden\" name=\"accounttype\" value=\"$type\">\n";
 
 echo ("</form></body></html>\n");
 
 // prints out the row of a table including the option name, values and help
 // $values: An array formated as module option
 // $module_name: The name of the module the options belong to
-// $old_profile: A hash array with the values from the loaded profile
-function print_option($values, $modulename, $old_profile) {
-			switch ($values['kind']) {
-				// text value
-				case 'text':
-					echo $values['text'] . "\n";
-					break;
-				// help link
-				case 'help':
-					echo "<a href=../help.php?module=$modulename&amp;module=" . $values['value'] . ">" . _('Help') . "</a>\n";
-					break;
-				// input field
-				case 'input':
-					if (($values['type'] == 'text') || ($values['type'] == 'checkbox')) {
-						if ($values['type'] == 'text') {
-							$output = "<input type=\"" . $values['type'] . "\" name=\"" . $values['name'] . "\"";
-							if ($values['size']) $output .= " size=\"" . $values['size'] . "\"";
-							if ($values['maxlength']) $output .= " maxlength=\"" . $values['maxlength'] . "\"";
-							if (isset($old_profile[$values['name']])) $output .= " value=\"" . $old_profile[$values['name']][0] . "\"";
-							elseif ($values['value']) $output .= " value=\"" . $values['value'] . "\"";
-							if ($values['disabled']) $output .= " disabled";
-							$output .= ">\n";
-							echo $output;
-							$_SESSION['profile_types'][$values['name']] = "text";
-						}
-						elseif ($values['type'] == 'checkbox') {
-							$output = "<input type=\"" . $values['type'] . "\" name=\"" . $values['name'] . "\"";
-							if ($values['size']) $output .= " size=\"" . $values['size'] . "\"";
-							if ($values['maxlength']) $output .= " maxlength=\"" . $values['maxlength'] . "\"";
-							if ($values['value']) $output .= " value=\"" . $values['value'] . "\"";
-							if ($values['disabled']) $output .= " disabled";
-							if (isset($old_profile[$values['name']]) && ($old_profile[$values['name']][0] == true)) $output .= " checked";
-							elseif ($values['checked']) $output .= " checked";
-							$output .= ">\n";
-							echo $output;
-							$_SESSION['profile_types'][$values['name']] = "checkbox";
-						}
-					}
-					break;
-				// select box
-				case 'select':
-					if ($values['multiple']) {
-						echo "<select name=\"" . $values['name'] . "[]\" size=\"" . $values['size'] . "\" multiple>\n";
-						$_SESSION['profile_types'][$values['name']] = "multiselect";
+// $old_options: A hash array with the values from the loaded profile
+function print_option($values, $modulename, $old_options) {
+	switch ($values['kind']) {
+		// text value
+		case 'text':
+			echo $values['text'] . "\n";
+			break;
+		// help link
+		case 'help':
+			echo "<a href=../help.php?module=$modulename&amp;module=" . $values['value'] . ">" . _('Help') . "</a>\n";
+			break;
+		// input field
+		case 'input':
+			if (($values['type'] == 'text') || ($values['type'] == 'checkbox')) {
+				if ($values['type'] == 'text') {
+					$output = "<input type=\"text\" name=\"" . $values['name'] . "\"";
+					if ($values['size']) $output .= " size=\"" . $values['size'] . "\"";
+					if ($values['maxlength']) $output .= " maxlength=\"" . $values['maxlength'] . "\"";
+					if (isset($old_options[$values['name']])) $output .= " value=\"" . $old_options[$values['name']][0] . "\"";
+					elseif ($values['value']) $output .= " value=\"" . $values['value'] . "\"";
+					if ($values['disabled']) $output .= " disabled";
+					$output .= ">\n";
+					echo $output;
+					$_SESSION['profile_types'][$values['name']] = "text";
+				}
+				elseif ($values['type'] == 'checkbox') {
+					$output = "<input type=\"checkbox\" name=\"" . $values['name'] . "\"";
+					if ($values['size']) $output .= " size=\"" . $values['size'] . "\"";
+					if ($values['maxlength']) $output .= " maxlength=\"" . $values['maxlength'] . "\"";
+					if ($values['disabled']) $output .= " disabled";
+					if (isset($old_options[$values['name']]) && ($old_options[$values['name']][0] == true)) $output .= " checked";
+					elseif ($values['checked']) $output .= " checked";
+					$output .= ">\n";
+					echo $output;
+					$_SESSION['profile_types'][$values['name']] = "checkbox";
+				}
+			}
+			break;
+		// select box
+		case 'select':
+			if ($values['multiple']) {
+				echo "<select name=\"" . $values['name'] . "[]\" size=\"" . $values['size'] . "\" multiple>\n";
+				$_SESSION['profile_types'][$values['name']] = "multiselect";
+			}
+			else {
+				echo "<select name=\"" . $values['name'] . "\" size=\"" . $values['size'] . "\">\n";
+				$_SESSION['profile_types'][$values['name']] = "select";
+			}
+			// option values
+			for ($i = 0; $i < sizeof($values['options']); $i++) {
+				// use values from old profile if given
+				if (isset($old_options[$values['name']])) {
+					if (in_array($values['options'][$i], $old_options[$values['name']])) {
+						echo "<option selected>" . $values['options'][$i] . "</option>\n";
 					}
 					else {
-						echo "<select name=\"" . $values['name'] . "\" size=\"" . $values['size'] . "\">\n";
-						$_SESSION['profile_types'][$values['name']] = "select";
+						echo "<option>" . $values['options'][$i] . "</option>\n";
 					}
-					// option values
-					for ($i = 0; $i < sizeof($values['options']); $i++) {
-						// use values from old profile if given
-						if (isset($old_profile[$values['name']])) {
-							if (in_array($values['options'][$i], $old_profile[$values['name']])) {
-								echo "<option selected>" . $values['options'][$i] . "</option>\n";
-							}
-							else {
-								echo "<option>" . $values['options'][$i] . "</option>\n";
-							}
-						}
-						// use default values if not in profile
-						else {
-							if (in_array($values['options'][$i], $values['options_selected'])) {
-								echo "<option selected>" . $values['options'][$i] . "</option>\n";
-							}
-							else {
-								echo "<option>" . $values['options'][$i] . "</option>\n";
-							}
-						}
+				}
+				// use default values if not in profile
+				else {
+					if (in_array($values['options'][$i], $values['options_selected'])) {
+						echo "<option selected>" . $values['options'][$i] . "</option>\n";
 					}
-					echo "</select>\n";
-					break;
-				// print error message for invalid types
-				default:
-					echo _("Unrecognized type") . ": " . $values['kind'] . "\n";
-					break;
+					else {
+						echo "<option>" . $values['options'][$i] . "</option>\n";
+					}
+				}
 			}
+			echo "</select>\n";
+			break;
+		// print error message for invalid types
+		default:
+			echo _("Unrecognized type") . ": " . $values['kind'] . "\n";
+			break;
+	}
 }
 
 ?>
