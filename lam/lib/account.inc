@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 $Id$
 
@@ -55,7 +55,7 @@ class account { // This class keeps all needed values for any account
 	var $smb_pwdcanchange;
 	var $smb_pwdmustchange;
 	var $smb_homedrive;
-	var $smb_scriptpath;
+	var $smb_scriptPath;
 	var $smb_profilePath;
 	var $smb_smbuserworkstations;
 	var $smb_smbhome;
@@ -77,19 +77,59 @@ class account { // This class keeps all needed values for any account
 	var $personal_employeeType;
 	}
 
-function registervars() { // This function registers all needes session-varibales needed by account.php
+function initvars($type=false,$DN=false) { // This function registers all needes session-varibales needed by account.php
 	// if session was started previos, the existing session will be continued
 	session_save_path('../sess');
 	@session_start();
-	if ( !session_is_registered("type2")) session_register("type2"); // $type2 stores the kind of account (User|GRoup|Host)
-	if ( !session_is_registered("shelllist")) session_register("shelllist"); // $shelllist contains all shells defined in /etc/shells
-	if ( !session_is_registered("modify")) session_register("modify"); // if an existing account should be modified modify is true
-	if ( !session_is_registered("account")) session_register("account"); // The new Accout properties are stored here
-	if ( !session_is_registered("account_temp")) session_register("account_temp"); // Tempoprary account properties. If values are OK they will be moved to var account
-	if ( !session_is_registered("account_old")) session_register("account_old"); // Only valid if an account should be modified. It'll contains the existing account properties
-	if (!is_object($account)) $account = new account();
-	if (!is_object($account_temp)) $account_temp = new account();
-	if (!is_object($account_old)) $account = new account();
+	if ($type) {
+		if (session_is_registered("type2")) session_unregister("type2");
+		 else session_register("type2"); // $type2 stores the kind of account (User|Group|Host)
+		$_SESSION['type2'] = $type;
+		if (session_is_registered("shelllist")) session_unregister("shelllist");
+		 else session_register("shelllist"); // $shelllist contains all shells defined in /etc/shells
+		$_SESSION['shelllist'] = getshells(); // Write List of all valid shells in variable
+		if (session_is_registered("account")) session_unregister("account");
+		 else session_register("account"); // The new Accout properties are stored here
+		if ($DN) {
+			if (session_is_registered("account_old")) session_unregister("account_old");
+			else session_register("account_old"); // Only valid if an account should be modified. It'll contains the existing account properties
+			$DN = str_replace("\'", '',$DN);
+				switch ($type) {
+					case 'user':
+						$_SESSION['account'] = loaduser($DN);
+						$_SESSION['account_old'] = $_SESSION['account'];
+						$_SESSION['account']->unix_password='';
+						$_SESSION['account']->smb_password='';
+						break;
+					case 'group':
+						$_SESSION['account'] = loadgroup($DN);
+						$_SESSION['account_old'] = $_SESSION['account'];
+						if (!session_is_registered('final_changegids')) session_register('final_changegids');
+							else $_SESSION['final_changegids'] = '';
+						break;
+					case 'host':
+						$_SESSION['account'] = loadhost($DN);
+						$_SESSION['account_old'] = $_SESSION['account'];
+						$_SESSION['account']->unix_password='';
+						$_SESSION['account']->smb_password='';
+						break;
+					}
+			}
+		 else {
+			if ( (($type=='user')||($type=='group')) && ($_SESSION['config']->scriptServer)) $_SESSION['account'] = getquotas($type);
+			switch ($type) {
+				case 'user':
+						$_SESSION['account'] = loadUserProfile('default');
+					break;
+				case 'group':
+						$_SESSION['account'] = loadGroupProfile('default');
+					break;
+				case 'host':
+						$_SESSION['account'] = loadHostProfile('default');
+					break;
+				}
+			}
+		}
 	}
 
 function getshells() { // Return a list of all shells listed in /etc/shells
@@ -105,203 +145,143 @@ function getshells() { // Return a list of all shells listed in /etc/shells
 	return $shells;
 	}
 
-function checkglobal() { // This functions checks all global account parameters
-	// Check if username has been entered
-	$error = "0";
-	switch ( $_SESSION['type2'] ) {
+function checkglobal($values, $type, $values_old=false) { // This functions checks all global account parameters $values is class account(), $type=user|host|group
+	// If all values are OK an array of class account is returned. Else an error-string is returned
+	$return = new account();
+	switch ($type) {
 		case 'user' :
-			if ( ($_SESSION['account_temp']->general_gecos=='') || ($_SESSION['account_temp']->general_gecos==' ')) $_SESSION['account_temp']->general_gecos = $_SESSION['account_temp']->general_givenname . " " . $_SESSION['account_temp']->general_surname ;
 			// Check if Homedir is valid
-			if ($_SESSION['account_temp']->general_username != '')
-				$_SESSION['account_temp']->general_homedir = str_replace('$user', $_SESSION['account_temp']->general_username, $_SESSION['account_temp']->general_homedir);
-			$_SESSION['account_temp']->general_homedir = str_replace('$group', $_SESSION['account_temp']->general_group, $_SESSION['account_temp']->general_homedir);
-			if ( !ereg('^[/][a-z]([a-z]|[0-9]|[.]|[-]|[_])*([/][a-z]([a-z]|[0-9]|[.]|[-]|[_])*)*$', $_SESSION['account_temp']->general_homedir )) $error = _('Homedirectory contents invalid characters.');
+			$return->general_homedir = str_replace('$group', $values->general_group, $values->general_homedir);
+			if ($values->general_username != '')
+				$return->general_homedir = str_replace('$user', $values->general_username, $values->general_homedir);
+			if ( !ereg('^[/][a-z]([a-z]|[0-9]|[.]|[-]|[_])*([/][a-z]([a-z]|[0-9]|[.]|[-]|[_])*)*$', $return->general_homedir ))
+				return _('Homedirectory contents invalid characters.');
 			// Check if givenname is valid
-			if ( !ereg('^([a-z]|[A-Z])+$', $_SESSION['account_temp']->general_givenname)) $error = _('Givenname contents invalid characters');
+			if ( !ereg('^([a-z]|[A-Z])+$', $values->general_givenname)) return _('Givenname contents invalid characters');
 			// Check if surname is valid
-			if ( !ereg('^([a-z]|[A-Z])+$', $_SESSION['account_temp']->general_surname)) $error = _('Surname contents invalid characters');
-			// Check if UID is valid. If none value was entered, the next useable value will be inserted
-			$temp = checkid();
-			if ($temp) $error = $temp;
-			// Check if Username-length is OK. minLength=3, maxLength=20
-			if ( !ereg('.{3,20}', $_SESSION['account_temp']->general_username))   $error = _('Username must content between 3 and 20 characters.');
-			// Check if Username starts with letter
-			if ( !ereg('^[a-z].*$', $_SESSION['account_temp']->general_username)) $error = _('Username contents invalid characters. First character must be a letter');
+			if ( !ereg('^([a-z]|[A-Z])+$', $values->general_surname)) return _('Surname contents invalid characters');
+			if ( ($values->general_gecos=='') || ($values->general_gecos==' '))
+				$return->general_gecos = $values->general_givenname . " " . $values->general_surname ;
 			// Check if Username contents only valid characters
-			if ( !ereg('^([a-z]|[0-9]|[.]|[-]|[_])*$', $_SESSION['account_temp']->general_username)) $error = _('Username contents invalid characters. Valid characters are: a-z, 0-9 and .-_ !');
+			if ( !ereg('^([a-z]|[0-9]|[.]|[-]|[_])*$', $values->general_username))
+				return _('Username contents invalid characters. Valid characters are: a-z, 0-9 and .-_ !');
 			// Check if user already exists
-			$temp = ldapexists();
-			if ($temp) $error = $temp;
 			break;
 		case 'group' :
-			// Check if Groupname-length is OK. minLength=3, maxLength=20
-			if ( !ereg('.{3,20}', $_SESSION['account_temp']->general_username))   $error = _('Groupname must content between 3 and 20 characters.');
-			// Check if Groupname starts with letter
-			if ( !ereg('^[a-z].*$', $_SESSION['account_temp']->general_username)) $error = _('Groupname contents invalid characters. First character must be a letter');
 			// Check if Groupname contents only valid characters
-			if ( !ereg('^([a-z]|[0-9]|[.]|[-]|[_])*$', $_SESSION['account_temp']->general_username)) $error = _('Groupname contents invalid characters. Valid characters are: a-z, 0-9 and .-_ !');
+			if ( !ereg('^([a-z]|[0-9]|[.]|[-]|[_])*$', $values->general_username))
+				return _('Groupname contents invalid characters. Valid characters are: a-z, 0-9 and .-_ !');
 			// Check if group already exists
-			$temp = ldapexists();
-			if ($temp) $error = $temp;
-			// Check if GID is valid. If none value was entered, the next useable value will be inserted
-			$temp = checkid();
-			if ($temp) $error = $temp;
-			if ($_SESSION['account_temp']->general_gecos=='') $_SESSION['account_temp']->general_gecos = $_SESSION['account_temp']->general_username ;
+			if ($values->general_gecos=='') $return->general_gecos = $values->general_username ;
 			break;
 		case 'host' :
-			if ( substr($_SESSION['account_temp']->general_username, strlen($_SESSION['account_temp']->general_username)-1, strlen($_SESSION['account_temp']->general_username)) != '$' ) $_SESSION['account_temp']->general_username = $_SESSION['account_temp']->general_username . '$';
-			// Check if Hostname-length is OK. minLength=3, maxLength=20
-			if ( !ereg('.{3,20}', $_SESSION['account_temp']->general_username))   $error = _('Hostname must content between 3 and 20 characters.');
-			// Check if Hostname starts with letter
-			if ( !ereg('^[a-z].*$', $_SESSION['account_temp']->general_username)) $error = _('Hostname contents invalid characters. First character must be a letter');
+			if ( substr($values->general_username, strlen($values->general_username)-1, strlen($values->general_username)) != '$' )
+				$return->general_username = $values->general_username . '$';
 			// Check if Hostname contents only valid characters
-			if ( !ereg('^([a-z]|[0-9]|[.]|[-]|[$])*$', $_SESSION['account_temp']->general_username)) $error = _('Hostname contents invalid characters. Valid characters are: a-z, 0-9 and .-_ !');
+			if ( !ereg('^([a-z]|[0-9]|[.]|[-]|[$])*$', $values->general_username))
+				return _('Hostname contents invalid characters. Valid characters are: a-z, 0-9 and .-_ !');
 			// Check if Hostname already exists
-			$temp = ldapexists();
-			if ($temp) $error = $temp;
-			$_SESSION['account_temp']->general_homedir = '/dev/null';
-			$_SESSION['account_temp']->general_shell = '/bin/false';
-			// Check if UID is valid. If none value was entered, the next useable value will be inserted
-			$temp = checkid();
-			if ($temp) $error = $temp;
-			if ($_SESSION['account_temp']->general_gecos=='') $_SESSION['account_temp']->general_gecos = $_SESSION['account_temp']->general_username;
+			$return->general_homedir = '/dev/null';
+			$return->general_shell = '/bin/false';
+			if ($values->general_gecos=='') $return->general_gecos = $values->general_username;
 			break;
 		}
-	if ($_SESSION['account_temp']->general_username) $_SESSION['account']->general_username = $_SESSION['account_temp']->general_username;
-	if ($_SESSION['account_temp']->general_surname) $_SESSION['account']->general_surname = $_SESSION['account_temp']->general_surname;
-	if ($_SESSION['account_temp']->general_givenname) $_SESSION['account']->general_givenname = $_SESSION['account_temp']->general_givenname;
-	if ($_SESSION['account_temp']->general_uidNumber) $_SESSION['account']->general_uidNumber = $_SESSION['account_temp']->general_uidNumber;
-	if ($_SESSION['account_temp']->general_group) $_SESSION['account']->general_group = $_SESSION['account_temp']->general_group;
-	if ($_SESSION['account_temp']->general_groupadd) $_SESSION['account']->general_groupadd = $_SESSION['account_temp']->general_groupadd;
-	if ($_SESSION['account_temp']->general_homedir) $_SESSION['account']->general_homedir = $_SESSION['account_temp']->general_homedir;
-	if ($_SESSION['account_temp']->general_shell) $_SESSION['account']->general_shell = $_SESSION['account_temp']->general_shell;
-	if ($_SESSION['account_temp']->general_dn) $_SESSION['account']->general_dn = $_SESSION['account_temp']->general_dn;
-	if ($_SESSION['account_temp']->general_gecos) $_SESSION['account']->general_gecos = $_SESSION['account_temp']->general_gecos;
-	return $error;
+	if ($temp = ldapexists($values, $type, $values_old)) return $temp;
+	// Check if UID is valid. If none value was entered, the next useable value will be inserted
+	$return->general_uidNumber = checkid($values, $type, $values_old);
+	if (is_string($return->general_uidNumber)) return $return->general_uidNumber;
+	// Check if Name-length is OK. minLength=3, maxLength=20
+	if ( !ereg('.{3,20}', $values->general_username)) return _('Name must content between 3 and 20 characters.');
+	// Check if Name starts with letter
+	if ( !ereg('^[a-z].*$', $values->general_username))
+		return _('Name contents invalid characters. First character must be a letter');
+	return $return;
 	}
 
 
-function checkunix() { // This function checks all unix account paramters
-	$error = "0";
-	switch ( $_SESSION['type2'] ) {
+function checkunix($values, $type) { // This function checks all unix account paramters
+	if ($type=='user' && !ereg('^([a-z]|[A-Z]|[0-9]|[\|]|[\#]|[\*]|[\,]|[\.]|[\;]|[\:]|[\_]|[\-]|[\+]|[\!]|[\%]|[\&]|[\/]|[\?]|[\{]|[\[]|[\(]|[\)]|[\]]|[\}])*$', $values->unix_password))
+		return _('Password contents invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !');
+	if ( !ereg('^([0-9]*)$', $values->unix_pwdminage))  return _('Password Minage must be are natural number.');
+	if ( $values->unix_pwdminage > $values->unix_pwdmaxage ) return _('Password Maxage must bigger as Password Minage.');
+	if ( !ereg('^([1-9]+)([0-9]*)$', $values->unix_pwdmaxage)) return _('Password Maxage must be are natural number.');
+	if ($values->unix_pwdminage=='') return _('No value for Password Minage.');
+	if ( !ereg('^(([-][1])|([0-9]*))$', $values->unix_pwdallowlogin))
+	return _('Password Expire must be are natural number or -1.');
+	if ($values->unix_pwdmaxage=='') return _('No value for Password Maxage.');
+	if ( !ereg('^([1-9]+)([0-9]*)$', $values->unix_pwdwarn)) return _('Password Warn must be are natural number.');
+	if ($values->unix_pwdallowlogin=='') return _('No value for Password Expire.');
+	if ($values->unix_pwdwarn=='') return _('No value for Password Warn.');
+	return 0;
+	}
+
+function checksamba($values, $type) { // This function checks all samba account paramters
+	$return = new account();
+	if ($values->smb_useunixpwd) $return->smb_password = $values->unix_password;
+	switch ($type) {
 		case 'user' :
-			if ( !ereg('^([0-9]*)$', $_SESSION['account_temp']->unix_pwdminage))  $error = _('Password Minage must be are natural number.');
-			if ( $_SESSION['account_temp']->unix_pwdminage > $_SESSION['account_temp']->unix_pwdmaxage ) $error = _('Password Maxage must bigger as Password Minage.');
-			if ( !ereg('^([1-9]+)([0-9]*)$', $_SESSION['account_temp']->unix_pwdmaxage))  $error = _('Password Maxage must be are natural number.');
-			if ($_SESSION['account_temp']->unix_pwdminage=='') $error = _('No value for Password Minage.');
-			if ( !ereg('^(([-][1])|([0-9]*))$', $_SESSION['account_temp']->unix_pwdallowlogin))  $error = _('Password Expire must be are natural number or -1.');
-			if ($_SESSION['account_temp']->unix_pwdmaxage=='') $error = _('No value for Password Maxage.');
-			if ( !ereg('^([1-9]+)([0-9]*)$', $_SESSION['account_temp']->unix_pwdwarn))  $error = _('Password Warn must be are natural number.');
-			if ($_SESSION['account_temp']->unix_pwdallowlogin=='') $error = _('No value for Password Expire.');
+			$return->smb_scriptPath = str_replace('$user', $values->general_username, $values->smb_scriptPath);
+			$return->smb_scriptPath = str_replace('$group', $values->general_group, $values->smb_scriptPath);
+			$return->smb_profilePath = str_replace('$user', $values->general_username, $values->smb_profilePath);
+			$return->smb_profilePath = str_replace('$group', $return->general_group, $return->smb_profilePath);
+			$return->smb_smbHome = str_replace('$user', $values->general_username, $values->smb_smbHome);
+			$return->smb_smbHome = str_replace('$group', $return->general_group, $return->smb_smbHome);
 			if ( !ereg('^([a-z]|[A-Z]|[0-9]|[\|]|[\#]|[\*]|[\,]|[\.]|[\;]|[\:]|[\_]|[\-]|[\+]|[\!]|[\%]|[\&]|[\/]|[\?]|[\{]|[\[]|[\(]|[\)]|[\]]|[\}])*$',
-				$_SESSION['account_temp']->unix_password)) $error = _('Password contents invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !');
-			if ($_SESSION['account_temp']->unix_pwdwarn=='') $error = _('No value for Password Warn.');
+				$values->smb_password)) return _('Password contents invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !');
+			if ( (!$return->smb_scriptPath=='') && (!ereg('^([/])*[a-z]([a-z]|[0-9]|[.]|[-]|[_])*([/][a-z]([a-z]|[0-9]|[.]|[-]|[_])*)*$', $return->smb_scriptPath)))
+				return _('Scriptpath is invalid');
+			if ( (!$return->smb_profilePath=='') && (!ereg('^[/][a-z]([a-z]|[0-9]|[.]|[-]|[_])*([/][a-z]([a-z]|[0-9]|[.]|[-]|[_])*)*$', $return->smb_profilePath))
+				&& (!ereg('^[\][\]([a-z]|[A-Z]|[0-9]|[.]|[-])+([\]([a-z]|[A-Z]|[0-9]|[.]|[-])+)+$', $return->smb_profilePath)))
+					return _('ProfilePath is invalid.');
+			if ( (!$return->smb_smbHome=='') && !ereg('^[\][\]([a-z]|[A-Z]|[0-9]|[.]|[-])+([\]([a-z]|[A-Z]|[0-9]|[.]|[-])+)+$', $return->smb_smbhome))
+				return _('smbHome is invalid.');
+			if ((!$values->smb_smbuserworkstations=='') && !ereg('^([a-z]|[A-Z]|[0-9]|[.]|[-])+(([,])+([a-z]|[A-Z]|[0-9]|[.]|[-])+)*$', $values->smb_smbuserworkstations))
+				return _('User Workstations is invalid.');
+			$return->smb_flagsW = 0;
 			break;
 		case 'host' :
-			if ( !ereg('^([0-9]*)$', $_SESSION['account_temp']->unix_pwdminage))  $error = _('Password Minage must be are natural number.');
-			if ( $_SESSION['account_temp']->unix_pwdminage > $_SESSION['account_temp']->unix_pwdmaxage ) $error = _('Password Maxage must bigger as Password Minage.');
-			if ( !ereg('^([1-9]+)([0-9]*)$', $_SESSION['account_temp']->unix_pwdmaxage))  $error = _('Password Maxage must be are natural number.');
-			if ($_SESSION['account_temp']->unix_pwdminage=='') $error = _('No value for Password Minage.');
-			if ( !ereg('^(([-][1])|([0-9]*))$', $_SESSION['account_temp']->unix_pwdallowlogin))  $error = _('Password Expire must be are natural number or -1.');
-			if ($_SESSION['account_temp']->unix_pwdmaxage=='') $error = _('No value for Password Maxage.');
-			if ( !ereg('^([1-9]+)([0-9]*)$', $_SESSION['account_temp']->unix_pwdwarn))  $error = _('Password Warn must be are natural number.');
-			if ($_SESSION['account_temp']->unix_pwdallowlogin=='') $error = _('No value for Password Expire.');
-			if ($_SESSION['account_temp']->unix_pwdwarn=='') $error = _('No value for Password Warn.');
-			$_SESSION['account_temp']->unix_password = '';
+			$return->smb_password = $values->unix_password;
+			$return->smb_flagsW = 1;
 			break;
 		}
-	// Write Values from Webpage to Session-Variables
-	$_SESSION['account']->unix_password = $_SESSION['account_temp']->unix_password;
-	$_SESSION['account']->unix_password_no = $_SESSION['account_temp']->unix_password_no;
-	$_SESSION['account']->unix_pwdwarn = $_SESSION['account_temp']->unix_pwdwarn;
-	$_SESSION['account']->unix_pwdallowlogin = $_SESSION['account_temp']->unix_pwdallowlogin;
-	$_SESSION['account']->unix_pwdmaxage = $_SESSION['account_temp']->unix_pwdmaxage;
-	$_SESSION['account']->unix_pwdminage = $_SESSION['account_temp']->unix_pwdminage;
-	$_SESSION['account']->unix_pwdexpire_day = $_SESSION['account_temp']->unix_pwdexpire_day;
-	$_SESSION['account']->unix_pwdexpire_mon = $_SESSION['account_temp']->unix_pwdexpire_mon;
-	$_SESSION['account']->unix_pwdexpire_yea = $_SESSION['account_temp']->unix_pwdexpire_yea;
-	if ($_SESSION['account_temp']->unix_deactivated) $_SESSION['account']->unix_deactivated = 1; else $_SESSION['account']->unix_deactivated = 0;
-	return $error;
+	if ((!$values->smb_domain=='') && !ereg('^([a-z]|[A-Z]|[0-9]|[-])+$', $values->smb_domain))
+		return _('Domain Name contents invalid characters. Valid characters are: a-z, A-Z, 0-9 and -.');
+	if ($values->smb_useunixpwd) $return->smb_useunixpwd = 1; else $return->smb_useunixpwd = 0;
+	if ($values->smb_pwdcanchange) $return->smb_pwdcanchange = 1; else $return->smb_pwdcanchange = 0;
+	if ($values->smb_pwdmustchange) $return->smb_pwdmustchange = 1; else $return->smb_pwdmustchange = 0;
+	return $return;
 	}
 
-function checksamba() { // This function checks all samba account paramters
-	$error = "0";
-	if ($_SESSION['account_temp']->smb_useunixpwd) $_SESSION['account_temp']->smb_password = $_SESSION['account_temp']->unix_password;
-	switch ( $_SESSION['type2'] ) {
-		case 'user' :
-			$_SESSION['account_temp']->smb_scriptpath = str_replace('$user', $_SESSION['account_temp']->general_username, $_SESSION['account_temp']->smb_scriptpath);
-			$_SESSION['account_temp']->smb_scriptpath = str_replace('$group', $_SESSION['account_temp']->general_group, $_SESSION['account_temp']->smb_scriptpath);
-			$_SESSION['account_temp']->smb_profilePath = str_replace('$user', $_SESSION['account_temp']->general_username, $_SESSION['account_temp']->smb_profilePath);
-			$_SESSION['account_temp']->smb_profilePath = str_replace('$group', $_SESSION['account_temp']->general_group, $_SESSION['account_temp']->smb_profilePath);
-			$_SESSION['account_temp']->smb_smbHome = str_replace('$user', $_SESSION['account_temp']->general_username, $_SESSION['account_temp']->smb_smbHome);
-			$_SESSION['account_temp']->smb_smbHome = str_replace('$group', $_SESSION['account_temp']->general_group, $_SESSION['account_temp']->smb_smbHome);
-			if ( !ereg('^([a-z]|[A-Z]|[0-9]|[\|]|[\#]|[\*]|[\,]|[\.]|[\;]|[\:]|[\_]|[\-]|[\+]|[\!]|[\%]|[\&]|[\/]|[\?]|[\{]|[\[]|[\(]|[\)]|[\]]|[\}])*$',
-				$_SESSION['account_temp']->smb_password)) $error = _('Password contents invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !');
-			if ( (!$_SESSION['account_temp']->smb_scriptpath=='') && (!ereg('^([/])*[a-z]([a-z]|[0-9]|[.]|[-]|[_])*([/][a-z]([a-z]|[0-9]|[.]|[-]|[_])*)*$', $_SESSION['account_temp']->smb_scriptpath))) $error = _('Scriptpath is invalid');
-			if ( (!$_SESSION['account_temp']->smb_profilePath=='') && (!ereg('^[/][a-z]([a-z]|[0-9]|[.]|[-]|[_])*([/][a-z]([a-z]|[0-9]|[.]|[-]|[_])*)*$', $_SESSION['account_temp']->smb_profilePath)) && (!ereg('^[\][\]([a-z]|[A-Z]|[0-9]|[.]|[-])+([\]([a-z]|[A-Z]|[0-9]|[.]|[-])+)+$', $_SESSION['account_temp']->smb_profilePath))) $error = _('ProfilePath is invalid.');
-			if ( (!$_SESSION['account_temp']->smb_smbHome=='') && !ereg('^[\][\]([a-z]|[A-Z]|[0-9]|[.]|[-])+([\]([a-z]|[A-Z]|[0-9]|[.]|[-])+)+$', $_SESSION['account_temp']->smb_smbhome)) $error = _('smbHome is invalid.');
-			if ( ((!$_SESSION['account_temp']->smb_smbuserworkstations=='') && $_SESSION['account_temp']->smb_smbuserworkstations!='*') && (!ereg('^([a-z]|[A-Z]|[0-9]|[.]|[-])+(([ ])+([a-z]|[A-Z]|[0-9]|[.]|[-])+)*$', $_SESSION['account_temp']->smb_smbuserworkstations))) $error = _('User Workstations is invalid.');
-			if ( (!$_SESSION['account_temp']->smb_domain=='') && !ereg('^([a-z]|[A-Z]|[0-9]|[-])+$', $_SESSION['account_temp']->smb_domain)) $error = _('Domain Name contents invalid characters. Valid characters are: a-z, A-Z, 0-9 and -.');
-			$_SESSION['account_temp']->smb_flagsW = 0;
-			break;
-		case 'host' :
-			if ( (!$_SESSION['account_temp']->smb_domain=='') && !ereg('^([a-z]|[A-Z]|[0-9]|[-])+$', $_SESSION['account_temp']->smb_domain)) $error = _('Domain Name contents invalid characters. Valid characters are: a-z, A-Z, 0-9 and -.');
-			$_SESSION['account_temp']->smb_password = $_SESSION['account_temp']->unix_password;
-			$_SESSION['account_temp']->smb_flagsW = 1;
-			break;
-		}
-	// Write Values from Webpage to Session-Variables
-	$_SESSION['account']->smb_password = $_SESSION['account_temp']->smb_password;
-	$_SESSION['account']->smb_password_no = $_SESSION['account_temp']->smb_password_no;
-	if ($_SESSION['account_temp']->smb_useunixpwd ) $_SESSION['account']->smb_useunixpwd = 1; else $_SESSION['account']->smb_useunixpwd = 0;
-	if ($_SESSION['account_temp']->smb_pwdcanchange ) $_SESSION['account']->smb_pwdcanchange = 1; else $_SESSION['account']->smb_pwdcanchange = 0;
-	if ($_SESSION['account_temp']->smb_pwdmustchange) $_SESSION['account']->smb_pwdmustchange = 1; else $_SESSION['account']->smb_pwdmustchange = 0;
-	$_SESSION['account']->smb_homedrive = $_SESSION['account_temp']->smb_homedrive;
-	$_SESSION['account']->smb_profilePath = $_SESSION['account_temp']->smb_profilePath;
-	$_SESSION['account']->smb_scriptpath = $_SESSION['account_temp']->smb_scriptpath;
-	$_SESSION['account']->smb_smbuserworkstations = $_SESSION['account_temp']->smb_smbuserworkstations;
-	$_SESSION['account']->smb_smbhome = $_SESSION['account_temp']->smb_smbhome;
-	$_SESSION['account']->smb_domain = $_SESSION['account_temp']->smb_domain;
-	if ($_SESSION['account_temp']->smb_flagsW) $_SESSION['account']->smb_flagsW = 1; else $_SESSION['account']->smb_flagsW = 0;
-	if ($_SESSION['account_temp']->smb_flagsD) $_SESSION['account']->smb_flagsD = 1; else $_SESSION['account']->smb_flagsD = 0;
-	if ($_SESSION['account_temp']->smb_flagsX) $_SESSION['account']->smb_flagsX = 1; else $_SESSION['account']->smb_flagsX = 0;
-	return $error;
-	}
-
-function checkquota() { // This function checks all quota paramters
-	$error = "0";
+function checkquota($values) { // This function checks all quota paramters
+	$return = new account();
 	$i=0;
-	while ($_SESSION['account']->quota[$i][0]) {
-		if (!$_SESSION['account_temp']->quota[$i][2]) $_SESSION['account']->quota[$i][2] = 0;
-			else if (!ereg('^([0-9])*$', $_SESSION['account_temp']->quota[$i][2])) $error = _('Block soft quota contains invalid characters. Only natural numbers are allowed');
-		if (!$_SESSION['account_temp']->quota[$i][3]) $_SESSION['account']->quota[$i][3] = 0;
-			else if (!ereg('^([0-9])*$', $_SESSION['account_temp']->quota[$i][3])) $error = _('Block hard quota contains invalid characters. Only natural numbers are allowed');
-		if (!$_SESSION['account_temp']->quota[$i][6]) $_SESSION['account']->quota[$i][6] = 0;
-			else if (!ereg('^([0-9])*$', $_SESSION['account_temp']->quota[$i][6])) $error = _('Inode soft quota contains invalid characters. Only natural numbers are allowed');
-		if (!$_SESSION['account_temp']->quota[$i][7]) $_SESSION['account']->quota[$i][7] = 0;
-			else if (!ereg('^([0-9])*$', $_SESSION['account_temp']->quota[$i][7])) $error = _('Inode hard quota contains invalid characters. Only natural numbers are allowed');
-		$_SESSION['account']->quota[$i][2] = $_SESSION['account_temp']->quota[$i][2];
-		$_SESSION['account']->quota[$i][3] = $_SESSION['account_temp']->quota[$i][3];
-		$_SESSION['account']->quota[$i][6] = $_SESSION['account_temp']->quota[$i][6];
-		$_SESSION['account']->quota[$i][7] = $_SESSION['account_temp']->quota[$i][7];
+	while ($values->quota[$i][0]) {
+		if (!$values->quota[$i][2]) $return->quota[$i][2] = 0;
+			else if (!ereg('^([0-9])*$', $values->quota[$i][2]))
+				return _('Block soft quota contains invalid characters. Only natural numbers are allowed');
+		if (!$values->quota[$i][3]) $return->quota[$i][3] = 0;
+			else if (!ereg('^([0-9])*$', $values->quota[$i][3]))
+				return _('Block hard quota contains invalid characters. Only natural numbers are allowed');
+		if (!$values->quota[$i][6]) $return->quota[$i][6] = 0;
+			else if (!ereg('^([0-9])*$', $values->quota[$i][6]))
+				return _('Inode soft quota contains invalid characters. Only natural numbers are allowed');
+		if (!$values->quota[$i][7]) $return->quota[$i][7] = 0;
+			else if (!ereg('^([0-9])*$', $values->quota[$i][7]))
+				return _('Inode hard quota contains invalid characters. Only natural numbers are allowed');
+		$return->quota[$i][2] = $values->quota[$i][2];
+		$return->quota[$i][3] = $values->quota[$i][3];
+		$return->quota[$i][6] = $values->quota[$i][6];
+		$return->quota[$i][7] = $values->quota[$i][7];
 		$i++;
 		}
-	return $error;
+	return $return;
 	}
 
 
-function checkpersonal() {
-	$error = "0";
-	if ($_SESSION['account_temp']->personal_title) $_SESSION['account']->personal_title = $_SESSION['account_temp']->personal_title ;
-	if ($_SESSION['account_temp']->personal_mail) $_SESSION['account']->personal_mail = $_SESSION['account_temp']->personal_mail ;
-	if ($_SESSION['account_temp']->personal_telephoneNumber) $_SESSION['account']->personal_telephoneNumber = $_SESSION['account_temp']->personal_telephoneNumber ;
-	if ($_SESSION['account_temp']->personal_mobileTelephoneNumber) $_SESSION['account']->personal_mobileTelephoneNumber = $_SESSION['account_temp']->personal_mobileTelephoneNumber ;
-	if ($_SESSION['account_temp']->personal_facsimileTelephoneNumber) $_SESSION['account']->personal_facsimileTelephoneNumber = $_SESSION['account_temp']->personal_facsimileTelephoneNumber ;
-	if ($_SESSION['account_temp']->personal_street) $_SESSION['account']->personal_street = $_SESSION['account_temp']->personal_street ;
-	if ($_SESSION['account_temp']->personal_postalCode) $_SESSION['account']->personal_postalCode = $_SESSION['account_temp']->personal_postalCode ;
-	if ($_SESSION['account_temp']->personal_postalAddress) $_SESSION['account']->personal_postalAddress = $_SESSION['account_temp']->personal_postalAddress ;
-	if ($_SESSION['account_temp']->personal_employeeType) $_SESSION['account']->personal_employeeType = $_SESSION['account_temp']->personal_employeeType ;
-	return $error;
+function checkpersonal($values) {
+	$return = new account();
+	$return = $values;
+	return $return;
 	}
 
 function genpasswd() { // This function will return a password with max. 8 characters
@@ -357,45 +337,47 @@ function RndInt($Format){
 * 8 CHARACTERS IN THE PASSWORD PRODUCED.
 */
 
-function getquotas($user='+') { // Whis function will return the quotas from the specified user If empty only filesystems with enabled quotas are returned
+function getquotas($type,$user='+') { // Whis function will return the quotas from the specified user If empty only filesystems with enabled quotas are returned
+	$return = new account();
 	$ldap_q = $_SESSION['ldap']->decrypt();
 	$towrite = $ldap_q[0].' '.$ldap_q[1].' '.$user.' quota get ';
-	if ($_SESSION['type2']=='user') $towrite = $towrite.'u';
+	if ($type=='user') $towrite = $towrite.'u';
 	 else $towrite = $towrite.'g';
 	exec("/usr/bin/ssh ".$_SESSION['config']->scriptServer." sudo ".$_SESSION['config']->scriptPath." $towrite", $vals);
 	$vals = explode(':', $vals[0]);
 	for ($i=0; $i<sizeof($vals); $i++) {
 		$vals2 = explode(',', $vals[$i]);
 		for ($j=0; $j<sizeof($vals2); $j++) {
-			$_SESSION['account']->quota[$i][$j] = $vals2[$j];
+			$return->quota[$i][$j] = $vals2[$j];
 			}
-		if ($_SESSION['account']->quota[$i][4]<$time) $_SESSION['account']->quota[$i][4] = '';
-			else $_SESSION['account']->quota[$i][4] = strval(($_SESSION['account']->quota[$i][4]-$time)/3600) . _(' hours');
-		if ($_SESSION['account']->quota[$i][8]<$time) $_SESSION['account']->quota[$i][8] = '';
-			else $_SESSION['account']->quota[$i][8] = strval(($_SESSION['account']->quota[$i][8]-$time)/3600) . _(' hours');
+		if ($return->quota[$i][4]<$time) $return->quota[$i][4] = '';
+			else $return->quota[$i][4] = strval(($return->quota[$i][4]-$time)/3600) . _(' hours');
+		if ($return->quota[$i][8]<$time) $return->quota[$i][8] = '';
+			else $return->quota[$i][8] = strval(($return->quota[$i][8]-$time)/3600) . _(' hours');
 		}
+	return $return;
 	}
 
-function setquotas($user) { // Whis function will set the quotas from the specified user.
+function setquotas($values,$type,$values_old=false) { // Whis function will set the quotas from the specified user.
 	$ldap_q = $_SESSION['ldap']->decrypt();
-	$towrite = $ldap_q[0].' '.$ldap_q[1].' '.$user.' quota set ';
-	if ($_SESSION['type2']=='user') $towrite = $towrite.'u ';
+	$towrite = $ldap_q[0].' '.$ldap_q[1].' '.$values->general_username.' quota set ';
+	if ($type=='user') $towrite = $towrite.'u ';
 	 else $towrite = $towrite.'g ';
 	$i=0;
-	while ($_SESSION['account']->quota[$i][0]) {
-		if ($_SESSION['account']->quota[$i] != $_SESSION['account_old']->quota[$i]) {
-			$towrite = $towrite. $_SESSION['account']->quota[$i][0] .','.$_SESSION['account']->quota[$i][2] .','.$_SESSION['account']->quota[$i][3]
-			.','.$_SESSION['account']->quota[$i][6] .','. $_SESSION['account']->quota[$i][7] .':';
+	while ($values->quota[$i][0]) {
+		if ($values->quota[$i] != $values_old->quota[$i]) {
+			$towrite = $towrite. $values->quota[$i][0] .','.$values->quota[$i][2] .','.$values->quota[$i][3]
+			.','.$values->quota[$i][6] .','. $values->quota[$i][7] .':';
 			}
 		$i++;
 		}
 	if ($i!=0) exec("/usr/bin/ssh ".$_SESSION['config']->scriptServer." sudo ".$_SESSION['config']->scriptPath." $towrite", $vals);
 	}
 
-function remquotas($user, $kind) { // Whis function will remove the quotas from the specified user.
+function remquotas($user, $type) { // Whis function will remove the quotas from the specified user.
 	$ldap_q = $_SESSION['ldap']->decrypt();
 	$towrite = $ldap_q[0].' '.$ldap_q[1].' '.$user.' quota set ';
-	if ($_SESSION['type2']=='user') $towrite = $towrite.'u ';
+	if ($type=='user') $towrite = $towrite.'u ';
 	 else $towrite = $towrite.'g ';
 	exec("/usr/bin/ssh ".$_SESSION['config']->scriptServer." sudo ".$_SESSION['config']->scriptPath." $towrite", $vals);
 	}
@@ -415,27 +397,27 @@ function remhomedir($user) { // Remove Homedirectory
 	}
 
 
-function ldapexists() { // This function will search if the DN already exists
-	switch ($_SESSION['type2']) {
+function ldapexists($values, $type, $values_old=false) { // This function will search if the DN already exists
+	switch ($type) {
 		case 'user':
 			$searchbase = $_SESSION['config']->get_UserSuffix();
-			$search = "uid=".$_SESSION['account_temp']->general_username;
+			$search = "uid=".$values->general_username;
 			break;
 		case 'group':
 			$searchbase = $_SESSION['config']->get_GroupSuffix();
-			$search = "cn=".$_SESSION['account_temp']->general_username;
+			$search = "cn=".$values->general_username;
 			break;
 		case 'host':
 			$searchbase = $_SESSION['config']->get_HostSuffix();
-			$search = "uid=".$_SESSION['account_temp']->general_username;
+			$search = "uid=".$values->general_username;
 			break;
 		}
 	$result = ldap_search($_SESSION['ldap']->server(), $searchbase, $search , array(''), 1);
 	$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 	if ($entry) $dn = (ldap_get_dn($_SESSION['ldap']->server(), $entry));
 	if ($dn) {
-		if ($_SESSION['modify']==1 && $_SESSION['account_temp']->general_username != $_SESSION['account_old']->general_username) return _($_SESSION['type2'] . ' already exists!');
-		if ($_SESSION['modify']==0) return  _($_SESSION['type2'] . ' already exists!');
+		if ($values_old->general_username != $values->general_username) return _($type . ' already exists!');
+		if (!$values_old) return  _($type . ' already exists!');
 		}
 	return 0;
 	}
@@ -462,8 +444,8 @@ function getgid($groupname) { // Will return the the gid to an existing Groupnam
 
 
 
-function checkid() { // if value is empty will return an unused id from all ids found in LDAP else check existing value
-	switch ($_SESSION['type2']) {
+function checkid($values, $type, $values_old=false) { // if value is empty will return an unused id from all ids found in LDAP else check existing value
+	switch ($type) {
 		case 'user':
 			$ObjectClass = 'PosixAccount';
 			$search = 'uidNumber';
@@ -486,39 +468,41 @@ function checkid() { // if value is empty will return an unused id from all ids 
 			$suffix = $_SESSION['config']->get_HostSuffix();
 			break;
 		}
-	if (($_SESSION['account_temp']->general_uidNumber=='') && $_SESSION['modify']==0) {
-		$result = ldap_search($_SESSION['ldap']->server(), $suffix, 'ObjectClass='.$ObjectClass);
-		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
-		while ($entry) {
-			$vals = ldap_get_values($_SESSION['ldap']->server(), $entry, $search);
-			$ids[] = $vals[0];
-			$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
-			}
-		if ($ids) {
-			sort ($ids, SORT_NUMERIC);
-			if ($ids[count($ids)-1] < $maxID) {
-				if ($minID > $ids[count($ids)-1]) $useID =  $minID;
-				else $useID = $ids[count($ids)-1]+1;
+	if ($values->general_uidNumber=='')
+		if (!$values_old) {
+			$result = ldap_search($_SESSION['ldap']->server(), $suffix, 'ObjectClass='.$ObjectClass);
+			$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
+			while ($entry) {
+				$vals = ldap_get_values($_SESSION['ldap']->server(), $entry, $search);
+				$ids[] = $vals[0];
+				$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
 				}
-			else {
-				$i=$minID;
-				foreach ($ids as $id) if ($id == $i) $i++;
-				$useID = $i;
+			if ($ids) {
+				sort ($ids, SORT_NUMERIC);
+				if ($ids[count($ids)-1] < $maxID) {
+					if ($minID > $ids[count($ids)-1]) $useID =  $minID;
+					else $useID = $ids[count($ids)-1]+1;
+					}
+				else {
+					$i=$minID;
+					foreach ($ids as $id) if ($id == $i) $i++;
+					$useID = $i;
+					}
 				}
+			 else $useID = $minID;
+			return $useID;
 			}
-		 else $useID = $minID;
-		$_SESSION['account_temp']->general_uidNumber = $useID;
-		}
-	if ($_SESSION['modify']==0) {
-		if (($_SESSION['account_temp']->general_uidNumber=='') && $_SESSION['modify'] == 1) $_SESSION['account_temp']->general_uidNumber = $_SESSION['account_old']->general_uidNumber ;
-		$result = ldap_search($_SESSION['ldap']->server(), $suffix, $search . '=' . $_SESSION['account_temp']->general_uidNumber, array(''), 1);
-		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
-		if ($entry) $dn = (ldap_get_dn($_SESSION['ldap']->server(), $entry));
-		if ( $dn && $_SESSION['modify']==0) return _('ID is used from group' . $dn . ' !');
-		if ( $_SESSION['account_temp']->general_uidNumber < $minID || $_SESSION['account_temp']->general_uidNumber > $maxID) return _('Please enter a value between '. $minID . ' and ' . $maxID . '!');
-		if ( $dn && ($dn != $_SESSION['account_old']->general_dn) && $_SESSION['modify']==1) return _('ID is used from user ' . $dn . ' !');
-		}
-	return 0;
+		else return $values_old->general_uidNumber;
+	// Check manual ID
+	$result = ldap_search($_SESSION['ldap']->server(), $suffix, $search . '=' . $values->general_uidNumber, array(''), 1);
+	$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
+	if ($entry) { // Entry with same ID found
+		$dn = (ldap_get_dn($_SESSION['ldap']->server(), $entry));
+		if (!$values_old) return _('ID is used from ' . $dn . ' !');
+		 else if ($dn!=$values_old->general_uidNumber) return _('ID is used from ' . $dn . ' !');
+		 }
+	if ( $values->general_uidNumber < $minID || $values->general_uidNumber > $maxID) return _('Please enter a value between '. $minID . ' and ' . $maxID . '!');
+	return intval($values->general_uidNumber);
 	}
 
 function getdays() { // will return the days from 1.1.1970 until now
@@ -527,36 +511,37 @@ function getdays() { // will return the days from 1.1.1970 until now
 	return $days;
 	}
 
-function smbflag() { // Creates te attribute attrFlags
+function smbflag($values) { // Creates te attribute attrFlags
 	$flag = "[";
-	if ($_SESSION['account']->smb_flagsW) $flag = $flag . "W"; else $flag = $flag . "U";
-	if ($_SESSION['account']->smb_flagsD) $flag = $flag . "D";
-	if ($_SESSION['account']->smb_flagsX) $flag = $flag . "X";
+	if ($values->smb_flagsW) $flag = $flag . "W"; else $flag = $flag . "U";
+	if ($values->smb_flagsD) $flag = $flag . "D";
+	if ($values->smb_flagsX) $flag = $flag . "X";
 	$flag = str_pad($flag, 12);
 	$flag = $flag. "]";
 	return $flag;
 	}
 
 function loaduser($dn) { // Will load all needed values from an existing account
+	$return = new account();
 	$result = ldap_search($_SESSION['ldap']->server(), $dn, "objectclass=PosixAccount");
 	$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 	$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
 	if ($attr['uid'][0]) {
-		$_SESSION['account']->general_username = $attr['uid'][0];
-		if ($_SESSION['config']->scriptServer) getquotas($attr['uid'][0]);
+		$return->general_username = $attr['uid'][0];
+		if ($_SESSION['config']->scriptServer) getquotas('user',$attr['uid'][0]);
 		}
-	if ($attr['uidNumber'][0]) $_SESSION['account']->general_uidNumber = $attr['uidNumber'][0];
-	if ($attr['homeDirectory'][0]) $_SESSION['account']->general_homedir = $attr['homeDirectory'][0];
-	if ($attr['shadowLastChange'][0]) $_SESSION['account']->unix_shadowLastChange = $attr['shadowLastChange'][0];
-	if ($attr['loginShell'][0]) $_SESSION['account']->general_shell = $attr['loginShell'][0];
-	if ($attr['gecos'][0]) $_SESSION['account']->general_gecos = $attr['gecos'][0];
-	if ($attr['description'][0]) $_SESSION['account']->general_gecos = $attr['description'][0];
+	if ($attr['uidNumber'][0]) $return->general_uidNumber = $attr['uidNumber'][0];
+	if ($attr['homeDirectory'][0]) $return->general_homedir = $attr['homeDirectory'][0];
+	if ($attr['shadowLastChange'][0]) $return->unix_shadowLastChange = $attr['shadowLastChange'][0];
+	if ($attr['loginShell'][0]) $return->general_shell = $attr['loginShell'][0];
+	if ($attr['gecos'][0]) $return->general_gecos = $attr['gecos'][0];
+	if ($attr['description'][0]) $return->general_gecos = $attr['description'][0];
 	if ($attr['gidNumber'][0]) {
 		$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(), "objectclass=PosixGroup", array('uidNumber'));
 		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 		while ($entry) {
 			$attr2 = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
-			if ($attr2['gidNumber'][0]==$attr['gidNumber'][0]) $_SESSION['account']->general_group = $attr2['cn'][0];
+			if ($attr2['gidNumber'][0]==$attr['gidNumber'][0]) $return->general_group = $attr2['cn'][0];
 			$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
 			}
 		}
@@ -565,63 +550,64 @@ function loaduser($dn) { // Will load all needed values from an existing account
 	while ($entry) {
 		$attr2 = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
 		if ($attr2['memberUid']) foreach ($attr2['memberUid'] as $id)
-			if (($id==$_SESSION['account']->general_username) && ($attr2['cn'][0]!=$_SESSION['account']->general_group)) $_SESSION['account']->general_groupadd[]=$attr2['cn'][0];
+			if (($id==$return->general_username) && ($attr2['cn'][0]!=$return->general_group)) $return->general_groupadd[]=$attr2['cn'][0];
 		$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
 		}
-	if ($attr['shadowMin'][0]) $_SESSION['account']->unix_pwdminage = $attr['shadowMin'][0];
-	if ($attr['shadowMax'][0]) $_SESSION['account']->unix_pwdmaxage = $attr['shadowMax'][0];
-	if ($attr['shadowWarning'][0]) $_SESSION['account']->unix_pwdwarn = $attr['shadowWarning'][0];
-	if ($attr['shadowInactive'][0]) $_SESSION['account']->unix_pwdallowlogin = $attr['shadowInactive'][0];
+	if ($attr['shadowMin'][0]) $return->unix_pwdminage = $attr['shadowMin'][0];
+	if ($attr['shadowMax'][0]) $return->unix_pwdmaxage = $attr['shadowMax'][0];
+	if ($attr['shadowWarning'][0]) $return->unix_pwdwarn = $attr['shadowWarning'][0];
+	if ($attr['shadowInactive'][0]) $return->unix_pwdallowlogin = $attr['shadowInactive'][0];
 	if ($attr['shadowExpire'][0]) {
 		$date = getdate ($attr['shadowExpire'][0]*86400);
-		$_SESSION['account']->unix_pwdexpire_day = $date['mday'];
-		$_SESSION['account']->unix_pwdexpire_mon = $date['mon'];
-		$_SESSION['account']->unix_pwdexpire_yea = $date['year'];
+		$return->unix_pwdexpire_day = $date['mday'];
+		$return->unix_pwdexpire_mon = $date['mon'];
+		$return->unix_pwdexpire_yea = $date['year'];
 		}
-	if ($attr['pwdCanChange'][0]) $_SESSION['account']->smb_pwdcanchange = $attr['pwdCanChange'][0];
+	if ($attr['pwdCanChange'][0]) $return->smb_pwdcanchange = $attr['pwdCanChange'][0];
 	if ($attr['acctFlags'][0]) {
-		if (strrpos($attr['acctFlags'][0], 'W')) $_SESSION['account']->smb_flagsW=true;
-		if (strrpos($attr['acctFlags'][0], 'D')) $_SESSION['account']->smb_flagsD=true;
-		if (strrpos($attr['acctFlags'][0], 'X')) $_SESSION['account']->smb_flagsX=true;
+		if (strrpos($attr['acctFlags'][0], 'W')) $return->smb_flagsW=true;
+		if (strrpos($attr['acctFlags'][0], 'D')) $return->smb_flagsD=true;
+		if (strrpos($attr['acctFlags'][0], 'X')) $return->smb_flagsX=true;
 		}
-	if ($attr['smbHome'][0]) $_SESSION['account']->smb_smbhome = $attr['smbHome'][0];
-	if ($attr['homeDrive'][0]) $_SESSION['account']->smb_homedrive = $attr['homeDrive'][0];
-	if ($attr['scriptPath'][0])  $_SESSION['account']->smb_scriptpath = $attr['scriptPath'][0];
-	if ($attr['profilePath'][0]) $_SESSION['account']->smb_profilePath = $attr['profilePath'][0];
-	if ($attr['userWorkstations'][0]) $_SESSION['account']->smb_smbuserworkstations = $attr['userWorkstations'][0];
-	if ($attr['domain'][0]) $_SESSION['account']->smb_domain = $attr['domain'][0];
-	if ($attr['givenName'][0]) $_SESSION['account']->general_givenname = $attr['givenName'][0];
-	if ($attr['sn'][0]) $_SESSION['account']->general_surname = $attr['sn'][0];
-	if ($attr['title'][0]) $_SESSION['account_temp']->personal_title = $attr['title'][0];
-	if ($attr['mail'][0]) $_SESSION['account_temp']->personal_mail = $attr['mail'][0];
-	if ($attr['telephoneNumber'][0]) $_SESSION['account_temp']->personal_telephoneNumber = $attr['telephoneNumber'][0];
-	if ($attr['mobileTelephoneNumber'][0]) $_SESSION['account_temp']->personal_mobileTelephoneNumber = $attr['mobileTelephoneNumber'][0];
-	if ($attr['facsimileTelephoneNumber'][0]) $_SESSION['account_temp']->personal_facsimileTelephoneNumber = $attr['facsimileTelephoneNumber'][0];
-	if ($attr['street'][0]) $_SESSION['account_temp']->personal_street = $attr['street'][0];
-	if ($attr['postalCode'][0]) $_SESSION['account_temp']->personal_postalCode = $attr['postalCode'][0];
-	if ($attr['postalAddress'][0]) $_SESSION['account_temp']->personal_postalAddress = $attr['postalAddress'][0];
-	if ($attr['employeeType'][0]) $_SESSION['account_temp']->personal_employeeType = $attr['employeeType'][0];
-	if (substr(str_replace('{CRYPT}', '',$attr['userPassword'][0]),0,1) == '!' ) $_SESSION['account']->unix_deactivated=true;
-	$_SESSION['account_old'] = $_SESSION['account'];
-	if ($attr['userPassword'][0]) $_SESSION['account_old']->unix_password = $attr['userPassword'][0];
-	if ($attr['ntPassword'][0])  $_SESSION['account_old']->smb_password = $attr['ntPassword'][0];
+	if ($attr['smbHome'][0]) $return->smb_smbhome = $attr['smbHome'][0];
+	if ($attr['homeDrive'][0]) $return->smb_homedrive = $attr['homeDrive'][0];
+	if ($attr['scriptPath'][0])  $return->smb_scriptPath = $attr['scriptPath'][0];
+	if ($attr['profilePath'][0]) $return->smb_profilePath = $attr['profilePath'][0];
+	if ($attr['userWorkstations'][0]) $return->smb_smbuserworkstations = $attr['userWorkstations'][0];
+	if ($attr['domain'][0]) $return->smb_domain = $attr['domain'][0];
+	if ($attr['givenName'][0]) $return->general_givenname = $attr['givenName'][0];
+	if ($attr['sn'][0]) $return->general_surname = $attr['sn'][0];
+	if ($attr['title'][0]) $return->personal_title = $attr['title'][0];
+	if ($attr['mail'][0]) $return->personal_mail = $attr['mail'][0];
+	if ($attr['telephoneNumber'][0]) $return->personal_telephoneNumber = $attr['telephoneNumber'][0];
+	if ($attr['mobileTelephoneNumber'][0]) $return->personal_mobileTelephoneNumber = $attr['mobileTelephoneNumber'][0];
+	if ($attr['facsimileTelephoneNumber'][0]) $return->personal_facsimileTelephoneNumber = $attr['facsimileTelephoneNumber'][0];
+	if ($attr['street'][0]) $return->personal_street = $attr['street'][0];
+	if ($attr['postalCode'][0]) $return->personal_postalCode = $attr['postalCode'][0];
+	if ($attr['postalAddress'][0]) $return->personal_postalAddress = $attr['postalAddress'][0];
+	if ($attr['employeeType'][0]) $return->personal_employeeType = $attr['employeeType'][0];
+	if (substr(str_replace('{CRYPT}', '',$attr['userPassword'][0]),0,1) == '!' ) $return->unix_deactivated=true;
+	if ($attr['userPassword'][0]) $return->unix_password = $attr['userPassword'][0];
+	if ($attr['ntPassword'][0])  $return->smb_password = $attr['ntPassword'][0];
+	return $return;
 	}
 
 function loadhost($dn) { // Will load all needed values from an existing account
+	$return = new account();
 	$result = ldap_search($_SESSION['ldap']->server(), $dn, "objectclass=PosixAccount");
 	$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 	$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
-	if ($attr['uid'][0]) $_SESSION['account']->general_username = $attr['uid'][0];
-	if ($attr['uidNumber'][0]) $_SESSION['account']->general_uidNumber = $attr['uidNumber'][0];
-	if ($attr['shadowLastChange'][0]) $_SESSION['account']->unix_shadowLastChange = $attr['shadowLastChange'][0];
-	if ($attr['gecos'][0]) $_SESSION['account']->general_gecos = $attr['gecos'][0];
-	if ($attr['description'][0]) $_SESSION['account']->general_gecos = $attr['description'][0];
+	if ($attr['uid'][0]) $return->general_username = $attr['uid'][0];
+	if ($attr['uidNumber'][0]) $return->general_uidNumber = $attr['uidNumber'][0];
+	if ($attr['shadowLastChange'][0]) $return->unix_shadowLastChange = $attr['shadowLastChange'][0];
+	if ($attr['gecos'][0]) $return->general_gecos = $attr['gecos'][0];
+	if ($attr['description'][0]) $return->general_gecos = $attr['description'][0];
 	if ($attr['gidNumber'][0]) {
 		$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(), "objectclass=PosixGroup", array('uidNumber'));
 		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 		while ($entry) {
 			$attr2 = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
-			if ($attr2['gidNumber'][0]==$attr['gidNumber'][0]) $_SESSION['account']->general_group = $attr2['cn'][0];
+			if ($attr2['gidNumber'][0]==$attr['gidNumber'][0]) $return->general_group = $attr2['cn'][0];
 			$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
 			}
 		}
@@ -630,63 +616,62 @@ function loadhost($dn) { // Will load all needed values from an existing account
 	while ($entry) {
 		$attr2 = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
 		if ($attr2['memberUid']) foreach ($attr2['memberUid'] as $id)
-			if (($id==$_SESSION['account']->general_username) && ($attr2['cn'][0]!=$_SESSION['account']->general_group)) $_SESSION['account']->general_groupadd[]=$attr2['cn'][0];
+			if (($id==$return->general_username) && ($attr2['cn'][0]!=$return->general_group)) $return->general_groupadd[]=$attr2['cn'][0];
 		$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
 		}
-	if ($attr['shadowMin'][0]) $_SESSION['account']->unix_pwdminage = $attr['shadowMin'][0];
-	if ($attr['shadowMax'][0]) $_SESSION['account']->unix_pwdmaxage = $attr['shadowMax'][0];
-	if ($attr['shadowWarning'][0]) $_SESSION['account']->unix_pwdwarn = $attr['shadowWarning'][0];
-	if ($attr['shadowInactive'][0]) $_SESSION['account']->unix_pwdallowlogin = $attr['shadowInactive'][0];
+	if ($attr['shadowMin'][0]) $return->unix_pwdminage = $attr['shadowMin'][0];
+	if ($attr['shadowMax'][0]) $return->unix_pwdmaxage = $attr['shadowMax'][0];
+	if ($attr['shadowWarning'][0]) $return->unix_pwdwarn = $attr['shadowWarning'][0];
+	if ($attr['shadowInactive'][0]) $return->unix_pwdallowlogin = $attr['shadowInactive'][0];
 	if ($attr['shadowExpire'][0]) {
 		$date = getdate ($attr['shadowExpire'][0]*86400);
-		$_SESSION['account']->unix_pwdexpire_day = $date['mday'];
-		$_SESSION['account']->unix_pwdexpire_mon = $date['mon'];
-		$_SESSION['account']->unix_pwdexpire_yea = $date['year'];
+		$return->unix_pwdexpire_day = $date['mday'];
+		$return->unix_pwdexpire_mon = $date['mon'];
+		$return->unix_pwdexpire_yea = $date['year'];
 		}
-	if ($attr['pwdCanChange'][0]) $_SESSION['account']->smb_pwdcanchange = $attr['pwdCanChange'][0];
+	if ($attr['pwdCanChange'][0]) $return->smb_pwdcanchange = $attr['pwdCanChange'][0];
 	if ($attr['acctFlags'][0]) {
-		if (strrpos($attr['acctFlags'][0], 'W')) $_SESSION['account']->smb_flagsW=true;
-		if (strrpos($attr['acctFlags'][0], 'D')) $_SESSION['account']->smb_flagsD=true;
-		if (strrpos($attr['acctFlags'][0], 'X')) $_SESSION['account']->smb_flagsX=true;
+		if (strrpos($attr['acctFlags'][0], 'W')) $return->smb_flagsW=true;
+		if (strrpos($attr['acctFlags'][0], 'D')) $return->smb_flagsD=true;
+		if (strrpos($attr['acctFlags'][0], 'X')) $return->smb_flagsX=true;
 		}
-	if ($attr['domain'][0]) $_SESSION['account']->smb_domain = $attr['domain'][0];
-	if ($attr['givenName'][0]) $_SESSION['account']->general_givenname = $attr['givenName'][0];
-	if ($attr['sn'][0]) $_SESSION['account']->general_surname = $attr['sn'][0];
-	if (substr(str_replace('{CRYPT}', '',$attr['userPassword'][0]),0,1) == '!' ) $_SESSION['account']->unix_deactivated=true;
-	$_SESSION['account_old'] = $_SESSION['account'];
-	if ($attr['userPassword'][0]) $_SESSION['account_old']->unix_password = $attr['userPassword'][0];
-	if ($attr['ntPassword'][0])  $_SESSION['account_old']->smb_password = $attr['ntPassword'][0];
+	if ($attr['domain'][0]) $return->smb_domain = $attr['domain'][0];
+	if ($attr['givenName'][0]) $return->general_givenname = $attr['givenName'][0];
+	if ($attr['sn'][0]) $return->general_surname = $attr['sn'][0];
+	if (substr(str_replace('{CRYPT}', '',$attr['userPassword'][0]),0,1) == '!' ) $return->unix_deactivated=true;
+	return $return;
 	}
 
 
 function loadgroup($dn) { // Will load all needed values from an existing group
+	$return = new account();
 	$result = ldap_search($_SESSION['ldap']->server(), $dn, "objectclass=PosixGroup");
 	$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 	$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
 	if ($attr['gidNumber'][0]) {
-		$_SESSION['account']->general_uidNumber = $attr['gidNumber'][0];
-		if ($_SESSION['config']->scriptServer) getquotas($attr['uid'][0]);
+		$return->general_uidNumber = $attr['gidNumber'][0];
+		if ($_SESSION['config']->scriptServer) getquotas('group',$attr['uid'][0]);
 		}
-	if ($attr['description'][0]) $_SESSION['account']->general_gecos = $attr['description'][0];
+	if ($attr['description'][0]) $return->general_gecos = $attr['description'][0];
 	if ($attr['cn'][0]) {
-		$_SESSION['account']->general_username = $attr['cn'][0];
-		if ($_SESSION['config']->scriptServer) getquotas($attr['cn'][0]);
+		$return->general_username = $attr['cn'][0];
+		if ($_SESSION['config']->scriptServer) getquotas('group',$attr['cn'][0]);
 		}
-	if ($attr['memberUid']) $_SESSION['account']->general_memberUid = $attr['memberUid'];
-	if (is_array($_SESSION['account']->general_memberUid)) array_shift($_SESSION['account']->general_memberUid);
-	$_SESSION['account']->general_dn = $dn;
-	$_SESSION['account_old'] = $_SESSION['account'];
+	if ($attr['memberUid']) $return->general_memberUid = $attr['memberUid'];
+	if (is_array($return->general_memberUid)) array_shift($return->general_memberUid);
+	$return->general_dn = $dn;
+	return $return;
 	}
 
 
-function createuser() { // Will create the LDAP-Account
+function createuser($values) { // Will create the LDAP-Account
 	// 2 == Account allready exists at different location
 	// 1 == Account has been created
 	// 4 == Error while creating Account
-	// Value stored in shadowExpire, days since 1.1.1970
-	$date = mktime(10,0,0, $_SESSION['account']->unix_pwdexpire_mon, $_SESSION['account']->unix_pwdexpire_day, $_SESSION['account']->unix_pwdexpire_yea) / 86400 ;
+	// values stored in shadowExpire, days since 1.1.1970
+	$date = mktime(10,0,0, $values->unix_pwdexpire_mon, $values->unix_pwdexpire_day, $values->unix_pwdexpire_yea) / 86400 ;
 	settype($date, 'integer');
-	$_SESSION['account']->general_dn = 'uid=' . $_SESSION['account']->general_username . ',' . $_SESSION['config']->get_UserSuffix();
+	$values->general_dn = 'uid=' . $values->general_username . ',' . $_SESSION['config']->get_UserSuffix();
 
 	// All Values need for an user-account
 	// General Objectclasses
@@ -694,83 +679,83 @@ function createuser() { // Will create the LDAP-Account
 	$attr['objectClass'][1] = 'shadowAccount';
 	$attr['objectClass'][2] = 'sambaAccount';
 	$attr['objectClass'][3] = 'inetOrgPerson';
-	$attr['cn'] = $_SESSION['account']->general_username; // posixAccount_req shadowAccount_req sambaAccount_may
-	$attr['uid'] = $_SESSION['account']->general_username; // posixAccount_req
-	$attr['uidNumber'] = $_SESSION['account']->general_uidNumber; // posixAccount_req
-	$attr['gidNumber'] = getgid($_SESSION['account']->general_group); // posixAccount_req
-	$attr['homeDirectory'] = $_SESSION['account']->general_homedir; // posixAccount_req
-	if ($_SESSION['account']->personal_title!='') $attr['title'] = $_SESSION['account']->personal_title;
-	if ($_SESSION['account']->personal_mail!='') $attr['mail'] = $_SESSION['account']->personal_mail;
-	if ($_SESSION['account']->personal_telephoneNumber!='') $attr['telephoneNumber'] = $_SESSION['account']->personal_telephoneNumber;
-	if ($_SESSION['account']->personal_mobileTelephoneNumber!='') $attr['mobileTelephoneNumber'] = $_SESSION['account']->personal_mobileTelephoneNumber;
-	if ($_SESSION['account']->personal_facsimileTelephoneNumber!='') $attr['facsimileTelephoneNumber'] = $_SESSION['account']->personal_facsimileTelephoneNumber;
-	if ($_SESSION['account']->personal_street!='') $attr['street'] = $_SESSION['account']->personal_street;
-	if ($_SESSION['account']->personal_postalCode!='') $attr['postalCode'] = $_SESSION['account']->personal_postalCode;
-	if ($_SESSION['account']->personal_postalAddress!='') $attr['postalAddress'] = $_SESSION['account']->personal_postalAddress;
-	if ($_SESSION['account']->personal_employeeType!='') $attr['employeeType'] = $_SESSION['account']->personal_employeeType;
+	$attr['cn'] = $values->general_username; // posixAccount_req shadowAccount_req sambaAccount_may
+	$attr['uid'] = $values->general_username; // posixAccount_req
+	$attr['uidNumber'] = $values->general_uidNumber; // posixAccount_req
+	$attr['gidNumber'] = getgid($values->general_group); // posixAccount_req
+	$attr['homeDirectory'] = $values->general_homedir; // posixAccount_req
+	if ($values->personal_title!='') $attr['title'] = $values->personal_title;
+	if ($values->personal_mail!='') $attr['mail'] = $values->personal_mail;
+	if ($values->personal_telephoneNumber!='') $attr['telephoneNumber'] = $values->personal_telephoneNumber;
+	if ($values->personal_mobileTelephoneNumber!='') $attr['mobileTelephoneNumber'] = $values->personal_mobileTelephoneNumber;
+	if ($values->personal_facsimileTelephoneNumber!='') $attr['facsimileTelephoneNumber'] = $values->personal_facsimileTelephoneNumber;
+	if ($values->personal_street!='') $attr['street'] = $values->personal_street;
+	if ($values->personal_postalCode!='') $attr['postalCode'] = $values->personal_postalCode;
+	if ($values->personal_postalAddress!='') $attr['postalAddress'] = $values->personal_postalAddress;
+	if ($values->personal_employeeType!='') $attr['employeeType'] = $values->personal_employeeType;
 	// posixAccount_may shadowAccount_may
-	if ($_SESSION['account']->unix_password_no) $_SESSION['account']->unix_password = '';
-	if ($_SESSION['account']->unix_deactivated) $attr['userPassword'] = '{CRYPT}!' . crypt($_SESSION['account']->unix_password);
-	else $attr['userPassword'] = '{CRYPT}' . crypt($_SESSION['account']->unix_password);
+	if ($values->unix_password_no) $values->unix_password = '';
+	if ($values->unix_deactivated) $attr['userPassword'] = '{CRYPT}!' . crypt($values->unix_password);
+	else $attr['userPassword'] = '{CRYPT}' . crypt($values->unix_password);
 	$attr['shadowLastChange'] = getdays(); // shadowAccount_may
-	$attr['ntPassword'] = exec('../lib/createntlm.pl nt ' . $_SESSION['account']->smb_password);
-	$attr['lmPassword'] = exec('../lib/createntlm.pl lm ' . $_SESSION['account']->smb_password);
+	$attr['ntPassword'] = exec('../lib/createntlm.pl nt ' . $values->smb_password);
+	$attr['lmPassword'] = exec('../lib/createntlm.pl lm ' . $values->smb_password);
 	$attr['pwdLastSet'] = time(); // sambaAccount_may
-	if ($_SESSION['account']->smb_password_no) {
+	if ($values->smb_password_no) {
 		$attr['ntPassword'] = 'NO PASSWORD*****';
 		$attr['lmPassword'] = 'NO PASSWORD*****';
 		$attr['pwdLastSet'] = time(); // sambaAccount_may
 		}
-	$attr['loginShell'] = $_SESSION['account']->general_shell; // posixAccount_may
-	$attr['gecos'] = $_SESSION['account']->general_gecos; // posixAccount_may
-	$attr['description'] = $_SESSION['account']->general_gecos; // posixAccount_may sambaAccount_may
+	$attr['loginShell'] = $values->general_shell; // posixAccount_may
+	$attr['gecos'] = $values->general_gecos; // posixAccount_may
+	$attr['description'] = $values->general_gecos; // posixAccount_may sambaAccount_may
 
-	$attr['shadowMin'] = $_SESSION['account']->unix_pwdminage; // shadowAccount_may
-	$attr['shadowMax'] = $_SESSION['account']->unix_pwdmaxage; // shadowAccount_may
-	$attr['shadowWarning'] = $_SESSION['account']->unix_pwdwarn; // shadowAccount_may
-	$attr['shadowInactive'] = $_SESSION['account']->unix_pwdallowlogin; // shadowAccount_may
+	$attr['shadowMin'] = $values->unix_pwdminage; // shadowAccount_may
+	$attr['shadowMax'] = $values->unix_pwdmaxage; // shadowAccount_may
+	$attr['shadowWarning'] = $values->unix_pwdwarn; // shadowAccount_may
+	$attr['shadowInactive'] = $values->unix_pwdallowlogin; // shadowAccount_may
 	$attr['shadowExpire'] =  $date ; // shadowAccount_may
-	$attr['rid'] = (2 * $_SESSION['account']->general_uidNumber + 1000); // sambaAccount_may
-	$attr['PrimaryGroupID'] = (2 * getgid($_SESSION['account']->general_group) + 1001); // sambaAccount_req
-	if ($_SESSION['account']->smb_pwdcanchange) $attr['pwdCanChange'] = "1"; else $attr['pwdCanChange'] = "0"; // sambaAccount_may
-	if ($_SESSION['account']->smb_pwdmustchange) $attr['pwdMustChange'] = "1"; else $attr['pwdMustChange'] = "0"; // sambaAccount_may
-	$attr['acctFlags'] = smbflag(); // sambaAccount_may
-	$attr['displayName'] = $_SESSION['account']->general_gecos; // sambaAccount_may
-	if ($_SESSION['account']->smb_smbhome!='') $attr['smbHome'] = $_SESSION['account']->smb_smbhome; // sambaAccount_may
-	if ($_SESSION['account']->smb_homedrive!='') $attr['homeDrive'] = $_SESSION['account']->smb_homedrive; // sambaAccount_may
-	if ($_SESSION['account']->smb_scriptpath!='') $attr['scriptPath']  = $_SESSION['account']->smb_scriptpath; // sambaAccount_may
-	if ($_SESSION['account']->smb_profilePath!='') $attr['profilePath'] = $_SESSION['account']->smb_profilePath; // sambaAccount_may
-	if ($_SESSION['account']->smb_smbuserworkstations!='') $attr['userWorkstations'] = $_SESSION['account']->smb_smbuserworkstations; // sambaAccount_may
-	if ($_SESSION['account']->smb_domain!='') $attr['domain'] = $_SESSION['account']->smb_domain; // sambaAccount_may
+	$attr['rid'] = (2 * $values->general_uidNumber + 1000); // sambaAccount_may
+	$attr['PrimaryGroupID'] = (2 * getgid($values->general_group) + 1001); // sambaAccount_req
+	if ($values->smb_pwdcanchange) $attr['pwdCanChange'] = "1"; else $attr['pwdCanChange'] = "0"; // sambaAccount_may
+	if ($values->smb_pwdmustchange) $attr['pwdMustChange'] = "1"; else $attr['pwdMustChange'] = "0"; // sambaAccount_may
+	$attr['acctFlags'] = smbflag(values); // sambaAccount_may
+	$attr['displayName'] = $values->general_gecos; // sambaAccount_may
+	if ($values->smb_smbhome!='') $attr['smbHome'] = $values->smb_smbhome; // sambaAccount_may
+	if ($values->smb_homedrive!='') $attr['homeDrive'] = $values->smb_homedrive; // sambaAccount_may
+	if ($values->smb_scriptPath!='') $attr['scriptPath']  = $values->smb_scriptPath; // sambaAccount_may
+	if ($values->smb_profilePath!='') $attr['profilePath'] = $values->smb_profilePath; // sambaAccount_may
+	if ($values->smb_smbuserworkstations!='') $attr['userWorkstations'] = $values->smb_smbuserworkstations; // sambaAccount_may
+	if ($values->smb_domain!='') $attr['domain'] = $values->smb_domain; // sambaAccount_may
 
-	if ($_SESSION['account']->general_givenname!='') $attr['givenName'] = $_SESSION['account']->general_givenname;
-	if ($_SESSION['account']->general_surname!='') $attr['sn'] = $_SESSION['account']->general_surname;
+	if ($values->general_givenname!='') $attr['givenName'] = $values->general_givenname;
+	if ($values->general_surname!='') $attr['sn'] = $values->general_surname;
 
-	$success = ldap_add($_SESSION['ldap']->server(),$_SESSION['account']->general_dn, $attr);
+	$success = ldap_add($_SESSION['ldap']->server(),$values->general_dn, $attr);
 	if (!$success) return 4;
 	if ($_SESSION['config']->scriptServer) {
-		setquotas($_SESSION['account']->general_username);
-		addhomedir($_SESSION['account']->general_username);
+		setquotas($values->general_username,'user');
+		addhomedir($values->general_username);
 		}
 	// Add user to groups
-	$result = ldap_search($_SESSION['ldap']->server(), 'cn='.$_SESSION['account']->general_group.','.$_SESSION['config']->get_GroupSuffix(), "objectclass=posixGroup");
+	$result = ldap_search($_SESSION['ldap']->server(), 'cn='.$values->general_group.','.$_SESSION['config']->get_GroupSuffix(), "objectclass=posixGroup");
 	$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 	$group = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
 	if ($group['memberUid']) array_shift($group['memberUid']);
-	if (! in_array($_SESSION['account']->general_username, $group)) {
-		$toadd['memberUid'] = $_SESSION['account']->general_username;
-		$success = ldap_mod_add($_SESSION['ldap']->server(), 'cn='.$_SESSION['account']->general_group.','.$_SESSION['config']->get_GroupSuffix(), $toadd);
+	if (! in_array($values->general_username, $group)) {
+		$toadd['memberUid'] = $values->general_username;
+		$success = ldap_mod_add($_SESSION['ldap']->server(), 'cn='.$values->general_group.','.$_SESSION['config']->get_GroupSuffix(), $toadd);
 		if (!$success) return 4;
 		}
 	// Add User to Additional Groups
-	if ($_SESSION['account']->general_groupadd)
-		foreach ($_SESSION['account']->general_groupadd as $group2) {
+	if ($values->general_groupadd)
+		foreach ($values->general_groupadd as $group2) {
 			$result = ldap_search($_SESSION['ldap']->server(), 'cn='.$group2.','.$_SESSION['config']->get_GroupSuffix(), "objectclass=posixGroup");
 			$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 			$group = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
 			if ($group['memberUid']) array_shift($group['memberUid']);
-			if (! in_array($_SESSION['account']->general_username, $group['memberUid'])) {
-				$toadd['memberUid'] = $_SESSION['account']->general_username;
+			if (! in_array($values->general_username, $group['memberUid'])) {
+				$toadd['memberUid'] = $values->general_username;
 				$success = ldap_mod_add($_SESSION['ldap']->server(), 'cn='.$group2.','.$_SESSION['config']->get_GroupSuffix(), $toadd);
 				}
 			if (!$success) return 4;
@@ -778,149 +763,149 @@ function createuser() { // Will create the LDAP-Account
 	return 1;
 	}
 
-function modifyuser() { // Will modify the LDAP-Account
+function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 	// 2 == Account allready exists at different location
 	// 3 == Account has been modified
 	// 5 == Error while modifying Account
 	// Value stored in shadowExpire, days since 1.1.1970
-	$date = mktime(10,0,0, $_SESSION['account']->unix_pwdexpire_mon, $_SESSION['account']->unix_pwdexpire_day, $_SESSION['account']->unix_pwdexpire_yea) / 86400 ;
+	$date = mktime(10,0,0, $values->unix_pwdexpire_mon, $values->unix_pwdexpire_day, $values->unix_pwdexpire_yea) / 86400 ;
 	settype($date, 'integer');
-	$_SESSION['account']->general_dn = 'uid=' . $_SESSION['account']->general_username . ',' . $_SESSION['config']->get_UserSuffix();
-	if ($_SESSION['account']->general_username != $_SESSION['account_old']->general_username) {
-		$attr['cn'] = $_SESSION['account']->general_username; // posixAccount_req shadowAccount_req sambaAccount_may
-		$attr['uid'] = $_SESSION['account']->general_username; // posixAccount_req
+	$values->general_dn = 'uid=' . $values->general_username . ',' . $values->get_UserSuffix();
+	if ($values->general_username != $values_old->general_username) {
+		$attr['cn'] = $values->general_username; // posixAccount_req shadowAccount_req sambaAccount_may
+		$attr['uid'] = $values->general_username; // posixAccount_req
 		}
-	if ($_SESSION['account']->general_uidNumber != $_SESSION['account_old']->general_uidNumber) {
-		$attr['uidNumber'] = $_SESSION['account']->general_uidNumber; // posixAccount_req
-		$attr['rid'] = (2 * $_SESSION['account']->general_uidNumber + 1000); // sambaAccount_may
+	if ($values->general_uidNumber != $values_old->general_uidNumber) {
+		$attr['uidNumber'] = $values->general_uidNumber; // posixAccount_req
+		$attr['rid'] = (2 * $values->general_uidNumber + 1000); // sambaAccount_may
 		}
-	if ($_SESSION['account']->general_group != $_SESSION['account_old']->general_group) {
-		$attr['gidNumber'] = getgid($_SESSION['account']->general_group); // posixAccount_req
-		$attr['PrimaryGroupID'] = (2 * getgid($_SESSION['account']->general_group) + 1001); // sambaAccount_req
+	if ($values->general_group != $values_old->general_group) {
+		$attr['gidNumber'] = getgid($values->general_group); // posixAccount_req
+		$attr['PrimaryGroupID'] = (2 * getgid($values->general_group) + 1001); // sambaAccount_req
 		}
-	if ($_SESSION['account']->general_homedir != $_SESSION['account_old']->general_homedir)
-		$attr['homeDirectory'] = $_SESSION['account']->general_homedir; // posixAccount_req
+	if ($values->general_homedir != $values_old->general_homedir)
+		$attr['homeDirectory'] = $values->general_homedir; // posixAccount_req
 	// posixAccount_may shadowAccount_may
-	$password_old = str_replace('{CRYPT}', '',$_SESSION['account_old']->unix_password);
+	$password_old = str_replace('{CRYPT}', '',$values_old->unix_password);
 	if (substr($password_old,0,1) == '!' ) $password_old = substr($password_old,1,strlen($password_old));
-	if ($_SESSION['account']->unix_password=='') {
-		if ($_SESSION['account']->unix_password_no) $password_old = '';
-		if ($_SESSION['account']->unix_deactivated) $attr['userPassword'] = '{CRYPT}!' . $password_old;
+	if ($values->unix_password=='') {
+		if ($values->unix_password_no) $password_old = '';
+		if ($values->unix_deactivated) $attr['userPassword'] = '{CRYPT}!' . $password_old;
 		else $attr['userPassword'] = '{CRYPT}' . $password_old;
-		$attr['shadowLastChange'] =  $_SESSION['account_old']->unix_shadowLastChange; // shadowAccount_may
+		$attr['shadowLastChange'] =  $values_old->unix_shadowLastChange; // shadowAccount_may
 		}
 	 else {
-		if ($_SESSION['account']->unix_deactivated) $attr['userPassword'] = '{CRYPT}!' . crypt($_SESSION['account']->unix_password);
-		else $attr['userPassword'] = '{CRYPT}' . crypt($_SESSION['account']->unix_password);
+		if ($values->unix_deactivated) $attr['userPassword'] = '{CRYPT}!' . crypt($values->unix_password);
+		else $attr['userPassword'] = '{CRYPT}' . crypt($values->unix_password);
 		$attr['shadowLastChange'] = getdays(); // shadowAccount_may
 		}
-	if ($_SESSION['account']->smb_password_no) {
+	if ($values->smb_password_no) {
 		$attr['ntPassword'] = 'NO PASSWORD*****';
 		$attr['lmPassword'] = 'NO PASSWORD*****';
 		$attr['pwdLastSet'] = time(); // sambaAccount_may
 		}
 	 else
-		if ($_SESSION['account']->smb_password!='') {
-			$attr['ntPassword'] = exec('../lib/createntlm.pl nt ' . $_SESSION['account']->smb_password);
-			$attr['lmPassword'] = exec('../lib/createntlm.pl lm ' . $_SESSION['account']->smb_password);
+		if ($values->smb_password!='') {
+			$attr['ntPassword'] = exec('../lib/createntlm.pl nt ' . $values->smb_password);
+			$attr['lmPassword'] = exec('../lib/createntlm.pl lm ' . $values->smb_password);
 			$attr['pwdLastSet'] = time(); // sambaAccount_may
 			}
-	if ($_SESSION['account']->general_shell != $_SESSION['account_old']->general_shell)
-		$attr['loginShell'] = $_SESSION['account']->general_shell; // posixAccount_may
-	if ($_SESSION['account']->general_gecos != $_SESSION['account_old']->general_gecos) {
-		$attr['gecos'] = $_SESSION['account']->general_gecos; // posixAccount_may
-		$attr['description'] = $_SESSION['account']->general_gecos; // posixAccount_may sambaAccount_may
-		$attr['displayName'] = $_SESSION['account']->general_gecos; // sambaAccount_may
+	if ($values->general_shell != $values_old->general_shell)
+		$attr['loginShell'] = $values->general_shell; // posixAccount_may
+	if ($values->general_gecos != $values_old->general_gecos) {
+		$attr['gecos'] = $values->general_gecos; // posixAccount_may
+		$attr['description'] = $values->general_gecos; // posixAccount_may sambaAccount_may
+		$attr['displayName'] = $values->general_gecos; // sambaAccount_may
 		}
-	if ($_SESSION['account']->general_pwdminage != $_SESSION['account_old']->general_pwdminage)
-		$attr['shadowMin'] = $_SESSION['account']->unix_pwdminage; // shadowAccount_may
-	if ($_SESSION['account']->general_pwdmaxage != $_SESSION['account_old']->general_pwdmaxage)
-		$attr['shadowMax'] = $_SESSION['account']->unix_pwdmaxage; // shadowAccount_may
-	if ($_SESSION['account']->general_pwdwarn != $_SESSION['account_old']->general_pwdwarn)
-		$attr['shadowWarning'] = $_SESSION['account']->unix_pwdwarn; // shadowAccount_may
-	if ($_SESSION['account']->general_pwdallowlogin != $_SESSION['account_old']->general_pwdallowlogin)
-		$attr['shadowInactive'] = $_SESSION['account']->unix_pwdallowlogin; // shadowAccount_may
-	if (($_SESSION['account']->personal_title != $_SESSION['account_old']->personal_title) && ($_SESSION['account']->personal_title != ''))
-		$attr['title'] = $_SESSION['account']->personal_title;
-	if (($_SESSION['account']->personal_title != $_SESSION['account_old']->personal_title) && ($_SESSION['account']->personal_title == ''))
-		$attr_rem['title'] = $_SESSION['account_old']->personal_title;
-	if (($_SESSION['account']->personal_mail != $_SESSION['account_old']->personal_mail) && ($_SESSION['account']->personal_mail != ''))
-		$attr['mail'] = $_SESSION['account']->personal_mail;
-	if (($_SESSION['account']->personal_mail != $_SESSION['account_old']->personal_mail) && ($_SESSION['account']->personal_mail == ''))
-		$attr_rem['mail'] = $_SESSION['account_old']->personal_mail;
-	if (($_SESSION['account']->personal_telephoneNumber != $_SESSION['account_old']->personal_telephoneNumber) && ($_SESSION['account']->personal_telephoneNumber !=''))
-		$attr['telephoneNumber'] = $_SESSION['account']->personal_telephoneNumber;
-	if (($_SESSION['account']->personal_telephoneNumber != $_SESSION['account_old']->personal_telephoneNumber) && ($_SESSION['account']->personal_telephoneNumber ==''))
-		$attr_rem['telephoneNumber'] = $_SESSION['account_old']->personal_telephoneNumber;
-	if (($_SESSION['account']->personal_mobileTelephoneNumber != $_SESSION['account_old']->personal_mobileTelephoneNumber) && ($_SESSION['account']->personal_mobileTelephoneNumber!=''))
-		$attr['mobileTelephoneNumber'] = $_SESSION['account']->personal_mobileTelephoneNumber;
-	if (($_SESSION['account']->personal_mobileTelephoneNumber != $_SESSION['account_old']->personal_mobileTelephoneNumber) && ($_SESSION['account']->personal_mobileTelephoneNumber==''))
-		$attr_rem['mobileTelephoneNumber'] = $_SESSION['account_old']->personal_mobileTelephoneNumber;
-	if (($_SESSION['account']->personal_facsimileTelephoneNumber != $_SESSION['account_old']->personal_facsimileTelephoneNumber) && ($_SESSION['account']->personal_facsimileTelephoneNumber!=''))
-		$attr['facsimileTelephoneNumber'] = $_SESSION['account']->personal_facsimileTelephoneNumber;
-	if (($_SESSION['account']->personal_facsimileTelephoneNumber != $_SESSION['account_old']->personal_facsimileTelephoneNumber) && ($_SESSION['account']->personal_facsimileTelephoneNumber==''))
-		$attr_rem['facsimileTelephoneNumber'] = $_SESSION['account_old']->personal_facsimileTelephoneNumber;
-	if (($_SESSION['account']->personal_street != $_SESSION['account_old']->personal_street) && ($_SESSION['account']->personal_street!=''))
-		$attr['street'] = $_SESSION['account']->personal_street;
-	if (($_SESSION['account']->personal_street != $_SESSION['account_old']->personal_street) && ($_SESSION['account']->personal_street==''))
-		$attr_rem['street'] = $_SESSION['account_old']->personal_street;
-	if (($_SESSION['account']->personal_street != $_SESSION['account_old']->personal_street) && ($_SESSION['account']->personal_street!=''))
-		$attr['postalCode'] = $_SESSION['account']->personal_street;
-	if (($_SESSION['account']->personal_street != $_SESSION['account_old']->personal_street) && ($_SESSION['account']->personal_street==''))
-		$attr_rem['postalCode'] = $_SESSION['account_old']->personal_street;
-	if (($_SESSION['account']->personal_postalAddress != $_SESSION['account_old']->personal_postalAddress) && ($_SESSION['account']->personal_postalAddress!=''))
-		$attr['postalAddress'] = $_SESSION['account']->personal_postalAddress;
-	if (($_SESSION['account']->personal_postalAddress != $_SESSION['account_old']->personal_postalAddress) && ($_SESSION['account']->personal_postalAddress==''))
-		$attr_rem['postalAddress'] = $_SESSION['account_old']->personal_postalAddress;
-	if (($_SESSION['account']->personal_employeeType != $_SESSION['account_old']->personal_employeeType) && ($_SESSION['account']->personal_employeeType!=''))
-		$attr['employeeType'] = $_SESSION['account']->personal_employeeType;
-	if (($_SESSION['account']->personal_employeeType != $_SESSION['account_old']->personal_employeeType) && ($_SESSION['account']->personal_employeeType==''))
-		$attr_rem['employeeType'] = $_SESSION['account_old']->personal_employeeType;
-	if (($_SESSION['account']->unix_pwdexpire_day = $date['mday']!=$_SESSION['account_old']->unix_pwdexpire_day = $date['mday']) ||
-		($_SESSION['account']->unix_pwdexpire_mon = $date['mon'] != $_SESSION['account_old']->unix_pwdexpire_mon = $date['mon']) ||
-		($_SESSION['account']->unix_pwdexpire_yea = $date['year'] != $_SESSION['account']->unix_pwdexpire_yea = $date['year']))
+	if ($values->general_pwdminage != $values_old->general_pwdminage)
+		$attr['shadowMin'] = $values->unix_pwdminage; // shadowAccount_may
+	if ($values->general_pwdmaxage != $values_old->general_pwdmaxage)
+		$attr['shadowMax'] = $values->unix_pwdmaxage; // shadowAccount_may
+	if ($values->general_pwdwarn != $values_old->general_pwdwarn)
+		$attr['shadowWarning'] = $values->unix_pwdwarn; // shadowAccount_may
+	if ($values->general_pwdallowlogin != $values_old->general_pwdallowlogin)
+		$attr['shadowInactive'] = $values->unix_pwdallowlogin; // shadowAccount_may
+	if (($values->personal_title != $values_old->personal_title) && ($values->personal_title != ''))
+		$attr['title'] = $values->personal_title;
+	if (($values->personal_title != $values_old->personal_title) && ($values->personal_title == ''))
+		$attr_rem['title'] = $values_old->personal_title;
+	if (($values->personal_mail != $values_old->personal_mail) && ($values->personal_mail != ''))
+		$attr['mail'] = $values->personal_mail;
+	if (($values->personal_mail != $values_old->personal_mail) && ($values->personal_mail == ''))
+		$attr_rem['mail'] = $values_old->personal_mail;
+	if (($values->personal_telephoneNumber != $values_old->personal_telephoneNumber) && ($values->personal_telephoneNumber !=''))
+		$attr['telephoneNumber'] = $values->personal_telephoneNumber;
+	if (($values->personal_telephoneNumber != $values_old->personal_telephoneNumber) && ($values->personal_telephoneNumber ==''))
+		$attr_rem['telephoneNumber'] = $values_old->personal_telephoneNumber;
+	if (($values->personal_mobileTelephoneNumber != $values_old->personal_mobileTelephoneNumber) && ($values->personal_mobileTelephoneNumber!=''))
+		$attr['mobileTelephoneNumber'] = $values->personal_mobileTelephoneNumber;
+	if (($values->personal_mobileTelephoneNumber != $values_old->personal_mobileTelephoneNumber) && ($values->personal_mobileTelephoneNumber==''))
+		$attr_rem['mobileTelephoneNumber'] = $values_old->personal_mobileTelephoneNumber;
+	if (($values->personal_facsimileTelephoneNumber != $values_old->personal_facsimileTelephoneNumber) && ($values->personal_facsimileTelephoneNumber!=''))
+		$attr['facsimileTelephoneNumber'] = $values->personal_facsimileTelephoneNumber;
+	if (($values->personal_facsimileTelephoneNumber != $values_old->personal_facsimileTelephoneNumber) && ($values->personal_facsimileTelephoneNumber==''))
+		$attr_rem['facsimileTelephoneNumber'] = $values_old->personal_facsimileTelephoneNumber;
+	if (($values->personal_street != $values_old->personal_street) && ($values->personal_street!=''))
+		$attr['street'] = $values->personal_street;
+	if (($values->personal_street != $values_old->personal_street) && ($values->personal_street==''))
+		$attr_rem['street'] = $values_old->personal_street;
+	if (($values->personal_street != $values_old->personal_street) && ($values->personal_street!=''))
+		$attr['postalCode'] = $values->personal_street;
+	if (($values->personal_street != $values_old->personal_street) && ($values->personal_street==''))
+		$attr_rem['postalCode'] = $values_old->personal_street;
+	if (($values->personal_postalAddress != $values_old->personal_postalAddress) && ($values->personal_postalAddress!=''))
+		$attr['postalAddress'] = $values->personal_postalAddress;
+	if (($values->personal_postalAddress != $values_old->personal_postalAddress) && ($values->personal_postalAddress==''))
+		$attr_rem['postalAddress'] = $values_old->personal_postalAddress;
+	if (($values->personal_employeeType != $values_old->personal_employeeType) && ($values->personal_employeeType!=''))
+		$attr['employeeType'] = $values->personal_employeeType;
+	if (($values->personal_employeeType != $values_old->personal_employeeType) && ($values->personal_employeeType==''))
+		$attr_rem['employeeType'] = $values_old->personal_employeeType;
+	if (($values->unix_pwdexpire_day = $date['mday']!=$values_old->unix_pwdexpire_day = $date['mday']) ||
+		($values->unix_pwdexpire_mon = $date['mon'] != $values_old->unix_pwdexpire_mon = $date['mon']) ||
+		($values->unix_pwdexpire_yea = $date['year'] != $values->unix_pwdexpire_yea = $date['year']))
 			$attr['shadowExpire'] =  $date ; // shadowAccount_may
-	if ($_SESSION['account']->smb_pwdcanchange && $_SESSION['account_old']->smb_pwdcanchange==0) $attr['pwdCanChange'] = "1"; else $attr['pwdCanChange'] = "0"; // sambaAccount_may
-	if ($_SESSION['account']->smb_pwdcanchange==0 && $_SESSION['account_old']->smb_pwdcanchange==1) $attr_rem['pwdCanChange'] = "1"; else $attr['pwdCanChange'] = "0"; // sambaAccount_may
-	if ($_SESSION['account']->smb_pwdmustchange && $_SESSION['account']->smb_pwdmustchange==0) $attr['pwdMustChange'] = "1"; else $attr['pwdMustChange'] = "0"; // sambaAccount_may
-	if ($_SESSION['account']->smb_pwdmustchange==0 && $_SESSION['account']->smb_pwdmustchange==1) $attr_rem['pwdMustChange'] = "1"; else $attr['pwdMustChange'] = "0"; // sambaAccount_may
+	if ($values->smb_pwdcanchange && $values_old->smb_pwdcanchange==0) $attr['pwdCanChange'] = "1"; else $attr['pwdCanChange'] = "0"; // sambaAccount_may
+	if ($values->smb_pwdcanchange==0 && $values_old->smb_pwdcanchange==1) $attr_rem['pwdCanChange'] = "1"; else $attr['pwdCanChange'] = "0"; // sambaAccount_may
+	if ($values->smb_pwdmustchange && $values->smb_pwdmustchange==0) $attr['pwdMustChange'] = "1"; else $attr['pwdMustChange'] = "0"; // sambaAccount_may
+	if ($values->smb_pwdmustchange==0 && $values->smb_pwdmustchange==1) $attr_rem['pwdMustChange'] = "1"; else $attr['pwdMustChange'] = "0"; // sambaAccount_may
 	$attr['acctFlags'] = smbflag(); // sambaAccount_may
-	if (($_SESSION['account']->smb_smbhome!='') && ($_SESSION['account']->smb_smbhome!=$_SESSION['account_old']->smb_smbhome)) $attr['smbHome'] = $_SESSION['account']->smb_smbhome; // sambaAccount_may
-	if (($_SESSION['account']->smb_smbhome=='') && ($_SESSION['account']->smb_smbhome!=$_SESSION['account_old']->smb_smbhome)) $attr_rem['smbHome'] = $_SESSION['account_old']->smb_smbhome; // sambaAccount_may
-	if (($_SESSION['account']->smb_homedrive!='') && ($_SESSION['account']->smb_homedrive!=$_SESSION['account_old']->smb_homedrive)) $attr['homeDrive'] = $_SESSION['account']->smb_homedrive; // sambaAccount_may
-	if (($_SESSION['account']->smb_homedrive=='') && ($_SESSION['account']->smb_homedrive!=$_SESSION['account_old']->smb_homedrive)) $attr_rem['homeDrive'] = $_SESSION['account_old']->smb_homedrive; // sambaAccount_may
-	if (($_SESSION['account']->smb_scriptpath!='') && ($_SESSION['account']->smb_scriptpath!=$_SESSION['account_old']->smb_scriptpath)) $attr['scriptPath']  = $_SESSION['account']->smb_scriptpath; // sambaAccount_may
-	if (($_SESSION['account']->smb_scriptpath=='') && ($_SESSION['account']->smb_scriptpath!=$_SESSION['account_old']->smb_scriptpath)) $attr_rem['scriptPath']  = $_SESSION['account_old']->smb_scriptpath; // sambaAccount_may
-	if (($_SESSION['account']->smb_profilePath!='') && ($_SESSION['account']->smb_profilePath!=$_SESSION['account_old']->smb_profilePath)) $attr['profilePath'] = $_SESSION['account']->smb_profilePath; // sambaAccount_may
-	if (($_SESSION['account']->smb_profilePath=='') && ($_SESSION['account']->smb_profilePath!=$_SESSION['account_old']->smb_profilePath)) $attr_rem['profilePath'] = $_SESSION['account_old']->smb_profilePath; // sambaAccount_may
-	if (($_SESSION['account']->smb_smbuserworkstations!='') && ($_SESSION['account']->smb_smbuserworkstations!=$_SESSION['account_old']->smb_smbuserworkstations))$attr['userWorkstations'] = $_SESSION['account']->smb_smbuserworkstations; // sambaAccount_may
-	if (($_SESSION['account']->smb_smbuserworkstations=='') && ($_SESSION['account']->smb_smbuserworkstations!=$_SESSION['account_old']->smb_smbuserworkstations))$attr_rem['userWorkstations'] = $_SESSION['account_old']->smb_smbuserworkstations; // sambaAccount_may
-	if (($_SESSION['account']->smb_domain!='') && ($_SESSION['account']->smb_domain!=$_SESSION['account_old']->smb_domain)) $attr['domain'] = $_SESSION['account']->smb_domain; // sambaAccount_may
-	if (($_SESSION['account']->smb_domain=='') && ($_SESSION['account']->smb_domain!=$_SESSION['account_old']->smb_domain)) $attr_rem['domain'] = $_SESSION['account_old']->smb_domain; // sambaAccount_may
-	if ($_SESSION['account']->general_givenname!=$_SESSION['account_old']->general_givenname) $attr['givenName'] = $_SESSION['account']->general_givenname;
-	if ($_SESSION['account']->general_surname!=$_SESSION['account_old']->general_surname) $attr['sn'] = $_SESSION['account']->general_surname;
+	if (($values->smb_smbhome!='') && ($values->smb_smbhome!=$values_old->smb_smbhome)) $attr['smbHome'] = $values->smb_smbhome; // sambaAccount_may
+	if (($values->smb_smbhome=='') && ($values->smb_smbhome!=$values_old->smb_smbhome)) $attr_rem['smbHome'] = $values_old->smb_smbhome; // sambaAccount_may
+	if (($values->smb_homedrive!='') && ($values->smb_homedrive!=$values_old->smb_homedrive)) $attr['homeDrive'] = $values->smb_homedrive; // sambaAccount_may
+	if (($values->smb_homedrive=='') && ($values->smb_homedrive!=$values_old->smb_homedrive)) $attr_rem['homeDrive'] = $values_old->smb_homedrive; // sambaAccount_may
+	if (($values->smb_scriptPath!='') && ($values->smb_scriptPath!=$values_old->smb_scriptPath)) $attr['scriptPath']  = $values->smb_scriptPath; // sambaAccount_may
+	if (($values->smb_scriptPath=='') && ($values->smb_scriptPath!=$values_old->smb_scriptPath)) $attr_rem['scriptPath']  = $values_old->smb_scriptPath; // sambaAccount_may
+	if (($values->smb_profilePath!='') && ($values->smb_profilePath!=$values_old->smb_profilePath)) $attr['profilePath'] = $values->smb_profilePath; // sambaAccount_may
+	if (($values->smb_profilePath=='') && ($values->smb_profilePath!=$values_old->smb_profilePath)) $attr_rem['profilePath'] = $values_old->smb_profilePath; // sambaAccount_may
+	if (($values->smb_smbuserworkstations!='') && ($values->smb_smbuserworkstations!=$values_old->smb_smbuserworkstations))$attr['userWorkstations'] = $values->smb_smbuserworkstations; // sambaAccount_may
+	if (($values->smb_smbuserworkstations=='') && ($values->smb_smbuserworkstations!=$values_old->smb_smbuserworkstations))$attr_rem['userWorkstations'] = $values_old->smb_smbuserworkstations; // sambaAccount_may
+	if (($values->smb_domain!='') && ($values->smb_domain!=$values_old->smb_domain)) $attr['domain'] = $values->smb_domain; // sambaAccount_may
+	if (($values->smb_domain=='') && ($values->smb_domain!=$values_old->smb_domain)) $attr_rem['domain'] = $values_old->smb_domain; // sambaAccount_may
+	if ($values->general_givenname!=$values_old->general_givenname) $attr['givenName'] = $values->general_givenname;
+	if ($values->general_surname!=$values_old->general_surname) $attr['sn'] = $values->general_surname;
 
 	if ($attr_rem) {
-			$success = ldap_mod_del($_SESSION['ldap']->server(),$_SESSION['account']->general_dn, $attr_rem);
+			$success = ldap_mod_del($_SESSION['ldap']->server(),$values->general_dn, $attr_rem);
 			if (!$success) return 5;
 			}
-	if ($_SESSION['account']->general_username == $_SESSION['account_old']->general_username) // Username hasn't changed
-		$success = ldap_modify($_SESSION['ldap']->server(),$_SESSION['account']->general_dn, $attr);
+	if ($values->general_username == $values_old->general_username) // Username hasn't changed
+		$success = ldap_modify($_SESSION['ldap']->server(),$values->general_dn, $attr);
 			else {
 				$result = ldap_search($_SESSION['ldap']->server(), $dn, "objectclass=PosixAccount");
 				$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 				$attr_old = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
-				$success = ldap_add($_SESSION['ldap']->server(),$_SESSION['account']->general_dn, $attr_old);
-				if ($success) $success = ldap_delete($_SESSION['ldap']->server(),$_SESSION['account_old']->general_dn);
-				if ($success) $success = ldap_mod_replace($_SESSION['ldap']->server(),$_SESSION['account']->general_dn, $attr);
+				$success = ldap_add($_SESSION['ldap']->server(),$values->general_dn, $attr_old);
+				if ($success) $success = ldap_delete($_SESSION['ldap']->server(),$values_old->general_dn);
+				if ($success) $success = ldap_mod_replace($_SESSION['ldap']->server(),$values->general_dn, $attr);
 				}
 	if (!$success) return 5;
 	// Write Groupmemberchips
-	if ($_SESSION['account']->general_groupadd) {
-		$allgroups = $_SESSION['account']->general_groupadd;
-		if (!in_array($_SESSION['account']->general_group, $allgroups)) $allgroups[] = $_SESSION['account']->general_group;
+	if ($values->general_groupadd) {
+		$allgroups = $values->general_groupadd;
+		if (!in_array($values->general_group, $allgroups)) $allgroups[] = $values->general_group;
 		}
-	 else $allgroups[0] = $_SESSION['account']->general_group;
+	 else $allgroups[0] = $values->general_group;
 	$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(), 'objectClass=PosixGroup');
 	$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 	while ($entry) {
@@ -929,44 +914,44 @@ function modifyuser() { // Will modify the LDAP-Account
 		if ($attr2['memberUid']) {
 			array_shift($attr2['memberUid']);
 			foreach ($attr2['memberUid'] as $nam) {
-				if ( ($nam==$_SESSION['account']->general_username) && !in_array($nam, $allgroups)) {
+				if ( ($nam==$values->general_username) && !in_array($nam, $allgroups)) {
 					$todelete['memberUid'] = $nam;
 					$success = ldap_mod_del($_SESSION['ldap']->server(), ldap_get_dn($_SESSION['ldap']->server(), $entry) ,$todelete);
 					if (!$success) return 5;
 					}
 				}
-			if (!in_array($_SESSION['account']->general_username, $attr2['memberUid']) && in_array($attr2['cn'][0], $allgroups)) {
+			if (!in_array($values->general_username, $attr2['memberUid']) && in_array($attr2['cn'][0], $allgroups)) {
 				$toadd['memberUid'] = $attr2['memberUid'];
-				$toadd['memberUid'][] = $_SESSION['account']->general_username;
+				$toadd['memberUid'][] = $values->general_username;
 				$success = ldap_mod_replace($_SESSION['ldap']->server(), ldap_get_dn($_SESSION['ldap']->server(), $entry),  $toadd);
 				if (!$success) return 5;
 				}
 			}
 		 else {
 			if (in_array($attr2['cn'][0], $allgroups)) {
-				$toadd['memberUid'] = $_SESSION['account']->general_username;
+				$toadd['memberUid'] = $values->general_username;
 				$success = ldap_mod_add($_SESSION['ldap']->server(), ldap_get_dn($_SESSION['ldap']->server(), $entry),  $toadd);
 				if (!$success) return 5;
 				}
 			}
 		$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
 		}
-	if ($_SESSION['config']->scriptServer) setquotas($_SESSION['account']->general_username);
+	if ($_SESSION['config']->scriptServer) setquotas($values->general_username);
 	return 3;
 	}
 
 
 
-function createhost() { // Will create the LDAP-Account
+function createhost($values) { // Will create the LDAP-Account
 	// 2 == Account allready exists at different location
 	// 1 == Account has been created
 	// 3 == Account has been modified
 	// 4 == Error while creating Account
 	// 5 == Error while modifying Account
 	// Value stored in shadowExpire, days since 1.1.1970
-	$date = mktime(10,0,0, $_SESSION['account']->unix_pwdexpire_mon, $_SESSION['account']->unix_pwdexpire_day, $_SESSION['account']->unix_pwdexpire_yea) / 86400 ;
+	$date = mktime(10,0,0, $values->unix_pwdexpire_mon, $values->unix_pwdexpire_day, $values->unix_pwdexpire_yea) / 86400 ;
 	settype($date, 'integer');
-	$_SESSION['account']->general_dn = 'uid=' . $_SESSION['account']->general_username . ',' . $_SESSION['config']->get_HostSuffix();
+	$values->general_dn = 'uid=' . $values->general_username . ',' . $_SESSION['config']->get_HostSuffix();
 
 	// All Values need for an host-account
 	// General Objectclasses
@@ -974,62 +959,62 @@ function createhost() { // Will create the LDAP-Account
 	$attr['objectClass'][1] = 'shadowAccount';
 	$attr['objectClass'][2] = 'sambaAccount';
 	$attr['objectClass'][3] = 'account';
-	$attr['cn'] = $_SESSION['account']->general_username; // posixAccount_req shadowAccount_req sambaAccount_may
-	$attr['uid'] = $_SESSION['account']->general_username; // posixAccount_req
-	$attr['uidNumber'] = $_SESSION['account']->general_uidNumber; // posixAccount_req
-	$attr['gidNumber'] = getgid($_SESSION['account']->general_group); // posixAccount_req
-	$attr['homeDirectory'] = $_SESSION['account']->general_homedir; // posixAccount_req
+	$attr['cn'] = $values->general_username; // posixAccount_req shadowAccount_req sambaAccount_may
+	$attr['uid'] = $values->general_username; // posixAccount_req
+	$attr['uidNumber'] = $values->general_uidNumber; // posixAccount_req
+	$attr['gidNumber'] = getgid($values->general_group); // posixAccount_req
+	$attr['homeDirectory'] = $values->general_homedir; // posixAccount_req
 
 	// posixAccount_may shadowAccount_may
-	if ($_SESSION['account']->unix_password_no) $_SESSION['account']->unix_password = '';
-	if ($_SESSION['account']->unix_deactivated) $attr['userPassword'] = '{CRYPT}!' . crypt($_SESSION['account']->unix_password);
-	else $attr['userPassword'] = '{CRYPT}' . crypt($_SESSION['account']->unix_password);
+	if ($values->unix_password_no) $values->unix_password = '';
+	if ($values->unix_deactivated) $attr['userPassword'] = '{CRYPT}!' . crypt($values->unix_password);
+	else $attr['userPassword'] = '{CRYPT}' . crypt($values->unix_password);
 	$attr['shadowLastChange'] = getdays(); // shadowAccount_may
-	$attr['ntPassword'] = exec('../lib/createntlm.pl nt ' . $_SESSION['account']->smb_password);
-	$attr['lmPassword'] = exec('../lib/createntlm.pl lm ' . $_SESSION['account']->smb_password);
+	$attr['ntPassword'] = exec('../lib/createntlm.pl nt ' . $values->smb_password);
+	$attr['lmPassword'] = exec('../lib/createntlm.pl lm ' . $values->smb_password);
 	$attr['pwdLastSet'] = time(); // sambaAccount_may
-	if ($_SESSION['account']->smb_password_no) {
+	if ($values->smb_password_no) {
 		$attr['ntPassword'] = 'NO PASSWORD*****';
 		$attr['lmPassword'] = 'NO PASSWORD*****';
 		$attr['pwdLastSet'] = time(); // sambaAccount_may
 		}
-	$attr['loginShell'] = $_SESSION['account']->general_shell; // posixAccount_may
-	$attr['gecos'] = $_SESSION['account']->general_gecos; // posixAccount_may
-	$attr['description'] = $_SESSION['account']->general_gecos; // posixAccount_may sambaAccount_may
+	$attr['loginShell'] = $values->general_shell; // posixAccount_may
+	$attr['gecos'] = $values->general_gecos; // posixAccount_may
+	$attr['description'] = $values->general_gecos; // posixAccount_may sambaAccount_may
 
-	$attr['shadowMin'] = $_SESSION['account']->unix_pwdminage; // shadowAccount_may
-	$attr['shadowMax'] = $_SESSION['account']->unix_pwdmaxage; // shadowAccount_may
-	$attr['shadowWarning'] = $_SESSION['account']->unix_pwdwarn; // shadowAccount_may
-	$attr['shadowInactive'] = $_SESSION['account']->unix_pwdallowlogin; // shadowAccount_may
+	$attr['shadowMin'] = $values->unix_pwdminage; // shadowAccount_may
+	$attr['shadowMax'] = $values->unix_pwdmaxage; // shadowAccount_may
+	$attr['shadowWarning'] = $values->unix_pwdwarn; // shadowAccount_may
+	$attr['shadowInactive'] = $values->unix_pwdallowlogin; // shadowAccount_may
 	$attr['shadowExpire'] =  $date ; // shadowAccount_may
-	$attr['rid'] = (2 * $_SESSION['account']->general_uidNumber + 1000); // sambaAccount_may
-	$attr['PrimaryGroupID'] = (2 * getgid($_SESSION['account']->general_group) + 1001); // sambaAccount_req
-	if ($_SESSION['account']->smb_pwdcanchange) $attr['pwdCanChange'] = "1"; else $attr['pwdCanChange'] = "0"; // sambaAccount_may
-	if ($_SESSION['account']->smb_pwdmustchange) $attr['pwdMustChange'] = "1"; else $attr['pwdMustChange'] = "0"; // sambaAccount_may
+	$attr['rid'] = (2 * $values->general_uidNumber + 1000); // sambaAccount_may
+	$attr['PrimaryGroupID'] = (2 * getgid($values->general_group) + 1001); // sambaAccount_req
+	if ($values->smb_pwdcanchange) $attr['pwdCanChange'] = "1"; else $attr['pwdCanChange'] = "0"; // sambaAccount_may
+	if ($values->smb_pwdmustchange) $attr['pwdMustChange'] = "1"; else $attr['pwdMustChange'] = "0"; // sambaAccount_may
 	$attr['acctFlags'] = smbflag(); // sambaAccount_may
-	$attr['displayName'] = $_SESSION['account']->general_gecos; // sambaAccount_may
-	if ($_SESSION['account']->smb_domain!='') $attr['domain'] = $_SESSION['account']->smb_domain; // sambaAccount_may
-	$success = ldap_add($_SESSION['ldap']->server(),$_SESSION['account']->general_dn, $attr);
+	$attr['displayName'] = $values->general_gecos; // sambaAccount_may
+	if ($values->smb_domain!='') $attr['domain'] = $values->smb_domain; // sambaAccount_may
+	$success = ldap_add($_SESSION['ldap']->server(),$values->general_dn, $attr);
 	if (!$success) return 4;
 	// Add host to groups
-	$result = ldap_search($_SESSION['ldap']->server(), 'cn='.$_SESSION['account']->general_group.','.$_SESSION['config']->get_GroupSuffix(), "objectclass=posixGroup");
+	$result = ldap_search($_SESSION['ldap']->server(), 'cn='.$values->general_group.','.$_SESSION['config']->get_GroupSuffix(), "objectclass=posixGroup");
 	$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 	$group = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
 	if ($group['memberUid']) array_shift($group['memberUid']);
-	if (! in_array($_SESSION['account']->general_username, $group)) {
-		$toadd['memberUid'] = $_SESSION['account']->general_username;
-		$success = ldap_mod_add($_SESSION['ldap']->server(), 'cn='.$_SESSION['account']->general_group.','.$_SESSION['config']->get_GroupSuffix(), $toadd);
+	if (! in_array($values->general_username, $group)) {
+		$toadd['memberUid'] = $values->general_username;
+		$success = ldap_mod_add($_SESSION['ldap']->server(), 'cn='.$values->general_group.','.$_SESSION['config']->get_GroupSuffix(), $toadd);
 		if (!$success) return 4;
 		}
 	// Add Host to Additional Groups
-	if ($_SESSION['account']->general_groupadd)
-		foreach ($_SESSION['account']->general_groupadd as $group2) {
+	if ($values->general_groupadd)
+		foreach ($values->general_groupadd as $group2) {
 			$result = ldap_search($_SESSION['ldap']->server(), 'cn='.$group2.','.$_SESSION['config']->get_GroupSuffix(), "objectclass=posixGroup");
 			$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 			$group = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
 			if ($group['memberUid']) array_shift($group['memberUid']);
-			if (! in_array($_SESSION['account']->general_username, $group['memberUid'])) {
-				$toadd['memberUid'] = $_SESSION['account']->general_username;
+			if (! in_array($values->general_username, $group['memberUid'])) {
+				$toadd['memberUid'] = $values->general_username;
 				$success = ldap_mod_add($_SESSION['ldap']->server(), 'cn='.$group2.','.$_SESSION['config']->get_GroupSuffix(), $toadd);
 				}
 			if (!$success) return 4;
@@ -1037,101 +1022,101 @@ function createhost() { // Will create the LDAP-Account
 	return 1;
 	}
 
-function modifyhost() { // Will modify the LDAP-Account
+function modifyhost($values,$values_old) { // Will modify the LDAP-Account
 	// 2 == Account allready exists at different location
 	// 3 == Account has been modified
 	// 5 == Error while modifying Account
 	// Value stored in shadowExpire, days since 1.1.1970
-	$date = mktime(10,0,0, $_SESSION['account']->unix_pwdexpire_mon, $_SESSION['account']->unix_pwdexpire_day, $_SESSION['account']->unix_pwdexpire_yea) / 86400 ;
+	$date = mktime(10,0,0, $values->unix_pwdexpire_mon, $values->unix_pwdexpire_day, $values->unix_pwdexpire_yea) / 86400 ;
 	settype($date, 'integer');
-	$_SESSION['account']->general_dn = 'uid=' . $_SESSION['account']->general_username . ',' . $_SESSION['config']->get_UserSuffix();
-	if ($_SESSION['account']->general_username != $_SESSION['account_old']->general_username) {
-		$attr['cn'] = $_SESSION['account']->general_username; // posixAccount_req shadowAccount_req sambaAccount_may
-		$attr['uid'] = $_SESSION['account']->general_username; // posixAccount_req
+	$values->general_dn = 'uid=' . $values->general_username . ',' . $_SESSION['config']->get_UserSuffix();
+	if ($values->general_username != $values_old->general_username) {
+		$attr['cn'] = $values->general_username; // posixAccount_req shadowAccount_req sambaAccount_may
+		$attr['uid'] = $values->general_username; // posixAccount_req
 		}
-	if ($_SESSION['account']->general_uidNumber != $_SESSION['account_old']->general_uidNumber) {
-		$attr['uidNumber'] = $_SESSION['account']->general_uidNumber; // posixAccount_req
-		$attr['rid'] = (2 * $_SESSION['account']->general_uidNumber + 1000); // sambaAccount_may
+	if ($values->general_uidNumber != $values_old->general_uidNumber) {
+		$attr['uidNumber'] = $values->general_uidNumber; // posixAccount_req
+		$attr['rid'] = (2 * $values->general_uidNumber + 1000); // sambaAccount_may
 		}
-	if ($_SESSION['account']->general_group != $_SESSION['account_old']->general_group) {
-		$attr['gidNumber'] = getgid($_SESSION['account']->general_group); // posixAccount_req
-		$attr['PrimaryGroupID'] = (2 * getgid($_SESSION['account']->general_group) + 1001); // sambaAccount_req
+	if ($values->general_group != $values_old->general_group) {
+		$attr['gidNumber'] = getgid($values->general_group); // posixAccount_req
+		$attr['PrimaryGroupID'] = (2 * getgid($values->general_group) + 1001); // sambaAccount_req
 		}
-	if ($_SESSION['account']->general_homedir != $_SESSION['account_old']->general_homedir)
-		$attr['homeDirectory'] = $_SESSION['account']->general_homedir; // posixAccount_req
+	if ($values->general_homedir != $values_old->general_homedir)
+		$attr['homeDirectory'] = $values->general_homedir; // posixAccount_req
 	// posixAccount_may shadowAccount_may
-	$password_old = str_replace('{CRYPT}', '',$_SESSION['account_old']->unix_password);
+	$password_old = str_replace('{CRYPT}', '',$values_old->unix_password);
 	if (substr($password_old,0,1) == '!' ) $password_old = substr($password_old,1,strlen($password_old));
-	if ($_SESSION['account']->unix_password=='') {
-		if ($_SESSION['account']->unix_password_no) $password_old = '';
-		if ($_SESSION['account']->unix_deactivated) $attr['userPassword'] = '{CRYPT}!' . $password_old;
+	if ($values->unix_password=='') {
+		if ($values->unix_password_no) $password_old = '';
+		if ($values->unix_deactivated) $attr['userPassword'] = '{CRYPT}!' . $password_old;
 		else $attr['userPassword'] = '{CRYPT}' . $password_old;
-		$attr['shadowLastChange'] =  $_SESSION['account_old']->unix_shadowLastChange; // shadowAccount_may
+		$attr['shadowLastChange'] =  $values_old->unix_shadowLastChange; // shadowAccount_may
 		}
 	 else {
-		if ($_SESSION['account']->unix_deactivated) $attr['userPassword'] = '{CRYPT}!' . crypt($_SESSION['account']->unix_password);
-		else $attr['userPassword'] = '{CRYPT}' . crypt($_SESSION['account']->unix_password);
+		if ($values->unix_deactivated) $attr['userPassword'] = '{CRYPT}!' . crypt($values->unix_password);
+		else $attr['userPassword'] = '{CRYPT}' . crypt($values->unix_password);
 		$attr['shadowLastChange'] = getdays(); // shadowAccount_may
 		}
-	if ($_SESSION['account']->smb_password_no) {
+	if ($values->smb_password_no) {
 		$attr['ntPassword'] = 'NO PASSWORD*****';
 		$attr['lmPassword'] = 'NO PASSWORD*****';
 		$attr['pwdLastSet'] = time(); // sambaAccount_may
 		}
 	 else
-		if ($_SESSION['account']->smb_password!='') {
-			$attr['ntPassword'] = exec('../lib/createntlm.pl nt ' . $_SESSION['account']->smb_password);
-			$attr['lmPassword'] = exec('../lib/createntlm.pl lm ' . $_SESSION['account']->smb_password);
+		if ($values->smb_password!='') {
+			$attr['ntPassword'] = exec('../lib/createntlm.pl nt ' . $values->smb_password);
+			$attr['lmPassword'] = exec('../lib/createntlm.pl lm ' . $values->smb_password);
 			$attr['pwdLastSet'] = time(); // sambaAccount_may
 			}
-	if ($_SESSION['account']->general_shell != $_SESSION['account_old']->general_shell)
-		$attr['loginShell'] = $_SESSION['account']->general_shell; // posixAccount_may
-	if ($_SESSION['account']->general_gecos != $_SESSION['account_old']->general_gecos) {
-		$attr['gecos'] = $_SESSION['account']->general_gecos; // posixAccount_may
-		$attr['description'] = $_SESSION['account']->general_gecos; // posixAccount_may sambaAccount_may
-		$attr['displayName'] = $_SESSION['account']->general_gecos; // sambaAccount_may
+	if ($values->general_shell != $values_old->general_shell)
+		$attr['loginShell'] = $values->general_shell; // posixAccount_may
+	if ($values->general_gecos != $values_old->general_gecos) {
+		$attr['gecos'] = $values->general_gecos; // posixAccount_may
+		$attr['description'] = $values->general_gecos; // posixAccount_may sambaAccount_may
+		$attr['displayName'] = $values->general_gecos; // sambaAccount_may
 		}
-	if ($_SESSION['account']->general_pwdminage != $_SESSION['account_old']->general_pwdminage)
-		$attr['shadowMin'] = $_SESSION['account']->unix_pwdminage; // shadowAccount_may
-	if ($_SESSION['account']->general_pwdmaxage != $_SESSION['account_old']->general_pwdmaxage)
-		$attr['shadowMax'] = $_SESSION['account']->unix_pwdmaxage; // shadowAccount_may
-	if ($_SESSION['account']->general_pwdwarn != $_SESSION['account_old']->general_pwdwarn)
-		$attr['shadowWarning'] = $_SESSION['account']->unix_pwdwarn; // shadowAccount_may
-	if ($_SESSION['account']->general_pwdallowlogin != $_SESSION['account_old']->general_pwdallowlogin)
-		$attr['shadowInactive'] = $_SESSION['account']->unix_pwdallowlogin; // shadowAccount_may
-	if (($_SESSION['account']->unix_pwdexpire_day = $date['mday']!=$_SESSION['account_old']->unix_pwdexpire_day = $date['mday']) ||
-		($_SESSION['account']->unix_pwdexpire_mon = $date['mon'] != $_SESSION['account_old']->unix_pwdexpire_mon = $date['mon']) ||
-		($_SESSION['account']->unix_pwdexpire_yea = $date['year'] != $_SESSION['account']->unix_pwdexpire_yea = $date['year']))
+	if ($values->general_pwdminage != $values_old->general_pwdminage)
+		$attr['shadowMin'] = $values->unix_pwdminage; // shadowAccount_may
+	if ($values->general_pwdmaxage != $values_old->general_pwdmaxage)
+		$attr['shadowMax'] = $values->unix_pwdmaxage; // shadowAccount_may
+	if ($values->general_pwdwarn != $values_old->general_pwdwarn)
+		$attr['shadowWarning'] = $values->unix_pwdwarn; // shadowAccount_may
+	if ($values->general_pwdallowlogin != $values_old->general_pwdallowlogin)
+		$attr['shadowInactive'] = $values->unix_pwdallowlogin; // shadowAccount_may
+	if (($values->unix_pwdexpire_day = $date['mday']!=$values_old->unix_pwdexpire_day = $date['mday']) ||
+		($values->unix_pwdexpire_mon = $date['mon'] != $values_old->unix_pwdexpire_mon = $date['mon']) ||
+		($values->unix_pwdexpire_yea = $date['year'] != $values->unix_pwdexpire_yea = $date['year']))
 			$attr['shadowExpire'] =  $date ; // shadowAccount_may
-	if ($_SESSION['account']->smb_pwdcanchange && $_SESSION['account_old']->smb_pwdcanchange==0) $attr['pwdCanChange'] = "1"; else $attr['pwdCanChange'] = "0"; // sambaAccount_may
-	if ($_SESSION['account']->smb_pwdcanchange==0 && $_SESSION['account_old']->smb_pwdcanchange==1) $attr_rem['pwdCanChange'] = "1"; else $attr['pwdCanChange'] = "0"; // sambaAccount_may
-	if ($_SESSION['account']->smb_pwdmustchange && $_SESSION['account']->smb_pwdmustchange==0) $attr['pwdMustChange'] = "1"; else $attr['pwdMustChange'] = "0"; // sambaAccount_may
-	if ($_SESSION['account']->smb_pwdmustchange==0 && $_SESSION['account']->smb_pwdmustchange==1) $attr_rem['pwdMustChange'] = "1"; else $attr['pwdMustChange'] = "0"; // sambaAccount_may
+	if ($values->smb_pwdcanchange && $values_old->smb_pwdcanchange==0) $attr['pwdCanChange'] = "1"; else $attr['pwdCanChange'] = "0"; // sambaAccount_may
+	if ($values->smb_pwdcanchange==0 && $values_old->smb_pwdcanchange==1) $attr_rem['pwdCanChange'] = "1"; else $attr['pwdCanChange'] = "0"; // sambaAccount_may
+	if ($values->smb_pwdmustchange && $values->smb_pwdmustchange==0) $attr['pwdMustChange'] = "1"; else $attr['pwdMustChange'] = "0"; // sambaAccount_may
+	if ($values->smb_pwdmustchange==0 && $values->smb_pwdmustchange==1) $attr_rem['pwdMustChange'] = "1"; else $attr['pwdMustChange'] = "0"; // sambaAccount_may
 	$attr['acctFlags'] = smbflag(); // sambaAccount_may
-	if (($_SESSION['account']->smb_domain!='') && ($_SESSION['account']->smb_domain!=$_SESSION['account_old']->smb_domain)) $attr['domain'] = $_SESSION['account']->smb_domain; // sambaAccount_may
-	if (($_SESSION['account']->smb_domain=='') && ($_SESSION['account']->smb_domain!=$_SESSION['account_old']->smb_domain)) $attr_rem['domain'] = $_SESSION['account_old']->smb_domain; // sambaAccount_may
+	if (($values->smb_domain!='') && ($values->smb_domain!=$values_old->smb_domain)) $attr['domain'] = $values->smb_domain; // sambaAccount_may
+	if (($values->smb_domain=='') && ($values->smb_domain!=$values_old->smb_domain)) $attr_rem['domain'] = $values_old->smb_domain; // sambaAccount_may
 
 	if ($attr_rem) {
-		$success = ldap_mod_del($_SESSION['ldap']->server(),$_SESSION['account']->general_dn, $attr_rem);
+		$success = ldap_mod_del($_SESSION['ldap']->server(),$values->general_dn, $attr_rem);
 		if (!$success) return 5;
 		}
-	if ($_SESSION['account']->general_username == $_SESSION['account_old']->general_username) // Username hasn't changed
-		$success = ldap_modify($_SESSION['ldap']->server(),$_SESSION['account']->general_dn, $attr);
+	if ($values->general_username == $values_old->general_username) // Username hasn't changed
+		$success = ldap_modify($_SESSION['ldap']->server(),$values->general_dn, $attr);
 			else {
 				$result = ldap_search($_SESSION['ldap']->server(), $dn, "objectclass=PosixAccount");
 				$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 				$attr_old = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
-				$success = ldap_add($_SESSION['ldap']->server(),$_SESSION['account']->general_dn, $attr_old);
-				if ($success) $success = ldap_delete($_SESSION['ldap']->server(),$_SESSION['account_old']->general_dn);
-				if ($success) $success = ldap_mod_replace($_SESSION['ldap']->server(),$_SESSION['account']->general_dn, $attr);
+				$success = ldap_add($_SESSION['ldap']->server(),$values->general_dn, $attr_old);
+				if ($success) $success = ldap_delete($_SESSION['ldap']->server(),$values_old->general_dn);
+				if ($success) $success = ldap_mod_replace($_SESSION['ldap']->server(),$values->general_dn, $attr);
 				}
 	if (!$success) return 5;
 	// Write Groupmemberchips
-	if ($_SESSION['account']->general_groupadd) {
-		$allgroups = $_SESSION['account']->general_groupadd;
-		if (!in_array($_SESSION['account']->general_group, $allgroups)) $allgroups[] = $_SESSION['account']->general_group;
+	if ($values->general_groupadd) {
+		$allgroups = $values->general_groupadd;
+		if (!in_array($values->general_group, $allgroups)) $allgroups[] = $values->general_group;
 		}
-	 else $allgroups[0] = $_SESSION['account']->general_group;
+	 else $allgroups[0] = $values->general_group;
 	$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(), 'objectClass=PosixGroup');
 	$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 	while ($entry) {
@@ -1140,22 +1125,22 @@ function modifyhost() { // Will modify the LDAP-Account
 		if ($attr2['memberUid']) {
 			array_shift($attr2['memberUid']);
 			foreach ($attr2['memberUid'] as $nam) {
-				if ( ($nam==$_SESSION['account']->general_username) && !in_array($nam, $allgroups)) {
+				if ( ($nam==$values->general_username) && !in_array($nam, $allgroups)) {
 					$todelete['memberUid'] = $nam;
 					$success = ldap_mod_del($_SESSION['ldap']->server(), ldap_get_dn($_SESSION['ldap']->server(), $entry) ,$todelete);
 					if (!$success) return 5;
 					}
 				}
-			if (!in_array($_SESSION['account']->general_username, $attr2['memberUid']) && in_array($attr2['cn'][0], $allgroups)) {
+			if (!in_array($values->general_username, $attr2['memberUid']) && in_array($attr2['cn'][0], $allgroups)) {
 				$toadd['memberUid'] = $attr2['memberUid'];
-				$toadd['memberUid'][] = $_SESSION['account']->general_username;
+				$toadd['memberUid'][] = $values->general_username;
 				$success = ldap_mod_replace($_SESSION['ldap']->server(), ldap_get_dn($_SESSION['ldap']->server(), $entry),  $toadd);
 				if (!$success) return 5;
 				}
 			}
 		 else {
 			if (in_array($attr2['cn'][0], $allgroups)) {
-				$toadd['memberUid'] = $_SESSION['account']->general_username;
+				$toadd['memberUid'] = $values->general_username;
 				$success = ldap_mod_add($_SESSION['ldap']->server(), ldap_get_dn($_SESSION['ldap']->server(), $entry),  $toadd);
 				if (!$success) return 5;
 				}
@@ -1167,49 +1152,49 @@ function modifyhost() { // Will modify the LDAP-Account
 
 
 
-function creategroup() { // Will create the LDAP-Group
+function creategroup($values) { // Will create the LDAP-Group
 	// 2 == Group allready exists at different location
 	// 1 == Group has been created
 	// 3 == Group has been modified
 	// 4 == Error while creating Group
 	// 5 == Error while modifying Group
-	$_SESSION['account']->general_dn = 'cn=' . $_SESSION['account']->general_username . ',' . $_SESSION['config']->get_GroupSuffix();
+	$values->general_dn = 'cn=' . $values->general_username . ',' . $_SESSION['config']->get_GroupSuffix();
 	$attr['objectClass'] = 'posixGroup';
-	$attr['cn'] = $_SESSION['account']->general_username;
-	$attr['gidNumber'] = $_SESSION['account']->general_uidNumber;
-	$attr['description'] = $_SESSION['account']->general_gecos;
-	if ($_SESSION['account']->general_memeberUid) $attr['memberUid'] = $_SESSION['account']->general_memberUid;
-	$success = ldap_add($_SESSION['ldap']->server(),$_SESSION['account']->general_dn, $attr);
+	$attr['cn'] = $values->general_username;
+	$attr['gidNumber'] = $values->general_uidNumber;
+	$attr['description'] = $values->general_gecos;
+	if ($values->general_memeberUid) $attr['memberUid'] = $values->general_memberUid;
+	$success = ldap_add($_SESSION['ldap']->server(),$values->general_dn, $attr);
 	if ($_SESSION['config']->scriptServer) setquotas($attr['uid'][0]);
 	if ($success) return 1;
 	else return 4;
 	}
 
-function modifygroup() { // Will modify the LDAP-Group
+function modifygroup($values,$values_old) { // Will modify the LDAP-Group
 	// 2 == Group allready exists at different location
 	// 3 == Group has been modified
 	// 5 == Error while modifying Group
-	$_SESSION['account']->general_dn = 'cn=' . $_SESSION['account']->general_username . ',' . $_SESSION['config']->get_GroupSuffix();
-	if ($_SESSION['account']->general_username != $_SESSION['account_old']->general_username) $attr['cn'] = $_SESSION['account']->general_username;
-	if ($_SESSION['account']->general_uidNumber != $_SESSION['account_old']->general_uidNumber) $attr['gidNumber'] = $_SESSION['account']->general_uidNumber;
-	if ($_SESSION['account']->general_gecos != $_SESSION['account_old']->general_gecos) $attr['description'] = $_SESSION['account']->general_gecos;
-	if ($_SESSION['account']->general_memeberUid != $_SESSION['account_old']->general_memberUid) $attr['memberUid'] = $_SESSION['account']->general_memberUid;
-	if ($_SESSION['account']->general_username == $_SESSION['account_old']->general_username) // Groupname hasn't changed
-		$success = ldap_mod_replace($_SESSION['ldap']->server(),$_SESSION['account']->general_dn, $attr);
+	$values->general_dn = 'cn=' . $values->general_username . ',' . $_SESSION['config']->get_GroupSuffix();
+	if ($values->general_username != $values_old->general_username) $attr['cn'] = $values->general_username;
+	if ($values->general_uidNumber != $values_old->general_uidNumber) $attr['gidNumber'] = $values->general_uidNumber;
+	if ($values->general_gecos != $values_old->general_gecos) $attr['description'] = $values->general_gecos;
+	if ($values->general_memeberUid != $values_old->general_memberUid) $attr['memberUid'] = $values->general_memberUid;
+	if ($values->general_username == $values_old->general_username) // Groupname hasn't changed
+		$success = ldap_mod_replace($_SESSION['ldap']->server(),$values->general_dn, $attr);
 	else {
 		$result = ldap_search($_SESSION['ldap']->server(), $dn, "objectclass=PosixGroup");
 		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 		$attr_old = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
-		$success = ldap_add($_SESSION['ldap']->server(),$_SESSION['account']->general_dn, $attr_old);
-		if ($success) ldap_delete($_SESSION['ldap']->server(),$_SESSION['account_old']->general_dn);
-		if ($success) $success = ldap_mod_replace($_SESSION['ldap']->server(),$_SESSION['account']->general_dn, $attr);
+		$success = ldap_add($_SESSION['ldap']->server(),$values->general_dn, $attr_old);
+		if ($success) ldap_delete($_SESSION['ldap']->server(),$values_old->general_dn);
+		if ($success) $success = ldap_mod_replace($_SESSION['ldap']->server(),$values->general_dn, $attr);
 		}
 	if (!$success) return 5;
 	if ( $_SESSION['final_changegids']==true ) {
-		$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_UserSuffix(), 'gidNumber=' . $_SESSION['account_old']->general_uidNumber, array('gidNumber'));
+		$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_UserSuffix(), 'gidNumber=' . $values_old->general_uidNumber, array('gidNumber'));
 		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 		while ($entry) {
-			$user['gidNumber'][0] = $_SESSION['account']->general_uidNumber;
+			$user['gidNumber'][0] = $values->general_uidNumber;
 			ldap_modify($_SESSION['ldap']->server(), ldap_get_dn($_SESSION['ldap']->server(), $entry), $user);
 			$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
 			}

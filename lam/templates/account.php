@@ -31,53 +31,36 @@ include_once('../lib/status.inc'); // Return error-message
 include_once('../lib/pdf.inc'); // Return a pdf-file
 
 
-registervars(); // Register all needed variables in session and register session
 $error = "0";
-if ( $_GET['type'] ) { // Type is true if account.php was called from Users/Group/Hosts-List
-	$_SESSION['type2'] = $_GET['type']; // Register $type in Session for further usage
-	$_SESSION['account'] = ""; // Delete $_SESSION['account'] because values are now invalid
-	$_SESSION['account_old'] = ""; // Delete $_SESSION['account_old'] because values are now invalid
-	$_SESSION['account_temp'] = ""; // Delete $_SESSION['account_temp'] because values are now invalid
-	$_SESSION['modify'] = 0; // Set modify back to false
-	$_SESSION['shelllist'] = getshells(); // Write List of all valid shells in variable
-	if ((($_GET['type']=='user')||($_GET['type']=='group')) && ($_SESSION['config']->scriptServer) && (!$_GET['DN'])) getquotas();
-	}
-
-if ( $_GET['DN'] ) { // $DN is true if an entry should be modified and account.php was called from Users/Group/Host-List
-	$_SESSION['modify'] = 1;
-	$DN = str_replace("\'", '',$_GET['DN']);
-	switch ($_SESSION['type2']) {
-		case 'user': loaduser($DN); break;
-		case 'group':
-			loadgroup($DN);
-			if (!session_is_registered('final_changegids')) session_register('final_changegids');
-			 else $_SESSION['final_changegids'] = '';
-			break;
-		case 'host': loadhost($DN); break;
-		}
-	}
+initvars($_GET['type'], $_GET['DN']); // Initialize alle needed vars
 
 switch ($_POST['select']) {
 	case 'general':
 		if (!$_POST['load']) { // No Profile was loaded
 			// Write alle values in temporary object
-			if ($_POST['f_general_username']) $_SESSION['account_temp']->general_username = $_POST['f_general_username'];
-				else $_SESSION['account_temp']->general_username = $_POST['f_general_username'];
-			if ($_POST['f_general_surname']) $_SESSION['account_temp']->general_surname = $_POST['f_general_surname'];
-				else $_SESSION['account_temp']->general_surname = "";
-			if ($_POST['f_general_givenname']) $_SESSION['account_temp']->general_givenname = $_POST['f_general_givenname'];
-				else $_SESSION['account_temp']->general_givenname = "";
-			if ($_POST['f_general_uidNumber']) $_SESSION['account_temp']->general_uidNumber = $_POST['f_general_uidNumber'];
-				else $_SESSION['account_temp']->general_uidNumber = "";
-			if ($_POST['f_general_group']) $_SESSION['account_temp']->general_group = $_POST['f_general_group'];
-				if ($_POST['f_general_groupadd']) $_SESSION['account_temp']->general_groupadd = $_POST['f_general_groupadd'];
-			if ($_POST['f_general_homedir']) $_SESSION['account_temp']->general_homedir = $_POST['f_general_homedir'];
-				else $_SESSION['account_temp']->general_homedir = "";
-			if ($_POST['f_general_shell']) $_SESSION['account_temp']->general_shell = $_POST['f_general_shell'];
-			if ($_POST['f_general_gecos']) $_SESSION['account_temp']->general_gecos = $_POST['f_general_gecos'];
-				else $_SESSION['account_temp']->general_gecos = "";
+			if ($_POST['f_general_username']) $_SESSION['account']->general_username = $_POST['f_general_username'];
+				else $_SESSION['account']->general_username = $_POST['f_general_username'];
+			if ($_POST['f_general_surname']) $_SESSION['account']->general_surname = $_POST['f_general_surname'];
+				else $_SESSION['account']->general_surname = "";
+			if ($_POST['f_general_givenname']) $_SESSION['account']->general_givenname = $_POST['f_general_givenname'];
+				else $_SESSION['account']->general_givenname = "";
+			if ($_POST['f_general_uidNumber']) $_SESSION['account']->general_uidNumber = $_POST['f_general_uidNumber'];
+				else $_SESSION['account']->general_uidNumber = "";
+			if ($_POST['f_general_group']) $_SESSION['account']->general_group = $_POST['f_general_group'];
+				if ($_POST['f_general_groupadd']) $_SESSION['account']->general_groupadd = $_POST['f_general_groupadd'];
+			if ($_POST['f_general_homedir']) $_SESSION['account']->general_homedir = $_POST['f_general_homedir'];
+				else $_SESSION['account']->general_homedir = "";
+			if ($_POST['f_general_shell']) $_SESSION['account']->general_shell = $_POST['f_general_shell'];
+			if ($_POST['f_general_gecos']) $_SESSION['account']->general_gecos = $_POST['f_general_gecos'];
+				else $_SESSION['account']->general_gecos = "";
 			// Check Values
-			$error = checkglobal(); // account.inc
+			if ($_SESSION['account_old']) $values = checkglobal($_SESSION['account'], $_SESSION['type2'], $_SESSION['account_old']); // account.inc
+				else $values = checkglobal($_SESSION['account'], $_SESSION['type2']); // account.inc
+			if (is_object($values)) {
+				while (list($key, $val) = each($values)) // Set only defined values
+					if ($val) $_SESSION['account']->$key = $val;
+				}
+				else $error = $values;
 			// Check which part Site should be displayd
 			if ($_POST['next'] && ($error=="0"))
 				switch ($_SESSION['type2']) {
@@ -89,33 +72,31 @@ switch ($_POST['select']) {
 		break;
 	case 'unix':
 		// Write alle values in temporary object
-		if ($_POST['f_unix_password']) $_SESSION['account_temp']->unix_password = $_POST['f_unix_password'];
-			else $_SESSION['account_temp']->unix_password = '';
-		if ($_POST['genpass']) { $_SESSION['account_temp']->unix_password = genpasswd(); }
-		if ($_POST['f_unix_password_no']) $_SESSION['account_temp']->unix_password_no = $_POST['f_unix_password_no'];
-			else $_SESSION['account_temp']->unix_password_no = false;
-		if ($_POST['f_unix_pwdwarn']) $_SESSION['account_temp']->unix_pwdwarn = $_POST['f_unix_pwdwarn'];
-			else $_SESSION['account_temp']->unix_pwdwarn = '';
-		if ($_POST['f_unix_pwdallowlogin']) $_SESSION['account_temp']->unix_pwdallowlogin = $_POST['f_unix_pwdallowlogin'];
-			else $_SESSION['account_temp']->unix_pwdallowlogin = '';
-		if ($_POST['f_unix_pwdmaxage']) $_SESSION['account_temp']->unix_pwdmaxage = $_POST['f_unix_pwdmaxage'];
-			else $_SESSION['account_temp']->unix_pwdmaxage = '';
-		if ($_POST['f_unix_pwdminage']) $_SESSION['account_temp']->unix_pwdminage = $_POST['f_unix_pwdminage'];
-			else $_SESSION['account_temp']->unix_pwdminage = '';
-		if ($_POST['f_unix_pwdexpire_day']) $_SESSION['account_temp']->unix_pwdexpire_day = $_POST['f_unix_pwdexpire_day'];
-		if ($_POST['f_unix_pwdexpire_mon']) $_SESSION['account_temp']->unix_pwdexpire_mon = $_POST['f_unix_pwdexpire_mon'];
-		if ($_POST['f_unix_pwdexpire_yea']) $_SESSION['account_temp']->unix_pwdexpire_yea = $_POST['f_unix_pwdexpire_yea'];
-		if ($_POST['f_unix_deactivated']) $_SESSION['account_temp']->unix_deactivated = $_POST['f_unix_deactivated'];
-			else $_SESSION['account_temp']->unix_deactivated = false;
+		if ($_POST['f_unix_password']) $_SESSION['account']->unix_password = $_POST['f_unix_password'];
+			else $_SESSION['account']->unix_password = '';
+		if ($_POST['genpass']) { $_SESSION['account']->unix_password = genpasswd(); }
+		if ($_POST['f_unix_password_no']) $_SESSION['account']->unix_password_no = true;
+			else $_SESSION['account']->unix_password_no = false;
+		if ($_POST['f_unix_pwdwarn']) $_SESSION['account']->unix_pwdwarn = $_POST['f_unix_pwdwarn'];
+			else $_SESSION['account']->unix_pwdwarn = '';
+		if ($_POST['f_unix_pwdallowlogin']) $_SESSION['account']->unix_pwdallowlogin = $_POST['f_unix_pwdallowlogin'];
+			else $_SESSION['account']->unix_pwdallowlogin = '';
+		if ($_POST['f_unix_pwdmaxage']) $_SESSION['account']->unix_pwdmaxage = $_POST['f_unix_pwdmaxage'];
+			else $_SESSION['account']->unix_pwdmaxage = '';
+		if ($_POST['f_unix_pwdminage']) $_SESSION['account']->unix_pwdminage = $_POST['f_unix_pwdminage'];
+			else $_SESSION['account']->unix_pwdminage = '';
+		if ($_POST['f_unix_pwdexpire_day']) $_SESSION['account']->unix_pwdexpire_day = $_POST['f_unix_pwdexpire_day'];
+		if ($_POST['f_unix_pwdexpire_mon']) $_SESSION['account']->unix_pwdexpire_mon = $_POST['f_unix_pwdexpire_mon'];
+		if ($_POST['f_unix_pwdexpire_yea']) $_SESSION['account']->unix_pwdexpire_yea = $_POST['f_unix_pwdexpire_yea'];
+		if ($_POST['f_unix_deactivated']) $_SESSION['account']->unix_deactivated = $_POST['f_unix_deactivated'];
+			else $_SESSION['account']->unix_deactivated = false;
 		// Check Values
-		$error = checkunix(); // account.inc
 		// Check which part Site should be displayd
 		if ($_POST['genpass']) $select_local = 'unix';
+			else $error = checkunix($_SESSION['account'], $_SESSION['type2']); // account.inc
 		if ($_POST['respass']) {
-			$_SESSION['account_temp']->unix_password_no=1;
-			$_SESSION['account_temp']->smb_password_no=1;
-			$_SESSION['account']->unix_password_no=1;
-			$_SESSION['account']->smb_password_no=1;
+			$_SESSION['account']->unix_password_no=true;
+			$_SESSION['account']->smb_password_no=true;
 			}
 		if (($_POST['next']) && ($error=="0")) $select_local = 'samba';
 			else $select_local = 'unix';
@@ -123,35 +104,40 @@ switch ($_POST['select']) {
 		break;
 	case 'samba':
 		// Write alle values in temporary object
-		if ($_POST['f_smb_password']) $_SESSION['account_temp']->smb_password = $_POST['f_smb_password'];
-			else $_SESSION['account_temp']->smb_password = "";
-		if ($_POST['f_smb_password_no']) $_SESSION['account_temp']->smb_password_no = $_POST['f_smb_password_no'];
-			else $_SESSION['account_temp']->smb_password_no = false;
-		if ($_POST['f_smb_useunixpwd']) $_SESSION['account_temp']->smb_useunixpwd = $_POST['f_smb_useunixpwd'];
-			else $_SESSION['account_temp']->smb_useunixpwd = false;
-		if ($_POST['f_smb_pwdcanchange']) $_SESSION['account_temp']->smb_pwdcanchange = $_POST['f_smb_pwdcanchange'];
-			else $_SESSION['account_temp']->smb_pwdcanchange = false;
-		if ($_POST['f_smb_pwdmustchange']) $_SESSION['account_temp']->smb_pwdmustchange = $_POST['f_smb_pwdmustchange'];
-			else $_SESSION['account_temp']->smb_pwdmustchange = false;
-		if ($_POST['f_smb_homedrive']) $_SESSION['account_temp']->smb_homedrive = $_POST['f_smb_homedrive'];
-		if ($_POST['f_smb_scriptpath']) $_SESSION['account_temp']->smb_scriptpath = $_POST['f_smb_scriptpath'];
-			else $_SESSION['account_temp']->smb_scriptpath = '';
-		if ($_POST['f_smb_smbuserworkstations']) $_SESSION['account_temp']->smb_smbuserworkstations = $_POST['f_smb_smbuserworkstations'];
-			else $_SESSION['account_temp']->smb_smbuserworkstations = "";
-		if ($_POST['f_smb_smbhome']) $_SESSION['account_temp']->smb_smbhome = stripslashes($_POST['f_smb_smbhome']);
-			else $_SESSION['account_temp']->smb_smbhome = "";
-		if ($_POST['f_smb_profilePath']) $_SESSION['account_temp']->smb_profilePath = stripslashes($_POST['f_smb_profilePath']);
-			else $_SESSION['account_temp']->smb_profilePath = "";
-		if ($_POST['f_smb_domain']) $_SESSION['account_temp']->smb_domain = $_POST['f_smb_domain'];
-			else $_SESSION['account_temp']->smb_domain = false;
-		if ($_POST['f_smb_flagsW']) $_SESSION['account_temp']->smb_flagsW = $_POST['f_smb_flagsW'];
-			else $_SESSION['account_temp']->smb_flagsW = false;
-		if ($_POST['f_smb_flagsD']) $_SESSION['account_temp']->smb_flagsD = $_POST['f_smb_flagsD'];
-			else $_SESSION['account_temp']->smb_flagsD = false;
-		if ($_POST['f_smb_flagsX']) $_SESSION['account_temp']->smb_flagsX = $_POST['f_smb_flagsX'];
-			else $_SESSION['account_temp']->smb_flagsX = false;
+		if ($_POST['f_smb_password']) $_SESSION['account']->smb_password = $_POST['f_smb_password'];
+			else $_SESSION['account']->smb_password = "";
+		if ($_POST['f_smb_password_no']) $_SESSION['account']->smb_password_no = true;
+			else $_SESSION['account']->smb_password_no = false;
+		if ($_POST['f_smb_useunixpwd']) $_SESSION['account']->smb_useunixpwd = $_POST['f_smb_useunixpwd'];
+			else $_SESSION['account']->smb_useunixpwd = false;
+		if ($_POST['f_smb_pwdcanchange']) $_SESSION['account']->smb_pwdcanchange = $_POST['f_smb_pwdcanchange'];
+			else $_SESSION['account']->smb_pwdcanchange = false;
+		if ($_POST['f_smb_pwdmustchange']) $_SESSION['account']->smb_pwdmustchange = $_POST['f_smb_pwdmustchange'];
+			else $_SESSION['account']->smb_pwdmustchange = false;
+		if ($_POST['f_smb_homedrive']) $_SESSION['account']->smb_homedrive = $_POST['f_smb_homedrive'];
+		if ($_POST['f_smb_scriptpath']) $_SESSION['account']->smb_scriptPath = $_POST['f_smb_scriptpath'];
+			else $_SESSION['account']->smb_scriptPath = '';
+		if ($_POST['f_smb_smbuserworkstations']) $_SESSION['account']->smb_smbuserworkstations = $_POST['f_smb_smbuserworkstations'];
+			else $_SESSION['account']->smb_smbuserworkstations = "";
+		if ($_POST['f_smb_smbhome']) $_SESSION['account']->smb_smbhome = stripslashes($_POST['f_smb_smbhome']);
+			else $_SESSION['account']->smb_smbhome = "";
+		if ($_POST['f_smb_profilePath']) $_SESSION['account']->smb_profilePath = stripslashes($_POST['f_smb_profilePath']);
+			else $_SESSION['account']->smb_profilePath = "";
+		if ($_POST['f_smb_domain']) $_SESSION['account']->smb_domain = $_POST['f_smb_domain'];
+			else $_SESSION['account']->smb_domain = false;
+		if ($_POST['f_smb_flagsW']) $_SESSION['account']->smb_flagsW = $_POST['f_smb_flagsW'];
+			else $_SESSION['account']->smb_flagsW = false;
+		if ($_POST['f_smb_flagsD']) $_SESSION['account']->smb_flagsD = $_POST['f_smb_flagsD'];
+			else $_SESSION['account']->smb_flagsD = false;
+		if ($_POST['f_smb_flagsX']) $_SESSION['account']->smb_flagsX = $_POST['f_smb_flagsX'];
+			else $_SESSION['account']->smb_flagsX = false;
 		// Check Values
-		$error = checksamba(); // account.inc
+		$values = checksamba($_SESSION['account'], $_SESSION['type2']); // account.inc
+		if (is_object($values)) {
+			while (list($key, $val) = each($values)) // Set only defined values
+				if ($val) $_SESSION['account']->$key = $val;
+			}
+			else $error = $values;
 		// Check which part Site should be displayd
 		if ($_POST['back']) $select_local = 'unix';
 		if ($_POST['next']) {
@@ -166,13 +152,18 @@ switch ($_POST['select']) {
 	case 'quota':
 		$i=0;
 		while ($_SESSION['account']->quota[$i][0]) {
-			$_SESSION['account_temp']->quota[$i][2] = $_POST['f_quota_'.$i.'_2'];
-			$_SESSION['account_temp']->quota[$i][3] = $_POST['f_quota_'.$i.'_3'];
-			$_SESSION['account_temp']->quota[$i][6] = $_POST['f_quota_'.$i.'_6'];
-			$_SESSION['account_temp']->quota[$i][7] = $_POST['f_quota_'.$i.'_7'];
+			$_SESSION['account']->quota[$i][2] = $_POST['f_quota_'.$i.'_2'];
+			$_SESSION['account']->quota[$i][3] = $_POST['f_quota_'.$i.'_3'];
+			$_SESSION['account']->quota[$i][6] = $_POST['f_quota_'.$i.'_6'];
+			$_SESSION['account']->quota[$i][7] = $_POST['f_quota_'.$i.'_7'];
 			$i++;
 			}
-		$error = checkquota();
+		$values = checkquota($_SESSION['account'], $_SESSION['type2']); // account.inc
+		if (is_object($values)) {
+			while (list($key, $val) = each($values)) // Set only defined values
+				if ($val) $_SESSION['account']->$key = $val;
+			}
+			else $error = $values;
 		// Check which part Site should be displayd
 		if ($_POST['back'])
 			switch ($_SESSION['type2']) {
@@ -189,26 +180,31 @@ switch ($_POST['select']) {
 			}
 		break;
 	case 'personal':
-		if ($_POST['f_personal_title']) $_SESSION['account_temp']->personal_title = $_POST['f_personal_title'];
-			else $_SESSION['account_temp']->personal_title = "";
-		if ($_POST['f_personal_mail']) $_SESSION['account_temp']->personal_mail = $_POST['f_personal_mail'];
-			else $_SESSION['account_temp']->personal_mail = "";
-		if ($_POST['f_personal_telephoneNumber']) $_SESSION['account_temp']->personal_telephoneNumber = $_POST['f_personal_telephoneNumber'];
-			else $_SESSION['account_temp']->personal_telephoneNumber = "";
-		if ($_POST['f_personal_mobileTelephoneNumber']) $_SESSION['account_temp']->personal_mobileTelephoneNumber = $_POST['f_personal_mobileTelephoneNumber'];
-			else $_SESSION['account_temp']->personal_mobileTelephoneNumber = "";
-		if ($_POST['f_personal_facsimileTelephoneNumber']) $_SESSION['account_temp']->personal_facsimileTelephoneNumber = $_POST['f_personal_facsimileTelephoneNumber'];
-			else $_SESSION['account_temp']->personal_facsimileTelephoneNumber = "";
-		if ($_POST['f_personal_street']) $_SESSION['account_temp']->personal_street = $_POST['f_personal_street'];
-			else $_SESSION['account_temp']->personal_street = "";
-		if ($_POST['f_personal_postalCode']) $_SESSION['account_temp']->personal_postalCode = $_POST['f_personal_postalCode'];
-			else $_SESSION['account_temp']->personal_postalCode = "";
-		if ($_POST['f_personal_postalAddress']) $_SESSION['account_temp']->personal_postalAddress = $_POST['f_personal_postalAddress'];
-			else $_SESSION['account_temp']->personal_postalAddress = "";
-		if ($_POST['f_personal_employeeType']) $_SESSION['account_temp']->personal_employeeType = $_POST['f_personal_employeeType'];
-			else $_SESSION['account_temp']->personal_employeeType = "";
+		if ($_POST['f_personal_title']) $_SESSION['account']->personal_title = $_POST['f_personal_title'];
+			else $_SESSION['account']->personal_title = "";
+		if ($_POST['f_personal_mail']) $_SESSION['account']->personal_mail = $_POST['f_personal_mail'];
+			else $_SESSION['account']->personal_mail = "";
+		if ($_POST['f_personal_telephoneNumber']) $_SESSION['account']->personal_telephoneNumber = $_POST['f_personal_telephoneNumber'];
+			else $_SESSION['account']->personal_telephoneNumber = "";
+		if ($_POST['f_personal_mobileTelephoneNumber']) $_SESSION['account']->personal_mobileTelephoneNumber = $_POST['f_personal_mobileTelephoneNumber'];
+			else $_SESSION['account']->personal_mobileTelephoneNumber = "";
+		if ($_POST['f_personal_facsimileTelephoneNumber']) $_SESSION['account']->personal_facsimileTelephoneNumber = $_POST['f_personal_facsimileTelephoneNumber'];
+			else $_SESSION['account']->personal_facsimileTelephoneNumber = "";
+		if ($_POST['f_personal_street']) $_SESSION['account']->personal_street = $_POST['f_personal_street'];
+			else $_SESSION['account']->personal_street = "";
+		if ($_POST['f_personal_postalCode']) $_SESSION['account']->personal_postalCode = $_POST['f_personal_postalCode'];
+			else $_SESSION['account']->personal_postalCode = "";
+		if ($_POST['f_personal_postalAddress']) $_SESSION['account']->personal_postalAddress = $_POST['f_personal_postalAddress'];
+			else $_SESSION['account']->personal_postalAddress = "";
+		if ($_POST['f_personal_employeeType']) $_SESSION['account']->personal_employeeType = $_POST['f_personal_employeeType'];
+			else $_SESSION['account']->personal_employeeType = "";
 		// Check which part Site should be displayd
-		$error = checkpersonal(); // account.inc
+		$values = checkpersonal($_SESSION['account'], $_SESSION['type2']); // account.inc
+		if (is_object($values)) {
+			while (list($key, $val) = each($values)) // Set only defined values
+				if ($val) $_SESSION['account']->$key = $val;
+			}
+			else $error = $values;
 		if ($_POST['back'] && ($error=="0")) $select_local = 'quota';
 		if ($_POST['next'] && ($error=="0")) $select_local = 'final';
 		break;
@@ -231,18 +227,18 @@ switch ($_POST['select']) {
 if ( $_POST['create'] ) { // Create-Button was pressed
 	switch ($_SESSION['type2']) {
 		case 'user':
-			if ($_SESSION['modify']==1) $result = modifyuser();
-			 else $result = createuser(); // account.inc
+			if ($_SESSION['account_old']) $result = modifyuser($_SESSION['account'],$_SESSION['account_old']);
+			 else $result = createuser($_SESSION['account']); // account.inc
 			if ( $result==1 || $result==3 ) $select_local = 'finish';
 			break;
 		case 'group':
-			if ($_SESSION['modify']==1) $result = modifygroup();
-			 else $result = creategroup(); // account.inc
+			if ($_SESSION['account_old']) $result = modifygroup($_SESSION['account'],$_SESSION['account_old']);
+			 else $result = creategroup($_SESSION['account']); // account.inc
 			if ( $result==1 || $result==3 ) $select_local = 'finish';
 			break;
 		case 'host':
-			if ($_SESSION['modify']==1) $result = modifyhost();
-			 else $result = createhost(); // account.inc
+			if ($_SESSION['account_old']) $result = modifyhost($_SESSION['account'],$_SESSION['account_old']);
+			 else $result = createhost($_SESSION['account']); // account.inc
 			if ( $result==1 || $result==3 ) $select_local = 'finish';
 			break;
 		}
@@ -262,19 +258,16 @@ echo '</title>
 	echo '<table rules="all" class="account" width="100%">
 	<tr><td></td></tr>';
 
+print_r($_SESSION['account']);
+
 
 if (!$select_local) $select_local='general';
 if ($_POST['createagain']) {
 	$select_local='general';
 	$_SESSION['account']="";
-	$_SESSION['account_temp']="";
-	$_SESSION['account_old']="";
 	}
 if ($_POST['backmain']) {
 	$select_local='backmain';
-	$_SESSION['account']="";
-	$_SESSION['account_temp']="";
-	$_SESSION['account_old']="";
 	}
 
 if ($_POST['load']) $select_local='load';
@@ -488,11 +481,11 @@ switch ($select_local) {
 				echo '></td></tr>';
 				break;
 			case 'host' :
-				echo '<input name="f_unix_password_no" type="hidden" value="'.$_SESSION['account']->unix_password_no.'">';
+				echo '<input name="f_unix_password_no" type="hidden" value="'. $_SESSION['account']->unix_password_no) . '">';
 				echo '<tr><td>';
 				echo _('Password');
 				echo '</td><td></td><td>';
-				if ($_SESSION['modify']==1) {
+				if ($_SESSION['account_old']) {
 					echo '<input name="respass" type="submit" value="';
 					echo _('Reset Password'); echo '">';
 					}
@@ -612,7 +605,7 @@ switch ($select_local) {
 				echo _('Driveletter assigned on Windows-Workstations as Homedirectory.');
 				echo '</td></tr><tr><td>';
 				echo _('Script Path');
-				echo '</td><td><input name="f_smb_scriptpath" type="text" size="20" maxlength="20" value="' . $_SESSION['account']->smb_scriptpath . '">
+				echo '</td><td><input name="f_smb_scriptpath" type="text" size="20" maxlength="20" value="' . $_SESSION['account']->smb_scriptPath . '">
 					</td><td>';
 				echo _('Filename and -path relative to netlogon-share which should be executed on logon. $user and $group are replaced with user- and groupname. Can be left empty.');
 				echo '</td></tr><tr><td>';
@@ -750,18 +743,18 @@ switch ($select_local) {
 		// Final Settings
 		echo '<input name="select" type="hidden" value="final">
 		<tr><td>';
-		if ($_SESSION['modify']==1) echo _('Modify');
+		if ($_SESSION['account_old']) echo _('Modify');
 		 else echo _('Create');
 		echo '</td></tr>';
 		switch ( $_SESSION['type2'] ) {
 			case 'user' :
-				if (($_SESSION['modify']==1) && ($_SESSION['account']->general_uidNumber != $_SESSION['account_old']->general_uidNumber)) {
+				if (($_SESSION['account_old']) && ($_SESSION['account']->general_uidNumber != $_SESSION['account_old']->general_uidNumber)) {
 					echo '<tr>';
 					StatusMessage ('INFO', _('UID-number has changed. You have to run the following command as root in order to change existing file-permissions:'),
 					'find / -gid ' . $_SESSION['account_old' ]->general_uidNumber . ' -exec chown ' . $_SESSION['account']->general_uidNumber . ' {} \;');
 					echo '</tr>';
 					}
-				if (($_SESSION['modify']==1) && ($_SESSION['account']->general_homedir != $_SESSION['account_old']->general_homedir)) {
+				if (($_SESSION['account_old']) && ($_SESSION['account']->general_homedir != $_SESSION['account_old']->general_homedir)) {
 					echo '<tr>';
 					StatusMessage ('INFO', _('Home Directory has changed. You have to run the following command as root in order to change the existing homedirectory:'),
 					'mv ' . $_SESSION['account_old' ]->general_homedir . ' ' . $_SESSION['account']->general_homedir);
@@ -769,7 +762,7 @@ switch ($select_local) {
 					}
 				break;
 			case 'group' :
-				if (($_SESSION['modify']==1) && ($_SESSION['account']->general_uidNumber != $_SESSION['account_old']->general_uidNumber)) {
+				if (($_SESSION['account_old']) && ($_SESSION['account']->general_uidNumber != $_SESSION['account_old']->general_uidNumber)) {
 					echo '<tr>';
 					StatusMessage ('INFO', _('GID-number has changed. You have to run the following command as root in order to change existing file-permissions:'),
 					'find / -gid ' . $_SESSION['account_old' ]->general_uidNumber . ' -exec chgrp ' . $_SESSION['account']->general_uidNumber . ' {} \;');
@@ -783,7 +776,7 @@ switch ($select_local) {
 					}
 				break;
 			case 'host':
-				if (($_SESSION['modify']==1) && ($_SESSION['account']->general_uidNumber != $_SESSION['account_old']->general_uidNumber)) {
+				if (($_SESSION['account_old']) && ($_SESSION['account']->general_uidNumber != $_SESSION['account_old']->general_uidNumber)) {
 					echo '<tr>';
 					StatusMessage ('INFO', _('UID-number has changed. You have to run the following command as root in order to change existing file-permissions:'),
 					'find / -gid ' . $_SESSION['account_old' ]->general_uidNumber . ' -exec chown ' . $_SESSION['account']->general_uidNumber . ' {} \;');
@@ -802,7 +795,7 @@ switch ($select_local) {
 			}
 		echo '</td><td>
 		<input name="create" type="submit" value="';
-		if ($_SESSION['modify']==1) echo _('Modify Account');
+		if ($_SESSION['account_old']) echo _('Modify Account');
 		 else echo _('Create Account');
 		echo '">
 		</td></tr>';
@@ -818,9 +811,9 @@ switch ($select_local) {
 				echo '<tr><td>';
 				echo _('User ');
 				echo $_SESSION['account']->general_username;
-				if ($_SESSION['modify']==1) echo _(' has been modified');
-				 else echo _(' has been created');
-				if ($_SESSION['modify']!=1)
+				if ($_SESSION['account_old']) echo _(' has been modified. ');
+				 else echo _(' has been created. ');
+				if (!$_SESSION['account_old'])
 					{ echo '<input name="createagain" type="submit" value="'; echo _('Create another user'); echo '">'; }
 				echo '</td><td>
 					<input name="outputpdf" type="submit" value="'; echo _('Create PDF-file'); echo '">
@@ -832,10 +825,10 @@ switch ($select_local) {
 				echo '<tr><td>';
 				echo _('Group ');
 				echo $_SESSION['account']->general_username;
-				if ($_SESSION['modify']==1) echo _(' has been modified');
-				 else echo _(' has been created');
+				if ($_SESSION['account_old']) echo _(' has been modified. ');
+				 else echo _(' has been created. ');
 				echo '</td></tr><tr><td>';
-				if ($_SESSION['modify']!=1)
+				if (!$_SESSION['account_old'])
 					{ echo' <input name="createagain" type="submit" value="'; echo _('Create another group'); echo '">'; }
 				echo '</td><td></td><td>
 				<input name="backmain" type="submit" value="'; echo _('Back to grouplist'); echo '">
@@ -845,10 +838,10 @@ switch ($select_local) {
 				echo '<tr><td>';
 				echo _('Host ');
 				echo $_SESSION['account']->general_username;
-				if ($_SESSION['modify']==1) echo _(' has been modified');
-				 else echo _(' has been created');
+				if ($_SESSION['account_old']) echo _(' has been modified. ');
+				 else echo _(' has been created. ');
 				echo '</td></tr><tr><td>';
-				if ($_SESSION['modify']!=1)
+				if (!$_SESSION['account_old'])
 					{ echo '<input name="createagain" type="submit" value="'; echo _('Create another host'); echo '">'; }
 				echo '</td><td></td><td>
 				<input name="backmain" type="submit" value="'; echo _('Back to hostlist'); echo '">
@@ -873,14 +866,12 @@ switch ($select_local) {
 		switch ( $_SESSION['type2'] ) {
 			case 'user':
 				$_SESSION['account'] = loadUserProfile($_POST['f_general_selectprofile']);
-				if ($_SESSION['config']->scriptServer) getquotas();
 				break;
 			case 'host':
 				$_SESSION['account'] = loadHostProfile($_POST['f_general_selectprofile']);
 				break;
 			case 'group':
 				$_SESSION['account'] = loadGroupProfile($_POST['f_general_selectprofile']);
-				if ($_SESSION['config']->scriptServer) getquotas();
 				break;
 			}
 		echo '<meta http-equiv="refresh" content="0; URL=account.php">';
