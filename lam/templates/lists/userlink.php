@@ -41,7 +41,7 @@ $dn = $_SESSION['ldap']->search_username($user);
 
 if ($dn) {
 	// redirect to account.php
-	echo("<meta http-equiv=\"refresh\" content=\"0; URL=../account.php?type=user&amp;DN='$dn'\">");
+	metaRefresh("../account.php?type=user&amp;DN='$dn'");
 
 }
 else {

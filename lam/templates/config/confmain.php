@@ -65,11 +65,11 @@ if ($_POST['back'] || $_POST['submitconf']){
 		if ($_POST['scriptserver']) $_SESSION['scriptserver'] = $_POST['scriptserver'];
 		else $_SESSION['scriptserver'] = "";
 		if ($_POST['filename']) $_SESSION['filename'] = $_POST['filename'];
-		echo("<meta http-equiv=\"refresh\" content=\"0; URL=confsave.php\">");
+		metaRefresh("confsave.php");
 	}
 	// back to login
 	else if ($_POST['back']){
-		echo("<meta http-equiv=\"refresh\" content=\"0; URL=../login.php\">");
+		metaRefresh("../login.php");
 	}
 	exit;
 }

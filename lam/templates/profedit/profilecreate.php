@@ -38,13 +38,13 @@ setlanguage();
 // abort button was pressed in profileuser/~host.php
 // back to profile editor
 if ($_POST['abort']) {
-	echo("<meta http-equiv=\"refresh\" content=\"0; URL=profilemain.php\">");
+	metaRefresh("profilemain.php");
 	exit;
 }
 
 // check if user is logged in, if not go to login
 if (!$_SESSION['ldap'] || !$_SESSION['ldap']->server()) {
-	echo("<meta http-equiv=\"refresh\" content=\"0; URL=../login.php\">\n");
+	metaRefresh("../login.php");
 	exit;
 }
 

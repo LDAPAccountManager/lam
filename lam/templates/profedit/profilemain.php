@@ -35,7 +35,7 @@ setlanguage();
 
 // check if user is logged in, if not go to login
 if (!$_SESSION['ldap'] || !$_SESSION['ldap']->server()) {
-	echo("<meta http-equiv=\"refresh\" content=\"0; URL=../login.php\">");
+	metaRefresh("../login.php");
 	exit;
 }
 
@@ -43,33 +43,33 @@ if (!$_SESSION['ldap'] || !$_SESSION['ldap']->server()) {
 if ($_POST['forward'] == "yes") {
 	// on abort go back to main page
 	if ($_POST['abort']) {
-		echo("<meta http-equiv=\"refresh\" content=\"0; URL=../lists/listusers.php\">");
+		metaRefresh("../lists/listusers.php");
 	}
 	// on submit forward to other profile pages
 	elseif ($_POST['submit']) {
 		// create new user profile
 		if ($_POST['profile'] == "newuser") {
-			echo("<meta http-equiv=\"refresh\" content=\"0; URL=profileuser.php\">");
+			metaRefresh("profileuser.php");
 		}
 		// edit user profile
 		elseif($_POST['profile'] == "edituser") {
-			echo("<meta http-equiv=\"refresh\" content=\"0; URL=profileuser.php?edit=" . $_POST['e_user'] . "\">");
+			metaRefresh("profileuser.php?edit=" . $_POST['e_user']);
 		}
 		// delete user profile
 		elseif($_POST['profile'] == "deluser") {
-			echo("<meta http-equiv=\"refresh\" content=\"0; URL=profiledelete.php?type=user&del=" . $_POST['d_user'] . "\">");
+			metaRefresh("profiledelete.php?type=user&del=" . $_POST['d_user']);
 		}
 		// create new host profile
 		elseif ($_POST['profile'] == "newhost") {
-			echo("<meta http-equiv=\"refresh\" content=\"0; URL=profilehost.php\">");
+			metaRefresh("profilehost.php");
 		}
 		// edit host profile
 		elseif($_POST['profile'] == "edithost") {
-			echo("<meta http-equiv=\"refresh\" content=\"0; URL=profilehost.php?edit=" . $_POST['e_host'] . "\">");
+			metaRefresh("profilehost.php?edit=" . $_POST['e_host']);
 		}
 		// delete user profile
 		elseif($_POST['profile'] == "delhost") {
-			echo("<meta http-equiv=\"refresh\" content=\"0; URL=profiledelete.php?type=host&del=" . $_POST['d_host'] . "\">");
+			metaRefresh("profiledelete.php?type=host&del=" . $_POST['d_host']);
 		}
 	}
 	exit;

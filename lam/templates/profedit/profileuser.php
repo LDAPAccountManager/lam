@@ -36,7 +36,7 @@ setlanguage();
 
 // check if user is logged in, if not go to login
 if (!$_SESSION['ldap'] || !$_SESSION['ldap']->server()) {
-	echo("<meta http-equiv=\"refresh\" content=\"0; URL=../login.php\">\n");
+	metaRefresh("../login.php");
 	exit;
 }
 

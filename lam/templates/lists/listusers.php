@@ -66,7 +66,7 @@ $usr_units = $_SESSION['usr_units'];
 if ($_POST['new_user'] || $_POST['del_user'] || $_POST['pdf_user']){
 	// add new user
 	if ($_POST['new_user']){
-		echo("<meta http-equiv=\"refresh\" content=\"0; URL=../account.php?type=user\">");
+		metaRefresh("../account.php?type=user");
 		exit;
 	}
 	// delete user(s)
@@ -74,7 +74,7 @@ if ($_POST['new_user'] || $_POST['del_user'] || $_POST['pdf_user']){
 		// search for checkboxes
 		$users = array_keys($_POST, "on");
 		$userstr = implode(";", $users);
-		echo("<meta http-equiv=\"refresh\" content=\"0; URL=../delete.php?type=user&DN='$userstr'\">");
+		metaRefresh("../delete.php?type=user&DN='$userstr'");
 	}
 	// PDF
 	elseif ($_POST['pdf_user']){

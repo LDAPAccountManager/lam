@@ -272,7 +272,7 @@ elseif ($_POST['sub_save']) {
 
 // back to list
 elseif ($_POST['sub_back']) {
-	echo("<meta http-equiv=\"refresh\" content=\"0; URL=lists/listdomains.php\">");
+	metaRefresh("lists/listdomains.php");
 }
 
 

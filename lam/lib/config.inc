@@ -56,6 +56,24 @@ function getConfigProfiles() {
 	return $ret;
 }
 
+// print meta refresh
+// $page is the target page
+function metaRefresh($page) {
+	echo $_SESSION['header'];
+	echo "<html>\n";
+	echo "<head>\n";
+	echo "<title></title>\n";
+	echo "<meta http-equiv=\"refresh\" content=\"0; URL=" . $page . "\">\n";
+	echo "</head>\n";
+	echo "<body>\n";
+	// print link if refresh does not work
+	echo "<p>\n";
+	echo "<a href=\"" . $page . "\">" . _("Click here if you are not directed to the next page.") . "</a>\n";
+	echo "</p>\n";
+	echo "</body>\n";
+	echo "</html>\n";
+}
+
 
 /*
 // class Config

@@ -45,7 +45,7 @@ $hst_units = $_SESSION['hst_units'];
 if ($_POST['new_host'] || $_POST['del_host']){
 	// add new host
 	if ($_POST['new_host']){
-		echo("<meta http-equiv=\"refresh\" content=\"0; URL=../account.php?type=host\">");
+		metaRefresh("../account.php?type=host");
 		exit;
 	}
 	// delete host(s)
@@ -53,7 +53,7 @@ if ($_POST['new_host'] || $_POST['del_host']){
 		// search for checkboxes
 		$hosts = array_keys($_POST, "on");
 		$hoststr = implode(";", $hosts);
-		echo("<meta http-equiv=\"refresh\" content=\"0; URL=../delete.php?type=host&amp;DN='$hoststr'\">");
+		metaRefresh("../delete.php?type=host&amp;DN='$hoststr'");
 		}
 		exit;
 }

@@ -45,7 +45,7 @@ $grp_units = $_SESSION['grp_units'];
 if ($_POST['new_group'] || $_POST['del_group']){
 	// add new group
 	if ($_POST['new_group']){
-		echo("<meta http-equiv=\"refresh\" content=\"0; URL=../account.php?type=group\">");
+		metaRefresh("../account.php?type=group");
 		exit;
 	}
 	// delete group(s)
@@ -53,7 +53,7 @@ if ($_POST['new_group'] || $_POST['del_group']){
 		// search for checkboxes
 		$groups = array_keys($_POST, "on");
 		$groupstr = implode(";", $groups);
-		echo("<meta http-equiv=\"refresh\" content=\"0; URL=../delete.php?type=group&amp;DN='$groupstr'\">");
+		metaRefresh("../delete.php?type=group&amp;DN='$groupstr'");
 		}
 		exit;
 }

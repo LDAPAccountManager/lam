@@ -45,7 +45,7 @@ $dom_units = $_SESSION['dom_units'];
 if ($_POST['new_domain'] || $_POST['del_domain']){
 	// add new domain
 	if ($_POST['new_domain']){
-		echo("<meta http-equiv=\"refresh\" content=\"0; URL=../domain.php?action=new\">");
+		metaRefresh("../domain.php?action=new");
 		exit;
 	}
 	// delete domain(s)
@@ -53,7 +53,7 @@ if ($_POST['new_domain'] || $_POST['del_domain']){
 		// search for checkboxes
 		$domains = array_keys($_POST, "on");
 		$domainstr = implode(";", $domains);
-		echo("<meta http-equiv=\"refresh\" content=\"0; URL=../domain.php?action=delete&amp;DN='$domainstr'\">");
+		metaRefresh("../domain.php?action=delete&amp;DN='$domainstr'");
 		}
 		exit;
 }
