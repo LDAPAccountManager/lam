@@ -216,6 +216,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "<input name=\"next_samba\" type=\"submit\" value=\""; echo _('Samba'); echo "\">\n<br>";
 		echo "<input name=\"next_final\" type=\"submit\" value=\""; echo _('Final');
 		echo "\"></fieldset></td>\n<td>";
+		echo "<table border=0 width=\"100%\">\n<tr>\n<td>";
 		echo "<fieldset><legend><b>";
 		echo _("General properties");
 		echo "</b></legend>\n<table border=0 width=\"100%\">\n<tr>\n<td>";
@@ -257,7 +258,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo '</select></td><td><a href="../help.php?HelpNumber=463" target="lamhelp">'._('Help').'</a>'.
 			"</td>\n</tr>\n</table>";
 		echo _('Values with * are required');
-		echo "</fieldset>\n</td></tr><tr><td></td><td>";
+		echo "</fieldset>\n</td></tr><tr><td>";
 		if (count($profilelist)!=0) {
 			echo "<fieldset><legend>";
 			echo _("Load profile");
@@ -269,7 +270,7 @@ switch ($select_local) { // Select which part of page will be loaded
 			echo "\"></td><td><a href=\"../help.php?HelpNumber=XXX\" target=\"lamhelp\">";
 			echo _('Help-XX')."</a></td>\n</tr>\n</table>\n</fieldset>\n";
 			}
-		echo "</td></tr>\n</table>\n";
+		echo "</td></tr></table>\n</td></tr>\n</table>\n";
 		break;
 
 	case 'samba':
@@ -335,6 +336,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "<input name=\"next_samba\" type=\"submit\" value=\""; echo _('Samba'); echo "\">\n<br>";
 		echo "<input name=\"next_final\" type=\"submit\" disabled value=\""; echo _('Final');
 		echo "\"></fieldset></td>\n<td>";
+		echo "<table border=0 width=\"100%\">\n<tr>\n<td>";
 		echo "<fieldset><legend>";
 		echo _("Save profile");
 		echo "</legend>\n<table border=0 width=\"100%\">\n<tr>\n<td>";
@@ -342,7 +344,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo '</td><td><input name="save" type="submit" value="';
 		echo _('Save profile');
 		echo '"></td><td><a href="../help.php?HelpNumber=457" target="lamhelp">'._('Help');
-		echo "</a></td>\n</tr>\n</table>\n</fieldset>\n</td></tr>\n<tr><td></td><td>\n";
+		echo "</a></td>\n</tr>\n</table>\n</fieldset>\n</td></tr>\n<tr><td>\n";
 		echo "<fieldset><legend><b>";
 		if ($_SESSION['account_old']) echo _('Modify');
 		 else echo _('Create');
@@ -386,8 +388,8 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo '<input name="create" type="submit" value="';
 		if ($_SESSION['account_old']) echo _('Modify Account');
 		 else echo _('Create Account');
-		echo '"></td></tr>'."\n";
-		echo "</table>\n</fieldset>\n</tr></table>";
+		echo '">'."\n";
+		echo "</td></tr></table></fieldset>\n</td></tr></table>\n</tr></table>";
 		break;
 	case 'finish':
 		// Final Settings

@@ -305,6 +305,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "value=\""; echo _('Quota'); echo "\">\n<br>";
 		echo "<input name=\"next_final\" type=\"submit\" value=\""; echo _('Final');
 		echo "\"></fieldset></td>\n<td>";
+		echo "<table border=0 width=\"100%\">\n<tr>\n<td>";
 		echo "<fieldset><legend><b>";
 		echo _("General properties");
 		echo "</b></legend>\n<table border=0 width=\"100%\">\n<tr>\n<td>";
@@ -332,7 +333,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "</select></td>\n<td><a href=\"help.php?HelpNumber=462\" target=\"lamhelp\">"._('Help').
 			"</a></td>\n</tr>\n</table>";
 		echo _('Values with * are required');
-		echo "</fieldset>\n</td></tr></table>";
+		echo "</fieldset>\n</td></tr><tr><td>";
 		if (count($profilelist)!=0) {
 			echo "<fieldset><legend>";
 			echo _("Load profile");
@@ -343,7 +344,7 @@ switch ($select_local) { // Select which part of page will be loaded
 				"<input name=\"load\" type=\"submit\" value=\""; echo _('Load Profile');
 			echo "\"></td>\n</tr>\n</table>\n</fieldset>\n";
 			}
-		echo "</tr>\n</table>\n";
+		echo "</td></tr>\n</table>\n</td></tr></table>\n";
 		break;
 
 	case 'samba':
@@ -474,6 +475,15 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "value=\""; echo _('Quota'); echo "\">\n<br>";
 		echo "<input name=\"next_final\" type=\"submit\" disabled value=\""; echo _('Final');
 		echo "\"></fieldset></td>\n<td>";
+		echo "<table border=0 width=\"100%\">\n<tr>\n<td>";
+		echo "<fieldset><legend>";
+		echo _("Save profile");
+		echo "</legend>\n<table border=0 width=\"100%\">\n<tr>\n<td>";
+		echo '<input name="f_finish_safeProfile" type="text" size="30" maxlength="50">';
+		echo '</td><td><input name="save" type="submit" value="';
+		echo _('Save profile');
+		echo '"></td><td><a href="../help.php?HelpNumber=457" target="lamhelp">'._('Help');
+		echo "</a></td>\n</tr>\n</table>\n</fieldset>\n</td></tr>\n<tr><td>\n";
 		echo "<fieldset><legend><b>";
 		if ($_SESSION['account_old']) echo _('Modify');
 		 else echo _('Create');
@@ -510,20 +520,11 @@ switch ($select_local) { // Select which part of page will be loaded
 				echo "</tr>\n";
 				}
 			}
-		echo '<tr><td>'.
-			'<input name="back" type="submit" value="'; echo _('back'); echo '">'.
-			'</td>'."\n".'<td>'.
-			'</td>'."\n".'<td><input name="f_finish_safeProfile" type="text" size="30" maxlength="50">'.
-			'<input name="save" type="submit" value="';
-		echo _('Save profile');
-		echo '"><a href="help.php?HelpNumber=457" target="lamhelp">'._('Help').'</a>'.
-			'</td>'."\n".'<td>'.
-			"<input name=\"create\" type=\"submit\" $disabled value=\"";
+		echo "<tr><td><input name=\"create\" type=\"submit\" $disabled value=\"";
 		if ($_SESSION['account_old']) echo _('Modify Account');
 		 else echo _('Create Account');
-		echo '">'.
-		'</td></tr>'."\n";
-		echo "</table>\n</fieldset>\n</tr>\n</table>\n";
+		echo '">'."\n";
+		echo "</td></tr></table></fieldset>\n</td></tr></table>\n</tr></table>";
 		break;
 
 	case 'finish':

@@ -663,7 +663,6 @@ function ldapexists($values, $type, $values_old=false) { // This function will s
 			$keys = array_keys($_SESSION['groupDN']);
 			unset ($keys[0]);
 			$keys = array_values($keys);
-			if (in_array($search , $keys)) print "hit";
 			 if ( ($values_old->general_username != $values->general_username) &&
 				($_SESSION['groupDN'][0] != $values->general_username) &&
 				(in_array($search , $keys)) ) return sprintf (_('%s already exists!'), $type);
