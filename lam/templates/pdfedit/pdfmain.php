@@ -36,12 +36,12 @@ setlanguage();
 
 // Unset pdf structure definitions in session if set
 if(isset($_SESSION['currentPDFStructure'])) {
-	unset($_SESSION['currentPDFStructure']);
-	unset($_SESSION['availablePDFFields']);
-	unset($_SESSION['currentPageDefinitions']);
 	session_unregister('currentPDFStructure');
 	session_unregister('availablePDFFields');
 	session_unregister('currentPageDefinitions');
+	unset($_SESSION['currentPDFStructure']);
+	unset($_SESSION['availablePDFFields']);
+	unset($_SESSION['currentPageDefinitions']);
 }
 
 // check if user is logged in, if not go to login

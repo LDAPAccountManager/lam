@@ -26,19 +26,23 @@ include_once("ldap.inc");
 
 function getPDFStructureDefinitions($scope = "user") {
 	$return = array();
-	$dirHandle = opendir($_SESSION['lampath'] . '/config/pdf/' . $scope . '/');
-	while($file = readdir($dirHandle)) {
-		if(!is_dir($file) && $file != '.' && $file != '..' && $file != 'default.xml') {
-			array_push($return, substr($file,0,strlen($file)-4));
+	$path = $_SESSION['lampath'] . 'config/pdf/' . $scope;
+	if(is_dir($path)) {
+		$dirHandle = opendir($path);
+		while($file = readdir($dirHandle)) {
+			if(!is_dir($file) && $file != '.' && $file != '..' && $file != 'default.xml') {
+				array_push($return, substr($file,0,strlen($file)-4));
+			}
 		}
+		sort($return);
 	}
-	sort($return);
 	return $return;
 }
 
 function loadPDFStructureDefinitions($scope='user', $definition='default.xml') {
 	$parser = new xmlParser();
-	$xml = $parser->parse($_SESSION['lampath'] . 'config/pdf/' . $scope . '/' . $definition);
+	$file = $_SESSION['lampath'] . 'config/pdf/' . $scope . '/' . $definition;
+	$xml = $parser->parse($file);
 	
 	$border = array();
 	$structure = array();
@@ -61,7 +65,7 @@ function savePDFStructureDefinitions($scope,$definition) {
 	$handle = fopen($_SESSION['lampath'] . 'config/pdf/' . $scope . '/' . $definition,'w');
 	$pdf_attributes = '';
 	foreach($_SESSION['currentPageDefinitions'] as $key => $value) {
-		if($key != 'TYPE') {
+		if($key != 'type') {
 			$pdf_attributes .= ' ' . $key . '="' . $value . '"';
 		}
 	}
@@ -98,7 +102,8 @@ function savePDFStructureDefinitions($scope,$definition) {
 }
 
 function deletePDFStructureDefinition($scope,$definition) {
-	return unlink($_SESSION['lampath'] . 'config/pdf/' . $scope . '/' . $definition . '.xml');
+	$file = $_SESSION['lampath'] . 'config/pdf/' . $scope . '/' . $definition;
+	return unlink($file);
 }
 
 function getAvailableLogos() {

@@ -319,7 +319,7 @@ elseif(isset($_POST['page'])) {
 		$_SESSION['currentPageDefinitions']['logo-max'] = true;
 	}
 	if($_POST['headline'] != 'LDAP Account Manager' && $_POST['headline'] != $_SESSION['currentPageDefinitions']['headline']) {
-		$_SESSION['currentPageDefinitions']['headline'] = $_POST['headline'];
+		$_SESSION['currentPageDefinitions']['headline'] = str_replace('<','',str_replace('>','',$_POST['headline']));
 	}
 	if($_POST['margin-top'] != '10.0' && $_SESSION['currentPageDefinitions']['margin-top'] != $_POST['margin-top']) {
 		$_SESSION['currentPageDefinitions']['margin-top'] = $_POST['margin-top'];
