@@ -287,7 +287,7 @@ if($_POST['action'] == "checklogin")
 	{
 		$result = $_SESSION['ldap']->connect($_POST['username'],$_POST['passwd']); // Connect to LDAP server for verifing username/password
 
-		if($result == 0) // Username/password correct. Do some configuration and load main frame.
+		if($result === 0) // Username/password correct. Do some configuration and load main frame.
 		{
 			$_SESSION['loggedIn'] = true;
 			$_SESSION['language'] = $_POST['language']; // Write selected language in session
