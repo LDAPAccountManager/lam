@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 $Id$
 
@@ -23,7 +23,7 @@ $Id$
   LDAP Account Manager checking login data.
 */
 
-include_once("../config/config.php"); // Include config.php which provides Config class
+include_once("../lib/config.inc"); // Include config.inc which provides Config class
 
 // Get session save path
 $path = getcwd();
@@ -36,10 +36,171 @@ $session_save_path .= "/sess";
 
 session_save_path($session_save_path); // Set session save path
 @session_start(); // Start LDAP Account Manager session
+
+function display_LoginPage($config_object)
+{
+	// generate 256 bit key and initialization vector for user/passwd-encryption
+	$key = mcrypt_create_iv(32, MCRYPT_DEV_RANDOM);
+	$iv = mcrypt_create_iv(32, MCRYPT_DEV_RANDOM);
+
+	// save both in cookie
+	setcookie("Key", base64_encode($key), 0, "/");
+	setcookie("IV", base64_encode($iv), 0, "/");
+
+	// loading available languages from language.conf file
+
+	$languagefile = "../config/language.conf";
+	if(is_file($languagefile) == True)
+	{
+		$file = fopen($languagefile, "r");
+		$i = 0;
+		while(!feof($file))
+		{
+			$line = fgets($file, 1024);
+			if($line == "\n" || $line[0] == "#") continue; // ignore comment and empty lines
+			$value = explode(":", $line);
+			$languages[$i]["link"] = $value[0] . ":" . $value[1];
+			$languages[$i]["descr"] = $value[2];
+			$i++;
+		}
+		fclose($file);
+	}
+	else
+	{
+		$message = "Unable to load available languages. Setting English as default language. For further instructions please contact the Admin of this site.";
+	}
+
+	echo "
+		<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">
+		<html>
+			<head>
+				<title>
+					";
+	echo _("LDAP Account Manager -Login-");
+	echo "
+				</title>
+				<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">
+			</head>
+			<body>
+				<p align=\"center\"><img src=\"../graphics/banner.jpg\" border=\"1\"></p>
+			<table width=\"100%\" border=\"0\">
+				<tr>
+					<td width=\"100%\" align=\"right\">
+						<a href=\"../config/conflogin.php\" target=\"_self\">";
+						 echo _("Configuration Login");
+	echo "
+						</a>
+					</td>
+				</tr>
+			</table>
+			<hr><br><br>
+			<b><p align=\"center\">";
+			echo _("Enter Username and Password for Account:");
+	echo "
+			</b></p>";
+			if($error_message != "")
+				{
+					echo "<p align=\"center\">";
+					echo _($error_message);
+					echo "</p>";
+				}
+	echo "
+				<form action=\"login.php\" method=\"post\">
+					<input type=\"hidden\" name=\"action\" value=\"checklogin\">
+					<table width=\"500\" align=\"center\" border=\"0\">
+						<tr>
+							<td width=\"45%\" align=\"right\">";
+								echo _("Username:");
+	echo "
+							</td>
+							<td width=\"10%\">
+							</td>
+							<td width=\"45%\" align=\"left\">
+								<select name=\"username\" size=\"1\">";
+								for($i = 0; $i < count($config_object->Admins); $i++)
+								{
+									$text = explode(",", $config_object->Admins[$i]);
+									$text = explode("=", $text[0]);
+									echo "<option value=\"" . $config_object->Admins[$i] . "\">" . $text[1] . "</option>";
+								}
+	echo "
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td width=\"45%\" align=\"right\">";
+								echo _("Password:");
+	echo "
+							</td>
+							<td width=\"10%\">
+							</td>
+							<td width=\"45%\" align=\"left\">
+								<input type=\"password\" name=\"passwd\">
+							</td>
+						</tr>
+						<tr>";
+							if($message != "")
+							{
+	echo "					<td width=\"100%\" colspan=\"3\" align=\"center\">";
+								echo _($message);
+	echo "						<input type=\"hidden\" name=\"language\" value=\"english\">
+							</td>";
+							}
+							else
+							{
+	echo "					<td width=\"45%\" align=\"right\">";
+								echo _("Your Language:");
+	echo "
+							</td>
+							<td width=\"10%\">
+							</td>
+							<td width=\"45%\" align=\"left\">
+								<select name=\"language\" size=\"1\">";
+								for($i = 0; $i < count($languages); $i++)
+								{
+									echo "<option value=\"" . $languages[$i]["link"] . "\">" . $languages[$i]["descr"] . "</option>";
+								}
+	echo "						</select>
+							</td>";
+							}
+	echo "
+						</tr>
+						<tr>
+							<td width=\"100%\" colspan=\"3\" align=\"center\">
+								<input type=\"submit\" name=\"submit\" value=\"";
+								echo _("Login") . "\">";
+	echo "
+							</td>
+						</tr>
+					</table>
+					<br><br><br>
+					<table width=\"310\" align=\"center\" bgcolor=\"#C7E7C7\" border=\"0\">
+						<tr>
+							<td width=\"100%\" align=\"center\">";
+								echo _("You are connecting to the server specified below:");
+	echo "
+							</td>
+						</tr>
+						<tr>
+							<td><br></td>
+						</tr>
+						<tr>
+							<td width=\"100%\" align=\"center\">
+								ServerURL: <b>";
+								echo $config_object->get_ServerURL();
+	echo "
+								</b></td>
+						</tr>
+					</table>
+				</form>
+			</body>
+		</html>";
+}
+
 // checking if the submitted username/password is correct.
 if($action == "checklogin")
 {
-	include_once("../lib/ldap.php"); // Include ldap.php which provides Ldap class
+	include_once("../lib/ldap.inc"); // Include ldap.php which provides Ldap class
 
 	$ldap = new Ldap($config); //$config); // Create new Ldap object
 	$result = $ldap->connect($username,$passwd); // Connect to LDAP server for verifing username/password
@@ -51,7 +212,6 @@ if($action == "checklogin")
 		setlocale(LC_ALL, $language[0]);
 		bindtextdomain("lam", "../locale");
 		textdomain("lam");
-
 		include("./main.php"); // Load main frame
 
 		session_register("ldap"); // Register $ldap object in session
@@ -62,12 +222,12 @@ if($action == "checklogin")
 		if($ldap->server)
 		{
 			$error_message = "Wrong Password/Username  combination. Try again.";
-			include("./login.inc"); // Username/password invalid. Return to login page.
+			display_LoginPage($config); // Username/password invalid. Return to login page.
 		}
 		else
 		{
 			$error_message = "Cannot connect to specified LDAP-Server. Try again.";
-			include("./login.inc"); // Server not reachable. Return to login page.
+			display_LoginPage($config); // Username/password invalid. Return to login page.
 		}
 	}
 }
@@ -76,10 +236,8 @@ else
 {
 	session_register("config"); // Register $config object in session
 
-	include_once("../lib/ldap.php"); // Includ ldap.php which provides Ldap class
-
 	$config = new Config; // Create new Config object
 
-	include("./login.inc"); // Load login page
+	display_LoginPage($config); // Load Login page
 }
 ?>
