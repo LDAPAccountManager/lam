@@ -719,7 +719,7 @@ class Config {
 	function set_UserModules($modules) {
 		if (! is_array($modules)) return false;
 		// check module names
-		$available = getAvailableUserModules();
+		$available = getAvailableModules('user');
 		for ($i = 0; $i < sizeof($modules); $i++) {
 			if (! in_array($modules[$i], $available)) return false;
 		}
@@ -739,7 +739,7 @@ class Config {
 	function set_GroupModules($modules) {
 		if (! is_array($modules)) return false;
 		// check module names
-		$available = getAvailableGroupModules();
+		$available = getAvailableModules('group');
 		for ($i = 0; $i < sizeof($modules); $i++) {
 			if (! in_array($modules[$i], $available)) return false;
 		}
@@ -759,7 +759,7 @@ class Config {
 	function set_HostModules($modules) {
 		if (! is_array($modules)) return false;
 		// check module names
-		$available = getAvailableHostModules();
+		$available = getAvailableModules('host');
 		for ($i = 0; $i < sizeof($modules); $i++) {
 			if (! in_array($modules[$i], $available)) return false;
 		}
