@@ -554,9 +554,7 @@ class accountContainer {
 					// load profile
 					if ($post['selectLoadProfile'] && $post['loadProfile']) {
 						// *** fixme load*Profile must return array in the same way ldap_get_attributes does.
-						$function = '$newattributes = load'.ucfirst($scope).'Profile($post[\'selectLoadProfile\']);';
-						//eval($function);
-						$newattributes = call_user_func('load'.ucfirst($scope).'Profile', $post['selectLoadProfile']);
+						$newattributes = loadAccountProfile($post['selectLoadProfile'], $scope);
 						// pass newattributes to each module
 						$modules = array_keys($this->module);
 						foreach ($modules as $module) $this->module[$module]->load_attributes($newattributes);
@@ -573,9 +571,7 @@ class accountContainer {
 					if ($post['saveProfile']) {
 						if ($post['selectSaveProfile']=='') $errors['saveProfile'][] = array('ERROR', _('Save profile'), _('No profilename given.'));
 						else {
-							$function = 'save'.ucfirst($scope).'Profile();';
-							//eval($function);
-							call_user_func('save'.ucfirst($scope).'Profile');
+							//saveAccountProfile($scope); // TODO missing parameters, remove?
 							if ($function) $errors['saveProfile'][] = array('INFO', _('Save profile'), _('New profile created.'));
 								else $errors['saveProfile'][] = array('ERROR', _('Save profile'), _('Wrong profilename given.'));
 							}
@@ -707,9 +703,7 @@ class accountContainer {
 		
 				if (!$profile) {
 					// Get list of profiles
-					$function = '$profilelist = get'.ucfirst($this->type).'Profiles();';
-					//eval($function);
-					$profilelist = call_user_func('get'.ucfirst($this->type).'Profiles');
+					$profilelist = getAccountProfiles($this->type);
 					if (count($profilelist)!=0) {
 						$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _("Load profile") ),
 							1 => array ( 'kind' => 'select', 'name' => 'selectLoadProfile', 'options' => $profilelist ),
@@ -1271,7 +1265,7 @@ class accountContainer {
 		// Write Module-Order in variable
 		$this->order = array_merge ('main' ,$order);
 		// *** fixme load*Profile must return array in the same way ldap_get_attributes does.
-		$function = '$newattributes = load'.ucfirst($this->type).'Profile(\'default\');';
+		$function = '$newattributes = load'.ucfirst($this->type).'Profile(\'default\');';  // TODO function is called loadAccountProfile()
 		//eval($function);
 		return 0;
 		}
