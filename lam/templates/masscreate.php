@@ -45,14 +45,18 @@ echo '</title>
 	echo '<table rules="all" class="masscreate" width="100%">
 	<tr><td></td></tr>';
 
+if ($_POST['tolist']) $select = 'list';
+if ($_POST['back']) $select = 'main';
+if ($_POST['cancel']) $select = 'cancel';
+if ($_POST['create']) $select = 'create';
+if ($_POST['pdf']) createpdf($_SESSION['accounts']);
 if (!$select) $select='main';
+
 
 switch ($select) {
 	case 'main':
 		// if session was started previos, the existing session will be continued
 		$profilelist = getUserProfiles();
-		if ( !session_is_registered("accounts")) session_register("accounts");
-		if (!is_object($accounts)) $accounts = array();
 		echo '<input name="select" type="hidden" value="main">';
 		echo '<tr><td>';
 		echo _('Mass Creation');
@@ -75,13 +79,15 @@ switch ($select) {
 			<input type="hidden" name="MAX_FILE_SIZE" value="100000">';
 		echo _('Select file:');
 		echo '</td><td><input name="userfile" type="file"></td></tr>
-			<tr><td><input type="submit" value="'; echo _('Commit'); echo '">';
+			<tr><td><input name="tolist" type="submit" value="'; echo _('Commit'); echo '">';
 		echo '</td></tr>';
 		break;
 	case 'list':
+		if ( session_is_registered("accounts")) session_unregister("accounts");
+		session_register("accounts");
+		if (!is_array($accounts)) $accounts = array();
 	 	$handler = fopen($_FILES['userfile']->tmp_name, 'r');
 		$error=false;
-		echo '<input name="select" type="hidden" value="list">';
 		echo '<tr><td>';
 		echo _('Confirm List');
 		echo '</td></tr>';
@@ -154,21 +160,32 @@ switch ($select) {
 		echo '</td><td><input name="create" type="submit" value="'; echo _('Create'); echo '">';
 		break;
 	case 'cancel':
-		echo '<input name="select" type="hidden" value="cancel">';
-
+		echo '<meta http-equiv="refresh" content="0; URL=lists/listusers.php">';
 		break;
 	case 'create':
-		echo '<input name="select" type="hidden" value="create">';
-
-		break;
-	case 'finish':
-		echo '<input name="select" type="hidden" value="finish">';
-
-		break;
-	case 'pdf':
-		echo '<input name="select" type="hidden" value="pdf">';
-
-		break;
+		$row=0;
+		while ($row < sizeof($_SESSION['accounts']  $row!=-1) {
+			if (getgid($_SESSION['accounts'][$row]->general_group)==-1) {
+				$group = new account();
+				$group->general_username=$_SESSION['accounts'][$row]->general_group;
+				$group->general_uidNumber=checkid($_SESSION['accounts'][$row], 'group');
+				$group->general_gecos=$_SESSION['accounts'][$row]->general_group;
+				creategroup($_SESSION['accounts'][$row]);
+				}
+			$error = createuser($_SESSION['accounts'][$row]);
+			if ($error==1) $row++;
+				else {
+				$row = -1;
+				StatusMessage('ERROR', _('Could not create user'), _('Was unable to create ').$_SESSION['accounts'][$row]->general_username);
+			}
+		if ($row=-1) echo '<tr><td><input name="cancel" type="submit" value="'; echo _('Cancel'); echo '">';
+			else {
+			echo '<tr><td>';
+			echo _('All Users have been created');
+			echo '</td></tr><tr><td>';
+			echo '<tr><td><input name="cancel" type="submit" value="'; echo _('Mainmenu'); echo '">';
+			echo '<tr><td><input name="pdf" type="submit" value="'; echo _('Create PDF-File'); echo '">';
+			break;
 	}
 
 

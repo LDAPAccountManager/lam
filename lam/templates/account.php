@@ -479,7 +479,9 @@ switch ($select_local) {
 				echo '></td></tr>';
 				break;
 			case 'host' :
-				echo '<input name="f_unix_password_no" type="hidden" value="'. $_SESSION['account']->unix_password_no) . '">';
+				echo '<input name="f_unix_password_no" type="hidden" value="';
+				if ($_SESSION['account']->unix_password_no) echo 'checked';
+				echo  '">';
 				echo '<tr><td>';
 				echo _('Password');
 				echo '</td><td></td><td>';
