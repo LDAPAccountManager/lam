@@ -39,7 +39,6 @@ if (!$_SESSION['ldap'] || !$_SESSION['ldap']->server()) {
 	exit;
 }
 
-
 // check if user has pressed submit or abort button
 if ($_POST['forward'] == "yes") {
 	// on abort go back to main page
