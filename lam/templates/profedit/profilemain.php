@@ -50,11 +50,11 @@ if ($_POST['forward'] == "yes") {
 		}
 		// edit user profile
 		elseif($_POST['profile'] == "edituser") {
-			echo("<meta http-equiv=\"refresh\" content=\"0; URL=profileuser.php?edit=" . $_POST['user'] . "\">");
+			echo("<meta http-equiv=\"refresh\" content=\"0; URL=profileuser.php?edit=" . $_POST['e_user'] . "\">");
 		}
 		// delete user profile
 		elseif($_POST['profile'] == "deluser") {
-			echo("<meta http-equiv=\"refresh\" content=\"0; URL=profiledelete.php?type=user&del=" . $_POST['user'] . "\">");
+			echo("<meta http-equiv=\"refresh\" content=\"0; URL=profiledelete.php?type=user&del=" . $_POST['d_user'] . "\">");
 		}
 		// create new host profile
 		elseif ($_POST['profile'] == "newhost") {
@@ -62,11 +62,11 @@ if ($_POST['forward'] == "yes") {
 		}
 		// edit host profile
 		elseif($_POST['profile'] == "edithost") {
-			echo("<meta http-equiv=\"refresh\" content=\"0; URL=profilehost.php?edit=" . $_POST['host'] . "\">");
+			echo("<meta http-equiv=\"refresh\" content=\"0; URL=profilehost.php?edit=" . $_POST['e_host'] . "\">");
 		}
 		// delete user profile
 		elseif($_POST['profile'] == "delhost") {
-			echo("<meta http-equiv=\"refresh\" content=\"0; URL=profiledelete.php?type=host&del=" . $_POST['host'] . "\">");
+			echo("<meta http-equiv=\"refresh\" content=\"0; URL=profiledelete.php?type=host&del=" . $_POST['d_host'] . "\">");
 		}
 	}
 	exit;
@@ -120,7 +120,7 @@ for ($i = 0; $i < sizeof($hstprof); $i++) {
 						</input>
 					</td>
 					<td>
-						<select name="user" size=1>
+						<select name="e_user" size=1>
 							<? echo $userprofiles ?>
 						<select>
 					</td>
@@ -135,7 +135,7 @@ for ($i = 0; $i < sizeof($hstprof); $i++) {
 						</input>
 					</td>
 					<td>
-						<select name="user" size=1>
+						<select name="d_user" size=1>
 							<? echo $userprofiles ?>
 						<select>
 					</td>
@@ -171,7 +171,7 @@ for ($i = 0; $i < sizeof($hstprof); $i++) {
 						</input>
 					</td>
 					<td>
-						<select name="host" size=1>
+						<select name="e_host" size=1>
 							<? echo $hostprofiles ?>
 						<select>
 					</td>
@@ -186,7 +186,7 @@ for ($i = 0; $i < sizeof($hstprof); $i++) {
 						</input>
 					</td>
 					<td>
-						<select name="host" size=1>
+						<select name="d_host" size=1>
 							<? echo $hostprofiles ?>
 						<select>
 					</td>
