@@ -342,16 +342,16 @@ switch ($select_local) {
 		switch ( $_SESSION['type2'] ) {
 			case 'user' :
 				if (session_is_registered("type2")) session_unregister("type2");
-				echo "<meta http-equiv=\"refresh\" content=\"0; URL=lists/listusers.php\">\n";
+				echo "<meta http-equiv=\"refresh\" content=\"2; URL=lists/listusers.php\">\n";
 				break;
 			case 'group' :
 
 				if (session_is_registered("type2")) session_unregister("type2");
-				echo "<meta http-equiv=\"refresh\" content=\"0; URL=lists/listgroups.php\">\n";
+				echo "<meta http-equiv=\"refresh\" content=\"2; URL=lists/listgroups.php\">\n";
 				break;
 			case 'host' :
 				if (session_is_registered("type2")) session_unregister("type2");
-				echo "<meta http-equiv=\"refresh\" content=\"0; URL=lists/listhosts.php\">\n";
+				echo "<meta http-equiv=\"refresh\" content=\"2; URL=lists/listhosts.php\">\n";
 				break;
 			}
 		break;
@@ -458,7 +458,7 @@ switch ($select_local) { // Select which part of page will be loaded
 				echo '</select></td><td>'.
 					'<a href="help.php?HelpNumber=406" target="lamhelp">'._('Help').'</a>'.
 					'</td></tr>'."\n".'<tr><td>';
-				echo _('Additional Groupmembership');
+				echo _('Additional Groups');
 				echo '</td>'."\n".'<td><select name="f_general_groupadd[]" size="3" multiple>';
 				// loop though existing groups for additional groups
 				foreach ($groups as $group) {
@@ -727,7 +727,7 @@ switch ($select_local) { // Select which part of page will be loaded
 				echo '</td>'."\n".'<td><input name="f_smb_password_no" type="checkbox"';
 				if ($_SESSION['account']->smb_password_no) echo ' checked ';
 				echo '></td>'."\n".'<td>'.
-					'<a href="help.php?HelpNumber=428" target="lamhelp">'._('Help').'</a>'.
+					'<a href="help.php?HelpNumber=426" target="lamhelp">'._('Help').'</a>'.
 					'</td></tr>'."\n".'<tr><td>';
 				echo _('Password doesn\'t expire.');
 				echo '</td>'."\n".'<td><input name="f_smb_flagsX" type="checkbox"';
@@ -837,29 +837,29 @@ switch ($select_local) { // Select which part of page will be loaded
 						echo "</option>\n";
 						}
 					if ( $_SESSION['account']->smb_mapgroup == $_SESSION['account']->smb_domain->SID . "-" . '514' ) {
-						echo '<option selected> ';
+						echo '<option selected> *';
 						echo _('Domain Guests');
 						echo "</option>\n"; }
 					 else {
-						echo '<option> ';
+						echo '<option> *';
 						echo _('Domain Guests');
 						echo "</option>\n";
 						}
 					if ( $_SESSION['account']->smb_mapgroup == $_SESSION['account']->smb_domain->SID . "-" . '513' ) {
-						echo '<option selected> ';
+						echo '<option selected> *';
 						echo _('Domain Users');
 						echo "</option>\n"; }
 					 else {
-						echo '<option> ';
+						echo '<option> *';
 						echo _('Domain Users');
 						echo "</option>\n";
 						}
 					if ( $_SESSION['account']->smb_mapgroup == $_SESSION['account']->smb_domain->SID . "-" . '512' ) {
-						echo '<option selected> ';
+						echo '<option selected> *';
 						echo _('Domain Admins');
 						echo "</option>\n"; }
 					 else {
-						echo '<option> ';
+						echo '<option> *';
 						echo _('Domain Admins');
 						echo "</option>\n";
 						}
@@ -1039,29 +1039,29 @@ switch ($select_local) { // Select which part of page will be loaded
 				if (isset($_SESSION['account_old']->general_objectClass)) {
 					if (!in_array('posixAccount', $_SESSION['account_old']->general_objectClass)) {
 						echo '<tr>';
-						StatusMessage('WARN', _('ObjectClass doesn\'t fit.'), _('Have to recreate entry.'));
+						StatusMessage('WARN', _('ObjectClass posixAccount not found.'), _('Have to recreate entry.'));
 						echo "</tr>\n";
 						}
 					if (!in_array('shadowAccount', $_SESSION['account_old']->general_objectClass)) {
 						echo '<tr>';
-						StatusMessage('WARN', _('ObjectClass doesn\'t fit.'), _('Have to recreate entry.'));
+						StatusMessage('WARN', _('ObjectClass shadowAccount.'), _('Have to recreate entry.'));
 						echo "</tr>\n";
 						}
 					if (!in_array('inetOrgPerson', $_SESSION['account_old']->general_objectClass)) {
 						echo '<tr>';
-						StatusMessage('WARN', _('ObjectClass doesn\'t fit.'), _('Have to recreate entry.'));
+						StatusMessage('WARN', _('ObjectClass inetOrgPerson not found.'), _('Have to recreate entry.'));
 						echo "</tr>\n";
 						}
 					if ($_SESSION['config']->samba3 == 'yes') {
 						if (!in_array('sambaSamAccount', $_SESSION['account_old']->general_objectClass)) {
 							echo '<tr>';
-							StatusMessage('WARN', _('ObjectClass doesn\'t fit.'), _('Have to recreate entry.'));
+							StatusMessage('WARN', _('ObjectClass sambaSamAccount not found.'), _('Have to recreate entry.'));
 							echo "</tr>\n";
 							}}
 						else
 						if (!in_array('sambaAccount', $_SESSION['account_old']->general_objectClass)) {
 							echo '<tr>';
-							StatusMessage('WARN', _('ObjectClass doesn\'t fit.'), _('Have to recreate entry.'));
+							StatusMessage('WARN', _('ObjectClass sambaAccount not found.'), _('Have to recreate entry.'));
 							echo "</tr>\n";
 							}
 					}
@@ -1082,12 +1082,12 @@ switch ($select_local) { // Select which part of page will be loaded
 				if (isset($_SESSION['account_old']->general_objectClass)) {
 					if (($_SESSION['config']->samba3 == 'yes') && (!in_array('sambaGroupMapping', $_SESSION['account_old']->general_objectClass))) {
 						echo '<tr>';
-						StatusMessage('WARN', _('ObjectClass doesn\'t fit.'), _('Have to recreate entry.'));
+						StatusMessage('WARN', _('ObjectClass sambaGroupMapping not found.'), _('Have to recreate entry.'));
 						echo "</tr>\n";
 						}
 					if (!in_array('posixGroup', $_SESSION['account_old']->general_objectClass)) {
 						echo '<tr>';
-						StatusMessage('WARN', _('ObjectClass doesn\'t fit.'), _('Have to recreate entry.'));
+						StatusMessage('WARN', _('ObjectClass posixGroup not found.'), _('Have to recreate entry.'));
 						echo "</tr>\n";
 						}
 					}
@@ -1102,29 +1102,29 @@ switch ($select_local) { // Select which part of page will be loaded
 				if (isset($_SESSION['account_old']->general_objectClass)) {
 					if (!in_array('posixAccount', $_SESSION['account_old']->general_objectClass)) {
 						echo '<tr>';
-						StatusMessage('WARN', _('ObjectClass doesn\'t fit.'), _('Have to recreate entry.'));
+						StatusMessage('WARN', _('ObjectClass posixAccount not found.'), _('Have to recreate entry.'));
 						echo "</tr>\n";
 						}
 					if (!in_array('shadowAccount', $_SESSION['account_old']->general_objectClass)) {
 						echo '<tr>';
-						StatusMessage('WARN', _('ObjectClass doesn\'t fit.'), _('Have to recreate entry.'));
+						StatusMessage('WARN', _('ObjectClass shadowAccount not found.'), _('Have to recreate entry.'));
 						echo "</tr>\n";
 						}
 					if (!in_array('account', $_SESSION['account_old']->general_objectClass)) {
 						echo '<tr>';
-						StatusMessage('WARN', _('ObjectClass doesn\'t fit.'), _('Have to recreate entry.'));
+						StatusMessage('WARN', _('ObjectClass account not found.'), _('Have to recreate entry.'));
 						echo "</tr>\n";
 						}
 					if ($_SESSION['config']->samba3 == 'yes') {
 						if (!in_array('sambaSamAccount', $_SESSION['account_old']->general_objectClass)) {
 							echo '<tr>';
-							StatusMessage('WARN', _('ObjectClass doesn\'t fit.'), _('Have to recreate entry.'));
+							StatusMessage('WARN', _('ObjectClass sambaSamAccount not found.'), _('Have to recreate entry.'));
 							echo "</tr>\n";
 							}}
 						else
 						if (!in_array('sambaAccount', $_SESSION['account_old']->general_objectClass)) {
 							echo '<tr>';
-							StatusMessage('WARN', _('ObjectClass doesn\'t fit.'), _('Have to recreate entry.'));
+							StatusMessage('WARN', _('ObjectClass sambaAccount not found.'), _('Have to recreate entry.'));
 							echo "</tr>\n";
 							}
 					}
