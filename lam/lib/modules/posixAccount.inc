@@ -1034,10 +1034,17 @@ class posixAccount extends baseModule {
 				// TODO autoGID
 				$partialAccounts[$i]['uidNumber'] = 42;
 			}
-			elseif (get_preg($rawAccounts[$i][$ids['posixAccount_uid']], 'digit') &&
-			($rawAccounts[$i][$ids['posixAccount_uid']] > $this->moduleSettings['posixAccount_minUID'][0]) &&
-			($rawAccounts[$i][$ids['posixAccount_uid']] < $this->moduleSettings['posixAccount_maxUID'][0])) {
-				$partialAccounts[$i]['uidNumber'] = $rawAccounts[$i][$ids['posixAccount_uid']];
+			elseif (get_preg($rawAccounts[$i][$ids['posixAccount_uid']], 'digit')) {
+				if (($this->get_scope() == 'user') &&
+				($rawAccounts[$i][$ids['posixAccount_uid']] > $this->moduleSettings['posixAccount_minUID'][0]) &&
+				($rawAccounts[$i][$ids['posixAccount_uid']] < $this->moduleSettings['posixAccount_maxUID'][0])) {
+					$partialAccounts[$i]['uidNumber'] = $rawAccounts[$i][$ids['posixAccount_uid']];
+				}
+				elseif (($this->get_scope() == 'host') &&
+				($rawAccounts[$i][$ids['posixAccount_uid']] > $this->moduleSettings['posixAccount_minMachine'][0]) &&
+				($rawAccounts[$i][$ids['posixAccount_uid']] < $this->moduleSettings['posixAccount_maxMachine'][0])) {
+					$partialAccounts[$i]['uidNumber'] = $rawAccounts[$i][$ids['posixAccount_uid']];
+				}
 			}
 			else {
 				$errMsg = $this->messages['uidNumber'][4];
