@@ -1,4 +1,4 @@
-# $Id: messages.po,v 1.10 2003/08/14 15:28:06 gruberroland Exp $
+# $Id: messages.po,v 1.11 2003/08/14 16:23:43 gruberroland Exp $
 #
 #
 # LDAP Account Manager
@@ -15,9 +15,9 @@ msgstr ""
 "Content-Type: text/plain; charset=ISO-8859-15\n"
 "Content-Transfer-Encoding: 8-bit\n"
 
-#: ../help/help.inc:132 ../help/help.inc:148 ../help/help.inc:156
-msgid " and "
-msgstr ""
+#: ../lib/account.inc:574
+msgid "%s already exists!"
+msgstr "%s besteht schon!"
 
 #: ../templates/config/confmain.php:331 ../templates/ou_edit.php:95
 #: ../templates/ou_edit.php:160 ../templates/ou_edit.php:225
@@ -29,7 +29,7 @@ msgstr ""
 msgid "Abort"
 msgstr "Abbrechen"
 
-#: ../templates/account.php:673 ../help/help.inc:177
+#: ../templates/account.php:693 ../help/help.inc:177
 msgid "Account deactivated"
 msgstr ""
 
@@ -43,7 +43,7 @@ msgstr ""
 msgid "Account expires on"
 msgstr ""
 
-#: ../templates/account.php:778 ../templates/account.php:898
+#: ../templates/account.php:798 ../templates/account.php:975
 #: ../templates/profedit/profileuser.php:210 ../help/help.inc:187
 msgid "Account is deactivated"
 msgstr "Account deaktiviert"
@@ -52,7 +52,7 @@ msgstr "Account deaktiviert"
 msgid "Add profile:"
 msgstr "Neues Profil:"
 
-#: ../lib/account.inc:252
+#: ../lib/account.inc:255
 msgid "Added $ to hostname."
 msgstr "$-Zeichen zum Hostnamen hinzugefügt."
 
@@ -60,11 +60,11 @@ msgstr "$-Zeichen zum Hostnamen hinzugefügt."
 msgid "Additional Groups"
 msgstr ""
 
-#: ../templates/account.php:461 ../templates/profedit/profileuser.php:97
+#: ../templates/account.php:481 ../templates/profedit/profileuser.php:97
 msgid "Additional groups"
 msgstr "Zusätzliche Gruppen"
 
-#: ../templates/domain.php:155 ../help/help.inc:282
+#: ../templates/domain.php:155 ../help/help.inc:278
 msgid "Algorithmic RID Base"
 msgstr "RID-Basisnummer"
 
@@ -84,7 +84,7 @@ msgstr "Alle Änderungen waren erfolgreich."
 msgid "Allowed hosts"
 msgstr "Erlaubte PCs"
 
-#: ../templates/massdetail.php:175
+#: ../templates/massdetail.php:175 ../templates/lists/listusers.php:299
 msgid "Apply"
 msgstr "Ok"
 
@@ -148,11 +148,11 @@ msgstr "Zurück zum Profileditor"
 msgid "Back to domain list"
 msgstr "Zurück zur Domänenliste"
 
-#: ../templates/account.php:1180 ../templates/lists/userlink.php:55
+#: ../templates/account.php:1257 ../templates/lists/userlink.php:55
 msgid "Back to group list"
 msgstr "Zurück zur Gruppenliste"
 
-#: ../templates/account.php:1193
+#: ../templates/account.php:1270
 msgid "Back to host list"
 msgstr "Zurück zur Hostliste"
 
@@ -173,25 +173,25 @@ msgstr "Zurück zu den Einstellungen"
 msgid "Back to profile login"
 msgstr "Zurück zum Konfigurationslogin"
 
-#: ../templates/account.php:1167
+#: ../templates/account.php:1244
 msgid "Back to user list"
 msgstr "Zurück zur Benutzerliste"
 
-#: ../lib/account.inc:408
+#: ../lib/account.inc:411
 msgid "Block hard quota"
 msgstr "hartes Block-Quota"
 
-#: ../lib/account.inc:408
+#: ../lib/account.inc:411
 msgid ""
 "Block hard quota contains invalid characters. Only natural numbers are "
 "allowed"
 msgstr ""
 
-#: ../lib/account.inc:405
+#: ../lib/account.inc:408
 msgid "Block soft quota"
 msgstr "weiches Block-Quota"
 
-#: ../lib/account.inc:405
+#: ../lib/account.inc:408
 msgid ""
 "Block soft quota contains invalid characters. Only natural numbers are "
 "allowed"
@@ -200,8 +200,8 @@ msgstr ""
 #: ../help/help.inc:134 ../help/help.inc:162 ../help/help.inc:164
 #: ../help/help.inc:166 ../help/help.inc:168 ../help/help.inc:192
 #: ../help/help.inc:194 ../help/help.inc:196 ../help/help.inc:198
-#: ../help/help.inc:200 ../help/help.inc:250 ../help/help.inc:260
-#: ../help/help.inc:262
+#: ../help/help.inc:200 ../help/help.inc:246 ../help/help.inc:256
+#: ../help/help.inc:258
 msgid "Can be left empty."
 msgstr ""
 
@@ -220,7 +220,7 @@ msgstr ""
 msgid "Cannot open config file!"
 msgstr "Kann Konfigurationsdatei nicht öffnen!"
 
-#: ../templates/account.php:1082
+#: ../templates/account.php:1159
 msgid "Change GID-Number of all users in group to new value"
 msgstr ""
 
@@ -228,9 +228,9 @@ msgstr ""
 msgid "Change Profile"
 msgstr "Profil ändern"
 
-#: ../templates/lists/listdomains.php:194
-#: ../templates/lists/listgroups.php:249 ../templates/lists/listhosts.php:241
-#: ../templates/lists/listusers.php:259
+#: ../templates/lists/listdomains.php:192
+#: ../templates/lists/listgroups.php:247 ../templates/lists/listhosts.php:239
+#: ../templates/lists/listusers.php:287
 msgid "Change Suffix"
 msgstr "Suffix wechseln"
 
@@ -256,7 +256,7 @@ msgid ""
 "Empty means every workstation."
 msgstr ""
 
-#: ../help/help.inc:260
+#: ../help/help.inc:256
 msgid ""
 "Comma separated list of unix workstations the user is allowed to login. "
 "Empty means every workstation."
@@ -306,16 +306,16 @@ msgstr ""
 msgid "Could not rename file!"
 msgstr "Konnte Datei nicht umbenennen!"
 
-#: ../templates/account.php:1026 ../templates/masscreate.php:275
+#: ../templates/account.php:1103 ../templates/masscreate.php:275
 #: ../templates/initsuff.php:105
 msgid "Create"
 msgstr "Erstellen"
 
-#: ../templates/account.php:1146
+#: ../templates/account.php:1223
 msgid "Create Account"
 msgstr "Account erstellen"
 
-#: ../templates/account.php:1165 ../templates/masscreate.php:311
+#: ../templates/account.php:1242 ../templates/masscreate.php:311
 msgid "Create PDF file"
 msgstr "PDF-Datei erstellen"
 
@@ -327,19 +327,19 @@ msgstr "Neues Samba-Hostprofil erstellen"
 msgid "Create a new User Profile"
 msgstr "Neues Benutzerprofil erstellen"
 
-#: ../templates/account.php:1178
+#: ../templates/account.php:1255
 msgid "Create another group"
 msgstr "Weitere Gruppe anlegen"
 
-#: ../templates/account.php:1191
+#: ../templates/account.php:1268
 msgid "Create another host"
 msgstr "Weiteren Host anlegen"
 
-#: ../templates/account.php:1163
+#: ../templates/account.php:1240
 msgid "Create another user"
 msgstr "Weiteren Benutzer anlegen"
 
-#: ../templates/account.php:326
+#: ../templates/account.php:350
 msgid "Create new Account"
 msgstr "Neuen Account anlegen"
 
@@ -388,15 +388,15 @@ msgstr "Löschen"
 msgid "Delete Account"
 msgstr "Lösche Account"
 
-#: ../templates/lists/listdomains.php:184
+#: ../templates/lists/listdomains.php:199
 msgid "Delete Domain(s)"
 msgstr "Lösche Domain(s)"
 
-#: ../templates/lists/listgroups.php:239
+#: ../templates/lists/listgroups.php:254
 msgid "Delete Group(s)"
 msgstr "Lösche Gruppe(n)"
 
-#: ../templates/lists/listhosts.php:231
+#: ../templates/lists/listhosts.php:246
 msgid "Delete Host(s)"
 msgstr "Lösche Host(s)"
 
@@ -409,9 +409,9 @@ msgstr "Samba-Hostprofil löschen"
 msgid "Delete User Profile"
 msgstr "Benutzerprofil löschen"
 
-#: ../templates/lists/listusers.php:249
+#: ../templates/lists/listusers.php:307
 msgid "Delete User(s)"
-msgstr "Lösche Benutzer(s)"
+msgstr "Lösche Benutzer"
 
 #: ../templates/delete.php:64
 msgid "Delete also Homedirectories"
@@ -427,7 +427,7 @@ msgstr "Löschoperation abgebrochen."
 
 #: ../templates/ou_edit.php:366 ../templates/ou_edit.php:399
 #: ../templates/ou_edit.php:432 ../templates/ou_edit.php:466
-#: ../help/help.inc:268
+#: ../help/help.inc:264
 msgid "Delete organizational unit"
 msgstr "Organizational Unit löschen"
 
@@ -470,35 +470,37 @@ msgstr "Soll dieses Profil gelöscht werden?"
 msgid "Do you really want to delete user(s):"
 msgstr ""
 
-#: ../templates/account.php:811 ../templates/account.php:871
-#: ../templates/account.php:905 ../templates/profedit/profilehost.php:82
+#: ../templates/account.php:887 ../templates/account.php:948
+#: ../templates/account.php:982 ../templates/profedit/profilehost.php:82
 #: ../templates/profedit/profileuser.php:329 ../help/help.inc:199
-#: ../help/help.inc:261
+#: ../help/help.inc:257
 msgid "Domain"
 msgstr "Domäne"
 
-#: ../templates/account.php:164 ../templates/account.php:861
-#: ../templates/account.php:865
+#: ../templates/account.php:165 ../templates/account.php:877
+#: ../templates/account.php:881 ../templates/account.php:938
+#: ../templates/account.php:942
 msgid "Domain Admins"
 msgstr "Domänenadministratoren"
 
-#: ../templates/account.php:162 ../templates/account.php:843
-#: ../templates/account.php:847
+#: ../templates/account.php:163 ../templates/account.php:859
+#: ../templates/account.php:863 ../templates/account.php:920
+#: ../templates/account.php:924
 msgid "Domain Guests"
 msgstr "Domänengäste"
 
-#: ../lib/account.inc:382
+#: ../lib/account.inc:385
 msgid "Domain Name"
 msgstr "Domänenname"
 
-#: ../lib/account.inc:382
+#: ../lib/account.inc:385
 msgid ""
 "Domain Name contents invalid characters. Valid characters are: a-z, A-Z, 0-9 "
 "and -."
 msgstr ""
 
 #: ../templates/lists/listdomains.php:84 ../templates/domain.php:113
-#: ../help/help.inc:274
+#: ../help/help.inc:270
 msgid "Domain SID"
 msgstr "Domänen-SID"
 
@@ -506,17 +508,18 @@ msgstr "Domänen-SID"
 msgid "Domain Settings"
 msgstr "Domäneneinstellungen"
 
-#: ../templates/account.php:163 ../templates/account.php:852
-#: ../templates/account.php:856
+#: ../templates/account.php:164 ../templates/account.php:868
+#: ../templates/account.php:872 ../templates/account.php:929
+#: ../templates/account.php:933
 msgid "Domain Users"
 msgstr "Domänenbenutzer"
 
 #: ../templates/lists/listdomains.php:83 ../templates/domain.php:79
-#: ../help/help.inc:270 ../lib/account.inc:369
+#: ../help/help.inc:266 ../lib/account.inc:372
 msgid "Domain name"
 msgstr "Domänenname"
 
-#: ../lib/account.inc:369
+#: ../lib/account.inc:372
 msgid ""
 "Domain name contents invalid characters. Valid characters are: a-z, A-Z, 0-9 "
 "and -."
@@ -549,7 +552,7 @@ msgstr "E-Mail"
 
 #: ../templates/lists/listdomains.php:153
 #: ../templates/lists/listgroups.php:194 ../templates/lists/listhosts.php:200
-#: ../templates/lists/listusers.php:217
+#: ../templates/lists/listusers.php:240
 msgid "Edit"
 msgstr "Editieren"
 
@@ -561,7 +564,7 @@ msgstr "Hostprofil ändern"
 msgid "Edit User Profile"
 msgstr "Benutzerprofil ändern"
 
-#: ../templates/account.php:969 ../templates/massdetail.php:127
+#: ../templates/account.php:1046 ../templates/massdetail.php:127
 #: ../help/help.inc:227
 msgid "Employee type"
 msgstr "Angestelltentyp"
@@ -594,7 +597,7 @@ msgstr "Beispiel"
 msgid "Examples"
 msgstr "Beispiele"
 
-#: ../templates/account.php:654 ../help/help.inc:169
+#: ../templates/account.php:674 ../help/help.inc:169
 msgid "Expire date"
 msgstr "Ablaufdatum"
 
@@ -602,7 +605,7 @@ msgstr "Ablaufdatum"
 msgid "Failed to create entry!"
 msgstr "Konnte Eintrag nicht erstellen!"
 
-#: ../templates/account.php:1005 ../templates/massdetail.php:163
+#: ../templates/account.php:1082 ../templates/massdetail.php:163
 #: ../help/help.inc:239 ../help/help.inc:240
 msgid "Fax number"
 msgstr "Faxnummer"
@@ -618,7 +621,7 @@ msgid ""
 msgstr ""
 
 #: ../templates/lists/listgroups.php:171 ../templates/lists/listhosts.php:177
-#: ../templates/lists/listusers.php:195
+#: ../templates/lists/listusers.php:217
 msgid "Filter"
 msgstr "Filtern"
 
@@ -626,40 +629,40 @@ msgstr "Filtern"
 msgid "First name"
 msgstr "Vorname"
 
-#: ../templates/account.php:523 ../help/help.inc:60 ../help/help.inc:147
+#: ../templates/account.php:543 ../help/help.inc:60 ../help/help.inc:147
 #: ../lib/ldap.inc:57 ../lib/ldap.inc:69
 msgid "GID number"
 msgstr "GID Nummer"
 
-#: ../templates/account.php:1075
+#: ../templates/account.php:1152
 msgid ""
 "GID-number has changed. You have to run the following command as root in "
 "order to change existing file-permissions:"
 msgstr ""
 
-#: ../templates/account.php:479 ../templates/account.php:529
-#: ../templates/account.php:578 ../help/help.inc:137 ../help/help.inc:149
-#: ../help/help.inc:159 ../lib/account.inc:187 ../lib/account.inc:223
-#: ../lib/account.inc:264
+#: ../templates/account.php:499 ../templates/account.php:549
+#: ../templates/account.php:598 ../help/help.inc:137 ../help/help.inc:149
+#: ../help/help.inc:159 ../lib/account.inc:190 ../lib/account.inc:226
+#: ../lib/account.inc:267
 msgid "Gecos"
 msgstr "Beschreibung"
 
-#: ../templates/account.php:419
+#: ../templates/account.php:439
 msgid "General properties"
 msgstr "Allgemeine Eigenschaften"
 
-#: ../templates/account.php:627
+#: ../templates/account.php:647
 msgid "Generate password"
 msgstr "Passwort generieren"
 
-#: ../templates/account.php:445 ../templates/masscreate.php:196
-#: ../templates/massdetail.php:103 ../help/help.inc:173 ../lib/account.inc:182
+#: ../templates/account.php:465 ../templates/masscreate.php:196
+#: ../templates/massdetail.php:103 ../help/help.inc:173 ../lib/account.inc:185
 msgid "Given name"
-msgstr "Nachname"
+msgstr "Vorname"
 
-#: ../lib/account.inc:182
+#: ../lib/account.inc:185
 msgid "Given name contents invalid characters"
-msgstr "Nachname enthält ungültige Zeichen"
+msgstr "Vorname enthält ungültige Zeichen"
 
 #: ../help/help.inc:174
 msgid ""
@@ -667,7 +670,7 @@ msgid ""
 "seen anybody with a number in his name?"
 msgstr ""
 
-#: ../templates/account.php:932 ../help/help.inc:211
+#: ../templates/account.php:1009 ../help/help.inc:211
 msgid "Grace block period"
 msgstr "Block-Frist"
 
@@ -682,11 +685,15 @@ msgid ""
 "days."
 msgstr ""
 
-#: ../templates/account.php:934 ../help/help.inc:222
+#: ../templates/account.php:1011 ../help/help.inc:222
 msgid "Grace inode period"
 msgstr "Inode-Frist"
 
-#: ../templates/account.php:1172 ../templates/masscreate.php:190
+#: ../templates/account.php:1249
+msgid "Group"
+msgstr "Gruppe"
+
+#: ../templates/masscreate.php:190
 msgid "Group "
 msgstr ""
 
@@ -714,7 +721,7 @@ msgstr "Gruppenmitglieder"
 msgid "Group name"
 msgstr "Gruppenname"
 
-#: ../templates/lists/listgroups.php:282
+#: ../templates/lists/listgroups.php:287
 msgid "Group(s) found"
 msgstr "Gruppe(n) gefunden"
 
@@ -722,16 +729,16 @@ msgstr "Gruppe(n) gefunden"
 msgid "GroupSuffix"
 msgstr "Gruppensuffix"
 
-#: ../templates/account.php:517 ../help/help.inc:143 ../lib/account.inc:220
-#: ../lib/account.inc:247
+#: ../templates/account.php:537 ../help/help.inc:143 ../lib/account.inc:223
+#: ../lib/account.inc:250
 msgid "Groupname"
 msgstr "Gruppenname"
 
-#: ../lib/account.inc:247
+#: ../lib/account.inc:250
 msgid "Groupname allready in use. Selected next free groupname."
 msgstr ""
 
-#: ../lib/account.inc:220
+#: ../lib/account.inc:223
 msgid ""
 "Groupname contents invalid characters. Valid characters are: a-z, 0-9 and .-"
 "_ !"
@@ -763,28 +770,24 @@ msgstr ""
 msgid "Groups"
 msgstr "Gruppen"
 
-#: ../templates/account.php:932 ../help/help.inc:208
+#: ../templates/account.php:1009 ../help/help.inc:208 ../help/help.inc:209
 msgid "Hard block limit"
 msgstr "hartes Block-Limit"
 
-#: ../help/help.inc:209
-msgid "Hard block limit."
-msgstr ""
-
 #: ../help/help.inc:220
-msgid "Hard inode (files) limit."
+msgid "Hard inode (files) limit"
 msgstr ""
 
-#: ../templates/account.php:934 ../help/help.inc:219
+#: ../templates/account.php:1011 ../help/help.inc:219
 msgid "Hard inode limit"
 msgstr "hartes Inode-Limit"
 
-#: ../templates/account.php:1045 ../templates/account.php:1050
-#: ../templates/account.php:1055 ../templates/account.php:1061
-#: ../templates/account.php:1067 ../templates/account.php:1088
-#: ../templates/account.php:1093 ../templates/account.php:1108
-#: ../templates/account.php:1113 ../templates/account.php:1118
-#: ../templates/account.php:1124 ../templates/account.php:1130
+#: ../templates/account.php:1122 ../templates/account.php:1127
+#: ../templates/account.php:1132 ../templates/account.php:1138
+#: ../templates/account.php:1144 ../templates/account.php:1165
+#: ../templates/account.php:1170 ../templates/account.php:1185
+#: ../templates/account.php:1190 ../templates/account.php:1195
+#: ../templates/account.php:1201 ../templates/account.php:1207
 msgid "Have to recreate entry."
 msgstr ""
 
@@ -806,47 +809,48 @@ msgstr ""
 #: ../templates/config/profmanage.php:224
 #: ../templates/config/profmanage.php:249
 #: ../templates/config/profmanage.php:292
-#: ../templates/config/profmanage.php:311 ../templates/account.php:431
-#: ../templates/account.php:437 ../templates/account.php:443
-#: ../templates/account.php:449 ../templates/account.php:459
-#: ../templates/account.php:472 ../templates/account.php:477
-#: ../templates/account.php:482 ../templates/account.php:491
-#: ../templates/account.php:502 ../templates/account.php:521
-#: ../templates/account.php:527 ../templates/account.php:532
-#: ../templates/account.php:543 ../templates/account.php:561
-#: ../templates/account.php:567 ../templates/account.php:576
-#: ../templates/account.php:581 ../templates/account.php:592
-#: ../templates/account.php:632 ../templates/account.php:637
-#: ../templates/account.php:642 ../templates/account.php:647
-#: ../templates/account.php:652 ../templates/account.php:671
-#: ../templates/account.php:677 ../templates/account.php:682
-#: ../templates/account.php:726 ../templates/account.php:732
-#: ../templates/account.php:738 ../templates/account.php:757
-#: ../templates/account.php:776 ../templates/account.php:782
-#: ../templates/account.php:789 ../templates/account.php:794
-#: ../templates/account.php:799 ../templates/account.php:804
-#: ../templates/account.php:809 ../templates/account.php:826
-#: ../templates/account.php:869 ../templates/account.php:881
-#: ../templates/account.php:902 ../templates/account.php:920
-#: ../templates/account.php:935 ../templates/account.php:936
-#: ../templates/account.php:937 ../templates/account.php:938
-#: ../templates/account.php:939 ../templates/account.php:967
-#: ../templates/account.php:973 ../templates/account.php:979
-#: ../templates/account.php:985 ../templates/account.php:991
-#: ../templates/account.php:997 ../templates/account.php:1003
-#: ../templates/account.php:1009 ../templates/account.php:1015
-#: ../templates/account.php:1142 ../templates/masscreate.php:121
-#: ../templates/massdetail.php:101 ../templates/massdetail.php:107
-#: ../templates/massdetail.php:113 ../templates/massdetail.php:119
-#: ../templates/massdetail.php:125 ../templates/massdetail.php:131
-#: ../templates/massdetail.php:137 ../templates/massdetail.php:143
-#: ../templates/massdetail.php:149 ../templates/massdetail.php:155
-#: ../templates/massdetail.php:161 ../templates/massdetail.php:167
-#: ../templates/massdetail.php:173 ../templates/ou_edit.php:355
-#: ../templates/ou_edit.php:368 ../templates/ou_edit.php:388
-#: ../templates/ou_edit.php:401 ../templates/ou_edit.php:421
-#: ../templates/ou_edit.php:434 ../templates/ou_edit.php:455
-#: ../templates/ou_edit.php:468 ../templates/profedit/profilehost.php:74
+#: ../templates/config/profmanage.php:311 ../templates/account.php:451
+#: ../templates/account.php:457 ../templates/account.php:463
+#: ../templates/account.php:469 ../templates/account.php:479
+#: ../templates/account.php:492 ../templates/account.php:497
+#: ../templates/account.php:502 ../templates/account.php:511
+#: ../templates/account.php:522 ../templates/account.php:541
+#: ../templates/account.php:547 ../templates/account.php:552
+#: ../templates/account.php:563 ../templates/account.php:581
+#: ../templates/account.php:587 ../templates/account.php:596
+#: ../templates/account.php:601 ../templates/account.php:612
+#: ../templates/account.php:652 ../templates/account.php:657
+#: ../templates/account.php:662 ../templates/account.php:667
+#: ../templates/account.php:672 ../templates/account.php:691
+#: ../templates/account.php:697 ../templates/account.php:702
+#: ../templates/account.php:746 ../templates/account.php:752
+#: ../templates/account.php:758 ../templates/account.php:777
+#: ../templates/account.php:796 ../templates/account.php:802
+#: ../templates/account.php:809 ../templates/account.php:814
+#: ../templates/account.php:819 ../templates/account.php:824
+#: ../templates/account.php:829 ../templates/account.php:885
+#: ../templates/account.php:902 ../templates/account.php:946
+#: ../templates/account.php:958 ../templates/account.php:979
+#: ../templates/account.php:997 ../templates/account.php:1012
+#: ../templates/account.php:1013 ../templates/account.php:1014
+#: ../templates/account.php:1015 ../templates/account.php:1016
+#: ../templates/account.php:1044 ../templates/account.php:1050
+#: ../templates/account.php:1056 ../templates/account.php:1062
+#: ../templates/account.php:1068 ../templates/account.php:1074
+#: ../templates/account.php:1080 ../templates/account.php:1086
+#: ../templates/account.php:1092 ../templates/account.php:1219
+#: ../templates/masscreate.php:121 ../templates/massdetail.php:101
+#: ../templates/massdetail.php:107 ../templates/massdetail.php:113
+#: ../templates/massdetail.php:119 ../templates/massdetail.php:125
+#: ../templates/massdetail.php:131 ../templates/massdetail.php:137
+#: ../templates/massdetail.php:143 ../templates/massdetail.php:149
+#: ../templates/massdetail.php:155 ../templates/massdetail.php:161
+#: ../templates/massdetail.php:167 ../templates/massdetail.php:173
+#: ../templates/ou_edit.php:355 ../templates/ou_edit.php:368
+#: ../templates/ou_edit.php:388 ../templates/ou_edit.php:401
+#: ../templates/ou_edit.php:421 ../templates/ou_edit.php:434
+#: ../templates/ou_edit.php:455 ../templates/ou_edit.php:468
+#: ../templates/profedit/profilehost.php:74
 #: ../templates/profedit/profilehost.php:99
 #: ../templates/profedit/profilehost.php:113
 #: ../templates/profedit/profileuser.php:92
@@ -893,32 +897,33 @@ msgstr ""
 msgid "Hold the CTRL-key to (de)select multiple groups."
 msgstr ""
 
-#: ../templates/profedit/profileuser.php:112 ../lib/account.inc:178
-#: ../lib/account.inc:180
+#: ../templates/profedit/profileuser.php:112 ../lib/account.inc:181
+#: ../lib/account.inc:183
 msgid "Home Directory"
 msgstr "Home Verzeichnis"
 
-#: ../templates/account.php:1038
+#: ../templates/account.php:1115
 msgid ""
 "Home Directory has changed. You have to run the following command as root in "
 "order to change the existing homedirectory:"
 msgstr ""
 
-#: ../templates/account.php:474 ../help/help.inc:135 ../lib/ldap.inc:62
+#: ../templates/account.php:494 ../help/help.inc:135 ../lib/ldap.inc:62
 msgid "Home directory"
 msgstr "Heimatverzeichnis"
 
-#: ../templates/account.php:784 ../templates/profedit/profileuser.php:264
+#: ../templates/account.php:804 ../templates/profedit/profileuser.php:264
 #: ../help/help.inc:189
 msgid "Home drive"
 msgstr "Heimatlaufwerk"
 
-#: ../templates/account.php:791 ../templates/profedit/profileuser.php:295
-#: ../lib/account.inc:356
+#: ../templates/account.php:811 ../templates/profedit/profileuser.php:295
+#: ../help/help.inc:197 ../lib/account.inc:355 ../lib/account.inc:357
+#: ../lib/account.inc:359
 msgid "Home path"
 msgstr "Heimatverzeichnis"
 
-#: ../lib/account.inc:356
+#: ../lib/account.inc:359
 msgid "Home path is invalid."
 msgstr "Heimatverzeichnis ist ungültig."
 
@@ -926,21 +931,17 @@ msgstr "Heimatverzeichnis ist ungültig."
 msgid "Homedir is invalid!"
 msgstr "Heimatverzeichnis ist ungültig!"
 
-#: ../lib/account.inc:180
+#: ../lib/account.inc:183
 msgid "Homedirectory contents invalid characters."
 msgstr "Heimatverzeichnis enthält ungültige Zeichen."
 
-#: ../templates/account.php:1185
+#: ../templates/account.php:1262
 msgid "Host"
 msgstr "Host"
 
 #: ../templates/profedit/profilehost.php:62
 msgid "Host attributes"
 msgstr "Hostattribute"
-
-#: ../help/help.inc:245 ../help/help.inc:246
-msgid "Host can change password"
-msgstr ""
 
 #: ../lib/ldap.inc:78
 msgid "Host description"
@@ -954,12 +955,8 @@ msgstr ""
 msgid "Host list attributes are invalid!"
 msgstr "Attribute der Hostliste sind ungültig!"
 
-#: ../help/help.inc:247 ../help/help.inc:248
-msgid "Host must change password"
-msgstr ""
-
-#: ../templates/account.php:557 ../help/help.inc:151 ../lib/account.inc:252
-#: ../lib/account.inc:257 ../lib/account.inc:286 ../lib/ldap.inc:76
+#: ../templates/account.php:577 ../help/help.inc:151 ../lib/account.inc:255
+#: ../lib/account.inc:260 ../lib/account.inc:289 ../lib/ldap.inc:76
 msgid "Host name"
 msgstr "Hostname"
 
@@ -975,11 +972,11 @@ msgstr "HostSuffix"
 msgid "HostSuffix is invalid!"
 msgstr "Hostsuffix ist ungültig!"
 
-#: ../lib/account.inc:286
+#: ../lib/account.inc:289
 msgid "Hostname allready in use. Selected next free hostname."
 msgstr ""
 
-#: ../lib/account.inc:257
+#: ../lib/account.inc:260
 msgid ""
 "Hostname contents invalid characters. Valid characters are: a-z, 0-9 and .-"
 "_ !"
@@ -990,11 +987,12 @@ msgstr ""
 msgid "Hosts"
 msgstr "Hosts"
 
-#: ../lib/account.inc:659
-msgid "ID is used from"
+#: ../lib/account.inc:662
+#, php-format
+msgid "ID is used from %s!"
 msgstr ""
 
-#: ../lib/account.inc:292
+#: ../lib/account.inc:295
 msgid "ID-Number"
 msgstr "ID-Nummer"
 
@@ -1068,7 +1066,7 @@ msgid ""
 "If you want to change the current preferences password, please enter it here."
 msgstr ""
 
-#: ../help/help.inc:258
+#: ../help/help.inc:254
 msgid "If you want to use a well known RID you can selcet a well known group."
 msgstr ""
 
@@ -1076,59 +1074,59 @@ msgstr ""
 msgid "Information"
 msgstr "Information"
 
-#: ../lib/account.inc:414
+#: ../lib/account.inc:417
 msgid "Inode hard quota"
 msgstr "hartes Inode-Quota"
 
-#: ../lib/account.inc:414
+#: ../lib/account.inc:417
 msgid ""
 "Inode hard quota contains invalid characters. Only natural numbers are "
 "allowed"
 msgstr ""
 
-#: ../lib/account.inc:411
+#: ../lib/account.inc:414
 msgid "Inode soft quota"
 msgstr "weiches Inode-Quota"
 
-#: ../lib/account.inc:411
+#: ../lib/account.inc:414
 msgid ""
 "Inode soft quota contains invalid characters. Only natural numbers are "
 "allowed"
 msgstr ""
 
-#: ../lib/account.inc:354
+#: ../lib/account.inc:357
 msgid "Inserted groupname in HomePath."
 msgstr "Gruppenname wurde in Heimatverzeichnis eingefügt."
 
-#: ../lib/account.inc:223
+#: ../lib/account.inc:226
 msgid "Inserted groupname in gecos-field."
 msgstr "Gruppenname wurde in Beschreibung eingefügt."
 
-#: ../lib/account.inc:350
+#: ../lib/account.inc:353
 msgid "Inserted groupname in profilepath."
 msgstr "Gruppenname wurde in Profilpfad eingefügt."
 
-#: ../lib/account.inc:346
+#: ../lib/account.inc:349
 msgid "Inserted groupname in scriptpath."
 msgstr "Gruppenname wurde in Scriptpfad eingefügt."
 
-#: ../lib/account.inc:264
+#: ../lib/account.inc:267
 msgid "Inserted hostname in gecos-field."
 msgstr "Hostname wurde in Beschreibung eingefügt."
 
-#: ../lib/account.inc:187
+#: ../lib/account.inc:190
 msgid "Inserted sur- and given name in gecos-field."
 msgstr "Vor- und Nachname wurden in Beschreibung eingefügt."
 
-#: ../lib/account.inc:352
+#: ../lib/account.inc:355
 msgid "Inserted username in Home Path."
 msgstr "Benutzername wurde in Heimatverzeichnis eingefügt."
 
-#: ../lib/account.inc:348
+#: ../lib/account.inc:351
 msgid "Inserted username in profilepath."
 msgstr "Benutzername wurde in Profilpfad eingefügt."
 
-#: ../lib/account.inc:344
+#: ../lib/account.inc:347
 msgid "Inserted username in scriptpath."
 msgstr "Benutzername wurde in Scriptpfad eingefügt."
 
@@ -1166,12 +1164,12 @@ msgstr "LDAP Listeneinstellungen"
 
 #: ../templates/lists/listdomains.php:110
 #: ../templates/lists/listgroups.php:139 ../templates/lists/listhosts.php:145
-#: ../templates/lists/listusers.php:159
+#: ../templates/lists/listusers.php:181
 msgid "LDAP Search failed! Please check your preferences."
 msgstr "LDAP Suche fehlgeschlagen! Bitte überprüfen Sie die Einstellungen."
 
 #: ../templates/lists/listdomains.php:99 ../templates/lists/listgroups.php:128
-#: ../templates/lists/listhosts.php:134 ../templates/lists/listusers.php:146
+#: ../templates/lists/listhosts.php:134 ../templates/lists/listusers.php:168
 msgid "LDAP sizelimit exceeded, not all entries are shown."
 msgstr ""
 
@@ -1203,8 +1201,8 @@ msgstr "Liste der berechtigten Benutzer ist ungültig!"
 msgid "List of valid users"
 msgstr "Liste der berechtigten Benutzer"
 
-#: ../templates/account.php:509 ../templates/account.php:549
-#: ../templates/account.php:598
+#: ../templates/account.php:529 ../templates/account.php:569
+#: ../templates/account.php:618
 msgid "Load Profile"
 msgstr "Profil laden"
 
@@ -1213,7 +1211,7 @@ msgstr "Profil laden"
 msgid "Login"
 msgstr "Login"
 
-#: ../templates/account.php:484 ../templates/profedit/profileuser.php:119
+#: ../templates/account.php:504 ../templates/profedit/profileuser.php:119
 #: ../help/help.inc:139 ../lib/ldap.inc:63
 msgid "Login shell"
 msgstr "Login Shell"
@@ -1283,7 +1281,7 @@ msgstr "Maximale UID-Nummer"
 msgid "Maximum list entries"
 msgstr "Maximale Listeneinträge"
 
-#: ../templates/account.php:644 ../templates/profedit/profileuser.php:158
+#: ../templates/account.php:664 ../templates/profedit/profileuser.php:158
 #: ../help/help.inc:165
 msgid "Maximum password age"
 msgstr "Maximales Passwortalter"
@@ -1312,25 +1310,25 @@ msgstr "Minimale GID-Nummer"
 msgid "Minimum UID number"
 msgstr "Minimale UID-Nummer"
 
-#: ../templates/account.php:649 ../templates/profedit/profileuser.php:165
+#: ../templates/account.php:669 ../templates/profedit/profileuser.php:165
 #: ../help/help.inc:167
 msgid "Minimum password age"
 msgstr "Minimales Passwortalter"
 
-#: ../templates/account.php:999 ../templates/massdetail.php:157
+#: ../templates/account.php:1076 ../templates/massdetail.php:157
 #: ../help/help.inc:237 ../help/help.inc:238
 msgid "Mobile number"
 msgstr "Mobil"
 
-#: ../templates/account.php:1025
+#: ../templates/account.php:1102
 msgid "Modify"
 msgstr "Ändern"
 
-#: ../templates/account.php:1145
+#: ../templates/account.php:1222
 msgid "Modify Account"
 msgstr "Account ändern"
 
-#: ../templates/account.php:931
+#: ../templates/account.php:1008
 msgid "Mointpoint"
 msgstr ""
 
@@ -1342,15 +1340,15 @@ msgstr ""
 msgid "Mountpoint"
 msgstr "Mountpunkt"
 
-#: ../lib/account.inc:296 ../lib/account.inc:299
+#: ../lib/account.inc:299 ../lib/account.inc:302
 msgid "Name"
 msgstr "Name"
 
-#: ../lib/account.inc:299
+#: ../lib/account.inc:302
 msgid "Name contents invalid characters. First character must be a letter"
 msgstr ""
 
-#: ../lib/account.inc:296
+#: ../lib/account.inc:299
 msgid "Name must content between 3 and 20 characters."
 msgstr ""
 
@@ -1360,15 +1358,15 @@ msgid ""
 "exists, it will be overwritten."
 msgstr ""
 
-#: ../templates/lists/listdomains.php:183
+#: ../templates/lists/listdomains.php:198
 msgid "New Domain"
 msgstr "Neue Domäne"
 
-#: ../templates/lists/listgroups.php:238
+#: ../templates/lists/listgroups.php:253
 msgid "New Group"
 msgstr "Neue Gruppe"
 
-#: ../templates/lists/listhosts.php:230
+#: ../templates/lists/listhosts.php:245
 msgid "New Host"
 msgstr "Neuer Host"
 
@@ -1381,7 +1379,7 @@ msgstr "Neue OU erfolgreich erstellt."
 msgid "New Password"
 msgstr "Neues Passwort"
 
-#: ../templates/lists/listusers.php:248
+#: ../templates/lists/listusers.php:306
 msgid "New User"
 msgstr "Neuer Benutzer"
 
@@ -1399,7 +1397,7 @@ msgstr "Neues Hauptpasswort:"
 
 #: ../templates/ou_edit.php:353 ../templates/ou_edit.php:386
 #: ../templates/ou_edit.php:419 ../templates/ou_edit.php:453
-#: ../help/help.inc:266
+#: ../help/help.inc:262
 msgid "New organizational unit"
 msgstr "Neue Organizational Unit"
 
@@ -1407,11 +1405,11 @@ msgstr "Neue Organizational Unit"
 msgid "New password set successfully."
 msgstr "Neues Passwort wurde erfolgreich gesetzt."
 
-#: ../templates/domain.php:144 ../help/help.inc:280
+#: ../templates/domain.php:144 ../help/help.inc:276
 msgid "Next Group RID"
 msgstr "Nächste Gruppen-RID"
 
-#: ../templates/domain.php:128 ../help/help.inc:276
+#: ../templates/domain.php:128 ../help/help.inc:272
 msgid "Next RID"
 msgstr "Nächste RID"
 
@@ -1419,19 +1417,19 @@ msgstr "Nächste RID"
 msgid "Next RID is not a number!"
 msgstr "Nächste RID ist keine Zahl!"
 
-#: ../help/help.inc:277
+#: ../help/help.inc:273
 msgid "Next RID to use when creating accounts."
 msgstr "Nächste RID für neue Accounts."
 
-#: ../help/help.inc:281
+#: ../help/help.inc:277
 msgid "Next RID to use when creating groups."
 msgstr "Nächste RID für neue Gruppen."
 
-#: ../help/help.inc:279
+#: ../help/help.inc:275
 msgid "Next RID to use when creating user accounts."
 msgstr "Nächste RID für neue Benutzer."
 
-#: ../templates/domain.php:136 ../help/help.inc:278
+#: ../templates/domain.php:136 ../help/help.inc:274
 msgid "Next User RID"
 msgstr "Nächste Benutzer-RID"
 
@@ -1459,7 +1457,7 @@ msgstr "Keine Samba Domänen gefunden!"
 msgid "No Samba Hosts found!"
 msgstr "Keine Samba Hosts gefunden!"
 
-#: ../templates/lists/listusers.php:151 ../templates/lists/listusers.php:160
+#: ../templates/lists/listusers.php:173 ../templates/lists/listusers.php:182
 msgid "No Users found!"
 msgstr "Keine Benutzer gefunden!"
 
@@ -1471,7 +1469,7 @@ msgstr "Keine Änderungen vorgenommen."
 msgid "No domains found, please create one."
 msgstr ""
 
-#: ../lib/account.inc:646
+#: ../lib/account.inc:649
 msgid "No free ID-Number!"
 msgstr "Keine ID-Nummer mehr frei!"
 
@@ -1479,7 +1477,7 @@ msgstr "Keine ID-Nummer mehr frei!"
 msgid "No password was entered!"
 msgstr "Passwort leer!"
 
-#: ../lib/account.inc:189
+#: ../lib/account.inc:192
 msgid "No primary group defined!"
 msgstr "Keine primäre Gruppe angegeben!"
 
@@ -1532,43 +1530,43 @@ msgstr "OU ist ungültig!"
 msgid "OU is not empty or invalid!"
 msgstr "OU ist nicht leer oder ungültig!"
 
-#: ../templates/main_header.php:58 ../help/help.inc:266 ../help/help.inc:268
+#: ../templates/main_header.php:58 ../help/help.inc:262 ../help/help.inc:264
 msgid "OU-Editor"
 msgstr "OU-Editor"
 
-#: ../templates/account.php:1118
+#: ../templates/account.php:1195
 msgid "ObjectClass account not found."
 msgstr ""
 
-#: ../templates/account.php:1055
+#: ../templates/account.php:1132
 msgid "ObjectClass inetOrgPerson not found."
 msgstr ""
 
-#: ../templates/account.php:1045 ../templates/account.php:1108
+#: ../templates/account.php:1122 ../templates/account.php:1185
 msgid "ObjectClass posixAccount not found."
 msgstr ""
 
-#: ../templates/account.php:1093
+#: ../templates/account.php:1170
 msgid "ObjectClass posixGroup not found."
 msgstr ""
 
-#: ../templates/account.php:1067 ../templates/account.php:1130
+#: ../templates/account.php:1144 ../templates/account.php:1207
 msgid "ObjectClass sambaAccount not found."
 msgstr ""
 
-#: ../templates/account.php:1088
+#: ../templates/account.php:1165
 msgid "ObjectClass sambaGroupMapping not found."
 msgstr ""
 
-#: ../templates/account.php:1061 ../templates/account.php:1124
+#: ../templates/account.php:1138 ../templates/account.php:1201
 msgid "ObjectClass sambaSamAccount not found."
 msgstr ""
 
-#: ../templates/account.php:1113
+#: ../templates/account.php:1190
 msgid "ObjectClass shadowAccount not found."
 msgstr ""
 
-#: ../templates/account.php:1050
+#: ../templates/account.php:1127
 msgid "ObjectClass shadowAccount."
 msgstr ""
 
@@ -1576,44 +1574,44 @@ msgstr ""
 msgid "Ok"
 msgstr "Ok"
 
-#: ../templates/account.php:622 ../templates/account.php:891
-#: ../lib/account.inc:314 ../lib/account.inc:358
+#: ../templates/account.php:642 ../templates/account.php:968
+#: ../lib/account.inc:317 ../lib/account.inc:361
 msgid "Password"
 msgstr "Passwort"
 
-#: ../lib/account.inc:319
+#: ../lib/account.inc:322
 msgid "Password Expire"
 msgstr ""
 
-#: ../lib/account.inc:319
+#: ../lib/account.inc:322
 msgid "Password Expire must be are natural number or -1."
 msgstr ""
 
-#: ../lib/account.inc:316 ../lib/account.inc:317
+#: ../lib/account.inc:319 ../lib/account.inc:320
 msgid "Password Maxage"
 msgstr "Maximales Passwortalter"
 
-#: ../lib/account.inc:317
+#: ../lib/account.inc:320
 msgid "Password Maxage must be are natural number."
 msgstr ""
 
-#: ../lib/account.inc:316
+#: ../lib/account.inc:319
 msgid "Password Maxage must bigger as Password Minage."
 msgstr ""
 
-#: ../lib/account.inc:315
+#: ../lib/account.inc:318
 msgid "Password Minage"
 msgstr "Minimales Passwortalter"
 
-#: ../lib/account.inc:315
+#: ../lib/account.inc:318
 msgid "Password Minage must be are natural number."
 msgstr ""
 
-#: ../lib/account.inc:320
+#: ../lib/account.inc:323
 msgid "Password Warn"
 msgstr ""
 
-#: ../lib/account.inc:320
+#: ../lib/account.inc:323
 msgid "Password Warn must be are natural number."
 msgstr ""
 
@@ -1621,18 +1619,18 @@ msgstr ""
 msgid "Password changed!"
 msgstr "Passwort geändert!"
 
-#: ../lib/account.inc:314 ../lib/account.inc:358
+#: ../lib/account.inc:317 ../lib/account.inc:361
 msgid ""
 "Password contents invalid characters. Valid characters are: a-z, A-Z, 0-9 "
 "and #*,.;:_-+!$%&/|?{[()]}= !"
 msgstr ""
 
-#: ../templates/account.php:734 ../templates/profedit/profileuser.php:251
+#: ../templates/account.php:754 ../templates/profedit/profileuser.php:251
 #: ../help/help.inc:181
 msgid "Password does not expire"
 msgstr "Passwort läuft nicht ab"
 
-#: ../templates/account.php:639 ../help/help.inc:163
+#: ../templates/account.php:659 ../help/help.inc:163
 msgid "Password expire"
 msgstr ""
 
@@ -1652,7 +1650,7 @@ msgstr "Maximales Passwortalter ist keine Zahl!"
 msgid "Password minimum age is not numeric!"
 msgstr "Minimales Passwortalter ist keine Zahl!"
 
-#: ../templates/account.php:634 ../help/help.inc:161
+#: ../templates/account.php:654 ../help/help.inc:161
 msgid "Password warn"
 msgstr "Passwortwarnung"
 
@@ -1678,12 +1676,13 @@ msgstr ""
 msgid "Path to external script"
 msgstr "Pfad zum externen Script"
 
-#: ../templates/account.php:961
+#: ../templates/account.php:1038
 msgid "Personal properties"
 msgstr "Persönliche Einstellungen"
 
-#: ../lib/account.inc:663
-msgid "Please enter a value between"
+#: ../lib/account.inc:666
+#, php-format
+msgid "Please enter a value between %s and %s!"
 msgstr ""
 
 #: ../templates/config/conflogin.php:83
@@ -1714,19 +1713,19 @@ msgstr ""
 msgid "Please wait until all users are created if no error is shown."
 msgstr ""
 
-#: ../help/help.inc:254
+#: ../help/help.inc:250
 msgid "Position in ldap-tree where the group should be created."
 msgstr ""
 
-#: ../help/help.inc:256
+#: ../help/help.inc:252
 msgid "Position in ldap-tree where the host should be created."
 msgstr ""
 
-#: ../help/help.inc:252
+#: ../help/help.inc:248
 msgid "Position in ldap-tree where the user should be created."
 msgstr ""
 
-#: ../templates/account.php:987 ../templates/massdetail.php:145
+#: ../templates/account.php:1064 ../templates/massdetail.php:145
 #: ../help/help.inc:233
 msgid "Postal address"
 msgstr "Anschrift"
@@ -1735,7 +1734,7 @@ msgstr "Anschrift"
 msgid "Postal address, city"
 msgstr ""
 
-#: ../templates/account.php:981 ../templates/massdetail.php:139
+#: ../templates/account.php:1058 ../templates/massdetail.php:139
 #: ../help/help.inc:231 ../help/help.inc:232
 msgid "Postal code"
 msgstr "Postleitzahl"
@@ -1744,11 +1743,11 @@ msgstr "Postleitzahl"
 msgid "Predefined values"
 msgstr ""
 
-#: ../templates/account.php:451 ../templates/account.php:569
+#: ../templates/account.php:471 ../templates/account.php:589
 #: ../templates/masscreate.php:196 ../templates/massdetail.php:115
 #: ../templates/profedit/profilehost.php:67
 #: ../templates/profedit/profileuser.php:85 ../help/help.inc:141
-#: ../help/help.inc:157 ../lib/account.inc:189
+#: ../help/help.inc:157 ../lib/account.inc:192
 msgid "Primary group"
 msgstr "Primäre Gruppe"
 
@@ -1791,26 +1790,26 @@ msgstr "Profilpasswort"
 msgid "Profile passwords are different or empty!"
 msgstr "Die Passwörter stimmen nicht überein!"
 
-#: ../templates/account.php:796 ../templates/profedit/profileuser.php:302
-#: ../help/help.inc:193 ../lib/account.inc:348 ../lib/account.inc:350
-#: ../lib/account.inc:364
+#: ../templates/account.php:816 ../templates/profedit/profileuser.php:302
+#: ../help/help.inc:193 ../lib/account.inc:351 ../lib/account.inc:353
+#: ../lib/account.inc:367
 msgid "Profile path"
 msgstr "Profilpfad"
+
+#: ../lib/account.inc:367
+msgid "Profile path is invalid"
+msgstr ""
 
 #: ../templates/profedit/profilecreate.php:198
 msgid "Profile path is invalid!"
 msgstr "Profilpfad ist ungültig!"
-
-#: ../lib/account.inc:364
-msgid "Profile path is invalid."
-msgstr "Profilpfad ist ungültig."
 
 #: ../templates/profedit/profilecreate.php:238
 #: ../templates/profedit/profilecreate.php:265
 msgid "Profile was saved."
 msgstr "Profil wurde gespeichert."
 
-#: ../templates/account.php:930
+#: ../templates/account.php:1007
 msgid "Quota properties"
 msgstr "Quota-Einstellungen"
 
@@ -1835,9 +1834,9 @@ msgstr "Neues Hauptpasswort erneut eingeben:"
 msgid "Reenter profile password:"
 msgstr "Profilpasswort erneut eingeben:"
 
-#: ../templates/masscreate.php:274 ../templates/lists/listdomains.php:213
-#: ../templates/lists/listgroups.php:269 ../templates/lists/listhosts.php:261
-#: ../templates/lists/listusers.php:280
+#: ../templates/masscreate.php:274 ../templates/lists/listdomains.php:218
+#: ../templates/lists/listgroups.php:274 ../templates/lists/listhosts.php:266
+#: ../templates/lists/listusers.php:330
 msgid "Refresh"
 msgstr "Aktualisieren"
 
@@ -1849,7 +1848,7 @@ msgstr "Profil umbenennen zu:"
 msgid "Renamed profile."
 msgstr "Profil umbenannt."
 
-#: ../lib/account.inc:178
+#: ../lib/account.inc:181
 msgid "Replaced $user or $group in homedir."
 msgstr "$user und $group wurden im Heimatverzeichnis ersetzt."
 
@@ -1859,7 +1858,7 @@ msgstr "$user und $group wurden im Heimatverzeichnis ersetzt."
 msgid "Reset"
 msgstr "Zurücksetzen"
 
-#: ../templates/account.php:895
+#: ../templates/account.php:972
 msgid "Reset password"
 msgstr "Passwort zurücksetzen"
 
@@ -1871,7 +1870,7 @@ msgstr "Samba 3 Domänen-SID ist ungültig!"
 msgid "Samba 3.x schema"
 msgstr "Samba 3.x Schema"
 
-#: ../templates/lists/listdomains.php:226
+#: ../templates/lists/listdomains.php:231
 msgid "Samba Domain(s) found"
 msgstr "Samba-Domäne(n) gefunden"
 
@@ -1879,7 +1878,7 @@ msgstr "Samba-Domäne(n) gefunden"
 msgid "Samba Host Profiles"
 msgstr "Samba-Hostprofile"
 
-#: ../templates/lists/listhosts.php:274
+#: ../templates/lists/listhosts.php:279
 msgid "Samba Host(s) found"
 msgstr "Samba Host(s) gefunden"
 
@@ -1895,11 +1894,11 @@ msgstr "Samba Account"
 msgid "Samba home directory is invalid!"
 msgstr "Samba-Heimatverzeichnis ist ungültig!"
 
-#: ../templates/account.php:719
+#: ../templates/account.php:739
 msgid "Samba password"
 msgstr "Samba-Passwort"
 
-#: ../templates/account.php:696
+#: ../templates/account.php:716
 msgid "Samba properties"
 msgstr "Samba-Einstellungen"
 
@@ -1915,7 +1914,7 @@ msgstr "Samba-Version"
 msgid "Samba version is not defined!"
 msgstr "Samba-Version ist nicht definiert!"
 
-#: ../templates/account.php:806 ../help/help.inc:195 ../lib/account.inc:366
+#: ../templates/account.php:826 ../help/help.inc:195 ../lib/account.inc:369
 msgid "Samba workstations"
 msgstr "Samba PCs"
 
@@ -1923,7 +1922,7 @@ msgstr "Samba PCs"
 msgid "Samba workstations are invalid!"
 msgstr "Samba-Arbeitsstationen sind ungültig!"
 
-#: ../lib/account.inc:366
+#: ../lib/account.inc:369
 msgid "Samba workstations is invalid."
 msgstr ""
 
@@ -1932,28 +1931,24 @@ msgstr ""
 msgid "Save"
 msgstr "Speichern"
 
-#: ../templates/account.php:1141
-msgid "Save Profile"
-msgstr ""
-
-#: ../help/help.inc:243 ../help/help.inc:244
+#: ../templates/account.php:1218 ../help/help.inc:243 ../help/help.inc:244
 msgid "Save profile"
 msgstr "Profil speichern"
 
-#: ../templates/account.php:801 ../templates/profedit/profileuser.php:309
-#: ../help/help.inc:88 ../help/help.inc:191 ../lib/account.inc:344
-#: ../lib/account.inc:346
+#: ../templates/account.php:821 ../templates/profedit/profileuser.php:309
+#: ../help/help.inc:88 ../help/help.inc:191 ../lib/account.inc:347
+#: ../lib/account.inc:349 ../lib/account.inc:364
 msgid "Script path"
 msgstr "Scriptpfad"
+
+#: ../lib/account.inc:364
+msgid "Script path is invalid"
+msgstr ""
 
 #: ../templates/config/confsave.php:179
 #: ../templates/profedit/profilecreate.php:208
 msgid "Script path is invalid!"
 msgstr "Scriptpfad ist ungültig!"
-
-#: ../lib/account.inc:361
-msgid "Script path is invalid."
-msgstr ""
 
 #: ../help/help.inc:94
 msgid "Script server"
@@ -1966,10 +1961,6 @@ msgstr "Scriptserver ist ungültig!"
 #: ../templates/config/confmain.php:281
 msgid "Script settings"
 msgstr "Scripteinstellungen"
-
-#: ../lib/account.inc:361
-msgid "Scriptpath"
-msgstr ""
 
 #: ../templates/config/confmain.php:299
 msgid "Security settings"
@@ -2037,7 +2028,7 @@ msgstr "Fehler zeigen."
 msgid "Show Warnings."
 msgstr "Warnungen zeigen."
 
-#: ../templates/account.php:932 ../help/help.inc:205
+#: ../templates/account.php:1009 ../help/help.inc:205
 msgid "Soft block limit"
 msgstr "weiches Block-Limit"
 
@@ -2049,7 +2040,7 @@ msgstr "weiches Block-Limit"
 msgid "Soft inode (files) limit."
 msgstr ""
 
-#: ../templates/account.php:933 ../help/help.inc:216
+#: ../templates/account.php:1010 ../help/help.inc:216
 msgid "Soft inode limit"
 msgstr "weiches Inode-Limit"
 
@@ -2061,7 +2052,7 @@ msgstr "Leider wurde keine Hilfenummer angegeben."
 msgid "Sorry this help number ({bold}"
 msgstr ""
 
-#: ../templates/account.php:975 ../templates/massdetail.php:133
+#: ../templates/account.php:1052 ../templates/massdetail.php:133
 #: ../help/help.inc:229 ../help/help.inc:230
 msgid "Street"
 msgstr "Straße"
@@ -2075,26 +2066,26 @@ msgstr "Straße"
 msgid "Submit"
 msgstr "Abschicken"
 
-#: ../templates/account.php:1153
+#: ../templates/account.php:1230
 msgid "Success"
 msgstr ""
 
-#: ../templates/account.php:493 ../templates/account.php:534
-#: ../templates/account.php:583 ../templates/masscreate.php:112
-#: ../templates/lists/listdomains.php:187
-#: ../templates/lists/listgroups.php:242 ../templates/lists/listhosts.php:234
-#: ../templates/lists/listusers.php:252 ../templates/domain.php:95
-#: ../help/help.inc:251 ../help/help.inc:253 ../help/help.inc:255
-#: ../help/help.inc:272
+#: ../templates/account.php:513 ../templates/account.php:554
+#: ../templates/account.php:603 ../templates/masscreate.php:112
+#: ../templates/lists/listdomains.php:185
+#: ../templates/lists/listgroups.php:240 ../templates/lists/listhosts.php:232
+#: ../templates/lists/listusers.php:280 ../templates/domain.php:95
+#: ../help/help.inc:247 ../help/help.inc:249 ../help/help.inc:251
+#: ../help/help.inc:268
 msgid "Suffix"
 msgstr "Suffix"
 
-#: ../templates/account.php:439 ../templates/masscreate.php:196
-#: ../templates/massdetail.php:97 ../help/help.inc:171 ../lib/account.inc:184
+#: ../templates/account.php:459 ../templates/masscreate.php:196
+#: ../templates/massdetail.php:97 ../help/help.inc:171 ../lib/account.inc:187
 msgid "Surname"
 msgstr "Nachname"
 
-#: ../lib/account.inc:184
+#: ../lib/account.inc:187
 msgid "Surname contents invalid characters"
 msgstr "Nachname enthält ungültige Zeichen"
 
@@ -2108,7 +2099,7 @@ msgstr ""
 msgid "Surname*,Givenname*,Username*,PrimaryGroup,Title,Mail,telephonenumber,"
 msgstr ""
 
-#: ../templates/account.php:993 ../templates/massdetail.php:151
+#: ../templates/account.php:1070 ../templates/massdetail.php:151
 #: ../help/help.inc:235 ../help/help.inc:236
 msgid "Telephone number"
 msgstr "Telefonnummer"
@@ -2121,11 +2112,11 @@ msgstr ""
 msgid "The Primary group the host should be member of."
 msgstr ""
 
-#: ../help/help.inc:275
+#: ../help/help.inc:271
 msgid "The SID of your Samba server. Get it with \"net getlocalsid\"."
 msgstr "Die Domänen-SID des Samba-Servers. Auszulesen mit \"net getlocalsid\"."
 
-#: ../help/help.inc:273
+#: ../help/help.inc:269
 msgid "The domain entry will be saved under this suffix."
 msgstr "Der Domäneneintrag wird unter diesem Suffix gespeichert."
 
@@ -2138,7 +2129,7 @@ msgid ""
 "The following suffix(es) are missing in LDAP. LAM can create them for you."
 msgstr "Folgende Suffixe fehlen in LDAP. LAM kann sie für Sie erstellen."
 
-#: ../help/help.inc:271
+#: ../help/help.inc:267
 msgid "The name of your Windows domain or workgroup."
 msgstr "Der Name ihrer Windows-Domäne oder Arbeitsgruppe."
 
@@ -2226,16 +2217,16 @@ msgstr ""
 msgid "This user was not found!"
 msgstr "Dieser Benutzer wurde nicht gefunden!"
 
-#: ../help/help.inc:267
+#: ../help/help.inc:263
 msgid "This will create a new organizational unit under the selected one."
 msgstr "Dies erzeugt eine neue Organizational Unit unterhalb der markierten."
 
-#: ../help/help.inc:269
+#: ../help/help.inc:265
 msgid ""
 "This will delete the selected organizational unit. The OU has to be empty."
 msgstr "Dies löscht die markierte Organizational Unit. Die OU muss leer sein."
 
-#: ../templates/account.php:963 ../templates/massdetail.php:121
+#: ../templates/account.php:1040 ../templates/massdetail.php:121
 #: ../help/help.inc:225
 msgid "Title"
 msgstr "Titel"
@@ -2250,13 +2241,17 @@ msgid ""
 "shells"
 msgstr ""
 
-#: ../templates/account.php:433 ../templates/account.php:563
+#: ../templates/lists/listusers.php:294
+msgid "Translate GID number to group name"
+msgstr ""
+
+#: ../templates/account.php:453 ../templates/account.php:583
 #: ../help/help.inc:58 ../help/help.inc:131 ../help/help.inc:155
 #: ../lib/ldap.inc:56
 msgid "UID number"
 msgstr "UID Nummer"
 
-#: ../templates/account.php:1032 ../templates/account.php:1101
+#: ../templates/account.php:1109 ../templates/account.php:1178
 msgid ""
 "UID-number has changed. You have to run the following command as root in "
 "order to change existing file-permissions:"
@@ -2321,12 +2316,12 @@ msgstr "Rückgängig"
 msgid "Unix account"
 msgstr "Unix-Account"
 
-#: ../templates/account.php:617
+#: ../templates/account.php:637
 msgid "Unix properties"
 msgstr "Unix-Einstellungen"
 
-#: ../templates/account.php:679 ../templates/profedit/profileuser.php:200
-#: ../help/help.inc:259 ../lib/account.inc:322
+#: ../templates/account.php:699 ../templates/profedit/profileuser.php:200
+#: ../help/help.inc:255 ../lib/account.inc:325
 msgid "Unix workstations"
 msgstr "Arbeitsstationen"
 
@@ -2334,7 +2329,7 @@ msgstr "Arbeitsstationen"
 msgid "Unix workstations are invalid!"
 msgstr "Unix-Arbeitsstationen sind ungültig!"
 
-#: ../lib/account.inc:322
+#: ../lib/account.inc:325
 msgid "Unix workstations is invalid."
 msgstr "Unix-Arbeitsstationen sind ungültig."
 
@@ -2344,19 +2339,16 @@ msgid ""
 "use it!"
 msgstr ""
 
+#: ../templates/account.php:648 ../templates/account.php:748
 #: ../help/help.inc:175
 msgid "Use no password"
 msgstr "Kein Passwort setzen"
 
-#: ../templates/account.php:628 ../templates/account.php:728
-msgid "Use no password."
-msgstr ""
-
-#: ../templates/account.php:722 ../help/help.inc:179
+#: ../templates/account.php:742 ../help/help.inc:179
 msgid "Use unix password"
 msgstr "Unix-Passwort verwenden"
 
-#: ../templates/account.php:931 ../help/help.inc:203
+#: ../templates/account.php:1008 ../help/help.inc:203
 msgid "Used blocks"
 msgstr "Benutzte Blöcke"
 
@@ -2364,19 +2356,19 @@ msgstr "Benutzte Blöcke"
 msgid "Used blocks. 1000 blocks are usually 1MB"
 msgstr ""
 
-#: ../help/help.inc:283
+#: ../help/help.inc:279
 msgid "Used for calculating RIDs from UID/GID. Do not change if unsure."
 msgstr ""
 
-#: ../templates/account.php:933 ../help/help.inc:214
+#: ../templates/account.php:1010 ../help/help.inc:214
 msgid "Used inodes"
 msgstr "benutzte Inodes"
 
 #: ../help/help.inc:215
-msgid "Used inodes (files)."
+msgid "Used inodes (files)"
 msgstr ""
 
-#: ../templates/account.php:1158
+#: ../templates/account.php:1235
 msgid "User "
 msgstr "Benutzer "
 
@@ -2388,16 +2380,12 @@ msgstr "Benutzer ID"
 msgid "User Profiles"
 msgstr "Benutzerprofile"
 
-#: ../help/help.inc:183
-msgid "User can change Password"
-msgstr ""
-
-#: ../templates/account.php:740 ../help/help.inc:114
+#: ../templates/account.php:760 ../help/help.inc:114 ../help/help.inc:183
 msgid "User can change password"
 msgstr "Benutzer kann Passwort ändern"
 
 #: ../help/help.inc:138
-msgid "User descriptopn. If left empty sur- and givename will be used."
+msgid "User description. If left empty sur- and give name will be used."
 msgstr ""
 
 #: ../templates/initsuff.php:81
@@ -2408,11 +2396,7 @@ msgstr "Benutzerliste"
 msgid "User list attributes are invalid!"
 msgstr "Attribute der Benutzerliste sind ungültig!"
 
-#: ../help/help.inc:185
-msgid "User must change Password"
-msgstr ""
-
-#: ../templates/account.php:759 ../help/help.inc:118
+#: ../templates/account.php:779 ../help/help.inc:118 ../help/help.inc:185
 msgid "User must change password"
 msgstr "Benutzer muss Passwort ändern"
 
@@ -2420,7 +2404,7 @@ msgstr "Benutzer muss Passwort ändern"
 msgid "User name"
 msgstr "Benutzername"
 
-#: ../templates/lists/listusers.php:296
+#: ../templates/lists/listusers.php:343
 msgid "User(s) found"
 msgstr "Benutzer gefunden"
 
@@ -2436,17 +2420,17 @@ msgstr "Benutzersuffix"
 msgid "UserSuffix is invalid!"
 msgstr "UserSuffix ist ungültig!"
 
-#: ../templates/account.php:427 ../templates/masscreate.php:247
-#: ../templates/massdetail.php:109 ../help/help.inc:127 ../lib/account.inc:192
-#: ../lib/account.inc:215 ../lib/ldap.inc:58
+#: ../templates/account.php:447 ../templates/masscreate.php:247
+#: ../templates/massdetail.php:109 ../help/help.inc:127 ../lib/account.inc:195
+#: ../lib/account.inc:218 ../lib/ldap.inc:58
 msgid "Username"
 msgstr "Benutzername"
 
-#: ../templates/masscreate.php:247 ../lib/account.inc:215
+#: ../templates/masscreate.php:247 ../lib/account.inc:218
 msgid "Username allready in use. Selected next free username."
 msgstr ""
 
-#: ../lib/account.inc:192
+#: ../lib/account.inc:195
 msgid ""
 "Username contents invalid characters. Valid characters are: a-z, 0-9 and .-"
 "_ !"
@@ -2479,8 +2463,8 @@ msgstr "Benutzer"
 msgid "Valid users"
 msgstr "Berechtigte Benutzer"
 
-#: ../templates/account.php:504 ../templates/account.php:545
-#: ../templates/account.php:594 ../templates/account.php:684
+#: ../templates/account.php:524 ../templates/account.php:565
+#: ../templates/account.php:614 ../templates/account.php:704
 msgid "Values with * are required"
 msgstr ""
 
@@ -2502,19 +2486,20 @@ msgid ""
 "your certificate!"
 msgstr ""
 
-#: ../help/help.inc:249
+#: ../help/help.inc:245
 msgid "Windows domain"
 msgstr "Windows-Domäne"
 
-#: ../help/help.inc:250
+#: ../help/help.inc:246
 msgid "Windows domain of host."
 msgstr "Windows-Domäne des Hosts."
 
-#: ../templates/account.php:830 ../help/help.inc:257
+#: ../templates/account.php:831 ../templates/account.php:906
+#: ../help/help.inc:253
 msgid "Windows groupname"
 msgstr "Windows-Gruppenname"
 
-#: ../help/help.inc:262
+#: ../help/help.inc:258
 msgid "Windows-Domain of group."
 msgstr "Windows-Domäne der Gruppe."
 
@@ -2583,17 +2568,13 @@ msgstr ""
 msgid "Your Language:"
 msgstr "Sprache:"
 
-#: ../lib/account.inc:571 ../lib/account.inc:572
-msgid "already exists!"
-msgstr ""
-
-#: ../lib/account.inc:663
+#: ../help/help.inc:132 ../help/help.inc:148 ../help/help.inc:156
 msgid "and"
 msgstr ""
 
-#: ../templates/account.php:689 ../templates/account.php:923
-#: ../templates/account.php:953 ../templates/account.php:1017
-#: ../templates/account.php:1137
+#: ../templates/account.php:709 ../templates/account.php:1000
+#: ../templates/account.php:1030 ../templates/account.php:1094
+#: ../templates/account.php:1214
 msgid "back"
 msgstr "zurück"
 
@@ -2613,7 +2594,7 @@ msgstr ""
 msgid "deleted"
 msgstr ""
 
-#: ../templates/account.php:1011 ../templates/massdetail.php:169
+#: ../templates/account.php:1088 ../templates/massdetail.php:169
 #: ../help/help.inc:241 ../help/help.inc:242
 msgid "eMail address"
 msgstr "E-Mail Adresse"
@@ -2622,17 +2603,17 @@ msgstr "E-Mail Adresse"
 msgid "employeeType. If PrimaryGroup is not given it'll used from profile."
 msgstr ""
 
-#: ../templates/account.php:1161 ../templates/account.php:1175
-#: ../templates/account.php:1188
+#: ../templates/account.php:1238 ../templates/account.php:1252
+#: ../templates/account.php:1265
 msgid "has been created"
 msgstr ""
 
-#: ../templates/account.php:1160 ../templates/account.php:1174
-#: ../templates/account.php:1187
+#: ../templates/account.php:1237 ../templates/account.php:1251
+#: ../templates/account.php:1264
 msgid "has been modified"
 msgstr ""
 
-#: ../lib/account.inc:503 ../lib/account.inc:505
+#: ../lib/account.inc:506 ../lib/account.inc:508
 msgid "hours"
 msgstr "Stunden"
 
@@ -2655,9 +2636,9 @@ msgstr ""
 msgid "mobileTelephoneNumber,facsimileNumber,street,postalCode,postalAddress,"
 msgstr ""
 
-#: ../templates/account.php:603 ../templates/account.php:691
-#: ../templates/account.php:925 ../templates/account.php:955
-#: ../templates/account.php:1019
+#: ../templates/account.php:623 ../templates/account.php:711
+#: ../templates/account.php:1002 ../templates/account.php:1032
+#: ../templates/account.php:1096
 msgid "next"
 msgstr "vor"
 
@@ -2703,10 +2684,6 @@ msgstr "saveHostProfile: account ist vom falschen Typ!"
 #: ../lib/profiles.inc:279
 msgid "saveUserProfile: account has wrong type!"
 msgstr "saveUserProfile: account ist vom falschen Typ!"
-
-#: ../help/help.inc:197 ../lib/account.inc:352 ../lib/account.inc:354
-msgid "smb home"
-msgstr ""
 
 #: ../templates/profedit/profileuser.php:136
 #: ../templates/profedit/profileuser.php:137
