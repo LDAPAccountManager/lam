@@ -182,17 +182,19 @@ class posixGroup extends baseModule {
 		parent::init($base);
 		// Add Array with all attributes and type
 		$this->attributes = $_SESSION[$this->base]->get_module_attributes('posixGroup');
-		$_SESSION[$this->base]->add_attributes ('posixGroup');
+		$this->orig = $this->attributes;
 		// Make references to attributes which already esists in ldap
 		$newattributes = array_keys($this->attributes);
 		$module = array_keys($_SESSION[$this->base]->module);
 		// fixme *** do we have to unset module posixAccuont itself
 		for ($i=0; $i<count($module); $i++) {
-			foreach ($newattributes as $attribute)
-				if (isset($_SESSION[$this->base]->module[$module[$i]]->attributes[$attribute]))
-					$this->attributes[$attribute] =& $_SESSION[$this->base]->module[$module[$i]]->attributes[$attribute];
+			if ($module[$i]!='posixGroup')
+				foreach ($newattributes as $attribute)
+					if (isset($_SESSION[$this->base]->module[$module[$i]]->attributes[$attribute])) {
+						$this->attributes[$attribute] =& $_SESSION[$this->base]->module[$module[$i]]->attributes[$attribute];
+						$this->orig[$attribute] =& $_SESSION[$this->base]->module[$module[$i]]->orig[$attribute];
+						}
 			}
-		$this->orig = $this->attributes ;
 		$this->changegids=false;
 		}
 
@@ -418,7 +420,8 @@ class posixGroup extends baseModule {
 			$errors['gidNumber'][] = array('INFO', _('GID number'), _('GID number has changed. Please select checkbox to change GID number of users and hosts.'));
 
 		// Load attributes
-		$this->attributes['cn'][0] = $post['cn'];
+		//$this->attributes['cn'][0] = $post['cn'];
+		$_SESSION['account']->module['posixGroup']->attributes['cn'][0] = $post['cn'];
 		$this->attributes['gidNumber'][0] = $post['gidNumber'];
 		$this->attributes['description'][0] = $post['description'];
 		if ($post['userPassword_no']) $this->userPassword_no=true;

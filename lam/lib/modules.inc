@@ -896,7 +896,7 @@ class accountContainer {
 			$string = trim($string);
 			// Ad must
 			foreach (explode(" $ ", $string) as $attribute) {
-				$return[$attribute] = '';
+				$return[$attribute] = array('');
 				}
 			}
 		// create array with may-attributes
@@ -908,7 +908,7 @@ class accountContainer {
 			$string = trim($string);
 			// Ad may
 			foreach (explode(" $ ", $string) as $attribute) {
-				$return[$attribute] = '';
+				$return[$attribute] = array('');
 				}
 			}
 		// Get attributes of subclasses
@@ -930,7 +930,7 @@ class accountContainer {
 				$string = trim($string);
 				// Ad must
 				foreach (explode(" $ ", $string) as $attribute) {
-					$return[$attribute] = '';
+					$return[$attribute] = array('');
 					}
 				}
 			// create array with may-attributes
@@ -942,7 +942,7 @@ class accountContainer {
 				$string = trim($string);
 				// Ad may
 				foreach (explode(" $ ", $string) as $attribute) {
-					$return[$attribute] = '';
+					$return[$attribute] = array('');
 					}
 				}
 			}
