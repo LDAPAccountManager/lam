@@ -465,7 +465,7 @@ function loaduser($dn) { // Will load all needed values from an existing account
 	if ($attr['shadowExpire'][0]) {
 		$date = getdate ($attr['shadowExpire'][0]*86400);
 		$_SESSION['account']->unix_pwdexpire_day = $date['mday'];
-		$_SESSION['account']->unix_pwdexpire_mon = $date['month']; // *******************Fixme How to get a numbermonth?
+		$_SESSION['account']->unix_pwdexpire_mon = $date['mon'];
 		$_SESSION['account']->unix_pwdexpire_yea = $date['year'];
 		}
 	if ($attr['pwdCanChange'][0]) $_SESSION['account']->smb_pwdcanchange = $attr['pwdCanChange'][0];
@@ -530,7 +530,7 @@ function loadhost($dn) { // Will load all needed values from an existing account
 	if ($attr['shadowExpire'][0]) {
 		$date = getdate ($attr['shadowExpire'][0]*86400);
 		$_SESSION['account']->unix_pwdexpire_day = $date['mday'];
-		$_SESSION['account']->unix_pwdexpire_mon = $date['month']; // *******************Fixme How to get a numbermonth?
+		$_SESSION['account']->unix_pwdexpire_mon = $date['mon'];
 		$_SESSION['account']->unix_pwdexpire_yea = $date['year'];
 		}
 	if ($attr['pwdCanChange'][0]) $_SESSION['account']->smb_pwdcanchange = $attr['pwdCanChange'][0];
