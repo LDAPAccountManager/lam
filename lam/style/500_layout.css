@@ -38,13 +38,13 @@ body {
 
 /// links
 a {
-color:darkblue;
-text-decoration:none;
+color:blue;
+text-decoration:underline;
 }
 
 a:visited {
-color:darkblue;
-text-decoration:none;
+color:blue;
+text-decoration:underline;
 }
 
 a:hover {
