@@ -5,15 +5,22 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: LAM 0.4.2\n"
+"Project-Id-Version: LAM 0.4.5\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de \n"
 "POT-Creation-Date: 2004-01-14 17:45+0200\n"
-"PO-Revision-Date: 2004-02-28 13:38+0900\n"
+"PO-Revision-Date: 2004-03-16 11:38+0900\n"
 "Last-Translator: Oota toshiya <ribbon@sourceforge.net>\n"
 "Language-Team: Japanese <ribbon@sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=EUC-JP\n"
 "Content-Transfer-Encoding: 8-bit\n"
+
+#: ../help/help.inc:147
+#, fuzzy, php-format
+msgid "$%s and $%s are replaced with username or primary groupname."
+msgstr ""
+"ホームディレクトリのUNCパス (\\\\サーバ\\共有)。$%s と $%s はユーザ名とグルー"
+"プ名に変換される。"
 
 #: ../lib/account.inc:722 ../lib/account.inc:727
 #, php-format
@@ -36,15 +43,15 @@ msgstr "(optional)"
 #: ../templates/profedit/profilemain.php:262
 #: ../templates/profedit/profileuser.php:430
 msgid "Abort"
-msgstr "概要"
+msgstr "中止"
 
-#: ../templates/account/useredit.php:1118 ../help/help.inc:196
+#: ../templates/account/useredit.php:1118 ../help/help.inc:197
 msgid "Account deactivated"
 msgstr "アカウントが無効化された"
 
-#: ../help/help.inc:179
+#: ../help/help.inc:180
 msgid "Account expire date. Format: DD-MM-YYYY"
-msgstr "Account-Ablaufdatum im Format: TT-MM-JJJJ"
+msgstr "アカウント有効期限。形式は: TT-MM-JJJJ"
 
 #: ../templates/profedit/profileuser.php:180
 msgid "Account expires on"
@@ -52,7 +59,7 @@ msgstr "アカウントの満了は"
 
 #: ../templates/account/useredit.php:1249
 #: ../templates/profedit/profileuser.php:218
-#: ../templates/profedit/profileuser.php:267 ../help/help.inc:206
+#: ../templates/profedit/profileuser.php:267 ../help/help.inc:207
 msgid "Account is deactivated"
 msgstr "アカウントが無効化された"
 
@@ -60,7 +67,7 @@ msgstr "アカウントが無効化された"
 msgid "Add profile"
 msgstr "プロファイル追加"
 
-#: ../templates/account/hostedit.php:132
+#: ../templates/account/hostedit.php:131
 msgid "Added $ to hostname."
 msgstr "ホスト名に$を追加した."
 
@@ -74,13 +81,13 @@ msgid "Additional groups"
 msgstr "追加のグループ"
 
 #: ../templates/domain.php:136 ../templates/confwiz/ldaptest.php:372
-#: ../help/help.inc:304
+#: ../help/help.inc:305
 msgid "Algorithmic RID Base"
 msgstr "アルゴリズム的なRIDベース"
 
 #: ../templates/domain.php:242 ../templates/confwiz/ldaptest.php:252
 msgid "Algorithmic RID base is not a number!"
-msgstr "アルゴリズム的なRIDベースは数字でない!"
+msgstr "アルゴリズム的なRIDベースが数字でない!"
 
 #: ../templates/masscreate.php:261
 msgid "All Users have been created"
@@ -109,7 +116,7 @@ msgstr "適用"
 #: ../templates/config/confmain.php:237 ../templates/confwiz/o_lists.php:131
 #: ../lib/config.inc:286
 msgid "Attributes in Group List"
-msgstr "グループリスト注の属性"
+msgstr "グループリスト中の属性"
 
 #: ../templates/config/confmain.php:242 ../templates/confwiz/o_lists.php:136
 #: ../lib/config.inc:287
@@ -204,7 +211,7 @@ msgstr "ドメインリストに戻る"
 msgid "Back to group list"
 msgstr "グループリストに戻る"
 
-#: ../templates/account/hostedit.php:473 ../templates/delete.php:209
+#: ../templates/account/hostedit.php:471 ../templates/delete.php:209
 #: ../templates/delete.php:234
 msgid "Back to host list"
 msgstr "ホストリストに戻る"
@@ -301,19 +308,19 @@ msgstr "ソフトquotaのブロックに不正な文字がある。自然数のみが有効"
 #: ../templates/config/confmain.php:163 ../templates/confwiz/server2.php:202
 #: ../help/help.inc:103 ../lib/config.inc:273
 msgid "Cache timeout"
-msgstr "タイムアウトの検出"
+msgstr "キャッシュ有効時間"
 
 #: ../templates/config/confsave.php:94 ../templates/confwiz/server2.php:74
 msgid "Cache timeout is invalid!"
-msgstr "タイムアウトの検出が不正!"
+msgstr "キャッシュ有効時間が不正!"
 
-#: ../help/help.inc:145 ../help/help.inc:171 ../help/help.inc:173
-#: ../help/help.inc:175 ../help/help.inc:177 ../help/help.inc:211
-#: ../help/help.inc:214 ../help/help.inc:217 ../help/help.inc:219
-#: ../help/help.inc:222 ../help/help.inc:270 ../help/help.inc:280
-#: ../help/help.inc:282 ../help/help.inc:284
+#: ../help/help.inc:145 ../help/help.inc:172 ../help/help.inc:174
+#: ../help/help.inc:176 ../help/help.inc:178 ../help/help.inc:212
+#: ../help/help.inc:215 ../help/help.inc:218 ../help/help.inc:220
+#: ../help/help.inc:223 ../help/help.inc:271 ../help/help.inc:281
+#: ../help/help.inc:283 ../help/help.inc:285
 msgid "Can be left empty."
-msgstr "Can be left empty."
+msgstr "省略可"
 
 #: ../templates/account/hostedit.php:99
 msgid "Can not create any hosts."
@@ -380,9 +387,9 @@ msgstr "値の検査."
 
 #: ../templates/masscreate.php:246 ../lib/config.inc:70
 msgid "Click here if you are not directed to the next page."
-msgstr "直接次のページに行かないならばここをクリック."
+msgstr "自動的に次ページにジャンプしない場合はここをクリック."
 
-#: ../help/help.inc:280
+#: ../help/help.inc:281
 msgid "Comma separated list of unix workstations the user is allowed to login."
 msgstr "PCのユーザのカンマ分離リストはログインの時に認められる??."
 
@@ -466,7 +473,7 @@ msgid "Could not rename file!"
 msgstr "ファイル名を変更できない!"
 
 #: ../templates/account/groupedit.php:823
-#: ../templates/account/hostedit.php:435
+#: ../templates/account/hostedit.php:433
 #: ../templates/account/useredit.php:1555 ../templates/initsuff.php:198
 #: ../templates/masscreate.php:328 ../templates/confwiz/ldaptest.php:208
 #: ../templates/confwiz/ldaptest.php:401 ../templates/confwiz/ldaptest.php:489
@@ -474,13 +481,13 @@ msgid "Create"
 msgstr "作成"
 
 #: ../templates/account/groupedit.php:837
-#: ../templates/account/hostedit.php:444
+#: ../templates/account/hostedit.php:442
 #: ../templates/account/useredit.php:1559
 msgid "Create Account"
 msgstr "アカウント作成"
 
 #: ../templates/account/groupedit.php:856
-#: ../templates/account/hostedit.php:472
+#: ../templates/account/hostedit.php:470
 #: ../templates/account/useredit.php:1577 ../templates/masscreate.php:264
 msgid "Create PDF file"
 msgstr "PDFファイル作成"
@@ -525,7 +532,7 @@ msgstr "新しいユーザプロファイルを作成"
 msgid "Create another group"
 msgstr "もう一つのグループを作成"
 
-#: ../templates/account/hostedit.php:470
+#: ../templates/account/hostedit.php:468
 msgid "Create another host"
 msgstr "もう一つのホストを作成"
 
@@ -534,7 +541,7 @@ msgid "Create another user"
 msgstr "もう一つのユーザを作成"
 
 #: ../templates/account/groupedit.php:451 ../templates/account/hostedit.php:92
-#: ../templates/account/hostedit.php:312 ../templates/account/useredit.php:101
+#: ../templates/account/hostedit.php:310 ../templates/account/useredit.php:101
 #: ../templates/account/useredit.php:741
 msgid "Create new Account"
 msgstr "新しいアカウントを作成"
@@ -569,24 +576,24 @@ msgstr "ユーザを作成。Please stand by ...."
 msgid "DN"
 msgstr "DN"
 
-#: ../help/help.inc:203
+#: ../help/help.inc:204
 msgid "Date after the user is able to change his password. Format: DD-MM-YYYY"
 msgstr ""
 "ユーザの後の日付はそのユーザのパスワードを変更できる。形式は: DD-MM-YYYY"
 
-#: ../help/help.inc:205
+#: ../help/help.inc:206
 msgid "Date after the user must change his password. Format: DD-MM-YYYY"
 msgstr ""
 "ユーザの後の日付はそのユーザのパスワードを変更しなければならない。形式は: DD-"
 "MM-YYYY"
 
-#: ../help/help.inc:171
+#: ../help/help.inc:172
 msgid ""
 "Days before password is to expire that user is warned of pending password "
 "expiration. If set value must be 0<."
 msgstr ""
-"パスワードの前の日付はパスワード満了の猶予をユーザが警告されているためのもの"
-"である????。もしもその値を設定するなら0より小さくなければならない。"
+"パスワードが期限切れになる前にユーザへパスワード期限切れの猶予期間である旨を"
+"警告する日数。もしもその値を設定するなら0より小さくなければならない。"
 
 #: ../templates/config/confmain.php:270 ../templates/confwiz/o_lang.php:108
 #: ../help/help.inc:84 ../lib/config.inc:289
@@ -648,7 +655,7 @@ msgstr "削除操作がキャンセルされた"
 
 #: ../templates/ou_edit.php:357 ../templates/ou_edit.php:390
 #: ../templates/ou_edit.php:423 ../templates/ou_edit.php:457
-#: ../help/help.inc:290
+#: ../help/help.inc:291
 msgid "Delete organizational unit"
 msgstr "organizational unitを削除"
 
@@ -702,7 +709,7 @@ msgstr "詳細"
 #: ../templates/account/groupedit.php:247
 #: ../templates/account/groupedit.php:661
 #: ../templates/account/useredit.php:453
-#: ../templates/account/useredit.php:1180 ../help/help.inc:182
+#: ../templates/account/useredit.php:1180 ../help/help.inc:183
 #: ../lib/pdf.inc:434
 msgid "Display name"
 msgstr "表示名"
@@ -735,12 +742,12 @@ msgid "Do you really want to delete user(s):"
 msgstr "本当にこのユーザを削除したいか?:"
 
 #: ../templates/account/groupedit.php:708
-#: ../templates/account/hostedit.php:399
+#: ../templates/account/hostedit.php:397
 #: ../templates/account/useredit.php:1365
 #: ../templates/profedit/profilegroup.php:72
 #: ../templates/profedit/profilehost.php:83
-#: ../templates/profedit/profileuser.php:345 ../help/help.inc:221
-#: ../help/help.inc:281 ../lib/pdf.inc:315 ../lib/pdf.inc:360
+#: ../templates/profedit/profileuser.php:345 ../help/help.inc:222
+#: ../help/help.inc:282 ../lib/pdf.inc:315 ../lib/pdf.inc:360
 #: ../lib/pdf.inc:446
 msgid "Domain"
 msgstr "ドメイン"
@@ -768,7 +775,7 @@ msgid "Domain Guests"
 msgstr "ドメインゲスト(Domain Guests)"
 
 #: ../templates/domain.php:94 ../templates/confwiz/ldaptest.php:333
-#: ../templates/lists/listdomains.php:86 ../help/help.inc:296
+#: ../templates/lists/listdomains.php:86 ../help/help.inc:297
 msgid "Domain SID"
 msgstr "ドメインのSID"
 
@@ -795,13 +802,13 @@ msgstr "ドメインは正しく削除された."
 msgid "Domain has been modified."
 msgstr "ドメインは変更された"
 
-#: ../templates/account/hostedit.php:213 ../templates/account/useredit.php:449
+#: ../templates/account/hostedit.php:212 ../templates/account/useredit.php:449
 #: ../templates/domain.php:78 ../templates/confwiz/ldaptest.php:320
-#: ../templates/lists/listdomains.php:85 ../help/help.inc:292
+#: ../templates/lists/listdomains.php:85 ../help/help.inc:293
 msgid "Domain name"
 msgstr "ドメイン名"
 
-#: ../templates/account/hostedit.php:213 ../templates/account/useredit.php:449
+#: ../templates/account/hostedit.php:212 ../templates/account/useredit.php:449
 msgid ""
 "Domain name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 "
 "and -."
@@ -828,7 +835,7 @@ msgstr "ドメインサフィックスが不正!"
 msgid "Domains"
 msgstr "ドメイン"
 
-#: ../help/help.inc:209
+#: ../help/help.inc:210
 msgid "Driveletter assigned on windows workstations as homedirectory."
 msgstr "WindowsPCに割り当てられたドライブ名文字はホームディレクトリである??."
 
@@ -865,11 +872,11 @@ msgstr "ワークステーションの編集??"
 #: ../templates/account/useredit.php:496
 #: ../templates/account/useredit.php:1472 ../templates/masscreate.php:377
 #: ../templates/masscreate.php:575 ../templates/massdetail.php:142
-#: ../templates/massdetail.php:226 ../help/help.inc:249
+#: ../templates/massdetail.php:226 ../help/help.inc:250
 msgid "Employee type"
 msgstr "職業"
 
-#: ../help/help.inc:250
+#: ../help/help.inc:251
 msgid "Employee type: worker, student, nurse, ..."
 msgstr "職業:会社員、学生、看護士、IT戦士 ..."
 
@@ -894,11 +901,11 @@ msgstr "例"
 msgid "Examples"
 msgstr "例"
 
-#: ../templates/masscreate.php:402 ../help/help.inc:186
+#: ../templates/masscreate.php:402 ../help/help.inc:187
 msgid "Expand suffix with primary groupname"
 msgstr "プライマリのグループ名にサフィックスを補完??"
 
-#: ../templates/account/useredit.php:1099 ../help/help.inc:178
+#: ../templates/account/useredit.php:1099 ../help/help.inc:179
 msgid "Expire date"
 msgstr "満了日"
 
@@ -921,15 +928,15 @@ msgstr "ドメイン変更に失敗!"
 #: ../templates/account/useredit.php:491
 #: ../templates/account/useredit.php:1508 ../templates/masscreate.php:369
 #: ../templates/masscreate.php:570 ../templates/massdetail.php:154
-#: ../templates/massdetail.php:262 ../help/help.inc:261 ../help/help.inc:262
+#: ../templates/massdetail.php:262 ../help/help.inc:262 ../help/help.inc:263
 msgid "Fax number"
 msgstr "ファクス番号"
 
-#: ../templates/main_header.php:58
+#: ../templates/main_header.php:58 ../templates/masscreate.php:347
 msgid "File Upload"
 msgstr "ファイルのアップロード"
 
-#: ../help/help.inc:211
+#: ../help/help.inc:212
 #, php-format
 msgid ""
 "Filename and -path relative to netlogon-share which should be executed on "
@@ -960,14 +967,14 @@ msgstr "最後"
 
 #: ../templates/account/useredit.php:954 ../lib/ldap.inc:198
 msgid "First name"
-msgstr "最初の名前(名字)??"
+msgstr "(姓でない)名"
 
 #: ../lib/pdf.inc:440
 msgid "GID"
 msgstr "GID"
 
 #: ../templates/account/groupedit.php:600 ../help/help.inc:58
-#: ../help/help.inc:156 ../lib/ldap.inc:195 ../lib/ldap.inc:207
+#: ../help/help.inc:157 ../lib/ldap.inc:195 ../lib/ldap.inc:207
 #: ../lib/ldap.inc:218
 msgid "GID number"
 msgstr "GID番号"
@@ -981,10 +988,10 @@ msgstr ""
 "マンドを実行しなければならない:"
 
 #: ../templates/account/groupedit.php:171
-#: ../templates/account/hostedit.php:187 ../templates/account/hostedit.php:387
+#: ../templates/account/hostedit.php:186 ../templates/account/hostedit.php:385
 #: ../templates/account/useredit.php:241 ../templates/account/useredit.php:987
-#: ../templates/masscreate.php:555 ../help/help.inc:148 ../help/help.inc:159
-#: ../help/help.inc:168
+#: ../templates/masscreate.php:555 ../help/help.inc:149 ../help/help.inc:160
+#: ../help/help.inc:169
 msgid "Gecos"
 msgstr "Gecos"
 
@@ -1004,7 +1011,7 @@ msgid "General"
 msgstr "一般??"
 
 #: ../templates/account/groupedit.php:594
-#: ../templates/account/hostedit.php:364 ../templates/account/useredit.php:940
+#: ../templates/account/hostedit.php:362 ../templates/account/useredit.php:940
 msgid "General properties"
 msgstr "一般のプロパティ"
 
@@ -1015,32 +1022,32 @@ msgstr "パスワードの作成"
 #: ../templates/account/useredit.php:236 ../templates/masscreate.php:283
 #: ../templates/masscreate.php:355 ../templates/masscreate.php:550
 #: ../templates/massdetail.php:84 ../templates/massdetail.php:208
-#: ../help/help.inc:192 ../lib/pdf.inc:89
+#: ../help/help.inc:193 ../lib/pdf.inc:89
 msgid "Given name"
-msgstr "与えられた名前(Given Name)??"
+msgstr "(姓でない)名"
 
 #: ../templates/account/useredit.php:236 ../templates/masscreate.php:550
 #: ../templates/massdetail.php:84
 msgid "Given name contains invalid characters"
-msgstr "与えられた名前(Given name)に不正な文字がある"
+msgstr "姓でない名(Given name)に不正な文字がある"
 
-#: ../help/help.inc:193
+#: ../help/help.inc:194
 msgid "Given name of user. Only letters, - and spaces are allowed."
-msgstr "ユーザの与えられた名前。文字のみとスペースが有効."
+msgstr "ユーザの(姓でない)名。文字,ハイフン(-)とスペースが有効."
 
 #: ../templates/account/groupedit.php:759
-#: ../templates/account/useredit.php:1418 ../help/help.inc:233
+#: ../templates/account/useredit.php:1418 ../help/help.inc:234
 msgid "Grace block period"
 msgstr "Grace block period"
 
-#: ../help/help.inc:234
+#: ../help/help.inc:235
 msgid ""
 "Grace block period. Most filesystems use a fixed maximum value of 7 days."
 msgstr ""
 "Grace block period. ほとんどのファイルシステムは固定された一週間の最大値を使"
 "う??"
 
-#: ../help/help.inc:245
+#: ../help/help.inc:246
 msgid ""
 "Grace inode (files) period. Most filesystems use a fixed maximum value of 7 "
 "days."
@@ -1049,7 +1056,7 @@ msgstr ""
 "大値を使う??"
 
 #: ../templates/account/groupedit.php:761
-#: ../templates/account/useredit.php:1420 ../help/help.inc:244
+#: ../templates/account/useredit.php:1420 ../help/help.inc:245
 msgid "Grace inode period"
 msgstr "Grace inode period??"
 
@@ -1058,10 +1065,12 @@ msgid "Group"
 msgstr "グループ"
 
 #: ../templates/account/groupedit.php:850
+#, php-format
 msgid "Group %s has been created."
 msgstr "グループ %s は作成された"
 
 #: ../templates/account/groupedit.php:847
+#, php-format
 msgid "Group %s has been modified."
 msgstr "グループ %s は変更された"
 
@@ -1077,7 +1086,7 @@ msgstr "グループSID"
 msgid "Group description"
 msgstr "グループの説明"
 
-#: ../help/help.inc:160
+#: ../help/help.inc:161
 msgid "Group description. If left empty group name will be used."
 msgstr "グループの説明。もしも空白ならば、グループ名が使われる."
 
@@ -1093,8 +1102,8 @@ msgstr "グループリストの属性が不正!"
 msgid "Group member DNs"
 msgstr "グループメンバのDN"
 
-#: ../templates/account/groupedit.php:538 ../help/help.inc:180
-#: ../help/help.inc:283 ../lib/ldap.inc:208
+#: ../templates/account/groupedit.php:538 ../help/help.inc:181
+#: ../help/help.inc:284 ../lib/ldap.inc:208
 msgid "Group members"
 msgstr "グループメンバ"
 
@@ -1102,7 +1111,7 @@ msgstr "グループメンバ"
 msgid "Group name"
 msgstr "グループ名"
 
-#: ../help/help.inc:155
+#: ../help/help.inc:156
 msgid ""
 "Group name of the group which should be created. Valid characters are: a-z,0-"
 "9, .-_. Lam does not allow a number as first character because groupadd also "
@@ -1115,7 +1124,7 @@ msgstr ""
 "かの問題が起きるため、文字A-Zは使えない。もしもグループ名がすでに使われていた"
 "ならば、グループ名は数字が補完される。次の自由な数字が使われる。"
 
-#: ../templates/masscreate.php:406 ../help/help.inc:188
+#: ../templates/masscreate.php:406 ../help/help.inc:189
 msgid "Group suffix"
 msgstr "グループサフィックス"
 
@@ -1139,7 +1148,7 @@ msgstr "グループサフィックスが不正!"
 #: ../templates/account/groupedit.php:158
 #: ../templates/account/groupedit.php:168
 #: ../templates/account/groupedit.php:208
-#: ../templates/account/groupedit.php:596 ../help/help.inc:154
+#: ../templates/account/groupedit.php:596 ../help/help.inc:155
 msgid "Groupname"
 msgstr "グループ名"
 
@@ -1167,8 +1176,8 @@ msgstr "ハードblock制限??"
 #: ../templates/account/groupedit.php:759
 #: ../templates/account/useredit.php:1418
 #: ../templates/profedit/profilegroup.php:101
-#: ../templates/profedit/profileuser.php:378 ../help/help.inc:230
-#: ../help/help.inc:231
+#: ../templates/profedit/profileuser.php:378 ../help/help.inc:231
+#: ../help/help.inc:232
 msgid "Hard block limit"
 msgstr "ハードブロック制限"
 
@@ -1176,18 +1185,18 @@ msgstr "ハードブロック制限"
 msgid "Hard inode"
 msgstr "ハードinode制限??"
 
-#: ../help/help.inc:242
+#: ../help/help.inc:243
 msgid "Hard inode (files) limit"
 msgstr "ハードinode(ファイル)制限"
 
 #: ../templates/account/groupedit.php:761
 #: ../templates/account/useredit.php:1420
 #: ../templates/profedit/profilegroup.php:103
-#: ../templates/profedit/profileuser.php:380 ../help/help.inc:241
+#: ../templates/profedit/profileuser.php:380 ../help/help.inc:242
 msgid "Hard inode limit"
 msgstr "ハードinode制限"
 
-#: ../templates/account/hostedit.php:223 ../templates/account/useredit.php:585
+#: ../templates/account/hostedit.php:222 ../templates/account/useredit.php:585
 msgid "Have to add objectClass posixAccount."
 msgstr "オブジェクトクラス posixAccountを追加しなければならない."
 
@@ -1195,7 +1204,7 @@ msgstr "オブジェクトクラス posixAccountを追加しなければならない."
 msgid "Have to add objectClass posixGroup."
 msgstr "オブジェクトクラス posixGroup を追加しなければならない."
 
-#: ../templates/account/hostedit.php:228
+#: ../templates/account/hostedit.php:226
 msgid ""
 "Have to add objectClass sambaAccount. Host with sambaSamAccount will be set "
 "back to sambaAccount."
@@ -1215,7 +1224,7 @@ msgstr ""
 msgid "Have to add objectClass sambaGroupMapping."
 msgstr "オブジェクトクラスsambaGroupMappingを追加しなければならない."
 
-#: ../templates/account/hostedit.php:226
+#: ../templates/account/hostedit.php:224
 msgid ""
 "Have to add objectClass sambaSamAccount. Host with sambaAccount will be "
 "updated."
@@ -1224,14 +1233,15 @@ msgstr ""
 "sambaAccountは更新される."
 
 #: ../templates/account/useredit.php:590
+#, fuzzy
 msgid ""
-"Have to add objectClass sambaSamAccount. USer with sambaAccount will be "
+"Have to add objectClass sambaSamAccount. User with sambaAccount will be "
 "updated."
 msgstr ""
 "オブジェクトクラスsambaSamAccountを追加しなければならない。ユーザの"
 "sambaAccountは更新される."
 
-#: ../templates/account/hostedit.php:224 ../templates/account/useredit.php:587
+#: ../templates/account/useredit.php:587
 msgid "Have to add objectClass shadowAccount."
 msgstr "オブジェクトクラスshadowAccountを追加しなければならない."
 
@@ -1250,10 +1260,10 @@ msgstr "オブジェクトクラスshadowAccountを追加しなければならない."
 #: ../templates/account/groupedit.php:765
 #: ../templates/account/groupedit.php:766
 #: ../templates/account/groupedit.php:819
-#: ../templates/account/hostedit.php:360 ../templates/account/hostedit.php:370
-#: ../templates/account/hostedit.php:376 ../templates/account/hostedit.php:385
-#: ../templates/account/hostedit.php:390 ../templates/account/hostedit.php:417
-#: ../templates/account/hostedit.php:428 ../templates/account/hostedit.php:454
+#: ../templates/account/hostedit.php:358 ../templates/account/hostedit.php:368
+#: ../templates/account/hostedit.php:374 ../templates/account/hostedit.php:383
+#: ../templates/account/hostedit.php:388 ../templates/account/hostedit.php:415
+#: ../templates/account/hostedit.php:426 ../templates/account/hostedit.php:452
 #: ../templates/account/useredit.php:824 ../templates/account/useredit.php:894
 #: ../templates/account/useredit.php:946 ../templates/account/useredit.php:952
 #: ../templates/account/useredit.php:958 ../templates/account/useredit.php:964
@@ -1401,14 +1411,14 @@ msgid "Home directory"
 msgstr "ホームディレクトリ"
 
 #: ../templates/account/useredit.php:1255
-#: ../templates/profedit/profileuser.php:280 ../help/help.inc:208
+#: ../templates/profedit/profileuser.php:280 ../help/help.inc:209
 #: ../lib/pdf.inc:206
 msgid "Home drive"
 msgstr "ホームドライブ"
 
 #: ../templates/account/useredit.php:438 ../templates/account/useredit.php:440
 #: ../templates/account/useredit.php:1262
-#: ../templates/profedit/profileuser.php:311 ../help/help.inc:218
+#: ../templates/profedit/profileuser.php:311 ../help/help.inc:219
 msgid "Home path"
 msgstr "ホームパス"
 
@@ -1424,11 +1434,13 @@ msgstr "Homedirが不正!"
 msgid "Homedirectory contains invalid characters."
 msgstr "ホームディレクトリに不正な文字がある."
 
-#: ../templates/account/hostedit.php:466
+#: ../templates/account/hostedit.php:464
+#, php-format
 msgid "Host %s has been created."
 msgstr "ホスト %s は作成された"
 
-#: ../templates/account/hostedit.php:463
+#: ../templates/account/hostedit.php:461
+#, php-format
 msgid "Host %s has been modified."
 msgstr "ホスト %s は変更された"
 
@@ -1440,7 +1452,7 @@ msgstr "ホストの属性"
 msgid "Host description"
 msgstr "ホストの説明"
 
-#: ../help/help.inc:169
+#: ../help/help.inc:170
 msgid "Host description. If left empty host name will be used."
 msgstr "ホストの説明。もしも空白ならば、ホスト名が使われる."
 
@@ -1448,13 +1460,13 @@ msgstr "ホストの説明。もしも空白ならば、ホスト名が使われる."
 msgid "Host list attributes are invalid!"
 msgstr "Attribute der Hostliste sind ung|ltig!"
 
-#: ../templates/account/hostedit.php:132 ../templates/account/hostedit.php:138
-#: ../templates/account/hostedit.php:178 ../templates/account/hostedit.php:366
-#: ../help/help.inc:161 ../lib/ldap.inc:214
+#: ../templates/account/hostedit.php:131 ../templates/account/hostedit.php:137
+#: ../templates/account/hostedit.php:177 ../templates/account/hostedit.php:364
+#: ../help/help.inc:162 ../lib/ldap.inc:214
 msgid "Host name"
 msgstr "ホスト名"
 
-#: ../help/help.inc:162
+#: ../help/help.inc:163
 msgid ""
 "Host name of the host which should be created. Valid characters are: a-z,0-"
 "9, .-_$. Lam does not allow a number as first character because useradd also "
@@ -1482,15 +1494,15 @@ msgstr "ホストサフィックス"
 msgid "HostSuffix is invalid!"
 msgstr "ホストサフィックスが不正!"
 
-#: ../templates/account/hostedit.php:121
+#: ../templates/account/hostedit.php:120
 msgid "Hostname"
 msgstr "ホスト名"
 
-#: ../templates/account/hostedit.php:178
+#: ../templates/account/hostedit.php:177
 msgid "Hostname already in use. Selected next free hostname."
 msgstr "ホスト名がすでに使われている。次の自由なホスト名が選択された."
 
-#: ../templates/account/hostedit.php:138
+#: ../templates/account/hostedit.php:137
 msgid ""
 "Hostname contains invalid characters. Valid characters are: a-z, A-Z, 0-9 "
 "and .-_ !"
@@ -1520,7 +1532,7 @@ msgid "If Primary group is not given it'll used from profile."
 msgstr ""
 "もしもプライマリグループが与えられなければ、それはプロファイルから使われる??."
 
-#: ../help/help.inc:189
+#: ../help/help.inc:190
 msgid ""
 "If a not yet existing group is defined in csv-file, a new group in the "
 "selected group suffix will be created."
@@ -1528,7 +1540,7 @@ msgstr ""
 "もしも、csvファイル中に存在ずるグループがまだ定義されていなければ、選択された"
 "グループサフィックス中の新しいグループが作成される."
 
-#: ../help/help.inc:268
+#: ../help/help.inc:269
 msgid ""
 "If a not yet existing group is defined in csv-file, a new group with the "
 "selected group profile will be created."
@@ -1536,7 +1548,7 @@ msgstr ""
 "もしもcsvファイル中に存在するグループがまだ定義されていなければ、選択されたグ"
 "ループプロファイルの新しいグループが作成される."
 
-#: ../help/help.inc:197
+#: ../help/help.inc:198
 msgid ""
 "If checked account will be deactivated by putting a ! before the encrypted "
 "password."
@@ -1544,23 +1556,23 @@ msgstr ""
 "チェックした場合、暗号化したパスワードの前に ! をおくことによってアカウントは"
 "無効化される."
 
-#: ../help/help.inc:207
+#: ../help/help.inc:208
 msgid "If checked account will be deactivated. (Setting D-Flag)"
 msgstr "チェックした場合、(D-フラグをセットすることで)アカウントは無効化される"
 
-#: ../help/help.inc:195
+#: ../help/help.inc:196
 msgid "If checked no password will be used."
 msgstr "チェックした場合、パスワードは使われない."
 
-#: ../help/help.inc:201
+#: ../help/help.inc:202
 msgid "If checked password does not expire. (Setting X-Flag)"
 msgstr "チェックした場合、パスワードは満了にならない(X-フラグをセット)"
 
-#: ../help/help.inc:199
+#: ../help/help.inc:200
 msgid "If checked unix password will also be used as samba password."
-msgstr "チェックした場合、sambaパスワードとしてもUNIXパスワードが使われる."
+msgstr "チェックした場合、sambaパスワードとしてもUnixパスワードが使われる."
 
-#: ../help/help.inc:157
+#: ../help/help.inc:158
 #, php-format
 msgid ""
 "If empty GID number will be generated automaticly. Valid values are between %"
@@ -1569,7 +1581,7 @@ msgstr ""
 "もしも空白ならば、GID番号が自動的に生成される。有効な値は、%s と %s の間であ"
 "る."
 
-#: ../help/help.inc:142 ../help/help.inc:164
+#: ../help/help.inc:142 ../help/help.inc:165
 #, php-format
 msgid ""
 "If empty UID number will be generated automaticly. Valid values are between %"
@@ -1578,7 +1590,7 @@ msgstr ""
 "もしも空白ならば、UID番号が自動的に生成される。有効な値は、%s と %s の間であ"
 "る."
 
-#: ../help/help.inc:187
+#: ../help/help.inc:188
 msgid ""
 "If selected users will be added with OUs expanded with their primary group. "
 "E.g. if a user is in group admin the user suffix will be ou=admin,+user "
@@ -1592,7 +1604,7 @@ msgstr ""
 msgid ""
 "If set to \"yes\" the Windows password will be the same as the Unix one."
 msgstr ""
-"もしも \"はい(yes)\" にセットされたならば、WindowsパスワードはUNIXのものと同"
+"もしも \"はい(yes)\" にセットされたならば、WindowsパスワードはUnixのものと同"
 "じになる。"
 
 #: ../help/help.inc:131
@@ -1650,7 +1662,7 @@ msgstr ""
 "もしも、LAMによって、ホームディレクトリとquotaを管理したいのであれば、"
 "lammdaemon.plのセットアップが必要である。"
 
-#: ../help/help.inc:278
+#: ../help/help.inc:279
 msgid "If you want to use a well known RID you can selcet a well known group."
 msgstr ""
 "もしも、よく知られたRIDを使いたいのであれば、よく知られたグループを選択でき"
@@ -1705,7 +1717,7 @@ msgstr "ディスプレイ名としてgecosフィールドを挿入."
 msgid "Inserted groupname in gecos-field."
 msgstr "gecosフィールドにグループ名を挿入."
 
-#: ../templates/account/hostedit.php:187
+#: ../templates/account/hostedit.php:186
 msgid "Inserted hostname in gecos-field."
 msgstr "gecosフィールドにホスト名を挿入."
 
@@ -1850,7 +1862,7 @@ msgstr "言語の設定"
 
 #: ../templates/account/useredit.php:960 ../lib/ldap.inc:199
 msgid "Last name"
-msgstr "名前(Last name)"
+msgstr "姓"
 
 #: ../help/help.inc:62
 msgid "List attributes"
@@ -1860,7 +1872,7 @@ msgstr "属性の一覧"
 msgid "List of admin users is empty or invalid!"
 msgstr "管理者(admin users)のリストが空白か不正!"
 
-#: ../help/help.inc:217
+#: ../help/help.inc:218
 msgid ""
 "List of samba workstations the user is allowed to login. Empty means every "
 "workstation."
@@ -1874,14 +1886,14 @@ msgid "List of valid users"
 msgstr "有効なユーザのリスト"
 
 #: ../templates/account/groupedit.php:629
-#: ../templates/account/hostedit.php:358
+#: ../templates/account/hostedit.php:356
 #: ../templates/account/useredit.php:1023
 msgid "Load Profile"
 msgstr "プロファイルのロード"
 
 #: ../templates/account/groupedit.php:624
-#: ../templates/account/hostedit.php:280 ../templates/account/hostedit.php:353
-#: ../templates/account/useredit.php:1018 ../help/help.inc:184
+#: ../templates/account/hostedit.php:278 ../templates/account/hostedit.php:351
+#: ../templates/account/useredit.php:1018 ../help/help.inc:185
 msgid "Load profile"
 msgstr "プロファイルのロード"
 
@@ -1903,14 +1915,14 @@ msgid "Login at workstation(s)"
 msgstr "ワークステーションでのログイン"
 
 #: ../templates/account/useredit.php:992
-#: ../templates/profedit/profileuser.php:127 ../help/help.inc:150
+#: ../templates/profedit/profileuser.php:127 ../help/help.inc:151
 #: ../lib/ldap.inc:201
 msgid "Login shell"
 msgstr "ログインシェル"
 
 #: ../templates/account/useredit.php:432 ../templates/account/useredit.php:444
 #: ../templates/account/useredit.php:1272
-#: ../templates/profedit/profileuser.php:325 ../help/help.inc:210
+#: ../templates/profedit/profileuser.php:325 ../help/help.inc:211
 #: ../lib/pdf.inc:210
 msgid "Logon script"
 msgstr ""
@@ -1931,10 +1943,6 @@ msgstr "マシンナンバ"
 #: ../templates/config/conflogin.php:127
 msgid "Manage profiles"
 msgstr "プロファイルの操作"
-
-#: ../templates/masscreate.php:347
-msgid "Mass Creation"
-msgstr "一括作成(Mass Creation)??"
 
 #: ../templates/config/profmanage.php:351
 msgid "Master Password:"
@@ -1993,7 +2001,7 @@ msgid "Maximum list entries"
 msgstr "最大のリストエントリ"
 
 #: ../templates/account/useredit.php:1089
-#: ../templates/profedit/profileuser.php:166 ../help/help.inc:174
+#: ../templates/profedit/profileuser.php:166 ../help/help.inc:175
 msgid "Maximum password age"
 msgstr "最大のパスワード期限(age)"
 
@@ -2033,25 +2041,25 @@ msgid "Minimum UID number is invalid!"
 msgstr "最小のUID番号が不正!"
 
 #: ../templates/account/useredit.php:1094
-#: ../templates/profedit/profileuser.php:173 ../help/help.inc:176
+#: ../templates/profedit/profileuser.php:173 ../help/help.inc:177
 msgid "Minimum password age"
 msgstr "最小のパスワード期限(age)"
 
 #: ../templates/account/useredit.php:490
 #: ../templates/account/useredit.php:1502 ../templates/masscreate.php:367
 #: ../templates/masscreate.php:569 ../templates/massdetail.php:152
-#: ../templates/massdetail.php:256 ../help/help.inc:259 ../help/help.inc:260
+#: ../templates/massdetail.php:256 ../help/help.inc:260 ../help/help.inc:261
 msgid "Mobile number"
 msgstr "携帯電話"
 
 #: ../templates/account/groupedit.php:822
-#: ../templates/account/hostedit.php:434
+#: ../templates/account/hostedit.php:432
 #: ../templates/account/useredit.php:1554
 msgid "Modify"
 msgstr "変更"
 
 #: ../templates/account/groupedit.php:836
-#: ../templates/account/hostedit.php:443
+#: ../templates/account/hostedit.php:441
 #: ../templates/account/useredit.php:1558
 msgid "Modify Account"
 msgstr "アカウント変更"
@@ -2059,18 +2067,18 @@ msgstr "アカウント変更"
 #: ../templates/account/groupedit.php:758
 #: ../templates/account/useredit.php:1417
 #: ../templates/profedit/profilegroup.php:99
-#: ../templates/profedit/profileuser.php:376 ../help/help.inc:223
+#: ../templates/profedit/profileuser.php:376 ../help/help.inc:224
 #: ../lib/pdf.inc:240
 msgid "Mountpoint"
 msgstr "マウントポイント"
 
-#: ../help/help.inc:224
+#: ../help/help.inc:225
 msgid "Mountpoint of device with enabled quotas."
 msgstr "quotaが有効になったデバイスのマウントポイント."
 
 #: ../templates/account/groupedit.php:215
 #: ../templates/account/groupedit.php:218
-#: ../templates/account/hostedit.php:180 ../templates/account/hostedit.php:183
+#: ../templates/account/hostedit.php:179 ../templates/account/hostedit.php:182
 #: ../templates/account/useredit.php:305 ../templates/account/useredit.php:308
 #: ../templates/masscreate.php:563 ../templates/masscreate.php:566
 #: ../templates/massdetail.php:90
@@ -2078,13 +2086,13 @@ msgid "Name"
 msgstr "名前"
 
 #: ../templates/account/groupedit.php:218
-#: ../templates/account/hostedit.php:183 ../templates/account/useredit.php:308
+#: ../templates/account/hostedit.php:182 ../templates/account/useredit.php:308
 #: ../templates/masscreate.php:566 ../templates/massdetail.php:90
 msgid "Name contains invalid characters. First character must be a letter."
 msgstr "名前に不正な文字がある。最初の文字は英文字でなければならない."
 
 #: ../templates/account/groupedit.php:215
-#: ../templates/account/hostedit.php:180 ../templates/account/useredit.php:305
+#: ../templates/account/hostedit.php:179 ../templates/account/useredit.php:305
 #: ../templates/masscreate.php:563
 msgid "Name must contain between 3 and 20 characters."
 msgstr "名前は3から20文字の範囲でなければならない."
@@ -2132,7 +2140,7 @@ msgstr "新しいマスタパスワードが正しく設定された."
 
 #: ../templates/ou_edit.php:344 ../templates/ou_edit.php:377
 #: ../templates/ou_edit.php:410 ../templates/ou_edit.php:444
-#: ../help/help.inc:288
+#: ../help/help.inc:289
 msgid "New organizational unit"
 msgstr "新しい Organizational Unit"
 
@@ -2141,7 +2149,7 @@ msgid "New password set successfully."
 msgstr "新しいパスワードが正しく設定された."
 
 #: ../templates/account/groupedit.php:435
-#: ../templates/account/hostedit.php:290 ../templates/account/useredit.php:719
+#: ../templates/account/hostedit.php:288 ../templates/account/useredit.php:719
 msgid "New profile created."
 msgstr "新しいプロファイルが作成された."
 
@@ -2157,12 +2165,12 @@ msgid "Next"
 msgstr "次"
 
 #: ../templates/domain.php:125 ../templates/confwiz/ldaptest.php:361
-#: ../help/help.inc:302
+#: ../help/help.inc:303
 msgid "Next Group RID"
 msgstr "次のグループRID"
 
 #: ../templates/domain.php:109 ../templates/confwiz/ldaptest.php:345
-#: ../help/help.inc:298
+#: ../help/help.inc:299
 msgid "Next RID"
 msgstr "次のRID"
 
@@ -2170,20 +2178,20 @@ msgstr "次のRID"
 msgid "Next RID is not a number!"
 msgstr "次のRIDは番号ではない!"
 
-#: ../help/help.inc:299
+#: ../help/help.inc:300
 msgid "Next RID to use when creating accounts."
 msgstr "アカウント作成時に使われる次のRID."
 
-#: ../help/help.inc:303
+#: ../help/help.inc:304
 msgid "Next RID to use when creating groups."
 msgstr "グループ作成時に使われる次のRID."
 
-#: ../help/help.inc:301
+#: ../help/help.inc:302
 msgid "Next RID to use when creating user accounts."
 msgstr "ユーザアカウントを作成するときに使われる次のRID."
 
 #: ../templates/domain.php:117 ../templates/confwiz/ldaptest.php:353
-#: ../help/help.inc:300
+#: ../help/help.inc:301
 msgid "Next User RID"
 msgstr "次のユーザRID"
 
@@ -2245,7 +2253,7 @@ msgid "No primary group defined!"
 msgstr "プライマリグループが定義されていない!"
 
 #: ../templates/account/groupedit.php:432
-#: ../templates/account/hostedit.php:287 ../templates/account/useredit.php:716
+#: ../templates/account/hostedit.php:285 ../templates/account/useredit.php:716
 msgid "No profilename given."
 msgstr "プロファイル名が与えられていない."
 
@@ -2262,17 +2270,17 @@ msgid "No user(s) were deleted"
 msgstr "ユーザが一人も削除されなかった"
 
 #: ../templates/account/groupedit.php:845
-#: ../templates/account/hostedit.php:461
+#: ../templates/account/hostedit.php:459
 #: ../templates/account/useredit.php:1566 ../help/help.inc:47
 msgid "Note"
 msgstr "ノート"
 
-#: ../help/help.inc:173
+#: ../help/help.inc:174
 msgid ""
 "Number of days a user can login even his password has expired. -1=always."
 msgstr "パスワードが満了になってもユーザがログインできる日数。-1は無期限"
 
-#: ../help/help.inc:177
+#: ../help/help.inc:178
 msgid ""
 "Number of days a user has to wait until he\\'s allowed to change his "
 "password again. If set value must be 0<."
@@ -2280,7 +2288,7 @@ msgstr ""
 "再度パスワードを変更できるまで待たなければならない日数。設定するならば0より大"
 "きくなければならない。"
 
-#: ../help/help.inc:175
+#: ../help/help.inc:176
 msgid ""
 "Number of days after a user has to change his password again. If set value "
 "must be 0<."
@@ -2308,11 +2316,11 @@ msgstr "OU が不正!"
 msgid "OU is not empty or invalid!"
 msgstr "OU が空白でないか不正!"
 
-#: ../templates/main_header.php:54 ../help/help.inc:288 ../help/help.inc:290
+#: ../templates/main_header.php:54 ../help/help.inc:289 ../help/help.inc:291
 msgid "OU-Editor"
 msgstr "OU-エディタ"
 
-#: ../templates/account/hostedit.php:223 ../templates/account/useredit.php:585
+#: ../templates/account/hostedit.php:222 ../templates/account/useredit.php:585
 msgid "ObjectClass posixAccount not found."
 msgstr "オブジェクトクラス posixAccount が見つからない."
 
@@ -2320,7 +2328,7 @@ msgstr "オブジェクトクラス posixAccount が見つからない."
 msgid "ObjectClass posixGroup not found."
 msgstr "オブジェクトクラス posixGroup が見つからない."
 
-#: ../templates/account/hostedit.php:228 ../templates/account/useredit.php:594
+#: ../templates/account/hostedit.php:226 ../templates/account/useredit.php:594
 msgid "ObjectClass sambaAccount not found."
 msgstr "オブジェクトクラス sambaAccount が見つからない."
 
@@ -2328,11 +2336,11 @@ msgstr "オブジェクトクラス sambaAccount が見つからない."
 msgid "ObjectClass sambaGroupMapping not found."
 msgstr "オブジェクトクラス sambaGroupMapping が見つからない."
 
-#: ../templates/account/hostedit.php:226 ../templates/account/useredit.php:590
+#: ../templates/account/hostedit.php:224 ../templates/account/useredit.php:590
 msgid "ObjectClass sambaSamAccount not found."
 msgstr "オブジェクトクラス sambaSamAccount が見つからない."
 
-#: ../templates/account/hostedit.php:224 ../templates/account/useredit.php:587
+#: ../templates/account/useredit.php:587
 msgid "ObjectClass shadowAccount not found."
 msgstr "オブジェクトクラス shadowAccount が見つからない."
 
@@ -2352,7 +2360,7 @@ msgstr "PDF設定"
 msgid "PDF text"
 msgstr "PDFテキスト"
 
-#: ../templates/account/hostedit.php:392 ../templates/account/useredit.php:316
+#: ../templates/account/hostedit.php:390 ../templates/account/useredit.php:316
 #: ../templates/account/useredit.php:346 ../templates/account/useredit.php:418
 #: ../templates/account/useredit.php:442
 #: ../templates/account/useredit.php:1061 ../templates/login.php:169
@@ -2377,11 +2385,11 @@ msgstr ""
 "{[()]}= !"
 
 #: ../templates/account/useredit.php:1205
-#: ../templates/profedit/profileuser.php:257 ../help/help.inc:200
+#: ../templates/profedit/profileuser.php:257 ../help/help.inc:201
 msgid "Password does not expire"
 msgstr "パスワードが満了していない"
 
-#: ../templates/account/useredit.php:1084 ../help/help.inc:172
+#: ../templates/account/useredit.php:1084 ../help/help.inc:173
 #: ../lib/pdf.inc:168
 msgid "Password expire"
 msgstr "パスワード満了"
@@ -2436,7 +2444,7 @@ msgid "Password minimum age is not numeric!"
 msgstr "パスワード最小期限が数字でない!"
 
 #: ../templates/account/useredit.php:352
-#: ../templates/account/useredit.php:1079 ../help/help.inc:170
+#: ../templates/account/useredit.php:1079 ../help/help.inc:171
 msgid "Password warn"
 msgstr "パスワード警告日"
 
@@ -2452,7 +2460,7 @@ msgstr "パスワード警告"
 msgid "Passwords are different!"
 msgstr "パスワードが異なる!"
 
-#: ../help/help.inc:214
+#: ../help/help.inc:215
 #, php-format
 msgid ""
 "Path of the userprofile. Can be a local absolute path or a UNC-path (\\"
@@ -2661,33 +2669,33 @@ msgstr "ページを選択:"
 msgid "Please select your prefered language."
 msgstr "表示言語を選択."
 
-#: ../help/help.inc:274
+#: ../help/help.inc:275
 msgid "Position in ldap-tree where the group should be created."
 msgstr "グループを作成すべきldap木の場所."
 
-#: ../help/help.inc:276
+#: ../help/help.inc:277
 msgid "Position in ldap-tree where the host should be created."
 msgstr "ホストを作成すべきldap木の場所."
 
-#: ../help/help.inc:272
+#: ../help/help.inc:273
 msgid "Position in ldap-tree where the user should be created."
 msgstr "ユーザを作成すべきldap木の場所."
 
 #: ../templates/account/useredit.php:494
 #: ../templates/account/useredit.php:1490 ../templates/masscreate.php:375
 #: ../templates/masscreate.php:573 ../templates/massdetail.php:148
-#: ../templates/massdetail.php:244 ../help/help.inc:255 ../lib/pdf.inc:101
+#: ../templates/massdetail.php:244 ../help/help.inc:256 ../lib/pdf.inc:101
 msgid "Postal address"
 msgstr "住所"
 
-#: ../help/help.inc:256
+#: ../help/help.inc:257
 msgid "Postal address, city"
 msgstr "住所、区市町村."
 
 #: ../templates/account/useredit.php:497
 #: ../templates/account/useredit.php:1484 ../templates/masscreate.php:373
 #: ../templates/masscreate.php:576 ../templates/massdetail.php:146
-#: ../templates/massdetail.php:238 ../help/help.inc:253 ../help/help.inc:254
+#: ../templates/massdetail.php:238 ../help/help.inc:254 ../help/help.inc:255
 #: ../lib/pdf.inc:97
 msgid "Postal code"
 msgstr "郵便番号"
@@ -2700,12 +2708,12 @@ msgstr "あらかじめ定義された属性はタイプが: \"#Attribute\"??."
 msgid "Predefined values"
 msgstr "あらかじめ定義された値"
 
-#: ../templates/account/hostedit.php:378 ../templates/account/useredit.php:243
+#: ../templates/account/hostedit.php:376 ../templates/account/useredit.php:243
 #: ../templates/account/useredit.php:966 ../templates/masscreate.php:283
 #: ../templates/masscreate.php:359 ../templates/masscreate.php:558
 #: ../templates/profedit/profilehost.php:68
-#: ../templates/profedit/profileuser.php:93 ../help/help.inc:152
-#: ../help/help.inc:166 ../lib/pdf.inc:310 ../lib/pdf.inc:354
+#: ../templates/profedit/profileuser.php:93 ../help/help.inc:153
+#: ../help/help.inc:167 ../lib/pdf.inc:310 ../lib/pdf.inc:354
 msgid "Primary group"
 msgstr "プライマリグループ"
 
@@ -2731,7 +2739,7 @@ msgstr "プロファイルエディタ"
 msgid "Profile deleted."
 msgstr "プロファイルが削除された."
 
-#: ../templates/account/hostedit.php:280
+#: ../templates/account/hostedit.php:278
 msgid "Profile loaded."
 msgstr "プロファイルがロードされた."
 
@@ -2767,7 +2775,7 @@ msgstr "プロファイルパスワードが異なるか空白!"
 
 #: ../templates/account/useredit.php:435 ../templates/account/useredit.php:447
 #: ../templates/account/useredit.php:1267
-#: ../templates/profedit/profileuser.php:318 ../help/help.inc:213
+#: ../templates/profedit/profileuser.php:318 ../help/help.inc:214
 #: ../lib/pdf.inc:214
 msgid "Profile path"
 msgstr "プロファイルパス"
@@ -2851,7 +2859,7 @@ msgstr "プロファイル名が変更された."
 #: ../templates/account/useredit.php:1067
 #: ../templates/account/useredit.php:1187
 msgid "Repeat password"
-msgstr "パスワード繰り返し??"
+msgstr "パスワード再入力"
 
 #: ../templates/account/useredit.php:296
 #, php-format
@@ -2880,7 +2888,7 @@ msgstr "リセット"
 msgid "Reset all changes."
 msgstr "すべての変更をリセット."
 
-#: ../templates/account/hostedit.php:396
+#: ../templates/account/hostedit.php:394
 msgid "Reset password"
 msgstr "パスワードをリセット"
 
@@ -2958,7 +2966,7 @@ msgstr "Sambaバージョン"
 msgid "Samba version is not defined!"
 msgstr "Sambaバージョンが定義されていない!"
 
-#: ../templates/account/useredit.php:1277 ../help/help.inc:216
+#: ../templates/account/useredit.php:1277 ../help/help.inc:217
 msgid "Samba workstations"
 msgstr "Samba 配下のPC"
 
@@ -2981,12 +2989,12 @@ msgstr "保存"
 #: ../templates/account/groupedit.php:436
 #: ../templates/account/groupedit.php:814
 #: ../templates/account/groupedit.php:818
-#: ../templates/account/hostedit.php:287 ../templates/account/hostedit.php:290
-#: ../templates/account/hostedit.php:291 ../templates/account/hostedit.php:449
-#: ../templates/account/hostedit.php:453 ../templates/account/useredit.php:716
+#: ../templates/account/hostedit.php:285 ../templates/account/hostedit.php:288
+#: ../templates/account/hostedit.php:289 ../templates/account/hostedit.php:447
+#: ../templates/account/hostedit.php:451 ../templates/account/useredit.php:716
 #: ../templates/account/useredit.php:719 ../templates/account/useredit.php:720
 #: ../templates/account/useredit.php:1546
-#: ../templates/account/useredit.php:1550 ../help/help.inc:265
+#: ../templates/account/useredit.php:1550 ../help/help.inc:266
 msgid "Save profile"
 msgstr "プロファイルを保存"
 
@@ -3037,7 +3045,7 @@ msgstr "すべてを選択"
 msgid "Select file:"
 msgstr "ファイルの選択:"
 
-#: ../templates/masscreate.php:412 ../help/help.inc:267
+#: ../templates/masscreate.php:412 ../help/help.inc:268
 msgid "Select group profile"
 msgstr "グループプロファイルの選択"
 
@@ -3118,11 +3126,11 @@ msgstr "ソフトブロック"
 #: ../templates/account/groupedit.php:759
 #: ../templates/account/useredit.php:1418
 #: ../templates/profedit/profilegroup.php:100
-#: ../templates/profedit/profileuser.php:377 ../help/help.inc:227
+#: ../templates/profedit/profileuser.php:377 ../help/help.inc:228
 msgid "Soft block limit"
 msgstr "ソフトブロック制限値"
 
-#: ../help/help.inc:228
+#: ../help/help.inc:229
 msgid "Soft block limit."
 msgstr "ソフトブロック制限値."
 
@@ -3130,14 +3138,14 @@ msgstr "ソフトブロック制限値."
 msgid "Soft inode"
 msgstr "ソフトinode"
 
-#: ../help/help.inc:239
+#: ../help/help.inc:240
 msgid "Soft inode (files) limit."
 msgstr "ソフトinode(ファイル)制限値."
 
 #: ../templates/account/groupedit.php:760
 #: ../templates/account/useredit.php:1419
 #: ../templates/profedit/profilegroup.php:102
-#: ../templates/profedit/profileuser.php:379 ../help/help.inc:238
+#: ../templates/profedit/profileuser.php:379 ../help/help.inc:239
 msgid "Soft inode limit"
 msgstr "ソフトinode制限値"
 
@@ -3153,7 +3161,7 @@ msgstr "このヘルプ番号({bold}%d{endbold})は無効"
 #: ../templates/account/useredit.php:493
 #: ../templates/account/useredit.php:1478 ../templates/masscreate.php:371
 #: ../templates/masscreate.php:572 ../templates/massdetail.php:144
-#: ../templates/massdetail.php:232 ../help/help.inc:251 ../help/help.inc:252
+#: ../templates/massdetail.php:232 ../help/help.inc:252 ../help/help.inc:253
 #: ../lib/pdf.inc:93
 msgid "Street"
 msgstr "町名"
@@ -3170,20 +3178,20 @@ msgid "Submit"
 msgstr "更新(Submit)"
 
 #: ../templates/account/groupedit.php:607
-#: ../templates/account/hostedit.php:419
+#: ../templates/account/hostedit.php:417
 #: ../templates/account/useredit.php:1001 ../templates/domain.php:149
 #: ../templates/confwiz/ldaptest.php:384
 #: ../templates/lists/listdomains.php:187
 #: ../templates/lists/listgroups.php:300 ../templates/lists/listhosts.php:288
-#: ../templates/lists/listusers.php:341 ../help/help.inc:271
-#: ../help/help.inc:273 ../help/help.inc:275 ../help/help.inc:294
+#: ../templates/lists/listusers.php:341 ../help/help.inc:272
+#: ../help/help.inc:274 ../help/help.inc:276 ../help/help.inc:295
 msgid "Suffix"
 msgstr "サフィックス"
 
 #: ../templates/account/useredit.php:238 ../templates/masscreate.php:283
 #: ../templates/masscreate.php:353 ../templates/masscreate.php:552
 #: ../templates/massdetail.php:81 ../templates/massdetail.php:202
-#: ../help/help.inc:190 ../lib/pdf.inc:85
+#: ../help/help.inc:191 ../lib/pdf.inc:85
 msgid "Surname"
 msgstr "Surname??"
 
@@ -3192,14 +3200,14 @@ msgstr "Surname??"
 msgid "Surname contains invalid characters"
 msgstr "Surnameに不正な文字がある"
 
-#: ../help/help.inc:191
+#: ../help/help.inc:192
 msgid "Surname of user. Only letters, - and spaces are allowed."
 msgstr "ユーザのSurname。文字と - と空白のみ有効."
 
 #: ../templates/account/useredit.php:489
 #: ../templates/account/useredit.php:1496 ../templates/masscreate.php:365
 #: ../templates/masscreate.php:568 ../templates/massdetail.php:150
-#: ../templates/massdetail.php:250 ../help/help.inc:257 ../help/help.inc:258
+#: ../templates/massdetail.php:250 ../help/help.inc:258 ../help/help.inc:259
 msgid "Telephone number"
 msgstr "電話番号"
 
@@ -3208,19 +3216,19 @@ msgstr "電話番号"
 msgid "Text for user PDF"
 msgstr "ユーザPDFのためのテキスト"
 
-#: ../help/help.inc:153
+#: ../help/help.inc:154
 msgid "The Primary Group the user should be member of."
 msgstr "ユーザがメンバでなければならないプライマリグループ."
 
-#: ../help/help.inc:167
+#: ../help/help.inc:168
 msgid "The Primary group the host should be member of."
 msgstr "ホストがメンバでなければならないプライマリグループ."
 
-#: ../help/help.inc:297
+#: ../help/help.inc:298
 msgid "The SID of your Samba server. Get it with \"net getlocalsid\"."
 msgstr "SambaサーバのSID. \"net getlocalsid\" で取得."
 
-#: ../help/help.inc:295
+#: ../help/help.inc:296
 msgid "The domain entry will be saved under this suffix."
 msgstr "このサフィックス下でドメインエントリが保存された."
 
@@ -3242,7 +3250,7 @@ msgid ""
 "The following suffix(es) are missing in LDAP. LAM will create them for you."
 msgstr "以下のサフィックスはLDAPにない。LAMはそれを作成するだろう。"
 
-#: ../help/help.inc:293
+#: ../help/help.inc:294
 msgid "The name of your Windows domain or workgroup."
 msgstr "Windowsのドメイン又はワークグループ名."
 
@@ -3409,11 +3417,11 @@ msgstr "このテキストは各々のユーザのPDFファイルに現われる。"
 msgid "This user was not found!"
 msgstr "このユーザは未定義である!"
 
-#: ../help/help.inc:289
+#: ../help/help.inc:290
 msgid "This will create a new organizational unit under the selected one."
 msgstr "これは、選択されたものに、新しい organizational unit を作成する。"
 
-#: ../help/help.inc:291
+#: ../help/help.inc:292
 msgid ""
 "This will delete the selected organizational unit. The OU has to be empty."
 msgstr ""
@@ -3424,7 +3432,7 @@ msgstr ""
 msgid "This will delete the selected profile."
 msgstr "これは選択されたプロファイルを削除する。"
 
-#: ../help/help.inc:266
+#: ../help/help.inc:267
 msgid ""
 "This will make a profile of the current account. The saved values are the "
 "same as in the profile editor. Profile names may contain the letters a-z, 0-"
@@ -3437,11 +3445,11 @@ msgstr ""
 #: ../templates/account/useredit.php:495
 #: ../templates/account/useredit.php:1466 ../templates/masscreate.php:361
 #: ../templates/masscreate.php:574 ../templates/massdetail.php:140
-#: ../templates/massdetail.php:220 ../help/help.inc:247 ../lib/pdf.inc:81
+#: ../templates/massdetail.php:220 ../help/help.inc:248 ../lib/pdf.inc:81
 msgid "Title"
 msgstr "肩書"
 
-#: ../help/help.inc:248
+#: ../help/help.inc:249
 msgid "Title of user, Mr., Ms., ..."
 msgstr "ユーザの肩書(Mr,Msなど)."
 
@@ -3451,7 +3459,7 @@ msgid ""
 "administrative user and the password."
 msgstr "LDAPサーバに接続するために、管理者のユーザのDNとパスワードを入力"
 
-#: ../help/help.inc:151
+#: ../help/help.inc:152
 msgid ""
 "To disable login use /bin/false. List of shells is read from lam/config/"
 "shells"
@@ -3467,8 +3475,8 @@ msgstr "GID番号をグループ名に変換"
 msgid "UID"
 msgstr "UID"
 
-#: ../templates/account/hostedit.php:372 ../templates/account/useredit.php:948
-#: ../help/help.inc:56 ../help/help.inc:141 ../help/help.inc:163
+#: ../templates/account/hostedit.php:370 ../templates/account/useredit.php:948
+#: ../help/help.inc:56 ../help/help.inc:141 ../help/help.inc:164
 #: ../lib/ldap.inc:194 ../lib/ldap.inc:217
 msgid "UID number"
 msgstr "UID番号"
@@ -3481,7 +3489,7 @@ msgstr ""
 "UID番号が変更された。存在するファイルのパーミッションを変更するために、以下の"
 "コマンドをrootで実行する必要がある。"
 
-#: ../help/help.inc:219
+#: ../help/help.inc:220
 #, php-format
 msgid ""
 "UNC-path (\\\\server\\share) of homedirectory. $%s and $%s are replaced with "
@@ -3555,7 +3563,7 @@ msgstr "プロファイルを保存できない!"
 msgid "Undo"
 msgstr "復活"
 
-#: ../templates/account/hostedit.php:439
+#: ../templates/account/hostedit.php:437
 msgid "Undo changes"
 msgstr "復活の変更??"
 
@@ -3595,7 +3603,7 @@ msgstr "Unixプロパティ"
 
 #: ../templates/account/useredit.php:354
 #: ../templates/account/useredit.php:1127
-#: ../templates/profedit/profileuser.php:208 ../help/help.inc:279
+#: ../templates/profedit/profileuser.php:208 ../help/help.inc:280
 msgid "Unix workstations"
 msgstr "Unixワークステーション"
 
@@ -3615,41 +3623,43 @@ msgid ""
 msgstr "使う前にlamdaemonのドキュメントを読み、あなたの責任で使うこと"
 
 #: ../templates/account/useredit.php:1073
-#: ../templates/account/useredit.php:1199 ../help/help.inc:194
+#: ../templates/account/useredit.php:1199 ../help/help.inc:195
 msgid "Use no password"
 msgstr "パスワードなし"
 
-#: ../templates/account/useredit.php:1193 ../help/help.inc:198
+#: ../templates/account/useredit.php:1193 ../help/help.inc:199
 msgid "Use unix password"
 msgstr "Unixパスワードを使う"
 
 #: ../templates/account/groupedit.php:758
-#: ../templates/account/useredit.php:1417 ../help/help.inc:225
+#: ../templates/account/useredit.php:1417 ../help/help.inc:226
 msgid "Used blocks"
 msgstr "使用したブロック"
 
-#: ../help/help.inc:226
+#: ../help/help.inc:227
 msgid "Used blocks. 1000 blocks are usually 1MB"
 msgstr "使用したブロック。1000ブロックは通常1MB."
 
-#: ../help/help.inc:305
+#: ../help/help.inc:306
 msgid "Used for calculating RIDs from UID/GID. Do not change if unsure."
 msgstr "RIDs を UID/GID から計算するために使う。自信がないなら変更しないこと。"
 
 #: ../templates/account/groupedit.php:760
-#: ../templates/account/useredit.php:1419 ../help/help.inc:236
+#: ../templates/account/useredit.php:1419 ../help/help.inc:237
 msgid "Used inodes"
 msgstr "使用したinode"
 
-#: ../help/help.inc:237
+#: ../help/help.inc:238
 msgid "Used inodes (files)"
 msgstr "使用したinode(ファイル)"
 
 #: ../templates/account/useredit.php:1571
+#, php-format
 msgid "User %s has been created."
 msgstr "ユーザ %s が作成された"
 
 #: ../templates/account/useredit.php:1568
+#, php-format
 msgid "User %s has been modified."
 msgstr "ユーザ %s は変更された"
 
@@ -3662,11 +3672,11 @@ msgid "User Profiles"
 msgstr "ユーザプロファイル"
 
 #: ../templates/account/useredit.php:1211 ../help/help.inc:130
-#: ../help/help.inc:202
+#: ../help/help.inc:203
 msgid "User can change password"
 msgstr "ユーザはパスワードを変更可能"
 
-#: ../help/help.inc:149
+#: ../help/help.inc:150
 msgid "User description. If left empty sur- and give name will be used."
 msgstr "ユーザの説明。もしも空白ならば、sur-と与えられた名前が使われる."
 
@@ -3684,7 +3694,7 @@ msgstr "ユーザ一覧"
 msgid "User list attributes are invalid!"
 msgstr "ユーザ一覧属性が無効!"
 
-#: ../templates/account/useredit.php:1230 ../help/help.inc:204
+#: ../templates/account/useredit.php:1230 ../help/help.inc:205
 msgid "User must change password"
 msgstr "ユーザはパスワードを変更しなければならない"
 
@@ -3762,11 +3772,11 @@ msgstr ""
 msgid "Users"
 msgstr "ユーザ"
 
-#: ../help/help.inc:284
+#: ../help/help.inc:285
 msgid "Users also being member of the current group."
 msgstr "ユーザは現在のグループのメンバーにいる。"
 
-#: ../help/help.inc:181
+#: ../help/help.inc:182
 msgid "Users wich are also members of group."
 msgstr "ユーザはグループのメンバーにもいる。"
 
@@ -3775,7 +3785,7 @@ msgid "Valid users"
 msgstr "有効なユーザ"
 
 #: ../templates/account/groupedit.php:619
-#: ../templates/account/hostedit.php:430
+#: ../templates/account/hostedit.php:428
 #: ../templates/account/useredit.php:1013
 #: ../templates/account/useredit.php:1134
 msgid "Values with * are required"
@@ -3814,15 +3824,15 @@ msgstr "Windowsドメイン"
 msgid "Windows User Settings"
 msgstr "Windowsユーザ設定"
 
-#: ../help/help.inc:183
+#: ../help/help.inc:184
 msgid "Windows clients will show display name as group description."
 msgstr "Windowsクライアントはグループの説明として名前を表示する。"
 
-#: ../help/help.inc:269
+#: ../help/help.inc:270
 msgid "Windows domain"
 msgstr "Windowsドメイン"
 
-#: ../help/help.inc:270
+#: ../help/help.inc:271
 msgid "Windows domain of host."
 msgstr "ホストのWindowsドメイン"
 
@@ -3831,7 +3841,7 @@ msgid "Windows group name"
 msgstr "Windowsグループ名"
 
 #: ../templates/account/groupedit.php:665
-#: ../templates/account/useredit.php:1282 ../help/help.inc:277
+#: ../templates/account/useredit.php:1282 ../help/help.inc:278
 msgid "Windows groupname"
 msgstr "Windowsグループ名"
 
@@ -3851,11 +3861,11 @@ msgstr "Windowsパスワードが無効化された!"
 msgid "Windows password set to unix password."
 msgstr "WindowsパスワードをUnixパスワードに設定。"
 
-#: ../help/help.inc:282
+#: ../help/help.inc:283
 msgid "Windows-Domain of group."
 msgstr "グループのWindowsドメイン."
 
-#: ../help/help.inc:222
+#: ../help/help.inc:223
 msgid "Windows-Domain of user."
 msgstr "ユーザのWindowsドメイン."
 
@@ -3886,7 +3896,7 @@ msgstr "間違ったSambaオプションパラメータ。Sambaパスワードを設定!"
 
 #: ../templates/profedit/profilecreate.php:163
 msgid "Wrong parameter for Samba option: Set Unix Password for Samba!"
-msgstr "間違ったSambaオプションパラメータ。Samba用のUNIXパスワードを設定!"
+msgstr "間違ったSambaオプションパラメータ。Samba用のUnixパスワードを設定!"
 
 #: ../templates/profedit/profilecreate.php:187
 msgid "Wrong parameter for Samba option: home drive!"
@@ -3894,27 +3904,27 @@ msgstr "間違ったSambaオプションパラメータ:ホームドライブ!"
 
 #: ../templates/profedit/profilecreate.php:139
 msgid "Wrong parameter for Unix account activation!"
-msgstr "間違ったUNIXアカウント有効化パラメータ!"
+msgstr "間違ったUnixアカウント有効化パラメータ!"
 
 #: ../templates/profedit/profilecreate.php:123
 msgid "Wrong parameter for Unix password expiry!"
-msgstr "間違ったUNIXパスワード満了パラメータ!"
+msgstr "間違ったUnixパスワード満了パラメータ!"
 
 #: ../templates/profedit/profilecreate.php:99
 msgid "Wrong parameter for Unix password warning!"
-msgstr "間違ったｐにパスワード警告パラメータ!"
+msgstr "間違ったUnixパスワード警告パラメータ!"
 
 #: ../templates/profedit/profilecreate.php:91
 msgid "Wrong parameter for login disable!"
 msgstr "間違ったログイン無効パラメータ!"
 
 #: ../templates/account/groupedit.php:436
-#: ../templates/account/hostedit.php:291 ../templates/account/useredit.php:720
+#: ../templates/account/hostedit.php:289 ../templates/account/useredit.php:720
 msgid "Wrong profilename given."
 msgstr "間違ったプロファイル名が与えられた."
 
 #: ../templates/account/groupedit.php:158
-#: ../templates/account/hostedit.php:121 ../templates/account/useredit.php:224
+#: ../templates/account/hostedit.php:120 ../templates/account/useredit.php:224
 msgid ""
 "You are using a capital letters. This can cause problems because not all "
 "programs are case-sensitive."
@@ -3922,17 +3932,17 @@ msgstr ""
 "大文字を使っている。これはすべてのプログラムが大文字/小文字を区別するとは限ら"
 "ないため、問題を引き起こす。"
 
-#: ../help/help.inc:185
+#: ../help/help.inc:186
 msgid ""
 "You can select a previous defined profile here. This will set all fields to "
 "the profile values."
 msgstr ""
-"ここで、以前に定義したプロファイルを選択できる。これはプロファイルの価にすべ"
-"てのフィールドを設定する。"
+"ここで、以前に定義したプロファイルを選択できる。これはすべてのフィールドを"
+"プロファイルの価で設定する。"
 
 #: ../templates/logout.php:62
 msgid "You have been logged off from LDAP Account Manager."
-msgstr "LDAP Account Managerからログオフする必要がある。"
+msgstr "LDAP Account Managerからログオフした"
 
 #: ../templates/login.php:192
 msgid "Your Language"
@@ -3945,7 +3955,7 @@ msgstr "削除した"
 #: ../templates/account/useredit.php:492
 #: ../templates/account/useredit.php:1514 ../templates/masscreate.php:363
 #: ../templates/masscreate.php:571 ../templates/massdetail.php:156
-#: ../templates/massdetail.php:268 ../help/help.inc:263 ../help/help.inc:264
+#: ../templates/massdetail.php:268 ../help/help.inc:264 ../help/help.inc:265
 msgid "eMail address"
 msgstr "電子メールアドレス"
 
@@ -3958,14 +3968,14 @@ msgid ""
 "ldap://localhost:389 connects to localhost using a standard LDAP connection "
 "on port 389"
 msgstr ""
-"ldaps://localhost:389 は標準的なlocalhostのポート389へのLDAP接続を行なう。"
+"ldaps://localhost:389 はlocalhostのポート389へ標準的なLDAP接続を行なう。"
 
 #: ../help/help.inc:45
 msgid ""
 "ldaps://141.40.146.133 connects to 141.40.146.133 using an encrypted LDAP "
 "connection."
 msgstr ""
-"ldaps://141.40.146.133 は 141.40.146.133 へ暗号化されたLDAPを使って接続する。"
+"ldaps://141.40.146.133 は 141.40.146.133 へ暗号化されたLDAP接続を行なう。"
 
 #: ../templates/profedit/profileuser.php:144
 #: ../templates/profedit/profileuser.php:145
@@ -3996,7 +4006,7 @@ msgstr ""
 
 #: ../templates/config/confmain.php:377
 msgid "required"
-msgstr "必要"
+msgstr "必須"
 
 #: ../templates/config/confmain.php:378
 msgid "required for Samba 3 schema"
