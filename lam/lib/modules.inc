@@ -441,6 +441,7 @@ class accountContainer {
 			echo _('Please select page:');
 			echo "</b></legend>\n";
 		// Loop for module
+		// $x is used to count up tabindex
 		for ($i=0; $i<count($this->order); $i++ ) {
 			if ($this->order[$i]==$this->order[$this->module['main']->current_page] || !$this->module[$this->order[$i]]->module_ready() ) {
 				// print disabled button
@@ -452,7 +453,8 @@ class accountContainer {
 				// print normal button
 				echo "<input name=\"form_main_".$this->order[$i]."\" type=\"submit\" value=\"";
 				echo $this->module[$this->order[$i]]->get_alias($type);
-				echo "\">\n<br>";
+				echo "\" tabindex=$x>\n<br>";
+				$x++;
 				}
 			}
 		if ($this->dn_orig!='') echo "<input name=\"form_main_reset\" type=\"submit\" value=\"" . _('Reset changes') . "\"><br>\n";
@@ -474,14 +476,22 @@ class accountContainer {
 		return 0;
 		}
 
-	function parse_html($module, $input) {
+	function parse_html($module, $input, $y=5000, $z=10000) {
+		/* $y and $z are used to change the the taborder.
+		*  Unfortunatly we don't now how many taborders we need
+		*  Every link also help needs a taborder.
+		*  Therefore we start with taborder=10000 for help
+		*  and taborder=5000 for input fields
+		*  taborder starts at 5000 because we need also some
+		*  taborders for the side bar.
+		*/
 		if (is_array($input)) {
 			echo "<table>\n";
 			for ($i=0; $i<count($input); $i++) {
 				// Draw column
 				echo "<tr>\n";
 				for ($j=0; $j<count($input[$i]); $j++ ) {
-					// draw raw
+					// Draw raw
 					switch ($input[$i][$j]['kind']) {
 							case 'text':
 								echo "<td";
@@ -500,6 +510,11 @@ class accountContainer {
 								if ($input[$i][$j]['maxlength']!='') $output .= ' maxlength="' . $input[$i][$j]['maxlength'] . '"';
 								if ($input[$i][$j]['value']!='') $output .= ' value="' . $input[$i][$j]['value'] . '"';
 								if ($input[$i][$j]['disabled']) $output .= ' disabled';
+									// Show taborder
+									else {
+										$output .= " tabindex=$y";
+										$y++;
+										}
 								if ($input[$i][$j]['checked']) $output .= ' checked';
 								$output .= "></td>\n";
 								echo $output;
@@ -522,6 +537,9 @@ class accountContainer {
 								echo "<select name=\"" . $input[$i][$j]['name'] . '"';
 								if ($input[$i][$j]['multiple']) echo ' multiple';
 								if ($input[$i][$j]['size']) echo ' size="' . $input[$i][$j]['size'] . '"';
+								// Show taborder
+								echo " tabindex=$y";
+								$y++;
 								echo ">\n";
 								// merge both option arrays and sort them.
 								$options = array_merge ($input[$i][$j]['options'], $input[$i][$j]['options_selected'] );
@@ -539,14 +557,15 @@ class accountContainer {
 								echo "<td";
 								if ($input[$i][$j]['td']['valign']!='') echo ' valign="' . $input[$i][$j]['td']['valign'] .'"';
 								echo ">\n";
-								$this->parse_html($module, $input[$i][$j]['value']);
+								$this->parse_html($module, $input[$i][$j]['value'], $y, $z);
 								echo "</td>\n";
 								break;
 							case 'help':
 								echo "<td";
 								if ($input[$i][$j]['td']['valign']!='') echo ' valign="' . $input[$i][$j]['td']['valign'] .'"';
 								echo ">\n";
-								echo "<a href=../help.php?module=$module&item=". $input[$i][$j]['value'] . ">" . _('Help') . "</a></td>\n";
+								echo "<a href=../help.php?module=$module&item=". $input[$i][$j]['value'] . " tabindex=$z>" . _('Help') . "</a></td>\n";
+								$z++;
 								break;
 							case 'message':
 								echo "<td";
