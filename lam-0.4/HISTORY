@@ -1,6 +1,7 @@
 
   - fixed bugs:
       fixed error messages when moving an user account
+      fixed problem with special group SIDs
 
 
 26.01.2005 0.4.8
