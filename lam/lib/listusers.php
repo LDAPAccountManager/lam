@@ -13,7 +13,7 @@ $Id$
   This program is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
+  GNU General Public License for more detaexils.
   
   You should have received a copy of the GNU General Public License
   along with this program; if not, write to the Free Software
@@ -25,31 +25,45 @@ $Id$
 include_once ('../config/config.php');
 include_once("ldap.php");
 
-$ldapconnection = new Ldap(new Config());
-$userlist = $ldapconnection->getUsers();
+// class representing local user entry with attributes of ldap user entry
+include_once("userentry.php");
 
-//$bla = array (attr1, attr2);
-//$userlist = array ($bla, $bla, $bla, $bla);
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\" />";
 
-echo "<table>\n";
+// config object should be in session!!!
+$config = new Config();
+$ldap = new Ldap($config);
+
+// username/password should also be in session!!!
+$username = "cn=admin,o=test,c=de";
+$passwd = "secret";
+$result = $ldap->connect ($username, $passwd);
+
+$user_dn_list = $ldap->getUsers ($config->get_UserSuffix());
+
+echo "<table width=\"100%\">\n";
 
 // print attribute headers
-echo "<tr>\n";
-foreach ($userlist[0] as $attributes) {
-     echo ("<td>" . $attributes["dn"] . "</td>");
-}
-echo "</tr>\n";
+echo "<tr>";
+echo "<th class=\"userlist\">Vorname</th>";
+echo "<th class=\"userlist\">Nachname</th>";
+echo "<th class=\"userlist\">Uid</th>";
+echo "<th class=\"userlist\">Home Verzeichnis</th>";
+echo "</tr>";
 
-// print user list
-foreach ($userlist as $user_attributes) {
+foreach ($user_dn_list as $user_dn) {
   echo "<tr>\n";
-    foreach ($user_attributes as $attribute) {
-      echo "<td>$attribute</td>\n";
-    }
+
+  $userentry = $ldap->getUser ($user_dn);
+  echo ("<td class=\"userlist\">" . $userentry->getGivenName() . "</td>");
+  echo ("<td class=\"userlist\">" . $userentry->getSn() . "</td>");    
+  echo ("<td class=\"userlist\">" . $userentry->getUid() . "</td>");    
+  echo ("<td class=\"userlist\">" . $userentry->gethomeDirectory() . "</td>");
   echo "</tr>\n";
 }
-echo "</table>\n";
+echo "</table>";
 
+$ldap->close();
 
 ?>
  
