@@ -58,7 +58,7 @@ things to get it to work:
    You have to run the command as the user your webserver is running, e.g.
 
    wwwrun@tilo:/srv/www/htdocs/lam/lib> /srv/www/htdocs/lam/lib/lamdaemon.pl \
-     127.0.0.1 /srv/www/htdocs/lam/lib/lamdaemon.pl root secret *test
+     127.0.0.1 /srv/www/htdocs/lam/lib/lamdaemon.pl adminuser secret *test
 
    You should get the following response:
 
@@ -73,5 +73,13 @@ things to get it to work:
 
 
 Now everything should work fine.
+
+
+Security warning:
+-----------------
+
+   If you use PHP < 4.3 your admin user and password are passed as commandline argument.
+   This can be a security risk. Upgrade your PHP version for productive use.
+
 
 Please send a mail to TiloLutz@gmx.de if you have any suggestions.

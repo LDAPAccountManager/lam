@@ -205,9 +205,23 @@ else {
 	$remotepath = shift @ARGV;
 	use Net::SSH::Perl;
 	if ($ARGV[2] eq "*test") { print "Net::SSH::Perl successfully installed.\n"; }
-	@username = split (',', $ARGV[0]);
-	$username[0] =~ s/uid=//;
-	$password = $ARGV[1];
+	if (($ARGV[0] eq "-") and ($ARGV[1] eq "-")) {  # user+passwd are in STDIN
+		$username = <STDIN>;
+		chop($username);
+		@username = split (',', $username);
+		$username[0] =~ s/uid=//;
+		$username[0] =~ s/cn=//;
+		$username = $username[0];
+		$password = <STDIN>;
+		chop($password);
+	}
+	else {
+		@username = split (',', $ARGV[0]);
+		$username[0] =~ s/uid=//;
+		$username[0] =~ s/cn=//;
+		$username = $username[0];
+		$password = $ARGV[1];
+	}
 	# Put all transfered lines in one string
 	if ($ARGV[2] ne "*test") {
 		$string = do {local $/;<STDIN>};
@@ -216,7 +230,7 @@ else {
 	my $ssh = Net::SSH::Perl->new($hostname, options=>[
 		"UserKnownHostsFile /dev/null"],
 		protocol => "2,1" );
-	$ssh->login($username[0], $password);
+	$ssh->login($username, $password);
 	# Change needed to prevent buffer overrun
 	@string2 = split ("\n", $string);
 	for ($i=0; $i<=$#string2; $i++) {
