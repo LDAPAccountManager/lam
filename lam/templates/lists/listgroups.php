@@ -30,6 +30,8 @@ include_once ("../../lib/status.inc");
 session_save_path("../../sess");
 @session_start();
 
+setlanguage();
+
 // get sorting column when register_globals is off
 $list = $_GET['list'];
 
