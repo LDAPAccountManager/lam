@@ -22,6 +22,7 @@ $Id$
 
   LDAP Account Manager display help pages.
 */
+include_once("../lib/ldap.inc");
 
 session_save_path("../sess"); // Set session save path
 @session_start(); // Start LDAP Account Manager session
