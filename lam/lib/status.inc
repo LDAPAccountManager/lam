@@ -37,7 +37,7 @@ function StatusMessage($MessageTyp,$MessageHeadline,$MessageText,$MessageVariabl
 	/* Set output-message, when none or false $MessageTyp is submitted. */
 	else {
 		$class = "class=\"statusError\"";
-		$MessageTyp = s_("LAM Internal Error");
+		$MessageTyp = _("LAM Internal Error");
 		$MessageHeadline = _("Invalid/Missing Message type");
 		$MessageText = _("Please report this error to the Bug-Tracker at {link=http://lam.sf.net}LDAP Account Manager Development Team{endlink}. The error number is {bold}0001:Invalid/Missing Message type.{endbold} Thank you.");
 	}
@@ -46,7 +46,7 @@ function StatusMessage($MessageTyp,$MessageHeadline,$MessageText,$MessageVariabl
 	$MessageText = parseMessageString($MessageText);
 
 	//$MessageTyp = "<h1 " . $class . ">" . $MessageTyp . "</h1>"; // Format $MessageTyp
-	$MessageTyp = "<img src=\"../graphics/" . strtolower($MessageTyp) . ".jpg\" alt=\"" . $MessageTyp . "\" width=\"50\" height=\"60\">";
+	$MessageTyp = "<img src=\"" . $_SESSION['lampath'] . "graphics/" . strtolower($MessageTyp) . ".png\" alt=\"" . $MessageTyp . "\" width=\"50\" height=\"60\">";
 	$MessageHeadline = "<h2 " . $class . ">" . $MessageHeadline . "</h2>"; // Format $MessageHeadline
 	$MessageText = "<p " . $class . ">" . $MessageText . "</p>"; // Format $MessageText
 	$format = "<div " . $class . "><br><table><tr><td>" . $MessageTyp . "</td><td>" . $MessageHeadline . $MessageText . "</td></tr></table><br></div>";
