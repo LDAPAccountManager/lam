@@ -448,7 +448,7 @@ function get_preg($argument, $regexp) {
 					$pregexpr = '/^(\\+)*([0-9\\.\\ \\(\\)\\/-])*$/';
 					break;
 		case "email":
-					$pregexpr = '^(([0-9a-z\\._-])+[@]([0-9a-z-])+([.]([0-9a-z-])+)*)*$';
+					$pregexpr = '/^(([0-9a-z\\._-])+[@]([0-9a-z-])+([.]([0-9a-z-])+)*)*$/';
 					break;
 		case "street":		// Allow all letters, numbers, space and .-_
 					$pregexpr = '/^([[:alnum:]\\.\\ \\_-])*$/';
