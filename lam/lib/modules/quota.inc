@@ -67,7 +67,7 @@ class quota {
 
 	var $quota;
 
-	function get_alias() {
+	function get_alias($scope) {
 		return _('quota');
 		}
 

@@ -63,7 +63,7 @@ class main {
 	// name of accountContainer so we can read other classes in accuontArray
 	var $base;
 
-	function get_alias() {
+	function get_alias($scope) {
 		return _('main');
 		}
 
@@ -207,7 +207,7 @@ class main {
 				if (!$_SESSION[$this->base]->module[$module]->module_complete()) {
 					$disabled = true;
 					$table[] = array ( 0 => array ( 'kind' => 'message', 'type' => 'ERROR', 'headline' =>  _('Check module'),
-						'text' => sprintf(_('Please set up all required attributes on %s page.'), $_SESSION[$this->base]->module[$module]->get_alias()) ));
+						'text' => sprintf(_('Please set up all required attributes on %s page.'), $_SESSION[$this->base]->module[$module]->get_alias($this->base->type)) ));
 					}		
 				}
 			}

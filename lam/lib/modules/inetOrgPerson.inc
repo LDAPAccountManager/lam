@@ -66,7 +66,7 @@ class inetOrgPerson {
 	*/
 	var $orig;
 
-	function get_alias() {
+	function get_alias($scope) {
 		return _('inetOrgPerson');
 	}
 

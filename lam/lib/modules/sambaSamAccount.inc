@@ -122,7 +122,7 @@ class sambaSamAccount {
 			}
 		}
 
-	function get_alias() {
+	function get_alias($scope) {
 		return _('sambaSamAccount');
 		}
 

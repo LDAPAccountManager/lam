@@ -138,7 +138,7 @@ function getAvailableModules($scope) {
 			$entry = substr($entry, 0, strpos($entry, '.'));
 			$eval = '$module = '.$entry."::get_dependencies(".$scope.");";
 			eval ($eval);
-			if ($module != -1) $return[] = getModuleAlias($entry, $scope);
+			if ($module != -1) $return[] = $entry;
 			}
 	return $return;
 	}
@@ -259,13 +259,13 @@ class accountContainer {
 			if ($this->order[$i]==$this->order[$this->module['main']->current_page] || !$this->module[$this->order[$i]]->module_ready() ) {
 				// print disabled button
 				echo "<input name=\"form_main_".$this->order[$i]."\" type=\"submit\" value=\"";
-				echo $this->module[$this->order[$i]]->get_alias();
+				echo $this->module[$this->order[$i]]->get_alias($type);
 				echo "\" disabled>\n<br>";
 				}
 			else {
 				// print normal button
 				echo "<input name=\"form_main_".$this->order[$i]."\" type=\"submit\" value=\"";
-				echo $this->module[$this->order[$i]]->get_alias();
+				echo $this->module[$this->order[$i]]->get_alias($type);
 				echo "\">\n<br>";
 				}
 			}
@@ -273,7 +273,7 @@ class accountContainer {
 		echo "</fieldset></td></tr>\n";
 		echo "</table></td>\n<td>";
 		echo "<td><fieldset class=\"".$this->type."edit-dark\"><legend class=\"".$this->type."edit-bright\"><b>";
-			echo $this->module[$this->order[$this->module['main']->current_page]]->get_alias();
+			echo $this->module[$this->order[$this->module['main']->current_page]]->get_alias($type);
 			echo "</b></legend>\n";
 		// display html-code from mdule
 		$function = '$result = $this->module[$this->order[$this->module[\'main\']->current_page]]->display_html_'.$this->module['main']->subpage.'($post);';

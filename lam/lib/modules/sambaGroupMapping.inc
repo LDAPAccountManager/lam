@@ -93,7 +93,7 @@ class sambaGroupMapping {
 	// Array of well known rids
 	var $rids;
 
-	function get_alias() {
+	function get_alias($scope) {
 		return _('sambaGroupMapping');
 		}
 
