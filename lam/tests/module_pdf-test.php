@@ -30,7 +30,7 @@ include_once('../lib/pdf.inc');
 //print_r(processLine("<block><key>Test key</key><value><b><i>Test value</i></b></value></block>"));
 //print_r(processLine("<block><p><b>Test p</b></p><br /></block>"));
 	
-	$entries = array("Surname" => array("<block><key>Test key</key><value>Test value</value></block>"),"Given name" => array("<block><p><b>Test p</b></p></block>"),"User quotas" => array("<block><key>User quotas</key><td width=\"30\" align=\"L\"><b>Mountpoint</b></td><td width=\"30\" align=\"L\"><b>Soft block</b></td><td width=\"30\" align=\"L\"><b>Soft inode</b></td><td width=\"30\" align=\"L\"><b>Hard block</b></td><td width=\"30\" align=\"L\"><b>Hard inode</b></td></block>","<block><td width=\"30\" align=\"L\">/usr</td><td width=\"30\" align=\"L\">10</td><td width=\"30\" align=\"L\">100</td><td width=\"30\" align=\"L\">15</td><td width=\"30\" align=\"L\">150</td></block>"));
+	$entries = array("Last name" => array("<block><key>Test key</key><value>Test value</value></block>"),"First name" => array("<block><p><b>Test p</b></p></block>"),"User quotas" => array("<block><key>User quotas</key><td width=\"30\" align=\"L\"><b>Mountpoint</b></td><td width=\"30\" align=\"L\"><b>Soft block</b></td><td width=\"30\" align=\"L\"><b>Soft inode</b></td><td width=\"30\" align=\"L\"><b>Hard block</b></td><td width=\"30\" align=\"L\"><b>Hard inode</b></td></block>","<block><td width=\"30\" align=\"L\">/usr</td><td width=\"30\" align=\"L\">10</td><td width=\"30\" align=\"L\">100</td><td width=\"30\" align=\"L\">15</td><td width=\"30\" align=\"L\">150</td></block>"));
 	$structure = getStructure(array("User"));
 	$structure = $structure['User'];
 

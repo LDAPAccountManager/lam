@@ -49,10 +49,10 @@ class inetOrgPerson extends baseModule {
 	**/
 	function load_Messages() {
 		$this->messages['host'][0] = array('ERROR', _('Unix workstations'), _('Unix workstations is invalid.'));
-		$this->messages['givenName'][0] = array('ERROR', _('Given name'), _('Given name contains invalid characters!'));
-		$this->messages['givenName'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_lastName', _('Given name contains invalid characters!'));
-		$this->messages['surname'][0] = array('ERROR', _('Surname'), _('Surname contains invalid characters!'));
-		$this->messages['surname'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_firstName', _('Surname contains invalid characters!'));
+		$this->messages['givenName'][0] = array('ERROR', _('First name'), _('First name contains invalid characters!'));
+		$this->messages['givenName'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_lastName', _('First name contains invalid characters!'));
+		$this->messages['lastname'][0] = array('ERROR', _('Last name'), _('Last name contains invalid characters!'));
+		$this->messages['lastname'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_firstName', _('Last name contains invalid characters!'));
 		$this->messages['telephoneNumber'][0] = array('ERROR', _('Telephone number'), _('Please enter a valid telephone number!'));
 		$this->messages['telephoneNumber'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_telephone', _('Please enter a valid telephone number!'));
 		$this->messages['mobileTelephone'][0] = array('ERROR', _('Mobile number'), _('Please enter a valid mobile number!'));
@@ -207,18 +207,19 @@ class inetOrgPerson extends baseModule {
 													'facimilieTelefonNumber',
 													'mail');
 		// help Entries
-		$return['help'] = array (	'description'						=>	array ("ext" => "FALSE", "Headline" => _("Gecos"), "Text" => _("Host description. If left empty host name will be used.")),
-											'title'									=>	array ("ext" => "FALSE", "Headline" => _("Title"), "Text" => _("Title of user, Mr., Ms., ...")),
-											'givenName'						=>	array ("ext" => "FALSE", "Headline" => _("Given name"), "Text" => _("Given name of user. Only letters, - and spaces are allowed.")),
-											'sn'									=>	array ("ext" => "FALSE", "Headline" => _("Surname"), "Text" => _("Surname of user. Only letters, - and spaces are allowed.")),
-											'employeeType'					=>	array ("ext" => "FALSE", "Headline" => _("Employee type"), "Text" => _("Employee type: worker, student, nurse, ...")),
-											'street'								=>	array ("ext" => "FALSE", "Headline" => _("Street"), "Text" => _("Street")),
-											'postalCode'						=>	array ("ext" => "FALSE", "Headline" => _("Postal code"), "Text" => _("Postal code")),
-											'postalAddress'					=>	array ("ext" => "FALSE", "Headline" => _("Postal address"), "Text" => _("Postal address, city")),
-											'telephoneNumber'				=>	array ("ext" => "FALSE", "Headline" => _("Telephone number"), "Text" => _("Telephone number")),
-											'mobileTelephoneNumber'		=>	array ("ext" => "FALSE", "Headline" => _("Mobile number"), "Text" => _("Mobile number")),
-											'facsimileTelephoneNumber'	=>	array ("ext" => "FALSE", "Headline" => _("Fax number"), "Text" => _("Fax number")),
-											'mail'									=>	array ("ext" => "FALSE", "Headline" => _("eMail address"), "Text" => _("eMail address")));
+		$return['help'] = array (
+			'description' => array("ext" => "FALSE", "Headline" => _("Gecos"), "Text" => _("Host description. If left empty host name will be used.")),
+			'title' => array("ext" => "FALSE", "Headline" => _("Title"), "Text" => _("Title of user, Mr., Ms., ...")),
+			'givenName' => array("ext" => "FALSE", "Headline" => _("First name"), "Text" => _("First name of user. Only letters, - and spaces are allowed.")),
+			'sn' => array("ext" => "FALSE", "Headline" => _("Last name"), "Text" => _("Last name of user. Only letters, - and spaces are allowed.")),
+			'employeeType' => array("ext" => "FALSE", "Headline" => _("Employee type"), "Text" => _("Employee type: worker, student, nurse, ...")),
+			'street' => array("ext" => "FALSE", "Headline" => _("Street"), "Text" => _("Street")),
+			'postalCode' => array("ext" => "FALSE", "Headline" => _("Postal code"), "Text" => _("Postal code")),
+			'postalAddress' => array("ext" => "FALSE", "Headline" => _("Postal address"), "Text" => _("Postal address, city")),
+			'telephoneNumber' => array("ext" => "FALSE", "Headline" => _("Telephone number"), "Text" => _("Telephone number")),
+			'mobileTelephoneNumber' => array("ext" => "FALSE", "Headline" => _("Mobile number"), "Text" => _("Mobile number")),
+			'facsimileTelephoneNumber' => array("ext" => "FALSE", "Headline" => _("Fax number"), "Text" => _("Fax number")),
+			'mail' => array("ext" => "FALSE", "Headline" => _("eMail address"), "Text" => _("eMail address")));
 		
 		return $return;
 	}
@@ -322,7 +323,7 @@ class inetOrgPerson extends baseModule {
 
 		// Do some regex-checks and return error if attributes are set to wrong values
 		if ( !get_preg($this->attributes['givenName'][0], 'realname')) $triggered_messages['givenName'][] = $this->messages['givenName'][0];
-		if ( !get_preg($this->attributes['sn'][0], 'realname')) $triggered_messages['sn'][] = $this->messages['surname'][0];
+		if ( !get_preg($this->attributes['sn'][0], 'realname')) $triggered_messages['sn'][] = $this->messages['lastname'][0];
 		if ( !get_preg($this->attributes['telephoneNumber'][0], 'telephone')) $triggered_messages['telephoneNumber'][] = $this->messages['telephoneNumber'][0];
 		if ( !get_preg($this->attributes['mobileTelephoneNumber'][0], 'telephone')) $triggered_messages['mobileTelephoneNumber'][] = $this->messages['mobileTelephone'][0];
 		if ( !get_preg($this->attributes['facsimileTelephoneNumber'][0], 'telephone')) $triggered_messages['facsimileTelephoneNumber'][] = $this->messages['facsimileNumber'][0];
@@ -442,7 +443,7 @@ class inetOrgPerson extends baseModule {
 				$partialAccounts[$i]['sn'] = $rawAccounts[$i][$ids['inetOrgPerson_lastName']];
 			}
 			else {
-				$errMsg = $this->messages['surname'][1];
+				$errMsg = $this->messages['lastname'][1];
 				array_push($errMsg, array($i));
 				$triggered_messages[] = $errMsg;
 			}
