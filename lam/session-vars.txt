@@ -124,7 +124,8 @@ confwiz/*.php
 - conwiz_masterpwd: Hauptpasswort für Einstellungen, zur Überprüfung des Admins
 
 
-
+profilepage.php/profilecreate.php
+- profile_types: Hash Array mit Typen (text, select, ...) der verarbeiteten Optionen
 
 
 
