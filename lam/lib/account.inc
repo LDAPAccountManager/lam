@@ -1681,6 +1681,7 @@ function modifygroup($values,$values_old) { // Will modify the LDAP-Group
 	if (($_SESSION['config']->samba3 == 'yes') && (!in_array('sambaGroupMapping', $values->general_objectClass))) {
 		if (!isset($attr['objectClass'])) $attr['objectClass'] = $values->general_objectClass;
 		$attr['objectClass'][] = 'sambaGroupMapping';
+		$attr['sambaGroupType'] = '2';
 		}
 
 	if ($attr_rem) { // Remove attributes not longer valid

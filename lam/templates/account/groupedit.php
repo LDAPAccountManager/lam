@@ -330,7 +330,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "</td>\n<td><input name=\"f_general_uidNumber\" type=\"text\" size=\"30\" maxlength=\"6\" value=\"".$_SESSION['account']->general_uidNumber."\">".
 			"</td>\n<td><a href=\"../help.php?HelpNumber=408\" target=\"lamhelp\">"._('Help').
 			"</a></td>\n</tr>\n<tr>\n<td>";
-		echo _('Gecos');
+		echo _('Description');
 		echo "</td>\n<td><input name=\"f_general_gecos\" type=\"text\" size=\"30\" value=\"".$_SESSION['account']->general_gecos."\"></td>\n".
 			"<td><a href=\"../help.php?HelpNumber=409\" target=\"lamhelp\">"._('Help')."</a></td>\n</tr>\n<tr>\n<td>";
 		echo _('Suffix'); echo "</td>\n<td><select name=\"f_general_suffix\">";
