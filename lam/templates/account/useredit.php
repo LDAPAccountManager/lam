@@ -92,6 +92,24 @@ if (isset($_GET['DN']) && $_GET['DN']!='') {
 // Startcondition. useredit.php was called from outside to create a new group
  else if (count($_POST)==0) {
 	// Create new account object with settings from default profile
+	// Check if there are valid groups. Can not create user with no primary group
+	$groups = findgroups();
+	if (count($groups)==0) {
+		// Write HTML-Header
+		echo $header_intern;
+		echo "<html><head>";
+		echo "<title>";
+		echo _("Create new Account");
+		echo "</title>\n".
+			"<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n".
+			"<meta http-equiv=\"pragma\" content=\"no-cache\">\n".
+			"<meta http-equiv=\"cache-control\" content=\"no-cache\">\n".
+			"</head><body>\n".
+		// Display errir-messages
+		StatusMessage("ERROR", _("Can not create any users."),_("Please create a group first."));
+		echo "</body></html>";
+		die;
+		}
 	$account_new = loadUserProfile('default');
 	$account_new ->type = 'user';
 	if ($config_intern->scriptServer) {
@@ -415,7 +433,7 @@ switch ($_POST['select']) {
 				else $account_new->smb_password = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $_POST['f_smb_password'], MCRYPT_MODE_ECB, $iv));
 			}
 		 	else $account_new->smb_password = '';
-		if ( ($account_new->smb_useunixpwd && !$account_old) || ($account_new->smb_useunixpwd && $account_new->unix_password!='') ) {
+		if ( (($account_new->smb_useunixpwd && !$account_old) || ($account_new->smb_useunixpwd && $account_new->unix_password!='')) && isset($account_new->unix_password) ) {
 			// Set Samba-Password to unix-password if option is set
 			$unix_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($account_new->unix_password), MCRYPT_MODE_ECB, $iv);
 			$smb_password = str_replace(chr(00), '', $unix_password);
@@ -733,10 +751,10 @@ do { // X-Or, only one if() can be true
 		}
 	} while(0);
 
-
 // Write HTML-Header
 echo $header_intern;
-echo "<html><head><title>";
+echo "<html><head>";
+echo "<title>";
 echo _("Create new Account");
 echo "</title>\n".
 	"<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n".
@@ -752,6 +770,7 @@ if (is_array($errors))
 
 // print_r($account_new);
 //print_r($account_old);
+
 
 switch ($select_local) {
 	/* Select which part of page should be loaded and check values

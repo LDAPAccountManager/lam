@@ -45,7 +45,7 @@ function createUserPDF($accounts) {
 		$key = base64_decode($_COOKIE['Key']);
 		$pdfFile->addPage();
 		// Load string with additional information from session
-		$info_string = $_SESSION['config']->pdf_customtext;
+		$info_string = $_SESSION['config']->pdftext;
 		// Print individuall text.
 		// Get all allowed vairables from account-object
 		$values = get_object_vars($account);

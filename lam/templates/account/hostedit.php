@@ -82,6 +82,24 @@ if (isset($_GET['DN']) && $_GET['DN']!='') {
 // Startcondition. hostedit.php was called from outside to create a new host
 else if (count($_POST)==0) {
 	// Create new account object with settings from default profile
+	// Check if there are valid groups. Can not create user with no primary group
+	$groups = findgroups();
+	if (count($groups)==0) {
+		// Write HTML-Header
+		echo $header_intern;
+		echo "<html><head>";
+		echo "<title>";
+		echo _("Create new Account");
+		echo "</title>\n".
+			"<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n".
+			"<meta http-equiv=\"pragma\" content=\"no-cache\">\n".
+			"<meta http-equiv=\"cache-control\" content=\"no-cache\">\n".
+			"</head><body>\n".
+		// Display errir-messages
+		StatusMessage("ERROR", _("Can not create any hosts."),_("Please create a group first."));
+		echo "</body></html>";
+		die;
+		}
 	$account_new = loadHostProfile('default');
 	$account_new ->type = 'host';
 	$account_new->smb_flagsW = 1;
