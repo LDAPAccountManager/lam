@@ -47,6 +47,12 @@ color:red;
 text-decoration:none;
 }
 
+form { }
+input { 
+font-weight:bold;
+background-color:#CCCCFF;
+}
+
 
 /**
  * table style for userlist.php
