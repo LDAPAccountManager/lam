@@ -348,16 +348,13 @@ class sambaAccount extends baseModule {
 				"Text" => _("Drive letter assigned on windows workstations as homedirectory.")),
 			"homePath" => array(
 				"ext" => "FALSE", "Headline" => _("Home path"),
-				"Text" => _("UNC-path (\\\\server\\share) of homedirectory. $%s and $%s are replaced with user- and groupname."). ' '. _("Can be left empty."),
-				"variables" => array('user', 'group')),
+				"Text" => _('UNC-path (\\\\server\\share) of homedirectory. $user and $group are replaced with user- and groupname.'). ' '. _("Can be left empty.")),
 			"profilePath" => array(
 				"ext" => "FALSE", "Headline" => _("Profile path"),
-				"Text" => _("Path of the user profile. Can be a local absolute path or a UNC-path (\\\\server\\share). $%s and $%s are replaced with user- and groupname."). ' '. _("Can be left empty."),
-				"variables" => array('user', 'group')),
+				"Text" => _('Path of the user profile. Can be a local absolute path or a UNC-path (\\\\server\\share). $user and $group are replaced with user- and groupname.'). ' '. _("Can be left empty.")),
 			"scriptPath" => array(
 				"ext" => "FALSE", "Headline" => _("Logon script"),
-				"Text" => _("Filename and -path relative to netlogon-share which should be executed on logon. $%s and $%s are replaced with user- and groupname."). ' '. _("Can be left empty."),
-				"variables" => array('user', 'group')),
+				"Text" => _('Filename and -path relative to netlogon-share which should be executed on logon. $user and $group are replaced with user- and groupname.'). ' '. _("Can be left empty.")),
 			"workstations" => array(
 				"ext" => "FALSE", "Headline" => _("Samba workstations"),
 				"Text" => _("Comma separated list of Samba workstations the user is allowed to login. Empty means every workstation."). ' '. _("Can be left empty.")),
