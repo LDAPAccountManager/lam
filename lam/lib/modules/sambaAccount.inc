@@ -45,8 +45,10 @@ class sambaAccount extends baseModule {
 		// error messages for input checks
 		$this->messages['homePath'][0] = array('ERROR', _('Home path'), _('Home path is invalid.'));
 		$this->messages['homePath'][1] = array('INFO', _('Home path'), _('Inserted user- or groupname in HomePath.'));
+		$this->messages['homePath'][2] = array('INFO', _('Account %s:') . ' sambaAccount_homePath', _('Inserted user- or groupname in HomePath.'));
 		$this->messages['profilePath'][0] = array('ERROR', _('Profile path'), _('Profile path is invalid!'));
 		$this->messages['profilePath'][1] = array('INFO', _('Profile path'), _('Inserted user- or groupname in profilepath.'));
+		$this->messages['profilePath'][2] = array('INFO', _('Account %s:') . ' sambaAccount_profilePath', _('Inserted user- or groupname in profilepath.'));
 		$this->messages['logonScript'][0] = array('ERROR', _('Logon script'), _('Logon script is invalid!'));
 		$this->messages['logonScript'][1] = array('INFO', _('Logon script'), _('Inserted user- or groupname in logon script.'));
 		$this->messages['logonScript'][2] = array('ERROR', _('Account %s:') . ' sambaAccount_logonScript', _('Logon script is invalid!'));
@@ -252,13 +254,13 @@ class sambaAccount extends baseModule {
 					'name' => 'sambaAccount_homePath',
 					'description' => _('Home path'),
 					'help' => 'homePath',
-					'example' => '/home/smiller'
+					'example' => _('\\\\server\\homes\\smiller')
 				),
 				array(
 					'name' => 'sambaAccount_profilePath',
 					'description' => _('Profile path'),
 					'help' => 'profilePath',
-					'example' => '\\server\profiles\smiller'
+					'example' => _('\\\\server\\profiles\\smiller')
 				),
 				array(
 					'name' => 'sambaAccount_logonScript',
@@ -862,13 +864,15 @@ class sambaAccount extends baseModule {
 			for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 				if (!in_array("sambaAccount", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "sambaAccount";
 				// displayName
-				if (get_preg($rawAccounts[$i][$ids['sambaAccount_displayName']], 'realname')) {
-					$partialAccounts[$i]['displayName'] = $rawAccounts[$i][$ids['sambaAccount_displayName']];
-				}
-				else {
-					$errMsg = $this->messages['displayName'][0];
-					array_push($errMsg, array($i));
-					$triggered_messages[] = $errMsg;
+				if ($rawAccounts[$i][$ids['sambaAccount_displayName']] != "") {
+					if (get_preg($rawAccounts[$i][$ids['sambaAccount_displayName']], 'realname')) {
+						$partialAccounts[$i]['displayName'] = $rawAccounts[$i][$ids['sambaAccount_displayName']];
+					}
+					else {
+						$errMsg = $this->messages['displayName'][0];
+						array_push($errMsg, array($i));
+						$triggered_messages[] = $errMsg;
+					}
 				}
 				// password
 				if (!get_preg($rawAccounts[$i][$ids['sambaAccount_password']], 'password')) {
@@ -992,7 +996,7 @@ class sambaAccount extends baseModule {
 						$partialAccounts[$i]['smbHome'] = $rawAccounts[$i][$ids['sambaAccount_homePath']];
 					}
 					else {
-						$errMsg = $this->messages['homePath'][0];
+						$errMsg = $this->messages['homePath'][2];
 						array_push($errMsg, array($i));
 						$triggered_messages[] = $errMsg;
 					}
@@ -1003,7 +1007,7 @@ class sambaAccount extends baseModule {
 						$partialAccounts[$i]['profilePath'] = $rawAccounts[$i][$ids['sambaAccount_profilePath']];
 					}
 					else {
-						$errMsg = $this->messages['profilePath'][0];
+						$errMsg = $this->messages['profilePath'][2];
 						array_push($errMsg, array($i));
 						$triggered_messages[] = $errMsg;
 					}
