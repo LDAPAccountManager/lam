@@ -39,15 +39,20 @@ body {
 /* links */
 a {
 color:blue;
-text-decoration:underline;
+text-decoration:none;
 }
 
 a:visited {
 color:blue;
-text-decoration:underline;
+text-decoration:none;
 }
 
 a:hover {
+color:red;
+text-decoration:none;
+}
+
+a:active {
 color:red;
 text-decoration:none;
 }
