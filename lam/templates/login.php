@@ -194,7 +194,7 @@ if($_POST['action'] == "checklogin")
 	include_once("../lib/ldap.inc"); // Include ldap.php which provides Ldap class
 
 	$ldap = new Ldap($_SESSION['config']); //$config); // Create new Ldap object
-	$result = $ldap->connect($username,$passwd); // Connect to LDAP server for verifing username/password
+	$result = $ldap->connect($_POST['username'],$_POST['passwd']); // Connect to LDAP server for verifing username/password
 	if($result == True) // Username/password correct. Do some configuration and load main frame.
 	{
 		// setting language
@@ -213,12 +213,12 @@ if($_POST['action'] == "checklogin")
 		if($ldap->server)
 		{
 			$error_message = _("Wrong Password/Username  combination. Try again.");
-			display_LoginPage($config); // Username/password invalid. Return to login page.
+			display_LoginPage($_SESSION['config']); // Username/password invalid. Return to login page.
 		}
 		else
 		{
 			$error_message = _("Cannot connect to specified LDAP-Server. Try again.");
-			display_LoginPage($config); // Username/password invalid. Return to login page.
+			display_LoginPage($_SESSION['config']); // Username/password invalid. Return to login page.
 		}
 	}
 }
