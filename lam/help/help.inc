@@ -54,16 +54,16 @@ $helpArray = array (
 						":</b><br><br>".
 						_("ou=People,dc=yourcompany,dc=com will read and store all accounts in this subtree.")),
 				"203" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("UID number"),
-					"Text" => _("These are the minimum and maximum numbers to use for user IDs when creating new user accounts. The range has to be different from that of machines. New user accounts will always get the highest number in use plus one.")),
+					"Text" => _("These are the minimum and maximum numbers to use for user IDs when creating new user accounts. The range should be different from that of machines. New user accounts will always get the highest number in use plus one.")),
 				"204" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("GID number"),
 					"Text" => _("These are the minimum and maximum numbers to use for group IDs when creating new group accounts. New group accounts will always get the highest number in use plus one.")),
 				"205" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("Machine number"),
-					"Text" => _("These are the minimum and maximum numbers to use for machine IDs when creating new accounts for Samba hosts. The range has to be different from that of users. New host accounts will always get the highest number in use plus one.")),
+					"Text" => _("These are the minimum and maximum numbers to use for machine IDs when creating new accounts for Samba hosts. The range should be different from that of users. New host accounts will always get the highest number in use plus one.")),
 				"206" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("List attributes"),
-					"Text" => _("This is the list of attributes to show in the user/group/host list. The entries can either be predefined values, \"#value\", or individual ones, \"value:description\". Several entries are seperated by semicolons.") .
+					"Text" => _("This is the list of attributes to show in the user/group/host list. The entries can either be predefined values, \"#attribute\", or individual ones, \"attribute:description\". Several entries are seperated by semicolons.") .
 						"<br><br><b>" .
 						_("Example") .
-						": </b>#homeDirectory;#uid;#cn;#uidNumber;#gidNumber;description:UserDescription<br><br><br><u><b>" .
+						": </b>#homeDirectory;#uid;#uidNumber;#gidNumber;mail:Mail address<br><br><br><u><b>" .
 						_("Predefined values") .
 						":</b></u><br><br><b>" .
 						_("Users") .
@@ -82,7 +82,7 @@ $helpArray = array (
 				"208" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("Maximum list entries"),
 					"Text" => _("This is the number of rows to show in the user/group/host list. If more entries are found the list will be split into several pages.")),
 				"209" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("Default language"),
-					"Text" => _("Defines the language of the login window and sets this language as the default language. Users can change the language at login.")),
+					"Text" => _("This defines the language of the login window and sets this language as the default language. Users can change the language at login.")),
 				"210" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("Script path"),
 					"Text" => _("This is the absolute path to an external script for setting quotas and creating home directories.").
 							"<br><br><b>".
