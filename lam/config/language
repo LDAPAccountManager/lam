@@ -4,11 +4,11 @@
 # Normally you don't have to edit this file manually. It is modified automatically when you add a new language in the Configuration-Site.
 
 # Englisch Language
-en_GB:iso639_en:English (Britain)
+en_GB:iso639_en:English (Britain):ISO-8859-15
 
 # German Language
-de_DE:iso639_de:Deutsch (Deutschland)
+de_DE:iso639_de:Deutsch (Deutschland):ISO-8859-15
 
 # German Language
-fr_FR:iso639_fr:Francais (France)
+fr_FR:iso639_fr:Francais (France):ISO-8859-15
 
