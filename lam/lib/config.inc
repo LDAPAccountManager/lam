@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
-  Copyright (C) 2003-04  Roland Gruber
+  Copyright (C) 2003 - 2004  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@ $Id$
 */
 
 include_once("status.inc");
+include_once("modules.inc");
 
 // sets language settings for automatic translation
 function setlanguage() {
@@ -259,6 +260,9 @@ class Config {
 			if (!in_array("samba3", $saved)) array_push($file_array, "\n\n# Set to \"yes\" only if you use the new Samba 3.x schema.\n" . "samba3: " . $this->samba3 . "\n");
 			if (!in_array("cachetimeout", $saved)) array_push($file_array, "\n\n# Number of minutes LAM caches LDAP searches.\n" . "cacheTimeout: " . $this->cachetimeout . "\n");
 			if (!in_array("pwdhash", $saved)) array_push($file_array, "\n\n# Password hash algorithm (CRYPT/MD5/SMD5/SHA/SSHA/PLAIN).\n" . "pwdhash: " . $this->pwdhash . "\n");
+			if (!in_array("usermodules", $saved)) array_push($file_array, "\n\n# List of used user modules\n" . "usermodules: " . $this->usermodules . "\n");
+			if (!in_array("groupmodules", $saved)) array_push($file_array, "\n\n# List of used group modules\n" . "groupmodules: " . $this->groupmodules . "\n");
+			if (!in_array("hostmodules", $saved)) array_push($file_array, "\n\n# List of used host modules\n" . "hostmodules: " . $this->hostmodules . "\n");
 			$file = fopen($conffile, "w");
 			if ($file) {
 				for ($i = 0; $i < sizeof($file_array); $i++) fputs($file, $file_array[$i]);
@@ -295,7 +299,10 @@ class Config {
 		echo "<b>" . _("Default language") . ": </b>" . $this->defaultLanguage . "<br>";
 		echo "<b>" . _("Path to external script") . ": </b>" . $this->scriptPath . "<br>";
 		echo "<b>" . _("Server of external script") . ": </b>" . $this->scriptServer . "<br>";
-		echo "<b>" . _("List of valid users") . ": </b>" . $this->Admins . "<br><br>";
+		echo "<b>" . _("List of valid users") . ": </b>" . $this->Admins . "<br>";
+		echo "<b>" . _("User modules") . ": </b>" . $this->usermodules . "<br>";
+		echo "<b>" . _("Group modules") . ": </b>" . $this->groupmodules . "<br>";
+		echo "<b>" . _("Host modules") . ": </b>" . $this->hostmodules . "<br><br>";
 		echo "<b>" . _("Text for user PDF") . ": </b>" . $this->get_pdftext();
 	}
 
@@ -712,13 +719,18 @@ class Config {
 	function set_UserModules($modules) {
 		if (! is_array($modules)) return false;
 		// check module names
-		// TODO check against available module names
+		$available = getAvailableUserModules();
+		for ($i = 0; $i < sizeof($modules); $i++) {
+			if (! in_array($modules[$i], $available)) return false;
+		}
+		// TODO: check depends/conflicts
 		$this->usermodules = implode(",", $modules);
+		return true;
 	}
 
 	// returns an array of all selected group modules
 	function get_GroupModules() {
-		return explode(",", $this->usermodules);
+		return explode(",", $this->groupmodules);
 	}
 
 	// sets the selected group modules
@@ -727,13 +739,18 @@ class Config {
 	function set_GroupModules($modules) {
 		if (! is_array($modules)) return false;
 		// check module names
-		// TODO check against available module names
+		$available = getAvailableGroupModules();
+		for ($i = 0; $i < sizeof($modules); $i++) {
+			if (! in_array($modules[$i], $available)) return false;
+		}
+		// TODO: check depends/conflicts
 		$this->groupmodules = implode(",", $modules);
+		return true;
 	}
 
 	// returns an array of all selected host modules
 	function get_HostModules() {
-		return explode(",", $this->usermodules);
+		return explode(",", $this->hostmodules);
 	}
 
 	// sets the selected host modules
@@ -742,8 +759,13 @@ class Config {
 	function set_HostModules($modules) {
 		if (! is_array($modules)) return false;
 		// check module names
-		// TODO check against available module names
+		$available = getAvailableHostModules();
+		for ($i = 0; $i < sizeof($modules); $i++) {
+			if (! in_array($modules[$i], $available)) return false;
+		}
+		// TODO: check depends/conflicts
 		$this->hostmodules = implode(",", $modules);
+		return true;
 	}
 
 }

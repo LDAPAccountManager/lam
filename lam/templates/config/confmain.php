@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
-  Copyright (C) 2003  Roland Gruber
+  Copyright (C) 2003-04  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -33,9 +33,9 @@ session_save_path("../../sess");
 setlanguage();
 
 // check if button was pressed and if we have to save the setting or go back to login
-if ($_POST['back'] || $_POST['submitconf']){
+if ($_POST['back'] || $_POST['submitconf'] || $_POST['editmodules']){
 	// save settings
-	if ($_POST['submitconf']){
+	if ($_POST['submitconf'] || $_POST['editmodules']){
 		// save HTTP-POST variables in session
 		$_SESSION['conf_passwd'] = $_POST['passwd'];
 		$_SESSION['conf_passwd1'] = $_POST['passwd1'];
@@ -63,8 +63,18 @@ if ($_POST['back'] || $_POST['submitconf']){
 		$_SESSION['conf_scriptpath'] = $_POST['scriptpath'];
 		$_SESSION['conf_scriptserver'] = $_POST['scriptserver'];
 		$_SESSION['conf_pdf_usertext'] = $_POST['pdf_usertext'];
+		$_SESSION['conf_usermodules'] = explode(",", $_POST['usermodules']);
+		$_SESSION['conf_groupmodules'] = explode(",", $_POST['groupmodules']);
+		$_SESSION['conf_hostmodules'] = explode(",", $_POST['hostmodules']);
 		$_SESSION['conf_filename'] = $_POST['filename'];
+	}
+	// go to final page
+	if ($_POST['submitconf']){
 		metaRefresh("confsave.php");
+	}
+	// go to modules page
+	elseif ($_POST['editmodules']){
+		metaRefresh("confmodules.php");
 	}
 	// back to login
 	else if ($_POST['back']){
@@ -75,6 +85,7 @@ if ($_POST['back'] || $_POST['submitconf']){
 
 // get password if register_globals is off
 if ($_POST['passwd']) $passwd = $_POST['passwd'];
+if ($_GET["modulesback"] == "true") $passwd = $_SESSION['conf_passwd'];
 
 // check if password was entered
 // if not: load login page
@@ -84,14 +95,51 @@ if (! $passwd) {
 	exit;
 }
 
+include_once ('../../lib/config.inc');
+$filename = $_POST['filename'];
+if ($_GET["modulesback"] == "true") $filename = $_SESSION['conf_filename'];
+$conf = new Config($filename);
+
 // check if password is valid
 // if not: load login page
-include_once ('../../lib/config.inc');
-$conf = new Config($_POST['filename']);
 if (!(($conf->get_Passwd()) == $passwd)) {
 	$message = _("The password is invalid! Please try again.");
 	require('conflogin.php');
 	exit;
+}
+
+// check if user comes from modules page
+if ($_GET["modulesback"] == "true") {
+	// load config values from session
+	$conf->set_samba3($_SESSION['conf_samba3']);
+	$conf->set_ServerURL($_SESSION['conf_serverurl']);
+	$conf->set_cacheTimeout($_SESSION['conf_cachetimeout']);
+	$conf->set_Adminstring($_SESSION['conf_admins']);
+	$conf->set_UserSuffix($_SESSION['conf_suffusers']);
+	$conf->set_GroupSuffix($_SESSION['conf_suffgroups']);
+	$conf->set_HostSuffix($_SESSION['conf_suffhosts']);
+	$conf->set_DomainSuffix($_SESSION['conf_suffdomains']);
+	$conf->set_minUID($_SESSION['conf_minUID']);
+	$conf->set_maxUID($_SESSION['conf_maxUID']);
+	$conf->set_minGID($_SESSION['conf_minGID']);
+	$conf->set_maxGID($_SESSION['conf_maxGID']);
+	$conf->set_minMachine($_SESSION['conf_minMach']);
+	$conf->set_maxMachine($_SESSION['conf_maxMach']);
+	$conf->set_userlistAttributes($_SESSION['conf_usrlstattr']);
+	$conf->set_grouplistAttributes($_SESSION['conf_grplstattr']);
+	$conf->set_hostlistAttributes($_SESSION['conf_hstlstattr']);
+	$conf->set_MaxListEntries($_SESSION['conf_maxlistentries']);
+	$conf->set_defaultLanguage($_SESSION['conf_lang']);
+	$conf->set_scriptpath($_SESSION['conf_scriptpath']);
+	$conf->set_scriptserver($_SESSION['conf_scriptserver']);
+	$conf->set_pwdhash($_SESSION['conf_pwdhash']);
+	$conf->set_pdftext($_SESSION['conf_pdf_usertext']);
+	// check if modules were edited
+	if ($_GET["moduleschanged"] == "true") {
+		$conf->set_UserModules($_SESSION['conf_usermodules']);
+		$conf->set_GroupModules($_SESSION['conf_groupmodules']);
+		$conf->set_HostModules($_SESSION['conf_hostmodules']);
+	}
 }
 
 echo $_SESSION['header'];
@@ -173,6 +221,23 @@ echo ("<td><a href=\"../help.php?HelpNumber=214\" target=\"lamhelp\">" . _("Help
 
 echo ("</table>");
 echo ("</fieldset>");
+
+echo ("<p></p>");
+
+echo ("<fieldset><legend><b>" . _("Account modules") . "</b></legend>");
+echo ("<table border=0>");
+
+// Account modules
+echo "<tr><td><b>" . _("User modules") . ": </b>" . implode(", ", $conf->get_UserModules()) . "</td></tr>\n";
+echo "<tr><td><b>" . _("Group modules") . ": </b>" . implode(", ", $conf->get_GroupModules()) . "</td></tr>\n";
+echo "<tr><td><b>" . _("Host modules") . ": </b>" . implode(", ", $conf->get_HostModules()) . "</td></tr>\n";
+echo "<tr><td>&nbsp;</td></tr>\n";
+echo "<tr><td><input type=\"submit\" name=\"editmodules\" value=\"" . _("Edit modules") . "\">&nbsp;&nbsp;" .
+	"<a href=\"../help.php?HelpNumber=217\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n";
+
+echo ("</table>");
+echo ("</fieldset>");
+
 echo ("<p></p>");
 
 echo ("<fieldset><legend><b>" . _("Samba settings") . "</b></legend>");
@@ -188,6 +253,7 @@ echo ("<td><a href=\"../help.php?HelpNumber=213\" target=\"lamhelp\">" . _("Help
 
 echo ("</table>");
 echo ("</fieldset>");
+
 echo ("<p></p>");
 
 echo ("<fieldset><legend><b>" . _("Ranges") . "</b></legend>");
@@ -197,6 +263,7 @@ echo ("<table border=0>");
 echo ("<tr><td align=\"right\"><b>".
 	_("Minimum UID number") . " *: </b>".
 	"<input size=6 type=\"text\" name=\"minUID\" value=\"" . $conf->get_minUID() . "\"></td>\n");
+echo "<td>&nbsp;&nbsp;&nbsp;</td>\n";
 // maxUID
 echo ("<td align=\"right\"><b>" . _("Maximum UID number") . " *: </b>".
 	"<input size=6 type=\"text\" name=\"maxUID\" value=\"" . $conf->get_maxUID() . "\"></td>\n");
@@ -206,6 +273,7 @@ echo ("<td><a href=\"../help.php?HelpNumber=203\" target=\"lamhelp\">" . _("Help
 echo ("<tr><td align=\"right\"><b>".
 	_("Minimum GID number") . " *: </b>".
 	"<input size=6 type=\"text\" name=\"minGID\" value=\"" . $conf->get_minGID() . "\"></td>\n");
+echo "<td>&nbsp;&nbsp;&nbsp;</td>\n";
 // maxGID
 echo ("<td align=\"right\"><b>" . _("Maximum GID number")." *: </b>".
 	"<input size=6 type=\"text\" name=\"maxGID\" value=\"" . $conf->get_maxGID() . "\"></td>\n");
@@ -215,6 +283,7 @@ echo ("<td><a href=\"../help.php?HelpNumber=204\" target=\"lamhelp\">" . _("Help
 echo ("<tr><td align=\"right\"><b>".
 	_("Minimum Machine number") . " **: </b>".
 	"<input size=6 type=\"text\" name=\"minMach\" value=\"" . $conf->get_minMachine() . "\"></td>\n");
+echo "<td>&nbsp;&nbsp;&nbsp;</td>\n";
 // maxMach
 echo ("<td align=\"right\"><b>" . _("Maximum Machine number") . " **: </b>".
 	"<input size=6 type=\"text\" name=\"maxMach\" value=\"" . $conf->get_maxMachine() . "\"></td>\n");
@@ -342,22 +411,20 @@ echo ("<table border=0>\n");
 // admin list
 echo ("<tr><td align=\"right\"><b>".
 	_("List of valid users") . " *: </b></td>".
-	"<td colspan=2><input size=50 type=\"text\" name=\"admins\" value=\"" . $conf->get_Adminstring() . "\"></td>\n");
+	"<td><input size=50 type=\"text\" name=\"admins\" value=\"" . $conf->get_Adminstring() . "\"></td>\n");
 echo ("<td><a href=\"../help.php?HelpNumber=207\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
-echo ("</table>\n");
 
-echo ("<p></p>\n");
+echo ("<tr><td colspan=3>&nbsp;</td></tr>\n");
 
-echo ("<table border=0>\n");
 // new password
-echo ("<tr><td bgcolor=\"red\" align=\"right\"><b>".
-	_("New Password") . ": </b></td>".
-	"<td bgcolor=\"red\" align=\"left\"><input type=\"password\" name=\"passwd1\"></td>\n");
+echo ("<tr><td align=\"right\"><font color=\"red\"><b>".
+	_("New Password") . ": </b></font></td>".
+	"<td align=\"left\"><input type=\"password\" name=\"passwd1\"></td>\n");
 echo ("<td rowspan=2><a href=\"../help.php?HelpNumber=212\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 // reenter password
-echo ("<tr><td bgcolor=\"red\" align=\"right\"><b>".
-	_("Reenter Password") . ": </b></td>".
-	"<td bgcolor=\"red\" align=\"left\"><input type=\"password\" name=\"passwd2\"></td></tr>\n");
+echo ("<tr><td align=\"right\"><font color=\"red\"><b>".
+	_("Reenter Password") . ": </b></font></td>".
+	"<td align=\"left\"><input type=\"password\" name=\"passwd2\"></td></tr>\n");
 echo ("</table>\n");
 echo ("</fieldset>\n");
 echo ("<p></p>\n");
@@ -385,7 +452,12 @@ echo ("<p>*** = ". _("required for Samba 3 accounts") . "</p>");
 echo ("<p><input type=\"hidden\" name=\"passwd\" value=\"" . $passwd . "\"></p>\n");
 
 // config file
-echo ("<p><input type=\"hidden\" name=\"filename\" value=\"" . $_POST['filename'] . "\"></p>\n");
+echo ("<p><input type=\"hidden\" name=\"filename\" value=\"" . $filename . "\"></p>\n");
+
+// modules
+echo ("<p><input type=\"hidden\" name=\"usermodules\" value=\"" . implode(",", $conf->get_UserModules()) . "\"></p>\n");
+echo ("<p><input type=\"hidden\" name=\"groupmodules\" value=\"" . implode(",", $conf->get_GroupModules()) . "\"></p>\n");
+echo ("<p><input type=\"hidden\" name=\"hostmodules\" value=\"" . implode(",", $conf->get_HostModules()) . "\"></p>\n");
 
 echo ("</form>\n");
 echo ("</body>\n");

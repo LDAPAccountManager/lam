@@ -57,6 +57,9 @@ unset($_SESSION['conf_scriptserver']);
 unset($_SESSION['conf_samba3']);
 unset($_SESSION['conf_pwdhash']);
 unset($_SESSION['conf_filename']);
+unset($_SESSION['conf_usermodules']);
+unset($_SESSION['conf_groupmodules']);
+unset($_SESSION['conf_hostmodules']);
 
 // remove config wizard settings
 unset($_SESSION['confwiz_config']);

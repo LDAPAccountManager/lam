@@ -201,6 +201,24 @@ if (!$conf->set_pdftext($pdftext)) {
 	exit;
 }
 
+if (! $conf->set_UserModules($_SESSION['conf_usermodules'])) {
+	echo ("<font color=\"red\"><b>" . _("Saving user modules failed!") . "</b></font>");
+	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
+	exit;
+}
+
+if (! $conf->set_GroupModules($_SESSION['conf_groupmodules'])) {
+	echo ("<font color=\"red\"><b>" . _("Saving group modules failed!") . "</b></font>");
+	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
+	exit;
+}
+
+if (! $conf->set_HostModules($_SESSION['conf_hostmodules'])) {
+	echo ("<font color=\"red\"><b>" . _("Saving host modules failed!") . "</b></font>");
+	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
+	exit;
+}
+
 
 // check if password was changed
 if ($passwd1) {
@@ -251,5 +269,8 @@ unset($_SESSION['conf_samba3']);
 unset($_SESSION['conf_pwdhash']);
 unset($_SESSION['conf_pdf_usertext']);
 unset($_SESSION['conf_filename']);
+unset($_SESSION['conf_usermodules']);
+unset($_SESSION['conf_groupmodules']);
+unset($_SESSION['conf_hostmodules']);
 
 ?>
