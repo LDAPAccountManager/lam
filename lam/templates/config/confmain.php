@@ -24,6 +24,8 @@ $Id$
 
 */
 
+include_once ("../../lib/config.inc");
+
 // start session
 session_save_path("../../sess");
 session_start();
@@ -211,15 +213,14 @@ echo ("<td><p align=\"left\">".
 // maximum list entries
 echo ("<tr><td><p align=\"right\"><b>".
 	_("Maximum displayed entries") . ": </b></p></td>".
-	"<td><select name=\"maxlistentries\">".
-	"<option>".$conf->get_MaxListEntries()."</option>".
-	"<option>10</option>".
-	"<option>20</option>".
-	"<option>30</option>".
-	"<option>50</option>".
-	"<option>75</option>".
-	"<option>100</option>".
-	"</select></td>\n");
+	"<td><select name=\"maxlistentries\"><option selected>".$conf->get_MaxListEntries()."</option>");
+if ($conf->get_MaxListEntries() != 10) echo("<option>10</option>");
+if ($conf->get_MaxListEntries() != 20) echo("<option>20</option>");
+if ($conf->get_MaxListEntries() != 30) echo("<option>30</option>");
+if ($conf->get_MaxListEntries() != 50) echo("<option>50</option>");
+if ($conf->get_MaxListEntries() != 75) echo("<option>75</option>");
+if ($conf->get_MaxListEntries() != 100) echo("<option>100</option>");
+echo ("</select></td>\n");
 // maximum list entries description
 echo ("<td><p align=\"left\">".
 	_("This is the maximum count of entries which are displayed on one page of the user/host/group lists.").
@@ -252,7 +253,8 @@ if(is_file($languagefile))
 echo ("<select name=\"language\">");
 for ($i = 0; $i < sizeof($languages); $i++) {
 	$entry = explode(":", $languages[$i]);
-	echo ("<option value=\"" . $languages[$i] . "\">" . $entry[2] . "</option>");
+	if ($_SESSION['config']->get_defaultLanguage() != $languages[$i]) echo("<option value=\"" . $languages[$i] . "\">" . $entry[2] . "</option>");
+	else echo("<option selected value=\"" . $languages[$i] . "\">" . $entry[2] . "</option>");
 }
 echo ("</select>");
 }
