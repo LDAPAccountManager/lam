@@ -33,6 +33,8 @@ class posixGroup extends baseModule {
 
 	/**
 	* Creates a new posixGroup object.
+	*
+	* @param string $scope account type
 	*/
 	function posixGroup($scope) {
 		// load error messages
@@ -80,7 +82,7 @@ class posixGroup extends baseModule {
 			}
 			if ($rawAccounts[$i][$ids['posixGroup_password']] != "") {
 				if (eregi(".*", $rawAccounts[$i][$ids['posixGroup_password']])) {  // TODO use real regex for group name
-					$partialAccounts[$i]['password'] = pwd_hash($rawAccounts[$i][$ids['posixGroup_password']], true, $this->moduleSettings['posixAccount_pwdHash'][0]);
+					$partialAccounts[$i]['userPassword'] = pwd_hash($rawAccounts[$i][$ids['posixGroup_password']], true, $this->moduleSettings['posixAccount_pwdHash'][0]);
 				}
 				else {
 					$errors[] = array(); // TODO error message
