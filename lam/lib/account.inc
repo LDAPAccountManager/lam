@@ -349,19 +349,19 @@ function checksamba($values, $type) { // This function checks all samba account 
 			$return->smb_profilePath = str_replace('$group', $return->general_group, $return->smb_profilePath);
 			if ($values->smb_profilePath != $return->smb_profilePath) $errors[] = array('INFO', _('Profile path'), _('Inserted groupname in profilepath.'));
 			$return->smb_smbhome = str_replace('$user', $values->general_username, $values->smb_smbhome);
-			if ($values->smb_smbhome != $return->smb_smbhome) $errors[] = array('INFO', _('smb home'), _('Inserted username in Home Path.'));
+			if ($values->smb_smbhome != $return->smb_smbhome) $errors[] = array('INFO', _('Home path'), _('Inserted username in Home Path.'));
 			$return->smb_smbhome = str_replace('$group', $return->general_group, $return->smb_smbhome);
-			if ($values->smb_smbhome != $return->smb_smbhome) $errors[] = array('INFO', _('smb home'), _('Inserted groupname in HomePath.'));
-			if ( (!ereg('^[\][\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+([\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+)+$', $return->smb_smbhome)))
+			if ($values->smb_smbhome != $return->smb_smbhome) $errors[] = array('INFO', _('Home path'), _('Inserted groupname in HomePath.'));
+			if ( (!$return->smb_smbhome=='') && (!ereg('^[\][\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+([\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+)+$', $return->smb_smbhome)))
 					$errors[] = array('ERROR', _('Home path'), _('Home path is invalid.'));
 			if ( !ereg('^([a-z]|[A-Z]|[0-9]|[\|]|[\#]|[\*]|[\,]|[\.]|[\;]|[\:]|[\_]|[\-]|[\+]|[\!]|[\%]|[\&]|[\/]|[\?]|[\{]|[\[]|[\(]|[\)]|[\]]|[\}])*$',
 				$values->smb_password)) $errors[] = array('ERROR', _('Password'), _('Password contents invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
 			if ( (!$return->smb_scriptPath=='') && (!ereg('^([/])*([a-z]|[0-9]|[.]|[-]|[_]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+([a-z]|[0-9]|[.]|[-]|[_]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])*'.
 				'([/]([a-z]|[0-9]|[.]|[-]|[_]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+([a-z]|[0-9]|[.]|[-]|[_]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])*)*$', $return->smb_scriptPath)))
-				$errors[] = array('ERROR', _('Scriptpath'), _('Script path is invalid.'));
+				$errors[] = array('ERROR', _('Script path'), _('Script path is invalid').'.');
 			if ( (!$return->smb_profilePath=='') && (!ereg('^[/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*([/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*)*$', $return->smb_profilePath))
 				&& (!ereg('^[\][\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+([\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+)+$', $return->smb_profilePath)))
-					$errors[] = array('ERROR', _('Profile path'), _('Profile path is invalid.'));
+					$errors[] = array('ERROR', _('Profile path'), _('Profile path is invalid').'.');
 			if ((!$values->smb_smbuserworkstations=='') && !ereg('^([a-z]|[A-Z]|[0-9]|[.]|[-])+(([,])+([a-z]|[A-Z]|[0-9]|[.]|[-])+)*$', $values->smb_smbuserworkstations))
 				$errors[] = array('ERROR', _('Samba workstations'), _('Samba workstations is invalid.'));
 			$return->smb_flagsW = 0;
@@ -568,8 +568,8 @@ function ldapexists($values, $type, $values_old=false) { // This function will s
 	$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 	if ($entry) $dn = (ldap_get_dn($_SESSION['ldap']->server(), $entry));
 	if ($dn) {
-		if ($values_old->general_username != $values->general_username) return $type .' '. _('already exists!');
-		if (!$values_old) return  $type .' '. _('already exists!');
+		if ($values_old->general_username != $values->general_username) return sprintf (_('%s already exists!', $type));
+		if (!$values_old) return  sprintf (('%s already exists!'), $type);
 		}
 	return 0;
 	}
@@ -656,11 +656,11 @@ function checkid($values, $type, $values_old=false) { // if value is empty will 
 	$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 	if ($entry) { // Entry with same ID found
 		$dn = (ldap_get_dn($_SESSION['ldap']->server(), $entry));
-		$string = _('ID is used from') .' '. $dn . ' !';
+		$string = sprint(_('ID is used from %s!'), $dn);
 		if (!$values_old) return $string;
 		 else if ($dn!=$values_old->general_dn) return $string;
 		 }
-	if ( $values->general_uidNumber < $minID || $values->general_uidNumber > $maxID) return _('Please enter a value between').' '. $minID .' '. _('and') .' '. $maxID . '!';
+	if ( $values->general_uidNumber < $minID || $values->general_uidNumber > $maxID) return sprintf(_('Please enter a value between %s and %s!'), $minID, $maxID);
 	return intval($values->general_uidNumber);
 	}
 

@@ -625,7 +625,7 @@ switch ($select_local) { // Select which part of page will be loaded
 					'</td>'."\n".'<td>'.
 					'<input name="genpass" type="submit" value="';
 				echo _('Generate password'); echo '"></td></tr><tr><td>';
-				echo _('Use no password.');
+				echo _('Use no password');
 				echo '</td>'."\n".'<td><input name="f_unix_password_no" type="checkbox"';
 				if ($_SESSION['account']->unix_password_no) echo ' checked ';
 				echo '></td>'."\n".'<td>'.
@@ -725,7 +725,7 @@ switch ($select_local) { // Select which part of page will be loaded
 				echo '></td>'."\n".'<td>'.
 					'<a href="help.php?HelpNumber=428" target="lamhelp">'._('Help').'</a>';
 				echo '</td></tr>'."\n".'<tr><td>';
-				echo _('Use no password.');
+				echo _('Use no password');
 				echo '</td>'."\n".'<td><input name="f_smb_password_no" type="checkbox"';
 				if ($_SESSION['account']->smb_password_no) echo ' checked ';
 				echo '></td>'."\n".'<td>'.
@@ -1138,7 +1138,7 @@ switch ($select_local) { // Select which part of page will be loaded
 			'</td>'."\n".'<td>'.
 			'</td>'."\n".'<td><input name="f_finish_safeProfile" type="text" size="30" maxlength="50">'.
 			'<input name="save" type="submit" value="';
-		echo _('Save Profile');
+		echo _('Save profile');
 		echo '"><a href="help.php?HelpNumber=457" target="lamhelp">'._('Help').'</a>'.
 			'</td>'."\n".'<td>'.
 			'<input name="create" type="submit" value="';
@@ -1169,7 +1169,7 @@ switch ($select_local) { // Select which part of page will be loaded
 				break;
 			case 'group' :
 				echo '<tr><td>';
-				echo _('Group ');
+				echo _('Group').' ';
 				echo $_SESSION['account']->general_username;
 				if ($_SESSION['account_old']) echo ' '._('has been modified').'.';
 				 else echo ' '._('has been created').'.';

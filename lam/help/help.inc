@@ -129,13 +129,13 @@ $helpArray = array (
 					 character because useradd also does not allow it. Lam doesn't allow capital letters A-Z because it
 					 can cause several problems. If username is allready used username will expanded with a number. The next free number will be used.")),
 				"401" => array ("ext" => "FALSE", "Headline" => _("UID number"),
-					"Text" => _("If empty UID number will be generated automaticly. Valid values are between").' '.$_SESSION['config']->get_minUID()._(" and ").$_SESSION['config']->get_maxUID()."."),
+					"Text" => _("If empty UID number will be generated automaticly. Valid values are between").' '.$_SESSION['config']->get_minUID().' '._("and").' '.$_SESSION['config']->get_maxUID()."."),
 				"402" => array ("ext" => "FALSE", "Headline" => _("Additional Groups"),
 					"Text" => _("Hold the CTRL-key to (de)select multiple groups."). ' '. _("Can be left empty.")),
 				"403" => array ("ext" => "FALSE", "Headline" => _("Home directory"),
 					"Text" => _("$user and $group are replaced with username or primary groupname.")),
 				"404" => array ("ext" => "FALSE", "Headline" => _("Gecos"),
-					"Text" => _("User descriptopn. If left empty sur- and givename will be used.")),
+					"Text" => _("User description. If left empty sur- and give name will be used.")),
 				"405" => array ("ext" => "FALSE", "Headline" => _("Login shell"),
 					"Text" => _("To disable login use /bin/false. List of shells is read from lam/config/shells")),
 				"406" => array ("ext" => "FALSE", "Headline" => _("Primary group"),
@@ -145,7 +145,7 @@ $helpArray = array (
 					 character because groupadd also does not allow it. Lam doesn't allow capital letters A-Z because it
 					 can cause several problems. If groupname is allready used username will expanded with a number. The next free number will be used.")),
 				"408" => array ("ext" => "FALSE", "Headline" => _("GID number"),
-					"Text" => _("If empty GID number will be generated automaticly. Valid values are between").' '.$_SESSION['config']->get_minGID()._(" and ").$_SESSION['config']->get_maxGID()."."),
+					"Text" => _("If empty GID number will be generated automaticly. Valid values are between").' '.$_SESSION['config']->get_minGID().' '._("and").' '.$_SESSION['config']->get_maxGID()."."),
 				"409" => array ("ext" => "FALSE", "Headline" => _("Gecos"),
 					"Text" => _("Group description. If left empty group name will be used.")),
 				"410" => array ("ext" => "FALSE", "Headline" => _("Host name"),
@@ -153,7 +153,7 @@ $helpArray = array (
 					 character because useradd also does not allow it. Lam doesn't allow capital letters A-Z because it
 					 can cause several problems. Hostnames are always ending with $. If last character isn't $ it will be added. If hostname is allready used username will expanded with a number. The next free number will be used.")),
 				"411" => array ("ext" => "FALSE", "Headline" => _("UID number"),
-					"Text" => _("If empty UID number will be generated automaticly. Valid values are between").' '.$_SESSION['config']->get_minMachine()._(" and ").$_SESSION['config']->get_maxMachine()."."),
+					"Text" => _("If empty UID number will be generated automaticly. Valid values are between").' '.$_SESSION['config']->get_minMachine().' '._("and").' '.$_SESSION['config']->get_maxMachine()."."),
 				"412" => array ("ext" => "FALSE", "Headline" => _("Primary group"),
 					"Text" => _("The Primary group the host should be member of.")),
 				"413" => array ("ext" => "FALSE", "Headline" => _("Gecos"),
@@ -180,9 +180,9 @@ $helpArray = array (
 					"Text" => _("If checked unix password will also be used as samba password.")),
 				"429" => array ("ext" => "FALSE", "Headline" => _("Password does not expire"),
 					"Text" => _("If checked password does not expire. (Setting X-Flag)")),
-				"430" => array ("ext" => "FALSE", "Headline" => _("User can change Password"),
+				"430" => array ("ext" => "FALSE", "Headline" => _("User can change password"),
 					"Text" => _("Date after the user is able to change his password. Format: DD-MM-YYYY")),
-				"431" => array ("ext" => "FALSE", "Headline" => _("User must change Password"),
+				"431" => array ("ext" => "FALSE", "Headline" => _("User must change password"),
 					"Text" => _("Date after the user must change his password. Format: DD-MM-YYYY")),
 				"432" => array ("ext" => "FALSE", "Headline" => _("Account is deactivated"),
 					"Text" => _("If checked account will be deactivated. (Setting D-Flag)")),
@@ -194,7 +194,7 @@ $helpArray = array (
 					"Text" => _("Path of the userprofile. Can be a local absolute path or a UNC-path (\\\\server\\share). \$user and \$group are replaced with user- and groupname."). ' '. _("Can be left empty.")),
 				"436" => array ("ext" => "FALSE", "Headline" => _("Samba workstations"),
 					"Text" => _("Comma separated list of samba workstations the user is allowed to login. Empty means every workstation."). ' '. _("Can be left empty.")),
-				"437" => array ("ext" => "FALSE", "Headline" => _("smb home"),
+				"437" => array ("ext" => "FALSE", "Headline" => _("Home path"),
 					"Text" => _("UNC-path (\\\\server\\share) of homedirectory. \$user and \$group are replaced with user- and groupname."). ' '. _("Can be left empty.")),
 				"438" => array ("ext" => "FALSE", "Headline" => _("Domain"),
 					"Text" => _("Windows-Domain of user."). ' '. _("Can be left empty.")),
@@ -206,18 +206,18 @@ $helpArray = array (
 					"Text" => _("Soft block limit."), "SeeAlso" => '<a href="http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.4"</a>'.
 						'Quota How-To'),
 				"442" => array ("ext" => "FALSE", "Headline" => _("Hard block limit"),
-					"Text" => _("Hard block limit."), "SeeAlso" => '<a href="http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.5"</a>'.
+					"Text" => _("Hard block limit").'.', "SeeAlso" => '<a href="http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.5"</a>'.
 						'Quota How-To'),
 				"443" => array ("ext" => "FALSE", "Headline" => _("Grace block period"),
 					"Text" => _("Grace block period. Most filesystems use a fixed maximum value of 7 days."), "SeeAlso" => '<a href="http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.6"</a>'.
 						'Quota How-To'),
 				"444" => array ("ext" => "FALSE", "Headline" => _("Used inodes"),
-					"Text" => _("Used inodes (files).")),
+					"Text" => _("Used inodes (files)").'.'),
 				"445" => array ("ext" => "FALSE", "Headline" => _("Soft inode limit"),
 					"Text" => _("Soft inode (files) limit."), "SeeAlso" => '<a href="http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.4"</a>'.
 						'Quota How-To'),
 				"446" => array ("ext" => "FALSE", "Headline" => _("Hard inode limit"),
-					"Text" => _("Hard inode (files) limit."), "SeeAlso" => '<a href="http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.5"</a>'.
+					"Text" => _("Hard inode (files) limit").'.', "SeeAlso" => '<a href="http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.5"</a>'.
 						'Quota How-To'),
 				"447" => array ("ext" => "FALSE", "Headline" => _("Grace inode period"),
 					"Text" => _("Grace inode (files) period. Most filesystems use a fixed maximum value of 7 days."), "SeeAlso" => '<a href="http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.6"</a>'.
@@ -242,10 +242,6 @@ $helpArray = array (
 					"Text" => _("eMail address")),
 				"457" => array ("ext" => "FALSE", "Headline" => _("Save profile"),
 					"Text" => _("Save profile")),
-				"458" => array ("ext" => "FALSE", "Headline" => _("Host can change password"),
-					"Text" => _("Host can change password")),
-				"459" => array ("ext" => "FALSE", "Headline" => _("Host must change password"),
-					"Text" => _("Host must change password")),
 				"460" => array ("ext" => "FALSE", "Headline" => _("Windows domain"),
 					"Text" => _("Windows domain of host."). ' '. _("Can be left empty.")),
 				"461" => array ("ext" => "FALSE", "Headline" => _("Suffix"),
