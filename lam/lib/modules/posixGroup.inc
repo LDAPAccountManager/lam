@@ -230,32 +230,30 @@ class posixGroup extends baseModule {
 		$return['dependencies'] = array('depends' => array(), 'conflicts' => array('inetOrgPerson', 'account', 'sambaDomain'));
 		// configuration options
 		$return['config_options']['group'] = array(
-		array(
-		0 => array('kind' => 'text', 'text' => '<b>' . _('Minimum GID number') . " *: </b>"),
-		1 => array('kind' => 'input', 'name' => 'posixGroup_minGID', 'type' => 'text', 'size' => '10', 'maxlength' => '255'),
-		2 => array('kind' => 'text', 'value' => '&nbsp;'),
-		3 => array('kind' => 'text', 'text' => '<b>' . _('Maximum GID number') . " *: </b>"),
-		4 => array('kind' => 'input', 'name' => 'posixGroup_maxGID', 'type' => 'text', 'size' => '10', 'maxlength' => '255'),
-		5 => array('kind' => 'help', 'value' => 'minMaxGID'))
-		);
-		$return['config_options']['all'] = array(
-		array(
-		0 => array('kind' => 'text', 'text' => '<b>' . _("Password hash type") . ': &nbsp;</b>'),
-		1 => array('kind' => 'select', 'name' => 'posixGroup_pwdHash', 'size' => '1',
-		'options' => array("CRYPT", "SHA", "SSHA", "MD5", "SMD5", "PLAIN"), 'options_selected' => array('SSHA')),
-		2 => array('kind' => 'text', 'value' => '&nbsp;'),
-		3 => array('kind' => 'text', 'value' => '&nbsp;'),
-		4 => array('kind' => 'text', 'value' => '&nbsp;'),
-		5 => array('kind' => 'help', 'value' => 'pwdHash'))
+			array(
+				0 => array('kind' => 'text', 'text' => '<b>' . _('Minimum GID number') . " *: </b>"),
+				1 => array('kind' => 'input', 'name' => 'posixGroup_minGID', 'type' => 'text', 'size' => '10', 'maxlength' => '255'),
+				2 => array('kind' => 'text', 'value' => '&nbsp;'),
+				3 => array('kind' => 'text', 'text' => '<b>' . _('Maximum GID number') . " *: </b>"),
+				4 => array('kind' => 'input', 'name' => 'posixGroup_maxGID', 'type' => 'text', 'size' => '10', 'maxlength' => '255'),
+				5 => array('kind' => 'help', 'value' => 'minMaxGID')),
+			array(
+				0 => array('kind' => 'text', 'text' => '<b>' . _("Password hash type") . ': &nbsp;</b>'),
+				1 => array('kind' => 'select', 'name' => 'posixGroup_pwdHash', 'size' => '1',
+				'options' => array("CRYPT", "SHA", "SSHA", "MD5", "SMD5", "PLAIN"), 'options_selected' => array('SSHA')),
+				2 => array('kind' => 'text', 'value' => '&nbsp;'),
+				3 => array('kind' => 'text', 'value' => '&nbsp;'),
+				4 => array('kind' => 'text', 'value' => '&nbsp;'),
+				5 => array('kind' => 'help', 'value' => 'pwdHash'))
 		);
 		// configuration descriptions
 		$return['config_descriptions'] = array(
-		'legend' => _("GID ranges for Unix groups"),
-		'descriptions' => array(
-		'posixGroup_minGID' => _("Minimum GID number for Unix groups"),
-		'posixGroup_maxGID' => _("Maximum GID number for Unix groups"),
-		'posixGroup_pwdHash' => _("Password hash type for Unix groups"),
-		)
+			'legend' => _("GID ranges for Unix groups"),
+			'descriptions' => array(
+				'posixGroup_minGID' => _("Minimum GID number for Unix groups"),
+				'posixGroup_maxGID' => _("Maximum GID number for Unix groups"),
+				'posixGroup_pwdHash' => _("Password hash type for Unix groups"),
+			)
 		);
 		// configuration checks
 		$return['config_checks']['group']['posixGroup_minGID'] = array (
@@ -285,36 +283,36 @@ class posixGroup extends baseModule {
 		// upload fields
 		$return['upload_columns'] = array(
 		array(
-		'name' => 'posixGroup_cn',
-		'description' => _('Group name'),
-		'help' => 'cn',
-		'example' => _('adminstrators'),
-		'required' => true,
-		'unique' => true
+			'name' => 'posixGroup_cn',
+			'description' => _('Group name'),
+			'help' => 'cn',
+			'example' => _('adminstrators'),
+			'required' => true,
+			'unique' => true
 		),
 		array(
-		'name' => 'posixGroup_gid',
-		'description' => _('GID number'),
-		'help' => 'gidNumber',
-		'example' => '2034'
+			'name' => 'posixGroup_gid',
+			'description' => _('GID number'),
+			'help' => 'gidNumber',
+			'example' => '2034'
 		),
 		array(
-		'name' => 'posixGroup_description',
-		'description' => _('Group description'),
-		'help' => 'description',
-		'example' => _('Administrators group')
+			'name' => 'posixGroup_description',
+			'description' => _('Group description'),
+			'help' => 'description',
+			'example' => _('Administrators group')
 		),
 		array(
-		'name' => 'posixGroup_members',
-		'description' => _('Group members'),
-		'help' => 'upload_members',
-		'example' => _('user01,user02,user03')
+			'name' => 'posixGroup_members',
+			'description' => _('Group members'),
+			'help' => 'upload_members',
+			'example' => _('user01,user02,user03')
 		),
 		array(
-		'name' => 'posixGroup_password',
-		'description' => _('Group password'),
-		'help' => 'password',
-		'example' => _('secret')
+			'name' => 'posixGroup_password',
+			'description' => _('Group password'),
+			'help' => 'password',
+			'example' => _('secret')
 		)
 		);
 		// help Entries
