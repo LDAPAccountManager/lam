@@ -505,7 +505,7 @@ class Config {
 	* @return true if $value has correct format
 	*/
 	function set_DomainSuffix($value) {
-		if (!$value && ($this->get_Samba3() == "no")) $this->domainsuffix = "";
+		if (!$value) $this->domainsuffix = "";
 		elseif (is_string($value) && (eregi("^(([a-z0-9 \\-])*=([a-z0-9 \\-])*)(,([a-z0-9 \\-])*=([a-z0-9 \\-])*)*$", $value))) {
 			$this->domainsuffix = $value;
 		}
