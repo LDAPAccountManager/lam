@@ -281,30 +281,6 @@ function genpasswd() { // This function will return a password with max. 8 chara
 	$Integer = '23456789';
 	// DEFINE CONSTANTS FOR ALGORTTHM
 	define("LEN", '1');
- 	/* THIS FUNCTION GENERATES A RANDOM NUMBER THAT WILL BE USED TO
- 	* RANDOMLY SELECT CHARACTERS FROM THE STRINGS ABOVE
- 	*/
-	function RndInt($Format){
-		switch ($Format){
-			case 'letter':
-				$Rnd = rand(0,23);
-				if ($Rnd > 23){
-					$Rnd = $Rnd - 1;
-					}
-				break;
-			case 'number':
-				$Rnd = rand(2,9);
-				if ($Rnd > 8){
-					$Rnd = $Rnd - 1;
-					}
-				break;
-			}
-		return $Rnd;
-		} // END RndInt() FUNCTION
-
- 	/* RUN THE FUNCTION TO GENERATE RANDOM INTEGERS FOR EACH OF THE
-	* 8 CHARACTERS IN THE PASSWORD PRODUCED.
-	*/
 	$a = RndInt('letter');
 	$b = RndInt('letter');
 	$c = RndInt('letter');
@@ -326,6 +302,31 @@ function genpasswd() { // This function will return a password with max. 8 chara
 	$PW = $L1 . $U2 . $I1 . $L2 . $I2 . $U1 . $U3 . $L3;
 	return $PW;
 	}
+
+/* THIS FUNCTION GENERATES A RANDOM NUMBER THAT WILL BE USED TO
+* RANDOMLY SELECT CHARACTERS FROM THE STRINGS ABOVE
+*/
+function RndInt($Format){
+	switch ($Format){
+		case 'letter':
+			$Rnd = rand(0,23);
+			if ($Rnd > 23){
+				$Rnd = $Rnd - 1;
+				}
+			break;
+		case 'number':
+			$Rnd = rand(2,9);
+			if ($Rnd > 8){
+				$Rnd = $Rnd - 1;
+				}
+			break;
+		}
+	return $Rnd;
+	} // END RndInt() FUNCTION
+/* RUN THE FUNCTION TO GENERATE RANDOM INTEGERS FOR EACH OF THE
+* 8 CHARACTERS IN THE PASSWORD PRODUCED.
+*/
+
 
 function ldapexists() { // This function will search if the DN already exists
 	switch ($_SESSION['type2']) {
