@@ -1,0 +1,314 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Module HowTo - Account pages</title>
+  <link rel="stylesheet" type="text/css" href="style/layout.css">
+</head>
+<body>
+<div style="text-align: center;">
+<h1>Module HowTo - Account pages<br>
+</h1>
+<br>
+<br>
+<div style="text-align: left;"><br>
+<h2>1. Defining pages<br>
+</h2>
+You can define multiple subpages for your account page. Usually one
+page is enough but you may display certain attribute settings on an
+extra page (e.g. Unix group memberships are on a second page).<br>
+<br>
+The page names are set by <span style="font-weight: bold;">pages() </span>which
+returns an array of names.<br>
+<br>
+<span style="font-weight: bold; text-decoration: underline;">Example:</span><br
+ style="font-weight: bold; text-decoration: underline;">
+<br>
+The
+<span style="font-style: italic;">ieee802Device</span>
+module needs only one page which is called <span
+ style="font-style: italic;">'attributes'</span>.<br>
+<br>
+<table style="width: 100%; text-align: left;" class="mod-code"
+ border="0" cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
+&nbsp;&nbsp;&nbsp; * This function returns a list of all account pages
+in this module.<br>
+&nbsp;&nbsp;&nbsp; */<br>
+&nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">function</span> <span
+ style="color: rgb(255, 0, 0);">pages</span>() {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return array('attributes');<br>
+&nbsp;&nbsp;&nbsp; }<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<br>
+<h2>2. Page display</h2>
+Now that you have defined your subpages you will need one function for
+each page to display it. The function must return <span
+ style="font-style: italic;">meta HTML code</span> as defined in the <span
+ style="font-style: italic;">modules specification</span>.<br>
+This function is called <span style="font-weight: bold;">display_html_&lt;page
+name&gt;()</span> where <span style="font-style: italic;">&lt;page
+name&gt;</span> is the name of your subpage.<br>
+<br>
+<span style="font-weight: bold; text-decoration: underline;">Example:</span><br
+ style="font-weight: bold; text-decoration: underline;">
+<br>
+The
+<span style="font-style: italic;">ieee802Device</span>
+module has only one subpage called <span style="font-style: italic;">'attributes'</span>.<br>
+<br>
+The first half of the code displays the existing MAC addresses and the
+second an input field for new values.<br>
+The variable <span style="font-style: italic;">$this-&gt;attributes</span>
+contains all LDAP attributes of an account.<br>
+<br>
+<table style="width: 100%; text-align: left;" class="mod-code"
+ border="0" cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
+&nbsp;&nbsp;&nbsp; * This function will create the meta HTML code to
+show a page with all attributes.<br>
+&nbsp;&nbsp;&nbsp; *<br>
+&nbsp;&nbsp;&nbsp; * @param array $post HTTP-POST values<br>
+&nbsp;&nbsp;&nbsp; */<br>
+&nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">function</span> <span
+ style="color: rgb(255, 0, 0);">display_html_attributes</span>($post) {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $return = array();<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // list current MACs<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; for ($i = 0; $i &lt;
+sizeof($this-&gt;attributes['macAddress']); $i++) {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $return[] =
+array(<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; 0 =&gt; array('kind' =&gt; 'text', 'text' =&gt;
+_('MAC address')),<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; 1 =&gt; array('kind' =&gt; 'input', 'name' =&gt;
+'macAddress' . $i, 'type' =&gt; 'text', 'size' =&gt; '17', 'maxlength'
+=&gt; '17', 'value' =&gt; $this-&gt;attributes['macAddress'][$i]),<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; 2 =&gt; array('kind' =&gt; 'input', 'type' =&gt;
+'submit', 'name' =&gt; 'delMAC' . $i, 'value' =&gt; _("Remove")),<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; 3 =&gt; array('kind' =&gt; 'help', 'value' =&gt;
+'mac'));<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // input box for new MAC<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $return[] = array(<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 0 =&gt;
+array('kind' =&gt; 'text', 'text' =&gt; _('New MAC address')),<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 1 =&gt;
+array('kind' =&gt; 'input', 'name' =&gt; 'macAddress', 'type' =&gt;
+'text', 'size' =&gt; '17', 'maxlength' =&gt; '17', 'value' =&gt; ''),<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 2 =&gt;
+array('kind' =&gt; 'input', 'type' =&gt; 'submit', 'name' =&gt;
+'addMAC', 'value' =&gt; _("Add")),<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 3 =&gt;
+array('kind' =&gt; 'help', 'value' =&gt; 'mac'),<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 4 =&gt;
+array('kind' =&gt; 'input', 'type' =&gt; 'hidden', 'value' =&gt;
+sizeof($this-&gt;attributes['macAddress']), 'name' =&gt; 'mac_number'));<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return $return;<br>
+&nbsp;&nbsp;&nbsp; }<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<br>
+<h2>3. Processing input data<br>
+</h2>
+Every time the user clicks on a submit button while your page is
+displayed LAM will call a function in your module.<br>
+This function is called <span style="font-weight: bold;">process_&lt;page
+name&gt;()</span> where <span style="font-style: italic;">&lt;page
+name&gt;</span> is the name of your subpage.<br>
+<br>
+<span style="font-weight: bold; text-decoration: underline;">Example:</span><br
+ style="font-weight: bold; text-decoration: underline;">
+<br>
+The
+<span style="font-style: italic;">ieee802Device</span>
+module has only one subpage called <span style="font-style: italic;">'attributes'</span>
+and therefore only <span style="font-style: italic;">process_attributes()</span>.<br>
+<br>
+The function checks the input fields and fills the LDAP attributes. If
+all is ok it will enable the user to move to another module page.<br>
+<br>
+<table style="width: 100%; text-align: left;" class="mod-code"
+ border="0" cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
+&nbsp;&nbsp;&nbsp; * Write variables into object and do some regex
+checks<br>
+&nbsp;&nbsp;&nbsp; *<br>
+&nbsp;&nbsp;&nbsp; * @param array $post HTTP-POST values<br>
+&nbsp;&nbsp;&nbsp; */<br>
+&nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">function</span> <span
+ style="color: rgb(255, 0, 0);">proccess_attributes</span>($post) {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $this-&gt;triggered_messages =
+array();<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+$this-&gt;attributes['macAddress'] = array();<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // check old MACs<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if (isset($post['mac_number'])) {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; for ($i = 0;
+$i &lt; $post['mac_number']; $i++) {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; if (isset($post['delMAC' . $i])) continue;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; if (isset($post['macAddress' . $i]) &amp;&amp;
+($post['macAddress' . $i] != "")) {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // check if address has correct
+format<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if (!get_preg($post['macAddress'
+. $i], 'macAddress')) {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $message =
+$this-&gt;messages['mac'][0];<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $message[] =
+$post['macAddress' . $i];<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+$this-&gt;triggered_messages[] = array($message);<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+$this-&gt;attributes['macAddress'][] = $post['macAddress' . $i];<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // check new MAC<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if (isset($post['macAddress'])
+&amp;&amp; ($post['macAddress'] != "")) {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // check if
+address has correct format<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if
+(get_preg($post['macAddress'], 'macAddress')) {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; $this-&gt;attributes['macAddress'][] =
+$post['macAddress'];<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; else {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $message =
+$this-&gt;messages['mac'][0];<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $message[] = $post['macAddress'];<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $this-&gt;triggered_messages[] =
+array($message);<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+$this-&gt;attributes['macAddress'] =
+array_unique($this-&gt;attributes['macAddress']);<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if
+(sizeof($this-&gt;triggered_messages) &gt; 0) {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+$this-&gt;inputCorrect = false;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return
+$this-&gt;triggered_messages;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; else {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+$this-&gt;inputCorrect = true;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return 0;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; }<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<br>
+<h2>4. Defining that your module is ready for LDAP add/modify</h2>
+Before a new account can be created or modified all modules are asked
+if they are ready.<br>
+There are two functions which control the module status. The <span
+ style="font-weight: bold;">module_ready()</span> function has to
+return <span style="font-style: italic;">true</span> if the user may
+move to another module page. If it is <span style="font-style: italic;">false</span>
+the user will be redirected to your module page. The second function is
+<span style="font-weight: bold;">module_complete()</span>. The user
+cannot do the LDAP operation if one or modules return <span
+ style="font-style: italic;">false</span>.<br>
+<br>
+<span style="font-weight: bold; text-decoration: underline;">Example:</span><br
+ style="font-weight: bold; text-decoration: underline;">
+<br>
+The
+<span style="font-style: italic;">ieee802Device</span>
+module uses a global variable to store the status: <span
+ style="font-style: italic;">$this-&gt;inputCorrect</span>. It is set
+in <span style="font-style: italic;">process_attributes()</span>. The
+variable can be preset to <span style="font-style: italic;">true</span>
+because the MAC address is optional.<br>
+<br>
+<table style="width: 100%; text-align: left;" class="mod-code"
+ border="0" cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /** used for
+account pages, true if input data is correct */<br>
+&nbsp;&nbsp;&nbsp; var $inputCorrect = true;<br>
+      <br>
+&nbsp;&nbsp;&nbsp; /**<br>
+&nbsp;&nbsp;&nbsp; * This function returns true if all needed settings
+are done.<br>
+&nbsp;&nbsp;&nbsp; */<br>
+&nbsp;&nbsp;&nbsp; function module_complete() {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return $this-&gt;inputCorrect;<br>
+&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; /**<br>
+&nbsp;&nbsp;&nbsp; * Returns true if all settings on module page are
+correct.<br>
+&nbsp;&nbsp;&nbsp; */<br>
+&nbsp;&nbsp;&nbsp; function module_ready() {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return $this-&gt;inputCorrect;<br>
+&nbsp;&nbsp;&nbsp; }<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<br>
+<h2>5. Saving the LDAP attributes<br>
+</h2>
+<br>
+<br>
+<span style="font-weight: bold; text-decoration: underline;">Example:</span><br
+ style="font-weight: bold; text-decoration: underline;">
+<br>
+<br>
+<br>
+<table style="width: 100%; text-align: left;" class="mod-code"
+ border="0" cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; <br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<br>
+<span style="font-weight: bold;"></span>
+<h2><span style="font-weight: bold;"></span></h2>
+</div>
+</div>
+</body>
+</html>
