@@ -59,7 +59,7 @@ function StatusMessage($MessageTyp,$MessageHeadline,$MessageText,$MessageVariabl
 		$variables .= "," . $MessageVariables[$i];
 	}
 	$command = 'printf("' . addslashes($format) . '"' . $variables . ');';
-	call_user_func_array('printf',array{$format,$MessageVariables});
+	call_user_func_array('printf',array($format,$MessageVariables));
 	//eval($command);
 }
 
