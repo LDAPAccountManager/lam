@@ -109,15 +109,14 @@ class sambaSamAccount {
 	function sambaLMPassword($newpassword=false) {
 		if (is_string($newpassword)) {
 			// Write new password
-			$this->attributes['sambaLMPassword'][0] = base64_encode($_SESSION['ldap']->encrypt($newpassword));
+			$this->attributes['sambaLMPassword'][0] = base64_encode($_SESSION[$_SESSION[$this->base]->ldap]->encrypt($newpassword));
 			return 0;
 			}
 		else {
 			if ($this->useunixpwd) return $_SESSION[$this->base]->module['posixAccount']->userPassword();
 			if ($this->attributes['sambaLMPassword'][0]!='') {
 				// Read existing password if set
-				$password = $_SESSION['ldap']->decrypt(base64_decode($this->attributes['sambaLMPassword'][0]));
-				return $password;
+				return $_SESSION[$_SESSION[$this->base]->ldap]->decrypt(base64_decode($this->attributes['sambaLMPassword'][0]));
 				}
 			else return '';
 			}

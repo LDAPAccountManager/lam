@@ -236,7 +236,18 @@ class cache {
 	*/
 	function update_cache($dn, $mode, $attributes=false) {
 		$allowed_modes = array ( 'add', 'remove', 'modify', 'delete_dn' );
-		$allowed_types = array ( 'user', 'group', 'host', 'domain', '*' );
+		$allowed_types = array ( 'user', 'group', 'host', '*' );
+		for ($i=0; $i<count($allowed_types); $i++) {
+			if ($allowed_types[$i]!='*') {
+				$function = '$suffix = $$this->config->get_'.ucfirst($allowed_types[$i]).'Suffix();';
+				print $function;
+				print "<br>";
+				// *** fixme, where is get_DomainSuffix
+				If ($scope != '*') eval($function);
+					else $suffix = '';
+				if (substr($suffix, $dn)) $singlescope = $allowed_types[$i];
+				}
+			}
 		if (!in_array($singlescope, $allowed_types)) trigger_error(sprintf(_('Invalid scope. Valid scopes are %s.'), implode(" ", $allowed_types)), E_USER_ERROR);
 		if (!in_array($mode, $allowed_modes)) trigger_error(sprintf(_('Invalid mode. Valid modes are %s.'), implode(" ", $allowed_modes)), E_USER_ERROR);
 		// Everything seems to be OK, start processing data

@@ -90,6 +90,18 @@ class account {
 		return array('attributes');
 		}
 
+	/*
+	*/
+	function get_help($id) {
+		switch ($id) {
+			case "description":
+				return array ("ext" => "FALSE", "Headline" => _("Description"),
+					"Text" => _("Host Description."));
+				break;
+			}
+		return false;
+		}
+
 	/* This function returns all ldap attributes
 	* which are part of account and returns
 	* also their values.
@@ -161,7 +173,7 @@ class account {
 		echo "<tr>\n";
 		echo "<td>" . _('Description') . "</td>\n";
 		echo "<td><input name=\"description\" type=\"text\" size=\"30\" maxlength=\"255\" value=\"".$this->attributes['description'][0]."\"></td>\n";
-		echo "<td><a href=\"../help.php?HelpNumber=404\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
+		echo "<td><a href=\"../help.php?HelpNumber=description&module=account\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
 		echo "</tr>\n";
 		echo "</table>\n";
 		return 0;

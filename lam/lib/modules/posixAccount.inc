@@ -118,17 +118,13 @@ class posixAccount {
 	function userPassword($newpassword=false) {
 		if (is_string($newpassword)) {
 			// Write new password
-			if ($newpassword!='') {
-				$this->attributes['userPassword'][0] = base64_encode($_SESSION['ldap']->encrypt($newpassword));
-				}
-			else $this->attributes['userPassword'][0] = '';
+			$this->attributes['userPassword'][0] = base64_encode($_SESSION[$_SESSION[$this->base]->ldap]->encrypt($newpassword));
 			return 0;
 			}
 		else {
 			if ($this->attributes['userPassword'][0]!='') {
 				// Read existing password if set
-				$password = $_SESSION['ldap']->decrypt(base64_decode($this->attributes['userPassword'][0]));
-				return $password;
+				return $_SESSION[$_SESSION[$this->base]->ldap]->decrypt(base64_decode($this->attributes['userPassword'][0]));
 				}
 			else return '';
 			}
@@ -161,7 +157,7 @@ class posixAccount {
 
 	function profile_attributes() {
 		// array of attribtues wich are unique and not allowed to store in profile
-		array unique_attributes ( 'user' => array ('cn', 'rid', 'uid', 'uidNumber', 'userPassword')  );
+		//array unique_attributes ( 'user' => array ('cn', 'rid', 'uid', 'uidNumber', 'userPassword')  );
 		}
 
 	/* This function returns all ldap attributes
