@@ -53,8 +53,8 @@ class account { // This class keeps all needed values for any account
 	var $smb_password;		// string for samba-password (user|host)
 	var $smb_password_no;		// string (1|0) set samba-password to none (user|host)
 	var $smb_useunixpwd;		// string (1|0) use unix-password as samba-password (user|host)
-	var $smb_pwdcanchange;		// string (1|0) user/host is able to change password (user|host)
-	var $smb_pwdmustchange;		// string (1|0) user/host has to change password at next login (user|host)
+	var $smb_pwdcanchange;		// string unix-timestamp user/host is able to change password (user|host)
+	var $smb_pwdmustchange;		// string unix-timestamp user/host has to change password at next login (user|host)
 	var $smb_homedrive;		// string Homedrive (C:, D:, ...) (user)
 	var $smb_scriptPath;		// string ScriptPath (\\server\loginscript) (user)
 	var $smb_profilePath;		// string profilePAth (\\server\profilepath) (user)
@@ -708,7 +708,7 @@ function loaduser($dn) { // Will load all needed values from an existing account
 			if (strrpos($attr['sambaAcctFlags'][0], 'X')) $return->smb_flagsX=true;
 			}
 		if ($attr['sambaPwdCanChange'][0]) $return->smb_pwdcanchange = $attr['sambaPwdCanChange'][0];
-		if ($attr['sambaPwdCanChange'][0]<time()) $return->smb_pwdmustchange = 1;
+		if ($attr['sambaPwdMustChange'][0]) $return->smb_pwdmustchange = $attr['sambaPwdMustChange'][0];
 		if ($attr['sambaHomePath'][0]) $return->smb_smbhome = $attr['sambaHomePath'][0];
 		if ($attr['sambaHomeDrive'][0]) $return->smb_homedrive = $attr['sambaHomeDrive'][0];
 		if ($attr['sambaLogonScript'][0])  $return->smb_scriptPath = $attr['sambaLogonScript'][0];
@@ -724,7 +724,7 @@ function loaduser($dn) { // Will load all needed values from an existing account
 				}
 			if ($attr['smbHome'][0]) $return->smb_smbhome = $attr['smbHome'][0];
 			if ($attr['pwdCanChange'][0]) $return->smb_pwdcanchange = $attr['pwdCanChange'][0];
-			if ($attr['pwdCanChange'][0]<time()) $return->smb_pwdmustchange = 1;
+			if ($attr['pwdMustChange'][0]) $return->smb_pwdmustchange = $attr['pwdMustChange'][0];
 			if ($attr['homeDrive'][0]) $return->smb_homedrive = $attr['homeDrive'][0];
 			if ($attr['scriptPath'][0])  $return->smb_scriptPath = $attr['scriptPath'][0];
 			if ($attr['profilePath'][0]) $return->smb_profilePath = $attr['profilePath'][0];
@@ -796,7 +796,7 @@ function loadhost($dn) { // Will load all needed values from an existing account
 			if (strrpos($attr['sambaAcctFlags'][0], 'X')) $return->smb_flagsX=true;
 			}
 		if ($attr['sambaPwdCanChange'][0]) $return->smb_pwdcanchange = $attr['sambaPwdCanChange'][0];
-		if ($attr['sambaPwdCanChange'][0]<time()) $return->smb_pwdmustchange = 1;
+		if ($attr['sambaPwdMustChange'][0]) $return->smb_pwdmustchange = $attr['sambaPwdMustChange'][0];
 		if ($attr['sambaDomainName'][0]) $return->smb_domain = $attr['sambaDomainName'][0];
 		}
 		else {
@@ -807,7 +807,7 @@ function loadhost($dn) { // Will load all needed values from an existing account
 				}
 			if ($attr['domain'][0]) $return->smb_domain = $attr['domain'][0];
 			if ($attr['pwdCanChange'][0]) $return->smb_pwdcanchange = $attr['pwdCanChange'][0];
-			if ($attr['pwdCanChange'][0]<time()) $return->smb_pwdmustchange = 1;
+			if ($attr['pwdMustChange'][0]) $return->smb_pwdmustchange = $attr['pwdMustChange'][0];
 			}
 	if ($attr['givenName'][0]) $return->general_givenname = $attr['givenName'][0];
 	if ($attr['sn'][0]) $return->general_surname = $attr['sn'][0];
