@@ -211,15 +211,15 @@ switch ($select_local) { // Select which part of page will be loaded
 		// Show page info
 		echo '<input name="select" type="hidden" value="general">';
 		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
-		echo "<br><fieldset><legend>";
+		echo "<br><fieldset class=\"hostedit-dark\"><legend class=\"hostedit-bright\"><b>";
 		echo _('Please select page:');
-		echo "</legend>\n";
+		echo "</b></legend>\n";
 		echo "<input name=\"next_general\" type=\"submit\" disabled value=\""; echo _('General'); echo "\">\n<br>";
 		echo "<input name=\"next_samba\" type=\"submit\" value=\""; echo _('Samba'); echo "\">\n<br>";
 		echo "<input name=\"next_final\" type=\"submit\" value=\""; echo _('Final');
 		echo "\"></fieldset></td>\n<td>";
 		echo "<table border=0 width=\"100%\">\n<tr>\n<td>";
-		echo "<fieldset><legend><b>";
+		echo "<fieldset class=\"hostedit-bright\"><legend class=\"hostedit-bright\"><b>";
 		echo _("General properties");
 		echo "</b></legend>\n<table border=0 width=\"100%\">\n<tr>\n<td>";
 		echo _('Host name').'*';
@@ -262,9 +262,9 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo _('Values with * are required');
 		echo "</fieldset>\n</td></tr><tr><td>";
 		if (count($profilelist)!=0) {
-			echo "<fieldset><legend>";
+			echo "<fieldset class=\"hostedit-dark\"><legend class=\"hostedit-bright\"><b>";
 			echo _("Load profile");
-			echo "</legend>\n<table border=0 width=\"100%\">\n<tr>\n<td>";
+			echo "</b></legend>\n<table border=0 width=\"100%\">\n<tr>\n<td>";
 			echo "<select name=\"f_general_selectprofile\" >";
 			foreach ($profilelist as $profile) echo "	<option>$profile</option>\n";
 			echo "</select></td><td>\n".
@@ -282,14 +282,14 @@ switch ($select_local) { // Select which part of page will be loaded
 		if ($_SESSION['account']->smb_password_no) echo '<input name="f_smb_password_no" type="hidden" value="1">';
 		echo '<input name="select" type="hidden" value="samba">';
 		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
-		echo "<br><fieldset><legend>";
+		echo "<br><fieldset class=\"hostedit-dark\"><legend class=\"hostedit-bright\"><b>";
 		echo _('Please select page:');
-		echo "</legend>\n";
+		echo "</b></legend>\n";
 		echo "<input name=\"next_general\" type=\"submit\" value=\""; echo _('General'); echo "\">\n<br>";
 		echo "<input name=\"next_samba\" type=\"submit\" disabled value=\""; echo _('Samba'); echo "\">\n<br>";
 		echo "<input name=\"next_final\" type=\"submit\" value=\""; echo _('Final');
 		echo "\"></fieldset></td>\n<td>";
-		echo "<fieldset><legend><b>"._('Samba properties')."</b></legend>\n";
+		echo "<fieldset class=\"hostedit-bright\"><legend class=\"hostedit-bright\"><b>"._('Samba properties')."</b></legend>\n";
 		echo "<table border=0 width=\"100%\"><tr><td>";
 		echo _('Password');
 		echo '</td><td>';
@@ -329,23 +329,23 @@ switch ($select_local) { // Select which part of page will be loaded
 		// Final Settings
 		echo '<input name="select" type="hidden" value="final">';
 		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
-		echo "<br><fieldset><legend>";
+		echo "<br><fieldset class=\"hostedit-dark\"><legend class=\"hostedit-bright\"><b>";
 		echo _('Please select page:');
-		echo "</legend>\n";
+		echo "</b></legend>\n";
 		echo "<input name=\"next_general\" type=\"submit\" value=\""; echo _('General'); echo "\">\n<br>";
 		echo "<input name=\"next_samba\" type=\"submit\" value=\""; echo _('Samba'); echo "\">\n<br>";
 		echo "<input name=\"next_final\" type=\"submit\" disabled value=\""; echo _('Final');
 		echo "\"></fieldset></td>\n<td>";
 		echo "<table border=0 width=\"100%\">\n<tr>\n<td>";
-		echo "<fieldset><legend>";
+		echo "<fieldset class=\"hostedit-dark\"><legend class=\"hostedit-bright\"><b>";
 		echo _("Save profile");
-		echo "</legend>\n<table border=0 width=\"100%\">\n<tr>\n<td>";
+		echo "</b></legend>\n<table border=0 width=\"100%\">\n<tr>\n<td>";
 		echo '<input name="f_finish_safeProfile" type="text" size="30" maxlength="50">';
 		echo '</td><td><input name="save" type="submit" value="';
 		echo _('Save profile');
 		echo '"></td><td><a href="../help.php?HelpNumber=457" target="lamhelp">'._('Help');
 		echo "</a></td>\n</tr>\n</table>\n</fieldset>\n</td></tr>\n<tr><td>\n";
-		echo "<fieldset><legend><b>";
+		echo "<fieldset class=\"hostedit-bright\"><legend class=\"hostedit-bright\"><b>";
 		if ($_SESSION['account_old']) echo _('Modify');
 		 else echo _('Create');
 		echo "</b></legend>\n";
@@ -394,7 +394,7 @@ switch ($select_local) { // Select which part of page will be loaded
 	case 'finish':
 		// Final Settings
 		echo '<input name="select" type="hidden" value="finish">';
-		echo "<fieldset><legend><b>"._('Success')."</b></legend>\n";
+		echo "<fieldset class=\"hostedit-bright\"><legend class=\"hostedit-bright\"><b>"._('Success')."</b></legend>\n";
 		echo "<table border=0 width=\"100%\"><tr><td>";
 		echo '<tr><td>';
 		echo _('Host');

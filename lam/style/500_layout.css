@@ -408,3 +408,58 @@ p.statusError {
   margin-right:35px;
 }
 
+/**
+ * table style for groupedit.php
+ *
+ */
+
+fieldset.groupedit-bright {
+  background-color:#d6e3ff;
+}
+
+fieldset.groupedit-middle {
+  background-color:#C7E7C7;
+}
+
+legend.groupedit-bright {
+  color:#7167bf;
+}
+
+fieldset.groupedit-dark {
+  background-color:#7167bf;
+}
+
+legend.groupedit-dark {
+  color:#000000;
+}
+
+select.groupedit-bright {
+  background-color:#d6e3ff;
+}
+
+
+/**
+ * table style for hostedit.php
+ *
+ */
+
+fieldset.hostedit-bright {
+  background-color:#ffe2dd;
+}
+
+legend.hostedit-bright {
+  color:#7167bf;
+}
+
+fieldset.hostedit-dark {
+  background-color:#ffc4ba;
+}
+
+legend.hostedit-dark {
+  color:#000000;
+}
+
+select.hostedit-bright {
+  background-color:#ffc4ba;
+}
+

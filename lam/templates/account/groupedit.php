@@ -241,7 +241,7 @@ echo "</head><body>\n";
 echo "<form action=\"groupedit.php\" method=\"post\">\n";
 
 if (is_array($errors)) {
-	echo "<table class=\"account\" width=\"100%\">\n";
+	echo "<table class=\"groupedit\" width=\"100%\">\n";
 	for ($i=0; $i<sizeof($errors); $i++) StatusMessage($errors[$i][0], $errors[$i][1], $errors[$i][2]);
 	echo "</table>";
 	}
@@ -260,9 +260,9 @@ switch ($select_local) { // Select which part of page will be loaded
 		ldapreload('user');
 		echo "<input name=\"select\" type=\"hidden\" value=\"groupmembers\">\n";
 		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
-		echo "<br><fieldset><legend>";
+		echo "<br><fieldset class=\"groupedit-middle\"><legend class=\"groupedit-bright\"><b>";
 		echo _('Please select page:');
-		echo "</legend>\n";
+		echo "</b></legend>\n";
 		echo "<input name=\"next_general\" type=\"submit\" value=\""; echo _('General'); echo "\">\n<br>";
 		echo "<input name=\"next_members\" type=\"submit\" disabled value=\""; echo _('Members'); echo "\">\n<br>";
 		echo "<input name=\"next_samba\" type=\"submit\" value=\""; echo _('Samba'); echo "\">\n<br>";
@@ -270,11 +270,11 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "value=\""; echo _('Quota'); echo "\">\n<br>";
 		echo "<input name=\"next_final\" type=\"submit\" value=\""; echo _('Final');
 		echo "\"></fieldset></td>\n<td>";
-		echo "<fieldset><legend><b>". _('Additional group members') . "</b></legend>\n";
+		echo "<fieldset class=\"groupedit-bright\"><legend class=\"groupedit-bright\"><b>". _('Additional group members') . "</b></legend>\n";
 		echo "<table border=0 width=\"100%\">\n";
-		echo "<tr><td valign=\"top\"><fieldset><legend>";
+		echo "<tr><td valign=\"top\"><fieldset class=\"groupedit-middle\"><legend class=\"groupedit-bright\">";
 		echo _('Group members');
-		echo "</legend><select name=\"members[]\" size=15 multiple>\n";
+		echo "</legend><select name=\"members[]\" class=\"groupedit-bright\" size=15 multiple>\n";
 		for ($i=0; $i<count($_SESSION['account']->unix_memberUid); $i++)
 			if ($_SESSION['account']->unix_memberUid[$i]!='') echo "		<option>".$_SESSION['account']->unix_memberUid[$i]."</option>\n";
 		echo "</select></fieldset></td>\n";
@@ -282,9 +282,9 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo " ";
 		echo "<input type=\"submit\" name=\"remove\" value=\"=>\"><br><br>";
 		echo "<a href=\"../help.php?HelpNumber=XXX\" target=\"lamhelp\">"._('Help-XX')."</a></td>\n";
-		echo "<td valign=\"top\"><fieldset><legend>";
+		echo "<td valign=\"top\"><fieldset class=\"groupedit-middle\"><legend class=\"groupedit-bright\">";
 		echo _('Available users');
-		echo "</legend><select name=\"users[]\" size=15 multiple>\n";
+		echo "</legend><select name=\"users[]\" size=15 multiple class=\"groupedit-bright\">\n";
 		foreach ($_SESSION['userDN'] as $temp)
 			if (is_array($temp)) {
 				echo "		<option>$temp[cn]</option>\n";
@@ -299,9 +299,9 @@ switch ($select_local) { // Select which part of page will be loaded
 		// Show page info
 		echo "<input name=\"select\" type=\"hidden\" value=\"general\">\n";
 		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
-		echo "<br><fieldset><legend>";
+		echo "<br><fieldset class=\"groupedit-middle\"><legend class=\"groupedit-bright\"><b>";
 		echo _('Please select page:');
-		echo "</legend>\n";
+		echo "</b></legend>\n";
 		echo "<input name=\"next_general\" type=\"submit\" disabled value=\""; echo _('General'); echo "\">\n<br>";
 		echo "<input name=\"next_members\" type=\"submit\" value=\""; echo _('Members'); echo "\">\n<br>";
 		echo "<input name=\"next_samba\" type=\"submit\" value=\""; echo _('Samba'); echo "\">\n<br>";
@@ -310,7 +310,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "<input name=\"next_final\" type=\"submit\" value=\""; echo _('Final');
 		echo "\"></fieldset></td>\n<td>";
 		echo "<table border=0 width=\"100%\">\n<tr>\n<td>";
-		echo "<fieldset><legend><b>";
+		echo "<fieldset class=\"groupedit-bright\"><legend class=\"groupedit-bright\"><b>";
 		echo _("General properties");
 		echo "</b></legend>\n<table border=0 width=\"100%\">\n<tr>\n<td>";
 		echo _("Groupname")."*";
@@ -339,9 +339,9 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo _('Values with * are required');
 		echo "</fieldset>\n</td></tr><tr><td>";
 		if (count($profilelist)!=0) {
-			echo "<fieldset><legend>";
+			echo "<fieldset class=\"groupedit-middle\"><legend class=\"groupedit-bright\"><b>";
 			echo _("Load profile");
-			echo "</legend>\n<table border=0>\n<tr>\n<td>";
+			echo "</b></legend>\n<table border=0>\n<tr>\n<td>";
 			echo "<select name=\"f_general_selectprofile\" >";
 			foreach ($profilelist as $profile) echo "	<option>$profile</option>\n";
 			echo "</select>\n".
@@ -356,9 +356,9 @@ switch ($select_local) { // Select which part of page will be loaded
 		if ($_SESSION['config']->samba3 == 'yes') $samba3domains = $_SESSION['ldap']->search_domains($_SESSION[config]->get_domainSuffix());
 		echo "<input name=\"select\" type=\"hidden\" value=\"samba\">\n";
 		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
-		echo "<br><fieldset><legend>";
+		echo "<br><fieldset class=\"groupedit-middle\"><legend class=\"groupedit-bright\"><b>";
 		echo _('Please select page:');
-		echo "</legend>\n";
+		echo "</b></legend>\n";
 		echo "<input name=\"next_general\" type=\"submit\" value=\""; echo _('General'); echo "\">\n<br>";
 		echo "<input name=\"next_members\" type=\"submit\" value=\""; echo _('Members'); echo "\">\n<br>";
 		echo "<input name=\"next_samba\" type=\"submit\" disabled value=\""; echo _('Samba'); echo "\">\n<br>";
@@ -366,7 +366,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "value=\""; echo _('Quota'); echo "\">\n<br>";
 		echo "<input name=\"next_final\" type=\"submit\" value=\""; echo _('Final');
 		echo "\"></fieldset></td>\n<td>";
-		echo "<fieldset><legend><b>"._('Samba properties')."</b></legend>\n";
+		echo "<fieldset class=\"groupedit-bright\"><legend class=\"groupedit-bright\"><b>"._('Samba properties')."</b></legend>\n";
 		echo "<table border=0 width=\"100%\"><tr><td>";
 		echo _('Windows groupname');
 		echo "</td>\n<td><select name=\"f_smb_mapgroup\">";
@@ -428,9 +428,9 @@ switch ($select_local) { // Select which part of page will be loaded
 		// Quota Settings
 		echo "<input name=\"select\" type=\"hidden\" value=\"samba\">\n";
 		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
-		echo "<br><fieldset><legend>";
+		echo "<br><fieldset class=\"groupedit-middle\"><legend class=\"groupedit-bright\"><b>";
 		echo _('Please select page:');
-		echo "</legend>\n";
+		echo "</b></legend>\n";
 		echo "<input name=\"next_general\" type=\"submit\" value=\""; echo _('General'); echo "\">\n<br>";
 		echo "<input name=\"next_members\" type=\"submit\" value=\""; echo _('Members'); echo "\">\n<br>";
 		echo "<input name=\"next_samba\" type=\"submit\" value=\""; echo _('Samba'); echo "\">\n<br>";
@@ -438,7 +438,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "<input name=\"next_final\" type=\"submit\" value=\""; echo _('Final');
 		echo "\"></fieldset></td>\n<td>";
 		echo '<input name="select" type="hidden" value="quota">';
-		echo "<fieldset><legend><b>"._('Quota properties')."</b></legend>\n";
+		echo "<fieldset class=\"groupedit-bright\"><legend class=\"groupedit-bright\"><b>"._('Quota properties')."</b></legend>\n";
 		echo "<table border=0 width=\"100%\"><tr><td>";
 		echo _('Mountpoint'); echo '</td>'."\n".'<td>'; echo _('Used blocks'); echo '</td>'."\n".'<td>';
 		echo _('Soft block limit'); echo '</td>'."\n".'<td>'; echo _('Hard block limit'); echo '</td>'."\n".'<td>'; echo _('Grace block period');
@@ -469,9 +469,9 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo '<input name="select" type="hidden" value="final">';
 		echo "<input name=\"select\" type=\"hidden\" value=\"samba\">\n";
 		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
-		echo "<br><fieldset><legend>";
+		echo "<br><fieldset class=\"groupedit-middle\"><legend class=\"groupedit-bright\"><b>";
 		echo _('Please select page:');
-		echo "</legend>\n";
+		echo "</b></legend>\n";
 		echo "<input name=\"next_general\" type=\"submit\" value=\""; echo _('General'); echo "\">\n<br>";
 		echo "<input name=\"next_members\" type=\"submit\" value=\""; echo _('Members'); echo "\">\n<br>";
 		echo "<input name=\"next_samba\" type=\"submit\" value=\""; echo _('Samba'); echo "\">\n<br>";
@@ -480,7 +480,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "<input name=\"next_final\" type=\"submit\" disabled value=\""; echo _('Final');
 		echo "\"></fieldset></td>\n<td>";
 		echo "<table border=0 width=\"100%\">\n<tr>\n<td>";
-		echo "<fieldset><legend>";
+		echo "<fieldset class=\"groupedit-middle\"><legend class=\"groupedit-bright\">";
 		echo _("Save profile");
 		echo "</legend>\n<table border=0 width=\"100%\">\n<tr>\n<td>";
 		echo '<input name="f_finish_safeProfile" type="text" size="30" maxlength="50">';
@@ -488,7 +488,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo _('Save profile');
 		echo '"></td><td><a href="../help.php?HelpNumber=457" target="lamhelp">'._('Help');
 		echo "</a></td>\n</tr>\n</table>\n</fieldset>\n</td></tr>\n<tr><td>\n";
-		echo "<fieldset><legend><b>";
+		echo "<fieldset class=\"groupedit-bright\"><legend class=\"groupedit-bright\"><b>";
 		if ($_SESSION['account_old']) echo _('Modify');
 		 else echo _('Create');
 		echo "</b></legend>\n";
@@ -534,7 +534,7 @@ switch ($select_local) { // Select which part of page will be loaded
 	case 'finish':
 		// Final Settings
 		echo '<input name="select" type="hidden" value="finish">';
-		echo "<fieldset><legend><b>"._('Success')."</b></legend>\n";
+		echo "<fieldset class=\"groupedit-bright\"><legend class=\"groupedit-bright\"><b>"._('Success')."</b></legend>\n";
 		echo "<table border=0 width=\"100%\"><tr><td>";
 		echo '<tr><td>';
 		echo _('Group').' ';
