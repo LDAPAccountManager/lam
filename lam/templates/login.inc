@@ -65,7 +65,7 @@ else
 		</title>
 	<link rel="stylesheet" type="text/css" href="../style/layout.css">
 	</head>
-	<body><!--<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">-->
+	<body>
 		<p align="center"><img src="../graphics/banner.jpg" border=1></p>
 		<table width="100%" border="0"><tr><td width="100%" align="right"><a href="../config/conflogin.php" target="_self"><? echo _("Configuration Login") ?></a></td></tr></table><hr><br><br>
 		<b><p align="center"> <? echo _("Enter Username and Password for Account:"); ?> </b></p>
