@@ -95,15 +95,24 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 		// Write all general values into $_SESSION['account'] if no profile should be loaded
 		if (!$_POST['load']) {
 			// Set correct SID if GIS has changed
-			if (isset($_SESSION['account_old']->general_uidNumber) && ($_SESSION['account']->general_uidNumber != $_POST['f_general_uidNumber'])
-				&& ($_SESSION['config']->samba3 == 'yes')) {
-				$temp = explode('-', $_SESSION['account']->smb_mapgroup);
-				$SID = $temp[0].'-'.$temp[1].'-'.$temp[2].'-'.$temp[3].'-'.$temp[4].'-'.$temp[5].'-'.$temp[6];
-				if ( $temp[7]!='512' && $temp[7]!='513' && $temp[7]!='514' )
-					$_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-".
-						(2 * $_POST['f_general_uidNumber'] + $_SESSION['account']->smb_domain->RIDbase +1);
+			if ($_SESSION['config']->samba3 == 'yes')
+				if (isset($_SESSION['account_old']->general_uidNumber)) {
+					if ($_SESSION['account']->general_uidNumber != $_POST['f_general_uidNumber']) {
+						$temp = explode('-', $_SESSION['account']->smb_mapgroup);
+						$SID = $temp[0].'-'.$temp[1].'-'.$temp[2].'-'.$temp[3].'-'.$temp[4].'-'.$temp[5].'-'.$temp[6];
+						if ( $temp[7]!='512' && $temp[7]!='513' && $temp[7]!='514' )
+							$_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-".
+								(2 * $_POST['f_general_uidNumber'] + $_SESSION['account']->smb_domain->RIDbase +1);
+						}
+					}
+				else {
+					$temp = explode('-', $_SESSION['account']->smb_mapgroup);
+					$SID = $temp[0].'-'.$temp[1].'-'.$temp[2].'-'.$temp[3].'-'.$temp[4].'-'.$temp[5].'-'.$temp[6];
+					if ( $temp[7]!='512' && $temp[7]!='513' && $temp[7]!='514' )
+						$_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-".
+							(2 * $_POST['f_general_uidNumber'] + $_SESSION['account']->smb_domain->RIDbase +1);
+					}
 
-				}
 			$_SESSION['account']->general_dn = $_POST['f_general_suffix'];
 			$_SESSION['account']->general_username = $_POST['f_general_username'];
 			$_SESSION['account']->general_uidNumber = $_POST['f_general_uidNumber'];
