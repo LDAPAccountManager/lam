@@ -10,4 +10,6 @@ Help numbers should only be used if they are assigned in this file to avoid doub
 100 - 199: unassigend
 200 - 299: Roland Gruber: configuration wizard, configuration login
 300 - 399: Roland Gruber: profil editor
-300 -: unassigned
+400 - 499: Tilo Lutz: account.php
+500 - 599: Tilo Lutz: Masscreate and Massdelete
+600 -: unassigned
