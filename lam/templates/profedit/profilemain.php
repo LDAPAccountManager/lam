@@ -87,7 +87,7 @@ for ($i = 0; $i < sizeof($hstprof); $i++) {
 }
 
 echo ("<?xml version=\"1.0\" encoding=\"ISO-8859-15\"?>\n");
-echo ("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n");
+echo ("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Strict//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">\n");
 ?>
 
 <html>
@@ -96,23 +96,21 @@ echo ("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http:/
 		<link rel="stylesheet" type="text/css" href="../../style/layout.css">
 	</head>
 	<body>
-		<br>
+		<p></p>
 		<form action="profilemain.php" method="post">
 
 		<!-- user profile options -->
 		<fieldset>
 			<legend>
-				<b> <? echo _("User Profiles"); ?> </b>
+				<b><? echo _("User Profiles"); ?></b>
 			</legend>
-			<table align="left" border=0>
+			<table border=0>
 				<!-- new user profile -->
 				<tr>
 					<td>
-						<input checked type="radio" name="profile" value="newuser">
+						<input type="radio" name="profile" value="newuser" checked>
 					</td>
-					<td colspan=2>
-						<? echo _("Create a new User Profile"); ?>
-					</td>
+					<td colspan=2><? echo _("Create a new User Profile"); ?></td>
 				</tr>
 				<!-- edit user profile -->
 				<tr>
@@ -124,9 +122,7 @@ echo ("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http:/
 							<? echo $userprofiles ?>
 						</select>
 					</td>
-					<td>
-						<? echo _("Edit User Profile"); ?>
-					</td>
+					<td><? echo _("Edit User Profile"); ?></td>
 				</tr>
 				<!-- delete user profile -->
 				<tr>
@@ -138,29 +134,25 @@ echo ("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http:/
 							<? echo $userprofiles ?>
 						</select>
 					</td>
-					<td>
-						<? echo _("Delete User Profile"); ?>
-					</td>
+					<td><? echo _("Delete User Profile"); ?></td>
 				</tr>
 			</table>
 		</fieldset>
 
-		<br>
+		<p></p>
 
 		<!-- host profile options -->
 		<fieldset>
 			<legend>
-				<b> <? echo _("Samba Host Profiles"); ?> </b>
+				<b><? echo _("Samba Host Profiles"); ?></b>
 			</legend>
-			<table align="left" border=0>
+			<table border=0>
 				<!-- new host profile -->
 				<tr>
 					<td>
 						<input type="radio" name="profile" value="newhost">
 					</td>
-					<td colspan=2>
-						<? echo _("Create a new Samba Host Profile"); ?>
-					</td>
+					<td colspan=2><? echo _("Create a new Samba Host Profile"); ?></td>
 				</tr>
 				<!-- edit host profile -->
 				<tr>
@@ -172,9 +164,7 @@ echo ("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http:/
 							<? echo $hostprofiles ?>
 						</select>
 					</td>
-					<td>
-						<? echo _("Edit Samba Host Profile"); ?>
-					</td>
+					<td><? echo _("Edit Samba Host Profile"); ?></td>
 				</tr>
 				<!-- delete host profile -->
 				<tr>
@@ -186,21 +176,20 @@ echo ("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http:/
 							<? echo $hostprofiles ?>
 						</select>
 					</td>
-					<td>
-						<? echo _("Delete Samba Host Profile"); ?>
-					</td>
+					<td><? echo _("Delete Samba Host Profile"); ?></td>
 				</tr>
 			</table>
 		</fieldset>
 
-		<br>
-		<br>
+		<p></p>
 
 		<!-- forward is used to check if buttons were pressed -->
+		<p>
 		<input type="hidden" name="forward" value="yes">
 
 		<input type="submit" name="submit" value="<? echo _("Submit"); ?>">
 		<input type="submit" name="abort" value="<? echo _("Abort"); ?>">
+		</p>
 
 		</form>
 	</body>
