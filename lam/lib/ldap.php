@@ -98,6 +98,8 @@ class Ldap{
 		if ($this->conf->get_SSL() == "True") $this->server = @ldap_connect("ldaps://" . $this->conf->get_Host(), $this->conf->get_Port());
 		else $this->server = @ldap_connect("ldap://" . $this->conf->get_Host(), $this->conf->get_Port());
 		if ($this->server) {
+			// use LDAPv3
+			ldap_set_option($this->server, LDAP_OPT_PROTOCOL_VERSION, 3);
 			$bind = @ldap_bind($this->server, $user, $passwd);
 			if ($bind) {
 			// return server handle
