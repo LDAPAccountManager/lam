@@ -136,6 +136,9 @@ class Ldap{
 	var $supports_samba2_schema=false;  // objectClass sambaAccount
 	var $supports_samba3_schema=false;  // objectClass sambaSamAccount
 
+	// random number (changes on every page request)
+	var $rand;
+
 	// constructor
 	// $config: an object of Config (../config/config.php)
 	function Ldap($config) {
@@ -171,6 +174,8 @@ class Ldap{
 			"uidnumber" => _("UID number"),
 			"gidnumber" => _("GID number")
 			);
+		mt_srand((double)microtime()*1000000);
+		$this->rand = mt_rand();
 		return true;
 	}
 
@@ -331,13 +336,16 @@ class Ldap{
 		// define which attributes to save
 		return array("conf", "username", "password", "ldapUserAttributes", "ldapGroupAttributes",
 			"ldapHostAttributes", "objectClasses", "supports_unix_hosts", "supports_samba2_schema",
-			"supports_samba3_schema");
+			"supports_samba3_schema", "rand");
 	}
 
 	// reconnects to LDAP server when deserialized
 	function __wakeup() {
 		$data = $this->decrypt();
 		$this->connect($data[0], $data[1]);
+		// change random number
+		mt_srand($this->rand + (microtime() * 1000000));
+		$this->rand = mt_rand();
 	}
 
 	// encrypts username and password
