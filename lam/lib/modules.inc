@@ -152,22 +152,20 @@ function check_module_conflicts($selected, $deps) {
 }
 
 // returns an array with all available user module names
+// $scope = suer, group, host, ....
 function getAvailableModules($scope) {
-	// scope = suer, group, host, ....
 	// get module names.
 	$dir = opendir('../../lib/modules');
 	while ($entry = readdir($dir))
 		if (is_file('../../lib/modules/'.$entry)) {
 			$entry = substr($entry, 0, strpos($entry, '.'));
-			$eval = '$module = '.$entry."::get_dependencies(".$scope.");";
-			eval ($eval);
-			if ($module != -1) $return[] = $entry;
-			}
+			if (call_user_func(array($entry, "can_manage"), $scope)) $return[] = $entry;
+		}
 	return $return;
 	}
 
+// $scope = user, group, host, ...
 function getProfileOptions($scope, $post=false) {
-	// type = user, group, host, ...
 	if (!isset($_SESSION['profile_account'])) {
 		// create new object
 		$_SESSION['profile_account'] = new accountContainer($scope, 'profile_account');
