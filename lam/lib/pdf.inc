@@ -62,6 +62,7 @@ function createUserPDF($accounts) {
 		$pdfFile->Cell(50,5,$account->general_surname,0,1,"L",0);
 		$pdfFile->setFont("times","",10);
 		$pdfFile->Cell(50,5,_("Given name") . ":",0,0,"R",0);
+		$pdfFile->setFont("times","B",10);
 		$pdfFile->Cell(50,5,$account->general_givenname,0,1,"L",0);
 		$pdfFile->setFont("times","",10);
 		$pdfFile->Cell(50,5,_("Street") . ":",0,0,"R",0);
