@@ -152,10 +152,7 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 			else $_SESSION['account']->smb_flagsD = false;
 		if ($_POST['f_smb_flagsX']) $_SESSION['account']->smb_flagsX = true;
 			else $_SESSION['account']->smb_flagsX = false;
-		if ($_POST['f_smb_mapgroup'] == _('Domain Guests')) $_SESSION['account']->smb_mapgroup = $_SESSION[config]->get_domainSID() . "-" . '514';
-		if ($_POST['f_smb_mapgroup'] == _('Domain Users')) $_SESSION['account']->smb_mapgroup = $_SESSION[config]->get_domainSID() . "-" . '513';
-		if ($_POST['f_smb_mapgroup'] == _('Domain Admins')) $_SESSION['account']->smb_mapgroup = $_SESSION[config]->get_domainSID() . "-" . '512';
-		if (isset($_POST['f_smb_domain'])) $_SESSION['account']->smb_displayName = $_POST['f_smb_domain'];
+		if (isset($_POST['f_smb_displayName'])) $_SESSION['account']->smb_displayName = $_POST['f_smb_displayName'];
 			else $_SESSION['account']->smb_displayName = '';
 
 		if ($_SESSION['config']->samba3 == 'yes') {
@@ -164,6 +161,9 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 				if ($_POST['f_smb_domain'] == $samba3domains[$i]->name) {
 					$_SESSION['account']->smb_domain = $samba3domains[$i];
 					}
+			if ($_POST['f_smb_mapgroup'] == _('Domain Guests')) $_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-" . '514';
+			if ($_POST['f_smb_mapgroup'] == _('Domain Users')) $_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-" . '513';
+			if ($_POST['f_smb_mapgroup'] == _('Domain Admins')) $_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-" . '512';
 			}
 		else {
 			if (isset($_POST['f_smb_domain'])) $_SESSION['account']->smb_domain = $_POST['f_smb_domain'];
@@ -828,7 +828,7 @@ switch ($select_local) { // Select which part of page will be loaded
 				echo '<tr><td>';
 				echo _('Windows well known group');
 				echo '</td>'."\n".'<td><select name="f_smb_mapgroup" >';
-					if ( $_SESSION['account']->smb_mapgroup == $_SESSION[config]->get_domainSID() . "-" . '514' ) {
+					if ( $_SESSION['account']->smb_mapgroup == $_SESSION['account']->smb_domain->SID . "-" . '514' ) {
 						echo '<option selected> ';
 						echo _('Domain Guests');
 						echo "</option>\n"; }
@@ -837,7 +837,7 @@ switch ($select_local) { // Select which part of page will be loaded
 						echo _('Domain Guests');
 						echo "</option>\n";
 						}
-					if ( $_SESSION['account']->smb_mapgroup == $_SESSION[config]->get_domainSID() . "-" . '513' ) {
+					if ( $_SESSION['account']->smb_mapgroup == $_SESSION['account']->smb_domain->SID . "-" . '513' ) {
 						echo '<option selected> ';
 						echo _('Domain Users');
 						echo "</option>\n"; }
@@ -846,7 +846,7 @@ switch ($select_local) { // Select which part of page will be loaded
 						echo _('Domain Users');
 						echo "</option>\n";
 						}
-					if ( $_SESSION['account']->smb_mapgroup == $_SESSION[config]->get_domainSID() . "-" . '512' ) {
+					if ( $_SESSION['account']->smb_mapgroup == $_SESSION['account']->smb_domain->SID . "-" . '512' ) {
 						echo '<option selected> ';
 						echo _('Domain Admins');
 						echo "</option>\n"; }
@@ -860,14 +860,25 @@ switch ($select_local) { // Select which part of page will be loaded
 					'</td></tr>'."\n".'<tr><td>';
 					echo _('Windows Groupname');
 					echo '</td><td>'.
-					'<input name="f_smb_domain" type="text" size="30" maxlength="80" value="' . $_SESSION['account']->smb_displayName . '">'.
+					'<input name="f_smb_displayName" type="text" size="30" maxlength="80" value="' . $_SESSION['account']->smb_displayName . '">'.
 					'</td><td>'.
 					'<a href="help.php?HelpNumber=465" target="lamhelp">'._('Help').'</a>'.
-					'</td></tr>'."\n";
+					'</td></tr>'."\n".'<tr><td>';
+				echo _('Domain');
+				echo '</td><td><select name="f_smb_domain">';
+				for ($i=0; $i<sizeof($samba3domains); $i++) {
+					if ($_SESSION['account']->smb_domain->name) {
+						if ($_SESSION['account']->smb_domain->name == $samba3domains[$i]->name)
+							echo '<option selected>' . $samba3domains[$i]->name. '</option>';
+						else echo '<option>' . $samba3domains[$i]->name. '</option>';
+						}
+					else echo '<option>' . $samba3domains[$i]->name. '</option>';
+					}
 				break;
 			case 'host':
 				// set smb_flgasW true because account is host
 				$_SESSION['account']->smb_flagsW = 1;
+				if ($_SESSION['account']->smb_password_no) echo '<input name="f_smb_password_no" type="hidden" value="1l">';
 				echo '<input name="f_unix_password_no" type="hidden" value="';
 				if ($_SESSION['account']->unix_password_no) echo 'checked';
 				echo  '">';
@@ -1023,6 +1034,33 @@ switch ($select_local) { // Select which part of page will be loaded
 					'mv ' . $_SESSION['account_old' ]->general_homedir . ' ' . $_SESSION['account']->general_homedir);
 					echo '</tr>'."\n";
 					}
+				if (!in_array('posixAccount', $_SESSION['account_old']->general_objectClass)) {
+					echo '<tr>';
+					StatusMessage('WARN', _('ObjectClass doesn\'t fit.'), _('Have to recreate entry.'));
+					echo "</tr>\n";
+					}
+				if (!in_array('shadowAccount', $_SESSION['account_old']->general_objectClass)) {
+					echo '<tr>';
+					StatusMessage('WARN', _('ObjectClass doesn\'t fit.'), _('Have to recreate entry.'));
+					echo "</tr>\n";
+					}
+				if (!in_array('inetOrgPerson', $_SESSION['account_old']->general_objectClass)) {
+					echo '<tr>';
+					StatusMessage('WARN', _('ObjectClass doesn\'t fit.'), _('Have to recreate entry.'));
+					echo "</tr>\n";
+					}
+				if ($_SESSION['config']->samba3 == 'yes') {
+					if (!in_array('sambaSamAccount', $_SESSION['account_old']->general_objectClass)) {
+						echo '<tr>';
+						StatusMessage('WARN', _('ObjectClass doesn\'t fit.'), _('Have to recreate entry.'));
+						echo "</tr>\n";
+						}}
+					else
+					if (!in_array('sambaAccount', $_SESSION['account_old']->general_objectClass)) {
+						echo '<tr>';
+						StatusMessage('WARN', _('ObjectClass doesn\'t fit.'), _('Have to recreate entry.'));
+						echo "</tr>\n";
+						}
 				break;
 			case 'group' :
 				if (($_SESSION['account_old']) && ($_SESSION['account']->general_uidNumber != $_SESSION['account_old']->general_uidNumber)) {
@@ -1037,6 +1075,16 @@ switch ($select_local) { // Select which part of page will be loaded
 					echo _('Change GID-Number of all users in group to new value');
 					echo '</td></tr>'."\n";
 					}
+				if (($_SESSION['config']->samba3 == 'yes') && (!in_array('sambaGroupMapping', $_SESSION['account_old']->general_objectClass))) {
+					echo '<tr>';
+					StatusMessage('WARN', _('ObjectClass doesn\'t fit.'), _('Have to recreate entry.'));
+					echo "</tr>\n";
+					}
+				if (!in_array('posixGroup', $_SESSION['account_old']->general_objectClass)) {
+					echo '<tr>';
+					StatusMessage('WARN', _('ObjectClass doesn\'t fit.'), _('Have to recreate entry.'));
+					echo "</tr>\n";
+					}
 				break;
 			case 'host':
 				if (($_SESSION['account_old']) && ($_SESSION['account']->general_uidNumber != $_SESSION['account_old']->general_uidNumber)) {
@@ -1045,6 +1093,33 @@ switch ($select_local) { // Select which part of page will be loaded
 					'find / -gid ' . $_SESSION['account_old' ]->general_uidNumber . ' -exec chown ' . $_SESSION['account']->general_uidNumber . ' {} \;');
 					echo '</tr>'."\n";
 					}
+				if (!in_array('posixAccount', $_SESSION['account_old']->general_objectClass)) {
+					echo '<tr>';
+					StatusMessage('WARN', _('ObjectClass doesn\'t fit.'), _('Have to recreate entry.'));
+					echo "</tr>\n";
+					}
+				if (!in_array('shadowAccount', $_SESSION['account_old']->general_objectClass)) {
+					echo '<tr>';
+					StatusMessage('WARN', _('ObjectClass doesn\'t fit.'), _('Have to recreate entry.'));
+					echo "</tr>\n";
+					}
+				if (!in_array('account', $_SESSION['account_old']->general_objectClass)) {
+					echo '<tr>';
+					StatusMessage('WARN', _('ObjectClass doesn\'t fit.'), _('Have to recreate entry.'));
+					echo "</tr>\n";
+					}
+				if ($_SESSION['config']->samba3 == 'yes') {
+					if (!in_array('sambaSamAccount', $_SESSION['account_old']->general_objectClass)) {
+						echo '<tr>';
+						StatusMessage('WARN', _('ObjectClass doesn\'t fit.'), _('Have to recreate entry.'));
+						echo "</tr>\n";
+						}}
+					else
+					if (!in_array('sambaAccount', $_SESSION['account_old']->general_objectClass)) {
+						echo '<tr>';
+						StatusMessage('WARN', _('ObjectClass doesn\'t fit.'), _('Have to recreate entry.'));
+						echo "</tr>\n";
+						}
 				break;
 			}
 		echo '<tr><td>'.

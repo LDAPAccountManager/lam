@@ -25,19 +25,19 @@
 # Configure-Options
 # change only variables starting from here
 	# list of valid admins
-@admins = ('cn=Manager,dc=my-domain,dc=com');
+@admins = ('cn=Manager,dc=my-domain,dc=com',
+	    'uid=test,ou=people,dc=my-domain,dc=com');
 $server_ldap="127.0.0.1"; # IP or DNS of ldap-server
 $server_ssh="127.0.0.1"; # IP or DNS of host to create homedirs, quota, ....
-$server_ssh_ident = "/var/lib/wwwrun/.ssh/id_dsa";
-$server_ssh_known = "/var/lib/wwwrun/.ssh/knownhosts";
-
+$server_ssh_ident = "/var/lib/wwwrun/.ssh/id_dsa"; # SSH-Key to use
+$path = "/srv/www/htdocs/lam/lib/lamdaemon.pl"; # path to ldap on remote-host
 $server_ldap_port='389'; # Port used from ldap
 $server_tls='no'; # Use TLS?
 $server_tls_verify='require'; # none,optional or require a valid server certificated
 $server_tls_clientcert=''; # path to client certificate
 $server_tls_clientkey=''; # path to client certificate
 $server_tls_decryptkey=''; # To to decrypt clientkey
-$server_tls_cafile=''; # Path to CA-File
+$server_tls_cafile='/etc/certificates/ca.cert'; # Path to CA-File
 $debug=true; # Show debug messages
 
 # Don't change anything below this line
@@ -182,7 +182,7 @@ if ($found==true) {
 						$i=0;
 						($<, $>) = ($>, $<); # Get root privileges
 						while ($quota_usr[$i][0]) {
-							$dev = Quota::getqcarg($quota[$i][1]);
+							$dev = Quota::getqcarg($quota[$i][0]);
 							$return = Quota::setqlim($dev,$user[2],$quota[$i][1],$quota[$i][2],$quota[$i][3],$quota[$i][4],1,$group);
 							$i++;
 							}
@@ -223,10 +223,9 @@ else {
     $username[0] =~ s/uid=//;
     my $ssh = Net::SSH::Perl->new($server_ssh, options=>[
 	"IdentityFile $server_ssh_ident",
-	"UserKnownHostsFile $server_ssh_known"
+	"UserKnownHostsFile /dev/null"
 	]);
     $ssh->login($username[0], $vals[1]);
-    #$path = "/srv/www/htdocs/lam/lib/lamdaemon.pl";
-    ($stdout, $stderr, $exit) = $ssh->cmd("sudo $0 @ARGV");
+    ($stdout, $stderr, $exit) = $ssh->cmd("sudo $path @ARGV");
     print "$stdout";
     }

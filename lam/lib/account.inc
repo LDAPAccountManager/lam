@@ -25,6 +25,7 @@ $Id$
 
 class account { // This class keeps all needed values for any account
 	// General Settings
+	var $general_objectClass;	// Array, contains old objectclasses of loaded account
 	var $general_username;		// string Username, Hostname or Groupname
 	var $general_uidNumber;		// string UIDNumber(user|host) GIDNumber(group) only natural numbers allowed
 	var $general_surname;		// string Surname (user)
@@ -516,7 +517,7 @@ function setquotas($values,$type,$values_old=false) { // Whis function will set 
 			}
 		$i++;
 		}
-	if ($i!=0) exec($$_SESSION['config']->scriptPath." $towrite", $vals);
+	if ($i!=0) exec($_SESSION['config']->scriptPath." $towrite", $vals);
 	//if ($i!=0) exec("/usr/bin/ssh ".$_SESSION['config']->scriptServer." sudo ".$_SESSION['config']->scriptPath." $towrite", $vals);
 	}
 
@@ -717,6 +718,11 @@ function loaduser($dn) { // Will load all needed values from an existing account
 			else $return->unix_host = $return->unix_host . ', ' . $attr['host'][$i];
 		$i++;
 		}
+	$i=0;
+	while (isset($attr['objectClass'][$i])) {
+		$return->general_objectClass[$i] = $attr['objectClass'][$i];
+		$i++;
+		}
 	if ($_SESSION['config']->samba3 == 'yes') {
 		if (isset($attr['sambaAcctFlags'][0])) {
 			if (strrpos($attr['sambaAcctFlags'][0], 'W')) $return->smb_flagsW=true;
@@ -779,6 +785,11 @@ function loadhost($dn) { // Will load all needed values from an existing account
 	$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 	$return->general_dn = (ldap_get_dn($_SESSION['ldap']->server(), $entry));
 	$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
+	$i=0;
+	while (isset($attr['objectClass'][$i])) {
+		$return->general_objectClass[$i] = $attr['objectClass'][$i];
+		$i++;
+		}
 	if (isset($attr['uid'][0])) $return->general_username = $attr['uid'][0];
 	if (isset($attr['uidNumber'][0])) $return->general_uidNumber = $attr['uidNumber'][0];
 	if (isset($attr['shadowLastChange'][0])) $return->unix_shadowLastChange = $attr['shadowLastChange'][0];
@@ -839,16 +850,28 @@ function loadgroup($dn) { // Will load all needed values from an existing group
 	$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 	$return->general_dn = (ldap_get_dn($_SESSION['ldap']->server(), $entry));
 	$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
+	$i=0;
+	while (isset($attr['objectClass'][$i])) {
+		$return->general_objectClass[$i] = $attr['objectClass'][$i];
+		$i++;
+		}
 	if (isset($attr['gidNumber'][0])) $return->general_uidNumber = $attr['gidNumber'][0];
 	if (isset($attr['description'][0])) $return->general_gecos = $attr['description'][0];
 	if (isset($attr['cn'][0])) {
 		$return->general_username = $attr['cn'][0];
 		if ($_SESSION['config']->scriptServer) getquotas('group',$attr['cn'][0]);
 		}
-	if (isset($attr['memberUid'])) $return->general_memberUid = $attr['memberUid'];
+	if (isset($attr['memberUid'][0])) $return->general_memberUid = $attr['memberUid'][0];
 	if (is_array($return->general_memberUid)) array_shift($return->general_memberUid);
-	if (isset($attr['sambaSID'])) $return->smb_mapgroup = $attr['sambaSID'];
-	if (isset($attr['displayName'])) $return->smb_displayName = $attr['displayName'];
+	if (isset($attr['sambaSID'][0])) {
+		$return->smb_mapgroup = $attr['sambaSID'][0];
+		$temp = explode('-', $attr['sambaSID'][0]);
+		$SID = $temp[0].'-'.$temp[1].'-'.$temp[2].'-'.$temp[3].'-'.$temp[4].'-'.$temp[5].'-'.$temp[6];
+		$samba3domains = $_SESSION['ldap']->search_domains($_SESSION[config]->get_domainSuffix());
+		for ($i=0; $i<sizeof($samba3domains); $i++)
+			if ($SID == $samba3domains[$i]->SID) $return->smb_domain = $samba3domains[$i];
+		}
+	if (isset($attr['displayName'][0])) $return->smb_displayName = $attr['displayName'][0];
 	if ($_SESSION['config']->scriptServer) {
 		$values = getquotas('group',$return->general_username);
 		if (is_object($values)) {
@@ -961,7 +984,7 @@ function createuser($values) { // Will create the LDAP-Account
 	$hosts = explode (',', $values->unix_host);
 	$i=0;
 	while(isset($hosts[$i])) {
-		$attr['host'][$i] = $hosts[$i];
+		if ($hosts[$i]!='') $attr['host'][$i] = $hosts[$i];
 		$i++;
 		}
 	if ($values->unix_pwdminage!='') $attr['shadowMin'] = $values->unix_pwdminage; // shadowAccount_may
@@ -976,7 +999,7 @@ function createuser($values) { // Will create the LDAP-Account
 	$success = ldap_add($_SESSION['ldap']->server(),$values->general_dn, $attr);
 	if (!$success) return 4;
 	if ($_SESSION['config']->scriptServer) {
-		setquotas($values->general_username,'user');
+		setquotas($values,'user');
 		addhomedir($values->general_username);
 		}
 	// Add User to Additional Groups
@@ -1136,7 +1159,7 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 	$j=0;
 	while(isset($hosts[$i])) {
 		if ($hosts[$i]!='') {
-			$attr['host'][$j] = $hosts[$i];
+			if ($hosts[$i]!='') $attr['host'][$j] = $hosts[$i];
 			$j++;
 			}
 		$i++;
@@ -1145,7 +1168,7 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 	$j=0;
 	while(isset($hosts_old[$i])) {
 		if ($hosts_old[$i]!='') {
-			$attr_rem['host'][$j] = $hosts_old[$i];
+			if ($hosts_old[$i]!='') $attr_rem['host'][$j] = $hosts_old[$i];
 			$j++;
 			}
 		$i++;
@@ -1212,6 +1235,32 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 	if ($values->general_givenname!=$values_old->general_givenname) $attr['givenName'] = $values->general_givenname;
 	if ($values->general_surname!=$values_old->general_surname) $attr['sn'] = $values->general_surname;
 
+	if ( (!in_array('posixAccount', $_SESSION['account_old']->general_objectClass)) ||
+		(!in_array('shadowAccount', $_SESSION['account_old']->general_objectClass)) ||
+		(!in_array('inetOrgPerson', $_SESSION['account_old']->general_objectClass)) ||
+		(($_SESSION['config']->samba3 =='yes') && (!in_array('sambaSamAccount', $_SESSION['account_old']->general_objectClass))) ||
+		(($_SESSION['config']->samba3 !='yes') && (!in_array('sambaAccount', $_SESSION['account_old']->general_objectClass)))) {
+
+			$result = ldap_search($_SESSION['ldap']->server(), $values_old->general_dn, "objectclass=PosixGroup");
+			$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
+			$attr_old = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
+			// remove "count" from array
+			unset($attr_old['count']);
+			for ($i=0; $i < sizeof($attr_old); $i++) unset($attr_old[$i]);
+			$keys = array_keys($attr_old);
+			for ($i=0; $i < sizeof($keys); $i++)
+				unset($attr_old[$keys[$i]]['count']);
+			unset ($attr_old['objectClass']);
+			$attr_old['objectClass'][0] = 'posixAccount';
+			$attr_old['objectClass'][1] = 'shadowAccount';
+			$attr_old['objectClass'][2] = 'inetOrgPerson';
+			if ($_SESSION['config']->samba3 !='yes') $attr_old['objectClass'][3] = 'sambaSamAccount';
+				else $attr_old['objectClass'][3] = 'sambaAccount';
+			$success = ldap_delete($_SESSION['ldap']->server(),$values_old->general_dn);
+			if ($success) $success = ldap_add($_SESSION['ldap']->server(),$values->general_dn, $attr_old);
+				else return 5;
+			}
+
 	if ($attr_rem) {
 			$success = ldap_mod_del($_SESSION['ldap']->server(),$values_old->general_dn, $attr_rem);
 			if (!$success) return 5;
@@ -1265,7 +1314,7 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 			}
 		$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
 		}
-	if ($_SESSION['config']->scriptServer) setquotas($values->general_username,'user',$values_old->general_username);
+	if ($_SESSION['config']->scriptServer) setquotas($values,'user',$values_old);
 	return 3;
 	}
 
@@ -1396,6 +1445,32 @@ function modifyhost($values,$values_old) { // Will modify the LDAP-Account
 		$attr['displayName'] = $values->general_gecos; // sambaAccount_may
 		}
 
+	if ( (!in_array('posixAccount', $_SESSION['account_old']->general_objectClass)) ||
+		(!in_array('shadowAccount', $_SESSION['account_old']->general_objectClass)) ||
+		(!in_array('account', $_SESSION['account_old']->general_objectClass)) ||
+		(($_SESSION['config']->samba3 =='yes') && (!in_array('sambaSamAccount', $_SESSION['account_old']->general_objectClass))) ||
+		(($_SESSION['config']->samba3 !='yes') && (!in_array('sambaAccount', $_SESSION['account_old']->general_objectClass)))) {
+
+			$result = ldap_search($_SESSION['ldap']->server(), $values_old->general_dn, "objectclass=PosixGroup");
+			$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
+			$attr_old = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
+			// remove "count" from array
+			unset($attr_old['count']);
+			for ($i=0; $i < sizeof($attr_old); $i++) unset($attr_old[$i]);
+			$keys = array_keys($attr_old);
+			for ($i=0; $i < sizeof($keys); $i++)
+				unset($attr_old[$keys[$i]]['count']);
+			unset ($attr_old['objectClass']);
+			$attr_old['objectClass'][0] = 'posixAccount';
+			$attr_old['objectClass'][1] = 'shadowAccount';
+			$attr_old['objectClass'][2] = 'account';
+			if ($_SESSION['config']->samba3 !='yes') $attr_old['objectClass'][3] = 'sambaSamAccount';
+				else $attr_old['objectClass'][3] = 'sambaAccount';
+			$success = ldap_delete($_SESSION['ldap']->server(),$values_old->general_dn);
+			if ($success) $success = ldap_add($_SESSION['ldap']->server(),$values->general_dn, $attr_old);
+				else return 5;
+			}
+
 	if ($attr_rem) {
 		$success = ldap_mod_del($_SESSION['ldap']->server(),$values_old->general_dn, $attr_rem);
 		if (!$success) return 5;
@@ -1405,7 +1480,7 @@ function modifyhost($values,$values_old) { // Will modify the LDAP-Account
 		if (!$success) return 5;
 		}
 	if ($values->general_dn != $values_old->general_dn) {// Hostname hasn't changed
-		$result = ldap_search($_SESSION['ldap']->server(), $dn, "objectclass=PosixAccount");
+		$result = ldap_search($_SESSION['ldap']->server(), $values_old->general_dn, "objectclass=PosixAccount");
 		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 		$attr_old = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
 		// remove "count" from array
@@ -1416,8 +1491,8 @@ function modifyhost($values,$values_old) { // Will modify the LDAP-Account
 			unset($attr_old[$keys[$i]]['count']);
 		$success = ldap_add($_SESSION['ldap']->server(),$values->general_dn, $attr_old);
 		if ($success) $success = ldap_delete($_SESSION['ldap']->server(),$values_old->general_dn);
+		if (!$success) return 5;
 		}
-	if (!$success) return 5;
 	return 3;
 	}
 
@@ -1454,7 +1529,7 @@ function creategroup($values) { // Will create the LDAP-Group
 		if ($values->smb_displayName) $attr['displayName'] = $values->smb_displayName;
 		}
 	$success = ldap_add($_SESSION['ldap']->server(),$values->general_dn, $attr);
-	if ($_SESSION['config']->scriptServer) setquotas($attr['uid'][0],'group');
+	if ($_SESSION['config']->scriptServer) setquotas($values,'group');
 	if ($success) return 1;
 	else return 4;
 	}
@@ -1492,12 +1567,29 @@ function modifygroup($values,$values_old) { // Will modify the LDAP-Group
 		$success = ldap_mod_del($_SESSION['ldap']->server(),$values_old->general_dn, $attr_rem);
 		if (!$success) return 5;
 		}
+	if (($_SESSION['config']->samba3 = 'yes') && (!in_array('sambaGroupMapping', $_SESSION['account_old']->general_objectClass))) {
+		$result = ldap_search($_SESSION['ldap']->server(), $values_old->general_dn, "objectclass=PosixGroup");
+		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
+		$attr_old = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
+		// remove "count" from array
+		unset($attr_old['count']);
+		for ($i=0; $i < sizeof($attr_old); $i++) unset($attr_old[$i]);
+		$keys = array_keys($attr_old);
+		for ($i=0; $i < sizeof($keys); $i++)
+			unset($attr_old[$keys[$i]]['count']);
+		unset ($attr_old['objectClass']);
+		$attr_old['objectClass'][0] = 'posixGroup';
+		$attr_old['objectClass'][1] = 'sambaGroupMapping';
+		$success = ldap_delete($_SESSION['ldap']->server(),$values_old->general_dn);
+		if ($success) $success = ldap_add($_SESSION['ldap']->server(),$values->general_dn, $attr_old);
+			else return 5;
+		}
 	if ($attr) {
 		$success = ldap_mod_replace($_SESSION['ldap']->server(),$values->general_dn, $attr);
 		if (!$success) return 5;
 		}
 	if ($values->general_dn != $values_old->general_dn) {// Groupname hasn't changed
-		$result = ldap_search($_SESSION['ldap']->server(), $dn, "objectclass=PosixGroup");
+		$result = ldap_search($_SESSION['ldap']->server(), $values_old->general_dn, "objectclass=PosixGroup");
 		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 		$attr_old = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
 		// remove "count" from array
@@ -1509,8 +1601,8 @@ function modifygroup($values,$values_old) { // Will modify the LDAP-Group
 		$success = ldap_add($_SESSION['ldap']->server(),$values->general_dn, $attr_old);
 		if ($success) ldap_delete($_SESSION['ldap']->server(),$values_old->general_dn);
 		if ($success) $success = ldap_mod_replace($_SESSION['ldap']->server(),$values->general_dn, $attr);
+		if (!$success) return 5;
 		}
-	if (!$success) return 5;
 	if ( $_SESSION['final_changegids']==true ) {
 		$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_UserSuffix(), 'gidNumber=' . $values_old->general_uidNumber, array('gidNumber'));
 		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
@@ -1520,7 +1612,7 @@ function modifygroup($values,$values_old) { // Will modify the LDAP-Group
 			$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
 			}
 		}
-	if ($_SESSION['config']->scriptServer) setquotas($attr['uid'][0],'group');
+	if ($_SESSION['config']->scriptServer) setquotas($values,'group',$values_old);
 	return 3;
 	}
 
