@@ -27,13 +27,16 @@ define('FPDF_FONTPATH', 'font/');
 include_once("fpdf.php");
 
 function createUserPDF($accounts) {
+
 // Check if all submitted accounts are user accounts
 	for($i=0;$i<count($accounts);$i++) {
 		$account = $accounts[$i];
-		if($account->type <> "user") {
-			return 2; // 2 means non user account submitted for createUserPDF()
-		}
+//		if($account->type <> "user") {
+//			return 2; // 2 means non user account submitted for createUserPDF()
+//		}
 	}
+
+
 // Start PDF file
 	$pdfFile = new lamPDF();
 	$pdfFile->Open();
@@ -236,8 +239,49 @@ function createUserPDF($accounts) {
 		$pdfFile->setFont("arial","B",12);
 	}
 // Close document and send it to the browser
+//	$pdfFile->Close();
+//	$pdfFile->Output();
+
+
+	// Delete old PDF older than 3 min
+	$relpath = $_SESSION['lampath'].'tmp/';
+
+	$t=time();
+	$h=opendir("$relpath");
+	while ($file=readdir($h)) {
+    	    if (substr($file, -4)=='.pdf') {
+    		$path = $relpath.$file;
+    		if ($t-filemtime($path)>180)
+		@unlink($path);
+	    }
+	}
+	closedir($h);
+	
+	// Close PDF
 	$pdfFile->Close();
-	$pdfFile->Output();
+	// use timestamp as filename so it should be unique.
+	$time = time();
+	$filename = $relpath. $time .'.pdf';
+	$fileurl = $_SESSION['lamurl'].'templates/getpdf.php?&f='.$_SESSION['lampath'] .'tmp/'. $time .'.pdf';
+	// Save PDF
+	$pdfFile->Output($filename);
+
+	// Create redirector page
+
+
+	echo $_SESSION['header'];
+	echo "<html><head><title>";
+	echo _("PDF File");
+	echo "</title>\n".
+		"<link rel=\"stylesheet\" type=\"text/css\" href=\"".$_SESSION['lamurl']."style/layout.css\">\n".
+		"<meta http-equiv=\"pragma\" content=\"no-cache\">\n".
+		"<meta http-equiv=\"cache-control\" content=\"no-cache\">\n".
+		"<meta http-equiv=\"refresh\" content=\"2; URL=$fileurl\">\n".
+		"</head><body>\n".
+		"<a href=\"$fileurl\">";
+	echo _('Please press here if meta-refresh didn\'t work.');
+	echo "</a></body></html>";
+
 	return 0; // 0 means everything successful; page(s) printed
 }
 
