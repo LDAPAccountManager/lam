@@ -138,8 +138,8 @@ echo ("<tr><td>&nbsp</td></tr>");
 // Samba version
 echo ("<tr><td><p align=\"right\"><b>".
 	_("Samba 3.x schema") . ": </b></p></td><td><select name=\"samba3\">\n");
-if ($conf->get_samba3() == "no") echo ("<option>no</option><option>yes</option></td>");
-elseif ($conf->get_samba3() == "yes") echo ("<option>yes</option><option>no</option></td>");
+if ($conf->get_samba3() == "yes") echo ("<option>yes</option><option>no</option></td>");
+else echo ("<option>no</option><option>yes</option></td>");
 echo ("<td><a href=\"../help.php?HelpNumber=213\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 
 echo ("</table>");
