@@ -72,7 +72,17 @@ class baseModule {
 	function get_scope() {
 		return $this->scope;
 	}
-	
+
+	/**
+	* Returns true if this module fits for the current scope.
+	*
+	* @return boolean true if module fits
+	*/
+	function can_manage() {
+		if (is_array($this->meta["account_types"]) && in_array($this->scope, $this->meta["account_types"])) return true;
+		else return false;
+	}
+
 	/**
 	* Returns true if this module is enough to provide a sensible account.
 	*

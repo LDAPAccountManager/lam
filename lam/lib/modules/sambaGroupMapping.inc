@@ -53,6 +53,19 @@ $Id$
 * 'attributes': this is a list of arrays with all ldap attributes wich are allowed for this account
 */
 class sambaGroupMapping extends baseModule {
+
+	/**
+	* Returns meta data that is interpreted by parent class
+	*
+	* @return array array with meta data
+	*/
+	function get_metaData() {
+		$return = array();
+		// manages group accounts
+		$return["account_types"] = array("group");
+		return $return;
+	}
+
 	// Constructor
 	function init($base) {
 		/* Return an error if sambaGroupMapping should be created without
@@ -96,11 +109,6 @@ class sambaGroupMapping extends baseModule {
 	function get_alias($scope) {
 		return _('Samba 3');
 		}
-
-	function can_manage($scope) {
-		if ($scope == "group") return true;
-		else return false;
-	}
 
 	/* This function returns a list with all required modules
 	*/

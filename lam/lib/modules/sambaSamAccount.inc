@@ -61,6 +61,8 @@ class sambaSamAccount extends baseModule {
 	*/
 	function get_metaData() {
 		$return = array();
+		// manages user and host accounts
+		$return["account_types"] = array("user", "host");
 		if ($this->get_scope() == "host") {
 			// this is a base module
 			$return["is_base"] = true;
@@ -142,12 +144,6 @@ class sambaSamAccount extends baseModule {
 	function get_alias($scope) {
 		return _('Samba 3');
 		}
-
-	function can_manage($scope) {
-		if ($scope == "host") return true;
-		elseif ($scope == "user") return true;
-		else return false;
-	}
 
 	/* This function returns a list with all required modules
 	*/

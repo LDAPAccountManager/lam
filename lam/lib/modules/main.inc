@@ -44,6 +44,19 @@ $Id$
 * It also chooses which page to show.
 */
 class main extends baseModule {
+
+	/**
+	* Returns meta data that is interpreted by parent class
+	*
+	* @return array array with meta data
+	*/
+	function get_metaData() {
+		$return = array();
+		// manages no accounts
+		$return["account_types"] = array();
+		return $return;
+	}
+
 	// Constructor
 	function init($base) {
 		// Set counter to first page
@@ -66,10 +79,6 @@ class main extends baseModule {
 	function get_alias($scope) {
 		return _('main');
 		}
-
-	function can_manage($scope) {
-		return false;
-	}
 
 	/* This function returns a list with all required modules
 	*/

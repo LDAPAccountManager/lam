@@ -164,8 +164,12 @@ function check_module_conflicts($selected, $deps) {
 	else return false;
 }
 
-// returns an array with all available user module names
-// $scope = user, group, host, ...
+/**
+* Returns an array with all available user module names
+*
+* @param string $scope account type (user, group, host)
+* @return array list of possible modules
+*/
 function getAvailableModules($scope) {
 	global $relative;
 	$return = array();
@@ -174,7 +178,8 @@ function getAvailableModules($scope) {
 	while ($entry = readdir($dir))
 		if ((substr($entry, strlen($entry) - 4, 4) == '.inc') && is_file($relative . 'lib/modules/'.$entry)) {
 			$entry = substr($entry, 0, strpos($entry, '.'));
-			if (call_user_func(array($entry, "can_manage"), $scope)) $return[] = $entry;
+			$temp = new $entry($scope);
+			if ($temp->can_manage()) $return[] = $entry;
 		}
 	return $return;
 }

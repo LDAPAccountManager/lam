@@ -35,17 +35,15 @@ allowed to call other static functions.<br>
     <tr>
       <td
  style="vertical-align: top; background-color: rgb(204, 204, 204); text-align: center;"><span
- style="font-weight: bold;">function can_manage($scope)</span><br>
+ style="font-weight: bold;">function can_manage()</span><br>
       </td>
     </tr>
   </tbody>
 </table>
 <br>
 Returns <span style="font-style: italic;">true</span> if this module
-can manage accounts of type <span style="font-style: italic;">$scope</span>,
+can manage accounts of the current type<span style="font-style: italic;"></span>,
 otherwise <span style="font-style: italic;">false</span>.<br>
-The <span style="font-weight: bold;">$scope</span> parameter defines
-the account type ("user", "group", "host" at this time).<br>
 <br>
 <br>
 <h3>2.1.2. get_alias</h3>
@@ -558,10 +556,17 @@ which should be displayed when this help entry is called.
 <br>
 <br>
 <h2>6. Module meta data</h2>
-<h3>6.1 is_base_module()</h3>
+<h3>6.1 can_manage()
+</h3>
+&nbsp;&nbsp;&nbsp; "account_types" =&gt; array<br>
+<br>
+<span style="font-weight: bold;">&nbsp;&nbsp;&nbsp; Example:
+array("user", "host")</span><br style="font-weight: bold;">
+<br>
+<h3>6.2 is_base_module()</h3>
 &nbsp;&nbsp;&nbsp; "is_base" =&gt; boolean<br>
 <br>
-<h3>6.2 get_ldap_filter()</h3>
+<h3>6.3 get_ldap_filter()</h3>
 &nbsp;&nbsp;&nbsp; "ldap_filter" =&gt; array<br>
 <br>
 <span style="font-weight: bold;">&nbsp;&nbsp; Example:</span><span

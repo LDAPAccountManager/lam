@@ -22,6 +22,19 @@ $Id$
 
 
 class quota extends baseModule {
+
+	/**
+	* Returns meta data that is interpreted by parent class
+	*
+	* @return array array with meta data
+	*/
+	function get_metaData() {
+		$return = array();
+		// manages user and group accounts
+		$return["account_types"] = array("user", "group");
+		return $return;
+	}
+
 	// Constructor
 	function init($base) {
 		$this->base = $base;
@@ -70,12 +83,6 @@ class quota extends baseModule {
 	function get_alias($scope) {
 		return _('Quota');
 		}
-
-	function can_manage($scope) {
-		if ($scope == "group") return true;
-		elseif ($scope == "user") return true;
-		else return false;
-	}
 
 	/* This function returns a list with all required modules
 	*/

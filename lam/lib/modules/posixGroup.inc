@@ -61,6 +61,8 @@ class posixGroup extends baseModule {
 	*/
 	function get_metaData() {
 		$return = array();
+		// manages group accounts
+		$return["account_types"] = array("group");
 		if ($this->get_scope() == "group") {
 			// this is a base module
 			$return["is_base"] = true;
@@ -139,11 +141,6 @@ class posixGroup extends baseModule {
 	function get_alias($scope) {
 		return _('Unix');
 		}
-
-	function can_manage($scope) {
-		if ($scope == "group") return true;
-		else return false;
-	}
 
 	/* This function returns a list with all required modules
 	*/

@@ -61,6 +61,9 @@ class posixAccount extends baseModule {
 	*/
 	function get_metaData() {
 		$return = array();
+		// manages user and host accounts
+		$return["account_types"] = array("user", "host");
+		// user specific data
 		if ($this->get_scope() == "user") {
 			// this is a base module
 			$return["is_base"] = true;
@@ -148,12 +151,6 @@ class posixAccount extends baseModule {
 
 	function get_alias($scope) {
 		return "Unix";
-	}
-
-	function can_manage($scope) {
-		if ($scope == "host") return true;
-		elseif ($scope == "user") return true;
-		else return false;
 	}
 
 	/* This function returns a list with all required modules

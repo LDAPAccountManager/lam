@@ -38,6 +38,19 @@ $Id$
 */
 
 class account extends baseModule {
+
+	/**
+	* Returns meta data that is interpreted by parent class
+	*
+	* @return array array with meta data
+	*/
+	function get_metaData() {
+		$return = array();
+		// manages host accounts
+		$return["account_types"] = array("host");
+		return $return;
+	}
+
 	// Constructor
 	function init($base) {
 		// Get local copy of name of account_container in session
@@ -65,11 +78,6 @@ class account extends baseModule {
 
 	function get_alias($scope) {
 		return _('Account');
-	}
-
-	function can_manage($scope) {
-		if ($scope == "host") return true;
-		else return false;
 	}
 
 	/* This function returns a list with all required modules

@@ -37,6 +37,19 @@ $Id$
 */
 
 class inetOrgPerson extends baseModule {
+
+	/**
+	* Returns meta data that is interpreted by parent class
+	*
+	* @return array array with meta data
+	*/
+	function get_metaData() {
+		$return = array();
+		// manages user accounts
+		$return["account_types"] = array("user");
+		return $return;
+	}
+
 	// Constructor
 	function init($base) {
 		// Get local copy of name of account_container in session
@@ -68,11 +81,6 @@ class inetOrgPerson extends baseModule {
 
 	function get_alias($scope) {
 		return _('Personal');
-	}
-
-	function can_manage($scope) {
-		if ($scope == "user") return true;
-		else return false;
 	}
 
 	/* This function returns a list with all required modules

@@ -53,6 +53,19 @@ $Id$
 * 'attributes': this is a list of arrays with all ldap attributes wich are allowed for this account
 */
 class shadowAccount extends baseModule {
+
+	/**
+	* Returns meta data that is interpreted by parent class
+	*
+	* @return array array with meta data
+	*/
+	function get_metaData() {
+		$return = array();
+		// manages user accounts
+		$return["account_types"] = array("user");
+		return $return;
+	}
+
 	// Constructor
 	function init($base) {
 		/* Return an error if shadowAccount should be created without
@@ -90,11 +103,6 @@ class shadowAccount extends baseModule {
 	function get_alias($scope) {
 		return _('Shadow');
 		}
-
-	function can_manage($scope) {
-		if ($scope == "user") return true;
-		else return false;
-	}
 
 	/* This function returns a list with all required modules
 	*/
