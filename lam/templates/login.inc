@@ -67,17 +67,17 @@ else
 		<input type="hidden" name="action" value="checklogin">
 			<table width="500" align="center" border="0">
 				<tr>
-					<td width="45%" align="right"><? echo _("Username:") ?></td><td width="10%"></td><td width="45%" align="left"><input type="text" name="username"></td>
+					<td width="45%" align="right"><? echo _("Username:") ?></td><td width="10%"></td><td width="45%" align="left"><select name="username" size="1"><? for($i = 0; $i < count($config->Admins); $i++) { $text = explode(",", $config->Admins[$i]); $text = explode("=", $text[0]); echo "<option value=\"" . $config->Admins[$i] . "\">" . $text[1] . "</option>"; } ?></select></td>
 				</tr>
 				<tr>
 					<td width="45%" align="right"><? echo _("Password:") ?></td><td width="10%"></td><td width="45%" align="left"><input type="password" name="passwd"></td>
 				</tr>
 				<tr>
-<? if($message != "") { ?>
+					<? if($message != "") { ?>
 					<td width="100%" colspan="3" align="center"><? echo _($message) ?><input type="hidden" name="language" value="english"></td>
-<? } else { ?>
+					<? } else { ?>
 					<td width="45%" align="right"><? echo _("Your Language:") ?></td><td width="10%"></td><td width="45%" align="left"><select name="language" size="1"><? for($i = 0; $i < count($languages); $i++) { echo "<option value=\"" . $languages[$i]["link"] . "\">" . $languages[$i]["descr"] . "</option>"; } ?></select></td>
-<? } ?>
+					<? } ?>
 				</tr>
 				<tr>
 					<td width="100%" colspan="3" align="center"><input type="submit" name="submit" value=<? echo _("Login"); ?>></td>
