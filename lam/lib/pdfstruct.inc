@@ -28,7 +28,7 @@ function getPDFStructureDefinitions($scope = "user") {
 	$return = array();
 	$dirHandle = opendir($_SESSION['lampath'] . '/config/pdf/' . $scope . '/');
 	while($file = readdir($dirHandle)) {
-		if($file != '.' && $file != '..' && $file != 'default.xml') {
+		if(!is_dir($file) && $file != '.' && $file != '..' && $file != 'default.xml') {
 			array_push($return, substr($file,0,strlen($file)-4));
 		}
 	}
