@@ -227,7 +227,7 @@ if ($user_count != 0) {
 		echo("<tr class=\"userlist\"\nonMouseOver=\"user_over(this, '" . $i . "')\"\n" .
 			"onMouseOut=\"user_out(this, '" . $i . "')\"\n" .
 			"onClick=\"user_click(this, '" . $i . "')\"\n" .
-			"onDblClick=\"parent.frames[1].location.href='../account/edit.php?type=user&amp;DN=" . $i . "'\">\n");
+			"onDblClick=\"parent.frames[1].location.href='../account/edit.php?type=user&amp;DN=" . $info[$i]['dn'] . "'\">\n");
 		// checkboxes if selectall = "yes"
 		if ($_GET['selectall'] == "yes") {
 			echo "<td height=22 align=\"center\">\n<input onClick=\"user_click(this, '" . $i . "')\" type=\"checkbox\" name=\"" .
@@ -237,7 +237,7 @@ if ($user_count != 0) {
 			echo "<td height=22 align=\"center\">\n<input onClick=\"user_click(this, '" . $i . "')\" type=\"checkbox\" name=\"" .
 				$i . "\">\n</td>\n";
 		}
-		echo ("<td align='center'>\n<a href=\"../account/edit.php?type=user&amp;DN='" . $i . "'\">" .
+		echo ("<td align='center'>\n<a href=\"../account/edit.php?type=user&amp;DN='" . $info[$i]['dn'] . "'\">" .
 			_("Edit") . "</a>\n</td>\n");
 		for ($k = 0; $k < sizeof($attr_array); $k++) {
 			echo ("<td>\n");
