@@ -758,9 +758,9 @@ if (is_array($errors))
 
 // print_r($account_new);
 //print_r($account_old);
-if (!isset($_SESSION['cache'])) $_SESSION['cache'] = new cache();
-$temp = new accountContainer('user');
-$temp->add_objectClass('inetOrgPerson');
+//if (!isset($_SESSION['cache'])) $_SESSION['cache'] = new cache();
+//$temp = new accountContainer('user');
+//$temp->add_objectClass('inetOrgPerson');
 // print_r($temp->modules);
 
 switch ($select_local) {
