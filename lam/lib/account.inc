@@ -36,20 +36,23 @@ $Id$
 */
 function getshells() {
 	// Load shells from file
-	$shells =  file($_SESSION['lampath'].'config/shells');
-	$i=0;
-	while (count($shells) > $i) {
-		// remove whitespaces
-		trim($shells[$i]);
-		// remove lineend
-		$shells[$i] = substr($shells[$i], 0, strpos($shells[$i], "\n"));
-		// remove comments
-		if ($shells[$i]{0}=='#') unset ($shells[$i]);
-		 else $i++;
+	if (file_exists($_SESSION['lampath'] . 'config/shells')) {
+		$shells = file($_SESSION['lampath'] . 'config/shells');
+		$i = 0;
+		while (count($shells) > $i) {
+			// remove whitespaces
+			trim($shells[$i]);
+			// remove lineend
+			$shells[$i] = substr($shells[$i], 0, strpos($shells[$i], "\n"));
+			// remove comments
+			if ($shells[$i]{0}=='#') unset ($shells[$i]);
+			 else $i++;
 		}
-	// $shells is array with all valid shells
-	return $shells;
+		// $shells is array with all valid shells
+		return $shells;
 	}
+	else return array();
+}
 
 
 /* This function will replace umlates with ascci-chars
