@@ -138,11 +138,10 @@ class Config {
 	
 	// prints current preferences
 	function printconf() {
-		echo _("SSL: " ) . $this->SSL . "</br>";
-		echo _("Host: ") . $this->Host . "</br>";
-		echo _("Port: ") . $this->Port . "</br>";
-		echo _("Passwd: ") . $this->Passwd . "</br>";
-		echo _("Admins: "); for ($i = 0; $i < sizeof($this->Admins); $i++) { echo $this->Admins[$i] . "&nbsp;&nbsp;&nbsp;"; }
+		echo _("<b>SSL: </b>" ) . $this->SSL . "</br>";
+		echo _("<b>Host: </b>") . $this->Host . "</br>";
+		echo _("<b>Port: </b>") . $this->Port . "</br>";
+		echo _("<b>Admins: </b>") . $this->Adminstring;
 	}
 	
 	function get_SSL() {

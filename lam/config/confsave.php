@@ -54,6 +54,9 @@ $conf->set_Adminstring($admins);
 if ($ssl == "on") $conf->set_SSL("True");
 else $conf->set_SSL("False");
 
+echo ("<br><b><big><big><p align=\"center\"> LDAP Account Manager</b></big></big></p><br><br>");
+
+
 // check if password was changed
 if ($pass1 != $pass2) {
 	echo _("<b>" . _("Passwords are different!") . "</b>");
@@ -66,6 +69,4 @@ if ($pass1 != "") {
 // save settings
 echo ("<b>" . _("Saving the following settings:") . "</b><br><br>");
 $conf->printconf();
-if ($conf->save()) echo ("<br><br><b>" . _("Failed!") . "</b>");
-else echo ("<br><br><b>" . _("Successfully saved!") . "</b>");
 ?> 
