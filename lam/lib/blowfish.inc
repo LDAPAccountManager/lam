@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * The Cipher_blowfish:: class implements the Cipher interface enryption data
  * using the Blowfish algorithm.
  *
@@ -329,7 +329,7 @@ class Cipher_blowfish {
     /**
      * Set the key to be used for en/decryption
      *
-     * @param String $key   The key to use
+     * @param String $key The key to use
      */
     function setKey($key)
     {
@@ -388,7 +388,7 @@ class Cipher_blowfish {
     /**
      * Return the size of the blocks that this cipher needs
      *
-     * @return Integer  The number of characters per block
+     * @return Integer The number of characters per block
      */
     function getBlockSize()
     {
@@ -398,8 +398,8 @@ class Cipher_blowfish {
     /**
      * Encrypt a block on data.
      *
-     * @param String $block         The data to encrypt
-     * @param optional String $key  The key to use
+     * @param String $block The data to encrypt
+     * @param optional String $key The key to use
      *
      * @return String the encrypted output
      */
@@ -497,8 +497,8 @@ class Cipher_blowfish {
     /**
      * Decrypt a block on data.
      *
-     * @param String $block         The data to decrypt
-     * @param optional String $key  The key to use
+     * @param String $block The data to decrypt
+     * @param optional String $key The key to use
      *
      * @return String the decrypted output
      */
@@ -535,7 +535,8 @@ class Cipher_blowfish {
     /**
      * Converts a text key into an array.
      *
-     * @return array  The key.
+     * @param String $key key string
+     * @return array The key.
      */
     function _formatKey($key)
     {
