@@ -56,7 +56,7 @@ if (isset($_GET['getCSV'])) {
 		Header('Content-Type: application/force-download');
 	}
 	else {
-		Header('Content-Type: text/plain');
+		Header('Content-Type: application/msexcel');
 	}
 	Header('Content-disposition: attachment; filename=lam.csv');
 	echo $_SESSION['mass_csv'];
