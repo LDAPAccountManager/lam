@@ -1841,10 +1841,10 @@ function modifyuser($values,$values_old,$uselamdaemon=true) { // Will modify the
 		$attr['street'] = utf8_encode($values->personal_street);
 	if (($values->personal_street != $values_old->personal_street) && ($values->personal_street==''))
 		$attr_rem['street'] = utf8_encode($values_old->personal_street);
-	if (($values->personal_street != $values_old->personal_street) && ($values->personal_street!=''))
-		$attr['postalCode'] = utf8_encode($values->personal_street);
-	if (($values->personal_street != $values_old->personal_street) && ($values->personal_street==''))
-		$attr_rem['postalCode'] = utf8_encode($values_old->personal_street);
+	if (($values->personal_postalCode != $values_old->personal_postalCode) && ($values->personal_postalCode!=''))
+		$attr['postalCode'] = utf8_encode($values->personal_postalCode);
+	if (($values->personal_postalCode != $values_old->personal_postalCode) && ($values->personal_postalCode==''))
+		$attr_rem['postalCode'] = utf8_encode($values_old->personal_postalCode);
 	if (($values->personal_postalAddress != $values_old->personal_postalAddress) && ($values->personal_postalAddress!=''))
 		$attr['postalAddress'] = utf8_encode($values->personal_postalAddress);
 	if (($values->personal_postalAddress != $values_old->personal_postalAddress) && ($values->personal_postalAddress==''))
