@@ -33,6 +33,7 @@ include_once('../../lib/ldap.inc'); // LDAP-functions
 session_save_path('../../sess');
 @session_start();
 setlanguage();
+$_SESSION['shelllist'] = getshells(); // Write List of all valid shells in variable
 if (isset($_GET['DN'])) {
 	if (isset($_GET['DN']) && $_GET['DN']!='') {
 		if (isset($_SESSION['account_old'])) unset($_SESSION['account_old']);
@@ -415,7 +416,7 @@ switch ($select_local) { // Select which part of page will be loaded
 			'<a href="help.php?HelpNumber=406" target="lamhelp">'._('Help').'</a>'.
 			'</td></tr>'."\n".'<tr><td>';
 		echo _('Additional groups');
-		echo '</td>'."\n".'<td><select name="f_general_groupadd[]" size="4" multiple>';
+		echo '</td>'."\n".'<td><select name="f_general_groupadd[]" size="3" multiple>';
 		// loop though existing groups for additional groups
 		foreach ($groups as $group) {
 			if ($_SESSION['account']->general_groupadd) {
@@ -460,7 +461,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo _('Values with * are required');
 		echo "</fieldset>\n</td></tr><tr><td>";
 		if (count($profilelist)!=0) {
-			echo "<fieldset class=\"useredit-middle\"><legend class=\"useredit-bright\"><b>";
+			echo "<fieldset class=\"useredit-dark\"><legend class=\"useredit-bright\"><b>";
 			echo _("Load profile");
 			echo "</b></legend>\n<table border=0>\n<tr>\n<td>";
 			echo "<select name=\"f_general_selectprofile\" >";
@@ -485,7 +486,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		$date = getdate ($_SESSION['account']->unix_pwdexpire);
 		echo "<input name=\"select\" type=\"hidden\" value=\"unix\">\n";
 		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
-		echo "<table border=0><tr><td><fieldset class=\"useredit-middle\"><legend class=\"useredit-bright\"><b>";
+		echo "<table border=0><tr><td><fieldset class=\"useredit-dark\"><legend class=\"useredit-bright\"><b>";
 		echo _('Please select page:');
 		echo "</b></legend>\n";
 		echo "<input name=\"next_general\" type=\"submit\" value=\""; echo _('General'); echo "\">\n<br>";
@@ -772,7 +773,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		// Quota Settings
 		echo "<input name=\"select\" type=\"hidden\" value=\"quota\">\n";
 		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
-		echo "<table border=0><tr><td><fieldset class=\"useredit-middle\"><legend class=\"useredit-bright\"><b>";
+		echo "<table border=0><tr><td><fieldset class=\"useredit-dark\"><legend class=\"useredit-bright\"><b>";
 		echo _('Please select page:');
 		echo "</b></legend>\n";
 		echo "<input name=\"next_general\" type=\"submit\" value=\""; echo _('General'); echo "\">\n<br>";
@@ -812,7 +813,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		// Personal Settings
 		echo "<input name=\"select\" type=\"hidden\" value=\"personal\">\n";
 		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
-		echo "<table border=0><tr><td><fieldset class=\"useredit-middle\"><legend class=\"useredit-bright\"><b>";
+		echo "<table border=0><tr><td><fieldset class=\"useredit-dark\"><legend class=\"useredit-bright\"><b>";
 		echo _('Please select page:');
 		echo "</b></legend>\n";
 		echo "<input name=\"next_general\" type=\"submit\" value=\""; echo _('General'); echo "\">\n<br>";

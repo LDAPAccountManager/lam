@@ -92,7 +92,6 @@ tr.userlist-head {
 
 /* color of rows on mouseOver */
 tr.userlist-over {
-  background-color:#CCCCFF;
 }
 
 /* color of checked rows */
@@ -461,5 +460,30 @@ legend.hostedit-dark {
 
 select.hostedit-bright {
   background-color:#ffc4ba;
+}
+
+/**
+ * table style for useredit.php
+ *
+ */
+
+fieldset.useredit-bright {
+  background-color:#fff2a3;
+}
+
+legend.useredit-bright {
+  color:blue;
+}
+
+fieldset.useredit-dark {
+  background-color:#CCCCFF;
+}
+
+legend.useredit-dark {
+  color:blue;
+}
+
+select.useredit-bright {
+  background-color:#CCCCFF;
 }
 

@@ -38,7 +38,6 @@ if (isset($_GET['DN'])) {
 		if (isset($_SESSION['account_old'])) unset($_SESSION['account_old']);
 		$DN = str_replace("\'", '',$_GET['DN']);
 		$_SESSION['account'] = loadgroup($DN);
-		$_SESSION['account'] ->type = 'group';
 		$_SESSION['account_old'] = $_SESSION['account'];
 		$_SESSION['account']->general_dn = substr($_SESSION['account']->general_dn, strpos($_SESSION['account']->general_dn, ',')+1);
 		$_SESSION['final_changegids'] = '';

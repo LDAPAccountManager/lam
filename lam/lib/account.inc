@@ -84,71 +84,8 @@ class account { // This class keeps all needed values for any account
 	}
 
 
-function initvars($type=false,$DN=false) { // This function registers all needes session-varibales needed by account.php
-	// if session was started previos, the existing session will be continued
-	session_save_path('../sess');
-	@session_start();
-	setlanguage();
-	if ($type) {
-		if (isset($_SESSION['shelllist'])) unset($_SESSION['shelllist']);
-		$_SESSION['shelllist'] = getshells(); // Write List of all valid shells in variable
-		if (isset($_SESSION['account'])) unset($_SESSION['account']);
-		if (isset($_SESSION['errors'])) unset($_SESSION['errors']);
-		if ($DN) {
-			if (isset($_SESSION['account_old'])) unset($_SESSION['account_old']);
-			$DN = str_replace("\'", '',$DN);
-				switch ($type) {
-					case 'user':
-						$_SESSION['account'] = loaduser($DN);
-						$_SESSION['account_old'] = $_SESSION['account'];
-						$_SESSION['account']->unix_password='';
-						$_SESSION['account']->smb_password='';
-						$_SESSION['account']->general_dn = substr($_SESSION['account']->general_dn, strpos($_SESSION['account']->general_dn, ',')+1);
-						break;
-					case 'group':
-						$_SESSION['account'] = loadgroup($DN);
-						$_SESSION['account_old'] = $_SESSION['account'];
-						$_SESSION['account']->general_dn = substr($_SESSION['account']->general_dn, strpos($_SESSION['account']->general_dn, ',')+1);
-						$_SESSION['final_changegids'] = '';
-						break;
-					case 'host':
-						$_SESSION['account'] = loadhost($DN);
-						$_SESSION['account_old'] = $_SESSION['account'];
-						$_SESSION['account']->unix_password='';
-						$_SESSION['account']->smb_password='';
-						$_SESSION['account']->general_dn = substr($_SESSION['account']->general_dn, strpos($_SESSION['account']->general_dn, ',')+1);
-						break;
-					}
-			}
-		 else {
-			if (isset($_SESSION['account_old'])) unset($_SESSION['account_old']);
-			switch ($type) {
-				case 'user':
-						$_SESSION['account'] = loadUserProfile('default');
-						$_SESSION['account']->type = 'user';
-					break;
-				case 'group':
-						$_SESSION['account'] = loadGroupProfile('default');
-						$_SESSION['account']->type = 'group';
-					break;
-				case 'host':
-						$_SESSION['account'] = loadHostProfile('default');
-						$_SESSION['account']->type = 'host';
-					break;
-				}
-			if ( (($type=='user')||($type=='group')) && ($_SESSION['config']->scriptServer)) {
-				$values = getquotas($type);
-				if (is_object($values)) {
-					while (list($key, $val) = each($values)) // Set only defined values
-						if ($val) $_SESSION['account']->$key = $val;
-					}
-				}
-			}
-		}
-	}
-
 function getshells() { // Return a list of all shells listed in ../config/shells
-	$shells =  file('../config/shells');
+	$shells =  file('../../config/shells');
 	$i=0;
 	while ($shells[$i]) {
 		chop($shells[$i]);
@@ -1006,7 +943,7 @@ function loadgroup($dn) { // Will load all needed values from an existing group
 		$i++;
 		}
 	if (isset($attr['gidNumber'][0])) $return->general_uidNumber = $attr['gidNumber'][0];
-	if (isset($attr['description'][0])) $return->general_gecos = $attr['description'][0];
+	if (isset($attr['gecos'][0])) $return->general_gecos = utf8_decode($attr['gecos'][0]);
 	if (isset($attr['cn'][0])) {
 		$return->general_username = $attr['cn'][0];
 		if ($_SESSION['config']->scriptServer) getquotas('group',$attr['cn'][0]);
@@ -1059,8 +996,8 @@ function createuser($values) { // Will create the LDAP-Account
 	$attr['objectClass'][1] = 'shadowAccount';
 	if ($_SESSION['config']->samba3 == 'yes') {
 		$attr['objectClass'][2] = 'sambaSamAccount';
-		$attr['sambaNTPassword'] = exec('../lib/createntlm.pl nt ' . $values->smb_password);
-		$attr['sambaLMPassword'] = exec('../lib/createntlm.pl lm ' . $values->smb_password);
+		$attr['sambaNTPassword'] = exec('../../lib/createntlm.pl nt ' . $values->smb_password);
+		$attr['sambaLMPassword'] = exec('../../lib/createntlm.pl lm ' . $values->smb_password);
 		$attr['sambaPwdLastSet'] = time(); // sambaAccount_may
 		if ($values->smb_password_no) {
 			$attr['sambaNTPassword'] = 'NO PASSWORD*****';
@@ -1086,8 +1023,8 @@ function createuser($values) { // Will create the LDAP-Account
 		}
 		else {
 		$attr['objectClass'][2] = 'sambaAccount';
-		$attr['ntPassword'] = exec('../lib/createntlm.pl nt ' . $values->smb_password);
-		$attr['lmPassword'] = exec('../lib/createntlm.pl lm ' . $values->smb_password);
+		$attr['ntPassword'] = exec('../../lib/createntlm.pl nt ' . $values->smb_password);
+		$attr['lmPassword'] = exec('../../lib/createntlm.pl lm ' . $values->smb_password);
 		$attr['pwdLastSet'] = time(); // sambaAccount_may
 		if ($values->smb_password_no) {
 			$attr['ntPassword'] = 'NO PASSWORD*****';
@@ -1245,8 +1182,8 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 			}
 		 else
 			if ($values->smb_password!='') {
-				$attr['sambaNTPassword'] = exec('../lib/createntlm.pl nt ' . $values->smb_password);
-				$attr['sambaLMPassword'] = exec('../lib/createntlm.pl lm ' . $values->smb_password);
+				$attr['sambaNTPassword'] = exec('../../lib/createntlm.pl nt ' . $values->smb_password);
+				$attr['sambaLMPassword'] = exec('../../lib/createntlm.pl lm ' . $values->smb_password);
 				$attr['sambaPwdLastSet'] = time(); // sambaAccount_may
 				}
 		if ($values->smb_pwdcanchange != $values_old->smb_pwdcanchange) $attr['sambaPwdCanChange'] = $values->smb_pwdcanchange; // sambaAccount_may
@@ -1276,8 +1213,8 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 			}
 		 else
 			if ($values->smb_password!='') {
-				$attr['ntPassword'] = exec('../lib/createntlm.pl nt ' . $values->smb_password);
-				$attr['lmPassword'] = exec('../lib/createntlm.pl lm ' . $values->smb_password);
+				$attr['ntPassword'] = exec('../../lib/createntlm.pl nt ' . $values->smb_password);
+				$attr['lmPassword'] = exec('../../lib/createntlm.pl lm ' . $values->smb_password);
 				$attr['pwdLastSet'] = time(); // sambaAccount_may
 				}
 		if ($values->smb_pwdcanchange != $values_old->smb_pwdcanchange) $attr['pwdCanChange'] = $values->smb_pwdcanchange; // sambaAccount_may
