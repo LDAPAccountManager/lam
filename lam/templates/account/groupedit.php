@@ -36,17 +36,18 @@ setlanguage();
 if (isset($_GET['DN'])) {
 	if ($_GET['DN']!='') {
 		if (isset($_SESSION['account_old'])) unset($_SESSION['account_old']);
-		$DN = str_replace("\'", '',$DN);
+		$DN = str_replace("\'", '',$_GET['DN']);
 		$_SESSION['account'] = loadgroup($DN);
+		$_SESSION['account'] ->type = 'group';
 		$_SESSION['account_old'] = $_SESSION['account'];
 		$_SESSION['account']->general_dn = substr($_SESSION['account']->general_dn, strpos($_SESSION['account']->general_dn, ',')+1);
 		$_SESSION['final_changegids'] = '';
 		}
 	else {
 		$_SESSION['account'] = loadGroupProfile('default');
+		$_SESSION['account'] ->type = 'group';
 		if (isset($_SESSION['account_old'])) unset($_SESSION['account_old']);
 		}
-	$_SESSION['account'] ->type = 'group';
 	$values = getquotas($type);
 	if (is_object($values)) {
 		while (list($key, $val) = each($values)) // Set only defined values
@@ -197,7 +198,8 @@ do { // X-Or, only one if() can be true
 	if ($_POST['createagain']) {
 		$select_local='general';
 		unset($_SESSION['account']);
-		$_SESSION['account'] = loadUserProfile('default');
+		$_SESSION['account'] = loadGroupProfile('default');
+		$_SESSION['account'] ->type = 'group';
 		break;
 		}
 	if ($_POST['backmain']) {
@@ -207,7 +209,11 @@ do { // X-Or, only one if() can be true
 		}
 	if ($_POST['load']) {
 		// load profile
-		if ($_POST['f_general_selectprofile']!='') $_SESSION['account'] = loadGroupProfile($_POST['f_general_selectprofile']);
+		if ($_POST['f_general_selectprofile']!='') $values = loadGroupProfile($_POST['f_general_selectprofile']);
+		if (is_object($values)) {
+			while (list($key, $val) = each($values)) // Set only defined values
+				if (isset($val)) $_SESSION['account']->$key = $val;
+			}
 		// select general page after group has been loaded
 		$select_local='general';
 		break;
