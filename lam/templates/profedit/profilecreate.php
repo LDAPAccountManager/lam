@@ -151,7 +151,7 @@ if ($_GET['type'] == "user") {
 		exit;
 	}
 	if (($_POST['smb_password_no'] == "1") || ($_POST['smb_password_no'] == "0")) {
-		$acct->smb_password_no = $_POST['smb_password_no'];
+		$acct->smb_flags['N'] = $_POST['smb_password_no'];
 	}
 	else {
 		StatusMessage("ERROR", _("Wrong parameter for Samba option: Set Samba Password!"), $_POST['smb_password_no']);
@@ -167,7 +167,7 @@ if ($_GET['type'] == "user") {
 		exit;
 	}
 	if (($_POST['smb_flagsD'] == "1") || ($_POST['smb_flagsD'] == "0")) {
-		$acct->smb_flagsD = $_POST['smb_flagsD'];
+		$acct->smb_flags['D'] = $_POST['smb_flagsD'];
 	}
 	else {
 		StatusMessage("ERROR", _("Wrong parameter for Samba option: Account does not expire!"), $_POST['smb_flagsD']);
@@ -175,7 +175,7 @@ if ($_GET['type'] == "user") {
 		exit;
 	}
 	if (($_POST['smb_flagsX'] == "1") || ($_POST['smb_flagsX'] == "0")) {
-		$acct->smb_flagsX = $_POST['smb_flagsX'];
+		$acct->smb_flags['X'] = $_POST['smb_flagsX'];
 	}
 	else {
 		StatusMessage("ERROR", _("Wrong parameter for Samba option: Account is disabled!"), $_POST['smb_flagsX']);
