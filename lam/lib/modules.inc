@@ -1023,11 +1023,19 @@ class accountContainer {
 			// Now we have a string with all must-attributes
 			$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
 			$string = trim($string);
-			// Ad must
+			// Add must
 			foreach (explode(" $ ", $string) as $attribute) {
 				$return[$attribute] = array('');
-				}
 			}
+		}
+		elseif (strpos($_SESSION['ldap']->objectClasses[$line],  'MUST ')) {
+			$string_withtail = substr($_SESSION['ldap']->objectClasses[$line], strpos($_SESSION['ldap']->objectClasses[$line],  'MUST ')+5);
+			// Now we have a string with the must-attribute
+			$string = substr($string_withtail, 0, strpos($string_withtail, ' '));
+			$string = trim($string);
+			// Add must
+			$return[$string] = array('');
+		}
 		// create array with may-attributes
 		// Get startposition in string
 		if (strpos($_SESSION['ldap']->objectClasses[$line],  'MAY (')) {
@@ -1035,11 +1043,19 @@ class accountContainer {
 			// Now we have a string with all must-attributes
 			$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
 			$string = trim($string);
-			// Ad may
+			// Add may
 			foreach (explode(" $ ", $string) as $attribute) {
 				$return[$attribute] = array('');
-				}
 			}
+		}
+		elseif (strpos($_SESSION['ldap']->objectClasses[$line],  'MAY ')) {
+			$string_withtail = substr($_SESSION['ldap']->objectClasses[$line], strpos($_SESSION['ldap']->objectClasses[$line],  'MAY ')+4);
+			// Now we have a string with the may-attribute
+			$string = substr($string_withtail, 0, strpos($string_withtail, ' '));
+			$string = trim($string);
+			// Add must
+			$return[$string] = array('');
+		}
 		// Get attributes of subclasses
 		while (strpos($_SESSION['ldap']->objectClasses[$line], "SUP ")) {
 			$string_withtail = substr($_SESSION['ldap']->objectClasses[$line], strpos($_SESSION['ldap']->objectClasses[$line],  'SUP ')+4);
@@ -1057,11 +1073,19 @@ class accountContainer {
 				// Now we have a string with all must-attributes
 				$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
 				$string = trim($string);
-				// Ad must
+				// Add must
 				foreach (explode(" $ ", $string) as $attribute) {
 					$return[$attribute] = array('');
-					}
 				}
+			}
+			elseif (strpos($_SESSION['ldap']->objectClasses[$line],  'MUST ')) {
+				$string_withtail = substr($_SESSION['ldap']->objectClasses[$line], strpos($_SESSION['ldap']->objectClasses[$line],  'MUST ')+5);
+				// Now we have a string with the must-attribute
+				$string = substr($string_withtail, 0, strpos($string_withtail, ' '));
+				$string = trim($string);
+				// Add must
+				$return[$string] = array('');
+			}
 			// create array with may-attributes
 			// Get startposition in string
 			if (strpos($_SESSION['ldap']->objectClasses[$line],  'MAY (')) {
@@ -1069,12 +1093,20 @@ class accountContainer {
 				// Now we have a string with all must-attributes
 				$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
 				$string = trim($string);
-				// Ad may
+				// Add may
 				foreach (explode(" $ ", $string) as $attribute) {
 					$return[$attribute] = array('');
-					}
 				}
 			}
+			elseif (strpos($_SESSION['ldap']->objectClasses[$line],  'MAY ')) {
+				$string_withtail = substr($_SESSION['ldap']->objectClasses[$line], strpos($_SESSION['ldap']->objectClasses[$line],  'MAY ')+4);
+				// Now we have a string with the may-attribute
+				$string = substr($string_withtail, 0, strpos($string_withtail, ' '));
+				$string = trim($string);
+				// Add must
+				$return[$string] = array('');
+			}
+		}
 
 		// make references with attibutes which are used by more than one module
 		$newattributes = array_keys($return);
