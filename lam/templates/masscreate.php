@@ -185,7 +185,7 @@ switch ($select) {
 				}
 		for ($i=0; $i<sizeof($groups); $i++)
 			if ($_SESSION['accounts'][$i]->general_group!='')
-				StatusMessage('INFO', _('Group').' '
+				StatusMessage('INFO', _('Group').' '.
 					$_SESSION['accounts'][$i]->general_group.' '._('not found!'), _('It will be created.'));
 		if ($_FILES['userfile']['size']>0) {
 			fclose($handle);
