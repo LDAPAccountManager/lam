@@ -121,7 +121,7 @@ function print_option($values, $modulename, $old_options) {
 			break;
 		// help link
 		case 'help':
-			echo "<a href=../help.php?module=$modulename&amp;module=" . $values['value'] . ">" . _('Help') . "</a>\n";
+			echo "<a href=../help.php?module=$modulename&amp;HelpNumber=" . $values['value'] . ">" . _('Help') . "</a>\n";
 			break;
 		// input field
 		case 'input':
