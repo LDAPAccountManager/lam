@@ -11,7 +11,75 @@
 <br>
 <br>
 <div style="text-align: left;"><br>
-<h2>1. Defining pages<br>
+<h2>1. Loading the LDAP attributes<br>
+</h2>
+Every time the user selects an existing account to modify LAM will load
+the complete LDAP entry of it. Your module then should select the
+attributes which are useful for it.<br>
+There are two variables in <span style="font-style: italic;">baseModule</span>
+which should be used to store the attributes. The <span
+ style="font-weight: bold;">$attributes</span> variable stores the
+current attributes including changes the user made. The <span
+ style="font-weight: bold;">$orig</span> variable stores the attributes
+as they were originally when the account was loaded. This allows you to
+see what changes were made.<br>
+<br>
+The <span style="font-weight: bold;">load_attributes()</span> function
+in your module gets the complete attribute list from LDAP.<br>
+<br>
+<span style="font-weight: bold; text-decoration: underline;">Example:</span><br
+ style="font-weight: bold; text-decoration: underline;">
+<br>
+The <span style="font-style: italic;">ieee802Device</span> uses an
+object class and the <span style="font-style: italic;">'macAddress'</span>
+attribute. Therefore we will save this two values.<br>
+<br>
+<table style="width: 100%; text-align: left;" class="mod-code"
+ border="0" cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
+&nbsp;&nbsp;&nbsp; * This function loads all needed attributes into the
+object.<br>
+&nbsp;&nbsp;&nbsp; *<br>
+&nbsp;&nbsp;&nbsp; * @param array $attr an array as it is retured from
+ldap_get_attributes<br>
+&nbsp;&nbsp;&nbsp; */<br>
+&nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">function</span> <span
+ style="color: rgb(255, 0, 0);">load_attributes</span>($attr) {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+$this-&gt;attributes['objectClass'] = array();<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+$this-&gt;attributes['macAddress'] = array();<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $this-&gt;orig['objectClass'] =
+array();<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $this-&gt;orig['macAddress'] =
+array();<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if (isset($attr['objectClass'])) {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+unset($attr['objectClass']['count']);<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+$this-&gt;attributes['objectClass'] = $attr['objectClass'];<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+$this-&gt;orig['objectClass'] = $attr['objectClass'];<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if (isset($attr['macAddress'])) {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+unset($attr['macAddress']['count']);<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+$this-&gt;attributes['macAddress'] = $attr['macAddress'];<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+$this-&gt;orig['macAddress'] = $attr['macAddress'];<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return 0;<br>
+&nbsp;&nbsp;&nbsp; }<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<br>
+<h2>2. Defining pages<br>
 </h2>
 You can define multiple subpages for your account page. Usually one
 page is enough but you may display certain attribute settings on an
@@ -46,7 +114,7 @@ in this module.<br>
 </table>
 <br>
 <br>
-<h2>2. Page display</h2>
+<h2>3. Page display</h2>
 Now that you have defined your subpages you will need one function for
 each page to display it. The function must return <span
  style="font-style: italic;">meta HTML code</span> as defined in the <span
@@ -65,7 +133,7 @@ module has only one subpage called <span style="font-style: italic;">'attributes
 The first half of the code displays the existing MAC addresses and the
 second an input field for new values.<br>
 The variable <span style="font-style: italic;">$this-&gt;attributes</span>
-contains all LDAP attributes of an account.<br>
+contains the LDAP attributes which are useful for this module.<br>
 <br>
 <table style="width: 100%; text-align: left;" class="mod-code"
  border="0" cellpadding="2" cellspacing="2">
@@ -122,7 +190,7 @@ sizeof($this-&gt;attributes['macAddress']), 'name' =&gt; 'mac_number'));<br>
 </table>
 <br>
 <br>
-<h2>3. Processing input data<br>
+<h2>4. Processing input data<br>
 </h2>
 Every time the user clicks on a submit button while your page is
 displayed LAM will call a function in your module.<br>
@@ -234,7 +302,7 @@ $this-&gt;inputCorrect = true;<br>
 </table>
 <br>
 <br>
-<h2>4. Defining that your module is ready for LDAP add/modify</h2>
+<h2>5. Defining that your module is ready for LDAP add/modify</h2>
 Before a new account can be created or modified all modules are asked
 if they are ready.<br>
 There are two functions which control the module status. The <span
@@ -263,13 +331,15 @@ because the MAC address is optional.<br>
     <tr>
       <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /** used for
 account pages, true if input data is correct */<br>
-&nbsp;&nbsp;&nbsp; var $inputCorrect = true;<br>
+&nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">var</span>
+$inputCorrect = true;<br>
       <br>
 &nbsp;&nbsp;&nbsp; /**<br>
 &nbsp;&nbsp;&nbsp; * This function returns true if all needed settings
 are done.<br>
 &nbsp;&nbsp;&nbsp; */<br>
-&nbsp;&nbsp;&nbsp; function module_complete() {<br>
+&nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">function</span> <span
+ style="color: rgb(255, 0, 0);">module_complete</span>() {<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return $this-&gt;inputCorrect;<br>
 &nbsp;&nbsp;&nbsp; }<br>
 &nbsp;&nbsp;&nbsp; <br>
@@ -277,7 +347,8 @@ are done.<br>
 &nbsp;&nbsp;&nbsp; * Returns true if all settings on module page are
 correct.<br>
 &nbsp;&nbsp;&nbsp; */<br>
-&nbsp;&nbsp;&nbsp; function module_ready() {<br>
+&nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">function</span> <span
+ style="color: rgb(255, 0, 0);">module_ready</span>() {<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return $this-&gt;inputCorrect;<br>
 &nbsp;&nbsp;&nbsp; }<br>
       </td>
@@ -286,20 +357,55 @@ correct.<br>
 </table>
 <br>
 <br>
-<h2>5. Saving the LDAP attributes<br>
+<h2>6. Saving the LDAP attributes<br>
 </h2>
-<br>
+When all modules report that they are ready for LDAP add/modify and the
+user clicks on the add/modify button your module will be asked what
+changes have to be made.<br>
+This is done in the function <span style="font-weight: bold;">save_attributes()</span>
+which must be implemented by your module.<br>
 <br>
 <span style="font-weight: bold; text-decoration: underline;">Example:</span><br
  style="font-weight: bold; text-decoration: underline;">
 <br>
-<br>
+The <span style="font-style: italic;">ieee802Device</span>
+module saves the attribute states in <span style="font-style: italic;">$attributes</span>
+and <span style="font-style: italic;">$orig</span> and there are no
+other DNs which may be modified. Therefore we can use the <span
+ style="font-weight: bold;">save_module_attributes()</span> function in
+<span style="font-weight: bold;">accountContainer</span>. You can
+always access the current <span style="font-weight: bold;">accountContainer</span>
+with <span style="font-weight: bold;">$_SESSION[$this-&gt;base]</span>.<br>
 <br>
 <table style="width: 100%; text-align: left;" class="mod-code"
  border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; <br>
+      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
+&nbsp;&nbsp;&nbsp; * Returns a list of modifications which have to be
+made to the LDAP account.<br>
+&nbsp;&nbsp;&nbsp; *<br>
+&nbsp;&nbsp;&nbsp; * @return array list of modifications<br>
+&nbsp;&nbsp;&nbsp; * &lt;br&gt;This function returns an array with 3
+entries:<br>
+&nbsp;&nbsp;&nbsp; * &lt;br&gt;array( DN1 ('add' =&gt; array($attr),
+'remove' =&gt; array($attr), 'modify' =&gt; array($attr)), DN2 .... )<br>
+&nbsp;&nbsp;&nbsp; * &lt;br&gt;DN is the DN to change. It may be
+possible to change several DNs (e.g. create a new user and add him to
+some groups via attribute memberUid)<br>
+&nbsp;&nbsp;&nbsp; * &lt;br&gt;"add" are attributes which have to be
+added to LDAP entry<br>
+&nbsp;&nbsp;&nbsp; * &lt;br&gt;"remove" are attributes which have to be
+removed from LDAP entry<br>
+&nbsp;&nbsp;&nbsp; * &lt;br&gt;"modify" are attributes which have to
+been modified in LDAP entry<br>
+&nbsp;&nbsp;&nbsp; */<br>
+&nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">function</span> <span
+ style="color: rgb(255, 0, 0);">save_attributes</span>() {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return
+$_SESSION[$this-&gt;base]-&gt;save_module_attributes($this-&gt;attributes,
+$this-&gt;orig);<br>
+&nbsp;&nbsp;&nbsp; }<br>
       </td>
     </tr>
   </tbody>
