@@ -27,7 +27,9 @@ $Id$
 include_once("status.inc");
 include_once("modules.inc");
 
-// sets language settings for automatic translation
+/**
+* sets language settings for automatic translation
+*/
 function setlanguage() {
 	if ($_SESSION['language']) {
 		$language = explode(":", $_SESSION['language']);
@@ -40,7 +42,9 @@ function setlanguage() {
 	else echo _("Language not defined in session!");
 }
 
-// returns an array of string with all available configuration profiles (without .conf)
+/**
+* returns an array of string with all available configuration profiles (without .conf)
+*/
 function getConfigProfiles() {
 	$dir = dir(substr(__FILE__, 0, strlen(__FILE__) - 15) . "/config");
 	$ret = array();
@@ -58,8 +62,11 @@ function getConfigProfiles() {
 	return $ret;
 }
 
-// print meta refresh
-// $page is the URL of the target page
+/**
+* print meta refresh
+*
+* @param $page the URL of the target page
+*/
 function metaRefresh($page) {
 	echo $_SESSION['header'];
 	echo "<meta http-equiv=\"refresh\" content=\"0; URL=" . $page . "\">\n";
@@ -75,88 +82,105 @@ function metaRefresh($page) {
 }
 
 
-/*
-// class Config
+/**
+* This class manages .conf files.
 */
-// manages .conf files
 class Config {
 
-	// server address (e.g. ldap://127.0.0.1:389)
+	/** server address (e.g. ldap://127.0.0.1:389) */
 	var $ServerURL;
 
-	// array of strings: users with admin rights
+	/** array of strings: users with admin rights */
 	var $Admins;
 
-	// string: password to edit preferences
+	/** string: password to edit preferences */
 	var $Passwd;
 
-	// suffix for users
+	/** suffix for users */
 	var $usersuffix;
 
-	// suffix for groups
+	/** suffix for groups */
 	var $groupsuffix;
 
-	// suffix for Samba hosts
+	/** suffix for Samba hosts */
 	var $hostsuffix;
 
-	// suffix for domains (Samba 3)
+	/** suffix for domains (Samba 3) */
 	var $domainsuffix;
 
-	// minimum/maximum numbers for UID, GID and UID of Samba Hosts
+	/** minimum UID number for users */
 	var $MinUID;
+	/** maximum UID number for users */
 	var $MaxUID;
+	/** minimum GID number for groups */
 	var $MinGID;
+	/** maximum GID number for groups */
 	var $MaxGID;
+	/** minimum UID number for Samba hosts */
 	var $MinMachine;
+	/** maximum UID number for Samba hosts */
 	var $MaxMachine;
 
-	// attributes that are shown in the user/group/host tables
+	/** attributes that are shown in the user list */
 	var $userlistAttributes;
+	/** attributes that are shown in the group list */
 	var $grouplistAttributes;
+	/** attributes that are shown in the host list */
 	var $hostlistAttributes;
 
-	// maximum number of rows shown in user/group/host list
+	/** maximum number of rows shown in user/group/host lists */
 	var $maxlistentries;
 
-	// default language
+	/** default language */
 	var $defaultLanguage;
 
-	// Path to external script and server where it is executed
-	// used for managing quota and home directories
-	// optional settings, may not be defined
+	/**
+	* Path to external lamdaemon script on server where it is executed
+	* used for managing quota and home directories
+	* optional setting, may not be defined
+	*/
 	var $scriptPath;
+
+	/**
+	* server where lamdaemon script is executed
+	* used for managing quota and home directories
+	* optional setting, may not be defined
+	*/
 	var $scriptServer;
 
-	// if "yes" use the new LDAP schema for Samba 3.x
-	var $samba3;
-
-	// LDAP cache timeout
+	/** LDAP cache timeout */
 	var $cachetimeout;
 
-	// password hash algorithm
+	/** password hash algorithm */
 	var $pwdhash;
 
-	// text to include in user PDF files
+	/** text to include in user PDF files */
 	var $pdftext = "";
 
-	// account modules		// TODO add default modules for LAM <0.5
+	/** account modules
+	** TODO add default modules for LAM <0.5 
+	*/
 	var $usermodules = "um1,um2,um3";
 	var $groupmodules = "gm1,gm2,gm3";
 	var $hostmodules = "hm1,hm2,hm3";
 
-	// name of configuration file
+	/** name of configuration file */
 	var $file;
 
-	// list of all settings in config file
+	/** list of all settings in config file */
 	var $settings = array("ServerURL", "Passwd", "Admins", "usersuffix", "groupsuffix", "hostsuffix",
 		"domainsuffix", "MinUID", "MaxUID", "MinGID", "MaxGID", "MinMachine", "MaxMachine",
 		"userlistAttributes", "grouplistAttributes", "hostlistAttributes", "maxlistentries",
-		"defaultLanguage", "scriptPath", "scriptServer", "samba3", "cachetimeout", "pwdhash",
+		"defaultLanguage", "scriptPath", "scriptServer", "cachetimeout", "pwdhash",
 		"usermodules", "groupmodules", "hostmodules");
 
 
-	// constructor, loads preferences from config file
-	function Config($file=0) {
+	/**
+	* constructor, loads preferences from config file
+	*
+	* @param $file Index number in config file array
+	*/
+	function Config($file = 0) {
 		// load first profile if none is given
 		if (!is_string($file)) {
 			$profiles = getConfigProfiles();
@@ -166,7 +190,7 @@ class Config {
 		$this->reload();
 	}
 
-	// reloads preferences from config file
+	/** reloads preferences from config file */
 	function reload() {
 		$conffile = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/config/" . $this->file . ".conf";
 		if (is_file($conffile) == True) {
@@ -200,7 +224,7 @@ class Config {
 		}
 	}
 
-	// saves preferences to config file
+	/** saves preferences to config file */
 	function save() {
 		$conffile = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/config/" . $this->file . ".conf";
 		if (is_file($conffile) == True) {
@@ -257,7 +281,6 @@ class Config {
 			if (!in_array("defaultLanguage", $saved)) array_push($file_array, "\n\n# default language (a line from config/language)\n" . "defaultLanguage: " . $this->defaultLanguage . "\n");
 			if (!in_array("scriptPath", $saved)) array_push($file_array, "\n\n# Path to external Script\n" . "scriptPath: " . $this->scriptPath . "\n");
 			if (!in_array("scriptServer", $saved)) array_push($file_array, "\n\n# Server of external Script\n" . "scriptServer: " . $this->scriptServer . "\n");
-			if (!in_array("samba3", $saved)) array_push($file_array, "\n\n# Set to \"yes\" only if you use the new Samba 3.x schema.\n" . "samba3: " . $this->samba3 . "\n");
 			if (!in_array("cachetimeout", $saved)) array_push($file_array, "\n\n# Number of minutes LAM caches LDAP searches.\n" . "cacheTimeout: " . $this->cachetimeout . "\n");
 			if (!in_array("pwdhash", $saved)) array_push($file_array, "\n\n# Password hash algorithm (CRYPT/MD5/SMD5/SHA/SSHA/PLAIN).\n" . "pwdhash: " . $this->pwdhash . "\n");
 			if (!in_array("usermodules", $saved)) array_push($file_array, "\n\n# List of used user modules\n" . "usermodules: " . $this->usermodules . "\n");
@@ -276,12 +299,11 @@ class Config {
 		}
 	}
 
-	// prints current preferences
+	/** prints current preferences */
 	function printconf() {
 		echo "<b>" . _("Server address") . ": </b>" . $this->ServerURL . "<br>";
 		echo "<b>" . _("Password hash type") . ": </b>" . $this->pwdhash . "<br>";
 		echo "<b>" . _("Cache timeout") . ": </b>" . $this->cachetimeout . "<br>";
-		echo "<b>" . _("Samba 3.x schema") . ": </b>" . $this->samba3 . "<br>";
 		echo "<b>" . _("UserSuffix") . ": </b>" . $this->usersuffix . "<br>";
 		echo "<b>" . _("GroupSuffix") . ": </b>" . $this->groupsuffix . "<br>";
 		echo "<b>" . _("HostSuffix") . ": </b>" . $this->hostsuffix . "<br>";
@@ -308,33 +330,51 @@ class Config {
 
 	// functions to read/write preferences
 
-	// returns the server address as string
+	/**
+	* returns the server address as string
+	*
+	* @return server address
+	*/
 	function get_ServerURL() {
 		return $this->ServerURL;
 	}
 
-	// sets the server address
-	// $value: new server address
-	// returns true if $value has correct format
+	/**
+	* sets the server address
+	*
+	* @param $value new server address
+	* @return true if $value has correct format
+	*/
 	function set_ServerURL($value) {
 		if (is_string($value)) $this->ServerURL = $value;
 		else return false;
 		return true;
 	}
 
-	// returns an array of string with all admin names
+	/**
+	* returns an array of string with all admin names
+	*
+	* @return the admin names
+	*/
 	function get_Admins() {
 		return explode(";", $this->Admins);
 	}
 
-	// returns all admin users seperated by semicolons
+	/**
+	* returns all admin users seperated by semicolons
+	*
+	* @return the admin string
+	*/
 	function get_Adminstring() {
 		return $this->Admins;
 	}
 
-	// needs a string that contains all admin users seperated by semicolons
-	// $value: new admin string
-	// returns true if $value has correct format
+	/**
+	* sets the admin string
+	*
+	* @param $value new admin string that contains all admin users seperated by semicolons
+	* @return true if $value has correct format
+	*/
 	function set_Adminstring($value) {
 		if (is_string($value) &&
 		eregi("^[a-z0-9\\-]+=[a-z0-9\\-]+(,[a-z0-9\\-]+=[a-z0-9 \\-]+)+(;[a-z0-9\\-]+=[a-z0-9\\-]+(,[a-z0-9\\-]+=[a-z0-9 \\-]+)+)*$", $value)) {
@@ -344,28 +384,42 @@ class Config {
 		return true;
 	}
 
-	// returns the password to access the preferences wizard
+	/**
+	* returns the password to access the preferences wizard
+	*
+	* @return the password
+	*/
 	function get_Passwd() {
 		return $this->Passwd;
 	}
 
-	// sets the preferences wizard password
-	// $value: new password
-	// returns true if $value has correct format
+	/**
+	* sets the preferences wizard password
+	*
+	* @param $value new password
+	* @return true if $value has correct format
+	*/
 	function set_Passwd($value) {
 		if (is_string($value)) $this->Passwd = $value;
 		else return false;
 		return true;
 	}
 
-	// returns the LDAP suffix where users are saved
+	/**
+	* returns the LDAP suffix where users are saved
+	*
+	* @return the user suffix
+	*/
 	function get_UserSuffix() {
 		return $this->usersuffix;
 	}
 
-	// sets the LDAP suffix where users are saved
-	// $value: new user suffix
-	// returns true if $value has correct format
+	/**
+	* sets the LDAP suffix where users are saved
+	*
+	* @param $value new user suffix
+	* @return true if $value has correct format
+	*/
 	function set_UserSuffix($value) {
 		if (is_string($value) && (eregi("^(([a-z0-9 \\-])*=([a-z0-9 \\-])*)(,([a-z0-9 \\-])*=([a-z0-9 \\-])*)*$", $value))) {
 			$this->usersuffix = $value;
@@ -374,14 +428,21 @@ class Config {
 		return true;
 	}
 
-	// returns the LDAP suffix where groups are saved
+	/**
+	* returns the LDAP suffix where groups are saved
+	*
+	* @return the group suffix
+	*/
 	function get_GroupSuffix() {
 		return $this->groupsuffix;
 	}
 
-	// sets the LDAP suffix where groups are saved
-	// $value: new group suffix
-	// returns true if $value has correct format
+	/**
+	* sets the LDAP suffix where groups are saved
+	*
+	* @param $value new group suffix
+	* @return true if $value has correct format
+	*/
 	function set_GroupSuffix($value) {
 		if (is_string($value) && (eregi("^(([a-z0-9 \\-])*=([a-z0-9 \\-])*)(,([a-z0-9 \\-])*=([a-z0-9 \\-])*)*$", $value))) {
 			$this->groupsuffix = $value;
@@ -390,14 +451,21 @@ class Config {
 		return true;
 	}
 
-	// returns the LDAP suffix where hosts are saved
+	/**
+	* returns the LDAP suffix where hosts are saved
+	*
+	* @return the host suffix
+	*/
 	function get_HostSuffix() {
 		return $this->hostsuffix;
 	}
 
-	// sets the LDAP suffix where hosts are saved
-	// $value: new host suffix
-	// returns true if $value has correct format
+	/**
+	* sets the LDAP suffix where hosts are saved
+	*
+	* @param $value new host suffix
+	* @return true if $value has correct format
+	*/
 	function set_HostSuffix($value) {
 		if (! $value) $this->hostsuffix = "";
 		elseif (is_string($value) && (eregi("^(([a-z0-9 \\-])*=([a-z0-9 \\-])*)(,([a-z0-9 \\-])*=([a-z0-9 \\-])*)*$", $value))) {
@@ -407,14 +475,21 @@ class Config {
 		return true;
 	}
 
-	// returns the LDAP suffix where domains are saved
+	/**
+	* returns the LDAP suffix where domains are saved
+	*
+	* @return the domain suffix
+	*/
 	function get_DomainSuffix() {
 		return $this->domainsuffix;
 	}
 
-	// sets the LDAP suffix where domains are saved
-	// $value: new domain suffix
-	// returns true if $value has correct format
+	/**
+	* sets the LDAP suffix where domains are saved
+	*
+	* @param $value new domain suffix
+	* @return true if $value has correct format
+	*/
 	function set_DomainSuffix($value) {
 		if (!$value && ($this->get_Samba3() == "no")) $this->domainsuffix = "";
 		elseif (is_string($value) && (eregi("^(([a-z0-9 \\-])*=([a-z0-9 \\-])*)(,([a-z0-9 \\-])*=([a-z0-9 \\-])*)*$", $value))) {
@@ -424,70 +499,105 @@ class Config {
 		return true;
 	}
 
-	// returns the minimum UID to use when creating new users
+	/**
+	* returns the minimum UID to use when creating new users
+	*
+	* @return the minimum UID number
+	*/
 	function get_minUID() {
 		return $this->MinUID;
 	}
 
-	// sets the minimum UID to use when creating new users
-	// $value: new minimum UID number
-	// returns true if $value has correct format
+	/**
+	* sets the minimum UID to use when creating new users
+	*
+	* @param $value new minimum UID number
+	* @return true if $value has correct format
+	*/
 	function set_minUID($value) {
 		if (is_numeric($value)) $this->MinUID = $value;
 		else return false;
 		return true;
 	}
 
-	// returns the maximum UID to use when creating new users
+	/**
+	* returns the maximum UID to use when creating new users
+	*
+	* @return the maximum UID number
+	*/
 	function get_maxUID() {
 		return $this->MaxUID;
 	}
 
-	// sets the maximum UID to use when creating new users
-	// $value: new maximum UID number
-	// returns true if $value has correct format
+	/**
+	* sets the maximum UID to use when creating new users
+	*
+	* @param $value new maximum UID number
+	* @return true if $value has correct format
+	*/
 	function set_maxUID($value) {
 		if (is_numeric($value)) $this->MaxUID = $value;
 		else return false;
 		return true;
 	}
 
-	// returns the minimum GID to use when creating new groups
+	/**
+	* returns the minimum GID to use when creating new groups
+	*
+	* @return the minimum GID number
+	*/
 	function get_minGID() {
 		return $this->MinGID;
 	}
 
-	// sets the minimum GID to use when creating new groups
-	// $value: new minimum GID number
-	// returns true if $value has correct format
+	/**
+	* sets the minimum GID to use when creating new groups
+	*
+	* @param $value new minimum GID number
+	* @return true if $value has correct format
+	*/
 	function set_minGID($value) {
 		if (is_numeric($value)) $this->MinGID = $value;
 		else return false;
 		return true;
 	}
 
-	// returns the maximum GID to use when creating new groups
+	/**
+	* returns the maximum GID to use when creating new groups
+	*
+	* @return the maximum GID number
+	*/
 	function get_maxGID() {
 		return $this->MaxGID;
 	}
 
-	// sets the maximum GID to use when creating new groups
-	// $value: new maximum GID number
-	// returns true if $value has correct format
+	/**
+	* sets the maximum GID to use when creating new groups
+	*
+	* @param $value new maximum GID number
+	* @return true if $value has correct format
+	*/
 	function set_maxGID($value) {
 		if (is_numeric($value)) $this->MaxGID = $value;
 		else return false;
 		return true;
 	}
 
-	// returns the minimum UID to use when creating new Samba hosts
+	/**
+	* returns the minimum UID to use when creating new Samba hosts
+	*
+	* @return the minimum UID number
+	*/
 	function get_minMachine() {
 		return $this->MinMachine;
 	}
 
-	// sets the minimum UID to use when creating new Samba hosts
-	// $value: new minimum machine number
-	// returns true if $value has correct format
+	/**
+	* sets the minimum UID to use when creating new Samba hosts
+	*
+	* @param $value new minimum UID number
+	* @return true if $value has correct format
+	*/
 	function set_minMachine($value) {
 		if (! $value && ($this->hostsuffix == "")) $this->MinMachine = "";
 		elseif (is_numeric($value)) $this->MinMachine = $value;
@@ -495,14 +605,21 @@ class Config {
 		return true;
 	}
 
-	// returns the maximum UID to use when creating new Samba hosts
+	/**
+	* returns the maximum UID to use when creating new Samba hosts
+	*
+	* @return the maximum UID number
+	*/
 	function get_maxMachine() {
 		return $this->MaxMachine;
 	}
 
-	// sets the maximum UID to use when creating new Samba hosts
-	// $value: new maximum machine number
-	// returns true if $value has correct format
+	/**
+	* sets the maximum UID to use when creating new Samba hosts
+	*
+	* @param $value new maximum UID number
+	* @return true if $value has correct format
+	*/
 	function set_maxMachine($value) {
 		if (! $value && ($this->hostsuffix == "")) $this->MaxMachine = "";
 		elseif (is_numeric($value)) $this->MaxMachine = $value;
@@ -510,14 +627,21 @@ class Config {
 		return true;
 	}
 
-	// returns the list of attributes to show in user list
+	/**
+	* returns the list of attributes to show in user list
+	*
+	* @return the attribute list
+	*/
 	function get_userlistAttributes() {
 		return $this->userlistAttributes;
 	}
 
-	// sets the list of attributes to show in user list
-	// $value: new attribute string
-	// returns true if $value has correct format
+	/**
+	* sets the list of attributes to show in user list
+	*
+	* @param $value new attribute string
+	* @return true if $value has correct format
+	*/
 	function set_userlistAttributes($value) {
 		if (is_string($value) && eregi("^((#[^:;]+)|([^:;]*:[^:;]+))(;((#[^:;]+)|([^:;]*:[^:;]+)))*$", $value)) {
 			$this->userlistAttributes = $value;
@@ -526,14 +650,21 @@ class Config {
 		return true;
 	}
 
-	// returns the list of attributes to show in group list
+	/**
+	* returns the list of attributes to show in group list
+	*
+	* @return the attribute list
+	*/
 	function get_grouplistAttributes() {
 		return $this->grouplistAttributes;
 	}
 
-	// sets the list of attributes to show in group list
-	// $value: new attribute string
-	// returns true if $value has correct format
+	/**
+	* sets the list of attributes to show in group list
+	*
+	* @param $value new attribute string
+	* @return true if $value has correct format
+	*/
 	function set_grouplistAttributes($value) {
 		if (is_string($value) && eregi("^((#[^:;]+)|([^:;]*:[^:;]+))(;((#[^:;]+)|([^:;]*:[^:;]+)))*$", $value)) {
 			$this->grouplistAttributes = $value;
@@ -542,14 +673,21 @@ class Config {
 		return true;
 	}
 
-	// returns the list of attributes to show in host list
+	/**
+	* returns the list of attributes to show in host list
+	*
+	* @return the attribute list
+	*/
 	function get_hostlistAttributes() {
 		return $this->hostlistAttributes;
 	}
 
-	// sets the list of attributes to show in host list
-	// $value: new attribute string
-	// returns true if $value has correct format
+	/**
+	* sets the list of attributes to show in host list
+	*
+	* @param $value new attribute string
+	* @return true if $value has correct format
+	*/
 	function set_hostlistAttributes($value) {
 		if (! $value && ($this->hostsuffix == "")) $this->hostlistAttributes = "";
 		elseif (is_string($value) && eregi("^((#[^:;]+)|([^:;]*:[^:;]+))(;((#[^:;]+)|([^:;]*:[^:;]+)))*$", $value)) {
@@ -559,42 +697,63 @@ class Config {
 		return true;
 	}
 
-	// returns the maximum number of rows in user/group/host lists
+	/**
+	* returns the maximum number of rows in user/group/host lists
+	*
+	* @return maximum number
+	*/
 	function get_MaxListEntries() {
 		return $this->maxlistentries;
 	}
 
-	// sets the maximum number of rows in user/group/host lists
-	// $value: new attribute string
-	// returns true if $value has correct format
+	/**
+	* sets the maximum number of rows in user/group/host lists
+	*
+	* @param $value new attribute string
+	* @return true if $value has correct format
+	*/
 	function set_MaxListEntries ($value) {
 		if (is_numeric($value)) $this->maxlistentries = $value;
 		else return false;
 		return true;
 	}
 
-	// returns the default language string
+	/**
+	* returns the default language string
+	*
+	* @return default language
+	*/
 	function get_defaultLanguage() {
 		return $this->defaultLanguage;
 	}
 
-	// sets the default language string
-	// $value: new default language
-	// returns true if $value has correct format
+	/**
+	* sets the default language string
+	*
+	* @param $value new default language
+	* @return true if $value has correct format
+	*/
 	function set_defaultLanguage($value) {
 		if (is_string($value)) $this->defaultLanguage = $value;
 		else return false;
 		return true;
 	}
 
-	// returns the path to the external script
+	/**
+	* returns the path to the external script
+	*
+	* @return script path
+	*/
 	function get_scriptPath() {
 		return $this->scriptPath;
 	}
 
-	// sets the path to the external script
-	// $value: new script path
-	// returns true if $value has correct format
+	/**
+	* sets the path to the external script
+	*
+	* @param $value new script path
+	* @return true if $value has correct format
+	*/
 	function set_scriptPath($value) {
 		if (!$value) $this->scriptPath = ""; // optional parameter
 		elseif (is_string($value) && eregi("^/([a-z0-9_\\-])+(/([a-z0-9_\\.\\-])+)+$", $value)) $this->scriptPath = $value;
@@ -602,40 +761,25 @@ class Config {
 		return true;
 	}
 
-	// returns the server of the external script
+	/**
+	* returns the server of the external script
+	*
+	* @return script server
+	*/
 	function get_scriptServer() {
 		return $this->scriptServer;
 	}
 
-	// sets the server of the external script
-	// $value: new script server
-	// returns true if $value has correct format
+	/**
+	* sets the server of the external script
+	*
+	* @param $value new script server
+	* @return true if $value has correct format
+	*/
 	function set_scriptServer($value) {
 		if (!$value) $this->scriptServer = ""; // optional parameter
 		elseif (is_string($value) && eregi("^[a-z0-9\\-]+(\\.[a-z0-9\\-]+)*$", $value)) {
 			$this->scriptServer = $value;
-		}
-		else return false;
-		return true;
-	}
-
-	// returns "yes" if Samba 3.x schema is used, otherwise "no"
-	function get_samba3() {
-		return $this->samba3;
-	}
-
-	// returns true if Samba 3, else false
-	function is_samba3() {
-		if ($this->samba3 == "yes") return true;
-		else return false;
-	}
-
-	// set Samba version: "yes" means 3.x schema, "no" means 2.2.x schema
-	// $value: "yes"/"no"
-	// returns true if $value has correct format
-	function set_samba3($value) {
-		if (is_string($value) && eregi("^(yes|no)$", $value)) {
-			$this->samba3 = $value;
 		}
 		else return false;
 		return true;
