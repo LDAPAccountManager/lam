@@ -283,9 +283,9 @@ if($_POST['action'] == "checklogin")
 }
 // Reload loginpage after a profile change
 elseif($_POST['action'] == "profileChange") {
-	$config = new Config($_POST['profile']); // Recreate the config object with the submited profile
+	$_SESSION['config'] = new Config($_POST['profile']); // Recreate the config object with the submited
 
-	display_LoginPage($config,""); // Load login page
+	display_LoginPage($_SESSION['config'],""); // Load login page
 }
 // Load login page
 else
