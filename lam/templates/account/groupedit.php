@@ -105,13 +105,6 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 								(2 * $_POST['f_general_uidNumber'] + $_SESSION['account']->smb_domain->RIDbase +1);
 						}
 					}
-				else {
-					$temp = explode('-', $_SESSION['account']->smb_mapgroup);
-					$SID = $temp[0].'-'.$temp[1].'-'.$temp[2].'-'.$temp[3].'-'.$temp[4].'-'.$temp[5].'-'.$temp[6];
-					if ( $temp[7]!='512' && $temp[7]!='513' && $temp[7]!='514' )
-						$_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-".
-							(2 * $_POST['f_general_uidNumber'] + $_SESSION['account']->smb_domain->RIDbase +1);
-					}
 
 			$_SESSION['account']->general_dn = $_POST['f_general_suffix'];
 			$_SESSION['account']->general_username = $_POST['f_general_username'];
@@ -551,6 +544,10 @@ switch ($select_local) { // Select which part of page will be loaded
 				echo '<tr>';
 				StatusMessage('WARN', _('ObjectClass sambaGroupMapping not found.'), _('Have to add objectClass sambaGroupMapping.'));
 				echo "</tr>\n";
+				$disabled = "disabled";
+				echo "<tr>";
+				StatusMessage("ERROR", _("Samba Options not set!"), _("Please check settings on samba page."));
+				echo "</tr>";
 				}
 			if (!in_array('posixGroup', $_SESSION['account_old']->general_objectClass)) {
 				echo '<tr>';
