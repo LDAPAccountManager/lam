@@ -145,7 +145,8 @@ class Ldap{
 	}
 	// add root suffix if needed
 	if (!in_array($suffix, $units)) {
-		array_push($units, $suffix);
+		if (sizeof($units) > 0) array_push($units, $suffix);
+		else $units[0] = $suffix;
 	}
 	return $units;
 	}
