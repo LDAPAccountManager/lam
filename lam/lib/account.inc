@@ -63,6 +63,8 @@ class account { // This class keeps all needed values for any account
 	var $smb_flagsW;
 	var $smb_flagsD;
 	var $smb_flagsX;
+	// Quota Settins
+	var $quota;
 	// Personal Settings
 	var $personal_title;
 	var $personal_mail;
@@ -260,6 +262,28 @@ function checksamba() { // This function checks all samba account paramters
 	return $error;
 	}
 
+function checkquota() { // This function checks all quota paramters
+	$error = "0";
+	$i=0;
+	while ($_SESSION['account']->quota[$i][0]) {
+		if (!$_SESSION['account_temp']->quota[$i][2]) $_SESSION['account']->quota[$i][2] = 0;
+			else if (!ereg('^([0-9])*$', $_SESSION['account_temp']->quota[$i][2])) $error = _('Block soft quota contains invalid characters. Only natural numbers are allowed');
+		if (!$_SESSION['account_temp']->quota[$i][3]) $_SESSION['account']->quota[$i][3] = 0;
+			else if (!ereg('^([0-9])*$', $_SESSION['account_temp']->quota[$i][3])) $error = _('Block hard quota contains invalid characters. Only natural numbers are allowed');
+		if (!$_SESSION['account_temp']->quota[$i][6]) $_SESSION['account']->quota[$i][6] = 0;
+			else if (!ereg('^([0-9])*$', $_SESSION['account_temp']->quota[$i][6])) $error = _('Inode soft quota contains invalid characters. Only natural numbers are allowed');
+		if (!$_SESSION['account_temp']->quota[$i][7]) $_SESSION['account']->quota[$i][7] = 0;
+			else if (!ereg('^([0-9])*$', $_SESSION['account_temp']->quota[$i][7])) $error = _('Inode hard quota contains invalid characters. Only natural numbers are allowed');
+		$_SESSION['account']->quota[$i][2] = $_SESSION['account_temp']->quota[$i][2];
+		$_SESSION['account']->quota[$i][3] = $_SESSION['account_temp']->quota[$i][3];
+		$_SESSION['account']->quota[$i][6] = $_SESSION['account_temp']->quota[$i][6];
+		$_SESSION['account']->quota[$i][7] = $_SESSION['account_temp']->quota[$i][7];
+		$i++;
+		}
+	return $error;
+	}
+
+
 function checkpersonal() {
 	$error = "0";
 	if ($_SESSION['account_temp']->personal_title) $_SESSION['account']->personal_title = $_SESSION['account_temp']->personal_title ;
@@ -326,6 +350,32 @@ function RndInt($Format){
 /* RUN THE FUNCTION TO GENERATE RANDOM INTEGERS FOR EACH OF THE
 * 8 CHARACTERS IN THE PASSWORD PRODUCED.
 */
+
+function getquotas($user='*') { // Whis function will return the quotas from the specified user If empty only filesystems with enabled quotas are returned
+	//$ldap = $_SESSION['ldap']->decrypt();
+	$ldap_q[0] = 'cn=Manager,dc=my-domain,dc=com';
+	$ldap_q[1] = 'secret';
+	$towrite = $ldap_q[0].' '.$ldap_q[1].' '.$user.' quota get ';
+	if ($_SESSION['type2']=='user') $towrite = $towrite.'u';
+	 else $towrite = $towrite.'g';
+	$file = fopen('../lib/lamdaemon.fifo', 'w');
+	fwrite($file, $towrite);
+	fclose ($file);
+	$file = fopen('../lib/lamdaemon.fifo', 'r');
+	$input = fread($file, 1024);
+	fclose ($file);
+	$vals = explode(';', $input);
+	$i=0;
+	while ($vals[$i]) {
+		$vals2 = explode(',', $vals[$i]);
+		$j=0;
+		while ($vals2[$j]) {
+			$_SESSION['account']->quota[$i][$j] = $vals2[$j];
+			$j++;
+			}
+		$i++;
+		}
+	}
 
 
 function ldapexists() { // This function will search if the DN already exists
@@ -502,6 +552,7 @@ function loaduser($dn) { // Will load all needed values from an existing account
 	$_SESSION['account_old'] = $_SESSION['account'];
 	if ($attr['userPassword'][0]) $_SESSION['account_old']->unix_password = $attr['userPassword'][0];
 	if ($attr['ntPassword'][0])  $_SESSION['account_old']->smb_password = $attr['ntPassword'][0];
+	//getquotas($attr['uid'][0]);
 	}
 
 function loadhost($dn) { // Will load all needed values from an existing account
@@ -567,6 +618,7 @@ function loadgroup($dn) { // Will load all needed values from an existing group
 	if (is_array($_SESSION['account']->general_memberUid)) array_shift($_SESSION['account']->general_memberUid);
 	$_SESSION['account']->general_dn = $dn;
 	$_SESSION['account_old'] = $_SESSION['account'];
+	//getquotas($attr['uid'][0]);
 	}
 
 
@@ -815,10 +867,6 @@ function createhost() { // Will create the LDAP-Host
 				if ($success) ldap_delete($_SESSION['ldap']->server(),$_SESSION['account_old']->general_dn);
 				}
 		if (!$success) return 5;
-		if ($attr['uidNumber']!=$_SESSION['account_old']->general_uidNumber) StatusMessage('INFO', _('Attention:'),
-			_('You have to run the following command if yuo want to preserve filepermission: ').
-			('find / -uid ' . $_SESSION['account_old' ]->general_uidNumber . ' -exec chown ' . $_SESSION['account']->general_uidNumber . ' {} \;'));
-		// Write Groupmemberchips
 		$allgroups = $_SESSION['account']->general_groupadd;
 		if (!in_array($_SESSION['account']->general_group, $allgroups)) $allgroups[] = $_SESSION['account']->general_group;
 		$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(), 'objectClass=PosixGroup', array('memberUid'));

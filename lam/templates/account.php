@@ -38,6 +38,7 @@ if ( $_GET['type'] ) { // Type is true if account.php was called from Users/Grou
 	$_SESSION['account_temp'] = ""; // Delete $_SESSION['account_temp'] because values are now invalid
 	$_SESSION['modify'] = 0; // Set modify back to false
 	$_SESSION['shelllist'] = getshells(); // Write List of all valid shells in variable
+	//if (($_GET['type']=='user')||($_GET['type']=='group')) getquotas();
 	}
 
 if ( $_GET['DN'] ) { // $DN is true if an entry should be modified and account.php was called from Users/Group/Host-List
@@ -102,7 +103,7 @@ switch ($_POST['select']) {
 		$error = checkunix(); // account.inc
 		// Check which part Site should be displayd
 		if ($_POST['back'] && ($error=="0")) $select_local = 'general';
-		if ($_POST['genpass'] && ($error=="0")) $select_local = 'unix';
+		if ($_POST['genpass']) $select_local = 'unix';
 		if ($_POST['next'] && ($error=="0")) $select_local = 'samba';
 		break;
 	case 'samba':
@@ -145,6 +146,15 @@ switch ($_POST['select']) {
 				}
 		break;
 	case 'quota':
+		$i=0;
+		while ($_SESSION['account']->quota[$i][0]) {
+			$_SESSION['account_temp']->quota[$i][2] = $_POST['f_quota_'.$i.'_2'];
+			$_SESSION['account_temp']->quota[$i][3] = $_POST['f_quota_'.$i.'_3'];
+			$_SESSION['account_temp']->quota[$i][6] = $_POST['f_quota_'.$i.'_6'];
+			$_SESSION['account_temp']->quota[$i][7] = $_POST['f_quota_'.$i.'_7'];
+			$i++;
+			}
+		$error = checkquota();
 		// Check which part Site should be displayd
 		if ($_POST['back'] && ($error=="0"))
 			switch ($_SESSION['type2']) {
@@ -241,7 +251,6 @@ if ($_POST['backmain']) {
 
 if ($_POST['load']) $select_local='load';
 if ($_POST['save']) $select_local='save';
-
 
 
 
@@ -648,12 +657,27 @@ switch ($select_local) {
 		break;
 	case 'quota':
 		// Quota Settings
-		echo '<input name="select" type="hidden" value="quota">
-		<tr><td>';
+		echo '<input name="select" type="hidden" value="quota"><tr><td>';
 		echo _('Quota Properties');
-		echo '</td></tr><tr><td>
+		echo '</td></tr><tr><td>'; echo _('Mointpoint'); echo '</td><td>'; echo _('used blocks'); echo '</td><td>';
+		echo _('soft block limit'); echo '</td><td>'; echo _('hard block limit'); echo '</td><td>'; echo _('grace block period');
+		echo '</td><td>'; echo _('used inodes'); echo '</td><td>'; echo _('soft inode limit'); echo '</td><td>';
+		echo _('hard inode limit'); echo '</td><td>'; echo _('grace inode period'); echo '</td></tr>';
+		$i=0;
+		while ($_SESSION['account']->quota[$i][0]) {
+			echo '<tr><td>'.$_SESSION['account']->quota[$i][0].'</td><td>'.$_SESSION['account']->quota[$i][1].'</td>'; // used blocks
+			echo '<td><input name="f_quota_'.$i.'_2" type="text" size="12" maxlength="20" value="'.$_SESSION['account']->quota[$i][2].'"></td>'; // blocks soft limit
+			echo '<td><input name="f_quota_'.$i.'_3" type="text" size="12" maxlength="20" value="'.$_SESSION['account']->quota[$i][3].'"></td>'; // blocks hard limit
+			echo '<td>'.$_SESSION['account']->quota[$i][4].'</td>'; // block grace period
+			echo '<td>'.$_SESSION['account']->quota[$i][5].'</td>'; // used inodes
+			echo '<td><input name="f_quota_'.$i.'_6" type="text" size="12" maxlength="20" value="'.$_SESSION['account']->quota[$i][6].'"></td>'; // inodes soft limit
+			echo '<td><input name="f_quota_'.$i.'_7" type="text" size="12" maxlength="20" value="'.$_SESSION['account']->quota[$i][7].'"></td>'; // inodes hard limit
+			echo '<td>'.$_SESSION['account']->quota[$i][8].'</td></tr>'; // inodes grace period
+			$i++;
+			}
+		echo '<tr><td>
 		<input name="back" type="submit" value="'; echo _('back'); echo '">
-		</td><td></td><td>
+		</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>
 		<input name="next" type="submit" value="'; echo _('next'); echo '">
 		</td></tr>';
 		break;
@@ -739,6 +763,14 @@ switch ($select_local) {
 					echo ' >';
 					echo _('Change GID-Number of all users in group to new value');
 					echo '</td></tr>';
+					}
+				break;
+			case 'host':
+				if (($_SESSION['modify']==1) && ($_SESSION['account']->general_uidNumber != $_SESSION['account_old']->general_uidNumber)) {
+					echo '<tr>';
+					StatusMessage ('INFO', _('UID-number has changed. You have to run the following command as root in order to change existing file-permissions:'),
+					'find / -gid ' . $_SESSION['account_old' ]->general_uidNumber . ' -exec chown ' . $_SESSION['account']->general_uidNumber . ' {} \;');
+					echo '</tr>';
 					}
 				break;
 			}
