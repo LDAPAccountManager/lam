@@ -209,9 +209,11 @@ class account {
 		return array();
 	}
 	
+	function get_pdfFields($account_type="user") {
+		return array(	'description');
+	}
+	
 	function get_pdfEntries($account_type = "user") {
-		echo "account:\n";
-		print_r($this->attributes);
 		return array('account_description' => array('<block><key>' . _('Description') . '</key><value>' . $this->attributes['description'][0] . '</value></block>'));
 	}
 

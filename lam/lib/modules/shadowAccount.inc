@@ -302,9 +302,16 @@ class shadowAccount {
 		return array();
 	}
 	
+	function get_pdfFields($account_type="user") {
+		return array(	'shadowLastChange',
+							'shadowWarning',
+							'shadowInactive',
+							'shadowExpire',
+							'shadowFlag',
+							'description');
+	}
+	
 	function get_pdfEntries($account_type = "user") {
-		echo "shadowAccount:\n";
-		print_r($this->attributes);
 		return array(	'shadowAccount_shadowLastChange' => array('<block><key>' . _('Last shadow password change') . '</key><value>' . $this->attributes['shadowLastChange'][0] . '</value></block>'),
 							'shadowAccount_shadowWarning' => array('<block><key>' . _('Password warn') . '</key><value>' . $this->attributes['shadowWarn'][0] . '</value><block>'),
 							'shadowAccount_shadowInactive' => array('<block><key>' . _('Account inactive') . '</key><value>' . $this->attributes['shadowInactive'][0] . '</value></block>'),

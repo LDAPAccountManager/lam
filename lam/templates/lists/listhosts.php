@@ -77,6 +77,7 @@ if ($_POST['new_host'] || $_POST['del_host'] || $_POST['pdf_host'] || $_POST['pd
 	}
 	// PDF for selected hosts
 	elseif ($_POST['pdf_host']){
+		$pdf_structure = $_POST['pdf_structure'];
 		// search for checkboxes
 		$hosts = array_keys($_POST, "on");
 		$list = array();
@@ -85,7 +86,7 @@ if ($_POST['new_host'] || $_POST['del_host'] || $_POST['pdf_host'] || $_POST['pd
 			$list[$i] = loadhost($hosts[$i]);
 		}
 		if (sizeof($list) > 0) {
-			createHostPDF($list);
+			createHostPDF($list,$pdf_structure);
 			exit;
 		}
 	}
@@ -96,7 +97,7 @@ if ($_POST['new_host'] || $_POST['del_host'] || $_POST['pdf_host'] || $_POST['pd
 			$list[$i] = loadhost($_SESSION['hst_info'][$i]['dn']);
 		}
 		if (sizeof($list) > 0) {
-			createHostPDF($list);
+			createHostPDF($list,$_POST['pdf_structure']);
 			exit;
 		}
 	}
@@ -312,6 +313,12 @@ if (sizeof($hst_info) > 0) {
 	echo ("<input type=\"submit\" name=\"del_host\" value=\"" . _("Delete Host(s)") . "\">\n");
 	echo ("<br><br><br>\n");
 	echo "<fieldset><legend><b>PDF</b></legend>\n";
+	echo ("<p>" . _('Select PDF structure to use:') . "&nbsp;&nbsp;<select name=\"pdf_structure\">\n");
+	$pdf_structures = getAvailablePDFStructures('host');
+	foreach($pdf_structures as $pdf_structure) {
+		echo "<option value=\"" . $pdf_structure . "\"" . (($pdf_structure == 'default.xml') ? " selected" : "") . ">" . substr($pdf_structure,0,strlen($pdf_structure)-4) . "</option>";
+	}
+	echo "</select></p><br>\n";
 	echo ("<input type=\"submit\" name=\"pdf_host\" value=\"" . _("Create PDF for selected host(s)") . "\">\n");
 	echo "&nbsp;";
 	echo ("<input type=\"submit\" name=\"pdf_all\" value=\"" . _("Create PDF for all hosts") . "\">\n");

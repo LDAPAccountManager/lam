@@ -715,9 +715,20 @@ class sambaSamAccount {
 		return array();
 	}
 	
+	function get_pdfFields($account_type="user") {
+		return array(	'displayName',
+							'uid',
+							'sambaHomePath',
+							'sambaHomeDrive',
+							'sambaLogonScript',
+							'sambaProfilePath',
+							'sambaUserWorkstations',
+							'sambaDomainName',
+							'description',
+							'sambaPrimaryGroupSID');
+	}
+	
 	function get_pdfEntries($account_type = "user") {
-		echo "sambaSamAccount:\n";
-		print_r($this->attributes);
 		return array(	'sambaSamAccount_displayName' => array('<block><key>' . _('Display name') . '</key><value' . $this->attributes['displayName'][0] . '</value></block>'),
 							'sambaSamAccount_uid' => array('<block><key>' . _('Username') . '</key><value>' . $this->attributes['uid'][0] . '</value></block>'),
 							'sambaSamAccount_sambaHomePath' => array('<block><key>' . _('Home path') . '</key><value>' . $this->attributes['sambaHomeDrive'][0] . '</value></block>'),

@@ -33,6 +33,15 @@ session_save_path("../../sess");
 
 setlanguage();
 
+// Unset pdf structure definitions in session if set
+if(isset($_SESSION['currentPDFStructure'])) {
+	unset($_SESSION['currentPDFStructure']);
+	unset($_SESSION['availablePDFFields']);
+	session_unregister('currentPDFStructure');
+	session_unregister('availablePDFFields');
+}
+
+
 // check if user is logged in, if not go to login
 if (!$_SESSION['ldap'] || !$_SESSION['ldap']->server()) {
 	metaRefresh("../login.php");

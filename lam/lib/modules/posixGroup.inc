@@ -597,11 +597,15 @@ class posixGroup {
 		return array();
 	}
 	
+	function get_pdfFields($account_type="user") {
+		return array(	'cn',
+							'gidNumber',
+							'memberUid',
+							'description');
+	}
+	
 	function get_pdfEntries($account_type = "group") {
-		echo "posixGroup:\n";
-		print_r($this->attributes);
-		return array(	'_posixGroup_cn' => array($this->attributes['cn'][0]),
-							'posixGroup_cn' => array('<block><key>' . _('Groupname') . '</key><value>' . $this->attributes['cn'][0] . '</value></block>'),
+		return array(	'posixGroup_cn' => array('<block><key>' . _('Groupname') . '</key><value>' . $this->attributes['cn'][0] . '</value></block>'),
 							'posixGroup_gidNumber' => array('<block><key>' . _('GID number') . '</key><value>' . $this->attributes['gidNumber'][0] . '</value></block>'),
 							'posixGroup_memberUid' => array('<block><key>' . _('Group members') . '</key><value>' . $this->attributes['memberUid'][0] . '</value></block>'),
 							'posixGroup_description' => array('<block><key>' . _('Description') . '</key><value>' . $this->attributes['description'][0] . '</value></block>'));

@@ -329,9 +329,15 @@ class sambaGroupMapping {
 		return array();
 	}
 	
+	function get_pdfFields($account_type="user") {
+		return array(	'gidNumber',
+							'sambaSID',
+							'displayName',
+							'sambaGroupType',
+							'description');
+	}
+	
 	function get_pdfEntries($account_type = "User") {
-		echo "sambaGroupMapping:\n";
-		print_r($this->attributes);
 		return array(	'sambaGroupMapping_gidNumber' => array('<block><key>' . _('GID number') . '</key><value>' . $this->attributes['gidNumber'][0] . '</value></block>'),
 							'sambaGroupMapping_sambaSID' => array('<block><key>' . _('Windows group') . '</key><value>' . $this->attributes['sambaSID'][0] . '</value></block>'),
 							'sambaGroupMapping_displayName' => array('<block><key>' . _('Display name') . '</key><value>' . $this->attributes['displayName'][0] . '</value></block>'),

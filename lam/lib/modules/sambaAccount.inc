@@ -690,9 +690,19 @@ class sambaAccount {
 		return array();
 	}
 	
+	function get_pdfFields($account_type="user") {
+		return array(	'displayName',
+							'uid',
+							'smbHome',
+							'homeDrive',
+							'scriptPath',
+							'profilePath',
+							'userWorkstations',
+							'domain',
+							'description');
+	}
+	
 	function get_pdfEntries($account_type = "user") {
-		echo "sambaAccount:\n";
-		print_r($this->attributes);
 		return array(	'sambaAccount_displayName' => array('<block><key>' . _('Display name') . '</key><value' . $this->attributes['displayName'][0] . '</value></block>'),
 							'sambaAccount_uid' => array('<block><key>' . _('Username') . '</key><value>' . $this->attributes['uid'][0] . '</value></block>'),
 							'sambaAccount_smbHome' => array('<block><key>' . _('Home path') . '</key><value>' . $this->attributes['smbHome'][0] . '</value></block>'),

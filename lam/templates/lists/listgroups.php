@@ -77,6 +77,7 @@ if ($_POST['new_group'] || $_POST['del_group'] || $_POST['pdf_group'] || $_POST[
 	}
 	// PDF for selected groups
 	elseif ($_POST['pdf_group']){
+		$pdf_structure = $_POST['pdf_structure'];
 		// search for checkboxes
 		$groups = array_keys($_POST, "on");
 		$list = array();
@@ -87,7 +88,7 @@ if ($_POST['new_group'] || $_POST['del_group'] || $_POST['pdf_group'] || $_POST[
 			$list[$i] = $_SESSION["accountPDF-$i"];
 		}
 		if (sizeof($list) > 0) {
-			createModulePDF($list, "group");
+			createModulePDF($list,$pdf_structure);
 			exit;
 		}
 	}
@@ -100,7 +101,7 @@ if ($_POST['new_group'] || $_POST['del_group'] || $_POST['pdf_group'] || $_POST[
 			$list[$i] = $_SESSION["accountPDF-$i"];
 		}
 		if (sizeof($list) > 0) {
-			createModulePDF($list, "group");
+			createModulePDF($list,$_POST['pdf_structure']);
 			exit;
 		}
 	}
@@ -331,6 +332,12 @@ if (sizeof($grp_info) > 0) {
 	echo ("<input type=\"submit\" name=\"del_group\" value=\"" . _("Delete Group(s)") . "\">\n");
 	echo ("<br><br><br>\n");
 	echo "<fieldset><legend><b>PDF</b></legend>\n";
+	echo ("<p>" . _('Select PDF structure to use:') . "&nbsp;&nbsp;<select name=\"pdf_structure\">\n");
+	$pdf_structures = getAvailablePDFStructures('group');
+	foreach($pdf_structures as $pdf_structure) {
+		echo "<option value=\"" . $pdf_structure . "\"" . (($pdf_structure == 'default.xml') ? " selected" : "") . ">" . substr($pdf_structure,0,strlen($pdf_structure)-4) . "</option>";
+	}
+	echo "</select></p><br>\n";
 	echo ("<input type=\"submit\" name=\"pdf_group\" value=\"" . _("Create PDF for selected group(s)") . "\">\n");
 	echo "&nbsp;";
 	echo ("<input type=\"submit\" name=\"pdf_all\" value=\"" . _("Create PDF for all groups") . "\">\n");

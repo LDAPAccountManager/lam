@@ -710,9 +710,19 @@ class posixAccount {
 		return array();
 	}
 	
+	function get_pdfFields($account_type="user") {
+		return array(	'uid',
+							'uidNumber',
+							'gidNumber',
+							'gecos',
+							'primaryGroup',
+							'additionalGroups',
+							'homeDirectory',
+							'userPassword',
+							'loginShell');
+	}
+	
 	function get_pdfEntries($account_type = "user") {
-		echo "posixAccount:\n";
-		print_r($this->attributes);
 		return array(	'posixAccount_uid' => array('<block><key>' . _('Username') . '</key><value>' . $this->attributes['uid'][0] . '</value></block>'),
 							'posixAccount_uidNumber' => array('<block><key>' . _('UID number') . '</key><value>' . $this->attributes['uidNumber'][0] . '</value></block>'),
 							'posixAccount_gidNumber' => array('<block><key>' . _('GID number') . '</key><value>' . $this->attributes['gidNumber'][0] . '</value></block>'),

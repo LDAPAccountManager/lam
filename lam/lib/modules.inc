@@ -1003,14 +1003,9 @@ class accountContainer {
 		// Dummy implementation
 		function getAvailablePDFFields() {
 			$return = array();
-			foreach($this->module as $key => $value) {
-				$fields = array();
-				if(is_array($value->attributes)) {
-					foreach($value->attributes as $field_key => $field_value) {
-						$fields[] = $field_key;
-					}
-				}
-				$return[$key] = $fields;
+			foreach($this->module as $moduleName => $module) {
+				echo "<pre>moduleName: $moduleName\n</pre>";
+				$return[$moduleName] = $module->get_pdfFields($this->type);
 			}
 			return $return;
 		}

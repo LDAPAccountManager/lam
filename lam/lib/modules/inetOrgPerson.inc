@@ -314,9 +314,23 @@ class inetOrgPerson {
 		return array();
 	}
 	
+	function get_pdfFields($account_type = "user") {
+		return array(	'description',
+							'host',
+							'title',
+							'givenName',
+							'sn',
+							'employeeType',
+							'street',
+							'postalCode',
+							'postalAddress',
+							'telephoneNumber',
+							'mobileTelephoneNumber',
+							'facimilieTelefonNumber',
+							'mail');
+	}
+	
 	function get_pdfEntries($account_type = "user") {
-		echo "inetOrgPerson:\n";
-		print_r($this->attributes);
 		return array(	'inetOrgPerson_description' => array('<block><key>' . _('Description') . '</key><value>' . $this->attributes['description'][0] . '</value></block>'),
 							'inetOrgPerson_host' => array('<block><key>' . _('Unix workstations') . '</key><value>' . $this->attributes['host'][0] . '</value></block>'),
 							'inetOrgPerson_title' => array('<block><key>' . _('Title') . '</key><value>' . $this->attributes['title'][0] . '</value></block>'),

@@ -41,114 +41,176 @@ if (!$_SESSION['ldap'] || !$_SESSION['ldap']->server()) {
 	exit;
 }
 
+// Write $_POST variables to $_GET when form was submitted via post
 if(isset($_POST['type'])) {
 	$_GET = $_POST;
 }
 
+// Abort and go back to main pdf structure page
 if(isset($_GET['abort'])) {
-	unset($_SESSION['currentPDFStructure']);
-	unset($_SESSION['availablePDFFields']);
-	session_unregister('currentPDFStructure');
-	session_unregister('availablePDFFields');
 	metarefresh('pdfmain.php');
 	exit;
 }
+// Check if pdfname is valid, then save current structure to file and go to
+// main pdf structure page
 elseif(isset($_GET['submit'])) {
-	savePDFStructureDefinitions($_GET['type'],$_GET['pdfname'] . '.xml');
-	unset($_SESSION['currentPDFStructure']);
-	unset($_SESSION['availablePDFFields']);
-	session_unregister('currentPDFStructure');
-	session_unregister('availablePDFFields');
-	metarefresh('pdfmain.php');
-	exit;
-}
-elseif(isset($_GET['add_section'])) {
-	$attributes = array();
-	if($_GET['section_type'] == 'text') {
-		$attributes['NAME'] = $_GET['section_text'];
+	if(!isset($_GET['pdfname']) || !preg_match('/[a-zA-Z0-9\-\_\.]+/',$_GET['pdfname'])) {
+		StatusMessage('ERROR',_('PDF-structure name not valid'),_('The name for that PDF-structure you submitted is not valid. A valid name must constist at least of one of the following characters \'a-z\',\'A-Z\',\'0-9\',\'_\',\'-\',\'.\'.'));
 	}
-	elseif($_GET['section_type'] == 'item') {
-		$attributes['NAME'] = '_' . $_GET['section_item'];
+	else {
+		savePDFStructureDefinitions($_GET['type'],$_GET['pdfname'] . '.xml');
+		metarefresh('pdfmain.php');
+		exit;
 	}
-	$newSectionStart = array('tag' => 'SECTION','type' => 'open','level' => '2','attributes' => $attributes);
-	$newSectionEnd = array('tag' => 'SECTION','type' => 'close','level' => '2');
-	$_SESSION['currentPDFStructure'][] = $newSectionStart;
-	$_SESSION['currentPDFStructure'][] = $newSectionEnd;
 }
+// Add a new section or static text
+elseif(isset($_GET['add'])) {
+	// Check if name for new section is specified when needed
+	if($_GET['add_type'] == 'section' && $_GET['section_type'] == 'text' && (!isset($_GET['section_text']) || $_GET['section_text'] == '')) {
+		StatusMessage('ERROR',_('No section text specified'),_('The headline for a new section must contain at least one character.'));
+	}
+	// Check if text for static text field is specified
+	elseif($_GET['add_type'] == 'text' && (!isset($_GET['text_text']) || $_GET['text_text'] == '')) {
+		StatusMessage('ERROR',_('No static text specified'),_('The static text must contain at least one character.'));
+	}
+	else {
+		// Add a new section
+		if($_GET['add_type'] == 'section') {
+			$attributes = array();
+			// Add a new section with user headline
+			if($_GET['section_type'] == 'text') {
+				$attributes['NAME'] = $_GET['section_text'];
+			}
+			// Add a new section with a module value headline
+			elseif($_GET['section_type'] == 'item') {
+				$attributes['NAME'] = '_' . $_GET['section_item'];
+			}
+			$entry = array(array('tag' => 'SECTION','type' => 'open','level' => '2','attributes' => $attributes),array('tag' => 'SECTION','type' => 'close','level' => '2'));
+		}
+		// Add new static text field
+		elseif($_GET['add_type'] == 'text') {
+			$entry = array(array('tag' => 'TEXT','type' => 'complete','level' => '2','value' => $_GET['text_text']));
+		}
+		// Insert new field in structure
+		array_splice($_SESSION['currentPDFStructure'],$_GET['add_position'],0,$entry);
+	}
+}
+// Add a new value field
 elseif(isset($_GET['add_field'])) {
+	// Get available modules
 	$modules = explode(',',$_GET['modules']);
 	$fields = array();
+	// Search each module for selected values
 	foreach($modules as $module) {
 		if(isset($_GET[$module])) {
 			foreach($_GET[$module] as $field) {
+				// Create ne value entry
 				$fields[] = array('tag' => 'ENTRY','type' => 'complete','level' => '3','attributes' => array('NAME' => $module . '_' . $field));
 			}
 		}
 	}
 	if(count($fields) > 0) {
 		$pos = 0;
+		// Find begin section to insert into
 		while($pos < $_GET['section']) {
 			next($_SESSION['currentPDFStructure']);
 			$pos++;
 		}
 		$current = next($_SESSION['currentPDFStructure']);
 		$pos++;
+		// End of section to insert into
 		while($current && $current['tag'] != 'SECTION' && $current['type'] != 'close') {
 			$current = next($_SESSION['currentPDFStructure']);
 			$pos++;
 		}
+		// Insert new entry before closing section tag
 		array_splice($_SESSION['currentPDFStructure'],$pos,0,$fields);
 	}
 }
+// Change section headline
+elseif(isset($_GET['change'])) {
+	$alter = explode('_',$_GET['change']);
+	$newvalue = $_GET['section_' . $alter[0]];
+	if($alter[1] == 'item') {
+		$newvalue = '_' . $newvalue;
+	}
+	$_SESSION['currentPDFStructure'][$alter[0]]['attributes']['NAME'] = $newvalue;
+}
+// Remove section, static text or value entry from structure
 elseif(isset($_GET['remove'])) {
 	$start = 0;
+	// Find element to remove
 	while($start < $_GET['remove']) {
 		next($_SESSION['currentPDFStructure']);
 		$start++;
 	}
 	$remove = current($_SESSION['currentPDFStructure']);
+	// We have a section to remove
 	if($remove['tag'] == "SECTION") {
 		$end = $start;
 		$current = next($_SESSION['currentPDFStructure']);
 		$end++;
+		// Find end of section to remove
 		while($current && $current['tag'] != 'SECTION' && $current['type'] != 'close') {
 			$current = next($_SESSION['currentPDFStructure']);
 			$end++;
 		}
+		// Remove complete section with all value entries in it from structure
 		array_splice($_SESSION['currentPDFStructure'],$start,$end - $start + 1);
 	}
+	// We have a value entry to remove
 	elseif($remove['tag'] == "ENTRY") {
 		array_splice($_SESSION['currentPDFStructure'],$start,1);
 	}
+	// We hava a static text to remove
 	elseif($remove['tag'] == "TEXT") {
 		array_splice($_SESSION['currentPDFStructure'],$start,1);
 	}
 }
+// Move a section, static text or value entry upwards
 elseif(isset($_GET['up'])) {
 	$tmp = $_SESSION['currentPDFStructure'][$_GET['up']];
 	$prev = $_SESSION['currentPDFStructure'][$_GET['up'] - 1];
-	if($tmp['tag'] == 'SECTION') {
+	// We have a section or static text to move
+	if($tmp['tag'] == 'SECTION' || $tmp['tag'] == 'TEXT') {
 		$pos = 0;
 		$borders = array();
 		$current = current($_SESSION['currentPDFStructure']);
+		// Add borders of sections and static text entry to array
 		if($current['tag'] == 'SECTION') {
 			$borders[$current['type']][] = $pos;
 		}
+		elseif($current['tag'] == 'TEXT') {
+			$borders['open'][] = $pos;
+			$borders['close'][] = $pos;
+		}
+		// Find all sections and statci text fields before the section or static
+		// text entry to move upwards
 		while($pos < $_GET['up']) {
 			$current = next($_SESSION['currentPDFStructure']);
 			$pos++;
 			if($current['tag'] == 'SECTION') {
 				$borders[$current['type']][] = $pos;
 			}
+			elseif($current['tag'] == 'TEXT') {
+				$borders['open'][] = $pos;
+				$borders['close'][] = $pos;
+			}
 		}
+		// Move only when not topmost element
 		if(count($borders['close']) > 0) {
-			$current = next($_SESSION['currentPDFStructure']);
-			$pos++;
-			while($current && $current['tag'] != 'SECTION' && $current['type'] != 'close') {
+			// We have a section to move up
+			if($current['tag'] == 'SECTION') {
 				$current = next($_SESSION['currentPDFStructure']);
 				$pos++;
+				// Find end of section to move
+				while($current && $current['tag'] != 'SECTION' && $current['type'] != 'close') {
+					$current = next($_SESSION['currentPDFStructure']);
+					$pos++;
+				}
+				$borders['close'][] = $pos;
 			}
-			$borders['close'][] = $pos;
+			// Calculate the entries to move and move them
 			$cut_start = $borders['open'][count($borders['open']) - 1];
 			$cut_count = $borders['close'][count($borders['close']) - 1] - $borders['open'][count($borders['open']) - 1] + 1;
 			$insert_pos = $borders['open'][count($borders['open']) - 2];
@@ -156,52 +218,71 @@ elseif(isset($_GET['up'])) {
 			array_splice($_SESSION['currentPDFStructure'],$insert_pos,0,$tomove);
 		}
 	}
+	// We have a value entry to move; move it only if its not the topmost
+	// entry in this section
 	elseif($tmp['tag'] == 'ENTRY' && $prev['tag'] == 'ENTRY') {
-		$_SESSION['currentPDFStructure'][$_GET['up']] = $_SESSION['currentPDFStructure'][$_GET['up'] - 1];
+		$_SESSION['currentPDFStructure'][$_GET['up']] = $prev;
 		$_SESSION['currentPDFStructure'][$_GET['up'] - 1] = $tmp;
 	}
-	elseif($tmp['tag'] == 'TEXT') {
-		if($_GET['up'] != 0) {
-			$tomove = array_splice($_SESSION['currentPDFStructure'],$_GET['up'],1);
-			array_splice($_SESSION['currentPDFStructure'],0,0,$tomove);
-		}
-	}
 }
+// Move a section, static text field or value entry downwards
 elseif(isset($_GET['down'])) {
 	$tmp = $_SESSION['currentPDFStructure'][$_GET['down']];
 	$next = $_SESSION['currentPDFStructure'][$_GET['down'] + 1];
-	if($tmp['tag'] == 'SECTION') {
+	// We have a section or static text to move
+	if($tmp['tag'] == 'SECTION' || $tmp['tag'] == 'TEXT') {
 		$pos = 0;
 		$current = current($_SESSION['currentPDFStructure']);
+		// Find section or static text entry to move
 		while($pos < $_GET['down']) {
 			$current = next($_SESSION['currentPDFStructure']);
 			$pos++;
 		}
 		$borders = array();
-		$borders[$current['type']][] = $pos;
-		$current = next($_SESSION['currentPDFStructure']);
-		$pos++;
-		while($current && $current['tag'] != 'SECTION' && $current['type'] != 'close') {
-			$current = next($_SESSION['currentPDFStructure']);
-			$pos++;
-		}
-		$borders['close'][] = $pos;
-		$current = next($_SESSION['currentPDFStructure']);
-		$pos++;
-		if($current) {
+		// We have a section to move
+		if($current['tag'] == 'SECTION'){
 			$borders[$current['type']][] = $pos;
 			$current = next($_SESSION['currentPDFStructure']);
 			$pos++;
+			// Find end of section to move
 			while($current && $current['tag'] != 'SECTION' && $current['type'] != 'close') {
-				if($current['tag'] == 'SECTION') {
-					$borders[$current['type']][] = $pos;
-				}
 				$current = next($_SESSION['currentPDFStructure']);
 				$pos++;
 			}
 			$borders['close'][] = $pos;
 		}
+		// We have a static text entry to move
+		elseif($current['tag'] == 'TEXT') {
+			$borders['open'][] = $pos;
+			$borders['close'][] = $pos;
+		}
+		$current = next($_SESSION['currentPDFStructure']);
+		$pos++;
+		// Find next section or static text entry in structure
+		if($current) {
+			// Next is a section
+			if($current['tag'] == 'SECTION') {
+				$borders[$current['type']][] = $pos;
+				$current = next($_SESSION['currentPDFStructure']);
+				$pos++;
+				// Find end of this section
+				while($current && $current['tag'] != 'SECTION' && $current['type'] != 'close') {
+					if($current['tag'] == 'SECTION') {
+						$borders[$current['type']][] = $pos;
+					}
+					$current = next($_SESSION['currentPDFStructure']);
+					$pos++;
+				}
+			}
+			// Next is static text entry
+			elseif($current['tag'] == 'TEXT') {
+				$borders['open'][] = $pos;
+			}
+			$borders['close'][] = $pos;
+		}
+		// Move only downwars if not bottenmost element of this structure
 		if(count($borders['open']) > 1) {
+			// Calculate entries to move and move them
 			$cut_start = $borders['open'][count($borders['open']) - 1];
 			$cut_count = $borders['close'][count($borders['close']) - 1] - $borders['open'][count($borders['open']) - 1] + 1;
 			$insert_pos = $borders['open'][count($borders['open']) - 2];
@@ -209,50 +290,40 @@ elseif(isset($_GET['down'])) {
 			array_splice($_SESSION['currentPDFStructure'],$insert_pos,0,$tomove);
 		}
 	}
+	// We have a value entry to move; move it only if it is not the bottmmost
+	// element of this section.
 	elseif($tmp['tag'] == 'ENTRY' && $next['tag'] == 'ENTRY') {
 		$_SESSION['currentPDFStructure'][$_GET['down']] = $_SESSION['currentPDFStructure'][$_GET['down'] + 1];
 		$_SESSION['currentPDFStructure'][$_GET['down'] + 1] = $tmp;
 	}
-	elseif($tmp['tag'] == 'TEXT') {
-		if($_GET['down'] != (count($_SESSION['currentPDFStructure']) -1)) {
-			$tomove = array_splice($_SESSION['currentPDFStructure'],$_GET['down'],1);
-			array_splice($_SESSION['currentPDFStructure'],count($_SESSION['currentPDFStructure']),0,$tomove);
-		}
-	}
-}
-elseif(isset($_GET['add_text'])) {
-	if($_GET['text_type'] == 'config') {
-		$entry = array('tag' => 'TEXT','type' => 'complete','level' => '2','attributes' => array('type' => $_GET['type']));
-	}
-	else {
-		$entry = array('tag' => 'TEXT','type' => 'complete','level' => '2','value' => $_GET['text_text']);
-	}
-	if($_GET['text_position'] == 'top') {
-		array_splice($_SESSION['currentPDFStructure'],0,0,array($entry));
-	}
-	else {
-		array_push($_SESSION['currentPDFStructure'],$entry);
-	}
 }
 
+// Load PDF structure from file if it is not defined in session
 if(!isset($_SESSION['currentPDFStructure'])) {
+	// Load structure file to be edit
 	if($_GET['edit']) {
 		$_SESSION['currentPDFStructure'] = loadPDFStructureDefinitions($_GET['type'],$_GET['edit']);
 	}
+	// Load default structure file when creating a new one
 	else {
 		$_SESSION['currentPDFStructure'] = loadPDFStructureDefinitions($_GET['type']);
 	}
 }
 
+// Load available fields from modules when not set in session
 if(!isset($_SESSION['availablePDFFields'])) {
 	$_SESSION['availablePDFFields'] = getAvailablePDFFields($_GET['type']);
 }
 
+// Create the values for the dropdown boxes for section headline defined by
+// value entries and fetch all available modules
 $modules = array();
+$section_items_array = array();
 $section_items = '';
 foreach($_SESSION['availablePDFFields'] as $module => $values) {
 	$modules[] = $module;
 	foreach($values as $attribute) {
+		$section_items_array[] = $module . '_' . $attribute;
 		$section_items .= "\t\t\t\t\t\t\t\t\t\t\t\t<option>" . $module . '_' . $attribute . "</option>\n";
 	}
 }
@@ -277,26 +348,44 @@ echo $_SESSION['header'];
 							</legend>
 							<table>
 <?php
+$sections = '<option value="0">' . _('Beginning') . "</option>\n";
+// Print every entry in the current structure
 foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
+	// Create the up/down/remove links
 	$links = "\t\t\t\t\t\t\t\t\t<td>\n\t\t\t\t\t\t\t\t\t\t<a href=\"pdfpage.php?type=" . $_GET['type'] . "&amp;up=" . $key . (($_GET['edit']) ? 'edit=' . $_GET['edit'] : '') . "\">" . _('Up') . "</a>\n\t\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t\t\t<td width=\"10\">\n\t\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t\t\t<td>\n\t\t\t\t\t\t\t\t\t\t<a href=\"pdfpage.php?type=" . $_GET['type'] . "&amp;down=" . $key . (($_GET['edit']) ? 'edit=' . $_GET['edit'] : '') . "\">" . _('Down') . "</a>\n\t\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t\t\t<td width=\"10\">\n\t\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t\t\t<td>\n\t\t\t\t\t\t\t\t\t\t<a href=\"pdfpage.php?type=" . $_GET['type'] . "&amp;remove=" . $key . (($_GET['edit']) ? 'edit=' . $_GET['edit'] : '') . "\">" . _('Remove') . "</a>\n\t\t\t\t\t\t\t\t\t</td>\n";
-	$uplink = 'pdfpage.php?type=' . $_GET['type'] . '&amp;up=' . $i . (($_GET['edit']) ? 'edit=' . $_GET['edit'] : '');
-	$downlink = 'pdfpage.php?type=' . $_GET['type'] . '&amp;down=' . urlencode($entry['tag']) . (($_GET['edit']) ? 'edit=' . $_GET['edit'] : '');
 	// We have a new section to start
 	if($entry['tag'] == "SECTION" && $entry['type'] == "open") {
 		$name = $entry['attributes']['NAME'];
-		if(preg_match("/^\_[a-zA-Z\_]+/",$name)) {
-			$section_headline = substr($name,1);
-		}
-		else {
-			$section_headline = $name;
-		}
 		?>
 								<tr>
 									<td width="20" align="left">
 										<input type="radio" name="section" value="<?php echo $key;?>">
 									</td>
 									<td colspan="2">
-										<b><?php echo $section_headline;?></b>
+		<?php
+		// Section headline is a value entry
+		if(preg_match("/^\_[a-zA-Z\_]+/",$name)) {
+			?>
+										<select name="section_<?php echo $key;?>">
+											<!-- <?php echo $section_items;?> -->
+			<?php
+			foreach($section_items_array as $item) {
+				?>
+											<option value="_<?php echo $item;?>"<?php echo ((substr($name,1) == $item) ? ' selected' : '');?>><?php echo $item;?></option>
+				<?php
+			}
+			?>
+										</select>
+										<button type="submit" name="change" value="<?php echo $key;?>_item"><?php echo _('Change');?></button> 
+			<?php
+		}
+		// Section headline is a user text
+		else {
+			?>
+										<input type="text" name="section_<?php echo $key;?>" value="<?php echo $name;?>">&nbsp;&nbsp;<button type="submit" name="change" value="<?php echo $key;?>"><?php echo _('Change');?></button>
+			<?php
+		}
+		?>
 									</td>
 									<td width="20">
 									</td>
@@ -306,6 +395,15 @@ foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 	}
 	// We have a section to end
 	elseif($entry['tag'] == "SECTION" && $entry['type'] == "close") {
+		if(preg_match("/^\_[a-zA-Z\_]+/",$name)) {
+			$section_headline = substr($name,1);
+		}
+		else {
+			$section_headline = $name;
+		}
+		// Add current section for dropdown box needed for the position when inserting a new
+		// section or static text entry
+		$sections .= '<option value="' . ($key + 1) . '">' . $section_headline . "</option>\n";
 		?>
 								<tr>
 									<td colspan="9">
@@ -316,31 +414,10 @@ foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 	}
 	// We have to include a static text.
 	elseif($entry['tag'] == "TEXT") {
-		if(!isset($entry['value'])) {
-			?>
-								<tr>
-									<td>
-									</td>
-									<td colspan="2">
-										<b><?php echo _('Static text');?></b>
-									</td>
-									<td width="20">
-									</td>
-									<?php echo $links;?>
-								</tr>
-								<tr>
-									<td colspan="2">
-									</td>
-									<td>
-										<?php echo _('Print PDF text from config.');?>
-									</td>
-									<td colspan="6">
-									</td>
-								</tr>
-			<?php
-		}
-		else {
-			?>
+		// Add current satic text for dropdown box needed for the position when inserting a new
+		// section or static text entry
+		$sections .= '<option value="' . ($key + 1) . '">' . _('Static text') . "</option>\n";
+		?>
 								<tr>
 									<td>
 									</td>
@@ -360,9 +437,6 @@ foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 										<td colspan="6">
 									</td>
 								</tr>
-			<?php
-		}
-		?>
 								<tr>
 									<td colspan="9">
 										<br>
@@ -390,44 +464,19 @@ foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 		<?php
 	}
 }
+// Print the boxes for adding new sections and static text entries
+// Print save and abort buttons
 ?>
 							</table>
 							<fieldset>
 								<legend>
-									<b><?php echo _("Add new section"); ?></b>
-								</legend>
- 								<table align="left" width="100%"> 
-									<tr>
-										<td>
-											<input type="radio" name="section_type" value="text" checked>
-										</td>
-										<td colspan="2">
-											<input type="text" name="section_text">
-										</td>
-										<td colspan="6" rowspan="2" align="left">
-											<input type="submit" name="add_section" value="<?php echo _('Add');?>">
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<input type="radio" name="section_type" value="item">
-										</td>
-										<td>
-											<select name="section_item">
-												<?php echo $section_items;?>
-											</select>
-										</td>
-									</tr>
-								</table>
-							</fieldset>
-							<p>&nbsp;</p>
-							<fieldset>
+									<b><?php echo _('Add section or static text');?></b>
 								<legend>
-									<b><?php echo _("Add static text"); ?></b>
-								</legend>
-								<table align="left" width="100%">
+								<table width="100%">
 									<tr>
-										<td colspan="2">
+										<td width="10">
+										</td>
+										<td>
 											<fieldset style="margin:0px;">
 												<legend>
 													<?php echo _('Position');?>
@@ -435,46 +484,78 @@ foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 												<table width="100%" style="margin:0px;">
 													<tr>
 														<td>
-															<input type="radio" name="text_position" value="top" checked>
+															<?php echo _('Add after');?>:
 														</td>
 														<td width="50%">
-															<?php echo _('Top');?>
+															<select name="add_position">
+																<?php echo $sections;?>
+															</select>
+														</td>
+													</tr>
+												</table>
+											</fieldset>
+										<td>
+										<td rowspan="5">
+											<input type="submit" name="add" value="<?php echo _('Add');?>">
+										</td>
+									</tr>
+									<tr>
+										<td colspan="2">
+											<br>
+										</td>
+									</tr>
+									<tr>
+										<td valign="center">
+											<input type="radio" name="add_type" value="section" checked>
+										</td>
+										<td>
+											<fieldset>
+												<legend>
+													<b><?php echo _("Section"); ?></b>
+												</legend>
+ 												<table align="left" width="100%"> 
+													<tr>
+														<td>
+															<input type="radio" name="section_type" value="text" checked>
+														</td>
+														<td colspan="2">
+															<input type="text" name="section_text">
+														</td>
+													</tr>
+													<tr>
+														<td>
+															<input type="radio" name="section_type" value="item">
 														</td>
 														<td>
-															<input type="radio" name="text_position" value="bottom">
-														</td>
-														<td width="50%">
-															<?php echo _('Bottom');?>
+															<select name="section_item">
+																<?php echo $section_items;?>
+															</select>
 														</td>
 													</tr>
 												</table>
 											</fieldset>
 										</td>
-										<td rowspan="2">
-											<input type="submit" name="add_text" value="<?php echo _('Add');?>">
+									</tr>
+									<tr>
+										<td colspan="2">
+											<br/>
 										</td>
 									</tr>
 									<tr>
+										<td width="10" valign="center">
+											<input type="radio" name="add_type" value="text">
+										</td>
 										<td>
 											<fieldset>
 												<legend>
-													<?php echo _('Text');?>
+													<b><?php echo _("Static text"); ?></b>
 												</legend>
 												<table width="100%">
 													<tr>
-														<td>
-															<input type="radio" name="text_type" value="config" checked>
+														<td width="10">
 														</td>
 														<td>
-															<?php echo _('Insert static text from config.');?>
-														</td>
-													</tr>
-													<tr>
-														<td>
-															<input type="radio" name="text_type" value="textfield">
-														</td>
-														<td>
-															<?php echo _('Use text from field below.');?>
+															<?php echo _('Write your text in the field below.');?>
 														</td>
 													</tr>
 													<tr>
@@ -482,8 +563,8 @@ foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 														</td>
 														<td>
 															<textarea name="text_text" rows="4" cols="40"></textarea>
- 														</td>
- 													</tr>
+														</td>
+													</tr>
 												</table>
 											</fieldset>
 										</td>
@@ -540,6 +621,7 @@ foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 							</legend>
 							<table>
 <?php
+// Print all available modules with the value fieds
 foreach($_SESSION['availablePDFFields'] as $module => $fields) {
 	?>
 								<tr>
@@ -553,6 +635,7 @@ foreach($_SESSION['availablePDFFields'] as $module => $fields) {
 									<td>
 										<select name="<?php echo $module?>[]" size="7" multiple>
 	<?php
+	// Print each value field
 	foreach($fields as $field) {
 		?>
 											<option><?php echo $field;?></option>

@@ -305,7 +305,11 @@ class quota {
 		return array();
 	}
 	
-	function get_pdfEntries($account_type = "User") {
+	function get_pdfFields($account_type="user") {
+		return array(	'quotas');
+	}
+	
+	function get_pdfEntries($account_type = "user") {
 		return array(	'quota_quotas' => array('<block><key>' . _('User quota') . '</key><td width="20%"><b>' . _('Mountpoint') . '</b></td><td width="20%"><b>' . _('Soft block') . '</b></td><td width="20%"><b>' . _('Soft inode') . '</b></td><td width="20%"><b>' . _('Hard block') . '</b></td><td width="20%"><b>' . _('Hard inode') . '</b></td></block>'));
 	}
 
