@@ -1,4 +1,3 @@
-general_group: root
 general_homedir: /home/$user
 general_shell: /bin/bash
 unix_password_no: 0
@@ -14,5 +13,3 @@ smb_flagsD: 0
 smb_flagsX: 1
 smb_homedrive: U:
 smb_smbhome: \\server\$user
-smb_domain: sambaDomainName=WMS-NET,dc=my-domain,dc=com
-quota: /media/sda1,1000,1100,1200,1300
