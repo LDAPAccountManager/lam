@@ -232,7 +232,7 @@ class posixGroup extends baseModule {
 		2 => array('kind' => 'text', 'value' => '&nbsp;'),
 		3 => array('kind' => 'text', 'text' => '<b>' . _('Maximum GID number') . " *: </b>"),
 		4 => array('kind' => 'input', 'name' => 'posixGroup_maxGID', 'type' => 'text', 'size' => '10', 'maxlength' => '255'),
-		5 => array('kind' => 'help', 'value' => 'TODO'))
+		5 => array('kind' => 'help', 'value' => 'minMaxGID'))
 		);
 		$return['config_options']['all'] = array(
 		array(
@@ -242,7 +242,7 @@ class posixGroup extends baseModule {
 		2 => array('kind' => 'text', 'value' => '&nbsp;'),
 		3 => array('kind' => 'text', 'value' => '&nbsp;'),
 		4 => array('kind' => 'text', 'value' => '&nbsp;'),
-		5 => array('kind' => 'help', 'value' => 'TODO'))
+		5 => array('kind' => 'help', 'value' => 'pwdHash'))
 		);
 		// configuration descriptions
 		$return['config_descriptions'] = array(
@@ -281,47 +281,79 @@ class posixGroup extends baseModule {
 		array(
 		'name' => 'posixGroup_cn',
 		'description' => _('Group name'),
-		'help' => 'TODO',
+		'help' => 'cn',
 		'example' => _('adminstrators'),
 		'required' => true
 		),
 		array(
 		'name' => 'posixGroup_gid',
 		'description' => _('GID number'),
-		'help' => 'TODO',
+		'help' => 'gidNumber',
 		'example' => _('2034'),
 		'required' => false
 		),
 		array(
 		'name' => 'posixGroup_description',
 		'description' => _('Group description'),
-		'help' => 'TODO',
+		'help' => 'description',
 		'example' => _('Administrators group'),
 		'required' => false
 		),
 		array(
 		'name' => 'posixGroup_members',
 		'description' => _('Group members'),
-		'help' => 'TODO',
+		'help' => 'upload_members',
 		'example' => _('user01,user02,user03'),
 		'required' => false
 		),
 		array(
 		'name' => 'posixGroup_password',
 		'description' => _('Group password'),
-		'help' => 'TODO',
+		'help' => 'password',
 		'example' => _('secret'),
 		'required' => false
 		)
 		);
 		// help Entries
-		$return['help'] = array (	'cn'							=>	array ("ext" => "FALSE", "Headline" => _("Groupname"), "Text" => _("Group name of the group which should be created. Valid characters are: a-z,0-9, .-_. Lam does not allow a number as first character because groupadd also does not allow it. Lam does not allow capital letters A-Z because it can cause several problems. If groupname is already used groupname will be expanded with a number. The next free number will be used.")),
-		'gidNumber'				=>	array ("ext" => "FALSE", "Headline" => _("GID number"), "Text" => _("If empty GID number will be generated automaticly depending on your configuration settings.")),
-		'description'				=>	array ("ext" => "FALSE", "Headline" => _("Gecos"), "Text" => _("Group description. If left empty group name will be used.")),
-		'adduser'					=>	array ("ext" => "FALSE", "Headline" => _("Group members"), "Text" => _("Users also being member of the current group."). ' '. _("Can be left empty.")),
-		/*'userPassword'		=>	*/
-		'userPassword_no'		=>	array ("ext" => "FALSE", "Headline" => _("Use no password"), "Text" => _("If checked no password will be used."))/*,*/
-		/*'userPassword_lock'	=>	*/);
+		$return['help'] = array(
+		'cn' =>	array(
+			"ext" => "FALSE",
+			"Headline" => _("Groupname"),
+			"Text" => _("Group name of the group which should be created. Valid characters are: a-z,0-9, .-_. Lam does not allow a number as first character because groupadd also does not allow it. Lam does not allow capital letters A-Z because it can cause several problems. If groupname is already used groupname will be expanded with a number. The next free number will be used.")),
+		'gidNumber'	=> array(
+			"ext" => "FALSE",
+			"Headline" => _("GID number"),
+			"Text" => _("If empty GID number will be generated automaticly depending on your configuration settings.")),
+		'description' => array(
+			"ext" => "FALSE",
+			"Headline" => _("Description"),
+			"Text" => _("Group description. If left empty group name will be used.")),
+		'members' => array(
+			"ext" => "FALSE",
+			"Headline" => _("Group members"),
+			"Text" => _("Users also being member of the current group."). ' '. _("Can be left empty.")),
+		'upload_members' => array(
+			"ext" => "FALSE",
+			"Headline" => _("Group members"),
+			"Text" => _("Users also being member of the current group. Users are separated by semicolons.")),
+		'password' => array(
+			"ext" => "FALSE",
+			"Headline" => _("Group password"),
+			"Text" => _("Sets the group password.")),
+		'userPassword_no' => array(
+			"ext" => "FALSE",
+			"Headline" => _("Use no password"),
+			"Text" => _("If checked no password will be used.")),
+		/*'userPassword_lock'	=>	*/
+		'minMaxGID' => array(
+			"ext" => "FALSE",
+			"Headline" => _("GID number"),
+			"Text" => _("These are the minimum and maximum numbers to use for group IDs when creating new group accounts. New group accounts will always get the highest number in use plus one.")),
+		'pwdHash' => array(
+			"ext" => "FALSE",
+			"Headline" => _("Password hash type"),
+			"Text" => _("LAM supports CRYPT, SHA, SSHA, MD5 and SMD5 to generate the hash value of an user password. SSHA and CRYPT are the most common but CRYPT does not support passwords greater than 8 letters. We do not recommend to use plain text passwords."))
+		);
 
 		return $return;
 	}
