@@ -24,6 +24,8 @@ $Id$
 */
 include_once('../lib/ldap.inc');
 
+
+
 echo '<html><head><title>';
 echo _('Delete Account');
 echo '</title>
@@ -35,28 +37,31 @@ echo '</title>
 	<table rules="all" class="delete" width="100%">
 	<tr><td>';
 
-if ($DN && $type)
-foreach ($DN as $dn) {
-	$dn = str_replace("\'", '',$dn);
-	switch ($type) {
-		case 'user':
-			$success = ldap_delete($_SESSION['ldap']->server(), $dn);
-			if (!$success) $error = _('Could not delete user: ').$dn;
-			break;
-		case 'host':
-			$success = ldap_delete($_SESSION['ldap']->server(), $dn);
-			if (!$success) $error = _('Could not delete user: ').$dn;
-			break;
-		case 'group':
-			$entry = ldap_read($_SESSION['ldap']->server(), $dn, "");
-			if (!$entry) $error = _('Could not delete group: ').$dn;
-			$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
-			if ($attr['memberUid']) $error = _('Could not delete group. Still users in group: ').$dn;
-			break;
-		}
-	if (!$error) echo $dn. _('deleted.');
-	echo '</td></tr><tr><td>';
-	}
+if ($type) {
+	$DN = split("[\?&]", $QUERY_STRING]);
+	array_shift($DN);
+	foreach ($DN as $dn) {
+		$dn = str_replace("\'", '',$dn);
 
+		switch ($type) {
+			case 'user':
+				$success = ldap_delete($_SESSION['ldap']->server(), $dn);
+				if (!$success) $error = _('Could not delete user: ').$dn;
+				break;
+			case 'host':
+				$success = ldap_delete($_SESSION['ldap']->server(), $dn);
+				if (!$success) $error = _('Could not delete user: ').$dn;
+				break;
+			case 'group':
+				$entry = ldap_read($_SESSION['ldap']->server(), $dn, "");
+				if (!$entry) $error = _('Could not delete group: ').$dn;
+				$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
+				if ($attr['memberUid']) $error = _('Could not delete group. Still users in group: ').$dn;
+				break;
+			}
+		if (!$error) echo $dn. _('deleted.');
+		echo '</td></tr><tr><td>';
+		}
+	}
 echo '</form></body></html>';
 ?>
