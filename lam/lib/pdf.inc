@@ -49,10 +49,11 @@ function createUserPDF($accounts) {
 		$iv = base64_decode($_COOKIE['IV']);
 		$key = base64_decode($_COOKIE['Key']);
 		$pdfFile->addPage();
-// Print General settings
-		$pdfFile->setFont("arial","B",12);
-		$pdfFile->Write(5,"- " . _("General User Settings") . ":");
+// Print Personal settings
+		$pdfFile->Write(5,"- " . _("Personal User Infos") . ":");
 		$pdfFile->Ln(6);
+		$pdfFile->setFont("times","",10);
+		$pdfFile->Cell(50,5,_("Title") . ":",0,0,"R",0);
 		$pdfFile->setFont("times","",10);
 		$pdfFile->Cell(50,5,_("Surname") . ":",0,0,"R",0);
 		$pdfFile->setFont("times","B",10);
@@ -60,15 +61,62 @@ function createUserPDF($accounts) {
 		$pdfFile->setFont("times","",10);
 		$pdfFile->Cell(50,5,_("Given name") . ":",0,0,"R",0);
 		$pdfFile->setFont("times","B",10);
-		$pdfFile->Cell(50,5,$account->general_givenname,0,1,"L",0);
+		$pdfFile->Cell(50,5,$account->personal_title,0,1,"L",0);
+		$pdfFile->setFont("times","",10);
+		$pdfFile->Cell(50,5,_("Street") . ":",0,0,"R",0);
+		$pdfFile->setFont("times","B",10);
+		$pdfFile->Cell(50,5,$account->personal_street,0,1,"L",0);
+		$pdfFile->setFont("times","",10);
+		$pdfFile->Cell(50,5,_("Postal code") . "::",0,0,"R",0);
+		$pdfFile->setFont("times","B",10);
+		$pdfFile->Cell(50,5,$account->personal_postalCode,0,1,"L",0);
+		$pdfFile->setFont("times","",10);
+		$pdfFile->Cell(50,5,_("Postal address") . ":",0,0,"R",0);
+		$pdfFile->setFont("times","B",10);
+		$pdfFile->Cell(50,5,$account->personal_postalAddress,0,1,"L",0);
+		$pdfFile->Cell(50,5,_("E-Mail") . "::",0,0,"R",0);
+		$pdfFile->setFont("times","B",10);
+		$pdfFile->Cell(50,5,$account->personal_mail,0,1,"L",0);
+		$pdfFile->setFont("times","",10);
+		$pdfFile->Cell(50,5,_("Phone") . ":",0,0,"R",0);
+		$pdfFile->setFont("times","B",10);
+		$pdfFile->Cell(50,5,$account->personal_telephoneNumber,0,1,"L",0);
+		$pdfFile->setFont("times","",10);
+		$pdfFile->Cell(50,5,_("Cellular phone") . ":",0,0,"R",0);
+		$pdfFile->setFont("times","B",10);
+		$pdfFile->Cell(50,5,$account->personal_mobileTelephoneNumber,0,1,"L",0);
+		$pdfFile->setFont("times","",10);
+		$pdfFile->Cell(50,5,_("Facsimile") . ":",0,0,"R",0);
+		$pdfFile->setFont("times","B",10);
+		$pdfFile->Cell(50,5,$account->personal_facsimileTelephoneNumber,0,1,"L",0);
+		$pdfFile->setFont("times","",10);
+// Print Unix settings
+		$pdfFile->Ln(9);
+		$pdfFile->setFont("arial","B",12);
+		$pdfFile->Write(5,"- " . _("Unix User Settings") . ":");
+		$pdfFile->Ln(6);
 		$pdfFile->setFont("times","",10);
 		$pdfFile->Cell(50,5,_("Username") . ":",0,0,"R",0);
 		$pdfFile->setFont("times","B",10);
 		$pdfFile->Cell(50,5,$account->general_username,0,1,"L",0);
 		$pdfFile->setFont("times","",10);
-		$pdfFile->Cell(50,5,_("Home Directory") . ":",0,0,"R",0);
-		$pdfFile->setFont("times","B",10);
-		$pdfFile->Cell(50,5,$account->general_homedir,0,1,"L",0);
+		$pdfFile->Cell(50,5,_("Unix password") . ":",0,0,"R",0);
+		if($account->unix_password_no == "1") {
+			$pdfFile->setFont("times","",10);
+			$pdfFile->Cell(50,5,_("Unix password") . ":",0,0,"R",0);
+			$pdfFile->setFont("times","B",10);
+			$pdfFile->Cell(50,5,_("Unix password disabled!"),0,1,"L",0);
+		}
+		elseif($account->unix_password == "") {
+		}
+		else {
+			$account->unix_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($account->unix_password), MCRYPT_MODE_ECB, $iv);
+			$account->unix_password = str_replace(chr(00), '', $account->unix_password);
+			$pdfFile->setFont("times","",10);
+			$pdfFile->Cell(50,5,_("Unix password") . ":",0,0,"R",0);
+			$pdfFile->setFont("times","B",10);
+			$pdfFile->Cell(50,5,$account->unix_password,0,1,"L",0);
+		}
 		$pdfFile->setFont("times","",10);
 		$pdfFile->Cell(50,5,_("Group(s)") . ":",0,0,"R",0);
 		$text = $account->general_group;
@@ -79,32 +127,15 @@ function createUserPDF($accounts) {
 		$pdfFile->setFont("times","B",10);
 		$pdfFile->Cell(50,5,$text,0,1,"L",0);
 		$pdfFile->setFont("times","",10);
-		$pdfFile->Cell(50,5,_("Login Shell(s)") . ":",0,0,"R",0);
+		$pdfFile->Cell(50,5,_("Home Directory") . ":",0,0,"R",0);
+		$pdfFile->setFont("times","B",10);
+		$pdfFile->Cell(50,5,$account->general_homedir,0,1,"L",0);
+		$pdfFile->setFont("times","",10);
+		$pdfFile->Cell(50,5,_("Login Shell") . ":",0,0,"R",0);
 		$text = "";
 		$shells = $account->general_shell;
 		$pdfFile->setFont("times","B",10);
 		$pdfFile->Cell(50,5,$account->general_shell,0,1,"L",0);
-		$pdfFile->Ln(9);
-		$pdfFile->setFont("arial","B",12);
-// Print Unix settings
-		$pdfFile->Write(5,"- " . _("Unix User Settings") . ":");
-		$pdfFile->Ln(6);
-		$pdfFile->setFont("times","",10);
-		$pdfFile->Cell(50,5,_("Unix password") . ":",0,0,"R",0);
-		if($account->unix_password_no == "1") {
-			$pdfFile->setFont("times","B",10);
-			$pdfFile->Cell(50,5,_("Unix password disabled!"),0,1,"L",0);
-		}
-		elseif($account->unix_password == "") {
-			$pdfFile->setFont("times","B",10);
-			$pdfFile->Cell(50,5,_("[Empty password string]"),0,1,"L",0);
-		}
-		else {
-			$account->unix_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($account->unix_password), MCRYPT_MODE_ECB, $iv);
-			$account->unix_password = str_replace(chr(00), '', $account->unix_password);
-			$pdfFile->setFont("times","B",10);
-			$pdfFile->Cell(50,5,$account->unix_password,0,1,"L",0);
-		}
 		$pdfFile->setFont("times","",10);
 		$pdfFile->Cell(50,5,_("Password expire") . ":",0,0,"R",0);
 		$pdfFile->setFont("times","B",10);
@@ -113,28 +144,32 @@ function createUserPDF($accounts) {
 		$pdfFile->Cell(50,5,_("Login at host(s)") . ":",0,0,"R",0);
 		$pdfFile->setFont("times","B",10);
 		$pdfFile->Cell(50,5,$account->unix_host,0,1,"L",0);
+// Print Samba settings
 		$pdfFile->Ln(9);
 		$pdfFile->setFont("arial","B",12);
-// Print Samba settings
-		$pdfFile->Write(5,"- " . _("Samba User Settings") . ":");
+		$pdfFile->Write(5,"- " . _("Windows User Settings") . ":");
 		$pdfFile->Ln(6);
 		$pdfFile->setFont("times","",10);
 		$pdfFile->Cell(50,5,_("Samba password") . ":",0,0,"R",0);
 		if($account->smb_password_no == "1") {
+			$pdfFile->setFont("times","",10);
+			$pdfFile->Cell(50,5,_("Windows password") . ":",0,0,"R",0);
 			$pdfFile->setFont("times","B",10);
-			$pdfFile->Cell(50,5,_("Samba password disabled!"),0,1,"L",0);
+			$pdfFile->Cell(50,5,_("Window password disabled!"),0,1,"L",0);
 		}
 		elseif($account->smb_useunixpwd == "1") {
+			$pdfFile->setFont("times","",10);
+			$pdfFile->Cell(50,5,_("Windows password") . ":",0,0,"R",0);
 			$pdfFile->setFont("times","B",10);
-			$pdfFile->Cell(50,5,_("Samba password set to unix password."),0,1,"L",0);
+			$pdfFile->Cell(50,5,_("Windows password set to unix password."),0,1,"L",0);
 		}
 		elseif($account->smb_password == "") {
-			$pdfFile->setFont("times","B",10);
-			$pdfFile->Cell(50,5,_("[Empty password string]"),0,1,"L",0);
 		}
 		else {
 			$account->smb_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($account->smb_password), MCRYPT_MODE_ECB, $iv);
 			$account->smb_password = str_replace(chr(00), '', $account->smb_password);
+			$pdfFile->setFont("times","",10);
+			$pdfFile->Cell(50,5,_("Windows password") . ":",0,0,"R",0);
 			$pdfFile->setFont("times","B",10);
 			$pdfFile->Cell(50,5,$account->smb_password,0,1,"L",0);
 		}
@@ -155,19 +190,19 @@ function createUserPDF($accounts) {
 		$pdfFile->setFont("times","B",10);
 		$pdfFile->Cell(50,5,$account->smb_smbuserworkstations,0,1,"L",0);
 		$pdfFile->setFont("times","",10);
-		$pdfFile->Cell(50,5,_("Samba home directory") . "::",0,0,"R",0);
+		$pdfFile->Cell(50,5,_("Windows home directory") . "::",0,0,"R",0);
 		$pdfFile->setFont("times","B",10);
 		$pdfFile->Cell(50,5,$account->smb_home,0,1,"L",0);
 		$pdfFile->setFont("times","",10);
-		$pdfFile->Cell(50,5,_("Samba Domain") . ":",0,0,"R",0);
+		$pdfFile->Cell(50,5,_("Windows Domain") . ":",0,0,"R",0);
 		$pdfFile->setFont("times","B",10);
 		if($_SESSION['config']->get_samba3() == "yes") {
 			$account->smb_domain = $account->smb_domain->name;
 		}
 		$pdfFile->Cell(50,5,$account->smb_domain,0,1,"L",0);
+// Print Quota settings
 		$pdfFile->Ln(9);
 		$pdfFile->setFont("arial","B",12);
-// Print Quota settings
 		$pdfFile->Write(5,"- " . _("Quota Settings") . ":");
 		$pdfFile->Ln(6);
 		$pdfFile->setFont("times","",10);
@@ -194,41 +229,6 @@ function createUserPDF($accounts) {
 		}
 		$pdfFile->Ln(9);
 		$pdfFile->setFont("arial","B",12);
-// Print Personal settings
-		$pdfFile->Write(5,"- " . _("Personal User Settings") . ":");
-		$pdfFile->Ln(6);
-		$pdfFile->setFont("times","",10);
-		$pdfFile->Cell(50,5,_("Title") . ":",0,0,"R",0);
-		$pdfFile->setFont("times","B",10);
-		$pdfFile->Cell(50,5,$account->personal_title,0,1,"L",0);
-		$pdfFile->setFont("times","",10);
-		$pdfFile->Cell(50,5,_("E-Mail") . "::",0,0,"R",0);
-		$pdfFile->setFont("times","B",10);
-		$pdfFile->Cell(50,5,$account->personal_mail,0,1,"L",0);
-		$pdfFile->setFont("times","",10);
-		$pdfFile->Cell(50,5,_("Phone") . ":",0,0,"R",0);
-		$pdfFile->setFont("times","B",10);
-		$pdfFile->Cell(50,5,$account->personal_telephoneNumber,0,1,"L",0);
-		$pdfFile->setFont("times","",10);
-		$pdfFile->Cell(50,5,_("Cellular phone") . ":",0,0,"R",0);
-		$pdfFile->setFont("times","B",10);
-		$pdfFile->Cell(50,5,$account->personal_mobileTelephoneNumber,0,1,"L",0);
-		$pdfFile->setFont("times","",10);
-		$pdfFile->Cell(50,5,_("Facsimile") . ":",0,0,"R",0);
-		$pdfFile->setFont("times","B",10);
-		$pdfFile->Cell(50,5,$account->personal_facsimileTelephoneNumber,0,1,"L",0);
-		$pdfFile->setFont("times","",10);
-		$pdfFile->Cell(50,5,_("Street") . ":",0,0,"R",0);
-		$pdfFile->setFont("times","B",10);
-		$pdfFile->Cell(50,5,$account->personal_street,0,1,"L",0);
-		$pdfFile->setFont("times","",10);
-		$pdfFile->Cell(50,5,_("Postal code") . "::",0,0,"R",0);
-		$pdfFile->setFont("times","B",10);
-		$pdfFile->Cell(50,5,$account->personal_postalCode,0,1,"L",0);
-		$pdfFile->setFont("times","",10);
-		$pdfFile->Cell(50,5,_("Postal address") . ":",0,0,"R",0);
-		$pdfFile->setFont("times","B",10);
-		$pdfFile->Cell(50,5,$account->personal_postalAddress,0,1,"L",0);
 	}
 // Close document and send it to the browser
 	$pdfFile->Close();
@@ -259,6 +259,6 @@ class lamPDF extends FPDF {
 		$this->Line(10,280,200,280);
 		$this->Line(10,282,200,282);
 		$this->SetY(285);
-		$this->Cell(0,5,_("This document was automatically created by LDAP Account Manager") . " (lib/pdf.inc)",0,0,"C",0);
+		$this->Cell(0,5,_("This document was automatically created by LDAP Account Manager"),0,0,"C",0);
 	}
 }
