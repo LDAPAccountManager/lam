@@ -167,9 +167,6 @@ class Config {
 	/** Password hash algorithm */
 	var $pwdhash;
 
-	/** Text to include in user PDF files */
-	var $pdftext = "";
-
 	/**
 	* Account modules
 	* TODO add default modules for LAM <0.5 
@@ -227,14 +224,6 @@ class Config {
 		}
 		else {
 			StatusMessage("ERROR", "", _("Unable to load configuration!") . " (" . $conffile . ")");
-		}
-		// load user PDF text
-		$pdffile = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/config/pdf/" . $this->file . ".txt";
-		if (is_file($pdffile) == True) {
-			$pdfstring = @file($pdffile);
-			$pdfstring = @implode("", $pdfstring);
-			if ($pdfstring) $this->pdftext = $pdfstring;
-			else $this->pdftext = "";
 		}
 	}
 
@@ -339,7 +328,6 @@ class Config {
 		echo "<b>" . _("User modules") . ": </b>" . $this->usermodules . "<br>";
 		echo "<b>" . _("Group modules") . ": </b>" . $this->groupmodules . "<br>";
 		echo "<b>" . _("Host modules") . ": </b>" . $this->hostmodules . "<br><br>";
-		echo "<b>" . _("Text for user PDF") . ": </b>" . $this->get_pdftext();
 	}
 
 	// functions to read/write preferences
@@ -851,41 +839,6 @@ class Config {
 	function set_pwdhash($value) {
 		if (is_string($value) && eregi("^(crypt|sha|ssha|md5|smd5|plain)$", $value)) {
 			$this->pwdhash = $value;
-		}
-		else return false;
-		return true;
-	}
-
-	/**
-	* Returns text for user PDF files
-	*
-	* @return text string
-	*/
-	function get_pdftext($name = "user") {
-		if ($this->pdftext) return $this->pdftext;
-		else return "";
-	}
-
-	/**
-	* Sets the text for user PDF files
-	*
-	* @param $value string containing the text
-	* @return true if $value has correct format and could be saved
-	*/
-	function set_pdftext($value) {
-		// check if text changed
-		if ($value == $this->pdftext) return true;
-		if (is_string($value)) {
-			// save to file
-			$pdffile = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/config/pdf/" . $this->file . ".txt";
-			$file = @fopen($pdffile, "w");
-			if ($file) {
-				@fputs($file, $value);
-				fclose($file);
-				$this->pdftext = $value;
-			}
-			else return false;
-			$this->pdftext = $value;
 		}
 		else return false;
 		return true;

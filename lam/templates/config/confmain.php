@@ -68,7 +68,6 @@ if ($_POST['back'] || $_POST['submitconf'] || $_POST['editmodules']){
 		$_SESSION['conf_pwdhash'] = $_POST['pwdhash'];
 		$_SESSION['conf_scriptpath'] = $_POST['scriptpath'];
 		$_SESSION['conf_scriptserver'] = $_POST['scriptserver'];
-		$_SESSION['conf_pdf_usertext'] = $_POST['pdf_usertext'];
 		$_SESSION['conf_usermodules'] = explode(",", $_POST['usermodules']);
 		$_SESSION['conf_groupmodules'] = explode(",", $_POST['groupmodules']);
 		$_SESSION['conf_hostmodules'] = explode(",", $_POST['hostmodules']);
@@ -139,7 +138,6 @@ if ($_GET["modulesback"] == "true") {
 	$conf->set_scriptpath($_SESSION['conf_scriptpath']);
 	$conf->set_scriptserver($_SESSION['conf_scriptserver']);
 	$conf->set_pwdhash($_SESSION['conf_pwdhash']);
-	$conf->set_pdftext($_SESSION['conf_pdf_usertext']);
 	// check if modules were edited
 	if ($_GET["moduleschanged"] == "true") {
 		$conf->set_UserModules($_SESSION['conf_usermodules']);
@@ -375,20 +373,6 @@ echo ("<tr><td align=\"right\"><b>".
 	_("Path to external script") . ": </b></td>".
 	"<td><input size=50 type=\"text\" name=\"scriptpath\" value=\"" . $conf->get_scriptPath() . "\"></td>\n");
 echo ("<td><a href=\"../help.php?HelpNumber=210\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
-
-echo ("</table>\n");
-echo ("</fieldset>\n");
-
-echo ("<p></p>\n");
-
-// PDF settings
-echo ("<fieldset><legend><b>" . _("PDF settings") . "</b></legend>\n");
-echo ("<table border=0>\n");
-
-echo ("<tr><td align=\"right\"><b>".
-	_("Text for user PDF") . ": </b></td>".
-	"<td><textarea name=\"pdf_usertext\" cols=\"80\" rows=\"5\">" . $conf->get_pdftext() . "</textarea></td>\n");
-echo ("<td><a href=\"../help.php?HelpNumber=216\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 
 echo ("</table>\n");
 echo ("</fieldset>\n");

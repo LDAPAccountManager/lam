@@ -66,7 +66,6 @@ $lang = $_SESSION['conf_lang'];
 $scriptpath = $_SESSION['conf_scriptpath'];
 $scriptserver = $_SESSION['conf_scriptserver'];
 $pwdhash = $_SESSION['conf_pwdhash'];
-$pdftext = $_SESSION['conf_pdf_usertext'];
 $filename = $_SESSION['conf_filename'];
 
 // check if password is correct
@@ -197,12 +196,6 @@ if (!$conf->set_pwdhash($pwdhash)) {
 	exit;
 }
 
-if (!$conf->set_pdftext($pdftext)) {
-	echo ("<font color=\"red\"><b>" . _("Saving PDF text failed!") . "</b></font>");
-	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
-	exit;
-}
-
 if (! $conf->set_UserModules($_SESSION['conf_usermodules'])) {
 	echo ("<font color=\"red\"><b>" . _("Saving user modules failed!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
@@ -268,7 +261,6 @@ unset($_SESSION['conf_lang']);
 unset($_SESSION['conf_scriptpath']);
 unset($_SESSION['conf_scriptserver']);
 unset($_SESSION['conf_pwdhash']);
-unset($_SESSION['conf_pdf_usertext']);
 unset($_SESSION['conf_filename']);
 unset($_SESSION['conf_usermodules']);
 unset($_SESSION['conf_groupmodules']);
