@@ -1,8 +1,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-  <meta http-equiv="content-type"
- content="text/html; charset=ISO-8859-15">
+  <meta content="text/html; charset=ISO-8859-15"
+ http-equiv="content-type">
   <title>Module specification</title>
 </head>
 <body>
@@ -28,8 +28,8 @@ allowed to call other static functions.<br>
 </h3>
 <h3>2.1.1. can_manage</h3>
 <br>
-<table style="text-align: left; width: 300px;" border="0"
- cellspacing="2" cellpadding="2">
+<table cellpadding="2" cellspacing="2" border="0"
+ style="text-align: left; width: 300px;">
   <tbody>
     <tr>
       <td
@@ -49,8 +49,8 @@ the account type ("user", "group", "host" at this time).<br>
 <br>
 <h3>2.1.2. get_alias</h3>
 <br>
-<table cellpadding="2" cellspacing="2" border="0"
- style="text-align: left; width: 300px;">
+<table style="text-align: left; width: 300px;" border="0"
+ cellspacing="2" cellpadding="2">
   <tbody>
     <tr>
       <td
@@ -71,8 +71,8 @@ the account type ("user", "group", "host" at this time).<br>
 <br>
 <h3>2.1.3. is_base_module</h3>
 <br>
-<table cellpadding="2" cellspacing="2" border="0"
- style="text-align: left; width: 300px; height: 30px;">
+<table style="text-align: left; width: 300px; height: 30px;" border="0"
+ cellspacing="2" cellpadding="2">
   <tbody>
     <tr>
       <td
@@ -96,8 +96,8 @@ quota module is no base module as it needs posixAccount.<br>
 <br>
 <h3>2.1.4. get_ldap_filter</h3>
 <br>
-<table cellpadding="2" cellspacing="2" border="0"
- style="text-align: left; width: 300px; height: 30px;">
+<table style="text-align: left; width: 300px; height: 30px;" border="0"
+ cellspacing="2" cellpadding="2">
   <tbody>
     <tr>
       <td
@@ -125,8 +125,8 @@ implement it.</span><br>
 <br>
 <h3>2.1.5. get_dependencies</h3>
 <br>
-<table style="text-align: left; width: 300px; font-weight: bold;"
- border="0" cellspacing="2" cellpadding="2">
+<table cellpadding="2" cellspacing="2" border="0"
+ style="text-align: left; width: 300px; font-weight: bold;">
   <tbody>
     <tr>
       <td
@@ -156,7 +156,92 @@ your module depends on one of these modules.<br>
 =&gt; array("exim"));</span><br
  style="font-weight: bold; font-style: italic;">
 <br>
-<h3>2.1.6. get_profileOptions</h3>
+<br>
+<h3>2.2. Class functions</h3>
+<h3>2.2.1. Constructor</h3>
+<br>
+<table cellpadding="2" cellspacing="2" border="0"
+ style="text-align: left; width: 300px; height: 30px;">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204); text-align: center;"><span
+ style="font-weight: bold;">function &lt;module name&gt; ($base)</span><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+Every module needs a constructor that has an<span
+ style="font-style: italic;"> <span style="font-weight: bold;">account
+container</span></span> as argument $base.<br>
+With this account container you can interact with other modules and use
+several helper functions.<br>
+<br>
+<h3>2.2.2. module_ready</h3>
+<br>
+<table cellpadding="2" cellspacing="2" border="0"
+ style="text-align: left; width: 300px; height: 30px;">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204); text-align: center;"><span
+ style="font-weight: bold;">function module_ready()</span><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+Your module might depend on input of other modules. This function
+determines if the module button on the account page is active or not.<br>
+The return value is <span style="font-weight: bold;">true</span> if
+your module accepts input, otherwise <span style="font-weight: bold;">false</span>.<br>
+<br>
+<h3>2.2.3. module_complete</h3>
+<br>
+<table style="text-align: left; width: 300px; height: 30px;" border="0"
+ cellspacing="2" cellpadding="2">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204); text-align: center;"><span
+ style="font-weight: bold;">function module_complete()</span><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+This function is called after your module has processed the POST input
+data.<br>
+If there was an input error and you want to display a page again then
+return <span style="font-weight: bold;">false</span>. If <span
+ style="font-weight: bold;">true</span> is returned the next module
+page will be displayed.<br>
+<br>
+<h3>2.2.4. get_help</h3>
+<br>
+<table style="text-align: left; width: 300px; height: 30px;" border="0"
+ cellspacing="2" cellpadding="2">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204); text-align: center;"><span
+ style="font-weight: bold;">function get_help($helpID)</span><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+This function is called when a page requests a help topic from this
+module.<br>
+<span style="font-weight: bold;">$helpID</span> is the help identifier;
+it must only contain a-z, A-Z, 0-9
+-, . and _.<br>
+It must return the help entry as array for the submitted help
+identifier. The format of the array to be returned is described in
+section 4. "Help entry syntax".<br>
+<br>
+<h3>2.1.5. get_profileOptions</h3>
 <br>
 <table cellpadding="2" cellspacing="2" border="0"
  style="text-align: left; width: 300px; height: 30px;">
@@ -184,7 +269,7 @@ as keywords to load and save profiles. We recommend to use the module
 name as prefix for them (e.g. posixAccount_homeDirectory) to avoid
 naming confilcts.<br>
 <br>
-<h3>2.1.7. check_profileOptions</h3>
+<h3>2.1.6. check_profileOptions</h3>
 <br>
 <table style="text-align: left; width: 400px; height: 30px;" border="0"
  cellspacing="2" cellpadding="2">
@@ -211,87 +296,6 @@ arrays to build StatusMessages (0 =&gt; message type, 1 =&gt; message
 head, 2 =&gt; message text, 3 =&gt; additional variables).<br>
 If no errors occured the function returns an empty array.<span
  style="font-weight: bold;"></span><br>
-<br>
-<br>
-<h3>2.2. Class functions</h3>
-<h3>2.2.1. Constructor</h3>
-<br>
-<table style="text-align: left; width: 300px; height: 30px;" border="0"
- cellspacing="2" cellpadding="2">
-  <tbody>
-    <tr>
-      <td
- style="vertical-align: top; background-color: rgb(204, 204, 204); text-align: center;"><span
- style="font-weight: bold;">function &lt;module name&gt; ($base)</span><br>
-      </td>
-    </tr>
-  </tbody>
-</table>
-<br>
-Every module needs a constructor that has an<span
- style="font-style: italic;"> <span style="font-weight: bold;">account
-container</span></span> as argument $base.<br>
-With this account container you can interact with other modules and use
-several helper functions.<br>
-<br>
-<h3>2.2.2. module_ready</h3>
-<br>
-<table style="text-align: left; width: 300px; height: 30px;" border="0"
- cellspacing="2" cellpadding="2">
-  <tbody>
-    <tr>
-      <td
- style="vertical-align: top; background-color: rgb(204, 204, 204); text-align: center;"><span
- style="font-weight: bold;">function module_ready()</span><br>
-      </td>
-    </tr>
-  </tbody>
-</table>
-<br>
-Your module might depend on input of other modules. This function
-determines if the module button on the account page is active or not.<br>
-The return value is <span style="font-weight: bold;">true</span> if
-your module accepts input, otherwise <span style="font-weight: bold;">false</span>.<br>
-<br>
-<h3>2.2.3. module_complete</h3>
-<br>
-<table cellpadding="2" cellspacing="2" border="0"
- style="text-align: left; width: 300px; height: 30px;">
-  <tbody>
-    <tr>
-      <td
- style="vertical-align: top; background-color: rgb(204, 204, 204); text-align: center;"><span
- style="font-weight: bold;">function module_complete()</span><br>
-      </td>
-    </tr>
-  </tbody>
-</table>
-<br>
-This function is called after your module has processed the POST input
-data.<br>
-If there was an input error and you want to display a page again then
-return <span style="font-weight: bold;">false</span>. If <span
- style="font-weight: bold;">true</span> is returned the next module
-page will be displayed.<br>
-<br>
-<h3>2.2.4. get_help</h3>
-<br>
-<table cellpadding="2" cellspacing="2" border="0"
- style="text-align: left; width: 300px; height: 30px;">
-  <tbody>
-    <tr>
-      <td
- style="vertical-align: top; background-color: rgb(204, 204, 204); text-align: center;"><span
- style="font-weight: bold;">function get_help($helpID)</span><br>
-      </td>
-    </tr>
-  </tbody>
-</table>
-<br>
-This function is called when a page requests a help topic from this module.<br>
-<span style="font-weight: bold;">$helpID</span> is the help identifier; it must only contain a-z, A-Z, 0-9
--, . and _.<br>
-It must return the help entry as array for the submitted help identifier. The format of the array to be returned is described in section 4. "Help entry syntax".<br>
 <br>
 <h3><br>
 </h3>
@@ -417,45 +421,66 @@ example", "td" =&gt; array("colspan" =&gt; 3))<br>
 <h3><br>
 </h3>
 <h2>4. Help entry syntax</h2>
-The array that is returned by the get_help function must follow the below described syntax. 
-Fields marked <b>REQUIRED</b> are neccessary under any circumstances. Fields marked 
-<b>OPTIONAL</b> may be left out when not needed.<br>
-There are basically two different types of help entries that can be used. Internal help entries, that 
-means the headline, text, etc is included in the help entry or external help entries, that means the help 
-entry has only a reference pointing to a HTML/PHP page that offers the help entry.
+The array that is returned by the get_help function must follow the
+below described syntax. Fields marked <b>REQUIRED</b> are neccessary
+under any circumstances. Fields marked <b>OPTIONAL</b> may be left out
+when not needed.<br>
+There are basically two different types of help entries that can be
+used. Internal help entries, that means the headline, text, etc is
+included in the help entry or external help entries, that means the
+help entry has only a reference pointing to a HTML/PHP page that offers
+the help entry.
 <br>
-<h3><br>4.1. Internal help entries</h3>
-<span style="font-weight: bold;">ext</span> <span style="font-style: italic;">(REQUIRED)</span> 
-<br>Must be <b>FALSE</b> in this case.
-<br><br>
-<span style="font-weight: bold;">Headline</span> <span style="font-style: italic;">(REQUIRED)</span> 
-<br>The headline of this help entry. Can consist of any alpha-numeric characters. No HTML/CSS 
-elements are not allowed here.
-<br><br>
-<span style="font-weight: bold;">Text</span> <span style="font-style: italic;">(REQUIRED)</span> 
-<br>The text of this help entry. Can constist if any alpha-numeric characters and can contain 
-placeholder for variables passed to this help entry. The placeholder must follow the syntax for 
-placeholder defined by the PHP <b>printf</b> function. HTML/CSS elements are allowed here as long 
-as they follow the XHTML1.0 Strict specification.<br><br>
-When placeholders are included you can submit the values that should be displayed there as arguments 
-when calling the <b>templates/help.php</b> file. There they are attached as <b>var1</b>, <b>var2</b> 
-and so on. The names must follow the following rules:<br>
+<h3><br>
+4.1. Internal help entries</h3>
+<span style="font-weight: bold;">ext</span> <span
+ style="font-style: italic;">(REQUIRED)</span> <br>
+Must be <b>FALSE</b> in this case.
+<br>
+<br>
+<span style="font-weight: bold;">Headline</span> <span
+ style="font-style: italic;">(REQUIRED)</span> <br>
+The headline of this help entry. Can consist of any alpha-numeric
+characters. No HTML/CSS elements are not allowed here.
+<br>
+<br>
+<span style="font-weight: bold;">Text</span> <span
+ style="font-style: italic;">(REQUIRED)</span> <br>
+The text of this help entry. Can constist if any alpha-numeric
+characters and can contain placeholder for variables passed to this
+help entry. The placeholder must follow the syntax for placeholder
+defined by the PHP <b>printf</b> function. HTML/CSS elements are
+allowed here as long as they follow the XHTML1.0 Strict specification.<br>
+<br>
+When placeholders are included you can submit the values that should be
+displayed there as arguments when calling the <b>templates/help.php</b>
+file. There they are attached as <b>var1</b>, <b>var2</b> and so on.
+The names must follow the following rules:<br>
 <ul>
-<li>1. They must be named <b>var$i</b> where $i is any positive number except the '0'.</li>
-<li>2. This number ($i) must either be '1' or $i -1 must be present.</li>
+  <li>1. They must be named <b>var$i</b> where $i is any positive
+number except the '0'.</li>
+  <li>2. This number ($i) must either be '1' or $i -1 must be present.</li>
 </ul>
 <br>
-<span style="font-weight: bold;">SeeAlso</span> <span style="font-style: italic;">(OPTIONAL)</span> 
-<br>An array of references to anonther related subjects. Each row of the array must contain a field 
-called "text" with the text that should be displayed and may contain a field called "link" which is used 
-as value for the href attribute of a HTML <a> tag when set.
+<span style="font-weight: bold;">SeeAlso</span> <span
+ style="font-style: italic;">(OPTIONAL)</span> <br>
+An array of references to anonther related subjects. Each row of the
+array must contain a field called "text" with the text that should be
+displayed and may contain a field called "link" which is used as value
+for the href attribute of a HTML <a> tag when set.
 <br>
-<h3><br>4.2. External help entries</h3>
-<span style="font-weight: bold;">ext</span> <span style="font-style: italic;">(REQUIRED)</span> 
-<br>Must be <b>TRUE</b> in this case.
-<br><br>
-<span style="font-weight: bold;">Link</span> <span style="font-style: italic;">(REQUIRED)</span> 
-<br>The complete filename of the file stored under the help/ directory which should be displayed 
-when this help entry is called.
+</a>
+<h3><a><br>
+4.2. External help entries</a></h3>
+<span style="font-weight: bold;"><a>ext</a></span><a> <span
+ style="font-style: italic;">(REQUIRED)</span> <br>
+Must be <b>TRUE</b> in this case.
+<br>
+<br>
+<span style="font-weight: bold;">Link</span> <span
+ style="font-style: italic;">(REQUIRED)</span> <br>
+The complete filename of the file stored under the help/ directory
+which should be displayed when this help entry is called.
+</a>
 </body>
 </html>
