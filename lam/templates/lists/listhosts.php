@@ -65,15 +65,14 @@ if ($sr) {
 	$info = ldap_get_entries($_SESSION["ldap"]->server, $sr);
 	ldap_free_result($sr);
 	if ($info["count"] == 0) echo ("<br><br><font color=\"red\"><b>" . _("No Samba Hosts found!") . "</b></font><br><br>");
+	// delete first array entry which is "count"
+	array_shift($info);
+	// sort rows by sort column ($list)
+	usort($info, "cmp_array");
 }
 else echo ("<br><br><font color=\"red\"><b>" . _("LDAP Search failed! Please check your preferences. <br> No Samba Hosts found!") . "</b></font><br><br>");
 
 echo ("<form action=\"../account.php?type=host\" method=\"post\">\n");
-
-// delete first array entry which is "count"
-array_shift($info);
-// sort rows by sort column ($list)
-usort($info, "cmp_array");
 
 // print host table header
 echo "<table rules=\"all\" class=\"hostlist\" width=\"100%\">\n";
