@@ -92,13 +92,12 @@ if ($_POST['new_user'] || $_POST['del_user'] || $_POST['pdf_user'] || $_POST['pd
 		$list = array();
 		// load users from LDAP
 		for ($i = 0; $i < sizeof($users); $i++) {
-			$list[$i] = loaduser($users[$i]);
-			$list[$i]->unix_password = "";
-			$list[$i]->smb_password = "";
+			$_SESSION["accountPDF-$i"] = new accountContainer("user", "accountPDF-$i");
+			$_SESSION["accountPDF-$i"]->load_account($users[$i]);
+			$list[$i] = $_SESSION["accountPDF-$i"];
 		}
 		if (sizeof($list) > 0) {
-			if ($_SESSION['config']->get_scriptServer()) $list = getquotas($list);
-			createUserPDF($list);
+			createModulePDF($list, "user");
 			exit;
 		}
 	}
@@ -106,13 +105,12 @@ if ($_POST['new_user'] || $_POST['del_user'] || $_POST['pdf_user'] || $_POST['pd
 	elseif ($_POST['pdf_all']){
 		$list = array();
 		for ($i = 0; $i < sizeof($_SESSION['userlist']); $i++) {
-			$list[$i] = loaduser($_SESSION['userlist'][$i]['dn']);
-			$list[$i]->unix_password = "";
-			$list[$i]->smb_password = "";
+			$_SESSION["accountPDF-$i"] = new accountContainer("user", "accountPDF-$i");
+			$_SESSION["accountPDF-$i"]->load_account($_SESSION['usr_info'][$i]['dn']);
+			$list[$i] = $_SESSION["accountPDF-$i"];
 		}
 		if (sizeof($list) > 0) {
-			if ($_SESSION['config']->get_scriptServer()) $list = getquotas($list);
-			createUserPDF($list);
+			createModulePDF($list, "user");
 			exit;
 		}
 	}
