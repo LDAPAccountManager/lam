@@ -236,22 +236,22 @@ if ($_GET['type'] == "user") {
 				$acct->quota[$i][6] = $_POST['f_quota_'.$i.'_6'];
 				$acct->quota[$i][7] = $_POST['f_quota_'.$i.'_7'];
 				// Check if values are OK
-				if (!ereg('^([0-9])*$', $acct->quota[$i][2])) {
+				if (!ereg('^([0-9])+$', $acct->quota[$i][2])) {
 					StatusMessage('ERROR', _('Block soft quota'), _('Block soft quota contains invalid characters. Only natural numbers are allowed'));
 					echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 					exit;
 				}
-				if (!ereg('^([0-9])*$', $acct->quota[$i][3])) {
+				if (!ereg('^([0-9])+$', $acct->quota[$i][3])) {
 					StatusMessage('ERROR', _('Block hard quota'), _('Block hard quota contains invalid characters. Only natural numbers are allowed'));
 					echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 					exit;
 				}
-				if (!ereg('^([0-9])*$', $acct->quota[$i][6])) {
+				if (!ereg('^([0-9])+$', $acct->quota[$i][6])) {
 					StatusMessage('ERROR', _('Inode soft quota'), _('Inode soft quota contains invalid characters. Only natural numbers are allowed'));
 					echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 					exit;
 				}
-				if (!ereg('^([0-9])*$', $acct->quota[$i][7])) {
+				if (!ereg('^([0-9])+$', $acct->quota[$i][7])) {
 					StatusMessage('ERROR', _('Inode hard quota'), _('Inode hard quota contains invalid characters. Only natural numbers are allowed'));
 					echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 					exit;
@@ -301,22 +301,22 @@ elseif ($_GET['type'] == "group") {
 				$acct->quota[$i][6] = $_POST['f_quota_'.$i.'_6'];
 				$acct->quota[$i][7] = $_POST['f_quota_'.$i.'_7'];
 				// Check if values are OK
-				if (!ereg('^([0-9])*$', $acct->quota[$i][2])) {
+				if (!ereg('^([0-9])+$', $acct->quota[$i][2])) {
 					StatusMessage('ERROR', _('Block soft quota'), _('Block soft quota contains invalid characters. Only natural numbers are allowed'));
 					echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 					exit;
 				}
-				if (!ereg('^([0-9])*$', $acct->quota[$i][3])) {
+				if (!ereg('^([0-9])+$', $acct->quota[$i][3])) {
 					StatusMessage('ERROR', _('Block hard quota'), _('Block hard quota contains invalid characters. Only natural numbers are allowed'));
 					echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 					exit;
 				}
-				if (!ereg('^([0-9])*$', $acct->quota[$i][6])) {
+				if (!ereg('^([0-9])+$', $acct->quota[$i][6])) {
 					StatusMessage('ERROR', _('Inode soft quota'), _('Inode soft quota contains invalid characters. Only natural numbers are allowed'));
 					echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 					exit;
 				}
-				if (!ereg('^([0-9])*$', $acct->quota[$i][7])) {
+				if (!ereg('^([0-9])+$', $acct->quota[$i][7])) {
 					StatusMessage('ERROR', _('Inode hard quota'), _('Inode hard quota contains invalid characters. Only natural numbers are allowed'));
 					echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 					exit;
