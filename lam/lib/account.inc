@@ -1449,9 +1449,8 @@ function createuser($values, $uselamdaemon=true) {
 			$success = ldap_mod_add($_SESSION['ldap']->server(), $dn, array('memberUid' => $values->general_username));
 			if (!$success) return 4;
 			// Add new memberUid to cache-array
-			if ((isset($_SESSION['groupDN']))) {
-				if (!in_array($values->general_username, $_SESSION['groupDN'][$dn]['memberUid'])) $_SESSION['groupDN'][$dn]['memberUid'][] = $_SESSION['groupDN'][$dn]['memberUid'];
-				}
+			ldapreload('group');
+			$_SESSION['groupDN'][$dn]['memberUid'][] = $values->general_username;
 			}
 	// Add new user to cache-array
 	if ((isset($_SESSION['userDN']))) {
@@ -1902,16 +1901,17 @@ function modifyuser($values,$values_old,$uselamdaemon=true) { // Will modify the
 		if ($attr2['memberUid']) {
 			// Remove user from groups he's not member anymore
 			if (@in_array($values->general_username, $attr2['memberUid']) && !@in_array($attr2['cn'][0],$values->general_groupadd)) {
+				print "1";
 				$dn = ldap_get_dn($_SESSION['ldap']->server(), $entry);
 				$success = ldap_mod_del($_SESSION['ldap']->server(), $dn ,array('memberUid' => $values->general_username));
 				if (!$success) return 5;
 				// Remove old memberUid to cache-array
+				ldapreload('group');
 				if ((isset($_SESSION['groupDN']))) {
-					if (!in_array($values->general_username, $_SESSION['groupDN'][$dn]['memberUid'])) {
-						$i=0;
-						for ($i=0; $i<count($dn); $i++) {
-							if ($_SESSION['groupDN'][$dn]['memberUid'][$i] == $values->general_username) unset ($_SESSION['groupDN'][$dn]['memberUid'][$i]);
-							$_SESSION['groupDN'][$dn]['memberUid'][$i] = array_values($_SESSION['groupDN'][$dn]['memberUid'][$i]);
+					for ($i=0; $i<count($_SESSION['groupDN'][$dn]['memberUid']); $i++) {
+						if ($values->general_username==$_SESSION['groupDN'][$dn]['memberUid'][$i]) {
+							unset($_SESSION['groupDN'][$dn]['memberUid'][$i]);
+							$_SESSION['groupDN'][$dn]['memberUid'] = array_values($_SESSION['groupDN'][$dn]['memberUid']);
 							}
 						}
 					}
@@ -1922,8 +1922,12 @@ function modifyuser($values,$values_old,$uselamdaemon=true) { // Will modify the
 				$success = ldap_mod_add($_SESSION['ldap']->server(), $dn ,array('memberUid' => $values->general_username));
 				if (!$success) return 5;
 				// Add new memberUid to cache-array
+				ldapreload('group');
 				if ((isset($_SESSION['groupDN']))) {
-					if (!in_array($values->general_username, $_SESSION['groupDN'][$dn]['memberUid'])) $_SESSION['groupDN'][$dn]['memberUid'][] = $_SESSION['groupDN'][$dn]['memberUid'];
+					if (is_array($_SESSION['groupDN'][$dn]['memberUid'])) {
+						if (!in_array($values->general_username, $_SESSION['groupDN'][$dn]['memberUid'])) $_SESSION['groupDN'][$dn]['memberUid'][] = $values->general_username;
+						}
+					else $_SESSION['groupDN'][$dn]['memberUid'][] = $values->general_username;
 					}
 				}
 			}
@@ -1934,8 +1938,12 @@ function modifyuser($values,$values_old,$uselamdaemon=true) { // Will modify the
 				$success = ldap_mod_add($_SESSION['ldap']->server(), $dn ,array('memberUid' => $values->general_username));
 				if (!$success) return 5;
 				// Add new memberUid to cache-array
+				ldapreload('group');
 				if ((isset($_SESSION['groupDN']))) {
-					if (!in_array($values->general_username, $_SESSION['groupDN'][$dn]['memberUid'])) $_SESSION['groupDN'][$dn]['memberUid'][] = $_SESSION['groupDN'][$dn]['memberUid'];
+					if (is_array($_SESSION['groupDN'][$dn]['memberUid'])) {
+						if (!in_array($values->general_username, $_SESSION['groupDN'][$dn]['memberUid'])) $_SESSION['groupDN'][$dn]['memberUid'][] = $values->general_username;
+						}
+					else $_SESSION['groupDN'][$dn]['memberUid'][] = $values->general_username;
 					}
 				}
 			}
@@ -1996,7 +2004,7 @@ function createhost($values) {
 		$attr['sambaLMPassword'] = '01FC5A6BE7BC6929AAD3B435B51404EE';
 		$attr['sambaPwdLastSet'] = time(); // sambaAccount_may
 		$attr['sambaSID'] = $values->smb_domain->SID . "-" . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase); // sambaAccount_may
-		$attr['sambaPrimaryGroupSID'] = $values->smb_domain->SID . "-" . (2 * getgid($values->general_group) + $values->smb_domain->RIDbase +1); // sambaAccount_req
+		$attr['sambaPrimaryGroupSID'] = $values->smb_domain->SID . "-515"; // sambaAccount_req
 		$attr['sambaPwdCanChange'] = time(); // sambaAccount_may
 		$attr['sambaPwdMustChange'] = "1893452400"; // sambaAccount_may // anywhere in year 2030
 		$attr['sambaAcctFlags'] = smbflag($values); // sambaAccount_may

@@ -237,7 +237,7 @@ switch ($_POST['select']) {
 			case '*'._('Domain Admins'): $account_new->smb_mapgroup = $account_new->smb_domain->SID . "-" . '512'; break;
 			case $account_new->general_username:
 					$account_new->smb_mapgroup = $account_new->smb_domain->SID . "-".
-						(2 * getgid($account_new->general_username) + $account_new->smb_domain->RIDbase +1);
+						(2 * $account_new->general_uidNumber + $account_new->smb_domain->RIDbase +1);
 				break;
 			}
 			// Check if values are OK and set automatic values. if not error-variable will be set
