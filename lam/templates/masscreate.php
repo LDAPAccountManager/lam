@@ -119,7 +119,8 @@ if ($select!='pdf') {
 					$_SESSION['accounts'][$_SESSION['pointer']]->general_homedir = str_replace('$user', $_SESSION['accounts'][$_SESSION['pointer']]->general_username, $_SESSION['accounts'][$_SESSION['pointer']]->general_homedir);
 
 				// Set uid number
-				$_SESSION['accounts'][$_SESSION['pointer']]->general_uidNumber = checkid($_SESSION['accounts'][$_SESSION['pointer']]);
+				$temp = explode(':', checkid($_SESSION['accounts'][$_SESSION['pointer']]));
+				$_SESSION['accounts'][$_SESSION['pointer']]->general_uidNumber = $temp[0];
 
 				$_SESSION['accounts'][$_SESSION['pointer']]->smb_scriptPath = str_replace('$user', $_SESSION['accounts'][$_SESSION['pointer']]->general_username, $_SESSION['accounts'][$_SESSION['pointer']]->smb_scriptPath);
 				$_SESSION['accounts'][$_SESSION['pointer']]->smb_scriptPath = str_replace('$group', $_SESSION['accounts'][$_SESSION['pointer']]->general_group, $_SESSION['accounts'][$_SESSION['pointer']]->smb_scriptPath);
@@ -163,7 +164,9 @@ if ($select!='pdf') {
 							}
 
 						$group->general_username=$_SESSION['accounts'][$_SESSION['pointer']]->general_group;
-						$group->general_uidNumber=checkid($_SESSION['accounts'][$_SESSION['pointer']]);
+						$temp = explode(':', checkid($_SESSION['accounts'][$_SESSION['pointer']]));
+						$_SESSION['accounts'][$_SESSION['pointer']]->general_uidNumber = $temp[0];
+
 						$group->general_gecos=$_SESSION['accounts'][$_SESSION['pointer']]->general_group;
 						$group->general_dn=$_SESSION['group_suffix'];
 						$error = creategroup($group);
@@ -179,7 +182,8 @@ if ($select!='pdf') {
 							}
 						}
 
-					$_SESSION['accounts'][$_SESSION['pointer']]->general_uidNumber = checkid($_SESSION['accounts'][$_SESSION['pointer']]);
+					$temp = explode(':', checkid($_SESSION['accounts'][$_SESSION['pointer']]));
+					$_SESSION['accounts'][$_SESSION['pointer']]->general_uidNumber = $temp[0];
 					$iv = base64_decode($_COOKIE["IV"]);
 					$key = base64_decode($_COOKIE["Key"]);
 					$_SESSION['accounts'][$_SESSION['pointer']]->unix_password = base64_encode(mcrypt_encrypt(

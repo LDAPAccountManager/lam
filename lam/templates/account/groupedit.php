@@ -23,6 +23,7 @@ $Id$
   LDAP Account Manager displays table for creating or modifying accounts in LDAP
 */
 
+// include all needed files
 include_once('../../lib/account.inc'); // File with all account-funtions
 include_once('../../lib/config.inc'); // File with configure-functions
 include_once('../../lib/profiles.inc'); // functions to load and save profiles
@@ -30,10 +31,17 @@ include_once('../../lib/status.inc'); // Return error-message
 include_once('../../lib/pdf.inc'); // Return a pdf-file
 include_once('../../lib/ldap.inc'); // LDAP-functions
 
+// Start session
 session_save_path('../../sess');
 @session_start();
+// Set correct language, codepages, ....
 setlanguage();
 
+/* hostaccount.php is using dynamic session varialenames so
+* we can run several copies of hostaccount.php at the same
+* time
+* $varkey is the dynamic part of the variable name
+*/
 if (!isset($_POST['varkey'])) $varkey = session_id().time();
 	else $varkey = $_POST['varkey'];
 
@@ -44,44 +52,55 @@ if (!isset($_SESSION['account_'.$varkey.'_final_changegids'])) $_SESSION['accoun
 $account_new =& $_SESSION['account_'.$varkey.'_account_new'];
 $final_changegids =& $_SESSION['account_'.$varkey.'_final_changegids'];
 if (is_object($_SESSION['account_'.$varkey.'_account_old'])) $account_old =& $_SESSION['account_'.$varkey.'_account_old'];
-
 $ldap_intern =& $_SESSION['ldap'];
 $config_intern =& $_SESSION['config'];
 $header_intern =& $_SESSION['header'];
 $userDN_intern =& $_SESSION['userDN'];
+// Register Post-Variables as reference
 
-if (isset($_POST['select'])) $select =& $_POST['select'];
-if (isset($_POST['load'])) $load =& $_POST['load'];
-
+// $_GET is only valid if groupedit.php was called from grouplist.php
 if (isset($_GET['DN']) && $_GET['DN']!='') {
+	// groupedit.php should edit an existing account
+	// reset variables
 	if (isset($_SESSION['account_'.$varkey.'_account_old'])) {
 		unset($account_old);
 		unset($_SESSION['account_'.$varkey.'_account_old']);
 		}
 	$_SESSION['account_'.$varkey.'_account_old'] = new account();
 	$account_old =& $_SESSION['account_'.$varkey.'_account_old'];
+	// get "real" DN from variable
 	$DN = str_replace("\'", '',$_GET['DN']);
+	// Load existing group
 	$account_new = loadgroup($DN);
+	// Get a copy of original host
 	$account_old = $account_new;
+	// Store only DN without cn=$name
 	$account_new->general_dn = substr($account_new->general_dn, strpos($account_new->general_dn, ',')+1);
 	$final_changegids = '';
+	// Display general-page
+	$select_local = 'general';
 	}
-
-else if (count($_POST)==0) { // Startcondition. groupedit.php was called from outside
+// Startcondition. groupedit.php was called from outside to create a new group
+else if (count($_POST)==0) {
+	// Create new account object with settings from default profile
 	$account_new = loadGroupProfile('default');
 	$account_new ->type = 'group';
 	if ($config_intern->scriptServer) {
-		// load quotas from profile and check if they are valid
+		// load quotas and check if quotas from profile are valid
 		$values = getquotas('group');
-		if (isset($account_new->quota[0])) { // check quotas from profile
+		if (isset($account_new->quota[0])) {
+			 // check quotas from profile
 			$i=0;
-			// check quota settings
+			// check quota settings, loop for every partition with quotas
 			while (isset($account_new->quota[$i])) {
+				// search if quotas from profile fit to a real quota
 				$found = (-1);
 				for ($j=0; $j<count($values->quota); $j++)
 					if ($values->quota[$j][0]==$account_new->quota[$i][0]) $found = $j;
+				// unset quota from profile if quotas (mointpoint) doesn't exists anymore
 				if ($found==-1) unset($account_new->quota[$i]);
 				else {
+					// Set missing part in quota-array
 					$account_new->quota[$i][1] = $values->quota[$found][1];
 					$account_new->quota[$i][5] = $values->quota[$found][5];
 					$account_new->quota[$i][4] = $values->quota[$found][4];
@@ -89,27 +108,31 @@ else if (count($_POST)==0) { // Startcondition. groupedit.php was called from ou
 					$i++;
 					}
 				}
+			// Beautify array, repair index
 			$account_new->quota = array_values($account_new->quota);
 			}
 		else { // No quotas saved in profile
+			// Display quotas for new users (Quota set to 0)
 			if (is_object($values)) {
 				while (list($key, $val) = each($values)) // Set only defined values
 				if (isset($val)) $account_new->$key = $val;
 				}
 			}
 		}
-	unset($account_old);
-	unset($_SESSION['account_'.$varkey.'_account_old']);
+	// Display general-page
+	$select_local = 'general';
 	}
 
-switch ($select) { // Select which part of page should be loaded and check values
-	// general = startpage, general account paramters
-	// samba = page with all samba-related parameters e.g. smbpassword
-	// quota = page with all quota-related parameters e.g. hard file quota
-	// personal = page with all personal-related parametergs, e.g. phone number
-	// final = last page shown before account is created/modified
-	//		if account is modified commands might be ran are shown
-	// finish = page shown after account has been created/modified
+switch ($_POST['select']) {
+	/* Select which part of page should be loaded and check values
+	* groupmembers = page with all users which are additional members of group
+	* general = startpage, general account paramters
+	* samba = page with all samba-related parameters e.g. smbpassword
+	* quota = page with all quota-related parameters e.g. hard file quota
+	* personal = page with all personal-related parametergs, e.g. phone number
+	* final = last page shown before account is created/modified
+	* finish = page shown after account has been created/modified
+	*/
 	case 'groupmembers':
 		do { // X-Or, only one if() can be true
 			if (isset($_POST['users']) && isset($_POST['add'])) { // Add users to list
@@ -121,7 +144,6 @@ switch ($select) { // Select which part of page should be loaded and check value
 				$account_new->unix_memberUid = array_flip($account_new->unix_memberUid);
 				// sort user
 				sort($account_new->unix_memberUid);
-				// display groupmembers page
 				break;
 				}
 			if (isset($_POST['members']) && isset($_POST['remove'])) { // remove users fromlist
@@ -129,12 +151,12 @@ switch ($select) { // Select which part of page should be loaded and check value
 				break;
 				}
 			} while(0);
+		// display groupmembers page
 		$select_local = 'groupmembers';
 		break;
-
 	case 'general':
-		// Write all general values into $account_new if no profile should be loaded
-		if (!$load) {
+		// Write all general attributes into $account_new if no profile should be loaded
+		if (!$_POST['load']) {
 			$account_new->general_dn = $_POST['f_general_suffix'];
 			$account_new->general_username = $_POST['f_general_username'];
 			$account_new->general_uidNumber = $_POST['f_general_uidNumber'];
@@ -158,10 +180,20 @@ switch ($select) { // Select which part of page should be loaded and check value
 				$lastchar = substr($account_new->general_username, strlen($account_new->general_username)-1, 1);
 				// Last character is no number
 				if ( !ereg('^([0-9])+$', $lastchar))
+					/* Last character is no number. Therefore we only have to
+					* add "2" to it.
+					*/
 					$account_new->general_username = $account_new->general_username . '2';
 				 else {
+					/* Last character is a number -> we have to increase the number until we've
+					* found a groupname with trailing number which is not in use.
+					*
+					* $i will show us were we have to split groupname so we get a part
+					* with the groupname and a part with the trailing number
+					*/
 				 	$i=strlen($account_new->general_username)-1;
 					$mark = false;
+					// Set $i to the last character which is a number in $account_new->general_username
 				 	while (!$mark) {
 						if (ereg('^([0-9])+$',substr($account_new->general_username, $i, strlen($account_new->general_username)-$i))) $i--;
 							else $mark=true;
@@ -169,66 +201,57 @@ switch ($select) { // Select which part of page should be loaded and check value
 					// increase last number with one
 					$firstchars = substr($account_new->general_username, 0, $i+1);
 					$lastchars = substr($account_new->general_username, $i+1, strlen($account_new->general_username)-$i);
+					// Put groupname together
 					$account_new->general_username = $firstchars . (intval($lastchars)+1);
 				 	}
 				}
+			// Show warning if lam has changed groupname
 			if ($account_new->general_username != $_POST['f_general_username']) $errors[] = array('WARN', _('Groupname'), _('Groupname already in use. Selected next free groupname.'));
-
 			// Check if UID is valid. If none value was entered, the next useable value will be inserted
-			$account_new->general_uidNumber = checkid($account_new, $account_old);
-			if (is_string($account_new->general_uidNumber)) { // true if checkid has returned an error
-				$errors[] = array('ERROR', _('ID-Number'), $account_new->general_uidNumber);
-				if (isset($account_old)) $account_new->general_uidNumber = $account_old->general_uidNumber;
-				else unset($account_new->general_uidNumber);
-				}
-
+			$temp = explode(':', checkid($account_new, $account_old));
+			$account_new->general_uidNumber = $temp[0];
+			// true if checkid has returned an error
+			if ($temp[1]!='') $errors[] = explode(';',$temp[1]);
 			// Check if Name-length is OK. minLength=3, maxLength=20
 			if ( !ereg('.{3,20}', $account_new->general_username)) $errors[] = array('ERROR', _('Name'), _('Name must contain between 3 and 20 characters.'));
 			// Check if Name starts with letter
 			if ( !ereg('^([a-z]|[A-Z]).*$', $account_new->general_username))
 				$errors[] = array('ERROR', _('Name'), _('Name contains invalid characters. First character must be a letter'));
-
 			}
 		break;
-
 	case 'samba':
+		// Write all samba attributes into $account_new
+		// Get all domains
 		$samba3domains = $ldap_intern->search_domains($config_intern->get_domainSuffix());
-		foreach ($samba3domains as $domain)
-			if ($_POST['f_smb_domain'] == $domain->name)
-				$account_new->smb_domain = $domain;
+		// Search the corrct domain in array
+		unset($account_new->smb_domain);
+		$i = 0;
+		while (!is_object($account_new->smb_domain) && isset($samba3domains[$i])) {
+			if ($_POST['f_smb_domain'] == $samba3domains[$i]->name)
+				$account_new->smb_domain = $samba3domains[$i];
+			else $i++;
+			}
 		$account_new->smb_displayName = $_POST['f_smb_displayName'];
-
-		if ($config_intern->is_samba3())
-			switch ($_POST['f_smb_mapgroup']) {
-				case '*'._('Domain Guests'): $account_new->smb_mapgroup = $account_new->smb_domain->SID . "-" . '514'; break;
-				case '*'._('Domain Users'): $account_new->smb_mapgroup = $account_new->smb_domain->SID . "-" . '513'; break;
-				case '*'._('Domain Admins'): $account_new->smb_mapgroup = $account_new->smb_domain->SID . "-" . '512'; break;
-				case $account_new->general_username:
-						$account_new->smb_mapgroup = $account_new->smb_domain->SID . "-".
-							(2 * getgid($account_new->general_username) + $account_new->smb_domain->RIDbase +1);
-					break;
-				}
-		else
-			switch ($_POST['f_smb_mapgroup']) {
-				case '*'._('Domain Guests'): $account_new->smb_mapgroup = '514'; break;
-				case '*'._('Domain Users'): $account_new->smb_mapgroup = '513'; break;
-				case '*'._('Domain Admins'): $account_new->smb_mapgroup = '512'; break;
-				case $account_new->general_username:
-					$account_new->smb_mapgroup = (2 * getgid($account_new->general_username) + 1001);
-					break;
-				}
-
-		// Check if value is set
+		// Check if group SID should be mapped to a well known SID
+		switch ($_POST['f_smb_mapgroup']) {
+			case '*'._('Domain Guests'): $account_new->smb_mapgroup = $account_new->smb_domain->SID . "-" . '514'; break;
+			case '*'._('Domain Users'): $account_new->smb_mapgroup = $account_new->smb_domain->SID . "-" . '513'; break;
+			case '*'._('Domain Admins'): $account_new->smb_mapgroup = $account_new->smb_domain->SID . "-" . '512'; break;
+			case $account_new->general_username:
+					$account_new->smb_mapgroup = $account_new->smb_domain->SID . "-".
+						(2 * getgid($account_new->general_username) + $account_new->smb_domain->RIDbase +1);
+				break;
+			}
+			// Check if values are OK and set automatic values. if not error-variable will be set
 		if (($account_new->smb_displayName=='') && isset($account_new->general_gecos)) {
 			$account_new->smb_displayName = $account_new->general_gecos;
 			$errors[] = array('INFO', _('Display name'), _('Inserted gecos-field as display name.'));
 			}
-
 		break;
-
 	case 'quota':
 		// Write all general values into $account_new
 		$i=0;
+		// loop for every mointpoint with quotas
 		while ($account_new->quota[$i][0]) {
 			$account_new->quota[$i][2] = $_POST['f_quota_'.$i.'_2'];
 			$account_new->quota[$i][3] = $_POST['f_quota_'.$i.'_3'];
@@ -246,16 +269,14 @@ switch ($select) { // Select which part of page should be loaded and check value
 			$i++;
 			}
 		break;
-
 	case 'final':
-		// Write all general values into $account_new
+		// Ask if we should change gidNumber of every user which is member of the group
 		if ($_POST['f_final_changegids']) $final_changegids = $_POST['f_final_changegids'] ;
 		break;
-
 	case 'finish':
 		// Check if pdf-file should be created
 		if ($_POST['outputpdf']) {
-			// Quota Settings
+			// Load quotas if not yet done because they are needed for the pdf-file
 			if ($config_intern->scriptServer && !isset($account_new->quota[0])) { // load quotas
 				$values = getquotas('group', $account_old->general_username);
 				if (is_object($values)) {
@@ -267,7 +288,9 @@ switch ($select) { // Select which part of page should be loaded and check value
 						if (isset($val)) $account_old->$key = $val;
 					}
 				}
+			// Create / display PDf-file
 			createGroupPDF(array($account_new));
+			// Stop script
 			die;
 			}
 		break;
@@ -276,54 +299,75 @@ switch ($select) { // Select which part of page should be loaded and check value
 
 do { // X-Or, only one if() can be true
 	if ($_POST['next_members']) {
+		// Go from groupmembers to next page if no error did ocour
 		if (!is_array($errors)) $select_local='groupmembers';
-			else $select_local=$select;
+			else $select_local=$_POST['select'];
 		break;
 		}
 	if ($_POST['next_general']) {
+		// Go from general to next page if no error did ocour
 		if (!is_array($errors)) $select_local='general';
-			else $select_local=$select;
+			else $select_local=$_POST['select'];
 		break;
 		}
 	if ($_POST['next_samba']) {
+		// Go from samba to next page if no error did ocour
 		if (!is_array($errors)) $select_local='samba';
-			else $select_local=$select;
+			else $select_local=$_POST['select'];
 		break;
 		}
 	if ($_POST['next_quota']) {
+		// Go from quota to next page if no error did ocour
 		if (!is_array($errors)) $select_local='quota';
-			else $select_local=$select;
+			else $select_local=$_POST['select'];
 		break;
 		}
 	if ($_POST['next_final']) {
+		// Check if objectclasses are OK
+		if ($config_intern->is_samba3() && !isset($account_new->smb_domain)) // Samba page not viewed; can not create group because if missing options
+			$errors[] = array("ERROR", _("Samba Options not set!"), _("Please check settings on samba page."));
+		if (isset($account_old->general_objectClass)) {
+			if (($config_intern->is_samba3()) && (!in_array('sambaGroupMapping', $account_old->general_objectClass)))
+				$errors[] = array('WARN', _('ObjectClass sambaGroupMapping not found.'), _('Have to add objectClass sambaGroupMapping.'));
+			if (!in_array('posixGroup', $account_old->general_objectClass))
+				$errors[] = array('WARN', _('ObjectClass posixGroup not found.'), _('Have to add objectClass posixGroup.'));
+			}
+		// Show info if gidNumber has changed
+		if (($account_old) && ($account_new->general_uidNumber != $account_old->general_uidNumber))
+			$errors[] = array('INFO', _('GID-number has changed. You have to run the following command as root in order to change existing file-permissions:'),
+			'find / -gid ' . $account_old->general_uidNumber . ' -exec chgrp ' . $account_new->general_uidNumber . ' {} \;');
+		// Go from final to next page if no error did ocour
 		if (!isset($errors)) $select_local='final';
-			else $select_local=$select;
+			else $select_local=$_POST['select'];
 		break;
 		}
+	// Reset account to original settings if undo-button was pressed
 	if ($_POST['next_reset']) {
 		$account_new = $account_old;
-		$account_new->unix_password='';
-		$account_new->smb_password='';
-		$account_new->smb_flagsW = 0;
 		$account_new->general_dn = substr($account_new->general_dn, strpos($account_new->general_dn, ',')+1);
-		$select_local = $select;
+		$select_local = $_POST['select'];
 		break;
 		}
-	if ( $_POST['create'] ) { // Create-Button was pressed
+	// Create-Button was pressed
+	if ( $_POST['create'] ) {
+		// Create or modify an account
 		if ($account_old) $result = modifygroup($account_new,$account_old);
 		 else $result = creategroup($account_new); // account.inc
-		if ( $result==1 || $result==3 ) $select_local = 'finish';
-			else $select_local = 'final';
+		if ( $result==4 || $result==5 ) $select_local = 'final';
+			else $select_local = 'finish';
 		break;
 		}
-	// Reset variables if recreate-button was pressed
+	// Load Profile and reset all attributes to settings in profile
 	if ($_POST['createagain']) {
 		$select_local='general';
+		unset ($_SESSION['account_'.$varkey.'_account_new']);
 		unset($account_new);
-		$account_new = loadGroupProfile('default');
+		$_SESSION['account_'.$varkey.'_account_new'] = loadGroupProfile('default');
+		$account_new =& $_SESSION['account_'.$varkey.'_account_new'];
 		$account_new ->type = 'group';
 		break;
 		}
+	// Go back to listgroups.php
 	if ($_POST['backmain']) {
 		metaRefresh("../lists/listgroups.php");
 		if (isset($_SESSION['account_'.$varkey.'_account_new'])) unset($_SESSION['account_'.$varkey.'_account_new']);
@@ -332,7 +376,8 @@ do { // X-Or, only one if() can be true
 		die;
 		break;
 		}
-	if ($load) {
+	// Load Profile and reset all attributes to settings in profile
+	if ($_POST['load']) {
 		$account_new->general_dn = $_POST['f_general_suffix'];
 		$account_new->general_username = $_POST['f_general_username'];
 		$account_new->general_uidNumber = $_POST['f_general_uidNumber'];
@@ -343,19 +388,22 @@ do { // X-Or, only one if() can be true
 			while (list($key, $val) = each($values)) // Set only defined values
 				if (isset($val)) $account_new->$key = $val;
 			}
-
 		if ($config_intern->scriptServer) {
-			// load quotas from profile and check if they are valid
-			$values = getquotas('group', $account_old->general_username);
-			if (isset($account_new->quota[0])) { // check quotas from profile
+			// load quotas and check if quotas from profile are valid
+			$values = getquotas('group');
+			if (isset($account_new->quota[0])) {
+				 // check quotas from profile
 				$i=0;
-				// check quota settings
+				// check quota settings, loop for every partition with quotas
 				while (isset($account_new->quota[$i])) {
+					// search if quotas from profile fit to a real quota
 					$found = (-1);
 					for ($j=0; $j<count($values->quota); $j++)
 						if ($values->quota[$j][0]==$account_new->quota[$i][0]) $found = $j;
+					// unset quota from profile if quotas (mointpoint) doesn't exists anymore
 					if ($found==-1) unset($account_new->quota[$i]);
-						else {
+					else {
+						// Set missing part in quota-array
 						$account_new->quota[$i][1] = $values->quota[$found][1];
 						$account_new->quota[$i][5] = $values->quota[$found][5];
 						$account_new->quota[$i][4] = $values->quota[$found][4];
@@ -363,9 +411,11 @@ do { // X-Or, only one if() can be true
 						$i++;
 						}
 					}
+				// Beautify array, repair index
 				$account_new->quota = array_values($account_new->quota);
 				}
 			else { // No quotas saved in profile
+				// Display quotas for new users (Quota set to 0)
 				if (is_object($values)) {
 					while (list($key, $val) = each($values)) // Set only defined values
 					if (isset($val)) $account_new->$key = $val;
@@ -376,9 +426,15 @@ do { // X-Or, only one if() can be true
 		$select_local='general';
 		break;
 		}
+	// Save Profile
 	if ($_POST['save']) {
 		// save profile
-		saveGroupProfile($account_new, $_POST['f_finish_safeProfile']);
+		if ($_POST['f_finish_safeProfile']=='')
+			$errors[] = array('ERROR', _('Save profile'), _('No profilename given.'));
+		else {
+			saveGroupProfile($account_new, $_POST['f_finish_safeProfile']);
+			$errors[] = array('INFO', _('Save profile'), _('New profile created.'));
+			}
 		// select last page displayed before user is created
 		$select_local='final';
 		break;
@@ -387,8 +443,6 @@ do { // X-Or, only one if() can be true
 		$select_local='groupmembers';
 		break;
 		}
-	// Set selected page to general if no page was defined. should only true if groupedit.php wasn't called by itself
-	if (!$select_local) $select_local='general';
 	} while(0);
 
 // Write HTML-Header
@@ -403,39 +457,58 @@ echo "</title>\n".
 	"<form action=\"groupedit.php\" method=\"post\">\n".
 	"<input name=\"varkey\" type=\"hidden\" value=\"".$varkey."\">\n";
 
+// Display errir-messages
 if (is_array($errors))
 	for ($i=0; $i<sizeof($errors); $i++) StatusMessage($errors[$i][0], $errors[$i][1], $errors[$i][2]);
 
 // print_r($account_old);
-switch ($select_local) { // Select which part of page will be loaded
-	// general = startpage, general account paramters
-	// unix = page with all shadow-options and password
-	// samba = page with all samba-related parameters e.g. smbpassword
-	// quota = page with all quota-related parameters e.g. hard file quota
-	// personal = page with all personal-related parametergs, e.g. phone number
-	// final = last page shown before account is created/modified
-	//		if account is modified commands might be ran are shown
-	// finish = page shown after account has been created/modified
+
+
+switch ($select_local) {
+	/* Select which part of page should be loaded and check values
+	* groupmembers = page with all users which are additional members of group
+	* general = startpage, general account paramters
+	* samba = page with all samba-related parameters e.g. smbpassword
+	* quota = page with all quota-related parameters e.g. hard file quota
+	* personal = page with all personal-related parametergs, e.g. phone number
+	* final = last page shown before account is created/modified
+	* finish = page shown after account has been created/modified
+	*/
 	case 'groupmembers':
+		// Validate cache-array
 		ldapreload('user');
+		// Get copy of cache-array
 		$temp2 = $userDN_intern;
+		// unset timestamp stored in $temp2[0]
 		unset($temp2[0]);
+		// load list with all users
 		foreach ($temp2 as $temp) $users[] = $temp['cn'];
+		// sort users
 		if (is_array($users)) sort($users, SORT_STRING);
+		// remove users which are allready additional members of group
 		$users = array_delete($account_new->unix_memberUid, $users);
+		/* Now we have to remove all users from list who are primary member of group
+		* At the moment lam is doing an extra ldap-search. In future this should be done
+		* via cache-array **** fixme
+		*/
+		// Do a ldap-search
 		if (isset($account_old->general_uidNumber))
 			$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_UserSuffix(), "(&(objectClass=PosixAccount)(gidNumber=$account_old->general_uidNumber))", array('cn'));
 		else $result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_UserSuffix(), "(&(objectClass=PosixAccount)(gidNumber=$account_new->general_uidNumber))", array('cn'));
 		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
+		// loop for every user which is primary member of group
 		while ($entry) {
 			$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
 			if (isset($attr['cn'][0])) {
+				// Remove user from user list
 				$users = @array_flip($users);
 				unset ($users[$attr['cn'][0]]);
 				$users = @array_flip($users);
 				}
+			// Go to next entry
 			$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
 			}
+
 		echo "<input name=\"select\" type=\"hidden\" value=\"groupmembers\">\n";
 		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
 		echo "<table border=0><tr><td><fieldset class=\"groupedit-middle\"><legend class=\"groupedit-bright\"><b>";
@@ -443,6 +516,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "</b></legend>\n";
 		echo "<input name=\"next_general\" type=\"submit\" value=\""; echo _('General'); echo "\">\n<br>";
 		echo "<input name=\"next_members\" type=\"submit\" disabled value=\""; echo _('Members'); echo "\">\n<br>";
+		// samba 2.2 doesn't have any settings for groups
 		if ($config_intern->is_samba3()) {
 			echo "<input name=\"next_samba\" type=\"submit\" value=\""; echo _('Samba'); echo "\">\n<br>";
 			}
@@ -463,6 +537,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "<tr><td valign=\"top\"><fieldset class=\"groupedit-middle\"><legend class=\"groupedit-bright\">";
 		echo _('Group members');
 		echo "</legend>";
+		// display all users which are additional members of group
 		if (count($account_new->unix_memberUid)!=0) {
 			echo "<select name=\"members[]\" class=\"groupedit-bright\" size=15 multiple>\n";
 			for ($i=0; $i<count($account_new->unix_memberUid); $i++)
@@ -477,6 +552,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "<td valign=\"top\"><fieldset class=\"groupedit-middle\"><legend class=\"groupedit-bright\">";
 		echo _('Available users');
 		echo "</legend>\n";
+		// Display all users which are not member of group in any way
 		if ((count($users)!=0) && is_array($users)) {
 			echo "<select name=\"users[]\" size=15 multiple class=\"groupedit-bright\">\n";
 			foreach ($users as $temp)
@@ -485,7 +561,6 @@ switch ($select_local) { // Select which part of page will be loaded
 			}
 		echo "</fieldset></td>\n</tr>\n</table>\n</fieldset></td></tr></table>\n</td></tr>\n</table>\n";
 		break;
-
 	case 'general':
 		// General Account Settings
 		// load list of profiles
@@ -498,6 +573,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "</b></legend>\n";
 		echo "<input name=\"next_general\" type=\"submit\" disabled value=\""; echo _('General'); echo "\">\n<br>";
 		echo "<input name=\"next_members\" type=\"submit\" value=\""; echo _('Members'); echo "\">\n<br>";
+		// samba 2.2 doesn't have any settings for groups
 		if ($config_intern->is_samba3()) {
 			echo "<input name=\"next_samba\" type=\"submit\" value=\""; echo _('Samba'); echo "\">\n<br>";
 			}
@@ -529,7 +605,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "</td>\n<td><input name=\"f_general_gecos\" type=\"text\" size=\"30\" value=\"".$account_new->general_gecos."\"></td>\n".
 			"<td><a href=\"../help.php?HelpNumber=409\" target=\"lamhelp\">"._('Help')."</a></td>\n</tr>\n<tr>\n<td>";
 		echo _('Suffix'); echo "</td>\n<td><select name=\"f_general_suffix\">";
-
+		// Display all allowed group suffixes
 		foreach ($ldap_intern->search_units($config_intern->get_GroupSuffix()) as $suffix) {
 			if ($account_new->general_dn) {
 				if ($account_new->general_dn == $suffix)
@@ -542,6 +618,7 @@ switch ($select_local) { // Select which part of page will be loaded
 			"</a></td>\n</tr>\n</table>";
 		echo _('Values with * are required');
 		echo "</fieldset>\n</td></tr><tr><td>";
+		// Show fieldset with list of all group profiles
 		if (count($profilelist)!=0) {
 			echo "<fieldset class=\"groupedit-middle\"><legend class=\"groupedit-bright\"><b>";
 			echo _("Load profile");
@@ -555,9 +632,9 @@ switch ($select_local) { // Select which part of page will be loaded
 			}
 		echo "</td></tr>\n</table>\n</td></tr></table>\n";
 		break;
-
 	case 'samba':
 		// Samba Settings
+		// samba 2.2 doesn't have any settings for groups
 		$samba3domains = $ldap_intern->search_domains($config_intern->get_domainSuffix());
 		echo "<input name=\"select\" type=\"hidden\" value=\"samba\">\n";
 		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
@@ -587,88 +664,50 @@ switch ($select_local) { // Select which part of page will be loaded
 			"</td>\n<td><a href=\"../help.php?HelpNumber=420\" target=\"lamhelp\">"._('Help')."</a></td>\n</tr>\n<tr>\n<td>";
 		echo _('Windows groupname');
 		echo "</td>\n<td><select name=\"f_smb_mapgroup\">";
-		if ($config_intern->samba3=='yes') {
-			if ( $account_new->smb_mapgroup == $account_new->smb_domain->SID . "-".
-			(2 * getgid($account_new->general_username) + $values->smb_domain->RIDbase+1)) {
-				echo '<option selected> ';
-				echo $account_new->general_username;
-				echo "</option>\n"; }
-			 else {
-				echo '<option> ';
-				echo $account_new->general_username;
-				echo "</option>\n";
-				}
-			if ( $account_new->smb_mapgroup == $account_new->smb_domain->SID . "-" . '514' ) {
-				echo '<option selected> *';
-				echo _('Domain Guests');
-				echo "</option>\n"; }
-			 else {
-				echo '<option> *';
-				echo _('Domain Guests');
-				echo "</option>\n";
-				}
-			if ( $account_new->smb_mapgroup == $account_new->smb_domain->SID . "-" . '513' ) {
-				echo '<option selected> *';
-				echo _('Domain Users');
-				echo "</option>\n"; }
-			 else {
-				echo '<option> *';
-				echo _('Domain Users');
-				echo "</option>\n";
-				}
-			if ( $account_new->smb_mapgroup == $account_new->smb_domain->SID . "-" . '512' ) {
-				echo '<option selected> *';
-				echo _('Domain Admins');
-				echo "</option>\n"; }
-			 else {
-				echo '<option> *';
-				echo _('Domain Admins');
-				echo "</option>\n";
-				}
+		// Display if group SID should be mapped to a well kown SID
+		if ( $account_new->smb_mapgroup == $account_new->smb_domain->SID . "-".
+		(2 * getgid($account_new->general_username) + $values->smb_domain->RIDbase+1)) {
+			echo '<option selected> ';
+			echo $account_new->general_username;
+			echo "</option>\n"; }
+		 else {
+			echo '<option> ';
+			echo $account_new->general_username;
+			echo "</option>\n";
 			}
-		else {
-			if ( $account_new->smb_mapgroup == (2 * getgid($account_new->general_username) +1001)) {
-				echo '<option selected> ';
-				echo $account_new->general_username;
-				echo "</option>\n"; }
-			 else {
-				echo '<option> ';
-				echo $account_new->general_username;
-				echo "</option>\n";
-				}
-			if ( $account_new->smb_mapgroup == '514' ) {
-				echo '<option selected> *';
-				echo _('Domain Guests');
-				echo "</option>\n"; }
-			 else {
-				echo '<option> *';
-				echo _('Domain Guests');
-				echo "</option>\n";
-				}
-			if ( $account_new->smb_mapgroup == '513' ) {
-				echo '<option selected> *';
-				echo _('Domain Users');
-				echo "</option>\n"; }
-			 else {
-				echo '<option> *';
-				echo _('Domain Users');
-				echo "</option>\n";
-				}
-			if ( $account_new->smb_mapgroup == '512' ) {
-				echo '<option selected> *';
-				echo _('Domain Admins');
-				echo "</option>\n"; }
-			 else {
-				echo '<option> *';
-				echo _('Domain Admins');
-				echo "</option>\n";
-				}
+		if ( $account_new->smb_mapgroup == $account_new->smb_domain->SID . "-" . '514' ) {
+			echo '<option selected> *';
+			echo _('Domain Guests');
+			echo "</option>\n"; }
+		 else {
+			echo '<option> *';
+			echo _('Domain Guests');
+			echo "</option>\n";
+			}
+		if ( $account_new->smb_mapgroup == $account_new->smb_domain->SID . "-" . '513' ) {
+			echo '<option selected> *';
+			echo _('Domain Users');
+			echo "</option>\n"; }
+		 else {
+			echo '<option> *';
+			echo _('Domain Users');
+			echo "</option>\n";
+			}
+		if ( $account_new->smb_mapgroup == $account_new->smb_domain->SID . "-" . '512' ) {
+			echo '<option selected> *';
+			echo _('Domain Admins');
+			echo "</option>\n"; }
+		 else {
+			echo '<option> *';
+			echo _('Domain Admins');
+			echo "</option>\n";
 			}
 		echo	"</select></td>\n<td>".
 			'<a href="../help.php?HelpNumber=464" target="lamhelp">'._('Help').'</a>'.
 			'</td></tr>'."\n".'<tr><td>';
 		echo _('Domain');
 		echo '</td><td>';
+		// select which domain name should be displayed
 		if (count($samba3domains)!=0) {
 			echo '<select name="f_smb_domain">';
 			for ($i=0; $i<sizeof($samba3domains); $i++) {
@@ -684,9 +723,9 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "</td>\n<td><a href=\"../help.php?HelpNumber=467\" target=\"lamhelp\">"._('Help')."</a></td></tr>\n";
 		echo "</table>\n</fieldset>\n</td></tr></table></td></tr>\n</table>\n";
 		break;
-
 	case 'quota':
 		// Quota Settings
+		// Load quotas if not yet done
 		if ($config_intern->scriptServer && !isset($account_new->quota[0]) ) { // load quotas
 			$values = getquotas('group', $account_new->general_username);
 			if (is_object($values)) {
@@ -698,7 +737,6 @@ switch ($select_local) { // Select which part of page will be loaded
 					if (isset($val)) $account_old->$key = $val;
 				}
 			}
-
 		echo "<input name=\"select\" type=\"hidden\" value=\"samba\">\n";
 		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
 		echo "<table border=0><tr><td><fieldset class=\"groupedit-middle\"><legend class=\"groupedit-bright\"><b>";
@@ -706,6 +744,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "</b></legend>\n";
 		echo "<input name=\"next_general\" type=\"submit\" value=\""; echo _('General'); echo "\">\n<br>";
 		echo "<input name=\"next_members\" type=\"submit\" value=\""; echo _('Members'); echo "\">\n<br>";
+		// samba 2.2 doesn't have any settings for groups
 		if ($config_intern->is_samba3()) {
 			echo "<input name=\"next_samba\" type=\"submit\" value=\""; echo _('Samba'); echo "\">\n<br>";
 			}
@@ -733,6 +772,7 @@ switch ($select_local) { // Select which part of page will be loaded
 			'<a href="../help.php?HelpNumber=445" target="lamhelp">'._('Help').'</a></td>'."\n".'<td><a href="../help.php?HelpNumber=446" target="lamhelp">'._('Help').'</a></td>'."\n".'<td>'.
 			'<a href="../help.php?HelpNumber=447" target="lamhelp">'._('Help').'</a></td></tr>'."\n";
 		$i=0;
+		// loop for every mointpoint with enabled quotas
 		while ($account_new->quota[$i][0]) {
 			echo '<tr><td>'.$account_new->quota[$i][0].'</td><td>'.$account_new->quota[$i][1].'</td>'; // used blocks
 			echo '<td><input name="f_quota_'.$i.'_2" type="text" size="12" maxlength="20" value="'.$account_new->quota[$i][2].'"></td>'; // blocks soft limit
@@ -746,15 +786,12 @@ switch ($select_local) { // Select which part of page will be loaded
 			}
 		echo "</table>\n</fieldset>\n</td></tr></table></td></tr>\n</table>\n";
 		break;
-
 	case 'final':
 		// Final Settings
 		$disabled = "";
-		if ($config_intern->is_samba3()) {
-			if (!isset($account_new->smb_domain)) { // Samba page nit viewd; can not create group because if missing options
-				$disabled = "disabled";
-				}
-			}
+		if ($config_intern->is_samba3() && !isset($account_new->smb_domain))
+			// Samba page not viewed; can not create group because if missing options
+			$disabled = "disabled";
 
 		echo '<input name="select" type="hidden" value="final">';
 		echo "<input name=\"select\" type=\"hidden\" value=\"final\">\n";
@@ -793,34 +830,14 @@ switch ($select_local) { // Select which part of page will be loaded
 		 else echo _('Create');
 		echo "</b></legend>\n";
 		echo "<table border=0 width=\"100%\">";
+		// Ask if gidNumbers of primary group members should be changed
 		if (($account_old) && ($account_new->general_uidNumber != $account_old->general_uidNumber)) {
-			echo '<tr>';
-			StatusMessage ('INFO', _('GID-number has changed. You have to run the following command as root in order to change existing file-permissions:'),
-			'find / -gid ' . $account_old->general_uidNumber . ' -exec chgrp ' . $account_new->general_uidNumber . ' {} \;');
-			echo '</tr>'."\n";
 			echo '<tr><td>';
 			echo '<input name="f_final_changegids" type="checkbox"';
 				if ($final_changegids) echo ' checked ';
 			echo ' >';
 			echo _('Change GID-Number of all users in group to new value');
 			echo '</td></tr>'."\n";
-			}
-		if ($disabled == "disabled") { // Samba page nit viewd; can not create group because if missing options
-			echo "<tr>";
-			StatusMessage("ERROR", _("Samba Options not set!"), _("Please check settings on samba page."));
-			echo "</tr>";
-			}
-		if (isset($account_old->general_objectClass)) {
-			if (($config_intern->is_samba3()) && (!in_array('sambaGroupMapping', $account_old->general_objectClass))) {
-				echo '<tr>';
-				StatusMessage('WARN', _('ObjectClass sambaGroupMapping not found.'), _('Have to add objectClass sambaGroupMapping.'));
-				echo "</tr>\n";
-				}
-			if (!in_array('posixGroup', $account_old->general_objectClass)) {
-				echo '<tr>';
-				StatusMessage('WARN', _('ObjectClass posixGroup not found.'), _('Have to add objectClass posixGroup.'));
-				echo "</tr>\n";
-				}
 			}
 		echo "<tr><td><input name=\"create\" type=\"submit\" $disabled value=\"";
 		if ($account_old) echo _('Modify Account');
@@ -831,8 +848,6 @@ switch ($select_local) { // Select which part of page will be loaded
 
 	case 'finish':
 		// Final Settings
-		if (($config_intern->samba3 =='yes') && !isset($account_new->smb_mapgroup)) $disabled = 'disabled';
-			else $disabled = '';
 		echo '<input name="select" type="hidden" value="finish">';
 		echo "<fieldset class=\"groupedit-bright\"><legend class=\"groupedit-bright\"><b>"._('Success')."</b></legend>\n";
 		echo "<table border=0 width=\"100%\">";

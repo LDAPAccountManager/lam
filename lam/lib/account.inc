@@ -624,37 +624,37 @@ function checkid($values, $values_old=false) {
 				// Store highest id-number
 				$id = $uids[count($uids)-1];
 				// Return minimum allowed id-number if all found id-numbers are too low
-				if ($id < $minID) return intval($minID);
+				if ($id < $minID) return implode(':', array($minID, ''));
 				// Return higesht used id-number + 1 if it's still in valid range
-				if ($id < $maxID) return intval($id)+1;
+				if ($id < $maxID) return implode(':', array( $id+1, ''));
 				/* If this function is still running we have to fid a free id-number between
 				* the used id-numbers
 				*/
 				$i = intval($minID);
 				while (in_array($i, $uids)) $i++;
-				if ($i>$maxID) return _('No free ID-Number!');
-					else return $i;
+				if ($i>$maxID) return implode(':', array($values->general_uidNumber , implode(';', array('ERROR', _('ID-Number'), _('No free ID-Number!')))));
+					else return implode(':', array($i, implode(';', array('WARN', _('ID-Number'), _('It\'s possible id-number is reused.')))));
 				}
-			else return intval($minID);
+			else return implode(':', array($minID, ''));
 			// return minimum allowed id-number if no id-numbers are found
 			}
-		else return intval($values_old->general_uidNumber);
+		else return implode(':', array($values_old->general_uidNumber, ''));
 		// old account -> return id-number which has been used
 		}
 	else {
 		// Check manual ID
 		// id-number is out of valid range
-		if ( $values->general_uidNumber < $minID || $values->general_uidNumber > $maxID) return sprintf(_('Please enter a value between %s and %s!'), $minID, $maxID);
+		if ( $values->general_uidNumber < $minID || $values->general_uidNumber > $maxID) return implode(':', array($values->general_uidNumber, implode(';', array('ERROR', _('ID-Number'), sprintf(_('Please enter a value between %s and %s!'), $minID, $maxID)))));
 		// $uids is allways an array but not if no entries were found
 		if (is_array($uids)) {
 			// id-number is in use and account is a new account
-			if ((in_array($values->general_uidNumber, $uids)) && !$values_old) return _('ID is already in use');
+			if ((in_array($values->general_uidNumber, $uids)) && !$values_old) return implode(':', array($values->general_uidNumber, implode(';', array('ERROR', _('ID-Number'), _('ID is already in use')))));
 			// id-number is in use, account is existing account and id-number is not used by itself
 			if ((in_array($values->general_uidNumber, $uids)) && $values_old && ($values_old->general_uidNumber != $values->general_uidNumber) )
-				return _('ID is already in use');
+				return implode(':', array($values_old->general_uidNumber, implode(';', array('ERROR', _('ID-Number'), _('ID is already in use')))));
 			}
 		// return id-number if everything is OK
-		return intval($values->general_uidNumber);
+		return implode(':', array($values->general_uidNumber, ''));
 		}
 	}
 
@@ -874,6 +874,9 @@ function loadhost($dn) {
 	$return->general_dn = (ldap_get_dn($_SESSION['ldap']->server(), $entry));
 	$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
 
+	// Set host samba flags
+	$return->smb_flagsW = 1;
+	$return->smb_flagsX = 1;
 	// load objectclasses
 	$i=0;
 	while (isset($attr['objectClass'][$i])) {

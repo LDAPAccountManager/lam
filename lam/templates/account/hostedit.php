@@ -23,6 +23,7 @@ $Id$
   LDAP Account Manager displays table for creating or modifying accounts in LDAP
 */
 
+// include all needed files
 include_once('../../lib/account.inc'); // File with all account-funtions
 include_once('../../lib/config.inc'); // File with configure-functions
 include_once('../../lib/profiles.inc'); // functions to load and save profiles
@@ -30,10 +31,17 @@ include_once('../../lib/status.inc'); // Return error-message
 include_once('../../lib/pdf.inc'); // Return a pdf-file
 include_once('../../lib/ldap.inc'); // LDAP-functions
 
+// Start session
 session_save_path('../../sess');
 @session_start();
+// Set correct language, codepages, ....
 setlanguage();
 
+/* hostedit.php is using dynamic session varialenames so
+* we can run several copies of hostedit.php at the same
+* time
+* $varkey is the dynamic part of the variable name
+*/
 if (!isset($_POST['varkey'])) $varkey = session_id().time();
 	else $varkey = $_POST['varkey'];
 if (!isset($_SESSION['account_'.$varkey.'_account_new'])) $_SESSION['account_'.$varkey.'_account_new'] = new account();
@@ -41,51 +49,46 @@ if (!isset($_SESSION['account_'.$varkey.'_account_new'])) $_SESSION['account_'.$
 // Register Session-Variables with references so we don't net to change to complete code if names changes
 $account_new =& $_SESSION['account_'.$varkey.'_account_new'];
 if (is_object($_SESSION['account_'.$varkey.'_account_old'])) $account_old =& $_SESSION['account_'.$varkey.'_account_old'];
-
 $ldap_intern =& $_SESSION['ldap'];
 $config_intern =& $_SESSION['config'];
 $header_intern =& $_SESSION['header'];
 
-
-
+// $_GET is only valid if hostedit.php was called from hostlist.php
 if (isset($_GET['DN']) && $_GET['DN']!='') {
+	// hostedit.php should edit an existing account
+	// reset variables
 	if (isset($_SESSION['account_'.$varkey.'_account_old'])) {
 		unset($account_old);
 		unset($_SESSION['account_'.$varkey.'_account_old']);
 		}
 	$_SESSION['account_'.$varkey.'_account_old'] = new account();
 	$account_old =& $_SESSION['account_'.$varkey.'_account_old'];
+	// get "real" DN from variable
 	$DN = str_replace("\'", '',$_GET['DN']);
+	// Load existing host
 	$account_new = loadhost($DN);
-	$account_new->smb_flagsW = 1;
-	$account_new->smb_flagsX = 1;
+	// Get a copy of original host
 	$account_old = $account_new;
 	// Store only DN without uid=$name
 	$account_new->general_dn = substr($account_new->general_dn, strpos($account_new->general_dn, ',')+1);
-	$_SESSION['final_changegids'] = '';
 	}
-else if (count($_POST)==0) { // Startcondition. hostedit.php was called from outside
+// Startcondition. hostedit.php was called from outside to create a new host
+else if (count($_POST)==0) {
+	// Create new account object with settings from default profile
 	$account_new = loadHostProfile('default');
 	$account_new ->type = 'host';
 	$account_new->smb_flagsW = 1;
 	$account_new->smb_flagsX = 1;
 	$account_new->general_homedir = '/dev/null';
 	$account_new->general_shell = '/bin/false';
-	if (isset($_SESSION['account_'.$varkey.'_account_old'])) {
-		unset($account_old);
-		unset($_SESSION['account_'.$varkey.'_account_old']);
-		}
 	}
 
-switch ($_POST['select']) { // Select which part of page should be loaded and check values
-	// general = startpage, general account paramters
-	// unix = page with all shadow-options and password
-	// samba = page with all samba-related parameters e.g. smbpassword
-	// quota = page with all quota-related parameters e.g. hard file quota
-	// personal = page with all personal-related parametergs, e.g. phone number
-	// final = last page shown before account is created/modified
-	//		if account is modified commands might be ran are shown
-	// finish = page shown after account has been created/modified
+switch ($_POST['select']) {
+	/* Select which page should be displayed. For hosts we have
+	* only have general and finish
+	* general = page with all settings for hosts
+	* final = page which will be displayed if changes were made
+	*/
 	case 'general':
 		// Write all general values into $account_new if no profile should be loaded
 		if (!$_POST['load']) {
@@ -94,102 +97,117 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 			$account_new->general_uidNumber = $_POST['f_general_uidNumber'];
 			$account_new->general_group = $_POST['f_general_group'];
 			$account_new->general_gecos = $_POST['f_general_gecos'];
+			$account_new->smb_displayName = $_POST['f_smb_displayName'];
 
 			// Check if values are OK and set automatic values.  if not error-variable will be set
+			// Add $ to end of hostname if hostname doesn't end with "$"
 			if ( substr($account_new->general_username, strlen($account_new->general_username)-1, strlen($account_new->general_username)) != '$' ) {
 				$account_new->general_username = $account_new->general_username . '$';
 				$errors[] = array('WARN', _('Host name'), _('Added $ to hostname.'));
 				}
+			// Get copy of hostname so we can check if changes were made
 			$tempname = $account_new->general_username;
 			// Check if Hostname contains only valid characters
 			if ( !ereg('^([a-z]|[A-Z]|[0-9]|[.]|[-]|[$])*$', $account_new->general_username))
-				$errors[] = array('ERROR', _('Host name'), _('Hostname contains invalid characters. Valid characters are: a-z, 0-9 and .-_ !'));
+				$errors[] = array('ERROR', _('Host name'), _('Hostname contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
 
-			if ($account_new->general_gecos=='') {
-				$account_new->general_gecos = $account_new->general_username;
-				$errors[] = array('INFO', _('Gecos'), _('Inserted hostname in gecos-field.'));
-				}
-			// Create automatic Hostname with number if original user already exists
+			// Create automatic Hostname with number if original host already exists
 			// Reset name to original name if new name is in use
 			if (ldapexists($account_new, $account_old) && is_object($account_old))
 				$account_new->general_username = $account_old->general_username;
 			while ($temp = ldapexists($account_new, $account_old)) {
-				// get last character of username
+				// Remove "$" at end of hostname
 				$account_new->general_username = substr($account_new->general_username, 0, $account_new->general_username-1);
-				$lastchar = substr($account_new->general_username, strlen($account_new->general_username)-2, 1);
-				// Last character is no number
-				if ( !ereg('^([0-9])+$', $lastchar))
-					$account_new->general_username = $account_new->general_username . '2';
-				 else {
-				 	$i=strlen($account_new->general_username)-3;
+				// get last character of username
+				$lastchar = substr($account_new->general_username, strlen($account_new->general_username)-1, 1);
+				if ( !ereg('^([0-9])+$', $lastchar)) {
+					/* Last character is no number. Therefore we only have to
+					* add "2" to it.
+					*/
+					$account_new->general_username = $account_new->general_username . '2$';
+					}
+				else {
+					/* Last character is a number -> we have to increase the number until we've
+					* found a hostname with trailing number which is not in use.
+					*
+					* $i will show us were we have to split hostname so we get a part
+					* with the hostname and a part with the trailing number
+					*/
+					$i=strlen($account_new->general_username)-3;
 					$mark = false;
-				 	while (!$mark) {
+					// Set $i to the last character which is a number in $account_new->general_username
+					while (!$mark) {
 						if (ereg('^([0-9])+$',substr($account_new->general_username, $i, strlen($account_new->general_username)-1))) $i--;
 							else $mark=true;
 						}
 					// increase last number with one
-					$firstchars = substr($account_new->general_username, 0, $i+1);
-					$lastchars = substr($account_new->general_username, $i+1, strlen($account_new->general_username)-$i);
+					$firstchars = substr($account_new->general_username, 0, $i+2);
+					$lastchars = substr($account_new->general_username, $i+2, strlen($account_new->general_username)-$i);
+					// Put hostname together
 					$account_new->general_username = $firstchars . (intval($lastchars)+1). '$';
 				 	}
-				$account_new->general_username = $account_new->general_username . "$";
 				}
+			// Show warning if lam has changed hostname
 			if ($account_new->general_username != $tempname)
 				$errors[] = array('WARN', _('Host name'), _('Hostname already in use. Selected next free hostname.'));
-
-			// Check if UID is valid. If none value was entered, the next useable value will be inserted
-			$account_new->general_uidNumber = checkid($account_new, $account_old);
-			if (is_string($account_new->general_uidNumber)) { // true if checkid has returned an error
-				$errors[] = array('ERROR', _('ID-Number'), $account_new->general_uidNumber);
-				if (isset($account_old)) $account_new->general_uidNumber = $account_old->general_uidNumber;
-				else unset($account_new->general_uidNumber);
-				}
 			// Check if Name-length is OK. minLength=3, maxLength=20
 			if ( !ereg('.{3,20}', $account_new->general_username)) $errors[] = array('ERROR', _('Name'), _('Name must contain between 3 and 20 characters.'));
 			// Check if Name starts with letter
 			if ( !ereg('^([a-z]|[A-Z]).*$', $account_new->general_username))
-				$errors[] = array('ERROR', _('Name'), _('Name contains invalid characters. First character must be a letter'));
-
-			}
-		break;
-
-	case 'samba':
-		// Write all general values into $account_new
-		$account_new->smb_displayName = $_POST['f_smb_displayName'];
-
-		if (isset($_POST['f_smb_flagsD'])) $account_new->smb_flagsD = true;
-			else $account_new->smb_flagsD = false;
-
-		if ($config_intern->is_samba3()) {
-			$samba3domains = $ldap_intern->search_domains($config_intern->get_domainSuffix());
-			for ($i=0; $i<sizeof($samba3domains); $i++)
-				if ($_POST['f_smb_domain'] == $samba3domains[$i]->name) {
-					$account_new->smb_domain = $samba3domains[$i];
+				$errors[] = array('ERROR', _('Name'), _('Name contains invalid characters. First character must be a letter.'));
+			// Set gecos-field to hostname if it's empty
+			if ($account_new->general_gecos=='') {
+				$account_new->general_gecos = $account_new->general_username;
+				$errors[] = array('INFO', _('Gecos'), _('Inserted hostname in gecos-field.'));
+				}
+			// Check if values are OK and set automatic values. if not error-variable will be set
+			if (($account_new->smb_displayName=='') && isset($account_new->general_gecos)) {
+				$account_new->smb_displayName = $account_new->general_gecos;
+				$errors[] = array('INFO', _('Display name'), _('Inserted gecos-field as display name.'));
+				}
+			// Check if UID is valid. If none value was entered, the next useable value will be inserted
+			$temp = explode(':', checkid($account_new, $account_old));
+			$account_new->general_uidNumber = $temp[0];
+			// true if checkid has returned an error
+			if ($temp[1]!='') $errors[] = explode(';',$temp[1]);
+			// Set Samba-Domain
+			if ($config_intern->is_samba3()) {
+				// Samba 3 used a samba3domain object
+				// Get all domains
+				$samba3domains = $ldap_intern->search_domains($config_intern->get_domainSuffix());
+				// Search the corrct domain in array
+				unset($account_new->smb_domain);
+				$i = 0;
+				while (!is_object($account_new->smb_domain) && isset($samba3domains[$i])) {
+					if ($_POST['f_smb_domain'] == $samba3domains[$i]->name)
+						$account_new->smb_domain = $samba3domains[$i];
+					else $i++;
 					}
+				}
+			// Samba 2.2 uses only a string as domainname
+			else {
+				$account_new->smb_domain = $_POST['f_smb_domain'];
+				// Check if Domain-name is OK
+				if ((!$account_new->smb_domain=='') && !ereg('^([a-z]|[A-Z]|[0-9]|[-])+$', $account_new->smb_domain))
+					$errors[] = array('ERROR', _('Domain name'), _('Domain name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and -.'));
+				}
+			// Reset password if reset button was pressed. Button only vissible if account should be modified
+			if ($_POST['respass']) {
+				$account_new->unix_password_no=true;
+				$account_new->smb_password_no=true;
+				}
 			}
-		else {
-			$account_new->smb_domain = $_POST['f_smb_domain'];
-			}
-		// Check if values are OK and set automatic values. if not error-variable will be set
-		if (($account_new->smb_displayName=='') && isset($account_new->general_gecos)) {
-			$account_new->smb_displayName = $account_new->general_gecos;
-			$errors[] = array('INFO', _('Display name'), _('Inserted gecos-field as display name.'));
+		// Check Objectclasses. Display Warning if objectclasses don'T fot
+		if (isset($account_old->general_objectClass)) {
+			if (!in_array('posixAccount', $account_old->general_objectClass)) $errors[] = array('WARN', _('ObjectClass posixAccount not found.'), _('Have to add objectClass posixAccount.'));
+			if (!in_array('shadowAccount', $account_old->general_objectClass)) $errors[] = array('WARN', _('ObjectClass shadowAccount not found.'), _('Have to add objectClass shadowAccount.'));
+			if ($config_intern->is_samba3()) {
+				if (!in_array('sambaSamAccount', $account_old->general_objectClass)) $errors[] = array('WARN', _('ObjectClass sambaSamAccount not found.'), _('Have to add objectClass sambaSamAccount. Host with sambaAccount will be updated.'));
+				}
+			else if (!in_array('sambaAccount', $account_old->general_objectClass)) $errors[] = array('WARN', _('ObjectClass sambaAccount not found.'), _('Have to add objectClass sambaSamAccount. Host with sambaSamAccount will be set back to sambaAccount.'));
 			}
 
-		if ((!$account_new->smb_domain=='') && !ereg('^([a-z]|[A-Z]|[0-9]|[-])+$', $account_new->smb_domain))
-			$errors[] = array('ERROR', _('Domain name'), _('Domain name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and -.'));
-
-		// Reset password if reset button was pressed. Button only vissible if account should be modified
-		if ($_POST['respass']) {
-			$account_new->unix_password_no=true;
-			$account_new->smb_password_no=true;
-			$select_local = 'samba';
-			}
 		break;
-	case 'final':
-		$select_local = 'final';
-		break;
-
 	case 'finish':
 		// Check if pdf-file should be created
 		if ($_POST['outputpdf']) {
@@ -197,49 +215,35 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 			die;
 			}
 		break;
-
 	}
 
 
 do { // X-Or, only one if() can be true
-	if ($_POST['next_general']) {
-		if (!is_array($errors)) $select_local='general';
-			else $select_local=$_POST['select'];
-		break;
-		}
-	if ($_POST['next_samba']) {
-		if (!is_array($errors)) $select_local='samba';
-			else $select_local=$_POST['select'];
-		break;
-		}
-	if ($_POST['next_final']) {
-		if (!is_array($errors)) $select_local='final';
-			else $select_local=$_POST['select'];
-		break;
-		}
+	// Reset account to original settings if undo-button was pressed
 	if ($_POST['next_reset']) {
 		$account_new = $account_old;
-		$account_new->unix_password='';
-		$account_new->smb_password='';
-		$account_new->smb_flagsW = 0;
 		$account_new->general_dn = substr($account_new->general_dn, strpos($account_new->general_dn, ',')+1);
-		$select_local = $_POST['select'];
 		break;
 		}
-	if ( $_POST['create'] ) { // Create-Button was pressed
+	// Create-Button was pressed
+	if ( $_POST['create'] && !isset($errors)) {
 		// Create or modify an account
 		if ($account_old) $result = modifyhost($account_new,$account_old);
 		 else $result = createhost($account_new); // account.inc
-		if ( $result==1 || $result==3 ) $select_local = 'finish';
-		 else $select_local = 'final';
+		if ($result==5 || $result==4) $select_local = 'general';
+		 else $select_local = 'finish';
 		}
+	// Back to main-page
 	if ($_POST['createagain']) {
 		$select_local='general';
+		unset ($_SESSION['account_'.$varkey.'_account_new']);
 		unset($account_new);
-		$account_new = loadHostProfile('default');
+		$_SESSION['account_'.$varkey.'_account_new'] = loadHostProfile('default');
+		$account_new =& $_SESSION['account_'.$varkey.'_account_new'];
 		$account_new ->type = 'host';
 		break;
 		}
+	// Load Profile and reset all attributes to settings in profile
 	if ($_POST['load']) {
 		$account_new->general_dn = $_POST['f_general_suffix'];
 		$account_new->general_username = $_POST['f_general_username'];
@@ -252,17 +256,21 @@ do { // X-Or, only one if() can be true
 			while (list($key, $val) = each($values)) // Set only defined values
 				if (isset($val)) $account_new->$key = $val;
 			}
-		// select general page after group has been loaded
-		$select_local='general';
+		$errors[] = array('INFO', _('Load profile'), _('Profile loaded.'));
 		break;
 		}
+	// Save Profile
 	if ($_POST['save']) {
 		// save profile
-		saveHostProfile($account_new, $_POST['f_finish_safeProfile']);
-		// select last page displayed before user is created
-		$select_local='final';
+		if ($_POST['f_finish_safeProfile']=='')
+			$errors[] = array('ERROR', _('Save profile'), _('No profilename given.'));
+		else {
+			saveHostProfile($account_new, $_POST['f_finish_safeProfile']);
+			$errors[] = array('INFO', _('Save profile'), _('New profile created.'));
+			}
 		break;
 		}
+	// Go back to listhosts.php
 	if ($_POST['backmain']) {
 		metaRefresh("../lists/listhosts.php");
 		if (isset($_SESSION['account_'.$varkey.'_account_new'])) unset($_SESSION['account_'.$varkey.'_account_new']);
@@ -270,8 +278,11 @@ do { // X-Or, only one if() can be true
 		die;
 		break;
 		}
-	if (!$select_local) $select_local='general';
 	} while(0);
+// Display main page if nothing else was selected
+if (!isset($select_local)) $select_local = 'general';
+
+
 
 // Write HTML-Header
 echo $header_intern;
@@ -285,21 +296,19 @@ echo "</title>\n".
 	"<form action=\"hostedit.php\" method=\"post\">\n".
 	"<input name=\"varkey\" type=\"hidden\" value=\"".$varkey."\">\n";
 
+// Display errir-messages
 if (is_array($errors))
 	for ($i=0; $i<sizeof($errors); $i++) StatusMessage($errors[$i][0], $errors[$i][1], $errors[$i][2]);
 
-
 // print_r($account_new);
 
-
-switch ($select_local) { // Select which part of page will be loaded
-	// general = startpage, general account paramters
-	// unix = page with all shadow-options and password
-	// samba = page with all samba-related parameters e.g. smbpassword
-	// quota = page with all quota-related parameters e.g. hard file quota
-	// personal = page with all personal-related parametergs, e.g. phone number
-	// final = last page shown before account is created/modified
-	//		if account is modified commands might be ran are shown
+/* Select which part of page will be loaded
+* Because hosts have very less settings all are
+* on a single page. Only success-message is on a
+* different page
+*/
+switch ($select_local) {
+	// general = startpage, all account paramters
 	// finish = page shown after account has been created/modified
 	case 'general':
 		// General Account Settings
@@ -307,54 +316,88 @@ switch ($select_local) { // Select which part of page will be loaded
 		$groups = findgroups();
 		// load list of profiles
 		$profilelist = getHostProfiles();
+		// Get List of all domains
+		if ($config_intern->is_samba3()) $samba3domains = $ldap_intern->search_domains($config_intern->get_domainSuffix());
+
+		// Why this ?? fixme
+		if ($account_new->smb_password_no) echo '<input name="f_smb_password_no" type="hidden" value="1">';
+
+
 		// Show page info
 		echo '<input name="select" type="hidden" value="general">';
-		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
-		echo "<table><tr><td><fieldset class=\"hostedit-dark\"><legend class=\"hostedit-bright\"><b>";
-		echo _('Please select page:');
-		echo "</b></legend>\n";
-		echo "<input name=\"next_general\" type=\"submit\" disabled value=\""; echo _('General'); echo "\">\n<br>";
-		echo "<input name=\"next_samba\" type=\"submit\" value=\""; echo _('Samba'); echo "\">\n<br>";
-		echo "<input name=\"next_final\" type=\"submit\" value=\""; echo _('Final');
-		echo "\">";
-		if (isset($account_old)) {
-			echo "<br><br>";
-			echo _("Reset all changes.");
-			echo "<br>";
-			echo "<input name=\"next_reset\" type=\"submit\" value=\""; echo _('Undo');
-			echo "\">\n";
+		// Show fieldset with list of all host profiles
+		if (count($profilelist)!=0) {
+			echo "<fieldset class=\"hostedit-dark\"><legend class=\"hostedit-bright\"><b>";
+			echo _("Load profile");
+			echo "</b></legend>\n<table border=0 width=\"100%\">\n<tr>\n<td width=\"50%\">";
+			echo "<select name=\"f_general_selectprofile\" >";
+			foreach ($profilelist as $profile) echo "	<option>$profile</option>\n";
+			echo "</select></td><td width=\"30%\">\n".
+				"<input name=\"load\" type=\"submit\" value=\""; echo _('Load Profile');
+			echo "\"></td><td width=\"20\"><a href=\"../help.php?HelpNumber=421\" target=\"lamhelp\">";
+			echo _('Help')."</a></td>\n</tr>\n</table>\n</fieldset>\n";
 			}
-		echo "</fieldset></td></tr></table></td>\n<td>";
-		echo "<table border=0 width=\"100%\">\n<tr>\n<td>";
+		// Show Fieldset with all host settings
 		echo "<fieldset class=\"hostedit-bright\"><legend class=\"hostedit-bright\"><b>";
 		echo _("General properties");
-		echo "</b></legend>\n<table border=0 width=\"100%\">\n<tr>\n<td>";
+		echo "</b></legend>\n<table border=0 width=\"100%\">\n<tr>\n<td width=\"50%\">";
 		echo _('Host name').'*';
-		echo '</td>'."\n".'<td>'.
+		echo "</td>\n<td width=\"30%\">".
 			'<input name="f_general_username" type="text" size="20" maxlength="20" value="' . $account_new->general_username . '">'.
-			'</td><td>'.
+			"</td><td width=\"20%\">".
 			'<a href="../help.php?HelpNumber=410" target="lamhelp">'._('Help').'</a>'.
-			'</td></tr>'."\n".'<tr><td>';
+			"</td></tr>\n<tr><td>";
 		echo _('UID number');
-		echo '</td>'."\n".'<td>'.
+		echo "</td>\n<td>".
 			'<input name="f_general_uidNumber" type="text" size="6" maxlength="6" value="' . $account_new->general_uidNumber . '">'.
-			'</td>'."\n".'<td>'.
+			"</td>\n<td>".
 			'<a href="../help.php?HelpNumber=411" target="lamhelp">'._('Help').'</a>'.
-			'</td></tr>'."\n".'<tr><td>';
+			"</td></tr>\n<tr><td>";
 		echo _('Primary group').'*';
-		echo '</td>'."\n".'<td><select name="f_general_group">';
+		echo "</td>\n<td><select name=\"f_general_group\">";
 		foreach ($groups as $group) {
 			if ($account_new->general_group == $group) echo '<option selected>' . $group. '</option>';
 			else echo '<option>' . $group. '</option>';
 			 }
 		echo '</select></td><td>'.
 			'<a href="../help.php?HelpNumber=412" target="lamhelp">'._('Help').'</a>'.
-			'</td></tr>'."\n".'<tr><td>';
+			"</td></tr>\n<tr><td>";
 		echo _('Gecos');
 		echo '</td><td><input name="f_general_gecos" type="text" size="30" value="' . $account_new->general_gecos . '">'.
-			'</td>'."\n".'<td>'.
+			"</td>\n<td>".
 			'<a href="../help.php?HelpNumber=413" target="lamhelp">'._('Help').'</a>'.
 			'</td></tr><tr><td>';
+		echo _("Display name");
+		echo "</td>\n<td>".
+			"<input name=\"f_smb_displayName\" type=\"text\" size=\"30\" maxlength=\"50\" value=\"".$account_new->smb_displayName."\">".
+			"</td>\n<td><a href=\"../help.php?HelpNumber=420\" target=\"lamhelp\">"._('Help')."</a></td>\n</tr>\n<tr>\n<td>";
+		echo _('Password');
+		echo '</td><td>';
+		if (isset($account_old)) {
+			echo '<input name="respass" type="submit" value="';
+			echo _('Reset password'); echo '">';
+			}
+		echo "</td></tr>\n<tr><td>";
+		echo _('Domain');
+		if ($config_intern->is_samba3()) {
+			// Get Domain-name from domainlist when using samba 3
+			echo '</td><td><select name="f_smb_domain">';
+			for ($i=0; $i<sizeof($samba3domains); $i++) {
+				if ($account_new->smb_domain->name) {
+					if ($account_new->smb_domain->name == $samba3domains[$i]->name)
+						echo '<option selected>' . $samba3domains[$i]->name. '</option>';
+					else echo '<option>' . $samba3domains[$i]->name. '</option>';
+					}
+				else echo '<option>' . $samba3domains[$i]->name. '</option>';
+				}
+			echo '</select>';
+			}
+		else {
+			// Display a textfield for samba 2.2
+			echo '</td>'."\n".'<td><input name="f_smb_domain" type="text" size="20" maxlength="80" value="' . $account_new->smb_domain . '">';
+			}
+		echo	'</td>'."\n".'<td><a href="../help.php?HelpNumber=460" target="lamhelp">'._('Help').'</a></td></tr>'."\n<tr><td>";
+		// Display all allowed host suffixes
 		echo _('Suffix'); echo '</td><td><select name="f_general_suffix">';
 		foreach ($ldap_intern->search_units($config_intern->get_HostSuffix()) as $suffix) {
 			if ($account_new->general_dn) {
@@ -367,138 +410,35 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo '</select></td><td><a href="../help.php?HelpNumber=463" target="lamhelp">'._('Help').'</a>'.
 			"</td>\n</tr>\n</table>";
 		echo _('Values with * are required');
-		echo "</fieldset>\n</td></tr><tr><td>";
-		if (count($profilelist)!=0) {
-			echo "<fieldset class=\"hostedit-dark\"><legend class=\"hostedit-bright\"><b>";
-			echo _("Load profile");
-			echo "</b></legend>\n<table border=0 width=\"100%\">\n<tr>\n<td>";
-			echo "<select name=\"f_general_selectprofile\" >";
-			foreach ($profilelist as $profile) echo "	<option>$profile</option>\n";
-			echo "</select></td><td>\n".
-				"<input name=\"load\" type=\"submit\" value=\""; echo _('Load Profile');
-			echo "\"></td><td><a href=\"../help.php?HelpNumber=421\" target=\"lamhelp\">";
-			echo _('Help')."</a></td>\n</tr>\n</table>\n</fieldset>\n";
-			}
-		echo "</td></tr></table>\n</td></tr>\n</table>\n";
-		break;
-
-	case 'samba':
-		// Samba Settings
-		if ($config_intern->is_samba3()) $samba3domains = $ldap_intern->search_domains($config_intern->get_domainSuffix());
-		if ($account_new->smb_password_no) echo '<input name="f_smb_password_no" type="hidden" value="1">';
-		echo '<input name="select" type="hidden" value="samba">';
-		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
-		echo "<table><tr><td><fieldset class=\"hostedit-dark\"><legend class=\"hostedit-bright\"><b>";
-		echo _('Please select page:');
-		echo "</b></legend>\n";
-		echo "<input name=\"next_general\" type=\"submit\" value=\""; echo _('General'); echo "\">\n<br>";
-		echo "<input name=\"next_samba\" type=\"submit\" disabled value=\""; echo _('Samba'); echo "\">\n<br>";
-		echo "<input name=\"next_final\" type=\"submit\" value=\""; echo _('Final');
-		echo "\">";
-		if (isset($account_old)) {
-			echo "<br><br>";
-			echo _("Reset all changes.");
-			echo "<br>";
-			echo "<input name=\"next_reset\" type=\"submit\" value=\""; echo _('Undo');
-			echo "\">\n";
-			}
-		echo "</fieldset></td></tr></table></td>\n<td>";
-		echo "<table border=0 width=\"100%\"><tr><td><fieldset class=\"hostedit-bright\"><legend class=\"hostedit-bright\"><b>"._('Samba properties')."</b></legend>\n";
-		echo "<table border=0 width=\"100%\"><tr><td>";
-		echo _("Display name");
-		echo "</td>\n<td>".
-			"<input name=\"f_smb_displayName\" type=\"text\" size=\"30\" maxlength=\"50\" value=\"".$account_new->smb_displayName."\">".
-			"</td>\n<td><a href=\"../help.php?HelpNumber=420\" target=\"lamhelp\">"._('Help')."</a></td>\n</tr>\n<tr>\n<td>";
-		echo _('Password');
-		echo '</td><td>';
-		if (isset($account_old)) {
-			echo '<input name="respass" type="submit" value="';
-			echo _('Reset password'); echo '">';
-			}
-		echo '</td></tr>'."\n".'<tr><td>';
-		echo _('Domain');
-		if ($config_intern->is_samba3()) {
-				echo '</td><td><select name="f_smb_domain">';
-			for ($i=0; $i<sizeof($samba3domains); $i++) {
-				if ($account_new->smb_domain->name) {
-					if ($account_new->smb_domain->name == $samba3domains[$i]->name)
-						echo '<option selected>' . $samba3domains[$i]->name. '</option>';
-					else echo '<option>' . $samba3domains[$i]->name. '</option>';
-					}
-				else echo '<option>' . $samba3domains[$i]->name. '</option>';
-				}
-			echo '</select>';
-			}
-		else {
-			echo '</td>'."\n".'<td><input name="f_smb_domain" type="text" size="20" maxlength="80" value="' . $account_new->smb_domain . '">';
-			}
-		echo	'</td>'."\n".'<td><a href="../help.php?HelpNumber=460" target="lamhelp">'._('Help').'</a></td></tr>'."\n";
-		echo "</table>\n</fieldset>\n</td></tr></table></td></tr>\n</table>\n";
-		break;
-
-	case 'final':
-		// Final Settings
-		echo '<input name="select" type="hidden" value="final">';
-		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
-		echo "<table><tr><td><fieldset class=\"hostedit-dark\"><legend class=\"hostedit-bright\"><b>";
-		echo _('Please select page:');
-		echo "</b></legend>\n";
-		echo "<input name=\"next_general\" type=\"submit\" value=\""; echo _('General'); echo "\">\n<br>";
-		echo "<input name=\"next_samba\" type=\"submit\" value=\""; echo _('Samba'); echo "\">\n<br>";
-		echo "<input name=\"next_final\" type=\"submit\" disabled value=\""; echo _('Final');
-		echo "\">";
-		if (isset($account_old)) {
-			echo "<br><br>";
-			echo _("Reset all changes.");
-			echo "<br>";
-			echo "<input name=\"next_reset\" type=\"submit\" value=\""; echo _('Undo');
-			echo "\">\n";
-			}
-		echo "</fieldset></td></tr></table></td>\n<td>";
-		echo "<table border=0 width=\"100%\">\n<tr>\n<td>";
-		echo "<table border=0 width=\"100%\"><tr><td><fieldset class=\"hostedit-dark\"><legend class=\"hostedit-bright\"><b>";
+		echo "</fieldset>\n";
+		// Show fieldset where to save a new profile
+		echo "<fieldset class=\"hostedit-dark\"><legend class=\"hostedit-bright\"><b>";
 		echo _("Save profile");
-		echo "</b></legend>\n<table border=0 width=\"100%\">\n<tr>\n<td>";
+		echo "</b></legend>\n<table border=0 width=\"100%\">\n<tr>\n<td width=\"50%\">";
 		echo '<input name="f_finish_safeProfile" type="text" size="30" maxlength="50">';
-		echo '</td><td><input name="save" type="submit" value="';
+		echo '</td><td width=\"30%\"><input name="save" type="submit" value="';
 		echo _('Save profile');
-		echo '"></td><td><a href="../help.php?HelpNumber=457" target="lamhelp">'._('Help');
-		echo "</a></td>\n</tr>\n</table>\n</fieldset>\n</td></tr>\n<tr><td>\n";
+		echo '"></td><td width="20%"><a href="../help.php?HelpNumber=457" target="lamhelp">'._('Help');
+		echo "</a></td>\n</tr>\n</table>\n</fieldset>";
+		// Show fieldset with modify, undo and back-button
 		echo "<fieldset class=\"hostedit-bright\"><legend class=\"hostedit-bright\"><b>";
 		if ($account_old) echo _('Modify');
 		 else echo _('Create');
 		echo "</b></legend>\n";
-		echo "<table border=0 width=\"100%\"><tr><td>";
-		if (isset($account_old->general_objectClass)) {
-			if (!in_array('posixAccount', $account_old->general_objectClass)) {
-				echo '<tr>';
-				StatusMessage('WARN', _('ObjectClass posixAccount not found.'), _('Have to add objectClass posixAccount.'));
-				echo "</tr>\n";
-				}
-			if (!in_array('shadowAccount', $account_old->general_objectClass)) {
-				echo '<tr>';
-				StatusMessage('WARN', _('ObjectClass shadowAccount not found.'), _('Have to add objectClass shadowAccount.'));
-				echo "</tr>\n";
-				}
-			if ($config_intern->is_samba3()) {
-				if (!in_array('sambaSamAccount', $account_old->general_objectClass)) {
-					echo '<tr>';
-					StatusMessage('WARN', _('ObjectClass sambaSamAccount not found.'), _('Have to add objectClass sambaSamAccount. Host with sambaAccount will be updated.'));
-					echo "</tr>\n";
-					}}
-				else
-				if (!in_array('sambaAccount', $account_old->general_objectClass)) {
-					echo '<tr>';
-					StatusMessage('WARN', _('ObjectClass sambaAccount not found.'), _('Have to add objectClass sambaSamAccount. Host with sambaSamAccount will be set back to sambaAccount.'));
-					echo "</tr>\n";
-					}
+		echo "<table border=0 width=\"100%\"><tr><td width=\"50%\">";
+		// display undo-button when editiing a host
+		if (isset($account_old)) {
+			echo "<input name=\"next_reset\" type=\"submit\" value=\""; echo _('Undo changes');
+			echo "\">\n";
 			}
+		echo "</td>\n<td width=\"30%\"></td><td width=\"20%\">";
 		echo '<input name="create" type="submit" value="';
 		if ($account_old) echo _('Modify Account');
 		 else echo _('Create Account');
 		echo '">'."\n";
-		echo "</td></tr></table></fieldset>\n</td></tr></table></td></tr></table>\n</tr></table>";
+		echo "</td></tr></table></fieldset>\n";
 		break;
+
 	case 'finish':
 		// Final Settings
 		echo '<input name="select" type="hidden" value="finish">';

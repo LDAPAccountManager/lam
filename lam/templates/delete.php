@@ -215,6 +215,7 @@ if ($_POST['delete_yes']) {
 
 if ($_POST['delete_no']) {
 	// Delete no accounts
+	echo '<input name="type" type="hidden" value="'.$_POST['type'].'">';
 	switch ($_POST['type']) {
 		// Select which page should be displayd if back-button will be pressed
 		case 'user':

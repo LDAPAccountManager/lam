@@ -251,12 +251,11 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 			if ($account_new->general_username != $_POST['f_general_username']) $errors[] = array('WARN', _('Username'), _('Username in use. Selected next free username.'));
 
 			// Check if UID is valid. If none value was entered, the next useable value will be inserted
-			$account_new->general_uidNumber = checkid($account_new, $account_old);
-			if (is_string($account_new->general_uidNumber)) { // true if checkid has returned an error
-				$errors[] = array('ERROR', _('ID-Number'), $account_new->general_uidNumber);
-				if (isset($account_old)) $account_new->general_uidNumber = $account_old->general_uidNumber;
-				else unset($account_new->general_uidNumber);
-				}
+			$temp = explode(':', checkid($account_new, $account_old));
+			$account_new->general_uidNumber = $temp[0];
+			// true if checkid has returned an error
+			if ($temp[1]!='') $errors[] = explode(';',$temp[1]);
+
 			// Check if Name-length is OK. minLength=3, maxLength=20
 			if ( !ereg('.{3,20}', $account_new->general_username)) $errors[] = array('ERROR', _('Name'), _('Name must contain between 3 and 20 characters.'));
 			// Check if Name starts with letter
