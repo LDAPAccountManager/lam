@@ -66,7 +66,7 @@ if (($_GET['action'] == "edit") || ($_GET['action'] == "new")) {
 	echo "</head>\n";
 	echo "<body>\n";
 	// print message, if needed
-	if ($_SESSION['domain_message']) echo "<p><font color=\"red\"><b>" . $_SESSION['domain_message'] . "</b></font></p><p>&nbsp;</p>";
+	if ($_SESSION['domain_message']) StatusMessage("INFO", $_SESSION['domain_message'], "");
 		// print fieldset
 		echo "<form action=\"domain.php\" method=\"post\">\n";
 		echo "<p>&nbsp;</p>\n";
