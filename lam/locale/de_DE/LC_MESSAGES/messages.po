@@ -1,4 +1,4 @@
-# $Id: messages.po,v 1.16 2003/09/06 12:14:26 gruberroland Exp $
+# $Id: messages.po,v 1.17 2003/09/07 10:15:35 gruberroland Exp $
 #
 #
 # LDAP Account Manager
@@ -243,7 +243,7 @@ msgstr ""
 msgid "Cannot open config file!"
 msgstr "Kann Konfigurationsdatei nicht öffnen!"
 
-#: ../lib/pdf.inc:213
+#: ../lib/pdf.inc:88
 msgid "Cellular phone"
 msgstr "Mobiltelefon"
 
@@ -595,7 +595,7 @@ msgstr "Domänen"
 msgid "Driveletter assigned on windows workstations as homedirectory."
 msgstr "Laufwerksbuchstabe, der als Heimatverzeichnis zugewiesen wird."
 
-#: ../lib/ldap.inc:64 ../lib/pdf.inc:205
+#: ../lib/ldap.inc:64 ../lib/pdf.inc:80
 msgid "E-Mail"
 msgstr "E-Mail"
 
@@ -654,7 +654,7 @@ msgstr "Beispiele"
 msgid "Expire date"
 msgstr "Ablaufdatum"
 
-#: ../lib/pdf.inc:217
+#: ../lib/pdf.inc:92
 msgid "Facsimile"
 msgstr "Fax"
 
@@ -710,10 +710,6 @@ msgstr ""
 msgid "Gecos"
 msgstr "Beschreibung"
 
-#: ../lib/pdf.inc:54
-msgid "General User Settings"
-msgstr "Allgemeine Einstellungen"
-
 #: ../templates/account.php:440
 msgid "General properties"
 msgstr "Allgemeine Eigenschaften"
@@ -724,7 +720,7 @@ msgstr "Passwort generieren"
 
 #: ../templates/account.php:466 ../templates/masscreate.php:178
 #: ../templates/masscreate.php:245 ../templates/massdetail.php:108
-#: ../help/help.inc:171 ../lib/account.inc:185 ../lib/pdf.inc:61
+#: ../help/help.inc:171 ../lib/account.inc:185 ../lib/pdf.inc:64
 msgid "Given name"
 msgstr "Vorname"
 
@@ -788,7 +784,7 @@ msgstr "Gruppenmitglieder"
 msgid "Group name"
 msgstr "Gruppenname"
 
-#: ../lib/pdf.inc:73
+#: ../lib/pdf.inc:123
 msgid "Group(s)"
 msgstr "Gruppe(n)"
 
@@ -845,7 +841,7 @@ msgstr ""
 msgid "Groups"
 msgstr "Gruppen"
 
-#: ../lib/pdf.inc:181
+#: ../lib/pdf.inc:221
 msgid "Hard block"
 msgstr "hartes Block-Limit"
 
@@ -853,7 +849,7 @@ msgstr "hartes Block-Limit"
 msgid "Hard block limit"
 msgstr "hartes Block-Limit"
 
-#: ../lib/pdf.inc:182
+#: ../lib/pdf.inc:222
 msgid "Hard inode"
 msgstr "hartes Inode-Limit"
 
@@ -965,7 +961,7 @@ msgstr "Hilfe"
 msgid "Hold the CTRL-key to (de)select multiple groups."
 msgstr "Halten Sie Strg gedrückt um mehrere Gruppen zu markieren."
 
-#: ../templates/profedit/profileuser.php:112 ../lib/pdf.inc:69
+#: ../templates/profedit/profileuser.php:112 ../lib/pdf.inc:132
 msgid "Home Directory"
 msgstr "Home Verzeichnis"
 
@@ -983,7 +979,7 @@ msgid "Home directory"
 msgstr "Heimatverzeichnis"
 
 #: ../templates/account.php:813 ../templates/profedit/profileuser.php:264
-#: ../help/help.inc:187 ../lib/pdf.inc:142
+#: ../help/help.inc:187 ../lib/pdf.inc:182
 msgid "Home drive"
 msgstr "Heimatlaufwerk"
 
@@ -1306,15 +1302,15 @@ msgstr "Profil laden"
 msgid "Login"
 msgstr "Login"
 
-#: ../lib/pdf.inc:82
-msgid "Login Shell(s)"
-msgstr ""
+#: ../lib/pdf.inc:136
+msgid "Login Shell"
+msgstr "Login Shell"
 
-#: ../lib/pdf.inc:113
+#: ../lib/pdf.inc:146
 msgid "Login at host(s)"
 msgstr "Login für Host(s)"
 
-#: ../lib/pdf.inc:154
+#: ../lib/pdf.inc:194
 msgid "Login at workstation(s)"
 msgstr "Login auf Arbeitsstation(en)"
 
@@ -1440,7 +1436,7 @@ msgstr "Ändern"
 msgid "Modify Account"
 msgstr "Account ändern"
 
-#: ../templates/account.php:1019 ../help/help.inc:199 ../lib/pdf.inc:178
+#: ../templates/account.php:1019 ../help/help.inc:199 ../lib/pdf.inc:218
 msgid "Mountpoint"
 msgstr "Mountpunkt"
 
@@ -1596,7 +1592,7 @@ msgstr "Keine primäre Gruppe angegeben!"
 msgid "No type specified!"
 msgstr "Kein Typ angegeben!"
 
-#: ../lib/pdf.inc:193
+#: ../lib/pdf.inc:233
 msgid "No user quotas defined or no quota support by filesystem."
 msgstr ""
 "Keine Benutzerquotas definiert oder keine Quotaunterstützung aktiviert."
@@ -1722,7 +1718,7 @@ msgstr ""
 msgid "Password does not expire"
 msgstr "Passwort läuft nicht ab"
 
-#: ../templates/account.php:660 ../help/help.inc:161 ../lib/pdf.inc:109
+#: ../templates/account.php:660 ../help/help.inc:161 ../lib/pdf.inc:142
 msgid "Password expire"
 msgstr "Passwortablauf"
 
@@ -1795,15 +1791,15 @@ msgstr ""
 msgid "Path to external script"
 msgstr "Pfad zum externen Script"
 
-#: ../lib/pdf.inc:198
-msgid "Personal User Settings"
-msgstr "Persönliche Einstellungen"
+#: ../lib/pdf.inc:53
+msgid "Personal User Infos"
+msgstr "Persönliche Informationen"
 
 #: ../templates/account.php:1049
 msgid "Personal properties"
 msgstr "Persönliche Einstellungen"
 
-#: ../lib/pdf.inc:209
+#: ../lib/pdf.inc:84
 msgid "Phone"
 msgstr "Telefon"
 
@@ -1901,7 +1897,7 @@ msgstr "Position im LDAP-Baum, wo der Benutzer erstellt werden soll."
 
 #: ../templates/account.php:1075 ../templates/masscreate.php:265
 #: ../templates/massdetail.php:150 ../help/help.inc:231 ../lib/account.inc:448
-#: ../lib/pdf.inc:229
+#: ../lib/pdf.inc:76
 msgid "Postal address"
 msgstr "Anschrift"
 
@@ -1911,7 +1907,7 @@ msgstr ""
 
 #: ../templates/account.php:1069 ../templates/masscreate.php:263
 #: ../templates/massdetail.php:144 ../help/help.inc:229 ../help/help.inc:230
-#: ../lib/account.inc:451 ../lib/pdf.inc:225
+#: ../lib/account.inc:451 ../lib/pdf.inc:72
 msgid "Postal code"
 msgstr "Postleitzahl"
 
@@ -1968,7 +1964,7 @@ msgstr "Die Passwörter stimmen nicht überein!"
 
 #: ../templates/account.php:825 ../templates/profedit/profileuser.php:302
 #: ../help/help.inc:191 ../lib/account.inc:360 ../lib/account.inc:362
-#: ../lib/account.inc:376 ../lib/pdf.inc:150
+#: ../lib/account.inc:376 ../lib/pdf.inc:190
 msgid "Profile path"
 msgstr "Profilpfad"
 
@@ -1981,7 +1977,7 @@ msgstr "Profilpfad ist ungültig!"
 msgid "Profile was saved."
 msgstr "Profil wurde gespeichert."
 
-#: ../lib/pdf.inc:171
+#: ../lib/pdf.inc:211
 msgid "Quota Settings"
 msgstr "Quota-Einstellungen"
 
@@ -2050,10 +2046,6 @@ msgstr "Samba 3 Domänen-SID ist ungültig!"
 msgid "Samba 3.x schema"
 msgstr "Samba 3.x Schema"
 
-#: ../lib/pdf.inc:162
-msgid "Samba Domain"
-msgstr "Samba-Domäne"
-
 #: ../templates/lists/listdomains.php:231
 msgid "Samba Domain(s) found"
 msgstr "Samba-Domäne(n) gefunden"
@@ -2070,33 +2062,17 @@ msgstr "Samba Host(s) gefunden"
 msgid "Samba Hosts"
 msgstr "Samba Hosts"
 
-#: ../lib/pdf.inc:119
-msgid "Samba User Settings"
-msgstr "Samba-Einstellungen"
-
 #: ../templates/profedit/profileuser.php:226
 msgid "Samba account"
 msgstr "Samba Account"
-
-#: ../lib/pdf.inc:158
-msgid "Samba home directory"
-msgstr "Samba-Heimatverzeichnis"
 
 #: ../templates/profedit/profilecreate.php:188
 msgid "Samba home directory is invalid!"
 msgstr "Samba-Heimatverzeichnis ist ungültig!"
 
-#: ../templates/account.php:748 ../lib/pdf.inc:122
+#: ../templates/account.php:748
 msgid "Samba password"
 msgstr "Samba-Passwort"
-
-#: ../lib/pdf.inc:125
-msgid "Samba password disabled!"
-msgstr "Samba-Passwort deaktiviert!"
-
-#: ../lib/pdf.inc:129
-msgid "Samba password set to unix password."
-msgstr "Unix-Passwort für Samba verwenden"
 
 #: ../templates/account.php:725
 msgid "Samba properties"
@@ -2133,7 +2109,7 @@ msgstr "Profil speichern"
 
 #: ../templates/account.php:830 ../templates/profedit/profileuser.php:309
 #: ../help/help.inc:84 ../help/help.inc:189 ../lib/account.inc:356
-#: ../lib/account.inc:358 ../lib/account.inc:373 ../lib/pdf.inc:146
+#: ../lib/account.inc:358 ../lib/account.inc:373 ../lib/pdf.inc:186
 msgid "Script path"
 msgstr "Scriptpfad"
 
@@ -2219,7 +2195,7 @@ msgstr "Informationen zeigen."
 msgid "Show Warnings."
 msgstr "Warnungen zeigen."
 
-#: ../lib/pdf.inc:179
+#: ../lib/pdf.inc:219
 msgid "Soft block"
 msgstr "weiches Block-Limit"
 
@@ -2231,7 +2207,7 @@ msgstr "weiches Block-Limit"
 msgid "Soft block limit."
 msgstr "weiches Block-Limit"
 
-#: ../lib/pdf.inc:180
+#: ../lib/pdf.inc:220
 msgid "Soft inode"
 msgstr "weiches Inode-Limit"
 
@@ -2249,7 +2225,7 @@ msgstr "Leider wurde keine Hilfenummer angegeben."
 
 #: ../templates/account.php:1063 ../templates/masscreate.php:261
 #: ../templates/massdetail.php:138 ../help/help.inc:227 ../help/help.inc:228
-#: ../lib/account.inc:447 ../lib/pdf.inc:221
+#: ../lib/account.inc:447 ../lib/pdf.inc:68
 msgid "Street"
 msgstr "Straße"
 
@@ -2278,7 +2254,7 @@ msgstr "Suffix"
 
 #: ../templates/account.php:460 ../templates/masscreate.php:178
 #: ../templates/masscreate.php:243 ../templates/massdetail.php:102
-#: ../help/help.inc:169 ../lib/account.inc:187 ../lib/pdf.inc:57
+#: ../help/help.inc:169 ../lib/account.inc:187 ../lib/pdf.inc:60
 msgid "Surname"
 msgstr "Nachname"
 
@@ -2370,7 +2346,7 @@ msgstr ""
 "Benutzer erstellt werden. Neue Benutzer bekommen die immer die höchste "
 "verwendete Zahl plus 1."
 
-#: ../lib/pdf.inc:262
+#: ../lib/pdf.inc:267
 msgid "This document was automatically created by LDAP Account Manager"
 msgstr "Dieses Dokument wurde von LDAP Account Manager erstellt."
 
@@ -2460,7 +2436,7 @@ msgstr "Dies löscht die markierte Organizational Unit. Die OU muss leer sein."
 
 #: ../templates/account.php:1051 ../templates/masscreate.php:251
 #: ../templates/massdetail.php:126 ../help/help.inc:223 ../lib/account.inc:449
-#: ../lib/pdf.inc:201
+#: ../lib/pdf.inc:56
 msgid "Title"
 msgstr "Titel"
 
@@ -2560,7 +2536,7 @@ msgstr "Kann das Profil nicht speichern!"
 msgid "Undo"
 msgstr "Rückgängig"
 
-#: ../lib/pdf.inc:90
+#: ../lib/pdf.inc:99
 msgid "Unix User Settings"
 msgstr "Unix-Einstellungen"
 
@@ -2568,11 +2544,11 @@ msgstr "Unix-Einstellungen"
 msgid "Unix account"
 msgstr "Unix-Account"
 
-#: ../lib/pdf.inc:93
+#: ../lib/pdf.inc:108 ../lib/pdf.inc:118
 msgid "Unix password"
 msgstr "Unix-Passwort"
 
-#: ../lib/pdf.inc:96
+#: ../lib/pdf.inc:110
 msgid "Unix password disabled!"
 msgstr "Unix-Passwort deaktiviert!"
 
@@ -2652,7 +2628,7 @@ msgstr "Benutzer kann Passwort ändern"
 msgid "User description. If left empty sur- and give name will be used."
 msgstr "Benutzerbeschreibung, falls leer wird Vor- und Nachname verwendet."
 
-#: ../lib/pdf.inc:43 ../lib/pdf.inc:249
+#: ../lib/pdf.inc:43 ../lib/pdf.inc:254
 msgid "User information page"
 msgstr "Benutzerinformationen"
 
@@ -2672,7 +2648,7 @@ msgstr "Benutzer muss Passwort ändern"
 msgid "User name"
 msgstr "Benutzername"
 
-#: ../lib/pdf.inc:174
+#: ../lib/pdf.inc:214
 msgid "User quota(s)"
 msgstr "Benutzer Quota"
 
@@ -2695,7 +2671,8 @@ msgstr "UserSuffix ist ungültig!"
 #: ../templates/account.php:448 ../templates/login.php:121
 #: ../templates/masscreate.php:247 ../templates/masscreate.php:356
 #: ../templates/massdetail.php:114 ../help/help.inc:125 ../lib/account.inc:195
-#: ../lib/account.inc:227 ../lib/ldap.inc:58 ../lib/pdf.inc:65
+#: ../lib/account.inc:227 ../lib/ldap.inc:58 ../lib/pdf.inc:102
+#: ../lib/pdf.inc:155
 msgid "Username"
 msgstr "Benutzername"
 
@@ -2763,6 +2740,18 @@ msgstr ""
 "Wenn Sie ldaps:// verwenden stellen Sie sicher, dass Sie genau die selbe IP/"
 "Domäne wie in ihrem Zertifikat verwenden!"
 
+#: ../lib/pdf.inc:163
+msgid "Window password disabled!"
+msgstr "Windows-Passwort deaktiviert!"
+
+#: ../lib/pdf.inc:202
+msgid "Windows Domain"
+msgstr "Windows-Domäne"
+
+#: ../lib/pdf.inc:152
+msgid "Windows User Settings"
+msgstr "Windows-Einstellungen"
+
 #: ../help/help.inc:243
 msgid "Windows domain"
 msgstr "Windows-Domäne"
@@ -2775,6 +2764,18 @@ msgstr "Windows-Domäne des Hosts."
 #: ../help/help.inc:251
 msgid "Windows groupname"
 msgstr "Windows-Gruppenname"
+
+#: ../lib/pdf.inc:198
+msgid "Windows home directory"
+msgstr "Windows-Heimatverzeichnis"
+
+#: ../lib/pdf.inc:161 ../lib/pdf.inc:167 ../lib/pdf.inc:177
+msgid "Windows password"
+msgstr "Windows-Passwort"
+
+#: ../lib/pdf.inc:169
+msgid "Windows password set to unix password."
+msgstr "Unix-Passwort für Windows verwenden"
 
 #: ../help/help.inc:256
 msgid "Windows-Domain of group."
@@ -2789,8 +2790,8 @@ msgid "Workstations"
 msgstr "Arbeitsstationen"
 
 #: ../templates/login.php:271
-msgid "Wrong Password/Username  combination. Try again."
-msgstr ""
+msgid "Wrong Password/Username combination. Try again."
+msgstr "Falsche Benutzername/Passwort-Kombination. Bitte erneut eingeben."
 
 #: ../templates/profedit/profiledelete.php:67
 #: ../templates/profedit/profiledelete.php:112
@@ -2844,10 +2845,6 @@ msgstr "Sie wurden vom LDAP Account Manager abgemeldet."
 #: ../templates/login.php:169
 msgid "Your Language"
 msgstr "Sprache"
-
-#: ../lib/pdf.inc:100 ../lib/pdf.inc:133
-msgid "[Empty password string]"
-msgstr "[Leeres Passwort]"
 
 #: ../help/help.inc:130 ../help/help.inc:146 ../help/help.inc:154
 msgid "and"
