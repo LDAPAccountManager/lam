@@ -28,7 +28,7 @@ include_once("../lib/config.inc"); // Include config.inc which provides Config c
 session_save_path("../sess"); // Set session save path
 @session_start(); // Start LDAP Account Manager session
 
-function display_LoginPage($config_object)
+function display_LoginPage($config_object,$profile)
 {
 	global $error_message;
 	// generate 256 bit key and initialization vector for user/passwd-encryption
@@ -40,7 +40,11 @@ function display_LoginPage($config_object)
 	setcookie("IV", base64_encode($iv), 0, "/");
 
 	session_register("language");
-	$_SESSION["language"] = $config_object->get_defaultLanguage();
+	$_SESSION['language'] = $config_object->get_defaultLanguage();
+
+	session_register("header");
+	$language = explode(":",$_SESSION['language']);
+	$_SESSION['header'] = "<?xml version=\"1.0\" encoding=\"" . $language[3] . "\"?>\n<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n\n";
 
 	// loading available languages from language.conf file
 	$languagefile = "../config/language";
@@ -76,8 +80,7 @@ function display_LoginPage($config_object)
 
 	setlanguage(); // setting correct language
 
-	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">
-
+	echo $_SESSION["header"] . "
 		<html>
 			<head>
 				<title>
@@ -100,20 +103,6 @@ function display_LoginPage($config_object)
 				</tr>
 			</table>
 			<hr><br><br>
-			<form action=\"" . $PHP_SELF . "\" method=\"post\" enctype=\"plain/text\">
-				<input type=\"hidden\" name=\"action\" value=\"profileChange\">
-				<p align=\"center\">
-					<select name=\"profile\" size=\"1\">";
-	for($i=0;$i<count($profiles);$i++) {
-		echo "			<option value=\"" . $profiles[$i] . "\">" . $profiles[$i] . "</option>";
-	}
-	echo "			</select>
-					<input type=\"submit\" value=\"";
-	echo _("Change Profile");
-	echo "\">
-				</p>
-			</form>
-			<br><br>
 			<p align=\"center\"><b>";
 			echo _("Enter Username and Password for Account:");
 	echo "
@@ -200,7 +189,7 @@ function display_LoginPage($config_object)
 							</td>
 						</tr>
 					</table>
-					<br><br><br>
+					<br><br>
 					<table width=\"345\" align=\"center\" bgcolor=\"#C7E7C7\" border=\"0\">
 						<tr>
 							<td width=\"100%\" align=\"center\">";
@@ -211,6 +200,26 @@ function display_LoginPage($config_object)
 								</b></td>
 						</tr>
 					</table>
+				</form>
+				<br><br>
+				<form action=\"" . $PHP_SELF . "\" method=\"post\" enctype=\"plain/text\">
+					<input type=\"hidden\" name=\"action\" value=\"profileChange\">
+					<p align=\"center\">";
+	echo _("You are currently using Profile: ");
+	if(!$_POST['profile']) {
+		$_POST['profile'] = $profile;
+	}
+	echo "<b>" . $_POST['profile'] . "</b>";
+	echo "
+					<br><select name=\"profile\" size=\"1\">";
+	for($i=0;$i<count($profiles);$i++) {
+		echo "			<option value=\"" . $profiles[$i] . "\">" . $profiles[$i] . "</option>";
+	}
+	echo "			</select>
+					<input type=\"submit\" value=\"";
+	echo _("Change Profile");
+	echo "\">
+					</p>
 				</form>
 			</body>
 		</html>";
@@ -225,14 +234,17 @@ if($_POST['action'] == "checklogin")
 	if($_POST['passwd'] == "")
 	{
 		$error_message = _("Empty Password submitted. Try again.");
-		display_LoginPage($_SESSION['config']); // Empty password submitted. Return to login page.
+		display_LoginPage($_SESSION['config'],""); // Empty password submitted. Return to login page.
 	}
 	else
 	{
 		$result = $ldap->connect($_POST['username'],$_POST['passwd']); // Connect to LDAP server for verifing username/password
 		if($result == True) // Username/password correct. Do some configuration and load main frame.
 		{
-			$_SESSION["language"] = $_POST["language"]; // Write selected language in session
+			$_SESSION['language'] = $_POST['language']; // Write selected language in session
+			$language = explode(":",$_SESSION['language']);
+			$_SESSION['header'] = "<?xml version=\"1.0\" encoding=\"" . $language[3] . "\"?>\n<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n\n";
+
 			session_register("ldap"); // Register $ldap object in session
 
 			include("./main.php"); // Load main frame
@@ -242,12 +254,12 @@ if($_POST['action'] == "checklogin")
 			if($ldap->server)
 			{
 				$error_message = _("Wrong Password/Username  combination. Try again.");
-				display_LoginPage($_SESSION['config']); // Username/password invalid. Return to login page.
+				display_LoginPage($_SESSION['config'],""); // Username/password invalid. Return to login page.
 			}
 			else
 			{
 				$error_message = _("Cannot connect to specified LDAP-Server. Try again.");
-				display_LoginPage($_SESSION['config']); // Username/password invalid. Return to login page.
+				display_LoginPage($_SESSION['config'],""); // Username/password invalid. Return to login page.
 			}
 		}
 	}
@@ -256,7 +268,7 @@ if($_POST['action'] == "checklogin")
 elseif($_POST['action'] == "profileChange") {
 	$config = new Config($_POST['profile']); // Recreate the config object with the submited profile
 
-	display_LoginPage($config); // Load login page
+	display_LoginPage($config,""); // Load login page
 }
 // Load login page
 else
@@ -265,8 +277,9 @@ else
 
 	$default_Config = new CfgMain();
 	$default_Profile = $default_Config->default;
-	$config = new Config($default_Profile); // Create new Config object
+	//echo "default_Profile=" . $default_Profile . "<br>";
+	$_SESSION["config"] = new Config($default_Profile); // Create new Config object
 
-	display_LoginPage($config); // Load Login page
+	display_LoginPage($_SESSION["config"],$default_Profile); // Load Login page
 }
 ?>
