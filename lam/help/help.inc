@@ -143,7 +143,8 @@ $helpArray = array (
 					 Warning: Older systems have problems with usernames longer than 8 characters. You can't log in to Windows if username is longer than 16
 					 characters.")),
 				"401" => array ("ext" => "FALSE", "Headline" => _("UID number"),
-					"Text" => _("If empty UID number will be generated automaticly. Valid values are between").' '.$_SESSION['config']->get_minUID().' '._("and").' '.$_SESSION['config']->get_maxUID()."."),
+					"Text" => _("If empty UID number will be generated automaticly. Valid values are between %s and %s."),
+					"variables" => array($_SESSION['config']->get_minUID(), $_SESSION['config']->get_maxUID())),
 				"402" => array ("ext" => "FALSE", "Headline" => _("Additional groups"),
 					"Text" => _("Hold the CTRL-key to (de)select multiple groups."). ' '. _("Can be left empty.")),
 				"403" => array ("ext" => "FALSE", "Headline" => _("Home directory"),
@@ -159,7 +160,8 @@ $helpArray = array (
 					 character because groupadd also does not allow it. Lam doesn't allow capital letters A-Z because it
 					 can cause several problems. If groupname is allready used username will expanded with a number. The next free number will be used.")),
 				"408" => array ("ext" => "FALSE", "Headline" => _("GID number"),
-					"Text" => _("If empty GID number will be generated automaticly. Valid values are between").' '.$_SESSION['config']->get_minGID().' '._("and").' '.$_SESSION['config']->get_maxGID()."."),
+					"Text" => _("If empty GID number will be generated automaticly. Valid values are between %s and %s."),
+					"variables" => array($_SESSION['config']->get_minGID(), $_SESSION['config']->get_maxGID())),
 				"409" => array ("ext" => "FALSE", "Headline" => _("Gecos"),
 					"Text" => _("Group description. If left empty group name will be used.")),
 				"410" => array ("ext" => "FALSE", "Headline" => _("Host name"),
@@ -167,7 +169,8 @@ $helpArray = array (
 					 character because useradd also does not allow it. Lam doesn't allow capital letters A-Z because it
 					 can cause several problems. Hostnames are always ending with $. If last character isn't $ it will be added. If hostname is allready used username will expanded with a number. The next free number will be used.")),
 				"411" => array ("ext" => "FALSE", "Headline" => _("UID number"),
-					"Text" => _("If empty UID number will be generated automaticly. Valid values are between").' '.$_SESSION['config']->get_minMachine().' '._("and").' '.$_SESSION['config']->get_maxMachine()."."),
+					"Text" => _("If empty UID number will be generated automaticly. Valid values are between %s and %s."),
+					"variables" => array($_SESSION['config']->get_minMachine(), $_SESSION['config']->get_maxMachine())),
 				"412" => array ("ext" => "FALSE", "Headline" => _("Primary group"),
 					"Text" => _("The Primary group the host should be member of.")),
 				"413" => array ("ext" => "FALSE", "Headline" => _("Gecos"),

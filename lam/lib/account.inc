@@ -212,7 +212,6 @@ function getquotas($type,$user='+') {
 	* scriptPath is Path to lamdaemon.pl on remote system
 	*/
 	exec("perl ".escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." ".$towrite, $vals, $status);
-	print("perl ".escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." ".$towrite);
 	/* $vals is a string which contains a two dimensional array.
 	* We have to recreate it with explode
 	*

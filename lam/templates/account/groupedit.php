@@ -857,7 +857,7 @@ switch ($select_local) {
 	case 'finish':
 		// Final Settings
 		echo '<input name="select" type="hidden" value="finish">';
-		echo "<fieldset class=\"groupedit-bright\"><legend class=\"groupedit-bright\"><b>"._('Success')."</b></legend>\n";
+		echo "<fieldset class=\"groupedit-bright\"><legend class=\"groupedit-bright\"><b>"._('Note')."</b></legend>\n";
 		echo "<table border=0 width=\"100%\">";
 		echo '<tr><td>';
 		echo _('Group').' ';
