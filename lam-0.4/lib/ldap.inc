@@ -38,8 +38,7 @@ function hex2bin($value) {
 function pwd_hash($password, $enabled=true) {
 	// check for empty password
 	if (! $password || ($password == "")) {
-		if ($enabled) return "";
-		else return "!";
+		return "";
 	}
 	// calculate new random number
 	$_SESSION['ldap']->new_rand();
@@ -113,7 +112,7 @@ function pwd_hash($password, $enabled=true) {
 		break;
 	}
 	// enable/disable password
-	if (! $enabled) return "!" . $hash;
+	if (! $enabled) return pwd_disable($hash);
 	else return $hash;
 }
 
@@ -122,12 +121,21 @@ function pwd_hash($password, $enabled=true) {
 // and returns the new hash string
 // hash: hash value to enable
 function pwd_enable($hash) {
-	// check if password is disabled
-	if ((substr($hash, 0, 1) == "!") || ((substr($hash, 0, 1) == "*"))) {
+	// check if password is disabled (old wrong LAM method)
+	if ((substr($hash, 0, 2) == "!{") || ((substr($hash, 0, 2) == "*{"))) {
 		return substr($hash, 1, strlen($hash));
 	}
+	// check for "!" or "*" at beginning of password hash
 	else {
-		return $hash;
+		if (substr($hash, 0, 1) == "{") {
+			$pos = strpos($hash, "}");
+			if ((substr($hash, $pos + 1, 1) == "!") || (substr($hash, $pos + 1, 1) == "*")) {
+				// enable hash
+				return substr($hash, 0, $pos + 1) . substr($hash, $pos + 2, strlen($hash));
+			}
+			else return $hash;  // not disabled
+		}
+		else return $hash;  // password is plain text
 	}
 }
 
@@ -135,20 +143,35 @@ function pwd_enable($hash) {
 // and returns the new hash string
 // hash: hash value to disable
 function pwd_disable($hash) {
-	// check if already disabled
-	if ((substr($hash, 0, 1) == "!") || ((substr($hash, 0, 1) == "*"))) {
+	// check if password is disabled (old wrong LAM method)
+	if ((substr($hash, 0, 2) == "!{") || ((substr($hash, 0, 2) == "*{"))) {
 		return $hash;
 	}
+	// check for "!" or "*" at beginning of password hash
 	else {
-		return "!" . $hash;
+		if (substr($hash, 0, 1) == "{") {
+			$pos = strpos($hash, "}");
+			if ((substr($hash, $pos + 1, 1) == "!") || (substr($hash, $pos + 1, 1) == "*")) {
+				// hash already disabled
+				return $hash;
+			}
+			else return substr($hash, 0, $pos + 1) . "!" . substr($hash, $pos + 1, strlen($hash));  // not disabled
+		}
+		else return $hash;  // password is plain text
 	}
 }
 
 // checks if a password hash is enabled/disabled
 // returns true if the password is marked as enabled
 function pwd_is_enabled($hash) {
-	// disabled passwords have a "!" or "*" at the beginning
-	if ((substr($hash, 0, 1) == "!") || ((substr($hash, 0, 1) == "*"))) return false;
+	// disabled passwords have a "!" or "*" at the beginning (old wrong LAM method)
+	if ((substr($hash, 0, 2) == "!{") || ((substr($hash, 0, 2) == "*{"))) return false;
+	if (substr($hash, 0, 1) == "{") {
+		$pos = strrpos($hash, "}");
+		// check if hash starts with "!" or "*"
+		if ((substr($hash, $pos + 1, 1) == "!") || (substr($hash, $pos + 1, 1) == "*")) return false;
+		else return true;
+	}
 	else return true;
 }
 
