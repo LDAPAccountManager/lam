@@ -78,7 +78,7 @@ function createUserPDF($accounts) {
 		$pdfFile->Write(5,"- " . _("Personal User Infos") . ":");
 		$pdfFile->Ln(6);
 		$pdfFile->setFont("times","B",10);
-		$pdfFile->Cell(50,5,_("Title") . ":",0,0,"R",0);
+		$pdfFile->Cell(50,5,_("Job title") . ":",0,0,"R",0);
 		$pdfFile->setFont("times","",10);
 		$pdfFile->Cell(50,5,$account->personal_title,0,1,"L",0);
 		$pdfFile->setFont("times","B",10);
