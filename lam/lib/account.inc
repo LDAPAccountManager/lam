@@ -760,8 +760,8 @@ function createuser() { // Will create the LDAP-Account
 	if (! in_array($_SESSION['account']->general_username, $group)) {
 		$toadd['memberUid'] = $_SESSION['account']->general_username;
 		$success = ldap_mod_add($_SESSION['ldap']->server(), 'cn='.$_SESSION['account']->general_group.','.$_SESSION['config']->get_GroupSuffix(), $toadd);
+		if (!$success) return 4;
 		}
-	if (!$success) return 4;
 	// Add User to Additional Groups
 	if ($_SESSION['account']->general_groupadd)
 		foreach ($_SESSION['account']->general_groupadd as $group2) {
@@ -900,8 +900,10 @@ function modifyuser() { // Will modify the LDAP-Account
 	if ($_SESSION['account']->general_givenname!=$_SESSION['account_old']->general_givenname) $attr['givenName'] = $_SESSION['account']->general_givenname;
 	if ($_SESSION['account']->general_surname!=$_SESSION['account_old']->general_surname) $attr['sn'] = $_SESSION['account']->general_surname;
 
-	if ($attr_rem) $success = ldap_mod_del($_SESSION['ldap']->server(),$_SESSION['account']->general_dn, $attr_rem);
-	if (!$success) return 5;
+	if ($attr_rem) {
+			$success = ldap_mod_del($_SESSION['ldap']->server(),$_SESSION['account']->general_dn, $attr_rem);
+			if (!$success) return 5;
+			}
 	if ($_SESSION['account']->general_username == $_SESSION['account_old']->general_username) // Username hasn't changed
 		$success = ldap_modify($_SESSION['ldap']->server(),$_SESSION['account']->general_dn, $attr);
 			else {
@@ -930,24 +932,26 @@ function modifyuser() { // Will modify the LDAP-Account
 				if ( ($nam==$_SESSION['account']->general_username) && !in_array($nam, $allgroups)) {
 					$todelete['memberUid'] = $nam;
 					$success = ldap_mod_del($_SESSION['ldap']->server(), ldap_get_dn($_SESSION['ldap']->server(), $entry) ,$todelete);
+					if (!$success) return 5;
 					}
 				}
 			if (!in_array($_SESSION['account']->general_username, $attr2['memberUid']) && in_array($attr2['cn'][0], $allgroups)) {
 				$toadd['memberUid'] = $attr2['memberUid'];
 				$toadd['memberUid'][] = $_SESSION['account']->general_username;
 				$success = ldap_mod_replace($_SESSION['ldap']->server(), ldap_get_dn($_SESSION['ldap']->server(), $entry),  $toadd);
+				if (!$success) return 5;
 				}
 			}
 		 else {
 			if (in_array($attr2['cn'][0], $allgroups)) {
 				$toadd['memberUid'] = $_SESSION['account']->general_username;
 				$success = ldap_mod_add($_SESSION['ldap']->server(), ldap_get_dn($_SESSION['ldap']->server(), $entry),  $toadd);
+				if (!$success) return 5;
 				}
 			}
 		$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
 		}
 	if ($_SESSION['config']->scriptServer) setquotas($_SESSION['account']->general_username);
-	if (!$success) return 5;
 	return 3;
 	}
 
@@ -1015,8 +1019,8 @@ function createhost() { // Will create the LDAP-Account
 	if (! in_array($_SESSION['account']->general_username, $group)) {
 		$toadd['memberUid'] = $_SESSION['account']->general_username;
 		$success = ldap_mod_add($_SESSION['ldap']->server(), 'cn='.$_SESSION['account']->general_group.','.$_SESSION['config']->get_GroupSuffix(), $toadd);
+		if (!$success) return 4;
 		}
-	if (!$success) return 4;
 	// Add Host to Additional Groups
 	if ($_SESSION['account']->general_groupadd)
 		foreach ($_SESSION['account']->general_groupadd as $group2) {
@@ -1107,8 +1111,10 @@ function modifyhost() { // Will modify the LDAP-Account
 	if (($_SESSION['account']->smb_domain!='') && ($_SESSION['account']->smb_domain!=$_SESSION['account_old']->smb_domain)) $attr['domain'] = $_SESSION['account']->smb_domain; // sambaAccount_may
 	if (($_SESSION['account']->smb_domain=='') && ($_SESSION['account']->smb_domain!=$_SESSION['account_old']->smb_domain)) $attr_rem['domain'] = $_SESSION['account_old']->smb_domain; // sambaAccount_may
 
-	if ($attr_rem) $success = ldap_mod_del($_SESSION['ldap']->server(),$_SESSION['account']->general_dn, $attr_rem);
-	if (!$success) return 5;
+	if ($attr_rem) {
+		$success = ldap_mod_del($_SESSION['ldap']->server(),$_SESSION['account']->general_dn, $attr_rem);
+		if (!$success) return 5;
+		}
 	if ($_SESSION['account']->general_username == $_SESSION['account_old']->general_username) // Username hasn't changed
 		$success = ldap_modify($_SESSION['ldap']->server(),$_SESSION['account']->general_dn, $attr);
 			else {
@@ -1137,23 +1143,25 @@ function modifyhost() { // Will modify the LDAP-Account
 				if ( ($nam==$_SESSION['account']->general_username) && !in_array($nam, $allgroups)) {
 					$todelete['memberUid'] = $nam;
 					$success = ldap_mod_del($_SESSION['ldap']->server(), ldap_get_dn($_SESSION['ldap']->server(), $entry) ,$todelete);
+					if (!$success) return 5;
 					}
 				}
 			if (!in_array($_SESSION['account']->general_username, $attr2['memberUid']) && in_array($attr2['cn'][0], $allgroups)) {
 				$toadd['memberUid'] = $attr2['memberUid'];
 				$toadd['memberUid'][] = $_SESSION['account']->general_username;
 				$success = ldap_mod_replace($_SESSION['ldap']->server(), ldap_get_dn($_SESSION['ldap']->server(), $entry),  $toadd);
+				if (!$success) return 5;
 				}
 			}
 		 else {
 			if (in_array($attr2['cn'][0], $allgroups)) {
 				$toadd['memberUid'] = $_SESSION['account']->general_username;
 				$success = ldap_mod_add($_SESSION['ldap']->server(), ldap_get_dn($_SESSION['ldap']->server(), $entry),  $toadd);
+				if (!$success) return 5;
 				}
 			}
 		$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
 		}
-	if (!$success) return 5;
 	return 3;
 	}
 
@@ -1196,6 +1204,7 @@ function modifygroup() { // Will modify the LDAP-Group
 		if ($success) ldap_delete($_SESSION['ldap']->server(),$_SESSION['account_old']->general_dn);
 		if ($success) $success = ldap_mod_replace($_SESSION['ldap']->server(),$_SESSION['account']->general_dn, $attr);
 		}
+	if (!$success) return 5;
 	if ( $_SESSION['final_changegids']==true ) {
 		$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_UserSuffix(), 'gidNumber=' . $_SESSION['account_old']->general_uidNumber, array('gidNumber'));
 		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
@@ -1206,8 +1215,7 @@ function modifygroup() { // Will modify the LDAP-Group
 			}
 		}
 	if ($_SESSION['config']->scriptServer) setquotas($attr['uid'][0]);
-	if ($success) return 3;
-	else return 5;
+	return 3;
 	}
 
 

@@ -28,7 +28,7 @@ include_once('../lib/config.inc'); // File with configure-functions
 include_once('../lib/ldap.inc'); // LDAP-functions
 include_once('../lib/profiles.inc'); // functions to load and save profiles
 include_once('../lib/status.inc'); // Return error-message
-
+include_once('../lib/pdf.inc'); // Return a pdf-file
 
 
 registervars(); // Register all needed variables in session and register session
@@ -220,6 +220,9 @@ switch ($_POST['select']) {
 				case 'group': $select_local = 'quota'; break;
 				case 'host': $select_local = 'samba'; break;
 				}
+		break;
+	case 'finish':
+		if ($_POST['outputpdf']) createpdf($_SESSION['account']);
 		break;
 	}
 
@@ -806,7 +809,7 @@ switch ($select_local) {
 		break;
 	case 'finish':
 		// Final Settings
-		echo '<input name="select" type="hidden" value="final">
+		echo '<input name="select" type="hidden" value="finish">
 		<tr><td>';
 		echo _('Success');
 		echo '</td></tr>';
@@ -815,17 +818,13 @@ switch ($select_local) {
 				echo '<tr><td>';
 				echo _('User ');
 				echo $_SESSION['account']->general_username;
-				if ($_SESSION['modify']==1) echo _('has been modified');
-				 else echo _('has been created');
-				echo '</td></tr>';
-				foreach (file('../config/print.html') as $line) eval("?".">".$line."<"."?");
-				echo '<tr><td>';
+				if ($_SESSION['modify']==1) echo _(' has been modified');
+				 else echo _(' has been created');
 				if ($_SESSION['modify']!=1)
 					{ echo '<input name="createagain" type="submit" value="'; echo _('Create another user'); echo '">'; }
 				echo '</td><td>
-				<a href  ="javascript:self.print();">';
-				echo _('Print');
-				echo '</a></td><td>
+					<input name="outputpdf" type="submit" value="'; echo _('Create PDF-file'); echo '">
+					</td><td>
 				<input name="backmain" type="submit" value="'; echo _('Back to userlist'); echo '">
 				</td></tr>';
 				break;
@@ -833,8 +832,8 @@ switch ($select_local) {
 				echo '<tr><td>';
 				echo _('Group ');
 				echo $_SESSION['account']->general_username;
-				if ($_SESSION['modify']==1) echo _('has been modified');
-				 else echo _('has been created');
+				if ($_SESSION['modify']==1) echo _(' has been modified');
+				 else echo _(' has been created');
 				echo '</td></tr><tr><td>';
 				if ($_SESSION['modify']!=1)
 					{ echo' <input name="createagain" type="submit" value="'; echo _('Create another group'); echo '">'; }
@@ -846,8 +845,8 @@ switch ($select_local) {
 				echo '<tr><td>';
 				echo _('Host ');
 				echo $_SESSION['account']->general_username;
-				if ($_SESSION['modify']==1) echo _('has been modified');
-				 else echo _('has been created');
+				if ($_SESSION['modify']==1) echo _(' has been modified');
+				 else echo _(' has been created');
 				echo '</td></tr><tr><td>';
 				if ($_SESSION['modify']!=1)
 					{ echo '<input name="createagain" type="submit" value="'; echo _('Create another host'); echo '">'; }
