@@ -440,7 +440,7 @@ switch ($_POST['select']) {
 				$errors[] = array('ERROR', _('Home path'), _('Home path is invalid.'));
 		if ( !ereg('^([a-z]|[A-Z]|[0-9]|[\|]|[\#]|[\*]|[\,]|[\.]|[\;]|[\:]|[\_]|[\-]|[\+]|[\!]|[\%]|[\&]|[\/]|[\?]|[\{]|[\[]|[\(]|[\)]|[\]]|[\}])*$',
 			$smb_password)) $errors[] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
-		if ( (!$account_new->smb_scriptPath=='') && (!eregi('^([\\])*([a-z0-9\\._%äöüß-])+(\\\([a-z0-9\\._%äöüß-])+)*((\.bat)|(\.cmd))$', $account_new->smb_scriptPath)))
+		if ( (!$account_new->smb_scriptPath=='') && (!eregi('^([\\])*([a-z0-9\\._%äöüß-])+(\\\([a-z0-9\\._%äöüß-])+)*((\.bat)|(\.cmd)|(\.exe))$', $account_new->smb_scriptPath)))
 			$errors[] = array('ERROR', _('Logon script'), _('Logon script is invalid!'));
 		if ( (!$account_new->smb_profilePath=='') && (!eregi('^[/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*([/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*)*$', $account_new->smb_profilePath))
 			&& (!eregi('^[\][\]([a-z0-9_]|[.]|[-]|[%])+([\]([a-z0-9_]|[.]|[-]|[%])+)+$', $account_new->smb_profilePath)))
