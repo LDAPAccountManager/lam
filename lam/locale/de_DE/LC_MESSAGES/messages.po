@@ -1,4 +1,4 @@
-# $Id: messages.po,v 1.2 2004/01/17 14:00:52 gruberroland Exp $
+# $Id: messages.po,v 1.3 2004/01/18 10:58:16 gruberroland Exp $
 #
 #
 # LDAP Account Manager
@@ -414,7 +414,9 @@ msgstr "Einstellungen"
 msgid ""
 "Configuration profiles are protected with a password from unauthorised "
 "access. Please enter it here."
-msgstr "Konfigurationsprofile sind durch ein Passwort vor unerlaubten Zugriff geschützt. Bitte geben Sie es hier ein."
+msgstr ""
+"Konfigurationsprofile sind durch ein Passwort vor unerlaubten Zugriff "
+"geschützt. Bitte geben Sie es hier ein."
 
 #: ../templates/config/conflogin.php:118 ../templates/confwiz/final.php:46
 #: ../templates/confwiz/o_ranges.php:82 ../templates/confwiz/o_ranges.php:98
@@ -1598,7 +1600,9 @@ msgstr ""
 msgid ""
 "If you want more than one user to login to LAM please enter its DN(s) here. "
 "Multiple entries are seperated by semicolons."
-msgstr "Wenn sich mehr als ein Benutzer bei LAM anmelden soll, geben Sie bitte hier den/die DN(s) an. Mehrere Einträge werden durch Strichpunkte getrennt."
+msgstr ""
+"Wenn sich mehr als ein Benutzer bei LAM anmelden soll, geben Sie bitte hier "
+"den/die DN(s) an. Mehrere Einträge werden durch Strichpunkte getrennt."
 
 #: ../help/help.inc:97
 msgid ""
@@ -1617,13 +1621,17 @@ msgstr ""
 msgid ""
 "If you want to input your own description it would look like this: "
 "\"attribute:description\"."
-msgstr "Wenn Sie ihre eigene Beschreibung angeben wollen würde das so aussehen: \"Attribut:Beschreibung\"."
+msgstr ""
+"Wenn Sie ihre eigene Beschreibung angeben wollen würde das so aussehen: "
+"\"Attribut:Beschreibung\"."
 
 #: ../templates/confwiz/o_daemon.php:105
 msgid ""
 "If you want to manage quotas and homedirectories with LAM you need to setup "
 "lamdaemon.pl."
-msgstr "Wenn Sie LAM für die Verwaltung von Quotas und Heimatverzeichnissen verwenden wollen müssen Sie lamdaemon.pl einrichten."
+msgstr ""
+"Wenn Sie LAM für die Verwaltung von Quotas und Heimatverzeichnissen "
+"verwenden wollen müssen Sie lamdaemon.pl einrichten."
 
 #: ../help/help.inc:278
 msgid "If you want to use a well known RID you can selcet a well known group."
@@ -1749,13 +1757,17 @@ msgstr ""
 
 #: ../templates/confwiz/ldaptest.php:479
 msgid "LAM can create them for you or you have to create them manually later."
-msgstr "LAM kann sie für Sie erstellen oder Sie müssen sie später per Hand einrichten."
+msgstr ""
+"LAM kann sie für Sie erstellen oder Sie müssen sie später per Hand "
+"einrichten."
 
 #: ../templates/confwiz/ldaptest.php:478
 msgid ""
 "LAM detected that one or more essential Samba groups are missing. They are "
 "listed below."
-msgstr "Es fehlen eine oder mehrere nötige Samba-Gruppen. Sie werden nachfolgend aufgeführt."
+msgstr ""
+"Es fehlen eine oder mehrere nötige Samba-Gruppen. Sie werden nachfolgend "
+"aufgeführt."
 
 #: ../templates/confwiz/server2.php:170 ../help/help.inc:106
 msgid ""
@@ -2577,17 +2589,23 @@ msgstr "Bitte geben Sie das selbe Passwort in beide Felder ein."
 msgid ""
 "Please enter the suffixes of your LDAP tree where LAM should store the "
 "accounts."
-msgstr "Bitte geben Sie die Suffixe an, unter welchen LAM die Accounts speichern soll."
+msgstr ""
+"Bitte geben Sie die Suffixe an, unter welchen LAM die Accounts speichern "
+"soll."
 
 #: ../templates/confwiz/o_lists.php:103
 msgid "Please enter which attributes should be displayed in the list views."
-msgstr "Bitte geben Sie an, welche Attribute in den Listenansichten gespeichert werden sollen."
+msgstr ""
+"Bitte geben Sie an, welche Attribute in den Listenansichten gespeichert "
+"werden sollen."
 
 #: ../templates/confwiz/start.php:162
 msgid ""
 "Please enter your configuration master password. This password is \"lam\" by "
 "default."
-msgstr "Bitte geben Sie ihr Hauptpasswort für die Konfiguration ein. Dieses Passwort ist standardmäßig \"lam\"."
+msgstr ""
+"Bitte geben Sie ihr Hauptpasswort für die Konfiguration ein. Dieses Passwort "
+"ist standardmäßig \"lam\"."
 
 #: ../templates/masscreate.php:355
 msgid ""
@@ -2611,7 +2629,10 @@ msgstr ""
 msgid ""
 "Please select here if you want to make additional changes to your "
 "configuration profile or if LAM should use default values."
-msgstr "Bitte wählen Sie ob Sie noch weitere Änderungen an ihrem Konfigurationsprofil vornehmen möchten oder ob LAM Standardwerte einsetzen soll."
+msgstr ""
+"Bitte wählen Sie ob Sie noch weitere Änderungen an ihrem "
+"Konfigurationsprofil vornehmen möchten oder ob LAM Standardwerte einsetzen "
+"soll."
 
 #: ../templates/account/groupedit.php:514
 #: ../templates/account/groupedit.php:571
@@ -2995,6 +3016,10 @@ msgstr "Scripteinstellungen"
 msgid "Security settings"
 msgstr "Sicherheitseinstellungen"
 
+#: ../templates/help.php:90
+msgid "See also"
+msgstr "Siehe auch"
+
 #: ../templates/lists/listgroups.php:275 ../templates/lists/listhosts.php:258
 #: ../templates/lists/listusers.php:316
 msgid "Select all"
@@ -3265,7 +3290,10 @@ msgstr "Diese Samba3-Domäne ist bereits vorhanden!"
 msgid ""
 "This can be a list of predefined attributes which have a description and are "
 "translated or you can write your own description."
-msgstr "Dies kann eine Liste von vordefinierten Attributen mit zugehöriger Beschreibung und Übersetzung sein oder Sie schreiben ihre eigene Beschreibung."
+msgstr ""
+"Dies kann eine Liste von vordefinierten Attributen mit zugehöriger "
+"Beschreibung und Übersetzung sein oder Sie schreiben ihre eigene "
+"Beschreibung."
 
 #: ../help/help.inc:116
 msgid "This changes the password of the selected profile."
@@ -3420,7 +3448,9 @@ msgstr "Titel des Benutzers (Herr, Frau, Dr., etc.)."
 msgid ""
 "To connect to your LDAP server please enter now the DN of your "
 "administrative user and the password."
-msgstr "Bitte geben Sie den DN und das Passwort des administrativen Benutzers ein damit sich LAM mit ihrem LDAP-Server verbinden kann."
+msgstr ""
+"Bitte geben Sie den DN und das Passwort des administrativen Benutzers ein "
+"damit sich LAM mit ihrem LDAP-Server verbinden kann."
 
 #: ../help/help.inc:151
 msgid ""
