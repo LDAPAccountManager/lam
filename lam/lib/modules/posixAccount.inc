@@ -63,12 +63,15 @@ class posixAccount extends baseModule {
 		$this->messages['cmp_both'][0] = array('ERROR', _('UID ranges'), _("The UID ranges for users and hosts overlap! This is a problem because LAM uses the highest UID in use + 1. Please set the minimum UID to equal values or use independent ranges."));
 		$this->messages['homeDirectory'][0] = array('ERROR', _('Home directory'), _('Homedirectory contains invalid characters.'));
 		$this->messages['homeDirectory'][1] = array('INFO', _('Home directory'), _('Replaced $user or $group in homedir.'));
+		$this->messages['homeDirectory'][2] = array('ERROR', _('Account %s:') . ' posixAccount_homedir', _('Homedirectory contains invalid characters.'));
 		$this->messages['uidNumber'][1] = array('ERROR', _('ID-Number'), _('No free ID-Number!'));
 		$this->messages['uidNumber'][2] = array('WARN', _('ID-Number'), _('It is possible that this ID-number is reused. This can cause several problems because files with old permissions might still exist. To avoid this warning set maxUID to a higher value.'));
 		$this->messages['uidNumber'][3] = array('ERROR', _('ID-Number'), _('ID is already in use'));
+		$this->messages['uidNumber'][4] = array('ERROR', _('Account %s: posixAccount_uid'), _('UID must be a number. It has to be inside the UID range which is defined in your configuration profile.'));
 		$this->messages['userPassword'][0] = array('ERROR', _('Password'), _('Please enter the same password in both password-fields.'));
 		$this->messages['userPassword'][1] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
 		$this->messages['userPassword'][3] = array('ERROR', _('Password'), _('You cannot use this password options at the same time.'));
+		$this->messages['userPassword'][4] = array('ERROR', _('Account %s:') . ' posixAccount_password', _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
 		$this->messages['uid'][0] = array('INFO', _('UID'), _('UID has changed. Do you want to change home directory?'));
 		$this->messages['uid'][1] = array('WARN', _('Username'), _('You are using a capital letters. This can cause problems because windows isn\'t case-sensitive.'));
 		$this->messages['uid'][2] = array('ERROR', _('Username'), _('Username contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
@@ -76,6 +79,13 @@ class posixAccount extends baseModule {
 		$this->messages['uid'][4] = array('ERROR', _('Hostname'), _('Hostname contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ ! Hostname must end with $ !'));
 		$this->messages['uid'][5] = array('WARN', _('Username'), _('Username in use. Selected next free username.'));
 		$this->messages['uid'][6] = array('WARN', _('Hostname'), _('Hostname in use. Selected next free hostname.'));
+		$this->messages['uid'][7] = array('ERROR', _('Account %s:') . ' posixAccount_userName', _('Username contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
+		$this->messages['uid'][8] = array('ERROR', _('Account %s:') . ' posixAccount_hostName', _('Hostname contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
+		$this->messages['gidNumber'][0] = array('ERROR', _('Account %s:') . ' posixAccount_group', _('LAM was unable to find a group with this name!'));
+		$this->messages['gidNumber'][1] = array('ERROR', _('Account %s:') . ' posixAccount_group', _('This GID number is invalid! Please provide either a number or a group name.'));
+		$this->messages['gecos'][0] = array('ERROR', _('Account %s:') . ' posixAccount_gecos', _('This GECOS value is invalid!'));
+		$this->messages['shell'][0] = array('ERROR', _('Account %s:') . ' posixAccount_shell', _('This login shell is invalid!'));
+		$this->messages['passwordDisabled'][0] = array('ERROR', _('Account %s:') . ' posixAccount_passwordDisabled', _('This value can only be \"true\" or \"false\".'));
 	}
 
 	/**
@@ -1016,11 +1026,13 @@ class posixAccount extends baseModule {
 				// TODO autoGID
 				$partialAccounts[$i]['uidNumber'] = 42;
 			}
-			elseif (get_preg($rawAccounts[$i][$ids['posixAccount_uid']], 'digit')) {
+			elseif (get_preg($rawAccounts[$i][$ids['posixAccount_uid']], 'digit') &&
+			($rawAccounts[$i][$ids['posixAccount_uid']] > $this->moduleSettings['posixAccount_minUID'][0]) &&
+			($rawAccounts[$i][$ids['posixAccount_uid']] < $this->moduleSettings['posixAccount_maxUID'][0])) {
 				$partialAccounts[$i]['uidNumber'] = $rawAccounts[$i][$ids['posixAccount_uid']];
 			}
 			else {
-				$errMsg = $this->messages['uidNumber'][8]; // TODO
+				$errMsg = $this->messages['uidNumber'][4];
 				array_push($errMsg, array($i));
 				$triggered_messages[] = $errMsg;
 			}
@@ -1030,11 +1042,18 @@ class posixAccount extends baseModule {
 			}
 			if (get_preg($rawAccounts[$i][$ids['posixAccount_group']], 'groupname')) {
 				$partialAccounts[$i]['gidNumber'] = 42;
-				//$partialAccounts[$i]['gidNumber'] = $rawAccounts[$i][$ids['posixAccount_group']];
-				// TODO group name => GID number
+				$gid = $_SESSION['cache']->getgid($rawAccounts[$i][$ids['posixAccount_group']]);
+				if (is_numeric($gid)) {
+					$partialAccounts[$i]['gidNumber'] = $gid;
+				}
+				else {
+					$errMsg = $this->messages['gidNumber'][0];
+					array_push($errMsg, array($i));
+					$triggered_messages[] = $errMsg;
+				}
 			}
 			else {
-				$errMsg = $this->messages['gidNumber'][8]; // TODO
+				$errMsg = $this->messages['gidNumber'][1];
 				array_push($errMsg, array($i));
 				$triggered_messages[] = $errMsg;
 			}
@@ -1043,7 +1062,7 @@ class posixAccount extends baseModule {
 				$partialAccounts[$i]['gecos'] = $rawAccounts[$i][$ids['posixAccount_gecos']];
 			}
 			else {
-				$errMsg = $this->messages['gecos'][1]; // TODO
+				$errMsg = $this->messages['gecos'][0];
 				array_push($errMsg, array($i));
 				$triggered_messages[] = $errMsg;
 			}
@@ -1054,7 +1073,7 @@ class posixAccount extends baseModule {
 					$partialAccounts[$i]['uid'] = $rawAccounts[$i][$ids['posixAccount_userName']];
 				}
 				else {
-					$errMsg = $this->messages['username'][1]; // TODO
+					$errMsg = $this->messages['uid'][7];
 					array_push($errMsg, array($i));
 					$triggered_messages[] = $errMsg;
 				}
@@ -1066,7 +1085,7 @@ class posixAccount extends baseModule {
 					$partialAccounts[$i]['homeDirectory'] = $rawAccounts[$i][$ids['posixAccount_homedir']];
 				}
 				else {
-					$errMsg = $this->messages['homedir'][8]; // TODO
+					$errMsg = $this->messages['homeDirectory'][2];
 					array_push($errMsg, array($i));
 					$triggered_messages[] = $errMsg;
 				}
@@ -1078,7 +1097,7 @@ class posixAccount extends baseModule {
 					$partialAccounts[$i]['loginShell'] = $rawAccounts[$i][$ids['posixAccount_shell']];
 				}
 				else {
-					$errMsg = $this->messages['loginshell'][8]; // TODO
+					$errMsg = $this->messages['shell'][0];
 					array_push($errMsg, array($i));
 					$triggered_messages[] = $errMsg;
 				}
@@ -1092,7 +1111,7 @@ class posixAccount extends baseModule {
 					else $pwd_enabled = true;
 				}
 				else {
-					$errMsg = $this->messages['passwordDisabled'][8]; // TODO
+					$errMsg = $this->messages['passwordDisabled'][0];
 					array_push($errMsg, array($i));
 					$triggered_messages[] = $errMsg;
 				}
@@ -1100,8 +1119,8 @@ class posixAccount extends baseModule {
 				if (($rawAccounts[$i][$ids['posixAccount_password']] != "") && (get_preg($rawAccounts[$i][$ids['posixAccount_password']], 'password'))) {
 					$partialAccounts[$i]['userPassword'] = pwd_hash($rawAccounts[$i][$ids['posixAccount_password']], $pwd_enabled, $this->moduleSettings['posixAccount_pwdHash'][0]);
 				}
-				else {
-					$errMsg = $this->messages['password'][8]; // TODO
+				elseif ($rawAccounts[$i][$ids['posixAccount_password']] != "") {
+					$errMsg = $this->messages['userPassword'][4];
 					array_push($errMsg, array($i));
 					$triggered_messages[] = $errMsg;
 				}
@@ -1113,7 +1132,7 @@ class posixAccount extends baseModule {
 					$partialAccounts[$i]['uid'] = $rawAccounts[$i][$ids['posixAccount_hostName']];
 				}
 				else {
-					$errMsg = $this->messages['hostname'][1]; // TODO
+					$errMsg = $this->messages['uid'][8];
 					array_push($errMsg, array($i));
 					$triggered_messages[] = $errMsg;
 				}
