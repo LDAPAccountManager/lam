@@ -36,20 +36,12 @@ include_once($lampath_include.'lib/modules.inc'); // LDAP-functions
 include_once($lampath_include.'lib/cache.inc');
 include_once($lampath_include.'lib/account.inc');
 
-/* We have to include all modules
-* before start session
-*/
-$dir = opendir($lampath_include.'lib/modules');
-while ($entry = readdir($dir))
-	if (is_file($lampath_include.'lib/modules/'.$entry)) include_once ($lampath_include.'lib/modules/'.$entry);
-	
 // Start session
 session_save_path($lampath_include.'sess');
 @session_start();
 
 // Redirect to startpage if user is not loged in
 if (!isset($_SESSION['loggedIn'])) {
-	// *** fixme ../../
 	metaRefresh("../../login.php");
 	exit;
 	}

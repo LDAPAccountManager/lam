@@ -27,12 +27,17 @@ include_once('../../lib/include.inc');
 
 if ($_GET['DN']) {
 	//load account
+	if ($_GET['DN'] == $DN) $DN = str_replace("'", '',$_GET['DN']);
 	$DN = str_replace("\'", '', $_GET['DN']);
-	$_SESSION['account'] = new accountContainer('group', 'account');
+	$type = str_replace("\'", '', $_GET['type']);
+	if ($_GET['type'] == $type) $type = str_replace("'", '',$_GET['type']);
+	$_SESSION['account'] = new accountContainer($type, 'account');
 	$_SESSION['account']->load_account($DN);
 	}
 else if (count($_POST)==0) {
-	$_SESSION['account'] = new accountContainer('group', 'account');
+	$type = str_replace("\'", '', $_GET['type']);
+	if ($_GET['type'] == $type) $type = str_replace("'", '',$_GET['type']);
+	$_SESSION['account'] = new accountContainer($type, 'account');
 	$_SESSION['account']->new_account();
 	}
 $_SESSION['account']->continue_main($_POST);

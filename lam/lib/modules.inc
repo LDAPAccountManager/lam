@@ -24,6 +24,24 @@ $Id$
 
 */
 
+/* We have to include all modules
+* before start session
+*/
+// Get Lampath, needed 4 includes
+$stay=0;
+$relative='';
+while ($stay<7) {
+	if (is_dir($relative.'lib/modules')) {
+		$dir = opendir($relative.'lib/modules');
+		while ($entry = readdir($dir))
+			if (is_file($relative.'lib/modules/'.$entry)) include_once ($relative.'lib/modules/'.$entry);
+		$stay=10;
+		}
+	else {
+		$stay++;
+		$relative .= '../';
+		}
+	}
 
 // returns the alias name of a module
 function getModuleAlias($name) {
