@@ -1,4 +1,4 @@
-# $Id: messages.po,v 1.6 2003/08/03 16:06:26 gruberroland Exp $
+# $Id: messages.po,v 1.7 2003/08/04 16:49:47 gruberroland Exp $
 #
 #
 # LDAP Account Manager
@@ -188,7 +188,7 @@ msgstr "Zurück zur Benutzerliste"
 
 #: ../lib/account.inc:403
 msgid "Block hard quota"
-msgstr ""
+msgstr "hartes Block-Quota"
 
 #: ../lib/account.inc:403
 msgid ""
@@ -198,7 +198,7 @@ msgstr ""
 
 #: ../lib/account.inc:400
 msgid "Block soft quota"
-msgstr ""
+msgstr "weiches Block-Quota"
 
 #: ../lib/account.inc:400
 msgid ""
@@ -553,7 +553,7 @@ msgstr ""
 
 #: ../help/help.inc:284 ../help/help.inc:285
 msgid "Employee type"
-msgstr ""
+msgstr "Angestelltentyp"
 
 #: ../templates/login.php:254
 msgid "Empty Password submitted. Try again."
@@ -1020,7 +1020,7 @@ msgstr "Information"
 
 #: ../lib/account.inc:409
 msgid "Inode hard quota"
-msgstr ""
+msgstr "hartes Inode-Quota"
 
 #: ../lib/account.inc:409
 msgid ""
@@ -1030,7 +1030,7 @@ msgstr ""
 
 #: ../lib/account.inc:406
 msgid "Inode soft quota"
-msgstr ""
+msgstr "weiches Inode-Quota"
 
 #: ../lib/account.inc:406
 msgid ""
@@ -1040,39 +1040,39 @@ msgstr ""
 
 #: ../lib/account.inc:219
 msgid "Inserted groupname in gecos-field."
-msgstr ""
+msgstr "Gruppenname wurde in Beschreibung eingefügt."
 
 #: ../lib/account.inc:346
 msgid "Inserted groupname in profilepath."
-msgstr ""
+msgstr "Gruppenname wurde in Profilpfad eingefügt."
 
 #: ../lib/account.inc:342
 msgid "Inserted groupname in scriptpath."
-msgstr ""
+msgstr "Gruppenname wurde in Scriptpfad eingefügt."
 
 #: ../lib/account.inc:350
 msgid "Inserted groupname in smbhome."
-msgstr ""
+msgstr "Gruppenname wurde in Samba-Heimatverzeichnis eingefügt."
 
 #: ../lib/account.inc:260
 msgid "Inserted hostname in gecos-field."
-msgstr ""
+msgstr "Hostname wurde in Beschreibung eingefügt."
 
 #: ../lib/account.inc:183
 msgid "Inserted sur- and givenname in gecos-field."
-msgstr ""
+msgstr "Vor- und Nachname wurden in Beschreibung eingefügt."
 
 #: ../lib/account.inc:344
 msgid "Inserted username in profilepath."
-msgstr ""
+msgstr "Benutzername wurde in Profilpfad eingefügt."
 
 #: ../lib/account.inc:340
 msgid "Inserted username in scriptpath."
-msgstr ""
+msgstr "Benutzername wurde in Scriptpfad eingefügt."
 
 #: ../lib/account.inc:348
 msgid "Inserted username in smbhome."
-msgstr ""
+msgstr "Benutzername wurde in Samba-Heimatverzeichnis eingefügt."
 
 #: ../templates/massdetail.php:90
 msgid "Invalid Value!"
@@ -1605,19 +1605,19 @@ msgstr ""
 
 #: ../templates/profedit/profileuser.php:151 ../help/help.inc:161
 msgid "Password expiry"
-msgstr ""
+msgstr "Passwortablauf"
 
 #: ../templates/profedit/profilecreate.php:146
 msgid "Password expiry is not numeric!"
-msgstr ""
+msgstr "Passwortablauf ist keine Zahl!"
 
 #: ../templates/profedit/profilecreate.php:114
 msgid "Password maximum age is not numeric!"
-msgstr ""
+msgstr "Maximales Passwortalter ist keine Zahl!"
 
 #: ../templates/profedit/profilecreate.php:106
 msgid "Password minimum age is not numeric!"
-msgstr ""
+msgstr "Minimales Passwortalter ist keine Zahl!"
 
 #: ../help/help.inc:214 ../help/help.inc:224
 msgid "Password warn"
@@ -1625,7 +1625,7 @@ msgstr "Passwortwarnung"
 
 #: ../templates/profedit/profileuser.php:144 ../help/help.inc:159
 msgid "Password warning"
-msgstr ""
+msgstr "Passwortwarnung"
 
 #: ../templates/login.php:144
 msgid "Password:"
@@ -1811,7 +1811,7 @@ msgstr "Profil umbenannt."
 
 #: ../lib/account.inc:174
 msgid "Replaced $user or $group in homedir."
-msgstr ""
+msgstr "$user und $group wurden im Heimatverzeichnis ersetzt."
 
 #: ../templates/config/confmain.php:345
 #: ../templates/profedit/profilehost.php:120
@@ -1898,7 +1898,7 @@ msgstr "Speichern"
 
 #: ../templates/account.php:1081
 msgid "Save Profile"
-msgstr "Profil speichern"
+msgstr ""
 
 #: ../help/help.inc:300 ../help/help.inc:301
 msgid "Save profile"
@@ -1946,11 +1946,11 @@ msgstr ""
 
 #: ../templates/masscreate.php:108
 msgid "Select Profile:"
-msgstr ""
+msgstr "Profil wählen:"
 
 #: ../templates/masscreate.php:125
 msgid "Select file:"
-msgstr ""
+msgstr "Datei wählen:"
 
 #: ../templates/config/confsave.php:82
 msgid "Server Address is empty!"
@@ -1999,15 +1999,15 @@ msgstr "Shell ist ungültig!"
 
 #: ../templates/masscreate.php:205
 msgid "Show Details."
-msgstr ""
+msgstr "Details anzeigen."
 
 #: ../templates/masscreate.php:257
 msgid "Show Errors."
-msgstr ""
+msgstr "Fehler zeigen."
 
 #: ../templates/masscreate.php:252
 msgid "Show Warnings."
-msgstr ""
+msgstr "Warnungen zeigen."
 
 #: ../templates/help.php:65
 msgid "Sorry no help number submitted."
@@ -2106,11 +2106,11 @@ msgstr "Das Passwort ist falsch! Bitte erneut eingeben."
 
 #: ../templates/masscreate.php:270
 msgid "There are some errors."
-msgstr ""
+msgstr "Es gab einige Fehler."
 
 #: ../templates/masscreate.php:271
 msgid "There are some warnings."
-msgstr ""
+msgstr "Es gab einige Warnungen."
 
 #: ../help/help.inc:61
 msgid ""
@@ -2338,7 +2338,7 @@ msgstr "Unix-Arbeitsstationen sind ungültig."
 
 #: ../templates/account.php:739
 msgid "Use Unix-Password"
-msgstr ""
+msgstr "Kein Unix-Passwort setzen"
 
 #: ../help/help.inc:91 ../help/help.inc:97
 msgid ""
@@ -2360,7 +2360,7 @@ msgstr ""
 
 #: ../help/help.inc:266
 msgid "Used blocks"
-msgstr ""
+msgstr "Benutzte Blöcke"
 
 #: ../help/help.inc:267
 msgid "Used blocks."
@@ -2420,7 +2420,7 @@ msgstr "Benutzername"
 
 #: ../help/help.inc:141
 msgid "User workstations"
-msgstr ""
+msgstr "Arbeitsstationen"
 
 #: ../templates/lists/listusers.php:296
 msgid "User(s) found"
@@ -2547,31 +2547,31 @@ msgstr "Falscher oder fehlender Typ!"
 
 #: ../templates/profedit/profilecreate.php:170
 msgid "Wrong parameter for Samba option: Account does not expire!"
-msgstr ""
+msgstr "Falscher Parameter für Samba-Option: Account läuft nicht ab"
 
 #: ../templates/profedit/profilecreate.php:154
 msgid "Wrong parameter for Samba option: Set Samba Password!"
-msgstr ""
+msgstr "Falscher Parameter für Samba-Option: Samba-Passwort setzen"
 
 #: ../templates/profedit/profilecreate.php:162
 msgid "Wrong parameter for Samba option: Set Unix Password for Samba!"
-msgstr ""
+msgstr "Falscher Parameter für Samba-Option: Unix-Passwort für Samba setzen"
 
 #: ../templates/profedit/profilecreate.php:178
 msgid "Wrong parameter for Samba option: home drive!"
-msgstr ""
+msgstr "Falscher Parameter für Samba-Option: Heimatlaufwerk"
 
 #: ../templates/profedit/profilecreate.php:138
 msgid "Wrong parameter for Unix account activation!"
-msgstr ""
+msgstr "Falscher Parameter für Unix-Account Aktivierung"
 
 #: ../templates/profedit/profilecreate.php:122
 msgid "Wrong parameter for Unix password expiry!"
-msgstr ""
+msgstr "Falscher Parameter für Unix-Passwortablauf"
 
 #: ../templates/profedit/profilecreate.php:98
 msgid "Wrong parameter for Unix password warning!"
-msgstr ""
+msgstr "Falscher Parameter für Unix-Passwortwarnung"
 
 #: ../templates/profedit/profilecreate.php:90
 msgid "Wrong parameter for login disable!"
@@ -2637,19 +2637,19 @@ msgstr ""
 
 #: ../templates/account.php:942 ../help/help.inc:272 ../help/help.inc:273
 msgid "grace block period"
-msgstr ""
+msgstr "Block-Frist"
 
 #: ../templates/account.php:944 ../help/help.inc:280 ../help/help.inc:281
 msgid "grace inode period"
-msgstr ""
+msgstr "Inode-Frist"
 
 #: ../templates/account.php:942 ../help/help.inc:270 ../help/help.inc:271
 msgid "hard block limit"
-msgstr ""
+msgstr "hartes Block-Limit"
 
 #: ../templates/account.php:944 ../help/help.inc:278 ../help/help.inc:279
 msgid "hard inode limit"
-msgstr ""
+msgstr "hartes Inode-Limit"
 
 #: ../templates/account.php:1101 ../templates/account.php:1115
 #: ../templates/account.php:1128
@@ -2663,19 +2663,19 @@ msgstr ""
 
 #: ../lib/account.inc:497 ../lib/account.inc:499
 msgid "hours"
-msgstr ""
+msgstr "Stunden"
 
 #: ../help/help.inc:45
 msgid ""
 "ldap://localhost:389 connects to localhost using a standard LDAP connection "
 "on port 389"
-msgstr ""
+msgstr "ldaps://141.40.146.133 baut eine einfache Verbindung zu 141.40.146.133 auf."
 
 #: ../help/help.inc:47
 msgid ""
 "ldaps://141.40.146.133 connects to 141.40.146.133 using an encrypted LDAP "
 "connection."
-msgstr ""
+msgstr "ldaps://141.40.146.133 baut eine verschlüsselte Verbindung zu 141.40.146.133 auf."
 
 #: ../templates/masscreate.php:102
 msgid "mobileTelephoneNumber,facsimileNumber,street,postalCode,postalAddress,"
@@ -2724,11 +2724,11 @@ msgstr "Reihe"
 
 #: ../lib/profiles.inc:302
 msgid "saveHostProfile: account has wrong type!"
-msgstr ""
+msgstr "saveHostProfile: account ist vom falschen Typ!"
 
 #: ../lib/profiles.inc:236
 msgid "saveUserProfile: account has wrong type!"
-msgstr ""
+msgstr "saveUserProfile: account ist vom falschen Typ!"
 
 #: ../templates/account.php:819 ../help/help.inc:260 ../lib/account.inc:348
 #: ../lib/account.inc:350 ../lib/account.inc:359
@@ -2741,19 +2741,19 @@ msgstr ""
 
 #: ../templates/account.php:942 ../help/help.inc:268 ../help/help.inc:269
 msgid "soft block limit"
-msgstr ""
+msgstr "weiches Block-Limit"
 
 #: ../templates/account.php:943 ../help/help.inc:276 ../help/help.inc:277
 msgid "soft inode limit"
-msgstr ""
+msgstr "weiches Inode-Limit"
 
 #: ../templates/account.php:941
 msgid "used blocks"
-msgstr ""
+msgstr "benutzte Blöcke"
 
 #: ../templates/account.php:943 ../help/help.inc:274 ../help/help.inc:275
 msgid "used inodes"
-msgstr ""
+msgstr "benutzte Inodes"
 
 #: ../templates/profedit/profileuser.php:136
 #: ../templates/profedit/profileuser.php:137
