@@ -198,46 +198,47 @@ if ($user_count != 0) {
 
   // print input boxes for filters
   for ($k = 0; $k < sizeof ($desc_array); $k++) {
-    echo "<th>";
+    echo "<th>\n";
     echo ("<input type=\"text\" size=15 name=\"filter" . strtolower ($attr_array[$k]) .
-	  "\" value=\"" . $_POST["filter" . strtolower($attr_array[$k])] . "\">");
-    echo "</th>";
+	  "\" value=\"" . $_POST["filter" . strtolower($attr_array[$k])] . "\">\n");
+    echo "</th>\n";
   }
   echo "</tr>\n";
 
 if ($user_count != 0) {
-  // print user list
-  $userinfo = array_slice ($userinfo, ($page - 1) * $max_pageentrys,
-			   $max_pageentrys);
-  for ($i = 0; $i < sizeof ($userinfo); $i++) { // ignore last entry in array which is "count"
-    echo("<tr class=\"userlist\" onMouseOver=\"user_over(this, '" . $userinfo[$i]["dn"] . "')\"" .
-	 " onMouseOut=\"user_out(this, '" . $userinfo[$i]["dn"] . "')\"" .
-	 " onClick=\"user_click(this, '" . $userinfo[$i]["dn"] . "')\"" .
-	 " onDblClick=\"parent.frames[1].location.href='../account.php?type=user&amp;DN=" . $userinfo[$i]["dn"] . "'\">" .
-	 " <td height=22><input onClick=\"user_click(this, '" . $userinfo[$i]["dn"] . "')\" type=\"checkbox\" name=\"" . $userinfo[$i]["dn"] . "\"></td>" .
-	 " <td align='center'><a href=\"../account.php?type=user&amp;DN='" . $userinfo[$i]["dn"] . "'\">" . _("Edit") . "</a></td>\n");
-    for ($k = 0; $k < sizeof($attr_array); $k++) {
-      echo ("<td>\n");
-      // print all attribute entries seperated by "; "
-      if (sizeof($userinfo[$i][strtolower($attr_array[$k])]) > 0) {
-	// delete first array entry which is "count"
-	if (is_array($userinfo[$i][strtolower($attr_array[$k])])) {
-		array_shift($userinfo[$i][strtolower($attr_array[$k])]);
-		echo implode("; ", $userinfo[$i][strtolower($attr_array[$k])]);
+	// print user list
+	$userinfo = array_slice ($userinfo, ($page - 1) * $max_pageentrys, $max_pageentrys);
+	for ($i = 0; $i < sizeof ($userinfo); $i++) { // ignore last entry in array which is "count"
+		echo("<tr class=\"userlist\"\nonMouseOver=\"user_over(this, '" . $userinfo[$i]["dn"] . "')\"\n" .
+			"onMouseOut=\"user_out(this, '" . $userinfo[$i]["dn"] . "')\"\n" .
+			"onClick=\"user_click(this, '" . $userinfo[$i]["dn"] . "')\"\n" .
+			"onDblClick=\"parent.frames[1].location.href='../account.php?type=user&amp;DN=" . $userinfo[$i]["dn"] . "'\">\n" .
+			"<td height=22>\n<input onClick=\"user_click(this, '" . $userinfo[$i]["dn"] . "')\" type=\"checkbox\" name=\"" .
+			$userinfo[$i]["dn"] . "\">\n</td>\n" .
+			"<td align='center'>\n<a href=\"../account.php?type=user&amp;DN='" . $userinfo[$i]["dn"] . "'\">" .
+			_("Edit") . "</a>\n</td>\n");
+		for ($k = 0; $k < sizeof($attr_array); $k++) {
+			echo ("<td>\n");
+			// print all attribute entries seperated by "; "
+			if (sizeof($userinfo[$i][strtolower($attr_array[$k])]) > 0) {
+				// delete first array entry which is "count"
+				if (is_array($userinfo[$i][strtolower($attr_array[$k])])) {
+					array_shift($userinfo[$i][strtolower($attr_array[$k])]);
+					echo utf8_decode(implode("; ", $userinfo[$i][strtolower($attr_array[$k])])) . "\n";
+				}
+				else echo utf8_decode($userinfo[$i][strtolower($attr_array[$k])]) . "\n";
+			}
+		echo ("</td>\n");
+		}
+	echo("</tr>\n");
 	}
-	else echo $userinfo[$i][strtolower($attr_array[$k])];
-      }
-    }
-    echo ("</td>");
-  }
-  echo("</tr>\n");
 }
-echo ("</table>");
+echo ("</table>\n");
 
-echo ("<br />");
+echo ("<br>");
 if ($user_count != 0) {
   draw_navigation_bar ($user_count);
-  echo ("<br />");
+  echo ("<br>");
 }
 
 if (! $_GET['norefresh']) {
@@ -271,44 +272,38 @@ echo "</body></html>\n";
  * @return void
  */
 function draw_navigation_bar ($user_count) {
-  global $max_pageentrys;
-  global $page;
-  global $sortattrib;
-  global $searchfilter;
+	global $max_pageentrys;
+	global $page;
+	global $sortattrib;
+	global $searchfilter;
 
-  echo ("<table class=\"userlist-navbar\" width=\"100%\" border=\"0\"\n");
-  echo ("<tr>");
-  echo ("<td class=\"userlist-navbar\"><input type=\"submit\" name=\"refresh\" value=\"" . _("Refresh") . "\">&nbsp;&nbsp;");
-  if ($page != 1)
-    echo ("<a class=\"userlist\" href=\"listusers.php?norefresh=1&amp;page=" .
-	  ($page - 1) . "&amp;sortattrib=" . $sortattrib .
-	  $searchfilter . "\">&lt;=</a>");
-  else
-    echo ("&lt;=");
-  echo ("&nbsp;");
+	echo ("<table class=\"userlist-navbar\" width=\"100%\" border=\"0\"\n");
+	echo ("<tr>\n");
+	echo ("<td class=\"userlist-navbar\">\n<input type=\"submit\" name=\"refresh\" value=\"" . _("Refresh") . "\">\n&nbsp;&nbsp;");
+	if ($page != 1)
+		echo ("<a class=\"userlist\" href=\"listusers.php?norefresh=1&amp;page=" .
+			($page - 1) . "&amp;sortattrib=" . $sortattrib . $searchfilter . "\">&lt;=</a>\n");
+	else echo ("&lt;=");
+	echo ("&nbsp;");
 
-  if ($page < ($user_count / $max_pageentrys))
-    echo ("<a class=\"userlist\" href=\"listusers.php?norefresh=1&amp;page=" .
-	  ($page + 1) . "&amp;sortattrib=" . $sortattrib . $searchfilter . "\">=&gt;</a>");
-  else
-    echo ("=&gt;");
-  echo ("</td>");
-  echo ("<td class=\"userlist-navbartext\">");
-  echo "&nbsp;" . $user_count . " " .  _("User(s) found");
-  echo ("</td>");
+	if ($page < ($user_count / $max_pageentrys))
+		echo ("<a class=\"userlist\" href=\"listusers.php?norefresh=1&amp;page=" .
+			($page + 1) . "&amp;sortattrib=" . $sortattrib . $searchfilter . "\">=&gt;</a>\n");
+	else echo ("=&gt;");
+	echo ("</td>\n");
+	echo ("<td class=\"userlist-navbartext\">\n");
+	echo "&nbsp;" . $user_count . " " .  _("User(s) found") . "\n";
+	echo ("</td>\n");
 
 
-  echo ("<td class=\"userlist-activepage\" align=\"right\">");
-  for ($i = 0; $i < ($user_count / $max_pageentrys); $i++) {
-    if ($i == $page - 1)
-      echo ("&nbsp;" . ($i + 1));
-    else
-      echo ("&nbsp;<a class=\"userlist\" href=\"listusers.php?norefresh=1&amp;page=" .
-	    ($i + 1) . 
-	    "&amp;sortattrib=" . $sortattrib . $searchfilter .
-	    "\">" . ($i + 1) . "</a>");
-  }
-  echo ("</td></tr></table>");
+	echo ("<td class=\"userlist-activepage\" align=\"right\">");
+	for ($i = 0; $i < ($user_count / $max_pageentrys); $i++) {
+		if ($i == $page - 1) echo ("&nbsp;" . ($i + 1));
+		else echo ("&nbsp;<a class=\"userlist\" href=\"listusers.php?norefresh=1&amp;page=" .
+				($i + 1) . "&amp;sortattrib=" . $sortattrib . $searchfilter .
+				"\">" . ($i + 1) . "</a>\n");
+	}
+	echo ("</td></tr>\n</table>\n");
 }
 
 
