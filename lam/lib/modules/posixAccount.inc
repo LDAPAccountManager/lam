@@ -102,11 +102,11 @@ class posixAccount extends baseModule {
 			// LDAP filter
 			$return["ldap_filter"] = array('or' => "(objectClass=posixAccount)", 'and' => "(!(uid=*$))");
 			// module dependencies
-			$return['dependencies'] = array('depends' => array(array('inetOrgPerson', 'account')), 'conflicts' => array());
+			$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
 		}
 		elseif ($this->get_scope() == "host") {
 			// module dependencies
-			$return['dependencies'] = array('depends' => array('account'), 'conflicts' => array());
+			$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
 		}
 		// alias name
 		$return["alias"] = _("Unix");
