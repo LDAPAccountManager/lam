@@ -29,10 +29,16 @@ $Id$
 	<head>
 	</head>
 	<body>
-		<p align="center"><a href="http://lam.sf.net" target="new_window"><img src="../graphics/banner.jpg" border=1></a></p><br>
+		<table border=0 width="100%">
+			<tr>
+				<td width="100"></td>
+				<td><p align="center"><a href="http://lam.sf.net" target="new_window"><img src="../graphics/banner.jpg" border=1></a></p></td>
+				<td width="100"><p align="right"><a href="./logout.php" target="_top"><? echo _("Logout") ?></a></p><br></td>
+			</tr>
+		</table>
 		<table border="0" align="center" width="600">
 			<tr>
-				<td width="200"><p align="center"> <? echo _("Users") ?> </p></td>
+				<td width="200"><p align="center"><a href="../lib/listusers.php" target="mainpart"> <? echo _("Users");?> </a></p></td>
 				<td width="200"><p align="center"> <? echo _("Groups") ?> </p></td>
 				<td width="200"><p align="center"> <? echo _("Samba Hosts") ?> </p></td>
 			</tr>

@@ -19,21 +19,16 @@ $Id$
   along with this program; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-	This is the main window. The user and group lists will be shown in this frame.  
+	User is logged off from LDAP server, session is destroyed.  
   
 */
 
-echo ("<html>\n");
-echo ("	<head>\n");
-echo ("<title>LDAP Account Manager</title>\n");
-echo ("</head>\n");
-echo ("<frameset rows=\"150,*\">\n");
-echo ("<frame src=\"./main_header.php\" name=\"head\">\n");
-echo ("<frame src=\"../lib/listusers.php\" name=\"mainpart\">\n");
-echo ("<noframes>\n");
-echo ("This page requires a browser that can show frames!\n");
-echo ("</noframes>\n");
-echo ("</frameset>\n");
-echo ("</html>\n");
+@session_start();
+
+// destroy session
+session_destroy();
+
+// print logout message
 
 ?>
+
