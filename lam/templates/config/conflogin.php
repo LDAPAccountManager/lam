@@ -88,30 +88,41 @@ echo $_SESSION['header'];
 			</tr>
 			<tr><td style="border-style:none" >&nbsp;</td></tr>
 <?php
-	// print message if login was incorrect
+	if (!isset($message)) $message = "";
+	$files = getConfigProfiles();
+	if (sizeof($files) < 1) $message = _("No configuration profiles found. Please create one.");
+	// print message if login was incorrect or no config profiles are present
 	if (isset($message)) {  // $message is set by confmain.php (requires conflogin.php then)
-		echo ("<tr><td style=\"border-style:none\" rowspan=\"2\"></td>" .
-			"<td style=\"border-style:none\" colspan=2 align=\"center\"><b><font color=red>" . $message . "</font></b></td>" .
-			"<td style=\"border-style:none\" rowspan=\"2\"></td></tr>");
-		echo "<tr><td style=\"border-style:none\" colspan=2 >&nbsp;</td></tr>";
+		echo "<tr>\n";
+			echo "<td style=\"border-style:none\" rowspan=\"2\"></td>\n";
+			echo "<td style=\"border-style:none\" align=\"center\"><b><font color=red>" . $message . "</font></b></td>\n";
+			echo "<td style=\"border-style:none\" rowspan=\"2\"></td>\n";
+		echo "</tr>\n";
+		echo "<tr>\n";
+			echo "<td style=\"border-style:none\" >&nbsp;</td>\n";
+		echo "</tr>\n";
 	}
 ?>
 			<tr>
 				<td style="border-style:none" rowspan="4" width="20"></td>
 				<td style="border-style:none" align="center">
-					<select size=1 name="filename">
 					<?php
-						$files = getConfigProfiles();
+						if (sizeof($files) > 0) {
+							echo "<select size=1 name=\"filename\">\n";
 							$conf = new CfgMain();
 							$defaultprofile = $conf->default;
 							for ($i = 0; $i < sizeof($files); $i++) {
 								if ($files[$i] == $defaultprofile) echo ("<option selected>" . $files[$i] . "</option>\n");
 								else echo ("<option>" . $files[$i] . "</option>\n");
 							}
+							echo "</select>\n";
+						}
+						else echo "<select disabled size=1 name=\"filename\">\n<option></option>\n</select>\n";
+						if (sizeof($files) > 0) echo "<input type=\"password\" name=\"passwd\">\n";
+						else echo "<input disabled type=\"password\" name=\"passwd\">\n";
+						if (sizeof($files) > 0) echo "<input type=\"submit\" name=\"submit\" value=\"" . _("Ok") . "\">\n";
+						else echo "<input disabled type=\"submit\" name=\"submit\" value=\"" . _("Ok") . "\">\n";
 					?>
-					</select>
-					<input type="password" name="passwd">
-					<input type="submit" name="submit" value=" <?php echo _("Ok"); ?> ">
 					<a href="../help.php?HelpNumber=200" target="lamhelp"><?php echo _("Help") ?></a></td>
 				<td style="border-style:none" rowspan="4" width="20"></td>
 			</tr>
