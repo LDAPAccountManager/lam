@@ -43,7 +43,7 @@ function display_LoginPage($config_object)
 	$_SESSION["language"] = $config_object->get_defaultLanguage();
 
 	// loading available languages from language.conf file
-	$languagefile = "../config/language.conf";
+	$languagefile = "../config/language";
 	if(is_file($languagefile) == True)
 	{
 		$file = fopen($languagefile, "r");
@@ -72,6 +72,8 @@ function display_LoginPage($config_object)
 		$message = _("Unable to load available languages. Setting English as default language. For further instructions please contact the Admin of this site.");
 	}
 
+	$profiles = getConfigProfiles();
+
 	setlanguage(); // setting correct language
 
 	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">
@@ -98,6 +100,20 @@ function display_LoginPage($config_object)
 				</tr>
 			</table>
 			<hr><br><br>
+			<form action=\"" . $PHP_SELF . "\" method=\"post\" enctype=\"plain/text\">
+				<input type=\"hidden\" name=\"action\" value=\"profileChange\">
+				<p align=\"center\">
+					<select name=\"profile\" size=\"1\">";
+	for($i=0;$i<count($profiles);$i++) {
+		echo "			<option value=\"" . $profiles[$i] . "\">" . $profiles[$i] . "</option>";
+	}
+	echo "			</select>
+					<input type=\"submit\" value=\"";
+	echo _("Change Profile");
+	echo "\">
+				</p>
+			</form>
+			<br><br>
 			<p align=\"center\"><b>";
 			echo _("Enter Username and Password for Account:");
 	echo "
@@ -236,12 +252,20 @@ if($_POST['action'] == "checklogin")
 		}
 	}
 }
+// Reload loginpage after a profile change
+elseif($_POST['action'] == "profileChange") {
+	$config = new Config($_POST['profile']); // Recreate the config object with the submited profile
+
+	display_LoginPage($config); // Load login page
+}
 // Load login page
 else
 {
 	session_register("config"); // Register $config object in session
 
-	$config = new Config; // Create new Config object
+	$default_Config = new CfgMain();
+	$default_Profile = $default_Config->default;
+	$config = new Config($default_Profile); // Create new Config object
 
 	display_LoginPage($config); // Load Login page
 }
