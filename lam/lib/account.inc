@@ -218,11 +218,11 @@ function pwd_hash($password, $enabled = true, $hashType = 'SSHA') {
 			break;
 		case 'SHA':
 			// PHP 4.3+ can use sha1() function
-			if (function_exists(sha1)) {
+			if (function_exists('sha1')) {
 				$hash = "{SHA}" . base64_encode(hex2bin(sha1($password)));
 			}
 			// otherwise use MHash
-			elseif (function_exists(mHash)) {
+			elseif (function_exists('mHash')) {
 				$hash = "{SHA}" . base64_encode(mHash(MHASH_SHA1, $password));
 			}
 			// if SHA1 is not possible use crypt()
@@ -232,13 +232,13 @@ function pwd_hash($password, $enabled = true, $hashType = 'SSHA') {
 			break;
 		case 'SSHA':
 			// PHP 4.3+ can use sha1() function
-			if (function_exists(sha1)) {
+			if (function_exists('sha1')) {
 				$salt0 = substr(pack("h*", md5($_SESSION['ldap']->rand)), 0, 8);
 				$salt = substr(pack("H*", sha1($salt0 . $password)), 0, 4);
 				$hash = "{SSHA}" . base64_encode(hex2bin(sha1($password . $salt)) . $salt);
 			}
 			// otherwise use MHash
-			elseif (function_exists(mHash)) {
+			elseif (function_exists('mHash')) {
 				$salt = mhash_keygen_s2k(MHASH_SHA1, $password, substr(pack("h*", md5($_SESSION['ldap']->rand)), 0, 8), 4);
 				$hash = base64_encode(mHash(MHASH_SHA1, $password . $salt) . $salt);
 				$hash = "{SSHA}" . $hash;
@@ -254,13 +254,13 @@ function pwd_hash($password, $enabled = true, $hashType = 'SSHA') {
 		// use SSHA if the setting is invalid
 		default:
 			// PHP 4.3+ can use sha1() function
-			if (function_exists(sha1)) {
+			if (function_exists('sha1')) {
 				$salt0 = substr(pack("h*", md5($_SESSION['ldap']->rand)), 0, 8);
 				$salt = substr(pack("H*", sha1($salt0 . $password)), 0, 4);
 				$hash = "{SSHA}" . base64_encode(hex2bin(sha1($password . $salt)) . $salt);
 			}
 			// otherwise use MHash
-			elseif (function_exists(mHash)) {
+			elseif (function_exists('mHash')) {
 				$salt = mhash_keygen_s2k(MHASH_SHA1, $password, substr(pack("h*", md5($_SESSION['ldap']->rand)), 0, 8), 4);
 				$hash = base64_encode(mHash(MHASH_SHA1, $password . $salt) . $salt);
 				$hash = "{SSHA}" . $hash;
@@ -371,7 +371,7 @@ function pwd_is_enabled($hash) {
 				if (isset($units[$i]['sambaalgorithmicridbase'][0])) $ret[$i]->RIDbase = $units[$i]['sambaalgorithmicridbase'][0];
 			}
 			// sort array by domain name
-			usort($ret, array($this,"cmp_domain"));
+			usort($ret, "cmp_domain");
 		}
 		return $ret;
 	}
