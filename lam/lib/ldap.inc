@@ -83,9 +83,12 @@ class Ldap{
     // close any prior connection
     @$this->close();
     // do not allow anonymous bind
-    if ((!$user)||($user == "")) {
-      echo _("No username was specified!");
-      exit;
+    if ((!$user)||($user == "")||(!$passwd)) {
+		echo ("<html><head><title></title>");
+		echo ("<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\"></head><body>");
+		StatusMessage("ERROR", "", _("No username was specified or password is empty!"));
+		echo ("<br><br><a href=\"login.php\">" . _("Back to Login") . "</a></body></html>");
+		exit;
     }
 	// save password und username encrypted
 	$this->encrypt($user, $passwd);
