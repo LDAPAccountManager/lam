@@ -24,6 +24,8 @@ $Id$
   
 */
 
+// start session
+session_save_path("../sess");
 session_start();
 
 // check if password was entered
