@@ -247,6 +247,19 @@ if ($user_count != 0) {
   echo "</tr>\n";
 
 if ($user_count != 0) {
+	// translate GIDs and resort array if selected
+	if ($trans_primary == "on") {
+		// translate GIDs
+		for ($i = 0; $i < sizeof($userinfo); $i++) {
+			if ($trans_primary_hash[$userinfo[$i]['gidnumber'][0]]) {
+				$userinfo[$i]['gidnumber'][0] = $trans_primary_hash[$userinfo[$i]['gidnumber'][0]];
+			}
+		}
+		// resort if needed
+		if ($sortattrib == "gidnumber") {
+			usort ($userinfo, "cmp_array");
+		}
+	}
 	// print user list
 	$userinfo = array_slice ($userinfo, ($page - 1) * $max_pageentrys, $max_pageentrys);
 	for ($i = 0; $i < sizeof ($userinfo); $i++) { // ignore last entry in array which is "count"
@@ -267,14 +280,8 @@ if ($user_count != 0) {
 					array_shift($userinfo[$i][strtolower($attr_array[$k])]);
 					// sort array
 					sort($userinfo[$i][strtolower($attr_array[$k])]);
-					if (($trans_primary == "on") && (strtolower($attr_array[$k]) == "gidnumber")) {
-						// translate GID number to group name
-						if ($trans_primary_hash[$userinfo[$i][strtolower($attr_array[$k])][0]]) {
-							echo $trans_primary_hash[$userinfo[$i][strtolower($attr_array[$k])][0]];
-						}
-					}
 					// print all attribute entries seperated by "; "
-					else echo utf8_decode(implode("; ", $userinfo[$i][strtolower($attr_array[$k])])) . "\n";
+					echo utf8_decode(implode("; ", $userinfo[$i][strtolower($attr_array[$k])])) . "\n";
 				}
 				else echo utf8_decode($userinfo[$i][strtolower($attr_array[$k])]) . "\n";
 			}
