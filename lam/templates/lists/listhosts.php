@@ -33,7 +33,7 @@ session_save_path("../../sess");
 setlanguage();
 
 // get sorting column when register_globals is off
-$list = $_GET['list'];
+$sort = $_GET['sort'];
 
 // copy HTTP-GET variables to HTTP-POST
 $_POST = $_POST + $_GET;
@@ -121,7 +121,7 @@ if ($sr) {
 	if ($info["count"] == 0) StatusMessage("WARN", "", _("No Samba Hosts found!"));
 	// delete first array entry which is "count"
 	array_shift($info);
-	// sort rows by sort column ($list)
+	// sort rows by sort column ($sort)
 	usort($info, "cmp_array");
 }
 else StatusMessage("ERROR", _("LDAP Search failed! Please check your preferences."), _("No Samba Hosts found!"));
@@ -136,12 +136,12 @@ echo "<table rules=\"all\" class=\"hostlist\" width=\"100%\">\n";
 echo "<tr class=\"hostlist_head\"><th width=22 height=34></th><th></th>";
 // table header
 for ($k = 0; $k < sizeof($desc_array); $k++) {
-	if (strtolower($attr_array[$k]) == $list) {
+	if (strtolower($attr_array[$k]) == $sort) {
 		echo "<th class=\"hostlist_sort\"><a href=\"listhosts.php?".
-			"list=" . strtolower($attr_array[$k]) . $searchfilter . "\">" . $desc_array[$k] . "</a></th>";
+			"sort=" . strtolower($attr_array[$k]) . $searchfilter . "\">" . $desc_array[$k] . "</a></th>";
 	}
 	else echo "<th><a href=\"listhosts.php?".
-		"list=" . strtolower($attr_array[$k]) . $searchfilter . "\">" . $desc_array[$k] . "</a></th>";
+		"sort=" . strtolower($attr_array[$k]) . $searchfilter . "\">" . $desc_array[$k] . "</a></th>";
 }
 echo "</tr>\n";
 
@@ -206,20 +206,20 @@ echo "</body></html>\n";
 function draw_navigation_bar ($count) {
   global $max_pageentrys;
   global $page;
-  global $list;
+  global $sort;
   global $searchfilter;
 
   echo ("<table class=\"hostnav\" width=\"100%\" border=\"0\">\n");
   echo ("<tr>\n");
   echo ("<td><input type=\"submit\" name=\"refresh\" value=\"" . _("Refresh") . "\">&nbsp;&nbsp;");
   if ($page != 1)
-    echo ("<a href=\"listhosts.php?page=" . ($page - 1) . "&list=" . $list . $searchfilter . "\">&lt;=</a>\n");
+    echo ("<a href=\"listhosts.php?page=" . ($page - 1) . "&sort=" . $sort . $searchfilter . "\">&lt;=</a>\n");
   else
     echo ("&lt;=");
   echo ("&nbsp;");
 
   if ($page < ($count / $max_pageentrys))
-    echo ("<a href=\"listhosts.php?page=" . ($page + 1) . "&list=" . $list . $searchfilter . "\">=&gt;</a>\n");
+    echo ("<a href=\"listhosts.php?page=" . ($page + 1) . "&sort=" . $sort . $searchfilter . "\">=&gt;</a>\n");
   else
     echo ("=&gt;</td>");
 
@@ -233,7 +233,7 @@ function draw_navigation_bar ($count) {
       echo ("&nbsp;" . ($i + 1));
     else
       echo ("&nbsp;<a href=\"listhosts.php?page=" . ($i + 1) .
-	    "&list=" . $list . "\">" . ($i + 1) . "</a>\n");
+	    "&sort=" . $sort . "\">" . ($i + 1) . "</a>\n");
   }
   echo ("</td></tr></table>\n");
 }
@@ -242,13 +242,13 @@ function draw_navigation_bar ($count) {
 // rows are sorted with the first attribute entry of the sort column
 // if objects have attributes with multiple values the others are ignored
 function cmp_array($a, $b) {
-	// list specifies the sort column
-	global $list;
+	// sort specifies the sort column
+	global $sort;
 	global $attr_array;
-	// sort by first attribute with name $list
-	if (!$list) $list = strtolower($attr_array[0]);
-	if ($a[$list][0] == $b[$list][0]) return 0;
-	else if ($a[$list][0] == max($a[$list][0], $b[$list][0])) return 1;
+	// sort by first attribute with name $sort
+	if (!$sort) $sort = strtolower($attr_array[0]);
+	if ($a[$sort][0] == $b[$sort][0]) return 0;
+	else if ($a[$sort][0] == max($a[$sort][0], $b[$sort][0])) return 1;
 	else return -1;
 }
 
