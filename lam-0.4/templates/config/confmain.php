@@ -341,22 +341,20 @@ echo ("<table border=0>\n");
 // admin list
 echo ("<tr><td align=\"right\"><b>".
 	_("List of valid users") . " *: </b></td>".
-	"<td colspan=2><input size=50 type=\"text\" name=\"admins\" value=\"" . $conf->get_Adminstring() . "\"></td>\n");
+	"<td><input size=50 type=\"text\" name=\"admins\" value=\"" . $conf->get_Adminstring() . "\"></td>\n");
 echo ("<td><a href=\"../help.php?HelpNumber=207\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
-echo ("</table>\n");
 
-echo ("<p></p>\n");
+echo ("<tr><td colspan=3>&nbsp;</td></tr>\n");
 
-echo ("<table border=0>\n");
 // new password
-echo ("<tr><td bgcolor=\"red\" align=\"right\"><b>".
-	_("New Password") . ": </b></td>".
-	"<td bgcolor=\"red\" align=\"left\"><input type=\"password\" name=\"passwd1\"></td>\n");
+echo ("<tr><td align=\"right\"><font color=\"red\"><b>".
+	_("New Password") . ": </b></font></td>".
+	"<td align=\"left\"><input type=\"password\" name=\"passwd1\"></td>\n");
 echo ("<td rowspan=2><a href=\"../help.php?HelpNumber=212\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 // reenter password
-echo ("<tr><td bgcolor=\"red\" align=\"right\"><b>".
-	_("Reenter Password") . ": </b></td>".
-	"<td bgcolor=\"red\" align=\"left\"><input type=\"password\" name=\"passwd2\"></td></tr>\n");
+echo ("<tr><td align=\"right\"><font color=\"red\"><b>".
+	_("Reenter Password") . ": </b></font></td>".
+	"<td align=\"left\"><input type=\"password\" name=\"passwd2\"></td></tr>\n");
 echo ("</table>\n");
 echo ("</fieldset>\n");
 echo ("<p></p>\n");
