@@ -89,8 +89,6 @@ $helpArray = array (
 						"</b>"),
 				"212" => array ("ext" => "FALSE", "Headline" => _("Configuration wizard") . " - " . _("Change password"),
 					"Text" => _("If you want to change the current preferences password, please enter it here.")),
-				"213" => array ("ext" => "FALSE", "Headline" => _("Configuration wizard") . " - " . _("Samba version"),
-					"Text" => _("If you use Samba 3.x with the new LDAP schema say \"yes\" here. This will allow you to manage Samba 3 account attributes including domain objects.")),
 				"214" => array ("ext" => "FALSE", "Headline" => _("Configuration wizard") . " - " . _("Cache timeout"),
 					"Text" => _("This is the time in minutes which LAM caches its LDAP searches. Shorter times will stress LDAP more but decrease the possibility that changes are not identified.")),
 				"216" => array ("ext" => "FALSE", "Headline" => _("Configuration wizard") . " - " . _("Text for user PDF"),
