@@ -297,6 +297,30 @@ head, 2 =&gt; message text, 3 =&gt; additional variables).<br>
 If no errors occured the function returns an empty array.<span
  style="font-weight: bold;"></span><br>
 <br>
+<h3>2.2.7. get_pdfEntries</h3>
+<br>
+<table style="text-align: left; width: 300px; height: 30px;" border="0"
+ cellspacing="2" cellpadding="2">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204); text-align: center;"><span
+ style="font-weight: bold;">function get_PDF_Entries($scope)</span><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+This function is called when a PDF is to be created.<br>
+<span style="font-weight: bold;">$scope</span> is the account type
+("user", "group", "host" at this time).<br>
+It returns the fields which are printed in the PDF file for the specified 
+account type. At the monent there is no (easy) possibility for the user to 
+decide which fields are to be displayed. Perhaps there will be a PDF config 
+tool in future releases where you can offer the user to decide which fields are 
+to be displayed on the PDF file. The format of the array to be returned is 
+described in section 5. "PDF syntax".<br>
+<br>
 <h3><br>
 </h3>
 <h2>3. Meta HTML code</h2>
@@ -481,6 +505,10 @@ Must be <b>TRUE</b> in this case.
  style="font-style: italic;">(REQUIRED)</span> <br>
 The complete filename of the file stored under the help/ directory
 which should be displayed when this help entry is called.
-</a>
+</a><br>
+<br>
+<h3><br>
+</h3>
+<h2>5. PDF syntax</h2>
 </body>
 </html>
