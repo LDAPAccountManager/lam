@@ -86,6 +86,8 @@ for ($i = 0; $i < sizeof($hstprof); $i++) {
 	$hostprofiles = $hostprofiles . "<option>" . $hstprof[$i] . "</option>\n";
 }
 
+echo ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+echo ("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n");
 ?>
 
 <html>
@@ -107,7 +109,6 @@ for ($i = 0; $i < sizeof($hstprof); $i++) {
 				<tr>
 					<td>
 						<input checked type="radio" name="profile" value="newuser">
-						</input>
 					</td>
 					<td colspan=2>
 						<? echo _("Create a new User Profile"); ?>
@@ -117,12 +118,11 @@ for ($i = 0; $i < sizeof($hstprof); $i++) {
 				<tr>
 					<td>
 						<input type="radio" name="profile" value="edituser">
-						</input>
 					</td>
 					<td>
 						<select name="e_user" size=1>
 							<? echo $userprofiles ?>
-						<select>
+						</select>
 					</td>
 					<td>
 						<? echo _("Edit User Profile"); ?>
@@ -132,12 +132,11 @@ for ($i = 0; $i < sizeof($hstprof); $i++) {
 				<tr>
 					<td>
 						<input type="radio" name="profile" value="deluser">
-						</input>
 					</td>
 					<td>
 						<select name="d_user" size=1>
 							<? echo $userprofiles ?>
-						<select>
+						</select>
 					</td>
 					<td>
 						<? echo _("Delete User Profile"); ?>
@@ -158,7 +157,6 @@ for ($i = 0; $i < sizeof($hstprof); $i++) {
 				<tr>
 					<td>
 						<input type="radio" name="profile" value="newhost">
-						</input>
 					</td>
 					<td colspan=2>
 						<? echo _("Create a new Samba Host Profile"); ?>
@@ -168,12 +166,11 @@ for ($i = 0; $i < sizeof($hstprof); $i++) {
 				<tr>
 					<td>
 						<input type="radio" name="profile" value="edithost">
-						</input>
 					</td>
 					<td>
 						<select name="e_host" size=1>
 							<? echo $hostprofiles ?>
-						<select>
+						</select>
 					</td>
 					<td>
 						<? echo _("Edit Samba Host Profile"); ?>
@@ -183,12 +180,11 @@ for ($i = 0; $i < sizeof($hstprof); $i++) {
 				<tr>
 					<td>
 						<input type="radio" name="profile" value="delhost">
-						</input>
 					</td>
 					<td>
 						<select name="d_host" size=1>
 							<? echo $hostprofiles ?>
-						<select>
+						</select>
 					</td>
 					<td>
 						<? echo _("Delete Samba Host Profile"); ?>
@@ -201,10 +197,11 @@ for ($i = 0; $i < sizeof($hstprof); $i++) {
 		<br>
 
 		<!-- forward is used to check if buttons were pressed -->
-		<input type="hidden" name="forward" value="yes"></input>
+		<input type="hidden" name="forward" value="yes">
 
-		<input type="submit" name="submit" value="<? echo _("Submit"); ?>"></input>
-		<input type="submit" name="abort" value="<? echo _("Abort"); ?>"></input>
+		<input type="submit" name="submit" value="<? echo _("Submit"); ?>">
+		<input type="submit" name="abort" value="<? echo _("Abort"); ?>">
 
+		</form>
 	</body>
 </html>
