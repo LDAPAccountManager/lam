@@ -40,7 +40,7 @@ if (!$_SESSION['ldap'] || !$_SESSION['ldap']->server()) {
 if ($_POST['forward'] == "yes") {
 	// on abort go back to main page
 	if ($_POST['abort']) {
-		echo("<meta http-equiv=\"refresh\" content=\"0; URL=../main.php\">");
+		echo("<meta http-equiv=\"refresh\" content=\"0; URL=../lists/listusers.php\">");
 	}
 	// on submit forward to other profile pages
 	elseif ($_POST['submit']) {
