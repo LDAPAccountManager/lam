@@ -59,7 +59,8 @@ else
 		</title>
 	</head>
 	<body>
-		<p align="center"><img src="../graphics/banner.jpg" border=1></p><hr><br><br>
+		<p align="center"><img src="../graphics/banner.jpg" border=1></p>
+		<table width="100%" border="0"><tr><td width="100%" align="right"><a href="../config/conflogin.php" target="_self"><? echo _("Configuration Login") ?></a></td></tr></table><hr><br><br>
 		<b><p align="center"> <? echo _("Enter Username and Password for Account:"); ?> </b></p>
 		<? if($error_message != "") { echo "<p align=\"center\">"; echo _($error_message); echo "</p>"; } ?>
 		<form action="login.php" method="post">
