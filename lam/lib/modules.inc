@@ -535,8 +535,10 @@ function doUploadPostActions($scope, $data, $ids, $failed) {
 * @param boolean $restricted If true then no buttons will be displayed
 * @param integer $tabindex Start value of tabulator index for input fields
 * @param integer $tabindexLink Start value of tabulator index for links
+* @return array List of input field names and their type (name => type)
 */
 function parseHtml($module, $input, $values, $restricted, &$tabindex, &$tabindexLink) {
+	$ret = array();
 	if (is_array($input)) {
 		echo "<table>\n";
 		for ($i=0; $i<count($input); $i++) {	// $i = row number
@@ -557,22 +559,36 @@ function parseHtml($module, $input, $values, $restricted, &$tabindex, &$tabindex
 						break;
 					// input fields
 					case 'input':
-						if ($restricted && ($input[$i][$j]['type'] == "submit")) break;	// no buttons in restricted mode
+						$type = $input[$i][$j]['type'];
+						if ($restricted && (($type == "submit") || ($type == "reset") || ($type == "file"))) break;	// no buttons in restricted mode
 						$output = "<input";
 						if ($input[$i][$j]['name']!='') $output .= ' name="' . $input[$i][$j]['name'] . '"';
-						if ($input[$i][$j]['type']!='') $output .= ' type="' . $input[$i][$j]['type'] . '"';
+						if ($type != '') $output .= ' type="' . $type . '"';
 						if ($input[$i][$j]['size']!='') $output .= ' size="' . $input[$i][$j]['size'] . '"';
 						if ($input[$i][$j]['maxlength']!='') $output .= ' maxlength="' . $input[$i][$j]['maxlength'] . '"';
-						if ($input[$i][$j]['value']!='') $output .= ' value="' . $input[$i][$j]['value'] . '"';
+						// checkbox
+						if ($type == "checkbox") {
+							if (isset($values[$input[$i][$j]['name']])) {
+								if ($values[$input[$i][$j]['name']] == "true") $output .= ' checked';
+							}
+							elseif ($input[$i][$j]['checked']) $output .= ' checked';
+						}
+						// other input element
+						else {
+							if (isset($values[$input[$i][$j]['name']])) {
+								$output .= ' value="' . $values[$input[$i][$j]['name']] . '"';
+							}
+							elseif ($input[$i][$j]['value']!='') $output .= ' value="' . $input[$i][$j]['value'] . '"';
+						}
 						if ($input[$i][$j]['disabled']) $output .= ' disabled';
 						// Show taborder
 						else {
 							$output .= " tabindex=$tabindex";
 							$tabindex++;
 						}
-						if ($input[$i][$j]['checked']) $output .= ' checked';
 						$output .= ">";
 						echo $output;
+						$ret[$input[$i][$j]['name']] = $type;	// save type
 						break;
 					// inner fieldset
 					case 'fieldset':
@@ -583,6 +599,22 @@ function parseHtml($module, $input, $values, $restricted, &$tabindex, &$tabindex
 						break;
 					// selection
 					case 'select':
+						if (! is_numeric($input[$i][$j]['size'])) $input[$i][$j]['size'] = 1;	// correct size if needed
+						if (isset($input[$i][$j]['multiple'])) {
+							echo "<select name=\"" . $input[$i][$j]['name'] . '[]"';
+							echo ' multiple';
+							$ret[$input[$i][$j]['name']] = 'multiselect';	// save type
+						}
+						else {
+							echo "<select name=\"" . $input[$i][$j]['name'] . '"';
+							$ret[$input[$i][$j]['name']] = 'select';	// save type
+						}
+						echo ' size="' . $input[$i][$j]['size'] . '"';
+						// Show taborder
+						echo " tabindex=$tabindex";
+						$tabindex++;
+						echo ">\n";
+						// init option fields
 						if (!is_array($input[$i][$j]['options'])) $input[$i][$j]['options'] = array ( $input[$i][$j]['options'] );
 						if (isset($input[$i][$j]['options_selected'])) {
 							if (!is_array($input[$i][$j]['options_selected'])) {
@@ -593,17 +625,11 @@ function parseHtml($module, $input, $values, $restricted, &$tabindex, &$tabindex
 						else {
 							$input[$i][$j]['options_selected'] = array();
 						}
-						echo "<select name=\"" . $input[$i][$j]['name'] . '"';
-						if (isset($input[$i][$j]['multiple'])) echo ' multiple';
-						if (isset($input[$i][$j]['size'])) echo ' size="' . $input[$i][$j]['size'] . '"';
-						// Show taborder
-						echo " tabindex=$tabindex";
-						$tabindex++;
-						echo ">\n";
+						if (isset($values[$input[$i][$j]['name']])) $input[$i][$j]['options_selected'] = $values[$input[$i][$j]['name']];
 						// merge both option arrays and sort them.
 						$options = array_merge ($input[$i][$j]['options'], $input[$i][$j]['options_selected'] );
 						$options = array_unique($options);
-						if (get_preg($options[0], 'digit'))  sort($options, SORT_NUMERIC);
+						if (get_preg($options[0], 'digit')) sort($options, SORT_NUMERIC);
 						else sort($options, SORT_STRING);
 						foreach ($options as $option) {
 							if ($option!='') {
@@ -646,6 +672,7 @@ function parseHtml($module, $input, $values, $restricted, &$tabindex, &$tabindex
 		}
 	}
 	echo "</table>\n";
+	return $ret;
 }
 
 /**
