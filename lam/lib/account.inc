@@ -635,7 +635,7 @@ function checkid($values, $values_old=false) {
 				$i = intval($minID);
 				while (in_array($i, $uids)) $i++;
 				if ($i>$maxID) return implode(':', array($values->general_uidNumber , implode(';', array('ERROR', _('ID-Number'), _('No free ID-Number!')))));
-					else return implode(':', array($i, implode(';', array('WARN', _('ID-Number'), _('It\'s possible id-number is reused. This can cause several problems because some old file-permission can be still in use. To avoid this warning set maxUID to a higher value.')))));
+					else return implode(':', array($i, implode(';', array('WARN', _('ID-Number'), _('It is possible that this ID-number is reused. This can cause several problems because files with old permissions might still exist. To avoid this warning set maxUID to a higher value.')))));
 				}
 			else return implode(':', array($minID, ''));
 			// return minimum allowed id-number if no id-numbers are found
@@ -1228,8 +1228,6 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 		$values->smb_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($values->smb_password), MCRYPT_MODE_ECB, $iv);
 		$values->smb_password = str_replace(chr(00), '', $values->smb_password);
 		}
-
-
 	// Attributes which are required
 	if ($values->general_username != $values_old->general_username) {
 		$attr['cn'] = $values->general_username;
@@ -1276,6 +1274,7 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 	if ($values->general_gecos != $values_old->general_gecos) {
 		$attr['gecos'] = utf8_encode(replace_umlaut($values->general_gecos));
 		$attr['description'] = utf8_encode($values->general_gecos);
+		}
 	if (($values->unix_pwdminage != $values_old->unix_pwdminage) && ($values->unix_pwdminage !=''))
 		$attr['shadowMin'] = $values->unix_pwdminage; // shadowAccount_may
 	if (($values->unix_pwdminage != $values_old->unix_pwdminage) && ($values->unix_pwdminage ==''))
@@ -1286,13 +1285,12 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 		$attr_rem['shadowMax'] = $values_old->unix_pwdmaxage; // shadowAccount_may
 	if (($values->unix_pwdwarn != $values_old->unix_pwdwarn) && ($values->unix_pwdwarn !=''))
 		$attr['shadowWarning'] = $values->unix_pwdwarn; // shadowAccount_may
-	if (($values->unix_pwdwarn != $values_old->unix_pwdwarn) && ($values->general_pwdwarn ==''))
+	if (($values->unix_pwdwarn != $values_old->unix_pwdwarn) && ($values->unix_pwdwarn ==''))
 		$attr_rem['shadowWarning'] = $values_old->unix_pwdwarn; // shadowAccount_may
 	if (($values->unix_pwdallowlogin != $values_old->unix_pwdallowlogin) && ($values->unix_pwdallowlogin !=''))
 		$attr['shadowInactive'] = $values->unix_pwdallowlogin; // shadowAccount_may
 	if (($values->unix_pwdallowlogin != $values_old->unix_pwdallowlogin) && ($values->unix_pwdallowlogin ==''))
 		$attr_rem['shadowInactive'] = $values_old->unix_pwdallowlogin; // shadowAccount_may
-		}
 	// Check if shadow expire has changed
 	if ($values->unix_pwdexpire != $values_old->unix_pwdexpire) $attr['shadowExpire'] = intval($values->unix_pwdexpire / 86400) ;
 	// Set unix password
@@ -1551,12 +1549,6 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 	if (($values->personal_employeeType != $values_old->personal_employeeType) && ($values->personal_employeeType==''))
 		$attr_rem['employeeType'] = utf8_encode($values_old->personal_employeeType);
 
-	if ($attr_rem) {
-		// Remove old attributes which are no longer in use
-		$success = ldap_mod_del($_SESSION['ldap']->server(),$values_old->general_dn, $attr_rem);
-		if (!$success) return 5;
-		}
-
 	if ($values->general_dn != $values_old->general_dn) {
 		// Account should be moved to a new location
 		// Load old account
@@ -1570,7 +1562,15 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 		for ($i=0; $i < sizeof($keys); $i++)
 			unset($attr_old[$keys[$i]]['count']);
 		// Change uid to new uid. Else ldap won't create the new entry
-		$attr_old['uid'][0] = $values->general_username;
+		//$attr_old['uid'][0] = $values->general_username;
+		$attr_rem_keys = @array_keys($attr_rem);
+		for ($i=0; $i<count($attr_rem_keys); $i++) { // Remove attributes which should be deleted from array
+			if (isset($attr_old[$attr_rem_keys[$i]][0])) unset($attr_old[$attr_rem_keys[$i]]);
+			}
+		$attr_keys = @array_keys($attr);
+		for ($i=0; $i<count($attr_keys); $i++) { // Add attributes which have changed
+			$attr_old[$attr_keys[$i]][0] = $attr[$attr_keys[$i]];
+			}
 		// Create account at new location
 		$success = ldap_add($_SESSION['ldap']->server(),$values->general_dn, $attr_old);
 		// remove old account
@@ -1587,11 +1587,17 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 			$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
 			}
 		}
-
-	if ($attr) {
-		// Change or add new attributes
-		$success = ldap_modify($_SESSION['ldap']->server(),$values->general_dn, $attr);
-		if (!$success) return 5;
+	else { // Just modify, not recreate
+		if ($attr) {
+			// Change or add new attributes
+			$success = ldap_modify($_SESSION['ldap']->server(),$values->general_dn, $attr);
+			if (!$success) return 5;
+			}
+		if ($attr_rem) {
+			// Remove old attributes which are no longer in use
+			$success = ldap_mod_del($_SESSION['ldap']->server(),$values->general_dn, $attr_rem);
+			if (!$success) return 5;
+			}
 		}
 
 	// Write additional groupmemberchips
@@ -1897,12 +1903,6 @@ function modifyhost($values,$values_old) {
 		if (($values->smb_domain=='') && ($values->smb_domain!=$values_old->smb_domain)) $attr_rem['domain'] = $values_old->smb_domain; // sambaAccount_may
 		}
 
-	if ($attr_rem) {
-		// Remove old attributes which are no longer in use
-		$success = ldap_mod_del($_SESSION['ldap']->server(),$values_old->general_dn, $attr_rem);
-		if (!$success) return 5;
-		}
-
 	if ($values->general_dn != $values_old->general_dn) {
 		// Account should be moved to a new location
 		// Load old account
@@ -1916,19 +1916,34 @@ function modifyhost($values,$values_old) {
 		for ($i=0; $i < sizeof($keys); $i++)
 			unset($attr_old[$keys[$i]]['count']);
 		// Change uid to new uid. Else ldap won't create the new entry
-		$attr_old['uid'][0] = $values->general_username;
+		//$attr_old['uid'][0] = $values->general_username;
+		$attr_rem_keys = @array_keys($attr_rem);
+		for ($i=0; $i<count($attr_rem_keys); $i++) { // Remove attributes which should be deleted from array
+			if (isset($attr_old[$attr_rem_keys[$i]][0])) unset($attr_old[$attr_rem_keys[$i]]);
+			}
+		$attr_keys = @array_keys($attr);
+		for ($i=0; $i<count($attr_keys); $i++) { // Add attributes which have changed
+			$attr_old[$attr_keys[$i]][0] = $attr[$attr_keys[$i]];
+			}
 		// Create account at new location
 		$success = ldap_add($_SESSION['ldap']->server(),$values->general_dn, $attr_old);
 		// remove old account
 		if ($success) $success = ldap_delete($_SESSION['ldap']->server(),$values_old->general_dn);
 		if (!$success) return 5;
 		}
-
-	if ($attr) {
-		// Change or add new attributes
-		$success = ldap_modify($_SESSION['ldap']->server(),$values_old->general_dn, $attr);
-		if (!$success) return 5;
+	else { // Just modify, not recreate
+		if ($attr) {
+			// Change or add new attributes
+			$success = ldap_modify($_SESSION['ldap']->server(),$values->general_dn, $attr);
+			if (!$success) return 5;
+			}
+		if ($attr_rem) {
+			// Remove old attributes which are no longer in use
+			$success = ldap_mod_del($_SESSION['ldap']->server(),$values->general_dn, $attr_rem);
+			if (!$success) return 5;
+			}
 		}
+
 	//make required changes in cache-array
 	if ((isset($_SESSION['hostDN']))) {
 		if ($values->general_dn != $values_old->general_dn) {
@@ -2032,12 +2047,6 @@ function modifygroup($values,$values_old) {
 		 else $attr['memberUid'] = $values->unix_memberUid;
 		}
 
-	if ($attr_rem) {
-		// Remove attributes which are no longer in use
-		$success = ldap_mod_del($_SESSION['ldap']->server(),$values_old->general_dn, $attr_rem);
-		if (!$success) return 5;
-		}
-
 	if ($values->general_dn != $values_old->general_dn) {
 		// Account should be moved to a new location
 		// Load old account
@@ -2047,23 +2056,38 @@ function modifygroup($values,$values_old) {
 		// remove "count" from array
 		unset($attr_old['count']);
 		for ($i=0; $i < sizeof($attr_old); $i++) unset($attr_old[$i]);
-		$keys = array_keys($attr_old);
+		$keys = @array_keys($attr_old);
 		for ($i=0; $i < sizeof($keys); $i++)
 			unset($attr_old[$keys[$i]]['count']);
 		// Change cn to new cn. Else ldap won't create the new entry
-		$attr_old['cn'][0] = $values->general_username;
+		//$attr_old['cn'][0] = $values->general_username;
+		$attr_rem_keys = @array_keys($attr_rem);
+		for ($i=0; $i<count($attr_rem_keys); $i++) { // Remove attributes which should be deleted from array
+			if (isset($attr_old[$attr_rem_keys[$i]][0])) unset($attr_old[$attr_rem_keys[$i]]);
+			}
+		$attr_keys = array_keys($attr);
+		for ($i=0; $i<count($attr_keys); $i++) { // Add attributes which have changed
+			$attr_old[$attr_keys[$i]][0] = $attr[$attr_keys[$i]];
+			}
 		// Create account at new location
 		$success = ldap_add($_SESSION['ldap']->server(),$values->general_dn, $attr_old);
 		// remove old account
 		if ($success) $success = ldap_delete($_SESSION['ldap']->server(),$values_old->general_dn);
 		if (!$success) return 5;
 		}
-
-	if ($attr) {
-		// Change or add new attributes
-		$success = ldap_modify($_SESSION['ldap']->server(),$values->general_dn, $attr);
-		if (!$success) return 5;
+	else { // Just modify, not recreate
+		if ($attr) {
+			// Change or add new attributes
+			$success = ldap_modify($_SESSION['ldap']->server(),$values->general_dn, $attr);
+			if (!$success) return 5;
+			}
+		if ($attr_rem) {
+			// Remove old attributes which are no longer in use
+			$success = ldap_mod_del($_SESSION['ldap']->server(),$values->general_dn, $attr_rem);
+			if (!$success) return 5;
+			}
 		}
+
 
 	// Chnage GIDs of all users which are member of group
 	if ( $_SESSION['final_changegids']==true ) {

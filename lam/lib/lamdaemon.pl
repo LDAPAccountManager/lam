@@ -69,8 +69,10 @@ sub get_fs { # Load mountpoints from mtab if enabled quotas
 # ***************** Check values
 if ($( == 0 ) {
 	if ($ARGV[2] eq "*test") { print "sudo set up correctly.\n"; }
-	use Quota; # Needed to get and set quotas
-	if ($ARGV[2] eq "*test") { print "Perl quota module successfully installed.\n"; }
+	if ($ARGV[2] eq "*test") { 
+	    print "Perl quota module successfully installed.\n";
+	    use Quota; # Needed to get and set quotas
+	    }
 	# Drop root Previleges
 	($<, $>) = ($>, $<);
 	switch: {
@@ -113,6 +115,7 @@ if ($( == 0 ) {
 			last switch;
 			};
 		$vals[3] eq 'quota' && do {
+			use Quota; # Needed to get and set quotas
 			get_fs(); # Load list of devices with enabled quotas
 			# Store quota information in array
 			@quota_temp1 = split (':', $vals[6]);

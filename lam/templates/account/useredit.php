@@ -741,7 +741,12 @@ echo "</title>\n".
 if (is_array($errors))
 	for ($i=0; $i<sizeof($errors); $i++) StatusMessage($errors[$i][0], $errors[$i][1], $errors[$i][2]);
 
-// print_r($account_new);
+//print_r($account_new);
+//print_r($account_old);
+
+//if (($account_new->unix_pwdwarn != $account_old->unix_pwdwarn) && ($account_new->unix_pwdwarn !=''))
+//	print "treffer";
+
 
 switch ($select_local) {
 	/* Select which part of page should be loaded and check values
