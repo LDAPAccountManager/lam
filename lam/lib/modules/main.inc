@@ -194,7 +194,7 @@ class main {
 			// Show reason why module is disabled
 			for ($i=0; $i<count($modules); $i++)
 				$return[] = array ( 0 => array ( 'kind' => 'message', 'type' => 'ERROR', 'headline' =>  _('Check module'),
-					'text' => sprintf(_('Please set up all required attributes on %s page'), $_SESSION[$this->base]->module[$modules[$i]]->alias) ));
+					'text' => sprintf(_('Please set up all required attributes on %s page.'), $_SESSION[$this->base]->module[$modules[$i]]->get_alias()) ));
 			}
 			else $disabled = true;
 

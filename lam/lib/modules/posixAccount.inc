@@ -72,7 +72,6 @@ class posixAccount {
 		$this->orig = $_SESSION[$this->base]->get_module_attributes('posixAccount');
 		$this->attributes = $_SESSION[$this->base]->get_module_attributes('posixAccount');
 
-		$this->alias = _('posixAccount');
 		$groups = $_SESSION[$_SESSION[$this->base]->cache]->findgroups(); // list of all groupnames
 		if (count($groups)==0) trigger_error(_('No groups found in ldap.'), E_USER_WARNING);
 

@@ -529,6 +529,9 @@ class accountContainer {
 								echo ">\n";
 								echo "<a href=../help.php?module=$module&item=". $input[$i][$j]['value'] . ">" . _('Help') . "</a></td>\n";
 								break;
+							case 'message':
+								StatusMessage($input[$i][$j]['type'], $input[$i][$j]['headline'], $input[$i][$j]['text']);
+								break;
 							default:
 								echo "<td>Unrecognized type: " . $input[$i][$j]['kind'] . "</td>\n";
 								break;
@@ -797,8 +800,6 @@ class accountContainer {
 		else {
 			// Add module if it exists
 			if (class_exists($objectClass)) {
-				print $objectClass;
-				print "<br>X";
 				$this->module[$objectClass] = new $objectClass($this->base);
 				}
 			else trigger_error (_("objectClass $objectClass required but no module found."), E_USER_WARNING);
@@ -882,10 +883,7 @@ class accountContainer {
 		$this->order = $order;
 		// *** fixme load*Profile must return array in the same way ldap_get_attributes does.
 		$function = '$newattributes = load'.ucfirst($this->type).'Profile(\'default\');';
-		eval($function);
-		// pass newattributes to each module
-		//foreach ($module as $module2)
-		//	$this->module[$module2]->load_attributes($newattributes);
+		//eval($function);
 		return 0;
 		}
 
