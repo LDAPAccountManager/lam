@@ -293,6 +293,11 @@ class quota {
 		return 0;
 		}
 
+	function get_profileOptions($scope) {
+		$return = array();
+		return $return;
 	}
+
+}
 
 ?>

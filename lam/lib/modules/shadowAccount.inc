@@ -256,6 +256,23 @@ class shadowAccount {
 		return 0;
 		}
 
+	function get_profileOptions($scope) {
+		$return = array();
+		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Password warn') ),
+			1 => array ( 'kind' => 'input', 'name' => 'shadowWarning', 'type' => 'text', 'size' => '4', 'maxlength' => '4', 'value' => $this->attributes['shadowWarning'][0] ),
+			2 => array ( 'kind' => 'help', 'value' => 'shadowWarning' ));
+		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Password expire') ),
+			1 => array ( 'kind' => 'input', 'name' => 'shadowInactive', 'type' => 'text', 'size' => '4', 'maxlength' => '4', 'value' => $this->attributes['shadowInactive'][0] ),
+			2 => array ( 'kind' => 'help', 'value' => 'shadowInactive' ));
+		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Maximum password age') ),
+			1 => array ( 'kind' => 'input', 'name' => 'shadowMax', 'type' => 'text', 'size' => '5', 'maxlength' => '5', 'value' => $this->attributes['shadowMax'][0] ),
+			2 => array ( 'kind' => 'help', 'value' => 'shadowMax' ));
+		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Minimum password age') ),
+			1 => array ( 'kind' => 'input', 'name' => 'shadowMin', 'type' => 'text', 'size' => '5', 'maxlength' => '5', 'value' => $this->attributes['shadowMin'][0] ),
+			2 => array ( 'kind' => 'help', 'value' => 'shadowMin' ));
+		return $return;
 	}
+
+}
 
 ?>

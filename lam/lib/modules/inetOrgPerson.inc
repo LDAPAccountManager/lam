@@ -302,6 +302,11 @@ class inetOrgPerson {
 	function display_html_delete($post, $profile=false) {
 		return 0;
 		}
+
+	function get_profileOptions($scope) {
+		if ($scope == "user") return array();
 	}
+
+}
 
 ?>

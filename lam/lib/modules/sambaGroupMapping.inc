@@ -305,6 +305,15 @@ class sambaGroupMapping {
 		return 0;
 		}
 
+	function get_profileOptions($scope) {
+		$return = array();
+		// TODO fill in correct domains
+		$return[] = array (0 => array ('kind' => 'text', 'text' => _('Domain')),
+			1 => array ('kind' => 'select', 'name' => 'sambaDomainName', 'options' => $sambaDomainNames),
+			2 => array ('kind' => 'help', 'value' => 'sambaDomainName' ));
+		return $return;
 	}
+
+}
 
 ?>

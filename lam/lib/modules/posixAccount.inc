@@ -669,6 +669,15 @@ class posixAccount {
 		}
 
 
+	function get_profileOptions($scope) {
+		$return = array();
+		// TODO fill in correct groups
+		$return[] = array (0 => array ('kind' => 'text', 'text' => _('Primary group')),
+			1 => array ('kind' => 'select', 'name' => 'gidNumber', 'options' => array('g1', 'g2', 'g3'), 'options_selected' => array(), 'size' => 1),
+			2 => array ('kind' => 'help', 'value' => 'gidNumber'));
+		return $return;
 	}
+
+}
 
 ?>

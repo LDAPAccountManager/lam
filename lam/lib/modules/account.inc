@@ -198,6 +198,10 @@ class account {
 		return 0;
 		}
 
+	function get_profileOptions($scope) {
+		if ($scope == "host") return array();
 	}
+
+}
 
 ?>
