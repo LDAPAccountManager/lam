@@ -32,7 +32,7 @@ include_once('xml_parser.inc');
 $key = false;
 $line_width = LAMPDF_LINEWIDTH;
 
-function createModulePDF($accounts,$account_type) {
+function createModulePDF($accounts,$account_type="") {
 	
 	global $key;
 	
@@ -40,9 +40,6 @@ function createModulePDF($accounts,$account_type) {
 	if(!isset($_SESSION['pdf_structure'])) {
 		$_SESSION['pdf_structure'] = getStructure();
 	}
-	
-	// Get PDF structure from session
-	$structure = $_SESSION['pdf_structure'][$account_type];
 	
 	// The decimal separator must be a dot in order to write pdf-files
 	setlocale(LC_NUMERIC, "C");
@@ -52,6 +49,15 @@ function createModulePDF($accounts,$account_type) {
 	
 	// Loop over each account and add a new page in the PDF file for it 
 	foreach($accounts as $account) {
+		// Get account type from account container if none was specified or
+		// if it is different to the submitted or previous stored
+		if($account_type == "" || $account_type != $account->get_type()) {
+			$account_type = $account->get_type();
+		}
+		
+		// Get PDF structure from session
+		$structure = $_SESSION['pdf_structure'][$account_type];
+		
 		// Start a new page for each account
 		$pdf->AddPage();
 		
@@ -127,16 +133,19 @@ function createModulePDF($accounts,$account_type) {
 			}
 			// We have to include an entry from the account
 			elseif($entry['tag'] == "ENTRY") {
+				// Get name of current entry
+				$name = $entry['attributes']['NAME'];
+				
 				// Get current entry
-				$entry = $entries[$name];
+				$value_entry = $entries[$name];
 				
 				// Loop over all rows of this entry (most of the time this will be just one)
-				foreach($entry as $line) {
+				foreach($value_entry as $line) {
 					// Substitue XML syntax with valid FPDF methods
 					$methods = processLine($line);
 					// Call every method
 					foreach($methods as $method) {
-						call_user_method_array($pdf,$method[0],$method[1]);
+						call_user_func_array(array(&$pdf,$method[0]),$method[1]);
 					}
 				}
 				$key = false;
@@ -145,7 +154,7 @@ function createModulePDF($accounts,$account_type) {
 	}
 	
 	// Close PDF
-	$pdfFile->Close();
+	$pdf->Close();
 	// Get relative url path
 	$fullpath = realpath('.');
 	$subdirs = explode('/', str_replace($_SESSION['lampath'], '', $fullpath));
@@ -153,16 +162,16 @@ function createModulePDF($accounts,$account_type) {
 	// use timestamp and random number from ldap.inc as filename so it should be unique.
 	$filename .= 'tmp/' . $_SESSION['ldap']->rand . time() .'.pdf';
 	// Save PDF
-	$pdfFile->Output($filename);
+	$pdf->Output($filename);
 	// Output meta refresh to pdf-file
 	metaRefresh($filename);
 	// Return relative path of pdf-file
 	return $filename;
 }
 
-function getStructure($account_type = array("User","Group","Host")) {
+function getStructure($account_type = array("user","group","host")) {
 	$parser = new xmlParser();
-	$xml = $parser->parse('../config/pdf-structure.xml');
+	$xml = $parser->parse($_SESSION['lam_path'] . '/config/pdf-structure.xml');
 	$border = array();
 	$structure = array();
 	while(($current = current($account_type)) != null) {
@@ -190,7 +199,8 @@ function processLine($line,$first_td = true) {
 	// PCRE matching a <key> tag
 	$key_pattern = '/(<block>)<key>(.+)<\/key>(.*<\/block>)/';
 	// PCRE matching a <value> tag
-	$value_pattern = '/(<block>.*)<value>(.+)<\/value>(<\/block>)/';
+	// !!FIXME!! value must contain at least one character
+	$value_pattern = '/(<block>.*)<value>(.*)<\/value>(<\/block>)/';
 	// PCRE matching a <td> tag
 	$td_pattern = '/(<block>.*?)<td(.*?)>(.+?)<\/td>(.*<\/block>)/';
 	// PCRE matching a <p> tag

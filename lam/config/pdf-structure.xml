@@ -2,7 +2,7 @@
 	<pdf type="User">
 		<text name="User" />
 		<section name="Personal User Infos">
-			<entry name="Title" />
+			<entry name="title" />
 			<entry name="givenName" />
 			<entry name="sn" />
 			<entry name="street" />
@@ -24,14 +24,14 @@
 			<entry name="host" />
 		</section>
 		<section name="Windows User Settings">
-			<entry name="Username" />
+			<entry name="uid" />
 			<entry name="Windows password" />
-			<entry name="Home drive" />
-			<entry name="Script path" />
-			<entry name="Profile path" />
-			<entry name="Login at workstation(s)" />
-			<entry name="Windows home directory" />
-			<entry name="Windows domain" /> 
+			<entry name="sambaHomeDrive" />
+			<entry name="sambaLogonScript" />
+			<entry name="sambaProfilePath" />
+			<entry name="sambaUserWorkstations" />
+			<entry name="sambaHomePath" />
+			<entry name="sambaDomainName" /> 
 		</section>
 		<section name="Quota Settings">
 			<entry name="User quotas" />

@@ -716,7 +716,12 @@ class sambaSamAccount {
 	}
 	
 	function get_pdfEntries($account_type = "User") {
-		return array();
+		return array(	'sambaDomainName' => array('<block><key>' . _('Domain') . '</key><value>' . $this->attributes['sambaDomainName'][0] . '</value></block>'),
+							'sambaHomeDrive' => array('<block><key>' . _('Home drive') . '</key><value>' . $this->attributes['sambaHomeDrive'][0] . '<value></<block>'),
+							'sambaHomePath' => array('<block><key>' . _('Home path') . '</key><value>' . $this->attributes['sambaHomePath'][0] . '</value></block>'),
+							'sambaProfilePath' => array('<block><key>' . _('Profile path') . '</key><value>' . $this->attributes['sambaProfilePath'][0] . '</value></block>'),
+							'sambaLogonScript' => array('<block><key>' . _('Login script') . '</key><value>' . $this->attributes['sambaScriptPath'][0] . '</value></block>'),
+							'sambaUserWorkstations' => array('<block><key>' . _('Samba workstations') . '</key><value>' . $this->attributes['sambaUserWorkstations'][0] . '</value></block>'));
 	}
 
 }
