@@ -178,9 +178,9 @@ function checkglobal($values, $type, $values_old=false) { // This functions chec
 			$return->general_homedir = str_replace('$group', $values->general_group, $values->general_homedir);
 			if ($values->general_username != '')
 				$return->general_homedir = str_replace('$user', $values->general_username, $return->general_homedir);
-			if ($return->general_homedir != $values->general_homedir) $errors[] = array('INFO', _('Home Directory'), _('Replaced $user or $group in homedir.'));
+			if ($return->general_homedir != $values->general_homedir) $errors[] = array('INFO', _('Home directory'), _('Replaced $user or $group in homedir.'));
 			if ( !ereg('^[/]([a-z]|[A-Z])([a-z]|[A-Z]|[0-9]|[.]|[-]|[_])*([/]([a-z]|[A-Z])([a-z]|[A-Z]|[0-9]|[.]|[-]|[_])*)*$', $return->general_homedir ))
-				$errors[] = array('ERROR', _('Home Directory'), _('Homedirectory contains invalid characters.'));
+				$errors[] = array('ERROR', _('Home directory'), _('Homedirectory contains invalid characters.'));
 			// Check if givenname is valid
 			if ( !ereg('^([a-z]|[A-Z]|[-]|[ ]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+$', $values->general_givenname)) $errors[] = array('ERROR', _('Given name'), _('Given name contains invalid characters'));
 			// Check if surname is valid
@@ -194,6 +194,14 @@ function checkglobal($values, $type, $values_old=false) { // This functions chec
 			if ( !ereg('^([a-z]|[0-9]|[.]|[-]|[_])*$', $values->general_username))
 				$errors[] = array('ERROR', _('Username'), _('Username contains invalid characters. Valid characters are: a-z, 0-9 and .-_ !'));
 			// Check if user already exists
+			if (isset($values->general_groupadd) && in_array($values->general_group, $values->general_groupadd)) {
+				$return->general_groupadd = $values->general_groupadd;
+				for ($i=0; $i<count($values->general_groupadd); $i++ )
+					if ($values->general_groupadd[$i] == $values->general_group) {
+						unset ($return->general_groupadd[$i]);
+						$return->general_groupadd = array_values($return->general_groupadd);
+						}
+				}
 			$return->general_username = $values->general_username;
 			$return->general_dn = $values->general_dn;
 			// Create automatic useraccount with number if original user already exists
@@ -316,12 +324,12 @@ function checkunix($values, $type) { // This function checks all unix account pa
 		}
 	if ($type=='user' && !ereg('^([a-z]|[A-Z]|[0-9]|[\|]|[\#]|[\*]|[\,]|[\.]|[\;]|[\:]|[\_]|[\-]|[\+]|[\!]|[\%]|[\&]|[\/]|[\?]|[\{]|[\[]|[\(]|[\)]|[\]]|[\}])*$', $values->unix_password))
 		$errors[] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
-	if ( !ereg('^([0-9])*$', $values->unix_pwdminage))  $errors[] = array('ERROR', _('Password Minage'), _('Password Minage must be are natural number.'));
-	if ( $values->unix_pwdminage > $values->unix_pwdmaxage ) $errors[] = array('ERROR', _('Password Maxage'), _('Password Maxage must bigger as Password Minage.'));
-	if ( !ereg('^([0-9]*)$', $values->unix_pwdmaxage)) $errors[] = array('ERROR', _('Password Maxage'), _('Password Maxage must be are natural number.'));
+	if ( !ereg('^([0-9])*$', $values->unix_pwdminage))  $errors[] = array('ERROR', _('Password minage'), _('Password minage must be are natural number.'));
+	if ( $values->unix_pwdminage > $values->unix_pwdmaxage ) $errors[] = array('ERROR', _('Password maxage'), _('Password maxage must bigger as Password Minage.'));
+	if ( !ereg('^([0-9]*)$', $values->unix_pwdmaxage)) $errors[] = array('ERROR', _('Password maxage'), _('Password maxage must be are natural number.'));
 	if ( !ereg('^(([-][1])|([0-9]*))$', $values->unix_pwdallowlogin))
-		$errors[] = array('ERROR', _('Password Expire'), _('Password Expire must be are natural number or -1.'));
-	if ( !ereg('^([0-9]*)$', $values->unix_pwdwarn)) $errors[] = array('ERROR', _('Password Warn'), _('Password Warn must be are natural number.'));
+		$errors[] = array('ERROR', _('Password Expire'), _('Password expire must be are natural number or -1.'));
+	if ( !ereg('^([0-9]*)$', $values->unix_pwdwarn)) $errors[] = array('ERROR', _('Password warn'), _('Password warn must be are natural number.'));
 	if ((!$values->unix_host=='') && !ereg('^([a-z]|[A-Z]|[0-9]|[.]|[-])+(([,])+([ ])*([a-z]|[A-Z]|[0-9]|[.]|[-])+)*$', $values->unix_host))
 		$errors[] = array('ERROR', _('Unix workstations'), _('Unix workstations is invalid.'));
 	return $errors;
@@ -432,6 +440,15 @@ function checkpersonal($values) {
 	$return = new account();
 	$return = $values;
 	// Return values and errors
+	if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/])*$', $values->personal_telephoneNumber))  $errors[] = array('ERROR', _('Telephone number'), _('Please enter a valid telephone number!'));
+	if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/])*$', $values->personal_mobileTelephoneNumber))  $errors[] = array('ERROR', _('Mobile number'), _('Please enter a valid mobile number!'));
+	if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/])*$', $values->personal_facsimileTelephoneNumber))  $errors[] = array('ERROR', _('Fax number'), _('Please enter a valid fax number!'));
+	if ( !ereg('^(([0-9]|[A-Z]|[a-z]|[.]|[-]|[_])+[@]([0-9]|[A-Z]|[a-z]|[-])+([.]([0-9]|[A-Z]|[a-z]|[-])+)*)*$', $values->personal_mail))  $errors[] = array('ERROR', _('eMail address'), _('Please enter a valid eMail address!'));
+	if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $values->personal_street))  $errors[] = array('ERROR', _('Street'), _('Please enter a valid street name!'));
+	if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $values->personal_postalAddress))  $errors[] = array('ERROR', _('Postal address'), _('Please enter a valid postal address!'));
+	if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $values->personal_title))  $errors[] = array('ERROR', _('Title'), _('Please enter a valid title!'));
+	if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $values->personal_employeeType))  $errors[] = array('ERROR', _('Employee type'), _('Please enter a valid employee type!'));
+	if ( !ereg('^([0-9]|[A-Z]|[a-z])*$', $values->personal_postalCode))  $errors[] = array('ERROR', _('Postal code'), _('Please enter a valid postal code!'));
 	if (!$errors) return array($return, '');
 	 else return array($return, $errors);
 	}
@@ -1034,8 +1051,10 @@ function createuser($values) { // Will create the LDAP-Account
 		if ($values->smb_mapgroup!='') $attr['sambaPrimaryGroupSID'] = $values->smb_mapgroup; // sambaAccount_req
 			else $attr['sambaPrimaryGroupSID'] = $_SESSION['account']->smb_domain->SID . "-".
 							(2 * $_SESSION['account']->general_uidNumber + $values->smb_domain->RIDbase +1);
-		$attr['sambaPwdCanChange'] = $values->smb_pwdcanchange; // sambaAccount_may
-		$attr['sambaPwdMustChange'] = $values->smb_pwdmustchange; // sambaAccount_may
+		if ($values->smb_pwdcanchange!='') $attr['sambaPwdCanChange'] = $values->smb_pwdcanchange; // sambaAccount_may
+			else $attr['sambaPwdCanChange'] = time(); // sambaAccount_may
+		if ($values->smb_pwdmustchange!='') $attr['sambaMustCanChange'] = $values->smb_pwdmustchange; // sambaAccount_may
+			else $attr['sambaMustCanChange'] = time() + 1000000000; // sambaAccount_may
 		$attr['sambaAcctFlags'] = smbflag(values); // sambaAccount_may
 		$attr['displayName'] = $values->general_gecos; // sambaAccount_may
 		if ($values->smb_smbhome!='') $attr['sambaHomePath'] = utf8_encode($values->smb_smbhome); // sambaAccount_may
@@ -1057,7 +1076,10 @@ function createuser($values) { // Will create the LDAP-Account
 			}
 		$attr['rid'] = (2 * $values->general_uidNumber + 1000); // sambaAccount_may
 		$attr['primaryGroupID'] = $values->smb_mapgroup; // sambaAccount_req
-		$attr['pwdCanChange'] = $values->smb_pwdcanchange; // sambaAccount_may
+		if ($values->smb_pwdcanchange!='') $attr['pwdCanChange'] = $values->smb_pwdcanchange; // sambaAccount_may
+			else $attr['pwdCanChange'] = time(); // sambaAccount_may
+		if ($values->smb_pwdmustchange!='') $attr['pwdMustChange'] = $values->smb_pwdmustchange; // sambaAccount_may
+			else $attr['pwdMustChange'] = time() + 1000000000; // sambaAccount_may
 		$attr['pwdMustChange'] = $values->smb_pwdmustchange; // sambaAccount_may
 		$attr['acctFlags'] = smbflag(values); // sambaAccount_may
 		$attr['displayName'] = $values->general_gecos; // sambaAccount_may
@@ -1408,7 +1430,7 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 				}
 	if (!$success) return 5;
 	// Write Groupmemberchips
-	$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(), 'objectClass=PosixGroup', array('memberUid', 'cn'));
+ $result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(), 'objectClass=PosixGroup', array('memberUid', 'cn'));
 	$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 	while ($entry) {
 		$modifygroup=0;
