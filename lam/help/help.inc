@@ -100,6 +100,8 @@ $helpArray = array (
 						"<br><br><b>".
 						_("LAM will not work if version is wrong!").
 						"</b>"),
+				"214" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("Cache timeout"),
+					"Text" => _("This is the time in minutes which LAM caches its LDAP searches. Shorter times will stress LDAP more but decrease the possibility that changes are not identified.")),
 				// 300 - 399
 				// Roland Gruber
 				// profile editor

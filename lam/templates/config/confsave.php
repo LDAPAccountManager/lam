@@ -38,17 +38,18 @@ if ($_SESSION['passwd']) $passwd = $_SESSION['passwd'];
 if ($_SESSION['passwd1']) $passwd1 = $_SESSION['passwd1'];
 if ($_SESSION['passwd2']) $passwd2 = $_SESSION['passwd2'];
 if ($_SESSION['serverurl']) $serverurl = $_SESSION['serverurl'];
+if (isset($_SESSION['serverurl'])) $serverurl = $_SESSION['serverurl'];
 if ($_SESSION['admins']) $admins = $_SESSION['admins'];
 if ($_SESSION['suffusers']) $suffusers = $_SESSION['suffusers'];
 if ($_SESSION['suffgroups']) $suffgroups = $_SESSION['suffgroups'];
 if ($_SESSION['suffhosts']) $suffhosts = $_SESSION['suffhosts'];
 if ($_SESSION['suffdomains']) $suffdomains = $_SESSION['suffdomains'];
 //if ($_SESSION['suffmap']) $suffmap = $_SESSION['suffmap'];
-if ($_SESSION['minUID']) $minUID = $_SESSION['minUID'];
+if (isset($_SESSION['minUID'])) $minUID = $_SESSION['minUID'];
 if ($_SESSION['maxUID']) $maxUID = $_SESSION['maxUID'];
-if ($_SESSION['minGID']) $minGID = $_SESSION['minGID'];
+if (isset($_SESSION['minGID'])) $minGID = $_SESSION['minGID'];
 if ($_SESSION['maxGID']) $maxGID = $_SESSION['maxGID'];
-if ($_SESSION['minMach']) $minMach = $_SESSION['minMach'];
+if (isset($_SESSION['minMach'])) $minMach = $_SESSION['minMach'];
 if ($_SESSION['maxMach']) $maxMach = $_SESSION['maxMach'];
 if ($_SESSION['usrlstattr']) $usrlstattr = $_SESSION['usrlstattr'];
 if ($_SESSION['grplstattr']) $grplstattr = $_SESSION['grplstattr'];
@@ -82,6 +83,11 @@ if (!$serverurl) {
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
+if (!isset($cache_timeout) || !(is_numeric($cache_timeout)) || !($cache_timeout > -1)) {
+	echo ("<font color=\"red\"><b>" . _("Cache timeout is empty!") . "</b></font>");
+	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
+	exit;
+}
 if (!$admins || !eregi("^([a-z0-9]|-)+=([a-z0-9]|-)+(,([a-z0-9]|-)+=([a-z0-9]|-)+)+(;([a-z0-9]|-)+=([a-z0-9]|-)+(,([a-z0-9]|-)+=([a-z0-9]|-)+)+)*$", $admins)) {
 	echo ("<font color=\"red\"><b>" . _("List of admin users is empty or invalid!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
@@ -107,12 +113,7 @@ if (($samba3 == "yes") && !eregi("^(([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)(,([a-z]|-
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
-/*if ($suffmap && !eregi("^(([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)(,([a-z]|-|[0-9])*=([a-z]|-|[0-9])*)*$", $suffmap)) {
-	echo ("<font color=\"red\"><b>" . _("MappingSuffix is invalid!") . "</b></font>");
-	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
-	exit;
-}*/
-if (!$minUID || !is_numeric($minUID)) {
+if (!isset($minUID) || !is_numeric($minUID)) {
 	echo ("<font color=\"red\"><b>" . _("MinUID is invalid!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
@@ -122,7 +123,7 @@ if (!$maxUID || !is_numeric($maxUID)) {
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
-if (!$minGID || !is_numeric($minGID)) {
+if (!isset($minGID) || !is_numeric($minGID)) {
 	echo ("<font color=\"red\"><b>" . _("MinGID is invalid!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
@@ -132,7 +133,7 @@ if (!$maxGID || !is_numeric($maxGID)) {
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
-if (!$minMach || !is_numeric($minMach)) {
+if (!isset($minMach) || !is_numeric($minMach)) {
 	echo ("<font color=\"red\"><b>" . _("MinMachine is invalid!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
@@ -189,12 +190,12 @@ if ($scriptserver && !is_string($scriptserver)) {
 
 // set new preferences
 $conf->set_ServerURL($serverurl);
+$conf->set_cacheTimeout($cache_timeout);
 $conf->set_Adminstring($admins);
 $conf->set_UserSuffix($suffusers);
 $conf->set_GroupSuffix($suffgroups);
 $conf->set_HostSuffix($suffhosts);
 $conf->set_DomainSuffix($suffdomains);
-//$conf->set_MapSuffix($suffmap);
 $conf->set_minUID($minUID);
 $conf->set_maxUID($maxUID);
 $conf->set_minGID($minGID);
@@ -235,12 +236,12 @@ unset($_SESSION['passwd']);
 unset($_SESSION['passwd1']);
 unset($_SESSION['passwd2']);
 unset($_SESSION['serverurl']);
+unset($_SESSION['cache_timeout']);
 unset($_SESSION['admins']);
 unset($_SESSION['suffusers']);
 unset($_SESSION['suffgroups']);
 unset($_SESSION['suffhosts']);
 unset($_SESSION['suffdomains']);
-//unset($_SESSION['suffmap']);
 unset($_SESSION['minUID']);
 unset($_SESSION['maxUID']);
 unset($_SESSION['minGID']);

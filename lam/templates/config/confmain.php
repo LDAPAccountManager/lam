@@ -42,17 +42,17 @@ if ($_POST['back'] || $_POST['submitconf']){
 		if ($_POST['passwd1']) $_SESSION['passwd1'] = $_POST['passwd1'];
 		if ($_POST['passwd2']) $_SESSION['passwd2'] = $_POST['passwd2'];
 		if ($_POST['serverurl']) $_SESSION['serverurl'] = $_POST['serverurl'];
+		if (isset($_POST['cache_timeout'])) $_SESSION['cache_timeout'] = $_POST['cache_timeout'];
 		if ($_POST['admins']) $_SESSION['admins'] = $_POST['admins'];
 		if ($_POST['suffusers']) $_SESSION['suffusers'] = $_POST['suffusers'];
 		if ($_POST['suffgroups']) $_SESSION['suffgroups'] = $_POST['suffgroups'];
 		if ($_POST['suffhosts']) $_SESSION['suffhosts'] = $_POST['suffhosts'];
 		if ($_POST['suffdomains']) $_SESSION['suffdomains'] = $_POST['suffdomains'];
-//		if ($_POST['suffmap']) $suffmap = $_POST['suffmap'];
-		if ($_POST['minUID']) $_SESSION['minUID'] = $_POST['minUID'];
+		if (isset($_POST['minUID'])) $_SESSION['minUID'] = $_POST['minUID'];
 		if ($_POST['maxUID']) $_SESSION['maxUID'] = $_POST['maxUID'];
-		if ($_POST['minGID']) $_SESSION['minGID'] = $_POST['minGID'];
+		if (isset($_POST['minGID'])) $_SESSION['minGID'] = $_POST['minGID'];
 		if ($_POST['maxGID']) $_SESSION['maxGID'] = $_POST['maxGID'];
-		if ($_POST['minMach']) $_SESSION['minMach'] = $_POST['minMach'];
+		if (isset($_POST['minMach'])) $_SESSION['minMach'] = $_POST['minMach'];
 		if ($_POST['maxMach']) $_SESSION['maxMach'] = $_POST['maxMach'];
 		if ($_POST['usrlstattr']) $_SESSION['usrlstattr'] = $_POST['usrlstattr'];
 		if ($_POST['grplstattr']) $_SESSION['grplstattr'] = $_POST['grplstattr'];
@@ -141,11 +141,18 @@ echo ("<tr><td align=\"right\"><b>".
 	_("DomainSuffix") . " **: </b></td>".
 	"<td><input size=50 type=\"text\" name=\"suffdomains\" value=\"" . $conf->get_DomainSuffix() . "\"></td>\n");
 echo ("<td><a href=\"../help.php?HelpNumber=215\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
-// mapping suffix
-/*echo ("<tr><td align=\"right\"><b>".
-	_("MappingSuffix") . ": </b></td>".
-	"<td><input size=50 type=\"text\" name=\"suffmap\" value=\"" . $conf->get_MapSuffix() . "\"></td>\n");
-echo ("<td><a href=\"../help.php?HelpNumber=216\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");*/
+// LDAP cache timeout
+echo ("<tr><td align=\"right\"><b>".
+	_("Cache timeout") . " *: </b></td>".
+	"<td><select name=\"cache_timeout\">\n<option selected>".$conf->get_cacheTimeout()."</option>\n");
+if ($conf->get_cacheTimeout() != 0) echo("<option>0</option>\n");
+if ($conf->get_cacheTimeout() != 1) echo("<option>1</option>\n");
+if ($conf->get_cacheTimeout() != 2) echo("<option>2</option>\n");
+if ($conf->get_cacheTimeout() != 5) echo("<option>5</option>\n");
+if ($conf->get_cacheTimeout() != 10) echo("<option>10</option>\n");
+if ($conf->get_cacheTimeout() != 15) echo("<option>15</option>\n");
+echo ("</select></td>\n");
+echo ("<td><a href=\"../help.php?HelpNumber=214\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 
 echo ("</table>");
 echo ("</fieldset>");
