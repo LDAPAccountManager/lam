@@ -358,7 +358,7 @@ class posixGroup extends baseModule {
 		'pwdHash' => array(
 			"ext" => "FALSE",
 			"Headline" => _("Password hash type"),
-			"Text" => _("LAM supports CRYPT, SHA, SSHA, MD5 and SMD5 to generate the hash value of an user password. SSHA and CRYPT are the most common but CRYPT does not support passwords greater than 8 letters. We do not recommend to use plain text passwords."))
+			"Text" => _("LAM supports CRYPT, SHA, SSHA, MD5 and SMD5 to generate the hash value of passwords. SSHA and CRYPT are the most common but CRYPT does not support passwords greater than 8 letters. We do not recommend to use plain text passwords."))
 		);
 
 		return $return;
