@@ -1,7 +1,8 @@
 0.4.5
   - fixed bugs:
       StatusMessages with additional variables did not work
-      Samba hosts had unnecessary objectClass shadowAccount
+      Samba hosts had unnecessary objectClass shadowAccount (910084)
+      LAM had problems with non-standard spelled object classes (907636)
 
 
 29.02.2004 0.4.4 (stable)
