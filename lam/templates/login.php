@@ -25,16 +25,7 @@ $Id$
 
 include_once("../lib/config.inc"); // Include config.inc which provides Config class
 
-// Get session save path
-$path = getcwd();
-$path = explode("/", substr($path,1));
-for($i = 0; $i < (count($path) - 1); $i++)
-{
-	$session_save_path .= "/" . $path[$i];
-}
-$session_save_path .= "/sess";
-
-session_save_path($session_save_path); // Set session save path
+session_save_path("../sess"); // Set session save path
 @session_start(); // Start LDAP Account Manager session
 
 function display_LoginPage($config_object)
@@ -67,7 +58,7 @@ function display_LoginPage($config_object)
 	}
 	else
 	{
-		$message = "Unable to load available languages. Setting English as default language. For further instructions please contact the Admin of this site.";
+		$message = _("Unable to load available languages. Setting English as default language. For further instructions please contact the Admin of this site.");
 	}
 
 	echo "
@@ -76,7 +67,7 @@ function display_LoginPage($config_object)
 			<head>
 				<title>
 					";
-	echo _("LDAP Account Manager -Login-");
+	echo "LDAP Account Manager -Login-";
 	echo "
 				</title>
 				<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">
@@ -198,11 +189,11 @@ function display_LoginPage($config_object)
 }
 
 // checking if the submitted username/password is correct.
-if($action == "checklogin")
+if($_POST['action'] == "checklogin")
 {
 	include_once("../lib/ldap.inc"); // Include ldap.php which provides Ldap class
 
-	$ldap = new Ldap($config); //$config); // Create new Ldap object
+	$ldap = new Ldap($_SESSION['config']); //$config); // Create new Ldap object
 	$result = $ldap->connect($username,$passwd); // Connect to LDAP server for verifing username/password
 	if($result == True) // Username/password correct. Do some configuration and load main frame.
 	{
@@ -221,12 +212,12 @@ if($action == "checklogin")
 	{
 		if($ldap->server)
 		{
-			$error_message = "Wrong Password/Username  combination. Try again.";
+			$error_message = _("Wrong Password/Username  combination. Try again.");
 			display_LoginPage($config); // Username/password invalid. Return to login page.
 		}
 		else
 		{
-			$error_message = "Cannot connect to specified LDAP-Server. Try again.";
+			$error_message = _("Cannot connect to specified LDAP-Server. Try again.");
 			display_LoginPage($config); // Username/password invalid. Return to login page.
 		}
 	}
