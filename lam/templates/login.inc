@@ -57,6 +57,7 @@ else
 		echo _("LDAP Account Manager -Login-");
 		?>
 		</title>
+	<link rel="stylesheet" type="text/css" href="../style/layout.css">
 	</head>
 	<body>
 		<p align="center"><img src="../graphics/banner.jpg" border=1></p>
@@ -66,9 +67,6 @@ else
 		<form action="login.php" method="post">
 		<input type="hidden" name="action" value="checklogin">
 			<table width="500" align="center" border="0">
-				<tr>
-					<td width="100%" colspan="3" align="center"><? echo _("You are connecting with: "); echo $config->get_Host() . ":" . $config->get_Port(); ?></td>
-				</tr>
 				<tr>
 					<td width="45%" align="right"><? echo _("Username:") ?></td><td width="10%"></td><td width="45%" align="left"><select name="username" size="1"><? for($i = 0; $i < count($config->Admins); $i++) { $text = explode(",", $config->Admins[$i]); $text = explode("=", $text[0]); echo "<option value=\"" . $config->Admins[$i] . "\">" . $text[1] . "</option>"; } ?></select></td>
 				</tr>
@@ -86,6 +84,25 @@ else
 					<td width="100%" colspan="3" align="center"><input type="submit" name="submit" value=<? echo _("Login"); ?>></td>
 				</td>
 			</table>
+			<br><br><br>
+			<table width="310" align="center" bgcolor="#C7E7C7" border="0">
+				<tr>
+					<td width="100%" colspan="2" align="center"><? echo _("Information about the server you are connecting to.") ?></td>
+				</tr>
+				<tr>
+					<td width="50%" align="right">Servername:</td>
+					<td width="50%" align="left"><b><? echo $config->get_Host() ?></b></td>
+				</tr>
+				<tr>
+					<td width="50%" align="right">Port:</td>
+					<td width="50%" align="left"><b><? echo $config->get_Port() ?></b></td>
+				</tr>
+				<tr>
+					<td width="50%" align="right">SSL:</td>
+					<td width="50%" align="left"><b><? if($config->get_SSL() == "False") { $SSL = _("No"); } else { $SSL = -("Yes"); }; echo $SSL ?></b></td>
+				</tr>
+			</table>
+
 		</form>
 	</body>
 </html>
