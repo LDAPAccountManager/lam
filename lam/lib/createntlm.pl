@@ -482,6 +482,6 @@ sub E_P16 {
 	return @p16;
 }
 
-if ($ARGV[0] eq 'nt') { print nthash($ARGV[1]); }
-if ($ARGV[0] eq 'lm') { print lmhash($ARGV[1]); }
+if ($ARGV[0] eq 'nt') { print nthash($ARGV[1])."\n"; }
+if ($ARGV[0] eq 'lm') { print lmhash($ARGV[1])."\n"; }
 

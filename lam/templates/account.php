@@ -194,30 +194,15 @@ if ( $create ) { // Create-Button was pressed
 	switch ($_SESSION['type2']) {
 		case 'user':
 			$result = createuser(); // account.inc
-			if ( $result==1 || $result==3 ) {
-				$_SESSION['account'] = "";
-				$_SESSION['account_old'] = "";
-				$_SESSION['account_temp'] = "";
-				$select = 'finish';
-				}
+			if ( $result==1 || $result==3 ) $select = 'finish';
 			break;
 		case 'group':
 			$result = creategroup(); // account.inc
-			if ( $result==1 || $result==3 ) {
-				$_SESSION['account'] = "";
-				$_SESSION['account_old'] = "";
-				$_SESSION['account_temp'] = "";
-				$select = 'finish';
-				}
+			if ( $result==1 || $result==3 ) $select = 'finish';
 			break;
 		case 'host':
 			$result = createhost(); // account.inc
-			if ( $result==1 || $result==3 ) {
-				$_SESSION['account'] = "";
-				$_SESSION['account_old'] = "";
-				$_SESSION['account_temp'] = "";
-				$select = 'finish';
-				}
+			if ( $result==1 || $result==3 ) $select = 'finish';
 			break;
 		}
 	}
@@ -238,8 +223,22 @@ echo '</title>
 
 
 if (!$select) $select='general';
-if ($createagain) $select='general';
-if ($backmain) $select='backmain';
+if ($createagain) {
+	$select='general';
+	$_SESSION['account']="";
+	$_SESSION['account_temp']="";
+	$_SESSION['account_old']="";
+	}
+if ($backmain) {
+	$select='backmain';
+	$_SESSION['account']="";
+	$_SESSION['account_temp']="";
+	$_SESSION['account_old']="";
+	}
+
+
+
+
 
 switch ($select) {
 	case 'general':
@@ -763,7 +762,7 @@ switch ($select) {
 				echo $_SESSION['account']->general_username;
 				echo _('has been created');
 				echo '</td></tr>';
-				include('../config/print.php');
+				foreach (file('../config/print.html') as $line) eval("?".">".$line."<"."?");
 				echo '<tr><td>
 				<input name="createagain" type="submit" value="'; echo _('Create another user'); echo '">
 				</td><td>

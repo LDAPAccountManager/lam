@@ -570,7 +570,6 @@ function createuser() { // Will create the LDAP-Account
 	// 3 == Account has been modified
 	// 4 == Error while creating Account
 	// 5 == Error while modifying Account
-
 	// Value stored in shadowExpire, days since 1.1.1970
 	$date = mktime(0,0,0, $_SESSION['account']->unix_pwdexpire_day, $_SESSION['account']->unix_pwdexpire_mon, $_SESSION['account']->unix_pwdexpire_yea) / 86400 ;
 	settype($date, 'integer');
@@ -612,8 +611,8 @@ function createuser() { // Will create the LDAP-Account
 			$attr['shadowLastChange'] = getdays(); // shadowAccunt_may
 			}
 		if ($_SESSION['account']->smb_password!='') {
-			$attr['ntPassword'] = exec('../lib/createntlm.pl nt' . $_SESSION['account']->smb_password);
-			$attr['lmPassword'] = exec('../lib/createntlm.pl lm' . $_SESSION['account']->smb_password);
+			$attr['ntPassword'] = exec('../lib/createntlm.pl nt ' . $_SESSION['account']->smb_password);
+			$attr['lmPassword'] = exec('../lib/createntlm.pl lm ' . $_SESSION['account']->smb_password);
 			$attr['pwdLastSet'] = time(); // sambaAccount_may
 			}
 		}
@@ -622,8 +621,8 @@ function createuser() { // Will create the LDAP-Account
 		if ($_SESSION['account']->unix_deactivated) $attr['userPassword'] = '{CRYPT}!' . crypt($_SESSION['account']->unix_password);
 		else $attr['userPassword'] = '{CRYPT}' . crypt($_SESSION['account']->unix_password);
 		$attr['shadowLastChange'] = getdays(); // shadowAccunt_may
-		$attr['ntPassword'] = exec('../lib/createntlm.pl nt' . $_SESSION['account']->smb_password);
-		$attr['lmPassword'] = exec('../lib/createntlm.pl lm' . $_SESSION['account']->smb_password);
+		$attr['ntPassword'] = exec('../lib/createntlm.pl nt ' . $_SESSION['account']->smb_password);
+		$attr['lmPassword'] = exec('../lib/createntlm.pl lm ' . $_SESSION['account']->smb_password);
 		$attr['pwdLastSet'] = time(); // sambaAccount_may
 		}
 	if ($_SESSION['account']->smb_password_no) {
