@@ -150,6 +150,18 @@ class sambaSamAccount {
 		return array('attributes', 'sambaUserWorkstations');
 		}
 
+	/*
+	*/
+	function get_help($id) {
+		switch ($id) {
+			case "description":
+				return array ("ext" => "FALSE", "Headline" => _("Description"),
+					"Text" => _("Host Description."));
+				break;
+			}
+		return false;
+		}
+
 	/* This function returns all ldap attributes
 	* which are part of posixAccount and returns
 	* also their values.
@@ -243,7 +255,7 @@ class sambaSamAccount {
 
 	/* Write variables into object and do some regexp checks
 	*/
-	function proccess_attributes($post) {
+	function proccess_attributes($post, $profile=false) {
 		// Load attributes
 		$this->attributes['sambaDomainName'][0] = $post['sambaDomainName'];
 		// Get Domain SID from name
@@ -296,7 +308,7 @@ class sambaSamAccount {
 				}
 			if (!$wrid) $this->attributes['sambaPrimaryGroupSID'][0] = $SID."-".($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]*2)+$RIDbase+1;
 
-			if (isset($post['sambaLMPassword'])) {
+			if (isset($post['sambaLMPassword']) && !$profile) {
 				if ($post['sambaLMPassword'] != $post['sambaLMPassword2']) {
 					$errors[] = array('ERROR', _('Password'), _('Please enter the same password in both password-fields.'), 'sambaLMPassword');
 					unset ($post['sambaLMPassword2']);
@@ -306,38 +318,58 @@ class sambaSamAccount {
 			if ($post['useunixpwd']) $this->useunixpwd = true;
 				else $this->useunixpwd = false;
 
-			if ($post['sambaSID']== _('Administrator')) {
-				$this->attributes['sambaSID'][0] = $SID."-500";
-				// Do a check if an administrator already exists
-				if ($_SESSION[$_SESSION[$this->base]->cache]->in_cache($SID."-500", 'sambaSID', 'user')!=$_SESSION[$this->base]->dn_orig)
-					$errors[] = array('ERROR', _('Special user'), _('There can be only one administrator per domain.'), 'sambaSID');
+			if (!$profile) {
+				if ($post['sambaSID']== _('Administrator')) {
+					$this->attributes['sambaSID'][0] = $SID."-500";
+					// Do a check if an administrator already exists
+					if ($_SESSION[$_SESSION[$this->base]->cache]->in_cache($SID."-500", 'sambaSID', 'user')!=$_SESSION[$this->base]->dn_orig)
+						$errors['sambaSID'][] = array('ERROR', _('Special user'), _('There can be only one administrator per domain.'));
+					}
+				if ($post['sambaSID']== _('Guest')) {
+					$this->attributes['sambaSID'][0] = $SID."-501";
+					// Do a check if an administrator already exists
+					if ($_SESSION[$_SESSION[$this->base]->cache]->in_cache($SID."-501", 'sambaSID', 'user')!=$_SESSION[$this->base]->dn_orig)
+						$errors['sambaSID'][] = array('ERROR', _('Special user'), _('There can be only one guest per domain.'));
+					}
+				// Check values
+				$this->attributes['sambaHomePath'][0] = str_replace('$user', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['uid'][0], $this->attributes['sambaHomePath'][0]);
+				$this->attributes['sambaHomePath'][0] = str_replace('$group', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['gid'][0], $this->attributes['sambaHomePath'][0]);
+				if ($this->attributes['sambaHomePath'][0] != stripslashes($post['sambaHomePath'])) $errors['sambaHomePath'][] = array('INFO', _('Home path'), _('Inserted user- or groupname in HomePath.'));
+				$this->attributes['sambaLogonScript'][0] = str_replace('$user', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['uid'][0], $this->attributes['sambaLogonScript'][0]);
+				$this->attributes['sambaLogonScript'][0] = str_replace('$group', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['gid'][0], $this->attributes['sambaLogonScript'][0]);
+				if ($this->attributes['sambaLogonScript'][0] != stripslashes($post['sambaLogonScript'])) $errors['sambaLogonScript'][] = array('INFO', _('Logon script'), _('Inserted user- or groupname in logon script.'));
+				$this->attributes['sambaProfilePath'][0] = str_replace('$user', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['uid'][0], $this->attributes['sambaProfilePath'][0]);
+				$this->attributes['sambaProfilePath'][0] = str_replace('$group', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['gid'][0], $this->attributes['sambaProfilePath'][0]);
+				if ($this->attributes['sambaProfiletPath'][0] != stripslashes($post['sambaProfilePath'])) $errors['sambaProfilePath'][] = array('INFO', _('Profile path'), _('Inserted user- or groupname in profilepath.'));
+				if ( (!$this->attributes['sambaHomePath'][0]=='') && (!ereg('^[\][\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+([\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%]|[?]|[?]|[?]|[?]|[?]|[?]|[?])+)+$', $this->attributes['sambaHomePath'][0])))
+						$errors['sambaHomePath'][] = array('ERROR', _('Home path'), _('Home path is invalid.'));
+				if ( !ereg('^([a-z]|[A-Z]|[0-9]|[\|]|[\#]|[\*]|[\,]|[\.]|[\;]|[\:]|[\_]|[\-]|[\+]|[\!]|[\%]|[\&]|[\/]|[\?]|[\{]|[\[]|[\(]|[\)]|[\]]|[\}])*$',
+					$this->sambaLMPassword())) $errors['sambaLMPassword'][] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
+				if ( (!$this->attributes['sambaLogonScript'][0]=='') && (!ereg('^([/])*([a-z]|[0-9]|[.]|[-]|[_]|[%]|[?]|[?]|[?]|[?]|[?]|[?]|[?])+([a-z]|[0-9]|[.]|[-]|[_]|[%]|[?]|[?]|[?]|[?]|[?]|[?]|[?])*'.
+					'([/]([a-z]|[0-9]|[.]|[-]|[_]|[%]|[?]|[?]|[?]|[?]|[?]|[?]|[?])+([a-z]|[0-9]|[.]|[-]|[_]|[%]|[?]|[?]|[?]|[?]|[?]|[?]|[?])*)*(([.][b][a][t])|([.][c][m][d]))$', $this->attributes['sambaLogonScript'][0])))
+					$errors['sambaScriptPath'][] = array('ERROR', _('Script path'), _('Script path is invalid!'));
+				if ( (!$this->attributes['sambaProfilePath'][0]=='') && (!ereg('^[/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*([/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*)*$', $this->attributes['sambaProfilePath'][0]))
+					&& (!ereg('^[\][\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+([\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+)+$', $this->attributes['sambaProfilePath'][0])))
+						$errors['sambaProfilePath'][] = array('ERROR', _('Profile path'), _('Profile path is invalid!'));
 				}
-			if ($post['sambaSID']== _('Guest')) {
-				$this->attributes['sambaSID'][0] = $SID."-501";
-				// Do a check if an administrator already exists
-				if ($_SESSION[$_SESSION[$this->base]->cache]->in_cache($SID."-501", 'sambaSID', 'user')!=$_SESSION[$this->base]->dn_orig)
-					$errors[] = array('ERROR', _('Special user'), _('There can be only one guest per domain.'), 'sambaSID');
+			else {
+				$sambaHomePath = str_replace('$user', 'user', $this->attributes['sambaHomePath'][0]);
+				$sambaHomePath = str_replace('$group', 'group', $sambaHomePath);
+				$sambaLogonScript = str_replace('$user', 'user', $this->attributes['sambaLogonScript'][0]);
+				$sambaLogonScript = str_replace('$group', 'group', $sambaLogonScript);
+				$sambaProfilePath = str_replace('$user', 'user', $this->attributes['sambaProfilePath'][0]);
+				$sambaProfilePath = str_replace('$group', 'group', $sambaProfilePath);
+				if ( (!$this->attributes['sambaHomePath'][0]=='') && (!ereg('^[\][\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+([\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%]|[?]|[?]|[?]|[?]|[?]|[?]|[?])+)+$', $this->attributes['sambaHomePath'][0])))
+						$errors[] = array('ERROR', _('Home path'), _('Home path is invalid.'), 'sambaHomePath');
+				if ( !ereg('^([a-z]|[A-Z]|[0-9]|[\|]|[\#]|[\*]|[\,]|[\.]|[\;]|[\:]|[\_]|[\-]|[\+]|[\!]|[\%]|[\&]|[\/]|[\?]|[\{]|[\[]|[\(]|[\)]|[\]]|[\}])*$',
+					$this->sambaLMPassword())) $errors[] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'), 'sambaLMPassword');
+				if ( (!$this->attributes['sambaLogonScript'][0]=='') && (!ereg('^([/])*([a-z]|[0-9]|[.]|[-]|[_]|[%]|[?]|[?]|[?]|[?]|[?]|[?]|[?])+([a-z]|[0-9]|[.]|[-]|[_]|[%]|[?]|[?]|[?]|[?]|[?]|[?]|[?])*'.
+					'([/]([a-z]|[0-9]|[.]|[-]|[_]|[%]|[?]|[?]|[?]|[?]|[?]|[?]|[?])+([a-z]|[0-9]|[.]|[-]|[_]|[%]|[?]|[?]|[?]|[?]|[?]|[?]|[?])*)*(([.][b][a][t])|([.][c][m][d]))$', $this->attributes['sambaLogonScript'][0])))
+					$errors[] = array('ERROR', _('Script path'), _('Script path is invalid!'), 'sambaScriptPath');
+				if ( (!$this->attributes['sambaProfilePath'][0]=='') && (!ereg('^[/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*([/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*)*$', $this->attributes['sambaProfilePath'][0]))
+					&& (!ereg('^[\][\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+([\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+)+$', $this->attributes['sambaProfilePath'][0])))
+						$errors[] = array('ERROR', _('Profile path'), _('Profile path is invalid!'), 'sambaProfilePath');
 				}
-			// Check values
-			$this->attributes['sambaHomePath'][0] = str_replace('$user', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['uid'][0], $this->attributes['sambaHomePath'][0]);
-			$this->attributes['sambaHomePath'][0] = str_replace('$group', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['gid'][0], $this->attributes['sambaHomePath'][0]);
-			if ($this->attributes['sambaHomePath'][0] != stripslashes($post['sambaHomePath'])) $errors[] = array('INFO', _('Home path'), _('Inserted user- or groupname in HomePath.'), 'sambaHomePath');
-			$this->attributes['sambaLogonScript'][0] = str_replace('$user', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['uid'][0], $this->attributes['sambaLogonScript'][0]);
-			$this->attributes['sambaLogonScript'][0] = str_replace('$group', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['gid'][0], $this->attributes['sambaLogonScript'][0]);
-			if ($this->attributes['sambaLogonScript'][0] != stripslashes($post['sambaLogonScript'])) $errors[] = array('INFO', _('Logon script'), _('Inserted user- or groupname in logon script.'), 'sambaLogonScript');
-			$this->attributes['sambaProfilePath'][0] = str_replace('$user', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['uid'][0], $this->attributes['sambaProfilePath'][0]);
-			$this->attributes['sambaProfilePath'][0] = str_replace('$group', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['gid'][0], $this->attributes['sambaProfilePath'][0]);
-			if ($this->attributes['sambaProfiletPath'][0] != stripslashes($post['sambaProfilePath'])) $errors[] = array('INFO', _('Profile path'), _('Inserted user- or groupname in profilepath.'), 'sambaProfilePath');
-			if ( (!$this->attributes['sambaHomePath'][0]=='') && (!ereg('^[\][\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+([\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%]|[?]|[?]|[?]|[?]|[?]|[?]|[?])+)+$', $this->attributes['sambaHomePath'][0])))
-					$errors[] = array('ERROR', _('Home path'), _('Home path is invalid.'), 'sambaHomePath');
-			if ( !ereg('^([a-z]|[A-Z]|[0-9]|[\|]|[\#]|[\*]|[\,]|[\.]|[\;]|[\:]|[\_]|[\-]|[\+]|[\!]|[\%]|[\&]|[\/]|[\?]|[\{]|[\[]|[\(]|[\)]|[\]]|[\}])*$',
-				$this->sambaLMPassword())) $errors[] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'), 'sambaLMPassword');
-			if ( (!$this->attributes['sambaLogonScript'][0]=='') && (!ereg('^([/])*([a-z]|[0-9]|[.]|[-]|[_]|[%]|[?]|[?]|[?]|[?]|[?]|[?]|[?])+([a-z]|[0-9]|[.]|[-]|[_]|[%]|[?]|[?]|[?]|[?]|[?]|[?]|[?])*'.
-				'([/]([a-z]|[0-9]|[.]|[-]|[_]|[%]|[?]|[?]|[?]|[?]|[?]|[?]|[?])+([a-z]|[0-9]|[.]|[-]|[_]|[%]|[?]|[?]|[?]|[?]|[?]|[?]|[?])*)*(([.][b][a][t])|([.][c][m][d]))$', $this->attributes['sambaLogonScript'][0])))
-				$errors[] = array('ERROR', _('Script path'), _('Script path is invalid!'), 'sambaScriptPath');
-			if ( (!$this->attributes['sambaProfilePath'][0]=='') && (!ereg('^[/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*([/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*)*$', $this->attributes['sambaProfilePath'][0]))
-				&& (!ereg('^[\][\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+([\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+)+$', $this->attributes['sambaProfilePath'][0])))
-					$errors[] = array('ERROR', _('Profile path'), _('Profile path is invalid!'), 'sambaProfilePath');
 			}
 		if (is_array($errors)) return $errors;
 		if ($post['sambaUserWorkstations'])  return 'sambaUserWorkstations';
@@ -346,48 +378,50 @@ class sambaSamAccount {
 
 	/* Write variables into object and do some regexp checks
 	*/
-	function proccess_sambaUserWorkstations($post) {
+	function proccess_sambaUserWorkstations($post, $profile=false) {
 		// Load attributes
-		do { // X-Or, only one if() can be true
-			if (isset($post['availableSambaUserWorkstations']) && isset($post['sambaUserWorkstations_add'])) { // Add workstations to list
-				$temp = str_replace(' ', '', $this->attributes['sambaUserWorkstations'][0]);
-				$workstations = explode (',', $temp);
-				for ($i=0; $i<count($workstations); $i++)
-					if ($workstations[$i]=='') unset($workstations[$i]);
-				$workstations = array_values($workstations);
-				// Add new // Add workstations
-				$workstations = array_merge($workstations, $post['availableSambaUserWorkstations']);
-				// remove doubles
-				$workstations = array_flip($workstations);
-				array_unique($workstations);
-				$workstations = array_flip($workstations);
-				// sort workstations
-				sort($workstations);
-				// Recreate workstation string
-				$this->attributes['sambaUserWorkstations'][0] = $workstations[0];
-				for ($i=1; $i<count($workstations); $i++) {
-					$this->attributes['sambaUserWorkstations'][0] = $this->attributes['sambaUserWorkstations'][0] . "," . $workstations[$i];
+		if ($_SESSION[$this->base]->type=='user') {
+			do { // X-Or, only one if() can be true
+				if (isset($post['availableSambaUserWorkstations']) && isset($post['sambaUserWorkstations_add'])) { // Add workstations to list
+					$temp = str_replace(' ', '', $this->attributes['sambaUserWorkstations'][0]);
+					$workstations = explode (',', $temp);
+					for ($i=0; $i<count($workstations); $i++)
+						if ($workstations[$i]=='') unset($workstations[$i]);
+					$workstations = array_values($workstations);
+					// Add new // Add workstations
+					$workstations = array_merge($workstations, $post['availableSambaUserWorkstations']);
+					// remove doubles
+					$workstations = array_flip($workstations);
+					array_unique($workstations);
+					$workstations = array_flip($workstations);
+					// sort workstations
+					sort($workstations);
+					// Recreate workstation string
+					$this->attributes['sambaUserWorkstations'][0] = $workstations[0];
+					for ($i=1; $i<count($workstations); $i++) {
+						$this->attributes['sambaUserWorkstations'][0] = $this->attributes['sambaUserWorkstations'][0] . "," . $workstations[$i];
+						}
+					break;
 					}
-				break;
-				}
-			if (isset($post['sambaUserWorkstations']) && isset($post['sambaUserWorkstations_remove'])) { // remove // Add workstations from list
-				// Put all workstations in array
-				$temp = str_replace(' ', '', $this->attributes['sambaUserWorkstations'][0]);
-				$workstations = explode (',', $temp);
-				for ($i=0; $i<count($workstations); $i++)
-					if ($workstations[$i]=='') unset($workstations[$i]);
-				$workstations = array_values($workstations);
-				// Remove unwanted workstations from array
-				$workstations = array_delete($post['sambaUserWorkstations'], $workstations);
-				// Recreate workstation string
-				$this->attributes['sambaUserWorkstations'][0] = $workstations[0];
-				for ($i=1; $i<count($workstations); $i++) {
-					$this->attributes['sambaUserWorkstations'][0] = $this->attributes['sambaUserWorkstations'][0] . "," . $workstations[$i];
+				if (isset($post['sambaUserWorkstations']) && isset($post['sambaUserWorkstations_remove'])) { // remove // Add workstations from list
+					// Put all workstations in array
+					$temp = str_replace(' ', '', $this->attributes['sambaUserWorkstations'][0]);
+					$workstations = explode (',', $temp);
+					for ($i=0; $i<count($workstations); $i++)
+						if ($workstations[$i]=='') unset($workstations[$i]);
+					$workstations = array_values($workstations);
+					// Remove unwanted workstations from array
+					$workstations = array_delete($post['sambaUserWorkstations'], $workstations);
+					// Recreate workstation string
+					$this->attributes['sambaUserWorkstations'][0] = $workstations[0];
+					for ($i=1; $i<count($workstations); $i++) {
+						$this->attributes['sambaUserWorkstations'][0] = $this->attributes['sambaUserWorkstations'][0] . "," . $workstations[$i];
+						}
+					break;
 					}
-				break;
-				}
-			} while(0);
-		if ($post['attributes']) return 'attributes';
+				} while(0);
+			if ($post['attributes']) return 'attributes';
+			}
 		return 0;
 		}
 
@@ -395,7 +429,7 @@ class sambaSamAccount {
 	* to show a page with all attributes.
 	* It will output a complete html-table
 	*/
-	function display_html_attributes($post) {
+	function display_html_attributes($post, $profile=false) {
 		// Get Domain SID from name
 		$sambaDomains = $_SESSION[$_SESSION[$this->base]->ldap]->search_domains($_SESSION[$_SESSION[$this->base]->config]->get_domainSuffix());
 		for ($i=0; $i<count($sambaDomains); $i++ ) {
@@ -403,198 +437,132 @@ class sambaSamAccount {
 			if ($this->attributes['sambaDomainName'][0] == $sambaDomains[$i]->name)
 				$SID = $sambaDomains[$i]->SID;
 			}
+		$canchangedate = getdate($this->attributes['sambaPwdCanChange'][0]);
+		$mustchangedate = getdate($this->attributes['sambaPwdMustChange'][0]);
+
 		if ($_SESSION[$this->base]->type=='user') {
-			$canchangedate = getdate($this->attributes['sambaPwdCanChange'][0]);
-			$mustchangedate = getdate($this->attributes['sambaPwdMustChange'][0]);
-			echo	'<input name="sambaPwdCanChange_h" type="hidden" value="'.$canchangedate['hours'].'">'.
-				'<input name="sambaPwdCanChange_m" type="hidden" value="'.$canchangedate['minutes'].'">'.
-				'<input name="sambaPwdCanChange_s" type="hidden" value="'.$canchangedate['seconds'].'">'.
-				'<input name="sambaPwdMustChange_h" type="hidden" value="'.$mustchangedate['hours'].'">'.
-				'<input name="sambaPwdMustChange_m" type="hidden" value="'.$mustchangedate['minutes'].'">'.
-				'<input name="sambaPwdMustChange_s" type="hidden" value="'.$mustchangedate['seconds'].'">'.
-				'<input name="sambaAcctFlagsU" type="hidden" value="true">';
-			echo "<table border=0 width=\"100%\">\n<tr>\n";
-			echo "<tr>\n";
-			echo "<td>" . _('Samba password') . "</td>\n";
-			echo "<td><input name=\"sambaLMPassword\" type=\"password\" size=\"20\" maxlength=\"20\" value=\"" . $this->sambaLMPassword() . "\"></td>\n";
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td>" . _('Repeat password') . "</td>\n";
-			echo "<td><input name=\"sambaLMPassword2\" type=\"password\" size=\"20\" maxlength=\"20\" value=\"";
-				if ($post['sambaLMPassword2']!='') echo $post['sambaLMPassword2'];
-				else echo $this->sambaLMPassword();
-				echo "\"></td>\n";
-			echo "<td></td>\n";
-			echo "</tr>\n";
-			if ($_SESSION[$this->base]->module['posixAccount']->orig['userPassword'][0] != $_SESSION[$this->base]->module['posixAccount']->attributes['userPassword'][0]) {
-				echo "<tr>\n";
-				echo "<td>" . _('Use unix password') . "</td>\n";
-				echo "<td><input name=\"form_sambaAccount_useunixpwd\" type=\"checkbox\"";
-					if ($this->useunixpwd) echo " checked ";
-					echo "></td>\n";
-				echo "<td><a href=\"../help.php?HelpNumber=428\" target=\"lamhelp\">" . _('Help') . "</a></td>";
-				echo "</tr>\n";
+			$return[] = array ( 0 => array ( 'kind' => 'input', 'name' => 'sambaPwdCanChange_h', 'type' => 'hidden', 'value' => $canchangedate['hours']),
+					1 => array ( 'kind' => 'input', 'name' => 'sambaPwdCanChange_m', 'type' => 'hidden', 'value' => $canchangedate['minutes']),
+					2 => array ( 'kind' => 'input', 'name' => 'sambaPwdCanChange_s', 'type' => 'hidden', 'value' => $canchangedate['seconds']),
+					3 => array ( 'kind' => 'input', 'name' => 'sambaPwdMustChange_h', 'type' => 'hidden', 'value' => $mustchangedate['hours']),
+					4 => array ( 'kind' => 'input', 'name' => 'sambaPwdMustChange_m', 'type' => 'hidden', 'value' => $mustchangedate['minutes']),
+					5 => array ( 'kind' => 'input', 'name' => 'sambaPwdMustChange_s', 'type' => 'hidden', 'value' => $mustchangedate['seconds']),
+					6 => array ( 'kind' => 'input', 'name' => 'sambaAcctFlagsU', 'type' => 'hidden', 'value' => 'true'));
+			if (!$profile) {
+				if ($this->attributes['lmPassword'][0] != $this->orig['lmPassword'][0]) $password=$this->sambaLMPassword();
+					else $password='';
+				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Samba password') ),
+					1 => array ( 'kind' => 'input', 'name' => 'sambaLMPassword', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => $password));
+				if ($post['sambaLMPassword2']!='') $password2 = $post['sambaLMPassword2'];
+				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Repeat password') ),
+					1 => array ( 'kind' => 'input', 'name' => 'sambaLMPassword2', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => $password2),
+					2 => array ('kind' => 'help', 'value' => 'sambaLMPassword'));
 				}
-			echo "<tr>\n";
-			echo "<td>" . _('Use no password') . "</td>\n";
-			echo "<td><input name=\"sambaAcctFlagsN\" type=\"checkbox\"";
-				if (strpos($this->attributes['sambaAcctFlags'][0], "N")) echo " checked ";
-				echo "></td>\n";
-			echo "<td><a href=\"../help.php?HelpNumber=426\" target=\"lamhelp\">" . _('Help' ) ."</a></td>\n";
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td>" . _('Password does not expire') . "</td>\n";
-			echo "<td><input name=\"sambaAcctFlagsX\" type=\"checkbox\"";
-				if (strpos($this->attributes['sambaAcctFlags'][0], "X")) echo " checked ";
-				echo "></td>\n";
-			echo "<td><a href=\"../help.php?HelpNumber=429\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td>" . _('User can change password') . "</td>\n";
-			echo "<td><select name=\"sambaPwdCanChange_day\">";
-					for ( $i=1; $i<=31; $i++ ) {
-						if ($canchangedate['mday']==$i) echo "<option selected>$i</option>";
-							else echo "<option>$i</option>";
-						}
-				echo "</select><select name=\"sambaPwdCanChange_mon\">";
-					for ( $i=1; $i<=12; $i++ ) {
-						if ($canchangedate['mon'] == $i) echo "<option selected>$i</option>";
-							else echo "<option>$i</option>";
-						}
-				echo "</select><select name=\"sambaPwdCanChange_yea\">";
-					for ( $i=2003; $i<=2030; $i++ ) {
-						if ($canchangedate['year']==$i) echo "<option selected>$i</option>";
-							else echo "<option>$i</option>";
-						}
-				echo "</select></td>\n";
-			echo "<td><a href=\"../help.php?HelpNumber=430\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td>" . _('User must change password') . "</td>\n";
-			echo "<td><select name=\"sambaPwdMustChange_day\">";
-					for ( $i=1; $i<=31; $i++ ) {
-						if ($mustchangedate['mday']==$i) echo "<option selected>$i</option>";
-							else echo "<option>$i</option>";
-						}
-				echo "</select><select name=\"sambaPwdMustChange_mon\">";
-					for ( $i=1; $i<=12; $i++ ) {
-						if ($mustchangedate['mon'] == $i) echo "<option selected>$i</option>";
-							else echo "<option>$i</option>";
-						}
-				echo "</select><select name=\"sambaPwdMustChange_yea\">";
-					for ( $i=2030; $i>=2003; $i-- ) {
-						if ($mustchangedate['year']==$i) echo "<option selected>$i</option>";
-							else echo "<option>$i</option>";
-						}
-				echo "</select></td>\n";
-			echo "<td><a href=\"../help.php?HelpNumber=431\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td>" .  _('Account is deactivated') . "</td>\n";
-			echo "<td><input name=\"sambaAcctFlagsD\" type=\"checkbox\"";
-				if (strpos($this->attributes['sambaAcctFlags'][0], "D")) echo " checked ";
-				echo "></td>\n";
-			echo "<td><a href=\"../help.php?HelpNumber=432\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td>" . _('Home drive') . "</td>\n";
-			echo "<td><select name=\"sambaHomeDrive\">";
-				for ($i=90; $i>67; $i--)
-					if ($this->attributes['sambaHomeDrive'][0]== chr($i).':') echo "<option selected>".chr($i).":</option>";
-						else echo "<option>".chr($i).":</option>";
-				echo "</select></td>\n";
-			echo "<td><a href=\"../help.php?HelpNumber=433\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td>" . _('Home path') . "</td>\n";
-			echo "<td><input name=\"sambaHomePath\" type=\"text\" size=\"20\" maxlength=\"80\" value=\"" . $this->attributes['sambaHomePath'][0] . "\"></td>\n";
-			echo "<td><a href=\"../help.php?HelpNumber=437\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td>" . _('Profile path') . "</td>\n";
-			echo "<td><input name=\"sambaProfilePath\" type=\"text\" size=\"20\" maxlength=\"80\" value=\"" . $this->attributes['sambaProfilePath'][0] . "\"></td>\n";
-			echo "<td><a href=\"../help.php?HelpNumber=435\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td>" . _('Logon script') . "</td>\n";
-			echo "<td><input name=\"sambaLogonScript\" type=\"text\" size=\"20\" maxlength=\"80\" value=\"" . $this->attributes['sambaLogonScript'][0] . "\"></td>\n";
-			echo "<td><a href=\"../help.php?HelpNumber=434\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td>" . _('Samba workstations') . "</td>\n";
-			echo "<td><input name=\"sambaUserWorkstations\" type=\"submit\" value=\"" . _('Edit workstations') . "\"></td>\n";
-			echo "<td><a href=\"../help.php?HelpNumber=436\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td>" . _('Windows group') . "</td>\n";
-			echo "<td><select name=\"sambaPrimaryGroupSID\">";
-				// Display if group SID should be mapped to a well kown SID
+			if ($_SESSION[$this->base]->module['posixAccount']->orig['userPassword'][0] != $_SESSION[$this->base]->module['posixAccount']->attributes['userPassword'][0]) {
+				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Use unix password') ),
+					1 => array ( 'kind' => 'input', 'name' => 'useunixpwd', 'type' => 'checkbox', 'checked' => $this->useunixpwd),
+					2 => array ('kind' => 'help', 'value' => 'useunixpwd'));
+				}
+			$checked = false;
+			if (strpos($this->attributes['sambaAcctFlags'][0], "N")) $checked = true;
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Use no password') ),
+				1 => array ( 'kind' => 'input', 'name' => 'sambaAcctFlagsN', 'type' => 'checkbox', 'checked' => $checked),
+				2 => array ('kind' => 'help', 'value' => 'sambaAcctFlagsN'));
+			$checked = false;
+			if (strpos($this->attributes['sambaAcctFlags'][0], "X")) $checked = true;
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Password does not expire') ),
+				1 => array ( 'kind' => 'input', 'name' => 'sambaAcctFlagsX', 'type' => 'checkbox', 'checked' => $checked),
+				2 => array ('kind' => 'help', 'value' => 'sambaAcctFlagsX'));
+			$checked = false;
+			if (strpos($this->attributes['sambaScctFlags'][0], "D")) $checked = true;
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Account is deactivated') ),
+				1 => array ( 'kind' => 'input', 'name' => 'sambaAcctFlagsD', 'type' => 'checkbox', 'checked' => $checked),
+				2 => array ('kind' => 'help', 'value' => 'sambaAcctFlagsD'));
+			for ( $i=1; $i<=31; $i++ ) $mday[] = $i;
+			for ( $i=1; $i<=12; $i++ ) $mon[] = $i;
+			for ( $i=2003; $i<=2030; $i++ ) $year[] = $i;
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('User can change password') ),
+				1 => array ( 'kind' => 'table', 'value' => array ( 0 => array ( 0 => array ( 'kind' => 'select', 'name' => 'sambaPwdCanChange_day',
+						'options' => $mday, 'options_selectd' => $canchangedate['mday']),
+					1 => array ( 'kind' => 'select', 'name' => 'sambaPwdCanChange_mon',
+						'options' => $mon, 'options_selectd' => $canchangedate['mon']),
+					2 => array ( 'kind' => 'select', 'name' => 'sambaPwdCanChange_yes',
+						'options' => $year, 'options_selectd' => $canchangedate['year'])))),
+				2 => array ( 'kind' => 'help', 'value' => 'sambaPwdCanChange' ));
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('User must change password') ),
+				1 => array ( 'kind' => 'table', 'value' => array ( 0 => array ( 0 => array ( 'kind' => 'select', 'name' => 'sambaPwdMustChange_day',
+						'options' => $mday, 'options_selectd' => $mustchangedate['mday']),
+					1 => array ( 'kind' => 'select', 'name' => 'sambaPwdMustChange_mon',
+						'options' => $mon, 'options_selectd' => $mustchangedate['mon']),
+					2 => array ( 'kind' => 'select', 'name' => 'sambaPwdMustChange_yes',
+						'options' => $year, 'options_selectd' => $mustchangedate['year'])))),
+				2 => array ( 'kind' => 'help', 'value' => 'sambaPwdMustChange' ));
+			for ($i=90; $i>67; $i--) $drives[] = chr($i).':';
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Home drive') ),
+				1 => array ( 'kind' => 'select', 'name' => 'sambaHomeDrive', 'options' => $drives, 'options_selected' => array ($this->attributes['sambaHomeDrive'][0])),
+				2 => array ( 'kind' => 'help', 'value' => 'sambaHomeDrive' ));
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Home path') ),
+				1 => array ( 'kind' => 'input', 'type' => 'text', 'name' => 'sambaHomePath', 'size' => '20', 'maxlength' => '255', 'value' => $this->attributes['sambaHomePath'][0]),
+				2 => array ( 'kind' => 'help', 'value' => 'sambaHomePath' ));
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Profile path') ),
+				1 => array ( 'kind' => 'input', 'type' => 'text', 'name' => 'sambaProfilePath', 'size' => '20', 'maxlength' => '255', 'value' => $this->attributes['sambaProfilePath'][0]),
+				2 => array ( 'kind' => 'help', 'value' => 'sambaProfilePath' ));
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Logon script') ),
+				1 => array ( 'kind' => 'input', 'type' => 'text', 'name' => 'sambaLogonScript', 'size' => '20', 'maxlength' => '255', 'value' => $this->attributes['sambaLogonScript'][0]),
+				2 => array ( 'kind' => 'help', 'value' => 'sambaLogonScript' ));
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Samba workstations') ),
+				1 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'sambaUserWorkstations', 'value' => _('Edit workstations')),
+				2 => array ( 'kind' => 'help', 'value' => 'sambaUserWorkstations' ));
+
+			if (!$profile) {
 				$names = array_keys($this->rids);
 				$wrid=false;
 				for ($i=0; $i<count($names); $i++) {
 					if ($this->attributes['sambaPrimaryGroupSID'][0]==$SID."-".$this->rids[$names[$i]]) {
-						echo "<option selected>" . $names[$i] . "</option>";
+						$selected[] = $names[$i];
 						$wrid=true;
 						}
-					else echo "<option>" . $names[$i] . "</option>";
+					else $options[] = $names[$i];
 					}
-				if ($wrid) echo "<option>" . $_SESSION[$_SESSION[$this->base]->cache]->getgrnam($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]) . "</option>";
-					else echo "<option selected>" . $_SESSION[$_SESSION[$this->base]->cache]->getgrnam($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]) . "</option>";
-				echo	"</select></td>\n";
-			echo "<td><a href=\"../help.php?HelpNumber=464\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td>" . _('Special user') . "</td>\n";
-			echo "<td><select name=\"sambaSID\">";
+				if ($wrid) $options[] = $_SESSION[$_SESSION[$this->base]->cache]->getgrnam($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]);
+					else $selected[] = $_SESSION[$_SESSION[$this->base]->cache]->getgrnam($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]);
+				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Windows group') ),
+					1 => array ( 'kind' => 'select', 'name' => 'sambaPrimaryGroupSID', 'options' => $options, 'options_selected' => $selected),
+					2 => array ( 'kind' => 'help', 'value' => 'sambaPrimaryGroupSID' ));
 				// Display if group SID should be mapped to a well kown SID
 				$wrid=false;
 				if ($this->attributes['sambaSID'][0]==$SID."-500") {
-					echo "<option selected>" . _('Administrator') . "</option>";
+					$selected[] = _('Administrator');
 					$wrid=true;
 					}
-				else echo "<option>" . _('Administrator') . "</option>";
-				if ($this->attributes['sambaSID'][0]==$SID."-501") {
-					echo "<option selected>" . _('Guest') . "</option>";
+				else $options[] = _('Administrator');
+				if ($this->attributes['sambaSID'][0]==$SIM."-501") {
+					$selected[] = _('Guest');
 					$wrid=true;
 					}
-				else echo "<option>" . _('Guest') . "</option>";
-				if ($wrid) echo "<option>" . _('Ordinary user') . "</option>";
-					else echo "<option selected>" . _('Ordinary user') . "</option>";
-				echo	"</select></td>\n";
-			echo "<td><a href=\"../help.php?HelpNumber=XXX\" target=\"lamhelp\">" . _('Help-XX') . "</a></td>\n";
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td>" . _('Domain') . "</td>\n";
-			echo "<td><select name=\"sambaDomainName\">";
-				foreach ($sambaDomainNames as $domain) {
-					if ($this->attributes['sambaDomainName'][0]==$domain) echo "<option selected>$domain</option>";
-						else "<option>$domain</option>";
-					}
-				echo "</select></td>\n";
-			echo "<td><a href=\"../help.php?HelpNumber=438\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-			echo "</tr>\n";
-			echo "</table>\n";
+				else $options[] = _('Guest');
+				if ($wrid) $options[] = _('Ordinary user');
+					else $selected[] = _('Ordinary user');
+				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Special user') ),
+					1 => array ( 'kind' => 'select', 'name' => 'sambaSID', 'options' => $options, 'options_selected' => $selected),
+					2 => array ( 'kind' => 'help', 'value' => 'sambaSID' ));
+				}
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Domain') ),
+				1 => array ( 'kind' => 'select', 'name' => 'sambaDomainName', 'options' => $sambaDomainNames, 'options_selected' => array($this->attributes['sambaDomainName'][0])),
+				2 => array ( 'kind' => 'help', 'value' => 'sambaDomainName' ));
 			}
 		if ($_SESSION[$this->base]->type=='host') {
-			echo '<input name="sambaAcctFlagsW" type="hidden" value="true">';
-			echo "<table border=0 width=\"100%\">\n<tr>\n";
-			echo "<tr>\n";
-			echo "<td>" . _('Reset password') . "</td>\n";
-			echo "<td><input name=\"ResetSambaPassword\" type=\"submit\" value=\"" . _('Reset password') . "\"></td>\n";
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td>" . _('Domain') . "</td>\n";
-			echo "<td><select name=\"sambaDomainName\">";
-				foreach ($sambaDomainNames as $domain) {
-					if ($this->attributes['sambaDomainName'][0]==$domain) echo "<option selected>$domain</option>";
-						else "<option>$domain</option>";
-					}
-				echo "</select></td>\n";
-			echo "<td><a href=\"../help.php?HelpNumber=438\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-			echo "</tr>\n";
-			echo "</table>\n";
+			$return[] = array ( 0 => array ( 'kind' => 'input', 'name' => 'sambaAcctFlagsW', 'type' => 'hidden', 'value' => 'true' ));
+			if (!$profile) {
+				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Reset password') ),
+					1 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'ResetSambaPassword'),
+					2 => array ( 'kind' => 'help', 'value' => 'ResetSambaPassword' ));
+				}
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Domain') ),
+				1 => array ( 'kind' => 'select', 'name' => 'sambaDomainName', 'options' => $sambaDomainNames, 'options_selected' => $this->attributes['sambaDomainName'][0]),
+				2 => array ( 'kind' => 'help', 'value' => 'sambaDomainName' ));
 			}
-		return 0;
+		return $return;
 		}
 
 	function display_html_delete($post) {
@@ -605,52 +573,33 @@ class sambaSamAccount {
 	* to show a page with all attributes.
 	* It will output a complete html-table
 	*/
-	function display_html_sambaUserWorkstations($post) {
-		// Get list of all hosts.
-		$result = $_SESSION[$_SESSION[$this->base]->cache]->get_cache('uid', 'sambaSamAccount', 'host');
-		if (is_array($result)) {
-			foreach ($result as $host) $availableUserWorkstations[] = str_replace("$", '', $host[0]);
-			sort($availableUserWorkstations, SORT_STRING);
-			$result = str_replace(' ', '', $this->attributes['sambaUserWorkstations'][0]);
-			$userWorkstations = explode (',', $result);
-			$availableUserWorkstations = array_delete($userWorkstations, $availableUserWorkstations);
+	function display_html_sambaUserWorkstations($post, $profile=false) {
+		if ($_SESSION[$this->base]->type=='user') {
+			// Get list of all hosts.
+			$result = $_SESSION[$_SESSION[$this->base]->cache]->get_cache('uid', 'sambaSamAccount', 'host');
+			if (is_array($result)) {
+				foreach ($result as $host) $availableUserWorkstations[] = str_replace("$", '', $host[0]);
+				sort($availableUserWorkstations, SORT_STRING);
+				$result = str_replace(' ', '', $this->attributes['sambaUserWorkstations'][0]);
+				$userWorkstations = explode (',', $result);
+				$availableUserWorkstations = array_delete($userWorkstations, $availableUserWorkstations);
+				}
+
+			$return[] = array ( 0 => array ( 'kind' => 'fieldset', 'legend' => _("Allowed workstations"), 'value' =>
+				array ( 0 => array ( 0 => array ('kind' => 'fieldset', 'td' => array ('valign' => 'top'), 'legend' => _("Allowed workstations"), 'value' =>
+					array ( 0 => array ( 0 => array ( 'kind' => 'select', 'name' => 'sambaUserWorkstations[]', 'size' => '15', 'multiple', 'options' => $userWorkstations)))),
+				1 => array ( 'kind' => 'table', 'value' => array ( 0 => array ( 0 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'sambaUserWorkstations_add',
+					'value' => '<=')), 1 => array ( 0 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'sambaUserWorkstations_remove', 'value' => '=>' )),
+					2 => array ( 0 => array ( 'kind' => 'help', 'value' => 'sambaUserWorkstations' )))),
+				2 => array ('kind' => 'fieldset', 'td' => array ('valign' => 'top'), 'legend' => _("Available workstations"), 'value' =>
+					array ( 0 => array ( 0 => array ( 'kind' => 'select', 'name' => 'availableSambaUserWorkstations[]', 'size' => '15', 'multiple', 'options' => $availableUserWorkstations))))
+					))));
+
+			$return[] = array ( 0 => array ( 'kind' => 'input', 'type' => 'submit', 'value' => _('Back') ),
+				1 => array ( 'kind' => 'text'),
+				2 => array ('kind' => 'text'));
 			}
-		echo "<table border=0 width=\"100%\">\n<tr>\n";
-		echo "<tr>\n";
-		echo "<td valign=\"top\">";
-			echo "<fieldset class=\"".$_SESSION[$this->base]->type."edit-bright\"><legend class=\"".$_SESSION[$this->base]->type."edit-bright\">";
-				echo _("Allowed workstations");
-				echo "</legend>\n";
-			// display all workstations the user is allowed to login
-			if (count($userWorkstations)!=0) {
-				echo "<select name=\"sambaUserWorkstations[]\" class=\"".$_SESSION[$this->base]->type."edit-bright\" size=15 multiple>\n";
-				for ($i=0; $i<count($userWorkstations); $i++)
-					if ($userWorkstations[$i]!='') echo "<option>".$userWorkstations[$i]."</option>\n";
-				echo "</select>\n";
-				}
-			echo "</fieldset></td>\n";
-		echo "<td align=\"center\" width=\"10%\"><input type=\"submit\" name=\"sambaUserWorkstations_add\" value=\"<=\">";
-			echo " ";
-			echo "<input type=\"submit\" name=\"sambaUserWorkstations_remove\" value=\"=>\"><br><br>";
-			echo "<a href=\""."../help.php?HelpNumber=436\" target=\"lamhelp\">"._('Help')."</a></td>\n";
-		echo "<td valign=\"top\">";
-			echo "<fieldset class=\"".$_SESSION[$this->base]->type."edit-bright\"><legend class=\"".$_SESSION[$this->base]->type."edit-bright\">";
-				echo _('Available workstations');
-				echo "</legend>\n";
-			// Display all workstations without these the user is allowed to login
-			if (count($availableUserWorkstations)!=0) {
-				echo "<select name=\"availableSambaUserWorkstations[]\" size=15 multiple class=\"".$_SESSION[$this->base]->type."edit-bright\">\n";
-				foreach ($availableUserWorkstations as $temp) echo "<option>$temp</option>\n";
-				echo "</select>\n";
-				}
-			echo "</fieldset></td>\n";
-		echo "</tr>\n";
-		echo "<tr>\n";
-		echo "<td><input name=\"attributes\" type=\"submit\" value=\"" . _('Back') . "\"></td>\n";
-		echo "<td></td>\n";
-		echo "<td></td>\n";
-		echo "</tr>\n";
-		echo "</table>\n";
+		return $return;
 		}
 
 	}

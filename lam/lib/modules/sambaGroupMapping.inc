@@ -118,6 +118,18 @@ class sambaGroupMapping {
 		return array('attributes');
 		}
 
+	/*
+	*/
+	function get_help($id) {
+		switch ($id) {
+			case "description":
+				return array ("ext" => "FALSE", "Headline" => _("Description"),
+					"Text" => _("Host Description."));
+				break;
+			}
+		return false;
+		}
+
 	/* This function returns all ldap attributes
 	* which are part of sambaGroupMapping and returns
 	* also their values.
@@ -187,32 +199,39 @@ class sambaGroupMapping {
 
 	/* Write variables into object and do some regexp checks
 	*/
-	function proccess_attributes($post) {
-		// Get Domain SID from name
-		$sambaDomains = $_SESSION[$_SESSION[$this->base]->ldap]->search_domains($_SESSION[$_SESSION[$this->base]->config]->get_domainSuffix());
-		for ($i=0; $i<count($sambaDomains); $i++ )
-			if ($post['sambaDomainName'] == $sambaDomains[$i]->name) {
-				$SID = $sambaDomains[$i]->SID;
-				$RIDbase = $sambaDomain[$i]->RIDbase;
-				}
-
+	function proccess_attributes($post, $profile=false) {
 		// Load attributes
 		$this->attributes['displayName'][0] = $post['displayName'];
 		$this->attributes['sambaGroupType'][0] = 2;
 
-		$rids = array_keys($this->rids);
-		$wrid = false;
-		for ($i=0; $i<count($rids); $i++) {
-			if ($post['sambaSID'] == $rids[$i]) {
-				$wrid = true;
-				// Get Domain SID
-				$this->attributes['sambaSID'][0] = $SID."-".$this->rids[$rids[$i]];
-				// Do a check if special grou pis unique
-				if ($_SESSION[$_SESSION[$this->base]->cache]->in_cache($SID."-".$this->rids[$rids[$i]], 'sambaSID', 'group'))
-					$errors[] = array('ERROR', _('Special Group'),sprintf( _('There can be only one group %s.'), $rids[$i]), 'sambaSID');
+		if (!$profile) {
+			// Get Domain SID from name
+			$sambaDomains = $_SESSION[$_SESSION[$this->base]->ldap]->search_domains($_SESSION[$_SESSION[$this->base]->config]->get_domainSuffix());
+			for ($i=0; $i<count($sambaDomains); $i++ )
+				if ($post['sambaDomainName'] == $sambaDomains[$i]->name) {
+					$SID = $sambaDomains[$i]->SID;
+					$RIDbase = $sambaDomain[$i]->RIDbase;
+					}
+
+			// Load attributes
+			$this->attributes['displayName'][0] = $post['displayName'];
+			$this->attributes['sambaGroupType'][0] = 2;
+
+			$rids = array_keys($this->rids);
+			$wrid = false;
+			for ($i=0; $i<count($rids); $i++) {
+				if ($post['sambaSID'] == $rids[$i]) {
+					$wrid = true;
+					// Get Domain SID
+					$this->attributes['sambaSID'][0] = $SID."-".$this->rids[$rids[$i]];
+					// Do a check if special grou pis unique
+					if ($_SESSION[$_SESSION[$this->base]->cache]->in_cache($SID."-".$this->rids[$rids[$i]], 'sambaSID', 'group'))
+						$errors[] = array('ERROR', _('Special Group'),sprintf( _('There can be only one group %s.'), $rids[$i]), 'sambaSID');
+					}
 				}
+			if (!$wrid) $this->attributes['sambaSID'][0] = $SID."-".($_SESSION[$this->base]->module['posixGroup']->attributes['gidNumber'][0]*2)+$RIDbase+1;
 			}
-		if (!$wrid) $this->attributes['sambaSID'][0] = $SID."-".($_SESSION[$this->base]->module['posixGroup']->attributes['gidNumber'][0]*2)+$RIDbase+1;
+
 		// Return error-messages
 		if (is_array($errors)) return $errors;
 		return 0;
@@ -222,7 +241,7 @@ class sambaGroupMapping {
 	* to show a page with all attributes.
 	* It will output a complete html-table
 	*/
-	function display_html_attributes($post) {
+	function display_html_attributes($post, $profile=false) {
 		// Get Domain SID from name
 		$sambaDomains = $_SESSION[$_SESSION[$this->base]->ldap]->search_domains($_SESSION[$_SESSION[$this->base]->config]->get_domainSuffix());
 		// Get Domain-SID from group SID
@@ -235,42 +254,32 @@ class sambaGroupMapping {
 				$sel_domain = $sambaDomains[$i]->name;
 				}
 			}
-		echo "<table border=0 width=\"100%\">\n";
-		echo "<tr>\n";
-		echo "<td>" . _("Display name") . "</td>\n";
-		echo "<td><input name=\"displayName\" type=\"text\" size=\"30\" maxlength=\"50\" value=\"".$this->attributes['displayName'][0]."\"></td>\n";
-		echo "<td><a href=\"../help.php?HelpNumber=420\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-		echo "</tr>\n";
-		echo "<tr>\n";
-		echo "<td>" . _('Special group') . "</td>\n";
-		echo "<td><select name=\"sambaSID\">";
-			// Display if group SID should be mapped to a well kown SID
-			$names = array_keys($this->rids);
-			$wrid=false;
-			for ($i=0; $i<count($names); $i++) {
-				if ($this->attributes['sambaSID'][0]==$SID."-".$this->rids[$names[$i]]) {
-					echo "<option selected>" . $names[$i] . "</option>";
-					$wrid=true;
+		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Display name') ),
+			1 => array ( 'kind' => 'input', 'name' => 'displayName', 'type' => 'text', 'size' => '30', 'maxlength' => '50', 'value' => $this->attributes['displayName'][0]),
+			2 => array ( 'kind' => 'help', 'value' => 'displayName' ));
+
+		if (!$profile) {
+				$names = array_keys($this->rids);
+				$wrid=false;
+				for ($i=0; $i<count($names); $i++) {
+					if ($this->attributes['sambaSID'][0]==$SID."-".$this->rids[$names[$i]]) {
+						$selected[] = $names[$i];
+						$wrid=true;
+						}
+					else $options[] = $names[$i];
 					}
-				else echo "<option>" . $names[$i] . "</option>";
-				}
-			if ($wrid) echo "<option>" . $this->attributes['cn'][0] . "</option>";
-				else echo "<option selected>" . $this->attributes['cn'][0] . "</option>";
-			echo	"</select></td>\n";
-		echo "<td><a href=\"../help.php?HelpNumber=464\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-		echo "</tr>\n";
-		echo "<tr>\n";
-		echo "<td>" . _('Domain') . "</td>\n";
-		echo "<td><select name=\"sambaDomainName\">";
-			foreach ($sambaDomainNames as $domain) {
-				if ($sel_domain==$domain) echo "<option selected>$domain</option>";
-					else echo "<option>$domain</option>";
-				}
-			echo "</select></td>\n";
-		echo "<td><a href=\"../help.php?HelpNumber=467\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-		echo "</tr>\n";
-		echo "</table>\n";
-		return 0;
+				if ($wrid) $options[] = $_SESSION[$this->base]->module['posixGroup']->attributes['cn'][0];
+					else $selected[] = $_SESSION[$this->base]->module['posixGroup']->attributes['cn'][0];
+				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Windows group') ),
+					1 => array ( 'kind' => 'select', 'name' => 'sambaSID', 'options' => $options, 'options_selected' => $selected),
+					2 => array ( 'kind' => 'help', 'value' => 'sambaSID' ));
+			}
+
+		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Domain') ),
+			1 => array ( 'kind' => 'select', 'name' => 'sambaDomainName', 'options' => $sambaDomainNames, 'options_selected' => array ( $sel_domain ) ),
+			2 => array ( 'kind' => 'help', 'value' => 'sambaDomainName' ));
+
+		return $return;
 		}
 
 	function display_html_delete($post) {

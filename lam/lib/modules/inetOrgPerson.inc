@@ -183,7 +183,7 @@ class inetOrgPerson {
 		if (isset($this->attributes['host'])) {
 			$host = $post['host'];
 			if ((!$host=='') && !ereg('^([a-z]|[A-Z]|[0-9]|[.]|[-])+(([,])+([ ])*([a-z]|[A-Z]|[0-9]|[.]|[-])+)*$', $host))
-				$errors[] = array('ERROR', _('Unix workstations'), _('Unix workstations is invalid.'), 'host');
+				$errors['host'][] = array('ERROR', _('Unix workstations'), _('Unix workstations is invalid.'));
 			$hosts = explode(" ", $host);
 			$this->attributes['host'] = array();
 			foreach ($hosts as $host)
@@ -192,18 +192,18 @@ class inetOrgPerson {
 
 		// Do some regex-checks and return error if attributes are set to wrong values
 		if (!$profile) {
-			if ( !ereg('^([a-z]|[A-Z]|[-]|[ ]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+$', $this->attributes['givenName'][0])) $errors[] = array('ERROR', _('Given name'), _('Given name contains invalid characters'), 'givenName');
-			if ( !ereg('^([a-z]|[A-Z]|[-]|[ ]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+$', $this->attributes['sn'][0])) $errors[] = array('ERROR', _('Surname'), _('Surname contains invalid characters'), 'sn');
-			if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/]|[-])*$', $this->attributes['telephoneNumber'][0]))  $errors[] = array('ERROR', _('Telephone number'), _('Please enter a valid telephone number!'), 'telephoneNumber');
-			if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/]|[-])*$', $this->attributes['mobileTelephoneNumber'][0]))  $errors[] = array('ERROR', _('Mobile number'), _('Please enter a valid mobile number!'), 'mobileTelephoneNumber');
-			if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/]|[-])*$', $this->attributes['facsimileTelephoneNumber'][0]))  $errors[] = array('ERROR', _('Fax number'), _('Please enter a valid fax number!'), 'facsimileTelephoneNumber');
-			if ( !ereg('^(([0-9]|[A-Z]|[a-z]|[.]|[-]|[_])+[@]([0-9]|[A-Z]|[a-z]|[-])+([.]([0-9]|[A-Z]|[a-z]|[-])+)*)*$', $this->attributes['mail'][0]))  $errors[] = array('ERROR', _('eMail address'), _('Please enter a valid eMail address!'), 'mail');
-			if ( !ereg('^([0-9]|[A-Z]|[a-z]|[-]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $this->attributes['street'][0]))  $errors[] = array('ERROR', _('Street'), _('Please enter a valid street name!'), 'street');
-			if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $this->attributes['postalAddress'][0]))  $errors[] = array('ERROR', _('Postal address'), _('Please enter a valid postal address!'), 'postalAdress');
-			if ( !ereg('^([0-9]|[A-Z]|[a-z])*$', $this->attributes['personal_postalCode'][0]))  $errors[] = array('ERROR', _('Postal code'), _('Please enter a valid postal code!'), 'personal_postalCode');
+			if ( !ereg('^([a-z]|[A-Z]|[-]|[ ]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+$', $this->attributes['givenName'][0])) $errors['givenName'][] = array('ERROR', _('Given name'), _('Given name contains invalid characters'));
+			if ( !ereg('^([a-z]|[A-Z]|[-]|[ ]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+$', $this->attributes['sn'][0])) $errors['sn'][] = array('ERROR', _('Surname'), _('Surname contains invalid characters'));
+			if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/]|[-])*$', $this->attributes['telephoneNumber'][0]))  $errors['telephoneNumber'][] = array('ERROR', _('Telephone number'), _('Please enter a valid telephone number!'));
+			if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/]|[-])*$', $this->attributes['mobileTelephoneNumber'][0]))  $errors['mobileTelephoneNumber'][] = array('ERROR', _('Mobile number'), _('Please enter a valid mobile number!'));
+			if ( !ereg('^(\+)*([0-9]|[ ]|[.]|[(]|[)]|[/]|[-])*$', $this->attributes['facsimileTelephoneNumber'][0]))  $errors['facsimileTelephoneNumber'][] = array('ERROR', _('Fax number'), _('Please enter a valid fax number!'));
+			if ( !ereg('^(([0-9]|[A-Z]|[a-z]|[.]|[-]|[_])+[@]([0-9]|[A-Z]|[a-z]|[-])+([.]([0-9]|[A-Z]|[a-z]|[-])+)*)*$', $this->attributes['mail'][0]))  $errors['mail'] = array('ERROR', _('eMail address'), _('Please enter a valid eMail address!'));
+			if ( !ereg('^([0-9]|[A-Z]|[a-z]|[-]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $this->attributes['street'][0]))  $errors['street'][] = array('ERROR', _('Street'), _('Please enter a valid street name!'));
+			if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $this->attributes['postalAddress'][0]))  $errors['postalAdress'][] = array('ERROR', _('Postal address'), _('Please enter a valid postal address!'));
+			if ( !ereg('^([0-9]|[A-Z]|[a-z])*$', $this->attributes['personal_postalCode'][0]))  $errors['personal_postalCode'][] = array('ERROR', _('Postal code'), _('Please enter a valid postal code!'));
 			}
-		if ( !ereg('^([0-9]|[A-Z]|[a-z]|[-]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $this->attributes['title'][0]))  $errors[] = array('ERROR', _('Title'), _('Please enter a valid title!'), 'title');
-		if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $this->attributes['employeeType'][0]))  $errors[] = array('ERROR', _('Employee type'), _('Please enter a valid employee type!'), 'employeeType');
+		if ( !ereg('^([0-9]|[A-Z]|[a-z]|[-]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $this->attributes['title'][0]))  $errors['title'][] = array('ERROR', _('Title'), _('Please enter a valid title!'));
+		if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $this->attributes['employeeType'][0]))  $errors['employeeType'][] = array('ERROR', _('Employee type'), _('Please enter a valid employee type!'));
 		// Return error-messages
 		if (is_array($errors)) return $errors;
 		return 0;

@@ -95,6 +95,18 @@ class quota {
 		return array('attributes');
 		}
 
+	/*
+	*/
+	function get_help($id) {
+		switch ($id) {
+			case "description":
+				return array ("ext" => "FALSE", "Headline" => _("Description"),
+					"Text" => _("Host Description."));
+				break;
+			}
+		return false;
+		}
+
 	/* This function returns all ldap attributes
 	* which are part of quota and returns
 	* also their values.
@@ -185,7 +197,7 @@ class quota {
 
 	/* Write variables into object and do some regexp checks
 	*/
-	function proccess_attributes($post) {
+	function proccess_attributes($post, $profile=false) {
 		// Write all general values into $account_new
 		$i=0;
 		// loop for every mointpoint with quotas
@@ -196,17 +208,17 @@ class quota {
 			$this->quota[$i][7] = $post[$i . '_7'];
 			// Check if values are OK and set automatic values. if not error-variable will be set
 			if (!ereg('^([0-9])*$', $this->quota[$i][2]))
-				$errors[] = array('ERROR', _('Block soft quota'), _('Block soft quota contains invalid characters. Only natural numbers are allowed'));
+				$errors[$this->quota[$i][2]][] = array('ERROR', _('Block soft quota'), _('Block soft quota contains invalid characters. Only natural numbers are allowed'));
 			if (!ereg('^([0-9])*$', $this->quota[$i][3]))
-				$errors[] = array('ERROR', _('Block hard quota'), _('Block hard quota contains invalid characters. Only natural numbers are allowed'));
+				$errors[$this->quota[$i][3]][] = array('ERROR', _('Block hard quota'), _('Block hard quota contains invalid characters. Only natural numbers are allowed'));
 			if (!ereg('^([0-9])*$', $this->quota[$i][6]))
-				$errors[] = array('ERROR', _('Inode soft quota'), _('Inode soft quota contains invalid characters. Only natural numbers are allowed'));
+				$errors[$this->quota[$i][6]][] = array('ERROR', _('Inode soft quota'), _('Inode soft quota contains invalid characters. Only natural numbers are allowed'));
 			if (!ereg('^([0-9])*$', $this->quota[$i][7]))
-				$errors[] = array('ERROR', _('Inode hard quota'), _('Inode hard quota contains invalid characters. Only natural numbers are allowed'));
+				$errors[$this->quota[$i][7]][] = array('ERROR', _('Inode hard quota'), _('Inode hard quota contains invalid characters. Only natural numbers are allowed'));
 			if (intval($this->quota[$i][2]) > intval($this->quota[$i][3]))
-				$errors[] = array('ERROR', _('Block quota'), _('Block soft quota must be smaller than block hard quota'));
+				$errors[$this->quota[$i][2]][] = array('ERROR', _('Block quota'), _('Block soft quota must be smaller than block hard quota'));
 			if (intval($this->quota[$i][6]) > intval($this->quota[$i][7]))
-				$errors[] = array('ERROR', _('Inode quota'), _('Inode soft quota must be smaller than inode hard quota'));
+				$errors[$this->quota[$i][6]][] = array('ERROR', _('Inode quota'), _('Inode soft quota must be smaller than inode hard quota'));
 			$i++;
 			}
 
@@ -220,49 +232,43 @@ class quota {
 	* to show a page with all attributes.
 	* It will output a complete html-table
 	*/
-	function display_html_attributes($post) {
-		echo "<table border=0 width=\"100%\">\n";
-		echo "<tr>\n";
-		echo "<td>" . _('Mountpoint') . "</td>\n";
-		echo "<td>" . _('Used blocks') . "</td>\n";
-		echo "<td>" . _('Soft block limit') . "</td>\n";
-		echo "<td>" . _('Hard block limit') . "</td>\n";
-		echo "<td>" . _('Grace block period') . "</td>\n";
-		echo "<td>" . _('Used inodes') . "</td>\n";
-		echo "<td>" . _('Soft inode limit') . "</td>\n";
-		echo "<td>" . _('Hard inode limit') . "</td>\n";
-		echo "<td>" . _('Grace inode period') . "</td>\n";
-		echo "</tr>\n";
-		echo "<tr>\n";
-		echo "<td><a href=\"../help.php?HelpNumber=439\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-		echo "<td><a href=\"../help.php?HelpNumber=440\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-		echo "<td><a href=\"../help.php?HelpNumber=441\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-		echo "<td><a href=\"../help.php?HelpNumber=442\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-		echo "<td><a href=\"../help.php?HelpNumber=443\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-		echo "<td><a href=\"../help.php?HelpNumber=444\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-		echo "<td><a href=\"../help.php?HelpNumber=445\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-		echo "<td><a href=\"../help.php?HelpNumber=446\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-		echo "<td><a href=\"../help.php?HelpNumber=447\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-		echo "</tr>\n";
+	function display_html_attributes($post, $profile=false) {
+
+		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Mountpoint') ),
+				1 => array ( 'kind' => 'text', 'text' => _('Used blocks') ),
+				2 => array ( 'kind' => 'text', 'text' => _('Soft block limit') ),
+				3 => array ( 'kind' => 'text', 'text' => _('Hard block limit') ),
+				4 => array ( 'kind' => 'text', 'text' => _('Grace block period') ),
+				5 => array ( 'kind' => 'text', 'text' => _('Used inodes') ),
+				6 => array ( 'kind' => 'text', 'text' => _('Soft inode limit') ),
+				7 => array ( 'kind' => 'text', 'text' => _('Hard inode limit') ),
+				8 => array ( 'kind' => 'text', 'text' => _('Grace inode period') ));
+
+		$return[] = array ( 0 => array ( 'kind' => 'help', 'value' => 'Mountpoint' ),
+				1 => array ( 'kind' => 'help', 'value' => 'UsedBlocks' ),
+				2 => array ( 'kind' => 'help', 'value' => 'SoftBlockLimit' ),
+				3 => array ( 'kind' => 'help', 'value' => 'HardBlockLimit' ),
+				4 => array ( 'kind' => 'help', 'value' => 'GraceBlockPeriod' ),
+				5 => array ( 'kind' => 'help', 'value' => 'UsedInodes' ),
+				6 => array ( 'kind' => 'help', 'value' => 'SoftInodeLimit' ),
+				7 => array ( 'kind' => 'help', 'value' => 'HardInodeLimit' ),
+				8 => array ( 'kind' => 'help', 'value' => 'GraceInodePeriod' ));
 
 		$i=0;
 		// loop for every mointpoint with enabled quotas
 		while ($this->quota[$i][0]) {
-			echo "<tr>\n";
-			echo "<td>" . $this->quota[$i][0] . "</td>\n";
-			echo "<td>" . $this->quota[$i][1] . "</td>\n"; // used blocks
-			echo "<td><input name=\"" . $i . "_2\" type=\"text\" size=\"12\" maxlength=\"20\" value=\"" . $this->quota[$i][2] . "\"></td>\n"; // blocks soft limit
-			echo "<td><input name=\"" . $i . "_3\" type=\"text\" size=\"12\" maxlength=\"20\" value=\"" . $this->quota[$i][3] . "\"></td>\n"; // blocks hard limit
-			echo "<td>" . $this->quota[$i][4] . "</td>\n"; // block grace period
-			echo "<td>" . $this->quota[$i][5] . "</td>\n"; // used inodes
-			echo "<td><input name=\"" . $i . "_6\" type=\"text\" size=\"12\" maxlength=\"20\" value=\"" . $this->quota[$i][6] . "\"></td>\n"; // inodes soft limit
-			echo "<td><input name=\"" . $i . "_7\" type=\"text\" size=\"12\" maxlength=\"20\" value=\"" . $this->quota[$i][7] . "\"></td>\n"; // inodes hard limit
-			echo "<td>" . $this->quota[$i][8] . "</td>\n";
-			echo "</tr>\n"; // inodes grace period
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => $this->quota[$i][0] ),
+				1 => array ( 'kind' => 'text', 'text' => $this->quota[$i][1] ),
+				2 => array ( 'kind' => 'input', 'name' => $i . '_2', 'type' => 'text', 'size' => '12', 'maxlength' => '20', 'value' => $this->quota[$i][2]),
+				3 => array ( 'kind' => 'input', 'name' => $i . '_3', 'type' => 'text', 'size' => '12', 'maxlength' => '20', 'value' => $this->quota[$i][3]),
+				4 => array ( 'kind' => 'text', 'text' => $this->quota[$i][4] ),
+				5 => array ( 'kind' => 'text', 'text' => $this->quota[$i][5] ),
+				6 => array ( 'kind' => 'input', 'name' => $i . '_6', 'type' => 'text', 'size' => '12', 'maxlength' => '20', 'value' => $this->quota[$i][6]),
+				7 => array ( 'kind' => 'input', 'name' => $i . '_7', 'type' => 'text', 'size' => '12', 'maxlength' => '20', 'value' => $this->quota[$i][7]),
+				8 => array ( 'kind' => 'text', 'text' => $this->quota[$i][8] ));
 			$i++;
 			}
-		echo "</table>\n";
-		return 0;
+		return $return;
 		}
 
 	function display_html_delete($post) {

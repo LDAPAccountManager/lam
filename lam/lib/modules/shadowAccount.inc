@@ -111,6 +111,18 @@ class shadowAccount {
 		return array('attributes');
 		}
 
+	/*
+	*/
+	function get_help($id) {
+		switch ($id) {
+			case "description":
+				return array ("ext" => "FALSE", "Headline" => _("Description"),
+					"Text" => _("Host Description."));
+				break;
+			}
+		return false;
+		}
+
 	/* This function returns all ldap attributes
 	* which are part of shadowAccount and returns
 	* also their values.
@@ -168,7 +180,7 @@ class shadowAccount {
 
 	/* Write variables into object and do some regexp checks
 	*/
-	function proccess_attributes($post) {
+	function proccess_attributes($post, $profile=false) {
 		// Load attributes
 		$this->attributes['shadowMin'][0] = $post['shadowMin'];
 		$this->attributes['shadowMax'][0] = $post['shadowMax'];
@@ -191,51 +203,36 @@ class shadowAccount {
 	* to show a page with all attributes.
 	* It will output a complete html-table
 	*/
-	function display_html_attributes($post) {
+	function display_html_attributes($post, $profile=false) {
 		// Use dd-mm-yyyy format of date because it's easier to read for humans
 		$date = getdate ($this->attributes['shadowExpire'][0]*3600*24);
-		echo "<table border=0 width=\"100%\">\n<tr>\n";
-		echo "<td>" . _('Password warn') . "</td>\n";
-		echo "<td><input name=\"shadowWarning\" type=\"text\" size=\"4\" maxlength=\"4\" value=\"" . $this->attributes['shadowWarning'][0] . "\"></td>\n";
-		echo "<td><a href=\"../help.php?HelpNumber=414\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-		echo "</tr>\n";
-		echo "<tr>\n";
-		echo "<td>" . _('Password Expire') . "</td>\n";
-		echo "<td><input name=\"shadowInactive\" type=\"text\" size=\"4\" maxlength=\"4\" value=\"" . $this->attributes['shadowInactive'][0] . "\"></td>\n";
-		echo "<td><a href=\"../help.php?HelpNumber=415\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-		echo "</tr>\n";
-		echo "<tr>\n";
-		echo "<td>" . _('Maximum password age') . "</td>\n";
-		echo "<td><input name=\"shadowMax\" type=\"text\" size=\"5\" maxlength=\"5\" value=\"" . $this->attributes['shadowMax'][0] . "\"></td>\n";
-		echo "<td><a href=\"../help.php?HelpNumber=416\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-		echo "</tr>\n";
-		echo "<tr>\n";
-		echo "<td>" . _('Minimum password age') . "</td>\n";
-		echo "<td><input name=\"shadowMin\" type=\"text\" size=\"4\" maxlength=\"4\" value=\"" . $this->attributes['shadowMin'][0] . "\"></td>\n";
-		echo "<td><a href=\"../help.php?HelpNumber=417\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-		echo "</tr>\n";
-		echo "<tr>\n";
-		echo "<td>" . _('Expire date') . "</td>\n";
-		echo "<td><select name=\"shadowExpire_day\">";
-			for ( $i=1; $i<=31; $i++ ) {
-				if ($date['mday']==$i) echo "<option selected>$i</option>";
-				else echo "<option>$i</option>";
-				}
-			echo "</select>\n<select name=\"shadowExpire_mon\">";
-			for ( $i=1; $i<=12; $i++ ) {
-				if ($date['mon'] == $i) echo "<option selected>$i</option>";
-				else echo "<option>$i</option>";
-				}
-			echo "</select>\n<select name=\"shadowExpire_yea\">";
-			for ( $i=2030; $i>=2003; $i-- ) {
-				if ($date['year']==$i) echo "<option selected>$i</option>";
-				else echo "<option>$i</option>";
-				}
-			echo "</select></td>\n";
-		echo "<td><a href=\"../help.php?HelpNumber=418\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-		echo "</tr>\n";
-		echo "</table>\n";
-		return 0;
+
+		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Password warn') ),
+			1 => array ( 'kind' => 'input', 'name' => 'shadowWarning', 'type' => 'text', 'size' => '4', 'maxlength' => '4', 'value' => $this->attributes['shadowWarning'][0] ),
+			2 => array ( 'kind' => 'help', 'value' => 'shadowWarning' ));
+		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Password expire') ),
+			1 => array ( 'kind' => 'input', 'name' => 'shadowInactive', 'type' => 'text', 'size' => '4', 'maxlength' => '4', 'value' => $this->attributes['shadowInactive'][0] ),
+			2 => array ( 'kind' => 'help', 'value' => 'shadowInactive' ));
+		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Maximum password age') ),
+			1 => array ( 'kind' => 'input', 'name' => 'shadowMax', 'type' => 'text', 'size' => '5', 'maxlength' => '5', 'value' => $this->attributes['shadowMax'][0] ),
+			2 => array ( 'kind' => 'help', 'value' => 'shadowMax' ));
+		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Minimum password age') ),
+			1 => array ( 'kind' => 'input', 'name' => 'shadowMin', 'type' => 'text', 'size' => '5', 'maxlength' => '5', 'value' => $this->attributes['shadowMin'][0] ),
+			2 => array ( 'kind' => 'help', 'value' => 'shadowMin' ));
+
+		for ( $i=1; $i<=31; $i++ ) $mday[] = $i;
+		for ( $i=1; $i<=12; $i++ ) $mon[] = $i;
+		for ( $i=2003; $i<=2030; $i++ ) $year[] = $i;
+		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Expire day') ),
+			1 => array ( 'kind' => 'table', 'value' => array ( 0 => array ( 0 => array ( 'kind' => 'select', 'name' => 'shadowExpire_day',
+					'options' => $mday, 'options_selectd' => $date['mday']),
+				1 => array ( 'kind' => 'select', 'name' => 'shadowExpire_mon',
+					'options' => $mon, 'options_selectd' => $date['mon']),
+				2 => array ( 'kind' => 'select', 'name' => 'shadowExpire_yea',
+					'options' => $year, 'options_selectd' => $date['year'])))),
+			2 => array ( 'kind' => 'help', 'value' => 'shadowExpire' ));
+
+		return $return;
 		}
 
 	function display_html_delete($post) {

@@ -155,9 +155,16 @@ class posixAccount {
 		return array('attributes', 'groups');
 		}
 
-	function profile_attributes() {
-		// array of attribtues wich are unique and not allowed to store in profile
-		//array unique_attributes ( 'user' => array ('cn', 'rid', 'uid', 'uidNumber', 'userPassword')  );
+	/*
+	*/
+	function get_help($id) {
+		switch ($id) {
+			case "description":
+				return array ("ext" => "FALSE", "Headline" => _("Description"),
+					"Text" => _("Host Description."));
+				break;
+			}
+		return false;
 		}
 
 	/* This function returns all ldap attributes
@@ -253,7 +260,7 @@ class posixAccount {
 
 		// Remove primary group from additional groups
 		for ($i=0; $i<count($this->groups); $i++) {
-			if ($this->groups[$i]==$_SESSION[$_SESSION[$this->base]->cache]->getgrnam($this->attributes['gidNumber'])) unset($this->groups[$i]);
+			if ($this->groups[$i]==$_SESSION[$_SESSION[$this->base]->cache]->getgrnam($this->attributes['gidNumber'][0])) unset($this->groups[$i]);
 			}
 
 		// Set additional group memberships
@@ -331,15 +338,15 @@ class posixAccount {
 
 	/* Write variables into object and do some regexp checks
 	*/
-	function proccess_attributes($post) {
+	function proccess_attributes($post, $profile=false) {
 		if ($this->orig['uid'][0]!='' && $post['uid']!=$this->attributes['uid'][0])
-			$errors[] = array('INFO', _('UID'), _('UID has changed. Do you want to change home directory?'), 'uid');
+			$errors['uid'][] = array('INFO', _('UID'), _('UID has changed. Do you want to change home directory?'));
 		if ($this->orig['gidNumber'][0]!='' && $_SESSION[$_SESSION[$this->base]->cache]->getgid($post['gidNumber'])!=$this->attributes['gidNumber'][0])
-			$errors[] = array('INFO', _('GID number'), sprintf(_('GID number has changed. To keep file ownership you have to run the following command as root: \'find / -gid %s -uid %s -exec chgrp %s {} \;\''), $this->orig['gidNumber'][0], $this->orig['uidNumber'][0], $_SESSION[$_SESSION[$this->base]->cache]->getgid($post['gidNumber'])), 'gidNumber');
+			$errors['gidNumber'][] = array('INFO', _('GID number'), sprintf(_('GID number has changed. To keep file ownership you have to run the following command as root: \'find / -gid %s -uid %s -exec chgrp %s {} \;\''), $this->orig['gidNumber'][0], $this->orig['uidNumber'][0], $_SESSION[$_SESSION[$this->base]->cache]->getgid($post['gidNumber'])));
 		if ($this->orig['uidNumber'][0]!='' && $post['uidNumber']!=$this->attributes['uidNumber'][0])
-			$errors[] = array('INFO', _('UID number'), sprintf(_('UID number has changed. To keep file ownership you have to run the following command as root: \'find / -uid %s -exec chown %s {} \;\''), $this->orig['uidNumber'][0], $this->attributes['uidNumber'][0]), 'uidNumber');
+			$errors['uidNumber'][] = array('INFO', _('UID number'), sprintf(_('UID number has changed. To keep file ownership you have to run the following command as root: \'find / -uid %s -exec chown %s {} \;\''), $this->orig['uidNumber'][0], $this->attributes['uidNumber'][0]));
 		if (isset($post['homeDirectory']) && $this->orig['homeDirectory'][0]!='' && $post['homeDirectory']!=$this->attributes['homeDirectory'][0])
-			$errors[] = array('INFO', _('Home directory'), sprintf(_('Home directory changed. To keep home directory you have to run the following command as root: \'mv %s %s\''), $this->orig['homeDirectory'][0], $this->attributes['homeDirectory'][0]), 'homeDirectory');
+			$errors['homeDirectory'][] = array('INFO', _('Home directory'), sprintf(_('Home directory changed. To keep home directory you have to run the following command as root: \'mv %s %s\''), $this->orig['homeDirectory'][0], $this->attributes['homeDirectory'][0]));
 
 		// Load attributes
 		$this->attributes['uid'][0] = $post['uid'];
@@ -355,150 +362,153 @@ class posixAccount {
 			else $this->userPassword_no=false;
 		if ($post['userPassword_lock']) $this->userPassword_lock=true;
 			else $this->userPassword_lock=false;
-		if (isset($post['userPassword'])) {
-			if ($post['userPassword'] != $post['userPassword2']) {
-				$errors[] = array('ERROR', _('Password'), _('Please enter the same password in both password-fields.'), 'userPassword');
-				unset ($post['userPassword2']);
-				}
-				else $this->userPassword($post['userPassword']);
-			}
-		if ($post['genpass']) $this->userPassword(genpasswd());
-		// Check if UID is valid. If none value was entered, the next useable value will be inserted
-		// load min and may uidNumber
-		if ($_SESSION[$this->base]->type=='user') {
-			$minID = intval($_SESSION[$_SESSION[$this->base]->config]->get_minUID());
-			$maxID = intval($_SESSION[$_SESSION[$this->base]->config]->get_maxUID());
-			}
-		if ($_SESSION[$this->base]->type=='host') {
-			$minID = intval($_SESSION[$_SESSION[$this->base]->config]->get_minMachine());
-			$maxID = intval($_SESSION[$_SESSION[$this->base]->config]->get_maxMachine());
-			}
-		$dn_uids = $_SESSION[$_SESSION[$this->base]->cache]->get_cache('uidNumber', 'posixAccount', '*');
-		// get_cache will return an array ( dn1 => array(uidnumber1), dn2 => array(uidnumber2), ... )
-		foreach ($dn_uids as $uid) $uids[] = $uid[0];
-		if(is_array($uids)) sort ($uids, SORT_NUMERIC);
-		if ($this->attributes['uidNumber'][0]=='') {
-			// No id-number given
-			if ($this->orig['uidNumber'][0]=='') {
-				// new account -> we have to find a free id-number
-				if (count($uids)!=0) {
-					// There are some uids
-					// Store highest id-number
-					$id = $uids[count($uids)-1];
-					// Return minimum allowed id-number if all found id-numbers are too low
-					if ($id < $minID) $this->attributes['uidNumber'][0] = $minID;
-					// Return higesht used id-number + 1 if it's still in valid range
-					if ($id < $maxID) $this->attributes['uidNumber'][0] = $id+1;
-					/* If this function is still running we have to fid a free id-number between
-					* the used id-numbers
-					*/
-					$i = intval($minID);
-					while (in_array($i, $uids)) $i++;
-					if ($i>$maxID)
-						$errors[] = array('ERROR', _('ID-Number'), _('No free ID-Number!'), 'uidNumber');
-						else {
-							$this->attributes['uidNumber'][0] = $i;
-							$errors[] = array('WARN', _('ID-Number'), _('It is possible that this ID-number is reused. This can cause several problems because files with old permissions might still exist. To avoid this warning set maxUID to a higher value.'), 'uidNumber');
-							}
+		if (!$profile) {
+			if (isset($post['userPassword'])) {
+				if ($post['userPassword'] != $post['userPassword2']) {
+					$errors['userPassword'][] = array('ERROR', _('Password'), _('Please enter the same password in both password-fields.'));
+					unset ($post['userPassword2']);
 					}
-				else $this->attributes['uidNumber'][0] = $minID;
-				// return minimum allowed id-number if no id-numbers are found
+					else $this->userPassword($post['userPassword']);
 				}
-			else $this->attributes['uidNumber'][0] = $this->orig['uidNumber'][0];
-			// old account -> return id-number which has been used
-			}
-		else {
-			// Check manual ID
-			// id-number is out of valid range
-			if ( ($this->attributes['uidNumber'][0]!=$post['uidNumber']) && ($this->attributes['uidNumber'][0] < $minID || $this->attributes['uidNumber'][0] > $maxID)) $errors[] = array('ERROR', _('ID-Number'), sprintf(_('Please enter a value between %s and %s!'), $minID, $maxID), 'uidNumber');
-			// $uids is allways an array but not if no entries were found
-			if (is_array($uids)) {
-				// id-number is in use and account is a new account
-				if ((in_array($this->attributes['uidNumber'][0], $uids)) && $this->orig['uidNumber'][0]=='') $errors[] = array('ERROR', _('ID-Number'), _('ID is already in use'), 'uidNumber');
-				// id-number is in use, account is existing account and id-number is not used by itself
-				if ((in_array($this->attributes['uidNumber'][0], $uids)) && $this->orig['uidNumber'][0]!='' && ($this->orig['uidNumber'][0] != $this->attributes['uidNumber'][0]) ) {
-					$errors[] = array('ERROR', _('ID-Number'), _('ID is already in use'), 'uidNumber');
-					$this->attributes['uidNumber'][0] = $this->orig['uidNumber'][0];
+			if ($post['genpass']) $this->userPassword(genpasswd());
+			// Check if UID is valid. If none value was entered, the next useable value will be inserted
+			// load min and may uidNumber
+			if ($_SESSION[$this->base]->type=='user') {
+				$minID = intval($_SESSION[$_SESSION[$this->base]->config]->get_minUID());
+				$maxID = intval($_SESSION[$_SESSION[$this->base]->config]->get_maxUID());
+				}
+			if ($_SESSION[$this->base]->type=='host') {
+				$minID = intval($_SESSION[$_SESSION[$this->base]->config]->get_minMachine());
+				$maxID = intval($_SESSION[$_SESSION[$this->base]->config]->get_maxMachine());
+				}
+			$dn_uids = $_SESSION[$_SESSION[$this->base]->cache]->get_cache('uidNumber', 'posixAccount', '*');
+			// get_cache will return an array ( dn1 => array(uidnumber1), dn2 => array(uidnumber2), ... )
+			foreach ($dn_uids as $uid) $uids[] = $uid[0];
+			if(is_array($uids)) sort ($uids, SORT_NUMERIC);
+			if ($this->attributes['uidNumber'][0]=='') {
+				// No id-number given
+				if ($this->orig['uidNumber'][0]=='') {
+					// new account -> we have to find a free id-number
+					if (count($uids)!=0) {
+						// There are some uids
+						// Store highest id-number
+						$id = $uids[count($uids)-1];
+						// Return minimum allowed id-number if all found id-numbers are too low
+						if ($id < $minID) $this->attributes['uidNumber'][0] = $minID;
+						// Return higesht used id-number + 1 if it's still in valid range
+						if ($id < $maxID) $this->attributes['uidNumber'][0] = $id+1;
+						/* If this function is still running we have to fid a free id-number between
+						* the used id-numbers
+						*/
+						$i = intval($minID);
+						while (in_array($i, $uids)) $i++;
+						if ($i>$maxID)
+							$errors['uidNumber'][] = array('ERROR', _('ID-Number'), _('No free ID-Number!'));
+							else {
+								$this->attributes['uidNumber'][0] = $i;
+								$errors['uidNumber'][] = array('WARN', _('ID-Number'), _('It is possible that this ID-number is reused. This can cause several problems because files with old permissions might still exist. To avoid this warning set maxUID to a higher value.'));
+								}
+						}
+					else $this->attributes['uidNumber'][0] = $minID;
+					// return minimum allowed id-number if no id-numbers are found
+					}
+				else $this->attributes['uidNumber'][0] = $this->orig['uidNumber'][0];
+				// old account -> return id-number which has been used
+				}
+			else {
+				// Check manual ID
+				// id-number is out of valid range
+				if ( ($this->attributes['uidNumber'][0]!=$post['uidNumber']) && ($this->attributes['uidNumber'][0] < $minID || $this->attributes['uidNumber'][0] > $maxID)) $errors['uidNumber'][] = array('ERROR', _('ID-Number'), sprintf(_('Please enter a value between %s and %s!'), $minID, $maxID));
+				// $uids is allways an array but not if no entries were found
+				if (is_array($uids)) {
+					// id-number is in use and account is a new account
+					if ((in_array($this->attributes['uidNumber'][0], $uids)) && $this->orig['uidNumber'][0]=='') $errors['uidNumber'][] = array('ERROR', _('ID-Number'), _('ID is already in use'));
+					// id-number is in use, account is existing account and id-number is not used by itself
+					if ((in_array($this->attributes['uidNumber'][0], $uids)) && $this->orig['uidNumber'][0]!='' && ($this->orig['uidNumber'][0] != $this->attributes['uidNumber'][0]) ) {
+						$errors['uidNumber'][] = array('ERROR', _('ID-Number'), _('ID is already in use'));
+						$this->attributes['uidNumber'][0] = $this->orig['uidNumber'][0];
+						}
 					}
 				}
 			}
-
 		if ($_SESSION[$this->base]->type=='user') {
-			if (($this->attributes['uid'][0] != $post['uid']) &&  ereg('[A-Z]$', $post['uid']))
-				$errors[] = array('WARN', _('Username'), _('You are using a capital letters. This can cause problems because windows isn\'t case-sensitive.'), 'uid');
+			if (($this->attributes['uid'][0] != $post['uid']) &&  ereg('[A-Z]$', $post['uid']) && !$profile)
+				$errors['uid'][] = array('WARN', _('Username'), _('You are using a capital letters. This can cause problems because windows isn\'t case-sensitive.'));
 			// Check if Homedir is valid
-			$this->attributes['homeDirectory'][0] = str_replace('$group', $_SESSION[$_SESSION[$this->base]->cache]->getgrnam($this->attributes['gidNumber'][0]), $this->attributes['homeDirectory'][0]);
-			if ($this->attributes['uid'][0] != '')
-				$this->attributes['homeDirectory'][0] = str_replace('$user', $this->attributes['uid'][0], $this->attributes['homeDirectory'][0]);
-			if ($this->attributes['homeDirectory'][0] != $post['homeDirectory']) $errors[] = array('INFO', _('Home directory'), _('Replaced $user or $group in homedir.'));
+			if (!$profile) {
+					$this->attributes['homeDirectory'][0] = str_replace('$group', $_SESSION[$_SESSION[$this->base]->cache]->getgrnam($this->attributes['gidNumber'][0]), $this->attributes['homeDirectory'][0]);
+				if ($this->attributes['uid'][0] != '')
+					$this->attributes['homeDirectory'][0] = str_replace('$user', $this->attributes['uid'][0], $this->attributes['homeDirectory'][0]);
+				if ($this->attributes['homeDirectory'][0] != $post['homeDirectory']) $errors['homeDirecotry'][] = array('INFO', _('Home directory'), _('Replaced $user or $group in homedir.'));
+				}
 			if ( !ereg('^[/]([a-z]|[A-Z])([a-z]|[A-Z]|[0-9]|[.]|[-]|[_])*([/]([a-z]|[A-Z])([a-z]|[A-Z]|[0-9]|[.]|[-]|[_])*)*$', $this->attributes['homeDirectory'][0] ))
-				$errors[] = array('ERROR', _('Home directory'), _('Homedirectory contains invalid characters.'), 'homeDirectory');
+				$errors['homeDirecotry'][] = array('ERROR', _('Home directory'), _('Homedirectory contains invalid characters.'), 'homeDirectory');
 			// Check if Username contains only valid characters
-			if ( !ereg('^([a-z]|[A-Z]|[0-9]|[.]|[-]|[_])+$', $this->attributes['uid'][0]))
-				$errors[] = array('ERROR', _('Username'), _('Username contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'), 'uid');
+			if ( !ereg('^([a-z]|[A-Z]|[0-9]|[.]|[-]|[_])+$', $this->attributes['uid'][0]) && !$profile)
+				$errors['uid'][] = array('ERROR', _('Username'), _('Username contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
 			}
 
-		if ($_SESSION[$this->base]->type=='host') {
+		if ($_SESSION[$this->base]->type=='host' && !$profile) {
 			if (($this->attributes['uid'][0] != $post['form_account_uid']) &&  ereg('[A-Z]$', $post['form_account_uid']))
-				$errors[] = array('WARN', _('Hostname'), _('You are using a capital letters. This can cause problems because windows isn\'t case-sensitive.'), 'uid');
+				$errors['uid'][] = array('WARN', _('Hostname'), _('You are using a capital letters. This can cause problems because windows isn\'t case-sensitive.'));
 			// Check if Username contains only valid characters
 			if ( !ereg('^([a-z]|[A-Z]|[0-9]|[.]|[-]|[_])+[$]$', $this->attributes['uid'][0]))
-				$errors[] = array('ERROR', _('Hostname'), _('Hostname contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ ! Hostname must end with $ !'), 'uid');
+				$errors['uid'][] = array('ERROR', _('Hostname'), _('Hostname contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ ! Hostname must end with $ !'));
 			}
 
 		// Create automatic useraccount with number if original user already exists
 		// Reset name to original name if new name is in use
 		// Set username back to original name if new username is in use
-		if ($_SESSION[$_SESSION[$this->base]->cache]->in_cache($this->attributes['uid'][0],'uid', '*')!=false && ($this->orig['uid'][0]!='')) {
-			$this->attributes['uid'][0] = $this->orig['uid'][0];
-			}
-		// Change uid to a new uid until a free uid is found
-		else while ($_SESSION[$_SESSION[$this->base]->cache]->in_cache($this->attributes['uid'][0], 'uid', '*')) {
-			if ($_SESSION[$this->base]->type=='host') $this->attributes['uid'][0] = substr($this->attributes['uid'][0], 0, -1);
-				// get last character of username
-			$lastchar = substr($this->attributes['uid'][0], strlen($this->attributes['uid'][0])-1, 1);
-			// Last character is no number
-			if ( !ereg('^([0-9])+$', $lastchar))
-				/* Last character is no number. Therefore we only have to
-				* add "2" to it.
-				*/
-				if ($_SESSION[$this->base]->type=='host') $this->attributes['uid'][0] = $this->attributes['uid'][0] . '2$';
-					else $this->attributes['uid'][0] = $this->attributes['uid'][0] . '2';
-			 else {
-				/* Last character is a number -> we have to increase the number until we've
-				* found a groupname with trailing number which is not in use.
-				*
-				* $i will show us were we have to split groupname so we get a part
-				* with the groupname and a part with the trailing number
-				*/
-				$i=strlen($this->attributes['uid'][0])-1;
-				$mark = false;
-				// Set $i to the last character which is a number in $account_new->general_username
-				while (!$mark) {
-					if (ereg('^([0-9])+$',substr($this->attributes['uid'][0], $i, strlen($this->attributes['uid'][0])-$i))) $i--;
-						else $mark=true;
-					}
-				// increase last number with one
-				$firstchars = substr($this->attributes['uid'][0], 0, $i+1);
-				$lastchars = substr($this->attributes['uid'][0], $i+1, strlen($this->attributes['uid'][0])-$i);
-				// Put username together
-				if ($_SESSION[$this->base]->type=='host') $this->attributes['uid'][0] = $firstchars . (intval($lastchars)+1)."$";
-					else $this->attributes['uid'][0] = $firstchars . (intval($lastchars)+1);
+		if (!$profile) {
+			if ($_SESSION[$_SESSION[$this->base]->cache]->in_cache($this->attributes['uid'][0],'uid', '*')!=false && ($this->orig['uid'][0]!='')) {
+				$this->attributes['uid'][0] = $this->orig['uid'][0];
 				}
-			}
-
+			// Change uid to a new uid until a free uid is found
+			else while ($_SESSION[$_SESSION[$this->base]->cache]->in_cache($this->attributes['uid'][0], 'uid', '*')) {
+				if ($_SESSION[$this->base]->type=='host') $this->attributes['uid'][0] = substr($this->attributes['uid'][0], 0, -1);
+					// get last character of username
+				$lastchar = substr($this->attributes['uid'][0], strlen($this->attributes['uid'][0])-1, 1);
+				// Last character is no number
+				if ( !ereg('^([0-9])+$', $lastchar))
+					/* Last character is no number. Therefore we only have to
+					* add "2" to it.
+					*/
+					if ($_SESSION[$this->base]->type=='host') $this->attributes['uid'][0] = $this->attributes['uid'][0] . '2$';
+						else $this->attributes['uid'][0] = $this->attributes['uid'][0] . '2';
+				else {
+					/* Last character is a number -> we have to increase the number until we've
+					* found a groupname with trailing number which is not in use.
+					*
+					* $i will show us were we have to split groupname so we get a part
+					* with the groupname and a part with the trailing number
+					*/
+					$i=strlen($this->attributes['uid'][0])-1;
+					$mark = false;
+					// Set $i to the last character which is a number in $account_new->general_username
+					while (!$mark) {
+						if (ereg('^([0-9])+$',substr($this->attributes['uid'][0], $i, strlen($this->attributes['uid'][0])-$i))) $i--;
+							else $mark=true;
+						}
+					// increase last number with one
+					$firstchars = substr($this->attributes['uid'][0], 0, $i+1);
+					$lastchars = substr($this->attributes['uid'][0], $i+1, strlen($this->attributes['uid'][0])-$i);
+					// Put username together
+					if ($_SESSION[$this->base]->type=='host') $this->attributes['uid'][0] = $firstchars . (intval($lastchars)+1)."$";
+						else $this->attributes['uid'][0] = $firstchars . (intval($lastchars)+1);
+					}
+				}
 		// Show warning if lam has changed username
 		if ($_SESSION[$this->base]->type=='user')
 			if ($this->attributes['uid'][0] != $post['uid']) {
-				$errors[] = array('WARN', _('Username'), _('Username in use. Selected next free username.'), 'uid');
+				$errors['uid'][] = array('WARN', _('Username'), _('Username in use. Selected next free username.'));
 				}
 		if ($_SESSION[$this->base]->type=='host')
 			if ($this->attributes['uid'][0] != $post['uid']) {
-				$errors[] = array('WARN', _('Hostname'), _('Hostname in use. Selected next free hostname.'), 'uid');
+				$errors['uid'][] = array('WARN', _('Hostname'), _('Hostname in use. Selected next free hostname.'));
 				}
-
-		if (!ereg('^([a-z]|[A-Z]|[0-9]|[\|]|[\#]|[\*]|[\,]|[\.]|[\;]|[\:]|[\_]|[\-]|[\+]|[\!]|[\%]|[\&]|[\/]|[\?]|[\{]|[\[]|[\(]|[\)]|[\]]|[\}])*$', $this->userPassword()))
-			$errors[] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'), 'userPassword');
+			if (!ereg('^([a-z]|[A-Z]|[0-9]|[\|]|[\#]|[\*]|[\,]|[\.]|[\;]|[\:]|[\_]|[\-]|[\+]|[\!]|[\%]|[\&]|[\/]|[\?]|[\{]|[\[]|[\(]|[\)]|[\]]|[\}])*$', $this->userPassword()))
+				$errors['userPassword'][] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
+			}
 		// Return error-messages
 		if (is_array($errors)) return $errors;
 		// Go to additional group page when no error did ocour and button was pressed
@@ -508,7 +518,7 @@ class posixAccount {
 
 	/* Write variables into object and do some regexp checks
 	*/
-	function proccess_group($post) {
+	function proccess_group($post, $profile=false) {
 		do { // X-Or, only one if() can be true
 			if (isset($post['addgroups']) && isset($post['addgroups_button'])) { // Add groups to list
 				// Add new group
@@ -534,10 +544,10 @@ class posixAccount {
 	function display_html_attributes($post, $profile=false) {
 		$groups = $_SESSION[$_SESSION[$this->base]->cache]->findgroups(); // list of all groupnames
 		$shelllist = getshells(); // list of all valid shells
-		if ($this->attributes['userPassword'][0] != $this->orig['userPassword'][0]) $password=$this->userPassword();
-			else $password='';
 
 		if (!$profile) {
+			if ($this->attributes['userPassword'][0] != $this->orig['userPassword'][0]) $password=$this->userPassword();
+				else $password='';
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _("Username").'*' ),
 				1 => array ( 'kind' => 'input', 'name' => 'uid', 'type' => 'text', 'size' => '20', 'maxlength' => '20', 'value' => $this->attributes['uid'][0]),
 				2 => array ('kind' => 'help', 'value' => 'uid'));
@@ -554,9 +564,11 @@ class posixAccount {
 			2 => array ('kind' => 'help', 'value' => 'gidNumber'));
 
 		if ($_SESSION[$this->base]->type=='user') {
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Additional groups') ),
-				1 => array ( 'kind' => 'input', 'name' => 'addgroup', 'type' => 'submit', 'value' => _('Edit groups')),
-				2 => array ('kind' => 'help', 'value' => 'addgroup'));
+			if (!$profile) {
+				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Additional groups') ),
+					1 => array ( 'kind' => 'input', 'name' => 'addgroup', 'type' => 'submit', 'value' => _('Edit groups')),
+					2 => array ('kind' => 'help', 'value' => 'addgroup'));
+				}
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Home directory').'*' ),
 				1 => array ( 'kind' => 'input', 'name' => 'homeDirectory', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => $this->attributes['homeDirectory'][0]),
 				2 => array ('kind' => 'help', 'value' => 'homeDirectory'));

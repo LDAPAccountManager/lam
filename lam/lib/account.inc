@@ -412,7 +412,9 @@ class accountContainer {
 		echo "<form action=\"".$this->type."edit.php\" method=\"post\">\n";
 		// Display errir-messages
 		if (is_array($result))
-			for ($i=0; $i<sizeof($result); $i++) StatusMessage($result[$i][0], $result[$i][1], $result[$i][2]);
+			foreach ($result as $result2)
+				if (is_array($result2))
+					for ($i=0; $i<sizeof($result2); $i++) StatusMessage($result2[$i][0], $result2[$i][1], $result2[$i][2]);
 		// Create left module-menu
 		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
 		echo "<table><tr>";
@@ -443,9 +445,7 @@ class accountContainer {
 		// display html-code from mdule
 		$function = '$result = $this->module[$this->order[$this->module[\'main\']->current_page]]->display_html_'.$this->module['main']->subpage.'($post);';
 		eval ($function);
-		echo "<table>\n";
 		$this->parse_html($this->order[$this->module['main']->current_page], $result);
-		echo "</table>\n";
 		// Display rest of html-page
 		echo "</fieldset>\n";
 		echo "</td></tr></table>\n";
@@ -457,6 +457,7 @@ class accountContainer {
 
 	function parse_html($module, $input) {
 		if (is_array($input)) {
+			echo "<table>\n";
 			for ($i=0; $i<count($input); $i++) {
 				// Draw column
 				echo "<tr>\n";
@@ -479,8 +480,8 @@ class accountContainer {
 								if ($input[$i][$j]['size']!='') $output .= ' size="' . $input[$i][$j]['size'] . '"';
 								if ($input[$i][$j]['maxlength']!='') $output .= ' maxlength="' . $input[$i][$j]['maxlength'] . '"';
 								if ($input[$i][$j]['value']!='') $output .= ' value="' . $input[$i][$j]['value'] . '"';
-								if (isset($input[$i][$j]['disabled'])) $output .= ' disabled';
-								if (isset($input[$i][$j]['checked'])) $output .= ' checked';
+								if ($input[$i][$j]['disabled']) $output .= ' disabled';
+								if ($input[$i][$j]['checked']) $output .= ' checked';
 								$output .= "></td>\n";
 								echo $output;
 								break;
@@ -490,12 +491,12 @@ class accountContainer {
 								echo ">\n";
 								echo "<fieldset>\n";
 								if ($input[$i][$j]['legend']!='') echo "<legend>" . $input[$i][$j]['legend'] . "</legend>\n";
-								echo "<table>\n";
 								$this->parse_html($module, $input[$i][$j]['value']);
-								echo "</table>\n";
 								echo "</fieldset>\n";
 								break;
 							case 'select':
+								if (!is_array($input[$i][$j]['options'])) $input[$i][$j]['options'] = array ( $input[$i][$j]['options'] );
+								if (!is_array($input[$i][$j]['options_selected'])) $input[$i][$j]['options_selected'] = array ( $input[$i][$j]['options_selected'] );
 								echo "<td";
 								if ($input[$i][$j]['td']['valign']!='') echo ' valign="' . $input[$i][$j]['td']['valign'] .'"';
 								echo ">\n";
@@ -506,10 +507,12 @@ class accountContainer {
 								// merge both option arrays and sort them.
 								$options = array_merge ($input[$i][$j]['options'], $input[$i][$j]['options_selected'] );
 								$options = array_unique($options);
-								sort($options, SORT_STRING);
+								sort($options, SORT_NUMERIC);
 								foreach ($options as $option) {
-									if (in_array($option, $input[$i][$j]['options_selected'])) echo "<option selected>" . $option . "</option>\n";
-										else echo "<option>" . $option . "</option>\n";
+									if ($option!='') {
+										if (in_array($option, $input[$i][$j]['options_selected'])) echo "<option selected>" . $option . "</option>\n";
+											else echo "<option>" . $option . "</option>\n";
+										}
 									}
 								echo "</select></td>\n";
 								break;
@@ -517,16 +520,14 @@ class accountContainer {
 								echo "<td";
 								if ($input[$i][$j]['td']['valign']!='') echo ' valign="' . $input[$i][$j]['td']['valign'] .'"';
 								echo ">\n";
-								echo "<table>\n";
 								$this->parse_html($module, $input[$i][$j]['value']);
-								echo "</table>\n";
 								echo "</td>\n";
 								break;
 							case 'help':
 								echo "<td";
 								if ($input[$i][$j]['td']['valign']!='') echo ' valign="' . $input[$i][$j]['td']['valign'] .'"';
 								echo ">\n";
-								echo "<a href=../help.php?module=$module&item=$input[$i][$j]['value']>" . _('Help') . "</a></td>\n";
+								echo "<a href=../help.php?module=$module&item=". $input[$i][$j]['value'] . ">" . _('Help') . "</a></td>\n";
 								break;
 							default:
 								echo "<td>Unrecognized type: " . $input[$i][$j]['kind'] . "</td>\n";
@@ -536,6 +537,7 @@ class accountContainer {
 				echo "</tr>\n";
 				}
 			}
+		echo "</table>\n";
 		}
 
 	/* Add attributes to variable. Syntax is array( attribute = array ( objectClass1 => MUST|MAX, objectClass2 => MUST|MAY ), ... )
@@ -795,6 +797,8 @@ class accountContainer {
 		else {
 			// Add module if it exists
 			if (class_exists($objectClass)) {
+				print $objectClass;
+				print "<br>X";
 				$this->module[$objectClass] = new $objectClass($this->base);
 				}
 			else trigger_error (_("objectClass $objectClass required but no module found."), E_USER_WARNING);
@@ -853,7 +857,7 @@ class accountContainer {
 	* for a new account
 	*/
 	function new_account() {
-		$modulelist = array('posixAccount', 'shadowAccount', 'sambaAccount');
+		$modulelist = array('posixAccount', 'sambaAccount');
 		// *** fixme add modules from config which should be used but not yet in loaded account
 		foreach ($modulelist as $objectClass) $this->add_objectClass($objectClass);
 
@@ -1031,6 +1035,7 @@ class accountContainer {
 						$temparray[0] = $singleresult[0];
 						$temparray[1] = _($singleresult[1]);
 						$temparray[2] = _($singleresult[2]);
+						$errors[] = $temparray;
 						}
 					}
 				}

@@ -150,6 +150,18 @@ class sambaAccount {
 		return array('attributes', 'userWorkstations');
 		}
 
+	/*
+	*/
+	function get_help($id) {
+		switch ($id) {
+			case "description":
+				return array ("ext" => "FALSE", "Headline" => _("Description"),
+					"Text" => _("Host Description."));
+				break;
+			}
+		return false;
+		}
+
 	/* This function returns all ldap attributes
 	* which are part of sambaAccount and returns
 	* also their values.
@@ -237,7 +249,7 @@ class sambaAccount {
 
 	/* Write variables into object and do some regexp checks
 	*/
-	function proccess_attributes($post) {
+	function proccess_attributes($post, $profile=false) {
 		$this->attributes['domain'][0] = $post['domain'];
 		// Start character
 		$flag = "[";
@@ -254,7 +266,7 @@ class sambaAccount {
 		$flag = $flag. "]";
 		$this->attributes['acctFlags'][0] = $flag;
 
-		if ($_SESSION[$this->base]->type=='host') {
+		if ($_SESSION[$this->base]->type=='host' && !$profile) {
 			$this->attributes['primaryGroupID'][0] = $this->rids[_('Domain Computers')];
 			if ($post['ResetSambaPassword']) {
 				// *** fixme. What is the default password?
@@ -273,61 +285,79 @@ class sambaAccount {
 			$this->attributes['homeDrive'][0] = $post['homeDrive'];
 			$this->attributes['scriptPath'][0] = stripslashes($post['scriptPath']);
 			$this->attributes['profilePath'][0] = stripslashes($post['profilePath']);
-			$rids = array_keys($this->rids);
-			$wrid = false;
-			for ($i=0; $i<count($rids); $i++) {
-				if ($post['primaryGroupID'] == $rids[$i]) {
-					$wrid = true;
-					$this->attributes['primaryGroupID'][0] = $this->rids[$rids[$i]];
+			if (!$profile) {
+				$rids = array_keys($this->rids);
+				$wrid = false;
+				for ($i=0; $i<count($rids); $i++) {
+					if ($post['primaryGroupID'] == $rids[$i]) {
+						$wrid = true;
+						$this->attributes['primaryGroupID'][0] = $this->rids[$rids[$i]];
+						}
 					}
-				}
-			if (!$wrid) $this->attributes['primaryGroupID'][0] = ($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]*2)+1001;
+				if (!$wrid) $this->attributes['primaryGroupID'][0] = ($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]*2)+1001;
 
-			if (isset($post['lmPassword'])) {
-				if ($post['lmPassword'] != $post['lmPassword2']) {
-					$errors[] = array('ERROR', _('Password'), _('Please enter the same password in both password-fields.'), 'lmPassword');
-					unset ($post['lmPassword2']);
+				if (isset($post['lmPassword'])) {
+					if ($post['lmPassword'] != $post['lmPassword2']) {
+						$errors['lmPassword'][] = array('ERROR', _('Password'), _('Please enter the same password in both password-fields.'));
+						unset ($post['lmPassword2']);
+						}
+						else $this->lmPassword($post['lmPassword']);
 					}
-					else $this->lmPassword($post['lmPassword']);
+				if ($post['rid']== _('Administrator')) {
+					$this->attributes['rid'][0] = "500";
+					// Do a check if an administrator already exists
+					if ($_SESSION[$_SESSION[$this->base]->cache]->in_cache("500", 'rid', 'user')!=$_SESSION[$this->base]->dn_orig)
+						$errors['rid'][] = array('ERROR', _('Special user'), _('There can be only one administrator per domain.'));
+					}
+				if ($post['rid']== _('Guest')) {
+					$this->attributes['rid'][0] = "501";
+					// Do a check if an administrator already exists
+					if ($_SESSION[$_SESSION[$this->base]->cache]->in_cache("501", 'rid', 'user')!=$_SESSION[$this->base]->dn_orig)
+						$errors['rid'][] = array('ERROR', _('Special user'), _('There can be only one guest per domain.'));
+					}
+				$this->attributes['smbHome'][0] = str_replace('$user', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['uid'][0], $this->attributes['smbHome'][0]);
+				$this->attributes['smbHome'][0] = str_replace('$group', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['gid'][0], $this->attributes['smbHome'][0]);
+				if ($this->attributes['smbHome'][0] != stripslashes($post['smbHome'])) $errors['smbHome'][] = array('INFO', _('Home path'), _('Inserted user- or groupname in HomePath.'));
+				$this->attributes['scriptPath'][0] = str_replace('$user', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['uid'][0], $this->attributes['scriptPath'][0]);
+				$this->attributes['scriptPath'][0] = str_replace('$group', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['gid'][0], $this->attributes['scriptPath'][0]);
+				if ($this->attributes['scriptPath'][0] != stripslashes($post['scriptPath'])) $errors['scriptPath'][] = array('INFO', _('Script path'), _('Inserted user- or groupname in scriptpath.'));
+				$this->attributes['profilePath'][0] = str_replace('$user', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['uid'][0], $this->attributes['profilePath'][0]);
+				$this->attributes['profilePath'][0] = str_replace('$group', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['gid'][0], $this->attributes['profilePath'][0]);
+				if ($this->attributes['profiletPath'][0] != stripslashes($post['profilePath'])) $errors['profilePath'][] = array('INFO', _('Profile path'), _('Inserted user- or groupname in profilepath.'));
+				if ( !ereg('^([a-z]|[A-Z]|[0-9]|[\|]|[\#]|[\*]|[\,]|[\.]|[\;]|[\:]|[\_]|[\-]|[\+]|[\!]|[\%]|[\&]|[\/]|[\?]|[\{]|[\[]|[\(]|[\)]|[\]]|[\}])*$',
+					$this->lmPassword())) $errors['lmPassword'][] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
+				if ( (!$this->attributes['smbHome'][0]=='') && (!ereg('^[\][\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+([\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+)+$', $this->attributes['smbHome'][0])))
+						$errors['smbHome'][] = array('ERROR', _('Home path'), _('Home path is invalid.'));
+				if ( (!$this->attributes['scriptPath'][0]=='') && (!ereg('^([/])*([a-z]|[0-9]|[.]|[-]|[_]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+([a-z]|[0-9]|[.]|[-]|[_]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])*'.
+					'([/]([a-z]|[0-9]|[.]|[-]|[_]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+([a-z]|[0-9]|[.]|[-]|[_]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])*)*(([.][b][a][t])|([.][c][m][d]))$', $this->attributes['scriptPath'][0])))
+					$errors['scriptPath'][] = array('ERROR', _('Script path'), _('Script path is invalid!'));
+				if ( (!$this->attributes['profilePath'][0]=='') && (!ereg('^[/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*([/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*)*$', $this->attributes['profilePath'][0]))
+					&& (!ereg('^[\][\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+([\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+)+$', $this->attributes['profilePath'][0])))
+						$errors['profilePath'][] = array('ERROR', _('Profile path'), _('Profile path is invalid!'));
 				}
+			else {
+				$smbHome = str_replace('$user', 'user', $this->attributes['smbHome'][0]);
+				$smbHome = str_replace('$group', 'group', $smbHome);
+				$scriptPath = str_replace('$user', 'user', $this->attributes['scriptPath'][0]);
+				$scriptPath = str_replace('$group', 'group', $scriptPath);
+				$profilePath = str_replace('$user', 'user', $this->attributes['profilePath'][0]);
+				$profilePath = str_replace('$group', 'group', $profilePath);
+				if ( (!$smbHome=='') && (!ereg('^[\][\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+([\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+)+$', $smbHome)))
+						$errors['smbHome'][] = array('ERROR', _('Home path'), _('Home path is invalid.'));
+				if ( (!$scriptPath=='') && (!ereg('^([/])*([a-z]|[0-9]|[.]|[-]|[_]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+([a-z]|[0-9]|[.]|[-]|[_]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])*'.
+					'([/]([a-z]|[0-9]|[.]|[-]|[_]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+([a-z]|[0-9]|[.]|[-]|[_]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])*)*(([.][b][a][t])|([.][c][m][d]))$', $scriptPath)))
+					$errors['scriptPath'][] = array('ERROR', _('Script path'), _('Script path is invalid!'));
+				if ( (!$profilePath=='') && (!ereg('^[/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*([/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*)*$', $profilePath))
+					&& (!ereg('^[\][\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+([\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+)+$', $profilePath)))
+						$errors['profilePath'][] = array('ERROR', _('Profile path'), _('Profile path is invalid!'));
+				}
+
 			if ($post['useunixpwd']) $this->useunixpwd = true;
 				else $this->useunixpwd = false;
-
-			if ($post['rid']== _('Administrator')) {
-				$this->attributes['rid'][0] = "500";
-				// Do a check if an administrator already exists
-				if ($_SESSION[$_SESSION[$this->base]->cache]->in_cache("500", 'rid', 'user')!=$_SESSION[$this->base]->dn_orig)
-					$errors[] = array('ERROR', _('Special user'), _('There can be only one administrator per domain.'), 'rid');
-				}
-			if ($post['rid']== _('Guest')) {
-				$this->attributes['rid'][0] = "501";
-				// Do a check if an administrator already exists
-				if ($_SESSION[$_SESSION[$this->base]->cache]->in_cache("501", 'rid', 'user')!=$_SESSION[$this->base]->dn_orig)
-					$errors[] = array('ERROR', _('Special user'), _('There can be only one guest per domain.'), 'rid');
-				}
-			$this->attributes['smbHome'][0] = str_replace('$user', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['uid'][0], $this->attributes['smbHome'][0]);
-			$this->attributes['smbHome'][0] = str_replace('$group', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['gid'][0], $this->attributes['smbHome'][0]);
-			if ($this->attributes['smbHome'][0] != stripslashes($post['smbHome'])) $errors[] = array('INFO', _('Home path'), _('Inserted user- or groupname in HomePath.'), 'smbHome');
-			$this->attributes['scriptPath'][0] = str_replace('$user', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['uid'][0], $this->attributes['scriptPath'][0]);
-			$this->attributes['scriptPath'][0] = str_replace('$group', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['gid'][0], $this->attributes['scriptPath'][0]);
-			if ($this->attributes['scriptPath'][0] != stripslashes($post['scriptPath'])) $errors[] = array('INFO', _('Script path'), _('Inserted user- or groupname in scriptpath.'), 'scriptPath');
-			$this->attributes['profilePath'][0] = str_replace('$user', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['uid'][0], $this->attributes['profilePath'][0]);
-			$this->attributes['profilePath'][0] = str_replace('$group', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['gid'][0], $this->attributes['profilePath'][0]);
-			if ($this->attributes['profiletPath'][0] != stripslashes($post['profilePath'])) $errors[] = array('INFO', _('Profile path'), _('Inserted user- or groupname in profilepath.'), 'profilePath');
-			if ( (!$this->attributes['smbHome'][0]=='') && (!ereg('^[\][\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+([\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+)+$', $this->attributes['smbHome'][0])))
-					$errors[] = array('ERROR', _('Home path'), _('Home path is invalid.'), 'smbHome');
-			if ( !ereg('^([a-z]|[A-Z]|[0-9]|[\|]|[\#]|[\*]|[\,]|[\.]|[\;]|[\:]|[\_]|[\-]|[\+]|[\!]|[\%]|[\&]|[\/]|[\?]|[\{]|[\[]|[\(]|[\)]|[\]]|[\}])*$',
-				$this->lmPassword())) $errors[] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'), 'lmPassword');
-			if ( (!$this->attributes['scriptPath'][0]=='') && (!ereg('^([/])*([a-z]|[0-9]|[.]|[-]|[_]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+([a-z]|[0-9]|[.]|[-]|[_]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])*'.
-				'([/]([a-z]|[0-9]|[.]|[-]|[_]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+([a-z]|[0-9]|[.]|[-]|[_]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])*)*(([.][b][a][t])|([.][c][m][d]))$', $this->attributes['scriptPath'][0])))
-				$errors[] = array('ERROR', _('Script path'), _('Script path is invalid!'), 'scriptPath');
-			if ( (!$this->attributes['profilePath'][0]=='') && (!ereg('^[/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*([/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*)*$', $this->attributes['profilePath'][0]))
-				&& (!ereg('^[\][\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+([\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+)+$', $this->attributes['profilePath'][0])))
-					$errors[] = array('ERROR', _('Profile path'), _('Profile path is invalid!'), 'profilePath');
 			}
 
 		if ((!$this->attributes['domain'][0]=='') && !ereg('^([a-z]|[A-Z]|[0-9]|[-])+$', $this->attributes['domain'][0]))
-			$errors[] = array('ERROR', _('Domain name'), _('Domain name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and -.'), 'domain');
+			$errors['domain'][] = array('ERROR', _('Domain name'), _('Domain name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and -.'));
 
 		if (is_array($errors)) return $errors;
 		if ($post['userWorkstations'])  return 'userWorkstations';
@@ -336,48 +366,50 @@ class sambaAccount {
 
 	/* Write variables into object and do some regexp checks
 	*/
-	function proccess_userWorkstations($post) {
+	function proccess_userWorkstations($post, $profile=false) {
 		// Load attributes
-		do { // X-Or, only one if() can be true
-			if (isset($post['availableUserWorkstations']) && isset($post['userWorkstations_add'])) { // Add workstations to list
-				$temp = str_replace(' ', '', $this->attributes['userWorkstations'][0]);
-				$workstations = explode (',', $temp);
-				for ($i=0; $i<count($workstations); $i++)
-					if ($workstations[$i]=='') unset($workstations[$i]);
-				$workstations = array_values($workstations);
-				// Add new // Add workstations
-				$workstations = array_merge($workstations, $post['availableUserWorkstations']);
-				// remove doubles
-				$workstations = array_flip($workstations);
-				array_unique($workstations);
-				$workstations = array_flip($workstations);
-				// sort workstations
-				sort($workstations);
-				// Recreate workstation string
-				$this->attributes['userWorkstations'][0] = $workstations[0];
-				for ($i=1; $i<count($workstations); $i++) {
-					$this->attributes['userWorkstations'][0] = $this->attributes['userWorkstations'][0] . "," . $workstations[$i];
+		if ($_SESSION[$this->base]->type=='user') {
+			do { // X-Or, only one if() can be true
+				if (isset($post['availableUserWorkstations']) && isset($post['userWorkstations_add'])) { // Add workstations to list
+					$temp = str_replace(' ', '', $this->attributes['userWorkstations'][0]);
+					$workstations = explode (',', $temp);
+					for ($i=0; $i<count($workstations); $i++)
+						if ($workstations[$i]=='') unset($workstations[$i]);
+					$workstations = array_values($workstations);
+					// Add new // Add workstations
+					$workstations = array_merge($workstations, $post['availableUserWorkstations']);
+					// remove doubles
+					$workstations = array_flip($workstations);
+					array_unique($workstations);
+					$workstations = array_flip($workstations);
+					// sort workstations
+					sort($workstations);
+					// Recreate workstation string
+					$this->attributes['userWorkstations'][0] = $workstations[0];
+					for ($i=1; $i<count($workstations); $i++) {
+						$this->attributes['userWorkstations'][0] = $this->attributes['userWorkstations'][0] . "," . $workstations[$i];
+						}
+					break;
 					}
-				break;
-				}
-			if (isset($post['userWorkstations']) && isset($post['userWorkstations_remove'])) { // remove // Add workstations from list
-				// Put all workstations in array
-				$temp = str_replace(' ', '', $this->attributes['userWorkstations'][0]);
-				$workstations = explode (',', $temp);
-				for ($i=0; $i<count($workstations); $i++)
-					if ($workstations[$i]=='') unset($workstations[$i]);
-				$workstations = array_values($workstations);
-				// Remove unwanted workstations from array
-				$workstations = array_delete($post['userWorkstations'], $workstations);
-				// Recreate workstation string
-				$this->attributes['userWorkstations'][0] = $workstations[0];
-				for ($i=1; $i<count($workstations); $i++) {
-					$this->attributes['userWorkstations'][0] = $this->attributes['userWorkstations'][0] . "," . $workstations[$i];
+				if (isset($post['userWorkstations']) && isset($post['userWorkstations_remove'])) { // remove // Add workstations from list
+					// Put all workstations in array
+					$temp = str_replace(' ', '', $this->attributes['userWorkstations'][0]);
+					$workstations = explode (',', $temp);
+					for ($i=0; $i<count($workstations); $i++)
+						if ($workstations[$i]=='') unset($workstations[$i]);
+					$workstations = array_values($workstations);
+					// Remove unwanted workstations from array
+					$workstations = array_delete($post['userWorkstations'], $workstations);
+					// Recreate workstation string
+					$this->attributes['userWorkstations'][0] = $workstations[0];
+					for ($i=1; $i<count($workstations); $i++) {
+						$this->attributes['userWorkstations'][0] = $this->attributes['userWorkstations'][0] . "," . $workstations[$i];
+						}
+					break;
 					}
-				break;
-				}
-			} while(0);
-		if ($post['attributes']) return 'attributes';
+				} while(0);
+			if ($post['attributes']) return 'attributes';
+			}
 		return 0;
 		}
 
@@ -385,189 +417,136 @@ class sambaAccount {
 	* to show a page with all attributes.
 	* It will output a complete html-table
 	*/
-	function display_html_attributes($post) {
+	function display_html_attributes($post, $profile=false) {
 		if ($_SESSION[$this->base]->type=='user') {
 			$canchangedate = getdate($this->attributes['pwdCanChange'][0]);
 			$mustchangedate = getdate($this->attributes['pwdMustChange'][0]);
-			echo	'<input name="pwdCanChange_h" type="hidden" value="'.$canchangedate['hours'].'">'.
-				'<input name="pwdCanChange_m" type="hidden" value="'.$canchangedate['minutes'].'">'.
-				'<input name="pwdCanChange_s" type="hidden" value="'.$canchangedate['seconds'].'">'.
-				'<input name="pwdMustChange_h" type="hidden" value="'.$mustchangedate['hours'].'">'.
-				'<input name="pwdMustChange_m" type="hidden" value="'.$mustchangedate['minutes'].'">'.
-				'<input name="pwdMustChange_s" type="hidden" value="'.$mustchangedate['seconds'].'">'.
-				'<input name="acctFlagsU" type="hidden" value="true">';
-			echo "<table border=0 width=\"100%\">\n<tr>\n";
-			echo "<tr>\n";
-			echo "<td>" . _('Samba password') . "</td>\n";
-			echo "<td><input name=\"lmPassword\" type=\"password\" size=\"20\" maxlength=\"20\" value=\"" . $this->lmPassword() . "\"></td>\n";
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td>" . _('Repeat password') . "</td>\n";
-			echo "<td><input name=\"lmPassword2\" type=\"password\" size=\"20\" maxlength=\"20\" value=\"";
-				if ($post['lmPassword2']!='') echo $post['lmPassword2'];
-				else echo $this->lmPassword();
-				echo "\"></td>\n";
-			echo "<td></td>\n";
-			echo "</tr>\n";
-			if ($_SESSION[$this->base]->module['posixAccount']->orig['userPassword'][0] != $_SESSION[$this->base]->module['posixAccount']->attributes['userPassword'][0]) {
-				echo "<tr>\n";
-				echo "<td>" . _('Use unix password') . "</td>\n";
-				echo "<td><input name=\"useunixpwd\" type=\"checkbox\"";
-					if ($this->useunixpwd) echo " checked ";
-					echo "></td>\n";
-				echo "<td><a href=\"../help.php?HelpNumber=428\" target=\"lamhelp\">" . _('Help') . "</a></td>";
-				echo "</tr>\n";
+			$return[] = array ( 0 => array ( 'kind' => 'input', 'name' => 'pwdCanChange_h', 'type' => 'hidden', 'value' => $canchangedate['hours']),
+					1 => array ( 'kind' => 'input', 'name' => 'pwdCanChange_m', 'type' => 'hidden', 'value' => $canchangedate['minutes']),
+					2 => array ( 'kind' => 'input', 'name' => 'pwdCanChange_s', 'type' => 'hidden', 'value' => $canchangedate['seconds']),
+					3 => array ( 'kind' => 'input', 'name' => 'pwdMustChange_h', 'type' => 'hidden', 'value' => $mustchangedate['hours']),
+					4 => array ( 'kind' => 'input', 'name' => 'pwdMustChange_m', 'type' => 'hidden', 'value' => $mustchangedate['minutes']),
+					5 => array ( 'kind' => 'input', 'name' => 'pwdMustChange_s', 'type' => 'hidden', 'value' => $mustchangedate['seconds']),
+					6 => array ( 'kind' => 'input', 'name' => 'acctFlagsU', 'type' => 'hidden', 'value' => 'true'));
+
+			if (!$profile) {
+				if ($this->attributes['lmPassword'][0] != $this->orig['lmPassword'][0]) $password=$this->lmPassword();
+					else $password='';
+				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Samba password') ),
+					1 => array ( 'kind' => 'input', 'name' => 'lmPassword', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => $password));
+				if ($post['lmPassword2']!='') $password2 = $post['lmPassword2'];
+				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Repeat password') ),
+					1 => array ( 'kind' => 'input', 'name' => 'lmPassword2', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => $password2),
+					2 => array ('kind' => 'help', 'value' => 'lmPassword'));
 				}
-			echo "<tr>\n";
-			echo "<td>" . _('Use no password') . "</td>\n";
-			echo "<td><input name=\"acctFlagsN\" type=\"checkbox\"";
-				if (strpos($this->attributes['acctFlags'][0], "N")) echo " checked ";
-				echo "></td>\n";
-			echo "<td><a href=\"../help.php?HelpNumber=426\" target=\"lamhelp\">" . _('Help' ) ."</a></td>\n";
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td>" . _('Password does not expire') . "</td>\n";
-			echo "<td><input name=\"acctFlagsX\" type=\"checkbox\"";
-				if (strpos($this->attributes['acctFlags'][0], "X")) echo " checked ";
-				echo "></td>\n";
-			echo "<td><a href=\"../help.php?HelpNumber=429\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td>" . _('User can change password') . "</td>\n";
-			echo "<td><select name=\"pwdCanChange_day\">";
-					for ( $i=1; $i<=31; $i++ ) {
-						if ($canchangedate['mday']==$i) echo "<option selected>$i</option>";
-							else echo "<option>$i</option>";
-						}
-				echo "</select><select name=\"pwdCanChange_mon\">";
-					for ( $i=1; $i<=12; $i++ ) {
-						if ($canchangedate['mon'] == $i) echo "<option selected>$i</option>";
-							else echo "<option>$i</option>";
-						}
-				echo "</select><select name=\"pwdCanChange_yea\">";
-					for ( $i=2003; $i<=2030; $i++ ) {
-						if ($canchangedate['year']==$i) echo "<option selected>$i</option>";
-							else echo "<option>$i</option>";
-						}
-				echo "</select></td>\n";
-			echo "<td><a href=\"../help.php?HelpNumber=430\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td>" . _('User must change password') . "</td>\n";
-			echo "<td><select name=\"pwdMustChange_day\">";
-					for ( $i=1; $i<=31; $i++ ) {
-						if ($mustchangedate['mday']==$i) echo "<option selected>$i</option>";
-							else echo "<option>$i</option>";
-						}
-				echo "</select><select name=\"pwdMustChange_mon\">";
-					for ( $i=1; $i<=12; $i++ ) {
-						if ($mustchangedate['mon'] == $i) echo "<option selected>$i</option>";
-							else echo "<option>$i</option>";
-						}
-				echo "</select><select name=\"pwdMustChange_yea\">";
-					for ( $i=2030; $i>=2003; $i-- ) {
-						if ($mustchangedate['year']==$i) echo "<option selected>$i</option>";
-							else echo "<option>$i</option>";
-						}
-				echo "</select></td>\n";
-			echo "<td><a href=\"../help.php?HelpNumber=431\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td>" .  _('Account is deactivated') . "</td>\n";
-			echo "<td><input name=\"acctFlagsD\" type=\"checkbox\"";
-				if (strpos($this->attributes['acctFlags'][0], "D")) echo " checked ";
-				echo "></td>\n";
-			echo "<td><a href=\"../help.php?HelpNumber=432\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td>" . _('Home drive') . "</td>\n";
-			echo "<td><select name=\"homeDrive\">";
-				for ($i=90; $i>67; $i--)
-					if ($this->attributes['homeDrive'][0]== chr($i).':') echo "<option selected>".chr($i).":</option>";
-						else echo "<option>".chr($i).":</option>";
-				echo "</select></td>\n";
-			echo "<td><a href=\"../help.php?HelpNumber=433\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td>" . _('Home path') . "</td>\n";
-			echo "<td><input name=\"smbHome\" type=\"text\" size=\"20\" maxlength=\"80\" value=\"" . $this->attributes['smbHome'][0] . "\"></td>\n";
-			echo "<td><a href=\"../help.php?HelpNumber=437\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td>" . _('Profile path') . "</td>\n";
-			echo "<td><input name=\"profilePath\" type=\"text\" size=\"20\" maxlength=\"80\" value=\"" . $this->attributes['profilePath'][0] . "\"></td>\n";
-			echo "<td><a href=\"../help.php?HelpNumber=435\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td>" . _('Script path') . "</td>\n";
-			echo "<td><input name=\"scriptPath\" type=\"text\" size=\"20\" maxlength=\"80\" value=\"" . $this->attributes['scriptPath'][0] . "\"></td>\n";
-			echo "<td><a href=\"../help.php?HelpNumber=434\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td>" . _('Samba workstations') . "</td>\n";
-			echo "<td><input name=\"userWorkstations\" type=\"submit\" value=\"" . _('Edit workstations') . "\"></td>\n";
-			echo "<td><a href=\"../help.php?HelpNumber=436\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td>" . _('Windows group') . "</td>\n";
-			echo "<td><select name=\"primaryGroupID\">";
-				// Display if group SID should be mapped to a well kown SID
+
+			if ($_SESSION[$this->base]->module['posixAccount']->orig['userPassword'][0] != $_SESSION[$this->base]->module['posixAccount']->attributes['userPassword'][0]) {
+				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Use unix password') ),
+					1 => array ( 'kind' => 'input', 'name' => 'useunixpwd', 'type' => 'checkbox', 'checked' => $this->useunixpwd),
+					2 => array ('kind' => 'help', 'value' => 'useunixpwd'));
+				}
+			$checked = false;
+			if (strpos($this->attributes['acctFlags'][0], "N")) $checked = true;
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Use no password') ),
+				1 => array ( 'kind' => 'input', 'name' => 'acctFlagsN', 'type' => 'checkbox', 'checked' => $checked),
+				2 => array ('kind' => 'help', 'value' => 'acctFlagsN'));
+			$checked = false;
+			if (strpos($this->attributes['acctFlags'][0], "X")) $checked = true;
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Password does not expire') ),
+				1 => array ( 'kind' => 'input', 'name' => 'acctFlagsX', 'type' => 'checkbox', 'checked' => $checked),
+				2 => array ('kind' => 'help', 'value' => 'acctFlagsX'));
+			$checked = false;
+			if (strpos($this->attributes['acctFlags'][0], "D")) $checked = true;
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Account is deactivated') ),
+				1 => array ( 'kind' => 'input', 'name' => 'acctFlagsD', 'type' => 'checkbox', 'checked' => $checked),
+				2 => array ('kind' => 'help', 'value' => 'acctFlagsD'));
+			for ( $i=1; $i<=31; $i++ ) $mday[] = $i;
+			for ( $i=1; $i<=12; $i++ ) $mon[] = $i;
+			for ( $i=2003; $i<=2030; $i++ ) $year[] = $i;
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('User can change password') ),
+				1 => array ( 'kind' => 'table', 'value' => array ( 0 => array ( 0 => array ( 'kind' => 'select', 'name' => 'pwdCanChange_day',
+						'options' => $mday, 'options_selectd' => $canchangedate['mday']),
+					1 => array ( 'kind' => 'select', 'name' => 'pwdCanChange_mon',
+						'options' => $mon, 'options_selectd' => $canchangedate['mon']),
+					2 => array ( 'kind' => 'select', 'name' => 'pwdCanChange_yes',
+						'options' => $year, 'options_selectd' => $canchangedate['year'])))),
+				2 => array ( 'kind' => 'help', 'value' => 'pwdCanChange' ));
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('User must change password') ),
+				1 => array ( 'kind' => 'table', 'value' => array ( 0 => array ( 0 => array ( 'kind' => 'select', 'name' => 'pwdMustChange_day',
+						'options' => $mday, 'options_selectd' => $mustchangedate['mday']),
+					1 => array ( 'kind' => 'select', 'name' => 'pwdMustChange_mon',
+						'options' => $mon, 'options_selectd' => $mustchangedate['mon']),
+					2 => array ( 'kind' => 'select', 'name' => 'pwdMustChange_yes',
+						'options' => $year, 'options_selectd' => $mustchangedate['year'])))),
+				2 => array ( 'kind' => 'help', 'value' => 'pwdMustChange' ));
+			for ($i=90; $i>67; $i--) $drives[] = chr($i).':';
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Home drive') ),
+				1 => array ( 'kind' => 'select', 'name' => 'homeDrive', 'options' => $drives, 'options_selected' => array ($this->attributes['homeDrive'][0])),
+				2 => array ( 'kind' => 'help', 'value' => 'homeDrive' ));
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Home path') ),
+				1 => array ( 'kind' => 'input', 'type' => 'text', 'name' => 'smbHome', 'size' => '20', 'maxlength' => '255', 'value' => $this->attributes['smbHome'][0]),
+				2 => array ( 'kind' => 'help', 'value' => 'smbHome' ));
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Profile path') ),
+				1 => array ( 'kind' => 'input', 'type' => 'text', 'name' => 'profilePath', 'size' => '20', 'maxlength' => '255', 'value' => $this->attributes['profilePath'][0]),
+				2 => array ( 'kind' => 'help', 'value' => 'profilePath' ));
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Script path') ),
+				1 => array ( 'kind' => 'input', 'type' => 'text', 'name' => 'scriptPath', 'size' => '20', 'maxlength' => '255', 'value' => $this->attributes['scriptPath'][0]),
+				2 => array ( 'kind' => 'help', 'value' => 'scriptPath' ));
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Samba workstations') ),
+				1 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'userWorkstations', 'value' => _('Edit workstations')),
+				2 => array ( 'kind' => 'help', 'value' => 'userWorkstations' ));
+
+			if (!$profile) {
 				$names = array_keys($this->rids);
 				$wrid=false;
 				for ($i=0; $i<count($names); $i++) {
 					if ($this->attributes['primaryGroupID'][0]==$this->rids[$names[$i]]) {
-						echo "<option selected>" . $names[$i] . "</option>";
+						$selected[] = $names[$i];
 						$wrid=true;
 						}
-					else echo "<option>" . $names[$i] . "</option>";
+					else $options[] = $names[$i];
 					}
-				if ($wrid) echo "<option>" . $_SESSION[$_SESSION[$this->base]->cache]->getgrnam($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]) . "</option>";
-					else echo "<option selected>" . $_SESSION[$_SESSION[$this->base]->cache]->getgrnam($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]) . "</option>";
-				echo	"</select></td>\n";
-			echo "<td><a href=\"../help.php?HelpNumber=464\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td>" . _('Special user') . "</td>\n";
-			echo "<td><select name=\"rid\">";
+				if ($wrid) $options[] = $_SESSION[$_SESSION[$this->base]->cache]->getgrnam($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]);
+					else $selected[] = $_SESSION[$_SESSION[$this->base]->cache]->getgrnam($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]);
+				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Windows group') ),
+					1 => array ( 'kind' => 'select', 'name' => 'primaryGroupID', 'options' => $options, 'options_selected' => $selected),
+					2 => array ( 'kind' => 'help', 'value' => 'primaryGroupID' ));
 				// Display if group SID should be mapped to a well kown SID
 				$wrid=false;
 				if ($this->attributes['rid'][0]=="500") {
-					echo "<option selected>" . _('Administrator') . "</option>";
+					$selected[] = _('Administrator');
 					$wrid=true;
 					}
-				else echo "<option>" . _('Administrator') . "</option>";
+				else $options[] = _('Administrator');
 				if ($this->attributes['rid'][0]=="501") {
-					echo "<option selected>" . _('Guest') . "</option>";
+					$selected[] = _('Guest');
 					$wrid=true;
 					}
-				else echo "<option>" . _('Guest') . "</option>";
-				if ($wrid) echo "<option>" . _('Ordinary user') . "</option>";
-					else echo "<option selected>" . _('Ordinary user') . "</option>";
-				echo	"</select></td>\n";
-			echo "<td><a href=\"../help.php?HelpNumber=XXX\" target=\"lamhelp\">" . _('Help-XX') . "</a></td>\n";
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td>" . _('Domain') . "</td>\n";
-			echo "<td><input name=\"domain\" type=\"text\" size=\"20\" maxlength=\"80\" value=\"" . $this->attributes['domain'][0] . "\"></td>\n";
-			echo "<td><a href=\"../help.php?HelpNumber=438\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-			echo "</tr>\n";
-			echo "</table>\n";
+				else $options[] = _('Guest');
+				if ($wrid) $options[] = _('Ordinary user');
+					else $selected[] = _('Ordinary user');
+				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Special user') ),
+					1 => array ( 'kind' => 'select', 'name' => 'rid', 'options' => $options, 'options_selected' => $selected),
+					2 => array ( 'kind' => 'help', 'value' => 'rid' ));
+				}
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Domain') ),
+				1 => array ( 'kind' => 'input', 'type' => 'text', 'name' => 'domain', 'size' => '20', 'maxlength' => '255', 'value' => $this->attributes['domain'][0]),
+				2 => array ( 'kind' => 'help', 'value' => 'domain' ));
 			}
+
 		if ($_SESSION[$this->base]->type=='host') {
-			echo '<input name="acctFlagsW" type="hidden" value="true">';
-			echo "<table border=0 width=\"100%\">\n<tr>\n";
-			echo "<tr>\n";
-			echo "<td>" . _('Reset password') . "</td>\n";
-			echo "<td><input name=\"ResetSambaPassword\" type=\"submit\" value=\"" . _('Reset password') . "\"></td>\n";
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td>" . _('Domain') . "</td>\n";
-			echo "<td><input name=\"domain\" type=\"text\" size=\"20\" maxlength=\"80\" value=\"" . $this->attributes['domain'][0] . "\"></td>\n";
-			echo "<td><a href=\"../help.php?HelpNumber=438\" target=\"lamhelp\">" . _('Help') . "</a></td>\n";
-			echo "</tr>\n";
-			echo "</table>\n";
+			$return[] = array ( 0 => array ( 'kind' => 'input', 'name' => 'acctFlagsW', 'type' => 'hidden', 'value' => 'true' ));
+			if (!$profile) {
+				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Reset password') ),
+					1 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'ResetSambaPassword'),
+					2 => array ( 'kind' => 'help', 'value' => 'ResetSambaPassword' ));
+				}
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Domain') ),
+				1 => array ( 'kind' => 'input', 'type' => 'text', 'name' => 'domain', 'size' => '20', 'maxlength' => '255', 'value' => $this->attributes['domain'][0]),
+				2 => array ( 'kind' => 'help', 'value' => 'domain' ));
 			}
-		return 0;
+
+		return $return;
 		}
 
 	function display_html_delete($post) {
@@ -579,51 +558,33 @@ class sambaAccount {
 	* It will output a complete html-table
 	*/
 	function display_html_userWorkstations($post) {
-		// Get list of all hosts.
-		$result = $_SESSION[$_SESSION[$this->base]->cache]->get_cache('uid', 'sambaAccount', 'host');
-		if (is_array($result)) {
-			foreach ($result as $host) $availableUserWorkstations[] = str_replace("$", '', $host[0]);
-			sort($availableUserWorkstations, SORT_STRING);
-			$result = str_replace(' ', '', $this->attributes['userWorkstations'][0]);
-			$userWorkstations = explode (',', $result);
-			$availableUserWorkstations = array_delete($userWorkstations, $availableUserWorkstations);
+		if ($_SESSION[$this->base]->type=='user') {
+			// Get list of all hosts.
+			$result = $_SESSION[$_SESSION[$this->base]->cache]->get_cache('uid', 'sambaAccount', 'host');
+			if (is_array($result)) {
+				foreach ($result as $host) $availableUserWorkstations[] = str_replace("$", '', $host[0]);
+				sort($availableUserWorkstations, SORT_STRING);
+				$result = str_replace(' ', '', $this->attributes['userWorkstations'][0]);
+				$userWorkstations = explode (',', $result);
+				$availableUserWorkstations = array_delete($userWorkstations, $availableUserWorkstations);
+				}
+
+			$return[] = array ( 0 => array ( 'kind' => 'fieldset', 'legend' => _("Allowed workstations"), 'value' =>
+				array ( 0 => array ( 0 => array ('kind' => 'fieldset', 'td' => array ('valign' => 'top'), 'legend' => _("Allowed workstations"), 'value' =>
+					array ( 0 => array ( 0 => array ( 'kind' => 'select', 'name' => 'userWorkstations[]', 'size' => '15', 'multiple', 'options' => $userWorkstations)))),
+				1 => array ( 'kind' => 'table', 'value' => array ( 0 => array ( 0 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'userWorkstations_add',
+					'value' => '<=')), 1 => array ( 0 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'userWorkstations_remove', 'value' => '=>' )),
+					2 => array ( 0 => array ( 'kind' => 'help', 'value' => 'userWorkstations' )))),
+				2 => array ('kind' => 'fieldset', 'td' => array ('valign' => 'top'), 'legend' => _("Available workstations"), 'value' =>
+					array ( 0 => array ( 0 => array ( 'kind' => 'select', 'name' => 'availableUserWorkstations[]', 'size' => '15', 'multiple', 'options' => $availableUserWorkstations))))
+					))));
+
+			$return[] = array ( 0 => array ( 'kind' => 'input', 'type' => 'submit', 'value' => _('Back') ),
+				1 => array ( 'kind' => 'text'),
+				2 => array ('kind' => 'text'));
 			}
-		echo "<table border=0 width=\"100%\">\n<tr>\n";
-		echo "<tr>\n";
-		echo "<td valign=\"top\">";
-			echo "<fieldset class=\"".$_SESSION[$this->base]->type."edit-bright\"><legend class=\"".$_SESSION[$this->base]->type."edit-bright\">";
-				echo _("Allowed workstations");
-				echo "</legend>\n";
-			// display all workstations the user is allowed to login
-			if (count($userWorkstations)!=0) {
-				echo "<select name=\"userWorkstations[]\" class=\"".$_SESSION[$this->base]->type."edit-bright\" size=15 multiple>\n";
-				for ($i=0; $i<count($userWorkstations); $i++)
-					if ($userWorkstations[$i]!='') echo "<option>".$userWorkstations[$i]."</option>\n";
-				echo "</select>\n";
-				}
-			echo "</fieldset></td>\n";
-		echo "<td align=\"center\" width=\"10%\"><input type=\"submit\" name=\"userWorkstations_add\" value=\"<=\">";
-			echo " ";
-			echo "<input type=\"submit\" name=\"userWorkstations_remove\" value=\"=>\"><br><br>";
-			echo "<a href=\""."../help.php?HelpNumber=436\" target=\"lamhelp\">"._('Help')."</a></td>\n";
-		echo "<td valign=\"top\">";
-			echo "<fieldset class=\"".$_SESSION[$this->base]->type."edit-bright\"><legend class=\"".$_SESSION[$this->base]->type."edit-bright\">";
-				echo _('Available workstations');
-				echo "</legend>\n";
-			// Display all workstations without these the user is allowed to login
-			if (count($availableUserWorkstations)!=0) {
-				echo "<select name=\"availableUserWorkstations[]\" size=15 multiple class=\"".$_SESSION[$this->base]->type."edit-bright\">\n";
-				foreach ($availableUserWorkstations as $temp) echo "<option>$temp</option>\n";
-				echo "</select>\n";
-				}
-			echo "</fieldset></td>\n";
-		echo "</tr>\n";
-		echo "<tr>\n";
-		echo "<td><input name=\"attributes\" type=\"submit\" value=\"" . _('Back') . "\"></td>\n";
-		echo "<td></td>\n";
-		echo "<td></td>\n";
-		echo "</tr>\n";
-		echo "</table>\n";
+
+		return $return;
 		}
 
 	}

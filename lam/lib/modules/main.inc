@@ -141,12 +141,12 @@ class main {
 			}
 		// save profile
 		if ($post['saveProfile']) {
-			if ($post['selectSaveProfile']=='') $errors[] = array('ERROR', _('Save profile'), _('No profilename given.'));
+			if ($post['selectSaveProfile']=='') $errors['saveProfile'][] = array('ERROR', _('Save profile'), _('No profilename given.'));
 			else {
 				$function = 'save'.ucfirst($scope).'Profile();';
 				eval($function);
-				if ($function) $errors[] = array('INFO', _('Save profile'), _('New profile created.'));
-					else $errors[] = array('ERROR', _('Save profile'), _('Wrong profilename given.'));
+				if ($function) $errors['saveProfile'][] = array('INFO', _('Save profile'), _('New profile created.'));
+					else $errors['saveProfile'][] = array('ERROR', _('Save profile'), _('Wrong profilename given.'));
 				}
 			if (is_array($errors) && !$profile) return $errors;
 				else return 0;
