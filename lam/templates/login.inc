@@ -67,6 +67,9 @@ else
 		<input type="hidden" name="action" value="checklogin">
 			<table width="500" align="center" border="0">
 				<tr>
+					<td width="100%" colspan="3" align="center"><? echo _("You are connecting with: "); echo $config->get_Host() . ":" . $config->get_Port(); ?></td>
+				</tr>
+				<tr>
 					<td width="45%" align="right"><? echo _("Username:") ?></td><td width="10%"></td><td width="45%" align="left"><select name="username" size="1"><? for($i = 0; $i < count($config->Admins); $i++) { $text = explode(",", $config->Admins[$i]); $text = explode("=", $text[0]); echo "<option value=\"" . $config->Admins[$i] . "\">" . $text[1] . "</option>"; } ?></select></td>
 				</tr>
 				<tr>
