@@ -30,8 +30,8 @@ include_once('../lib/profiles.inc');
 
 registervars(); // Register all needed variables in session and register session
 $error = "0";
-if ( $type ) { // Type is true if account.php was called from Users/Group/Hosts-List
-	$_SESSION['type2'] = $type; // Register $type in Session for further usage
+if ( $_GET['type'] ) { // Type is true if account.php was called from Users/Group/Hosts-List
+	$_SESSION['type2'] = $_GET['type']; // Register $type in Session for further usage
 	$_SESSION['account'] = ""; // Delete $_SESSION['account'] because values are now invalid
 	$_SESSION['account_old'] = ""; // Delete $_SESSION['account_old'] because values are now invalid
 	$_SESSION['account_temp'] = ""; // Delete $_SESSION['account_temp'] because values are now invalid
@@ -39,172 +39,173 @@ if ( $type ) { // Type is true if account.php was called from Users/Group/Hosts-
 	$_SESSION['shelllist'] = getshells(); // Write List of all valid shells in variable
 	}
 
-if ( $DN ) { // $DN is true if an entry should be modified and account.php was called from Users/Group/Host-List
+if ( $_GET['DN'] ) { // $DN is true if an entry should be modified and account.php was called from Users/Group/Host-List
 	$_SESSION['modify'] = 1;
-	$DN = str_replace("\'", '',$DN);
-	switch ($type2) {
+	$DN = str_replace("\'", '',$_GET['DN']);
+	switch ($_SESSION['type2']) {
 		case 'user': loaduser($DN); break;
 		case 'group': loadgroup($DN); break;
 		case 'host': loadhost($DN); break;
 		}
 	}
 
-switch ($select) {
+switch ($_POST['select']) {
 	case 'general':
 		// Write alle values in temporary object
-		if ($f_general_username) $_SESSION['account_temp']->general_username = $f_general_username;
-			else $_SESSION['account_temp']->general_username = $f_general_username;
-		if ($f_general_surname) $_SESSION['account_temp']->general_surname = $f_general_surname;
+		if ($_POST['f_general_username']) $_SESSION['account_temp']->general_username = $_POST['f_general_username'];
+			else $_SESSION['account_temp']->general_username = $_POST['f_general_username'];
+		if ($_POST['f_general_surname']) $_SESSION['account_temp']->general_surname = $_POST['f_general_surname'];
 			else $_SESSION['account_temp']->general_surname = "";
-		if ($f_general_givenname) $_SESSION['account_temp']->general_givenname = $f_general_givenname;
+		if ($_POST['f_general_givenname']) $_SESSION['account_temp']->general_givenname = $_POST['f_general_givenname'];
 			else $_SESSION['account_temp']->general_givenname = "";
-		if ($f_general_uidNumber) $_SESSION['account_temp']->general_uidNumber = $f_general_uidNumber;
+		if ($_POST['f_general_uidNumber']) $_SESSION['account_temp']->general_uidNumber = $_POST['f_general_uidNumber'];
 			else $_SESSION['account_temp']->general_uidNumber = "";
-		if ($f_general_group) $_SESSION['account_temp']->general_group = $f_general_group;
-		if ($f_general_groupadd) $_SESSION['account_temp']->general_groupadd = $f_general_groupadd;
-		if ($f_general_homedir) $_SESSION['account_temp']->general_homedir = $f_general_homedir;
+		if ($_POST['f_general_group']) $_SESSION['account_temp']->general_group = $_POST['f_general_group'];
+		if ($_POST['f_general_groupadd']) $_SESSION['account_temp']->general_groupadd = $_POST['f_general_groupadd'];
+		if ($_POST['f_general_homedir']) $_SESSION['account_temp']->general_homedir = $_POST['f_general_homedir'];
 			else $_SESSION['account_temp']->general_homedir = "";
-		if ($f_general_shell) $_SESSION['account_temp']->general_shell = $f_general_shell;
-		if ($f_general_gecos) $_SESSION['account_temp']->general_gecos = $f_general_gecos;
+		if ($_POST['f_general_shell']) $_SESSION['account_temp']->general_shell = $_POST['f_general_shell'];
+		if ($_POST['f_general_gecos']) $_SESSION['account_temp']->general_gecos = $_POST['f_general_gecos'];
 			else $_SESSION['account_temp']->general_gecos = "";
 		// Check Values
 		$error = checkglobal(); // account.inc
 		// Check which part Site should be displayd
-		if ($next && ($error=="0"))
+		if ($_POST['next'] && ($error=="0"))
 			switch ($_SESSION['type2']) {
-				case 'user': $select = 'unix'; break;
-				case 'group': $select = 'quota'; break;
-				case 'host': $select = 'unix'; break;
+				case 'user': $select_local = 'unix'; break;
+				case 'group': $select_local = 'quota'; break;
+				case 'host': $select_local = 'unix'; break;
 				}
 		break;
 	case 'unix':
 		// Write alle values in temporary object
-		if ($genpass) { $f_unix_password = genpasswd(); }
-		if ($f_unix_password) $_SESSION['account_temp']->unix_password = $f_unix_password;
+		if ($_POST['f_unix_password']) $_SESSION['account_temp']->unix_password = $_POST['f_unix_password'];
 			else $_SESSION['account_temp']->unix_password = '';
-		if ($f_unix_password_no) $_SESSION['account_temp']->unix_password_no = $f_unix_password_no;
+		if ($_POST['genpass']) { $_SESSION['account_temp']->unix_password = genpasswd(); }
+		if ($_POST['f_unix_password_no']) $_SESSION['account_temp']->unix_password_no = $_POST['f_unix_password_no'];
 			else $_SESSION['account_temp']->unix_password_no = false;
-		if ($f_unix_pwdwarn) $_SESSION['account_temp']->unix_pwdwarn = $f_unix_pwdwarn;
+		if ($_POST['f_unix_pwdwarn']) $_SESSION['account_temp']->unix_pwdwarn = $_POST['f_unix_pwdwarn'];
 			else $_SESSION['account_temp']->unix_pwdwarn = '';
-		if ($f_unix_pwdallowlogin) $_SESSION['account_temp']->unix_pwdallowlogin = $f_unix_pwdallowlogin;
+		if ($_POST['f_unix_pwdallowlogin']) $_SESSION['account_temp']->unix_pwdallowlogin = $_POST['f_unix_pwdallowlogin'];
 			else $_SESSION['account_temp']->unix_pwdallowlogin = '';
-		if ($f_unix_pwdmaxage) $_SESSION['account_temp']->unix_pwdmaxage = $f_unix_pwdmaxage;
+		if ($_POST['f_unix_pwdmaxage']) $_SESSION['account_temp']->unix_pwdmaxage = $_POST['f_unix_pwdmaxage'];
 			else $_SESSION['account_temp']->unix_pwdmaxage = '';
-		if ($f_unix_pwdminage) $_SESSION['account_temp']->unix_pwdminage = $f_unix_pwdminage;
+		if ($_POST['f_unix_pwdminage']) $_SESSION['account_temp']->unix_pwdminage = $_POST['f_unix_pwdminage'];
 			else $_SESSION['account_temp']->unix_pwdminage = '';
-		if ($f_unix_pwdexpire_day) $_SESSION['account_temp']->unix_pwdexpire_day = $f_unix_pwdexpire_day;
-		if ($f_unix_pwdexpire_mon) $_SESSION['account_temp']->unix_pwdexpire_mon = $f_unix_pwdexpire_mon;
-		if ($f_unix_pwdexpire_yea) $_SESSION['account_temp']->unix_pwdexpire_yea = $f_unix_pwdexpire_yea;
-		if ($f_unix_deactivated) $_SESSION['account_temp']->unix_deactivated = $f_unix_deactivated;
+		if ($_POST['f_unix_pwdexpire_day']) $_SESSION['account_temp']->unix_pwdexpire_day = $_POST['f_unix_pwdexpire_day'];
+		if ($_POST['f_unix_pwdexpire_mon']) $_SESSION['account_temp']->unix_pwdexpire_mon = $_POST['f_unix_pwdexpire_mon'];
+		if ($_POST['f_unix_pwdexpire_yea']) $_SESSION['account_temp']->unix_pwdexpire_yea = $_POST['f_unix_pwdexpire_yea'];
+		if ($_POST['f_unix_deactivated']) $_SESSION['account_temp']->unix_deactivated = $_POST['f_unix_deactivated'];
 			else $_SESSION['account_temp']->unix_deactivated = false;
 		// Check Values
 		$error = checkunix(); // account.inc
 		// Check which part Site should be displayd
-		if ($back && ($error=="0")) $select = 'general';
-		if ($next && ($error=="0")) $select = 'samba';
+		if ($_POST['back'] && ($error=="0")) $select_local = 'general';
+		if ($_POST['genpass'] && ($error=="0")) $select_local = 'unix';
+		if ($_POST['next'] && ($error=="0")) $select_local = 'samba';
 		break;
 	case 'samba':
 		// Write alle values in temporary object
-		if ($f_smb_password) $_SESSION['account_temp']->smb_password = $f_smb_password;
+		if ($_POST['f_smb_password']) $_SESSION['account_temp']->smb_password = $_POST['f_smb_password'];
 			else $_SESSION['account_temp']->smb_password = "";
-		if ($f_smb_password_no) $_SESSION['account_temp']->smb_password_no = $f_smb_password_no;
+		if ($_POST['f_smb_password_no']) $_SESSION['account_temp']->smb_password_no = $_POST['f_smb_password_no'];
 			else $_SESSION['account_temp']->smb_password_no = false;
-		if ($f_smb_useunixpwd) $_SESSION['account_temp']->smb_useunixpwd = $f_smb_useunixpwd;
+		if ($_POST['f_smb_useunixpwd']) $_SESSION['account_temp']->smb_useunixpwd = $_POST['f_smb_useunixpwd'];
 			else $_SESSION['account_temp']->smb_useunixpwd = false;
-		if ($f_smb_pwdcanchange) $_SESSION['account_temp']->smb_pwdcanchange = $f_smb_pwdcanchange;
+		if ($_POST['f_smb_pwdcanchange']) $_SESSION['account_temp']->smb_pwdcanchange = $_POST['f_smb_pwdcanchange'];
 			else $_SESSION['account_temp']->smb_pwdcanchange = false;
-		if ($f_smb_pwdmustchange) $_SESSION['account_temp']->smb_pwdmustchange = $f_smb_pwdmustchange;
+		if ($_POST['f_smb_pwdmustchange']) $_SESSION['account_temp']->smb_pwdmustchange = $_POST['f_smb_pwdmustchange'];
 			else $_SESSION['account_temp']->smb_pwdmustchange = false;
-		if ($f_smb_homedrive) $_SESSION['account_temp']->smb_homedrive = $f_smb_homedrive;
-		if ($f_smb_scriptpath) $_SESSION['account_temp']->smb_scriptpath = $f_smb_scriptpath;
+		if ($_POST['f_smb_homedrive']) $_SESSION['account_temp']->smb_homedrive = $_POST['f_smb_homedrive'];
+		if ($_POST['f_smb_scriptpath']) $_SESSION['account_temp']->smb_scriptpath = $_POST['f_smb_scriptpath'];
 			else $_SESSION['account_temp']->smb_scriptpath = '';
-		if ($f_smb_smbuserworkstations) $_SESSION['account_temp']->smb_smbuserworkstations = $f_smb_smbuserworkstations;
+		if ($_POST['f_smb_smbuserworkstations']) $_SESSION['account_temp']->smb_smbuserworkstations = $_POST['f_smb_smbuserworkstations'];
 			else $_SESSION['account_temp']->smb_smbuserworkstations = "";
-		if ($f_smb_smbhome) $_SESSION['account_temp']->smb_smbhome = stripslashes($f_smb_smbhome);
+		if ($_POST['f_smb_smbhome']) $_SESSION['account_temp']->smb_smbhome = stripslashes($_POST['f_smb_smbhome']);
 			else $_SESSION['account_temp']->smb_smbhome = "";
-		if ($f_smb_profilePath) $_SESSION['account_temp']->smb_profilePath = stripslashes($f_smb_profilePath);
+		if ($_POST['f_smb_profilePath']) $_SESSION['account_temp']->smb_profilePath = stripslashes($_POST['f_smb_profilePath']);
 			else $_SESSION['account_temp']->smb_profilePath = "";
-		if ($f_smb_domain) $_SESSION['account_temp']->smb_domain = $f_smb_domain;
+		if ($_POST['f_smb_domain']) $_SESSION['account_temp']->smb_domain = $_POST['f_smb_domain'];
 			else $_SESSION['account_temp']->smb_domain = false;
-		if ($f_smb_flagsW) $_SESSION['account_temp']->smb_flagsW = $f_smb_flagsW;
+		if ($_POST['f_smb_flagsW']) $_SESSION['account_temp']->smb_flagsW = $_POST['f_smb_flagsW'];
 			else $_SESSION['account_temp']->smb_flagsW = false;
-		if ($f_smb_flagsD) $_SESSION['account_temp']->smb_flagsD = $f_smb_flagsD;
+		if ($_POST['f_smb_flagsD']) $_SESSION['account_temp']->smb_flagsD = $_POST['f_smb_flagsD'];
 			else $_SESSION['account_temp']->smb_flagsD = false;
-		if ($f_smb_flagsX) $_SESSION['account_temp']->smb_flagsX = $f_smb_flagsX;
+		if ($_POST['f_smb_flagsX']) $_SESSION['account_temp']->smb_flagsX = $_POST['f_smb_flagsX'];
 			else $_SESSION['account_temp']->smb_flagsX = false;
 		// Check Values
 		$error = checksamba(); // account.inc
 		// Check which part Site should be displayd
-		if ($back && ($error=="0")) $select = 'unix';
-		if ($next && ($error=="0"))
+		if ($_POST['back'] && ($error=="0")) $select_local = 'unix';
+		if ($_POST['next'] && ($error=="0"))
 			switch ($_SESSION['type2']) {
-				case 'user': $select = 'quota'; break;
-				case 'host': $select = 'final'; break;
+				case 'user': $select_local = 'quota'; break;
+				case 'host': $select_local = 'final'; break;
 				}
 		break;
 	case 'quota':
 		// Check which part Site should be displayd
-		if ($back && ($error=="0"))
+		if ($_POST['back'] && ($error=="0"))
 			switch ($_SESSION['type2']) {
-				case 'user': $select = 'samba'; break;
-				case 'group': $select = 'general'; break;
+				case 'user': $select_local = 'samba'; break;
+				case 'group': $select_local = 'general'; break;
 				}
-		if ($next && ($error=="0"))
+		if ($_POST['next'] && ($error=="0"))
 			switch ($_SESSION['type2']) {
-				case 'user': $select = 'personal'; break;
-				case 'group': $select = 'final'; break;
+				case 'user': $select_local = 'personal'; break;
+				case 'group': $select_local = 'final'; break;
 				}
 		break;
 	case 'personal':
-		if ($f_personal_title) $_SESSION['account_temp']->personal_title = $f_personal_title;
+		if ($_POST['f_personal_title']) $_SESSION['account_temp']->personal_title = $_POST['f_personal_title'];
 			else $_SESSION['account_temp']->personal_title = "";
-		if ($f_personal_mail) $_SESSION['account_temp']->personal_mail = $f_personal_mail;
+		if ($_POST['f_personal_mail']) $_SESSION['account_temp']->personal_mail = $_POST['f_personal_mail'];
 			else $_SESSION['account_temp']->personal_mail = "";
-		if ($f_personal_telephoneNumber) $_SESSION['account_temp']->personal_telephoneNumber = $f_personal_telephoneNumber;
+		if ($_POST['f_personal_telephoneNumber']) $_SESSION['account_temp']->personal_telephoneNumber = $_POST['f_personal_telephoneNumber'];
 			else $_SESSION['account_temp']->personal_telephoneNumber = "";
-		if ($f_personal_mobileTelephoneNumber) $_SESSION['account_temp']->personal_mobileTelephoneNumber = $f_personal_mobileTelephoneNumber;
+		if ($_POST['f_personal_mobileTelephoneNumber']) $_SESSION['account_temp']->personal_mobileTelephoneNumber = $_POST['f_personal_mobileTelephoneNumber'];
 			else $_SESSION['account_temp']->personal_mobileTelephoneNumber = "";
-		if ($f_personal_facsimileTelephoneNumber) $_SESSION['account_temp']->personal_facsimileTelephoneNumber = $f_personal_facsimileTelephoneNumber;
+		if ($_POST['f_personal_facsimileTelephoneNumber']) $_SESSION['account_temp']->personal_facsimileTelephoneNumber = $_POST['f_personal_facsimileTelephoneNumber'];
 			else $_SESSION['account_temp']->personal_facsimileTelephoneNumber = "";
-		if ($f_personal_street) $_SESSION['account_temp']->personal_street = $f_personal_street;
+		if ($_POST['f_personal_street']) $_SESSION['account_temp']->personal_street = $_POST['f_personal_street'];
 			else $_SESSION['account_temp']->personal_street = "";
-		if ($f_personal_postalCode) $_SESSION['account_temp']->personal_postalCode = $f_personal_postalCode;
+		if ($_POST['f_personal_postalCode']) $_SESSION['account_temp']->personal_postalCode = $_POST['f_personal_postalCode'];
 			else $_SESSION['account_temp']->personal_postalCode = "";
-		if ($f_personal_postalAddress) $_SESSION['account_temp']->personal_postalAddress = $f_personal_postalAddress;
+		if ($_POST['f_personal_postalAddress']) $_SESSION['account_temp']->personal_postalAddress = $_POST['f_personal_postalAddress'];
 			else $_SESSION['account_temp']->personal_postalAddress = "";
-		if ($f_personal_employeeType) $_SESSION['account_temp']->personal_employeeType = $f_personal_employeeType;
+		if ($_POST['f_personal_employeeType']) $_SESSION['account_temp']->personal_employeeType = $_POST['f_personal_employeeType'];
 			else $_SESSION['account_temp']->personal_employeeType = "";
 		// Check which part Site should be displayd
 		$error = checkpersonal(); // account.inc
-		if ($back && ($error=="0")) $select = 'quota';
-		if ($next && ($error=="0")) $select = 'final';
+		if ($_POST['back'] && ($error=="0")) $select_local = 'quota';
+		if ($_POST['next'] && ($error=="0")) $select_local = 'final';
 		break;
 	case 'final':
-		if ($back && ($error=="0"))
+		if ($_POST['back'] && ($error=="0"))
 			switch ($_SESSION['type2']) {
-				case 'user': $select = 'personal'; break;
-				case 'group': $select = 'quota'; break;
-				case 'host': $select = 'samba'; break;
+				case 'user': $select_local = 'personal'; break;
+				case 'group': $select_local = 'quota'; break;
+				case 'host': $select_local = 'samba'; break;
 				}
 		break;
 	}
 
 
 
-if ( $create ) { // Create-Button was pressed
-	$_SESSION['account']->final_changegids = $f_final_changegids;
+if ( $_POST['create'] ) { // Create-Button was pressed
+	$_SESSION['account']->final_changegids = $_POST['f_final_changegids'];
 	switch ($_SESSION['type2']) {
 		case 'user':
 			$result = createuser(); // account.inc
-			if ( $result==1 || $result==3 ) $select = 'finish';
+			if ( $result==1 || $result==3 ) $select_local = 'finish';
 			break;
 		case 'group':
 			$result = creategroup(); // account.inc
-			if ( $result==1 || $result==3 ) $select = 'finish';
+			if ( $result==1 || $result==3 ) $select_local = 'finish';
 			break;
 		case 'host':
 			$result = createhost(); // account.inc
-			if ( $result==1 || $result==3 ) $select = 'finish';
+			if ( $result==1 || $result==3 ) $select_local = 'finish';
 			break;
 		}
 	}
@@ -213,7 +214,7 @@ if ( $create ) { // Create-Button was pressed
 echo '<html><head><title>';
 echo _('Create new Account');
 echo '</title>
-	<link rel="stylesheet" type="text/css" href="../style/account.css">
+	<link rel="stylesheet" type="text/css" href="../style/layout.css">
 	</head><body>
 	<form action="account.php" method="post">
 	<meta http-equiv="pragma" content="no-cache">
@@ -224,27 +225,27 @@ echo '</title>
 	echo '</td></tr>';
 
 
-if (!$select) $select='general';
-if ($createagain) {
-	$select='general';
+if (!$select_local) $select_local='general';
+if ($_POST['createagain']) {
+	$select_local='general';
 	$_SESSION['account']="";
 	$_SESSION['account_temp']="";
 	$_SESSION['account_old']="";
 	}
-if ($backmain) {
-	$select='backmain';
+if ($_POST['backmain']) {
+	$select_local='backmain';
 	$_SESSION['account']="";
 	$_SESSION['account_temp']="";
 	$_SESSION['account_old']="";
 	}
 
-if ($load) $select='load';
-if ($save) $select='save';
+if ($_POST['load']) $select_local='load';
+if ($_POST['save']) $select_local='save';
 
 
 
 
-switch ($select) {
+switch ($select_local) {
 	case 'general':
 		// General Account Settings
 		$groups = findgroups();

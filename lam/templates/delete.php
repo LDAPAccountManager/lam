@@ -32,19 +32,18 @@ echo '<html><head><title>';
 echo _('Delete Account');
 echo '</title>
 	</head><body>
-	<link rel="stylesheet" type="text/css" href="../style/delete.css">
+	<link rel="stylesheet" type="text/css" href="../style/layout.css">
 	<form action="delete.php" method="post">
 	<meta http-equiv="pragma" content="no-cache">
 	<meta http-equiv="cache-control" content="no-cache">
 	<table rules="all" class="delete" width="100%">
 	<tr><td>';
 
-
-if ($type) {
-	$DN2 = explode(";", str_replace("\'", '',$DN));
-	echo '<input name="type5" type="hidden" value="'.$type.'">';
-	echo '<input name="DN" type="hidden" value="'.$DN.'">';
-	switch ($type) {
+if ($_GET['type']) {
+	$DN2 = explode(";", str_replace("\'", '',$_GET['DN']));
+	echo '<input name="type5" type="hidden" value="'.$_GET['type'].'">';
+	echo '<input name="DN" type="hidden" value="'.$_GET['DN'].'">';
+	switch ($_GET['type']) {
 		case 'user':
 			echo _('Do you really want to delete user(s):');
 			break;
@@ -64,11 +63,10 @@ if ($type) {
 	echo _('Chancel'); echo '">';
 	}
 
-if ($delete_yes) {
-	$DN = str_replace("\'", '',$DN);
-	$DN2 = explode(";", str_replace("\\", '',$DN));
+if ($_POST['delete_yes']) {
+	$DN2 = explode(";", str_replace("\\", '',str_replace("\'", '',$_POST['DN'])));
 	foreach ($DN2 as $dn) {
-		switch ($type5) {
+		switch ($_POST['type5']) {
 			case 'user':
 				$success = ldap_delete($_SESSION['ldap']->server(), $dn);
 				if (!$success) $error = _('Could not delete user: ').$dn;
@@ -95,7 +93,7 @@ if ($delete_yes) {
 		}
 	}
 
-if ($delete_no) echo _('Nothing was deleted.');
+if ($_POST['delete_no']) echo _('Nothing was deleted.');
 
 echo '</td></tr>';
 echo '</form></body></html>';
