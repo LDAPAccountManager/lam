@@ -198,6 +198,17 @@ function getHelp($module,$helpID) {
 	return call_user_func(array($module, "get_help"), $helpID);
 }
 
+// $scope = user, group, host, ...
+function getAvailablePDFFields($scope) {
+	// create new account container if needed
+	if (! isset($_SESSION["profile_account_$scope"])) {
+		$_SESSION["profile_account_$scope"] = new accountContainer($scope, "profile_account_$scope");
+		$_SESSION["profile_account_$scope"]->new_account();
+	}
+	// get options
+	return $_SESSION["profile_account_$scope"]->getAvailablePDFFields();
+}
+
 
 class accountContainer {
 	// Constructor
@@ -985,6 +996,21 @@ class accountContainer {
 			while(($current = current($this->module)) != null) {
 				$return = array_merge($return,$current->get_pdfEntries($account_type));
 				next($this->module);
+			}
+			return $return;
+		}
+		
+		// Dummy implementation
+		function getAvailablePDFFields() {
+			$return = array();
+			foreach($this->module as $key => $value) {
+				$fields = array();
+				if(is_array($value->attributes)) {
+					foreach($value->attributes as $field_key => $field_value) {
+						$fields[] = $field_key;
+					}
+				}
+				$return[$key] = $fields;
 			}
 			return $return;
 		}

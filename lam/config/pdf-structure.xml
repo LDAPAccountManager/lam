@@ -1,6 +1,6 @@
 <settings type="pdf">
 	<pdf type="user">
-		<text name="User" />
+		<text name="user" />
 		<section name="Personal User Infos">
 			<entry name="inetOrgPerson_title" />
 			<entry name="inetOrgPerson_givenName" />
@@ -41,7 +41,6 @@
 		<section name="_posixGroup_cn">
 			<entry name="posixGroup_description" />
 			<entry name="posixGroup_gidNumber" />
-			<entry name="Domain" />
 			<entry name="main_dn" />
 			<entry name="posixGroup_memberUid" />
 		</section>

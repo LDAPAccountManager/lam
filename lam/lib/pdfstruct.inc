@@ -1,0 +1,58 @@
+<?php
+/*
+$Id$
+
+  This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
+  Copyright (C) 2003  Roland Gruber
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+*/
+
+include_once("config.inc");
+include_once("ldap.inc");
+
+function getPDFStructureDefinitions($scope = "user") {
+	$return = array();
+	$dirHandle = opendir($_SESSION['lampath'] . '/config/pdf/' . $scope . '/');
+	while($file = readdir($dirHandle)) {
+		if($file != '.' && $file != '..' && $file != 'default.xml') {
+			array_push($return, substr($file,0,strlen($file)-4));
+		}
+	}
+	sort($return);
+	return $return;
+}
+
+function loadPDFStructureDefinitions($scope='user', $definition='default.xml') {
+	$parser = new xmlParser();
+	$xml = $parser->parse($_SESSION['lampath'] . 'config/pdf/' . $scope . '/' . $definition);
+	
+	$border = array();
+	$structure = array();
+	$pdf_entries = $xml[1]['PDF'];
+	$border[$current] = array();
+	while(($index = current($pdf_entries)) != null) {
+		if($xml[0][$index]['attributes']['TYPE'] == $scope) {
+			$border['start'] = $index;
+			next($pdf_entries);
+			$border['end'] = current($pdf_entries);
+		}
+		next($pdf_entries);
+	}
+	$structure = array_slice($xml[0],$border['start'] + 1,$border['end'] - ($border['start'] + 1));
+	return $structure;
+}
+?>
