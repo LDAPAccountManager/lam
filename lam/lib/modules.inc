@@ -1151,9 +1151,6 @@ class accountContainer {
 				$this->module[$module]->init($this->base);
 			}
 			$this->module[$module]->load_attributes($attr);
-			$this->module[$module]->attributes['objectClass'] = array($module);
-			if (in_array($objectClassName, $attr['objectClass']))
-				$this->module[$module]->orig['objectClass'] = array($module);
 			}
 
 		// sortm modules and make all active because all required attributes should be set
