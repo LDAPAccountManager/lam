@@ -82,6 +82,7 @@ if (($_GET['action'] == "edit") || ($_GET['action'] == "new")) {
 						}
 						else echo "<input type=\"text\" name=\"dom_name\">\n";
 					echo "</td>\n";
+					echo ("<td><a href=\"help.php?HelpNumber=651\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 				echo "</tr>\n";
 				echo "<tr>\n";
 					echo "<td>&nbsp;</td><td>&nbsp;</td>\n";
@@ -99,6 +100,7 @@ if (($_GET['action'] == "edit") || ($_GET['action'] == "new")) {
 						}
 						echo "</select>";
 					echo "</td>\n";
+					echo ("<td><a href=\"help.php?HelpNumber=652\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 				echo "</tr>\n";
 				echo "<tr>\n";
 					echo "<td>&nbsp;</td><td>&nbsp;</td>\n";
@@ -114,6 +116,7 @@ if (($_GET['action'] == "edit") || ($_GET['action'] == "new")) {
 						}
 						else echo "<input type=\"text\" size=\"50\" name=\"dom_SID\">\n";
 					echo "</td>\n";
+					echo ("<td><a href=\"help.php?HelpNumber=653\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 				echo "</tr>\n";
 				echo "<tr>\n";
 					echo "<td>&nbsp;</td><td>&nbsp;</td>\n";
@@ -124,6 +127,7 @@ if (($_GET['action'] == "edit") || ($_GET['action'] == "new")) {
 					echo "<td>\n";
 						echo "<input type=\"text\" name=\"dom_nextRID\" value=\"" . $domain->nextRID . "\">\n";
 					echo "</td>\n";
+					echo ("<td><a href=\"help.php?HelpNumber=654\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 				echo "</tr>\n";
 				echo "<tr>\n";
 					// next user RID
@@ -131,24 +135,27 @@ if (($_GET['action'] == "edit") || ($_GET['action'] == "new")) {
 					echo "<td>\n";
 						echo "<input type=\"text\" name=\"dom_nextUserRID\" value=\"" . $domain->nextUserRID . "\">\n";
 					echo "</td>\n";
+					echo ("<td><a href=\"help.php?HelpNumber=655\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 				echo "</tr>\n";
 				echo "<tr>\n";
-					// next RID
+					// next group RID
 					echo "<td><b>" . _("Next Group RID") . ": </b></td>\n";
 					echo "<td>\n";
 						echo "<input type=\"text\" name=\"dom_nextGroupRID\" value=\"" . $domain->nextGroupRID . "\">\n";
 					echo "</td>\n";
+					echo ("<td><a href=\"help.php?HelpNumber=656\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 				echo "</tr>\n";
 				echo "<tr>\n";
 					echo "<td>&nbsp;</td><td>&nbsp;</td>\n";
 				echo "</tr>\n";
 				echo "<tr>\n";
-					// next RID
+					// algorithmic RID base
 					echo "<td><b>" . _("Algorithmic RID Base") . ": </b></td>\n";
 					echo "<td>\n";
 						if ($_GET['action'] == "edit") echo $domain->RIDbase . "\n";
 						else echo "<input type=\"text\" name=\"dom_RIDbase\" value=\"" . $domain->RIDbase . "\">\n";
 					echo "</td>\n";
+					echo ("<td><a href=\"help.php?HelpNumber=657\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 				echo "</tr>\n";
 			echo "</table>\n";
 		echo "</fieldset>\n";
