@@ -34,7 +34,7 @@ $helpArray = array (
 				"200" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("Login"),
 					"Text" => _("Please enter the configuration password. This is NOT your LDAP password. It is stored in your .conf-file. If this is the first time you log in, enter \"lam\".")),
 				"201" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("Server address"),
-					"Text" => _("This is the Server Address of your LDAP server. Use ldap:// for standard LDAP connections and ldaps:// for encrypted (require server certificates) connections. The port value is optional.") .
+					"Text" => _("This is the server address of your LDAP server. Use ldap:// for standard LDAP connections and ldaps:// for encrypted (require server certificates) connections. The port value is optional.") .
 						"<br><br><b> " .
 						_("Examples") .
 						":</b><br><br> " .
@@ -78,9 +78,9 @@ $helpArray = array (
 						_("Example") .
 						": </b>cn=admin,dc=yourdomain,dc=org;cn=manager,dc=yourdomain,dc=org"),
 				"208" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("Maximum list entries"),
-					"Text" => _("This is the number of rows to show in the user/group/host list. If more entries are found the list will be split to several pages.")),
+					"Text" => _("This is the number of rows to show in the user/group/host list. If more entries are found the list will be split into several pages.")),
 				"209" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("Default language"),
-					"Text" => _("Defines the language of the login window and is sets this language as the default language. Users can change the language at login.")),
+					"Text" => _("Defines the language of the login window and sets this language as the default language. Users can change the language at login.")),
 				"210" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("Script path"),
 					"Text" => _("This is the absolute path to an external script for setting quotas and creating home directories.").
 							"<br><br><b>".
@@ -113,10 +113,6 @@ $helpArray = array (
 					"Text" => _("If set to \"yes\" the user will be able to change his Windows password.").
 						"<br><br>".
 						_("If unsure say \"yes\" here.")),
-				"303" => array ("ext" => "FALSE", "Headline" => _("Profile Editor") . " - " . _("User must change password"),
-					"Text" => _("If set to \"yes\" the user will need to change his Windows password at next login.").
-						"<br><br>".
-						_("If unsure say \"no\" here.")),
 				"360" => array ("ext" => "FALSE", "Headline" => _("Profile Editor") . " - " . _("Profile name"),
 					"Text" => _("Name under which the profile will be saved. If a profile with the same name exists, it will be overwritten.")),
 				// 400 - 499
