@@ -220,7 +220,7 @@ switch ($_POST['select']) {
 	case 'general':
 		if (!$_POST['load']) {
 			if (($account_new->general_username != $_POST['f_general_username']) &&  ereg('[A-Z]$', $_POST['f_general_username']))
-				$errors[] = array('WARN', _('Username'), _('You are using a capital letters. This can cause problems because user and user could have the same mail-address.'));
+				$errors[] = array('WARN', _('Username'), _('You are using a capital letters. This can cause problems because windows isn\'t case-sensitive.'));
 			// Write all general values into $account_new if no profile should be loaded
 			$account_new->general_dn = $_POST['f_general_suffix'];
 			$account_new->general_username = $_POST['f_general_username'];
@@ -758,10 +758,12 @@ if (is_array($errors))
 
 // print_r($account_new);
 //print_r($account_old);
-//if (!isset($_SESSION['cache'])) $_SESSION['cache'] = new cache();
-//$temp = new accountContainer('user');
-//$temp->add_objectClass('inetOrgPerson');
-// print_r($temp->modules);
+$_SESSION['cache'] = new cache();
+$temp = new accountContainer('user');
+$temp->add_objectClass('inetOrgPerson');
+$temp->module['inetOrgPerson']->display_html_attributes();
+
+exit;
 
 switch ($select_local) {
 	/* Select which part of page should be loaded and check values
