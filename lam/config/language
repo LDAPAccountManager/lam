@@ -1,19 +1,21 @@
-# LDAP Account Manager Language Configuration file
+# LDAP Account Manager language configuration file
+#
+# Do not modify!
 
-# Each line consists of a : seperated entrys. The first entry is the link to the language definition, the second is the language description. Further entries are not used yet.
-# Normally you don't have to edit this file manually. It is modified automatically when you add a new language in the Configuration-Site.
+# Each line consists of a ":"-seperated entry. The first part is the locale name,
+# the second is the character encoding and the third the language name.
 
-# Englisch Language
+# English
 en_GB.utf8:UTF-8:English (Great Britain)
 
-# French language
-fr_FR.utf8:UTF-8:Francais (France)
+# French
+fr_FR.utf8:UTF-8:Français (France)
 
-# German Language
+# German
 de_DE.utf8:UTF-8:Deutsch (Deutschland)
 
-# Hungarian Language
+# Hungarian
 hu_HU.utf8:UTF-8:Magyar (Magyarorszag)
 
-# Japanese Language
+# Japanese
 ja_JP.utf8:UTF-8:Japanese
