@@ -1,5 +1,5 @@
 # translation of messages.po to Française
-# $Id: messages.po,v 1.1 2004/03/19 12:19:19 gruberroland Exp $
+# $Id: messages.po,v 1.1 2004/10/02 11:26:18 gruberroland Exp $
 #
 #
 # LDAP Account Manager

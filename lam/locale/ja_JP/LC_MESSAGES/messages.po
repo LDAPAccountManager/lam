@@ -1,4 +1,4 @@
-# $Id: messages.po,v 1.5 2004/05/26 14:47:32 gruberroland Exp $
+# $Id: messages.po,v 1.1 2004/10/01 12:31:19 gruberroland Exp $
 #
 #
 # LDAP Account Manager
