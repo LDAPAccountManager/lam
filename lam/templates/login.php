@@ -23,21 +23,28 @@ $Id$
   LDAP Account Manager checking login data.
 */
 
-	// Starting LDAP Account Manager session
-	//session_name("LDAP Account Manager");
-	include_once("../config/config.php");
-	@session_start();
+include_once("../config/config.php"); // Include config.php which provides Config class
+
+// Get session save path
+$path = getcwd();
+$path = explode("/", substr($path,1));
+for($i = 0; $i < (count($path) - 1); $i++)
+{
+	$session_save_path .= "/" . $path[$i];
+}
+$session_save_path .= "/sess";
+
+session_save_path($session_save_path); // Set session save path
+@session_start(); // Start LDAP Account Manager session
 
 // checking if the submitted username/password is correct.
 if($action == "checklogin")
 {
-	// including ldap.php which provides basic ldap functions
-	include_once("../lib/ldap.php");
+	include_once("../lib/ldap.php"); // Include ldap.php which provides Ldap class
 
-	//$config = new Config; // Creating new Config object
-	$ldap = new Ldap($_SESSION["config"]); //$config); // Creating new Ldap object
-	$result = $ldap->connect($username,$passwd);
-	if($result == True) // Username/password correct. Doing some configuration and loading main Frame.
+	$ldap = new Ldap($config); //$config); // Create new Ldap object
+	$result = $ldap->connect($username,$passwd); // Connect to LDAP server for verifing username/password
+	if($result == True) // Username/password correct. Do some configuration and load main frame.
 	{
 		// setting language
 		$language = explode(":", $language);
@@ -46,7 +53,7 @@ if($action == "checklogin")
 		bindtextdomain("lam", "../locale");
 		textdomain("lam");
 
-		include("./main.php");
+		include("./main.php"); // Load main frame
 
 		session_register("ldap"); // Register $ldap object in session
 		session_register("language"); // Register $language in session
@@ -56,25 +63,24 @@ if($action == "checklogin")
 		if($ldap->server)
 		{
 			$error_message = "Wrong Password/Username  combination. Try again.";
-			include("./login.inc"); // Username/password invalid. Returning to Login page.
+			include("./login.inc"); // Username/password invalid. Return to login page.
 		}
 		else
 		{
 			$error_message = "Cannot connect to specified LDAP-Server. Try again.";
-			include("./login.inc"); // Server not reachable. Returning to Login page.
+			include("./login.inc"); // Server not reachable. Return to login page.
 		}
 	}
 }
-// Loading Login page
+// Load login page
 else
 {
 	session_register("config"); // Register $config object in session
 
-	// including ldap.php which provides basic ldap functions
-	include_once("../lib/ldap.php");
+	include_once("../lib/ldap.php"); // Includ ldap.php which provides Ldap class
 
-	$config = new Config; // Creating new Config object
+	$config = new Config; // Create new Config object
 
-	include("./login.inc");
+	include("./login.inc"); // Load login page
 }
 ?>
