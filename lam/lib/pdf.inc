@@ -182,7 +182,7 @@ function createUserPDF($accounts) {
 		$pdfFile->Cell(50,5,_("User quota(s)") . ":",0,0,"R",0);
 		$pdfFile->setFont("times","B",10);
 		$quotas = $account->quota;
-		if(count($quota)>0) {
+		if(count($quotas)>0) {
 			$pdfFile->Cell(20,5,_("Mountpoint"),0,0,"L",0);
 			$pdfFile->Cell(20,5,_("Soft block"),0,0,"L",0);
 			$pdfFile->Cell(20,5,_("Soft inode"),0,0,"L",0);
@@ -248,14 +248,7 @@ function createUserPDF($accounts) {
 class lamPDF extends FPDF {
 	// Print page header
 	function header() {
-		$lamPath = explode("/",__FILE__);
-		$i=1;
-		$imageFile = "";
-		while($lamPath[$i] <> "lam") {
-			$imageFile .= "/" . $lamPath[$i];
-			$i++;
-		}
-		$imageFile .= "/lam/graphics/printLogo.jpg";
+		$imageFile = substr(__FILE__,0,strlen(__FILE__)- 11) . "graphics/printLogo.jpg";
 		$this->Image($imageFile,10,10,50,20,"JPG");
 		$this->SetFont("arial","B",22);
 		$this->Cell(170,5,"LDAP Account Manager",0,1,"R",0);
