@@ -55,6 +55,7 @@ else
 }
 ?>
 
+<!--<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">-->
 <html>
 	<head>
 		<title>
@@ -64,7 +65,7 @@ else
 		</title>
 	<link rel="stylesheet" type="text/css" href="../style/layout.css">
 	</head>
-	<body>
+	<body><!--<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">-->
 		<p align="center"><img src="../graphics/banner.jpg" border=1></p>
 		<table width="100%" border="0"><tr><td width="100%" align="right"><a href="../config/conflogin.php" target="_self"><? echo _("Configuration Login") ?></a></td></tr></table><hr><br><br>
 		<b><p align="center"> <? echo _("Enter Username and Password for Account:"); ?> </b></p>
@@ -92,19 +93,13 @@ else
 			<br><br><br>
 			<table width="310" align="center" bgcolor="#C7E7C7" border="0">
 				<tr>
-					<td width="100%" colspan="2" align="center"><? echo _("Information about the server you are connecting to.") ?></td>
+					<td width="100%" align="center"><? echo _("You are connecting to the server specified below:") ?></td>
 				</tr>
 				<tr>
-					<td width="50%" align="right">Servername:</td>
-					<td width="50%" align="left"><b><? echo $config->get_Host() ?></b></td>
+					<td><br></td>
 				</tr>
 				<tr>
-					<td width="50%" align="right">Port:</td>
-					<td width="50%" align="left"><b><? echo $config->get_Port() ?></b></td>
-				</tr>
-				<tr>
-					<td width="50%" align="right">SSL:</td>
-					<td width="50%" align="left"><b><? if($config->get_SSL() == "False") { $SSL = _("No"); } else { $SSL = -("Yes"); }; echo $SSL ?></b></td>
+					<td width="100%" align="center">ServerURL: <b><? echo $config->get_ServerURL() ?></b></td>
 				</tr>
 			</table>
 
