@@ -286,7 +286,7 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 	case 'finish':
 		// Check if pdf-file should be created
 		if ($_POST['outputpdf']) {
-			createpdf(array($_SESSION['account']));
+			createUserPDF(array($_SESSION['account']));
 			$select_local = 'pdf';
 			}
 		break;

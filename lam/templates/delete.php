@@ -35,8 +35,21 @@ echo _('Delete Account');
 echo '</title>'."\n".
 	'<link rel="stylesheet" type="text/css" href="../style/layout.css">'."\n".
 	'<meta http-equiv="pragma" content="no-cache">'."\n".
-	'<meta http-equiv="cache-control" content="no-cache">'."\n".
-	'</head>'."\n".
+	'<meta http-equiv="cache-control" content="no-cache">'."\n";
+
+if ($_POST['backmain'])
+	switch ( $_POST['type5'] ) {
+		case 'user' :
+			echo "<meta http-equiv=\"refresh\" content=\"2; URL=lists/listusers.php\">\n";
+			break;
+		case 'group' :
+			echo "<meta http-equiv=\"refresh\" content=\"2; URL=lists/listgroups.php\">\n";
+			break;
+		case 'host' :
+			echo "<meta http-equiv=\"refresh\" content=\"2; URL=lists/listhosts.php\">\n";
+			break;
+			}
+echo '</head>'."\n".
 	'<body>'."\n".
 	'<form action="delete.php" method="post">'."\n".
 	'<table class="delete" width="100%">'."\n".
@@ -69,12 +82,13 @@ if ($_GET['type']) {
 		'<input name="delete_no" type="submit" value="';
 	echo _('Cancel'); echo '"></td><td></td><td>'.
 		'<input name="delete_yes" type="submit" value="';
-	echo _('Commit'); echo '">';
+	echo _('Commit'); echo '"></td></tr>';
 	}
 
-if ($_POST['delete_yes']) {
+if ($_POST['delete_yes'] && !$_POST['backmain']) {
 	$DN2 = explode(";", str_replace("\\", '',str_replace("\'", '',$_POST['DN'])));
 	foreach ($DN2 as $dn) {
+		echo '<input name="type5" type="hidden" value="'.$_POST['type5'].'">';
 		switch ($_POST['type5']) {
 			case 'user':
 				$temp=explode(',', $dn);
@@ -126,10 +140,44 @@ if ($_POST['delete_yes']) {
 		 else echo $error;
 		echo '</td></tr>'."\n".'<tr><td>';
 		}
+	switch ($_POST['type5']) {
+		case 'user':
+			echo '<input name="backmain" type="submit" value="'; echo _('Back to user list'); echo '">'.
+			'</td></tr>'."\n";
+			break;
+		case 'group':
+			echo '<input name="backmain" type="submit" value="'; echo _('Back to group list'); echo '">'.
+			'</td></tr>'."\n";
+			break;
+		case 'host':
+			echo '<input name="backmain" type="submit" value="'; echo _('Back to host list'); echo '">'.
+			'</td></tr>'."\n";
+			break;
+		}
 	}
 
-if ($_POST['delete_no']) echo _('Nothing was deleted.');
+if ($_POST['delete_no']) {
+	echo _('Nothing was deleted.</td></tr>');
 
-echo '</td></tr>'."\n";
+	}
+
+if ($_POST['backmain'])
+	switch ( $_POST['type5'] ) {
+		case 'user' :
+			echo '<tr><td><a href="lists/listusers.php">';
+			echo _('Please press here if meta-refresh didn\'t work.');
+			echo "</a></td></tr>\n";
+			break;
+		case 'group' :
+			echo '<tr><td><a href="lists/listgroup.php">';
+			echo _('Please press here if meta-refresh didn\'t work.');
+			echo "</a></td></tr>\n";
+			break;
+		case 'host' :
+			echo '<tr><td><a href="lists/listhost.php">';
+			echo _('Please press here if meta-refresh didn\'t work.');
+			echo "</a></td></tr>\n";
+			break;
+			}
 echo '</table></form></body></html>'."\n";
 ?>
