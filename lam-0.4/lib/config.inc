@@ -354,7 +354,7 @@ class Config {
 	// $value: new user suffix
 	// returns true if $value has correct format
 	function set_UserSuffix($value) {
-		if (is_string($value) && (eregi("^(([a-z0-9 \\-])*=([a-z0-9 \\-])*)(,([a-z0-9 \\-])*=([a-z0-9 \\-])*)*$", $value))) {
+		if (is_string($value)) {
 			$this->usersuffix = $value;
 		}
 		else return false;
@@ -370,7 +370,7 @@ class Config {
 	// $value: new group suffix
 	// returns true if $value has correct format
 	function set_GroupSuffix($value) {
-		if (is_string($value) && (eregi("^(([a-z0-9 \\-])*=([a-z0-9 \\-])*)(,([a-z0-9 \\-])*=([a-z0-9 \\-])*)*$", $value))) {
+		if (is_string($value)) {
 			$this->groupsuffix = $value;
 		}
 		else return false;
@@ -386,7 +386,7 @@ class Config {
 	// $value: new host suffix
 	// returns true if $value has correct format
 	function set_HostSuffix($value) {
-		if (is_string($value) && (eregi("^(([a-z0-9 \\-])*=([a-z0-9 \\-])*)(,([a-z0-9 \\-])*=([a-z0-9 \\-])*)*$", $value))) {
+		if (is_string($value)) {
 		$this->hostsuffix = $value;
 	}
 		else return false;
@@ -403,7 +403,7 @@ class Config {
 	// returns true if $value has correct format
 	function set_DomainSuffix($value) {
 		if (!$value && ($this->get_Samba3() == "no")) $this->domainsuffix = "";
-		elseif (is_string($value) && (eregi("^(([a-z0-9 \\-])*=([a-z0-9 \\-])*)(,([a-z0-9 \\-])*=([a-z0-9 \\-])*)*$", $value))) {
+		elseif (is_string($value)) {
 			$this->domainsuffix = $value;
 		}
 		else return false;
