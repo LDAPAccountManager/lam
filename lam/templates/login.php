@@ -289,7 +289,7 @@ if($_POST['action'] == "checklogin")
 			$_SESSION['loggedIn'] = true;
 			$_SESSION['language'] = $_POST['language']; // Write selected language in session
 			$current_language = explode(":",$_SESSION['language']);
-			$_SESSION['header'] = "<?xml version=\"1.0\" encoding=\"" . $current_language[1] . "\"?>\n<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n\n";
+			$_SESSION['header'] = "<?xml version=\"1.0\" encoding=\"" . $current_language[1] . "\"?>\n<!DOCTYPE>\n\n<html>\n	<head>\n		<meta http-equiv=\"content-type\" content=\"text/html; charset=" . $current_language[1] . "\">";
 
 			include("./main.php"); // Load main frame
 		}
