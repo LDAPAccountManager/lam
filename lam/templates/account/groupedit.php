@@ -23,43 +23,8 @@ $Id$
   LDAP Account Manager displays table for creating or modifying accounts in LDAP
 */
 
-// include all needed files
-include_once('../../lib/account.inc'); // File with all account-funtions
-include_once('../../lib/config.inc'); // File with configure-functions
-include_once('../../lib/profiles.inc'); // functions to load and save profiles
-include_once('../../lib/status.inc'); // Return error-message
-include_once('../../lib/pdf.inc'); // Return a pdf-file
-include_once('../../lib/ldap.inc'); // LDAP-functions
-include_once('../../lib/modules.inc');
-include_once('../../lib/cache.inc');
+include_once('../../lib/include.inc');
 
-/* We have to include all modules
-* before start session
-* *** fixme I would prefer loading them dynamic but
-* i don't know how to to this
-*/
-$dir = opendir('../../lib/modules');
-while ($entry = readdir($dir))
-	if (is_file('../../lib/modules/'.$entry)) include_once ('../../lib/modules/'.$entry);
-
-
-
-// Start session
-session_save_path('../../sess');
-@session_start();
-
-// Redirect to startpage if user is not loged in
-if (!isset($_SESSION['loggedIn'])) {
-	metaRefresh("../login.php");
-	exit;
-	}
-
-// Set correct language, codepages, ....
-setlanguage();
-
-if (!isset($_SESSION['cache'])) {
-	$_SESSION['cache'] = new cache();
-	}
 if ($_GET['DN']) {
 	//load account
 	$DN = str_replace("\'", '', $_GET['DN']);

@@ -27,7 +27,7 @@ $Id$
 
 // returns the alias name of a module
 function getModuleAlias($name) {
-	$eval = "$return = $name::get_alias()";
+	$eval = '$return = '.$name.'::get_alias();';
 	eval ($eval);
 	return $return;
 	}
@@ -36,16 +36,16 @@ function getModuleAlias($name) {
 // dependencies contains an array with two sub arrays: depends, conflicts
 // the elements of depends are either module names or an array of module names (OR-case)
 // the elements of conflicts are module names
-function getModuleDependencies($scope) {
+function getModulesDependencies($scope) {
 	// scope = suer, group, host, ....
 	// get module names.
 	$dir = opendir('../../lib/modules');
 	while ($entry = readdir($dir))
 		if (is_file('../../lib/modules/'.$entry)) {
-			$entry = substr($entry, 0, strpos('.'));
-			$eval = "$module = $entry::get_dependencies($scope)";
+			$entry = substr($entry, 0, strpos($entry, '.'));
+			$eval = '$module = '.$entry."::get_dependencies(".$scope.");";
 			eval ($eval);
-			$return[$entry] = $module;
+			if ($module != -1) $return[$entry] = $module;
 			}
 	return $return;
 	}
@@ -58,14 +58,34 @@ function getAvailableModules($scope) {
 	$dir = opendir('../../lib/modules');
 	while ($entry = readdir($dir))
 		if (is_file('../../lib/modules/'.$entry)) {
-			$entry = substr($entry, 0, strpos('.'));
-			$eval = "$module = $entry::get_dependencies($scope)";
+			$entry = substr($entry, 0, strpos($entry, '.'));
+			$eval = '$module = '.$entry."::get_dependencies(".$scope.");";
 			eval ($eval);
 			if ($module != -1) $return[] = getModuleAlias($entry);
 			}
 	return $return;
 	}
 
+function getProfileOptions($scope, $post) {
+	// type = user, group, host, ...
+	if (!isset($_SESSION['profile_account'])) {
+		// create new object
+		$_SESSION['profile_account'] = new accountContainer($scope, 'profile_account');
+		$_SESSION['profile_account']->new_account();
+		}
+	return $_SESSION['profile_account']->display_profile($post);
+	}
+
+function checkProfileOptions($scope, $post) {
+	// type = user, group, host, ...
+	if (!isset($_SESSION['profile_account'])) {
+		// create new object
+		$_SESSION['profile_account'] = new accountContainer($scope, 'profile_account');
+		$_SESSION['profile_account']->new_account();
+		}
+	return $_SESSION['profile_account']->process_profile($post);
+	}
+	
 
 class accountContainer {
 	// Constructor
@@ -97,7 +117,7 @@ class accountContainer {
 	/* This variale stores the type
 	* of account. Current unix, group, host are supported
 	*/
-	var $type;
+	var $scope;
 	var $ldap; // This is a reference to the ldap class in session
 	var $config; // This is a reference to the config class in session
 	// Localized part of HTML-Header

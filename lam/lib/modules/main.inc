@@ -189,7 +189,7 @@ class main {
 
 	function display_html_attributes($post, $profile=false) {
 		$modules = $_SESSION[$this->base]->check_attributes();
-		if (count($modules)!=0) {
+		if (count($modules)!=0 && !$profile) {
 			$disabled = false;
 			// Show reason why module is disabled
 			for ($i=0; $i<count($modules); $i++)
@@ -229,13 +229,13 @@ class main {
 					1 => array ('kind' => 'input', 'name' => 'saveProfile', 'type' => 'submit',
 						'value' => _('Save profile'), 'disabled' => $disabled))) ),
 				2 => array ('kind' => 'help', 'value' => 'saveProfile'));
+			if ($_SESSION[$this->base]->dn_orig!='') $text = _('Modify Account');
+				else $text = _('Create Account');
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => $text ),
+				1 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'create', 'value' => $text ),
+				2 => array ('kind' => 'help', 'value' => 'create'));
 			}
 
-		if ($_SESSION[$this->base]->dn_orig!='') $text = _('Modify Account');
- 			else $text = _('Create Account');
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => $text ),
-			1 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'create', 'value' => $text ),
-			2 => array ('kind' => 'help', 'value' => 'create'));
 		return $return;
 		}
 
