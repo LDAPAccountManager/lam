@@ -55,7 +55,7 @@ echo $_SESSION['header'];
 	<td width="100" align="right" height=20><a href="./logout.php" target="_top"><big><b><?php echo _("Logout") ?></b></big></a></td>
 	</tr>
 	<tr>
-    	<td align="left"><a href="ou_edit.php" target="mainpart"><?php echo _("OU Editor") ?></a></td>
+    	<td align="left"><a href="ou_edit.php" target="mainpart"><?php echo _("OU-Editor") ?></a></td>
 		<td rowspan=2></td>
 	</tr>
 	<tr>

@@ -321,7 +321,7 @@ $helpArray = array (
 				"601" => array ("ext" => "FALSE", "Headline" => _("OU-Editor") . " - " . _("New organizational unit"),
 					"Text" => _("This will create a new organizational unit under the selected one.")),
 				"602" => array ("ext" => "FALSE", "Headline" => _("OU-Editor") . " - " . _("Delete organizational unit"),
-					"Text" => _("This will the selected organizational unit. The OU has to be empty.")),
+					"Text" => _("This will delete the selected organizational unit. The OU has to be empty.")),
 				"651" => array ("ext" => "FALSE", "Headline" => _("Domain name"),
 					"Text" => _("The name of your Windows domain or workgroup.")),
 				"652" => array ("ext" => "FALSE", "Headline" => _("Suffix"),

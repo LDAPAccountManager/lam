@@ -118,7 +118,7 @@ echo ("<form action=\"confmain.php\" method=\"post\">\n");
 echo ("<fieldset><legend><b>" . _("Server settings") . "</b></legend>");
 echo ("<table border=0>");
 // serverURL
-echo ("<tr><td align=\"right\"><b>" . _("Server Address") . " *: </b></td>".
+echo ("<tr><td align=\"right\"><b>" . _("Server address") . " *: </b></td>".
 	"<td align=\"left\">".
 	"<input size=50 type=\"text\" name=\"serverurl\" value=\"" . $conf->get_ServerURL() . "\">".
 	"</td>\n");

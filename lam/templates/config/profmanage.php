@@ -141,7 +141,7 @@ if ($_POST['submit']) {
 		<!-- form for adding/renaming/deleting profiles -->
 		<form action="profmanage.php" method="post">
 		<fieldset>
-			<legend><b> <?php echo _("Profile Management"); ?> </b></legend>
+			<legend><b> <?php echo _("Profile management"); ?> </b></legend>
 			<p>
 			<table border=0>
 
