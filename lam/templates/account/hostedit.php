@@ -176,7 +176,7 @@ do { // X-Or, only one if() can be true
 		break;
 		}
 	if ($_POST['backmain']) {
-		echo "<meta http-equiv=\"refresh\" content=\"2; URL=lists/listhosts.php\">\n";
+		echo "<meta http-equiv=\"refresh\" content=\"2; URL=../lists/listhosts.php\">\n";
 		$select_local='backmain';
 		break;
 		}
@@ -402,9 +402,6 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "<fieldset><legend><b>"._('Success')."</b></legend>\n";
 		echo "<table border=0 width=\"100%\"><tr><td>";
 		echo '<tr><td>';
-		echo _('Success');
-		echo '</td></tr>'."\n";
-		echo '<tr><td>';
 		echo _('Host');
 		echo ' '.$_SESSION['account']->general_username.' ';
 		if ($_SESSION['account_old']) echo ' '._('has been modified').'.';
@@ -418,7 +415,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		break;
 	case 'backmain':
 		// unregister sessionvar and select which list should be shown
-		echo '<a href="lists/listhosts.php">';
+		echo '<a href="../lists/listhosts.php">';
 		echo _('Please press here if meta-refresh didn\'t work.');
 		echo "</a>\n";
 		if (isset($_SESSION['shelllist'])) unset($_SESSION['shelllist']);

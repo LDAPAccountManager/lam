@@ -288,6 +288,7 @@ function checkglobal($values, $type, $values_old=false) { // This functions chec
 			// Create automatic groupaccount with number if original user already exists
 			while ($temp = ldapexists($return, $type, $values_old)) {
 				// get last character of username
+				$return->general_username = substr($return->general_username, 0, $return->general_username-1);
 				$lastchar = substr($return->general_username, strlen($return->general_username)-2, 1);
 				// Last character is no number
 				if ( !ereg('^([0-9])+$', $lastchar))
@@ -304,6 +305,7 @@ function checkglobal($values, $type, $values_old=false) { // This functions chec
 					$lastchars = substr($return->general_username, $i+1, strlen($return->general_username)-$i);
 					$return->general_username = $firstchars . (intval($lastchars)+1). '$';
 				 	}
+				$return->general_username = $return->general_username . "$";
 				}
 			if ($values->general_username != $return->general_username) $errors[] = array('WARN', _('Host name'), _('Hostname already in use. Selected next free hostname.'));
 			break;
