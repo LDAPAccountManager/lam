@@ -25,7 +25,7 @@ $Id$
 /**
 * This page displays a list of all Samba domains.
 *
-* @package lists
+* @package tools
 * @author Roland Gruber
 */
 
