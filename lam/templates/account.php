@@ -393,7 +393,6 @@ if ($select_local != 'pdf') {
 		for ($i=0; $i<sizeof($errors); $i++) StatusMessage($errors[$i][0], $errors[$i][1], $errors[$i][2]);
 	}
 
-
 switch ($select_local) { // Select which part of page will be loaded
 	// general = startpage, general account paramters
 	// unix = page with all shadow-options and password

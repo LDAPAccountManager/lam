@@ -688,7 +688,7 @@ function loaduser($dn) { // Will load all needed values from an existing account
 		$return->unix_pwdexpire_yea = $date['year'];
 		}
 	if ($attr['pwdCanChange'][0]) $return->smb_pwdcanchange = $attr['pwdCanChange'][0];
-	if ($_SESSION['config']->samba3) {
+	if ($_SESSION['config']->samba3 == 'yes') {
 		if ($attr['sambaAcctFlags'][0]) {
 			if (strrpos($attr['sambaAcctFlags'][0], 'W')) $return->smb_flagsW=true;
 			if (strrpos($attr['sambaAcctFlags'][0], 'D')) $return->smb_flagsD=true;
@@ -778,7 +778,7 @@ function loadhost($dn) { // Will load all needed values from an existing account
 		$return->unix_pwdexpire_yea = $date['year'];
 		}
 	if ($attr['pwdCanChange'][0]) $return->smb_pwdcanchange = $attr['pwdCanChange'][0];
-	if ($_SESSION['config']->samba3) {
+	if ($_SESSION['config']->samba3 == 'yes') {
 		if ($attr['sambaAcctFlags'][0]) {
 			if (strrpos($attr['sambaAcctFlags'][0], 'W')) $return->smb_flagsW=true;
 			if (strrpos($attr['sambaAcctFlags'][0], 'D')) $return->smb_flagsD=true;
@@ -853,7 +853,7 @@ function createuser($values) { // Will create the LDAP-Account
 	// General Objectclasses
 	$attr['objectClass'][0] = 'posixAccount';
 	$attr['objectClass'][1] = 'shadowAccount';
-	if ($_SESSION['config']->samba3) {
+	if ($_SESSION['config']->samba3 == 'yes') {
 		$attr['objectClass'][2] = 'sambaSamAccount';
 		$attr['sambaNTPassword'] = exec('../lib/createntlm.pl nt ' . $values->smb_password);
 		$attr['sambaLMPassword'] = exec('../lib/createntlm.pl lm ' . $values->smb_password);
@@ -989,12 +989,12 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 		}
 	if ($values->general_uidNumber != $values_old->general_uidNumber) {
 		$attr['uidNumber'] = $values->general_uidNumber; // posixAccount_req
-		if ($_SESSION['config']->samba3) $attr['sambaSid'] = $_SESSION[config]->get_domainSID() . "-" . (2 * $values->general_uidNumber + 1000); // sambaAccount_may
+		if ($_SESSION['config']->samba3 == 'yes') $attr['sambaSid'] = $_SESSION[config]->get_domainSID() . "-" . (2 * $values->general_uidNumber + 1000); // sambaAccount_may
 			else $attr['rid'] = (2 * $values->general_uidNumber + 1000); // sambaAccount_may
 		}
 	if ($values->general_group != $values_old->general_group) {
 		$attr['gidNumber'] = getgid($values->general_group); // posixAccount_req
-		if ($_SESSION['config']->samba3) $attr['sambaPrimaryGroupSID'] = $_SESSION[config]->get_domainSID() . "-" . (2 * getgid($values->general_group) + 1001); // sambaAccount_req
+		if ($_SESSION['config']->samba3 == 'yes') $attr['sambaPrimaryGroupSID'] = $_SESSION[config]->get_domainSID() . "-" . (2 * getgid($values->general_group) + 1001); // sambaAccount_req
 			else $attr['primaryGroupID'] = (2 * getgid($values->general_group) + 1001); // sambaAccount_req
 		}
 	if ($values->general_homedir != $values_old->general_homedir)
@@ -1013,7 +1013,7 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 		else $attr['userPassword'] = '{CRYPT}' . crypt($values->unix_password);
 		$attr['shadowLastChange'] = getdays(); // shadowAccount_may
 		}
-	if ($_SESSION['config']->samba3) {
+	if ($_SESSION['config']->samba3 == 'yes') {
 		if ($values->smb_password_no) {
 			$attr['sambaNTPassword'] = 'NO PASSWORD*****';
 			$attr['sambaLMPassword'] = 'NO PASSWORD*****';
@@ -1222,7 +1222,7 @@ function createhost($values) { // Will create the LDAP-Account
 	// General Objectclasses
 	$attr['objectClass'][0] = 'posixAccount';
 	$attr['objectClass'][1] = 'shadowAccount';
-	if ($_SESSION['config']->samba3) {
+	if ($_SESSION['config']->samba3 == 'yes') {
 		$attr['objectClass'][2] = 'sambaSamAccount';
 		$attr['sambaNTPassword'] = exec('../lib/createntlm.pl nt ' . $values->smb_password);
 		$attr['sambaLMPassword'] = exec('../lib/createntlm.pl lm ' . $values->smb_password);
@@ -1328,12 +1328,12 @@ function modifyhost($values,$values_old) { // Will modify the LDAP-Account
 		}
 	if ($values->general_uidNumber != $values_old->general_uidNumber) {
 		$attr['uidNumber'] = $values->general_uidNumber; // posixAccount_req
-		if ($_SESSION['config']->samba3) $attr['sambaSid'] = $_SESSION[config]->get_domainSID() . "-" . (2 * $values->general_uidNumber + 1000); // sambaAccount_may
+		if ($_SESSION['config']->samba3 == 'yes') $attr['sambaSid'] = $_SESSION[config]->get_domainSID() . "-" . (2 * $values->general_uidNumber + 1000); // sambaAccount_may
 			else $attr['rid'] = (2 * $values->general_uidNumber + 1000); // sambaAccount_may
 		}
 	if ($values->general_group != $values_old->general_group) {
 		$attr['gidNumber'] = getgid($values->general_group); // posixAccount_req
-		if ($_SESSION['config']->samba3) $attr['sambaPrimaryGroupSID'] = $_SESSION[config]->get_domainSID() . "-" . (2 * getgid($values->general_group) + 1001); // sambaAccount_req
+		if ($_SESSION['config']->samba3 == 'yes') $attr['sambaPrimaryGroupSID'] = $_SESSION[config]->get_domainSID() . "-" . (2 * getgid($values->general_group) + 1001); // sambaAccount_req
 			else $attr['primaryGroupID'] = (2 * getgid($values->general_group) + 1001); // sambaAccount_req
 		}
 	if ($values->general_homedir != $values_old->general_homedir)
@@ -1352,7 +1352,7 @@ function modifyhost($values,$values_old) { // Will modify the LDAP-Account
 		else $attr['userPassword'] = '{CRYPT}' . crypt($values->unix_password);
 		$attr['shadowLastChange'] = getdays(); // shadowAccount_may
 		}
-	if ($_SESSION['config']->samba3) {
+	if ($_SESSION['config']->samba3 == 'yes') {
 		if ($values->smb_password_no) {
 			$attr['sambaNTPassword'] = 'NO PASSWORD*****';
 			$attr['sambaLMPassword'] = 'NO PASSWORD*****';
