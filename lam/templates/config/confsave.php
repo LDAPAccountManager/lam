@@ -62,12 +62,15 @@ if ($passwd != $conf->get_Passwd()) {
 	exit;
 }
 
+echo ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+echo ("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n");
+
 echo "<html><head><title>listusers</title>\n";
 echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
 echo "</head><body>\n";
 
 echo ("<p align=\"center\"><a href=\"http://lam.sf.net\" target=\"new_window\">".
-	"<img src=\"../../graphics/banner.jpg\" border=1></a></p><hr><br><br>");
+	"<img src=\"../../graphics/banner.jpg\" border=1 alt=\"LDAP Account Manager\"></a></p><hr><br><br>");
 
 // check new preferences
 if (chop($serverurl) == "") {

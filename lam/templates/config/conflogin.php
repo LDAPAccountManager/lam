@@ -26,6 +26,10 @@ $Id$
 // start session
 session_save_path("../../sess");
 session_start();
+
+echo ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+echo ("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">");
+
 ?>
 
 <html>
@@ -39,19 +43,18 @@ session_start();
 	</head>
 	<body>
 		<p align="center"><a href="http://lam.sf.net" target="new_window">
-			<img src="../../graphics/banner.jpg" border=1></a>
+			<img src="../../graphics/banner.jpg" border=1 alt="LDAP Account Manager"></a>
 		</p>
 		<hr><br><br>
 		<form action="confmain.php" method="post">
 		<table border=0 align="center">
 			<tr>
-				<td colspan=3><b><p align="center"> <? echo _("Password to enter preferences:"); ?> </b></p></td>
+				<td colspan=3 align="center"><b> <? echo _("Password to enter preferences:"); ?> </b></td>
 			</tr>
 			<tr>
-				<td><p align="center"><input type="password" name="passwd"></td>
+				<td align="center"><input type="password" name="passwd"></td>
 				<td><input type="submit" name="submit" value= <? echo _("Ok"); ?> </td>
-				<td> <a href="../help.php?HelpNumber=200" target="lamhelp"><? echo _("Help") ?></a></td>
-				</p>
+				<td><a href="../help.php?HelpNumber=200" target="lamhelp"><? echo _("Help") ?></a></td>
 			</tr>
 		</table>
 		</form>

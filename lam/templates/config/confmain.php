@@ -92,6 +92,9 @@ if (!(($conf->get_Passwd()) == $passwd)) {
 	exit;
 }
 
+echo ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+echo ("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n");
+
 echo ("<html>\n");
 echo ("<head>\n");
 echo ("<title>" . _("LDAP Account Manager Configuration") . "</title>\n");
@@ -107,8 +110,8 @@ echo ("<form action=\"confmain.php\" method=\"post\">\n");
 echo ("<fieldset><legend><b>" . _("Server settings") . "</b></legend>");
 echo ("<table align=\"left\" border=\"0\">");
 // serverURL
-echo ("<tr><td><p align=\"right\"><b>" . _("Server Address") . ": </b></p></td>".
-	"<td><p align=\"left\">".
+echo ("<tr><td align=\"right\"><b>" . _("Server Address") . ": </b></td>".
+	"<td align=\"left\">".
 	"<input size=50 type=\"text\" name=\"serverurl\" value=\"" . $conf->get_ServerURL() . "\">".
 	"</td>\n");
 echo ("<td><a href=\"../help.php?HelpNumber=201\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
@@ -117,18 +120,18 @@ echo ("<td><a href=\"../help.php?HelpNumber=201\" target=\"lamhelp\">" . _("Help
 echo ("<tr><td>&nbsp</td></tr>");
 
 // user suffix
-echo ("<tr><td><p align=\"right\"><b>".
-	_("UserSuffix") . ": </b></p></td>".
+echo ("<tr><td align=\"right\"><b>".
+	_("UserSuffix") . ": </b></td>".
 	"<td><input size=50 type=\"text\" name=\"suffusers\" value=\"" . $conf->get_UserSuffix() . "\"></td>\n");
 echo ("<td><a href=\"../help.php?HelpNumber=202\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 // group suffix
-echo ("<tr><td><p align=\"right\"><b>".
-	_("GroupSuffix") . ": </b></p></td>".
+echo ("<tr><td align=\"right\"><b>".
+	_("GroupSuffix") . ": </b></td>".
 	"<td><input size=50 type=\"text\" name=\"suffgroups\" value=\"" . $conf->get_GroupSuffix() . "\"></td>\n");
 echo ("<td><a href=\"../help.php?HelpNumber=202\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 // host suffix
-echo ("<tr><td><p align=\"right\"><b>".
-	_("HostSuffix") . ": </b></p></td>".
+echo ("<tr><td align=\"right\"><b>".
+	_("HostSuffix") . ": </b></td>".
 	"<td><input size=50 type=\"text\" name=\"suffhosts\" value=\"" . $conf->get_HostSuffix() . "\"></td>\n");
 echo ("<td><a href=\"../help.php?HelpNumber=202\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 
@@ -136,10 +139,10 @@ echo ("<td><a href=\"../help.php?HelpNumber=202\" target=\"lamhelp\">" . _("Help
 echo ("<tr><td>&nbsp</td></tr>");
 
 // Samba version
-echo ("<tr><td><p align=\"right\"><b>".
-	_("Samba 3.x schema") . ": </b></p></td><td><select name=\"samba3\">\n");
-if ($conf->get_samba3() == "yes") echo ("<option>yes</option><option>no</option></td>");
-else echo ("<option>no</option><option>yes</option></td>");
+echo ("<tr><td align=\"right\"><b>".
+	_("Samba 3.x schema") . ": </b></td><td><select name=\"samba3\">\n");
+if ($conf->get_samba3() == "yes") echo ("<option>yes</option><option>no</option></select></td>");
+else echo ("<option>no</option><option>yes</option></select></td>");
 echo ("<td><a href=\"../help.php?HelpNumber=213\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 
 echo ("</table>");
@@ -185,26 +188,26 @@ echo ("<fieldset><legend><b>" . _("LDAP List settings") . "</b></legend>");
 echo ("<table align=\"left\" border=\"0\">");
 
 // user list attributes
-echo ("<tr><td><p align=\"right\"><b>".
-	_("Attributes in User List:") . "</b></p></td>".
+echo ("<tr><td align=\"right\"><b>".
+	_("Attributes in User List:") . "</b></td>".
 	"<td><input size=50 type=\"text\" name=\"usrlstattr\" value=\"" . $conf->get_userlistAttributes() . "\"></td>");
 echo ("<td><a href=\"../help.php?HelpNumber=206\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>");
 // user list attributes
-echo ("<tr><td><p align=\"right\"><b>".
-	_("Attributes in Group List:") . "</b></p></td>".
+echo ("<tr><td align=\"right\"><b>".
+	_("Attributes in Group List:") . "</b></td>".
 	"<td><input size=50 type=\"text\" name=\"grplstattr\" value=\"" . $conf->get_grouplistAttributes() . "\"></td>");
 echo ("<td><a href=\"../help.php?HelpNumber=206\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>");
 // user list attributes
-echo ("<tr><td><p align=\"right\"><b>".
-	_("Attributes in Host List:") . "</b></p></td>".
+echo ("<tr><td align=\"right\"><b>".
+	_("Attributes in Host List:") . "</b></td>".
 	"<td><input size=50 type=\"text\" name=\"hstlstattr\" value=\"" . $conf->get_hostlistAttributes() . "\"></td>");
 echo ("<td><a href=\"../help.php?HelpNumber=206\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>");
 
 echo ("<tr><td>&nbsp</td></tr>");
 
 // maximum list entries
-echo ("<tr><td><p align=\"right\"><b>".
-	_("Maximum list entries") . ": </b></p></td>".
+echo ("<tr><td align=\"right\"><b>".
+	_("Maximum list entries") . ": </b></td>".
 	"<td><select name=\"maxlistentries\"><option selected>".$conf->get_MaxListEntries()."</option>");
 if ($conf->get_MaxListEntries() != 10) echo("<option>10</option>");
 if ($conf->get_MaxListEntries() != 20) echo("<option>20</option>");
@@ -263,12 +266,12 @@ echo ("<fieldset><legend><b>" . _("Script settings") . "</b></legend>\n");
 echo ("<table align=\"left\" border=\"0\">\n");
 
 // script settings
-echo ("<tr><td><p align=\"right\"><b>".
-	_("Path to external script") . ": </b></p></td>".
+echo ("<tr><td align=\"right\"><b>".
+	_("Path to external script") . ": </b></td>".
 	"<td><input size=50 type=\"text\" name=\"scriptpath\" value=\"" . $conf->get_scriptPath() . "\"></td>\n");
 echo ("<td><a href=\"../help.php?HelpNumber=210\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
-echo ("<tr><td><p align=\"right\"><b>".
-	_("Server of external script") . ": </b></p></td>".
+echo ("<tr><td align=\"right\"><b>".
+	_("Server of external script") . ": </b></td>".
 	"<td><input size=50 type=\"text\" name=\"scriptserver\" value=\"" . $conf->get_scriptServer() . "\"></td>\n");
 echo ("<td><a href=\"../help.php?HelpNumber=211\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 
@@ -280,8 +283,8 @@ echo ("<br>\n");
 echo ("<fieldset><legend><b>" . _("Security settings") . "</b></legend>\n");
 echo ("<table align=\"left\" border=\"0\">\n");
 // admin list
-echo ("<tr><td><p align=\"right\"><b>".
-	_("List of valid users") . ": </b></p></td>".
+echo ("<tr><td align=\"right\"><b>".
+	_("List of valid users") . ": </b></td>".
 	"<td colspan=2><input size=50 type=\"text\" name=\"admins\" value=\"" . $conf->get_Adminstring() . "\"></td>\n");
 echo ("<td><a href=\"../help.php?HelpNumber=207\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 echo ("</table>\n");
