@@ -91,6 +91,9 @@ $helpArray = array (
 				"213" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard - Samba version"),
 					"Text" => _("If you use Samba 3.x with the new LDAP schema say \"yes\" here, otherwise \"no\".".
 						"<br><br><b>LAM will not work if version is wrong!</b>")),
+				"214" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard - Samba domain SID"),
+					"Text" => _("If you use the new Samba 3.x schema enter your domain SID here.".
+						"<br><br>You can get your domain SID with this command: <b>net getlocalsid</b>")),
 				// 300 - 399
 				// Roland Gruber
 				// profile editor
@@ -150,6 +153,9 @@ $helpArray = array (
 					"Text" => _("This is primary group for the Samba machine account.")),
 				"371" => array ("ext" => "FALSE", "Headline" => _("Profile Editor - Domain"),
 					"Text" => _("This is the Windows domain name.")),
+				// 400 - 499
+				// Tilo Lutz
+				// account.php
 				"400" => array ("ext" => "FALSE", "Headline" => _("Username"),
 					"Text" => _("Username of the user which should be created. Valid characters are: a-z,0-9, .-_. Lam doesn't allow a number as first
 					 character because it's impossible to create a homedirectory starting with a number. Lam doesn't allow capital letters A-Z because it

@@ -57,13 +57,15 @@ if ($_POST['back'] || $_POST['submitconf']){
 		if ($_POST['language']) $language = $_POST['language'];
 		if ($_POST['scriptpath']) $scriptpath = $_POST['scriptpath'];
 		if ($_POST['samba3']) $samba3 = $_POST['samba3'];
+		if ($_POST['domainSID']) $domainSID = $_POST['domainSID'];
+		if ($_POST['scriptpath']) $scriptpath = $_POST['scriptpath'];
 		else $scriptpath = "";
 		if ($_POST['scriptserver']) $scriptserver = $_POST['scriptserver'];
 		else $scriptserver = "";
 		session_register('passwd', 'passwd1', 'passwd2', 'serverurl', 'admins', 'suffusers',
 			'suffgroups', 'suffhosts', 'minUID', 'maxUID', 'minGID', 'maxGID', 'minMach',
 			'maxMach', 'usrlstattr', 'grplstattr', 'hstlstattr', 'maxlistentries', 'language',
-			'scriptpath', 'scriptserver', 'samba3');
+			'scriptpath', 'scriptserver', 'samba3', 'domainSID');
 		echo("<meta http-equiv=\"refresh\" content=\"0; URL=confsave.php\">");
 	}
 	// back to login
@@ -135,8 +137,12 @@ echo ("<tr><td align=\"right\"><b>".
 	"<td><input size=50 type=\"text\" name=\"suffhosts\" value=\"" . $conf->get_HostSuffix() . "\"></td>\n");
 echo ("<td><a href=\"../help.php?HelpNumber=202\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 
-// new line
-echo ("<tr><td colspan=3>&nbsp</td></tr>");
+echo ("</table>");
+echo ("</fieldset>");
+echo ("<p></p>");
+
+echo ("<fieldset><legend><b>" . _("Samba settings") . "</b></legend>");
+echo ("<table border=0>");
 
 // Samba version
 echo ("<tr><td align=\"right\"><b>".
@@ -144,6 +150,15 @@ echo ("<tr><td align=\"right\"><b>".
 if ($conf->get_samba3() == "yes") echo ("<option>yes</option><option>no</option></select></td>");
 else echo ("<option>no</option><option>yes</option></select></td>");
 echo ("<td><a href=\"../help.php?HelpNumber=213\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
+
+// new line
+echo ("<tr><td colspan=3>&nbsp</td></tr>");
+
+// Samba domain SID
+echo ("<tr><td align=\"right\"><b>".
+	_("Domain SID (Samba 3 only)") . ": </b></td>".
+	"<td><input size=50 type=\"text\" name=\"domainSID\" value=\"" . $conf->get_domainSID() . "\"></td>\n");
+echo ("<td><a href=\"../help.php?HelpNumber=214\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 
 echo ("</table>");
 echo ("</fieldset>");
