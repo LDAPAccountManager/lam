@@ -59,7 +59,9 @@ class posixGroup extends baseModule {
 				$partialAccounts[$i]['cn'] = $rawAccounts[$i][$ids['posixGroup_cn']];
 			}
 			else {
-				$errors[] =$this->messages['cn'][2];
+				$errMsg = $this->messages['cn'][3];
+				array_push($errMsg, array($i));
+				$errors[] = $errMsg;
 			}
 			// GID
 			if ($rawAccounts[$i][$ids['posixGroup_gid']] == "") {
@@ -68,6 +70,11 @@ class posixGroup extends baseModule {
 			}
 			elseif (get_preg($rawAccounts[$i][$ids['posixGroup_gid']], 'digit')) {
 				$partialAccounts[$i]['gidNumber'] = $rawAccounts[$i][$ids['posixGroup_gid']];
+			}
+			else {
+				$errMsg = $this->messages['gidNumber'][8];
+				array_push($errMsg, array($i));
+				$errors[] = $errMsg;
 			}
 			// description (UTF-8, no regex check needed)
 			if ($rawAccounts[$i][$ids['posixGroup_description']] == "") {
@@ -293,13 +300,14 @@ class posixGroup extends baseModule {
 		'description' => _('Group name'),
 		'help' => 'cn',
 		'example' => _('adminstrators'),
-		'required' => true
+		'required' => true,
+		'unique' => true
 		),
 		array(
 		'name' => 'posixGroup_gid',
 		'description' => _('GID number'),
 		'help' => 'gidNumber',
-		'example' => _('2034'),
+		'example' => '2034',
 		'required' => false
 		),
 		array(
@@ -410,9 +418,11 @@ class posixGroup extends baseModule {
 		$this->messages['gidNumber'][5] = array('ERROR', _('Minimum GID number'), _('Minimum GID number is invalid or empty!'));
 		$this->messages['gidNumber'][6] = array('ERROR', _('Maximum GID number'), _('Maximum GID number is invalid or empty!'));
 		$this->messages['gidNumber'][7] = array('ERROR', _('Maximum GID number'), _('Maximum GID number must be greater than minimum GID number!'));
+		$this->messages['gidNumber'][8] = array('ERROR', _('Account %s: posixGroup_gid'), _('GID number has to be a numeric value!'));
 		$this->messages['cn'][0] = array('WARN', _('Groupname'), _('You are using a capital letters. This can cause problems because windows isn\'t case-sensitive.'));
 		$this->messages['cn'][1] = array('WARN', _('Groupname'), _('Groupname in use. Selected next free groupname.'));
 		$this->messages['cn'][2] = array('ERROR', _('Groupname'), _('Groupname contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
+		$this->messages['cn'][3] = array('ERROR', _('Account %s: posixGroup_cn'), _('Groupname contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
 		$this->messages['memberUID'][0] = array('ERROR', 'Account %s: posixGroup_members', _("This value must be a list of user names separated by semicolons."));
 		} 
 

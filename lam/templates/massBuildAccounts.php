@@ -87,8 +87,8 @@ echo "<body>\n";
 
 if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 	// check if input file is well formated
-	$data = array();
-	$ids = array();
+	$data = array();  // input values without first row
+	$ids = array();  // <column name> => <column number for $data>
 	// get input fields from modules
 	$columns = getUploadColumns($_POST['scope']);
 	// read input file
@@ -101,8 +101,10 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 	while (($line = fgetcsv($handle, 2000)) !== false ) { // account rows
 		$data[] = $line;
 	}
-	// check if all required attributes are given
+	
 	$errors = array();
+	
+	// check if all required columns are present
 	$checkcolumns = array();
 	$columns = call_user_func_array('array_merge', $columns);
 	for ($i = 0; $i < sizeof($columns); $i++) {
@@ -111,6 +113,8 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 			else $errors[] = array(_("A required column is missing in your CSV file."), $columns[$i]['name']);
 		}
 	}
+	
+	// check if all required attributes are given
 	$invalidColumns = array();
 	$id_names = array_keys($ids);
 	for ($i = 0; $i < sizeof($checkcolumns); $i++) {
@@ -130,10 +134,27 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 	for ($i = 0; $i < sizeof($invalidColumns); $i++) {
 		$errors[] = array(_("One or more values of the required column \"$invalidColumns[$i]\" are missing."), "");
 	}
+	
+	// check if values in unique columns are correct
+	for ($i = 0; $i < sizeof($columns); $i++) {
+		if ($columns[$i]['unique'] == true) {
+			$colNumber = $ids[$columns[$i]['name']];
+			$values_given = array();
+			for ($r = 0; $r < sizeof($data); $r++) {
+				$values_given[] = $data[$r][$colNumber];
+			}
+			$values_unique = array_unique($values_given);
+			if (sizeof($values_given) != sizeof($values_unique)) {
+				$errors[] = array(_("This column is defined to include unique entries but duplicates were found:"), $columns[$i]['name']);
+			}
+		}
+	}
+	
 	// if input data is invalid just display error messages (max 50)
 	if (sizeof($errors) > 0) {
 		for ($i = 0; $i < sizeof($errors); $i++) StatusMessage("ERROR", $errors[$i][0], $errors[$i][1]);
 	}
+	
 	// let modules build accounts
 	else {
 		$accounts = buildUploadAccounts($_POST['scope'], $data, $ids);
