@@ -75,7 +75,18 @@ $helpArray = array (
 					" will be split to several pages.")),
 				"209" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard - Default Language"),
 					"Text" => _("Defines the language of the login window and is sets this language the default language.".
-					" Users can change the language at login."))
+					" Users can change the language at login.")),
+				"210" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard - Script Path"),
+					"Text" => _("This is the absolute path to an external script for setting quotas and creating home directories.".
+						"<br><br><b>Use it at your own risk and read the documentation for lamdaemon before you use it!</b>"),
+						"SeeAlso" => "<a href=\"./help.php?HelpNumber=210\" target=\"_self\">TODO link to lamdaemon doku</a>"),
+				"211" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard - Script Server"),
+					"Text" => _("This is the server where the lamdaemon script is stored. LDAP Account Manager will make a SSH connection".
+						" to this server with username and password provided at login.".
+						"<br><br><b>Use it at your own risk and read the documentation for lamdaemon before you use it!</b>"),
+						"SeeAlso" => "<a href=\"./help.php?HelpNumber=210\" target=\"_self\">TODO link to lamdaemon doku</a>"),
+				"212" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard - Change Password"),
+					"Text" => _("If you want to change the current preferences password, please enter it here."))
 /* This is a sample help entry. Just copy this line an modify the vakues between the [] brackets.
 	Help text is located in the array:
 		"[Helpnumber]" => array ("ext" => "FALSE", "Headline" => _("[Headline]"), "Text" => _("[Text]"), "SeeAlso" => "[SeeAlso link]"),

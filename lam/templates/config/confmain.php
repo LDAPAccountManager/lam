@@ -104,7 +104,7 @@ echo ("<p align=\"center\"><a href=\"http://lam.sf.net\" target=\"new_window\">"
 echo ("<form action=\"confmain.php\" method=\"post\">\n");
 
 echo ("<fieldset><legend><b>" . _("Server settings") . "</b></legend>");
-echo ("<table align=\"center\" border=\"0\">");
+echo ("<table align=\"left\" border=\"0\">");
 // serverURL
 echo ("<tr><td><p align=\"right\"><b>" . _("Server Address") . ": </b></p></td>".
 	"<td><p align=\"left\">".
@@ -136,7 +136,7 @@ echo ("</fieldset>");
 echo ("<br>");
 
 echo ("<fieldset><legend><b>" . _("Ranges") . "</b></legend>");
-echo ("<table align=\"center\" border=\"0\">");
+echo ("<table align=\"left\" border=\"0\">");
 
 // minUID
 echo ("<tr><td align=\"right\"><b>".
@@ -171,7 +171,7 @@ echo ("</fieldset>");
 echo ("<br>");
 
 echo ("<fieldset><legend><b>" . _("LDAP List settings") . "</b></legend>");
-echo ("<table align=\"center\" border=\"0\">");
+echo ("<table align=\"left\" border=\"0\">");
 
 // user list attributes
 echo ("<tr><td><p align=\"right\"><b>".
@@ -259,10 +259,12 @@ echo ("<table align=\"left\" border=\"0\">\n");
 // script settings
 echo ("<tr><td><p align=\"right\"><b>".
 	_("Path to external script") . ": </b></p></td>".
-	"<td><input size=50 type=\"text\" name=\"scriptpath\" value=\"" . $conf->get_scriptPath() . "\"></td></tr>\n");
+	"<td><input size=50 type=\"text\" name=\"scriptpath\" value=\"" . $conf->get_scriptPath() . "\"></td>\n");
+echo ("<td><a href=\"../help.php?HelpNumber=210\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 echo ("<tr><td><p align=\"right\"><b>".
 	_("Server of external script") . ": </b></p></td>".
-	"<td><input size=50 type=\"text\" name=\"scriptserver\" value=\"" . $conf->get_scriptServer() . "\"></td></tr>\n");
+	"<td><input size=50 type=\"text\" name=\"scriptserver\" value=\"" . $conf->get_scriptServer() . "\"></td>\n");
+echo ("<td><a href=\"../help.php?HelpNumber=211\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 
 echo ("</table>\n");
 echo ("</fieldset>\n");
@@ -274,7 +276,8 @@ echo ("<table align=\"left\" border=\"0\">\n");
 // new password
 echo ("<tr><td bgcolor=\"red\" align=\"right\"><b>".
 	_("New Password") . ": </b></td>".
-	"<td bgcolor=\"red\" align=\"left\"><input type=\"password\" name=\"pass1\"></td></tr>\n");
+	"<td bgcolor=\"red\" align=\"left\"><input type=\"password\" name=\"pass1\"></td>\n");
+echo ("<td rowspan=2><a href=\"../help.php?HelpNumber=212\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 // reenter password
 echo ("<tr><td bgcolor=\"red\" align=\"right\"><b>".
 	_("Reenter Password") . ": </b></td>".
