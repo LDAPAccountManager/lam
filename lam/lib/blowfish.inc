@@ -4,15 +4,31 @@
  * The Cipher_blowfish:: class implements the Cipher interface enryption data
  * using the Blowfish algorithm.
  *
- * $Horde: horde/lib/Cipher/blowfish.php,v 1.2.2.4 2003/04/12 20:50:40 slusarz Exp $
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA  02111-1307, USA.
  *
  * Copyright 2002-2003 Mike Cochrane <mike@graftonhall.co.nz>
  *
  * See http://www.fsf.org/copyleft/lgpl.html for license information (LGPL).
  *
+ * This file was copied from the Horde project (http://www.horde.org).
+ *
  * author:  Mike Cochrane <mike@graftonhall.co.nz>
+ *
  * edited by Roland Gruber <post@rolandgruber.de> for LAM
- * - added encrypt/decrypt functions
+ *  - added encrypt/decrypt functions
  */
 class Cipher_blowfish {
 
