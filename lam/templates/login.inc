@@ -38,8 +38,8 @@ if(is_file($languagefile) == True)
 		$line = fgets($file, 1024);
 		if($line == "\n" || $line[0] == "#") continue; // ignore comment and empty lines
 		$value = explode(":", $line);
-		$languages[$i]["link"] = $value[0];
-		$languages[$i]["descr"] = $value[1];
+		$languages[$i]["link"] = $value[0] . ":" . $value[1];
+		$languages[$i]["descr"] = $value[2];
 		$i++;
 	}
 	fclose($file);
@@ -72,11 +72,11 @@ else
 					<td width="45%" align="right"><? echo _("Password:") ?></td><td width="10%"></td><td width="45%" align="left"><input type="password" name="passwd"></td>
 				</tr>
 				<tr>
-					<? if($message != "") { ?>
+<? if($message != "") { ?>
 					<td width="100%" colspan="3" align="center"><? echo _($message) ?><input type="hidden" name="language" value="english"></td>
-					<? } else { ?>
+<? } else { ?>
 					<td width="45%" align="right"><? echo _("Your Language:") ?></td><td width="10%"></td><td width="45%" align="left"><select name="language" size="1"><? for($i = 0; $i < count($languages); $i++) { echo "<option value=\"" . $languages[$i]["link"] . "\">" . $languages[$i]["descr"] . "</option>"; } ?></select></td>
-					<? } ?>
+<? } ?>
 				</tr>
 				<tr>
 					<td width="100%" colspan="3" align="center"><input type="submit" name="submit" value=<? echo _("Login"); ?>></td>
