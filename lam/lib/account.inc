@@ -184,6 +184,9 @@ function ntPassword($password) {
 	return exec(escapeshellarg($_SESSION['lampath'] . 'lib/createntlm.pl') . " nt " . escapeshellarg($password));
 }
 
+
+
+
 /**
 * Returns the hash value of a plain text password
 * the hash algorithm depends on the configuration file

@@ -30,6 +30,26 @@ class posixAccount extends baseModule {
 	parent::baseModule($scope);
 	}
 
+	function dynamic_Message($attribute, $id) {
+	switch ($attribute) {
+		case 'homeDirectory': switch ($id) {
+			case 2: return array('INFO', _('Home directory'), sprintf(_('Home directory changed. To keep home directory you have to run the following command as root: \'mv %s %s\''), $this->orig['homeDirectory'][0], $this->attributes['homeDirectory'][0]));	
+			break;
+			}
+		break;
+		case 'gidNumber': switch ($id) {
+			case 0: return array('INFO', _('GID number'), sprintf(_('GID number has changed. To keep file ownership you have to run the following command as root: \'find / -gid %s -uid %s -exec chgrp %s {} \;\''), $this->orig['gidNumber'][0], $this->orig['uidNumber'][0], $_SESSION['cache']->getgid($this->attribtues['gidNumber'][0])));
+			break;
+			}
+		break;
+		case 'uidNumber': switch ($id) {
+			case 0: return array('INFO', _('UID number'), sprintf(_('UID number has changed. To keep file ownership you have to run the following command as root: \'find / -uid %s -exec chown %s {} \;\''), $this->orig['uidNumber'][0], $this->attributes['uidNumber'][0]));	
+			break;
+			}
+		break;
+		}
+	}
+	
 	/** this functin fills the error message array with messages
 	**/
 	function load_Messages() {
@@ -43,9 +63,6 @@ class posixAccount extends baseModule {
 	$this->messages['cmp_both'][0] = array('ERROR', _('UID ranges'), _("The UID ranges for users and hosts overlap! This is a problem because LAM uses the highest UID in use + 1. Please set the minimum UID to equal values or use independent ranges."));
 	$this->messages['homeDirectory'][0] = array('ERROR', _('Home directory'), _('Homedirectory contains invalid characters.'));	
 	$this->messages['homeDirectory'][1] = array('INFO', _('Home directory'), _('Replaced $user or $group in homedir.'));	
-	$this->messages['homeDirectory'][2] = array('INFO', _('Home directory'), sprintf(_('Home directory changed. To keep home directory you have to run the following command as root: \'mv %s %s\''), $this->orig['homeDirectory'][0], $this->attributes['homeDirectory'][0]));	
-	$this->messages['gidNumber'][0] = array('INFO', _('GID number'), sprintf(_('GID number has changed. To keep file ownership you have to run the following command as root: \'find / -gid %s -uid %s -exec chgrp %s {} \;\''), $this->orig['gidNumber'][0], $this->orig['uidNumber'][0], $_SESSION['cache']->getgid($this->attribtues['gidNumber'][0])));
-	$this->messages['uidNumber'][0] = array('INFO', _('UID number'), sprintf(_('UID number has changed. To keep file ownership you have to run the following command as root: \'find / -uid %s -exec chown %s {} \;\''), $this->orig['uidNumber'][0], $this->attributes['uidNumber'][0]));
 	$this->messages['uidNumber'][1] = array('ERROR', _('ID-Number'), _('No free ID-Number!'));
 	$this->messages['uidNumber'][2] = array('WARN', _('ID-Number'), _('It is possible that this ID-number is reused. This can cause several problems because files with old permissions might still exist. To avoid this warning set maxUID to a higher value.'));
 	$this->messages['uidNumber'][3] = array('ERROR', _('ID-Number'), _('ID is already in use'));
@@ -375,18 +392,12 @@ class posixAccount extends baseModule {
 	function proccess_attributes($post, $profile=false) {
 		if ($this->orig['uid'][0]!='' && $post['uid']!=$this->attributes['uid'][0])
 			$errors['uid'][] = $this->messages['uid'][0];
-		if ($this->orig['gidNumber'][0]!='' && $_SESSION['cache']->getgid($post['gidNumber'])!=$this->attributes['gidNumber'][0]) {
-			$this->load_errorMessage();
-			$errors['gidNumber'][] = $this->messages['gidNumber'][0];
-		}
-		if ($this->orig['uidNumber'][0]!='' && $post['uidNumber']!=$this->attributes['uidNumber'][0]) {
-			$this->load_errorMessage();
-			$errors['uidNumber'][] = $this->messages['uidNumber'][0];
-		}
-		if (isset($post['homeDirectory']) && $this->orig['homeDirectory'][0]!='' && $post['homeDirectory']!=$this->attributes['homeDirectory'][0]) {
-			$this->load_errorMessage();
-			$errors['homeDirectory'][] = $this->messages['homeDirectory'][2];
-		}
+		if ($this->orig['gidNumber'][0]!='' && $_SESSION['cache']->getgid($post['gidNumber'])!=$this->attributes['gidNumber'][0])
+			$errors['gidNumber'][] = $this->dynamic_Message('gidNumber',0);
+		if ($this->orig['uidNumber'][0]!='' && $post['uidNumber']!=$this->attributes['uidNumber'][0])
+			$errors['uidNumber'][] = $this->dynamic_Message('uidNumber',0);
+		if (isset($post['homeDirectory']) && $this->orig['homeDirectory'][0]!='' && $post['homeDirectory']!=$this->attributes['homeDirectory'][0])
+			$errors['homeDirectory'][] = $this->dynamic_Message('homeDirectory',0);
 
 		// Load attributes
 		$this->attributes['uid'][0] = $post['uid'];
