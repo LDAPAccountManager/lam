@@ -25,6 +25,7 @@ $Id$
 
 include_once("config.inc");
 
+
 // manages connection to LDAP and several helper functions
 class Ldap{
 
@@ -46,6 +47,7 @@ class Ldap{
 	// constructor
 	// $config has to be an object of Config (../config/config.php)
 	function Ldap($config) {
+		setlanguage();
 		if (is_object($config)) $this->conf = $config;
 		else return false;
 		// construct arrays with known LDAP attributes
