@@ -75,22 +75,7 @@ class Ldap{
     ldap_free_result($sr);
     return $ret;
   }
-	
-  // returns an array of strings with the DN entries of all Samba hosts
-  // $base is optional and specifies the root from where to search for entries
-  function getMachines($base = "") {
-    if ($base == "") $base = $this->conf->get_HostSuffix();
-    // Samba hosts have the attribute "sambaAccount" and end with "$"
-    $filter = "(&(objectClass=sambaAccount) (uid=*$))";
-    $attrs = array();
-    $sr = ldap_search($this->server, $base, $filter, $attrs);
-    $info = ldap_get_entries($this->server, $sr);
-    $ret = array();
-    for ($i = 0; $i < $info["count"]; $i++) $ret[$i] = $info[$i]["dn"];
-    ldap_free_result($sr);
-    return $ret;
-  }
-
+  
   // connects to the server using the given username and password
   // $base is optional and specifies the root from where to search for entries
   // if connect succeeds the server handle is returned
