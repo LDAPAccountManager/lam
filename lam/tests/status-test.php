@@ -30,7 +30,7 @@ include_once("../lib/status.inc");
 <link rel="stylesheet" type="text/css" href="../style/layout.css" />
 </head>
 <body>
-<?
+<?php
 $Typ = "WARN";
 $Headline = "Test";
 $Text = "{color=00FF00}Farbe{endcolor} {bold}fett{endbold}";

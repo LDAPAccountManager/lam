@@ -43,7 +43,7 @@ echo $_SESSION['header'];
 		<link rel="stylesheet" type="text/css" href="../style/layout.css">
 	</head>
 	<body>
-<?
+<?php
 }
 
 /* Print HTML foot */
@@ -52,7 +52,7 @@ function echoHTMLFoot()
 ?>
 	</body>
 </html>
-<?
+<?php
 }
 
 /* Print help site */
