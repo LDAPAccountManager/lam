@@ -209,11 +209,11 @@ if ($_GET['type'] == "user") {
 		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to profile editor...") . "</a>");
 		exit;
 	}
-	if ($_POST['smb_scriptpath'] && eregi("^[/]([a-z0-9])+([/][a-z0-9_\\-\\$]+)*$", $_POST['smb_scriptpath'])) {
-		$acct->smb_scriptpath = $_POST['smb_scriptpath'];
+	if ($_POST['smb_scriptPath'] && eregi("^[/]([a-z0-9])+([/][a-z0-9_\\-\\$]+)*$", $_POST['smb_scriptPath'])) {
+		$acct->smb_scriptPath = $_POST['smb_scriptPath'];
 	}
-	elseif ($_POST['smb_scriptpath']) {
-		StatusMessage("ERROR", "", _("Script path is invalid!") . " " . $_POST['smb_scriptpath']);
+	elseif ($_POST['smb_scriptPath']) {
+		StatusMessage("ERROR", "", _("Script path is invalid!") . " " . $_POST['smb_scriptPath']);
 		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to profile editor...") . "</a>");
 		exit;
 	}

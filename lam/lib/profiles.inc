@@ -159,8 +159,8 @@ function loadUserProfile($profile) {
 				$acc->smb_homedrive = chop(substr($line, 15, strlen($line)-15));
 				continue;
 			}
-			if (substr($line, 0, 16) == "smb_scriptpath: ") {
-				$acc->smb_scriptpath = chop(substr($line, 16, strlen($line)-16));
+			if (substr($line, 0, 16) == "smb_scriptPath: ") {
+				$acc->smb_scriptPath = chop(substr($line, 16, strlen($line)-16));
 				continue;
 			}
 			if (substr($line, 0, 17) == "smb_profilePath: ") {
@@ -289,18 +289,18 @@ function saveUserProfile($account, $profile) {
 	// replace user and group names
 	$homedir = $account->general_homedir;
 	$profpath = $account->smb_profilePath;
-	$scriptpath = $account->smb_scriptpath;
+	$scriptPath = $account->smb_scriptPath;
 	$smbhome = $account->smb_smbhome;
 	if ($account->general_username) {
 		$homedir = str_replace($account->general_username, "\$user", $homedir);
 		$profpath = str_replace($account->general_username, "\$user", $profpath);
-		$scriptpath = str_replace($account->general_username, "\$user", $scriptpath);
+		$scriptPath = str_replace($account->general_username, "\$user", $scriptPath);
 		$smbhome = str_replace($account->general_username, "\$user", $smbhome);
 	}
 	if ($account->general_group) {
 		$homedir = str_replace($account->general_group, "\$group", $homedir);
 		$profpath = str_replace($account->general_group, "\$group", $profpath);
-		$scriptpath = str_replace($account->general_group, "\$group", $scriptpath);
+		$scriptPath = str_replace($account->general_group, "\$group", $scriptPath);
 		$smbhome = str_replace($account->general_group, "\$group", $smbhome);
 	}
 	// write attributes
@@ -322,7 +322,7 @@ function saveUserProfile($account, $profile) {
 	if (isset($account->smb_pwdcanchange)) fputs($file, "smb_pwdcanchange: " . $account->smb_pwdcanchange . "\n");
 	if (isset($account->smb_pwdmustchange)) fputs($file, "smb_pwdmustchange: " . $account->smb_pwdmustchange . "\n");
 	if (isset($account->smb_homedrive)) fputs($file, "smb_homedrive: " . $account->smb_homedrive . "\n");
-	if (isset($account->smb_scriptpath)) fputs($file, "smb_scriptpath: " . $scriptpath . "\n");
+	if (isset($account->smb_scriptPath)) fputs($file, "smb_scriptPath: " . $scriptPath . "\n");
 	if (isset($account->smb_profilePath)) fputs($file, "smb_profilePath: " . $profpath . "\n");
 	if (isset($account->smb_smbuserworkstations)) fputs($file, "smb_smbuserworkstations: " . $account->smb_smbuserworkstations . "\n");
 	if (isset($account->smb_smbhome)) fputs($file, "smb_smbhome: " . $smbhome . "\n");
