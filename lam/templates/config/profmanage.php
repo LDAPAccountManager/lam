@@ -140,45 +140,56 @@ if ($_POST['submit']) {
 		<br>
 		<!-- form for adding/renaming/deleting profiles -->
 		<form action="profmanage.php" method="post">
+		<table>
+		<tr><td>
 		<fieldset>
 			<legend><b> <?php echo _("Profile management"); ?> </b></legend>
 			<p>
-			<table border=0>
+			<table cellspacing=0 border=0>
 
 				<!-- add profile -->
-				<tr>
+				<tr bgcolor="#dbdbdb">
 					<td>
 						<input type="radio" name="action" value="add" checked>
 					</td>
 					<td>
 						<b>
 							<?php echo _("Add profile") . ":"; ?>
-							&nbsp
 						</b>
-						&nbsp <?php echo _("Profile name"); ?> :
+					</td>
+					<td align="right">
+						<?php echo _("Profile name") . ":"; ?>
 						<input type="text" name="addprofile">
 					</td>
-					<td>
+					<td>&nbsp;
 						<a href="../help.php?HelpNumber=230" target="lamhelp"><?php echo _("Help"); ?></a>
 					</td>
 				</tr>
-				<tr>
-					<td></td>
-					<td>
-						<?php echo _("Profile password:"); ?>
+				<tr bgcolor="#dbdbdb">
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td align="right">
+						<?php echo _("Profile password") . ":"; ?>
 						<input type="password" name="addpassword">
-						&nbsp <?php echo _("Reenter profile password:"); ?>
+					</td>
+					<td></td>
+				</tr>
+				<tr bgcolor="#dbdbdb">
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td align="right">
+						<?php echo _("Reenter profile password") . ":"; ?>
 						<input type="password" name="addpassword2">
 					</td>
 					<td></td>
 				</tr>
 
 				<tr>
-					<td colspan=3>&nbsp</td>
+					<td colspan=4>&nbsp</td>
 				</tr>
 
 				<!-- rename profile -->
-				<tr>
+				<tr bgcolor="#dbdbdb">
 					<td>
 						<input type="radio" name="action" value="rename">
 					</td>
@@ -190,26 +201,28 @@ if ($_POST['submit']) {
 						?>
 						</select>
 						<b>
-							<?php echo _("Rename profile to") . ":"; ?>
-							&nbsp
+							<?php echo _("Rename profile"); ?>
 						</b>
+					</td>
+					<td align="right">
+						<?php echo _("Profile name") . ":"; ?>
 						<input type="text" name="renfilename">
 					</td>
-					<td>
+					<td>&nbsp;
 						<a href="../help.php?HelpNumber=231" target="lamhelp"><?php echo _("Help"); ?></a>
 					</td>
 				</tr>
 
 				<tr>
-					<td colspan=3>&nbsp</td>
+					<td colspan=4>&nbsp</td>
 				</tr>
 
 				<!-- delete profile -->
-				<tr>
+				<tr bgcolor="#dbdbdb">
 					<td>
 						<input type="radio" name="action" value="delete">
 					</td>
-					<td>
+					<td colspan=2>
 						<select size=1 name="delfilename">
 						<?php
 							$files = getConfigProfiles();
@@ -220,17 +233,17 @@ if ($_POST['submit']) {
 							<?php echo _("Delete profile"); ?>
 						</b>
 					</td>
-					<td>
+					<td>&nbsp;
 						<a href="../help.php?HelpNumber=232" target="lamhelp"><?php echo _("Help"); ?></a>
 					</td>
 				</tr>
 
 				<tr>
-					<td colspan=3>&nbsp</td>
+					<td colspan=4>&nbsp</td>
 				</tr>
 
 				<!-- set profile password -->
-				<tr>
+				<tr bgcolor="#dbdbdb">
 					<td>
 						<input type="radio" name="action" value="setpass">
 					</td>
@@ -245,34 +258,37 @@ if ($_POST['submit']) {
 							<?php echo _("Set profile password"); ?>
 						</b>
 					</td>
-					<td>
+					<td align="right">
+						<?php echo _("Profile password") . ":"; ?>
+						<input type="password" name="setpassword">
+					</td>
+					<td>&nbsp;
 						<a href="../help.php?HelpNumber=233" target="lamhelp"><?php echo _("Help"); ?></a>
 					</td>
 				</tr>
-				<tr>
-					<td></td>
-					<td>
-						<?php echo _("Profile password:"); ?>
-						<input type="password" name="setpassword">
-						&nbsp <?php echo _("Reenter profile password:"); ?>
+				<tr bgcolor="#dbdbdb">
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td align="right">
+						<?php echo _("Reenter profile password") . ":"; ?>
 						<input type="password" name="setpassword2">
 					</td>
-					<td></td>
+					<td>&nbsp;</td>
 				</tr>
 
 				<tr>
-					<td colspan=3>&nbsp</td>
+					<td colspan=4>&nbsp</td>
 				</tr>
 				<tr>
-					<td colspan=3>&nbsp</td>
+					<td colspan=4>&nbsp</td>
 				</tr>
 
 				<!-- change default profile -->
-				<tr>
+				<tr bgcolor="#dbdbdb">
 					<td>
 						<input type="radio" name="action" value="setdefault">
 					</td>
-					<td>
+					<td colspan=2>
 						<select size=1 name="defaultfilename">
 						<?php
 							$files = getConfigProfiles();
@@ -288,13 +304,17 @@ if ($_POST['submit']) {
 							<?php echo _("Change default profile"); ?>
 						</b>
 					</td>
-					<td>
+					<td>&nbsp;
 						<a href="../help.php?HelpNumber=234" target="lamhelp"><?php echo _("Help"); ?></a>
 					</td>
 				</tr>
 
-				<!-- set master password -->
 				<tr>
+					<td colspan=4>&nbsp</td>
+				</tr>
+
+				<!-- set master password -->
+				<tr bgcolor="#dbdbdb">
 					<td>
 						<input type="radio" name="action" value="setmasterpass">
 					</td>
@@ -302,18 +322,29 @@ if ($_POST['submit']) {
 						<b>
 							<?php echo _("Change master password"); ?>
 						</b>
-						&nbsp <?php echo _("New master password:"); ?>
-						<input type="password" name="masterpassword">
-						&nbsp <?php echo _("Reenter new master password:"); ?>
-						<input type="password" name="masterpassword2">
 					</td>
-					<td>
+					<td align="right">
+						<?php echo _("New master password") . ":"; ?>
+						<input type="password" name="masterpassword">
+					</td>
+					<td>&nbsp;
 						<a href="../help.php?HelpNumber=235" target="lamhelp"><?php echo _("Help"); ?></a>
 					</td>
+				</tr>
+				<tr bgcolor="#dbdbdb">
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td align="right">
+						<?php echo _("Reenter new master password") . ":"; ?>
+						<input type="password" name="masterpassword2">
+					</td>
+					<td>&nbsp;</td>
 				</tr>
 
 			</table>
 			</fieldset>
+			</td></tr>
+			</table>
 			<p>&nbsp</p>
 
 			<!-- password field and submit button -->
