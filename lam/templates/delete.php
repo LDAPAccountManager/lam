@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 $Id$
 
@@ -33,7 +33,7 @@ echo $_SESSION['header'];
 echo '<html><head><title>';
 echo _('Delete Account');
 echo '</title>'."\n".
-	'<link rel="stylesheet" type="text/css" href="../style/layout.css">'."\n".
+	'<link rel="stylesheet" type="text/css" href="'.$_SESSION['lamurl'].'style/layout.css">'."\n".
 	'<meta http-equiv="pragma" content="no-cache">'."\n".
 	'<meta http-equiv="cache-control" content="no-cache">'."\n";
 

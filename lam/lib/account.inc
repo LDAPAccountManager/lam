@@ -86,7 +86,7 @@ class account { // This class keeps all needed values for any account
 
 
 function getshells() { // Return a list of all shells listed in ../config/shells
-	$shells =  file('../../config/shells');
+	$shells =  file($_SESSION['lampath'].'config/shells');
 	$i=0;
 	while ($shells[$i]) {
 		chop($shells[$i]);
@@ -178,7 +178,7 @@ function getquotas($type,$user='+') { // Whis function will return the quotas fr
 	$towrite = $ldap_q[0].' '.$ldap_q[1].' '.$user.' quota get ';
 	if ($type=='user') $towrite = $towrite.'u';
 	 else $towrite = $towrite.'g';
-	exec("perl ../../lib/lamdaemon.pl ".$_SESSION['config']->scriptServer ." ".$_SESSION['config']->scriptPath." ".$towrite, $vals, $status);
+	exec("perl ".$_SESSION['lampath']."lib/lamdaemon.pl ".$_SESSION['config']->scriptServer ." ".$_SESSION['config']->scriptPath." ".$towrite, $vals, $status);
 	$vals = explode(':', $vals[0]);
 	for ($i=0; $i<sizeof($vals); $i++) {
 		$vals2 = explode(',', $vals[$i]);
@@ -210,7 +210,7 @@ function setquotas($values,$type,$values_old=false) { // Whis function will set 
 			}
 		$i++;
 		}
-	if ($i!=0) exec("perl ../../lib/lamdaemon.pl ".$_SESSION['config']->scriptServer ." ".$_SESSION['config']->scriptPath." ".$towrite, $vals);
+	if ($i!=0) exec("perl ".$_SESSION['lampath']."lib/lamdaemon.pl ".$_SESSION['config']->scriptServer ." ".$_SESSION['config']->scriptPath." ".$towrite, $vals);
 	}
 
 function remquotas($user, $type) { // Whis function will remove the quotas from the specified user.
@@ -221,7 +221,7 @@ function remquotas($user, $type) { // Whis function will remove the quotas from 
 	if ($type=='user') $towrite = $towrite.'u ';
 	 else $towrite = $towrite.'g ';
 
-	exec("perl ../../lib/lamdaemon.pl ".$_SESSION['config']->scriptServer ." ".$_SESSION['config']->scriptPath." ".$towrite, $vals);
+	exec("perl ".$_SESSION['lampath']."lib/lamdaemon.pl ".$_SESSION['config']->scriptServer ." ".$_SESSION['config']->scriptPath." ".$towrite, $vals);
 	}
 
 
@@ -230,7 +230,7 @@ function addhomedir($user) { // Create Homedirectory
 	// all other needed vars are taken from remotesystem getusrnam
 	$ldap_q = $_SESSION['ldap']->decrypt();
 	$towrite = $ldap_q[0].' '.$ldap_q[1].' '.$user.' home add';
-	exec("perl ../../lib/lamdaemon.pl ".$_SESSION['config']->scriptServer ." ".$_SESSION['config']->scriptPath." ".$towrite, $vals);
+	exec("perl ".$_SESSION['lampath']."lib/lamdaemon.pl ".$_SESSION['config']->scriptServer ." ".$_SESSION['config']->scriptPath." ".$towrite, $vals);
 	}
 
 function remhomedir($user) { // Remove Homedirectory
@@ -238,7 +238,7 @@ function remhomedir($user) { // Remove Homedirectory
 	// all other needed vars are taken from remotesystem getusrnam
 	$ldap_q = $_SESSION['ldap']->decrypt();
 	$towrite = $ldap_q[0].' '.$ldap_q[1].' '.$user.' home rem';
-	exec("perl ../lib/lamdaemon.pl ".$_SESSION['config']->scriptServer ." ".$_SESSION['config']->scriptPath." ".$towrite, $vals);
+	exec("perl ".$_SESSION['lampath']."lib/lamdaemon.pl ".$_SESSION['config']->scriptServer ." ".$_SESSION['config']->scriptPath." ".$towrite, $vals);
 	}
 
 function ldapreload($type) { // This function will load an array th cache ldap-requests
@@ -761,13 +761,9 @@ function createuser($values) { // Will create the LDAP-Account
 			$attr['sambaPwdLastSet'] = time(); // sambaAccount_may
 			}
 		else {
-			if (file_exists('../../lib/createntlm.pl')) { // masscreate.php is at a different relative path
-				$attr['sambaNTPassword'] = exec('../../lib/createntlm.pl nt ' . $values->smb_password);
-				$attr['sambaLMPassword'] = exec('../../lib/createntlm.pl lm ' . $values->smb_password);
-				}
-			else {
-				$attr['sambaNTPassword'] = exec('../lib/createntlm.pl nt ' . $values->smb_password);
-				$attr['sambaLMPassword'] = exec('../lib/createntlm.pl lm ' . $values->smb_password);
+			if (file_exists($_SESSION['lampath'].'lib/createntlm.pl')) { // masscreate.php is at a different relative path
+				$attr['sambaNTPassword'] = exec($_SESSION['lampath'].'lib/createntlm.pl nt ' . $values->smb_password);
+				$attr['sambaLMPassword'] = exec($_SESSION['lampath'].'lib/createntlm.pl lm ' . $values->smb_password);
 				}
 			$attr['sambaPwdLastSet'] = time(); // sambaAccount_may
 			}
@@ -794,8 +790,8 @@ function createuser($values) { // Will create the LDAP-Account
 			$attr['pwdLastSet'] = time(); // sambaAccount_may
 			}
 		else {
-			$attr['ntPassword'] = exec('../../lib/createntlm.pl nt ' . $values->smb_password);
-			$attr['lmPassword'] = exec('../../lib/createntlm.pl lm ' . $values->smb_password);
+			$attr['ntPassword'] = exec($_SESSION['lampath'].'lib/createntlm.pl nt ' . $values->smb_password);
+			$attr['lmPassword'] = exec($_SESSION['lampath'].'lib/createntlm.pl lm ' . $values->smb_password);
 			$attr['pwdLastSet'] = time(); // sambaAccount_may
 			}
 		$attr['rid'] = (2 * $values->general_uidNumber + 1000); // sambaAccount_may
@@ -995,8 +991,8 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 			}
 		 else
 			if ($values->smb_password!='') {
-				$attr['sambaNTPassword'] = exec('../../lib/createntlm.pl nt ' . $values->smb_password);
-				$attr['sambaLMPassword'] = exec('../../lib/createntlm.pl lm ' . $values->smb_password);
+				$attr['sambaNTPassword'] = exec($_SESSION['lampath'].'lib/createntlm.pl nt ' . $values->smb_password);
+				$attr['sambaLMPassword'] = exec($_SESSION['lampath'].'lib/createntlm.pl lm ' . $values->smb_password);
 				$attr['sambaPwdLastSet'] = time(); // sambaAccount_may
 				}
 		if ($values->smb_pwdcanchange != $values_old->smb_pwdcanchange) $attr['sambaPwdCanChange'] = $values->smb_pwdcanchange; // sambaAccount_may
@@ -1026,8 +1022,8 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 			}
 		 else
 			if ($values->smb_password!='') {
-				$attr['ntPassword'] = exec('../../lib/createntlm.pl nt ' . $values->smb_password);
-				$attr['lmPassword'] = exec('../../lib/createntlm.pl lm ' . $values->smb_password);
+				$attr['ntPassword'] = exec($_SESSION['lampath'].'lib/createntlm.pl nt ' . $values->smb_password);
+				$attr['lmPassword'] = exec($_SESSION['lampath'].'lib/createntlm.pl lm ' . $values->smb_password);
 				$attr['pwdLastSet'] = time(); // sambaAccount_may
 				}
 		if ($values->smb_pwdcanchange != $values_old->smb_pwdcanchange) $attr['pwdCanChange'] = $values->smb_pwdcanchange; // sambaAccount_may

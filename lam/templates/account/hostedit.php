@@ -182,7 +182,7 @@ echo $_SESSION['header'];
 echo "<html><head><title>";
 echo _("Create new Account");
 echo "</title>\n".
-	"<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n".
+	"<link rel=\"stylesheet\" type=\"text/css\" href=\"".$_SESSION['lamurl']."style/layout.css\">\n".
 	"<meta http-equiv=\"pragma\" content=\"no-cache\">\n".
 	"<meta http-equiv=\"cache-control\" content=\"no-cache\">\n";
 
@@ -249,7 +249,7 @@ do { // X-Or, only one if() can be true
 		break;
 		}
 	if ($_POST['backmain']) {
-		echo "<meta http-equiv=\"refresh\" content=\"2; URL=../lists/listhosts.php\">\n";
+		echo "<meta http-equiv=\"refresh\" content=\"2; URL=".$_SESSION['lamurl']."templates/lists/listhosts.php\">\n";
 		$select_local='backmain';
 		break;
 		}
@@ -310,13 +310,13 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo '</td>'."\n".'<td>'.
 			'<input name="f_general_username" type="text" size="20" maxlength="20" value="' . $_SESSION['account']->general_username . '">'.
 			'</td><td>'.
-			'<a href="../help.php?HelpNumber=410" target="lamhelp">'._('Help').'</a>'.
+			'<a href="'.$_SESSION['lamurl'].'templates/help.php?HelpNumber=410" target="lamhelp">'._('Help').'</a>'.
 			'</td></tr>'."\n".'<tr><td>';
 		echo _('UID number');
 		echo '</td>'."\n".'<td>'.
 			'<input name="f_general_uidNumber" type="text" size="6" maxlength="6" value="' . $_SESSION['account']->general_uidNumber . '">'.
 			'</td>'."\n".'<td>'.
-			'<a href="../help.php?HelpNumber=411" target="lamhelp">'._('Help').'</a>'.
+			'<a href="'.$_SESSION['lamurl'].'templates/help.php?HelpNumber=411" target="lamhelp">'._('Help').'</a>'.
 			'</td></tr>'."\n".'<tr><td>';
 		echo _('Primary group').'*';
 		echo '</td>'."\n".'<td><select name="f_general_group">';
@@ -325,12 +325,12 @@ switch ($select_local) { // Select which part of page will be loaded
 			else echo '<option>' . $group. '</option>';
 			 }
 		echo '</select></td><td>'.
-			'<a href="../help.php?HelpNumber=412" target="lamhelp">'._('Help').'</a>'.
+			'<a href="'.$_SESSION['lamurl'].'templates/help.php?HelpNumber=412" target="lamhelp">'._('Help').'</a>'.
 			'</td></tr>'."\n".'<tr><td>';
 		echo _('Gecos');
 		echo '</td><td><input name="f_general_gecos" type="text" size="30" value="' . $_SESSION['account']->general_gecos . '">'.
 			'</td>'."\n".'<td>'.
-			'<a href="../help.php?HelpNumber=413" target="lamhelp">'._('Help').'</a>'.
+			'<a href="'.$_SESSION['lamurl'].'templates/help.php?HelpNumber=413" target="lamhelp">'._('Help').'</a>'.
 			'</td></tr><tr><td>';
 		echo _('Suffix'); echo '</td><td><select name="f_general_suffix">';
 		foreach ($_SESSION['ldap']->search_units($_SESSION['config']->get_HostSuffix()) as $suffix) {
@@ -341,7 +341,7 @@ switch ($select_local) { // Select which part of page will be loaded
 				}
 			else echo '<option>' . $suffix. '</option>';
 			}
-		echo '</select></td><td><a href="../help.php?HelpNumber=463" target="lamhelp">'._('Help').'</a>'.
+		echo '</select></td><td><a href="'.$_SESSION['lamurl'].'templates/help.php?HelpNumber=463" target="lamhelp">'._('Help').'</a>'.
 			"</td>\n</tr>\n</table>";
 		echo _('Values with * are required');
 		echo "</fieldset>\n</td></tr><tr><td>";
@@ -353,7 +353,7 @@ switch ($select_local) { // Select which part of page will be loaded
 			foreach ($profilelist as $profile) echo "	<option>$profile</option>\n";
 			echo "</select></td><td>\n".
 				"<input name=\"load\" type=\"submit\" value=\""; echo _('Load Profile');
-			echo "\"></td><td><a href=\"../help.php?HelpNumber=421\" target=\"lamhelp\">";
+			echo "\"></td><td><a href=\"".$_SESSION['lamurl']."templates/help.php?HelpNumber=421\" target=\"lamhelp\">";
 			echo _('Help')."</a></td>\n</tr>\n</table>\n</fieldset>\n";
 			}
 		echo "</td></tr></table>\n</td></tr>\n</table>\n";
@@ -385,7 +385,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo _("Display name");
 		echo "</td>\n<td>".
 			"<input name=\"f_smb_displayName\" type=\"text\" size=\"30\" maxlength=\"50\" value=\"".$_SESSION['account']->smb_displayName."\">".
-			"</td>\n<td><a href=\"../help.php?HelpNumber=420\" target=\"lamhelp\">"._('Help')."</a></td>\n</tr>\n<tr>\n<td>";
+			"</td>\n<td><a href=\"".$_SESSION['lamurl']."templates/help.php?HelpNumber=420\" target=\"lamhelp\">"._('Help')."</a></td>\n</tr>\n<tr>\n<td>";
 		echo _('Password');
 		echo '</td><td>';
 		if (isset($_SESSION['account_old'])) {
@@ -397,7 +397,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo '</td>'."\n".'<td><input name="f_smb_flagsD" type="checkbox"';
 		if ($_SESSION['account']->smb_flagsD) echo ' checked ';
 		echo '></td><td>'.
-			'<a href="../help.php?HelpNumber=432" target="lamhelp">'._('Help').'</a>'.
+			'<a href="'.$_SESSION['lamurl'].'templates/help.php?HelpNumber=432" target="lamhelp">'._('Help').'</a>'.
 			'</td></tr>'."\n".'<tr><td>';
 		echo '</td></tr>'."\n".'<tr><td>';
 		echo _('Domain');
@@ -416,7 +416,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		else {
 			echo '</td>'."\n".'<td><input name="f_smb_domain" type="text" size="20" maxlength="80" value="' . $_SESSION['account']->smb_domain . '">';
 			}
-		echo	'</td>'."\n".'<td><a href="../help.php?HelpNumber=460" target="lamhelp">'._('Help').'</a></td></tr>'."\n";
+		echo	'</td>'."\n".'<td><a href="'.$_SESSION['lamurl'].'templates/help.php?HelpNumber=460" target="lamhelp">'._('Help').'</a></td></tr>'."\n";
 		echo "</table>\n</fieldset>\n</td></tr></table></td></tr>\n</table>\n";
 		break;
 
@@ -446,7 +446,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo '<input name="f_finish_safeProfile" type="text" size="30" maxlength="50">';
 		echo '</td><td><input name="save" type="submit" value="';
 		echo _('Save profile');
-		echo '"></td><td><a href="../help.php?HelpNumber=457" target="lamhelp">'._('Help');
+		echo '"></td><td><a href="'.$_SESSION['lamurl'].'templates/help.php?HelpNumber=457" target="lamhelp">'._('Help');
 		echo "</a></td>\n</tr>\n</table>\n</fieldset>\n</td></tr>\n<tr><td>\n";
 		echo "<fieldset class=\"hostedit-bright\"><legend class=\"hostedit-bright\"><b>";
 		if ($_SESSION['account_old']) echo _('Modify');
@@ -502,7 +502,7 @@ switch ($select_local) { // Select which part of page will be loaded
 		break;
 	case 'backmain':
 		// unregister sessionvar and select which list should be shown
-		echo '<a href="../lists/listhosts.php">';
+		echo '<a href="'.$_SESSION['lamurl'].'templates/lists/listhosts.php">';
 		echo _('Please press here if meta-refresh didn\'t work.');
 		echo "</a>\n";
 		if (isset($_SESSION['shelllist'])) unset($_SESSION['shelllist']);

@@ -36,7 +36,7 @@ session_save_path('../sess');
 echo	'<html><head><title>';
 echo _('Create new accounts');
 echo '</title>'.
-	'<link rel="stylesheet" type="text/css" href="../style/layout.css">'.
+	'<link rel="stylesheet" type="text/css" href="'.$_SESSION['lamurl'].'style/layout.css">'.
 	'<meta http-equiv="pragma" content="no-cache">'.
 	'<meta http-equiv="cache-control" content="no-cache">'.
 	'</head><body>'.
@@ -173,12 +173,6 @@ switch ($select) {
 			'<input name="f_general_username" type="text" size="20" maxlength="20" value="' . $_SESSION['accounts'][$row]->general_username . '">'.
 			'</td><td>'.
 			'<a href="help.php?HelpNumber=400" target="lamhelp">'._('Help').'</a>'.
-			'</td></tr>'."\n".'<tr><td>';
-		echo _('Primary group').'*';
-		echo "</td>\n<td>".
-			'<input name="f_general_group" type="text" size="20" maxlength="20" value="' . $_SESSION['accounts'][$row]->general_group . '">'.
-			'</td><td>'.
-			'<a href="help.php?HelpNumber=406" target="lamhelp">'._('Help').'</a>'.
 			'</td></tr>'."\n".'<tr><td>';
 		echo _('Title');
 		echo '</td>'."\n".'<td>'.
