@@ -61,8 +61,10 @@ function display_LoginPage($config_object)
 		$message = _("Unable to load available languages. Setting English as default language. For further instructions please contact the Admin of this site.");
 	}
 
-	echo "
-		<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">
+	setlanguage(); // setting correct language
+
+	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">
+
 		<html>
 			<head>
 				<title>
@@ -92,7 +94,7 @@ function display_LoginPage($config_object)
 			if($error_message != "")
 				{
 					echo "<p align=\"center\">";
-					echo _($error_message);
+					echo $error_message;
 					echo "</p>";
 				}
 	echo "
@@ -133,7 +135,7 @@ function display_LoginPage($config_object)
 							if($message != "")
 							{
 	echo "					<td width=\"100%\" colspan=\"3\" align=\"center\">";
-								echo _($message);
+								echo $message;
 	echo "						<input type=\"hidden\" name=\"language\" value=\"english\">
 							</td>";
 							}
@@ -197,16 +199,11 @@ if($_POST['action'] == "checklogin")
 	$result = $ldap->connect($_POST['username'],$_POST['passwd']); // Connect to LDAP server for verifing username/password
 	if($result == True) // Username/password correct. Do some configuration and load main frame.
 	{
-		// setting language
-		$language = explode(":", $language);
-		putenv("LANG=" . $language[1]);
-		setlocale(LC_ALL, $language[0]);
-		bindtextdomain("lam", "../locale");
-		textdomain("lam");
-		include("./main.php"); // Load main frame
-
+		session_register('language'); // store selected language in session
 		session_register("ldap"); // Register $ldap object in session
 		session_register("language"); // Register $language in session
+
+		include("./main.php"); // Load main frame
 	}
 	else
 	{
