@@ -33,7 +33,7 @@ if($action == "checklogin")
 {
 	$config = new Config;
 	$ldap = new Ldap($config);
-	$result = $ldap->connect($username,$password);
+	$result = $ldap->connect($username,$passwd);
 	if($result == True)
 	{
 		include("./main.php"); // Username/password correct. Loading main Frame.
