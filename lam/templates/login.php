@@ -20,7 +20,7 @@ $Id$
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 
-  LDAP Account Manager checking login data.
+  LDAP Account Manager checking login datas.
 */
 
 include_once("../lib/config.inc"); // Include config.inc which provides Config class
@@ -86,7 +86,7 @@ function display_LoginPage($config_object)
 			<table width=\"100%\" border=\"0\">
 				<tr>
 					<td width=\"100%\" align=\"right\">
-						<a href=\"../config/conflogin.php\" target=\"_self\">";
+						<a href=\"./config/conflogin.php\" target=\"_self\">";
 						 echo _("Configuration Login");
 	echo "
 						</a>
