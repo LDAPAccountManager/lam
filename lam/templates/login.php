@@ -126,7 +126,7 @@ function display_LoginPage($config_object,$profile)
 					<td width="45%" align="left">
 						<select name="username" size="1">
 						<?php
-						$admin = $config_object->get_Admins();
+						$admins = $config_object->get_Admins();
 						for($i = 0; $i < count($admins); $i++) {
 							$text = explode(",", $admins[$i]);
 							$text = explode("=", $text[0]);
