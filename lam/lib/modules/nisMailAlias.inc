@@ -53,7 +53,7 @@ class nisMailAlias extends baseModule {
 		// alias name
 		$return["alias"] = _("Mail aliases");
 		// module dependencies
-		$return['dependencies'] = array('depends' => array(), 'conflicts' => array('posixGroup'));
+		$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
 		// help Entries
 		$return['help'] = array(
 			'alias' => array(

@@ -49,7 +49,7 @@ class ieee802Device extends baseModule {
 		// alias name
 		$return["alias"] = _("MAC address");
 		// module dependencies
-		$return['dependencies'] = array('depends' => array('account'), 'conflicts' => array());
+		$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
 		// help Entries
 		$return['help'] = array(
 			'mac' => array(

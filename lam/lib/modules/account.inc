@@ -33,8 +33,10 @@ class account extends baseModule {
 		$return["account_types"] = array("host", "user");
 		// alias name
 		$return["alias"] = _('Account');
+		// this is a base module
+		$return["is_base"] = true;
 		// module dependencies
-		$return['dependencies'] = array('depends' => array(), 'conflicts' => array('inetOrgPerson'));
+		$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
 		// available PDF fields
 		$return['PDF_fields'] = array(
 			'description'

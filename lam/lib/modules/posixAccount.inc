@@ -99,8 +99,6 @@ class posixAccount extends baseModule {
 		$return["account_types"] = array("user", "host");
 		// user specific data
 		if ($this->get_scope() == "user") {
-			// this is a base module
-			$return["is_base"] = true;
 			// LDAP filter
 			$return["ldap_filter"] = array('or' => "(objectClass=posixAccount)", 'and' => "(!(uid=*$))");
 			// module dependencies

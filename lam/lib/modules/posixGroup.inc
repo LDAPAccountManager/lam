@@ -227,7 +227,7 @@ class posixGroup extends baseModule {
 		// RDN attribute
 		$return["RDN"] = array("cn" => "normal");
 		// module dependencies
-		$return['dependencies'] = array('depends' => array(), 'conflicts' => array('inetOrgPerson', 'account', 'sambaDomain'));
+		$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
 		// configuration options
 		$return['config_options']['group'] = array(
 			array(

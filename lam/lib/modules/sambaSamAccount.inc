@@ -82,8 +82,6 @@ class sambaSamAccount extends baseModule {
 		// manages user and host accounts
 		$return["account_types"] = array("user", "host");
 		if ($this->get_scope() == "host") {
-			// this is a base module
-			$return["is_base"] = true;
 			// LDAP filter
 			$return["ldap_filter"] = array('and' => '(uid=*$)', 'or' => "(objectClass=posixAccount)");
 		}
