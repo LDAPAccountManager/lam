@@ -4,6 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
   Copyright (C) 2003  Roland Gruber, Leonhard Walchshäusl
+  Copyright (C) 2004  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -67,6 +68,7 @@ if ($_POST['new_user'] || $_POST['del_user'] || $_POST['pdf_user'] || $_POST['pd
 	// add new user
 	if ($_POST['new_user']){
 		metaRefresh("../account/useredit.php?type=user");
+		exit;
 	}
 	// delete user(s)
 	elseif ($_POST['del_user']){
@@ -75,7 +77,10 @@ if ($_POST['new_user'] || $_POST['del_user'] || $_POST['pdf_user'] || $_POST['pd
 			if (eregi("^uid=.*$", $entry)) $users[] = $entry;
 		}
 		$_SESSION['delete_dn'] = $users;
-		metaRefresh("../delete.php?type=user");
+		if (sizeof($users) > 0) {
+			metaRefresh("../delete.php?type=user");
+			exit;
+		}
 	}
 	// PDF for selected users
 	elseif ($_POST['pdf_user']){
@@ -93,6 +98,7 @@ if ($_POST['new_user'] || $_POST['del_user'] || $_POST['pdf_user'] || $_POST['pd
 		if (sizeof($list) > 0) {
 			if ($_SESSION['config']->get_scriptServer()) $list = getquotas($list);
 			createUserPDF($list);
+			exit;
 		}
 	}
 	// PDF for all users
@@ -106,9 +112,9 @@ if ($_POST['new_user'] || $_POST['del_user'] || $_POST['pdf_user'] || $_POST['pd
 		if (sizeof($list) > 0) {
 			if ($_SESSION['config']->get_scriptServer()) $list = getquotas($list);
 			createUserPDF($list);
+			exit;
 		}
 	}
-	exit;
 }
 
 echo $_SESSION['header'];

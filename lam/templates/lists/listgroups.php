@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
-  Copyright (C) 2003  Roland Gruber
+  Copyright (C) 2003 - 2004  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -48,13 +48,17 @@ if ($_POST['new_group'] || $_POST['del_group'] || $_POST['pdf_group'] || $_POST[
 	// add new group
 	if ($_POST['new_group']){
 		metaRefresh("../account/groupedit.php");
+		exit;
 	}
 	// delete group(s)
 	elseif ($_POST['del_group']){
 		// search for checkboxes
 		$groups = array_keys($_POST, "on");
 		$_SESSION['delete_dn'] = $groups;
-		metaRefresh("../delete.php?type=group");
+		if (sizeof($groups) > 0) {
+			metaRefresh("../delete.php?type=group");
+			exit;
+		}
 	}
 	// PDF for selected groups
 	elseif ($_POST['pdf_group']){
@@ -68,6 +72,7 @@ if ($_POST['new_group'] || $_POST['del_group'] || $_POST['pdf_group'] || $_POST[
 		if (sizeof($list) > 0) {
 			createGroupPDF($list);
 			if ($_SESSION['config']->get_scriptServer()) $list = getquotas($list);
+			exit;
 		}
 	}
 	// PDF for all groups
@@ -79,9 +84,9 @@ if ($_POST['new_group'] || $_POST['del_group'] || $_POST['pdf_group'] || $_POST[
 		if (sizeof($list) > 0) {
 			createGroupPDF($list);
 			if ($_SESSION['config']->get_scriptServer()) $list = getquotas($list);
+			exit;
 		}
 	}
-	exit;
 }
 
 echo $_SESSION['header'];

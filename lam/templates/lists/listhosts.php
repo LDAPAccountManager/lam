@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
-  Copyright (C) 2003  Roland Gruber
+  Copyright (C) 2003 - 2004  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -48,14 +48,18 @@ if ($_POST['new_host'] || $_POST['del_host'] || $_POST['pdf_host'] || $_POST['pd
 	// add new host
 	if ($_POST['new_host']){
 		metaRefresh("../account/hostedit.php");
+		exit;
 	}
 	// delete host(s)
 	elseif ($_POST['del_host']){
 		// search for checkboxes
 		$hosts = array_keys($_POST, "on");
 		$_SESSION['delete_dn'] = $hosts;
-		metaRefresh("../delete.php?type=host");
+		if (sizeof($hosts) > 0) {
+			metaRefresh("../delete.php?type=host");
+			exit;
 		}
+	}
 	// PDF for selected hosts
 	elseif ($_POST['pdf_host']){
 		// search for checkboxes
@@ -65,7 +69,10 @@ if ($_POST['new_host'] || $_POST['del_host'] || $_POST['pdf_host'] || $_POST['pd
 		for ($i = 0; $i < sizeof($hosts); $i++) {
 			$list[$i] = loadhost($hosts[$i]);
 		}
-		if (sizeof($list) > 0) createHostPDF($list);
+		if (sizeof($list) > 0) {
+			createHostPDF($list);
+			exit;
+		}
 	}
 	// PDF for all hosts
 	elseif ($_POST['pdf_all']){
@@ -73,9 +80,11 @@ if ($_POST['new_host'] || $_POST['del_host'] || $_POST['pdf_host'] || $_POST['pd
 		for ($i = 0; $i < sizeof($_SESSION['hst_info']); $i++) {
 			$list[$i] = loadhost($_SESSION['hst_info'][$i]['dn']);
 		}
-		if (sizeof($list) > 0) createHostPDF($list);
+		if (sizeof($list) > 0) {
+			createHostPDF($list);
+			exit;
+		}
 	}
-	exit;
 }
 
 echo $_SESSION['header'];

@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
-  Copyright (C) 2003  Roland Gruber
+  Copyright (C) 2003 - 2004  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -53,9 +53,11 @@ if ($_POST['new_domain'] || $_POST['del_domain']){
 		// search for checkboxes
 		$domains = array_keys($_POST, "on");
 		$domainstr = implode(";", $domains);
-		metaRefresh("../domain.php?action=delete&amp;DN='$domainstr'");
+		if ($domainstr) {
+			metaRefresh("../domain.php?action=delete&amp;DN='$domainstr'");
+			exit;
 		}
-		exit;
+	}
 }
 
 echo $_SESSION['header'];
