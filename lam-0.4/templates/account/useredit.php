@@ -587,7 +587,7 @@ do { // X-Or, only one if() can be true
 				$errors[] = array('WARN', _('ObjectClass shadowAccount not found.'), _('Have to add objectClass shadowAccount.'));
 			if ($config_intern->is_samba3()) {
 				if (!in_array('sambaSamAccount', $account_old->general_objectClass))
-					$errors[] = array('WARN', _('ObjectClass sambaSamAccount not found.'), _('Have to add objectClass sambaSamAccount. USer with sambaAccount will be updated.'));
+					$errors[] = array('WARN', _('ObjectClass sambaSamAccount not found.'), _('Have to add objectClass sambaSamAccount. User with sambaAccount will be updated.'));
 				}
 			else {
 				if (!in_array('sambaAccount', $account_old->general_objectClass))
