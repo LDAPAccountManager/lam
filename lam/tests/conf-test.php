@@ -47,6 +47,9 @@ $MinMachine = $conf->get_minMachine();
 $MaxMachine = $conf->get_maxMachine();
 $DefaultShell = $conf->get_defaultShell();
 $ShellList = $conf->get_shellList();
+$userlistAttributes = $conf->get_userlistAttributes();
+$grouplistAttributes = $conf->get_grouplistAttributes();
+$hostlistAttributes = $conf->get_hostlistAttributes();
 echo ("done<br>");
 // next we modify them and save lam.conf
 echo ("Changing preferences...");
@@ -68,6 +71,9 @@ $conf->set_minMachine("3");
 $conf->set_maxMachine("47");
 $conf->set_defaultShell("/usr/bin/test");
 $conf->set_shellList("/usr/bin/test;/usr/bin/false");
+$conf->set_userlistAttributes("#uid;#cn");
+$conf->set_grouplistAttributes("#gidNumber;#cn;#memberUID");
+$conf->set_hostlistAttributes("#cn;#uid;#description");
 $conf->save();
 echo ("done<br>");
 // at last all preferences are read from lam.conf and compared
@@ -92,6 +98,9 @@ if ($conf->get_minMachine() != "3") echo ("<br><font color=\"#FF0000\">Saving ma
 if ($conf->get_maxMachine() != "47") echo ("<br><font color=\"#FF0000\">Saving minMachine failed!</font><br>");
 if ($conf->get_defaultShell() != "/usr/bin/test") echo ("<br><font color=\"#FF0000\">Saving default shell failed!</font><br>");
 if ($conf->get_shellList() != "/usr/bin/test;/usr/bin/false") echo ("<br><font color=\"#FF0000\">Saving shellList failed!</font><br>");
+if ($conf->get_userlistAttributes() != "#uid;#cn") echo ("<br><font color=\"#FF0000\">Saving userlistAttributes failed!</font><br>");
+if ($conf->get_grouplistAttributes() != "#gidNumber;#cn;#memberUID") echo ("<br><font color=\"#FF0000\">Saving grouplistAttributes failed!</font><br>");
+if ($conf->get_hostlistAttributes() != "#cn;#uid;#description") echo ("<br><font color=\"#FF0000\">Saving hostlistAttributes failed!</font><br>");
 echo ("done<br>");
 // restore old values
 echo ("Restoring old preferences...");
@@ -112,6 +121,9 @@ $conf->set_minMachine($MinMachine);
 $conf->set_maxMachine($MaxMachine);
 $conf->set_defaultShell($DefaultShell);
 $conf->set_shellList($ShellList);
+$conf->set_userlistAttributes($userlistAttributes);
+$conf->set_grouplistAttributes($grouplistAttributes);
+$conf->set_hostlistAttributes($hostlistAttributes);
 $conf->save();
 echo ("done<br>");
 // finished

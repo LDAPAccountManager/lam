@@ -9,7 +9,7 @@ $Id$
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
   (at your option) any later version.
-  
+
   This program is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -63,7 +63,12 @@ class Config {
 	var $MaxGID;
 	var $MinMachine;
 	var $MaxMachine;
-	
+
+	// attributes that are shown in the user/group/host tables
+	var $userlistAttributes;
+	var $grouplistAttributes;
+	var $hostlistAttributes;
+
 	// default shell and list of possible shells
 	var $DefaultShell;
 	var $ShellList;
@@ -148,6 +153,18 @@ class Config {
 					$this->ShellList = chop(substr($line, 11, strlen($line)-11));
 					continue;
 				}
+				if (substr($line, 0, 20) == "userlistAttributes: ") {
+					$this->userlistAttributes = chop(substr($line, 20, strlen($line)-20));
+					continue;
+				}
+				if (substr($line, 0, 21) == "grouplistAttributes: ") {
+					$this->grouplistAttributes = chop(substr($line, 21, strlen($line)-21));
+					continue;
+				}
+				if (substr($line, 0, 20) == "hostlistAttributes: ") {
+					$this->hostlistAttributes = chop(substr($line, 20, strlen($line)-20));
+					continue;
+				}
 			}
 			fclose($file);
 		}
@@ -162,7 +179,8 @@ class Config {
 		if (is_file($conffile) == True) {
 			// booleans to check if value was already saved
 			$save_ssl = $save_host = $save_port = $save_passwd = $save_admins = $save_suffusr = $save_suffgrp = $save_suffhst =
-				$save_minUID = $save_maxUID = $save_minGID = $save_maxGID = $save_minMach = $save_maxMach = $save_defShell = $save_shellList = False;
+				$save_minUID = $save_maxUID = $save_minGID = $save_maxGID = $save_minMach = $save_maxMach = $save_defShell =
+				$save_shellList = $save_usrlstatrr =  $save_grplstatrr = $save_hstlstatrr = False;
 			$file = fopen($conffile, "r");
 			$file_array = array();
 			while (!feof($file)) {
@@ -252,6 +270,21 @@ class Config {
 					$save_shellList = True;
 					continue;
 				}
+				if (substr($file_array[$i], 0, 20) == "userlistAttributes: ") {
+					$file_array[$i] = "userlistAttributes: " . $this->userlistAttributes . "\n";
+					$save_usrlstattr = True;
+					continue;
+				}
+				if (substr($file_array[$i], 0, 21) == "grouplistAttributes: ") {
+					$file_array[$i] = "grouplistAttributes: " . $this->grouplistAttributes . "\n";
+					$save_grplstattr = True;
+					continue;
+				}
+				if (substr($file_array[$i], 0, 20) == "hostlistAttributes: ") {
+					$file_array[$i] = "hostlistAttributes: " . $this->hostlistAttributes . "\n";
+					$save_hstlstattr = True;
+					continue;
+				}
 			}
 			// check if we have to add new entries (e.g. if user upgraded LAM and has an old lam.conf)
 			if (!$save_ssl == True) array_push($file_array, "\n\n# use SSL to connect, can be True or False\n" . "ssl: " . $this->SSL);
@@ -274,7 +307,13 @@ class Config {
 			if (!$save_minMach == True) array_push($file_array, "\n\n# minimum UID number for Samba hosts\n" . "minMachine: " . $this->MinMachine);
 			if (!$save_maxMach == True) array_push($file_array, "\n\n# maximum UID number for Samba hosts\n" . "maxMachine: " . $this->MaxMachine);
 			if (!$save_defShell == True) array_push($file_array, "\n\n# default shell when creating new user\n" . "defaultShell: " . $this->DefaultShell);
-			if (!$save_shellList == True) array_push($file_array, "\n\n# list of possible shells\n" . "shellList: " . $this->ShellList);
+			if (!$save_shellList == True) array_push($file_array, "\n\n# list of possible shells\n# values have to be seperated by semicolons\n" . "shellList: " . $this->ShellList);
+			if (!$save_usrlstattr == True) array_push($file_array, "\n\n# list of attributes to show in user list\n# entries can either be predefined values (e.g. '#cn' or '#uid')" .
+			"\n# or individual ones (e.g. 'uid:User ID' or 'host:Host Name')\n# values have to be seperated by semicolons\n" . "userlistAttributes: " . $this->userlistAttributes);
+			if (!$save_grplstattr == True) array_push($file_array, "\n\n# list of attributes to show in group list\n# entries can either be predefined values (e.g. '#cn' or '#gidNumber')" .
+			"\n# or individual ones (e.g. 'cn:Group Name')\n# values have to be seperated by semicolons\n" . "grouplistAttributes: " . $this->grouplistAttributes);
+			if (!$save_hstlstattr == True) array_push($file_array, "\n\n# list of attributes to show in host list\n# entries can either be predefined values (e.g. '#cn' or '#uid')" .
+			"\n# or individual ones (e.g. 'cn:Host Name')\n# values have to be seperated by semicolons\n" . "hostlistAttributes: " . $this->hostlistAttributes);
 			$file = fopen($conffile, "w");
 			if ($file) {
 				for ($i = 0; $i < sizeof($file_array); $i++) fputs($file, $file_array[$i]);
@@ -286,7 +325,7 @@ class Config {
 			}
 		}
 	}
-	
+
 	// prints current preferences
 	function printconf() {
 		echo _("<b>SSL: </b>" ) . $this->SSL . "<br>";
@@ -302,6 +341,9 @@ class Config {
 		echo _("<b>maxGID: </b>") . $this->MaxGID . "<br>";
 		echo _("<b>minMachine: </b>") . $this->MinMachine . "<br>";
 		echo _("<b>maxMachine: </b>") . $this->MaxMachine . "<br>";
+		echo _("<b>userlistAttributes: </b>") . $this->userlistAttributes . "<br>";
+		echo _("<b>grouplistAttributes: </b>") . $this->grouplistAttributes . "<br>";
+		echo _("<b>hostlistAttributes: </b>") . $this->hostlistAttributes . "<br>";
 		echo _("<b>Default Shell: </b>") . $this->DefaultShell . "<br>";
 		echo _("<b>Shell list: </b>") . $this->ShellList;
 	}
@@ -500,11 +542,44 @@ class Config {
 	function get_shellList() {
 	return $this->ShellList;
 	}
-	
+
 	// sets the list of possible shells when creating new users
 	function set_shellList($value) {
 		if (is_string($value)) $this->ShellList = $value;
 		else echo _("Config->set_shellList failed!");
+	}
+
+	// returns the list of attributes to show in user list
+	function get_userlistAttributes() {
+	return $this->userlistAttributes;
+	}
+
+	// sets the list of attributes to show in user list
+	function set_userlistAttributes($value) {
+		if (is_string($value)) $this->userlistAttributes = $value;
+		else echo _("Config->set_userlistAttributes failed!");
+	}
+
+	// returns the list of attributes to show in group list
+	function get_grouplistAttributes() {
+	return $this->grouplistAttributes;
+	}
+
+	// sets the list of attributes to show in group list
+	function set_grouplistAttributes($value) {
+		if (is_string($value)) $this->grouplistAttributes = $value;
+		else echo _("Config->set_grouplistAttributes failed!");
+	}
+
+	// returns the list of attributes to show in host list
+	function get_hostlistAttributes() {
+	return $this->hostlistAttributes;
+	}
+
+	// sets the list of attributes to show in host list
+	function set_hostlistAttributes($value) {
+		if (is_string($value)) $this->hostlistAttributes = $value;
+		else echo _("Config->set_hostlistAttributes failed!");
 	}
 
 }

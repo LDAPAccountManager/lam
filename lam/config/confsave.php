@@ -106,6 +106,21 @@ if (chop($shellList) == "") {
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
+if (chop($usrlstattr) == "") {
+	echo _("<font color=\"red\"><b>" . _("No attributes in user list!") . "</b></font>");
+	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
+	exit;
+}
+if (chop($grplstattr) == "") {
+	echo _("<font color=\"red\"><b>" . _("No attributes in group list!") . "</b></font>");
+	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
+	exit;
+}
+if (chop($hstlstattr) == "") {
+	echo _("<font color=\"red\"><b>" . _("No attributes in host list!") . "</b></font>");
+	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
+	exit;
+}
 
 // set new preferences
 $conf->set_Host($host);
@@ -124,6 +139,9 @@ $conf->set_minMachine($minMach);
 $conf->set_maxMachine($maxMach);
 $conf->set_defaultShell($defShell);
 $conf->set_shellList($shellList);
+$conf->set_userlistAttributes($usrlstattr);
+$conf->set_grouplistAttributes($grplstattr);
+$conf->set_hostlistAttributes($hstlstattr);
 
 // check if password was changed
 if ($pass1 != $pass2) {
@@ -137,7 +155,7 @@ if ($pass1 != "") {
 }
 // save settings and display new settings
 $conf->save();
-echo ("<b>" . _("Saving the following settings:") . "</b><br><br>");
+echo ("<b>" . _("The following settings were saved:") . "</b><br><br>");
 $conf->printconf();
 echo ("<br><br><br><br><br><a href=\"../templates/login.php\" target=\"_top\">" . _("Back to Login") . "</a>");
 
