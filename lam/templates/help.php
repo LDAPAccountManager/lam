@@ -22,19 +22,46 @@ $Id$
 
   LDAP Account Manager display help pages.
 */
+
+/**
+ * LDAP Account Manager help page.
+ * 
+ * @author Michael Dürgner
+ * @version 0.5
+ * @package Help
+ * @copyright Copyright (C) 2003-2004 Michael Dürgner
+ * @license GPL
+ */
+
+/**
+ * 
+ */
 include_once("../lib/ldap.inc");
+
+/**
+ * 
+ */
 include_once("../lib/config.inc");
 
 session_save_path("../sess"); // Set session save path
 @session_start(); // Start LDAP Account Manager session
 
+/**
+ * 
+ */
 include_once("../lib/status.inc"); // Include lib/status.php which provides statusMessage()
+
+/**
+ * 
+ */
 include_once("../help/help.inc"); // Include help/help.inc which provides $helpArray where the help pages are stored
 
 setlanguage();
 
 
-/* Print HTML head */
+/**
+ * Print HTML header of the help page.
+ */
 function echoHTMLHead()
 {
 echo $_SESSION['header'];
@@ -46,7 +73,9 @@ echo $_SESSION['header'];
 <?php
 }
 
-/* Print HTML foot */
+/**
+ * Print HTML footer of the help page.
+ */
 function echoHTMLFoot()
 {
 ?>
@@ -55,7 +84,12 @@ function echoHTMLFoot()
 <?php
 }
 
-/* Print help site */
+/**
+ * Print help site for a specific help number.
+ * 
+ * @param array The help entry that is to be displayed. 
+ * @param array The help variables that are used to replace the spacer in the help text.
+ */
 function displayHelp($helpEntry,$helpVariables) {
 	/* Load external help page */
 	if($helpEntry["ext"] == "TRUE")
@@ -84,7 +118,7 @@ function displayHelp($helpEntry,$helpVariables) {
 }
 
 /* If no help number was submitted print error message */
-if(!isset($_GET['item']))
+if(!isset($_GET['HelpNumber']))
 {
 	$errorMessage = _("Sorry no help number submitted.");
 	echoHTMLHead();
@@ -97,11 +131,15 @@ $helpEntry = array();
 
 if(isset($_GET['module'])) {
 	include_once("../lib/modules.inc");
-	$helpEntry = getHelp($_GET['module'],$_GET['item'],$_GET['scope']);
-	//$helpEntry = $_SESSION['account']->getHelp($_GET['module'],$_GET['item']);
+	if(isset($_GET['scope'])) {
+		$helpEntry = getHelp($_GET['module'],$_GET['HelpNumber'],$_GET['scope']);
+	}
+	else {
+		$helpEntry = getHelp($_GET['module'],$_GET['HelpNumber']);
+	}
 	if(!$helpEntry) {
 		$variables = array();
-		array_push($variables,$_GET['item']);
+		array_push($variables,$_GET['HelpNumber']);
 		array_push($variables,$_GET['module']);
 		$errorMessage = _("Sorry this help id ({bold}%s{endbold}) is not available for this module ({bold}%s{endbold}).");
 		echoHTMLHead();

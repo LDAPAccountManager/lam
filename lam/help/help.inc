@@ -23,6 +23,16 @@ $Id$
   LDAP Account Manager help topics.
 */
 
+/**
+ * LDAP Account Manager help entries.
+ * 
+ * @author Michael Dürgner
+ * @version 0.5
+ * @package Help
+ * @copyright Copyright (C) 2003-2004 Michael Dürgner
+ * @license GPL
+ */
+
 setlanguage();
 
 $helpArray = array (

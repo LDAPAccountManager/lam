@@ -352,7 +352,7 @@ function checkConfigOptions($scopes, $options) {
 */
 function getHelp($module,$helpID,$scope='') {
 	$moduleObject = new $module((($scope != '') ? $scope : 'none'));
-	return $moduleObject->get_help($helpID,$scope);
+	return $moduleObject->get_help($helpID);
 }
 
 /**
@@ -877,7 +877,7 @@ class accountContainer {
 								echo "<td";
 								if ($input[$i][$j]['td']['valign']!='') echo ' valign="' . $input[$i][$j]['td']['valign'] .'"';
 								echo ">\n";
-								echo "<a href=../help.php?module=$module&item=". $input[$i][$j]['value'] . "&scope=" . $this->type . " target=\"help\" tabindex=$z>" . _('Help') . "</a></td>\n";
+								echo "<a href=../help.php?module=$module&HelpNumber=". $input[$i][$j]['value'] . "&scope=" . $this->type . " target=\"help\" tabindex=$z>" . _('Help') . "</a></td>\n";
 								$z++;
 								break;
 							case 'message':

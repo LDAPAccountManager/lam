@@ -18,11 +18,31 @@ $Id$
   You should have received a copy of the GNU General Public License
   along with this program; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-
-  LDAP Account Manager status messages.
 */
 
+/**
+ * LDAP Account Manager status messages.
+ * 
+ * @author Michael Dürgner
+ * @version 0.5
+ * @package lib
+ * @copyright Copyright (C) 2003-2004 Michael Dürgner
+ * @license GPL
+ */
+
+/**
+ * This function prints a short status message. It can be used to print INFO,
+ * WARN and ERROR messages at the moment.
+ * 
+ * @param string The type of the message to be printed. It must be one of
+ * the following types: 'INFO', 'WARN' or 'ERROR'. Every other type will lead
+ * to an error message indicating an invalid message type.
+ * @param string The headline of the status message.
+ * @param string The text of the status message. It may be formatted with
+ * the syntax specified by the other functions in this file. 
+ * @param array The variables that are used to replace the spacers in the
+ * submitted text. This parameter is optional.
+ */
 function StatusMessage($MessageTyp,$MessageHeadline,$MessageText,$MessageVariables = array()) {
 	/* Setting CSS-StyleSheet class depending on the $MessageTyp and rewriting $MessageTyp with a readable string. */
 	if($MessageTyp == "INFO") {
@@ -64,26 +84,59 @@ function StatusMessage($MessageTyp,$MessageHeadline,$MessageText,$MessageVariabl
 	}
 }
 
-/* Use the three replace functions on the submitted Text. */
+/**
+ * Use the three replace functions on the submitted Text.
+ * 
+ * @access private
+ * 
+ * @param string The text that is used to search for replaceable strings.
+ * 
+ * @return string The processed text.
+ */
 function parseMessageString($MessageString) {
 	return linkText(colorText(boldText($MessageString)));
 }
 
-/* Replace {bold} and {endbold} with <b> and </b> HTML-Tags. */
+/**
+ * Replace {bold} and {endbold} with <b> and </b> HTML-Tags.
+  * 
+ * @access private
+ * 
+ * @param string The text that is used to search for {bold} and {endbold} tags.
+ * 
+ * @return string The submitted text with {bold} and {endbold} replaced with
+ * the appropriate HTML tages <b> and </b> 
+ */
 function boldText($text) {
 	$pattern = "/\{bold\}([^{]*)\{endbold\}/"; // Regular expression matching {bold}[Text]{endbold}
 	$replace = "<b class=\"status\">\\1</b>"; // Replace pattern
 	return preg_replace($pattern,$replace,$text);
 }
 
-/* Replace {color=#[HEX-Value]} or {color=[HEX-Value]} and {endcolor} with <font color="#[HEX-Value]"> and </font> HTML-Tags. */
+/**
+ * Replace {color=#[HEX-Value]} or {color=[HEX-Value]} and {endcolor} with <font color="#[HEX-Value]"> and </font> HTML-Tags.
+ * 
+ * @access private
+ * 
+ * @param string 
+ * 
+ * @return string 
+ */
 function colorText($text) {
 	$pattern = "/\{color=#?([0-9,a-f,A-F]{6})\}([^{]*)\{endcolor\}/"; // Regular expression matching {color=#[HEX-Value]}[Text]{endcolor} or {color=[HEX-Value]}[Text]{endcolor}
 	$replace = "<font color=\"#\\1\">\\2</font>"; // Replace pattern
 	return preg_replace($pattern,$replace,$text);
 }
 
-/* Replace {link=[Link-Target]} and {endlink} with <a href="[Link-Target]" target="_blank"> and </a> HTML-Tags. */
+/**
+ * Replace {link=[Link-Target]} and {endlink} with <a href="[Link-Target]" target="_blank"> and </a> HTML-Tags.
+ * 
+ * @access private
+ * 
+ * @param string 
+ * 
+ * @return string 
+ */
 function linkText($text) {
 	$pattern = "/\{link=([^}]*)\}([^{]*)\{endlink\}/"; // Regular expression matching {link=[Link-Target]}[Text]{endlink}
 	$replace = "<a href=\"\\1\" target=\"_blank\">\\2</a>"; //Replace pattern

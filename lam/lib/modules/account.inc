@@ -36,9 +36,18 @@ class account extends baseModule {
 		// module dependencies
 		$return['dependencies'] = array('depends' => array(), 'conflicts' => array('inetOrgPerson'));
 		// available PDF fields
-		$return['PDF_fields'] = array('description');
+		$return['PDF_fields'] = array(
+			'description'
+		);
 		// help Entries
-		$return['help'] = array (	'description'	=>	array ("ext" => "FALSE", "Headline" => _("Gecos"), "Text" => _("Host description. If left empty host name will be used.")));
+		$return['help'] = array (
+			'host' => array(
+				'description'	=>	array (
+					"Headline" => _("Gecos"),
+					"Text" => _("Host description. If left empty host name will be used.")
+				)
+			)
+		);
 		return $return;
 	}
 

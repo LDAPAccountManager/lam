@@ -86,16 +86,18 @@ class sambaSamAccount extends baseModule {
 			'regex' => 'unixhost',
 			'error_message' => $this->messages['workstations'][0]);
 		// available PDF fields
-		$return['PDF_fields'] = array(	'displayName',
-													'uid',
-													'sambaHomePath',
-													'sambaHomeDrive',
-													'sambaLogonScript',
-													'sambaProfilePath',
-													'sambaUserWorkstations',
-													'sambaDomainName',
-													'description',
-													'sambaPrimaryGroupSID');
+		$return['PDF_fields'] = array(
+			'displayName',
+			'uid',
+			'sambaHomePath',
+			'sambaHomeDrive',
+			'sambaLogonScript',
+			'sambaProfilePath',
+			'sambaUserWorkstations',
+			'sambaDomainName',
+			'description',
+			'sambaPrimaryGroupSID'
+		);
 		return $return;
 	}
 

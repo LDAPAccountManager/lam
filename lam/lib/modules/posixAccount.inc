@@ -268,70 +268,73 @@ class posixAccount extends baseModule {
 			'additionalGroups',
 			'homeDirectory',
 			'userPassword',
-			'loginShell');
+			'loginShell'
+		);
 		// help Entries
 		$return['help'] = array(
-		"minMaxUser" => array(
-			"ext" => "FALSE",
-			"Headline" => _("UID number"),
-			"Text" => _("These are the minimum and maximum numbers to use for user IDs when creating new user accounts. The range should be different from that of machines. New user accounts will always get the highest number in use plus one.")),
-		"minMaxHost" => array(
-			"ext" => "FALSE",
-			"Headline" => _("UID number"),
-			"Text" => _("These are the minimum and maximum numbers to use for machine IDs when creating new accounts for Samba hosts. The range should be different from that of users. New host accounts will always get the highest number in use plus one.")),
-		'pwdHash' => array(
-			"ext" => "FALSE",
-			"Headline" => _("Password hash type"),
-			"Text" => _("LAM supports CRYPT, SHA, SSHA, MD5 and SMD5 to generate the hash value of passwords. SSHA and CRYPT are the most common but CRYPT does not support passwords greater than 8 letters. We do not recommend to use plain text passwords.")),
-		'uidNumber' => array(
-			"ext" => "FALSE",
-			"Headline" => _("UID number"),
-			"Text" => _("If empty UID number will be generated automaticly.")),
-		'user' => array(
-		'uid' => array(
-			"ext" => "FALSE",
-			"Headline" => _("Username"),
-			"Text" => _("Username of the user who should be created. Valid characters are: a-z,0-9, .-_. Lam does not allow a number as first character because useradd also does not allow it. Lam does not allow capital letters A-Z because it can cause several problems. If username is already used username will be expanded with a number. The next free number will be used. Warning: Older systems have problems with usernames longer than 8 characters. You can not log in to Windows if username is longer than 16 characters.")),
-		'gecos' => array(
-			"ext" => "FALSE",
-			"Headline" => _("Gecos"),
-			"Text" => _("User description. If left empty sur- and give name will be used.")),
-		'gidNumber' => array(
-			"ext" => "FALSE",
-			"Headline" => _("Primary group"),
-			"Text" => _("The Primary Group the user should be member of.")),
-		'homeDirectory' => array(
-			"ext" => "FALSE",
-			"Headline" => _("Home directory"),
-			"Text" => _("$user and $group are replaced with username or primary groupname.")),
-		/*'userPassword'		=>*/
-		'userPassword_no' => array(
-			"ext" => "FALSE",
-			"Headline" => _("Use no password"),
-			"Text" => _("If checked no password will be used.")),
-		/*'userPassword_lock'	=>*/
-		'loginShell' => array(
-			"ext" => "FALSE",
-			"Headline" => _("Login shell"),
-			"Text" => _("To disable login use /bin/false. List of shells is read from lam/config/shells")),
-		'addgroup' => array(
-			"ext" => "FALSE",
-			"Headline" => _("Additional groups"),
-			"Text" => _("Hold the CTRL-key to (de)select multiple groups."). ' '. _("Can be left empty."))),
-		'host' => array(
-		'uid' => array(
-			"ext" => "FALSE",
-			"Headline" => _("Host name"),
-			"Text" => _("Host name of the host which should be created. Valid characters are: a-z,0-9, .-_$. Lam does not allow a number as first character because useradd also does not allow it. Lam does not allow capital letters A-Z because it can cause several problems. Hostnames are always ending with $. If last character is not $ it will be added. If hostname is already used hostname will be expanded with a number. The next free number will be used.")),
-		'gecos' => array(
-			"ext" => "FALSE",
-			"Headline" => _("Gecos"),
-			"Text" => _("Host description. If left empty host name will be used.")),
-		'gidNumber' => array(
-			"ext" => "FALSE",
-			"Headline" => _("Primary group"),
-			"Text" => _("The Primary group the host should be member of."))
-		));
+			'minMaxUser' => array(
+				'Headline' => _('UID number'),
+				'Text' => _('These are the minimum and maximum numbers to use for user IDs when creating new user accounts. The range should be different from that of machines. New user accounts will always get the highest number in use plus one.')
+			),
+			'minMaxHost' => array(
+				'Headline' => _('UID number'),
+				'Text' => _('These are the minimum and maximum numbers to use for machine IDs when creating new accounts for Samba hosts. The range should be different from that of users. New host accounts will always get the highest number in use plus one.')
+			),
+			'pwdHash' => array(
+				"Headline" => _("Password hash type"),
+				"Text" => _("LAM supports CRYPT, SHA, SSHA, MD5 and SMD5 to generate the hash value of passwords. SSHA and CRYPT are the most common but CRYPT does not support passwords greater than 8 letters. We do not recommend to use plain text passwords.")
+			),
+			'uidNumber' => array(
+				"Headline" => _("UID number"),
+				"Text" => _("If empty UID number will be generated automaticly.")
+			),
+			'user' => array(
+				'uid' => array(
+					"Headline" => _("Username"),
+					"Text" => _("Username of the user who should be created. Valid characters are: a-z,0-9, .-_. Lam does not allow a number as first character because useradd also does not allow it. Lam does not allow capital letters A-Z because it can cause several problems. If username is already used username will be expanded with a number. The next free number will be used. Warning: Older systems have problems with usernames longer than 8 characters. You can not log in to Windows if username is longer than 16 characters.")
+				),
+				'gecos' => array(
+					"Headline" => _("Gecos"),
+					"Text" => _("User description. If left empty sur- and give name will be used.")
+				),
+				'gidNumber' => array(
+					"Headline" => _("Primary group"),
+					"Text" => _("The Primary Group the user should be member of.")
+				),
+				'homeDirectory' => array(
+					"Headline" => _("Home directory"),
+					"Text" => _("$user and $group are replaced with username or primary groupname.")
+				),
+				/*'userPassword'		=>*/
+				'userPassword_no' => array(
+					"Headline" => _("Use no password"),
+					"Text" => _("If checked no password will be used.")
+				),
+				/*'userPassword_lock'	=>*/
+				'loginShell' => array(
+					"Headline" => _("Login shell"),
+					"Text" => _("To disable login use /bin/false. List of shells is read from lam/config/shells")
+				),
+				'addgroup' => array(
+					"Headline" => _("Additional groups"),
+					"Text" => _("Hold the CTRL-key to (de)select multiple groups."). ' '. _("Can be left empty.")
+				)
+			),
+			'host' => array(
+				'uid' => array(
+					"Headline" => _("Host name"),
+					"Text" => _("Host name of the host which should be created. Valid characters are: a-z,0-9, .-_$. Lam does not allow a number as first character because useradd also does not allow it. Lam does not allow capital letters A-Z because it can cause several problems. Hostnames are always ending with $. If last character is not $ it will be added. If hostname is already used hostname will be expanded with a number. The next free number will be used.")
+				),
+				'gecos' => array(
+					"Headline" => _("Gecos"),
+					"Text" => _("Host description. If left empty host name will be used.")
+				),
+				'gidNumber' => array(
+					"Headline" => _("Primary group"),
+					"Text" => _("The Primary group the host should be member of.")
+				)
+			)
+		);
 
 		return $return;
 	}
@@ -1012,9 +1015,7 @@ class posixAccount extends baseModule {
 			}
 		}
 		return $return;
-	}
-
-	/**
+	n	/**
 	* In this function the LDAP account is built up.
 	*
 	* @param array $rawAccounts list of hash arrays (name => value) from user input

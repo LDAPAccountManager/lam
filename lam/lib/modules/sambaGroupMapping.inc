@@ -219,11 +219,13 @@ class sambaGroupMapping extends baseModule {
 		// module dependencies
 		$return['dependencies'] = array('depends' => array('posixGroup'), 'conflicts' => array());
 		// available PDF fields
-		$return['PDF_fields'] = array(	'gidNumber',
-													'sambaSID',
-													'displayName',
-													'sambaGroupType',
-													'description');
+		$return['PDF_fields'] = array(
+			'gidNumber',
+			'sambaSID',
+			'displayName',
+			'sambaGroupType',
+			'description'
+		);
 		// upload fields
 		// search existing Samba 3 domains
 		if ($_SESSION['loggedIn']) $domains = search_domains($_SESSION['config']->get_domainSuffix());
@@ -262,25 +264,26 @@ class sambaGroupMapping extends baseModule {
 		// help Entries
 		$return['help'] = array(
 			'displayName' => array(
-				"ext" => "FALSE",
 				"Headline" => _("Display name"),
-				"Text" => _("This is the group name which will be shown in Windows.")),
+				"Text" => _("This is the group name which will be shown in Windows.")
+			),
 			'sambaSID' => array(
-				"ext" => "FALSE",
 				"Headline" => _("Windows groupname"),
-				"Text" => _("If you want to use a well known RID you can selcet a well known group.")),
+				"Text" => _("If you want to use a well known RID you can selcet a well known group.")
+			),
 			'rid' => array(
-				"ext" => "FALSE",
 				"Headline" => _("Samba RID number"),
-				"Text" => _("This is the relative ID (similar to UID on Unix) for Windows accounts. If you leave this empty LAM will calculate the RID from the UID. This can be either a number or the name of a special group:") . ' ' . implode(", ", array_keys($this->rids))),
+				"Text" => _("This is the relative ID (similar to UID on Unix) for Windows accounts. If you leave this empty LAM will calculate the RID from the UID. This can be either a number or the name of a special group:") . ' ' . implode(", ", array_keys($this->rids))
+			),
 			'sambaDomainName' => array(
-				"ext" => "FALSE",
 				"Headline" => _("Domain"),
-				"Text" => _("Windows-Domain name of group."). ' '. _("Can be left empty.")),
+				"Text" => _("Windows-Domain name of group."). ' '. _("Can be left empty.")
+			),
 			'type' => array(
-				"ext" => "FALSE",
 				"Headline" => _("Samba group type"),
-				"Text" => _("Windows group type.")));
+				"Text" => _("Windows group type.")
+			)
+		);
 		
 		return $return;
 	}

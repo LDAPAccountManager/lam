@@ -18,12 +18,35 @@ $Id$
   You should have received a copy of the GNU General Public License
   along with this program; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
 */
 
+/**
+ * 
+ * 
+ * @author Michael Dürgner
+ * @version 0.5
+ * @package PDF
+ * @copyright Copyright (C) 2003-2004 Michael Dürgner
+ * @license GPL
+ */
+
+/**
+ * 
+ */
 include_once("config.inc");
+
+/**
+ * 
+ */
 include_once("ldap.inc");
 
+/**
+ * 
+ * 
+ * @param string 
+ * 
+ * @return array 
+ */
 function getPDFStructureDefinitions($scope = "user") {
 	$return = array();
 	$path = $_SESSION['lampath'] . 'config/pdf/' . $scope;
@@ -39,6 +62,14 @@ function getPDFStructureDefinitions($scope = "user") {
 	return $return;
 }
 
+/**
+ * 
+ * 
+ * @param string 
+ * @param string 
+ * 
+ * @return array
+ */
 function loadPDFStructureDefinitions($scope='user', $definition='default.xml') {
 	$parser = new xmlParser();
 	$file = $_SESSION['lampath'] . 'config/pdf/' . $scope . '/' . $definition;
@@ -61,6 +92,12 @@ function loadPDFStructureDefinitions($scope='user', $definition='default.xml') {
 	return array('structure' => $structure, 'page_definitions' => $page_definitions);
 }
 
+/**
+ * 
+ * 
+ * @param string 
+ * @param string 
+ */
 function savePDFStructureDefinitions($scope,$definition) {
 	$handle = fopen($_SESSION['lampath'] . 'config/pdf/' . $scope . '/' . $definition,'w');
 	$pdf_attributes = '';
@@ -101,11 +138,24 @@ function savePDFStructureDefinitions($scope,$definition) {
 	fclose($handle);
 }
 
+/**
+ * 
+ * 
+ * @param string 
+ * @param string
+ * 
+ * @return boolean  
+ */
 function deletePDFStructureDefinition($scope,$definition) {
 	$file = $_SESSION['lampath'] . 'config/pdf/' . $scope . '/' . $definition;
 	return unlink($file);
 }
 
+/**
+ * 
+ * 
+ * @return array 
+ */
 function getAvailableLogos() {
 	$return = array();
 	$dirPath = $_SESSION['lampath'] . '/config/pdf/logos/';

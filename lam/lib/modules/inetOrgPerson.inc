@@ -193,33 +193,80 @@ class inetOrgPerson extends baseModule {
 		);
 		// TODO unix workstations for upload
 		// available PDF fields
-		$return['PDF_fields'] = array(	'description',
-													'host',
-													'title',
-													'givenName',
-													'sn',
-													'employeeType',
-													'street',
-													'postalCode',
-													'postalAddress',
-													'telephoneNumber',
-													'mobileTelephoneNumber',
-													'facimilieTelefonNumber',
-													'mail');
+		$return['PDF_fields'] = array(
+			'description',
+			'host',
+			'title',
+			'givenName',
+			'sn',
+			'employeeType',
+			'street',
+			'postalCode',
+			'postalAddress',
+			'telephoneNumber',
+			'mobileTelephoneNumber',
+			'facimilieTelefonNumber',
+			'mail'
+		);
 		// help Entries
 		$return['help'] = array (
-			'description' => array("ext" => "FALSE", "Headline" => _("Gecos"), "Text" => _("Host description. If left empty host name will be used.")),
-			'title' => array("ext" => "FALSE", "Headline" => _("Title"), "Text" => _("Title of user, Mr., Ms., ...")),
-			'givenName' => array("ext" => "FALSE", "Headline" => _("First name"), "Text" => _("First name of user. Only letters, - and spaces are allowed.")),
-			'sn' => array("ext" => "FALSE", "Headline" => _("Last name"), "Text" => _("Last name of user. Only letters, - and spaces are allowed.")),
-			'employeeType' => array("ext" => "FALSE", "Headline" => _("Employee type"), "Text" => _("Employee type: worker, student, nurse, ...")),
-			'street' => array("ext" => "FALSE", "Headline" => _("Street"), "Text" => _("Street")),
-			'postalCode' => array("ext" => "FALSE", "Headline" => _("Postal code"), "Text" => _("Postal code")),
-			'postalAddress' => array("ext" => "FALSE", "Headline" => _("Postal address"), "Text" => _("Postal address, city")),
-			'telephoneNumber' => array("ext" => "FALSE", "Headline" => _("Telephone number"), "Text" => _("Telephone number")),
-			'mobileTelephoneNumber' => array("ext" => "FALSE", "Headline" => _("Mobile number"), "Text" => _("Mobile number")),
-			'facsimileTelephoneNumber' => array("ext" => "FALSE", "Headline" => _("Fax number"), "Text" => _("Fax number")),
-			'mail' => array("ext" => "FALSE", "Headline" => _("eMail address"), "Text" => _("eMail address")));
+			'user' => array (	
+				'description' => array (
+					"Headline" => _("Gecos"),
+					"Text" => _("User description. If left empty sur- and give name will be used.")
+				),
+				'title' => array (
+					"Headline" => _("Title"),
+					"Text" => _("Title of user, Mr., Ms., ...")
+				),
+				'givenName' => array (
+					"Headline" => _("Given name"),
+					"Text" => _("Given name of user. Only letters, - and spaces are allowed.")
+				),
+				'sn' => array (
+					"Headline" => _("Surname"),
+					"Text" => _("Surname of user. Only letters, - and spaces are allowed.")
+				),
+				'employeeType' => array (
+					"Headline" => _("Employee type"),
+					"Text" => _("Employee type: worker, student, nurse, ...")
+				),
+				'street' => array (
+					"Headline" => _("Street"),
+					"Text" => _("Street")
+				),
+				'postalCode' => array (
+					"Headline" => _("Postal code"),
+					"Text" => _("Postal code")
+				),
+				'postalAddress' => array (
+					"Headline" => _("Postal address"),
+					"Text" => _("Postal address, city")
+				),
+				'telephoneNumber' => array (
+					"Headline" => _("Telephone number"),
+					"Text" => _("Telephone number")
+				),
+				'mobileTelephoneNumber' => array (
+					"Headline" => _("Mobile number"),
+					"Text" => _("Mobile number")
+				),
+				'facsimileTelephoneNumber' => array (
+					"Headline" => _("Fax number"),
+					"Text" => _("Fax number")
+				),
+				'mail' => array (
+					"Headline" => _("eMail address"),
+					"Text" => _("eMail address")
+				)
+			),
+			'host' => array(
+				'description' => array (
+					"Headline" => _("Gecos"),
+					"Text" => _("Host description. If left empty host name will be used.")
+				)
+			)
+		);
 		
 		return $return;
 	}

@@ -147,15 +147,17 @@ class sambaAccount extends baseModule {
 		$return['profile_checks']['sambaAccount_domain'] = array('type' => 'ext_preg', 'regex' => 'domainname',
 			'error_message' => $this->messages['domain'][0]);
 		// available PDF fields
-		$return['PDF_fields'] = array(	'displayName',
-													'uid',
-													'smbHome',
-													'homeDrive',
-													'scriptPath',
-													'profilePath',
-													'userWorkstations',
-													'domain',
-													'description');
+		$return['PDF_fields'] = array(
+			'displayName',
+			'uid',
+			'smbHome',
+			'homeDrive',
+			'scriptPath',
+			'profilePath',
+			'userWorkstations',
+			'domain',
+			'description'
+		);
 		return $return;
 	}
 

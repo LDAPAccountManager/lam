@@ -498,12 +498,12 @@ class baseModule {
 	 * 
 	 * @return array The desired help entry.
 	 */
-	function get_help($id,$scope) {
+	function get_help($id) {
 		if(isset($this->meta['help'][$id])) {
 			return $this->meta['help'][$id];
 		}
-		elseif(isset($this->meta['help'][$scope][$id])) {
-			return $this->meta['help'][$scope][$id];
+		elseif(isset($this->meta['help'][$this->scope][$id])) {
+			return $this->meta['help'][$this->scope][$id];
 		}
 		else {
 			return false;

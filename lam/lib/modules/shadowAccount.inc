@@ -120,18 +120,37 @@ class shadowAccount extends baseModule {
 			'regex' => 'digit',
 			'error_message' => $this->messages['shadowWarning'][0]);
 		// available PDF fields
-		$return['PDF_fields'] = array(	'shadowLastChange',
-													'shadowWarning',
-													'shadowInactive',
-													'shadowExpire',
-													'shadowFlag',
-													'description');
+		$return['PDF_fields'] = array(
+			'shadowLastChange',
+			'shadowWarning',
+			'shadowInactive',
+			'shadowExpire',
+			'shadowFlag',
+			'description'
+		);
 		// help Entries
-		$return['help'] = array (	'shadowWarning'	=>	array ("ext" => "FALSE", "Headline" => _("Password warn"), "Text" => _("Days before password is to expire that user is warned of pending password expiration. If set value must be 0<."). ' '. _("Can be left empty.")),
-											'shadowInactive'	=>	array ("ext" => "FALSE", "Headline" => _("Password expire"), "Text" => _("Number of days a user can login even his password has expired. -1=always."). ' '. _("Can be left empty.")),
-											'shadowMin'		=>	array ("ext" => "FALSE", "Headline" => _("Minimum password age"), "Text" => _("Number of days a user has to wait until he\'s allowed to change his password again. If set value must be 0<."). ' '. _("Can be left empty.")),
-											'shadowMax'		=>	array ("ext" => "FALSE", "Headline" => _("Maximum password age"), "Text" => _("Number of days after a user has to change his password again. If set value must be 0<."). ' '. _("Can be left empty.")),
-											'shadowExpire'	=>	array ("ext" => "FALSE", "Headline" => _("Expire date"), "Text" => _("Account expire date. Format: DD-MM-YYYY")));
+		$return['help'] = array (
+			'shadowWarning' => array (
+				"Headline" => _("Password warn"),
+				"Text" => _("Days before password is to expire that user is warned of pending password expiration. If set value must be 0<."). ' '. _("Can be left empty.")
+			),
+			'shadowInactive' => array (
+				"Headline" => _("Password expire"),
+				"Text" => _("Number of days a user can login even his password has expired. -1=always."). ' '. _("Can be left empty.")
+			),
+			'shadowMin' => array (
+				"Headline" => _("Minimum password age"),
+				"Text" => _("Number of days a user has to wait until he\'s allowed to change his password again. If set value must be 0<."). ' '. _("Can be left empty.")
+			),
+			'shadowMax' => array (
+				"Headline" => _("Maximum password age"),
+				"Text" => _("Number of days after a user has to change his password again. If set value must be 0<."). ' '. _("Can be left empty.")
+			),
+			'shadowExpire' => array (
+				"Headline" => _("Expire date"),
+				"Text" => _("Account expire date. Format: DD-MM-YYYY")
+			)
+		);
 		
 		return $return;
 	}

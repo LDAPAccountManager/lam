@@ -276,10 +276,12 @@ class posixGroup extends baseModule {
 			'cmp_name2' => 'posixGroup_minGID',
 			'error_message' => $this->messages['gidNumber'][7]);
 		// available PDF fields
-		$return['PDF_fields'] = array(	'cn',
-		'gidNumber',
-		'memberUid',
-		'description');
+		$return['PDF_fields'] = array(
+			'cn',
+			'gidNumber',
+			'memberUid',
+			'description'
+		);
 		// upload fields
 		$return['upload_columns'] = array(
 		array(
@@ -317,43 +319,43 @@ class posixGroup extends baseModule {
 		);
 		// help Entries
 		$return['help'] = array(
-		'cn' =>	array(
-			"ext" => "FALSE",
-			"Headline" => _("Groupname"),
-			"Text" => _("Group name of the group which should be created. Valid characters are: a-z,0-9, .-_. Lam does not allow a number as first character because groupadd also does not allow it. Lam does not allow capital letters A-Z because it can cause several problems. If groupname is already used groupname will be expanded with a number. The next free number will be used.")),
-		'gidNumber'	=> array(
-			"ext" => "FALSE",
-			"Headline" => _("GID number"),
-			"Text" => _("If empty GID number will be generated automaticly depending on your configuration settings.")),
-		'description' => array(
-			"ext" => "FALSE",
-			"Headline" => _("Description"),
-			"Text" => _("Group description. If left empty group name will be used.")),
-		'members' => array(
-			"ext" => "FALSE",
-			"Headline" => _("Group members"),
-			"Text" => _("Users also being member of the current group."). ' '. _("Can be left empty.")),
-		'upload_members' => array(
-			"ext" => "FALSE",
-			"Headline" => _("Group members"),
-			"Text" => _("Users also being member of the current group. Users are separated by semicolons.")),
-		'password' => array(
-			"ext" => "FALSE",
-			"Headline" => _("Group password"),
-			"Text" => _("Sets the group password.")),
-		'userPassword_no' => array(
-			"ext" => "FALSE",
-			"Headline" => _("Use no password"),
-			"Text" => _("If checked no password will be used.")),
-		/*'userPassword_lock'	=>	*/
-		'minMaxGID' => array(
-			"ext" => "FALSE",
-			"Headline" => _("GID number"),
-			"Text" => _("These are the minimum and maximum numbers to use for group IDs when creating new group accounts. New group accounts will always get the highest number in use plus one.")),
-		'pwdHash' => array(
-			"ext" => "FALSE",
-			"Headline" => _("Password hash type"),
-			"Text" => _("LAM supports CRYPT, SHA, SSHA, MD5 and SMD5 to generate the hash value of passwords. SSHA and CRYPT are the most common but CRYPT does not support passwords greater than 8 letters. We do not recommend to use plain text passwords."))
+			'cn' =>	array(
+				"Headline" => _("Groupname"),
+				"Text" => _("Group name of the group which should be created. Valid characters are: a-z,0-9, .-_. Lam does not allow a number as first character because groupadd also does not allow it. Lam does not allow capital letters A-Z because it can cause several problems. If groupname is already used groupname will be expanded with a number. The next free number will be used.")
+			),
+			'gidNumber'	=> array(
+				"Headline" => _("GID number"),
+				"Text" => _("If empty GID number will be generated automaticly depending on your configuration settings.")
+			),
+			'description' => array(
+				"Headline" => _("Description"),
+				"Text" => _("Group description. If left empty group name will be used.")
+			),
+			'members' => array(
+				"Headline" => _("Group members"),
+				"Text" => _("Users also being member of the current group."). ' '. _("Can be left empty.")
+			),
+			'upload_members' => array(
+				"Headline" => _("Group members"),
+				"Text" => _("Users also being member of the current group. Users are separated by semicolons.")
+			),
+			'password' => array(
+				"Headline" => _("Group password"),
+				"Text" => _("Sets the group password.")
+			),
+			'userPassword_no' => array(
+				"Headline" => _("Use no password"),
+				"Text" => _("If checked no password will be used.")
+			),
+			/*'userPassword_lock'	=>	*/
+			'minMaxGID' => array(
+				"Headline" => _("GID number"),
+				"Text" => _("These are the minimum and maximum numbers to use for group IDs when creating new group accounts. New group accounts will always get the highest number in use plus one.")
+			),
+			'pwdHash' => array(
+				"Headline" => _("Password hash type"),
+				"Text" => _("LAM supports CRYPT, SHA, SSHA, MD5 and SMD5 to generate the hash value of passwords. SSHA and CRYPT are the most common but CRYPT does not support passwords greater than 8 letters. We do not recommend to use plain text passwords.")
+			)
 		);
 
 		return $return;
