@@ -910,7 +910,7 @@ class accountContainer {
 			if (strpos(strtolower($_SESSION['ldap']->objectClasses[$i]), strtolower("NAME '$objectClass'"))) $line = $i;
 			}
 		// Return error if objectClass isn't found
-		if ($line==-1) trigger_error (sprintf(_("objectClass %s required but not defined in ldap."), $objectClass), E_USER_WARNING);
+		if ($line==-1) trigger_error (sprintf(_("ObjectClass %s required but not defined in LDAP."), $objectClass), E_USER_WARNING);
 		// create array with must-attributes
 		// Get startposition in string
 		if (strpos($_SESSION['ldap']->objectClasses[$line],  'MUST (')) {
@@ -948,7 +948,7 @@ class accountContainer {
 				if (strpos($_SESSION['ldap']->objectClasses[$i], "NAME '$subclass'")) $line = $i;
 				}
 			// Return error if objectClass isn't found
-			if ($line==-1) trigger_error (sprintf(_("objectClass %s required but not defined in ldap."), $objectClass), E_USER_WARNING);
+			if ($line==-1) trigger_error (sprintf(_("ObjectClass %s required but not defined in LDAP."), $objectClass), E_USER_WARNING);
 			// create array with must-attributes
 			// Get startposition in string
 			if (strpos($_SESSION['ldap']->objectClasses[$line],  'MUST (')) {
@@ -1368,7 +1368,7 @@ class accountContainer {
 							$_SESSION['cache']->update_cache($this->$dn, 'delete_dn');
 						}
 					if (!$success) {
-						$errors[] = array('ERROR', 'LDAP', sprintf(_('Was unable to create dn: %s. This is possible a bug. Please check your ldap logs and send a bug report if it is a possible bug.'), $this->dn));
+						$errors[] = array('ERROR', 'LDAP', sprintf(_('Was unable to create DN: %s.'), $this->dn));
 						$stopprocessing = true;
 						}
 					}
@@ -1377,7 +1377,7 @@ class accountContainer {
 					$attr = array_merge_recursive($attributes[$this->dn]['add'], $attributes[$this->dn]['notchanged'], $attributes[$this->dn]['modify']);
 					$success = ldap_add($_SESSION['ldap']->server(), $this->dn, $attr);
 					if (!$success) {
-						$errors[] = array('ERROR', 'LDAP', sprintf(_('Was unable to create dn: %s. This is possible a bug. Please check your ldap logs and send a bug report if it is a possible bug.'), $this->dn));
+						$errors[] = array('ERROR', 'LDAP', sprintf(_('Was unable to create DN: %s.'), $this->dn));
 						$stopprocessing = true;
 						}
 					else
@@ -1393,7 +1393,7 @@ class accountContainer {
 				if (isset($attributes[$DNs[$i]]['modify']) && !$stopprocessing) {
 					$success = @ldap_mod_replace($_SESSION['ldap']->server(), $DNs[$i], $attributes[$DNs[$i]]['modify']);
 					if (!$success) {
-						$errors[] = array('ERROR', 'LDAP', sprintf(_('Was unable to modify attribtues from dn: %s. This is possible a bug. Please check your ldap logs and send a bug report if it is a possible bug.'), $DNs[$i]));
+						$errors[] = array('ERROR', 'LDAP', sprintf(_('Was unable to modify attribtues from DN: %s.'), $DNs[$i]));
 						$stopprocessing = true;
 						}
 					else
@@ -1403,7 +1403,7 @@ class accountContainer {
 				if (isset($attributes[$DNs[$i]]['add']) && !$stopprocessing) {
 					$success = @ldap_mod_add($_SESSION['ldap']->server(), $DNs[$i], $attributes[$DNs[$i]]['add']);
 					if (!$success) {
-						$errors[] = array('ERROR', 'LDAP', sprintf(_('Was unable to add attribtues to dn: %s. This is possible a bug. Please check your ldap logs and send a bug report if it is a possible bug.'), $DNs[$i]));
+						$errors[] = array('ERROR', 'LDAP', sprintf(_('Was unable to add attribtues to DN: %s.'), $DNs[$i]));
 						$stopprocessing = true;
 						}
 					else
@@ -1413,7 +1413,7 @@ class accountContainer {
 				if (isset($attributes[$DNs[$i]]['remove']) && !$stopprocessing) {
 					$success = @ldap_mod_del($_SESSION['ldap']->server(), $DNs[$i], $attributes[$DNs[$i]]['remove']);
 					if (!$success) {
-						$errors[] = array('ERROR', 'LDAP', sprintf(_('Was unable to remove attribtues from dn: %s. This is possible a bug. Please check your ldap logs and send a bug report if it is a possible bug.'), $DNs[$i]));
+						$errors[] = array('ERROR', 'LDAP', sprintf(_('Was unable to remove attribtues from DN: %s.'), $DNs[$i]));
 						$stopprocessing = true;
 						}
 					else

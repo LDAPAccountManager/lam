@@ -171,7 +171,7 @@ if ($_POST['delete']) {
 				if (isset($attributes[$DNs[$i]]['modify']) && !$stopprocessing) {
 					$success = @ldap_mod_replace($_SESSION[$_SESSION['account']->ldap]->server(), $DNs[$i], $attributes[$DNs[$i]]['modify']);
 					if (!$success) {
-						$errors[] = array ('ERROR', 'LDAP', sprintf(_('Was unable to modify attribtues from dn: %s. This is possible a bug. Please check your ldap logs and send a bug report if it is a possible bug.'), $DNs[$i]));
+						$errors[] = array ('ERROR', 'LDAP', sprintf(_('Was unable to modify attribtues from DN: %s.'), $DNs[$i]));
 						$stopprocessing = true;
 						}
 					else
@@ -181,7 +181,7 @@ if ($_POST['delete']) {
 				if (isset($attributes[$DNs[$i]]['add']) && !$stopprocessing) {
 					$success = @ldap_mod_add($_SESSION[$_SESSION['account']->ldap]->server(), $DNs[$i], $attributes[$DNs[$i]]['add']);
 					if (!$success) {
-						$errors[] = array ('ERROR', 'LDAP', sprintf(_('Was unable to add attribtues to dn: %s. This is possible a bug. Please check your ldap logs and send a bug report if it is a possible bug.'), $DNs[$i]));
+						$errors[] = array ('ERROR', 'LDAP', sprintf(_('Was unable to add attribtues to DN: %s.'), $DNs[$i]));
 						$stopprocessing = true;
 						}
 					else
@@ -191,7 +191,7 @@ if ($_POST['delete']) {
 				if (isset($attributes[$DNs[$i]]['remove']) && !$stopprocessing) {
 					$success = @ldap_mod_del($_SESSION[$_SESSION['account']->ldap]->server(), $DNs[$i], $attributes[$DNs[$i]]['remove']);
 					if (!$success) {
-						$errors[] = array ('ERROR', 'LDAP', sprintf(_('Was unable to remove attribtues from dn: %s. This is possible a bug. Please check your ldap logs and send a bug report if it is a possible bug.'), $DNs[$i]));
+						$errors[] = array ('ERROR', 'LDAP', sprintf(_('Was unable to remove attribtues from DN: %s.'), $DNs[$i]));
 						$stopprocessing = true;
 						}
 					else
@@ -215,7 +215,7 @@ if ($_POST['delete']) {
 			}
 		if (!$stopprocessing) {
 			$success = @ldap_delete($_SESSION[$_SESSION['account']->ldap]->server(), $_SESSION['delete_dn'][$m]);
-			if (!$success) $errors[] = array ('ERROR', 'LDAP', sprintf(_('Was unable to remove attribtues from dn: %s. This is possible a bug. Please check your ldap logs and send a bug report if it is a possible bug.'), $DNs[$i]));
+			if (!$success) $errors[] = array ('ERROR', 'LDAP', sprintf(_('Was unable to remove attribtues from DN: %s.'), $DNs[$i]));
 			else
 				$_SESSION['cache']->update_cache($_SESSION['delete_dn'][$m], 'delete_dn');
 			}

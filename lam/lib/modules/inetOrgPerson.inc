@@ -67,8 +67,8 @@ class inetOrgPerson extends baseModule {
 		$this->messages['postalAddress'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_address', _('Please enter a valid postal address!'));
 		$this->messages['postalCode'][0] = array('ERROR', _('Postal code'), _('Please enter a valid postal code!'));
 		$this->messages['postalCode'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_postalCode', _('Please enter a valid postal code!'));
-		$this->messages['title'][0] = array('ERROR', _('Title'), _('Please enter a valid title!'));
-		$this->messages['title'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_title', _('Please enter a valid title!'));
+		$this->messages['title'][0] = array('ERROR', _('Job title'), _('Please enter a valid job title!'));
+		$this->messages['title'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_title', _('Please enter a valid job title!'));
 		$this->messages['employeeType'][0] = array('ERROR', _('Employee type'), _('Please enter a valid employee type!'));
 		$this->messages['employeeType'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_type', _('Please enter a valid employee type!'));
 		$this->messages['cn'][0] = array('ERROR', _('Account %s:') . ' inetOrgPerson_cn', _('Please enter a valid common name!'));
@@ -146,7 +146,7 @@ class inetOrgPerson extends baseModule {
 		'name' => 'inetOrgPerson_type',
 		'description' => _('Employee type'),
 		'help' => 'employeeType',
-		'example' => _('Worker')
+		'example' => _('Temp')
 		),
 		array(
 		'name' => 'inetOrgPerson_street',
@@ -216,8 +216,8 @@ class inetOrgPerson extends baseModule {
 					"Text" => _("User description. If left empty sur- and give name will be used.")
 				),
 				'title' => array (
-					"Headline" => _("Title"),
-					"Text" => _("Title of user, Mr., Ms., ...")
+					"Headline" => _("Job title"),
+					"Text" => _("Job title of user: President, department manager, ...")
 				),
 				'givenName' => array (
 					"Headline" => _("First name"),
@@ -229,7 +229,7 @@ class inetOrgPerson extends baseModule {
 				),
 				'employeeType' => array (
 					"Headline" => _("Employee type"),
-					"Text" => _("Employee type: worker, student, nurse, ...")
+					"Text" => _("Employee type: Contractor, Employee, Intern, Temp, External, ...")
 				),
 				'street' => array (
 					"Headline" => _("Street"),
@@ -460,7 +460,7 @@ class inetOrgPerson extends baseModule {
 	function get_pdfEntries($account_type = "user") {
 		return array(	'inetOrgPerson_description' => array('<block><key>' . _('Description') . '</key><value>' . $this->attributes['description'][0] . '</value></block>'),
 							'inetOrgPerson_host' => array('<block><key>' . _('Unix workstations') . '</key><value>' . $this->attributes['host'][0] . '</value></block>'),
-							'inetOrgPerson_title' => array('<block><key>' . _('Title') . '</key><value>' . $this->attributes['title'][0] . '</value></block>'),
+							'inetOrgPerson_title' => array('<block><key>' . _('Job title') . '</key><value>' . $this->attributes['title'][0] . '</value></block>'),
 							'inetOrgPerson_givenName' => array('<block><key>' . _('First name') . '</key><value>' . $this->attributes['givenName'][0] . '</value></block>'),
 							'inetOrgPerson_sn' => array('<block><key>' . _('Last name') . '</key><value>' . $this->attributes['sn'][0] . '</value></block>'),
 							'inetOrgPerson_employeeType' => array('<block><key>' . _('Employee type') . '</key><value>' . $this->attributes['employeeType'][0]),

@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: messages\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de \n"
 "POT-Creation-Date: 2004-01-14 17:45+0200\n"
-"PO-Revision-Date: 2004-11-06 13:52+0100\n"
+"PO-Revision-Date: 2004-11-07 00:19+0100\n"
 "Last-Translator: Roland Gruber <post@rolandgruber.de>\n"
 "Language-Team: Deutsch <lam-i18n@lists.sourceforge.org>\n"
 "MIME-Version: 1.0\n"
@@ -156,7 +156,7 @@ msgstr "Administrator"
 msgid "Administrators group"
 msgstr "Administratoren"
 
-#: ../templates/domain.php:146 ../help/help.inc:270
+#: ../templates/domain.php:146 ../help/help.inc:252
 msgid "Algorithmic RID Base"
 msgstr "RID-Basisnummer"
 
@@ -348,8 +348,8 @@ msgstr "Cache Zeitbegrenzung ist ungültig!"
 #: ../help/help.inc:139 ../help/help.inc:163 ../help/help.inc:165
 #: ../help/help.inc:167 ../help/help.inc:169 ../help/help.inc:201
 #: ../help/help.inc:204 ../help/help.inc:207 ../help/help.inc:209
-#: ../help/help.inc:212 ../help/help.inc:236 ../help/help.inc:246
-#: ../help/help.inc:248 ../help/help.inc:250
+#: ../help/help.inc:212 ../help/help.inc:218 ../help/help.inc:228
+#: ../help/help.inc:230 ../help/help.inc:232
 msgid "Can be left empty."
 msgstr "Kann leer bleiben."
 
@@ -412,7 +412,7 @@ msgstr "Hier klicken wenn Sie nicht zur nächsten Seite weitergeleitet werden."
 msgid "Columns:"
 msgstr "Spalten:"
 
-#: ../help/help.inc:246
+#: ../help/help.inc:228
 msgid "Comma separated list of unix workstations the user is allowed to login."
 msgstr ""
 "Kommagetrennte Liste der Unix-Arbeitsstationen, auf welchen sich der "
@@ -614,7 +614,7 @@ msgstr "Löschoperation abgebrochen."
 
 #: ../templates/ou_edit.php:357 ../templates/ou_edit.php:390
 #: ../templates/ou_edit.php:423 ../templates/ou_edit.php:456
-#: ../help/help.inc:256
+#: ../help/help.inc:238
 msgid "Delete organizational unit"
 msgstr "Organizational Unit löschen"
 
@@ -712,7 +712,7 @@ msgstr "Sollen die folgenden Accounts wirklich gelöscht werden?"
 #: ../lib/modules/sambaGroupMapping.inc:187
 #: ../lib/modules/sambaGroupMapping.inc:279
 #: ../lib/modules/sambaGroupMapping.inc:321 ../help/help.inc:211
-#: ../help/help.inc:247
+#: ../help/help.inc:229
 msgid "Domain"
 msgstr "Domäne"
 
@@ -759,7 +759,7 @@ msgid "Domain Policy Admins"
 msgstr "Domänen-Policy-Administratoren"
 
 #: ../templates/lists/listdomains.php:99 ../templates/domain.php:104
-#: ../help/help.inc:262
+#: ../help/help.inc:244
 msgid "Domain SID"
 msgstr "Domänen-SID"
 
@@ -790,7 +790,7 @@ msgid "Domain has been modified."
 msgstr "Domäne wurde geändert."
 
 #: ../templates/lists/listdomains.php:98 ../templates/domain.php:88
-#: ../lib/modules/sambaAccount.inc:46 ../help/help.inc:258
+#: ../lib/modules/sambaAccount.inc:46 ../help/help.inc:240
 msgid "Domain name"
 msgstr "Domänenname"
 
@@ -864,13 +864,12 @@ msgstr "Arbeitsstationen ändern"
 #: ../lib/modules/inetOrgPerson.inc:72 ../lib/modules/inetOrgPerson.inc:99
 #: ../lib/modules/inetOrgPerson.inc:147 ../lib/modules/inetOrgPerson.inc:231
 #: ../lib/modules/inetOrgPerson.inc:417 ../lib/modules/inetOrgPerson.inc:466
-#: ../help/help.inc:215
 msgid "Employee type"
 msgstr "Angestelltentyp"
 
-#: ../lib/modules/inetOrgPerson.inc:232 ../help/help.inc:216
-msgid "Employee type: worker, student, nurse, ..."
-msgstr ""
+#: ../lib/modules/inetOrgPerson.inc:232
+msgid "Employee type: Contractor, Employee, Intern, Temp, External, ..."
+msgstr "Angestelltentyp: Angestellter, Extern, Aushilfskraft, ..."
 
 #: ../templates/login.php:297
 msgid "Empty Password submitted. Try again."
@@ -925,7 +924,6 @@ msgstr "Konnte Domäne nicht ändern!"
 #: ../lib/modules/inetOrgPerson.inc:60 ../lib/modules/inetOrgPerson.inc:183
 #: ../lib/modules/inetOrgPerson.inc:255 ../lib/modules/inetOrgPerson.inc:256
 #: ../lib/modules/inetOrgPerson.inc:441 ../lib/modules/inetOrgPerson.inc:472
-#: ../help/help.inc:227 ../help/help.inc:228
 msgid "Fax number"
 msgstr "Faxnummer"
 
@@ -1051,7 +1049,7 @@ msgstr "DNs der Gruppenmitglieder"
 #: ../lib/modules/posixGroup.inc:134 ../lib/modules/posixGroup.inc:193
 #: ../lib/modules/posixGroup.inc:309 ../lib/modules/posixGroup.inc:335
 #: ../lib/modules/posixGroup.inc:339 ../lib/modules/posixGroup.inc:372
-#: ../lib/lists.inc:200 ../help/help.inc:172 ../help/help.inc:249
+#: ../lib/lists.inc:200 ../help/help.inc:172 ../help/help.inc:231
 msgid "Group members"
 msgstr "Gruppenmitglieder"
 
@@ -1373,7 +1371,7 @@ msgstr ""
 "Wenn in der CSV-Datei eine Gruppe, die noch nicht existiert, vorkommt wird "
 "sie im gewählten Gruppensuffix erstellt."
 
-#: ../help/help.inc:234
+#: ../help/help.inc:216
 msgid ""
 "If a not yet existing group is defined in csv-file, a new group with the "
 "selected group profile will be created."
@@ -1431,7 +1429,7 @@ msgid ""
 "here."
 msgstr "Wenn Sie das aktuelle Hauptpasswort ändern wollen, geben Sie es hier ein."
 
-#: ../lib/modules/sambaGroupMapping.inc:272 ../help/help.inc:244
+#: ../lib/modules/sambaGroupMapping.inc:272 ../help/help.inc:226
 msgid "If you want to use a well known RID you can selcet a well known group."
 msgstr ""
 "Wenn Sie eine vordefinierte RID verwenden wollen, wählen Sie eine der "
@@ -1504,10 +1502,15 @@ msgstr ""
 msgid "Ivalid Account"
 msgstr "Ungültiger Account"
 
-#: ../lib/modules/inetOrgPerson.inc:95 ../lib/modules/inetOrgPerson.inc:141
-#: ../lib/modules/inetOrgPerson.inc:405
+#: ../lib/modules/inetOrgPerson.inc:70 ../lib/modules/inetOrgPerson.inc:95
+#: ../lib/modules/inetOrgPerson.inc:141 ../lib/modules/inetOrgPerson.inc:219
+#: ../lib/modules/inetOrgPerson.inc:405 ../lib/modules/inetOrgPerson.inc:463
 msgid "Job title"
 msgstr "Berufsbezeichnung"
+
+#: ../lib/modules/inetOrgPerson.inc:220
+msgid "Job title of user: President, department manager, ..."
+msgstr "Berufsbezeichnung des Benutzers: Präsident, Abteilungsleiter, ..."
 
 #: ../lib/status.inc:60
 msgid "LAM Internal Error"
@@ -1827,7 +1830,6 @@ msgstr "Minimales Passwortalter"
 #: ../lib/modules/inetOrgPerson.inc:58 ../lib/modules/inetOrgPerson.inc:177
 #: ../lib/modules/inetOrgPerson.inc:251 ../lib/modules/inetOrgPerson.inc:252
 #: ../lib/modules/inetOrgPerson.inc:437 ../lib/modules/inetOrgPerson.inc:471
-#: ../help/help.inc:225 ../help/help.inc:226
 msgid "Mobile number"
 msgstr "Mobil"
 
@@ -1912,7 +1914,7 @@ msgstr "Neues Hauptpasswort wurde erfolgreich gesetzt."
 
 #: ../templates/ou_edit.php:344 ../templates/ou_edit.php:377
 #: ../templates/ou_edit.php:410 ../templates/ou_edit.php:443
-#: ../help/help.inc:254
+#: ../help/help.inc:236
 msgid "New organizational unit"
 msgstr "Neue Organizational Unit"
 
@@ -1928,11 +1930,11 @@ msgstr "Neues Profil wurde erstellt."
 msgid "New user"
 msgstr "Neuer Benutzer"
 
-#: ../templates/domain.php:135 ../help/help.inc:268
+#: ../templates/domain.php:135 ../help/help.inc:250
 msgid "Next Group RID"
 msgstr "Nächste Gruppen-RID"
 
-#: ../templates/domain.php:119 ../help/help.inc:264
+#: ../templates/domain.php:119 ../help/help.inc:246
 msgid "Next RID"
 msgstr "Nächste RID"
 
@@ -1940,19 +1942,19 @@ msgstr "Nächste RID"
 msgid "Next RID is not a number!"
 msgstr "Nächste RID ist keine Zahl!"
 
-#: ../help/help.inc:265
+#: ../help/help.inc:247
 msgid "Next RID to use when creating accounts."
 msgstr "Nächste RID für neue Accounts."
 
-#: ../help/help.inc:269
+#: ../help/help.inc:251
 msgid "Next RID to use when creating groups."
 msgstr "Nächste RID für neue Gruppen."
 
-#: ../help/help.inc:267
+#: ../help/help.inc:249
 msgid "Next RID to use when creating user accounts."
 msgstr "Nächste RID für neue Benutzer."
 
-#: ../templates/domain.php:127 ../help/help.inc:266
+#: ../templates/domain.php:127 ../help/help.inc:248
 msgid "Next User RID"
 msgstr "Nächste Benutzer-RID"
 
@@ -2076,10 +2078,11 @@ msgstr "OU ist ungültig!"
 msgid "OU is not empty or invalid!"
 msgstr "OU ist nicht leer oder ungültig!"
 
-#: ../help/help.inc:254 ../help/help.inc:256
+#: ../help/help.inc:236 ../help/help.inc:238
 msgid "OU-Editor"
 msgstr "OU-Editor"
 
+#: ../lib/cache.inc:79 ../lib/modules.inc:913 ../lib/modules.inc:951
 #: ../lib/modules.inc:1050
 #, php-format
 msgid "ObjectClass %s required but not defined in LDAP."
@@ -2247,6 +2250,10 @@ msgstr "Bitte geben Sie einen gültigen Angestelltentyp ein!"
 msgid "Please enter a valid fax number!"
 msgstr "Bitte geben Sie eine gültige Faxnummer ein!"
 
+#: ../lib/modules/inetOrgPerson.inc:70 ../lib/modules/inetOrgPerson.inc:71
+msgid "Please enter a valid job title!"
+msgstr "Bitte geben Sie eine gültige Berufsbezeichnung ein!"
+
 #: ../lib/modules/inetOrgPerson.inc:58 ../lib/modules/inetOrgPerson.inc:59
 msgid "Please enter a valid mobile number!"
 msgstr "Bitte geben Sie eine gültige Mobiltelefonnummer ein!"
@@ -2266,10 +2273,6 @@ msgstr "Bitte geben Sie einen gültigen Straßennamen ein!"
 #: ../lib/modules/inetOrgPerson.inc:56 ../lib/modules/inetOrgPerson.inc:57
 msgid "Please enter a valid telephone number!"
 msgstr "Bitte geben Sie eine gültige Telefonnummer ein!"
-
-#: ../lib/modules/inetOrgPerson.inc:70 ../lib/modules/inetOrgPerson.inc:71
-msgid "Please enter a valid title!"
-msgstr "Bitte geben Sie eine gültige Berufsbezeichnung ein!"
 
 #: ../lib/modules/posixGroup.inc:532 ../lib/modules/posixAccount.inc:653
 #, php-format
@@ -2361,15 +2364,15 @@ msgstr ""
 msgid "Position"
 msgstr "Position"
 
-#: ../help/help.inc:240
+#: ../help/help.inc:222
 msgid "Position in ldap-tree where the group should be created."
 msgstr "Position im LDAP-Baum, wo die Gruppe erstellt werden soll."
 
-#: ../help/help.inc:242
+#: ../help/help.inc:224
 msgid "Position in ldap-tree where the host should be created."
 msgstr "Position im LDAP-Baum, wo der Host erstellt werden soll."
 
-#: ../help/help.inc:238
+#: ../help/help.inc:220
 msgid "Position in ldap-tree where the user should be created."
 msgstr "Position im LDAP-Baum, wo der Benutzer erstellt werden soll."
 
@@ -2380,18 +2383,17 @@ msgstr "Mögliche Werte"
 
 #: ../lib/modules/inetOrgPerson.inc:66 ../lib/modules/inetOrgPerson.inc:165
 #: ../lib/modules/inetOrgPerson.inc:243 ../lib/modules/inetOrgPerson.inc:429
-#: ../lib/modules/inetOrgPerson.inc:469 ../help/help.inc:221
+#: ../lib/modules/inetOrgPerson.inc:469
 msgid "Postal address"
 msgstr "Anschrift"
 
-#: ../lib/modules/inetOrgPerson.inc:244 ../help/help.inc:222
+#: ../lib/modules/inetOrgPerson.inc:244
 msgid "Postal address, city"
 msgstr "Bitte geben Sie hier die Anschrift ein."
 
 #: ../lib/modules/inetOrgPerson.inc:68 ../lib/modules/inetOrgPerson.inc:159
 #: ../lib/modules/inetOrgPerson.inc:239 ../lib/modules/inetOrgPerson.inc:240
 #: ../lib/modules/inetOrgPerson.inc:425 ../lib/modules/inetOrgPerson.inc:468
-#: ../help/help.inc:219 ../help/help.inc:220
 msgid "Postal code"
 msgstr "Postleitzahl"
 
@@ -2596,7 +2598,7 @@ msgid "Save"
 msgstr "Speichern"
 
 #: ../lib/modules.inc:614 ../lib/modules.inc:617 ../lib/modules.inc:618
-#: ../lib/modules.inc:752 ../lib/modules.inc:757 ../help/help.inc:231
+#: ../lib/modules.inc:752 ../lib/modules.inc:757 ../help/help.inc:213
 msgid "Save profile"
 msgstr "Profil speichern"
 
@@ -2663,7 +2665,7 @@ msgstr "Siehe auch"
 msgid "Select all"
 msgstr "Alle auswählen"
 
-#: ../help/help.inc:233
+#: ../help/help.inc:215
 msgid "Select group profile"
 msgstr "Gruppenprofil wählen"
 
@@ -2763,10 +2765,6 @@ msgstr "weiches Inode-Limit"
 msgid "Some required information is missing"
 msgstr "Einige benötigte Informationen fehlen noch"
 
-#: ../templates/help.php:123
-msgid "Sorry no help number submitted."
-msgstr ""
-
 #: ../templates/help.php:144
 #, php-format
 msgid ""
@@ -2812,7 +2810,6 @@ msgstr "Hans Müller,Raum 2.14,123-123-1234,123-123-1234"
 #: ../lib/modules/inetOrgPerson.inc:64 ../lib/modules/inetOrgPerson.inc:153
 #: ../lib/modules/inetOrgPerson.inc:235 ../lib/modules/inetOrgPerson.inc:236
 #: ../lib/modules/inetOrgPerson.inc:421 ../lib/modules/inetOrgPerson.inc:467
-#: ../help/help.inc:217 ../help/help.inc:218
 msgid "Street"
 msgstr "Straße"
 
@@ -2840,17 +2837,20 @@ msgstr "Seiteneinstellungen übernehmen"
 
 #: ../templates/lists/listhosts.php:278 ../templates/lists/listgroups.php:294
 #: ../templates/lists/listdomains.php:200 ../templates/lists/listusers.php:328
-#: ../templates/domain.php:159 ../lib/modules.inc:740 ../help/help.inc:237
-#: ../help/help.inc:239 ../help/help.inc:241 ../help/help.inc:260
+#: ../templates/domain.php:159 ../lib/modules.inc:740 ../help/help.inc:219
+#: ../help/help.inc:221 ../help/help.inc:223 ../help/help.inc:242
 msgid "Suffix"
 msgstr "Suffix"
 
 #: ../lib/modules/inetOrgPerson.inc:56 ../lib/modules/inetOrgPerson.inc:171
 #: ../lib/modules/inetOrgPerson.inc:247 ../lib/modules/inetOrgPerson.inc:248
 #: ../lib/modules/inetOrgPerson.inc:433 ../lib/modules/inetOrgPerson.inc:470
-#: ../help/help.inc:223 ../help/help.inc:224
 msgid "Telephone number"
 msgstr "Telefonnummer"
+
+#: ../lib/modules/inetOrgPerson.inc:149
+msgid "Temp"
+msgstr "Aushilfskraft"
 
 #: ../lib/modules/inetOrgPerson.inc:137
 msgid "Temp, contract until december"
@@ -2868,7 +2868,7 @@ msgstr "Die primäre Gruppe des Benutzers."
 msgid "The Primary group the host should be member of."
 msgstr "Die primäre Gruppe des Hosts."
 
-#: ../help/help.inc:263
+#: ../help/help.inc:245
 msgid "The SID of your Samba server. Get it with \"net getlocalsid\"."
 msgstr "Die Domänen-SID des Samba-Servers. Auszulesen mit \"net getlocalsid\"."
 
@@ -2883,7 +2883,7 @@ msgstr ""
 "setzen Sie die minimalen UID-Nummern auf den selben Wert oder verwenden Sie "
 "unabhängige Bereiche."
 
-#: ../help/help.inc:261
+#: ../help/help.inc:243
 msgid "The domain entry will be saved under this suffix."
 msgstr "Der Domäneneintrag wird unter diesem Suffix gespeichert."
 
@@ -2897,7 +2897,9 @@ msgstr "Folgende Suffixe fehlen in LDAP. LAM kann sie für Sie erstellen."
 
 #: ../templates/pdfedit/pdfpage.php:73
 msgid "The headline for a new section must contain at least one character."
-msgstr "Die Überschrift für einen neuen Abschnitt muss mindestens ein Zeichen enthalten."
+msgstr ""
+"Die Überschrift für einen neuen Abschnitt muss mindestens ein Zeichen "
+"enthalten."
 
 #: ../templates/pdfedit/pdfpage.php:61
 msgid ""
@@ -2908,7 +2910,7 @@ msgstr ""
 "Der Bezeichner für die PDF-Struktur ist ungültig. Ein gültiger besteht "
 "mindestens aus einem der folgenden Zeichen: 'a-z','A-Z','0-9','_','-','.'."
 
-#: ../help/help.inc:259
+#: ../help/help.inc:241
 msgid "The name of your Windows domain or workgroup."
 msgstr "Der Name ihrer Windows-Domäne oder Arbeitsgruppe."
 
@@ -3163,11 +3165,11 @@ msgstr "Dieser Wert darf nur \\\"true\\\" oder \\\"false\\\" sein."
 msgid "This value must be a list of user names separated by semicolons."
 msgstr "Dieser Wert muss eine Liste von Benutzernamen, getrennt duch Kommata, sein."
 
-#: ../help/help.inc:255
+#: ../help/help.inc:237
 msgid "This will create a new organizational unit under the selected one."
 msgstr "Dies erzeugt eine neue Organizational Unit unterhalb der markierten."
 
-#: ../help/help.inc:257
+#: ../help/help.inc:239
 msgid "This will delete the selected organizational unit. The OU has to be empty."
 msgstr "Dies löscht die markierte Organizational Unit. Die OU muss leer sein."
 
@@ -3175,7 +3177,7 @@ msgstr "Dies löscht die markierte Organizational Unit. Die OU muss leer sein."
 msgid "This will delete the selected profile."
 msgstr "Dies löscht das markierte Profil."
 
-#: ../help/help.inc:232
+#: ../help/help.inc:214
 msgid ""
 "This will make a profile of the current account. The saved values are the "
 "same as in the profile editor. Profile names may contain the letters a-z, 0-"
@@ -3184,16 +3186,6 @@ msgstr ""
 "Damit erstellen Sie ein Profil aus dem aktuellen Account. Es werden die "
 "selben Werte wie im Profileditor gespeichert. Profilnamen dürfen die "
 "Buchstaben a-z, 0-9 und -_ enthalten."
-
-#: ../lib/modules/inetOrgPerson.inc:70 ../lib/modules/inetOrgPerson.inc:219
-#: ../lib/modules/inetOrgPerson.inc:463 ../help/help.inc:213
-msgid "Title"
-msgstr "Titel"
-
-#: ../lib/modules/inetOrgPerson.inc:220 ../help/help.inc:214
-#, fuzzy
-msgid "Title of user, Mr., Ms., ..."
-msgstr "Berufsbezeichnung des Benutzers (Präsident, Abteilungsleiter, etc.)."
 
 #: ../lib/modules/posixAccount.inc:327 ../help/help.inc:145
 msgid ""
@@ -3316,18 +3308,13 @@ msgid "Unix"
 msgstr "Unix"
 
 #: ../lib/modules/inetOrgPerson.inc:51 ../lib/modules/inetOrgPerson.inc:400
-#: ../lib/modules/inetOrgPerson.inc:462 ../help/help.inc:245
+#: ../lib/modules/inetOrgPerson.inc:462 ../help/help.inc:227
 msgid "Unix workstations"
 msgstr "Arbeitsstationen"
 
 #: ../lib/modules/inetOrgPerson.inc:51
 msgid "Unix workstations is invalid."
 msgstr "Unix-Arbeitsstationen sind ungültig."
-
-#: ../templates/config/confmain.php:549
-#: ../templates/profedit/profilepage.php:247
-msgid "Unrecognized type"
-msgstr ""
 
 #: ../templates/config/confmodules.php:245
 #: ../templates/config/confmodules.php:348
@@ -3388,7 +3375,7 @@ msgstr "Benutzte Blöcke"
 msgid "Used blocks. 1000 blocks are usually 1MB"
 msgstr "Verwendete Blöcke. 1000 Blöcke sind normalerweise 1 MB."
 
-#: ../help/help.inc:271
+#: ../help/help.inc:253
 msgid "Used for calculating RIDs from UID/GID. Do not change if unsure."
 msgstr ""
 "Wird für die Berechnung der RIDs aus UID/GID verwendet. Nicht ändern, wenn "
@@ -3515,7 +3502,7 @@ msgstr ""
 msgid "Users"
 msgstr "Benutzer"
 
-#: ../lib/modules/posixGroup.inc:336 ../help/help.inc:250
+#: ../lib/modules/posixGroup.inc:336 ../help/help.inc:232
 msgid "Users also being member of the current group."
 msgstr "Benutzer die Mitglieder der Gruppe sind."
 
@@ -3536,17 +3523,13 @@ msgstr "Berechtigte Benutzer"
 
 #: ../templates/delete.php:184 ../lib/modules.inc:1406
 #, php-format
-msgid ""
-"Was unable to add attribtues to dn: %s. This is possible a bug. Please check "
-"your ldap logs and send a bug report if it is a possible bug."
-msgstr ""
+msgid "Was unable to add attribtues to DN: %s."
+msgstr "Konnte keine Attribute zum DN hinzufügen: %s."
 
 #: ../lib/modules.inc:1371 ../lib/modules.inc:1380
 #, php-format
-msgid ""
-"Was unable to create dn: %s. This is possible a bug. Please check your ldap "
-"logs and send a bug report if it is a possible bug."
-msgstr ""
+msgid "Was unable to create DN: %s."
+msgstr "Konnte DN nicht erstellen: %s."
 
 #: ../lib/modules.inc:1364
 #, php-format
@@ -3555,18 +3538,14 @@ msgstr "Konnte DN nicht löschen: %s."
 
 #: ../templates/delete.php:174 ../lib/modules.inc:1396
 #, php-format
-msgid ""
-"Was unable to modify attribtues from dn: %s. This is possible a bug. Please "
-"check your ldap logs and send a bug report if it is a possible bug."
-msgstr ""
+msgid "Was unable to modify attribtues from DN: %s."
+msgstr "Konnte die Attribute nicht ändern: %s."
 
 #: ../templates/delete.php:194 ../templates/delete.php:218
 #: ../lib/modules.inc:1416
 #, php-format
-msgid ""
-"Was unable to remove attribtues from dn: %s. This is possible a bug. Please "
-"check your ldap logs and send a bug report if it is a possible bug."
-msgstr ""
+msgid "Was unable to remove attribtues from DN: %s."
+msgstr "Konnte die Attribute nicht löschen: %s."
 
 #: ../help/help.inc:59
 msgid ""
@@ -3584,11 +3563,11 @@ msgstr "Breite"
 msgid "Windows clients will show display name as group description."
 msgstr "Der Anzeigename wird von Windows als Gruppenbeschreibung angezeigt."
 
-#: ../help/help.inc:235
+#: ../help/help.inc:217
 msgid "Windows domain"
 msgstr "Windows-Domäne"
 
-#: ../help/help.inc:236
+#: ../help/help.inc:218
 msgid "Windows domain of host."
 msgstr "Windows-Domäne des Hosts."
 
@@ -3603,7 +3582,7 @@ msgstr "Windows-Gruppe"
 msgid "Windows group type."
 msgstr "Windows-Gruppentyp."
 
-#: ../lib/modules/sambaGroupMapping.inc:271 ../help/help.inc:243
+#: ../lib/modules/sambaGroupMapping.inc:271 ../help/help.inc:225
 msgid "Windows groupname"
 msgstr "Windows-Gruppenname"
 
@@ -3611,17 +3590,13 @@ msgstr "Windows-Gruppenname"
 msgid "Windows-Domain name of group."
 msgstr "Windows-Domänenname der Gruppe."
 
-#: ../help/help.inc:248
+#: ../help/help.inc:230
 msgid "Windows-Domain of group."
 msgstr "Windows-Domäne der Gruppe."
 
 #: ../help/help.inc:212
 msgid "Windows-Domain of user."
 msgstr "Windows-Domäne des Benutzers."
-
-#: ../lib/modules/inetOrgPerson.inc:149
-msgid "Worker"
-msgstr "Arbeiter"
 
 #: ../templates/pdfedit/pdfpage.php:784
 msgid "Write your text in the field below."
@@ -3685,7 +3660,6 @@ msgstr "Basismodul"
 #: ../lib/modules/inetOrgPerson.inc:62 ../lib/modules/inetOrgPerson.inc:189
 #: ../lib/modules/inetOrgPerson.inc:259 ../lib/modules/inetOrgPerson.inc:260
 #: ../lib/modules/inetOrgPerson.inc:445 ../lib/modules/inetOrgPerson.inc:473
-#: ../help/help.inc:229 ../help/help.inc:230
 msgid "eMail address"
 msgstr "E-Mail Adresse"
 
@@ -3715,11 +3689,6 @@ msgstr ""
 #: ../lib/modules/posixAccount.inc:250
 msgid "machines"
 msgstr "Hosts"
-
-#: ../lib/cache.inc:79 ../lib/modules.inc:913 ../lib/modules.inc:951
-#, php-format
-msgid "objectClass %s required but not defined in ldap."
-msgstr ""
 
 #: ../help/help.inc:65
 msgid ""

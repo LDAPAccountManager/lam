@@ -76,7 +76,7 @@ class cache {
 			if (strpos($_SESSION['ldap']->objectClasses[$i], "NAME '$objectClass'")) $line = $i;
 			}
 		// Return error if objectClass isn't found
-		if ($line==-1) trigger_error (sprintf(_("objectClass %s required but not defined in ldap."), $objectClass), E_USER_WARNING);
+		if ($line==-1) trigger_error (sprintf(_("ObjectClass %s required but not defined in LDAP."), $objectClass), E_USER_WARNING);
 
 		// Create list of all allowed attributes
 		for ($i=0; $i<count($_SESSION['ldap']->objectClasses); $i++ ) {
