@@ -446,6 +446,7 @@ function get_preg($argument, $regexp) {
 		case 'hostname':	// first character must be letter, last must be $. Only normal letters, numbers and ._- are allowed
 					$pregexpr = '/^[a-zA-Z]([a-zA-Z0-9\\.\\_-])*\\$$/u';
 					break;
+		case 'cn':
 		case 'realname':	// Allow all letters, space and  .-_
 					$pregexpr = '/^[[:alpha:]]([[:alpha:]\\.\\ \\_-])*$/u';
 					break;
@@ -453,7 +454,7 @@ function get_preg($argument, $regexp) {
 					$pregexpr = '/^(\\+)*([0-9\\.\\ \\(\\)\\/-])*$/';
 					break;
 		case "email":
-					$pregexpr = '/^(([0-9a-z\\._-])+[@]([0-9a-z-])+([.]([0-9a-z-])+)*)*$/';
+					$pregexpr = '/^([0-9a-z\\._-])+[@]([0-9a-z-])+([.]([0-9a-z-])+)*$/';
 					break;
 		case "street":		// Allow all letters, numbers, space and .-_
 					$pregexpr = '/^([[:alnum:]\\.\\ \\_-])*$/u';
@@ -487,6 +488,9 @@ function get_preg($argument, $regexp) {
 					break;
 		case 'digit2':			// Same as digit but also -1
 					$pregexpr = '/^(([-][1])|([[:digit:]]*))$/';
+					break;
+		case 'gecos':
+					$pregexpr = '/^[a-zA-z0-9 \\._-]+([,][a-zA-z0-9 \\._-]+)*$/';
 					break;
 	}
 	if ($pregexpr!='')
