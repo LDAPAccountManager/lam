@@ -54,7 +54,7 @@ if (isset($_GET['DN'])) {
 			if (isset($val)) $_SESSION['account']->$key = $val;
 			}
 	}
-if (count($_POST)==0) {
+else if (count($_POST)==0) { // Startcondition. groupedit.php was called from outside
 	$_SESSION['account'] = loadGroupProfile('default');
 	$_SESSION['account'] ->type = 'group';
 	if (isset($_SESSION['account_old'])) unset($_SESSION['account_old']);
