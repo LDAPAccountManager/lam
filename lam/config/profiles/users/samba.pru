@@ -8,4 +8,3 @@ unix_pwdmaxage: 180
 smb_useunixpwd: 1
 smb_pwdcanchange: 1
 smb_homedrive: U:
-smb_smbuserworkstations: *

@@ -439,9 +439,11 @@ function getgid($groupname) { // Will return the the gid to an existing Groupnam
 	// Check if group already exists
 	$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(), 'cn=' . $groupname, array('gidNumber'), 0);
 	$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
-	$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
-	if ($attr['gidNumber'][0]) return $attr['gidNumber'][0];
-		else return -1;
+	if ($entry) {
+		$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
+		if ($attr['gidNumber'][0]) return $attr['gidNumber'][0];
+		}
+	else return -1;
 	}
 
 
@@ -527,6 +529,7 @@ function loaduser($dn) { // Will load all needed values from an existing account
 	$return = new account();
 	$result = ldap_search($_SESSION['ldap']->server(), $dn, "objectclass=PosixAccount");
 	$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
+	$return->general_dn = (ldap_get_dn($_SESSION['ldap']->server(), $entry));
 	$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
 	if ($attr['uid'][0]) {
 		$return->general_username = $attr['uid'][0];
@@ -598,6 +601,7 @@ function loadhost($dn) { // Will load all needed values from an existing account
 	$return = new account();
 	$result = ldap_search($_SESSION['ldap']->server(), $dn, "objectclass=PosixAccount");
 	$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
+	$return->general_dn = (ldap_get_dn($_SESSION['ldap']->server(), $entry));
 	$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
 	if ($attr['uid'][0]) $return->general_username = $attr['uid'][0];
 	if ($attr['uidNumber'][0]) $return->general_uidNumber = $attr['uidNumber'][0];
@@ -649,6 +653,7 @@ function loadgroup($dn) { // Will load all needed values from an existing group
 	$return = new account();
 	$result = ldap_search($_SESSION['ldap']->server(), $dn, "objectclass=PosixGroup");
 	$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
+	$return->general_dn = (ldap_get_dn($_SESSION['ldap']->server(), $entry));
 	$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
 	if ($attr['gidNumber'][0]) {
 		$return->general_uidNumber = $attr['gidNumber'][0];
@@ -938,7 +943,7 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 			}
 		$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
 		}
-	if ($_SESSION['config']->scriptServer) setquotas($values->general_username);
+	if ($_SESSION['config']->scriptServer) setquotas($values->general_username,'user',$values_old->general_username);
 	return 3;
 	}
 
@@ -1167,7 +1172,7 @@ function creategroup($values) { // Will create the LDAP-Group
 	$attr['description'] = $values->general_gecos;
 	if ($values->general_memeberUid) $attr['memberUid'] = $values->general_memberUid;
 	$success = ldap_add($_SESSION['ldap']->server(),$values->general_dn, $attr);
-	if ($_SESSION['config']->scriptServer) setquotas($attr['uid'][0]);
+	if ($_SESSION['config']->scriptServer) setquotas($attr['uid'][0],'group');
 	if ($success) return 1;
 	else return 4;
 	}
@@ -1201,7 +1206,7 @@ function modifygroup($values,$values_old) { // Will modify the LDAP-Group
 			$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
 			}
 		}
-	if ($_SESSION['config']->scriptServer) setquotas($attr['uid'][0]);
+	if ($_SESSION['config']->scriptServer) setquotas($attr['uid'][0],'group');
 	return 3;
 	}
 

@@ -33,7 +33,6 @@ include_once('../lib/pdf.inc'); // Return a pdf-file
 session_save_path('../sess');
 @session_start();
 
-print_r($_FILES['userfile']);
 if ($_POST['tolist'] && ($_FILES['userfile']['size']>0)) $select = 'list';
 if ($_POST['back']) $select = 'main';
 if ($_POST['cancel']) $select = 'cancel';
@@ -56,7 +55,8 @@ echo '</title>
 
 switch ($select) {
 	case 'main':
-		// if session was started previos, the existing session will be continued
+		if ( session_is_registered("accounts")) session_unregister("accounts");
+		session_register("accounts");
 		$profilelist = getUserProfiles();
 		echo '<input name="select" type="hidden" value="main">';
 		echo '<tr><td>';
@@ -84,15 +84,14 @@ switch ($select) {
 		echo '</td></tr>';
 		break;
 	case 'list':
-		if ( session_is_registered("accounts")) session_unregister("accounts");
-		session_register("accounts");
 		if (!is_array($accounts)) $accounts = array();
 	 	$handle = fopen($_FILES['userfile']['tmp_name'], 'r');
 		$error=false;
+		$groups = array();
 		echo '<tr><td>';
 		echo _('Confirm List');
 		echo '</td></tr>';
-		for ($row=0; $line_array=fgetcsv($handle,2048); ++$row) { // loops for every row
+		for ($row=0; $line_array=fgetcsv($handle,2048); $row++) { // loops for every row
 			$_SESSION['accounts'][$row] = loadUserProfile($_POST['f_selectprofile']) ;
 			if ($line_array[0]) $_SESSION['accounts'][$row]->general_surname = $line_array[0];
 			if ($line_array[1]) $_SESSION['accounts'][$row]->general_givenname = $line_array[1];
@@ -125,24 +124,35 @@ switch ($select) {
 				}
 			if (!$error) {
 				$values = checksamba($_SESSION['accounts'][$row], 'user'); // account.inc
-				while (list($key, $val) = each($values)) // Set only defined values
-					if ($val) $_SESSION['accounts'][$row]->$key = $val;
+				if (is_object($values)) {
+					while (list($key, $val) = each($values)) // Set only defined values
+						if ($val) $_SESSION['accounts'][$row]->$key = $val;
+					}
+					else $error = $values;
 				$values = checkquota($_SESSION['accounts'][$row], 'user'); // account.inc
-				while (list($key, $val) = each($values)) // Set only defined values
-					if ($val) $_SESSION['accounts'][$row]->$key = $val;
+				}
+			if (!$error) {
+				if (is_object($values)) {
+					while (list($key, $val) = each($values)) // Set only defined values
+						if ($val) $_SESSION['accounts'][$row]->$key = $val;
+					}
+					else $error = $values;
 				}
 			if ($error) StatusMessage('ERROR', _('Invalid Value in row ').$row.'!', $error);
-			if (getgid($_SESSION['accounts'][$row]->general_group)==-1) StatusMessage('INFO', _('Group ').
-				$_SESSION['accounts'][$row]->general_group._(' not found in row ').$row.'!', _('It will be created.'));
+			if ((getgid($_SESSION['accounts'][$row]->general_group)==-1) && (!in_array($_SESSION['accounts'][$row]->general_group, $groups))) $groups[] = $_SESSION['accounts'][$row]->general_group;
 			}
+		for ($i=0; $i<sizeof($groups); $i++)
+			StatusMessage('INFO', _('Group ').
+				$_SESSION['accounts'][$i]->general_group._(' not found!'), _('It will be created.'));
 		fclose($handle);
 		unlink($_FILES['userfile']['tmp_name']);
-		echo '<tr><td>'. _('Surname'). '</td><td>'. _('Givenname'). '</td><td>'. _('Username'). '</td><td>'. _('Primary Group'). '</td><td>'.
+		echo '<tr><td>'._('row').'</td><td>'. _('Surname'). '</td><td>'. _('Givenname'). '</td><td>'. _('Username'). '</td><td>'. _('Primary Group'). '</td><td>'.
 			_('Title'). '</td><td>'. _('Mail Address'). '</td><td>'. _('Telephonenumber'). '</td><td>'. _('Mobiletelephonenumber')
 			. '</td><td>'. _('Facsimiletelephonenumber'). '</td><td>'. _('Street'). '</td><td>'. _('Postal Code')
 			. '</td><td>'. _('Postal Address'). '</td><td>'. _('Employee Type') .'</td></tr>';
-		for ($row=0; sizeof($_SESSION['accounts']); $row++) { // loops for every row
-			echo '<tr><td>'.$_SESSION['accounts'][$row]->general_surname.'</td><td>'.
+		for ($row=0; $row<sizeof($_SESSION['accounts']); $row++) { // loops for every row
+			echo '<tr><td>'.$row.'</td><td>'.
+				$_SESSION['accounts'][$row]->general_surname.'</td><td>'.
 				$_SESSION['accounts'][$row]->general_givenname.'</td><td>'.
 				$_SESSION['accounts'][$row]->general_username.'</td><td>'.
 				$_SESSION['accounts'][$row]->general_group.'</td><td>'.
@@ -161,32 +171,34 @@ switch ($select) {
 		echo '</td><td><input name="create" type="submit" value="'; echo _('Create'); echo '">';
 		break;
 	case 'cancel':
+		if ( session_is_registered("accounts")) session_unregister("accounts");
 		echo '<meta http-equiv="refresh" content="0; URL=lists/listusers.php">';
 		break;
 	case 'create':
 		$row=0;
-		while ($row < sizeof($_SESSION['accounts']) || $row!=-1) {
+		$stay=true;
+		while (($row < sizeof($_SESSION['accounts'])) && $stay) {
 			if (getgid($_SESSION['accounts'][$row]->general_group)==-1) {
 				$group = new account();
 				$group->general_username=$_SESSION['accounts'][$row]->general_group;
 				$group->general_uidNumber=checkid($_SESSION['accounts'][$row], 'group');
 				$group->general_gecos=$_SESSION['accounts'][$row]->general_group;
-				creategroup($_SESSION['accounts'][$row]);
+				creategroup($group);
 				}
 			$error = createuser($_SESSION['accounts'][$row]);
 			if ($error==1) $row++;
 				else {
-				$row = -1;
+				$stay = false;
 				StatusMessage('ERROR', _('Could not create user'), _('Was unable to create ').$_SESSION['accounts'][$row]->general_username);
 				}
 			}
-		if ($row=-1) { echo '<tr><td><input name="cancel" type="submit" value="'; echo _('Cancel'); echo '">'; }
+		if (!$stay) { echo '<tr><td><input name="cancel" type="submit" value="'; echo _('Cancel'); echo '">'; }
 			else {
 			echo '<tr><td>';
 			echo _('All Users have been created');
 			echo '</td></tr><tr><td>';
 			echo '<tr><td><input name="cancel" type="submit" value="'; echo _('Mainmenu'); echo '">';
-			echo '<tr><td><input name="pdf" type="submit" value="'; echo _('Create PDF-File'); echo '">';
+			echo '</td><td></td><td><input name="pdf" type="submit" value="'; echo _('Create PDF-File'); echo '">';
 			}
 		break;
 	}

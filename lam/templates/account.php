@@ -272,7 +272,6 @@ if ($_POST['load']) $select_local='load';
 if ($_POST['save']) $select_local='save';
 
 
-
 switch ($select_local) {
 	case 'general':
 		// General Account Settings
