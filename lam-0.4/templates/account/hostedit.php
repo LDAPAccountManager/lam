@@ -104,7 +104,6 @@ else if (count($_POST)==0) {
 	$account_new = loadHostProfile('default');
 	$account_new ->type = 'host';
 	$account_new->smb_flags['W'] = 1;
-	$account_new->smb_flags['X'] = 1;
 	$account_new->general_homedir = '/dev/null';
 	$account_new->general_shell = '/bin/false';
 	}
@@ -218,10 +217,9 @@ switch ($_POST['select']) {
 				$account_new->smb_flags['N']=true;
 				}
 			}
-		// Check Objectclasses. Display Warning if objectclasses don'T fot
+		// Check object classes. Display warning if object classes were not found
 		if (isset($account_old->general_objectClass)) {
 			if (!in_array('posixAccount', $account_old->general_objectClass)) $errors[] = array('WARN', _('ObjectClass posixAccount not found.'), _('Have to add objectClass posixAccount.'));
-			if (!in_array('shadowAccount', $account_old->general_objectClass)) $errors[] = array('WARN', _('ObjectClass shadowAccount not found.'), _('Have to add objectClass shadowAccount.'));
 			if ($config_intern->is_samba3()) {
 				if (!in_array('sambaSamAccount', $account_old->general_objectClass)) $errors[] = array('WARN', _('ObjectClass sambaSamAccount not found.'), _('Have to add objectClass sambaSamAccount. Host with sambaAccount will be updated.'));
 				}
