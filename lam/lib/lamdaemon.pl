@@ -75,9 +75,12 @@ if ($( == 0 ) { # we are root
 		}
 	else {
 		# loop for every transmitted user
-		while (defined($input = <STDIN>)) {
+		# XXX fixme change code to read stdin at once and then loop
+		my $string = do {local $/;<STDIN>};
+		@input = split ("\n", $string );
+		for ($i=0; $i<=$#input; $i++) {
 			$return = "";
-			@vals = split (' ', $input);
+			@vals = split (' ', $input[$i]);
 			switch: {
 				# Get user information
 				if (($vals[3] eq 'user') || ($vals[1] eq 'home')) { @user = getpwnam($vals[0]); }
@@ -197,26 +200,14 @@ else {
 	$username[0] =~ s/uid=//;
 	$password = $ARGV[1];
 	# Put all transfered lines in one string
-	$i = 0;
-	$j = 0;
 	if ($ARGV[2] ne "*test") {
-		while (defined($input = <STDIN>)) {
-			$string[$i] .= $input;
-			$j++;
-			if ($j==5) {
-				$j=0;
-				$i++;
-				}
-			}
+		$string = do {local $/;<STDIN>};
 		}
 	else { $argv = "*test\n"; }
 	my $ssh = Net::SSH::Perl->new($hostname, options=>[
 		"UserKnownHostsFile /dev/null"],
 		protocol => "2,1" );
 	$ssh->login($username[0], $password);
-	foreach $string2 ( @string ) {
-		($stdout, $stderr, $exit) = $ssh->cmd("sudo $remotepath $argv", $string2);
-		$return .= $stdout;
-		}
-	print "$return";
+	($stdout, $stderr, $exit) = $ssh->cmd("sudo $remotepath $argv", $string);
+	print $stdout;
 	}

@@ -209,7 +209,7 @@ switch ($_POST['select']) {
 				// Recreate workstation string
 				$account_new->smb_smbuserworkstations = $workstations[0];
 				for ($i=1; $i<count($workstations); $i++) {
-					$account_new->smb_smbuserworkstations = $account_new->smb_smbuserworkstations . ", " . $workstations[$i];
+					$account_new->smb_smbuserworkstations = $account_new->smb_smbuserworkstations . "," . $workstations[$i];
 					}
 				break;
 				}
