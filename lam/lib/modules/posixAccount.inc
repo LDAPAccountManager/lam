@@ -546,7 +546,7 @@ class posixAccount {
 				}
 			} while(0);
 		if (isset($post['addgroups_button']) || isset($post['removegroups_button'])) return 'group';
-		if ($post['toattributes']) return 'attributes';
+		if ($post['back']) return 'attributes';
 		return 0;
 		}
 
@@ -630,15 +630,16 @@ class posixAccount {
 		$DNs = array_keys($dn_groups);
 		foreach ($DNs as $DN)
 			$groups[] = substr($DN, 3, strpos($DN, ',')-3);
-		// sort groups
-		sort($groups, SORT_STRING);
 		// remove groups the user is member of from grouplist
 		$groups = array_delete($this->groups, $groups);
 		// Remove primary group from grouplist
+		$group = $_SESSION[$_SESSION[$this->base]->cache]->getgrnam($this->attributes['gidNumber'][0]);
 		$groups = array_flip($groups);
-		if (isset($groups[$_SESSION[$_SESSION[$this->base]->cache]->getgrnam($this->attributes['gidNumber'])])) unset ($groups[$_SESSION[$_SESSION[$this->base]->cache]->getgrnam($this->attributes['gidNumber'])]);
+		unset ($groups[$group]);
 		$groups = array_flip($groups);
-
+		// sort groups
+		sort($groups, SORT_STRING);
+		
 		$return[] = array ( 0 => array ( 'kind' => 'fieldset', 'legend' => _("Additional groups"), 'value' =>
 			array ( 0 => array ( 0 => array ('kind' => 'fieldset', 'td' => array ('valign' => 'top'), 'legend' => _("Selected groups"), 'value' =>
 				array ( 0 => array ( 0 => array ( 'kind' => 'select', 'name' => 'removegroups[]', 'size' => '15', 'multiple', 'options' => $this->groups)))),
@@ -649,7 +650,7 @@ class posixAccount {
 				array ( 0 => array ( 0 => array ( 'kind' => 'select', 'name' => 'addgroups[]', 'size' => '15', 'multiple', 'options' => $groups))))
 				))));
 
-		$return[] = array ( 0 => array ( 'kind' => 'input', 'type' => 'submit', 'value' => _('Back') ),
+		$return[] = array ( 0 => array ( 'kind' => 'input', 'type' => 'submit', 'value' => _('Back'), 'name' => 'back' ),
 			1 => array ( 'kind' => 'text'),
 			2 => array ('kind' => 'text'));
 		return $return;
