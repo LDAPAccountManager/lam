@@ -82,7 +82,11 @@ if ($_POST['new_user'] || $_POST['del_user'] || $_POST['pdf_user']){
 		$users = array_keys($_POST, "on");
 		$userlist = array();
 		// load users from LDAP
-		for ($i = 0; $i < sizeof($users); $i++) $userlist[] = loaduser($users[$i]);
+		for ($i = 0; $i < sizeof($users); $i++) {
+			$userlist[$i] = loaduser($users[$i]);
+			$userlist[$i]->unix_password = "";
+			$userlist[$i]->smb_password = "";
+		}
 		createUserPDF($userlist);
 	}
 	exit;
