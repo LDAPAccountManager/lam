@@ -206,30 +206,6 @@ $helpArray = array (
 					"variables" => array('user', 'group')),
 				"438" => array ("ext" => "FALSE", "Headline" => _("Domain"),
 					"Text" => _("Windows-Domain of user."). ' '. _("Can be left empty.")),
-				"439" => array ("ext" => "FALSE", "Headline" => _("Mountpoint"),
-					"Text" => _("Mountpoint of device with enabled quotas.")),
-				"440" => array ("ext" => "FALSE", "Headline" => _("Used blocks"),
-					"Text" => _("Used blocks. 1000 blocks are usually 1MB")),
-				"441" => array ("ext" => "FALSE", "Headline" => _("Soft block limit"),
-					"Text" => _("Soft block limit."), "SeeAlso" => '<a href="http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.4">'.
-						'Quota How-To</a>'),
-				"442" => array ("ext" => "FALSE", "Headline" => _("Hard block limit"),
-					"Text" => _("Hard block limit").'.', "SeeAlso" => '<a href="http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.5">'.
-						'Quota How-To</a>'),
-				"443" => array ("ext" => "FALSE", "Headline" => _("Grace block period"),
-					"Text" => _("Grace block period. Most filesystems use a fixed maximum value of 7 days."), "SeeAlso" => '<a href="http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.6">'.
-						'Quota How-To</a>'),
-				"444" => array ("ext" => "FALSE", "Headline" => _("Used inodes"),
-					"Text" => _("Used inodes (files)").'.'),
-				"445" => array ("ext" => "FALSE", "Headline" => _("Soft inode limit"),
-					"Text" => _("Soft inode (files) limit."), "SeeAlso" => '<a href="http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.4">'.
-						'Quota How-To</a>'),
-				"446" => array ("ext" => "FALSE", "Headline" => _("Hard inode limit"),
-					"Text" => _("Hard inode (files) limit").'.', "SeeAlso" => '<a href="http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.5">'.
-						'Quota How-To</a>'),
-				"447" => array ("ext" => "FALSE", "Headline" => _("Grace inode period"),
-					"Text" => _("Grace inode (files) period. Most filesystems use a fixed maximum value of 7 days."), "SeeAlso" => '<a href="http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.6">'.
-						'Quota How-To</a>'),
 				"448" => array ("ext" => "FALSE", "Headline" => _("Title"),
 					"Text" => _("Title of user, Mr., Ms., ...")),
 				"449" => array ("ext" => "FALSE", "Headline" => _("Employee type"),

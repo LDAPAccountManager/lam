@@ -23,14 +23,6 @@ $Id$
 
 class quota extends baseModule {
 
-	/**
-	* Creates a new quota object.
-	*/
-	function quota($scope) {
-	// call parent constructor
-	parent::baseModule($scope);
-	}
-
 	/** this functin fills the error message array with messages
 	**/
 	function load_Messages() {
@@ -64,6 +56,51 @@ class quota extends baseModule {
 		}
 		// available PDF fields
 		$return['PDF_fields'] =  array(	'quotas');
+		// help entries
+		$return['help'] = array(
+		"Mountpoint" => array(
+			"ext" => "FALSE",
+			"Headline" => _("Mountpoint"),
+			"Text" => _("Mountpoint of device with enabled quotas.")),
+		"UsedBlocks" => array(
+			"ext" => "FALSE",
+			"Headline" => _("Used blocks"),
+			"Text" => _("Used blocks. 1000 blocks are usually 1MB")),
+		"SoftBlockLimit" => array(
+			"ext" => "FALSE",
+			"Headline" => _("Soft block limit"),
+			"Text" => _("Soft block limit."), "SeeAlso" => '<a href="http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.4">'.
+			'Quota How-To</a>'),
+		"HardBlockLimit" => array(
+			"ext" => "FALSE",
+			"Headline" => _("Hard block limit"),
+			"Text" => _("Hard block limit").'.', "SeeAlso" => '<a href="http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.5">'.
+			'Quota How-To</a>'),
+		"GraceBlockPeriod" => array(
+			"ext" => "FALSE",
+			"Headline" => _("Grace block period"),
+			"Text" => _("Grace block period. Most filesystems use a fixed maximum value of 7 days."), "SeeAlso" => '<a href="http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.6">'.
+			'Quota How-To</a>'),
+		"UsedInodes" => array(
+			"ext" => "FALSE",
+			"Headline" => _("Used inodes"),
+			"Text" => _("Used inodes (files)").'.'),
+		"SoftInodeLimit" => array(
+			"ext" => "FALSE",
+			"Headline" => _("Soft inode limit"),
+			"Text" => _("Soft inode (files) limit."), "SeeAlso" => '<a href="http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.4">'.
+			'Quota How-To</a>'),
+		"HardInodeLimit" => array(
+			"ext" => "FALSE",
+			"Headline" => _("Hard inode limit"),
+			"Text" => _("Hard inode (files) limit").'.', "SeeAlso" => '<a href="http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.5">'.
+			'Quota How-To</a>'),
+		"GraceInodePeriod" => array(
+			"ext" => "FALSE",
+			"Headline" => _("Grace inode period"),
+			"Text" => _("Grace inode (files) period. Most filesystems use a fixed maximum value of 7 days."), "SeeAlso" => '<a href="http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.6">'.
+			'Quota How-To</a>'),
+		);
 		return $return;
 	}
 
@@ -123,18 +160,6 @@ class quota extends baseModule {
 	*/
 	function pages() {
 		return array('attributes');
-		}
-
-	/*
-	*/
-	function get_help($id,$scope) {
-		switch ($id) {
-			case "description":
-				return array ("ext" => "FALSE", "Headline" => _("Description"),
-					"Text" => _("Host Description."));
-				break;
-			}
-		return false;
 		}
 
 	/* This function returns all ldap attributes
@@ -329,11 +354,11 @@ class quota extends baseModule {
 			4 => array('kind' => 'text', 'text' => '<b>' . _('Hard inode limit') . '&nbsp;&nbsp;</b>', 'align' => 'center'),
 		);
 		$return[] = array (
-			0 => array('kind' => 'help', 'value' => 'TODO', 'align' => 'center'),
-			1 => array('kind' => 'help', 'value' => 'TODO', 'align' => 'center'),
-			2 => array('kind' => 'help', 'value' => 'TODO', 'align' => 'center'),
-			3 => array('kind' => 'help', 'value' => 'TODO', 'align' => 'center'),
-			4 => array('kind' => 'help', 'value' => 'TODO', 'align' => 'center'),
+			0 => array('kind' => 'help', 'value' => 'Mountpoint', 'align' => 'center'),
+			1 => array('kind' => 'help', 'value' => 'SoftBlockLimit', 'align' => 'center'),
+			2 => array('kind' => 'help', 'value' => 'HardBlockLimit', 'align' => 'center'),
+			3 => array('kind' => 'help', 'value' => 'SoftInodeLimit', 'align' => 'center'),
+			4 => array('kind' => 'help', 'value' => 'HardInodeLimit', 'align' => 'center'),
 		);
 		for ($i = 0; $i < sizeof($dirs); $i++) {
 			$return[] = array(
