@@ -663,18 +663,18 @@ switch ($select_local) { // Select which part of page will be loaded
 			'</td>'."\n".'<td>'.
 			'<a href="../help.php?HelpNumber=401" target="lamhelp">'._('Help').'</a>'.
 			'</td></tr>'."\n".'<tr><td>';
-		echo _('Surname').'*';
-		echo '</td>'."\n".'<td>'.
-			'<input name="f_general_surname" type="text" size="20" maxlength="20" value="' . $_SESSION['account']->general_surname . '">'.
-			'</td><td>'.
-			'<a href="../help.php?HelpNumber=424" target="lamhelp">'._('Help').'</a>'.
-			'</td></tr>'."\n".'<tr><td>';
 		echo _('Given name').'*';
 		echo '</td>'."\n".'<td>'.
 			'<input name="f_general_givenname" type="text" size="20" maxlength="20" value="' . $_SESSION['account']->general_givenname . '">'.
 			'</td>'."\n".'<td>'.
 			'<a href="../help.php?HelpNumber=425" target="lamhelp">'._('Help').'</a>'.
 			'</td>'."\n".'</tr>'."\n".'<tr><td>';
+		echo _('Surname').'*';
+		echo '</td>'."\n".'<td>'.
+			'<input name="f_general_surname" type="text" size="20" maxlength="20" value="' . $_SESSION['account']->general_surname . '">'.
+			'</td><td>'.
+			'<a href="../help.php?HelpNumber=424" target="lamhelp">'._('Help').'</a>'.
+			'</td></tr>'."\n".'<tr><td>';
 		echo _('Primary group').'*';
 		echo '</td>'."\n".'<td><select name="f_general_group">';
 		// loop trough existing groups
