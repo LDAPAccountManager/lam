@@ -503,7 +503,7 @@ class Config {
 	// $value: new attribute string
 	// returns true if $value has correct format
 	function set_userlistAttributes($value) {
-		if (is_string($value) && eregi("^((#[a-z]+)|([a-z]*:[a-z_\\-]+))(;((#[a-z]+)|([a-z]*:[a-z_\\-]+)))*$", $value)) {
+		if (is_string($value) && eregi("^((#[^:;]+)|([^:;]*:[^:;]+))(;((#[^:;]+)|([^:;]*:[^:;]+)))*$", $value)) {
 			$this->userlistAttributes = $value;
 		}
 		else return false;
@@ -519,7 +519,7 @@ class Config {
 	// $value: new attribute string
 	// returns true if $value has correct format
 	function set_grouplistAttributes($value) {
-		if (is_string($value) && eregi("^((#[a-z]+)|([a-z]*:[a-z_\\-]+))(;((#[a-z]+)|([a-z]*:[a-z_\\-]+)))*$", $value)) {
+		if (is_string($value) && eregi("^((#[^:;]+)|([^:;]*:[^:;]+))(;((#[^:;]+)|([^:;]*:[^:;]+)))*$", $value)) {
 			$this->grouplistAttributes = $value;
 		}
 		else return false;
@@ -535,7 +535,7 @@ class Config {
 	// $value: new attribute string
 	// returns true if $value has correct format
 	function set_hostlistAttributes($value) {
-		if (is_string($value) && eregi("^((#[a-z]+)|([a-z]*:[a-z_\\-]+))(;((#[a-z]+)|([a-z]*:[a-z_\\-]+)))*$", $value)) {
+		if (is_string($value) && eregi("^((#[^:;]+)|([^:;]*:[^:;]+))(;((#[^:;]+)|([^:;]*:[^:;]+)))*$", $value)) {
 			$this->hostlistAttributes = $value;
 		}
 		else return false;
