@@ -197,7 +197,8 @@ class baseModule {
 	/**
 	* Checks input values of account profiles.
 	*
-	* @return array profile elements
+	* @param array $options a hash array (name => value) containing the options
+	* @return array list of error messages (array(type, title, text)) to generate StatusMessages, if any
 	*/
 	function check_profileOptions($options) {
 		$messages = array();
@@ -418,15 +419,16 @@ class baseModule {
 	}
 
 	/**
-	* In this function the LDAP account is build up.
+	* In this function the LDAP account is built up.
 	*
 	* @param array $rawAccounts list of hash arrays (name => value) from user input
 	* @param array $partialAccounts list of hash arrays (name => value) which are later added to LDAP
-	* @return array the updated partialAccouts
+	* @param array $ids list of IDs for column position (e.g. "posixAccount_uid" => 5)
+	* @return array list of error messages if any
 	*/
-	function build_uploadAccounts($rawAccounts, $partialAccounts) {
+	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts) {
 		// must be implemented in sub modules
-		return $partialAccounts;
+		return array();
 	}
 	
 	/**
