@@ -1,5 +1,5 @@
 /*
-This file contains a list of 100er blocks of help numbers. Each block can be unassigned or assigned to a developer. Each block description contains the name of the developer and the topic the help numbers a used for.
+This file contains a list of 100er blocks of help numbers. Each block can be unassigned or assigned to a developer. Each block description contains the name of the developer and the topic the help numbers are used for.
 
 If you are a developer and need a block of help numbers please contact Michael Dürgner <michael@duergner.com> ICQ-UIN:176796482.
 
@@ -9,4 +9,5 @@ Help numbers should only be used if they are assigned in this file to avoid doub
 0 - 99: any developer: for testing purposes
 100 - 199: unassigend
 200 - 299: Roland Gruber: configuration wizard, configuration login
+300 - 399: Roland Gruber: profil editor
 300 -: unassigned

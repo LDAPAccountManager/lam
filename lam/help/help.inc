@@ -29,7 +29,7 @@ $helpArray = array (
 				// for testing purposes
 				"0" => array ("ext" => "FALSE", "Headline" => _("Hilfetest 1"), "Text" => _("blablabla 1"), "SeeAlso" => "<a href=\"./help.php?HelpNumber=02\" target=\"_self\">02</a>"),
 				"02" => array ("ext" => "FALSE", "Headline" => _("Hilfetest 2"), "Text" => _("blablabla 2"), "SeeAlso" => ""),
-				"03" => array ("ext" => "TRUE", "Link" => "help/extFileExample.php"),
+				"03" => array ("ext" => "TRUE", "Link" => "extFileExample.php"),
 				// 200 - 299
 				// Roland Gruber
 				// configuration wizard
@@ -93,8 +93,8 @@ $helpArray = array (
 /* This is a sample help entry. Just copy this line an modify the vakues between the [] brackets.
 	Help text is located in the array:
 		"[Helpnumber]" => array ("ext" => "FALSE", "Headline" => _("[Headline]"), "Text" => _("[Text]"), "SeeAlso" => "[SeeAlso link]"),
-	Help text is located in an extra file; path must be relative to lam_root; File should be stored in help directory
-		"[Helpnumber]" => array ("ext" => "TRUE", "Link" => "[help/pathToFile]),
+	Help text is located in an extra file; File must be stored in help directory; Link has to be the path to the file if it is stored in a subdirectory and the filename with a leading slash;
+		"[Helpnumber]" => array ("ext" => "TRUE", "Link" => "[path/FileName]),
 */
 				);
 ?>

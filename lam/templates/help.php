@@ -87,7 +87,7 @@ function displayHelp($helpNumber)
 	elseif($helpArray[$helpNumber]["ext"] == "TRUE")
 	{
 		echoHTMLHead();
-		include_once("../" . $helpArray[$helpNumber]["Link"]);
+		include_once("../help/" . $helpArray[$helpNumber]["Link"]);
 		echoHTMLFoot();
 	}
 	/* Print empty page in all other cases */
