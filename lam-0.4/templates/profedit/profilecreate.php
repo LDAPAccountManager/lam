@@ -53,7 +53,6 @@ echo $_SESSION['header'];
 echo "<title></title>\n<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
 echo "</head>\n<body>\n<br>\n";
 
-print_r($_POST);
 // save user profile
 if ($_GET['type'] == "user") {
 	$acct = new account();
