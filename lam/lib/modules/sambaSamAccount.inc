@@ -69,13 +69,21 @@ class sambaSamAccount extends baseModule {
 		// module dependencies
 		$return['dependencies'] = array('depends' => array('posixAccount'), 'conflicts' => array());
 		// profile checks
-		$return['profile_checks']['sambaSamAccount_smbhome'] = array('type' => 'regex_i', 'regex' => 'UNC',
+		$return['profile_checks']['sambaSamAccount_smbhome'] = array(
+			'type' => 'ext_preg',
+			'regex' => 'UNC',
 			'error_message' => $this->messages['homePath'][0]);
-		$return['profile_checks']['sambaSamAccount_profilePath'] = array('type' => 'regex_i', 'regex' => 'UNC',
+		$return['profile_checks']['sambaSamAccount_profilePath'] = array(
+			'type' => 'ext_preg',
+			'regex' => 'UNC',
 			'error_message' => $this->messages['profilePath'][0]);
-		$return['profile_checks']['sambaSamAccount_logonScript'] = array('type' => 'regex_i', 'regex' => 'logonscript',
+		$return['profile_checks']['sambaSamAccount_logonScript'] = array(
+			'type' => 'ext_preg',
+			'regex' => 'logonscript',
 			'error_message' => $this->messages['logonScript'][0]);
-		$return['profile_checks']['sambaSamAccount_userWorkstations'] = array('type' => 'regex_i', 'regex' => 'unixhost',
+		$return['profile_checks']['sambaSamAccount_userWorkstations'] = array(
+			'type' => 'ext_preg',
+			'regex' => 'unixhost',
 			'error_message' => $this->messages['workstations'][0]);
 		// available PDF fields
 		$return['PDF_fields'] = array(	'displayName',

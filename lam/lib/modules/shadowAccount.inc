@@ -98,15 +98,26 @@ class shadowAccount extends baseModule {
 				2 => array('kind' => 'help', 'value' => 'TODO'))
 		);
 		// profile checks
-		$return['profile_checks']['shadowAccount_shadowMin'] = array('type' => 'regex', 'regex' => 'digit',
+		$return['profile_checks']['shadowAccount_shadowMin'] = array(
+			'type' => 'ext_preg',
+			'regex' => 'digit',
 			'error_message' => $this->messages['shadowMin'][0]);
-		$return['profile_checks']['shadowAccount_shadowMax'] = array('type' => 'regex', 'regex' => 'digit',
+		$return['profile_checks']['shadowAccount_shadowMax'] = array(
+			'type' => 'ext_preg',
+			'regex' => 'digit',
 			'error_message' => $this->messages['shadowMax'][0]);
-		$return['profile_checks']['shadowAccount_cmp'] = array('type' => 'int_greater', 'cmp_name1' => 'shadowAccount_shadowMax',
-			'cmp_name2' => 'shadowAccount_shadowMin', 'error_message' => $this->messages['shadow_cmp'][0]);
-		$return['profile_checks']['shadowAccount_shadowInactive'] = array('type' => 'regex', 'regex' => 'digit2',
+		$return['profile_checks']['shadowAccount_cmp'] = array(
+			'type' => 'int_greater',
+			'cmp_name1' => 'shadowAccount_shadowMax',
+			'cmp_name2' => 'shadowAccount_shadowMin',
+			'error_message' => $this->messages['shadow_cmp'][0]);
+		$return['profile_checks']['shadowAccount_shadowInactive'] = array(
+			'type' => 'ext_preg',
+			'regex' => 'digit2',
 			'error_message' => $this->messages['inactive'][0]);
-		$return['profile_checks']['shadowAccount_shadowWarning'] = array('type' => 'regex', 'regex' => 'digit',
+		$return['profile_checks']['shadowAccount_shadowWarning'] = array(
+			'type' => 'ext_preg',
+			'regex' => 'digit',
 			'error_message' => $this->messages['shadowWarning'][0]);
 		// available PDF fields
 		$return['PDF_fields'] = array(	'shadowLastChange',

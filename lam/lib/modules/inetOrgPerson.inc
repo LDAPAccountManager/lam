@@ -87,10 +87,14 @@ class inetOrgPerson extends baseModule {
 				2 => array('kind' => 'help', 'value' => 'TODO'))
 		);
 		// profile checks
-		$return['profile_checks']['inetOrgPerson_title'] = array('type' => 'regex_i', 'regex' => 'title',
+		$return['profile_checks']['inetOrgPerson_title'] = array(
+			'type' => 'ext_preg',
+			'regex' => 'title',
 			'error_message' => $this->messages['title'][0]);
-		$return['profile_checks']['inetOrgPerson_employeeType'] = array('type' => 'regex_i',
-			'regex' => 'employeeType', 'error_message' => $this->messages['employeeType'][0]);
+		$return['profile_checks']['inetOrgPerson_employeeType'] = array(
+			'type' => 'ext_preg',
+			'regex' => 'employeeType',
+			'error_message' => $this->messages['employeeType'][0]);
 		// available PDF fields
 		$return['PDF_fields'] = array(	'description',
 													'host',

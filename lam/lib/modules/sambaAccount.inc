@@ -136,15 +136,15 @@ class sambaAccount extends baseModule {
 			2 => array('kind' => 'help', 'value' => 'TODO')
 			);
 		// profile checks
-		$return['profile_checks']['sambaAccount_smbhome'] = array('type' => 'regex_i', 'regex' => 'UNC',
+		$return['profile_checks']['sambaAccount_smbhome'] = array('type' => 'ext_preg', 'regex' => 'UNC',
 			'error_message' => $this->messages['homePath'][0]);
-		$return['profile_checks']['sambaAccount_profilePath'] = array('type' => 'regex_i', 'regex' => 'UNC',
+		$return['profile_checks']['sambaAccount_profilePath'] = array('type' => 'ext_preg', 'regex' => 'UNC',
 			'error_message' => $this->messages['profilePath'][0]);
-		$return['profile_checks']['sambaAccount_scriptPath'] = array('type' => 'regex_i', 'regex' => 'logonScript',
+		$return['profile_checks']['sambaAccount_scriptPath'] = array('type' => 'ext_preg', 'regex' => 'logonScript',
 			'error_message' => $this->messages['logonScript'][0]);
-		$return['profile_checks']['sambaAccount_userWorkstations'] = array('type' => 'regex_i', 'regex' => 'unixhost',
+		$return['profile_checks']['sambaAccount_userWorkstations'] = array('type' => 'ext_preg', 'regex' => 'unixhost',
 			'error_message' => $this->messages['workstations'][0]);
-		$return['profile_checks']['sambaAccount_domain'] = array('type' => 'regex_i', 'regex' => 'domainname',
+		$return['profile_checks']['sambaAccount_domain'] = array('type' => 'ext_preg', 'regex' => 'domainname',
 			'error_message' => $this->messages['domain'][0]);
 		// available PDF fields
 		$return['PDF_fields'] = array(	'displayName',
