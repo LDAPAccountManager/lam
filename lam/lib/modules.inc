@@ -35,10 +35,11 @@ $Id$
 include_once("cache.inc");
 /** some helper functions */
 include_once("account.inc");
-include_once("ldap.inc");
 /** parent class of account modules */
 include_once("baseModule.inc");
-
+/** access to LDAP server */
+include_once("ldap.inc");
+ 
 /**
 * This includes all module files.
 */
@@ -342,6 +343,32 @@ function getAvailableScopes() {
 }
 
 /**
+* Returns an array containing all input columns for the file upload.
+*
+* Syntax:
+* <br> array(
+* <br>  string: name,  // fixed non-translated name which is used as column name (should be of format: <module name>_<column name>)
+* <br>  string: description,  // short descriptive name
+* <br>  string: help,  // help ID
+* <br>  string: example,  // example value
+* <br>  boolean: required  // true, if user must set a value for this column
+* <br> )
+*
+* @param string $scope account type
+* @return array column list
+*/
+function getUploadColumns($scope) {
+	// create new account container if needed
+	if (! isset($_SESSION["profile_account_$scope"])) {
+		$_SESSION["profile_account_$scope"] = new accountContainer($scope, "profile_account_$scope");
+		$_SESSION["profile_account_$scope"]->new_account();
+	}
+	// get options
+	return $_SESSION["profile_account_$scope"]->get_uploadColumns();
+}
+
+
+/**
 * This class includes all modules and attributes of an account.
 *
 * @package modules
@@ -360,8 +387,6 @@ class accountContainer {
 		$this->type = $type;
 		$this->base = $base;
 		// Name of variables in session
-		$this->ldap = 'ldap';
-		$this->config = 'config';
 		$this->cache = 'cache';
 		$this->header2 = 'header';
 		// Set startpage
@@ -382,8 +407,6 @@ class accountContainer {
 	* of account. Current unix, group, host are supported
 	*/
 	var $type;
-	var $ldap; // This is a reference to the ldap class in session
-	var $config; // This is a reference to the config class in session
 	// Localized part of HTML-Header
 	var $header2;
 	var $module; // This is an array with all module objects
@@ -585,7 +608,7 @@ class accountContainer {
 				if (count($table)!=0) $return[] = array ( 0 => array ( 'kind' => 'table', 'value' => $table ) );
 				// loop through all suffixes
 				$rootsuffix = call_user_func(array($_SESSION['config'], 'get_' . ucfirst($this->type) . 'Suffix'));
-				foreach ($_SESSION[$this->ldap]->search_units($rootsuffix) as $suffix) {
+				foreach ($_SESSION['ldap']->search_units($rootsuffix) as $suffix) {
 					if ($this->dn == $suffix) $option_selected = $suffix;
 					$suffixes[] = $suffix;
 					}
@@ -761,15 +784,15 @@ class accountContainer {
 	function add_attributes($objectClass) {
 		// loop through every existing objectlass and select current objectClass
 		$line=-1;
-		for ($i=0; $i<count($_SESSION[$this->ldap]->objectClasses) || $i==-1; $i++) {
-			if (strpos($_SESSION[$this->ldap]->objectClasses[$i], "NAME '$objectClass'")) $line = $i;
+		for ($i=0; $i<count($_SESSION['ldap']->objectClasses) || $i==-1; $i++) {
+			if (strpos($_SESSION['ldap']->objectClasses[$i], "NAME '$objectClass'")) $line = $i;
 			}
 		// Return error if objectClass isn't found
 		if ($line==-1) trigger_error (sprintf(_("objectClass %s required but not defined in ldap."), $objectClass), E_USER_WARNING);
 		// create array with must-attributes
 		// Get startposition in string
-		if (strpos($_SESSION[$this->ldap]->objectClasses[$line],  'MUST (')) {
-			$string_withtail = substr($_SESSION[$this->ldap]->objectClasses[$line], strpos($_SESSION[$this->ldap]->objectClasses[$line],  'MUST (')+6);
+		if (strpos($_SESSION['ldap']->objectClasses[$line],  'MUST (')) {
+			$string_withtail = substr($_SESSION['ldap']->objectClasses[$line], strpos($_SESSION['ldap']->objectClasses[$line],  'MUST (')+6);
 			// Now we have a string with all must-attributes
 			$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
 			$string = trim($string);
@@ -782,8 +805,8 @@ class accountContainer {
 			}
 		// create array with may-attributes
 		// Get startposition in string
-		if (strpos($_SESSION[$this->ldap]->objectClasses[$line],  'MAY (')) {
-			$string_withtail = substr($_SESSION[$this->ldap]->objectClasses[$line], strpos($_SESSION[$this->ldap]->objectClasses[$line],  'MAY (')+5);
+		if (strpos($_SESSION['ldap']->objectClasses[$line],  'MAY (')) {
+			$string_withtail = substr($_SESSION['ldap']->objectClasses[$line], strpos($_SESSION['ldap']->objectClasses[$line],  'MAY (')+5);
 			// Now we have a string with all must-attributes
 			$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
 			$string = trim($string);
@@ -795,19 +818,19 @@ class accountContainer {
 				}
 			}
 		// Get attributes of subclasses
-		while (strpos($_SESSION[$this->ldap]->objectClasses[$line], "SUP ")) {
-			$string_withtail = substr($_SESSION[$this->ldap]->objectClasses[$line], strpos($_SESSION[$this->ldap]->objectClasses[$line],  'SUP ')+4);
+		while (strpos($_SESSION['ldap']->objectClasses[$line], "SUP ")) {
+			$string_withtail = substr($_SESSION['ldap']->objectClasses[$line], strpos($_SESSION['ldap']->objectClasses[$line],  'SUP ')+4);
 			$subclass = substr($string_withtail, 0, strpos($string_withtail, ' '));
 			// Add account type to object
-			for ($i=0; $i<count($_SESSION[$this->ldap]->objectClasses) || $i==-1; $i++) {
-				if (strpos($_SESSION[$this->ldap]->objectClasses[$i], "NAME '$subclass'")) $line = $i;
+			for ($i=0; $i<count($_SESSION['ldap']->objectClasses) || $i==-1; $i++) {
+				if (strpos($_SESSION['ldap']->objectClasses[$i], "NAME '$subclass'")) $line = $i;
 				}
 			// Return error if objectClass isn't found
 			if ($line==-1) trigger_error (sprintf(_("objectClass %s required but not defined in ldap."), $objectClass), E_USER_WARNING);
 			// create array with must-attributes
 			// Get startposition in string
-			if (strpos($_SESSION[$this->ldap]->objectClasses[$line],  'MUST (')) {
-				$string_withtail = substr($_SESSION[$this->ldap]->objectClasses[$line], strpos($_SESSION[$this->ldap]->objectClasses[$line],  'MUST (')+6);
+			if (strpos($_SESSION['ldap']->objectClasses[$line],  'MUST (')) {
+				$string_withtail = substr($_SESSION['ldap']->objectClasses[$line], strpos($_SESSION['ldap']->objectClasses[$line],  'MUST (')+6);
 				// Now we have a string with all must-attributes
 				$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
 				$string = trim($string);
@@ -820,8 +843,8 @@ class accountContainer {
 				}
 			// create array with may-attributes
 			// Get startposition in string
-			if (strpos($_SESSION[$this->ldap]->objectClasses[$line],  'MAY (')) {
-				$string_withtail = substr($_SESSION[$this->ldap]->objectClasses[$line], strpos($_SESSION[$this->ldap]->objectClasses[$line],  'MAY (')+5);
+			if (strpos($_SESSION['ldap']->objectClasses[$line],  'MAY (')) {
+				$string_withtail = substr($_SESSION['ldap']->objectClasses[$line], strpos($_SESSION['ldap']->objectClasses[$line],  'MAY (')+5);
 				// Now we have a string with all must-attributes
 				$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
 				$string = trim($string);
@@ -860,13 +883,13 @@ class accountContainer {
 	function get_module_attributes($objectClass) {
 		// Add account type to object
 		$line=-1;
-		for ($i=0; $i<count($_SESSION[$this->ldap]->objectClasses) || $i==-1; $i++) {
-			if (strpos($_SESSION[$this->ldap]->objectClasses[$i], "NAME '$objectClass'")) $line = $i;
+		for ($i=0; $i<count($_SESSION['ldap']->objectClasses) || $i==-1; $i++) {
+			if (strpos($_SESSION['ldap']->objectClasses[$i], "NAME '$objectClass'")) $line = $i;
 			}
 		// Return error if objectClass isn't found
 		if ($line==-1) trigger_error (sprintf(_("ObjectClass %s required but not defined in ldap."), $objectClass), E_USER_WARNING);
-		if (strpos($_SESSION[$this->ldap]->objectClasses[$line],  'MUST (')) {
-			$string_withtail = substr($_SESSION[$this->ldap]->objectClasses[$line], strpos($_SESSION[$this->ldap]->objectClasses[$line],  'MUST (')+6);
+		if (strpos($_SESSION['ldap']->objectClasses[$line],  'MUST (')) {
+			$string_withtail = substr($_SESSION['ldap']->objectClasses[$line], strpos($_SESSION['ldap']->objectClasses[$line],  'MUST (')+6);
 			// Now we have a string with all must-attributes
 			$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
 			$string = trim($string);
@@ -877,8 +900,8 @@ class accountContainer {
 			}
 		// create array with may-attributes
 		// Get startposition in string
-		if (strpos($_SESSION[$this->ldap]->objectClasses[$line],  'MAY (')) {
-			$string_withtail = substr($_SESSION[$this->ldap]->objectClasses[$line], strpos($_SESSION[$this->ldap]->objectClasses[$line],  'MAY (')+5);
+		if (strpos($_SESSION['ldap']->objectClasses[$line],  'MAY (')) {
+			$string_withtail = substr($_SESSION['ldap']->objectClasses[$line], strpos($_SESSION['ldap']->objectClasses[$line],  'MAY (')+5);
 			// Now we have a string with all must-attributes
 			$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
 			$string = trim($string);
@@ -888,19 +911,19 @@ class accountContainer {
 				}
 			}
 		// Get attributes of subclasses
-		while (strpos($_SESSION[$this->ldap]->objectClasses[$line], "SUP ")) {
-			$string_withtail = substr($_SESSION[$this->ldap]->objectClasses[$line], strpos($_SESSION[$this->ldap]->objectClasses[$line],  'SUP ')+4);
+		while (strpos($_SESSION['ldap']->objectClasses[$line], "SUP ")) {
+			$string_withtail = substr($_SESSION['ldap']->objectClasses[$line], strpos($_SESSION['ldap']->objectClasses[$line],  'SUP ')+4);
 			$subclass = substr($string_withtail, 0, strpos($string_withtail, ' '));
 			// Add account type to object
-			for ($i=0; $i<count($_SESSION[$this->ldap]->objectClasses) || $i==-1; $i++) {
-				if (strpos($_SESSION[$this->ldap]->objectClasses[$i], "NAME '$subclass'")) $line = $i;
+			for ($i=0; $i<count($_SESSION['ldap']->objectClasses) || $i==-1; $i++) {
+				if (strpos($_SESSION['ldap']->objectClasses[$i], "NAME '$subclass'")) $line = $i;
 				}
 			// Return error if objectClass isn't found
 			if ($line==-1) trigger_error (sprintf(_("ObjectClass %s required but not defined in ldap."), $subclass), E_USER_WARNING);
 			// create array with must-attributes
 			// Get startposition in string
-			if (strpos($_SESSION[$this->ldap]->objectClasses[$line],  'MUST (')) {
-				$string_withtail = substr($_SESSION[$this->ldap]->objectClasses[$line], strpos($_SESSION[$this->ldap]->objectClasses[$line],  'MUST (')+6);
+			if (strpos($_SESSION['ldap']->objectClasses[$line],  'MUST (')) {
+				$string_withtail = substr($_SESSION['ldap']->objectClasses[$line], strpos($_SESSION['ldap']->objectClasses[$line],  'MUST (')+6);
 				// Now we have a string with all must-attributes
 				$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
 				$string = trim($string);
@@ -911,8 +934,8 @@ class accountContainer {
 				}
 			// create array with may-attributes
 			// Get startposition in string
-			if (strpos($_SESSION[$this->ldap]->objectClasses[$line],  'MAY (')) {
-				$string_withtail = substr($_SESSION[$this->ldap]->objectClasses[$line], strpos($_SESSION[$this->ldap]->objectClasses[$line],  'MAY (')+5);
+			if (strpos($_SESSION['ldap']->objectClasses[$line],  'MAY (')) {
+				$string_withtail = substr($_SESSION['ldap']->objectClasses[$line], strpos($_SESSION['ldap']->objectClasses[$line],  'MAY (')+5);
 				// Now we have a string with all must-attributes
 				$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
 				$string = trim($string);
@@ -1009,15 +1032,15 @@ class accountContainer {
 	* $dn is the dn of the account which should be loaded
 	*/
 	function load_account($dn) {
-		//$function = '$modules = $_SESSION[$this->config]->get_'.ucfirst($this->type).'Modules();';
+		//$function = '$modules = $_SESSION['config']->get_'.ucfirst($this->type).'Modules();';
 		//eval ($function);
-		$modules = call_user_func(array($_SESSION[$this->config], 'get_'.ucfirst($this->type).'Modules'));
+		$modules = call_user_func(array($_SESSION['config'], 'get_'.ucfirst($this->type).'Modules'));
 		$search = substr($dn, 0, strpos($dn, ','));
-		$result = ldap_search($_SESSION[$this->ldap]->server(), $dn, $search);
-		$entry = ldap_first_entry($_SESSION[$this->ldap]->server(), $result);
+		$result = ldap_search($_SESSION['ldap']->server(), $dn, $search);
+		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 		$this->dn = substr($dn, strpos($dn, ',')+1);
 		$this->dn_orig = $dn;
-		$attr = ldap_get_attributes($_SESSION[$this->ldap]->server(), $entry);
+		$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
 				
 		foreach ($modules as $module) {
 			if (!isset($this->module[$module])) {
@@ -1203,10 +1226,10 @@ class accountContainer {
 				if ($this->dn_orig!='') {
 					// merge attributes together
 					$attr = array_merge_recursive($attributes[$this->dn]['add'], $attributes[$this->dn]['notchanged'], $attributes[$this->dn]['modify']);
-					$success = ldap_add($_SESSION[$this->ldap]->server(), $this->dn, $attr);
+					$success = ldap_add($_SESSION['ldap']->server(), $this->dn, $attr);
 					if ($success) {
 						$_SESSION[$this->cache]->update_cache($this->$dn, 'add', $attr);
-						$success = ldap_delete($_SESSION[$this->ldap]->server(), $this->dn_orig);
+						$success = ldap_delete($_SESSION['ldap']->server(), $this->dn_orig);
 						if (!$success) {
 							$errors[] = array('ERROR', 'LDAP', sprintf(_('Was unable to delete dn: %s.'), $this->dn_orig));
 							$stopprocessing = true;
@@ -1222,7 +1245,7 @@ class accountContainer {
 				// create complete new dn
 				else {
 					$attr = array_merge_recursive($attributes[$this->dn]['add'], $attributes[$this->dn]['notchanged'], $attributes[$this->dn]['modify']);
-					$success = ldap_add($_SESSION[$this->ldap]->server(), $this->dn, $attr);
+					$success = ldap_add($_SESSION['ldap']->server(), $this->dn, $attr);
 					if (!$success) {
 						$errors[] = array('ERROR', 'LDAP', sprintf(_('Was unable to create dn: %s. This is possible a bug. Please check your ldap logs and send a bug report if it is a possible bug.'), $this->dn));
 						$stopprocessing = true;
@@ -1238,7 +1261,7 @@ class accountContainer {
 			if (!$stopprocessing) {
 				// modify attributes
 				if (isset($attributes[$DNs[$i]]['modify']) && !$stopprocessing) {
-					$success = @ldap_mod_replace($_SESSION[$this->ldap]->server(), $DNs[$i], $attributes[$DNs[$i]]['modify']);
+					$success = @ldap_mod_replace($_SESSION['ldap']->server(), $DNs[$i], $attributes[$DNs[$i]]['modify']);
 					if (!$success) {
 						$errors[] = array('ERROR', 'LDAP', sprintf(_('Was unable to modify attribtues from dn: %s. This is possible a bug. Please check your ldap logs and send a bug report if it is a possible bug.'), $DNs[$i]));
 						$stopprocessing = true;
@@ -1248,7 +1271,7 @@ class accountContainer {
 					}
 				// add attributes
 				if (isset($attributes[$DNs[$i]]['add']) && !$stopprocessing) {
-					$success = @ldap_mod_add($_SESSION[$this->ldap]->server(), $DNs[$i], $attributes[$DNs[$i]]['add']);
+					$success = @ldap_mod_add($_SESSION['ldap']->server(), $DNs[$i], $attributes[$DNs[$i]]['add']);
 					if (!$success) {
 						$errors[] = array('ERROR', 'LDAP', sprintf(_('Was unable to add attribtues to dn: %s. This is possible a bug. Please check your ldap logs and send a bug report if it is a possible bug.'), $DNs[$i]));
 						$stopprocessing = true;
@@ -1258,7 +1281,7 @@ class accountContainer {
 					}
 				// removce attributes
 				if (isset($attributes[$DNs[$i]]['remove']) && !$stopprocessing) {
-					$success = @ldap_mod_del($_SESSION[$this->ldap]->server(), $DNs[$i], $attributes[$DNs[$i]]['remove']);
+					$success = @ldap_mod_del($_SESSION['ldap']->server(), $DNs[$i], $attributes[$DNs[$i]]['remove']);
 					if (!$success) {
 						$errors[] = array('ERROR', 'LDAP', sprintf(_('Was unable to remove attribtues from dn: %s. This is possible a bug. Please check your ldap logs and send a bug report if it is a possible bug.'), $DNs[$i]));
 						$stopprocessing = true;
@@ -1291,12 +1314,12 @@ class accountContainer {
 
 	function lamdaemon($commands) {
 		// get username and password of the current lam-admin
-		$ldap_q = $_SESSION[$this->ldap]->decrypt_login();
+		$ldap_q = $_SESSION['ldap']->decrypt_login();
 		/* $towrite has the following syntax:
 		* admin-username, admin-password, owner of homedir, 'home', operation='add'
 		* use escapeshellarg to make exec() shell-safe
 		*/
-		$towrite = escapeshellarg($_SESSION[$this->config]->scriptServer)." ".escapeshellarg($_SESSION[$this->config]->scriptPath)." ".
+		$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." ".
 			escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]);
 
 		$userstring = implode ("\n", $commands);
@@ -1360,7 +1383,29 @@ class accountContainer {
 			$return['main'] = array(	'dn');
 			return $return;
 		}
-		
+
+		/**
+		* Returns an array containing all input columns for the file upload.
+		*
+		* Syntax:
+		* <br> array(
+		* <br>  string: name,  // fixed non-translated name which is used as column name (should be of format: <module name>_<column name>)
+		* <br>  string: description,  // short descriptive name
+		* <br>  string: help,  // help ID
+		* <br>  string: example,  // example value
+		* <br>  boolean: required  // true, if user must set a value for this column
+		* <br> )
+		*
+		* @return array column list
+		*/
+		function get_uploadColumns() {
+			$return = array();
+			foreach($this->module as $moduleName => $module) {
+				$return[$moduleName] = $module->get_uploadColumns();
+			}
+			return $return;
+		}
+
 		function getHelp($module,$id) {
 			return $this->module[$module]->get_help($id);
 		}
