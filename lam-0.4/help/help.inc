@@ -87,14 +87,12 @@ $helpArray = array (
 					"Text" => _("This is the absolute path to an external script for setting quotas and creating home directories.").
 							"<br><br><b>".
 							_("Use it at your own risk and read the documentation for lamdaemon before you use it!").
-							"</b>",
-					"SeeAlso" => "<a href=\"./help.php?HelpNumber=210\" target=\"_self\">TODO link to lamdaemon doku</a>"),
+							"</b>"),
 				"211" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("Script server"),
 					"Text" => _("This is the server where the lamdaemon script is stored. LDAP Account Manager will make a SSH connection to this server with username and password provided at login.").
 						"<br><br><b>".
 						_("Use it at your own risk and read the documentation for lamdaemon before you use it!").
-						"</b>",
-					"SeeAlso" => "<a href=\"./help.php?HelpNumber=210\" target=\"_self\">TODO link to lamdaemon doku</a>"),
+						"</b>"),
 				"212" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("Change password"),
 					"Text" => _("If you want to change the current preferences password, please enter it here.")),
 				"213" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("Samba version"),
