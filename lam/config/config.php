@@ -210,3 +210,5 @@ class Config {
 	}
 	
 }
+
+?>
