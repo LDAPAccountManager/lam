@@ -130,8 +130,12 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 	for ($i = 0; $i < sizeof($invalidColumns); $i++) {
 		$errors[] = array(_("One or more values of the required column \"$invalidColumns[$i]\" are missing."), "");
 	}
+	// if input data is invalid just display error messages (max 50)
+	if (sizeof($errors) > 0) {
+		for ($i = 0; $i < sizeof($errors); $i++) StatusMessage("ERROR", $errors[$i][0], $errors[$i][1]);
+	}
 	// let modules build accounts
-	if (sizeof($errors) < 1) {
+	else {
 		$accounts = buildUploadAccounts($_POST['scope'], $data, $ids);
 		if ($accounts != false) {
 			// set DN
@@ -145,30 +149,24 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 					$accounts[$i]['dn'] = $account_dn;
 				}
 			}
+			// store accounts in session
+			$_SESSION['mass_accounts'] = $_SESSION['ldap']->encrypt(serialize($accounts));
+			$_SESSION['mass_counter'] = 0;
+			$_SESSION['mass_errors'] = array();
+			// show links for upload and LDIF export
+			echo "<h1 align=\"center\">" . _("LAM has checked your input and is now ready to create the accounts.") . "</h1>\n";
+			echo "<p>&nbsp;</p>\n";
+			echo "<p align=\"center\">\n";
+			echo "<table align=\"center\" width=\"80%\"><tr>\n";
+				echo "<td align=\"center\" width=\"50%\">\n";
+				echo "<a href=\"massDoUpload.php\"><b>" . _("Upload accounts to LDAP") . "</b></a>";
+				echo "</td>\n";
+				echo "<td align=\"center\" width=\"50%\">\n";
+				echo "<a href=\"massBuildAccounts.php?showldif=true\"><b>" . _("Show LDIF file") . "</b></a>";
+				echo "</td>\n";
+			echo "</tr></table>\n";
+			echo "</p>\n";
 		}
-	}
-	// if input data is invalid just display error messages (max 50)
-	if (sizeof($errors) > 0) {
-		for ($i = 0; (($i < sizeof($errors)) || ($i > 49)); $i++) StatusMessage("ERROR", $errors[$i][0], $errors[$i][1]);
-	}
-	else {
-		// store accounts in session
-		$_SESSION['mass_accounts'] = $_SESSION['ldap']->encrypt(serialize($accounts));
-		$_SESSION['mass_counter'] = 0;
-		$_SESSION['mass_errors'] = array();
-		// show links for upload and LDIF export
-		echo "<h1 align=\"center\">" . _("LAM has checked your input and is now ready to create the accounts.") . "</h1>\n";
-		echo "<p>&nbsp;</p>\n";
-		echo "<p align=\"center\">\n";
-		echo "<table align=\"center\" width=\"80%\"><tr>\n";
-			echo "<td align=\"center\" width=\"50%\">\n";
-			echo "<a href=\"massDoUpload.php\"><b>" . _("Upload accounts to LDAP") . "</b></a>";
-			echo "</td>\n";
-			echo "<td align=\"center\" width=\"50%\">\n";
-			echo "<a href=\"massBuildAccounts.php?showldif=true\"><b>" . _("Show LDIF file") . "</b></a>";
-			echo "</td>\n";
-		echo "</tr></table>\n";
-		echo "</p>\n";
 	}
 }
 
