@@ -258,18 +258,40 @@ class shadowAccount {
 
 	function get_profileOptions() {
 		$return = array();
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Password warn') ),
-			1 => array ( 'kind' => 'input', 'name' => 'shadowWarning', 'type' => 'text', 'size' => '4', 'maxlength' => '4', 'value' => $this->attributes['shadowWarning'][0] ),
-			2 => array ( 'kind' => 'help', 'value' => 'shadowWarning' ));
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Password expire') ),
-			1 => array ( 'kind' => 'input', 'name' => 'shadowInactive', 'type' => 'text', 'size' => '4', 'maxlength' => '4', 'value' => $this->attributes['shadowInactive'][0] ),
-			2 => array ( 'kind' => 'help', 'value' => 'shadowInactive' ));
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Maximum password age') ),
-			1 => array ( 'kind' => 'input', 'name' => 'shadowMax', 'type' => 'text', 'size' => '5', 'maxlength' => '5', 'value' => $this->attributes['shadowMax'][0] ),
-			2 => array ( 'kind' => 'help', 'value' => 'shadowMax' ));
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Minimum password age') ),
-			1 => array ( 'kind' => 'input', 'name' => 'shadowMin', 'type' => 'text', 'size' => '5', 'maxlength' => '5', 'value' => $this->attributes['shadowMin'][0] ),
-			2 => array ( 'kind' => 'help', 'value' => 'shadowMin' ));
+		// password warning
+		$return[] = array(0 => array('kind' => 'text', 'text' => _('Password warn')),
+			1 => array('kind' => 'input', 'name' => 'shadowAccount_shadowWarning', 'type' => 'text', 'size' => '4', 'maxlength' => '4', 'value' => ""),
+			2 => array('kind' => 'help', 'value' => 'TODO'));
+		// password expiration
+		$return[] = array(0 => array('kind' => 'text', 'text' => _('Password expire')),
+			1 => array('kind' => 'input', 'name' => 'shadowAccount_shadowInactive', 'type' => 'text', 'size' => '4', 'maxlength' => '4', 'value' => ""),
+			2 => array('kind' => 'help', 'value' => 'TODO'));
+		// maximum password age
+		$return[] = array(0 => array('kind' => 'text', 'text' => _('Maximum password age')),
+			1 => array('kind' => 'input', 'name' => 'shadowAccount_shadowMax', 'type' => 'text', 'size' => '5', 'maxlength' => '5', 'value' => ""),
+			2 => array('kind' => 'help', 'value' => 'TODO'));
+		// minimum password age
+		$return[] = array(0 => array('kind' => 'text', 'text' => _('Minimum password age')),
+			1 => array('kind' => 'input', 'name' => 'shadowAccount_shadowMin', 'type' => 'text', 'size' => '5', 'maxlength' => '5', 'value' => ""),
+			2 => array('kind' => 'help', 'value' => 'TODO'));
+		// expiration date
+		$day = array(); $mon = array(); $year = array();
+		for ( $i=1; $i<=31; $i++ ) $day[] = $i;
+		for ( $i=1; $i<=12; $i++ ) $mon[] = $i;
+		for ( $i=2003; $i<=2030; $i++ ) $year[] = $i;
+		$return[] = array(
+			0 => array('kind' => 'text', 'text' => _('Expire day')),
+			1 => array('kind' => 'table', 'value' => array(
+				0 => array (
+					0 => array('kind' => 'select', 'name' => 'shadowAccount_shadowExpire_day',
+						'options' => $day, 'options_selectd' => ""),
+					1 => array('kind' => 'select', 'name' => 'shadowAccount_shadowExpire_mon',
+						'options' => $mon, 'options_selectd' => ""),
+					2 => array('kind' => 'select', 'name' => 'shadowAccount_shadowExpire_yea',
+						'options' => $year, 'options_selectd' => "")
+				)
+			)),
+			2 => array('kind' => 'help', 'value' => 'TODO'));
 		return $return;
 	}
 
