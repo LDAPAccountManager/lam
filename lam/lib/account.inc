@@ -66,6 +66,7 @@ class account { // This class keeps all needed values for any account
 	var $smb_flagsD;		// string (1|0) account is disabled? (user|host)
 	var $smb_flagsX;		// string (1|0) password doesn'T expire (user|host)
 	var $smb_mapgroup;		// decimal ID for groups
+	var $smb_displayName;		// string, description, similar to gecos-field.
 	// Quota Settins
 	var $quota;			// array[][] First array is an index for every chare with active quotas
 					// second array Contains values for every share:
@@ -350,6 +351,10 @@ function checksamba($values, $type) { // This function checks all samba account 
 		 else $return->smb_password = "";
 			break;
 		case 'group' :
+			if (($values->smb_displayName=='') && isset($values->general_gecos)) {
+				$return->smb_displayName = $values->general_gecos;
+				$errors[] = array('INFO', _('Display name'), _('Inserted gecos-field as display name.'));
+				}
 			break;
 		}
 	// Return values and errors
@@ -932,6 +937,7 @@ function loadgroup($dn) { // Will load all needed values from an existing group
 	$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 	$return->general_dn = (ldap_get_dn($_SESSION['ldap']->server(), $entry));
 	$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
+	// Load values into account object
 	$i=0;
 	while (isset($attr['objectClass'][$i])) {
 		$return->general_objectClass[$i] = $attr['objectClass'][$i];
@@ -943,13 +949,19 @@ function loadgroup($dn) { // Will load all needed values from an existing group
 		$i++;
 		}
 	if (isset($attr['gidNumber'][0])) $return->general_uidNumber = $attr['gidNumber'][0];
-	if (isset($attr['gecos'][0])) $return->general_gecos = utf8_decode($attr['gecos'][0]);
+	if (isset($attr['description'][0])) $return->general_gecos = utf8_decode($attr['description'][0]);
 	if (isset($attr['cn'][0])) {
 		$return->general_username = $attr['cn'][0];
-		if ($_SESSION['config']->scriptServer) getquotas('group',$attr['cn'][0]);
+		$values = getquotas('group', $attr['cn'][0]);
+		if (is_object($values)) {
+			while (list($key, $val) = each($values)) // Set only defined values
+				if (isset($val)) $return->$key = $val;
+			}
 		}
-	if (isset($attr['sambaSID'][0])) {
+	if (isset($attr['sambaSID'][0])) { // Samba3 Samba 2.0 don't have any objects 4 groups
 		$return->smb_mapgroup = $attr['sambaSID'][0];
+		if (isset($attr['displayName'][0])) $return->smb_displayName = utf8_decode($attr['displayName'][0]);
+		// extract SID from sambaSID to find domain
 		$temp = explode('-', $attr['sambaSID'][0]);
 		$SID = $temp[0].'-'.$temp[1].'-'.$temp[2].'-'.$temp[3].'-'.$temp[4].'-'.$temp[5].'-'.$temp[6];
 		$samba3domains = $_SESSION['ldap']->search_domains($_SESSION[config]->get_domainSuffix());
@@ -1612,27 +1624,15 @@ function creategroup($values) { // Will create the LDAP-Group
 	// 4 == Error while creating Group
 	// 5 == Error while modifying Group
 	$values->general_dn = 'cn=' . $values->general_username . ',' . $values->general_dn;
-
-	// decrypt password
-	$iv = base64_decode($_COOKIE["IV"]);
-	$key = base64_decode($_COOKIE["Key"]);
-	if ($values->unix_password != '') {
-		$values->unix_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($values->unix_password), MCRYPT_MODE_ECB, $iv);
-		$values->unix_password = str_replace(chr(00), '', $values->unix_password);
-		}
-	if ($values->smb_password != '') {
-		$values->smb_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($values->smb_password), MCRYPT_MODE_ECB, $iv);
-		$values->smb_password = str_replace(chr(00), '', $values->smb_password);
-		}
 	$attr['objectClass'][0] = 'posixGroup';
 	$attr['cn'] = $values->general_username;
 	$attr['gidNumber'] = $values->general_uidNumber;
-	$attr['description'] = $values->general_gecos;
+	if ($values->general_gecos) $attr['description'] = utf8_encode($values->general_gecos);
 	if ($_SESSION['config']->samba3 =='yes' && (isset($values->smb_mapgroup))) {
 		$attr['sambaSID'] = $values->smb_mapgroup;
 		$attr['objectClass'][1] = 'sambaGroupMapping';
 		$attr['sambaGroupType'] = '2';
-		if ($values->general_gecos) $attr['displayName'] = $values->general_gecos;
+		if ($values->smb_displayName) $attr['displayName'] = utf8_encode($values->smb_displayName);
 		}
 	$success = ldap_add($_SESSION['ldap']->server(),$values->general_dn, $attr);
 	if ($_SESSION['config']->scriptServer) setquotas($values,'group');
@@ -1652,34 +1652,21 @@ function modifygroup($values,$values_old) { // Will modify the LDAP-Group
 	// 5 == Error while modifying Group
 	$values->general_dn = 'cn=' . $values->general_username . ',' . $values->general_dn;
 
-	// decrypt password
-	$iv = base64_decode($_COOKIE["IV"]);
-	$key = base64_decode($_COOKIE["Key"]);
-	if ($values->unix_password != '') {
-		$values->unix_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($values->unix_password), MCRYPT_MODE_ECB, $iv);
-		$values->unix_password = str_replace(chr(00), '', $values->unix_password);
-		}
-	if ($values->smb_password != '') {
-		$values->smb_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($values->smb_password), MCRYPT_MODE_ECB, $iv);
-		$values->smb_password = str_replace(chr(00), '', $values->smb_password);
-		}
 	if ($values->general_username != $values_old->general_username) $attr['cn'] = $values->general_username;
 	if ($values->general_uidNumber != $values_old->general_uidNumber) $attr['gidNumber'] = $values->general_uidNumber;
-	if ($values->general_gecos != $values_old->general_gecos) $attr['description'] = $values->general_gecos;
+	if ($values->general_gecos != $values_old->general_gecos) $attr['description'] = utf8_encode($values->general_gecos);
+
+	if (($values->smb_displayName != $values_old->smb_displayName) && ($values->smb_displayName != ''))
+		$attr['displayName'] = utf8_encode($values->smb_displayName);
+	if (($values->smb_displayName != $values_old->smb_displayName) && ($values->smb_displayName == ''))
+		$attr_rem['displayName'] = utf8_encode($values_old->smb_displayName);
+
 	if ($_SESSION['config']->samba3 =='yes') {
 		if ($values->smb_mapgroup != $values_old->smb_mapgroup)
 			$attr['sambaSID'] = $values->smb_mapgroup;
-		if ($values->general_gecos!=$values_old->general_gecos)
-			$attr['displayName'] = $values->general_gecos;
 		}
 
 	if (($values->unix_memberUid != $values_old->unix_memberUid)) {
-		//$values->unix_memberUid = str_replace(' ', '', $values->unix_memberUid);
-		//$memberUid = explode (',', $values->unix_memberUid);
-		//$values_old->unix_memberUid = str_replace(' ', '', $values_old->unix_memberUid);
-		//$memberUid_old = explode (',', $values_old->unix_memberUid);
-		//if ($memberUid[0]=='') $attr_rem['memberUid'] = $memberUid_old;
-		// else if ($memberUid[0]!='') $attr['memberUid'] = $memberUid;
 		if (count($values->unix_memberUid)==0) $attr_rem['memberUid'] = $values_old->unix_memberUid;
 		 else $attr['memberUid'] = $values->unix_memberUid;
 		}
@@ -1724,6 +1711,7 @@ function modifygroup($values,$values_old) { // Will modify the LDAP-Group
 		if ($success) $success = ldap_mod_replace($_SESSION['ldap']->server(),$values->general_dn, $attr);
 		if (!$success) return 5;
 		}
+
 	if ( $_SESSION['final_changegids']==true ) {
 		$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_UserSuffix(), 'gidNumber=' . $values_old->general_uidNumber, array('gidNumber'));
 		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);

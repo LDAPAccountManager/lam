@@ -111,23 +111,25 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 		break;
 
 	case 'samba':
-		$_SESSION['account']->smb_domain = $_POST['f_smb_domain'];
+		$samba3domains = $_SESSION['ldap']->search_domains($_SESSION[config]->get_domainSuffix());
+		foreach ($samba3domains as $domain)
+			if ($_POST['f_smb_domain'] == $domain->name)
+				$_SESSION['account']->smb_domain = $domain;
+		$_SESSION['account']->smb_displayName = $_POST['f_smb_displayName'];
 		switch ($_POST['f_smb_mapgroup']) {
 			case '*'._('Domain Guests'): $_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-" . '514'; break;
 			case '*'._('Domain Users'): $_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-" . '513'; break;
 			case '*'._('Domain Admins'): $_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-" . '512'; break;
-			case $_SESSION['account']->general_group:
-				if ($_SESSION['config']->samba3 == 'yes')
-					$_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-".
-						(2 * getgid($_SESSION['account']->general_group) + $_SESSION['account']->smb_domain->RIDbase +1);
-				else $_SESSION['account']->smb_mapgroup = (2 * getgid($_SESSION['account']->general_group) + 1001);
-				break;
 			case $_SESSION['account']->general_username:
-				if ($_SESSION['config']->samba3 == 'yes')
-					$_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-".
-						(2 * $_SESSION['account']->general_uidNumber + $_SESSION['account']->smb_domain->RIDbase +1);
-				else $_SESSION['account']->smb_mapgroup = (2 * $_SESSION['account']->general_uidNumber + 1001);
+				$_SESSION['account']->smb_mapgroup = $_SESSION['account']->smb_domain->SID . "-".
+					(2 * getgid($_SESSION['account']->general_username) + $_SESSION['account']->smb_domain->RIDbase +1);
 				break;
+			}
+		if (isset($_SESSION['account_old'])) list($values, $errors) = checksamba($_SESSION['account'], 'group', $_SESSION['account_old']); // account.inc
+			else list($values, $errors) = checksamba($_SESSION['account'], 'group'); // account.inc
+		if (is_object($values)) { // Set only defined values
+			while (list($key, $val) = each($values))
+				if (isset($val)) $_SESSION['account']->$key = $val;
 			}
 		break;
 
@@ -249,6 +251,7 @@ if (is_array($errors)) {
 	for ($i=0; $i<sizeof($errors); $i++) StatusMessage($errors[$i][0], $errors[$i][1], $errors[$i][2]);
 	echo "</table>";
 	}
+
 // print_r($_SESSION['account']);
 
 switch ($select_local) { // Select which part of page will be loaded
@@ -269,7 +272,8 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "</b></legend>\n";
 		echo "<input name=\"next_general\" type=\"submit\" value=\""; echo _('General'); echo "\">\n<br>";
 		echo "<input name=\"next_members\" type=\"submit\" disabled value=\""; echo _('Members'); echo "\">\n<br>";
-		echo "<input name=\"next_samba\" type=\"submit\" value=\""; echo _('Samba'); echo "\">\n<br>";
+		if ($_SESSION['config']->samba3 == 'yes')
+			echo "<input name=\"next_samba\" type=\"submit\" value=\""; echo _('Samba'); echo "\">\n<br>";
 		echo "<input name=\"next_quota\" type=\"submit\""; if (!isset($_SESSION['config']->scriptPath)) echo " disabled ";
 		echo "value=\""; echo _('Quota'); echo "\">\n<br>";
 		echo "<input name=\"next_final\" type=\"submit\" value=\""; echo _('Final');
@@ -308,7 +312,8 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "</b></legend>\n";
 		echo "<input name=\"next_general\" type=\"submit\" disabled value=\""; echo _('General'); echo "\">\n<br>";
 		echo "<input name=\"next_members\" type=\"submit\" value=\""; echo _('Members'); echo "\">\n<br>";
-		echo "<input name=\"next_samba\" type=\"submit\" value=\""; echo _('Samba'); echo "\">\n<br>";
+		if ($_SESSION['config']->samba3 == 'yes')
+			echo "<input name=\"next_samba\" type=\"submit\" value=\""; echo _('Samba'); echo "\">\n<br>";
 		echo "<input name=\"next_quota\" type=\"submit\""; if (!isset($_SESSION['config']->scriptPath)) echo " disabled ";
 		echo "value=\""; echo _('Quota'); echo "\">\n<br>";
 		echo "<input name=\"next_final\" type=\"submit\" value=\""; echo _('Final');
@@ -357,7 +362,7 @@ switch ($select_local) { // Select which part of page will be loaded
 
 	case 'samba':
 		// Samba Settings
-		if ($_SESSION['config']->samba3 == 'yes') $samba3domains = $_SESSION['ldap']->search_domains($_SESSION[config]->get_domainSuffix());
+		$samba3domains = $_SESSION['ldap']->search_domains($_SESSION[config]->get_domainSuffix());
 		echo "<input name=\"select\" type=\"hidden\" value=\"samba\">\n";
 		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
 		echo "<table border=0><tr><td><fieldset class=\"groupedit-middle\"><legend class=\"groupedit-bright\"><b>";
@@ -370,8 +375,12 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "value=\""; echo _('Quota'); echo "\">\n<br>";
 		echo "<input name=\"next_final\" type=\"submit\" value=\""; echo _('Final');
 		echo "\"></fieldset></td></tr></table></td>\n<td valign=\"top\">";
-		echo "<table border=0><tr><td><fieldset class=\"groupedit-bright\"><legend class=\"groupedit-bright\"><b>"._('Samba properties')."</b></legend>\n";
+		echo "<table border=0 width=\"100%\"><tr><td><fieldset class=\"groupedit-bright\"><legend class=\"groupedit-bright\"><b>"._('Samba properties')."</b></legend>\n";
 		echo "<table border=0 width=\"100%\"><tr><td>";
+		echo _("Display name");
+		echo "</td>\n<td>".
+			"<input name=\"f_smb_displayName\" type=\"text\" size=\"30\" maxlength=\"50\" value=\"".$_SESSION['account']->smb_displayName."\">".
+			"</td>\n<td><a href=\"../help.php?HelpNumber=XXX\" target=\"lamhelp\">"._('Help-XX')."</a></td>\n</tr>\n<tr>\n<td>";
 		echo _('Windows groupname');
 		echo "</td>\n<td><select name=\"f_smb_mapgroup\">";
 		if ( $_SESSION['account']->smb_mapgroup == $_SESSION['account']->smb_domain->SID . "-".
@@ -437,7 +446,8 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo "</b></legend>\n";
 		echo "<input name=\"next_general\" type=\"submit\" value=\""; echo _('General'); echo "\">\n<br>";
 		echo "<input name=\"next_members\" type=\"submit\" value=\""; echo _('Members'); echo "\">\n<br>";
-		echo "<input name=\"next_samba\" type=\"submit\" value=\""; echo _('Samba'); echo "\">\n<br>";
+		if ($_SESSION['config']->samba3 == 'yes')
+			echo "<input name=\"next_samba\" type=\"submit\" value=\""; echo _('Samba'); echo "\">\n<br>";
 		echo "<input name=\"next_quota\" type=\"submit\" disabled value=\""; echo _('Quota'); echo "\">\n<br>";
 		echo "<input name=\"next_final\" type=\"submit\" value=\""; echo _('Final');
 		echo "\"></fieldset></td></tr></table></td>\n<td valign=\"top\">";
@@ -471,14 +481,15 @@ switch ($select_local) { // Select which part of page will be loaded
 	case 'final':
 		// Final Settings
 		echo '<input name="select" type="hidden" value="final">';
-		echo "<input name=\"select\" type=\"hidden\" value=\"samba\">\n";
+		echo "<input name=\"select\" type=\"hidden\" value=\"final\">\n";
 		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
 		echo "<table><tr><td><fieldset class=\"groupedit-middle\"><legend class=\"groupedit-bright\"><b>";
 		echo _('Please select page:');
 		echo "</b></legend>\n";
 		echo "<input name=\"next_general\" type=\"submit\" value=\""; echo _('General'); echo "\">\n<br>";
 		echo "<input name=\"next_members\" type=\"submit\" value=\""; echo _('Members'); echo "\">\n<br>";
-		echo "<input name=\"next_samba\" type=\"submit\" value=\""; echo _('Samba'); echo "\">\n<br>";
+		if ($_SESSION['config']->samba3 == 'yes')
+			echo "<input name=\"next_samba\" type=\"submit\" value=\""; echo _('Samba'); echo "\">\n<br>";
 		echo "<input name=\"next_quota\" type=\"submit\""; if (!isset($_SESSION['config']->scriptPath)) echo " disabled ";
 		echo "value=\""; echo _('Quota'); echo "\">\n<br>";
 		echo "<input name=\"next_final\" type=\"submit\" disabled value=\""; echo _('Final');
