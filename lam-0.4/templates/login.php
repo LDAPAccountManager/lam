@@ -129,20 +129,8 @@ function display_LoginPage($config_object,$profile)
 			<?php
 		}
 		?>
-		<?php
-		if($error_message != "") {
-		?>
-		<p align="center">
-			<?php
-			echo $error_message;
-			?>
-		</p>
-		<?php
-		}
-		?>
-		<table width="650" align="center" border="2" rules="none" bgcolor="white">
-			<form action="login.php" method="post">
-				<input type="hidden" name="action" value="checklogin">
+		<form action="login.php" method="post">
+			<table width="650" align="center" border="2" rules="none" bgcolor="white">
 				<tr>
 					<td width="70" rowspan="9">
 						<img src="../graphics/lam.png" alt="Logo">
@@ -193,7 +181,6 @@ function display_LoginPage($config_object,$profile)
 					<?php
 						echo $message;
 					?>
-						<input type="hidden" name="language" value="english">
 					</td>
 					<?php
 				}
@@ -230,11 +217,17 @@ function display_LoginPage($config_object,$profile)
 				</tr>
 				<tr>
 					<td height="50" colspan="2" align="center">
-						<input type="submit" name="submit" value="<?php echo _("Login"); ?>">
+						<input name="checklogin" type="submit" value="<?php echo _("Login"); ?>">
 					</td>
 				</tr>
 				<tr>
-					<td height="50" colspan="2"></td>
+					<td height="50" colspan="2" align="center">
+						<?php
+							if($error_message != "") {
+								echo "<font color=\"red\"><b>" . $error_message . "</b></font>";
+							}
+						?>
+					</td>
 				</tr>
 				<tr>
 					<td height="30" colspan="2"><b>
@@ -244,9 +237,6 @@ function display_LoginPage($config_object,$profile)
 						<?php echo $config_object->get_ServerURL(); ?>
 					</td>
 				</tr>
-			</form>
-			<form action="./login.php" method="post" enctype="plain/text">
-				<input type="hidden" name="action" value="profileChange">
 				<tr>
 				<td height="30"><b>
 					<?php
@@ -267,14 +257,14 @@ function display_LoginPage($config_object,$profile)
 					}
 					?>
 					</select>
-					<input type="submit" value="<?php echo _("Change Profile"); ?>">
+					<input name="profileChange" type="submit" value="<?php echo _("Change Profile"); ?>">
 				</td>
 				</tr>
 				<tr>
 					<td height="10" colspan="2"></td>
 				</tr>
-			</form>
-		</table>
+			</table>
+		</form>
 		<br><br>
 	</body>
 </html>
@@ -282,7 +272,7 @@ function display_LoginPage($config_object,$profile)
 }
 
 // checking if the submitted username/password is correct.
-if($_POST['action'] == "checklogin")
+if($_POST['checklogin'])
 {
 	$_SESSION['lampath'] = realpath('../') . "/";  // Save full path to lam in session
 
@@ -338,7 +328,7 @@ if($_POST['action'] == "checklogin")
 	}
 }
 // Reload loginpage after a profile change
-elseif($_POST['action'] == "profileChange") {
+elseif($_POST['profileChange']) {
 	$_SESSION['config'] = new Config($_POST['profile']); // Recreate the config object with the submited
 
 	display_LoginPage($_SESSION['config'],""); // Load login page
