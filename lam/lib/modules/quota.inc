@@ -296,7 +296,39 @@ class quota extends baseModule {
 		}
 
 	function get_profileOptions() {
+		// Get quotas
+		$quotas = $_SESSION[$this->base]->lamdaemon(array("+ quota get " . $this->get_scope()));
+		$dirs = split(":", $quotas[0]);
+		array_pop($dirs); // remove empty element at the end
+		for ($i = 0; $i < sizeof($dirs); $i++) {
+			$dirs[$i] = split(",", $dirs[$i]);
+			$dirs[$i] = $dirs[$i][0];
+		}
 		$return = array();
+		if (sizeof($dirs) < 1) return $return; // stop if no quota directories were found
+		$return[] = array (
+			0 => array('kind' => 'text', 'text' => '<b>' . _('Mountpoint') . '&nbsp;&nbsp;</b>', 'align' => 'center'),
+			1 => array('kind' => 'text', 'text' => '<b>' . _('Soft block limit') . '&nbsp;&nbsp;</b>', 'align' => 'center'),
+			2 => array('kind' => 'text', 'text' => '<b>' . _('Hard block limit') . '&nbsp;&nbsp;</b>', 'align' => 'center'),
+			3 => array('kind' => 'text', 'text' => '<b>' . _('Soft inode limit') . '&nbsp;&nbsp;</b>', 'align' => 'center'),
+			4 => array('kind' => 'text', 'text' => '<b>' . _('Hard inode limit') . '&nbsp;&nbsp;</b>', 'align' => 'center'),
+		);
+		$return[] = array (
+			0 => array('kind' => 'help', 'value' => 'TODO', 'align' => 'center'),
+			1 => array('kind' => 'help', 'value' => 'TODO', 'align' => 'center'),
+			2 => array('kind' => 'help', 'value' => 'TODO', 'align' => 'center'),
+			3 => array('kind' => 'help', 'value' => 'TODO', 'align' => 'center'),
+			4 => array('kind' => 'help', 'value' => 'TODO', 'align' => 'center'),
+		);
+		for ($i = 0; $i < sizeof($dirs); $i++) {
+			$return[] = array(
+				0 => array('kind' => 'text', 'text' => $dirs[$i], 'align' => 'left'),
+				1 => array('kind' => 'input', 'type' => 'text', 'text' => "", 'align' => 'center', 'size' => '12', 'name' => "quota_softblock_$i"),
+				2 => array('kind' => 'input', 'type' => 'text', 'text' => "", 'align' => 'center', 'size' => '12', 'name' => "quota_softblock_$i"),
+				3 => array('kind' => 'input', 'type' => 'text', 'text' => "", 'align' => 'center', 'size' => '12', 'name' => "quota_softblock_$i"),
+				4 => array('kind' => 'input', 'type' => 'text', 'text' => "", 'align' => 'center', 'size' => '12', 'name' => "quota_softblock_$i"),
+			);
+		}
 		return $return;
 	}
 
