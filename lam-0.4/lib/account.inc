@@ -1533,9 +1533,9 @@ function modifyuser($values,$values_old,$uselamdaemon=true) { // Will modify the
 		}
 	if ($values->general_uidNumber != $values_old->general_uidNumber) {
 		$attr['uidNumber'] = $values->general_uidNumber;
-		// Because sambaSid(rid) is related to uidNumber we have to change it if uidNumbaer has changed
+		// Because sambaSID(rid) is related to uidNumber we have to change it if uidNumbaer has changed
 		if ($_SESSION['config']->is_samba3())
-			$attr['sambaSid'] = $values->smb_domain->SID . "-" . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase);
+			$attr['sambaSID'] = $values->smb_domain->SID . "-" . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase);
 		else $attr['rid'] = (2 * $values->general_uidNumber + 1000);
 		}
 	if ($values->general_group != $values_old->general_group) {
@@ -1665,7 +1665,7 @@ function modifyuser($values,$values_old,$uselamdaemon=true) { // Will modify the
 			$attr['displayName'] = utf8_encode($values->smb_displayName); // sambaAccount_may
 			$attr['sambaAcctFlags'] = smbflag($values->flags); // sambaAccount_may
 			$attr['sambaDomainName'] = $values->smb_domain->name; // sambaAccount_may
-			$attr['sambaSid'] = $values->smb_domain->SID . "-" . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase); // sambaAccount_may
+			$attr['sambaSID'] = $values->smb_domain->SID . "-" . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase); // sambaAccount_may
 			$attr['sambaPrimaryGroupSID'] = $values->smb_mapgroup; // sambaAccount_req
 			// remove old attributes
 			if (in_array('sambaAccount', $attr_old['objectClass'])) $attr_rem['objectClass'] = 'sambaAccount';
@@ -1716,7 +1716,7 @@ function modifyuser($values,$values_old,$uselamdaemon=true) { // Will modify the
 		if (($values->smb_smbuserworkstations=='') && ($values->smb_smbuserworkstations!=$values_old->smb_smbuserworkstations))$attr_rem['sambaUserWorkstations'] = $values_old->smb_smbuserworkstations; // sambaAccount_may
 		if ($values->smb_domain->name!=$values_old->smb_domain->name) {
 			$attr['sambaDomainName'] = $values->smb_domain->name; // sambaAccount_may
-			$attr['sambaSid'] = $values->smb_domain->SID . "-" . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase);
+			$attr['sambaSID'] = $values->smb_domain->SID . "-" . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase);
 			$attr['sambaPrimaryGroupSID'] = $values->smb_domain->SID . "-".
 				(2 * getgid($values->general_group) + $values->smb_domain->RIDbase+1);
 			}
@@ -2095,9 +2095,9 @@ function modifyhost($values,$values_old) {
 		}
 	if ($values->general_uidNumber != $values_old->general_uidNumber) {
 		$attr['uidNumber'] = $values->general_uidNumber;
-		// Because sambaSid(rid) is related to uidNumber we have to change it if uidNumbaer has changed
+		// Because sambaSID(rid) is related to uidNumber we have to change it if uidNumbaer has changed
 		if ($_SESSION['config']->is_samba3())
-			$attr['sambaSid'] = $values->smb_domain->SID . "-" . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase);
+			$attr['sambaSID'] = $values->smb_domain->SID . "-" . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase);
 		else $attr['rid'] = (2 * $values->general_uidNumber + 1000);
 		}
 	if ($values->general_group != $values_old->general_group) {
@@ -2152,7 +2152,7 @@ function modifyhost($values,$values_old) {
 			$attr['displayName'] = utf8_encode($values->smb_displayName); // sambaAccount_may
 			$attr['sambaAcctFlags'] = smbflag($values->smb_flags); // sambaAccount_may
 			$attr['sambaDomainName'] = $values->smb_domain->name; // sambaAccount_may
-			$attr['sambaSid'] = $values->smb_domain->SID . "-" . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase); // sambaAccount_may
+			$attr['sambaSID'] = $values->smb_domain->SID . "-" . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase); // sambaAccount_may
 			$attr['sambaPrimaryGroupSID'] = $values->smb_domain->SID . "-" . (2 * getgid($values->general_group) + $values->smb_domain->RIDbase +1); // sambaAccount_req
 			// remove old attributes
 			if (in_array('sambaAccount', $attr_old['objectClass'])) $attr_rem['objectClass'] = 'sambaAccount';
@@ -2182,7 +2182,7 @@ function modifyhost($values,$values_old) {
 			}
 		if ($values->smb_domain->name!=$values_old->smb_domain->name) {
 			$attr['sambaDomainName'] = $values->smb_domain->name; // sambaAccount_may
-			$attr['sambaSid'] = $values->smb_domain->SID . "-" . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase);
+			$attr['sambaSID'] = $values->smb_domain->SID . "-" . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase);
 			$attr['sambaPrimaryGroupSID'] = $values->smb_domain->SID . "-".
 				(2 * getgid($values->general_group) + $values->smb_domain->RIDbase+1);
 			}
@@ -2384,7 +2384,7 @@ function modifygroup($values,$values_old, $uselamdaemon=true) {
 	if ($values->general_uidNumber != $values_old->general_uidNumber) {
 		$attr['gidNumber'] = $values->general_uidNumber;
 		// Set correct SID if UID was changed
-		if ($_SESSION['config']->is_samba3()) $attr['sambaSid'] = $values->smb_domain->SID . "-" . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase +1);
+		if ($_SESSION['config']->is_samba3()) $attr['sambaSID'] = $values->smb_domain->SID . "-" . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase +1);
 		}
 	if ($values->general_gecos != $values_old->general_gecos) $attr['description'] = utf8_encode($values->general_gecos);
 	if ($values->smb_displayName != $values_old->smb_displayName)
