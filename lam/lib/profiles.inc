@@ -97,8 +97,15 @@ function loadUserProfile($profile) {
 				// search keywords
 				$parts = array();
 				$parts = split(": ", $line);
-				if (sizeof($parts) != 2) continue;  // ignore malformed settings
-				else $settings[$parts[0]] = chop($parts[1]);
+				if (sizeof($parts) < 3) continue;  // ignore malformed settings
+				else {
+					$module = array_shift($parts);
+					$option = array_shift($parts);
+					$values = $parts;
+					// remove line ends
+					for ($i = 0; $i < sizeof($values); $i++) $values[$i] = chop($values[$i]);
+					$settings[$module][$option] = $values;
+				}
 			}
 			fclose($file);
 		}
@@ -128,8 +135,15 @@ function loadGroupProfile($profile) {
 				// search keywords
 				$parts = array();
 				$parts = split(": ", $line);
-				if (sizeof($parts) != 2) continue;  // ignore malformed settings
-				else $settings[$parts[0]] = chop($parts[1]);
+				if (sizeof($parts) < 3) continue;  // ignore malformed settings
+				else {
+					$module = array_shift($parts);
+					$option = array_shift($parts);
+					$values = $parts;
+					// remove line ends
+					for ($i = 0; $i < sizeof($values); $i++) $values[$i] = chop($values[$i]);
+					$settings[$module][$option] = $values;
+				}
 			}
 			fclose($file);
 		}
@@ -159,8 +173,15 @@ function loadHostProfile($profile) {
 				// search keywords
 				$parts = array();
 				$parts = split(": ", $line);
-				if (sizeof($parts) != 2) continue;  // ignore malformed settings
-				else $settings[$parts[0]] = chop($parts[1]);
+				if (sizeof($parts) < 3) continue;  // ignore malformed settings
+				else {
+					$module = array_shift($parts);
+					$option = array_shift($parts);
+					$values = $parts;
+					// remove line ends
+					for ($i = 0; $i < sizeof($values); $i++) $values[$i] = chop($values[$i]);
+					$settings[$module][$option] = $values;
+				}
 			}
 			fclose($file);
 		}
@@ -177,7 +198,7 @@ function loadHostProfile($profile) {
 // saves an hash array (attribute => value) to an user profile
 // file is created, if needed
 // $profile: name of the user profile (without .pru)
-// $attributes: hash array (attribute => value)
+// $attributes: hash array(module => array(attribute => value))
 function saveUserProfile($attributes, $profile) {
 	if (!$_SESSION['loggedIn'] == true) return false;
 	// check profile name
@@ -189,10 +210,13 @@ function saveUserProfile($attributes, $profile) {
 	$file = @fopen($path, "w");
 	if ($file) {
 		// write attributes
-		$keys = array_keys($attributes);
-		for ($i = 0; $i < sizeof($keys); $i++) {
-			$line = $keys[$i] . ": " . $attributes[$keys[$i]] . "\n";
-			fputs($file, $line);
+		$modules = array_keys($attributes);
+		for ($m = 0; $m < sizeof($modules); $m++) {
+			$keys = array_keys($attributes[$modules[$m]]);
+			for ($i = 0; $i < sizeof($keys); $i++) {
+				$line = $modules[$m] . ": " . $keys[$i] . ": " . $attributes[$modules[$m]][$keys[$i]] . "\n";
+				fputs($file, $line);
+			}
 		}
 		// close file
 		fclose($file);
@@ -207,7 +231,7 @@ function saveUserProfile($attributes, $profile) {
 // saves an hash array (attribute => value) to an group profile
 // file is created, if needed
 // $profile: name of the group profile (without .prg)
-// $attributes: hash array (attribute => value)
+// $attributes: hash array(module => array(attribute => value))
 function saveGroupProfile($attributes, $profile) {
 	if (!$_SESSION['loggedIn'] == true) return false;
 	// check profile name
@@ -219,10 +243,13 @@ function saveGroupProfile($attributes, $profile) {
 	$file = @fopen($path, "w");
 	if ($file) {
 		// write attributes
-		$keys = array_keys($attributes);
-		for ($i = 0; $i < sizeof($keys); $i++) {
-			$line = $keys[$i] . ": " . $attributes[$keys[$i]] . "\n";
-			fputs($file, $line);
+		$modules = array_keys($attributes);
+		for ($m = 0; $m < sizeof($modules); $m++) {
+			$keys = array_keys($attributes[$modules[$m]]);
+			for ($i = 0; $i < sizeof($keys); $i++) {
+				$line = $modules[$m] . ": " . $keys[$i] . ": " . $attributes[$modules[$m]][$keys[$i]] . "\n";
+				fputs($file, $line);
+			}
 		}
 		// close file
 		fclose($file);
@@ -237,7 +264,7 @@ function saveGroupProfile($attributes, $profile) {
 // saves an hash array (attribute => value) to an host profile
 // file is created, if needed
 // $profile: name of the host profile (without .prh)
-// $attributes: hash array (attribute => value)
+// $attributes: hash array(module => array(attribute => value))
 function saveHostProfile($attributes, $profile) {
 	if (!$_SESSION['loggedIn'] == true) return false;
 	// check profile name
@@ -249,10 +276,13 @@ function saveHostProfile($attributes, $profile) {
 	$file = @fopen($path, "w");
 	if ($file) {
 		// write attributes
-		$keys = array_keys($attributes);
-		for ($i = 0; $i < sizeof($keys); $i++) {
-			$line = $keys[$i] . ": " . $attributes[$keys[$i]] . "\n";
-			fputs($file, $line);
+		$modules = array_keys($attributes);
+		for ($m = 0; $m < sizeof($modules); $m++) {
+			$keys = array_keys($attributes[$modules[$m]]);
+			for ($i = 0; $i < sizeof($keys); $i++) {
+				$line = $modules[$m] . ": " . $keys[$i] . ": " . $attributes[$modules[$m]][$keys[$i]] . "\n";
+				fputs($file, $line);
+			}
 		}
 		// close file
 		fclose($file);
