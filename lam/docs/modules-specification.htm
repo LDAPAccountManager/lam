@@ -24,7 +24,7 @@ All module classes should extend the baseModule class.<br>
 </h3>
 <h3><br>
 </h3>
-<h3>2.1.1. can_manage</h3>
+<h3>2.1.1. can_manage*</h3>
 <br>
 <table cellpadding="2" cellspacing="2" border="0"
  style="text-align: left; width: 300px;">
@@ -43,7 +43,7 @@ can manage accounts of the current type<span style="font-style: italic;"></span>
 otherwise <span style="font-style: italic;">false</span>.<br>
 <br>
 <br>
-<h3>2.1.2. get_alias</h3>
+<h3>2.1.2. get_alias*</h3>
 <br>
 <table style="text-align: left; width: 300px;" border="0"
  cellspacing="2" cellpadding="2">
@@ -63,6 +63,8 @@ module selection of the configuration wizard.<br>
 Please take care that your alias name is not too long. It may contain
 any character but should not include parts that may be interpreted by
 the browser (e.g. '&lt;' or '&gt;').<br>
+If you use different aliases dependent on the account type please make
+sure that there is a general alias for unknown types.<br>
 <br>
 <h3>2.1.3. is_base_module*</h3>
 <br>
@@ -118,7 +120,7 @@ The resulting LDAP filter will look like this:
 is only used for base modules. Standard modules do not need to
 implement it.</span><br>
 <br>
-<h3>2.1.5. get_dependencies</h3>
+<h3>2.1.5. get_dependencies*</h3>
 <br>
 <table cellpadding="2" cellspacing="2" border="0"
  style="text-align: left; width: 300px; font-weight: bold;">
@@ -168,7 +170,92 @@ Returns an hash array including meta data for the baseModule.<br>
 <span style="font-weight: bold;">Example: return array("is_base" =&gt;
 true);</span><br style="font-weight: bold;">
 <br>
-<h3>2.1.7. get_scope()</h3>
+<h3>2.1.7. get_configOptions()*</h3>
+<br>
+<table cellpadding="2" cellspacing="2" border="0"
+ style="text-align: left; width: 300px;">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204); text-align: center;"><span
+ style="font-weight: bold;">function get_configOptions($scopes)</span><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+Returns a list of configuration options.<br>
+<span style="font-weight: bold;">$scopes</span> is a list of <span
+ style="font-style: italic;">account types</span> (user, group, host)
+which are used.<br>
+<span style="font-weight: bold;"></span><br>
+The return value is an array
+that contains <span style="font-weight: bold;">meta HTML code</span>.<br>
+<br>
+The type "fieldset" is not allowed here.<br>
+The <span style="font-style: italic;">name</span> attributes are used
+as keywords to load and save settings. We recommend to use the module
+name as prefix for them (e.g. posixAccount_homeDirectory) to avoid
+naming confilcts.<br>
+<br>
+<h3>2.1.8. get_configDescriptions()*</h3>
+<br>
+<table cellpadding="2" cellspacing="2" border="0"
+ style="text-align: left; width: 300px;">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204); text-align: center;"><span
+ style="font-weight: bold;">function get_configDescriptions()</span><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+Returns the description of every configuration option and the legend of
+the module fieldset on the configuration page.<br>
+<span style="font-weight: bold;"></span><br>
+The <span style="font-style: italic;">return</span> value is a hash
+array with this format:<br>
+&nbsp;&nbsp;&nbsp; <br>
+<span style="font-weight: bold;">&nbsp;&nbsp;&nbsp; array( 'legend'
+=&gt; 'Some general description for fieldset',</span><br
+ style="font-weight: bold;">
+<span style="font-weight: bold;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 'descriptions' =&gt; array('option1'
+=&gt; 'description1', ...))</span><br>
+<br>
+<h3>2.1.9. check_configOptions*</h3>
+<br>
+<table style="text-align: left; width: 400px; height: 30px;" border="0"
+ cellspacing="2" cellpadding="2">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204); text-align: center;"><span
+ style="font-weight: bold;">function check_configOptions($scopes,
+$options)</span><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+This function checks the input for module configuration settings.<br>
+<br>
+<span style="font-weight: bold;">$scopes</span> is a list of used
+account types (user, group, host).<br>
+<span style="font-weight: bold;"></span><span style="font-weight: bold;">$options</span>
+is an hash array
+(option name =&gt; value) that contains the input. The option values
+are all arrays containing one or more elements.<br>
+If the input data is invalid the return value is an array that contains
+arrays to build StatusMessages (0 =&gt; message type, 1 =&gt; message
+head, 2 =&gt; message text, 3 =&gt; additional variables).<br>
+If no errors occured the function returns an empty array.<span
+ style="font-weight: bold;"></span><br>
+<br style="font-weight: bold;">
+<span style="font-weight: bold;"></span>
+<h3>2.1.10. get_scope()</h3>
 <br>
 <table cellpadding="2" cellspacing="2" border="0"
  style="text-align: left; width: 300px;">
@@ -186,6 +273,8 @@ Returns the account type (user/group/host) of this module object.<br>
 <span style="font-weight: bold;"></span><br>
 <span style="font-weight: bold;">This function is provided by the
 baseModule and should not be overwritten.</span><br>
+<br>
+<br>
 <br>
 <h3>2.2. Class functions</h3>
 <h3>2.2.1. init</h3>
@@ -654,11 +743,51 @@ given</span><span style="font-weight: normal;"> (only if <span
   <ul>
     <li>&nbsp;array to build StatusMessages (0 =&gt; message type, 1
 =&gt; message
-head, 2 =&gt; message text, 3 =&gt; additional variables)<span
- style="font-weight: bold;"><br>
-      </span></li>
+head, 2 =&gt; message text, 3 =&gt; additional variables)</li>
   </ul>
 </ul>
+<br>
+<h3>6.7 get_configOptions()<br>
+</h3>
+&nbsp;&nbsp;&nbsp; "config_options" =&gt; array('user' =&gt; array,
+'host' =&gt; array, 'all' =&gt; array)<br>
+<br>
+&nbsp;&nbsp;&nbsp; The values from <span style="font-weight: bold;">'all'</span>
+are always returned, the other values only if they are inside the <span
+ style="font-style: italic;">$scopes</span> array.<br
+ style="font-weight: bold;">
+<br style="font-weight: bold;">
+<span style="font-weight: bold;">&nbsp;&nbsp; <span
+ style="font-style: italic;">Syntax for sub arrays is the same as for
+the
+return value of get_configOptions().<br>
+<br>
+</span></span>
+<h3>6.8 get_configDescriptions()<br>
+</h3>
+&nbsp;&nbsp;&nbsp; "config_descriptions" =&gt; array<br>
+<br>
+<span style="font-weight: bold;">&nbsp;&nbsp; <span
+ style="font-style: italic;">Syntax for array is the same as for the
+return value of get_configDescriptions().<br>
+<br>
+</span></span>
+<h3>6.9 check_configOptions()<br>
+</h3>
+&nbsp;&nbsp;&nbsp; "config_checks" =&gt; array('user' =&gt; array,
+'host' =&gt; 'array', 'all' =&gt; array)<br>
+<br>
+&nbsp;&nbsp;&nbsp; The values from 'all' are always used for checking,
+the other values only if they are inside the <span
+ style="font-style: italic;">$scopes</span> array.<br>
+<span style="font-weight: bold;"><br style="font-weight: bold;">
+</span><span style="font-weight: bold;">&nbsp;&nbsp; <span
+ style="font-style: italic;">Syntax for sub arrays is the same as for
+check_profileOptions().<br>
+<br>
+</span></span>
+<h3><br>
+</h3>
 <span style="font-weight: bold;"></span><span style="font-weight: bold;"><span
  style="font-style: italic;"></span></span><span
  style="font-style: italic; font-weight: bold;"></span><span

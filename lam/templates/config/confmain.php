@@ -33,6 +33,9 @@ $Id$
 /** Access to config functions */
 include_once ("../../lib/config.inc");
 
+/** access to module settings */
+include_once ("../../lib/modules.inc");
+
 // start session
 session_save_path("../../sess");
 @session_start();
@@ -72,6 +75,8 @@ if ($_POST['back'] || $_POST['submitconf'] || $_POST['editmodules']){
 		$_SESSION['conf_groupmodules'] = explode(",", $_POST['groupmodules']);
 		$_SESSION['conf_hostmodules'] = explode(",", $_POST['hostmodules']);
 		$_SESSION['conf_filename'] = $_POST['filename'];
+		$modSettings = array_keys($_SESSION['config_types']);
+		for ($i = 0; $i < sizeof($modSettings); $i++) $_SESSION['config_moduleSettings'][$modSettings[$i]] = $_POST[$modSettings[$i]];
 	}
 	// go to final page
 	if ($_POST['submitconf']){
@@ -212,7 +217,7 @@ echo ("<tr><td colspan=3>&nbsp</td></tr>");
 
 // LDAP cache timeout
 echo ("<tr><td align=\"right\"><b>".
-	_("Cache timeout") . " : </b></td>".
+	_("Cache timeout") . ": </b></td>".
 	"<td><select name=\"cachetimeout\">\n<option selected>".$conf->get_cacheTimeout()."</option>\n");
 if ($conf->get_cacheTimeout() != 0) echo("<option>0</option>\n");
 if ($conf->get_cacheTimeout() != 1) echo("<option>1</option>\n");
@@ -243,6 +248,58 @@ echo ("</table>");
 echo ("</fieldset>");
 
 echo ("<p></p>");
+
+
+// module settings
+
+// get list of scopes of modules
+$scopes = array();
+$mods = $conf->get_UserModules();
+for ($i = 0; $i < sizeof($mods); $i++) $scopes[$mods[$i]][] = 'user';
+$mods = $conf->get_GroupModules();
+for ($i = 0; $i < sizeof($mods); $i++) $scopes[$mods[$i]][] = 'group';
+$mods = $conf->get_HostModules();
+for ($i = 0; $i < sizeof($mods); $i++) $scopes[$mods[$i]][] = 'host';
+
+// get module options
+$options = getConfigOptions($scopes);
+// get current setting
+$old_options = $conf->get_moduleSettings();
+// get module descriptions
+$moduleDescriptions = getConfigDescriptions();
+
+// save scopes
+$_SESSION['config_scopes'] = $scopes;
+
+// index for tab order (1 is LDAP suffix)
+$tabindex = 2;
+
+// display module boxes
+$modules = array_keys($options);
+for ($m = 0; $m < sizeof($modules); $m++) {
+	// ignore empty values
+	if (!is_array($options[$modules[$m]]) || (sizeof($options[$modules[$m]]) < 1)) continue;
+	echo "<fieldset>\n";
+		echo "<legend><b>" . $moduleDescriptions['legend'][$modules[$m]] . "</b></legend>\n";
+		echo "<table>\n";
+		for ($l = 0; $l < sizeof($options[$modules[$m]]); $l++) {  // option lines
+			echo "<tr>\n";
+			for ($o = 0; $o < sizeof($options[$modules[$m]][$l]); $o++) {  // line parts
+				echo "<td";
+				if (isset($options[$modules[$m]][$l][$o]['align'])) echo " align=\"" . $options[$modules[$m]][$l][$o]['align'] . "\"";
+				if (isset($options[$modules[$m]][$l][$o]['colspan'])) echo " colspan=\"" . $options[$modules[$m]][$l][$o]['colspan'] . "\"";
+				if (isset($options[$modules[$m]][$l][$o]['rowspan'])) echo " rowspan=\"" . $options[$modules[$m]][$l][$o]['rowspan'] . "\"";
+				echo ">";
+				print_option($options[$modules[$m]][$l][$o], $modules[$m], $old_options, $tabindex);
+				echo "</td>\n";
+			}
+			echo "</tr>\n";
+		}
+		echo "</table>\n";
+	echo "</fieldset>\n";
+	echo "<br>";
+}
+
 
 echo ("<fieldset><legend><b>" . _("Ranges") . "</b></legend>");
 echo ("<table border=0>");
@@ -436,6 +493,111 @@ echo ("<p><input type=\"hidden\" name=\"hostmodules\" value=\"" . implode(",", $
 echo ("</form>\n");
 echo ("</body>\n");
 echo ("</html>\n");
+
+
+
+/**
+* prints out the row of a section table including the option name, values and help
+*
+* @param array $values an array formated as module option
+* @param string $module_name the name of the module the options belong to
+* @param array $old_options a hash array with the values from the loaded profile
+* @param integer $tabindex current value for tabulator order
+*/
+function print_option($values, $modulename, $old_options, &$tabindex) {
+	switch ($values['kind']) {
+		// text value
+		case 'text':
+			echo $values['text'] . "\n";
+			break;
+		// help link
+		case 'help':
+			echo "<a href=../help.php?module=$modulename&amp;HelpNumber=" . $values['value'] . ">" . _('Help') . "</a>\n";
+			break;
+		// input field
+		case 'input':
+			if (($values['type'] == 'text') || ($values['type'] == 'checkbox')) {
+				if ($values['type'] == 'text') {
+					$output = "<input tabindex=\"$tabindex\" type=\"text\" name=\"" . $values['name'] . "\"";
+					if ($values['size']) $output .= " size=\"" . $values['size'] . "\"";
+					if ($values['maxlength']) $output .= " maxlength=\"" . $values['maxlength'] . "\"";
+					if (isset($old_options[$values['name']])) $output .= " value=\"" . $old_options[$values['name']][0] . "\"";
+					elseif ($values['value']) $output .= " value=\"" . $values['value'] . "\"";
+					if ($values['disabled']) $output .= " disabled";
+					$output .= ">\n";
+					echo $output;
+					$_SESSION['config_types'][$values['name']] = "text";
+				}
+				elseif ($values['type'] == 'checkbox') {
+					$output = "<input tabindex=\"$tabindex\" type=\"checkbox\" name=\"" . $values['name'] . "\"";
+					if ($values['size']) $output .= " size=\"" . $values['size'] . "\"";
+					if ($values['maxlength']) $output .= " maxlength=\"" . $values['maxlength'] . "\"";
+					if ($values['disabled']) $output .= " disabled";
+					if (isset($old_options[$values['name']]) && ($old_options[$values['name']][0] == 'true')) $output .= " checked";
+					elseif ($values['checked']) $output .= " checked";
+					$output .= ">\n";
+					echo $output;
+					$_SESSION['config_types'][$values['name']] = "checkbox";
+				}
+				$tabindex++;
+			}
+			break;
+		// select box
+		case 'select':
+			if (! is_numeric($values['size'])) $values['size'] = 1;// correct size if needed
+			if ($values['multiple']) {
+				echo "<select tabindex=\"$tabindex\" name=\"" . $values['name'] . "[]\" size=\"" . $values['size'] . "\" multiple>\n";
+				$_SESSION['config_types'][$values['name']] = "multiselect";
+			}
+			else {
+				echo "<select tabindex=\"$tabindex\" name=\"" . $values['name'] . "\" size=\"" . $values['size'] . "\">\n";
+				$_SESSION['config_types'][$values['name']] = "select";
+			}
+			// option values
+			for ($i = 0; $i < sizeof($values['options']); $i++) {
+				// use values from old profile if given
+				if (isset($old_options[$values['name']])) {
+					if (in_array($values['options'][$i], $old_options[$values['name']])) {
+						echo "<option selected>" . $values['options'][$i] . "</option>\n";
+					}
+					else {
+						echo "<option>" . $values['options'][$i] . "</option>\n";
+					}
+				}
+				// use default values if not in profile
+				else {
+					if (is_array($values['options_selected']) && in_array($values['options'][$i], $values['options_selected'])) {
+						echo "<option selected>" . $values['options'][$i] . "</option>\n";
+					}
+					else {
+						echo "<option>" . $values['options'][$i] . "</option>\n";
+					}
+				}
+			}
+			echo "</select>\n";
+			$tabindex++;
+			break;
+		// subtable
+		case 'table':
+			echo "<table>\n";
+			for ($l = 0; $l < sizeof($values['value']); $l++) {  // option lines
+				echo "<tr>\n";
+				for ($o = 0; $o < sizeof($values['value'][$l]); $o++) {  // line parts
+					echo "<td>";
+					print_option($values['value'][$l][$o], $values['value'], $old_options, $tabindex);
+					echo "</td>\n";
+				}
+				echo "</tr>\n";
+			}
+			echo "</table>\n";
+		break;
+		// print error message for invalid types
+		default:
+			echo _("Unrecognized type") . ": " . $values['kind'] . "\n";
+			break;
+	}
+}
+
 
 ?>
 

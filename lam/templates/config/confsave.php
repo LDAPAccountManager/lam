@@ -214,6 +214,54 @@ if (! $conf->set_HostModules($_SESSION['conf_hostmodules'])) {
 	exit;
 }
 
+// check module options
+// create option array to check and save
+$options = array();
+$opt_keys = array_keys($_SESSION['config_types']);
+foreach ($opt_keys as $element) {
+	// text fields
+	if ($_SESSION['config_types'][$element] == "text") {
+		$options[$element] = array($_SESSION['config_moduleSettings'][$element]);
+	}
+	// checkboxes
+	elseif ($_SESSION['config_types'][$element] == "checkbox") {
+		if ($_SESSION['config_moduleSettings'][$element] == "on") $options[$element] = array('true');
+		else $options[$element] = array('false');
+	}
+	// dropdownbox
+	elseif ($_SESSION['config_types'][$element] == "select") {
+		$options[$element] = array($_SESSION['config_moduleSettings'][$element]);
+	}
+	// multiselect
+	elseif ($_SESSION['config_types'][$element] == "multiselect") {
+		$options[$element] = $_SESSION['config_moduleSettings'][$element];  // value is already an array
+	}
+}
+
+// remove double slashes if magic quotes are on
+if (get_magic_quotes_gpc() == 1) {
+	foreach ($opt_keys as $element) {
+		if (is_string($options[$element][0])) $options[$element][0] = stripslashes($options[$element][0]);
+	}
+}
+
+// check options
+$errors = checkConfigOptions($_SESSION['config_scopes'], $options);
+// print error messages if any
+if (sizeof($errors) > 0) {
+	for ($i = 0; $i < sizeof($errors); $i++) {
+		if (sizeof($errors[$i]) > 3) {  // messages with additional variables
+			StatusMessage($errors[$i][0], $errors[$i][1], $errors[$i][2], $errors[$i][3]);
+		}
+		else {
+			StatusMessage($errors[$i][0], $errors[$i][1], $errors[$i][2]);
+		}
+	}
+	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
+	exit;
+}
+// save module setting
+$conf->set_moduleSettings($options);
 
 // check if password was changed
 if ($passwd1) {

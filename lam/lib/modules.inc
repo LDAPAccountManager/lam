@@ -50,12 +50,12 @@ while ($stay<7) {
 		while ($entry = readdir($dir))
 			if ((substr($entry, strlen($entry) - 4, 4) == '.inc') && is_file($relative.'lib/modules/'.$entry)) include_once ($relative.'lib/modules/'.$entry);
 		$stay=10;
-		}
+	}
 	else {
 		$stay++;
 		$relative .= '../';
-		}
 	}
+}
 
 /**
 * Returns the alias name of a module
@@ -131,7 +131,7 @@ function getModulesDependencies($scope) {
 		$return[$mods[$i]] = $module->get_dependencies();
 	}
 	return $return;
-	}
+}
 
 
 /**
@@ -247,6 +247,61 @@ function checkProfileOptions($scope, $options) {
 	}
 	// get options
 	return $_SESSION["profile_account_$scope"]->checkProfileOptions($options);
+}
+
+/**
+* Returns a hash array (module name => elements) of all module options for the configuration page.
+*
+* @param array $scopes hash array (module name => array(account types))
+* @return array configuration options
+*/
+function getConfigOptions($scopes) {
+	$return = array();
+	$modules = array_keys($scopes);
+	for ($i = 0; $i < sizeof($modules); $i++) {
+		$m = new $modules[$i]('none');
+		$return[$modules[$i]] = $m->get_configOptions($scopes[$modules[$i]]);
+	}
+	return $return;
+}
+
+/**
+* Returns a hash array (module name => descriptions) containing descriptions shown on configuration pages.
+*
+* The returned array has the format array('legend' => array('posixAccount' => '...', ...), descriptions => array('option1' => '...', ...)).
+* <br> The "legend" value is used as text for the fieldset, the descriptions are used when the configuration is printed.
+*
+* @return array configuration descriptions
+*/
+function getConfigDescriptions() {
+	$return = array('legend' => array(), 'descriptions' => array());
+	$modules = array_merge(getAvailableModules('user'), getAvailableModules('group'), getAvailableModules('host'));
+	$modules = array_values(array_unique($modules));
+	for ($i = 0; $i < sizeof($modules); $i++) {
+		$m = new $modules[$i]('none');
+		$desc = $m->get_configDescriptions();
+		$return['legend'][$modules[$i]] = $desc['legend'];
+		$return['descriptions'] = array_merge($return['descriptions'], $desc['descriptions']);
+	}
+	return $return;
+}
+
+/**
+* Checks if the configuration options are valid
+*
+* @param array $scopes hash array (module name => array(account types))
+* @param array $options hash array containing all options (name => array(...))
+* @return array list of error messages
+*/
+function checkConfigOptions($scopes, $options) {
+	$return = array();
+	$modules = array_keys($scopes);
+	for ($i = 0; $i < sizeof($modules); $i++) {
+		$m = new $modules[$i]('none');
+		$errors = $m->check_configOptions($scopes[$modules[$i]], $options);
+		$return = array_merge($return, $errors);
+	}
+	return $return;
 }
 
 /**

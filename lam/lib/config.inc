@@ -365,7 +365,15 @@ class Config {
 		echo "<b>" . _("Module settings") . ": </b><br>\n";
 		echo "<ul>\n";
 		$names = array_keys($this->moduleSettings);
-		for ($i = 0; $i < sizeof($names); $i++) echo "<li>" . $names[$i] . ": " . implode(", ", $this->moduleSettings[$names[$i]]) . "</li>\n";
+		$descriptions = getConfigDescriptions();
+		$descriptions = $descriptions['descriptions'];
+		for ($i = 0; $i < sizeof($names); $i++) {
+			echo "<li><b>";
+			// print description if available
+			if (isset($descriptions[$names[$i]])) echo $descriptions[$names[$i]];
+			else echo $names[$i];
+			echo ": </b>" . implode(", ", $this->moduleSettings[$names[$i]]) . "</li>\n";
+		}
 		echo "</ul>\n";
 	}
 

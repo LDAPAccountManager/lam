@@ -141,7 +141,7 @@ class baseModule {
 	/**
 	* Checks input values of account profiles.
 	*
-	* @return profile elements
+	* @return array profile elements
 	*/
 	function check_profileOptions($options) {
 		$messages = array();
@@ -198,6 +198,106 @@ class baseModule {
 				}
 				else {
 					StatusMessage("ERROR", "Unsupported type!", $this->meta['profile_checks'][$identifiers[$i]]['type']);
+				}
+			}
+		}
+		return $messages;
+	}
+
+	/**
+	* Returns a list of elements for the configuration.
+	*
+	* @param array $scopes account types (user, group, host)
+	* @return array configuration elements
+	*/
+	function get_configOptions($scopes) {
+		$return = array();
+		for ($i = 0; $i < sizeof($scopes); $i++) {
+			if (isset($this->meta['config_options'][$scopes[$i]])) $return = array_merge($return, $this->meta['config_options'][$scopes[$i]]);
+		}
+		if (isset($this->meta['config_options']['all'])) $return = array_merge($return, $this->meta['config_options']['all']);
+		return $return;
+	}
+
+	/**
+	* Returns an array containing descriptions shown on configuration pages.
+	*
+	* The returned array has the format array('legend' => '...', descriptions => array('option1' => '...', ...)).
+	* <br> The "legend" value is used as text for the fieldset, the descriptions are used when the configuration is printed.
+	*
+	* @return array configuration elements
+	*/
+	function get_configDescriptions() {
+		$return = array('legend' => 'no description', 'descriptions' => array());
+		if (isset($this->meta['config_descriptions'])) $return = $this->meta['config_descriptions'];
+		return $return;
+	}
+
+	/**
+	* Checks input values of module settings.
+	*
+	* @param array $scopes list of account types which are used
+	* @param array $options hash array containing the settings (array('option' => array('value')))
+	* @return array profile elements
+	*/
+	function check_configOptions($scopes, $options) {
+		$messages = array();
+		$scopes[] = 'all'; // add checks that are independent of scope
+		for ($s = 0; $s < sizeof($scopes); $s++) {
+			if (is_array($this->meta['config_checks'][$scopes[$s]])) {
+				$identifiers = array_keys($this->meta['config_checks'][$scopes[$s]]);
+				for ($i = 0; $i < sizeof($identifiers); $i++) {
+					// check if option is required
+					if ($this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['required'] && ($options[$identifiers[$i]][0] == '')) {
+						$messages[] = $this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['required_message'];
+					}
+					// check by regular expression (case insensitive)
+					if ($this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['type'] == 'regex_i') {
+						// ignore empty fileds
+						if ($options[$identifiers[$i]][0] == '') continue;
+						if (! eregi($this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['regex'], $options[$identifiers[$i]][0])) {
+							$messages[] = $this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['error_message'];
+						}
+					}
+					// check by regular expression (case sensitive)
+					elseif ($this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['type'] == 'regex') {
+						// ignore empty fileds
+						if ($options[$identifiers[$i]][0] == '') continue;
+						if (! ereg($this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['regex'], $options[$identifiers[$i]][0])) {
+							$messages[] = $this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['error_message'];
+						}
+					}
+					// check by integer comparison (greater)
+					elseif ($this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['type'] == 'int_greater') {
+						// ignore if both fields are empty
+						if (($options[$this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['cmp_name1']][0] == '') && ($options[$this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['cmp_name2']][0] == '')) continue;
+						// print error message if only one field is empty
+						if (($options[$this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['cmp_name1']][0] == '') || ($options[$this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['cmp_name2']][0] == '')) {
+							$messages[] = $this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['error_message'];
+							continue;
+						}
+						// compare
+						if (!(intval($options[$this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['cmp_name1']][0]) > intval($options[$this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['cmp_name2']][0]))) {
+							$messages[] = $this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['error_message'];
+						}
+					}
+					// check by integer comparison (greater or equal)
+					elseif ($this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['type'] == 'int_greaterOrEqual') {
+						// ignore if both fields are empty
+						if (($options[$this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['cmp_name1']][0] == '') && ($options[$this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['cmp_name2']][0] == '')) continue;
+						// print error message if only one field is empty
+						if (($options[$this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['cmp_name1']][0] == '') || ($options[$this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['cmp_name2']][0] == '')) {
+							$messages[] = $this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['error_message'];
+							continue;
+						}
+						// compare
+						if (!(intval($options[$this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['cmp_name1']][0]) >= intval($options[$this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['cmp_name2']][0]))) {
+							$messages[] = $this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['error_message'];
+						}
+					}
+					else {
+						StatusMessage("ERROR", "Unsupported type!", $this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['type']);
+					}
 				}
 			}
 		}
