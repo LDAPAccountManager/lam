@@ -627,7 +627,7 @@ function ldapreload($type) {
 				$_SESSION['groupDN'][0] = time();
 				// Search 4 values which should be cached
 				$result = @ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(),
-					'objectClass=posixGroup', array('gidNumber', 'cn', 'memberUid'), 0);
+					'objectClass=posixGroup', array('gidNumber', 'cn', 'memberUid', 'sambaSID'), 0);
 				// Write search result in array
 				$entry = @ldap_first_entry($_SESSION['ldap']->server(), $result);
 				while ($entry) {
@@ -637,6 +637,8 @@ function ldapreload($type) {
 						$_SESSION['groupDN'][$dn]['uidNumber'] = $attr['gidNumber'][0];
 					if (isset($attr['cn'][0]))
 						$_SESSION['groupDN'][$dn]['cn'] = $attr['cn'][0];
+					if (isset($attr['sambaSID'][0]))
+						$_SESSION['groupDN'][$dn]['sambaSID'] = $attr['sambaSID'][0];
 					$i=0;
 					while (isset($attr['memberUid'][$i])) {
 						$_SESSION['groupDN'][$dn]['memberUid'][$i] = $attr['memberUid'][$i];
@@ -1370,7 +1372,11 @@ function createuser($values, $uselamdaemon=true) {
 		// Generate SID
 		$attr['sambaSID'] = $values->smb_domain->SID . "-"  . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase); // sambaAccount_may
 
-		if ($values->smb_mapgroup!='') $attr['sambaPrimaryGroupSID'] = $values->smb_mapgroup; // sambaAccount_req
+		//if ($values->smb_mapgroup!='') $attr['sambaPrimaryGroupSID'] = $values->smb_mapgroup; // sambaAccount_req
+		ldapreload('group');
+		foreach ($_SESSION['groupDN'] as $groupname) {
+			if ($groupname['cn'] == $values->general_group) $attr['sambaPrimaryGroupSID'] = $groupname['sambaSID'];
+			}
 		if ($values->smb_pwdcanchange!='') $attr['sambaPwdCanChange'] = $values->smb_pwdcanchange; // sambaAccount_may
 			else $attr['sambaPwdCanChange'] = time(); // sambaAccount_may
 		if ($values->smb_pwdmustchange!='') $attr['sambaPwdMustChange'] = $values->smb_pwdmustchange; // sambaAccount_may
@@ -1518,11 +1524,10 @@ function modifyuser($values,$values_old,$uselamdaemon=true) { // Will modify the
 		if ($_SESSION['config']->is_samba3()) {
 			// We use samba 3 schema
 			// Change SID only if we don't use a well known SID
-			if ($values->smb_mapgroup==$values->smb_domain->SID . '-512') $found=true;
-			if ($values->smb_mapgroup==$values->smb_domain->SID . '-513') $found=true;
-			if ($values->smb_mapgroup==$values->smb_domain->SID . '-514') $found=true;
-			if (!$found) $attr['sambaPrimaryGroupSID'] = $values->smb_domain->SID . "-".
-				(2 * getgid($values->general_group) + $values->smb_domain->RIDbase+1);
+			ldapreload('group');
+			foreach ($_SESSION['groupDN'] as $groupname) {
+				if ($groupname['cn'] == $values->general_group) $attr['sambaPrimaryGroupSID'] = $groupname['sambaSID'];
+				}
 			}
 		else {
 			// We use old samba 2.2 schema
@@ -1694,8 +1699,12 @@ function modifyuser($values,$values_old,$uselamdaemon=true) { // Will modify the
 			$attr['sambaPrimaryGroupSID'] = $values->smb_domain->SID . "-".
 				(2 * getgid($values->general_group) + $values->smb_domain->RIDbase+1);
 			}
-		if (($values->smb_mapgroup!='') && ($values->smb_mapgroup!=$values_old->smb_mapgroup)) $attr['sambaPrimaryGroupSID'] = $values->smb_mapgroup; // sambaAccount_may
-		if (($values->smb_mapgroup=='') && ($values->smb_mapgroup!=$values_old->smb_mapgroup)) $attr_rem['sambaPrimaryGroupSID'] = $values_old->smb_mapgroup;
+		if (($values->smb_mapgroup!='') && ($values->smb_mapgroup!=$values_old->smb_mapgroup)) {
+			ldapreload('group');
+			foreach ($_SESSION['groupDN'] as $groupname) {
+				if ($groupname['cn'] == $values->general_group) $attr['sambaPrimaryGroupSID'] = $groupname['sambaSID'];
+				}
+			}
 		if ($values->smb_displayName != $values_old->smb_displayName) $attr['displayName'] = utf8_encode($values->smb_displayName); // sambaAccount_may
 		}
 	else {
@@ -2324,6 +2333,8 @@ function creategroup($values, $uselamdaemon=true) {
 		$_SESSION['groupDN'][$values->general_dn]['memberUid'] = $values->unix_memberUid;
 		$_SESSION['groupDN'][$values->general_dn]['cn'] = $values->general_username;
 		$_SESSION['groupDN'][$values->general_dn]['uidNumber'] = $values->general_uidNumber;
+		if ($_SESSION['config']->is_samba3() && isset($values->smb_mapgroup))
+			$_SESSION['groupDN'][$values->general_dn]['sambaSID'] = $values->smb_mapgroup;
 		}
 	return 1;
 	}
@@ -2446,6 +2457,8 @@ function modifygroup($values,$values_old, $uselamdaemon=true) {
 		if (is_array($values->unix_memberUid)) $_SESSION['groupDN'][$values->general_dn]['memberUid'] = $values->unix_memberUid;
 		$_SESSION['groupDN'][$values->general_dn]['cn'] = $values->general_username;
 		$_SESSION['groupDN'][$values->general_dn]['uidNumber'] = $values->general_uidNumber;
+		if ($values->smb_mapgroup != $values_old->smb_mapgroup)
+			$_SESSION['groupDN'][$values->general_dn]['sambaSID'] = $values->smb_mapgroup;
 		}
 	// Return 3 if everything has worked fine
 	return 3;
