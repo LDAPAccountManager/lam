@@ -31,10 +31,11 @@ session_start();
 <html>
 	<head>
 		<title>
-		<?
-		echo _("Login");
-		?>
+			<?
+				echo _("Login");
+			?>
 		</title>
+		<link rel="stylesheet" type="text/css" href="../../style/layout.css">
 	</head>
 	<body>
 		<p align="center"><a href="http://lam.sf.net" target="new_window">

@@ -45,6 +45,10 @@ session_destroy();
 
 <html>
 	<body>
+	<title>
+		<? echo _("Logout"); ?>
+	</title>
+	<link rel="stylesheet" type="text/css" href="../style/layout.css">
 	<p align="center"><a href="http://lam.sf.net" target="new_window"><img src="../graphics/banner.jpg" border=1></a></p><hr><br>
 	<p align="center"><big><? echo ("You have been logged off from LDAP Account Manager."); ?></big></p>
 	<br><br><br><br><br><a href="../templates/login.php" target="_top"> <? echo _("Back to Login") ?> </a>
