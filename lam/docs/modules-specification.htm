@@ -188,7 +188,7 @@ Returns the account type (user/group/host) of this module object.<br>
 baseModule and should not be overwritten.</span><br>
 <br>
 <h3>2.2. Class functions</h3>
-<h3>2.2.1. Constructor</h3>
+<h3>2.2.1. init</h3>
 <br>
 <table cellpadding="2" cellspacing="2" border="0"
  style="text-align: left; width: 300px; height: 30px;">
@@ -196,13 +196,13 @@ baseModule and should not be overwritten.</span><br>
     <tr>
       <td
  style="vertical-align: top; background-color: rgb(204, 204, 204); text-align: center;"><span
- style="font-weight: bold;">function &lt;module name&gt; ($base)</span><br>
+ style="font-weight: bold;">function init($base)</span><br>
       </td>
     </tr>
   </tbody>
 </table>
 <br>
-Every module needs a constructor that has an<span
+Every module needs a initializing function that has an<span
  style="font-style: italic;"> <span style="font-weight: bold;">account
 container</span></span> as argument $base.<br>
 With this account container you can interact with other modules and use
@@ -313,9 +313,8 @@ naming confilcts.<br>
 <br>
 This function checks the input for a new or modified account profile.<br>
 <br>
-<span style="font-weight: bold;">$scope</span> is the account type
-("user", "group", "host" at this time).<br>
-<span style="font-weight: bold;">$options</span> is an hash array
+<span style="font-weight: bold;"></span><span style="font-weight: bold;">$options</span>
+is an hash array
 (option name =&gt; value) that contains the input. The option values
 are all arrays containing one or more elements.<br>
 If the input data is invalid the return value is an array that contains
@@ -603,6 +602,18 @@ determines how to check input</span></li>
     <li style="font-weight: bold;">regex_i:<span
  style="font-weight: normal;"> check with regular expression from <span
  style="font-style: italic;">regex</span> variable, case insensitive</span></li>
+    <li style="font-weight: bold;"><span style="font-weight: normal;"><span
+ style="font-weight: bold;">int_greater:</span> integer value of <span
+ style="font-style: italic;">cmp_name1</span> must be
+greater than the integer value from the option <span
+ style="font-style: italic;">cmp_name2</span></span></li>
+    <li style="font-weight: bold;"><span style="font-weight: normal;"><span
+ style="font-weight: bold;">int_greaterOrEqual:</span> integer value</span><span
+ style="font-weight: normal;"><span style="font-weight: normal;"> of <span
+ style="font-style: italic;">cmp_name1</span></span></span><span
+ style="font-weight: normal;">
+must be greater or equal than the integer value from the option <span
+ style="font-style: italic;">cmp_name2</span></span></li>
   </ul>
   <li style="font-weight: bold;">error_message:<span
  style="font-weight: normal;"> message that is displayed if input value
@@ -617,8 +628,19 @@ head, 2 =&gt; message text, 3 =&gt; additional variables)</span><span
  style="font-weight: normal;"> regular expression string (only if <span
  style="font-style: italic;">type</span> is <span
  style="font-style: italic;">regex</span>/<span
- style="font-style: italic;">regex_i</span>)</span><br>
-  </li>
+ style="font-style: italic;">regex_i</span>)</span></li>
+  <li style="font-weight: bold;"><span style="font-weight: normal;"><span
+ style="font-weight: normal;"><span style="font-weight: bold;">cmp_name1:</span>
+name of first input
+variable that is used for comparison (only if <span
+ style="font-style: italic;">type</span> is <span
+ style="font-style: italic;">int_greater/int_greaterOrEqual</span>)</span></span></li>
+  <li style="font-weight: bold;"><span style="font-weight: normal;"><span
+ style="font-weight: bold;">cmp_name2:</span> name of second input
+variable that is used for comparison (only if <span
+ style="font-style: italic;">type</span> is <span
+ style="font-style: italic;">int_greater/int_greaterOrEqual</span>)<br>
+    </span></li>
   <li><span style="font-weight: bold;">required:</span> <span
  style="font-style: italic;">true</span> or <span
  style="font-style: italic;">false</span>, if this input field must be

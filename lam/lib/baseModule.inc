@@ -152,19 +152,52 @@ class baseModule {
 				if ($this->meta['profile_checks'][$identifiers[$i]]['required'] && ($options[$identifiers[$i]][0] == '')) {
 					$messages[] = $this->meta['profile_checks'][$identifiers[$i]]['required_message'];
 				}
-				// ignore empty fileds
-				if ($options[$identifiers[$i]][0] == '') continue;
 				// check by regular expression (case insensitive)
 				if ($this->meta['profile_checks'][$identifiers[$i]]['type'] == 'regex_i') {
+					// ignore empty fileds
+					if ($options[$identifiers[$i]][0] == '') continue;
 					if (! eregi($this->meta['profile_checks'][$identifiers[$i]]['regex'], $options[$identifiers[$i]][0])) {
 						$messages[] = $this->meta['profile_checks'][$identifiers[$i]]['error_message'];
 					}
 				}
 				// check by regular expression (case sensitive)
 				elseif ($this->meta['profile_checks'][$identifiers[$i]]['type'] == 'regex') {
+					// ignore empty fileds
+					if ($options[$identifiers[$i]][0] == '') continue;
 					if (! ereg($this->meta['profile_checks'][$identifiers[$i]]['regex'], $options[$identifiers[$i]][0])) {
 						$messages[] = $this->meta['profile_checks'][$identifiers[$i]]['error_message'];
 					}
+				}
+				// check by integer comparison (greater)
+				elseif ($this->meta['profile_checks'][$identifiers[$i]]['type'] == 'int_greater') {
+					// ignore if both fields are empty
+					if (($options[$this->meta['profile_checks'][$identifiers[$i]]['cmp_name1']][0] == '') && ($options[$this->meta['profile_checks'][$identifiers[$i]]['cmp_name2']][0] == '')) continue;
+					// print error message if only one field is empty
+					if (($options[$this->meta['profile_checks'][$identifiers[$i]]['cmp_name1']][0] == '') || ($options[$this->meta['profile_checks'][$identifiers[$i]]['cmp_name2']][0] == '')) {
+						$messages[] = $this->meta['profile_checks'][$identifiers[$i]]['error_message'];
+						continue;
+					}
+					// compare
+					if (!(intval($options[$this->meta['profile_checks'][$identifiers[$i]]['cmp_name1']][0]) > intval($options[$this->meta['profile_checks'][$identifiers[$i]]['cmp_name2']][0]))) {
+						$messages[] = $this->meta['profile_checks'][$identifiers[$i]]['error_message'];
+					}
+				}
+				// check by integer comparison (greater or equal)
+				elseif ($this->meta['profile_checks'][$identifiers[$i]]['type'] == 'int_greaterOrEqual') {
+					// ignore if both fields are empty
+					if (($options[$this->meta['profile_checks'][$identifiers[$i]]['cmp_name1']][0] == '') && ($options[$this->meta['profile_checks'][$identifiers[$i]]['cmp_name2']][0] == '')) continue;
+					// print error message if only one field is empty
+					if (($options[$this->meta['profile_checks'][$identifiers[$i]]['cmp_name1']][0] == '') || ($options[$this->meta['profile_checks'][$identifiers[$i]]['cmp_name2']][0] == '')) {
+						$messages[] = $this->meta['profile_checks'][$identifiers[$i]]['error_message'];
+						continue;
+					}
+					// compare
+					if (!(intval($options[$this->meta['profile_checks'][$identifiers[$i]]['cmp_name1']][0]) >= intval($options[$this->meta['profile_checks'][$identifiers[$i]]['cmp_name2']][0]))) {
+						$messages[] = $this->meta['profile_checks'][$identifiers[$i]]['error_message'];
+					}
+				}
+				else {
+					StatusMessage("ERROR", "Unsupported type!", $this->meta['profile_checks'][$identifiers[$i]]['type']);
 				}
 			}
 		}

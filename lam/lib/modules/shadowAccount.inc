@@ -124,6 +124,17 @@ class shadowAccount extends baseModule {
 				)),
 				2 => array('kind' => 'help', 'value' => 'TODO'))
 		);
+		// profile checks
+		$return['profile_checks']['shadowAccount_shadowMin'] = array('type' => 'regex', 'regex' => $this->regex_number,
+			'error_message' => $this->messages['shadowMin']);
+		$return['profile_checks']['shadowAccount_shadowMax'] = array('type' => 'regex', 'regex' => $this->regex_number,
+			'error_message' => $this->messages['shadowMax']);
+		$return['profile_checks']['shadowAccount_cmp'] = array('type' => 'int_greater', 'cmp_name1' => 'shadowAccount_shadowMax',
+			'cmp_name2' => 'shadowAccount_shadowMin', 'error_message' => $this->messages['shadow_cmp']);
+		$return['profile_checks']['shadowAccount_shadowInactive'] = array('type' => 'regex', 'regex' => $this->regex_inactive,
+			'error_message' => $this->messages['inactive']);
+		$return['profile_checks']['shadowAccount_shadowWarning'] = array('type' => 'regex', 'regex' => $this->regex_number,
+			'error_message' => $this->messages['shadowWarning']);
 		return $return;
 	}
 
@@ -317,21 +328,6 @@ class shadowAccount extends baseModule {
 		return 0;
 		}
 
-	/**
-	* Checks input values of account profiles.
-	*
-	* @return profile elements
-	*/
-	function check_profileOptions($options) {
-		$errors = array();
-		if (!ereg($this->regex_number, $options['shadowAccount_shadowMin'][0])) $errors[] = $this->messages['shadowMin'];
-		if (!ereg($this->regex_number, $options['shadowAccount_shadowMax'][0])) $errors[] = $this->messages['shadowMax'];
-		if ($options['shadowAccount_shadowMin'][0] > $options['shadowAccount_shadowMax'][0]) $errors[] = $this->messages['shadow_cmp'];
-		if (!ereg($this->regex_inactive, $options['shadowAccount_shadowInactive'][0])) $errors[] = $this->messages['inactive'];
-		if (!ereg($this->regex_number, $options['shadowAccount_shadowWarning'][0])) $errors[] = $this->messages['shadowWarning'];
-		return $errors;
-	}
-	
 	function get_pdfFields($account_type="user") {
 		return array(	'shadowLastChange',
 							'shadowWarning',
