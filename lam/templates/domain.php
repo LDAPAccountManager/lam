@@ -221,9 +221,19 @@ elseif ($_POST['sub_save']) {
 	echo "</head>\n";
 	echo "<body>\n";
 	// check input
+	if ($_POST['add']) { // check for existing domains
+		$suffix = $_SESSION['config']->get_DomainSuffix();
+		$server = $_SESSION['ldap']->server;
+		$filter = "(|(sambasid=" . $_POST['dom_SID'] . ")(sambadomainname=" . $_POST['dom_name'] . "))";
+		$sr = ldap_search($server, $suffix, $filter, array());
+		$info = ldap_get_entries($_SESSION["ldap"]->server, $sr);
+	}
 	if ($_POST['add'] && !eregi("^[a-z0-9_\\-]+$", $_POST['dom_name'])) StatusMessage("ERROR", "", _("Domain name is invalid!"));
 	elseif ($_POST['add'] && !eregi("^S-[0-9]-[0-9]-[0-9]{2,2}-[0-9]*-[0-9]*-[0-9]*$", $_POST['dom_SID'])) {
 		StatusMessage("ERROR", "", _("Samba 3 domain SID is invalid!"));
+	}
+	elseif ($_POST['add'] && ($info["count"] > 0)) {
+		StatusMessage("ERROR", "", _("This Samba 3 domain is already present!"));
 	}
 	elseif ($_POST['dom_nextRID'] && !is_numeric($_POST['dom_nextRID'])) StatusMessage("ERROR", "", _("Next RID is not a number!"));
 	elseif ($_POST['dom_nextUserRID'] && !is_numeric($_POST['dom_nextUserRID'])) StatusMessage("ERROR", "", _("Next user RID is not a number!"));
