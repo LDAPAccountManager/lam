@@ -27,7 +27,7 @@ include_once('../lib/account.inc'); // File with custom functions
 include_once('../lib/config.inc'); // File with configure-functions
 include_once('../lib/ldap.inc'); // LDAP-functions
 include_once('../lib/profiles.inc'); // functions to load and save profiles
-include_once('../templates/status.php'); // Return error-message
+include_once('../lib/status.inc'); // Return error-message
 
 registervars(); // Register all needed variables in session and register session
 $error = "0";
