@@ -71,7 +71,7 @@ if ($passwd != $conf->get_Passwd()) {
 
 echo $_SESSION['header'];
 
-echo "<title>listusers</title>\n";
+echo "<title>" . _("LDAP Account Manager Configuration") . "</title>\n";
 echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
 echo "</head><body>\n";
 
