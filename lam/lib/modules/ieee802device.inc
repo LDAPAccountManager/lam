@@ -104,6 +104,10 @@ class ieee802Device extends baseModule {
 			$this->attributes['macAddress'] = $attr['macAddress'];
 			$this->orig['macAddress'] = $attr['macAddress'];
 		}
+		// add object class if needed
+		if (! in_array('ieee802Device', $this->orig['objectClass'])) {
+			$this->attributes['objectClass'][] = 'ieee802Device';
+		}
 		return 0;
 	}
 
