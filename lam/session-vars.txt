@@ -12,6 +12,7 @@ masscreate:
 - mass_dn: DN der Accounts
 - mass_counter: aktuelle Position im Account-Array
 - mass_errors: Fehlermeldungen beim Upload
+- mass_csv: CSV-Datei als Vorlage für Upload
 
 
 main:
