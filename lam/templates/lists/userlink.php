@@ -51,7 +51,7 @@ else {
 	echo "<html><head><title>userlink</title>\n";
 	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
 	echo "</head><body>\n";
-	echo StatusMessage("ERROR", "", _("This user was not found or is invalid!") . " " . $user);
+	echo StatusMessage("ERROR", "", _("This user was not found!") . " (" . $user . ")");
 	echo ("</body></html>\n");
 }
 
