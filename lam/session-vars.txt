@@ -7,19 +7,11 @@ Alle:
 - lampath: String mit Pfad zum LAM-Verzeichnis
 
 
-massdetail:
-- accounts: Array aus account-Objekten
-- errors:  Array aus Fehlermeldungen. Index ist gleich Index von accounts
-
-
 masscreate:
-- accounts: Array aus account-Objekten
-- pointer: Zeigt auf den aktuellen Startpunkt, ab dem Benutzer angelegt werden sollen.
-           Noetig, da mit Meta-Refreshs gearbeitet werden muss
-- errors:  Array aus Fehlermeldungen. Index ist gleich Index von accounts
-- group_suffix: Suffix, unter welchem eine Gruppe bei Bedarf angelegt wird
-- group_selectprofile: Profil, mit dem eine Gruppe bei Bedarf angelegt werden soll
-- rowstart: ??? nicht mehr benutzt
+- mass_accounts: verschlüsseltes, serialisiertes Array mit Accounts
+- mass_dn: DN der Accounts
+- mass_counter: aktuelle Position im Account-Array
+- mass_errors: Fehlermeldungen beim Upload
 
 
 main:

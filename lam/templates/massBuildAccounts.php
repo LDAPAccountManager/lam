@@ -145,11 +145,8 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 					$accounts[$i]['dn'] = $account_dn;
 				}
 			}
-			// accounts were built, now add them to LDAP
-			// TODO add to LDAP
 		}
 	}
-	print_r($accounts);
 	// if input data is invalid just display error messages (max 50)
 	if (sizeof($errors) > 0) {
 		for ($i = 0; (($i < sizeof($errors)) || ($i > 49)); $i++) StatusMessage("ERROR", $errors[$i][0], $errors[$i][1]);
@@ -157,6 +154,8 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 	else {
 		// store accounts in session
 		$_SESSION['mass_accounts'] = $_SESSION['ldap']->encrypt(serialize($accounts));
+		$_SESSION['mass_counter'] = 0;
+		$_SESSION['mass_errors'] = array();
 		// show links for upload and LDIF export
 		echo "<h1 align=\"center\">" . _("LAM has checked your input and is now ready to create the accounts.") . "</h1>\n";
 		echo "<p>&nbsp;</p>\n";
