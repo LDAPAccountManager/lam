@@ -30,7 +30,7 @@ class account extends baseModule {
 	function get_metaData() {
 		$return = array();
 		// manages host accounts
-		$return["account_types"] = array("host");
+		$return["account_types"] = array("host", "user");
 		// alias name
 		$return["alias"] = _('Account');
 		// module dependencies

@@ -94,7 +94,7 @@ class posixAccount extends baseModule {
 			// LDAP filter
 			$return["ldap_filter"] = array('or' => "(objectClass=posixAccount)", 'and' => "(!(uid=*$))");
 			// module dependencies
-			$return['dependencies'] = array('depends' => array('inetOrgPerson'), 'conflicts' => array());
+			$return['dependencies'] = array('depends' => array(array('inetOrgPerson', 'account')), 'conflicts' => array());
 		}
 		elseif ($this->get_scope() == "host") {
 			// module dependencies
