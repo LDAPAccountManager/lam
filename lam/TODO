@@ -7,9 +7,4 @@ beta 2
 
 - check security
 - add text field to PDF files
-
-beta 1
-
-- clean up code
-- improve status messages and help support
-- write documentation
+- remove lamurl
