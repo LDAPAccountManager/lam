@@ -88,15 +88,16 @@ class Ldap{
 	// $base is optional and specifies the root from where to search for entries
 	// if connect succeeds the server handle is returned
 	function connect($user, $passwd) {
+		// close any prior connection
+		@$this->close();
 		// do not allow anonymous bind
-		if ((!$user)||($user = "")) {
+		if ((!$user)||($user == "")) {
 			echo _("No username was specified!");
 			exit;
 		}
 		if ($this->conf->get_SSL() == "True") $this->server = ldap_connect("ldaps://" . $this->conf->get_Host(), $this->conf->get_Port());
 		else $this->server = ldap_connect("ldap://" . $this->conf->get_Host(), $this->conf->get_Port());
 		if ($this->server) {
-		ldap_set_option($this->server, LDAP_OPT_DEBUG_LEVEL, 0);
 			$bind = ldap_bind($this->server, $user, $passwd);
 			if ($bind) {
 			// return server handle
