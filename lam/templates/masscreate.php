@@ -41,7 +41,7 @@ if ($_POST['back']) $select = 'main';
 if ($_POST['cancel']) $select = 'cancel';
 if ($_POST['create']) $select = 'create';
 if ($_POST['pdf']) {
-	createpdf($_SESSION['accounts']);
+	createUserPDF($_SESSION['accounts']);
 	$select='pdf';
 	}
 if (!$select && !$_SESSION['pointer']) $select='main';
@@ -305,9 +305,11 @@ switch ($select) {
 			echo '<tr><td>';
 			echo _('All Users have been created');
 			echo '</td></tr><tr><td>';
-			echo '<tr><td><input name="cancel" type="submit" value="'; echo _('Mainmenu'); echo '">';
+			echo '<tr><td><input name="cancel" type="submit" value="'; echo _('User list'); echo '">';
 			echo '</td><td></td><td><input name="pdf" type="submit" value="'; echo _('Create PDF file'); echo '">';
 			echo '</td></tr>';
+			if ( isset($_SESSION['pointer'])) unset($_SESSION['pointer']);
+			if ( isset($_SESSION['errors'])) unset($_SESSION['errors']);
 			}
 		break;
 	}
