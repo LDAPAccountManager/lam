@@ -155,13 +155,11 @@ class Config {
 	/** LDAP cache timeout */
 	var $cachetimeout;
 
-	/**
-	* Account modules
-	* TODO add default modules for LAM <0.5 
-	*/
-	var $usermodules = "um1,um2,um3";
-	var $groupmodules = "gm1,gm2,gm3";
-	var $hostmodules = "hm1,hm2,hm3";
+	var $usermodules = "posixAccount,shadowAccount,quota";
+	/** Account modules for groups */
+	var $groupmodules = "posixGroup,quota";
+	/** Account modules for hosts */
+	var $hostmodules = "account,sambaSamAccount";
 
 	/** Name of configuration file */
 	var $file;
@@ -739,7 +737,9 @@ class Config {
 		for ($i = 0; $i < sizeof($modules); $i++) {
 			if (! in_array($modules[$i], $available)) return false;
 		}
-		// TODO: check depends/conflicts
+		// check depends/conflicts
+		if (check_module_conflicts($modules, getModulesDependencies('user')) != false) return false;
+		if (check_module_depends($modules, getModulesDependencies('user')) != false) return false;
 		$this->usermodules = implode(",", $modules);
 		return true;
 	}
@@ -773,7 +773,9 @@ class Config {
 		for ($i = 0; $i < sizeof($modules); $i++) {
 			if (! in_array($modules[$i], $available)) return false;
 		}
-		// TODO: check depends/conflicts
+		// check depends/conflicts
+		if (check_module_conflicts($modules, getModulesDependencies('group')) != false) return false;
+		if (check_module_depends($modules, getModulesDependencies('group')) != false) return false;
 		$this->groupmodules = implode(",", $modules);
 		return true;
 	}
@@ -807,7 +809,9 @@ class Config {
 		for ($i = 0; $i < sizeof($modules); $i++) {
 			if (! in_array($modules[$i], $available)) return false;
 		}
-		// TODO: check depends/conflicts
+		// check depends/conflicts
+		if (check_module_conflicts($modules, getModulesDependencies('host')) != false) return false;
+		if (check_module_depends($modules, getModulesDependencies('host')) != false) return false;
 		$this->hostmodules = implode(",", $modules);
 		return true;
 	}
