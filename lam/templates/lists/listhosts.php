@@ -219,6 +219,10 @@ if ($sr) {
 	$units = ldap_get_entries($_SESSION["ldap"]->server, $sr);
 	// delete first array entry which is "count"
 	array_shift($units);
+	// remove sub arrays
+	for ($i = 0; $i < sizeof($units); $i++) $units[$i] = $units[$i]['dn'];
+	// add root suffix from config
+	if (!in_array($_SESSION["config"]->get_HostSuffix(), $units)) array_push($units, $_SESSION["config"]->get_HostSuffix());
 }
 
 echo ("<p align=\"left\">\n");
@@ -227,10 +231,10 @@ if (sizeof($info) > 0) echo ("<input type=\"submit\" name=\"del_host\" value=\""
 // print combobox with possible sub-DNs
 if (sizeof($units) > 1) {
 echo ("&nbsp;&nbsp;&nbsp;&nbsp;<b>" . _("Suffix") . ": </b>");
-echo ("<select size=1 name=\"grp_suffix\">\n");
+echo ("<select size=1 name=\"hst_suffix\">\n");
 for ($i = 0; $i < sizeof($units); $i++) {
-	if ($hst_suffix == $units[$i]['dn']) echo ("<option selected>" . $units[$i]['dn'] . "</option>\n");
-	else echo("<option>" . $units[$i]['dn'] . "</option>\n");
+	if ($hst_suffix == $units[$i]) echo ("<option selected>" . $units[$i] . "</option>\n");
+	else echo("<option>" . $units[$i] . "</option>\n");
 }
 echo ("</select>\n");
 echo ("<input type=\"submit\" name=\"refresh\" value=\"" . _("Change Suffix") . "\">");
