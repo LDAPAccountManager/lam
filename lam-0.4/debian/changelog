@@ -1,3 +1,10 @@
+ldap-account-manager (0.4.6-3) unstable; urgency=low
+
+  * Closes: #281781: syntax error in apache.conf fixed
+  * added watch file
+
+ -- Roland Gruber <post@rolandgruber.de>  Sun, 21 Nov 2004 13:18:43 +0100
+
 ldap-account-manager (0.4.6-2) unstable; urgency=low
 
   * Added template to change master configuration password.
