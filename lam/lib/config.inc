@@ -221,6 +221,20 @@ class Config {
 			}
 			fclose($file);
 		}
+		// check modules
+		$scopes = array('user', 'group', 'host');
+		for ($s = 0; $s < sizeof($scopes); $s++) {
+			$scope = $scopes[$s];
+			$moduleVar = $scope . "modules";
+			$modules = explode(",", $this->$moduleVar);
+			$available = getAvailableModules($scope);
+			// only return available modules
+			$ret = array();
+			for ($i = 0; $i < sizeof($modules); $i++) {
+				if (in_array($modules[$i], $available)) $ret[] = $modules[$i];
+			}
+			$this->$moduleVar = implode(",", $ret);
+		}
 		return true;
 	}
 
@@ -714,14 +728,7 @@ class Config {
 	* @return array user modules
 	*/
 	function get_UserModules() {
-		$modules = explode(",", $this->usermodules);
-		$available = getAvailableModules('user');
-		// only return available modules
-		$ret = array();
-		for ($i = 0; $i < sizeof($modules); $i++) {
-			if (in_array($modules[$i], $available)) $ret[] = $modules[$i];
-		}
-		return $ret;
+		return explode(",", $this->usermodules);
 	}
 
 	/**
@@ -750,14 +757,7 @@ class Config {
 	* @return array group modules
 	*/
 	function get_GroupModules() {
-		$modules = explode(",", $this->groupmodules);
-		$available = getAvailableModules('group');
-		// only return available modules
-		$ret = array();
-		for ($i = 0; $i < sizeof($modules); $i++) {
-			if (in_array($modules[$i], $available)) $ret[] = $modules[$i];
-		}
-		return $ret;
+		return explode(",", $this->groupmodules);
 	}
 
 	/**
@@ -786,14 +786,7 @@ class Config {
 	* @return array host modules
 	*/
 	function get_HostModules() {
-		$modules = explode(",", $this->hostmodules);
-		$available = getAvailableModules('host');
-		// only return available modules
-		$ret = array();
-		for ($i = 0; $i < sizeof($modules); $i++) {
-			if (in_array($modules[$i], $available)) $ret[] = $modules[$i];
-		}
-		return $ret;
+		return explode(",", $this->hostmodules);
 	}
 
 	/**
