@@ -29,18 +29,18 @@ session_save_path('../sess');
 @session_start();
 
 echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-       "http://www.w3.org/TR/html4/loose.dtd">';
+       "http://www.w3.org/TR/html4/loose.dtd">'."\n";
 echo '<html><head><title>';
 echo _('Delete Account');
-echo '</title>
-	<link rel="stylesheet" type="text/css" href="../style/layout.css">
-	<meta http-equiv="pragma" content="no-cache">
-	<meta http-equiv="cache-control" content="no-cache">
-	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-	</head>
-	<body>
-	<form action="delete.php" method="post">
-	<table rules="all" class="delete" width="100%">
+echo '</title>'."\n".'
+	<link rel="stylesheet" type="text/css" href="../style/layout.css">'."\n".'
+	<meta http-equiv="pragma" content="no-cache">'."\n".'
+	<meta http-equiv="cache-control" content="no-cache">'."\n".'
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">'."\n".'
+	</head>'."\n".'
+	<body>'."\n".'
+	<form action="delete.php" method="post">'."\n".'
+	<table rules="all" class="delete" width="100%">'."\n".'
 	<tr><td>';
 
 if ($_GET['type']) {
@@ -58,13 +58,19 @@ if ($_GET['type']) {
 			echo _('Do you really want to delete group(s):');
 			break;
 		}
-	echo '</td></tr>';
+	echo '</td></tr>'."\n";
 	foreach ($DN2 as $dn) echo '<tr><td>'.$dn.'</td></tr>';
-	echo '<tr><td><br></td></tr><tr><td>
-	<input name="delete_yes" type="submit" value="';
-	echo _('Commit'); echo '"></td><td></td><td>
-	<input name="delete_no" type="submit" value="';
-	echo _('Cancel'); echo '">';
+	echo '<tr><td>';
+	if (($_GET['type']== user) && $_SESSION['config']->scriptServer) {
+		echo _('Delete also Homedirectories');
+		echo '</td>'."\n".'<td><input name="f_rem_home" type="checkbox">
+			</td></tr>'."\n".'<tr><td>';
+		}
+	echo '<br></td></tr>'."\n".'<tr><td>
+		<input name="delete_no" type="submit" value="';
+	echo _('Cancel'); echo '"></td><td></td><td>
+		<input name="delete_yes" type="submit" value="';
+	echo _('Commit'); echo '">';
 	}
 
 if ($_POST['delete_yes']) {
@@ -75,7 +81,7 @@ if ($_POST['delete_yes']) {
 				$temp=explode(',', $dn);
 				$username = str_replace('uid=', '', $temp[0]);
 				if ($_SESSION['config']->scriptServer) {
-					remhomedir($username);
+					if ($_POST['f_rem_home']) remhomedir($username);
 					remquotas($username, $_POST['type5']);
 					}
 				$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(), 'objectClass=PosixGroup', array('memberUid'));
@@ -103,7 +109,7 @@ if ($_POST['delete_yes']) {
 			case 'group':
 				$temp=explode(',', $dn);
 				$groupname = str_replace('cn=', '', $temp[0]);
-				$result = ldap_search($_SESSION['ldap']->server(), $dn, 'objectClass=*', array('gidNumber');
+				$result = ldap_search($_SESSION['ldap']->server(), $dn, 'objectClass=*', array('gidNumber'));
 				$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 				while ($entry) {
 					$attr2 = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
@@ -119,12 +125,12 @@ if ($_POST['delete_yes']) {
 			}
 		if (!$error) echo $dn. _(' deleted.');
 		 else echo $error;
-		echo '</td></tr><tr><td>';
+		echo '</td></tr>'."\n".'<tr><td>';
 		}
 	}
 
 if ($_POST['delete_no']) echo _('Nothing was deleted.');
 
-echo '</td></tr>';
-echo '</table></form></body></html>';
+echo '</td></tr>'."\n";
+echo '</table></form></body></html>'."\n";
 ?>

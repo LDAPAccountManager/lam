@@ -25,57 +25,61 @@ $Id$
 
 class account { // This class keeps all needed values for any account
 	// General Settings
-	var $general_username;
-	var $general_uidNumber;
-	var $general_surname;
-	var $general_givenname;
-	var $general_dn;
-	var $general_group;
-	var $general_groupadd;
-	var $general_homedir;
-	var $general_shell;
-	var $general_gecos;
-	var $general_memberUid;
+	var $general_username;		// string Username, Hostname or Groupname
+	var $general_uidNumber;		// string UIDNumber(user|host) GIDNumber(group) only natural numbers allowed
+	var $general_surname;		// string Surname (user)
+	var $general_givenname;		// string Givenname (user)
+	var $general_dn;		// string DN
+	var $general_group;		// string Primary group (user|host)
+	var $general_groupadd;		// array(string) Addititional Groups (user|host) is member of
+	var $general_homedir;		// atring Homedirectoy (user) For host it's hardcoded to/dev/null
+	var $general_shell;		// array(string) list off all valid shells (user) hosts are hard-wired to /bin/false
+	var $general_gecos;		// string, gecos-field (user|roup|host)
+	var $general_memberUid;		// array(string) Stores all users which are member of group but is not primary group (group)
 	// Unix Password Settings
-	var $unix_password;
-	var $unix_password_no;
-	var $unix_pwdwarn;
-	var $unix_pwdallowlogin;
-	var $unix_pwdmaxage;
-	var $unix_pwdminage;
-	var $unix_pwdexpire_day;
-	var $unix_pwdexpire_mon;
-	var $unix_pwdexpire_yea;
-	var $unix_deactivated;
-	var $unix_shadowLastChange;
+	var $unix_password;		// string for unix-password (user|host)
+	var $unix_password_no;		// string (0|1) set unix-password to none (user|host)
+	var $unix_pwdwarn;		// string number of days a user is warned before password expires (user|host) value must be a natural number (user|host)
+	var $unix_pwdallowlogin;	// string number of days a user can login even his password has expired (user) muste be a natural number or 0 or -1 (user|host)
+	var $unix_pwdmaxage;		// string Number of days after a user has to change his password again Value must be 0<. (user|host)
+	var $unix_pwdminage;		// string Number of days a user has to wait until he\'s allowed to change his password again. Value must be 0<. (user|host)
+	var $unix_pwdexpire_day;	// string (1-31), day the account expires (user|host)
+	var $unix_pwdexpire_mon;	// string (1-12) month the account expires (user|host)
+	var $unix_pwdexpire_yea;	// string (2003-2030) year the account expires (user|host)
+	var $unix_deactivated;		// string (1|0) account deactivated? (user|host)
+	var $unix_shadowLastChange;	// string, contains the days since 1.1.1970 the password has been changed last time (user|host)
 	// Samba Account
-	var $smb_password;
-	var $smb_password_no;
-	var $smb_useunixpwd;
-	var $smb_pwdcanchange;
-	var $smb_pwdmustchange;
-	var $smb_homedrive;
-	var $smb_scriptPath;
-	var $smb_profilePath;
-	var $smb_smbuserworkstations;
-	var $smb_smbhome;
-	var $smb_domain;
-	var $smb_flagsW;
-	var $smb_flagsD;
-	var $smb_flagsX;
+	var $smb_password;		// string for samba-password (user|host)
+	var $smb_password_no;		// string (1|0) set samba-password to none (user|host)
+	var $smb_useunixpwd;		// string (1|0) use unix-password as samba-password (user|host)
+	var $smb_pwdcanchange;		// string (1|0) user/host is able to change password (user|host)
+	var $smb_pwdmustchange;		// string (1|0) user/host has to change password at next login (user|host)
+	var $smb_homedrive;		// string Homedrive (C:, D:, ...) (user)
+	var $smb_scriptPath;		// string ScriptPath (\\server\loginscript) (user)
+	var $smb_profilePath;		// string profilePAth (\\server\profilepath) (user)
+	var $smb_smbuserworkstations;	// string comma-separated list of workstations (user)
+	var $smb_smbhome;		// string Home-Share (\\server\home) (user)
+	var $smb_domain;		// string Domain of (user|host)
+	var $smb_flagsW;		// string (1|0) account is host? (user|host)
+	var $smb_flagsD;		// string (1|0) account is disabled? (user|host)
+	var $smb_flagsX;		// string (1|0) password doesn'T expire (user|host)
 	// Quota Settins
-	var $quota;
+	var $quota;			// array[][] First array is an index for every chare with active quotas
+					// second array Contains values for every share:
+					// mointpoint, used blocks, soft block limit, hard block limit, grace block period, used inodes,
+					// soft inode limit, hard inode limit, grace inode period
 	// Personal Settings
-	var $personal_title;
-	var $personal_mail;
-	var $personal_telephoneNumber;
-	var $personal_mobileTelephoneNumber;
-	var $personal_facsimileTelephoneNumber;
-	var $personal_street;
-	var $personal_postalCode;
-	var $personal_postalAddress;
-	var $personal_employeeType;
+	var $personal_title;		// string title of user
+	var $personal_mail;		// string mailaddress of user
+	var $personal_telephoneNumber;	// string telephonenumber of user
+	var $personal_mobileTelephoneNumber; // string mobile umber of user
+	var $personal_facsimileTelephoneNumber; // strinf fax-number of user
+	var $personal_street;		// stirng streetname of user
+	var $personal_postalCode;	// string postal code of user
+	var $personal_postalAddress;	// string postal Address of user
+	var $personal_employeeType;	// string employe type of user
 	}
+
 
 function initvars($type=false,$DN=false) { // This function registers all needes session-varibales needed by account.php
 	// if session was started previos, the existing session will be continued
@@ -139,7 +143,7 @@ function initvars($type=false,$DN=false) { // This function registers all needes
 		}
 	}
 
-function getshells() { // Return a list of all shells listed in /etc/shells
+function getshells() { // Return a list of all shells listed in ../config/shells
 	$shells =  file('../config/shells');
 	$i=0;
 	while ($shells[$i]) {

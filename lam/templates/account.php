@@ -548,7 +548,7 @@ switch ($select_local) { // Select which part of page will be loaded
 					</td>'."\n".'<td>
 					<input name="genpass" type="submit" value="';
 				echo _('Generate Password'); echo '">
-					</td></tr>'."\n".'<tr><td>';
+					</td></tr><tr><td>';
 				echo _('Use no Password.');
 				echo '</td>'."\n".'<td><input name="f_unix_password_no" type="checkbox"';
 				if ($_SESSION['account']->unix_password_no) echo ' checked ';
