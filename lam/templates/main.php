@@ -28,6 +28,14 @@ $Id$
 * @author Roland Gruber
 */
 
+/** LDAP attibute cache */
+include_once('../lib/cache.inc');
+
+// create cache object
+if (!isset($_SESSION['cache'])) {
+	$_SESSION['cache'] = new cache();
+}
+
 
 // check if all suffixes in conf-file exist
 $conf = $_SESSION['config'];

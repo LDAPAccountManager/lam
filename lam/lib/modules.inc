@@ -462,10 +462,6 @@ class accountContainer {
 		// Set startpage
 		$this->current_page=0;
 		$this->subpage='attributes';
-		// create cache if needed
-		if (!isset($_SESSION['cache'])) {
-			$_SESSION['cache'] = new cache();
-		}
 		return 0;
 		}
 
