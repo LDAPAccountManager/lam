@@ -24,8 +24,8 @@ $Id$
 */
 
 include('../lib/account.inc'); // File with custom functions
-include('../config/config.php');
-include('../lib/ldap.php');
+include('../lib/config.inc');
+include('../lib/ldap.inc');
 
 registervars(); // Register all needed variables in session and register session
 $error = "0";
