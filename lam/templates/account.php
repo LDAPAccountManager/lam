@@ -226,7 +226,7 @@ if ( $create ) { // Create-Button was pressed
 echo '<html><head><title>';
 echo _('Create new Account');
 echo '</title>
-	<link rel="stylesheet" type="text/css" href="../style/layout.css">
+	<link rel="stylesheet" type="text/css" href="../style/account.css">
 	</head><body>
 	<form action="account.php" method="post">
 	<meta http-equiv="pragma" content="no-cache">
