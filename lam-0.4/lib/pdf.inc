@@ -204,7 +204,7 @@ function createUserPDF($accounts) {
 		$pdfFile->setFont("times","",10);
 		$pdfFile->Cell(50,5,$account->smb_homedrive,0,1,"L",0);
 		$pdfFile->setFont("times","B",10);
-		$pdfFile->Cell(50,5,_("Script path") . ":",0,0,"R",0);
+		$pdfFile->Cell(50,5,_("Logon script") . ":",0,0,"R",0);
 		$pdfFile->setFont("times","",10);
 		$pdfFile->Cell(50,5,$account->smb_scriptPath,0,1,"L",0);
 		$pdfFile->setFont("times","B",10);

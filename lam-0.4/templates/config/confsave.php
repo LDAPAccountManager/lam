@@ -178,7 +178,7 @@ if (!$conf->set_defaultLanguage($lang)) {
 }
 
 if (!$conf->set_scriptpath($scriptpath)) {
-	echo ("<font color=\"red\"><b>" . _("Script path is invalid!") . "</b></font>");
+	echo ("<font color=\"red\"><b>" . _("Logon script is invalid!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }

@@ -207,7 +207,7 @@ $helpArray = array (
 					"Text" => _("If checked account will be deactivated. (Setting D-Flag)")),
 				"433" => array ("ext" => "FALSE", "Headline" => _("Home drive"),
 					"Text" => _("Driveletter assigned on windows workstations as homedirectory.")),
-				"434" => array ("ext" => "FALSE", "Headline" => _("Script path"),
+				"434" => array ("ext" => "FALSE", "Headline" => _("Logon script"),
 					"Text" => _("Filename and -path relative to netlogon-share which should be executed on logon. $%s and $%s are replaced with user- and groupname."). ' '. _("Can be left empty."),
 					"variables" => array('user', 'group')),
 				"435" => array ("ext" => "FALSE", "Headline" => _("Profile path"),

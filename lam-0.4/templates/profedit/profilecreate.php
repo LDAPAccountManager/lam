@@ -53,6 +53,7 @@ echo $_SESSION['header'];
 echo "<title></title>\n<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
 echo "</head>\n<body>\n<br>\n";
 
+print_r($_POST);
 // save user profile
 if ($_GET['type'] == "user") {
 	$acct = new account();
@@ -188,8 +189,7 @@ if ($_GET['type'] == "user") {
 		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
-	// replace double \'s with \
-	$_POST['smb_smbhome'] = str_replace('\\\\', '\\', $_POST['smb_smbhome']);
+	if (get_magic_quotes_gpc() == 1) $_POST['smb_smbhome'] = stripslashes($_POST['smb_smbhome']);
 	if ($_POST['smb_smbhome'] && eregi("^[\][\]([a-z0-9])+([\][a-z0-9_\\-\\$%]+)+$", $_POST['smb_smbhome'])) {
 		$acct->smb_smbhome = $_POST['smb_smbhome'];
 	}
@@ -198,8 +198,7 @@ if ($_GET['type'] == "user") {
 		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
-	// replace double \'s with \
-	$_POST['smb_profilepath'] = str_replace('\\\\', '\\', $_POST['smb_profilepath']);
+	if (get_magic_quotes_gpc() == 1) $_POST['smb_profilepath'] = stripslashes($_POST['smb_profilepath']);
 	if ($_POST['smb_profilepath'] && eregi("^[\][\]([a-z0-9])+([\][a-z0-9_\\-\\$%]+)+$", $_POST['smb_profilepath'])) {
 		$acct->smb_profilePath = $_POST['smb_profilepath'];
 	}
@@ -208,13 +207,12 @@ if ($_GET['type'] == "user") {
 		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
-	// replace double \'s with \
-	$_POST['smb_scriptPath'] = str_replace('\\\\', '\\', $_POST['smb_scriptPath']);
+	if (get_magic_quotes_gpc() == 1) $_POST['smb_scriptPath'] = stripslashes($_POST['smb_scriptPath']);
 	if ($_POST['smb_scriptPath'] && is_string($_POST['smb_scriptPath'])) {
 		$acct->smb_scriptPath = $_POST['smb_scriptPath'];
 	}
 	elseif ($_POST['smb_scriptPath']) {
-		StatusMessage("ERROR", _("Script path is invalid!"), $_POST['smb_scriptPath']);
+		StatusMessage("ERROR", _("Logon script is invalid!"), $_POST['smb_scriptPath']);
 		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
