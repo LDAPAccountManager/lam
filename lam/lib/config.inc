@@ -227,7 +227,7 @@ class Config {
 						if (strtolower(substr($line, 0, $keylen + 2)) == "modules: ") {
 							$option = substr($line, $keylen + 2, strlen($line) - $keylen - 2);
 							$pos = strpos($option, ":");
-							$this->moduleSettings[substr($option, 0, $pos)] = substr($option, $pos + 2, strlen($option) - $pos - 2);
+							$this->moduleSettings[substr($option, 0, $pos)] = explode("+::+", substr($option, $pos + 2, strlen($option) - $pos - 2));
 						}
 						// general settings
 						else {
@@ -269,7 +269,7 @@ class Config {
 							$option = substr($line, $keylen + 2, strlen($line) - $keylen - 2);
 							$pos = strpos($option, ":");
 							$name = substr($option, 0, $pos);
-							$file_array[$i] = "modules: " . $name . ": " . $this->moduleSettings[$name] . "\n";
+							$file_array[$i] = "modules: " . $name . ": " . implode("+::+", $this->moduleSettings[$name]) . "\n";
 							$mod_saved[] = $name;	// mark keyword as saved
 						}
 						// general settings
@@ -365,7 +365,7 @@ class Config {
 		echo "<b>" . _("Module settings") . ": </b><br>\n";
 		echo "<ul>\n";
 		$names = array_keys($this->moduleSettings);
-		for ($i = 0; $i < sizeof($names); $i++) echo "<li>" . $names[$i] . " :" . $this->moduleSettings[$names[$i]] . "</li>\n";
+		for ($i = 0; $i < sizeof($names); $i++) echo "<li>" . $names[$i] . ": " . implode(", ", $this->moduleSettings[$names[$i]]) . "</li>\n";
 		echo "</ul>\n";
 	}
 
