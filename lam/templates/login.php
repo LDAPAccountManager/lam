@@ -30,6 +30,7 @@ session_save_path("../sess"); // Set session save path
 
 function display_LoginPage($config_object)
 {
+	global $error_message;
 	// generate 256 bit key and initialization vector for user/passwd-encryption
 	$key = mcrypt_create_iv(32, MCRYPT_DEV_RANDOM);
 	$iv = mcrypt_create_iv(32, MCRYPT_DEV_RANDOM);
@@ -37,6 +38,9 @@ function display_LoginPage($config_object)
 	// save both in cookie
 	setcookie("Key", base64_encode($key), 0, "/");
 	setcookie("IV", base64_encode($iv), 0, "/");
+
+	session_register("language");
+	$_SESSION["language"] = $config_object->get_defaultLanguage();
 
 	// loading available languages from language.conf file
 
@@ -48,10 +52,18 @@ function display_LoginPage($config_object)
 		while(!feof($file))
 		{
 			$line = fgets($file, 1024);
-			if($line == "\n" || $line[0] == "#") continue; // ignore comment and empty lines
+			if($line == "" || $line == "\n" || $line[0] == "#") continue; // ignore comment and empty lines
 			$value = explode(":", $line);
 			$languages[$i]["link"] = $value[0] . ":" . $value[1];
 			$languages[$i]["descr"] = $value[2];
+			if(rtrim($line) == $_SESSION["language"])
+			{
+				$languages[$i]["default"] = "YES";
+			}
+			else
+			{
+				$languages[$i]["default"] = "NO";
+			}
 			$i++;
 		}
 		fclose($file);
@@ -151,7 +163,14 @@ function display_LoginPage($config_object)
 								<select name=\"language\" size=\"1\">";
 								for($i = 0; $i < count($languages); $i++)
 								{
-									echo "<option value=\"" . $languages[$i]["link"] . "\">" . $languages[$i]["descr"] . "</option>";
+									if($languages[$i]["default"] == "YES")
+									{
+										echo "<option selected value=\"" . $languages[$i]["link"] . ":" . $languages[$i]["descr"] . "\">" . $languages[$i]["descr"] . "</option>";
+									}
+									else
+									{
+										echo "<option value=\"" . $languages[$i]["link"] . ":" . $languages[$i]["descr"] . "\">" . $languages[$i]["descr"] . "</option>";
+									}
 								}
 	echo "						</select>
 							</td>";
@@ -199,9 +218,8 @@ if($_POST['action'] == "checklogin")
 	$result = $ldap->connect($_POST['username'],$_POST['passwd']); // Connect to LDAP server for verifing username/password
 	if($result == True) // Username/password correct. Do some configuration and load main frame.
 	{
-		session_register('language'); // store selected language in session
+		$_SESSION["language"] = $_POST["language"]; // Write selected language in session
 		session_register("ldap"); // Register $ldap object in session
-		session_register("language"); // Register $language in session
 
 		include("./main.php"); // Load main frame
 	}
