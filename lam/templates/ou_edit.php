@@ -336,6 +336,7 @@ function display_main() {
 	echo ("<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">\n");
 	echo ("</head>\n");
 	echo ("<body>\n");
+	echo ("<br>\n");
 	echo ("<form action=\"ou_edit.php?type=user\" method=\"post\">\n");
 
 	// user OUs
@@ -344,26 +345,26 @@ function display_main() {
 	// new OU
 	echo ("<tr>\n");
 	echo ("<td><input type=radio name=\"type\" value=\"new_usr\" checked></td>\n");
+	echo ("<td><b>" . _("New organizational unit") . ":</b></td>\n");
+	echo ("<td>&nbsp;</td>\n");
 	echo ("<td><select size=1 name=usersuff_n>");
 	for ($i = 0; $i < sizeof($usr_units); $i++) {
 		echo ("<option>" . $usr_units[$i] . "</option>\n");
 	}
 	echo ("</select><td>\n");
 	echo ("<td><input type=text name=newsuff_u></td>\n");
-	echo ("<td><b>" . _("New organizational unit") . "</b></td>\n");
-	echo ("<td>&nbsp;</td>\n");
 	echo ("<td><a href=\"help.php?HelpNumber=601\" target=\"lamhelp\">". _("Help") ."</a></td>\n");
 	echo ("</tr>\n");
 	// delete OU
 	echo ("<tr>\n");
 	echo ("<td><input type=radio name=\"type\" value=\"del_usr\"></td>\n");
+	echo ("<td><b>" . _("Delete organizational unit") . ":</b></td>\n");
+	echo ("<td>&nbsp;</td>\n");
 	echo ("<td><select size=1 name=usersuff_d>");
 	for ($i = 0; $i < sizeof($usr_units); $i++) {
 		echo ("<option>" . $usr_units[$i] . "</option>\n");
 	}
 	echo ("</select><td>\n");
-	echo ("<td>&nbsp;</td>\n");
-	echo ("<td><b>" . _("Delete organizational unit") . "</b></td>\n");
 	echo ("<td>&nbsp;</td>\n");
 	echo ("<td><a href=\"help.php?HelpNumber=602\" target=\"lamhelp\">". _("Help") ."</a></td>\n");
 	echo ("</tr>\n");
@@ -377,26 +378,26 @@ function display_main() {
 	// new OU
 	echo ("<tr>\n");
 	echo ("<td><input type=radio name=\"type\" value=\"new_grp\"></td>\n");
+	echo ("<td><b>" . _("New organizational unit") . "</b></td>\n");
+	echo ("<td>&nbsp;</td>\n");
 	echo ("<td><select size=1 name=groupsuff_n>");
 	for ($i = 0; $i < sizeof($grp_units); $i++) {
 		echo ("<option>" . $grp_units[$i] . "</option>\n");
 	}
 	echo ("</select><td>\n");
 	echo ("<td><input type=text name=newsuff_g></td>\n");
-	echo ("<td><b>" . _("New organizational unit") . "</b></td>\n");
-	echo ("<td>&nbsp;</td>\n");
 	echo ("<td><a href=\"help.php?HelpNumber=601\" target=\"lamhelp\">". _("Help") ."</a></td>\n");
 	echo ("</tr>\n");
 	// delete OU
 	echo ("<tr>\n");
 	echo ("<td><input type=radio name=\"type\" value=\"del_grp\"></td>\n");
+	echo ("<td><b>" . _("Delete organizational unit") . "</b></td>\n");
+	echo ("<td>&nbsp;</td>\n");
 	echo ("<td><select size=1 name=groupsuff_d>");
 	for ($i = 0; $i < sizeof($grp_units); $i++) {
 		echo ("<option>" . $grp_units[$i] . "</option>\n");
 	}
 	echo ("</select><td>\n");
-	echo ("<td>&nbsp;</td>\n");
-	echo ("<td><b>" . _("Delete organizational unit") . "</b></td>\n");
 	echo ("<td>&nbsp;</td>\n");
 	echo ("<td><a href=\"help.php?HelpNumber=602\" target=\"lamhelp\">". _("Help") ."</a></td>\n");
 	echo ("</tr>\n");
@@ -410,26 +411,26 @@ function display_main() {
 	// new OU
 	echo ("<tr>\n");
 	echo ("<td><input type=radio name=\"type\" value=\"new_hst\"></td>\n");
+	echo ("<td><b>" . _("New organizational unit") . "</b></td>\n");
+	echo ("<td>&nbsp;</td>\n");
 	echo ("<td><select size=1 name=hostsuff_n>");
 	for ($i = 0; $i < sizeof($hst_units); $i++) {
 		echo ("<option>" . $hst_units[$i] . "</option>\n");
 	}
 	echo ("</select><td>\n");
 	echo ("<td><input type=text name=newsuff_h></td>\n");
-	echo ("<td><b>" . _("New organizational unit") . "</b></td>\n");
-	echo ("<td>&nbsp;</td>\n");
 	echo ("<td><a href=\"help.php?HelpNumber=601\" target=\"lamhelp\">". _("Help") ."</a></td>\n");
 	echo ("</tr>\n");
 	// delete OU
 	echo ("<tr>\n");
 	echo ("<td><input type=radio name=\"type\" value=\"del_hst\"></td>\n");
+	echo ("<td><b>" . _("Delete organizational unit") . "</b></td>\n");
+	echo ("<td>&nbsp;</td>\n");
 	echo ("<td><select size=1 name=hostsuff_d>");
 	for ($i = 0; $i < sizeof($hst_units); $i++) {
 		echo ("<option>" . $hst_units[$i] . "</option>\n");
 	}
 	echo ("</select><td>\n");
-	echo ("<td>&nbsp;</td>\n");
-	echo ("<td><b>" . _("Delete organizational unit") . "</b></td>\n");
 	echo ("<td>&nbsp;</td>\n");
 	echo ("<td><a href=\"help.php?HelpNumber=602\" target=\"lamhelp\">". _("Help") ."</a></td>\n");
 	echo ("</tr>\n");
@@ -444,26 +445,26 @@ function display_main() {
 		// new OU
 		echo ("<tr>\n");
 		echo ("<td><input type=radio name=\"type\" value=\"new_dom\"></td>\n");
+		echo ("<td><b>" . _("New organizational unit") . "</b></td>\n");
+		echo ("<td>&nbsp;</td>\n");
 		echo ("<td><select size=1 name=domsuff_n>");
 		for ($i = 0; $i < sizeof($dom_units); $i++) {
 			echo ("<option>" . $dom_units[$i] . "</option>\n");
 		}
 		echo ("</select><td>\n");
 		echo ("<td><input type=text name=newsuff_d></td>\n");
-		echo ("<td><b>" . _("New organizational unit") . "</b></td>\n");
-		echo ("<td>&nbsp;</td>\n");
 		echo ("<td><a href=\"help.php?HelpNumber=601\" target=\"lamhelp\">". _("Help") ."</a></td>\n");
 		echo ("</tr>\n");
 		// delete OU
 		echo ("<tr>\n");
 		echo ("<td><input type=radio name=\"type\" value=\"del_dom\"></td>\n");
+		echo ("<td><b>" . _("Delete organizational unit") . "</b></td>\n");
+		echo ("<td>&nbsp;</td>\n");
 		echo ("<td><select size=1 name=domsuff_d>");
 		for ($i = 0; $i < sizeof($dom_units); $i++) {
 			echo ("<option>" . $dom_units[$i] . "</option>\n");
 		}
 		echo ("</select><td>\n");
-		echo ("<td>&nbsp;</td>\n");
-		echo ("<td><b>" . _("Delete organizational unit") . "</b></td>\n");
 		echo ("<td>&nbsp;</td>\n");
 		echo ("<td><a href=\"help.php?HelpNumber=602\" target=\"lamhelp\">". _("Help") ."</a></td>\n");
 		echo ("</tr>\n");
