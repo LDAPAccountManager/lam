@@ -83,9 +83,9 @@ echo $_SESSION['header'];
 		<form action="confmain.php" method="post">
 		<table align="center" border="2" rules="none" bgcolor="white">
 			<tr>
-				<td style="border-style:none" rowspan="7" width="20"></td>
+				<td style="border-style:none" rowspan="3" width="20"></td>
 				<td style="border-style:none" colspan="2" height="20"></td>
-				<td style="border-style:none" rowspan="7" width="20"></td>
+				<td style="border-style:none" rowspan="3" width="20"></td>
 			</tr>
 			<tr>
 				<td style="border-style:none" colspan=2 align="center"><b> <?php echo _("Please enter password to change preferences:"); ?> </b></td>
@@ -93,9 +93,15 @@ echo $_SESSION['header'];
 			<tr><td style="border-style:none" colspan=2 >&nbsp;</td></tr>
 <?php
 	// print message if login was incorrect
-	if ($message) echo ("<tr><td colspan=4 align=\"center\"><font color=red>" . $message . "</font></td></tr>");
+	if ($message) {
+		echo ("<tr><td style=\"border-style:none\" rowspan=\"2\"></td>" .
+			"<td style=\"border-style:none\" colspan=2 align=\"center\"><b><font color=red>" . $message . "</font></b></td>" .
+			"<td style=\"border-style:none\" rowspan=\"2\"></td></tr>");
+		echo "<tr><td style=\"border-style:none\" colspan=2 >&nbsp;</td></tr>";
+	}
 ?>
 			<tr>
+				<td style="border-style:none" rowspan="4" width="20"></td>
 				<td style="border-style:none" colspan=2 align="center">
 					<select size=1 name="filename">
 					<?php
@@ -111,6 +117,7 @@ echo $_SESSION['header'];
 					<input type="password" name="passwd">
 					<input type="submit" name="submit" value=" <?php echo _("Ok"); ?> ">
 					<a href="../help.php?HelpNumber=200" target="lamhelp"><?php echo _("Help") ?></a></td>
+				<td style="border-style:none" rowspan="4" width="20"></td>
 			</tr>
 			<tr>
 				<td  style="border-style:none"colspan=2>&nbsp;</td>
