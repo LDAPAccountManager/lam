@@ -2016,8 +2016,8 @@ function createhost($values) {
 		// Add all attributes as samba3 objectclass
 		$attr['objectClass'][3] = 'sambaSamAccount';
 		// "Standard" password for new hosts
-		$attr['sambaNTPassword'] = '0CB6948805F797BF2A82807973B89537';
-		$attr['sambaLMPassword'] = '01FC5A6BE7BC6929AAD3B435B51404EE';
+		$attr['sambaNTPassword'] = '7DC46419FE56BD28F7587D05D06791D4';
+		$attr['sambaLMPassword'] = '206893E4C077CE5E27BCBF149915A329';
 		$attr['sambaPwdLastSet'] = time(); // sambaAccount_may
 		$attr['sambaSID'] = $values->smb_domain->SID . "-" . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase); // sambaAccount_may
 		$attr['sambaPrimaryGroupSID'] = $values->smb_domain->SID . "-515"; // sambaAccount_req
@@ -2030,8 +2030,8 @@ function createhost($values) {
 		// Add all attributes as samba2.2 objectclass
 		$attr['objectClass'][3] = 'sambaAccount';
 		// "Standard" password for new hosts
-		$attr['ntPassword'] = '0CB6948805F797BF2A82807973B89537';
-		$attr['lmPassword'] = '01FC5A6BE7BC6929AAD3B435B51404EE';
+		$attr['ntPassword'] = '7DC46419FE56BD28F7587D05D06791D4';
+		$attr['lmPassword'] = '206893E4C077CE5E27BCBF149915A329';
 		$attr['pwdLastSet'] = time(); // sambaAccount_may
 		$attr['rid'] = (2 * $values->general_uidNumber + 1000); // sambaAccount_may
 		$attr['primaryGroupID'] = (2 * getgid($values->general_group) + 1001); // sambaAccount_req
@@ -2163,8 +2163,8 @@ function modifyhost($values,$values_old) {
 		// Reset password
 		if ($values->smb_flags['N']) {
 			// "Standard" password for new hosts
-			$attr['sambaNTPassword'] = '0CB6948805F797BF2A82807973B89537';
-			$attr['sambaLMPassword'] = '01FC5A6BE7BC6929AAD3B435B51404EE';
+			$attr['sambaNTPassword'] = '7DC46419FE56BD28F7587D05D06791D4';
+			$attr['sambaLMPassword'] = '206893E4C077CE5E27BCBF149915A329';
 			$attr['sambaPwdLastSet'] = time(); // sambaAccount_may
 			}
 		if ($values->smb_domain->name!=$values_old->smb_domain->name) {
@@ -2230,8 +2230,8 @@ function modifyhost($values,$values_old) {
 			}
 		if ($values->smb_flags['N']) {
 			// "Standard" password for new hosts
-			$attr['ntPassword'] = '0CB6948805F797BF2A82807973B89537';
-			$attr['lmPassword'] = '01FC5A6BE7BC6929AAD3B435B51404EE';
+			$attr['ntPassword'] = '7DC46419FE56BD28F7587D05D06791D4';
+			$attr['lmPassword'] = '206893E4C077CE5E27BCBF149915A329';
 			$attr['pwdLastSet'] = time(); // sambaAccount_may
 			}
 		if (isset($attr_old['sambaSID'][0])) $attr_rem['sambaSID'] = $attr_old['sambaSID'][0];
