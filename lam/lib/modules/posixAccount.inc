@@ -1,23 +1,23 @@
 <?php
 /*
-$Id$
-
-This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
-Copyright (C) 2003  Tilo Lutz
-
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+	$Id$
+	
+	This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
+	Copyright (C) 2003  Tilo Lutz
+	
+	This program is free software; you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation; either version 2 of the License, or
+	(at your option) any later version.
+	
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+	
+	You should have received a copy of the GNU General Public License
+	along with this program; if not, write to the Free Software
+	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
 class posixAccount extends baseModule {
@@ -110,115 +110,218 @@ class posixAccount extends baseModule {
 		// configuration options
 		$return['config_options']['user'] = array(
 		array(
-		0 => array('kind' => 'text', 'text' => '<b>' . _("Users") . ': &nbsp;</b>' . _('Minimum UID number') . ": "),
-		1 => array('kind' => 'input', 'name' => 'posixAccount_minUID', 'type' => 'text', 'size' => '10', 'maxlength' => '255'),
-		2 => array('kind' => 'text', 'value' => '&nbsp;'),
-		3 => array('kind' => 'text', 'text' => _('Maximum UID number') . ": "),
-		4 => array('kind' => 'input', 'name' => 'posixAccount_maxUID', 'type' => 'text', 'size' => '10', 'maxlength' => '255'),
-		5 => array('kind' => 'help', 'value' => 'minMaxUser'))
+			0 => array('kind' => 'text', 'text' => '<b>' . _("Users") . ': &nbsp;</b>' . _('Minimum UID number') . ": "),
+			1 => array('kind' => 'input', 'name' => 'posixAccount_minUID', 'type' => 'text', 'size' => '10', 'maxlength' => '255'),
+			2 => array('kind' => 'text', 'value' => '&nbsp;'),
+			3 => array('kind' => 'text', 'text' => _('Maximum UID number') . ": "),
+			4 => array('kind' => 'input', 'name' => 'posixAccount_maxUID', 'type' => 'text', 'size' => '10', 'maxlength' => '255'),
+			5 => array('kind' => 'help', 'value' => 'minMaxUser'))
 		);
 		$return['config_options']['host'] = array(
 		array(
-		0 => array('kind' => 'text', 'text' => '<b>' . _("Hosts") . ': &nbsp;</b>' . _('Minimum UID number') . ": "),
-		1 => array('kind' => 'input', 'name' => 'posixAccount_minMachine', 'type' => 'text', 'size' => '10', 'maxlength' => '255'),
-		2 => array('kind' => 'text', 'value' => '&nbsp;'),
-		3 => array('kind' => 'text', 'text' => _('Maximum UID number') . ": "),
-		4 => array('kind' => 'input', 'name' => 'posixAccount_maxMachine', 'type' => 'text', 'size' => '10', 'maxlength' => '255'),
-		5 => array('kind' => 'help', 'value' => 'minMaxHost'))
+			0 => array('kind' => 'text', 'text' => '<b>' . _("Hosts") . ': &nbsp;</b>' . _('Minimum UID number') . ": "),
+			1 => array('kind' => 'input', 'name' => 'posixAccount_minMachine', 'type' => 'text', 'size' => '10', 'maxlength' => '255'),
+			2 => array('kind' => 'text', 'value' => '&nbsp;'),
+			3 => array('kind' => 'text', 'text' => _('Maximum UID number') . ": "),
+			4 => array('kind' => 'input', 'name' => 'posixAccount_maxMachine', 'type' => 'text', 'size' => '10', 'maxlength' => '255'),
+			5 => array('kind' => 'help', 'value' => 'minMaxHost'))
 		);
 		$return['config_options']['all'] = array(
 		array(
-		0 => array('kind' => 'text', 'text' => '<b>' . _("Password hash type") . ': &nbsp;</b>'),
-		1 => array('kind' => 'select', 'name' => 'posixAccount_pwdHash', 'size' => '1',
-		'options' => array("CRYPT", "SHA", "SSHA", "MD5", "SMD5", "PLAIN"), 'options_selected' => array('SSHA')),
-		2 => array('kind' => 'text', 'value' => '&nbsp;'),
-		3 => array('kind' => 'text', 'value' => '&nbsp;'),
-		4 => array('kind' => 'text', 'value' => '&nbsp;'),
-		5 => array('kind' => 'help', 'value' => 'pwdHash'))
+			0 => array('kind' => 'text', 'text' => '<b>' . _("Password hash type") . ': &nbsp;</b>'),
+			1 => array('kind' => 'select', 'name' => 'posixAccount_pwdHash', 'size' => '1',
+				'options' => array("CRYPT", "SHA", "SSHA", "MD5", "SMD5", "PLAIN"), 'options_selected' => array('SSHA')),
+			2 => array('kind' => 'text', 'value' => '&nbsp;'),
+			3 => array('kind' => 'text', 'value' => '&nbsp;'),
+			4 => array('kind' => 'text', 'value' => '&nbsp;'),
+			5 => array('kind' => 'help', 'value' => 'pwdHash'))
 		);
 		// configuration descriptions
 		$return['config_descriptions'] = array(
-		'legend' => _("UID ranges for Unix accounts"),
-		'descriptions' => array(
-		'posixAccount_minUID' => _("Minimum UID number for Unix accounts (users)"),
-		'posixAccount_maxUID' => _("Maximum UID number for Unix accounts (users)"),
-		'posixAccount_minMachine' => _("Minimum UID number for Unix accounts (hosts)"),
-		'posixAccount_maxMachine' => _("Maximum UID number for Unix accounts (hosts)"),
-		'posixAccount_pwdHash' => _("Password hash type"),
+			'legend' => _("UID ranges for Unix accounts"),
+			'descriptions' => array(
+			'posixAccount_minUID' => _("Minimum UID number for Unix accounts (users)"),
+			'posixAccount_maxUID' => _("Maximum UID number for Unix accounts (users)"),
+			'posixAccount_minMachine' => _("Minimum UID number for Unix accounts (hosts)"),
+			'posixAccount_maxMachine' => _("Maximum UID number for Unix accounts (hosts)"),
+			'posixAccount_pwdHash' => _("Password hash type"),
 		)
 		);
+		// upload
+		$return['upload_preDepends'] = array('inetOrgPerson');
+		// user specific upload options
+		if ($this->scope == 'user') {
+			$return['upload_columns'] = array(
+			array(
+				'name' => 'posixAccount_userName',
+				'description' => _('User name'),
+				'help' => 'userName', // TODO
+				'example' => _('smiller'),
+				'required' => true,
+				'unique' => true
+			),
+			array(
+				'name' => 'posixAccount_uid',
+				'description' => _('UID number'),
+				'help' => 'uid', // TODO
+				'example' => _('1234')
+			),
+			array(
+				'name' => 'posixAccount_group',
+				'description' => _('Primary group'),
+				'help' => 'group', // TODO
+				'example' => _('users'),
+				'required' => true
+			),
+			array(
+				'name' => 'posixAccount_additionalGroups',
+				'description' => _('Additional groups'),
+				'help' => 'additionalGroups', // TODO
+				'example' => _('group01,group02')
+			),
+			array(
+				'name' => 'posixAccount_homedir',
+				'description' => _('Home directory'),
+				'help' => 'homedir', // TODO
+				'example' => _('/home/smiller'),
+				'default' => '/home/<i>&lt;posixAccount_userName&gt;</i>'
+			),
+			array(
+				'name' => 'posixAccount_shell',
+				'description' => _('Login shell'),
+				'help' => 'shell', // TODO
+				'example' => _('/bin/bash'),
+				'values' => implode(", ", getshells()),
+				'default' => '/bin/bash'
+			),
+			array(
+				'name' => 'posixAccount_password',
+				'description' => _('Password'),
+				'help' => 'password', // TODO
+				'example' => _('secret')
+			),
+			array(
+				'name' => 'posixAccount_passwordDisabled',
+				'description' => _('Lock password'),
+				'help' => 'passwordDisabled', // TODO
+				'example' => _('false'),
+				'values' => 'true, false',
+				'default' => 'false'
+			),
+			array(
+				'name' => 'posixAccount_gecos',
+				'description' => _('GECOS'),
+				'help' => 'gecos',
+				'example' => _('Steve Miller,Room 2.14,123-123-1234,123-123-1234')
+			)
+			);
+		}
+		// host specific upload options
+		elseif ($this->scope == 'host') {
+			$return['upload_columns'] = array(
+			array(
+				'name' => 'posixAccount_hostName',
+				'description' => _('Host name'),
+				'help' => 'hostName', // TODO
+				'example' => _('pc01$'),
+				'required' => true,
+				'unique' => true
+			),
+			array(
+				'name' => 'posixAccount_uid',
+				'description' => _('UID number'),
+				'help' => 'uid', // TODO
+				'example' => _('1234')
+			),
+			array(
+				'name' => 'posixAccount_group',
+				'description' => _('Primary group'),
+				'help' => 'group', // TODO
+				'example' => _('machines'),
+				'required' => true
+			),
+			array(
+				'name' => 'posixAccount_gecos',
+				'description' => _('GECOS'),
+				'help' => 'gecos',
+				'example' => _('pc01,Room 2.34')
+			)
+			);
+		}
 		// available PDF fields
-		$return['PDF_fields'] = array(	'uid',
-		'uidNumber',
-		'gidNumber',
-		'gecos',
-		'primaryGroup',
-		'additionalGroups',
-		'homeDirectory',
-		'userPassword',
-		'loginShell');
+		$return['PDF_fields'] = array(
+			'uid',
+			'uidNumber',
+			'gidNumber',
+			'gecos',
+			'primaryGroup',
+			'additionalGroups',
+			'homeDirectory',
+			'userPassword',
+			'loginShell');
 		// help Entries
 		$return['help'] = array(
 		"minMaxUser" => array(
-		"ext" => "FALSE",
-		"Headline" => _("UID number"),
-		"Text" => _("These are the minimum and maximum numbers to use for user IDs when creating new user accounts. The range should be different from that of machines. New user accounts will always get the highest number in use plus one.")),
+			"ext" => "FALSE",
+			"Headline" => _("UID number"),
+			"Text" => _("These are the minimum and maximum numbers to use for user IDs when creating new user accounts. The range should be different from that of machines. New user accounts will always get the highest number in use plus one.")),
 		"minMaxHost" => array(
-		"ext" => "FALSE",
-		"Headline" => _("UID number"),
-		"Text" => _("These are the minimum and maximum numbers to use for machine IDs when creating new accounts for Samba hosts. The range should be different from that of users. New host accounts will always get the highest number in use plus one.")),
+			"ext" => "FALSE",
+			"Headline" => _("UID number"),
+			"Text" => _("These are the minimum and maximum numbers to use for machine IDs when creating new accounts for Samba hosts. The range should be different from that of users. New host accounts will always get the highest number in use plus one.")),
 		'pwdHash' => array(
-		"ext" => "FALSE",
-		"Headline" => _("Password hash type"),
-		"Text" => _("LAM supports CRYPT, SHA, SSHA, MD5 and SMD5 to generate the hash value of passwords. SSHA and CRYPT are the most common but CRYPT does not support passwords greater than 8 letters. We do not recommend to use plain text passwords.")),
+			"ext" => "FALSE",
+			"Headline" => _("Password hash type"),
+			"Text" => _("LAM supports CRYPT, SHA, SSHA, MD5 and SMD5 to generate the hash value of passwords. SSHA and CRYPT are the most common but CRYPT does not support passwords greater than 8 letters. We do not recommend to use plain text passwords.")),
 		'uidNumber' => array(
-		"ext" => "FALSE",
-		"Headline" => _("UID number"),
-		"Text" => _("If empty UID number will be generated automaticly.")),
+			"ext" => "FALSE",
+			"Headline" => _("UID number"),
+			"Text" => _("If empty UID number will be generated automaticly.")),
 		'user' => array(
 		'uid' => array(
-		"ext" => "FALSE",
-		"Headline" => _("Username"),
-		"Text" => _("Username of the user who should be created. Valid characters are: a-z,0-9, .-_. Lam does not allow a number as first character because useradd also does not allow it. Lam does not allow capital letters A-Z because it can cause several problems. If username is already used username will be expanded with a number. The next free number will be used. Warning: Older systems have problems with usernames longer than 8 characters. You can not log in to Windows if username is longer than 16 characters.")),
+			"ext" => "FALSE",
+			"Headline" => _("Username"),
+			"Text" => _("Username of the user who should be created. Valid characters are: a-z,0-9, .-_. Lam does not allow a number as first character because useradd also does not allow it. Lam does not allow capital letters A-Z because it can cause several problems. If username is already used username will be expanded with a number. The next free number will be used. Warning: Older systems have problems with usernames longer than 8 characters. You can not log in to Windows if username is longer than 16 characters.")),
 		'gecos' => array(
-		"ext" => "FALSE",
-		"Headline" => _("Gecos"),
-		"Text" => _("User description. If left empty sur- and give name will be used.")),
+			"ext" => "FALSE",
+			"Headline" => _("Gecos"),
+			"Text" => _("User description. If left empty sur- and give name will be used.")),
 		'gidNumber' => array(
-		"ext" => "FALSE",
-		"Headline" => _("Primary group"),
-		"Text" => _("The Primary Group the user should be member of.")),
+			"ext" => "FALSE",
+			"Headline" => _("Primary group"),
+			"Text" => _("The Primary Group the user should be member of.")),
 		'homeDirectory' => array(
-		"ext" => "FALSE",
-		"Headline" => _("Home directory"),
-		"Text" => _("$user and $group are replaced with username or primary groupname.")),
+			"ext" => "FALSE",
+			"Headline" => _("Home directory"),
+			"Text" => _("$user and $group are replaced with username or primary groupname.")),
 		/*'userPassword'		=>*/
 		'userPassword_no' => array(
-		"ext" => "FALSE",
-		"Headline" => _("Use no password"),
-		"Text" => _("If checked no password will be used.")),
+			"ext" => "FALSE",
+			"Headline" => _("Use no password"),
+			"Text" => _("If checked no password will be used.")),
 		/*'userPassword_lock'	=>*/
 		'loginShell' => array(
-		"ext" => "FALSE",
-		"Headline" => _("Login shell"),
-		"Text" => _("To disable login use /bin/false. List of shells is read from lam/config/shells")),
+			"ext" => "FALSE",
+			"Headline" => _("Login shell"),
+			"Text" => _("To disable login use /bin/false. List of shells is read from lam/config/shells")),
 		'addgroup' => array(
-		"ext" => "FALSE",
-		"Headline" => _("Additional groups"),
-		"Text" => _("Hold the CTRL-key to (de)select multiple groups."). ' '. _("Can be left empty."))),
+			"ext" => "FALSE",
+			"Headline" => _("Additional groups"),
+			"Text" => _("Hold the CTRL-key to (de)select multiple groups."). ' '. _("Can be left empty."))),
 		'host' => array(
 		'uid' => array(
-		"ext" => "FALSE",
-		"Headline" => _("Host name"),
-		"Text" => _("Host name of the host which should be created. Valid characters are: a-z,0-9, .-_$. Lam does not allow a number as first character because useradd also does not allow it. Lam does not allow capital letters A-Z because it can cause several problems. Hostnames are always ending with $. If last character is not $ it will be added. If hostname is already used hostname will be expanded with a number. The next free number will be used.")),
+			"ext" => "FALSE",
+			"Headline" => _("Host name"),
+			"Text" => _("Host name of the host which should be created. Valid characters are: a-z,0-9, .-_$. Lam does not allow a number as first character because useradd also does not allow it. Lam does not allow capital letters A-Z because it can cause several problems. Hostnames are always ending with $. If last character is not $ it will be added. If hostname is already used hostname will be expanded with a number. The next free number will be used.")),
 		'gecos' => array(
-		"ext" => "FALSE",
-		"Headline" => _("Gecos"),
-		"Text" => _("Host description. If left empty host name will be used.")),
+			"ext" => "FALSE",
+			"Headline" => _("Gecos"),
+			"Text" => _("Host description. If left empty host name will be used.")),
 		'gidNumber' => array(
-		"ext" => "FALSE",
-		"Headline" => _("Primary group"),
-		"Text" => _("The Primary group the host should be member of."))));
+			"ext" => "FALSE",
+			"Headline" => _("Primary group"),
+			"Text" => _("The Primary group the host should be member of."))
+		));
 
 		return $return;
 	}
@@ -228,6 +331,7 @@ class posixAccount extends baseModule {
 		// call parent init
 		parent::init($base);
 		$groups = $_SESSION['cache']->findgroups(); // list of all groupnames
+		// TODO better error handling
 		if (count($groups)==0) trigger_error(_('No groups found in ldap.'), E_USER_WARNING);
 		$this->createhomedir=false;
 	}
@@ -899,6 +1003,131 @@ class posixAccount extends baseModule {
 		return $return;
 	}
 
+	/**
+	* In this function the LDAP account is built up.
+	*
+	* @param array $rawAccounts list of hash arrays (name => value) from user input
+	* @param array $partialAccounts list of hash arrays (name => value) which are later added to LDAP
+	* @param array $ids list of IDs for column position (e.g. "posixAccount_uid" => 5)
+	* @return array list of error messages if any
+	*/
+	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts) {
+		$errors = array();
+		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
+			if (!in_array("posixAccount", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "posixAccount";
+			// UID
+			if ($rawAccounts[$i][$ids['posixAccount_uid']] == "") {
+				// TODO autoGID
+				$partialAccounts[$i]['uidNumber'] = 42;
+			}
+			elseif (get_preg($rawAccounts[$i][$ids['posixAccount_uid']], 'digit')) {
+				$partialAccounts[$i]['uidNumber'] = $rawAccounts[$i][$ids['posixAccount_uid']];
+			}
+			else {
+				$errMsg = $this->messages['uidNumber'][8]; // TODO
+				array_push($errMsg, array($i));
+				$errors[] = $errMsg;
+			}
+			// GID number
+			if (get_preg($rawAccounts[$i][$ids['posixAccount_group']], 'digit')) {
+				$partialAccounts[$i]['gidNumber'] = $rawAccounts[$i][$ids['posixAccount_group']];
+			}
+			if (get_preg($rawAccounts[$i][$ids['posixAccount_group']], 'groupname')) {
+				$partialAccounts[$i]['gidNumber'] = 42;
+				//$partialAccounts[$i]['gidNumber'] = $rawAccounts[$i][$ids['posixAccount_group']];
+				// TODO group name => GID number
+			}
+			else {
+				$errMsg = $this->messages['gidNumber'][8]; // TODO
+				array_push($errMsg, array($i));
+				$errors[] = $errMsg;
+			}
+			// GECOS // TODO fill default values
+			if (($rawAccounts[$i][$ids['posixAccount_gecos']] != "") && (get_preg($rawAccounts[$i][$ids['posixAccount_gecos']], 'gecos'))) {
+				$partialAccounts[$i]['gecos'] = $rawAccounts[$i][$ids['posixAccount_gecos']];
+			}
+			else {
+				$errMsg = $this->messages['gecos'][1]; // TODO
+				array_push($errMsg, array($i));
+				$errors[] = $errMsg;
+			}
+			// user specific attributes
+			if ($this->scope == 'user') {
+				// user name
+				if (get_preg($rawAccounts[$i][$ids['posixAccount_userName']], 'username')) {
+					$partialAccounts[$i]['uid'] = $rawAccounts[$i][$ids['posixAccount_userName']];
+				}
+				else {
+					$errMsg = $this->messages['username'][1]; // TODO
+					array_push($errMsg, array($i));
+					$errors[] = $errMsg;
+				}
+				// home directory
+				if ($rawAccounts[$i][$ids['posixAccount_homedir']] == "") {
+					$partialAccounts[$i]['homeDirectory'] = '/home/' . $partialAccounts[$i]['uid'];
+				}
+				elseif (get_preg($rawAccounts[$i][$ids['posixAccount_homedir']], 'homeDirectory')) {
+					$partialAccounts[$i]['homeDirectory'] = $rawAccounts[$i][$ids['posixAccount_homedir']];
+				}
+				else {
+					$errMsg = $this->messages['homedir'][8]; // TODO
+					array_push($errMsg, array($i));
+					$errors[] = $errMsg;
+				}
+				// login shell
+				if ($rawAccounts[$i][$ids['posixAccount_shell']] == "") {
+					$partialAccounts[$i]['loginShell'] = '/bin/bash';
+				}
+				elseif (in_array($rawAccounts[$i][$ids['posixAccount_shell']], getshells())) {
+					$partialAccounts[$i]['loginShell'] = $rawAccounts[$i][$ids['posixAccount_shell']];
+				}
+				else {
+					$errMsg = $this->messages['loginshell'][8]; // TODO
+					array_push($errMsg, array($i));
+					$errors[] = $errMsg;
+				}
+				$pwd_enabled = true;
+				// password enabled/disabled
+				if ($rawAccounts[$i][$ids['posixAccount_passwordDisabled']] == "") {
+					$pwd_enabled = true;
+				}
+				elseif (in_array($rawAccounts[$i][$ids['posixAccount_passwordDisabled']], array('true', 'false'))) {
+					if ($rawAccounts[$i][$ids['posixAccount_passwordDisabled']] == 'true') $pwd_enabled = false;
+					else $pwd_enabled = true;
+				}
+				else {
+					$errMsg = $this->messages['passwordDisabled'][8]; // TODO
+					array_push($errMsg, array($i));
+					$errors[] = $errMsg;
+				}
+				// password
+				if (($rawAccounts[$i][$ids['posixAccount_password']] != "") && (get_preg($rawAccounts[$i][$ids['posixAccount_password']], 'password'))) {
+					$partialAccounts[$i]['userPassword'] = pwd_hash($rawAccounts[$i][$ids['posixAccount_password']], $pwd_enabled, $this->moduleSettings['posixAccount_pwdHash'][0]);
+				}
+				else {
+					$errMsg = $this->messages['password'][8]; // TODO
+					array_push($errMsg, array($i));
+					$errors[] = $errMsg;
+				}
+			}
+			// host specific attributes
+			elseif ($this->scope == 'host') {
+				// host name
+				if (get_preg($rawAccounts[$i][$ids['posixAccount_hostName']], 'hostname')) {
+					$partialAccounts[$i]['uid'] = $rawAccounts[$i][$ids['posixAccount_hostName']];
+				}
+				else {
+					$errMsg = $this->messages['hostname'][1]; // TODO
+					array_push($errMsg, array($i));
+					$errors[] = $errMsg;
+				}
+				$partialAccounts[$i]['homeDirectory'] = '/dev/null';
+				$partialAccounts[$i]['loginShell'] = '/bin/false';
+			}
+		}
+		return $errors;
+	}
+	
 }
 
 ?>
