@@ -1,0 +1,280 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+<title>LDAP Authentication for Linux</title>
+<link rel="stylesheet" type="text/css" href="index.css">
+</head>
+<body>
+<div class="title">LDAP Authentication for Linux</div>&copy; 2002 by
+<a href="http://www.metaconsultancy.com">metaconsultancy</a><br>
+
+<p>
+LDAP is a directory server technology that allows information such
+as usernames and passwords for an entire site to be stored on a central
+server.
+This whitepapers describes how to set up a Linux workstation
+to use an LDAP server for user information and authentication.
+</p>
+
+<p>
+Before proceeding, you will need a working LDAP server which can
+provide you with user information. If you need to set one up,
+consult our <a href="ldap.htm">OpenLDAP whitepaper</a> for
+instructions.
+</p>
+
+<p>
+User information consists of such data as mappings between user id numbers
+and  user names (used, for example, by <span class="in">ls -l</span>), or home directory
+locations (used, for example, by <span class="in">cd ~</span>). Lookups of such information
+are handled by the name service subsystem, configured in the file
+<span class="path">/etc/nsswitch.conf</span>.
+
+Authentication (password checking), on the other hand, is handled by the
+PAM (plugable authentication module) subsystem, configured in the
+<span class="path">/etc/pam.d/</span> directory.
+
+While these two subsystems can (in fact must) be configured seperately,
+you will likely want both to use LDAP.
+</p>
+
+<div class="section">
+<span class="section">nss-ldap</span>
+
+<p>
+Begin by installing the shared library code necessary for the
+name service to use ldap.
+
+<div class="script"><pre class="code">
+# <span class="in">apt-get install libnss-ldap</span>
+</pre></div>
+
+</p>
+
+<p>
+Next, open the <span class="path">/etc/nsswitch.conf</span> file, and tell the
+name service subsystem to use LDAP to obtain user information.
+
+<div class="script">
+<div class="codetitle">nsswitch.conf</div>
+<pre class="code">
+passwd:    files ldap
+group:     files ldap
+shadow:    files ldap		
+</pre>
+</div>
+
+Note that we do not eliminate the use of flat files, since some
+users and groups (e.g. root) will remain local. If your machines do not
+use flat files at all and your LDAP server goes down, not even
+root will be able to log in.
+</p>
+
+<p>
+Finally, you need to tell then name service subsystem how to talk
+to your LDAP server. This is done in the file
+<span class="path">/etc/libnss-ldap.conf</span>.
+
+<div class="script">
+<div class="codetitle">libnss-ldap.conf</div>
+<pre class="code">
+uri ldap://ldap.example.com/ ldap://ldap-backup.example.com/
+base dc=example, dc=org
+</pre>
+</div>
+
+The uri directive specifies the domain name (or IP address) of your LDAP
+server. As our example illustrates, you can specify multiple LDAP servers,
+in which case they will be employed in failover fashion.
+
+The base directive specifies the root DN at which searches should start.
+
+For additional information on these and other configuration directives,
+<span class="in">man libnss-ldap.conf</span>.
+
+</p>
+
+<p>
+nss-ldap expects accounts to be objects with the following attributes: uid,
+uidNumber, gidNumber, homeDirectory, and loginShell. These attributes are 
+allowed by the objectClass posixAccount.
+</p>
+
+<p>
+There is a simple way to verify that your name service subsystem is using
+your LDAP server as instructed. Assign a file to be owned by a user that
+exists only in the LDAP database, not in <span class="path">/etc/passwd</span>. If
+an <span class="path">ls -l</span> correctly shows the username, then the name service
+subsystem is consulting the LDAP database; if it just shows the user number,
+something is wrong.
+
+For example, if the user john, with user number 1001, exists only in
+LDAP, we can try
+
+<div class="script"><pre class="code">
+# <span class="in">touch /tmp/test</span>
+# <span class="in">chown 1001 /tmp/test</span> 
+# <span class="in">ls -l /tmp/test</span>
+-rw-r-----     1 john     users         0 Jan  1 12:00 test
+</pre></div>
+
+to determine whether the the name service is using LDAP.
+</p>
+
+</div>
+
+<div class="section">
+<span class="section">pam-ldap</span>
+
+<p>
+Next we configure the PAM subsystem to use LDAP for passwords. Begin by
+installing the necessary PAM module.
+
+<div class="script"><pre class="code">
+# <span class="in">apt-get install libpam-ldap</span>
+</pre></div>
+
+The configuration file for the <span class="path">pam_ldap.so</span> module is
+<span class="path">/etc/pam_ldap.conf</span>.
+
+<div class="script">
+<div class="codetitle">pam_ldap.conf</div>
+<pre class="code">
+uri ldaps://ldap.example.com/
+base dc=example,dc=com
+pam_password exop
+</pre>
+</div>
+
+The uri and base directives work the same way they do for
+<span class="path">/etc/libnss_ldap.conf</span> and <span class="path">/etc/ldap/ldap.conf</span>.
+Notice that we have used ldaps to ensure that connections over which
+passwords are exchanged are encrypted.
+The directive &quot;pam_password exop&quot; tells pam-ldap to change passwords in
+a way that allows OpenLDAP to apply the hashing algorithm specified
+in <span class="path">/etc/ldap/slapd.conf</span>, instead of attempting to hash
+locally and write the result directly into the database.
+</p>
+
+<p>
+pam-ldap assumes accounts to be ojbects with the following attributes:
+uid and userPassword. The attributes are allowed by the objectClass
+posixAccount.
+</p>
+
+<p>
+We are now ready to configure individual services to use the LDAP server
+for password checking. Each service that uses PAM for authentication has
+its own configuration file <span class="path">/etc/pam.d/service</span>.
+To configure a service to use LDAP for password-checking, you must modify
+its PAM configuration file.
+</p>
+
+<p>
+To avoid an in-depth explanation of PAM, we will
+content ourselves with a few examples. Consider first the login program,
+which handles logins from the text console. A typical PAM stack which
+checks passwords both in <span class="path">/etc/passwd</span> and in the LDAP database
+follows.
+
+<div class="script">
+<div class="codetitle">/etc/pam.d/login</div>
+<pre class="code">
+auth        required      pam_nologin.so
+auth        sufficient    pam_ldap.so
+auth        sufficient    pam_unix.so shadow use_first_pass
+auth        required      pam_deny.so
+</pre>
+</div>
+
+After successful password authentication using the auth stack, login checks
+for the existance of an account using the account stack, so it is necessary
+to reference pam-ldap there, too.
+
+<div class="script">
+<div class="codetitle">/etc/pam.d/login</div>
+<pre class="code">
+account     sufficient    pam_unix.so
+account     sufficient    pam_ldap.so
+account     required      pam_deny.so
+</pre>
+</div>
+
+Other login-like programs include xdm and gdm (for graphical logins),
+ssh (for remote logins), su (for switching programs), and
+xlock and xscreensaver (for locked screens). Each has its own file
+in <span class="path">/etc/pam.d/</span>.
+</p>
+
+<p>
+Some applications not only authenticate passwords, but can also be used
+to change them. The prototypical example is of course <span class="path">passwd</span>,
+the standard password-changing utility. Such programs can be configured to
+use LDAP by modifying their password stack.
+
+<div class="script">
+<div class="codetitle">/etc/pam.d/passwd</div>
+<pre class="code">
+password    required      pam_cracklib.so
+password    sufficient    pam_ldap.so
+password    sufficient    pam_unix.so
+password    required      pam_deny.so
+</pre>
+</div>
+
+</p>
+
+<p>
+One convienient application of pam-ldap is to set up &quot;black box&quot; servers
+that can authenticate users for a particular service without having an
+account on the machine at all. Services such as netatalk, (Cyrus) imap,
+and (Postfix) smtp use PAM. By configuring their PAM stacks to use LDAP,
+while leaving LDAP out of the PAM stacks of services such as login and ssh,
+you can easily create a &quot;black box&quot; server.
+</p>
+
+</div>
+
+<div class="section">
+<span class="section">nscd</span>
+
+<p>
+To keep your computers from pounding your LDAP server every time
+a command such as <span class="in">ls -l /home</span> is issued on a computer in your
+organization, it is a good idea to configure your workstations to
+cache some user data. As long as the data in the cache is sufficiently
+fresh, the workstations use in instead of asking your LDAP server again.
+The name server caching daemon (nscd) accomplishes exactly
+this task.
+</p>
+
+<p>
+To install nscd on Debian, just
+
+<div class="script"><pre class="code">
+# <span class="in">apt-get install nscd</span>
+</pre></div>
+
+</p>
+
+<p>
+The configuration file for nscd is <span class="path">/etc/nscd.conf</span>.
+
+<div class="script">
+<div class="codetitle">nscd.conf</div>
+<pre class="code">
+enable-cache            passwd          yes
+positive-time-to-live   passwd          600
+negative-time-to-live   passwd          20
+suggested-size          passwd          211
+check-files             passwd          yes
+</pre>
+</div>
+
+</p>
+
+</div>
+
+</body>
+</html>
