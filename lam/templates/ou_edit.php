@@ -39,7 +39,7 @@ if ($_POST['submit']) {
 	// new user ou
 	if ($_POST['type'] == "new_usr") {
 		// create ou if valid
-		if (eregi("^[a-z0-9_\\-]+$", $_POST['newsuff_u'])) {
+		if (eregi("^[a-z0-9 _\\-]+$", $_POST['newsuff_u'])) {
 			// check if ou already exists
 			$new_dn = "ou=" . $_POST['newsuff_u'] . "," . $_POST['usersuff_n'];
 			if (!in_array(strtolower($new_dn), $_SESSION['ldap']->search_units($_POST['usersuff_n']))) {
@@ -104,7 +104,7 @@ if ($_POST['submit']) {
 	// new group ou
 	if ($_POST['type'] == "new_grp") {
 		// create ou if valid
-		if (eregi("^[a-z0-9_\\-]+$", $_POST['newsuff_g'])) {
+		if (eregi("^[a-z0-9 _\\-]+$", $_POST['newsuff_g'])) {
 			// check if ou already exists
 			$new_dn = "ou=" . $_POST['newsuff_g'] . "," . $_POST['groupsuff_n'];
 			if (!in_array(strtolower($new_dn), $_SESSION['ldap']->search_units($_POST['groupsuff_n']))) {
@@ -169,7 +169,7 @@ if ($_POST['submit']) {
 	// new host ou
 	if ($_POST['type'] == "new_hst") {
 		// create ou if valid
-		if (eregi("^[a-z0-9_\\-]+$", $_POST['newsuff_h'])) {
+		if (eregi("^[a-z0-9 _\\-]+$", $_POST['newsuff_h'])) {
 			// check if ou already exists
 			$new_dn = "ou=" . $_POST['newsuff_h'] . "," . $_POST['hostsuff_n'];
 			if (!in_array(strtolower($new_dn), $_SESSION['ldap']->search_units($_POST['hostsuff_n']))) {
@@ -234,7 +234,7 @@ if ($_POST['submit']) {
 	// new domain ou
 	if ($_POST['type'] == "new_dom") {
 		// create ou if valid
-		if (eregi("^[a-z0-9_\\-]+$", $_POST['newsuff_d'])) {
+		if (eregi("^[a-z0-9 _\\-]+$", $_POST['newsuff_d'])) {
 			// check if ou already exists
 			$new_dn = "ou=" . $_POST['newsuff_d'] . "," . $_POST['domsuff_n'];
 			if (!in_array(strtolower($new_dn), $_SESSION['ldap']->search_units($_POST['domsuff_n']))) {
