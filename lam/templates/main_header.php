@@ -40,7 +40,9 @@ setlanguage();
 echo $_SESSION['header'];
 
 // number of list views (users, groups, ...)
-$lists = 2;
+$lists = 0;
+if ($_SESSION['config']->get_Usersuffix() != "") $lists++;
+if ($_SESSION['config']->get_Groupsuffix() != "") $lists++;
 if ($_SESSION['config']->get_Hostsuffix() != "") $lists++;
 
 ?>
@@ -71,8 +73,12 @@ if ($_SESSION['config']->get_Hostsuffix() != "") $lists++;
 	<tr>
 		<td></td>
 		<?php
-			echo '<td width="120" align="center"><a href="./lists/listusers.php" target="mainpart"><big>' . _("Users") . '</big></a></td>' . "\n";
-			echo '<td width="120" align="center"><a href="./lists/listgroups.php" target="mainpart"><big>' . _("Groups") . '</big></a></td>' . "\n";
+			if ($_SESSION['config']->get_Usersuffix() != "") {
+				echo '<td width="120" align="center"><a href="./lists/listusers.php" target="mainpart"><big>' . _("Users") . '</big></a></td>' . "\n";
+			}
+			if ($_SESSION['config']->get_Groupsuffix() != "") {
+				echo '<td width="120" align="center"><a href="./lists/listgroups.php" target="mainpart"><big>' . _("Groups") . '</big></a></td>' . "\n";
+			}
 			if ($_SESSION['config']->get_Hostsuffix() != "") {
 				echo '<td width="120" align="center"><a href="./lists/listhosts.php" target="mainpart"><big>' . _("Hosts") . '</big></a></td>' . "\n";
 			}

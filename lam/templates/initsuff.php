@@ -148,23 +148,17 @@ if ($_POST['add_suff'] || $_POST['cancel']) {
 			for ($i = 0; $i < sizeof($fail); $i++) {
 				StatusMessage("ERROR", _("Failed to create entry!") . "<br>" . $error[$i], $fail[$i]);
 			}
-			echo "<p>&nbsp;</p>\n";
-			echo "<a href=\"lists/listusers.php\">" . _("User list") . "</a>\n";
 			echo "</body></html>\n";
 		}
 		else {
 			// print success message
 			StatusMessage("INFO", "", _("All changes were successful."));
-			echo "<p>&nbsp;</p>\n";
-			echo "<a href=\"lists/listusers.php\">" . _("User list") . "</a>\n";
 			echo "</body></html>\n";
 		}
 	}
 	else {
 		// no suffixes were created
 		StatusMessage("INFO", "", _("No changes were made."));
-		echo "<p>&nbsp;</p>\n";
-		echo "<a href=\"lists/listusers.php\">" . _("User list") . "</a>\n";
 		echo "</body></html>\n";
 	}
 	exit;
