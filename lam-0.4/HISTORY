@@ -1,3 +1,9 @@
+0.4.4
+  - fixed bugs:
+      plain posix groups could not be used as Samba 3 primary group
+      if magic_quotes_gpc in php.ini is was set to "Off", several pages did not work
+
+
 08.02.2004 0.4.3
   - new login layout
   - added Hungarian and Japanese translations
