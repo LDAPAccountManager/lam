@@ -941,8 +941,11 @@ function loaduser($dns) {
 		$search .= ")";
 		}
 	else $search = substr($dns, 0, strpos($dns, ','));
-	// search for users
-	$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_UserSuffix(), $search);
+	/* if string is langer then 1024 characters we have to search for all users and
+	* output only the selcted users because searchfilter would be too big
+	*/
+	if (strlen($search<1024)) $result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_UserSuffix(), $search);
+		else $result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_UserSuffix());
 	$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 	// loop for every found user
 	$i=0;
