@@ -458,22 +458,22 @@ function checkid($values, $type, $values_old=false) { // if value is empty will 
 		case 'user':
 			$ObjectClass = 'PosixAccount';
 			$search = 'uidNumber';
-			$minID = $_SESSION['config']->get_minUID();
-			$maxID = $_SESSION['config']->get_maxUID();
+			$minID = intval($_SESSION['config']->get_minUID());
+			$maxID = intval($_SESSION['config']->get_maxUID());
 			$suffix = $_SESSION['config']->get_UserSuffix();
 			break;
 		case 'group':
 			$ObjectClass = 'PosixGroup';
 			$search = 'gidNumber';
-			$minID = $_SESSION['config']->get_MinGID();
-			$maxID = $_SESSION['config']->get_MaxGID();
+			$minID = intval($_SESSION['config']->get_MinGID());
+			$maxID = intval($_SESSION['config']->get_MaxGID());
 			$suffix = $_SESSION['config']->get_GroupSuffix();
 			break;
 		case 'host':
 			$ObjectClass = 'PosixAccount';
 			$search = 'uidNumber';
-			$minID = $_SESSION['config']->get_MinMachine();
-			$maxID = $_SESSION['config']->get_MaxMachine();
+			$minID = intval($_SESSION['config']->get_MinMachine());
+			$maxID = intval($_SESSION['config']->get_MaxMachine());
 			$suffix = $_SESSION['config']->get_HostSuffix();
 			break;
 		}
@@ -510,7 +510,7 @@ function checkid($values, $type, $values_old=false) { // if value is empty will 
 		if (!$values_old) return _('ID is used from ' . $dn . ' !');
 		 else if ($dn!=$values_old->general_dn) return _('ID is used from ' . $dn . ' !');
 		 }
-	if ( $values->general_uidNumber <= $minID || $values->general_uidNumber >= $maxID) return _('Please enter a value between '. $minID . ' and ' . $maxID . '!');
+	if ( $values->general_uidNumber < $minID || $values->general_uidNumber > $maxID) return _('Please enter a value between '. $minID . ' and ' . $maxID . '!');
 	return intval($values->general_uidNumber);
 	}
 
