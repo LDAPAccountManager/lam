@@ -188,12 +188,6 @@ switch ($select) {
 	}
 
 
-if ($error != "0") {
-	echo '<script language="javascript"> alert("';
-	echo $error;
-	echo '"); </script>';
-	}
-
 
 if ( $create ) { // Create-Button was pressed
 	$_SESSION['account']->final_changegids = $f_final_changegids;
@@ -237,7 +231,12 @@ echo '</title>
 	<form action="account.php" method="post">
 	<meta http-equiv="pragma" content="no-cache">
 	<meta http-equiv="cache-control" content="no-cache">
-	<table rules="all" class="grouplist" width="100%">';
+	<table rules="all" class="account" width="100%">
+	<tr><td>';
+	if ($error != "0") echo $error;
+	echo '</td></tr>';
+
+
 if (!$select) $select='general';
 if ($createagain) $select='general';
 if ($backmain) $select='backmain';
