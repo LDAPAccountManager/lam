@@ -39,10 +39,8 @@ function display_LoginPage($config_object,$profile)
 	setcookie("Key", base64_encode($key), 0, "/");
 	setcookie("IV", base64_encode($iv), 0, "/");
 
-	session_register("language");
 	$_SESSION['language'] = $config_object->get_defaultLanguage();
 
-	session_register("header");
 	$current_language = explode(":",$_SESSION['language']);
 	$_SESSION['header'] = "<?xml version=\"1.0\" encoding=\"" . $current_language[1] . "\"?>\n<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n\n";
 
@@ -247,8 +245,7 @@ if($_POST['action'] == "checklogin")
 {
 	include_once("../lib/ldap.inc"); // Include ldap.php which provides Ldap class
 
-	session_register("ldap"); // Register $ldap object in session
-	$_SESSION['ldap'] = new Ldap($_SESSION['config']); //$config); // Create new Ldap object
+	$_SESSION['ldap'] = new Ldap($_SESSION['config']); // Create new Ldap object
 	if($_POST['passwd'] == "")
 	{
 		$error_message = _("Empty Password submitted. Try again.");
@@ -290,7 +287,6 @@ elseif($_POST['action'] == "profileChange") {
 // Load login page
 else
 {
-	session_register("config"); // Register $config object in session
 
 	$default_Config = new CfgMain();
 	$default_Profile = $default_Config->default;
