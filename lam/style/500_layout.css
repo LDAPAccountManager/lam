@@ -165,3 +165,93 @@ tr.account {
 }
 
 
+/**
+ * Color and font definitions for templates/status.php
+ *
+ */
+
+/* Background olor for the different Status Messages */
+div.status_info {
+  background-color:#5C7EC6;
+}
+
+div.status_warn {
+  background-color:#CE8037;
+}
+
+div.status_error {
+  background-color:#C65146;
+}
+
+/* H1 (MessageTyp) font size, family, color, and some more settings for the different Status Messages */
+h1.status_info {
+  font-size:16pt;
+  font-family:arial;
+  color:#FFFFFF;
+  margin-left:20px;
+}
+
+h1.status_warn {
+  font-size:16pt;
+  font-family:arial;
+  color:#FFFFFF;
+  margin-left:20px;
+}
+
+h1.status_error {
+  font-size:16pt;
+  font-family:arial;
+  color:#FFFFFF;
+  margin-left:20px;
+}
+
+/* H2 (MessageHeadline) font size, family, color, and some more settings for the different Status Messages */
+h2.status_info {
+  font-size:13pt;
+  font-family:arial;
+  color:#FFFFFF;
+  margin-left:25px;
+  margin-right:25px;
+}
+
+h2.status_warn {
+  font-size:13pt;
+  font-family:arial;
+  color:#FFFFFF;
+  margin-left:25px;
+  margin-right:25px;
+}
+
+h2.status_error {
+  font-size:13pt;
+  font-family:arial;
+  color:#FFFFFF;
+  margin-left:25px;
+  margin-right:25px;
+}
+
+/* P (MessageText) font size, family, color, and some more settings for the different Status Messages */
+p.status_info {
+  font-size:11pt;
+  font-family:serif;
+  color:#FFFFFF;
+  margin-left:35px;
+  margin-right:35px;
+}
+
+p.status_warn {
+  font-size:11pt;
+  font-family:serif;
+  color:#FFFFFF;
+  margin-left:35px;
+  margin-right:35px;
+}
+
+p.status_error {
+  font-size:11pt;
+  font-family:serif;
+  color:#FFFFFF;
+  margin-left:35px;
+  margin-right:35px;
+}
+
