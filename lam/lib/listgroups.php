@@ -19,7 +19,7 @@ $Id$
   along with this program; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-  This code displays a list of all Samba hosts.
+  This code displays a list of all groups.
 
 */
 include_once ('../config/config.php');
@@ -57,7 +57,7 @@ else {
 
 // Groups have the attribute "posixGroup"
 $filter = "(objectClass=posixGroup)";
-$attrs = array("cn", "gidNumber", "memberUID", "description");
+$attrs = $attr_array;
 $sr = @ldap_search($_SESSION["ldap"]->server(),
 	$_SESSION["config"]->get_GroupSuffix(),
 	$filter, $attrs);
@@ -70,17 +70,22 @@ else echo ("<br><br><font color=\"red\"><b>" . _("LDAP Search failed! Please che
 
 echo ("<form action=\"../templates/account.php?type=group\" method=\"post\">\n");
 
+// delete first array entry which is "count"
+array_shift($info);
+// sort rows by sort column ($list)
+usort($info, "cmp_array");
+
 // print group table header
 echo "<table rules=\"all\" class=\"grouplist\" width=\"100%\">\n";
 echo "<tr class=\"grouplist_head\"><th width=22 height=34></th><th></th>";
 // table header
 for ($k = 0; $k < sizeof($desc_array); $k++) {
-	echo "<th>" . $desc_array[$k] . "</th>";
+	echo "<th><a href=\"listgroups.php?list=" . strtolower($attr_array[$k]) . "\">" . $desc_array[$k] . "</a></th>";
 }
 echo "</tr>\n";
 
 // print group list
-for ($i = 0; $i < sizeof($info)-1; $i++) { // ignore last entry in array which is "count"
+for ($i = 0; $i < sizeof($info); $i++) { // ignore last entry in array which is "count"
 	echo("<tr class=\"grouplist\" onMouseOver=\"group_over(this, '" . $info[$i]["dn"] . "')\"" .
 								" onMouseOut=\"group_out(this, '" . $info[$i]["dn"] . "')\"" .
 								" onClick=\"group_click(this, '" . $info[$i]["dn"] . "')\"" .
@@ -91,6 +96,7 @@ for ($i = 0; $i < sizeof($info)-1; $i++) { // ignore last entry in array which i
 		echo ("<td>");
 		// print all attribute entries seperated by "; "
 		if (sizeof($info[$i][strtolower($attr_array[$k])]) > 0) {
+			// delete first array entry which is "count"
 			array_shift($info[$i][strtolower($attr_array[$k])]);
 			// generate links for group members
 			if (strtolower($attr_array[$k]) == "memberuid") {
@@ -119,9 +125,23 @@ for ($i = 0; $i < sizeof($info)-1; $i++) { // ignore last entry in array which i
 echo ("</table>");
 echo ("<p>&nbsp</p>\n");
 echo ("<table align=\"left\" border=\"0\">");
-echo ("<tr><td align=\"left\"><input type=\"button\" name=\"newgroup\" value=\"" . _("New Group") . "\" onClick=\"self.location.href='../templates/account.php?type=group'\">");
-echo ("&nbsp<input type=\"button\" name=\"delgroup\" value=\"" . _("Delete Group(s)") . "\" onClick=\"self.location.href='../templates/account.php?type=delete'\"></td></tr>\n");
+echo ("<tr><td align=\"left\"><a href=\"../templates/account.php?type=group\" target=\"_self\"><big>" . _("New Group") . "</big></a>");
+echo ("&nbsp&nbsp&nbsp<a href=\"../templates/account.php?type=delete\" target=\"_self\"><big>" . _("Delete Group(s)") . "</big></a></td></tr>\n");
 echo ("</table>\n");
 echo ("</form>\n");
 echo "</body></html>\n";
+
+// compare function used for usort-method
+// rows are sorted with the first attribute entry of the sort column
+// if objects have attributes with multiple values the others are ignored
+function cmp_array($a, $b) {
+	// list specifies the sort column
+	global $list;
+	// sort by first attribute with name $list
+	if (!$list) $list = 0;
+	if ($a[$list][0] == $b[$list][0]) return 0;
+	else if ($a[$list][0] == max($a[$list][0], $b[$list][0])) return 1;
+	else return -1;
+}
+
 ?>
