@@ -55,8 +55,13 @@ function StatusMessage($MessageTyp,$MessageHeadline,$MessageText,$MessageVariabl
 	$MessageHeadline = "<h2 " . $class . ">" . $MessageHeadline . "</h2>"; // Format $MessageHeadline
 	$MessageText = "<p " . $class . ">" . $MessageText . "</p>"; // Format $MessageText
 	$format = "<div " . $class . ">\n<br>\n<table>\n<tr>\n<td>" . $MessageTyp . "</td>\n<td>" . $MessageHeadline . $MessageText . "</td>\n</tr>\n</table>\n<br>\n</div>\n";
-	array_unshift($MessageVariables, $format);
-	call_user_func_array('printf',$MessageVariables);
+	if (is_array($MessageVariables)) {
+		array_unshift($MessageVariables, $format);
+		call_user_func_array('printf',$MessageVariables);
+	}
+	else {
+		printf($format, $MessageVariables);
+	}
 }
 
 /* Use the three replace functions on the submitted Text. */
