@@ -162,10 +162,10 @@ echo "<tr class=\"grouplist-head\"><th width=22 height=34></th><th></th>";
 for ($k = 0; $k < sizeof($desc_array); $k++) {
 	if (strtolower($attr_array[$k]) == $sort) {
 		echo "<th class=\"grouplist-sort\"><a href=\"listgroups.php?".
-			"sort=" . strtolower($attr_array[$k]) . $searchfilter . "&norefresh=y" . "\">" . $desc_array[$k] . "</a></th>";
+			"sort=" . strtolower($attr_array[$k]) . $searchfilter . "&amp;norefresh=y" . "\">" . $desc_array[$k] . "</a></th>";
 	}
 	else echo "<th><a href=\"listgroups.php?".
-		"sort=" . strtolower($attr_array[$k]) . $searchfilter . "&norefresh=y" . "\">" . $desc_array[$k] . "</a></th>";
+		"sort=" . strtolower($attr_array[$k]) . $searchfilter . "&amp;norefresh=y" . "\">" . $desc_array[$k] . "</a></th>";
 }
 echo "</tr>\n";
 
@@ -207,7 +207,7 @@ for ($i = $table_begin; $i < $table_end; $i++) {
 				for ($d = 0; $d < sizeof($grp_info[$i][strtolower($attr_array[$k])]); $d++) {
 					$user = $grp_info[$i][strtolower($attr_array[$k])][$d]; // user name
 					// if user was found in LDAP make link, otherwise just print name
-					$linklist[$d] = "<a href=userlink.php?user='" . $user . "' >" . $user . "</a>";
+					$linklist[$d] = "<a href=\"userlink.php?user='" . $user . "' \">" . $user . "</a>";
 				}
 				echo implode("; ", $linklist);
 			}

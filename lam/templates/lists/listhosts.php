@@ -168,10 +168,10 @@ echo "<tr class=\"hostlist-head\"><th width=22 height=34></th><th></th>";
 for ($k = 0; $k < sizeof($desc_array); $k++) {
 	if (strtolower($attr_array[$k]) == $sort) {
 		echo "<th class=\"hostlist-sort\"><a href=\"listhosts.php?".
-			"sort=" . strtolower($attr_array[$k]) . $searchfilter . "&norefresh=y" . "\">" . $desc_array[$k] . "</a></th>";
+			"sort=" . strtolower($attr_array[$k]) . $searchfilter . "&amp;norefresh=y" . "\">" . $desc_array[$k] . "</a></th>";
 	}
 	else echo "<th><a href=\"listhosts.php?".
-		"sort=" . strtolower($attr_array[$k]) . $searchfilter . "&norefresh=y" . "\">" . $desc_array[$k] . "</a></th>";
+		"sort=" . strtolower($attr_array[$k]) . $searchfilter . "&amp;norefresh=y" . "\">" . $desc_array[$k] . "</a></th>";
 }
 echo "</tr>\n";
 
