@@ -83,10 +83,12 @@ if ($_POST['new_host'] || $_POST['del_host'] || $_POST['pdf_host'] || $_POST['pd
 		$list = array();
 		// load hosts from LDAP
 		for ($i = 0; $i < sizeof($hosts); $i++) {
-			$list[$i] = loadhost($hosts[$i]);
+			$_SESSION["accountPDF-$i"] = new accountContainer("host", "accountPDF-$i");
+			$_SESSION["accountPDF-$i"]->load_account($hosts[$i]);
+			$list[$i] = $_SESSION["accountPDF-$i"];
 		}
 		if (sizeof($list) > 0) {
-			createHostPDF($list,$pdf_structure);
+			createModulePDF($list,$pdf_structure);
 			exit;
 		}
 	}
@@ -94,10 +96,12 @@ if ($_POST['new_host'] || $_POST['del_host'] || $_POST['pdf_host'] || $_POST['pd
 	elseif ($_POST['pdf_all']){
 		$list = array();
 		for ($i = 0; $i < sizeof($_SESSION['hst_info']); $i++) {
-			$list[$i] = loadhost($_SESSION['hst_info'][$i]['dn']);
+			$_SESSION["accountPDF-$i"] = new accountContainer("host", "accountPDF-$i");
+			$_SESSION["accountPDF-$i"]->load_account($_SESSION['hst_info'][$i]['dn']);
+			$list[$i] = $_SESSION["accountPDF-$i"];
 		}
 		if (sizeof($list) > 0) {
-			createHostPDF($list,$_POST['pdf_structure']);
+			createModulePDF($list,$_POST['pdf_structure']);
 			exit;
 		}
 	}
