@@ -153,7 +153,7 @@ function createUserPDF($accounts) {
 			if (sizeof($account->general_groupadd) > 0) $text = implode(", ", $account->general_groupadd);
 		}
 		$pdfFile->setFont("times","",10);
-		$pdfFile->MultiCell(50,5,$text,0,"L",0);
+		$pdfFile->MultiCell(50,5,$text,1,"L",0);
 		$pdfFile->setFont("times","B",10);
 		$pdfFile->Cell(50,5,_("Home Directory") . ":",0,0,"R",0);
 		$pdfFile->setFont("times","",10);
