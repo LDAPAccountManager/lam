@@ -757,9 +757,9 @@ function checkid($values, $type, $values_old=false) { // if value is empty will 
 					}
 				}
 			 else $useID = $minID;
-			return $useID;
+			return intval($useID);
 			}
-		else return $values_old->general_uidNumber;
+		else return intval($values_old->general_uidNumber);
 
 	// Check manual ID
 	if ( $values->general_uidNumber < $minID || $values->general_uidNumber > $maxID) return sprintf(_('Please enter a value between %s and %s!'), $minID, $maxID);
