@@ -31,10 +31,12 @@ session_save_path("../sess"); // Set session save path
 include_once("../lib/status.inc"); // Include lib/status.php which provides statusMessage()
 include_once("../help/help.inc"); // Include help/help.inc which provides $helpArray where the help pages are stored
 
+setlanguage();
+
+
 /* Print HTML head */
 function echoHTMLHead()
 {
-setlanguage();
 echo $_SESSION['header'];
 ?>
 <html>
