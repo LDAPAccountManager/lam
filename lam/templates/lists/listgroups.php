@@ -27,6 +27,7 @@ include_once ("../../lib/ldap.inc");
 include_once ("../../lib/status.inc");
 include_once("../../lib/account.inc");
 include_once("../../lib/pdf.inc");
+include_once("../../lib/modules.inc");
 
 // start session
 session_save_path("../../sess");
@@ -145,8 +146,8 @@ for ($k = 0; $k < sizeof($desc_array); $k++) {
 
 if (! $_GET['norefresh']) {
 	// configure search filter
-	// Groups have the attribute "posixGroup"
-	$filter = "(&(objectClass=posixGroup)";
+	$module_filter = get_ldap_filter("group");  // basic filter is provided by modules
+	$filter = "(&" . $module_filter;
 	for ($k = 0; $k < sizeof($desc_array); $k++) {
 	if (eregi("^([0-9a-z_\\*\\+\\-])+$", $_POST["filter" . strtolower($attr_array[$k])]))
 		$filter = $filter . "(" . strtolower($attr_array[$k]) . "=" .

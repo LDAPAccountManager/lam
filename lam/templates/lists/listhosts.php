@@ -27,6 +27,7 @@ include_once ("../../lib/ldap.inc");
 include_once ("../../lib/status.inc");
 include_once("../../lib/account.inc");
 include_once("../../lib/pdf.inc");
+include_once("../../lib/modules.inc");
 
 // start session
 session_save_path("../../sess");
@@ -143,14 +144,8 @@ for ($k = 0; $k < sizeof($desc_array); $k++) {
 
 if (! $_GET['norefresh']) {
 	// configure search filter
-	if ($_SESSION['config']->is_samba3()) {
-		// Samba hosts have the attribute "sambaSamAccount" and end with "$"
-		$filter = "(&(objectClass=sambaSamAccount) (uid=*$)";
-	}
-	else {
-		// Samba hosts have the attribute "sambaAccount" and end with "$"
-		$filter = "(&(objectClass=sambaAccount) (uid=*$)";
-	}
+	$module_filter = get_ldap_filter("host");  // basic filter is provided by modules
+	$filter = "(&(uid=*$)" . $module_filter;  // hosts end with "$"
 	for ($k = 0; $k < sizeof($desc_array); $k++) {
 	if (eregi("^([0-9a-z_\\*\\+\\-])+$", $_POST["filter" . strtolower($attr_array[$k])]))
 		$filter = $filter . "(" . strtolower($attr_array[$k]) . "=" .
