@@ -19,11 +19,20 @@ $Id$
   along with this program; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-
-  confmodules lets the user select the account modules
-
 */
+
+
+ /**
+* confmodules lets the user select the account modules
+*
+* @package configuration
+* @author Roland Gruber
+*/
+
+
+/** Access to config functions */
 include_once ('../../lib/config.inc');
+/** Access to module lists */
 include_once ('../../lib/modules.inc');
 
 // start session
@@ -38,6 +47,7 @@ $passwd = $_SESSION['conf_passwd'];
 // check if password is correct
 // if not: load login page
 if ($passwd != $conf->get_Passwd()) {
+	/** go back to login if password is invalid */
 	require('conflogin.php');
 	exit;
 }

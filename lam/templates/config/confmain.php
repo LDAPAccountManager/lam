@@ -19,11 +19,18 @@ $Id$
   along with this program; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-
-
-
 */
 
+
+/**
+* Main page of configuration
+*
+* @package configuration
+* @author Roland Gruber
+*/
+
+
+/** Access to config functions */
 include_once ("../../lib/config.inc");
 
 // start session
@@ -90,11 +97,11 @@ if ($_GET["modulesback"] == "true") $passwd = $_SESSION['conf_passwd'];
 // if not: load login page
 if (! $passwd) {
 	$message = _("No password was entered!");
+	/** go back to login if password is empty */
 	require('conflogin.php');
 	exit;
 }
 
-include_once ('../../lib/config.inc');
 $filename = $_POST['filename'];
 if ($_GET["modulesback"] == "true") $filename = $_SESSION['conf_filename'];
 $conf = new Config($filename);
@@ -103,6 +110,7 @@ $conf = new Config($filename);
 // if not: load login page
 if (!(($conf->get_Passwd()) == $passwd)) {
 	$message = _("The password is invalid! Please try again.");
+	/** go back to login if password is invalid */
 	require('conflogin.php');
 	exit;
 }

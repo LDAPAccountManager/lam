@@ -19,11 +19,20 @@ $Id$
   along with this program; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-
-  Login page to change the preferences.
 */
 
+
+/**
+* Login page to change the preferences.
+*
+* @package configuration
+* @author Roland Gruber
+*/
+
+
+/** Access to config functions */
 include_once('../../lib/config.inc');
+/** Used to print status messages */
 include_once('../../lib/status.inc');
 
 // start session
