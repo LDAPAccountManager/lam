@@ -55,6 +55,21 @@ $Id$
 class sambaSamAccount extends baseModule {
 
 	/**
+	* Creates a new sambaSamAccount object.
+	*
+	* @param string $scope account type (user, group, host)
+	*/
+	function sambaSamAccount($scope) {
+	// error messages for input checks
+	$this->messages['homedir'] = array('ERROR', _('Home path'), _('Home path is invalid.'));
+	$this->messages['profilePath'] = array('ERROR', _('Profile path'), _('Profile path is invalid!'));
+	$this->messages['logonScript'] = array('ERROR', _('Script path'), _('Script path is invalid!'));
+	$this->messages['workstations'] = array('ERROR', _('Samba workstations'), _('Please enter a comma separated list of host names!'));
+	// call parent constructor
+	parent::baseModule($scope);
+	}
+
+	/**
 	* Returns meta data that is interpreted by parent class
 	*
 	* @return array array with meta data
@@ -73,6 +88,15 @@ class sambaSamAccount extends baseModule {
 		$return["alias"] = _('Samba 3');
 		// module dependencies
 		$return['dependencies'] = array('depends' => array('posixAccount'), 'conflicts' => array());
+		// profile checks
+		$return['profile_checks']['sambaSamAccount_smbhome'] = array('type' => 'regex_i', 'regex' => $this->regex_homedir,
+			'error_message' => $this->messages['homedir']);
+		$return['profile_checks']['sambaSamAccount_profilePath'] = array('type' => 'regex_i', 'regex' => $this->regex_profilePath,
+			'error_message' => $this->messages['profilePath']);
+		$return['profile_checks']['sambaSamAccount_logonScript'] = array('type' => 'regex_i', 'regex' => $this->regex_logonScript,
+			'error_message' => $this->messages['logonScript']);
+		$return['profile_checks']['sambaSamAccount_userWorkstations'] = array('type' => 'regex_i', 'regex' => $this->regex_workstations,
+			'error_message' => $this->messages['workstations']);
 		return $return;
 	}
 
@@ -122,6 +146,18 @@ class sambaSamAccount extends baseModule {
 	// Array of well known rids
 	var $rids;
 
+
+	/** regular expression for home directory */
+	var $regex_homedir = '^[\][\]([a-z0-9\\.%-])+([\]([a-z0-9\\.%äöüß\\$-])+)+$';
+	/** regular expression for profile path */
+	var $regex_profilePath = '^([\][\]([a-zA-Z0-9\\.%-])+([\]([a-z0-9\\.%-])+)+)|([/][a-z]([a-z0-9\\._%-])*([/][a-z]([a-z0-9\\._%-])*)*)$';
+	/** regular expression for logon script */
+	var $regex_logonScript = '^([/])*([a-z0-9\\._%äöüß-])+([/]([a-z0-9\\._%äöüß-])+)*((\\.bat)|(\\.cmd))$';
+	/** regular expression for allowed workstations */
+	var $regex_workstations = '^([a-z0-9\\._-])+(,[a-z0-9\\._-])*$';
+
+	/** list of possible error messages */
+	var $messages = array();
 
 	/* $attribute['sambaLMPassword'] and sambaNTPassword can't accessed directly because it's enrcypted
 	* To read / write password function userPassword is needed
@@ -362,16 +398,14 @@ class sambaSamAccount extends baseModule {
 				$this->attributes['sambaProfilePath'][0] = str_replace('$user', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['uid'][0], $this->attributes['sambaProfilePath'][0]);
 				$this->attributes['sambaProfilePath'][0] = str_replace('$group', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['gid'][0], $this->attributes['sambaProfilePath'][0]);
 				if ($this->attributes['sambaProfiletPath'][0] != stripslashes($post['sambaProfilePath'])) $errors['sambaProfilePath'][] = array('INFO', _('Profile path'), _('Inserted user- or groupname in profilepath.'));
-				if ( (!$this->attributes['sambaHomePath'][0]=='') && (!ereg('^[\][\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+([\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%]|[?]|[?]|[?]|[?]|[?]|[?]|[?])+)+$', $this->attributes['sambaHomePath'][0])))
-						$errors['sambaHomePath'][] = array('ERROR', _('Home path'), _('Home path is invalid.'));
+				if ( (!$this->attributes['sambaHomePath'][0]=='') && (!ereg($this->regex_homedir, $this->attributes['sambaHomePath'][0])))
+						$errors['sambaHomePath'][] = $this->messages['homedir'];
 				if ( !ereg('^([a-z]|[A-Z]|[0-9]|[\|]|[\#]|[\*]|[\,]|[\.]|[\;]|[\:]|[\_]|[\-]|[\+]|[\!]|[\%]|[\&]|[\/]|[\?]|[\{]|[\[]|[\(]|[\)]|[\]]|[\}])*$',
 					$this->sambaLMPassword())) $errors['sambaLMPassword'][] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
-				if ( (!$this->attributes['sambaLogonScript'][0]=='') && (!ereg('^([/])*([a-z]|[0-9]|[.]|[-]|[_]|[%]|[?]|[?]|[?]|[?]|[?]|[?]|[?])+([a-z]|[0-9]|[.]|[-]|[_]|[%]|[?]|[?]|[?]|[?]|[?]|[?]|[?])*'.
-					'([/]([a-z]|[0-9]|[.]|[-]|[_]|[%]|[?]|[?]|[?]|[?]|[?]|[?]|[?])+([a-z]|[0-9]|[.]|[-]|[_]|[%]|[?]|[?]|[?]|[?]|[?]|[?]|[?])*)*(([.][b][a][t])|([.][c][m][d]))$', $this->attributes['sambaLogonScript'][0])))
-					$errors['sambaScriptPath'][] = array('ERROR', _('Script path'), _('Script path is invalid!'));
-				if ( (!$this->attributes['sambaProfilePath'][0]=='') && (!ereg('^[/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*([/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*)*$', $this->attributes['sambaProfilePath'][0]))
-					&& (!ereg('^[\][\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+([\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+)+$', $this->attributes['sambaProfilePath'][0])))
-						$errors['sambaProfilePath'][] = array('ERROR', _('Profile path'), _('Profile path is invalid!'));
+				if ( (!$this->attributes['sambaLogonScript'][0]=='') && (!ereg($this->regex_logonScript, $this->attributes['sambaLogonScript'][0])))
+					$errors['sambaScriptPath'][] = $this->messages['logonScript'];
+				if (!($this->attributes['sambaProfilePath'][0] == '') && !ereg($this->regex_profilePath, $this->attributes['sambaProfilePath'][0]))
+						$errors['sambaProfilePath'][] = $this->messages['profilePath'];
 				}
 			else {
 				$sambaHomePath = str_replace('$user', 'user', $this->attributes['sambaHomePath'][0]);
@@ -661,25 +695,25 @@ class sambaSamAccount extends baseModule {
 			// path to home directory
 			$return[] = array(
 				0 => array('kind' => 'text', 'text' => _('Home path') . ': '),
-				1 => array('kind' => 'input', 'type' => 'text', 'name' => 'sambaSamAccount_sambaHomePath', 'size' => '20', 'maxlength' => '255', 'value' => ''),
+				1 => array('kind' => 'input', 'type' => 'text', 'name' => 'sambaSamAccount_smbhome', 'size' => '20', 'maxlength' => '255', 'value' => ''),
 				2 => array('kind' => 'help', 'value' => 'TODO')
 				);
 			// profile path
 			$return[] = array(
 				0 => array('kind' => 'text', 'text' => _('Profile path') . ': '),
-				1 => array('kind' => 'input', 'type' => 'text', 'name' => 'sambaSamAccount_sambaProfilePath', 'size' => '20', 'maxlength' => '255', 'value' => ''),
+				1 => array('kind' => 'input', 'type' => 'text', 'name' => 'sambaSamAccount_profilePath', 'size' => '20', 'maxlength' => '255', 'value' => ''),
 				2 => array('kind' => 'help', 'value' => 'TODO')
 				);
 			// logon script
 			$return[] = array(
 				0 => array('kind' => 'text', 'text' => _('Logon script') . ': '),
-				1 => array('kind' => 'input', 'type' => 'text', 'name' => 'sambaSamAccount_sambaLogonScript', 'size' => '20', 'maxlength' => '255', 'value' => ''),
+				1 => array('kind' => 'input', 'type' => 'text', 'name' => 'sambaSamAccount_logonScript', 'size' => '20', 'maxlength' => '255', 'value' => ''),
 				2 => array('kind' => 'help', 'value' => 'TODO')
 				);
 			// allowed workstations
 			$return[] = array(
 				0 => array('kind' => 'text', 'text' => _('Samba workstations') . ': '),
-				1 => array('kind' => 'input', 'type' => 'text', 'name' => 'sambaSamAccount_sambaUserWorkstations', 'value' => ''),
+				1 => array('kind' => 'input', 'type' => 'text', 'name' => 'sambaSamAccount_userWorkstations', 'value' => ''),
 				2 => array('kind' => 'help', 'value' => 'TODO')
 				);
 			// domains
@@ -710,13 +744,6 @@ class sambaSamAccount extends baseModule {
 		return $return;
 	}
 
-	// checks if the values of a new or modified profile are valid
-	// $scope: the account type (user, group, host, ...)
-	// $options: a hash array (name => value) containing the options
-	function check_profileOptions($options) {
-		return array();
-	}
-	
 	function get_pdfFields($account_type="user") {
 		return array(	'displayName',
 							'uid',
