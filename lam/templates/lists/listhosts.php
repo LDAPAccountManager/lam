@@ -225,20 +225,7 @@ echo ("<br>\n");
 
 if (! $_GET['norefresh']) {
 	// generate list of possible suffixes
-	$sr = @ldap_search($_SESSION["ldap"]->server(),
-		$_SESSION["config"]->get_HostSuffix(),
-		"objectClass=organizationalunit", array("DN"));
-	if ($sr) {
-		$hst_units = ldap_get_entries($_SESSION["ldap"]->server, $sr);
-		// delete first array entry which is "count"
-		array_shift($hst_units);
-		// remove sub arrays
-		for ($i = 0; $i < sizeof($hst_units); $i++) $hst_units[$i] = $hst_units[$i]['dn'];
-		// add root suffix from config
-		if (!in_array($_SESSION["config"]->get_HostSuffix(), $hst_units)) {
-			array_push($hst_units, $_SESSION["config"]->get_HostSuffix());
-		}
-	}
+$hst_units = $_SESSION['ldap']->search_units($_SESSION["config"]->get_HostSuffix());
 }
 
 echo ("<p align=\"left\">\n");

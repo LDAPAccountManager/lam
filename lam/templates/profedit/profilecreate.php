@@ -274,7 +274,7 @@ elseif ($_GET['type'] == "host") {
 }
 
 // error: no or wrong type
-else echo (StatusMessage("ERROR", "", _("No type specified!")));
+else StatusMessage("ERROR", "", _("No type specified!"));
 
 echo ("</body></html>\n");
 
