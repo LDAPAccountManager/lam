@@ -1160,13 +1160,16 @@ class posixAccount extends baseModule {
 	function doUploadPostActions($data, $ids, $failed, &$temp) {
 		// on first call generate list of ldap operations
 		if (!isset($temp['counter'])) {
+			$temp['groups'] = array();
 			$temp['counter'] = 0;
 			$col = $ids['posixAccount_additionalGroups'];
 			for ($i = 0; $i < sizeof($data); $i++) {
+				if (in_array($i, $failed)) continue; // ignore failed accounts
 				if ($data[$i][$col] != "") {
 					$groups = explode(",", $data[$i][$col]);
 					for ($g = 0; $g < sizeof($groups); $g++) {
-						$temp['groups'][$groups[$g]][] = $data[$i][$ids['posixAccount_userName']];
+						if (!in_array($groups[$g], $temp['groups'])) $temp['groups'][] = $groups[$g];
+						$temp['members'][$groups[$g]][] = $data[$i][$ids['posixAccount_userName']];
 					}
 				}
 			}
@@ -1176,8 +1179,51 @@ class posixAccount extends baseModule {
 				'errors' => array()
 			);
 		}
+		// get DNs of groups
+		elseif (!isset($temp['dn'])) {
+			$temp['dn'] = array();
+			$result = $_SESSION['cache']->get_cache('cn', 'posixGroup', 'group');
+			$keys = array_keys($result);
+			for ($i = 0; $i < sizeof($result); $i++) {
+				$temp['dn'][$result[$keys[$i]][0]] = $keys[$i];
+			}
+		}
+		// add users to groups
+		elseif ($temp['counter'] < sizeof($temp['groups'])) {
+			if (isset($temp['dn'][$temp['groups'][$temp['counter']]])) {
+				$success = @ldap_mod_add($_SESSION['ldap']->server, $temp['dn'][$temp['groups'][$temp['counter']]], array('memberUID' => $temp['members'][$temp['groups'][$temp['counter']]]));
+				$errors = array();
+				if (!$success) {
+					$errors[] = array(
+						"ERROR",
+						_("LAM was unable to modify group memberships for group: %s"),
+						ldap_errno($_SESSION[ldap]->server) . ": " . ldap_error($_SESSION[ldap]->server),
+						array($temp['groups'][$temp['counter']])
+					);
+				}
+				$temp['counter']++;
+				return array (
+					'status' => 'inProgress',
+					'progress' => ($temp['counter'] * 100) / sizeof($temp['groups']),
+					'errors' => $errors
+				);
+			}
+			else {
+				$temp['counter']++;
+				return array (
+					'status' => 'inProgress',
+					'progress' => ($temp['counter'] * 100) / sizeof($temp['groups']),
+					'errors' => array(array('ERROR', _('Unable to find group in LDAP.'), $temp['groups'][$temp['counter']]))
+				);
+			}
+		}
+		// all groups are modified
 		else {
-		// TODO ldap_add()
+			return array (
+				'status' => 'finished',
+				'progress' => 100,
+				'errors' => array()
+			);
 		}
 	}
 
