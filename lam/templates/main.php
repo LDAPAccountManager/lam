@@ -19,9 +19,15 @@ $Id$
   along with this program; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-  This is the main window. The user and group lists will be shown in this frame.
-
 */
+
+/**
+* This is the main window. The user and group lists will be shown in this frameset.
+*
+* @package main
+* @author Roland Gruber
+*/
+
 
 // check if all suffixes in conf-file exist
 $conf = $_SESSION['config'];

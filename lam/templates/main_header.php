@@ -19,9 +19,16 @@ $Id$
   along with this program; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-
-
 */
+
+/**
+* Head frame in main window, includes links to lists etc.
+*
+* @package main
+* @author Roland Gruber
+*/
+
+/** access to configuration options */
 include_once ("../lib/config.inc");
 
 // start session
