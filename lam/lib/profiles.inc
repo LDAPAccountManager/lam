@@ -48,7 +48,6 @@ function getUserProfiles() {
 
 // returns an array of String with all available group profiles (without .prg)
 function getGroupProfiles() {
-// group profiles are not supported at this time
 	$dir = @dir(substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/groups");
 	$ret = array();
 	$pos = 0;
@@ -180,26 +179,51 @@ function loadUserProfile($profile) {
 				if (substr($line, 0, 12) == "smb_domain: ") {
 					if ($_SESSION['config']->is_samba3()) {
 						$dn = chop(substr($line, 12, strlen($line)-12));
-						// load domain object
-						$dom = new samba3domain();
-						$sr = @ldap_search($_SESSION['ldap']->server, $dn, "objectClass=sambaDomain");
-						if ($sr) {
-							$info = @ldap_get_entries($_SESSION['ldap']->server, $sr);
-							if ($info) {
-								// get domain attributes
-								@array_shift($info);
-								$dom->dn = $dn;
-								$dom->name = $info[0]['sambadomainname'][0];
-								$dom->SID = $info[0]['sambaSID'][0];
-								$dom->nextRID = $info[0]['sambanextrid'][0];
-								$dom->nextUserRID = $info[0]['sambanextuserrid'][0];
-								$dom->nextGroupRID = $info[0]['sambanextgrouprid'][0];
-								if (isset($dom->RIDbase)) $dom->RIDbase = $info[0]['sambaalgorithmicridbase'][0];
+						if (! stristr($dn, "sambaDomainName=")) {  // Samba 3 and Samba 2 profile
+							// get domain list
+							$doms = $_SESSION['ldap']->search_domains($_SESSION['config']->get_domainSuffix());
+							// search domain name
+							for ($d = 0; $d < sizeof($doms); $d++) {
+								if (strtolower($doms[$d]->name) == strtolower($dn)) {
+									$acc->smb_domain = $doms[$d];
+									break;
+								}
 							}
 						}
-						$acc->smb_domain = $dom;
+						else {  // Samba 3 and Samba 3 profile
+							// load domain object
+							$dom = new samba3domain();
+							$sr = @ldap_search($_SESSION['ldap']->server, $dn, "objectClass=sambaDomain");
+							if ($sr) {
+								$info = @ldap_get_entries($_SESSION['ldap']->server, $sr);
+								if ($info) {
+									// get domain attributes
+									@array_shift($info);
+									$dom->dn = $dn;
+									$dom->name = $info[0]['sambadomainname'][0];
+									$dom->SID = $info[0]['sambaSID'][0];
+									$dom->nextRID = $info[0]['sambanextrid'][0];
+									$dom->nextUserRID = $info[0]['sambanextuserrid'][0];
+									$dom->nextGroupRID = $info[0]['sambanextgrouprid'][0];
+									if (isset($dom->RIDbase)) $dom->RIDbase = $info[0]['sambaalgorithmicridbase'][0];
+								}
+							}
+							$acc->smb_domain = $dom;
+						}
 					}
-					else $acc->smb_domain = chop(substr($line, 12, strlen($line)-12));
+					else {
+						$dom_name =  chop(substr($line, 12, strlen($line)-12));
+						if (substr($dom_name, 0, 16) == "sambaDomainName=") {  // Samba 2 and Samba 3 profile
+							// extract domain name from DN
+							$dom_name = substr($dom_name, 16, strlen($dom_name) - 16);
+							$pos = strpos($dom_name, ",");
+							$dom_name = substr($dom_name, 0, $pos);
+							$acc->smb_domain = $dom_name;
+						}
+						else {  // Samba 2 and Samba 2 profile
+							$acc->smb_domain = $dom_name;
+						}
+					}
 					continue;
 				}
 				if (substr($line, 0, 7) == "quota: ") {
