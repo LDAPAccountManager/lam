@@ -366,6 +366,7 @@ function getquotas($type,$user='+') { // Whis function will return the quotas fr
 		if ($return->quota[$i][8]<$time) $return->quota[$i][8] = '';
 			else $return->quota[$i][8] = strval(($return->quota[$i][8]-$time)/3600) . _(' hours');
 		}
+	print_r ($return);
 	return $return;
 	}
 
@@ -540,10 +541,7 @@ function loaduser($dn) { // Will load all needed values from an existing account
 	$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 	$return->general_dn = (ldap_get_dn($_SESSION['ldap']->server(), $entry));
 	$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
-	if ($attr['uid'][0]) {
-		$return->general_username = $attr['uid'][0];
-		if ($_SESSION['config']->scriptServer) getquotas('user',$attr['uid'][0]);
-		}
+	if ($attr['uid'][0]) $return->general_username = $attr['uid'][0];
 	if ($attr['uidNumber'][0]) $return->general_uidNumber = $attr['uidNumber'][0];
 	if ($attr['homeDirectory'][0]) $return->general_homedir = $attr['homeDirectory'][0];
 	if ($attr['shadowLastChange'][0]) $return->unix_shadowLastChange = $attr['shadowLastChange'][0];
@@ -672,10 +670,7 @@ function loadgroup($dn) { // Will load all needed values from an existing group
 	$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 	$return->general_dn = (ldap_get_dn($_SESSION['ldap']->server(), $entry));
 	$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
-	if ($attr['gidNumber'][0]) {
-		$return->general_uidNumber = $attr['gidNumber'][0];
-		if ($_SESSION['config']->scriptServer) getquotas('group',$attr['uid'][0]);
-		}
+	if ($attr['gidNumber'][0]) $return->general_uidNumber = $attr['gidNumber'][0];
 	if ($attr['description'][0]) $return->general_gecos = $attr['description'][0];
 	if ($attr['cn'][0]) {
 		$return->general_username = $attr['cn'][0];
