@@ -36,32 +36,90 @@ setlanguage();
 // check if user already pressed button
 if ($_POST['add_suff'] || $_POST['cancel']) {
 	if ($_POST['add_suff']) {
-	$fail = array();
-	$errors = array();
-	$new_suff = $_POST['new_suff'];
-	$new_suff = str_replace("\\'", "", $new_suff);
-	$new_suff = explode(";", $new_suff);
-		// add entry
+		$fail = array();
+		$errors = array();
+		$new_suff = $_POST['new_suff'];
+		$new_suff = str_replace("\\'", "", $new_suff);
+		$new_suff = explode(";", $new_suff);
+		// add entries
 		for ($i = 0; $i < sizeof($new_suff); $i++) {
+			// check if entry is already present
+			$info = @ldap_search($_SESSION['ldap']->server, $new_suff[$i], "", array());
+			$res = @ldap_get_entries($_SESSION['ldap']->server, $info);
+			if ($res) continue;
 			$suff = $new_suff[$i];
 			// generate DN and attributes
 			$tmp = explode(",", $suff);
 			$name = explode("=", $tmp[0]);
 			array_shift($tmp);
 			$end = implode(",", $tmp);
-			if ($name[0] != "ou") {
-				$fail[] = $suff;
-				continue;
+			if ($name[0] != "ou") {  // add root entry
+				$attr = array();
+				$attr[$name[0]] = $name[1];
+				$attr['objectClass'] = 'organization';
+				$dn = $suff;
+				if (!@ldap_add($_SESSION['ldap']->server(), $dn, $attr)) {
+					$fail[] = $suff;
+					continue;
+				}
 			}
-			else {
+			else {  // add organizational unit
 				$name = $name[1];
 				$attr = array();
 				$attr['objectClass'] = "organizationalunit";
 				$attr['ou'] = $name;
-				$dn = "ou=" . $name . "," . $end;
+				$dn = $suff;
 				if (!@ldap_add($_SESSION['ldap']->server(), $dn, $attr)) {
-					$fail[] = $suff;
-					$error[] = ldap_error($_SESSION['ldap']->server());
+					// check if we have to add parent entries
+					if (ldap_errno($_SESSION['ldap']->server()) == 32) {
+						$temp = explode(",", $suff);
+						$subsuffs = array();
+						// make list of subsuffixes
+						for ($k = 0; $k < sizeof($temp); $k++) {
+							$part = explode("=", $temp[$k]);
+							if ($part[0] == "ou") $subsuffs[] = implode(",", array_slice($temp, $k));
+							else {
+								$subsuffs[] = implode(",", array_slice($temp, $k));
+								break;
+							}
+						}
+						// create missing entries
+						for ($k = sizeof($subsuffs) - 1; $k >= 0; $k--) {
+							// check if subsuffix is present
+							$info = @ldap_search($_SESSION['ldap']->server, $subsuffs[$k], "", array());
+							$res = @ldap_get_entries($_SESSION['ldap']->server, $info);
+							if (!$res) {
+								$suffarray = explode(",", $subsuffs[$k]);
+								$headarray = explode("=", $suffarray[0]);
+								if ($headarray[0] == "ou") {  // add ou entry
+									$attr = array();
+									$attr['objectClass'] = 'organizationalunit';
+									$attr['ou'] = $headarray[1];
+									$dn = $subsuffs[$k];
+									if (!@ldap_add($_SESSION['ldap']->server(), $dn, $attr)) {
+										$fail[] = $suff;
+										$error[] = ldap_error($_SESSION['ldap']->server());
+										break;
+									}
+								}
+								else {  // add root entry
+									$attr = array();
+									$attr['objectClass'] = 'organization';
+									$attr[$headarray[0]] = $headarray[1];
+									$dn = $subsuffs[$k];
+									if (!@ldap_add($_SESSION['ldap']->server(), $dn, $attr)) {
+										$fail[] = $suff;
+										$error[] = ldap_error($_SESSION['ldap']->server());
+										break;
+									}
+								}
+							}
+						}
+					}
+					else {
+						$fail[] = $suff;
+						$error[] = ldap_error($_SESSION['ldap']->server());
+					}
 				}
 			}
 		}

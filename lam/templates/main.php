@@ -29,22 +29,22 @@ $new_suffs = array();
 if ($conf->get_UserSuffix() && ($conf->get_UserSuffix() != "")) {
 	$info = @ldap_search($_SESSION['ldap']->server, $conf->get_UserSuffix(), "", array());
 	$res = @ldap_get_entries($_SESSION['ldap']->server, $info);
-	if (!$res) $new_suffs[] = $conf->get_UserSuffix();
+	if (!$res && !in_array($conf->get_UserSuffix(), $new_suffs)) $new_suffs[] = $conf->get_UserSuffix();
 }
 if ($conf->get_GroupSuffix() && ($conf->get_GroupSuffix() != "")) {
 	$info = @ldap_search($_SESSION['ldap']->server, $conf->get_GroupSuffix(), "", array());
 	$res = @ldap_get_entries($_SESSION['ldap']->server, $info);
-	if (!$res) $new_suffs[] = $conf->get_GroupSuffix();
+	if (!$res && !in_array($conf->get_GroupSuffix(), $new_suffs)) $new_suffs[] = $conf->get_GroupSuffix();
 }
 if ($conf->get_HostSuffix() && ($conf->get_HostSuffix() != "")) {
 	$info = @ldap_search($_SESSION['ldap']->server, $conf->get_HostSuffix(), "", array());
 	$res = @ldap_get_entries($_SESSION['ldap']->server, $info);
-	if (!$res) $new_suffs[] = $conf->get_HostSuffix();
+	if (!$res && !in_array($conf->get_HostSuffix(), $new_suffs)) $new_suffs[] = $conf->get_HostSuffix();
 }
 if ($conf->get_DomainSuffix() && ($conf->get_DomainSuffix() != "")) {
 	$info = @ldap_search($_SESSION['ldap']->server, $conf->get_DomainSuffix(), "", array());
 	$res = @ldap_get_entries($_SESSION['ldap']->server, $info);
-	if (!$res) $new_suffs[] = $conf->get_DomainSuffix();
+	if (!$res && !in_array($conf->get_DomainSuffix(), $new_suffs)) $new_suffs[] = $conf->get_DomainSuffix();
 }
 
 if ($_SESSION['config']->is_samba3()) {
