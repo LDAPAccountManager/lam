@@ -1098,9 +1098,9 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 		$attr['shadowWarning'] = $values->unix_pwdwarn; // shadowAccount_may
 	if (($values->unix_pwdwarn != $values_old->unix_pwdwarn) && ($values->general_pwdwarn ==''))
 		$attr_rem['shadowWarning'] = $values_old->unix_pwdwarn; // shadowAccount_may
-	if (($values->general_pwdallowlogin != $values_old->general_pwdallowlogin) && ($values->general_pwdallowlogin !=''))
+	if (($values->unix_pwdallowlogin != $values_old->unix_pwdallowlogin) && ($values->unix_pwdallowlogin !=''))
 		$attr['shadowInactive'] = $values->unix_pwdallowlogin; // shadowAccount_may
-	if (($values->general_pwdallowlogin != $values_old->general_pwdallowlogin) && ($values->general_pwdallowlogin ==''))
+	if (($values->unix_pwdallowlogin != $values_old->unix_pwdallowlogin) && ($values->unix_pwdallowlogin ==''))
 		$attr_rem['shadowInactive'] = $values_old->unix_pwdallowlogin; // shadowAccount_may
 	if (($date != $date_old) && $date) $attr['shadowExpire'] =  $date ; // shadowAccount_may
 	if (($date != $date_old) && !$date) $attr_rem['shadowExpire'] =  $date_old ; // shadowAccount_may
