@@ -84,7 +84,7 @@ function displayHelp($helpEntry,$helpVariables) {
 }
 
 /* If no help number was submitted print error message */
-if(!isset($_GET['HelpNumber']))
+if(!isset($_GET['item']))
 {
 	$errorMessage = _("Sorry no help number submitted.");
 	echoHTMLHead();
@@ -95,9 +95,19 @@ if(!isset($_GET['HelpNumber']))
 
 $helpEntry = array();
 
-if(isset($_GET['Module'])) {
+if(isset($_GET['module'])) {
 	include_once("../lib/modules.inc");
-	$helpEntry = getHelp($_GET['Module'],$_GET['HelpNumber']);
+	$helpEntry = getHelp($_GET['module'],$_GET['item']);
+	if(!$helpEntry) {
+		$variables = array();
+		array_push($variables,$_GET['item']);
+		array_push($variables,$_GET['module']);
+		$errorMessage = _("Sorry this help id ({bold}%s{endbold}) is not available for this module ({bold}%s{endbold}).");
+		echoHTMLHead();
+		statusMessage("ERROR","",$errorMessage,$variables);
+		echoHTMLFoot();
+		exit;
+	}
 }
 else {
 	/* If submitted help number is not in help/help.inc print error message */
