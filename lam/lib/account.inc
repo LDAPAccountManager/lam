@@ -630,7 +630,7 @@ function ldapreload($type) {
 				$_SESSION['groupDN'][0] = time();
 				// Search 4 values which should be cached
 				$result = @ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(),
-					'objectClass=posixGroup', array('gidNumber', 'cn'), 0);
+					'objectClass=posixGroup', array('gidNumber', 'cn', 'memberUid'), 0);
 				// Write search result in array
 				$entry = @ldap_first_entry($_SESSION['ldap']->server(), $result);
 				while ($entry) {
@@ -640,6 +640,11 @@ function ldapreload($type) {
 						$_SESSION['groupDN'][$dn]['uidNumber'] = $attr['gidNumber'][0];
 					if (isset($attr['cn'][0]))
 						$_SESSION['groupDN'][$dn]['cn'] = $attr['cn'][0];
+					$i=0;
+					while (isset($attr['memberUid'][$i])) {
+						$_SESSION['groupDN'][$dn]['memberUid'][$i] = $attr['memberUid'][$i];
+						$i++;
+						}
 					$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
 					}
 				}
@@ -983,15 +988,11 @@ function loaduser($dns) {
 			$return[$i]->general_group = getgrnam($attr['gidNumber'][0]);
 
 			// get all additional groupmemberships
-			// load all groups which have memberUid set to the username which should be loaded
-			$result2 = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(), "memberUid=".$attr['uid'][0], array('cn'));
-			$entry2 = ldap_first_entry($_SESSION['ldap']->server(), $result2);
-			// loop for every group
-			while ($entry2) {
-				$attr2 = ldap_get_attributes($_SESSION['ldap']->server(), $entry2);
-				// Add groupnames to array
-				if ($attr2['cn'][0]!=$return[$i]->general_group) $return[$i]->general_groupadd[]=$attr2['cn'][0];
-				$entry2 = ldap_next_entry($_SESSION['ldap']->server(), $entry2);
+			// Load groups in cache
+			ldapreload('group');
+			foreach ($_SESSION['groupDN'] as $group) {
+				if (is_array($group['memberUid']))
+					if (in_array($return[$i]->general_username, $group['memberUid'])) $return[$i]->general_groupadd[] = $group['cn'];
 				}
 
 			/* Write attributes into $return.
@@ -1447,7 +1448,11 @@ function createuser($values, $uselamdaemon=true) {
 			// Add user to group
 			$success = ldap_mod_add($_SESSION['ldap']->server(), $dn, array('memberUid' => $values->general_username));
 			if (!$success) return 4;
-		}
+			// Add new memberUid to cache-array
+			if ((isset($_SESSION['groupDN']))) {
+				if (!in_array($values->general_username, $_SESSION['groupDN'][$dn]['memberUid'])) $_SESSION['groupDN'][$dn]['memberUid'][] = $_SESSION['groupDN'][$dn]['memberUid'];
+				}
+			}
 	// Add new user to cache-array
 	if ((isset($_SESSION['userDN']))) {
 		$_SESSION['userDN'][$values->general_dn]['cn'] = $values->general_username;
@@ -1855,8 +1860,19 @@ function modifyuser($values,$values_old,$uselamdaemon=true) { // Will modify the
 		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 		// loop for every found group and remove membership
 		while ($entry) {
-			$success = ldap_mod_del($_SESSION['ldap']->server(), ldap_get_dn($_SESSION['ldap']->server(), $entry) , array('memberUid' => $values_old->general_username));
+			$dn = ldap_get_dn($_SESSION['ldap']->server(), $entry);
+			$success = ldap_mod_del($_SESSION['ldap']->server(), $dn , array('memberUid' => $values_old->general_username));
 			// *** fixme add error-message if memberUid couldn't be deleted
+			// Remove old memberUid to cache-array
+			if ((isset($_SESSION['groupDN']))) {
+				if (!in_array($values->general_username, $_SESSION['groupDN'][$dn]['memberUid'])) {
+					$i=0;
+					for ($i=0; $i<count($dn); $i++) {
+						if ($_SESSION['groupDN'][$dn]['memberUid'][$i] == $values->general_username) unset ($_SESSION['groupDN'][$dn]['memberUid'][$i]);
+						$_SESSION['groupDN'][$dn]['memberUid'][$i] = array_values($_SESSION['groupDN'][$dn]['memberUid'][$i]);
+						}
+					}
+				}
 			$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
 			}
 		}
@@ -1886,20 +1902,41 @@ function modifyuser($values,$values_old,$uselamdaemon=true) { // Will modify the
 		if ($attr2['memberUid']) {
 			// Remove user from groups he's not member anymore
 			if (@in_array($values->general_username, $attr2['memberUid']) && !@in_array($attr2['cn'][0],$values->general_groupadd)) {
-				$success = ldap_mod_del($_SESSION['ldap']->server(), ldap_get_dn($_SESSION['ldap']->server(), $entry) ,array('memberUid' => $values->general_username));
+				$dn = ldap_get_dn($_SESSION['ldap']->server(), $entry);
+				$success = ldap_mod_del($_SESSION['ldap']->server(), $dn ,array('memberUid' => $values->general_username));
 				if (!$success) return 5;
+				// Remove old memberUid to cache-array
+				if ((isset($_SESSION['groupDN']))) {
+					if (!in_array($values->general_username, $_SESSION['groupDN'][$dn]['memberUid'])) {
+						$i=0;
+						for ($i=0; $i<count($dn); $i++) {
+							if ($_SESSION['groupDN'][$dn]['memberUid'][$i] == $values->general_username) unset ($_SESSION['groupDN'][$dn]['memberUid'][$i]);
+							$_SESSION['groupDN'][$dn]['memberUid'][$i] = array_values($_SESSION['groupDN'][$dn]['memberUid'][$i]);
+							}
+						}
+					}
 				}
 			// Add user to groups
 			if (!@in_array($values->general_username, $attr2['memberUid']) && @in_array($attr2['cn'][0],$values->general_groupadd)) {
-				$success = ldap_mod_add($_SESSION['ldap']->server(), ldap_get_dn($_SESSION['ldap']->server(), $entry) ,array('memberUid' => $values->general_username));
+				$dn = ldap_get_dn($_SESSION['ldap']->server(), $entry);
+				$success = ldap_mod_add($_SESSION['ldap']->server(), $dn ,array('memberUid' => $values->general_username));
 				if (!$success) return 5;
+				// Add new memberUid to cache-array
+				if ((isset($_SESSION['groupDN']))) {
+					if (!in_array($values->general_username, $_SESSION['groupDN'][$dn]['memberUid'])) $_SESSION['groupDN'][$dn]['memberUid'][] = $_SESSION['groupDN'][$dn]['memberUid'];
+					}
 				}
 			}
 		else {
 			// Add user to groups
 			if (@in_array($attr2['cn'][0],$values->general_groupadd)) {
-				$success = ldap_mod_add($_SESSION['ldap']->server(), ldap_get_dn($_SESSION['ldap']->server(), $entry) ,array('memberUid' => $values->general_username));
+				$dn = ldap_get_dn($_SESSION['ldap']->server(), $entry);
+				$success = ldap_mod_add($_SESSION['ldap']->server(), $dn ,array('memberUid' => $values->general_username));
 				if (!$success) return 5;
+				// Add new memberUid to cache-array
+				if ((isset($_SESSION['groupDN']))) {
+					if (!in_array($values->general_username, $_SESSION['groupDN'][$dn]['memberUid'])) $_SESSION['groupDN'][$dn]['memberUid'][] = $_SESSION['groupDN'][$dn]['memberUid'];
+					}
 				}
 			}
 		$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
@@ -2272,6 +2309,7 @@ function creategroup($values, $uselamdaemon=true) {
 	if ($_SESSION['config']->scriptServer && is_array($values->quota) && $uselamdaemon) setquotas(array($values));
 	// Add new group to cache-array
 	if ((isset($_SESSION['groupDN']))) {
+		$_SESSION['groupDN'][$dn]['memberUid'] = $user;
 		$_SESSION['groupDN'][$values->general_dn]['cn'] = $values->general_username;
 		$_SESSION['groupDN'][$values->general_dn]['uidNumber'] = $values->general_uidNumber;
 		}
@@ -2393,6 +2431,7 @@ function modifygroup($values,$values_old, $uselamdaemon=true) {
 		if ($values->general_dn != $values_old->general_dn) {
 			unset ($_SESSION['groupDN'][$values_old->general_dn]);
 			}
+		if (is_array($values->unix_memberUid)) $_SESSION['groupDN'][$values->general_dn]['memberUid'] = $values->unix_memberUid;
 		$_SESSION['groupDN'][$values->general_dn]['cn'] = $values->general_username;
 		$_SESSION['groupDN'][$values->general_dn]['uidNumber'] = $values->general_uidNumber;
 		}
