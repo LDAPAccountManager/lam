@@ -182,7 +182,7 @@ function createUserPDF($accounts) {
 			$pdfFile->setFont("times","B",10);
 			$pdfFile->Cell(50,5,_("Windows password") . ":",0,0,"R",0);
 			$pdfFile->setFont("times","",10);
-			$pdfFile->Cell(50,5,_("Window password disabled!"),0,1,"L",0);
+			$pdfFile->Cell(50,5,_("Windows password disabled!"),0,1,"L",0);
 		}
 		elseif($account->smb_useunixpwd == "1") {
 			$pdfFile->setFont("times","B",10);
