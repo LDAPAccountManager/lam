@@ -208,7 +208,7 @@ function getquotas($users) {
 			if ($return[$i]->general_username!='') $userstring .= $return[$i]->general_username." quota get ".$return[$i]->type."\n";
 				else $userstring .= "+ quota get ".$return[$i]->type."\n";
 		}
-	if (function_exists(proc_open)) {
+	if (function_exists('proc_open')) {
 		// New Code, requires PHP 4.3
 		$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." - -";
 		$descriptorspec = array(
@@ -331,7 +331,7 @@ function setquotas($values2) {
 		$userstring = $values2->general_username." quota set ".$values2->type." ".$quotastring."\n";
 		}
 
-	if (function_exists(proc_open)) {
+	if (function_exists('proc_open')) {
 		// New Code, requires PHP 4.3
 		$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." - -";
 		$descriptorspec = array(
@@ -396,7 +396,7 @@ function remquotas($users, $type) {
 		}
 	else $userstring = "$users quota rem $type\n";
 
-	if (function_exists(proc_open)) {
+	if (function_exists('proc_open')) {
 		// New Code, requires PHP 4.3
 		$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." - -";
 		$descriptorspec = array(
@@ -461,7 +461,7 @@ function addhomedir($users) {
 		}
 	else $userstring = "$users home add\n";
 
-	if (function_exists(proc_open)) {
+	if (function_exists('proc_open')) {
 		// New Code, requires PHP 4.3
 		$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." - -";
 		$descriptorspec = array(
@@ -527,7 +527,7 @@ function remhomedir($users) {
 		}
 	else $userstring = "$users home rem\n";
 
-	if (function_exists(proc_open)) {
+	if (function_exists('proc_open')) {
 		// New Code, requires PHP 4.3
 		$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." - -";
 		$descriptorspec = array(
