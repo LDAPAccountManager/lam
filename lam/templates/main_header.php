@@ -56,14 +56,14 @@ if ($_SESSION['config']->get_Suffix('tree') != "") $lists++;
 <table border=0 width="100%">
 	<tr>
 		<td width="200">
-			<a href="tools.php" target="mainpart"><?php echo _("Tools") ?></a>
+			<img src="../graphics/tools.png">&nbsp;<a href="tools.php" target="mainpart"><?php echo _("Tools") ?></a>
 		</td>
 		<?php
 			echo "<td colspan=$lists align=\"center\">\n";
 		?>
 			<a href="http://lam.sf.net" target="new_window"><img src="../graphics/banner.jpg" border=1 alt="LDAP Account Manager"></a>
 		</td>
-	<td width="200" align="right" height=20><a href="./logout.php" target="_top"><big><b><?php echo _("Logout") ?></b></big></a></td>
+	<td width="200" align="right" height=20><img src="../graphics/go.png">&nbsp;<a href="./logout.php" target="_top"><big><b><?php echo _("Logout") ?></b></big></a></td>
 	</tr>
 	<tr>
 		<?php
@@ -75,16 +75,16 @@ if ($_SESSION['config']->get_Suffix('tree') != "") $lists++;
 		<td></td>
 		<?php
 			if ($_SESSION['config']->get_Suffix('tree') != "") {
-				echo '<td width="120" align="center"><a href="./tree/tree_view.php" target="mainpart"><big>' . _("Tree view") . '</big></a></td>' . "\n";
+				echo '<td width="120" align="center"><img src="../graphics/process.png">&nbsp;<a href="./tree/tree_view.php" target="mainpart"><big>' . _("Tree view") . '</big></a></td>' . "\n";
 			}
 			if ($_SESSION['config']->get_Suffix('user') != "") {
-				echo '<td width="120" align="center"><a href="./lists/listusers.php" target="mainpart"><big>' . _("Users") . '</big></a></td>' . "\n";
+				echo '<td width="120" align="center"><img src="../graphics/user.png">&nbsp;<a href="./lists/listusers.php" target="mainpart"><big>' . _("Users") . '</big></a></td>' . "\n";
 			}
 			if ($_SESSION['config']->get_Suffix('group') != "") {
-				echo '<td width="120" align="center"><a href="./lists/listgroups.php" target="mainpart"><big>' . _("Groups") . '</big></a></td>' . "\n";
+				echo '<td width="120" align="center"><img src="../graphics/ou.png">&nbsp;<a href="./lists/listgroups.php" target="mainpart"><big>' . _("Groups") . '</big></a></td>' . "\n";
 			}
 			if ($_SESSION['config']->get_Suffix('host') != "") {
-				echo '<td width="120" align="center"><a href="./lists/listhosts.php" target="mainpart"><big>' . _("Hosts") . '</big></a></td>' . "\n";
+				echo '<td width="120" align="center"><img src="../graphics/host.png">&nbsp;<a href="./lists/listhosts.php" target="mainpart"><big>' . _("Hosts") . '</big></a></td>' . "\n";
 			}
 		?>
 		<td></td>
