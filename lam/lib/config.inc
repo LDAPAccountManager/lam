@@ -117,9 +117,6 @@ class Config {
   // if "yes" use the new LDAP schema for Samba 3.x
   var $samba3;
 
-  // Samba 3 domain SIDs
-  var $domainSID;
-
   // name of configuration file
   var $file;
 
@@ -232,10 +229,6 @@ class Config {
 	  $this->samba3 = chop(substr($line, 8, strlen($line)-8));
 	  continue;
 	}
-	if (substr($line, 0, 11) == "domainSID: ") {
-	  $this->domainSID = chop(substr($line, 11, strlen($line)-11));
-	  continue;
-	}
       }
       fclose($file);
     }
@@ -252,7 +245,7 @@ class Config {
       $save_serverURL = $save_passwd = $save_admins = $save_suffusr = $save_suffgrp = $save_suffhst =
 	$save_minUID = $save_maxUID = $save_minGID = $save_maxGID = $save_minMach = $save_maxMach =
 	$save_usrlstatrr =  $save_grplstatrr = $save_hstlstatrr = $save_maxlstent = $save_deflang =
-	$save_scriptPath = $save_scriptServer = $save_samba3 = $save_domainSID = $save_suffdom =
+	$save_scriptPath = $save_scriptServer = $save_samba3 = $save_suffdom =
 	$save_suffmap = False;
 	$file = fopen($conffile, "r");
 	$file_array = array();
@@ -375,11 +368,6 @@ class Config {
 			$save_samba3 = True;
 			continue;
 		}
-		if (substr($file_array[$i], 0, 11) == "domainSID: ") {
-			$file_array[$i] = "domainSID: " . $this->domainSID . "\n";
-			$save_domainSID = True;
-			continue;
-		}
 	}
 	// check if we have to add new entries (e.g. if user upgraded LAM and has an old config file)
 	if (!$save_serverURL == True) array_push($file_array, "\n\n# server address (e.g. ldap://localhost:389 or ldaps://localhost:636)\n" . "serverURL: " . $this->ServerURL . "\n");
@@ -414,7 +402,6 @@ class Config {
 	if (!$save_scriptPath == True) array_push($file_array, "\n\n# Path to external Script\n" . "scriptPath: " . $this->scriptPath . "\n");
 	if (!$save_scriptServer == True) array_push($file_array, "\n\n# Server of external Script\n" . "scriptServer: " . $this->scriptServer . "\n");
 	if (!$save_samba3 == True) array_push($file_array, "\n\n# Set to \"yes\" only if you use the new Samba 3.x schema.\n" . "samba3: " . $this->samba3 . "\n");
-	if (!$save_domainSID == True) array_push($file_array, "\n\n# Samba 3 domain SID. Set only if you use the new Samba 3.x schema.\n" . "domainSID: " . $this->domainSID . "\n");
 	$file = fopen($conffile, "w");
 	if ($file) {
 		for ($i = 0; $i < sizeof($file_array); $i++) fputs($file, $file_array[$i]);
@@ -431,7 +418,6 @@ class Config {
   function printconf() {
     echo "<b>" . _("Server address") . ": </b>" . $this->ServerURL . "<br>";
     echo "<b>" . _("Samba 3.x schema") . ": </b>" . $this->samba3 . "<br>";
-    echo "<b>" . _("Domain SID") . ": </b>" . $this->domainSID . "<br>";
     echo "<b>" . _("UserSuffix") . ": </b>" . $this->Suff_users . "<br>";
     echo "<b>" . _("GroupSuffix") . ": </b>" . $this->Suff_groups . "<br>";
     echo "<b>" . _("HostSuffix") . ": </b>" . $this->Suff_hosts . "<br>";
@@ -763,23 +749,6 @@ class Config {
 	function set_samba3($value) {
 		if (is_string($value) && eregi("^(yes|no)$", $value)) {
 			$this->samba3 = $value;
-		}
-		else return false;
-		return true;
-	}
-
-	// returns the Samba domain SID (Samba 3 only)
-	function get_domainSID() {
-		return $this->domainSID;
-	}
-
-	// sets the Samba domain SID (Samba 3 only)
-	function set_domainSID($value) {
-		if (!$value) { // optional parameter
-			$this->domainSID = "";
-		}
-		elseif (is_string($value) && eregi("^S-[0-9]-[0-9]-[0-9]{2,2}-[0-9]*-[0-9]*-[0-9]*$", $value)) {
-			$this->domainSID = $value;
 		}
 		else return false;
 		return true;

@@ -58,7 +58,6 @@ if ($_SESSION['lang']) $lang = $_SESSION['lang'];
 if ($_SESSION['scriptpath']) $scriptpath = $_SESSION['scriptpath'];
 if ($_SESSION['scriptserver']) $scriptserver = $_SESSION['scriptserver'];
 if ($_SESSION['samba3']) $samba3 = $_SESSION['samba3'];
-if ($_SESSION['domainSID']) $domainSID = $_SESSION['domainSID'];
 if ($_SESSION['filename']) $filename = $_SESSION['filename'];
 
 // check if password is correct
@@ -176,12 +175,6 @@ if (!$samba3) {
 	exit;
 }
 
-if (($samba3 == "yes") && !eregi("^S-[0-9]-[0-9]-[0-9]{2,2}-[0-9]*-[0-9]*-[0-9]*$", $domainSID)) {
-	echo ("<font color=\"red\"><b>" . _("Samba 3 domain SID is invalid!") . "</b></font>");
-	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
-	exit;
-}
-
 if ($scriptpath && !eregi("^/[a-z0-9_\\-]+(/[a-z0-9_\\.\\-]+)+$", $scriptpath)) {
 	echo ("<font color=\"red\"><b>" . _("Script path is invalid!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
@@ -214,7 +207,6 @@ $conf->set_hostlistAttributes($hstlstattr);
 $conf->set_MaxListEntries($maxlistentries);
 $conf->set_defaultLanguage($lang);
 $conf->set_samba3($samba3);
-$conf->set_domainSID($domainSID);
 $conf->set_scriptpath($scriptpath);
 $conf->set_scriptserver($scriptserver);
 
@@ -263,7 +255,6 @@ unset($_SESSION['lang']);
 unset($_SESSION['scriptpath']);
 unset($_SESSION['scriptserver']);
 unset($_SESSION['samba3']);
-unset($_SESSION['domainSID']);
 unset($_SESSION['filename']);
 
 ?>

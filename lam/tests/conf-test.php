@@ -54,7 +54,6 @@ $defaultlanguage = $conf->get_defaultlanguage();
 $scriptpath = $conf->get_scriptPath();
 $scriptServer = $conf->get_scriptServer();
 $samba3 = $conf->get_samba3();
-$domainSID = $conf->get_domainSID();
 echo ("done<br>");
 // next we modify them and save lam.conf
 echo ("Changing preferences...");
@@ -81,7 +80,6 @@ $conf->set_defaultlanguage("de_AT:iso639_de:Deutsch (Oesterreich)");
 $conf->set_scriptPath("/var/www/lam/lib/script");
 $conf->set_scriptServer("127.0.0.1");
 $conf->set_samba3("yes");
-$conf->set_domainSID("S-0-1-22-1234567890-1234567890-1234567890");
 $conf->save();
 echo ("done<br>");
 // at last all preferences are read from lam.conf and compared
@@ -112,7 +110,6 @@ if ($conf->get_defaultlanguage() != "de_AT:iso639_de:Deutsch (Oesterreich)") ech
 if ($conf->get_scriptPath() != "/var/www/lam/lib/script") echo ("<br><font color=\"#FF0000\">Saving script path failed!</font><br>");
 if ($conf->get_scriptServer() != "127.0.0.1") echo ("<br><font color=\"#FF0000\">Saving script server failed!</font><br>");
 if ($conf->get_samba3() != "yes") echo ("<br><font color=\"#FF0000\">Saving samba3 failed!</font><br>");
-if ($conf->get_domainSID() != "S-0-1-22-1234567890-1234567890-1234567890") echo ("<br><font color=\"#FF0000\">Saving domainSID failed!</font><br>");
 echo ("done<br>");
 // restore old values
 echo ("Restoring old preferences...");
@@ -139,7 +136,6 @@ $conf->set_defaultLanguage($defaultlanguage);
 $conf->set_scriptPath($scriptpath);
 $conf->set_scriptServer($scriptserver);
 $conf->set_samba3($samba3);
-$conf->set_domainSID($domainSID);
 $conf->save();
 echo ("done<br>");
 // finished

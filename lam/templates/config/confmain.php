@@ -60,7 +60,6 @@ if ($_POST['back'] || $_POST['submitconf']){
 		if ($_POST['maxlistentries']) $_SESSION['maxlistentries'] = $_POST['maxlistentries'];
 		if ($_POST['lang']) $_SESSION['lang'] = $_POST['lang'];
 		if ($_POST['samba3']) $_SESSION['samba3'] = $_POST['samba3'];
-		if ($_POST['domainSID']) $_SESSION['domainSID'] = $_POST['domainSID'];
 		if ($_POST['scriptpath']) $_SESSION['scriptpath'] = $_POST['scriptpath'];
 		else $_SESSION['scriptpath'] = "";
 		if ($_POST['scriptserver']) $_SESSION['scriptserver'] = $_POST['scriptserver'];
@@ -161,15 +160,6 @@ echo ("<tr><td align=\"right\"><b>".
 if ($conf->get_samba3() == "yes") echo ("<option>yes</option><option>no</option></select></td>");
 else echo ("<option>no</option><option>yes</option></select></td>");
 echo ("<td><a href=\"../help.php?HelpNumber=213\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
-
-// new line
-echo ("<tr><td colspan=3>&nbsp</td></tr>");
-
-// Samba domain SID
-echo ("<tr><td align=\"right\"><b>".
-	_("Domain SID") . " **: </b></td>".
-	"<td><input size=50 type=\"text\" name=\"domainSID\" value=\"" . $conf->get_domainSID() . "\"></td>\n");
-echo ("<td><a href=\"../help.php?HelpNumber=214\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 
 echo ("</table>");
 echo ("</fieldset>");
