@@ -42,7 +42,10 @@ if (!$_SESSION['ldap'] || !$_SESSION['ldap']->server()) {
 
 // print header
 echo $_SESSION['header'];
-echo ("<html><head>\n<title></title>\n<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n</head><body><br>\n");
+echo "<html><head>\n<title></title>\n<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
+echo "<meta http-equiv=\"pragma\" content=\"no-cache\">\n";
+echo "<meta http-equiv=\"cache-control\" content=\"no-cache\">\n";
+echo "</head><body><br>\n";
 
 $acct = new Account();
 

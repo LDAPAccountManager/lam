@@ -63,6 +63,8 @@ if (($_GET['action'] == "edit") || ($_GET['action'] == "new")) {
 	echo "<head>\n";
 	echo "<title>Domain Management</title>\n";
 	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">\n";
+	echo "<meta http-equiv=\"pragma\" content=\"no-cache\">\n";
+	echo "<meta http-equiv=\"cache-control\" content=\"no-cache\">\n";
 	echo "</head>\n";
 	echo "<body>\n";
 	// print message, if needed

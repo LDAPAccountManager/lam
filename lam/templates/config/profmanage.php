@@ -44,6 +44,8 @@ echo $_SESSION['header'];
 			?>
 		</title>
 		<link rel="stylesheet" type="text/css" href="../../style/layout.css">
+		<meta http-equiv="pragma" content="no-cache">
+		<meta http-equiv="cache-control" content="no-cache">
 	</head>
 	<body>
 		<p align="center"><a href="http://lam.sf.net" target="_blank">

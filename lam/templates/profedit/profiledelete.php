@@ -44,6 +44,8 @@ echo $_SESSION['header'];
 echo ("<html>\n");
 echo ("<head><title>" . _("Delete User Profile") . "</title>\n");
 echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
+echo "<meta http-equiv=\"pragma\" content=\"no-cache\">\n";
+echo "<meta http-equiv=\"cache-control\" content=\"no-cache\">\n";
 echo ("</head>\n<body>\n<p><br></p>\n");
 
 // check if admin has submited delete operation
