@@ -215,6 +215,10 @@ class accountContainer {
 		$this->cache = 'cache';
 		$this->header2 = 'header';
 		$this->module['main'] = new main($this->base);
+		// create cache if needed
+		if (!isset($_SESSION['cache'])) {
+			$_SESSION['cache'] = new cache();
+		}
 		return 0;
 		}
 
