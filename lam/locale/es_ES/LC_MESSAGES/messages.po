@@ -1537,7 +1537,7 @@ msgid ""
 msgstr "Es posible que este numero de ID ya esté en uso. Esto puede causar varios problemas ya que puede haber archivos viejos que todavia exitan, y que tiengan los permisos viejos. Para evitar este mensaje de aviso, ponga el parametro maxUID a un valor mas alto."
 
 #: ../lib/modules/sambaGroupMapping.inc:57
-msgid "Ivalid Account"
+msgid "Invalid Account"
 msgstr "Cuenta inválida."
 
 #: ../lib/modules/inetOrgPerson.inc:70 ../lib/modules/inetOrgPerson.inc:95

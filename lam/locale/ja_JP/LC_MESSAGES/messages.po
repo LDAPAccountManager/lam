@@ -1763,7 +1763,7 @@ msgid "It is possible that this ID-number is reused. This can cause several prob
 msgstr "ID番号を再利用することは可能です。古いパーミッションを持ったファイルがまだ存在するかも知れないため、これはいくつかの問題を引き起こすかもしれません。この警告を防ぐには、maxUIDをより大きな値に設定してください。"
 
 #: ../lib/modules/sambaGroupMapping.inc:57
-msgid "Ivalid Account"
+msgid "Invalid Account"
 msgstr "無効なアカウントです"
 
 #: ../lib/modules/inetOrgPerson.inc:70

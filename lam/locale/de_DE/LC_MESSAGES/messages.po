@@ -1611,7 +1611,7 @@ msgstr ""
 "den Optionen erhöhen."
 
 #: ../lib/modules/sambaGroupMapping.inc:57
-msgid "Ivalid Account"
+msgid "Invalid Account"
 msgstr "Ungültiger Account"
 
 #: ../lib/modules/inetOrgPerson.inc:70 ../lib/modules/inetOrgPerson.inc:95

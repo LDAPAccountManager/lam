@@ -54,7 +54,7 @@ class sambaGroupMapping extends baseModule {
 			_('Local Group') => 4,
 			_('Builtin Group') => 5,
 			_('Deleted Account') => 6,
-			_('Ivalid Account') => 7
+			_('Invalid Account') => 7
 			);
 		// call parent constructor
 		parent::baseModule($scope);

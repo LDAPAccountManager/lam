@@ -1607,7 +1607,7 @@ msgstr ""
 "valeur."
 
 #: ../lib/modules/sambaGroupMapping.inc:57
-msgid "Ivalid Account"
+msgid "Invalid Account"
 msgstr "Compte invalide"
 
 #: ../lib/modules/inetOrgPerson.inc:70 ../lib/modules/inetOrgPerson.inc:95
