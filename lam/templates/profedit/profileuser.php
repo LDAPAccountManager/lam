@@ -195,6 +195,16 @@ echo ("</tr>\n");
 // empty row
 echo ("<tr><td>&nbsp</td><td>&nbsp</td><td>&nbsp</td></tr>\n");
 
+// unix workstations
+echo ("<tr>\n");
+echo ("<td align=\"right\"><b>" . _("Unix workstations") . ": </b></td>\n");
+echo ("<td><input type=\"text\" name=\"unix_host\" value=\"" . $acct->unix_host . "\"></td>\n");
+echo ("<td><a href=\"../help.php?HelpNumber=466\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
+echo ("</tr>\n");
+
+// empty row
+echo ("<tr><td>&nbsp</td><td>&nbsp</td><td>&nbsp</td></tr>\n");
+
 // deactivate account
 echo ("<tr>\n");
 echo ("<td align=\"right\"><b>" . _("Account is deactivated") . ": </b></td>\n");

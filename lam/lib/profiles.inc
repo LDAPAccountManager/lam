@@ -135,6 +135,10 @@ function loadUserProfile($profile) {
 					$acc->unix_deactivated = chop(substr($line, 18, strlen($line)-18));
 					continue;
 				}
+				if (substr($line, 0, 11) == "unix_host: ") {
+					$acc->unix_host = chop(substr($line, 11, strlen($line)-11));
+					continue;
+				}
 				if (substr($line, 0, 17) == "smb_password_no: ") {
 					$acc->smb_password_no = chop(substr($line, 17, strlen($line)-17));
 					continue;
@@ -264,6 +268,7 @@ function saveUserProfile($account, $profile) {
 		if (isset($account->unix_pwdmaxage)) fputs($file, "unix_pwdmaxage: " . $account->unix_pwdmaxage . "\n");
 		if (isset($account->unix_pwdexpire)) fputs($file, "unix_pwdexpire: " . $account->unix_pwdexpire . "\n");
 		if (isset($account->unix_deactivated)) fputs($file, "unix_deactivated: " . $account->unix_deactivated . "\n");
+		if (isset($account->unix_host)) fputs($file, "unix_host: " . $account->unix_host . "\n");
 		if (isset($account->smb_password_no)) fputs($file, "smb_password_no: " . $account->smb_password_no . "\n");
 		if (isset($account->smb_useunixpwd)) fputs($file, "smb_useunixpwd: " . $account->smb_useunixpwd . "\n");
 		if (isset($account->smb_flagsD)) fputs($file, "smb_flagsD: " . $account->smb_flagsD . "\n");

@@ -60,7 +60,7 @@ if ($_GET['type'] == "user") {
 		$acct->general_group = $_POST['general_group'];
 		}
 	else {
-		StatusMessage("ERROR", "", _("Primary group name is invalid!") . " " . $_POST['general_group']);
+		StatusMessage("ERROR", _("Primary group name is invalid!"), $_POST['general_group']);
 		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
@@ -71,7 +71,7 @@ if ($_GET['type'] == "user") {
 		$acct->general_homedir = $_POST['general_homedir'];
 	}
 	elseif ($_POST['general_homedir']) {
-		StatusMessage("ERROR", "", _("Homedir is invalid!") . " " . $_POST['general_homedir']);
+		StatusMessage("ERROR", _("Homedir is invalid!"), $_POST['general_homedir']);
 		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
@@ -79,7 +79,7 @@ if ($_GET['type'] == "user") {
 		$acct->general_shell = $_POST['general_shell'];
 	}
 	else {
-		StatusMessage("ERROR", "", _("Shell is invalid!") . " " . $_POST['general_shell']);
+		StatusMessage("ERROR", _("Shell is invalid!"), $_POST['general_shell']);
 		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
@@ -87,7 +87,7 @@ if ($_GET['type'] == "user") {
 		$acct->unix_password_no = $_POST['unix_password_no'];
 	}
 	else {
-		StatusMessage("ERROR", "", _("Wrong parameter for login disable!") . " " . $_POST['unix_password_no']);
+		StatusMessage("ERROR", _("Wrong parameter for login disable!"), $_POST['unix_password_no']);
 		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
@@ -95,7 +95,7 @@ if ($_GET['type'] == "user") {
 		$acct->unix_pwdwarn = $_POST['unix_pwdwarn'];
 	}
 	elseif ($_POST['unix_pwdwarn']) {
-		StatusMessage("ERROR", "", _("Wrong parameter for Unix password warning!") . " " . $_POST['unix_pwdwarn']);
+		StatusMessage("ERROR", _("Wrong parameter for Unix password warning!"), $_POST['unix_pwdwarn']);
 		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
@@ -103,7 +103,7 @@ if ($_GET['type'] == "user") {
 		$acct->unix_pwdminage = $_POST['unix_pwdminage'];
 	}
 	elseif ($_POST['unix_pwdminage']) {
-		StatusMessage("ERROR", "", _("Password minimum age is not numeric!") . " " . $_POST['unix_pwdminage']);
+		StatusMessage("ERROR", _("Password minimum age is not numeric!"), $_POST['unix_pwdminage']);
 		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
@@ -111,7 +111,7 @@ if ($_GET['type'] == "user") {
 		$acct->unix_pwdmaxage = $_POST['unix_pwdmaxage'];
 	}
 	elseif ($_POST['unix_pwdmaxage']) {
-		StatusMessage("ERROR", "", _("Password maximum age is not numeric!") . " " . $_POST['unix_pwdmaxage']);
+		StatusMessage("ERROR", _("Password maximum age is not numeric!"), $_POST['unix_pwdmaxage']);
 		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
@@ -119,7 +119,15 @@ if ($_GET['type'] == "user") {
 		$acct->unix_pwdexpire = mktime(0, 0, 0, $_POST['unix_pwdexpire_mon'], $_POST['unix_pwdexpire_day'], $_POST['unix_pwdexpire_yea']);
 	}
 	else {
-		StatusMessage("ERROR", "", _("Wrong parameter for Unix password expiry!"));
+		StatusMessage("ERROR", _("Wrong parameter for Unix password expiry!"));
+		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
+		exit;
+	}
+	if ($_POST['unix_host'] && eregi("^[a-z0-9]+(,[a-z0-9]+)*$", $_POST['unix_host'])) {
+		$acct->unix_host = $_POST['unix_host'];
+	}
+	elseif ($_POST['unix_host']) {
+		StatusMessage("ERROR", _("Unix workstations are invalid!"), $_POST['unix_host']);
 		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
@@ -127,7 +135,7 @@ if ($_GET['type'] == "user") {
 		$acct->unix_deactivated = $_POST['unix_deactivated'];
 	}
 	else {
-		StatusMessage("ERROR", "", _("Wrong parameter for Unix account activation!") . " " . $_POST['unix_deactivated']);
+		StatusMessage("ERROR", _("Wrong parameter for Unix account activation!"), $_POST['unix_deactivated']);
 		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
@@ -135,7 +143,7 @@ if ($_GET['type'] == "user") {
 		$acct->unix_pwdallowlogin = $_POST['unix_pwdallowlogin'];
 	}
 	elseif ($_POST['unix_pwdallowlogin']) {
-		StatusMessage("ERROR", "", _("Password expiry is not numeric!") . " " . $_POST['unix_pwdallowlogin']);
+		StatusMessage("ERROR", _("Password expiry is not numeric!"), $_POST['unix_pwdallowlogin']);
 		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
@@ -143,7 +151,7 @@ if ($_GET['type'] == "user") {
 		$acct->smb_password_no = $_POST['smb_password_no'];
 	}
 	else {
-		StatusMessage("ERROR", "", _("Wrong parameter for Samba option: Set Samba Password!") . " " . $_POST['smb_password_no']);
+		StatusMessage("ERROR", _("Wrong parameter for Samba option: Set Samba Password!"), $_POST['smb_password_no']);
 		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
@@ -151,7 +159,7 @@ if ($_GET['type'] == "user") {
 		$acct->smb_useunixpwd = $_POST['smb_useunixpwd'];
 	}
 	else {
-		StatusMessage("ERROR", "", _("Wrong parameter for Samba option: Set Unix Password for Samba!") . " " . $_POST['smb_useunixpwd']);
+		StatusMessage("ERROR", _("Wrong parameter for Samba option: Set Unix Password for Samba!"), $_POST['smb_useunixpwd']);
 		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
@@ -159,7 +167,7 @@ if ($_GET['type'] == "user") {
 		$acct->smb_flagsD = $_POST['smb_flagsD'];
 	}
 	else {
-		StatusMessage("ERROR", "", _("Wrong parameter for Samba option: Account does not expire!") . " " . $_POST['smb_flagsD']);
+		StatusMessage("ERROR", _("Wrong parameter for Samba option: Account does not expire!"), $_POST['smb_flagsD']);
 		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
@@ -167,7 +175,7 @@ if ($_GET['type'] == "user") {
 		$acct->smb_homedrive = $_POST['smb_homedrive'];
 	}
 	else {
-		StatusMessage("ERROR", "", _("Wrong parameter for Samba option: home drive!") . " " . $_POST['smb_homedrive']);
+		StatusMessage("ERROR", _("Wrong parameter for Samba option: home drive!"), $_POST['smb_homedrive']);
 		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
@@ -177,7 +185,7 @@ if ($_GET['type'] == "user") {
 		$acct->smb_smbhome = $_POST['smb_smbhome'];
 	}
 	elseif ($_POST['smb_smbhome']) {
-		StatusMessage("ERROR", "", _("Samba home directory is invalid!") . " " . $_POST['smb_smbhome']);
+		StatusMessage("ERROR", _("Samba home directory is invalid!"), $_POST['smb_smbhome']);
 		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
@@ -187,7 +195,7 @@ if ($_GET['type'] == "user") {
 		$acct->smb_profilePath = $_POST['smb_profilepath'];
 	}
 	elseif ($_POST['smb_profilepath']) {
-		StatusMessage("ERROR", "", _("Profile path is invalid!") . " " . $_POST['smb_profilepath']);
+		StatusMessage("ERROR", _("Profile path is invalid!"), $_POST['smb_profilepath']);
 		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
@@ -197,7 +205,7 @@ if ($_GET['type'] == "user") {
 		$acct->smb_scriptPath = $_POST['smb_scriptPath'];
 	}
 	elseif ($_POST['smb_scriptPath']) {
-		StatusMessage("ERROR", "", _("Script path is invalid!") . " " . $_POST['smb_scriptPath']);
+		StatusMessage("ERROR", _("Script path is invalid!"), $_POST['smb_scriptPath']);
 		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
@@ -205,7 +213,7 @@ if ($_GET['type'] == "user") {
 		$acct->smb_smbuserworkstations = $_POST['smb_smbuserworkstations'];
 	}
 	elseif ($_POST['smb_smbuserworkstations']) {
-		StatusMessage("ERROR", "", _("Samba workstations are invalid!") . " " . $_POST['smb_smbuserworkstations']);
+		StatusMessage("ERROR", _("Samba workstations are invalid!"), $_POST['smb_smbuserworkstations']);
 		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
@@ -213,7 +221,7 @@ if ($_GET['type'] == "user") {
 		$acct->smb_domain = $_POST['smb_domain'];
 	}
 	elseif ($_POST['smb_domain']) {
-		StatusMessage("ERROR", "", _("Domain name is invalid!") . " " . $_POST['smb_domain']);
+		StatusMessage("ERROR", _("Domain name is invalid!"), $_POST['smb_domain']);
 		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
@@ -221,7 +229,7 @@ if ($_GET['type'] == "user") {
 		$profname = $_POST['profname'];
 	}
 	else {
-		StatusMessage("ERROR", "", _("Invalid profile name!"));
+		StatusMessage("ERROR", _("Invalid profile name!"), $_POST['profname']);
 		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
@@ -240,7 +248,7 @@ elseif ($_GET['type'] == "host") {
 		$acct->general_group = $_POST['general_group'];
 		}
 	else {
-		StatusMessage("ERROR", "", _("Primary group name is invalid!") . " " . $_POST['general_group']);
+		StatusMessage("ERROR", _("Primary group name is invalid!"), $_POST['general_group']);
 		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
@@ -248,7 +256,7 @@ elseif ($_GET['type'] == "host") {
 		$acct->smb_domain = $_POST['smb_domain'];
 	}
 	elseif ($_POST['smb_domain']) {
-		StatusMessage("ERROR", "", _("Domain name is invalid!") . " " . $_POST['smb_domain']);
+		StatusMessage("ERROR", _("Domain name is invalid!"), $_POST['smb_domain']);
 		echo ("<br><br><a href=\"javascript:history.back()\">" . _("Back to Profile Editor") . "</a>");
 		exit;
 	}
