@@ -80,6 +80,11 @@ if (chop($suffgroups) == "") {
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
+if (chop($suffhosts) == "") {
+	echo _("<font color=\"red\"><b>" . _("HostSuffix is empty!") . "</b></font>");
+	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
+	exit;
+}
 if (chop($minUID) == "") {
 	echo _("<font color=\"red\"><b>" . _("MinUID is empty!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
