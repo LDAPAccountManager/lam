@@ -286,7 +286,11 @@ class accountContainer {
 								echo "<a href=../help.php?module=$module&item=". $input[$i][$j]['value'] . ">" . _('Help') . "</a></td>\n";
 								break;
 							case 'message':
+								echo "<td";
+								if ($input[$i][$j]['td']['valign']!='') echo ' valign="' . $input[$i][$j]['td']['valign'] .'"';
+								echo ">\n";
 								StatusMessage($input[$i][$j]['type'], $input[$i][$j]['headline'], $input[$i][$j]['text']);
+								echo "</td>\n";
 								break;
 							default:
 								echo "<td>Unrecognized type: " . $input[$i][$j]['kind'] . "</td>\n";
@@ -395,6 +399,7 @@ class accountContainer {
 		return 0;
 		}
 
+		
 	/* This function return ldap attributes which are uses by $objectClass
 	* Syntax is get_attributes($objectClass)
 	* Return is an array with all allowed attributes
@@ -537,8 +542,9 @@ class accountContainer {
 					// found attribute which must be set
 					if ($this->attributes[$attributes[$i]][$singleattribute[$j]]=='MUST') {
 						// Check if attribute is set
-						if ($this->module[$singleattribute[$j]]->attributes[$attributes[$i]]=='')
+						if ($this->module[$singleattribute[$j]]->attributes[$attributes[$i]]=='') {
 							if (!in_array($singleattribute[$j], $return)) $return[] = $singleattribute[$j];
+							}
 						}
 					}
 				}

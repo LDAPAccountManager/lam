@@ -145,6 +145,19 @@ class posixAccount {
 		return true;
 		}
 
+	/* This functions return true
+	* if all needed settings are done
+	*/
+	function module_complete() {
+		if (!$this->module_ready()) return false;
+		if ($this->attributes['uid'][0] == '') return false;
+		if ($this->attributes['uidNumber'][0] == '') return false;
+		if ($this->attributes['gidNumber'][0] == '') return false;
+		if ($this->attributes['homeDirectory'][0] == '') return false;
+		if ($this->attributes['loginShell'][0] == '') return false;
+		return true;
+		}	
+	
 	/* This function returns a list of all html-pages in module
 	* This is usefull for mass upload and pdf-files
 	* because lam can walk trough all pages itself and do some
@@ -362,14 +375,15 @@ class posixAccount {
 		if ($post['userPassword_lock']) $this->userPassword_lock=true;
 			else $this->userPassword_lock=false;
 		if (!$profile) {
-			if (isset($post['userPassword'])) {
-				if ($post['userPassword'] != $post['userPassword2']) {
-					$errors['userPassword'][] = array('ERROR', _('Password'), _('Please enter the same password in both password-fields.'));
-					unset ($post['userPassword2']);
-					}
-					else $this->userPassword($post['userPassword']);
-				}
 			if ($post['genpass']) $this->userPassword(genpasswd());
+				else if (isset($post['userPassword'])) {
+					if ($post['userPassword'] != $post['userPassword2']) {
+						$errors['userPassword'][] = array('ERROR', _('Password'), _('Please enter the same password in both password-fields.'));
+						unset ($post['userPassword2']);
+						}
+						else $this->userPassword($post['userPassword']);
+					}
+			
 			// Check if UID is valid. If none value was entered, the next useable value will be inserted
 			// load min and may uidNumber
 			if ($_SESSION[$this->base]->type=='user') {
@@ -581,6 +595,7 @@ class posixAccount {
 					1 => array ( 'kind' => 'input', 'name' => 'userPassword', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => $password),
 					2 => array ( 'kind' => 'input', 'name' => 'genpass', 'type' => 'submit', 'value' => _('Generate password')));
 				if ($post['userPassword2']!='') $password2 = $post['userPassword2'];
+				 else $password2 = $password;
 				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Repeat password') ),
 					1 => array ( 'kind' => 'input', 'name' => 'userPassword2', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => $password2),
 					2 => array ('kind' => 'help', 'value' => 'userPassword'));

@@ -77,6 +77,14 @@ class main {
 		return true;
 		}
 
+	/* This functions return true
+	* if all needed settings are done
+	*/
+	function module_complete() {
+		if (!$this->module_ready()) return false;
+		return true;
+		}	
+	
 	/* This function returns a list of all html-pages in module
 	* This is usefull for mass upload and pdf-files
 	* because lam can walk trough all pages itself and do some
@@ -188,16 +196,19 @@ class main {
 		}
 
 	function display_html_attributes($post, $profile=false) {
-		$modules = $_SESSION[$this->base]->check_attributes();
-		if (count($modules)!=0 && !$profile) {
+		$modules = array_keys($_SESSION[$this->base]->module);
+		if (!$profile) {
 			$disabled = false;
-			// Show reason why module is disabled
-			for ($i=0; $i<count($modules); $i++)
-				$return[] = array ( 0 => array ( 'kind' => 'message', 'type' => 'ERROR', 'headline' =>  _('Check module'),
-					'text' => sprintf(_('Please set up all required attributes on %s page.'), $_SESSION[$this->base]->module[$modules[$i]]->get_alias()) ));
+			foreach ($modules as $module) {
+				if (!$_SESSION[$this->base]->module[$module]->module_complete()) {
+					$disabled = true;
+					$table[] = array ( 0 => array ( 'kind' => 'message', 'type' => 'ERROR', 'headline' =>  _('Check module'),
+						'text' => sprintf(_('Please set up all required attributes on %s page.'), $_SESSION[$this->base]->module[$module]->get_alias()) ));
+					}		
+				}
 			}
-			else $disabled = true;
-
+					
+		if (count($table)!=0) $return[] = array ( 0 => array ( 'kind' => 'table', 'value' => $table ) );
 		// loop through all suffixes
 		$function = '$suffix = $_SESSION[$_SESSION[$this->base]->config]->get_'.ucfirst($_SESSION[$this->base]->type).'Suffix();';
 		eval($function);

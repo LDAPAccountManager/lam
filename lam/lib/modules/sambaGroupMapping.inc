@@ -109,6 +109,16 @@ class sambaGroupMapping {
 		return true;
 		}
 
+	/* This functions return true
+	* if all needed settings are done
+	*/
+	function module_complete() {
+		if (!$this->module_ready()) return false;
+		if ($this->attributes['sambaSID'][0] == '') return false;
+		if ($this->attributes['sambaGroupType'][0] == '') return false;
+		return true;
+		}
+	
 	/* This function returns a list of all html-pages in module
 	* This is usefull for mass upload and pdf-files
 	* because lam can walk trough all pages itself and do some

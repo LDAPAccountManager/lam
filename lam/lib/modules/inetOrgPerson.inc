@@ -46,7 +46,9 @@ class inetOrgPerson {
 		if (!is_string($base)) trigger_error(_('Please create a new module object with $accountContainer->add_objectClass(\'inetOrgPerson\');'), E_USER_ERROR);
 		if ($_SESSION[$this->base]->type != 'user') trigger_error(_('inetOrgPerson can only be used for users.'), E_USER_WARNING);
 		// load attribtues which are used in inetOrgPerson objectClass
-		$this->attributes = $_SESSION[$this->base]->get_module_attributes('inetOrgPerson');
+		// unset attributes which are "must" but not in this module
+		// cn will be set to uid in module posixAccount
+		// Therefore module posixAccount is required an cn will be removed from main index in account_container
 		// Create copy of attributes
 		$this->orig = $this->attributes ;
 		// Add objectClass to attributes
@@ -70,7 +72,7 @@ class inetOrgPerson {
 	/* This function returns a list with all required modules
 	*/
 	function get_dependencies($scope) {
-		if ($scope=='user') return array('require' => array('main'), 'conflict' => array('account', 'posixGroup', 'sambaDomain') );
+		if ($scope=='user') return array('require' => array('main', 'posixAccount'), 'conflict' => array('account', 'posixGroup', 'sambaDomain') );
 		return -1;
 		}
 
@@ -81,6 +83,16 @@ class inetOrgPerson {
 		return true;
 		}
 
+	/* This functions return true
+	* if all needed settings are done
+	*/
+	function module_complete() {
+		if (!$this->module_ready()) return false;
+		if ($this->attributes['sn'][0] == '') return false;
+		if ($this->attributes['givenName'][0] == '') return false;
+		return true;
+		}	
+		
 	/* This function returns a list of all html-pages in module
 	* This is usefull for mass upload and pdf-files
 	* because lam can walk trough all pages itself and do some
