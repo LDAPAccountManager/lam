@@ -82,7 +82,7 @@ function is_base_module($name, $scope) {
 * @return string LDAP filter
 */
 function get_ldap_filter($scope) {
-	$mods = getAvailableModules($scope);
+	$mods = $_SESSION['config']->get_AccountModules($scope);
 	$filters = array();
 	$orFilter = '';
 	for ($i = 0; $i < sizeof($mods); $i++) {
@@ -116,7 +116,7 @@ function get_ldap_filter($scope) {
 * @return array list of LDAP attributes
 */
 function getRDNAttributes($scope) {
-	$mods = getAvailableModules($scope);
+	$mods = $_SESSION['config']->get_AccountModules($scope);
 	$return = array();
 	$attrs_low = array();
 	$attrs_normal = array();
@@ -153,7 +153,7 @@ function getRDNAttributes($scope) {
 }
 
 /**
-* Returns a hash array (module name => dependencies) of all user module dependencies
+* Returns a hash array (module name => dependencies) of all module dependencies
 *
 * "dependencies" contains an array with two sub arrays: depends, conflicts
 * <br>The elements of "depends" are either module names or an array of module names (OR-case).
@@ -416,7 +416,7 @@ function getUploadColumns($scope) {
 */
 function buildUploadAccounts($scope, $data, $ids) {
 	// build module order
-	$unOrdered = getAvailableModules($scope);
+	$unOrdered = $_SESSION['config']->get_AccountModules($scope);
 	$ordered = array();
 	$predepends = array();
 	// get dependencies
