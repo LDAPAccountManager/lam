@@ -2299,8 +2299,7 @@ function creategroup($values, $uselamdaemon=true) {
 		if ($values->smb_displayName) $attr['displayName'] = utf8_encode($values->smb_displayName);
 		}
 	// Write additional group members
-	if (is_array($values->unix_memberUid)) foreach ($values->unix_memberUid as $user)
-		$attr['memberUid'][] = $user;
+	if (is_array($values->unix_memberUid)) $attr['memberUid'][] = $values->unix_memberUid;
 	// Create LDAP group account
 	$success = ldap_add($_SESSION['ldap']->server(),$values->general_dn, $attr);
 	// Continue if now error did ocour
@@ -2309,7 +2308,7 @@ function creategroup($values, $uselamdaemon=true) {
 	if ($_SESSION['config']->scriptServer && is_array($values->quota) && $uselamdaemon) setquotas(array($values));
 	// Add new group to cache-array
 	if ((isset($_SESSION['groupDN']))) {
-		$_SESSION['groupDN'][$dn]['memberUid'] = $user;
+		$_SESSION['groupDN'][$values->general_dn]['memberUid'] = $values->unix_memberUid;
 		$_SESSION['groupDN'][$values->general_dn]['cn'] = $values->general_username;
 		$_SESSION['groupDN'][$values->general_dn]['uidNumber'] = $values->general_uidNumber;
 		}

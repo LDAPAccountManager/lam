@@ -216,6 +216,7 @@ else {
 	$ssh->login($username[0], $password);
 	foreach $string2 ( @string ) {
 		($stdout, $stderr, $exit) = $ssh->cmd("sudo $remotepath $argv", $string2);
-		print "$stdout";
+		$return .= $stdout;
 		}
+	print "$return";
 	}
