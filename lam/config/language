@@ -4,14 +4,16 @@
 # Normally you don't have to edit this file manually. It is modified automatically when you add a new language in the Configuration-Site.
 
 # Englisch Language
-en_GB:UTF-8:English (Great Britain)
+en_GB.utf8:UTF-8:English (Great Britain)
+
+# French language
+fr_FR.utf8:UTF-8:Francais (France)
 
 # German Language
-de_DE:UTF-8:Deutsch (Deutschland)
+de_DE.utf8:UTF-8:Deutsch (Deutschland)
 
 # Hungarian Language
-hu_HU:UTF-8:Magyar (Magyarorszag)
+hu_HU.utf8:UTF-8:Magyar (Magyarorszag)
 
 # Japanese Language
-ja_JP.eucJP:EUC-JP:Japanese (EUC)
-
+ja_JP.utf8:UTF-8:Japanese
