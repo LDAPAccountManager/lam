@@ -31,14 +31,14 @@ echo _('Delete Account');
 echo '</title>
 	<link rel="stylesheet" type="text/css" href="../style/delete.css">
 	</head><body>
-	<form action="account.php" method="post">
+	<form action="account.php" method="get">
 	<meta http-equiv="pragma" content="no-cache">
 	<meta http-equiv="cache-control" content="no-cache">
 	<table rules="all" class="delete" width="100%">
 	<tr><td>';
 
 if ($type) {
-	$DN = split("[\?&]", $QUERY_STRING]);
+	$DN = split("[\?&]", $QUERY_STRING);
 	array_shift($DN);
 	foreach ($DN as $dn) {
 		$dn = str_replace("\'", '',$dn);
