@@ -117,6 +117,16 @@ class posixAccount extends baseModule {
 				4 => array('kind' => 'input', 'name' => 'posixAccount_maxMachine', 'type' => 'text', 'size' => '10', 'maxlength' => '255'),
 				5 => array('kind' => 'help', 'value' => 'TODO'))
 		);
+		$return['config_options']['all'] = array(
+			array(
+				0 => array('kind' => 'text', 'text' => '<b>' . _("Password hash type") . ': &nbsp;</b>'),
+				1 => array('kind' => 'select', 'name' => 'posixAccount_pwdHash', 'size' => '1',
+					'options' => array("CRYPT", "SHA", "SSHA", "MD5", "SMD5", "PLAIN"), 'options_selected' => array('SSHA')),
+				2 => array('kind' => 'text', 'value' => '&nbsp;'),
+				3 => array('kind' => 'text', 'value' => '&nbsp;'),
+				4 => array('kind' => 'text', 'value' => '&nbsp;'),
+				5 => array('kind' => 'help', 'value' => 'TODO'))
+		);
 		// configuration descriptions
 		$return['config_descriptions'] = array(
 			'legend' => _("UID ranges for Unix accounts"),
@@ -125,6 +135,7 @@ class posixAccount extends baseModule {
 				'posixAccount_maxUID' => _("Maximum UID number for Unix accounts (users)"),
 				'posixAccount_minMachine' => _("Minimum UID number for Unix accounts (hosts)"),
 				'posixAccount_maxMachine' => _("Maximum UID number for Unix accounts (hosts)"),
+				'posixAccount_pwdHash' => _("Password hash type"),
 			)
 		);
 		return $return;
@@ -314,15 +325,15 @@ class posixAccount extends baseModule {
 		if (count($this->orig['userPassword'])==0) {
 			// New user or no old password set
 			if ($this->userPassword_no) {
-				$return[$_SESSION[$this->base]->dn]['modify']['userPassword'][0] = pwd_hash ('', !$this->userPassword_lock);
+				$return[$_SESSION[$this->base]->dn]['modify']['userPassword'][0] = pwd_hash('', !$this->userPassword_lock, $this->moduleSettings['posixAccount_pwdHash'][0]);
 				}
-				else $return[$_SESSION[$this->base]->dn]['modify']['userPassword'][0] = utf8_encode(pwd_hash ($this->userPassword(), !$this->userPassword_lock));
+				else $return[$_SESSION[$this->base]->dn]['modify']['userPassword'][0] = utf8_encode(pwd_hash($this->userPassword(), !$this->userPassword_lock, $this->moduleSettings['posixAccount_pwdHash'][0]));
 			}
 		else {
 			if (($this->attributes['userPassword'][0] != $this->orig['userPassword'][0] && $this->userPassword()!='' ) || $this->userPassword_no) {
 				// Write new password
-				if ($this->userPassword_no) $return[$_SESSION[$this->base]->dn]['modify']['userPassword'][0] = pwd_hash ('', !$this->userPassword_lock);
-					else $return[$_SESSION[$this->base]->dn]['modify']['userPassword'][0] = utf8_encode(pwd_hash ($this->userPassword(), !$this->userPassword_lock));
+				if ($this->userPassword_no) $return[$_SESSION[$this->base]->dn]['modify']['userPassword'][0] = pwd_hash('', !$this->userPassword_lock, $this->moduleSettings['posixAccount_pwdHash'][0]);
+					else $return[$_SESSION[$this->base]->dn]['modify']['userPassword'][0] = utf8_encode(pwd_hash($this->userPassword(), !$this->userPassword_lock, $this->moduleSettings['posixAccount_pwdHash'][0]));
 				}
 			else { // No new password but old password
 				// (un)lock password

@@ -71,4 +71,6 @@ modules: posixAccount_minMachine: 50000
 modules: posixAccount_maxMachine: 60000
 modules: posixGroup_minGID: 10000
 modules: posixGroup_maxGID: 20000
+modules: posixGroup_pwdHash: SSHA
+modules: posixAccount_pwdHash: SSHA
 

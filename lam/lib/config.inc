@@ -154,9 +154,6 @@ class Config {
 	/** LDAP cache timeout */
 	var $cachetimeout;
 
-	/** Password hash algorithm */
-	var $pwdhash;
-
 	/**
 	* Account modules
 	* TODO add default modules for LAM <0.5 
@@ -171,7 +168,7 @@ class Config {
 	/** List of all settings in config file */
 	var $settings = array("ServerURL", "Passwd", "Admins", "usersuffix", "groupsuffix", "hostsuffix",
 		"domainsuffix", "userlistAttributes", "grouplistAttributes", "hostlistAttributes", "maxlistentries",
-		"defaultLanguage", "scriptPath", "scriptServer", "cachetimeout", "pwdhash",
+		"defaultLanguage", "scriptPath", "scriptServer", "cachetimeout",
 		"usermodules", "groupmodules", "hostmodules", "modules");
 
 
@@ -293,7 +290,6 @@ class Config {
 			if (!in_array("scriptPath", $saved)) array_push($file_array, "\n\n# Path to external Script\n" . "scriptPath: " . $this->scriptPath . "\n");
 			if (!in_array("scriptServer", $saved)) array_push($file_array, "\n\n# Server of external Script\n" . "scriptServer: " . $this->scriptServer . "\n");
 			if (!in_array("cachetimeout", $saved)) array_push($file_array, "\n\n# Number of minutes LAM caches LDAP searches.\n" . "cacheTimeout: " . $this->cachetimeout . "\n");
-			if (!in_array("pwdhash", $saved)) array_push($file_array, "\n\n# Password hash algorithm (CRYPT/MD5/SMD5/SHA/SSHA/PLAIN).\n" . "pwdhash: " . $this->pwdhash . "\n");
 			if (!in_array("usermodules", $saved)) array_push($file_array, "\n\n# List of used user modules\n" . "usermodules: " . $this->usermodules . "\n");
 			if (!in_array("groupmodules", $saved)) array_push($file_array, "\n\n# List of used group modules\n" . "groupmodules: " . $this->groupmodules . "\n");
 			if (!in_array("hostmodules", $saved)) array_push($file_array, "\n\n# List of used host modules\n" . "hostmodules: " . $this->hostmodules . "\n");
@@ -320,7 +316,6 @@ class Config {
 	/** Prints current preferences */
 	function printconf() {
 		echo "<b>" . _("Server address") . ": </b>" . $this->ServerURL . "<br>\n";
-		echo "<b>" . _("Password hash type") . ": </b>" . $this->pwdhash . "<br>\n";
 		echo "<b>" . _("Cache timeout") . ": </b>" . $this->cachetimeout . "<br>\n";
 		echo "<b>" . _("UserSuffix") . ": </b>" . $this->usersuffix . "<br>\n";
 		echo "<b>" . _("GroupSuffix") . ": </b>" . $this->groupsuffix . "<br>\n";
@@ -709,30 +704,6 @@ class Config {
 	function set_cacheTimeout($value) {
 		if (is_numeric($value) && ($value > -1)) {
 			$this->cachetimeout = $value;
-		}
-		else return false;
-		return true;
-	}
-
-	/**
-	* Returns the password hash type
-	*
-	* @return password hash
-	*/
-	function get_pwdhash() {
-		if ($this->pwdhash) return strtoupper($this->pwdhash);
-		else return "SSHA";
-	}
-
-	/**
-	* Sets the password hash type (CRYPT/SHA/SSHA/MD5/SMD5)
-	*
-	* @param $value new password hash algorithm
-	* @return true if $value has correct format
-	*/
-	function set_pwdhash($value) {
-		if (is_string($value) && eregi("^(crypt|sha|ssha|md5|smd5|plain)$", $value)) {
-			$this->pwdhash = $value;
 		}
 		else return false;
 		return true;

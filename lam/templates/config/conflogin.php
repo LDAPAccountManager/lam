@@ -57,7 +57,6 @@ unset($_SESSION['conf_maxlistentries']);
 unset($_SESSION['conf_lang']);
 unset($_SESSION['conf_scriptpath']);
 unset($_SESSION['conf_scriptserver']);
-unset($_SESSION['conf_pwdhash']);
 unset($_SESSION['conf_filename']);
 
 echo $_SESSION['header'];

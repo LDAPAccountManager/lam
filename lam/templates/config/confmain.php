@@ -62,7 +62,6 @@ if ($_POST['back'] || $_POST['submitconf'] || $_POST['editmodules']){
 		$_SESSION['conf_hstlstattr'] = $_POST['hstlstattr'];
 		$_SESSION['conf_maxlistentries'] = $_POST['maxlistentries'];
 		$_SESSION['conf_lang'] = $_POST['lang'];
-		$_SESSION['conf_pwdhash'] = $_POST['pwdhash'];
 		$_SESSION['conf_scriptpath'] = $_POST['scriptpath'];
 		$_SESSION['conf_scriptserver'] = $_POST['scriptserver'];
 		$_SESSION['conf_usermodules'] = explode(",", $_POST['usermodules']);
@@ -130,7 +129,6 @@ if ($_GET["modulesback"] == "true") {
 	$conf->set_defaultLanguage($_SESSION['conf_lang']);
 	$conf->set_scriptpath($_SESSION['conf_scriptpath']);
 	$conf->set_scriptserver($_SESSION['conf_scriptserver']);
-	$conf->set_pwdhash($_SESSION['conf_pwdhash']);
 	// check if modules were edited
 	if ($_GET["moduleschanged"] == "true") {
 		$conf->set_UserModules($_SESSION['conf_usermodules']);
@@ -183,22 +181,6 @@ echo ("<tr><td align=\"right\"><b>".
 	_("DomainSuffix") . " ***: </b></td>".
 	"<td><input size=50 type=\"text\" name=\"suffdomains\" value=\"" . $conf->get_DomainSuffix() . "\"></td>\n");
 echo ("<td><a href=\"../help.php?HelpNumber=202\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
-
-// new line
-echo ("<tr><td colspan=3>&nbsp</td></tr>");
-
-// LDAP password hash type
-echo ("<tr><td align=\"right\"><b>".
-	_("Password hash type") . " : </b></td>".
-	"<td><select name=\"pwdhash\">\n<option selected>" . $conf->get_pwdhash() . "</option>\n");
-if ($conf->get_pwdhash() != "CRYPT") echo("<option>CRYPT</option>\n");
-if ($conf->get_pwdhash() != "SHA") echo("<option>SHA</option>\n");
-if ($conf->get_pwdhash() != "SSHA") echo("<option>SSHA</option>\n");
-if ($conf->get_pwdhash() != "MD5") echo("<option>MD5</option>\n");
-if ($conf->get_pwdhash() != "SMD5") echo("<option>SMD5</option>\n");
-if ($conf->get_pwdhash() != "PLAIN") echo("<option>PLAIN</option>\n");
-echo ("</select></td>\n");
-echo ("<td><a href=\"../help.php?HelpNumber=215\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 
 // new line
 echo ("<tr><td colspan=3>&nbsp</td></tr>");

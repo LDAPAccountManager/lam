@@ -179,4 +179,94 @@ function ntPassword($password) {
 	return exec(escapeshellarg($_SESSION['lampath'] . 'lib/createntlm.pl') . " nt " . escapeshellarg($password));
 }
 
+/**
+* Returns the hash value of a plain text password
+* the hash algorithm depends on the configuration file
+*
+* @param string $password the password string
+* @param boolean $enabled marks the hash as enabled/disabled (e.g. by prefixing "!")
+* @param string $hashType password hash type (CRYPT, SHA, SSHA, MD5, SMD5, PLAIN)
+* @return string the password hash
+*/
+function pwd_hash($password, $enabled = true, $hashType = 'SSHA') {
+	// check for empty password
+	if (! $password || ($password == "")) {
+		return "";
+	}
+	// calculate new random number
+	$_SESSION['ldap']->new_rand();
+	$hash = "";
+	switch ($hashType) {
+		case 'CRYPT':
+			$hash = "{CRYPT}" . crypt($password);
+			break;
+		case 'MD5':
+			$hash = "{MD5}" . base64_encode(hex2bin(md5($password)));
+			break;
+		case 'SMD5':
+				$salt0 = substr(pack("h*", md5($_SESSION['ldap']->rand)), 0, 8);
+				$salt = substr(pack("H*", md5($salt0 . $password)), 0, 4);
+				$hash = "{SMD5}" . base64_encode(hex2bin(md5($password . $salt)) . $salt);
+			break;
+		case 'SHA':
+			// PHP 4.3+ can use sha1() function
+			if (function_exists(sha1)) {
+				$hash = "{SHA}" . base64_encode(hex2bin(sha1($password)));
+			}
+			// otherwise use MHash
+			elseif (function_exists(mHash)) {
+				$hash = "{SHA}" . base64_encode(mHash(MHASH_SHA1, $password));
+			}
+			// if SHA1 is not possible use crypt()
+			else {
+				$hash = "{CRYPT}" . crypt($password);
+			}
+			break;
+		case 'SSHA':
+			// PHP 4.3+ can use sha1() function
+			if (function_exists(sha1)) {
+				$salt0 = substr(pack("h*", md5($_SESSION['ldap']->rand)), 0, 8);
+				$salt = substr(pack("H*", sha1($salt0 . $password)), 0, 4);
+				$hash = "{SSHA}" . base64_encode(hex2bin(sha1($password . $salt)) . $salt);
+			}
+			// otherwise use MHash
+			elseif (function_exists(mHash)) {
+				$salt = mhash_keygen_s2k(MHASH_SHA1, $password, substr(pack("h*", md5($_SESSION['ldap']->rand)), 0, 8), 4);
+				$hash = base64_encode(mHash(MHASH_SHA1, $password . $salt) . $salt);
+				$hash = "{SSHA}" . $hash;
+			}
+			// if SSHA is not possible use crypt()
+			else {
+				$hash = "{CRYPT}" . crypt($password);
+			}
+			break;
+		case 'PLAIN':
+			$hash = $password;
+			break;
+		// use SSHA if the setting is invalid
+		default:
+			// PHP 4.3+ can use sha1() function
+			if (function_exists(sha1)) {
+				$salt0 = substr(pack("h*", md5($_SESSION['ldap']->rand)), 0, 8);
+				$salt = substr(pack("H*", sha1($salt0 . $password)), 0, 4);
+				$hash = "{SSHA}" . base64_encode(hex2bin(sha1($password . $salt)) . $salt);
+			}
+			// otherwise use MHash
+			elseif (function_exists(mHash)) {
+				$salt = mhash_keygen_s2k(MHASH_SHA1, $password, substr(pack("h*", md5($_SESSION['ldap']->rand)), 0, 8), 4);
+				$hash = base64_encode(mHash(MHASH_SHA1, $password . $salt) . $salt);
+				$hash = "{SSHA}" . $hash;
+			}
+			// if SSHA is not possible use crypt()
+			else {
+				$hash = "{CRYPT}" . crypt($password);
+			}
+		break;
+	}
+	// enable/disable password
+	if (! $enabled) return pwd_disable($hash);
+	else return $hash;
+}
+
+
 ?>

@@ -59,7 +59,6 @@ $maxlistentries = $_SESSION['conf_maxlistentries'];
 $lang = $_SESSION['conf_lang'];
 $scriptpath = $_SESSION['conf_scriptpath'];
 $scriptserver = $_SESSION['conf_scriptserver'];
-$pwdhash = $_SESSION['conf_pwdhash'];
 $filename = $_SESSION['conf_filename'];
 
 // check if password is correct
@@ -150,12 +149,6 @@ if (!$conf->set_scriptpath($scriptpath)) {
 
 if (!$conf->set_scriptserver($scriptserver)) {
 	echo ("<font color=\"red\"><b>" . _("Script server is invalid!") . "</b></font>");
-	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
-	exit;
-}
-
-if (!$conf->set_pwdhash($pwdhash)) {
-	echo ("<font color=\"red\"><b>" . _("Password hash is invalid!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
@@ -266,7 +259,6 @@ unset($_SESSION['conf_maxlistentries']);
 unset($_SESSION['conf_lang']);
 unset($_SESSION['conf_scriptpath']);
 unset($_SESSION['conf_scriptserver']);
-unset($_SESSION['conf_pwdhash']);
 unset($_SESSION['conf_filename']);
 unset($_SESSION['conf_usermodules']);
 unset($_SESSION['conf_groupmodules']);
