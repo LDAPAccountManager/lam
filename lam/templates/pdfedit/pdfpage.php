@@ -781,13 +781,6 @@ foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 														<td width="10">
 														</td>
 														<td>
-															<?php echo _('Write your text in the field below.');?>
-														</td>
-													</tr>
-													<tr>
-														<td>
-														</td>
-														<td>
 															<textarea name="text_text" rows="4" cols="40"></textarea>
 														</td>
 													</tr>

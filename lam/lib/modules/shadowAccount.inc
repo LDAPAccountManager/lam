@@ -333,7 +333,6 @@ class shadowAccount extends baseModule {
 							'shadowAccount_shadowWarning' => array('<block><key>' . _('Password warning') . '</key><value>' . $this->attributes['shadowWarn'][0] . '</value><block>'),
 							'shadowAccount_shadowInactive' => array('<block><key>' . _('Account inactive') . '</key><value>' . $this->attributes['shadowInactive'][0] . '</value></block>'),
 							'shadowAccount_shadowExpire' => array('<block><key>' . _('Password expire') . '</key><value>' . date('d. m. Y',$this->attributes['shadowExpire'][0]) . '</value></block>'),
-							'shadowAccount_shadowFlag' => array('<block><key>' . _('Shadow flag') . '</key><value>' . $this->attributes['shadowFlag'][0] . '</value></bock>'),
 							'shadowAccount_description' => array('<block><key>' . _('Description') . '</key><value>' . $this->attributes['description'][0] . '</value></block>'));
 	}
 
