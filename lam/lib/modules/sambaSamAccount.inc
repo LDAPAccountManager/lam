@@ -172,7 +172,7 @@ class sambaSamAccount extends baseModule {
 		switch ($id) {
 			case "description":
 				return array ("ext" => "FALSE", "Headline" => _("Description"),
-					"Text" => _("Host description."));
+					"Text" => _("Host description") . ".");
 				break;
 			}
 		return false;
