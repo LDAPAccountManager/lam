@@ -109,7 +109,8 @@ class posixGroup extends baseModule {
 		}
 		// fill in autoGIDs
 		if (sizeof($needAutoGID) > 0) {
-			$gids = $this->getNextGIDs(sizeof($needAutoGID));
+			$errorsTemp = array();
+			$gids = $this->getNextGIDs(sizeof($needAutoGID), $errorsTemp);
 			if (is_array($gids)) {
 				for ($i = 0; $i < sizeof($needAutoGID); $i++) {
 					$partialAccounts[$i]['gidNumber'] = $gids[$i];
@@ -510,7 +511,7 @@ class posixGroup extends baseModule {
 				if ($this->attributes['gidNumber'][0]=='') {
 				// No id-number given, find free GID
 				if ($this->orig['gidNumber'][0]=='') {
-					$newGID = $this->getNextGIDs(1);
+					$newGID = $this->getNextGIDs(1, $triggered_messages);
 					if (is_array($newGID)) {
 						$this->attributes['gidNumber'][0] = $newGID[0];
 					}
@@ -767,9 +768,10 @@ class posixGroup extends baseModule {
 	* Returns one or more free GID numbers.
 	*
 	* @param integer $count Number of needed free GIDs.
+	* @param array $triggered_messages list of error messages where errors can be added
 	* @return mixed Null if no GIDs are free else an array of free GIDs. 
 	*/
-	function getNextGIDs($count) {
+	function getNextGIDs($count, &$triggered_messages) {
 		$ret = array();
 		$minID = intval($this->moduleSettings['posixGroup_minGID'][0]);
 		$maxID = intval($this->moduleSettings['posixGroup_maxGID'][0]);
