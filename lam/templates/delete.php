@@ -157,7 +157,7 @@ if ($_POST['delete_yes'] && !$_POST['backmain']) {
 	}
 
 if ($_POST['delete_no']) {
-	echo _('Nothing was deleted.</td></tr>');
+	echo _('Nothing was deleted').'</td></tr>';
 
 	}
 
