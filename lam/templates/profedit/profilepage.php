@@ -19,13 +19,22 @@ $Id$
   along with this program; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-  Manages creating/changing of profiles.
-
 */
 
+/**
+* Manages creating/changing of profiles.
+*
+* @package Profiles
+* @author Roland Gruber
+*/
+
+/** helper functions for profiles */
 include_once("../../lib/profiles.inc");
+/** access to LDAP server */
 include_once("../../lib/ldap.inc");
+/** access to configuration options */
 include_once("../../lib/config.inc");
+/** access to account modules */
 include_once("../../lib/modules.inc");
 
 // start session
@@ -109,10 +118,13 @@ echo "<input type=\"hidden\" name=\"accounttype\" value=\"$type\">\n";
 
 echo ("</form></body></html>\n");
 
-// prints out the row of a table including the option name, values and help
-// $values: An array formated as module option
-// $module_name: The name of the module the options belong to
-// $old_options: A hash array with the values from the loaded profile
+/**
+* prints out the row of a section table including the option name, values and help
+*
+* @param array $values an array formated as module option
+* @param string $module_name the name of the module the options belong to
+* @param array $old_options a hash array with the values from the loaded profile
+*/
 function print_option($values, $modulename, $old_options) {
 	switch ($values['kind']) {
 		// text value

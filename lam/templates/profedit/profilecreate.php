@@ -19,14 +19,24 @@ $Id$
   along with this program; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-  Saves new/modified profiles.
-
 */
 
+/**
+* Saves new/modified profiles.
+*
+* @package Profiles
+* @author Roland Gruber
+*/
+
+/** Used to display status messages */
 include_once("../../lib/status.inc");
+/** access to account modules */
 include_once("../../lib/modules.inc");
+/** helper functions for profiles */
 include_once("../../lib/profiles.inc");
+/** access to LDAP server */
 include_once("../../lib/ldap.inc");
+/** access to configuration options */
 include_once("../../lib/config.inc");
 
 // start session

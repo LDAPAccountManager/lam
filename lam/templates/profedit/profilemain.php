@@ -19,12 +19,20 @@ $Id$
   along with this program; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-  This is the main window of the profile editor.
-
 */
 
+/**
+* This is the main window of the profile editor.
+*
+* @package Profiles
+* @author Roland Gruber
+*/
+
+/** helper functions for profiles */
 include_once("../../lib/profiles.inc");
+/** access to LDAP server */
 include_once("../../lib/ldap.inc");
+/** access to configuration options */
 include_once("../../lib/config.inc");
 
 // start session
