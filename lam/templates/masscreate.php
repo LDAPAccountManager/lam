@@ -83,12 +83,9 @@ if ($select!='pdf') {
 
 switch ($select) {
 	case 'main':
-		if ( session_is_registered("accounts")) session_unregister("accounts");
-		if ( session_is_registered("pointer")) session_unregister("pointer");
-		if ( session_is_registered("errors")) session_unregister("errors");
-		session_register("accounts");
-		session_register("pointer");
-		session_register("errors");
+		if ( isset($_SESSION['accounts'])) unset($_SESSION['accounts']);
+		if ( isset($_SESSION['pointer'])) unset($_SESSION['pointer']);
+		if ( isset($_SESSION['errors'])) unset($_SESSION['errors']);
 		$_SESSION['pointer']=0;
 		$profilelist = getUserProfiles();
 		echo '<tr><td><input name="select" type="hidden" value="main">';
@@ -134,10 +131,11 @@ switch ($select) {
 		echo '</td></tr>';
 		if ($_FILES['userfile']['size']>0) {
 			$handle = fopen($_FILES['userfile']['tmp_name'], 'r');
+			$profile = loadUserProfile($_POST['f_selectprofile']) ;
 			for ($row=0; $line_array=fgetcsv($handle,2048); $row++) { // loops for every row
 				$iv = base64_decode($_COOKIE["IV"]);
 				$key = base64_decode($_COOKIE["Key"]);
-				$_SESSION['accounts'][$row] = loadUserProfile($_POST['f_selectprofile']) ;
+				$_SESSION['accounts'][$row] = $profile;
 				$_SESSION['accounts'][$row]->general_dn = $_POST['f_general_suffix'];
 				if ($line_array[0]) $_SESSION['accounts'][$row]->general_surname = $line_array[0];
 				if ($line_array[1]) $_SESSION['accounts'][$row]->general_givenname = $line_array[1];

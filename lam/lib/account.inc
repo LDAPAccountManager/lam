@@ -121,19 +121,19 @@ function initvars($type=false,$DN=false) { // This function registers all needes
 					}
 			}
 		 else {
-			if (session_is_registered("account_old")) session_unregister("account_old");
+			if (isset($_SESSION['account_old'])) unset($_SESSION['account_old']);
 			switch ($type) {
 				case 'user':
-						$_SESSION['account']->type = 'user';
 						$_SESSION['account'] = loadUserProfile('default');
+						$_SESSION['account']->type = 'user';
 					break;
 				case 'group':
-						$_SESSION['account']->type = 'group';
 						$_SESSION['account'] = loadGroupProfile('default');
+						$_SESSION['account']->type = 'group';
 					break;
 				case 'host':
-						$_SESSION['account']->type = 'host';
 						$_SESSION['account'] = loadHostProfile('default');
+						$_SESSION['account']->type = 'host';
 					break;
 				}
 			if ( (($type=='user')||($type=='group')) && ($_SESSION['config']->scriptServer)) {
@@ -195,6 +195,7 @@ function checkglobal($values, $type, $values_old=false) { // This functions chec
 				$errors[] = array('ERROR', _('Username'), _('Username contents invalid characters. Valid characters are: a-z, 0-9 and .-_ !'));
 			// Check if user already exists
 			$return->general_username = $values->general_username;
+			$return->general_dn = $values->general_dn;
 			// Create automatic useraccount with number if original user allready exists
 			while ($temp = ldapexists($return, $type, $values_old)) {
 				// get last character of username
@@ -551,39 +552,125 @@ function remhomedir($user) { // Remove Homedirectory
 	//exec("/usr/bin/ssh ".$_SESSION['config']->scriptServer." sudo ".$_SESSION['config']->scriptPath." $towrite", $vals);
 	}
 
+function ldapreload($type) { // This function will load an array th cache ldap-requests
+	$validtime = 120;
+	switch ($type) {
+		case 'user':
+			if ((!isset($_SESSION['userDN'])) || ($_SESSION['userDN'][0] < time()-$validtime)) {
+				if (isset($_SESSION['userDN'])) unset($_SESSION['userDN']);
+				$_SESSION['userDN'][0] = time();
+				$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_UserSuffix(),
+				'objectClass=posixAccount', array('cn', 'uidNumber'), 0);
+				$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
+				while ($entry) {
+					$dn = (ldap_get_dn($_SESSION['ldap']->server(), $entry));
+					$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
+					if (isset($attr['cn'][0]))
+						$_SESSION['userDN'][$dn]['cn'] = $attr['cn'][0];
+					if (isset($attr['uidNumber'][0]))
+						$_SESSION['userDN'][$dn]['uidNumber'] = $attr['uidNumber'][0];
+					$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
+					}
+				}
+			break;
+		case 'group':
+			if ((!isset($_SESSION['groupDN'])) || ($_SESSION['groupDN'][0] < time()-$validtime)) {
+				if (isset($_SESSION['groupDN'])) unset($_SESSION['groupDN']);
+				$_SESSION['groupDN'][0] = time();
+				$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(),
+				'objectClass=posixGroup', array('gidNumber', 'cn'), 0);
+				$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
+				while ($entry) {
+					$dn = (ldap_get_dn($_SESSION['ldap']->server(), $entry));
+					$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
+					if (isset($attr['gidNumber'][0]))
+						$_SESSION['groupDN'][$dn]['gidNumber'] = $attr['gidNumber'][0];
+					if (isset($attr['cn'][0]))
+						$_SESSION['groupDN'][$dn]['cn'] = $attr['cn'][0];
+					$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
+					}
+				}
+			break;
+		case 'host':
+			if ((!isset($_SESSION['hostDN'])) || ($_SESSION['hostDN'][0] < time()-$validtime)) {
+				if (isset($_SESSION['hostDN'])) unset($_SESSION['hostDN']);
+				$_SESSION['hostDN'][0] = time();
+				$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_HostSuffix(),
+				'objectClass=posixAccount', array('cn', 'uidNumber'), 0);
+				$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
+				while ($entry) {
+					$dn = (ldap_get_dn($_SESSION['ldap']->server(), $entry));
+					$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
+					if (isset($attr['cn'][0]))
+						$_SESSION['hostDN'][$dn]['cn'] = $attr['cn'][0];
+					if (isset($attr['uidNumber'][0]))
+						$_SESSION['hostDN'][$dn]['uidNumber'] = $attr['uidNumber'][0];
+					$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
+					}
+				}
+			break;
+		}
+	return 0;
+	}
+
+
+
 
 function ldapexists($values, $type, $values_old=false) { // This function will search if the DN already exists
 	switch ($type) {
 		case 'user':
-			$searchbase = $_SESSION['config']->get_UserSuffix();
-			$search = "uid=".$values->general_username;
+			ldapreload('user');
+			$search = 'uid='.$values->general_username.','.$values->general_dn;
+			$keys = array_keys($_SESSION['userDN']);
+			unset ($keys[0]);
+			$keys = array_values($keys);
+			 if ( ($values_old->general_username != $values->general_username) &&
+				($_SESSION['userDN'][0] != $values->general_username) &&
+				(in_array($search , $keys)) ) return sprintf (_('%s already exists!'), $type);
+			if ((!$values_old) &&
+				($_SESSION['userDN'][0] != $values->general_username) &&
+				(in_array($search , $keys)) ) return sprintf (_('%s already exists!'), $type);
 			break;
 		case 'group':
-			$searchbase = $_SESSION['config']->get_GroupSuffix();
-			$search = "cn=".$values->general_username;
+			ldapreload('group');
+			$search = 'cn='.$values->general_username.','.$values->general_dn;
+			$keys = array_keys($_SESSION['groupDN']);
+			unset ($keys[0]);
+			$keys = array_values($keys);
+			if ( ($values_old->general_username != $values->general_username) &&
+				($_SESSION['groupDN'][0] != $values->general_username) &&
+				(in_array($search , $keys)) ) return sprintf (_('%s already exists!'), $type);
+			if ((!$values_old) &&
+				($_SESSION['groupDN'][0] != $values->general_username) &&
+				(in_array($search , $keys))) return sprintf (_('%s already exists!'), $type);
 			break;
 		case 'host':
-			$searchbase = $_SESSION['config']->get_HostSuffix();
-			$search = "uid=".$values->general_username;
+			ldapreload('host');
+			$search = 'uid='.$values->general_username.','.$values->general_dn;
+			$keys = array_keys($_SESSION['hostDN']);
+			unset ($keys[0]);
+			$keys = array_values($keys);
+			if ( ($values_old->general_username != $values->general_username) &&
+				($_SESSION['hostDN'][0] != $values->general_username) &&
+				(in_array($search , $keys)) ) return sprintf (_('%s already exists!'), $type);
+			if ((!$values_old) &&
+				($_SESSION['hostDN'][0] != $values->general_username) &&
+				(in_array($search , $keys))) return sprintf (_('%s already exists!'), $type);
 			break;
-		}
-	$result = ldap_search($_SESSION['ldap']->server(), $searchbase, $search , array(''), 1);
-	$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
-	if ($entry) $dn = (ldap_get_dn($_SESSION['ldap']->server(), $entry));
-	if ($dn) {
-		if ($values_old->general_username != $values->general_username) return sprintf (_('%s already exists!', $type));
-		if (!$values_old) return  sprintf (('%s already exists!'), $type);
 		}
 	return 0;
 	}
 
 
 function findgroups() { // Will return an array with all Groupnames found in LDAP
-	$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(), 'ObjectClass=PosixGroup', array(''), 1);
-	$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
-	while ($entry) {
-		$group[] = strtok(ldap_dn2ufn(ldap_get_dn($_SESSION['ldap']->server(), $entry)),',');
-		$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
+	ldapreload('group');
+	$group = array_keys($_SESSION['groupDN']);
+	unset ($group[0]);
+	$group = array_values($group);
+	for ($i=0; $i<count($group); $i++) {
+		$start = strpos($group[$i], '=')+1;
+		$end = strpos($group[$i], ',');
+		$group[$i] = substr($group[$i], $start, $end-$start);
 		}
 	sort ($group, SORT_STRING);
 	return $group;
@@ -591,14 +678,13 @@ function findgroups() { // Will return an array with all Groupnames found in LDA
 
 
 function getgid($groupname) { // Will return the the gid to an existing Groupname
-	// Check if group already exists
-	$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(), 'ObjectClass=PosixGroup', array('gidNumber', 'cn'), 0);
-	$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
-	while ($entry) {
-		$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
-		if ((isset($attr['gidNumber'][0])) && ($attr['cn'][0]==$groupname)) return $attr['gidNumber'][0];
-		$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
-		}
+	ldapreload('group');
+	$search = 'cn='.$groupname;
+	$keys = array_keys($_SESSION['groupDN']);
+	unset ($keys[0]);
+	$keys = array_values($keys);
+	foreach ($keys as $key)
+		if (strstr($key, $search))  return $_SESSION['groupDN'][$key]['gidNumber'];
 	return -1;
 	}
 
@@ -607,36 +693,38 @@ function getgid($groupname) { // Will return the the gid to an existing Groupnam
 function checkid($values, $type, $values_old=false) { // if value is empty will return an unused id from all ids found in LDAP else check existing value
 	switch ($type) {
 		case 'user':
-			$ObjectClass = 'PosixAccount';
-			$search = 'uidNumber';
 			$minID = intval($_SESSION['config']->get_minUID());
 			$maxID = intval($_SESSION['config']->get_maxUID());
 			$suffix = $_SESSION['config']->get_UserSuffix();
+			$keys = array_keys($_SESSION['userDN']);
+			unset ($keys[0]);
+			$keys = array_values($keys);
+			foreach ($keys as $key)
+				$ids[] = $_SESSION['userDN'][$key]['uidNumber'];
 			break;
 		case 'group':
-			$ObjectClass = 'PosixGroup';
-			$search = 'gidNumber';
 			$minID = intval($_SESSION['config']->get_MinGID());
 			$maxID = intval($_SESSION['config']->get_MaxGID());
 			$suffix = $_SESSION['config']->get_GroupSuffix();
+			$keys = array_keys($_SESSION['groupDN']);
+			unset ($keys[0]);
+			$keys = array_values($keys);
+			foreach ($keys as $key)
+				$ids[] = $_SESSION['groupDN'][$key]['gidNumber'];
 			break;
 		case 'host':
-			$ObjectClass = 'PosixAccount';
-			$search = 'uidNumber';
 			$minID = intval($_SESSION['config']->get_MinMachine());
 			$maxID = intval($_SESSION['config']->get_MaxMachine());
 			$suffix = $_SESSION['config']->get_HostSuffix();
+			$keys = array_keys($_SESSION['hostDN']);
+			unset ($keys[0]);
+			$keys = array_values($keys);
+			foreach ($keys as $key)
+				$ids[] = $_SESSION['hostDN'][$key]['uidNumber'];
 			break;
 		}
 	if ($values->general_uidNumber=='')
 		if (!$values_old) {
-			$result = ldap_search($_SESSION['ldap']->server(), $suffix, 'ObjectClass='.$ObjectClass, array($search));
-			$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
-			while ($entry) {
-				$vals = ldap_get_values($_SESSION['ldap']->server(), $entry, $search);
-				$ids[] = $vals[0];
-				$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
-				}
 			if ($ids) {
 				sort ($ids, SORT_NUMERIC);
 				if ($ids[count($ids)-1] < $maxID) {
@@ -654,16 +742,13 @@ function checkid($values, $type, $values_old=false) { // if value is empty will 
 			return $useID;
 			}
 		else return $values_old->general_uidNumber;
+
 	// Check manual ID
-	$result = ldap_search($_SESSION['ldap']->server(), $suffix, $search . '=' . $values->general_uidNumber, array(''), 1);
-	$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
-	if ($entry) { // Entry with same ID found
-		$dn = (ldap_get_dn($_SESSION['ldap']->server(), $entry));
-		$string = sprintf(_('ID is used from %s!'), $dn);
-		if (!$values_old) return $string;
-		 else if ($dn!=$values_old->general_dn) return $string;
-		 }
 	if ( $values->general_uidNumber < $minID || $values->general_uidNumber > $maxID) return sprintf(_('Please enter a value between %s and %s!'), $minID, $maxID);
+	if ( (in_array($values->general_uidNumber, $ids))) {
+		if (!$values_old) return _('ID is allready in use');
+		if ($ids != $values_old->uidNumber) return _('ID is allready in use');
+		}
 	return intval($values->general_uidNumber);
 	}
 
@@ -1038,6 +1123,7 @@ function createuser($values) { // Will create the LDAP-Account
 				}
 			if (!$success) return 4;
 		}
+	if ((isset($_SESSION['userDN']))) $_SESSION['userDN'][0] = time() -240;
 	return 1;
 	}
 
@@ -1344,6 +1430,7 @@ function modifyuser($values,$values_old) { // Will modify the LDAP-Account
 		$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
 		}
 	if ($_SESSION['config']->scriptServer) setquotas($values,'user',$values_old);
+	if ((isset($_SESSION['userDN']))) $_SESSION['userDN'][0] = time() -240;
 	return 3;
 	}
 
@@ -1412,6 +1499,7 @@ function createhost($values) { // Will create the LDAP-Account
 	if ($date!='') $attr['shadowExpire'] =  $date ; // shadowAccount_may
 	$success = ldap_add($_SESSION['ldap']->server(),$values->general_dn, $attr);
 	if (!$success) return 4;
+	if ((isset($_SESSION['hostDN']))) $_SESSION['hostDN'][0] = time() -240;
 	return 1;
 	}
 
@@ -1522,6 +1610,7 @@ function modifyhost($values,$values_old) { // Will modify the LDAP-Account
 		if ($success) $success = ldap_delete($_SESSION['ldap']->server(),$values_old->general_dn);
 		if (!$success) return 5;
 		}
+	if ((isset($_SESSION['hostDN']))) $_SESSION['hostDN'][0] = time() -240;
 	return 3;
 	}
 
@@ -1559,7 +1648,10 @@ function creategroup($values) { // Will create the LDAP-Group
 		}
 	$success = ldap_add($_SESSION['ldap']->server(),$values->general_dn, $attr);
 	if ($_SESSION['config']->scriptServer) setquotas($values,'group');
-	if ($success) return 1;
+	if ($success) {
+		if ((isset($_SESSION['groupDN']))) $_SESSION['groupDN'][0] = time() -240;
+		return 1;
+		}
 	else return 4;
 	}
 
@@ -1640,6 +1732,7 @@ function modifygroup($values,$values_old) { // Will modify the LDAP-Group
 			}
 		}
 	if ($_SESSION['config']->scriptServer) setquotas($values,'group',$values_old);
+	if ((isset($_SESSION['groupDN']))) $_SESSION['groupDN'][0] = time() -240;
 	return 3;
 	}
 
