@@ -19,10 +19,12 @@ $Id$
   along with this program; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
+	
+	Config supplies access to the configuration data.
+
 */
 
 
-// Config supplies access to the configuration data.
 
 class Config {
 
@@ -79,6 +81,7 @@ class Config {
 			while (!feof($file)) {
 				$line = fgets($file, 1024);
 				if (($line == "\n")||($line[0] == "#")) continue; // ignore comments
+				// search keywords
 				if (substr($line, 0, 5) == "ssl: ") {
 					$this->SSL = chop(substr($line, 5, strlen($line)-5));
 					continue;
@@ -157,6 +160,7 @@ class Config {
 	function save() {
 		$conffile = "../lam.conf";
 		if (is_file($conffile) == True) {
+			// booleans to check if value was already saved
 			$save_ssl = $save_host = $save_port = $save_passwd = $save_admins = $save_suffusr = $save_suffgrp = $save_suffhst =
 				$save_minUID = $save_maxUID = $save_minGID = $save_maxGID = $save_minMach = $save_maxMach = $save_defShell = $save_shellList = False;
 			$file = fopen($conffile, "r");
@@ -167,6 +171,7 @@ class Config {
 			fclose($file);
 			for ($i = 0; $i < sizeof($file_array); $i++) {
 				if (($file_array[$i] == "\n")||($file_array[$i][0] == "#")) continue; // ignore comments
+				// search for keywords
 				if (substr($file_array[$i], 0, 5) == "ssl: ") {
 					$file_array[$i] = "ssl: " . $this->SSL . "\n";
 					$save_ssl = True;
@@ -248,7 +253,7 @@ class Config {
 					continue;
 				}
 			}
-			// check if we have to add new entries (e.g. if user upgraded LAM)
+			// check if we have to add new entries (e.g. if user upgraded LAM and has an old lam.conf)
 			if (!$save_ssl == True) array_push($file_array, "\n\n# use SSL to connect, can be True or False\n" . "ssl: " . $this->SSL);
 			if (!$save_host == True) array_push($file_array, "\n\n# hostname of LDAP server (e.g localhost)\n" . "host: " . $this->Host);
 			if (!$save_port == True) array_push($file_array, "\n\n# portnumber of LDAP server (default 389)\n" . "port: " . $this->Port);
@@ -297,37 +302,45 @@ class Config {
 
 // functions to read/write preferences
 	
+	// returns a string that can be "True" or "False"
 	function get_SSL() {
 		return $this->SSL;
 	}
 	
+	// accepts only strings that are either "True" or "False"
 	function set_SSL($value) {
 		if (($value == "True") || ($value == "False")) $this->SSL = $value;
 		else echo _("Config->set_SSL failed!");
 	}
 	
+	// returns the hostname
 	function get_Host() {
 		return $this->Host;
 	}
 	
+	// sets the hostname
 	function set_Host($value) {
 		if (is_string($value)) $this->Host = $value;
 		else echo _("Config->set_Host failed!");
 	}
 	
+	// returns the port number as string
 	function get_Port() {
 		return $this->Port;
 	}
 	
+	// sets the portnumber
 	function set_Port($value) {
 		if (is_numeric($value)) $this->Port = $value;
 		else echo _("Config->set_Port failed!");
 	}
 	
+	// returns an array of string with all admin names
 	function get_Admins() {
 		return $this->Admins;
 	}
 	
+	// needs an array of string containing all admin users
 	function set_Admins($value) {
 		if (is_array($value)) { // check if $value is array of strings
 			$b = true;
@@ -342,10 +355,12 @@ class Config {
 		else echo _("Config->set_Admins failed!");
 	}
 	
+	// returns all admin users seperated by semicolons
 	function get_Adminstring() {
 		return $this->Adminstring;
 	}
 	
+	// needs a string that contains all admin users seperated by semicolons
 	function set_Adminstring($value) {
 		if (is_string($value)) {
 			$this->Adminstring = $value;
@@ -354,109 +369,133 @@ class Config {
 		else echo _("Config->set_Adminstring failed!");
 	}
 	
+	// returns the password to access the preferences wizard
 	function get_Passwd() {
 		return $this->Passwd;
 	}
 	
+	// sets the preferences wizard password
 	function set_Passwd($value) {
 		if (is_string($value)) $this->Passwd = $value;
 		else echo _("Config->set_Passwd failed!");
 	}
 	
+	// returns the LDAP suffix where users are saved
 	function get_UserSuffix() {
 		return $this->Suff_users;
 	}
 	
+	// sets the LDAP suffix where users are saved
 	function set_UserSuffix($value) {
 		if (is_string($value)) $this->Suff_users = $value;
 		else echo _("Config->set_UserSuffix failed!");
 	}
 	
+	// returns the LDAP suffix where groups are saved
 	function get_GroupSuffix() {
 		return $this->Suff_groups;
 	}
 	
+	// sets the LDAP suffix where groups are saved
 	function set_GroupSuffix($value) {
 		if (is_string($value)) $this->Suff_groups = $value;
 		else echo _("Config->set_GroupSuffix failed!");
 	}
 	
+	// returns the LDAP suffix where hosts are saved
 	function get_HostSuffix() {
 		return $this->Suff_hosts;
 	}
 	
+	// sets the LDAP suffix where hosts are saved
 	function set_HostSuffix($value) {
 		if (is_string($value)) $this->Suff_hosts = $value;
 		else echo _("Config->set_HostSuffix failed!");
 	}
 	
+	// returns the minimum UID to use when creating new users
 	function get_minUID() {
 	return $this->MinUID;
 	}
 	
+	// sets the minimum UID to use when creating new users
 	function set_minUID($value) {
 		if (is_numeric($value)) $this->MinUID = $value;
 		else echo _("Config->set_minUID failed!");
 	}
 
+	// returns the maximum UID to use when creating new users
 	function get_maxUID() {
 	return $this->MaxUID;
 	}
 	
+	// sets the maximum UID to use when creating new users
 	function set_maxUID($value) {
 		if (is_numeric($value)) $this->MaxUID = $value;
 		else echo _("Config->set_maxUID failed!");
 	}
 
+	// returns the minimum GID to use when creating new groups
 	function get_minGID() {
 	return $this->MinGID;
 	}
 	
+	// sets the minimum GID to use when creating new groups
 	function set_minGID($value) {
 		if (is_numeric($value)) $this->MinGID = $value;
 		else echo _("Config->set_minGID failed!");
 	}
 
+	// returns the maximum GID to use when creating new groups
 	function get_maxGID() {
 	return $this->MaxGID;
 	}
 	
+	// sets the maximum GID to use when creating new groups
 	function set_maxGID($value) {
 		if (is_numeric($value)) $this->MaxGID = $value;
 		else echo _("Config->set_maxGID failed!");
 	}
 
+	// returns the minimum UID to use when creating new Samba hosts
 	function get_minMachine() {
 	return $this->MinMachine;
 	}
 	
+	// sets the minimum UID to use when creating new Samba hosts
 	function set_minMachine($value) {
 		if (is_numeric($value)) $this->MinMachine = $value;
 		else echo _("Config->set_minMachine failed!");
 	}
 
+	// returns the maximum UID to use when creating new Samba hosts
 	function get_maxMachine() {
 	return $this->MaxMachine;
 	}
 	
+	// sets the maximum UID to use when creating new Samba hosts
 	function set_maxMachine($value) {
 		if (is_numeric($value)) $this->MaxMachine = $value;
 		else echo _("Config->set_maxMachine failed!");
 	}
 	
+	// returns the default shell to use when creating new users
 	function get_defaultShell() {
 	return $this->DefaultShell;
 	}
 	
+	// sets the default shell to use when creating new users
 	function set_defaultShell($value) {
 		if (is_string($value)) $this->DefaultShell = $value;
 		else echo _("Config->set_shellList failed!");
 	}
 
+	// returns a list of possible shells when creating new users
 	function get_shellList() {
 	return $this->ShellList;
 	}
 	
+	// sets the list of possible shells when creating new users
 	function set_shellList($value) {
 		if (is_string($value)) $this->ShellList = $value;
 		else echo _("Config->set_shellList failed!");
