@@ -86,7 +86,7 @@ class cache {
 			foreach ($DNs as $dn) {
 				if (isset($this->ldapcache[$scope][$dn][$attribute]) && in_array($objectClass, $this->ldapcache[$scope][$dn]['objectClass'])) {
 					// return string if only attribute exists only once
-					if (count($this->ldapcache[$scope][$dn][$attribute])==1) $return[$dn] = $this->ldapcache[$scope][$dn][$attribute][0];
+					if (count($this->ldapcache[$scope][$dn][$attribute])==1) $return[$dn][] = $this->ldapcache[$scope][$dn][$attribute][0];
 					else {
 						// else return array with all attributes
 						$return[$dn] = $this->ldapcache[$scope][$dn][$attribute];
@@ -231,6 +231,7 @@ class accountContainer {
 	var $type;
 	var $lampath; // reference to lampath from Session
 	var $ldap; // This is a reference to the ldap class in session
+	var $modules; // This is an array with all module objects
 
 	/* Get the type of account. Valid
 	* types are: user, group, host
@@ -266,7 +267,7 @@ class accountContainer {
 		// create array with may-attributes
 		// Get startposition in string
 		if (strpos($this->ldap->objectClasses[$line],  'MAY (')) {
-			$string_withtail = substr($this->ldap->objectClasses[$line], strpos($_SESSION['ldap']->objectClasses[$line],  'MAY (')+5);
+			$string_withtail = substr($this->ldap->objectClasses[$line], strpos($this->ldap->objectClasses[$line],  'MAY (')+5);
 			// Now we have a string with all must-attributes
 			$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
 			$string = trim($string);
@@ -277,6 +278,49 @@ class accountContainer {
 					else $this->attributes[$attribute][$objectClass] = 'MAY';
 				}
 			}
+
+		// Get attributes of subclasses
+		while (strpos($this->ldap->objectClasses[$line], "SUP ")) {
+			$string_withtail = substr($this->ldap->objectClasses[$line], strpos($this->ldap->objectClasses[$line],  'SUP ')+4);
+			$subclass = substr($string_withtail, 0, strpos($string_withtail, ' '));
+			// Add account type to object
+			for ($i=0; $i<count($this->ldap->objectClasses) || $i==-1; $i++) {
+				if (strpos($this->ldap->objectClasses[$i], "NAME '$subclass'")) $line = $i;
+				}
+			// Return error if objectClass isn't found
+			if ($line==-1) trigger_error (_("objectClass objectClass required but not defined in ldap."), E_USER_WARNING);
+
+			// create array with must-attributes
+			// Get startposition in string
+			if (strpos($this->ldap->objectClasses[$line],  'MUST (')) {
+				$string_withtail = substr($this->ldap->objectClasses[$line], strpos($this->ldap->objectClasses[$line],  'MUST (')+6);
+				// Now we have a string with all must-attributes
+				$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
+				$string = trim($string);
+				$may = explode(" $ ", $string);
+				// Ad must
+				foreach ($must as $attribute) {
+					if (!isset($this->attributes[$attribute])) $this->attributes[$attribute][$objectClass] = 'MUST';
+						else $this->attributes[$attribute][$objectClass] = 'MUST';
+					}
+				}
+			// create array with may-attributes
+			// Get startposition in string
+			if (strpos($this->ldap->objectClasses[$line],  'MAY (')) {
+				$string_withtail = substr($this->ldap->objectClasses[$line], strpos($this->ldap->objectClasses[$line],  'MAY (')+5);
+				// Now we have a string with all must-attributes
+				$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
+				$string = trim($string);
+				$must = explode(" $ ", $string);
+				// Ad may
+				foreach ($must as $attribute) {
+					if (!isset($this->attributes[$attribute])) $this->attributes[$attribute][$objectClass] = 'MAY';
+						else $this->attributes[$attribute][$objectClass] = 'MAY';
+					}
+				}
+			}
+
+
 		}
 
 	/* This function return ldap attributes
@@ -309,7 +353,7 @@ class accountContainer {
 			// Add module if it exists
 			if (filetype($this->lampath."/lib/modules/".$objectClass.".inc") == 'file') {
 				include_once ($this->lampath."/lib/modules/".$objectClass.".inc");
-				$this[] = new $objectClass($this);
+				$this->modules[] = new $objectClass($this);
 				}
 			}
 		return 0;
