@@ -29,6 +29,62 @@ $Id$
 * @author Roland Gruber
 */
 
+/**
+* Builds the regular expressions from the filter values.
+*
+* @param array $post HTTP Post values
+* @param array $attributes list of displayed attributes
+* @return array filter data array($attribute => array('regex' => $reg, 'original' => $orig))
+* $reg is the regular expression to use, $orig the user's unmodified input string
+*/
+function listBuildFilter($post, $attributes) {
+	$filter = array();
+	for ($i = 0; $i < sizeof($attributes); $i++) {
+		if (eregi('^([0-9a-z_\\*\\$])+$', $_POST["filter" . strtolower($attributes[$i])])) {
+			$filter[$attributes[$i]]['original'] = $_POST["filter" . strtolower($attributes[$i])];
+			$filter[$attributes[$i]]['regex'] = $_POST["filter" . strtolower($attributes[$i])];
+			// replace special characters
+			$filter[$attributes[$i]]['regex'] = str_replace("*", "(.)*", $filter[$attributes[$i]]['regex']);
+			$filter[$attributes[$i]]['regex'] = str_replace('$', '[$]', $filter[$attributes[$i]]['regex']);
+			// add string begin and end
+			$filter[$attributes[$i]]['regex'] = "^" . $filter[$attributes[$i]]['regex'] . "$";
+		}
+	}
+	return $filter;
+}
+
+
+/**
+* Removes all entries which do not fit to the filter.
+*
+* @param array $entries list of accounts
+* @param array $filter attribute filter
+* @return array filtered list of accounts
+*/
+function listFilterAccounts($entries, $filter) {
+	$attributes = array_keys($filter);
+	for ($r = 0; $r < sizeof($entries); $r++) {
+		for ($a = 0; $a < sizeof($attributes); $a++) {
+			// check if filter fits
+			$found = false;
+			for ($i = 0; $i < sizeof($entries[$r][$attributes[$a]]); $i++) {
+				if (eregi($filter[$attributes[$a]]['regex'], $entries[$r][$attributes[$a]][$i])) {
+					$found = true;
+					break;
+				}
+			}
+			if (!$found) {
+				// remove account and reindex array
+				unset($entries[$r]);
+				$entries = array_values($entries);
+				$r--;
+				break;
+			}
+		}
+	}
+	return $entries;
+}
+
 
 /**
 * Sorts an account list by a given attribute
@@ -94,7 +150,7 @@ function listDrawNavigationBar($count, $max_page_entries, $page, $sort, $searchF
 	echo("<tr>\n");
 	echo("<td><input type=\"submit\" name=\"refresh\" value=\"" . _("Refresh") . "\">&nbsp;&nbsp;");
 	if ($page != 1) {
-		echo("<a href=\"list" . $scope . "s.php?page=" . ($page - 1) . "&amp;sort=" . $sort . $searchFilter . "\">&lt;=</a>\n");
+		echo("<a href=\"list" . $scope . "s.php?norefresh=true&amp;page=" . ($page - 1) . "&amp;sort=" . $sort . $searchFilter . "\">&lt;=</a>\n");
 	}
 	else {
 		echo("&lt;=");
@@ -102,7 +158,7 @@ function listDrawNavigationBar($count, $max_page_entries, $page, $sort, $searchF
 	echo("&nbsp;");
 
 	if ($page < ($count / $max_page_entries)) {
-		echo("<a href=\"list" . $scope . "s.php?page=" . ($page + 1) . "&amp;sort=" . $sort . $searchFilter . "\">=&gt;</a>\n");
+		echo("<a href=\"list" . $scope . "s.php?norefresh=true&amp;page=" . ($page + 1) . "&amp;sort=" . $sort . $searchFilter . "\">=&gt;</a>\n");
 	}
 	else {
 		echo("=&gt;</td>");
@@ -119,7 +175,7 @@ function listDrawNavigationBar($count, $max_page_entries, $page, $sort, $searchF
 			echo("&nbsp;" . ($i + 1));
 		}
 		else {
-			echo("&nbsp;<a href=\"list" . $scope . "s.php?page=" . ($i + 1) . "&amp;sort=" . $sort . "\">" . ($i + 1) . "</a>\n");
+			echo("&nbsp;<a href=\"list" . $scope . "s.php?norefresh=true&amp;page=" . ($i + 1) . "&amp;sort=" . $sort . "\">" . ($i + 1) . "</a>\n");
 		}
 	}
 	echo("</td></tr></table>\n");
