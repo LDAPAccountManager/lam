@@ -42,7 +42,8 @@ if (!$_SESSION['ldap'] || !$_SESSION['ldap']->server()) {
 
 // load quota list
 if ($_SESSION['config']->get_scriptPath()) {
-	$acct_q = getquotas("group");
+	$tmp = getquotas("group");
+	$acct_q = $tmp[0];
 }
 
 // print header

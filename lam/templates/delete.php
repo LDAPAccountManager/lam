@@ -148,13 +148,8 @@ if ($_POST['delete_yes']) {
 				// Get username from DN
 				$temp=explode(',', $dn);
 				$username = str_replace('uid=', '', $temp[0]);
-
-				if ($config_intern->scriptServer) {
-					// Remove homedir if required
-					if ($_POST['f_rem_home']) remhomedir(array($username));
-					// Remove quotas if lamdaemon.pl is used
-					if ($config_intern->scriptServer) remquotas(array($username), 'user');
-					}
+				// Fill array with groupnames
+				$usernames[] = $username;
 				// Search for groups which have memberUid set to username
 				$result = ldap_search($ldap_intern->server(), $config_intern->get_GroupSuffix(), "(&(objectClass=PosixGroup)(memberUid=$username))", array(''));
 				$entry = ldap_first_entry($ldap_intern->server(), $result);
@@ -180,6 +175,8 @@ if ($_POST['delete_yes']) {
 				*/
 				$temp=explode(',', $dn);
 				$groupname = str_replace('cn=', '', $temp[0]);
+				// Fill array with groupnames
+				$usernames[] = $groupname;
 				// Get group GIDNumber
 				$groupgid = getgid($groupname);
 				// Search for users which have gid set to current gid
@@ -187,14 +184,17 @@ if ($_POST['delete_yes']) {
 				// Print error if still users in group
 				if (!$result) $error = _('Could not delete group. Still users in group:').' '.$dn;
 				else {
-					// continue if no primary users are in group
-					// Remove quotas if lamdaemon.pl is used
-					if ($config_intern->scriptServer) remquotas(array($groupname), 'group');
 					// Delete group itself
 					$success = ldap_delete($ldap_intern->server(), $dn);
 					if (!$success) $error = _('Could not delete group:').' '.$dn;
 					}
 				break;
+			}
+		if ($config_intern->scriptServer && is_set($usernames)) {
+			// Remove homedir if required
+			if ($_POST['f_rem_home']) remhomedir($usernames);
+			// Remove quotas if lamdaemon.pl is used
+			remquotas($usernames, 'user');
 			}
 		// Remove DNs from cache-array
 		if ($success && isset($_SESSION[$_POST['type'].'DN'][$dn])) unset($_SESSION[$_POST['type'].'DN'][$dn]);
