@@ -59,12 +59,12 @@ function listSort($sort, $attr_array, $info) {
 		if ($sort != "dn") {
 			// sort by first attribute with name $sort
 			if ($a[$sort][0] == $b[$sort][0]) return 0;
-			else if ($a[$sort][0] == max($a[$sort][0], $b[$sort][0])) return 1;
+			elseif ($a[$sort][0] == max($a[$sort][0], $b[$sort][0])) return 1;
 			else return -1;
 		}
 		else {
 			if ($a[$sort] == $b[$sort]) return 0;
-			else if ($a[$sort] == max($a[$sort], $b[$sort])) return 1;
+			elseif ($a[$sort] == max($a[$sort], $b[$sort])) return 1;
 			else return -1;
 		}
 	}

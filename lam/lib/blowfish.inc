@@ -322,7 +322,7 @@ class Cipher_blowfish {
     var $_rounds = 16;
 
     /** Constructor */
-    function Cipher_blowfish($params = null)
+    function Cipher_blowfish()
     {
     }
 

@@ -264,7 +264,7 @@ elseif ($_POST['sub_save']) {
 		if ($_POST['dom_DN'] != $newDN) {
 			$success = ldap_rename($_SESSION['ldap']->server(), $_POST['dom_DN'], $RDN, $_POST['dom_suffix'], true);
 		}
-		if ($success) StatusMessage("INFO", _("Domain has been modified."), $DN);
+		if ($success) StatusMessage("INFO", _("Domain has been modified."), $_POST['dom_DN']);
 		else StatusMessage("ERROR", "", _("Failed to modify domain!"));
 	}
 	// add entry

@@ -68,8 +68,8 @@ $options = getProfileOptions($type);
 $old_options = array();
 if ($_GET['edit']) {
 	if ($type == "user") $old_options = loadUserProfile($_GET['edit']);
-	else if ($type == "group") $old_options = loadGroupProfile($_GET['edit']);
-	else if ($type == "host") $old_options = loadHostProfile($_GET['edit']);
+	elseif ($type == "group") $old_options = loadGroupProfile($_GET['edit']);
+	elseif ($type == "host") $old_options = loadHostProfile($_GET['edit']);
 }
 
 // display formular

@@ -135,7 +135,7 @@ echo ("<form action=\"listdomains.php\" method=\"post\">\n");
 
 // draw navigation bar if domain accounts were found
 if (sizeof($dom_info) > 0) {
-listDrawNavigationBar(sizeof($dom_info), $max_page_entries, $page, $sort, $searchFilter, "domain", _("%s Samba domain(s) found"));
+listDrawNavigationBar(sizeof($dom_info), $max_page_entries, $page, $sort, '', "domain", _("%s Samba domain(s) found"));
 echo ("<br>\n");
 }
 
@@ -185,7 +185,7 @@ echo ("<br>");
 
 // draw navigation bar if domain accounts were found
 if (sizeof($dom_info) > 0) {
-listDrawNavigationBar(sizeof($dom_info), $max_page_entries, $page, $sort, $searchFilter, "domain", _("%s Samba domain(s) found"));
+listDrawNavigationBar(sizeof($dom_info), $max_page_entries, $page, $sort, '', "domain", _("%s Samba domain(s) found"));
 echo ("<br>\n");
 }
 

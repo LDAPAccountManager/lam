@@ -224,6 +224,7 @@ class Ldap{
 			ldap_free_result($sr);
 			return $ret;
 		}
+		else return "";
 	}
 
 	/**
@@ -301,7 +302,7 @@ class Ldap{
 			if ($info) {
 				$this->objectClasses = $info[0]['objectclasses'];
 				array_shift($this->objectClasses);
-				return true;
+				return;
 			}
 		}
 		// if search failed save empty result
@@ -357,7 +358,7 @@ class Ldap{
 					}
 				}
 			}
-			@closedir($h);
+			@closedir($dir);
 		}
 	}
 
@@ -488,6 +489,7 @@ class Ldap{
 			elseif ($part_a == max($part_a, $part_b)) return 1;
 			else return -1;
 		}
+		return -1;
 	}
 
 	/**

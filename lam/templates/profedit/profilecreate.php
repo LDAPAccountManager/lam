@@ -110,21 +110,21 @@ else {  // input data is valid, save profile
 	// save profile
 	if ($_POST['accounttype'] == "user") {
 		if (saveUserProfile($options, $_POST['profname'])) {
-			echo StatusMessage("INFO", _("Profile was saved."), $profname);
+			echo StatusMessage("INFO", _("Profile was saved."), $_POST['profname']);
 		}
-		else StatusMessage("ERROR", _("Unable to save profile!"), $profname);
+		else StatusMessage("ERROR", _("Unable to save profile!"), $_POST['profname']);
 	}
 	elseif ($_POST['accounttype'] == "group") {
 		if (saveGroupProfile($options, $_POST['profname'])) {
-			echo StatusMessage("INFO", _("Profile was saved."), $profname);
+			echo StatusMessage("INFO", _("Profile was saved."), $_POST['profname']);
 		}
-		else StatusMessage("ERROR", _("Unable to save profile!"), $profname);
+		else StatusMessage("ERROR", _("Unable to save profile!"), $_POST['profname']);
 	}
 	elseif ($_POST['accounttype'] == "host") {
 		if (saveHostProfile($options, $_POST['profname'])) {
-			echo StatusMessage("INFO", _("Profile was saved."), $profname);
+			echo StatusMessage("INFO", _("Profile was saved."), $_POST['profname']);
 		}
-		else StatusMessage("ERROR", _("Unable to save profile!"), $profname);
+		else StatusMessage("ERROR", _("Unable to save profile!"), $_POST['profname']);
 	}
 	echo ("<br><p><a href=\"profilemain.php\">" . _("Back to Profile Editor") . "</a></p>");
 }

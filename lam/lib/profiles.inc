@@ -326,6 +326,7 @@ function saveHostProfile($attributes, $profile) {
 * Deletes a user profile
 *
 * @param string $file name of profile (Without .pru)
+* @return boolean true if profile was deleted
 */
 function delUserProfile($file) {
 	if (!$_SESSION['loggedIn'] == true) return false;
@@ -334,12 +335,14 @@ function delUserProfile($file) {
 	if (is_file($prof)) {
 		return @unlink($prof);
 	}
+	else return false;
 }
 
 /**
 * Deletes a group profile
 *
 * @param string $file name of profile (Without .prg)
+* @return boolean true if profile was deleted
 */
 function delGroupProfile($file) {
 	if (!$_SESSION['loggedIn'] == true) return false;
@@ -348,12 +351,14 @@ function delGroupProfile($file) {
 	if (is_file($prof)) {
 		return @unlink($prof);
 	}
+	else return false;
 }
 
 /**
 * Deletes a host profile
 *
 * @param string $file name of profile (Without .prh)
+* @return boolean true if profile was deleted
 */
 function delHostProfile($file) {
 	if (!$_SESSION['loggedIn'] == true) return false;
@@ -362,6 +367,7 @@ function delHostProfile($file) {
 	if (is_file($prof)) {
 		return @unlink($prof);
 	}
+	else return false;
 }
 
 ?>
