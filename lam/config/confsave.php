@@ -20,7 +20,7 @@ $Id$
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
   
-  
+  confsave saves the new preferences to lam.conf
   
 */
 
@@ -28,8 +28,9 @@ include_once ('config.php');
 $conf = new Config();
 
 // check if password is correct 
+// if not: load login page
 if ($passwd != $conf->get_Passwd()) {
-	require('confmain.php');
+	require('conflogin.php');
 	exit;
 }
 
@@ -73,11 +74,12 @@ if ($pass1 != $pass2) {
 	echo _("<b>" . _("Passwords are different!") . "</b>");
 	exit;
 }
+// set new password
 if ($pass1 != "") {
 	$conf->set_Passwd($pass1);
 	echo ("<b>" . _("Password changed!") . "</b><br><br>");
 }
-// save settings
+// save settings and display new settings
 $conf->save();
 echo ("<b>" . _("Saving the following settings:") . "</b><br><br>");
 $conf->printconf();

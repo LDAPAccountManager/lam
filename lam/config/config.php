@@ -67,7 +67,7 @@ class Config {
 			$file = fopen($conffile, "r");
 			while (!feof($file)) {
 				$line = fgets($file, 1024);
-				if (($line == "\n")||($line[0] == "#")) continue;
+				if (($line == "\n")||($line[0] == "#")) continue; // ignore comments
 				if (substr($line, 0, 5) == "ssl: ") {
 					$this->SSL = chop(substr($line, 5, strlen($line)-5));
 					continue;
@@ -122,7 +122,7 @@ class Config {
 			}
 			fclose($file);
 			for ($i = 0; $i < sizeof($file_array); $i++) {
-				if (($file_array[$i] == "\n")||($file_array[$i][0] == "#")) continue;
+				if (($file_array[$i] == "\n")||($file_array[$i][0] == "#")) continue; // ignore comments
 				if (substr($file_array[$i], 0, 5) == "ssl: ") {
 					$file_array[$i] = "ssl: " . $this->SSL . "\n";
 					$save_ssl = True;
@@ -176,7 +176,7 @@ class Config {
 				"# e.g. ou=People,dc=yourdomain,dc=org\n" . "usersuffix: " . $this->suff_users);
 			if (!$save_suffgrp == True) array_push($file_array, "\n# suffix of groups\n" . 
 				"# e.g. ou=Groups,dc=yourdomain,dc=org\n" . "groupsuffix: " . $this->suff_groups);
-			if (!$save_suffhst == True) array_push($file_array, "\n# suffix of hosts\n" . 
+			if (!$save_suffhst == True) array_push($file_array, "\n# suffix of Samba hosts\n" . 
 				"# e.g. ou=machines,dc=yourdomain,dc=org\n" . "hostsuffix: " . $this->suff_hosts);
 			$file = fopen($conffile, "w");
 			for ($i = 0; $i < sizeof($file_array); $i++) fputs($file, $file_array[$i]);
@@ -194,6 +194,8 @@ class Config {
 		echo _("<b>GroupSuffix: </b>") . $this->suff_groups . "</br>";
 		echo _("<b>HostSuffix: </b>") . $this->suff_hosts;
 	}
+
+// functions to read/write preferences
 	
 	function get_SSL() {
 		return $this->SSL;
@@ -227,7 +229,7 @@ class Config {
 	}
 	
 	function set_Admins($value) {
-		if (is_array($value)) {
+		if (is_array($value)) { // check if $value is array of strings
 			$b = true;
 			for($i = 0; $i < sizeof($value); $i++){
 				if (is_string($value[$i]) == false) {
@@ -237,6 +239,7 @@ class Config {
 			}
 			if ($b) $this->Admins = $value;
 		}
+		else echo _("Config->set_Admins failed!");
 	}
 	
 	function get_Adminstring() {

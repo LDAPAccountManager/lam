@@ -21,7 +21,7 @@ $Id$
 
 */
 
-// Ldap provides basic functions to connect to the OpenLDAP server and get lists of users and groups.
+// ldap.php provides basic functions to connect to the OpenLDAP server and get lists of users and groups.
 include_once("../config/config.php");
 
 class Ldap{
@@ -99,7 +99,6 @@ class Ldap{
 	}
 	
 	// closes connection to server
-	// $base is optional and specifies the root from where to search for entries
 	function close() {
 		ldap_close($this->server);
 	}

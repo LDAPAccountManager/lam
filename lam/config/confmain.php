@@ -25,12 +25,14 @@ $Id$
 */
 
 // check if password was entered
+// if not: load login page
 if (! $passwd) {
 	require('conflogin.php');
 	exit;
 }
 
 // check if password is valid
+// if not: load login page
 include_once ('config.php');
 $conf = new Config();
 if (!(($conf->get_Passwd()) == $passwd)) {
