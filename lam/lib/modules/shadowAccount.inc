@@ -272,7 +272,7 @@ class shadowAccount extends baseModule {
 	 * @see baseModule#get_pdfEntries
 	 */
 	function get_pdfEntries($account_type = "user") {
-		return array(	'shadowAccount_shadowLastChange' => array('<block><key>' . _('Last shadow password change') . '</key><value>' . $this->attributes['shadowLastChange'][0] . '</value></block>'),
+		return array(	'shadowAccount_shadowLastChange' => array('<block><key>' . _('Last password change') . '</key><value>' . $this->attributes['shadowLastChange'][0] . '</value></block>'),
 							'shadowAccount_shadowWarning' => array('<block><key>' . _('Password warn') . '</key><value>' . $this->attributes['shadowWarn'][0] . '</value><block>'),
 							'shadowAccount_shadowInactive' => array('<block><key>' . _('Account inactive') . '</key><value>' . $this->attributes['shadowInactive'][0] . '</value></block>'),
 							'shadowAccount_shadowExpire' => array('<block><key>' . _('Password expire') . '</key><value>' . date('d. m. Y',$this->attributes['shadowExpire'][0]) . '</value></block>'),
