@@ -24,10 +24,15 @@ $Id$
 */
 
 $helpArray = array (
-				"101" => array ("ext" => "FALSE", "Headline" => _("Hilfetest 1"), "Text" => _("blablabla 1"), "SeeAlso" => "<a href=\"./help.php?HelpNumber=102\" target=\"_self\">102</a>"),
-				"102" => array ("ext" => "FALSE", "Headline" => _("Hilfetest 2"), "Text" => _("blablabla 2"), "SeeAlso" => ""),
-				"103" => array ("ext" => "TRUE", "Link" => "help/extFileExample.php"),
-				// configuration wizard (200 - 249)
+				// 0 - 99
+				// any developer
+				// for testing purposes
+				"0" => array ("ext" => "FALSE", "Headline" => _("Hilfetest 1"), "Text" => _("blablabla 1"), "SeeAlso" => "<a href=\"./help.php?HelpNumber=02\" target=\"_self\">02</a>"),
+				"02" => array ("ext" => "FALSE", "Headline" => _("Hilfetest 2"), "Text" => _("blablabla 2"), "SeeAlso" => ""),
+				"03" => array ("ext" => "TRUE", "Link" => "help/extFileExample.php"),
+				// 200 - 299
+				// Roland Gruber
+				// configuration wizard
 				// configuration login
 				"200" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard - Login"),
 					"Text" => _("Please enter the configuration password. This is NOT your LDAP password.".
