@@ -392,7 +392,7 @@ class sambaGroupMapping extends baseModule {
 
 	/* Write variables into object and do some regexp checks
 	*/
-	function proccess_attributes(&$post) {
+	function process_attributes(&$post) {
 		// Save attributes
 		$this->attributes['displayName'][0] = $post['displayName'];
 		$this->attributes['sambaGroupType'][0] = $this->sambaGroupTypes[$post['sambaGroupType']];

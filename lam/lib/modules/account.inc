@@ -143,7 +143,7 @@ class account extends baseModule {
 
 	/* Write variables into object and do some regexp checks
 	*/
-	function proccess_attributes(&$post) {
+	function process_attributes(&$post) {
 		// Load attributes
 		$this->attributes['description'][0] = $post['description'];
 		return 0;

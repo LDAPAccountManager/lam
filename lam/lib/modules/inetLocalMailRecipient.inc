@@ -227,7 +227,7 @@ class inetLocalMailRecipient extends baseModule {
 	*
 	* @param array $post HTTP-POST values
 	*/
-	function proccess_attributes(&$post) {
+	function process_attributes(&$post) {
 		$this->triggered_messages = array();
 		$this->attributes['mailRoutingAddress'] = array();
 		$this->attributes['mailLocalAddress'] = array();

@@ -248,7 +248,7 @@ class quota extends baseModule {
 
 	/* Write variables into object and do some regexp checks
 	*/
-	function proccess_attributes(&$post) {
+	function process_attributes(&$post) {
 		// Write all general values into $account_new
 		$i=0;
 		// loop for every mointpoint with quotas

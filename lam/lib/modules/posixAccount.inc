@@ -585,7 +585,7 @@ class posixAccount extends baseModule {
 
 	/* Write variables into object and do some regexp checks
 	*/
-	function proccess_attributes(&$post) {
+	function process_attributes(&$post) {
 		$this->attributes['homeDirectory'][0] = $post['homeDirectory'];
 		$this->attributes['loginShell'][0] = $post['loginShell'];
 		if (isset($post['gecos'])) $this->attributes['gecos'][0] = $post['gecos'];
@@ -787,7 +787,7 @@ class posixAccount extends baseModule {
 
 	/* Write variables into object and do some regexp checks
 	*/
-	function proccess_group(&$post) {
+	function process_group(&$post) {
 		do { // X-Or, only one if() can be true
 		if (isset($post['addgroups']) && isset($post['addgroups_button'])) { // Add groups to list
 		// Add new group

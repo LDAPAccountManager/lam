@@ -498,7 +498,7 @@ class sambaSamAccount extends baseModule {
 
 	/* Write variables into object and do some regexp checks
 	*/
-	function proccess_attributes(&$post) {
+	function process_attributes(&$post) {
 		// Save attributes
 		$this->attributes['sambaDomainName'][0] = $post['sambaDomainName'];
 		// Get Domain SID from name
@@ -639,7 +639,7 @@ class sambaSamAccount extends baseModule {
 
 	/* Write variables into object and do some regexp checks
 	*/
-	function proccess_sambaUserWorkstations(&$post) {
+	function process_sambaUserWorkstations(&$post) {
 		// Load attributes
 		if ($_SESSION[$this->base]->type=='user') {
 			do { // X-Or, only one if() can be true

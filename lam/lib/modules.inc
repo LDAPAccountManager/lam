@@ -640,7 +640,7 @@ class accountContainer {
 						}
 					}
 				}
-				else $result = call_user_func(array(&$this->module[$this->order[$this->current_page]], 'proccess_'.$this->subpage), $post);
+				else $result = call_user_func(array(&$this->module[$this->order[$this->current_page]], 'process_'.$this->subpage), $post);
 			}
 		if (is_string($result)) $this->subpage = $result;
 		if (is_int($result)) {
@@ -1257,7 +1257,7 @@ class accountContainer {
 
 
 	// TODO remove this function?
-	function proccess_profile(&$post) {
+	function process_profile(&$post) {
 		$return = array();
 		$module = array_keys ($this->module);
 		foreach ($module as $singlemodule) {

@@ -163,7 +163,7 @@ class ieee802Device extends baseModule {
 	*
 	* @param array $post HTTP-POST values
 	*/
-	function proccess_attributes(&$post) {
+	function process_attributes(&$post) {
 		$this->triggered_messages = array();
 		$this->attributes['macAddress'] = array();
 		// check old MACs

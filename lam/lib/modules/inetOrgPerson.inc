@@ -350,7 +350,7 @@ class inetOrgPerson extends baseModule {
 		return 0;
 		}
 
-	function proccess_attributes(&$post) {
+	function process_attributes(&$post) {
 		// Load attributes
 		$this->attributes['description'][0] = $post['description'];
 		$this->attributes['sn'][0] = $post['sn'];

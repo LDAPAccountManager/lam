@@ -529,7 +529,7 @@ class sambaAccount extends baseModule {
 
 	/* Write variables into object and do some regexp checks
 	*/
-	function proccess_attributes(&$post) {
+	function process_attributes(&$post) {
 		$this->attributes['domain'][0] = $post['domain'];
 		// Start character
 		$flag = "[";
@@ -662,7 +662,7 @@ class sambaAccount extends baseModule {
 
 	/* Write variables into object and do some regexp checks
 	*/
-	function proccess_userWorkstations(&$post) {
+	function process_userWorkstations(&$post) {
 		// Load attributes
 		if ($_SESSION[$this->base]->type=='user') {
 			do { // X-Or, only one if() can be true

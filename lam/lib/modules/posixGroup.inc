@@ -441,7 +441,7 @@ class posixGroup extends baseModule {
 
 	/* Write variables into object and do some regexp checks
 	*/
-	function proccess_attributes(&$post) {
+	function process_attributes(&$post) {
 		$this->attributes['description'][0] = $post['description'];
 
 		if (($post['userPassword_lock'] && $post['userPassword_invalid']) || ($post['userPassword_nopassword'] && $post['userPassword_invalid'])) {
@@ -607,7 +607,7 @@ class posixGroup extends baseModule {
 
 	/* Write variables into object and do some regexp checks
 	*/
-	function proccess_user(&$post) {
+	function process_user(&$post) {
 		do { // X-Or, only one if() can be true
 		if (isset($post['addusers']) && isset($post['addusers_button'])) { // Add groups to list
 		// Add new user
