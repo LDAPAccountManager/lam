@@ -1031,7 +1031,7 @@ function modifyhost($values,$values_old) { // Will modify the LDAP-Account
 	// Value stored in shadowExpire, days since 1.1.1970
 	$date = mktime(10,0,0, $values->unix_pwdexpire_mon, $values->unix_pwdexpire_day, $values->unix_pwdexpire_yea) / 86400 ;
 	settype($date, 'integer');
-	$values->general_dn = 'uid=' . $values->general_username . ',' . $_SESSION['config']->get_UserSuffix();
+	$values->general_dn = 'uid=' . $values->general_username . ',' . $_SESSION['config']->get_HostSuffix();
 	if ($values->general_username != $values_old->general_username) {
 		$attr['cn'] = $values->general_username; // posixAccount_req shadowAccount_req sambaAccount_may
 		$attr['uid'] = $values->general_username; // posixAccount_req
@@ -1094,7 +1094,7 @@ function modifyhost($values,$values_old) { // Will modify the LDAP-Account
 	if ($values->smb_pwdcanchange==0 && $values_old->smb_pwdcanchange==1) $attr_rem['pwdCanChange'] = "1"; else $attr['pwdCanChange'] = "0"; // sambaAccount_may
 	if ($values->smb_pwdmustchange && $values->smb_pwdmustchange==0) $attr['pwdMustChange'] = "1"; else $attr['pwdMustChange'] = "0"; // sambaAccount_may
 	if ($values->smb_pwdmustchange==0 && $values->smb_pwdmustchange==1) $attr_rem['pwdMustChange'] = "1"; else $attr['pwdMustChange'] = "0"; // sambaAccount_may
-	$attr['acctFlags'] = smbflag(); // sambaAccount_may
+	$attr['acctFlags'] = smbflag($values); // sambaAccount_may
 	if (($values->smb_domain!='') && ($values->smb_domain!=$values_old->smb_domain)) $attr['domain'] = $values->smb_domain; // sambaAccount_may
 	if (($values->smb_domain=='') && ($values->smb_domain!=$values_old->smb_domain)) $attr_rem['domain'] = $values_old->smb_domain; // sambaAccount_may
 
@@ -1102,18 +1102,18 @@ function modifyhost($values,$values_old) { // Will modify the LDAP-Account
 		$success = ldap_mod_del($_SESSION['ldap']->server(),$values->general_dn, $attr_rem);
 		if (!$success) return 5;
 		}
-	if ($values->general_username == $values_old->general_username) // Username hasn't changed
+	if ($values->general_username == $values_old->general_username) // Hostname hasn't changed
 		$success = ldap_modify($_SESSION['ldap']->server(),$values->general_dn, $attr);
-			else {
-				$result = ldap_search($_SESSION['ldap']->server(), $dn, "objectclass=PosixAccount");
-				$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
-				$attr_old = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
-				$success = ldap_add($_SESSION['ldap']->server(),$values->general_dn, $attr_old);
-				if ($success) $success = ldap_delete($_SESSION['ldap']->server(),$values_old->general_dn);
-				if ($success) $success = ldap_mod_replace($_SESSION['ldap']->server(),$values->general_dn, $attr);
-				}
+	else {
+		$result = ldap_search($_SESSION['ldap']->server(), $dn, "objectclass=PosixAccount");
+		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
+		$attr_old = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
+		$success = ldap_add($_SESSION['ldap']->server(),$values->general_dn, $attr_old);
+		if ($success) $success = ldap_delete($_SESSION['ldap']->server(),$values_old->general_dn);
+		if ($success) $success = ldap_mod_replace($_SESSION['ldap']->server(),$values->general_dn, $attr);
+		}
 	if (!$success) return 5;
-	$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(), 'objectClass=PosixGroup');
+	$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(), 'objectClass=PosixGroup', array('memberUid', 'cn'));
 	$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 	while ($entry) {
 		$modifygroup=0;
@@ -1121,13 +1121,13 @@ function modifyhost($values,$values_old) { // Will modify the LDAP-Account
 		if ($attr2['memberUid']) {
 			array_shift($attr2['memberUid']);
 			foreach ($attr2['memberUid'] as $nam) {
-				if ( ($nam==$values->general_username) && !in_array($nam, $values->general_groupadd)) {
+				if ( ($nam==$values->general_username) && !in_array($attr2['cn'][0], $values->general_groupadd)) {
 					$todelete['memberUid'] = $nam;
 					$success = ldap_mod_del($_SESSION['ldap']->server(), ldap_get_dn($_SESSION['ldap']->server(), $entry) ,$todelete);
 					if (!$success) return 5;
 					}
 				}
-			if (!in_array($values->general_username, $attr2['memberUid']) && in_array($attr2['cn'][0], $values->general_groupadd)) {
+			if (!in_array($values->general_username, $attr2['memberUid']) && in_array($attr2['cn'][0], $values->general_groupadd) && ($attr2['cn'][0]!=$values->general_group)) {
 				$toadd['memberUid'] = $attr2['memberUid'];
 				$toadd['memberUid'][] = $values->general_username;
 				$success = ldap_mod_replace($_SESSION['ldap']->server(), ldap_get_dn($_SESSION['ldap']->server(), $entry),  $toadd);
@@ -1135,7 +1135,7 @@ function modifyhost($values,$values_old) { // Will modify the LDAP-Account
 				}
 			}
 		 else {
-			if (in_array($attr2['cn'][0], $values->general_groupadd)) {
+			if (in_array($attr2['cn'][0], $values->general_groupadd) && ($attr2['cn'][0]!=$values->general_group)) {
 				$toadd['memberUid'] = $values->general_username;
 				$success = ldap_mod_add($_SESSION['ldap']->server(), ldap_get_dn($_SESSION['ldap']->server(), $entry),  $toadd);
 				if (!$success) return 5;

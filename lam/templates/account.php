@@ -55,7 +55,7 @@ switch ($_POST['select']) { // Select which part of page should be loaded and ch
 				else $_SESSION['account']->general_uidNumber = "";
 			if ($_POST['f_general_group']) $_SESSION['account']->general_group = $_POST['f_general_group'];
 			if ($_POST['f_general_groupadd']) $_SESSION['account']->general_groupadd = $_POST['f_general_groupadd'];
-				else $_SESSION['account']->general_groupadd = '';
+				else $_SESSION['account']->general_groupadd = array('');
 			if ($_POST['f_general_homedir']) $_SESSION['account']->general_homedir = $_POST['f_general_homedir'];
 				else $_SESSION['account']->general_homedir = "";
 			if ($_POST['f_general_shell']) $_SESSION['account']->general_shell = $_POST['f_general_shell'];
@@ -655,7 +655,9 @@ switch ($select_local) { // Select which part of page will be loaded
 				echo _('Account deactivated');
 				echo '</td>'."\n".'<td><input name="f_unix_deactivated" type="checkbox"';
 				if ($_SESSION['account']->unix_deactivated) echo ' checked ';
-				echo '></td></tr>'."\n";
+				echo '></td><td>
+					<a href="help.php?HelpNumber=432" target="lamhelp">'._('Help').'</a>
+					</td></tr>'."\n";
 				break;
 			}
 		echo '<tr><td>
@@ -764,38 +766,44 @@ switch ($select_local) { // Select which part of page will be loaded
 					</td></tr>'."\n";
 				break;
 			case 'host':
-				echo '<input name="f_smb_password_no" type="hidden" value="'.$_SESSION['account']->unix_password_no.'">';
-				echo '<tr><td>';
-				echo _('Password doesn\'t expire.');
-				echo '</td><td><input name="f_smb_flagsX" type="checkbox"';
-				if ($_SESSION['account']->smb_flagsX) echo ' checked ';
-				echo '></td></tr><tr><td>';
-				echo _('Host can change Password');
-				echo '</td><td><input name="f_smb_pwdcanchange" type="checkbox"';
-				if ($_SESSION['account']->smb_pwdcanchange) echo ' checked ';
-				echo '></td></tr><tr><td>';
-				echo _('Host must change Password');
-				echo '</td><td><input name="f_smb_pwdmustchange" type="checkbox"';
-				if ($_SESSION['account']->smb_pwdmustchange) echo ' checked ';
-				echo '></td></tr><tr><td>';
-				echo _('Accout is deactivated');
-				echo '</td><td><input name="f_smb_flagsD" type="checkbox"';
-				if ($_SESSION['account']->smb_flagsD) echo ' checked ';
-				echo '></td></tr><tr><td>';
+				// set smb_flgasW true because account is host
 				$_SESSION['account']->smb_flagsW = 1;
-				echo '</td></tr><tr><td>';
+				echo '<tr><td><input name="f_smb_password_no" type="hidden" value="'.$_SESSION['account']->unix_password_no.'">';
+				echo _('Password doesn\'t expire.');
+				echo '</td>'."\n".'<td><input name="f_smb_flagsX" type="checkbox"';
+				if ($_SESSION['account']->smb_flagsX) echo ' checked ';
+				echo '></td><td>
+					<a href="help.php?HelpNumber=429" target="lamhelp">'._('Help').'</a>
+					</td></tr>'."\n".'<tr><td>';
+				echo _('Host can change Password');
+				echo '</td>'."\n".'<td><input name="f_smb_pwdcanchange" type="checkbox"';
+				if ($_SESSION['account']->smb_pwdcanchange) echo ' checked ';
+				echo '></td><td>
+					<a href="help.php?HelpNumber=458" target="lamhelp">'._('Help').'</a>
+					</td></tr>'."\n".'<tr><td>';
+				echo _('Host must change Password');
+				echo '</td>'."\n".'<td><input name="f_smb_pwdmustchange" type="checkbox"';
+				if ($_SESSION['account']->smb_pwdmustchange) echo ' checked ';
+				echo '></td><td>
+					<a href="help.php?HelpNumber=459" target="lamhelp">'._('Help').'</a>
+					</td></tr>'."\n".'<tr><td>';
+				echo _('Accout is deactivated');
+				echo '</td>'."\n".'<td><input name="f_smb_flagsD" type="checkbox"';
+				if ($_SESSION['account']->smb_flagsD) echo ' checked ';
+				echo '></td><td>
+					<a href="help.php?HelpNumber=432" target="lamhelp">'._('Help').'</a>
+					</td></tr>'."\n".'<tr><td>';
+				echo '</td></tr>'."\n".'<tr><td>';
 				echo _('Domain');
-				echo '</td><td><input name="f_smb_domain" type="text" size="20" maxlength="20" value="' . $_SESSION['account']->smb_domain . '">
-					</td><td>';
-				echo _('Windows-Domain of user. Can be left empty.');
-				echo '</td></tr>';
+				echo '</td>'."\n".'<td><input name="f_smb_domain" type="text" size="20" maxlength="20" value="' . $_SESSION['account']->smb_domain . '">
+					</td><td>
+					<a href="help.php?HelpNumber=460" target="lamhelp">'._('Help').'</a>
+					</td></tr>'."\n";
 				break;
 			}
-		echo '<tr><td>
-		<input name="back" type="submit" value="'; echo _('back'); echo '">
-		</td><td></td><td>
-		<input name="next" type="submit" value="'; echo _('next'); echo '">
-		</td></tr>';
+		echo '<tr><td><input name="back" type="submit" value="'; echo _('back');
+		echo '"></td><td></td><td><input name="next" type="submit" value="';
+		echo _('next'); echo '"></td></tr>'."\n";
 		break;
 	case 'quota':
 		// Quota Settings
@@ -897,20 +905,20 @@ switch ($select_local) { // Select which part of page will be loaded
 		echo '<tr><td><input name="select" type="hidden" value="final">';
 		if ($_SESSION['account_old']) echo _('Modify');
 		 else echo _('Create');
-		echo '</td></tr>';
+		echo '</td></tr>'."\n";
 		switch ( $_SESSION['type2'] ) {
 			case 'user' :
 				if (($_SESSION['account_old']) && ($_SESSION['account']->general_uidNumber != $_SESSION['account_old']->general_uidNumber)) {
 					echo '<tr>';
 					StatusMessage ('INFO', _('UID-number has changed. You have to run the following command as root in order to change existing file-permissions:'),
 					'find / -gid ' . $_SESSION['account_old' ]->general_uidNumber . ' -exec chown ' . $_SESSION['account']->general_uidNumber . ' {} \;');
-					echo '</tr>';
+					echo '</tr>'."\n";
 					}
 				if (($_SESSION['account_old']) && ($_SESSION['account']->general_homedir != $_SESSION['account_old']->general_homedir)) {
 					echo '<tr>';
 					StatusMessage ('INFO', _('Home Directory has changed. You have to run the following command as root in order to change the existing homedirectory:'),
 					'mv ' . $_SESSION['account_old' ]->general_homedir . ' ' . $_SESSION['account']->general_homedir);
-					echo '</tr>';
+					echo '</tr>'."\n";
 					}
 				break;
 			case 'group' :
@@ -918,13 +926,13 @@ switch ($select_local) { // Select which part of page will be loaded
 					echo '<tr>';
 					StatusMessage ('INFO', _('GID-number has changed. You have to run the following command as root in order to change existing file-permissions:'),
 					'find / -gid ' . $_SESSION['account_old' ]->general_uidNumber . ' -exec chgrp ' . $_SESSION['account']->general_uidNumber . ' {} \;');
-					echo '</tr>';
+					echo '</tr>'."\n";
 					echo '<tr><td>';
 					echo '<input name="f_final_changegids" type="checkbox"';
 						if ($_SESSION['final_changegids']) echo ' checked ';
 					echo ' >';
 					echo _('Change GID-Number of all users in group to new value');
-					echo '</td></tr>';
+					echo '</td></tr>'."\n";
 					}
 				break;
 			case 'host':
@@ -932,29 +940,29 @@ switch ($select_local) { // Select which part of page will be loaded
 					echo '<tr>';
 					StatusMessage ('INFO', _('UID-number has changed. You have to run the following command as root in order to change existing file-permissions:'),
 					'find / -gid ' . $_SESSION['account_old' ]->general_uidNumber . ' -exec chown ' . $_SESSION['account']->general_uidNumber . ' {} \;');
-					echo '</tr>';
+					echo '</tr>'."\n";
 					}
 				break;
 			}
 		echo '<tr><td>
 			<input name="back" type="submit" value="'; echo _('back'); echo '">
-			</td><td>
-			</td><td><input name="f_finish_safeProfile" type="text" size="30" maxlength="30">
+			</td>'."\n".'<td>
+			</td>'."\n".'<td><input name="f_finish_safeProfile" type="text" size="30" maxlength="30">
 			<input name="save" type="submit" value="';
 		echo _('Save Profile');
 		echo '"><a href="help.php?HelpNumber=457" target="lamhelp">'._('Help').'</a>
-			</td><td>
+			</td>'."\n".'<td>
 			<input name="create" type="submit" value="';
 		if ($_SESSION['account_old']) echo _('Modify Account');
 		 else echo _('Create Account');
 		echo '">
-		</td></tr>';
+		</td></tr>'."\n";
 		break;
 	case 'finish':
 		// Final Settings
 		echo '<tr><td><input name="select" type="hidden" value="finish">';
 		echo _('Success');
-		echo '</td></tr>';
+		echo '</td></tr>'."\n";
 		switch ( $_SESSION['type2'] ) {
 			case 'user' :
 				echo '<tr><td>';
@@ -964,11 +972,11 @@ switch ($select_local) { // Select which part of page will be loaded
 				 else echo _(' has been created. ');
 				if (!$_SESSION['account_old'])
 					{ echo '<input name="createagain" type="submit" value="'; echo _('Create another user'); echo '">'; }
-				echo '</td><td>
+				echo '</td>'."\n".'<td>
 					<input name="outputpdf" type="submit" value="'; echo _('Create PDF-file'); echo '">
-					</td><td>
-				<input name="backmain" type="submit" value="'; echo _('Back to userlist'); echo '">
-				</td></tr>';
+					</td>'."\n".'<td>
+					<input name="backmain" type="submit" value="'; echo _('Back to userlist'); echo '">
+					</td></tr>'."\n";
 				break;
 			case 'group' :
 				echo '<tr><td>';
@@ -976,12 +984,12 @@ switch ($select_local) { // Select which part of page will be loaded
 				echo $_SESSION['account']->general_username;
 				if ($_SESSION['account_old']) echo _(' has been modified. ');
 				 else echo _(' has been created. ');
-				echo '</td></tr><tr><td>';
+				echo '</td></tr>'."\n".'<tr><td>';
 				if (!$_SESSION['account_old'])
 					{ echo' <input name="createagain" type="submit" value="'; echo _('Create another group'); echo '">'; }
 				echo '</td><td></td><td>
-				<input name="backmain" type="submit" value="'; echo _('Back to grouplist'); echo '">
-				</td></tr>';
+					<input name="backmain" type="submit" value="'; echo _('Back to grouplist'); echo '">
+					</td></tr>'."\n";
 				break;
 			case 'host' :
 				echo '<tr><td>';
@@ -989,12 +997,12 @@ switch ($select_local) { // Select which part of page will be loaded
 				echo $_SESSION['account']->general_username;
 				if ($_SESSION['account_old']) echo _(' has been modified. ');
 				 else echo _(' has been created. ');
-				echo '</td></tr><tr><td>';
+				echo '</td></tr>'."\n".'<tr><td>';
 				if (!$_SESSION['account_old'])
 					{ echo '<input name="createagain" type="submit" value="'; echo _('Create another host'); echo '">'; }
-				echo '</td><td></td><td>
-				<input name="backmain" type="submit" value="'; echo _('Back to hostlist'); echo '">
-				</td></tr>';
+				echo '</td><td>'."\n".'</td><td>
+					<input name="backmain" type="submit" value="'; echo _('Back to hostlist'); echo '">
+					</td></tr>'."\n";
 				break;
 			}
 		break;
