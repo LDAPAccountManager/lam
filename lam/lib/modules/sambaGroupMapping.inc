@@ -227,12 +227,17 @@ class sambaGroupMapping extends baseModule {
 													'sambaGroupType',
 													'description');
 		// upload fields
+		// search existing Samba 3 domains
+		$domains = search_domains($_SESSION['config']->get_domainSuffix());
+		$domainNames = array();
+		for ($i = 0; $i < sizeof($domains); $i++) $domainNames[] = $domains[$i]->name;
 		$return['upload_columns'] = array(
 			array(
 				'name' => 'sambaGroupMapping_domain',
 				'description' => _('Samba 3 domain name'),
 				'help' => 'sambaDomainName',
-				'example' => _('Domain1'),
+				'example' => $domainNames[0],
+				'values' => implode(", ", $domainNames),
 				'required' => true
 			),
 			array(
@@ -251,6 +256,7 @@ class sambaGroupMapping extends baseModule {
 				'name' => 'sambaGroupMapping_groupType',
 				'description' => _('Samba 3 group type'),
 				'help' => 'type',
+				'values' => implode(", ", array_keys($this->sambaGroupTypes) + $this->sambaGroupTypes),
 				'example' => '2'
 			)
 		);
@@ -276,7 +282,7 @@ class sambaGroupMapping extends baseModule {
 			'type' => array(
 				"ext" => "FALSE",
 				"Headline" => _("Samba group type"),
-				"Text" => _("Windows group type.") . "<br><br><b>" . _("Possible values: ") . "</b>" . implode(", ", array_keys($this->sambaGroupTypes) + $this->sambaGroupTypes)));
+				"Text" => _("Windows group type.")));
 		
 		return $return;
 	}
