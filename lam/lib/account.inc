@@ -485,6 +485,9 @@ function get_preg($argument, $regexp) {
 		case 'gecos':
 					$pregexpr = '/^[a-zA-z0-9 \\._-]+([,][a-zA-z0-9 \\._-]+)*$/';
 					break;
+		case 'macAddress':
+					$pregexpr = '/^[0-9a-fA-F]{2}(:[0-9a-fA-F]{2}){5}$/';
+					break;
 	}
 	if ($pregexpr!='')
 		if (preg_match($pregexpr, $argument)) {
