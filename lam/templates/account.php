@@ -252,9 +252,9 @@ echo _('Create new Account');
 echo '</title>
 	<link rel="stylesheet" type="text/css" href="../style/layout.css">
 	<meta http-equiv="pragma" content="no-cache">
-	<meta http-equiv="cache-control" content="no-cache">';
+	<meta http-equiv="cache-control" content="no-cache">
 	</head><body>
-	<form action="account.php" method="post">
+	<form action="account.php" method="post">';
 	if ($error != "0") StatusMessage('ERROR', _('Invalid Value!'), $error);
 	echo '<table rules="all" class="account" width="100%">
 	<tr><td></td></tr>';
