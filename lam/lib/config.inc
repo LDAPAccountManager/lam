@@ -20,15 +20,22 @@ $Id$
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 
-	Config supplies access to the configuration data.
-
 */
 
+/**
+* This file includes functions to manage the configuration files.
+*
+* @package configuration
+* @author Roland Gruber
+*/
+
+/** Used to print messages. */
 include_once("status.inc");
+/** Used to get module information. */
 include_once("modules.inc");
 
 /**
-* sets language settings for automatic translation
+* Sets language settings for automatic translation
 */
 function setlanguage() {
 	if ($_SESSION['language']) {
@@ -43,7 +50,9 @@ function setlanguage() {
 }
 
 /**
-* returns an array of string with all available configuration profiles (without .conf)
+* Returns an array of string with all available configuration profiles (without .conf)
+*
+* @return array profile names
 */
 function getConfigProfiles() {
 	$dir = dir(substr(__FILE__, 0, strlen(__FILE__) - 15) . "/config");
@@ -63,9 +72,9 @@ function getConfigProfiles() {
 }
 
 /**
-* print meta refresh
+* Prints a meta refresh page
 *
-* @param $page the URL of the target page
+* @param string $page the URL of the target page
 */
 function metaRefresh($page) {
 	echo $_SESSION['header'];
@@ -84,66 +93,70 @@ function metaRefresh($page) {
 
 /**
 * This class manages .conf files.
+*
+* @package configuration
 */
 class Config {
 
-	/** server address (e.g. ldap://127.0.0.1:389) */
+	/** Server address (e.g. ldap://127.0.0.1:389) */
 	var $ServerURL;
 
-	/** array of strings: users with admin rights */
+	/** Array of string: users with admin rights */
 	var $Admins;
 
-	/** string: password to edit preferences */
+	/** Password to edit preferences */
 	var $Passwd;
 
-	/** suffix for users */
+	/** LDAP suffix for users */
 	var $usersuffix;
 
-	/** suffix for groups */
+	/** LDAP suffix for groups */
 	var $groupsuffix;
 
-	/** suffix for Samba hosts */
+	/** LDAP suffix for Samba hosts */
 	var $hostsuffix;
 
-	/** suffix for domains (Samba 3) */
+	/** LDAP suffix for Samba 3 domains */
 	var $domainsuffix;
 
-	/** minimum UID number for users */
+	/** Minimum UID number for users */
 	var $MinUID;
-	/** maximum UID number for users */
+	/** Maximum UID number for users */
 	var $MaxUID;
-	/** minimum GID number for groups */
+	/** Minimum GID number for groups */
 	var $MinGID;
-	/** maximum GID number for groups */
+	/** Maximum GID number for groups */
 	var $MaxGID;
-	/** minimum UID number for Samba hosts */
+	/** Minimum UID number for Samba hosts */
 	var $MinMachine;
-	/** maximum UID number for Samba hosts */
+	/** Maximum UID number for Samba hosts */
 	var $MaxMachine;
 
-	/** attributes that are shown in the user list */
+	/** Attributes that are shown in the user list */
 	var $userlistAttributes;
-	/** attributes that are shown in the group list */
+	/** Attributes that are shown in the group list */
 	var $grouplistAttributes;
-	/** attributes that are shown in the host list */
+	/** Attributes that are shown in the host list */
 	var $hostlistAttributes;
 
-	/** maximum number of rows shown in user/group/host lists */
+	/** Maximum number of rows shown in user/group/host lists */
 	var $maxlistentries;
 
-	/** default language */
+	/** Default language */
 	var $defaultLanguage;
 
 	/**
 	* Path to external lamdaemon script on server where it is executed
-	* used for managing quota and home directories
+	*
+	* This is used for managing quota and home directories.
 	* optional setting, may not be defined
 	*/
 	var $scriptPath;
 
 	/**
-	* server where lamdaemon script is executed
-	* used for managing quota and home directories
+	* Server where lamdaemon script is executed
+	*
+	* This is used for managing quota and home directories.
 	* optional setting, may not be defined
 	*/
 	var $scriptServer;
@@ -151,23 +164,24 @@ class Config {
 	/** LDAP cache timeout */
 	var $cachetimeout;
 
-	/** password hash algorithm */
+	/** Password hash algorithm */
 	var $pwdhash;
 
-	/** text to include in user PDF files */
+	/** Text to include in user PDF files */
 	var $pdftext = "";
 
-	/** account modules
-	** TODO add default modules for LAM <0.5 
+	/**
+	* Account modules
+	* TODO add default modules for LAM <0.5 
 	*/
 	var $usermodules = "um1,um2,um3";
 	var $groupmodules = "gm1,gm2,gm3";
 	var $hostmodules = "hm1,hm2,hm3";
 
-	/** name of configuration file */
+	/** Name of configuration file */
 	var $file;
 
-	/** list of all settings in config file */
+	/** List of all settings in config file */
 	var $settings = array("ServerURL", "Passwd", "Admins", "usersuffix", "groupsuffix", "hostsuffix",
 		"domainsuffix", "MinUID", "MaxUID", "MinGID", "MaxGID", "MinMachine", "MaxMachine",
 		"userlistAttributes", "grouplistAttributes", "hostlistAttributes", "maxlistentries",
@@ -176,7 +190,7 @@ class Config {
 
 
 	/**
-	* constructor, loads preferences from config file
+	* Loads preferences from config file
 	*
 	* @param $file Index number in config file array
 	*/
@@ -190,7 +204,7 @@ class Config {
 		$this->reload();
 	}
 
-	/** reloads preferences from config file */
+	/** Reloads preferences from config file */
 	function reload() {
 		$conffile = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/config/" . $this->file . ".conf";
 		if (is_file($conffile) == True) {
@@ -224,7 +238,7 @@ class Config {
 		}
 	}
 
-	/** saves preferences to config file */
+	/** Saves preferences to config file */
 	function save() {
 		$conffile = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/config/" . $this->file . ".conf";
 		if (is_file($conffile) == True) {
@@ -299,7 +313,7 @@ class Config {
 		}
 	}
 
-	/** prints current preferences */
+	/** Prints current preferences */
 	function printconf() {
 		echo "<b>" . _("Server address") . ": </b>" . $this->ServerURL . "<br>";
 		echo "<b>" . _("Password hash type") . ": </b>" . $this->pwdhash . "<br>";
@@ -331,7 +345,7 @@ class Config {
 	// functions to read/write preferences
 
 	/**
-	* returns the server address as string
+	* Returns the server address as string
 	*
 	* @return server address
 	*/
@@ -340,7 +354,7 @@ class Config {
 	}
 
 	/**
-	* sets the server address
+	* Sets the server address
 	*
 	* @param $value new server address
 	* @return true if $value has correct format
@@ -352,7 +366,7 @@ class Config {
 	}
 
 	/**
-	* returns an array of string with all admin names
+	* Returns an array of string with all admin names
 	*
 	* @return the admin names
 	*/
@@ -361,7 +375,7 @@ class Config {
 	}
 
 	/**
-	* returns all admin users seperated by semicolons
+	* Returns all admin users seperated by semicolons
 	*
 	* @return the admin string
 	*/
@@ -370,7 +384,7 @@ class Config {
 	}
 
 	/**
-	* sets the admin string
+	* Sets the admin string
 	*
 	* @param $value new admin string that contains all admin users seperated by semicolons
 	* @return true if $value has correct format
@@ -385,7 +399,7 @@ class Config {
 	}
 
 	/**
-	* returns the password to access the preferences wizard
+	* Returns the password to access the preferences wizard
 	*
 	* @return the password
 	*/
@@ -394,7 +408,7 @@ class Config {
 	}
 
 	/**
-	* sets the preferences wizard password
+	* Sets the preferences wizard password
 	*
 	* @param $value new password
 	* @return true if $value has correct format
@@ -406,7 +420,7 @@ class Config {
 	}
 
 	/**
-	* returns the LDAP suffix where users are saved
+	* Returns the LDAP suffix where users are saved
 	*
 	* @return the user suffix
 	*/
@@ -415,7 +429,7 @@ class Config {
 	}
 
 	/**
-	* sets the LDAP suffix where users are saved
+	* Sets the LDAP suffix where users are saved
 	*
 	* @param $value new user suffix
 	* @return true if $value has correct format
@@ -438,7 +452,7 @@ class Config {
 	}
 
 	/**
-	* sets the LDAP suffix where groups are saved
+	* Sets the LDAP suffix where groups are saved
 	*
 	* @param $value new group suffix
 	* @return true if $value has correct format
@@ -461,7 +475,7 @@ class Config {
 	}
 
 	/**
-	* sets the LDAP suffix where hosts are saved
+	* Sets the LDAP suffix where hosts are saved
 	*
 	* @param $value new host suffix
 	* @return true if $value has correct format
@@ -476,7 +490,7 @@ class Config {
 	}
 
 	/**
-	* returns the LDAP suffix where domains are saved
+	* Returns the LDAP suffix where domains are saved
 	*
 	* @return the domain suffix
 	*/
@@ -485,7 +499,7 @@ class Config {
 	}
 
 	/**
-	* sets the LDAP suffix where domains are saved
+	* Sets the LDAP suffix where domains are saved
 	*
 	* @param $value new domain suffix
 	* @return true if $value has correct format
@@ -500,7 +514,7 @@ class Config {
 	}
 
 	/**
-	* returns the minimum UID to use when creating new users
+	* Returns the minimum UID to use when creating new users
 	*
 	* @return the minimum UID number
 	*/
@@ -509,7 +523,7 @@ class Config {
 	}
 
 	/**
-	* sets the minimum UID to use when creating new users
+	* Sets the minimum UID to use when creating new users
 	*
 	* @param $value new minimum UID number
 	* @return true if $value has correct format
@@ -521,7 +535,7 @@ class Config {
 	}
 
 	/**
-	* returns the maximum UID to use when creating new users
+	* Returns the maximum UID to use when creating new users
 	*
 	* @return the maximum UID number
 	*/
@@ -530,7 +544,7 @@ class Config {
 	}
 
 	/**
-	* sets the maximum UID to use when creating new users
+	* Sets the maximum UID to use when creating new users
 	*
 	* @param $value new maximum UID number
 	* @return true if $value has correct format
@@ -542,7 +556,7 @@ class Config {
 	}
 
 	/**
-	* returns the minimum GID to use when creating new groups
+	* Returns the minimum GID to use when creating new groups
 	*
 	* @return the minimum GID number
 	*/
@@ -551,7 +565,7 @@ class Config {
 	}
 
 	/**
-	* sets the minimum GID to use when creating new groups
+	* Sets the minimum GID to use when creating new groups
 	*
 	* @param $value new minimum GID number
 	* @return true if $value has correct format
@@ -563,7 +577,7 @@ class Config {
 	}
 
 	/**
-	* returns the maximum GID to use when creating new groups
+	* Returns the maximum GID to use when creating new groups
 	*
 	* @return the maximum GID number
 	*/
@@ -572,7 +586,7 @@ class Config {
 	}
 
 	/**
-	* sets the maximum GID to use when creating new groups
+	* Sets the maximum GID to use when creating new groups
 	*
 	* @param $value new maximum GID number
 	* @return true if $value has correct format
@@ -584,7 +598,7 @@ class Config {
 	}
 
 	/**
-	* returns the minimum UID to use when creating new Samba hosts
+	* Returns the minimum UID to use when creating new Samba hosts
 	*
 	* @return the minimum UID number
 	*/
@@ -593,7 +607,7 @@ class Config {
 	}
 
 	/**
-	* sets the minimum UID to use when creating new Samba hosts
+	* Sets the minimum UID to use when creating new Samba hosts
 	*
 	* @param $value new minimum UID number
 	* @return true if $value has correct format
@@ -606,7 +620,7 @@ class Config {
 	}
 
 	/**
-	* returns the maximum UID to use when creating new Samba hosts
+	* Returns the maximum UID to use when creating new Samba hosts
 	*
 	* @return the maximum UID number
 	*/
@@ -615,7 +629,7 @@ class Config {
 	}
 
 	/**
-	* sets the maximum UID to use when creating new Samba hosts
+	* Sets the maximum UID to use when creating new Samba hosts
 	*
 	* @param $value new maximum UID number
 	* @return true if $value has correct format
@@ -628,7 +642,7 @@ class Config {
 	}
 
 	/**
-	* returns the list of attributes to show in user list
+	* Returns the list of attributes to show in user list
 	*
 	* @return the attribute list
 	*/
@@ -637,7 +651,7 @@ class Config {
 	}
 
 	/**
-	* sets the list of attributes to show in user list
+	* Sets the list of attributes to show in user list
 	*
 	* @param $value new attribute string
 	* @return true if $value has correct format
@@ -651,7 +665,7 @@ class Config {
 	}
 
 	/**
-	* returns the list of attributes to show in group list
+	* Returns the list of attributes to show in group list
 	*
 	* @return the attribute list
 	*/
@@ -660,7 +674,7 @@ class Config {
 	}
 
 	/**
-	* sets the list of attributes to show in group list
+	* Sets the list of attributes to show in group list
 	*
 	* @param $value new attribute string
 	* @return true if $value has correct format
@@ -674,7 +688,7 @@ class Config {
 	}
 
 	/**
-	* returns the list of attributes to show in host list
+	* Returns the list of attributes to show in host list
 	*
 	* @return the attribute list
 	*/
@@ -683,7 +697,7 @@ class Config {
 	}
 
 	/**
-	* sets the list of attributes to show in host list
+	* Sets the list of attributes to show in host list
 	*
 	* @param $value new attribute string
 	* @return true if $value has correct format
@@ -698,7 +712,7 @@ class Config {
 	}
 
 	/**
-	* returns the maximum number of rows in user/group/host lists
+	* Returns the maximum number of rows in user/group/host lists
 	*
 	* @return maximum number
 	*/
@@ -707,7 +721,7 @@ class Config {
 	}
 
 	/**
-	* sets the maximum number of rows in user/group/host lists
+	* Sets the maximum number of rows in user/group/host lists
 	*
 	* @param $value new attribute string
 	* @return true if $value has correct format
@@ -719,7 +733,7 @@ class Config {
 	}
 
 	/**
-	* returns the default language string
+	* Returns the default language string
 	*
 	* @return default language
 	*/
@@ -728,7 +742,7 @@ class Config {
 	}
 
 	/**
-	* sets the default language string
+	* Sets the default language string
 	*
 	* @param $value new default language
 	* @return true if $value has correct format
@@ -740,7 +754,7 @@ class Config {
 	}
 
 	/**
-	* returns the path to the external script
+	* Returns the path to the external script
 	*
 	* @return script path
 	*/
@@ -749,7 +763,7 @@ class Config {
 	}
 
 	/**
-	* sets the path to the external script
+	* Sets the path to the external script
 	*
 	* @param $value new script path
 	* @return true if $value has correct format
@@ -762,7 +776,7 @@ class Config {
 	}
 
 	/**
-	* returns the server of the external script
+	* Returns the server of the external script
 	*
 	* @return script server
 	*/
@@ -771,7 +785,7 @@ class Config {
 	}
 
 	/**
-	* sets the server of the external script
+	* Sets the server of the external script
 	*
 	* @param $value new script server
 	* @return true if $value has correct format
@@ -785,20 +799,31 @@ class Config {
 		return true;
 	}
 
-	// returns the LDAP cache timeout in minutes
+	/**
+	* Returns the LDAP cache timeout in minutes
+	*
+	* @return cache time
+	*/
 	function get_cacheTimeout() {
 		if (isset($this->cachetimeout)) return $this->cachetimeout;
 		else return 5;
 	}
 
-	// returns the LDAP cache timeout in seconds
+	/**
+	* Returns the LDAP cache timeout in seconds
+	*
+	* @return cache time
+	*/
 	function get_cacheTimeoutSec() {
 		return $this->cachetimeout * 60;
 	}
 
-	// sets the LDAP cache timeout in minutes (0,1,2,5,10,15)
-	// $value: new cache timeout
-	// returns true if $value has correct format
+	/**
+	* Sets the LDAP cache timeout in minutes (0,1,2,5,10,15)
+	*
+	* @param $value new cache timeout
+	* @return true if $value has correct format
+	*/
 	function set_cacheTimeout($value) {
 		if (is_numeric($value) && ($value > -1)) {
 			$this->cachetimeout = $value;
@@ -807,15 +832,22 @@ class Config {
 		return true;
 	}
 
-	// returns the password hash type
+	/**
+	* Returns the password hash type
+	*
+	* @return password hash
+	*/
 	function get_pwdhash() {
 		if ($this->pwdhash) return strtoupper($this->pwdhash);
 		else return "SSHA";
 	}
 
-	// set the password hash type (CRYPT/SHA/SSHA/MD5/SMD5)
-	// $value: new password hash algorithm
-	// returns true if $value has correct format
+	/**
+	* Sets the password hash type (CRYPT/SHA/SSHA/MD5/SMD5)
+	*
+	* @param $value new password hash algorithm
+	* @return true if $value has correct format
+	*/
 	function set_pwdhash($value) {
 		if (is_string($value) && eregi("^(crypt|sha|ssha|md5|smd5|plain)$", $value)) {
 			$this->pwdhash = $value;
@@ -824,15 +856,22 @@ class Config {
 		return true;
 	}
 
-	// returns text for user PDF files
+	/**
+	* Returns text for user PDF files
+	*
+	* @return text string
+	*/
 	function get_pdftext($name = "user") {
 		if ($this->pdftext) return $this->pdftext;
 		else return "";
 	}
 
-	// set the text for user PDF files
-	// $value: string containing the text
-	// returns true if $value has correct format and could be saved
+	/**
+	* Sets the text for user PDF files
+	*
+	* @param $value string containing the text
+	* @return true if $value has correct format and could be saved
+	*/
 	function set_pdftext($value) {
 		// check if text changed
 		if ($value == $this->pdftext) return true;
@@ -852,7 +891,11 @@ class Config {
 		return true;
 	}
 
-	// returns an array of all selected user modules
+	/**
+	* Returns an array of all selected user modules
+	*
+	* @return user modules
+	*/
 	function get_UserModules() {
 		$modules = explode(",", $this->usermodules);
 		$available = getAvailableModules('user');
@@ -864,9 +907,12 @@ class Config {
 		return $ret;
 	}
 
-	// sets the selected user modules
-	// $modules: array with module names (not aliases!)
-	// returns true if $modules has correct format
+	/**
+	* Sets the selected user modules
+	*
+	* @param $modules array with module names (not aliases!)
+	* @return true if $modules has correct format
+	*/
 	function set_UserModules($modules) {
 		if (! is_array($modules)) return false;
 		// check module names
@@ -879,7 +925,11 @@ class Config {
 		return true;
 	}
 
-	// returns an array of all selected group modules
+	/**
+	* Returns an array of all selected group modules
+	*
+	* @return group modules
+	*/
 	function get_GroupModules() {
 		$modules = explode(",", $this->groupmodules);
 		$available = getAvailableModules('group');
@@ -891,9 +941,12 @@ class Config {
 		return $ret;
 	}
 
-	// sets the selected group modules
-	// $modules: array with module names (not aliases!)
-	// returns true if $modules has correct format
+	/**
+	* Sets the selected group modules
+	*
+	* @param $modules array with module names (not aliases!)
+	* @return true if $modules has correct format
+	*/
 	function set_GroupModules($modules) {
 		if (! is_array($modules)) return false;
 		// check module names
@@ -906,7 +959,11 @@ class Config {
 		return true;
 	}
 
-	// returns an array of all selected host modules
+	/**
+	* Returns an array of all selected host modules
+	*
+	* @return host modules
+	*/
 	function get_HostModules() {
 		$modules = explode(",", $this->hostmodules);
 		$available = getAvailableModules('host');
@@ -918,9 +975,12 @@ class Config {
 		return $ret;
 	}
 
-	// sets the selected host modules
-	// $modules: array with module names (not aliases!)
-	// returns true if $modules has correct format
+	/**
+	* Sets the selected host modules
+	*
+	* @param $modules array with module names (not aliases!)
+	* @return true if $modules has correct format
+	*/
 	function set_HostModules($modules) {
 		if (! is_array($modules)) return false;
 		// check module names
@@ -936,24 +996,29 @@ class Config {
 }
 
 
-/*
-// class CfgMain
+/**
+* This class manages config.cfg.
+*
+* @package configuration
 */
-// manages config.cfg
 class CfgMain {
 
-	// default profile
+	/** Default profile */
 	var $default;
 
-	// password to change config.cfg
+	/** Password to change config.cfg */
 	var $password;
 
-	// constructor, loads preferences from config file
+	/**
+	* Loads preferences from config file
+	*/
 	function CfgMain() {
 		$this->reload();
 	}
 
-	// reloads preferences from config file config.cfg
+	/**
+	* Reloads preferences from config file config.cfg
+	*/
 	function reload() {
 		$conffile = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/config/config.cfg";
 		if (is_file($conffile) == True) {
@@ -979,7 +1044,9 @@ class CfgMain {
 		}
 	}
 
-	// saves preferences to config file config.cfg
+	/**
+	* Saves preferences to config file config.cfg
+	*/
 	function save() {
 		$conffile = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/config/config.cfg";
 		if (is_file($conffile) == True) {

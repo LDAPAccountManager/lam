@@ -21,20 +21,36 @@ $Id$
 
 */
 
-// ldap.inc provides basic functions to connect to the OpenLDAP server.
+/**
+* ldap.inc provides basic functions to connect to the OpenLDAP server.
+*
+* @package LDAP
+* @author Roland Gruber
+*/
 
+/** Access to configuration data */
 include_once("config.inc");
+/** Encryption functions */
 include_once("blowfish.inc");
 
-// converts a HEX string to a binary value
+/**
+* Converts a HEX string to a binary value
+*
+* @param string $value HEX string
+* @return binary result binary
+*/
 function hex2bin($value) {
 	return pack("H*", $value);
 }
 
-// returns the hash value of a plain text password
-// the hash algorithm depends on the configuration file
-// $password: the password string
-// $enabled: marks the hash as enabled/disabled (e.g. by prefixing "!")
+/**
+* Returns the hash value of a plain text password
+* the hash algorithm depends on the configuration file
+*
+* @param string $password the password string
+* @param boolean $enabled marks the hash as enabled/disabled (e.g. by prefixing "!")
+* @return string the password hash
+*/
 function pwd_hash($password, $enabled=true) {
 	// check for empty password
 	if (! $password || ($password == "")) {
@@ -117,9 +133,12 @@ function pwd_hash($password, $enabled=true) {
 }
 
 
-// marks an password hash as enabled
-// and returns the new hash string
-// hash: hash value to enable
+/**
+* Marks an password hash as enabled and returns the new hash string
+*
+* @param string $hash hash value to enable
+* @return string enabled password hash
+*/
 function pwd_enable($hash) {
 	// check if password is disabled (old wrong LAM method)
 	if ((substr($hash, 0, 2) == "!{") || ((substr($hash, 0, 2) == "*{"))) {
@@ -139,9 +158,12 @@ function pwd_enable($hash) {
 	}
 }
 
-// marks an password hash as disabled
-// and returns the new hash string
-// hash: hash value to disable
+/**
+* Marks an password hash as disabled and returns the new hash string
+*
+* @param string $hash hash value to disable
+* @return string disabled hash value
+*/
 function pwd_disable($hash) {
 	// check if password is disabled (old wrong LAM method)
 	if ((substr($hash, 0, 2) == "!{") || ((substr($hash, 0, 2) == "*{"))) {
@@ -161,8 +183,12 @@ function pwd_disable($hash) {
 	}
 }
 
-// checks if a password hash is enabled/disabled
-// returns true if the password is marked as enabled
+/**
+* Checks if a password hash is enabled/disabled
+*
+* @param string $hash password hash to check
+* @return boolean true if the password is marked as enabled
+*/
 function pwd_is_enabled($hash) {
 	// disabled passwords have a "!" or "*" at the beginning (old wrong LAM method)
 	if ((substr($hash, 0, 2) == "!{") || ((substr($hash, 0, 2) == "*{"))) return false;
@@ -176,37 +202,48 @@ function pwd_is_enabled($hash) {
 }
 
 
-// manages connection to LDAP and several helper functions
+/**
+* Ldap manages connection to LDAP and includes several helper functions.
+*
+* @package LDAP
+*/
 class Ldap{
 
-	// object of Config to access preferences
+	/** Object of Config to access preferences */
 	var $conf;
 
-	// server handle
+	/** Server handle */
 	var $server;
 
-	// LDAP username and password used for bind
+	/** LDAP username used for bind */
 	var $username;
+	/** LDAP password used for bind */
 	var $password;
 
-	// Arrays that contain LDAP attributes and their descriptions which are translated
+	/** Contains LDAP attributes for user list and their descriptions */
 	var $ldapUserAttributes;
+	/** Contains LDAP attributes for group list and their descriptions */
 	var $ldapGroupAttributes;
+	/** Contains LDAP attributes for host list and their descriptions */
 	var $ldapHostAttributes;
 
-	// array with all objectClass strings from the LDAP server
+	/** Array with all objectClass strings from the LDAP server */
 	var $objectClasses;
 
-	// capabilities of the LDAP server
-	var $supports_unix_hosts=false;  // host attribute in inetOrgPerson
-	var $supports_samba2_schema=false;  // objectClass sambaAccount
-	var $supports_samba3_schema=false;  // objectClass sambaSamAccount
+	// Capabilities of the LDAP server
+	/** Host attribute in inetOrgPerson */
+	var $supports_unix_hosts = false;
+	/** ObjectClass sambaAccount */
+	var $supports_samba2_schema = false;
+	/** ObjectClass sambaSamAccount */
+	var $supports_samba3_schema = false;
 
-	// random number (changes on every page request)
+	/** Random number (changes on every page request) */
 	var $rand;
 
-	// constructor
-	// $config: an object of Config (../config/config.php)
+	/**
+	* @param object $config an object of class Config
+	*/
 	function Ldap($config) {
 		setlanguage();
 		if (is_object($config)) $this->conf = $config;
@@ -245,10 +282,13 @@ class Ldap{
 		return true;
 	}
 
-	// connects to the server using the given username and password
-	// if connect succeeds the server handle is returned
-	// $user: user name
-	// $passwd: password
+	/**
+	* Connects to the server using the given username and password
+	*
+	* @param string $user user name
+	* @param string $passwd password
+	* @return mixed if connect succeeds the server handle is returned, else false
+	*/
 	function connect($user, $passwd) {
 		// close any prior connection
 		@$this->close();
@@ -288,14 +328,17 @@ class Ldap{
 		else return false;
 	}
 
-	// closes connection to server
+	/** Closes connection to server */
 	function close() {
 		@ldap_close($this->server);
 	}
 
-	// searches LDAP for a specific user name
-	// and returns its DN entry
-	// $name: user name
+	/**
+	* Searches LDAP for a specific user name and returns its DN entry
+	*
+	* @param string $name user name
+	* @return string DN
+	*/
 	function search_username($name) {
 		$filter = "(uid=$name)";
 		$attrs = array();
@@ -309,8 +352,12 @@ class Ldap{
 		}
 	}
 
-	// returns an array with all organizational units under the given suffix
-	// $suffix: search suffix
+	/**
+	* Returns an array with all organizational units under the given suffix
+	*
+	* @param string $suffix search suffix
+	* @return array DNs of organizational units
+	*/
 	function search_units($suffix) {
 		$ret = array();
 		$sr = @ldap_search($this->server(), $suffix, "objectClass=organizationalunit", array("DN"));
@@ -336,8 +383,12 @@ class Ldap{
 		return $ret;
 	}
 
-	// returns an array with all Samba 3 domain entries under the given suffix
-	// $suffix: search suffix
+	/**
+	* Returns an array with all Samba 3 domain entries under the given suffix
+	*
+	* @param string $suffix search suffix
+	* @return array list of samba3domain objects
+	*/
 	function search_domains($suffix) {
 		$ret = array();
 		$attr = array("DN", "sambaDomainName", "sambaSID", "sambaNextRid", "sambaNextGroupRid",
@@ -364,7 +415,7 @@ class Ldap{
 		return $ret;
 	}
 
-	// reads the array of objectClasses from the LDAP server
+	/** Reads the array of objectClasses from the LDAP server */
 	function updateClasses() {
 		// read from default cn
 		$sr = @ldap_read($this->server, 'cn=subschema', '(objectClass=*)', array('objectclasses'));
@@ -383,7 +434,7 @@ class Ldap{
 		$this->objectClasses = array();
 	}
 
-	// updates the capabilities values (var $supports_*)
+	/** Updates the capabilities values (var $supports_*) */
 	function updateCapabilities() {
 		for ($i = 0; $i < sizeof($this->objectClasses); $i++) {
 			$line = $this->objectClasses[$i];
@@ -394,12 +445,16 @@ class Ldap{
 		}
 	}
 
-	// returns the LDAP connection handle
+	/**
+	* Returns the LDAP connection handle
+	*
+	* @return object connection handle
+	*/
 	function server() {
 		return $this->server;
 	}
 
-	// closes connection to LDAP server before serialization
+	/** Closes connection to LDAP server before serialization */
 	function __sleep() {
 		$this->close();
 		// define which attributes to save
@@ -408,7 +463,7 @@ class Ldap{
 			"supports_samba3_schema", "rand");
 	}
 
-	// reconnects to LDAP server when deserialized
+	/** Reconnects to LDAP server when deserialized */
 	function __wakeup() {
 		$data = $this->decrypt_login();
 		$this->connect($data[0], $data[1]);
@@ -432,16 +487,19 @@ class Ldap{
 		}
 	}
 
-	// calculates a new value for rand
+	/** Calculates a new value for rand */
 	function new_rand() {
 		// change random number
 		mt_srand($this->rand + (microtime() * 1000000));
 		$this->rand = mt_rand();
 	}
 
-	// encrypts a string
-	// $data: string to encrypt
-	// return: encrypted string
+	/**
+	* Encrypts a string
+	*
+	* @param string $data string to encrypt
+	* @return object encrypted string
+	*/
 	function encrypt($data) {
 		// use MCrypt if available
 		if (function_exists(mcrypt_create_iv)) {
@@ -463,9 +521,12 @@ class Ldap{
 		}
 	}
 
-	// decrypts a string
-	// $data: string to decrypt
-	// return: decrypted string
+	/**
+	* Decrypts a string
+	*
+	* @param object $data string to decrypt
+	* @return string decrypted string
+	*/
 	function decrypt($data) {
 		// use MCrypt if available
 		if (function_exists(mcrypt_create_iv)) {
@@ -489,19 +550,23 @@ class Ldap{
 		}
 	}
 
-	// encrypts username and password
-	// $username: LDAP user name
-	// $password: LDAP password
+	/**
+	* Encrypts username and password
+	*
+	* @param string $username LDAP user name
+	* @param string $password LDAP password
+	*/
 	function encrypt_login($username, $password) {
 		// encrypt username and password
 		$this->username = base64_encode($this->encrypt($username));
 		$this->password = base64_encode($this->encrypt($password));
 	}
 
-	// decrypts username and password
-	// returns an array
-	// return[0]: user name
-	// return[1]: password
+	/**
+	* Decrypts username and password
+	*
+	* @return array array(user name, password)
+	*/
 	function decrypt_login() {
 		// decrypt username and password
 		$username = $this->decrypt(base64_decode($this->username));
@@ -510,30 +575,48 @@ class Ldap{
 		return $ret;
 	}
 
-	// closes connection to LDAP server and deletes encrypted username/password
+	/** Closes connection to LDAP server and deletes encrypted username/password */
 	function destroy() {
 		$this->close();
 		$this->username="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
 		$this->password="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
 	}
 
-	// returns an array that contains LDAP attribute names and their description
+	/**
+	* Returns the LDAP attribute names and their description for the user list
+	*
+	* @return array list of LDAP attributes and descriptions
+	*/
 	function attributeUserArray() {
 		return $this->ldapUserAttributes;
 	}
 
-	// returns an array that contains LDAP attribute names and their description
+	/**
+	* Returns the LDAP attribute names and their description for the group list
+	*
+	* @return array list of LDAP attributes and descriptions
+	*/
 	function attributeGroupArray() {
 		return $this->ldapGroupAttributes;
 	}
 
-	// returns an array that contains LDAP attribute names and their description
+	/**
+	* Returns the LDAP attribute names and their description for the host list
+	*
+	* @return array list of LDAP attributes and descriptions
+	*/
 	function attributeHostArray() {
 		return $this->ldapHostAttributes;
 	}
 
 
-	// helper function to sort the unit DNs
+	/**
+	* Helper function to sort the unit DNs
+	*
+	* @param string $a first argument to compare
+	* @param string $b second argument to compare
+	* @return integer 0 if equal, 1 if $a is greater, -1 if $b is greater
+	*/
 	function cmp_array($a, $b) {
 		// split DNs
 		$array_a = explode(",", $a);
@@ -560,7 +643,13 @@ class Ldap{
 		}
 	}
 
-	// helper function to sort the domains
+	/**
+	* Helper function to sort the domains
+	*
+	* @param string $a first argument to compare
+	* @param string $b second argument to compare
+	* @return integer 0 if equal, 1 if $a is greater, -1 if $b is greater
+	*/
 	function cmp_domain($a, $b) {
 		if ($a->name == $b->name) return 0;
 		elseif ($a->name == max($a->name, $b->name)) return 1;
@@ -570,29 +659,33 @@ class Ldap{
 
 }
 
-// represents a Samba 3 domain entry
+/**
+* Represents a Samba 3 domain entry
+*
+* @package LDAP
+*/
 class samba3domain {
 
-	// DN
+	/** DN */
 	var $dn;
 
-	// domain name
+	/** Domain name */
 	var $name;
 
-	// domain SID
+	/** Domain SID */
 	var $SID;
 
-	// next RID
+	/** Next RID */
 	var $nextRID;
 
-	// next user RID
+	/** Next user RID */
 	var $nextUserRID;
 
-	// next group RID
+	/** Next group RID */
 	var $nextGroupRID;
 
-	// RID base to calculate RIDs, default 1000
-	var $RIDbase=1000;
+	/** RID base to calculate RIDs, default 1000 */
+	var $RIDbase = 1000;
 }
 
 ?>
