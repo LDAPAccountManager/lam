@@ -70,17 +70,23 @@ else echo ("<br><br><font color=\"red\"><b>" . _("LDAP Search failed! Please che
 
 echo ("<form action=\"../templates/account.php?type=host\" method=\"post\">\n");
 
+// delete first array entry which is "count"
+array_shift($info);
+// sort rows by sort column ($list)
+usort($info, "cmp_array");
+
 // print host table header
 echo "<table rules=\"all\" class=\"hostlist\" width=\"100%\">\n";
 echo "<tr class=\"hostlist_head\"><th width=22 height=34></th><th></th>";
 // table header
 for ($k = 0; $k < sizeof($desc_array); $k++) {
-	echo "<th>" . $desc_array[$k] . "</th>";
+	echo "<th><a href=\"listhosts.php?list=$attr_array[$k]\">" . $desc_array[$k] . "</th>";
 }
 echo "</tr>\n";
 
 // print host list
-for ($i = 0; $i < sizeof($info)-1; $i++) { // ignore last entry in array which is "count"
+
+for ($i = 0; $i < sizeof($info); $i++) {
 	echo("<tr class=\"hostlist\" onMouseOver=\"host_over(this, '" . $info[$i]["dn"] . "')\"" .
 								" onMouseOut=\"host_out(this, '" . $info[$i]["dn"] . "')\"" .
 								" onClick=\"host_click(this, '" . $info[$i]["dn"] . "')\"" .
@@ -91,6 +97,7 @@ for ($i = 0; $i < sizeof($info)-1; $i++) { // ignore last entry in array which i
 		echo ("<td>");
 		// print all attribute entries seperated by "; "
 		if (sizeof($info[$i][strtolower($attr_array[$k])]) > 0) {
+			// delete first array entry which is "count"
 			array_shift($info[$i][strtolower($attr_array[$k])]);
 			echo implode("; ", $info[$i][strtolower($attr_array[$k])]);
 		}
@@ -101,9 +108,23 @@ for ($i = 0; $i < sizeof($info)-1; $i++) { // ignore last entry in array which i
 echo ("</table>");
 echo ("<p>&nbsp</p>\n");
 echo ("<table align=\"left\" border=\"0\">");
-echo ("<tr><td align=\"left\"><input type=\"button\" name=\"newhost\" value=\"" . _("New Host") . "\" onClick=\"self.location.href='../templates/account.php?type=host'\">");
-echo ("&nbsp<input type=\"button\" name=\"delhost\" value=\"" . _("Delete Host(s)") . "\" onClick=\"self.location.href='../templates/account.php?type=delete'\"></td></tr>\n");
+echo ("<tr><td align=\"left\"><a href=\"../templates/account.php?type=host\" target=\"_self\"><big>" . _("New Host") . "</big></a>");
+echo ("&nbsp&nbsp&nbsp<a href=\"../templates/account.php?type=delete\" target=\"_self\"><big>" . _("Delete Host(s)") . "</big></a></td></tr>\n");
 echo ("</table>\n");
 echo ("</form>\n");
 echo "</body></html>\n";
+
+// compare function used for usort-method
+// rows are sorted with the first attribute entry of the sort column
+// if objects have attributes with multiple values the others are ignored
+function cmp_array($a, $b) {
+	// list specifies the sort column
+	global $list;
+	// sort by first attribute with name $list
+	if (!$list) $list = 0;
+	if ($a[$list][0] == $b[$list][0]) return 0;
+	else if ($a[$list][0] == max($a[$list][0], $b[$list][0])) return 1;
+	else return -1;
+}
+
 ?>
