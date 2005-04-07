@@ -508,6 +508,9 @@ function get_preg($argument, $regexp) {
 		case 'nis_recipient':
 					$pregexpr = '/^([[:alnum:]@\\.\\ \\_-])+$/u';
 					break;
+		case 'country':	// Allow all letters and space
+					$pregexpr = '/^[[:alpha:]]([[:alpha:] ])+$/u';
+					break;
 	}
 	if ($pregexpr!='')
 		if (preg_match($pregexpr, $argument)) {
