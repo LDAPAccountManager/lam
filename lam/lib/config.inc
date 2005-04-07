@@ -73,6 +73,26 @@ function getConfigProfiles() {
 }
 
 /**
+* Returns the version number of this LAM installation.
+* Format: <major version>.<minor version>.<patch level>
+* <br> Major/minor version are always numbers, patch level may contain letters for inofficial releases only (e.g. 0.5.alpha1).
+*
+* @return string version number
+*/
+function LAMVersion() {
+	$file = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/VERSION";
+	if (is_readable($file)) {
+		$handle = fopen($file, "r");
+		if (!feof($handle)) {
+			return trim(fgets($handle, 20));
+		}
+	}
+	// file was not readable
+	return '0.0.unknown';
+}
+
+
+/**
 * Prints a meta refresh page
 *
 * @param string $page the URL of the target page
