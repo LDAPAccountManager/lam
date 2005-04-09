@@ -733,7 +733,7 @@ table.tree_edit_dn input {
 table.tree_edit_dn input.val {
 	font-size: 14px;
 	width: 350px; 
-	font-family: arial, helvetica, sans-serif
+	font-family: arial, helvetica, sans-serif;
 	background-color: white;
 }
 
@@ -776,7 +776,7 @@ table.tree_edit_dn tr td.attr a:hover {
 
 table.tree_edit_dn tr td.val {
 	text-align: left;
-	vertical-align: center;
+	vertical-align: middle;
 	padding-bottom: 10px;
 	padding-left: 80px;
 }
