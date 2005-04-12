@@ -358,9 +358,11 @@ class posixAccount extends baseModule {
 		// call parent init
 		parent::init($base);
 		$groups = $_SESSION['cache']->findgroups(); // list of all groupnames
-		// TODO better error handling
-		if (count($groups)==0) trigger_error(_('No groups found in ldap.'), E_USER_WARNING);
 		$this->createhomedir=false;
+		if (count($groups)==0) {
+			StatusMessage("ERROR", _('No Unix groups found in LDAP! Please create one first.'), '');
+			return;
+		}
 	}
 
 	// Variables
@@ -587,6 +589,10 @@ class posixAccount extends baseModule {
 	/* Write variables into object and do some regexp checks
 	*/
 	function process_attributes(&$post) {
+		$groups = $_SESSION['cache']->findgroups(); // list of all groupnames
+		if (count($groups)==0) {
+			return array("ERROR", _('No Unix groups found in LDAP! Please create one first.'), '');
+		}
 		$this->attributes['homeDirectory'][0] = $post['homeDirectory'];
 		$this->attributes['loginShell'][0] = $post['loginShell'];
 		if (isset($post['gecos'])) $this->attributes['gecos'][0] = $post['gecos'];
@@ -798,6 +804,10 @@ class posixAccount extends baseModule {
 	*/
 	function display_html_attributes(&$post) {
 		$groups = $_SESSION['cache']->findgroups(); // list of all groupnames
+		if (count($groups)==0) {
+			StatusMessage("ERROR", _('No Unix groups found in LDAP! Please create one first.'), '');
+			return;
+		}
 		$shelllist = getshells(); // list of all valid shells
 
 		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _("Username").'*' ),
