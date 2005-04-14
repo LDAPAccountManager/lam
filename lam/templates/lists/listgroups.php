@@ -67,11 +67,9 @@ echo "</head><body>\n";
 listPrintJavaScript();
 
 // generate attribute-description table
-$attr_array = array();	// list of LDAP attributes to show
-$desc_array = array();	// list of descriptions for the attributes
-$attr_string = $_SESSION["config"]->get_grouplistAttributes();
-$temp_array = explode(";", $attr_string);
-$hash_table = listGetAttributeGroupArray();
+$temp_array = listGetAttributeDescriptionList($scope);
+$attr_array = array_keys($temp_array);	// list of LDAP attributes to show
+$desc_array = array_values($temp_array);	// list of descriptions for the attributes
 
 // get current page
 if (isset($_GET["page"])) $page = $_GET["page"];
@@ -82,24 +80,6 @@ if ($_SESSION["config"]->get_MaxListEntries() <= 0)
 	$max_page_entries = 10;	// default setting, if not yet set
 else
 	$max_page_entries = $_SESSION["config"]->get_MaxListEntries();
-
-// generate column attributes and descriptions
-for ($i = 0; $i < sizeof($temp_array); $i++) {
-	// if value is predifined, look up description in hash_table
-	if (substr($temp_array[$i],0,1) == "#") {
-		$attr = strtolower(substr($temp_array[$i],1));
-		$attr_array[$i] = $attr;
-		if ($hash_table[$attr]) $desc_array[] = strtoupper($hash_table[$attr]);
-		else $desc_array[] = strtoupper($attr);
-	}
-	// if not predefined, the attribute is seperated by a ":" from description
-	else {
-		$attr = explode(":", $temp_array[$i]);
-		$attr_array[$i] = $attr[0];
-		if ($attr[1]) $desc_array[$i] = strtoupper($attr[1]);
-		else $desc_array[$i] = strtoupper($attr[0]);
-	}
-}
 
 // get sorting column
 if (isset($_GET["sort"])) $sort = $_GET["sort"];
@@ -138,13 +118,12 @@ if ($refresh) {
 		}
 }
 
-$filter = listBuildFilter($_POST, $attr_array);
+$filter = listBuildFilter($attr_array);
 $info = listFilterAccounts($info, $filter);
 if (sizeof($info) == 0) StatusMessage("WARN", "", _("No groups found!"));
 // sort rows by sort column ($sort)
 if ($info) {
 	$info = listSort($sort, $attr_array, $info);
-	$_SESSION[$scope . 'info'] = $info;
 }
 
 // build filter URL

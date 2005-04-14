@@ -525,33 +525,54 @@ class Config {
 	/**
 	* Returns the list of attributes to show in user list
 	*
+	* @param string $scope account type
 	* @return string the attribute list
 	*/
-	function get_userlistAttributes() {
-		return $this->userlistAttributes;
+	function get_listAttributes($scope) {
+		switch ($scope) {
+			case 'user':
+				return $this->userlistAttributes;
+				break;
+			case 'group':
+				return $this->grouplistAttributes;
+				break;
+			case 'host':
+				return $this->hostlistAttributes;
+				break;
+			default:
+				return '';
+				break;
+		}
 	}
 
 	/**
 	* Sets the list of attributes to show in user list
 	*
 	* @param string $value new attribute string
+	* @param string $scope account type
 	* @return boolean true if $value has correct format
 	*/
-	function set_userlistAttributes($value) {
+	function set_listAttributes($value, $scope) {
 		if (is_string($value) && eregi("^((#[^:;]+)|([^:;]*:[^:;]+))(;((#[^:;]+)|([^:;]*:[^:;]+)))*$", $value)) {
-			$this->userlistAttributes = $value;
+			switch ($scope) {
+				case 'user':
+						$this->userlistAttributes = $value;
+					break;
+				case 'group':
+						$this->grouplistAttributes = $value;
+					break;
+				case 'host':
+						$this->hostlistAttributes = $value;
+					break;
+				default:
+					return false;
+					break;
+			}
+			return true;
 		}
-		else return false;
-		return true;
-	}
-
-	/**
-	* Returns the list of attributes to show in group list
-	*
-	* @return string the attribute list
-	*/
-	function get_grouplistAttributes() {
-		return $this->grouplistAttributes;
+		else {
+			return false;
+		}
 	}
 
 	/**
@@ -563,30 +584,6 @@ class Config {
 	function set_grouplistAttributes($value) {
 		if (is_string($value) && eregi("^((#[^:;]+)|([^:;]*:[^:;]+))(;((#[^:;]+)|([^:;]*:[^:;]+)))*$", $value)) {
 			$this->grouplistAttributes = $value;
-		}
-		else return false;
-		return true;
-	}
-
-	/**
-	* Returns the list of attributes to show in host list
-	*
-	* @return string the attribute list
-	*/
-	function get_hostlistAttributes() {
-		return $this->hostlistAttributes;
-	}
-
-	/**
-	* Sets the list of attributes to show in host list
-	*
-	* @param string $value new attribute string
-	* @return boolean true if $value has correct format
-	*/
-	function set_hostlistAttributes($value) {
-		if (! $value && ($this->hostsuffix == "")) $this->hostlistAttributes = "";
-		elseif (is_string($value) && eregi("^((#[^:;]+)|([^:;]*:[^:;]+))(;((#[^:;]+)|([^:;]*:[^:;]+)))*$", $value)) {
-			$this->hostlistAttributes = $value;
 		}
 		else return false;
 		return true;

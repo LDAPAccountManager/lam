@@ -32,12 +32,11 @@ $Id$
 /**
 * Builds the regular expressions from the filter values.
 *
-* @param array $post HTTP Post values
 * @param array $attributes list of displayed attributes
 * @return array filter data array($attribute => array('regex' => $reg, 'original' => $orig))
 * $reg is the regular expression to use, $orig the user's unmodified input string
 */
-function listBuildFilter($post, $attributes) {
+function listBuildFilter($attributes) {
 	$filter = array();
 	for ($i = 0; $i < sizeof($attributes); $i++) {
 		if (isset($_POST["filter" . strtolower($attributes[$i])]) && eregi('^([0-9a-z_\\*\\$])+$', $_POST["filter" . strtolower($attributes[$i])])) {
@@ -287,53 +286,49 @@ function listDoPost($scope) {
 /**
 * Returns the LDAP attribute names and their description for the user list
 *
+* @param string $scope account type
 * @return array list of LDAP attributes and descriptions
 */
-function listGetAttributeUserArray() {
-	return array (
-		"uid" => _("User ID"),
-		"uidnumber" => _("UID number"),
-		"gidnumber" => _("GID number"),
-		"cn" => _("Username"),
-		"host" => _("Allowed hosts"),
-		"givenname" => _("First name"),
-		"sn" => _("Last name"),
-		"homedirectory" => _("Home directory"),
-		"loginshell" => _("Login shell"),
-		"mail" => _("E-Mail"),
-		"gecos" => _("Description")
-		);
-}
-
-/**
-* Returns the LDAP attribute names and their description for the group list
-*
-* @return array list of LDAP attributes and descriptions
-*/
-function listGetAttributeGroupArray() {
-	return array (
-		"cn" => _("Group name"),
-		"gidnumber" => _("GID number"),
-		"memberuid" => _("Group members"),
-		"member" => _("Group member DNs"),
-		"description" => _("Group description")
-		);
-}
-
-/**
-* Returns the LDAP attribute names and their description for the host list
-*
-* @return array list of LDAP attributes and descriptions
-*/
-function listGetAttributeHostArray() {
-	return array (
-		"uid" => _("Host username"),
-		"cn" => _("Host name"),
-		"rid" => _("RID (Windows UID)"),
-		"description" => _("Host description"),
-		"uidnumber" => _("UID number"),
-		"gidnumber" => _("GID number")
-		);
+function listGetAttributeArray($scope) {
+	switch ($scope) {
+		case 'user':
+			return array (
+				"uid" => _("User ID"),
+				"uidnumber" => _("UID number"),
+				"gidnumber" => _("GID number"),
+				"cn" => _("Username"),
+				"host" => _("Allowed hosts"),
+				"givenname" => _("First name"),
+				"sn" => _("Last name"),
+				"homedirectory" => _("Home directory"),
+				"loginshell" => _("Login shell"),
+				"mail" => _("E-Mail"),
+				"gecos" => _("Description")
+				);
+			break;
+		case 'group':
+			return array (
+				"cn" => _("Group name"),
+				"gidnumber" => _("GID number"),
+				"memberuid" => _("Group members"),
+				"member" => _("Group member DNs"),
+				"description" => _("Group description")
+				);
+			break;
+		case 'host':
+			return array (
+				"uid" => _("Host username"),
+				"cn" => _("Host name"),
+				"rid" => _("RID (Windows UID)"),
+				"description" => _("Host description"),
+				"uidnumber" => _("UID number"),
+				"gidnumber" => _("GID number")
+				);
+			break;
+		default:
+			return array();
+			break;
+	}
 }
 
 /**
@@ -390,5 +385,44 @@ function listPrintJavaScript() {
 	echo "//-->\n";
 	echo "</script>\n";
 }
+
+/**
+* Returns an hash array containing with all attributes to be shown and their descriptions.
+* Format: array(attribute => description)
+*
+* @param string $scope account type
+* @return array attribute list
+*/
+function listGetAttributeDescriptionList($scope) {
+	$ret = array();
+	$attr_string = $_SESSION["config"]->get_listAttributes($scope);
+	$temp_array = explode(";", $attr_string);
+	$hash_table = listGetAttributeArray($scope);
+	// generate column attributes and descriptions
+	for ($i = 0; $i < sizeof($temp_array); $i++) {
+		// if value is predifined, look up description in hash_table
+		if (substr($temp_array[$i],0,1) == "#") {
+			$attr = strtolower(substr($temp_array[$i],1));
+			if (isset($hash_table[$attr])) {
+				$ret[$attr] = $hash_table[$attr];
+			}
+			else {
+				$ret[$attr] = $attr;
+			}
+		}
+		// if not predefined, the attribute is seperated by a ":" from description
+		else {
+			$attr = explode(":", $temp_array[$i]);
+			if (isset($attr[1])) {
+				$ret[$attr[0]] = $attr[1];
+			}
+			else {
+				$ret[$attr[0]] = $attr[0];
+			}
+		}
+	}
+	return $ret;
+}
+
 
 ?>

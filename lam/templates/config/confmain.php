@@ -124,9 +124,9 @@ if (isset($_GET["modulesback"])) {
 	$conf->set_Suffix('host', $_SESSION['conf_suffhosts']);
 	$conf->set_Suffix('domain', $_SESSION['conf_suffdomains']);
 	$conf->set_Suffix('tree', $_SESSION['conf_sufftree']);
-	$conf->set_userlistAttributes($_SESSION['conf_usrlstattr']);
-	$conf->set_grouplistAttributes($_SESSION['conf_grplstattr']);
-	$conf->set_hostlistAttributes($_SESSION['conf_hstlstattr']);
+	$conf->set_listAttributes($_SESSION['conf_usrlstattr'], 'user');
+	$conf->set_listAttributes($_SESSION['conf_grplstattr'], 'group');
+	$conf->set_listAttributes($_SESSION['conf_hstlstattr'], 'host');
 	$conf->set_MaxListEntries($_SESSION['conf_maxlistentries']);
 	$conf->set_defaultLanguage($_SESSION['conf_lang']);
 	$conf->set_scriptpath($_SESSION['conf_scriptpath']);
@@ -292,19 +292,19 @@ echo ("<table border=0>\n");
 // user list attributes
 echo ("<tr><td align=\"right\"><b>".
 	_("Attributes in User List") . " *:</b></td>".
-	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"usrlstattr\" value=\"" . $conf->get_userlistAttributes() . "\"></td>");
+	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"usrlstattr\" value=\"" . $conf->get_listAttributes('user') . "\"></td>");
 echo ("<td><a href=\"../help.php?HelpNumber=206\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 $tabindex++;
 // group list attributes
 echo ("<tr><td align=\"right\"><b>".
 	_("Attributes in Group List") . " *:</b></td>".
-	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"grplstattr\" value=\"" . $conf->get_grouplistAttributes() . "\"></td>");
+	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"grplstattr\" value=\"" . $conf->get_listAttributes('group') . "\"></td>");
 echo ("<td><a href=\"../help.php?HelpNumber=206\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 $tabindex++;
 // host list attributes
 echo ("<tr><td align=\"right\"><b>".
 	_("Attributes in Host List") . " **:</b></td>".
-	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"hstlstattr\" value=\"" . $conf->get_hostlistAttributes() . "\"></td>");
+	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"hstlstattr\" value=\"" . $conf->get_listAttributes('host') . "\"></td>");
 echo ("<td><a href=\"../help.php?HelpNumber=206\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
 $tabindex++;
 

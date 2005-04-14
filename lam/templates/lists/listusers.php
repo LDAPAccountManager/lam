@@ -61,7 +61,7 @@ if (isset($_GET['norefresh'])) $refresh = false;
 if (isset($_POST['refresh'])) $refresh = true;
 
 // check if primary group should be translated
-if (isset($_POST['trans_primary'])) $trans_primary = "on";
+if (isset($_POST['trans_primary']) && ($_POST['trans_primary'] == 'on')) $trans_primary = "on";
 else $trans_primary = "off";
 if (isset($_SESSION['trans_primary_hash'])) $trans_primary_hash = $_SESSION['trans_primary_hash'];
 else $trans_primary_hash = array();
@@ -107,29 +107,9 @@ if ($_SESSION["config"]->get_MaxListEntries() <= 0) {
 else $max_page_entries = $_SESSION["config"]->get_MaxListEntries();
 
 // generate attribute-description table
-$attr_array = array();	// list of LDAP attributes to show
-$desc_array = array();	// list of descriptions for the attributes
-$attr_string = $_SESSION["config"]->get_userlistAttributes();
-$temp_array = explode(";", $attr_string);
-$hash_table = listGetAttributeUserArray();
-
-// generate column attributes and descriptions
-for ($i = 0; $i < sizeof($temp_array); $i++) {
-  // if value is predifined, look up description in hash_table
-  if (substr($temp_array[$i],0,1) == "#") {
-    $attr = strtolower(substr($temp_array[$i],1));
-    $attr_array[$i] = $attr;
-    if ($hash_table[$attr]) $desc_array[] = strtoupper($hash_table[$attr]);
-	else $desc_array[] = strtoupper($attr);
-  }
-  // if not predefined, the attribute is seperated by a ":" from description
-  else {
-    $attr = explode(":", $temp_array[$i]);
-    $attr_array[$i] = $attr[0];
-    if ($attr[1]) $desc_array[$i] = strtoupper($attr[1]);
-	else $desc_array[$i] = strtoupper($attr[0]);
-  }
-}
+$temp_array = listGetAttributeDescriptionList($scope);
+$attr_array = array_keys($temp_array);	// list of LDAP attributes to show
+$desc_array = array_values($temp_array);	// list of descriptions for the attributes
 
 if (isset($_GET["sort"])) $sort = $_GET["sort"];
 else $sort = strtolower($attr_array[0]);
@@ -167,13 +147,12 @@ if ($refresh) {
 	}
 }
 
-$filter = listBuildFilter($_POST, $attr_array);
+$filter = listBuildFilter($attr_array);
 $info = listFilterAccounts($info, $filter);
 if (sizeof($info) == 0) StatusMessage("WARN", "", _("No users found!"));
 // sort rows by sort column ($sort)
 if ($info) {
 	$info = listSort($sort, $attr_array, $info);
-	$_SESSION[$scope . 'info'] = $info;
 }
 
 // build filter URL
@@ -219,7 +198,6 @@ if (sizeof($info) != 0) {
 		// resort if needed
 		if ($sort == "gidnumber") {
 			$info = listSort($sort, $attr_array, $info);
-			$_SESSION[$scope . 'info'] = $info;
 		}
 	}
 	// print user list

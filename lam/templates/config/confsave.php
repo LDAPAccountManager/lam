@@ -128,17 +128,17 @@ if (!$conf->set_Suffix("tree", $sufftree)) {
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
-if (!$conf->set_userlistAttributes($usrlstattr)) {
+if (!$conf->set_listAttributes($usrlstattr, 'user')) {
 	echo ("<font color=\"red\"><b>" . _("User list attributes are invalid!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
-if (!$conf->set_grouplistAttributes($grplstattr)) {
+if (!$conf->set_listAttributes($grplstattr, 'group')) {
 	echo ("<font color=\"red\"><b>" . _("Group list attributes are invalid!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
-if (!$conf->set_hostlistAttributes($hstlstattr)) {
+if (!$conf->set_listAttributes($hstlstattr, 'host')) {
 	echo ("<font color=\"red\"><b>" . _("Host list attributes are invalid!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
