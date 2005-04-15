@@ -43,12 +43,12 @@ $Id$
 $templates = array();
 
 $templates[] = array(
-	'desc' => 'Organizational Unit',
+	'desc' => _('Organizational unit'),
 	'icon' => '../../graphics/ou.png',
 	'handler' => 'new_ou_template.php');
 
 $templates[] = array(
-	'desc' => 'Custom',
+	'desc' => _('Custom'),
 	'icon' => '../../graphics/object.png',
 	'handler' => 'custom.php');
 
