@@ -108,6 +108,8 @@ if ($refresh) {
 		ldap_free_result($sr);
 		// delete first array entry which is "count"
 		unset($info['count']);
+		// save position in original $info
+		for ($i = 0; $i < sizeof($info); $i++) $info[$i]['LAM_ID'] = $i;
 		// save results
 		$_SESSION[$scope . 'info'] = $info;
 	}
@@ -158,19 +160,19 @@ else $table_end = ($page * $max_page_entries);
 if (sizeof($info) > 0) {
 	// print group list
 	for ($i = $table_begin; $i < $table_end; $i++) {
-		echo("<tr class=\"grouplist\" onMouseOver=\"list_over(this, '" . $i . "', '" . $scope . "')\"" .
-									" onMouseOut=\"list_out(this, '" . $i . "', '" . $scope . "')\"" .
-									" onClick=\"list_click(this, '" . $i . "', '" . $scope . "')\"" .
-									" onDblClick=\"parent.frames[1].location.href='../account/edit.php?type=group&amp;DN=" . $info[$i]['dn'] . "'\">");
+		echo("<tr class=\"grouplist\" onMouseOver=\"list_over(this, '" . $info[$i]['LAM_ID'] . "', '" . $scope . "')\"\n" .
+									" onMouseOut=\"list_out(this, '" . $info[$i]['LAM_ID'] . "', '" . $scope . "')\"\n" .
+									" onClick=\"list_click(this, '" . $info[$i]['LAM_ID'] . "', '" . $scope . "')\"\n" .
+									" onDblClick=\"parent.frames[1].location.href='../account/edit.php?type=group&amp;DN=" . $info[$i]['dn'] . "'\">\n");
 		if (isset($_GET['selectall'])) {
-		echo " <td height=22 align=\"center\"><input onClick=\"list_click(this, '" . $i . "', '" . $scope . "')\" type=\"checkbox\"" .
-			" name=\"" . $i . "\" checked></td>";
+		echo " <td height=22 align=\"center\"><input onClick=\"list_click(this, '" . $info[$i]['LAM_ID'] . "', '" . $scope . "')\" type=\"checkbox\"" .
+			" name=\"" . $info[$i]['LAM_ID'] . "\" checked></td>\n";
 		}
 		else {
-		echo " <td height=22 align=\"center\"><input onClick=\"list_click(this, '" . $i . "', '" . $scope . "')\" type=\"checkbox\"" .
-			" name=\"" . $i . "\"></td>";
+		echo " <td height=22 align=\"center\"><input onClick=\"list_click(this, '" . $info[$i]['LAM_ID'] . "', '" . $scope . "')\" type=\"checkbox\"" .
+			" name=\"" . $info[$i]['LAM_ID'] . "\"></td>\n";
 		}
-		echo (" <td align='center'><a href=\"../account/edit.php?type=group&amp;DN='" . $info[$i]['dn'] . "'\">" . _("Edit") . "</a></td>");
+		echo (" <td align='center'><a href=\"../account/edit.php?type=group&amp;DN='" . $info[$i]['dn'] . "'\">" . _("Edit") . "</a></td>\n");
 		for ($k = 0; $k < sizeof($attr_array); $k++) {
 			echo ("<td>");
 			// print all attribute entries seperated by "; "
@@ -201,7 +203,7 @@ if (sizeof($info) > 0) {
 					else echo $info[$i][strtolower($attr_array[$k])];
 				}
 			}
-			echo ("</td>");
+			echo ("</td>\n");
 		}
 		echo("</tr>\n");
 	}

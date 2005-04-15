@@ -135,6 +135,8 @@ if ($refresh) {
 		ldap_free_result ($sr);
 		// delete first array entry which is "count"
 		unset($info['count']);
+		// save position in original $info
+		for ($i = 0; $i < sizeof($info); $i++) $info[$i]['LAM_ID'] = $i;
 		// save results
 		$_SESSION[$scope . 'info'] = $info;
 	}
@@ -202,18 +204,18 @@ if (sizeof($info) != 0) {
 	}
 	// print user list
 	for ($i = $table_begin; $i < $table_end; $i++) {
-		echo("<tr class=\"userlist\"\nonMouseOver=\"list_over(this, '" . $i . "', '" . $scope . "')\"\n" .
-			"onMouseOut=\"list_out(this, '" . $i . "', '" . $scope . "')\"\n" .
-			"onClick=\"list_click(this, '" . $i . "', '" . $scope . "')\"\n" .
+		echo("<tr class=\"userlist\"\nonMouseOver=\"list_over(this, '" . $info[$i]['LAM_ID'] . "', '" . $scope . "')\"\n" .
+			"onMouseOut=\"list_out(this, '" . $info[$i]['LAM_ID'] . "', '" . $scope . "')\"\n" .
+			"onClick=\"list_click(this, '" . $info[$i]['LAM_ID'] . "', '" . $scope . "')\"\n" .
 			"onDblClick=\"parent.frames[1].location.href='../account/edit.php?type=user&amp;DN=" . $info[$i]['dn'] . "'\">\n");
 		// checkboxes if selectall = "yes"
 		if (isset($_GET['selectall'])) {
-			echo "<td height=22 align=\"center\">\n<input onClick=\"list_click(this, '" . $i . "', '" . $scope . "')\" type=\"checkbox\" name=\"" .
-				$i . "\" checked>\n</td>\n";
+			echo "<td height=22 align=\"center\">\n<input onClick=\"list_click(this, '" . $info[$i]['LAM_ID'] . "', '" . $scope . "')\" type=\"checkbox\" name=\"" .
+				$info[$i]['LAM_ID'] . "\" checked>\n</td>\n";
 		}
 		else {
-			echo "<td height=22 align=\"center\">\n<input onClick=\"list_click(this, '" . $i . "', '" . $scope . "')\" type=\"checkbox\" name=\"" .
-				$i . "\">\n</td>\n";
+			echo "<td height=22 align=\"center\">\n<input onClick=\"list_click(this, '" . $info[$i]['LAM_ID'] . "', '" . $scope . "')\" type=\"checkbox\" name=\"" .
+				$info[$i]['LAM_ID'] . "\">\n</td>\n";
 		}
 		echo ("<td align='center'>\n<a href=\"../account/edit.php?type=user&amp;DN='" . $info[$i]['dn'] . "'\">" .
 			_("Edit") . "</a>\n</td>\n");
