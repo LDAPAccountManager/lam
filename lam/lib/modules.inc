@@ -784,8 +784,6 @@ class accountContainer {
 						}
 					if ($post['outputpdf']) {
 						// Create / display PDf-file
-						$function = 'create'.ucfirst($this->type).'PDF(array($_SESSION[$this->base]));';
-						//eval($function);
 						call_user_func('create'.ucfirst($this->type).'PDF', array($_SESSION[$this->base]));
 						exit;
 						}
@@ -1299,7 +1297,6 @@ class accountContainer {
 			foreach ($list as $item) {
 				$function = 'display_html_' . $item;
 				$page = $this->module[$singlemodule]->$function($post,true);
-				//eval($function);
 				$return = array_merge($return, $page);
 				}
 			}
@@ -1336,9 +1333,10 @@ class accountContainer {
 			}
 		// Write Module-Order in variable
 		$this->order = array_merge ('main' ,$order);
-		// *** fixme load*Profile must return array in the same way ldap_get_attributes does.
-		$function = '$newattributes = load'.ucfirst($this->type).'Profile(\'default\');';  // TODO function is called loadAccountProfile()
-		//eval($function);
+		$profile = loadAccountProfile('default', $this->type);
+		// pass profile to each module
+		$modules = array_keys($this->module);
+		foreach ($modules as $module) $this->module[$module]->load_profile($profile);
 		return 0;
 		}
 
