@@ -328,10 +328,6 @@ foreach( $attrs as $attr => $vals ) {
 		$user_password = $vals[0];
         $enc_type = get_enc_type( $user_password );
 
-        // Set the default hashing type if the password is blank (must be newly created)
-        if( $user_password == '' ) {
-            $enc_type = get_default_hash();
-        } 
         ?>
 
 		<input type="hidden"
