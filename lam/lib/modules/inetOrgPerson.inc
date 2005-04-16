@@ -302,7 +302,6 @@ class inetOrgPerson extends baseModule {
 	function module_complete() {
 		if (!$this->module_ready()) return false;
 		if ($this->attributes['sn'][0] == '') return false;
-		if ($this->attributes['givenName'][0] == '') return false;
 		return true;
 		}	
 		
@@ -377,12 +376,12 @@ class inetOrgPerson extends baseModule {
 			}
 
 		// Do some regex-checks and return error if attributes are set to wrong values
-		if ( !get_preg($this->attributes['givenName'][0], 'realname')) $triggered_messages['givenName'][] = $this->messages['givenName'][0];
+		if (($this->attributes['givenName'][0] != '') && !get_preg($this->attributes['givenName'][0], 'realname')) $triggered_messages['givenName'][] = $this->messages['givenName'][0];
 		if ( !get_preg($this->attributes['sn'][0], 'realname')) $triggered_messages['sn'][] = $this->messages['lastname'][0];
 		if ( !get_preg($this->attributes['telephoneNumber'][0], 'telephone')) $triggered_messages['telephoneNumber'][] = $this->messages['telephoneNumber'][0];
 		if ( !get_preg($this->attributes['mobileTelephoneNumber'][0], 'telephone')) $triggered_messages['mobileTelephoneNumber'][] = $this->messages['mobileTelephone'][0];
 		if ( !get_preg($this->attributes['facsimileTelephoneNumber'][0], 'telephone')) $triggered_messages['facsimileTelephoneNumber'][] = $this->messages['facsimileNumber'][0];
-		if ( !get_preg($this->attributes['mail'][0], 'email')) $triggered_messages['mail'][] = $this->messages['email'][0];
+		if (($this->attributes['mail'][0] != '') && !get_preg($this->attributes['mail'][0], 'email')) $triggered_messages['mail'][] = $this->messages['email'][0];
 		if ( !get_preg($this->attributes['street'][0], 'street')) $triggered_messages['street'][] = $this->messages['street'][0];
 		if ( !get_preg($this->attributes['postalAddress'][0], 'postalAddress')) $triggered_messages['postalAdress'][] = $this->messages['postalAddress'][0];
 		if ( !get_preg($this->attributes['personal_postalCode'][0], 'postalCode')) $triggered_messages['personal_postalCode'][] = $this->messages['postalCode'][0];
@@ -414,7 +413,7 @@ class inetOrgPerson extends baseModule {
 			1 => array ( 'kind' => 'input', 'name' => 'title', 'type' => 'text', 'size' => '10',
 				'value' => $this->attributes['title'][0] ),
 			2 => array ('kind' => 'help', 'value' => 'title'));
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('First name').'*' ),
+		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('First name') ),
 			1 => array ( 'kind' => 'input', 'name' => 'givenName', 'type' => 'text', 'size' => '30',
 				'maxlength' => '255', 'value' => $this->attributes['givenName'][0] ),
 			2 => array ('kind' => 'help', 'value' => 'givenName'));
