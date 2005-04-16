@@ -237,7 +237,7 @@ class shadowAccount extends baseModule {
 		 */
 		unset($this->attributes['userPassword']);
 		unset($this->orig['userPassword']);
-		$this->load_ldap_attributes($attr);
+		parent::load_attributes($attr);
 		return 0;
 		}
 

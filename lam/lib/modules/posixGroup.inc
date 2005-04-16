@@ -398,7 +398,7 @@ class posixGroup extends baseModule {
 	* $attr is an array as it's retured from ldap_get_attributes
 	*/
 	function load_attributes($attr) {
-		$this->load_ldap_attributes($attr);
+		parent::load_attributes($attr);
 		// Delete password. We don't want to show an encrypted password because it makes no sense
 		$this->userPassword('');
 		return 0;

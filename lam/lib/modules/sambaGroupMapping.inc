@@ -345,15 +345,6 @@ class sambaGroupMapping extends baseModule {
 		}
 	}
 
-	/* This function loads all attributes into the object
-	* $attr is an array as it's retured from ldap_get_attributes
-	*/
-	function load_attributes($attr) {
-		$this->load_ldap_attributes($attr);
-		return 0;
-		}
-
-
 	/** this functin fills the error message array with messages
 	**/
 	function load_Messages() {

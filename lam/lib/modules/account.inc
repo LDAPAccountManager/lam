@@ -114,14 +114,6 @@ class account extends baseModule {
 		return array('attributes');
 		}
 
-	/* This function loads all attributes into the object
-	* $attr is an array as it's retured from ldap_get_attributes
-	*/
-	function load_attributes($attr) {
-		$this->load_ldap_attributes($attr);
-		return 0;
-		}
-
 	/* This function returns an array with 4 entries:
 	* array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr), 'lamdaemon' => array(cmds)), DN2 .... )
 	* DN is the DN to change. It may be possible to change several DNs,

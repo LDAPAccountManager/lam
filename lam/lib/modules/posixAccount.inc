@@ -431,7 +431,7 @@ class posixAccount extends baseModule {
 	* $attr is an array as it's retured from ldap_get_attributes
 	*/
 	function load_attributes($attr) {
-		$this->load_ldap_attributes($attr);
+		parent::load_attributes($attr);
 
 		// get all additional groupmemberships
 		$dn_groups = $_SESSION['cache']->get_cache('memberUid', 'posixGroup', 'group');

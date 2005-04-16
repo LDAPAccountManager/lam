@@ -421,7 +421,7 @@ class sambaSamAccount extends baseModule {
 	* $attr is an array as it's retured from ldap_get_attributes
 	*/
 	function load_attributes($attr) {
-		$this->load_ldap_attributes($attr);
+		parent::load_attributes($attr);
 		if (strpos($this->attributes['sambaAcctFlags'][0], "D")) $this->deactivated = true;
 		if (strpos($this->attributes['sambaAcctFlags'][0], "N")) $this->nopwd = true;
 		if (strpos($this->attributes['sambaAcctFlags'][0], "X")) $this->noexpire = true;

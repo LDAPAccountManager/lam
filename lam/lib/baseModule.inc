@@ -100,10 +100,13 @@ class baseModule {
 	}
 
 
-	/* This function loads all standard ldap attributes. It is used
+	/**
+	* This function loads all standard LDAP attributes. It is used
 	* by the modules to reduce code
+	*
+	* @param array $attr attribute list
 	*/
-	function load_ldap_attributes($attr) {
+	function load_attributes($attr) {
 		// Load attributes which are displayed
 		$objectClassName = $this->attributes['objectClass'];
 		// unset count entries
@@ -124,6 +127,7 @@ class baseModule {
 		if (in_array($objectClassName[0], $attr['objectClass']))
 			$this->orig['objectClass'] = $objectClassName;
 		else $this->orig['objectClass'] = array();
+		return 0;
 	}
 
 	/**
