@@ -19,12 +19,21 @@ $Id$
   along with this program; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-
-  LDAP Account Manager functions used by account.php
 */
 
-/* This class contains all functions
-* which are needed to manage the ldap cache
+/**
+* Provides a cache for LDAP attributes.
+*
+* @author Tilo Lutz
+* @package lib
+*/
+
+/** en/decryption functions */
+include_once('ldap.inc');
+
+
+/**
+* This class contains all functions which are needed to manage the LDAP cache.
 */
 class cache {
 	function cache() {
@@ -333,6 +342,24 @@ class cache {
 		else return -1;
 		}
 
+	/**
+	* Encrypts LDAP cache before saving to session file.
+	*
+	* @return array list of variables to save
+	*/
+	function __sleep() {
+		$this->ldapcache = $_SESSION['ldap']->encrypt(serialize($this->ldapcache));
+		// define which attributes to save
+		return array("ldapcache", "attributes", "time");
 	}
+	
+	/**
+	* Decrypts LDAP cache after loading from session file.
+	*/
+	function __wakeup() {
+		$this->ldapcache = unserialize($_SESSION['ldap']->decrypt($this->ldapcache));
+	}
+
+}
 
 ?>
