@@ -146,7 +146,7 @@ class posixGroup extends baseModule {
 		1 => array ( 'kind' => 'input', 'name' => 'description', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => $this->attributes['description'][0]),
 		2 => array ('kind' => 'help', 'value' => 'description'));
 		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _("Group members").'*' ),
-		1 => array ( 'kind' => 'input', 'name' => 'adduser', 'type' => 'submit', 'value' => _('Edit groups')),
+		1 => array ( 'kind' => 'input', 'name' => 'adduser', 'type' => 'submit', 'value' => _('Edit members')),
 		2 => array ('kind' => 'help', 'value' => 'adduser'));
 		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Password') ),
 		1 => array ( 'kind' => 'input', 'name' => 'userPassword', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => $this->userPassword()),
@@ -178,17 +178,22 @@ class posixGroup extends baseModule {
 		return 0;
 	}
 
-
+	/**
+	* Displays selections to add or remove users from current group.
+	*
+	* @param array $post HTTP-POST
+	* @return array meta HTML output
+	*/
 	function display_html_user(&$post) {
-		// load list with all groups
+		// load list with all users
 		$dn_users = $_SESSION['cache']->get_cache('uid', 'posixAccount', 'user');
 		if (is_array($dn_users)) {
 			foreach ($dn_users as $user) $users[] = $user[0];
-			// sort groups
+			// sort users
 			sort($users, SORT_STRING);
-			// remove groups the user is member of from grouplist
+			// remove users which are already members
 			$users = array_delete($this->attributes['memberUid'], $users);
-			// Remove primary group from grouplist
+			// remove users with this group as their primary group
 			$users_dn = $_SESSION['cache']->get_cache('gidNumber', 'posixAccount', 'user');
 			$DNs = array_keys($users_dn);
 			for ($i=0; $i<count($DNs); $i++) {
@@ -204,19 +209,28 @@ class posixGroup extends baseModule {
 			// sort users
 			sort($users);
 		}
-		$return[] = array ( 0 => array ( 'kind' => 'fieldset', 'legend' => _("Group members"), 'value' =>
-		array ( 0 => array ( 0 => array ('kind' => 'fieldset', 'td' => array ('valign' => 'top'), 'legend' => _("Selected users"), 'value' =>
-		array ( 0 => array ( 0 => array ( 'kind' => 'select', 'name' => 'removeusers[]', 'size' => '15', 'multiple', 'options' => $this->attributes['memberUid'])))),
-		1 => array ( 'kind' => 'table', 'value' => array ( 0 => array ( 0 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'addusers_button',
-		'value' => '<=')), 1 => array ( 0 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'removeusers_button', 'value' => '=>' )),
-		2 => array ( 0 => array ( 'kind' => 'help', 'value' => 'adduser' )))),
-		2 => array ('kind' => 'fieldset', 'td' => array ('valign' => 'top'), 'legend' => _("Available users"), 'value' =>
-		array ( 0 => array ( 0 => array ( 'kind' => 'select', 'name' => 'addusers[]', 'size' => '15', 'multiple', 'options' => $users))))
+		$return[] = array(
+			0 => array('kind' => 'fieldset', 'legend' => _("Group members"), 'value' =>	array (
+				0 => array(
+					0 => array('kind' => 'fieldset', 'td' => array ('valign' => 'top'), 'legend' => _("Selected users"), 'value' => array (
+						0 => array(
+							0 => array ( 'kind' => 'select', 'name' => 'removeusers', 'size' => '15', 'multiple' => true, 'options' => $this->attributes['memberUid'])))),
+					1 => array('kind' => 'table', 'value' => array(
+						0 => array(
+							0 => array('kind' => 'input', 'type' => 'submit', 'name' => 'addusers_button', 'value' => '<=')),
+							1 => array(
+								0 => array('kind' => 'input', 'type' => 'submit', 'name' => 'removeusers_button', 'value' => '=>' )),
+							2 => array(
+								0 => array('kind' => 'help', 'value' => 'adduser' )))),
+					2 => array('kind' => 'fieldset', 'td' => array('valign' => 'top'), 'legend' => _("Available users"), 'value' => array(
+						0 => array(
+							0 => array('kind' => 'select', 'name' => 'addusers', 'size' => '15', 'multiple' => true, 'options' => $users))))
 		))));
 
-		$return[] = array ( 0 => array ( 'kind' => 'input', 'name' => 'toattributes' ,'type' => 'submit', 'value' => _('Back') ),
-		1 => array ( 'kind' => 'text'),
-		2 => array ('kind' => 'text'));
+		$return[] = array(
+			0 => array('kind' => 'input', 'name' => 'toattributes' ,'type' => 'submit', 'value' => _('Back') ),
+			1 => array('kind' => 'text'),
+			2 => array('kind' => 'text'));
 		return $return;
 	}
 
@@ -603,28 +617,28 @@ class posixGroup extends baseModule {
 	}
 
 
-	/* Write variables into object and do some regexp checks
+	/**
+	* Processes input data and adds or removes users from current group.
+	*
+	* @param array $post HTTP-POST
+	* @return string name of next page
 	*/
 	function process_user(&$post) {
-		do { // X-Or, only one if() can be true
-		if (isset($post['addusers']) && isset($post['addusers_button'])) { // Add groups to list
-		// Add new user
-		$this->attributes['memberUid'] = @array_merge($this->attributes['memberUid'], $post['addusers']);
-		// remove doubles
-		$this->attributes['memberUid'] = @array_flip($this->attributes['memberUid']);
-		array_unique($this->attributes['memberUid']);
-		$this->attributes['memberUid'] = @array_flip($this->attributes['memberUid']);
-		// sort groups
-		sort($this->attributes['memberUid']);
-		break;
+		if (isset($post['addusers']) && isset($post['addusers_button'])) { // Add users to list
+			// Add new user
+			$this->attributes['memberUid'] = @array_merge($this->attributes['memberUid'], $post['addusers']);
+			// remove duplicates
+			$this->attributes['memberUid'] = @array_flip($this->attributes['memberUid']);
+			array_unique($this->attributes['memberUid']);
+			$this->attributes['memberUid'] = @array_flip($this->attributes['memberUid']);
+			// sort users
+			sort($this->attributes['memberUid']);
 		}
-		if (isset($post['removeusers']) && isset($post['removeusers_button'])) { // remove groups from list
-		$this->attributes['memberUid'] = array_delete($post['removeusers'], $this->attributes['memberUid']);
-		break;
+		elseif (isset($post['removeusers']) && isset($post['removeusers_button'])) { // remove users from list
+			$this->attributes['memberUid'] = array_delete($post['removeusers'], $this->attributes['memberUid']);
 		}
-		} while(0);
 		if (isset($post['adduser_button']) || isset($post['removeuser_button'])) return 'user';
-		if ($post['toattributes']) return 'attributes';
+		elseif ($post['toattributes']) return 'attributes';
 		return 0;
 	}
 
