@@ -442,28 +442,24 @@ p.statusError {
  *
  */
 
-fieldset.groupedit-bright {
+fieldset.groupedit {
   background-color:#d6e3ff;
 }
 
-fieldset.groupedit-middle {
-  background-color:#C7E7C7;
-}
-
-legend.groupedit-bright {
+fieldset.groupedit legend {
   color:blue;
 }
 
-fieldset.groupedit-dark {
-  background-color:#7167bf;
-}
-
-legend.groupedit-dark {
-  color:blue;
-}
-
-select.groupedit-bright {
+fieldset.groupedit fieldset {
   background-color:#d6e3ff;
+}
+
+fieldset.groupedit fieldset fieldset {
+  background-color:#d6e3ff;
+}
+
+fieldset.groupedit select {
+  background-color:#a8c3ff;
 }
 
 
@@ -472,51 +468,54 @@ select.groupedit-bright {
  *
  */
 
-fieldset.hostedit-bright {
+fieldset.hostedit {
   background-color:#ffe2dd;
 }
 
-legend.hostedit-bright {
+fieldset.hostedit legend {
   color:blue;
 }
 
-fieldset.hostedit-dark {
+fieldset.hostedit fieldset {
+  background-color:#ffe2dd;
+}
+
+fieldset.hostedit fieldset fieldset {
+  background-color:#ffe2dd;
+}
+
+fieldset.hostedit select {
   background-color:#ffc4ba;
 }
 
-legend.hostedit-dark {
-  color:blue;
-}
-
-select.hostedit-bright {
-  background-color:#ffc4ba;
-}
 
 /**
  * table style for useredit.php
  *
  */
 
-fieldset.useredit-bright {
+fieldset.useredit {
   background-color:#fff2a3;
 }
 
-legend.useredit-bright {
+fieldset.useredit legend {
   color:blue;
 }
 
-fieldset.useredit-dark {
-  background-color:#CCCCFF;
+fieldset.useredit fieldset {
+  background-color:#fff2a3;
 }
 
-legend.useredit-dark {
-  color:blue;
+fieldset.useredit fieldset fieldset {
+  background-color:#fff2a3;
 }
 
-select.useredit-bright {
-  background-color:#CCCCFF;
+fieldset.useredit select {
+  background-color:#fffde2;
 }
 
+
+/* schema browser */
 
 table.schema_oclasses {
 	border-left: 1px solid black;

@@ -821,7 +821,7 @@ class accountContainer {
 		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
 		echo "<table><tr>";
 		
-		echo "<td><fieldset class=\"".$this->type."edit-dark\"><legend class=\"".$this->type."edit-bright\"><b>";
+		echo "<td><fieldset class=\"".$this->type."edit\"><legend><b>";
 			echo _('Please select page:');
 			echo "</b></legend>\n";
 		$x=0;
@@ -843,12 +843,12 @@ class accountContainer {
 		echo "</fieldset></td></tr>\n";
 		echo "</table></td>\n<td>";
 		if ($this->current_page==0) {
-			echo "<td><fieldset class=\"".$this->type."edit-dark\"><legend class=\"".$this->type."edit-bright\"><b>";
+			echo "<td><fieldset class=\"".$this->type."edit\"><legend><b>";
 			echo _('Main');
 			echo "</b></legend>\n";
 			}
 		else {
-			echo "<td><fieldset class=\"".$this->type."edit-dark\"><legend class=\"".$this->type."edit-bright\"><b>";
+			echo "<td><fieldset class=\"".$this->type."edit\"><legend><b>";
 				echo $this->module[$this->order[$this->current_page]]->get_alias($type);
 				echo "</b></legend>\n";
 			}

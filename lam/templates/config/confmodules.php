@@ -155,15 +155,15 @@ function config_showAccountModules($scope, $title) {
 	}
 	
 	// show account modules
-	echo "<fieldset class=\"" . $scope . "edit-bright\"><legend class=\"" . $scope . "edit-bright\"><b>" . $title . "</b></legend>\n";
+	echo "<fieldset class=\"" . $scope . "edit\"><legend><b>" . $title . "</b></legend>\n";
 	echo "<table border=0 width=\"100%\">\n";
 		// select boxes
 		echo "<tr>\n";
 			echo "<td width=\"5%\"></td>\n";
 			echo "<td width=\"40%\">\n";
-				echo "<fieldset class=\"" . $scope . "edit-bright\">\n";
-					echo "<legend class=\"" . $scope . "edit-bright\">" . _("Selected modules") . "</legend>\n";
-					echo "<select class=\"" . $scope . "edit-bright\" name=\"" . $scope . "_selected[]\" size=5 multiple>\n";
+				echo "<fieldset class=\"" . $scope . "edit\">\n";
+					echo "<legend>" . _("Selected modules") . "</legend>\n";
+					echo "<select class=\"" . $scope . "edit\" name=\"" . $scope . "_selected[]\" size=5 multiple>\n";
 						for ($i = 0; $i < sizeof($selected); $i++) {
 							if (in_array($selected[$i], $available)) {  // selected modules must be available
 								if (is_base_module($selected[$i], $scope)) {  // mark base modules
@@ -189,9 +189,9 @@ function config_showAccountModules($scope, $title) {
 				echo "</p>\n";
 			echo "</td>\n";
 			echo "<td width=\"40%\">\n";
-				echo "<fieldset class=\"" . $scope . "edit-bright\">\n";
-					echo "<legend class=\"" . $scope . "edit-bright\">" . _("Available modules") . "</legend>\n";
-					echo "<select class=\"" . $scope . "edit-bright\" name=\"" . $scope . "_available[]\" size=5 multiple>\n";
+				echo "<fieldset class=\"" . $scope . "edit\">\n";
+					echo "<legend>" . _("Available modules") . "</legend>\n";
+					echo "<select class=\"" . $scope . "edit\" name=\"" . $scope . "_available[]\" size=5 multiple>\n";
 						for ($i = 0; $i < sizeof($available); $i++) {
 							if (! in_array($available[$i], $selected)) {  // display non-selected modules
 								if (is_base_module($available[$i], $scope)) {  // mark base modules

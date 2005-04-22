@@ -73,7 +73,7 @@ if ($_GET['type']) {
 	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">\n";
 	echo "</head><body>\n";
 	echo "<form action=\"delete.php\" method=\"post\">\n";
-	echo "<fieldset class=\"".$_GET['type']."edit-dark\"><legend class=\"".$_GET['type']."edit-bright\"><b>";
+	echo "<fieldset class=\"".$_GET['type']."edit\"><legend><b>";
 	echo _('Please confirm:');
 	echo "</b></legend>\n";
 	echo "<input name=\"type\" type=\"hidden\" value=\"" . $_GET['type'] . "\">\n";
@@ -123,7 +123,7 @@ if ($_POST['delete']) {
 	echo "</head><body>\n";
 	echo "<form action=\"delete.php\" method=\"post\">\n";
 	echo "<input name=\"type\" type=\"hidden\" value=\"" . $_POST['type'] . "\">\n";
-	echo "<fieldset class=\"".$_POST['type']."edit-dark\"><legend class=\"".$_POST['type']."edit-bright\"><b>";
+	echo "<fieldset class=\"".$_POST['type']."edit\"><legend><b>";
 	echo _('Deleting. Please stand by ...');
 	echo "</b></legend>\n";
 
