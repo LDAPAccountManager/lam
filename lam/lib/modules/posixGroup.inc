@@ -217,11 +217,11 @@ class posixGroup extends baseModule {
 							0 => array ( 'kind' => 'select', 'name' => 'removeusers', 'size' => '15', 'multiple' => true, 'options' => $this->attributes['memberUid'])))),
 					1 => array('kind' => 'table', 'value' => array(
 						0 => array(
-							0 => array('kind' => 'input', 'type' => 'submit', 'name' => 'addusers_button', 'value' => '<=')),
+							0 => array('kind' => 'input', 'type' => 'submit', 'name' => 'addusers_button', 'value' => '<=', 'td' => array('align' => 'center'))),
 							1 => array(
-								0 => array('kind' => 'input', 'type' => 'submit', 'name' => 'removeusers_button', 'value' => '=>' )),
+								0 => array('kind' => 'input', 'type' => 'submit', 'name' => 'removeusers_button', 'value' => '=>', 'td' => array('align' => 'center'))),
 							2 => array(
-								0 => array('kind' => 'help', 'value' => 'adduser' )))),
+								0 => array('kind' => 'help', 'value' => 'adduser', 'td' => array('align' => 'center'))))),
 					2 => array('kind' => 'fieldset', 'td' => array('valign' => 'top'), 'legend' => _("Available users"), 'value' => array(
 						0 => array(
 							0 => array('kind' => 'select', 'name' => 'addusers', 'size' => '15', 'multiple' => true, 'options' => $users))))
