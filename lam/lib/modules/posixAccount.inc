@@ -874,6 +874,12 @@ class posixAccount extends baseModule {
 		return $return;
 	}
 
+	/**
+	* Displays the group selection.
+	*
+	* @param array $post HTTP-POST
+	* @return array meta HTML code
+	*/
 	function display_html_group(&$post) {
 		// load list with all groups
 		$dn_groups = $_SESSION['cache']->get_cache('gidNumber', 'posixGroup', 'group');
@@ -890,19 +896,28 @@ class posixAccount extends baseModule {
 		// sort groups
 		sort($groups, SORT_STRING);
 
-		$return[] = array ( 0 => array ( 'kind' => 'fieldset', 'legend' => _("Additional groups"), 'value' =>
-		array ( 0 => array ( 0 => array ('kind' => 'fieldset', 'td' => array ('valign' => 'top'), 'legend' => _("Selected groups"), 'value' =>
-		array ( 0 => array ( 0 => array ( 'kind' => 'select', 'name' => 'removegroups[]', 'size' => '15', 'multiple', 'options' => $this->groups)))),
-		1 => array ( 'kind' => 'table', 'value' => array ( 0 => array ( 0 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'addgroups_button',
-		'value' => '<=')), 1 => array ( 0 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'removegroups_button', 'value' => '=>' )),
-		2 => array ( 0 => array ( 'kind' => 'help', 'value' => 'addgroup' )))),
-		2 => array ('kind' => 'fieldset', 'td' => array ('valign' => 'top'), 'legend' => _("Available groups"), 'value' =>
-		array ( 0 => array ( 0 => array ( 'kind' => 'select', 'name' => 'addgroups[]', 'size' => '15', 'multiple', 'options' => $groups))))
+		$return[] = array(
+			0 => array('kind' => 'fieldset', 'legend' => _("Additional groups"), 'value' => array(
+				0 => array(
+					0 => array('kind' => 'fieldset', 'td' => array('valign' => 'top'), 'legend' => _("Selected groups"), 'value' => array(
+						0 => array (
+							0 => array('kind' => 'select', 'name' => 'removegroups', 'size' => '15', 'multiple' => true, 'options' => $this->groups)))),
+						1 => array('kind' => 'table', 'value' => array(
+							0 => array(
+								0 => array('kind' => 'input', 'type' => 'submit', 'name' => 'addgroups_button', 'value' => '<=', 'td' => array('align' => 'center'))),
+							1 => array(
+								0 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'removegroups_button', 'value' => '=>', 'td' => array('align' => 'center'))),
+							2 => array(
+								0 => array ( 'kind' => 'help', 'value' => 'addgroup', 'td' => array('align' => 'center'))))),
+						2 => array('kind' => 'fieldset', 'td' => array('valign' => 'top'), 'legend' => _("Available groups"), 'value' => array(
+							0 => array(
+								0 => array('kind' => 'select', 'name' => 'addgroups', 'size' => '15', 'multiple' => true, 'options' => $groups))))
 		))));
 
-		$return[] = array ( 0 => array ( 'kind' => 'input', 'type' => 'submit', 'value' => _('Back'), 'name' => 'back' ),
-		1 => array ( 'kind' => 'text'),
-		2 => array ('kind' => 'text'));
+		$return[] = array(
+			0 => array('kind' => 'input', 'type' => 'submit', 'value' => _('Back'), 'name' => 'back'),
+			1 => array('kind' => 'text'),
+			2 => array('kind' => 'text'));
 		return $return;
 	}
 
