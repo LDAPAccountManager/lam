@@ -206,7 +206,14 @@ function listPrintTableHeader($scope, $searchFilter, $desc_array, $attr_array, $
 	echo "</tr>\n";
 	
 	// print filter row
-	echo "<tr align=\"center\" class=\"" . $scope . "list\">\n<td width=22 height=34></td>\n<td>";
+	echo "<tr align=\"center\" class=\"" . $scope . "list\">\n";
+	echo "<td width=22 height=34>";
+		// help link
+		echo "<a href=\"../help.php?HelpNumber=250\" target=\"lamhelp\">";
+		echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
+		echo "</a>\n";
+	echo "</td>\n";
+	echo "<td>";
 	echo "<input type=\"submit\" name=\"apply_filter\" value=\"" . _("Filter") . "\">";
 	echo "</td>\n";
 	// print input boxes for filters
@@ -216,8 +223,7 @@ function listPrintTableHeader($scope, $searchFilter, $desc_array, $attr_array, $
 			$value = " value=\"" . $_POST["filter" . strtolower($attr_array[$k])] . "\"";
 		}
 		echo "<td>";
-		echo ("<input type=\"text\" size=15 name=\"filter" . strtolower ($attr_array[$k]) ."\"" .
-		$value . "title=\"" . _("Here you can input small filters (e.g. 'value' or 'v*').") . "\">");
+		echo ("<input type=\"text\" size=15 name=\"filter" . strtolower ($attr_array[$k]) ."\"" . $value . ">");
 		echo "</td>\n";
 	}
 	echo "</tr>\n";
