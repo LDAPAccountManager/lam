@@ -122,8 +122,12 @@ echo $_SESSION['header'];
 						else echo "<input disabled type=\"password\" name=\"passwd\">\n";
 						if (sizeof($files) > 0) echo "<input type=\"submit\" name=\"submit\" value=\"" . _("Ok") . "\">\n";
 						else echo "<input disabled type=\"submit\" name=\"submit\" value=\"" . _("Ok") . "\">\n";
+						// help link
+						echo "&nbsp;<a href=\"../help.php?HelpNumber=200\" target=\"lamhelp\">";
+						echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
+						echo "</a>\n";
 					?>
-					<a href="../help.php?HelpNumber=200" target="lamhelp"><?php echo _("Help") ?></a></td>
+				</td>
 				<td style="border-style:none" rowspan="4" width="20"></td>
 			</tr>
 			<tr>

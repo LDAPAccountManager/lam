@@ -177,7 +177,12 @@ if (!isset($cfg->default) && !isset($cfg->password)) {
 						<input type="text" name="addprofile">
 					</td>
 					<td>&nbsp;
-						<a href="../help.php?HelpNumber=230" target="lamhelp"><?php echo _("Help"); ?></a>
+					<?PHP
+						// help link
+						echo "<a href=\"../help.php?HelpNumber=230\" target=\"lamhelp\">";
+						echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
+						echo "</a>\n";
+					?>
 					</td>
 				</tr>
 				<tr bgcolor="#dbdbff">
@@ -224,7 +229,12 @@ if (!isset($cfg->default) && !isset($cfg->password)) {
 						<input type="text" name="renfilename">
 					</td>
 					<td>&nbsp;
-						<a href="../help.php?HelpNumber=231" target="lamhelp"><?php echo _("Help"); ?></a>
+					<?PHP
+						// help link
+						echo "<a href=\"../help.php?HelpNumber=231\" target=\"lamhelp\">";
+						echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
+						echo "</a>\n";
+					?>
 					</td>
 				</tr>
 
@@ -249,7 +259,12 @@ if (!isset($cfg->default) && !isset($cfg->password)) {
 						</b>
 					</td>
 					<td>&nbsp;
-						<a href="../help.php?HelpNumber=232" target="lamhelp"><?php echo _("Help"); ?></a>
+					<?PHP
+						// help link
+						echo "<a href=\"../help.php?HelpNumber=232\" target=\"lamhelp\">";
+						echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
+						echo "</a>\n";
+					?>
 					</td>
 				</tr>
 
@@ -278,7 +293,12 @@ if (!isset($cfg->default) && !isset($cfg->password)) {
 						<input type="password" name="setpassword">
 					</td>
 					<td>&nbsp;
-						<a href="../help.php?HelpNumber=233" target="lamhelp"><?php echo _("Help"); ?></a>
+					<?PHP
+						// help link
+						echo "<a href=\"../help.php?HelpNumber=233\" target=\"lamhelp\">";
+						echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
+						echo "</a>\n";
+					?>
 					</td>
 				</tr>
 				<tr bgcolor="#dbdbff">
@@ -321,7 +341,12 @@ if (!isset($cfg->default) && !isset($cfg->password)) {
 					</td>
 					<td>&nbsp;</td>
 					<td>&nbsp;
-						<a href="../help.php?HelpNumber=234" target="lamhelp"><?php echo _("Help"); ?></a>
+					<?PHP
+						// help link
+						echo "<a href=\"../help.php?HelpNumber=234\" target=\"lamhelp\">";
+						echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
+						echo "</a>\n";
+					?>
 					</td>
 				</tr>
 
@@ -344,7 +369,12 @@ if (!isset($cfg->default) && !isset($cfg->password)) {
 						<input type="password" name="masterpassword">
 					</td>
 					<td>&nbsp;
-						<a href="../help.php?HelpNumber=235" target="lamhelp"><?php echo _("Help"); ?></a>
+					<?PHP
+						// help link
+						echo "<a href=\"../help.php?HelpNumber=235\" target=\"lamhelp\">";
+						echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
+						echo "</a>\n";
+					?>
 					</td>
 				</tr>
 				<tr bgcolor="#dbdbff">
@@ -372,7 +402,12 @@ if (!isset($cfg->default) && !isset($cfg->password)) {
 			&nbsp
 			<input type="submit" name="submit" value=" <?php echo _("Submit"); ?> ">
 			&nbsp
-			<a href="../help.php?HelpNumber=236" target="lamhelp"><?php echo _("Help"); ?></a>
+			<?PHP
+				// help link
+				echo "<a href=\"../help.php?HelpNumber=236\" target=\"lamhelp\">";
+				echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
+				echo "</a>\n";
+			?>
 
 		</form>
 		<p><br></p>

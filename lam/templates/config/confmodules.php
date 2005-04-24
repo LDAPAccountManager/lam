@@ -105,7 +105,11 @@ echo "<p>\n";
 echo "</p>\n";
 
 echo "<p><br><br>\n";
-echo "(*) <a href=\"../help.php?HelpNumber=237\">" . _("Base module") . "</a>";
+echo "(*) " . _("Base module");
+// help link
+echo "&nbsp;<a href=\"../help.php?HelpNumber=237\" target=\"lamhelp\">";
+echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
+echo "</a>\n";
 echo "</p>\n";
 
 echo "</form>\n";
