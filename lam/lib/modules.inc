@@ -365,7 +365,6 @@ function getAvailablePDFFields($scope) {
 	// create new account container if needed
 	if (! isset($_SESSION["profile_account_$scope"])) {
 		$_SESSION["profile_account_$scope"] = new accountContainer($scope, "profile_account_$scope");
-		$_SESSION["profile_account_$scope"]->new_account();
 	}
 	// get options
 	return $_SESSION["profile_account_$scope"]->getAvailablePDFFields();
