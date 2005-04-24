@@ -82,12 +82,15 @@ foreach ($_SESSION['ldap']->search_units($rootsuffix) as $suffix) {
 	$suffixes[] = $suffix;
 }
 if (sizeof($suffixes) > 0) {
-echo "<fieldset>\n<legend><b>" . _("LDAP suffix") . "</b></legend>\n";
+echo "<fieldset class=\"" . $type . "edit\">\n<legend><b>" . _("LDAP suffix") . "</b></legend>\n";
 	echo _("LDAP suffix") . ":&nbsp;&nbsp;";
 	echo "<select tabindex=\"1\">";
 	for ($i = 0; $i < sizeof($suffixes); $i++) echo "<option>" . $suffixes[$i] . "</option>\n";
 	echo "</select>\n";
-	echo "&nbsp;&nbsp;<a href=../help.php?HelpNumber=\"361\">" . _('Help') . "</a>\n";
+	// help link
+	echo "&nbsp;<a href=\"../help.php?HelpNumber=361\" target=\"lamhelp\">";
+	echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
+	echo "</a>\n";
 echo "</fieldset>\n<br>\n";
 }
 
@@ -100,7 +103,7 @@ $modules = array_keys($options);
 for ($m = 0; $m < sizeof($modules); $m++) {
 	// ignore modules without options
 	if (sizeof($options[$modules[$m]]) < 1) continue;
-	echo "<fieldset>\n";
+	echo "<fieldset class=\"" . $type . "edit\">\n";
 		echo "<legend><b>" . getModuleAlias($modules[$m], $type) . "</b></legend>\n";
 	$profileTypes = parseHtml($modules[$m], $options[$modules[$m]], $old_options, true, $tabindex, $tabindexLink, $type);
 	$_SESSION['profile_types'] = array_merge($profileTypes, $_SESSION['profile_types']);
@@ -109,26 +112,19 @@ for ($m = 0; $m < sizeof($modules); $m++) {
 }
 
 // profile name and submit/abort buttons
-echo ("<table border=0>\n");
-echo ("<tr>\n");
-echo ("<td><b>" . _("Profile name") . ":</b></td>\n");
+echo ("<b>" . _("Profile name") . ":</b> \n");
 $tabindex++;
-echo ("<td><input tabindex=\"$tabindex\" type=\"text\" name=\"profname\" value=\"" . $_GET['edit'] . "\"></td>\n");
-echo ("<td><a href=\"../help.php?HelpNumber=360\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
-echo ("</tr>\n");
-echo ("<tr>\n");
-echo ("<td colspan=2>&nbsp</td>");
-echo ("</tr>\n");
-echo ("<tr>\n");
+echo ("<input tabindex=\"$tabindex\" type=\"text\" name=\"profname\" value=\"" . $_GET['edit'] . "\">\n");
+// help link
+echo "<a href=\"../help.php?HelpNumber=360\" target=\"lamhelp\">";
+echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
+echo "</a><br><br>\n";
 $tabindex++;
-echo ("<td><input tabindex=\"$tabindex\" type=\"submit\" name=\"submit\" value=\"" . _("Save") . "\"></td>\n");
+echo ("<input tabindex=\"$tabindex\" type=\"submit\" name=\"submit\" value=\"" . _("Save") . "\">\n");
 $tabindex++;
-echo ("<td><input tabindex=\"$tabindex\" type=\"reset\" name=\"reset\" value=\"" . _("Reset") . "\">\n");
+echo ("<input tabindex=\"$tabindex\" type=\"reset\" name=\"reset\" value=\"" . _("Reset") . "\">\n");
 $tabindex++;
-echo ("<input tabindex=\"$tabindex\" type=\"submit\" name=\"abort\" value=\"" . _("Abort") . "\"></td>\n");
-echo ("<td>&nbsp</td>");
-echo ("</tr>\n");
-echo ("</table>\n");
+echo ("<input tabindex=\"$tabindex\" type=\"submit\" name=\"abort\" value=\"" . _("Abort") . "\">\n");
 echo "<input type=\"hidden\" name=\"accounttype\" value=\"$type\">\n";
 
 echo ("</form></body></html>\n");
