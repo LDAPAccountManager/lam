@@ -135,31 +135,33 @@ function showMainPage($scope) {
 	echo "<p><big><b>" . _("Columns:") . "</b></big></p>\n";
 
 	// DN options
-	echo "<fieldset>\n<legend><b>" . _("DN settings") . "</b></legend>\n";
+	echo "<fieldset class=\"" . $scope . "edit\">\n<legend><b>" . _("DN settings") . "</b></legend>\n";
 	echo "<table width=\"100%\">\n";
 		echo "<tr valign=\"top\">\n";
 			echo "<td width=\"50%\">\n";
 			echo "<b>" . _("DN suffix") . "</b>\n";
+			// help link
+			echo "&nbsp;<a href=\"help.php?HelpNumber=361\" target=\"lamhelp\">";
+			echo "<img src=\"../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
+			echo "</a>\n";
 			echo "<br>\n";
 				echo "<ul>\n";
 					echo "<li><b>" . _("Identifier") . ":</b> " . "dn_suffix</li>\n";
 					echo "<li><b>" . _("Example value") . ":</b> " . "ou=accounts,dc=yourdomain,dc=org</li>\n";
 					echo "<li><b>" . _("Default value") . ":</b> " . $_SESSION['config']->get_Suffix($scope) . "</li>\n";
-					echo "<li>\n";
-						echo "<a href=\"help.php?HelpNumber=361\" target=\"lamhelp\">" . _("Help") . "</a>\n";
-					echo "</li>\n";
 				echo "</ul>\n";
 			echo "</td>\n";
 			echo "<td width=\"50%\">\n";
 			echo "<b><font color=\"red\">" . _("RDN identifier") . "</font></b>\n";
+			// help link
+			echo "&nbsp;<a href=\"help.php?HelpNumber=301\" target=\"lamhelp\">";
+			echo "<img src=\"../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
+			echo "</a>\n";
 			echo "<br>\n";
 				echo "<ul>\n";
 					echo "<li><b>" . _("Identifier") . ":</b> " . "dn_rdn</li>\n";
 					echo "<li><b>" . _("Possible values") . ":</b> " . implode(", ", getRDNAttributes($scope)) . "</li>\n";
 					echo "<li><b>" . _("Example value") . ":</b> " . "uid</li>\n";
-					echo "<li>\n";
-						echo "<a href=\"help.php?HelpNumber=301\" target=\"lamhelp\">" . _("Help") . "</a>\n";
-					echo "</li>\n";
 				echo "</ul>\n";
 			echo "</td>\n";
 		echo "</tr>\n";
@@ -173,7 +175,7 @@ function showMainPage($scope) {
 	$modules = array_keys($columns);
 	for ($m = 0; $m < sizeof($modules); $m++) {
 		if (sizeof($columns[$modules[$m]]) < 1) continue;
-		echo "<fieldset>\n<legend><b>" . getModuleAlias($modules[$m], $scope) . "</b></legend>\n";
+		echo "<fieldset class=\"" . $scope . "edit\">\n<legend><b>" . getModuleAlias($modules[$m], $scope) . "</b></legend>\n";
 		echo "<table width=\"100%\">\n";
 		for ($i = 0; $i < sizeof($columns[$modules[$m]]); $i++) {
 			echo "<tr valign=\"top\">\n";
@@ -206,7 +208,7 @@ function showMainPage($scope) {
 	$sampleCSV = "";
 	$sampleCSV_head = array();
 	$sampleCSV_row = array();
-	echo "<big><b>" . _("This is an example how it would look in your spreadsheet program before you convert to CSV:") . "</b></big>\n";
+	echo "<big><b>" . _("This is an example how it would look in your spreadsheet program before you convert to CSV:") . "</b></big><br><br>\n";
 
 	echo "<table style=\"border-color: grey\" cellpadding=\"10\" border=\"2\" cellspacing=\"0\">\n";
 		echo "<tr>\n";
@@ -284,6 +286,10 @@ function showColumnData($module, $data) {
 			echo $data['description'];
 		echo "</b>\n";
 	}
+	// help link
+	echo "&nbsp;<a href=\"help.php?module=$module&amp;HelpNumber=". $data['help'] . "\" target=\"lamhelp\">";
+	echo "<img src=\"../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
+	echo "</a>\n";
 	echo "<br>\n";
 	echo "<ul>\n";
 		echo "<li>\n";
@@ -302,9 +308,6 @@ function showColumnData($module, $data) {
 				echo "<b>" . _("Default value") . ":</b> " . $data['default'] . "\n";
 			echo "</li>\n";
 		}
-		echo "<li>\n";
-			echo "<a href=\"help.php?module=" . $module . "&amp;HelpNumber=" . $data['help'] . "\" target=\"lamhelp\">" . _("Help") . "</a>\n";
-		echo "</li>\n";
 
 	echo "</ul>\n";
 }
