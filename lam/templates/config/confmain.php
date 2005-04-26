@@ -162,7 +162,11 @@ echo ("<tr><td align=\"right\"><b>" . _("Server address") . " *: </b></td>".
 	"<td align=\"left\">".
 	"<input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"serverurl\" value=\"" . $conf->get_ServerURL() . "\">".
 	"</td>\n");
-echo ("<td><a href=\"../help.php?HelpNumber=201\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
+echo "<td>";
+echo "<a href=\"../help.php?HelpNumber=201\" target=\"lamhelp\">";
+echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
+echo "</a>\n";
+echo "</td></tr>\n";
 $tabindex++;
 
 // new line
@@ -172,31 +176,51 @@ echo ("<tr><td colspan=3>&nbsp</td></tr>");
 echo ("<tr><td align=\"right\"><b>".
 	_("UserSuffix") . ": </b></td>".
 	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"suffusers\" value=\"" . $conf->get_Suffix('user') . "\"></td>\n");
-echo ("<td><a href=\"../help.php?HelpNumber=202\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
+echo "<td>";
+echo "<a href=\"../help.php?HelpNumber=202\" target=\"lamhelp\">";
+echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
+echo "</a>\n";
+echo "</td></tr>\n";
 $tabindex++;
 // group suffix
 echo ("<tr><td align=\"right\"><b>".
 	_("GroupSuffix") . ": </b></td>".
 	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"suffgroups\" value=\"" . $conf->get_Suffix('group') . "\"></td>\n");
-echo ("<td><a href=\"../help.php?HelpNumber=202\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
+echo "<td>";
+echo "<a href=\"../help.php?HelpNumber=202\" target=\"lamhelp\">";
+echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
+echo "</a>\n";
+echo "</td></tr>\n";
 $tabindex++;
 // host suffix
 echo ("<tr><td align=\"right\"><b>".
 	_("HostSuffix") . ": </b></td>".
 	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"suffhosts\" value=\"" . $conf->get_Suffix('host') . "\"></td>\n");
-echo ("<td><a href=\"../help.php?HelpNumber=202\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
+echo "<td>";
+echo "<a href=\"../help.php?HelpNumber=202\" target=\"lamhelp\">";
+echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
+echo "</a>\n";
+echo "</td></tr>\n";
 $tabindex++;
 // domain suffix
 echo ("<tr><td align=\"right\"><b>".
 	_("DomainSuffix") . " **: </b></td>".
 	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"suffdomains\" value=\"" . $conf->get_Suffix('domain') . "\"></td>\n");
-echo ("<td><a href=\"../help.php?HelpNumber=202\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
+echo "<td>";
+echo "<a href=\"../help.php?HelpNumber=202\" target=\"lamhelp\">";
+echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
+echo "</a>\n";
+echo "</td></tr>\n";
 $tabindex++;
 // tree suffix
 echo ("<tr><td align=\"right\"><b>".
 	_("TreeSuffix") . ": </b></td>".
 	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"sufftree\" value=\"" . $conf->get_Suffix('tree') . "\"></td>\n");
-echo ("<td><a href=\"../help.php?HelpNumber=203\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
+echo "<td>";
+echo "<a href=\"../help.php?HelpNumber=203\" target=\"lamhelp\">";
+echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
+echo "</a>\n";
+echo "</td></tr>\n";
 $tabindex++;
 
 // new line
@@ -214,7 +238,11 @@ if ($conf->get_cacheTimeout() != 10) echo("<option>10</option>\n");
 if ($conf->get_cacheTimeout() != 15) echo("<option>15</option>\n");
 echo ("</select></td>\n");
 $tabindex++;
-echo ("<td><a href=\"../help.php?HelpNumber=214\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
+echo "<td>";
+echo "<a href=\"../help.php?HelpNumber=214\" target=\"lamhelp\">";
+echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
+echo "</a>\n";
+echo "</td></tr>\n";
 
 echo ("</table>");
 echo ("</fieldset>");
@@ -229,8 +257,11 @@ echo "<tr><td><b>" . _("User modules") . ": </b>" . implode(", ", $conf->get_Acc
 echo "<tr><td><b>" . _("Group modules") . ": </b>" . implode(", ", $conf->get_AccountModules('group')) . "</td></tr>\n";
 echo "<tr><td><b>" . _("Host modules") . ": </b>" . implode(", ", $conf->get_AccountModules('host')) . "</td></tr>\n";
 echo "<tr><td>&nbsp;</td></tr>\n";
-echo "<tr><td><input tabindex=\"$tabindex\" type=\"submit\" name=\"editmodules\" value=\"" . _("Edit modules") . "\">&nbsp;&nbsp;" .
-	"<a href=\"../help.php?HelpNumber=217\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n";
+echo "<tr><td><input tabindex=\"$tabindex\" type=\"submit\" name=\"editmodules\" value=\"" . _("Edit modules") . "\">&nbsp;&nbsp;";
+echo "<a href=\"../help.php?HelpNumber=217\" target=\"lamhelp\">";
+echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
+echo "</a>\n";
+echo "</td></tr>\n";
 $tabindex++;
 
 echo ("</table>");
@@ -281,19 +312,31 @@ echo ("<table border=0>\n");
 echo ("<tr><td align=\"right\"><b>".
 	_("Attributes in User List") . " *:</b></td>".
 	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"usrlstattr\" value=\"" . $conf->get_listAttributes('user') . "\"></td>");
-echo ("<td><a href=\"../help.php?HelpNumber=206\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
+echo "<td>";
+echo "<a href=\"../help.php?HelpNumber=206\" target=\"lamhelp\">";
+echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
+echo "</a>\n";
+echo "</td></tr>\n";
 $tabindex++;
 // group list attributes
 echo ("<tr><td align=\"right\"><b>".
 	_("Attributes in Group List") . " *:</b></td>".
 	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"grplstattr\" value=\"" . $conf->get_listAttributes('group') . "\"></td>");
-echo ("<td><a href=\"../help.php?HelpNumber=206\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
+echo "<td>";
+echo "<a href=\"../help.php?HelpNumber=206\" target=\"lamhelp\">";
+echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
+echo "</a>\n";
+echo "</td></tr>\n";
 $tabindex++;
 // host list attributes
 echo ("<tr><td align=\"right\"><b>".
 	_("Attributes in Host List") . " **:</b></td>".
 	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"hstlstattr\" value=\"" . $conf->get_listAttributes('host') . "\"></td>");
-echo ("<td><a href=\"../help.php?HelpNumber=206\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
+echo "<td>";
+echo "<a href=\"../help.php?HelpNumber=206\" target=\"lamhelp\">";
+echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
+echo "</a>\n";
+echo "</td></tr>\n";
 $tabindex++;
 
 echo ("<tr><td colspan=3>&nbsp</td></tr>\n");
@@ -310,7 +353,11 @@ if ($conf->get_MaxListEntries() != 75) echo("<option>75</option>\n");
 if ($conf->get_MaxListEntries() != 100) echo("<option>100</option>\n");
 echo ("</select></td>\n");
 $tabindex++;
-echo ("<td><a href=\"../help.php?HelpNumber=208\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
+echo "<td>";
+echo "<a href=\"../help.php?HelpNumber=208\" target=\"lamhelp\">";
+echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
+echo "</a>\n";
+echo "</td></tr>\n";
 
 echo ("</table>\n");
 echo ("</fieldset>\n");
@@ -351,7 +398,11 @@ else
 	echo _("Unable to load available languages. Setting English as default language. For further instructions please contact the Admin of this site.");
 }
 echo ("</td>\n");
-echo ("<td><a href=\"../help.php?HelpNumber=209\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
+echo "<td>";
+echo "<a href=\"../help.php?HelpNumber=209\" target=\"lamhelp\">";
+echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
+echo "</a>\n";
+echo "</td></tr>\n";
 
 echo ("</table>\n");
 echo ("</fieldset>\n");
@@ -366,12 +417,20 @@ echo ("<tr><td align=\"right\"><b>".
 	_("Server of external script") . ": </b></td>".
 	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"scriptserver\" value=\"" . $conf->get_scriptServer() . "\"></td>\n");
 $tabindex++;
-echo ("<td><a href=\"../help.php?HelpNumber=211\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
+echo "<td>";
+echo "<a href=\"../help.php?HelpNumber=211\" target=\"lamhelp\">";
+echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
+echo "</a>\n";
+echo "</td></tr>\n";
 echo ("<tr><td align=\"right\"><b>".
 	_("Path to external script") . ": </b></td>".
 	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"scriptpath\" value=\"" . $conf->get_scriptPath() . "\"></td>\n");
 $tabindex++;
-echo ("<td><a href=\"../help.php?HelpNumber=210\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
+echo "<td>";
+echo "<a href=\"../help.php?HelpNumber=210\" target=\"lamhelp\">";
+echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
+echo "</a>\n";
+echo "</td></tr>\n";
 
 echo ("</table>\n");
 echo ("</fieldset>\n");
@@ -385,7 +444,11 @@ echo ("<table border=0>\n");
 echo ("<tr><td align=\"right\"><b>".
 	_("List of valid users") . " *: </b></td>".
 	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"admins\" value=\"" . $conf->get_Adminstring() . "\"></td>\n");
-echo ("<td><a href=\"../help.php?HelpNumber=207\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
+echo "<td>";
+echo "<a href=\"../help.php?HelpNumber=207\" target=\"lamhelp\">";
+echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
+echo "</a>\n";
+echo "</td></tr>\n";
 $tabindex++;
 
 echo ("<tr><td colspan=3>&nbsp;</td></tr>\n");
@@ -395,7 +458,11 @@ echo ("<tr><td align=\"right\"><font color=\"red\"><b>".
 	_("New Password") . ": </b></font></td>".
 	"<td align=\"left\"><input tabindex=\"$tabindex\" type=\"password\" name=\"passwd1\"></td>\n");
 $tabindex++;
-echo ("<td rowspan=2><a href=\"../help.php?HelpNumber=212\" target=\"lamhelp\">" . _("Help") . "</a></td></tr>\n");
+echo "<td rowspan=2>";
+echo "<a href=\"../help.php?HelpNumber=212\" target=\"lamhelp\">";
+echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
+echo "</a>\n";
+echo "</td></tr>\n";
 // reenter password
 echo ("<tr><td align=\"right\"><font color=\"red\"><b>".
 	_("Reenter Password") . ": </b></font></td>".
