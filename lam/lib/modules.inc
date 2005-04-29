@@ -701,29 +701,44 @@ class accountContainer {
 		// Set startpage
 		$this->current_page=0;
 		$this->subpage='attributes';
+		$this->isNewAccount = false;
 		return 0;
 		}
 
-	/* Array of all used attributes
+	/**
+	* Array of all used attributes
 	* Syntax is attribute => array ( objectClass => MUST or MAY, ...)
 	*/
 	var $attributes;
-	/* This variale stores the type
-	* of account. Current unix, group, host are supported
+	
+	/**
+	* This variale stores the account type.
+	* Currently "user", "group" and "host" are supported.
 	*/
 	var $type;
+	
 	var $module; // This is an array with all module objects
-	// DN of the account
+	
+	/** DN of the account */
 	var $dn;
+	
+	/** DN of account when it was loaded */
 	var $dn_orig;
-	// this are stores the module order
+	
+	/** Module order */
 	var $order;
-	// name of accountContainer so we can read other classes in accuontArray
+	
+	/** Name of accountContainer variable in session */
 	var $base;
-	// This variable stores the number of the current displayed page
+	
+	/** This variable stores the name of the currently displayed page */
 	var $current_page;
-	// This variable os set to the pagename of a subpage if it should be displayed
+	
+	/** This variable is set to the pagename of a subpage if it should be displayed */
 	var $subpage;
+	
+	/** True if this is a newly created account */
+	var $isNewAccount;
 
 	
 	/* Get the type of account. Valid
@@ -1287,27 +1302,11 @@ class accountContainer {
 		return 0;
 		}
 
-
-	// TODO remove this function?
-	function process_profile(&$post) {
-		$return = array();
-		$module = array_keys ($this->module);
-		foreach ($module as $singlemodule) {
-			// get list of display functions.
-			$list = $this->module[$singlemodule]->pages();
-			foreach ($list as $item) {
-				$function = 'display_html_' . $item;
-				$page = $this->module[$singlemodule]->$function($post,true);
-				$return = array_merge($return, $page);
-				}
-			}
-		return $return;
-		}
-
-	/* This function will prepare the object
-	* for a new account
+	/**
+	* This function will prepare the object for a new account.
 	*/
 	function new_account() {
+		$this->isNewAccount = true;
 		$modules = $_SESSION['config']->get_AccountModules($this->type);
 		foreach ($modules as $module) {
 			$this->module[$module] = new $module($this->type);
