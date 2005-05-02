@@ -719,11 +719,20 @@ class accountContainer {
 	
 	var $module; // This is an array with all module objects
 	
-	/** DN of the account */
+	/** DN suffix of the account */
 	var $dn;
 	
-	/** DN of account when it was loaded */
+	/** DN suffix of account when it was loaded */
 	var $dn_orig;
+	
+	/** RDN attribute of this account */
+	var $rdn;
+	
+	/** RDN attribute of this account when it was loaded */
+	var $rdn_orig;
+
+	/** original LDAP attributes when account was loaded from LDAP */
+	var $attributes_orig;
 	
 	/** Module order */
 	var $order;
@@ -759,6 +768,8 @@ class accountContainer {
 					$result = 0;
 					// change dn
 					if ($post['suffix']!='') $this->dn = $post['suffix'];
+					// change RDN
+					if (isset($post['rdn'])) $this->rdn = $post['rdn'];
 						
 					// load profile
 					if ($post['selectLoadProfile'] && $post['loadProfile']) {
@@ -887,31 +898,44 @@ class accountContainer {
 			// loop through all suffixes
 			$rootsuffix = $_SESSION['config']->get_Suffix($this->type);
 			foreach ($_SESSION['ldap']->search_units($rootsuffix) as $suffix) {
-				if ($this->dn == $suffix) $option_selected = $suffix;
+				if ($this->dn == $suffix) $options_selected = $suffix;
 				$suffixes[] = $suffix;
-				}
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Suffix') ),
-				1 => array ( 'kind' => 'select', 'name' => 'suffix', 'options' => $suffixes,
-					'option_selected' => array($option_selected) ),
+			}
+			$return[] = array(
+				0 => array('kind' => 'text', 'text' => _('Suffix')),
+				1 => array('kind' => 'select', 'name' => 'suffix', 'options' => $suffixes, 'options_selected' => array($options_selected)),
 				2 => array ('kind' => 'help', 'value' => 'suffix'));
+			// RDN selection
+			$rdnlist = getRDNAttributes($this->type);
+			$rdnSelected = array();
+			if ($this->rdn != '') {
+				$rdnSelected[] = $this->rdn;
+			}
+			else {
+				$rdnSelected[] = $rdnlist[0];
+			}
+			$return[] = array(
+				0 => array('kind' => 'text', 'text' => _('RDN identifier')),
+				1 => array('kind' => 'select', 'name' => 'rdn', 'options' => $rdnlist, 'options_selected' => $rdnSelected),
+				2 => array ('kind' => 'help', 'value' => '301'));
 	
-				// Get list of profiles
-				$profilelist = getAccountProfiles($this->type);
-				if (count($profilelist)!=0) {
-					$return[] = array(
-						0 => array('kind' => 'text', 'text' => _("Load profile")),
-						1 => array('kind' => 'table', 'value' => array(0 => array(
-							0 => array('kind' => 'select', 'name' => 'selectLoadProfile', 'options' => $profilelist),
-							1 => array('kind' => 'input', 'type' => 'submit', 'name' => 'loadProfile', 'value' => _('Load profile'))
+			// Get list of profiles
+			$profilelist = getAccountProfiles($this->type);
+			if (count($profilelist)!=0) {
+				$return[] = array(
+					0 => array('kind' => 'text', 'text' => _("Load profile")),
+					1 => array('kind' => 'table', 'value' => array(0 => array(
+						0 => array('kind' => 'select', 'name' => 'selectLoadProfile', 'options' => $profilelist),
+						1 => array('kind' => 'input', 'type' => 'submit', 'name' => 'loadProfile', 'value' => _('Load profile'))
 						)),
-						2 => array('kind' => 'help', 'value' => 'selectLoadProfile'))
-					);
-				}
-				if ($this->dn_orig!='') $text = _('Modify Account');
-					else $text = _('Create Account');
-				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => $text ),
-					1 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'create', 'value' => $text ),
-					2 => array ('kind' => 'help', 'value' => 'create'));
+					2 => array('kind' => 'help', 'value' => 'selectLoadProfile'))
+				);
+			}
+			if ($this->dn_orig!='') $text = _('Modify Account');
+				else $text = _('Create Account');
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => $text ),
+				1 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'create', 'value' => $text ),
+				2 => array ('kind' => 'help', 'value' => 'create'));
 			if ($this->subpage=='finish')  {
 				// Show success message
 				if ($this->dn_orig == '') {
@@ -1268,7 +1292,20 @@ class accountContainer {
 		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 		$this->dn = substr($dn, strpos($dn, ',')+1);
 		$this->dn_orig = $dn;
+		// extract RDN
+		$this->rdn = split("=", substr($dn, 0, strpos($dn, ',')));
+		$this->rdn = $this->rdn[0];
+		$this->rdn_orig = $this->rdn;
 		$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
+		$attrNames = array_keys($attr);
+		// remove 'count' entries and numerical entries
+		for ($i = 0; $i < sizeof($attrNames); $i++) unset($attr[$attrNames[$i]]['count']);
+		unset($attr['count']);
+		for ($i = 0; $i < count($attr); $i++) {
+			if (isset($attr[$i])) unset($attr[$i]);
+		}
+		// save original attributes
+		$this->attributes_orig = $attr;
 				
 		foreach ($modules as $module) {
 			if (!isset($this->module[$module])) {
@@ -1340,7 +1377,10 @@ class accountContainer {
 		return 0;
 		}
 
-	/* This function will save an account.
+	/**
+	* This function will save an account to the LDAP database.
+	*
+	* @return array list of status messages if any errors occured
 	*/
 	function save_account() {
 		$module = array_keys ($this->module);
@@ -1368,8 +1408,7 @@ class accountContainer {
 		*/
 		// TODO how do we interact with the user and show him what has been changed
 		// Complete dn with uid or cn=
-		if ($this->type=='group') $search = 'cn';
-			else $search = 'uid';
+		$search = $this->rdn;
 		$added = false;
 		foreach ($attributes as $DN) {
 			if (isset($DN['modify'][$search][0]) && !$added) {
@@ -1407,14 +1446,17 @@ class accountContainer {
 				}
 			}
 		// fixme *** ad update_cache after every ldap-change
-
-		print_r($attributes);
 		if (!$stopprocessing) {
 			if ($this->dn != $this->dn_orig) {
 				// move existing DN
 				if ($this->dn_orig!='') {
 					// merge attributes together
 					$attr = array_merge_recursive($attributes[$this->dn]['add'], $attributes[$this->dn]['notchanged'], $attributes[$this->dn]['modify']);
+					// add attributes which are not controlled by modules from original account
+					$attrNames = array_keys($this->attributes_orig);
+					for ($i = 0; $i < sizeof($attrNames); $i++) {
+						if (!isset($attr[$attrNames[$i]])) $attr[$attrNames[$i]] = $this->attributes_orig[$attrNames[$i]];
+					}
 					$success = ldap_add($_SESSION['ldap']->server(), $this->dn, $attr);
 					if ($success) {
 						$_SESSION['cache']->update_cache($this->$dn, 'add', $attr);
