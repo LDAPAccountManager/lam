@@ -109,13 +109,7 @@ class baseModule {
 	function load_attributes($attr) {
 		// Load attributes which are displayed
 		$objectClassName = $this->attributes['objectClass'];
-		// unset count entries
-		unset ($attr['count']);
 		$attributes = array_keys($attr);
-		foreach ($attributes as $attribute) unset ($attr[$attribute]['count']);
-		// unset double entries
-		for ($i=0; $i<count($attr); $i++)
-		if (isset($attr[$i])) unset($attr[$i]);
 		foreach ($attributes as $attribute) {
 			if (isset($this->attributes[$attribute])) {
 				// decode as unicode

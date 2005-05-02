@@ -95,12 +95,10 @@ class ieee802Device extends baseModule {
 		$this->orig['objectClass'] = array();
 		$this->orig['macAddress'] = array();
 		if (isset($attr['objectClass'])) {
-			unset($attr['objectClass']['count']);
 			$this->attributes['objectClass'] = $attr['objectClass'];
 			$this->orig['objectClass'] = $attr['objectClass'];
 		}
 		if (isset($attr['macAddress'])) {
-			unset($attr['macAddress']['count']);
 			$this->attributes['macAddress'] = $attr['macAddress'];
 			$this->orig['macAddress'] = $attr['macAddress'];
 		}

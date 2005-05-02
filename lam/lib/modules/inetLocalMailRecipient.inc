@@ -139,22 +139,18 @@ class inetLocalMailRecipient extends baseModule {
 		$this->orig['mailRoutingAddress'] = array();
 		$this->orig['mailHost'] = array();
 		if (isset($attr['objectClass'])) {
-			unset($attr['objectClass']['count']);
 			$this->attributes['objectClass'] = $attr['objectClass'];
 			$this->orig['objectClass'] = $attr['objectClass'];
 		}
 		if (isset($attr['mailLocalAddress'])) {
-			unset($attr['mailLocalAddress']['count']);
 			$this->attributes['mailLocalAddress'] = $attr['mailLocalAddress'];
 			$this->orig['mailLocalAddress'] = $attr['mailLocalAddress'];
 		}
 		if (isset($attr['mailRoutingAddress'])) {
-			unset($attr['mailRoutingAddress']['count']);
 			$this->attributes['mailRoutingAddress'] = $attr['mailRoutingAddress'];
 			$this->orig['mailRoutingAddress'] = $attr['mailRoutingAddress'];
 		}
 		if (isset($attr['mailHost'])) {
-			unset($attr['mailHost']['count']);
 			$this->attributes['mailHost'] = $attr['mailHost'];
 			$this->orig['mailHost'] = $attr['mailHost'];
 		}

@@ -114,17 +114,14 @@ class nisMailAlias extends baseModule {
 		$this->orig['rfc822MailMember'] = array();
 		$this->orig['cn'] = array();
 		if (isset($attr['objectClass'])) {
-			unset($attr['objectClass']['count']);
 			$this->attributes['objectClass'] = $attr['objectClass'];
 			$this->orig['objectClass'] = $attr['objectClass'];
 		}
 		if (isset($attr['cn'])) {
-			unset($attr['cn']['count']);
 			$this->attributes['cn'] = $attr['cn'];
 			$this->orig['cn'] = $attr['cn'];
 		}
 		if (isset($attr['rfc822MailMember'])) {
-			unset($attr['rfc822MailMember']['count']);
 			$this->attributes['rfc822MailMember'] = $attr['rfc822MailMember'];
 			$this->orig['rfc822MailMember'] = $attr['rfc822MailMember'];
 		}
