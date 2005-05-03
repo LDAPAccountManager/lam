@@ -319,7 +319,10 @@ class posixAccount extends baseModule {
 					"Headline" => _("Home directory"),
 					"Text" => _('$user and $group are replaced with username or primary groupname.')
 				),
-				/*'userPassword'		=>*/
+				'userPassword' => array(
+					"Headline" => _("Password"),
+					"Text" => _("Please enter the password which you want to set for this account.")
+				),
 				'userPassword_no' => array(
 					"Headline" => _("Use no password"),
 					"Text" => _("If checked no password will be used.")
@@ -688,7 +691,7 @@ class posixAccount extends baseModule {
 				else {
 					$this->userPassword_invalid=false;
 					if ($post['genpass']) $this->userPassword(genpasswd());
-					else {
+					elseif ($_SESSION[$this->base]->isNewAccount) {
 						if ($post['userPassword'] != $post['userPassword2'])
 							$triggered_messages['userPassword'][] = $this->messages['userPassword'][0];
 						else $this->userPassword($post['userPassword']);
@@ -759,7 +762,7 @@ class posixAccount extends baseModule {
 			if ($_SESSION[$this->base]->type=='host')
 				$triggered_messages['uid'][] = $this->messages['uid'][6];
 			}
-			if (!get_preg($this->userPassword(), 'password'))
+			if ($_SESSION[$this->base]->isNewAccount && !get_preg($this->userPassword(), 'password'))
 			$triggered_messages['userPassword'][] = $this->messages['userPassword'][1];
 		}
 	
@@ -774,6 +777,7 @@ class posixAccount extends baseModule {
 	else $this->triggered_messages = array();
 	// Go to additional group page when no error did ocour and button was pressed
 	if ($post['addgroup'])  return 'group';
+	if ($post['changepass'])  return 'password';
 	return 0;
 	}
 
@@ -798,6 +802,24 @@ class posixAccount extends baseModule {
 	return 0;
 	}
 
+	/**
+	* Sets a new password.
+	*
+	* @param $post HTTP POST
+	*/
+	function process_password(&$post) {
+		if ($post['back']) return 'attributes';
+		$messages = array();
+		if ($post['userPassword'] != $post['userPassword2']) {
+			$messages['userPassword'][] = $this->messages['userPassword'][0];
+			if (!get_preg($post['userPassword'], 'password'))
+				$messages['userPassword'][] = $this->messages['userPassword'][1];
+			}
+			else $this->userPassword($post['userPassword']);
+		if (sizeof($messages) > 0) return $messages;
+		else return 'attributes';
+	}
+	
 	/* This function will create the html-page
 	* to show a page with all attributes.
 	* It will output a complete html-table
@@ -810,56 +832,77 @@ class posixAccount extends baseModule {
 		}
 		$shelllist = getshells(); // list of all valid shells
 
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _("Username").'*' ),
-		1 => array ( 'kind' => 'input', 'name' => 'uid', 'type' => 'text', 'size' => '20', 'maxlength' => '20', 'value' => $this->attributes['uid'][0]),
-		2 => array ('kind' => 'help', 'value' => 'uid'));
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('UID number').'*' ),
-		1 => array ( 'kind' => 'input', 'name' => 'uidNumber', 'type' => 'text', 'size' => '6', 'maxlength' => '6', 'value' => $this->attributes['uidNumber'][0]),
-		2 => array ('kind' => 'help', 'value' => 'uidNumber'));
+		$return[] = array (
+			0 => array('kind' => 'text', 'text' => _("Username").'*'),
+			1 => array('kind' => 'input', 'name' => 'uid', 'type' => 'text', 'size' => '20', 'maxlength' => '20', 'value' => $this->attributes['uid'][0]),
+			2 => array('kind' => 'help', 'value' => 'uid'));
+		$return[] = array(
+			0 => array('kind' => 'text', 'text' => _('UID number').'*'),
+			1 => array('kind' => 'input', 'name' => 'uidNumber', 'type' => 'text', 'size' => '6', 'maxlength' => '6', 'value' => $this->attributes['uidNumber'][0]),
+			2 => array('kind' => 'help', 'value' => 'uidNumber'));
 		if (!isset($_SESSION[$this->base]->modules['inetOrgPerson'])) {
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Gecos') ),
-			1 => array ( 'kind' => 'input', 'name' => 'gecos', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => $this->attributes['gecos'][0]),
-			2 => array ('kind' => 'help', 'value' => 'gecos'));
+			$return[] = array(
+				0 => array('kind' => 'text', 'text' => _('Gecos')),
+				1 => array('kind' => 'input', 'name' => 'gecos', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => $this->attributes['gecos'][0]),
+				2 => array('kind' => 'help', 'value' => 'gecos'));
 		}
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Primary group').'*' ),
-		1 => array ( 'kind' => 'select', 'name' => 'gidNumber', 'options' => $groups, 'options_selected' =>
-		array ($_SESSION['cache']->getgrnam($this->attributes['gidNumber'][0]))),
-		2 => array ('kind' => 'help', 'value' => 'gidNumber'));
+		$return[] = array(
+			0 => array('kind' => 'text', 'text' => _('Primary group').'*' ),
+			1 => array('kind' => 'select', 'name' => 'gidNumber', 'options' => $groups, 'options_selected' => array($_SESSION['cache']->getgrnam($this->attributes['gidNumber'][0]))),
+			2 => array('kind' => 'help', 'value' => 'gidNumber'));
 
 		if ($_SESSION[$this->base]->type=='user') {
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Additional groups') ),
-			1 => array ( 'kind' => 'input', 'name' => 'addgroup', 'type' => 'submit', 'value' => _('Edit groups')),
-			2 => array ('kind' => 'help', 'value' => 'addgroup'));
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Home directory').'*' ),
-			1 => array ( 'kind' => 'input', 'name' => 'homeDirectory', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => $this->attributes['homeDirectory'][0]),
-			2 => array ('kind' => 'help', 'value' => 'homeDirectory'));
+			$return[] = array(
+				0 => array('kind' => 'text', 'text' => _('Additional groups')),
+				1 => array('kind' => 'input', 'name' => 'addgroup', 'type' => 'submit', 'value' => _('Edit groups')),
+				2 => array('kind' => 'help', 'value' => 'addgroup'));
+			$return[] = array(
+				0 => array('kind' => 'text', 'text' => _('Home directory').'*'),
+				1 => array('kind' => 'input', 'name' => 'homeDirectory', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => $this->attributes['homeDirectory'][0]),
+				2 => array('kind' => 'help', 'value' => 'homeDirectory'));
 			if ($this->orig['homeDirectory']=='' && isset($_SESSION['config']->scriptPath)) {
-				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Create home directory') ),
-				1 => array ( 'kind' => 'input', 'name' => 'createhomedir', 'type' => 'checkbox', 'checked' => $this->createhomedir),
-				2 => array ('kind' => 'help', 'value' => 'createhomedir'));
+				$return[] = array(
+					0 => array('kind' => 'text', 'text' => _('Create home directory')),
+					1 => array('kind' => 'input', 'name' => 'createhomedir', 'type' => 'checkbox', 'checked' => $this->createhomedir),
+					2 => array('kind' => 'help', 'value' => 'createhomedir'));
 				}
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Password') ),
-			1 => array ( 'kind' => 'input', 'name' => 'userPassword', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => $this->userPassword()),
-			2 => array ( 'kind' => 'input', 'name' => 'genpass', 'type' => 'submit', 'value' => _('Generate password')));
-			if ($post['userPassword2']!='') $password2 = $post['userPassword2'];
-			else $password2 = $this->userPassword();
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Repeat password') ),
-			1 => array ( 'kind' => 'input', 'name' => 'userPassword2', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => $password2),
-			2 => array ('kind' => 'help', 'value' => 'userPassword'));
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Set no password') ),
-			1 => array ( 'kind' => 'input', 'name' => 'userPassword_nopassword', 'type' => 'checkbox', 'checked' => $this->userPassword_nopassword),
-			2 => array ('kind' => 'help', 'value' => 'userPassword_nopassword'));
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Invalid password') ),
-			1 => array ( 'kind' => 'input', 'name' => 'userPassword_invalid', 'type' => 'checkbox', 'checked' => $this->userPassword_invalid),
-			2 => array ('kind' => 'help', 'value' => 'userPassword_invalid'));
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Lock password') ),
-			1 => array ( 'kind' => 'input', 'name' => 'userPassword_lock', 'type' => 'checkbox', 'checked' => $this->userPassword_lock),
-			2 => array ('kind' => 'help', 'value' => 'userPassword_lock'));
-			if (count($shelllist)!=0)
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Login shell').'*' ),
-			1 => array ( 'kind' => 'select', 'name' => 'loginShell', 'options' => $shelllist, 'options_selected' =>
-			array ($this->attributes['loginShell'][0])),
-			2 => array ('kind' => 'help', 'value' => 'loginShell'));
+			if ($_SESSION[$this->base]->isNewAccount) {
+				$return[] = array(
+					0 => array('kind' => 'text', 'text' => _('Password') ),
+					1 => array('kind' => 'input', 'name' => 'userPassword', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => $this->userPassword()),
+					2 => array('kind' => 'input', 'name' => 'genpass', 'type' => 'submit', 'value' => _('Generate password')));
+				if ($post['userPassword2']!='') $password2 = $post['userPassword2'];
+				else $password2 = $this->userPassword();
+				$return[] = array(
+					0 => array('kind' => 'text', 'text' => _('Repeat password')),
+					1 => array('kind' => 'input', 'name' => 'userPassword2', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => $password2),
+					2 => array('kind' => 'help', 'value' => 'userPassword'));
+			}
+			else {
+				$return[] = array(
+					0 => array('kind' => 'text', 'text' => _('Password') ),
+					1 => array('kind' => 'input', 'name' => 'changepass', 'type' => 'submit', 'value' => _('Change password')));
+			}
+			$return[] = array(
+				0 => array('kind' => 'text', 'text' => _('Set no password')),
+				1 => array('kind' => 'input', 'name' => 'userPassword_nopassword', 'type' => 'checkbox', 'checked' => $this->userPassword_nopassword),
+				2 => array('kind' => 'help', 'value' => 'userPassword_nopassword'));
+			$return[] = array(
+				0 => array('kind' => 'text', 'text' => _('Invalid password')),
+				1 => array('kind' => 'input', 'name' => 'userPassword_invalid', 'type' => 'checkbox', 'checked' => $this->userPassword_invalid),
+				2 => array('kind' => 'help', 'value' => 'userPassword_invalid'));
+			if ($_SESSION[$this->base]->isNewAccount || isset($this->attributes['userPassword'][0])) {
+				$return[] = array(
+					0 => array('kind' => 'text', 'text' => _('Lock password')),
+					1 => array('kind' => 'input', 'name' => 'userPassword_lock', 'type' => 'checkbox', 'checked' => $this->userPassword_lock),
+					2 => array('kind' => 'help', 'value' => 'userPassword_lock'));
+			}
+			if (count($shelllist)!=0) {
+				$return[] = array(
+					0 => array('kind' => 'text', 'text' => _('Login shell').'*'),
+					1 => array('kind' => 'select', 'name' => 'loginShell', 'options' => $shelllist, 'options_selected' => array ($this->attributes['loginShell'][0])),
+					2 => array('kind' => 'help', 'value' => 'loginShell'));
+			}
 		}
 	return $return;
 	}
@@ -921,6 +964,30 @@ class posixAccount extends baseModule {
 		return $return;
 	}
 
+	/**
+	* Displays the password changing dialog.
+	*
+	* @param array $post HTTP-POST
+	* @return array meta HTML code
+	*/
+	function display_html_password(&$post) {
+		$return[] = array(
+			0 => array('kind' => 'text', 'text' => _('Password') ),
+			1 => array('kind' => 'input', 'name' => 'userPassword', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => ""),
+			2 => array('kind' => 'help', 'value' => 'userPassword'));
+		if ($post['userPassword2']!='') $password2 = $post['userPassword2'];
+		else $password2 = $this->userPassword();
+		$return[] = array(
+			0 => array('kind' => 'text', 'text' => _('Repeat password')),
+			1 => array('kind' => 'input', 'name' => 'userPassword2', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => ""));
+		$return[] = array(
+			0 => array('kind' => 'table', 'value' => array(
+				0 => array(
+					0 => array('kind' => 'input', 'type' => 'submit', 'value' => _('Submit'), 'name' => 'submit'),
+					1 => array('kind' => 'input', 'type' => 'submit', 'value' => _('Back'), 'name' => 'back'),
+					2 => array('kind' => 'text')))));
+		return $return;
+	}
 
 	/**
 	* Returns a list of elements for the account profiles.

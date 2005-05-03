@@ -136,39 +136,58 @@ class posixGroup extends baseModule {
 	* It will output a complete html-table
 	*/
 	function display_html_attributes(&$post) {
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _("Groupname").'*' ),
-		1 => array ( 'kind' => 'input', 'name' => 'cn', 'type' => 'text', 'size' => '20', 'maxlength' => '20', 'value' => $this->attributes['cn'][0]),
-		2 => array ('kind' => 'help', 'value' => 'cn'));
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('GID number').'*' ),
-		1 => array ( 'kind' => 'input', 'name' => 'gidNumber', 'type' => 'text', 'size' => '6', 'maxlength' => '6', 'value' => $this->attributes['gidNumber'][0]),
-		2 => array ('kind' => 'help', 'value' => 'gidNumber'));
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Description') ),
-		1 => array ( 'kind' => 'input', 'name' => 'description', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => $this->attributes['description'][0]),
-		2 => array ('kind' => 'help', 'value' => 'description'));
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _("Group members").'*' ),
-		1 => array ( 'kind' => 'input', 'name' => 'adduser', 'type' => 'submit', 'value' => _('Edit members')),
-		2 => array ('kind' => 'help', 'value' => 'adduser'));
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Password') ),
-		1 => array ( 'kind' => 'input', 'name' => 'userPassword', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => $this->userPassword()),
-		2 => array ( 'kind' => 'input', 'name' => 'genpass', 'type' => 'submit', 'value' => _('Generate password')));
+		$return[] = array(
+			0 => array('kind' => 'text', 'text' => _("Groupname").'*'),
+			1 => array('kind' => 'input', 'name' => 'cn', 'type' => 'text', 'size' => '20', 'maxlength' => '20', 'value' => $this->attributes['cn'][0]),
+			2 => array('kind' => 'help', 'value' => 'cn'));
+		$return[] = array(
+			0 => array('kind' => 'text', 'text' => _('GID number').'*'),
+			1 => array('kind' => 'input', 'name' => 'gidNumber', 'type' => 'text', 'size' => '6', 'maxlength' => '6', 'value' => $this->attributes['gidNumber'][0]),
+			2 => array('kind' => 'help', 'value' => 'gidNumber'));
+		$return[] = array(
+			0 => array('kind' => 'text', 'text' => _('Description')),
+			1 => array('kind' => 'input', 'name' => 'description', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => $this->attributes['description'][0]),
+			2 => array ('kind' => 'help', 'value' => 'description'));
+		$return[] = array(
+			0 => array('kind' => 'text', 'text' => _("Group members").'*'),
+			1 => array('kind' => 'input', 'name' => 'adduser', 'type' => 'submit', 'value' => _('Edit members')),
+			2 => array ('kind' => 'help', 'value' => 'adduser'));
+		if ($_SESSION[$this->base]->isNewAccount) {
+			$return[] = array(
+				0 => array('kind' => 'text', 'text' => _('Password')),
+				1 => array('kind' => 'input', 'name' => 'userPassword', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => $this->userPassword()),
+				2 => array('kind' => 'input', 'name' => 'genpass', 'type' => 'submit', 'value' => _('Generate password')));
 			if ($post['userPassword2']!='') $password2 = $post['userPassword2'];
 			else $password2 = $this->userPassword();
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Repeat password') ),
-		1 => array ( 'kind' => 'input', 'name' => 'userPassword2', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => $password2),
-		2 => array ('kind' => 'help', 'value' => 'userPassword'));
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Set no password') ),
-		1 => array ( 'kind' => 'input', 'name' => 'userPassword_nopassword', 'type' => 'checkbox', 'checked' => $this->userPassword_nopassword),
-		2 => array ('kind' => 'help', 'value' => 'userPassword_nopassword'));
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Invalid password') ),
-		1 => array ( 'kind' => 'input', 'name' => 'userPassword_invalid', 'type' => 'checkbox', 'checked' => $this->userPassword_invalid),
-		2 => array ('kind' => 'help', 'value' => 'userPassword_invalid'));
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Lock password') ),
-		1 => array ( 'kind' => 'input', 'name' => 'userPassword_lock', 'type' => 'checkbox', 'checked' => $this->userPassword_lock),
-		2 => array ('kind' => 'help', 'value' => 'userPassword_lock'));
+			$return[] = array(
+				0 => array('kind' => 'text', 'text' => _('Repeat password')),
+				1 => array('kind' => 'input', 'name' => 'userPassword2', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => $password2),
+				2 => array('kind' => 'help', 'value' => 'userPassword'));
+		}
+		else {
+			$return[] = array(
+				0 => array('kind' => 'text', 'text' => _('Password') ),
+				1 => array('kind' => 'input', 'name' => 'changepass', 'type' => 'submit', 'value' => _('Change password')));
+		}
+		$return[] = array(
+			0 => array('kind' => 'text', 'text' => _('Set no password')),
+			1 => array('kind' => 'input', 'name' => 'userPassword_nopassword', 'type' => 'checkbox', 'checked' => $this->userPassword_nopassword),
+			2 => array('kind' => 'help', 'value' => 'userPassword_nopassword'));
+		$return[] = array(
+			0 => array('kind' => 'text', 'text' => _('Invalid password')),
+			1 => array('kind' => 'input', 'name' => 'userPassword_invalid', 'type' => 'checkbox', 'checked' => $this->userPassword_invalid),
+			2 => array('kind' => 'help', 'value' => 'userPassword_invalid'));
+		if ($_SESSION[$this->base]->isNewAccount || isset($this->attributes['userPassword'][0])) {
+			$return[] = array(
+				0 => array('kind' => 'text', 'text' => _('Lock password')),
+				1 => array('kind' => 'input', 'name' => 'userPassword_lock', 'type' => 'checkbox', 'checked' => $this->userPassword_lock),
+				2 => array('kind' => 'help', 'value' => 'userPassword_lock'));
+		}
 		if ($this->attributes['gidNumber'][0]!=$this->orig['gidNumber'][0] && $this->orig['gidNumber'][0]!='')
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Change GID number of users and hosts') ),
-		1 => array ( 'kind' => 'input', 'name' => 'changegids', 'type' => 'checkbox', 'checked' => $this->changegids, 'value' => true),
-		2 => array ('kind' => 'help', 'value' => 'changegids'));
+		$return[] = array(
+			0 => array('kind' => 'text', 'text' => _('Change GID number of users and hosts')),
+			1 => array('kind' => 'input', 'name' => 'changegids', 'type' => 'checkbox', 'checked' => $this->changegids, 'value' => true),
+			2 => array('kind' => 'help', 'value' => 'changegids'));
 		return $return;
 	}
 
@@ -234,7 +253,31 @@ class posixGroup extends baseModule {
 		return $return;
 	}
 
-
+	/**
+	* Displays the password changing dialog.
+	*
+	* @param array $post HTTP-POST
+	* @return array meta HTML code
+	*/
+	function display_html_password(&$post) {
+		$return[] = array(
+			0 => array('kind' => 'text', 'text' => _('Password') ),
+			1 => array('kind' => 'input', 'name' => 'userPassword', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => ""),
+			2 => array('kind' => 'help', 'value' => 'password'));
+		if ($post['userPassword2']!='') $password2 = $post['userPassword2'];
+		else $password2 = $this->userPassword();
+		$return[] = array(
+			0 => array('kind' => 'text', 'text' => _('Repeat password')),
+			1 => array('kind' => 'input', 'name' => 'userPassword2', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => ""));
+		$return[] = array(
+			0 => array('kind' => 'table', 'value' => array(
+				0 => array(
+					0 => array('kind' => 'input', 'type' => 'submit', 'value' => _('Submit'), 'name' => 'submit'),
+					1 => array('kind' => 'input', 'type' => 'submit', 'value' => _('Back'), 'name' => 'back'),
+					2 => array('kind' => 'text')))));
+		return $return;
+	}
+	
 	/**
 	* Returns meta data that is interpreted by parent class
 	*
@@ -497,7 +540,7 @@ class posixGroup extends baseModule {
 				else {
 					$this->userPassword_invalid=false;
 					if ($post['genpass']) $this->userPassword(genpasswd());
-					else {
+					elseif ($_SESSION[$this->base]->isNewAccount) {
 						if ($post['userPassword'] != $post['userPassword2'])
 							$triggered_messages['userPassword'][] = $this->messages['userPassword'][0];
 						else $this->userPassword($post['userPassword']);
@@ -613,6 +656,7 @@ class posixGroup extends baseModule {
 		else $this->triggered_messages = array();
 		// Go to additional group page when no error did ocour and button was pressed
 		if ($post['adduser'])  return 'user';
+		if ($post['changepass'])  return 'password';
 		return 0;
 	}
 
@@ -643,6 +687,24 @@ class posixGroup extends baseModule {
 	}
 
 
+	/**
+	* Sets a new password.
+	*
+	* @param $post HTTP POST
+	*/
+	function process_password(&$post) {
+		if ($post['back']) return 'attributes';
+		$messages = array();
+		if ($post['userPassword'] != $post['userPassword2']) {
+			$messages['userPassword'][] = $this->messages['userPassword'][0];
+			if (!get_preg($post['userPassword'], 'password'))
+				$messages['userPassword'][] = $this->messages['userPassword'][1];
+			}
+			else $this->userPassword($post['userPassword']);
+		if (sizeof($messages) > 0) return $messages;
+		else return 'attributes';
+	}
+	
 	/* This function returns an array with 3 entries:
 	* array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
 	* DN is the DN to change. It may be possible to change several DNs,
