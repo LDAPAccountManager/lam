@@ -80,37 +80,6 @@ class cache {
 		// Check input variables
 		$allowed_types = array ( 'user', 'group', 'host', 'domain', '*' );
 		if (!in_array($singlescope, $allowed_types)) trigger_error(sprintf('Invalid scope. Valid scopes are %s.', implode(" ", $allowed_types)), E_USER_ERROR);
-		$line=-1;
-		for ($i=0; $i<count($_SESSION['ldap']->objectClasses) || $i==-1; $i++) {
-			if (strpos($_SESSION['ldap']->objectClasses[$i], "NAME '$objectClass'")) $line = $i;
-			}
-		// Return error if objectClass isn't found
-		if ($line==-1) trigger_error (sprintf(_("ObjectClass %s required but not defined in LDAP."), $objectClass), E_USER_WARNING);
-
-		// Create list of all allowed attributes
-		$allowed_attributes = array();
-		for ($i=0; $i<count($_SESSION['ldap']->objectClasses); $i++ ) {
-			if (strpos($_SESSION['ldap']->objectClasses[$i],  'MUST (')) {
-				$string_withtail = substr($_SESSION['ldap']->objectClasses[$i], strpos($_SESSION['ldap']->objectClasses[$i],  'MUST (')+6);
-				// Now we have a string with all must-attributes
-				$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
-				$string = trim($string);
-				$allowed_attributes = array_merge($allowed_attributes, explode(" $ ", $string));
-				}
-			// create array with may-attributes
-			// Get startposition in string
-			if (strpos($_SESSION['ldap']->objectClasses[$i],  'MAY (')) {
-				$string_withtail = substr($_SESSION['ldap']->objectClasses[$i], strpos($_SESSION['ldap']->objectClasses[$i],  'MAY (')+5);
-				// Now we have a string with all must-attributes
-				$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
-				$string = trim($string);
-				$allowed_attributes = array_merge($allowed_attributes, explode(" $ ", $string));
-				}
-			}
-		$allowed_attributes = array_unique($allowed_attributes);
-		if (!in_array($attribute, $allowed_attributes)) trigger_error(_('Attribute not defined in LDAP.'), E_USER_WARNING);
-
-		// Everything seems to be OK, start processing data
 		$this->refresh_cache();
 		if ($singlescope == '*') $scopes = $allowed_types;
 			else $scopes = array ( $singlescope );
@@ -147,30 +116,6 @@ class cache {
 		// Check input variables
 		$allowed_types = array ( 'user', 'group', 'host', 'domain', '*' );
 		if (!in_array($singlescope, $allowed_types)) trigger_error(sprintf('Invalid scope. Valid scopes are %s.', implode(" ", $allowed_types)), E_USER_ERROR);
-		// Create list of all allowed attributes
-		$allowed_attributes = array();
-		for ($i=0; $i<count($_SESSION['ldap']->objectClasses); $i++ ) {
-			if (strpos($_SESSION['ldap']->objectClasses[$i],  'MUST (')) {
-				$string_withtail = substr($_SESSION['ldap']->objectClasses[$i], strpos($_SESSION['ldap']->objectClasses[$i],  'MUST (')+6);
-				// Now we have a string with all must-attributes
-				$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
-				$string = trim($string);
-				$allowed_attributes = array_merge($allowed_attributes, explode(" $ ", $string));
-				}
-			// create array with may-attributes
-			// Get startposition in string
-			if (strpos($_SESSION['ldap']->objectClasses[$i],  'MAY (')) {
-				$string_withtail = substr($_SESSION['ldap']->objectClasses[$i], strpos($_SESSION['ldap']->objectClasses[$i],  'MAY (')+5);
-				// Now we have a string with all must-attributes
-				$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
-				$string = trim($string);
-				$allowed_attributes = array_merge($allowed_attributes, explode(" $ ", $string));
-				}
-			}
-		$allowed_attributes = array_unique($allowed_attributes);
-		if (!in_array($attribute, $allowed_attributes)) trigger_error(_('Attribute not defined in LDAP.'), E_USER_WARNING);
-
-		// Everything seems to be OK, start processing data
 		$this->refresh_cache();
 		if ($singlescope == '*') $scopes = $allowed_types;
 			else $scopes = array ( $singlescope );
@@ -248,7 +193,7 @@ class cache {
 		$allowed_types = array ( 'user', 'group', 'host', '*' );
 		for ($i=0; $i<count($allowed_types); $i++) {
 			if ($allowed_types[$i]!='*') {
-				If ($scope != '*')
+				If ($mode != '*')
 					$suffix = $_SESSION['config']->get_Suffix($allowed_types[$i]);
 					else $suffix = '';
 				if (substr($suffix, $dn)) $singlescope = $allowed_types[$i];
