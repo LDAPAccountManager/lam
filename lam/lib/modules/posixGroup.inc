@@ -205,24 +205,18 @@ class posixGroup extends baseModule {
 	*/
 	function display_html_user(&$post) {
 		// load list with all users
-		$dn_users = $_SESSION['cache']->get_cache('uid', 'posixAccount', 'user');
+		$dn_users = $_SESSION['cache']->get_cache(array('uid', 'gidNumber'), 'posixAccount', 'user');
+		$users = array();
 		if (is_array($dn_users)) {
-			foreach ($dn_users as $user) $users[] = $user[0];
-			// sort users
-			sort($users, SORT_STRING);
-			// remove users which are already members
-			$users = array_delete($this->attributes['memberUid'], $users);
-			// remove users with this group as their primary group
-			$users_dn = $_SESSION['cache']->get_cache('gidNumber', 'posixAccount', 'user');
-			$DNs = array_keys($users_dn);
-			for ($i=0; $i<count($DNs); $i++) {
-				if ($users_dn[$DNs[$i]][0]==$this->attributes['gidNumber'][0]) {
-					$thisuser = substr($DNs[$i], 4, strpos($DNs[$i], ",")-4);
-					if (in_array($thisuser, $users)) {
-						$users = @array_flip($users);
-						unset($users[$thisuser]);
-						$users = @array_flip($users);
-					}
+			$DNs = array_keys($dn_users);
+			for ($i = 0; $i < sizeof($DNs); $i++) {
+				// users who can be added have a uid and gidNumber
+				if (isset($dn_users[$DNs[$i]]['uid'][0]) && isset($dn_users[$DNs[$i]]['gidNumber'][0]) &&
+				// are not already member
+				!in_array($dn_users[$DNs[$i]]['uid'][0], $this->attributes['memberUid']) &&
+				// and do not have this group as their primary group
+				!($this->attributes['gidNumber'][0] == $dn_users[$DNs[$i]]['gidNumber'][0])) {
+					$users[] = $dn_users[$DNs[$i]]['uid'][0];
 				}
 			}
 			// sort users
