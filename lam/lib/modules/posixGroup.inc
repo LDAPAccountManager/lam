@@ -258,8 +258,6 @@ class posixGroup extends baseModule {
 			0 => array('kind' => 'text', 'text' => _('Password') ),
 			1 => array('kind' => 'input', 'name' => 'userPassword', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => ""),
 			2 => array('kind' => 'help', 'value' => 'password'));
-		if ($post['userPassword2']!='') $password2 = $post['userPassword2'];
-		else $password2 = $this->userPassword();
 		$return[] = array(
 			0 => array('kind' => 'text', 'text' => _('Repeat password')),
 			1 => array('kind' => 'input', 'name' => 'userPassword2', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => ""));
