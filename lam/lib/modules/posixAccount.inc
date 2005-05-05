@@ -925,10 +925,11 @@ class posixAccount extends baseModule {
 	*/
 	function display_html_group(&$post) {
 		// load list with all groups
-		$dn_groups = $_SESSION['cache']->get_cache('gidNumber', 'posixGroup', 'group');
+		$dn_groups = $_SESSION['cache']->get_cache('cn', 'posixGroup', 'group');
 		$DNs = array_keys($dn_groups);
-		foreach ($DNs as $DN)
-		$groups[] = substr($DN, 3, strpos($DN, ',')-3);
+		foreach ($DNs as $DN) {
+			$groups[] = $dn_groups[$DN][0];
+		}
 		// remove groups the user is member of from grouplist
 		$groups = array_delete($this->groups, $groups);
 		// Remove primary group from grouplist
