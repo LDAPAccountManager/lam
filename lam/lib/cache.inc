@@ -72,10 +72,18 @@ class cache {
 		$this->refresh_cache(true);
 		}
 
-	/* This function returns an array ( dn1 => array(uidnumber1), dn2 => array(uidnumber2), ... )
+	/**
+	* Queries the cache for a list of LDAP entries and their attributes.
+	*
+	* @param mixed $attributes One (string) or many (array) attribute names.
+	* @param string $objectClass The resulting entries need to contain this object class.
+	* @param string $singlescope The account type or "*" if all.
+	* @return array The found LDAP entries.
+	* <br>Format: array(dn1 => array(uidnumber1), dn2 => array(uidnumber2), ... ) if $attributes is of type string
+	* <br>or array(dn1 => array(uid => array(myuid), uidNumber => array(1234)), ... ) if $attributes is an array
 	*
 	*/
-	function get_cache($attribute, $objectClass, $singlescope) {
+	function get_cache($attributes, $objectClass, $singlescope) {
 		$this->refresh_cache();
 		// Check input variables
 		$allowed_types = array ( 'user', 'group', 'host', 'domain', '*' );
@@ -84,28 +92,35 @@ class cache {
 		if ($singlescope == '*') $scopes = $allowed_types;
 			else $scopes = array ( $singlescope );
 		// Add cache entry dynamic
+		if (!is_array($attributes)) $attributes = array($attributes);
 		foreach ($scopes as $scope) {
-			if (!@in_array($attribute ,$this->attributes[$scope])) $add[$scope][] = $attribute;
+			for ($i = 0; $i < sizeof($attributes); $i++) {
+				if (!@in_array($attributes[$i], $this->attributes[$scope])) $add[$scope][] = $attributes[$i];
 			}
+		}
 		if (count($add)!=0) $this->add_cache($add);
 
 		foreach ($scopes as $scope) {
 			if (isset($this->ldapcache[$scope])) {
 				$DNs = array_keys($this->ldapcache[$scope]);
 				foreach ($DNs as $dn) {
-					if (isset($this->ldapcache[$scope][$dn][$attribute]) && in_array($objectClass, $this->ldapcache[$scope][$dn]['objectClass'])) {
-						// return string if only attribute exists only once
-						if (count($this->ldapcache[$scope][$dn][$attribute])==1) $return[$dn] = array($this->ldapcache[$scope][$dn][$attribute][0]);
-						else {
-							// else return array with all attributes
-							$return[$dn] = $this->ldapcache[$scope][$dn][$attribute];
+					// skip entries which do not fit to search
+					if (!in_array($objectClass, $this->ldapcache[$scope][$dn]['objectClass'])) continue;
+					for ($i = 0; $i < sizeof($attributes); $i++) {
+						if (isset($this->ldapcache[$scope][$dn][$attributes[$i]])) {
+							if (sizeof($attributes) > 1) {
+								$return[$dn][$attributes[$i]] = $this->ldapcache[$scope][$dn][$attributes[$i]];
+							}
+							else {
+								$return[$dn] = $this->ldapcache[$scope][$dn][$attributes[$i]];
 							}
 						}
 					}
 				}
 			}
-		return $return;
 		}
+		return $return;
+	}
 
 	/* This functions returns the dn if a dn with $attribute=$value is found
 	* $values is the value $attribute is set to
