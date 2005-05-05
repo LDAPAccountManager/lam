@@ -1013,18 +1013,16 @@ class sambaSamAccount extends baseModule {
 		// get list of Samba 3 domains
 		$domains = search_domains($_SESSION['config']->get_Suffix('domain'));
 		// get list of Unix groups and their sambaSID + gidNumber
-		$groups = $_SESSION['cache']->get_cache('cn', 'posixGroup', 'group');
-		$groups_SID = $_SESSION['cache']->get_cache('sambaSID', 'sambaGroupMapping', 'group');
-		$groups_gid = $_SESSION['cache']->get_cache('gidNumber', 'posixGroup', 'group');
+		$groups = $_SESSION['cache']->get_cache(array('cn', 'sambaSID', 'gidNumber'), 'posixGroup', 'group');
 		$groups_k = array_keys($groups);
-		for ($i = 0; $i < sizeof($groups_k); $i++) {
-			$groups[$groups_k[$i]] = array('cn' => $groups[$groups_k[$i]][0]);
-			if (isset($groups_SID[$groups_k[$i]][0])) $groups[$groups_k[$i]]['SID'] = $groups_SID[$groups_k[$i]][0];
-			if (isset($groups_gid[$groups_k[$i]][0])) $groups[$groups_k[$i]]['gid'] = $groups_gid[$groups_k[$i]][0];
-		}
 		$groups_cn = array();
 		for ($i = 0; $i < sizeof($groups_k); $i++) {
-			$groups_cn[$groups[$groups_k[$i]]['cn']] = $groups[$groups_k[$i]];
+			if (isset($groups[$groups_k[$i]]['sambaSID'][0])) {
+				$groups_cn[$groups[$groups_k[$i]]['cn'][0]]['SID'] = $groups[$groups_k[$i]]['sambaSID'][0];
+			}
+			if (isset($groups[$groups_k[$i]]['gidNumber'][0])) {
+				$groups_cn[$groups[$groups_k[$i]]['cn'][0]]['gid'] = $groups[$groups_k[$i]]['gidNumber'][0];
+			}
 		}
 		if ($this->get_scope() == 'user') {
 			for ($i = 0; $i < sizeof($rawAccounts); $i++) {
@@ -1241,7 +1239,7 @@ class sambaSamAccount extends baseModule {
 				}
 				else {
 					// default domain users
-					$partialAccounts[$i]['sambaPrimaryGroupSID'] = $domains[$domIndex]->SID . '-' . $this->rids['Domain Users'];
+					$partialAccounts[$i]['sambaPrimaryGroupSID'] = $domains[$domIndex]->SID . '-' . $this->rids[_('Domain Users')];
 				}
 				// special user
 				if ($rawAccounts[$i][$ids['sambaSamAccount_rid']] != "") {
