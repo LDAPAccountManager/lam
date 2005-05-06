@@ -174,9 +174,7 @@ if( $is_object_class ) {
 		<input type="text" <?php 
 				if( $schema_attr->getMaxLength() ) 
 					echo "maxlength=\"" . $schema_attr->getMaxLength() . "\" "; 
-				?>name="new_value" size="40" value="" /><?php 
-                    // draw the "browse" button next to this input box if this attr houses DNs:
-                    if( is_dn_attr( $attr ) ) draw_chooser_link( "new_value_form.new_value", false ); ?>
+				?>name="new_value" size="40" value="" />
         <?php } ?>
 	<?php } ?>
 

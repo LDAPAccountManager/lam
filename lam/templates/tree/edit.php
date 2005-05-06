@@ -470,10 +470,6 @@ foreach( $attrs as $attr => $vals ) {
 
 
 		<?php 
-		// draw a link for popping up the entry browser if this is the type of attribute
-		// that houses DNs. 
-		if( is_dn_attr( $attr ) )
-			draw_chooser_link( "edit_form.$input_id", false );
 
         ?>
 
