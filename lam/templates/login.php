@@ -293,6 +293,15 @@ function display_LoginPage($config_object,$profile)
 			</tr>
 		</table>
 		<br><br>
+			<TABLE style="position:absolute; bottom:10px;" border="0" width="99%">
+				<TR><TD align="right"><HR>
+					<SMALL>
+					<?php
+						echo "LDAP Account Manager: <b>" . LAMVersion() . "</b>&nbsp;&nbsp;&nbsp;";
+					?>
+					</SMALL>
+				</TD></TR>
+			</TABLE>
 	</body>
 </html>
 <?php
