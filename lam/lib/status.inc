@@ -76,8 +76,13 @@ function StatusMessage($MessageTyp,$MessageHeadline,$MessageText,$MessageVariabl
 	$MessageText = "<p " . $class . ">" . $MessageText . "</p>"; // Format $MessageText
 	$format = "<div " . $class . ">\n<table>\n<tr>\n<td>" . $MessageTyp . "</td>\n<td>" . $MessageHeadline . $MessageText . "</td>\n</tr>\n</table>\n</div>\n";
 	if (is_array($MessageVariables)) {
-		array_unshift($MessageVariables, $format);
-		call_user_func_array('printf',$MessageVariables);
+		if (sizeof($MessageVariables) > 0) {
+			array_unshift($MessageVariables, $format);
+			call_user_func_array('printf',$MessageVariables);
+		}
+		else {
+			echo $format;
+		}
 	}
 	else {
 		printf($format, $MessageVariables);
