@@ -818,18 +818,31 @@ class accountContainer {
 				}
 				else $result = call_user_func(array(&$this->module[$this->order[$this->current_page]], 'process_'.$this->subpage), $post);
 			}
-		if (is_string($result)) $this->subpage = $result;
-		if (is_int($result)) {
+		// change to next page
+		if (is_string($result)) $this->subpage = $result;  // go to subpage of current module
+		$errorsOccured = false;
+		if (is_array($result)) {  // messages were returned, check for errors
+			$errorKeys = array_keys($result);
+			for ($i = 0; $i < sizeof($errorKeys); $i++) {
+				for ($m = 0; $m < sizeof($result[$errorKeys[$i]]); $m++) {
+					if (($result[$errorKeys[$i]][$m][0] == 'ERROR') || ($result[$errorKeys[$i]][$m][0] == 'WARN')) {
+						$errorsOccured = true;
+						break;
+					}
+				}
+			}
+		}
+		if (is_int($result) || !$errorsOccured) {  // numeric return value means to change to another module
 			if ($post['form_main_main']) {
 				$this->current_page = 0;
 				$this->subpage='attributes';
-				}
+			}
 			else for ($i=1; $i<count($this->order); $i++ )
 				if (isset($post['form_main_'.$this->order[$i]]) && ($this->module[$this->order[$i]]->module_ready())) {
 					$this->current_page = $i;
 					$this->subpage='attributes';
-					}
-			}
+				}
+		}
 		// Write HTML-Code
 		echo $_SESSION['header'];
 		echo "<title>";
@@ -844,6 +857,24 @@ class accountContainer {
 			foreach ($result as $result2)
 				if (is_array($result2))
 					for ($i=0; $i<sizeof($result2); $i++) StatusMessage($result2[$i][0], $result2[$i][1], $result2[$i][2]);
+		if ($this->current_page==0) {
+			if ($this->subpage=='attributes')  {
+				$modules = array_keys($this->module);
+				$table = array();
+				$disabled = false;
+				$incompleteModules = array();
+				foreach ($modules as $module) {
+					if (!$this->module[$module]->module_complete()) {
+						$disabled = true;
+						$incompleteModules[] = $this->module[$module]->get_alias();
+					}		
+				}
+				if (sizeof($incompleteModules) > 0) {
+					StatusMessage('INFO', _('Some required information is missing'),
+						sprintf(_('Please set up all required attributes on page: %s'), implode(", ", $incompleteModules)));
+				}
+			}
+		}
 		// Create left module-menu
 		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
 		echo "<table><tr>";
@@ -880,21 +911,8 @@ class accountContainer {
 				echo "</b></legend>\n";
 			}
 		// display html-code from mdule
-		if ($this->current_page==0) {
-			if ($this->subpage=='attributes')  {
-				$modules = array_keys($this->module);
-				$table = array();
-				$disabled = false;
-				foreach ($modules as $module) {
-					if (!$this->module[$module]->module_complete()) {
-						$disabled = true;
-						$table[] = array ( 0 => array ( 'kind' => 'message', 'type' => 'ERROR', 'headline' =>  _('Some required information is missing'),
-							'text' => sprintf(_('Please set up all required attributes on page: %s'), $this->module[$module]->get_alias()) ));
-						}		
-					}
-				}
-							
-			if (count($table)!=0) $return[] = array ( 0 => array ( 'kind' => 'table', 'value' => $table ) );
+		$return = array();
+		if ($this->current_page==0) {			
 			// loop through all suffixes
 			$rootsuffix = $_SESSION['config']->get_Suffix($this->type);
 			foreach ($_SESSION['ldap']->search_units($rootsuffix) as $suffix) {
@@ -934,7 +952,7 @@ class accountContainer {
 			if ($this->dn_orig!='') $text = _('Modify Account');
 				else $text = _('Create Account');
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => $text ),
-				1 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'create', 'value' => $text ),
+				1 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'create', 'value' => $text, 'disabled' => $disabled),
 				2 => array ('kind' => 'help', 'value' => 'create'));
 			if ($this->subpage=='finish')  {
 				// Show success message
