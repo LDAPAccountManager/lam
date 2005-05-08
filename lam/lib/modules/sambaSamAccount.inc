@@ -367,31 +367,6 @@ class sambaSamAccount extends baseModule {
 	var $rids;
 
 
-	/* $attribute['sambaLMPassword'] and $attribute['sambaNTPassword'] can't accessed directly because it's enrcypted
-	* To read / write password function sambaLMPassword is needed
-	* This function will return the unencrypted password when
-	* called without a variable
-	* If it's called with a new password, the
-	* new password will be stored encrypted
-	*/
-	function sambaLMPassword($newpassword=false) {
-		if (is_string($newpassword)) {
-			// Write new password
-			if ($newpassword=='')
-				$this->attributes['sambaLMPassword'][0] = '';
-			else $this->attributes['sambaLMPassword'][0] = base64_encode($_SESSION['ldap']->encrypt($newpassword));
-			return 0;
-			}
-		else {
-			if ($this->useunixpwd) return $_SESSION[$this->base]->module['posixAccount']->userPassword();
-			if ($this->attributes['sambaLMPassword'][0]!='') {
-				// Read existing password if set
-				return $_SESSION['ldap']->decrypt(base64_decode($this->attributes['sambaLMPassword'][0]));
-				}
-			else return '';
-			}
-		}
-
 	function module_ready() {
 		if ($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]=='') return false;
 		if ($_SESSION[$this->base]->module['posixAccount']->attributes['uidNumber'][0]=='') return false;
@@ -425,8 +400,6 @@ class sambaSamAccount extends baseModule {
 		if (strpos($this->attributes['sambaAcctFlags'][0], "D")) $this->deactivated = true;
 		if (strpos($this->attributes['sambaAcctFlags'][0], "N")) $this->nopwd = true;
 		if (strpos($this->attributes['sambaAcctFlags'][0], "X")) $this->noexpire = true;
-		// Delete password. We don't want to show an encrypted password because it makes no sense
-		$this->sambaLMPassword('');
 		return 0;
 		}
 
@@ -456,32 +429,6 @@ class sambaSamAccount extends baseModule {
 
 		$return = $_SESSION[$this->base]->save_module_attributes($this->attributes, $this->orig);
 
-		// unset password when needed
-		if (isset($return[$_SESSION[$this->base]->dn]['add']['sambaLMPassword']))
-		unset($return[$_SESSION[$this->base]->dn]['add']['sambaLMPassword']);
-		if (isset($return[$_SESSION[$this->base]->dn]['modify']['sambaLMPassword']))
-		unset($return[$_SESSION[$this->base]->dn]['modify']['sambaLMPassword']);
-		if (isset($return[$_SESSION[$this->base]->dn]['notchanged']['sambaLMPassword']))
-		unset($return[$_SESSION[$this->base]->dn]['notchanged']['sambaLMPassword']);
-		if (isset($return[$_SESSION[$this->base]->dn]['add']['sambaNTPassword']))
-		unset($return[$_SESSION[$this->base]->dn]['add']['sambaNTPassword']);
-		if (isset($return[$_SESSION[$this->base]->dn]['modify']['sambaNTPassword']))
-		unset($return[$_SESSION[$this->base]->dn]['modify']['sambaNTPassword']);
-		if (isset($return[$_SESSION[$this->base]->dn]['notchanged']['sambaNTPassword']))
-		unset($return[$_SESSION[$this->base]->dn]['notchanged']['sambaNTPassword']);
-		if (!isset($this->orig['sambaLMPassword'][0])) {
-			// new account
-			$return[$_SESSION[$this->base]->dn]['add']['sambaLMPassword'][0] = lmPassword($this->sambaLMPassword());
-			$return[$_SESSION[$this->base]->dn]['add']['sambaNTPassword'][0] = ntPassword($this->sambaLMPassword());
-			$return[$_SESSION[$this->base]->dn]['add']['sambaPwdLastSet'][0] = time();
-			}
-		else
-			// edit existing account
-			if ($this->sambaLMPassword()!='' && $this->attributes['sambaLMPassword'][0] != $this->orig['sambaLMPassword'][0]) {
-				$return[$_SESSION[$this->base]->dn]['modify']['sambaLMPassword'][0] = lmPassword($this->sambaLMPassword());
-				$return[$_SESSION[$this->base]->dn]['modify']['sambaNTPassword'][0] = ntPassword($this->sambaLMPassword());
-				$return[$_SESSION[$this->base]->dn]['modify']['sambaPwdLastSet'][0] = time();
-			}
 		return $return;
 		}
 
@@ -536,10 +483,11 @@ class sambaSamAccount extends baseModule {
 		if ($_SESSION[$this->base]->type=='host') {
 			$this->attributes['sambaPrimaryGroupSID'][0] = $SID."-".$this->rids[_('Domain Computers')];
 			if ($post['ResetSambaPassword']) {
-				$this->sambaLMPassword($_SESSION[$this->base]->module['posixAccount']->attributes['uid'][0]);
-				$_SESSION[$this->base]->module['posixAccount']->userPassword('');
-				}
+				$this->attributes['sambaLMPassword'][0] = lmPassword($_SESSION[$this->base]->module['posixAccount']->attributes['uid'][0]);
+				$this->attributes['sambaNTPassword'][0] = ntPassword($_SESSION[$this->base]->module['posixAccount']->attributes['uid'][0]);
+				$this->attributes['sambaPwdLastSet'][0] = time();
 			}
+		}
 
 		if ($_SESSION[$this->base]->type=='user') {
 			$this->attributes['sambaPwdCanChange'][0] = mktime($post['sambaPwdCanChange_h'], $post['sambaPwdCanChange_m'], $post['sambaPwdCanChange_s'],
@@ -573,17 +521,26 @@ class sambaSamAccount extends baseModule {
 				}
 			}
 
-			if ($post['useunixpwd']) $this->useunixpwd = true;
-				else $this->useunixpwd = false;
-			if (isset($post['sambaLMPassword'])) {
+			if ($post['useunixpwd']) {
+				$this->useunixpwd = true;
+				$this->attributes['sambaLMPassword'][0] = lmPassword($_SESSION[$this->base]->module['posixAccount']->userPassword());
+				$this->attributes['sambaNTPassword'][0] = ntPassword($_SESSION[$this->base]->module['posixAccount']->userPassword());
+				$this->attributes['sambaPwdLastSet'][0] = time();
+			}
+			else $this->useunixpwd = false;
+			if (!$this->useunixpwd && isset($post['sambaLMPassword']) && ($post['sambaLMPassword'] != '')) {
 				if ($post['sambaLMPassword'] != $post['sambaLMPassword2']) {
 					$triggered_messages['sambaLMPassword'][] = $this->messages['sambaLMPassword'][0];
 					unset ($post['sambaLMPassword2']);
-					}
+				}
 				else {
-						if ( !get_preg($this->sambaLMPassword(), 'password')) $triggered_messages['sambaLMPassword'][] = $this->messages['sambaLMPassword'][1];
-							else $this->sambaLMPassword($post['sambaLMPassword']);
+					if (!get_preg($post['sambaLMPassword'], 'password')) $triggered_messages['sambaLMPassword'][] = $this->messages['sambaLMPassword'][1];
+					else {
+						$this->attributes['sambaLMPassword'][0] = lmPassword($post['sambaLMPassword']);
+						$this->attributes['sambaNTPassword'][0] = ntPassword($post['sambaLMPassword']);
+						$this->attributes['sambaPwdLastSet'][0] = time();
 					}
+				}
 			}
 			if ($post['sambaSID']== _('Administrator')) {
 				$this->attributes['sambaSID'][0] = $SID."-500";
@@ -714,18 +671,16 @@ class sambaSamAccount extends baseModule {
 					4 => array ( 'kind' => 'input', 'name' => 'sambaPwdMustChange_m', 'type' => 'hidden', 'value' => $mustchangedate['minutes']),
 					5 => array ( 'kind' => 'input', 'name' => 'sambaPwdMustChange_s', 'type' => 'hidden', 'value' => $mustchangedate['seconds']),
 					6 => array ( 'kind' => 'input', 'name' => 'sambaAcctFlagsU', 'type' => 'hidden', 'value' => 'true'));
-			if ($post['sambaLMPassword2']!='') $password2 = $post['sambaLMPassword2'];
-			else $password2 = $this->sambaLMPassword();
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Samba password') ),
-				1 => array ( 'kind' => 'input', 'name' => 'sambaLMPassword', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => $this->sambaLMPassword()));
+				1 => array ( 'kind' => 'input', 'name' => 'sambaLMPassword', 'type' => 'password', 'size' => '20', 'maxlength' => '255'));
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Repeat password') ),
-				1 => array ( 'kind' => 'input', 'name' => 'sambaLMPassword2', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => $password2),
+				1 => array ( 'kind' => 'input', 'name' => 'sambaLMPassword2', 'type' => 'password', 'size' => '20', 'maxlength' => '255'),
 				2 => array ('kind' => 'help', 'value' => 'sambaLMPassword'));
 			if ($_SESSION[$this->base]->module['posixAccount']->orig['userPassword'][0] != $_SESSION[$this->base]->module['posixAccount']->attributes['userPassword'][0]) {
 				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Use unix password') ),
 					1 => array ( 'kind' => 'input', 'name' => 'useunixpwd', 'type' => 'checkbox', 'checked' => $this->useunixpwd),
 					2 => array ('kind' => 'help', 'value' => 'useunixpwd'));
-				}
+			}
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Use no password') ),
 				1 => array ( 'kind' => 'input', 'name' => 'sambaAcctFlagsN', 'type' => 'checkbox', 'checked' => $this->nopwd, 'value' => 'true'),
 				2 => array ('kind' => 'help', 'value' => 'sambaAcctFlagsN'));
