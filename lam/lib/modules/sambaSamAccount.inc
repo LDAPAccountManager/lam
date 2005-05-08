@@ -453,13 +453,6 @@ class sambaSamAccount extends baseModule {
 		if ($this->attributes['sambaSID'][0] == $SID."-500") $special = true;
 		if ($this->attributes['sambaSID'][0] == $SID."-501") $special = true;
 		if (!$special) $this->attributes['sambaSID'][0] == $SID."-".($_SESSION[$this->base]->module['posixAccount']->attributes['uidNumber'][0]*2+$RIDbase);
-		$rids = array_keys($this->rids);
-		$wrid = false;
-		for ($i=0; $i<count($rids); $i++)
-			if ($this->attributes['sambaPrimaryGroupSID'][0] == $SID . "-" . $rids[$i])
-				$wrid = true;
-		if (!$wrid) $this->attributes['sambaPrimaryGroupSID'][0] = $SID."-".($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]*2)+$RIDbase+1;
-
 
 		$return = $_SESSION[$this->base]->save_module_attributes($this->attributes, $this->orig);
 
@@ -566,7 +559,19 @@ class sambaSamAccount extends baseModule {
 					$this->attributes['sambaPrimaryGroupSID'][0] = $SID."-".$this->rids[$rids[$i]];
 					}
 				}
-			if (!$wrid) $this->attributes['sambaPrimaryGroupSID'][0] = $SID."-".($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]*2)+$RIDbase+1;
+			if (!$wrid) {
+				$gidnumber = $_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0];
+				$groups = $_SESSION['cache']->get_cache(array('gidNumber', 'sambaSID'), 'sambaGroupMapping', 'group');
+				$groupKeys = array_keys($groups);
+				for ($i = 0; $i < sizeof($groupKeys); $i++) {
+					if ($groups[$groupKeys[$i]]['gidNumber'][0] == $gidnumber) {
+						if (isset($groups[$groupKeys[$i]]['sambaSID'][0])) {
+							$this->attributes['sambaPrimaryGroupSID'][0] = $groups[$groupKeys[$i]]['sambaSID'][0];
+						}
+						break;
+					}
+				}
+			}
 
 			if ($post['useunixpwd']) $this->useunixpwd = true;
 				else $this->useunixpwd = false;
