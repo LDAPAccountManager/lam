@@ -1057,12 +1057,18 @@ class posixAccount extends baseModule {
 			$this->groups = $profile['posixAccount_additionalGroup'];
 		}
 		// no password
-		if (isset($profile['posixAccount_userPassword_no'][0])) {
-			$this->userPassword_nopassword = $profile['posixAccount_userPassword_no'][0];
+		if ($profile['posixAccount_userPassword_no'][0] == "true") {
+			$this->userPassword_nopassword = true;
+		}
+		elseif ($profile['posixAccount_userPassword_no'][0] == "false") {
+			$this->userPassword_nopassword = false;
 		}
 		// locked password
-		if (isset($profile['posixAccount_userPassword_lock'][0])) {
-			$this->userPassword_lock = $profile['posixAccount_userPassword_lock'][0];
+		if ($profile['posixAccount_userPassword_lock'][0] == "true") {
+			$this->userPassword_lock = true;
+		}
+		elseif ($profile['posixAccount_userPassword_lock'][0] == "false") {
+			$this->userPassword_lock = false;
 		}
 	}
 
