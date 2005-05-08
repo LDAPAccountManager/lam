@@ -329,6 +329,8 @@ class inetOrgPerson extends baseModule {
 		// because it en/decrypted in session
 		if (isset($return[$_SESSION[$this->base]->dn]['modify']['userPassword']))
 			unset($return[$_SESSION[$this->base]->dn]['modify']['userPassword']);
+		if (isset($return[$_SESSION[$this->base]->dn]['add']['userPassword']))
+			unset($return[$_SESSION[$this->base]->dn]['add']['userPassword']);
 		// Return attributes
 		return $return;
 		}
