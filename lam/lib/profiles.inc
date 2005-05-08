@@ -124,7 +124,7 @@ function saveAccountProfile($attributes, $profile, $scope) {
 				$line = $keys[$i] . ": " . implode("+::+", $attributes[$keys[$i]]) . "\n";
 			}
 			else {
-				$line = $keys[$i] . ": ";
+				$line = $keys[$i] . ": \n";
 			}
 			fputs($file, $line);
 		}
