@@ -782,9 +782,11 @@ class accountContainer {
 					// save account
 					if ($post['create']) {
 						$errors = $this->save_account();
-						if (is_array($errors)) $result = array($errors);
-						// return name of subpage
-						$result = 'finish';
+						if (is_array($errors)) {
+							$result = array($errors);
+							$stopProcessing = true;
+						}
+						else $result = 'finish';
 						}
 					}
 				if ($this->subpage=='finish') {
@@ -853,10 +855,18 @@ class accountContainer {
 		echo "</head><body>\n";
 		echo "<form action=\"edit.php\" method=\"post\">\n";
 		// Display error-messages
-		if (is_array($result))
-			foreach ($result as $result2)
-				if (is_array($result2))
+		if (is_array($result)) {
+			foreach ($result as $result2) {
+				if (is_array($result2)) {
 					for ($i=0; $i<sizeof($result2); $i++) StatusMessage($result2[$i][0], $result2[$i][1], $result2[$i][2]);
+				}
+			}
+			if (isset($stopProcessing) && ($stopProcessing == true)) {
+				echo "</body>\n";
+				echo "</html>\n";
+				return 0;
+			}
+		}
 		if ($this->current_page==0) {
 			if ($this->subpage=='attributes')  {
 				$modules = array_keys($this->module);
@@ -886,7 +896,9 @@ class accountContainer {
 		// print normal button
 		echo "<input name=\"form_main_main\" type=\"submit\" value=\"";
 		echo _('Main');
-		echo "\" tabindex=$x>\n<br>";
+		echo "\" tabindex=$x";
+		if ($this->subpage == 'finish') echo " disabled";
+		echo ">\n<br>";
 		$x++;
 		// Loop for module
 		// $x is used to count up tabindex
@@ -894,10 +906,16 @@ class accountContainer {
 			// print normal button
 			echo "<input name=\"form_main_".$this->order[$i]."\" type=\"submit\" value=\"";
 			echo $this->module[$this->order[$i]]->get_alias();
-			echo "\" tabindex=$x>\n<br>";
+			echo "\" tabindex=$x";
+			if ($this->subpage == 'finish') echo " disabled";
+			echo ">\n<br>";
 			$x++;
 			}
-		if ($this->dn_orig!='') echo "<input name=\"form_main_reset\" type=\"submit\" value=\"" . _('Reset changes') . "\"><br>\n";
+		if ($this->dn_orig!='') {
+			echo "<input name=\"form_main_reset\" type=\"submit\" value=\"" . _('Reset changes') . "\"";
+			if ($this->subpage == 'finish') echo " disabled";
+			echo "><br>\n";
+		}
 		echo "</fieldset></td></tr>\n";
 		echo "</table></td>\n<td>";
 		if ($this->current_page==0) {
@@ -912,49 +930,8 @@ class accountContainer {
 			}
 		// display html-code from mdule
 		$return = array();
-		if ($this->current_page==0) {			
-			// loop through all suffixes
-			$rootsuffix = $_SESSION['config']->get_Suffix($this->type);
-			foreach ($_SESSION['ldap']->search_units($rootsuffix) as $suffix) {
-				if ($this->dn == $suffix) $options_selected = $suffix;
-				$suffixes[] = $suffix;
-			}
-			$return[] = array(
-				0 => array('kind' => 'text', 'text' => _('Suffix')),
-				1 => array('kind' => 'select', 'name' => 'suffix', 'options' => $suffixes, 'options_selected' => array($options_selected)),
-				2 => array ('kind' => 'help', 'value' => 'suffix'));
-			// RDN selection
-			$rdnlist = getRDNAttributes($this->type);
-			$rdnSelected = array();
-			if ($this->rdn != '') {
-				$rdnSelected[] = $this->rdn;
-			}
-			else {
-				$rdnSelected[] = $rdnlist[0];
-			}
-			$return[] = array(
-				0 => array('kind' => 'text', 'text' => _('RDN identifier')),
-				1 => array('kind' => 'select', 'name' => 'rdn', 'options' => $rdnlist, 'options_selected' => $rdnSelected),
-				2 => array ('kind' => 'help', 'value' => '301'));
-	
-			// Get list of profiles
-			$profilelist = getAccountProfiles($this->type);
-			if (count($profilelist)!=0) {
-				$return[] = array(
-					0 => array('kind' => 'text', 'text' => _("Load profile")),
-					1 => array('kind' => 'table', 'value' => array(0 => array(
-						0 => array('kind' => 'select', 'name' => 'selectLoadProfile', 'options' => $profilelist),
-						1 => array('kind' => 'input', 'type' => 'submit', 'name' => 'loadProfile', 'value' => _('Load profile'))
-						)),
-					2 => array('kind' => 'help', 'value' => 'selectLoadProfile'))
-				);
-			}
-			if ($this->dn_orig!='') $text = _('Modify Account');
-				else $text = _('Create Account');
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => $text ),
-				1 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'create', 'value' => $text, 'disabled' => $disabled),
-				2 => array ('kind' => 'help', 'value' => 'create'));
-			if ($this->subpage=='finish')  {
+		if ($this->current_page == 0) {			
+			if ($this->subpage == 'finish') {
 				// Show success message
 				if ($this->dn_orig == '') {
 					$text = _("Account was created successfully.");
@@ -962,16 +939,59 @@ class accountContainer {
 				else {
 					$text = _("Account was modified successfully.");
 				}
-				$return[] = array ( 0 => array ( 'kind' => 'message', 'type' => 'INFO', 'headline' =>  _('LDAP operation successful.'),
-					'text' => $text ));
-	
-				$return[] = array ( 0 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'createagain',
-						'value' => _('Create another account')),
-					1 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'outputpdf',
-						'value' => _('Create PDF file') ),
-					2 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'backmain',
-						'value' => _('Back to account list')));
+				$return[] = array(
+					0 => array('kind' => 'message', 'type' => 'INFO', 'headline' =>  _('LDAP operation successful.'), 'text' => $text,
+						'td' => array('colspan' => 3)));
+				$return[] = array(
+					0 => array('kind' => 'text', 'text' => '', 'td' => array('colspan' => 3)));
+				$return[] = array(
+					0 => array('kind' => 'input', 'type' => 'submit', 'name' => 'createagain', 'value' => _('Create another account')),
+					1 => array('kind' => 'input', 'type' => 'submit', 'name' => 'outputpdf', 'value' => _('Create PDF file') ),
+					2 => array('kind' => 'input', 'type' => 'submit', 'name' => 'backmain', 'value' => _('Back to account list')));
+			}
+			else {
+				// loop through all suffixes
+				$rootsuffix = $_SESSION['config']->get_Suffix($this->type);
+				foreach ($_SESSION['ldap']->search_units($rootsuffix) as $suffix) {
+					if ($this->dn == $suffix) $options_selected = $suffix;
+					$suffixes[] = $suffix;
 				}
+				$return[] = array(
+					0 => array('kind' => 'text', 'text' => _('Suffix')),
+					1 => array('kind' => 'select', 'name' => 'suffix', 'options' => $suffixes, 'options_selected' => array($options_selected)),
+					2 => array ('kind' => 'help', 'value' => 'suffix'));
+				// RDN selection
+				$rdnlist = getRDNAttributes($this->type);
+				$rdnSelected = array();
+				if ($this->rdn != '') {
+					$rdnSelected[] = $this->rdn;
+				}
+				else {
+					$rdnSelected[] = $rdnlist[0];
+				}
+				$return[] = array(
+					0 => array('kind' => 'text', 'text' => _('RDN identifier')),
+					1 => array('kind' => 'select', 'name' => 'rdn', 'options' => $rdnlist, 'options_selected' => $rdnSelected),
+					2 => array ('kind' => 'help', 'value' => '301'));
+		
+				// Get list of profiles
+				$profilelist = getAccountProfiles($this->type);
+				if (count($profilelist)!=0) {
+					$return[] = array(
+						0 => array('kind' => 'text', 'text' => _("Load profile")),
+						1 => array('kind' => 'table', 'value' => array(0 => array(
+							0 => array('kind' => 'select', 'name' => 'selectLoadProfile', 'options' => $profilelist),
+							1 => array('kind' => 'input', 'type' => 'submit', 'name' => 'loadProfile', 'value' => _('Load profile'))
+							)),
+						2 => array('kind' => 'help', 'value' => 'selectLoadProfile'))
+					);
+				}
+				if ($this->dn_orig!='') $text = _('Modify Account');
+					else $text = _('Create Account');
+				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => $text ),
+					1 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'create', 'value' => $text, 'disabled' => $disabled),
+					2 => array ('kind' => 'help', 'value' => 'create'));
+			}
 		}
 		else $return = call_user_func(array($this->module[$this->order[$this->current_page]], 'display_html_'.$this->subpage), $post);
 		$y = 5000;
@@ -1480,14 +1500,14 @@ class accountContainer {
 						$_SESSION['cache']->update_cache($this->$dn, 'add', $attr);
 						$success = ldap_delete($_SESSION['ldap']->server(), $this->dn_orig);
 						if (!$success) {
-							$errors[] = array('ERROR', 'LDAP', sprintf(_('Was unable to delete DN: %s.'), $this->dn_orig));
+							$errors[] = array('ERROR', sprintf(_('Was unable to delete DN: %s.'), $this->dn_orig), ldap_error($_SESSION['ldap']->server()));
 							$stopprocessing = true;
 							}
 						if ($success)
 							$_SESSION['cache']->update_cache($this->$dn, 'delete_dn');
 						}
 					if (!$success) {
-						$errors[] = array('ERROR', 'LDAP', sprintf(_('Was unable to create DN: %s.'), $this->dn));
+						$errors[] = array('ERROR', sprintf(_('Was unable to create DN: %s.'), $this->dn), ldap_error($_SESSION['ldap']->server()));
 						$stopprocessing = true;
 						}
 					}
@@ -1496,7 +1516,7 @@ class accountContainer {
 					$attr = array_merge_recursive($attributes[$this->dn]['add'], $attributes[$this->dn]['notchanged'], $attributes[$this->dn]['modify']);
 					$success = ldap_add($_SESSION['ldap']->server(), $this->dn, $attr);
 					if (!$success) {
-						$errors[] = array('ERROR', 'LDAP', sprintf(_('Was unable to create DN: %s.'), $this->dn));
+						$errors[] = array('ERROR', sprintf(_('Was unable to create DN: %s.'), $this->dn), ldap_error($_SESSION['ldap']->server()));
 						$stopprocessing = true;
 						}
 					else
@@ -1512,7 +1532,7 @@ class accountContainer {
 				if (isset($attributes[$DNs[$i]]['modify']) && !$stopprocessing) {
 					$success = @ldap_mod_replace($_SESSION['ldap']->server(), $DNs[$i], $attributes[$DNs[$i]]['modify']);
 					if (!$success) {
-						$errors[] = array('ERROR', 'LDAP', sprintf(_('Was unable to modify attribtues from DN: %s.'), $DNs[$i]));
+						$errors[] = array('ERROR', sprintf(_('Was unable to modify attribtues from DN: %s.'), $DNs[$i]), ldap_error($_SESSION['ldap']->server()));
 						$stopprocessing = true;
 						}
 					else
@@ -1522,7 +1542,7 @@ class accountContainer {
 				if (isset($attributes[$DNs[$i]]['add']) && !$stopprocessing) {
 					$success = @ldap_mod_add($_SESSION['ldap']->server(), $DNs[$i], $attributes[$DNs[$i]]['add']);
 					if (!$success) {
-						$errors[] = array('ERROR', 'LDAP', sprintf(_('Was unable to add attribtues to DN: %s.'), $DNs[$i]));
+						$errors[] = array('ERROR', sprintf(_('Was unable to add attribtues to DN: %s.'), $DNs[$i]), ldap_error($_SESSION['ldap']->server()));
 						$stopprocessing = true;
 						}
 					else
@@ -1532,7 +1552,7 @@ class accountContainer {
 				if (isset($attributes[$DNs[$i]]['remove']) && !$stopprocessing) {
 					$success = @ldap_mod_del($_SESSION['ldap']->server(), $DNs[$i], $attributes[$DNs[$i]]['remove']);
 					if (!$success) {
-						$errors[] = array('ERROR', 'LDAP', sprintf(_('Was unable to remove attribtues from DN: %s.'), $DNs[$i]));
+						$errors[] = array('ERROR', sprintf(_('Was unable to remove attribtues from DN: %s.'), $DNs[$i]), ldap_error($_SESSION['ldap']->server()));
 						$stopprocessing = true;
 						}
 					else
