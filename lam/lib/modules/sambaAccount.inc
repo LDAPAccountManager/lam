@@ -408,31 +408,6 @@ class sambaAccount extends baseModule {
 	/** Array of well known rids */
 	var $rids;
 
-	/* $attribute['lmPassword'] and $attribute['ntPassword'] can't accessed directly because it's enrcypted
-	* To read / write password function lmPassword is needed
-	* This function will return the unencrypted password when
-	* called without a variable
-	* If it's called with a new password, the
-	* new password will be stored encrypted
-	*/
-	function lmPassword($newpassword=false) {
-		if (is_string($newpassword)) {
-			// Write new password
-			if ($newpassword=='')
-				$this->attributes['lmPassword'][0] = '';
-			else $this->attributes['lmPassword'][0] = base64_encode($_SESSION['ldap']->encrypt($newpassword));
-			return 0;
-			}
-		else {
-			if ($this->useunixpwd) return $_SESSION[$this->base]->module['posixAccount']->userPassword();
-			if ($this->attributes['lmPassword'][0]!='') {
-				// Read existing password if set
-				return $_SESSION['ldap']->decrypt(base64_decode($this->attributes['lmPassword'][0]));
-				}
-			else return '';
-			}
-		}
-
 	function module_ready() {
 		if ($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]=='') return false;
 		if ($_SESSION[$this->base]->module['posixAccount']->attributes['uidNumber'][0]=='') return false;
@@ -440,14 +415,16 @@ class sambaAccount extends baseModule {
 		return true;
 		}
 
-	/* This functions return true
-	* if all needed settings are done
+	/**
+	* This functions returns true if all needed settings are done
+	*
+	* @return boolean true if ready to save account
 	*/
 	function module_complete() {
 		if (!$this->module_ready()) return false;
 		if ($this->attributes['rid'][0] == '') return false;
 		return true;
-		}	
+	}	
 
 	/* This function returns a list of all html-pages in module
 	* This is usefull for mass upload and pdf-files
@@ -456,15 +433,6 @@ class sambaAccount extends baseModule {
 	*/
 	function pages() {
 		return array('attributes', 'userWorkstations');
-		}
-
-	/* This function returns all ldap attributes
-	* which are part of sambaAccount and returns
-	* also their values.
-	*/
-	function get_attributes() {
-		$return['lmPassword'] = $this->lmPassword();
-		return $this->attributes;
 		}
 
 	/* This function loads all attributes into the object
@@ -550,9 +518,9 @@ class sambaAccount extends baseModule {
 		if ($_SESSION[$this->base]->type=='host') {
 			$this->attributes['primaryGroupID'][0] = $this->rids[_('Domain Computers')];
 			if ($post['ResetSambaPassword']) {
-				// *** fixme. What is the default password?
-				$this->lmPassword('');
-				$_SESSION[$this->base]->module['posixAccount']->userPassword('');
+				$this->attributes['lmPassword'][0] = lmPassword($_SESSION[$this->base]->module['posixAccount']->attributes['uid'][0]);
+				$this->attributes['ntPassword'][0] = ntPassword($_SESSION[$this->base]->module['posixAccount']->attributes['uid'][0]);
+				$this->attributes['pwdLastSet'][0] = time();
 				}
 			}
 
@@ -578,15 +546,26 @@ class sambaAccount extends baseModule {
 			if (!$wrid) $this->attributes['primaryGroupID'][0] = ($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]*2)+1001;
 			if ($post['useunixpwd']) $this->useunixpwd = true;
 				else $this->useunixpwd = false;
-			if (isset($post['lmPassword'])) {
+			if ($post['useunixpwd']) {
+				$this->useunixpwd = true;
+				$this->attributes['lmPassword'][0] = lmPassword($_SESSION[$this->base]->module['posixAccount']->userPassword());
+				$this->attributes['ntPassword'][0] = ntPassword($_SESSION[$this->base]->module['posixAccount']->userPassword());
+				$this->attributes['pwdLastSet'][0] = time();
+			}
+			else $this->useunixpwd = false;
+			if (!$this->useunixpwd && isset($post['lmPassword']) && ($post['lmPassword'] != '')) {
 				if ($post['lmPassword'] != $post['lmPassword2']) {
 					$triggered_messages['lmPassword'][] = $this->messages['lmPassword'][0];
 					unset ($post['lmPassword2']);
-					}
+				}
 				else {
-						if ( !get_preg($this->lmPassword(), 'password')) $triggered_messages['lmPassword'][] = $this->messages['lmPassword'][1];
-							else $this->lmPassword($post['lmPassword']);
+					if ( !get_preg($post['lmPassword'], 'password')) $triggered_messages['lmPassword'][] = $this->messages['lmPassword'][1];
+					else {
+						$this->attributes['lmPassword'][0] = lmPassword($post['lmPassword']);
+						$this->attributes['ntPassword'][0] = ntPassword($post['lmPassword']);
+						$this->attributes['pwdLastSet'][0] = time();
 					}
+				}
 			}
 			// rid
 			$specialNames = array_keys($this->rids);
@@ -704,14 +683,13 @@ class sambaAccount extends baseModule {
 					4 => array ( 'kind' => 'input', 'name' => 'pwdMustChange_m', 'type' => 'hidden', 'value' => $mustchangedate['minutes']),
 					5 => array ( 'kind' => 'input', 'name' => 'pwdMustChange_s', 'type' => 'hidden', 'value' => $mustchangedate['seconds']),
 					6 => array ( 'kind' => 'input', 'name' => 'acctFlagsU', 'type' => 'hidden', 'value' => 'true'));
-
-			if ($post['lmPassword2']!='') $password2 = $post['lmPassword2'];
-			else $password2 = $this->lmPassword();
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Samba password') ),
-				1 => array ( 'kind' => 'input', 'name' => 'lmPassword', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => $this->lmPassword()));
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Repeat password') ),
-				1 => array ( 'kind' => 'input', 'name' => 'lmPassword2', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => $password2),
-				2 => array ('kind' => 'help', 'value' => 'lmPassword'));
+			$return[] = array(
+				0 => array('kind' => 'text', 'text' => _('Samba password') ),
+				1 => array('kind' => 'input', 'name' => 'lmPassword', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => ''));
+			$return[] = array(
+				0 => array('kind' => 'text', 'text' => _('Repeat password') ),
+				1 => array('kind' => 'input', 'name' => 'lmPassword2', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => ''),
+				2 => array('kind' => 'help', 'value' => 'lmPassword'));
 			if ($_SESSION[$this->base]->module['posixAccount']->orig['userPassword'][0] != $_SESSION[$this->base]->module['posixAccount']->attributes['userPassword'][0]) {
 				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Use unix password') ),
 					1 => array ( 'kind' => 'input', 'name' => 'useunixpwd', 'type' => 'checkbox', 'checked' => $this->useunixpwd, 'value' => true),
