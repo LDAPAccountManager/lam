@@ -491,35 +491,18 @@ class sambaAccount extends baseModule {
 		* it's psssible uidNumber has changed
 		*/
 		$special = false;
-		if ($this->attributes['rid'][0] == "500") $special = true;
-		if ($this->attributes['rid'][0] == "501") $special = true;
-		if ($this->attributes['rid'][0] == "515") $special = true;
+		if ($this->attributes['rid'][0] < 1000) $special = true;
 		if (!$special) $this->attributes['rid'][0] == $_SESSION[$this->base]->module['posixAccount']->attributes['uidNumber'][0]*2+1000;
-		$rids = array_keys($this->rids);
+		$rids = array_values($this->rids);
 		$wrid = false;
-		for ($i=0; $i<count($rids); $i++)
-			if ($this->attributes['primaryGroupID'][0] == $rids[$i])
+		for ($i=0; $i<count($rids); $i++) {
+			if ($this->attributes['primaryGroupID'][0] == $rids[$i]) {
 				$wrid = true;
+				break;
+			}
+		}
 		if (!$wrid) $this->attributes['primaryGroupID'][0] = ($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]*2)+1001;
-
-
-
 		$return = $_SESSION[$this->base]->save_module_attributes($this->attributes, $this->orig);
-		// Set password
-		if (isset($return[$_SESSION[$this->base]->dn]['modify']['lmPassword']))
-			unset($return[$_SESSION[$this->base]->dn]['modify']['lmPassword']);
-		if (isset($return[$_SESSION[$this->base]->dn]['modify']['ntPassword']))
-			unset($return[$_SESSION[$this->base]->dn]['modify']['ntPassword']);
-		if (!isset($this->orig['lmPassword'][0])) {
-			$return[$_SESSION[$this->base]->dn]['modify']['lmPassword'][0] = lmPassword($this->lmPassword());
-			$return[$_SESSION[$this->base]->dn]['modify']['ntPassword'][0] = ntPassword($this->lmPassword());
-			$return[$_SESSION[$this->base]->dn]['modify']['pwdLastSet'][0] = time();
-			}
-		if ($this->lmPassword()!='') {
-			$return[$_SESSION[$this->base]->dn]['modify']['lmPassword'][0] = lmPassword($this->lmPassword());
-			$return[$_SESSION[$this->base]->dn]['modify']['ntPassword'][0] = ntPassword($this->lmPassword());
-			$return[$_SESSION[$this->base]->dn]['modify']['pwdLastSet'][0] = time();
-			}
 		return $return;
 		}
 
@@ -589,8 +572,9 @@ class sambaAccount extends baseModule {
 				if ($post['primaryGroupID'] == $rids[$i]) {
 					$wrid = true;
 					$this->attributes['primaryGroupID'][0] = $this->rids[$rids[$i]];
-					}
+					break;
 				}
+			}
 			if (!$wrid) $this->attributes['primaryGroupID'][0] = ($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]*2)+1001;
 			if ($post['useunixpwd']) $this->useunixpwd = true;
 				else $this->useunixpwd = false;
@@ -604,18 +588,14 @@ class sambaAccount extends baseModule {
 							else $this->lmPassword($post['lmPassword']);
 					}
 			}
-			if ($post['rid']== _('Administrator')) {
-				$this->attributes['rid'][0] = "500";
-				// Do a check if an administrator already exists
-				if ($_SESSION['cache']->in_cache("500", 'rid', 'user')!=$_SESSION[$this->base]->dn_orig)
-					$triggered_messages['rid'][] = $this->messages['rid'][0];
-				}
-			if ($post['rid']== _('Guest')) {
-				$this->attributes['rid'][0] = "501";
-				// Do a check if an administrator already exists
-				if ($_SESSION['cache']->in_cache("501", 'rid', 'user')!=$_SESSION[$this->base]->dn_orig)
-					$triggered_messages['rid'][] = $this->messages['rid'][1];
-				}
+			// rid
+			$specialNames = array_keys($this->rids);
+			if (in_array($post['rid'], $specialNames)) {
+				$this->attributes['rid'][0] = $this->rids[$post['rid']];
+			}
+			else {
+				$this->attributes['rid'][0] = $_SESSION[$this->base]->module['posixAccount']->attributes['uidNumber'][0]*2+1000;
+			}
 			$this->attributes['smbHome'][0] = str_replace('$user', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['uid'][0], $this->attributes['smbHome'][0]);
 			$this->attributes['smbHome'][0] = str_replace('$group', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['gid'][0], $this->attributes['smbHome'][0]);
 			if ($this->attributes['smbHome'][0] != stripslashes($post['smbHome'])) $triggered_messages['smbHome'][] = $this->messages['homePath'][1];
@@ -783,33 +763,33 @@ class sambaAccount extends baseModule {
 				2 => array ( 'kind' => 'help', 'value' => 'userWorkstations' ));
 
 			$names = array_keys($this->rids);
-			$wrid=false;
+			$options = array();
+			$selected = array();
+			$wrid = false;
 			for ($i=0; $i<count($names); $i++) {
-				if ($this->attributes['primaryGroupID'][0]==$this->rids[$names[$i]]) {
+				if ($this->attributes['primaryGroupID'][0] == $this->rids[$names[$i]]) {
 					$selected[] = $names[$i];
 					$wrid=true;
-					}
-				else $options[] = $names[$i];
 				}
+				else $options[] = $names[$i];
+			}
 			if ($wrid) $options[] = $_SESSION['cache']->getgrnam($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]);
 				else $selected[] = $_SESSION['cache']->getgrnam($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]);
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Windows group') ),
 				1 => array ( 'kind' => 'select', 'name' => 'primaryGroupID', 'options' => $options, 'options_selected' => $selected),
 				2 => array ( 'kind' => 'help', 'value' => 'primaryGroupID' ));
-			// Display if group SID should be mapped to a well kown SID
-			$wrid=false;
-			if ($this->attributes['rid'][0]=="500") {
-				$selected[] = _('Administrator');
-				$wrid=true;
+			$options = array();
+			$selected = array();
+			$wrid = false;
+			for ($i=0; $i<count($names); $i++) {
+				if ($this->attributes['rid'][0] == $this->rids[$names[$i]]) {
+					$selected[] = $names[$i];
+					$wrid=true;
 				}
-			else $options[] = _('Administrator');
-			if ($this->attributes['rid'][0]=="501") {
-				$selected[] = _('Guest');
-				$wrid=true;
-				}
-			else $options[] = _('Guest');
+				else $options[] = $names[$i];
+			}
 			if ($wrid) $options[] = "-";
-				else $selected[] = "-";
+			else $selected[] = "-";
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Special user') ),
 				1 => array ( 'kind' => 'select', 'name' => 'rid', 'options' => $options, 'options_selected' => $selected),
 				2 => array ( 'kind' => 'help', 'value' => 'rid' ));
