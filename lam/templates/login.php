@@ -97,7 +97,7 @@ function display_LoginPage($config_object,$profile)
 	else
 	{
 		//TODO Generate Status message
-		$message = _("Unable to load available languages. Setting English as default language. For further instructions please contact the Admin of this site.");
+		$message = _("Unable to load available languages. Setting English as default language. For further instructions please contact the admin of this site.");
 	}
 
 	$profiles = getConfigProfiles();
@@ -127,7 +127,7 @@ function display_LoginPage($config_object,$profile)
 		<table width="100%" border="0">
 			<tr>
 				<td width="100%" align="right">
-					<a href="./config/conflogin.php" target="_self"><?php echo _("Configuration Login"); ?></a>
+					<a href="./config/conflogin.php" target="_self"><?php echo _("Configuration login"); ?></a>
 				</td>
 			</tr>
 		</table>
@@ -145,7 +145,7 @@ function display_LoginPage($config_object,$profile)
 		}
 		// check if PHP has gettext support
 		if (! function_exists('gettext')) {
-			StatusMessage("ERROR", "Your PHP has no gettext support!", "Please install gettext and recompile PHP is compiled without gettext support.");
+			StatusMessage("ERROR", "Your PHP has no gettext support!", "Please install gettext for PHP.");
 			echo "<br><br>";
 		}
 		?>
@@ -159,16 +159,13 @@ function display_LoginPage($config_object,$profile)
 						<table width="580">
 							<tr>
 								<td style="border-style:none" height="70" colspan="2" align="center">
-									<font color="darkblue"><b><big><?php echo _("Enter Username and Password for Account"); ?></big></b></font>
-								</td>
-								<td style="border-style:none" rowspan="9" width="70">
-									&nbsp;
+									<font color="darkblue"><b><big><?php echo _("Please select your user name and enter your password to log in"); ?></big></b></font>
 								</td>
 							</tr>
 							<tr>
 								<td style="border-style:none" height="35" align="right"><b>
 									<?php
-									echo _("Username") . ":";
+									echo _("User name") . ":";
 									?>
 								</b>&nbsp;&nbsp;</td>
 								<td style="border-style:none" height="35" align="left">
@@ -212,7 +209,7 @@ function display_LoginPage($config_object,$profile)
 								?>
 								<td style="border-style:none" align="right"><b>
 									<?php
-									echo _("Your Language") . ":";
+									echo _("Language") . ":";
 									?>
 								</b>&nbsp;&nbsp;</td>
 								<td style="border-style:none" height="35" align="left">
@@ -245,7 +242,7 @@ function display_LoginPage($config_object,$profile)
 								</td>
 							</tr>
 							<tr>
-								<td style="border-style:none" height="50" colspan="2" align="center">
+								<td style="border-style:none" colspan="2" align="center">
 									<?php
 										if($error_message != "") {
 											echo "<font color=\"red\"><b>" . $error_message . "</b></font>";
@@ -292,7 +289,7 @@ function display_LoginPage($config_object,$profile)
 								?>
 								</select>
 								<input name="profileChange" type="hidden" value="profileChange">
-								<input name="submit" type="submit" value="<?php echo _("Change Profile"); ?>" tabindex="5">
+								<input name="submit" type="submit" value="<?php echo _("Change profile"); ?>" tabindex="5">
 							</td>
 							</tr>
 							<tr>
@@ -329,7 +326,7 @@ if($_POST['checklogin'])
 
 	if($_POST['passwd'] == "")
 	{
-		$error_message = _("Empty Password submitted. Try again.");
+		$error_message = _("Empty password submitted. Please try again.");
 		display_LoginPage($_SESSION['config'],""); // Empty password submitted. Return to login page.
 	}
 	else
@@ -356,17 +353,17 @@ if($_POST['checklogin'])
 		{
 			if ($result === False)
 			{
-				$error_message = _("Cannot connect to specified LDAP-Server. Please try again.");
+				$error_message = _("Cannot connect to specified LDAP server. Please try again.");
 				display_LoginPage($_SESSION['config'],""); // connection failed
 			}
 			elseif ($result == 81)
 			{
-				$error_message = _("Cannot connect to specified LDAP-Server. Please try again.");
+				$error_message = _("Cannot connect to specified LDAP server. Please try again.");
 				display_LoginPage($_SESSION['config'],""); // connection failed
 			}
 			elseif ($result == 49)
 			{
-				$error_message = _("Wrong Password/Username combination. Try again.");
+				$error_message = _("Wrong password/user name combination. Please try again.");
 				display_LoginPage($_SESSION['config'],""); // Username/password invalid. Return to login page.
 			}
 			else
