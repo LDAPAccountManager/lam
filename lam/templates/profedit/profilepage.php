@@ -81,18 +81,55 @@ $suffixes = array();
 foreach ($_SESSION['ldap']->search_units($rootsuffix) as $suffix) {
 	$suffixes[] = $suffix;
 }
-if (sizeof($suffixes) > 0) {
-echo "<fieldset class=\"" . $type . "edit\">\n<legend><b>" . _("LDAP suffix") . "</b></legend>\n";
-	echo _("LDAP suffix") . ":&nbsp;&nbsp;";
-	echo "<select tabindex=\"1\">";
-	for ($i = 0; $i < sizeof($suffixes); $i++) echo "<option>" . $suffixes[$i] . "</option>\n";
+// get RDNs
+$rdns = getRDNAttributes($type);
+
+echo "<fieldset class=\"" . $type . "edit\">\n<legend><b>" . _("LDAP") . "</b></legend>\n";
+	echo "<table border=0>";
+	echo "<tr><td>";
+	// LDAP suffix
+	echo _("LDAP suffix") . ":";
+	echo "</td><td>";
+	echo "<select name=\"ldap_suffix\" tabindex=\"1\">";
+	for ($i = 0; $i < sizeof($suffixes); $i++) {
+		if ($old_options['ldap_suffix'][0] == $suffixes[$i]) {
+			echo "<option selected>" . $suffixes[$i] . "</option>\n";
+		}
+		else {
+			echo "<option>" . $suffixes[$i] . "</option>\n";
+		}
+	}
 	echo "</select>\n";
+	echo "</td><td>";
 	// help link
 	echo "&nbsp;<a href=\"../help.php?HelpNumber=361\" target=\"lamhelp\">";
 	echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
-	echo "</a>\n";
+	echo "</a><br>\n";
+	echo "</td></tr>";
+	// LDAP RDN
+	echo "<tr><td>";
+	echo _("RDN identifier") . ":";
+	echo "</td><td>";
+	echo "<select name=\"ldap_rdn\" tabindex=\"1\">";
+	for ($i = 0; $i < sizeof($rdns); $i++) {
+		if ($old_options['ldap_rdn'][0] == $rdns[$i]) {
+			echo "<option selected>" . $rdns[$i] . "</option>\n";
+		}
+		else {
+			echo "<option>" . $rdns[$i] . "</option>\n";
+		}
+	}
+	echo "</select>\n";
+	echo "</td><td>";
+	// help link
+	echo "&nbsp;<a href=\"../help.php?HelpNumber=301\" target=\"lamhelp\">";
+	echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
+	echo "</a><br>\n";
+	echo "</td></tr>";
+	echo "</table>";
 echo "</fieldset>\n<br>\n";
-}
+$_SESSION['profile_types']['ldap_suffix'] = 'select';
+$_SESSION['profile_types']['ldap_rdn'] = 'select';
 
 // index for tab order (1 is LDAP suffix)
 $tabindex = 2;
