@@ -23,7 +23,8 @@ Installation Instructions for LAM
    - Suse: ftp://ftp.suse.com/pub/people/poeml/mod_php4
    - RedHat: http://ftp.horde.org/pub/RPMS
 
-   OpenLDAP + Suse: Do not use the rfc2307bis.schema but nis.schema instead.
+
+   See docs/README.schema.txt for information about used LDAP schema files.
 
 
 2. Installation
