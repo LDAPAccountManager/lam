@@ -728,9 +728,6 @@ class accountContainer {
 	/** RDN attribute of this account */
 	var $rdn;
 	
-	/** RDN attribute of this account when it was loaded */
-	var $rdn_orig;
-
 	/** original LDAP attributes when account was loaded from LDAP */
 	var $attributes_orig;
 	
@@ -777,6 +774,12 @@ class accountContainer {
 						// pass profile to each module
 						$modules = array_keys($this->module);
 						foreach ($modules as $module) $this->module[$module]->load_profile($profile);
+						if (isset($profile['ldap_rdn'][0])) {
+							$this->rdn = $profile['ldap_rdn'][0];
+						}
+						if (isset($profile['ldap_suffix'][0])) {
+							$this->dn = $profile['ldap_suffix'][0];
+						}
 						$result = 0;
 						}
 					// save account
@@ -1333,7 +1336,6 @@ class accountContainer {
 		// extract RDN
 		$this->rdn = split("=", substr($dn, 0, strpos($dn, ',')));
 		$this->rdn = $this->rdn[0];
-		$this->rdn_orig = $this->rdn;
 		$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
 		$attrNames = array_keys($attr);
 		// remove 'count' entries and numerical entries
@@ -1412,6 +1414,12 @@ class accountContainer {
 		// pass profile to each module
 		$modules = array_keys($this->module);
 		foreach ($modules as $module) $this->module[$module]->load_profile($profile);
+		if (isset($profile['ldap_rdn'][0])) {
+			$this->rdn = $profile['ldap_rdn'][0];
+		}
+		if (isset($profile['ldap_suffix'][0])) {
+			$this->dn = $profile['ldap_suffix'][0];
+		}
 		return 0;
 		}
 
