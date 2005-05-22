@@ -1,9 +1,5 @@
-stable
+0.5.alpha2
 
-???
-
-
-0.5
-
-- check security
-- module structure
+- fix PDF support
+- document missing parts
+- test LAM and fix bugs
