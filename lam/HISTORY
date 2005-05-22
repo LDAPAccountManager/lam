@@ -1,4 +1,10 @@
-??? 0.5-alpha1
+??? 0.5.alpha2
+   - added documentation about schemas
+   - fixed bugs:
+    -> set DN suffix and RDN on profile loading
+
+
+11.05.2005 0.5.alpha1
   - new modular architecture
    -> possibility to create Unix-only accounts
    -> plugins for more objectClasses planned
