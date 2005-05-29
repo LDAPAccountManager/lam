@@ -187,7 +187,13 @@ class ObjectClass extends SchemaItem
 					$this->type='auxiliary';
 					break;
 				case 'MUST':
-					if($strings[$i+1]!="(")
+					if (preg_match("/^\(./",$strings[$i+1]))
+					{
+						$i++;
+						$attr = new ObjectClassAttribute(preg_replace("/^\(/","",$strings[$i]), $this->name);
+						array_push ($this->must_attrs, $attr);
+					}
+					elseif($strings[$i+1]!="(")
 					{
 						$i++;
 						$attr = new ObjectClassAttribute($strings[$i], $this->name);
@@ -206,7 +212,13 @@ class ObjectClass extends SchemaItem
 					sort($this->must_attrs);
 					break;
 				case 'MAY':
-					if($strings[$i+1]!="(")
+					if (preg_match("/^\(./",$strings[$i+1]))
+					{
+						$i++;
+						$attr = new ObjectClassAttribute(preg_replace("/^\(/","",$strings[$i]), $this->name);
+						array_push ($this->may_attrs, $attr);
+					}
+					elseif($strings[$i+1]!="(")
 					{
 						$i++;
 						$attr = new ObjectClassAttribute($strings[$i], $this->name);
@@ -1638,6 +1650,8 @@ function get_schema_attributes($dn = null, $use_cache=true )
 
 	// Add the used in and required_by values.
 	$schema_object_classes = get_schema_objectclasses();
+	if ( ! is_array ( $schema_object_classes ) )
+		return array ();
 
 	foreach( $schema_object_classes as $object_class ) {
 		$must_attrs = $object_class->getMustAttrNames($schema_object_classes);
@@ -1961,7 +1975,7 @@ function get_cached_schema($schema_type )
     }
 
     //echo "Getting session-cached schema for \"$schema_type\"...<br />\n";
-    if( cached_schema_available($schema_type ) ) {
+    if( cached_schema_available($schema_type ) && array_key_exists ( $schema_type, $_SESSION[ 'schema' ] ) ) {
         $schema = $_SESSION[ 'schema' ][ $schema_type ];
         $cache[ $schema_type ] = $schema;
         return $schema;
