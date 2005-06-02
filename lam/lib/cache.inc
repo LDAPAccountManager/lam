@@ -257,18 +257,21 @@ class cache {
 		}
 
 
-	/* This function will return the gidNumber to an existing groupname
-	* gidNumbers are taken from cache-array
+	/**
+	* This function will return the GID number to an existing group name (using the cache).
+	*
+	* @param string $groupname name of group
+	* @return string GID number
 	*/
 	function getgid($groupname) {
-		$dn_groups = $_SESSION['cache']->get_cache('gidNumber', 'posixGroup', 'group');
+		$dn_groups = $_SESSION['cache']->get_cache(array('gidNumber', 'cn'), 'posixGroup', 'group');
 		$DNs = array_keys($dn_groups);
 		foreach ($DNs as $DN) {
-			// TODO doesn't work when groupname is part of DN
-			if (strpos($DN, $groupname))
-				return $dn_groups[$DN][0];
+			if ($dn_groups[$DN]['cn'][0] == $groupname) {
+				return $dn_groups[$DN]['gidNumber'][0];
 			}
 		}
+	}
 
 
 	/* This function will return an array with all groupnames
