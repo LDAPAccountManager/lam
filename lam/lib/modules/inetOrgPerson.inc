@@ -220,7 +220,7 @@ class inetOrgPerson extends baseModule {
 		$return['help'] = array (
 			'user' => array (	
 				'description' => array (
-					"Headline" => _("Gecos"),
+					"Headline" => _("Description"),
 					"Text" => _("User description. If left empty sur- and give name will be used.")
 				),
 				'title' => array (
@@ -270,7 +270,7 @@ class inetOrgPerson extends baseModule {
 			),
 			'host' => array(
 				'description' => array (
-					"Headline" => _("Gecos"),
+					"Headline" => _("Description"),
 					"Text" => _("Host description. If left empty host name will be used.")
 				)
 			)

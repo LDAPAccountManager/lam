@@ -168,7 +168,7 @@ class posixAccount extends baseModule {
 			array(
 				'name' => 'posixAccount_userName',
 				'description' => _('User name'),
-				'help' => 'userName', // TODO
+				'help' => 'uid',
 				'example' => _('smiller'),
 				'required' => true,
 				'unique' => true
@@ -176,33 +176,33 @@ class posixAccount extends baseModule {
 			array(
 				'name' => 'posixAccount_uid',
 				'description' => _('UID number'),
-				'help' => 'uid', // TODO
+				'help' => 'uidNumber',
 				'example' => '1234'
 			),
 			array(
 				'name' => 'posixAccount_group',
 				'description' => _('Primary group'),
-				'help' => 'group', // TODO
+				'help' => 'group_upload',
 				'example' => _('users'),
 				'required' => true
 			),
 			array(
 				'name' => 'posixAccount_additionalGroups',
 				'description' => _('Additional groups'),
-				'help' => 'additionalGroups', // TODO
+				'help' => 'addgroup_upload',
 				'example' => _('group01,group02')
 			),
 			array(
 				'name' => 'posixAccount_homedir',
 				'description' => _('Home directory'),
-				'help' => 'homedir', // TODO
+				'help' => 'homeDirectory_upload',
 				'example' => _('/home/smiller'),
 				'default' => '/home/<i>&lt;posixAccount_userName&gt;</i>'
 			),
 			array(
 				'name' => 'posixAccount_shell',
 				'description' => _('Login shell'),
-				'help' => 'shell', // TODO
+				'help' => 'loginShell',
 				'example' => '/bin/bash',
 				'values' => implode(", ", getshells()),
 				'default' => '/bin/bash'
@@ -210,13 +210,13 @@ class posixAccount extends baseModule {
 			array(
 				'name' => 'posixAccount_password',
 				'description' => _('Password'),
-				'help' => 'password', // TODO
+				'help' => 'userPassword',
 				'example' => _('secret')
 			),
 			array(
 				'name' => 'posixAccount_passwordDisabled',
 				'description' => _('Lock password'),
-				'help' => 'passwordDisabled', // TODO
+				'help' => 'userPassword_lock',
 				'example' => 'false',
 				'values' => 'true, false',
 				'default' => 'false'
@@ -235,7 +235,7 @@ class posixAccount extends baseModule {
 			array(
 				'name' => 'posixAccount_hostName',
 				'description' => _('Host name'),
-				'help' => 'hostName', // TODO
+				'help' => 'uid',
 				'example' => _('pc01$'),
 				'required' => true,
 				'unique' => true
@@ -243,13 +243,13 @@ class posixAccount extends baseModule {
 			array(
 				'name' => 'posixAccount_uid',
 				'description' => _('UID number'),
-				'help' => 'uid', // TODO
+				'help' => 'uidNumber',
 				'example' => '1234'
 			),
 			array(
 				'name' => 'posixAccount_group',
 				'description' => _('Primary group'),
-				'help' => 'group', // TODO
+				'help' => 'group_upload',
 				'example' => _('machines'),
 				'required' => true
 			),
@@ -302,6 +302,18 @@ class posixAccount extends baseModule {
 				"Headline" => _("UID number"),
 				"Text" => _("If empty UID number will be generated automaticly.")
 			),
+			'group_upload' => array(
+				"Headline" => _("Primary group"),
+				"Text" => _("The primary group for this account. You can insert a GID number or a group name.")
+			),
+			'addgroup_upload' => array(
+				"Headline" => _("Additional groups"),
+				"Text" => _("Here you can enter a list of additional group memberships. The group names are separated by commas.")
+			),
+			'homeDirectory_upload' => array(
+				"Headline" => _("Home directory"),
+				"Text" => _("Please enter the path to the user's home directory.")
+			),
 			'user' => array(
 				'uid' => array(
 					"Headline" => _("Username"),
@@ -313,11 +325,11 @@ class posixAccount extends baseModule {
 				),
 				'gidNumber' => array(
 					"Headline" => _("Primary group"),
-					"Text" => _("The Primary Group the user should be member of.")
+					"Text" => _("The Primary group the user should be member of.")
 				),
 				'homeDirectory' => array(
 					"Headline" => _("Home directory"),
-					"Text" => _('$user and $group are replaced with username or primary groupname.')
+					"Text" => _('$user and $group are replaced with user name or primary group name.')
 				),
 				'userPassword' => array(
 					"Headline" => _("Password"),
@@ -327,10 +339,13 @@ class posixAccount extends baseModule {
 					"Headline" => _("Use no password"),
 					"Text" => _("If checked no password will be used.")
 				),
-				/*'userPassword_lock'	=>*/
+				'userPassword_lock' => array(
+					"Headline" => _("Account deactivated"),
+					"Text" => _("If checked account will be deactivated by putting a \"!\" before the encrypted password.")
+				),
 				'loginShell' => array(
 					"Headline" => _("Login shell"),
-					"Text" => _("To disable login use /bin/false. List of shells is read from lam/config/shells")
+					"Text" => _("To disable login use /bin/false. The list of shells is read from lam/config/shells")
 				),
 				'addgroup' => array(
 					"Headline" => _("Additional groups"),
@@ -348,7 +363,11 @@ class posixAccount extends baseModule {
 				),
 				'gidNumber' => array(
 					"Headline" => _("Primary group"),
-					"Text" => _("The Primary group the host should be member of.")
+					"Text" => _("The primary group the host should be member of.")
+				),
+				'description' => array (
+					"Headline" => _("Description"),
+					"Text" => _("Host description. If left empty host name will be used.")
 				)
 			)
 		);
@@ -1187,7 +1206,6 @@ class posixAccount extends baseModule {
 				$partialAccounts[$i]['gidNumber'] = $rawAccounts[$i][$ids['posixAccount_group']];
 			}
 			if (get_preg($rawAccounts[$i][$ids['posixAccount_group']], 'groupname')) {
-				$partialAccounts[$i]['gidNumber'] = 42;
 				$gid = $_SESSION['cache']->getgid($rawAccounts[$i][$ids['posixAccount_group']]);
 				if (is_numeric($gid)) {
 					$partialAccounts[$i]['gidNumber'] = $gid;
