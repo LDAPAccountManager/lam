@@ -180,17 +180,17 @@ function showMainPage($scope) {
 		for ($i = 0; $i < sizeof($columns[$modules[$m]]); $i++) {
 			echo "<tr valign=\"top\">\n";
 				echo "<td width=\"33%\">\n";
-					showColumnData($modules[$m], $columns[$modules[$m]][$i]);
+					showColumnData($modules[$m], $columns[$modules[$m]][$i], $scope);
 				echo "</td>\n";
 				$i++;
 				if ($i < sizeof($columns[$modules[$m]])) {
 					echo "<td width=\"33%\">\n";
-						showColumnData($modules[$m], $columns[$modules[$m]][$i]);
+						showColumnData($modules[$m], $columns[$modules[$m]][$i], $scope);
 					echo "</td>\n";
 					$i++;
 					if ($i < sizeof($columns[$modules[$m]])) {
 						echo "<td width=\"33%\">\n";
-							showColumnData($modules[$m], $columns[$modules[$m]][$i]);
+							showColumnData($modules[$m], $columns[$modules[$m]][$i], $scope);
 						echo "</td>\n";
 					}
 					else echo "<td width=\"33%\"></td>"; // empty cell if no more fields
@@ -274,8 +274,9 @@ function showMainPage($scope) {
 *
 * @param string $module account module name
 * @param array $data field data from modules
+* @param string $scope account type
 */
-function showColumnData($module, $data) {
+function showColumnData($module, $data, $scope) {
 	if (isset($data['required']) && ($data['required'] == true)) {
 		echo "<font color=\"red\"><b>\n";
 			echo $data['description'];
@@ -287,7 +288,7 @@ function showColumnData($module, $data) {
 		echo "</b>\n";
 	}
 	// help link
-	echo "&nbsp;<a href=\"help.php?module=$module&amp;HelpNumber=". $data['help'] . "\" target=\"lamhelp\">";
+	echo "&nbsp;<a href=\"help.php?module=$module&amp;HelpNumber=". $data['help'] . "&amp;scope=" . $scope . "\" target=\"lamhelp\">";
 	echo "<img src=\"../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
 	echo "</a>\n";
 	echo "<br>\n";
