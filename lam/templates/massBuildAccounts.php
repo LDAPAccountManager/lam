@@ -161,8 +161,10 @@ if ($_FILES['inputfile'] && ($_FILES['inputfile']['size'] > 0)) {
 		if ($accounts != false) {
 			// set DN
 			for ($i = 0; $i < sizeof($accounts); $i++) {
-				if (!isset($accounts[$i][$data[$i][$ids['dn_rdn']]])) $errors[] = array(_('Account %s:') . ' dn_rdn', _("Data field for RDN is empty!"), array($i));
-				// TODO check against list of possible RDN attributes
+				// check against list of possible RDN attributes
+				if (!in_array($data[$i][$ids['dn_rdn']], getRDNAttributes($_POST['scope']))) {
+					$errors[] = array(_('Account %s:') . ' dn_rdn' . $accounts[$i][$data[$i][$ids['dn_rdn']]], _("Invalid RDN attribute!"), array($i));
+				}
 				else {
 					$account_dn = $data[$i][$ids['dn_rdn']] . "=" . $accounts[$i][$data[$i][$ids['dn_rdn']]] . ",";
 					if ($data[$i][$ids['dn_suffix']] == "") $account_dn = $account_dn . $_SESSION['config']->get_Suffix($_POST['scope']);
