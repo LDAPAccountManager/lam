@@ -1123,15 +1123,6 @@ class MatchingRule extends SchemaItem
 	}
 
     /**
-     * Gets this MatchingRule's syntax string (an OID).
-     * @todo Is this function broken?
-     */
-	function getSyntax()
-	{
-		return $this->description;
-	}
-
-    /**
      * Gets an array of attribute names (strings) which use this MatchingRule
      * @return array The array of attribute names (strings).
      */
@@ -1195,7 +1186,6 @@ class MatchingRuleUse extends SchemaItem
 					$this->name =        preg_replace("/\'$/", "", $this->name);
 					break;
 				case 'APPLIES':
-					// TODO
 					if($strings[$i+1]!="(") {
 						// has a single attribute name
 						$i++;
