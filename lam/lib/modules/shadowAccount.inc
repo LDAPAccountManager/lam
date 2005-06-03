@@ -72,22 +72,22 @@ class shadowAccount extends baseModule {
 			array(
 				0 => array('kind' => 'text', 'text' => _('Password warning')),
 				1 => array('kind' => 'input', 'name' => 'shadowAccount_shadowWarning', 'type' => 'text', 'size' => '4', 'maxlength' => '4', 'value' => ""),
-				2 => array('kind' => 'help', 'value' => 'TODO')),
+				2 => array('kind' => 'help', 'value' => 'shadowWarning')),
 			// password expiration
 			array(
 				0 => array('kind' => 'text', 'text' => _('Password expiration')),
 				1 => array('kind' => 'input', 'name' => 'shadowAccount_shadowInactive', 'type' => 'text', 'size' => '4', 'maxlength' => '4', 'value' => ""),
-				2 => array('kind' => 'help', 'value' => 'TODO')),
+				2 => array('kind' => 'help', 'value' => 'shadowInactive')),
 			// minimum password age
 			array(
 				0 => array('kind' => 'text', 'text' => _('Minimum password age')),
 				1 => array('kind' => 'input', 'name' => 'shadowAccount_shadowMin', 'type' => 'text', 'size' => '5', 'maxlength' => '5', 'value' => ""),
-				2 => array('kind' => 'help', 'value' => 'TODO')),
+				2 => array('kind' => 'help', 'value' => 'shadowMin')),
 			// maximum password age
 			array(
 				0 => array('kind' => 'text', 'text' => _('Maximum password age')),
 				1 => array('kind' => 'input', 'name' => 'shadowAccount_shadowMax', 'type' => 'text', 'size' => '5', 'maxlength' => '5', 'value' => ""),
-				2 => array('kind' => 'help', 'value' => 'TODO')),
+				2 => array('kind' => 'help', 'value' => 'shadowMax')),
 			// expiration date
 			array(
 				0 => array('kind' => 'text', 'text' => _('Expiration date')),
@@ -101,7 +101,7 @@ class shadowAccount extends baseModule {
 							'options' => $year, 'options_selectd' => "")
 					)
 				)),
-				2 => array('kind' => 'help', 'value' => 'TODO'))
+				2 => array('kind' => 'help', 'value' => 'shadowExpire'))
 		);
 		// profile checks
 		$return['profile_checks']['shadowAccount_shadowMin'] = array(
