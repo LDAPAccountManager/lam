@@ -28,8 +28,12 @@ include_once("../lib/config.inc"); // Include config.inc which provides Config c
 session_save_path("../sess"); // Set session save path
 @session_start(); // Start LDAP Account Manager session
 
-function display_LoginPage($config_object,$profile)
-{
+/**
+* Displays the login window.
+*
+* @param object $config_object current active configuration
+*/
+function display_LoginPage($config_object) {
 	global $error_message;
 	// generate 256 bit key and initialization vector for user/passwd-encryption
 	// check if we can use /dev/random otherwise use /dev/urandom or rand()
@@ -93,11 +97,6 @@ function display_LoginPage($config_object,$profile)
 			$i++;
 		}
 		fclose($file);
-	}
-	else
-	{
-		//TODO Generate Status message
-		$message = _("Unable to load available languages. Setting English as default language. For further instructions please contact the admin of this site.");
 	}
 
 	$profiles = getConfigProfiles();
@@ -194,19 +193,6 @@ function display_LoginPage($config_object,$profile)
 								</td>
 							</tr>
 							<tr>
-							<?php
-							if($message != "") {
-								?>
-								<td height="35" colspan="3" align="center">
-								<?php
-									echo $message;
-								?>
-								</td>
-								<?php
-							}
-							else
-							{
-								?>
 								<td style="border-style:none" align="right"><b>
 									<?php
 									echo _("Language") . ":";
@@ -231,9 +217,6 @@ function display_LoginPage($config_object,$profile)
 									?>
 									</select>
 								</td>
-								<?php
-							}
-							?>
 							</tr>
 							<tr>
 								<td style="border-style:none" height="50" colspan="2" align="center">
@@ -327,7 +310,7 @@ if($_POST['checklogin'])
 	if($_POST['passwd'] == "")
 	{
 		$error_message = _("Empty password submitted. Please try again.");
-		display_LoginPage($_SESSION['config'],""); // Empty password submitted. Return to login page.
+		display_LoginPage($_SESSION['config']); // Empty password submitted. Return to login page.
 	}
 	else
 	{
@@ -354,22 +337,22 @@ if($_POST['checklogin'])
 			if ($result === False)
 			{
 				$error_message = _("Cannot connect to specified LDAP server. Please try again.");
-				display_LoginPage($_SESSION['config'],""); // connection failed
+				display_LoginPage($_SESSION['config']); // connection failed
 			}
 			elseif ($result == 81)
 			{
 				$error_message = _("Cannot connect to specified LDAP server. Please try again.");
-				display_LoginPage($_SESSION['config'],""); // connection failed
+				display_LoginPage($_SESSION['config']); // connection failed
 			}
 			elseif ($result == 49)
 			{
 				$error_message = _("Wrong password/user name combination. Please try again.");
-				display_LoginPage($_SESSION['config'],""); // Username/password invalid. Return to login page.
+				display_LoginPage($_SESSION['config']); // Username/password invalid. Return to login page.
 			}
 			else
 			{
 				$error_message = _("LDAP error, server says:") .  "\n<br>($result) " . ldap_err2str($result);
-				display_LoginPage($_SESSION['config'],""); // other errors
+				display_LoginPage($_SESSION['config']); // other errors
 			}
 		}
 	}
@@ -377,7 +360,7 @@ if($_POST['checklogin'])
 // Reload loginpage after a profile change
 elseif($_POST['profileChange']) {
 	$_SESSION['config'] = new Config($_POST['profile']); // Recreate the config object with the submited
-	display_LoginPage($_SESSION['config'],""); // Load login page
+	display_LoginPage($_SESSION['config']); // Load login page
 }
 // Load login page
 else
@@ -387,6 +370,6 @@ else
 	$default_Profile = $default_Config->default;
 	$_SESSION["config"] = new Config($default_Profile); // Create new Config object
 
-	display_LoginPage($_SESSION["config"],$default_Profile); // Load Login page
+	display_LoginPage($_SESSION["config"]); // Load Login page
 }
 ?>
