@@ -27,7 +27,6 @@ $Id$
  * LDAP Account Manager help entries.
  * 
  * @author Michael Dürgner
- * @version 0.5
  * @package Help
  * @copyright Copyright (C) 2003-2004 Michael Dürgner
  * @license GPL
@@ -138,105 +137,9 @@ $helpArray = array (
 					"Text" => _("Name under which the profile will be saved. If a profile with the same name exists, it will be overwritten.")),
 				"361" => array ("ext" => "FALSE", "Headline" => _("DN suffix"),
 					"Text" => _("The new account will be saved under this LDAP suffix.")),
-				// 400 - 499
-				// Tilo Lutz
-				// account.php
-				"400" => array ("ext" => "FALSE", "Headline" => _("Username"),
-					"Text" => _("Username of the user who should be created. Valid characters are: a-z,0-9, .-_. Lam does not allow a number as first character because useradd also does not allow it. Lam does not allow capital letters A-Z because it can cause several problems. If username is already used username will be expanded with a number. The next free number will be used. Warning: Older systems have problems with usernames longer than 8 characters. You can not log in to Windows if username is longer than 16 characters.")),
-				"401" => array ("ext" => "FALSE", "Headline" => _("UID number"),
-					"Text" => _("If empty UID number will be generated automaticly.")),
-				"402" => array ("ext" => "FALSE", "Headline" => _("Additional groups"),
-					"Text" => _("Hold the CTRL-key to (de)select multiple groups."). ' '. _("Can be left empty.")),
-				"403" => array ("ext" => "FALSE", "Headline" => _("Home directory"),
-					"Text" => _("$user and $group are replaced with username or primary groupname.")),
-				"404" => array ("ext" => "FALSE", "Headline" => _("Gecos"),
-					"Text" => _("User description. If left empty sur- and give name will be used.")),
-				"405" => array ("ext" => "FALSE", "Headline" => _("Login shell"),
-					"Text" => _("To disable login use /bin/false. List of shells is read from lam/config/shells")),
-				"406" => array ("ext" => "FALSE", "Headline" => _("Primary group"),
-					"Text" => _("The Primary Group the user should be member of.")),
-				"407" => array ("ext" => "FALSE", "Headline" => _("Groupname"),
-					"Text" => _("Group name of the group which should be created. Valid characters are: a-z,0-9, .-_. Lam does not allow a number as first character because groupadd also does not allow it. Lam does not allow capital letters A-Z because it can cause several problems. If groupname is already used groupname will be expanded with a number. The next free number will be used.")),
-				"408" => array ("ext" => "FALSE", "Headline" => _("GID number"),
-					"Text" => _("If empty GID number will be generated automaticly depending on your configuration settings.")),
-				"409" => array ("ext" => "FALSE", "Headline" => _("Gecos"),
-					"Text" => _("Group description. If left empty group name will be used.")),
-				"410" => array ("ext" => "FALSE", "Headline" => _("Host name"),
-					"Text" => _("Host name of the host which should be created. Valid characters are: a-z,0-9, .-_$. Lam does not allow a number as first character because useradd also does not allow it. Lam does not allow capital letters A-Z because it can cause several problems. Hostnames are always ending with $. If last character is not $ it will be added. If hostname is already used hostname will be expanded with a number. The next free number will be used.")),
-				"411" => array ("ext" => "FALSE", "Headline" => _("UID number"),
-					"Text" => _("If empty UID number will be generated automaticly.")),
-				"412" => array ("ext" => "FALSE", "Headline" => _("Primary group"),
-					"Text" => _("The Primary group the host should be member of.")),
-				"413" => array ("ext" => "FALSE", "Headline" => _("Gecos"),
-					"Text" => _("Host description. If left empty host name will be used.")),
-				"414" => array ("ext" => "FALSE", "Headline" => _("Password warn"),
-					"Text" => _("Days before password is to expire that user is warned of pending password expiration. If set value must be 0<."). ' '. _("Can be left empty.")),
-				"415" => array ("ext" => "FALSE", "Headline" => _("Password expire"),
-					"Text" => _("Number of days a user can login even his password has expired. -1=always."). ' '. _("Can be left empty.")),
-				"416" => array ("ext" => "FALSE", "Headline" => _("Maximum password age"),
-					"Text" => _("Number of days after a user has to change his password again. If set value must be 0<."). ' '. _("Can be left empty.")),
-				"417" => array ("ext" => "FALSE", "Headline" => _("Minimum password age"),
-					"Text" => _("Number of days a user has to wait until he\'s allowed to change his password again. If set value must be 0<."). ' '. _("Can be left empty.")),
-				"418" => array ("ext" => "FALSE", "Headline" => _("Expire date"),
-					"Text" => _("Account expire date. Format: DD-MM-YYYY")),
-				"419" => array ("ext" => "FALSE", "Headline" => _("Group members"),
-					"Text" => _("Users wich are also members of group.")),
-				"420" => array ("ext" => "FALSE", "Headline" => _("Display name"),
-					"Text" => _("Windows clients will show display name as group description.")),
-				"421" => array ("ext" => "FALSE", "Headline" => _("Load profile"),
-					"Text" => _("You can select a previous defined profile here. This will set all fields to the profile values.")),
-				"422" => array ("ext" => "FALSE", "Headline" => _("Expand suffix with primary groupname"),
-					"Text" => _("If selected users will be added with OUs expanded with their primary group. E.g. if a user is in group admin the user suffix will be ou=admin,+user suffix.")),
-				"423" => array ("ext" => "FALSE", "Headline" => _("Group suffix"),
-					"Text" => _("If a not yet existing group is defined in csv-file, a new group in the selected group suffix will be created.")),
-				"424" => array ("ext" => "FALSE", "Headline" => _("Last name"),
-					"Text" => _("Last name of user. Only letters, - and spaces are allowed.")),
-				"425" => array ("ext" => "FALSE", "Headline" => _("First name"),
-					"Text" => _("First name of user. Only letters, - and spaces are allowed.")),
-				"426" => array ("ext" => "FALSE", "Headline" => _("Use no password"),
-					"Text" => _("If checked no password will be used.")),
-				"428" => array ("ext" => "FALSE", "Headline" => _("Use unix password"),
-					"Text" => _("If checked unix password will also be used as samba password.")),
-				"429" => array ("ext" => "FALSE", "Headline" => _("Password does not expire"),
-					"Text" => _("If checked password does not expire. (Setting X-Flag)")),
-				"430" => array ("ext" => "FALSE", "Headline" => _("User can change password"),
-					"Text" => _("Date after the user is able to change his password. Format: DD-MM-YYYY")),
-				"431" => array ("ext" => "FALSE", "Headline" => _("User must change password"),
-					"Text" => _("Date after the user must change his password. Format: DD-MM-YYYY")),
-				"432" => array ("ext" => "FALSE", "Headline" => _("Account is deactivated"),
-					"Text" => _("If checked account will be deactivated. (Setting D-Flag)")),
-				"433" => array ("ext" => "FALSE", "Headline" => _("Home drive"),
-					"Text" => _("Driveletter assigned on windows workstations as homedirectory.")),
-				"434" => array ("ext" => "FALSE", "Headline" => _("Script path"),
-					"Text" => _('Filename and -path relative to netlogon-share which should be executed on logon. $user and $group are replaced with user- and groupname.'). ' '. _("Can be left empty.")),
-				"435" => array ("ext" => "FALSE", "Headline" => _("Profile path"),
-					"Text" => _('Path of the user profile. Can be a local absolute path or a UNC-path (\\\\server\\share). $user and $group are replaced with user- and groupname.'). ' '. _("Can be left empty.")),
-				"436" => array ("ext" => "FALSE", "Headline" => _("Samba workstations"),
-					"Text" => _("List of Samba workstations the user is allowed to login. Empty means every workstation."). ' '. _("Can be left empty.")),
-				"437" => array ("ext" => "FALSE", "Headline" => _("Home path"),
-					"Text" => _('UNC-path (\\\\server\\share) of homedirectory. $user and $group are replaced with user- and groupname.'). ' '. _("Can be left empty.")),
-				"438" => array ("ext" => "FALSE", "Headline" => _("Domain"),
-					"Text" => _("Windows-Domain of user."). ' '. _("Can be left empty.")),
-				"457" => array ("ext" => "FALSE", "Headline" => _("Save profile"),
-					"Text" => _("This will make a profile of the current account. The saved values are the same as in the profile editor. Profile names may contain the letters a-z, 0-9 and -_.")),
-				"458" => array ("ext" => "FALSE", "Headline" => _("Select group profile"),
-					"Text" => _("If a not yet existing group is defined in csv-file, a new group with the selected group profile will be created.")),
-				"460" => array ("ext" => "FALSE", "Headline" => _("Windows domain"),
-					"Text" => _("Windows domain of host."). ' '. _("Can be left empty.")),
-				"461" => array ("ext" => "FALSE", "Headline" => _("Suffix"),
-					"Text" => _("Position in ldap-tree where the user should be created.")),
-				"462" => array ("ext" => "FALSE", "Headline" => _("Suffix"),
-					"Text" => _("Position in ldap-tree where the group should be created.")),
-				"463" => array ("ext" => "FALSE", "Headline" => _("Suffix"),
-					"Text" => _("Position in ldap-tree where the host should be created.")),
-				"464" => array ("ext" => "FALSE", "Headline" => _("Windows group name"),
-					"Text" => _("If you want to use a well known RID you can selcet a well known group.")),
-				"466" => array ("ext" => "FALSE", "Headline" => _("Unix workstations"),
-					"Text" => _("Comma separated list of unix workstations the user is allowed to login."). ' '. _("Can be left empty.")),
-				"467" => array ("ext" => "FALSE", "Headline" => _("Domain"),
-					"Text" => _("Windows-Domain of group."). ' '. _("Can be left empty.")),
-				"468" => array ("ext" => "FALSE", "Headline" => _("Group members"),
-					"Text" => _("Users also being member of the current group."). ' '. _("Can be left empty.")),
+				// 400 - 599
+				// unused
+				
 				// 600 - 699
 				// Roland Gruber
 				// OU-editor, domain page
@@ -259,11 +162,29 @@ $helpArray = array (
 				"657" => array ("ext" => "FALSE", "Headline" => _("Algorithmic RID Base"),
 					"Text" => _("Used for calculating RIDs from UID/GID. Do not change if unsure."))
 
-/* This is a sample help entry. Just copy this line an modify the vakues between the [] brackets.
-	Help text is located in the array:
-		"[Helpnumber]" => array ("ext" => "FALSE", "Headline" => _("[Headline]"), "Text" => _("[Text]"), "SeeAlso" => "[SeeAlso link]"),
-	Help text is located in an extra file; File must be stored in help directory; Link has to be the path to the file if it is stored in a subdirectory and the filename with a leading slash;
-		"[Helpnumber]" => array ("ext" => "TRUE", "Link" => "[path/FileName]),
+);
+
+/* This is a sample help entry. Just copy this line an modify the values between the [] brackets.
+
+	"[HelpNumber]" => array ("ext" => "FALSE", "Headline" => _("[Headline]"), "Text" => _("[Text]"), "SeeAlso" => "[SeeAlso link]"),
+	"999" => array ("ext" => "FALSE", "Headline" => _("This is a sample entry"), "Text" => _("Sample text"), "SeeAlso" => "http://lam.sf.net"),
+
+
+	If help text is located in an extra file then the file must be stored in help directory.
+	The link has to be the path to the file if it is stored in a subdirectory and the filename with a leading slash.
+
+	"[HelpNumber]" => array ("ext" => "TRUE", "Link" => "[path/FileName]),
+	"999" => array ("ext" => "TRUE", "Link" => "extra.htm),
+
+
+	Syntax:
+	=======
+
+		HelpNumber: numeric value
+		ext: FALSE if help entry is located in this file, TRUE if external help page
+		Headline: topic of help entry
+		Text: help text (ext = FALSE)
+		SeeAlso: URL to additional information (ext = FALSE, optional)
+		Link: relative URL to external help page (ext = TRUE)
 */
-				);
 ?>
