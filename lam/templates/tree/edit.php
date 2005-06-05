@@ -111,6 +111,9 @@ echo "</head>\n";
 	<td class="icon"><img src="../../graphics/delete.gif" /></td>
 	<td><a style="color: red" href="delete_form.php?dn=<?php echo $encoded_dn; ?>">
 	<?php echo _('Delete'); ?></a></td>
+	<td class="icon"><img src="../../graphics/save.png" /></td>
+	<td><a href="export_form.php?dn=<?php echo $encoded_dn; ?>">
+	<?php echo _('Export'); ?></a></td>
 </tr>
 <tr>
     	<td class="icon"><img src="../../graphics/light.png" /></td>

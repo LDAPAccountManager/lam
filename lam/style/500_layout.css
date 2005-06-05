@@ -894,4 +894,17 @@ table.tree_create td.heading {
 	padding: 10px;
 }
 
+table.export_form {
+	font-size: 75%;
+	width: 400px;
+    border-spacing: 10px;
+    border-collapse: separate;
+}
+
+table.export_form tr td {
+	text-align: left;
+	vertical-align: top;
+	padding: 4px;
+}
+
 
