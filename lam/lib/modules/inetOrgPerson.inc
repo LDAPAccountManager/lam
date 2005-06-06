@@ -48,7 +48,8 @@ class inetOrgPerson extends baseModule {
 	/** this functin fills the error message array with messages
 	**/
 	function load_Messages() {
-		$this->messages['host'][0] = array('ERROR', _('Unix workstations'), _('Unix workstations is invalid.'));
+		$this->messages['host'][0] = array('ERROR', _('Unix workstations'), _('Unix workstations are invalid!'));
+		$this->messages['host'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_hosts', _('Unix workstations are invalid!'));
 		$this->messages['givenName'][0] = array('ERROR', _('First name'), _('First name contains invalid characters!'));
 		$this->messages['givenName'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_lastName', _('First name contains invalid characters!'));
 		$this->messages['lastname'][0] = array('ERROR', _('Last name'), _('Last name contains invalid characters!'));
@@ -199,7 +200,15 @@ class inetOrgPerson extends baseModule {
 		'example' => _('user@company.com')
 		)
 		);
-		// TODO unix workstations for upload
+		// Unix workstations for upload
+		if ($_SESSION['ldap']->supports_unix_hosts) {
+			$return['upload_columns'][] = array(
+				'name' => 'inetOrgPerson_hosts',
+				'description' => _('Unix workstations'),
+				'help' => 'workstations',
+				'example' => _('pc01,pc02')
+				);
+		}
 		// available PDF fields
 		$return['PDF_fields'] = array(
 			'description',
@@ -266,6 +275,10 @@ class inetOrgPerson extends baseModule {
 				'mail' => array (
 					"Headline" => _("eMail address"),
 					"Text" => _("eMail address")
+				),
+				'workstations' => array (
+					"Headline" => _("Unix workstations"),
+					"Text" => _("Please enter a comma separated list of host names where this user is allowed to log in. Can be left empty.")
 				)
 			),
 			'host' => array(
@@ -361,12 +374,11 @@ class inetOrgPerson extends baseModule {
 			$host = $post['host'];
 			if (!get_preg($host,'unixhost'))
 				$triggered_messages['host'][] = $this->messages['host'][0];
-			$hosts = explode(" ", $host);
+			$hosts = explode(",", $host);
 			$this->attributes['host'] = array();
 			foreach ($hosts as $host)
 				if ($host!="") $this->attributes['host'][] = $host;
 			}
-
 		// Do some regex-checks and return error if attributes are set to wrong values
 		if (($this->attributes['givenName'][0] != '') && !get_preg($this->attributes['givenName'][0], 'realname')) $triggered_messages['givenName'][] = $this->messages['givenName'][0];
 		if ( !get_preg($this->attributes['sn'][0], 'realname')) $triggered_messages['sn'][] = $this->messages['lastname'][0];
@@ -394,12 +406,13 @@ class inetOrgPerson extends baseModule {
 				'maxlength' => '255', 'value' => $this->attributes['description'][0] ),
 			2 => array ('kind' => 'help', 'value' => 'description'));
 		if (isset($this->attributes['host'])) {
-			if (is_array($this->attributes['host']))
-				foreach ($this->attributes['host'] as $host) $hostvalue .= $host." ";
+			if (is_array($this->attributes['host'])) {
+				$hostvalue .= implode(",", $this->attributes['host']);
+			}
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Unix workstations') ),
 				1 => array ( 'kind' => 'input', 'name' => 'host', 'type' => 'text', 'size' => '20',
-					'maxlength' => '255', 'value' => $hostvalues ),
-				2 => array ('kind' => 'help', 'value' => 'host'));
+					'maxlength' => '255', 'value' => $hostvalue ),
+				2 => array ('kind' => 'help', 'value' => 'workstations'));
 			}
 		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Job title') ),
 			1 => array ( 'kind' => 'input', 'name' => 'title', 'type' => 'text', 'size' => '10',
@@ -612,6 +625,17 @@ class inetOrgPerson extends baseModule {
 				}
 				else {
 					$partialAccounts[$i]['cn'] = $partialAccounts[$i]['sn'];
+				}
+			}
+			// Unix workstations
+			if ($rawAccounts[$i][$ids['inetOrgPerson_hosts']] != "") {
+				if (get_preg($rawAccounts[$i][$ids['inetOrgPerson_hosts']], 'unixhost')) {
+					$partialAccounts[$i]['host'] = explode(",", $rawAccounts[$i][$ids['inetOrgPerson_hosts']]);
+				}
+				else {
+					$errMsg = $this->messages['host'][1];
+					array_push($errMsg, array($i));
+					$triggered_messages[] = $errMsg;
 				}
 			}
 		}
