@@ -507,13 +507,15 @@ class inetOrgPerson extends baseModule {
 				$triggered_messages[] = $errMsg;
 			}
 			// first name
-			if (($rawAccounts[$i][$ids['inetOrgPerson_firstName']] != "") && get_preg($rawAccounts[$i][$ids['inetOrgPerson_firstName']], 'realname')) {
-				$partialAccounts[$i]['givenName'] = $rawAccounts[$i][$ids['inetOrgPerson_firstName']];
-			}
-			else {
-				$errMsg = $this->messages['givenName'][1];
-				array_push($errMsg, array($i));
-				$triggered_messages[] = $errMsg;
+			if ($rawAccounts[$i][$ids['inetOrgPerson_firstName']] != "") {
+				if (get_preg($rawAccounts[$i][$ids['inetOrgPerson_firstName']], 'realname')) {
+					$partialAccounts[$i]['givenName'] = $rawAccounts[$i][$ids['inetOrgPerson_firstName']];
+				}
+				else {
+					$errMsg = $this->messages['givenName'][1];
+					array_push($errMsg, array($i));
+					$triggered_messages[] = $errMsg;
+				}
 			}
 			// description
 			if ($rawAccounts[$i][$ids['inetOrgPerson_description']] != "") {
@@ -528,85 +530,103 @@ class inetOrgPerson extends baseModule {
 				}
 			}
 			// title
-			if (($rawAccounts[$i][$ids['inetOrgPerson_title']] != "") && get_preg($rawAccounts[$i][$ids['inetOrgPerson_title']], 'title')) {
-				$partialAccounts[$i]['title'] = $rawAccounts[$i][$ids['inetOrgPerson_title']];
-			}
-			else {
-				$errMsg = $this->messages['title'][1];
-				array_push($errMsg, array($i));
-				$triggered_messages[] = $errMsg;
+			if ($rawAccounts[$i][$ids['inetOrgPerson_title']] != "") {
+				if (get_preg($rawAccounts[$i][$ids['inetOrgPerson_title']], 'title')) {
+					$partialAccounts[$i]['title'] = $rawAccounts[$i][$ids['inetOrgPerson_title']];
+				}
+				else {
+					$errMsg = $this->messages['title'][1];
+					array_push($errMsg, array($i));
+					$triggered_messages[] = $errMsg;
+				}
 			}
 			// employee type
-			if (($rawAccounts[$i][$ids['inetOrgPerson_type']] != "") && get_preg($rawAccounts[$i][$ids['inetOrgPerson_type']], 'employeeType')) {
-				$partialAccounts[$i]['employeeType'] = $rawAccounts[$i][$ids['inetOrgPerson_type']];
-			}
-			else {
-				$errMsg = $this->messages['employeeType'][1];
-				array_push($errMsg, array($i));
-				$triggered_messages[] = $errMsg;
+			if ($rawAccounts[$i][$ids['inetOrgPerson_type']] != "") {
+				if (get_preg($rawAccounts[$i][$ids['inetOrgPerson_type']], 'employeeType')) {
+					$partialAccounts[$i]['employeeType'] = $rawAccounts[$i][$ids['inetOrgPerson_type']];
+				}
+				else {
+					$errMsg = $this->messages['employeeType'][1];
+					array_push($errMsg, array($i));
+					$triggered_messages[] = $errMsg;
+				}
 			}
 			// street
-			if (($rawAccounts[$i][$ids['inetOrgPerson_street']] != "") && get_preg($rawAccounts[$i][$ids['inetOrgPerson_street']], 'street')) {
-				$partialAccounts[$i]['street'] = $rawAccounts[$i][$ids['inetOrgPerson_street']];
-			}
-			else {
-				$errMsg = $this->messages['street'][1];
-				array_push($errMsg, array($i));
-				$triggered_messages[] = $errMsg;
+			if ($rawAccounts[$i][$ids['inetOrgPerson_street']] != "") {
+				if (get_preg($rawAccounts[$i][$ids['inetOrgPerson_street']], 'street')) {
+					$partialAccounts[$i]['street'] = $rawAccounts[$i][$ids['inetOrgPerson_street']];
+				}
+				else {
+					$errMsg = $this->messages['street'][1];
+					array_push($errMsg, array($i));
+					$triggered_messages[] = $errMsg;
+				}
 			}
 			// postal code
-			if (($rawAccounts[$i][$ids['inetOrgPerson_postalCode']] != "") && get_preg($rawAccounts[$i][$ids['inetOrgPerson_postalCode']], 'postalCode')) {
-				$partialAccounts[$i]['postalCode'] = $rawAccounts[$i][$ids['inetOrgPerson_postalCode']];
-			}
-			else {
-				$errMsg = $this->messages['postalCode'][1];
-				array_push($errMsg, array($i));
-				$triggered_messages[] = $errMsg;
+			if ($rawAccounts[$i][$ids['inetOrgPerson_postalCode']] != "") {
+				if (get_preg($rawAccounts[$i][$ids['inetOrgPerson_postalCode']], 'postalCode')) {
+					$partialAccounts[$i]['postalCode'] = $rawAccounts[$i][$ids['inetOrgPerson_postalCode']];
+				}
+				else {
+					$errMsg = $this->messages['postalCode'][1];
+					array_push($errMsg, array($i));
+					$triggered_messages[] = $errMsg;
+				}
 			}
 			// postal address
-			if (($rawAccounts[$i][$ids['inetOrgPerson_address']] != "") && get_preg($rawAccounts[$i][$ids['inetOrgPerson_address']], 'postalAddress')) {
-				$partialAccounts[$i]['postalAddress'] = $rawAccounts[$i][$ids['inetOrgPerson_address']];
-			}
-			else {
-				$errMsg = $this->messages['postalAddress'][1];
-				array_push($errMsg, array($i));
-				$triggered_messages[] = $errMsg;
+			if ($rawAccounts[$i][$ids['inetOrgPerson_address']] != "") {
+				if (get_preg($rawAccounts[$i][$ids['inetOrgPerson_address']], 'postalAddress')) {
+					$partialAccounts[$i]['postalAddress'] = $rawAccounts[$i][$ids['inetOrgPerson_address']];
+				}
+				else {
+					$errMsg = $this->messages['postalAddress'][1];
+					array_push($errMsg, array($i));
+					$triggered_messages[] = $errMsg;
+				}
 			}
 			// telephone
-			if (($rawAccounts[$i][$ids['inetOrgPerson_telephone']] != "") && get_preg($rawAccounts[$i][$ids['inetOrgPerson_telephone']], 'telephone')) {
-				$partialAccounts[$i]['telephoneNumber'] = $rawAccounts[$i][$ids['inetOrgPerson_telephone']];
-			}
-			else {
-				$errMsg = $this->messages['telephone'][1];
-				array_push($errMsg, array($i));
-				$triggered_messages[] = $errMsg;
+			if ($rawAccounts[$i][$ids['inetOrgPerson_telephone']] != "") {
+				if (get_preg($rawAccounts[$i][$ids['inetOrgPerson_telephone']], 'telephone')) {
+					$partialAccounts[$i]['telephoneNumber'] = $rawAccounts[$i][$ids['inetOrgPerson_telephone']];
+				}
+				else {
+					$errMsg = $this->messages['telephoneNumber'][1];
+					array_push($errMsg, array($i));
+					$triggered_messages[] = $errMsg;
+				}
 			}
 			// mobile
-			if (($rawAccounts[$i][$ids['inetOrgPerson_mobile']] != "") && get_preg($rawAccounts[$i][$ids['inetOrgPerson_mobile']], 'telephone')) {
-				$partialAccounts[$i]['mobiletelephoneNumber'] = $rawAccounts[$i][$ids['inetOrgPerson_mobile']];
-			}
-			else {
-				$errMsg = $this->messages['mobileTelephone'][1];
-				array_push($errMsg, array($i));
-				$triggered_messages[] = $errMsg;
+			if ($rawAccounts[$i][$ids['inetOrgPerson_mobile']] != "") {
+				if (get_preg($rawAccounts[$i][$ids['inetOrgPerson_mobile']], 'telephone')) {
+					$partialAccounts[$i]['mobiletelephoneNumber'] = $rawAccounts[$i][$ids['inetOrgPerson_mobile']];
+				}
+				else {
+					$errMsg = $this->messages['mobileTelephone'][1];
+					array_push($errMsg, array($i));
+					$triggered_messages[] = $errMsg;
+				}
 			}
 			// facsimile
-			if (($rawAccounts[$i][$ids['inetOrgPerson_fax']] != "") && get_preg($rawAccounts[$i][$ids['inetOrgPerson_fax']], 'telephone')) {
-				$partialAccounts[$i]['facsimileTelephoneNumber'] = $rawAccounts[$i][$ids['inetOrgPerson_fax']];
-			}
-			else {
-				$errMsg = $this->messages['facsimileNumber'][1];
-				array_push($errMsg, array($i));
-				$triggered_messages[] = $errMsg;
+			if ($rawAccounts[$i][$ids['inetOrgPerson_fax']] != "") {
+				if (get_preg($rawAccounts[$i][$ids['inetOrgPerson_fax']], 'telephone')) {
+					$partialAccounts[$i]['facsimileTelephoneNumber'] = $rawAccounts[$i][$ids['inetOrgPerson_fax']];
+				}
+				else {
+					$errMsg = $this->messages['facsimileNumber'][1];
+					array_push($errMsg, array($i));
+					$triggered_messages[] = $errMsg;
+				}
 			}
 			// eMail
-			if (($rawAccounts[$i][$ids['inetOrgPerson_email']] != "") && get_preg($rawAccounts[$i][$ids['inetOrgPerson_email']], 'email')) {
-				$partialAccounts[$i]['mail'] = $rawAccounts[$i][$ids['inetOrgPerson_email']];
-			}
-			else {
-				$errMsg = $this->messages['email'][1];
-				array_push($errMsg, array($i));
-				$triggered_messages[] = $errMsg;
+			if ($rawAccounts[$i][$ids['inetOrgPerson_email']] != "") {
+				if (get_preg($rawAccounts[$i][$ids['inetOrgPerson_email']], 'email')) {
+					$partialAccounts[$i]['mail'] = $rawAccounts[$i][$ids['inetOrgPerson_email']];
+				}
+				else {
+					$errMsg = $this->messages['email'][1];
+					array_push($errMsg, array($i));
+					$triggered_messages[] = $errMsg;
+				}
 			}
 			// cn
 			if ($rawAccounts[$i][$ids['inetOrgPerson_cn']] != "") {
