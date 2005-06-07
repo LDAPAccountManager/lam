@@ -321,7 +321,7 @@ class posixAccount extends baseModule {
 				),
 				'gecos' => array(
 					"Headline" => _("Gecos"),
-					"Text" => _("User description. If left empty sur- and give name will be used.")
+					"Text" => _("User description. If left empty first and last name will be used.")
 				),
 				'gidNumber' => array(
 					"Headline" => _("Primary group"),
@@ -1221,14 +1221,29 @@ class posixAccount extends baseModule {
 				array_push($errMsg, array($i));
 				$triggered_messages[] = $errMsg;
 			}
-			// GECOS // TODO fill default values
-			if (($rawAccounts[$i][$ids['posixAccount_gecos']] != "") && (get_preg($rawAccounts[$i][$ids['posixAccount_gecos']], 'gecos'))) {
-				$partialAccounts[$i]['gecos'] = $rawAccounts[$i][$ids['posixAccount_gecos']];
+			// GECOS
+			if ($rawAccounts[$i][$ids['posixAccount_gecos']] != "") {
+				if (get_preg($rawAccounts[$i][$ids['posixAccount_gecos']], 'gecos')) {
+					$partialAccounts[$i]['gecos'] = $rawAccounts[$i][$ids['posixAccount_gecos']];
+				}
+				else {
+					$errMsg = $this->messages['gecos'][0];
+					array_push($errMsg, array($i));
+					$triggered_messages[] = $errMsg;
+				}
 			}
 			else {
-				$errMsg = $this->messages['gecos'][0];
-				array_push($errMsg, array($i));
-				$triggered_messages[] = $errMsg;
+				$gecos = "";
+				if (($rawAccounts[$i][$ids['inetOrgPerson_firstName']] != "") && ($rawAccounts[$i][$ids['inetOrgPerson_lastName']] != "")) {
+					$gecos = $rawAccounts[$i][$ids['inetOrgPerson_firstName']] . " " . $rawAccounts[$i][$ids['inetOrgPerson_lastName']];
+					if ($rawAccounts[$i][$ids['inetOrgPerson_telephone']] != "") {
+						$gecos = $gecos . ",," . $rawAccounts[$i][$ids['inetOrgPerson_telephone']];  // double "," because room is unknown
+						if ($rawAccounts[$i][$ids['inetOrgPerson_fax']] != "") {
+							$gecos = $gecos . "," . $rawAccounts[$i][$ids['inetOrgPerson_fax']];
+						}
+					}
+				}
+				if ($gecos != "") $partialAccounts[$i]['gecos'] = $gecos;
 			}
 			// user specific attributes
 			if ($this->scope == 'user') {
