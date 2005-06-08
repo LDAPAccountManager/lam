@@ -76,11 +76,13 @@ class posixAccount extends baseModule {
 		$this->messages['uid'][1] = array('WARN', _('Username'), _('You are using a capital letters. This can cause problems because windows isn\'t case-sensitive.'));
 		$this->messages['uid'][2] = array('ERROR', _('Username'), _('Username contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
 		$this->messages['uid'][3] = array('WARN', _('Hostname'), _('You are using a capital letters. This can cause problems because windows isn\'t case-sensitive.'));
-		$this->messages['uid'][4] = array('ERROR', _('Hostname'), _('Hostname contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ ! Hostname must end with $ !'));
-		$this->messages['uid'][5] = array('WARN', _('Username'), _('Username in use. Selected next free username.'));
-		$this->messages['uid'][6] = array('WARN', _('Hostname'), _('Hostname in use. Selected next free hostname.'));
-		$this->messages['uid'][7] = array('ERROR', _('Account %s:') . ' posixAccount_userName', _('Username contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
-		$this->messages['uid'][8] = array('ERROR', _('Account %s:') . ' posixAccount_hostName', _('Hostname contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
+		$this->messages['uid'][4] = array('ERROR', _('Hostname'), _('Hostname contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ ! Host name must end with $ !'));
+		$this->messages['uid'][5] = array('WARN', _('Username'), _('User name in use. Selected next free user name.'));
+		$this->messages['uid'][6] = array('WARN', _('Hostname'), _('Host name in use. Selected next free host name.'));
+		$this->messages['uid'][7] = array('ERROR', _('Account %s:') . ' posixAccount_userName', _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
+		$this->messages['uid'][8] = array('ERROR', _('Account %s:') . ' posixAccount_hostName', _('Host name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
+		$this->messages['uid'][9] = array('ERROR', _('Account %s:') . ' posixAccount_userName', _('User name already exists!'));
+		$this->messages['uid'][10] = array('ERROR', _('Account %s:') . ' posixAccount_hostName', _('Host name already exists!'));
 		$this->messages['gidNumber'][0] = array('ERROR', _('Account %s:') . ' posixAccount_group', _('LAM was unable to find a group with this name!'));
 		$this->messages['gidNumber'][1] = array('ERROR', _('Account %s:') . ' posixAccount_group', _('This GID number is invalid! Please provide either a number or a group name.'));
 		$this->messages['gecos'][0] = array('ERROR', _('Account %s:') . ' posixAccount_gecos', _('This gecos value is invalid!'));
@@ -1177,6 +1179,15 @@ class posixAccount extends baseModule {
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts) {
 		$triggered_messages = array();
 		$needAutoUID = array();
+		// get list of existing users
+		$dnUsers = $_SESSION['cache']->get_cache('uid', 'posixAccount', '*');
+		$existingUsers = array();
+		foreach ($dnUsers as $dn) {
+			$existingUsers[] = $dn[0];
+		}
+		// get list of existing groups
+		$existingGroups = $_SESSION['cache']->findgroups();
+		// check input
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			if (!in_array("posixAccount", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "posixAccount";
 			// UID
@@ -1247,8 +1258,22 @@ class posixAccount extends baseModule {
 			}
 			// user specific attributes
 			if ($this->scope == 'user') {
+				// additional groups
+				if ($rawAccounts[$i][$ids['posixAccount_additionalGroups']] != "") {
+					$groups = explode(",", $rawAccounts[$i][$ids['posixAccount_additionalGroups']]);
+					for ($g = 0; $g < sizeof($groups); $g++) {
+						if (!in_array($groups[$g], $existingGroups)) {
+							$triggered_messages[] = array('ERROR', _('Unable to find group in LDAP.'), $groups[$g]);
+						}
+					}
+				}
 				// user name
-				if (get_preg($rawAccounts[$i][$ids['posixAccount_userName']], 'username')) {
+				if (in_array($rawAccounts[$i][$ids['posixAccount_userName']], $existingUsers)) {
+					$errMsg = $this->messages['uid'][9];
+					array_push($errMsg, array($i));
+					$triggered_messages[] = $errMsg;
+				}
+				elseif (get_preg($rawAccounts[$i][$ids['posixAccount_userName']], 'username')) {
 					$partialAccounts[$i]['uid'] = $rawAccounts[$i][$ids['posixAccount_userName']];
 				}
 				else {
@@ -1317,7 +1342,12 @@ class posixAccount extends baseModule {
 			// host specific attributes
 			elseif ($this->scope == 'host') {
 				// host name
-				if (get_preg($rawAccounts[$i][$ids['posixAccount_hostName']], 'hostname')) {
+				if (in_array($rawAccounts[$i][$ids['posixAccount_hostName']], $existingUsers)) {
+					$errMsg = $this->messages['uid'][10];
+					array_push($errMsg, array($i));
+					$triggered_messages[] = $errMsg;
+				}
+				elseif (get_preg($rawAccounts[$i][$ids['posixAccount_hostName']], 'hostname')) {
 					$partialAccounts[$i]['uid'] = $rawAccounts[$i][$ids['posixAccount_hostName']];
 					$partialAccounts[$i]['cn'] = $rawAccounts[$i][$ids['posixAccount_hostName']];
 				}
