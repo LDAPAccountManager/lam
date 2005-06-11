@@ -265,10 +265,12 @@ class cache {
 	*/
 	function getgid($groupname) {
 		$dn_groups = $_SESSION['cache']->get_cache(array('gidNumber', 'cn'), 'posixGroup', 'group');
-		$DNs = array_keys($dn_groups);
-		foreach ($DNs as $DN) {
-			if ($dn_groups[$DN]['cn'][0] == $groupname) {
-				return $dn_groups[$DN]['gidNumber'][0];
+		if (is_array($dn_groups)) {
+			$DNs = array_keys($dn_groups);
+			foreach ($DNs as $DN) {
+				if ($dn_groups[$DN]['cn'][0] == $groupname) {
+					return $dn_groups[$DN]['gidNumber'][0];
+				}
 			}
 		}
 	}
