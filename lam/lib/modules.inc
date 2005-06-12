@@ -816,7 +816,8 @@ class accountContainer {
 						}
 					if ($post['outputpdf']) {
 						// Create / display PDf-file
-						call_user_func('create'.ucfirst($this->type).'PDF', array($_SESSION[$this->base]));
+						// TODO: add selection for PDF structure in final page
+						createModulePDF(array($_SESSION[$this->base]), 'default.xml');
 						exit;
 						}
 					}
