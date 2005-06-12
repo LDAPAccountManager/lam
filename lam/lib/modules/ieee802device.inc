@@ -254,7 +254,7 @@ class ieee802Device extends baseModule {
 	function get_pdfEntries() {
 		$return = array();
 		if (sizeof($this->attributes['macAddress']) > 0) {
-			$return['ieee802Device_macAddress'] = '<block><key>' . _('MAC address list') . '</key><value>' . implode(', ', $this->attributes['macAddress']) . '</value></block>';
+			$return['ieee802Device_macAddress'][0] = '<block><key>' . _('MAC address(es)') . '</key><value>' . implode(', ', $this->attributes['macAddress']) . '</value></block>';
 		}
 		return $return;
 	}
