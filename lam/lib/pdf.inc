@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
-  Copyright (C) 2003  Michael Drgner
+  Copyright (C) 2003  Michael Dürgner
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -26,16 +26,10 @@ $Id$
  * be called by other pages and furthermore some helper functions.
  * 
  * @author Michael Dürgner
- * @version 0.5
  * @package PDF
  * @copyright Copyright (C) 2003-2004 Michael Dürgner
  * @license GPL
  */
-
-/**
- * 
- */
-define('FPDF_FONTPATH','font/');
 
 /**
  * 
@@ -46,6 +40,11 @@ define('LAMPDF_LINEWIDTH',190);
  * 
  */
 include_once("fpdf.php");
+
+/**
+ * 
+ */
+include_once("ufpdf.php");
 
 /**
  * 
@@ -107,8 +106,10 @@ function createModulePDF($accounts,$pdf_structure="default.xml") {
 	// The decimal separator must be a dot in order to write pdf-files
 	setlocale(LC_NUMERIC, "C");
 	
+	$fontName = "BitstreamVeraSans-Roman"; // TODO: load font name from XML file
+	
 	// Create a new PDF file acording to the account type
-	$pdf = new LamPDF($account_type,$load['page_definitions']);
+	$pdf = new LamPDF($account_type,$load['page_definitions'],$fontName);
 	
 	// Loop over each account and add a new page in the PDF file for it 
 	foreach($accounts as $account) {
@@ -130,7 +131,7 @@ function createModulePDF($accounts,$pdf_structure="default.xml") {
 				else {
 					$section_headline = '- ' . _($name);
 				}
-				$pdf->setFont("arial","B",12);
+				$pdf->setFont($fontName,"B",12);
 				$pdf->Write(5,$section_headline . ":");
 				$pdf->Ln(6);
 			}
@@ -171,7 +172,7 @@ function createModulePDF($accounts,$pdf_structure="default.xml") {
 				// Split string in array
 				$info_array = explode("\n", $info_string);
 				// Set font for text
-				$pdf->setFont("times","",10);
+				$pdf->setFont($fontName,"",10);
 				// Print each entry in array (each line in the text) as new line
 				foreach ($info_array as $info) {
 					$pdf->Cell(50,5,$info,0,1,"L",0);
@@ -192,7 +193,7 @@ function createModulePDF($accounts,$pdf_structure="default.xml") {
 					// Loop over all rows of this entry (most of the time this will be just one)
 					foreach($value_entry as $line) {
 						// Substitue XML syntax with valid FPDF methods
-						$methods = processLine($line);
+						$methods = processLine($line,true,$fontName);
 						// Call every method
 						foreach($methods as $method) {
 							call_user_func_array(array(&$pdf,$method[0]),$method[1]);
@@ -274,7 +275,7 @@ function getSectionHeadline($line) {
  * 
  * @return array
  */
-function processLine($line,$first_td = true) {
+function processLine($line,$first_td = true, $fontName) {
 	global $key, $line_width;
 	
 	// PCRE matching <block> tag
@@ -296,24 +297,24 @@ function processLine($line,$first_td = true) {
 		$key = true;
 		$line_width = $line_width - 50;
 		$format = processFormatTags($matches[2],'B');
-		$return[] = array('setFont',array('times',$format[0],10));
+		$return[] = array('setFont',array($fontName,$format[0],10));
 		$return[] = array('Cell',array(50,5,$format[1] . ':',0,0,'R',0));
-		$return[] = array('setFont',array('times','',10));
-		return array_merge($return,processLine($matches[1] . $matches[3],false));
+		$return[] = array('setFont',array($fontName,'',10));
+		return array_merge($return,processLine($matches[1] . $matches[3],false,$fontName));
 	}
 	elseif(preg_match($value_pattern,$line,$matches)) {
 		$format = processFormatTags($matches[2],'');
-		$return[] = array('setFont',array('times',$format[0],10));
+		$return[] = array('setFont',array($fontName,$format[0],10));
 		$return[] = array('Cell',array(50,5,$format[1],0,0,'L',0));
-		$return[] = array('setFont',array('times','',10));
-		return array_merge($return,processLine($matches[1] . $matches[3]));
+		$return[] = array('setFont',array($fontName,'',10));
+		return array_merge($return,processLine($matches[1] . $matches[3],true,$fontName));
 	}
 	elseif(preg_match($p_pattern,$line,$matches)) {
 		$format = processFormatTags($matches[2],'');
-		$return[] = array('setFont',array('times',$format[0],10));
+		$return[] = array('setFont',array($fontName,$format[0],10));
 		$return[] = array('Write',array(5,$format[1]));
-		$return[] = array('setFont',array('times','',10));
-		return array_merge($return,processLine($matches[1] . $matches[3]));
+		$return[] = array('setFont',array($fontName,'',10));
+		return array_merge($return,processLine($matches[1] . $matches[3],true,$fontName));
 	}
 	elseif(preg_match($td_pattern,$line,$matches)) {
 		if($first_td && $key) {
@@ -322,10 +323,10 @@ function processLine($line,$first_td = true) {
 		}
 		$format = processFormatTags($matches[3],'');
 		$attrs = processAttributes($matches[2],array('width' => $line_width,'height' => 5,'align' => 'L'));
-		$return[] = array('setFont',array('times',$format[0],10));
+		$return[] = array('setFont',array($fontName,$format[0],10));
 		$return[] = array('Cell',array($attrs['width'],$attrs['height'],$format[1],0,0,$attrs['align'],0));
-		$return[] = array('setFont',array('times','',10));
-		return array_merge($return,processLine($matches[1] . $matches[4],$first_td));
+		$return[] = array('setFont',array($fontName,'',10));
+		return array_merge($return,processLine($matches[1] . $matches[4],$first_td,$fontName));
 	}
 	elseif(preg_match($br_pattern,$line,$matches)) {
 		return array(array('Ln',array(5)));
@@ -414,34 +415,44 @@ function processAttributes($attrs,$return = array()) {
 
 
 /**
- * 
+ * Creates a LAM information page in PDF format.
  * 
  * @author Michael Dürgner
- * @version 0.5
  * @package PDF
  */
-class lamPDF extends FPDF {
+class lamPDF extends UFPDF {
 	
 	/**
-	 * 
+	 * format settings for page layout
 	 */
 	var $page_definitions;
 	
+	/**
+	* current active font name
+	*/
+	var $fontName;
+	
+	/**
+	* list of supported fonts
+	* format: <font name> => array(<file for default font style>, <file for bold>, <italic>, <bold italic>)
+	*/
+	var $fontList = array(
+		'BitstreamVeraSans-Roman' => array('vera.php', 'verab.php', 'verabi.php', 'verai.php')
+	);
+
 	/**
 	 * 
 	 * 
 	 * @param string 
 	 * @param array
 	 */
-	function lamPDF($account_type = "User",$page_definitions = array()) {
+	function lamPDF($account_type = "User",$page_definitions = array(),$fontName) {
+		$this->fontName = $fontName;
+		define('FPDF_FONTPATH', $_SESSION['lampath'] . "lib/" . 'font/');
 		// Call constructor of superclass
 		$this->FPDF('P','mm','A4');
 		
 		$this->page_definitions = $page_definitions;
-		
-		echo "<pre>";
-		print_r($this->page_definitions);
-		echo "</pre>";
 		
 		// Decide which PDF file type we shall use
 		switch($account_type) {
@@ -452,13 +463,17 @@ class lamPDF extends FPDF {
 				$subject = _("Group information page");
 				break;
 			case "host":
-				$subject = _("Samba-Host information page");
+				$subject = _("Host information page");
 				break;
 		}
 		
 		// Open PDF file and write some basic information
 		$this->Open();
-		$this->setFont("arial","",12);
+		$this->AddFont($this->fontName, '', $this->fontList[$this->fontName][0]);
+		$this->AddFont($this->fontName, 'B', $this->fontList[$this->fontName][1]);
+		$this->AddFont($this->fontName, 'I', $this->fontList[$this->fontName][2]);
+		$this->AddFont($this->fontName, 'BI', $this->fontList[$this->fontName][3]);
+		$this->setFont($this->fontName,"",12);
 		$this->setTitle($this->page_definitions['headline']);
 		$this->setSubject($subject);
 		$this->setAuthor("LDAP Account Manager Devel-Team -Michael Duergner-");
@@ -489,10 +504,10 @@ class lamPDF extends FPDF {
 			}
 			$this->Image($imageFile,10,10,$width,$height,"JPG");
 		}
-		$this->SetFont("arial","B",22);
+		$this->SetFont($this->fontName,"B",22);
 		$this->Cell(170,5,$this->page_definitions['headline'],0,1,"R",0);
 		$this->Ln(3);
-		$this->SetFont("times","",14);
+		$this->SetFont($this->fontName,"",14);
 		$this->Cell(170,5,"- " . $this->subject . " -",0,0,"R",0);
 		$this->SetLineWidth(0.8);
 		$this->Line(10,$this->page_definitions['margin-top'] + 30,200,$this->page_definitions['margin-top'] + 30);
