@@ -91,7 +91,7 @@ class inetOrgPerson extends baseModule {
 		// RDN attribute
 		$return["RDN"] = array("cn" => "low");
 		// module dependencies
-		$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
+		$return['dependencies'] = array('depends' => array('posixAccount'), 'conflicts' => array()); // TODO make inetOrgPerson independent
 		// profile elements
 		$return['profile_options'] = array(
 			array(
