@@ -302,7 +302,7 @@ function listGetAttributeArray($scope) {
 				"uid" => _("User ID"),
 				"uidnumber" => _("UID number"),
 				"gidnumber" => _("GID number"),
-				"cn" => _("Username"),
+				"cn" => _("User name"),
 				"host" => _("Allowed hosts"),
 				"givenname" => _("First name"),
 				"sn" => _("Last name"),
@@ -323,7 +323,7 @@ function listGetAttributeArray($scope) {
 			break;
 		case 'host':
 			return array (
-				"uid" => _("Host username"),
+				"uid" => _("Host name"),
 				"cn" => _("Host name"),
 				"rid" => _("RID (Windows UID)"),
 				"description" => _("Host description"),

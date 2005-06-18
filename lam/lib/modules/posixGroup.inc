@@ -137,7 +137,7 @@ class posixGroup extends baseModule {
 	*/
 	function display_html_attributes(&$post) {
 		$return[] = array(
-			0 => array('kind' => 'text', 'text' => _("Groupname").'*'),
+			0 => array('kind' => 'text', 'text' => _("Group name").'*'),
 			1 => array('kind' => 'input', 'name' => 'cn', 'type' => 'text', 'size' => '20', 'maxlength' => '20', 'value' => $this->attributes['cn'][0]),
 			2 => array('kind' => 'help', 'value' => 'cn'));
 		$return[] = array(
@@ -381,8 +381,8 @@ class posixGroup extends baseModule {
 		// help Entries
 		$return['help'] = array(
 			'cn' =>	array(
-				"Headline" => _("Groupname"),
-				"Text" => _("Group name of the group which should be created. Valid characters are: a-z,0-9, .-_. Lam does not allow a number as first character because groupadd also does not allow it. Lam does not allow capital letters A-Z because it can cause several problems. If groupname is already used groupname will be expanded with a number. The next free number will be used.")
+				"Headline" => _("Group name"),
+				"Text" => _("Group name of the group which should be created. Valid characters are: a-z,0-9, .-_. LAM does not allow a number as first character because groupadd also does not allow it. LAM does not allow capital letters A-Z because it can cause several problems. If group name is already used group name will be expanded with a number. The next free number will be used.")
 			),
 			'gidNumber'	=> array(
 				"Headline" => _("GID number"),
@@ -428,7 +428,7 @@ class posixGroup extends baseModule {
 	* @see baseModule#get_pdfEntries
 	*/
 	function get_pdfEntries($account_type = "group") {
-		return array(	'posixGroup_cn' => array('<block><key>' . _('Groupname') . '</key><value>' . $this->attributes['cn'][0] . '</value></block>'),
+		return array(	'posixGroup_cn' => array('<block><key>' . _('Group name') . '</key><value>' . $this->attributes['cn'][0] . '</value></block>'),
 		'posixGroup_gidNumber' => array('<block><key>' . _('GID number') . '</key><value>' . $this->attributes['gidNumber'][0] . '</value></block>'),
 		'posixGroup_memberUid' => array('<block><key>' . _('Group members') . '</key><value>' . $this->attributes['memberUid'][0] . '</value></block>'),
 		'posixGroup_description' => array('<block><key>' . _('Description') . '</key><value>' . $this->attributes['description'][0] . '</value></block>'));
@@ -468,10 +468,10 @@ class posixGroup extends baseModule {
 		$this->messages['gidNumber'][6] = array('ERROR', _('Maximum GID number'), _('Maximum GID number is invalid or empty!'));
 		$this->messages['gidNumber'][7] = array('ERROR', _('Maximum GID number'), _('Maximum GID number must be greater than minimum GID number!'));
 		$this->messages['gidNumber'][8] = array('ERROR', _('Account %s:') . ' posixGroup_gid', _('GID number has to be a numeric value!'));
-		$this->messages['cn'][0] = array('WARN', _('Groupname'), _('You are using a capital letters. This can cause problems because windows isn\'t case-sensitive.'));
-		$this->messages['cn'][1] = array('WARN', _('Groupname'), _('Groupname in use. Selected next free groupname.'));
-		$this->messages['cn'][2] = array('ERROR', _('Groupname'), _('Groupname contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
-		$this->messages['cn'][3] = array('ERROR', _('Account %s:') . ' posixGroup_cn', _('Groupname contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
+		$this->messages['cn'][0] = array('WARN', _('Group name'), _('You are using a capital letters. This can cause problems because Windows isn\'t case-sensitive.'));
+		$this->messages['cn'][1] = array('WARN', _('Group name'), _('Group name in use. Selected next free group name.'));
+		$this->messages['cn'][2] = array('ERROR', _('Group name'), _('Group name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
+		$this->messages['cn'][3] = array('ERROR', _('Account %s:') . ' posixGroup_cn', _('Group name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
 		$this->messages['memberUID'][0] = array('ERROR', _('Account %s:') . ' posixGroup_members', _("This value must be a list of user names separated by semicolons."));
 		} 
 

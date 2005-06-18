@@ -44,13 +44,13 @@ class sambaAccount extends baseModule {
 	function load_Messages() {
 		// error messages for input checks
 		$this->messages['homePath'][0] = array('ERROR', _('Home path'), _('Home path is invalid.'));
-		$this->messages['homePath'][1] = array('INFO', _('Home path'), _('Inserted user- or groupname in HomePath.'));
-		$this->messages['homePath'][2] = array('INFO', _('Account %s:') . ' sambaAccount_homePath', _('Inserted user- or groupname in HomePath.'));
+		$this->messages['homePath'][1] = array('INFO', _('Home path'), _('Inserted user or group name in home path.'));
+		$this->messages['homePath'][2] = array('INFO', _('Account %s:') . ' sambaAccount_homePath', _('Inserted user or group name in home path.'));
 		$this->messages['profilePath'][0] = array('ERROR', _('Profile path'), _('Profile path is invalid!'));
-		$this->messages['profilePath'][1] = array('INFO', _('Profile path'), _('Inserted user- or groupname in profilepath.'));
-		$this->messages['profilePath'][2] = array('INFO', _('Account %s:') . ' sambaAccount_profilePath', _('Inserted user- or groupname in profilepath.'));
+		$this->messages['profilePath'][1] = array('INFO', _('Profile path'), _('Inserted user or group name in profile path.'));
+		$this->messages['profilePath'][2] = array('INFO', _('Account %s:') . ' sambaAccount_profilePath', _('Inserted user or group name in profile path.'));
 		$this->messages['logonScript'][0] = array('ERROR', _('Logon script'), _('Logon script is invalid!'));
-		$this->messages['logonScript'][1] = array('INFO', _('Logon script'), _('Inserted user- or groupname in logon script.'));
+		$this->messages['logonScript'][1] = array('INFO', _('Logon script'), _('Inserted user or group name in logon script.'));
 		$this->messages['logonScript'][2] = array('ERROR', _('Account %s:') . ' sambaAccount_logonScript', _('Logon script is invalid!'));
 		$this->messages['workstations'][0] = array('ERROR', _('Samba workstations'), _('Please enter a comma separated list of host names!'));
 		$this->messages['workstations'][1] = array('ERROR', _('Account %s:') . ' sambaAccount_workstations', _('Please enter a comma separated list of host names!'));
@@ -355,13 +355,13 @@ class sambaAccount extends baseModule {
 				"Text" => _("Drive letter assigned on windows workstations as homedirectory.")),
 			"homePath" => array(
 				"ext" => "FALSE", "Headline" => _("Home path"),
-				"Text" => _('UNC-path (\\\\server\\share) of homedirectory. $user and $group are replaced with user- and groupname.'). ' '. _("Can be left empty.")),
+				"Text" => _('UNC-path (\\\\server\\share) of homedirectory. $user and $group are replaced with user and group name.'). ' '. _("Can be left empty.")),
 			"profilePath" => array(
 				"ext" => "FALSE", "Headline" => _("Profile path"),
-				"Text" => _('Path of the user profile. Can be a local absolute path or a UNC-path (\\\\server\\share). $user and $group are replaced with user- and groupname.'). ' '. _("Can be left empty.")),
+				"Text" => _('Path of the user profile. Can be a local absolute path or a UNC-path (\\\\server\\share). $user and $group are replaced with user and group name.'). ' '. _("Can be left empty.")),
 			"scriptPath" => array(
 				"ext" => "FALSE", "Headline" => _("Logon script"),
-				"Text" => _('Filename and -path relative to netlogon-share which should be executed on logon. $user and $group are replaced with user- and groupname.'). ' '. _("Can be left empty.")),
+				"Text" => _('Filename and -path relative to netlogon-share which should be executed on logon. $user and $group are replaced with user and group name.'). ' '. _("Can be left empty.")),
 			"workstations" => array(
 				"ext" => "FALSE", "Headline" => _("Samba workstations"),
 				"Text" => _("Comma separated list of Samba workstations the user is allowed to login. Empty means every workstation."). ' '. _("Can be left empty.")),
@@ -831,7 +831,7 @@ class sambaAccount extends baseModule {
 	 */
 	function get_pdfEntries($account_type = "user") {
 		return array(	'sambaAccount_displayName' => array('<block><key>' . _('Display name') . '</key><value' . $this->attributes['displayName'][0] . '</value></block>'),
-							'sambaAccount_uid' => array('<block><key>' . _('Username') . '</key><value>' . $this->attributes['uid'][0] . '</value></block>'),
+							'sambaAccount_uid' => array('<block><key>' . _('User name') . '</key><value>' . $this->attributes['uid'][0] . '</value></block>'),
 							'sambaAccount_smbHome' => array('<block><key>' . _('Home path') . '</key><value>' . $this->attributes['smbHome'][0] . '</value></block>'),
 							'sambaAccount_homeDrive' => array('<block><key>' . _('Home drive') . '</key><value>' . $this->attributes['homePath'][0] . '</value></block>'),
 							'sambaAccount_scriptPath' => array('<block><key>' . _('Logon script') . '</key><value>' . $this->attributes['scriptPath'][0] . '</value></block>'),

@@ -270,7 +270,7 @@ class sambaGroupMapping extends baseModule {
 				"Text" => _("This is the group name which will be shown in Windows.")
 			),
 			'sambaSID' => array(
-				"Headline" => _("Windows groupname"),
+				"Headline" => _("Windows group name"),
 				"Text" => _("If you want to use a well known RID you can selcet a well known group.")
 			),
 			'rid' => array(
