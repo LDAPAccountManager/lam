@@ -1,8 +1,10 @@
 ??? 0.5.alpha2
    - added documentation about schemas
    - PDF now uses UTF-8 fonts
+   - added possibility to create plain inetOrgPerson accounts
    - fixed bugs:
     -> set DN suffix and RDN on profile loading
+    -> PDF editor did not show all items
 
 
 11.05.2005 0.5.alpha1
