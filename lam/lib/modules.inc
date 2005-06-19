@@ -362,12 +362,14 @@ function getHelp($module,$helpID,$scope='') {
 * @return array PDF entries
 */
 function getAvailablePDFFields($scope) {
-	// create new account container if needed
-	if (! isset($_SESSION["profile_account_$scope"])) {
-		$_SESSION["profile_account_$scope"] = new accountContainer($scope, "profile_account_$scope");
+	$mods = $_SESSION['config']->get_AccountModules($scope);
+	$return = array();
+	for ($i = 0; $i < sizeof($mods); $i++) {
+		$module = new $mods[$i]($scope);
+		$return[$mods[$i]] = $module->get_pdfFields();
 	}
-	// get options
-	return $_SESSION["profile_account_$scope"]->getAvailablePDFFields();
+	$return['main'] = array('dn');
+	return $return;
 }
 
 /**
@@ -1607,18 +1609,5 @@ class accountContainer {
 			return $return;
 		}
 		
-		/**
-		 * 
-		 * 
-		 * @return 
-		 */
-		function getAvailablePDFFields() {
-			$return = array();
-			foreach($this->module as $moduleName => $module) {
-				$return[$moduleName] = $module->get_pdfFields($this->type);
-			}
-			$return['main'] = array(	'dn');
-			return $return;
-		}
 	}
 ?>

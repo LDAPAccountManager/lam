@@ -439,7 +439,7 @@ class baseModule {
 	 * @param string $scope account type
 	 * @return array list of available fields for PDF output
 	 */
-	function get_pdfFields($scope = 'user') {
+	function get_pdfFields() {
 		return ((isset($this->meta['PDF_fields'])) ? $this->meta['PDF_fields'] : array());
 	}
 	

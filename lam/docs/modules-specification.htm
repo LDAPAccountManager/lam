@@ -579,15 +579,13 @@ section 4. "Help entry syntax".<br>
   <tbody>
     <tr>
       <td style="vertical-align: top; text-align: center;"><span
- style="font-weight: bold;">function get_PDF_Entries($scope)</span><br>
+ style="font-weight: bold;">function get_PDF_Entries()</span><br>
       </td>
     </tr>
   </tbody>
 </table>
 <br>
 This function is called when a PDF is to be created.<br>
-<span style="font-weight: bold;">$scope</span> is the account type
-("user", "group", "host" at this time).<br>
 It returns the fields which are printed in the PDF file for the
 specified account type. At the monent there is no (easy) possibility
 for the user to decide which fields are to be displayed. Perhaps there
