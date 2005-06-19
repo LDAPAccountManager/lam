@@ -433,6 +433,7 @@ function get_preg($argument, $regexp) {
 		case 'password':	// fixme where do i get an exact regexp?
 					$pregexpr = '/^([[:alnum:]\\ \\|\\#\\*\\,\\.\\;\\:\\_\\+\\!\\%\\&\\/\\?\\{\\(\\)\\}-])*$/u';
 					break;
+		case 'cn':
 		case 'groupname':	// first character must be a letter. All letters, numbers, space and ._- are allowed characters
 		case 'username':	// first character must be a letter. All letters, numbers, space and ._- are allowed characters
 					$pregexpr = '/^[[:alpha:]]([[:alnum:]\\.\\ \\_-])*$/u';
@@ -444,7 +445,6 @@ function get_preg($argument, $regexp) {
 		case 'hostname':	// first character must be letter, last must be $. Only normal letters, numbers and ._- are allowed
 					$pregexpr = '/^[a-zA-Z]([a-zA-Z0-9\\.\\_-])*\\$$/u';
 					break;
-		case 'cn':
 		case 'realname':	// Allow all letters, space and  .-_
 					$pregexpr = '/^[[:alpha:]]([[:alpha:]\\.\\ \\_-])*$/u';
 					break;

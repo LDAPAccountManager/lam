@@ -73,12 +73,12 @@ class posixAccount extends baseModule {
 		$this->messages['userPassword'][3] = array('ERROR', _('Password'), _('You cannot use this password options at the same time.'));
 		$this->messages['userPassword'][4] = array('ERROR', _('Account %s:') . ' posixAccount_password', _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
 		$this->messages['uid'][0] = array('INFO', _('UID'), _('UID has changed. Do you want to change home directory?'));
-		$this->messages['uid'][1] = array('WARN', _('Username'), _('You are using a capital letters. This can cause problems because windows isn\'t case-sensitive.'));
-		$this->messages['uid'][2] = array('ERROR', _('Username'), _('Username contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
-		$this->messages['uid'][3] = array('WARN', _('Hostname'), _('You are using a capital letters. This can cause problems because windows isn\'t case-sensitive.'));
-		$this->messages['uid'][4] = array('ERROR', _('Hostname'), _('Hostname contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ ! Host name must end with $ !'));
-		$this->messages['uid'][5] = array('WARN', _('Username'), _('User name in use. Selected next free user name.'));
-		$this->messages['uid'][6] = array('WARN', _('Hostname'), _('Host name in use. Selected next free host name.'));
+		$this->messages['uid'][1] = array('WARN', _('User name'), _('You are using a capital letters. This can cause problems because windows isn\'t case-sensitive.'));
+		$this->messages['uid'][2] = array('ERROR', _('User name'), _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
+		$this->messages['uid'][3] = array('WARN', _('Host name'), _('You are using a capital letters. This can cause problems because windows isn\'t case-sensitive.'));
+		$this->messages['uid'][4] = array('ERROR', _('Host name'), _('Host name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ ! Host name must end with $ !'));
+		$this->messages['uid'][5] = array('WARN', _('User name'), _('User name in use. Selected next free user name.'));
+		$this->messages['uid'][6] = array('WARN', _('Host name'), _('Host name in use. Selected next free host name.'));
 		$this->messages['uid'][7] = array('ERROR', _('Account %s:') . ' posixAccount_userName', _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
 		$this->messages['uid'][8] = array('ERROR', _('Account %s:') . ' posixAccount_hostName', _('Host name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
 		$this->messages['uid'][9] = array('ERROR', _('Account %s:') . ' posixAccount_userName', _('User name already exists!'));
@@ -88,6 +88,8 @@ class posixAccount extends baseModule {
 		$this->messages['gecos'][0] = array('ERROR', _('Account %s:') . ' posixAccount_gecos', _('This gecos value is invalid!'));
 		$this->messages['shell'][0] = array('ERROR', _('Account %s:') . ' posixAccount_shell', _('This login shell is invalid!'));
 		$this->messages['passwordDisabled'][0] = array('ERROR', _('Account %s:') . ' posixAccount_passwordDisabled', _('This value can only be \"true\" or \"false\".'));
+		$this->messages['cn'][0] = array('ERROR', _('Common name'), _('Please enter a valid common name!'));
+		$this->messages['cn'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_cn', _('Please enter a valid common name!'));
 	}
 
 	/**
@@ -174,6 +176,12 @@ class posixAccount extends baseModule {
 				'example' => _('smiller'),
 				'required' => true,
 				'unique' => true
+			),
+			array(
+				'name' => 'posixAccount_cn',
+				'description' => _('Common name'),
+				'help' => 'cn',
+				'example' => _('Steve Miller')
 			),
 			array(
 				'name' => 'posixAccount_uid',
@@ -284,7 +292,8 @@ class posixAccount extends baseModule {
 			'additionalGroups',
 			'homeDirectory',
 			'userPassword',
-			'loginShell'
+			'loginShell',
+			'cn'
 		);
 		// help Entries
 		$return['help'] = array(
@@ -318,8 +327,8 @@ class posixAccount extends baseModule {
 			),
 			'user' => array(
 				'uid' => array(
-					"Headline" => _("Username"),
-					"Text" => _("Username of the user who should be created. Valid characters are: a-z,0-9, .-_. Lam does not allow a number as first character because useradd also does not allow it. Lam does not allow capital letters A-Z because it can cause several problems. If username is already used username will be expanded with a number. The next free number will be used. Warning: Older systems have problems with usernames longer than 8 characters. You can not log in to Windows if username is longer than 16 characters.")
+					"Headline" => _("User name"),
+					"Text" => _("User name of the user who should be created. Valid characters are: a-z,0-9, .-_. LAM does not allow a number as first character because useradd also does not allow it. LAM does not allow capital letters A-Z because it can cause several problems. If user name is already used user name will be expanded with a number. The next free number will be used. Warning: Older systems have problems with user names longer than 8 characters. You can not log in to Windows if user name is longer than 16 characters.")
 				),
 				'gecos' => array(
 					"Headline" => _("Gecos"),
@@ -327,7 +336,7 @@ class posixAccount extends baseModule {
 				),
 				'gidNumber' => array(
 					"Headline" => _("Primary group"),
-					"Text" => _("The Primary group the user should be member of.")
+					"Text" => _("The primary group the user should be member of.")
 				),
 				'homeDirectory' => array(
 					"Headline" => _("Home directory"),
@@ -352,12 +361,16 @@ class posixAccount extends baseModule {
 				'addgroup' => array(
 					"Headline" => _("Additional groups"),
 					"Text" => _("Hold the CTRL-key to (de)select multiple groups."). ' '. _("Can be left empty.")
+				),
+				'cn' => array (
+					"Headline" => _("Common name"),
+					"Text" => _("This is the natural name of the user. If empty, the first and last name or user name is used.")
 				)
 			),
 			'host' => array(
 				'uid' => array(
 					"Headline" => _("Host name"),
-					"Text" => _("Host name of the host which should be created. Valid characters are: a-z,0-9, .-_$. Lam does not allow a number as first character because useradd also does not allow it. Lam does not allow capital letters A-Z because it can cause several problems. Hostnames are always ending with $. If last character is not $ it will be added. If hostname is already used hostname will be expanded with a number. The next free number will be used.")
+					"Text" => _("Host name of the host which should be created. Valid characters are: a-z,0-9, .-_$. LAM does not allow a number as first character because useradd also does not allow it. LAM does not allow capital letters A-Z because it can cause several problems. Host names are always ending with $. If last character is not $ it will be added. If host name is already used host name will be expanded with a number. The next free number will be used.")
 				),
 				'gecos' => array(
 					"Headline" => _("Gecos"),
@@ -632,7 +645,26 @@ class posixAccount extends baseModule {
 			$triggered_messages['homeDirectory'][] = $this->dynamic_Message('homeDirectory',0);
 		// Load attributes
 		$this->attributes['uid'][0] = $post['uid'];
-		$this->attributes['cn'][0] = $this->attributes['uid'][0];
+		$this->attributes['cn'][0] = $post['cn'];
+		if ($this->attributes['cn'][0] == '') {
+			if (isset($_SESSION[$this->base]->module['inetOrgPerson'])) {
+				if ($_SESSION[$this->base]->module['inetOrgPerson']->attributes['givenName'][0]) {
+					$this->attributes['cn'][0] = $_SESSION[$this->base]->module['inetOrgPerson']->attributes['givenName'][0] . " " . $_SESSION[$this->base]->module['inetOrgPerson']->attributes['sn'][0];
+				}
+				elseif ($_SESSION[$this->base]->module['inetOrgPerson']->attributes['sn'][0]) {
+					$this->attributes['cn'][0] = $_SESSION[$this->base]->module['inetOrgPerson']->attributes['sn'][0];
+				}
+				else {
+					$this->attributes['cn'][0] = $post['uid'];
+				}
+			}
+			else {
+				$this->attributes['cn'][0] = $post['uid'];
+			}
+		}
+		if (!get_preg($this->attributes['cn'][0], 'cn')) {
+			$triggered_messages['cn'][] = $this->messages['cn'][0];
+		}
 		$this->attributes['uidNumber'][0] = $post['uidNumber'];
 		$this->attributes['gidNumber'][0] = $_SESSION['cache']->getgid($post['gidNumber']);
 		// Check if UID is valid. If none value was entered, the next useable value will be inserted
@@ -854,9 +886,13 @@ class posixAccount extends baseModule {
 		$shelllist = getshells(); // list of all valid shells
 
 		$return[] = array (
-			0 => array('kind' => 'text', 'text' => _("Username").'*'),
-			1 => array('kind' => 'input', 'name' => 'uid', 'type' => 'text', 'size' => '20', 'maxlength' => '20', 'value' => $this->attributes['uid'][0]),
+			0 => array('kind' => 'text', 'text' => _("User name").'*'),
+			1 => array('kind' => 'input', 'name' => 'uid', 'type' => 'text', 'size' => '30', 'maxlength' => '20', 'value' => $this->attributes['uid'][0]),
 			2 => array('kind' => 'help', 'value' => 'uid'));
+		$return[] = array (
+			0 => array('kind' => 'text', 'text' => _("Common name").'*'),
+			1 => array('kind' => 'input', 'name' => 'cn', 'type' => 'text', 'size' => '30', 'value' => $this->attributes['cn'][0]),
+			2 => array('kind' => 'help', 'value' => 'cn'));
 		$return[] = array(
 			0 => array('kind' => 'text', 'text' => _('UID number').'*'),
 			1 => array('kind' => 'input', 'name' => 'uidNumber', 'type' => 'text', 'size' => '6', 'maxlength' => '6', 'value' => $this->attributes['uidNumber'][0]),
@@ -890,13 +926,13 @@ class posixAccount extends baseModule {
 			if ($_SESSION[$this->base]->isNewAccount) {
 				$return[] = array(
 					0 => array('kind' => 'text', 'text' => _('Password') ),
-					1 => array('kind' => 'input', 'name' => 'userPassword', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => $this->userPassword()),
+					1 => array('kind' => 'input', 'name' => 'userPassword', 'type' => 'password', 'size' => '30', 'maxlength' => '255', 'value' => $this->userPassword()),
 					2 => array('kind' => 'input', 'name' => 'genpass', 'type' => 'submit', 'value' => _('Generate password')));
 				if ($post['userPassword2']!='') $password2 = $post['userPassword2'];
 				else $password2 = $this->userPassword();
 				$return[] = array(
 					0 => array('kind' => 'text', 'text' => _('Repeat password')),
-					1 => array('kind' => 'input', 'name' => 'userPassword2', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => $password2),
+					1 => array('kind' => 'input', 'name' => 'userPassword2', 'type' => 'password', 'size' => '30', 'maxlength' => '255', 'value' => $password2),
 					2 => array('kind' => 'help', 'value' => 'userPassword'));
 			}
 			else {
@@ -1098,15 +1134,17 @@ class posixAccount extends baseModule {
 	* @see baseModule#get_pdfEntries
 	*/
 	function get_pdfEntries($account_type = "user") {
-		return array(	'posixAccount_uid' => array('<block><key>' . _('Username') . '</key><value>' . $this->attributes['uid'][0] . '</value></block>'),
-		'posixAccount_uidNumber' => array('<block><key>' . _('UID number') . '</key><value>' . $this->attributes['uidNumber'][0] . '</value></block>'),
-		'posixAccount_gidNumber' => array('<block><key>' . _('GID number') . '</key><value>' . $this->attributes['gidNumber'][0] . '</value></block>'),
-		'posixAccount_gecos' => array('<block><key>' . _('Gecos') . '</key><value>' . $this->attributes['gecos'][0] . '</value></block>'),
-		'posixAccount_primaryGroup' => array('<block><key>' . _('Primary group') . '</key><value>' . $_SESSION['cache']->getgrnam($this->attributes['gidNumber'][0]) . '</value></block>'),
-		'posixAccount_additionalGroups' => array('<block><key>' . _('Additional groups') . '</key><value>' . '</value></block>'),
-		'posixAccount_homeDirectory' => array('<block><key>' . _('Home directory') . '</key><value>' . $this->attributes['homeDirectory'][0] . '</value></block>'),
-		'posixAccount_userPassword' => array('<block><key>' . _('Password') . '</key><value>' . $this->attributes['userPassword'][0] . '</value></block>'),
-		'posixAccount_loginShell' => array('<block><key>' . _('Login shell') . '</key><value>' . $this->attributes['loginShell'][0] . '</value></block>'),
+		return array(
+			'posixAccount_uid' => array('<block><key>' . _('User name') . '</key><value>' . $this->attributes['uid'][0] . '</value></block>'),
+			'posixAccount_cn' => array('<block><key>' . _('Common name') . '</key><value>' . $this->attributes['cn'][0] . '</value></block>'),
+			'posixAccount_uidNumber' => array('<block><key>' . _('UID number') . '</key><value>' . $this->attributes['uidNumber'][0] . '</value></block>'),
+			'posixAccount_gidNumber' => array('<block><key>' . _('GID number') . '</key><value>' . $this->attributes['gidNumber'][0] . '</value></block>'),
+			'posixAccount_gecos' => array('<block><key>' . _('Gecos') . '</key><value>' . $this->attributes['gecos'][0] . '</value></block>'),
+			'posixAccount_primaryGroup' => array('<block><key>' . _('Primary group') . '</key><value>' . $_SESSION['cache']->getgrnam($this->attributes['gidNumber'][0]) . '</value></block>'),
+			'posixAccount_additionalGroups' => array('<block><key>' . _('Additional groups') . '</key><value>' . '</value></block>'),
+			'posixAccount_homeDirectory' => array('<block><key>' . _('Home directory') . '</key><value>' . $this->attributes['homeDirectory'][0] . '</value></block>'),
+			'posixAccount_userPassword' => array('<block><key>' . _('Password') . '</key><value>' . $this->attributes['userPassword'][0] . '</value></block>'),
+			'posixAccount_loginShell' => array('<block><key>' . _('Login shell') . '</key><value>' . $this->attributes['loginShell'][0] . '</value></block>'),
 		);
 	}
 
@@ -1336,6 +1374,28 @@ class posixAccount extends baseModule {
 					}
 					else {
 						$partialAccounts[$i]['description'] = $rawAccounts[$i][$ids['posixAccount_hostName']];
+					}
+				}
+				// cn
+				if ($rawAccounts[$i][$ids['posixAccount_cn']] != "") {
+					if (get_preg($rawAccounts[$i][$ids['posixAccount_cn']], 'cn')) {
+						$partialAccounts[$i]['cn'] = $rawAccounts[$i][$ids['posixAccount_cn']];
+					}
+					else {
+						$errMsg = $this->messages['cn'][1];
+						array_push($errMsg, array($i));
+						$triggered_messages[] = $errMsg;
+					}
+				}
+				else {
+					if ($partialAccounts[$i]['givenName']) {
+						$partialAccounts[$i]['cn'] = $partialAccounts[$i]['givenName'] . " " . $partialAccounts[$i]['sn'];
+					}
+					elseif ($partialAccounts[$i]['sn']) {
+						$partialAccounts[$i]['cn'] = $partialAccounts[$i]['sn'];
+					}
+					else {
+						$partialAccounts[$i]['cn'] = $partialAccounts[$i]['uid'];
 					}
 				}
 			}
