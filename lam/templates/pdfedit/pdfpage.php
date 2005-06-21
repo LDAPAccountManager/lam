@@ -23,6 +23,14 @@ $Id$
 
 */
 
+/**
+* Displays the main page of the PDF editor where the user can select the displayed entries.
+*
+* @author Michael Dürgner
+* @author Roland Gruber
+* @package PDF
+*/
+
 include_once('../../lib/pdfstruct.inc');
 include_once('../../lib/ldap.inc');
 include_once('../../lib/config.inc');
@@ -49,6 +57,7 @@ if(isset($_POST['type'])) {
 	}
 }
 
+
 // Abort and go back to main pdf structure page
 if(isset($_GET['abort'])) {
 	metarefresh('pdfmain.php');
@@ -69,16 +78,16 @@ elseif(isset($_GET['submit'])) {
 // Add a new section or static text
 elseif(isset($_GET['add'])) {
 	// Check if name for new section is specified when needed
-	if($_GET['add_type'] == 'section' && $_GET['section_type'] == 'text' && (!isset($_GET['section_text']) || $_GET['section_text'] == '')) {
+	if($_GET['section_type'] == 'text' && (!isset($_GET['section_text']) || $_GET['section_text'] == '')) {
 		StatusMessage('ERROR',_('No section text specified'),_('The headline for a new section must contain at least one character.'));
 	}
 	// Check if text for static text field is specified
-	elseif($_GET['add_type'] == 'text' && (!isset($_GET['text_text']) || $_GET['text_text'] == '')) {
+	elseif($_GET['section_type'] == 'textbox' && (!isset($_GET['text_text']) || $_GET['text_text'] == '')) {
 		StatusMessage('ERROR',_('No static text specified'),_('The static text must contain at least one character.'));
 	}
 	else {
 		// Add a new section
-		if($_GET['add_type'] == 'section') {
+		if(($_GET['section_type'] == 'item') || ($_GET['section_type'] == 'text')) {
 			$attributes = array();
 			// Add a new section with user headline
 			if($_GET['section_type'] == 'text') {
@@ -91,7 +100,7 @@ elseif(isset($_GET['add'])) {
 			$entry = array(array('tag' => 'SECTION','type' => 'open','level' => '2','attributes' => $attributes),array('tag' => 'SECTION','type' => 'close','level' => '2'));
 		}
 		// Add new static text field
-		elseif($_GET['add_type'] == 'text') {
+		elseif($_GET['section_type'] == 'textbox') {
 			$entry = array(array('tag' => 'TEXT','type' => 'complete','level' => '2','value' => $_GET['text_text']));
 		}
 		// Insert new field in structure
@@ -300,71 +309,24 @@ elseif(isset($_GET['down'])) {
 		$_SESSION['currentPDFStructure'][$_GET['down'] + 1] = $tmp;
 	}
 }
-// TODO implement page handling
-elseif(isset($_POST['page'])) {
-	if($_POST['logoFile'] != 'printLogo.jpg' && $_POST['logoFile'] != $_SESSION['currentPageDefinitions']['filename']) {
-		$_SESSION['currentPageDefinitions']['filename'] = $_POST['logoFile'];
-	}
-	if($_POST['logo-width'] != '50' && $_POST['logo-width'] != $_SESSION['currentPageDefinitions']['logo-width']) {
-		if($_POST['logo-width'] <= 50 && $_POST['logo-width'] > 0) {
-			$_SESSION['currentPageDefinitions']['logo-width'] = $_POST['logo-width'];
-		}
-	}
-	if($_POST['logo-height'] != '20' && $_POST['logo-height'] != $_SESSION['currentPageDefinitions']['logo-height']) {
-		if($_POST['logo-height'] <= 20 && $_POST['logo-height'] > 0) {
-			$_SESSION['currentPageDefinitions']['logo-height'] = $_POST['logo-height'];
-		}
-	}
-	if(isset($_POST['logo-max']) && !isset($_SESSION['currentPageDefinitions']['logo-max'])) {
-		$_SESSION['currentPageDefinitions']['logo-max'] = true;
-	}
-	if($_POST['headline'] != 'LDAP Account Manager' && $_POST['headline'] != $_SESSION['currentPageDefinitions']['headline']) {
-		$_SESSION['currentPageDefinitions']['headline'] = str_replace('<','',str_replace('>','',$_POST['headline']));
-	}
-	if($_POST['margin-top'] != '10.0' && $_SESSION['currentPageDefinitions']['margin-top'] != $_POST['margin-top']) {
-		$_SESSION['currentPageDefinitions']['margin-top'] = $_POST['margin-top'];
-	}
-	if($_POST['margin-bottom'] != '20.0' && $_SESSION['currentPageDefinitions']['margin-bottom'] != $_POST['margin-bottom']) {
-		$_SESSION['currentPageDefinitions']['margin-bottom'] = $_POST['margin-bottom'];
-	}
-	if($_POST['margin-left'] != '10.0' && $_SESSION['currentPageDefinitions']['margin-left'] != $_POST['margin-left']) {
-		$_SESSION['currentPageDefinitions']['margin-left'] = $_POST['margin-left'];
-	}
-	if($_POST['margin-right'] != '10.0' && $_SESSION['currentPageDefinitions']['margin-right'] != $_POST['margin-right']) {
-		$_SESSION['currentPageDefinitions']['margin-right'] = $_POST['margin-right'];
-	}
-	if(isset($_POST['defaults'])) {
-		foreach($_POST['defaults'] as $default) {
-			switch($default) {
-				case 'logoFile':
-					unset($_SESSION['currentPageDefinitions']['filename']);
-					break;
-				case 'logoSize':
-					unset($_SESSION['currentPageDefinitions']['logo-width']);
-					unset($_SESSION['currentPageDefinitions']['logo-height']);
-					unset($_SESSION['currentPageDefinitions']['logo-max']);
-					break;
-				case 'headline':
-					unset($_SESSION['currentPageDefinitions']['headline']);
-					break;
-				case 'margin-top':
-					unset($_SESSION['currentPageDefinitions']['margin-top']);
-					break;
-				case 'margin-bottom':
-					unset($_SESSION['currentPageDefinitions']['margin-bottom']);
-					break;
-				case 'margin-left':
-					unset($_SESSION['currentPageDefinitions']['margin-left']);
-					break;
-				case 'margin-right':
-					unset($_SESSION['currentPageDefinitions']['margin-right']);
-					break;
-				default:
-					break;
-			}
-		}
-		if(count($_SESSION['currentPageDefinitions']['margin']) == 0) {
-			unset($_SESSION['currentPageDefinitions']['margin']);
+
+if ((isset($_GET['headline'])) && ($_GET['logoFile'] != $_SESSION['currentPageDefinitions']['filename'])) {
+	$_SESSION['currentPageDefinitions']['filename'] = $_GET['logoFile'];
+}
+if ((isset($_GET['headline'])) && ($_GET['headline'] != $_SESSION['currentPageDefinitions']['headline'])) {
+	$_SESSION['currentPageDefinitions']['headline'] = str_replace('<','',str_replace('>','',$_GET['headline']));
+}
+if(isset($_POST['defaults'])) {
+	foreach($_POST['defaults'] as $default) {
+		switch($default) {
+			case 'logoFile':
+				unset($_SESSION['currentPageDefinitions']['filename']);
+				break;
+			case 'headline':
+				unset($_SESSION['currentPageDefinitions']['headline']);
+				break;
+			default:
+				break;
 		}
 	}
 }
@@ -400,7 +362,7 @@ foreach($_SESSION['availablePDFFields'] as $module => $values) {
 	$modules[] = $module;
 	foreach($values as $attribute) {
 		$section_items_array[] = $module . '_' . $attribute;
-		$section_items .= "\t\t\t\t\t\t\t\t\t\t\t\t<option>" . $module . '_' . $attribute . "</option>\n";
+		$section_items .= "<option>" . $module . '_' . $attribute . "</option>\n";
 	}
 }
 $modules = join(',',$modules);
@@ -408,7 +370,7 @@ $modules = join(',',$modules);
 $logoFiles = getAvailableLogos();
 $logos = '<option value="none"' . (($_SESSION['currentPageDefinitions']['filename'] == 'none') ? ' selected="selected"' : '') . '>' . _('No logo') . "</option>\n";
 foreach($logoFiles as $logoFile) {
-	$logos .= "\t\t\t\t\t\t\t\t\t\t\t<option value=\"" . $logoFile['filename'] . "\"" .(($_SESSION['currentPageDefinitions']['filename'] == $logoFile['filename'] || (!isset($_SESSION['currentPageDefinitions']['filename']) && $logoFile['filename'] == 'printLogo.jpg')) ? ' selected="selected"' : '') . '">' . $logoFile['filename'] . ' (' . $logoFile['infos'][0] . ' x ' . $logoFile['infos'][1] . ")</option>\n";  
+	$logos .= "<option value=\"" . $logoFile['filename'] . "\"" .(($_SESSION['currentPageDefinitions']['filename'] == $logoFile['filename'] || (!isset($_SESSION['currentPageDefinitions']['filename']) && $logoFile['filename'] == 'printLogo.jpg')) ? ' selected="selected"' : '') . '>' . $logoFile['filename'] . ' (' . $logoFile['infos'][0] . ' x ' . $logoFile['infos'][1] . ")</option>\n";  
 }
 
 // print header
@@ -421,75 +383,14 @@ echo $_SESSION['header'];
 	<body>
 		<br>
 		<form action="pdfpage.php" method="post">
-			<table width="100%">
+			<table>
 				<tr>
-					<td width="100%" colspan="3" align="center">
+					<td width="100%" colspan="3" align="left">
 						<fieldset>
 							<legend>
 								<b><?php echo _('Page settings'); ?></b>
 							</legend>
-							<table width="100%">
-								<tr>
-									<td>
-										<b><?php echo _('Logo'); ?>:</b>
-									</td>
-									<td>
-										<select name="logoFile" size="1">
-											<?php echo $logos; ?>
-										</select>
-									</td>
-									<td>
-										<?php echo _('Use default') ?> <input type="checkbox" name="defaults[]" value="logoFile">
-									</td>
-									<td rowspan="4" align="center">
-										<input type="submit" name="page" value="<?php echo _('Submit page settings'); ?>">
-									</td>
-								</tr>
-								<tr>
-									<td>
-									</td>
-									<td>
-										<p>
-											<fieldset>
-												<legend>
-													<?php echo _('Size'); ?>
-												</legend>
-											<table width="100%">
-												<tr>
-													<td>
-															<?php echo _('Width') . ':'; ?>
-													</td>
-													<td>
-															<input type="text" name="logo-width" value="<?php echo ((isset($_SESSION['currentPageDefinitions']['logo-width'])) ? $_SESSION['currentPageDefinitions']['logo-width'] : '50'); ?>" size="5"> cm
-													</td>
-												</tr>
-												<tr>
-													<td>
-															<?php echo _('Height') . ':'; ?>
-													</td>
-													<td>
-															<input type="text" name="logo-height" value="<?php echo ((isset($_SESSION['currentPageDefinitions']['logo-height'])) ? $_SESSION['currentPageDefinitions']['logo-height'] : '20'); ?>" size="5"> cm
-													</td>
-												</tr>
-												<tr>
-													<td>
-															<input type="checkbox" name="logo-max"<?php echo ((isset($_SESSION['currentPageDefinitions']['logo-max'])) ? ' checked="checked"' : ''); ?>>
-													</td>
-													<td>
-															<?php echo _('Maximize with correct ratio'); ?>
-													</td>
-												</tr>
-											</table>
-											</fieldset>
-										</p>
-									</td>
-									<td>
-										<?php echo _('Use default') ?> <input type="checkbox" name="defaults[]" value="logoSize">
-									</td>
-									<!-- <td rowspan="3" align="center">
-										<input type="submit" name="page" value="<?php echo _('Submit page settings'); ?>">
-									</td> -->
-								</tr>
+							<table border="0">
 								<tr>
 									<td>
 										<b><?php echo _('Headline'); ?>:</b>
@@ -502,58 +403,16 @@ echo $_SESSION['header'];
 									</td>
 								</tr>
 								<tr>
-									<td colspan="3">
-										<fieldset>
-											<legend>
-												<?php echo _('Margin'); ?>
-											</legend>
-											<table width="100%">
-												<tr>
-													<td>
-														<b><?php echo _('Top'); ?>:</b>
-													</td>
-													<td>
-														<input type="text" name="margin-top" value="<?php echo ((isset($_SESSION['currentPageDefinitions']['margin-top'])) ? $_SESSION['currentPageDefinitions']['margin-top'] : '10.0'); ?>" size="5">
-													</td>
-													<td>
-														<?php echo _('Use default') ?> <input type="checkbox" name="defaults[]" value="margin-top">
-													</td>
-												</tr>
-												<tr>
-													<td>
-														<b><?php echo _('Bottom'); ?>:</b>
-													</td>
-													<td>
-														<input type="text" name="margin-bottom" value="<?php echo ((isset($_SESSION['currentPageDefinitions']['margin-bottom'])) ? $_SESSION['currentPageDefinitions']['margin-bottom'] : '20.0'); ?>" size="5">
-													</td>
-													<td>
-														<?php echo _('Use default') ?> <input type="checkbox" name="defaults[]" value="margin-bottom">
-													</td>
-												</tr>
-												<tr>
-													<td>
-														<b><?php echo _('Left'); ?>:</b>
-													</td>
-													<td>
-														<input type="text" name="margin-left" value="<?php echo ((isset($_SESSION['currentPageDefinitions']['margin-left'])) ? $_SESSION['currentPageDefinitions']['margin-left'] : '10.0'); ?>" size="5">
-													</td>
-													<td>
-														<?php echo _('Use default') ?> <input type="checkbox" name="defaults[]" value="margin-left">
-													</td>
-												</tr>
-												<tr>
-													<td>
-														<b><?php echo _('right'); ?>:</b>
-													</td>
-													<td>
-														<input type="text" name="margin-right" value="<?php echo ((isset($_SESSION['currentPageDefinitions']['margin-right'])) ? $_SESSION['currentPageDefinitions']['margin-right'] : '10.0'); ?>" size="5">
-													</td>
-													<td>
-														<?php echo _('Use default') ?> <input type="checkbox" name="defaults[]" value="margin-right">
-													</td>
-												</tr>
-											</table>
-										</fieldset>
+									<td>
+										<b><?php echo _('Logo'); ?>:</b>
+									</td>
+									<td>
+										<select name="logoFile" size="1">
+											<?php echo $logos; ?>
+										</select>
+									</td>
+									<td>
+										<?php echo _('Use default') ?> <input type="checkbox" name="defaults[]" value="logoFile">
 									</td>
 								</tr>
 							</table>
@@ -567,7 +426,7 @@ echo $_SESSION['header'];
 				</tr>
 				<tr>
 					<!-- print current structure -->
-					<td width="45%" align="center">
+					<td align="left" valign="top">
 						<fieldset>
 							<legend>
 								<b><?php echo _("PDF structure"); ?></b>
@@ -578,7 +437,23 @@ $sections = '<option value="0">' . _('Beginning') . "</option>\n";
 // Print every entry in the current structure
 foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 	// Create the up/down/remove links
-	$links = "\t\t\t\t\t\t\t\t\t<td>\n\t\t\t\t\t\t\t\t\t\t<a href=\"pdfpage.php?type=" . $_GET['type'] . "&amp;up=" . $key . (($_GET['edit']) ? 'edit=' . $_GET['edit'] : '') . "\"><img src=\"../../graphics/up.gif\" alt=\"" . _("UP") . "\" border=\"0\"></a>\n\t\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t\t\t<td width=\"10\">\n\t\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t\t\t<td>\n\t\t\t\t\t\t\t\t\t\t<a href=\"pdfpage.php?type=" . $_GET['type'] . "&amp;down=" . $key . (($_GET['edit']) ? 'edit=' . $_GET['edit'] : '') . "\"><img src=\"../../graphics/down.gif\" alt=\"" . _("Down") . "\" border=\"0\"></a>\n\t\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t\t\t<td width=\"10\">\n\t\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t\t\t<td>\n\t\t\t\t\t\t\t\t\t\t<a href=\"pdfpage.php?type=" . $_GET['type'] . "&amp;remove=" . $key . (($_GET['edit']) ? 'edit=' . $_GET['edit'] : '') . "\"><img src=\"../../graphics/delete.gif\" alt=\"" . _("Remove") . "\" border=\"0\"></a>\n\t\t\t\t\t\t\t\t\t</td>\n";
+	$links = "<td>\n<a href=\"pdfpage.php?type=" . $_GET['type'] . "&amp;up=" . $key .
+			(($_GET['pdfname']) ? '&amp;pdfname=' . $_GET['pdfname'] : '') .
+			(($_GET['headline']) ? '&amp;headline=' . $_GET['headline'] : '') .
+			(($_GET['logoFile']) ? '&amp;logoFile=' . $_GET['logoFile'] : '') . "\">" .
+		"<img src=\"../../graphics/up.gif\" alt=\"" . _("Up") . "\" border=\"0\"></a>\n</td>\n" .
+		"<td width=\"10\">\n</td>\n" .
+		"<td>\n<a href=\"pdfpage.php?type=" . $_GET['type'] . "&amp;down=" . $key .
+			(($_GET['pdfname']) ? '&amp;pdfname=' . $_GET['pdfname'] : '') .
+			(($_GET['headline']) ? '&amp;headline=' . $_GET['headline'] : '') .
+			(($_GET['logoFile']) ? '&amp;logoFile=' . $_GET['logoFile'] : '') . "\">" .
+		"<img src=\"../../graphics/down.gif\" alt=\"" . _("Down") . "\" border=\"0\"></a>\n</td>\n" .
+		"<td width=\"10\">\n</td>\n" .
+		"<td>\n<a href=\"pdfpage.php?type=" . $_GET['type'] . "&amp;remove=" . $key .
+			(($_GET['pdfname']) ? '&amp;pdfname=' . $_GET['pdfname'] : '') .
+			(($_GET['headline']) ? '&amp;headline=' . $_GET['headline'] : '') .
+			(($_GET['logoFile']) ? '&amp;logoFile=' . $_GET['logoFile'] : '') . "\">" .
+		"<img src=\"../../graphics/delete.gif\" alt=\"" . _("Remove") . "\" border=\"0\"></a>\n</td>\n";
 	// We have a new section to start
 	if($entry['tag'] == "SECTION" && $entry['type'] == "open") {
 		$name = $entry['attributes']['NAME'];
@@ -694,46 +569,73 @@ foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 // Print save and abort buttons
 ?>
 							</table>
+						</fieldset>
+						<p>&nbsp;</p>
+					</td>
+					
+					<td align="center">
+						<input type="submit" name="add_field" value="<=">
+					</td>
+					
+					<!-- print available fields sorted by modul -->
+					<td align="left" valign="top">
+						<fieldset>
+							<legend>
+								<b><?php echo _("Available PDF fields"); ?></b>
+							</legend>
+							<table>
+<?php
+// Print all available modules with the value fieds
+foreach($_SESSION['availablePDFFields'] as $module => $fields) {
+	?>
+								<tr>
+									<td colspan="2">
+										<b><?php
+											if ($module != 'main') {
+												echo getModuleAlias($module, $_GET['type']);
+											}
+											else {
+												echo _('Main');
+											}
+										?></b>
+									</td>
+								</tr>
+								<tr>
+									<td width="20">
+									</td>
+									<td>
+										<select name="<?php echo $module?>[]" size="7" multiple>
+	<?php
+	// Print each value field
+	foreach($fields as $field) {
+		?>
+											<option><?php echo $field;?></option>
+		<?php
+	}
+	?>
+										</select>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="2">
+										<br>
+									</td>
+								</tr>
+	<?php
+}
+?>
+							</table>
+						</fieldset>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="3">
 							<fieldset>
 								<legend>
 									<b><?php echo _('Add section or static text');?></b>
-								<legend>
-								<table width="100%">
+								</legend>
+								<table>
 									<tr>
-										<td width="10">
-										</td>
-										<td>
-											<fieldset style="margin:0px;">
-												<legend>
-													<?php echo _('Position');?>
-												</legend>
-												<table width="100%" style="margin:0px;">
-													<tr>
-														<td>
-															<?php echo _('Add after');?>:
-														</td>
-														<td width="50%">
-															<select name="add_position">
-																<?php echo $sections;?>
-															</select>
-														</td>
-													</tr>
-												</table>
-											</fieldset>
-										<td>
-										<td rowspan="5">
-											<input type="submit" name="add" value="<?php echo _('Add');?>">
-										</td>
-									</tr>
-									<tr>
-										<td colspan="2">
-											<br>
-										</td>
-									</tr>
-									<tr>
-										<td valign="center">
-											<input type="radio" name="add_type" value="section" checked>
-										</td>
 										<td>
 											<fieldset>
 												<legend>
@@ -745,7 +647,7 @@ foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 															<input type="radio" name="section_type" value="text" checked>
 														</td>
 														<td colspan="2">
-															<input type="text" name="section_text">
+															<?php echo _("Name"); ?>: <input type="text" name="section_text">
 														</td>
 													</tr>
 													<tr>
@@ -768,9 +670,6 @@ foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 										</td>
 									</tr>
 									<tr>
-										<td width="10" valign="center">
-											<input type="radio" name="add_type" value="text">
-										</td>
 										<td>
 											<fieldset>
 												<legend>
@@ -779,19 +678,40 @@ foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 												<table width="100%">
 													<tr>
 														<td width="10">
+															<input type="radio" name="section_type" value="textbox">
 														</td>
 														<td>
-															<textarea name="text_text" rows="4" cols="40"></textarea>
+															<textarea name="text_text" rows="3" cols="40"></textarea>
 														</td>
 													</tr>
 												</table>
 											</fieldset>
 										</td>
 									</tr>
+									<tr>
+										<td>
+											<B><?php echo _('Position');?>: </B>
+											<select name="add_position">
+												<?php echo $sections;?>
+											</select>
+										<td>
+									</tr>
+									<tr>
+										<td colspan="2">
+											<br>
+										</td>
+									</tr>
+									<TR>
+										<td>
+											<input type="submit" name="add" value="<?php echo _('Add');?>">
+										</td>
+									</TR>
 								</table>
 							</fieldset>
-						</fieldset>
-						<p>&nbsp;</p>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="3">
 						<fieldset>
 							<legend>
 								<b><?php echo _("Submit"); ?></b>
@@ -837,54 +757,6 @@ foreach($_SESSION['currentPDFStructure'] as $key => $entry) {
 										&nbsp
 									</td>
 								</tr>
-							</table>
-						</fieldset>
-					</td>
-					
-					<td width="10%" align="center">
-						<input type="submit" name="add_field" value="<=">
-					</td>
-					
-					<!-- print available fields sorted by modul -->
-					<td width="45%" align="center">
-						<fieldset>
-							<legend>
-								<b><?php echo _("Available PDF fields"); ?></b>
-							</legend>
-							<table>
-<?php
-// Print all available modules with the value fieds
-foreach($_SESSION['availablePDFFields'] as $module => $fields) {
-	?>
-								<tr>
-									<td colspan="2">
-										<b><?php echo $module;?></b>
-									</td>
-								</tr>
-								<tr>
-									<td width="20">
-									</td>
-									<td>
-										<select name="<?php echo $module?>[]" size="7" multiple>
-	<?php
-	// Print each value field
-	foreach($fields as $field) {
-		?>
-											<option><?php echo $field;?></option>
-		<?php
-	}
-	?>
-										</select>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="2">
-										<br>
-									</td>
-								</tr>
-	<?php
-}
-?>
 							</table>
 						</fieldset>
 					</td>
