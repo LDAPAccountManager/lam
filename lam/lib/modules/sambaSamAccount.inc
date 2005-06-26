@@ -482,9 +482,11 @@ class sambaSamAccount extends baseModule {
 
 		if ($_SESSION[$this->base]->type=='host') {
 			$this->attributes['sambaPrimaryGroupSID'][0] = $SID."-".$this->rids[_('Domain Computers')];
-			if ($post['ResetSambaPassword']) {
-				$this->attributes['sambaLMPassword'][0] = lmPassword($_SESSION[$this->base]->module['posixAccount']->attributes['uid'][0]);
-				$this->attributes['sambaNTPassword'][0] = ntPassword($_SESSION[$this->base]->module['posixAccount']->attributes['uid'][0]);
+			if ($post['ResetSambaPassword'] || !$this->attributes['sambaLMPassword'][0]) {
+				$hostname = $_SESSION[$this->base]->module['posixAccount']->attributes['uid'][0];
+				$hostname = substr($hostname, 0, strlen($hostname) - 1);
+				$this->attributes['sambaLMPassword'][0] = lmPassword($hostname);
+				$this->attributes['sambaNTPassword'][0] = ntPassword($hostname);
 				$this->attributes['sambaPwdLastSet'][0] = time();
 			}
 		}
@@ -558,14 +560,14 @@ class sambaSamAccount extends baseModule {
 				$this->attributes['sambaSID'][0] = $SID."-". (($_SESSION[$this->base]->module['posixAccount']->attributes['uidNumber'][0]*2)+$RIDbase);
 			}
 			// Check values
-			$this->attributes['sambaHomePath'][0] = str_replace('$user', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['uid'][0], $this->attributes['sambaHomePath'][0]);
-			$this->attributes['sambaHomePath'][0] = str_replace('$group', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['gid'][0], $this->attributes['sambaHomePath'][0]);
+			$this->attributes['sambaHomePath'][0] = str_replace('$user', $_SESSION[$this->base]->module['posixAccount']->attributes['uid'][0], $this->attributes['sambaHomePath'][0]);
+			$this->attributes['sambaHomePath'][0] = str_replace('$group', $_SESSION['cache']->getgrnam($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]), $this->attributes['sambaHomePath'][0]);
 			if ($this->attributes['sambaHomePath'][0] != stripslashes($post['sambaHomePath'])) $triggered_messages['sambaHomePath'][] = $this->messages['homePath'][1];
-			$this->attributes['sambaLogonScript'][0] = str_replace('$user', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['uid'][0], $this->attributes['sambaLogonScript'][0]);
-			$this->attributes['sambaLogonScript'][0] = str_replace('$group', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['gid'][0], $this->attributes['sambaLogonScript'][0]);
+			$this->attributes['sambaLogonScript'][0] = str_replace('$user', $_SESSION[$this->base]->module['posixAccount']->attributes['uid'][0], $this->attributes['sambaLogonScript'][0]);
+			$this->attributes['sambaLogonScript'][0] = str_replace('$group', $_SESSION['cache']->getgrnam($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]), $this->attributes['sambaLogonScript'][0]);
 			if ($this->attributes['sambaLogonScript'][0] != stripslashes($post['sambaLogonScript'])) $triggered_messages['sambaLogonScript'][] = $this->messages['logonScript'][1];
-			$this->attributes['sambaProfilePath'][0] = str_replace('$user', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['uid'][0], $this->attributes['sambaProfilePath'][0]);
-			$this->attributes['sambaProfilePath'][0] = str_replace('$group', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['gid'][0], $this->attributes['sambaProfilePath'][0]);
+			$this->attributes['sambaProfilePath'][0] = str_replace('$user', $_SESSION[$this->base]->module['posixAccount']->attributes['uid'][0], $this->attributes['sambaProfilePath'][0]);
+			$this->attributes['sambaProfilePath'][0] = str_replace('$group', $_SESSION['cache']->getgrnam($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]), $this->attributes['sambaProfilePath'][0]);
 			if ($this->attributes['sambaProfilePath'][0] != stripslashes($post['sambaProfilePath'])) $triggered_messages['sambaProfilePath'][] = $this->messages['profilePath'][1];
 			if ( (!$this->attributes['sambaHomePath'][0]=='') && (!get_preg($this->attributes['sambaHomePath'][0], 'UNC')))
 				$triggered_messages['sambaHomePath'][] = $this->messages['homePath'][0];
@@ -574,22 +576,12 @@ class sambaSamAccount extends baseModule {
 			if (!($this->attributes['sambaProfilePath'][0] == '') &&
 				!(get_preg($this->attributes['sambaProfilePath'][0], 'UNC') xor get_preg($this->attributes['sambaProfilePath'][0], 'homeDirectory')))
 					$triggered_messages['sambaProfilePath'][] = $this->messages['profilePath'][0];
+		}
+		else {  // host
+			if (!$this->attributes['sambaSID'][0]) {
+				$this->attributes['sambaSID'][0] = $SID."-". (($_SESSION[$this->base]->module['posixAccount']->attributes['uidNumber'][0]*2)+$RIDbase);
 			}
-		else {
-			$sambaHomePath = str_replace('$user', 'user', $this->attributes['sambaHomePath'][0]);
-			$sambaHomePath = str_replace('$group', 'group', $sambaHomePath);
-			$sambaLogonScript = str_replace('$user', 'user', $this->attributes['sambaLogonScript'][0]);
-			$sambaLogonScript = str_replace('$group', 'group', $sambaLogonScript);
-			$sambaProfilePath = str_replace('$user', 'user', $this->attributes['sambaProfilePath'][0]);
-			$sambaProfilePath = str_replace('$group', 'group', $sambaProfilePath);
-			if ( (!$this->attributes['sambaHomePath'][0]=='') && (!get_preg($this->attributes['sambaHomePath'][0], 'UNC')))
-					$triggered_messages[] = $this->messages['homePath'][0];
-			if ( (!$this->attributes['sambaLogonScript'][0]=='') && (!get_preg($this->attributes['sambaLogonScript'][0], 'logonscript')))
-				$triggered_messages[] = $this->messages['logonScript'][0];
-			if ( (!$this->attributes['sambaProfilePath'][0]=='') && (!get_preg($this->attributes['sambaProfilePath'][0], 'UNC'))
-				&& (!get_preg($this->attributes['sambaProfilePath'][0], 'UNC')))
-					$triggered_messages[] = $this->messages['profilePath'][0];
-			}
+		}
 		if (count($triggered_messages)!=0) {
 			$this->triggered_messages = $triggered_messages;
 			return $triggered_messages;
@@ -766,11 +758,8 @@ class sambaSamAccount extends baseModule {
 		if ($_SESSION[$this->base]->type=='host') {
 			$return[] = array ( 0 => array ( 'kind' => 'input', 'name' => 'sambaAcctFlagsW', 'type' => 'hidden', 'value' => 'true' ));
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Reset password') ),
-				1 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'ResetSambaPassword'),
+				1 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'ResetSambaPassword', 'value' => _('Submit')),
 				2 => array ( 'kind' => 'help', 'value' => 'ResetSambaPassword' ));
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Domain') ),
-				1 => array ( 'kind' => 'select', 'name' => 'sambaDomainName', 'options' => $sambaDomainNames, 'options_selected' => $this->attributes['sambaDomainName'][0]),
-				2 => array ( 'kind' => 'help', 'value' => 'sambaDomainName' ));
 			}
 		return $return;
 		}

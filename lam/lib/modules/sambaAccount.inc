@@ -179,7 +179,6 @@ class sambaAccount extends baseModule {
 		// available PDF fields
 		$return['PDF_fields'] = array(
 			'displayName',
-			'uid',
 			'smbHome',
 			'homeDrive',
 			'scriptPath',
@@ -411,7 +410,6 @@ class sambaAccount extends baseModule {
 	function module_ready() {
 		if ($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]=='') return false;
 		if ($_SESSION[$this->base]->module['posixAccount']->attributes['uidNumber'][0]=='') return false;
-		if ($this->attributes['uid'][0]=='') return false;
 		return true;
 		}
 
@@ -517,15 +515,17 @@ class sambaAccount extends baseModule {
 
 		if ($_SESSION[$this->base]->type=='host') {
 			$this->attributes['primaryGroupID'][0] = $this->rids[_('Domain Computers')];
-			if ($post['ResetSambaPassword']) {
-				$this->attributes['lmPassword'][0] = lmPassword($_SESSION[$this->base]->module['posixAccount']->attributes['uid'][0]);
-				$this->attributes['ntPassword'][0] = ntPassword($_SESSION[$this->base]->module['posixAccount']->attributes['uid'][0]);
+			if ($post['ResetSambaPassword'] || (!$this->attributes['lmPassword'][0])) {
+				$hostname = $_SESSION[$this->base]->module['posixAccount']->attributes['uid'][0];
+				$hostname = substr($hostname, 0, strlen($hostname) - 1);
+				$this->attributes['lmPassword'][0] = lmPassword($hostname);
+				$this->attributes['ntPassword'][0] = ntPassword($hostname);
 				$this->attributes['pwdLastSet'][0] = time();
 				}
 			}
 
-		// Check values
-		if ($_SESSION[$this->base]->type=='user') {
+		// check values for user account
+		if ($this->scope == 'user') {
 			$this->attributes['pwdCanChange'][0] = mktime($post['pwdCanChange_h'], $post['pwdCanChange_m'], $post['pwdCanChange_s'],
 				$post['pwdCanChange_mon'], $post['pwdCanChange_day'], $post['pwdCanChange_yea']);
 			$this->attributes['pwdMustChange'][0] = mktime($post['pwdMustChange_h'], $post['pwdMustChange_m'], $post['pwdMustChange_s'],
@@ -575,37 +575,31 @@ class sambaAccount extends baseModule {
 			else {
 				$this->attributes['rid'][0] = $_SESSION[$this->base]->module['posixAccount']->attributes['uidNumber'][0]*2+1000;
 			}
-			$this->attributes['smbHome'][0] = str_replace('$user', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['uid'][0], $this->attributes['smbHome'][0]);
-			$this->attributes['smbHome'][0] = str_replace('$group', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['gid'][0], $this->attributes['smbHome'][0]);
+			$this->attributes['smbHome'][0] = str_replace('$user', $_SESSION[$this->base]->module['posixAccount']->attributes['uid'][0], $this->attributes['smbHome'][0]);
+			$this->attributes['smbHome'][0] = str_replace('$group', $_SESSION['cache']->getgrnam($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]), $this->attributes['smbHome'][0]);
 			if ($this->attributes['smbHome'][0] != stripslashes($post['smbHome'])) $triggered_messages['smbHome'][] = $this->messages['homePath'][1];
-			$this->attributes['scriptPath'][0] = str_replace('$user', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['uid'][0], $this->attributes['scriptPath'][0]);
-			$this->attributes['scriptPath'][0] = str_replace('$group', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['gid'][0], $this->attributes['scriptPath'][0]);
+			$this->attributes['scriptPath'][0] = str_replace('$user', $_SESSION[$this->base]->module['posixAccount']->attributes['uid'][0], $this->attributes['scriptPath'][0]);
+			$this->attributes['scriptPath'][0] = str_replace('$group', $_SESSION['cache']->getgrnam($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]), $this->attributes['scriptPath'][0]);
 			if ($this->attributes['scriptPath'][0] != stripslashes($post['scriptPath'])) $triggered_messages['scriptPath'][] = $this->messages['logonScript'][1];
-			$this->attributes['profilePath'][0] = str_replace('$user', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['uid'][0], $this->attributes['profilePath'][0]);
-			$this->attributes['profilePath'][0] = str_replace('$group', $_SESSION[$this->base]->module['inetOrgPerson']->attributes['gid'][0], $this->attributes['profilePath'][0]);
+			$this->attributes['profilePath'][0] = str_replace('$user', $_SESSION[$this->base]->module['posixAccount']->attributes['uid'][0], $this->attributes['profilePath'][0]);
+			$this->attributes['profilePath'][0] = str_replace('$group', $_SESSION['cache']->getgrnam($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]), $this->attributes['profilePath'][0]);
 			if ($this->attributes['profiletPath'][0] != stripslashes($post['profilePath'])) $triggered_messages['profilePath'][] = $this->messages['profilePath'][1];
 			if ( (!$this->attributes['smbHome'][0]=='') && (!get_preg($this->attributes['smbHome'][0], 'UNC')))
-					$triggered_messages['smbHome'][] = $this->messages['homedir'][0];
+					$triggered_messages['smbHome'][] = $this->messages['homePath'][0];
 			if ( (!$this->attributes['scriptPath'][0]=='') && (!get_preg($this->attributes['scriptPath'][0], 'logonscript')))
 				$triggered_messages['scriptPath'][] = $this->messages['logonScript'][0];
 			if ( (!$this->attributes['profilePath'][0]=='') && (!get_preg($this->attributes['profilePath'][0], 'UNC')))
 					$triggered_messages['profilePath'][] = $this->messages['profilePath'][0];
 			}
+		// check values for host account
 		else {
-			$smbHome = str_replace('$user', 'user', $this->attributes['smbHome'][0]);
-			$smbHome = str_replace('$group', 'group', $smbHome);
-			$scriptPath = str_replace('$user', 'user', $this->attributes['scriptPath'][0]);
-			$scriptPath = str_replace('$group', 'group', $scriptPath);
-			$profilePath = str_replace('$user', 'user', $this->attributes['profilePath'][0]);
-			$profilePath = str_replace('$group', 'group', $profilePath);
-			if ( (!$smbHome=='') && (!get_preg($smbHome, 'UNC')))
-					$triggered_messages['smbHome'][] = $this->messages['homePath'][0];
-			if ( (!$scriptPath=='') && (!get_preg($scriptPath, 'logonscript')))
-				$triggered_messages['scriptPath'][] = $this->messages['logonScript'][0];
-			if ( (!$profilePath=='') && (!get_preg('^[/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*([/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*)*$', $profilePath))
-				&& (!get_preg($profilePath, 'UNC')))
-					$triggered_messages['profilePath'][] = $this->messages['profilePath'][0];
+			if (!$this->attributes['rid'][0]) {
+				$this->attributes['rid'][0] = ($_SESSION[$this->base]->module['posixAccount']->attributes['uidNumber'][0] * 2) + 1000;
 			}
+			if (!$this->attributes['primaryGroupID'][0]) {
+				$this->attributes['primaryGroupID'][0] = ($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0] * 2) + 1001;
+			}
+		}
 
 		if ((!$this->attributes['domain'][0]=='') && !get_preg($this->attributes['domain'][0], 'domainname'))
 			$triggered_messages['domain'][] = $this->messages['domain'][0];
@@ -778,12 +772,9 @@ class sambaAccount extends baseModule {
 		if ($_SESSION[$this->base]->type=='host') {
 			$return[] = array ( 0 => array ( 'kind' => 'input', 'name' => 'acctFlagsW', 'type' => 'hidden', 'value' => 'true' ));
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Reset password') ),
-				1 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'ResetSambaPassword'),
+				1 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'ResetSambaPassword', 'value' => _('Submit')),
 				2 => array ( 'kind' => 'help', 'value' => 'ResetSambaPassword' ));
 			}
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Domain') ),
-			1 => array ( 'kind' => 'input', 'type' => 'text', 'name' => 'domain', 'size' => '20', 'maxlength' => '255', 'value' => $this->attributes['domain'][0]),
-			2 => array ( 'kind' => 'help', 'value' => 'domain' ));
 		return $return;
 		}
 
@@ -831,7 +822,6 @@ class sambaAccount extends baseModule {
 	 */
 	function get_pdfEntries($account_type = "user") {
 		return array(	'sambaAccount_displayName' => array('<block><key>' . _('Display name') . '</key><value' . $this->attributes['displayName'][0] . '</value></block>'),
-							'sambaAccount_uid' => array('<block><key>' . _('User name') . '</key><value>' . $this->attributes['uid'][0] . '</value></block>'),
 							'sambaAccount_smbHome' => array('<block><key>' . _('Home path') . '</key><value>' . $this->attributes['smbHome'][0] . '</value></block>'),
 							'sambaAccount_homeDrive' => array('<block><key>' . _('Home drive') . '</key><value>' . $this->attributes['homePath'][0] . '</value></block>'),
 							'sambaAccount_scriptPath' => array('<block><key>' . _('Logon script') . '</key><value>' . $this->attributes['scriptPath'][0] . '</value></block>'),

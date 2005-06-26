@@ -647,7 +647,10 @@ class posixAccount extends baseModule {
 		$this->attributes['uid'][0] = $post['uid'];
 		$this->attributes['cn'][0] = $post['cn'];
 		if ($this->attributes['cn'][0] == '') {
-			if (isset($_SESSION[$this->base]->module['inetOrgPerson'])) {
+			if (($this->scope == 'host') && (substr($post['uid'], -1, 1) == '$')) {
+				$this->attributes['cn'][0] = substr($post['uid'], 0, strlen($post['uid']) - 1);
+			}
+			elseif (isset($_SESSION[$this->base]->module['inetOrgPerson'])) {
 				if ($_SESSION[$this->base]->module['inetOrgPerson']->attributes['givenName'][0]) {
 					$this->attributes['cn'][0] = $_SESSION[$this->base]->module['inetOrgPerson']->attributes['givenName'][0] . " " . $_SESSION[$this->base]->module['inetOrgPerson']->attributes['sn'][0];
 				}
@@ -768,6 +771,12 @@ class posixAccount extends baseModule {
 				// Check if Hostname contains only valid characters
 				if ( !get_preg($this->attributes['uid'][0], 'hostname'))
 				$triggered_messages['uid'][] = $this->messages['uid'][4];
+				if (!$this->attributes['homeDirectory'][0]) {
+					$this->attributes['homeDirectory'][0] = '/dev/null';
+				}
+				if (!$this->attributes['loginShell'][0]) {
+					$this->attributes['loginShell'][0] = '/bin/false';
+				}
 			}
 			// Create automatic useraccount with number if original user already exists
 			// Reset name to original name if new name is in use
