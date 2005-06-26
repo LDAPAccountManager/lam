@@ -1,5 +1,8 @@
-0.5.alpha2
 
-- fix PDF support
-- document missing parts
-- test LAM and fix bugs
+ - document missing parts
+
+0.5.rc1
+ - change location of PDF profiles
+ - support for sambaLogonHours
+ - inetOrgPerson attributes: add manager and postOfficeBox
+
