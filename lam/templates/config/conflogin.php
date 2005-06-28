@@ -71,6 +71,17 @@ echo $_SESSION['header'];
 		<link rel="stylesheet" type="text/css" href="../../style/layout.css">
 	</head>
 	<body>
+		<?php
+			// set focus on password field
+			echo "<script type=\"text/javascript\" language=\"javascript\">\n";
+			echo "<!--\n";
+			echo "window.onload = function() {\n";
+				echo "loginField = document.getElementsByName('passwd')[0];\n";
+				echo "loginField.focus();\n";
+			echo "}\n";
+			echo "//-->\n";
+			echo "</script>\n";
+		?>
 		<p align="center"><a href="http://lam.sf.net" target="_blank">
 			<img src="../../graphics/banner.jpg" border=1 alt="LDAP Account Manager"></a>
 		</p>
