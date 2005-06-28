@@ -129,7 +129,7 @@ function createModulePDF($accounts,$pdf_structure="default.xml") {
 					$section_headline = getSectionHeadline($entries[substr($name,1)][0]);
 				}
 				else {
-					$section_headline = '- ' . _($name);
+					$section_headline = $name;
 				}
 				$pdf->setFont($fontName,"B",12);
 				$pdf->Write(5,$section_headline . ":");
