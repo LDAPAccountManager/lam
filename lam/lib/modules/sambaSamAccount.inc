@@ -544,20 +544,18 @@ class sambaSamAccount extends baseModule {
 					}
 				}
 			}
-			if ($post['sambaSID']== _('Administrator')) {
-				$this->attributes['sambaSID'][0] = $SID."-500";
-				// Do a check if an administrator already exists
-				if ($_SESSION['cache']->in_cache($SID."-500", 'sambaSID', 'user')!=$_SESSION[$this->base]->dn_orig)
-					$triggered_messages['sambaSID'][] = $this->messages['rid'][0];
+			$specialRids = array_flip($this->rids);
+			// set special RID if selected
+			if (in_array($post['sambaSID'], $specialRids)) {
+				$this->attributes['sambaSID'][0] = $SID . '-' . $this->rids[$post['sambaSID']];
+			}
+			// standard RID
+			else if ($post['sambaSID'] == "-") {
+				$rid = substr($this->attributes['sambaSID'][0], strrpos($this->attributes['sambaSID'][0], '-') + 1, strlen($this->attributes['sambaSID'][0]));
+				// change only if not yet set or previously set to special SID
+				if (!$this->attributes['sambaSID'][0] || in_array($rid, $this->rids)) {
+					$this->attributes['sambaSID'][0] = $SID."-". (($_SESSION[$this->base]->module['posixAccount']->attributes['uidNumber'][0]*2)+$RIDbase);
 				}
-			else if ($post['sambaSID']== _('Guest')) {
-				$this->attributes['sambaSID'][0] = $SID."-501";
-				// Do a check if an guest already exists
-				if ($_SESSION['cache']->in_cache($SID."-501", 'sambaSID', 'user')!=$_SESSION[$this->base]->dn_orig)
-					$triggered_messages['sambaSID'][] = $this->messages['rid'][1];
-				}
-			else if ($post['sambaSID']== "-") {
-				$this->attributes['sambaSID'][0] = $SID."-". (($_SESSION[$this->base]->module['posixAccount']->attributes['uidNumber'][0]*2)+$RIDbase);
 			}
 			// Check values
 			$this->attributes['sambaHomePath'][0] = str_replace('$user', $_SESSION[$this->base]->module['posixAccount']->attributes['uid'][0], $this->attributes['sambaHomePath'][0]);
@@ -732,28 +730,31 @@ class sambaSamAccount extends baseModule {
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Windows group') ),
 				1 => array ( 'kind' => 'select', 'name' => 'sambaPrimaryGroupSID', 'options' => $options, 'options_selected' => $selected),
 				2 => array ( 'kind' => 'help', 'value' => 'sambaPrimaryGroupSID' ));
-			// Display if group SID should be mapped to a well kown SID
-			$wrid=false;
-			$options = array();
+			// display if group SID should be mapped to a well known SID
+			$options = array_keys($this->rids);
+			$options[] = '-';
 			$selected = array();
-			if ($this->attributes['sambaSID'][0]==$SID."-500") {
-				$selected[] = _('Administrator');
-				$wrid=true;
+			if ($this->attributes['sambaSID'][0]) {
+				$rid = substr($this->attributes['sambaSID'][0], strrpos($this->attributes['sambaSID'][0], '-') + 1, strlen($this->attributes['sambaSID'][0]));
+				$specialRids = array_flip($this->rids);
+				if (in_array($rid, $this->rids)) {
+					$selected = array($specialRids[$rid]);
 				}
-			else $options[] = _('Administrator');
-			if ($this->attributes['sambaSID'][0]==$SID."-501") {
-				$selected[] = _('Guest');
-				$wrid=true;
+				else {
+					$selected = array('-');
 				}
-			else $options[] = _('Guest');
-			if ($wrid) $options[] = "-";
-				else $selected[] = "-";
+			}
+			else $selected[] = "-";
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Special user') ),
 				1 => array ( 'kind' => 'select', 'name' => 'sambaSID', 'options' => $options, 'options_selected' => $selected),
 				2 => array ( 'kind' => 'help', 'value' => 'sambaSID' ));
 			}
+		$selectedDomain = array();
+		if (in_array($this->attributes['sambaDomainName'][0], $sambaDomainNames)) {
+			$selectedDomain = array($this->attributes['sambaDomainName'][0]);
+		}
 		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Domain') ),
-			1 => array ( 'kind' => 'select', 'name' => 'sambaDomainName', 'options' => $sambaDomainNames, 'options_selected' => array($this->attributes['sambaDomainName'][0])),
+			1 => array ( 'kind' => 'select', 'name' => 'sambaDomainName', 'options' => $sambaDomainNames, 'options_selected' => $selectedDomain),
 			2 => array ( 'kind' => 'help', 'value' => 'sambaDomainName' ));
 		if ($_SESSION[$this->base]->type=='host') {
 			$return[] = array ( 0 => array ( 'kind' => 'input', 'name' => 'sambaAcctFlagsW', 'type' => 'hidden', 'value' => 'true' ));
