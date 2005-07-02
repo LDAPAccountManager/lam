@@ -1,3 +1,7 @@
+??? 0.5.rc1
+   - added manager and post office box for inetOrgPerson
+
+
 30.06.2005 0.5.alpha2
    - added documentation about schemas
    - PDF now uses UTF-8 fonts
