@@ -87,6 +87,8 @@ class sambaSamAccount extends baseModule {
 		}
 		// alias name
 		$return["alias"] = _('Samba 3');
+		// RDN attribute
+		$return["RDN"] = array("sambaSID" => "low");
 		// module dependencies
 		$return['dependencies'] = array('depends' => array('posixAccount'), 'conflicts' => array());
 		// profile checks
