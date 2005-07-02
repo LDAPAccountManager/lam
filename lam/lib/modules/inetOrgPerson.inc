@@ -75,8 +75,9 @@ class inetOrgPerson extends baseModule {
 		$this->messages['cn'][0] = array('ERROR', _('Common name'), _('Please enter a valid common name!'));
 		$this->messages['cn'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_cn', _('Please enter a valid common name!'));
 		$this->messages['uid'][0] = array('ERROR', _('User name'), _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
-		$this->messages['uid'][1] = array('ERROR', _('Account %s:') . ' posixAccount_userName', _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
-		$this->messages['uid'][3] = array('ERROR', _('Account %s:') . ' posixAccount_userName', _('User name already exists!'));
+		$this->messages['uid'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_userName', _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
+		$this->messages['uid'][3] = array('ERROR', _('Account %s:') . ' inetOrgPerson_userName', _('User name already exists!'));
+		$this->messages['manager'][0] = array('ERROR', _('Account %s:') . ' inetOrgPerson_manager', _('This is not a valid DN!'));
 	}	
 	
 	/**
@@ -157,6 +158,12 @@ class inetOrgPerson extends baseModule {
 		'example' => _('Temp')
 		),
 		array(
+		'name' => 'inetOrgPerson_manager',
+		'description' => _('Manager'),
+		'help' => 'manager',
+		'example' => 'uid=smiller,ou=People,dc=company,dc=com'
+		),
+		array(
 		'name' => 'inetOrgPerson_street',
 		'description' => _('Street'),
 		'help' => 'street',
@@ -173,6 +180,12 @@ class inetOrgPerson extends baseModule {
 		'description' => _('Postal address'),
 		'help' => 'postalAddress',
 		'example' => _('Mycity')
+		),
+		array(
+		'name' => 'inetOrgPerson_postOfficeBox',
+		'description' => _('Post office box'),
+		'help' => 'postOfficeBox',
+		'example' => '12345'
 		),
 		array(
 		'name' => 'inetOrgPerson_telephone',
@@ -233,11 +246,13 @@ class inetOrgPerson extends baseModule {
 		$return['PDF_fields'] = array(
 			'description',
 			'host',
-			'title',
 			'givenName',
 			'sn',
+			'title',
 			'employeeType',
+			'manager',
 			'street',
+			'postOfficeBox',
 			'postalCode',
 			'postalAddress',
 			'telephoneNumber',
@@ -275,9 +290,17 @@ class inetOrgPerson extends baseModule {
 					"Headline" => _("Employee type"),
 					"Text" => _("Employee type: Contractor, Employee, Intern, Temp, External, ...")
 				),
+				'manager' => array (
+					"Headline" => _("Manager"),
+					"Text" => _("This is the LDAP DN of the user's manager. Use this property to represent hierarchies in your company.")
+				),
 				'street' => array (
 					"Headline" => _("Street"),
 					"Text" => _("Street")
+				),
+				'postOfficeBox' => array (
+					"Headline" => _("Post office box"),
+					"Text" => _("Post office box")
 				),
 				'postalCode' => array (
 					"Headline" => _("Postal code"),
@@ -394,9 +417,16 @@ class inetOrgPerson extends baseModule {
 		$this->attributes['mobileTelephoneNumber'][0] = $post['mobileTelephoneNumber'];
 		$this->attributes['facsimileTelephoneNumber'][0] = $post['facsimileTelephoneNumber'];
 		$this->attributes['street'][0] = $post['street'];
+		$this->attributes['postOfficeBox'][0] = $post['postOfficeBox'];
 		$this->attributes['postalCode'][0] = $post['postalCode'];
 		$this->attributes['postalAddress'][0] = $post['postalAddress'];
 		$this->attributes['employeeType'][0] = $post['employeeType'];
+		if ($post['manager'] != '-') {
+			$this->attributes['manager'][0] = $post['manager'];
+		}
+		else {
+			unset($this->attributes['manager'][0]);
+		}
 
 		$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
 		if (!in_array('posixAccount', $modules)) {
@@ -477,18 +507,21 @@ class inetOrgPerson extends baseModule {
 					'maxlength' => '255', 'value' => $this->attributes['cn'][0] ),
 				2 => array ('kind' => 'help', 'value' => 'cn'));
 		}
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Job title') ),
-			1 => array ( 'kind' => 'input', 'name' => 'title', 'type' => 'text', 'size' => '30',
-				'value' => $this->attributes['title'][0] ),
-			2 => array ('kind' => 'help', 'value' => 'title'));
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Employee type') ),
-			1 => array ( 'kind' => 'input', 'name' => 'employeeType', 'type' => 'text', 'size' => '30',
-				'maxlength' => '255', 'value' => $this->attributes['employeeType'][0] ),
-			2 => array ('kind' => 'help', 'value' => 'employeeType'));
+		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Description') ),
+			1 => array ( 'kind' => 'input', 'name' => 'description', 'type' => 'text', 'size' => '30',
+				'maxlength' => '255', 'value' => $this->attributes['description'][0] ),
+			2 => array ('kind' => 'help', 'value' => 'description'));
+
+		$return[] = array(0 => array('kind' => 'text', 'td' => array('colspan' => 3)));
+
 		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Street') ),
 			1 => array ( 'kind' => 'input', 'name' => 'street', 'type' => 'text', 'size' => '30',
 				'maxlength' => '255', 'value' => $this->attributes['street'][0] ),
 			2 => array ('kind' => 'help', 'value' => 'street'));
+		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Post office box') ),
+			1 => array ( 'kind' => 'input', 'name' => 'postOfficeBox', 'type' => 'text', 'size' => '30',
+				'maxlength' => '255', 'value' => $this->attributes['postOfficeBox'][0] ),
+			2 => array ('kind' => 'help', 'value' => 'postOfficeBox'));
 		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Postal code') ),
 			1 => array ( 'kind' => 'input', 'name' => 'postalCode', 'type' => 'text', 'size' => '30',
 				'maxlength' => '255', 'value' => $this->attributes['postalCode'][0] ),
@@ -513,10 +546,17 @@ class inetOrgPerson extends baseModule {
 			1 => array ( 'kind' => 'input', 'name' => 'mail', 'type' => 'text', 'size' => '30',
 				'maxlength' => '255', 'value' => $this->attributes['mail'][0] ),
 			2 => array ('kind' => 'help', 'value' => 'mail'));
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Description') ),
-			1 => array ( 'kind' => 'input', 'name' => 'description', 'type' => 'text', 'size' => '30',
-				'maxlength' => '255', 'value' => $this->attributes['description'][0] ),
-			2 => array ('kind' => 'help', 'value' => 'description'));
+
+		$return[] = array(0 => array('kind' => 'text', 'td' => array('colspan' => 3)));
+
+		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Job title') ),
+			1 => array ( 'kind' => 'input', 'name' => 'title', 'type' => 'text', 'size' => '30',
+				'value' => $this->attributes['title'][0] ),
+			2 => array ('kind' => 'help', 'value' => 'title'));
+		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Employee type') ),
+			1 => array ( 'kind' => 'input', 'name' => 'employeeType', 'type' => 'text', 'size' => '30',
+				'maxlength' => '255', 'value' => $this->attributes['employeeType'][0] ),
+			2 => array ('kind' => 'help', 'value' => 'employeeType'));
 		if (isset($this->attributes['host'])) {
 			if (is_array($this->attributes['host'])) {
 				$hostvalue .= implode(",", $this->attributes['host']);
@@ -525,7 +565,25 @@ class inetOrgPerson extends baseModule {
 				1 => array ( 'kind' => 'input', 'name' => 'host', 'type' => 'text', 'size' => '30',
 					'maxlength' => '255', 'value' => $hostvalue ),
 				2 => array ('kind' => 'help', 'value' => 'workstations'));
-			}
+		}
+		// get list of existing users for manager attribute
+		$dnUsers = $_SESSION['cache']->get_cache('uid', 'inetOrgPerson', 'user');
+		if (!is_array($dnUsers)) $dnUsers = array();
+		$dnUsers = array_keys($dnUsers);
+		usort($dnUsers, array($_SESSION['ldap'], 'cmp_array'));
+		array_unshift($dnUsers, '-');
+		$optionsSelected = array();
+		if ($this->attributes['manager'][0]) {
+			$optionsSelected[] = $this->attributes['manager'][0];
+		}
+		else {
+			$optionsSelected[] = '-';
+		}
+		$return[] = array(
+			0 => array('kind' => 'text', 'text' => _('Manager')),
+			1 => array('kind' => 'select', 'name' => 'manager', 'size' => '1',
+				'options' => $dnUsers, 'options_selected' => $optionsSelected),
+			2 => array('kind' => 'help', 'value' => 'manager'));
 		return $return;
 		}
 
@@ -545,7 +603,9 @@ class inetOrgPerson extends baseModule {
 			'inetOrgPerson_givenName' => array('<block><key>' . _('First name') . '</key><value>' . $this->attributes['givenName'][0] . '</value></block>'),
 			'inetOrgPerson_sn' => array('<block><key>' . _('Last name') . '</key><value>' . $this->attributes['sn'][0] . '</value></block>'),
 			'inetOrgPerson_employeeType' => array('<block><key>' . _('Employee type') . '</key><value>' . $this->attributes['employeeType'][0] . '</value></block>'),
+			'inetOrgPerson_manager' => array('<block><key>' . _('Manager') . '</key><value>' . $this->attributes['manager'][0] . '</value></block>'),
 			'inetOrgPerson_street' => array('<block><key>' . _('Street') . '</key><value>' . $this->attributes['street'][0] . '</value></block>'),
+			'inetOrgPerson_postOfficeBox' => array('<block><key>' . _('Post office box') . '</key><value>' . $this->attributes['postOfficeBox'][0] . '</value></block>'),
 			'inetOrgPerson_postalCode' => array('<block><key>' . _('Postal code') . '</key><value>' . $this->attributes['postalCode'][0] . '</value></block>'),
 			'inetOrgPerson_postalAddress' => array('<block><key>' . _('Postal address') . '</key><value>' . $this->attributes['postalAddress'][0] . '</value></block>'),
 			'inetOrgPerson_telephoneNumber' => array('<block><key>' . _('Telephone number') . '</key><value>' . $this->attributes['telephoneNumber'][0] . '</value></block>'),
@@ -622,6 +682,17 @@ class inetOrgPerson extends baseModule {
 					$triggered_messages[] = $errMsg;
 				}
 			}
+			// manager
+			if ($rawAccounts[$i][$ids['inetOrgPerson_manager']] != "") {
+				if (get_preg($rawAccounts[$i][$ids['inetOrgPerson_manager']], 'dn')) {
+					$partialAccounts[$i]['manager'] = $rawAccounts[$i][$ids['inetOrgPerson_manager']];
+				}
+				else {
+					$errMsg = $this->messages['manager'][0];
+					array_push($errMsg, array($i));
+					$triggered_messages[] = $errMsg;
+				}
+			}
 			// street
 			if ($rawAccounts[$i][$ids['inetOrgPerson_street']] != "") {
 				if (get_preg($rawAccounts[$i][$ids['inetOrgPerson_street']], 'street')) {
@@ -632,6 +703,10 @@ class inetOrgPerson extends baseModule {
 					array_push($errMsg, array($i));
 					$triggered_messages[] = $errMsg;
 				}
+			}
+			// post office box
+			if ($rawAccounts[$i][$ids['inetOrgPerson_postOfficeBox']] != "") {
+				$partialAccounts[$i]['postOfficeBox'] = $rawAccounts[$i][$ids['inetOrgPerson_postOfficeBox']];
 			}
 			// postal code
 			if ($rawAccounts[$i][$ids['inetOrgPerson_postalCode']] != "") {
