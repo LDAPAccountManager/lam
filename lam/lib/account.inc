@@ -511,6 +511,9 @@ function get_preg($argument, $regexp) {
 		case 'country':	// Allow all letters and space
 					$pregexpr = '/^[[:alpha:]]([[:alpha:] ])+$/u';
 					break;
+		case 'dn':	// LDAP DN
+					$pregexpr = '/^([^=,]+=[^=,]+)(,([^=,]+=[^=,]+))*$/';
+					break;
 	}
 	if ($pregexpr!='')
 		if (preg_match($pregexpr, $argument)) {
