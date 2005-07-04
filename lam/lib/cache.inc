@@ -179,16 +179,16 @@ class cache {
 				while ($entry) {
 					$dn = (ldap_get_dn($_SESSION['ldap']->server(), $entry));
 					$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
+					// unset double entries
+					for ($i=0; $i<count($attr); $i++) {
+						if (isset($attr[$i])) unset($attr[$i]);
+					}
 					// unset every count entry
 					unset ($attr['count']);
 					$attributes = array_keys($attr);
 					foreach ($attributes as $attribute) {
 						unset ($attr[$attribute]['count']);
 					}
-					// unset double entries
-					for ($i=0; $i<count($attr); $i++) {
-						if (isset($attr[$i])) unset($attr[$i]);
-						}
 					// Write new cache entry
 					$addcache = $attr;
 					unset ($addcache['objectClass']);
