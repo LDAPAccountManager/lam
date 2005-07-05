@@ -176,31 +176,32 @@ if (sizeof($info) > 0) {
 		for ($k = 0; $k < sizeof($attr_array); $k++) {
 			echo ("<td>");
 			// print all attribute entries seperated by "; "
-			if (sizeof($info[$i][strtolower($attr_array[$k])]) > 0) {
+			$attrName = strtolower($attr_array[$k]);
+			if (isset($info[$i][$attrName]) && sizeof($info[$i][$attrName]) > 0) {
 				// delete first array entry which is "count"
-				if (is_array($info[$i][strtolower($attr_array[$k])])) unset($info[$i][strtolower($attr_array[$k])]['count']);
+				if (is_array($info[$i][$attrName])) unset($info[$i][$attrName]['count']);
 				// generate links for group members
-				if (strtolower($attr_array[$k]) == "memberuid") {
+				if ($attrName == "memberuid") {
 					// sort array
-					sort($info[$i][strtolower($attr_array[$k])]);
+					sort($info[$i][$attrName]);
 					// make a link for each member of the group
 					$linklist = array();
-					for ($d = 0; $d < sizeof($info[$i][strtolower($attr_array[$k])]); $d++) {
-						$user = $info[$i][strtolower($attr_array[$k])][$d]; // user name
+					for ($d = 0; $d < sizeof($info[$i][$attrName]); $d++) {
+						$user = $info[$i][$attrName][$d]; // user name
 						$linklist[$d] = "<a href=\"userlink.php?user='" . $user . "' \">" . $user . "</a>";
 					}
 					echo implode("; ", $linklist);
 				}
 				// print all other attributes
 				else {
-					if (is_array($info[$i][strtolower($attr_array[$k])])) {
+					if (is_array($info[$i][$attrName])) {
 						// delete "count" entry
-						unset($info[$i][strtolower($attr_array[$k])]['count']);
+						unset($info[$i][$attrName]['count']);
 						// sort array
-						sort($info[$i][strtolower($attr_array[$k])]);
-						echo implode("; ", $info[$i][strtolower($attr_array[$k])]);
+						sort($info[$i][$attrName]);
+						echo implode("; ", $info[$i][$attrName]);
 					}
-					else echo $info[$i][strtolower($attr_array[$k])];
+					else echo $info[$i][$attrName];
 				}
 			}
 			echo ("</td>\n");

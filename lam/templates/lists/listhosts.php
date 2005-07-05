@@ -176,15 +176,16 @@ if (sizeof($info) > 0) {
 		for ($k = 0; $k < sizeof($attr_array); $k++) {
 			echo ("<td>");
 			// print all attribute entries seperated by "; "
-			if (sizeof($info[$i][strtolower($attr_array[$k])]) > 0) {
+			$attrName = strtolower($attr_array[$k]);
+			if (isset($info[$i][$attrName]) && sizeof($info[$i][$attrName]) > 0) {
 				// delete "count" entry
-				unset($info[$i][strtolower($attr_array[$k])]['count']);
-				if (is_array($info[$i][strtolower($attr_array[$k])])) {
+				unset($info[$i][$attrName]['count']);
+				if (is_array($info[$i][$attrName])) {
 					// sort array
-					sort($info[$i][strtolower($attr_array[$k])]);
-					echo implode("; ", $info[$i][strtolower($attr_array[$k])]);
+					sort($info[$i][$attrName]);
+					echo implode("; ", $info[$i][$attrName]);
 				}
-				else echo $info[$i][strtolower($attr_array[$k])];
+				else echo $info[$i][$attrName];
 			}
 			echo ("</td>\n");
 		}
