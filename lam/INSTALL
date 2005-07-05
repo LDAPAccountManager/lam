@@ -6,7 +6,7 @@ Installation Instructions for LAM
 1. Requirements
 
    - Apache webserver (SSL optional) with installed PHP-Module (PHP-Module with
-     ldap, gettext, mcrypt+mhash optional)
+     ldap, gettext, xml, mcrypt+mhash optional)
    - Perl (optional, needed only for lamdaemon)
    - OpenLDAP (>2.0)
    - A web browser :-)
@@ -53,3 +53,13 @@ Installation Instructions for LAM
      - Manually:
        A default config file can be found in /lam/config/lam.conf_sample.
        Change the necessary entries and rename it to /lam/config/lam.conf.
+
+
+3. Setting up PHP
+
+   LAM runs with PHP4 or PHP5.
+   
+   Needed changes in your php.ini:
+
+    * memory_limit = 32M
+
