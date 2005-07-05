@@ -1343,11 +1343,11 @@ class accountContainer {
 		$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
 		$attrNames = array_keys($attr);
 		// remove 'count' entries and numerical entries
-		for ($i = 0; $i < sizeof($attrNames); $i++) unset($attr[$attrNames[$i]]['count']);
-		unset($attr['count']);
 		for ($i = 0; $i < count($attr); $i++) {
 			if (isset($attr[$i])) unset($attr[$i]);
 		}
+		for ($i = 0; $i < sizeof($attrNames); $i++) unset($attr[$attrNames[$i]]['count']);
+		unset($attr['count']);
 		// save original attributes
 		$this->attributes_orig = $attr;
 				
