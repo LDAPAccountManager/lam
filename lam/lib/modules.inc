@@ -553,6 +553,7 @@ function parseHtml($module, $input, $values, $restricted, &$tabindex, &$tabindex
 				if (isset($input[$i][$j]['td']['valign'])) echo " valign=\"" . $input[$i][$j]['td']['valign'] . "\"";
 				if (isset($input[$i][$j]['td']['colspan'])) echo " colspan=\"" . $input[$i][$j]['td']['colspan'] . "\"";
 				if (isset($input[$i][$j]['td']['rowspan'])) echo " rowspan=\"" . $input[$i][$j]['td']['rowspan'] . "\"";
+				if (isset($input[$i][$j]['td']['width'])) echo " width=\"" . $input[$i][$j]['td']['width'] . "\"";
 				echo ">\n";
 				switch ($input[$i][$j]['kind']) {
 					// plain text
@@ -1412,7 +1413,7 @@ class accountContainer {
 				}
 			}
 		// Write Module-Order in variable
-		$this->order = array_merge ('main' ,$order);
+		$this->order = array_unshift($order, 'main');
 		$profile = loadAccountProfile('default', $this->type);
 		// pass profile to each module
 		$modules = array_keys($this->module);
