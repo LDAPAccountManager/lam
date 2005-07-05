@@ -1379,7 +1379,7 @@ class accountContainer {
 				}
 			}
 		// Write Module-Order in variable
-		$this->order = array_merge ('main' ,$order);
+		$this->order = array_unshift($order, 'main');
 		return 0;
 		}
 
