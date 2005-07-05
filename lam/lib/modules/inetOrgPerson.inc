@@ -234,7 +234,7 @@ class inetOrgPerson extends baseModule {
 			}
 		}
 		// Unix workstations for upload
-		if ($_SESSION['ldap']->supports_unix_hosts) {
+		if ($_SESSION['loggedIn'] && $_SESSION['ldap']->supports_unix_hosts) {
 			$return['upload_columns'][] = array(
 				'name' => 'inetOrgPerson_hosts',
 				'description' => _('Unix workstations'),
