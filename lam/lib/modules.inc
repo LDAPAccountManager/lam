@@ -1379,7 +1379,8 @@ class accountContainer {
 				}
 			}
 		// Write Module-Order in variable
-		$this->order = array_unshift($order, 'main');
+		array_unshift($order, 'main');
+		$this->order = $order;
 		return 0;
 		}
 
@@ -1413,7 +1414,8 @@ class accountContainer {
 				}
 			}
 		// Write Module-Order in variable
-		$this->order = array_unshift($order, 'main');
+		array_unshift($order, 'main');
+		$this->order = $order;
 		$profile = loadAccountProfile('default', $this->type);
 		// pass profile to each module
 		$modules = array_keys($this->module);
