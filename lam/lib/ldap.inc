@@ -294,9 +294,8 @@ class Ldap{
 	function __sleep() {
 		$this->close();
 		// define which attributes to save
-		return array("conf", "username", "password", "ldapUserAttributes", "ldapGroupAttributes",
-			"ldapHostAttributes", "objectClasses", "attributes", "supports_unix_hosts", "supports_samba2_schema",
-			"supports_samba3_schema", "rand");
+		return array("conf", "username", "password", "objectClasses", "attributes",
+			"supports_unix_hosts", "supports_samba2_schema", "supports_samba3_schema", "rand");
 	}
 
 	/** Reconnects to LDAP server when deserialized */
