@@ -1444,7 +1444,7 @@ class accountContainer {
 			// merge changes
 			$DNs = array_keys($temp);
 			// *** fixme don't include references
-			$attributes = array_merge_recursive($temp, $attributes);
+			if (is_array($temp)) $attributes = array_merge_recursive($temp, $attributes);
 			for ($i=0; $i<count($DNs); $i++) {
 				$ops = array_keys($temp[$DNs[$i]]);
 				for ($j=0; $j<count($ops); $j++) {
@@ -1503,7 +1503,10 @@ class accountContainer {
 				// move existing DN
 				if ($this->dn_orig!='') {
 					// merge attributes together
-					$attr = array_merge_recursive($attributes[$this->dn]['add'], $attributes[$this->dn]['notchanged'], $attributes[$this->dn]['modify']);
+					$attr = array();
+					if (is_array($attributes[$this->dn]['add'])) $attr = array_merge_recursive($attr, $attributes[$this->dn]['add']);
+					if (is_array($attributes[$this->dn]['notchanged'])) $attr = array_merge_recursive($attr, $attributes[$this->dn]['notchanged']);
+					if (is_array($attributes[$this->dn]['modify'])) $attr = array_merge_recursive($attr, $attributes[$this->dn]['modify']);
 					// add attributes which are not controlled by modules from original account
 					$attrNames = array_keys($this->attributes_orig);
 					for ($i = 0; $i < sizeof($attrNames); $i++) {
@@ -1527,7 +1530,10 @@ class accountContainer {
 					}
 				// create complete new dn
 				else {
-					$attr = array_merge_recursive($attributes[$this->dn]['add'], $attributes[$this->dn]['notchanged'], $attributes[$this->dn]['modify']);
+					$attr = array();
+					if (is_array($attributes[$this->dn]['add'])) $attr = array_merge_recursive($attr, $attributes[$this->dn]['add']);
+					if (is_array($attributes[$this->dn]['notchanged'])) $attr = array_merge_recursive($attr, $attributes[$this->dn]['notchanged']);
+					if (is_array($attributes[$this->dn]['modify'])) $attr = array_merge_recursive($attr, $attributes[$this->dn]['modify']);
 					$success = ldap_add($_SESSION['ldap']->server(), $this->dn, $attr);
 					if (!$success) {
 						$errors[] = array('ERROR', sprintf(_('Was unable to create DN: %s.'), $this->dn), ldap_error($_SESSION['ldap']->server()));
