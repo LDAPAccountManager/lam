@@ -1,7 +1,10 @@
-lamdaemon.pl is used to modify quota and homedirs
-on a remote or local host via ssh.
-If you want wo use it you have to set up some
-things to get it to work:
+
+   Setting up lamdaemon:
+
+
+ Lamdaemon.pl is used to modify quota and home directories on a remote or local host via ssh.
+ If you want wo use it you have to set up some things to get it to work:
+
 
 1. Setup values in LDAP Account Manager
    * Set the remote or local host in the configuration
@@ -14,13 +17,16 @@ things to get it to work:
    a wrapper, sudo.
    Edit /etc/sudoers on host where homedirs or quotas should be used
    and add the following line:
+   
    $admin All= NOPASSWD: $path
-   $admin is the adminuser from LAM and $path
-   is the path to lamdaemon.pl e.g. "$admin All= NOPASSWD: /srv/www/htdocs/lam/lib/lamdaemon.pl"
+   
+   $admin is the adminuser from LAM and $path is the path to lamdaemon.pl
+   e.g. "$admin All= NOPASSWD: /srv/www/htdocs/lam/lib/lamdaemon.pl"
    At the moment the password is a paramteter of lamdaemon.pl
    therefore you should disable logging so the password does not
    appear in any logfile.
    This can be done by adding the following line to /etc/sudoers:
+
    Defaults:$admin !syslog
 
 
@@ -42,7 +48,14 @@ things to get it to work:
    dpkg -i install libnet-ssh-perl_1.25-1_all.deb
 
 
-4. Test lamdaemon.pl
+4. Set up SSH
+   Your SSH daemon must offer the password authentication method.
+   To activate it just use this configuration option in /etc/ssh/sshd_config:
+
+   PasswordAuthentication yes
+
+
+5. Test lamdaemon.pl
    There is a test-function in lamdaemon.pl. Please run lamdaemon.pl
    with the following parameters to test it:
 
@@ -71,8 +84,42 @@ things to get it to work:
    Your password in LDAP has to be hashed with CRYPT. If you use something like SSHA
    you will probably get "Access denied.".
 
+   Now everything should work fine.
 
-Now everything should work fine.
+
+6. Debugging lamdaemon
+   If you set up all things as documented before and still get "Access denied"
+   then you can try to debug the problem.
+
+   - Check /var/log/auth.log or the equivalent on your system
+     This file contains messages about all logins. If the ssh login
+     failed then you will find a description about the reason here.
+
+   - Enable debug output in lamdaemon
+     In line 230 of lamdaemon.pl change the SSH options like this:
+
+     my $ssh = Net::SSH::Perl->new($hostname, options=>[
+       "UserKnownHostsFile /dev/null"],
+       protocol => "2,1",
+       debug => "true" );
+
+     This will produce a lot of output when you do the lamdaemon test.
+     Check that there is a line like this:
+  
+     Authentication methods that can continue: publickey,password,keyboard-interactive.
+
+     The "password" is the one which is important.
+
+   - Set sshd in debug mode
+     In /etc/ssh/sshd_conf add these lines:
+
+     SyslogFacility AUTH
+     LogLevel DEBUG3
+
+     Now check /var/log/syslog for messages from sshd.
+
+   - Update Openssh
+     A Suse Linux user reported that upgrading Openssh solved the problem.
 
 
 Security warning:
