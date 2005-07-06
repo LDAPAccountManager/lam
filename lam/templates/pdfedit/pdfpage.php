@@ -63,9 +63,32 @@ if(isset($_GET['abort'])) {
 	metarefresh('pdfmain.php');
 	exit;
 }
+
+// set new logo and headline
+if ((isset($_GET['headline'])) && ($_GET['logoFile'] != $_SESSION['currentPageDefinitions']['filename'])) {
+	$_SESSION['currentPageDefinitions']['filename'] = $_GET['logoFile'];
+}
+if ((isset($_GET['headline'])) && ($_GET['headline'] != $_SESSION['currentPageDefinitions']['headline'])) {
+	$_SESSION['currentPageDefinitions']['headline'] = str_replace('<','',str_replace('>','',$_GET['headline']));
+}
+if(isset($_POST['defaults'])) {
+	foreach($_POST['defaults'] as $default) {
+		switch($default) {
+			case 'logoFile':
+				unset($_SESSION['currentPageDefinitions']['filename']);
+				break;
+			case 'headline':
+				unset($_SESSION['currentPageDefinitions']['headline']);
+				break;
+			default:
+				break;
+		}
+	}
+}
+
 // Check if pdfname is valid, then save current structure to file and go to
 // main pdf structure page
-elseif(isset($_GET['submit'])) {
+if(isset($_GET['submit'])) {
 	if(!isset($_GET['pdfname']) || !preg_match('/[a-zA-Z0-9\-\_\.]+/',$_GET['pdfname'])) {
 		StatusMessage('ERROR',_('PDF-structure name not valid'),_('The name for that PDF-structure you submitted is not valid. A valid name must constist at least of one of the following characters \'a-z\',\'A-Z\',\'0-9\',\'_\',\'-\',\'.\'.'));
 	}
@@ -307,27 +330,6 @@ elseif(isset($_GET['down'])) {
 	elseif($tmp['tag'] == 'ENTRY' && $next['tag'] == 'ENTRY') {
 		$_SESSION['currentPDFStructure'][$_GET['down']] = $_SESSION['currentPDFStructure'][$_GET['down'] + 1];
 		$_SESSION['currentPDFStructure'][$_GET['down'] + 1] = $tmp;
-	}
-}
-
-if ((isset($_GET['headline'])) && ($_GET['logoFile'] != $_SESSION['currentPageDefinitions']['filename'])) {
-	$_SESSION['currentPageDefinitions']['filename'] = $_GET['logoFile'];
-}
-if ((isset($_GET['headline'])) && ($_GET['headline'] != $_SESSION['currentPageDefinitions']['headline'])) {
-	$_SESSION['currentPageDefinitions']['headline'] = str_replace('<','',str_replace('>','',$_GET['headline']));
-}
-if(isset($_POST['defaults'])) {
-	foreach($_POST['defaults'] as $default) {
-		switch($default) {
-			case 'logoFile':
-				unset($_SESSION['currentPageDefinitions']['filename']);
-				break;
-			case 'headline':
-				unset($_SESSION['currentPageDefinitions']['headline']);
-				break;
-			default:
-				break;
-		}
 	}
 }
 
