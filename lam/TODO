@@ -3,6 +3,4 @@
 
 0.5.rc1
  - change location of PDF profiles
- - support for sambaLogonHours
- - inetOrgPerson attributes: add manager and postOfficeBox
 

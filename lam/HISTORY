@@ -1,5 +1,6 @@
 ??? 0.5.rc1
    - added manager and post office box for inetOrgPerson
+   - Samba 3: added support for logon hours
    - fixed bugs:
     -> several fixes for PHP5
 
