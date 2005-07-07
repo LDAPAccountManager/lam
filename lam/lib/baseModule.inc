@@ -238,7 +238,7 @@ class baseModule {
 					if ($this->meta['profile_checks'][$identifiers[$i]]['required']) {
 						$messages[] = $this->meta['profile_checks'][$identifiers[$i]]['required_message'];
 					}
-					return $messages;
+					continue;
 				}
 				switch ($this->meta['profile_checks'][$identifiers[$i]]['type']) {
 					// check by regular expression (from account.inc)
