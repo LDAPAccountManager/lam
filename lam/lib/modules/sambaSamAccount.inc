@@ -68,7 +68,8 @@ class sambaSamAccount extends baseModule {
 		$this->messages['pwdMustChange'][0] = array('ERROR', _('Account %s:') . ' sambaSamAccount_pwdMustChange', _('Please enter a valid date in format DD-MM-YYYY.'));
 		$this->messages['homeDrive'][0] = array('ERROR', _('Account %s:') . ' sambaSamAccount_homeDrive', _('Please enter a valid drive letter.'));
 		$this->messages['domain'][0] = array('ERROR', _('Account %s:') . ' sambaSamAccount_domain', _('LAM was unable to find a domain with this name!'));
-		$this->messages['logonHours'][0] = array('ERROR', _('Account %s:') . ' sambaSamAccount_logonHours', _('The format of the logon hours field is invalid!'));
+		$this->messages['logonHours'][0] = array('ERROR', _('Logon hours'), _('The format of the logon hours field is invalid!'));
+		$this->messages['logonHours'][1] = array('ERROR', _('Account %s:') . ' sambaSamAccount_logonHours', _('The format of the logon hours field is invalid!'));
 		$this->messages['group'][0] = array('ERROR', _('Account %s:') . ' sambaSamAccount_group', _('Please enter a valid group name!'));
 	}
 	
@@ -108,6 +109,10 @@ class sambaSamAccount extends baseModule {
 			'type' => 'ext_preg',
 			'regex' => 'unixhost',
 			'error_message' => $this->messages['workstations'][0]);
+		$return['profile_checks']['sambaSamAccount_logonHours'] = array(
+			'type' => 'ext_preg',
+			'regex' => 'sambaLogonHours',
+			'error_message' => $this->messages['logonHours'][0]);
 		// profile mappings
 		$return['profile_mappings'] = array(
 			'sambaSamAccount_homeDrive' => 'sambaHomeDrive',
@@ -115,7 +120,8 @@ class sambaSamAccount extends baseModule {
 			'sambaSamAccount_profilePath' => 'sambaProfilePath',
 			'sambaSamAccount_scriptPath' => 'sambaLogonScript',
 			'sambaSamAccount_userWorkstations' => 'sambaUserWorkstations',
-			'sambaSamAccount_sambaDomainName' => 'sambaDomainName'
+			'sambaSamAccount_sambaDomainName' => 'sambaDomainName',
+			'sambaSamAccount_logonHours' => 'sambaLogonHours'
 		);
 		// available PDF fields
 		$return['PDF_fields'] = array(
@@ -195,6 +201,9 @@ class sambaSamAccount extends baseModule {
 			"domain" => array(
 				"ext" => "FALSE", "Headline" => _("Domain"),
 				"Text" => _("Windows domain name of account.")),
+			"logonHours" => array(
+				"ext" => "FALSE", "Headline" => _("Logon hours"),
+				"Text" => _("This option defines the allowed logon hours for this account.")),
 			"logonHoursUpload" => array(
 				"ext" => "FALSE", "Headline" => _("Logon hours"),
 				"Text" => _("This option defines the allowed logon hours for this account. The format is the same as for the LDAP attribute. The 24*7 hours are represented as 168 bit which are saved as 21 hex (21*8 = 168) values. The first bit represents Sunday 0:00 - 0:59 in GMT."))
@@ -367,7 +376,11 @@ class sambaSamAccount extends baseModule {
 	var $deactivated;
 	/** array of well known rids */
 	var $rids;
-
+	/** HEX to binary conversion table */
+	var $hex2bitstring = array('0' => '0000', '1' => '0001', '2' => '0010', '3' => '0011', '4' => '0100',
+		'5' => '0101', '6' => '0110', '7' => '0111', '8' => '1000', '9' => '1001', 'A' => '1010',
+		'B' => '1011', 'C' => '1100', 'D' => '1101', 'E' => '1110', 'F' => '1111');
+	
 
 	function module_ready() {
 		if ($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]=='') return false;
@@ -588,6 +601,7 @@ class sambaSamAccount extends baseModule {
 		}
 		else $this->triggered_messages = array();
 		if ($post['sambaUserWorkstations'])  return 'sambaUserWorkstations';
+		if ($post['logonHours'])  return 'logonHours';
 		return 0;
 		}
 
@@ -640,6 +654,41 @@ class sambaSamAccount extends baseModule {
 		return 0;
 		}
 
+	/**
+	* Save logon hours
+	*
+	* @param array $post HTTP POST variables
+	* @return string next page name (attributes or logonHours)
+	*/
+	function process_logonHours(&$post) {
+		if ($post['abort']) return 'attributes';
+		// set new logon hours
+		$logonHours = '';
+		for ($i = 0; $i < 7; $i++) {
+			for ($h = 0; $h < 24; $h++) {
+				if ($post['lh_' . $i . '_' . $h] == 'on') {
+					$logonHours = $logonHours . '1';
+				}
+				else {
+					$logonHours = $logonHours . '0';
+				}
+			}
+		}
+		// put sunday back at the beginning
+		$sunday = substr($logonHours, strlen($logonHours) - 24);
+		$logonHours = $sunday . substr($logonHours, 0, strlen($logonHours) - 24);
+		// reconstruct HEX string
+		$bitstring2hex = array_flip($this->hex2bitstring);
+		$logonHoursNew = '';
+		for ($i = 0; $i < 42; $i++) {
+			$part = substr($logonHours, $i * 4, 4);
+			$hex = $bitstring2hex[$part];
+			$logonHoursNew = $logonHoursNew . $hex;
+		}
+		$this->attributes['sambaLogonHours'][0] = $logonHoursNew;
+		if ($post['submit']) return 'attributes';
+	}
+	
 	/* This function will create the html-page
 	* to show a page with all attributes.
 	* It will output a complete html-table
@@ -758,6 +807,13 @@ class sambaSamAccount extends baseModule {
 		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Domain') ),
 			1 => array ( 'kind' => 'select', 'name' => 'sambaDomainName', 'options' => $sambaDomainNames, 'options_selected' => $selectedDomain),
 			2 => array ( 'kind' => 'help', 'value' => 'sambaDomainName' ));
+		// logon hours
+		if ($_SESSION[$this->base]->type=='user') {
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Logon hours') ),
+				1 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'logonHours', 'value' => _('Edit logon hours')),
+				2 => array ( 'kind' => 'help', 'value' => 'logonHours' ));
+		}
+		// reset host password
 		if ($_SESSION[$this->base]->type=='host') {
 			$return[] = array ( 0 => array ( 'kind' => 'input', 'name' => 'sambaAcctFlagsW', 'type' => 'hidden', 'value' => 'true' ));
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Reset password') ),
@@ -803,6 +859,84 @@ class sambaSamAccount extends baseModule {
 			}
 		return $return;
 		}
+
+	/**
+	* This function will create the HTML page to edit logon hours.
+	*
+	* @param array $post HTTP POST variables
+	* @return array meta HTML code
+	*/
+	function display_html_logonHours(&$post) {
+		$days = array(0 => _('Monday'), 1 => _('Tuesday'), 2 => _('Wednesday'), 3 => _('Thursday'),
+			4 => _('Friday'), 5 => _('Saturday'), 6 => _('Sunday'));
+		if (!$this->attributes['sambaLogonHours'][0]) {
+			$this->attributes['sambaLogonHours'][0] = 'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF';
+		}
+		// convert existing logonHours string to bit array
+		$logonHours = $this->attributes['sambaLogonHours'][0];
+		$temp = array();
+		for ($i = 0; $i < strlen($logonHours); $i++) {
+			$temp[] = $this->hex2bitstring[$logonHours[$i]];
+		}
+		$logonHours = implode('', $temp);
+		// move sunday at the end
+		$sunday = substr($logonHours, 0, 24);
+		$logonHours = substr($logonHours, 24) . $sunday;
+		$week = array();
+		for ($i = 0; $i < 7; $i++) {
+			$week[$i] = substr($logonHours, 24*$i, 24);
+		}
+		// get offset
+		$offset = 0;
+		if ($post['timezone']) {
+			if (strlen(substr($post['timezone'], 3)) > 0) {
+				$part = substr($post['timezone'], 3);
+				if ($part[1] == '1') $offset = 10;
+				$offset = $offset + intval($part[2]);
+				if ($part[0] == '-') $offset = -$offset;
+			}
+		}
+		// display input
+		for ($i = 0; $i < 7; $i++) {
+			$return[0][1 + $i] = array('kind' => 'text', 'text' => '<b>' . $days[$i] . '</b>', 'td' => array('width' => "12.5%", 'align' => 'center'));
+			for ($h = 0; $h < 24; $h++) {
+				$pos = $h;
+				$pos = $pos + $offset;
+				if ($pos > 23) $pos = $pos - 24;
+				elseif ($pos < 0) $pos = 24 + $pos;
+				if ($week[$i][$h] == 1) {
+					$return[$pos + 1][1 + $i] = array('kind' => 'input', 'name' => 'lh_' . $i . '_' . $h,
+						'type' => 'checkbox', 'checked' => true, 'td' => array('align' => 'center'));
+				}
+				else {
+					$return[$pos + 1][1 + $i] = array('kind' => 'input', 'name' => 'lh_' . $i . '_' . $h,
+						'type' => 'checkbox', 'checked' => false, 'td' => array('align' => 'center'));
+				}
+			}
+		}
+		$return[0][0] = array('kind' => 'text', 'text' => '<b>' . _('Time') . '</b>', 'td' => array('width' => "12.5%"));
+		for ($h = 0; $h < 24; $h++) {
+			$return[1 + $h][0] = array('kind' => 'text', 'text' => "$h:00 - $h:59");
+		}
+		$return[] = array(0 => array('kind' => 'text', 'text' => '&nbsp;', 'td' => array('colspan' => 8)));
+		$timezones = array('GMT');
+		for ($i = 1; $i <= 12; $i++) {
+			if ($i < 10) $t = '0' . $i;
+			else $t = $i;
+			array_push($timezones, 'GMT+' . $t);
+			array_unshift($timezones, 'GMT-' . $t);
+		}
+		$return[] = array(
+			0 => array('kind' => 'input', 'name' => 'submit', 'type' => 'submit', 'value' => _('Submit')),
+			1 => array('kind' => 'input', 'name' => 'abort', 'type' => 'submit', 'value' => _('Abort')),
+			2 => array('kind' => 'text', 'td' => array('colspan' => 3)),
+			3 => array('kind' => 'table', 'td' => array('colspan' => 3, 'align' => 'right'), 'value' => array(0 => array(
+				0 => array('kind' => 'text', 'text' => _('Time zone')),
+				1 => array('kind' => 'select', 'name' => 'timezone', 'options' => $timezones, 'options_selected' => $post['timezone']),
+				2 => array('kind' => 'input', 'name' => 'change_tz', 'type' => 'submit', 'value' => _('Change')))))
+			);
+		return $return;
+	}
 
 	/**
 	* Returns a list of elements for the account profiles.
@@ -878,6 +1012,12 @@ class sambaSamAccount extends baseModule {
 				0 => array('kind' => 'text', 'text' => _('Domain') . ': '),
 				1 => array('kind' => 'select', 'name' => 'sambaSamAccount_sambaDomainName', 'options' => $sambaDomainNames, 'options_selected' => array()),
 				2 => array('kind' => 'help', 'value' => 'domain')
+				);
+			// logon hours
+			$return[] = array(
+				0 => array('kind' => 'text', 'text' => _('Logon hours') . ': '),
+				1 => array('kind' => 'input', 'type' => 'text', 'name' => 'sambaSamAccount_logonHours', 'value' => ''),
+				2 => array('kind' => 'help', 'value' => 'logonHoursUpload')
 				);
 		}
 		elseif ($this->get_scope() == 'host') {
@@ -1217,7 +1357,7 @@ class sambaSamAccount extends baseModule {
 						$partialAccounts[$i]['sambaLogonHours'] = $rawAccounts[$i][$ids['sambaSamAccount_logonHours']];
 					}
 					else {
-						$errMsg = $this->messages['logonHours'][0];
+						$errMsg = $this->messages['logonHours'][1];
 						array_push($errMsg, array($i));
 						$triggered_messages[] = $errMsg;
 					}
