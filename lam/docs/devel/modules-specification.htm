@@ -1039,6 +1039,110 @@ which should be displayed when this help entry is called.
 <h3><br>
 </h3>
 <h2>5. PDF syntax</h2>
+The get_pdfEntries() function uses XML formatted commands to define the
+PDF output. Each part in the PDF document is surrounded by <span
+ style="font-weight: bold; font-style: italic;">"&lt;block&gt;"</span>
+and <span style="font-weight: bold; font-style: italic;">"&lt;/block&gt;"</span>.<br>
+<br>
+Inside the &lt;block&gt; tags there are different ways to format the
+output:<br>
+<ul>
+  <li><span style="font-weight: bold;">simple line with attribute name
+and value:</span> <span style="font-weight: bold; font-style: italic;">&lt;block&gt;&lt;key&gt;</span>attribute
+name<span style="font-weight: bold; font-style: italic;">&lt;/key&gt;&lt;value&gt;</span>attribute
+value<span style="font-weight: bold; font-style: italic;">&lt;/value&gt;&lt;/block&gt;</span></li>
+  <li><span style="font-weight: bold;">table:</span> <span
+ style="font-weight: bold; font-style: italic;">&lt;block&gt;&lt;key&gt;</span>attribute
+name<span style="font-weight: bold; font-style: italic;">&lt;/key&gt;&lt;td&gt;</span>first
+value<span style="font-weight: bold; font-style: italic;">&lt;td&gt;&lt;/block&gt;&lt;block&gt;&lt;td&gt;</span>second
+value<span style="font-weight: bold; font-style: italic;">&lt;/td&gt;&lt;/block&gt;&lt;block&gt;&lt;td&gt;</span><span
+ style="font-weight: bold;"></span>third value<span
+ style="font-weight: bold; font-style: italic;">&lt;/td&gt;&lt;/block&gt;</span></li>
+</ul>
+<br>
+Special commands:<br style="font-weight: bold;">
+<ul>
+  <li><span style="font-weight: bold;">Alignment in &lt;td&gt;:</span>
+You can specify the alignment in &lt;td&gt; tags with <span
+ style="font-weight: bold; font-style: italic;">align=(L|R|C)</span>
+(e.g. &lt;td align=\"L\"&gt;)</li>
+  <li><span style="font-weight: bold;">Line breaks:</span> Line breaks
+can be specified by adding a <span
+ style="font-weight: bold; font-style: italic;">&lt;br /&gt;</span>
+tag. The new line will start at the left border of the PDF document.<br>
+  </li>
+</ul>
+<br>
+<span style="font-weight: bold; text-decoration: underline;">Examples:</span><br
+ style="font-weight: bold; text-decoration: underline;">
+<br>
+<span style="font-weight: bold;">1. Simple name+value lines:</span><br
+ style="font-weight: bold;">
+<br>
+In most cases you will just want to display a single line per attribute
+with its name and value.<br>
+<br>
+&nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">'myAttribute'</span>
+=&gt; <span style="font-weight: bold;">'<span
+ style="font-style: italic;">&lt;block&gt;&lt;key&gt;</span></span>AttrName<span
+ style="font-weight: bold; font-style: italic;">&lt;/key&gt;&lt;value&gt;</span>12345<span
+ style="font-weight: bold; font-style: italic;">&lt;/value&gt;&lt;/block&gt;</span><span
+ style="font-weight: bold;">'</span><br>
+<br>
+This will give the following PDF output: <span
+ style="font-weight: bold;">AttrName:</span> 12345<br>
+<br>
+<span style="font-weight: bold;"><br>
+2. Multiline values:</span><br>
+<br>
+Sometimes you have multivalued attributes where it is not applicable to
+write all values in one line but where you want to list your values one
+below the other or show a table.<br>
+This can be done by using the &lt;td&gt; tag. This example only uses
+one column but can just use more &lt;td&gt; tags per &lt;block&gt; tag
+to display more columns.<br>
+<br>
+&nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">'myAttribute'</span>
+=&gt; <span style="font-weight: bold;">'<span
+ style="font-style: italic;">&lt;block&gt;&lt;key&gt;</span></span>AttrName<span
+ style="font-weight: bold; font-style: italic;">&lt;/key&gt;&lt;td
+align=\"L\"&gt;</span>123<span
+ style="font-weight: bold; font-style: italic;">&lt;/td&gt;&lt;/block&gt;&lt;block&gt;&lt;td
+align=\"L\"&gt;</span>456<span
+ style="font-weight: bold; font-style: italic;">&lt;/td&gt;&lt;/block&gt;&lt;block&gt;&lt;td
+align=\"L\"&gt;</span>789<span
+ style="font-weight: bold; font-style: italic;">&lt;/td&gt;&lt;/block&gt;</span><span
+ style="font-weight: bold;">'</span><br>
+<br>
+This will give the following PDF output: <br>
+<br>
+<table
+ style="text-align: left; background-color: rgb(255, 255, 255); width: 121px; height: 79px;"
+ border="0" cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;"><span style="font-weight: bold;">AttrName:</span><br>
+      </td>
+      <td style="vertical-align: top;">123<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td
+ style="vertical-align: top; background-color: rgb(255, 255, 255);">456<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;">789<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<br>
 <br>
 <br>
 <h2>6. Module meta data</h2>
