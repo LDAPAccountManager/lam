@@ -71,12 +71,12 @@ class shadowAccount extends baseModule {
 			// password warning
 			array(
 				0 => array('kind' => 'text', 'text' => _('Password warning')),
-				1 => array('kind' => 'input', 'name' => 'shadowAccount_shadowWarning', 'type' => 'text', 'size' => '4', 'maxlength' => '4', 'value' => ""),
+				1 => array('kind' => 'input', 'name' => 'shadowAccount_shadowWarning', 'type' => 'text', 'size' => '5', 'maxlength' => '4', 'value' => ""),
 				2 => array('kind' => 'help', 'value' => 'shadowWarning')),
 			// password expiration
 			array(
 				0 => array('kind' => 'text', 'text' => _('Password expiration')),
-				1 => array('kind' => 'input', 'name' => 'shadowAccount_shadowInactive', 'type' => 'text', 'size' => '4', 'maxlength' => '4', 'value' => ""),
+				1 => array('kind' => 'input', 'name' => 'shadowAccount_shadowInactive', 'type' => 'text', 'size' => '5', 'maxlength' => '4', 'value' => ""),
 				2 => array('kind' => 'help', 'value' => 'shadowInactive')),
 			// minimum password age
 			array(
@@ -93,12 +93,9 @@ class shadowAccount extends baseModule {
 				0 => array('kind' => 'text', 'text' => _('Expiration date')),
 				1 => array('kind' => 'table', 'value' => array(
 					0 => array (
-						0 => array('kind' => 'select', 'name' => 'shadowAccount_shadowExpire_day',
-							'options' => $day, 'options_selectd' => ""),
-						1 => array('kind' => 'select', 'name' => 'shadowAccount_shadowExpire_mon',
-							'options' => $mon, 'options_selectd' => ""),
-						2 => array('kind' => 'select', 'name' => 'shadowAccount_shadowExpire_yea',
-							'options' => $year, 'options_selectd' => "")
+						0 => array('kind' => 'select', 'name' => 'shadowAccount_shadowExpire_day', 'options' => $day),
+						1 => array('kind' => 'select', 'name' => 'shadowAccount_shadowExpire_mon', 'options' => $mon),
+						2 => array('kind' => 'select', 'name' => 'shadowAccount_shadowExpire_yea', 'options' => $year)
 					)
 				)),
 				2 => array('kind' => 'help', 'value' => 'shadowExpire'))
