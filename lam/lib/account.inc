@@ -470,7 +470,7 @@ function get_preg($argument, $regexp) {
 					$pregexpr = '/^[[:digit:]]*$/';
 					break;
 		case "UNC":			// UNC Path, e.g. \\server\share\folder\...
-					$pregexpr = '/^((([\\\][\\\])|(%))([a-zA-Z0-9%\\.-])+)([\\\]([[:alnum:]%\\.\\ \\_-])+)+$/u';
+					$pregexpr = '/^((([\\\][\\\])|(%))([a-zA-Z0-9%\\.-])+)([\\\]([[:alnum:]%\\.\\$\\ \\_-])+)+$/u';
 					break;
 		case "logonscript":	// path to login-script. normal unix file
 					$pregexpr = '/^(([\/])*([[:alnum:]%\\.\\ \\_-])+([\/]([[:alnum:]%\\.\\ \\_-])+)*((\\.bat)|(\\.cmd)|(\\.exe)))*$/u';
