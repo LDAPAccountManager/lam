@@ -644,7 +644,8 @@ function parseHtml($module, $input, $values, $restricted, &$tabindex, &$tabindex
 						break;
 					// sub table
 					case 'table':
-						parseHtml($module, $input[$i][$j]['value'], $values, $restricted, $tabindex, $tabindexLink, $scope);
+						$retTemp = parseHtml($module, $input[$i][$j]['value'], $values, $restricted, $tabindex, $tabindexLink, $scope);
+						$ret = array_merge($ret, $retTemp);
 						break;
 					// help link
 					case 'help':
