@@ -9,8 +9,8 @@
 <body>
 <h1 style="text-align: center;">Profile editor<br>
 </h1>
-<div style="text-align: center;"><img alt="profile editor"
- src="images/lam_profedit.png" style="width: 502px; height: 236px;"><br>
+<div style="text-align: center;"><img alt=""
+ src="images/lam_profedit.png" style="width: 354px; height: 236px;"><br>
 </div>
 <div style="text-align: center;"><br>
 <div style="text-align: left;">The <span style="font-style: italic;">profile
@@ -50,24 +50,19 @@ for a complete list of supported types.<br>
 <br>
 The profiles have unique names under which they are saved. If a profile
 with the same name already exists it will be overwritten.<br>
-When the user selects to save the profile he will be redirected to
-profilecreate.php.<br>
 <br>
-<h2>Profilecreate.php</h2>
-This script takes the values which were entered in profilepage.php and
-checks them for correctness. <br>
-<br>
+When the user selects to save the profile then
+profilepage.php will check the input for correctness.<br>
 First the values are converted to the correct type (checkbox -&gt;
-Boolean) by checking <span style="font-weight: bold;">$_SESSION['profile_types']</span>.<br>
-<br>
+Boolean) by checking <span style="font-weight: bold;">$_SESSION['profile_types']</span>.
 Then LAM will replace all "\'" with&nbsp; "'" if <span
- style="font-style: italic;">magic_quotes_gpc</span> is on.<br>
-<br>
-Now the input data is checked for correctness by calling <span
- style="font-weight: bold;">checkProfileOptions()</span>. The <span
- style="font-style: italic;">account modules</span> return a list of
-error messages if one or more options are incorrect.<br>
-If there are errors they will be displayed, otherwise the profile is
+ style="font-style: italic;">magic_quotes_gpc</span> is on. Now the
+input data is checked for correctness by calling <span
+ style="font-weight: bold;">checkProfileOptions()</span>.<br>
+The <span style="font-style: italic;">account modules</span> return a
+list of
+error messages if one or more options are incorrect. If there are
+errors they will be displayed, otherwise the profile is
 saved by calling <span style="font-weight: bold;">saveAccountProfile()</span>.<br>
 <br>
 <h2>Profiledelete.php</h2>

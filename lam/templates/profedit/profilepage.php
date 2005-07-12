@@ -36,6 +36,8 @@ include_once("../../lib/ldap.inc");
 include_once("../../lib/config.inc");
 /** access to account modules */
 include_once("../../lib/modules.inc");
+/** Used to display status messages */
+include_once("../../lib/status.inc");
 
 // start session
 session_save_path("../../sess");
@@ -49,13 +51,82 @@ if (!$_SESSION['ldap'] || !$_SESSION['ldap']->server()) {
 	exit;
 }
 
-// empty list of attribute types
-$_SESSION['profile_types'] = array();
+// copy type and profile name from POST to GET
+if (isset($_POST['profname'])) $_GET['edit'] = $_POST['profname'];
+if (isset($_POST['accounttype'])) $_GET['type'] = $_POST['accounttype'];
+
+// abort button was pressed
+// back to profile editor
+if ($_POST['abort']) {
+	metaRefresh("profilemain.php");
+	exit;
+}
 
 // print header
 echo $_SESSION['header'];
 echo "<title></title>\n<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
 echo "</head><body><br>\n";
+
+// save button was presed
+if ($_POST['save']) {
+	// create option array to check and save
+	$options = array();
+	$opt_keys = array_keys($_SESSION['profile_types']);
+	foreach ($opt_keys as $element) {
+		// text fields
+		if ($_SESSION['profile_types'][$element] == "text") {
+			$options[$element] = array($_POST[$element]);
+		}
+		// checkboxes
+		elseif ($_SESSION['profile_types'][$element] == "checkbox") {
+			if ($_POST[$element] == "on") $options[$element] = array('true');
+			else $options[$element] = array('false');
+		}
+		// dropdownbox
+		elseif ($_SESSION['profile_types'][$element] == "select") {
+			$options[$element] = array($_POST[$element]);
+		}
+		// multiselect
+		elseif ($_SESSION['profile_types'][$element] == "multiselect") {
+			$options[$element] = $_POST[$element];  // value is already an array
+		}
+	}
+	
+	// remove double slashes if magic quotes are on
+	if (get_magic_quotes_gpc() == 1) {
+		foreach ($opt_keys as $element) {
+			if (is_string($options[$element][0])) $options[$element][0] = stripslashes($options[$element][0]);
+		}
+	}
+	
+	// check options
+	$errors = checkProfileOptions($_POST['accounttype'], $options);
+	// print error messages if any
+	if (sizeof($errors) > 0) {
+		for ($i = 0; $i < sizeof($errors); $i++) {
+			if (sizeof($errors[$i]) > 3) {  // messages with additional variables
+				StatusMessage($errors[$i][0], $errors[$i][1], $errors[$i][2], $errors[$i][3]);
+			}
+			else {
+				StatusMessage($errors[$i][0], $errors[$i][1], $errors[$i][2]);
+			}
+		}
+		echo "<br>\n";
+	}
+	else {  // input data is valid, save profile
+		// save profile
+		if (saveAccountProfile($options, $_POST['profname'], $_POST['accounttype'])) {
+			echo StatusMessage("INFO", _("Profile was saved."), $_POST['profname']);
+			echo ("<br><p><a href=\"profilemain.php\">" . _("Back to Profile Editor") . "</a></p>");
+			echo "</body></html>";
+			exit();
+		}
+		else StatusMessage("ERROR", _("Unable to save profile!"), $_POST['profname']);
+	}
+}
+
+// empty list of attribute types
+$_SESSION['profile_types'] = array();
 
 // check if account type is valid
 $type = $_GET['type'];
@@ -64,14 +135,25 @@ if (!(($type == 'user') || ($type == 'group') || ($type == 'host'))) meta_refres
 // get module options
 $options = getProfileOptions($type);
 
-// load old profile if needed
+// load old profile or POST values if needed
 $old_options = array();
-if ($_GET['edit']) {
+if (isset($_POST['save'])) {
+	$postKeys = array_keys($_POST);
+	for ($i = 0; $i < sizeof($postKeys); $i++) {
+		if (!is_array($_POST[$postKeys[$i]])) {
+			$old_options[$postKeys[$i]] = array($_POST[$postKeys[$i]]);
+		}
+		else {
+			$old_options[$postKeys[$i]] = $_POST[$postKeys[$i]];
+		}
+	}
+}
+elseif (isset($_GET['edit'])) {
 	$old_options = loadAccountProfile($_GET['edit'], $type);
 }
 
 // display formular
-echo ("<form action=\"profilecreate.php?type=$type\" method=\"post\">\n");
+echo ("<form action=\"profilepage.php?type=$type\" method=\"post\">\n");
 
 // suffix box
 // get root suffix
@@ -157,7 +239,7 @@ echo "<a href=\"../help.php?HelpNumber=360\" target=\"lamhelp\">";
 echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
 echo "</a><br><br>\n";
 $tabindex++;
-echo ("<input tabindex=\"$tabindex\" type=\"submit\" name=\"submit\" value=\"" . _("Save") . "\">\n");
+echo ("<input tabindex=\"$tabindex\" type=\"submit\" name=\"save\" value=\"" . _("Save") . "\">\n");
 $tabindex++;
 echo ("<input tabindex=\"$tabindex\" type=\"reset\" name=\"reset\" value=\"" . _("Reset") . "\">\n");
 $tabindex++;
