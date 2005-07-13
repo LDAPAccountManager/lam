@@ -287,7 +287,7 @@ if (sizeof($info) != 0) {
 	echo ("<b>" . _('PDF structure') . ":</b>&nbsp;&nbsp;<select name=\"pdf_structure\">\n");
 	$pdf_structures = getAvailablePDFStructures($scope);
 	foreach($pdf_structures as $pdf_structure) {
-		echo "<option value=\"" . $pdf_structure . "\"" . (($pdf_structure == 'default.xml') ? " selected" : "") . ">" . substr($pdf_structure,0,strlen($pdf_structure)-4) . "</option>";
+		echo "<option " . (($pdf_structure == 'default') ? " selected" : "") . ">" . $pdf_structure . "</option>";
 	}
 	echo "</select>&nbsp;&nbsp;&nbsp;&nbsp;\n";
 	echo ("<input type=\"submit\" name=\"pdf\" value=\"" . _("Create PDF for selected user(s)") . "\">\n");

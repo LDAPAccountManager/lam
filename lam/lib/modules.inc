@@ -821,7 +821,7 @@ class accountContainer {
 					if ($post['outputpdf']) {
 						// Create / display PDf-file
 						// TODO: add selection for PDF structure in final page
-						createModulePDF(array($_SESSION[$this->base]), 'default.xml');
+						createModulePDF(array($_SESSION[$this->base]), $post['pdfStructure']);
 						exit;
 						}
 					}
@@ -954,8 +954,16 @@ class accountContainer {
 					0 => array('kind' => 'text', 'text' => '', 'td' => array('colspan' => 3)));
 				$return[] = array(
 					0 => array('kind' => 'input', 'type' => 'submit', 'name' => 'createagain', 'value' => _('Create another account')),
-					1 => array('kind' => 'input', 'type' => 'submit', 'name' => 'outputpdf', 'value' => _('Create PDF file') ),
-					2 => array('kind' => 'input', 'type' => 'submit', 'name' => 'backmain', 'value' => _('Back to account list')));
+					1 => array('kind' => 'input', 'type' => 'submit', 'name' => 'backmain', 'value' => _('Back to account list')));
+				$return[] = array(
+					0 => array('kind' => 'text', 'text' => '&nbsp;')
+				);
+				$pdfStructures = getAvailablePDFStructures($type);
+				$return[] = array(
+					0 => array('kind' => 'fieldset', 'legend' => '<b>PDF</b>', 'td' => array('colspan' => 2), 'value' => array(array(
+						0 => array('kind' => 'select', 'name' => 'pdfStructure', 'options' => $pdfStructures),
+						1 => array('kind' => 'input', 'type' => 'submit', 'name' => 'outputpdf', 'value' => _('Create PDF file')))
+					)));
 			}
 			else {
 				// loop through all suffixes
