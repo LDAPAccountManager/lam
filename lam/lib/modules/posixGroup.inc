@@ -428,9 +428,10 @@ class posixGroup extends baseModule {
 	* @see baseModule#get_pdfEntries
 	*/
 	function get_pdfEntries($account_type = "group") {
-		return array(	'posixGroup_cn' => array('<block><key>' . _('Group name') . '</key><value>' . $this->attributes['cn'][0] . '</value></block>'),
+		return array(
+		'posixGroup_cn' => array('<block><key>' . _('Group name') . '</key><value>' . $this->attributes['cn'][0] . '</value></block>'),
 		'posixGroup_gidNumber' => array('<block><key>' . _('GID number') . '</key><value>' . $this->attributes['gidNumber'][0] . '</value></block>'),
-		'posixGroup_memberUid' => array('<block><key>' . _('Group members') . '</key><value>' . $this->attributes['memberUid'][0] . '</value></block>'),
+		'posixGroup_memberUid' => array('<block><key>' . _('Group members') . '</key><value>' . implode(', ', $this->attributes['memberUid']) . '</value></block>'),
 		'posixGroup_description' => array('<block><key>' . _('Description') . '</key><value>' . $this->attributes['description'][0] . '</value></block>'));
 	}
 
