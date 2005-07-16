@@ -297,23 +297,23 @@ function processLine($line,$first_td = true, $fontName) {
 		$key = true;
 		$line_width = $line_width - 50;
 		$format = processFormatTags($matches[2],'B');
-		$return[] = array('setFont',array($fontName,$format[0],10));
+		$return[] = array('setFont',array($fontName,$format[0],9));
 		$return[] = array('Cell',array(50,5,$format[1] . ':',0,0,'R',0));
-		$return[] = array('setFont',array($fontName,'',10));
+		$return[] = array('setFont',array($fontName,'',9));
 		return array_merge($return,processLine($matches[1] . $matches[3],false,$fontName));
 	}
 	elseif(preg_match($value_pattern,$line,$matches)) {
 		$format = processFormatTags($matches[2],'');
-		$return[] = array('setFont',array($fontName,$format[0],10));
+		$return[] = array('setFont',array($fontName,$format[0],9));
 		$return[] = array('Cell',array(50,5,$format[1],0,0,'L',0));
-		$return[] = array('setFont',array($fontName,'',10));
+		$return[] = array('setFont',array($fontName,'',9));
 		return array_merge($return,processLine($matches[1] . $matches[3],true,$fontName));
 	}
 	elseif(preg_match($p_pattern,$line,$matches)) {
 		$format = processFormatTags($matches[2],'');
-		$return[] = array('setFont',array($fontName,$format[0],10));
+		$return[] = array('setFont',array($fontName,$format[0],9));
 		$return[] = array('Write',array(5,$format[1]));
-		$return[] = array('setFont',array($fontName,'',10));
+		$return[] = array('setFont',array($fontName,'',9));
 		return array_merge($return,processLine($matches[1] . $matches[3],true,$fontName));
 	}
 	elseif(preg_match($td_pattern,$line,$matches)) {
@@ -323,9 +323,9 @@ function processLine($line,$first_td = true, $fontName) {
 		}
 		$format = processFormatTags($matches[3],'');
 		$attrs = processAttributes($matches[2],array('width' => $line_width,'height' => 5,'align' => 'L'));
-		$return[] = array('setFont',array($fontName,$format[0],10));
+		$return[] = array('setFont',array($fontName,$format[0],9));
 		$return[] = array('Cell',array($attrs['width'],$attrs['height'],$format[1],0,0,$attrs['align'],0));
-		$return[] = array('setFont',array($fontName,'',10));
+		$return[] = array('setFont',array($fontName,'',9));
 		return array_merge($return,processLine($matches[1] . $matches[4],$first_td,$fontName));
 	}
 	elseif(preg_match($br_pattern,$line,$matches)) {
