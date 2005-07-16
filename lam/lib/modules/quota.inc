@@ -414,12 +414,32 @@ class quota extends baseModule {
 		}
 	}
 
-	/*
-	 * (non-PHPDoc)
+	/** Returns the PDF entries for this module.
+	 * 
 	 * @see baseModule#get_pdfEntries
+	 *
+	 * @return array list of possible PDF entries
 	 */
 	function get_pdfEntries($account_type = "user") {
-		return array(	'quota_quotas' => array('<block><key>' . _('User quota') . '</key><td width="20%"><b>' . _('Mountpoint') . '</b></td><td width="20%"><b>' . _('Soft block') . '</b></td><td width="20%"><b>' . _('Soft inode') . '</b></td><td width="20%"><b>' . _('Hard block') . '</b></td><td width="20%"><b>' . _('Hard inode') . '</b></td></block>'));
+		if (sizeof($this->quota) > 0) {
+			$quotas = array();
+			$quotas[] = '<block>' .
+					'<td width="20%"><b>' . _('Mountpoint') . '</b></td>' .
+					'<td width="20%"><b>' . _('Soft block') . '</b></td>' .
+					'<td width="20%"><b>' . _('Hard block') . '</b></td>' .
+					'<td width="20%"><b>' . _('Soft inode') . '</b></td>' .
+					'<td width="20%"><b>' . _('Hard inode') . '</b></td></block>';
+			for ($i = 0; $i < sizeof($this->quota); $i++) {
+				$quotas[] = '<block>' .
+					'<td width="20%" align=\"L\">' . $this->quota[$i][0] . '</td>' .
+					'<td width="20%" align=\"L\">' . $this->quota[$i][2] . '</td>' .
+					'<td width="20%" align=\"L\">' . $this->quota[$i][3] . '</td>' .
+					'<td width="20%" align=\"L\">' . $this->quota[$i][6] . '</td>' .
+					'<td width="20%" align=\"L\">' . $this->quota[$i][7] . '</td></block>';
+			}
+			return array(
+				'quota_quotas' => $quotas);
+		}
 	}
 
 }
