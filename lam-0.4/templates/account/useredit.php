@@ -158,11 +158,12 @@ switch ($_POST['select']) {
 		do { // X-Or, only one if() can be true
 			if (isset($_POST['allgroups']) && isset($_POST['add'])) { // Add groups to list
 				// Add new group
-				$account_new->general_groupadd = @array_merge($account_new->general_groupadd, $_POST['allgroups']);
+				if (!is_array($account_new->general_groupadd)) $account_new->general_groupadd = array();
+				$account_new->general_groupadd = array_merge($account_new->general_groupadd, $_POST['allgroups']);
 				// remove doubles
-				$account_new->general_groupadd = @array_flip($account_new->general_groupadd);
+				$account_new->general_groupadd = array_flip($account_new->general_groupadd);
 				array_unique($account_new->general_groupadd);
-				$account_new->general_groupadd = @array_flip($account_new->general_groupadd);
+				$account_new->general_groupadd = array_flip($account_new->general_groupadd);
 				// sort groups
 				sort($account_new->general_groupadd);
 				break;
