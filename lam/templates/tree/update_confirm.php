@@ -88,7 +88,7 @@ foreach( $old_values as $attr => $old_val )
 
 		// special case for userPassword attributes
 		if( 0 == strcasecmp( $attr, 'userPassword' ) && $new_val != '' ) {
-		  $new_val = password_hash( $new_val, $_POST['enc_type'] );
+		  $new_val = pwd_hash($new_val, true, $_POST['enc_type'] );
 		  $password_already_hashed = true;
 		}
 		// special case for samba password
@@ -111,7 +111,7 @@ if(	isset( $_POST['enc_type'] ) &&
 	$_POST['enc_type'] != 'clear' &&
 	$_POST['new_values']['userpassword'] != '' ) {
 
-	$new_password = password_hash( $_POST['new_values']['userpassword'], $_POST['enc_type'] );
+	$new_password = pwd_hash( $_POST['new_values']['userpassword'], true, $_POST['enc_type'] );
 	$update_array[ 'userpassword' ] = $new_password;
 }
 
@@ -160,7 +160,7 @@ foreach( $update_array as $attr => $val ) {
 			foreach( $old_values[ $attr ] as $v )
 				echo nl2br( htmlspecialchars( $v ) ) . "<br />";
 		else  
-			if( 0 == strcasecmp( $attr, 'userPassword' ) && ( obfuscate_password_display() || is_null( get_enc_type( $old_values[ $attr ] ) ) ) ) {
+			if( 0 == strcasecmp( $attr, 'userPassword' ) && ( is_null( get_enc_type( $old_values[ $attr ] ) ) ) ) {
 				echo preg_replace( '/./', '*', $old_values[ $attr ] ) . "<br />";
 			}
 			else {
@@ -190,7 +190,7 @@ foreach( $update_array as $attr => $val ) {
 		}
 		else 
 			if( $new_val != '' ) 
-				if( 0 == strcasecmp( $attr, 'userPassword' ) && ( obfuscate_password_display() || is_null( get_enc_type( $new_values[ $attr ] ) ) ) ) {
+				if( 0 == strcasecmp( $attr, 'userPassword' ) && ( is_null( get_enc_type( $new_values[ $attr ] ) ) ) ) {
 					echo preg_replace( '/./', '*', $new_val ) . "<br />";
 				}
 				else {

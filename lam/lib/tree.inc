@@ -1107,32 +1107,9 @@ function get_enc_type( $user_password )
     /* Capture the stuff in the { } to determine if this is crypt, md5, etc. */
     $enc_type = null;
     if( preg_match( "/{([^}]+)}/", $user_password, $enc_type) ) 
-        $enc_type = strtolower( $enc_type[1] ); 
+        return $enc_type[1]; 
     else
         return null;
-
-    /* handle crypt types */
-    if( 0 == strcasecmp( $enc_type, 'crypt') ) {
-        $salt = null;
-        if( preg_match( "/{[^}]+}\\$(.)\\$/", $user_password, $salt) )
-            $salt = $salt[1];
-        else
-            $salt = null;
-        switch( $salt ) {
-            case '':   // CRYPT_STD_DES
-                $enc_type = "crypt";
-                break;
-            case '1':   // CRYPT_MD5
-                $enc_type = "md5crypt";
-                break;
-            case '2':   // CRYPT_BLOWFISH
-                $enc_type = "blowfish";
-                break;
-            default:
-                $enc_type = "crypt";
-        }
-    }
-    return $enc_type;
 }
 
 /**

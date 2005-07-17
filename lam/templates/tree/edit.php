@@ -341,7 +341,7 @@ foreach( $attrs as $attr => $vals ) {
 		<input size="38"
 		       type="hidden"
 		       name="old_enc_type"
-		       value="<?php echo ($enc_type==''?'clear':$enc_type); ?>" />
+		       value="<?php echo ($enc_type==''?'PLAIN':$enc_type); ?>" />
 
         <br />
 		<input style="width: 260px"
@@ -350,14 +350,12 @@ foreach( $attrs as $attr => $vals ) {
                value="<?php echo htmlspecialchars( $user_password ); ?>" />
 
 		<select name="enc_type">
-			<option>clear</option>
-			<option<?php echo $enc_type=='crypt'?' selected="true"':''; ?>>crypt</option>
-			<option<?php echo $enc_type=='md5'?' selected="true"':''; ?>>md5</option>
-			<option<?php echo $enc_type=='smd5'?' selected="true"':''; ?>>smd5</option>
-			<option<?php echo $enc_type=='md5crypt'?' selected="true"':''; ?>>md5crypt</option>
-			<option<?php echo $enc_type=='blowfish'?' selected="true"':''; ?>>blowfish</option>
-			<option<?php echo $enc_type=='sha'?' selected="true"':''; ?>>sha</option>
-			<option<?php echo $enc_type=='ssha'?' selected="true"':''; ?>>ssha</option>
+			<option>PLAIN</option>
+			<option<?php echo $enc_type=='CRYPT'?' selected="true"':''; ?>>CRYPT</option>
+			<option<?php echo $enc_type=='MD5'?' selected="true"':''; ?>>MD5</option>
+			<option<?php echo $enc_type=='SMD5'?' selected="true"':''; ?>>SMD5</option>
+			<option<?php echo $enc_type=='SHA'?' selected="true"':''; ?>>SHA</option>
+			<option<?php echo $enc_type=='SSHA'?' selected="true"':''; ?>>SSHA</option>
 			</select>
 
             <br />
