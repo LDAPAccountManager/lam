@@ -9,6 +9,9 @@
 *                                                                              *
 * UFPDF is a modification of FPDF to support Unicode through UTF-8.            *
 *                                                                              *
+* This file includes modifications from Andrea Rossato which fix line breaking *
+* in Write()/MultiCell().                                                      *
+*                                                                              *
 *******************************************************************************/
 
 if(!class_exists('UFPDF'))
@@ -17,6 +20,12 @@ define('UFPDF_VERSION','0.1');
 
 include_once 'fpdf.php';
 
+/**
+ * Main UFPDF class for creating Unicode PDF documents
+ *
+ * derives from FPDF class
+ * @see FPDF
+ */
 class UFPDF extends FPDF
 {
 
@@ -34,11 +43,22 @@ function GetStringWidth($s)
 {
   //Get width of a string in the current font
   $s = (string)$s;
-  $codepoints=$this->utf8_to_codepoints($s);
+  $codepoints=$this->utf8_to_codepoints(trim($s));
   $cw=&$this->CurrentFont['cw'];
   $w=0;
-  foreach($codepoints as $cp)
-    $w+=$cw[$cp];
+  foreach($codepoints as $cp) {
+    if (isset($cw[$cp])) {
+	    $w+=$cw[$cp];
+    }
+    else if (isset($cw[ord($cp)])) {
+	    $w+=$cw[ord($cp)];
+    }
+    else if (isset($cw[chr($cp)])) {
+	    $w+=$cw[chr($cp)];
+    }
+    //-- adjust width for incorrect hebrew chars
+    if ($cp>1480 && $cp < 1550) $w -= $cw[$cp]/1.8;
+  }
   return $w*$this->FontSize/1000;
 }
 
@@ -88,7 +108,7 @@ function AcceptPageBreak()
   return $this->AutoPageBreak;
 }
 
-function Cell($w,$h=0,$txt='',$border=0,$ln=0,$align='',$fill=0,$link='')
+function Cell($w,$h=0,$txt='',$border=0,$ln=0,$align='J',$fill=0,$link='')
 {
   //Output a cell
   $k=$this->k;
@@ -168,6 +188,220 @@ function Cell($w,$h=0,$txt='',$border=0,$ln=0,$align='',$fill=0,$link='')
     $this->x+=$w;
 }
 
+function MultiCell($w,$h,$txt,$border=0,$align='J',$fill=0)
+{
+	//Output text with automatic or explicit line breaks
+	$cw=&$this->CurrentFont['cw'];
+	$cp=$this->utf8_to_codepoints(trim($txt));
+	//print_r($cp);
+	if($w==0)
+		$w=$this->w-$this->rMargin-$this->x;
+	$wmax=($w-2*$this->cMargin)*1000/$this->FontSize;
+	//echo $w;
+	$s=str_replace("\r",'',$txt);
+	$nb=$this->strlen($s);
+	if($nb>0 and $s[$nb-1]=="\n")
+		$nb--;
+	$b=0;
+	if($border)
+	{
+		if($border==1)
+		{
+			$border='LTRB';
+			$b='LRT';
+			$b2='LR';
+		}
+		else
+		{
+			$b2='';
+			if(is_int(strpos($border,'L')))
+				$b2.='L';
+			if(is_int(strpos($border,'R')))
+				$b2.='R';
+			$b=is_int(strpos($border,'T')) ? $b2.'T' : $b2;
+		}
+	}
+	$sep=-1;
+	$i=0;
+	$j=0;
+	$l=0;
+	$ns=0;
+	$nl=1;
+	$char = 0;
+	while($i<$nb)
+	{
+	  //Get next character
+	  $c = $this->code2utf($cp[$i]);
+	  $charw = $cw[$cp[$i]];
+		
+		if($c=="\n")
+		{
+			//Explicit line break
+			if($this->ws>0)
+			{
+				$this->ws=0;
+				$this->_out('0 Tw');
+			}
+			$this->Cell($w,$h,$this->utf8_substr($cp,$j,$i-$j,"UTF-8"),$b,2,$align,$fill);
+			$i++;
+			$sep=-1;
+			$j=$i;
+			$l=0;
+			$ns=0;
+			$nl++;
+			if($border and $nl==2)
+				$b=$b2;
+			continue;
+		}
+		if($c==' ')
+		{
+			$sep=$i;
+			$ls=$l;
+			$ns++;
+		}
+		$l+=$charw;
+		
+		if($l>$wmax)
+		{
+			//Automatic line break
+			if($sep==-1)
+			{
+				if($i==$j)
+					$i++;
+				if($this->ws>0)
+				{
+					$this->ws=0;
+					$this->_out('0 Tw');
+				}
+				$this->Cell($w,$h,$this->utf8_substr($cp,$j,$i-$j,"UTF-8"),$b,2,$align,$fill);
+			}
+			else
+			{
+				if($align=='J')
+				{
+				  $len_ligne = $this->GetStringWidth($this->utf8_substr($cp,$j,$sep-$j,"UTF-8"));
+				  $nb_carac = $this->strlen($this->utf8_substr($cp,$j,$sep-$j,"UTF-8"));
+				  $ecart = (($w-2) - $len_ligne) / $nb_carac;
+				  $this->_out(sprintf('BT %.3f Tc ET',$ecart*$this->k));
+				  //$this->ws=($ns>1) ? ($wmax-$ls)/1000*$this->FontSize/($ns-1) : 0;
+				  //$this->_out(sprintf('%.3f Tw',$this->ws*$this->k));
+				  //echo ($wmax-$ls)/1000*$this->FontSize/($ns-1)."=".($wmax-$ls)."<br>";	//$andrea = sprintf('%.3f Tw',$this->ws*$this->k);
+				}
+				$this->Cell($w,$h,$this->utf8_substr($cp,$j,$sep-$j,"UTF-8"),$b,2,$align,$fill);
+				$i=$sep+1;
+			}
+			$sep=-1;
+			$j=$i;
+			$l=0;
+			$ns=0;
+			$nl++;
+			if($border and $nl==2)
+				$b=$b2;
+		}
+		else
+			$i++;
+	}
+	//Last chunk
+	if($this->ws>0)
+	{
+		$this->ws=0;
+		$this->_out('0 Tw');
+	}
+	if($border and is_int(strpos($border,'B')))
+		$b.='B';
+	$this->Cell($w,$h,$this->utf8_substr($cp,$j,$i-$j,"UTF-8"),$b,2,$align,$fill);
+	$this->x=$this->lMargin;
+}
+
+function Write($h,$txt,$link='')
+{
+	//Output text in flowing mode
+	$cw=&$this->CurrentFont['cw'];
+	$cp=$this->utf8_to_codepoints(trim($txt));
+	$w=$this->w-$this->rMargin-$this->x;
+	$wmax=($w-2*$this->cMargin)*1000/$this->FontSize;
+	$s=str_replace("\r",'',$txt);
+	$nb=$this->strlen($s);
+	$sep=-1;
+	$i=0;
+	$j=0;
+	$l=0;
+	$nl=1;
+	while($i<$nb)
+	{
+		//Get next character
+		$c=$s{$i};
+		$charw = $cw[$cp[$i]];
+		if($c=="\n")
+		{
+			//Explicit line break
+			$this->Cell($w,$h,$this->utf8_substr($cp,$j,$i-$j,"UTF-8"),0,2,'',0,$link);
+			$i++;
+			$sep=-1;
+			$j=$i;
+			$l=0;
+			if($nl==1)
+			{
+				$this->x=$this->lMargin;
+				$w=$this->w-$this->rMargin-$this->x;
+				$wmax=($w-2*$this->cMargin)*1000/$this->FontSize;
+			}
+			$nl++;
+			continue;
+		}
+		if($c==' ')
+			$sep=$i;
+		$l+=$charw;
+		if($l>$wmax)
+		{
+			//Automatic line break
+			if($sep==-1)
+			{
+				if($this->x>$this->lMargin)
+				{
+					//Move to next line
+					$this->x=$this->lMargin;
+					$this->y+=$h;
+					$w=$this->w-$this->rMargin-$this->x;
+					$wmax=($w-2*$this->cMargin)*1000/$this->FontSize;
+					$i++;
+					$nl++;
+					continue;
+				}
+				if($i==$j)
+					$i++;
+				$this->Cell($w,$h,$this->utf8_substr($cp,$j,$i-$j,"UTF-8"),0,2,'',0,$link);
+			}
+			else
+			{
+				$this->Cell($w,$h,$this->utf8_substr($cp,$j,$sep-$j,"UTF-8"),0,2,'',0,$link);
+				$i=$sep+1;
+			}
+			$sep=-1;
+			$j=$i;
+			$l=0;
+			if($nl==1)
+			{
+				$this->x=$this->lMargin;
+				$w=$this->w-$this->rMargin-$this->x;
+				$wmax=($w-2*$this->cMargin)*1000/$this->FontSize;
+			}
+			$nl++;
+		}
+		else
+			$i++;
+	}
+	//Last chunk
+	if($i!=$j)
+		$this->Cell($l/1000*$this->FontSize,$h,$this->utf8_substr($cp,$j, "", "UTF-8"),0,0,'',0,$link);
+}
+
+function AliasNbPages($alias='{nb}')
+{
+	//Define an alias for total number of pages
+	$this->AliasNbPages=$this->utf8_to_utf16be($alias,false);
+}
+
 /*******************************************************************************
 *                                                                              *
 *                              Protected methods                               *
@@ -179,7 +413,7 @@ function _puttruetypeunicode($font) {
   $this->_newobj();
   $this->_out('<</Type /Font');
   $this->_out('/Subtype /Type0');
-  $this->_out('/BaseFont /'. $font['name'] .'-UCS');
+  $this->_out('/BaseFont /'. $font['name'] );
   $this->_out('/Encoding /Identity-H');
   $this->_out('/DescendantFonts ['. ($this->n + 1) .' 0 R]');
   $this->_out('>>');
@@ -193,6 +427,7 @@ function _puttruetypeunicode($font) {
   $this->_out('/CIDSystemInfo <</Registry (Adobe) /Ordering (UCS) /Supplement 0>>');
   $this->_out('/FontDescriptor '. ($this->n + 1) .' 0 R');
   $c = 0;
+  $widths = "";
   foreach ($font['cw'] as $i => $w) {
     $widths .= $i .' ['. $w.'] ';
   }
@@ -205,6 +440,7 @@ function _puttruetypeunicode($font) {
   $this->_newobj();
   $this->_out('<</Type /FontDescriptor');
   $this->_out('/FontName /'.$font['name']);
+  $s = "";
   foreach ($font['desc'] as $k => $v) {
     $s .= ' /'. $k .' '. $v;
   }
@@ -275,10 +511,84 @@ function _putinfo()
 	$this->_out('/CreationDate '.$this->_textstring('D:'.date('YmdHis')));
 }
 
+function _putpages()
+{
+	$nb=$this->page;
+	if(!empty($this->AliasNbPages))
+	{
+		$nbstr = $this->utf8_to_utf16be($nb,false);
+		//Replace number of pages
+		for($n=1;$n<=$nb;$n++) {
+			$this->pages[$n]=str_replace($this->AliasNbPages,$nbstr,$this->pages[$n]);
+		}
+	}
+	if($this->DefOrientation=='P')
+	{
+		$wPt=$this->fwPt;
+		$hPt=$this->fhPt;
+	}
+	else
+	{
+		$wPt=$this->fhPt;
+		$hPt=$this->fwPt;
+	}
+	$filter=($this->compress) ? '/Filter /FlateDecode ' : '';
+	for($n=1;$n<=$nb;$n++)
+	{
+		//Page
+		$this->_newobj();
+		$this->_out('<</Type /Page');
+		$this->_out('/Parent 1 0 R');
+		if(isset($this->OrientationChanges[$n]))
+			$this->_out(sprintf('/MediaBox [0 0 %.2f %.2f]',$hPt,$wPt));
+		$this->_out('/Resources 2 0 R');
+		if(isset($this->PageLinks[$n]))
+		{
+			//Links
+			$annots='/Annots [';
+			foreach($this->PageLinks[$n] as $pl)
+			{
+				$rect=sprintf('%.2f %.2f %.2f %.2f',$pl[0],$pl[1],$pl[0]+$pl[2],$pl[1]-$pl[3]);
+				$annots.='<</Type /Annot /Subtype /Link /Rect ['.$rect.'] /Border [0 0 0] ';
+				if(is_string($pl[4]))
+					$annots.='/A <</S /URI /URI '.$this->_textstring($pl[4]).'>>>>';
+				else
+				{
+					$l=$this->links[$pl[4]];
+					$h=isset($this->OrientationChanges[$l[0]]) ? $wPt : $hPt;
+					$annots.=sprintf('/Dest [%d 0 R /XYZ 0 %.2f null]>>',1+2*$l[0],$h-$l[1]*$this->k);
+				}
+			}
+			$this->_out($annots.']');
+		}
+		$this->_out('/Contents '.($this->n+1).' 0 R>>');
+		$this->_out('endobj');
+		//Page content
+		$p=($this->compress) ? gzcompress($this->pages[$n]) : $this->pages[$n];
+		$this->_newobj();
+		$this->_out('<<'.$filter.'/Length '.strlen($p).'>>');
+		$this->_putstream($p);
+		$this->_out('endobj');
+	}
+	//Pages root
+	$this->offsets[1]=strlen($this->buffer);
+	$this->_out('1 0 obj');
+	$this->_out('<</Type /Pages');
+	$kids='/Kids [';
+	for($i=0;$i<$nb;$i++)
+		$kids.=(3+2*$i).' 0 R ';
+	$this->_out($kids.']');
+	$this->_out('/Count '.$nb);
+	$this->_out(sprintf('/MediaBox [0 0 %.2f %.2f]',$wPt,$hPt));
+	$this->_out('>>');
+	$this->_out('endobj');
+}
+
 // UTF-8 to UTF-16BE conversion.
 // Correctly handles all illegal UTF-8 sequences.
 function utf8_to_utf16be(&$txt, $bom = true) {
   $l = strlen($txt);
+  $txt .= " ";
   $out = $bom ? "\xFE\xFF" : '';
   for ($i = 0; $i < $l; ++$i) {
     $c = ord($txt{$i});
@@ -376,10 +686,38 @@ function utf8_to_utf16be(&$txt, $bom = true) {
   return $out;
 }
 
+function code2utf($num){
+  if($num<128)return chr($num);
+  if($num<2048)return chr(($num>>6)+192).chr(($num&63)+128);
+  if($num<65536)return chr(($num>>12)+224).chr((($num>>6)&63)+128).chr(($num&63)+128);
+  if($num<2097152)return chr(($num>>18)+240).chr((($num>>12)&63)+128).chr((($num>>6)&63)+128). chr(($num&63)+128);
+  return '';
+}
+
+function strlen($s) {
+  return strlen(utf8_decode($s));
+}
+
+function utf8_substr($str,$start)
+{
+  if( func_num_args() >= 3 ) {
+    $end = func_get_arg( 2 ); 
+    for ($i=$start; $i < ($start+$end); $i++)
+      $rs .= $this->code2utf($str[$i]);
+    
+  } else {
+    for ($i=$start; $i < count($str); $i++)
+      $rs .= $this->code2utf($str[$i]);
+  }
+
+  return $rs;
+}
+
 // UTF-8 to codepoint array conversion.
 // Correctly handles all illegal UTF-8 sequences.
 function utf8_to_codepoints(&$txt) {
   $l = strlen($txt);
+  $txt .= " ";
   $out = array();
   for ($i = 0; $i < $l; ++$i) {
     $c = ord($txt{$i});
