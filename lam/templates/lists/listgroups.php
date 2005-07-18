@@ -240,7 +240,7 @@ if (sizeof($info) > 0) {
 	echo ("<br><br><br>\n");
 	echo "<fieldset><legend><b>PDF</b></legend>\n";
 	echo ("<b>" . _('PDF structure') . ":</b>&nbsp;&nbsp;<select name=\"pdf_structure\">\n");
-	$pdf_structures = getAvailablePDFStructures($scope);
+	$pdf_structures = getPDFStructureDefinitions($scope);
 	foreach($pdf_structures as $pdf_structure) {
 		echo "<option " . (($pdf_structure == 'default') ? " selected" : "") . ">" . $pdf_structure . "</option>";
 	}

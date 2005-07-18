@@ -958,7 +958,7 @@ class accountContainer {
 				$return[] = array(
 					0 => array('kind' => 'text', 'text' => '&nbsp;')
 				);
-				$pdfStructures = getAvailablePDFStructures($type);
+				$pdfStructures = getPDFStructureDefinitions($type);
 				$return[] = array(
 					0 => array('kind' => 'fieldset', 'legend' => '<b>PDF</b>', 'td' => array('colspan' => 2), 'value' => array(array(
 						0 => array('kind' => 'select', 'name' => 'pdfStructure', 'options' => $pdfStructures),
