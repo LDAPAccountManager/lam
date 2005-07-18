@@ -393,7 +393,7 @@ function Write($h,$txt,$link='')
 	}
 	//Last chunk
 	if($i!=$j)
-		$this->Cell($l/1000*$this->FontSize,$h,$this->utf8_substr($cp,$j, "", "UTF-8"),0,0,'',0,$link);
+		$this->Cell($l/1000*$this->FontSize,$h,$this->utf8_substr($cp,$j),0,0,'',0,$link);
 }
 
 function AliasNbPages($alias='{nb}')
