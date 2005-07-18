@@ -305,7 +305,7 @@ function processLine($line,$first_td = true, $fontName) {
 	elseif(preg_match($value_pattern,$line,$matches)) {
 		$format = processFormatTags($matches[2],'');
 		$return[] = array('setFont',array($fontName,$format[0],9));
-		$return[] = array('Cell',array(50,5,$format[1],0,0,'L',0));
+		$return[] = array('MultiCell',array(0,5,$format[1],0,'L',0));
 		$return[] = array('setFont',array($fontName,'',9));
 		return array_merge($return,processLine($matches[1] . $matches[3],true,$fontName));
 	}
