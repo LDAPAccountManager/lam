@@ -132,7 +132,7 @@ function createModulePDF($accounts,$pdf_structure="default.xml") {
 					$section_headline = $name;
 				}
 				$pdf->setFont($fontName,"B",12);
-				$pdf->Write(5,$section_headline . ":");
+				$pdf->Write(0,$section_headline . ":");
 				$pdf->Ln(6);
 			}
 			// We have a section to end
@@ -173,10 +173,7 @@ function createModulePDF($accounts,$pdf_structure="default.xml") {
 				$info_array = explode("\n", $info_string);
 				// Set font for text
 				$pdf->setFont($fontName,"",10);
-				// Print each entry in array (each line in the text) as new line
-				foreach ($info_array as $info) {
-					$pdf->Cell(50,5,$info,0,1,"L",0);
-				}
+				$pdf->MultiCell(0,5,$info_string,0,"L",0);
 				// Print linebreak afterwards
 				$pdf->Ln(6);
 			}
@@ -298,14 +295,14 @@ function processLine($line,$first_td = true, $fontName) {
 		$line_width = $line_width - 50;
 		$format = processFormatTags($matches[2],'B');
 		$return[] = array('setFont',array($fontName,$format[0],9));
-		$return[] = array('Cell',array(50,5,$format[1] . ':',0,0,'R',0));
+		$return[] = array('Cell',array(50,0,$format[1] . ':',0,0,'R',0));
 		$return[] = array('setFont',array($fontName,'',9));
 		return array_merge($return,processLine($matches[1] . $matches[3],false,$fontName));
 	}
 	elseif(preg_match($value_pattern,$line,$matches)) {
 		$format = processFormatTags($matches[2],'');
 		$return[] = array('setFont',array($fontName,$format[0],9));
-		$return[] = array('MultiCell',array(0,5,$format[1],0,'L',0));
+		$return[] = array('MultiCell',array(0,0,$format[1],0,'L',0));
 		$return[] = array('setFont',array($fontName,'',9));
 		return array_merge($return,processLine($matches[1] . $matches[3],true,$fontName));
 	}
@@ -322,7 +319,7 @@ function processLine($line,$first_td = true, $fontName) {
 			$return[] = array('Cell',array(50,5,'',0,0,'L',0));
 		}
 		$format = processFormatTags($matches[3],'');
-		$attrs = processAttributes($matches[2],array('width' => $line_width,'height' => 5,'align' => 'L'));
+		$attrs = processAttributes($matches[2],array('width' => $line_width,'height' => 0,'align' => 'L'));
 		$return[] = array('setFont',array($fontName,$format[0],9));
 		$return[] = array('Cell',array($attrs['width'],$attrs['height'],$format[1],0,0,$attrs['align'],0));
 		$return[] = array('setFont',array($fontName,'',9));
