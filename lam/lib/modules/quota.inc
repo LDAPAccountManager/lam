@@ -28,11 +28,18 @@ class quota extends baseModule {
 	function load_Messages() {
 	// error messages for input checks
 	$this->messages['softblock'][0] = array('ERROR', _('Block soft quota'), _('Block soft quota contains invalid characters. Only natural numbers are allowed.'));
+	$this->messages['softblock'][1] = array('ERROR', _('Account %s:') . ' %s', _('Block soft quota contains invalid characters. Only natural numbers are allowed.'));
 	$this->messages['hardblock'][0] = array('ERROR', _('Block hard quota'), _('Block hard quota contains invalid characters. Only natural numbers are allowed.'));
+	$this->messages['hardblock'][1] = array('ERROR', _('Account %s:') . ' %s', _('Block hard quota contains invalid characters. Only natural numbers are allowed.'));
 	$this->messages['softinode'][0] = array('ERROR', _('Inode soft quota'), _('Inode soft quota contains invalid characters. Only natural numbers are allowed.'));
+	$this->messages['softinode'][1] = array('ERROR', _('Account %s:') . ' %s', _('Inode soft quota contains invalid characters. Only natural numbers are allowed.'));
 	$this->messages['hardinode'][0] = array('ERROR', _('Inode hard quota'), _('Inode hard quota contains invalid characters. Only natural numbers are allowed.'));
+	$this->messages['hardinode'][1] = array('ERROR', _('Account %s:') . ' %s', _('Inode hard quota contains invalid characters. Only natural numbers are allowed.'));
 	$this->messages['block_cmp'][0] = array('ERROR', _('Block quota'), _('Block soft quota must be smaller than block hard quota.'));
+	$this->messages['block_cmp'][1] = array('ERROR', _('Account %s:') . ' %s', _('Block soft quota must be smaller than block hard quota.'));
 	$this->messages['inode_cmp'][0] = array('ERROR', _('Inode quota'), _('Inode soft quota must be smaller than inode hard quota.'));
+	$this->messages['inode_cmp'][1] = array('ERROR', _('Account %s:') . ' %s', _('Inode soft quota must be smaller than inode hard quota.'));
+	$this->messages['upload'][0] = array('ERROR', _('Account %s:') . ' %s', _('Quota has wrong format!'));
 	}
 	
 	/**
@@ -95,6 +102,10 @@ class quota extends baseModule {
 			"GraceInodePeriod" => array(
 				"Headline" => _("Grace inode period"),
 				"Text" => _("Grace inode (files) period. Most filesystems use a fixed maximum value of 7 days."), "SeeAlso" => '<a href="http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.6">'.'Quota How-To</a>'
+			),
+			"upload" => array(
+				"Headline" => _("Quota"),
+				"Text" => _("Please enter the quota settings for this mount point. The syntax is: {soft block limit},{hard block limit},{soft inode limit},{hard inode limit}")
 			)
 		);
 		return $return;
@@ -440,6 +451,168 @@ class quota extends baseModule {
 			return array(
 				'quota_quotas' => $quotas);
 		}
+	}
+
+	/**
+	* Returns an array containing all input columns for the file upload.
+	*
+	* Syntax:
+	* <br> array(
+	* <br>  string: name,  // fixed non-translated name which is used as column name (should be of format: <module name>_<column name>)
+	* <br>  string: description,  // short descriptive name
+	* <br>  string: help,  // help ID
+	* <br>  string: example,  // example value
+	* <br>  boolean: required  // true, if user must set a value for this column
+	* <br> )
+	*
+	* @return array column list
+	*/
+	function get_uploadColumns() {
+		$return = array();
+		// Get quotas
+		$quotas = lamdaemon(array("+ quota get " . $this->get_scope()));
+		$dirs = split(":", $quotas[0]);
+		array_pop($dirs); // remove empty element at the end
+		for ($i = 0; $i < sizeof($dirs); $i++) {
+			$dirs[$i] = split(",", $dirs[$i]);
+			$dirs[$i] = $dirs[$i][0];
+		}
+		for ($i = 0; $i < sizeof($dirs); $i++) {
+			$return[] = array(
+				'name' => 'quota_' . $dirs[$i],
+				'description' => _('Quota for:') . ' ' . $dirs[$i],
+				'help' => 'upload',
+				'example' => '2000,2500,3000,3500');
+		}
+		return $return;
+	}
+
+	/**
+	* In this function the LDAP account is built up.
+	*
+	* @param array $rawAccounts list of hash arrays (name => value) from user input
+	* @param array $partialAccounts list of hash arrays (name => value) which are later added to LDAP
+	* @param array $ids list of IDs for column position (e.g. "posixAccount_uid" => 5)
+	* @return array list of error messages if any
+	*/
+	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts) {
+		// Quota changes no LDAP attributes, all actions are done in doUploadPostActions()
+		return array();
+	}
+	
+	/**
+	* This function executes one post upload action.
+	*
+	* @param array $data array containing one account in each element
+	* @param array $ids array(<column_name> => <column number>)
+	* @param array $failed list of accounts which were not created successfully
+	* @param array $temp variable to store temporary data between two post actions
+	* @return array current status
+	* <br> array (
+	* <br>  'status' => 'finished' | 'inProgress'
+	* <br>  'progress' => 0..100
+	* <br>  'errors' => array (<array of parameters for StatusMessage>)
+	* <br> )
+	*/
+	function doUploadPostActions($data, $ids, $failed, &$temp) {
+		$errors = array();
+		// first call, get list of user names and quota values
+		if (!isset($temp['counter'])) {
+			$temp['counter'] = 0;
+			// create list of quota columns
+			$temp['quotas'] = array();
+			$columns = array_keys($ids);
+			for ($i = 0; $i < sizeof($columns); $i++) {
+				if (strpos($columns[$i], 'quota_') === 0) {
+					$temp['quotas'][] = substr($columns[$i], 6);
+				}
+			}
+			// select user/group name depending on current scope
+			$temp['accounts'] = array();
+			$col = 'invalid';
+			if ($this->get_scope() == 'user') $col = $ids['posixAccount_userName'];
+			elseif ($this->get_scope() == 'group') $col = $ids['posixGroup_cn'];
+			// create list of account names and their quota values
+			for ($i = 0; $i < sizeof($data); $i++) {
+				if (in_array($i, $failed)) continue; // ignore failed accounts
+				$name = $data[$i][$col];
+				for ($m = 0; $m < sizeof($temp['quotas']); $m++) {
+					if ($data[$i][$ids['quota_' . $temp['quotas'][$m]]] != '') {
+						$parts = explode(',', $data[$i][$ids['quota_' . $temp['quotas'][$m]]]);
+						// check syntax
+						if (sizeof($parts) != 4) {
+							$errMsg = $this->messages['upload'][0];
+							array_push($errMsg, array($i, 'quota_' . $temp['quotas'][$m]));
+							$errors[] = $errMsg;
+							continue;
+						}
+						if (!get_preg($parts[0], 'digit')) {
+							$errMsg = $this->messages['softblock'][1];
+							array_push($errMsg, array($i, 'quota_' . $temp['quotas'][$m]));
+							$errors[] = $errMsg;
+							continue;
+						}
+						if (!get_preg($parts[1], 'digit')) {
+							$errMsg = $this->messages['hardblock'][1];
+							array_push($errMsg, array($i, 'quota_' . $temp['quotas'][$m]));
+							$errors[] = $errMsg;
+							continue;
+						}
+						if (!get_preg($parts[2], 'digit')) {
+							$errMsg = $this->messages['softinode'][1];
+							array_push($errMsg, array($i, 'quota_' . $temp['quotas'][$m]));
+							$errors[] = $errMsg;
+							continue;
+						}
+						if (!get_preg($parts[3], 'digit')) {
+							$errMsg = $this->messages['hardinode'][1];
+							array_push($errMsg, array($i, 'quota_' . $temp['quotas'][$m]));
+							$errors[] = $errMsg;
+							continue;
+						}
+						if ($parts[0] >= $parts[1]) {
+							$errMsg = $this->messages['block_cmp'][1];
+							array_push($errMsg, array($i, 'quota_' . $temp['quotas'][$m]));
+							$errors[] = $errMsg;
+							continue;
+						}
+						if ($parts[2] >= $parts[3]) {
+							$errMsg = $this->messages['inode_cmp'][1];
+							array_push($errMsg, array($i, 'quota_' . $temp['quotas'][$m]));
+							$errors[] = $errMsg;
+							continue;
+						}
+						// save quota settings
+						$temp['accounts'][$name][$temp['quotas'][$m]] = $parts;
+					}
+				}
+			}
+			return array('status' => 'inProgress', 'progress' => 5, 'errors' => $errors);
+		}
+		// quotas are ready to set
+		elseif ($temp['counter'] < sizeof($temp['accounts'])) {
+			$names = array_keys($temp['accounts']);
+			$name = $names[$temp['counter']];
+			$mountPoints = array_keys($temp['accounts'][$name]);
+			// set quota
+			$quotaString = $name . " quota set " . $this->scope . " ";
+			for ($m = 0; $m < sizeof($mountPoints); $m++) {
+				$partString = $mountPoints[$m] . ',' . implode(',', $temp['accounts'][$name][$mountPoints[$m]]) . ':';
+				$quotaString .= $partString;
+			}
+			$quotaString .= "\n";
+			$result = lamdaemon(array($quotaString));
+			if (is_array($result)) {
+				$errors[] = array('ERROR', implode('<br>', $result), '');
+			}
+			// set counters to next account/mount point
+			$temp['counter']++;
+			return array(
+				'status' => 'inProgress',
+				'progress' => 5 + (95 * ($temp['counter'] / sizeof($temp['accounts']))),
+				'errors' => $errors);
+		}
+		return array('status' => 'finished');
 	}
 
 }
