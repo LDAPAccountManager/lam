@@ -58,10 +58,11 @@ echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">\n
 // create accounts
 $accounts = unserialize($_SESSION['ldap']->decrypt($_SESSION['mass_accounts']));
 if (($_SESSION['mass_counter'] < sizeof($accounts)) || !isset($_SESSION['mass_postActions']['finished'])) {
-	$maxTime = get_cfg_var('max_execution_time') - 5;
-	$refreshTime = get_cfg_var('max_execution_time') + 1;
 	$startTime = time();
-	echo "<meta http-equiv=\"refresh\" content=\"2; URL=massDoUpload.php\">\n";
+	$maxTime = get_cfg_var('max_execution_time') - 5;
+	if ($maxTime > 60) $maxTime = 60;
+	$refreshTime = $maxTime + 7;
+	echo "<meta http-equiv=\"refresh\" content=\"" . $refreshTime . "; URL=massDoUpload.php\">\n";
 	echo "</head>\n<body>\n";
 	echo "<h1>" . _("LDAP upload in progress. Please wait.") . "</h1>\n";
 	echo "<table align=\"center\" width=\"80%\" style=\"border-color: grey\" border=\"2\" cellspacing=\"0\" rules=\"none\">\n";
@@ -70,7 +71,7 @@ if (($_SESSION['mass_counter'] < sizeof($accounts)) || !isset($_SESSION['mass_po
 	echo "</table>";
 	flush();  // send HTML to browser
 	// add accounts to LDAP
-	while (($_SESSION['mass_counter'] < sizeof($accounts)) && ($startTime + $maxTime > time())) {
+	while (($_SESSION['mass_counter'] < sizeof($accounts)) && (($startTime + $maxTime) > time())) {
 		// create accounts as long as max_execution_time is not near
 		$attrs = $accounts[$_SESSION['mass_counter']];
 		$dn = $attrs['dn'];
@@ -101,7 +102,7 @@ if (($_SESSION['mass_counter'] < sizeof($accounts)) || !isset($_SESSION['mass_po
 		echo "<td bgcolor=\"grey\" width=\"" . (100 - $return['progress']) . "%\">&nbsp;</td></tr>\n";
 		echo "</table>";
 		flush();
-		while (!isset($_SESSION['mass_postActions']['finished']) && ($startTime + $maxTime > time())) {
+		while (!isset($_SESSION['mass_postActions']['finished']) && (($startTime + $maxTime) > time())) {
 			$return  = doUploadPostActions($_SESSION['mass_scope'], $data, $_SESSION['mass_ids'], $_SESSION['mass_failed']);
 			if ($return['status'] == 'finished') {
 				$_SESSION['mass_postActions']['finished'] = true;
