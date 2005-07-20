@@ -1,4 +1,12 @@
 <?php
+/**
+* This file includes UFPDF which adds Unicode support to FPDF.
+*
+* @author Steven Wittens
+* @author Andrea Rossato
+* @package PDF
+*/
+
 /*******************************************************************************
 * Software: UFPDF, Unicode Free PDF generator                                  *
 * Version:  0.1                                                                *
@@ -23,7 +31,7 @@ include_once 'fpdf.php';
 /**
  * Main UFPDF class for creating Unicode PDF documents
  *
- * derives from FPDF class
+ * @package PDF
  * @see FPDF
  */
 class UFPDF extends FPDF

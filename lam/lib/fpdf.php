@@ -1,4 +1,11 @@
 <?php
+/**
+* This file includes the FPDF implementation which is used to generate PDF files.
+*
+* @author Olivier Plathey
+* @package PDF
+*/
+
 /*******************************************************************************
 * Software: FPDF                                                               *
 * Version:  1.53                                                               *
@@ -13,6 +20,11 @@ if(!class_exists('FPDF'))
 {
 define('FPDF_VERSION','1.53');
 
+/**
+ * Main FPDF class for creating PDF documents
+ *
+ * @package PDF
+ */
 class FPDF
 {
 //Private properties
