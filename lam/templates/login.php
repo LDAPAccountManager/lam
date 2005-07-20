@@ -19,10 +19,16 @@ $Id$
   along with this program; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-
-  LDAP Account Manager checking login datas.
 */
 
+/**
+* Login form of LDAP Account Manager.
+*
+* @author Michael Duergner
+* @package main
+*/
+
+/** access to configuration options */
 include_once("../lib/config.inc"); // Include config.inc which provides Config class
 
 session_save_path("../sess"); // Set session save path

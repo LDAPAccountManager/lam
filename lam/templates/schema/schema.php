@@ -22,14 +22,12 @@ $Id$
 */
 
 
-/* 
- * schema.php
- * Displays the schema for the specified server_id
- * 
- * Variables that come in as GET vars:
- *  - server_id
- *  - view (optional: can be 'attr' or empty. If 'attr', show that attribute)
- *  - attr (optional)
+/**
+ * Displays the LDAP schema of the server
+ *
+ * @package tools
+ * @author David Smith
+ * @author Roland Gruber
  */
  
  

@@ -19,12 +19,20 @@ $Id$
   along with this program; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-  This is an editor for orgnizational units.
-
 */
 
+/**
+* This is an editor for organizational units.
+*
+* @author Roland Gruber
+* @package tools
+*/
+
+/** access to configuration data */
 include_once ("../lib/config.inc");
+/** access LDAP server */
 include_once ("../lib/ldap.inc");
+/** used to print status messages */
 include_once ("../lib/status.inc");
 
 // start session

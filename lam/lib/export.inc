@@ -36,6 +36,7 @@ $Id$
  * @author Roland Gruber
  */ 
 
+/** used to print status messages */
 include_once('status.inc');
 
 // registry for the exporters

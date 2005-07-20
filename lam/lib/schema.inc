@@ -25,6 +25,7 @@ $Id$
  * Classes and functions for fetching and parsing schema from an LDAP server.
  * 
  * @package lib
+ *
  * @author The phpLDAPadmin development team
  * @author Roland Gruber
  */ 
@@ -38,6 +39,8 @@ $Id$
  * All schema items have at least two things in common: An OID 
  * and a description. This class provides an implementation for 
  * these two data.
+ * 
+ * @package lib
  */
  class SchemaItem
  {
@@ -82,6 +85,8 @@ $Id$
 
 /**
  * Represents an LDAP objectClass
+ * 
+ * @package lib
  */
 class ObjectClass extends SchemaItem
 {
@@ -465,6 +470,8 @@ class ObjectClass extends SchemaItem
   * a "source" objectClass, meaning that it keeps track of which objectClass originally
   * specified it. This class is therefore used by the class ObjectClass to determine
   * inheritance.
+  * 
+  * @package lib
   */
  class ObjectClassAttribute
  {
@@ -501,6 +508,8 @@ class ObjectClass extends SchemaItem
 
 /**
  * Represents an LDAP AttributeType 
+ * 
+ * @package lib
  */
 class AttributeType extends SchemaItem
 {
@@ -954,6 +963,8 @@ class AttributeType extends SchemaItem
 
 /**
  * Represents an LDAP Syntax
+ * 
+ * @package lib
  */
 class Syntax extends SchemaItem
 {
@@ -998,6 +1009,8 @@ class Syntax extends SchemaItem
 
 /**
  * Represents an LDAP MatchingRule
+ * 
+ * @package lib
  */
 class MatchingRule extends SchemaItem
 {
@@ -1134,6 +1147,8 @@ class MatchingRule extends SchemaItem
 
 /**
  * Represents an LDAP schema matchingRuleUse entry
+ * 
+ * @package lib
  */ 
 class MatchingRuleUse extends SchemaItem
 {
