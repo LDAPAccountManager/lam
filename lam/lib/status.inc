@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
-  Copyright (C) 2003  Michael Duergner
+  Copyright (C) 2003 - 2004  Michael Duergner
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -24,23 +24,27 @@ $Id$
  * LDAP Account Manager status messages.
  * 
  * @author Michael Dürgner
- * @version 0.5
  * @package lib
- * @copyright Copyright (C) 2003-2004 Michael Dürgner
- * @license GPL
  */
 
 /**
  * This function prints a short status message. It can be used to print INFO,
  * WARN and ERROR messages at the moment.
+ *
+ * The headline and text may be formated with special tags:
+ * <br>
+ * <br><b>{bold}, {endbold}:</b> All text between these tags is printed bold.
+ * <br><b>{color=#123456}, {endcolor}:</b> All text between these tags is printed in the given color.
+ * <br><b>{link=http://nodomain.org}, {endlink}:</b> A link with the given target is created. The link text is the text between the tags.
  * 
- * @param string The type of the message to be printed. It must be one of
- * the following types: 'INFO', 'WARN' or 'ERROR'. Every other type will lead
- * to an error message indicating an invalid message type.
- * @param string The headline of the status message.
- * @param string The text of the status message. It may be formatted with
- * the syntax specified by the other functions in this file. 
- * @param array The variables that are used to replace the spacers in the
+ * @param string $MessageTyp The type of the message to be printed. It must be one of
+ * the following types: 'INFO', 'WARN' or 'ERROR'.
+ * <br> Every other type will lead to an error message indicating an invalid message type.
+ * @param string $MessageHeadline The headline of the status message.
+ * <br> It may be formatted with special color/link/bold tags. 
+ * @param string $MessageText The text of the status message.
+ * <br> It may be formatted with special color/link/bold tags. 
+ * @param array $MessageVariables The variables that are used to replace the spacers (%s) in the
  * submitted text. This parameter is optional.
  */
 function StatusMessage($MessageTyp,$MessageHeadline,$MessageText,$MessageVariables = array()) {
@@ -94,7 +98,7 @@ function StatusMessage($MessageTyp,$MessageHeadline,$MessageText,$MessageVariabl
  * 
  * @access private
  * 
- * @param string The text that is used to search for replaceable strings.
+ * @param string $MessageString The text that is used to search for replaceable strings.
  * 
  * @return string The processed text.
  */
@@ -107,7 +111,7 @@ function parseMessageString($MessageString) {
   * 
  * @access private
  * 
- * @param string The text that is used to search for {bold} and {endbold} tags.
+ * @param string $text The text that is used to search for {bold} and {endbold} tags.
  * 
  * @return string The submitted text with {bold} and {endbold} replaced with
  * the appropriate HTML tages <b> and </b> 
@@ -123,9 +127,9 @@ function boldText($text) {
  * 
  * @access private
  * 
- * @param string 
+ * @param string $text The text that is used to search for {color} and {endcolor} tags.
  * 
- * @return string 
+ * @return string Input string with HTML-formatted color tags
  */
 function colorText($text) {
 	$pattern = "/\{color=#?([0-9,a-f,A-F]{6})\}([^{]*)\{endcolor\}/"; // Regular expression matching {color=#[HEX-Value]}[Text]{endcolor} or {color=[HEX-Value]}[Text]{endcolor}
@@ -138,9 +142,9 @@ function colorText($text) {
  * 
  * @access private
  * 
- * @param string 
+ * @param string $text The text that is used to search for {link} and {endlink} tags.
  * 
- * @return string 
+ * @return string Input string with HTML-formatted link tags
  */
 function linkText($text) {
 	$pattern = "/\{link=([^}]*)\}([^{]*)\{endlink\}/"; // Regular expression matching {link=[Link-Target]}[Text]{endlink}

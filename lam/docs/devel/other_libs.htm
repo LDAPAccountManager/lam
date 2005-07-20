@@ -28,7 +28,14 @@ They allow to have translated descriptions of the most common
 attributes.<br>
 <br>
 <h2><a name="status"></a>Status messages (status.inc)</h2>
+Status.inc provides the function <span
+ style="font-weight: bold; font-style: italic;">StatusMessage()</span>
+which can be used to display error, warning and information messages.<br>
+The function uses preg_replace() to convert the special tags to HTML
+tags. The message variables are included with printf().<br>
 <br>
+The parameters of <span style="font-weight: bold; font-style: italic;">StatusMessage()
+</span>are described in the developer FAQ.<br>
 <br>
 <h2><a name="treeSchema"></a>Tree view and schema browser</h2>
 The files tree.inc and schema.inc contain functions which are needed by

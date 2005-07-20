@@ -58,6 +58,46 @@ really logged in and not calling the scripts by hand?</span></big><br>
 successfully logged in to LAM the variable <span
  style="font-weight: bold; color: rgb(204, 0, 0);">$_SESSION['loggedIn']</span>
 is set to true.<br>
+<br>
+<big><span style="font-weight: bold;"><br>
+<br>
+Q: What is the command for these error/warning/info messages?</span></big><br>
+<br>
+<big><span style="font-weight: bold;">A:</span></big> Your script must
+include status.inc (automatically included for account
+modules) to display these messages.<br>
+The command is <span style="font-weight: bold;">StatusMessage(&lt;type&gt;,
+&lt;headline&gt;, &lt;text&gt;[, &lt;variables&gt;])</span>.<br>
+<br>
+<span style="font-weight: bold;">Parameters:</span><br>
+<ul>
+  <li><span style="font-weight: bold;">&lt;type&gt;:</span> message
+type ("ERROR", "WARN", "INFO")</li>
+  <li><span style="font-weight: bold;">&lt;headline&gt;:</span>
+headline for the message (may include format tags)<br>
+  </li>
+  <li><span style="font-weight: bold;">&lt;type&gt;:</span> text for
+the message (may include format tags)</li>
+  <li><span style="font-weight: bold;">&lt;variables&gt;:</span>
+optional, array of variables to include in headline/text<br>
+The positions in headline/text must be marked with %s before.</li>
+</ul>
+<br>
+<span style="font-weight: bold;">Format of special tags:</span><br>
+<ul>
+  <li><span style="font-weight: bold;">{bold}</span>text<span
+ style="font-weight: bold;">{endbold}:</span> "text" is printed bold</li>
+  <li><span style="font-weight: bold;">{color=#123456}</span>text<span
+ style="font-weight: bold;">{endcolor}:</span> "text" is printed in
+given color</li>
+  <li><span style="font-weight: bold;">{link=http://nodomain.org}</span>text<span
+ style="font-weight: bold;">{endlink}:</span> This will add a link to
+http://nodomain.org which will be labeled "text"<br>
+  </li>
+</ul>
+<br>
+<br>
+<br>
 </div>
 </div>
 </body>
