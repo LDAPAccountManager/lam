@@ -218,7 +218,7 @@ function check_module_depends($selected, $deps) {
 *
 * @param array $selected selected module names
 * @param array $deps module dependencies
-* @return false if no conflict was found,
+* @return boolean false if no conflict was found,
 * otherwise an array of array(selected module, conflicting module) if conflicts were found
 */
 function check_module_conflicts($selected, $deps) {
@@ -689,7 +689,12 @@ function parseHtml($module, $input, $values, $restricted, &$tabindex, &$tabindex
 * @package modules
 */
 class accountContainer {
-	// Constructor
+	/**
+	* Constructor
+	*
+	* @param string $type account type
+	* @param string $base key in $_SESSION where this object is saved
+	*/
 	function accountContainer($type, $base) {
 		/* Set the type of account. Valid
 		* types are: user, group, host
@@ -721,7 +726,8 @@ class accountContainer {
 	*/
 	var $type;
 	
-	var $module; // This is an array with all module objects
+	/** This is an array with all module objects */
+	var $module;
 	
 	/** DN suffix of the account */
 	var $dn;
@@ -751,13 +757,21 @@ class accountContainer {
 	var $isNewAccount;
 
 	
-	/* Get the type of account. Valid
-	* types are: user, group, host
+	/**
+	* Returns the accout type of this object (e.g. user, group, host).
+	*
+	* @return string account type
 	*/
 	function get_type() {
 		return $this->type;
 		}
 	
+	/**
+	* This function is called when the user clicks on any button on the account pages.
+	* It prints the HTML code of each account page.
+	*
+	* @param array $post HTTP POST variables
+	*/
 	function continue_main($post) {
 		if ($this->subpage=='') $this->subpage='attributes';
 		if ($post['form_main_reset']) {
@@ -1022,7 +1036,9 @@ class accountContainer {
 		return 0;
 		}
 
-	/* Add attributes to variable. Syntax is array( attribute = array ( objectClass1 => MUST|MAX, objectClass2 => MUST|MAY ), ... )
+	/**
+	* Add attributes to variable. Syntax is array( attribute = array ( objectClass1 => MUST|MAX, objectClass2 => MUST|MAY ), ... )
+	* @todo document this function
 	*/
 	function add_attributes($objectClass) {
 		// loop through every existing objectlass and select current objectClass
@@ -1101,10 +1117,13 @@ class accountContainer {
 			}
 		}
 
-	/* This function return ldap attributes
+	/**
+	* This function return ldap attributes
 	* Syntax is get_attributes($value, $scope)
 	* $scope = 'objectClass', $value = objectClass return value are all attributes of objectClass
 	* $scope = 'attribute', $value = attribute returns alle objectClasses which are using the attribute
+	*
+	* @todo Obsolete function???
 	*/
 	function get_attributes($value, $scope) {
 		if ($scope=='attribute' && isset($this->attributes[$value])) return $this->attributes[$value];
@@ -1119,12 +1138,15 @@ class accountContainer {
 		}
 
 		
-	/* This function returns all ldap attributes in an array which are used by $objectClass
-	* ldap attributs already in use by another objectClass are passed as reference.
-	* Therefore this function must be called as reference: $result =& ..get_module_attributes
+	/**
+	* This function returns all LDAP attributes which are used by the given object class.
+	* LDAP attributs which are already in use by another object class are passed as reference.
+	* <br>Therefore this function must be called as reference: $result =& ..get_module_attributes
 	*
-	* if original is true referencees will be set to original attributes. This are the original attributes
-	* when an ldap entry is loaded.
+	* @param string $objectClass object class name
+	* @param boolean $original If original is true references will be set to original attributes. This are the original attributes
+	* when an LDAP entry is loaded.
+	* @return array list of attributes
 	*/
 	function get_module_attributes($objectClass, $original=false) {
 		// Add account type to object
@@ -1252,9 +1274,12 @@ class accountContainer {
 		return $return;
 		}
 
-	/* This function return ldap attributes which are uses by $objectClass
-	* Syntax is get_attributes($attributes, $orig)
-	* Return is an array as needed for $this->saveAccount()
+	/**
+	* This function checks which LDAP attributes have changed while the account was edited.
+	* 
+	* @param array $attributes list of current LDAP attributes
+	* @param array $orig list of old attributes when account was loaded
+	* @return array an array which can be passed to $this->saveAccount()
 	*/
 	function save_module_attributes($attributes, $orig) {
 		// Get list of all "easy" attributes
@@ -1310,34 +1335,10 @@ class accountContainer {
 		return $return;
 		}
 
-
-	/* This function checks if all MUST-attribtues are set.
-	* If not it will return an array with all modules
-	* which have to be set first
-	*/
-	function check_attributes() {
-		$return = array();
-		if (is_array($this->attributes)) {
-			// get named list of attributes
-			$attributes = array_keys($this->attributes);
-			for ($i=0; $i<count($attributes); $i++) {
-				$singleattribute = array_keys ($this->attributes[$attributes[$i]]);
-				for ($j=0; $j<count($singleattribute); $j++) {
-					// found attribute which must be set
-					if ($this->attributes[$attributes[$i]][$singleattribute[$j]]=='MUST') {
-						// Check if attribute is set
-						if ($this->module[$singleattribute[$j]]->attributes[$attributes[$i]]=='') {
-							if (!in_array($singleattribute[$j], $return)) $return[] = $singleattribute[$j];
-							}
-						}
-					}
-				}
-			return $return;
-			}
-		}
-
-	/* This function will load an account.
-	* $dn is the dn of the account which should be loaded
+	/**
+	* Loads an LDAP account with the given DN.
+	*
+	* @param string $dn the DN of the account
 	*/
 	function load_account($dn) {
 		$modules = $_SESSION['config']->get_AccountModules($this->type);
@@ -1611,11 +1612,11 @@ class accountContainer {
 		}
 
 		/**
+		 * Returns a list of possible PDF entries for this account.
 		 * 
-		 * 
-		 * @param string account_type
+		 * @param string $account_type account type
 		 *
-		 * @return 
+		 * @return list of PDF entries (array(<name> => <PDF lines>))
 		 */
 		function get_pdfEntries($acount_type) {
 			$return = array();
@@ -1623,7 +1624,7 @@ class accountContainer {
 				$return = array_merge($return,$current->get_pdfEntries($account_type));
 				next($this->module);
 			}
-			$return = array_merge($return,array(	'main_dn' => array('<block><key>' . _('DN') . '</key><value>' . $this->dn . '</value></block>')));
+			$return = array_merge($return,array('main_dn' => array('<block><key>' . _('DN') . '</key><value>' . $this->dn . '</value></block>')));
 			return $return;
 		}
 		
