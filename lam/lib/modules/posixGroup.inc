@@ -21,6 +21,21 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
 
+/**
+* Manages Unix accounts for groups.
+*
+* @package modules
+*
+* @author Tilo Lutz
+* @author Roland Gruber
+* @author Michael Duergner
+*/
+
+/**
+* Manages the object class "posixGroup" for groups.
+*
+* @package modules
+*/
 class posixGroup extends baseModule {
 
 	// Variables

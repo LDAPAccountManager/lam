@@ -27,7 +27,7 @@ $Id$
 * @author Tilo Lutz
 * @author Roland Gruber
 *
-* @package modules
+* @package lib
 */
 
 /** Needed to calculate Samba passwords */

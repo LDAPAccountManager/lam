@@ -21,6 +21,21 @@ $Id$
 */
 
 
+/**
+* Manages Samba 3 accounts for groups.
+*
+* @package modules
+*
+* @author Tilo Lutz
+* @author Roland Gruber
+* @author Michael Duergner
+*/
+
+/**
+* Manages the object class "sambaGroupMapping" for groups.
+*
+* @package modules
+*/
 class sambaGroupMapping extends baseModule {
 
 	// Variables

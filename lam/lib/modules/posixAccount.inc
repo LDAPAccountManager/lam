@@ -20,6 +20,21 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+/**
+* Manages Unix accounts for users and hosts.
+*
+* @package modules
+*
+* @author Tilo Lutz
+* @author Roland Gruber
+* @author Michael Duergner
+*/
+
+/**
+* Manages the object class "posixAccount" for users and hosts.
+*
+* @package modules
+*/
 class posixAccount extends baseModule {
 
 	/**

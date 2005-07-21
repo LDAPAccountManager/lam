@@ -20,6 +20,21 @@ $Id$
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+/**
+* Manages Unix shadow accounts for users.
+*
+* @package modules
+*
+* @author Tilo Lutz
+* @author Roland Gruber
+* @author Michael Duergner
+*/
+
+/**
+* Manages the object class "shadowAccount" for users.
+*
+* @package modules
+*/
 class shadowAccount extends baseModule {
 
 	/**

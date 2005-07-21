@@ -20,6 +20,21 @@ $Id$
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+/**
+* Manages Samba 3 accounts for users and hosts.
+*
+* @package modules
+*
+* @author Tilo Lutz
+* @author Roland Gruber
+* @author Michael Duergner
+*/
+
+/**
+* Manages the object class "sambaSamAccount" for users and hosts.
+*
+* @package modules
+*/
 class sambaSamAccount extends baseModule {
 
 	/**

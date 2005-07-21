@@ -21,6 +21,21 @@ $Id$
 */
 
 
+/**
+* Manages quotas for users and groups.
+*
+* @package modules
+*
+* @author Tilo Lutz
+* @author Roland Gruber
+* @author Michael Duergner
+*/
+
+/**
+* Manages quotas for users and groups.
+*
+* @package modules
+*/
 class quota extends baseModule {
 
 	/** this functin fills the error message array with messages
