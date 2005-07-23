@@ -43,11 +43,11 @@ $Id$
  * @param string $MessageHeadline The headline of the status message.
  * <br> It may be formatted with special color/link/bold tags. 
  * @param string $MessageText The text of the status message.
- * <br> It may be formatted with special color/link/bold tags. 
+ * <br> It may be formatted with special color/link/bold tags. This parameter is optional.
  * @param array $MessageVariables The variables that are used to replace the spacers (%s) in the
  * submitted text. This parameter is optional.
  */
-function StatusMessage($MessageTyp,$MessageHeadline,$MessageText,$MessageVariables = array()) {
+function StatusMessage($MessageTyp,$MessageHeadline,$MessageText='',$MessageVariables = array()) {
 	/* Setting CSS-StyleSheet class depending on the $MessageTyp and rewriting $MessageTyp with a readable string. */
 	if($MessageTyp == "INFO") {
 		$class = "class=\"statusInfo\"";
