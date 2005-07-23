@@ -135,6 +135,7 @@ switch ($_POST['select']) {
 		do { // X-Or, only one if() can be true
 			if (isset($_POST['users']) && isset($_POST['add'])) { // Add users to list
 				// Add new user
+				if (!is_array($account_new->unix_memberUid)) $account_new->unix_memberUid = array();
 				$account_new->unix_memberUid = array_merge($account_new->unix_memberUid, $_POST['users']);
 				// remove doubles
 				$account_new->unix_memberUid = array_flip($account_new->unix_memberUid);

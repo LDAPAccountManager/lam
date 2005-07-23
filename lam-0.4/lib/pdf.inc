@@ -23,6 +23,9 @@ $Id$
   LDAP Account Manager lamPDF class and some pdf functions
 */
 
+// PHP 5 compatibility
+if( phpversion() >= "5" ) ini_set( "zend.ze1_compatibility_mode", 1 );
+
 define('FPDF_FONTPATH', 'font/');
 include_once("fpdf.php");
 

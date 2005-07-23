@@ -23,6 +23,9 @@ $Id$
 
 // ldap.inc provides basic functions to connect to the OpenLDAP server.
 
+// PHP 5 compatibility
+if( phpversion() >= "5" ) ini_set( "zend.ze1_compatibility_mode", 1 );
+
 include_once("config.inc");
 include_once("blowfish.inc");
 

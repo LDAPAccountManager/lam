@@ -23,6 +23,8 @@ $Id$
   LDAP Account Manager functions used by account.php
 */
 
+// PHP 5 compatibility
+if( phpversion() >= "5" ) ini_set( "zend.ze1_compatibility_mode", 1 );
 
 // This class keeps all needed values for any account
 class account {
@@ -2380,6 +2382,7 @@ function creategroup($values, $uselamdaemon=true) {
 *	5 == Error while modifying Account
 */
 function modifygroup($values,$values_old, $uselamdaemon=true) {
+	print_r($values);print_r($values_old);
 	// Add missing objectclasses to group
 	if (!in_array('posixGroup', $values->general_objectClass)) {
 		$attr['objectClass'] = $values->general_objectClass;

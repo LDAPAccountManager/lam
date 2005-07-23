@@ -23,6 +23,9 @@ $Id$
 
 // profiles.inc provides functions to load and save profiles for users/groups/hosts
 
+// PHP 5 compatibility
+if( phpversion() >= "5" ) ini_set( "zend.ze1_compatibility_mode", 1 );
+
 include_once("config.inc");
 include_once("account.inc");
 include_once("ldap.inc");

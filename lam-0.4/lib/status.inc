@@ -23,6 +23,9 @@ $Id$
   LDAP Account Manager status messages.
 */
 
+// PHP 5 compatibility
+if( phpversion() >= "5" ) ini_set( "zend.ze1_compatibility_mode", 1 );
+
 function StatusMessage($MessageTyp,$MessageHeadline,$MessageText,$MessageVariables = array()) {
 	/* Setting CSS-StyleSheet class depending on the $MessageTyp and rewriting $MessageTyp with a readable string. */
 	if($MessageTyp == "INFO") {

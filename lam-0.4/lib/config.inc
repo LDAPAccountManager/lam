@@ -24,6 +24,9 @@ $Id$
 
 */
 
+// PHP 5 compatibility
+if( phpversion() >= "5" ) ini_set( "zend.ze1_compatibility_mode", 1 );
+
 include_once("status.inc");
 
 // sets language settings for automatic translation
