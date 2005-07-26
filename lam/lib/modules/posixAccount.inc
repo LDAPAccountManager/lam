@@ -630,6 +630,7 @@ class posixAccount extends baseModule {
 		$return = array();
 		// remove memberUids if set
 		$groups = $_SESSION['cache']->get_cache('memberUid', 'posixGroup', 'group');
+		if (!is_array($groups)) return $return;
 		$DNs = array_keys($groups);
 		for ($i=0; $i<count($DNs); $i++) {
 			if (in_array($this->attributes['uid'][0], $groups[$DNs[$i]])) $return[$DNs[$i]]['remove']['memberUid'][] = $this->attributes['uid'][0];
