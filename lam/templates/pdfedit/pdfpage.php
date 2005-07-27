@@ -31,10 +31,15 @@ $Id$
 * @package PDF
 */
 
+/** access to PDF configuration files */
 include_once('../../lib/pdfstruct.inc');
+/** LDAP object */
 include_once('../../lib/ldap.inc');
+/** LAM configuration */
 include_once('../../lib/config.inc');
+/** module functions */
 include_once('../../lib/modules.inc');
+/** XML functions */
 include_once('../../lib/xml_parser.inc');
 
 // start session
@@ -89,14 +94,28 @@ if(isset($_POST['defaults'])) {
 // Check if pdfname is valid, then save current structure to file and go to
 // main pdf structure page
 if(isset($_GET['submit'])) {
+	echo $_SESSION['header'];
+	echo "<title>LDAP Account Manager</title>";
+	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">";
+	echo "</head>";
+	echo "<body>";
 	if(!isset($_GET['pdfname']) || !preg_match('/[a-zA-Z0-9\-\_\.]+/',$_GET['pdfname'])) {
-		StatusMessage('ERROR',_('PDF-structure name not valid'),_('The name for that PDF-structure you submitted is not valid. A valid name must constist at least of one of the following characters \'a-z\',\'A-Z\',\'0-9\',\'_\',\'-\',\'.\'.'));
+		StatusMessage('ERROR', _('PDF-structure name not valid'), _('The name for that PDF-structure you submitted is not valid. A valid name must constist at least of one of the following characters \'a-z\',\'A-Z\',\'0-9\',\'_\',\'-\',\'.\'.'));
 	}
 	else {
-		savePDFStructureDefinitions($_GET['type'],$_GET['pdfname'] . '.xml');
-		metarefresh('pdfmain.php');
-		exit;
+		$return = savePDFStructureDefinitions($_GET['type'],$_GET['pdfname']);
+		if($return == 'ok') {
+			StatusMessage('INFO', _("PDF structure was successfully saved."), $_GET['pdfname']);
+		} 
+		elseif($return == 'no perms'){
+			StatusMessage('ERROR', _("Could not save PDF profile, access denied."), $_GET['pdfname']);
+		}
+		elseif($return == 'file exists'){
+			StatusMessage('ERROR', _("This file already exists."), $_GET['pdfname']);
+		}
 	}
+	echo "</body></html>";
+	exit;
 }
 // Add a new section or static text
 elseif(isset($_GET['add'])) {
@@ -340,7 +359,7 @@ if(!isset($_SESSION['currentPDFStructure'])) {
 		$load = loadPDFStructureDefinitions($_GET['type'],$_GET['edit']);
 		$_SESSION['currentPDFStructure'] = $load['structure'];
 		$_SESSION['currentPageDefinitions'] = $load['page_definitions'];
-		$_GET['pdfname'] = substr($_GET['edit'],0,strlen($_GET['edit']) - 4);
+		$_GET['pdfname'] = $_GET['edit'];
 	}
 	// Load default structure file when creating a new one
 	else {
@@ -727,7 +746,7 @@ foreach($_SESSION['availablePDFFields'] as $module => $fields) {
 										<b><?php echo _("Structure name"); ?>:</b>
 									</td>
 									<td>
-										<input type="text" name="pdfname" value="<?php echo substr($_GET['edit'],0,strlen($_GET['edit']) -4);?>">
+										<input type="text" name="pdfname" value="<?php echo $_GET['edit'];?>">
 									</td>
 									<td>
 										<a href="../help.php?HelpNumber=360" target="lamhelp"><?php echo _("Help");?></a>
