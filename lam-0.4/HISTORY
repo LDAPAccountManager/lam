@@ -1,3 +1,7 @@
+28.07.2005 0.4.10
+  - PHP5 compatibility added
+
+
 09.03.2005 0.4.9
   - fixed bugs:
       fixed error messages when moving an user account
