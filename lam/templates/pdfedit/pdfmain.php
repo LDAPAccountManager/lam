@@ -19,13 +19,22 @@ $Id$
   along with this program; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-  This is the main window of the pdf structure editor.
-
 */
 
+/**
+* This is the main window of the pdf structure editor.
+*
+* @author Michael Dürgner
+* @package PDF
+*/
+
+/** access to PDF configuration files */
 include_once("../../lib/pdfstruct.inc");
+/** LDAP object */
 include_once("../../lib/ldap.inc");
+/** for language settings */
 include_once("../../lib/config.inc");
+/** module functions */
 include_once("../../lib/modules.inc");
 
 // start session
@@ -83,7 +92,7 @@ foreach($scopes as $scope) {
 	$availableScopes .= '<option value="' . $scope . '">' . $scope . "</option>\n";
 	
 	foreach($pdfStructDefs as $pdfStructureDefinition) {
-		$availableStructureDefinitions .= '<option value="' . $scope . ':' . $pdfStructureDefinition . '.xml">' . $scope . ' - ' . $pdfStructureDefinition . "</option>\n";
+		$availableStructureDefinitions .= '<option value="' . $scope . ':' . $pdfStructureDefinition . '">' . $scope . ' - ' . $pdfStructureDefinition . "</option>\n";
 	}
 }
 
