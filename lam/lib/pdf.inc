@@ -22,60 +22,30 @@ $Id$
 
 /**
  * LDAP Account Manager PDF printing library. It consists of lamPDF class,
- * the createModulePDF() and getAvailablePDFStructure() functions that may
- * be called by other pages and furthermore some helper functions.
+ * the createModulePDF() function that may be called by other pages
+ * and furthermore some helper functions.
  * 
  * @author Michael Dürgner
  * @package PDF
- * @copyright Copyright (C) 2003-2004 Michael Dürgner
- * @license GPL
  */
 
-/**
- * 
- */
+/** PDF line width */
 define('LAMPDF_LINEWIDTH',190);
 
-/**
- * 
- */
+/** PDF generator class */
 include_once("fpdf.php");
 
-/**
- * 
- */
+/** Unicode support for FPDF */
 include_once("ufpdf.php");
 
-/**
- * 
- */
+/** XML functions */
 include_once('xml_parser.inc');
+
+/** access to PDF configuration files */
+include_once('pdfstruct.inc');
 
 $key = false;
 $line_width = LAMPDF_LINEWIDTH;
-
-/**
- * This function will return all available PDF structure definitions for the submitted
- * account scope.
- * 
- * @param string The account scope the PDF structure definitions should be
- * returned.
- * 
- * @return array All available PDF structure definitions for the submitted account
- * scope. Each entry is a string being the filename that may be passed to the 
- * createModulePDF() function as second argument.
- */
-function getAvailablePDFStructures($scope='user') {
-	$return = array();
-	$dirHandle = opendir($_SESSION['lampath'] . '/config/pdf/' . $scope . '/');
-	while($file = readdir($dirHandle)) {
-		if(!is_dir($file) && $file != '.' && $file != '..') {
-			array_push($return,$file);
-		}
-	}
-	sort($return);
-	return $return;
-}
 
 /**
  * This function creates the PDF output of one or more accounts. At the moment
@@ -83,13 +53,13 @@ function getAvailablePDFStructures($scope='user') {
  * this is not limited by the function itself but by the account types that are
  * allowed in LAM and the exsisting PDF structure definitions. 
  * 
- * @param array A numbered array containing all accounts the PDF page should
+ * @param array $accounts A numbered array containing all accounts the PDF page should
  * be created for. The entries of the array must be AccountContainer objects.
- * @param string The filename of the structure definition that should be used
- * to create the PDF page. If not submitted the 'default.xml' structure definition
+ * @param string $pdf_structure The filename of the structure definition that should be used
+ * to create the PDF page. If not submitted the 'default.user' structure definition
  * for the appropriate account type.
  */
-function createModulePDF($accounts,$pdf_structure="default.xml") {
+function createModulePDF($accounts,$pdf_structure="default") {
 	
 	global $key;
 	
@@ -98,9 +68,8 @@ function createModulePDF($accounts,$pdf_structure="default.xml") {
 	if($account_type == "" || $account_type != $accounts[0]->get_type()) {
 		$account_type = $accounts[0]->get_type();
 	}
-	
 	// Get PDF structure from xml file
-	$load = getStructure($account_type,$pdf_structure);
+	$load = loadPDFStructureDefinitions($account_type,$pdf_structure);
 	$structure = $load['structure'];
 	
 	// The decimal separator must be a dot in order to write pdf-files
@@ -219,39 +188,11 @@ function createModulePDF($accounts,$pdf_structure="default.xml") {
 }
 
 /**
+ * Creates a section headline.
  * 
+ * @param string $line section name
  * 
- * @param string 
- * @param string
- * 
- * @return array
- */
-function getStructure($scope,$pdf_structure) {
-	$parser = new xmlParser();
-	$xml = $parser->parse($_SESSION['lampath'] . '/config/pdf/' . $scope . '/' . $pdf_structure);
-	
-	$border = array();
-	$structure = array();
-	$complete_page_definitions = array('filename' => 'printLogo.jpg', 'headline' => 'LDAP Account Manager', 'margin-top' => '10.0', 'margin-bottom' => '20.0', 'margin-left' => '10.0', 'margin-right' => '10.0');
-	if($xml[0][$xml[1]['PDF'][0]]['attributes']['TYPE'] == $scope) {
-		$border['start'] = $xml[1]['PDF'][0];
-		$page_definitions = $xml[0][$xml[1]['PDF'][0]]['attributes'];
-		foreach($page_definitions as $key => $value) {
-			$complete_page_definitions[strtolower($key)] = $value;
-			unset($page_definitions[$key]);
-		}
-		$border['end'] = $xml[1]['PDF'][1];
-	}
-	$structure = array_slice($xml[0],$border['start'] + 1,$border['end'] - ($border['start'] + 1));
-	return array('structure' => $structure, 'page_definitions' => $complete_page_definitions);
-}
-
-/**
- * 
- * 
- * @param string
- * 
- * @return string 
+ * @return string XML code for headline
  */
 function getSectionHeadline($line) {
 	$headline_pattern = '/<block>.*<value>(.*)<\/value><\/block>/';
@@ -265,12 +206,12 @@ function getSectionHeadline($line) {
 }
 
 /**
+ * Creates the XML code for an PDF entry.
  * 
+ * @param string $line XML code of PDF entry
+ * @param boolean $first_td True if this is the first column
  * 
- * @param string 
- * @param boolean
- * 
- * @return array
+ * @return array XML codes
  */
 function processLine($line,$first_td = true, $fontName) {
 	global $key, $line_width;
@@ -335,12 +276,12 @@ function processLine($line,$first_td = true, $fontName) {
 }
 
 /**
+ * Formats the XML code.
  * 
+ * @param string $line XML code of PDF entry
+ * @param string $style style commands
  * 
- * @param string 
- * @param string
- * 
- * @return array 
+ * @return array XML code
  */
 function processFormatTags($line,$style) {
 	// PCRE matching a <i> tag
@@ -368,12 +309,12 @@ function processFormatTags($line,$style) {
 }
 
 /**
+ * Processes width, height and alignment attributes.
  * 
+ * @param string $attrs attributes
+ * @param array $return XML code
  * 
- * @param string 
- * @param array
- * 
- * @return array
+ * @return array XML code
  */
 function processAttributes($attrs,$return = array()) {
 	global $line_width;
@@ -440,10 +381,10 @@ class lamPDF extends UFPDF {
 	/**
 	 * 
 	 * 
-	 * @param string 
-	 * @param array
+	 * @param string $account_type
+	 * @param array $page_definitions
 	 */
-	function lamPDF($account_type = "User",$page_definitions = array(),$fontName) {
+	function lamPDF($account_type = "user",$page_definitions = array(),$fontName) {
 		$this->fontName = $fontName;
 		define('FPDF_FONTPATH', $_SESSION['lampath'] . "lib/" . 'font/');
 		// Call constructor of superclass
