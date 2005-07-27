@@ -99,7 +99,7 @@ if(isset($_GET['submit'])) {
 	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">";
 	echo "</head>";
 	echo "<body>";
-	if(!isset($_GET['pdfname']) || !preg_match('/[a-zA-Z0-9\-\_\.]+/',$_GET['pdfname'])) {
+	if(!isset($_GET['pdfname']) || !preg_match('/[a-zA-Z0-9\-\_]+/',$_GET['pdfname'])) {
 		StatusMessage('ERROR', _('PDF-structure name not valid'), _('The name for that PDF-structure you submitted is not valid. A valid name must constist at least of one of the following characters \'a-z\',\'A-Z\',\'0-9\',\'_\',\'-\',\'.\'.'));
 	}
 	else {
@@ -109,9 +109,6 @@ if(isset($_GET['submit'])) {
 		} 
 		elseif($return == 'no perms'){
 			StatusMessage('ERROR', _("Could not save PDF profile, access denied."), $_GET['pdfname']);
-		}
-		elseif($return == 'file exists'){
-			StatusMessage('ERROR', _("This file already exists."), $_GET['pdfname']);
 		}
 	}
 	echo "</body></html>";

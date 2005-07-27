@@ -21,140 +21,156 @@ $Id$
 */
 
 /**
- * 
+ * Functions to manage the PDF structures.
  * 
  * @author Michael Dürgner
- * @version 0.5
  * @package PDF
- * @copyright Copyright (C) 2003-2004 Michael Dürgner
- * @license GPL
  */
 
-/**
- * 
- */
+/** LAM configuration */
 include_once("config.inc");
 
-/**
- * 
- */
+/** LDAP object */
 include_once("ldap.inc");
 
 /**
+ * This function will return all available PDF structure definitions for the submitted
+ * account scope.
  * 
+ * @param string $scope The account scope the PDF structure definitions should be
+ * returned.
  * 
- * @param string 
- * 
- * @return array 
+ * @return array $scope All available PDF structure definitions for the submitted account
+ * scope. Each entry is a string being the filename that may be passed to the 
+ * createModulePDF() function as second argument.
  */
 function getPDFStructureDefinitions($scope = "user") {
 	$return = array();
-	$path = $_SESSION['lampath'] . 'config/pdf/' . $scope;
+	$path = $_SESSION['lampath'] . 'config/pdf/';
 	if(is_dir($path)) {
 		$dirHandle = opendir($path);
 		while($file = readdir($dirHandle)) {
-			if(!is_dir($file) && $file != '.' && $file != '..' && $file != 'default.xml') {
-				array_push($return, substr($file,0,strlen($file)-4));
+			$struct_file = explode('.',$file);
+			if(!is_dir($path.$file) && $file != '.' && $file != '..' && $struct_file[1] == $scope) {
+				array_push($return, $struct_file[0]);
 			}
 		}
 		sort($return);
 	}
-	return $return;
+ 	return $return;
 }
 
 /**
+ * This function is used to get pdf structure from xml file.
+ * Used in createModulePDF.
+ *
+ * @param string $scope The account scope for wich the PDF structure should be returned.
+ * @param string $pdf_structure Structure name of selected scope wich should be returned.
  * 
- * 
- * @param string 
- * @param string 
- * 
- * @return array
+ * @return array PDF structure
  */
-function loadPDFStructureDefinitions($scope='user', $definition='default.xml') {
+function loadPDFStructureDefinitions($scope='user',$pdf_structure='default') {
 	$parser = new xmlParser();
-	$file = $_SESSION['lampath'] . 'config/pdf/' . $scope . '/' . $definition;
+	$file = $_SESSION['lampath'] . 'config/pdf/' . $pdf_structure . '.' . $scope . '.xml';
 	$xml = $parser->parse($file);
-	
 	$border = array();
 	$structure = array();
-	$border[$current] = array();
-	$page_definitions = array();
+	$complete_page_definitions = array('filename' => 'printLogo.jpg', 'headline' => 'LDAP Account Manager', 'margin-top' => '10.0', 'margin-bottom' => '20.0', 'margin-left' => '10.0', 'margin-right' => '10.0');
 	if($xml[0][$xml[1]['PDF'][0]]['attributes']['TYPE'] == $scope) {
 		$border['start'] = $xml[1]['PDF'][0];
 		$page_definitions = $xml[0][$xml[1]['PDF'][0]]['attributes'];
 		foreach($page_definitions as $key => $value) {
-			$page_definitions[strtolower($key)] = $value;
+			$complete_page_definitions[strtolower($key)] = $value;
 			unset($page_definitions[$key]);
 		}
 		$border['end'] = $xml[1]['PDF'][1];
 	}
 	$structure = array_slice($xml[0],$border['start'] + 1,$border['end'] - ($border['start'] + 1));
-	return array('structure' => $structure, 'page_definitions' => $page_definitions);
+	return array('structure' => $structure, 'page_definitions' => $complete_page_definitions);
 }
 
+
 /**
+ * Saves PDF structure definitions to XML file in format: <name>.<scope>.xml
  * 
- * 
- * @param string 
- * @param string 
+ * @param string $scope account type
+ * @param string $definition Name of definition
+ * @return string "no perms" if access denied or "ok".
  */
 function savePDFStructureDefinitions($scope,$definition) {
-	$handle = fopen($_SESSION['lampath'] . 'config/pdf/' . $scope . '/' . $definition,'w');
-	$pdf_attributes = '';
-	foreach($_SESSION['currentPageDefinitions'] as $key => $value) {
-		if($key != 'type') {
-			$pdf_attributes .= ' ' . $key . '="' . $value . '"';
-		}
+	if (!preg_match('/[a-zA-Z0-9\-\_]+/',$definition)) return 'no perms';
+	if (!preg_match('/[a-zA-Z]+/',$scope)) return 'no perms';
+	$struct_file = ($_SESSION['lampath'] . 'config/pdf/' . $definition . '.' . $scope . '.xml');
+	if(!is_writable($_SESSION['lampath'] . 'config/pdf/')) {
+		return 'no perms';
 	}
-	$file = '<pdf type="' . $scope . "\"" . $pdf_attributes . ">\n";
-	foreach($_SESSION['currentPDFStructure'] as $entry) {
-		$ident = '';
-		for($i=0;$i<$entry['level'] -1;$i++) {
-			$ident .= "\t";
-		}
-		$attributes = '';
-		if(is_array($entry['attributes'])) {
-			foreach($entry['attributes'] as $key => $value) {
-				$attributes .= ' ' . strtolower($key) . '="' . $value . '"';
+	else {
+		$handle = fopen($struct_file,'w');
+		$pdf_attributes = '';
+		foreach($_SESSION['currentPageDefinitions'] as $key => $value) {
+			if($key != 'type') {
+				$pdf_attributes .= ' ' . $key . '="' . $value . '"';
 			}
 		}
-		if($entry['type'] == 'open') {
-			$file .= $ident . '<' . strtolower($entry['tag']) . $attributes . ">\n"; 
-		}
-		elseif($entry['type'] == 'close') {
-			$file .= $ident . '</' . strtolower($entry['tag']) . ">\n";
-		}
-		elseif($entry['type'] == 'complete') {
-			if(isset($entry['value'])) {
-				$file .= $ident . '<' . strtolower($entry['tag']) . $attributes . '>' . $entry['value'] . '</' . strtolower($entry['tag']) . ">\n";
+		$file = '<pdf type="' . $scope . "\"" . $pdf_attributes . ">\n";
+		foreach($_SESSION['currentPDFStructure'] as $entry) {
+			$ident = '';
+			for($i=0;$i<$entry['level'] -1;$i++) {
+				$ident .= "\t";
 			}
-			else {
-				$file .= $ident . '<' . strtolower($entry['tag']) . $attributes . " />\n";
+			$attributes = '';
+			if(is_array($entry['attributes'])) {
+				foreach($entry['attributes'] as $key => $value) {
+					$attributes .= ' ' . strtolower($key) . '="' . $value . '"';
+				}
+			}
+			if($entry['type'] == 'open') {
+				$file .= $ident . '<' . strtolower($entry['tag']) . $attributes . ">\n"; 
+			}
+			elseif($entry['type'] == 'close') {
+				$file .= $ident . '</' . strtolower($entry['tag']) . ">\n";
+			}
+			elseif($entry['type'] == 'complete') {
+				if(isset($entry['value'])) {
+					$file .= $ident . '<' . strtolower($entry['tag']) . $attributes . '>' . $entry['value'] . '</' . strtolower($entry['tag']) . ">\n";
+				}
+				else {
+					$file .= $ident . '<' . strtolower($entry['tag']) . $attributes . " />\n";
+				}
 			}
 		}
+		$file .= "</pdf>";
+		fwrite($handle,$file);
+		fclose($handle);
+		return 'ok';
 	}
-	$file .= "</pdf>";
-	fwrite($handle,$file);
-	fclose($handle);
 }
 
 /**
+ * Deletes XML file with PDF structure definitions.
  * 
+ * @param string $scope account type
+ * @param string $definition Name of definition to delete
  * 
- * @param string 
- * @param string
- * 
- * @return boolean  
+ * @return boolean True if file was deleted or false if a problem occured.
  */
-function deletePDFStructureDefinition($scope,$definition) {
-	$file = $_SESSION['lampath'] . 'config/pdf/' . $scope . '/' . $definition;
-	return unlink($file);
+function deletePDFStructureDefinition($scope, $definition) {
+	if (!preg_match('/[a-zA-Z0-9\-\_]+/',$definition)) return false;
+	if (!preg_match('/[a-zA-Z]+/',$scope)) return false;
+	$file = $_SESSION['lampath'] . 'config/pdf/' . $definition . '.' . $scope . '.xml';
+	if(is_file($file) && is_writable($file)) {
+		return unlink($file);
+	}
+	else {
+		return false;
+	}
+	
 }
 
 /**
+ * This function returns an array with all aviliable logo images.
  * 
- * 
- * @return array 
+ * @return array list of logo files
  */
 function getAvailableLogos() {
 	$return = array();
