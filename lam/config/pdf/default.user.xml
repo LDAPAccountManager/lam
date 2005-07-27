@@ -1,0 +1,38 @@
+<pdf type="user">
+	<text name="user" />
+	<section name="Personal user information">
+		<entry name="inetOrgPerson_title" />
+		<entry name="inetOrgPerson_givenName" />
+		<entry name="inetOrgPerson_sn" />
+		<entry name="inetOrgPerson_street" />
+		<entry name="inetOrgPerson_postalCode" />
+		<entry name="inetOrgPerson_postalAddress" />
+		<entry name="inetOrgPerson_mail" />
+		<entry name="inetOrgPerson_telephoneNumber" />
+		<entry name="inetOrgPerson_mobileTelephoneNumber" />
+		<entry name="inetOrgPerson_facsimileTelephoneNumber" />
+	</section>
+	<section name="Unix settings">
+		<entry name="posixAccount_uid" />
+		<entry name="posixAccount_userPassword" />
+		<entry name="posixAccount_primaryGroup" />
+		<entry name="posixAccount_additionalGroups" />
+		<entry name="posixAccount_homeDirectory" />
+		<entry name="posixAccount_loginShell" />
+		<entry name="shadowAccount_shadowExpire" />
+		<entry name="inetOrgPerson_host" />
+	</section>
+	<section name="Windows settings">
+		<entry name="sambaAccount_uid" />
+		<entry name="sambaAccount_password" />
+		<entry name="sambaAccount_homeDrive" />
+		<entry name="sambaAccount_scriptPath" />
+		<entry name="sambaAccount_smbHome" />
+		<entry name="sambaAccount_userWorkstations" />
+		<entry name="sambaAccount_homePath" />
+		<entry name="sambaAccount_domain" /> 
+	</section>
+	<section name="Quota Settings">
+		<entry name="quota_quotas" />
+	</section>
+</pdf>

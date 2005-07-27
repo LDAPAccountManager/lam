@@ -1,0 +1,8 @@
+<pdf type="group">
+	<section name="_posixGroup_cn">
+		<entry name="main_dn" />
+		<entry name="posixGroup_description" />
+		<entry name="posixGroup_gidNumber" />
+		<entry name="posixGroup_memberUid" />
+	</section>
+</pdf>
