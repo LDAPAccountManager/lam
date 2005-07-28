@@ -225,6 +225,8 @@ function processLine($line,$first_td = true, $fontName) {
 	$value_pattern = '/(<block>.*)<value>(.*)<\/value>(<\/block>)/';
 	// PCRE matching a <td> tag
 	$td_pattern = '/(<block>.*?)<td(.*?)>(.+?)<\/td>(.*<\/block>)/';
+	// PCRE matching <tr> tag
+	$tr_pattern = '/<tr><\/tr>/';
 	// PCRE matching a <p> tag
 	$p_pattern = '/(<block>.*)<p>(.+)<\/p>(.*<\/block>)/';
 	// PCRE matching a <br> tag
@@ -236,14 +238,14 @@ function processLine($line,$first_td = true, $fontName) {
 		$line_width = $line_width - 50;
 		$format = processFormatTags($matches[2],'B');
 		$return[] = array('setFont',array($fontName,$format[0],9));
-		$return[] = array('Cell',array(50,0,$format[1] . ':',0,0,'R',0));
+		$return[] = array('Cell',array(50,5,$format[1] . ':',0,0,'R',0));
 		$return[] = array('setFont',array($fontName,'',9));
 		return array_merge($return,processLine($matches[1] . $matches[3],false,$fontName));
 	}
 	elseif(preg_match($value_pattern,$line,$matches)) {
 		$format = processFormatTags($matches[2],'');
 		$return[] = array('setFont',array($fontName,$format[0],9));
-		$return[] = array('MultiCell',array(0,0,$format[1],0,'L',0));
+		$return[] = array('MultiCell',array(0,5,$format[1],0,'L',0));
 		$return[] = array('setFont',array($fontName,'',9));
 		return array_merge($return,processLine($matches[1] . $matches[3],true,$fontName));
 	}
@@ -260,7 +262,7 @@ function processLine($line,$first_td = true, $fontName) {
 			$return[] = array('Cell',array(50,5,'',0,0,'L',0));
 		}
 		$format = processFormatTags($matches[3],'');
-		$attrs = processAttributes($matches[2],array('width' => $line_width,'height' => 0,'align' => 'L'));
+		$attrs = processAttributes($matches[2],array('width' => $line_width,'height' => 5,'align' => 'L'));
 		$return[] = array('setFont',array($fontName,$format[0],9));
 		$return[] = array('Cell',array($attrs['width'],$attrs['height'],$format[1],0,0,$attrs['align'],0));
 		$return[] = array('setFont',array($fontName,'',9));
@@ -270,6 +272,10 @@ function processLine($line,$first_td = true, $fontName) {
 		return array(array('Ln',array(5)));
 	}
 	elseif(preg_match($block_pattern,$line,$matches)) {
+		$line_width = LAMPDF_LINEWIDTH;
+		return array();
+	}
+	elseif(preg_match($tr_pattern,$line,$matches)) {
 		$line_width = LAMPDF_LINEWIDTH;
 		return array(array('Ln',array(5)));
 	}
