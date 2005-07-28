@@ -168,6 +168,10 @@ class Config {
 		$conffile = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/config/" . $this->file . ".conf";
 		if (is_file($conffile) == True) {
 			$file = fopen($conffile, "r");
+			if (!$file) {
+				StatusMessage("ERROR", "", _("Unable to load configuration!") . " (" . $conffile . ")");
+				return;
+			}
 			while (!feof($file)) {
 				$line = fgets($file, 1024);
 				$line = trim($line);  // remove spaces at the beginning and end
@@ -202,6 +206,10 @@ class Config {
 		$conffile = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/config/" . $this->file . ".conf";
 		if (is_file($conffile) == True) {
 			$file = fopen($conffile, "r");
+			if (!$file) {
+				StatusMessage("ERROR", "", _("Cannot open config file!") . " (" . $conffile . ")");
+				return;
+			}
 			$file_array = array();
 			// read config file
 			while (!feof($file)) {
@@ -719,6 +727,10 @@ class CfgMain {
 		$conffile = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/config/config.cfg";
 		if (is_file($conffile) == True) {
 			$file = fopen($conffile, "r");
+			if (!$file) {
+				StatusMessage("ERROR", "", _("Unable to load configuration!") . " (" . $conffile . ")");
+				return;
+			}
 			while (!feof($file)) {
 				$line = fgets($file, 1024);
 				$line = trim($line);  // remove spaces at the beginning and end
@@ -747,6 +759,10 @@ class CfgMain {
 			// booleans to check if value was already saved
 			$save_password = $save_default = False;
 			$file = fopen($conffile, "r");
+			if (!$file) {
+				StatusMessage("ERROR", "", _("Cannot open config file!") . " (" . $conffile . ")");
+				return;
+			}
 			$file_array = array();
 			// read config file
 			while (!feof($file)) {
