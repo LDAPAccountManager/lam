@@ -4,7 +4,7 @@ Source: ldap-account-manager
 Section: web
 Priority: extra
 Maintainer: Roland Gruber <post@rolandgruber.de>
-Standards-Version: 3.6.1
+Standards-Version: 3.6.2
 Home-Page: <URL:http://lam.sf.net>
 Upstream-Source: <URL:http://www.sourceforge.net/projects/lam>
 Description: Webfrontend to manage Samba and Unix accounts
