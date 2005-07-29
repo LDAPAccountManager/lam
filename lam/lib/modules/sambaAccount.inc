@@ -375,7 +375,7 @@ class sambaAccount extends baseModule {
 				"Text" => _('Path of the user profile. Can be a local absolute path or a UNC-path (\\\\server\\share). $user and $group are replaced with user and group name.'). ' '. _("Can be left empty.")),
 			"scriptPath" => array(
 				"ext" => "FALSE", "Headline" => _("Logon script"),
-				"Text" => _('Filename and -path relative to netlogon-share which should be executed on logon. $user and $group are replaced with user and group name.'). ' '. _("Can be left empty.")),
+				"Text" => _('File name and path relative to the netlogon-share which should be executed on logon. $user and $group are replaced with user and group name.'). ' '. _("Can be left empty.")),
 			"workstations" => array(
 				"ext" => "FALSE", "Headline" => _("Samba workstations"),
 				"Text" => _("Comma separated list of Samba workstations the user is allowed to login. Empty means every workstation."). ' '. _("Can be left empty.")),
