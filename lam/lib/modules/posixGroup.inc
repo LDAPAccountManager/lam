@@ -140,8 +140,18 @@ class posixGroup extends baseModule {
 
 
 	function delete_attributes($post) {
-		if ($_SESSION['cache']->in_cache($this->attributes['gidNumber'][0], 'gidNumber', 'user'))
-		$return[$_SESSION[$this->base]->dn]['errors'][] = array ('ERROR', _('Primary group'), _('There are still users who have this group as their primary group.'));
+		$data = $_SESSION['cache']->get_cache('gidNumber', 'posixAccount', 'user');
+		$DNs = array_keys($data);
+		$found = false;
+		for ($i = 0; $i < sizeof($DNs); $i++) {
+			if ($data[$DNs[$i]][0] == $this->attributes['gidNumber'][0]) {
+				$found = true;
+				break;
+			}
+		}
+		if ($found) {
+			$return[$_SESSION[$this->base]->dn]['errors'][] = $this->messages['primaryGroup'][0];
+		}
 		return $return;
 	}
 
@@ -489,6 +499,7 @@ class posixGroup extends baseModule {
 		$this->messages['cn'][2] = array('ERROR', _('Group name'), _('Group name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
 		$this->messages['cn'][3] = array('ERROR', _('Account %s:') . ' posixGroup_cn', _('Group name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
 		$this->messages['memberUID'][0] = array('ERROR', _('Account %s:') . ' posixGroup_members', _("This value must be a list of user names separated by semicolons."));
+		$this->messages['primaryGroup'][0] = array('ERROR', _('Primary group'), _('There are still users who have this group as their primary group.'));
 		} 
 
 
