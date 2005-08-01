@@ -1,4 +1,5 @@
 ??? 0.5.rc1
+   - Kolab 2 support
    - added manager and post office box for inetOrgPerson
    - Samba 3: added support for logon hours
    - Samba 3: added sambaSID as possible RDN attribute
