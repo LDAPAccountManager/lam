@@ -892,7 +892,6 @@ class accountContainer {
 		if ($this->current_page==0) {
 			if ($this->subpage=='attributes')  {
 				$modules = array_keys($this->module);
-				$table = array();
 				$disabled = false;
 				$incompleteModules = array();
 				foreach ($modules as $module) {
@@ -947,7 +946,7 @@ class accountContainer {
 			}
 		else {
 			echo "<td><fieldset class=\"".$this->type."edit\"><legend><b>";
-				echo $this->module[$this->order[$this->current_page]]->get_alias($type);
+				echo $this->module[$this->order[$this->current_page]]->get_alias();
 				echo "</b></legend>\n";
 			}
 		// display html-code from mdule
@@ -972,7 +971,7 @@ class accountContainer {
 				$return[] = array(
 					0 => array('kind' => 'text', 'text' => '&nbsp;')
 				);
-				$pdfStructures = getPDFStructureDefinitions($type);
+				$pdfStructures = getPDFStructureDefinitions($this->type);
 				$return[] = array(
 					0 => array('kind' => 'fieldset', 'legend' => '<b>PDF</b>', 'td' => array('colspan' => 2), 'value' => array(array(
 						0 => array('kind' => 'select', 'name' => 'pdfStructure', 'options' => $pdfStructures),
@@ -1156,9 +1155,6 @@ class accountContainer {
 			}
 		// Return empty array if no objectClass wasn't found
 		if ($line==-1) return array();
-		//if ($line==-1) trigger_error (sprintf(_("ObjectClass %s required but not defined in ldap."), $objectClass), E_USER_WARNING);
-		// get casesensitive objectClass name
-		$objectClassName = substr($_SESSION['ldap']->objectClasses[$line], 6+strpos($_SESSION['ldap']->objectClasses[$line], "NAME '"), strlen($objectClass) );
 		if (strpos($_SESSION['ldap']->objectClasses[$line],  'MUST (')) {
 			$string_withtail = substr($_SESSION['ldap']->objectClasses[$line], strpos($_SESSION['ldap']->objectClasses[$line],  'MUST (')+6);
 			// Now we have a string with all must-attributes
@@ -1371,23 +1367,26 @@ class accountContainer {
 
 		// sortm modules and make all active because all required attributes should be set
 		$module = array_keys ($this->module);
-		$modulelist = array();
 		// loop until all modules are in order.
 		// We don't want to loop forever
 		$remain = count($module) * count($module);
 		$order = array();
-		while ( (count($module) != count($modulelist)) && ($remain!=0) ) {
+		while ( (count($module) != count($order)) && ($remain!=0) ) {
 			$remain--;
 			foreach ($module as $moduleitem) {
 				$required = $this->module[$moduleitem]->get_dependencies($this->type);
 				$everything_found = true;
 				if (is_array($required['depends'])) {
-					foreach ($required['depends'] as $requireditem)
-						if (!in_array($requireditem, $modulelist)) $everthing_found = false;
+					foreach ($required['depends'] as $requireditem) {
+						if (!in_array($requireditem, $order)) {
+							$everything_found = false;
+							break;
+						}
 					}
-				if ($everything_found && !in_array($moduleitem, $order) ) $order[] = $moduleitem;
 				}
+				if ($everything_found && !in_array($moduleitem, $order) ) $order[] = $moduleitem;
 			}
+		}
 		// Write Module-Order in variable
 		array_unshift($order, 'main');
 		$this->order = $order;
@@ -1406,23 +1405,26 @@ class accountContainer {
 		}
 
 		$module = array_keys ($this->module);
-		$modulelist = array();
 		// loop until all modules are in order.
 		// We don't want to loop forever
 		$remain = count($module) * count($module);
 		$order = array();
-		while ( (count($module) != count($modulelist)) && ($remain!=0) ) {
+		while ( (count($module) != count($order)) && ($remain!=0) ) {
 			$remain--;
 			foreach ($module as $moduleitem) {
 				$required = $this->module[$moduleitem]->get_dependencies($this->type);
 				$everything_found = true;
-				if (is_array($required['require'])) {
-					foreach ($required['require'] as $requireditem)
-						if (!in_array($reuquireditem, $modulelist)) $everthing_found = false;
+				if (is_array($required['depends'])) {
+					foreach ($required['depends'] as $requireditem) {
+						if (!in_array($requireditem, $order)) {
+							$everything_found = false;
+							break;
+						}
 					}
-				if ($everything_found && !in_array($moduleitem, $order) ) $order[] = $moduleitem;
 				}
+				if ($everything_found && !in_array($moduleitem, $order) ) $order[] = $moduleitem;
 			}
+		}
 		// Write Module-Order in variable
 		array_unshift($order, 'main');
 		$this->order = $order;
@@ -1524,14 +1526,14 @@ class accountContainer {
 					}
 					$success = ldap_add($_SESSION['ldap']->server(), $this->dn, $attr);
 					if ($success) {
-						$_SESSION['cache']->update_cache($this->$dn, 'add', $attr);
+						$_SESSION['cache']->update_cache($this->dn, 'add', $attr);
 						$success = ldap_delete($_SESSION['ldap']->server(), $this->dn_orig);
 						if (!$success) {
 							$errors[] = array('ERROR', sprintf(_('Was unable to delete DN: %s.'), $this->dn_orig), ldap_error($_SESSION['ldap']->server()));
 							$stopprocessing = true;
 							}
 						if ($success)
-							$_SESSION['cache']->update_cache($this->$dn, 'delete_dn');
+							$_SESSION['cache']->update_cache($this->dn, 'delete_dn');
 						}
 					if (!$success) {
 						$errors[] = array('ERROR', sprintf(_('Was unable to create DN: %s.'), $this->dn), ldap_error($_SESSION['ldap']->server()));
@@ -1550,7 +1552,7 @@ class accountContainer {
 						$stopprocessing = true;
 						}
 					else
-						$_SESSION['cache']->update_cache($this->$dn, 'add', $attr);
+						$_SESSION['cache']->update_cache($this->dn, 'add', $attr);
 					}
 				unset($attributes[$this->dn]);
 				}
@@ -1566,7 +1568,7 @@ class accountContainer {
 						$stopprocessing = true;
 						}
 					else
-						$_SESSION['cache']->update_cache($this->$dn, 'modify', $attributes[$this->dn]['modify']);
+						$_SESSION['cache']->update_cache($this->dn, 'modify', $attributes[$this->dn]['modify']);
 					}
 				// add attributes
 				if (isset($attributes[$DNs[$i]]['add']) && !$stopprocessing) {
@@ -1576,7 +1578,7 @@ class accountContainer {
 						$stopprocessing = true;
 						}
 					else
-						$_SESSION['cache']->update_cache($this->$dn, 'add', $attributes[$this->dn]['add']);
+						$_SESSION['cache']->update_cache($this->dn, 'add', $attributes[$this->dn]['add']);
 					}
 				// removce attributes
 				if (isset($attributes[$DNs[$i]]['remove']) && !$stopprocessing) {
@@ -1586,7 +1588,7 @@ class accountContainer {
 						$stopprocessing = true;
 						}
 					else
-						$_SESSION['cache']->update_cache($this->$dn, 'remove', $attributes[$this->dn]['remove']);
+						$_SESSION['cache']->update_cache($this->dn, 'remove', $attributes[$this->dn]['remove']);
 					}
 				}
 			}
@@ -1614,14 +1616,12 @@ class accountContainer {
 		/**
 		 * Returns a list of possible PDF entries for this account.
 		 * 
-		 * @param string $account_type account type
-		 *
 		 * @return list of PDF entries (array(<name> => <PDF lines>))
 		 */
-		function get_pdfEntries($acount_type) {
+		function get_pdfEntries() {
 			$return = array();
 			while(($current = current($this->module)) != null) {
-				$return = array_merge($return,$current->get_pdfEntries($account_type));
+				$return = array_merge($return,$current->get_pdfEntries($this->type));
 				next($this->module);
 			}
 			$return = array_merge($return,array('main_dn' => array('<block><key>' . _('DN') . '</key><value>' . $this->dn . '</value></block>')));
