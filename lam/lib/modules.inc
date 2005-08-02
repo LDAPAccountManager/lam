@@ -862,9 +862,16 @@ class accountContainer {
 				$this->subpage='attributes';
 			}
 			else for ($i=1; $i<count($this->order); $i++ )
-				if (isset($post['form_main_'.$this->order[$i]]) && ($this->module[$this->order[$i]]->module_ready())) {
-					$this->current_page = $i;
-					$this->subpage='attributes';
+				if (isset($post['form_main_'.$this->order[$i]])) {
+					if ($this->module[$this->order[$i]]->module_ready()) {
+						$this->current_page = $i;
+						$this->subpage='attributes';
+					}
+					else {
+						StatusMessage('ERROR', _('The module %s is not yet ready.'),
+							_('Please enter the account information on the other pages first.'),
+							array($this->module[$this->order[$i]]->get_alias()));
+					}
 				}
 		}
 		// Write HTML-Code
