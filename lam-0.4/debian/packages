@@ -63,7 +63,7 @@ Major-Changes:
 
 Package: ldap-account-manager
 Architecture: all
-Depends: php4 | php4-cgi | libapache2-mod-php4, php4-ldap, apache | apache-ssl | httpd, perl, wwwconfig-common, debconf
+Depends: php4 | php4-cgi | libapache2-mod-php4, php4-ldap, apache | apache-ssl | httpd, perl, wwwconfig-common, debconf | debconf-2.0
 Recommends: php4-mhash
 Suggests: ldap-server, sudo, php4-mcrypt
 Conflicts: php4-apc

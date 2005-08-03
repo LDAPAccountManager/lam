@@ -1,3 +1,9 @@
+ldap-account-manager (0.4.10-2) unstable; urgency=low
+
+  * fixed debconf dependency
+
+ -- Roland Gruber <post@rolandgruber.de>  Wed,  3 Aug 2005 15:25:29 +0200
+
 ldap-account-manager (0.4.10-1) unstable; urgency=low
 
   * Updated to new upstream release 0.4.10.
