@@ -36,6 +36,8 @@ include_once('../lib/ldap.inc');
 include_once('../lib/status.inc');
 /** account modules */
 include_once('../lib/modules.inc');
+/** LAM cache */
+include_once('../lib/cache.inc');
 
 
 // Start session
@@ -114,6 +116,7 @@ if (($_SESSION['mass_counter'] < sizeof($accounts)) || !isset($_SESSION['mass_po
 }
 // all accounts have been created
 else {
+	$_SESSION['cache']->refresh_cache(true);
 	echo "</head>\n<body>\n";
 	echo "<h1>" . _("LDAP upload has finished") . "</h1>\n";
 	if (sizeof($_SESSION['mass_errors']) > 0) {
