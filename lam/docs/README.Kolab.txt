@@ -31,3 +31,16 @@ Some notes on managing Kolab accounts with LAM:
     Do not change the first/last name of your users in the Kolab GUI!
     The GUI will change the common name which leads to an LDAP object class
     violation. This is caused by a bug in the Kolab GUI.
+
+
+4. Installing LAM on the Kolab server
+
+  You can install LAM in the directory "/kolab/var/kolab/www" which is
+  the root directory for Apache.
+  The PHP installation already includes all required packages.
+
+  !!! Attention !!!
+  LAM will not work if installed on the first stable release (20.06.2005)
+  of Kolab 2. The provided PHP release has some bugs which make it
+  impossible for LAM to work properly.
+  Hopefully this will change with the next release of Kolab 2.
