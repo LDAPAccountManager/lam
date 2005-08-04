@@ -295,7 +295,7 @@ class kolabUser extends baseModule {
 	function display_html_attributes(&$post) {
 		$return = array();
 		// check if account is marked for deletion
-		if (isset($this->attributes['kolabDeleteflag'])) { // TODO delete flag
+		if (isset($this->attributes['kolabDeleteflag'])) {
 			$return[] = array(
 			0 => array('kind' => 'text', 'text' => _('This account is marked for deletion.')));
 			return $return;
