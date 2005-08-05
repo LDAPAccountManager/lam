@@ -1618,22 +1618,46 @@ class accountContainer {
 			}
 		if (count($errors)!=0) return $errors;
 		return 0;
-		}
-
-		/**
-		 * Returns a list of possible PDF entries for this account.
-		 * 
-		 * @return list of PDF entries (array(<name> => <PDF lines>))
-		 */
-		function get_pdfEntries() {
-			$return = array();
-			while(($current = current($this->module)) != null) {
-				$return = array_merge($return,$current->get_pdfEntries($this->type));
-				next($this->module);
-			}
-			$return = array_merge($return,array('main_dn' => array('<block><key>' . _('DN') . '</key><value>' . $this->dn . '</value></block>')));
-			return $return;
-		}
-		
 	}
+
+	/**
+	 * Returns a list of possible PDF entries for this account.
+	 * 
+	 * @return list of PDF entries (array(<name> => <PDF lines>))
+	 */
+	function get_pdfEntries() {
+		$return = array();
+		while(($current = current($this->module)) != null) {
+			$return = array_merge($return,$current->get_pdfEntries($this->type));
+			next($this->module);
+		}
+		$return = array_merge($return,array('main_dn' => array('<block><key>' . _('DN') . '</key><value>' . $this->dn . '</value></block>')));
+		return $return;
+	}
+		
+	/**
+	* Encrypts sensitive data before storing in session.
+	*
+	* @return array list of attributes which are serialized
+	*/
+	function __sleep() {
+		// encrypt data
+		$this->attributes = $_SESSION['ldap']->encrypt(serialize($this->attributes));
+		$this->attributes_orig = $_SESSION['ldap']->encrypt(serialize($this->attributes_orig));
+		$this->module = $_SESSION['ldap']->encrypt(serialize($this->module));
+		// save all attributes
+		return array_keys(get_object_vars(&$this));
+	}
+	
+	/**
+	* Decrypts sensitive data after accountContainer was loaded from session.
+	*/
+	function __wakeup() {
+		// decrypt data
+		$this->attributes = unserialize($_SESSION['ldap']->decrypt($this->attributes));
+		$this->attributes_orig = unserialize($_SESSION['ldap']->decrypt($this->attributes_orig));
+		$this->module = unserialize($_SESSION['ldap']->decrypt($this->module));
+	}
+
+}
 ?>
