@@ -563,8 +563,8 @@ class sambaAccount extends baseModule {
 				else $this->useunixpwd = false;
 			if ($post['useunixpwd']) {
 				$this->useunixpwd = true;
-				$this->attributes['lmPassword'][0] = lmPassword($_SESSION[$this->base]->module['posixAccount']->userPassword());
-				$this->attributes['ntPassword'][0] = ntPassword($_SESSION[$this->base]->module['posixAccount']->userPassword());
+				$this->attributes['lmPassword'][0] = lmPassword($_SESSION[$this->base]->module['posixAccount']->attributes['userPassword'][0]);
+				$this->attributes['ntPassword'][0] = ntPassword($_SESSION[$this->base]->module['posixAccount']->attributes['userPassword'][0]);
 				$this->attributes['pwdLastSet'][0] = time();
 			}
 			else $this->useunixpwd = false;
