@@ -744,9 +744,8 @@ class posixGroup extends baseModule {
 		unset($return[$_SESSION[$this->base]->dn]['notchanged']['userPassword']);
 		// Set unix password
 		if (isset($this->orig['userPassword'][0])) {
-			// use no password
-			if ($this->userPassword_nopassword)
-				$return[$_SESSION[$this->base]->dn]['modify']['userPassword'][0] = pwd_hash('', !$this->userPassword_lock, $this->moduleSettings['posixGroup_pwdHash'][0]);
+			// use no password, do nothing
+			if ($this->userPassword_nopassword) {}
 			// invalid, use '*' as password
 			elseif ($this->userPassword_invalid)
 				$return[$_SESSION[$this->base]->dn]['modify']['userPassword'][0] = '*';
