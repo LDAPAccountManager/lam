@@ -141,7 +141,7 @@ if( $is_object_class ) {
 
 	<form action="add_oclass_form.php" method="post" class="new_value">
 	<input type="hidden" name="dn" value="<?php echo $encoded_dn; ?>" />
-	<select name="new_oclass">
+	<select name="new_oclass[]" multiple size="15">
 
 	<?php foreach( $schema_oclasses as $name => $oclass ) {
 
@@ -153,7 +153,7 @@ if( $is_object_class ) {
 
 	<?php } ?>
 
-	</select> <input type="submit" value="<?php echo _('Add'); ?>" />
+	</select><br /><br /><input type="submit" value="<?php echo _('Add'); ?>" />
 		
 	<br />
 

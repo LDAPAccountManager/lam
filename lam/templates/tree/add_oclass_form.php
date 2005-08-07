@@ -75,11 +75,14 @@ foreach( $entry as $attr => $junk )
 	$current_attrs[] = strtolower($attr);
 
 // grab the required attributes for the new objectClass
-$oclass = get_schema_objectclass( $new_oclass );
-if( $oclass )
-	$must_attrs = $oclass->getMustAttrs();
-else
-	$must_attrs = array();
+$schema_oclasses = get_schema_objectclasses();
+$must_attrs = array();
+foreach($new_oclass as $oclass_name) {
+	$oclass = get_schema_objectclass($oclass_name);
+	if($oclass)
+		$must_attrs = array_merge($must_attrs, $oclass->getMustAttrNames($schema_oclasses));
+}
+$must_attrs = array_unique( $must_attrs );
 
 // We don't want any of the attr meta-data, just the string
 //foreach( $must_attrs as $i => $attr )
@@ -89,7 +92,7 @@ else
 // but that the object does not currently contain
 $needed_attrs = array();
 foreach( $must_attrs as $attr ) {
-    $attr = get_schema_attribute( $attr->getName() );
+    $attr = get_schema_attribute($attr);
     //echo "<pre>"; var_dump( $attr ); echo "</pre>";
     // First, check if one of this attr's aliases is already an attribute of this entry
     foreach( $attr->getAliases() as $alias_attr_name )
@@ -120,7 +123,7 @@ if( count( $needed_attrs ) > 0 )
 	<br />
 	
 	<form action="add_oclass.php" method="post">
-	<input type="hidden" name="new_oclass" value="<?php echo htmlspecialchars( $new_oclass ); ?>" />
+	<input type="hidden" name="new_oclass" value="<?php echo rawurlencode(serialize($new_oclass)); ?>" />
 	<input type="hidden" name="dn" value="<?php echo $encoded_dn; ?>" />
 	
 	<table class="tree_edit_dn" cellspacing="0">

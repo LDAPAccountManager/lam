@@ -62,7 +62,7 @@ setlanguage();
 
 $dn = rawurldecode( $_POST['dn'] );
 $encoded_dn = rawurlencode( $dn );
-$new_oclass = $_POST['new_oclass'];
+$new_oclass = unserialize( rawurldecode( $_POST['new_oclass'] ) );
 $new_attrs = $_POST['new_attrs'];
 
 $new_entry = array();
