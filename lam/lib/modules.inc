@@ -1533,14 +1533,14 @@ class accountContainer {
 					}
 					$success = ldap_add($_SESSION['ldap']->server(), $this->dn, $attr);
 					if ($success) {
-						$_SESSION['cache']->update_cache($this->dn, 'add', $attr);
+						//$_SESSION['cache']->update_cache($this->dn, 'add', $attr); TODO: reactivate
 						$success = ldap_delete($_SESSION['ldap']->server(), $this->dn_orig);
 						if (!$success) {
 							$errors[] = array('ERROR', sprintf(_('Was unable to delete DN: %s.'), $this->dn_orig), ldap_error($_SESSION['ldap']->server()));
 							$stopprocessing = true;
 							}
-						if ($success)
-							$_SESSION['cache']->update_cache($this->dn, 'delete_dn');
+						//if ($success) TODO: reactivate
+							//$_SESSION['cache']->update_cache($this->dn, 'delete_dn'); TODO: reactivate
 						}
 					if (!$success) {
 						$errors[] = array('ERROR', sprintf(_('Was unable to create DN: %s.'), $this->dn), ldap_error($_SESSION['ldap']->server()));
@@ -1558,8 +1558,8 @@ class accountContainer {
 						$errors[] = array('ERROR', sprintf(_('Was unable to create DN: %s.'), $this->dn), ldap_error($_SESSION['ldap']->server()));
 						$stopprocessing = true;
 						}
-					else
-						$_SESSION['cache']->update_cache($this->dn, 'add', $attr);
+					//else TODO: reactivate
+						//$_SESSION['cache']->update_cache($this->dn, 'add', $attr); TODO: reactivate
 					}
 				unset($attributes[$this->dn]);
 				}
@@ -1574,8 +1574,8 @@ class accountContainer {
 						$errors[] = array('ERROR', sprintf(_('Was unable to modify attribtues from DN: %s.'), $DNs[$i]), ldap_error($_SESSION['ldap']->server()));
 						$stopprocessing = true;
 						}
-					else
-						$_SESSION['cache']->update_cache($this->dn, 'modify', $attributes[$this->dn]['modify']);
+					//else TODO: reactivate
+						//$_SESSION['cache']->update_cache($this->dn, 'modify', $attributes[$this->dn]['modify']); TODO: reactivate
 					}
 				// add attributes
 				if (isset($attributes[$DNs[$i]]['add']) && !$stopprocessing) {
@@ -1584,8 +1584,8 @@ class accountContainer {
 						$errors[] = array('ERROR', sprintf(_('Was unable to add attribtues to DN: %s.'), $DNs[$i]), ldap_error($_SESSION['ldap']->server()));
 						$stopprocessing = true;
 						}
-					else
-						$_SESSION['cache']->update_cache($this->dn, 'add', $attributes[$this->dn]['add']);
+					//else TODO: reactivate
+						//$_SESSION['cache']->update_cache($this->dn, 'add', $attributes[$this->dn]['add']); TODO: reactivate
 					}
 				// removce attributes
 				if (isset($attributes[$DNs[$i]]['remove']) && !$stopprocessing) {
@@ -1594,8 +1594,8 @@ class accountContainer {
 						$errors[] = array('ERROR', sprintf(_('Was unable to remove attribtues from DN: %s.'), $DNs[$i]), ldap_error($_SESSION['ldap']->server()));
 						$stopprocessing = true;
 						}
-					else
-						$_SESSION['cache']->update_cache($this->dn, 'remove', $attributes[$this->dn]['remove']);
+					//else TODO: reactivate
+						//$_SESSION['cache']->update_cache($this->dn, 'remove', $attributes[$this->dn]['remove']); TODO: reactivate
 					}
 				}
 			}
@@ -1616,6 +1616,7 @@ class accountContainer {
 						}
 				}
 			}
+		$_SESSION['cache']->refresh_cache(true); // TODO: remove when update_cache is fixed
 		if (count($errors)!=0) return $errors;
 		return 0;
 	}
