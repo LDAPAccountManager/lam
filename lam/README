@@ -2,56 +2,44 @@
 LAM - Readme
 ============
 
-  A set of PHP-scripts to administrate Unix and Samba accounts in an LDAP server.
-  LAM runs on any webserver with PHP4 support and connects to your LDAP server
-  unencrypted or via SSL.
-  The application manages accounts for users, groups and Samba hosts in
-  multiple organizational units. LAM supports the Samba 2.x schema and the
-  Samba 3 schema.
+  LDAP Account Manager (LAM) manages user, group and host accounts in an LDAP
+  directory. LAM runs on any webserver with PHP4/5 support and connects to your
+  LDAP server unencrypted or via SSL/TLS.
+  Currently LAM supports these account types: Samba 2 and 3, Unix, Kolab 2,
+  address book entries, NIS mail aliases and MAC addresses. There is a tree
+  viewer included to allow access to the raw LDAP attributes. You can use
+  templates for account creation and use multiple configuration profiles.
+  LAM is translated to Catalan, English, French, German, Hungarian, Italian,
+  Spanish and Japanese.
 
   http://sourceforge.net/projects/lam/
 
-    Copyright (C) 2003 - 2004 Michael Duergner <michael@duergner.com>
+    Copyright (C) 2003 - 2005 Michael Duergner <michael@duergner.com>
                               Roland Gruber <post@rolandgruber.de>
                               Tilo Lutz <tilolutz@gmx.de>
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
   Requirements:
-    PHP4
+    PHP4/5
     Openldap (2.0 or greater)
     A web-browser that supports CSS (Netscape 4.x is not recommended)
 
   Summary:
     With LAM you can easily manage user, group and machine accounts stored in
-    a LDAP server over a web interface. At the moment it supports:
+    an LDAP directory over a web interface. At the moment it supports:
 
-      - displaying the user/group/host/domain entries
-      - deleting entries
-      - adding new entries
-      - editing entries
+      - managing user/group/host/domain entries
       - filtering and sorting
       - account profiles
-      - access management
       - multiple configuration profiles
+      - tree viwer
+      - schema browser
       - OU Editor
       - account creation via file upload
-      - Samba 2 and 3 schema support
+      - PDF export for all accounts
+      - manage user/group Quota and create home directories
 
   Important:
-    The standard password to edit the configuration options is "lam".
+    The default password to edit the configuration options is "lam".
 
   Download:
     You can get the newest version at http://sourceforge.net/projects/lam/
@@ -70,12 +58,16 @@ LAM - Readme
   Security:
     It is strongly recommended to use a SSL connection to your web server.
 
-    LAM needs to store your LDAP username + password in the session. The session
+    LAM needs to store your LDAP user name + password in the session. The session
     files are saved in sess/ and are accessible only by the web server. To increase
     security username and password are encrypted with MCrypt/AES or Blowfish.
     The key and IV are generated at random when you log in. They are stored in two
     cookies.
  
+  License:
+    LAM is published under the GNU General Public License.
+    The comlete list of licenses can be found in the copyright file.
+
 
     Have fun!
         The LAM devel team
