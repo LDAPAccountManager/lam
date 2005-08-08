@@ -1,4 +1,4 @@
-??? 0.5.rc1
+08.08.2005 0.5.rc1
    - Kolab 2 support
    - added manager and post office box for inetOrgPerson
    - Samba 3: added support for logon hours
@@ -10,6 +10,7 @@
     -> several fixes for PHP5
     -> fixes for PDF editor and output
     -> password changing in tree view did not work
+    -> fixed changing of group memberships for users
 
 
 30.06.2005 0.5.alpha2

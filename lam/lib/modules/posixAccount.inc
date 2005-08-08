@@ -575,12 +575,12 @@ class posixAccount extends baseModule {
 					$DNs = array_keys($dn_cns);
 					foreach ($DNs as $DN) {
 						if (is_array($add))
-						if (in_array($dn_cns[$DN][0], $add)) $return[$DN]['add']['memberUid'] = $this->attributes['uid'][0];
+						if (in_array($dn_cns[$DN][0], $add)) $return[$DN]['add']['memberUid'][] = $this->attributes['uid'][0];
 						if (is_array($remove))
-						if (in_array($dn_cns[$DN][0], $remove)) $return[$DN]['remove']['memberUid'] = $this->attributes['uid'][0];
+						if (in_array($dn_cns[$DN][0], $remove)) $return[$DN]['remove']['memberUid'][] = $this->attributes['uid'][0];
 					}
 					// primary group mut also be removed if it has changed after setting additional groups
-					if (in_array($_SESSION['cache']->getgrnam($this->attributes['gidNumber'][0]), $this->groups_orig)) $return[$DN]['remove']['memberUid'] = $this->attributes['uid'];
+					if (in_array($_SESSION['cache']->getgrnam($this->attributes['gidNumber'][0]), $this->groups_orig)) $return[$DN]['remove']['memberUid'][] = $this->attributes['uid'];
 				}
 				else {
 					// Add user to every group
@@ -588,7 +588,7 @@ class posixAccount extends baseModule {
 					// get_cache will return an array ( dn1 => array(cn1), dn2 => array(cn2), ... )
 					$DNs = array_keys($dn_cns);
 					foreach ($DNs as $DN) {
-						if (in_array($dn_cns[$DN][0], $this->groups)) $return[$DN]['add']['memberUid'] = $this->attributes['uid'][0];
+						if (in_array($dn_cns[$DN][0], $this->groups)) $return[$DN]['add']['memberUid'][] = $this->attributes['uid'][0];
 					}
 				}
 			}
@@ -599,7 +599,7 @@ class posixAccount extends baseModule {
 					// get_cache will return an array ( dn1 => array(cn1), dn2 => array(cn2), ... )
 					$DNs = array_keys($dn_cns);
 					foreach ($DNs as $DN) {
-						if (in_array($dn_cns[$DN][0], $this->orig['groups'])) $return[$DN]['remove']['memberUid'] = $this->attributes['uid'][0];
+						if (in_array($dn_cns[$DN][0], $this->orig['groups'])) $return[$DN]['remove']['memberUid'][] = $this->attributes['uid'][0];
 					}
 				}
 			}
