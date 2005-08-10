@@ -28,24 +28,30 @@
   Schema: none
 
 
-  5. Mail routing (module inetLocalMailRecipient)
+  5. Kolab 2 users (module kolabUser)
+ 
+  Schema: kolab2.schema, rfc2739.schema
+  Source: part of Kolab 2 installation
+
+  
+  6. Mail routing (module inetLocalMailRecipient)
 
   Schema: misc.schema
   Source: part of OpenLDAP installation
 
 
-  6. Mail aliases (module nisMailAlias)
+  7. Mail aliases (module nisMailAlias)
 
   Schema: misc.schema
   Source: part of OpenLDAP installation
 
 
-  7. MAC addresses (module ieee802device)
+  8. MAC addresses (module ieee802device)
 
   Schema: nis.schema
   Source: part of OpenLDAP installation
 
-  8. Simple Accounts (module account)
+  9. Simple Accounts (module account)
 
   Schema: cosine.schema
   Source: part of OpenLDAP installation
