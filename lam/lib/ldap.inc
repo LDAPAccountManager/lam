@@ -30,8 +30,6 @@ $Id$
 
 /** Access to configuration data */
 include_once("config.inc");
-/** Encryption functions */
-include_once("blowfish.inc");
 /** LDAP schema */
 include_once("schema.inc");
 
@@ -350,15 +348,9 @@ class Ldap{
 			// encrypt string
 			return mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $data, MCRYPT_MODE_ECB, $iv);
 		}
-		// use Blowfish if MCrypt is not available
+		// otherwise do not encrypt
 		else {
-			// read key and iv from cookie
-			$iv = base64_decode($_COOKIE["IV"]);
-			$key = base64_decode($_COOKIE["Key"]);
-			$b_key = $iv . $key;
-			// encrypt string
-			$b_fish = new Cipher_blowfish();
-			return $b_fish->encrypt($data, $b_key);
+			return $data;
 		}
 	}
 
@@ -379,15 +371,9 @@ class Ldap{
 			$ret = str_replace(chr(00), "", $ret);
 			return $ret;
 		}
-		// use Blowfish if MCrypt is not available
+		// otherwise do not decrypt
 		else {
-			// read key and iv from cookie
-			$iv = base64_decode($_COOKIE["IV"]);
-			$key = base64_decode($_COOKIE["Key"]);
-			$b_key = $iv . $key;
-			// decrypt string
-			$b_fish = new Cipher_blowfish();
-			return $b_fish->decrypt($data, $b_key);
+			return $data;
 		}
 	}
 

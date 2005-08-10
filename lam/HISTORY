@@ -1,3 +1,8 @@
+??? 0.5.rc2
+   - fixed bugs:
+    -> removed Blowfish encryption (bad performance)
+
+
 08.08.2005 0.5.rc1
    - Kolab 2 support
    - added manager and post office box for inetOrgPerson

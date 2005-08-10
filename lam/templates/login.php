@@ -56,19 +56,10 @@ function display_LoginPage($config_object) {
 			srand((double)microtime()*1234567);
 			$iv = mcrypt_create_iv(32, MCRYPT_RAND);
 		}
+		// save both in cookie
+		setcookie("Key", base64_encode($key), 0, "/");
+		setcookie("IV", base64_encode($iv), 0, "/");
 	}
-	// use Blowfish if MCrypt is not available
-	else {
-		// generate iv and key for encryption
-		$key = "";
-		$iv = "";
-		while (strlen($key) < 30) $key .= mt_rand();
-		while (strlen($iv) < 30) $iv .= mt_rand();
-	}
-
-	// save both in cookie
-	setcookie("Key", base64_encode($key), 0, "/");
-	setcookie("IV", base64_encode($iv), 0, "/");
 
 	$_SESSION['language'] = $config_object->get_defaultLanguage();
 

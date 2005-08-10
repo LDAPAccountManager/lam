@@ -13,8 +13,7 @@ Installation Instructions for LAM
 
    MHash is only needed if you use PHP < 4.3 and want to use SHA or SSHA
    for password hashes.
-   MCrypt will be used if available, otherwise Blowfish will be used
-   to store your LDAP password in the session file.
+   MCrypt will be used to store your LDAP password encrypted in the session file.
 
    Getting mcrypt and mhash for Suse/RedHat:
 

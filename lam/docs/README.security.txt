@@ -22,15 +22,13 @@
    exploit this.
 
 
-4. LDAP password protection
+4. Protection of your LDAP password and directory contents
+
+   You have to install the MCrypt extension for PHP to enable encryption.
 
    Your LDAP password is stored encrypted in the session file. The key and IV to decrypt
-   it are stored in two cookies. We use MCrypt/AES or Blowfish to encrypt the password.
-
-
-5. Protection of new user passwords
-
-   These passwords are, if stored in the session file, encrypted with the same key and IV
-   as your LDAP password.
+   it are stored in two cookies. We use MCrypt/AES to encrypt the password.
+   All data that was read from LDAP and needs to be stored in the session file is also
+   encrypted.
 
 
