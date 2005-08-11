@@ -625,6 +625,7 @@ class posixAccount extends baseModule {
 	/* Write variables into object and do some regexp checks
 	*/
 	function process_attributes(&$post) {
+		$triggered_messages = array();
 		$groups = $_SESSION['cache']->findgroups(); // list of all groupnames
 		if (count($groups)==0) {
 			return array("ERROR", _('No Unix groups found in LDAP! Please create one first.'), '');
