@@ -834,7 +834,6 @@ class accountContainer {
 						}
 					if ($post['outputpdf']) {
 						// Create / display PDf-file
-						// TODO: add selection for PDF structure in final page
 						createModulePDF(array($_SESSION[$this->base]), $post['pdfStructure']);
 						exit;
 						}
