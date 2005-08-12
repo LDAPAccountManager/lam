@@ -34,8 +34,10 @@ $Id$
 include_once("createntlm.inc");
 
 
-/* Return a list of all shells listed in ../config/shells
-* Normally ../config/shells is a symbolic link to /etc/shells
+/**
+* Returns a list of shells listed in config/shells.
+*
+* @return array list of shell names
 */
 function getshells() {
 	// Load shells from file
@@ -58,12 +60,12 @@ function getshells() {
 }
 
 
-/* This function will replace umlates with ascci-chars
-* fixme ***
-* In order to map all non-ascii characters this function should be changed
-*/
-/* This function will return all values from $array without values of $values
-* $values, $array and $return are arrays
+/**
+* This function will return all values from $array without values of $values.
+*
+* @param array $values list of values which should be removed
+* @param array $array list of original values
+* @return array list of remaining values
 */
 function array_delete($values, $array) {
 	// Loop for every entry and check if it should be removed
@@ -73,12 +75,16 @@ function array_delete($values, $array) {
 			if (!@in_array($array_value, $values))
 				$return[] = $array_value;
 		return $return;
-		}
-	else return array();
 	}
+	else return array();
+}
 
 
-// This function will return a password with max. 8 characters
+/**
+* This function will return a password with max. 8 characters.
+*
+* @return string password
+*/
 function genpasswd() {
 	// Allowed Characters to generate passwords
 	// I'Ve removed characters like l and 1 because they are too similar
@@ -107,11 +113,15 @@ function genpasswd() {
 	// COMBINE THE CHARACTERS AND DISPLAY TH // E NEW PASSWORD
 	$PW = $L1 . $U2 . $I1 . $L2 . $I2 . $U1 . $U3 . $L3;
 	return $PW;
-	}
+}
 
 
-/* THIS FUNCTION GENERATES A RANDOM NUMBER THAT WILL BE USED TO
-* RANDOMLY SELECT CHARACTERS FROM THE STRINGS ABOVE
+/**
+* THIS FUNCTION GENERATES A RANDOM NUMBER THAT WILL BE USED TO
+* RANDOMLY SELECT CHARACTERS.
+*
+* @param string $Format "letter" or "number"
+* @return integer random number
 */
 function RndInt($Format){
 	switch ($Format){
@@ -119,29 +129,34 @@ function RndInt($Format){
 			$Rnd = rand(0,23);
 			if ($Rnd > 23){
 				$Rnd = $Rnd - 1;
-				}
+			}
 			break;
 		case 'number':
 			$Rnd = rand(2,9);
 			if ($Rnd > 8){
 				$Rnd = $Rnd - 1;
-				}
+			}
 			break;
-		}
+	}
 	return $Rnd;
-	} // END RndInt() FUNCTION
+}
 
-// This function will return the days from 1.1.1970 until now
+/**
+* This function will return the days from 1.1.1970 until now.
+*
+* @return number of days
+*/
 function getdays() {
 	$days = time() / 86400;
 	settype($days, 'integer');
 	return $days;
 	}
 
-/* This function creates all attributes stored in attrFlags. It's the same
-* syntax used in smbpasswd
-* $values is an array of samba flags as defined in account object
-* Return value is a string
+/**
+* Takes a list of Samba flags and creates the corresponding flag string.
+*
+* @param array $input is an array of Samba flags (e.g. X or D)
+* @return string Samba flag string
 */
 function smbflag($input) {
 	// Start character
@@ -158,7 +173,7 @@ function smbflag($input) {
 	// End character
 	$flag = $flag. "]";
 	return $flag;
-	}
+}
 
 /**
 * Generates the LM hash of a password.
@@ -417,10 +432,13 @@ class samba3domain {
 	var $RIDbase = 1000;
 }
 
-/** This functions contains a collection of regular expressions
-* It's much easier to handle them here than in every module
-* because many of them are used several times.
-**/
+/**
+* Checks if a given value matches the selected regular expression.
+*
+* @param string $argument value to check
+* @param string $regexp pattern name
+* @return boolean true if matches, otherwise false
+*/
 function get_preg($argument, $regexp) {
 	/* Bug in php preg_match doesn't work correct with utf8
 	*/
@@ -430,7 +448,7 @@ function get_preg($argument, $regexp) {
 	// First we check "positive" cases
 	$pregexpr = '';
 	switch ($regexp) {
-		case 'password':	// fixme where do i get an exact regexp?
+		case 'password':
 					$pregexpr = '/^([[:alnum:]\\ \\|\\#\\*\\,\\.\\;\\:\\_\\+\\!\\%\\&\\/\\?\\{\\(\\)\\}-])*$/u';
 					break;
 		case 'cn':	// first character must be a letter. All letters, numbers, space and @._- are allowed characters
