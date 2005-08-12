@@ -709,13 +709,17 @@ class sambaSamAccount extends baseModule {
 	* It will output a complete html-table
 	*/
 	function display_html_attributes(&$post) {
-		// Get Domain SID from name
+		// Get Domain SID from user SID
+		if ($this->attributes['sambaSID'][0]!='')
+			$domainSID = substr($this->attributes['sambaSID'][0], 0, strrpos($this->attributes['sambaSID'][0], "-"));
 		$sambaDomains = search_domains($_SESSION['config']->get_Suffix('domain'));
 		for ($i=0; $i<count($sambaDomains); $i++ ) {
 			$sambaDomainNames[] = $sambaDomains[$i]->name;
-			if ($this->attributes['sambaDomainName'][0] == $sambaDomains[$i]->name)
-				$SID = $sambaDomains[$i]->SID;
+			if ($domainSID == $sambaDomains[$i]->SID) {
+				$SID = $domainSID;
+				$sel_domain = $sambaDomains[$i]->name;
 			}
+		}
 		$canchangedate = getdate($this->attributes['sambaPwdCanChange'][0]);
 		$mustchangedate = getdate($this->attributes['sambaPwdMustChange'][0]);
 
@@ -815,12 +819,8 @@ class sambaSamAccount extends baseModule {
 				1 => array ( 'kind' => 'select', 'name' => 'sambaSID', 'options' => $options, 'options_selected' => $selected),
 				2 => array ( 'kind' => 'help', 'value' => 'sambaSID' ));
 			}
-		$selectedDomain = array();
-		if (in_array($this->attributes['sambaDomainName'][0], $sambaDomainNames)) {
-			$selectedDomain = array($this->attributes['sambaDomainName'][0]);
-		}
 		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Domain') ),
-			1 => array ( 'kind' => 'select', 'name' => 'sambaDomainName', 'options' => $sambaDomainNames, 'options_selected' => $selectedDomain),
+			1 => array ( 'kind' => 'select', 'name' => 'sambaDomainName', 'options' => $sambaDomainNames, 'options_selected' => array($sel_domain)),
 			2 => array ( 'kind' => 'help', 'value' => 'sambaDomainName' ));
 		// logon hours
 		if ($_SESSION[$this->base]->type=='user') {
