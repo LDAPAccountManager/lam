@@ -145,10 +145,13 @@ function getRDNAttributes($scope) {
 		}
 	}
 	// merge arrays
-	$return = $attrs_high;
-	for ($i = 0; $i < sizeof($attrs_normal); $i++) $return[] = $attrs_normal[$i];
-	for ($i = 0; $i < sizeof($attrs_low); $i++) $return[] = $attrs_low[$i];
-	$return = array_values(array_unique($return));
+	$return = array_values(array_unique($attrs_high));
+	for ($i = 0; $i < sizeof($attrs_normal); $i++) {
+		if (!in_array($attrs_normal[$i], $return)) $return[] = $attrs_normal[$i];
+	}
+	for ($i = 0; $i < sizeof($attrs_low); $i++) {
+		if (!in_array($attrs_low[$i], $return)) $return[] = $attrs_low[$i];
+	}
 	return $return;
 }
 
