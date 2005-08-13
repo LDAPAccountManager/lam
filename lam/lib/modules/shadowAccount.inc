@@ -47,8 +47,9 @@ class shadowAccount extends baseModule {
 	parent::baseModule($scope);
 	}
 
-	/** this functin fills the error message array with messages
-	**/
+	/**
+	* This function builds up the message array.
+	*/
 	function load_Messages() {
 		// error messages for input checks
 		$this->messages['shadowMin'][0] = array('ERROR', _('Password minage'), _('Password minimum age must be are natural number.'));
@@ -211,25 +212,6 @@ class shadowAccount extends baseModule {
 		return $return;
 	}
 
-	// Constructor
-	function init($base) {
-		// call parent init
-		parent::init($base);
-		}
-
-
-	function module_ready() {
-		return true;
-		}
-
-	/* This functions return true
-	* if all needed settings are done
-	*/
-	function module_complete() {
-		if (!$this->module_ready()) return false;
-		return true;
-		}
-	
 	/* This function returns a list of all html-pages in module
 	* This is usefull for mass upload and pdf-files
 	* because lam can walk trough all pages itself and do some

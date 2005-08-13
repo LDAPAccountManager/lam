@@ -522,6 +522,25 @@ class baseModule {
 	}
 
 	/**
+	* This function is used to check if this module page can be displayed.
+	* It returns false if a module depends on data from other modules which was not yet entered.
+	*
+	* @return boolean true, if page can be displayed
+	*/
+	function module_ready() {
+		return true;
+	}
+
+	/**
+	* This functions is used to check if all settings for this module have been made.
+	*
+	* @return boolean true, if settings are complete
+	*/
+	function module_complete() {
+		return true;
+	}
+
+	/**
 	* Checks if the attribute values follow the LDAP syntax.
 	* Not every LDAP attribute allows UTF-8 strings. Therefore we do a syntax check here
 	* and change UTF-8 strings to ASCII strings if needed.

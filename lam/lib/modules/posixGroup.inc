@@ -504,14 +504,8 @@ class posixGroup extends baseModule {
 	* if all needed settings are done
 	*/
 	function module_complete() {
-		if (!$this->module_ready()) return false;
 		if ($this->attributes['cn'][0] == '') return false;
 		if ($this->attributes['gidNumber'][0] == '') return false;
-		return true;
-	}
-
-
-	function module_ready() {
 		return true;
 	}
 

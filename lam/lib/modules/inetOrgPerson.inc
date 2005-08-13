@@ -344,28 +344,10 @@ class inetOrgPerson extends baseModule {
 		return $return;
 	}
 
-	/**
-	* Initializes the module in its accountContainer
-	*
-	* @param string $base the name of account_container in session
-	*/
-	function init($base) {
-		// call parent init
-		parent::init($base);
-		}
-
-	/* This function returns true if all required attributes from other
-	* modules are set. This is required to prevent undefined states
-	*/
-	function module_ready() {
-		return true;
-		}
-
 	/* This functions return true
 	* if all needed settings are done
 	*/
 	function module_complete() {
-		if (!$this->module_ready()) return false;
 		if ($this->attributes['sn'][0] == '') return false;
 		return true;
 		}	

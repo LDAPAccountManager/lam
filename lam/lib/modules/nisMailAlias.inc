@@ -248,13 +248,6 @@ class nisMailAlias extends baseModule {
 	}
 	
 	/**
-	* Returns true if all settings on module page are correct.
-	*/
-	function module_ready() {
-		return $this->inputCorrect;
-	}
-
-	/**
 	* In this function the LDAP account is built up.
 	*
 	* @param array $rawAccounts list of hash arrays (name => value) from user input

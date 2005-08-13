@@ -431,15 +431,10 @@ class posixAccount extends baseModule {
 	var $groups_orig;
 	var $createhomedir;
 
-	function module_ready() {
-		return true;
-	}
-
 	/* This functions return true
 	* if all needed settings are done
 	*/
 	function module_complete() {
-		if (!$this->module_ready()) return false;
 		if ($this->attributes['uid'][0] == '') return false;
 		if ($this->attributes['uidNumber'][0] == '') return false;
 		if ($this->attributes['gidNumber'][0] == '') return false;

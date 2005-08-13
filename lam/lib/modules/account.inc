@@ -105,20 +105,13 @@ class account extends baseModule {
 	function load_Messages() {
 	}
 
-	/* This function returns true if all required attributes from other
-	* modules are set. This is required to prevent undefined states
-	*/
-	function module_ready() {
-		return true;
-		}
-
 	/* This functions return true
 	* if all needed settings are done
 	*/
 	function module_complete() {
 		if (!$this->module_ready()) return false;
 		return true;
-		}	
+	}	
 	
 	/* This function returns a list of all html-pages in module
 	* This is usefull for mass upload and pdf-files
