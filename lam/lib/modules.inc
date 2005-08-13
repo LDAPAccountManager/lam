@@ -635,8 +635,10 @@ function parseHtml($module, $input, $values, $restricted, &$tabindex, &$tabindex
 						// merge both option arrays and sort them.
 						$options = array_merge ($input[$i][$j]['options'], $input[$i][$j]['options_selected'] );
 						$options = array_unique($options);
-						if (get_preg($options[0], 'digit')) sort($options, SORT_NUMERIC);
-						else sort($options, SORT_STRING);
+						if (!$input[$i][$j]['noSorting']) {
+							if (get_preg($options[0], 'digit')) sort($options, SORT_NUMERIC);
+							else sort($options, SORT_STRING);
+						}
 						foreach ($options as $option) {
 							if ($option!='') {
 								if (in_array($option, $input[$i][$j]['options_selected'])) echo "<option selected>" . $option . "</option>\n";
@@ -998,7 +1000,7 @@ class accountContainer {
 				}
 				$return[] = array(
 					0 => array('kind' => 'text', 'text' => _('Suffix')),
-					1 => array('kind' => 'select', 'name' => 'suffix', 'options' => $suffixes, 'options_selected' => array($options_selected)),
+					1 => array('kind' => 'select', 'name' => 'suffix', 'options' => $suffixes, 'options_selected' => array($options_selected), 'noSorting' => true),
 					2 => array ('kind' => 'help', 'value' => 'suffix'));
 				// RDN selection
 				$rdnlist = getRDNAttributes($this->type);
@@ -1011,7 +1013,7 @@ class accountContainer {
 				}
 				$return[] = array(
 					0 => array('kind' => 'text', 'text' => _('RDN identifier')),
-					1 => array('kind' => 'select', 'name' => 'rdn', 'options' => $rdnlist, 'options_selected' => $rdnSelected),
+					1 => array('kind' => 'select', 'name' => 'rdn', 'options' => $rdnlist, 'options_selected' => $rdnSelected, 'noSorting' => true),
 					2 => array ('kind' => 'help', 'value' => '301'));
 		
 				// Get list of profiles
