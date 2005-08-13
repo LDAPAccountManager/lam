@@ -793,7 +793,9 @@ class accountContainer {
 						$modules = array_keys($this->module);
 						foreach ($modules as $module) $this->module[$module]->load_profile($profile);
 						if (isset($profile['ldap_rdn'][0])) {
-							$this->rdn = $profile['ldap_rdn'][0];
+							if (in_array($profile['ldap_rdn'][0], getRDNAttributes($this->type))) {
+								$this->rdn = $profile['ldap_rdn'][0];
+							}
 						}
 						if (isset($profile['ldap_suffix'][0])) {
 							$this->dn = $profile['ldap_suffix'][0];
@@ -1439,7 +1441,9 @@ class accountContainer {
 		$modules = array_keys($this->module);
 		foreach ($modules as $module) $this->module[$module]->load_profile($profile);
 		if (isset($profile['ldap_rdn'][0])) {
-			$this->rdn = $profile['ldap_rdn'][0];
+			if (in_array($profile['ldap_rdn'][0], getRDNAttributes($this->type))) {
+				$this->rdn = $profile['ldap_rdn'][0];
+			}
 		}
 		if (isset($profile['ldap_suffix'][0])) {
 			$this->dn = $profile['ldap_suffix'][0];
