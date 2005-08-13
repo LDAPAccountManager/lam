@@ -43,6 +43,7 @@ class account extends baseModule {
 	* @return array array with meta data
 	*/
 	function get_metaData() {
+		$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
 		$return = array();
 		// manages host accounts
 		$return["account_types"] = array("host", "user");
@@ -50,12 +51,19 @@ class account extends baseModule {
 		$return["alias"] = _('Account');
 		// this is a base module
 		$return["is_base"] = true;
+		// LDAP filter
+		$return["ldap_filter"] = array('or' => "(objectClass=account)");
+		// RDN attribute
+		$return["RDN"] = array("uid" => "low");
 		// module dependencies
 		$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
 		// available PDF fields
 		$return['PDF_fields'] = array(
 			'description'
 		);
+		if (!in_array('posixAccount', $modules)) {
+			$return['PDF_fields'][] = 'uid';
+		}
 		// help Entries
 		$return['help'] = array (
 			'host' => array(
@@ -74,7 +82,6 @@ class account extends baseModule {
 	                'help' => 'host'
 				);
 			}
-			$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
 			if (!in_array('posixAccount', $modules)) {
 				$return['upload_columns'][] = array(
 	                'name' => 'account_uid',
@@ -94,34 +101,50 @@ class account extends baseModule {
 		return $return;
 	}
 
-	// Constructor
-	function init($base) {
-		// call parent init
-		parent::init($base);
-		}
-
-	/** this functin fills the error message array with messages
-	**/
+	/**
+	* This function fills the message array.
+	*/
 	function load_Messages() {
+		$this->messages['uid'][0] = array('ERROR', _('User name'), _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
+		$this->messages['uid'][1] = array('ERROR', _('Account %s:') . ' posixAccount_userName', _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
+		$this->messages['uid'][2] = array('WARN', _('User name'), _('You are using a capital letters. This can cause problems because windows isn\'t case-sensitive.'));
+		$this->messages['uid'][3] = array('ERROR', _('User name'), _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
 	}
 
-	/* This functions return true
-	* if all needed settings are done
+	/**
+	* This functions returns true if all needed settings are done.
+	*
+	* @return boolean true if LDAP operation can be done
 	*/
 	function module_complete() {
-		if (!$this->module_ready()) return false;
+		if ($this->attributes['uid'][0] == '') return false;
 		return true;
 	}	
 	
-	/* This function returns a list of all html-pages in module
-	* This is usefull for mass upload and pdf-files
-	* because lam can walk trough all pages itself and do some
-	* error checkings
+	/**
+	* This function returns a list of all possible pages of this module.
+	*
+	* @return array list of page names
 	*/
 	function pages() {
 		return array('attributes');
-		}
+	}
 
+	/**
+	* This function loads all attributes into the object.
+	*
+	* @param array $attr an array as it is retured from ldap_get_attributes()
+	*/
+	function load_attributes($attr) {
+		parent::load_attributes($attr);
+		// uid is not loaded automatically because it is called userid in schema
+		if (isset($attr['uid'])) {
+			$this->orig['uid'] = $attr['uid'];
+			$this->attributes['uid'] = $attr['uid'];
+		}
+		return 0;
+	}
+	
 	/* This function returns an array with 4 entries:
 	* array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr), 'lamdaemon' => array(cmds)), DN2 .... )
 	* DN is the DN to change. It may be possible to change several DNs,
@@ -146,6 +169,9 @@ class account extends baseModule {
 	function process_attributes(&$post) {
 		// Load attributes
 		$this->attributes['description'][0] = $post['description'];
+		$this->attributes['uid'][0] = $post['uid'];
+		if (!get_preg($this->attributes['uid'][0], '!upper')) $triggered_messages['uid'][] = $this->messages['uid'][2];
+		if (!get_preg($this->attributes['uid'][0], 'username')) $triggered_messages['uid'][] = $this->messages['uid'][3];
 		return 0;
 		}
 
@@ -154,24 +180,36 @@ class account extends baseModule {
 	* It will output a complete html-table
 	*/
 	function display_html_attributes(&$post) {
+		// user name if no posixAccount
+		$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
+		if (!in_array('posixAccount', $modules)) {
+			$return[] = array (
+				0 => array('kind' => 'text', 'text' => _("User name").'*'),
+				1 => array('kind' => 'input', 'name' => 'uid', 'type' => 'text', 'size' => '30', 'maxlength' => '20',
+					'value' => $this->attributes['uid'][0]),
+				2 => array('kind' => 'help', 'value' => 'uid'));
+		}
+		// description
 		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Description') ),
 			1 => array ( 'kind' => 'input', 'name' => 'description', 'type' => 'text', 'size' => '30',
 				'maxlength' => '255', 'value' => $this->attributes['description'][0] ),
 			2 => array ('kind' => 'help', 'value' => 'description'));
-
 		return $return;
-		}
+	}
 
 	function display_html_delete(&$post) {
 		return 0;
-		}
+	}
 	
 	/*
 	 * (non-PHPDoc)
 	 * @see baseModule#get_pdfEntries
 	 */
 	function get_pdfEntries($account_type = "user") {
-		return array('account_description' => array('<block><key>' . _('Description') . '</key><value>' . $this->attributes['description'][0] . '</value></block>'));
+		$return = array();
+		$return['account_description'] = array('<block><key>' . _('Description') . '</key><value>' . $this->attributes['description'][0] . '</value></block>');
+		$return['account_uid'] = array('<block><key>' . _('User name') . '</key><value>' . $this->attributes['uid'][0] . '</value></block>');
+		return $return;
 	}
 
 	/**
@@ -201,12 +239,10 @@ class account extends baseModule {
 					$partialAccounts[$i]['uid'] = $rawAccounts[$i][$ids['account_uid']];
 				}
 				else {
-					$errMsg = $this->messages['uid'][7];
+					$errMsg = $this->messages['uid'][1];
 					array_push($errMsg, array($i));
 					$triggered_messages[] = $errMsg;
 				}
-			}
-			if ($this->get_scope() == 'user') {
 			}
 		}
 		return $messages;
