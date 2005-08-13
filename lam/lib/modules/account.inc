@@ -43,7 +43,9 @@ class account extends baseModule {
 	* @return array array with meta data
 	*/
 	function get_metaData() {
-		$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
+		if ($_SESSION['loggedIn']) {
+			$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
+		}
 		$return = array();
 		// manages host accounts
 		$return["account_types"] = array("host", "user");
@@ -61,7 +63,7 @@ class account extends baseModule {
 		$return['PDF_fields'] = array(
 			'description'
 		);
-		if (!in_array('posixAccount', $modules)) {
+		if ($_SESSION['loggedIn'] && !in_array('posixAccount', $modules)) {
 			$return['PDF_fields'][] = 'uid';
 		}
 		// help Entries
