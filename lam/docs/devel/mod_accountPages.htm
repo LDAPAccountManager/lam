@@ -198,6 +198,10 @@ This function is called <span style="font-weight: bold;">process_&lt;page
 name&gt;()</span> where <span style="font-style: italic;">&lt;page
 name&gt;</span> is the name of your subpage.<br>
 <br>
+If all input data is ok then return "0" or an array containing no error
+message. If you return one or more error messages then the user will be
+redirected to your page.<br>
+<br>
 <span style="font-weight: bold; text-decoration: underline;">Example:</span><br
  style="font-weight: bold; text-decoration: underline;">
 <br>
@@ -305,14 +309,20 @@ $this-&gt;inputCorrect = true;<br>
 <h2>5. Defining that your module is ready for LDAP add/modify</h2>
 Before a new account can be created or modified all modules are asked
 if they are ready.<br>
-There are two functions which control the module status. The <span
- style="font-weight: bold;">module_ready()</span> function has to
+<br>
+There are two functions which control the module status:<br>
+The <span style="font-weight: bold;">module_ready()</span> function
+has to
 return <span style="font-style: italic;">true</span> if the user may
-move to another module page. If it is <span style="font-style: italic;">false</span>
-the user will be redirected to your module page. The second function is
+move to your module page. If it is <span style="font-style: italic;">false</span>
+the user will be shown an error message that your module is not yet
+ready. You can use this if your module depends on input data from other
+modules (e.g. you need the user name from posixAccount first).<br>
+The second function is
 <span style="font-weight: bold;">module_complete()</span>. The user
-cannot do the LDAP operation if one or modules return <span
- style="font-style: italic;">false</span>.<br>
+cannot do the LDAP operation if one or more modules return <span
+ style="font-style: italic;">false</span>. This defines if all needed
+input data for your module was entered.<br>
 <br>
 <span style="font-weight: bold; text-decoration: underline;">Example:</span><br
  style="font-weight: bold; text-decoration: underline;">

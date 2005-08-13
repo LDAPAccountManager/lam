@@ -529,7 +529,7 @@ several helper functions.<br>
 </table>
 <br>
 Your module might depend on input of other modules. This function
-determines if the module button on the account page is active or not.<br>
+determines if the user can change to your module page or not.<br>
 The return value is <span style="font-weight: bold;">true</span> if
 your module accepts input, otherwise <span style="font-weight: bold;">false</span>.<br>
 <br>
@@ -545,12 +545,10 @@ your module accepts input, otherwise <span style="font-weight: bold;">false</spa
   </tbody>
 </table>
 <br>
-This function is called after your module has processed the POST input
-data.<br>
-If there was an input error and you want to display a page again then
-return <span style="font-weight: bold;">false</span>. If <span
- style="font-weight: bold;">true</span> is returned the next module
-page will be displayed.<br>
+This function tells LAM if it can create/modify the LDAP account. If
+your module needs any additional input then set this to <span
+ style="font-weight: bold;">false</span>. The user will be notified
+that your module needs more input.<br>
 <br>
 <h3>2.2.4. get_help</h3>
 <br>
