@@ -38,16 +38,6 @@ $Id$
 class shadowAccount extends baseModule {
 
 	/**
-	* Creates a new shadowAccount object.
-	*
-	* @param string $scope account type (user, group, host)
-	*/
-	function shadowAccount($scope) {
-	// call parent constructor
-	parent::baseModule($scope);
-	}
-
-	/**
 	* This function builds up the message array.
 	*/
 	function load_Messages() {
@@ -212,36 +202,25 @@ class shadowAccount extends baseModule {
 		return $return;
 	}
 
-	/* This function returns a list of all html-pages in module
-	* This is usefull for mass upload and pdf-files
-	* because lam can walk trough all pages itself and do some
-	* error checkings
+	/**
+	* This function returns a list of all module pages.
+	*
+	* @return array list of page names
 	*/
 	function pages() {
 		return array('attributes');
-		}
+	}
 
-	/* This function loads all attributes into the object
-	* $attr is an array as it's retured from ldap_get_attributes
-	*/
-	function load_attributes($attr) {
-		/* unset userPassword because:
-		 * it is used by posixAccount
-		 * it is a special attribute and stores encrypted in session
-		 */
-		unset($this->attributes['userPassword']);
-		unset($this->orig['userPassword']);
-		parent::load_attributes($attr);
-		return 0;
-		}
-
-	/* This function returns an array with 3 entries:
-	* array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
-	* DN is the DN to change. It may be possible to change several DNs,
-	* e.g. create a new user and add him to some groups via attribute memberUid
-	* add are attributes which have to be added to ldap entry
-	* remove are attributes which have to be removed from ldap entry
-	* modify are attributes which have to been modified in ldap entry
+	/**
+	* Returns a list of modifications which have to be made to the LDAP account.
+	*
+	* @return array list of modifications
+	* <br>This function returns an array with 3 entries:
+	* <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
+	* <br>DN is the DN to change. It may be possible to change several DNs (e.g. create a new user and add him to some groups via attribute memberUid)
+	* <br>"add" are attributes which have to be added to LDAP entry
+	* <br>"remove" are attributes which have to be removed from LDAP entry
+	* <br>"modify" are attributes which have to been modified in LDAP entry
 	*/
 	function save_attributes() {
 		$return = $_SESSION[$this->base]->save_module_attributes($this->attributes, $this->orig);
@@ -252,15 +231,13 @@ class shadowAccount extends baseModule {
 			if ($_SESSION[$this->base]->module['posixAccount']->orig['userPassword'][0] != $_SESSION[$this->base]->module['posixAccount']->attributes['userPassword'][0] && $_SESSION[$this->base]->module['posixAccount']->attributes['userPassword'][0]!='')
 				$return[$_SESSION[$this->base]->dn]['modify']['shadowLastChange'] = array(intval(time()/3600/24));
 		}
-		
 		return $return;
-		}
+	}
 
-	function delete_attributes($post) {
-		return 0;
-		}
-
-	/* Write variables into object and do some regexp checks
+	/**
+	* Checks user input and saves it in LDAP attributes.
+	*
+	* @param array $post HTTP POST data
 	*/
 	function process_attributes(&$post) {
 		// Load attributes
@@ -268,9 +245,7 @@ class shadowAccount extends baseModule {
 		$this->attributes['shadowMax'][0] = $post['shadowMax'];
 		$this->attributes['shadowWarning'][0] = $post['shadowWarning'];
 		$this->attributes['shadowInactive'][0] = $post['shadowInactive'];
-		$this->attributes['shadowExpire'][0] = intval(mktime(10, 0, 0, $post['shadowExpire_mon'],
-			$post['shadowExpire_day'], $post['shadowExpire_yea'])/3600/24);
-
+		$this->attributes['shadowExpire'][0] = intval(mktime(10, 0, 0, $post['shadowExpire_mon'],$post['shadowExpire_day'], $post['shadowExpire_yea'])/3600/24);
 		if ( !get_preg($this->attributes['shadowMin'][0], 'digit'))  $triggered_messages['shadowMin'][] = $this->messages['shadowMin'][0];
 		if ( !get_preg($this->attributes['shadowMax'][0], 'digit')) $triggered_messages['shadowMax'][] = $this->messages['shadowMax'][0];
 		if ( $this->attributes['shadowMin'][0] > $this->attributes['shadowMax'][0]) $triggered_messages['shadowMin'][] = $this->messages['shadow_cmp'][0];
@@ -282,11 +257,13 @@ class shadowAccount extends baseModule {
 		}
 		else $this->triggered_messages = array();
 		return 0;
-		}
+	}
 
-	/* This function will create the html-page
-	* to show a page with all attributes.
-	* It will output a complete html-table
+	/**
+	* This function will create the meta HTML code to show a page with all attributes.
+	*
+	* @param array $post HTTP POST data
+	* @return array meta HTML code
 	*/
 	function display_html_attributes(&$post) {
 		// Use dd-mm-yyyy format of date because it's easier to read for humans
@@ -318,22 +295,19 @@ class shadowAccount extends baseModule {
 			2 => array ( 'kind' => 'help', 'value' => 'shadowExpire' ));
 
 		return $return;
-		}
+	}
 
-	function display_html_delete(&$post) {
-		return 0;
-		}
-
-	/*
-	 * (non-PHPDoc)
-	 * @see baseModule#get_pdfEntries
-	 */
-	function get_pdfEntries($account_type = "user") {
-		return array(	'shadowAccount_shadowLastChange' => array('<block><key>' . _('Last password change') . '</key><value>' . $this->attributes['shadowLastChange'][0] . '</value></block>'),
-							'shadowAccount_shadowWarning' => array('<block><key>' . _('Password warning') . '</key><value>' . $this->attributes['shadowWarn'][0] . '</value><block>'),
-							'shadowAccount_shadowInactive' => array('<block><key>' . _('Account inactive') . '</key><value>' . $this->attributes['shadowInactive'][0] . '</value></block>'),
-							'shadowAccount_shadowExpire' => array('<block><key>' . _('Password expiration') . '</key><value>' . date('d. m. Y',$this->attributes['shadowExpire'][0]) . '</value></block>'),
-							'shadowAccount_description' => array('<block><key>' . _('Description') . '</key><value>' . $this->attributes['description'][0] . '</value></block>'));
+	/**
+	* Returns a list of PDF entries
+	*
+	* @return array PDF entries
+	*/
+	function get_pdfEntries() {
+		return array('shadowAccount_shadowLastChange' => array('<block><key>' . _('Last password change') . '</key><value>' . $this->attributes['shadowLastChange'][0] . '</value></block>'),
+			'shadowAccount_shadowWarning' => array('<block><key>' . _('Password warning') . '</key><value>' . $this->attributes['shadowWarn'][0] . '</value><block>'),
+			'shadowAccount_shadowInactive' => array('<block><key>' . _('Account inactive') . '</key><value>' . $this->attributes['shadowInactive'][0] . '</value></block>'),
+			'shadowAccount_shadowExpire' => array('<block><key>' . _('Password expiration') . '</key><value>' . date('d. m. Y',$this->attributes['shadowExpire'][0]) . '</value></block>'),
+			'shadowAccount_description' => array('<block><key>' . _('Description') . '</key><value>' . $this->attributes['description'][0] . '</value></block>'));
 	}
 
 	/**
