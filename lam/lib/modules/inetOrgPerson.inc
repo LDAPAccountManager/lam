@@ -38,14 +38,7 @@ $Id$
 class inetOrgPerson extends baseModule {
 
 	/**
-	* Creates a new inetOrgPerson object.
-	*/
-	function inetOrgPerson($scope) {
-		// call parent constructor
-		parent::baseModule($scope);
-	}
-
-	/** this functin fills the error message array with messages
+	* This function fills the message array.
 	**/
 	function load_Messages() {
 		$this->messages['host'][0] = array('ERROR', _('Unix workstations'), _('Unix workstations are invalid!'));
@@ -78,6 +71,9 @@ class inetOrgPerson extends baseModule {
 		$this->messages['uid'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_userName', _('User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
 		$this->messages['uid'][3] = array('ERROR', _('Account %s:') . ' inetOrgPerson_userName', _('User name already exists!'));
 		$this->messages['manager'][0] = array('ERROR', _('Account %s:') . ' inetOrgPerson_manager', _('This is not a valid DN!'));
+		$this->messages['userPassword'][0] = array('ERROR', _('Password'), _('Please enter the same password in both password fields.'));
+		$this->messages['userPassword'][1] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
+		$this->messages['userPassword'][2] = array('ERROR', _('Account %s:') . ' posixAccount_password', _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
 	}	
 	
 	/**
@@ -337,6 +333,10 @@ class inetOrgPerson extends baseModule {
 				'workstations' => array (
 					"Headline" => _("Unix workstations"),
 					"Text" => _("Please enter a comma separated list of host names where this user is allowed to log in. Can be left empty.")
+				),
+				'userPassword' => array(
+					"Headline" => _("Password"),
+					"Text" => _("Please enter the password which you want to set for this account.")
 				)
 			)
 		);
@@ -344,13 +344,15 @@ class inetOrgPerson extends baseModule {
 		return $return;
 	}
 
-	/* This functions return true
-	* if all needed settings are done
+	/**
+	* This functions return true if all needed settings are done.
+	*
+	* @return boolean true, if all is ok
 	*/
 	function module_complete() {
 		if ($this->attributes['sn'][0] == '') return false;
 		return true;
-		}	
+	}	
 		
 	/* This function returns a list of all html-pages in module
 	* This is usefull for mass upload and pdf-files
@@ -359,7 +361,7 @@ class inetOrgPerson extends baseModule {
 	*/
 	function pages() {
 		return array('attributes');
-		}
+	}
 
 	/* This function returns an array with 4 entries:
 	* array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr), 'lamdaemon' => array(cmds)), DN2 .... )
@@ -370,23 +372,8 @@ class inetOrgPerson extends baseModule {
 	* lamdaemon are lamdaemon commands to modify homedir, quotas, ...
 	*/
 	function save_attributes() {
-		// Get easy attributes
-		$return = $_SESSION[$this->base]->save_module_attributes($this->attributes, $this->orig);
-		// unset password. First we hanlde userPassword with posixAccount, second we hanlde it completly separat
-		// because it en/decrypted in session
-		if (isset($return[$_SESSION[$this->base]->dn]['modify']['userPassword']))
-			unset($return[$_SESSION[$this->base]->dn]['modify']['userPassword']);
-		if (isset($return[$_SESSION[$this->base]->dn]['add']['userPassword']))
-			unset($return[$_SESSION[$this->base]->dn]['add']['userPassword']);
-		// Return attributes
-		return $return;
-		}
-	/* Write variables into object and do some regexp checks
-	*/
-
-	function delete_attributes($post) {
-		return 0;
-		}
+		return $_SESSION[$this->base]->save_module_attributes($this->attributes, $this->orig);
+	}
 
 	function process_attributes(&$post) {
 		// Load attributes
@@ -458,8 +445,22 @@ class inetOrgPerson extends baseModule {
 		if ( !get_preg($this->attributes['personal_postalCode'][0], 'postalCode')) $triggered_messages['personal_postalCode'][] = $this->messages['postalCode'][0];
 		if ( !get_preg($this->attributes['title'][0], 'title')) $triggered_messages['title'][] = $this->messages['title'][0];
 		if ( !get_preg($this->attributes['employeeType'][0], 'employeeType')) $triggered_messages['employeeType'][] = $this->messages['employeeType'][0];
+		if ($post['userPassword']) {
+			if ($post['userPassword'] != $post['userPassword2']) {
+				$triggered_messages['userPassword'][] = $this->messages['userPassword'][0];
+			}
+			else {
+				if (!get_preg($post['userPassword'], 'password')) {
+					$triggered_messages['userPassword'][] = $this->messages['userPassword'][1];
+				}
+				else {
+					$this->attributes['userPassword'][0] = $post['userPassword'];
+				}
+			}
+		}
 		// Return error-messages
 		if (is_array($triggered_messages)) return $triggered_messages;
+		if ($post['changepass']) return 'password';
 		return 0;
 		}
 
@@ -495,6 +496,29 @@ class inetOrgPerson extends baseModule {
 			2 => array ('kind' => 'help', 'value' => 'description'));
 
 		$return[] = array(0 => array('kind' => 'text', 'td' => array('colspan' => 3)));
+
+		// password
+		if (!in_array('posixAccount', $modules)) {
+			// new account, show input fields
+			if ($_SESSION[$this->base]->isNewAccount) {
+				$return[] = array(
+					0 => array('kind' => 'text', 'text' => _('Password') ),
+					1 => array('kind' => 'input', 'name' => 'userPassword', 'type' => 'password', 'size' => '30', 'maxlength' => '255', 'value' => $this->attributes['userPassword'][0]),
+					2 => array('kind' => 'help', 'value' => 'userPassword'));
+				$return[] = array(
+					0 => array('kind' => 'text', 'text' => _('Repeat password')),
+					1 => array('kind' => 'input', 'name' => 'userPassword2', 'type' => 'password', 'size' => '30', 'maxlength' => '255', 'value' => $this->attributes['userPassword'][0]),
+					2 => array('kind' => 'text', 'text' => ''));
+			}
+			// old account, show button for password page
+			else {
+				$return[] = array(
+					0 => array('kind' => 'text', 'text' => _('Password') ),
+					1 => array('kind' => 'input', 'name' => 'changepass', 'type' => 'submit', 'value' => _('Change password')));
+			}
+
+			$return[] = array(0 => array('kind' => 'text', 'td' => array('colspan' => 3)));
+		}
 
 		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Street') ),
 			1 => array ( 'kind' => 'input', 'name' => 'street', 'type' => 'text', 'size' => '30',
@@ -569,9 +593,51 @@ class inetOrgPerson extends baseModule {
 		return $return;
 		}
 
-	function display_html_delete(&$post) {
-		return 0;
+	/**
+	* Sets a new password.
+	*
+	* @param $post HTTP POST
+	*/
+	function process_password(&$post) {
+		if ($post['back']) return 'attributes';
+		$messages = array();
+		if ($post['userPassword'] != $post['userPassword2']) {
+			$messages['userPassword'][] = $this->messages['userPassword'][0];
 		}
+		else {
+			if (!get_preg($post['userPassword'], 'password')) {
+				$messages['userPassword'][] = $this->messages['userPassword'][1];
+			}
+			else {
+				$this->attributes['userPassword'][0] = $post['userPassword'];
+			}
+		}
+		if (sizeof($messages) > 0) return $messages;
+		else return 'attributes';
+	}
+
+	/**
+	* Displays the password changing dialog.
+	*
+	* @param array $post HTTP-POST
+	* @return array meta HTML code
+	*/
+	function display_html_password(&$post) {
+		$return[] = array(
+			0 => array('kind' => 'text', 'text' => _('Password') ),
+			1 => array('kind' => 'input', 'name' => 'userPassword', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => ""),
+			2 => array('kind' => 'help', 'value' => 'userPassword'));
+		$return[] = array(
+			0 => array('kind' => 'text', 'text' => _('Repeat password')),
+			1 => array('kind' => 'input', 'name' => 'userPassword2', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => ""));
+		$return[] = array(
+			0 => array('kind' => 'table', 'value' => array(
+				0 => array(
+					0 => array('kind' => 'input', 'type' => 'submit', 'value' => _('Submit'), 'name' => 'submit'),
+					1 => array('kind' => 'input', 'type' => 'submit', 'value' => _('Back'), 'name' => 'back'),
+					2 => array('kind' => 'text')))));
+		return $return;
+	}
 
 	/*
 	 * (non-PHPDoc)
