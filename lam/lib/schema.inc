@@ -152,7 +152,7 @@ class ObjectClass extends SchemaItem
 						} while(!preg_match("/\'$/s", $strings[$i]));
 						do {
 							$i++;
-						}while($strings[$i]!=")");
+						}while(!preg_match('/\)+\)?/',$strings[$i]));
 					}
 					$this->name =        preg_replace("/^\'/", "", $this->name);
 					$this->name =        preg_replace("/\'$/", "", $this->name);
@@ -172,14 +172,14 @@ class ObjectClass extends SchemaItem
 				case 'SUP':
 					if($strings[$i+1]!="(") {
 						$i++;
-						array_push ($this->sup_classes, $strings[$i]);
+						array_push ($this->sup_classes, preg_replace("/'/","",$strings[$i]));
 					}else{
 						$i++;
 						do {
 							$i++;
 							if($strings[$i]!="$")
-								array_push( $this->sup_classes, $strings[$i] );
-						}while($strings[$i+1]!=")");
+								array_push($this->sup_classes,preg_replace("/'/","",$strings[$i]));
+						}while(! preg_match('/\)+\)?/',$strings[$i+1]));
 					}
 					break;
 				case 'ABSTRACT':
@@ -212,7 +212,7 @@ class ObjectClass extends SchemaItem
 							 $attr = new ObjectClassAttribute($strings[$i], $this->name);
 							 array_push ($this->must_attrs, $attr);
 							}
-						}while($strings[$i+1]!=")");
+						}while(! preg_match('/\)+\)?/',$strings[$i+1]));
 					}
 					sort($this->must_attrs);
 					break;
@@ -238,7 +238,7 @@ class ObjectClass extends SchemaItem
 							 $attr = new ObjectClassAttribute($strings[$i], $this->name);
 							 array_push ($this->may_attrs, $attr);
 							}
-						}while($strings[$i+1]!=")");
+						}while(! preg_match('/\)+\)?/',$strings[$i+1]));
 					}
 					sort($this->may_attrs);
 					break;
@@ -681,8 +681,12 @@ class AttributeType extends SchemaItem
 		$this->name =        preg_replace("/\'$/", "", $this->name);
 		$this->description = preg_replace("/^\'/", "", $this->description);
 		$this->description = preg_replace("/\'$/", "", $this->description);
+		$this->syntax = preg_replace("/^\'/", "", $this->syntax );
+		$this->syntax = preg_replace("/\'$/", "", $this->syntax );
 		$this->syntax_oid  = preg_replace("/^\'/", "", $this->syntax_oid );
 		$this->syntax_oid  = preg_replace("/\'$/", "", $this->syntax_oid );
+		$this->sup_attribute = preg_replace("/^\'/", "", $this->sup_attribute );
+		$this->sup_attribute = preg_replace("/\'$/", "", $this->sup_attribute );
 	}
 
     /** 
@@ -1066,7 +1070,7 @@ class MatchingRule extends SchemaItem
 						} while(!preg_match("/\'$/s", $strings[$i]));
 						do {
 							$i++;
-						}while($strings[$i]!=")");
+						}while(! preg_match('/\)+\)?/',$strings[$i]));
 					}
 					$this->name =        preg_replace("/^\'/", "", $this->name);
 					$this->name =        preg_replace("/\'$/", "", $this->name);
@@ -1195,7 +1199,7 @@ class MatchingRuleUse extends SchemaItem
 						} while(!preg_match("/\'$/s", $strings[$i]));
 						do {
 							$i++;
-						}while($strings[$i]!=")");
+						}while(! preg_match('/\)+\)?/',$strings[$i]));
 					}
 					$this->name =        preg_replace("/^\'/", "", $this->name);
 					$this->name =        preg_replace("/\'$/", "", $this->name);
