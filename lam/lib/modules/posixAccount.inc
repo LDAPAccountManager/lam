@@ -37,14 +37,6 @@
 */
 class posixAccount extends baseModule {
 
-	/**
-	* Creates a new posixAccount object.
-	*/
-	function posixAccount($scope) {
-		// call parent constructor
-		parent::baseModule($scope);
-	}
-
 	function dynamic_Message($attribute, $id) {
 		switch ($attribute) {
 			case 'homeDirectory': switch ($id) {
@@ -83,9 +75,9 @@ class posixAccount extends baseModule {
 		$this->messages['uidNumber'][2] = array('WARN', _('ID-Number'), _('It is possible that this ID-number is reused. This can cause several problems because files with old permissions might still exist. To avoid this warning set maxUID to a higher value.'));
 		$this->messages['uidNumber'][3] = array('ERROR', _('ID-Number'), _('ID is already in use'));
 		$this->messages['uidNumber'][4] = array('ERROR', _('Account %s:') . ' posixAccount_uid', _('UID must be a number. It has to be inside the UID range which is defined in your configuration profile.'));
-		$this->messages['userPassword'][0] = array('ERROR', _('Password'), _('Please enter the same password in both password-fields.'));
+		$this->messages['userPassword'][0] = array('ERROR', _('Password'), _('Please enter the same password in both password fields.'));
 		$this->messages['userPassword'][1] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
-		$this->messages['userPassword'][3] = array('ERROR', _('Password'), _('You cannot use this password options at the same time.'));
+		$this->messages['userPassword'][3] = array('ERROR', _('Password'), _('You cannot use these password options at the same time.'));
 		$this->messages['userPassword'][4] = array('ERROR', _('Account %s:') . ' posixAccount_password', _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
 		$this->messages['uid'][0] = array('INFO', _('UID'), _('UID has changed. Do you want to change home directory?'));
 		$this->messages['uid'][1] = array('WARN', _('User name'), _('You are using a capital letters. This can cause problems because windows isn\'t case-sensitive.'));
@@ -868,7 +860,9 @@ class posixAccount extends baseModule {
 		$messages = array();
 		if ($post['userPassword'] != $post['userPassword2']) {
 			$messages['userPassword'][] = $this->messages['userPassword'][0];
-			if (!get_preg($post['userPassword'], 'password'))
+		}
+		else {
+			if (!get_preg($post['userPassword'], 'password')) {
 				$messages['userPassword'][] = $this->messages['userPassword'][1];
 			}
 			else {
@@ -877,6 +871,7 @@ class posixAccount extends baseModule {
 				$this->userPassword_lock = false;
 				$this->userPassword_nopassword = false;
 			}
+		}
 		if (sizeof($messages) > 0) return $messages;
 		else return 'attributes';
 	}
