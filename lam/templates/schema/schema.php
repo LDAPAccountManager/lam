@@ -438,7 +438,7 @@ if( $view == 'syntaxes' ) {
 <?php } /* End else (displaying objectClasses */ ?>
 
 <?php if( ! is_null( $viewvalue ) && ! $viewed )
-    StatusMessage( sprintf( _('No such schema item: "%s"'), htmlspecialchars( $viewvalue ) ) );
+    StatusMessage("ERROR",  sprintf( _('No such schema item: "%s"'), htmlspecialchars( $viewvalue ) ) );
 ?>
 
 </body>
