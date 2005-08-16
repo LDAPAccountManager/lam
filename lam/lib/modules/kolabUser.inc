@@ -293,6 +293,14 @@ class kolabUser extends baseModule {
 	* @param array $post HTTP-POST values
 	*/
 	function display_html_attributes(&$post) {
+		if ($_SESSION[$this->base]->isNewAccount) {
+			if (isset($_SESSION[$this->base]->module['posixAccount']) && !$_SESSION[$this->base]->module['posixAccount']->attributes['userPassword'][0]) {
+				StatusMessage('ERROR', _("Please enter a user password on this page: %s"), '', array($_SESSION[$this->base]->module['posixAccount']->get_alias()));
+			}
+			elseif (isset($_SESSION[$this->base]->module['inetOrgPerson']) && !$_SESSION[$this->base]->module['inetOrgPerson']->attributes['userPassword'][0]) {
+				StatusMessage('ERROR', _("Please enter a user password on this page: %s"), '', array($_SESSION[$this->base]->module['inetOrgPerson']->get_alias()));
+			}
+		}
 		$return = array();
 		// check if account is marked for deletion
 		if (isset($this->attributes['kolabDeleteflag'])) {
@@ -607,9 +615,13 @@ class kolabUser extends baseModule {
 
 	/**
 	* This function returns true if all needed settings are done.
+	*
+	* @return true, if account can be saved
 	*/
 	function module_complete() {
 		if ($_SESSION[$this->base]->isNewAccount) {
+			if (isset($_SESSION[$this->base]->module['posixAccount']) && !$_SESSION[$this->base]->module['posixAccount']->attributes['userPassword'][0]) return false;
+			elseif (isset($_SESSION[$this->base]->module['inetOrgPerson']) && !$_SESSION[$this->base]->module['inetOrgPerson']->attributes['userPassword'][0]) return false;
 			return $this->inputCorrect;
 		}
 		else {
