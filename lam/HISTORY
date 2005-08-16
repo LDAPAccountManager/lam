@@ -1,7 +1,9 @@
-??? 0.5.rc2
+18.08.2005 0.5.rc2
    - allow user accounts based only on "account" module
+   - inetOrgPerson: allow setting a password if posixAccount is not active
    - fixed bugs:
     -> removed Blowfish encryption (bad performance)
+    -> Kolab now complains if no user password is set
 
 
 08.08.2005 0.5.rc1
