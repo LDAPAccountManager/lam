@@ -372,7 +372,18 @@ class inetOrgPerson extends baseModule {
 	* lamdaemon are lamdaemon commands to modify homedir, quotas, ...
 	*/
 	function save_attributes() {
-		return $_SESSION[$this->base]->save_module_attributes($this->attributes, $this->orig);
+		$return = $_SESSION[$this->base]->save_module_attributes($this->attributes, $this->orig);
+		// do not set password if posixAccount is active
+		$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
+		if (in_array('posixAccount', $modules)) {
+			if (isset($return[$_SESSION[$this->base]->dn]['modify']['userPassword'])) {
+				unset($return[$_SESSION[$this->base]->dn]['modify']['userPassword']); 	 
+			}
+			if (isset($return[$_SESSION[$this->base]->dn]['add']['userPassword'])) {
+				unset($return[$_SESSION[$this->base]->dn]['add']['userPassword']);
+			}
+		}
+		return $return;
 	}
 
 	function process_attributes(&$post) {
