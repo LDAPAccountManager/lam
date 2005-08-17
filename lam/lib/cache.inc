@@ -34,6 +34,8 @@ include_once('ldap.inc');
 
 /**
 * This class contains all functions which are needed to manage the LDAP cache.
+*
+* @package lib
 */
 class cache {
 	function cache() {
