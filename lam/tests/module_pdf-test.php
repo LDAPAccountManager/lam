@@ -20,21 +20,27 @@ $Id$
   along with this program; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-
-  LDAP Account Manager module PDF test
 */
 
+/**
+*  LDAP Account Manager module PDF test
+*
+* @package tests
+* @author Michael Duergner
+*/
+
+/** PDF functions */
 include_once('../lib/pdf.inc');
+/** PDF structures */
+include_once('../lib/pdfstruct.inc');
 
-//print_r(getStructure());
-//print_r(processLine("<block><key>Test key</key><value><b><i>Test value</i></b></value></block>"));
-//print_r(processLine("<block><p><b>Test p</b></p><br /></block>"));
-	
+
+	define('FPDF_FONTPATH', "../lib/font/");
+
 	$entries = array("Last name" => array("<block><key>Test key</key><value>Test value</value></block>"),"First name" => array("<block><p><b>Test p</b></p></block>"),"User quotas" => array("<block><key>User quotas</key><td width=\"30\" align=\"L\"><b>Mountpoint</b></td><td width=\"30\" align=\"L\"><b>Soft block</b></td><td width=\"30\" align=\"L\"><b>Soft inode</b></td><td width=\"30\" align=\"L\"><b>Hard block</b></td><td width=\"30\" align=\"L\"><b>Hard inode</b></td></block>","<block><td width=\"30\" align=\"L\">/usr</td><td width=\"30\" align=\"L\">10</td><td width=\"30\" align=\"L\">100</td><td width=\"30\" align=\"L\">15</td><td width=\"30\" align=\"L\">150</td></block>"));
-	$structure = getStructure(array("User"));
-	$structure = $structure['User'];
+	$structure = getPDFStructureDefinitions("user");
 
-	$pdf = new LamPDF("User");
+	$pdf = new LamPDF("user", array('filename' => 'none'), 'BitstreamVeraSans-Roman');
 	
 	// Loop over each account and add a new page in the PDF file for it 
 		// Start a new page for each account
@@ -86,5 +92,5 @@ include_once('../lib/pdf.inc');
 			}
 		}
 		$pdf->Close();
-		$pdf->Output('/home/md/workspace/lam/tests/test.pdf','F');
+		$pdf->Output('/tmp/test.pdf','F');
 ?>
