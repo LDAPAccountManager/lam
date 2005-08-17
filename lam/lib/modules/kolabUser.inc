@@ -300,6 +300,9 @@ class kolabUser extends baseModule {
 			elseif (isset($_SESSION[$this->base]->module['inetOrgPerson']) && !$_SESSION[$this->base]->module['inetOrgPerson']->attributes['userPassword'][0]) {
 				StatusMessage('ERROR', _("Please enter a user password on this page: %s"), '', array($_SESSION[$this->base]->module['inetOrgPerson']->get_alias()));
 			}
+			if (!$_SESSION[$this->base]->module['inetOrgPerson']->attributes['mail'][0]) {
+				StatusMessage('ERROR', _("Please enter an email address on this page: %s"), '', array($_SESSION[$this->base]->module['inetOrgPerson']->get_alias()));
+			}
 		}
 		$return = array();
 		// check if account is marked for deletion
@@ -622,6 +625,7 @@ class kolabUser extends baseModule {
 		if ($_SESSION[$this->base]->isNewAccount) {
 			if (isset($_SESSION[$this->base]->module['posixAccount']) && !$_SESSION[$this->base]->module['posixAccount']->attributes['userPassword'][0]) return false;
 			elseif (isset($_SESSION[$this->base]->module['inetOrgPerson']) && !$_SESSION[$this->base]->module['inetOrgPerson']->attributes['userPassword'][0]) return false;
+			if (!$_SESSION[$this->base]->module['inetOrgPerson']->attributes['mail'][0]) return false;
 			return $this->inputCorrect;
 		}
 		else {
