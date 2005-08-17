@@ -25,19 +25,22 @@
 * Used to delete accounts from LDAP tree.
 *
 * @author Tilo Lutz
-* @module main
+* @package main
 */
 
 
-// include all needed files
-include_once('../lib/account.inc'); // File with all account-funtions
-include_once('../lib/config.inc'); // File with configure-functions
-include_once('../lib/profiles.inc'); // functions to load and save profiles
-include_once('../lib/status.inc'); // Return error-message
-include_once('../lib/pdf.inc'); // Return a pdf-file
-include_once('../lib/ldap.inc'); // LDAP-functions
-include_once('../lib/lamdaemon.inc'); // lamdaemon
-include_once('../lib/modules.inc'); // lamdaemon
+/** account functions */
+include_once('../lib/account.inc');
+/** current configuration options */
+include_once('../lib/config.inc');
+/** message displaying */
+include_once('../lib/status.inc');
+/** LDAP connection */
+include_once('../lib/ldap.inc');
+/** lamdaemon interface */
+include_once('../lib/lamdaemon.inc');
+/** module interface */
+include_once('../lib/modules.inc');
 
 // Start session
 session_save_path('../sess');
