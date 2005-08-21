@@ -62,8 +62,8 @@ class sambaSamAccount extends baseModule {
 		$this->messages['profilePath'][0] = array('ERROR', _('Profile path'), _('Profile path is invalid!'));
 		$this->messages['profilePath'][1] = array('INFO', _('Profile path'), _('Inserted user or group name in profile path.'));
 		$this->messages['profilePath'][2] = array('ERROR', _('Account %s:') . ' sambaSamAccount_profilePath', _('Profile path is invalid!'));
-		$this->messages['logonScript'][0] = array('ERROR', _('Script path'), _('Script path is invalid!'));
-		$this->messages['logonScript'][1] = array('INFO', _('Script path'), _('Inserted user or group name in script path.'));
+		$this->messages['logonScript'][0] = array('ERROR', _('Logon script'), _('Logon script is invalid!'));
+		$this->messages['logonScript'][1] = array('INFO', _('Logon script'), _('Inserted user or group name in logon script.'));
 		$this->messages['logonScript'][2] = array('ERROR', _('Account %s:') . ' sambaSamAccount_logonScript', _('Logon script is invalid!'));
 		$this->messages['workstations'][0] = array('ERROR', _('Samba workstations'), _('Please enter a comma separated list of host names!'));
 		$this->messages['workstations'][1] = array('ERROR', _('Account %s:') . ' sambaSamAccount_workstations', _('Please enter a comma separated list of host names!'));
@@ -218,7 +218,18 @@ class sambaSamAccount extends baseModule {
 				"Text" => _("Windows domain name of account.")),
 			"logonHours" => array(
 				"ext" => "FALSE", "Headline" => _("Logon hours"),
-				"Text" => _("This option defines the allowed logon hours for this account.")),
+				"Text" => _("This option defines the allowed logon hours for this account.") . "<br><br><br><u><b>".
+				_("Time zones:") . "</b></u><br><br>" .
+				"GMT-12: " . _("Eniwetok, Kwajalein") . "<br>" . "GMT-11: " . _("Midway Island, Samoa") . "<br>" . "GMT-10: " . _("Hawaii") . "<br>" .
+				"GMT-09: " . _("Alaska") . "<br>" . "GMT-08: " . _("Pacific Time (US & Canada)") . "<br>" . "GMT-07: " . _("Mountain Time (US & Canada)") . "<br>" .
+				"GMT-06: " . _("Central Time (US & Canada), Mexico City") . "<br>" . "GMT-05: " . _("Eastern Time (US & Canada), Bogota") . "<br>" .
+				"GMT-04: " . _("Atlantic time (Canada), Caracas") . "<br>" . "GMT-03: " . _("Brazil, Buenos Aires") . "<br>" . "GMT-02: " . _("Mid-Atlantic") . "<br>" .
+				"GMT-01: " . _("Azores, Cape Verde Islands") . "<br>" . "GMT: &nbsp;&nbsp;&nbsp;&nbsp;" . _("Western Europe Time, London, Lisbon") . "<br>" .
+				"GMT+01: " . _("Central Europe Time, Paris, Berlin") . "<br>" . "GMT+02: " . _("Eastern Europe Time, South Africa") . "<br>" .
+				"GMT+03: " . _("Baghdad, Riyadh, Moscow") . "<br>" . "GMT+04: " . _("Abu Dhabi, Muscat, Baku") . "<br>" . "GMT+05: " . _("Islamabad, Karachi") . "<br>" .
+				"GMT+06: " . _("Almaty, Dhaka, Colombo") . "<br>" . "GMT+07: " . _("Bangkok, Hanoi, Jakarta") . "<br>" . "GMT+08: " . _("Beijing, Perth, Singapore") . "<br>" .
+				"GMT+09: " . _("Tokyo, Seoul, Osaka, Yakutsk") . "<br>" . "GMT+10: " . _("East Australian Standard, Guam") . "<br>" .
+				"GMT+11: " . _("Magadan, Solomon Islands") . "<br>" . "GMT+12: " . _("Auckland, Fiji, Kamchatka")),
 			"logonHoursUpload" => array(
 				"ext" => "FALSE", "Headline" => _("Logon hours"),
 				"Text" => _("This option defines the allowed logon hours for this account. The format is the same as for the LDAP attribute. The 24*7 hours are represented as 168 bit which are saved as 21 hex (21*8 = 168) values. The first bit represents Sunday 0:00 - 0:59 in GMT."))
@@ -942,13 +953,14 @@ class sambaSamAccount extends baseModule {
 			array_unshift($timezones, 'GMT-' . $t);
 		}
 		$return[] = array(
-			0 => array('kind' => 'input', 'name' => 'submit', 'type' => 'submit', 'value' => _('Submit')),
-			1 => array('kind' => 'input', 'name' => 'abort', 'type' => 'submit', 'value' => _('Abort')),
-			2 => array('kind' => 'text', 'td' => array('colspan' => 3)),
-			3 => array('kind' => 'table', 'td' => array('colspan' => 3, 'align' => 'right'), 'value' => array(0 => array(
+			0 => array('kind' => 'input', 'name' => 'submit', 'type' => 'submit', 'value' => _('Submit'), 'td' => array('align' => 'right')),
+			1 => array('kind' => 'input', 'name' => 'abort', 'type' => 'submit', 'value' => _('Abort'), 'td' => array('align' => 'left')),
+			2 => array('kind' => 'text', 'td' => array('colspan' => 2)),
+			3 => array('kind' => 'table', 'td' => array('colspan' => 4, 'align' => 'right'), 'value' => array(0 => array(
 				0 => array('kind' => 'text', 'text' => _('Time zone')),
 				1 => array('kind' => 'select', 'name' => 'timezone', 'options' => $timezones, 'options_selected' => $post['timezone']),
-				2 => array('kind' => 'input', 'name' => 'change_tz', 'type' => 'submit', 'value' => _('Change')))))
+				2 => array('kind' => 'input', 'name' => 'change_tz', 'type' => 'submit', 'value' => _('Change')),
+				3 => array('kind' => 'help', 'value' => 'logonHours'))))
 			);
 		return $return;
 	}
