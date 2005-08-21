@@ -679,8 +679,8 @@ function parseHtml($module, $input, $values, $restricted, &$tabindex, &$tabindex
 						echo "Unrecognized type: " . $input[$i][$j]['kind'] . "\n";
 						break;
 				}
+				echo "</td>\n";
 			}
-			echo "</td>\n";
 			echo "</tr>\n";
 		}
 	}
