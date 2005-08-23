@@ -1,3 +1,8 @@
+??? 0.5.rc3
+   - fixed bugs:
+    -> buttons on account page are better sorted
+
+
 18.08.2005 0.5.rc2
    - allow user accounts based only on "account" module
    - inetOrgPerson: allow setting a password if posixAccount is not active
