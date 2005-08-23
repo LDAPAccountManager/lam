@@ -1378,31 +1378,8 @@ class accountContainer {
 			$this->module[$module]->load_attributes($attr);
 			}
 
-		// sortm modules and make all active because all required attributes should be set
-		$module = array_keys ($this->module);
-		// loop until all modules are in order.
-		// We don't want to loop forever
-		$remain = count($module) * count($module);
-		$order = array();
-		while ( (count($module) != count($order)) && ($remain!=0) ) {
-			$remain--;
-			foreach ($module as $moduleitem) {
-				$required = $this->module[$moduleitem]->get_dependencies($this->type);
-				$everything_found = true;
-				if (is_array($required['depends'])) {
-					foreach ($required['depends'] as $requireditem) {
-						if (!in_array($requireditem, $order)) {
-							$everything_found = false;
-							break;
-						}
-					}
-				}
-				if ($everything_found && !in_array($moduleitem, $order) ) $order[] = $moduleitem;
-			}
-		}
-		// Write Module-Order in variable
-		array_unshift($order, 'main');
-		$this->order = $order;
+		// sort module buttons
+		$this->sortModules();
 		return 0;
 		}
 
@@ -1416,31 +1393,8 @@ class accountContainer {
 			$this->module[$module] = new $module($this->type);
 			$this->module[$module]->init($this->base);
 		}
-
-		$module = array_keys ($this->module);
-		// loop until all modules are in order.
-		// We don't want to loop forever
-		$remain = count($module) * count($module);
-		$order = array();
-		while ( (count($module) != count($order)) && ($remain!=0) ) {
-			$remain--;
-			foreach ($module as $moduleitem) {
-				$required = $this->module[$moduleitem]->get_dependencies($this->type);
-				$everything_found = true;
-				if (is_array($required['depends'])) {
-					foreach ($required['depends'] as $requireditem) {
-						if (!in_array($requireditem, $order)) {
-							$everything_found = false;
-							break;
-						}
-					}
-				}
-				if ($everything_found && !in_array($moduleitem, $order) ) $order[] = $moduleitem;
-			}
-		}
-		// Write Module-Order in variable
-		array_unshift($order, 'main');
-		$this->order = $order;
+		// sort module buttons
+		$this->sortModules();
 		$profile = loadAccountProfile('default', $this->type);
 		// pass profile to each module
 		$modules = array_keys($this->module);
@@ -1521,7 +1475,7 @@ class accountContainer {
 		if (isset($attributes[$DNs[$i]]['errors'])) {
 			foreach ($attributes[$DNs[$i]]['errors'] as $singleerror) {
 				$errors[] = $singleerror;
-				if ($singleerror[0] = 'ERROR') $stopprocessing = true;
+				if ($singleerror[0] == 'ERROR') $stopprocessing = true;
 				}
 			}
 		// fixme *** ad update_cache after every ldap-change
@@ -1615,7 +1569,7 @@ class accountContainer {
 				if (is_array($result))
 					foreach ($result as $singleresult) {
 						if (is_array($singleresult)) {
-							if ($singleresult[0] = 'ERROR') $stopprocessing = true;
+							if ($singleresult[0] == 'ERROR') $stopprocessing = true;
 							$temparray[0] = $singleresult[0];
 							$temparray[1] = _($singleresult[1]);
 							$temparray[2] = _($singleresult[2]);
@@ -1643,7 +1597,68 @@ class accountContainer {
 		$return = array_merge($return,array('main_dn' => array('<block><key>' . _('DN') . '</key><value>' . $this->dn . '</value></block>')));
 		return $return;
 	}
-		
+
+	/**
+	* Sorts the module buttons for the account page.
+	*/
+	function sortModules() {
+		$order = array();
+		$modules = array_keys($this->module);
+		$depModules = array();
+		for ($i = 0; $i < sizeof($modules); $i++) {
+			// insert waiting modules
+			for ($w = 0; $w < sizeof($depModules); $w++) {
+				$dependencies = $this->module[$depModules[$w]]->get_dependencies($this->type);
+				$dependencies = $dependencies['depends'];
+				$everything_found = true;
+				for ($d = 0; $d < sizeof($dependencies); $d++) {
+					if (!in_array($dependencies[$d], $order)) {
+						$everything_found = false;
+						break;
+					}
+				}
+				// inser after depending module
+				if ($everything_found) {
+					$order[] = $depModules[$w];
+					unset($depModules[$w]);
+					$depModules = array_values($depModules);
+					$w--;
+				}
+			}
+			// check next module
+			$dependencies = $this->module[$modules[$i]]->get_dependencies($this->type);
+			if (is_array($dependencies['depends'])) {
+				$everything_found = true;
+				$dependencies = $dependencies['depends'];
+				for ($d = 0; $d < sizeof($dependencies); $d++) {
+					if (!in_array($dependencies[$d], $order)) {
+						$everything_found = false;
+						break;
+					}
+				}
+				// remove module if dependencies are not satisfied
+				if (!$everything_found) {
+					$depModules[] = $modules[$i];
+					unset($modules[$i]);
+					$modules = array_values($modules);
+					$i--;
+				}
+				else {
+					$order[] = $modules[$i];
+				}
+			}
+			else {
+				$order[] = $modules[$i];
+			}
+		}
+		// add modules which could not be sorted (e.g. because of cyclic dependencies)
+		if (sizeof($depModules) > 0) {
+			for ($i = 0; $i < sizeof($depModules); $i++) $order[] = $depModules[$i];
+		}
+		array_unshift($order, 'main');
+		$this->order = $order;
+	}
+	
 	/**
 	* Encrypts sensitive data before storing in session.
 	*
