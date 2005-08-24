@@ -926,9 +926,15 @@ class accountContainer {
 		echo "<td><fieldset class=\"".$this->type."edit\"><legend><b>";
 			echo _('Please select page:');
 			echo "</b></legend>\n";
+		// calculate button width
+		$buttonWidth = round(0.8 * strlen(utf8_decode(_("Reset changes"))));
+		for ($b = 0; $b < sizeof($this->order); $b++) {
+			$tempWidth = round(0.8 * strlen(utf8_decode($this->order[$b])));
+			if ($buttonWidth < $tempWidth) $buttonWidth = $tempWidth;
+		}
 		$x=0;
 		// print normal button
-		echo "<input name=\"form_main_main\" type=\"submit\" value=\"";
+		echo "<input style=\"width:" . $buttonWidth ."em;\" name=\"form_main_main\" type=\"submit\" value=\"";
 		echo _('Main');
 		echo "\" tabindex=$x";
 		if ($this->subpage == 'finish') echo " disabled";
@@ -938,7 +944,7 @@ class accountContainer {
 		// $x is used to count up tabindex
 		for ($i=1; $i<count($this->order); $i++ ) {
 			// print normal button
-			echo "<input name=\"form_main_".$this->order[$i]."\" type=\"submit\" value=\"";
+			echo "<input style=\"width:" . $buttonWidth ."em;\" name=\"form_main_".$this->order[$i]."\" type=\"submit\" value=\"";
 			echo $this->module[$this->order[$i]]->get_alias();
 			echo "\" tabindex=$x";
 			if ($this->subpage == 'finish') echo " disabled";
@@ -946,7 +952,7 @@ class accountContainer {
 			$x++;
 			}
 		if ($this->dn_orig!='') {
-			echo "<input name=\"form_main_reset\" type=\"submit\" value=\"" . _('Reset changes') . "\"";
+			echo "<input style=\"width:" . $buttonWidth ."em;\" name=\"form_main_reset\" type=\"submit\" value=\"" . _('Reset changes') . "\"";
 			if ($this->subpage == 'finish') echo " disabled";
 			echo "><br>\n";
 		}
