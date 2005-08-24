@@ -933,8 +933,8 @@ class accountContainer {
 			if ($buttonWidth < $tempWidth) $buttonWidth = $tempWidth;
 		}
 		$x=0;
-		// print normal button
-		echo "<input style=\"width:" . $buttonWidth ."em;\" name=\"form_main_main\" type=\"submit\" value=\"";
+		// print "main" button
+		echo "<input style=\"width:" . $buttonWidth ."em;margin:2px;\" name=\"form_main_main\" type=\"submit\" value=\"";
 		echo _('Main');
 		echo "\" tabindex=$x";
 		if ($this->subpage == 'finish') echo " disabled";
@@ -944,7 +944,7 @@ class accountContainer {
 		// $x is used to count up tabindex
 		for ($i=1; $i<count($this->order); $i++ ) {
 			// print normal button
-			echo "<input style=\"width:" . $buttonWidth ."em;\" name=\"form_main_".$this->order[$i]."\" type=\"submit\" value=\"";
+			echo "<input style=\"width:" . $buttonWidth ."em;margin:2px;\" name=\"form_main_".$this->order[$i]."\" type=\"submit\" value=\"";
 			echo $this->module[$this->order[$i]]->get_alias();
 			echo "\" tabindex=$x";
 			if ($this->subpage == 'finish') echo " disabled";
@@ -952,7 +952,7 @@ class accountContainer {
 			$x++;
 			}
 		if ($this->dn_orig!='') {
-			echo "<input style=\"width:" . $buttonWidth ."em;\" name=\"form_main_reset\" type=\"submit\" value=\"" . _('Reset changes') . "\"";
+			echo "<br><input style=\"width:" . $buttonWidth ."em;margin:2px;\" name=\"form_main_reset\" type=\"submit\" value=\"" . _('Reset changes') . "\"";
 			if ($this->subpage == 'finish') echo " disabled";
 			echo "><br>\n";
 		}
