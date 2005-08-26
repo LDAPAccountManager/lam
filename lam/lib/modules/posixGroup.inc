@@ -48,16 +48,6 @@ class posixGroup extends baseModule {
 	// change gids of users and hosts?
 	var $changegids;
 
-	/**
-	* Creates a new posixGroup object.
-	*
-	* @param string $scope account type
-	*/
-	function posixGroup($scope) {
-		// call parent constructor
-		parent::baseModule($scope);
-	}
-
 
 	/**
 	* In this function the LDAP account is built up.
@@ -224,11 +214,6 @@ class posixGroup extends baseModule {
 		return $return;
 	}
 
-
-	function display_html_delete(&$post) {
-		// Get list of primary groupmembers.
-		return 0;
-	}
 
 	/**
 	* Displays selections to add or remove users from current group.
@@ -504,9 +489,33 @@ class posixGroup extends baseModule {
 	* if all needed settings are done
 	*/
 	function module_complete() {
+		if (!$_SESSION[$this->base]->isNewAccount) {
+			// check if account is based on our object class
+			$objectClasses = $_SESSION[$this->base]->attributes_orig['objectClass'];
+			if (is_array($objectClasses) && !in_array('posixGroup', $objectClasses)) {
+				return true;
+			}
+		}
 		if ($this->attributes['cn'][0] == '') return false;
 		if ($this->attributes['gidNumber'][0] == '') return false;
 		return true;
+	}
+
+
+	/**
+	* Controls if the module button the account page is visible and activated.
+	*
+	* @return string status ("enabled", "disabled", "hidden")
+	*/
+	function getButtonStatus() {
+		if (!$_SESSION[$this->base]->isNewAccount) {
+			// check if account is based on our object class
+			$objectClasses = $_SESSION[$this->base]->attributes_orig['objectClass'];
+			if (is_array($objectClasses) && !in_array('posixGroup', $objectClasses)) {
+				return "disabled";
+			}
+		}
+		return "enabled";
 	}
 
 
@@ -728,6 +737,10 @@ class posixGroup extends baseModule {
 	* modify are attributes which have to been modified in ldap entry
 	*/
 	function save_attributes() {
+		// skip saving if account is based on another structural object class
+		if (!$_SESSION[$this->base]->isNewAccount && !in_array('posixGroup', $_SESSION[$this->base]->attributes_orig['objectClass'])) {
+			return array();
+		}
 		$return = $_SESSION[$this->base]->save_module_attributes($this->attributes, $this->orig);
 		// unset password when needed
 		if (isset($return[$_SESSION[$this->base]->dn]['add']['userPassword']))

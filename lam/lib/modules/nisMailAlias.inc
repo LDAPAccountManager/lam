@@ -52,6 +52,8 @@ class nisMailAlias extends baseModule {
 		$return["ldap_filter"] = array('or' => "(objectClass=nisMailAlias)");
 		// alias name
 		$return["alias"] = _("Mail aliases");
+		// RDN attribute
+		$return["RDN"] = array("cn" => "normal");
 		// module dependencies
 		$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
 		// help Entries
@@ -144,6 +146,10 @@ class nisMailAlias extends baseModule {
 	* <br>"modify" are attributes which have to been modified in LDAP entry
 	*/
 	function save_attributes() {
+		// skip saving if account is based on another structural object class
+		if (!$_SESSION[$this->base]->isNewAccount && !in_array('nisMailAlias', $_SESSION[$this->base]->attributes_orig['objectClass'])) {
+			return array();
+		}
 		return $_SESSION[$this->base]->save_module_attributes($this->attributes, $this->orig);
 	}
 
@@ -244,9 +250,32 @@ class nisMailAlias extends baseModule {
 	* This function returns true if all needed settings are done.
 	*/
 	function module_complete() {
+		if (!$_SESSION[$this->base]->isNewAccount) {
+			// check if account is based on our object class
+			$objectClasses = $_SESSION[$this->base]->attributes_orig['objectClass'];
+			if (is_array($objectClasses) && !in_array('nisMailAlias', $objectClasses)) {
+				return true;
+			}
+		}
 		return $this->inputCorrect;
 	}
 	
+	/**
+	* Controls if the module button the account page is visible and activated.
+	*
+	* @return string status ("enabled", "disabled", "hidden")
+	*/
+	function getButtonStatus() {
+		if (!$_SESSION[$this->base]->isNewAccount) {
+			// check if account is based on our object class
+			$objectClasses = $_SESSION[$this->base]->attributes_orig['objectClass'];
+			if (is_array($objectClasses) && !in_array('nisMailAlias', $objectClasses)) {
+				return "disabled";
+			}
+		}
+		return "enabled";
+	}
+
 	/**
 	* In this function the LDAP account is built up.
 	*

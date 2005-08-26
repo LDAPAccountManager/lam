@@ -539,6 +539,15 @@ class baseModule {
 	function module_complete() {
 		return true;
 	}
+	
+	/**
+	* Controls if the module button the account page is visible and activated.
+	*
+	* @return string status ("enabled", "disabled", "hidden")
+	*/
+	function getButtonStatus() {
+		return "enabled";
+	}
 
 	/**
 	* Checks if the attribute values follow the LDAP syntax.

@@ -119,10 +119,27 @@ class account extends baseModule {
 	* @return boolean true if LDAP operation can be done
 	*/
 	function module_complete() {
-		if ($this->attributes['uid'][0] == '') return false;
+		$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
+		if (!in_array('posixAccount', $modules) && $this->attributes['uid'][0] == '') return false;
 		return true;
 	}	
 	
+	/**
+	* Controls if the module button the account page is visible and activated.
+	*
+	* @return string status ("enabled", "disabled", "hidden")
+	*/
+	function getButtonStatus() {
+		if (!$_SESSION[$this->base]->isNewAccount) {
+			// check if account is based on our object class
+			$objectClasses = $_SESSION[$this->base]->attributes_orig['objectClass'];
+			if (is_array($objectClasses) && !in_array('account', $objectClasses)) {
+				return "disabled";
+			}
+		}
+		return "enabled";
+	}
+
 	/**
 	* This function returns a list of all possible pages of this module.
 	*
@@ -156,11 +173,15 @@ class account extends baseModule {
 	* lamdaemon are lamdaemon commands to modify homedir, quotas, ...
 	*/
 	function save_attributes() {
+		// skip saving if account is based on another structural object class
+		if (!$_SESSION[$this->base]->isNewAccount && !in_array('account', $_SESSION[$this->base]->attributes_orig['objectClass'])) {
+			return array();
+		}
 		// Get easy attributes
 		$return = $_SESSION[$this->base]->save_module_attributes($this->attributes, $this->orig);
 		// Return attributes
 		return $return;
-		}
+	}
 
 	function delete_attributes($post) {
 		return 0;
@@ -171,11 +192,15 @@ class account extends baseModule {
 	function process_attributes(&$post) {
 		// Load attributes
 		$this->attributes['description'][0] = $post['description'];
-		$this->attributes['uid'][0] = $post['uid'];
-		if (!get_preg($this->attributes['uid'][0], '!upper')) $triggered_messages['uid'][] = $this->messages['uid'][2];
-		if (!get_preg($this->attributes['uid'][0], 'username')) $triggered_messages['uid'][] = $this->messages['uid'][3];
-		return 0;
+		// user name if no posixAccount
+		$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
+		if (!in_array('posixAccount', $modules)) {
+			$this->attributes['uid'][0] = $post['uid'];
+			if (!get_preg($this->attributes['uid'][0], '!upper')) $triggered_messages['uid'][] = $this->messages['uid'][2];
+			if (!get_preg($this->attributes['uid'][0], 'username')) $triggered_messages['uid'][] = $this->messages['uid'][3];
 		}
+		return 0;
+	}
 
 	/* This function will create the html-page
 	* to show a page with all attributes.

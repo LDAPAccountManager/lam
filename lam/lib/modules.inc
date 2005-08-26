@@ -943,14 +943,17 @@ class accountContainer {
 		// Loop for module
 		// $x is used to count up tabindex
 		for ($i=1; $i<count($this->order); $i++ ) {
+			$buttonStatus = $this->module[$this->order[$i]]->getButtonStatus();
+			// skip hidden buttons
+			if ($buttonStatus == 'hidden') continue;
 			// print normal button
 			echo "<input style=\"width:" . $buttonWidth ."em;margin:2px;\" name=\"form_main_".$this->order[$i]."\" type=\"submit\" value=\"";
 			echo $this->module[$this->order[$i]]->get_alias();
 			echo "\" tabindex=$x";
-			if ($this->subpage == 'finish') echo " disabled";
+			if (($buttonStatus == 'disabled') || $this->subpage == 'finish') echo " disabled";
 			echo ">\n<br>";
 			$x++;
-			}
+		}
 		if ($this->dn_orig!='') {
 			echo "<br><input style=\"width:" . $buttonWidth ."em;margin:2px;\" name=\"form_main_reset\" type=\"submit\" value=\"" . _('Reset changes') . "\"";
 			if ($this->subpage == 'finish') echo " disabled";

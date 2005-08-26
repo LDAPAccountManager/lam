@@ -350,10 +350,33 @@ class inetOrgPerson extends baseModule {
 	* @return boolean true, if all is ok
 	*/
 	function module_complete() {
+		if (!$_SESSION[$this->base]->isNewAccount) {
+			// check if account is based on our object class
+			$objectClasses = $_SESSION[$this->base]->attributes_orig['objectClass'];
+			if (is_array($objectClasses) && !in_array('inetOrgPerson', $objectClasses)) {
+				return true;
+			}
+		}
 		if ($this->attributes['sn'][0] == '') return false;
 		return true;
 	}	
 		
+	/**
+	* Controls if the module button the account page is visible and activated.
+	*
+	* @return string status ("enabled", "disabled", "hidden")
+	*/
+	function getButtonStatus() {
+		if (!$_SESSION[$this->base]->isNewAccount) {
+			// check if account is based on our object class
+			$objectClasses = $_SESSION[$this->base]->attributes_orig['objectClass'];
+			if (is_array($objectClasses) && !in_array('inetOrgPerson', $objectClasses)) {
+				return "disabled";
+			}
+		}
+		return "enabled";
+	}
+
 	/* This function returns a list of all html-pages in module
 	* This is usefull for mass upload and pdf-files
 	* because lam can walk trough all pages itself and do some
@@ -372,6 +395,10 @@ class inetOrgPerson extends baseModule {
 	* lamdaemon are lamdaemon commands to modify homedir, quotas, ...
 	*/
 	function save_attributes() {
+		// skip saving if account is based on another structural object class
+		if (!$_SESSION[$this->base]->isNewAccount && !in_array('inetOrgPerson', $_SESSION[$this->base]->attributes_orig['objectClass'])) {
+			return array();
+		}
 		$return = $_SESSION[$this->base]->save_module_attributes($this->attributes, $this->orig);
 		// do not set password if posixAccount is active
 		$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
