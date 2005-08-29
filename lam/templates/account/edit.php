@@ -54,20 +54,24 @@ if (!isset($_SESSION['loggedIn'])) {
 // Set correct language, codepages, ....
 setlanguage();
 
+//load account
 if ($_GET['DN']) {
-	//load account
 	$DN = str_replace("\'", '', $_GET['DN']);
 	$type = str_replace("\'", '', $_GET['type']);
 	if ($_GET['type'] == $type) $type = str_replace("'", '',$_GET['type']);
+	if ($_GET['DN'] == $DN) $DN = str_replace("'", '',$_GET['DN']);
 	$_SESSION['account'] = new accountContainer($type, 'account');
 	$_SESSION['account']->load_account($DN);
-	}
+}
+// new account
 else if (count($_POST)==0) {
 	$type = str_replace("\'", '', $_GET['type']);
 	if ($_GET['type'] == $type) $type = str_replace("'", '',$_GET['type']);
+	if ($_GET['DN'] == $DN) $DN = str_replace("'", '',$_GET['DN']);
 	$_SESSION['account'] = new accountContainer($type, 'account');
 	$_SESSION['account']->new_account();
-	}
+}
+// show account page
 $_SESSION['account']->continue_main($_POST);
 
 ?>
