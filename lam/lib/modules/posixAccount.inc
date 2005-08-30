@@ -332,6 +332,10 @@ class posixAccount extends baseModule {
 				"Headline" => _("Home directory"),
 				"Text" => _("Please enter the path to the user's home directory.")
 			),
+			'deletehomedir' => array(
+				"Headline" => _("Home directory"),
+				"Text" => _("Activating this checkbox will remove the user's home directory.")
+			),
 			'user' => array(
 				'uid' => array(
 					"Headline" => _("User name"),
