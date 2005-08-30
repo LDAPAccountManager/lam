@@ -438,7 +438,7 @@ class kolabUser extends baseModule {
 	* @param array $post HTTP-POST values
 	*/
 	function process_attributes(&$post) {
-		if ($post['kolabDelete'])  return 'delete';
+		if ($post['kolabDelete'])  return 'deleteUser';
 		$this->triggered_messages = array();
 		$this->attributes['kolabInvitationPolicy'] = array();
 		// country
@@ -591,7 +591,7 @@ class kolabUser extends baseModule {
 	*
 	* @param array $post HTTP-POST values
 	*/
-	function display_html_delete(&$post) {
+	function display_html_deleteUser(&$post) {
 		$return = array();
 		$return[] = array(
 			0 => array('kind' => 'text', 'text' => _('Do you really want to mark this account for deletion?'), 'td' => array('colspan' => 2)));
@@ -608,7 +608,7 @@ class kolabUser extends baseModule {
 	*
 	* @param array $post HTTP-POST values
 	*/
-	function process_delete(&$post) {
+	function process_deleteUser(&$post) {
 		if ($post['kolabDeleteConfirm']) {
 			// set delete flag
 			$this->attributes['kolabDeleteflag'][0] = $this->attributes['kolabHomeServer'][0];
