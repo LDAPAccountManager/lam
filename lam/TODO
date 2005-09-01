@@ -4,6 +4,12 @@
  - lamdaemon without Perl
 
 
+0.5.1
+
+ - Samba 3: support kickoff time
+ - InetOrgPerson: jpgPhoto
+
+
 0.5.0
 
  - document missing parts
