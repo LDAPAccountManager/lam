@@ -806,7 +806,7 @@ class accountContainer {
 							$this->dn = $profile['ldap_suffix'][0];
 						}
 						$result = 0;
-						}
+					}
 					// save account
 					if ($post['create']) {
 						$errors = $this->save_account();
@@ -814,9 +814,9 @@ class accountContainer {
 							$result = array($errors);
 							$stopProcessing = true;
 						}
-						else $result = 'finish';
-						}
+						else $this->subpage = 'finish';
 					}
+				}
 				if ($this->subpage=='finish') {
 					if ($post['createagain']) {
 						// Reset objects
@@ -832,24 +832,23 @@ class accountContainer {
 						// Add all required objects etc.
 						$this->new_account();
 						$result = 0;
-						}
+					}
 					if ($post['backmain']) {
 						// Return to *-list
 						// *** fixme unset accountContainer in session
 						metaRefresh("../lists/list".$this->type."s.php");
 						exit;
-						}
+					}
 					if ($post['outputpdf']) {
 						// Create / display PDf-file
 						createModulePDF(array($_SESSION[$this->base]), $post['pdfStructure']);
 						exit;
-						}
 					}
 				}
-				else $result = call_user_func(array(&$this->module[$this->order[$this->current_page]], 'process_'.$this->subpage), $post);
 			}
+			else $result = call_user_func(array(&$this->module[$this->order[$this->current_page]], 'process_'.$this->subpage), $post);
+		}
 		// change to next page
-		if (is_string($result)) $this->subpage = $result;  // go to subpage of current module
 		$errorsOccured = false;
 		if (is_array($result)) {  // messages were returned, check for errors
 			$errorKeys = array_keys($result);
@@ -858,6 +857,19 @@ class accountContainer {
 					if (($result[$errorKeys[$i]][$m][0] == 'ERROR') || ($result[$errorKeys[$i]][$m][0] == 'WARN')) {
 						$errorsOccured = true;
 						break;
+					}
+				}
+			}
+		}
+		// go to subpage of current module
+		if (!$errorsOccured) {
+			$postKeys = array_keys($post);
+			for ($p = 0; $p < sizeof($postKeys); $p++) {
+				if (is_string($postKeys[$p]) && (strpos($postKeys[$p], 'form_subpage_' . $this->order[$this->current_page]) === 0)) {
+					$temp = substr($postKeys[$p], strlen($this->order[$this->current_page]) + 14);
+					$temp = explode('_', $temp);
+					if (sizeof($temp) == 2) {
+						$this->subpage = $temp[0];
 					}
 				}
 			}

@@ -537,10 +537,10 @@ class sambaSamAccount extends baseModule {
 				$post['sambaPwdCanChange_mon'], $post['sambaPwdCanChange_day'], $post['sambaPwdCanChange_yea']);
 			$this->attributes['sambaPwdMustChange'][0] = mktime($post['sambaPwdMustChange_h'], $post['sambaPwdMustChange_m'], $post['sambaPwdMustChange_s'],
 				$post['sambaPwdMustChange_mon'], $post['sambaPwdMustChange_day'], $post['sambaPwdMustChange_yea']);
-			$this->attributes['sambaHomePath'][0] = stripslashes($post['sambaHomePath']);
+			$this->attributes['sambaHomePath'][0] = $post['sambaHomePath'];
 			$this->attributes['sambaHomeDrive'][0] = $post['sambaHomeDrive'];
-			$this->attributes['sambaLogonScript'][0] = stripslashes($post['sambaLogonScript']);
-			$this->attributes['sambaProfilePath'][0] = stripslashes($post['sambaProfilePath']);
+			$this->attributes['sambaLogonScript'][0] = $post['sambaLogonScript'];
+			$this->attributes['sambaProfilePath'][0] = $post['sambaProfilePath'];
 			$rids = array_keys($this->rids);
 			$wrid = false;
 			for ($i=0; $i<count($rids); $i++) {
@@ -601,13 +601,13 @@ class sambaSamAccount extends baseModule {
 			// Check values
 			$this->attributes['sambaHomePath'][0] = str_replace('$user', $_SESSION[$this->base]->module['posixAccount']->attributes['uid'][0], $this->attributes['sambaHomePath'][0]);
 			$this->attributes['sambaHomePath'][0] = str_replace('$group', $_SESSION['cache']->getgrnam($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]), $this->attributes['sambaHomePath'][0]);
-			if ($this->attributes['sambaHomePath'][0] != stripslashes($post['sambaHomePath'])) $triggered_messages['sambaHomePath'][] = $this->messages['homePath'][1];
+			if ($this->attributes['sambaHomePath'][0] != $post['sambaHomePath']) $triggered_messages['sambaHomePath'][] = $this->messages['homePath'][1];
 			$this->attributes['sambaLogonScript'][0] = str_replace('$user', $_SESSION[$this->base]->module['posixAccount']->attributes['uid'][0], $this->attributes['sambaLogonScript'][0]);
 			$this->attributes['sambaLogonScript'][0] = str_replace('$group', $_SESSION['cache']->getgrnam($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]), $this->attributes['sambaLogonScript'][0]);
-			if ($this->attributes['sambaLogonScript'][0] != stripslashes($post['sambaLogonScript'])) $triggered_messages['sambaLogonScript'][] = $this->messages['logonScript'][1];
+			if ($this->attributes['sambaLogonScript'][0] != $post['sambaLogonScript']) $triggered_messages['sambaLogonScript'][] = $this->messages['logonScript'][1];
 			$this->attributes['sambaProfilePath'][0] = str_replace('$user', $_SESSION[$this->base]->module['posixAccount']->attributes['uid'][0], $this->attributes['sambaProfilePath'][0]);
 			$this->attributes['sambaProfilePath'][0] = str_replace('$group', $_SESSION['cache']->getgrnam($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]), $this->attributes['sambaProfilePath'][0]);
-			if ($this->attributes['sambaProfilePath'][0] != stripslashes($post['sambaProfilePath'])) $triggered_messages['sambaProfilePath'][] = $this->messages['profilePath'][1];
+			if ($this->attributes['sambaProfilePath'][0] != $post['sambaProfilePath']) $triggered_messages['sambaProfilePath'][] = $this->messages['profilePath'][1];
 			if ( (!$this->attributes['sambaHomePath'][0]=='') && (!get_preg($this->attributes['sambaHomePath'][0], 'UNC')))
 				$triggered_messages['sambaHomePath'][] = $this->messages['homePath'][0];
 			if ( (!$this->attributes['sambaLogonScript'][0]=='') && (!get_preg($this->attributes['sambaLogonScript'][0], 'logonscript')))
@@ -626,10 +626,8 @@ class sambaSamAccount extends baseModule {
 			return $triggered_messages;
 		}
 		else $this->triggered_messages = array();
-		if ($post['sambaUserWorkstations'])  return 'sambaUserWorkstations';
-		if ($post['logonHours'])  return 'logonHours';
 		return 0;
-		}
+	}
 
 	/* Write variables into object and do some regexp checks
 	*/
@@ -675,10 +673,9 @@ class sambaSamAccount extends baseModule {
 					break;
 					}
 				} while(0);
-			if ($post['attributes']) return 'attributes';
 			}
 		return 0;
-		}
+	}
 
 	/**
 	* Save logon hours
@@ -687,7 +684,7 @@ class sambaSamAccount extends baseModule {
 	* @return string next page name (attributes or logonHours)
 	*/
 	function process_logonHours(&$post) {
-		if ($post['abort']) return 'attributes';
+		if ($post['form_subpage_sambaSamAccount_attributes_abort']) return;
 		// set new logon hours
 		$logonHours = '';
 		for ($i = 0; $i < 7; $i++) {
@@ -712,7 +709,6 @@ class sambaSamAccount extends baseModule {
 			$logonHoursNew = $logonHoursNew . $hex;
 		}
 		$this->attributes['sambaLogonHours'][0] = $logonHoursNew;
-		if ($post['submit']) return 'attributes';
 	}
 	
 	/* This function will create the html-page
@@ -794,7 +790,7 @@ class sambaSamAccount extends baseModule {
 				1 => array ( 'kind' => 'input', 'type' => 'text', 'name' => 'sambaLogonScript', 'size' => '20', 'maxlength' => '255', 'value' => $this->attributes['sambaLogonScript'][0]),
 				2 => array ( 'kind' => 'help', 'value' => 'sambaLogonScript' ));
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Samba workstations') ),
-				1 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'sambaUserWorkstations', 'value' => _('Edit workstations')),
+				1 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_sambaSamAccount_sambaUserWorkstations_open', 'value' => _('Edit workstations')),
 				2 => array ( 'kind' => 'help', 'value' => 'sambaUserWorkstations' ));
 
 			$names = array_keys($this->rids);
@@ -836,7 +832,7 @@ class sambaSamAccount extends baseModule {
 		// logon hours
 		if ($_SESSION[$this->base]->type=='user') {
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Logon hours') ),
-				1 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'logonHours', 'value' => _('Edit logon hours')),
+				1 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_sambaSamAccount_logonHours_open', 'value' => _('Edit logon hours')),
 				2 => array ( 'kind' => 'help', 'value' => 'logonHours' ));
 		}
 		// reset host password
@@ -847,10 +843,6 @@ class sambaSamAccount extends baseModule {
 				2 => array ( 'kind' => 'help', 'value' => 'ResetSambaPassword' ));
 			}
 		return $return;
-		}
-
-	function display_html_delete(&$post) {
-		return 0;
 		}
 
 	/* This function will create the html-page
@@ -869,17 +861,17 @@ class sambaSamAccount extends baseModule {
 				$availableUserWorkstations = array_delete($userWorkstations, $availableUserWorkstations);
 				}
 
-			$return[] = array ( 0 => array ( 'kind' => 'fieldset', 'legend' => _("Allowed workstations"), 'value' =>
+			$return[] = array( 0 => array ( 'kind' => 'fieldset', 'legend' => _("Allowed workstations"), 'value' =>
 				array ( 0 => array ( 0 => array ('kind' => 'fieldset', 'td' => array ('valign' => 'top'), 'legend' => _("Allowed workstations"), 'value' =>
-					array ( 0 => array ( 0 => array ( 'kind' => 'select', 'name' => 'sambaUserWorkstations[]', 'size' => '15', 'multiple', 'options' => $userWorkstations)))),
+					array ( 0 => array ( 0 => array ( 'kind' => 'select', 'name' => 'sambaUserWorkstations', 'size' => '15', 'multiple' => true, 'options' => $userWorkstations)))),
 				1 => array ( 'kind' => 'table', 'value' => array ( 0 => array ( 0 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'sambaUserWorkstations_add',
 					'value' => '<=')), 1 => array ( 0 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'sambaUserWorkstations_remove', 'value' => '=>' )),
 					2 => array ( 0 => array ( 'kind' => 'help', 'value' => 'sambaUserWorkstations' )))),
 				2 => array ('kind' => 'fieldset', 'td' => array ('valign' => 'top'), 'legend' => _("Available workstations"), 'value' =>
-					array ( 0 => array ( 0 => array ( 'kind' => 'select', 'name' => 'availableSambaUserWorkstations[]', 'size' => '15', 'multiple', 'options' => $availableUserWorkstations))))
+					array ( 0 => array ( 0 => array ( 'kind' => 'select', 'name' => 'availableSambaUserWorkstations', 'size' => '15', 'multiple' => true, 'options' => $availableUserWorkstations))))
 					))));
 
-			$return[] = array ( 0 => array ( 'kind' => 'input', 'type' => 'submit', 'value' => _('Back') ),
+			$return[] = array ( 0 => array ( 'kind' => 'input', 'name' => 'form_subpage_sambaSamAccount_attributes_back', 'type' => 'submit', 'value' => _('Back') ),
 				1 => array ( 'kind' => 'text'),
 				2 => array ('kind' => 'text'));
 			}
@@ -953,8 +945,8 @@ class sambaSamAccount extends baseModule {
 			array_unshift($timezones, 'GMT-' . $t);
 		}
 		$return[] = array(
-			0 => array('kind' => 'input', 'name' => 'submit', 'type' => 'submit', 'value' => _('Submit'), 'td' => array('align' => 'right')),
-			1 => array('kind' => 'input', 'name' => 'abort', 'type' => 'submit', 'value' => _('Abort'), 'td' => array('align' => 'left')),
+			0 => array('kind' => 'input', 'name' => 'form_subpage_sambaSamAccount_attributes_submit', 'type' => 'submit', 'value' => _('Submit'), 'td' => array('align' => 'right')),
+			1 => array('kind' => 'input', 'name' => 'form_subpage_sambaSamAccount_attributes_abort', 'type' => 'submit', 'value' => _('Abort'), 'td' => array('align' => 'left')),
 			2 => array('kind' => 'text', 'td' => array('colspan' => 2)),
 			3 => array('kind' => 'table', 'td' => array('colspan' => 4, 'align' => 'right'), 'value' => array(0 => array(
 				0 => array('kind' => 'text', 'text' => _('Time zone')),

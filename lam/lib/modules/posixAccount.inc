@@ -817,20 +817,16 @@ class posixAccount extends baseModule {
 			if ($_SESSION[$this->base]->isNewAccount && !get_preg($this->attributes['userPassword'][0], 'password'))
 			$triggered_messages['userPassword'][] = $this->messages['userPassword'][1];
 		}
-	
-	$temp = $this->input_check();
-	// TODO is this really OK?
-	if (is_array($temp)) $triggered_messages = array_merge_recursive($triggered_messages, $temp);
-	// Return error-messages
-	if (count($triggered_messages)!=0) {
-		$this->triggered_messages = $triggered_messages;
-		return $triggered_messages;
-	}
-	else $this->triggered_messages = array();
-	// Go to additional group page when no error did ocour and button was pressed
-	if ($post['addgroup'])  return 'group';
-	if ($post['changepass'])  return 'password';
-	return 0;
+		$temp = $this->input_check();
+		// TODO is this really OK?
+		if (is_array($temp)) $triggered_messages = array_merge_recursive($triggered_messages, $temp);
+		// Return error-messages
+		if (count($triggered_messages)!=0) {
+			$this->triggered_messages = $triggered_messages;
+			return $triggered_messages;
+		}
+		else $this->triggered_messages = array();
+		return 0;
 	}
 
 	/* Write variables into object and do some regexp checks
@@ -850,7 +846,6 @@ class posixAccount extends baseModule {
 		}
 		} while(0);
 	if (isset($post['addgroups_button']) || isset($post['removegroups_button'])) return 'group';
-	if ($post['back']) return 'attributes';
 	return 0;
 	}
 
@@ -860,7 +855,7 @@ class posixAccount extends baseModule {
 	* @param $post HTTP POST
 	*/
 	function process_password(&$post) {
-		if ($post['back']) return 'attributes';
+		if ($post['form_subpage_posixAccount_attributes_back']) return;
 		$messages = array();
 		if ($post['userPassword'] != $post['userPassword2']) {
 			$messages['userPassword'][] = $this->messages['userPassword'][0];
@@ -877,7 +872,6 @@ class posixAccount extends baseModule {
 			}
 		}
 		if (sizeof($messages) > 0) return $messages;
-		else return 'attributes';
 	}
 	
 	/* This function will create the html-page
@@ -935,7 +929,7 @@ class posixAccount extends baseModule {
 		if ($_SESSION[$this->base]->type=='user') {
 			$return[] = array(
 				0 => array('kind' => 'text', 'text' => _('Additional groups')),
-				1 => array('kind' => 'input', 'name' => 'addgroup', 'type' => 'submit', 'value' => _('Edit groups')),
+				1 => array('kind' => 'input', 'name' => 'form_subpage_posixAccount_group_open', 'type' => 'submit', 'value' => _('Edit groups')),
 				2 => array('kind' => 'help', 'value' => 'addgroup'));
 			$return[] = array(
 				0 => array('kind' => 'text', 'text' => _('Home directory').'*'),
@@ -960,7 +954,7 @@ class posixAccount extends baseModule {
 			else {
 				$return[] = array(
 					0 => array('kind' => 'text', 'text' => _('Password') ),
-					1 => array('kind' => 'input', 'name' => 'changepass', 'type' => 'submit', 'value' => _('Change password')));
+					1 => array('kind' => 'input', 'name' => 'form_subpage_posixAccount_password_open', 'type' => 'submit', 'value' => _('Change password')));
 			}
 			$return[] = array(
 				0 => array('kind' => 'text', 'text' => _('Set no password')),
@@ -1038,7 +1032,7 @@ class posixAccount extends baseModule {
 		))));
 
 		$return[] = array(
-			0 => array('kind' => 'input', 'type' => 'submit', 'value' => _('Back'), 'name' => 'back'),
+			0 => array('kind' => 'input', 'type' => 'submit', 'value' => _('Back'), 'name' => 'form_subpage_posixAccount_attributes_back'),
 			1 => array('kind' => 'text'),
 			2 => array('kind' => 'text'));
 		return $return;
@@ -1061,8 +1055,8 @@ class posixAccount extends baseModule {
 		$return[] = array(
 			0 => array('kind' => 'table', 'value' => array(
 				0 => array(
-					0 => array('kind' => 'input', 'type' => 'submit', 'value' => _('Submit'), 'name' => 'submit'),
-					1 => array('kind' => 'input', 'type' => 'submit', 'value' => _('Back'), 'name' => 'back'),
+					0 => array('kind' => 'input', 'type' => 'submit', 'value' => _('Submit'), 'name' => 'form_subpage_posixAccount_attributes_submit'),
+					1 => array('kind' => 'input', 'type' => 'submit', 'value' => _('Back'), 'name' => 'form_subpage_posixAccount_attributes_back'),
 					2 => array('kind' => 'text')))));
 		return $return;
 	}

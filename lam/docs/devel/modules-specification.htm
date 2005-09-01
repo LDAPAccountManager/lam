@@ -745,27 +745,19 @@ is needed t interact with the user.<br>
   </tbody>
 </table>
 <br>
-This function processes user inputs. It checks user inputs. It also
+This function processes user input. It checks user input. It also
 saves changes in attributes.<br>
-<span style="font-weight: bold;">$post</span> is the $_POST
-array.&nbsp; Some attributes ar not part of a profile, e.g. uidNumber.
-If $profile<br>
-is true attributes wich are not part of a profile won't be checked.<br>
-LDAP attributes have to be stored in $this-&gt;attributes array. First
-index is the attribute name. Second<br>
-index is an array of values of an attribute.<br>
-This functions can return three different variables. When 0 is returned
-everything is ok. When a string is<br>
-returned the string is the name of a subpage of the module. If it
+This functions can return two different variables. When 0 is returned
+everything is ok. If it
 returns an array the array contains status<br>
-messages. First Index is the attribute which has triggered a message.
-Second index is an array containing<br>
-status message arrays.<br>
+messages. First index is the attribute which has triggered a message.
+Second index is an array containing status message arrays.<br>
 This function must reset $this-&gt;triggered_messages when it wants to
 display
 status messages. This can be done with $this-&gt;triggered_messages =
 array();<br>
-<br>
+<span style="font-weight: bold;">$post</span> is the $_POST
+array.<br>
 <br>
 <br>
 <h3>2.2.14. process_*<br>
@@ -785,7 +777,7 @@ This function has the exact behavoir like process_attributes function.
 * is the name of the subpage which<br>
 should be processed.<br>
 <span style="font-weight: bold;">$post</span> is the $_POST array. It
-is needed t interact with the user.<br>
+is needed to interact with the user.<br>
 <br>
 <br>
 <h3>2.2.15. display_html_attributes($post)<br>
@@ -981,21 +973,46 @@ height attribute for td elements<br>
   </li>
 </ul>
 <br>
+Input buttons which should load a different subpage of a module must
+have a special <span style="font-style: italic;">name </span>attribute:<br>
+<br>
+<span style="font-weight: bold;">name</span> =&gt; 'form_subpage_' . <span
+ style="font-style: italic;">&lt;module name&gt;</span> . '_' . <span
+ style="font-style: italic;">&lt;subpage name&gt;</span> . '_' . <span
+ style="font-style: italic;">&lt;button name&gt;</span><br>
+<ul>
+  <li><span style="font-weight: bold;">&lt;module name&gt;:</span> name
+of this account module (e.g. 'posixAccount')</li>
+  <li><span style="font-weight: bold;">&lt;subpage name&gt;:</span>
+name of next subpage (e.g. 'attributes')</li>
+  <li><span style="font-weight: bold;"> &lt;button name&gt;:</span> a
+name to distinguish buttons (e.g. 'ok'/'cancel'/'back')<br>
+  </li>
+</ul>
+<br>
+<br>
 <span style="font-weight: bold;">Example:</span><span
  style="font-family: monospace;"><br>
 <br>
 </span><code>array(<br>
-&nbsp; array(<br>
-&nbsp;&nbsp;&nbsp; array("kind" =&gt; "text", "text" =&gt; "This is an
+&nbsp; 0 =&gt; array(<br>
+&nbsp;&nbsp;&nbsp; 0 =&gt; array("kind" =&gt; "text", "text" =&gt;
+"This is an
 example", "td" =&gt; array("colspan" =&gt; 3))<br>
 &nbsp; ), <br>
-&nbsp; array(<br>
-&nbsp;&nbsp;&nbsp; array("kind" =&gt; "text", "text" =&gt; "Input:"),<br>
-&nbsp; &nbsp; array("kind" =&gt; "input", "name" =&gt; "myinput",
+&nbsp; 1 =&gt; array(<br>
+&nbsp;&nbsp;&nbsp; 0 =&gt; array("kind" =&gt; "text", "text" =&gt;
+"Input:"),<br>
+&nbsp; &nbsp; 1 =&gt; array("kind" =&gt; "input", "name" =&gt;
+"myinput",
 "type" =&gt; "text"),<br>
-&nbsp; &nbsp; array("kind" =&gt; "help", "value" =&gt; "42")<br>
+&nbsp; &nbsp; 2 =&gt; array("kind" =&gt; "help", "value" =&gt; "42")<br>
+&nbsp; ),<br>
+</code><code>&nbsp; 2 =&gt; array(<br>
+&nbsp;&nbsp;&nbsp; 0 =&gt; array("kind" =&gt; "input", "name" =&gt;
+'form_subpage_myModule_attributes_back', "value" =&gt; _("Back"))<br>
 &nbsp; )<br>
-)<br>
+</code><code>)<br>
 </code><br>
 <br>
 <h3><br>

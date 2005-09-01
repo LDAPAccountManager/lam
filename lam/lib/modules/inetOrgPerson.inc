@@ -552,7 +552,7 @@ class inetOrgPerson extends baseModule {
 			else {
 				$return[] = array(
 					0 => array('kind' => 'text', 'text' => _('Password') ),
-					1 => array('kind' => 'input', 'name' => 'changepass', 'type' => 'submit', 'value' => _('Change password')));
+					1 => array('kind' => 'input', 'name' => 'form_subpage_inetOrgPerson_password_open', 'type' => 'submit', 'value' => _('Change password')));
 			}
 
 			$return[] = array(0 => array('kind' => 'text', 'td' => array('colspan' => 3)));
@@ -637,7 +637,7 @@ class inetOrgPerson extends baseModule {
 	* @param $post HTTP POST
 	*/
 	function process_password(&$post) {
-		if ($post['back']) return 'attributes';
+		if ($post['form_subpage_inetOrgPerson_attributes_back']) return;
 		$messages = array();
 		if ($post['userPassword'] != $post['userPassword2']) {
 			$messages['userPassword'][] = $this->messages['userPassword'][0];
@@ -650,8 +650,7 @@ class inetOrgPerson extends baseModule {
 				$this->attributes['userPassword'][0] = $post['userPassword'];
 			}
 		}
-		if (sizeof($messages) > 0) return $messages;
-		else return 'attributes';
+		return $messages;
 	}
 
 	/**
@@ -671,8 +670,8 @@ class inetOrgPerson extends baseModule {
 		$return[] = array(
 			0 => array('kind' => 'table', 'value' => array(
 				0 => array(
-					0 => array('kind' => 'input', 'type' => 'submit', 'value' => _('Submit'), 'name' => 'submit'),
-					1 => array('kind' => 'input', 'type' => 'submit', 'value' => _('Back'), 'name' => 'back'),
+					0 => array('kind' => 'input', 'type' => 'submit', 'value' => _('Submit'), 'name' => 'form_subpage_inetOrgPerson_attributes_submit'),
+					1 => array('kind' => 'input', 'type' => 'submit', 'value' => _('Back'), 'name' => 'form_subpage_inetOrgPerson_attributes_back'),
 					2 => array('kind' => 'text')))));
 		return $return;
 	}

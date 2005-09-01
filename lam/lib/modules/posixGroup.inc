@@ -175,7 +175,7 @@ class posixGroup extends baseModule {
 			2 => array ('kind' => 'help', 'value' => 'description'));
 		$return[] = array(
 			0 => array('kind' => 'text', 'text' => _("Group members").'*'),
-			1 => array('kind' => 'input', 'name' => 'adduser', 'type' => 'submit', 'value' => _('Edit members')),
+			1 => array('kind' => 'input', 'name' => 'form_subpage_posixGroup_user_open', 'type' => 'submit', 'value' => _('Edit members')),
 			2 => array ('kind' => 'help', 'value' => 'adduser'));
 		if ($_SESSION[$this->base]->isNewAccount) {
 			$return[] = array(
@@ -190,7 +190,7 @@ class posixGroup extends baseModule {
 		else {
 			$return[] = array(
 				0 => array('kind' => 'text', 'text' => _('Password') ),
-				1 => array('kind' => 'input', 'name' => 'changepass', 'type' => 'submit', 'value' => _('Change password')));
+				1 => array('kind' => 'input', 'name' => 'form_subpage_posixGroup_password_open', 'type' => 'submit', 'value' => _('Change password')));
 		}
 		$return[] = array(
 			0 => array('kind' => 'text', 'text' => _('Set no password')),
@@ -259,7 +259,7 @@ class posixGroup extends baseModule {
 		))));
 
 		$return[] = array(
-			0 => array('kind' => 'input', 'name' => 'toattributes' ,'type' => 'submit', 'value' => _('Back') ),
+			0 => array('kind' => 'input', 'name' => 'form_subpage_posixGroup_attributes_back' ,'type' => 'submit', 'value' => _('Back') ),
 			1 => array('kind' => 'text'),
 			2 => array('kind' => 'text'));
 		return $return;
@@ -282,8 +282,8 @@ class posixGroup extends baseModule {
 		$return[] = array(
 			0 => array('kind' => 'table', 'value' => array(
 				0 => array(
-					0 => array('kind' => 'input', 'type' => 'submit', 'value' => _('Submit'), 'name' => 'submit'),
-					1 => array('kind' => 'input', 'type' => 'submit', 'value' => _('Back'), 'name' => 'back'),
+					0 => array('kind' => 'input', 'type' => 'submit', 'value' => _('Submit'), 'name' => 'form_subpage_posixGroup_attributes_submit'),
+					1 => array('kind' => 'input', 'type' => 'submit', 'value' => _('Back'), 'name' => 'form_subpage_posixGroup_attributes_back'),
 					2 => array('kind' => 'text')))));
 		return $return;
 	}
@@ -672,9 +672,6 @@ class posixGroup extends baseModule {
 			return $triggered_messages;
 		}
 		else $this->triggered_messages = array();
-		// Go to additional group page when no error did ocour and button was pressed
-		if ($post['adduser'])  return 'user';
-		if ($post['changepass'])  return 'password';
 		return 0;
 	}
 
@@ -699,8 +696,6 @@ class posixGroup extends baseModule {
 		elseif (isset($post['removeusers']) && isset($post['removeusers_button'])) { // remove users from list
 			$this->attributes['memberUid'] = array_delete($post['removeusers'], $this->attributes['memberUid']);
 		}
-		if (isset($post['adduser_button']) || isset($post['removeuser_button'])) return 'user';
-		elseif ($post['toattributes']) return 'attributes';
 		return 0;
 	}
 
@@ -711,7 +706,7 @@ class posixGroup extends baseModule {
 	* @param $post HTTP POST
 	*/
 	function process_password(&$post) {
-		if ($post['back']) return 'attributes';
+		if ($post['form_subpage_posixGroup_attributes_back']) return;
 		$messages = array();
 		if ($post['userPassword'] != $post['userPassword2']) {
 			$messages['userPassword'][] = $this->messages['userPassword'][0];
@@ -725,7 +720,6 @@ class posixGroup extends baseModule {
 				$this->userPassword_nopassword = false;
 			}
 		if (sizeof($messages) > 0) return $messages;
-		else return 'attributes';
 	}
 	
 	/* This function returns an array with 3 entries:

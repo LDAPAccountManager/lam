@@ -487,10 +487,6 @@ class sambaAccount extends baseModule {
 		return $return;
 		}
 
-	function delete_attributes($post) {
-		return 0;
-		}
-
 	/* Write variables into object and do some regexp checks
 	*/
 	function process_attributes(&$post) {
@@ -545,10 +541,10 @@ class sambaAccount extends baseModule {
 				$post['pwdCanChange_mon'], $post['pwdCanChange_day'], $post['pwdCanChange_yea']);
 			$this->attributes['pwdMustChange'][0] = mktime($post['pwdMustChange_h'], $post['pwdMustChange_m'], $post['pwdMustChange_s'],
 				$post['pwdMustChange_mon'], $post['pwdMustChange_day'], $post['pwdMustChange_yea']);
-			$this->attributes['smbHome'][0] = stripslashes($post['smbHome']);
+			$this->attributes['smbHome'][0] = $post['smbHome'];
 			$this->attributes['homeDrive'][0] = $post['homeDrive'];
-			$this->attributes['scriptPath'][0] = stripslashes($post['scriptPath']);
-			$this->attributes['profilePath'][0] = stripslashes($post['profilePath']);
+			$this->attributes['scriptPath'][0] = $post['scriptPath'];
+			$this->attributes['profilePath'][0] = $post['profilePath'];
 			$rids = array_keys($this->rids);
 			$wrid = false;
 			for ($i=0; $i<count($rids); $i++) {
@@ -592,13 +588,13 @@ class sambaAccount extends baseModule {
 			}
 			$this->attributes['smbHome'][0] = str_replace('$user', $_SESSION[$this->base]->module['posixAccount']->attributes['uid'][0], $this->attributes['smbHome'][0]);
 			$this->attributes['smbHome'][0] = str_replace('$group', $_SESSION['cache']->getgrnam($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]), $this->attributes['smbHome'][0]);
-			if ($this->attributes['smbHome'][0] != stripslashes($post['smbHome'])) $triggered_messages['smbHome'][] = $this->messages['homePath'][1];
+			if ($this->attributes['smbHome'][0] != $post['smbHome']) $triggered_messages['smbHome'][] = $this->messages['homePath'][1];
 			$this->attributes['scriptPath'][0] = str_replace('$user', $_SESSION[$this->base]->module['posixAccount']->attributes['uid'][0], $this->attributes['scriptPath'][0]);
 			$this->attributes['scriptPath'][0] = str_replace('$group', $_SESSION['cache']->getgrnam($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]), $this->attributes['scriptPath'][0]);
-			if ($this->attributes['scriptPath'][0] != stripslashes($post['scriptPath'])) $triggered_messages['scriptPath'][] = $this->messages['logonScript'][1];
+			if ($this->attributes['scriptPath'][0] != $post['scriptPath']) $triggered_messages['scriptPath'][] = $this->messages['logonScript'][1];
 			$this->attributes['profilePath'][0] = str_replace('$user', $_SESSION[$this->base]->module['posixAccount']->attributes['uid'][0], $this->attributes['profilePath'][0]);
 			$this->attributes['profilePath'][0] = str_replace('$group', $_SESSION['cache']->getgrnam($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]), $this->attributes['profilePath'][0]);
-			if ($this->attributes['profiletPath'][0] != stripslashes($post['profilePath'])) $triggered_messages['profilePath'][] = $this->messages['profilePath'][1];
+			if ($this->attributes['profiletPath'][0] != $post['profilePath']) $triggered_messages['profilePath'][] = $this->messages['profilePath'][1];
 			if ( (!$this->attributes['smbHome'][0]=='') && (!get_preg($this->attributes['smbHome'][0], 'UNC')))
 					$triggered_messages['smbHome'][] = $this->messages['homePath'][0];
 			if ( (!$this->attributes['scriptPath'][0]=='') && (!get_preg($this->attributes['scriptPath'][0], 'logonscript')))
@@ -624,7 +620,6 @@ class sambaAccount extends baseModule {
 			return $triggered_messages;
 		}
 		else $this->triggered_messages = array();
-		if ($post['userWorkstations'])  return 'userWorkstations';
 		return 0;
 		}
 
@@ -633,49 +628,46 @@ class sambaAccount extends baseModule {
 	function process_userWorkstations(&$post) {
 		// Load attributes
 		if ($_SESSION[$this->base]->type=='user') {
-			do { // X-Or, only one if() can be true
-				if (isset($post['availableUserWorkstations']) && isset($post['userWorkstations_add'])) { // Add workstations to list
-					$temp = str_replace(' ', '', $this->attributes['userWorkstations'][0]);
-					$workstations = explode (',', $temp);
-					for ($i=0; $i<count($workstations); $i++)
-						if ($workstations[$i]=='') unset($workstations[$i]);
-					$workstations = array_values($workstations);
-					// Add new // Add workstations
-					$workstations = array_merge($workstations, $post['availableUserWorkstations']);
-					// remove doubles
-					$workstations = array_flip($workstations);
-					array_unique($workstations);
-					$workstations = array_flip($workstations);
-					// sort workstations
-					sort($workstations);
-					// Recreate workstation string
-					$this->attributes['userWorkstations'][0] = $workstations[0];
-					for ($i=1; $i<count($workstations); $i++) {
-						$this->attributes['userWorkstations'][0] = $this->attributes['userWorkstations'][0] . "," . $workstations[$i];
-						}
-					break;
-					}
-				if (isset($post['userWorkstations']) && isset($post['userWorkstations_remove'])) { // remove // Add workstations from list
-					// Put all workstations in array
-					$temp = str_replace(' ', '', $this->attributes['userWorkstations'][0]);
-					$workstations = explode (',', $temp);
-					for ($i=0; $i<count($workstations); $i++)
-						if ($workstations[$i]=='') unset($workstations[$i]);
-					$workstations = array_values($workstations);
-					// Remove unwanted workstations from array
-					$workstations = array_delete($post['userWorkstations'], $workstations);
-					// Recreate workstation string
-					$this->attributes['userWorkstations'][0] = $workstations[0];
-					for ($i=1; $i<count($workstations); $i++) {
-						$this->attributes['userWorkstations'][0] = $this->attributes['userWorkstations'][0] . "," . $workstations[$i];
-						}
-					break;
-					}
-				} while(0);
-			if ($post['attributes']) return 'attributes';
+			if (isset($post['availableUserWorkstations']) && isset($post['userWorkstations_add'])) { // Add workstations to list
+				$temp = str_replace(' ', '', $this->attributes['userWorkstations'][0]);
+				$workstations = explode (',', $temp);
+				for ($i=0; $i<count($workstations); $i++) {
+					if ($workstations[$i]=='') unset($workstations[$i]);
+				}
+				$workstations = array_values($workstations);
+				// Add new // Add workstations
+				$workstations = array_merge($workstations, $post['availableUserWorkstations']);
+				// remove doubles
+				$workstations = array_flip($workstations);
+				array_unique($workstations);
+				$workstations = array_flip($workstations);
+				// sort workstations
+				sort($workstations);
+				// Recreate workstation string
+				$this->attributes['userWorkstations'][0] = $workstations[0];
+				for ($i=1; $i<count($workstations); $i++) {
+					$this->attributes['userWorkstations'][0] = $this->attributes['userWorkstations'][0] . "," . $workstations[$i];
+				}
 			}
-		return 0;
+			elseif (isset($post['userWorkstations']) && isset($post['userWorkstations_remove'])) { // remove // Add workstations from list
+				// Put all workstations in array
+				$temp = str_replace(' ', '', $this->attributes['userWorkstations'][0]);
+				$workstations = explode (',', $temp);
+				for ($i=0; $i<count($workstations); $i++) {
+					if ($workstations[$i]=='') unset($workstations[$i]);
+				}
+				$workstations = array_values($workstations);
+				// Remove unwanted workstations from array
+				$workstations = array_delete($post['userWorkstations'], $workstations);
+				// Recreate workstation string
+				$this->attributes['userWorkstations'][0] = $workstations[0];
+				for ($i=1; $i<count($workstations); $i++) {
+					$this->attributes['userWorkstations'][0] = $this->attributes['userWorkstations'][0] . "," . $workstations[$i];
+				}
+			}
 		}
+		return 0;
+	}
 
 	/* This function will create the html-page
 	* to show a page with all attributes.
@@ -746,7 +738,7 @@ class sambaAccount extends baseModule {
 				1 => array ( 'kind' => 'input', 'type' => 'text', 'name' => 'scriptPath', 'size' => '20', 'maxlength' => '255', 'value' => $this->attributes['scriptPath'][0]),
 				2 => array ( 'kind' => 'help', 'value' => 'scriptPath' ));
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Samba workstations') ),
-				1 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'userWorkstations', 'value' => _('Edit workstations')),
+				1 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_sambaAccount_userWorkstations_open', 'value' => _('Edit workstations')),
 				2 => array ( 'kind' => 'help', 'value' => 'userWorkstations' ));
 
 			$names = array_keys($this->rids);
@@ -780,7 +772,7 @@ class sambaAccount extends baseModule {
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Special user') ),
 				1 => array ( 'kind' => 'select', 'name' => 'rid', 'options' => $options, 'options_selected' => $selected),
 				2 => array ( 'kind' => 'help', 'value' => 'rid' ));
-			}
+		}
 		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Domain') ),
 			1 => array ( 'kind' => 'input', 'type' => 'text', 'name' => 'domain', 'size' => '20', 'maxlength' => '255', 'value' => $this->attributes['domain'][0]),
 			2 => array ( 'kind' => 'help', 'value' => 'domain' ));
@@ -789,13 +781,9 @@ class sambaAccount extends baseModule {
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Reset password') ),
 				1 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'ResetSambaPassword', 'value' => _('Submit')),
 				2 => array ( 'kind' => 'help', 'value' => 'ResetSambaPassword' ));
-			}
+		}
 		return $return;
-		}
-
-	function display_html_delete(&$post) {
-		return 0;
-		}
+	}
 
 	/* This function will create the html-page
 	* to show a page with all attributes.
@@ -811,25 +799,24 @@ class sambaAccount extends baseModule {
 				$result = str_replace(' ', '', $this->attributes['userWorkstations'][0]);
 				$userWorkstations = explode (',', $result);
 				$availableUserWorkstations = array_delete($userWorkstations, $availableUserWorkstations);
-				}
-
+			}
 			$return[] = array ( 0 => array ( 'kind' => 'fieldset', 'legend' => _("Allowed workstations"), 'value' =>
 				array ( 0 => array ( 0 => array ('kind' => 'fieldset', 'td' => array ('valign' => 'top'), 'legend' => _("Allowed workstations"), 'value' =>
-					array ( 0 => array ( 0 => array ( 'kind' => 'select', 'name' => 'userWorkstations[]', 'size' => '15', 'multiple', 'options' => $userWorkstations)))),
+					array ( 0 => array ( 0 => array ( 'kind' => 'select', 'name' => 'userWorkstations', 'size' => '15', 'multiple' => true, 'options' => $userWorkstations)))),
 				1 => array ( 'kind' => 'table', 'value' => array ( 0 => array ( 0 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'userWorkstations_add',
 					'value' => '<=')), 1 => array ( 0 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'userWorkstations_remove', 'value' => '=>' )),
 					2 => array ( 0 => array ( 'kind' => 'help', 'value' => 'userWorkstations' )))),
 				2 => array ('kind' => 'fieldset', 'td' => array ('valign' => 'top'), 'legend' => _("Available workstations"), 'value' =>
-					array ( 0 => array ( 0 => array ( 'kind' => 'select', 'name' => 'availableUserWorkstations[]', 'size' => '15', 'multiple', 'options' => $availableUserWorkstations))))
+					array ( 0 => array ( 0 => array ( 'kind' => 'select', 'name' => 'availableUserWorkstations', 'size' => '15', 'multiple' => true, 'options' => $availableUserWorkstations))))
 					))));
 
-			$return[] = array ( 0 => array ( 'kind' => 'input', 'type' => 'submit', 'value' => _('Back') ),
-				1 => array ( 'kind' => 'text'),
-				2 => array ('kind' => 'text'));
-			}
-
-		return $return;
+			$return[] = array(
+				0 => array('kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_sambaAccount_attributes_back', 'value' => _('Back')),
+				1 => array('kind' => 'text'),
+				2 => array('kind' => 'text'));
 		}
+		return $return;
+	}
 	
 	/*
 	 * (non-PHPDoc)

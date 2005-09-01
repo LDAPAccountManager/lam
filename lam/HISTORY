@@ -1,9 +1,12 @@
 ??? 0.5.rc3
+   - INFO messages no longer prevent changing to subpages of a module
    - fixed bugs:
     -> buttons on account page are better sorted
     -> account module: some problems solved when used for user accounts
     -> nisMailAlias: fixed missing RDN possibility
     -> fixed conflicts when accounts were built with other base modules
+    -> Samba 2/3: setting allowed workstations failed
+    -> magic_quotes_gpc = Off prevented editing of accounts
 
 
 18.08.2005 0.5.rc2

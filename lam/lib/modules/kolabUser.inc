@@ -423,7 +423,7 @@ class kolabUser extends baseModule {
 		// delete flag
 		if (!$_SESSION[$this->base]->isNewAccount) {
 			$returnDelete = array(
-				0 => array('kind' => 'input', 'type' => 'submit', 'value' => _('Mark account for deletion'), 'name' => 'kolabDelete'),
+				0 => array('kind' => 'input', 'type' => 'submit', 'value' => _('Mark account for deletion'), 'name' => 'form_subpage_kolabUser_deleteUser_open'),
 				1 => array('kind' => 'help', 'value' => 'deleteFlag'));
 			$return[] = array(
 				array('kind' => 'fieldset', 'legend' => _('Delete Kolab account'), 'value' => array($returnDelete), 'td' => array('colspan' => 3))
@@ -438,7 +438,7 @@ class kolabUser extends baseModule {
 	* @param array $post HTTP-POST values
 	*/
 	function process_attributes(&$post) {
-		if ($post['kolabDelete'])  return 'deleteUser';
+		if ($post['form_subpage_kolabUser_deleteUser_open'])  return;
 		$this->triggered_messages = array();
 		$this->attributes['kolabInvitationPolicy'] = array();
 		// country
@@ -598,8 +598,8 @@ class kolabUser extends baseModule {
 		$return[] = array(
 			0 => array('kind' => 'text', 'text' => ' ', 'td' => array('colspan' => 2)));
 		$return[] = array(
-			0 => array('kind' => 'input', 'type' => 'submit', 'value' => _('Mark account for deletion'), 'name' => 'kolabDeleteConfirm'),
-			1 => array('kind' => 'input', 'type' => 'submit', 'value' => _('Cancel'), 'name' => 'kolabDeleteCancel'));
+			0 => array('kind' => 'input', 'type' => 'submit', 'value' => _('Mark account for deletion'), 'name' => 'form_subpage_kolabUser_attributes_confirm'),
+			1 => array('kind' => 'input', 'type' => 'submit', 'value' => _('Cancel'), 'name' => 'form_subpage_kolabUser_attributes_cancel'));
 		return $return;
 	}
 	
@@ -609,11 +609,10 @@ class kolabUser extends baseModule {
 	* @param array $post HTTP-POST values
 	*/
 	function process_deleteUser(&$post) {
-		if ($post['kolabDeleteConfirm']) {
+		if ($post['form_subpage_kolabUser_attributes_confirm']) {
 			// set delete flag
 			$this->attributes['kolabDeleteflag'][0] = $this->attributes['kolabHomeServer'][0];
 		}
-		return 'attributes';
 	}
 
 	/**
