@@ -148,11 +148,6 @@ class sambaGroupMapping extends baseModule {
 		return $triggered_messages;
 	}
 
-	function delete_attributes($post) {
-		return 0;
-		}
-
-
 	/* This function will create the html-page
 	* to show a page with all attributes.
 	* It will output a complete html-table
@@ -205,11 +200,6 @@ class sambaGroupMapping extends baseModule {
 
 		return $return;
 		}
-
-	function display_html_delete(&$post) {
-		return 0;
-		}
-
 
 	/* This function returns all ldap attributes
 	* which are part of sambaGroupMapping and returns
