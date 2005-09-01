@@ -183,10 +183,6 @@ class account extends baseModule {
 		return $return;
 	}
 
-	function delete_attributes($post) {
-		return 0;
-		}
-
 	/* Write variables into object and do some regexp checks
 	*/
 	function process_attributes(&$post) {
@@ -224,10 +220,6 @@ class account extends baseModule {
 		return $return;
 	}
 
-	function display_html_delete(&$post) {
-		return 0;
-	}
-	
 	/*
 	 * (non-PHPDoc)
 	 * @see baseModule#get_pdfEntries
