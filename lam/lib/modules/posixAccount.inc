@@ -365,6 +365,10 @@ class posixAccount extends baseModule {
 					"Headline" => _("Account deactivated"),
 					"Text" => _("If checked account will be deactivated by putting a \"!\" before the encrypted password.")
 				),
+				'userPassword_invalid' => array(
+					"Headline" => _("Invalid password"),
+					"Text" => _("This will set an invalid password which prevents logins with this account.")
+				),
 				'loginShell' => array(
 					"Headline" => _("Login shell"),
 					"Text" => _("To disable login use /bin/false. The list of shells is read from lam/config/shells")
@@ -959,7 +963,7 @@ class posixAccount extends baseModule {
 			$return[] = array(
 				0 => array('kind' => 'text', 'text' => _('Set no password')),
 				1 => array('kind' => 'input', 'name' => 'userPassword_nopassword', 'type' => 'checkbox', 'checked' => $this->userPassword_nopassword),
-				2 => array('kind' => 'help', 'value' => 'userPassword_nopassword'));
+				2 => array('kind' => 'help', 'value' => 'userPassword_no'));
 			$return[] = array(
 				0 => array('kind' => 'text', 'text' => _('Invalid password')),
 				1 => array('kind' => 'input', 'name' => 'userPassword_invalid', 'type' => 'checkbox', 'checked' => $this->userPassword_invalid),

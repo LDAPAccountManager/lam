@@ -335,6 +335,9 @@ class sambaAccount extends baseModule {
 			"password" => array(
 				"ext" => "FALSE", "Headline" => _("Samba password"),
 				"Text" => _("This is the account's Windows password.")),
+			"resetPassword" => array(
+				"ext" => "FALSE", "Headline" => _("Reset password"),
+				"Text" => _("This will reset the host's password to a default value.")),
 			"pwdUnix" => array(
 				"ext" => "FALSE", "Headline" => _("Use Unix password"),
 				"Text" => _("If checked Unix password will also be used as Samba password.")),
@@ -376,6 +379,9 @@ class sambaAccount extends baseModule {
 			"scriptPath" => array(
 				"ext" => "FALSE", "Headline" => _("Logon script"),
 				"Text" => _('File name and path relative to the netlogon-share which should be executed on logon. $user and $group are replaced with user and group name.'). ' '. _("Can be left empty.")),
+			"userWorkstations" => array(
+				"ext" => "FALSE", "Headline" => _("Samba workstations"),
+				"Text" => _("List of Samba workstations the user is allowed to login. Empty means every workstation.")),
 			"workstations" => array(
 				"ext" => "FALSE", "Headline" => _("Samba workstations"),
 				"Text" => _("Comma separated list of Samba workstations the user is allowed to login. Empty means every workstation."). ' '. _("Can be left empty.")),
@@ -690,21 +696,21 @@ class sambaAccount extends baseModule {
 			$return[] = array(
 				0 => array('kind' => 'text', 'text' => _('Repeat password') ),
 				1 => array('kind' => 'input', 'name' => 'lmPassword2', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => ''),
-				2 => array('kind' => 'help', 'value' => 'lmPassword'));
+				2 => array('kind' => 'help', 'value' => 'password'));
 			if ($_SESSION[$this->base]->module['posixAccount']->orig['userPassword'][0] != $_SESSION[$this->base]->module['posixAccount']->attributes['userPassword'][0]) {
 				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Use unix password') ),
 					1 => array ( 'kind' => 'input', 'name' => 'useunixpwd', 'type' => 'checkbox', 'checked' => $this->useunixpwd, 'value' => true),
-					2 => array ('kind' => 'help', 'value' => 'useunixpwd'));
+					2 => array ('kind' => 'help', 'value' => 'pwdUnix'));
 				}
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Use no password') ),
 				1 => array ( 'kind' => 'input', 'name' => 'acctFlagsN', 'type' => 'checkbox', 'checked' => $this->nopwd),
-				2 => array ('kind' => 'help', 'value' => 'acctFlagsN'));
+				2 => array ('kind' => 'help', 'value' => 'noPassword'));
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Password does not expire') ),
 				1 => array ( 'kind' => 'input', 'name' => 'acctFlagsX', 'type' => 'checkbox', 'checked' => $this->noexpire),
-				2 => array ('kind' => 'help', 'value' => 'acctFlagsX'));
+				2 => array ('kind' => 'help', 'value' => 'noExpire'));
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Account is deactivated') ),
 				1 => array ( 'kind' => 'input', 'name' => 'acctFlagsD', 'type' => 'checkbox', 'checked' => $this->deactivated),
-				2 => array ('kind' => 'help', 'value' => 'acctFlagsD'));
+				2 => array ('kind' => 'help', 'value' => 'deactivated'));
 			for ( $i=1; $i<=31; $i++ ) $mday[] = $i;
 			for ( $i=1; $i<=12; $i++ ) $mon[] = $i;
 			for ( $i=2003; $i<=2030; $i++ ) $year[] = $i;
@@ -730,7 +736,7 @@ class sambaAccount extends baseModule {
 				2 => array ( 'kind' => 'help', 'value' => 'homeDrive' ));
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Home path') ),
 				1 => array ( 'kind' => 'input', 'type' => 'text', 'name' => 'smbHome', 'size' => '20', 'maxlength' => '255', 'value' => $this->attributes['smbHome'][0]),
-				2 => array ( 'kind' => 'help', 'value' => 'smbHome' ));
+				2 => array ( 'kind' => 'help', 'value' => 'homePath' ));
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Profile path') ),
 				1 => array ( 'kind' => 'input', 'type' => 'text', 'name' => 'profilePath', 'size' => '20', 'maxlength' => '255', 'value' => $this->attributes['profilePath'][0]),
 				2 => array ( 'kind' => 'help', 'value' => 'profilePath' ));
@@ -756,7 +762,7 @@ class sambaAccount extends baseModule {
 				else $selected[] = $_SESSION['cache']->getgrnam($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]);
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Windows group') ),
 				1 => array ( 'kind' => 'select', 'name' => 'primaryGroupID', 'options' => $options, 'options_selected' => $selected),
-				2 => array ( 'kind' => 'help', 'value' => 'primaryGroupID' ));
+				2 => array ( 'kind' => 'help', 'value' => 'group' ));
 			$options = array();
 			$selected = array();
 			$wrid = false;
@@ -771,7 +777,7 @@ class sambaAccount extends baseModule {
 			else $selected[] = "-";
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Special user') ),
 				1 => array ( 'kind' => 'select', 'name' => 'rid', 'options' => $options, 'options_selected' => $selected),
-				2 => array ( 'kind' => 'help', 'value' => 'rid' ));
+				2 => array ( 'kind' => 'help', 'value' => 'specialUser' ));
 		}
 		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Domain') ),
 			1 => array ( 'kind' => 'input', 'type' => 'text', 'name' => 'domain', 'size' => '20', 'maxlength' => '255', 'value' => $this->attributes['domain'][0]),
@@ -780,7 +786,7 @@ class sambaAccount extends baseModule {
 			$return[] = array ( 0 => array ( 'kind' => 'input', 'name' => 'acctFlagsW', 'type' => 'hidden', 'value' => 'true' ));
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Reset password') ),
 				1 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'ResetSambaPassword', 'value' => _('Submit')),
-				2 => array ( 'kind' => 'help', 'value' => 'ResetSambaPassword' ));
+				2 => array ( 'kind' => 'help', 'value' => 'resetPassword' ));
 		}
 		return $return;
 	}

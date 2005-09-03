@@ -130,10 +130,10 @@ class sambaSamAccount extends baseModule {
 			'error_message' => $this->messages['logonHours'][0]);
 		// profile mappings
 		$return['profile_mappings'] = array(
-			'sambaSamAccount_homeDrive' => 'sambaHomeDrive',
+			'sambaSamAccount_sambaHomeDrive' => 'sambaHomeDrive',
 			'sambaSamAccount_smbhome' => 'sambaHomePath',
 			'sambaSamAccount_profilePath' => 'sambaProfilePath',
-			'sambaSamAccount_scriptPath' => 'sambaLogonScript',
+			'sambaSamAccount_logonScript' => 'sambaLogonScript',
 			'sambaSamAccount_userWorkstations' => 'sambaUserWorkstations',
 			'sambaSamAccount_sambaDomainName' => 'sambaDomainName',
 			'sambaSamAccount_logonHours' => 'sambaLogonHours'
@@ -159,6 +159,9 @@ class sambaSamAccount extends baseModule {
 			"password" => array(
 				"ext" => "FALSE", "Headline" => _("Samba password"),
 				"Text" => _("This is the account's Windows password.")),
+			"resetPassword" => array(
+				"ext" => "FALSE", "Headline" => _("Reset password"),
+				"Text" => _("This will reset the host's password to a default value.")),
 			"pwdUnix" => array(
 				"ext" => "FALSE", "Headline" => _("Use Unix password"),
 				"Text" => _("If checked Unix password will also be used as Samba password.")),
@@ -200,12 +203,21 @@ class sambaSamAccount extends baseModule {
 			"scriptPath" => array(
 				"ext" => "FALSE", "Headline" => _("Logon script"),
 				"Text" => _('File name and path relative to netlogon-share which should be executed on logon. $user and $group are replaced with user and group name.'). ' '. _("Can be left empty.")),
+			"userWorkstations" => array(
+				"ext" => "FALSE", "Headline" => _("Samba workstations"),
+				"Text" => _("List of Samba workstations the user is allowed to login. Empty means every workstation.")),
 			"workstations" => array(
 				"ext" => "FALSE", "Headline" => _("Samba workstations"),
 				"Text" => _("Comma separated list of Samba workstations the user is allowed to login. Empty means every workstation."). ' '. _("Can be left empty.")),
+			"group" => array(
+				"ext" => "FALSE", "Headline" => _("Windows primary group"),
+				"Text" => _("This is the user's primary Windows group.")),
 			"groupUpload" => array(
 				"ext" => "FALSE", "Headline" => _("Windows primary group SID"),
 				"Text" => _("This is the SID of the user's primary Windows group.")),
+			"specialUser" => array(
+				"ext" => "FALSE", "Headline" => _("Special user"),
+				"Text" => _("This allows you to define this account as a special user like administrator or guest.")),
 			"ridUpload" => array(
 				"ext" => "FALSE", "Headline" => _("Samba RID"),
 				"Text" => _("This is the relative ID number for your Windows account. You can either enter a number or one of these special accounts: ") .
@@ -458,11 +470,12 @@ class sambaSamAccount extends baseModule {
 		*/
 		// Get Domain SID from name
 		$sambaDomains = search_domains($_SESSION['config']->get_Suffix('domain'));
-		for ($i=0; $i<count($sambaDomains); $i++ )
+		for ($i=0; $i<count($sambaDomains); $i++ ) {
 			if ($this->attributes['sambaDomainName'][0] == $sambaDomains[$i]->name) {
 				$SID = $sambaDomains[$i]->SID;
 				$RIDbase = $sambaDomains[$i]->RIDbase;
-				}
+			}
+		}
 		$special = false;
 		if ($this->attributes['sambaSID'][0] == $SID."-500") $special = true;
 		if ($this->attributes['sambaSID'][0] == $SID."-501") $special = true;
@@ -471,11 +484,7 @@ class sambaSamAccount extends baseModule {
 		$return = $_SESSION[$this->base]->save_module_attributes($this->attributes, $this->orig);
 
 		return $return;
-		}
-
-	function delete_attributes($post) {
-		return 0;
-		}
+	}
 
 	/* Write variables into object and do some regexp checks
 	*/
@@ -742,7 +751,7 @@ class sambaSamAccount extends baseModule {
 				1 => array ( 'kind' => 'input', 'name' => 'sambaLMPassword', 'type' => 'password', 'size' => '20', 'maxlength' => '255'));
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Repeat password') ),
 				1 => array ( 'kind' => 'input', 'name' => 'sambaLMPassword2', 'type' => 'password', 'size' => '20', 'maxlength' => '255'),
-				2 => array ('kind' => 'help', 'value' => 'sambaLMPassword'));
+				2 => array ('kind' => 'help', 'value' => 'password'));
 			if ($_SESSION[$this->base]->module['posixAccount']->orig['userPassword'][0] != $_SESSION[$this->base]->module['posixAccount']->attributes['userPassword'][0]) {
 				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Use unix password') ),
 					1 => array ( 'kind' => 'input', 'name' => 'useunixpwd', 'type' => 'checkbox', 'checked' => $this->useunixpwd),
@@ -750,13 +759,13 @@ class sambaSamAccount extends baseModule {
 			}
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Use no password') ),
 				1 => array ( 'kind' => 'input', 'name' => 'sambaAcctFlagsN', 'type' => 'checkbox', 'checked' => $this->nopwd, 'value' => 'true'),
-				2 => array ('kind' => 'help', 'value' => 'sambaAcctFlagsN'));
+				2 => array ('kind' => 'help', 'value' => 'noPassword'));
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Password does not expire') ),
 				1 => array ( 'kind' => 'input', 'name' => 'sambaAcctFlagsX', 'type' => 'checkbox', 'checked' => $this->noexpire, 'value' => 'true'),
-				2 => array ('kind' => 'help', 'value' => 'sambaAcctFlagsX'));
+				2 => array ('kind' => 'help', 'value' => 'noExpire'));
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Account is deactivated') ),
 				1 => array ( 'kind' => 'input', 'name' => 'sambaAcctFlagsD', 'type' => 'checkbox', 'checked' => $this->deactivated, 'value' => 'true'),
-				2 => array ('kind' => 'help', 'value' => 'sambaAcctFlagsD'));
+				2 => array ('kind' => 'help', 'value' => 'deactivated'));
 			for ( $i=1; $i<=31; $i++ ) $mday[] = $i;
 			for ( $i=1; $i<=12; $i++ ) $mon[] = $i;
 			for ( $i=2003; $i<=2030; $i++ ) $year[] = $i;
@@ -767,7 +776,7 @@ class sambaSamAccount extends baseModule {
 						'options' => $mon, 'options_selected' => array($canchangedate['mon'])),
 					2 => array ( 'kind' => 'select', 'name' => 'sambaPwdCanChange_yea',
 						'options' => $year, 'options_selected' => array($canchangedate['year']))))),
-				2 => array ( 'kind' => 'help', 'value' => 'sambaPwdCanChange' ));
+				2 => array ( 'kind' => 'help', 'value' => 'pwdCanChange' ));
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('User must change password') ),
 				1 => array ( 'kind' => 'table', 'value' => array ( 0 => array ( 0 => array ( 'kind' => 'select', 'name' => 'sambaPwdMustChange_day',
 						'options' => $mday, 'options_selected' => array($mustchangedate['mday'])),
@@ -775,23 +784,23 @@ class sambaSamAccount extends baseModule {
 						'options' => $mon, 'options_selected' => array($mustchangedate['mon'])),
 					2 => array ( 'kind' => 'select', 'name' => 'sambaPwdMustChange_yea',
 						'options' => $year, 'options_selected' => array($mustchangedate['year']))))),
-				2 => array ( 'kind' => 'help', 'value' => 'sambaPwdMustChange' ));
+				2 => array ( 'kind' => 'help', 'value' => 'pwdMustChange' ));
 			for ($i=90; $i>67; $i--) $drives[] = chr($i).':';
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Home drive') ),
 				1 => array ( 'kind' => 'select', 'name' => 'sambaHomeDrive', 'options' => $drives, 'options_selected' => array ($this->attributes['sambaHomeDrive'][0])),
-				2 => array ( 'kind' => 'help', 'value' => 'sambaHomeDrive' ));
+				2 => array ( 'kind' => 'help', 'value' => 'homeDrive' ));
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Home path') ),
 				1 => array ( 'kind' => 'input', 'type' => 'text', 'name' => 'sambaHomePath', 'size' => '20', 'maxlength' => '255', 'value' => $this->attributes['sambaHomePath'][0]),
-				2 => array ( 'kind' => 'help', 'value' => 'sambaHomePath' ));
+				2 => array ( 'kind' => 'help', 'value' => 'homePath' ));
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Profile path') ),
 				1 => array ( 'kind' => 'input', 'type' => 'text', 'name' => 'sambaProfilePath', 'size' => '20', 'maxlength' => '255', 'value' => $this->attributes['sambaProfilePath'][0]),
-				2 => array ( 'kind' => 'help', 'value' => 'sambaProfilePath' ));
+				2 => array ( 'kind' => 'help', 'value' => 'profilePath' ));
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Logon script') ),
 				1 => array ( 'kind' => 'input', 'type' => 'text', 'name' => 'sambaLogonScript', 'size' => '20', 'maxlength' => '255', 'value' => $this->attributes['sambaLogonScript'][0]),
-				2 => array ( 'kind' => 'help', 'value' => 'sambaLogonScript' ));
+				2 => array ( 'kind' => 'help', 'value' => 'scriptPath' ));
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Samba workstations') ),
 				1 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_sambaSamAccount_sambaUserWorkstations_open', 'value' => _('Edit workstations')),
-				2 => array ( 'kind' => 'help', 'value' => 'sambaUserWorkstations' ));
+				2 => array ( 'kind' => 'help', 'value' => 'userWorkstations' ));
 
 			$names = array_keys($this->rids);
 			$wrid=false;
@@ -806,7 +815,7 @@ class sambaSamAccount extends baseModule {
 				else $selected[] = $_SESSION['cache']->getgrnam($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]);
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Windows group') ),
 				1 => array ( 'kind' => 'select', 'name' => 'sambaPrimaryGroupSID', 'options' => $options, 'options_selected' => $selected),
-				2 => array ( 'kind' => 'help', 'value' => 'sambaPrimaryGroupSID' ));
+				2 => array ( 'kind' => 'help', 'value' => 'group' ));
 			// display if group SID should be mapped to a well known SID
 			$options = array_keys($this->rids);
 			$options[] = '-';
@@ -824,11 +833,11 @@ class sambaSamAccount extends baseModule {
 			else $selected[] = "-";
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Special user') ),
 				1 => array ( 'kind' => 'select', 'name' => 'sambaSID', 'options' => $options, 'options_selected' => $selected),
-				2 => array ( 'kind' => 'help', 'value' => 'sambaSID' ));
+				2 => array ( 'kind' => 'help', 'value' => 'specialUser' ));
 			}
 		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Domain') ),
 			1 => array ( 'kind' => 'select', 'name' => 'sambaDomainName', 'options' => $sambaDomainNames, 'options_selected' => array($sel_domain)),
-			2 => array ( 'kind' => 'help', 'value' => 'sambaDomainName' ));
+			2 => array ( 'kind' => 'help', 'value' => 'domain' ));
 		// logon hours
 		if ($_SESSION[$this->base]->type=='user') {
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Logon hours') ),
@@ -840,7 +849,7 @@ class sambaSamAccount extends baseModule {
 			$return[] = array ( 0 => array ( 'kind' => 'input', 'name' => 'sambaAcctFlagsW', 'type' => 'hidden', 'value' => 'true' ));
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Reset password') ),
 				1 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'ResetSambaPassword', 'value' => _('Submit')),
-				2 => array ( 'kind' => 'help', 'value' => 'ResetSambaPassword' ));
+				2 => array ( 'kind' => 'help', 'value' => 'resetPassword' ));
 			}
 		return $return;
 		}
