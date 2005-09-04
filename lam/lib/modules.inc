@@ -1691,7 +1691,7 @@ class accountContainer {
 		$this->attributes_orig = $_SESSION['ldap']->encrypt(serialize($this->attributes_orig));
 		$this->module = $_SESSION['ldap']->encrypt(serialize($this->module));
 		// save all attributes
-		return array_keys(get_object_vars(&$this));
+		return array_keys(get_object_vars($this));
 	}
 	
 	/**
