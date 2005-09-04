@@ -457,18 +457,16 @@ class posixAccount extends baseModule {
 	*/
 	function load_attributes($attr) {
 		parent::load_attributes($attr);
-
-		// get all additional groupmemberships
-		$dn_groups = $_SESSION['cache']->get_cache('memberUid', 'posixGroup', 'group');
+		// get additional group memberships
+		$dn_groups = $_SESSION['cache']->get_cache(array('memberUid', 'cn'), 'posixGroup', 'group');
 		if (is_array($dn_groups)) {
 			if (!is_array($this->groups)) $this->groups = array();
 			$DNs = array_keys($dn_groups);
-			foreach ($DNs as $DN) {
-				if (in_array($attr['uid'][0], $dn_groups[$DN])) {
-					$this->groups[] = substr($DN, 3, strpos($DN, ',')-3);
+			for ($i = 0; $i < sizeof($DNs); $i++) {
+				if (isset($dn_groups[$DNs[$i]]['memberUid'][0])) {
+					if (in_array($attr['uid'][0], $dn_groups[$DNs[$i]]['memberUid'])) $this->groups[] = $dn_groups[$DNs[$i]]['cn'][0];
 				}
 			}
-			sort($this->groups);
 			$this->groups_orig = $this->groups;
 		}
 		return 0;
@@ -840,8 +838,6 @@ class posixAccount extends baseModule {
 		if (isset($post['addgroups']) && isset($post['addgroups_button'])) { // Add groups to list
 		// Add new group
 		$this->groups = @array_merge($this->groups, $post['addgroups']);
-		// sort groups
-		sort($this->groups);
 		break;
 		}
 		if (isset($post['removegroups']) && isset($post['removegroups_button'])) { // remove groups from list
@@ -1014,8 +1010,6 @@ class posixAccount extends baseModule {
 		$groups = array_flip($groups);
 		unset ($groups[$group]);
 		$groups = array_flip($groups);
-		// sort groups
-		sort($groups, SORT_STRING);
 
 		$return[] = array(
 			0 => array('kind' => 'fieldset', 'legend' => _("Additional groups"), 'value' => array(
