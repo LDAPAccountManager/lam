@@ -2,7 +2,15 @@
 Some notes on managing Kolab accounts with LAM: 
 
 
-1. Deleting accounts
+1. Creating accounts
+  
+  The mailbox server cannot be changed after the account has been saved. Please
+  make sure that the value is correct.
+  The email address ("Personal" page) must match your Kolab domain, otherwise the
+  account will not work.
+
+
+2. Deleting accounts
 
   If you want to cleanly delete accounts use the "Mark for deletion" button on the
   Kolab subpage of an account. This will also remove the user's mailbox.
@@ -10,7 +18,7 @@ Some notes on managing Kolab accounts with LAM:
   then no cleanup actions are made.
 
 
-2. Managing accounts with both LAM and Kolab Admin GUI
+3. Managing accounts with both LAM and Kolab Admin GUI
 
   The Kolab GUI has some restrictions that LAM does not have.
   Please pay attention to the following restrictions:
@@ -26,8 +34,15 @@ Some notes on managing Kolab accounts with LAM:
     violation. This is caused by a bug in the Kolab GUI.
 
 
-3. Installing LAM on the Kolab server
+4. Adding a Kolab part to existing accounts
+
+  If you upgrade existing non-Kolab accounts please make sure that the account
+  has a Unix password.
+
+
+5. Installing LAM on the Kolab server
 
   You can install LAM in the directory "/kolab/var/kolab/www" which is
   the root directory for Apache.
   The PHP installation already includes all required packages.
+
