@@ -529,7 +529,12 @@ class posixGroup extends baseModule {
 	}
 
 
-	/* Write variables into object and do some regexp checks
+	/**
+	* Processes user input of the primary module page.
+	* It checks if all input values are correct and updates the associated LDAP attributes.
+	*
+	* @param array $post HTTP-POST values
+	* @return array list of info/error messages
 	*/
 	function process_attributes(&$post) {
 		$this->attributes['description'][0] = $post['description'];
@@ -672,15 +677,15 @@ class posixGroup extends baseModule {
 			return $triggered_messages;
 		}
 		else $this->triggered_messages = array();
-		return 0;
 	}
 
 
 	/**
-	* Processes input data and adds or removes users from current group.
+	* Processes user input of the user selection page.
+	* It checks if all input values are correct and updates the associated LDAP attributes.
 	*
-	* @param array $post HTTP-POST
-	* @return string name of next page
+	* @param array $post HTTP-POST values
+	* @return array list of info/error messages
 	*/
 	function process_user(&$post) {
 		if (isset($post['addusers']) && isset($post['addusers_button'])) { // Add users to list
@@ -696,14 +701,15 @@ class posixGroup extends baseModule {
 		elseif (isset($post['removeusers']) && isset($post['removeusers_button'])) { // remove users from list
 			$this->attributes['memberUid'] = array_delete($post['removeusers'], $this->attributes['memberUid']);
 		}
-		return 0;
 	}
 
 
 	/**
-	* Sets a new password.
+	* Processes user input of the password page.
+	* It checks if all input values are correct and updates the associated LDAP attributes.
 	*
-	* @param $post HTTP POST
+	* @param array $post HTTP-POST values
+	* @return array list of info/error messages
 	*/
 	function process_password(&$post) {
 		if ($post['form_subpage_posixGroup_attributes_back']) return;

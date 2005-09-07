@@ -219,9 +219,11 @@ class inetLocalMailRecipient extends baseModule {
 	}
 
 	/**
-	* Write variables into object and do some regex checks
+	* Processes user input of the primary module page.
+	* It checks if all input values are correct and updates the associated LDAP attributes.
 	*
 	* @param array $post HTTP-POST values
+	* @return array list of info/error messages
 	*/
 	function process_attributes(&$post) {
 		$this->triggered_messages = array();
@@ -286,7 +288,6 @@ class inetLocalMailRecipient extends baseModule {
 		}
 		else {
 			$this->inputCorrect = true;
-			return 0;
 		}
 	}
 

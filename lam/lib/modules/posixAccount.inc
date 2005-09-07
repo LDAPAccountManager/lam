@@ -615,7 +615,12 @@ class posixAccount extends baseModule {
 		return $return;
 	}
 
-	/* Write variables into object and do some regexp checks
+	/**
+	* Processes user input of the primary module page.
+	* It checks if all input values are correct and updates the associated LDAP attributes.
+	*
+	* @param array $post HTTP-POST values
+	* @return array list of info/error messages
 	*/
 	function process_attributes(&$post) {
 		$triggered_messages = array();
@@ -828,31 +833,31 @@ class posixAccount extends baseModule {
 			return $triggered_messages;
 		}
 		else $this->triggered_messages = array();
-		return 0;
-	}
-
-	/* Write variables into object and do some regexp checks
-	*/
-	function process_group(&$post) {
-		do { // X-Or, only one if() can be true
-		if (isset($post['addgroups']) && isset($post['addgroups_button'])) { // Add groups to list
-		// Add new group
-		$this->groups = @array_merge($this->groups, $post['addgroups']);
-		break;
-		}
-		if (isset($post['removegroups']) && isset($post['removegroups_button'])) { // remove groups from list
-		$this->groups = array_delete($post['removegroups'], $this->groups);
-		break;
-		}
-		} while(0);
-	if (isset($post['addgroups_button']) || isset($post['removegroups_button'])) return 'group';
-	return 0;
 	}
 
 	/**
-	* Sets a new password.
+	* Processes user input of the group selection page.
+	* It checks if all input values are correct and updates the associated LDAP attributes.
 	*
-	* @param $post HTTP POST
+	* @param array $post HTTP-POST values
+	* @return array list of info/error messages
+	*/
+	function process_group(&$post) {
+		if (isset($post['addgroups']) && isset($post['addgroups_button'])) { // Add groups to list
+			// Add new group
+			$this->groups = @array_merge($this->groups, $post['addgroups']);
+		}
+		elseif (isset($post['removegroups']) && isset($post['removegroups_button'])) { // remove groups from list
+			$this->groups = array_delete($post['removegroups'], $this->groups);
+		}
+	}
+
+	/**
+	* Processes user input of the password page.
+	* It checks if all input values are correct and updates the associated LDAP attributes.
+	*
+	* @param array $post HTTP-POST values
+	* @return array list of info/error messages
 	*/
 	function process_password(&$post) {
 		if ($post['form_subpage_posixAccount_attributes_back']) return;

@@ -413,6 +413,13 @@ class inetOrgPerson extends baseModule {
 		return $return;
 	}
 
+	/**
+	* Processes user input of the primary module page.
+	* It checks if all input values are correct and updates the associated LDAP attributes.
+	*
+	* @param array $post HTTP-POST values
+	* @return array list of info/error messages
+	*/
 	function process_attributes(&$post) {
 		// Load attributes
 		$this->attributes['description'][0] = $post['description'];
@@ -498,8 +505,6 @@ class inetOrgPerson extends baseModule {
 		}
 		// Return error-messages
 		if (is_array($triggered_messages)) return $triggered_messages;
-		if ($post['changepass']) return 'password';
-		return 0;
 		}
 
 	/* This function will create the html-page

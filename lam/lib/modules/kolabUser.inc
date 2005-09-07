@@ -433,9 +433,11 @@ class kolabUser extends baseModule {
 	}
 
 	/**
-	* Write variables into object and do some regex checks
+	* Processes user input of the primary module page.
+	* It checks if all input values are correct and updates the associated LDAP attributes.
 	*
 	* @param array $post HTTP-POST values
+	* @return array list of info/error messages
 	*/
 	function process_attributes(&$post) {
 		if ($post['form_subpage_kolabUser_deleteUser_open'])  return;
@@ -582,7 +584,6 @@ class kolabUser extends baseModule {
 		}
 		else {
 			$this->inputCorrect = true;
-			return 0;
 		}
 	}
 

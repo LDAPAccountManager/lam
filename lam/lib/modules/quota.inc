@@ -272,7 +272,12 @@ class quota extends baseModule {
 		return $return;
 		}
 
-	/* Write variables into object and do some regexp checks
+	/**
+	* Processes user input of the primary module page.
+	* It checks if all input values are correct and updates the associated LDAP attributes.
+	*
+	* @param array $post HTTP-POST values
+	* @return array list of info/error messages
 	*/
 	function process_attributes(&$post) {
 		// Write all general values into $account_new
@@ -304,8 +309,6 @@ class quota extends baseModule {
 			return $triggered_messages;
 		}
 		else $this->triggered_messages = array();
-		// Go to additional group page when no error did ocour and button was pressed
-		return 0;
 		}
 
 	/* This function will create the html-page

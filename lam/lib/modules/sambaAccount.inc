@@ -493,7 +493,12 @@ class sambaAccount extends baseModule {
 		return $return;
 		}
 
-	/* Write variables into object and do some regexp checks
+	/**
+	* Processes user input of the primary module page.
+	* It checks if all input values are correct and updates the associated LDAP attributes.
+	*
+	* @param array $post HTTP-POST values
+	* @return array list of info/error messages
 	*/
 	function process_attributes(&$post) {
 		$this->attributes['domain'][0] = $post['domain'];
@@ -626,10 +631,14 @@ class sambaAccount extends baseModule {
 			return $triggered_messages;
 		}
 		else $this->triggered_messages = array();
-		return 0;
-		}
+	}
 
-	/* Write variables into object and do some regexp checks
+	/**
+	* Processes user input of the workstation selection page.
+	* It checks if all input values are correct and updates the associated LDAP attributes.
+	*
+	* @param array $post HTTP-POST values
+	* @return array list of info/error messages
 	*/
 	function process_userWorkstations(&$post) {
 		// Load attributes
@@ -672,7 +681,6 @@ class sambaAccount extends baseModule {
 				}
 			}
 		}
-		return 0;
 	}
 
 	/* This function will create the html-page

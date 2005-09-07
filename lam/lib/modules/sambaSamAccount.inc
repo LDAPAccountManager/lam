@@ -486,7 +486,12 @@ class sambaSamAccount extends baseModule {
 		return $return;
 	}
 
-	/* Write variables into object and do some regexp checks
+	/**
+	* Processes user input of the primary module page.
+	* It checks if all input values are correct and updates the associated LDAP attributes.
+	*
+	* @param array $post HTTP-POST values
+	* @return array list of info/error messages
 	*/
 	function process_attributes(&$post) {
 		// Save attributes
@@ -635,62 +640,64 @@ class sambaSamAccount extends baseModule {
 			return $triggered_messages;
 		}
 		else $this->triggered_messages = array();
-		return 0;
 	}
 
-	/* Write variables into object and do some regexp checks
+	/**
+	* Processes user input of the primary module page.
+	* It checks if all input values are correct and updates the associated LDAP attributes.
+	*
+	* @param array $post HTTP-POST values
+	* @return array list of info/error messages
 	*/
 	function process_sambaUserWorkstations(&$post) {
 		// Load attributes
 		if ($_SESSION[$this->base]->type=='user') {
-			do { // X-Or, only one if() can be true
-				if (isset($post['availableSambaUserWorkstations']) && isset($post['sambaUserWorkstations_add'])) { // Add workstations to list
-					$temp = str_replace(' ', '', $this->attributes['sambaUserWorkstations'][0]);
-					$workstations = explode (',', $temp);
-					for ($i=0; $i<count($workstations); $i++)
-						if ($workstations[$i]=='') unset($workstations[$i]);
-					$workstations = array_values($workstations);
-					// Add new // Add workstations
-					$workstations = array_merge($workstations, $post['availableSambaUserWorkstations']);
-					// remove doubles
-					$workstations = array_flip($workstations);
-					array_unique($workstations);
-					$workstations = array_flip($workstations);
-					// sort workstations
-					sort($workstations);
-					// Recreate workstation string
-					$this->attributes['sambaUserWorkstations'][0] = $workstations[0];
-					for ($i=1; $i<count($workstations); $i++) {
-						$this->attributes['sambaUserWorkstations'][0] = $this->attributes['sambaUserWorkstations'][0] . "," . $workstations[$i];
-						}
-					break;
+			if (isset($post['availableSambaUserWorkstations']) && isset($post['sambaUserWorkstations_add'])) { // Add workstations to list
+				$temp = str_replace(' ', '', $this->attributes['sambaUserWorkstations'][0]);
+				$workstations = explode (',', $temp);
+				for ($i=0; $i<count($workstations); $i++) {
+					if ($workstations[$i]=='') unset($workstations[$i]);
+				}
+				$workstations = array_values($workstations);
+				// Add new // Add workstations
+				$workstations = array_merge($workstations, $post['availableSambaUserWorkstations']);
+				// remove doubles
+				$workstations = array_flip($workstations);
+				array_unique($workstations);
+				$workstations = array_flip($workstations);
+				// sort workstations
+				sort($workstations);
+				// Recreate workstation string
+				$this->attributes['sambaUserWorkstations'][0] = $workstations[0];
+				for ($i=1; $i<count($workstations); $i++) {
+					$this->attributes['sambaUserWorkstations'][0] = $this->attributes['sambaUserWorkstations'][0] . "," . $workstations[$i];
 					}
-				if (isset($post['sambaUserWorkstations']) && isset($post['sambaUserWorkstations_remove'])) { // remove // Add workstations from list
-					// Put all workstations in array
-					$temp = str_replace(' ', '', $this->attributes['sambaUserWorkstations'][0]);
-					$workstations = explode (',', $temp);
-					for ($i=0; $i<count($workstations); $i++)
-						if ($workstations[$i]=='') unset($workstations[$i]);
-					$workstations = array_values($workstations);
-					// Remove unwanted workstations from array
-					$workstations = array_delete($post['sambaUserWorkstations'], $workstations);
-					// Recreate workstation string
-					$this->attributes['sambaUserWorkstations'][0] = $workstations[0];
-					for ($i=1; $i<count($workstations); $i++) {
-						$this->attributes['sambaUserWorkstations'][0] = $this->attributes['sambaUserWorkstations'][0] . "," . $workstations[$i];
-						}
-					break;
-					}
-				} while(0);
+				}
+			elseif (isset($post['sambaUserWorkstations']) && isset($post['sambaUserWorkstations_remove'])) { // remove // Add workstations from list
+				// Put all workstations in array
+				$temp = str_replace(' ', '', $this->attributes['sambaUserWorkstations'][0]);
+				$workstations = explode (',', $temp);
+				for ($i=0; $i<count($workstations); $i++) {
+					if ($workstations[$i]=='') unset($workstations[$i]);
+				}
+				$workstations = array_values($workstations);
+				// Remove unwanted workstations from array
+				$workstations = array_delete($post['sambaUserWorkstations'], $workstations);
+				// Recreate workstation string
+				$this->attributes['sambaUserWorkstations'][0] = $workstations[0];
+				for ($i=1; $i<count($workstations); $i++) {
+					$this->attributes['sambaUserWorkstations'][0] = $this->attributes['sambaUserWorkstations'][0] . "," . $workstations[$i];
+				}
 			}
-		return 0;
+		}
 	}
 
 	/**
-	* Save logon hours
+	* Processes user input of the logon hours page.
+	* It checks if all input values are correct and updates the associated LDAP attributes.
 	*
-	* @param array $post HTTP POST variables
-	* @return string next page name (attributes or logonHours)
+	* @param array $post HTTP-POST values
+	* @return array list of info/error messages
 	*/
 	function process_logonHours(&$post) {
 		if ($post['form_subpage_sambaSamAccount_attributes_abort']) return;

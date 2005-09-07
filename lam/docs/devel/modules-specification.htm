@@ -747,17 +747,16 @@ is needed t interact with the user.<br>
 <br>
 This function processes user input. It checks user input. It also
 saves changes in attributes.<br>
-This functions can return two different variables. When 0 is returned
-everything is ok. If it
-returns an array the array contains status<br>
-messages. First index is the attribute which has triggered a message.
-Second index is an array containing status message arrays.<br>
-This function must reset $this-&gt;triggered_messages when it wants to
-display
-status messages. This can be done with $this-&gt;triggered_messages =
-array();<br>
+It may
+return an array which contains status messages. Each entry is an array
+containing the status message parameters.<br>
 <span style="font-weight: bold;">$post</span> is the $_POST
 array.<br>
+<br>
+<span style="font-weight: bold; text-decoration: underline;">Example:</span><br>
+<br>
+return array(0 =&gt; array('ERROR', 'Invalid input!', 'This is not
+allowed here.'));<br>
 <br>
 <br>
 <h3>2.2.14. process_*<br>

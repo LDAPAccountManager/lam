@@ -235,9 +235,11 @@ class shadowAccount extends baseModule {
 	}
 
 	/**
-	* Checks user input and saves it in LDAP attributes.
+	* Processes user input of the primary module page.
+	* It checks if all input values are correct and updates the associated LDAP attributes.
 	*
-	* @param array $post HTTP POST data
+	* @param array $post HTTP-POST values
+	* @return array list of info/error messages
 	*/
 	function process_attributes(&$post) {
 		// Load attributes
@@ -256,7 +258,6 @@ class shadowAccount extends baseModule {
 			return $triggered_messages;
 		}
 		else $this->triggered_messages = array();
-		return 0;
 	}
 
 	/**

@@ -183,7 +183,12 @@ class account extends baseModule {
 		return $return;
 	}
 
-	/* Write variables into object and do some regexp checks
+	/**
+	* Processes user input of the primary module page.
+	* It checks if all input values are correct and updates the associated LDAP attributes.
+	*
+	* @param array $post HTTP-POST values
+	* @return array list of info/error messages
 	*/
 	function process_attributes(&$post) {
 		// Load attributes
@@ -195,7 +200,6 @@ class account extends baseModule {
 			if (!get_preg($this->attributes['uid'][0], '!upper')) $triggered_messages['uid'][] = $this->messages['uid'][2];
 			if (!get_preg($this->attributes['uid'][0], 'username')) $triggered_messages['uid'][] = $this->messages['uid'][3];
 		}
-		return 0;
 	}
 
 	/* This function will create the html-page

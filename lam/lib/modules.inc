@@ -861,8 +861,8 @@ class accountContainer {
 				}
 			}
 		}
-		// go to subpage of current module
 		if (!$errorsOccured) {
+			// go to subpage of current module
 			$postKeys = array_keys($post);
 			for ($p = 0; $p < sizeof($postKeys); $p++) {
 				if (is_string($postKeys[$p]) && (strpos($postKeys[$p], 'form_subpage_' . $this->order[$this->current_page]) === 0)) {
@@ -873,24 +873,26 @@ class accountContainer {
 					}
 				}
 			}
-		}
-		if (is_int($result) || !$errorsOccured) {  // numeric return value means to change to another module
+			// change module page if requested
 			if ($post['form_main_main']) {
 				$this->current_page = 0;
 				$this->subpage='attributes';
 			}
-			else for ($i=1; $i<count($this->order); $i++ )
-				if (isset($post['form_main_'.$this->order[$i]])) {
-					if ($this->module[$this->order[$i]]->module_ready()) {
-						$this->current_page = $i;
-						$this->subpage='attributes';
-					}
-					else {
-						StatusMessage('ERROR', _('The module %s is not yet ready.'),
-							_('Please enter the account information on the other pages first.'),
-							array($this->module[$this->order[$i]]->get_alias()));
+			else {
+				for ($i=1; $i<count($this->order); $i++ ) {
+					if (isset($post['form_main_'.$this->order[$i]])) {
+						if ($this->module[$this->order[$i]]->module_ready()) {
+							$this->current_page = $i;
+							$this->subpage='attributes';
+						}
+						else {
+							StatusMessage('ERROR', _('The module %s is not yet ready.'),
+								_('Please enter the account information on the other pages first.'),
+								array($this->module[$this->order[$i]]->get_alias()));
+						}
 					}
 				}
+			}
 		}
 		// Write HTML-Code
 		echo $_SESSION['header'];
