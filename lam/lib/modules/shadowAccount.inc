@@ -224,12 +224,21 @@ class shadowAccount extends baseModule {
 	*/
 	function save_attributes() {
 		$return = $_SESSION[$this->base]->save_module_attributes($this->attributes, $this->orig);
-
 		// Set shadowLastchange manual.
 		if (isset($_SESSION[$this->base]->module['posixAccount']->orig['userPassword'][0])) {
 			// TODO fixme ****** fix this behavoir 
 			if ($_SESSION[$this->base]->module['posixAccount']->orig['userPassword'][0] != $_SESSION[$this->base]->module['posixAccount']->attributes['userPassword'][0] && $_SESSION[$this->base]->module['posixAccount']->attributes['userPassword'][0]!='')
 				$return[$_SESSION[$this->base]->dn]['modify']['shadowLastChange'] = array(intval(time()/3600/24));
+		}
+		// do not set password if posixAccount is active
+		$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
+		if (in_array('posixAccount', $modules)) {
+			if (isset($return[$_SESSION[$this->base]->dn]['modify']['userPassword'])) {
+				unset($return[$_SESSION[$this->base]->dn]['modify']['userPassword']); 	 
+			}
+			if (isset($return[$_SESSION[$this->base]->dn]['add']['userPassword'])) {
+				unset($return[$_SESSION[$this->base]->dn]['add']['userPassword']);
+			}
 		}
 		return $return;
 	}
