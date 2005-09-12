@@ -1,3 +1,8 @@
+???  0.5.0
+   - fixed bugs:
+    -> fixed error message when creating new accounts with shadowAccount
+    -> added missing help entries on main account page
+
 08.09.2005 0.5.rc3
    - INFO messages no longer prevent changing to subpages of a module
    - fixed bugs:
