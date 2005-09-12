@@ -137,9 +137,16 @@ $helpArray = array (
 					"Text" => _("Name under which the profile will be saved. If a profile with the same name exists, it will be overwritten.")),
 				"361" => array ("ext" => "FALSE", "Headline" => _("DN suffix"),
 					"Text" => _("The new account will be saved under this LDAP suffix.")),
-				// 400 - 599
-				// unused
-				
+				// 400 - 499
+				// account pages
+				"401" => array ("ext" => "FALSE", "Headline" => _("Load profile"),
+					"Text" => _("Here you can load an account profile to set default settings for your account. The default profile is automatically loaded for new accounts.")),
+				"402" => array ("ext" => "FALSE", "Headline" => _("Save account"),
+					"Text" => _("This saves your account to the LDAP database.")),
+				"403" => array ("ext" => "FALSE", "Headline" => _("Create PDF file"),
+					"Text" => _("Here you can select a PDF structure and export the account to a PDF file.")),
+				// 500 - 599
+				// unused				
 				// 600 - 699
 				// Roland Gruber
 				// OU-editor, domain page

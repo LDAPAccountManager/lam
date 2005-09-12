@@ -129,7 +129,8 @@ if(!isset($_GET['HelpNumber']))
 
 $helpEntry = array();
 
-if(isset($_GET['module'])) {
+// module help
+if(isset($_GET['module']) && !($_GET['module'] == 'main')) {
 	include_once("../lib/modules.inc");
 	if(isset($_GET['scope'])) {
 		$helpEntry = getHelp($_GET['module'],$_GET['HelpNumber'],$_GET['scope']);
@@ -148,6 +149,7 @@ if(isset($_GET['module'])) {
 		exit;
 	}
 }
+// help entry in help.inc
 else {
 	/* If submitted help number is not in help/help.inc print error message */
 	if(!array_key_exists($_GET['HelpNumber'],$helpArray))

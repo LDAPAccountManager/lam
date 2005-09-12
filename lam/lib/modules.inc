@@ -934,10 +934,9 @@ class accountContainer {
 			}
 		}
 		// Create left module-menu
-		echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
-		echo "<table><tr>";
+		echo "<table border=0 width=\"100%\">\n<tr valign=\"top\"><td width=\"15%\">";
 		
-		echo "<td><fieldset class=\"".$this->type."edit\"><legend><b>";
+		echo "<fieldset class=\"".$this->type."edit\"><legend><b>";
 			echo _('Please select page:');
 			echo "</b></legend>\n";
 		// calculate button width
@@ -973,15 +972,15 @@ class accountContainer {
 			if ($this->subpage == 'finish') echo " disabled";
 			echo "><br>\n";
 		}
-		echo "</fieldset></td></tr>\n";
-		echo "</table></td>\n<td>";
+		echo "</fieldset>\n";
+		echo "</td>\n<td>";
 		if ($this->current_page==0) {
-			echo "<td><fieldset class=\"".$this->type."edit\"><legend><b>";
+			echo "<fieldset class=\"".$this->type."edit\"><legend><b>";
 			echo _('Main');
 			echo "</b></legend>\n";
 			}
 		else {
-			echo "<td><fieldset class=\"".$this->type."edit\"><legend><b>";
+			echo "<fieldset class=\"".$this->type."edit\"><legend><b>";
 				echo $this->module[$this->order[$this->current_page]]->get_alias();
 				echo "</b></legend>\n";
 			}
@@ -1004,14 +1003,14 @@ class accountContainer {
 				$return[] = array(
 					0 => array('kind' => 'input', 'type' => 'submit', 'name' => 'createagain', 'value' => _('Create another account')),
 					1 => array('kind' => 'input', 'type' => 'submit', 'name' => 'backmain', 'value' => _('Back to account list')));
-				$return[] = array(
-					0 => array('kind' => 'text', 'text' => '&nbsp;')
-				);
+				$return[] = array(0 => array('kind' => 'text', 'text' => '&nbsp;')); // empty line
+				$return[] = array(0 => array('kind' => 'text', 'text' => '&nbsp;')); // empty line
 				$pdfStructures = getPDFStructureDefinitions($this->type);
 				$return[] = array(
 					0 => array('kind' => 'fieldset', 'legend' => '<b>PDF</b>', 'td' => array('colspan' => 2), 'value' => array(array(
 						0 => array('kind' => 'select', 'name' => 'pdfStructure', 'options' => $pdfStructures),
-						1 => array('kind' => 'input', 'type' => 'submit', 'name' => 'outputpdf', 'value' => _('Create PDF file')))
+						1 => array('kind' => 'input', 'type' => 'submit', 'name' => 'outputpdf', 'value' => _('Create PDF file')),
+						2 => array('kind' => 'help', 'value' => '403'))
 					)));
 			}
 			else {
@@ -1024,7 +1023,7 @@ class accountContainer {
 				$return[] = array(
 					0 => array('kind' => 'text', 'text' => _('Suffix')),
 					1 => array('kind' => 'select', 'name' => 'suffix', 'options' => $suffixes, 'options_selected' => array($options_selected), 'noSorting' => true),
-					2 => array ('kind' => 'help', 'value' => 'suffix'));
+					2 => array ('kind' => 'help', 'value' => '361'));
 				// RDN selection
 				$rdnlist = getRDNAttributes($this->type);
 				$rdnSelected = array();
@@ -1047,15 +1046,16 @@ class accountContainer {
 						1 => array('kind' => 'table', 'value' => array(0 => array(
 							0 => array('kind' => 'select', 'name' => 'selectLoadProfile', 'options' => $profilelist),
 							1 => array('kind' => 'input', 'type' => 'submit', 'name' => 'loadProfile', 'value' => _('Load profile'))
-							)),
-						2 => array('kind' => 'help', 'value' => 'selectLoadProfile'))
+							))),
+						2 => array('kind' => 'help', 'value' => '401')
 					);
 				}
+				$return[] = array(0 => array('kind' => 'text', 'text' => '&nbsp;')); // empty line
 				if ($this->dn_orig!='') $text = _('Modify Account');
 					else $text = _('Create Account');
 				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => $text ),
 					1 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'create', 'value' => $text, 'disabled' => $disabled),
-					2 => array ('kind' => 'help', 'value' => 'create'));
+					2 => array ('kind' => 'help', 'value' => '402'));
 			}
 		}
 		else $return = call_user_func(array($this->module[$this->order[$this->current_page]], 'display_html_'.$this->subpage), $post);
