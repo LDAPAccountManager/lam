@@ -41,14 +41,14 @@ LAM - Readme
   Important:
     The default password to edit the configuration options is "lam".
 
-  Download:
-    You can get the newest version at http://sourceforge.net/projects/lam/
-
   Installation:
     Please see the INSTALL file.
 
   Documentation:
     Basic documentation is available in the directory "docs".
+
+  Upgrade from older versions:
+    See docs/README.upgrade.txt for upgrade instructions.
 
   Internationalization:
     If you want to use a translated version of LAM be sure to install the
@@ -64,6 +64,9 @@ LAM - Readme
     The key and IV are generated at random when you log in. They are stored in two
     cookies.
  
+  Download:
+    You can get the newest version at http://sourceforge.net/projects/lam/
+
   License:
     LAM is published under the GNU General Public License.
     The comlete list of licenses can be found in the copyright file.
