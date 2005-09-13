@@ -77,6 +77,7 @@ class sambaAccount extends baseModule {
 		$this->messages['rid'][0] = array('ERROR', _('Special user'), _('There can be only one administrator per domain.'));
 		$this->messages['rid'][1] = array('ERROR', _('Special user'), _('There can be only one guest per domain.'));	
 		$this->messages['displayName'][0] = array('ERROR', _('Account %s:') . ' sambaAccount_displayName', _('Please enter a valid display name!'));
+		$this->messages['displayName'][1] = array('ERROR', _('Display name'), _('Please enter a valid display name!'));
 		$this->messages['pwdUnix'][0] = array('ERROR', _('Account %s:') . ' sambaAccount_pwdUnix', _('This value can only be \"true\" or \"false\"!'));
 		$this->messages['noPassword'][0] = array('ERROR', _('Account %s:') . ' sambaAccount_noPassword', _('This value can only be \"true\" or \"false\"!'));
 		$this->messages['noExpire'][0] = array('ERROR', _('Account %s:') . ' sambaAccount_noExpire', _('This value can only be \"true\" or \"false\"!'));
@@ -535,6 +536,13 @@ class sambaAccount extends baseModule {
 		$flag = $flag. "]";
 		$this->attributes['acctFlags'][0] = $flag;
 
+		// display name
+		$this->attributes['displayName'][0] = $post['displayName'];
+		if (!($this->attributes['displayName'][0] == '') && !(get_preg($this->attributes['displayName'][0], 'realname'))) {
+			$triggered_messages['displayName'][] = $this->messages['displayName'][1];
+		}
+
+		// host attributes
 		if ($_SESSION[$this->base]->type=='host') {
 			$this->attributes['primaryGroupID'][0] = $this->rids[_('Domain Computers')];
 			if ($post['ResetSambaPassword'] || (!$this->attributes['lmPassword'][0])) {
@@ -545,7 +553,6 @@ class sambaAccount extends baseModule {
 				$this->attributes['pwdLastSet'][0] = time();
 				}
 			}
-
 		// check values for user account
 		if ($this->scope == 'user') {
 			$this->attributes['pwdCanChange'][0] = mktime($post['pwdCanChange_h'], $post['pwdCanChange_m'], $post['pwdCanChange_s'],
@@ -688,6 +695,11 @@ class sambaAccount extends baseModule {
 	* It will output a complete html-table
 	*/
 	function display_html_attributes(&$post) {
+		$return[] = array(
+			0 => array('kind' => 'text', 'text' => _('Display name')),
+			1 => array('kind' => 'input', 'type' => 'text', 'name' => 'displayName', 'size' => '20', 'value' => $this->attributes['displayName'][0]),
+			2 => array('kind' => 'help', 'value' => 'displayName'));
+		// user attributes
 		if ($_SESSION[$this->base]->type=='user') {
 			$canchangedate = getdate($this->attributes['pwdCanChange'][0]);
 			$mustchangedate = getdate($this->attributes['pwdMustChange'][0]);

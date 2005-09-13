@@ -75,6 +75,7 @@ class sambaSamAccount extends baseModule {
 		$this->messages['rid'][2] = array('ERROR', _('Account %s:') . ' sambaSamAccount_rid', _('Please enter a RID number or the name of a special account!'));
 		$this->messages['rid'][3] = array('ERROR', _('Account %s:') . ' sambaSamAccount_rid', _('This is not a valid RID number!'));
 		$this->messages['displayName'][0] = array('ERROR', _('Account %s:') . ' sambaSamAccount_displayName', _('Please enter a valid display name!'));
+		$this->messages['displayName'][1] = array('ERROR', _('Display name'), _('Please enter a valid display name!'));
 		$this->messages['pwdUnix'][0] = array('ERROR', _('Account %s:') . ' sambaSamAccount_pwdUnix', _('This value can only be \"true\" or \"false\"!'));
 		$this->messages['noPassword'][0] = array('ERROR', _('Account %s:') . ' sambaSamAccount_noPassword', _('This value can only be \"true\" or \"false\"!'));
 		$this->messages['noExpire'][0] = array('ERROR', _('Account %s:') . ' sambaSamAccount_noExpire', _('This value can only be \"true\" or \"false\"!'));
@@ -535,6 +536,13 @@ class sambaSamAccount extends baseModule {
 		$flag = $flag. "]";
 		$this->attributes['sambaAcctFlags'][0] = $flag;
 
+		// display name
+		$this->attributes['displayName'][0] = $post['displayName'];
+		if (!($this->attributes['displayName'][0] == '') && !(get_preg($this->attributes['displayName'][0], 'realname'))) {
+			$triggered_messages['displayName'][] = $this->messages['displayName'][1];
+		}
+
+		// host attributes
 		if ($_SESSION[$this->base]->type=='host') {
 			$this->attributes['sambaPrimaryGroupSID'][0] = $SID."-".$this->rids[_('Domain Computers')];
 			if ($post['ResetSambaPassword'] || !$this->attributes['sambaLMPassword'][0]) {
@@ -545,7 +553,7 @@ class sambaSamAccount extends baseModule {
 				$this->attributes['sambaPwdLastSet'][0] = time();
 			}
 		}
-
+		// user attributes
 		if ($_SESSION[$this->base]->type=='user') {
 			$this->attributes['sambaPwdCanChange'][0] = mktime($post['sambaPwdCanChange_h'], $post['sambaPwdCanChange_m'], $post['sambaPwdCanChange_s'],
 				$post['sambaPwdCanChange_mon'], $post['sambaPwdCanChange_day'], $post['sambaPwdCanChange_yea']);
@@ -746,6 +754,10 @@ class sambaSamAccount extends baseModule {
 		$canchangedate = getdate($this->attributes['sambaPwdCanChange'][0]);
 		$mustchangedate = getdate($this->attributes['sambaPwdMustChange'][0]);
 
+		$return[] = array(
+			0 => array('kind' => 'text', 'text' => _('Display name')),
+			1 => array('kind' => 'input', 'type' => 'text', 'name' => 'displayName', 'size' => '20', 'value' => $this->attributes['displayName'][0]),
+			2 => array('kind' => 'help', 'value' => 'displayName'));
 		if ($_SESSION[$this->base]->type=='user') {
 			$return[] = array ( 0 => array ( 'kind' => 'input', 'name' => 'sambaPwdCanChange_h', 'type' => 'hidden', 'value' => $canchangedate['hours']),
 					1 => array ( 'kind' => 'input', 'name' => 'sambaPwdCanChange_m', 'type' => 'hidden', 'value' => $canchangedate['minutes']),
@@ -1088,24 +1100,24 @@ class sambaSamAccount extends baseModule {
 			$this->useunixpwd = false;
 		}
 		// use no password
-		if ($profile['sambaSamAccount_acctFlagsN'][0] == "true") {
+		if ($profile['sambaSamAccount_sambaAcctFlagsN'][0] == "true") {
 			$this->nopwd = true;
 		}
-		elseif ($profile['sambaSamAccount_acctFlagsN'][0] == "false") {
+		elseif ($profile['sambaSamAccount_sambaAcctFlagsN'][0] == "false") {
 			$this->nopwd = false;
 		}
 		// password expiration
-		if ($profile['sambaSamAccount_acctFlagsX'][0] == "true") {
+		if ($profile['sambaSamAccount_sambaAcctFlagsX'][0] == "true") {
 			$this->noexpire = true;
 		}
-		elseif ($profile['sambaSamAccount_acctFlagsX'][0] == "false") {
+		elseif ($profile['sambaSamAccount_sambaAcctFlagsX'][0] == "false") {
 			$this->noexpire = false;
 		}
 		// use no password
-		if ($profile['sambaSamAccount_acctFlagsD'][0] == "true") {
+		if ($profile['sambaSamAccount_sambaAcctFlagsD'][0] == "true") {
 			$this->deactivated = true;
 		}
-		elseif ($profile['sambaSamAccount_acctFlagsD'][0] == "false") {
+		elseif ($profile['sambaSamAccount_sambaAcctFlagsD'][0] == "false") {
 			$this->deactivated = false;
 		}
 	}
