@@ -140,7 +140,7 @@ $helpArray = array (
 				// 400 - 499
 				// account pages
 				"401" => array ("ext" => "FALSE", "Headline" => _("Load profile"),
-					"Text" => _("Here you can load an account profile to set default settings for your account. The default profile is automatically loaded for new accounts.")),
+					"Text" => _("Here you can load an account profile to set default settings for your account. The \"default\" profile is automatically loaded for new accounts.")),
 				"402" => array ("ext" => "FALSE", "Headline" => _("Save account"),
 					"Text" => _("This saves your account to the LDAP database.")),
 				"403" => array ("ext" => "FALSE", "Headline" => _("Create PDF file"),
