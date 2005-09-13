@@ -161,11 +161,10 @@ class quota extends baseModule {
 	var $quota;
 
 	function module_ready() {
-		if (!isset($_SESSION['config']->scriptPath)) return $false;
 		if ($_SESSION[$this->base]->type=='user' && $_SESSION[$this->base]->module['posixAccount']->attributes['uid'][0]=='') return false;
 		if ($_SESSION[$this->base]->type=='group' && $_SESSION[$this->base]->module['posixGroup']->attributes['cn'][0]=='') return false;
 		return true;
-		}
+	}
 
 	/* This functions return true
 	* if all needed settings are done
@@ -173,7 +172,7 @@ class quota extends baseModule {
 	function module_complete() {
 		if (!$this->module_ready()) return false;
 		return true;
-		}
+	}
 	
 	/* This function returns a list of all html-pages in module
 	* This is usefull for mass upload and pdf-files
