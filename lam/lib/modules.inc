@@ -1063,7 +1063,7 @@ class accountContainer {
 		$z = 10000;
 		parseHtml($this->order[$this->current_page], $return, array(), false, $y, $z, $this->type);
 		// Display rest of html-page
-		echo "</fieldset>\n";
+		echo "</fieldset>\n<br>*" . _('required');
 		echo "</td></tr></table>\n";
 		echo "</form>\n";
 		echo "</body>\n";
