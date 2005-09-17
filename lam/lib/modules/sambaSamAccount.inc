@@ -451,9 +451,14 @@ class sambaSamAccount extends baseModule {
 	*/
 	function load_attributes($attr) {
 		parent::load_attributes($attr);
-		if (strpos($this->attributes['sambaAcctFlags'][0], "D")) $this->deactivated = true;
-		if (strpos($this->attributes['sambaAcctFlags'][0], "N")) $this->nopwd = true;
-		if (strpos($this->attributes['sambaAcctFlags'][0], "X")) $this->noexpire = true;
+		if (is_string($this->attributes['sambaAcctFlags'][0])) {
+			if (strpos($this->attributes['sambaAcctFlags'][0], "D")) $this->deactivated = true;
+			else $this->deactivated = false;
+			if (strpos($this->attributes['sambaAcctFlags'][0], "N")) $this->nopwd = true;
+			else $this->nopwd = false;
+			if (strpos($this->attributes['sambaAcctFlags'][0], "X")) $this->noexpire = true;
+			else $this->noexpire = false;
+		}
 		return 0;
 		}
 
