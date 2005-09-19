@@ -174,23 +174,6 @@ class quota extends baseModule {
 		return true;
 	}
 	
-	/* This function returns a list of all html-pages in module
-	* This is usefull for mass upload and pdf-files
-	* because lam can walk trough all pages itself and do some
-	* error checkings
-	*/
-	function pages() {
-		return array('attributes');
-		}
-
-	/* This function returns all ldap attributes
-	* which are part of quota and returns
-	* also their values.
-	*/
-	function get_attributes() {
-		return $this->quota;
-		}
-
 	/* This function loads all attributes into the object
 	* $attr is an array as it's retured from ldap_get_attributes
 	*/
@@ -467,6 +450,9 @@ class quota extends baseModule {
 			}
 			return array(
 				'quota_quotas' => $quotas);
+		}
+		else {
+			return array();
 		}
 	}
 

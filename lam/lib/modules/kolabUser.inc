@@ -281,13 +281,6 @@ class kolabUser extends baseModule {
 	}
 
 	/**
-	* This function returns a list of all account pages in this module.
-	*/
-	function pages() {
-		return array('attributes');
-	}
-
-	/**
 	* This function will create the meta HTML code to show a page with all attributes.
 	*
 	* @param array $post HTTP-POST values

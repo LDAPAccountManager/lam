@@ -141,15 +141,6 @@ class account extends baseModule {
 	}
 
 	/**
-	* This function returns a list of all possible pages of this module.
-	*
-	* @return array list of page names
-	*/
-	function pages() {
-		return array('attributes');
-	}
-
-	/**
 	* This function loads all attributes into the object.
 	*
 	* @param array $attr an array as it is retured from ldap_get_attributes()

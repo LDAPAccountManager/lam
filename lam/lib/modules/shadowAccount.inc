@@ -203,15 +203,6 @@ class shadowAccount extends baseModule {
 	}
 
 	/**
-	* This function returns a list of all module pages.
-	*
-	* @return array list of page names
-	*/
-	function pages() {
-		return array('attributes');
-	}
-
-	/**
 	* Returns a list of modifications which have to be made to the LDAP account.
 	*
 	* @return array list of modifications

@@ -519,16 +519,6 @@ class posixGroup extends baseModule {
 	}
 
 
-	/* This function returns a list of all html-pages in module
-	* This is usefull for mass upload and pdf-files
-	* because lam can walk trough all pages itself and do some
-	* error checkings
-	*/
-	function pages() {
-		return array('attributes', 'user');
-	}
-
-
 	/**
 	* Processes user input of the primary module page.
 	* It checks if all input values are correct and updates the associated LDAP attributes.

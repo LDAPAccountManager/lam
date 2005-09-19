@@ -79,42 +79,7 @@ $this-&gt;orig['macAddress'] = $attr['macAddress'];<br>
 </table>
 <br>
 <br>
-<h2>2. Defining pages<br>
-</h2>
-You can define multiple subpages for your account page. Usually one
-page is enough but you may display certain attribute settings on an
-extra page (e.g. Unix group memberships are on a second page).<br>
-<br>
-The page names are set by <span style="font-weight: bold;">pages() </span>which
-returns an array of names.<br>
-<br>
-<span style="font-weight: bold; text-decoration: underline;">Example:</span><br
- style="font-weight: bold; text-decoration: underline;">
-<br>
-The
-<span style="font-style: italic;">ieee802Device</span>
-module needs only one page which is called <span
- style="font-style: italic;">'attributes'</span>.<br>
-<br>
-<table style="width: 100%; text-align: left;" class="mod-code"
- border="0" cellpadding="2" cellspacing="2">
-  <tbody>
-    <tr>
-      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
-&nbsp;&nbsp;&nbsp; * This function returns a list of all account pages
-in this module.<br>
-&nbsp;&nbsp;&nbsp; */<br>
-&nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">function</span> <span
- style="color: rgb(255, 0, 0);">pages</span>() {<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return array('attributes');<br>
-&nbsp;&nbsp;&nbsp; }<br>
-      </td>
-    </tr>
-  </tbody>
-</table>
-<br>
-<br>
-<h2>3. Page display</h2>
+<h2>2. Page display</h2>
 Now that you have defined your subpages you will need one function for
 each page to display it. The function must return <span
  style="font-style: italic;">meta HTML code</span> as defined in the <span
@@ -190,7 +155,7 @@ sizeof($this-&gt;attributes['macAddress']), 'name' =&gt; 'mac_number'));<br>
 </table>
 <br>
 <br>
-<h2>4. Processing input data<br>
+<h2>3. Processing input data<br>
 </h2>
 Every time the user clicks on a submit button while your page is
 displayed LAM will call a function in your module.<br>
@@ -306,7 +271,7 @@ $this-&gt;inputCorrect = true;<br>
 </table>
 <br>
 <br>
-<h2>5. Defining that your module is ready for LDAP add/modify</h2>
+<h2>4. Defining that your module is ready for LDAP add/modify</h2>
 Before a new account can be created or modified all modules are asked
 if they are ready.<br>
 <br>
@@ -367,7 +332,7 @@ correct.<br>
 </table>
 <br>
 <br>
-<h2>6. Saving the LDAP attributes<br>
+<h2>5. Saving the LDAP attributes<br>
 </h2>
 When all modules report that they are ready for LDAP add/modify and the
 user clicks on the add/modify button your module will be asked what

@@ -377,15 +377,6 @@ class inetOrgPerson extends baseModule {
 		return "enabled";
 	}
 
-	/* This function returns a list of all html-pages in module
-	* This is usefull for mass upload and pdf-files
-	* because lam can walk trough all pages itself and do some
-	* error checkings
-	*/
-	function pages() {
-		return array('attributes');
-	}
-
 	/* This function returns an array with 4 entries:
 	* array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr), 'lamdaemon' => array(cmds)), DN2 .... )
 	* DN is the DN to change. It may be possible to change several DNs,

@@ -433,7 +433,7 @@ class sambaAccount extends baseModule {
 		if ($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]=='') return false;
 		if ($_SESSION[$this->base]->module['posixAccount']->attributes['uidNumber'][0]=='') return false;
 		return true;
-		}
+	}
 
 	/**
 	* This functions returns true if all needed settings are done
@@ -445,15 +445,6 @@ class sambaAccount extends baseModule {
 		if ($this->attributes['rid'][0] == '') return false;
 		return true;
 	}	
-
-	/* This function returns a list of all html-pages in module
-	* This is usefull for mass upload and pdf-files
-	* because lam can walk trough all pages itself and do some
-	* error checkings
-	*/
-	function pages() {
-		return array('attributes', 'userWorkstations');
-		}
 
 	/* This function loads all attributes into the object
 	* $attr is an array as it's retured from ldap_get_attributes

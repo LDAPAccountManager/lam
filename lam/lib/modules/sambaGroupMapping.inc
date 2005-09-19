@@ -201,15 +201,6 @@ class sambaGroupMapping extends baseModule {
 		return $return;
 		}
 
-	/* This function returns all ldap attributes
-	* which are part of sambaGroupMapping and returns
-	* also their values.
-	*/
-	function get_attributes() {
-		return $this->attributes;
-		}
-
-
 	/**
 	* Returns meta data that is interpreted by parent class
 	*
@@ -367,23 +358,13 @@ class sambaGroupMapping extends baseModule {
 		if ($this->attributes['sambaSID'][0] == '') return false;
 		if ($this->attributes['sambaGroupType'][0] == '') return false;
 		return true;
-		}
+	}
 
 
 	function module_ready() {
 		if ($_SESSION[$this->base]->module['posixGroup']->attributes['gidNumber'][0]=='') return false;
 		return true;
-		}
-
-
-	/* This function returns a list of all html-pages in module
-	* This is usefull for mass upload and pdf-files
-	* because lam can walk trough all pages itself and do some
-	* error checkings
-	*/
-	function pages() {
-		return array('attributes');
-		}
+	}
 
 
 	/**
