@@ -723,7 +723,7 @@ function utf8_substr($str,$start)
 
 // UTF-8 to codepoint array conversion.
 // Correctly handles all illegal UTF-8 sequences.
-function utf8_to_codepoints(&$txt) {
+function utf8_to_codepoints($txt) {
   $l = strlen($txt);
   $txt .= " ";
   $out = array();
