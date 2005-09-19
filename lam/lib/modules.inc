@@ -1153,27 +1153,6 @@ class accountContainer {
 		}
 
 	/**
-	* This function return ldap attributes
-	* Syntax is get_attributes($value, $scope)
-	* $scope = 'objectClass', $value = objectClass return value are all attributes of objectClass
-	* $scope = 'attribute', $value = attribute returns alle objectClasses which are using the attribute
-	*
-	* @todo Obsolete function???
-	*/
-	function get_attributes($value, $scope) {
-		if ($scope=='attribute' && isset($this->attributes[$value])) return $this->attributes[$value];
-		if ($scope=='objectClass') {
-			$keys = array_keys($this->attributes);
-			foreach ($keys as $attribute) {
-				if (isset($this->attributes[$attribute][$value])) $return[$attribute] = $this->attributes[$attribute][$value];
-				}
-			return $return;
-			}
-		return 0;
-		}
-
-		
-	/**
 	* This function returns all LDAP attributes which are used by the given object class.
 	* LDAP attributs which are already in use by another object class are passed as reference.
 	* <br>Therefore this function must be called as reference: $result =& ..get_module_attributes
