@@ -1495,6 +1495,12 @@ class accountContainer {
 					for ($i = 0; $i < sizeof($attrNames); $i++) {
 						if (!isset($attr[$attrNames[$i]])) $attr[$attrNames[$i]] = $this->attributes_orig[$attrNames[$i]];
 					}
+					// add missing object classes
+					for ($i = 0; $i < sizeof($this->attributes_orig['objectClass']); $i++) {
+						if (!in_array($this->attributes_orig['objectClass'][$i], $attr['objectClass'])) {
+							$attr['objectClass'][] = $this->attributes_orig['objectClass'][$i];
+						}
+					}
 					$success = ldap_add($_SESSION['ldap']->server(), $this->dn, $attr);
 					if ($success) {
 						//$_SESSION['cache']->update_cache($this->dn, 'add', $attr); TODO: reactivate
