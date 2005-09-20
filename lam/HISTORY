@@ -1,9 +1,11 @@
-???  0.5.0
+28.09.2005 0.5.0
    - Samba 2/3: added display name in account pages
    - fixed bugs:
     -> fixed error message when creating new accounts with shadowAccount
     -> added missing help entries on main account page
-    -> Samba 3: fixed profile settings for password expiration, no password and deactivated account
+    -> Samba 2/3: fixed settings for password expiration, no password and deactivated account
+    -> changing of RDN caused problems in some cases
+
 
 08.09.2005 0.5.rc3
    - INFO messages no longer prevent changing to subpages of a module
@@ -40,6 +42,10 @@
     -> fixed changing of group memberships for users
 
 
+28.07.2005 0.4.10
+  - PHP5 compatibility added
+
+
 30.06.2005 0.5.alpha2
    - added documentation about schemas
    - PDF now uses UTF-8 fonts
@@ -66,6 +72,13 @@
   - new plugin for managing mail routing with inetLocalMailRecipient (RFE 1092137)
   - schema browser
   - tree view
+
+
+09.03.2005 0.4.9
+  - fixed bugs:
+      fixed error messages when moving an user account
+      fixed problem with special group SIDs
+      lamdaemon.pl security fix
 
 
 26.01.2005 0.4.8
