@@ -131,7 +131,6 @@ class sambaSamAccount extends baseModule {
 			'error_message' => $this->messages['logonHours'][0]);
 		// profile mappings
 		$return['profile_mappings'] = array(
-			'sambaSamAccount_sambaHomeDrive' => 'sambaHomeDrive',
 			'sambaSamAccount_smbhome' => 'sambaHomePath',
 			'sambaSamAccount_profilePath' => 'sambaProfilePath',
 			'sambaSamAccount_logonScript' => 'sambaLogonScript',
@@ -556,7 +555,10 @@ class sambaSamAccount extends baseModule {
 			$this->attributes['sambaPwdMustChange'][0] = mktime($post['sambaPwdMustChange_h'], $post['sambaPwdMustChange_m'], $post['sambaPwdMustChange_s'],
 				$post['sambaPwdMustChange_mon'], $post['sambaPwdMustChange_day'], $post['sambaPwdMustChange_yea']);
 			$this->attributes['sambaHomePath'][0] = $post['sambaHomePath'];
-			$this->attributes['sambaHomeDrive'][0] = $post['sambaHomeDrive'];
+			if ($post['sambaHomeDrive'] == "-")
+				$this->attributes['sambaHomeDrive'][0] = '';
+			else
+				$this->attributes['sambaHomeDrive'][0] = $post['sambaHomeDrive'];
 			$this->attributes['sambaLogonScript'][0] = $post['sambaLogonScript'];
 			$this->attributes['sambaProfilePath'][0] = $post['sambaProfilePath'];
 			$rids = array_keys($this->rids);
@@ -800,9 +802,15 @@ class sambaSamAccount extends baseModule {
 					2 => array ( 'kind' => 'select', 'name' => 'sambaPwdMustChange_yea',
 						'options' => $year, 'options_selected' => array($mustchangedate['year']))))),
 				2 => array ( 'kind' => 'help', 'value' => 'pwdMustChange' ));
+
+			$drives = array('-');
 			for ($i=90; $i>67; $i--) $drives[] = chr($i).':';
+			if ($this->attributes['sambaHomeDrive'][0]) {
+				$selected = array ($this->attributes['sambaHomeDrive'][0]);
+			}
+			else $selected = array('-');
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Home drive') ),
-				1 => array ( 'kind' => 'select', 'name' => 'sambaHomeDrive', 'options' => $drives, 'options_selected' => array ($this->attributes['sambaHomeDrive'][0])),
+				1 => array ( 'kind' => 'select', 'name' => 'sambaHomeDrive', 'options' => $drives, 'options_selected' => $selected),
 				2 => array ( 'kind' => 'help', 'value' => 'homeDrive' ));
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Home path') ),
 				1 => array ( 'kind' => 'input', 'type' => 'text', 'name' => 'sambaHomePath', 'size' => '20', 'maxlength' => '255', 'value' => $this->attributes['sambaHomePath'][0]),
@@ -819,6 +827,8 @@ class sambaSamAccount extends baseModule {
 
 			$names = array_keys($this->rids);
 			$wrid=false;
+			$options = array();
+			$selected = array();
 			for ($i=0; $i<count($names); $i++) {
 				if ($this->attributes['sambaPrimaryGroupSID'][0]==$SID."-".$this->rids[$names[$i]]) {
 					$selected[] = $names[$i];
@@ -1014,11 +1024,11 @@ class sambaSamAccount extends baseModule {
 				2 => array('kind' => 'help', 'value' => 'deactivated')
 				);
 			// letter of home drive
-			$drives = array();
+			$drives = array('-');
 			for ($i = 90; $i > 67; $i--) $drives[] = chr($i) . ':';
 			$return[] = array(
 				0 => array('kind' => 'text', 'text' => _('Home drive') . ': '),
-				1 => array('kind' => 'select', 'name' => 'sambaSamAccount_sambaHomeDrive', 'options' => $drives, 'options_selected' => array('Z:')),
+				1 => array('kind' => 'select', 'name' => 'sambaSamAccount_sambaHomeDrive', 'options' => $drives, 'options_selected' => array('-')),
 				2 => array('kind' => 'help', 'value' => 'homeDrive')
 				);
 			// path to home directory
@@ -1115,6 +1125,13 @@ class sambaSamAccount extends baseModule {
 		}
 		elseif ($profile['sambaSamAccount_sambaAcctFlagsD'][0] == "false") {
 			$this->deactivated = false;
+		}
+		// home drive
+		if ($profile['sambaSamAccount_sambaHomeDrive'][0] == "-") {
+			$this->attributes['sambaHomeDrive'][0] = '';
+		}
+		elseif ($profile['sambaSamAccount_sambaHomeDrive'][0]) {
+			$this->attributes['sambaHomeDrive'][0] = $profile['sambaSamAccount_sambaHomeDrive'][0];
 		}
 	}
 
