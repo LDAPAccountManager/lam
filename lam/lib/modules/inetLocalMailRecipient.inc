@@ -253,7 +253,7 @@ class inetLocalMailRecipient extends baseModule {
 				if (isset($post['delAdr' . $i])) continue;
 				if (isset($post['localAdr' . $i]) && ($post['localAdr' . $i] != "")) {
 					// check if address has correct format
-					if (!get_preg($post['localAdr' . $i], 'email')) {
+					if (!get_preg($post['localAdr' . $i], 'mailLocalAddress')) {
 						$message = $this->messages['localAdr'][0];
 						$message[] = $post['localAdr' . $i];
 						$this->triggered_messages[] = array($message);
@@ -265,7 +265,7 @@ class inetLocalMailRecipient extends baseModule {
 		// check new local address
 		if (isset($post['localAdr']) && ($post['localAdr'] != "")) {
 			// check if address has correct format
-			if (get_preg($post['localAdr'], 'email')) {
+			if (get_preg($post['localAdr'], 'mailLocalAddress')) {
 				$this->attributes['mailLocalAddress'][] = $post['localAdr'];
 			}
 			else {
@@ -309,7 +309,7 @@ class inetLocalMailRecipient extends baseModule {
 				$adrs = explode(',', $rawAccounts[$i][$ids['inetLocalMailRecipient_localAdr']]);
 				// check format
 				for ($a = 0; $a < sizeof($adrs); $a++) {
-					if (get_preg($adrs[$a], 'email')) {
+					if (get_preg($adrs[$a], 'mailLocalAddress')) {
 						$partialAccounts[$i]['mailLocalAddress'][] = $adrs[$a];
 					}
 					else {
