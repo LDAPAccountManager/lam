@@ -728,7 +728,6 @@ msgid "Common name"
 msgstr "Nombre común"
 
 #: ../templates/login.php:126
-#, fuzzy
 msgid "Configuration login"
 msgstr "Login de configuración"
 
