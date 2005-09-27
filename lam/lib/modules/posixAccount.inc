@@ -1562,7 +1562,7 @@ class posixAccount extends baseModule {
 		$uids = array();
 		if(is_array($dn_uids)) {
 			foreach ($dn_uids as $uid) {
-				if (($uid[0] < $maxID) && ($uid[0] > $minID)) $uids[] = $uid[0];  // ignore UIDs > maxID and UIDs < minID
+				if (($uid[0] <= $maxID) && ($uid[0] >= $minID)) $uids[] = $uid[0];  // ignore UIDs > maxID and UIDs < minID
 			}
 			sort ($uids, SORT_NUMERIC);
 		}

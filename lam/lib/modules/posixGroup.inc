@@ -857,7 +857,7 @@ class posixGroup extends baseModule {
 		$gids = array();
 		if(is_array($dn_gids)) {
 			foreach ($dn_gids as $gid) {
-				if (($gid[0] < $maxID) && ($gid[0] > $minID)) $gids[] = $gid[0];  // ignore GIDs > maxID and GIDs < minID
+				if (($gid[0] <= $maxID) && ($gid[0] >= $minID)) $gids[] = $gid[0];  // ignore GIDs > maxID and GIDs < minID
 			}
 			sort ($gids, SORT_NUMERIC);
 		}

@@ -1,3 +1,8 @@
+??? 0.5.1
+   - fixed bugs:
+    -> automatic UID/GID assignment did not fully work
+
+
 28.09.2005 0.5.0
    - Samba 2/3: added display name in account pages
    - fixed bugs:
