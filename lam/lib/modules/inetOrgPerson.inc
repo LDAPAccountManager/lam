@@ -419,7 +419,7 @@ class inetOrgPerson extends baseModule {
 		$this->attributes['title'][0] = $post['title'];
 		$this->attributes['mail'][0] = $post['mail'];
 		$this->attributes['telephoneNumber'][0] = $post['telephoneNumber'];
-		$this->attributes['mobileTelephoneNumber'][0] = $post['mobileTelephoneNumber'];
+		$this->attributes['mobile'][0] = $post['mobileTelephoneNumber'];
 		$this->attributes['facsimileTelephoneNumber'][0] = $post['facsimileTelephoneNumber'];
 		$this->attributes['street'][0] = $post['street'];
 		$this->attributes['postOfficeBox'][0] = $post['postOfficeBox'];
@@ -473,7 +473,7 @@ class inetOrgPerson extends baseModule {
 		if (($this->attributes['givenName'][0] != '') && !get_preg($this->attributes['givenName'][0], 'realname')) $triggered_messages['givenName'][] = $this->messages['givenName'][0];
 		if ( !get_preg($this->attributes['sn'][0], 'realname')) $triggered_messages['sn'][] = $this->messages['lastname'][0];
 		if ( !get_preg($this->attributes['telephoneNumber'][0], 'telephone')) $triggered_messages['telephoneNumber'][] = $this->messages['telephoneNumber'][0];
-		if ( !get_preg($this->attributes['mobileTelephoneNumber'][0], 'telephone')) $triggered_messages['mobileTelephoneNumber'][] = $this->messages['mobileTelephone'][0];
+		if ( !get_preg($this->attributes['mobile'][0], 'telephone')) $triggered_messages['mobileTelephoneNumber'][] = $this->messages['mobileTelephone'][0];
 		if ( !get_preg($this->attributes['facsimileTelephoneNumber'][0], 'telephone')) $triggered_messages['facsimileTelephoneNumber'][] = $this->messages['facsimileNumber'][0];
 		if (($this->attributes['mail'][0] != '') && !get_preg($this->attributes['mail'][0], 'email')) $triggered_messages['mail'][] = $this->messages['email'][0];
 		if ( !get_preg($this->attributes['street'][0], 'street')) $triggered_messages['street'][] = $this->messages['street'][0];
@@ -576,7 +576,7 @@ class inetOrgPerson extends baseModule {
 			2 => array ('kind' => 'help', 'value' => 'telephoneNumber'));
 		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Mobile number') ),
 			1 => array ( 'kind' => 'input', 'name' => 'mobileTelephoneNumber', 'type' => 'text', 'size' => '30',
-				'maxlength' => '255', 'value' => $this->attributes['mobileTelephoneNumber'][0] ),
+				'maxlength' => '255', 'value' => $this->attributes['mobile'][0] ),
 			2 => array ('kind' => 'help', 'value' => 'mobileTelephoneNumber'));
 		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Fax number') ),
 			1 => array ( 'kind' => 'input', 'name' => 'facsimileTelephoneNumber', 'type' => 'text', 'size' => '30',
@@ -690,7 +690,7 @@ class inetOrgPerson extends baseModule {
 			'inetOrgPerson_postalCode' => array('<block><key>' . _('Postal code') . '</key><value>' . $this->attributes['postalCode'][0] . '</value></block>'),
 			'inetOrgPerson_postalAddress' => array('<block><key>' . _('Postal address') . '</key><value>' . $this->attributes['postalAddress'][0] . '</value></block>'),
 			'inetOrgPerson_telephoneNumber' => array('<block><key>' . _('Telephone number') . '</key><value>' . $this->attributes['telephoneNumber'][0] . '</value></block>'),
-			'inetOrgPerson_mobileTelephoneNumber' => array('<block><key>' . _('Mobile number') . '</key><value>' . $this->attributes['mobileTelephoneNumber'][0] . '</value></block>'),
+			'inetOrgPerson_mobileTelephoneNumber' => array('<block><key>' . _('Mobile number') . '</key><value>' . $this->attributes['mobile'][0] . '</value></block>'),
 			'inetOrgPerson_facimileTelephoneNumber' => array('<block><key>' . _('Fax number') . '</key><value>' . $this->attributes['facsimileTelephoneNumber'][0] . '</value></block>'),
 			'inetOrgPerson_mail' => array('<block><key>' . _('eMail address') . '</key><value>' . $this->attributes['mail'][0] . '</value></block>'),
 			'inetOrgPerson_cn' => array('<block><key>' . _('Common name') . '</key><value>' . $this->attributes['cn'][0] . '</value></block>'),
@@ -825,7 +825,7 @@ class inetOrgPerson extends baseModule {
 			// mobile
 			if ($rawAccounts[$i][$ids['inetOrgPerson_mobile']] != "") {
 				if (get_preg($rawAccounts[$i][$ids['inetOrgPerson_mobile']], 'telephone')) {
-					$partialAccounts[$i]['mobiletelephoneNumber'] = $rawAccounts[$i][$ids['inetOrgPerson_mobile']];
+					$partialAccounts[$i]['mobile'] = $rawAccounts[$i][$ids['inetOrgPerson_mobile']];
 				}
 				else {
 					$errMsg = $this->messages['mobileTelephone'][1];
