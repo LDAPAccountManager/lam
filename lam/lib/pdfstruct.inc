@@ -105,7 +105,8 @@ function savePDFStructureDefinitions($scope,$definition) {
 		return 'no perms';
 	}
 	else {
-		$handle = fopen($struct_file,'w');
+		$handle = @fopen($struct_file,'w');
+		if (!$handle) return 'no perms';
 		$pdf_attributes = '';
 		foreach($_SESSION['currentPageDefinitions'] as $key => $value) {
 			if($key != 'type') {
