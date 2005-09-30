@@ -32,7 +32,7 @@ $Id$
 include_once("../lib/config.inc"); // Include config.inc which provides Config class
 
 session_save_path("../sess"); // Set session save path
-@session_start(); // Start LDAP Account Manager session
+session_start(); // Start LDAP Account Manager session
 
 /**
 * Displays the login window.
@@ -129,6 +129,11 @@ function display_LoginPage($config_object) {
 		</table>
 		<hr><br><br>
 		<?php
+		// check if PHP has session support
+		if (! function_exists('session_start')) {
+			StatusMessage("ERROR", "Your PHP has no session support!", "Please install the session extension for PHP.");
+			echo "<br><br>";
+		}
 		// check if all password hashes are possible
 		if ((! function_exists('mHash')) && (! function_exists('sha1'))) {
 			StatusMessage("INFO", "Your PHP does not support MHash or sha1(), you will only be able to use CRYPT/PLAIN/MD5/SMD5 for user passwords!", "Please install MHash or update to PHP >4.3.");
