@@ -82,6 +82,7 @@ class sambaSamAccount extends baseModule {
 		$this->messages['deactivated'][0] = array('ERROR', _('Account %s:') . ' sambaSamAccount_deactivated', _('This value can only be \"true\" or \"false\"!'));
 		$this->messages['pwdCanChange'][0] = array('ERROR', _('Account %s:') . ' sambaSamAccount_pwdCanChange', _('Please enter a valid date in format DD-MM-YYYY.'));
 		$this->messages['pwdMustChange'][0] = array('ERROR', _('Account %s:') . ' sambaSamAccount_pwdMustChange', _('Please enter a valid date in format DD-MM-YYYY.'));
+		$this->messages['expireDate'][0] = array('ERROR', _('Account %s:') . ' sambaSamAccount_expireDate', _('Please enter a valid date in format DD-MM-YYYY.'));
 		$this->messages['homeDrive'][0] = array('ERROR', _('Account %s:') . ' sambaSamAccount_homeDrive', _('Please enter a valid drive letter.'));
 		$this->messages['domain'][0] = array('ERROR', _('Account %s:') . ' sambaSamAccount_domain', _('LAM was unable to find a domain with this name!'));
 		$this->messages['logonHours'][0] = array('ERROR', _('Logon hours'), _('The format of the logon hours field is invalid!'));
@@ -244,7 +245,10 @@ class sambaSamAccount extends baseModule {
 				"GMT+11: " . _("Magadan, Solomon Islands") . "<br>" . "GMT+12: " . _("Auckland, Fiji, Kamchatka")),
 			"logonHoursUpload" => array(
 				"ext" => "FALSE", "Headline" => _("Logon hours"),
-				"Text" => _("This option defines the allowed logon hours for this account. The format is the same as for the LDAP attribute. The 24*7 hours are represented as 168 bit which are saved as 21 hex (21*8 = 168) values. The first bit represents Sunday 0:00 - 0:59 in GMT."))
+				"Text" => _("This option defines the allowed logon hours for this account. The format is the same as for the LDAP attribute. The 24*7 hours are represented as 168 bit which are saved as 21 hex (21*8 = 168) values. The first bit represents Sunday 0:00 - 0:59 in GMT.")),
+			'expireDate' => array (
+				"Headline" => _("Account expiration date"),
+				"Text" => _("This is the date when the account will expire. Format: DD-MM-YYYY"))
 		);
 		// upload dependencies
 		$return['upload_preDepends'] = array('posixAccount', 'inetOrgPerson');
@@ -313,6 +317,13 @@ class sambaSamAccount extends baseModule {
 					'name' => 'sambaSamAccount_pwdMustChange',
 					'description' => _('User must change password'),
 					'help' => 'pwdMustChange',
+					'default' => '31-12-2030',
+					'example' => '15-10-2006'
+				),
+				array(
+					'name' => 'sambaSamAccount_expireDate',
+					'description' => _('Account expiration date'),
+					'help' => 'expireDate',
 					'default' => '31-12-2030',
 					'example' => '15-10-2006'
 				),
@@ -554,6 +565,8 @@ class sambaSamAccount extends baseModule {
 				$post['sambaPwdCanChange_mon'], $post['sambaPwdCanChange_day'], $post['sambaPwdCanChange_yea']);
 			$this->attributes['sambaPwdMustChange'][0] = mktime($post['sambaPwdMustChange_h'], $post['sambaPwdMustChange_m'], $post['sambaPwdMustChange_s'],
 				$post['sambaPwdMustChange_mon'], $post['sambaPwdMustChange_day'], $post['sambaPwdMustChange_yea']);
+			$this->attributes['sambaKickoffTime'][0] = mktime($post['sambaExpire_h'], $post['sambaExpire_m'], $post['sambaExpire_s'],
+				$post['sambaExpire_mon'], $post['sambaExpire_day'], $post['sambaExpire_yea']);
 			$this->attributes['sambaHomePath'][0] = $post['sambaHomePath'];
 			if ($post['sambaHomeDrive'] == "-")
 				$this->attributes['sambaHomeDrive'][0] = '';
@@ -751,6 +764,7 @@ class sambaSamAccount extends baseModule {
 		}
 		$canchangedate = getdate($this->attributes['sambaPwdCanChange'][0]);
 		$mustchangedate = getdate($this->attributes['sambaPwdMustChange'][0]);
+		$expiredate = getdate($this->attributes['sambaKickoffTime'][0]);
 
 		$return[] = array(
 			0 => array('kind' => 'text', 'text' => _('Display name')),
@@ -763,12 +777,17 @@ class sambaSamAccount extends baseModule {
 					3 => array ( 'kind' => 'input', 'name' => 'sambaPwdMustChange_h', 'type' => 'hidden', 'value' => $mustchangedate['hours']),
 					4 => array ( 'kind' => 'input', 'name' => 'sambaPwdMustChange_m', 'type' => 'hidden', 'value' => $mustchangedate['minutes']),
 					5 => array ( 'kind' => 'input', 'name' => 'sambaPwdMustChange_s', 'type' => 'hidden', 'value' => $mustchangedate['seconds']),
-					6 => array ( 'kind' => 'input', 'name' => 'sambaAcctFlagsU', 'type' => 'hidden', 'value' => 'true'));
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Samba password') ),
-				1 => array ( 'kind' => 'input', 'name' => 'sambaLMPassword', 'type' => 'password', 'size' => '20', 'maxlength' => '255'));
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Repeat password') ),
-				1 => array ( 'kind' => 'input', 'name' => 'sambaLMPassword2', 'type' => 'password', 'size' => '20', 'maxlength' => '255'),
-				2 => array ('kind' => 'help', 'value' => 'password'));
+					6 => array ( 'kind' => 'input', 'name' => 'sambaExpire_h', 'type' => 'hidden', 'value' => $expiredate['hours']),
+					7 => array ( 'kind' => 'input', 'name' => 'sambaExpire_m', 'type' => 'hidden', 'value' => $expiredate['minutes']),
+					8 => array ( 'kind' => 'input', 'name' => 'sambaExpire_s', 'type' => 'hidden', 'value' => $expiredate['seconds']),
+					9 => array ( 'kind' => 'input', 'name' => 'sambaAcctFlagsU', 'type' => 'hidden', 'value' => 'true'));
+			$return[] = array(
+				0 => array('kind' => 'text', 'text' => _('Samba password')),
+				1 => array('kind' => 'input', 'name' => 'sambaLMPassword', 'type' => 'password', 'size' => '20', 'maxlength' => '255'),
+				2 => array('kind' => 'help', 'value' => 'password'));
+			$return[] = array(
+				0 => array('kind' => 'text', 'text' => _('Repeat password')),
+				1 => array('kind' => 'input', 'name' => 'sambaLMPassword2', 'type' => 'password', 'size' => '20', 'maxlength' => '255'));
 			if ($_SESSION[$this->base]->module['posixAccount']->orig['userPassword'][0] != $_SESSION[$this->base]->module['posixAccount']->attributes['userPassword'][0]) {
 				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Use unix password') ),
 					1 => array ( 'kind' => 'input', 'name' => 'useunixpwd', 'type' => 'checkbox', 'checked' => $this->useunixpwd),
@@ -802,6 +821,14 @@ class sambaSamAccount extends baseModule {
 					2 => array ( 'kind' => 'select', 'name' => 'sambaPwdMustChange_yea',
 						'options' => $year, 'options_selected' => array($mustchangedate['year']))))),
 				2 => array ( 'kind' => 'help', 'value' => 'pwdMustChange' ));
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Account expiration date') ),
+				1 => array ( 'kind' => 'table', 'value' => array ( 0 => array ( 0 => array ( 'kind' => 'select', 'name' => 'sambaExpire_day',
+						'options' => $mday, 'options_selected' => $expiredate['mday']),
+					1 => array ( 'kind' => 'select', 'name' => 'sambaExpire_mon',
+						'options' => $mon, 'options_selected' => $expiredate['mon']),
+					2 => array ( 'kind' => 'select', 'name' => 'sambaExpire_yea',
+						'options' => $year, 'options_selected' => $expiredate['year'])))),
+				2 => array ( 'kind' => 'help', 'value' => 'expireDate' ));
 
 			$drives = array('-');
 			for ($i=90; $i>67; $i--) $drives[] = chr($i).':';
@@ -999,6 +1026,11 @@ class sambaSamAccount extends baseModule {
 	function get_profileOptions() {
 		$return = array();
 		if ($this->get_scope() == 'user') {
+			// lists for expiration date
+			$day = array(); $mon = array(); $year = array();
+			for ( $i=1; $i<=31; $i++ ) $day[] = $i;
+			for ( $i=1; $i<=12; $i++ ) $mon[] = $i;
+			for ( $i=2003; $i<=2030; $i++ ) $year[] = $i;
 			// use Unix password as Samba password
 			$return[] = array(
 				0 => array('kind' => 'text', 'text' => _('Use unix password') . ': '),
@@ -1011,18 +1043,29 @@ class sambaSamAccount extends baseModule {
 				1 => array('kind' => 'input', 'name' => 'sambaSamAccount_sambaAcctFlagsN', 'type' => 'checkbox', 'checked' => false),
 				2 => array('kind' => 'help', 'value' => 'noPassword')
 				);
-			// password never expires
-			$return[] = array(
-				0 => array('kind' => 'text', 'text' => _('Password does not expire') . ': '),
-				1 => array('kind' => 'input', 'name' => 'sambaSamAccount_sambaAcctFlagsX', 'type' => 'checkbox', 'checked' => true),
-				2 => array('kind' => 'help', 'value' => 'noExpire')
-				);
 			// account deactivation
 			$return[] = array(
 				0 => array('kind' => 'text', 'text' => _('Account is deactivated') . ': '),
 				1 => array('kind' => 'input', 'name' => 'sambaSamAccount_sambaAcctFlagsD', 'type' => 'checkbox', 'checked' => false),
 				2 => array('kind' => 'help', 'value' => 'deactivated')
 				);
+			// password never expires
+			$return[] = array(
+				0 => array('kind' => 'text', 'text' => _('Password does not expire') . ': '),
+				1 => array('kind' => 'input', 'name' => 'sambaSamAccount_sambaAcctFlagsX', 'type' => 'checkbox', 'checked' => true),
+				2 => array('kind' => 'help', 'value' => 'noExpire')
+				);
+			// expiration date
+			$return[] = array(
+				0 => array('kind' => 'text', 'text' => _('Account expiration date')),
+				1 => array('kind' => 'table', 'value' => array(
+					0 => array (
+						0 => array('kind' => 'select', 'name' => 'sambaSamAccount_expire_day', 'options' => $day, 'options_selected' => array('1')),
+						1 => array('kind' => 'select', 'name' => 'sambaSamAccount_expire_mon', 'options' => $mon, 'options_selected' => array('1')),
+						2 => array('kind' => 'select', 'name' => 'sambaSamAccount_expire_yea', 'options' => $year, 'options_selected' => array('2030'))
+					)
+				)),
+				2 => array('kind' => 'help', 'value' => 'expireDate'));
 			// letter of home drive
 			$drives = array('-');
 			for ($i = 90; $i > 67; $i--) $drives[] = chr($i) . ':';
@@ -1132,6 +1175,12 @@ class sambaSamAccount extends baseModule {
 		}
 		elseif ($profile['sambaSamAccount_sambaHomeDrive'][0]) {
 			$this->attributes['sambaHomeDrive'][0] = $profile['sambaSamAccount_sambaHomeDrive'][0];
+		}
+		// expiration date
+		if (isset($profile['sambaSamAccount_expire_day'][0]) && ($profile['sambaSamAccount_expire_day'][0] != "")) {
+			$date = mktime(10, 0, 0, $profile['sambaSamAccount_expire_mon'][0],
+				$profile['sambaSamAccount_expire_day'][0], $profile['sambaSamAccount_expire_yea'][0]);
+			$this->attributes['sambaKickoffTime'][0] = $date;
 		}
 	}
 
@@ -1291,6 +1340,19 @@ class sambaSamAccount extends baseModule {
 					}
 					else {
 						$errMsg = $this->messages['pwdMustChange'][0];
+						array_push($errMsg, array($i));
+						$triggered_messages[] = $errMsg;
+					}
+				}
+				// expiration date
+				if ($rawAccounts[$i][$ids['sambaSamAccount_expireDate']] != "") {
+					if (get_preg($rawAccounts[$i][$ids['sambaSamAccount_expireDate']], 'date')) {
+						$parts = explode("-", $rawAccounts[$i][$ids['sambaSamAccount_expireDate']]);
+						$time = mktime(0, 0, 0, $parts[1], $parts[0], $parts[2]);
+						$partialAccounts[$i]['sambaKickoffTime'] = $time;
+					}
+					else {
+						$errMsg = $this->messages['expireDate'][0];
 						array_push($errMsg, array($i));
 						$triggered_messages[] = $errMsg;
 					}

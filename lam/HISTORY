@@ -1,4 +1,5 @@
 ??? 0.5.1
+   - Samba 3: added support for account expiration
    - fixed bugs:
     -> automatic UID/GID assignment did not fully work
     -> PDF: additional groups for Unix users
