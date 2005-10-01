@@ -96,12 +96,12 @@ class shadowAccount extends baseModule {
 				2 => array('kind' => 'help', 'value' => 'shadowMax')),
 			// expiration date
 			array(
-				0 => array('kind' => 'text', 'text' => _('Expiration date')),
+				0 => array('kind' => 'text', 'text' => _('Account expiration date')),
 				1 => array('kind' => 'table', 'value' => array(
 					0 => array (
-						0 => array('kind' => 'select', 'name' => 'shadowAccount_shadowExpire_day', 'options' => $day),
-						1 => array('kind' => 'select', 'name' => 'shadowAccount_shadowExpire_mon', 'options' => $mon),
-						2 => array('kind' => 'select', 'name' => 'shadowAccount_shadowExpire_yea', 'options' => $year)
+						0 => array('kind' => 'select', 'name' => 'shadowAccount_shadowExpire_day', 'options' => $day, 'options_selected' => array('1')),
+						1 => array('kind' => 'select', 'name' => 'shadowAccount_shadowExpire_mon', 'options' => $mon, 'options_selected' => array('1')),
+						2 => array('kind' => 'select', 'name' => 'shadowAccount_shadowExpire_yea', 'options' => $year, 'options_selected' => array('2030'))
 					)
 				)),
 				2 => array('kind' => 'help', 'value' => 'shadowExpire'))
@@ -162,8 +162,8 @@ class shadowAccount extends baseModule {
 				"Text" => _("Number of days after a user has to change his password again. If set value must be 0<."). ' '. _("Can be left empty.")
 			),
 			'shadowExpire' => array (
-				"Headline" => _("Expiration date"),
-				"Text" => _("Account expiration date. Format: DD-MM-YYYY")
+				"Headline" => _("Account expiration date"),
+				"Text" => _("This is the date when the account will expire. Format: DD-MM-YYYY")
 			)
 		);
 		// upload fields
@@ -194,7 +194,7 @@ class shadowAccount extends baseModule {
 			),
 			array(
 				'name' => 'shadowAccount_expireDate',
-				'description' => _('Expiration date'),
+				'description' => _('Account expiration date'),
 				'help' => 'shadowExpire',
 				'example' => '17-07-2011'
 			)
@@ -271,10 +271,10 @@ class shadowAccount extends baseModule {
 		$date = getdate ($this->attributes['shadowExpire'][0]*3600*24);
 
 		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Password warning') ),
-			1 => array ( 'kind' => 'input', 'name' => 'shadowWarning', 'type' => 'text', 'size' => '4', 'maxlength' => '4', 'value' => $this->attributes['shadowWarning'][0] ),
+			1 => array ( 'kind' => 'input', 'name' => 'shadowWarning', 'type' => 'text', 'size' => '5', 'maxlength' => '4', 'value' => $this->attributes['shadowWarning'][0] ),
 			2 => array ( 'kind' => 'help', 'value' => 'shadowWarning' ));
 		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Password expiration') ),
-			1 => array ( 'kind' => 'input', 'name' => 'shadowInactive', 'type' => 'text', 'size' => '4', 'maxlength' => '4', 'value' => $this->attributes['shadowInactive'][0] ),
+			1 => array ( 'kind' => 'input', 'name' => 'shadowInactive', 'type' => 'text', 'size' => '5', 'maxlength' => '4', 'value' => $this->attributes['shadowInactive'][0] ),
 			2 => array ( 'kind' => 'help', 'value' => 'shadowInactive' ));
 		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Minimum password age') ),
 			1 => array ( 'kind' => 'input', 'name' => 'shadowMin', 'type' => 'text', 'size' => '5', 'maxlength' => '5', 'value' => $this->attributes['shadowMin'][0] ),
@@ -286,7 +286,7 @@ class shadowAccount extends baseModule {
 		for ( $i=1; $i<=31; $i++ ) $mday[] = $i;
 		for ( $i=1; $i<=12; $i++ ) $mon[] = $i;
 		for ( $i=2003; $i<=2030; $i++ ) $year[] = $i;
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Expiration date') ),
+		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Account expiration date') ),
 			1 => array ( 'kind' => 'table', 'value' => array ( 0 => array ( 0 => array ( 'kind' => 'select', 'name' => 'shadowExpire_day',
 					'options' => $mday, 'options_selected' => $date['mday']),
 				1 => array ( 'kind' => 'select', 'name' => 'shadowExpire_mon',
