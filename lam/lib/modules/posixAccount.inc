@@ -617,7 +617,7 @@ class posixAccount extends baseModule {
 		$triggered_messages = array();
 		$groups = $_SESSION['cache']->findgroups(); // list of all groupnames
 		if (count($groups)==0) {
-			return array("ERROR", _('No Unix groups found in LDAP! Please create one first.'), '');
+			return array(array(array("ERROR", _('No Unix groups found in LDAP! Please create one first.'), '')));
 		}
 		$this->attributes['homeDirectory'][0] = $post['homeDirectory'];
 		$this->attributes['loginShell'][0] = $post['loginShell'];
