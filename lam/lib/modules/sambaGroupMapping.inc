@@ -76,6 +76,21 @@ class sambaGroupMapping extends baseModule {
 	}
 
 	/**
+	* Initializes the module after it became part of an accountContainer
+	*
+	* @param string $base the name of the accountContainer object ($_SESSION[$base])
+	*/
+	function init($base) {
+		// call parent init
+		parent::init($base);
+		$sambaDomains = search_domains($_SESSION['config']->get_Suffix('domain'));
+		if (sizeof($sambaDomains) == 0) {
+			StatusMessage("ERROR", _('No Samba 3 domains found in LDAP! Please create one first.'), '');
+			return;
+		}
+	}
+
+	/**
 	* In this function the LDAP account is built up.
 	*
 	* @param array $rawAccounts list of hash arrays (name => value) from user input
@@ -153,8 +168,11 @@ class sambaGroupMapping extends baseModule {
 	* It will output a complete html-table
 	*/
 	function display_html_attributes(&$post) {
-		// Get Domain SID from name
 		$sambaDomains = search_domains($_SESSION['config']->get_Suffix('domain'));
+		if (sizeof($sambaDomains) == 0) {
+			StatusMessage("ERROR", _('No Samba 3 domains found in LDAP! Please create one first.'), '');
+			return;
+		}
 		// Get Domain-SID from group SID
 		if ($this->attributes['sambaSID'][0]!='')
 			$domainSID = substr($this->attributes['sambaSID'][0], 0, strrpos($this->attributes['sambaSID'][0], "-"));
@@ -375,12 +393,15 @@ class sambaGroupMapping extends baseModule {
 	* @return array list of info/error messages
 	*/
 	function process_attributes(&$post) {
+		$sambaDomains = search_domains($_SESSION['config']->get_Suffix('domain'));
+		if (sizeof($sambaDomains) == 0) {
+			return array(array(array("ERROR", _('No Samba 3 domains found in LDAP! Please create one first.'))));
+		}
 		// Save attributes
 		$this->attributes['displayName'][0] = $post['displayName'];
 		$this->attributes['sambaGroupType'][0] = $this->sambaGroupTypes[$post['sambaGroupType']];
 
 		// Get Domain SID from name
-		$sambaDomains = search_domains($_SESSION['config']->get_Suffix('domain'));
 		for ($i=0; $i<count($sambaDomains); $i++ )
 			if ($post['sambaDomainName'] == $sambaDomains[$i]->name) {
 				$SID = $sambaDomains[$i]->SID;

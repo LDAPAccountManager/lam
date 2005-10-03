@@ -37,6 +37,23 @@ $Id$
 */
 class sambaSamAccount extends baseModule {
 
+	// Variables
+	/** use unix password as samba password? */
+	var $useunixpwd;
+	/** use no password? */
+	var $nopwd;
+	/** password does not expire? */
+	var $noexpire;
+	/** account deactivated? */
+	var $deactivated;
+	/** array of well known rids */
+	var $rids;
+	/** HEX to binary conversion table */
+	var $hex2bitstring = array('0' => '0000', '1' => '0001', '2' => '0010', '3' => '0011', '4' => '0100',
+		'5' => '0101', '6' => '0110', '7' => '0111', '8' => '1000', '9' => '1001', 'A' => '1010',
+		'B' => '1011', 'C' => '1100', 'D' => '1101', 'E' => '1110', 'F' => '1111');
+	
+
 	/**
 	* Creates a new sambaSamAccount object.
 	*
@@ -412,24 +429,12 @@ class sambaSamAccount extends baseModule {
 		$this->noexpire = true;
 		$this->nopwd = false;
 		$this->deactivated = false;
+		$sambaDomains = search_domains($_SESSION['config']->get_Suffix('domain'));
+		if (sizeof($sambaDomains) == 0) {
+			StatusMessage("ERROR", _('No Samba 3 domains found in LDAP! Please create one first.'), '');
+			return;
+		}
 	}
-
-	// Variables
-	/** use unix password as samba password? */
-	var $useunixpwd;
-	/** use no password? */
-	var $nopwd;
-	/** password does not expire? */
-	var $noexpire;
-	/** account deactivated? */
-	var $deactivated;
-	/** array of well known rids */
-	var $rids;
-	/** HEX to binary conversion table */
-	var $hex2bitstring = array('0' => '0000', '1' => '0001', '2' => '0010', '3' => '0011', '4' => '0100',
-		'5' => '0101', '6' => '0110', '7' => '0111', '8' => '1000', '9' => '1001', 'A' => '1010',
-		'B' => '1011', 'C' => '1100', 'D' => '1101', 'E' => '1110', 'F' => '1111');
-	
 
 	function module_ready() {
 		if ($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]=='') return false;
@@ -501,10 +506,13 @@ class sambaSamAccount extends baseModule {
 	* @return array list of info/error messages
 	*/
 	function process_attributes(&$post) {
+		$sambaDomains = search_domains($_SESSION['config']->get_Suffix('domain'));
+		if (sizeof($sambaDomains) == 0) {
+			return array(array(array("ERROR", _('No Samba 3 domains found in LDAP! Please create one first.'))));
+		}
 		// Save attributes
 		$this->attributes['sambaDomainName'][0] = $post['sambaDomainName'];
 		// Get Domain SID from name
-		$sambaDomains = search_domains($_SESSION['config']->get_Suffix('domain'));
 		for ($i=0; $i<count($sambaDomains); $i++ )
 			if ($this->attributes['sambaDomainName'][0] == $sambaDomains[$i]->name) {
 				$SID = $sambaDomains[$i]->SID;
@@ -752,9 +760,13 @@ class sambaSamAccount extends baseModule {
 	*/
 	function display_html_attributes(&$post) {
 		// Get Domain SID from user SID
+		$sambaDomains = search_domains($_SESSION['config']->get_Suffix('domain'));
+		if (sizeof($sambaDomains) == 0) {
+			StatusMessage("ERROR", _('No Samba 3 domains found in LDAP! Please create one first.'), '');
+			return;
+		}
 		if ($this->attributes['sambaSID'][0]!='')
 			$domainSID = substr($this->attributes['sambaSID'][0], 0, strrpos($this->attributes['sambaSID'][0], "-"));
-		$sambaDomains = search_domains($_SESSION['config']->get_Suffix('domain'));
 		for ($i=0; $i<count($sambaDomains); $i++ ) {
 			$sambaDomainNames[] = $sambaDomains[$i]->name;
 			if ($domainSID == $sambaDomains[$i]->SID) {
