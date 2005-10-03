@@ -226,7 +226,10 @@ else {
 	if ($ARGV[2] ne "*test") {
 		$string = do {local $/;<STDIN>};
 		}
-	else { $argv = "*test\n"; }
+	else {
+		$argv = "*test\n";
+		$string = " \n";
+	}
 	my $ssh = Net::SSH::Perl->new($hostname, options=>[
 		"UserKnownHostsFile /dev/null"],
 		protocol => "2,1" );
