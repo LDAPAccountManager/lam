@@ -4,7 +4,8 @@
     -> automatic UID/GID assignment did not fully work
     -> PDF: additional groups for Unix users
     -> inetOrgPerson: fixed mobile number
-    -> Samba 2/3: passwords fixed for file uploads
+    -> Samba 2/3: passwords fixed for file uploads (1311561)
+    -> Quota: profile settings fixed
 
 
 28.09.2005 0.5.0
