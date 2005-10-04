@@ -403,8 +403,8 @@ class quota extends baseModule {
 			if (!get_preg($options["quota_hardblock_" . $dirs[$i]][0], 'digit')) $return[] = $this->messages['hardblock'][0];
 			if (!get_preg($options["quota_softinode_" . $dirs[$i]][0], 'digit')) $return[] = $this->messages['softinode'][0];
 			if (!get_preg($options["quota_hardinode_" . $dirs[$i]][0], 'digit')) $return[] = $this->messages['hardinode'][0];
-			if (intval($options["quota_softblock_" . $dirs[$i]][0]) > intval($options["quota_hardblock_$i"][0])) $return[] = $this->messages['block_cmp'][0];
-			if (intval($options["quota_softinode_" . $dirs[$i]][0]) > intval($options["quota_hardinode_$i"][0])) $return[] = $this->messages['inode_cmp'][0];
+			if (intval($options["quota_softblock_" . $dirs[$i]][0]) > intval($options["quota_hardblock_" . $dirs[$i]][0])) $return[] = $this->messages['block_cmp'][0];
+			if (intval($options["quota_softinode_" . $dirs[$i]][0]) > intval($options["quota_hardinode_" . $dirs[$i]][0])) $return[] = $this->messages['inode_cmp'][0];
 			$i++;
 		}
 		return $return;
