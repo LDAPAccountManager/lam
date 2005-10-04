@@ -233,14 +233,15 @@ function showMainPage($scope) {
 			}
 		echo "</tr>\n";
 		echo "<tr>\n";
+			$RDNs = getRDNAttributes($scope);
 			// DN attributes
 			$sampleCSV_row[] = "\"" . $_SESSION['config']->get_Suffix($scope) . "\"";
-			$sampleCSV_row[] = "\"" . array_shift(getRDNAttributes($scope)) . "\"";
+			$sampleCSV_row[] = "\"" . $RDNs[0] . "\"";
 			echo "<td>\n";
 				echo $_SESSION['config']->get_Suffix($scope);
 			echo "</td>\n";
 			echo "<td>\n";
-				echo array_shift(getRDNAttributes($scope));
+				echo $RDNs[0];
 			echo "</td>\n";
 			// module attributes
 			for ($m = 0; $m < sizeof($modules); $m++) {
