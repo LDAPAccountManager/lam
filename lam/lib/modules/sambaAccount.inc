@@ -887,13 +887,13 @@ class sambaAccount extends baseModule {
 				}
 				// use Unix password
 				if ($rawAccounts[$i][$ids['sambaAccount_pwdUnix']] == "") {  // default: use Unix
-					$partialAccounts[$i]['lmPassword'] = lmPassword($partialAccounts[$i]['userPassword']);
-					$partialAccounts[$i]['ntPassword'] = ntPassword($partialAccounts[$i]['userPassword']);
+					$partialAccounts[$i]['lmPassword'] = lmPassword($rawAccounts[$i][$ids['posixAccount_password']]);
+					$partialAccounts[$i]['ntPassword'] = ntPassword($rawAccounts[$i][$ids['posixAccount_password']]);
 				}
 				elseif (in_array($rawAccounts[$i][$ids['sambaAccount_pwdUnix']], array('true', 'false'))) {
 					if ($rawAccounts[$i][$ids['sambaAccount_pwdUnix']] == 'true') {  // use Unix
-						$partialAccounts[$i]['lmPassword'] = lmPassword($partialAccounts[$i]['userPassword']);
-						$partialAccounts[$i]['ntPassword'] = ntPassword($partialAccounts[$i]['userPassword']);
+						$partialAccounts[$i]['lmPassword'] = lmPassword($rawAccounts[$i][$ids['posixAccount_password']]);
+						$partialAccounts[$i]['ntPassword'] = ntPassword($rawAccounts[$i][$ids['posixAccount_password']]);
 					}
 					else {  // use given password
 						$partialAccounts[$i]['lmPassword'] = lmPassword($rawAccounts[$i][$ids['sambaAccount_password']]);
