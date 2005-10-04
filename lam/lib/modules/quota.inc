@@ -403,8 +403,8 @@ class quota extends baseModule {
 			if (!get_preg($options["quota_hardblock_" . $dirs[$i]][0], 'digit')) $return[] = $this->messages['hardblock'][0];
 			if (!get_preg($options["quota_softinode_" . $dirs[$i]][0], 'digit')) $return[] = $this->messages['softinode'][0];
 			if (!get_preg($options["quota_hardinode_" . $dirs[$i]][0], 'digit')) $return[] = $this->messages['hardinode'][0];
-			if (intval($options["quota_softblock_" . $dirs[$i]][0]) >= $options["quota_hardblock_$i"][0]) $return[] = $this->messages['block_cmp'][0];
-			if (intval($options["quota_softinode_" . $dirs[$i]][0]) >= $options["quota_hardinode_$i"][0]) $return[] = $this->messages['inode_cmp'][0];
+			if (intval($options["quota_softblock_" . $dirs[$i]][0]) > intval($options["quota_hardblock_$i"][0])) $return[] = $this->messages['block_cmp'][0];
+			if (intval($options["quota_softinode_" . $dirs[$i]][0]) > intval($options["quota_hardinode_$i"][0])) $return[] = $this->messages['inode_cmp'][0];
 			$i++;
 		}
 		return $return;
@@ -573,13 +573,13 @@ class quota extends baseModule {
 							$errors[] = $errMsg;
 							continue;
 						}
-						if ($parts[0] >= $parts[1]) {
+						if ($parts[0] > $parts[1]) {
 							$errMsg = $this->messages['block_cmp'][1];
 							array_push($errMsg, array($i, 'quota_' . $temp['quotas'][$m]));
 							$errors[] = $errMsg;
 							continue;
 						}
-						if ($parts[2] >= $parts[3]) {
+						if ($parts[2] > $parts[3]) {
 							$errMsg = $this->messages['inode_cmp'][1];
 							array_push($errMsg, array($i, 'quota_' . $temp['quotas'][$m]));
 							$errors[] = $errMsg;
