@@ -232,7 +232,7 @@ else {
 	}
 	my $ssh = Net::SSH::Perl->new($hostname, options=>[
 		"UserKnownHostsFile /dev/null"],
-		protocol => "2,1" );
+		protocol => "2,1", debug => 0 );
 	$ssh->login($username, $password);
 	# Change needed to prevent buffer overrun
 	@string2 = split ("\n", $string);

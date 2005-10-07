@@ -96,12 +96,11 @@
      failed then you will find a description about the reason here.
 
    - Enable debug output in lamdaemon
-     In line 230 of lamdaemon.pl change the SSH options like this:
+     In line 235 of lamdaemon.pl change the SSH options like this:
 
      my $ssh = Net::SSH::Perl->new($hostname, options=>[
        "UserKnownHostsFile /dev/null"],
-       protocol => "2,1",
-       debug => "true" );
+       protocol => "2,1", debug => 1 );
 
      This will produce a lot of output when you do the lamdaemon test.
      Check that there is a line like this:
