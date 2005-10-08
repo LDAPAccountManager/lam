@@ -409,8 +409,10 @@ class posixAccount extends baseModule {
 	function init($base) {
 		// call parent init
 		parent::init($base);
-		$groups = $_SESSION['cache']->findgroups(); // list of all groupnames
 		$this->createhomedir=false;
+		$this->groups = array();
+		$this->groups_orig = array();
+		$groups = $_SESSION['cache']->findgroups(); // list of all groupnames
 		if (count($groups)==0) {
 			StatusMessage("ERROR", _('No Unix groups found in LDAP! Please create one first.'), '');
 			return;
@@ -451,15 +453,14 @@ class posixAccount extends baseModule {
 		// get additional group memberships
 		$dn_groups = $_SESSION['cache']->get_cache(array('memberUid', 'cn'), 'posixGroup', 'group');
 		if (is_array($dn_groups)) {
-			if (!is_array($this->groups)) $this->groups = array();
 			$DNs = array_keys($dn_groups);
 			for ($i = 0; $i < sizeof($DNs); $i++) {
 				if (isset($dn_groups[$DNs[$i]]['memberUid'][0])) {
 					if (in_array($attr['uid'][0], $dn_groups[$DNs[$i]]['memberUid'])) $this->groups[] = $dn_groups[$DNs[$i]]['cn'][0];
 				}
 			}
-			$this->groups_orig = $this->groups;
 		}
+		$this->groups_orig = $this->groups;
 		return 0;
 	}
 
@@ -548,43 +549,18 @@ class posixAccount extends baseModule {
 			}
 		}
 		else {
-			if (is_array($this->groups)) {
-				// There are some additional groups defined
-				if (is_array($this->groups_orig)) {
-					//There are some old groups.
-					$add = array_delete($this->groups_orig, $this->groups);
-					$remove = array_delete($this->groups, $this->groups_orig);
-					$dn_cns = $_SESSION['cache']->get_cache('cn', 'posixGroup', 'group');
-					// get_cache will return an array ( dn1 => array(cn1), dn2 => array(cn2), ... )
-					$DNs = array_keys($dn_cns);
-					foreach ($DNs as $DN) {
-						if (is_array($add))
-						if (in_array($dn_cns[$DN][0], $add)) $return[$DN]['add']['memberUid'][] = $this->attributes['uid'][0];
-						if (is_array($remove))
-						if (in_array($dn_cns[$DN][0], $remove)) $return[$DN]['remove']['memberUid'][] = $this->attributes['uid'][0];
-					}
-					// primary group mut also be removed if it has changed after setting additional groups
-					if (in_array($_SESSION['cache']->getgrnam($this->attributes['gidNumber'][0]), $this->groups_orig)) $return[$DN]['remove']['memberUid'][] = $this->attributes['uid'];
+			// update groups.
+			$add = array_delete($this->groups_orig, $this->groups);
+			$remove = array_delete($this->groups, $this->groups_orig);
+			$dn_cns = $_SESSION['cache']->get_cache('cn', 'posixGroup', 'group');
+			// get_cache will return an array ( dn1 => array(cn1), dn2 => array(cn2), ... )
+			$DNs = array_keys($dn_cns);
+			foreach ($DNs as $DN) {
+				if (is_array($add)) {
+					if (in_array($dn_cns[$DN][0], $add)) $return[$DN]['add']['memberUid'][] = $this->attributes['uid'][0];
 				}
-				else {
-					// Add user to every group
-					$dn_cns = $_SESSION['cache']->get_cache('cn', 'posixGroup', 'group');
-					// get_cache will return an array ( dn1 => array(cn1), dn2 => array(cn2), ... )
-					$DNs = array_keys($dn_cns);
-					foreach ($DNs as $DN) {
-						if (in_array($dn_cns[$DN][0], $this->groups)) $return[$DN]['add']['memberUid'][] = $this->attributes['uid'][0];
-					}
-				}
-			}
-			else {
-				if (is_array($this->groups_orig)) {
-					//There are some old groups which have to be removed
-					$dn_cns = $_SESSION['cache']->get_cache('cn', 'posixGroup', 'group');
-					// get_cache will return an array ( dn1 => array(cn1), dn2 => array(cn2), ... )
-					$DNs = array_keys($dn_cns);
-					foreach ($DNs as $DN) {
-						if (in_array($dn_cns[$DN][0], $this->orig['groups'])) $return[$DN]['remove']['memberUid'][] = $this->attributes['uid'][0];
-					}
+				if (is_array($remove)) {
+					if (in_array($dn_cns[$DN][0], $remove)) $return[$DN]['remove']['memberUid'][] = $this->attributes['uid'][0];
 				}
 			}
 		}
