@@ -1,10 +1,11 @@
-??? 0.5.1
+19.10.2005 0.5.1
    - Samba 3: added support for account expiration
    - fixed bugs:
     -> automatic UID/GID assignment did not fully work
     -> PDF: additional groups for Unix users
     -> inetOrgPerson: fixed mobile number
     -> Samba 2/3: passwords fixed for file uploads (1311561)
+    -> Samba 3: fixed logon hours (patch 1311915)
     -> Quota: profile settings fixed
 
 

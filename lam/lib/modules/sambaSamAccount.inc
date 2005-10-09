@@ -730,25 +730,17 @@ class sambaSamAccount extends baseModule {
 		if ($post['form_subpage_sambaSamAccount_attributes_abort']) return;
 		// set new logon hours
 		$logonHours = '';
-		for ($i = 0; $i < 7; $i++) {
-			for ($h = 0; $h < 24; $h++) {
-				if ($post['lh_' . $i . '_' . $h] == 'on') {
-					$logonHours = $logonHours . '1';
-				}
-				else {
-					$logonHours = $logonHours . '0';
-				}
-			}
+		for ($i = 0; $i < 24*7; $i++) {
+			$logonHours .= isset($post['lh_' . $i]) ? '1' : '0';
 		}
-		// put sunday back at the beginning
-		$sunday = substr($logonHours, strlen($logonHours) - 24);
-		$logonHours = $sunday . substr($logonHours, 0, strlen($logonHours) - 24);
 		// reconstruct HEX string
 		$bitstring2hex = array_flip($this->hex2bitstring);
 		$logonHoursNew = '';
-		for ($i = 0; $i < 42; $i++) {
-			$part = substr($logonHours, $i * 4, 4);
-			$hex = $bitstring2hex[$part];
+		for ($i = 0; $i < 21; $i++) {
+			$part = strrev(substr($logonHours, $i * 8, 8));
+			$byte[hi] = substr($part,0,4);
+			$byte[low] = substr($part,4,4);
+			$hex = $bitstring2hex[$byte[hi]].$bitstring2hex[$byte[low]];
 			$logonHoursNew = $logonHoursNew . $hex;
 		}
 		$this->attributes['sambaLogonHours'][0] = $logonHoursNew;
@@ -958,8 +950,8 @@ class sambaSamAccount extends baseModule {
 	* @return array meta HTML code
 	*/
 	function display_html_logonHours(&$post) {
-		$days = array(0 => _('Monday'), 1 => _('Tuesday'), 2 => _('Wednesday'), 3 => _('Thursday'),
-			4 => _('Friday'), 5 => _('Saturday'), 6 => _('Sunday'));
+		$days = array(1 => _('Monday'), 2 => _('Tuesday'), 3 => _('Wednesday'), 4 => _('Thursday'),
+			5 => _('Friday'), 6 => _('Saturday'), 0 => _('Sunday'));
 		if (!$this->attributes['sambaLogonHours'][0]) {
 			$this->attributes['sambaLogonHours'][0] = 'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF';
 		}
@@ -969,13 +961,15 @@ class sambaSamAccount extends baseModule {
 		for ($i = 0; $i < strlen($logonHours); $i++) {
 			$temp[] = $this->hex2bitstring[$logonHours[$i]];
 		}
-		$logonHours = implode('', $temp);
-		// move sunday at the end
-		$sunday = substr($logonHours, 0, 24);
-		$logonHours = substr($logonHours, 24) . $sunday;
-		$week = array();
-		for ($i = 0; $i < 7; $i++) {
-			$week[$i] = substr($logonHours, 24*$i, 24);
+		$logonHoursRev = implode('', $temp);
+		// reverse bits low to high (1 is 0:00 sunday, 2 is 1:00 sunday, etc)
+		$logonHours = "";
+		for ($i = 0; $i < 21; $i++) {
+			$logonHours .= strrev(substr($logonHoursRev, $i*8, 8));
+		}
+		$hour = array();
+		for ($i = 0; $i < 24*7; $i++) {
+			$hour[$i] = substr($logonHours, $i, 1);
 		}
 		// get offset
 		$offset = 0;
@@ -988,22 +982,23 @@ class sambaSamAccount extends baseModule {
 			}
 		}
 		// display input
-		for ($i = 0; $i < 7; $i++) {
-			$return[0][1 + $i] = array('kind' => 'text', 'text' => '<b>' . $days[$i] . '</b>', 'td' => array('width' => "12.5%", 'align' => 'center'));
-			for ($h = 0; $h < 24; $h++) {
-				$pos = $h;
-				$pos = $pos + $offset;
-				if ($pos > 23) $pos = $pos - 24;
-				elseif ($pos < 0) $pos = 24 + $pos;
-				if ($week[$i][$h] == 1) {
-					$return[$pos + 1][1 + $i] = array('kind' => 'input', 'name' => 'lh_' . $i . '_' . $h,
-						'type' => 'checkbox', 'checked' => true, 'td' => array('align' => 'center'));
-				}
-				else {
-					$return[$pos + 1][1 + $i] = array('kind' => 'input', 'name' => 'lh_' . $i . '_' . $h,
-						'type' => 'checkbox', 'checked' => false, 'td' => array('align' => 'center'));
-				}
+		for ($i = 0; $i < 24*7; $i++) {
+			$hr = $i + $offset;
+			if ($hr < 0) {
+				$hr = $hr + 24*7;
+			} elseif ($hr >= 24*7) {
+				$hr = $hr - 24*7;
 			}
+			if ($i % 7 == 0) {
+				$return[0][floor($i / 24)+1] = array('kind' => 'text',
+					'text' => '<b>' . $days[floor($i / 24)] . '</b>',
+					'td' => array('width' => "11%", 'align' => 'center'));
+			}
+			$return[$i % 24 + 1][floor($i/24) + 1] = array('kind' => 'input',
+				'name' => 'lh_' . $hr,
+				'type' => 'checkbox',
+				'checked' => $hour[$hr] ? true : false,
+				'td' => array('align' => 'center'));
 		}
 		$return[0][0] = array('kind' => 'text', 'text' => '<b>' . _('Time') . '</b>', 'td' => array('width' => "12.5%"));
 		for ($h = 0; $h < 24; $h++) {
