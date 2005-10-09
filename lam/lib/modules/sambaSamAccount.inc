@@ -1191,11 +1191,12 @@ class sambaSamAccount extends baseModule {
 		}
 	}
 
-	/*
-	 * (non-PHPDoc)
-	 * @see baseModule#get_pdfEntries
-	 */
-	function get_pdfEntries($account_type = "user") {
+	/**
+	* Returns the PDF entries for this module.
+	* 
+	* @return array list of possible PDF entries
+	*/
+	function get_pdfEntries() {
 		return array(	'sambaSamAccount_displayName' => array('<block><key>' . _('Display name') . '</key><value' . $this->attributes['displayName'][0] . '</value></block>'),
 							'sambaSamAccount_uid' => array('<block><key>' . _('User name') . '</key><value>' . $this->attributes['uid'][0] . '</value></block>'),
 							'sambaSamAccount_sambaHomePath' => array('<block><key>' . _('Home path') . '</key><value>' . $this->attributes['sambaHomeDrive'][0] . '</value></block>'),

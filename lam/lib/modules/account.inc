@@ -215,11 +215,12 @@ class account extends baseModule {
 		return $return;
 	}
 
-	/*
-	 * (non-PHPDoc)
-	 * @see baseModule#get_pdfEntries
-	 */
-	function get_pdfEntries($account_type = "user") {
+	/**
+	* Returns the PDF entries for this module.
+	* 
+	* @return array list of possible PDF entries
+	*/
+	function get_pdfEntries() {
 		$return = array();
 		$return['account_description'] = array('<block><key>' . _('Description') . '</key><value>' . $this->attributes['description'][0] . '</value></block>');
 		$return['account_uid'] = array('<block><key>' . _('User name') . '</key><value>' . $this->attributes['uid'][0] . '</value></block>');

@@ -1599,7 +1599,7 @@ class accountContainer {
 	function get_pdfEntries() {
 		$return = array();
 		while(($current = current($this->module)) != null) {
-			$return = array_merge($return,$current->get_pdfEntries($this->type));
+			$return = array_merge($return,$current->get_pdfEntries());
 			next($this->module);
 		}
 		$return = array_merge($return,array('main_dn' => array('<block><key>' . _('DN') . '</key><value>' . $this->dn . '</value></block>')));

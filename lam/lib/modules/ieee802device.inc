@@ -244,7 +244,9 @@ class ieee802Device extends baseModule {
 	}
 
 	/**
-	* Returns a list of PDF entries
+	* Returns the PDF entries for this module.
+	* 
+	* @return array list of possible PDF entries
 	*/
 	function get_pdfEntries() {
 		$return = array();

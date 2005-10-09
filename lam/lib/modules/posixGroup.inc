@@ -441,11 +441,12 @@ class posixGroup extends baseModule {
 	}
 
 
-	/*
-	* (non-PHPDoc)
-	* @see baseModule#get_pdfEntries
+	/**
+	* Returns the PDF entries for this module.
+	* 
+	* @return array list of possible PDF entries
 	*/
-	function get_pdfEntries($account_type = "group") {
+	function get_pdfEntries() {
 		return array(
 		'posixGroup_cn' => array('<block><key>' . _('Group name') . '</key><value>' . $this->attributes['cn'][0] . '</value></block>'),
 		'posixGroup_gidNumber' => array('<block><key>' . _('GID number') . '</key><value>' . $this->attributes['gidNumber'][0] . '</value></block>'),

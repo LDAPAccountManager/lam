@@ -1113,11 +1113,12 @@ class posixAccount extends baseModule {
 		}
 	}
 
-	/*
-	* (non-PHPDoc)
-	* @see baseModule#get_pdfEntries
+	/**
+	* Returns the PDF entries for this module.
+	* 
+	* @return array list of possible PDF entries
 	*/
-	function get_pdfEntries($account_type = "user") {
+	function get_pdfEntries() {
 		return array(
 			'posixAccount_uid' => array('<block><key>' . _('User name') . '</key><value>' . $this->attributes['uid'][0] . '</value></block>'),
 			'posixAccount_cn' => array('<block><key>' . _('Common name') . '</key><value>' . $this->attributes['cn'][0] . '</value></block>'),

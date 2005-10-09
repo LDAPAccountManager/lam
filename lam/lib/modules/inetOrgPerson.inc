@@ -672,11 +672,12 @@ class inetOrgPerson extends baseModule {
 		return $return;
 	}
 
-	/*
-	 * (non-PHPDoc)
-	 * @see baseModule#get_pdfEntries
-	 */
-	function get_pdfEntries($account_type = "user") {
+	/**
+	* Returns the PDF entries for this module.
+	* 
+	* @return array list of possible PDF entries
+	*/
+	function get_pdfEntries() {
 		return array(
 			'inetOrgPerson_description' => array('<block><key>' . _('Description') . '</key><value>' . $this->attributes['description'][0] . '</value></block>'),
 			'inetOrgPerson_host' => array('<block><key>' . _('Unix workstations') . '</key><value>' . $this->attributes['host'][0] . '</value></block>'),

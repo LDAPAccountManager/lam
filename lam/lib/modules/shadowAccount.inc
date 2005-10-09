@@ -299,9 +299,9 @@ class shadowAccount extends baseModule {
 	}
 
 	/**
-	* Returns a list of PDF entries
-	*
-	* @return array PDF entries
+	* Returns the PDF entries for this module.
+	* 
+	* @return array list of possible PDF entries
 	*/
 	function get_pdfEntries() {
 		return array('shadowAccount_shadowLastChange' => array('<block><key>' . _('Last password change') . '</key><value>' . $this->attributes['shadowLastChange'][0] . '</value></block>'),

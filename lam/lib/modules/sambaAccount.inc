@@ -840,11 +840,12 @@ class sambaAccount extends baseModule {
 		return $return;
 	}
 	
-	/*
-	 * (non-PHPDoc)
-	 * @see baseModule#get_pdfEntries
-	 */
-	function get_pdfEntries($account_type = "user") {
+	/**
+	* Returns the PDF entries for this module.
+	* 
+	* @return array list of possible PDF entries
+	*/
+	function get_pdfEntries() {
 		return array(	'sambaAccount_displayName' => array('<block><key>' . _('Display name') . '</key><value' . $this->attributes['displayName'][0] . '</value></block>'),
 							'sambaAccount_smbHome' => array('<block><key>' . _('Home path') . '</key><value>' . $this->attributes['smbHome'][0] . '</value></block>'),
 							'sambaAccount_homeDrive' => array('<block><key>' . _('Home drive') . '</key><value>' . $this->attributes['homePath'][0] . '</value></block>'),

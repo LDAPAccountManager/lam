@@ -425,13 +425,12 @@ class quota extends baseModule {
 		}
 	}
 
-	/** Returns the PDF entries for this module.
-	 * 
-	 * @see baseModule#get_pdfEntries
-	 *
-	 * @return array list of possible PDF entries
-	 */
-	function get_pdfEntries($account_type = "user") {
+	/**
+	* Returns the PDF entries for this module.
+	* 
+	* @return array list of possible PDF entries
+	*/
+	function get_pdfEntries() {
 		if (sizeof($this->quota) > 0) {
 			$quotas = array();
 			$quotas[] = '<block><tr>' .
