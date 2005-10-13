@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: LAM 0.4.6\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de \n"
 "POT-Creation-Date: 2004-01-14 17:45+0200\n"
-"PO-Revision-Date: 2005-09-20 17:00+0900\n"
-"Last-Translator: Yasuhiro Magara <gama@lifemedia.co.jp>\n"
+"PO-Revision-Date: 2005-10-11 14:46+0900\n"
+"Last-Translator: Yasuhiro Magara <gama@users.sourceforge.jp>\n"
 "Language-Team: Japanese <gama@users.sourceforge.jp>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -81,11 +81,11 @@ msgstr ""
 #: ../templates/profedit/profiledelete.php:85
 #: ../templates/profedit/profilepage.php:246
 #: ../templates/profedit/profilemain.php:157
-#: ../lib/modules/sambaSamAccount.inc:977
+#: ../lib/modules/sambaSamAccount.inc:1017
 msgid "Abort"
 msgstr "中止"
 
-#: ../lib/modules/sambaSamAccount.inc:242
+#: ../lib/modules/sambaSamAccount.inc:259
 msgid "Abu Dhabi, Muscat, Baku"
 msgstr ""
 
@@ -107,16 +107,20 @@ msgstr "アカウント"
 #: ../lib/modules/sambaAccount.inc:83 ../lib/modules/sambaAccount.inc:84
 #: ../lib/modules/sambaAccount.inc:85 ../lib/modules/sambaAccount.inc:86
 #: ../lib/modules/sambaAccount.inc:87 ../lib/modules/sambaAccount.inc:88
-#: ../lib/modules/sambaAccount.inc:89 ../lib/modules/sambaSamAccount.inc:61
-#: ../lib/modules/sambaSamAccount.inc:64 ../lib/modules/sambaSamAccount.inc:67
-#: ../lib/modules/sambaSamAccount.inc:69 ../lib/modules/sambaSamAccount.inc:72
-#: ../lib/modules/sambaSamAccount.inc:75 ../lib/modules/sambaSamAccount.inc:76
-#: ../lib/modules/sambaSamAccount.inc:77 ../lib/modules/sambaSamAccount.inc:79
-#: ../lib/modules/sambaSamAccount.inc:80 ../lib/modules/sambaSamAccount.inc:81
-#: ../lib/modules/sambaSamAccount.inc:82 ../lib/modules/sambaSamAccount.inc:83
-#: ../lib/modules/sambaSamAccount.inc:84 ../lib/modules/sambaSamAccount.inc:85
-#: ../lib/modules/sambaSamAccount.inc:86 ../lib/modules/sambaSamAccount.inc:88
-#: ../lib/modules/sambaSamAccount.inc:89 ../lib/modules/posixAccount.inc:73
+#: ../lib/modules/sambaAccount.inc:89 ../lib/modules/sambaSamAccount.inc:78
+#: ../lib/modules/sambaSamAccount.inc:81 ../lib/modules/sambaSamAccount.inc:84
+#: ../lib/modules/sambaSamAccount.inc:86 ../lib/modules/sambaSamAccount.inc:89
+#: ../lib/modules/sambaSamAccount.inc:92 ../lib/modules/sambaSamAccount.inc:93
+#: ../lib/modules/sambaSamAccount.inc:94 ../lib/modules/sambaSamAccount.inc:96
+#: ../lib/modules/sambaSamAccount.inc:97 ../lib/modules/sambaSamAccount.inc:98
+#: ../lib/modules/sambaSamAccount.inc:99
+#: ../lib/modules/sambaSamAccount.inc:100
+#: ../lib/modules/sambaSamAccount.inc:101
+#: ../lib/modules/sambaSamAccount.inc:102
+#: ../lib/modules/sambaSamAccount.inc:103
+#: ../lib/modules/sambaSamAccount.inc:104
+#: ../lib/modules/sambaSamAccount.inc:106
+#: ../lib/modules/sambaSamAccount.inc:107 ../lib/modules/posixAccount.inc:73
 #: ../lib/modules/posixAccount.inc:77 ../lib/modules/posixAccount.inc:81
 #: ../lib/modules/posixAccount.inc:89 ../lib/modules/posixAccount.inc:90
 #: ../lib/modules/posixAccount.inc:91 ../lib/modules/posixAccount.inc:92
@@ -126,8 +130,8 @@ msgstr "アカウント"
 #: ../lib/modules/kolabUser.inc:223 ../lib/modules/kolabUser.inc:225
 #: ../lib/modules/kolabUser.inc:227 ../lib/modules/kolabUser.inc:229
 #: ../lib/modules/kolabUser.inc:231 ../lib/modules/kolabUser.inc:233
-#: ../lib/modules/kolabUser.inc:235 ../lib/modules/sambaGroupMapping.inc:357
-#: ../lib/modules/sambaGroupMapping.inc:358
+#: ../lib/modules/kolabUser.inc:235 ../lib/modules/sambaGroupMapping.inc:366
+#: ../lib/modules/sambaGroupMapping.inc:367
 #: ../lib/modules/shadowAccount.inc:46 ../lib/modules/shadowAccount.inc:48
 #: ../lib/modules/shadowAccount.inc:50 ../lib/modules/shadowAccount.inc:52
 #: ../lib/modules/shadowAccount.inc:54 ../lib/modules/shadowAccount.inc:55
@@ -156,21 +160,26 @@ msgstr "ファイルアップロードによるアカウント作成"
 msgid "Account deactivated"
 msgstr "アカウントが無効化されました"
 
-#: ../lib/modules/shadowAccount.inc:166
-msgid "Account expiration date. Format: DD-MM-YYYY"
-msgstr "アカウント有効期限。形式は: DD-MM-YYYY"
+#: ../lib/modules/sambaSamAccount.inc:267
+#: ../lib/modules/sambaSamAccount.inc:342
+#: ../lib/modules/sambaSamAccount.inc:828
+#: ../lib/modules/sambaSamAccount.inc:1067 ../lib/modules/shadowAccount.inc:99
+#: ../lib/modules/shadowAccount.inc:165 ../lib/modules/shadowAccount.inc:197
+#: ../lib/modules/shadowAccount.inc:289
+msgid "Account expiration date"
+msgstr "アカウント失効日"
 
-#: ../lib/modules/shadowAccount.inc:318
+#: ../lib/modules/shadowAccount.inc:309
 msgid "Account inactive"
 msgstr "アカウントが無効です"
 
 #: ../lib/modules/sambaAccount.inc:132 ../lib/modules/sambaAccount.inc:249
 #: ../lib/modules/sambaAccount.inc:361 ../lib/modules/sambaAccount.inc:364
-#: ../lib/modules/sambaAccount.inc:731 ../lib/modules/sambaSamAccount.inc:185
-#: ../lib/modules/sambaSamAccount.inc:188
-#: ../lib/modules/sambaSamAccount.inc:300
-#: ../lib/modules/sambaSamAccount.inc:785
-#: ../lib/modules/sambaSamAccount.inc:1016
+#: ../lib/modules/sambaAccount.inc:727 ../lib/modules/sambaSamAccount.inc:202
+#: ../lib/modules/sambaSamAccount.inc:205
+#: ../lib/modules/sambaSamAccount.inc:320
+#: ../lib/modules/sambaSamAccount.inc:806
+#: ../lib/modules/sambaSamAccount.inc:1055
 msgid "Account is deactivated"
 msgstr "無効なアカウント"
 
@@ -196,18 +205,20 @@ msgstr "アカウントが変更されました。"
 
 #: ../lib/modules/posixAccount.inc:337
 msgid "Activating this checkbox will remove the user's home directory."
-msgstr "このチェックボックスを有効にした場合、ユーザのホームディレクトリを削除します。"
+msgstr ""
+"このチェックボックスを有効にした場合、ユーザのホームディレクトリを削除しま"
+"す。"
 
 #: ../templates/tree/add_value_form.php:156
 #: ../templates/tree/add_value_form.php:181
 #: ../templates/tree/add_oclass_form.php:140
 #: ../templates/tree/add_attr_form.php:129
 #: ../templates/tree/add_attr_form.php:161
-#: ../templates/pdfedit/pdfpage.php:724 ../lib/modules/ieee802device.inc:153
-#: ../lib/modules/kolabUser.inc:374 ../lib/modules/kolabUser.inc:391
-#: ../lib/modules/kolabUser.inc:417
-#: ../lib/modules/inetLocalMailRecipient.inc:215
-#: ../lib/modules/nisMailAlias.inc:187
+#: ../templates/pdfedit/pdfpage.php:724 ../lib/modules/ieee802device.inc:146
+#: ../lib/modules/kolabUser.inc:367 ../lib/modules/kolabUser.inc:384
+#: ../lib/modules/kolabUser.inc:410
+#: ../lib/modules/inetLocalMailRecipient.inc:208
+#: ../lib/modules/nisMailAlias.inc:180
 msgid "Add"
 msgstr "追加"
 
@@ -235,9 +246,9 @@ msgid "Adding attribute failed!"
 msgstr "属性の追加に失敗しました!"
 
 #: ../lib/modules/posixAccount.inc:208 ../lib/modules/posixAccount.inc:328
-#: ../lib/modules/posixAccount.inc:377 ../lib/modules/posixAccount.inc:936
-#: ../lib/modules/posixAccount.inc:1020 ../lib/modules/posixAccount.inc:1082
-#: ../lib/modules/posixAccount.inc:1161
+#: ../lib/modules/posixAccount.inc:377 ../lib/modules/posixAccount.inc:927
+#: ../lib/modules/posixAccount.inc:1011 ../lib/modules/posixAccount.inc:1073
+#: ../lib/modules/posixAccount.inc:1152
 msgid "Additional groups"
 msgstr "追加のグループ"
 
@@ -249,7 +260,7 @@ msgstr "モジュールに対する追加タスク:"
 msgid "Administrators group"
 msgstr "管理者グループ"
 
-#: ../lib/modules/sambaSamAccount.inc:237
+#: ../lib/modules/sambaSamAccount.inc:254
 msgid "Alaska"
 msgstr ""
 
@@ -262,7 +273,7 @@ msgid "Algorithmic RID base is not a number!"
 msgstr "アルゴリズム的なRIDベースが数字でありません!"
 
 #: ../lib/modules/nisMailAlias.inc:62 ../lib/modules/nisMailAlias.inc:77
-#: ../lib/modules/nisMailAlias.inc:172 ../lib/modules/nisMailAlias.inc:328
+#: ../lib/modules/nisMailAlias.inc:165 ../lib/modules/nisMailAlias.inc:321
 msgid "Alias name"
 msgstr "別名"
 
@@ -278,13 +289,13 @@ msgstr "すべての変更が成功しました。"
 msgid "Allowed hosts"
 msgstr "許可されたホスト"
 
-#: ../lib/modules/sambaAccount.inc:829 ../lib/modules/sambaAccount.inc:830
-#: ../lib/modules/sambaSamAccount.inc:892
-#: ../lib/modules/sambaSamAccount.inc:893
+#: ../lib/modules/sambaAccount.inc:825 ../lib/modules/sambaAccount.inc:826
+#: ../lib/modules/sambaSamAccount.inc:929
+#: ../lib/modules/sambaSamAccount.inc:930
 msgid "Allowed workstations"
 msgstr "許可されたワークステーション"
 
-#: ../lib/modules/sambaSamAccount.inc:243
+#: ../lib/modules/sambaSamAccount.inc:260
 msgid "Almaty, Dhaka, Colombo"
 msgstr ""
 
@@ -301,7 +312,7 @@ msgstr "常に拒否"
 msgid "An attribute (%s) was modified and is highlighted below."
 msgstr "属性(%s)が変更され、ハイライト表示されています。"
 
-#: ../lib/modules/kolabUser.inc:356 ../lib/modules/kolabUser.inc:810
+#: ../lib/modules/kolabUser.inc:349 ../lib/modules/kolabUser.inc:803
 msgid "Anyone"
 msgstr "誰か"
 
@@ -313,7 +324,7 @@ msgstr "適用"
 msgid "Are you sure you want to permanently delete this object?"
 msgstr "本当にこのオブジェクトを削除しますか?"
 
-#: ../lib/modules/sambaSamAccount.inc:239
+#: ../lib/modules/sambaSamAccount.inc:256
 msgid "Atlantic time (Canada), Caracas"
 msgstr ""
 
@@ -337,7 +348,7 @@ msgstr "ホストリスト中の属性"
 msgid "Attributes in User List"
 msgstr "ユーザリスト中の属性"
 
-#: ../lib/modules/sambaSamAccount.inc:245
+#: ../lib/modules/sambaSamAccount.inc:262
 msgid "Auckland, Fiji, Kamchatka"
 msgstr ""
 
@@ -345,7 +356,7 @@ msgstr ""
 msgid "Available PDF fields"
 msgstr "有効なPDFフィールド"
 
-#: ../lib/modules/posixAccount.inc:1032
+#: ../lib/modules/posixAccount.inc:1023
 msgid "Available groups"
 msgstr "有効なグループ"
 
@@ -357,18 +368,18 @@ msgstr "有効なモジュール"
 msgid "Available users"
 msgstr "有効なユーザ"
 
-#: ../lib/modules/sambaAccount.inc:835 ../lib/modules/sambaSamAccount.inc:898
+#: ../lib/modules/sambaAccount.inc:831 ../lib/modules/sambaSamAccount.inc:935
 msgid "Available workstations"
 msgstr "有効なワークステーション"
 
-#: ../lib/modules/sambaSamAccount.inc:240
+#: ../lib/modules/sambaSamAccount.inc:257
 msgid "Azores, Cape Verde Islands"
 msgstr ""
 
 #: ../templates/tree/update_confirm.php:251 ../lib/modules/posixGroup.inc:262
-#: ../lib/modules/posixGroup.inc:286 ../lib/modules/sambaAccount.inc:840
-#: ../lib/modules/sambaSamAccount.inc:902 ../lib/modules/posixAccount.inc:1038
-#: ../lib/modules/posixAccount.inc:1062 ../lib/modules/inetOrgPerson.inc:679
+#: ../lib/modules/posixGroup.inc:286 ../lib/modules/sambaAccount.inc:836
+#: ../lib/modules/sambaSamAccount.inc:939 ../lib/modules/posixAccount.inc:1029
+#: ../lib/modules/posixAccount.inc:1053 ../lib/modules/inetOrgPerson.inc:670
 msgid "Back"
 msgstr "戻る"
 
@@ -426,11 +437,11 @@ msgstr "プリファレンスに戻る..."
 msgid "Back to profile login"
 msgstr "プロファイルログインに戻る"
 
-#: ../lib/modules/sambaSamAccount.inc:242
+#: ../lib/modules/sambaSamAccount.inc:259
 msgid "Baghdad, Riyadh, Moscow"
 msgstr ""
 
-#: ../lib/modules/sambaSamAccount.inc:243
+#: ../lib/modules/sambaSamAccount.inc:260
 msgid "Bangkok, Hanoi, Jakarta"
 msgstr ""
 
@@ -450,7 +461,7 @@ msgstr "ベースモジュール"
 msgid "Beginning"
 msgstr "先頭"
 
-#: ../lib/modules/sambaSamAccount.inc:243
+#: ../lib/modules/sambaSamAccount.inc:260
 msgid "Beijing, Perth, Singapore"
 msgstr ""
 
@@ -490,7 +501,7 @@ msgstr ""
 "ブロック・ソフトクオータはブロック・ハードクオータより小さくなくてはなりませ"
 "ん。"
 
-#: ../lib/modules/sambaSamAccount.inc:239
+#: ../lib/modules/sambaSamAccount.inc:256
 msgid "Brazil, Buenos Aires"
 msgstr ""
 
@@ -514,11 +525,11 @@ msgstr "キャッシュ有効時間が正しくありません。"
 #: ../lib/modules/posixGroup.inc:415 ../lib/modules/sambaAccount.inc:376
 #: ../lib/modules/sambaAccount.inc:379 ../lib/modules/sambaAccount.inc:382
 #: ../lib/modules/sambaAccount.inc:388 ../lib/modules/sambaAccount.inc:400
-#: ../lib/modules/sambaSamAccount.inc:200
-#: ../lib/modules/sambaSamAccount.inc:203
-#: ../lib/modules/sambaSamAccount.inc:206
-#: ../lib/modules/sambaSamAccount.inc:212 ../lib/modules/posixAccount.inc:378
-#: ../lib/modules/sambaGroupMapping.inc:287
+#: ../lib/modules/sambaSamAccount.inc:217
+#: ../lib/modules/sambaSamAccount.inc:220
+#: ../lib/modules/sambaSamAccount.inc:223
+#: ../lib/modules/sambaSamAccount.inc:229 ../lib/modules/posixAccount.inc:378
+#: ../lib/modules/sambaGroupMapping.inc:296
 #: ../lib/modules/shadowAccount.inc:150 ../lib/modules/shadowAccount.inc:154
 #: ../lib/modules/shadowAccount.inc:158 ../lib/modules/shadowAccount.inc:162
 msgid "Can be left empty."
@@ -528,11 +539,11 @@ msgstr "省略可"
 #: ../templates/tree/delete_form.php:118 ../templates/tree/delete_form.php:167
 #: ../templates/domain.php:223 ../templates/domain.php:254
 #: ../templates/delete.php:107 ../templates/initsuff.php:188
-#: ../lib/modules/kolabUser.inc:603
+#: ../lib/modules/kolabUser.inc:596
 msgid "Cancel"
 msgstr "中止"
 
-#: ../templates/login.php:336 ../templates/login.php:341
+#: ../templates/login.php:341 ../templates/login.php:346
 msgid "Cannot connect to specified LDAP server. Please try again."
 msgstr "指定されたLDAPサーバに接続できません。再試行してください。"
 
@@ -540,16 +551,16 @@ msgstr "指定されたLDAPサーバに接続できません。再試行して�
 msgid "Cannot open config file!"
 msgstr "configファイルをオープンできません!"
 
-#: ../lib/modules/sambaSamAccount.inc:241
+#: ../lib/modules/sambaSamAccount.inc:258
 msgid "Central Europe Time, Paris, Berlin"
 msgstr ""
 
-#: ../lib/modules/sambaSamAccount.inc:238
+#: ../lib/modules/sambaSamAccount.inc:255
 msgid "Central Time (US & Canada), Mexico City"
 msgstr ""
 
 #: ../templates/pdfedit/pdfpage.php:498 ../templates/pdfedit/pdfpage.php:504
-#: ../lib/modules/sambaSamAccount.inc:982
+#: ../lib/modules/sambaSamAccount.inc:1022
 msgid "Change"
 msgstr "変更"
 
@@ -565,12 +576,12 @@ msgstr "デフォルト・プロファイルの変更"
 msgid "Change master password"
 msgstr "マスタパスワードの変更"
 
-#: ../lib/modules/posixGroup.inc:193 ../lib/modules/posixAccount.inc:962
-#: ../lib/modules/inetOrgPerson.inc:560 ../help/help.inc:105
+#: ../lib/modules/posixGroup.inc:193 ../lib/modules/posixAccount.inc:953
+#: ../lib/modules/inetOrgPerson.inc:551 ../help/help.inc:105
 msgid "Change password"
 msgstr "パスワードの変更"
 
-#: ../templates/login.php:272
+#: ../templates/login.php:277
 msgid "Change profile"
 msgstr "プロファイルの変更"
 
@@ -603,7 +614,7 @@ msgstr "集合属性"
 msgid "Columns:"
 msgstr "カラム:"
 
-#: ../lib/modules/sambaAccount.inc:388 ../lib/modules/sambaSamAccount.inc:212
+#: ../lib/modules/sambaAccount.inc:388 ../lib/modules/sambaSamAccount.inc:229
 msgid ""
 "Comma separated list of Samba workstations the user is allowed to login. "
 "Empty means every workstation."
@@ -616,10 +627,10 @@ msgid "Commit"
 msgstr "更新"
 
 #: ../lib/modules/posixAccount.inc:98 ../lib/modules/posixAccount.inc:189
-#: ../lib/modules/posixAccount.inc:381 ../lib/modules/posixAccount.inc:916
-#: ../lib/modules/posixAccount.inc:1156 ../lib/modules/inetOrgPerson.inc:68
+#: ../lib/modules/posixAccount.inc:381 ../lib/modules/posixAccount.inc:907
+#: ../lib/modules/posixAccount.inc:1147 ../lib/modules/inetOrgPerson.inc:68
 #: ../lib/modules/inetOrgPerson.inc:217 ../lib/modules/inetOrgPerson.inc:326
-#: ../lib/modules/inetOrgPerson.inc:531 ../lib/modules/inetOrgPerson.inc:705
+#: ../lib/modules/inetOrgPerson.inc:522 ../lib/modules/inetOrgPerson.inc:696
 msgid "Common name"
 msgstr "氏名(common name)"
 
@@ -627,7 +638,7 @@ msgstr "氏名(common name)"
 msgid "Configuration login"
 msgstr "構成設定ログイン"
 
-#: ../templates/login.php:254
+#: ../templates/login.php:259
 msgid "Configuration profile"
 msgstr "構成プロファイル"
 
@@ -665,8 +676,8 @@ msgid "Could not save PDF profile, access denied."
 msgstr "PDFプロファイルを保存できません。アクセスが拒否されました。"
 
 #: ../lib/modules/kolabUser.inc:83 ../lib/modules/kolabUser.inc:146
-#: ../lib/modules/kolabUser.inc:175 ../lib/modules/kolabUser.inc:316
-#: ../lib/modules/kolabUser.inc:786
+#: ../lib/modules/kolabUser.inc:175 ../lib/modules/kolabUser.inc:309
+#: ../lib/modules/kolabUser.inc:779
 msgid "Country"
 msgstr "国"
 
@@ -733,7 +744,7 @@ msgstr "他のアカウントを作成"
 msgid "Create group accounts"
 msgstr "グループアカウントを作成"
 
-#: ../lib/modules/posixAccount.inc:945
+#: ../lib/modules/posixAccount.inc:936
 msgid "Create home directory"
 msgstr "ホームディレクトリを作成"
 
@@ -777,7 +788,7 @@ msgstr "カスタム"
 #: ../templates/tree/update_confirm.php:75
 #: ../templates/tree/add_attr_form.php:72 ../templates/tree/delete_form.php:76
 #: ../templates/tree/delete_form.php:150 ../templates/delete.php:89
-#: ../lib/modules.inc:1620
+#: ../lib/modules.inc:1605
 msgid "DN"
 msgstr ""
 
@@ -792,17 +803,17 @@ msgstr "DNサフィックス"
 #: ../lib/export.inc:511
 #, php-format
 msgid "DSML Export for: %s"
-msgstr ""
+msgstr "DSMLにエクスポート: %s"
 
 #: ../templates/tree/templates/creation/custom.php:96
 msgid "Data field for RDN is empty!"
 msgstr "RDNのデータフィールドが空です!"
 
-#: ../lib/modules/sambaAccount.inc:368 ../lib/modules/sambaSamAccount.inc:192
+#: ../lib/modules/sambaAccount.inc:368 ../lib/modules/sambaSamAccount.inc:209
 msgid "Date after the user is able to change his password. Format: DD-MM-YYYY"
 msgstr "ユーザによるパスワード変更の禁止が解かれる日付。形式は: DD-MM-YYYY"
 
-#: ../lib/modules/sambaAccount.inc:370 ../lib/modules/sambaSamAccount.inc:194
+#: ../lib/modules/sambaAccount.inc:370 ../lib/modules/sambaSamAccount.inc:211
 msgid "Date after the user must change his password. Format: DD-MM-YYYY"
 msgstr "ユーザがパスワードを変更しなければならなくなる日付。形式は: DD-MM-YYYY"
 
@@ -819,13 +830,13 @@ msgstr ""
 msgid "Default language"
 msgstr "規定の言語"
 
-#: ../templates/masscreate.php:151 ../templates/masscreate.php:309
+#: ../templates/masscreate.php:151 ../templates/masscreate.php:310
 msgid "Default value"
 msgstr "既定値"
 
 #: ../lib/modules/kolabUser.inc:130 ../lib/modules/kolabUser.inc:134
-#: ../lib/modules/kolabUser.inc:194 ../lib/modules/kolabUser.inc:420
-#: ../lib/modules/kolabUser.inc:824
+#: ../lib/modules/kolabUser.inc:194 ../lib/modules/kolabUser.inc:413
+#: ../lib/modules/kolabUser.inc:817
 msgid "Delegates"
 msgstr "代理人"
 
@@ -860,7 +871,7 @@ msgstr "グループの削除"
 msgid "Delete Host(s)"
 msgstr "ホストの削除"
 
-#: ../lib/modules/kolabUser.inc:429
+#: ../lib/modules/kolabUser.inc:422
 msgid "Delete Kolab account"
 msgstr "Kolabアカウントを削除"
 
@@ -877,7 +888,7 @@ msgstr "全ての %s オブジェクトを削除"
 msgid "Delete domain(s)"
 msgstr "ドメインを削除"
 
-#: ../lib/modules/posixAccount.inc:991
+#: ../lib/modules/posixAccount.inc:982
 msgid "Delete home directory"
 msgstr "ホームディレクトリを削除"
 
@@ -931,28 +942,28 @@ msgstr "削除中です。お待ちください ..."
 
 #: ../templates/tree/add_value_form.php:185 ../templates/schema/schema.php:93
 #: ../templates/schema/schema.php:147 ../templates/schema/schema.php:350
-#: ../lib/modules/account.inc:97 ../lib/modules/account.inc:220
-#: ../lib/modules/account.inc:233 ../lib/modules/posixGroup.inc:173
+#: ../lib/modules/account.inc:97 ../lib/modules/account.inc:211
+#: ../lib/modules/account.inc:224 ../lib/modules/posixGroup.inc:173
 #: ../lib/modules/posixGroup.inc:410 ../lib/modules/posixGroup.inc:453
-#: ../lib/modules/sambaAccount.inc:859 ../lib/modules/sambaSamAccount.inc:1138
+#: ../lib/modules/sambaAccount.inc:855 ../lib/modules/sambaSamAccount.inc:1207
 #: ../lib/modules/posixAccount.inc:287 ../lib/modules/posixAccount.inc:399
-#: ../lib/modules/sambaGroupMapping.inc:308
-#: ../lib/modules/shadowAccount.inc:320 ../lib/modules/inetOrgPerson.inc:140
-#: ../lib/modules/inetOrgPerson.inc:270 ../lib/modules/inetOrgPerson.inc:536
-#: ../lib/modules/inetOrgPerson.inc:690 ../lib/lists.inc:312
+#: ../lib/modules/sambaGroupMapping.inc:317
+#: ../lib/modules/shadowAccount.inc:311 ../lib/modules/inetOrgPerson.inc:140
+#: ../lib/modules/inetOrgPerson.inc:270 ../lib/modules/inetOrgPerson.inc:527
+#: ../lib/modules/inetOrgPerson.inc:681 ../lib/lists.inc:312
 msgid "Description"
 msgstr "説明"
 
 #: ../lib/modules/sambaAccount.inc:80 ../lib/modules/sambaAccount.inc:213
-#: ../lib/modules/sambaAccount.inc:334 ../lib/modules/sambaAccount.inc:699
-#: ../lib/modules/sambaAccount.inc:852 ../lib/modules/sambaSamAccount.inc:78
-#: ../lib/modules/sambaSamAccount.inc:158
-#: ../lib/modules/sambaSamAccount.inc:264
-#: ../lib/modules/sambaSamAccount.inc:758
-#: ../lib/modules/sambaSamAccount.inc:1130
-#: ../lib/modules/sambaGroupMapping.inc:169
-#: ../lib/modules/sambaGroupMapping.inc:274
-#: ../lib/modules/sambaGroupMapping.inc:306
+#: ../lib/modules/sambaAccount.inc:334 ../lib/modules/sambaAccount.inc:695
+#: ../lib/modules/sambaAccount.inc:848 ../lib/modules/sambaSamAccount.inc:95
+#: ../lib/modules/sambaSamAccount.inc:175
+#: ../lib/modules/sambaSamAccount.inc:284
+#: ../lib/modules/sambaSamAccount.inc:774
+#: ../lib/modules/sambaSamAccount.inc:1199
+#: ../lib/modules/sambaGroupMapping.inc:187
+#: ../lib/modules/sambaGroupMapping.inc:283
+#: ../lib/modules/sambaGroupMapping.inc:315
 msgid "Display name"
 msgstr "表示名"
 
@@ -981,7 +992,7 @@ msgstr "本当にこのPDF構成を削除しますか?"
 msgid "Do you really want to delete this profile?"
 msgstr "本当にこのプロファイルを削除しますか?"
 
-#: ../lib/modules/kolabUser.inc:598
+#: ../lib/modules/kolabUser.inc:591
 msgid "Do you really want to mark this account for deletion?"
 msgstr "本当にこのアカウントを削除しますか?"
 
@@ -995,61 +1006,61 @@ msgstr "これらの変更を行ないますか?"
 
 #: ../lib/modules/sambaAccount.inc:171 ../lib/modules/sambaAccount.inc:315
 #: ../lib/modules/sambaAccount.inc:325 ../lib/modules/sambaAccount.inc:399
-#: ../lib/modules/sambaAccount.inc:802 ../lib/modules/sambaAccount.inc:858
-#: ../lib/modules/sambaSamAccount.inc:230
-#: ../lib/modules/sambaSamAccount.inc:257
-#: ../lib/modules/sambaSamAccount.inc:376
-#: ../lib/modules/sambaSamAccount.inc:857
-#: ../lib/modules/sambaSamAccount.inc:1059
-#: ../lib/modules/sambaSamAccount.inc:1078
-#: ../lib/modules/sambaSamAccount.inc:1137
+#: ../lib/modules/sambaAccount.inc:798 ../lib/modules/sambaAccount.inc:854
+#: ../lib/modules/sambaSamAccount.inc:247
+#: ../lib/modules/sambaSamAccount.inc:277
+#: ../lib/modules/sambaSamAccount.inc:403
+#: ../lib/modules/sambaSamAccount.inc:894
+#: ../lib/modules/sambaSamAccount.inc:1115
+#: ../lib/modules/sambaSamAccount.inc:1134
+#: ../lib/modules/sambaSamAccount.inc:1206
 #: ../lib/modules/sambaGroupMapping.inc:68
-#: ../lib/modules/sambaGroupMapping.inc:197
-#: ../lib/modules/sambaGroupMapping.inc:286
-#: ../lib/modules/sambaGroupMapping.inc:328
+#: ../lib/modules/sambaGroupMapping.inc:215
+#: ../lib/modules/sambaGroupMapping.inc:295
+#: ../lib/modules/sambaGroupMapping.inc:337
 msgid "Domain"
 msgstr "ドメイン"
 
 #: ../lib/modules/sambaAccount.inc:48 ../lib/modules/sambaAccount.inc:310
-#: ../lib/modules/sambaSamAccount.inc:48
+#: ../lib/modules/sambaSamAccount.inc:65
 #: ../lib/modules/sambaGroupMapping.inc:55
-#: ../lib/modules/sambaGroupMapping.inc:259
+#: ../lib/modules/sambaGroupMapping.inc:268
 msgid "Domain Admins"
 msgstr "ドメイン管理者(Domain Admins)"
 
-#: ../lib/modules/sambaAccount.inc:50 ../lib/modules/sambaSamAccount.inc:49
+#: ../lib/modules/sambaAccount.inc:50 ../lib/modules/sambaSamAccount.inc:66
 #: ../lib/modules/sambaGroupMapping.inc:60
 msgid "Domain Certificate Admins"
 msgstr "ドメイン証明書管理者(Domain Certificate Admins)"
 
-#: ../lib/modules/sambaAccount.inc:49 ../lib/modules/sambaAccount.inc:547
-#: ../lib/modules/sambaSamAccount.inc:49
-#: ../lib/modules/sambaSamAccount.inc:547
+#: ../lib/modules/sambaAccount.inc:49 ../lib/modules/sambaAccount.inc:543
+#: ../lib/modules/sambaSamAccount.inc:66
+#: ../lib/modules/sambaSamAccount.inc:561
 #: ../lib/modules/sambaGroupMapping.inc:58
 msgid "Domain Computers"
 msgstr "ドメインコンピュータ(Domain Computers)"
 
-#: ../lib/modules/sambaAccount.inc:50 ../lib/modules/sambaSamAccount.inc:49
+#: ../lib/modules/sambaAccount.inc:50 ../lib/modules/sambaSamAccount.inc:66
 #: ../lib/modules/sambaGroupMapping.inc:59
 msgid "Domain Controllers"
 msgstr "ドメインコントローラ(Domain Controllers)"
 
-#: ../lib/modules/sambaAccount.inc:51 ../lib/modules/sambaSamAccount.inc:50
+#: ../lib/modules/sambaAccount.inc:51 ../lib/modules/sambaSamAccount.inc:67
 #: ../lib/modules/sambaGroupMapping.inc:62
 msgid "Domain Enterprise Admins"
 msgstr "ドメインエンタープライズ管理者(Domain Enterprise Admins)"
 
 #: ../lib/modules/sambaGroupMapping.inc:67
-#: ../lib/modules/sambaGroupMapping.inc:189
+#: ../lib/modules/sambaGroupMapping.inc:207
 msgid "Domain Group"
 msgstr "ドメイングループ(Domain Group)"
 
-#: ../lib/modules/sambaAccount.inc:49 ../lib/modules/sambaSamAccount.inc:48
+#: ../lib/modules/sambaAccount.inc:49 ../lib/modules/sambaSamAccount.inc:65
 #: ../lib/modules/sambaGroupMapping.inc:57
 msgid "Domain Guests"
 msgstr "ドメインゲスト(Domain Guests)"
 
-#: ../lib/modules/sambaAccount.inc:52 ../lib/modules/sambaSamAccount.inc:50
+#: ../lib/modules/sambaAccount.inc:52 ../lib/modules/sambaSamAccount.inc:67
 #: ../lib/modules/sambaGroupMapping.inc:63
 msgid "Domain Policy Admins"
 msgstr "ドメインポリシー管理者(Domain Policy Admins)"
@@ -1059,7 +1070,7 @@ msgstr "ドメインポリシー管理者(Domain Policy Admins)"
 msgid "Domain SID"
 msgstr "ドメインのSID"
 
-#: ../lib/modules/sambaAccount.inc:51 ../lib/modules/sambaSamAccount.inc:50
+#: ../lib/modules/sambaAccount.inc:51 ../lib/modules/sambaSamAccount.inc:67
 #: ../lib/modules/sambaGroupMapping.inc:61
 msgid "Domain Schema Admins"
 msgstr "ドメインスキーマ管理者(Domain Schema Admins)"
@@ -1068,13 +1079,13 @@ msgstr "ドメインスキーマ管理者(Domain Schema Admins)"
 msgid "Domain Settings"
 msgstr "ドメインの設定"
 
-#: ../lib/modules/sambaAccount.inc:48 ../lib/modules/sambaSamAccount.inc:48
-#: ../lib/modules/sambaSamAccount.inc:1381
+#: ../lib/modules/sambaAccount.inc:48 ../lib/modules/sambaSamAccount.inc:65
+#: ../lib/modules/sambaSamAccount.inc:1463
 #: ../lib/modules/sambaGroupMapping.inc:56
 msgid "Domain Users"
 msgstr "ドメインユーザ(Domain Users)"
 
-#: ../lib/modules/sambaGroupMapping.inc:253
+#: ../lib/modules/sambaGroupMapping.inc:262
 msgid "Domain administrators"
 msgstr "ドメイン管理者(Domain administrator)"
 
@@ -1119,11 +1130,11 @@ msgstr "ドメイン"
 msgid "Down"
 msgstr "下へ"
 
-#: ../templates/masscreate.php:263
+#: ../templates/masscreate.php:264
 msgid "Download sample CSV file"
 msgstr "サンプルCSVファイルをダウンロード"
 
-#: ../lib/modules/sambaAccount.inc:373 ../lib/modules/sambaSamAccount.inc:197
+#: ../lib/modules/sambaAccount.inc:373 ../lib/modules/sambaSamAccount.inc:214
 msgid "Drive letter assigned on windows workstations as homedirectory."
 msgstr ""
 "Windows ワークステーションのホームディレクトリとして割り当てられたドライブ文"
@@ -1153,20 +1164,20 @@ msgstr "電子メールの別名リスト"
 msgid "EMail alias list has invalid format!"
 msgstr "電子メール別名リストの形式が正しくありません!"
 
-#: ../lib/modules/kolabUser.inc:188 ../lib/modules/kolabUser.inc:394
-#: ../lib/modules/kolabUser.inc:820
+#: ../lib/modules/kolabUser.inc:188 ../lib/modules/kolabUser.inc:387
+#: ../lib/modules/kolabUser.inc:813
 msgid "EMail aliases"
 msgstr "電子メールの別名"
 
-#: ../lib/modules/sambaSamAccount.inc:244
+#: ../lib/modules/sambaSamAccount.inc:261
 msgid "East Australian Standard, Guam"
 msgstr ""
 
-#: ../lib/modules/sambaSamAccount.inc:241
+#: ../lib/modules/sambaSamAccount.inc:258
 msgid "Eastern Europe Time, South Africa"
 msgstr ""
 
-#: ../lib/modules/sambaSamAccount.inc:238
+#: ../lib/modules/sambaSamAccount.inc:255
 msgid "Eastern Time (US & Canada), Bogota"
 msgstr ""
 
@@ -1179,11 +1190,11 @@ msgstr "編集"
 msgid "Edit PDF structure"
 msgstr "PDF構成の編集"
 
-#: ../lib/modules/posixAccount.inc:937
+#: ../lib/modules/posixAccount.inc:928
 msgid "Edit groups"
 msgstr "グループの編集"
 
-#: ../lib/modules/sambaSamAccount.inc:863
+#: ../lib/modules/sambaSamAccount.inc:900
 msgid "Edit logon hours"
 msgstr "ログオン時間の編集"
 
@@ -1199,13 +1210,13 @@ msgstr "モジュールの編集"
 msgid "Edit profile"
 msgstr "プロファイルの編集"
 
-#: ../lib/modules/sambaAccount.inc:767 ../lib/modules/sambaSamAccount.inc:821
+#: ../lib/modules/sambaAccount.inc:763 ../lib/modules/sambaSamAccount.inc:856
 msgid "Edit workstations"
 msgstr "ワークステーションの編集??"
 
 #: ../lib/modules/inetOrgPerson.inc:66 ../lib/modules/inetOrgPerson.inc:105
 #: ../lib/modules/inetOrgPerson.inc:152 ../lib/modules/inetOrgPerson.inc:286
-#: ../lib/modules/inetOrgPerson.inc:605 ../lib/modules/inetOrgPerson.inc:695
+#: ../lib/modules/inetOrgPerson.inc:596 ../lib/modules/inetOrgPerson.inc:686
 msgid "Employee type"
 msgstr "雇用形態"
 
@@ -1213,7 +1224,7 @@ msgstr "雇用形態"
 msgid "Employee type: Contractor, Employee, Intern, Temp, External, ..."
 msgstr "雇用形態: 正社員、実習生、臨時雇用、派遣、..."
 
-#: ../templates/login.php:309
+#: ../templates/login.php:314
 msgid "Empty password submitted. Please try again."
 msgstr "パスワードが空です。やり直してください。"
 
@@ -1221,7 +1232,7 @@ msgstr "パスワードが空です。やり直してください。"
 msgid "Encountered an error while performing search."
 msgstr "検索実行中にエラーが発生しました。"
 
-#: ../lib/modules/sambaSamAccount.inc:236
+#: ../lib/modules/sambaSamAccount.inc:253
 msgid "Eniwetok, Kwajalein"
 msgstr ""
 
@@ -1265,18 +1276,13 @@ msgid "Example"
 msgstr "例"
 
 #: ../templates/masscreate.php:150 ../templates/masscreate.php:164
-#: ../templates/masscreate.php:305
+#: ../templates/masscreate.php:306
 msgid "Example value"
 msgstr "例"
 
 #: ../help/help.inc:50 ../help/help.inc:62
 msgid "Examples"
 msgstr "例"
-
-#: ../lib/modules/shadowAccount.inc:99 ../lib/modules/shadowAccount.inc:165
-#: ../lib/modules/shadowAccount.inc:197 ../lib/modules/shadowAccount.inc:298
-msgid "Expiration date"
-msgstr "有効期限"
 
 #: ../templates/tree/edit.php:116 ../templates/tree/export_form.php:87
 #: ../templates/tree/export_form.php:95
@@ -1311,11 +1317,11 @@ msgstr "ドメイン変更に失敗しました!"
 
 #: ../lib/modules/inetOrgPerson.inc:54 ../lib/modules/inetOrgPerson.inc:200
 #: ../lib/modules/inetOrgPerson.inc:318 ../lib/modules/inetOrgPerson.inc:319
-#: ../lib/modules/inetOrgPerson.inc:590 ../lib/modules/inetOrgPerson.inc:703
+#: ../lib/modules/inetOrgPerson.inc:581 ../lib/modules/inetOrgPerson.inc:694
 msgid "Fax number"
 msgstr "ファクス番号"
 
-#: ../lib/modules/sambaSamAccount.inc:206
+#: ../lib/modules/sambaSamAccount.inc:223
 msgid ""
 "File name and path relative to netlogon-share which should be executed on "
 "logon. $user and $group are replaced with user and group name."
@@ -1344,8 +1350,8 @@ msgid "Filter"
 msgstr "フィルタ"
 
 #: ../lib/modules/inetOrgPerson.inc:46 ../lib/modules/inetOrgPerson.inc:127
-#: ../lib/modules/inetOrgPerson.inc:278 ../lib/modules/inetOrgPerson.inc:522
-#: ../lib/modules/inetOrgPerson.inc:693 ../lib/lists.inc:307
+#: ../lib/modules/inetOrgPerson.inc:278 ../lib/modules/inetOrgPerson.inc:513
+#: ../lib/modules/inetOrgPerson.inc:684 ../lib/lists.inc:307
 msgid "First name"
 msgstr "(姓でない)名"
 
@@ -1362,8 +1368,8 @@ msgid "For automatic invitation handling."
 msgstr ""
 
 #: ../lib/modules/kolabUser.inc:87 ../lib/modules/kolabUser.inc:154
-#: ../lib/modules/kolabUser.inc:200 ../lib/modules/kolabUser.inc:339
-#: ../lib/modules/kolabUser.inc:798
+#: ../lib/modules/kolabUser.inc:200 ../lib/modules/kolabUser.inc:332
+#: ../lib/modules/kolabUser.inc:791
 msgid "Free/Busy interval"
 msgstr ""
 
@@ -1371,15 +1377,15 @@ msgstr ""
 msgid "Free/Busy interval must be a number!"
 msgstr "Free/Busyインターバルは数でなくてはなりません!"
 
-#: ../lib/modules/sambaSamAccount.inc:917
+#: ../lib/modules/sambaSamAccount.inc:954
 msgid "Friday"
 msgstr "金曜日"
 
 #: ../lib/modules/posixGroup.inc:169 ../lib/modules/posixGroup.inc:376
 #: ../lib/modules/posixGroup.inc:406 ../lib/modules/posixGroup.inc:431
 #: ../lib/modules/posixGroup.inc:451 ../lib/modules/posixGroup.inc:471
-#: ../lib/modules/posixAccount.inc:48 ../lib/modules/posixAccount.inc:1158
-#: ../lib/modules/sambaGroupMapping.inc:304 ../lib/lists.inc:304
+#: ../lib/modules/posixAccount.inc:48 ../lib/modules/posixAccount.inc:1149
+#: ../lib/modules/sambaGroupMapping.inc:313 ../lib/lists.inc:304
 #: ../lib/lists.inc:318 ../lib/lists.inc:331
 msgid "GID number"
 msgstr "GID番号"
@@ -1412,12 +1418,12 @@ msgstr "unixグループのGID範囲"
 
 #: ../lib/modules/account.inc:73 ../lib/modules/posixAccount.inc:243
 #: ../lib/modules/posixAccount.inc:275 ../lib/modules/posixAccount.inc:345
-#: ../lib/modules/posixAccount.inc:391 ../lib/modules/posixAccount.inc:925
-#: ../lib/modules/posixAccount.inc:1159
+#: ../lib/modules/posixAccount.inc:391 ../lib/modules/posixAccount.inc:916
+#: ../lib/modules/posixAccount.inc:1150
 msgid "Gecos"
 msgstr ""
 
-#: ../lib/modules/posixGroup.inc:184 ../lib/modules/posixAccount.inc:953
+#: ../lib/modules/posixGroup.inc:184 ../lib/modules/posixAccount.inc:944
 msgid "Generate password"
 msgstr "パスワードの作成"
 
@@ -1430,7 +1436,7 @@ msgstr "日本"
 msgid "Go"
 msgstr ""
 
-#: ../lib/modules/quota.inc:102 ../lib/modules/quota.inc:323
+#: ../lib/modules/quota.inc:102 ../lib/modules/quota.inc:306
 msgid "Grace block period"
 msgstr "ブロック猶予期間"
 
@@ -1449,7 +1455,7 @@ msgstr ""
 "iノード(ファイル)クオータの猶予期間。 ほとんどのファイルシステムは、最大値で"
 "ある7日間を固定値として使用します。"
 
-#: ../lib/modules/quota.inc:118 ../lib/modules/quota.inc:327
+#: ../lib/modules/quota.inc:118 ../lib/modules/quota.inc:310
 msgid "Grace inode period"
 msgstr "iノードクオータの猶予期間"
 
@@ -1526,7 +1532,7 @@ msgstr "グループパスワード"
 msgid "Group profiles"
 msgstr "グループのプロファイル"
 
-#: ../lib/modules/sambaGroupMapping.inc:194
+#: ../lib/modules/sambaGroupMapping.inc:212
 msgid "Group type"
 msgstr "グループのタイプ"
 
@@ -1543,16 +1549,16 @@ msgstr "グループサフィックスが正しくありません!"
 msgid "Groups"
 msgstr "グループ"
 
-#: ../lib/modules/quota.inc:457
+#: ../lib/modules/quota.inc:440
 msgid "Hard block"
 msgstr "ハードblock"
 
 #: ../lib/modules/quota.inc:98 ../lib/modules/quota.inc:99
-#: ../lib/modules/quota.inc:322 ../lib/modules/quota.inc:379
+#: ../lib/modules/quota.inc:305 ../lib/modules/quota.inc:362
 msgid "Hard block limit"
 msgstr "ハードブロック制限"
 
-#: ../lib/modules/quota.inc:459
+#: ../lib/modules/quota.inc:442
 msgid "Hard inode"
 msgstr "ハードinode"
 
@@ -1560,12 +1566,12 @@ msgstr "ハードinode"
 msgid "Hard inode (files) limit"
 msgstr "ハードinode(ファイル)制限"
 
-#: ../lib/modules/quota.inc:114 ../lib/modules/quota.inc:326
-#: ../lib/modules/quota.inc:381
+#: ../lib/modules/quota.inc:114 ../lib/modules/quota.inc:309
+#: ../lib/modules/quota.inc:364
 msgid "Hard inode limit"
 msgstr "ハードinode制限"
 
-#: ../lib/modules/sambaSamAccount.inc:236
+#: ../lib/modules/sambaSamAccount.inc:253
 msgid "Hawaii"
 msgstr ""
 
@@ -1581,7 +1587,7 @@ msgstr "見出し"
 #: ../templates/domain.php:136 ../templates/domain.php:149
 #: ../templates/domain.php:162 ../templates/domain.php:179
 #: ../templates/domain.php:202 ../templates/masscreate.php:145
-#: ../templates/masscreate.php:158 ../templates/masscreate.php:292
+#: ../templates/masscreate.php:158 ../templates/masscreate.php:293
 #: ../templates/config/profmanage.php:183
 #: ../templates/config/profmanage.php:235
 #: ../templates/config/profmanage.php:265
@@ -1636,7 +1642,10 @@ msgstr ""
 msgid ""
 "Here you can load an account profile to set default settings for your "
 "account. The \"default\" profile is automatically loaded for new accounts."
-msgstr "ここでは、あなたのアカウントに対するデフォルト値を設定するために、アカウントプロファイルをロードできます。新しいアカウントに対しては、\"default\"プロファイルが自動的にロードされます。"
+msgstr ""
+"ここでは、あなたのアカウントに対するデフォルト値を設定するために、アカウント"
+"プロファイルをロードできます。新しいアカウントに対しては、\"default\"プロファ"
+"イルが自動的にロードされます。"
 
 #: ../templates/tools.php:54
 msgid "Here you can manage your account profiles."
@@ -1645,7 +1654,9 @@ msgstr "ここで、あなたのアカウントのプロファイルを管理で
 #: ../help/help.inc:147
 msgid ""
 "Here you can select a PDF structure and export the account to a PDF file."
-msgstr "ここでは、PDF構成の選択と、アカウントのPDFフィアルへのエクスポートを行えます。"
+msgstr ""
+"ここでは、PDF構成の選択と、アカウントのPDFフィアルへのエクスポートを行えま"
+"す。"
 
 #: ../help/help.inc:112
 msgid ""
@@ -1669,9 +1680,9 @@ msgstr ""
 #: ../lib/modules/posixAccount.inc:43 ../lib/modules/posixAccount.inc:71
 #: ../lib/modules/posixAccount.inc:72 ../lib/modules/posixAccount.inc:214
 #: ../lib/modules/posixAccount.inc:332 ../lib/modules/posixAccount.inc:336
-#: ../lib/modules/posixAccount.inc:353 ../lib/modules/posixAccount.inc:762
-#: ../lib/modules/posixAccount.inc:940 ../lib/modules/posixAccount.inc:1087
-#: ../lib/modules/posixAccount.inc:1162 ../lib/lists.inc:309
+#: ../lib/modules/posixAccount.inc:353 ../lib/modules/posixAccount.inc:753
+#: ../lib/modules/posixAccount.inc:931 ../lib/modules/posixAccount.inc:1078
+#: ../lib/modules/posixAccount.inc:1153 ../lib/lists.inc:309
 msgid "Home directory"
 msgstr "ホームディレクトリ"
 
@@ -1685,30 +1696,30 @@ msgstr ""
 "権限で以下のコマンドを実行しなければなりません: 'mv %s %s'"
 
 #: ../lib/modules/sambaAccount.inc:140 ../lib/modules/sambaAccount.inc:271
-#: ../lib/modules/sambaAccount.inc:372 ../lib/modules/sambaAccount.inc:754
-#: ../lib/modules/sambaAccount.inc:854 ../lib/modules/sambaSamAccount.inc:196
-#: ../lib/modules/sambaSamAccount.inc:322
-#: ../lib/modules/sambaSamAccount.inc:808
-#: ../lib/modules/sambaSamAccount.inc:1024
-#: ../lib/modules/sambaSamAccount.inc:1133
+#: ../lib/modules/sambaAccount.inc:372 ../lib/modules/sambaAccount.inc:750
+#: ../lib/modules/sambaAccount.inc:850 ../lib/modules/sambaSamAccount.inc:213
+#: ../lib/modules/sambaSamAccount.inc:349
+#: ../lib/modules/sambaSamAccount.inc:843
+#: ../lib/modules/sambaSamAccount.inc:1080
+#: ../lib/modules/sambaSamAccount.inc:1202
 msgid "Home drive"
 msgstr "ホームドライブ"
 
 #: ../lib/modules/sambaAccount.inc:61 ../lib/modules/sambaAccount.inc:62
 #: ../lib/modules/sambaAccount.inc:146 ../lib/modules/sambaAccount.inc:277
-#: ../lib/modules/sambaAccount.inc:375 ../lib/modules/sambaAccount.inc:757
-#: ../lib/modules/sambaAccount.inc:853 ../lib/modules/sambaSamAccount.inc:59
-#: ../lib/modules/sambaSamAccount.inc:60
-#: ../lib/modules/sambaSamAccount.inc:199
-#: ../lib/modules/sambaSamAccount.inc:328
-#: ../lib/modules/sambaSamAccount.inc:811
-#: ../lib/modules/sambaSamAccount.inc:1030
-#: ../lib/modules/sambaSamAccount.inc:1132
+#: ../lib/modules/sambaAccount.inc:375 ../lib/modules/sambaAccount.inc:753
+#: ../lib/modules/sambaAccount.inc:849 ../lib/modules/sambaSamAccount.inc:76
+#: ../lib/modules/sambaSamAccount.inc:77
+#: ../lib/modules/sambaSamAccount.inc:216
+#: ../lib/modules/sambaSamAccount.inc:355
+#: ../lib/modules/sambaSamAccount.inc:846
+#: ../lib/modules/sambaSamAccount.inc:1086
+#: ../lib/modules/sambaSamAccount.inc:1201
 msgid "Home path"
 msgstr "ホームパス"
 
-#: ../lib/modules/sambaAccount.inc:61 ../lib/modules/sambaSamAccount.inc:59
-#: ../lib/modules/sambaSamAccount.inc:61
+#: ../lib/modules/sambaAccount.inc:61 ../lib/modules/sambaSamAccount.inc:76
+#: ../lib/modules/sambaSamAccount.inc:78
 msgid "Home path is invalid."
 msgstr "ホームパスが正しくありません。"
 
@@ -1806,25 +1817,25 @@ msgstr "ホストサフィックスが正しくありません!"
 msgid "Hosts"
 msgstr "ホスト"
 
-#: ../lib/modules/posixGroup.inc:474 ../lib/modules/posixGroup.inc:612
-#: ../lib/modules/posixAccount.inc:76 ../lib/modules/posixAccount.inc:709
+#: ../lib/modules/posixGroup.inc:474 ../lib/modules/posixGroup.inc:602
+#: ../lib/modules/posixAccount.inc:76 ../lib/modules/posixAccount.inc:700
 msgid "ID is already in use"
 msgstr "ID はすでに使用されています"
 
 #: ../lib/modules/posixGroup.inc:472 ../lib/modules/posixGroup.inc:473
-#: ../lib/modules/posixGroup.inc:474 ../lib/modules/posixGroup.inc:608
-#: ../lib/modules/posixGroup.inc:612 ../lib/modules/posixAccount.inc:74
+#: ../lib/modules/posixGroup.inc:474 ../lib/modules/posixGroup.inc:598
+#: ../lib/modules/posixGroup.inc:602 ../lib/modules/posixAccount.inc:74
 #: ../lib/modules/posixAccount.inc:75 ../lib/modules/posixAccount.inc:76
-#: ../lib/modules/posixAccount.inc:705 ../lib/modules/posixAccount.inc:709
+#: ../lib/modules/posixAccount.inc:696 ../lib/modules/posixAccount.inc:700
 msgid "ID-Number"
 msgstr "ID番号"
 
 #: ../templates/masscreate.php:149 ../templates/masscreate.php:162
-#: ../templates/masscreate.php:297
+#: ../templates/masscreate.php:298
 msgid "Identifier"
 msgstr "識別子"
 
-#: ../lib/modules/sambaAccount.inc:344 ../lib/modules/sambaSamAccount.inc:168
+#: ../lib/modules/sambaAccount.inc:344 ../lib/modules/sambaSamAccount.inc:185
 msgid "If checked Unix password will also be used as Samba password."
 msgstr "チェックした場合、unixパスワードがSambaパスワードとしても使われます。"
 
@@ -1836,17 +1847,17 @@ msgstr ""
 "チェックした場合、暗号化パスワードの前に\"!\"が挿入され、アカウントは無効化さ"
 "れます。"
 
-#: ../lib/modules/sambaAccount.inc:362 ../lib/modules/sambaSamAccount.inc:186
+#: ../lib/modules/sambaAccount.inc:362 ../lib/modules/sambaSamAccount.inc:203
 msgid "If checked account will be deactivated. (Setting D-Flag)"
 msgstr ""
 "チェックした場合、(D-フラグをセットすることで)アカウントは無効化されます。"
 
 #: ../lib/modules/posixGroup.inc:427 ../lib/modules/sambaAccount.inc:350
-#: ../lib/modules/sambaSamAccount.inc:174 ../lib/modules/posixAccount.inc:362
+#: ../lib/modules/sambaSamAccount.inc:191 ../lib/modules/posixAccount.inc:362
 msgid "If checked no password will be used."
 msgstr "チェックした場合、パスワードは使われません。"
 
-#: ../lib/modules/sambaAccount.inc:356 ../lib/modules/sambaSamAccount.inc:180
+#: ../lib/modules/sambaAccount.inc:356 ../lib/modules/sambaSamAccount.inc:197
 msgid "If checked password does not expire. (Setting X-Flag)"
 msgstr "チェックした場合、パスワードは無期限になります。(X-フラグをセット)"
 
@@ -1860,26 +1871,26 @@ msgstr "未記入の場合、設定内容に従ってGID番号が自動的に生
 msgid "If empty UID number will be generated automaticly."
 msgstr "未記入の場合、UID番号が自動的に生成されます。"
 
-#: ../lib/modules/sambaAccount.inc:347 ../lib/modules/sambaSamAccount.inc:171
+#: ../lib/modules/sambaAccount.inc:347 ../lib/modules/sambaSamAccount.inc:188
 msgid "If set to \"true\" Unix password will also be used as Samba password."
 msgstr ""
 "\"true\"にセットした場合、unixパスワードがSambaパスワードとしても使われます。"
 
-#: ../lib/modules/sambaAccount.inc:365 ../lib/modules/sambaSamAccount.inc:189
+#: ../lib/modules/sambaAccount.inc:365 ../lib/modules/sambaSamAccount.inc:206
 msgid "If set to \"true\" account will be deactivated. (Setting D-Flag)"
 msgstr ""
 "\"true\"にセットした場合、アカウントは無効になります。(D-フラグをセット)"
 
-#: ../lib/modules/sambaAccount.inc:353 ../lib/modules/sambaSamAccount.inc:177
+#: ../lib/modules/sambaAccount.inc:353 ../lib/modules/sambaSamAccount.inc:194
 msgid "If set to \"true\" no password will be used."
 msgstr "\"true\"にセットした場合、パスワードは使われません。"
 
-#: ../lib/modules/sambaAccount.inc:359 ../lib/modules/sambaSamAccount.inc:183
+#: ../lib/modules/sambaAccount.inc:359 ../lib/modules/sambaSamAccount.inc:200
 msgid "If set to \"true\" password does not expire. (Setting X-Flag)"
 msgstr ""
 "\"true\"にセットした場合、パスワードは無期限になります。(X-フラグをセット)"
 
-#: ../lib/modules/sambaSamAccount.inc:225
+#: ../lib/modules/sambaSamAccount.inc:242
 msgid ""
 "If you leave this empty LAM will use: uidNumber*2 + sambaAlgorithmicRidBase."
 msgstr ""
@@ -1906,7 +1917,7 @@ msgstr ""
 "用してください。"
 
 #: ../lib/modules/sambaAccount.inc:391
-#: ../lib/modules/sambaGroupMapping.inc:279
+#: ../lib/modules/sambaGroupMapping.inc:288
 msgid "If you want to use a well known RID you can selcet a well known group."
 msgstr ""
 "もしも、よく知られているRID(well known RID)を使いたいのであれば、よく知られた"
@@ -1956,16 +1967,16 @@ msgstr ""
 "ん。"
 
 #: ../lib/modules/sambaAccount.inc:62 ../lib/modules/sambaAccount.inc:63
-#: ../lib/modules/sambaSamAccount.inc:60
+#: ../lib/modules/sambaSamAccount.inc:77
 msgid "Inserted user or group name in home path."
 msgstr "ホームパス名にユーザ又はグループ名を挿入しました。"
 
-#: ../lib/modules/sambaAccount.inc:68 ../lib/modules/sambaSamAccount.inc:66
+#: ../lib/modules/sambaAccount.inc:68 ../lib/modules/sambaSamAccount.inc:83
 msgid "Inserted user or group name in logon script."
 msgstr "ログオンスクリプトパスにユーザ又はグループ名を挿入しました。"
 
 #: ../lib/modules/sambaAccount.inc:65 ../lib/modules/sambaAccount.inc:66
-#: ../lib/modules/sambaSamAccount.inc:63
+#: ../lib/modules/sambaSamAccount.inc:80
 msgid "Inserted user or group name in profile path."
 msgstr "プロファイルパスにユーザ又はグループ名を挿入しました。"
 
@@ -1978,7 +1989,7 @@ msgid "Invalid RDN attribute!"
 msgstr "不正なRDN属性です!"
 
 #: ../lib/modules/posixGroup.inc:200 ../lib/modules/posixAccount.inc:369
-#: ../lib/modules/posixAccount.inc:969
+#: ../lib/modules/posixAccount.inc:960
 msgid "Invalid password"
 msgstr "無効なパスワードです"
 
@@ -1987,7 +1998,7 @@ msgid "Invalid/Missing Message type"
 msgstr "不正な/間違ったメッセージタイプ"
 
 #: ../lib/modules/kolabUser.inc:122 ../lib/modules/kolabUser.inc:169
-#: ../lib/modules/kolabUser.inc:377 ../lib/modules/kolabUser.inc:810
+#: ../lib/modules/kolabUser.inc:370 ../lib/modules/kolabUser.inc:803
 msgid "Invitation policy"
 msgstr "不正なポリシー"
 
@@ -1995,7 +2006,7 @@ msgstr "不正なポリシー"
 msgid "Invitation policy list"
 msgstr "不正なポリシーリスト"
 
-#: ../lib/modules/sambaSamAccount.inc:242
+#: ../lib/modules/sambaSamAccount.inc:259
 msgid "Islamabad, Karachi"
 msgstr ""
 
@@ -2011,7 +2022,7 @@ msgstr ""
 
 #: ../lib/modules/inetOrgPerson.inc:64 ../lib/modules/inetOrgPerson.inc:101
 #: ../lib/modules/inetOrgPerson.inc:146 ../lib/modules/inetOrgPerson.inc:274
-#: ../lib/modules/inetOrgPerson.inc:601 ../lib/modules/inetOrgPerson.inc:692
+#: ../lib/modules/inetOrgPerson.inc:592 ../lib/modules/inetOrgPerson.inc:683
 msgid "Job title"
 msgstr "役職"
 
@@ -2071,11 +2082,11 @@ msgstr ""
 msgid "LAM was unable to create account %s! An LDAP error occured."
 msgstr "LAMはアカウント %s を作成できませんでした! LDAPエラーが発生しました。"
 
-#: ../lib/modules/sambaGroupMapping.inc:357
+#: ../lib/modules/sambaGroupMapping.inc:366
 msgid "LAM was unable to find a Samba 3 domain with this name!"
 msgstr "LAMは、この名前のSamba 3ドメインを見つけられませんでした。"
 
-#: ../lib/modules/sambaSamAccount.inc:86
+#: ../lib/modules/sambaSamAccount.inc:104
 msgid "LAM was unable to find a domain with this name!"
 msgstr "LAMは、この名前のドメインを見つけられませんでした。"
 
@@ -2083,7 +2094,7 @@ msgstr "LAMは、この名前のドメインを見つけられませんでした
 msgid "LAM was unable to find a group with this name!"
 msgstr "LAMは、この名前のグループを見つけられませんでした。"
 
-#: ../lib/modules/posixAccount.inc:1521
+#: ../lib/modules/posixAccount.inc:1512
 #, php-format
 msgid "LAM was unable to modify group memberships for group: %s"
 msgstr "LAMはグループ %s のグループメンバーシップを変更できませんでした。"
@@ -2106,7 +2117,7 @@ msgstr "LDAP リスト設定"
 msgid "LDAP Search failed! Please check your preferences."
 msgstr "LDAP検索に失敗しました! プリファレンスを確認してください。"
 
-#: ../templates/login.php:351
+#: ../templates/login.php:356
 msgid "LDAP error, server says:"
 msgstr "LDAP エラー、サーバからのメッセージ:"
 
@@ -2114,7 +2125,7 @@ msgstr "LDAP エラー、サーバからのメッセージ:"
 msgid "LDAP operation successful."
 msgstr "LDAP操作が完了しました。"
 
-#: ../templates/login.php:246
+#: ../templates/login.php:251
 msgid "LDAP server"
 msgstr "LDAPサーバ"
 
@@ -2138,9 +2149,9 @@ msgstr "LDAPアップロード中です。お待ちください。"
 #: ../lib/export.inc:441
 #, php-format
 msgid "LDIF Export for: %s"
-msgstr ""
+msgstr "LDIFにエクスポート: %s"
 
-#: ../templates/login.php:195
+#: ../templates/login.php:200
 msgid "Language"
 msgstr "言語"
 
@@ -2153,8 +2164,8 @@ msgid "Language settings"
 msgstr "言語の設定"
 
 #: ../lib/modules/inetOrgPerson.inc:48 ../lib/modules/inetOrgPerson.inc:133
-#: ../lib/modules/inetOrgPerson.inc:282 ../lib/modules/inetOrgPerson.inc:526
-#: ../lib/modules/inetOrgPerson.inc:694 ../lib/lists.inc:308
+#: ../lib/modules/inetOrgPerson.inc:282 ../lib/modules/inetOrgPerson.inc:517
+#: ../lib/modules/inetOrgPerson.inc:685 ../lib/lists.inc:308
 msgid "Last name"
 msgstr "姓"
 
@@ -2166,7 +2177,7 @@ msgstr "姓に不正な文字が含まれています!"
 msgid "Last name of user. Only letters, - and spaces are allowed."
 msgstr "ユーザの姓。アルファベット、_ - と空白のみが使用できます。"
 
-#: ../lib/modules/shadowAccount.inc:316
+#: ../lib/modules/shadowAccount.inc:307
 msgid "Last password change"
 msgstr "パスワード最終変更時刻"
 
@@ -2178,7 +2189,7 @@ msgstr ""
 msgid "List attributes"
 msgstr "属性の一覧"
 
-#: ../lib/modules/sambaAccount.inc:385 ../lib/modules/sambaSamAccount.inc:209
+#: ../lib/modules/sambaAccount.inc:385 ../lib/modules/sambaSamAccount.inc:226
 msgid ""
 "List of Samba workstations the user is allowed to login. Empty means every "
 "workstation."
@@ -2207,29 +2218,29 @@ msgid "Local Group"
 msgstr "ローカルグループ"
 
 #: ../lib/modules/inetLocalMailRecipient.inc:60
-#: ../lib/modules/inetLocalMailRecipient.inc:206
+#: ../lib/modules/inetLocalMailRecipient.inc:199
 msgid "Local address"
 msgstr "ローカルアドレス"
 
 #: ../lib/modules/inetLocalMailRecipient.inc:64
 #: ../lib/modules/inetLocalMailRecipient.inc:97
-#: ../lib/modules/inetLocalMailRecipient.inc:366
+#: ../lib/modules/inetLocalMailRecipient.inc:359
 msgid "Local address list"
 msgstr "ローカルアドレス一覧"
 
 #: ../lib/modules/posixGroup.inc:205 ../lib/modules/posixAccount.inc:235
-#: ../lib/modules/posixAccount.inc:974 ../lib/modules/posixAccount.inc:1099
+#: ../lib/modules/posixAccount.inc:965 ../lib/modules/posixAccount.inc:1090
 msgid "Lock password"
 msgstr "パスワードのロック"
 
-#: ../templates/login.php:221 ../templates/config/conflogin.php:68
+#: ../templates/login.php:226 ../templates/config/conflogin.php:68
 #: ../help/help.inc:45
 msgid "Login"
 msgstr "ログイン"
 
 #: ../lib/modules/posixAccount.inc:221 ../lib/modules/posixAccount.inc:373
-#: ../lib/modules/posixAccount.inc:980 ../lib/modules/posixAccount.inc:1091
-#: ../lib/modules/posixAccount.inc:1164 ../lib/lists.inc:310
+#: ../lib/modules/posixAccount.inc:971 ../lib/modules/posixAccount.inc:1082
+#: ../lib/modules/posixAccount.inc:1155 ../lib/lists.inc:310
 msgid "Login shell"
 msgstr "ログインシェル"
 
@@ -2237,30 +2248,30 @@ msgstr "ログインシェル"
 msgid "Logo"
 msgstr "ロゴ"
 
-#: ../lib/modules/sambaSamAccount.inc:87
-#: ../lib/modules/sambaSamAccount.inc:233
-#: ../lib/modules/sambaSamAccount.inc:247
-#: ../lib/modules/sambaSamAccount.inc:366
-#: ../lib/modules/sambaSamAccount.inc:862
-#: ../lib/modules/sambaSamAccount.inc:1065
+#: ../lib/modules/sambaSamAccount.inc:105
+#: ../lib/modules/sambaSamAccount.inc:250
+#: ../lib/modules/sambaSamAccount.inc:264
+#: ../lib/modules/sambaSamAccount.inc:393
+#: ../lib/modules/sambaSamAccount.inc:899
+#: ../lib/modules/sambaSamAccount.inc:1121
 msgid "Logon hours"
 msgstr "ログオン時間"
 
 #: ../lib/modules/sambaAccount.inc:67 ../lib/modules/sambaAccount.inc:68
 #: ../lib/modules/sambaAccount.inc:158 ../lib/modules/sambaAccount.inc:289
-#: ../lib/modules/sambaAccount.inc:381 ../lib/modules/sambaAccount.inc:763
-#: ../lib/modules/sambaAccount.inc:855 ../lib/modules/sambaSamAccount.inc:65
-#: ../lib/modules/sambaSamAccount.inc:66
-#: ../lib/modules/sambaSamAccount.inc:205
-#: ../lib/modules/sambaSamAccount.inc:340
-#: ../lib/modules/sambaSamAccount.inc:817
-#: ../lib/modules/sambaSamAccount.inc:1042
-#: ../lib/modules/sambaSamAccount.inc:1134
+#: ../lib/modules/sambaAccount.inc:381 ../lib/modules/sambaAccount.inc:759
+#: ../lib/modules/sambaAccount.inc:851 ../lib/modules/sambaSamAccount.inc:82
+#: ../lib/modules/sambaSamAccount.inc:83
+#: ../lib/modules/sambaSamAccount.inc:222
+#: ../lib/modules/sambaSamAccount.inc:367
+#: ../lib/modules/sambaSamAccount.inc:852
+#: ../lib/modules/sambaSamAccount.inc:1098
+#: ../lib/modules/sambaSamAccount.inc:1203
 msgid "Logon script"
 msgstr "ログオンスクリプト"
 
 #: ../lib/modules/sambaAccount.inc:67 ../lib/modules/sambaAccount.inc:69
-#: ../lib/modules/sambaSamAccount.inc:65 ../lib/modules/sambaSamAccount.inc:67
+#: ../lib/modules/sambaSamAccount.inc:82 ../lib/modules/sambaSamAccount.inc:84
 msgid "Logon script is invalid!"
 msgstr "ログオンスクリプトが正しくありません!"
 
@@ -2269,7 +2280,7 @@ msgid "Logout"
 msgstr "ログアウト"
 
 #: ../lib/modules/ieee802device.inc:50 ../lib/modules/ieee802device.inc:56
-#: ../lib/modules/ieee802device.inc:67 ../lib/modules/ieee802device.inc:144
+#: ../lib/modules/ieee802device.inc:67 ../lib/modules/ieee802device.inc:137
 msgid "MAC address"
 msgstr "MACアドレス"
 
@@ -2277,11 +2288,11 @@ msgstr "MACアドレス"
 msgid "MAC address list"
 msgstr "MACアドレス一覧"
 
-#: ../lib/modules/ieee802device.inc:259
+#: ../lib/modules/ieee802device.inc:252
 msgid "MAC address(es)"
 msgstr "MACアドレス"
 
-#: ../lib/modules/sambaSamAccount.inc:245
+#: ../lib/modules/sambaSamAccount.inc:262
 msgid "Magadan, Solomon Islands"
 msgstr ""
 
@@ -2290,8 +2301,8 @@ msgid "Mail aliases"
 msgstr "電子メール エイリアス"
 
 #: ../lib/modules/kolabUser.inc:91 ../lib/modules/kolabUser.inc:158
-#: ../lib/modules/kolabUser.inc:206 ../lib/modules/kolabUser.inc:334
-#: ../lib/modules/kolabUser.inc:794
+#: ../lib/modules/kolabUser.inc:206 ../lib/modules/kolabUser.inc:327
+#: ../lib/modules/kolabUser.inc:787
 msgid "Mail quota"
 msgstr "メール・クオータ"
 
@@ -2307,14 +2318,14 @@ msgstr "メール転送"
 #: ../lib/modules/inetLocalMailRecipient.inc:68
 #: ../lib/modules/inetLocalMailRecipient.inc:74
 #: ../lib/modules/inetLocalMailRecipient.inc:103
-#: ../lib/modules/inetLocalMailRecipient.inc:200
-#: ../lib/modules/inetLocalMailRecipient.inc:369
+#: ../lib/modules/inetLocalMailRecipient.inc:193
+#: ../lib/modules/inetLocalMailRecipient.inc:362
 msgid "Mail server"
 msgstr "メールサーバ"
 
 #: ../lib/modules/kolabUser.inc:150 ../lib/modules/kolabUser.inc:181
-#: ../lib/modules/kolabUser.inc:322 ../lib/modules/kolabUser.inc:328
-#: ../lib/modules/kolabUser.inc:790
+#: ../lib/modules/kolabUser.inc:315 ../lib/modules/kolabUser.inc:321
+#: ../lib/modules/kolabUser.inc:783
 msgid "Mailbox home server"
 msgstr "メールボックス・ホーム・サーバ"
 
@@ -2340,7 +2351,7 @@ msgid "Manage profiles"
 msgstr "プロファイルの操作"
 
 #: ../lib/modules/inetOrgPerson.inc:158 ../lib/modules/inetOrgPerson.inc:290
-#: ../lib/modules/inetOrgPerson.inc:632 ../lib/modules/inetOrgPerson.inc:696
+#: ../lib/modules/inetOrgPerson.inc:623 ../lib/modules/inetOrgPerson.inc:687
 msgid "Manager"
 msgstr "管理者"
 
@@ -2360,7 +2371,7 @@ msgstr "手動"
 msgid "Manual if conflicts"
 msgstr "競合した場合は手動"
 
-#: ../lib/modules/kolabUser.inc:426 ../lib/modules/kolabUser.inc:602
+#: ../lib/modules/kolabUser.inc:419 ../lib/modules/kolabUser.inc:595
 msgid "Mark account for deletion"
 msgstr "アカウントを削除対象としてマークする"
 
@@ -2450,15 +2461,15 @@ msgid "Maximum list entries"
 msgstr "リストエントリの最大数"
 
 #: ../lib/modules/shadowAccount.inc:94 ../lib/modules/shadowAccount.inc:161
-#: ../lib/modules/shadowAccount.inc:191 ../lib/modules/shadowAccount.inc:291
+#: ../lib/modules/shadowAccount.inc:191 ../lib/modules/shadowAccount.inc:282
 msgid "Maximum password age"
 msgstr "パスワード期限(age)の最大値"
 
-#: ../lib/modules/sambaSamAccount.inc:239
+#: ../lib/modules/sambaSamAccount.inc:256
 msgid "Mid-Atlantic"
 msgstr ""
 
-#: ../lib/modules/sambaSamAccount.inc:236
+#: ../lib/modules/sambaSamAccount.inc:253
 msgid "Midway Island, Samoa"
 msgstr ""
 
@@ -2496,13 +2507,13 @@ msgid "Minimum UID number is invalid!"
 msgstr "UID番号の最小値が不正です!"
 
 #: ../lib/modules/shadowAccount.inc:89 ../lib/modules/shadowAccount.inc:157
-#: ../lib/modules/shadowAccount.inc:185 ../lib/modules/shadowAccount.inc:288
+#: ../lib/modules/shadowAccount.inc:185 ../lib/modules/shadowAccount.inc:279
 msgid "Minimum password age"
 msgstr "パスワード期限(age)の最小値"
 
 #: ../lib/modules/inetOrgPerson.inc:52 ../lib/modules/inetOrgPerson.inc:194
 #: ../lib/modules/inetOrgPerson.inc:314 ../lib/modules/inetOrgPerson.inc:315
-#: ../lib/modules/inetOrgPerson.inc:586 ../lib/modules/inetOrgPerson.inc:702
+#: ../lib/modules/inetOrgPerson.inc:577 ../lib/modules/inetOrgPerson.inc:693
 msgid "Mobile number"
 msgstr "携帯電話番号"
 
@@ -2518,16 +2529,16 @@ msgstr "モジュール選択"
 msgid "Module settings"
 msgstr "モジュール設定"
 
-#: ../lib/modules/sambaSamAccount.inc:916
+#: ../lib/modules/sambaSamAccount.inc:953
 msgid "Monday"
 msgstr "月曜日"
 
-#: ../lib/modules/sambaSamAccount.inc:237
+#: ../lib/modules/sambaSamAccount.inc:254
 msgid "Mountain Time (US & Canada)"
 msgstr ""
 
-#: ../lib/modules/quota.inc:86 ../lib/modules/quota.inc:319
-#: ../lib/modules/quota.inc:377 ../lib/modules/quota.inc:455
+#: ../lib/modules/quota.inc:86 ../lib/modules/quota.inc:302
+#: ../lib/modules/quota.inc:360 ../lib/modules/quota.inc:438
 msgid "Mountpoint"
 msgstr "マウントポイント"
 
@@ -2571,7 +2582,7 @@ msgstr "新しいグループ"
 msgid "New Host"
 msgstr "新しいホスト"
 
-#: ../lib/modules/ieee802device.inc:151
+#: ../lib/modules/ieee802device.inc:144
 msgid "New MAC address"
 msgstr "新しいMACアドレス"
 
@@ -2588,7 +2599,7 @@ msgstr "新しいパスワード"
 msgid "New default profile set successfully."
 msgstr "新しいプロファイル既定値が正しく設定されました。"
 
-#: ../lib/modules/inetLocalMailRecipient.inc:213
+#: ../lib/modules/inetLocalMailRecipient.inc:206
 msgid "New local address"
 msgstr "新しいローカルアドレス"
 
@@ -2611,7 +2622,7 @@ msgstr "新しい organizational unit"
 msgid "New password set successfully."
 msgstr "新しいパスワードが正しく設定されました。"
 
-#: ../lib/modules/nisMailAlias.inc:185
+#: ../lib/modules/nisMailAlias.inc:178
 msgid "New recipient"
 msgstr "新しい受信者"
 
@@ -2674,14 +2685,23 @@ msgstr "次のユーザRIDが番号ではありません!"
 msgid "No"
 msgstr "いいえ"
 
+#: ../lib/modules/sambaSamAccount.inc:434
+#: ../lib/modules/sambaSamAccount.inc:511
+#: ../lib/modules/sambaSamAccount.inc:757
+#: ../lib/modules/sambaGroupMapping.inc:88
+#: ../lib/modules/sambaGroupMapping.inc:173
+#: ../lib/modules/sambaGroupMapping.inc:398
+msgid "No Samba 3 domains found in LDAP! Please create one first."
+msgstr "Samba 3グループがLDAPに存在しません。最初に一個作成してください。"
+
 #: ../templates/lists/listdomains.php:126
 #: ../templates/lists/listdomains.php:132
 #: ../templates/lists/listdomains.php:136
 msgid "No Samba domains found!"
 msgstr "Sambaドメインが見つかりません!"
 
-#: ../lib/modules/posixAccount.inc:415 ../lib/modules/posixAccount.inc:629
-#: ../lib/modules/posixAccount.inc:906
+#: ../lib/modules/posixAccount.inc:415 ../lib/modules/posixAccount.inc:620
+#: ../lib/modules/posixAccount.inc:897
 msgid "No Unix groups found in LDAP! Please create one first."
 msgstr "unixグループがLDAPに存在しません。最初に一個作成してください。"
 
@@ -2816,7 +2836,7 @@ msgstr "OUエディタ"
 msgid "Object classes"
 msgstr "オブジェクトクラス"
 
-#: ../lib/modules.inc:1085 ../lib/modules.inc:1123 ../lib/modules.inc:1241
+#: ../lib/modules.inc:1085 ../lib/modules.inc:1123 ../lib/modules.inc:1220
 #, php-format
 msgid "ObjectClass %s required but not defined in LDAP."
 msgstr "必須オブジェクトクラス %s がLDAPに定義されていません。"
@@ -2875,7 +2895,7 @@ msgstr "PDF構成"
 msgid "PDF-structure name not valid"
 msgstr "PDF構成名が正しくありません"
 
-#: ../lib/modules/sambaSamAccount.inc:237
+#: ../lib/modules/sambaSamAccount.inc:254
 msgid "Pacific Time (US & Canada)"
 msgstr ""
 
@@ -2887,20 +2907,20 @@ msgstr "ページ設定"
 msgid "Parent to"
 msgstr "派生先"
 
-#: ../templates/login.php:185 ../lib/modules/posixGroup.inc:182
+#: ../templates/login.php:190 ../lib/modules/posixGroup.inc:182
 #: ../lib/modules/posixGroup.inc:192 ../lib/modules/posixGroup.inc:276
 #: ../lib/modules/posixGroup.inc:468 ../lib/modules/posixGroup.inc:469
 #: ../lib/modules/posixGroup.inc:470 ../lib/modules/sambaAccount.inc:74
 #: ../lib/modules/sambaAccount.inc:75 ../lib/modules/sambaAccount.inc:219
-#: ../lib/modules/sambaSamAccount.inc:70 ../lib/modules/sambaSamAccount.inc:71
-#: ../lib/modules/sambaSamAccount.inc:270 ../lib/modules/posixAccount.inc:78
+#: ../lib/modules/sambaSamAccount.inc:87 ../lib/modules/sambaSamAccount.inc:88
+#: ../lib/modules/sambaSamAccount.inc:290 ../lib/modules/posixAccount.inc:78
 #: ../lib/modules/posixAccount.inc:79 ../lib/modules/posixAccount.inc:80
 #: ../lib/modules/posixAccount.inc:229 ../lib/modules/posixAccount.inc:357
-#: ../lib/modules/posixAccount.inc:951 ../lib/modules/posixAccount.inc:961
-#: ../lib/modules/posixAccount.inc:1052 ../lib/modules/posixAccount.inc:1163
+#: ../lib/modules/posixAccount.inc:942 ../lib/modules/posixAccount.inc:952
+#: ../lib/modules/posixAccount.inc:1043 ../lib/modules/posixAccount.inc:1154
 #: ../lib/modules/inetOrgPerson.inc:74 ../lib/modules/inetOrgPerson.inc:75
-#: ../lib/modules/inetOrgPerson.inc:338 ../lib/modules/inetOrgPerson.inc:548
-#: ../lib/modules/inetOrgPerson.inc:559 ../lib/modules/inetOrgPerson.inc:669
+#: ../lib/modules/inetOrgPerson.inc:338 ../lib/modules/inetOrgPerson.inc:539
+#: ../lib/modules/inetOrgPerson.inc:550 ../lib/modules/inetOrgPerson.inc:660
 msgid "Password"
 msgstr "パスワード"
 
@@ -2909,8 +2929,8 @@ msgid "Password changed!"
 msgstr "パスワードが変更されました!"
 
 #: ../lib/modules/posixGroup.inc:469 ../lib/modules/sambaAccount.inc:75
-#: ../lib/modules/sambaAccount.inc:76 ../lib/modules/sambaSamAccount.inc:71
-#: ../lib/modules/sambaSamAccount.inc:72 ../lib/modules/posixAccount.inc:79
+#: ../lib/modules/sambaAccount.inc:76 ../lib/modules/sambaSamAccount.inc:88
+#: ../lib/modules/sambaSamAccount.inc:89 ../lib/modules/posixAccount.inc:79
 #: ../lib/modules/posixAccount.inc:81 ../lib/modules/inetOrgPerson.inc:75
 #: ../lib/modules/inetOrgPerson.inc:76
 msgid ""
@@ -2922,17 +2942,17 @@ msgstr ""
 
 #: ../lib/modules/sambaAccount.inc:126 ../lib/modules/sambaAccount.inc:241
 #: ../lib/modules/sambaAccount.inc:355 ../lib/modules/sambaAccount.inc:358
-#: ../lib/modules/sambaAccount.inc:728 ../lib/modules/sambaSamAccount.inc:179
-#: ../lib/modules/sambaSamAccount.inc:182
-#: ../lib/modules/sambaSamAccount.inc:292
-#: ../lib/modules/sambaSamAccount.inc:782
-#: ../lib/modules/sambaSamAccount.inc:1010
+#: ../lib/modules/sambaAccount.inc:724 ../lib/modules/sambaSamAccount.inc:196
+#: ../lib/modules/sambaSamAccount.inc:199
+#: ../lib/modules/sambaSamAccount.inc:312
+#: ../lib/modules/sambaSamAccount.inc:803
+#: ../lib/modules/sambaSamAccount.inc:1061
 msgid "Password does not expire"
 msgstr "無期限のパスワード"
 
 #: ../lib/modules/shadowAccount.inc:49 ../lib/modules/shadowAccount.inc:84
 #: ../lib/modules/shadowAccount.inc:153 ../lib/modules/shadowAccount.inc:179
-#: ../lib/modules/shadowAccount.inc:285 ../lib/modules/shadowAccount.inc:319
+#: ../lib/modules/shadowAccount.inc:276 ../lib/modules/shadowAccount.inc:310
 msgid "Password expiration"
 msgstr "パスワード有効期限"
 
@@ -2975,7 +2995,7 @@ msgstr "パスワード寿命の最小値は自然数でなければなりませ
 
 #: ../lib/modules/shadowAccount.inc:51 ../lib/modules/shadowAccount.inc:79
 #: ../lib/modules/shadowAccount.inc:149 ../lib/modules/shadowAccount.inc:173
-#: ../lib/modules/shadowAccount.inc:282 ../lib/modules/shadowAccount.inc:317
+#: ../lib/modules/shadowAccount.inc:273 ../lib/modules/shadowAccount.inc:308
 msgid "Password warning"
 msgstr "パスワード警告"
 
@@ -2987,7 +3007,7 @@ msgstr "パスワード警告期限は自然数でなければなりません。
 msgid "Passwords are different!"
 msgstr "パスワードが異なっています!"
 
-#: ../lib/modules/sambaAccount.inc:379 ../lib/modules/sambaSamAccount.inc:203
+#: ../lib/modules/sambaAccount.inc:379 ../lib/modules/sambaSamAccount.inc:220
 msgid ""
 "Path of the user profile. Can be a local absolute path or a UNC-path (\\"
 "\\server\\share). $user and $group are replaced with user and group name."
@@ -3011,7 +3031,7 @@ msgstr ""
 msgid "Please confirm:"
 msgstr "確認してください:"
 
-#: ../lib/modules/sambaSamAccount.inc:75
+#: ../lib/modules/sambaSamAccount.inc:92
 msgid "Please enter a RID number or the name of a special account!"
 msgstr "特殊アカウントのRID番号または名前を入力してください。"
 
@@ -3024,13 +3044,14 @@ msgstr ""
 "入力して下さい。空のままでも構いません。"
 
 #: ../lib/modules/sambaAccount.inc:70 ../lib/modules/sambaAccount.inc:71
-#: ../lib/modules/sambaSamAccount.inc:68 ../lib/modules/sambaSamAccount.inc:69
+#: ../lib/modules/sambaSamAccount.inc:85 ../lib/modules/sambaSamAccount.inc:86
 msgid "Please enter a comma separated list of host names!"
 msgstr "カンマで区切られたホスト名を入力してください!"
 
-#: ../lib/modules/kolabUser.inc:298 ../lib/modules/kolabUser.inc:301
+#: ../lib/modules/kolabUser.inc:291 ../lib/modules/kolabUser.inc:294
+#, php-format
 msgid "Please enter a user password on this page: %s"
-msgstr "このページに対するパスワードを入力してください: %"
+msgstr "このページに対するパスワードを入力してください: %s"
 
 #: ../lib/modules/posixAccount.inc:98 ../lib/modules/posixAccount.inc:99
 #: ../lib/modules/inetOrgPerson.inc:68 ../lib/modules/inetOrgPerson.inc:69
@@ -3038,16 +3059,18 @@ msgid "Please enter a valid common name!"
 msgstr "正しい氏名を入力してください!"
 
 #: ../lib/modules/sambaAccount.inc:85 ../lib/modules/sambaAccount.inc:86
-#: ../lib/modules/sambaSamAccount.inc:83 ../lib/modules/sambaSamAccount.inc:84
+#: ../lib/modules/sambaSamAccount.inc:100
+#: ../lib/modules/sambaSamAccount.inc:101
+#: ../lib/modules/sambaSamAccount.inc:102
 msgid "Please enter a valid date in format DD-MM-YYYY."
 msgstr "正しい日付をDD-MM-YYYYの形式で入力してください!"
 
 #: ../lib/modules/sambaAccount.inc:79 ../lib/modules/sambaAccount.inc:80
-#: ../lib/modules/sambaSamAccount.inc:77 ../lib/modules/sambaSamAccount.inc:78
+#: ../lib/modules/sambaSamAccount.inc:94 ../lib/modules/sambaSamAccount.inc:95
 msgid "Please enter a valid display name!"
 msgstr "正しい表示名(display name)を入力してください!"
 
-#: ../lib/modules/sambaAccount.inc:87 ../lib/modules/sambaSamAccount.inc:85
+#: ../lib/modules/sambaAccount.inc:87 ../lib/modules/sambaSamAccount.inc:103
 msgid "Please enter a valid drive letter."
 msgstr "正しいドライブ文字を入力してください!"
 
@@ -3067,7 +3090,7 @@ msgstr "正しいファクス番号を入力してください!"
 msgid "Please enter a valid group RID."
 msgstr "正しいグループRIDを入力してください!"
 
-#: ../lib/modules/sambaSamAccount.inc:89
+#: ../lib/modules/sambaSamAccount.inc:107
 msgid "Please enter a valid group name!"
 msgstr "正しいグループ名を入力してください!"
 
@@ -3099,14 +3122,15 @@ msgstr "正しい町名(street name)を入力してください!"
 msgid "Please enter a valid telephone number!"
 msgstr "正しい電話番号を入力してください!"
 
-#: ../lib/modules/posixGroup.inc:608 ../lib/modules/posixAccount.inc:705
+#: ../lib/modules/posixGroup.inc:598 ../lib/modules/posixAccount.inc:696
 #, php-format
 msgid "Please enter a value between %s and %s!"
 msgstr "%s と %s の間の値を入力してください!"
 
-#: ../lib/modules/kolabUser.inc:305
+#: ../lib/modules/kolabUser.inc:298
+#, php-format
 msgid "Please enter an email address on this page: %s"
-msgstr "このページに対するメールアドレスを入力してください。"
+msgstr "このページに対するメールアドレスを入力してください。: %s"
 
 #: ../templates/config/conflogin.php:98
 msgid "Please enter password to change preferences:"
@@ -3173,7 +3197,7 @@ msgid "Please enter the same password in both password fields."
 msgstr "両方のパスワードフィールドに同じパスワードを入力してください。"
 
 #: ../lib/modules/posixGroup.inc:468 ../lib/modules/sambaAccount.inc:74
-#: ../lib/modules/sambaSamAccount.inc:70
+#: ../lib/modules/sambaSamAccount.inc:87
 msgid "Please enter the same password in both password-fields."
 msgstr "2つのパスワードフィールドに同じパスワードを入力してください。"
 
@@ -3205,7 +3229,7 @@ msgstr "ページを選択:"
 msgid "Please select your account type:"
 msgstr "アカウントタイプを選択してください:"
 
-#: ../templates/login.php:158
+#: ../templates/login.php:163
 msgid "Please select your user name and enter your password to log in"
 msgstr "ユーザ名を選んでからパスワードを入力してログインしてください。"
 
@@ -3226,20 +3250,20 @@ msgstr "ポリシーリストの形式が不正です!"
 msgid "Position"
 msgstr "位置"
 
-#: ../templates/masscreate.php:163 ../templates/masscreate.php:301
-#: ../lib/modules/sambaGroupMapping.inc:358
+#: ../templates/masscreate.php:163 ../templates/masscreate.php:302
+#: ../lib/modules/sambaGroupMapping.inc:367
 msgid "Possible values"
 msgstr "候補となる値"
 
 #: ../lib/modules/inetOrgPerson.inc:182 ../lib/modules/inetOrgPerson.inc:298
-#: ../lib/modules/inetOrgPerson.inc:299 ../lib/modules/inetOrgPerson.inc:570
-#: ../lib/modules/inetOrgPerson.inc:698
+#: ../lib/modules/inetOrgPerson.inc:299 ../lib/modules/inetOrgPerson.inc:561
+#: ../lib/modules/inetOrgPerson.inc:689
 msgid "Post office box"
 msgstr ""
 
 #: ../lib/modules/inetOrgPerson.inc:60 ../lib/modules/inetOrgPerson.inc:176
-#: ../lib/modules/inetOrgPerson.inc:306 ../lib/modules/inetOrgPerson.inc:578
-#: ../lib/modules/inetOrgPerson.inc:700
+#: ../lib/modules/inetOrgPerson.inc:306 ../lib/modules/inetOrgPerson.inc:569
+#: ../lib/modules/inetOrgPerson.inc:691
 msgid "Postal address"
 msgstr "住所"
 
@@ -3249,7 +3273,7 @@ msgstr "住所、区市町村"
 
 #: ../lib/modules/inetOrgPerson.inc:62 ../lib/modules/inetOrgPerson.inc:170
 #: ../lib/modules/inetOrgPerson.inc:302 ../lib/modules/inetOrgPerson.inc:303
-#: ../lib/modules/inetOrgPerson.inc:574 ../lib/modules/inetOrgPerson.inc:699
+#: ../lib/modules/inetOrgPerson.inc:565 ../lib/modules/inetOrgPerson.inc:690
 msgid "Postal code"
 msgstr "郵便番号"
 
@@ -3264,8 +3288,8 @@ msgstr "社長"
 #: ../lib/modules/posixGroup.inc:484 ../lib/modules/posixAccount.inc:201
 #: ../lib/modules/posixAccount.inc:268 ../lib/modules/posixAccount.inc:324
 #: ../lib/modules/posixAccount.inc:349 ../lib/modules/posixAccount.inc:395
-#: ../lib/modules/posixAccount.inc:930 ../lib/modules/posixAccount.inc:1078
-#: ../lib/modules/posixAccount.inc:1106 ../lib/modules/posixAccount.inc:1160
+#: ../lib/modules/posixAccount.inc:921 ../lib/modules/posixAccount.inc:1069
+#: ../lib/modules/posixAccount.inc:1097 ../lib/modules/posixAccount.inc:1151
 msgid "Primary group"
 msgstr "プライマリグループ"
 
@@ -3307,19 +3331,19 @@ msgstr "プロファイルパスワードが異なるか、または未入力で
 
 #: ../lib/modules/sambaAccount.inc:64 ../lib/modules/sambaAccount.inc:65
 #: ../lib/modules/sambaAccount.inc:152 ../lib/modules/sambaAccount.inc:283
-#: ../lib/modules/sambaAccount.inc:378 ../lib/modules/sambaAccount.inc:760
-#: ../lib/modules/sambaAccount.inc:856 ../lib/modules/sambaSamAccount.inc:62
-#: ../lib/modules/sambaSamAccount.inc:63
-#: ../lib/modules/sambaSamAccount.inc:202
-#: ../lib/modules/sambaSamAccount.inc:334
-#: ../lib/modules/sambaSamAccount.inc:814
-#: ../lib/modules/sambaSamAccount.inc:1036
-#: ../lib/modules/sambaSamAccount.inc:1135
+#: ../lib/modules/sambaAccount.inc:378 ../lib/modules/sambaAccount.inc:756
+#: ../lib/modules/sambaAccount.inc:852 ../lib/modules/sambaSamAccount.inc:79
+#: ../lib/modules/sambaSamAccount.inc:80
+#: ../lib/modules/sambaSamAccount.inc:219
+#: ../lib/modules/sambaSamAccount.inc:361
+#: ../lib/modules/sambaSamAccount.inc:849
+#: ../lib/modules/sambaSamAccount.inc:1092
+#: ../lib/modules/sambaSamAccount.inc:1204
 msgid "Profile path"
 msgstr "プロファイルパス"
 
-#: ../lib/modules/sambaAccount.inc:64 ../lib/modules/sambaSamAccount.inc:62
-#: ../lib/modules/sambaSamAccount.inc:64
+#: ../lib/modules/sambaAccount.inc:64 ../lib/modules/sambaSamAccount.inc:79
+#: ../lib/modules/sambaSamAccount.inc:81
 msgid "Profile path is invalid!"
 msgstr "プロファイルパスが正しくありません!"
 
@@ -3331,7 +3355,7 @@ msgstr "プロファイルがセーブされました。"
 msgid "Quota"
 msgstr ""
 
-#: ../lib/modules/quota.inc:500
+#: ../lib/modules/quota.inc:486
 msgid "Quota for:"
 msgstr "Quotaの対象:"
 
@@ -3360,12 +3384,12 @@ msgstr "このOUを新規作成しますか?"
 msgid "Really delete attribute?"
 msgstr "この属性を削除しますか?"
 
-#: ../lib/modules/nisMailAlias.inc:66 ../lib/modules/nisMailAlias.inc:178
+#: ../lib/modules/nisMailAlias.inc:66 ../lib/modules/nisMailAlias.inc:171
 msgid "Recipient"
 msgstr "受信者"
 
 #: ../lib/modules/nisMailAlias.inc:70 ../lib/modules/nisMailAlias.inc:84
-#: ../lib/modules/nisMailAlias.inc:331
+#: ../lib/modules/nisMailAlias.inc:324
 msgid "Recipient list"
 msgstr "受信者リスト"
 
@@ -3399,11 +3423,11 @@ msgstr "競合の場合に拒否"
 msgid "Relative distinguished name"
 msgstr "相対識別名"
 
-#: ../templates/pdfedit/pdfpage.php:474 ../lib/modules/ieee802device.inc:146
-#: ../lib/modules/kolabUser.inc:366 ../lib/modules/kolabUser.inc:385
-#: ../lib/modules/kolabUser.inc:411
-#: ../lib/modules/inetLocalMailRecipient.inc:208
-#: ../lib/modules/nisMailAlias.inc:180
+#: ../templates/pdfedit/pdfpage.php:474 ../lib/modules/ieee802device.inc:139
+#: ../lib/modules/kolabUser.inc:359 ../lib/modules/kolabUser.inc:378
+#: ../lib/modules/kolabUser.inc:404
+#: ../lib/modules/inetLocalMailRecipient.inc:201
+#: ../lib/modules/nisMailAlias.inc:173
 msgid "Remove"
 msgstr "削除"
 
@@ -3416,13 +3440,13 @@ msgid "Renamed profile."
 msgstr "プロファイル名が変更されました。"
 
 #: ../lib/modules/posixGroup.inc:186 ../lib/modules/posixGroup.inc:280
-#: ../lib/modules/sambaAccount.inc:717 ../lib/modules/sambaSamAccount.inc:771
-#: ../lib/modules/posixAccount.inc:955 ../lib/modules/posixAccount.inc:1056
-#: ../lib/modules/inetOrgPerson.inc:552 ../lib/modules/inetOrgPerson.inc:673
+#: ../lib/modules/sambaAccount.inc:713 ../lib/modules/sambaSamAccount.inc:793
+#: ../lib/modules/posixAccount.inc:946 ../lib/modules/posixAccount.inc:1047
+#: ../lib/modules/inetOrgPerson.inc:543 ../lib/modules/inetOrgPerson.inc:664
 msgid "Repeat password"
 msgstr "パスワード再入力"
 
-#: ../lib/modules/posixAccount.inc:72 ../lib/modules/posixAccount.inc:762
+#: ../lib/modules/posixAccount.inc:72 ../lib/modules/posixAccount.inc:753
 msgid "Replaced $user or $group in homedir."
 msgstr "$user または $group をホームディレクトリに置き換えました。"
 
@@ -3445,16 +3469,16 @@ msgstr "リセット"
 msgid "Reset changes"
 msgstr "変更をリセット"
 
-#: ../lib/modules/sambaAccount.inc:340 ../lib/modules/sambaAccount.inc:807
-#: ../lib/modules/sambaSamAccount.inc:164
-#: ../lib/modules/sambaSamAccount.inc:869
+#: ../lib/modules/sambaAccount.inc:340 ../lib/modules/sambaAccount.inc:803
+#: ../lib/modules/sambaSamAccount.inc:181
+#: ../lib/modules/sambaSamAccount.inc:906
 msgid "Reset password"
 msgstr "パスワードをリセット"
 
 #: ../lib/modules/inetLocalMailRecipient.inc:56
 #: ../lib/modules/inetLocalMailRecipient.inc:91
-#: ../lib/modules/inetLocalMailRecipient.inc:195
-#: ../lib/modules/inetLocalMailRecipient.inc:363
+#: ../lib/modules/inetLocalMailRecipient.inc:188
+#: ../lib/modules/inetLocalMailRecipient.inc:356
 msgid "Routing address"
 msgstr "転送アドレス"
 
@@ -3462,8 +3486,8 @@ msgstr "転送アドレス"
 msgid "Samba 2"
 msgstr "Samba 2"
 
-#: ../lib/modules/sambaSamAccount.inc:106
-#: ../lib/modules/sambaGroupMapping.inc:223
+#: ../lib/modules/sambaSamAccount.inc:124
+#: ../lib/modules/sambaGroupMapping.inc:232
 msgid "Samba 3"
 msgstr "Samba 3"
 
@@ -3479,52 +3503,52 @@ msgstr "Samba 3 ドメイン"
 msgid "Samba Hosts"
 msgstr "Samba ホスト"
 
-#: ../lib/modules/sambaSamAccount.inc:223
-#: ../lib/modules/sambaSamAccount.inc:227
-#: ../lib/modules/sambaSamAccount.inc:359
-#: ../lib/modules/sambaSamAccount.inc:383
+#: ../lib/modules/sambaSamAccount.inc:240
+#: ../lib/modules/sambaSamAccount.inc:244
+#: ../lib/modules/sambaSamAccount.inc:386
+#: ../lib/modules/sambaSamAccount.inc:410
 msgid "Samba RID"
 msgstr "Samba RID"
 
-#: ../lib/modules/sambaGroupMapping.inc:257
-#: ../lib/modules/sambaGroupMapping.inc:282
+#: ../lib/modules/sambaGroupMapping.inc:266
+#: ../lib/modules/sambaGroupMapping.inc:291
 msgid "Samba RID number"
 msgstr "Samba RID番号"
 
-#: ../lib/modules/sambaGroupMapping.inc:251
+#: ../lib/modules/sambaGroupMapping.inc:260
 msgid "Samba display name"
 msgstr "Samba表示名"
 
-#: ../lib/modules/sambaGroupMapping.inc:243
+#: ../lib/modules/sambaGroupMapping.inc:252
 msgid "Samba domain name"
 msgstr "Sambaドメイン名"
 
-#: ../lib/modules/sambaGroupMapping.inc:263
-#: ../lib/modules/sambaGroupMapping.inc:290
-#: ../lib/modules/sambaGroupMapping.inc:307
+#: ../lib/modules/sambaGroupMapping.inc:272
+#: ../lib/modules/sambaGroupMapping.inc:299
+#: ../lib/modules/sambaGroupMapping.inc:316
 msgid "Samba group type"
 msgstr "Sambaグループタイプ"
 
-#: ../lib/modules/sambaAccount.inc:337 ../lib/modules/sambaAccount.inc:714
-#: ../lib/modules/sambaSamAccount.inc:161
-#: ../lib/modules/sambaSamAccount.inc:769
+#: ../lib/modules/sambaAccount.inc:337 ../lib/modules/sambaAccount.inc:710
+#: ../lib/modules/sambaSamAccount.inc:178
+#: ../lib/modules/sambaSamAccount.inc:789
 msgid "Samba password"
 msgstr "Sambaパスワード"
 
 #: ../lib/modules/sambaAccount.inc:70 ../lib/modules/sambaAccount.inc:164
 #: ../lib/modules/sambaAccount.inc:295 ../lib/modules/sambaAccount.inc:384
-#: ../lib/modules/sambaAccount.inc:387 ../lib/modules/sambaAccount.inc:766
-#: ../lib/modules/sambaAccount.inc:857 ../lib/modules/sambaSamAccount.inc:68
-#: ../lib/modules/sambaSamAccount.inc:208
-#: ../lib/modules/sambaSamAccount.inc:211
-#: ../lib/modules/sambaSamAccount.inc:346
-#: ../lib/modules/sambaSamAccount.inc:820
-#: ../lib/modules/sambaSamAccount.inc:1048
-#: ../lib/modules/sambaSamAccount.inc:1136
+#: ../lib/modules/sambaAccount.inc:387 ../lib/modules/sambaAccount.inc:762
+#: ../lib/modules/sambaAccount.inc:853 ../lib/modules/sambaSamAccount.inc:85
+#: ../lib/modules/sambaSamAccount.inc:225
+#: ../lib/modules/sambaSamAccount.inc:228
+#: ../lib/modules/sambaSamAccount.inc:373
+#: ../lib/modules/sambaSamAccount.inc:855
+#: ../lib/modules/sambaSamAccount.inc:1104
+#: ../lib/modules/sambaSamAccount.inc:1205
 msgid "Samba workstations"
 msgstr "Samba ワークステーション"
 
-#: ../lib/modules/sambaSamAccount.inc:917
+#: ../lib/modules/sambaSamAccount.inc:954
 msgid "Saturday"
 msgstr "土曜日"
 
@@ -3618,7 +3642,7 @@ msgstr "生成処理に対するテンプレートを選んでください"
 msgid "Select all"
 msgstr "すべてを選択"
 
-#: ../lib/modules/posixAccount.inc:1022
+#: ../lib/modules/posixAccount.inc:1013
 msgid "Selected groups"
 msgstr "選択されたグループ"
 
@@ -3647,8 +3671,8 @@ msgstr "外部スクリプトのサーバ"
 msgid "Server settings"
 msgstr "サーバ設定"
 
-#: ../lib/modules/posixGroup.inc:196 ../lib/modules/posixAccount.inc:965
-#: ../lib/modules/posixAccount.inc:1095
+#: ../lib/modules/posixGroup.inc:196 ../lib/modules/posixAccount.inc:956
+#: ../lib/modules/posixAccount.inc:1086
 msgid "Set no password"
 msgstr "パスワードなし"
 
@@ -3676,12 +3700,12 @@ msgstr "内部属性を表示する"
 msgid "Single valued"
 msgstr "単一の値"
 
-#: ../lib/modules/quota.inc:456
+#: ../lib/modules/quota.inc:439
 msgid "Soft block"
 msgstr "ソフトブロック"
 
-#: ../lib/modules/quota.inc:94 ../lib/modules/quota.inc:321
-#: ../lib/modules/quota.inc:378
+#: ../lib/modules/quota.inc:94 ../lib/modules/quota.inc:304
+#: ../lib/modules/quota.inc:361
 msgid "Soft block limit"
 msgstr "ソフトブロック制限"
 
@@ -3689,7 +3713,7 @@ msgstr "ソフトブロック制限"
 msgid "Soft block limit."
 msgstr "ソフトブロック制限"
 
-#: ../lib/modules/quota.inc:458
+#: ../lib/modules/quota.inc:441
 msgid "Soft inode"
 msgstr "ソフトinode"
 
@@ -3697,8 +3721,8 @@ msgstr "ソフトinode"
 msgid "Soft inode (files) limit."
 msgstr "ソフトinode(ファイル)制限。"
 
-#: ../lib/modules/quota.inc:110 ../lib/modules/quota.inc:325
-#: ../lib/modules/quota.inc:380
+#: ../lib/modules/quota.inc:110 ../lib/modules/quota.inc:308
+#: ../lib/modules/quota.inc:363
 msgid "Soft inode limit"
 msgstr "ソフトinode制限"
 
@@ -3727,10 +3751,10 @@ msgstr "このヘルプ番号({bold}%d{endbold})は無効です。"
 
 #: ../lib/modules/sambaAccount.inc:77 ../lib/modules/sambaAccount.inc:78
 #: ../lib/modules/sambaAccount.inc:308 ../lib/modules/sambaAccount.inc:396
-#: ../lib/modules/sambaAccount.inc:798 ../lib/modules/sambaSamAccount.inc:73
-#: ../lib/modules/sambaSamAccount.inc:74
-#: ../lib/modules/sambaSamAccount.inc:220
-#: ../lib/modules/sambaSamAccount.inc:853
+#: ../lib/modules/sambaAccount.inc:794 ../lib/modules/sambaSamAccount.inc:90
+#: ../lib/modules/sambaSamAccount.inc:91
+#: ../lib/modules/sambaSamAccount.inc:237
+#: ../lib/modules/sambaSamAccount.inc:890
 msgid "Special user"
 msgstr "特殊ユーザ"
 
@@ -3751,7 +3775,7 @@ msgstr "Step 2 of 2: 属性と値の記入"
 msgid "Steve"
 msgstr "スティーブ"
 
-#: ../lib/modules/sambaAccount.inc:215 ../lib/modules/sambaSamAccount.inc:266
+#: ../lib/modules/sambaAccount.inc:215 ../lib/modules/sambaSamAccount.inc:286
 #: ../lib/modules/posixAccount.inc:191 ../lib/modules/inetOrgPerson.inc:219
 msgid "Steve Miller"
 msgstr "スティーブ ミラー"
@@ -3762,7 +3786,7 @@ msgstr "スティーブ ミラー, 2-14号室, 123-123-1234,123-123-1234"
 
 #: ../lib/modules/inetOrgPerson.inc:58 ../lib/modules/inetOrgPerson.inc:164
 #: ../lib/modules/inetOrgPerson.inc:294 ../lib/modules/inetOrgPerson.inc:295
-#: ../lib/modules/inetOrgPerson.inc:566 ../lib/modules/inetOrgPerson.inc:697
+#: ../lib/modules/inetOrgPerson.inc:557 ../lib/modules/inetOrgPerson.inc:688
 msgid "Street"
 msgstr "町名"
 
@@ -3784,9 +3808,9 @@ msgstr "Sub (サブツリー全体)"
 #: ../templates/pdfedit/pdfpage.php:735 ../templates/pdfedit/pdfmain.php:152
 #: ../templates/profedit/profiledelete.php:84
 #: ../templates/profedit/profilemain.php:156 ../lib/modules/posixGroup.inc:285
-#: ../lib/modules/sambaAccount.inc:808 ../lib/modules/sambaSamAccount.inc:870
-#: ../lib/modules/sambaSamAccount.inc:976 ../lib/modules/posixAccount.inc:1061
-#: ../lib/modules/inetOrgPerson.inc:678
+#: ../lib/modules/sambaAccount.inc:804 ../lib/modules/sambaSamAccount.inc:907
+#: ../lib/modules/sambaSamAccount.inc:1016
+#: ../lib/modules/posixAccount.inc:1052 ../lib/modules/inetOrgPerson.inc:669
 msgid "Submit"
 msgstr "更新(Submit)"
 
@@ -3803,7 +3827,7 @@ msgstr "成功"
 msgid "Suffix"
 msgstr "サフィックス"
 
-#: ../lib/modules/sambaSamAccount.inc:917
+#: ../lib/modules/sambaSamAccount.inc:954
 msgid "Sunday"
 msgstr "日曜日"
 
@@ -3825,7 +3849,7 @@ msgstr "招待ポリシーのターゲット正しくありません。"
 
 #: ../lib/modules/inetOrgPerson.inc:50 ../lib/modules/inetOrgPerson.inc:188
 #: ../lib/modules/inetOrgPerson.inc:310 ../lib/modules/inetOrgPerson.inc:311
-#: ../lib/modules/inetOrgPerson.inc:582 ../lib/modules/inetOrgPerson.inc:701
+#: ../lib/modules/inetOrgPerson.inc:573 ../lib/modules/inetOrgPerson.inc:692
 msgid "Telephone number"
 msgstr "電話番号"
 
@@ -3890,7 +3914,8 @@ msgid ""
 "The following suffix(es) are missing in LDAP. LAM can create them for you."
 msgstr "以下のサフィックスはLDAPにありません。LAM はこれらを作成できます。"
 
-#: ../lib/modules/sambaSamAccount.inc:87 ../lib/modules/sambaSamAccount.inc:88
+#: ../lib/modules/sambaSamAccount.inc:105
+#: ../lib/modules/sambaSamAccount.inc:106
 msgid "The format of the logon hours field is invalid!"
 msgstr "ログオン時間フィールドの形式が正しくありません!"
 
@@ -3956,15 +3981,15 @@ msgstr "設定すべき新しい必須属性があります。"
 msgid "There are still users who have this group as their primary group."
 msgstr "このグループをプライマリグループとするユーザがまだ存在します。"
 
-#: ../lib/modules/sambaAccount.inc:77 ../lib/modules/sambaSamAccount.inc:73
+#: ../lib/modules/sambaAccount.inc:77 ../lib/modules/sambaSamAccount.inc:90
 msgid "There can be only one administrator per domain."
 msgstr "管理者は、ドメイン毎に一つだけ存在可能です。"
 
-#: ../lib/modules/sambaGroupMapping.inc:356
+#: ../lib/modules/sambaGroupMapping.inc:365
 msgid "There can be only one group of this type."
 msgstr "このタイプのグループを一つだけ指定できます。"
 
-#: ../lib/modules/sambaAccount.inc:78 ../lib/modules/sambaSamAccount.inc:74
+#: ../lib/modules/sambaAccount.inc:78 ../lib/modules/sambaSamAccount.inc:91
 msgid "There can be only one guest per domain."
 msgstr "ドメイン毎にゲストアカウントを一個だけ指定できます。"
 
@@ -4013,15 +4038,17 @@ msgstr ""
 msgid "This Samba 3 domain is already present!"
 msgstr "このSamba 3 ドメインはすでに存在しています!"
 
-#: ../lib/modules/kolabUser.inc:311
+#: ../lib/modules/kolabUser.inc:304
 msgid "This account is marked for deletion."
 msgstr "このアカウントを削除対象としてマークしました。"
 
-#: ../lib/modules/sambaSamAccount.inc:221
+#: ../lib/modules/sambaSamAccount.inc:238
 msgid ""
 "This allows you to define this account as a special user like administrator "
 "or guest."
-msgstr "このアカウントをadministratorやguest等の特殊ユーザとして定義する事を可能にします。"
+msgstr ""
+"このアカウントをadministratorやguest等の特殊ユーザとして定義する事を可能にし"
+"ます。"
 
 #: ../help/help.inc:120
 msgid "This changes the password of the selected profile."
@@ -4105,11 +4132,11 @@ msgstr ""
 msgid "This is not a valid DN!"
 msgstr "無効なDNです!"
 
-#: ../lib/modules/sambaSamAccount.inc:76
+#: ../lib/modules/sambaSamAccount.inc:93
 msgid "This is not a valid RID number!"
 msgstr "無効なRID番号です!"
 
-#: ../lib/modules/sambaGroupMapping.inc:358
+#: ../lib/modules/sambaGroupMapping.inc:367
 msgid "This is not a valid Samba 3 group type!"
 msgstr "不正なSamba 3グループタイプです!"
 
@@ -4139,7 +4166,7 @@ msgstr "ネットワークカードデバイスのMACアドレスです(例 0:01
 msgid "This is the RID of the user's primary Windows group."
 msgstr "ユーザのプライマリWindowsグループのRIDです。"
 
-#: ../lib/modules/sambaSamAccount.inc:218
+#: ../lib/modules/sambaSamAccount.inc:235
 msgid "This is the SID of the user's primary Windows group."
 msgstr "ユーザのプライマリWindowsグループのSIDです。"
 
@@ -4151,15 +4178,19 @@ msgstr ""
 "ホームディレクトリを作成し、quotaを設定するための外部スクリプトの絶対パスで"
 "す。"
 
-#: ../lib/modules/sambaAccount.inc:338 ../lib/modules/sambaSamAccount.inc:162
+#: ../lib/modules/sambaAccount.inc:338 ../lib/modules/sambaSamAccount.inc:179
 msgid "This is the account's Windows password."
 msgstr "アカウントのWindowsパスワードです。"
 
-#: ../lib/modules/sambaAccount.inc:335 ../lib/modules/sambaSamAccount.inc:159
+#: ../lib/modules/sambaAccount.inc:335 ../lib/modules/sambaSamAccount.inc:176
 msgid "This is the account's full name on Windows systems."
 msgstr "アカウントのWindowsシステム上のフルネームです。"
 
-#: ../lib/modules/sambaGroupMapping.inc:275
+#: ../lib/modules/sambaSamAccount.inc:268 ../lib/modules/shadowAccount.inc:166
+msgid "This is the date when the account will expire. Format: DD-MM-YYYY"
+msgstr "アカウントが失効する日。形式は: DD-MM-YYYY"
+
+#: ../lib/modules/sambaGroupMapping.inc:284
 msgid "This is the group name which will be shown in Windows."
 msgstr "Windows上で表示されるグループ名です。"
 
@@ -4208,7 +4239,7 @@ msgstr ""
 "ユーザ/グループ/ホスト一覧に表示する行数です。もしもより多くのエントリがある"
 "ならば、リストは複数のページに分割されます。"
 
-#: ../lib/modules/sambaGroupMapping.inc:283
+#: ../lib/modules/sambaGroupMapping.inc:292
 msgid ""
 "This is the relative ID (similar to UID on Unix) for Windows accounts. If "
 "you leave this empty LAM will calculate the RID from the UID. This can be "
@@ -4218,7 +4249,7 @@ msgstr ""
 "合、LAMはUIDからRIDを算出します。数値または特殊グループ名のどちらかを指定でき"
 "ます。"
 
-#: ../lib/modules/sambaSamAccount.inc:224
+#: ../lib/modules/sambaSamAccount.inc:241
 msgid ""
 "This is the relative ID number for your Windows account. You can either "
 "enter a number or one of these special accounts: "
@@ -4226,7 +4257,7 @@ msgstr ""
 "あなたのWindowsアカウントに対する相対ID番号です。数字またはこれらの特殊アカウ"
 "ントのどれか一つを指定できます: "
 
-#: ../lib/modules/sambaSamAccount.inc:228
+#: ../lib/modules/sambaSamAccount.inc:245
 msgid ""
 "This is the relative ID number for your host account. If you leave this "
 "empty LAM will use: uidNumber*2 + sambaAlgorithmicRidBase."
@@ -4288,7 +4319,7 @@ msgstr ""
 "他のユーザが将来の予定をチェックする場合の時間的上限(日数)。未入力の場合はデ"
 "フォルト値(60日)がセットされます。"
 
-#: ../lib/modules/sambaSamAccount.inc:215
+#: ../lib/modules/sambaSamAccount.inc:232
 msgid "This is the user's primary Windows group."
 msgstr "ユーザのプライマリWindowsグループです。"
 
@@ -4300,12 +4331,12 @@ msgstr "ログインシェルが正しくありません!"
 msgid "This object class is obsolete."
 msgstr "このオブジェクトクラスは旧式です。"
 
-#: ../lib/modules/sambaSamAccount.inc:234
+#: ../lib/modules/sambaSamAccount.inc:251
 msgid "This option defines the allowed logon hours for this account."
 msgstr ""
 "このオプションは、このアカウントがログオンを許可される時間を定義します。"
 
-#: ../lib/modules/sambaSamAccount.inc:248
+#: ../lib/modules/sambaSamAccount.inc:265
 msgid ""
 "This option defines the allowed logon hours for this account. The format is "
 "the same as for the LDAP attribute. The 24*7 hours are represented as 168 "
@@ -4334,8 +4365,8 @@ msgstr "ユーザが見つかりません!"
 
 #: ../lib/modules/sambaAccount.inc:81 ../lib/modules/sambaAccount.inc:82
 #: ../lib/modules/sambaAccount.inc:83 ../lib/modules/sambaAccount.inc:84
-#: ../lib/modules/sambaSamAccount.inc:79 ../lib/modules/sambaSamAccount.inc:80
-#: ../lib/modules/sambaSamAccount.inc:81 ../lib/modules/sambaSamAccount.inc:82
+#: ../lib/modules/sambaSamAccount.inc:96 ../lib/modules/sambaSamAccount.inc:97
+#: ../lib/modules/sambaSamAccount.inc:98 ../lib/modules/sambaSamAccount.inc:99
 msgid "This value can only be \\\"true\\\" or \\\"false\\\"!"
 msgstr "この値は、\"true\"または\"false\"のいずれかでなくてはなりません。"
 
@@ -4361,7 +4392,7 @@ msgstr ""
 msgid "This will delete the selected profile."
 msgstr "選択されたプロファイルを削除します。"
 
-#: ../lib/modules/sambaAccount.inc:341 ../lib/modules/sambaSamAccount.inc:165
+#: ../lib/modules/sambaAccount.inc:341 ../lib/modules/sambaSamAccount.inc:182
 msgid "This will reset the host's password to a default value."
 msgstr "ホストのパスワードをデフォルト値にリセットします。"
 
@@ -4376,21 +4407,22 @@ msgstr ""
 #: ../lib/modules/posixAccount.inc:370
 msgid ""
 "This will set an invalid password which prevents logins with this account."
-msgstr "無効なパスワードを設定する事により、このアカウントでのログインを防止します。"
+msgstr ""
+"無効なパスワードを設定する事により、このアカウントでのログインを防止します。"
 
-#: ../lib/modules/sambaSamAccount.inc:916
+#: ../lib/modules/sambaSamAccount.inc:953
 msgid "Thursday"
 msgstr "木曜日"
 
-#: ../lib/modules/sambaSamAccount.inc:963
+#: ../lib/modules/sambaSamAccount.inc:1003
 msgid "Time"
 msgstr "時刻"
 
-#: ../lib/modules/sambaSamAccount.inc:980
+#: ../lib/modules/sambaSamAccount.inc:1020
 msgid "Time zone"
 msgstr "タイムゾーン"
 
-#: ../lib/modules/sambaSamAccount.inc:235
+#: ../lib/modules/sambaSamAccount.inc:252
 msgid "Time zones:"
 msgstr "タイムゾーン:"
 
@@ -4402,7 +4434,7 @@ msgstr ""
 "ログインを禁止するためには/bin/falseを使ってください。シェルの一覧は lam/"
 "config/shells から読み込まれます。"
 
-#: ../lib/modules/sambaSamAccount.inc:244
+#: ../lib/modules/sambaSamAccount.inc:261
 msgid "Tokyo, Seoul, Osaka, Yakutsk"
 msgstr "東京、ソウル、大阪、ヤクーツク"
 
@@ -4434,7 +4466,7 @@ msgstr "ツリーサフィックス"
 msgid "TreeSuffix is invalid!"
 msgstr "ツリーサフィックスが正しくありません!"
 
-#: ../lib/modules/sambaSamAccount.inc:916
+#: ../lib/modules/sambaSamAccount.inc:953
 msgid "Tuesday"
 msgstr "木曜日"
 
@@ -4459,7 +4491,7 @@ msgstr "UIDは数値で、設定ファイルで定義されたUIDの範囲内で
 #: ../lib/modules/posixAccount.inc:53 ../lib/modules/posixAccount.inc:195
 #: ../lib/modules/posixAccount.inc:262 ../lib/modules/posixAccount.inc:308
 #: ../lib/modules/posixAccount.inc:312 ../lib/modules/posixAccount.inc:320
-#: ../lib/modules/posixAccount.inc:920 ../lib/modules/posixAccount.inc:1157
+#: ../lib/modules/posixAccount.inc:911 ../lib/modules/posixAccount.inc:1148
 #: ../lib/lists.inc:303 ../lib/lists.inc:330
 msgid "UID number"
 msgstr "UID番号"
@@ -4478,7 +4510,7 @@ msgstr ""
 msgid "UID ranges for Unix accounts"
 msgstr "unixアカウントに対するUIDの範囲"
 
-#: ../lib/modules/sambaAccount.inc:376 ../lib/modules/sambaSamAccount.inc:200
+#: ../lib/modules/sambaAccount.inc:376 ../lib/modules/sambaSamAccount.inc:217
 msgid ""
 "UNC-path (\\\\server\\share) of homedirectory. $user and $group are replaced "
 "with user and group name."
@@ -4513,7 +4545,7 @@ msgstr "ドメインを削除できません!"
 msgid "Unable to delete profile!"
 msgstr "プロファイルを削除できません!"
 
-#: ../lib/modules/posixAccount.inc:1321 ../lib/modules/posixAccount.inc:1538
+#: ../lib/modules/posixAccount.inc:1312 ../lib/modules/posixAccount.inc:1529
 msgid "Unable to find group in LDAP."
 msgstr "LDAP内にグループが見つかりません。"
 
@@ -4543,8 +4575,8 @@ msgid "Unix"
 msgstr "unix"
 
 #: ../lib/modules/inetOrgPerson.inc:44 ../lib/modules/inetOrgPerson.inc:236
-#: ../lib/modules/inetOrgPerson.inc:334 ../lib/modules/inetOrgPerson.inc:613
-#: ../lib/modules/inetOrgPerson.inc:691
+#: ../lib/modules/inetOrgPerson.inc:334 ../lib/modules/inetOrgPerson.inc:604
+#: ../lib/modules/inetOrgPerson.inc:682
 msgid "Unix workstations"
 msgstr "unixワークステーション"
 
@@ -4579,9 +4611,9 @@ msgstr "使用方法"
 
 #: ../lib/modules/sambaAccount.inc:114 ../lib/modules/sambaAccount.inc:225
 #: ../lib/modules/sambaAccount.inc:343 ../lib/modules/sambaAccount.inc:346
-#: ../lib/modules/sambaSamAccount.inc:167
-#: ../lib/modules/sambaSamAccount.inc:170
-#: ../lib/modules/sambaSamAccount.inc:276
+#: ../lib/modules/sambaSamAccount.inc:184
+#: ../lib/modules/sambaSamAccount.inc:187
+#: ../lib/modules/sambaSamAccount.inc:296
 msgid "Use Unix password"
 msgstr "unixパスワードを使用"
 
@@ -4597,21 +4629,21 @@ msgstr "使う前にlamdaemonのドキュメントを読み、あなたの責任
 
 #: ../lib/modules/posixGroup.inc:426 ../lib/modules/sambaAccount.inc:120
 #: ../lib/modules/sambaAccount.inc:233 ../lib/modules/sambaAccount.inc:349
-#: ../lib/modules/sambaAccount.inc:352 ../lib/modules/sambaAccount.inc:725
-#: ../lib/modules/sambaSamAccount.inc:173
-#: ../lib/modules/sambaSamAccount.inc:176
-#: ../lib/modules/sambaSamAccount.inc:284
-#: ../lib/modules/sambaSamAccount.inc:779
-#: ../lib/modules/sambaSamAccount.inc:1004 ../lib/modules/posixAccount.inc:361
+#: ../lib/modules/sambaAccount.inc:352 ../lib/modules/sambaAccount.inc:721
+#: ../lib/modules/sambaSamAccount.inc:190
+#: ../lib/modules/sambaSamAccount.inc:193
+#: ../lib/modules/sambaSamAccount.inc:304
+#: ../lib/modules/sambaSamAccount.inc:800
+#: ../lib/modules/sambaSamAccount.inc:1049 ../lib/modules/posixAccount.inc:361
 msgid "Use no password"
 msgstr "パスワードなし"
 
-#: ../lib/modules/sambaAccount.inc:721 ../lib/modules/sambaSamAccount.inc:775
-#: ../lib/modules/sambaSamAccount.inc:998
+#: ../lib/modules/sambaAccount.inc:717 ../lib/modules/sambaSamAccount.inc:796
+#: ../lib/modules/sambaSamAccount.inc:1043
 msgid "Use unix password"
 msgstr "unixパスワードを使う"
 
-#: ../lib/modules/quota.inc:90 ../lib/modules/quota.inc:320
+#: ../lib/modules/quota.inc:90 ../lib/modules/quota.inc:303
 msgid "Used blocks"
 msgstr "使用したブロック"
 
@@ -4632,7 +4664,7 @@ msgid "Used for calculating RIDs from UID/GID. Do not change if unsure."
 msgstr ""
 "RIDs を UID/GID から計算するために使用します。自信がないなら変更しないこと。"
 
-#: ../lib/modules/quota.inc:106 ../lib/modules/quota.inc:324
+#: ../lib/modules/quota.inc:106 ../lib/modules/quota.inc:307
 msgid "Used inodes"
 msgstr "使用したinode"
 
@@ -4649,9 +4681,9 @@ msgid "User ID"
 msgstr "ユーザ ID"
 
 #: ../lib/modules/sambaAccount.inc:257 ../lib/modules/sambaAccount.inc:367
-#: ../lib/modules/sambaAccount.inc:737 ../lib/modules/sambaSamAccount.inc:191
-#: ../lib/modules/sambaSamAccount.inc:308
-#: ../lib/modules/sambaSamAccount.inc:791
+#: ../lib/modules/sambaAccount.inc:733 ../lib/modules/sambaSamAccount.inc:208
+#: ../lib/modules/sambaSamAccount.inc:328
+#: ../lib/modules/sambaSamAccount.inc:812
 msgid "User can change password"
 msgstr "ユーザはパスワードを変更可能"
 
@@ -4682,22 +4714,22 @@ msgid "User modules"
 msgstr "ユーザモジュール"
 
 #: ../lib/modules/sambaAccount.inc:264 ../lib/modules/sambaAccount.inc:369
-#: ../lib/modules/sambaAccount.inc:745 ../lib/modules/sambaSamAccount.inc:193
-#: ../lib/modules/sambaSamAccount.inc:315
-#: ../lib/modules/sambaSamAccount.inc:799
+#: ../lib/modules/sambaAccount.inc:741 ../lib/modules/sambaSamAccount.inc:210
+#: ../lib/modules/sambaSamAccount.inc:335
+#: ../lib/modules/sambaSamAccount.inc:820
 msgid "User must change password"
 msgstr "ユーザはパスワード変更が必要"
 
-#: ../templates/login.php:164 ../lib/modules/account.inc:90
+#: ../templates/login.php:169 ../lib/modules/account.inc:90
 #: ../lib/modules/account.inc:110 ../lib/modules/account.inc:112
-#: ../lib/modules/account.inc:113 ../lib/modules/account.inc:214
-#: ../lib/modules/account.inc:234 ../lib/modules/sambaSamAccount.inc:1131
+#: ../lib/modules/account.inc:113 ../lib/modules/account.inc:205
+#: ../lib/modules/account.inc:225 ../lib/modules/sambaSamAccount.inc:1200
 #: ../lib/modules/posixAccount.inc:83 ../lib/modules/posixAccount.inc:84
 #: ../lib/modules/posixAccount.inc:87 ../lib/modules/posixAccount.inc:181
-#: ../lib/modules/posixAccount.inc:341 ../lib/modules/posixAccount.inc:912
-#: ../lib/modules/posixAccount.inc:1155 ../lib/modules/inetOrgPerson.inc:70
+#: ../lib/modules/posixAccount.inc:341 ../lib/modules/posixAccount.inc:903
+#: ../lib/modules/posixAccount.inc:1146 ../lib/modules/inetOrgPerson.inc:70
 #: ../lib/modules/inetOrgPerson.inc:224 ../lib/modules/inetOrgPerson.inc:330
-#: ../lib/modules/inetOrgPerson.inc:517 ../lib/modules/inetOrgPerson.inc:706
+#: ../lib/modules/inetOrgPerson.inc:508 ../lib/modules/inetOrgPerson.inc:697
 #: ../lib/lists.inc:305
 msgid "User name"
 msgstr "ユーザ名"
@@ -4780,39 +4812,39 @@ msgstr "テンプレートを使用:"
 msgid "Valid users"
 msgstr "有効なユーザ"
 
-#: ../templates/delete.php:184 ../lib/modules.inc:1569
+#: ../templates/delete.php:184 ../lib/modules.inc:1554
 #, php-format
 msgid "Was unable to add attribtues to DN: %s."
 msgstr "DN %s に属性を追加できませんでした。"
 
-#: ../lib/modules.inc:1531 ../lib/modules.inc:1543
+#: ../lib/modules.inc:1516 ../lib/modules.inc:1528
 #, php-format
 msgid "Was unable to create DN: %s."
 msgstr "DN %s を作成できませんでした。"
 
 #: ../templates/tree/delete.php:109 ../templates/delete.php:221
-#: ../lib/modules.inc:1524
+#: ../lib/modules.inc:1509
 #, php-format
 msgid "Was unable to delete DN: %s."
 msgstr "DN %s を削除できませんでした。"
 
 #: ../templates/tree/update.php:105 ../templates/tree/add_oclass.php:89
 #: ../templates/tree/add_oclass_form.php:158 ../templates/delete.php:175
-#: ../lib/modules.inc:1559
+#: ../lib/modules.inc:1544
 #, php-format
 msgid "Was unable to modify attribtues from DN: %s."
 msgstr "DN %s の属性を変更できませんでした。"
 
-#: ../templates/delete.php:193 ../lib/modules.inc:1579
+#: ../templates/delete.php:193 ../lib/modules.inc:1564
 #, php-format
 msgid "Was unable to remove attribtues from DN: %s."
 msgstr "DN %s の属性を削除できませんでした。"
 
-#: ../lib/modules/sambaSamAccount.inc:916
+#: ../lib/modules/sambaSamAccount.inc:953
 msgid "Wednesday"
 msgstr "水曜日"
 
-#: ../lib/modules/sambaSamAccount.inc:240
+#: ../lib/modules/sambaSamAccount.inc:257
 msgid "Western Europe Time, London, Lisbon"
 msgstr ""
 
@@ -4824,16 +4856,16 @@ msgstr ""
 "ldaps:// を使う時は、証明書のIP/ドメイン名と正確に一致するものを使用してくだ"
 "さい。"
 
-#: ../lib/modules/sambaAccount.inc:400 ../lib/modules/sambaSamAccount.inc:231
+#: ../lib/modules/sambaAccount.inc:400 ../lib/modules/sambaSamAccount.inc:248
 msgid "Windows domain name of account."
 msgstr "アカウントのWindowsドメイン名"
 
-#: ../lib/modules/sambaAccount.inc:301 ../lib/modules/sambaAccount.inc:783
-#: ../lib/modules/sambaSamAccount.inc:352
-#: ../lib/modules/sambaSamAccount.inc:835
-#: ../lib/modules/sambaSamAccount.inc:1139
-#: ../lib/modules/sambaGroupMapping.inc:184
-#: ../lib/modules/sambaGroupMapping.inc:305
+#: ../lib/modules/sambaAccount.inc:301 ../lib/modules/sambaAccount.inc:779
+#: ../lib/modules/sambaSamAccount.inc:379
+#: ../lib/modules/sambaSamAccount.inc:872
+#: ../lib/modules/sambaSamAccount.inc:1208
+#: ../lib/modules/sambaGroupMapping.inc:202
+#: ../lib/modules/sambaGroupMapping.inc:314
 msgid "Windows group"
 msgstr "Windowsグループ"
 
@@ -4842,23 +4874,23 @@ msgid "Windows group RID"
 msgstr "WindowsグループRID"
 
 #: ../lib/modules/sambaAccount.inc:390
-#: ../lib/modules/sambaGroupMapping.inc:278
+#: ../lib/modules/sambaGroupMapping.inc:287
 msgid "Windows group name"
 msgstr "Windowsグループ名"
 
-#: ../lib/modules/sambaGroupMapping.inc:291
+#: ../lib/modules/sambaGroupMapping.inc:300
 msgid "Windows group type."
 msgstr "Windowsグループタイプ"
 
-#: ../lib/modules/sambaSamAccount.inc:214
+#: ../lib/modules/sambaSamAccount.inc:231
 msgid "Windows primary group"
 msgstr "Windowsプライマリグループ"
 
-#: ../lib/modules/sambaSamAccount.inc:217
+#: ../lib/modules/sambaSamAccount.inc:234
 msgid "Windows primary group SID"
 msgstr "WindowsプライマリグループSID"
 
-#: ../lib/modules/sambaGroupMapping.inc:287
+#: ../lib/modules/sambaGroupMapping.inc:296
 msgid "Windows-Domain name of group."
 msgstr "グループのWindowsドメイン名。"
 
@@ -4867,7 +4899,7 @@ msgstr "グループのWindowsドメイン名。"
 msgid "Wrong or missing type!"
 msgstr "タイプが間違っているか、または抜けています!"
 
-#: ../templates/login.php:346
+#: ../templates/login.php:351
 msgid "Wrong password/user name combination. Please try again."
 msgstr "誤ったパスワード/ユーザ名の組み合わせです。やり直してください。"
 
@@ -4939,11 +4971,11 @@ msgstr ""
 msgid "[attribute deleted]"
 msgstr "[削除された属性]"
 
-#: ../lib/modules/sambaAccount.inc:279 ../lib/modules/sambaSamAccount.inc:330
+#: ../lib/modules/sambaAccount.inc:279 ../lib/modules/sambaSamAccount.inc:357
 msgid "\\\\server\\homes\\smiller"
 msgstr ""
 
-#: ../lib/modules/sambaAccount.inc:285 ../lib/modules/sambaSamAccount.inc:336
+#: ../lib/modules/sambaAccount.inc:285 ../lib/modules/sambaSamAccount.inc:363
 msgid "\\\\server\\profiles\\smiller"
 msgstr ""
 
@@ -4980,7 +5012,7 @@ msgstr "ダウンロード"
 
 #: ../lib/modules/inetOrgPerson.inc:56 ../lib/modules/inetOrgPerson.inc:206
 #: ../lib/modules/inetOrgPerson.inc:322 ../lib/modules/inetOrgPerson.inc:323
-#: ../lib/modules/inetOrgPerson.inc:594 ../lib/modules/inetOrgPerson.inc:704
+#: ../lib/modules/inetOrgPerson.inc:585 ../lib/modules/inetOrgPerson.inc:695
 msgid "eMail address"
 msgstr "電子メールアドレス"
 
@@ -4993,7 +5025,7 @@ msgid "group01,group02"
 msgstr ""
 
 #: ../lib/modules/quota.inc:146 ../lib/modules/quota.inc:148
-#: ../lib/modules/quota.inc:214 ../lib/modules/quota.inc:216
+#: ../lib/modules/quota.inc:197 ../lib/modules/quota.inc:199
 msgid "hours"
 msgstr "時間"
 
@@ -5022,12 +5054,12 @@ msgid "machines"
 msgstr "マシン"
 
 #: ../lib/modules/sambaAccount.inc:317 ../lib/modules/sambaAccount.inc:327
-#: ../lib/modules/sambaSamAccount.inc:260
-#: ../lib/modules/sambaSamAccount.inc:379
+#: ../lib/modules/sambaSamAccount.inc:280
+#: ../lib/modules/sambaSamAccount.inc:406
 msgid "mydomain"
 msgstr "マイドメイン"
 
-#: ../lib/modules/sambaSamAccount.inc:354
+#: ../lib/modules/sambaSamAccount.inc:381
 msgid "mygroup"
 msgstr "マイグループ"
 
@@ -5083,7 +5115,7 @@ msgid "required for Samba 3 accounts"
 msgstr "Samba 3アカウントにおいて必須"
 
 #: ../lib/modules/posixGroup.inc:396 ../lib/modules/sambaAccount.inc:221
-#: ../lib/modules/sambaSamAccount.inc:272 ../lib/modules/posixAccount.inc:231
+#: ../lib/modules/sambaSamAccount.inc:292 ../lib/modules/posixAccount.inc:231
 msgid "secret"
 msgstr ""
 
@@ -5112,11 +5144,11 @@ msgstr ""
 msgid "users"
 msgstr "ユーザ"
 
+#~ msgid "Account expiration date. Format: DD-MM-YYYY"
+#~ msgstr "アカウント有効期限。形式は: DD-MM-YYYY"
+
 #~ msgid "Inserted user or group name in script path."
 #~ msgstr "スクリプトパスにユーザ又はグループ名を挿入しました。"
-
-#~ msgid "Account expire date. Format: DD-MM-YYYY"
-#~ msgstr "アカウント有効期限。形式は: DD-MM-YYYY"
 
 #~ msgid "Add after"
 #~ msgstr "後ろに追加"
