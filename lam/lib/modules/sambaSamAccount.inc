@@ -248,18 +248,7 @@ class sambaSamAccount extends baseModule {
 				"Text" => _("Windows domain name of account.")),
 			"logonHours" => array(
 				"ext" => "FALSE", "Headline" => _("Logon hours"),
-				"Text" => _("This option defines the allowed logon hours for this account.") . "<br><br><br><u><b>".
-				_("Time zones:") . "</b></u><br><br>" .
-				"GMT-12: " . _("Eniwetok, Kwajalein") . "<br>" . "GMT-11: " . _("Midway Island, Samoa") . "<br>" . "GMT-10: " . _("Hawaii") . "<br>" .
-				"GMT-09: " . _("Alaska") . "<br>" . "GMT-08: " . _("Pacific Time (US & Canada)") . "<br>" . "GMT-07: " . _("Mountain Time (US & Canada)") . "<br>" .
-				"GMT-06: " . _("Central Time (US & Canada), Mexico City") . "<br>" . "GMT-05: " . _("Eastern Time (US & Canada), Bogota") . "<br>" .
-				"GMT-04: " . _("Atlantic time (Canada), Caracas") . "<br>" . "GMT-03: " . _("Brazil, Buenos Aires") . "<br>" . "GMT-02: " . _("Mid-Atlantic") . "<br>" .
-				"GMT-01: " . _("Azores, Cape Verde Islands") . "<br>" . "GMT: &nbsp;&nbsp;&nbsp;&nbsp;" . _("Western Europe Time, London, Lisbon") . "<br>" .
-				"GMT+01: " . _("Central Europe Time, Paris, Berlin") . "<br>" . "GMT+02: " . _("Eastern Europe Time, South Africa") . "<br>" .
-				"GMT+03: " . _("Baghdad, Riyadh, Moscow") . "<br>" . "GMT+04: " . _("Abu Dhabi, Muscat, Baku") . "<br>" . "GMT+05: " . _("Islamabad, Karachi") . "<br>" .
-				"GMT+06: " . _("Almaty, Dhaka, Colombo") . "<br>" . "GMT+07: " . _("Bangkok, Hanoi, Jakarta") . "<br>" . "GMT+08: " . _("Beijing, Perth, Singapore") . "<br>" .
-				"GMT+09: " . _("Tokyo, Seoul, Osaka, Yakutsk") . "<br>" . "GMT+10: " . _("East Australian Standard, Guam") . "<br>" .
-				"GMT+11: " . _("Magadan, Solomon Islands") . "<br>" . "GMT+12: " . _("Auckland, Fiji, Kamchatka")),
+				"Text" => _("This option defines the allowed logon hours for this account.")),
 			"logonHoursUpload" => array(
 				"ext" => "FALSE", "Headline" => _("Logon hours"),
 				"Text" => _("This option defines the allowed logon hours for this account. The format is the same as for the LDAP attribute. The 24*7 hours are represented as 168 bit which are saved as 21 hex (21*8 = 168) values. The first bit represents Sunday 0:00 - 0:59 in GMT.")),
@@ -971,33 +960,17 @@ class sambaSamAccount extends baseModule {
 		for ($i = 0; $i < 24*7; $i++) {
 			$hour[$i] = substr($logonHours, $i, 1);
 		}
-		// get offset
-		$offset = 0;
-		if ($post['timezone']) {
-			if (strlen(substr($post['timezone'], 3)) > 0) {
-				$part = substr($post['timezone'], 3);
-				if ($part[1] == '1') $offset = 10;
-				$offset = $offset + intval($part[2]);
-				if ($part[0] == '-') $offset = -$offset;
-			}
-		}
 		// display input
 		for ($i = 0; $i < 24*7; $i++) {
-			$hr = $i + $offset;
-			if ($hr < 0) {
-				$hr = $hr + 24*7;
-			} elseif ($hr >= 24*7) {
-				$hr = $hr - 24*7;
-			}
 			if ($i % 7 == 0) {
 				$return[0][floor($i / 24)+1] = array('kind' => 'text',
 					'text' => '<b>' . $days[floor($i / 24)] . '</b>',
 					'td' => array('width' => "11%", 'align' => 'center'));
 			}
 			$return[$i % 24 + 1][floor($i/24) + 1] = array('kind' => 'input',
-				'name' => 'lh_' . $hr,
+				'name' => 'lh_' . $i,
 				'type' => 'checkbox',
-				'checked' => $hour[$hr] ? true : false,
+				'checked' => $hour[$i] ? true : false,
 				'td' => array('align' => 'center'));
 		}
 		$return[0][0] = array('kind' => 'text', 'text' => '<b>' . _('Time') . '</b>', 'td' => array('width' => "12.5%"));
@@ -1005,23 +978,10 @@ class sambaSamAccount extends baseModule {
 			$return[1 + $h][0] = array('kind' => 'text', 'text' => "$h:00 - $h:59");
 		}
 		$return[] = array(0 => array('kind' => 'text', 'text' => '&nbsp;', 'td' => array('colspan' => 8)));
-		$timezones = array('GMT');
-		for ($i = 1; $i <= 12; $i++) {
-			if ($i < 10) $t = '0' . $i;
-			else $t = $i;
-			array_push($timezones, 'GMT+' . $t);
-			array_unshift($timezones, 'GMT-' . $t);
-		}
 		$return[] = array(
 			0 => array('kind' => 'input', 'name' => 'form_subpage_sambaSamAccount_attributes_submit', 'type' => 'submit', 'value' => _('Submit'), 'td' => array('align' => 'right')),
-			1 => array('kind' => 'input', 'name' => 'form_subpage_sambaSamAccount_attributes_abort', 'type' => 'submit', 'value' => _('Abort'), 'td' => array('align' => 'left')),
-			2 => array('kind' => 'text', 'td' => array('colspan' => 2)),
-			3 => array('kind' => 'table', 'td' => array('colspan' => 4, 'align' => 'right'), 'value' => array(0 => array(
-				0 => array('kind' => 'text', 'text' => _('Time zone')),
-				1 => array('kind' => 'select', 'name' => 'timezone', 'options' => $timezones, 'options_selected' => $post['timezone']),
-				2 => array('kind' => 'input', 'name' => 'change_tz', 'type' => 'submit', 'value' => _('Change')),
-				3 => array('kind' => 'help', 'value' => 'logonHours'))))
-			);
+			1 => array('kind' => 'input', 'name' => 'form_subpage_sambaSamAccount_attributes_abort', 'type' => 'submit', 'value' => _('Abort'), 'td' => array('align' => 'left'))
+		);
 		return $return;
 	}
 
