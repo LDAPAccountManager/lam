@@ -6,6 +6,7 @@
     -> inetOrgPerson: fixed mobile number
     -> Samba 2/3: passwords fixed for file uploads (1311561)
     -> Samba 3: fixed logon hours (patch 1311915)
+    -> Samba 3: loading of domain setting from profile did not work
     -> Quota: profile settings fixed
 
 

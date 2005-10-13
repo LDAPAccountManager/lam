@@ -746,13 +746,22 @@ class sambaSamAccount extends baseModule {
 			StatusMessage("ERROR", _('No Samba 3 domains found in LDAP! Please create one first.'), '');
 			return;
 		}
-		if ($this->attributes['sambaSID'][0]!='')
+		if ($this->attributes['sambaSID'][0]!='') {
 			$domainSID = substr($this->attributes['sambaSID'][0], 0, strrpos($this->attributes['sambaSID'][0], "-"));
+		}
 		for ($i=0; $i<count($sambaDomains); $i++ ) {
 			$sambaDomainNames[] = $sambaDomains[$i]->name;
-			if ($domainSID == $sambaDomains[$i]->SID) {
-				$SID = $domainSID;
-				$sel_domain = $sambaDomains[$i]->name;
+			if (isset($domainSID)) {
+				if ($domainSID == $sambaDomains[$i]->SID) {
+					$SID = $domainSID;
+					$sel_domain = $sambaDomains[$i]->name;
+				}
+			}
+			elseif ($this->attributes['sambaDomainName'][0]!='') {
+				if ($this->attributes['sambaDomainName'][0] == $sambaDomains[$i]->name) {
+					$SID = $domainSID;
+					$sel_domain = $sambaDomains[$i]->name;
+				}
 			}
 		}
 		$canchangedate = getdate($this->attributes['sambaPwdCanChange'][0]);
@@ -1148,6 +1157,27 @@ class sambaSamAccount extends baseModule {
 			$date = mktime(10, 0, 0, $profile['sambaSamAccount_expire_mon'][0],
 				$profile['sambaSamAccount_expire_day'][0], $profile['sambaSamAccount_expire_yea'][0]);
 			$this->attributes['sambaKickoffTime'][0] = $date;
+		}
+		// domain -> change SID
+		if ($this->attributes['sambaSID'][0]) {
+			if (isset($profile['sambaSamAccount_sambaDomainName'][0]) && ($profile['sambaSamAccount_sambaDomainName'][0] != "")) {
+				$domains = search_domains($_SESSION['config']->get_Suffix('domain'));
+				$domSID = '';
+				// find domain SID
+				for ($i = 0; $i < sizeof($domains); $i++) {
+					if ($domains[$i]->name == $profile['sambaSamAccount_sambaDomainName'][0]) {
+						$domSID = $domains[$i]->SID;
+						break;
+					}
+				}
+				// replace domain part of SID
+				if ($domSID != '') {
+					$SID = $this->attributes['sambaSID'][0];
+					$rid = substr($SID, strrpos($SID, '-') + 1);
+					$SID = $domSID . '-' . $rid;
+					$this->attributes['sambaSID'][0] = $SID;
+				}
+			}
 		}
 	}
 
