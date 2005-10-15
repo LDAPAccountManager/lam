@@ -1480,7 +1480,6 @@ class accountContainer {
 				if ($singleerror[0] == 'ERROR') $stopprocessing = true;
 				}
 			}
-		// fixme *** ad update_cache after every ldap-change
 		if (!$stopprocessing) {
 			if ($this->dn != $this->dn_orig) {
 				// move existing DN
@@ -1503,20 +1502,17 @@ class accountContainer {
 					}
 					$success = ldap_add($_SESSION['ldap']->server(), $this->dn, $attr);
 					if ($success) {
-						//$_SESSION['cache']->update_cache($this->dn, 'add', $attr); TODO: reactivate
 						$success = ldap_delete($_SESSION['ldap']->server(), $this->dn_orig);
 						if (!$success) {
 							$errors[] = array('ERROR', sprintf(_('Was unable to delete DN: %s.'), $this->dn_orig), ldap_error($_SESSION['ldap']->server()));
 							$stopprocessing = true;
-							}
-						//if ($success) TODO: reactivate
-							//$_SESSION['cache']->update_cache($this->dn, 'delete_dn'); TODO: reactivate
 						}
+					}
 					if (!$success) {
 						$errors[] = array('ERROR', sprintf(_('Was unable to create DN: %s.'), $this->dn), ldap_error($_SESSION['ldap']->server()));
 						$stopprocessing = true;
-						}
 					}
+				}
 				// create complete new dn
 				else {
 					$attr = array();
@@ -1527,13 +1523,11 @@ class accountContainer {
 					if (!$success) {
 						$errors[] = array('ERROR', sprintf(_('Was unable to create DN: %s.'), $this->dn), ldap_error($_SESSION['ldap']->server()));
 						$stopprocessing = true;
-						}
-					//else TODO: reactivate
-						//$_SESSION['cache']->update_cache($this->dn, 'add', $attr); TODO: reactivate
 					}
-				unset($attributes[$this->dn]);
 				}
+				unset($attributes[$this->dn]);
 			}
+		}
 		$DNs = array_keys($attributes);
 		for ($i=0; $i<count($DNs); $i++) {
 			if (!$stopprocessing) {
@@ -1543,38 +1537,32 @@ class accountContainer {
 					if (!$success) {
 						$errors[] = array('ERROR', sprintf(_('Was unable to modify attribtues from DN: %s.'), $DNs[$i]), ldap_error($_SESSION['ldap']->server()));
 						$stopprocessing = true;
-						}
-					//else TODO: reactivate
-						//$_SESSION['cache']->update_cache($this->dn, 'modify', $attributes[$this->dn]['modify']); TODO: reactivate
 					}
+				}
 				// add attributes
 				if (isset($attributes[$DNs[$i]]['add']) && !$stopprocessing) {
 					$success = @ldap_mod_add($_SESSION['ldap']->server(), $DNs[$i], $attributes[$DNs[$i]]['add']);
 					if (!$success) {
 						$errors[] = array('ERROR', sprintf(_('Was unable to add attribtues to DN: %s.'), $DNs[$i]), ldap_error($_SESSION['ldap']->server()));
 						$stopprocessing = true;
-						}
-					//else TODO: reactivate
-						//$_SESSION['cache']->update_cache($this->dn, 'add', $attributes[$this->dn]['add']); TODO: reactivate
 					}
+				}
 				// removce attributes
 				if (isset($attributes[$DNs[$i]]['remove']) && !$stopprocessing) {
 					$success = @ldap_mod_del($_SESSION['ldap']->server(), $DNs[$i], $attributes[$DNs[$i]]['remove']);
 					if (!$success) {
 						$errors[] = array('ERROR', sprintf(_('Was unable to remove attribtues from DN: %s.'), $DNs[$i]), ldap_error($_SESSION['ldap']->server()));
 						$stopprocessing = true;
-						}
-					//else TODO: reactivate
-						//$_SESSION['cache']->update_cache($this->dn, 'remove', $attributes[$this->dn]['remove']); TODO: reactivate
 					}
 				}
 			}
+		}
 
 		if (!$stopprocessing) {
 			foreach ($attributes as $DN) {
 				if (is_array($DN['lamdaemon']['command'])) $result = lamdaemon($DN['lamdaemon']['command']);
 				// Error somewhere in lamdaemon
-				if (is_array($result))
+				if (is_array($result)) {
 					foreach ($result as $singleresult) {
 						if (is_array($singleresult)) {
 							if ($singleresult[0] == 'ERROR') $stopprocessing = true;
@@ -1582,11 +1570,12 @@ class accountContainer {
 							$temparray[1] = _($singleresult[1]);
 							$temparray[2] = _($singleresult[2]);
 							$errors[] = $temparray;
-							}
 						}
+					}
 				}
 			}
-		$_SESSION['cache']->refresh_cache(true); // TODO: remove when update_cache is fixed
+		}
+		$_SESSION['cache']->refresh_cache(true);
 		if (count($errors)!=0) return $errors;
 		return 0;
 	}

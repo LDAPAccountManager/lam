@@ -890,7 +890,7 @@ class inetOrgPerson extends baseModule {
 				}
 				// uid
 				// get list of existing users
-				$dnUsers = $_SESSION['cache']->get_cache('uid', 'inetOrgPerson', '*');
+				$dnUsers = $_SESSION['cache']->get_cache('uid', 'inetOrgPerson', 'user');
 				$existingUsers = array();
 				foreach ($dnUsers as $dn) {
 					$existingUsers[] = $dn[0];

@@ -41,7 +41,7 @@ class cache {
 	function cache() {
 		$this->time = 0;
 		$this->attributes = array();
-		}
+	}
 
 	var $ldapcache; // This variable contains the cache
 	var $attributes; // This variable contains a list and their scope of attributes which should be cached
@@ -51,8 +51,6 @@ class cache {
 	* syntax of $attributes is array( scope1 => array ( attributes ), scope2 => array ( attributes ), ...)
 	*/
 	function add_cache($attributes) {
-		// Check input variable
-		$allowed_types = array ( 'user', 'group', 'host', 'domain', '*' );
 		if (!is_array($attributes)) trigger_error('Argument of add_cache must be : array ( scope => array(attribute1(string), attribute2(string), ..), scope => ... ).', E_USER_ERROR);
 		foreach ($attributes as $attribute) {
 			if (!is_array($attribute)) trigger_error('Argument of add_cache must be : array ( scope => array(attribute1(string), attribute2(string), ..), scope => ... ).', E_USER_ERROR);
@@ -62,37 +60,29 @@ class cache {
 			}
 		$scopes = array_keys($attributes);
 		foreach ($scopes as $scope) {
-			if (!@in_array($scope, $allowed_types)) trigger_error(sprintf('Invalid scope. Valid scopes are %s.', implode(" ", $allowed_types)), E_USER_ERROR);
-			}
-		// Everything seems to be OK, start processing data
-		foreach ($scopes as $scope) {
 			for ($i=0; $i<count($attributes[$scope]); $i++ ) {
 				if (!@in_array($attributes[$scope][$i] ,$this->attributes[$scope])) $this->attributes[$scope][] = $attributes[$scope][$i];
 				}
 			}
 		// Rebuild cache
 		$this->refresh_cache(true);
-		}
+	}
 
 	/**
 	* Queries the cache for a list of LDAP entries and their attributes.
 	*
 	* @param mixed $attributes One (string) or many (array) attribute names.
 	* @param string $objectClass The resulting entries need to contain this object class.
-	* @param string $singlescope The account type or "*" if all.
+	* @param mixed $scope the account type(s) as string or array
 	* @return array The found LDAP entries.
 	* <br>Format: array(dn1 => array(uidnumber1), dn2 => array(uidnumber2), ... ) if $attributes is of type string
 	* <br>or array(dn1 => array(uid => array(myuid), uidNumber => array(1234)), ... ) if $attributes is an array
 	*
 	*/
-	function get_cache($attributes, $objectClass, $singlescope) {
+	function get_cache($attributes, $objectClass, $scopelist) {
 		$this->refresh_cache();
-		// Check input variables
-		$allowed_types = array ( 'user', 'group', 'host', 'domain', '*' );
-		if (!in_array($singlescope, $allowed_types)) trigger_error(sprintf('Invalid scope. Valid scopes are %s.', implode(" ", $allowed_types)), E_USER_ERROR);
-		$this->refresh_cache();
-		if ($singlescope == '*') $scopes = $allowed_types;
-			else $scopes = array ( $singlescope );
+		if (is_array($scopelist)) $scopes = $scopelist;
+			else $scopes = array($scopelist);
 		// Add cache entry dynamic
 		if (!is_array($attributes)) $attributes = array($attributes);
 		foreach ($scopes as $scope) {
@@ -126,16 +116,12 @@ class cache {
 
 	/* This functions returns the dn if a dn with $attribute=$value is found
 	* $values is the value $attribute is set to
-	* $scope is the scope where to search
+	* $scopelist mixed the account type(s) as string or array
 	*/
-	function in_cache($value, $attribute, $singlescope) {
+	function in_cache($value, $attribute, $scopelist) {
 		$this->refresh_cache();
-		// Check input variables
-		$allowed_types = array ( 'user', 'group', 'host', 'domain', '*' );
-		if (!in_array($singlescope, $allowed_types)) trigger_error(sprintf('Invalid scope. Valid scopes are %s.', implode(" ", $allowed_types)), E_USER_ERROR);
-		$this->refresh_cache();
-		if ($singlescope == '*') $scopes = $allowed_types;
-			else $scopes = array ( $singlescope );
+		if (is_array($scopelist)) $scopes = $scopelist;
+		else $scopes = array($scopelist);
 		// Add cache entry dynamic
 		foreach ($scopes as $scope) {
 			if (!@in_array($attribute ,$this->attributes[$scope])) $add[$scope][] = $attribute;
@@ -168,10 +154,8 @@ class cache {
 			unset ($this->ldapcache);
 			$scopes = array_keys($this->attributes);
 			foreach ($scopes as $scope) {
-				// Get Scope
-				If ($scope != '*')
-					$suffix = $_SESSION['config']->get_Suffix($scope);
-					else $suffix = '';
+				// Get suffix
+				$suffix = $_SESSION['config']->get_Suffix($scope);
 				// Get Data from ldap
 				$search = $this->attributes[$scope];
 				$search[] = 'objectClass';
@@ -196,67 +180,11 @@ class cache {
 					unset ($addcache['objectClass']);
 					if (count($addcache)!=0) $this->ldapcache[$scope][$dn] = $attr;
 					$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
-					}
 				}
+			}
 			$this->time = time();
-			}
 		}
-
-	/* This function update the cache when changes were
-	* made without refrehing the complete cache
-	*/
-	function update_cache($dn, $mode, $attributes=false) {
-		$allowed_modes = array ( 'add', 'remove', 'modify', 'delete_dn' );
-		$allowed_types = array ( 'user', 'group', 'host', '*' );
-		for ($i=0; $i<count($allowed_types); $i++) {
-			if ($allowed_types[$i]!='*') {
-				If ($mode != '*')
-					$suffix = $_SESSION['config']->get_Suffix($allowed_types[$i]);
-					else $suffix = '';
-				if (substr($suffix, $dn)) $singlescope = $allowed_types[$i];
-				}
-			}
-		if (!in_array($singlescope, $allowed_types)) trigger_error(sprintf('Invalid scope. Valid scopes are %s.', implode(" ", $allowed_types)), E_USER_ERROR);
-		if (!in_array($mode, $allowed_modes)) trigger_error(sprintf('Invalid mode. Valid modes are %s.', implode(" ", $allowed_modes)), E_USER_ERROR);
-		// Everything seems to be OK, start processing data
-		// Get Scope
-		foreach ($allowed_types as $scope) {
-			if ($scope!='*') {
-				$suffix = $_SESSION['config']->get_Suffix($scope);
-				if (strpos($dn, $suffix)) $singlescope = $scope;
-				}
-			}
-		if (!isset($singlescope)) trigger_error(sprintf('Invalid dn: %s. DN not covered by any suffix.', $dn), E_USER_WARN);
-		// Refresh Cache
-		$this->refresh_cache();
-		if (is_array($attributes))
-			switch ($mode) {
-				case 'add':
-					$list = array_keys($attributes);
-					for ($i=0; $i<count($list); $i++)
-						foreach ($attributes[$list[$i]] as $attribute)
-							$this->ldapcache[$singlescope][$dn][$list[$i]][] = $attributes[$list[$i]];
-					break;
-				case 'remove':
-					$list = array_keys($attributes);
-					for ($i=0; $i<count($list); $i++)
-						foreach ($attributes[$list[$i]] as $attribute)
-							if (isset($this->ldapcache[$singlescope][$dn][$list[$i]][$attributes[$list[$i]]]))
-								unset($this->ldapcache[$singlescope][$dn][$list[$i]][$attributes[$list[$i]]]);
-					break;
-				case 'modify':
-					$list = array_keys($attributes);
-					for ($i=0; $i<count($list); $i++) {
-						if (isset($this->ldapcache[$singlescope][$dn][$list[$i]])) unset($this->ldapcache[$singlescope][$dn][$list[$i]]);
-						foreach ($attributes[$list[$i]] as $attribute)
-							$this->ldapcache[$singlescope][$dn][$list[$i]][] = $attributes[$list[$i]];
-						}
-				}
-		else {
-			if ($mode=='delete_dn')
-				if (isset($this->ldapcache[$singlescope][$dn])) unset($this->ldapcache[$singlescope][$dn]);
-			}
-		}
+	}
 
 
 	/**

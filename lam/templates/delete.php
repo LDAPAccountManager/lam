@@ -175,7 +175,6 @@ if ($_POST['delete']) {
 						$errors[] = array ('ERROR', sprintf(_('Was unable to modify attribtues from DN: %s.'), $DNs[$i]), ldap_error($_SESSION['ldap']->server()));
 						$stopprocessing = true;
 					}
-					//else $_SESSION['cache']->update_cache($DNs[$i], 'modify', $attributes[$DNs[$i]]['modify']); TODO: reactivate
 				}
 				// add attributes
 				if (isset($attributes[$DNs[$i]]['add']) && !$stopprocessing) {
@@ -184,7 +183,6 @@ if ($_POST['delete']) {
 						$errors[] = array ('ERROR', sprintf(_('Was unable to add attribtues to DN: %s.'), $DNs[$i]), ldap_error($_SESSION['ldap']->server()));
 						$stopprocessing = true;
 					}
-					//else $_SESSION['cache']->update_cache($DNs[$i], 'add', $attributes[$DNs[$i]]['add']); TODO: reactivate
 				}
 				// removce attributes
 				if (isset($attributes[$DNs[$i]]['remove']) && !$stopprocessing) {
@@ -193,7 +191,6 @@ if ($_POST['delete']) {
 						$errors[] = array ('ERROR', sprintf(_('Was unable to remove attribtues from DN: %s.'), $DNs[$i]), ldap_error($_SESSION['ldap']->server()));
 						$stopprocessing = true;
 					}
-					//else $_SESSION['cache']->update_cache($DNs[$i], 'remove', $attributes[$DNs[$i]]['remove']); TODO: reactivate
 				}
 			}
 		}
@@ -221,8 +218,6 @@ if ($_POST['delete']) {
 				$errors[] = array ('ERROR', sprintf(_('Was unable to delete DN: %s.'), $_SESSION['delete_dn'][$m]), ldap_error($_SESSION['ldap']->server()));
 				$stopprocessing = true;
 			}
-			//else TODO: reactivate
-			//$_SESSION['cache']->update_cache($_SESSION['delete_dn'][$m], 'delete_dn'); TODO: reactivate
 		}
 		if (!$stopprocessing) {
 			echo sprintf(_('Deleted DN: %s'), $_SESSION['delete_dn'][$m]) . "<br>\n";
@@ -235,7 +230,7 @@ if ($_POST['delete']) {
 			echo "<br>\n";
 		}
 	}
-	$_SESSION['cache']->refresh_cache(true); // TODO: remove when update_cache is fixed
+	$_SESSION['cache']->refresh_cache(true);
 	echo "<br>\n";
 	echo "<br><input name=\"cancel\" type=\"submit\" value=\"" . _('Back to list') . "\">\n";
 	echo "</fieldset>\n";

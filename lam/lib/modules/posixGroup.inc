@@ -795,7 +795,7 @@ class posixGroup extends baseModule {
 				if (strpos($_SESSION['ldap']->objectClasses[$i], "NAME 'posixAccount'")) $line = $i;
 			}
 			if ($line!=-1) {
-				$result = $_SESSION['cache']->get_cache('gidNumber', 'posixAccount', '*');
+				$result = $_SESSION['cache']->get_cache('gidNumber', 'posixAccount', array('user', 'host'));
 				if (is_array($result)) {
 					$DNs = array_keys($result);
 					for ($i=0; $i<count($DNs); $i++)
@@ -808,7 +808,7 @@ class posixGroup extends baseModule {
 				if (strpos($_SESSION['ldap']->objectClasses[$i], "NAME 'sambaAccount'")) $line = $i;
 			}
 			if ($line!=-1) {
-				$result = $_SESSION['cache']->get_cache('primaryGroupID', 'sambaAccount', '*');
+				$result = $_SESSION['cache']->get_cache('primaryGroupID', 'sambaAccount', array('user', 'host'));
 				if (is_array($result)) {
 					$DNs = array_keys($result);
 					for ($i=0; $i<count($DNs); $i++) {
@@ -822,7 +822,7 @@ class posixGroup extends baseModule {
 				if (strpos($_SESSION['ldap']->objectClasses[$i], "NAME 'sambaSamAccount'")) $line = $i;
 			}
 			if ($line!=-1) {
-				$result = $_SESSION['cache']->get_cache('sambaPrimaryGroupSID', 'sambaSamAccount', '*');
+				$result = $_SESSION['cache']->get_cache('sambaPrimaryGroupSID', 'sambaSamAccount', array('user', 'host'));
 				if (is_array($result)) {
 					$DNs = array_keys($result);
 					for ($i=0; $i<count($DNs); $i++) {
@@ -853,7 +853,7 @@ class posixGroup extends baseModule {
 		$ret = array();
 		$minID = intval($this->moduleSettings['posixGroup_minGID'][0]);
 		$maxID = intval($this->moduleSettings['posixGroup_maxGID'][0]);
-		$dn_gids = $_SESSION['cache']->get_cache('gidNumber', 'posixGroup', '*');
+		$dn_gids = $_SESSION['cache']->get_cache('gidNumber', 'posixGroup', 'group');
 		// get_cache will return an array ( dn1 => array(gidnumber1), dn2 => array(gidnumber2), ... )
 		$gids = array();
 		if(is_array($dn_gids)) {

@@ -645,7 +645,7 @@ class posixAccount extends baseModule {
 			$minID = intval($this->moduleSettings['posixAccount_minMachine'][0]);
 			$maxID = intval($this->moduleSettings['posixAccount_maxMachine'][0]);
 		}
-		$dn_uids = $_SESSION['cache']->get_cache('uidNumber', 'posixAccount', '*');
+		$dn_uids = $_SESSION['cache']->get_cache('uidNumber', 'posixAccount', array('user', 'host'));
 		// get_cache will return an array ( dn1 => array(uidnumber1), dn2 => array(uidnumber2), ... )
 		if(is_array($dn_uids)) {
 			foreach ($dn_uids as $uid) $uids[] = $uid[0];
@@ -745,11 +745,11 @@ class posixAccount extends baseModule {
 			// Create automatic useraccount with number if original user already exists
 			// Reset name to original name if new name is in use
 			// Set username back to original name if new username is in use
-			if ($_SESSION['cache']->in_cache($this->attributes['uid'][0],'uid', '*') && ($this->orig['uid'][0]!=''))
+			if ($_SESSION['cache']->in_cache($this->attributes['uid'][0],'uid', array('user', 'host')) && ($this->orig['uid'][0]!=''))
 			$this->attributes['uid'][0] = $this->orig['uid'][0];
 			// Change uid to a new uid until a free uid is found
 			else
-			while ($_SESSION['cache']->in_cache($this->attributes['uid'][0], 'uid', '*')) {
+			while ($_SESSION['cache']->in_cache($this->attributes['uid'][0], 'uid', array('user', 'host'))) {
 				if ($_SESSION[$this->base]->type=='host') $this->attributes['uid'][0] = substr($this->attributes['uid'][0], 0, -1);
 				// get last character of username
 				$lastchar = substr($this->attributes['uid'][0], strlen($this->attributes['uid'][0])-1, 1);
@@ -1203,7 +1203,7 @@ class posixAccount extends baseModule {
 		$triggered_messages = array();
 		$needAutoUID = array();
 		// get list of existing users
-		$dnUsers = $_SESSION['cache']->get_cache('uid', 'posixAccount', '*');
+		$dnUsers = $_SESSION['cache']->get_cache('uid', 'posixAccount', array('user', 'host'));
 		$existingUsers = array();
 		foreach ($dnUsers as $dn) {
 			$existingUsers[] = $dn[0];
@@ -1534,7 +1534,7 @@ class posixAccount extends baseModule {
 			$minID = intval($this->moduleSettings['posixAccount_minMachine'][0]);
 			$maxID = intval($this->moduleSettings['posixAccount_maxMachine'][0]);
 		}
-		$dn_uids = $_SESSION['cache']->get_cache('uidNumber', 'posixAccount', '*');
+		$dn_uids = $_SESSION['cache']->get_cache('uidNumber', 'posixAccount', array('user', 'host'));
 		// get_cache will return an array ( dn1 => array(uidnumber1), dn2 => array(uidnumber2), ... )
 		$uids = array();
 		if(is_array($dn_uids)) {

@@ -8,6 +8,7 @@
     -> Samba 3: fixed logon hours (patch 1311915)
     -> Samba 3: loading of domain setting from profile did not work
     -> Quota: profile settings fixed
+    -> reduced memory usage
 
 
 28.09.2005 0.5.0
