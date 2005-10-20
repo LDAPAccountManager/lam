@@ -51,7 +51,14 @@
   Schema: nis.schema
   Source: part of OpenLDAP installation
 
+  
   9. Simple Accounts (module account)
 
   Schema: cosine.schema
   Source: part of OpenLDAP installation
+
+
+  10. SSH public keys (module ldapPublicKey)
+
+  Schema: openssh-lpk.schema
+  Source: Included in patch from http://www.opendarwin.org/en/projects/openssh-lpk/
