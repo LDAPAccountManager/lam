@@ -907,12 +907,12 @@ class posixAccount extends baseModule {
 				0 => array('kind' => 'text', 'text' => _('Home directory').'*'),
 				1 => array('kind' => 'input', 'name' => 'homeDirectory', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => $this->attributes['homeDirectory'][0]),
 				2 => array('kind' => 'help', 'value' => 'homeDirectory'));
-			if ($this->orig['homeDirectory']=='' && isset($_SESSION['config']->scriptPath)) {
+			if ($_SESSION[$this->base]->isNewAccount && isset($_SESSION['config']->scriptPath)) {
 				$return[] = array(
 					0 => array('kind' => 'text', 'text' => _('Create home directory')),
 					1 => array('kind' => 'input', 'name' => 'createhomedir', 'type' => 'checkbox', 'checked' => $this->createhomedir),
 					2 => array('kind' => 'help', 'value' => 'createhomedir'));
-				}
+			}
 			if ($_SESSION[$this->base]->isNewAccount) {
 				$return[] = array(
 					0 => array('kind' => 'text', 'text' => _('Password') ),

@@ -1,5 +1,7 @@
 ??? 0.5.2
    - New module for SSH public keys
+   - fixed bugs:
+    -> creation of home directories did not work
 
 19.10.2005 0.5.1
    - Samba 3: added support for account expiration

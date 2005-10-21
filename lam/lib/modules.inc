@@ -1525,6 +1525,23 @@ class accountContainer {
 						$errors[] = array('ERROR', sprintf(_('Was unable to create DN: %s.'), $this->dn), ldap_error($_SESSION['ldap']->server()));
 						$stopprocessing = true;
 					}
+					// lamdaemon commands for the new account
+					if (!$stopprocessing) {
+						$DN = $attributes[$this->dn];
+						if (is_array($DN['lamdaemon']['command'])) $result = lamdaemon($DN['lamdaemon']['command']);
+						// Error somewhere in lamdaemon
+						if (is_array($result)) {
+							foreach ($result as $singleresult) {
+								if (is_array($singleresult)) {
+									if ($singleresult[0] == 'ERROR') $stopprocessing = true;
+									$temparray[0] = $singleresult[0];
+									$temparray[1] = _($singleresult[1]);
+									$temparray[2] = _($singleresult[2]);
+									$errors[] = $temparray;
+								}
+							}
+						}
+					}
 				}
 				unset($attributes[$this->dn]);
 			}
