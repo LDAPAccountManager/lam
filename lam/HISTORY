@@ -1,5 +1,6 @@
 ??? 0.5.2
    - New module for SSH public keys
+   - check file permissions on login page
    - fixed bugs:
     -> creation of home directories did not work
 

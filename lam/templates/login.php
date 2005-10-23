@@ -149,6 +149,15 @@ function display_LoginPage($config_object) {
 			StatusMessage("ERROR", "Your PHP has no gettext support!", "Please install gettext for PHP.");
 			echo "<br><br>";
 		}
+		// check file permissions
+		$writableDirs = array('config', 'config/profiles', 'config/pdf', 'sess', 'tmp', );
+		for ($i = 0; $i < sizeof($writableDirs); $i++) {
+			$path = realpath('../') . "/" . $writableDirs[$i];
+			if (!is_writable($path)) {
+				StatusMessage("ERROR", _('The directory %s is not writable for the web server. Please change your file permissions.'), '', array($path));
+				echo "<br>";
+			}
+		}
 		?>
 		<table width="650" align="center" border="2" rules="none" bgcolor="white">
 			<tr>
