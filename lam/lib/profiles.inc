@@ -64,7 +64,7 @@ function getAccountProfiles($scope) {
 * @return array hash array (attribute => value)
 */
 function loadAccountProfile($profile, $scope) {
-	if (!eregi("^[0-9a-z_-]+$", $profile) || !eregi("^[a-z]+$", $scope)) return false;
+	if (!eregi("^[0-9a-z _-]+$", $profile) || !eregi("^[a-z]+$", $scope)) return false;
 	$settings = array();
 	$file = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/config/profiles/" . $profile . "." . $scope;
 	if (is_file($file) == True) {
@@ -110,7 +110,7 @@ function loadAccountProfile($profile, $scope) {
 function saveAccountProfile($attributes, $profile, $scope) {
 	if (!$_SESSION['loggedIn'] == true) return false;
 	// check profile name
-	if (!eregi("^[0-9a-z_-]+$", $profile) || !eregi("^[a-z]+$", $scope)) return false;
+	if (!eregi("^[0-9a-z _-]+$", $profile) || !eregi("^[a-z]+$", $scope)) return false;
 	if (!is_array($attributes)) {
 		return false;
 	}
@@ -146,7 +146,7 @@ function saveAccountProfile($attributes, $profile, $scope) {
 */
 function delAccountProfile($file, $scope) {
 	if (!$_SESSION['loggedIn'] == true) return false;
-	if (!eregi("^[0-9a-z\\-_]+$", $file) || !eregi("^[0-9a-z\\-_]+$", $scope)) return false;
+	if (!eregi("^[0-9a-z _-]+$", $file) || !eregi("^[a-z]+$", $scope)) return false;
 	$prof = substr(__FILE__, 0, strlen(__FILE__) - 16) . "config/profiles/" . $file . "." . $scope;
 	if (is_file($prof)) {
 		return @unlink($prof);

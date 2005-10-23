@@ -3,6 +3,9 @@
    - check file permissions on login page
    - fixed bugs:
     -> creation of home directories did not work
+    -> allow spaces in profile names (1333058)
+    -> fixed problem with magic_quotes_gpc in profile editor (1333069)    
+
 
 19.10.2005 0.5.1
    - Samba 3: added support for account expiration

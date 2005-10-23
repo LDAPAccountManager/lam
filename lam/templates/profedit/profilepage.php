@@ -141,7 +141,12 @@ if (isset($_POST['save'])) {
 	$postKeys = array_keys($_POST);
 	for ($i = 0; $i < sizeof($postKeys); $i++) {
 		if (!is_array($_POST[$postKeys[$i]])) {
-			$old_options[$postKeys[$i]] = array($_POST[$postKeys[$i]]);
+			if (get_magic_quotes_gpc() == 1) {
+				$old_options[$postKeys[$i]] = array(stripslashes($_POST[$postKeys[$i]]));
+			}
+			else {
+				$old_options[$postKeys[$i]] = array($_POST[$postKeys[$i]]);
+			}
 		}
 		else {
 			$old_options[$postKeys[$i]] = $_POST[$postKeys[$i]];
