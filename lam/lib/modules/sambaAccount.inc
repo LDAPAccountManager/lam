@@ -74,8 +74,6 @@ class sambaAccount extends baseModule {
 		$this->messages['lmPassword'][0] = array('ERROR', _('Password'), _('Please enter the same password in both password-fields.'));
 		$this->messages['lmPassword'][1] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
 		$this->messages['lmPassword'][2] = array('ERROR', _('Account %s:') . ' sambaAccount_password', _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
-		$this->messages['rid'][0] = array('ERROR', _('Special user'), _('There can be only one administrator per domain.'));
-		$this->messages['rid'][1] = array('ERROR', _('Special user'), _('There can be only one guest per domain.'));	
 		$this->messages['displayName'][0] = array('ERROR', _('Account %s:') . ' sambaAccount_displayName', _('Please enter a valid display name!'));
 		$this->messages['displayName'][1] = array('ERROR', _('Display name'), _('Please enter a valid display name!'));
 		$this->messages['pwdUnix'][0] = array('ERROR', _('Account %s:') . ' sambaAccount_pwdUnix', _('This value can only be \"true\" or \"false\"!'));
