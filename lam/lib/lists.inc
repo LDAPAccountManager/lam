@@ -39,7 +39,7 @@ $Id$
 function listBuildFilter($attributes) {
 	$filter = array();
 	for ($i = 0; $i < sizeof($attributes); $i++) {
-		if (isset($_POST["filter" . strtolower($attributes[$i])]) && eregi('^([0-9a-z_\\*\\$])+$', $_POST["filter" . strtolower($attributes[$i])])) {
+		if (isset($_POST["filter" . strtolower($attributes[$i])]) && eregi('^([0-9a-z _\\*\\$-])+$', $_POST["filter" . strtolower($attributes[$i])])) {
 			$filter[$attributes[$i]]['original'] = $_POST["filter" . strtolower($attributes[$i])];
 			$filter[$attributes[$i]]['regex'] = $_POST["filter" . strtolower($attributes[$i])];
 			// replace special characters
