@@ -636,8 +636,7 @@ function parseHtml($module, $input, $values, $restricted, &$tabindex, &$tabindex
 						$options = array_merge ($input[$i][$j]['options'], $input[$i][$j]['options_selected'] );
 						$options = array_unique($options);
 						if (!$input[$i][$j]['noSorting']) {
-							if (get_preg($options[0], 'digit')) sort($options, SORT_NUMERIC);
-							else sort($options, SORT_STRING);
+							sort($options);
 						}
 						foreach ($options as $option) {
 							if ($option!='') {
