@@ -237,8 +237,6 @@ class posixGroup extends baseModule {
 					$users[] = $dn_users[$DNs[$i]]['uid'][0];
 				}
 			}
-			// sort users
-			sort($users);
 		}
 		$return[] = array(
 			0 => array('kind' => 'fieldset', 'legend' => _("Group members"), 'value' =>	array (
