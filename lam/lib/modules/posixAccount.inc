@@ -687,7 +687,7 @@ class posixAccount extends baseModule {
 			if ( !get_preg($this->attributes['homeDirectory'][0], 'homeDirectory' ))
 			$triggered_messages['homeDirecotry'][] = $this->messages['homeDirectory'][0];
 		}
-			if (($post['userPassword_lock'] && $post['userPassword_invalid']) || ($post['userPassword_nopassword'] && $post['userPassword_invalid'])) {
+		if (($post['userPassword_lock'] && $post['userPassword_invalid']) || ($post['userPassword_nopassword'] && $post['userPassword_invalid'])) {
 			// found invalid password parameter combination
 			$triggered_messages['userPassword'][] = $this->messages['userPassword'][3];
 		}
@@ -732,6 +732,11 @@ class posixAccount extends baseModule {
 				$triggered_messages['uid'][] = $this->messages['uid'][2];
 			}
 			if ($_SESSION[$this->base]->type=='host') {
+				// add "$" to uid if needed
+				if (substr($this->attributes['uid'][0], -1, 1) != '$') {
+					$this->attributes['uid'][0] .= '$';
+					$post['uid'] .= '$';
+				}
 				// Check if Hostname contains only valid characters
 				if ( !get_preg($this->attributes['uid'][0], 'hostname'))
 				$triggered_messages['uid'][] = $this->messages['uid'][4];
@@ -783,10 +788,8 @@ class posixAccount extends baseModule {
 			}
 			// Show warning if lam has changed username
 			if ($this->attributes['uid'][0] != $post['uid']) {
-				if ($_SESSION[$this->base]->type=='user')
-				$triggered_messages['uid'][] = $this->messages['uid'][5];
-			if ($_SESSION[$this->base]->type=='host')
-				$triggered_messages['uid'][] = $this->messages['uid'][6];
+				if ($_SESSION[$this->base]->type=='user') $triggered_messages['uid'][] = $this->messages['uid'][5];
+				if ($_SESSION[$this->base]->type=='host') $triggered_messages['uid'][] = $this->messages['uid'][6];
 			}
 			if ($_SESSION[$this->base]->isNewAccount && !get_preg($this->attributes['userPassword'][0], 'password'))
 			$triggered_messages['userPassword'][] = $this->messages['userPassword'][1];
