@@ -189,7 +189,12 @@ class Ldap{
 			$info = @ldap_get_entries($this->server,$sr);
 			if ($info) {
 				$this->objectClasses = $info[0]['objectclasses'];
-				array_shift($this->objectClasses);
+				if (is_array($this->objectClasses)) {
+					array_shift($this->objectClasses);
+				}
+				else {
+					$this->objectClasses = array();
+				}
 			}
 		}
 		// if search failed save empty result
@@ -204,8 +209,16 @@ class Ldap{
 			$info = @ldap_get_entries($this->server,$sr);
 			if ($info) {
 				$attributes = $info[0]['attributetypes'];
-				array_shift($attributes);
+				if (is_array($attributes)) {
+					array_shift($attributes);
+				}
+				else {
+					$attributes = array();
+				}
 			}
+		}
+		else {
+			$attributes = array();
 		}
 		// build Attribute list
 		for ($i=0; $i<count($attributes); $i++) {
