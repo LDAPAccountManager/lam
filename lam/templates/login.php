@@ -28,6 +28,50 @@ $Id$
 * @package main
 */
 
+/** status messages */
+include_once("../lib/status.inc");
+
+// check environment
+$criticalErrors = array();
+// check if PHP has session support
+if (! function_exists('session_start')) {
+	$criticalErrors[] = array("ERROR", "Your PHP has no session support!", "Please install the session extension for PHP.");
+}
+// check if PHP has LDAP support
+if (! function_exists('ldap_search')) {
+	$criticalErrors[] = array("ERROR", "Your PHP has no LDAP support!", "Please install the LDAP extension for PHP.");
+}
+// check if PHP has gettext support
+if (! function_exists('gettext') || !function_exists('_')) {
+	$criticalErrors[] = array("ERROR", "Your PHP has no gettext support!", "Please install gettext for PHP.");
+}
+// check file permissions
+$writableDirs = array('config', 'config/profiles', 'config/pdf', 'sess', 'tmp', );
+for ($i = 0; $i < sizeof($writableDirs); $i++) {
+	$path = realpath('../') . "/" . $writableDirs[$i];
+	if (!is_writable($path)) {
+		$criticalErrors[] = array("ERROR", _('The directory %s is not writable for the web server. Please change your file permissions.'), '', array($path));
+	}
+}
+// stop login if critical errors occured
+if (sizeof($criticalErrors) > 0) {
+	echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n\n";
+	echo "<html>\n<head>\n";
+	echo "<meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n";
+	echo "<meta http-equiv=\"pragma\" content=\"no-cache\">\n		<meta http-equiv=\"cache-control\" content=\"no-cache\">\n";
+	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">";
+	echo "<title>LDAP Account Manager</title>\n";
+	echo "</head><body>\n";
+	for ($i = 0; $i < sizeof($criticalErrors); $i++) {
+		call_user_func_array("StatusMessage", $criticalErrors[$i]);
+		echo "<br><br>";
+	}
+	echo "</body></html>";
+	exit();
+}
+
+
 /** access to configuration options */
 include_once("../lib/config.inc"); // Include config.inc which provides Config class
 
@@ -129,34 +173,10 @@ function display_LoginPage($config_object) {
 		</table>
 		<hr><br><br>
 		<?php
-		// check if PHP has session support
-		if (! function_exists('session_start')) {
-			StatusMessage("ERROR", "Your PHP has no session support!", "Please install the session extension for PHP.");
-			echo "<br><br>";
-		}
 		// check if all password hashes are possible
 		if ((! function_exists('mHash')) && (! function_exists('sha1'))) {
 			StatusMessage("INFO", "Your PHP does not support MHash or sha1(), you will only be able to use CRYPT/PLAIN/MD5/SMD5 for user passwords!", "Please install MHash or update to PHP >4.3.");
 			echo "<br><br>";
-		}
-		// check if PHP has LDAP support
-		if (! function_exists('ldap_search')) {
-			StatusMessage("ERROR", "Your PHP has no LDAP support!", "Please install the LDAP extension for PHP.");
-			echo "<br><br>";
-		}
-		// check if PHP has gettext support
-		if (! function_exists('gettext')) {
-			StatusMessage("ERROR", "Your PHP has no gettext support!", "Please install gettext for PHP.");
-			echo "<br><br>";
-		}
-		// check file permissions
-		$writableDirs = array('config', 'config/profiles', 'config/pdf', 'sess', 'tmp', );
-		for ($i = 0; $i < sizeof($writableDirs); $i++) {
-			$path = realpath('../') . "/" . $writableDirs[$i];
-			if (!is_writable($path)) {
-				StatusMessage("ERROR", _('The directory %s is not writable for the web server. Please change your file permissions.'), '', array($path));
-				echo "<br>";
-			}
 		}
 		?>
 		<table width="650" align="center" border="2" rules="none" bgcolor="white">
