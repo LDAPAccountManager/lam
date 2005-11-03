@@ -56,7 +56,9 @@ if ($_SESSION['config']->get_Suffix('tree') != "") $lists++;
 <table border=0 width="100%">
 	<tr>
 		<td width="200">
-			<img src="../graphics/tools.png">&nbsp;<a href="tools.php" target="mainpart"><?php echo _("Tools") ?></a>
+			<img src="../graphics/smile.png">&nbsp;<a href="http://lam.sourceforge.net/sponsors/donations.htm" target="_blank"><?php echo _("Donate") ?></a>
+			<br><br>
+			<img src="../graphics/tools.png">&nbsp;<a href="tools.php" target="mainpart"><BIG><B><?php echo _("Tools") ?></B></BIG></a>
 		</td>
 		<?php
 			echo "<td colspan=$lists align=\"center\">\n";
