@@ -70,7 +70,7 @@ class account extends baseModule {
 		$return['help'] = array (
 			'host' => array(
 				'description'	=>	array (
-					"Headline" => _("Gecos"),
+					"Headline" => _("Description"),
 					"Text" => _("Host description. If left empty host name will be used.")
 				)
 			)
