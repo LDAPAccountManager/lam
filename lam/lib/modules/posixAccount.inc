@@ -474,23 +474,6 @@ class posixAccount extends baseModule {
 	*/
 	function save_attributes() {
 		$return = $_SESSION[$this->base]->save_module_attributes($this->attributes, $this->orig);
-		// fill gecos with correct attributes frm inetOrgPerson when they are set
-		// TODO do we have t use 7bit ascci only?
-		// TODO change gecos evertime something in inetOrgPerson has changes
-		if (isset($_SESSION[$this->base]->modules['inetOrgPerson'])) {
-			if (isset($return[$_SESSION[$this->base]->dn]['add']['gecos']))
-				$return[$_SESSION[$this->base]->dn]['add']['gecos'] = $_SESSION[$this->base]->modules['inetOrgPerson']->attributes['givenName'][0] .
-					" " . $_SESSION[$this->base]->modules['inetOrgPerson']->attributes['sn'][0] . "," .
-					$_SESSION[$this->base]->modules['inetOrgPerson']->attributes['roomNumber'][0] . "," .
-					$_SESSION[$this->base]->modules['inetOrgPerson']->attributes['telephoneNumber'][0] . "," .
-					$_SESSION[$this->base]->modules['inetOrgPerson']->attributes['homePhone'][0] ;
-			if (isset($return[$_SESSION[$this->base]->dn]['modify']['gecos']))
-				$return[$_SESSION[$this->base]->dn]['modify']['gecos'] = $_SESSION[$this->base]->modules['inetOrgPerson']->attributes['givenName'][0] .
-					" " . $_SESSION[$this->base]->modules['inetOrgPerson']->attributes['sn'][0] . "," .
-					$_SESSION[$this->base]->modules['inetOrgPerson']->attributes['roomNumber'][0] . "," .
-					$_SESSION[$this->base]->modules['inetOrgPerson']->attributes['telephoneNumber'][0] . "," .
-					$_SESSION[$this->base]->modules['inetOrgPerson']->attributes['homePhone'][0] ;
-		}
 		// unset password when needed
 		if (isset($return[$_SESSION[$this->base]->dn]['add']['userPassword']))
 		unset($return[$_SESSION[$this->base]->dn]['add']['userPassword']);
@@ -890,12 +873,10 @@ class posixAccount extends baseModule {
 			0 => array('kind' => 'text', 'text' => _('UID number').'*'),
 			1 => array('kind' => 'input', 'name' => 'uidNumber', 'type' => 'text', 'size' => '6', 'maxlength' => '6', 'value' => $this->attributes['uidNumber'][0]),
 			2 => array('kind' => 'help', 'value' => 'uidNumber'));
-		if (!isset($_SESSION[$this->base]->modules['inetOrgPerson'])) {
-			$return[] = array(
-				0 => array('kind' => 'text', 'text' => _('Gecos')),
-				1 => array('kind' => 'input', 'name' => 'gecos', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => $this->attributes['gecos'][0]),
-				2 => array('kind' => 'help', 'value' => 'gecos'));
-		}
+		$return[] = array(
+			0 => array('kind' => 'text', 'text' => _('Gecos')),
+			1 => array('kind' => 'input', 'name' => 'gecos', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => $this->attributes['gecos'][0]),
+			2 => array('kind' => 'help', 'value' => 'gecos'));
 		$return[] = array(
 			0 => array('kind' => 'text', 'text' => _('Primary group').'*' ),
 			1 => array('kind' => 'select', 'name' => 'gidNumber', 'options' => $groups, 'options_selected' => array($_SESSION['cache']->getgrnam($this->attributes['gidNumber'][0]))),
