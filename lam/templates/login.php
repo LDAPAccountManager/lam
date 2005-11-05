@@ -50,7 +50,7 @@ $writableDirs = array('config', 'config/profiles', 'config/pdf', 'sess', 'tmp', 
 for ($i = 0; $i < sizeof($writableDirs); $i++) {
 	$path = realpath('../') . "/" . $writableDirs[$i];
 	if (!is_writable($path)) {
-		$criticalErrors[] = array("ERROR", _('The directory %s is not writable for the web server. Please change your file permissions.'), '', array($path));
+		$criticalErrors[] = array("ERROR", 'The directory %s is not writable for the web server. Please change your file permissions.', '', array($path));
 	}
 }
 // stop login if critical errors occured
