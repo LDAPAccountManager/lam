@@ -117,7 +117,7 @@ if ($_POST['save']) {
 		// save profile
 		if (saveAccountProfile($options, $_POST['profname'], $_POST['accounttype'])) {
 			echo StatusMessage("INFO", _("Profile was saved."), $_POST['profname']);
-			echo ("<br><p><a href=\"profilemain.php\">" . _("Back to Profile Editor") . "</a></p>");
+			echo ("<br><p><a href=\"profilemain.php\">" . _("Back to profile editor") . "</a></p>");
 			echo "</body></html>";
 			exit();
 		}

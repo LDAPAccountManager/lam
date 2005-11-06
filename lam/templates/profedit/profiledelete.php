@@ -60,7 +60,7 @@ if ($_POST['submit']) {
 		StatusMessage("ERROR", _("Unable to delete profile!"), $_POST['del'] . "." . $_POST['type']);
 	}
 	else StatusMessage("INFO", _("Deleted profile:"), $_POST['del'] . "." . $_POST['type']);
-	echo ("<br><a href=\"profilemain.php\">" . _("Back to Profile Editor") . "</a>");
+	echo ("<br><a href=\"profilemain.php\">" . _("Back to profile editor") . "</a>");
 	echo ("</body></html>\n");
 	exit;
 }
@@ -68,7 +68,7 @@ if ($_POST['submit']) {
 // check if admin has aborted delete operation
 if ($_POST['abort']) {
 	StatusMessage("INFO", "", _("Delete operation canceled."));
-	echo ("<br><a href=\"profilemain.php\">" . _("Back to Profile Editor") . "</a>");
+	echo ("<br><a href=\"profilemain.php\">" . _("Back to profile editor") . "</a>");
 	echo ("</body></html>\n");
 	exit;
 }
@@ -90,5 +90,5 @@ if (($type == "user") || ($type == "host") || ($type == "group")) {
 else{
 	// no valid profile type
 	StatusMessage("ERROR", "", _("Wrong or missing type!") . " " . $type);
-	echo ("<a href=\"profilemain.php\">" . _("Back to Profile Editor") . "</a>");
+	echo ("<a href=\"profilemain.php\">" . _("Back to profile editor") . "</a>");
 }
