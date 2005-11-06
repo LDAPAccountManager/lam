@@ -427,7 +427,7 @@ foreach( $attrs as $attr => $vals ) {
                 src="../../graphics/tree_info.png" /></a>
             <?php
 			$schema_object = get_schema_objectclass( $val);
-			if ($schema_object->type == 'structural') {
+			if (is_object($schema_object) && $schema_object->type == 'structural') {
 				echo "$val <small>(<acronym>" .
                         _('structural') . "</acronym>)</small><br />";
                 ?>
