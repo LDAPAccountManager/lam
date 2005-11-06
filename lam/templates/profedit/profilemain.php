@@ -53,14 +53,15 @@ if (!$_SESSION['ldap'] || !$_SESSION['ldap']->server()) {
 	exit;
 }
 
-// check if user has pressed submit or abort button
-if ($_POST['submit']) {
-	// on abort go back to main page
-	if ($_POST['abort']) {
-		metaRefresh("../lists/listusers.php");
-	}
-	// on submit forward to other profile pages
-	elseif ($_POST['submit']) {
+// on abort go back to main page
+if (isset($_POST['abort'])) {
+	metaRefresh("../tools.php");
+	exit;
+}
+// check if user has pressed submit button
+elseif (isset($_POST['submit'])) {
+	// forward to other profile pages
+	if ($_POST['submit']) {
 		for ($i = 0; $i < sizeof($profileClasses); $i++) {
 			// create new profile
 			if ($_POST['profile'] == ("new" . $profileClasses[$i]['scope'])) {
