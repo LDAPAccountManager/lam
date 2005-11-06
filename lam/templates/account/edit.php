@@ -55,7 +55,7 @@ if (!isset($_SESSION['loggedIn'])) {
 setlanguage();
 
 //load account
-if ($_GET['DN']) {
+if (isset($_GET['DN'])) {
 	$DN = str_replace("\'", '', $_GET['DN']);
 	$type = str_replace("\'", '', $_GET['type']);
 	if ($_GET['type'] == $type) $type = str_replace("'", '',$_GET['type']);

@@ -286,7 +286,7 @@ function display_LoginPage($config_object) {
 							<td style="border-style:none" height="30"><b>
 								<?php
 								echo _("Configuration profile") . ": ";
-								if(!$_POST['profileChange']) {
+								if(empty($_POST['profileChange'])) {
 									$_POST['profile'] = $_SESSION['config']->file;
 								}
 								?></b>
@@ -330,7 +330,7 @@ function display_LoginPage($config_object) {
 }
 
 // checking if the submitted username/password is correct.
-if($_POST['checklogin'])
+if(!empty($_POST['checklogin']))
 {
 	$_SESSION['lampath'] = realpath('../') . "/";  // Save full path to lam in session
 
@@ -389,7 +389,7 @@ if($_POST['checklogin'])
 	}
 }
 // Reload loginpage after a profile change
-elseif($_POST['profileChange']) {
+elseif(!empty($_POST['profileChange'])) {
 	$_SESSION['config'] = new Config($_POST['profile']); // Recreate the config object with the submited
 	display_LoginPage($_SESSION['config']); // Load login page
 }
