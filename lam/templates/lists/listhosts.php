@@ -54,8 +54,8 @@ $scope = 'host';
 // copy HTTP-GET variables to HTTP-POST
 $_POST = $_POST + $_GET;
 
-$info = $_SESSION[$scope . 'info'];
-$units = $_SESSION[$scope . '_units'];
+if (isset($_SESSION[$scope . 'info'])) $info = $_SESSION[$scope . 'info'];
+if (isset($_SESSION[$scope . '_units'])) $units = $_SESSION[$scope . '_units'];
 
 listDoPost($scope);
 
