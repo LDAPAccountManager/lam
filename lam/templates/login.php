@@ -46,7 +46,7 @@ if (! function_exists('gettext') || !function_exists('_')) {
 	$criticalErrors[] = array("ERROR", "Your PHP has no gettext support!", "Please install gettext for PHP.");
 }
 // check file permissions
-$writableDirs = array('config', 'config/profiles', 'config/pdf', 'sess', 'tmp', );
+$writableDirs = array('sess', 'tmp');
 for ($i = 0; $i < sizeof($writableDirs); $i++) {
 	$path = realpath('../') . "/" . $writableDirs[$i];
 	if (!is_writable($path)) {
