@@ -466,7 +466,7 @@ function get_preg($argument, $regexp) {
 					$pregexpr = '/^[a-zA-Z]([a-zA-Z0-9\\.\\_-])*\\$$/u';
 					break;
 		case 'realname':	// Allow all letters, space and  .-_
-					$pregexpr = '/^[[:alpha:]]([[:alpha:]\\.\\ \\_-])*$/u';
+					$pregexpr = '/^[[:alnum:]]([[:alnum:]\\.\\ \\_-])*$/u';
 					break;
 		case "telephone":	// Allow numbers, space, brackets, /-+.
 					$pregexpr = '/^(\\+)*([0-9\\.\\ \\(\\)\\/-])*$/';
