@@ -401,6 +401,15 @@ class inetOrgPerson extends baseModule {
 				unset($return[$_SESSION[$this->base]->dn]['add']['userPassword']);
 			}
 		}
+		// postalAddress and facsimileTelephoneNumber need special removing
+		if (isset($return[$_SESSION[$this->base]->dn]['remove']['postalAddress'])) {
+			$return[$_SESSION[$this->base]->dn]['modify']['postalAddress'] = array();
+			unset($return[$_SESSION[$this->base]->dn]['remove']['postalAddress']);
+		}
+		if (isset($return[$_SESSION[$this->base]->dn]['remove']['facsimileTelephoneNumber'])) {
+			$return[$_SESSION[$this->base]->dn]['modify']['facsimileTelephoneNumber'] = array();
+			unset($return[$_SESSION[$this->base]->dn]['remove']['facsimileTelephoneNumber']);
+		}
 		return $return;
 	}
 
