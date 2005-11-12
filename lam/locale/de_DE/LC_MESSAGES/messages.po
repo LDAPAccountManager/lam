@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: messages\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de \n"
 "POT-Creation-Date: 2004-01-14 17:45+0200\n"
-"PO-Revision-Date: 2005-11-05 16:43+0100\n"
+"PO-Revision-Date: 2005-11-07 11:22+0100\n"
 "Last-Translator: Roland Gruber <post@rolandgruber.de>\n"
 "Language-Team: Deutsch <lam-i18n@lists.sourceforge.org>\n"
 "MIME-Version: 1.0\n"
@@ -83,7 +83,7 @@ msgstr ""
 #: ../templates/pdfedit/pdfpage.php:772 ../templates/pdfedit/pdfmain.php:153
 #: ../templates/profedit/profiledelete.php:85
 #: ../templates/profedit/profilepage.php:251
-#: ../templates/profedit/profilemain.php:157
+#: ../templates/profedit/profilemain.php:158
 #: ../lib/modules/sambaSamAccount.inc:990
 msgid "Abort"
 msgstr "Abbrechen"
@@ -375,13 +375,6 @@ msgstr "Zurück zum OU-Editor"
 msgid "Back to PDF Editor"
 msgstr "Zurück zum PDF-Editor"
 
-#: ../templates/profedit/profiledelete.php:63
-#: ../templates/profedit/profiledelete.php:71
-#: ../templates/profedit/profiledelete.php:93
-#: ../templates/profedit/profilepage.php:120
-msgid "Back to Profile Editor"
-msgstr "Zurück zum Profileditor"
-
 #: ../lib/modules.inc:1004
 msgid "Back to account list"
 msgstr "Zurück zur Accountliste"
@@ -410,6 +403,13 @@ msgstr "Zurück zur Liste"
 #: ../templates/config/confsave.php:231
 msgid "Back to preferences..."
 msgstr "Zurück zu den Einstellungen"
+
+#: ../templates/profedit/profiledelete.php:63
+#: ../templates/profedit/profiledelete.php:71
+#: ../templates/profedit/profiledelete.php:93
+#: ../templates/profedit/profilepage.php:120
+msgid "Back to profile editor"
+msgstr "Zurück zum Profileditor"
 
 #: ../templates/config/profmanage.php:417
 msgid "Back to profile login"
@@ -507,8 +507,7 @@ msgstr "Abbrechen"
 
 #: ../templates/login.php:370 ../templates/login.php:375
 msgid "Cannot connect to specified LDAP server. Please try again."
-msgstr ""
-"Kann keine Verbindung zum LDAP-Server aufbauen. Bitte erneut versuchen."
+msgstr "Kann keine Verbindung zum LDAP-Server aufbauen. Bitte erneut versuchen."
 
 #: ../lib/config.inc:348 ../lib/config.inc:883
 msgid "Cannot open config file!"
@@ -686,7 +685,7 @@ msgstr "PDF-Datei für ausgewählte(n) Benutzer erstellen"
 msgid "Create a new PDF structure for scope: "
 msgstr "Neue PDF-Struktur erstellen für Typ:"
 
-#: ../templates/profedit/profilemain.php:119
+#: ../templates/profedit/profilemain.php:120
 msgid "Create a new profile"
 msgstr "Neues Profil erstellen"
 
@@ -765,13 +764,11 @@ msgstr "Datenfeld für RDN ist leer!"
 
 #: ../lib/modules/sambaAccount.inc:366 ../lib/modules/sambaSamAccount.inc:207
 msgid "Date after the user is able to change his password. Format: DD-MM-YYYY"
-msgstr ""
-"Datum, nach dem der Benutzer sein Passwort ändern kann. Format: TT-MM-JJJJ"
+msgstr "Datum, nach dem der Benutzer sein Passwort ändern kann. Format: TT-MM-JJJJ"
 
 #: ../lib/modules/sambaAccount.inc:368 ../lib/modules/sambaSamAccount.inc:209
 msgid "Date after the user must change his password. Format: DD-MM-YYYY"
-msgstr ""
-"Datum, nach dem der Benutzer sein Passwort ändern muss. Format: TT-MM-JJJJ"
+msgstr "Datum, nach dem der Benutzer sein Passwort ändern muss. Format: TT-MM-JJJJ"
 
 #: ../lib/modules/shadowAccount.inc:150
 msgid ""
@@ -861,7 +858,7 @@ msgstr "Organizational Unit löschen"
 
 #: ../templates/config/profmanage.php:258
 #: ../templates/profedit/profiledelete.php:52
-#: ../templates/profedit/profilemain.php:145 ../help/help.inc:117
+#: ../templates/profedit/profilemain.php:146 ../help/help.inc:117
 msgid "Delete profile"
 msgstr "Lösche Profil"
 
@@ -1153,7 +1150,7 @@ msgstr "Mitglieder ändern"
 msgid "Edit modules"
 msgstr "Module ändern"
 
-#: ../templates/profedit/profilemain.php:132
+#: ../templates/profedit/profilemain.php:133
 msgid "Edit profile"
 msgstr "Profil ändern"
 
@@ -1306,8 +1303,7 @@ msgstr "Vorname enthält ungültige Zeichen!"
 
 #: ../lib/modules/inetOrgPerson.inc:279
 msgid "First name of user. Only letters, - and spaces are allowed."
-msgstr ""
-"Vorname des Benutzers. Es sind nur Buchstaben, - und Leerzeichen erlaubt."
+msgstr "Vorname des Benutzers. Es sind nur Buchstaben, - und Leerzeichen erlaubt."
 
 #: ../lib/modules/kolabUser.inc:123
 msgid "For automatic invitation handling."
@@ -1386,17 +1382,14 @@ msgid "Grace block period"
 msgstr "Block-Frist"
 
 #: ../lib/modules/quota.inc:103
-msgid ""
-"Grace block period. Most filesystems use a fixed maximum value of 7 days."
-msgstr ""
-"Block-Frist. Viele Dateisysteme verwenden ein festes Maximum von 7 Tagen."
+msgid "Grace block period. Most filesystems use a fixed maximum value of 7 days."
+msgstr "Block-Frist. Viele Dateisysteme verwenden ein festes Maximum von 7 Tagen."
 
 #: ../lib/modules/quota.inc:119
 msgid ""
 "Grace inode (files) period. Most filesystems use a fixed maximum value of 7 "
 "days."
-msgstr ""
-"Inode-Frist. Viele Dateisysteme verwenden ein festes Maximum von 7 Tagen."
+msgstr "Inode-Frist. Viele Dateisysteme verwenden ein festes Maximum von 7 Tagen."
 
 #: ../lib/modules/quota.inc:118 ../lib/modules/quota.inc:310
 msgid "Grace inode period"
@@ -1593,15 +1586,13 @@ msgid "Here you can manage your account profiles."
 msgstr "Hier können Sie Ihre Accountprofile verwalten."
 
 #: ../help/help.inc:147
-msgid ""
-"Here you can select a PDF structure and export the account to a PDF file."
+msgid "Here you can select a PDF structure and export the account to a PDF file."
 msgstr ""
 "Die Account-Daten können als PDF-Datei exportiert werden. Wählen Sie hierfür "
 "das gewünschte PDF-Profil."
 
 #: ../help/help.inc:112
-msgid ""
-"Here you can select which plugins you want to use for account management."
+msgid "Here you can select which plugins you want to use for account management."
 msgstr ""
 "Hier können Sie die Plugins wählen, die Sie zur Accountverwaltung verwenden "
 "möchten."
@@ -1725,8 +1716,7 @@ msgstr ""
 
 #: ../lib/modules/posixAccount.inc:88
 msgid "Host name in use. Selected next free host name."
-msgstr ""
-"Hostname wird bereits verwendet. Nächster freier Hostname wurde ausgewählt."
+msgstr "Hostname wird bereits verwendet. Nächster freier Hostname wurde ausgewählt."
 
 #: ../lib/modules/posixAccount.inc:388
 msgid ""
@@ -1781,8 +1771,7 @@ msgstr "Bezeichner"
 
 #: ../lib/modules/sambaAccount.inc:342 ../lib/modules/sambaSamAccount.inc:183
 msgid "If checked Unix password will also be used as Samba password."
-msgstr ""
-"Falls aktiviert wird das Unix-Passwort auch als Samba-Passwort verwendet."
+msgstr "Falls aktiviert wird das Unix-Passwort auch als Samba-Passwort verwendet."
 
 #: ../lib/modules/posixAccount.inc:366
 msgid ""
@@ -1840,24 +1829,20 @@ msgstr ""
 "gesetzt)"
 
 #: ../lib/modules/sambaSamAccount.inc:240
-msgid ""
-"If you leave this empty LAM will use: uidNumber*2 + sambaAlgorithmicRidBase."
+msgid "If you leave this empty LAM will use: uidNumber*2 + sambaAlgorithmicRidBase."
 msgstr ""
 "Wenn Sie das Feld leer lassen wird LAM folgenden Wert einfügen: uidNumber*2 "
 "+ sambaAlgorithmicRidBase."
 
 #: ../help/help.inc:106
-msgid ""
-"If you want to change the current preferences password, please enter it here."
-msgstr ""
-"Wenn Sie das aktuelle Profilpasswort ändern wollen, geben Sie es hier ein."
+msgid "If you want to change the current preferences password, please enter it here."
+msgstr "Wenn Sie das aktuelle Profilpasswort ändern wollen, geben Sie es hier ein."
 
 #: ../help/help.inc:124
 msgid ""
 "If you want to change your master configuration password, please enter it "
 "here."
-msgstr ""
-"Wenn Sie das aktuelle Hauptpasswort ändern wollen, geben Sie es hier ein."
+msgstr "Wenn Sie das aktuelle Hauptpasswort ändern wollen, geben Sie es hier ein."
 
 #: ../lib/modules/sambaAccount.inc:395
 msgid ""
@@ -2126,8 +2111,7 @@ msgstr "Nachname enthält ungültige Zeichen!"
 
 #: ../lib/modules/inetOrgPerson.inc:283
 msgid "Last name of user. Only letters, - and spaces are allowed."
-msgstr ""
-"Nachname des Benutzers. Es sind nur Buchstaben, - und Leerzeichen erlaubt."
+msgstr "Nachname des Benutzers. Es sind nur Buchstaben, - und Leerzeichen erlaubt."
 
 #: ../lib/modules/shadowAccount.inc:307
 msgid "Last password change"
@@ -2720,8 +2704,7 @@ msgstr ""
 "haben."
 
 #: ../lib/modules/shadowAccount.inc:154
-msgid ""
-"Number of days a user can login even his password has expired. -1=always."
+msgid "Number of days a user can login even his password has expired. -1=always."
 msgstr ""
 "Anzahl der Tage, in denen sich ein Benutzer anmelden kann, obwohl sein "
 "Passwort bereits abgelaufen ist. -1 = immer."
@@ -2969,8 +2952,7 @@ msgstr "Persönlich"
 
 #: ../lib/modules/ldapPublicKey.inc:59
 msgid "Please a comma separated list of your public SSH keys."
-msgstr ""
-"Bitte geben Sie eine Liste von SSH-Schlüsseln, getrennt durch Kommata, ein."
+msgstr "Bitte geben Sie eine Liste von SSH-Schlüsseln, getrennt durch Kommata, ein."
 
 #: ../templates/delete.php:80
 msgid "Please confirm:"
@@ -2978,8 +2960,7 @@ msgstr "Bitte bestätigen:"
 
 #: ../lib/modules/sambaSamAccount.inc:90
 msgid "Please enter a RID number or the name of a special account!"
-msgstr ""
-"Bitte geben Sie eine RID-Nummer oder den Namen eines Spezialaccounts ein!"
+msgstr "Bitte geben Sie eine RID-Nummer oder den Namen eines Spezialaccounts ein!"
 
 #: ../lib/modules/inetOrgPerson.inc:335
 msgid ""
@@ -3766,7 +3747,7 @@ msgstr "Unterhalb (kompletter Baum unter Basis-DN)"
 #: ../templates/config/confmain.php:481 ../templates/pdfedit/pdfdelete.php:81
 #: ../templates/pdfedit/pdfpage.php:735 ../templates/pdfedit/pdfmain.php:152
 #: ../templates/profedit/profiledelete.php:84
-#: ../templates/profedit/profilemain.php:156 ../lib/modules/posixGroup.inc:283
+#: ../templates/profedit/profilemain.php:157 ../lib/modules/posixGroup.inc:283
 #: ../lib/modules/sambaAccount.inc:802 ../lib/modules/sambaSamAccount.inc:903
 #: ../lib/modules/sambaSamAccount.inc:989 ../lib/modules/posixAccount.inc:1012
 #: ../lib/modules/inetOrgPerson.inc:669
@@ -3829,8 +3810,7 @@ msgid "Text for user PDF"
 msgstr "Text für Benutzer-PDF"
 
 #: ../lib/modules/kolabUser.inc:159
-msgid ""
-"The Cyrus mail quota for users in MBytes, leave blank for unlimited space."
+msgid "The Cyrus mail quota for users in MBytes, leave blank for unlimited space."
 msgstr ""
 "Das Cyrus-Mailquota für Benutzer in MBytes, leer heißt unbegrenzter "
 "Speicherplatz."
@@ -3853,8 +3833,7 @@ msgstr ""
 #: ../templates/tree/templates/creation/custom.php:99
 #, php-format
 msgid "The container you specified (%s) does not exist. Please try again."
-msgstr ""
-"Der angegebene Container (%s) existiert nicht. Bitte versuchen Sie es erneut."
+msgstr "Der angegebene Container (%s) existiert nicht. Bitte versuchen Sie es erneut."
 
 #: ../lib/modules/kolabUser.inc:147
 msgid "The country name of the user."
@@ -3873,8 +3852,7 @@ msgid "The following settings were saved to profile:"
 msgstr "Die folgenden Einstellungen wurden gespeichert:"
 
 #: ../templates/initsuff.php:178
-msgid ""
-"The following suffix(es) are missing in LDAP. LAM can create them for you."
+msgid "The following suffix(es) are missing in LDAP. LAM can create them for you."
 msgstr "Folgende Suffixe fehlen in LDAP. LAM kann sie für Sie erstellen."
 
 #: ../lib/modules/sambaSamAccount.inc:103
@@ -3987,8 +3965,7 @@ msgstr ""
 "plus 1."
 
 #: ../lib/modules/posixAccount.inc:94
-msgid ""
-"This GID number is invalid! Please provide either a number or a group name."
+msgid "This GID number is invalid! Please provide either a number or a group name."
 msgstr ""
 "Diese GID-Nummer ist ungültig! Bitte geben Sie eine Nummer ein oder einen "
 "Gruppennamen."
@@ -4005,8 +3982,7 @@ msgstr "Dieser Account wurde zum Löschen markiert."
 msgid ""
 "This allows you to define this account as a special user like administrator "
 "or guest."
-msgstr ""
-"Hier können Sie spezielle Accounts definieren, z.B. Administrator oder Gast."
+msgstr "Hier können Sie spezielle Accounts definieren, z.B. Administrator oder Gast."
 
 #: ../help/help.inc:120
 msgid "This changes the password of the selected profile."
@@ -4017,8 +3993,7 @@ msgid "This changes the profile which is selected by default at login."
 msgstr "Damit ändern Sie das Standardprofil am Login."
 
 #: ../templates/massBuildAccounts.php:148
-msgid ""
-"This column is defined to include unique entries but duplicates were found:"
+msgid "This column is defined to include unique entries but duplicates were found:"
 msgstr "Diese Spalte darf keine doppelten Einträge enthalten:"
 
 #: ../help/help.inc:94
@@ -4121,8 +4096,7 @@ msgstr ""
 msgid ""
 "This is the MAC address of the network card of the device (e.g. 00:01:02:DE:"
 "EF:18)."
-msgstr ""
-"Dies ist die MAC-Adresse der Netzwerkkarte im Gerät (z.B. 00:01:02:DE:EF:18)."
+msgstr "Dies ist die MAC-Adresse der Netzwerkkarte im Gerät (z.B. 00:01:02:DE:EF:18)."
 
 #: ../lib/modules/sambaAccount.inc:392
 msgid "This is the RID of the user's primary Windows group."
@@ -4347,16 +4321,14 @@ msgstr "Dieser Wert darf nur \\\"true\\\" oder \\\"false\\\" sein."
 
 #: ../lib/modules/posixGroup.inc:482
 msgid "This value must be a list of user names separated by semicolons."
-msgstr ""
-"Dieser Wert muss eine Liste von Benutzernamen, getrennt duch Kommata, sein."
+msgstr "Dieser Wert muss eine Liste von Benutzernamen, getrennt duch Kommata, sein."
 
 #: ../help/help.inc:154
 msgid "This will create a new organizational unit under the selected one."
 msgstr "Dies erzeugt eine neue Organizational Unit unterhalb der markierten."
 
 #: ../help/help.inc:156
-msgid ""
-"This will delete the selected organizational unit. The OU has to be empty."
+msgid "This will delete the selected organizational unit. The OU has to be empty."
 msgstr "Dies löscht die markierte Organizational Unit. Die OU muss leer sein."
 
 #: ../help/help.inc:118
@@ -4376,8 +4348,7 @@ msgstr ""
 "dies um Kolab-Accounts sauber zu löschen (löscht z.B. das Postfach)."
 
 #: ../lib/modules/posixAccount.inc:370
-msgid ""
-"This will set an invalid password which prevents logins with this account."
+msgid "This will set an invalid password which prevents logins with this account."
 msgstr ""
 "Wenn Sie dieses Kästchen anwählen, dann setzt LAM ein ungültiges Passwort "
 "für den Account. Dadurch kann sich niemand mit diesem Account anmelden."
@@ -4440,8 +4411,7 @@ msgstr "Benutzer ID"
 
 #: ../lib/modules/posixAccount.inc:82
 msgid "UID has changed. Do you want to change home directory?"
-msgstr ""
-"UID-Nummer wurde geändert. Soll das Heimatverzeichnis angepasst werden?"
+msgstr "UID-Nummer wurde geändert. Soll das Heimatverzeichnis angepasst werden?"
 
 #: ../lib/modules/posixAccount.inc:77
 msgid ""
@@ -5003,8 +4973,7 @@ msgstr "JPEG-Bild enthält Fehler"
 msgid ""
 "ldap://localhost:389 connects to localhost using a standard LDAP connection "
 "on port 389"
-msgstr ""
-"ldaps://141.40.146.133 baut eine einfache Verbindung zu 141.40.146.133 auf."
+msgstr "ldaps://141.40.146.133 baut eine einfache Verbindung zu 141.40.146.133 auf."
 
 #: ../help/help.inc:54
 msgid ""
@@ -5108,3 +5077,4 @@ msgstr "benutzer@firma.de"
 #: ../lib/modules/posixAccount.inc:203
 msgid "users"
 msgstr "Benutzer"
+
