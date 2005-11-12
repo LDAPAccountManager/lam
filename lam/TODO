@@ -4,8 +4,8 @@
  - lamdaemon without Perl
 
 
-0.5.2
+0.5.3
 
  - InetOrgPerson: jpgPhoto
-
+ - delete entries recursively
  
