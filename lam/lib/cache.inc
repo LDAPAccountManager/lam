@@ -80,6 +80,7 @@ class cache {
 	*
 	*/
 	function get_cache($attributes, $objectClass, $scopelist) {
+		$return = array();
 		$this->refresh_cache();
 		if (is_array($scopelist)) $scopes = $scopelist;
 			else $scopes = array($scopelist);
