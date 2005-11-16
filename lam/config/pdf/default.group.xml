@@ -1,4 +1,4 @@
-<pdf type="group">
+<pdf type="group" headline="Group information">
 	<section name="_posixGroup_cn">
 		<entry name="main_dn" />
 		<entry name="posixGroup_description" />

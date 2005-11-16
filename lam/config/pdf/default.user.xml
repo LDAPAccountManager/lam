@@ -1,4 +1,4 @@
-<pdf type="user">
+<pdf type="user" headline="User information">
 	<text name="user" />
 	<section name="Personal user information">
 		<entry name="inetOrgPerson_title" />

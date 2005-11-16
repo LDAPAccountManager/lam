@@ -398,19 +398,6 @@ class lamPDF extends UFPDF {
 		
 		$this->page_definitions = $page_definitions;
 		
-		// Decide which PDF file type we shall use
-		switch($account_type) {
-			case "user":
-				$subject = _("User information page");
-				break;
-			case "group":
-				$subject = _("Group information page");
-				break;
-			case "host":
-				$subject = _("Host information page");
-				break;
-		}
-		
 		// Open PDF file and write some basic information
 		$this->Open();
 		$this->AddFont($this->fontName, '', $this->fontList[$this->fontName][0]);
@@ -419,9 +406,7 @@ class lamPDF extends UFPDF {
 		$this->AddFont($this->fontName, 'BI', $this->fontList[$this->fontName][3]);
 		$this->setFont($this->fontName,"",12);
 		$this->setTitle($this->page_definitions['headline']);
-		$this->setSubject($subject);
-		$this->setAuthor("LDAP Account Manager Devel-Team -Michael Duergner-");
-		$this->setCreator("LDAP Account Manager (pdf.inc)");
+		$this->setCreator("LDAP Account Manager");
 		$this->setMargins($this->page_definitions['margin-left'],$this->page_definitions['margin-top'],$this->page_definitions['margin-right']);
 		$this->setAutoPageBreak(true,$this->page_definitions['margin-bottom']);
 	}
@@ -448,12 +433,11 @@ class lamPDF extends UFPDF {
 			}
 			$this->Image($imageFile,10,10,$width,$height,"JPG");
 		}
-		$this->SetFont($this->fontName,"B",22);
+		$this->SetY(18);
+		$this->SetFont($this->fontName,"B",18);
 		$this->Cell(170,5,$this->page_definitions['headline'],0,1,"R",0);
 		$this->Ln(3);
-		$this->SetFont($this->fontName,"",14);
-		$this->Cell(170,5,"- " . $this->subject . " -",0,0,"R",0);
-		$this->SetLineWidth(0.8);
+		$this->SetLineWidth(0.4);
 		$this->Line(10,$this->page_definitions['margin-top'] + 30,200,$this->page_definitions['margin-top'] + 30);
 		$this->Line(10,$this->page_definitions['margin-top'] + 32,200,$this->page_definitions['margin-top'] + 32);
 		$this->SetY(50);
@@ -463,10 +447,11 @@ class lamPDF extends UFPDF {
 	 * 
 	 */
 	function footer() {
-		$this->SetLineWidth(0.8);
+		$this->SetLineWidth(0.4);
 		$this->Line(10,280,200,280);
 		$this->Line(10,282,200,282);
-		$this->SetY(285);
+		$this->SetY(286);
+		$this->SetFont($this->fontName,"",10);
 		$this->Cell(0,5,_("This document was automatically created by LDAP Account Manager"),0,0,"C",0);
 	}
 }
