@@ -88,14 +88,12 @@ function display_LoginPage($config_object) {
 	// generate 256 bit key and initialization vector for user/passwd-encryption
 	// check if we can use /dev/random otherwise use /dev/urandom or rand()
 	if(function_exists('mcrypt_create_iv')) {
-		$key = @mcrypt_create_iv(32, MCRYPT_DEV_RANDOM);
-		if (! $key) $key = @mcrypt_create_iv(32, MCRYPT_DEV_URANDOM);
+		$key = @mcrypt_create_iv(32, MCRYPT_DEV_URANDOM);
 		if (! $key) {
 			srand((double)microtime()*1234567);
 			$key = mcrypt_create_iv(32, MCRYPT_RAND);
 		}
-		$iv = @mcrypt_create_iv(32, MCRYPT_DEV_RANDOM);
-		if (! $iv) $iv = @mcrypt_create_iv(32, MCRYPT_DEV_URANDOM);
+		$iv = @mcrypt_create_iv(32, MCRYPT_DEV_URANDOM);
 		if (! $iv) {
 			srand((double)microtime()*1234567);
 			$iv = mcrypt_create_iv(32, MCRYPT_RAND);
