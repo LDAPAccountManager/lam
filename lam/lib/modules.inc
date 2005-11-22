@@ -1481,7 +1481,7 @@ class accountContainer {
 				}
 			}
 		if (!$stopprocessing) {
-			if ($this->dn != $this->dn_orig) {
+			if (strtolower($this->dn) != strtolower($this->dn_orig)) {
 				// move existing DN
 				if ($this->dn_orig!='') {
 					// merge attributes together
