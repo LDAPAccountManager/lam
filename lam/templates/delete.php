@@ -82,11 +82,15 @@ if ($_GET['type']) {
 	echo "<input name=\"type\" type=\"hidden\" value=\"" . $_GET['type'] . "\">\n";
 	echo "<b>" . _("Do you really want to remove the following accounts?") . "</b>";
 	echo "<br><br>\n";
-	echo "<table border=0 width=\"100%\">\n<tr><td valign=\"top\" width=\"15%\" >";
+	echo "<table border=0>\n";
 	for ($i=0; $i<count($users); $i++) {
 		echo "<tr>\n";
 		echo "<td><b>" . _("Account name:") . "</b> $users[$i]</td>\n";
-		echo "<td><b>" . _('DN') . ":</b> " . $_SESSION['delete_dn'][$i] . "</td>\n";
+		echo "<td>&nbsp;&nbsp;<b>" . _('DN') . ":</b> " . $_SESSION['delete_dn'][$i] . "</td>\n";
+		$childCount = getChildCount($_SESSION['delete_dn'][$i]);
+		if ($childCount > 0) {
+			echo "<td>&nbsp;&nbsp;<b>" . _('Number of child entries') . ":</b> " . $childCount . "</td>\n";
+		}
 		echo "</tr>\n";
 	}
 	echo "</table>\n";
@@ -213,11 +217,8 @@ if ($_POST['delete']) {
 			}
 		}
 		if (!$stopprocessing) {
-			$success = @ldap_delete($_SESSION['ldap']->server(), $_SESSION['delete_dn'][$m]);
-			if (!$success) {
-				$errors[] = array ('ERROR', sprintf(_('Was unable to delete DN: %s.'), $_SESSION['delete_dn'][$m]), ldap_error($_SESSION['ldap']->server()));
-				$stopprocessing = true;
-			}
+			$errors = deleteDN($_SESSION['delete_dn'][$m]);
+			if (sizeof($errors) > 0) $stopprocessing = true;
 		}
 		if (!$stopprocessing) {
 			echo sprintf(_('Deleted DN: %s'), $_SESSION['delete_dn'][$m]) . "<br>\n";
@@ -238,6 +239,50 @@ if ($_POST['delete']) {
 	echo "</body>\n";
 	echo "</html>\n";
 
+}
+
+/**
+* Returns the number of child entries of a DN.
+*
+* @param string $dn DN of parent
+* @return interger number of childs
+*/
+function getChildCount($dn) {
+	$return = 0;
+	$sr = @ldap_search($_SESSION['ldap']->server, $dn, 'objectClass=*', array('dn'), 0);
+	if ($sr) {
+		$entries = ldap_get_entries($_SESSION['ldap']->server, $sr);
+		$return = $entries['count'] - 1;
+	}
+	return $return;
+}
+
+/**
+* Deletes a DN and all child entries.
+* 
+* @param string $dn DN to delete
+* @return array error messages
+*/
+function deleteDN($dn) {
+	$errors = array();
+	$sr = @ldap_list($_SESSION['ldap']->server, $dn, 'objectClass=*', array('dn'), 0);
+	if ($sr) {
+		$entries = ldap_get_entries($_SESSION['ldap']->server, $sr);
+		for ($i = 0; $i < $entries['count']; $i++) {
+			// delete recursively
+			$subErrors = deleteDN($entries[$i]['dn']);
+			for ($e = 0; $e < sizeof($subErrors); $e++) $errors[] = $subErrors[$e];
+		}
+	}
+	else {
+		$errors[] = array ('ERROR', sprintf(_('Was unable to delete DN: %s.'), $dn), ldap_error($_SESSION['ldap']->server()));
+	}
+	// delete parent DN
+	$success = @ldap_delete($_SESSION['ldap']->server(), $dn);
+	if (!$success) {
+		$errors[] = array ('ERROR', sprintf(_('Was unable to delete DN: %s.'), $dn), ldap_error($_SESSION['ldap']->server()));
+	}
+	return $errors;
 }
 
 ?>
