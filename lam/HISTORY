@@ -1,5 +1,6 @@
 ??? 0.5.3
    - accounts are now deleted with subentries
+   - updated Italian translation
    - fixed bugs:
     -> fixed problems with case-insensitive DNs
 
