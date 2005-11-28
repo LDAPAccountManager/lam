@@ -63,6 +63,7 @@ if (($_SESSION['mass_counter'] < sizeof($accounts)) || !isset($_SESSION['mass_po
 	$startTime = time();
 	$maxTime = get_cfg_var('max_execution_time') - 5;
 	if ($maxTime > 60) $maxTime = 60;
+	if ($maxTime <= 0) $maxTime = 60;
 	$refreshTime = $maxTime + 7;
 	echo "<meta http-equiv=\"refresh\" content=\"" . $refreshTime . "; URL=massDoUpload.php\">\n";
 	echo "</head>\n<body>\n";
