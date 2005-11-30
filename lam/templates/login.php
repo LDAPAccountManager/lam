@@ -45,6 +45,10 @@ if (! function_exists('ldap_search')) {
 if (! function_exists('gettext') || !function_exists('_')) {
 	$criticalErrors[] = array("ERROR", "Your PHP has no gettext support!", "Please install gettext for PHP.");
 }
+// check if PHP has XML support
+if (! function_exists('utf8_decode')) {
+	$criticalErrors[] = array("ERROR", "Your PHP has no XML support!", "Please install the XML extension for PHP.");
+}
 // check file permissions
 $writableDirs = array('sess', 'tmp');
 for ($i = 0; $i < sizeof($writableDirs); $i++) {
