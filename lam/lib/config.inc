@@ -46,6 +46,7 @@ function setlanguage() {
 	setlocale(LC_ALL, $language[0]);  // set LC_ALL to de_DE
 	$locdir = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/locale";  // set path to translations
 	bindtextdomain("messages", $locdir);
+	bind_textdomain_codeset("messages", $language[1]);
 	textdomain("messages");
 	header("Content-type: text/html; charset=" . $language[1], true);
 }
