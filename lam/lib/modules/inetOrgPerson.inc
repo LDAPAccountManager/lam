@@ -74,6 +74,7 @@ class inetOrgPerson extends baseModule {
 		$this->messages['userPassword'][0] = array('ERROR', _('Password'), _('Please enter the same password in both password fields.'));
 		$this->messages['userPassword'][1] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
 		$this->messages['userPassword'][2] = array('ERROR', _('Account %s:') . ' posixAccount_password', _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
+		$this->messages['photo'][0] = array('ERROR', _('No file selected.'));
 	}	
 	
 	/**
@@ -337,6 +338,10 @@ class inetOrgPerson extends baseModule {
 				'userPassword' => array(
 					"Headline" => _("Password"),
 					"Text" => _("Please enter the password which you want to set for this account.")
+				),
+				'photoUpload' => array(
+					"Headline" => _("Add photo"),
+					"Text" => _("Please select an image file to upload. It must be in JPG format (.jpg/.jpeg).")
 				)
 			)
 		);
@@ -401,7 +406,7 @@ class inetOrgPerson extends baseModule {
 				unset($return[$_SESSION[$this->base]->dn]['add']['userPassword']);
 			}
 		}
-		// postalAddress and facsimileTelephoneNumber need special removing
+		// postalAddress, facsimileTelephoneNumber and jpegPhoto need special removing
 		if (isset($return[$_SESSION[$this->base]->dn]['remove']['postalAddress'])) {
 			$return[$_SESSION[$this->base]->dn]['modify']['postalAddress'] = array();
 			unset($return[$_SESSION[$this->base]->dn]['remove']['postalAddress']);
@@ -409,6 +414,10 @@ class inetOrgPerson extends baseModule {
 		if (isset($return[$_SESSION[$this->base]->dn]['remove']['facsimileTelephoneNumber'])) {
 			$return[$_SESSION[$this->base]->dn]['modify']['facsimileTelephoneNumber'] = array();
 			unset($return[$_SESSION[$this->base]->dn]['remove']['facsimileTelephoneNumber']);
+		}
+		if (isset($return[$_SESSION[$this->base]->dn]['remove']['jpegPhoto'])) {
+			$return[$_SESSION[$this->base]->dn]['modify']['jpegPhoto'] = array();
+			unset($return[$_SESSION[$this->base]->dn]['remove']['jpegPhoto']);
 		}
 		return $return;
 	}
@@ -503,6 +512,7 @@ class inetOrgPerson extends baseModule {
 				}
 			}
 		}
+		if ($post['delPhoto']) $this->attributes['jpegPhoto'] = array();
 		// Return error-messages
 		if (is_array($triggered_messages)) return $triggered_messages;
 		}
@@ -633,6 +643,29 @@ class inetOrgPerson extends baseModule {
 			1 => array('kind' => 'select', 'name' => 'manager', 'size' => '1',
 				'options' => $dnUsers, 'options_selected' => $optionsSelected),
 			2 => array('kind' => 'help', 'value' => 'manager'));
+		// photo
+		$photoFile = '../../graphics/userDefault.png';
+		$noPhoto = true;
+		if ($this->attributes['jpegPhoto'][0]) {
+			$jpeg_filename = 'jpg' . $_SESSION['ldap']->new_rand() . '.jpg';
+			$outjpeg = @fopen($_SESSION['lampath'] . 'tmp/' . $jpeg_filename, "wb");
+			fwrite($outjpeg, $this->attributes['jpegPhoto'][0]);
+			fclose ($outjpeg);
+			$photoFile = '../../tmp/' . $jpeg_filename;
+			$noPhoto = false;
+		}
+		$photo = array(array(
+			0 => array('kind' => 'image', 'alt' => _('Photo'), 'path' => $photoFile, 'td' => array('align' => 'center'))));
+		if ($noPhoto) {
+			$photo[] = array(array('kind' => 'input', 'type' => 'submit', 'name' => 'form_subpage_inetOrgPerson_photo_open', 'value' => _('Add photo')));
+		}
+		else {
+			$photo[] = array(array('kind' => 'input', 'type' => 'submit', 'name' => 'delPhoto', 'value' => _('Delete photo')));
+		}
+		$return = array(array(
+			0 => array('kind' => 'table', 'value' => $return),
+			1 => array('kind' => 'table', 'value' => $photo, 'td' => array('valign' => 'top', 'align' => 'right','width' => '100%'))
+			));
 		return $return;
 		}
 
@@ -676,6 +709,46 @@ class inetOrgPerson extends baseModule {
 			0 => array('kind' => 'table', 'value' => array(
 				0 => array(
 					0 => array('kind' => 'input', 'type' => 'submit', 'value' => _('Submit'), 'name' => 'form_subpage_inetOrgPerson_attributes_submit'),
+					1 => array('kind' => 'input', 'type' => 'submit', 'value' => _('Back'), 'name' => 'form_subpage_inetOrgPerson_attributes_back'),
+					2 => array('kind' => 'text')))));
+		return $return;
+	}
+
+	/**
+	* Sets a new photo.
+	*
+	* @param $post HTTP POST
+	*/
+	function process_photo(&$post) {
+		if ($post['form_subpage_inetOrgPerson_attributes_back']) return;
+		$messages = array();
+		if ($_FILES['photoFile'] && ($_FILES['photoFile']['size'] > 0)) {
+			$handle = fopen($_FILES['photoFile']['tmp_name'], "r");
+			$data = fread($handle, 1000000);
+			fclose($handle);
+			$this->attributes['jpegPhoto'][0] = $data;
+		}
+		else {
+			$messages['photo'][] = $this->messages['photo'][0];
+		}
+		return $messages;
+	}
+
+	/**
+	* Displays the photo upload page.
+	*
+	* @param array $post HTTP-POST
+	* @return array meta HTML code
+	*/
+	function display_html_photo(&$post) {
+		$return[] = array(
+			0 => array('kind' => 'text', 'text' => _('Photo file (JPG format)') ),
+			1 => array('kind' => 'input', 'name' => 'photoFile', 'type' => 'file'),
+			2 => array('kind' => 'help', 'value' => 'photoUpload'));
+		$return[] = array(
+			0 => array('kind' => 'table', 'value' => array(
+				0 => array(
+					0 => array('kind' => 'input', 'type' => 'submit', 'value' => _('Add photo'), 'name' => 'form_subpage_inetOrgPerson_attributes_submit'),
 					1 => array('kind' => 'input', 'type' => 'submit', 'value' => _('Back'), 'name' => 'form_subpage_inetOrgPerson_attributes_back'),
 					2 => array('kind' => 'text')))));
 		return $return;

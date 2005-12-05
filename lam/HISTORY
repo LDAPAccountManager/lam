@@ -1,6 +1,7 @@
-??? 0.5.3
+14.12.2005 0.5.3
+   - inetOrgPerson: support jpegPhoto images
    - accounts are now deleted with subentries
-   - updated Italian translation
+   - big update for Italian translation
    - fixed bugs:
     -> fixed problems with case-insensitive DNs
     -> file upload did not work when max_execution_time=0 (1367957)
