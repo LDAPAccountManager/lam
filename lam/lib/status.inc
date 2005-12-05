@@ -63,7 +63,7 @@ function StatusMessage($MessageTyp,$MessageHeadline,$MessageText='',$MessageVari
 		$class = "class=\"statusError\"";
 		$MessageTyp = _("LAM Internal Error");
 		$MessageHeadline = _("Invalid/Missing Message type");
-		$MessageText = _("Please report this error to the Bug-Tracker at {link=http://lam.sf.net}LDAP Account Manager Development Team{endlink}. The error number is {bold}0001:Invalid/Missing Message type.{endbold} Thank you.");
+		$MessageText = _("Please report this error to the Bug-Tracker at {link=http://lam.sourceforge.net}LDAP Account Manager Development Team{endlink}. The error number is {bold}0001:Invalid/Missing Message type.{endbold} Thank you.");
 	}
 
 	$MessageHeadline = parseMessageString($MessageHeadline);

@@ -164,7 +164,7 @@ function display_LoginPage($config_object) {
 		echo "</script>\n";
 	?>
 		<p align="center">
-			<a href="http://lam.sf.net" target="_blank"><img src="../graphics/banner.jpg" border="1" alt="LDAP Account Manager"></a>
+			<a href="http://lam.sourceforge.net" target="_blank"><img src="../graphics/banner.jpg" border="1" alt="LDAP Account Manager"></a>
 		</p>
 		<table width="100%" border="0">
 			<tr>

@@ -76,7 +76,7 @@ echo "<title>" . _("LDAP Account Manager Configuration") . "</title>\n";
 echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
 echo "</head><body>\n";
 
-echo ("<p align=\"center\"><a href=\"http://lam.sf.net\" target=\"new_window\">".
+echo ("<p align=\"center\"><a href=\"http://lam.sourceforge.net\" target=\"new_window\">".
 	"<img src=\"../../graphics/banner.jpg\" border=1 alt=\"LDAP Account Manager\"></a></p><hr><br><br>");
 
 // remove double slashes if magic quotes are on
