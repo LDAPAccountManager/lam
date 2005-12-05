@@ -901,7 +901,7 @@ class accountContainer {
 		echo "</title>\n";
 		echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
 		echo "</head><body>\n";
-		echo "<form action=\"edit.php\" method=\"post\">\n";
+		echo "<form enctype=\"multipart/form-data\" action=\"edit.php\" method=\"post\">\n";
 		// Display error-messages
 		if (is_array($result)) {
 			foreach ($result as $result2) {
@@ -1369,6 +1369,15 @@ class accountContainer {
 		}
 		for ($i = 0; $i < sizeof($attrNames); $i++) unset($attr[$attrNames[$i]]['count']);
 		unset($attr['count']);
+		// get binary attributes
+		$binaryAttr = array('jpegPhoto');
+		for ($i = 0; $i < sizeof($binaryAttr); $i++) {
+			if (isset($attr[$binaryAttr[$i]][0])) {
+				$binData = ldap_get_values_len($_SESSION['ldap']->server(), $entry, $binaryAttr[$i]);
+				unset($binData['count']);
+				$attr[$binaryAttr[$i]] = $binData;
+			}
+		}
 		// save original attributes
 		$this->attributes_orig = $attr;
 				
@@ -1564,7 +1573,7 @@ class accountContainer {
 						$stopprocessing = true;
 					}
 				}
-				// removce attributes
+				// remove attributes
 				if (isset($attributes[$DNs[$i]]['remove']) && !$stopprocessing) {
 					$success = @ldap_mod_del($_SESSION['ldap']->server(), $DNs[$i], $attributes[$DNs[$i]]['remove']);
 					if (!$success) {
