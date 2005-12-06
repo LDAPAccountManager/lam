@@ -632,7 +632,7 @@ class posixAccount extends baseModule {
 		// get_cache will return an array ( dn1 => array(uidnumber1), dn2 => array(uidnumber2), ... )
 		if(is_array($dn_uids)) {
 			foreach ($dn_uids as $uid) $uids[] = $uid[0];
-			sort ($uids, SORT_NUMERIC);
+			if (sizeof($uids) > 0) sort($uids, SORT_NUMERIC);
 		}
 		if ($this->attributes['uidNumber'][0]=='') {
 			// No id-number given
