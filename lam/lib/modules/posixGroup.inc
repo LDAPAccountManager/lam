@@ -174,9 +174,9 @@ class posixGroup extends baseModule {
 			1 => array('kind' => 'input', 'name' => 'description', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => $this->attributes['description'][0]),
 			2 => array ('kind' => 'help', 'value' => 'description'));
 		$return[] = array(
-			0 => array('kind' => 'text', 'text' => _("Group members").'*'),
+			0 => array('kind' => 'text', 'text' => _("Group members")),
 			1 => array('kind' => 'input', 'name' => 'form_subpage_posixGroup_user_open', 'type' => 'submit', 'value' => _('Edit members')),
-			2 => array ('kind' => 'help', 'value' => 'adduser'));
+			2 => array ('kind' => 'help', 'value' => 'members'));
 		if ($_SESSION[$this->base]->isNewAccount) {
 			$return[] = array(
 				0 => array('kind' => 'text', 'text' => _('Password')),
@@ -185,7 +185,7 @@ class posixGroup extends baseModule {
 			$return[] = array(
 				0 => array('kind' => 'text', 'text' => _('Repeat password')),
 				1 => array('kind' => 'input', 'name' => 'userPassword2', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => $this->attributes['userPassword'][0]),
-				2 => array('kind' => 'help', 'value' => 'userPassword'));
+				2 => array('kind' => 'help', 'value' => 'password'));
 		}
 		else {
 			$return[] = array(
@@ -195,7 +195,7 @@ class posixGroup extends baseModule {
 		$return[] = array(
 			0 => array('kind' => 'text', 'text' => _('Set no password')),
 			1 => array('kind' => 'input', 'name' => 'userPassword_nopassword', 'type' => 'checkbox', 'checked' => $this->userPassword_nopassword),
-			2 => array('kind' => 'help', 'value' => 'userPassword_nopassword'));
+			2 => array('kind' => 'help', 'value' => 'userPassword_no'));
 		$return[] = array(
 			0 => array('kind' => 'text', 'text' => _('Invalid password')),
 			1 => array('kind' => 'input', 'name' => 'userPassword_invalid', 'type' => 'checkbox', 'checked' => $this->userPassword_invalid),
@@ -410,7 +410,7 @@ class posixGroup extends baseModule {
 			),
 			'members' => array(
 				"Headline" => _("Group members"),
-				"Text" => _("Users who are member of the current group."). ' '. _("Can be left empty.")
+				"Text" => _("Users who are member of the current group.")
 			),
 			'upload_members' => array(
 				"Headline" => _("Group members"),
@@ -424,7 +424,14 @@ class posixGroup extends baseModule {
 				"Headline" => _("Use no password"),
 				"Text" => _("If checked no password will be used.")
 			),
-			/*'userPassword_lock'	=>	*/
+			'userPassword_lock' => array(
+				"Headline" => _("Account deactivated"),
+				"Text" => _("If checked account will be deactivated by putting a \"!\" before the encrypted password.")
+			),
+			'userPassword_invalid' => array(
+				"Headline" => _("Invalid password"),
+				"Text" => _("This will set an invalid password which prevents logins with this account.")
+			),
 			'minMaxGID' => array(
 				"Headline" => _("GID number"),
 				"Text" => _("These are the minimum and maximum numbers to use for group IDs when creating new group accounts. New group accounts will always get the highest number in use plus one.")
