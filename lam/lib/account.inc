@@ -451,9 +451,6 @@ function get_preg($argument, $regexp) {
 		case 'password':
 					$pregexpr = '/^([[:alnum:]\\ \\|\\#\\*\\,\\.\\;\\:\\_\\+\\!\\%\\&\\/\\?\\{\\(\\)\\}-])*$/u';
 					break;
-		case 'cn':	// first character must be a letter. All letters, numbers, space and @._- are allowed characters
-					$pregexpr = '/^[[:alpha:]]([[:alnum:]@\\.\\ \\_-])*(\\$)?$/u';
-					break;
 		case 'groupname':	// first character must be a letter. All letters, numbers, space and ._- are allowed characters
 		case 'username':	// first character must be a letter. All letters, numbers, space and ._- are allowed characters
 					$pregexpr = '/^[[:alpha:]]([[:alnum:]\\.\\ \\_-])*$/u';
@@ -466,6 +463,7 @@ function get_preg($argument, $regexp) {
 					$pregexpr = '/^[a-zA-Z]([a-zA-Z0-9\\.\\_-])*\\$$/u';
 					break;
 		case 'realname':	// Allow all but \, <, >, =, $, ?
+		case 'cn':
 					$pregexpr = '/^[^\\\<>=\\$\\?]+$/';
 					break;
 		case "telephone":	// Allow numbers, space, brackets, /-+.
