@@ -465,8 +465,8 @@ function get_preg($argument, $regexp) {
 		case 'hostname':	// first character must be letter, last must be $. Only normal letters, numbers and ._- are allowed
 					$pregexpr = '/^[a-zA-Z]([a-zA-Z0-9\\.\\_-])*\\$$/u';
 					break;
-		case 'realname':	// Allow all letters, space and  .-_
-					$pregexpr = '/^[[:alnum:]]([[:alnum:]\\.\\ \\_-])*$/u';
+		case 'realname':	// Allow all but \, <, >, =, $, ?
+					$pregexpr = '/^[^\\\<>=\\$\\?]+$/';
 					break;
 		case "telephone":	// Allow numbers, space, brackets, /-+.
 					$pregexpr = '/^(\\+)*([0-9\\.\\ \\(\\)\\/-])*$/';
@@ -477,14 +477,12 @@ function get_preg($argument, $regexp) {
 		case "mailLocalAddress":
 					$pregexpr = '/^([0-9a-z\\._-])+([@]([0-9a-z-])+([.]([0-9a-z-])+)*)?$/';
 					break;
-		case "street":		// Allow all letters, numbers, space and .-_
-					$pregexpr = '/^([[:alnum:]\\.\\ \\_-])*$/u';
-					break;
-		case "postalAddress":	// Allow all letters, numbers, space and .-_
-		case "postalCode":		// Allow all letters, numbers, space and .-_
-		case "title":			// Allow all letters, numbers, space and .-_
-		case "employeeType":	// Allow all letters, numbers, space and .-_
-					$pregexpr = '/^([[:alnum:]\\.\\ \\_-])*$/u';
+		case "postalAddress":	// Allow all but \, <, >, =, $, ?
+		case "postalCode":
+		case "street":
+		case "title":
+		case "employeeType":
+					$pregexpr = '/^[^\\\<>=\\$\\?]*$/';
 					break;
 		case "homeDirectory":		// Homapath, /path/......
 					$pregexpr = '/^([\/]([[:alnum:]\\$\\.\\ \\_-])+)+$/u';
