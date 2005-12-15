@@ -45,7 +45,7 @@
 
    apt-get install dh-make-perl
    dh-make-perl --build --cpan Net::SSH::Perl
-   dpkg -i install libnet-ssh-perl_1.25-1_all.deb
+   dpkg -i libnet-ssh-perl_1.25-1_all.deb
 
 
 4. Set up SSH
