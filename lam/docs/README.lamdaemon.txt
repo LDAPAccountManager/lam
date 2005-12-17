@@ -40,6 +40,8 @@
 
    If your Perl executable is not located in /usr/bin/perl you will have to edit
    the path in the first line of lamdaemon.pl.
+   If you have problems compiling the Perl modules try installing a newer release
+   of your GCC compiler and the "make" application.
 
    Debian users can install Net::SSH:Perl with dh-make-perl:
 
