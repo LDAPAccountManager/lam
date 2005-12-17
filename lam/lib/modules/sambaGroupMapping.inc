@@ -418,10 +418,12 @@ class sambaGroupMapping extends baseModule {
 				// Get Domain SID
 				$this->attributes['sambaSID'][0] = $SID."-".$this->rids[$rids[$i]];
 				// Do a check if special group is unique
-				if ($_SESSION['cache']->in_cache($SID."-".$this->rids[$rids[$i]], 'sambaSID', 'group')) {
-					$message = $this->messages['sambaSID'][0];
-					$message[] = $rids[$i];
-					$triggered_messages['sambaSID'][] = $message;
+				if ($_SESSION[$this->base]->isNewAccount) {
+					if ($_SESSION['cache']->in_cache($SID."-".$this->rids[$rids[$i]], 'sambaSID', 'group')) {
+						$message = $this->messages['sambaSID'][0];
+						$message[] = $rids[$i];
+						$triggered_messages['sambaSID'][] = $message;
+					}
 				}
 			}
 		}
