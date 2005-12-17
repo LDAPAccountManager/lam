@@ -1433,6 +1433,7 @@ class accountContainer {
 		foreach ($module as $singlemodule) {
 			// load changes
 			$temp = $this->module[$singlemodule]->save_attributes();
+			if (!is_array($temp)) $temp = array();
 			// merge changes
 			$DNs = array_keys($temp);
 			// *** fixme don't include references

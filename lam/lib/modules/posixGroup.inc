@@ -579,7 +579,7 @@ class posixGroup extends baseModule {
 			$maxID = intval($this->moduleSettings['posixGroup_maxGID'][0]);
 			$dn_gids = $_SESSION['cache']->get_cache('gidNumber', 'posixGroup', 'group');
 			// get_cache will return an array ( dn1 => array(uidnumber1), dn2 => array(uidnumber2), ... )
-			if(is_array($dn_gids)) {
+			if(is_array($dn_gids) && (sizeof($dn_gids) > 0)) {
 				foreach ($dn_gids as $gid) $gids[] = $gid[0];
 				sort ($gids, SORT_NUMERIC);
 			}
