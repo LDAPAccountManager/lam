@@ -1,3 +1,7 @@
+??? ???
+   - fixed bugs:
+    -> Samba groups: editing of special groups fixed
+
 14.12.2005 0.5.3
    - accounts are now deleted with subentries
    - big update for Italian translation
