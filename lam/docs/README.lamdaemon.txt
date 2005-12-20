@@ -37,6 +37,7 @@
    perl -MCPAN -e shell
    install Quota
    install Net::SSH::Perl
+   install Math::BigInt::GMP
 
    If your Perl executable is not located in /usr/bin/perl you will have to edit
    the path in the first line of lamdaemon.pl.
