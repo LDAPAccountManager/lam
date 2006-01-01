@@ -56,30 +56,36 @@ if ($passwd != $conf->get_Passwd()) {
 if ($_POST['submit']) {
 	//selection ok, back to other settings
 	metarefresh('confmain.php?modulesback=true&amp;moduleschanged=true');
+	exit;
 }
 elseif ($_POST['abort']) {
 	// no changes
 	metarefresh('confmain.php?modulesback=true');
+	exit;
 }
+
+$types = $_SESSION['conf_accountTypes'];
 
 echo $_SESSION['header'];
 
 echo "<title>" . _("LDAP Account Manager Configuration") . "</title>\n";
 echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
+for ($i = 0; $i < sizeof($types); $i++){
+	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/type_" . $types[$i] . ".css\">\n";
+}
 echo "</head><body>\n";
 
 echo ("<p align=\"center\"><a href=\"http://lam.sourceforge.net\" target=\"new_window\">".
 	"<img src=\"../../graphics/banner.jpg\" border=1 alt=\"LDAP Account Manager\"></a></p><hr><br>\n");
 
 echo ("<form action=\"confmodules.php\" method=\"post\">\n");
-echo "<p align=\"center\"><big><b>" . _("Module selection") . "</b></big><br><br></p>";
+echo "<h1 align=\"center\">" . _("Module selection") . "</h1>";
 
 
-$account_list = array(
-	array('user', _('User modules')),
-	array('group', _('Group modules')),
-	array('host', _('Host modules'))
-);
+$account_list = array();
+for ($i = 0; $i < sizeof($types); $i++) {
+	$account_list[] = array($types[$i], getTypeAlias($types[$i]));
+}
 
 $allDependenciesOk  = true;
 
@@ -126,7 +132,8 @@ echo "</html>\n";
 */
 function config_showAccountModules($scope, $title) {
 	// account modules
-	$selected_temp = $_SESSION['conf_' . $scope . 'modules'];
+	$selected_temp = $_SESSION['conf_typeSettings']['modules_' . $scope];
+	if (isset($selected_temp)) $selected_temp = explode(',', $selected_temp);
 	$available = array();
 	$available = getAvailableModules($scope);
 	$selected = array();
@@ -145,7 +152,7 @@ function config_showAccountModules($scope, $title) {
 			if (! in_array($selected[$i], $_POST[$scope . '_selected'])) $new_selected[] = $selected[$i];
 		}
 		$selected = $new_selected;
-		$_SESSION['conf_' . $scope . 'modules'] = $selected;
+		$_SESSION['conf_typeSettings']['modules_' . $scope] = implode(',', $selected);
 	}
 	
 	// add modules to selection
@@ -155,7 +162,7 @@ function config_showAccountModules($scope, $title) {
 			if (! in_array($_POST[$scope . '_available'][$i], $selected)) $new_selected[] = $_POST[$scope . '_available'][$i];
 		}
 		$selected = $new_selected;
-		$_SESSION['conf_' . $scope . 'modules'] = $selected;
+		$_SESSION['conf_typeSettings']['modules_' . $scope] = implode(',', $selected);
 	}
 	
 	// show account modules

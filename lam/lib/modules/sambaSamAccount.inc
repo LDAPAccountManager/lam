@@ -416,7 +416,7 @@ class sambaSamAccount extends baseModule {
 		$this->noexpire = true;
 		$this->nopwd = false;
 		$this->deactivated = false;
-		$sambaDomains = search_domains($_SESSION['config']->get_Suffix('domain'));
+		$sambaDomains = search_domains();
 		if (sizeof($sambaDomains) == 0) {
 			StatusMessage("ERROR", _('No Samba 3 domains found in LDAP! Please create one first.'), '');
 			return;
@@ -468,7 +468,7 @@ class sambaSamAccount extends baseModule {
 		* it's psssible uidNumber has changed
 		*/
 		// Get Domain SID from name
-		$sambaDomains = search_domains($_SESSION['config']->get_Suffix('domain'));
+		$sambaDomains = search_domains();
 		for ($i=0; $i<count($sambaDomains); $i++ ) {
 			if ($this->attributes['sambaDomainName'][0] == $sambaDomains[$i]->name) {
 				$SID = $sambaDomains[$i]->SID;
@@ -493,7 +493,7 @@ class sambaSamAccount extends baseModule {
 	* @return array list of info/error messages
 	*/
 	function process_attributes(&$post) {
-		$sambaDomains = search_domains($_SESSION['config']->get_Suffix('domain'));
+		$sambaDomains = search_domains();
 		if (sizeof($sambaDomains) == 0) {
 			return array(array(array("ERROR", _('No Samba 3 domains found in LDAP! Please create one first.'))));
 		}
@@ -739,7 +739,7 @@ class sambaSamAccount extends baseModule {
 	*/
 	function display_html_attributes(&$post) {
 		// Get Domain SID from user SID
-		$sambaDomains = search_domains($_SESSION['config']->get_Suffix('domain'));
+		$sambaDomains = search_domains();
 		if (sizeof($sambaDomains) == 0) {
 			StatusMessage("ERROR", _('No Samba 3 domains found in LDAP! Please create one first.'), '');
 			return;
@@ -1073,7 +1073,7 @@ class sambaSamAccount extends baseModule {
 				2 => array('kind' => 'help', 'value' => 'workstations')
 				);
 			// domains
-			$sambaDomains = search_domains($_SESSION['config']->get_Suffix('domain'));
+			$sambaDomains = search_domains();
 			$sambaDomainNames = array();
 			for ($i = 0; $i < count($sambaDomains); $i++) {
 				$sambaDomainNames[] = $sambaDomains[$i]->name;
@@ -1092,7 +1092,7 @@ class sambaSamAccount extends baseModule {
 		}
 		elseif ($this->get_scope() == 'host') {
 			// domains
-			$sambaDomains = search_domains($_SESSION['config']->get_Suffix('domain'));
+			$sambaDomains = search_domains();
 			$sambaDomainNames = array();
 			for ($i = 0; $i < count($sambaDomains); $i++) {
 				$sambaDomainNames[] = $sambaDomains[$i]->name;
@@ -1159,7 +1159,7 @@ class sambaSamAccount extends baseModule {
 		// domain -> change SID
 		if ($this->attributes['sambaSID'][0]) {
 			if (isset($profile['sambaSamAccount_sambaDomainName'][0]) && ($profile['sambaSamAccount_sambaDomainName'][0] != "")) {
-				$domains = search_domains($_SESSION['config']->get_Suffix('domain'));
+				$domains = search_domains();
 				$domSID = '';
 				// find domain SID
 				for ($i = 0; $i < sizeof($domains); $i++) {
@@ -1208,7 +1208,7 @@ class sambaSamAccount extends baseModule {
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts) {
 		$triggered_messages = array();
 		// get list of Samba 3 domains
-		$domains = search_domains($_SESSION['config']->get_Suffix('domain'));
+		$domains = search_domains();
 		// get list of Unix groups and their sambaSID + gidNumber
 		$groups = $_SESSION['cache']->get_cache(array('cn', 'sambaSID', 'gidNumber'), 'posixGroup', 'group');
 		$groups_k = array_keys($groups);

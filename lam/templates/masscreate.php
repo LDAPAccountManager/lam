@@ -63,16 +63,20 @@ if (isset($_GET['getCSV'])) {
 	exit;
 }
 
+$types = $_SESSION['config']->get_ActiveTypes();
+
 echo $_SESSION['header'];
 echo "<title>account upload</title>\n";
 echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">\n";
+for ($i = 0; $i < sizeof($types); $i++) {
+	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/type_" . $types[$i] . ".css\">\n";
+}
 echo "</head>\n";
 echo "<body>\n";
 
 // check if account specific page should be shown
-if (isset($_POST['user'])) showMainPage('user');
-elseif (isset($_POST['group'])) showMainPage('group');
-elseif (isset($_POST['host'])) showMainPage('host');
+if (isset($_POST['type'])) showMainPage($_POST['type']);
+
 // show start page
 else {
 	echo "<h1 align=\"center\">" . _("Account creation via file upload") . "</h1>\n";
@@ -91,18 +95,15 @@ else {
 	
 	echo "<form enctype=\"multipart/form-data\" action=\"masscreate.php\" method=\"post\">\n";
 	echo "<table style=\"border-color: grey\" cellpadding=\"10\" border=\"2\" cellspacing=\"0\">\n";
-	echo "<tr>\n";
-		echo "<th class=\"userlist-sort\">\n";
-			echo "<input type=\"submit\" name=\"user\" value=\"" . _("Create user accounts") . "\">\n";
-		echo "</th>\n";
-		echo "<th class=\"grouplist-sort\">\n";
-			echo "<input type=\"submit\" name=\"group\" value=\"" . _("Create group accounts") . "\">\n";
-		echo "</th>\n";
-		echo "<th class=\"hostlist-sort\">\n";
-			echo "<input type=\"submit\" name=\"host\" value=\"" . _("Create host accounts") . "\">\n";
-		echo "</th>\n";
-	echo "</tr>\n";
+	for ($i = 0; $i < sizeof($types); $i++) {
+		echo "<tr>\n";
+		echo "<th class=\"" . $types[$i] . "list-sort\" align=\"center\"><input type=\"radio\" name=\"type\" value=\"" . $types[$i] . "\"></th>\n";
+		echo "<th class=\"" . $types[$i] . "list-sort\" align=\"left\">" . getTypeAlias($types[$i]) . "</th>\n";
+		echo "</tr>\n";
+	}
 	echo "</table>\n";
+	echo "<br><br>\n";
+	echo "<input type=\"submit\" name=\"submit\" value=\"". _("Submit") . "\">\n";
 	echo "</form>\n";
 	
 	echo "</body>\n";
@@ -161,7 +162,6 @@ function showMainPage($scope) {
 				echo "<ul>\n";
 					echo "<li><b>" . _("Identifier") . ":</b> " . "dn_rdn</li>\n";
 					echo "<li><b>" . _("Possible values") . ":</b> " . implode(", ", getRDNAttributes($scope)) . "</li>\n";
-					echo "<li><b>" . _("Example value") . ":</b> " . "uid</li>\n";
 				echo "</ul>\n";
 			echo "</td>\n";
 		echo "</tr>\n";

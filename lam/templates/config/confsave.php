@@ -48,14 +48,7 @@ $passwd2 = $_SESSION['conf_passwd2'];
 $serverurl = $_SESSION['conf_serverurl'];
 $cachetimeout = $_SESSION['conf_cachetimeout'];
 $admins = $_SESSION['conf_admins'];
-$suffusers = $_SESSION['conf_suffusers'];
-$suffgroups = $_SESSION['conf_suffgroups'];
-$suffhosts = $_SESSION['conf_suffhosts'];
-$suffdomains = $_SESSION['conf_suffdomains'];
 $sufftree = $_SESSION['conf_sufftree'];
-$usrlstattr = $_SESSION['conf_usrlstattr'];
-$grplstattr = $_SESSION['conf_grplstattr'];
-$hstlstattr = $_SESSION['conf_hstlstattr'];
 $maxlistentries = $_SESSION['conf_maxlistentries'];
 $lang = $_SESSION['conf_lang'];
 $scriptpath = $_SESSION['conf_scriptpath'];
@@ -81,10 +74,7 @@ echo ("<p align=\"center\"><a href=\"http://lam.sourceforge.net\" target=\"new_w
 
 // remove double slashes if magic quotes are on
 if (get_magic_quotes_gpc() == 1) {
-	$suffusers = stripslashes($suffusers);
-	$suffgroups = stripslashes($suffgroups);
-	$suffhosts = stripslashes($suffhosts);
-	$suffdomains = stripslashes($suffdomains);
+	$sufftree = stripslashes($sufftree);
 }
 
 // check new preferences
@@ -103,43 +93,8 @@ if (!$conf->set_Adminstring($admins)) {
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
-if (!$conf->set_Suffix('user', $suffusers)) {
-	echo ("<font color=\"red\"><b>" . _("UserSuffix is invalid!") . "</b></font>");
-	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
-	exit;
-}
-if (!$conf->set_Suffix('group', $suffgroups)) {
-	echo ("<font color=\"red\"><b>" . _("GroupSuffix is invalid!") . "</b></font>");
-	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
-	exit;
-}
-if (!$conf->set_Suffix('host', $suffhosts)) {
-	echo ("<font color=\"red\"><b>" . _("HostSuffix is invalid!") . "</b></font>");
-	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
-	exit;
-}
-if (!$conf->set_Suffix('domain', $suffdomains)) {
-	echo ("<font color=\"red\"><b>" . _("DomainSuffix is invalid!") . "</b></font>");
-	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
-	exit;
-}
 if (!$conf->set_Suffix("tree", $sufftree)) {
 	echo ("<font color=\"red\"><b>" . _("TreeSuffix is invalid!") . "</b></font>");
-	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
-	exit;
-}
-if (!$conf->set_listAttributes($usrlstattr, 'user')) {
-	echo ("<font color=\"red\"><b>" . _("User list attributes are invalid!") . "</b></font>");
-	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
-	exit;
-}
-if (!$conf->set_listAttributes($grplstattr, 'group')) {
-	echo ("<font color=\"red\"><b>" . _("Group list attributes are invalid!") . "</b></font>");
-	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
-	exit;
-}
-if (!$conf->set_listAttributes($hstlstattr, 'host')) {
-	echo ("<font color=\"red\"><b>" . _("Host list attributes are invalid!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }
@@ -167,23 +122,8 @@ if (!$conf->set_scriptserver($scriptserver)) {
 	exit;
 }
 
-if (! $conf->set_AccountModules($_SESSION['conf_usermodules'], 'user')) {
-	echo ("<font color=\"red\"><b>" . _("Saving user modules failed!") . "</b></font>");
-	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
-	exit;
-}
-
-if (! $conf->set_AccountModules($_SESSION['conf_groupmodules'], 'group')) {
-	echo ("<font color=\"red\"><b>" . _("Saving group modules failed!") . "</b></font>");
-	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
-	exit;
-}
-
-if (! $conf->set_AccountModules($_SESSION['conf_hostmodules'], 'host')) {
-	echo ("<font color=\"red\"><b>" . _("Saving host modules failed!") . "</b></font>");
-	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
-	exit;
-}
+$conf->set_typeSettings($_SESSION['conf_typeSettings']);
+$conf->set_ActiveTypes($_SESSION['conf_accountTypes']);
 
 // check module options
 // create option array to check and save
@@ -249,34 +189,14 @@ if ($passwd1) {
 
 // save settings and display new settings
 $conf->save();
-echo ("<b>" . _("The following settings were saved to profile:") . " </b>" . $filename . "<br><br>");
-$conf->printconf();
 echo ("<br><br><br><br><br><a href=\"../login.php\" target=\"_top\">" . _("Back to Login") . "</a>");
 
 echo("</body></html>");
 
 // remove settings from session
-unset($_SESSION['conf_passwd']);
-unset($_SESSION['conf_passwd1']);
-unset($_SESSION['conf_passwd2']);
-unset($_SESSION['conf_serverurl']);
-unset($_SESSION['conf_cachetimeout']);
-unset($_SESSION['conf_admins']);
-unset($_SESSION['conf_suffusers']);
-unset($_SESSION['conf_suffgroups']);
-unset($_SESSION['conf_suffhosts']);
-unset($_SESSION['conf_suffdomains']);
-unset($_SESSION['conf_sufftree']);
-unset($_SESSION['conf_usrlstattr']);
-unset($_SESSION['conf_grplstattr']);
-unset($_SESSION['conf_hstlstattr']);
-unset($_SESSION['conf_maxlistentries']);
-unset($_SESSION['conf_lang']);
-unset($_SESSION['conf_scriptpath']);
-unset($_SESSION['conf_scriptserver']);
-unset($_SESSION['conf_filename']);
-unset($_SESSION['conf_usermodules']);
-unset($_SESSION['conf_groupmodules']);
-unset($_SESSION['conf_hostmodules']);
+$sessionKeys = array_keys($_SESSION);
+for ($i = 0; $i < sizeof($sessionKeys); $i++) {
+	if (substr($sessionKeys[$i], 0, 5) == "conf_") unset($_SESSION[$sessionKeys[$i]]);
+}
 
 ?>

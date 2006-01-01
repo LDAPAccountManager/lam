@@ -33,6 +33,8 @@ $Id$
 include_once("status.inc");
 /** Used to get module information. */
 include_once("modules.inc");
+/** Used to get type information. */
+include_once("types.inc");
 
 /**
 * Sets language settings for automatic translation
@@ -129,27 +131,8 @@ class Config {
 	/** Password to edit preferences */
 	var $Passwd;
 
-	/** LDAP suffix for users */
-	var $usersuffix;
-
-	/** LDAP suffix for groups */
-	var $groupsuffix;
-
-	/** LDAP suffix for Samba hosts */
-	var $hostsuffix;
-
-	/** LDAP suffix for Samba 3 domains */
-	var $domainsuffix;
-
 	/** LDAP suffix for tree view */
 	var $treesuffix;
-
-	/** Attributes that are shown in the user list */
-	var $userlistAttributes;
-	/** Attributes that are shown in the group list */
-	var $grouplistAttributes;
-	/** Attributes that are shown in the host list */
-	var $hostlistAttributes;
 
 	/** Maximum number of rows shown in user/group/host lists */
 	var $maxlistentries;
@@ -159,6 +142,9 @@ class Config {
 
 	/** module settings */
 	var $moduleSettings = array();
+
+	/** type settings */
+	var $typeSettings = array();
 
 	/**
 	* Path to external lamdaemon script on server where it is executed
@@ -179,20 +165,16 @@ class Config {
 	/** LDAP cache timeout */
 	var $cachetimeout;
 
-	var $usermodules = "posixAccount,shadowAccount,quota";
-	/** Account modules for groups */
-	var $groupmodules = "posixGroup,quota";
-	/** Account modules for hosts */
-	var $hostmodules = "account,sambaSamAccount";
+	/** Active account types */
+	var $activeTypes = "user,group,host,smbDomain";
 
 	/** Name of configuration file */
 	var $file;
 
 	/** List of all settings in config file */
-	var $settings = array("ServerURL", "Passwd", "Admins", "usersuffix", "groupsuffix", "hostsuffix", "treesuffix",
-		"domainsuffix", "userlistAttributes", "grouplistAttributes", "hostlistAttributes", "maxlistentries",
+	var $settings = array("ServerURL", "Passwd", "Admins", "treesuffix", "maxlistentries",
 		"defaultLanguage", "scriptPath", "scriptServer", "cachetimeout",
-		"usermodules", "groupmodules", "hostmodules", "modules");
+		"modules", "activeTypes", "types");
 
 
 	/**
@@ -233,7 +215,13 @@ class Config {
 						if (strtolower(substr($line, 0, $keylen + 2)) == "modules: ") {
 							$option = substr($line, $keylen + 2, strlen($line) - $keylen - 2);
 							$pos = strpos($option, ":");
-							$this->moduleSettings[substr($option, 0, $pos)] = explode("+::+", substr($option, $pos + 2, strlen($option) - $pos - 2));
+							$this->moduleSettings[substr($option, 0, $pos)] = explode("+::+", substr($option, $pos + 2));
+						}
+						// type settings
+						elseif (strtolower(substr($line, 0, $keylen + 2)) == "types: ") {
+							$option = substr($line, $keylen + 2, strlen($line) - $keylen - 2);
+							$pos = strpos($option, ":");
+							$this->typeSettings[substr($option, 0, $pos)] = substr($option, $pos + 2);
 						}
 						// general settings
 						else {
@@ -246,7 +234,7 @@ class Config {
 			fclose($file);
 		}
 		// check modules
-		$scopes = array('user', 'group', 'host');
+		$scopes = $this->get_ActiveTypes();
 		for ($s = 0; $s < sizeof($scopes); $s++) {
 			$scope = $scopes[$s];
 			$moduleVar = $scope . "modules";
@@ -293,6 +281,15 @@ class Config {
 							$file_array[$i] = "modules: " . $name . ": " . implode("+::+", $this->moduleSettings[$name]) . "\n";
 							$mod_saved[] = $name;	// mark keyword as saved
 						}
+						// type settings
+						elseif (strtolower(substr($line, 0, $keylen + 2)) == "types: ") {
+							$option = substr($line, $keylen + 2, strlen($line) - $keylen - 2);
+							$pos = strpos($option, ":");
+							$name = substr($option, 0, $pos);
+							if (!isset($this->typeSettings[$name])) continue;
+							$file_array[$i] = "types: " . $name . ": " . $this->typeSettings[$name] . "\n";
+							$mod_saved[] = $name;	// mark keyword as saved
+						}
 						// general settings
 						else {
 							$file_array[$i] = $keyword . ": " . $this->$keyword . "\n";
@@ -308,30 +305,14 @@ class Config {
 			if (!in_array("Admins", $saved)) array_push($file_array, "\n\n# list of users who are allowed to use LDAP Account Manager\n" .
 								"# names have to be seperated by semicolons\n" .
 								"# e.g. admins: cn=admin,dc=yourdomain,dc=org;cn=root,dc=yourdomain,dc=org\n" . "admins: " . $this->Admins . "\n");
-			if (!in_array("usersuffix", $saved)) array_push($file_array, "\n\n# suffix of users\n" .
-								"# e.g. ou=People,dc=yourdomain,dc=org\n" . "usersuffix: " . $this->usersuffix . "\n");
-			if (!in_array("groupsuffix", $saved)) array_push($file_array, "\n\n# suffix of groups\n" .
-								"# e.g. ou=Groups,dc=yourdomain,dc=org\n" . "groupsuffix: " . $this->groupsuffix . "\n");
-			if (!in_array("hostsuffix", $saved)) array_push($file_array, "\n\n# suffix of hosts\n" .
-								"# e.g. ou=machines,dc=yourdomain,dc=org\n" . "hostsuffix: " . $this->hostsuffix . "\n");
-			if (!in_array("domainsuffix", $saved)) array_push($file_array, "\n\n# suffix of Samba 3 domains\n" .
-								"# e.g. ou=domains,dc=yourdomain,dc=org\n" . "domainsuffix: " . $this->domainsuffix . "\n");
 			if (!in_array("treesuffix", $saved)) array_push($file_array, "\n\n# suffix of tree view\n" .
 								"# e.g. dc=yourdomain,dc=org\n" . "treesuffix: " . $this->treesuffix . "\n");
-			if (!in_array("userlistAttributes", $saved)) array_push($file_array, "\n\n# list of attributes to show in user list\n# entries can either be predefined values (e.g. '#cn' or '#uid')" .
-								"\n# or individual ones (e.g. 'uid:User ID' or 'host:Host Name')\n# values have to be seperated by semicolons\n" . "userlistAttributes: " . $this->userlistAttributes . "\n");
-			if (!in_array("grouplistAttributes", $saved)) array_push($file_array, "\n\n# list of attributes to show in group list\n# entries can either be predefined values (e.g. '#cn' or '#gidNumber')" .
-								"\n# or individual ones (e.g. 'cn:Group Name')\n# values have to be seperated by semicolons\n" . "grouplistAttributes: " . $this->grouplistAttributes . "\n");
-			if (!in_array("hostlistAttributes", $saved)) array_push($file_array, "\n\n# list of attributes to show in host list\n# entries can either be predefined values (e.g. '#cn' or '#uid')" .
-								"\n# or individual ones (e.g. 'cn:Host Name')\n# values have to be seperated by semicolons\n" . "hostlistAttributes: " . $this->hostlistAttributes . "\n");
 			if (!in_array("maxlistentries", $saved)) array_push($file_array, "\n\n# maximum number of rows to show in user/group/host lists\n" . "maxlistentries: " . $this->maxlistentries . "\n");
 			if (!in_array("defaultLanguage", $saved)) array_push($file_array, "\n\n# default language (a line from config/language)\n" . "defaultLanguage: " . $this->defaultLanguage . "\n");
 			if (!in_array("scriptPath", $saved)) array_push($file_array, "\n\n# Path to external Script\n" . "scriptPath: " . $this->scriptPath . "\n");
 			if (!in_array("scriptServer", $saved)) array_push($file_array, "\n\n# Server of external Script\n" . "scriptServer: " . $this->scriptServer . "\n");
 			if (!in_array("cachetimeout", $saved)) array_push($file_array, "\n\n# Number of minutes LAM caches LDAP searches.\n" . "cacheTimeout: " . $this->cachetimeout . "\n");
-			if (!in_array("usermodules", $saved)) array_push($file_array, "\n\n# List of used user modules\n" . "usermodules: " . $this->usermodules . "\n");
-			if (!in_array("groupmodules", $saved)) array_push($file_array, "\n\n# List of used group modules\n" . "groupmodules: " . $this->groupmodules . "\n");
-			if (!in_array("hostmodules", $saved)) array_push($file_array, "\n\n# List of used host modules\n" . "hostmodules: " . $this->hostmodules . "\n");
+			if (!in_array("activeTypes", $saved)) array_push($file_array, "\n\n# List of active account types.\n" . "activeTypes: " . $this->activeTypes . "\n");
 			// check if all module settings were added
 			$m_settings = array_keys($this->moduleSettings);
 			for ($i = 0; $i < sizeof($m_settings); $i++) {
@@ -339,52 +320,25 @@ class Config {
 					array_push($file_array, "modules: " . $m_settings[$i] . ": " . implode("+::+", $this->moduleSettings[$m_settings[$i]]) . "\n");
 				}
 			}
+			// check if all type settings were added
+			$t_settings = array_keys($this->typeSettings);
+			for ($i = 0; $i < sizeof($t_settings); $i++) {
+				if (!in_array($t_settings[$i], $mod_saved)) {
+					array_push($file_array, "types: " . $t_settings[$i] . ": " . $this->typeSettings[$t_settings[$i]] . "\n");
+				}
+			}
 			$file = fopen($conffile, "w");
 			if ($file) {
 				for ($i = 0; $i < sizeof($file_array); $i++) fputs($file, $file_array[$i]);
 				fclose($file);
 				@chmod ($conffile, 0600);
+				StatusMessage("INFO", _("Your settings were successfully saved.") , " (" . $conffile . ")");
 			}
 			else {
-				StatusMessage("ERROR", "", _("Cannot open config file!") . " (" . $conffile . ")");
+				StatusMessage("ERROR", _("Cannot open config file!") . " (" . $conffile . ")");
 				exit;
 			}
 		}
-	}
-
-	/** Prints current preferences */
-	function printconf() {
-		echo "<b>" . _("Server address") . ": </b>" . $this->ServerURL . "<br>\n";
-		echo "<b>" . _("Cache timeout") . ": </b>" . $this->cachetimeout . "<br>\n";
-		echo "<b>" . _("UserSuffix") . ": </b>" . $this->usersuffix . "<br>\n";
-		echo "<b>" . _("GroupSuffix") . ": </b>" . $this->groupsuffix . "<br>\n";
-		echo "<b>" . _("HostSuffix") . ": </b>" . $this->hostsuffix . "<br>\n";
-		echo "<b>" . _("DomainSuffix") . ": </b>" . $this->domainsuffix . "<br>\n";
-		echo "<b>" . _("TreeSuffix") . ": </b>" . $this->treesuffix . "<br>\n";
-		echo "<b>" . _("Attributes in User List") . ": </b>" . $this->userlistAttributes . "<br>\n";
-		echo "<b>" . _("Attributes in Group List") . ": </b>" . $this->grouplistAttributes . "<br>\n";
-		echo "<b>" . _("Attributes in Host List") . ": </b>" . $this->hostlistAttributes . "<br>\n";
-		echo "<b>" . _("Maximum list entries") . ": </b>" . $this->maxlistentries . "<br>\n";
-		echo "<b>" . _("Default language") . ": </b>" . $this->defaultLanguage . "<br>\n";
-		echo "<b>" . _("Path to external script") . ": </b>" . $this->scriptPath . "<br>\n";
-		echo "<b>" . _("Server of external script") . ": </b>" . $this->scriptServer . "<br>\n";
-		echo "<b>" . _("List of valid users") . ": </b>" . $this->Admins . "<br>\n";
-		echo "<b>" . _("User modules") . ": </b>" . $this->usermodules . "<br>\n";
-		echo "<b>" . _("Group modules") . ": </b>" . $this->groupmodules . "<br>\n";
-		echo "<b>" . _("Host modules") . ": </b>" . $this->hostmodules . "<br><br>\n";
-		echo "<b>" . _("Module settings") . ": </b><br>\n";
-		echo "<ul>\n";
-		$names = array_keys($this->moduleSettings);
-		$descriptions = getConfigDescriptions();
-		$descriptions = $descriptions['descriptions'];
-		for ($i = 0; $i < sizeof($names); $i++) {
-			echo "<li><b>";
-			// print description if available
-			if (isset($descriptions[$names[$i]])) echo $descriptions[$names[$i]];
-			else echo $names[$i];
-			echo ": </b>" . implode(", ", $this->moduleSettings[$names[$i]]) . "</li>\n";
-		}
-		echo "</ul>\n";
 	}
 
 	// functions to read/write preferences
@@ -471,24 +425,12 @@ class Config {
 	* @return string the LDAP suffix
 	*/
 	function get_Suffix($scope) {
-		switch ($scope) {
-			case 'user':
-					return $this->usersuffix;
-				break;
-			case 'group':
-					return $this->groupsuffix;
-				break;
-			case 'host':
-					return $this->hostsuffix;
-				break;
-			case 'domain':
-					return $this->domainsuffix;
-				break;
-			case 'tree':
-					return $this->treesuffix;
-				break;
+		if ($scope == "tree") {
+			return $this->treesuffix;
 		}
-		return "";
+		else {
+			return $this->typeSettings['suffix_' . $scope];
+		}
 	}
 
 	/**
@@ -503,22 +445,11 @@ class Config {
 		elseif (!is_string($value)) {
 			return false;
 		}
-		switch ($scope) {
-			case 'user':
-					$this->usersuffix = $value;
-				break;
-			case 'group':
-					$this->groupsuffix = $value;
-				break;
-			case 'host':
-					$this->hostsuffix = $value;
-				break;
-			case 'domain':
-					$this->domainsuffix = $value;
-				break;
-			case 'tree':
-					$this->treesuffix = $value;
-				break;
+		if ($scope == "tree") {
+			$this->treesuffix = $value;
+		}
+		else {
+			$this->typeSettings['suffix_' . $scope] = $value;
 		}
 		return true;
 	}
@@ -530,20 +461,7 @@ class Config {
 	* @return string the attribute list
 	*/
 	function get_listAttributes($scope) {
-		switch ($scope) {
-			case 'user':
-				return $this->userlistAttributes;
-				break;
-			case 'group':
-				return $this->grouplistAttributes;
-				break;
-			case 'host':
-				return $this->hostlistAttributes;
-				break;
-			default:
-				return '';
-				break;
-		}
+		return $this->typeSettings['attr_' . $scope];
 	}
 
 	/**
@@ -555,39 +473,12 @@ class Config {
 	*/
 	function set_listAttributes($value, $scope) {
 		if (is_string($value) && eregi("^((#[^:;]+)|([^:;]*:[^:;]+))(;((#[^:;]+)|([^:;]*:[^:;]+)))*$", $value)) {
-			switch ($scope) {
-				case 'user':
-						$this->userlistAttributes = $value;
-					break;
-				case 'group':
-						$this->grouplistAttributes = $value;
-					break;
-				case 'host':
-						$this->hostlistAttributes = $value;
-					break;
-				default:
-					return false;
-					break;
-			}
+			$this->typeSettings['attr_' . $scope] = $value;
 			return true;
 		}
 		else {
 			return false;
 		}
-	}
-
-	/**
-	* Sets the list of attributes to show in group list
-	*
-	* @param string $value new attribute string
-	* @return boolean true if $value has correct format
-	*/
-	function set_grouplistAttributes($value) {
-		if (is_string($value) && eregi("^((#[^:;]+)|([^:;]*:[^:;]+))(;((#[^:;]+)|([^:;]*:[^:;]+)))*$", $value)) {
-			$this->grouplistAttributes = $value;
-		}
-		else return false;
-		return true;
 	}
 
 	/**
@@ -718,21 +609,12 @@ class Config {
 	* @return array user modules
 	*/
 	function get_AccountModules($scope) {
-		switch ($scope) {
-			case 'user':
-				return explode(",", $this->usermodules);
-				break;		
-			case 'group':
-				return explode(",", $this->groupmodules);
-				break;		
-			case 'host':
-				return explode(",", $this->hostmodules);
-				break;		
-			default:
-				return array();
-				break;
+		if (isset($this->typeSettings["modules_" . $scope])) {
+			return explode(",", $this->typeSettings["modules_" . $scope]);
 		}
-		
+		else {
+			return array();
+		}
 	}
 
 	/**
@@ -752,19 +634,7 @@ class Config {
 		// check depends/conflicts
 		if (check_module_conflicts($modules, getModulesDependencies($scope)) != false) return false;
 		if (check_module_depends($modules, getModulesDependencies($scope)) != false) return false;
-		switch ($scope) {
-			case 'user':
-				$this->usermodules = implode(",", $modules);
-				break;		
-			case 'group':
-				$this->groupmodules = implode(",", $modules);
-				break;		
-			case 'host':
-				$this->hostmodules = implode(",", $modules);
-				break;		
-			default:
-				break;
-		}
+		$this->typeSettings["modules_" . $scope] = implode(",", $modules);
 		return true;
 	}
 
@@ -787,6 +657,45 @@ class Config {
 	*/
 	function get_moduleSettings() {
 		return $this->moduleSettings;
+	}
+
+	/**
+	* Returns a list of active account types.
+	*
+	* @return array list of types
+	*/
+	function get_ActiveTypes() {
+		return explode(",", $this->activeTypes);
+	}
+	
+	/**
+	* Sets the list of active types.
+	*
+	* @param array list of types
+	*/
+	function set_ActiveTypes($types) {
+		$this->activeTypes = implode(",", $types);
+	}
+
+	/**
+	* Sets the settings for the account types.
+	*
+	* @param array $settings list of type setting array(name => value)
+	* @return boolean true if $settings has correct format
+	*/
+	function set_typeSettings($settings) {
+		if (!is_array($settings)) return false;
+		$this->typeSettings = $settings;
+		return true;
+	}
+
+	/**
+	* Returns a list of saved type settings
+	*
+	* @return array list of settings: array(name => value)
+	*/
+	function get_typeSettings() {
+		return $this->typeSettings;
 	}
 
 }

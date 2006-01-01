@@ -1,0 +1,100 @@
+/*
+$Id$
+
+  This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
+  Copyright (C) 2005-2006  Roland Gruber
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more detaexils.
+
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+*/
+
+
+/**
+ * style definition for smbDomain accounts
+ *
+ */
+
+/* */
+table.smbDomainnav {
+  background-color:#a8ddbf;
+  border-width:1px;
+  border-style:solid;
+  border-color:#1d993e;
+}
+
+/* text in navigation bar */
+td.smbDomainnav-text {
+  color:green;
+  font-family:Verdana,sans-serif;
+  font-size:12px;
+}
+
+/* color for active page digit */
+td.smbDomainnav-activepage {
+ color:red;
+}
+
+/* table preferences */
+table.smbDomainlist {
+  border-width:1px;
+  border-style:solid;
+  border-color:#1d993e;
+}
+
+/* color of entry rows */
+tr.smbDomainlist {
+  background-color:#c9ddd2;
+}
+
+/* color of head row */
+tr.smbDomainlist-head {
+  background-color:#a8ddbf;
+}
+
+/* color of sorted column in head row */
+th.smbDomainlist-sort {
+  background-color:#c9ddd2;
+}
+
+/* color of rows on mouseOver */
+tr.smbDomainlist-over {
+  background-color:#ffe265;
+}
+
+/* color of checked rows */
+tr.smbDomainlist-checked {
+  background-color:#f27c71;
+}
+
+
+fieldset.smbDomainedit {
+  background-color:#c9ddd2;
+}
+
+fieldset.smbDomainedit legend {
+  color:blue;
+}
+
+fieldset.smbDomainedit fieldset {
+  background-color:#c9ddd2;
+}
+
+fieldset.smbDomainedit fieldset fieldset {
+  background-color:#c9ddd2;
+}
+
+fieldset.smbDomainedit select {
+  background-color:#a8ddbf;
+}

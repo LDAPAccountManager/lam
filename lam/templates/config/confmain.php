@@ -43,9 +43,9 @@ session_save_path("../../sess");
 setlanguage();
 
 // check if button was pressed and if we have to save the setting or go back to login
-if (isset($_POST['back']) || isset($_POST['submitconf']) || isset($_POST['editmodules'])){
+if (isset($_POST['back']) || isset($_POST['submitconf']) || isset($_POST['editmodules']) || isset($_POST['edittypes'])){
 	// save settings
-	if ($_POST['submitconf'] || $_POST['editmodules']){
+	if ($_POST['submitconf'] || $_POST['editmodules'] || $_POST['edittypes']){
 		// save HTTP-POST variables in session
 		$_SESSION['conf_passwd'] = $_POST['passwd'];
 		$_SESSION['conf_passwd1'] = $_POST['passwd1'];
@@ -53,21 +53,11 @@ if (isset($_POST['back']) || isset($_POST['submitconf']) || isset($_POST['editmo
 		$_SESSION['conf_serverurl'] = $_POST['serverurl'];
 		$_SESSION['conf_cachetimeout'] = $_POST['cachetimeout'];
 		$_SESSION['conf_admins'] = $_POST['admins'];
-		$_SESSION['conf_suffusers'] = $_POST['suffusers'];
-		$_SESSION['conf_suffgroups'] = $_POST['suffgroups'];
-		$_SESSION['conf_suffhosts'] = $_POST['suffhosts'];
-		$_SESSION['conf_suffdomains'] = $_POST['suffdomains'];
 		$_SESSION['conf_sufftree'] = $_POST['sufftree'];
-		$_SESSION['conf_usrlstattr'] = $_POST['usrlstattr'];
-		$_SESSION['conf_grplstattr'] = $_POST['grplstattr'];
-		$_SESSION['conf_hstlstattr'] = $_POST['hstlstattr'];
 		$_SESSION['conf_maxlistentries'] = $_POST['maxlistentries'];
 		$_SESSION['conf_lang'] = $_POST['lang'];
 		$_SESSION['conf_scriptpath'] = $_POST['scriptpath'];
 		$_SESSION['conf_scriptserver'] = $_POST['scriptserver'];
-		$_SESSION['conf_usermodules'] = explode(",", $_POST['usermodules']);
-		$_SESSION['conf_groupmodules'] = explode(",", $_POST['groupmodules']);
-		$_SESSION['conf_hostmodules'] = explode(",", $_POST['hostmodules']);
 		$_SESSION['conf_filename'] = $_POST['filename'];
 		$modSettings = array_keys($_SESSION['config_types']);
 		for ($i = 0; $i < sizeof($modSettings); $i++) $_SESSION['config_moduleSettings'][$modSettings[$i]] = $_POST[$modSettings[$i]];
@@ -80,6 +70,10 @@ if (isset($_POST['back']) || isset($_POST['submitconf']) || isset($_POST['editmo
 	elseif ($_POST['editmodules']){
 		metaRefresh("confmodules.php");
 	}
+	// go to types page
+	elseif ($_POST['edittypes']){
+		metaRefresh("conftypes.php");
+	}
 	// back to login
 	else if ($_POST['back']){
 		metaRefresh("../login.php");
@@ -89,7 +83,7 @@ if (isset($_POST['back']) || isset($_POST['submitconf']) || isset($_POST['editmo
 
 // get password if register_globals is off
 if (isset($_POST['passwd'])) $passwd = $_POST['passwd'];
-if (isset($_GET["modulesback"])) $passwd = $_SESSION['conf_passwd'];
+if (isset($_GET["modulesback"]) || isset($_GET["typesback"])) $passwd = $_SESSION['conf_passwd'];
 
 // check if password was entered
 // if not: load login page
@@ -101,7 +95,7 @@ if (! $passwd) {
 }
 
 $filename = $_POST['filename'];
-if (isset($_GET["modulesback"])) $filename = $_SESSION['conf_filename'];
+if (isset($_GET["modulesback"]) || isset($_GET["typesback"])) $filename = $_SESSION['conf_filename'];
 $conf = new Config($filename);
 
 // check if password is valid
@@ -119,25 +113,25 @@ if (isset($_GET["modulesback"])) {
 	$conf->set_ServerURL($_SESSION['conf_serverurl']);
 	$conf->set_cacheTimeout($_SESSION['conf_cachetimeout']);
 	$conf->set_Adminstring($_SESSION['conf_admins']);
-	$conf->set_Suffix('user', $_SESSION['conf_suffusers']);
-	$conf->set_Suffix('group', $_SESSION['conf_suffgroups']);
-	$conf->set_Suffix('host', $_SESSION['conf_suffhosts']);
-	$conf->set_Suffix('domain', $_SESSION['conf_suffdomains']);
 	$conf->set_Suffix('tree', $_SESSION['conf_sufftree']);
-	$conf->set_listAttributes($_SESSION['conf_usrlstattr'], 'user');
-	$conf->set_listAttributes($_SESSION['conf_grplstattr'], 'group');
-	$conf->set_listAttributes($_SESSION['conf_hstlstattr'], 'host');
 	$conf->set_MaxListEntries($_SESSION['conf_maxlistentries']);
 	$conf->set_defaultLanguage($_SESSION['conf_lang']);
 	$conf->set_scriptpath($_SESSION['conf_scriptpath']);
 	$conf->set_scriptserver($_SESSION['conf_scriptserver']);
-	// check if modules were edited
-	if ($_GET["moduleschanged"] == "true") {
-		$conf->set_AccountModules($_SESSION['conf_usermodules'], 'user');
-		$conf->set_AccountModules($_SESSION['conf_groupmodules'], 'group');
-		$conf->set_AccountModules($_SESSION['conf_hostmodules'], 'host');
+}
+
+// check if user comes from types page
+if (isset($_GET["typesback"])) {
+	// check if a new account type was added
+	if (isset($_GET["typeschanged"])) {
+		metaRefresh("confmodules.php");
+		exit;		
 	}
 }
+
+// type information
+if (!isset($_SESSION['conf_accountTypes'])) $_SESSION['conf_accountTypes'] = $conf->get_ActiveTypes();
+if (!isset($_SESSION['conf_typeSettings'])) $_SESSION['conf_typeSettings'] = $conf->get_typeSettings();
 
 // index for tab order
 $tabindex = 1;
@@ -172,49 +166,9 @@ $tabindex++;
 // new line
 echo ("<tr><td colspan=3>&nbsp</td></tr>");
 
-// user suffix
-echo ("<tr><td align=\"right\"><b>".
-	_("UserSuffix") . ": </b></td>".
-	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"suffusers\" value=\"" . $conf->get_Suffix('user') . "\"></td>\n");
-echo "<td>";
-echo "<a href=\"../help.php?HelpNumber=202\" target=\"lamhelp\">";
-echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
-echo "</a>\n";
-echo "</td></tr>\n";
-$tabindex++;
-// group suffix
-echo ("<tr><td align=\"right\"><b>".
-	_("GroupSuffix") . ": </b></td>".
-	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"suffgroups\" value=\"" . $conf->get_Suffix('group') . "\"></td>\n");
-echo "<td>";
-echo "<a href=\"../help.php?HelpNumber=202\" target=\"lamhelp\">";
-echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
-echo "</a>\n";
-echo "</td></tr>\n";
-$tabindex++;
-// host suffix
-echo ("<tr><td align=\"right\"><b>".
-	_("HostSuffix") . ": </b></td>".
-	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"suffhosts\" value=\"" . $conf->get_Suffix('host') . "\"></td>\n");
-echo "<td>";
-echo "<a href=\"../help.php?HelpNumber=202\" target=\"lamhelp\">";
-echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
-echo "</a>\n";
-echo "</td></tr>\n";
-$tabindex++;
-// domain suffix
-echo ("<tr><td align=\"right\"><b>".
-	_("DomainSuffix") . " **: </b></td>".
-	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"suffdomains\" value=\"" . $conf->get_Suffix('domain') . "\"></td>\n");
-echo "<td>";
-echo "<a href=\"../help.php?HelpNumber=202\" target=\"lamhelp\">";
-echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
-echo "</a>\n";
-echo "</td></tr>\n";
-$tabindex++;
 // tree suffix
 echo ("<tr><td align=\"right\"><b>".
-	_("TreeSuffix") . ": </b></td>".
+	_("Tree suffix") . ": </b></td>".
 	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"sufftree\" value=\"" . $conf->get_Suffix('tree') . "\"></td>\n");
 echo "<td>";
 echo "<a href=\"../help.php?HelpNumber=203\" target=\"lamhelp\">";
@@ -249,22 +203,22 @@ echo ("</fieldset>");
 
 echo ("<p></p>");
 
-echo ("<fieldset><legend><b>" . _("Account modules") . "</b></legend>");
-echo ("<table border=0>");
+echo ("<fieldset><legend><b>" . _("Account types and modules") . "</b></legend>");
 
 // Account modules
-echo "<tr><td><b>" . _("User modules") . ": </b>" . implode(", ", $conf->get_AccountModules('user')) . "</td></tr>\n";
-echo "<tr><td><b>" . _("Group modules") . ": </b>" . implode(", ", $conf->get_AccountModules('group')) . "</td></tr>\n";
-echo "<tr><td><b>" . _("Host modules") . ": </b>" . implode(", ", $conf->get_AccountModules('host')) . "</td></tr>\n";
-echo "<tr><td>&nbsp;</td></tr>\n";
-echo "<tr><td><input tabindex=\"$tabindex\" type=\"submit\" name=\"editmodules\" value=\"" . _("Edit modules") . "\">&nbsp;&nbsp;";
+$types = $_SESSION['conf_accountTypes'];
+for ($i = 0; $i < sizeof($types); $i++) {
+	echo "<b>" . getTypeAlias($types[$i]) . ": </b>" . implode(", ", $conf->get_AccountModules($types[$i])) . "<br>\n";
+}
+echo "<br>\n";
+echo "<input tabindex=\"$tabindex\" type=\"submit\" name=\"edittypes\" value=\"" . _("Edit account types") . "\">&nbsp;&nbsp;";
+$tabindex++;
+echo "<input tabindex=\"$tabindex\" type=\"submit\" name=\"editmodules\" value=\"" . _("Edit modules") . "\">&nbsp;&nbsp;";
 echo "<a href=\"../help.php?HelpNumber=217\" target=\"lamhelp\">";
 echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
 echo "</a>\n";
-echo "</td></tr>\n";
 $tabindex++;
 
-echo ("</table>");
 echo ("</fieldset>");
 
 echo ("<p></p>");
@@ -274,12 +228,10 @@ echo ("<p></p>");
 
 // get list of scopes of modules
 $scopes = array();
-$mods = $conf->get_AccountModules('user');
-for ($i = 0; $i < sizeof($mods); $i++) $scopes[$mods[$i]][] = 'user';
-$mods = $conf->get_AccountModules('group');
-for ($i = 0; $i < sizeof($mods); $i++) $scopes[$mods[$i]][] = 'group';
-$mods = $conf->get_AccountModules('host');
-for ($i = 0; $i < sizeof($mods); $i++) $scopes[$mods[$i]][] = 'host';
+for ($m = 0; $m < sizeof($types); $m++) {
+	$mods = $conf->get_AccountModules($types[$m]);
+	for ($i = 0; $i < sizeof($mods); $i++) $scopes[$mods[$i]][] = $types[$m];
+}
 
 // get module options
 $options = getConfigOptions($scopes);
@@ -305,41 +257,8 @@ for ($i = 0; $i < sizeof($modules); $i++) {
 }
 
 
-echo ("<fieldset><legend><b>" . _("LDAP List settings") . "</b></legend>\n");
+echo ("<fieldset><legend><b>" . _("List settings") . "</b></legend>\n");
 echo ("<table border=0>\n");
-
-// user list attributes
-echo ("<tr><td align=\"right\"><b>".
-	_("Attributes in User List") . " *:</b></td>".
-	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"usrlstattr\" value=\"" . $conf->get_listAttributes('user') . "\"></td>");
-echo "<td>";
-echo "<a href=\"../help.php?HelpNumber=206\" target=\"lamhelp\">";
-echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
-echo "</a>\n";
-echo "</td></tr>\n";
-$tabindex++;
-// group list attributes
-echo ("<tr><td align=\"right\"><b>".
-	_("Attributes in Group List") . " *:</b></td>".
-	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"grplstattr\" value=\"" . $conf->get_listAttributes('group') . "\"></td>");
-echo "<td>";
-echo "<a href=\"../help.php?HelpNumber=206\" target=\"lamhelp\">";
-echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
-echo "</a>\n";
-echo "</td></tr>\n";
-$tabindex++;
-// host list attributes
-echo ("<tr><td align=\"right\"><b>".
-	_("Attributes in Host List") . " **:</b></td>".
-	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"hstlstattr\" value=\"" . $conf->get_listAttributes('host') . "\"></td>");
-echo "<td>";
-echo "<a href=\"../help.php?HelpNumber=206\" target=\"lamhelp\">";
-echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
-echo "</a>\n";
-echo "</td></tr>\n";
-$tabindex++;
-
-echo ("<tr><td colspan=3>&nbsp</td></tr>\n");
 
 // maximum list entries
 echo ("<tr><td align=\"right\"><b>".
@@ -499,11 +418,6 @@ echo ("<p><input type=\"hidden\" name=\"passwd\" value=\"" . $passwd . "\"></p>\
 
 // config file
 echo ("<p><input type=\"hidden\" name=\"filename\" value=\"" . $filename . "\"></p>\n");
-
-// modules
-echo ("<p><input type=\"hidden\" name=\"usermodules\" value=\"" . implode(",", $conf->get_AccountModules('user')) . "\"></p>\n");
-echo ("<p><input type=\"hidden\" name=\"groupmodules\" value=\"" . implode(",", $conf->get_AccountModules('group')) . "\"></p>\n");
-echo ("<p><input type=\"hidden\" name=\"hostmodules\" value=\"" . implode(",", $conf->get_AccountModules('host')) . "\"></p>\n");
 
 echo ("</form>\n");
 echo ("</body>\n");

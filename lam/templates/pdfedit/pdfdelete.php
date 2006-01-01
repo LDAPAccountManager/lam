@@ -73,19 +73,22 @@ if ($_POST['abort']) {
 
 // check if right type was given
 $type = $_GET['type'];
-if (($type == "user") || ($type == "host") || ($type == "group")) {
-	echo ("<p align=\"center\"><big>" . _("Do you really want to delete this PDF structure?") . " <b>");
-		echo (_('Scope') . ': ' . $_GET['type'] . ' ' . _('Name') . ': ' . $_GET['delete'] . "</b></big><br></p>\n");
-	echo ("<form action=\"pdfdelete.php\" method=\"post\">\n");
-	echo ("<p align=\"center\">\n");
-	echo ("<input type=\"submit\" name=\"submit\" value=\"" . _("Submit") . "\">\n");
-	echo ("<input type=\"submit\" name=\"abort\" value=\"" . _("Abort") . "\">\n");
-	echo ("<input type=\"hidden\" name=\"type\" value=\"" . $_GET['type'] . "\">");
-	echo ("<input type=\"hidden\" name=\"delete\" value=\"" . $_GET['delete'] . "\">");
-	echo ("</p></form></body></html>\n");
-}
-else{
-	// no valid pdf type
-	StatusMessage("ERROR", "", _("Wrong or missing type!") . " " . $type);
-	echo ("<a href=\"pdfmain.php\">" . _("Back to PDF Editor") . "</a>");
-}
+echo ("<p align=\"center\"><big>" . _("Do you really want to delete this PDF structure?") . "</big>");
+echo "<br>\n";
+echo "<br></p>\n";
+echo "<table align=\"center\">\n";
+	echo "<tr><td>\n";
+		echo "<b>" . _('Account type') . ': </b>' . $_GET['type'];
+	echo "</td></tr>\n";
+	echo "<tr><td>\n";
+		echo "<b>" . _('Name') . ': </b>' . $_GET['delete'] . "<br>\n";
+	echo "</td></tr>\n";
+echo "</table>\n";
+echo "<br>\n";
+echo ("<form action=\"pdfdelete.php\" method=\"post\">\n");
+echo ("<p align=\"center\">\n");
+echo ("<input type=\"submit\" name=\"submit\" value=\"" . _("Submit") . "\">\n");
+echo ("<input type=\"submit\" name=\"abort\" value=\"" . _("Abort") . "\">\n");
+echo ("<input type=\"hidden\" name=\"type\" value=\"" . $_GET['type'] . "\">");
+echo ("<input type=\"hidden\" name=\"delete\" value=\"" . $_GET['delete'] . "\">");
+echo ("</p></form></body></html>\n");

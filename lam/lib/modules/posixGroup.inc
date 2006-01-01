@@ -832,7 +832,7 @@ class posixGroup extends baseModule {
 					$DNs = array_keys($result);
 					for ($i=0; $i<count($DNs); $i++) {
 						// Get Domain SID from name
-						$sambaDomains = search_domains($_SESSION['config']->get_Suffix('domain'));
+						$sambaDomains = search_domains();
 						// Get Domain-SID from group SID
 						$domainSID = substr($result[$DNs[$i]], 0, strrpos($result[$DNs[$i]], "-"));
 						for ($i=0; $i<count($sambaDomains); $i++ )

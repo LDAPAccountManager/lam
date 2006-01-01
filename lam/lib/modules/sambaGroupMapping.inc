@@ -83,7 +83,7 @@ class sambaGroupMapping extends baseModule {
 	function init($base) {
 		// call parent init
 		parent::init($base);
-		$sambaDomains = search_domains($_SESSION['config']->get_Suffix('domain'));
+		$sambaDomains = search_domains();
 		if (sizeof($sambaDomains) == 0) {
 			StatusMessage("ERROR", _('No Samba 3 domains found in LDAP! Please create one first.'), '');
 			return;
@@ -100,7 +100,7 @@ class sambaGroupMapping extends baseModule {
 	*/
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts) {
 		// search existing Samba 3 domains
-		$domains = search_domains($_SESSION['config']->get_Suffix('domain'));
+		$domains = search_domains();
 		$nameToSID = array();
 		// get domain SIDs
 		for ($i = 0; $i < sizeof($domains); $i++) {
@@ -168,7 +168,7 @@ class sambaGroupMapping extends baseModule {
 	* It will output a complete html-table
 	*/
 	function display_html_attributes(&$post) {
-		$sambaDomains = search_domains($_SESSION['config']->get_Suffix('domain'));
+		$sambaDomains = search_domains();
 		if (sizeof($sambaDomains) == 0) {
 			StatusMessage("ERROR", _('No Samba 3 domains found in LDAP! Please create one first.'), '');
 			return;
@@ -243,7 +243,7 @@ class sambaGroupMapping extends baseModule {
 		// upload fields
 		// search existing Samba 3 domains
 		if ($_SESSION['loggedIn']) {
-			$domains = search_domains($_SESSION['config']->get_Suffix('domain'));
+			$domains = search_domains();
 			$domainNames = array();
 			for ($i = 0; $i < sizeof($domains); $i++) $domainNames[] = $domains[$i]->name;
 			$return['upload_columns'] = array(
@@ -327,7 +327,7 @@ class sambaGroupMapping extends baseModule {
 	function get_profileOptions() {
 		$return = array();
 		// get list of domains
-		$sambaDomains = search_domains($_SESSION['config']->get_Suffix('domain'));
+		$sambaDomains = search_domains();
 		$sambaDomainNames = array();
 		for ($i = 0; $i < count($sambaDomains); $i++ ) {
 			// extract names
@@ -350,7 +350,7 @@ class sambaGroupMapping extends baseModule {
 	function load_profile($profile) {
 		if (isset($profile['sambaGroupMapping_sambaDomainName'][0])) {
 			// get list of domains
-			$sambaDomains = search_domains($_SESSION['config']->get_Suffix('domain'));
+			$sambaDomains = search_domains();
 			for ($i = 0; $i < sizeof($sambaDomains); $i++) {
 				if ($sambaDomains[$i]->name == $profile['sambaGroupMapping_sambaDomainName'][0]) {
 					$this->attributes['sambaSID'][0] = $sambaDomains[$i]->SID . "-0";
@@ -394,7 +394,7 @@ class sambaGroupMapping extends baseModule {
 	* @return array list of info/error messages
 	*/
 	function process_attributes(&$post) {
-		$sambaDomains = search_domains($_SESSION['config']->get_Suffix('domain'));
+		$sambaDomains = search_domains();
 		if (sizeof($sambaDomains) == 0) {
 			return array(array(array("ERROR", _('No Samba 3 domains found in LDAP! Please create one first.'))));
 		}
@@ -448,7 +448,7 @@ class sambaGroupMapping extends baseModule {
 	*/
 	function save_attributes() {
 		// Get Domain SID from name
-		$sambaDomains = search_domains($_SESSION['config']->get_Suffix('domain'));
+		$sambaDomains = search_domains();
 		// Get Domain-SID from group SID
 		$domainSID = substr($this->attributes['sambaSID'][0], 0, strrpos($this->attributes['sambaSID'][0], "-"));
 		for ($i=0; $i<count($sambaDomains); $i++ )

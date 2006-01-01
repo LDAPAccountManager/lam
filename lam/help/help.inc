@@ -153,21 +153,7 @@ $helpArray = array (
 				"601" => array ("ext" => "FALSE", "Headline" => _("OU-Editor") . " - " . _("New organizational unit"),
 					"Text" => _("This will create a new organizational unit under the selected one.")),
 				"602" => array ("ext" => "FALSE", "Headline" => _("OU-Editor") . " - " . _("Delete organizational unit"),
-					"Text" => _("This will delete the selected organizational unit. The OU has to be empty.")),
-				"651" => array ("ext" => "FALSE", "Headline" => _("Domain name"),
-					"Text" => _("The name of your Windows domain or workgroup.")),
-				"652" => array ("ext" => "FALSE", "Headline" => _("Suffix"),
-					"Text" => _("The domain entry will be saved under this suffix.")),
-				"653" => array ("ext" => "FALSE", "Headline" => _("Domain SID"),
-					"Text" => _("The SID of your Samba server. Get it with \"net getlocalsid\".")),
-				"654" => array ("ext" => "FALSE", "Headline" => _("Next RID"),
-					"Text" => _("Next RID to use when creating accounts.")),
-				"655" => array ("ext" => "FALSE", "Headline" => _("Next User RID"),
-					"Text" => _("Next RID to use when creating user accounts.")),
-				"656" => array ("ext" => "FALSE", "Headline" => _("Next Group RID"),
-					"Text" => _("Next RID to use when creating groups.")),
-				"657" => array ("ext" => "FALSE", "Headline" => _("Algorithmic RID Base"),
-					"Text" => _("Used for calculating RIDs from UID/GID. Do not change if unsure."))
+					"Text" => _("This will delete the selected organizational unit. The OU has to be empty."))
 
 );
 

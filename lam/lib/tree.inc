@@ -301,6 +301,8 @@ function get_icon( $dn )
 		return 'nt_machine.png';
 	if( in_array( 'sambaaccount', $object_classes ) )
 		return 'nt_user.png';
+	elseif( in_array( 'sambadomain', $object_classes ) )
+		return 'smbDomain.png';
 	elseif( in_array( 'person', $object_classes ) ||
 	    in_array( 'organizationalperson', $object_classes ) ||
 	    in_array( 'inetorgperson', $object_classes ) ||

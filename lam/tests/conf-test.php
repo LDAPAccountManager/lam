@@ -34,8 +34,6 @@ include ("../lib/config.inc");
 
 $conf = new Config('test');
 echo "<html><head><title></title><link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\"></head><body>";
-echo ("<b> Current Config</b><br><br>");
-$conf->printconf();
 echo ("<br><br><big><b> Starting Test...</b></big><br><br>");
 // now all preferences are loaded
 echo ("Loading preferences...");
@@ -46,7 +44,7 @@ $Adminstring = $conf->get_Adminstring();
 $Suff_users = $conf->get_Suffix('user');
 $Suff_groups = $conf->get_Suffix('group');
 $Suff_hosts = $conf->get_Suffix('host');
-$Suff_domains = $conf->get_Suffix('domain');
+$Suff_domains = $conf->get_Suffix('smbDomain');
 $userlistAttributes = $conf->get_listAttributes('user');
 $grouplistAttributes = $conf->get_listAttributes('group');
 $hostlistAttributes = $conf->get_listAttributes('host');
@@ -65,7 +63,7 @@ $conf->set_Adminstring("uid=test,o=test,dc=org;uid=root,o=test2,c=de");
 $conf->set_Suffix('user', "ou=test,o=test,c=de");
 $conf->set_Suffix('group', "ou=testgrp,o=test,c=de");
 $conf->set_Suffix('host', "ou=testhst,o=test,c=de");
-$conf->set_Suffix('domain', "ou=testdom,o=test,c=de");
+$conf->set_Suffix('smbDomain', "ou=testdom,o=test,c=de");
 $conf->set_listAttributes("#uid;#cn", 'user');
 $conf->set_listAttributes("#gidNumber;#cn;#memberUID", 'group');
 $conf->set_listAttributes("#cn;#uid;#description", 'host');
@@ -86,7 +84,7 @@ if ($conf2->get_Adminstring() != "uid=test,o=test,dc=org;uid=root,o=test2,c=de")
 if ($conf2->get_Suffix('user') != "ou=test,o=test,c=de") echo ("<br><font color=\"#FF0000\">Saving user suffix failed!</font><br>");
 if ($conf2->get_Suffix('group') != "ou=testgrp,o=test,c=de") echo ("<br><font color=\"#FF0000\">Saving group suffix failed!</font><br>");
 if ($conf2->get_Suffix('host') != "ou=testhst,o=test,c=de") echo ("<br><font color=\"#FF0000\">Saving host suffix failed!</font><br>");
-if ($conf2->get_Suffix('domain') != "ou=testdom,o=test,c=de") echo ("<br><font color=\"#FF0000\">Saving domain suffix failed!</font><br>");
+if ($conf2->get_Suffix('smbDomain') != "ou=testdom,o=test,c=de") echo ("<br><font color=\"#FF0000\">Saving domain suffix failed!</font><br>");
 if ($conf2->get_listAttributes('user') != "#uid;#cn") echo ("<br><font color=\"#FF0000\">Saving userlistAttributes failed!</font><br>");
 if ($conf2->get_listAttributes('group') != "#gidNumber;#cn;#memberUID") echo ("<br><font color=\"#FF0000\">Saving grouplistAttributes failed!</font><br>");
 if ($conf2->get_listAttributes('host') != "#cn;#uid;#description") echo ("<br><font color=\"#FF0000\">Saving hostlistAttributes failed!</font><br>");
@@ -106,7 +104,7 @@ $conf2->set_Adminstring($Adminstring);
 $conf2->set_Suffix('user', $Suff_users);
 $conf2->set_Suffix('group', $Suff_groups);
 $conf2->set_Suffix('host', $Suff_hosts);
-$conf2->set_Suffix('domain', $Suff_domains);
+$conf2->set_Suffix('smbDomain', $Suff_domains);
 $conf2->set_listAttributes($userlistAttributes, 'user');
 $conf2->set_listAttributes($grouplistAttributes, 'group');
 $conf2->set_listAttributes($hostlistAttributes, 'host');
@@ -119,7 +117,5 @@ $conf2->save();
 echo ("done<br>");
 // finished
 echo ("<br><b><font color=\"#00C000\">Test is complete.</font></b>");
-echo ("<br><br><b> Current Config</b><br><br>");
-$conf2->printconf();
 
 ?>

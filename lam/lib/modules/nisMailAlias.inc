@@ -45,7 +45,7 @@ class nisMailAlias extends baseModule {
 	function get_metaData() {
 		$return = array();
 		// manages host accounts
-		$return["account_types"] = array("group");
+		$return["account_types"] = array("mailAlias");
 		// base module
 		$return["is_base"] = true;
 		// LDAP filter

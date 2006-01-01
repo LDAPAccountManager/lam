@@ -82,7 +82,7 @@ if ($_POST['forward'] == "yes") {
 	exit;
 }
 
-$scopes = getAvailableScopes();
+$scopes = $_SESSION['config']->get_ActiveTypes();
 
 $availableStructureDefinitions = '';
 $availableScopes = '';

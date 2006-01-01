@@ -357,50 +357,50 @@ function pwd_is_enabled($hash) {
 	else return true;
 }
 
-	/**
-	* Returns an array with all Samba 3 domain entries under the given suffix
-	*
-	* @param string $suffix search suffix
-	* @return array list of samba3domain objects
-	*/
-	function search_domains($suffix) {
-		$ret = array();
-		$attr = array("DN", "sambaDomainName", "sambaSID", "sambaNextRid", "sambaNextGroupRid",
-			"sambaNextUserRid", "sambaAlgorithmicRidBase");
-		$sr = @ldap_search($_SESSION['ldap']->server(), $suffix, "objectClass=sambaDomain", $attr);
-		if ($sr) {
-			$units = ldap_get_entries($_SESSION['ldap']->server, $sr);
-			// delete count entry
-			unset($units['count']);
-			// extract attributes
-			for ($i = 0; $i < sizeof($units); $i++) {
-				$ret[$i] = new samba3domain();
-				$ret[$i]->dn = $units[$i]['dn'];
-				$ret[$i]->name = $units[$i]['sambadomainname'][0];
-				$ret[$i]->SID = $units[$i]['sambasid'][0];
-				if (isset($units[$i]['sambanextrid'][0])) $ret[$i]->nextRID = $units[$i]['sambanextrid'][0];
-				if (isset($units[$i]['sambanextgrouprid'][0])) $ret[$i]->nextGroupRID = $units[$i]['sambanextgrouprid'][0];
-				if (isset($units[$i]['sambanextuserrid'][0])) $ret[$i]->nextUserRID = $units[$i]['sambanextuserrid'][0];
-				if (isset($units[$i]['sambaalgorithmicridbase'][0])) $ret[$i]->RIDbase = $units[$i]['sambaalgorithmicridbase'][0];
-			}
-			// sort array by domain name
-			usort($ret, "cmp_domain");
+/**
+* Returns an array with all Samba 3 domain entries under the given suffix
+*
+* @return array list of samba3domain objects
+*/
+function search_domains() {
+	$suffix = $_SESSION['config']->get_Suffix('smbDomain');
+	$ret = array();
+	$attr = array("DN", "sambaDomainName", "sambaSID", "sambaNextRid", "sambaNextGroupRid",
+		"sambaNextUserRid", "sambaAlgorithmicRidBase");
+	$sr = @ldap_search($_SESSION['ldap']->server(), $suffix, "objectClass=sambaDomain", $attr);
+	if ($sr) {
+		$units = ldap_get_entries($_SESSION['ldap']->server, $sr);
+		// delete count entry
+		unset($units['count']);
+		// extract attributes
+		for ($i = 0; $i < sizeof($units); $i++) {
+			$ret[$i] = new samba3domain();
+			$ret[$i]->dn = $units[$i]['dn'];
+			$ret[$i]->name = $units[$i]['sambadomainname'][0];
+			$ret[$i]->SID = $units[$i]['sambasid'][0];
+			if (isset($units[$i]['sambanextrid'][0])) $ret[$i]->nextRID = $units[$i]['sambanextrid'][0];
+			if (isset($units[$i]['sambanextgrouprid'][0])) $ret[$i]->nextGroupRID = $units[$i]['sambanextgrouprid'][0];
+			if (isset($units[$i]['sambanextuserrid'][0])) $ret[$i]->nextUserRID = $units[$i]['sambanextuserrid'][0];
+			if (isset($units[$i]['sambaalgorithmicridbase'][0])) $ret[$i]->RIDbase = $units[$i]['sambaalgorithmicridbase'][0];
 		}
-		return $ret;
+		// sort array by domain name
+		usort($ret, "cmp_domain");
 	}
+	return $ret;
+}
 
-	/**
-	* Helper function to sort the domains
-	*
-	* @param string $a first argument to compare
-	* @param string $b second argument to compare
-	* @return integer 0 if equal, 1 if $a is greater, -1 if $b is greater
-	*/
-	function cmp_domain($a, $b) {
-		if ($a->name == $b->name) return 0;
-		elseif ($a->name == max($a->name, $b->name)) return 1;
-		else return -1;
-	}
+/**
+* Helper function to sort the domains
+*
+* @param string $a first argument to compare
+* @param string $b second argument to compare
+* @return integer 0 if equal, 1 if $a is greater, -1 if $b is greater
+*/
+function cmp_domain($a, $b) {
+	if ($a->name == $b->name) return 0;
+	elseif ($a->name == max($a->name, $b->name)) return 1;
+	else return -1;
+}
 
 
 /**
@@ -498,7 +498,7 @@ function get_preg($argument, $regexp) {
 					$pregexpr = '/^(([a-zA-Z0-9\\.\\_-])+(,[a-zA-Z0-9\\.\\_-])*)*$/';
 					break;
 		case "domainname":		// Windows Domainname
-					$pregexpr = '/^([a-z0-9\\.\\_-])+$/';
+					$pregexpr = '/^([A-Za-z0-9\\.\\_-])+$/';
 					break;
 		case "unixhost":		// Unix hosts
 					$pregexpr = '/^([a-z0-9,\\.\\_-])*$/';
@@ -533,6 +533,8 @@ function get_preg($argument, $regexp) {
 		case 'dn':	// LDAP DN
 					$pregexpr = '/^([^=,]+=[^=,]+)(,([^=,]+=[^=,]+))*$/';
 					break;
+		case 'domainSID': // Samba domain SID
+					$pregexpr = "/^S\\-[0-9]\\-[0-9]\\-[0-9]{2,2}\\-[0-9]+\\-[0-9]+\\-[0-9]+$/";
 	}
 	if ($pregexpr!='')
 		if (preg_match($pregexpr, $argument)) {

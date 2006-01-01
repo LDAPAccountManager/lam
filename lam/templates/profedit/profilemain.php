@@ -41,11 +41,15 @@ session_save_path("../../sess");
 
 setlanguage();
 
-$profileClasses = array(
-	array('scope' => 'user', 'title' => _('User profiles'), 'profiles' => ""),
-	array('scope' => 'group', 'title' => _('Group profiles'), 'profiles' => ""),
-	array('scope' => 'host', 'title' => _('Host profiles'), 'profiles' => "")
-);
+$types = $_SESSION['config']->get_ActiveTypes();
+$profileClasses = array();
+for ($i = 0; $i < sizeof($types); $i++) {
+	$profileClasses[] = array(
+		'scope' => $types[$i],
+		'title' => getTypeAlias($types[$i]),
+		'profiles' => "");
+}
+
 
 // check if user is logged in, if not go to login
 if (!$_SESSION['ldap'] || !$_SESSION['ldap']->server()) {
@@ -97,6 +101,9 @@ echo $_SESSION['header'];
 
 echo "<title>LDAP Account Manager</title>\n";
 echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
+for ($i = 0; $i < sizeof($profileClasses); $i++) {
+	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/type_" . $profileClasses[$i]['scope'] . ".css\">\n";
+}
 echo "</head>\n";
 echo "<body>\n";
 
@@ -106,7 +113,7 @@ echo "<form action=\"profilemain.php\" method=\"post\">\n";
 
 for ($i = 0; $i < sizeof($profileClasses); $i++) {
 
-	echo "<fieldset>\n";
+	echo "<fieldset class=\"" . $profileClasses[$i]['scope'] . "edit\">\n";
 	echo "<legend>\n";
 	echo "<b>" . $profileClasses[$i]['title'] . "</b>\n";
 	echo "</legend>\n";

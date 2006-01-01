@@ -317,6 +317,11 @@ function getConfigOptions($scopes) {
 */
 function getConfigDescriptions() {
 	$return = array('legend' => array(), 'descriptions' => array());
+	$modules = array();
+	$types = $_SESSION['config']->get_ActiveTypes();
+	for ($i = 0; $i < sizeof($types); $i++) {
+		$modules = array_merge($modules, getAvailableModules($types[$i]));
+	}
 	$modules = array_merge(getAvailableModules('user'), getAvailableModules('group'), getAvailableModules('host'));
 	$modules = array_values(array_unique($modules));
 	for ($i = 0; $i < sizeof($modules); $i++) {
@@ -373,15 +378,6 @@ function getAvailablePDFFields($scope) {
 	}
 	$return['main'] = array('dn');
 	return $return;
-}
-
-/**
- * Return a list of current available scopes
- *
- * @return array Available scopes
- */
-function getAvailableScopes() {
-	return array('user','group','host', 'domain');
 }
 
 /**
@@ -707,8 +703,6 @@ class accountContainer {
 		
 		if (!is_string($type)) trigger_error('Argument of accountContainer must be string.', E_USER_ERROR);
 		if (!is_string($base)) trigger_error('Argument of accountContainer must be string.', E_USER_ERROR);
-		// *** fixme use global variable to determine allowed types
-		if (!in_array($type, getAvailableScopes())) trigger_error('Account type not recognized.', E_USER_ERROR);
 		$this->type = $type;
 		$this->base = $base;
 		// Set startpage
@@ -900,6 +894,7 @@ class accountContainer {
 			else echo _("Create new Account");
 		echo "</title>\n";
 		echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
+		echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/type_" . $this->type . ".css\">\n";
 		echo "</head><body>\n";
 		echo "<form enctype=\"multipart/form-data\" action=\"edit.php\" method=\"post\">\n";
 		// Display error-messages
@@ -937,7 +932,7 @@ class accountContainer {
 		
 		echo "<fieldset class=\"".$this->type."edit\"><legend><b>";
 			echo _('Please select page:');
-			echo "</b></legend>\n";
+			echo "</b></legend><center>\n";
 		// calculate button width
 		$buttonWidth = round(0.8 * strlen(utf8_decode(_("Reset changes"))));
 		for ($b = 0; $b < sizeof($this->order); $b++) {
@@ -971,7 +966,7 @@ class accountContainer {
 			if ($this->subpage == 'finish') echo " disabled";
 			echo "><br>\n";
 		}
-		echo "</fieldset>\n";
+		echo "</center></fieldset>\n";
 		echo "</td>\n<td>";
 		if ($this->current_page==0) {
 			echo "<fieldset class=\"".$this->type."edit\"><legend><b>";
@@ -1177,7 +1172,7 @@ class accountContainer {
 			$string = trim($string);
 			// Add must
 			foreach (explode(" $ ", $string) as $attribute) {
-				$return[$attribute] = array('');
+				$return[$attribute] = array();
 			}
 		}
 		elseif (strpos($_SESSION['ldap']->objectClasses[$line],  'MUST ')) {
@@ -1186,7 +1181,7 @@ class accountContainer {
 			$string = substr($string_withtail, 0, strpos($string_withtail, ' '));
 			$string = trim($string);
 			// Add must
-			$return[$string] = array('');
+			$return[$string] = array();
 		}
 		// create array with may-attributes
 		// Get startposition in string
@@ -1197,7 +1192,7 @@ class accountContainer {
 			$string = trim($string);
 			// Add may
 			foreach (explode(" $ ", $string) as $attribute) {
-				$return[$attribute] = array('');
+				$return[$attribute] = array();
 			}
 		}
 		elseif (strpos($_SESSION['ldap']->objectClasses[$line],  'MAY ')) {
@@ -1206,7 +1201,7 @@ class accountContainer {
 			$string = substr($string_withtail, 0, strpos($string_withtail, ' '));
 			$string = trim($string);
 			// Add must
-			$return[$string] = array('');
+			$return[$string] = array();
 		}
 		// Get attributes of subclasses
 		while (strpos($_SESSION['ldap']->objectClasses[$line], "SUP ")) {
@@ -1227,7 +1222,7 @@ class accountContainer {
 				$string = trim($string);
 				// Add must
 				foreach (explode(" $ ", $string) as $attribute) {
-					$return[$attribute] = array('');
+					$return[$attribute] = array();
 				}
 			}
 			elseif (strpos($_SESSION['ldap']->objectClasses[$line],  'MUST ')) {
@@ -1236,7 +1231,7 @@ class accountContainer {
 				$string = substr($string_withtail, 0, strpos($string_withtail, ' '));
 				$string = trim($string);
 				// Add must
-				$return[$string] = array('');
+				$return[$string] = array();
 			}
 			// create array with may-attributes
 			// Get startposition in string
@@ -1247,7 +1242,7 @@ class accountContainer {
 				$string = trim($string);
 				// Add may
 				foreach (explode(" $ ", $string) as $attribute) {
-					$return[$attribute] = array('');
+					$return[$attribute] = array();
 				}
 			}
 			elseif (strpos($_SESSION['ldap']->objectClasses[$line],  'MAY ')) {
@@ -1256,7 +1251,7 @@ class accountContainer {
 				$string = substr($string_withtail, 0, strpos($string_withtail, ' '));
 				$string = trim($string);
 				// Add must
-				$return[$string] = array('');
+				$return[$string] = array();
 			}
 		}
 

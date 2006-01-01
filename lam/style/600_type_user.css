@@ -1,0 +1,119 @@
+/*
+$Id$
+
+  This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
+  Copyright (C) 2005-2006  Roland Gruber
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more detaexils.
+
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+*/
+
+
+/**
+ * style definition for user accounts
+ */
+
+/**
+* Preferences for the list view and some other pages which have no own definitions (e.g. profile editor).
+*/
+ 
+/* main table of account list */
+table.userlist {
+  border-width:1px;
+  border-style:solid;
+  border-color:#9b8523;
+}
+
+/* color of entry rows */
+tr.userlist {
+  background-color:#fffde2;
+}
+
+/* color of head row */
+tr.userlist-head {
+  background-color:#fff2a3;
+  font-weight:bold;
+}
+
+/* color of rows on mouseOver */
+tr.userlist-over {
+  background-color:#ccccff;
+}
+
+/* color of checked rows */
+tr.userlist-checked {
+  background-color:#f27c71;
+}
+
+/* color of sorted column */
+th.userlist-sort {
+  background-color:#fffde2;
+}
+
+
+
+
+/* style of navigation bar */
+table.usernav {
+  background-color:#fff2a3;
+  border-width:1px;
+  border-style:solid;
+  border-color:#9b8523;
+}
+
+/* text area in the center, e.g. "100 object(s) found" */
+td.usernav-text {
+  color:green;
+  font-family:Verdana,sans-serif;
+  font-size:12px;
+}
+
+/* color for active page number */
+td.usernav-activepage {
+ color:red;
+}
+
+
+
+
+/* account pages */
+
+/* main fieldset */
+fieldset.useredit {
+  background-color:#fff2a3;
+}
+
+/* legend of main fieldset */
+fieldset.useredit legend {
+  color:blue;
+}
+
+/* subfieldset */
+fieldset.useredit fieldset {
+  background-color:#fff2a3;
+}
+
+/* subsubfieldset */
+fieldset.useredit fieldset fieldset {
+  background-color:#fff2a3;
+}
+
+/* select boxes */
+fieldset.useredit select {
+  background-color:#fffde2;
+}
+
+
+ 

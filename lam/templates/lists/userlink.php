@@ -62,7 +62,7 @@ else {
 	echo "</head><body>\n";
 	StatusMessage("ERROR", "", _("This user was not found!") . " (" . $user . ")");
 	echo "<p>&nbsp;</p>";
-	echo "<p><a href=\"listgroups.php\">" . _("Back to group list") . "</a></p>";
+	echo "<p><a href=\"list.php?type=group\">" . _("Back to group list") . "</a></p>";
 	echo ("</body></html>\n");
 }
 

@@ -42,6 +42,7 @@ echo $_SESSION['header'];
 
 echo "<title></title>\n";
 echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">\n";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/type_user.css\">\n";
 echo "</head>";
 
 echo "<body>\n";
@@ -54,15 +55,6 @@ $tools[] = array(
 		"description" => _("Here you can manage your account profiles."),
 		"link" => "profedit/profilemain.php"
 	);
-
-// Samba 3 domains
-if ($_SESSION['config']->get_Suffix('domain') && ($_SESSION['config']->get_Suffix('domain') != "")) {
-$tools[] = array(
-		"name" => _("Samba 3 domains"),
-		"description" => _("Manages Samba 3 domain accounts."),
-		"link" => "lists/listdomains.php"
-	);
-}
 
 // file upload
 $tools[] = array(

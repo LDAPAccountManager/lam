@@ -42,22 +42,10 @@ session_save_path("../../sess");
 setlanguage();
 
 // remove settings from session
-unset($_SESSION['conf_passwd']);
-unset($_SESSION['conf_passwd1']);
-unset($_SESSION['conf_passwd2']);
-unset($_SESSION['conf_serverurl']);
-unset($_SESSION['conf_admins']);
-unset($_SESSION['conf_suffusers']);
-unset($_SESSION['conf_suffgroups']);
-unset($_SESSION['conf_suffhosts']);
-unset($_SESSION['conf_usrlstattr']);
-unset($_SESSION['conf_grplstattr']);
-unset($_SESSION['conf_hstlstattr']);
-unset($_SESSION['conf_maxlistentries']);
-unset($_SESSION['conf_lang']);
-unset($_SESSION['conf_scriptpath']);
-unset($_SESSION['conf_scriptserver']);
-unset($_SESSION['conf_filename']);
+$sessionKeys = array_keys($_SESSION);
+for ($i = 0; $i < sizeof($sessionKeys); $i++) {
+	if (substr($sessionKeys[$i], 0, 5) == "conf_") unset($_SESSION[$sessionKeys[$i]]);
+}
 
 echo $_SESSION['header'];
 

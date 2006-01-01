@@ -73,22 +73,13 @@ if ($_POST['abort']) {
 	exit;
 }
 
-// check if right type was given
 $type = $_GET['type'];
-if (($type == "user") || ($type == "host") || ($type == "group")) {
-	// user profile
-	echo ("<p align=\"center\"><big>" . _("Do you really want to delete this profile?") . " <b>");
-	echo ($_GET['del'] . "</b></big><br></p>\n");
-	echo ("<form action=\"profiledelete.php\" method=\"post\">\n");
-	echo ("<p align=\"center\">\n");
-	echo ("<input type=\"submit\" name=\"submit\" value=\"" . _("Submit") . "\">\n");
-	echo ("<input type=\"submit\" name=\"abort\" value=\"" . _("Abort") . "\">\n");
-	echo ("<input type=\"hidden\" name=\"type\" value=\"$type\">");
-	echo ("<input type=\"hidden\" name=\"del\" value=\"" . $_GET['del'] . "\">");
-	echo ("</p></form></body></html>\n");
-}
-else{
-	// no valid profile type
-	StatusMessage("ERROR", "", _("Wrong or missing type!") . " " . $type);
-	echo ("<a href=\"profilemain.php\">" . _("Back to profile editor") . "</a>");
-}
+echo ("<p align=\"center\"><big>" . _("Do you really want to delete this profile?") . " <b>");
+echo ($_GET['del'] . "</b></big><br></p>\n");
+echo ("<form action=\"profiledelete.php\" method=\"post\">\n");
+echo ("<p align=\"center\">\n");
+echo ("<input type=\"submit\" name=\"submit\" value=\"" . _("Submit") . "\">\n");
+echo ("<input type=\"submit\" name=\"abort\" value=\"" . _("Abort") . "\">\n");
+echo ("<input type=\"hidden\" name=\"type\" value=\"$type\">");
+echo ("<input type=\"hidden\" name=\"del\" value=\"" . $_GET['del'] . "\">");
+echo ("</p></form></body></html>\n");

@@ -65,6 +65,7 @@ if ($_POST['abort']) {
 // print header
 echo $_SESSION['header'];
 echo "<title></title>\n<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
+echo "<title></title>\n<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/type_" . $_GET['type'] . ".css\">\n";
 echo "</head><body><br>\n";
 
 // save button was presed
@@ -130,7 +131,6 @@ $_SESSION['profile_types'] = array();
 
 // check if account type is valid
 $type = $_GET['type'];
-if (!(($type == 'user') || ($type == 'group') || ($type == 'host'))) meta_refresh('profilemain.php');
 
 // get module options
 $options = getProfileOptions($type);
