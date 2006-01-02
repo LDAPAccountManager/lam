@@ -29,3 +29,5 @@ hu_HU.utf8:UTF-8:Magyar (Magyarország)
 # Japanese
 ja_JP.utf8:UTF-8:日本語 (日本)
 
+# Chinese (Traditional)
+zh_TW.utf8:UTF-8:繁體中文(台灣)
