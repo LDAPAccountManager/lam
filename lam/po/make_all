@@ -22,4 +22,8 @@ echo " "
 echo "Generating Japanese translation template"
 ./make_po_jp
 tar -czf messages.po_jp.tar.gz messages.po  
+echo " "
+echo "Generating Chinese translation template"
+./make_po_zh
+tar -czf messages.po_zh.tar.gz messages.po  
 
