@@ -33,6 +33,8 @@ $Id$
 include_once("types.inc");
 /** Used to get PDF information. */
 include_once("pdfstruct.inc");
+/** Used to create PDF files. */
+include_once("pdf.inc");
 
 
 /**
@@ -414,7 +416,7 @@ class lamList {
 				$accounts = array_keys($_POST, "on");
 				$_SESSION['delete_dn'] = array();
 				for ($i = 0; $i < sizeof($accounts); $i++) {
-					$_SESSION['delete_dn'][] = $_SESSION[$this->type . 'info'][$accounts[$i]]['dn'];
+					$_SESSION['delete_dn'][] = $this->entries[$accounts[$i]]['dn'];
 				}
 				if (sizeof($accounts) > 0) {
 					metaRefresh("../delete.php?type=" . $this->type);
@@ -430,7 +432,7 @@ class lamList {
 				// load accounts from LDAP
 				for ($i = 0; $i < sizeof($accounts); $i++) {
 					$_SESSION["accountPDF-$i"] = new accountContainer($this->type, "accountPDF-$i");
-					$_SESSION["accountPDF-$i"]->load_account($_SESSION[$this->type . 'info'][$accounts[$i]]['dn']);
+					$_SESSION["accountPDF-$i"]->load_account($this->entries[$accounts[$i]]['dn']);
 					$list[$i] = $_SESSION["accountPDF-$i"];
 				}
 				if (sizeof($list) > 0) {
@@ -441,9 +443,9 @@ class lamList {
 			// PDF for all accounts
 			elseif (isset($_POST['pdf_all'])){
 				$list = array();
-				for ($i = 0; $i < sizeof($_SESSION[$this->type . 'info']); $i++) {
+				for ($i = 0; $i < sizeof($this->entries); $i++) {
 					$_SESSION["accountPDF-$i"] = new accountContainer($this->type, "accountPDF-$i");
-					$_SESSION["accountPDF-$i"]->load_account($_SESSION[$this->type . 'info'][$i]['dn']);
+					$_SESSION["accountPDF-$i"]->load_account($this->entries[$i]['dn']);
 					$list[$i] = $_SESSION["accountPDF-$i"];
 				}
 				if (sizeof($list) > 0) {
