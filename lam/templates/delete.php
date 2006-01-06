@@ -117,7 +117,7 @@ if ($_GET['type']) {
 
 if ($_POST['cancel']) {
 	if (isset($_SESSION['delete_dn'])) unset($_SESSION['delete_dn']);
-	metaRefresh("lists/list" . $_POST['type'] . "s.php");
+	metaRefresh("lists/list.php?type=" . $_POST['type']);
 }
 
 if ($_POST['delete']) {

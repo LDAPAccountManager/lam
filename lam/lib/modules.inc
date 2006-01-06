@@ -827,9 +827,9 @@ class accountContainer {
 						$result = 0;
 					}
 					if ($post['backmain']) {
-						// Return to *-list
-						// *** fixme unset accountContainer in session
-						metaRefresh("../lists/list".$this->type."s.php");
+						// Return to account list
+						unset($_SESSION[$this->base]);
+						metaRefresh("../lists/list.php?type=" . $this->type);
 						exit;
 					}
 					if ($post['outputpdf']) {
