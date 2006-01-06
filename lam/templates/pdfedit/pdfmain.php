@@ -63,7 +63,7 @@ if (!$_SESSION['ldap'] || !$_SESSION['ldap']->server()) {
 if ($_POST['forward'] == "yes") {
 	// on abort go back to main page
 	if ($_POST['abort']) {
-		metaRefresh("../lists/listusers.php");
+		metaRefresh("../tools.php");
 	}
 	// on submit forward to other pdf structure pages
 	else if($_POST['submit']) {
