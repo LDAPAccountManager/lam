@@ -61,7 +61,7 @@ function StatusMessage($MessageTyp,$MessageHeadline,$MessageText='',$MessageVari
 	/* Set output-message, when none or false $MessageTyp is submitted. */
 	else {
 		$class = "class=\"statusError\"";
-		$MessageTyp = _("ERROR");
+		$MessageTyp = "ERROR";
 		$MessageHeadline = _("Invalid/Missing Message type");
 		$MessageText = _("Please report this error to the Bug-Tracker at {link=http://lam.sourceforge.net}LDAP Account Manager Development Team{endlink}. The error number is {bold}0001:Invalid/Missing Message type.{endbold} Thank you.");
 	}
