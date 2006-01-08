@@ -131,6 +131,7 @@ if (isset($_GET["typesback"])) {
 
 // type information
 if (!isset($_SESSION['conf_accountTypes'])) $_SESSION['conf_accountTypes'] = $conf->get_ActiveTypes();
+if (!isset($_SESSION['conf_accountTypesOld'])) $_SESSION['conf_accountTypesOld'] = $conf->get_ActiveTypes();
 if (!isset($_SESSION['conf_typeSettings'])) $_SESSION['conf_typeSettings'] = $conf->get_typeSettings();
 
 // index for tab order

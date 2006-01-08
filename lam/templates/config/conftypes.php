@@ -89,14 +89,29 @@ if ($_POST['submit']) {
 			}
 		}
 	}
+	//selection ok, back to other settings
 	if ($allOK) {
-		//selection ok, back to other settings
-		metarefresh('confmain.php?typesback=true&amp;typeschanged=true');
+		// check if there is a new type
+		$addedType = false;
+		for ($i = 0; $i < sizeof($_SESSION['conf_accountTypes']); $i++) {
+			if (!in_array($_SESSION['conf_accountTypes'][$i], $_SESSION['conf_accountTypesOld'])) {
+				$addedType = true;
+				break;
+			}
+		}
+		$_SESSION['conf_accountTypesOld'] = $_SESSION['conf_accountTypes'];
+		if ($addedType) {
+			metarefresh('confmain.php?typesback=true&amp;typeschanged=true');
+		}
+		else {
+			metarefresh('confmain.php?typesback=true');
+		}
 		exit;
 	}
 }
+// no changes
 elseif ($_POST['abort']) {
-	// no changes
+	$_SESSION['conf_accountTypes'] = $_SESSION['conf_accountTypesOld'];
 	metarefresh('confmain.php?typesback=true');
 	exit;
 }
