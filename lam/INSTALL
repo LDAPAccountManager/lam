@@ -45,19 +45,18 @@ Installation Instructions for LAM
      Copy config.cfg_sample to config.cfg and set the master password and default
      profile.
 
-     - With web browser:
-       Follow the link "Configuration Login" from the start page (lam/index.html).
+     Open the index.html in your web browser:
+     - Follow the link "Configuration Login" from the start page.
        (The default password to edit the options is "lam")
+     - Select the default lam profile or create a new profile.
+     - Change the settings to fit your environment.
 
-     - Manually:
-       A default config file can be found in /lam/config/lam.conf_sample.
-       Change the necessary entries and rename it to /lam/config/lam.conf.
 
 
 3. Setting up PHP
 
    LAM runs with PHP4 or PHP5.
-   
+
    Needed changes in your php.ini:
 
     * memory_limit = 32M
