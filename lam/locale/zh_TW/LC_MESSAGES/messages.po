@@ -324,7 +324,7 @@ msgstr "都拒絕"
 #: ../templates/tree/edit.php:138
 #, php-format
 msgid "An attribute (%s) was modified and is highlighted below."
-msgstr ""
+msgstr "下列反白的屬性(%s)已被修改."
 
 #: ../lib/modules/kolabUser.inc:349 ../lib/modules/kolabUser.inc:803
 msgid "Anyone"
@@ -4557,12 +4557,12 @@ msgstr "有效的使用者"
 #: ../templates/delete.php:187 ../lib/modules.inc:1568
 #, php-format
 msgid "Was unable to add attribtues to DN: %s."
-msgstr "無法增加屬性到 %s."
+msgstr "無法增加屬性到 %s 這個DN中."
 
 #: ../lib/modules.inc:1517 ../lib/modules.inc:1529
 #, php-format
 msgid "Was unable to create DN: %s."
-msgstr "無法建立DN: %s."
+msgstr "無法建立這個DN: %s."
 
 #: ../templates/tree/delete.php:109 ../templates/delete.php:278
 #: ../templates/delete.php:283 ../lib/modules.inc:1512
@@ -4880,3 +4880,157 @@ msgstr ""
 msgid "users"
 msgstr ""
 
+#~ msgid "Algorithmic RID Base"
+#~ msgstr "RID的演算基底"
+
+#~ msgid "Attributes in Group List"
+#~ msgstr "群組清單的屬性"
+
+#~ msgid "Attributes in Host List"
+#~ msgstr "主機清單中的屬性"
+
+#~ msgid "Attributes in User List"
+#~ msgstr "使用者清單的屬性"
+
+#~ msgid "Back to domain list"
+#~ msgstr "返回網域列表"
+
+#~ msgid "Create group accounts"
+#~ msgstr "建立群組帳號"
+
+#~ msgid "Create host accounts"
+#~ msgstr "建立主機帳號"
+
+#~ msgid "Create user accounts"
+#~ msgstr "建立使用者帳號"
+
+#~ msgid "Delete Domain(s)"
+#~ msgstr "刪除網域"
+
+#~ msgid "Delete Host(s)"
+#~ msgstr "刪除主機帳號"
+
+#~ msgid "Do you really want to delete domain(s):"
+#~ msgstr "確定刪除模組:"
+
+#~ msgid "Domain Settings"
+#~ msgstr "網域設定"
+
+#~ msgid "Domain deleted successfully."
+#~ msgstr "刪除網域成功"
+
+#~ msgid "Domain has been modified."
+#~ msgstr "網域已經更改"
+
+#~ msgid "DomainSuffix"
+#~ msgstr "網域尾碼"
+
+#~ msgid "Domains"
+#~ msgstr "網域"
+
+#~ msgid "Failed to add domain!"
+#~ msgstr "新增網域失敗!"
+
+#~ msgid "Failed to modify domain!"
+#~ msgstr "修改網域失敗!"
+
+#~ msgid "Group modules"
+#~ msgstr "群組模組"
+
+#~ msgid "Group profiles"
+#~ msgstr "群組設定檔"
+
+#~ msgid "GroupSuffix"
+#~ msgstr "群組尾碼"
+
+#~ msgid "GroupSuffix is invalid!"
+#~ msgstr "群組尾碼無效!"
+
+#~ msgid "Host modules"
+#~ msgstr "主機模組"
+
+#~ msgid "Host profiles"
+#~ msgstr "主機設定檔"
+
+#~ msgid "HostSuffix"
+#~ msgstr "主機尾碼"
+
+#~ msgid "HostSuffix is invalid!"
+#~ msgstr "主機尾碼錯誤!"
+
+#~ msgid "LAM Internal Error"
+#~ msgstr "LAM內部錯誤"
+
+#~ msgid "Manages Samba 3 domain accounts."
+#~ msgstr "管理Samba 3 網域帳號"
+
+#~ msgid "Module settings"
+#~ msgstr "模組設定"
+
+#~ msgid "Next RID to use when creating groups."
+#~ msgstr "建立群組時使用的下一個RID."
+
+#~ msgid "Samba Hosts"
+#~ msgstr "Samba主機"
+
+#~ msgid "Saving group modules failed!"
+#~ msgstr "儲存群組模組失敗!"
+
+#~ msgid "Saving host modules failed!"
+#~ msgstr "儲存主機模組失敗!"
+
+#~ msgid "Saving user modules failed!"
+#~ msgstr "儲存使用者模組失敗!"
+
+#~ msgid "The domain entry will be saved under this suffix."
+#~ msgstr "這個領域項目會被儲存在這個LDAP尾碼下."
+
+#~ msgid "The following settings were saved to profile:"
+#~ msgstr "下列設定已被儲存在設定檔:"
+
+#~ msgid "This Samba 3 domain is already present!"
+#~ msgstr "這個網域已經存在"
+
+#~ msgid "TreeSuffix"
+#~ msgstr "樹狀結構的尾碼"
+
+#~ msgid "Unable to delete domain!"
+#~ msgstr "無法刪除網域!"
+
+#~ msgid "User modules"
+#~ msgstr "使用者模組"
+
+#~ msgid "User profiles"
+#~ msgstr "使用者設定檔"
+
+#~ msgid "UserSuffix"
+#~ msgstr "使用者尾碼"
+
+#~ msgid "UserSuffix is invalid!"
+#~ msgstr "無效的使用者尾碼!"
+
+#~ msgid "Wrong or missing type!"
+#~ msgstr "錯誤或遺漏的類型!"
+
+#~ msgid "Account expiration date. Format: DD-MM-YYYY"
+#~ msgstr "帳號過期時間: DD-MM-YYYY"
+
+#~ msgid ""
+#~ "This will make a profile of the current account. The saved values are the "
+#~ "same as in the profile editor. Profile names may contain the letters a-z, "
+#~ "0-9 and -_."
+#~ msgstr ""
+#~ "這會產生目前帳號的設定檔,這儲存的值會和設定檔編輯器中所看到的相同.設定檔名"
+#~ "稱只能包含字母a-z,0-9和 -_ ."
+
+#~ msgid "Windows clients will show display name as group description."
+#~ msgstr "Windows的客戶端會以顯示名稱做為群組描述的內容"
+
+#~ msgid "Windows domain"
+#~ msgstr "Windows網域"
+
+#~ msgid "Windows domain of host."
+#~ msgstr "主機所在的Windows網域"
+
+#~ msgid "Windows groupname"
+#~ msgstr "Windows群組名稱"
