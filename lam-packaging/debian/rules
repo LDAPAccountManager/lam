@@ -1,0 +1,64 @@
+#!/usr/bin/make -f
+
+clean:
+	dh_testdir
+	dh_testroot
+	debconf-updatepo
+	dh_clean
+
+build:
+
+install: 
+	dh_testdir
+	dh_testroot
+	dh_clean -k
+	dh_installdirs
+
+	install -D --mode=644 index.html debian/ldap-account-manager/usr/share/ldap-account-manager/index.html
+	install -D --mode=644 VERSION debian/ldap-account-manager/usr/share/ldap-account-manager/VERSION
+	install -D --mode=644 tmp/.htaccess debian/ldap-account-manager/var/lib/ldap-account-manager/tmp/.htaccess
+	install -D --mode=644 config/.htaccess debian/ldap-account-manager/var/lib/ldap-account-manager/config/.htaccess
+	install -D --mode=644 config/language debian/ldap-account-manager/var/lib/ldap-account-manager/config/language
+	install -D --mode=644 config/shells debian/ldap-account-manager/var/lib/ldap-account-manager/config/shells
+	install -D --mode=644 config/lam.conf_sample debian/ldap-account-manager/var/lib/ldap-account-manager/config/lam.conf_sample
+	install -D --mode=644 config/config.cfg_sample debian/ldap-account-manager/var/lib/ldap-account-manager/config/config.cfg_sample
+	cp -r config/profiles debian/ldap-account-manager/var/lib/ldap-account-manager/config/
+	cp -r config/pdf debian/ldap-account-manager/var/lib/ldap-account-manager/config/
+	cp -r graphics debian/ldap-account-manager/usr/share/ldap-account-manager/
+	install -D --mode=644 help/help.inc debian/ldap-account-manager/usr/share/ldap-account-manager/help/help.inc
+	install -D --mode=644 lib/.htaccess debian/ldap-account-manager/usr/share/ldap-account-manager/lib/.htaccess
+	install -D --mode=644 lib/*.inc debian/ldap-account-manager/usr/share/ldap-account-manager/lib
+	install -D --mode=644 lib/ufpdf.php debian/ldap-account-manager/usr/share/ldap-account-manager/lib/ufpdf.php
+	install -D --mode=755 lib/lamdaemon.pl debian/ldap-account-manager/usr/share/ldap-account-manager/lib/lamdaemon.pl
+	cp -r lib/font debian/ldap-account-manager/usr/share/ldap-account-manager/lib/
+	cp -r lib/modules debian/ldap-account-manager/usr/share/ldap-account-manager/lib/
+	cp -r lib/types debian/ldap-account-manager/usr/share/ldap-account-manager/lib/
+	cp -r locale debian/ldap-account-manager/usr/share/ldap-account-manager/
+	install -D --mode=644 sess/.htaccess debian/ldap-account-manager/var/lib/ldap-account-manager/sess/.htaccess
+	install -D --mode=644 style/*.css debian/ldap-account-manager/usr/share/ldap-account-manager/style
+	cp -r templates debian/ldap-account-manager/usr/share/ldap-account-manager/
+
+# Build architecture-independent files here.
+binary-dep: build install
+
+# Build architecture-independent files here.
+binary-indep: build install
+	dh_testdir
+	dh_testroot
+	dh_installchangelogs HISTORY
+	dh_installdocs
+	dh_install
+	dh_compress
+	dh_fixperms
+	install -D --mode=644 debian/lam.apache.conf debian/ldap-account-manager/etc/ldap-account-manager/apache.conf
+	install -D --mode=644 config/config.cfg_sample debian/ldap-account-manager/etc/ldap-account-manager/config.cfg
+	dh_link /etc/ldap-account-manager/config.cfg /var/lib/ldap-account-manager/config/config.cfg
+	dh_installdebconf
+	dh_installdeb
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+binary: binary-indep
+.PHONY: build clean binary-indep binary install configure
+

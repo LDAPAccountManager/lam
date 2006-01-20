@@ -1,0 +1,113 @@
+#!/bin/bash
+
+set -e
+
+. /usr/share/debconf/confmodule
+db_version 2.0 || [ $? -lt 30 ]
+
+if [ ! -h /usr/share/ldap-account-manager/lib/fpdf.php ]; then\
+  ln -s /usr/share/fpdf/fpdf.php /usr/share/ldap-account-manager/lib/fpdf.php; fi
+if [ ! -h /usr/share/ldap-account-manager/config ]; then\
+  ln -s /var/lib/ldap-account-manager/config /usr/share/ldap-account-manager/config; fi
+if [ ! -h /usr/share/ldap-account-manager/sess ]; then\
+  ln -s /var/lib/ldap-account-manager/sess /usr/share/ldap-account-manager/sess; fi
+if [ ! -h /usr/share/ldap-account-manager/tmp ]; then\
+  ln -s /var/lib/ldap-account-manager/tmp /usr/share/ldap-account-manager/tmp; fi
+chown www-data /etc/ldap-account-manager/config.cfg
+chmod 600 /etc/ldap-account-manager/config.cfg
+chown www-data /var/lib/ldap-account-manager/sess
+chown www-data /var/lib/ldap-account-manager/tmp
+chown -R www-data /var/lib/ldap-account-manager/config
+chown www-data /var/lib/ldap-account-manager/tmp
+if [ ! -f /var/lib/ldap-account-manager/config/lam.conf ]; \
+   then cp /var/lib/ldap-account-manager/config/lam.conf_sample /var/lib/ldap-account-manager/config/lam.conf; \
+	chown www-data /var/lib/ldap-account-manager/config/lam.conf; fi
+chmod 600 /var/lib/ldap-account-manager/config/*.conf
+if [ "$1" = "configure" ]; then
+    db_get "ldap-account-manager/alias"
+    alias="$RET"
+	 perl -pi -e "s/Alias \/.* \/usr\/share\/ldap-account-manager/Alias \/$alias \/usr\/share\/ldap-account-manager/g"\
+        /etc/ldap-account-manager/apache.conf
+    db_get "ldap-account-manager/passwd"
+    passwd="$RET"
+	 perl -pi -e "s/password: .*/password: $passwd/g" /etc/ldap-account-manager/config.cfg
+    db_get "ldap-account-manager/config-webserver"
+    webservers="$RET"
+    restart=""
+   for server in $webservers; do
+       server=${server%,}
+       test -x /usr/sbin/$server || continue
+       case "$server" in
+           apache|apache-perl|apache-ssl)
+               if [ -x /usr/sbin/modules-config ]; then
+                   if [ -f /usr/lib/apache/1.3/libphp4.so ]; then
+                       if ! grep "^LoadModule php4_module " /etc/$server/modules.conf > /dev/null 2>&1; then
+                           modules-config $server enable mod_php4
+                       fi
+                   else
+                       if [ -f /usr/lib/apache/1.3/mod_actions.so ]; then
+                           if ! grep "^LoadModule action_module " /etc/$server/modules.conf > /dev/null 2>&1; then
+                               modules-config $server enable mod_actions
+                           fi
+                       fi
+                       if [ -f /usr/lib/apache/1.3/mod_cgi.so ]; then
+                           if ! grep "^LoadModule cgi_module " /etc/$server/modules.conf > /dev/null 2>&1; then
+                               modules-config $server enable mod_cgi
+                           fi
+                       fi
+                   fi
+               fi
+               if grep "^Include /etc/ldap-account-manager/apache.conf" /etc/$server/httpd.conf > /dev/null 2>&1; then
+                   mv -f /etc/$server/httpd.conf /etc/$server/httpd.conf.old.ldap-account-manager
+                   grep -v "^Include /etc/ldap-account-manager/apache.conf" /etc/$server/httpd.conf.old.ldap-account-manager \
+                       > /etc/$server/httpd.conf
+               fi
+               if ! grep "^Include /etc/$server/conf.d" /etc/$server/httpd.conf > /dev/null 2>&1; then
+                   cp -f /etc/$server/httpd.conf /etc/$server/httpd.conf.old.ldap-account-manager
+                   echo "Include /etc/$server/conf.d" >> /etc/$server/httpd.conf
+               fi
+               if [ -f /etc/$server/httpd.conf.old.ldap-account-manager -a ! -f /etc/$server/httpd.conf.old ]; then
+                   mv -f /etc/$server/httpd.conf.old.ldap-account-manager /etc/$server/httpd.conf.old
+               fi
+               mkdir -p /etc/$server/conf.d
+               ;;
+           apache2)
+               if [ -d /etc/$server/mods-enabled ]; then
+                   if [ ! -f /etc/$server/mods-enabled/actions.load -a ! -h /etc/$server/mods-enabled/actions.load ]; then
+                       ln -s /etc/$server/mods-available/actions.load /etc/$server/mods-enabled/actions.load
+                   fi
+                   if [ -f /etc/apache2/mods-available/php4.load ]; then
+                       if [ ! -f /etc/$server/mods-enabled/php4.load -a ! -h /etc/$server/mods-enabled/php4.load ]; then
+                           ln -s /etc/$server/mods-available/php4.load /etc/$server/mods-enabled/php4.load
+                       fi
+                   else
+                       if [ ! -f /etc/$server/mods-enabled/cgi.load -a ! -h /etc/$server/mods-enabled/cgi.load ]; then
+                           ln -s /etc/$server/mods-available/cgi.load /etc/$server/mods-enabled/cgi.load
+                       fi
+                   fi
+               fi
+               ;;
+       esac
+       if [ ! -f /etc/$server/conf.d/ldap-account-manager -a ! -h /etc/$server/conf.d/ldap-account-manager ]; then
+           ln -s /etc/ldap-account-manager/apache.conf /etc/$server/conf.d/ldap-account-manager
+	    restart="$restart $server"
+       fi
+   done
+   db_get "ldap-account-manager/restart-webserver"
+   if [ "$RET" = "true" ]; then
+       for server in $restart; do
+           server=${server%,}
+           if [ -x /usr/sbin/invoke-rc.d ]; then
+               invoke-rc.d $server restart
+           else
+               /etc/init.d/$server restart
+           fi
+       done
+   fi
+	fi
+
+#DEBHELPER#
+
+db_stop
+
+exit 0

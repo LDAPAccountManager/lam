@@ -1,0 +1,103 @@
+# Vietnamese translation for LDAP Account Manager.
+# Copyright © 2005 Free Software Foundation, Inc.
+# Clytie Siddall <clytie@riverland.net.au>, 2005.
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: ldap-account-manager\n"
+"Report-Msgid-Bugs-To: post@rolandgruber.de\n"
+"POT-Creation-Date: 2005-11-08 20:24+0100\n"
+"PO-Revision-Date: 2005-12-21 16:30+1030\n"
+"Last-Translator: Clytie Siddall <clytie@riverland.net.au>\n"
+"Language-Team: Vietnamese <gnomevi-list@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+"X-Generator: LocFactoryEditor 1.5\n"
+
+#. Type: multiselect
+#. Description
+#: ../templates:5
+msgid "Which webserver would you like to configure automatically?"
+msgstr "Bạn có muốn tự động cấu hình trình phục vụ Mạng nào?"
+
+#. Type: multiselect
+#. Description
+#: ../templates:5
+msgid ""
+"LDAP Account Manager supports any webserver that supports PHP4, but this "
+"automatic configuration process only supports Apache and Apache2. If you "
+"choose to configure Apache(2) LAM can be accessed at http(s)://localhost/lam"
+msgstr ""
+"Bộ Quản lý Tài khoản LDAP hỗ trợ trình phục vụ nào cũng hỗ trợ PHP4, nhưng "
+"mà tiến trình tự động cấu hình này chỉ hỗ trợ Apache và Apache2 thôi. Nếu "
+"bạn chọn cấu hình Apache(2), BQT có thể được truy cập tại <http(s)://"
+"localhost/lam>."
+
+#. Type: string
+#. Description
+#: ../templates:13
+msgid "Enter alias:"
+msgstr "Gõ bí danh:"
+
+#. Type: string
+#. Description
+#: ../templates:13
+msgid ""
+"LAM will add an alias to your httpd.conf which allows you to access LAM at "
+"http(s)://localhost/lam. If you want an alias other than \"lam\" please "
+"specify it here."
+msgstr ""
+"BQT sẽ thêm một bí danh vào tập tin cấu hình <httpd.conf> của bạn, mà cho "
+"phép bạn truy cập BQT tại <http(s)://localhost/lam>. Nếu bạn muốn có bí danh "
+"khác với « lam », hãy gõ nó vào đây."
+
+#. Type: string
+#. Description
+#: ../templates:21
+msgid "Enter master configuration password (clear text):"
+msgstr "Gõ mật khẩu cấu hình chủ (chữ xem được):"
+
+#. Type: string
+#. Description
+#: ../templates:21
+msgid ""
+"The configuration profiles are secured by a master password. You will need "
+"it to create and delete profiles. As default it is set to \"lam\" and can be "
+"changed directly in LAM. But you can also change it now."
+msgstr ""
+"Những hồ sơ cấu hình đựơc bảo mật bởi một mật khẩu chủ. Bạn sẽ cần thiết nó "
+"để tạo và xóa bỏ hồ sơ đó. Mặc định là « lam » và có thể được thay đổi trực "
+"tiếp từ BQT. Bạn cũng có thể thay đổi nó ngay bây giờ."
+
+#. Type: boolean
+#. Description
+#: ../templates:30
+msgid "Would you like to restart your webserver(s) now?"
+msgstr "Vậy bạn có muốn khởi chạy trình phục vụ Mạng không?"
+
+#. Type: boolean
+#. Description
+#: ../templates:30
+msgid "Your webserver(s) need to be restarted in order to apply the changes."
+msgstr ""
+"Cần phải khởi chạy lại trình phục vụ Mạng, để làm cho các thay đổi hoạt động."
+
+#. Type: note
+#. Description
+#: ../templates:35
+msgid "Upgrade from pre-0.5.0 versions"
+msgstr "Nâng cấp từ phiên bản trước 0.5.0"
+
+#. Type: note
+#. Description
+#: ../templates:35
+msgid ""
+"Please note that this version uses new file formats for configuration and "
+"account profiles. You will have to update your configuration and create new "
+"account profiles."
+msgstr ""
+"Hãy ghi chú rằng phiên bản này sử dụng khuôn dạng tập tin mới với cấu hình "
+"và hồ sơ tài khoản. Bạn sẽ phải cập nhật cấu hình, và tạo hồ sơ tài khoản "
+"mới."
