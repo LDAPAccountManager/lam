@@ -192,11 +192,6 @@ for ($i = 0; $i < sizeof($activeTypes); $i++) {
 	echo "<tr>\n";
 		echo "<td>" . _("LDAP suffix") . "</td>\n";
 		echo "<td><input type=\"text\" size=\"40\" name=\"suffix_" . $activeTypes[$i] . "\" value=\"" . $_SESSION['conf_typeSettings']['suffix_' . $activeTypes[$i]] . "\"></td>\n";
-		echo "<td>";
-		echo "<a href=\"../help.php?HelpNumber=202\" target=\"lamhelp\">";
-		echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
-		echo "</a>\n";
-		echo "</td>\n";
 	echo "</tr>\n";
 	// list attributes
 	if (isset($_SESSION['conf_typeSettings']['attr_' . $activeTypes[$i]])) {
@@ -208,11 +203,6 @@ for ($i = 0; $i < sizeof($activeTypes); $i++) {
 	echo "<tr>\n";
 		echo "<td>" . _("List attributes") . "</td>\n";
 		echo "<td><input type=\"text\" size=\"40\" name=\"attr_" . $activeTypes[$i] . "\" value=\"" . $attributes . "\"></td>\n";
-		echo "<td>";
-		echo "<a href=\"../help.php?HelpNumber=206\" target=\"lamhelp\">";
-		echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
-		echo "</a>\n";
-		echo "</td>\n";
 	echo "</tr>\n";
 	echo "<tr><td colspan=\"2\">&nbsp;</td></tr>\n";
 	// remove button

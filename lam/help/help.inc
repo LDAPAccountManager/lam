@@ -34,19 +34,6 @@ $Id$
 
 setlanguage();
 
-// generate help entry for translated list attributes
-$types = getTypes();
-$entry206Example = "";
-for ($i = 0; $i < sizeof($types); $i++) {
-	$entry206Example .= "<b>" . getTypeAlias($types[$i]) . ":</b><br><br>\n";
-	$descriptions = getListAttributeDescriptions($types[$i]);
-	$attributes = array_keys($descriptions);
-	for ($a = 0; $a < sizeof($attributes); $a++) {
-		$entry206Example .= "#" . $attributes[$a] . ": " . $descriptions[$attributes[$a]] . "<br>";
-	}
-	$entry206Example .= "<br><br>";
-}
-
 $helpArray = array (
 				// 0 - 99
 				// any developer
@@ -69,10 +56,10 @@ $helpArray = array (
 						_("Note") .
 						":</b><br><br>" .
 						_("When using ldaps:// be sure to use exactly the same IP/domain name as in your certificate!")),
-				"202" => array ("ext" => "FALSE", "Headline" => _("Configuration wizard") . " - " . _("LDAP suffix"),
-					"Text" => _("This is the suffix of the LDAP tree from where to search for LDAP entries. Only entries in this subtree will be displayed in the account list. When creating a new accont this will be the DN where it is saved.") .
+				"202" => array ("ext" => "FALSE", "Headline" => _("Configuration wizard") . " - " . _("User/Group/Host suffix"),
+					"Text" => _("This is the suffix of the LDAP tree from where to search for user/group/host entries. Only entries in these subtrees will be displayed in the user/group/host list. When creating a new accont this will be the DN where it is saved.") .
 						"<br><br><b>".
-						_("Example").
+						_("Examples").
 						":</b><br><br>".
 						_("ou=People,dc=yourcompany,dc=com will read and store all accounts in this subtree.")),
 				"203" => array ("ext" => "FALSE", "Headline" => _("Configuration wizard") . " - " . _("Tree suffix"),
@@ -82,10 +69,20 @@ $helpArray = array (
 						":</b><br><br>".
 						_("dc=yourcompany,dc=com")),
 				"206" => array ("ext" => "FALSE", "Headline" => _("Configuration wizard") . " - " . _("List attributes"),
-					"Text" => _("This is the list of attributes to show in the account list. The entries can either be predefined values, \"#attribute\", or individual ones, \"attribute:description\". Several entries are seperated by semicolons.") .
-						"<br><br><br><big><b>" .
-						_("Example") . ": </b></big>#homeDirectory;#uid;#uidNumber;#gidNumber;mail:Mail address<br><br>" .
-						"<br><big><b>" . _("Predefined values") . ":</b></big><br><br><br>" . $entry206Example),
+					"Text" => _("This is the list of attributes to show in the user/group/host list. The entries can either be predefined values, \"#attribute\", or individual ones, \"attribute:description\". Several entries are seperated by semicolons.") .
+						"<br><br><b>" .
+						_("Example") .
+						": </b>#homeDirectory;#uid;#uidNumber;#gidNumber;mail:Mail address<br><br><br><u><b>" .
+						_("Predefined values") .
+						":</b></u><br><br><b>" .
+						_("Users") .
+						": </b>#uid, #uidNumber, #gidNumber, #cn, #host, #givenName, #sn, #homeDirectory, #loginShell, #mail, #gecos".
+						"<br><b>" .
+						_("Groups") .
+						": </b>#cn, #gidNumber, #memberUID, #member, #description".
+						"<br><b>" .
+						_("Hosts") .
+						": </b>#uid, #cn, #rid, #description"),
 				"207" => array ("ext" => "FALSE", "Headline" => _("Configuration wizard") . " - " . _("Valid users"),
 					"Text" => _("This is a list of valid DN entries of all users that are allowed to login to LDAP Account Manager. The user names have to be separated by semicolons.") .
 						"<br><br><b>" .
@@ -111,9 +108,8 @@ $helpArray = array (
 					"Text" => _("This is the time in minutes which LAM caches its LDAP searches. Shorter times will stress LDAP more but decrease the possibility that changes are not identified.")),
 				"216" => array ("ext" => "FALSE", "Headline" => _("Configuration wizard") . " - " . _("Text for user PDF"),
 					"Text" => _("This text will appear on top of every user PDF file.")),
-				"217" => array ("ext" => "FALSE", "Headline" => _("Configuration wizard") . " - " . _("Account types and modules"),
-					"Text" => _("Here you can select which plugins you want to use for account management.") . "<br><br>"
-						. _("Account types define which sorts of LDAP entries (e.g. users and groups) should be managed. The account modules define which properties (e.g. Unix and Samba) can be edited.")),
+				"217" => array ("ext" => "FALSE", "Headline" => _("Configuration wizard") . " - " . _("Account modules"),
+					"Text" => _("Here you can select which plugins you want to use for account management.")),
 				"230" => array ("ext" => "FALSE", "Headline" => _("Profile management") . " - " . _("Add profile"),
 					"Text" => _("Please enter the name of the new profile and the password to change its settings. Profile names may contain letters, numbers and -/_.")),
 				"231" => array ("ext" => "FALSE", "Headline" => _("Profile management") . " - " . _("Rename profile"),

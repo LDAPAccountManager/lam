@@ -1,8 +1,3 @@
-??? 1.0.rc2
-   - fixed bugs:
-    -> changed check for mail addresses (patch 1403922)
-
-
 09.01.2006 1.0.rc1
    - new architecture with support for more account types
    - new translation: Traditional Chinese

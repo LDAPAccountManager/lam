@@ -1,21 +1,6 @@
 Upgrade instructions:
 =====================
 
-0.5.x -> 1.0.0:
-===============
-
-The architecture of LAM changed again.
-
-Please enter the LAM configuration editor and edit your existing profiles.
-You can now select which account lists should be displayed by selecting
-the active account types ("Edit account types"). The settings for the LDAP
-suffixes and the list attributes also moved on this page.
-
-After saving all configuration profiles you can login to LAM. The Samba domain
-editor under "Tools" no longer exists. This is now an account type just like
-users or groups. The NIS mail aliases have their own account list, too.
-
-
 
 0.4.x -> 0.5.0:
 ===============
