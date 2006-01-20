@@ -1,0 +1,58 @@
+#!/bin/bash
+#
+# Builds LDAP Account Manager packages from CVS.
+
+if [ $# -lt 1 ]
+then
+echo -e "Usage: buildPackage <CVS tag>"
+exit
+fi
+
+cd /daten/projekte/lam/pakete
+
+export CVS_TAG=$1
+
+cvs -z3 -d:ext:gruberroland@cvs.sourceforge.net:/cvsroot/lam export -r $CVS_TAG lam
+cvs -z3 -d:ext:gruberroland@cvs.sourceforge.net:/cvsroot/lam export -r $CVS_TAG lam-packaging
+
+cp lam-packaging/getVersion ./
+export VERSION=`./getVersion`
+
+# remove files which are not in the final release
+rm lam/session-vars.txt
+rm -r lam/po
+rm -r lam/tests
+rm lam/.cvsignore
+rm lam/config/.cvsignore
+# TODO remove
+rm -r lam/debian
+# TODO remove
+mv lam ldap-account-manager-$VERSION
+
+# tar.gz
+tar cfvz ldap-account-manager-$VERSION.tar.gz ldap-account-manager-$VERSION
+
+# Debian
+mkdir Debian
+cp ldap-account-manager-$VERSION.tar.gz Debian/ldap-account-manager_$VERSION.orig.tar.gz
+mv ldap-account-manager-$VERSION Debian/
+cp -r lam-packaging/debian Debian/ldap-account-manager-$VERSION/
+cd Debian/ldap-account-manager-$VERSION
+debuild
+cd ..
+rm -r ldap-account-manager-$VERSION
+cd ..
+
+# RPM
+perl -pi -e "s/\\@\\@VERSION\\@\\@/$VERSION/g" lam-packaging/RPM/ldap-account-manager.spec
+mkdir RPM
+cp ldap-account-manager-$VERSION.tar.gz /usr/src/rpm/SOURCES
+rpmbuild --clean --rmsource -ba lam-packaging/RPM/ldap-account-manager.spec
+mv /usr/src/rpm/SRPMS/ldap-account-manager-$VERSION-1.src.rpm RPM/
+mv /usr/src/rpm/RPMS/noarch/ldap-account-manager-$VERSION-1.noarch.rpm RPM/
+
+# clean up
+rm -r lam-packaging
+rm getVersion
+rm buildPackages
+
