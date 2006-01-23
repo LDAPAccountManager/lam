@@ -430,6 +430,7 @@ class inetOrgPerson extends baseModule {
 	* @return array list of info/error messages
 	*/
 	function process_attributes(&$post) {
+		$triggered_messages = array();
 		// Load attributes
 		$this->attributes['description'][0] = $post['description'];
 		$this->attributes['sn'][0] = $post['sn'];
@@ -514,8 +515,8 @@ class inetOrgPerson extends baseModule {
 		}
 		if ($post['delPhoto']) $this->attributes['jpegPhoto'] = array();
 		// Return error-messages
-		if (is_array($triggered_messages)) return $triggered_messages;
-		}
+		return $triggered_messages;
+	}
 
 	/* This function will create the html-page
 	* to show a page with all attributes.
