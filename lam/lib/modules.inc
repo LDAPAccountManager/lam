@@ -557,7 +557,7 @@ function parseHtml($module, $input, $values, $restricted, &$tabindex, &$tabindex
 				switch ($input[$i][$j]['kind']) {
 					// plain text
 					case 'text':
-						echo $input[$i][$j]['text'];
+						if (isset($input[$i][$j]['text'])) echo $input[$i][$j]['text'];
 						break;
 					// input fields
 					case 'input':
@@ -566,8 +566,8 @@ function parseHtml($module, $input, $values, $restricted, &$tabindex, &$tabindex
 						$output = "<input";
 						if ($input[$i][$j]['name']!='') $output .= ' name="' . $input[$i][$j]['name'] . '"';
 						if ($type != '') $output .= ' type="' . $type . '"';
-						if ($input[$i][$j]['size']!='') $output .= ' size="' . $input[$i][$j]['size'] . '"';
-						if ($input[$i][$j]['maxlength']!='') $output .= ' maxlength="' . $input[$i][$j]['maxlength'] . '"';
+						if (isset($input[$i][$j]['size']) && ($input[$i][$j]['size'] != '')) $output .= ' size="' . $input[$i][$j]['size'] . '"';
+						if (isset($input[$i][$j]['maxlength']) && ($input[$i][$j]['maxlength'] != '')) $output .= ' maxlength="' . $input[$i][$j]['maxlength'] . '"';
 						// checkbox
 						if ($type == "checkbox") {
 							if (isset($values[$input[$i][$j]['name']])) {
@@ -582,7 +582,7 @@ function parseHtml($module, $input, $values, $restricted, &$tabindex, &$tabindex
 							}
 							elseif ($input[$i][$j]['value']!='') $output .= ' value="' . $input[$i][$j]['value'] . '"';
 						}
-						if ($input[$i][$j]['disabled']) $output .= ' disabled';
+						if (isset($input[$i][$j]['disabled']) && ($input[$i][$j]['disabled'] == true)) $output .= ' disabled';
 						// Show taborder
 						else {
 							$output .= " tabindex=$tabindex";
@@ -601,7 +601,7 @@ function parseHtml($module, $input, $values, $restricted, &$tabindex, &$tabindex
 						break;
 					// selection
 					case 'select':
-						if (! is_numeric($input[$i][$j]['size'])) $input[$i][$j]['size'] = 1;	// correct size if needed
+						if (! isset($input[$i][$j]['size'])) $input[$i][$j]['size'] = 1;	// correct size if needed
 						if (isset($input[$i][$j]['multiple'])) {
 							echo "<select name=\"" . $input[$i][$j]['name'] . '[]"';
 							echo ' multiple';
