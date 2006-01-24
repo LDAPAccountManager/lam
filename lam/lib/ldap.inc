@@ -359,7 +359,7 @@ class Ldap{
 			$iv = base64_decode($_COOKIE["IV"]);
 			$key = base64_decode($_COOKIE["Key"]);
 			// encrypt string
-			return mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $data, MCRYPT_MODE_ECB, $iv);
+			return mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, base64_encode($data), MCRYPT_MODE_ECB, $iv);
 		}
 		// otherwise do not encrypt
 		else {
@@ -381,7 +381,7 @@ class Ldap{
 			$key = base64_decode($_COOKIE["Key"]);
 			// decrypt string
 			$ret = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, $data, MCRYPT_MODE_ECB, $iv);
-			$ret = str_replace(chr(00), "", $ret);
+			$ret = base64_decode(str_replace(chr(00), "", $ret));
 			return $ret;
 		}
 		// otherwise do not decrypt
