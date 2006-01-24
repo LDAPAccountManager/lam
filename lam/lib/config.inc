@@ -237,8 +237,8 @@ class Config {
 		$scopes = $this->get_ActiveTypes();
 		for ($s = 0; $s < sizeof($scopes); $s++) {
 			$scope = $scopes[$s];
-			$moduleVar = $scope . "modules";
-			$modules = explode(",", $this->$moduleVar);
+			$moduleVar = "modules_" . $scope;
+			$modules = explode(",", $this->typeSettings[$moduleVar]);
 			$available = getAvailableModules($scope);
 			// only return available modules
 			$ret = array();

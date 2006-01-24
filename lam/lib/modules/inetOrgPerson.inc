@@ -618,6 +618,7 @@ class inetOrgPerson extends baseModule {
 				'maxlength' => '255', 'value' => $this->attributes['employeeType'][0] ),
 			2 => array ('kind' => 'help', 'value' => 'employeeType'));
 		if (isset($this->attributes['host'])) {
+			$hostvalue = "";
 			if (is_array($this->attributes['host'])) {
 				$hostvalue .= implode(",", $this->attributes['host']);
 			}
@@ -647,7 +648,7 @@ class inetOrgPerson extends baseModule {
 		// photo
 		$photoFile = '../../graphics/userDefault.png';
 		$noPhoto = true;
-		if ($this->attributes['jpegPhoto'][0]) {
+		if (isset($this->attributes['jpegPhoto'][0])) {
 			$jpeg_filename = 'jpg' . $_SESSION['ldap']->new_rand() . '.jpg';
 			$outjpeg = @fopen($_SESSION['lampath'] . 'tmp/' . $jpeg_filename, "wb");
 			fwrite($outjpeg, $this->attributes['jpegPhoto'][0]);

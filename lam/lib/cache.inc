@@ -86,6 +86,7 @@ class cache {
 			else $scopes = array($scopelist);
 		// Add cache entry dynamic
 		if (!is_array($attributes)) $attributes = array($attributes);
+		$add = array();
 		foreach ($scopes as $scope) {
 			for ($i = 0; $i < sizeof($attributes); $i++) {
 				if (!@in_array($attributes[$i], $this->attributes[$scope])) $add[$scope][] = $attributes[$i];
@@ -124,6 +125,7 @@ class cache {
 		if (is_array($scopelist)) $scopes = $scopelist;
 		else $scopes = array($scopelist);
 		// Add cache entry dynamic
+		$add = array();
 		foreach ($scopes as $scope) {
 			if (!@in_array($attribute ,$this->attributes[$scope])) $add[$scope][] = $attribute;
 			}

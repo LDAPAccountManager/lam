@@ -604,7 +604,7 @@ class lamList {
 		if (isset($_GET["sort"])) $this->sortColumn = $_GET["sort"];
 		else $this->sortColumn = strtolower($this->attrArray[0]);
 		// check search suffix
-		if ($_POST['suffix']) $this->suffix = $_POST['suffix'];  // new suffix selected via combobox
+		if (isset($_POST['suffix'])) $this->suffix = $_POST['suffix'];  // new suffix selected via combobox
 		elseif (!$this->suffix) $this->suffix = $_SESSION["config"]->get_Suffix($this->type);  // default suffix
 		// check if LDAP data should be refreshed
 		$this->refresh = true;

@@ -631,7 +631,7 @@ function parseHtml($module, $input, $values, $restricted, &$tabindex, &$tabindex
 						// merge both option arrays and sort them.
 						$options = array_merge ($input[$i][$j]['options'], $input[$i][$j]['options_selected'] );
 						$options = array_unique($options);
-						if (!$input[$i][$j]['noSorting']) {
+						if (!isset($input[$i][$j]['noSorting']) || !$input[$i][$j]['noSorting']) {
 							sort($options);
 						}
 						foreach ($options as $option) {
@@ -772,7 +772,7 @@ class accountContainer {
 	*/
 	function continue_main($post) {
 		if ($this->subpage=='') $this->subpage='attributes';
-		if ($post['form_main_reset']) {
+		if (isset($post['form_main_reset'])) {
 			$this->load_account($this->dn_orig);
 			}
 		else {
@@ -780,12 +780,12 @@ class accountContainer {
 				if ($this->subpage=='attributes') {
 					$result = 0;
 					// change dn
-					if ($post['suffix']!='') $this->dn = $post['suffix'];
+					if (isset($post['suffix']) && ($post['suffix'] != '')) $this->dn = $post['suffix'];
 					// change RDN
 					if (isset($post['rdn'])) $this->rdn = $post['rdn'];
 						
 					// load profile
-					if ($post['selectLoadProfile'] && $post['loadProfile']) {
+					if (isset($post['selectLoadProfile']) && isset($post['loadProfile'])) {
 						$profile = loadAccountProfile($post['selectLoadProfile'], $this->type);
 						// pass profile to each module
 						$modules = array_keys($this->module);
@@ -801,7 +801,7 @@ class accountContainer {
 						$result = 0;
 					}
 					// save account
-					if ($post['create']) {
+					if (isset($post['create'])) {
 						$errors = $this->save_account();
 						if (is_array($errors)) {
 							$result = array($errors);
@@ -867,7 +867,7 @@ class accountContainer {
 				}
 			}
 			// change module page if requested
-			if ($post['form_main_main']) {
+			if (isset($post['form_main_main'])) {
 				$this->current_page = 0;
 				$this->subpage='attributes';
 			}
