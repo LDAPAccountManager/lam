@@ -57,7 +57,7 @@ if (isset($_POST['accounttype'])) $_GET['type'] = $_POST['accounttype'];
 
 // abort button was pressed
 // back to profile editor
-if ($_POST['abort']) {
+if (isset($_POST['abort'])) {
 	metaRefresh("profilemain.php");
 	exit;
 }
@@ -69,7 +69,7 @@ echo "<title></title>\n<link rel=\"stylesheet\" type=\"text/css\" href=\"../../s
 echo "</head><body><br>\n";
 
 // save button was presed
-if ($_POST['save']) {
+if (isset($_POST['save'])) {
 	// create option array to check and save
 	$options = array();
 	$opt_keys = array_keys($_SESSION['profile_types']);
@@ -80,7 +80,7 @@ if ($_POST['save']) {
 		}
 		// checkboxes
 		elseif ($_SESSION['profile_types'][$element] == "checkbox") {
-			if ($_POST[$element] == "on") $options[$element] = array('true');
+			if (isset($_POST[$element]) && ($_POST[$element] == "on")) $options[$element] = array('true');
 			else $options[$element] = array('false');
 		}
 		// dropdownbox
@@ -89,14 +89,15 @@ if ($_POST['save']) {
 		}
 		// multiselect
 		elseif ($_SESSION['profile_types'][$element] == "multiselect") {
-			$options[$element] = $_POST[$element];  // value is already an array
+			if (isset($_POST[$element])) $options[$element] = $_POST[$element];  // value is already an array
+			else $options[$element] = array();
 		}
 	}
 	
 	// remove double slashes if magic quotes are on
 	if (get_magic_quotes_gpc() == 1) {
 		foreach ($opt_keys as $element) {
-			if (is_string($options[$element][0])) $options[$element][0] = stripslashes($options[$element][0]);
+			if (isset($options[$element][0]) && is_string($options[$element][0])) $options[$element][0] = stripslashes($options[$element][0]);
 		}
 	}
 	
@@ -179,7 +180,7 @@ echo "<fieldset class=\"" . $type . "edit\">\n<legend><b>" . _("LDAP") . "</b></
 	echo "</td><td>";
 	echo "<select name=\"ldap_suffix\" tabindex=\"1\">";
 	for ($i = 0; $i < sizeof($suffixes); $i++) {
-		if ($old_options['ldap_suffix'][0] == $suffixes[$i]) {
+		if (isset($old_options['ldap_suffix']) && ($old_options['ldap_suffix'][0] == $suffixes[$i])) {
 			echo "<option selected>" . $suffixes[$i] . "</option>\n";
 		}
 		else {
@@ -199,7 +200,7 @@ echo "<fieldset class=\"" . $type . "edit\">\n<legend><b>" . _("LDAP") . "</b></
 	echo "</td><td>";
 	echo "<select name=\"ldap_rdn\" tabindex=\"1\">";
 	for ($i = 0; $i < sizeof($rdns); $i++) {
-		if ($old_options['ldap_rdn'][0] == $rdns[$i]) {
+		if (isset($old_options['ldap_rdn']) && ($old_options['ldap_rdn'][0] == $rdns[$i])) {
 			echo "<option selected>" . $rdns[$i] . "</option>\n";
 		}
 		else {

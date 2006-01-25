@@ -580,7 +580,7 @@ function parseHtml($module, $input, $values, $restricted, &$tabindex, &$tabindex
 							if (isset($values[$input[$i][$j]['name']])) {
 								$output .= ' value="' . $values[$input[$i][$j]['name']][0] . '"';
 							}
-							elseif ($input[$i][$j]['value']!='') $output .= ' value="' . $input[$i][$j]['value'] . '"';
+							elseif (isset($input[$i][$j]['value']) && $input[$i][$j]['value']!='') $output .= ' value="' . $input[$i][$j]['value'] . '"';
 						}
 						if (isset($input[$i][$j]['disabled']) && ($input[$i][$j]['disabled'] == true)) $output .= ' disabled';
 						// Show taborder

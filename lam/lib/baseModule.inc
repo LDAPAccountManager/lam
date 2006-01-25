@@ -235,7 +235,7 @@ class baseModule {
 				// empty input
 				if (($options[$identifiers[$i]][0] == '') || !isset($options[$identifiers[$i]][0])) {
 					// check if option is required
-					if ($this->meta['profile_checks'][$identifiers[$i]]['required']) {
+					if (isset($this->meta['profile_checks'][$identifiers[$i]]['required']) && $this->meta['profile_checks'][$identifiers[$i]]['required']) {
 						$messages[] = $this->meta['profile_checks'][$identifiers[$i]]['required_message'];
 					}
 					continue;
