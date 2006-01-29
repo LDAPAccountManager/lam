@@ -27,3 +27,4 @@ echo "Generating Chinese translation template"
 ./make_po_zh
 tar -czf messages.po_zh.tar.gz messages.po  
 
+rm messages.po
