@@ -42,83 +42,60 @@ session_save_path("../../sess");
 
 setlanguage();
 
-// check if button was pressed and if we have to save the setting or go back to login
-if (isset($_POST['back']) || isset($_POST['submitconf']) || isset($_POST['editmodules']) || isset($_POST['edittypes'])){
-	// save settings
-	if ($_POST['submitconf'] || $_POST['editmodules'] || $_POST['edittypes']){
-		// save HTTP-POST variables in session
-		$_SESSION['conf_passwd'] = $_POST['passwd'];
-		$_SESSION['conf_passwd1'] = $_POST['passwd1'];
-		$_SESSION['conf_passwd2'] = $_POST['passwd2'];
-		$_SESSION['conf_serverurl'] = $_POST['serverurl'];
-		$_SESSION['conf_cachetimeout'] = $_POST['cachetimeout'];
-		$_SESSION['conf_admins'] = $_POST['admins'];
-		$_SESSION['conf_sufftree'] = $_POST['sufftree'];
-		$_SESSION['conf_maxlistentries'] = $_POST['maxlistentries'];
-		$_SESSION['conf_lang'] = $_POST['lang'];
-		$_SESSION['conf_scriptpath'] = $_POST['scriptpath'];
-		$_SESSION['conf_scriptserver'] = $_POST['scriptserver'];
-		$_SESSION['conf_filename'] = $_POST['filename'];
-		$modSettings = array_keys($_SESSION['config_types']);
-		for ($i = 0; $i < sizeof($modSettings); $i++) $_SESSION['config_moduleSettings'][$modSettings[$i]] = $_POST[$modSettings[$i]];
-	}
-	// go to final page
-	if ($_POST['submitconf']){
-		metaRefresh("confsave.php");
-	}
-	// go to modules page
-	elseif ($_POST['editmodules']){
-		metaRefresh("confmodules.php");
-	}
-	// go to types page
-	elseif ($_POST['edittypes']){
-		metaRefresh("conftypes.php");
-	}
-	// back to login
-	else if ($_POST['back']){
-		metaRefresh("../login.php");
-	}
-	exit;
-}
-
-// get password if register_globals is off
+// get password
 if (isset($_POST['passwd'])) $passwd = $_POST['passwd'];
-if (isset($_GET["modulesback"]) || isset($_GET["typesback"])) $passwd = $_SESSION['conf_passwd'];
+if (isset($_GET["modulesback"]) || isset($_GET["typesback"])) $passwd = $_SESSION['conf_config']->get_Passwd();
 
 // check if password was entered
 // if not: load login page
 if (! $passwd) {
-	$message = _("No password was entered!");
+	$_SESSION['conf_message'] = _("No password was entered!");
 	/** go back to login if password is empty */
 	require('conflogin.php');
 	exit;
 }
 
-$filename = $_POST['filename'];
-if (isset($_GET["modulesback"]) || isset($_GET["typesback"])) $filename = $_SESSION['conf_filename'];
-$conf = new Config($filename);
+if (!isset($_SESSION['conf_config']) && isset($_POST['filename'])) {
+	$_SESSION['conf_config'] = new Config($_POST['filename']);	
+}
+$conf = &$_SESSION['conf_config'];
 
 // check if password is valid
 // if not: load login page
 if (!(($conf->get_Passwd()) == $passwd)) {
-	$message = _("The password is invalid! Please try again.");
+	$sessionKeys = array_keys($_SESSION);
+	for ($i = 0; $i < sizeof($sessionKeys); $i++) {
+		if (substr($sessionKeys[$i], 0, 5) == "conf_") unset($_SESSION[$sessionKeys[$i]]);
+	}
+	$_SESSION['conf_message'] = _("The password is invalid! Please try again.");
 	/** go back to login if password is invalid */
 	require('conflogin.php');
 	exit;
 }
 
-// check if user comes from modules page
-if (isset($_GET["modulesback"])) {
-	// load config values from session
-	$conf->set_ServerURL($_SESSION['conf_serverurl']);
-	$conf->set_cacheTimeout($_SESSION['conf_cachetimeout']);
-	$conf->set_Adminstring($_SESSION['conf_admins']);
-	$conf->set_Suffix('tree', $_SESSION['conf_sufftree']);
-	$conf->set_MaxListEntries($_SESSION['conf_maxlistentries']);
-	$conf->set_defaultLanguage($_SESSION['conf_lang']);
-	$conf->set_scriptpath($_SESSION['conf_scriptpath']);
-	$conf->set_scriptserver($_SESSION['conf_scriptserver']);
+// check if button was pressed and if we have to save the setting or go back to login
+if (isset($_POST['back']) || isset($_POST['submitconf']) || isset($_POST['editmodules']) || isset($_POST['edittypes'])){
+	// go to final page
+	if ($_POST['submitconf']){
+		saveSettings();
+	}
+	// go to modules page
+	elseif ($_POST['editmodules']){
+		metaRefresh("confmodules.php");
+		exit;
+	}
+	// go to types page
+	elseif ($_POST['edittypes']){
+		metaRefresh("conftypes.php");
+		exit;
+	}
+	// back to login
+	else if ($_POST['back']){
+		metaRefresh("../login.php");
+		exit;
+	}
 }
+
 
 // check if user comes from types page
 if (isset($_GET["typesback"])) {
@@ -146,6 +123,14 @@ echo ("</head>\n");
 echo ("<body>\n");
 echo ("<p align=\"center\"><a href=\"http://lam.sourceforge.net\" target=\"new_window\">".
 	"<img src=\"../../graphics/banner.jpg\" border=1 alt=\"LDAP Account Manager\"></a></p>\n<hr>\n<p></p>\n");
+
+// display error messages
+if (isset($_SESSION['conf_errors'])) {
+	for ($i = 0; $i < sizeof($_SESSION['conf_errors']); $i++) {
+		call_user_func_array('StatusMessage', $_SESSION['conf_errors'][$i]);
+	}
+	echo "<br>";
+}
 
 // display formular
 echo ("<form action=\"confmain.php\" method=\"post\">\n");
@@ -207,7 +192,7 @@ echo ("<p></p>");
 echo ("<fieldset><legend><b>" . _("Account types and modules") . "</b></legend>");
 
 // Account modules
-$types = $_SESSION['conf_accountTypes'];
+$types = $conf->get_ActiveTypes();
 for ($i = 0; $i < sizeof($types); $i++) {
 	echo "<b>" . getTypeAlias($types[$i]) . ": </b>" . implode(", ", $conf->get_AccountModules($types[$i])) . "<br>\n";
 }
@@ -241,18 +226,16 @@ $old_options = $conf->get_moduleSettings();
 // get module descriptions
 $moduleDescriptions = getConfigDescriptions();
 
-// save scopes
-$_SESSION['config_scopes'] = $scopes;
 
 // display module boxes
 $modules = array_keys($options);
-$_SESSION['config_types'] = array();
+$_SESSION['conf_types'] = array();
 for ($i = 0; $i < sizeof($modules); $i++) {
 	if (sizeof($options[$modules[$i]]) < 1) continue;
 	echo "<fieldset>\n";
 	echo "<legend><b>" . $moduleDescriptions['legend'][$modules[$i]] . "</b></legend>\n";
 	$configTypes = parseHtml($modules[$i], $options[$modules[$i]], $old_options, true, $tabindex, $tabindexLink, 'config');
-	$_SESSION['config_types'] = array_merge($configTypes, $_SESSION['config_types']);
+	$_SESSION['conf_types'] = array_merge($configTypes, $_SESSION['conf_types']);
 	echo "</fieldset>\n";
 	echo "<br>";
 }
@@ -417,13 +400,121 @@ echo ("<p>** = ". _("required for Samba 3 accounts") . "</p>");
 // password for configuration
 echo ("<p><input type=\"hidden\" name=\"passwd\" value=\"" . $passwd . "\"></p>\n");
 
-// config file
-echo ("<p><input type=\"hidden\" name=\"filename\" value=\"" . $filename . "\"></p>\n");
-
 echo ("</form>\n");
 echo ("</body>\n");
 echo ("</html>\n");
 
+
+/**
+ * Saves the entered settings.
+ *
+ */
+function saveSettings() {
+	$conf = &$_SESSION['conf_config'];
+	$types = $conf->get_ActiveTypes();
+	
+	// remove double slashes if magic quotes are on
+	if (get_magic_quotes_gpc() == 1) {
+		$postKeys = array_keys($_POST);
+		for ($i = 0; $i < sizeof($postKeys); $i++) {
+			if (is_string($_POST[$postKeys[$i]])) $_POST[$postKeys[$i]] = stripslashes($_POST[$postKeys[$i]]);
+		}
+	}
+	// check new preferences
+	$errors = array();
+	if (!$conf->set_ServerURL($_POST['serverurl'])) {
+		$errors[] = array("ERROR", _("Server Address is empty!"));
+	}
+	if (!$conf->set_cacheTimeout($_POST['cachetimeout'])) {
+		$errors[] = array("ERROR", _("Cache timeout is invalid!"));
+	}
+	if (!$conf->set_Adminstring($_POST['admins'])) {
+		$errors[] = array("ERROR", _("List of admin users is empty or invalid!"));
+	}
+	if (!$conf->set_Suffix("tree", $_POST['sufftree'])) {
+		$errors[] = array("ERROR", _("TreeSuffix is invalid!"));
+	}
+	if (!$conf->set_MaxListEntries($_POST['maxlistentries'])) {
+		$errors[] = array("ERROR", _("Max list entries is invalid!"));
+	}
+	if (!$conf->set_defaultLanguage($_POST['lang'])) {
+		$errors[] = array("ERROR", _("Language is not defined!"));
+	}
+	if (!$conf->set_scriptpath($_POST['scriptpath'])) {
+		$errors[] = array("ERROR", _("Script path is invalid!"));
+	}
+	if (!$conf->set_scriptserver($_POST['scriptserver'])) {
+		$errors[] = array("ERROR", _("Script server is invalid!"));
+	}
+	// check if password was changed
+	if (isset($_POST['passwd1']) && ($_POST['passwd1'] != '')) {
+		if ($_POST['passwd1'] != $_POST['passwd2']) {
+			$errors[] = array("ERROR", _("Passwords are different!"));
+		}
+		else {
+			// set new password
+			$conf->set_Passwd($_POST['passwd1']);
+		}
+	}
+
+	// check module options
+	// create option array to check and save
+	$options = array();
+	$opt_keys = array_keys($_SESSION['conf_types']);
+	for ($i = 0; $i < sizeof($opt_keys); $i++) {
+		$element = $opt_keys[$i];
+		// text fields
+		if ($_SESSION['conf_types'][$element] == "text") {
+			$options[$element] = array($_POST[$element]);
+		}
+		// checkboxes
+		elseif ($_SESSION['conf_types'][$element] == "checkbox") {
+			if ($_POST[$element] == "on") $options[$element] = array('true');
+			else $options[$element] = array('false');
+		}
+		// dropdownbox
+		elseif ($_SESSION['conf_types'][$element] == "select") {
+			$options[$element] = array($_POST[$element]);
+		}
+		// multiselect
+		elseif ($_SESSION['conf_types'][$element] == "multiselect") {
+			$options[$element] = $_POST[$element];  // value is already an array
+		}
+	}
+
+	// get list of scopes of modules
+	$scopes = array();
+	for ($m = 0; $m < sizeof($types); $m++) {
+		$mods = $conf->get_AccountModules($types[$m]);
+		for ($i = 0; $i < sizeof($mods); $i++) $scopes[$mods[$i]][] = $types[$m];
+	}
+	// check options
+	$errors = array_merge($errors, checkConfigOptions($scopes, $options));
+	// print error messages if any
+	if (sizeof($errors) > 0) {
+		$_SESSION['conf_errors'] = $errors;
+	}
+	// save settings if no errors occured
+	else {
+		// page head
+		echo $_SESSION['header'];
+		echo "<title>" . _("LDAP Account Manager Configuration") . "</title>\n";
+		echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
+		echo "</head><body>\n";
+		echo ("<p align=\"center\"><a href=\"http://lam.sourceforge.net\" target=\"new_window\">".
+			"<img src=\"../../graphics/banner.jpg\" border=1 alt=\"LDAP Account Manager\"></a></p><hr><br><br>");
+		$conf->set_moduleSettings($options);
+		$conf->save();
+		echo ("<br><br><br><br><br><a href=\"../login.php\" target=\"_top\">" . _("Back to Login") . "</a>");	
+		echo("</body></html>");
+		// remove settings from session
+		$sessionKeys = array_keys($_SESSION);
+		for ($i = 0; $i < sizeof($sessionKeys); $i++) {
+			if (substr($sessionKeys[$i], 0, 5) == "conf_") unset($_SESSION[$sessionKeys[$i]]);
+		}
+		exit();
+	}
+}
 
 ?>
 

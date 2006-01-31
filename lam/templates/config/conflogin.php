@@ -41,6 +41,9 @@ session_save_path("../../sess");
 
 setlanguage();
 
+// get error message from confmain.php
+if (isset($_SESSION['conf_message'])) $message = $_SESSION['conf_message'];
+
 // remove settings from session
 $sessionKeys = array_keys($_SESSION);
 for ($i = 0; $i < sizeof($sessionKeys); $i++) {
@@ -87,7 +90,6 @@ echo $_SESSION['header'];
 			</tr>
 			<tr><td style="border-style:none" >&nbsp;</td></tr>
 <?php
-	if (!isset($message)) $message = "";
 	$files = getConfigProfiles();
 	if (sizeof($files) < 1) $message = _("No configuration profiles found. Please create one.");
 	// print message if login was incorrect or no config profiles are present

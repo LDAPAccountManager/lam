@@ -41,30 +41,35 @@ session_save_path("../../sess");
 
 setlanguage();
 
-$conf = new Config($_SESSION['conf_filename']);
 
-$passwd = $_SESSION['conf_passwd'];
-// check if password is correct
+// check if config is set
 // if not: load login page
-if ($passwd != $conf->get_Passwd()) {
+if (!isset($_SESSION['conf_config'])) {
 	/** go back to login if password is invalid */
 	require('conflogin.php');
 	exit;
 }
 
+$conf = &$_SESSION['conf_config'];
+
+
 // user pressed submit/abort button
 if ($_POST['submit']) {
+	// save new module settings
+	$_SESSION['conf_accountTypesOld'] = $_SESSION['conf_accountTypes'];
+	$conf->set_typeSettings($_SESSION['conf_typeSettings']);
 	//selection ok, back to other settings
-	metarefresh('confmain.php?modulesback=true&amp;moduleschanged=true');
+	metarefresh('confmain.php?modulesback=true');
 	exit;
 }
 elseif ($_POST['abort']) {
 	// no changes
+	$_SESSION['conf_accountTypes'] = $_SESSION['conf_accountTypesOld'];
 	metarefresh('confmain.php?modulesback=true');
 	exit;
 }
 
-$types = $_SESSION['conf_accountTypes'];
+$types = $conf->get_ActiveTypes();
 
 echo $_SESSION['header'];
 
