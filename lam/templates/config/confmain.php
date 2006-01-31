@@ -493,6 +493,7 @@ function saveSettings() {
 	// print error messages if any
 	if (sizeof($errors) > 0) {
 		$_SESSION['conf_errors'] = $errors;
+		$conf->set_moduleSettings($options);
 	}
 	// save settings if no errors occured
 	else {
