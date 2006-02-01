@@ -34,9 +34,6 @@ $Id$
 */
 class nisMailAlias extends baseModule {
 	
-	/** used for account pages, true if input data is correct */
-	var $inputCorrect = true;
-
 	/**
 	* Returns meta data that is interpreted by parent class
 	*
@@ -150,7 +147,7 @@ class nisMailAlias extends baseModule {
 		if (!$_SESSION[$this->base]->isNewAccount && !in_array('nisMailAlias', $_SESSION[$this->base]->attributes_orig['objectClass'])) {
 			return array();
 		}
-		return $_SESSION[$this->base]->save_module_attributes($this->attributes, $this->orig);
+		return parent::save_attributes();
 	}
 
 	/**
@@ -232,28 +229,13 @@ class nisMailAlias extends baseModule {
 		}
 		$this->attributes['rfc822MailMember'] = array_unique($this->attributes['rfc822MailMember']);
 		if (sizeof($this->triggered_messages) > 0) {
-			$this->inputCorrect = false;
 			return $this->triggered_messages;
 		}
 		else {
-			$this->inputCorrect = true;
+			return array();
 		}
 	}
 
-	/**
-	* This function returns true if all needed settings are done.
-	*/
-	function module_complete() {
-		if (!$_SESSION[$this->base]->isNewAccount) {
-			// check if account is based on our object class
-			$objectClasses = $_SESSION[$this->base]->attributes_orig['objectClass'];
-			if (is_array($objectClasses) && !in_array('nisMailAlias', $objectClasses)) {
-				return true;
-			}
-		}
-		return $this->inputCorrect;
-	}
-	
 	/**
 	* Controls if the module button the account page is visible and activated.
 	*

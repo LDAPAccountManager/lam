@@ -277,7 +277,7 @@ class kolabUser extends baseModule {
 		if (!isset($this->attributes['objectClass']) || !in_array('kolabInetOrgPerson', $this->attributes['objectClass'])) {
 			$this->attributes['objectClass'][] = 'kolabInetOrgPerson';
 		}
-		return $_SESSION[$this->base]->save_module_attributes($this->attributes, $this->orig);
+		return parent::save_attributes();
 	}
 
 	/**

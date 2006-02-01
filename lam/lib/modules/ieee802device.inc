@@ -34,9 +34,6 @@ $Id$
 */
 class ieee802Device extends baseModule {
 	
-	/** used for account pages, true if input data is correct */
-	var $inputCorrect = true;
-
 	/**
 	* Returns meta data that is interpreted by parent class
 	*
@@ -110,21 +107,6 @@ class ieee802Device extends baseModule {
 	}
 
 	/**
-	* Returns a list of modifications which have to be made to the LDAP account.
-	*
-	* @return array list of modifications
-	* <br>This function returns an array with 3 entries:
-	* <br>array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
-	* <br>DN is the DN to change. It may be possible to change several DNs (e.g. create a new user and add him to some groups via attribute memberUid)
-	* <br>"add" are attributes which have to be added to LDAP entry
-	* <br>"remove" are attributes which have to be removed from LDAP entry
-	* <br>"modify" are attributes which have to been modified in LDAP entry
-	*/
-	function save_attributes() {
-		return $_SESSION[$this->base]->save_module_attributes($this->attributes, $this->orig);
-	}
-
-	/**
 	* This function will create the meta HTML code to show a page with all attributes.
 	*
 	* @param array $post HTTP-POST values
@@ -188,27 +170,11 @@ class ieee802Device extends baseModule {
 		}
 		$this->attributes['macAddress'] = array_unique($this->attributes['macAddress']);
 		if (sizeof($this->triggered_messages) > 0) {
-			$this->inputCorrect = false;
 			return $this->triggered_messages;
 		}
 		else {
-			$this->inputCorrect = true;
-			return 0;
+			return array();
 		}
-	}
-
-	/**
-	* This function returns true if all needed settings are done.
-	*/
-	function module_complete() {
-		return $this->inputCorrect;
-	}
-	
-	/**
-	* Returns true if all settings on module page are correct.
-	*/
-	function module_ready() {
-		return $this->inputCorrect;
 	}
 
 	/**

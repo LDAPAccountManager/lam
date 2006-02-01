@@ -423,6 +423,12 @@ class sambaSamAccount extends baseModule {
 		}
 	}
 
+	/**
+	* This function is used to check if this module page can be displayed.
+	* It returns false if a module depends on data from other modules which was not yet entered.
+	*
+	* @return boolean true, if page can be displayed
+	*/
 	function module_ready() {
 		if ($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]=='') return false;
 		if ($_SESSION[$this->base]->module['posixAccount']->attributes['uidNumber'][0]=='') return false;
@@ -430,8 +436,10 @@ class sambaSamAccount extends baseModule {
 		return true;
 	}
 
-	/* This functions return true
-	* if all needed settings are done
+	/**
+	* This functions is used to check if all settings for this module have been made.
+	*
+	* @return boolean true, if settings are complete
 	*/
 	function module_complete() {
 		if (!$this->module_ready()) return false;
