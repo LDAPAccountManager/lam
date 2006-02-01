@@ -271,11 +271,16 @@ $this-&gt;inputCorrect = true;<br>
 </table>
 <br>
 <br>
-<h2>4. Defining that your module is ready for LDAP add/modify</h2>
-Before a new account can be created or modified all modules are asked
-if they are ready.<br>
+<h2>4. Defining that your module is ready for user input and LDAP
+add/modify</h2>
+In most cases you will not need to implement these functions. The <span
+ style="font-style: italic;">baseModule</span> will return <span
+ style="font-style: italic;">true</span> for both functions.<br>
 <br>
-There are two functions which control the module status:<br>
+<span style="text-decoration: underline;"><br>
+There are two functions which control the module status:</span><br
+ style="text-decoration: underline;">
+<br>
 The <span style="font-weight: bold;">module_ready()</span> function
 has to
 return <span style="font-style: italic;">true</span> if the user may
@@ -283,49 +288,64 @@ move to your module page. If it is <span style="font-style: italic;">false</span
 the user will be shown an error message that your module is not yet
 ready. You can use this if your module depends on input data from other
 modules (e.g. you need the user name from posixAccount first).<br>
+<br>
 The second function is
 <span style="font-weight: bold;">module_complete()</span>. The user
 cannot do the LDAP operation if one or more modules return <span
  style="font-style: italic;">false</span>. This defines if all needed
 input data for your module was entered.<br>
+Use this function if you want to check that all required attributes are
+set.<br>
 <br>
 <span style="font-weight: bold; text-decoration: underline;">Example:</span><br
  style="font-weight: bold; text-decoration: underline;">
 <br>
-The
-<span style="font-style: italic;">ieee802Device</span>
-module uses a global variable to store the status: <span
- style="font-style: italic;">$this-&gt;inputCorrect</span>. It is set
-in <span style="font-style: italic;">process_attributes()</span>. The
-variable can be preset to <span style="font-style: italic;">true</span>
-because the MAC address is optional.<br>
+The <span style="font-style: italic;">sambaSamAccount</span>
+module needs the user's <span style="font-style: italic;">uidNumber</span>
+and <span style="font-style: italic;">gidNumber</span> before it can
+accept input and the account needs a <span style="font-style: italic;">sambaSID</span>
+before it can be saved.<br>
 <br>
 <table style="width: 100%; text-align: left;" class="mod-code"
  border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /** used for
-account pages, true if input data is correct */<br>
-&nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">var</span>
-$inputCorrect = true;<br>
-      <br>
-&nbsp;&nbsp;&nbsp; /**<br>
-&nbsp;&nbsp;&nbsp; * This function returns true if all needed settings
-are done.<br>
-&nbsp;&nbsp;&nbsp; */<br>
-&nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">function</span> <span
- style="color: rgb(255, 0, 0);">module_complete</span>() {<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return $this-&gt;inputCorrect;<br>
-&nbsp;&nbsp;&nbsp; }<br>
-&nbsp;&nbsp;&nbsp; <br>
-&nbsp;&nbsp;&nbsp; /**<br>
-&nbsp;&nbsp;&nbsp; * Returns true if all settings on module page are
-correct.<br>
+      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
+&nbsp;&nbsp;&nbsp; * This function is used to check if this module page
+can be displayed.<br>
+&nbsp;&nbsp;&nbsp; * It returns false if a module depends on data from
+other modules which was not yet entered.<br>
+&nbsp;&nbsp;&nbsp; *<br>
+&nbsp;&nbsp;&nbsp; * @return boolean true, if page can be displayed<br>
 &nbsp;&nbsp;&nbsp; */<br>
 &nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">function</span> <span
  style="color: rgb(255, 0, 0);">module_ready</span>() {<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return $this-&gt;inputCorrect;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if
+($_SESSION[$this-&gt;base]-&gt;module['posixAccount']-&gt;attributes['gidNumber'][0]=='')
+return false;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if
+($_SESSION[$this-&gt;base]-&gt;module['posixAccount']-&gt;attributes['uidNumber'][0]=='')
+return false;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if
+($this-&gt;attributes['uid'][0]=='') return false;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return true;<br>
 &nbsp;&nbsp;&nbsp; }<br>
+      <br>
+&nbsp;&nbsp;&nbsp; /**<br>
+&nbsp;&nbsp;&nbsp; * This functions is used to check if all settings
+for this module have been made.<br>
+&nbsp;&nbsp;&nbsp; *<br>
+&nbsp;&nbsp;&nbsp; * @return boolean true, if settings are complete<br>
+&nbsp;&nbsp;&nbsp; */<br>
+&nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">function</span> <span
+ style="color: rgb(255, 0, 0);">module_complete</span>() {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if (!$this-&gt;module_ready())
+return false;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if
+($this-&gt;attributes['sambaSID'][0] == '') return false;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return true;<br>
+&nbsp;&nbsp;&nbsp; }<br>
+      <br>
       </td>
     </tr>
   </tbody>
@@ -334,23 +354,23 @@ correct.<br>
 <br>
 <h2>5. Saving the LDAP attributes<br>
 </h2>
+In most cases you will not have to implement this option if you use <span
+ style="font-weight: bold;">$this-&gt;attributes</span> and <span
+ style="font-weight: bold;">$this-&gt;orig</span> to manage the LDAP
+attributes. The <span style="font-style: italic;">baseModule</span>
+will generate the save comands for you.<br>
+<br>
 When all modules report that they are ready for LDAP add/modify and the
 user clicks on the add/modify button your module will be asked what
 changes have to be made.<br>
-This is done in the function <span style="font-weight: bold;">save_attributes()</span>
-which must be implemented by your module.<br>
+This is done in the function <span style="font-weight: bold;">save_attributes()</span>.<br>
 <br>
 <span style="font-weight: bold; text-decoration: underline;">Example:</span><br
  style="font-weight: bold; text-decoration: underline;">
 <br>
-The <span style="font-style: italic;">ieee802Device</span>
-module saves the attribute states in <span style="font-style: italic;">$attributes</span>
-and <span style="font-style: italic;">$orig</span> and there are no
-other DNs which may be modified. Therefore we can use the <span
- style="font-weight: bold;">save_module_attributes()</span> function in
-<span style="font-weight: bold;">accountContainer</span>. You can
-always access the current <span style="font-weight: bold;">accountContainer</span>
-with <span style="font-weight: bold;">$_SESSION[$this-&gt;base]</span>.<br>
+The <span style="font-style: italic;">kolabUser</span> module uses
+this function to make sure that its object class is saved. Other
+modules (e.g. quota) use it build the lamdaemon commands.<br>
 <br>
 <table style="width: 100%; text-align: left;" class="mod-code"
  border="0" cellpadding="2" cellspacing="2">
@@ -375,11 +395,15 @@ removed from LDAP entry<br>
 &nbsp;&nbsp;&nbsp; * &lt;br&gt;"modify" are attributes which have to
 been modified in LDAP entry<br>
 &nbsp;&nbsp;&nbsp; */<br>
-&nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">function</span> <span
- style="color: rgb(255, 0, 0);">save_attributes</span>() {<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return
-$_SESSION[$this-&gt;base]-&gt;save_module_attributes($this-&gt;attributes,
-$this-&gt;orig);<br>
+&nbsp;&nbsp;&nbsp; function save_attributes() {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // add object class if needed<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if
+(!isset($this-&gt;attributes['objectClass']) ||
+!in_array('kolabInetOrgPerson', $this-&gt;attributes['objectClass'])) {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+$this-&gt;attributes['objectClass'][] = 'kolabInetOrgPerson';<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return parent::save_attributes();<br>
 &nbsp;&nbsp;&nbsp; }<br>
       </td>
     </tr>

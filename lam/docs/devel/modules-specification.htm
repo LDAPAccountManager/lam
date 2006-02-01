@@ -533,6 +533,9 @@ determines if the user can change to your module page or not.<br>
 The return value is <span style="font-weight: bold;">true</span> if
 your module accepts input, otherwise <span style="font-weight: bold;">false</span>.<br>
 <br>
+This function is implemented by the <span style="font-style: italic;">baseModule</span>
+which returns <span style="font-weight: bold;">true</span> as default.<br>
+<br>
 <h3>2.2.3. module_complete</h3>
 <br>
 <table border="0" cellpadding="2" cellspacing="2">
@@ -549,6 +552,9 @@ This function tells LAM if it can create/modify the LDAP account. If
 your module needs any additional input then set this to <span
  style="font-weight: bold;">false</span>. The user will be notified
 that your module needs more input.<br>
+<br>
+This function is implemented by the <span style="font-style: italic;">baseModule</span>
+which returns <span style="font-weight: bold;">true</span> as default.<br>
 <br>
 <h3>2.2.4. getButtonStatus<br>
 </h3>
@@ -697,10 +703,7 @@ separat.<br>
   </tbody>
 </table>
 <br>
-This function returns an array with changes which should be saved. If
-all attributes are very simple are part of<br>
-the dn of account it's possible to just call
-$this-&gt;save_ldap_attributes($this-&gt;attributes, $this-&gt;orig).<br>
+This function returns an array with changes which should be saved.<br>
 The return array has the following syntax: First index is the ldap dn
 which should be changed. Second<br>
 index is the kind of modification. Possible values are: 'add',
@@ -712,6 +715,10 @@ an attribute.<br>
 first index is 'lamdaemon'. Second index is 'command'. Third index is
 the command<br>
 itself which should be executed by lamdaemon.<br>
+<br>
+This function is implemented by the <span style="font-style: italic;">baseModule</span>
+which builds the required comands from <span style="font-weight: bold;">$this-attributes</span>
+and <span style="font-weight: bold;">$this-&gt;orig</span>.<br>
 <br>
 <h3>2.2.12. delete_attributes<br>
 </h3>
