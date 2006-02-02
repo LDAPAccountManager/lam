@@ -122,6 +122,7 @@ class Ldap{
 			}
 			$bind = @ldap_bind($this->server, $user, $passwd);
 			if ($bind) {
+				$return = ldap_errno($this->server);
 				// read objectClasses from server and update capabilities if needed
 				if (! $this->objectClasses) {
 					$this->updateClasses();
@@ -133,7 +134,7 @@ class Ldap{
 					get_schema_syntaxes();
 				}
 				// return success number
-				return ldap_errno($this->server);
+				return $return;
 			}
 			// return error number
 			else return ldap_errno($this->server);

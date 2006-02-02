@@ -2,6 +2,7 @@
    - fixed bugs:
     -> changed check for mail addresses (patch 1403922)
     -> fixed JPG upload when MCrypt is enabled
+    -> fixed login problems for AD servers
 
 
 09.01.2006 1.0.rc1
