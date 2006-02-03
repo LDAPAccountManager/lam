@@ -168,65 +168,67 @@ echo ("<form action=\"conftypes.php\" method=\"post\">\n");
 echo "<h1 align=\"center\">" . _("Account type selection") . "</h1>";
 
 // show available types
-echo "<fieldset><legend><b>" . _("Available account types") . "</b></legend>\n";
-echo "<table>\n";
-for ($i = 0; $i < sizeof($availableTypes); $i++) {
-	echo "<tr>\n";
-		echo "<td><b>" . getTypeAlias($availableTypes[$i]) . ": </b></td>\n";
-		echo "<td>" . getTypeDescription($availableTypes[$i]) . "</td>\n";
-		echo "<td><input type=\"submit\" name=\"add_" . $availableTypes[$i] ."\" value=\"" . _("Add") . "\"></td>\n";
-	echo "</tr>\n";
+if (sizeof($availableTypes) > 0) {
+	echo "<fieldset><legend><b>" . _("Available account types") . "</b></legend>\n";
+	echo "<table>\n";
+	for ($i = 0; $i < sizeof($availableTypes); $i++) {
+		echo "<tr>\n";
+			echo "<td><b>" . getTypeAlias($availableTypes[$i]) . ": </b></td>\n";
+			echo "<td>" . getTypeDescription($availableTypes[$i]) . "</td>\n";
+			echo "<td><input type=\"submit\" name=\"add_" . $availableTypes[$i] ."\" value=\"" . _("Add") . "\"></td>\n";
+		echo "</tr>\n";
+	}
+	echo "</table>\n";
+	echo "</fieldset>\n";
+	
+	echo "<p><br><br></p>";
 }
-echo "</table>\n";
-echo "</fieldset>\n";
-
-echo "<p><br><br></p>";
 
 // show active types
-echo "<fieldset><legend><b>" . _("Active account types") . "</b></legend><br>\n";
-for ($i = 0; $i < sizeof($activeTypes); $i++) {
-	echo "<fieldset class=\"" . $activeTypes[$i] . "edit\">\n";
-	echo "<legend>" . "<b>" . getTypeAlias($activeTypes[$i]) . ": </b>" . getTypeDescription($activeTypes[$i]) . "</legend>";
-	echo "<br>\n";
-	echo "<table>\n";
-	// LDAP suffix
-	echo "<tr>\n";
-		echo "<td>" . _("LDAP suffix") . "</td>\n";
-		echo "<td><input type=\"text\" size=\"40\" name=\"suffix_" . $activeTypes[$i] . "\" value=\"" . $_SESSION['conf_typeSettings']['suffix_' . $activeTypes[$i]] . "\"></td>\n";
-		echo "<td>";
-		echo "<a href=\"../help.php?HelpNumber=202\" target=\"lamhelp\">";
-		echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
-		echo "</a>\n";
-		echo "</td>\n";
-	echo "</tr>\n";
-	// list attributes
-	if (isset($_SESSION['conf_typeSettings']['attr_' . $activeTypes[$i]])) {
-		$attributes = $_SESSION['conf_typeSettings']['attr_' . $activeTypes[$i]];
+if (sizeof($activeTypes) > 0) {
+	echo "<fieldset><legend><b>" . _("Active account types") . "</b></legend><br>\n";
+	for ($i = 0; $i < sizeof($activeTypes); $i++) {
+		echo "<fieldset class=\"" . $activeTypes[$i] . "edit\">\n";
+		echo "<legend>" . "<b>" . getTypeAlias($activeTypes[$i]) . ": </b>" . getTypeDescription($activeTypes[$i]) . "</legend>";
+		echo "<br>\n";
+		echo "<table>\n";
+		// LDAP suffix
+		echo "<tr>\n";
+			echo "<td>" . _("LDAP suffix") . "</td>\n";
+			echo "<td><input type=\"text\" size=\"40\" name=\"suffix_" . $activeTypes[$i] . "\" value=\"" . $_SESSION['conf_typeSettings']['suffix_' . $activeTypes[$i]] . "\"></td>\n";
+			echo "<td>";
+			echo "<a href=\"../help.php?HelpNumber=202\" target=\"lamhelp\">";
+			echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
+			echo "</a>\n";
+			echo "</td>\n";
+		echo "</tr>\n";
+		// list attributes
+		if (isset($_SESSION['conf_typeSettings']['attr_' . $activeTypes[$i]])) {
+			$attributes = $_SESSION['conf_typeSettings']['attr_' . $activeTypes[$i]];
+		}
+		else {
+			$attributes = getDefaultListAttributes($activeTypes[$i]);
+		}
+		echo "<tr>\n";
+			echo "<td>" . _("List attributes") . "</td>\n";
+			echo "<td><input type=\"text\" size=\"40\" name=\"attr_" . $activeTypes[$i] . "\" value=\"" . $attributes . "\"></td>\n";
+			echo "<td>";
+			echo "<a href=\"../help.php?HelpNumber=206\" target=\"lamhelp\">";
+			echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
+			echo "</a>\n";
+			echo "</td>\n";
+		echo "</tr>\n";
+		echo "<tr><td colspan=\"2\">&nbsp;</td></tr>\n";
+		// remove button
+		echo "<tr>\n";
+			echo "<td colspan=\"2\"><input type=\"submit\" name=\"rem_" . $activeTypes[$i] . "\" value=\"" . _("Remove this account type") . "\"></td>\n";
+		echo "</tr>\n";
+		echo "</table>\n";
+		echo "</fieldset><br>\n";
 	}
-	else {
-		$attributes = getDefaultListAttributes($activeTypes[$i]);
-	}
-	echo "<tr>\n";
-		echo "<td>" . _("List attributes") . "</td>\n";
-		echo "<td><input type=\"text\" size=\"40\" name=\"attr_" . $activeTypes[$i] . "\" value=\"" . $attributes . "\"></td>\n";
-		echo "<td>";
-		echo "<a href=\"../help.php?HelpNumber=206\" target=\"lamhelp\">";
-		echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
-		echo "</a>\n";
-		echo "</td>\n";
-	echo "</tr>\n";
-	echo "<tr><td colspan=\"2\">&nbsp;</td></tr>\n";
-	// remove button
-	echo "<tr>\n";
-		echo "<td colspan=\"2\"><input type=\"submit\" name=\"rem_" . $activeTypes[$i] . "\" value=\"" . _("Remove this account type") . "\"></td>\n";
-	echo "</tr>\n";
-	echo "</table>\n";
-	echo "</fieldset><br>\n";
+	echo "</fieldset>\n";
+	echo "<p><br><br></p>\n";
 }
-echo "</fieldset>\n";
-
-
-echo "<p><br><br></p>\n";
 
 // submit and abort button
 echo "<p>";
