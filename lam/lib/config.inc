@@ -229,6 +229,10 @@ class Config {
 						}
 						break;
 					}
+					elseif (strtolower($line) == strtolower($keyword . ":")) {
+						// set empty options
+						$this->$keyword = '';
+					}
 				}
 			}
 			fclose($file);
@@ -665,7 +669,8 @@ class Config {
 	* @return array list of types
 	*/
 	function get_ActiveTypes() {
-		return explode(",", $this->activeTypes);
+		if (($this->activeTypes == '') || !isset($this->activeTypes)) return array();
+		else return explode(",", $this->activeTypes);
 	}
 	
 	/**
