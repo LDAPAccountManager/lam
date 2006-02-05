@@ -1,4 +1,13 @@
-ldap-account-manager (1.0.rc1-1) unstable; urgency=low
+ldap-account-manager (1.0.rc2-1) experimental; urgency=low
+
+  * Updated to new upstream release.
+  * [INTL:pt_BR] Brazilian Portuguese debconf templates translation
+    (Closes: #348624)
+  * [INTL:sv] Swedish debconf templates translation (Closes: #348922)
+
+ -- Roland Gruber <post@rolandgruber.de>  Sun, 22 Jan 2006 12:58:46 +0100
+
+ldap-account-manager (1.0.rc1-1) experimental; urgency=low
 
   * Updated to new upstream release.
 
