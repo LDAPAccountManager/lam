@@ -89,10 +89,10 @@ $availableScopes = '';
 
 foreach($scopes as $scope) {
 	$pdfStructDefs = getPDFStructureDefinitions($scope);
-	$availableScopes .= '<option value="' . $scope . '">' . $scope . "</option>\n";
+	$availableScopes .= '<option value="' . $scope . '">' . getTypeAlias($scope) . "</option>\n";
 	
 	foreach($pdfStructDefs as $pdfStructureDefinition) {
-		$availableStructureDefinitions .= '<option value="' . $scope . ':' . $pdfStructureDefinition . '">' . $scope . ' - ' . $pdfStructureDefinition . "</option>\n";
+		$availableStructureDefinitions .= '<option value="' . $scope . ':' . $pdfStructureDefinition . '">' . getTypeAlias($scope) . ' - ' . $pdfStructureDefinition . "</option>\n";
 	}
 }
 
@@ -100,12 +100,13 @@ echo $_SESSION['header'];
 ?>
 		<title>LDAP Account Manager</title>
 		<link rel="stylesheet" type="text/css" href="../../style/layout.css">
+		<link rel="stylesheet" type="text/css" href="../../style/type_user.css">
 	</head>
 	<body>
 		<p></p>
 		<form action="pdfmain.php" method="post">
 		<!-- pdf structure options -->
-		<fieldset>
+		<fieldset class="useredit">
 			<legend>
 				<b><?php echo _("PDF structures"); ?></b>
 			</legend>
@@ -115,7 +116,7 @@ echo $_SESSION['header'];
 					<td>
 						<input type="radio" name="pdf" value="new" checked="checked">
 					</td>
-					<td colspan=2><?php echo _("Create a new PDF structure for scope: "); ?><select name="scope" size="1"><?php echo $availableScopes; ?></select></td>
+					<td><?php echo _("Create a new PDF structure for scope: "); ?><select name="scope" size="1"><?php echo $availableScopes; ?></select></td>
 				</tr>
 				<!-- edit pdf structure -->
 				<tr>
@@ -126,8 +127,7 @@ echo $_SESSION['header'];
 						<select name="edit" size=1>
 							<?php echo $availableStructureDefinitions; ?>
 						</select>
-					</td>
-					<td><?php echo _("Edit PDF structure"); ?></td>
+						<?php echo _("Edit PDF structure"); ?></td>
 				</tr>
 				<!-- delete pdf structure -->
 				<tr>
@@ -138,8 +138,7 @@ echo $_SESSION['header'];
 						<select name="delete" size=1>
 							<?php echo $availableStructureDefinitions; ?>
 						</select>
-					</td>
-					<td><?php echo _("Delete PDF structure"); ?></td>
+						<?php echo _("Delete PDF structure"); ?></td>
 				</tr>
 			</table>
 		</fieldset>
