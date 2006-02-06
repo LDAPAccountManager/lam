@@ -1,0 +1,5132 @@
+#
+# LDAP Account Manager
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LAM 0.5\n"
+"Report-Msgid-Bugs-To: post@rolandgruber.de\n"
+"POT-Creation-Date: 2004-01-14 17:45+0200\n"
+"PO-Revision-Date: 2006-02-06 02:12+0100\n"
+"Last-Translator: Ruud Baart <R.J.Baart@prompt.nl>\n"
+"Language-Team: German <post@rolandgruber.de>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../lib/modules/posixAccount.inc:354
+msgid "$user and $group are replaced with user name or primary group name."
+msgstr "$user en $groep zijn vervangen door gebruikersnaam of de naam van de primaire groep."
+
+#: ../lib/types/mailAlias.inc:106
+#, php-format
+msgid "%s alias(es) found"
+msgstr "%s alias(sen) gevonden"
+
+#: ../lib/types/smbDomain.inc:106
+#, php-format
+msgid "%s domain(s) found"
+msgstr "%s domein(en) gevonden"
+
+#: ../lib/types/group.inc:108
+#, php-format
+msgid "%s group(s) found"
+msgstr "%s groep(en) gevonden"
+
+#: ../lib/types/host.inc:110
+#, php-format
+msgid "%s host(s) found"
+msgstr "%s host(s) gevonden"
+
+#: ../lib/lists.inc:94
+#, php-format
+msgid "%s object(s) found"
+msgstr "%s object(en) gevonden"
+
+#: ../lib/types/user.inc:120
+#, php-format
+msgid "%s user(s) found"
+msgstr "%s gebruiker(s) gevonden"
+
+#: ../templates/tree/templates/creation/custom.php:63
+msgid "(example: cn=MyNewPerson)"
+msgstr "(voorbeeld: cn=MijnNieuwPersoon)"
+
+#: ../templates/tree/templates/creation/new_ou_template.php:60
+msgid "(hint: do not include \"ou=\")"
+msgstr "(hint: laat \"ou=\" weg)"
+
+#: ../templates/tree/add_attr_form.php:135
+msgid "(no new attributes available for this entry)"
+msgstr "(geen nieuw attributen beschikbaar voor deze ingang)"
+
+#: ../templates/tree/add_attr_form.php:173
+msgid "(no new binary attributes available for this entry)"
+msgstr "(geen nieuw binair attributen beschikbaar voor deze ingang)"
+
+#: ../lib/modules/posixAccount.inc:216
+msgid "/home/smiller"
+msgstr "/home/smiller"
+
+#: ../templates/massBuildAccounts.php:113
+msgid "A required column is missing in your CSV file."
+msgstr "Een verplichte kolom ontbreekt in het CSV bestand"
+
+#: ../lib/modules/kolabUser.inc:131
+msgid "A user may define who is allowed to act on behalf of herself. This property is checked when using the Kolab smtp daemon (Postfix) to send emails."
+msgstr "Een gebruiker mag bepalen wie het toegestaan is namens hem te handelen. Deze eigenschap wordt gecontroleerd wanneer de Kolab SMTP daemon (Postfix) gebruikt wordt om e-mail te versturen."
+
+#: ../templates/ou_edit.php:106
+#: ../templates/config/confmodules.php:110
+#: ../templates/config/confmain.php:405
+#: ../templates/config/conftypes.php:233
+#: ../templates/pdfedit/pdfdelete.php:91
+#: ../templates/pdfedit/pdfpage.php:772
+#: ../templates/pdfedit/pdfmain.php:153
+#: ../templates/profedit/profiledelete.php:82
+#: ../templates/profedit/profilepage.php:251
+#: ../templates/profedit/profilemain.php:165
+#: ../lib/modules/sambaSamAccount.inc:990
+msgid "Abort"
+msgstr "Afbreken"
+
+#: ../lib/modules/account.inc:53
+msgid "Account"
+msgstr "Account"
+
+#: ../templates/massBuildAccounts.php:166
+#: ../lib/modules/account.inc:111
+#: ../lib/modules/ieee802device.inc:84
+#: ../lib/modules/posixGroup.inc:484
+#: ../lib/modules/posixGroup.inc:488
+#: ../lib/modules/posixGroup.inc:489
+#: ../lib/modules/quota.inc:46
+#: ../lib/modules/quota.inc:48
+#: ../lib/modules/quota.inc:50
+#: ../lib/modules/quota.inc:52
+#: ../lib/modules/quota.inc:54
+#: ../lib/modules/quota.inc:56
+#: ../lib/modules/quota.inc:57
+#: ../lib/modules/sambaAccount.inc:63
+#: ../lib/modules/sambaAccount.inc:66
+#: ../lib/modules/sambaAccount.inc:69
+#: ../lib/modules/sambaAccount.inc:71
+#: ../lib/modules/sambaAccount.inc:73
+#: ../lib/modules/sambaAccount.inc:76
+#: ../lib/modules/sambaAccount.inc:77
+#: ../lib/modules/sambaAccount.inc:79
+#: ../lib/modules/sambaAccount.inc:80
+#: ../lib/modules/sambaAccount.inc:81
+#: ../lib/modules/sambaAccount.inc:82
+#: ../lib/modules/sambaAccount.inc:83
+#: ../lib/modules/sambaAccount.inc:84
+#: ../lib/modules/sambaAccount.inc:85
+#: ../lib/modules/sambaAccount.inc:86
+#: ../lib/modules/sambaAccount.inc:87
+#: ../lib/modules/sambaSamAccount.inc:78
+#: ../lib/modules/sambaSamAccount.inc:81
+#: ../lib/modules/sambaSamAccount.inc:84
+#: ../lib/modules/sambaSamAccount.inc:86
+#: ../lib/modules/sambaSamAccount.inc:89
+#: ../lib/modules/sambaSamAccount.inc:90
+#: ../lib/modules/sambaSamAccount.inc:91
+#: ../lib/modules/sambaSamAccount.inc:92
+#: ../lib/modules/sambaSamAccount.inc:94
+#: ../lib/modules/sambaSamAccount.inc:95
+#: ../lib/modules/sambaSamAccount.inc:96
+#: ../lib/modules/sambaSamAccount.inc:97
+#: ../lib/modules/sambaSamAccount.inc:98
+#: ../lib/modules/sambaSamAccount.inc:99
+#: ../lib/modules/sambaSamAccount.inc:100
+#: ../lib/modules/sambaSamAccount.inc:101
+#: ../lib/modules/sambaSamAccount.inc:102
+#: ../lib/modules/sambaSamAccount.inc:104
+#: ../lib/modules/sambaSamAccount.inc:105
+#: ../lib/modules/posixAccount.inc:73
+#: ../lib/modules/posixAccount.inc:77
+#: ../lib/modules/posixAccount.inc:81
+#: ../lib/modules/posixAccount.inc:89
+#: ../lib/modules/posixAccount.inc:90
+#: ../lib/modules/posixAccount.inc:91
+#: ../lib/modules/posixAccount.inc:92
+#: ../lib/modules/posixAccount.inc:93
+#: ../lib/modules/posixAccount.inc:94
+#: ../lib/modules/posixAccount.inc:95
+#: ../lib/modules/posixAccount.inc:96
+#: ../lib/modules/posixAccount.inc:97
+#: ../lib/modules/posixAccount.inc:99
+#: ../lib/modules/kolabUser.inc:223
+#: ../lib/modules/kolabUser.inc:225
+#: ../lib/modules/kolabUser.inc:227
+#: ../lib/modules/kolabUser.inc:229
+#: ../lib/modules/kolabUser.inc:231
+#: ../lib/modules/kolabUser.inc:233
+#: ../lib/modules/kolabUser.inc:235
+#: ../lib/modules/sambaGroupMapping.inc:367
+#: ../lib/modules/sambaGroupMapping.inc:368
+#: ../lib/modules/shadowAccount.inc:46
+#: ../lib/modules/shadowAccount.inc:48
+#: ../lib/modules/shadowAccount.inc:50
+#: ../lib/modules/shadowAccount.inc:52
+#: ../lib/modules/shadowAccount.inc:54
+#: ../lib/modules/shadowAccount.inc:55
+#: ../lib/modules/sambaDomain.inc:137
+#: ../lib/modules/sambaDomain.inc:139
+#: ../lib/modules/sambaDomain.inc:141
+#: ../lib/modules/sambaDomain.inc:143
+#: ../lib/modules/sambaDomain.inc:145
+#: ../lib/modules/sambaDomain.inc:147
+#: ../lib/modules/inetOrgPerson.inc:45
+#: ../lib/modules/inetOrgPerson.inc:47
+#: ../lib/modules/inetOrgPerson.inc:49
+#: ../lib/modules/inetOrgPerson.inc:51
+#: ../lib/modules/inetOrgPerson.inc:53
+#: ../lib/modules/inetOrgPerson.inc:55
+#: ../lib/modules/inetOrgPerson.inc:57
+#: ../lib/modules/inetOrgPerson.inc:59
+#: ../lib/modules/inetOrgPerson.inc:61
+#: ../lib/modules/inetOrgPerson.inc:63
+#: ../lib/modules/inetOrgPerson.inc:65
+#: ../lib/modules/inetOrgPerson.inc:67
+#: ../lib/modules/inetOrgPerson.inc:69
+#: ../lib/modules/inetOrgPerson.inc:71
+#: ../lib/modules/inetOrgPerson.inc:72
+#: ../lib/modules/inetOrgPerson.inc:73
+#: ../lib/modules/inetOrgPerson.inc:76
+#: ../lib/modules/inetLocalMailRecipient.inc:120
+#: ../lib/modules/inetLocalMailRecipient.inc:122
+#: ../lib/modules/inetLocalMailRecipient.inc:124
+#: ../lib/modules/nisMailAlias.inc:101
+#: ../lib/modules/nisMailAlias.inc:103
+#, php-format
+msgid "Account %s:"
+msgstr "Account %s:"
+
+#: ../templates/masscreate.php:82
+msgid "Account creation via file upload"
+msgstr "Account aanmaken via upload van bestand"
+
+#: ../lib/modules/posixGroup.inc:428
+#: ../lib/modules/posixAccount.inc:365
+msgid "Account deactivated"
+msgstr "Account op nonactief gezet"
+
+#: ../lib/modules/sambaSamAccount.inc:254
+#: ../lib/modules/sambaSamAccount.inc:329
+#: ../lib/modules/sambaSamAccount.inc:824
+#: ../lib/modules/sambaSamAccount.inc:1034
+#: ../lib/modules/shadowAccount.inc:99
+#: ../lib/modules/shadowAccount.inc:165
+#: ../lib/modules/shadowAccount.inc:197
+#: ../lib/modules/shadowAccount.inc:289
+msgid "Account expiration date"
+msgstr "Verloopdatum account"
+
+#: ../lib/modules/shadowAccount.inc:309
+msgid "Account inactive"
+msgstr "Niet actief account"
+
+#: ../lib/modules/sambaAccount.inc:130
+#: ../lib/modules/sambaAccount.inc:247
+#: ../lib/modules/sambaAccount.inc:359
+#: ../lib/modules/sambaAccount.inc:362
+#: ../lib/modules/sambaAccount.inc:725
+#: ../lib/modules/sambaSamAccount.inc:200
+#: ../lib/modules/sambaSamAccount.inc:203
+#: ../lib/modules/sambaSamAccount.inc:307
+#: ../lib/modules/sambaSamAccount.inc:802
+#: ../lib/modules/sambaSamAccount.inc:1022
+msgid "Account is deactivated"
+msgstr "Account is gedeactiveerd"
+
+#: ../help/help.inc:133
+msgid "Account lists - Filters"
+msgstr "Lijst accounts - Filters"
+
+#: ../templates/delete.php:88
+msgid "Account name:"
+msgstr "Naam account"
+
+#: ../templates/pdfedit/pdfdelete.php:81
+msgid "Account type"
+msgstr "Type account"
+
+#: ../templates/config/conftypes.php:167
+msgid "Account type selection"
+msgstr "Selectie type account"
+
+#: ../templates/config/confmain.php:207
+#: ../help/help.inc:114
+msgid "Account types and modules"
+msgstr "Type accounts en modules"
+
+#: ../help/help.inc:116
+msgid "Account types define which sorts of LDAP entries (e.g. users and groups) should be managed. The account modules define which properties (e.g. Unix and Samba) can be edited."
+msgstr "Type accounts bepalen welk soort LDAP entrees (bijvoorbeeld gebruikers en groepen) beheerd zouden moeten worden. De account modules bepalen welke eigenschappen (bijvoorbeeld Unix en Samba) geredigeerd kunnen worden."
+
+#: ../lib/modules.inc:987
+msgid "Account was created successfully."
+msgstr "Aanmaken account is aangemaakt."
+
+#: ../lib/modules.inc:990
+msgid "Account was modified successfully."
+msgstr "Aanmaken account is gewijzigd."
+
+#: ../lib/modules/posixAccount.inc:337
+msgid "Activating this checkbox will remove the user's home directory."
+msgstr "Aanvinken van deze mogelijkheid zal de homedirectory van de gebruiker verwijderen."
+
+#: ../templates/config/conftypes.php:185
+msgid "Active account types"
+msgstr "Actieve account types"
+
+#: ../templates/tree/add_value_form.php:156
+#: ../templates/tree/add_value_form.php:181
+#: ../templates/tree/add_oclass_form.php:140
+#: ../templates/tree/add_attr_form.php:129
+#: ../templates/tree/add_attr_form.php:161
+#: ../templates/config/conftypes.php:176
+#: ../templates/pdfedit/pdfpage.php:724
+#: ../lib/modules/ieee802device.inc:146
+#: ../lib/modules/kolabUser.inc:367
+#: ../lib/modules/kolabUser.inc:384
+#: ../lib/modules/kolabUser.inc:410
+#: ../lib/modules/ldapPublicKey.inc:137
+#: ../lib/modules/inetLocalMailRecipient.inc:208
+#: ../lib/modules/nisMailAlias.inc:180
+msgid "Add"
+msgstr "Toevoegen"
+
+#: ../templates/tree/edit.php:126
+#: ../templates/tree/add_value_form.php:94
+#: ../templates/tree/add_attr_form.php:71
+#: ../templates/tree/add_attr_form.php:108
+#, php-format
+msgid "Add new attribute"
+msgstr "Toevoegen nieuw attribuut"
+
+#: ../templates/tree/add_attr_form.php:141
+msgid "Add new binary attribute"
+msgstr "Toevoegen nieuw binair attribuut"
+
+#: ../lib/modules/inetOrgPerson.inc:343
+#: ../lib/modules/inetOrgPerson.inc:660
+#: ../lib/modules/inetOrgPerson.inc:751
+msgid "Add photo"
+msgstr "Toevoegen foto"
+
+#: ../templates/config/profmanage.php:172
+#: ../help/help.inc:117
+msgid "Add profile"
+msgstr "Toevoegen profiel"
+
+#: ../templates/pdfedit/pdfpage.php:653
+msgid "Add section or static text"
+msgstr "Toevoegen sectie of vaste tekst"
+
+#: ../templates/tree/add_value.php:93
+msgid "Adding attribute failed!"
+msgstr "Toevoegen attribuut mislukt!"
+
+#: ../lib/modules/posixAccount.inc:208
+#: ../lib/modules/posixAccount.inc:328
+#: ../lib/modules/posixAccount.inc:377
+#: ../lib/modules/posixAccount.inc:887
+#: ../lib/modules/posixAccount.inc:971
+#: ../lib/modules/posixAccount.inc:1033
+#: ../lib/modules/posixAccount.inc:1113
+msgid "Additional groups"
+msgstr "Additionele groepen"
+
+#: ../templates/massDoUpload.php:102
+msgid "Additional tasks for module:"
+msgstr "Additionele taken voor module:"
+
+#: ../lib/modules/posixGroup.inc:382
+msgid "Administrators group"
+msgstr "Administratorgroep"
+
+#: ../lib/modules/sambaDomain.inc:146
+#: ../lib/modules/sambaDomain.inc:147
+msgid "Algorithmic RID base is not a number!"
+msgstr "Basis algoritme RID  is geen getal!"
+
+#: ../lib/types/mailAlias.inc:80
+#: ../lib/modules/nisMailAlias.inc:62
+#: ../lib/modules/nisMailAlias.inc:77
+#: ../lib/modules/nisMailAlias.inc:165
+#: ../lib/modules/nisMailAlias.inc:323
+msgid "Alias name"
+msgstr "Naam alias"
+
+#: ../templates/schema/schema.php:230
+msgid "Aliases"
+msgstr "Aliassen"
+
+#: ../templates/initsuff.php:155
+msgid "All changes were successful."
+msgstr "Alle veranderingen zijn uitgevoerd."
+
+#: ../lib/types/user.inc:84
+msgid "Allowed hosts"
+msgstr "Teogestane hosts"
+
+#: ../lib/modules/sambaAccount.inc:823
+#: ../lib/modules/sambaAccount.inc:824
+#: ../lib/modules/sambaSamAccount.inc:925
+#: ../lib/modules/sambaSamAccount.inc:926
+msgid "Allowed workstations"
+msgstr "Toegestane werkstations"
+
+#: ../lib/modules/kolabUser.inc:51
+msgid "Always accept"
+msgstr "Altijd accepteren"
+
+#: ../lib/modules/kolabUser.inc:52
+msgid "Always reject"
+msgstr "Altijd afwijzen"
+
+#: ../templates/tree/edit.php:138
+#, php-format
+msgid "An attribute (%s) was modified and is highlighted below."
+msgstr "Een attribuut (%s) is gewijzigd en hieronder geaccentueerd"
+
+#: ../lib/modules/kolabUser.inc:349
+#: ../lib/modules/kolabUser.inc:803
+msgid "Anyone"
+msgstr "Willekeurig wie"
+
+#: ../lib/types/user.inc:237
+msgid "Apply"
+msgstr "Toepassen"
+
+#: ../templates/tree/delete_form.php:148
+msgid "Are you sure you want to permanently delete this object?"
+msgstr "U bet zeker dat u dit obect permanent wilt verwijderen?"
+
+#: ../templates/tree/update_confirm.php:148
+msgid "Attribute"
+msgstr "Attribuut"
+
+#: ../templates/schema/schema.php:73
+#: ../templates/schema/schema.php:74
+msgid "Attribute types"
+msgstr "Attribuuttypen"
+
+#: ../templates/pdfedit/pdfpage.php:602
+msgid "Available PDF fields"
+msgstr "Beschikbare PDF velden"
+
+#: ../templates/config/conftypes.php:170
+msgid "Available account types"
+msgstr "Beschikbare accounttypes"
+
+#: ../lib/modules/posixAccount.inc:983
+msgid "Available groups"
+msgstr "Beschikbare groepen"
+
+#: ../templates/config/confmodules.php:204
+msgid "Available modules"
+msgstr "Beschikbare modules"
+
+#: ../lib/modules/posixGroup.inc:254
+msgid "Available users"
+msgstr "Beschikbare gebruikers"
+
+#: ../lib/modules/sambaAccount.inc:829
+#: ../lib/modules/sambaSamAccount.inc:931
+msgid "Available workstations"
+msgstr "Beschikbare werkstations"
+
+#: ../templates/tree/update_confirm.php:251
+#: ../lib/modules/posixGroup.inc:260
+#: ../lib/modules/posixGroup.inc:284
+#: ../lib/modules/sambaAccount.inc:834
+#: ../lib/modules/sambaSamAccount.inc:935
+#: ../lib/modules/posixAccount.inc:989
+#: ../lib/modules/posixAccount.inc:1013
+#: ../lib/modules/inetOrgPerson.inc:712
+#: ../lib/modules/inetOrgPerson.inc:752
+msgid "Back"
+msgstr "Terug"
+
+#: ../templates/config/confsave.php:192
+#: ../templates/config/conflogin.php:150
+#: ../templates/logout.php:73
+msgid "Back to Login"
+msgstr "Terug naar Login"
+
+#: ../templates/ou_edit.php:127
+#: ../templates/ou_edit.php:131
+msgid "Back to OU-Editor"
+msgstr "Terug naar OU-Editor"
+
+#: ../templates/pdfedit/pdfdelete.php:61
+#: ../templates/pdfedit/pdfdelete.php:69
+msgid "Back to PDF Editor"
+msgstr "Terug naar PDF editor"
+
+#: ../lib/modules.inc:999
+msgid "Back to account list"
+msgstr "Terug naar lijst met accounts"
+
+#: ../templates/lists/userlink.php:65
+msgid "Back to group list"
+msgstr "Terug naar lijst van groepen"
+
+#: ../templates/delete.php:236
+msgid "Back to list"
+msgstr "Terug naar lijst"
+
+#: ../templates/config/confsave.php:83
+#: ../templates/config/confsave.php:88
+#: ../templates/config/confsave.php:93
+#: ../templates/config/confsave.php:98
+#: ../templates/config/confsave.php:103
+#: ../templates/config/confsave.php:109
+#: ../templates/config/confsave.php:115
+#: ../templates/config/confsave.php:121
+#: ../templates/config/confsave.php:171
+msgid "Back to preferences..."
+msgstr "Terug naar voorkeuren..."
+
+#: ../templates/profedit/profiledelete.php:63
+#: ../templates/profedit/profiledelete.php:71
+#: ../templates/profedit/profilepage.php:121
+msgid "Back to profile editor"
+msgstr "Terug naar profiel editor"
+
+#: ../templates/config/profmanage.php:417
+msgid "Back to profile login"
+msgstr "Terug naar profiel login"
+
+#: ../templates/tree/export_form.php:73
+msgid "Base (base DN only)"
+msgstr "Base (uitsluitend basis DN)"
+
+#: ../templates/tree/export_form.php:98
+msgid "Base DN"
+msgstr "Basis DN"
+
+#: ../templates/config/confmodules.php:114
+#: ../help/help.inc:131
+msgid "Base module"
+msgstr "Basis module"
+
+#: ../templates/pdfedit/pdfpage.php:454
+msgid "Beginning"
+msgstr "Begin"
+
+#: ../templates/tree/edit.php:171
+#: ../templates/tree/edit.php:300
+msgid "Binary value"
+msgstr "Binaire waarde"
+
+#: ../lib/modules/quota.inc:47
+msgid "Block hard quota"
+msgstr "Uiterste blok quotum"
+
+#: ../lib/modules/quota.inc:47
+#: ../lib/modules/quota.inc:48
+msgid "Block hard quota contains invalid characters. Only natural numbers are allowed."
+msgstr "Uiterste blok quotum bevat ongeldige tekens; alleen getallen zijn toegestaan."
+
+#: ../lib/modules/quota.inc:53
+msgid "Block quota"
+msgstr "Blok quotum"
+
+#: ../lib/modules/quota.inc:45
+msgid "Block soft quota"
+msgstr "Zachte blok quotum"
+
+#: ../lib/modules/quota.inc:45
+#: ../lib/modules/quota.inc:46
+msgid "Block soft quota contains invalid characters. Only natural numbers are allowed."
+msgstr "Zachte blok quotum bevat ongeldige tekens; alleen getallen zijn toegestaan."
+
+#: ../lib/modules/quota.inc:53
+#: ../lib/modules/quota.inc:54
+msgid "Block soft quota must be smaller than block hard quota."
+msgstr "Zachte blok quotum dient kleiner te zijn dat het uiterste blokquotum"
+
+#: ../lib/modules/sambaGroupMapping.inc:70
+msgid "Builtin Group"
+msgstr "Ingebouwde groep"
+
+#: ../templates/masscreate.php:128
+msgid "CSV file:"
+msgstr "CSV bestand:"
+
+#: ../templates/config/confmain.php:186
+#: ../help/help.inc:110
+msgid "Cache timeout"
+msgstr "Cache timeout"
+
+#: ../templates/config/confsave.php:87
+msgid "Cache timeout is invalid!"
+msgstr "Cache timeout is ongeldig!"
+
+#: ../lib/modules/sambaAccount.inc:374
+#: ../lib/modules/sambaAccount.inc:377
+#: ../lib/modules/sambaAccount.inc:380
+#: ../lib/modules/sambaAccount.inc:386
+#: ../lib/modules/sambaAccount.inc:398
+#: ../lib/modules/sambaSamAccount.inc:215
+#: ../lib/modules/sambaSamAccount.inc:218
+#: ../lib/modules/sambaSamAccount.inc:221
+#: ../lib/modules/sambaSamAccount.inc:227
+#: ../lib/modules/posixAccount.inc:378
+#: ../lib/modules/sambaGroupMapping.inc:296
+#: ../lib/modules/shadowAccount.inc:150
+#: ../lib/modules/shadowAccount.inc:154
+#: ../lib/modules/shadowAccount.inc:158
+#: ../lib/modules/shadowAccount.inc:162
+msgid "Can be left empty."
+msgstr "Kan open gelaten worden"
+
+#: ../templates/tree/update_confirm.php:237
+#: ../templates/tree/delete_form.php:118
+#: ../templates/tree/delete_form.php:167
+#: ../templates/delete.php:111
+#: ../templates/initsuff.php:188
+#: ../lib/modules/kolabUser.inc:596
+msgid "Cancel"
+msgstr "Afbreken"
+
+#: ../templates/login.php:372
+#: ../templates/login.php:377
+msgid "Cannot connect to specified LDAP server. Please try again."
+msgstr "Kan de opgegeven LDAP server niet bereiken. S.v.p. opnieuw proberen."
+
+#: ../lib/config.inc:338
+#: ../lib/config.inc:793
+msgid "Cannot open config file!"
+msgstr "Kan configuratiefile niet openen!"
+
+#: ../templates/pdfedit/pdfpage.php:498
+#: ../templates/pdfedit/pdfpage.php:504
+msgid "Change"
+msgstr "Verander"
+
+#: ../lib/modules/posixGroup.inc:211
+msgid "Change GID number of users and hosts"
+msgstr "Verander GID nummer van gebruikers en hosts"
+
+#: ../templates/config/profmanage.php:339
+#: ../help/help.inc:125
+msgid "Change default profile"
+msgstr "Verander default profiel"
+
+#: ../templates/config/profmanage.php:364
+#: ../help/help.inc:127
+msgid "Change master password"
+msgstr "Verander master wachtwoord"
+
+#: ../lib/modules/posixGroup.inc:193
+#: ../lib/modules/posixAccount.inc:913
+#: ../lib/modules/inetOrgPerson.inc:570
+#: ../help/help.inc:108
+msgid "Change password"
+msgstr "Verander wachtwoord"
+
+#: ../templates/login.php:308
+msgid "Change profile"
+msgstr "Verander profiel"
+
+#: ../lib/lists.inc:474
+msgid "Change suffix"
+msgstr "Verander achtervoegsel"
+
+#: ../lib/baseModule.inc:569
+#, php-format
+msgid "Changed value %s because only numeric values are allowed."
+msgstr "Waarde %s is veranderd omdat alleen getallen zijn toegestaan"
+
+#: ../lib/baseModule.inc:600
+msgid "Changed value because only ASCII characters are allowed."
+msgstr "Waarde is veranderd omdat alleen ASCII karakters zijn toegestaan."
+
+#: ../templates/tree/create_form.php:75
+msgid "Choose a template"
+msgstr "Kies een sjabloon"
+
+#: ../templates/tree/create.php:165
+#: ../lib/config.inc:111
+msgid "Click here if you are not directed to the next page."
+msgstr "Klik hier als u niet wordt doorverwezen naar de volgende pagina"
+
+#: ../templates/schema/schema.php:203
+msgid "Collective"
+msgstr "Verzamelen"
+
+#: ../templates/masscreate.php:136
+msgid "Columns:"
+msgstr "Kolommen:"
+
+#: ../lib/modules/sambaAccount.inc:386
+#: ../lib/modules/sambaSamAccount.inc:227
+msgid "Comma separated list of Samba workstations the user is allowed to login. Empty means every workstation."
+msgstr "Komma gescheiden lijst van Samba werkstations waarop de geruiker mag inloggen. Leeg betekent dat ieder werkstation is toegestaan."
+
+#: ../templates/tree/update_confirm.php:230
+msgid "Commit"
+msgstr "Bevestig"
+
+#: ../lib/modules/posixAccount.inc:98
+#: ../lib/modules/posixAccount.inc:189
+#: ../lib/modules/posixAccount.inc:381
+#: ../lib/modules/posixAccount.inc:869
+#: ../lib/modules/posixAccount.inc:1108
+#: ../lib/modules/inetOrgPerson.inc:68
+#: ../lib/modules/inetOrgPerson.inc:218
+#: ../lib/modules/inetOrgPerson.inc:327
+#: ../lib/modules/inetOrgPerson.inc:541
+#: ../lib/modules/inetOrgPerson.inc:779
+msgid "Common name"
+msgstr "Algemene naam"
+
+#: ../templates/login.php:172
+msgid "Configuration login"
+msgstr "Configuratie login"
+
+#: ../templates/login.php:290
+msgid "Configuration profile"
+msgstr "Configuratie profiel"
+
+#: ../help/help.inc:58
+#: ../help/help.inc:60
+#: ../help/help.inc:72
+#: ../help/help.inc:78
+#: ../help/help.inc:84
+#: ../help/help.inc:89
+#: ../help/help.inc:94
+#: ../help/help.inc:96
+#: ../help/help.inc:98
+#: ../help/help.inc:103
+#: ../help/help.inc:108
+#: ../help/help.inc:110
+#: ../help/help.inc:112
+#: ../help/help.inc:114
+#: ../help/help.inc:131
+msgid "Configuration wizard"
+msgstr "Configuratie hulp"
+
+#: ../templates/config/confmodules.php:245
+msgid "Conflicting module:"
+msgstr "Conflikterende module:"
+
+#: ../templates/tree/templates/creation/custom.php:66
+#: ../templates/tree/templates/creation/new_ou_template.php:105
+msgid "Container"
+msgstr "Container"
+
+#: ../templates/tree/templates/creation/new_ou_template.php:64
+msgid "Container DN"
+msgstr "Container DN"
+
+#: ../templates/tree/delete_attr.php:78
+msgid "Could not perform ldap_modify operation."
+msgstr "ldap_modificatie kan niet worden uitgevoerd."
+
+#: ../templates/config/profmanage.php:99
+msgid "Could not rename file!"
+msgstr "Kan bestand niet hernoemen!"
+
+#: ../templates/pdfedit/pdfpage.php:111
+msgid "Could not save PDF profile, access denied."
+msgstr "Kan PDF profiel niet opslaan, toegang geweigerd."
+
+#: ../lib/modules/kolabUser.inc:83
+#: ../lib/modules/kolabUser.inc:146
+#: ../lib/modules/kolabUser.inc:175
+#: ../lib/modules/kolabUser.inc:309
+#: ../lib/modules/kolabUser.inc:779
+msgid "Country"
+msgstr "Land"
+
+#: ../lib/modules/kolabUser.inc:226
+#: ../lib/modules/kolabUser.inc:227
+msgid "Country name is invalid!"
+msgstr "Landennaam is ongeldig!"
+
+#: ../templates/tree/templates/creation/custom.php:234
+#: ../templates/tree/templates/creation/new_ou_template.php:107
+#: ../templates/initsuff.php:187
+msgid "Create"
+msgstr "Aanmaken"
+
+#: ../lib/modules.inc:1049
+msgid "Create Account"
+msgstr "Account maken"
+
+#: ../templates/tree/creation_template.php:84
+#: ../templates/tree/create_form.php:74
+msgid "Create Object"
+msgstr "Object maken"
+
+#: ../lib/modules.inc:1006
+#: ../help/help.inc:150
+msgid "Create PDF file"
+msgstr "PDF bestand maken"
+
+#: ../lib/types/mailAlias.inc:111
+msgid "Create PDF for all aliases"
+msgstr "PDFvoor alle aliassen maken"
+
+#: ../lib/types/smbDomain.inc:111
+msgid "Create PDF for all domains"
+msgstr "PDF voor alle domeinen maken"
+
+#: ../lib/types/group.inc:113
+msgid "Create PDF for all groups"
+msgstr "PDF voor alle groepen maken"
+
+#: ../lib/types/host.inc:115
+msgid "Create PDF for all hosts"
+msgstr "PDF voor alle hosts maken"
+
+#: ../lib/lists.inc:99
+msgid "Create PDF for all objects"
+msgstr "PDF voor alle hosts maken"
+
+#: ../lib/types/user.inc:125
+msgid "Create PDF for all users"
+msgstr "PDF voor alle gebruiikers maken"
+
+#: ../lib/types/mailAlias.inc:110
+msgid "Create PDF for selected alias(es)"
+msgstr "PDF voor geselecteerde alias(sen) maken"
+
+#: ../lib/types/smbDomain.inc:110
+msgid "Create PDF for selected domain(s)"
+msgstr "PDF voor geslecteerde domein(en) maken"
+
+#: ../lib/types/group.inc:112
+msgid "Create PDF for selected group(s)"
+msgstr "PDF voor geselecteerde groep(en) maken"
+
+#: ../lib/types/host.inc:114
+msgid "Create PDF for selected host(s)"
+msgstr "PDF voor geselecteerde host(s) maken"
+
+#: ../lib/lists.inc:98
+msgid "Create PDF for selected object(s)"
+msgstr "PDF voor geselecteerde object(en) maken"
+
+#: ../lib/types/user.inc:124
+msgid "Create PDF for selected user(s)"
+msgstr "PDF voor geselecteerde gebruiker(s) maken"
+
+#: ../templates/pdfedit/pdfmain.php:118
+msgid "Create a new PDF structure for scope: "
+msgstr "Een nieuwe PDf structuur maken voor bereik:"
+
+#: ../templates/profedit/profilemain.php:127
+msgid "Create a new profile"
+msgstr "Nieuw profiel maken"
+
+#: ../lib/modules.inc:998
+msgid "Create another account"
+msgstr "Ander account maken"
+
+#: ../lib/modules/posixAccount.inc:896
+msgid "Create home directory"
+msgstr "Home directory maken"
+
+#: ../lib/modules.inc:894
+msgid "Create new Account"
+msgstr "Nieuw account maken"
+
+#: ../templates/tree/edit.php:124
+#: ../templates/tree/tree.php:185
+#: ../templates/tree/tree.php:187
+#: ../templates/tree/tree.php:188
+#: ../lib/tree.inc:66
+#: ../lib/tree.inc:67
+#: ../lib/tree.inc:129
+#: ../lib/tree.inc:131
+#: ../lib/tree.inc:132
+msgid "Create new entry"
+msgstr "Nieuwe entree maken"
+
+#: ../templates/config/profmanage.php:84
+msgid "Created new profile."
+msgstr "Nieuw profiel maken"
+
+#: ../templates/tools.php:62
+msgid "Creates accounts by uploading a CSV formated file."
+msgstr "Accounts maken middels het uploaden van bestand in CSV formaat."
+
+#: ../templates/tree/add_value_form.php:100
+msgid "Current list of values for attribute:"
+msgstr "Huidige lijst van waarden voor attribuut:"
+
+#: ../templates/tree/templates/templates.inc:51
+msgid "Custom"
+msgstr "Op maat"
+
+#: ../templates/tree/edit.php:91
+#: ../templates/tree/add_value_form.php:98
+#: ../templates/tree/add_oclass_form.php:120
+#: ../templates/tree/update_confirm.php:75
+#: ../templates/tree/add_attr_form.php:72
+#: ../templates/tree/delete_form.php:76
+#: ../templates/tree/delete_form.php:150
+#: ../templates/delete.php:89
+#: ../lib/modules.inc:1616
+msgid "DN"
+msgstr "DN"
+
+#: ../templates/masscreate.php:139
+msgid "DN settings"
+msgstr "DN instellingen"
+
+#: ../templates/masscreate.php:143
+#: ../help/help.inc:142
+msgid "DN suffix"
+msgstr "DN achtervoegsel"
+
+#: ../lib/export.inc:511
+#, php-format
+msgid "DSML Export for: %s"
+msgstr "DSML uitvoer voor: %s"
+
+#: ../templates/tree/templates/creation/custom.php:96
+msgid "Data field for RDN is empty!"
+msgstr "Data veld voor RDN is leeg!"
+
+#: ../lib/modules/sambaAccount.inc:366
+#: ../lib/modules/sambaSamAccount.inc:207
+msgid "Date after the user is able to change his password. Format: DD-MM-YYYY"
+msgstr "Datum waarna de gebruiker zijn wachtwoord mag wijzigen. Format: DD-MM-YYYY"
+
+#: ../lib/modules/sambaAccount.inc:368
+#: ../lib/modules/sambaSamAccount.inc:209
+msgid "Date after the user must change his password. Format: DD-MM-YYYY"
+msgstr "Datum waarna de gebruiker zijn wachtwoord moet wijzigen. Format: DD-MM-YYYY"
+
+#: ../lib/modules/shadowAccount.inc:150
+msgid "Days before password is to expire that user is warned of pending password expiration. If set value must be 0<."
+msgstr "Aantal dagen voor het verlopen van het wachtwoord waarop de gebruiker wordt gewaarschuwd. Indien gezet moet de waarde groter dan 0 zijn."
+
+#: ../templates/config/confmain.php:291
+#: ../help/help.inc:96
+msgid "Default language"
+msgstr "Default taal"
+
+#: ../templates/masscreate.php:152
+#: ../templates/masscreate.php:310
+msgid "Default value"
+msgstr "Default waarde"
+
+#: ../lib/modules/kolabUser.inc:130
+#: ../lib/modules/kolabUser.inc:134
+#: ../lib/modules/kolabUser.inc:194
+#: ../lib/modules/kolabUser.inc:413
+#: ../lib/modules/kolabUser.inc:817
+msgid "Delegates"
+msgstr "Gemachtigde"
+
+#: ../lib/modules/kolabUser.inc:231
+msgid "Delegates has invalid format!"
+msgstr "Gemachtige heeft ongeldig formaat!"
+
+#: ../templates/tree/edit.php:113
+#: ../templates/tree/delete_form.php:158
+#: ../templates/delete.php:110
+#: ../lib/tree.inc:1164
+msgid "Delete"
+msgstr "Verwijderen"
+
+#: ../templates/tree/delete_form.php:75
+#, php-format
+msgid "Delete %s"
+msgstr "Verwijder %s"
+
+#: ../templates/delete.php:74
+#: ../templates/delete.php:127
+msgid "Delete Account"
+msgstr "Verwijder account"
+
+#: ../lib/modules/kolabUser.inc:422
+msgid "Delete Kolab account"
+msgstr "Verwijder Kolab account"
+
+#: ../templates/pdfedit/pdfdelete.php:48
+#: ../templates/pdfedit/pdfmain.php:142
+msgid "Delete PDF structure"
+msgstr "Verwijder PDF structuur"
+
+#: ../lib/types/mailAlias.inc:109
+msgid "Delete alias"
+msgstr "Verwijder alias"
+
+#: ../templates/tree/delete_form.php:110
+#, php-format
+msgid "Delete all %s objects"
+msgstr "Verwijder alle %s objecten"
+
+#: ../lib/types/smbDomain.inc:109
+msgid "Delete domain"
+msgstr "Verwijder domein"
+
+#: ../lib/types/group.inc:111
+msgid "Delete group"
+msgstr "Verwijder groep"
+
+#: ../lib/modules/posixAccount.inc:942
+msgid "Delete home directory"
+msgstr "Verwijder homedirectory"
+
+#: ../lib/types/host.inc:113
+msgid "Delete host"
+msgstr "Verwijder host"
+
+#: ../lib/lists.inc:97
+msgid "Delete object"
+msgstr "Verwijder object"
+
+#: ../templates/pdfedit/pdfdelete.php:68
+#: ../templates/profedit/profiledelete.php:70
+msgid "Delete operation canceled."
+msgstr "Verwijderingsoperatie geannuleerd"
+
+#: ../templates/ou_edit.php:177
+#: ../help/help.inc:159
+msgid "Delete organizational unit"
+msgstr "Verwijder organizational unit"
+
+#: ../lib/modules/inetOrgPerson.inc:663
+msgid "Delete photo"
+msgstr "Verwijder foto"
+
+#: ../templates/config/profmanage.php:258
+#: ../templates/profedit/profiledelete.php:52
+#: ../templates/profedit/profilemain.php:153
+#: ../help/help.inc:121
+msgid "Delete profile"
+msgstr "Verwijder profiel"
+
+#: ../lib/types/user.inc:123
+msgid "Delete user"
+msgstr "Verwijder gebruiker"
+
+#: ../lib/modules/sambaGroupMapping.inc:71
+msgid "Deleted Account"
+msgstr "Verwijderd account"
+
+#: ../templates/delete.php:224
+#, php-format
+msgid "Deleted DN: %s"
+msgstr "Verwijderd DN: %s"
+
+#: ../templates/pdfedit/pdfdelete.php:59
+msgid "Deleted PDF structure:"
+msgstr "Verwijderd PDF structuur:"
+
+#: ../templates/profedit/profiledelete.php:62
+msgid "Deleted profile:"
+msgstr "Verwijderd profiel:"
+
+#: ../templates/tree/rdelete.php:70
+#: ../templates/tree/rdelete.php:132
+#: ../templates/tree/rdelete.php:144
+#, php-format
+msgid "Deleting %s"
+msgstr "Bezig met verwijder van %s"
+
+#: ../templates/delete.php:134
+msgid "Deleting. Please stand by ..."
+msgstr "Bezig met verwijderen. Moment ..."
+
+#: ../templates/tree/add_value_form.php:185
+#: ../templates/schema/schema.php:93
+#: ../templates/schema/schema.php:147
+#: ../templates/schema/schema.php:350
+#: ../lib/types/user.inc:90
+#: ../lib/modules/account.inc:73
+#: ../lib/modules/account.inc:97
+#: ../lib/modules/account.inc:211
+#: ../lib/modules/account.inc:225
+#: ../lib/modules/posixGroup.inc:173
+#: ../lib/modules/posixGroup.inc:408
+#: ../lib/modules/posixGroup.inc:459
+#: ../lib/modules/sambaAccount.inc:854
+#: ../lib/modules/sambaSamAccount.inc:1196
+#: ../lib/modules/posixAccount.inc:287
+#: ../lib/modules/posixAccount.inc:399
+#: ../lib/modules/sambaGroupMapping.inc:318
+#: ../lib/modules/shadowAccount.inc:311
+#: ../lib/modules/inetOrgPerson.inc:141
+#: ../lib/modules/inetOrgPerson.inc:271
+#: ../lib/modules/inetOrgPerson.inc:546
+#: ../lib/modules/inetOrgPerson.inc:764
+msgid "Description"
+msgstr "Omschrijving"
+
+#: ../lib/modules/sambaAccount.inc:78
+#: ../lib/modules/sambaAccount.inc:211
+#: ../lib/modules/sambaAccount.inc:332
+#: ../lib/modules/sambaAccount.inc:693
+#: ../lib/modules/sambaAccount.inc:847
+#: ../lib/modules/sambaSamAccount.inc:93
+#: ../lib/modules/sambaSamAccount.inc:173
+#: ../lib/modules/sambaSamAccount.inc:271
+#: ../lib/modules/sambaSamAccount.inc:770
+#: ../lib/modules/sambaSamAccount.inc:1188
+#: ../lib/modules/sambaGroupMapping.inc:187
+#: ../lib/modules/sambaGroupMapping.inc:283
+#: ../lib/modules/sambaGroupMapping.inc:316
+msgid "Display name"
+msgstr "Display naam"
+
+#: ../lib/modules.inc:471
+msgid "Displayed account numbers start at \"0\". Add 2 to get the row in your spreadsheet."
+msgstr "Getoonde account nummers beginnen met \"0\". Voeg 2 toe om de rij in de spreadsheet in te krijgen."
+
+#: ../templates/ou_edit.php:98
+msgid "Do you really want to delete this OU?"
+msgstr "Weet u zeker dat u deze OU wilt verwijderen?"
+
+#: ../templates/pdfedit/pdfdelete.php:76
+msgid "Do you really want to delete this PDF structure?"
+msgstr "Weet u zeker dat u deze PDF structuur wilt verwijderen?"
+
+#: ../templates/profedit/profiledelete.php:77
+msgid "Do you really want to delete this profile?"
+msgstr "Weet u zeker dat u deze profiel wilt verwijderen?"
+
+#: ../lib/modules/kolabUser.inc:591
+msgid "Do you really want to mark this account for deletion?"
+msgstr "Weet u zeker dat u dit account wilt markeren om te verwijdern?"
+
+#: ../templates/delete.php:83
+msgid "Do you really want to remove the following accounts?"
+msgstr "Weet u zeker dat u de volgende accounts wilt verwijderen?"
+
+#: ../templates/tree/update_confirm.php:142
+msgid "Do you want to make these changes?"
+msgstr "Wilt u deze veranderingen maken?"
+
+#: ../lib/modules/sambaAccount.inc:169
+#: ../lib/modules/sambaAccount.inc:313
+#: ../lib/modules/sambaAccount.inc:323
+#: ../lib/modules/sambaAccount.inc:397
+#: ../lib/modules/sambaAccount.inc:796
+#: ../lib/modules/sambaAccount.inc:853
+#: ../lib/modules/sambaSamAccount.inc:245
+#: ../lib/modules/sambaSamAccount.inc:264
+#: ../lib/modules/sambaSamAccount.inc:390
+#: ../lib/modules/sambaSamAccount.inc:890
+#: ../lib/modules/sambaSamAccount.inc:1082
+#: ../lib/modules/sambaSamAccount.inc:1101
+#: ../lib/modules/sambaSamAccount.inc:1195
+#: ../lib/modules/sambaGroupMapping.inc:68
+#: ../lib/modules/sambaGroupMapping.inc:215
+#: ../lib/modules/sambaGroupMapping.inc:295
+#: ../lib/modules/sambaGroupMapping.inc:338
+msgid "Domain"
+msgstr "Domein"
+
+#: ../lib/modules/sambaAccount.inc:48
+#: ../lib/modules/sambaAccount.inc:308
+#: ../lib/modules/sambaSamAccount.inc:65
+#: ../lib/modules/sambaGroupMapping.inc:55
+#: ../lib/modules/sambaGroupMapping.inc:268
+msgid "Domain Admins"
+msgstr "Domeinbeheerders"
+
+#: ../lib/modules/sambaAccount.inc:50
+#: ../lib/modules/sambaSamAccount.inc:66
+#: ../lib/modules/sambaGroupMapping.inc:60
+msgid "Domain Certificate Admins"
+msgstr "Beheerder domein certificaat"
+
+#: ../lib/modules/sambaAccount.inc:49
+#: ../lib/modules/sambaAccount.inc:541
+#: ../lib/modules/sambaSamAccount.inc:66
+#: ../lib/modules/sambaSamAccount.inc:548
+#: ../lib/modules/sambaGroupMapping.inc:58
+msgid "Domain Computers"
+msgstr "Domein computers"
+
+#: ../lib/modules/sambaAccount.inc:50
+#: ../lib/modules/sambaSamAccount.inc:66
+#: ../lib/modules/sambaGroupMapping.inc:59
+msgid "Domain Controllers"
+msgstr "Domein controllers"
+
+#: ../lib/modules/sambaAccount.inc:51
+#: ../lib/modules/sambaSamAccount.inc:67
+#: ../lib/modules/sambaGroupMapping.inc:62
+msgid "Domain Enterprise Admins"
+msgstr "Bheerder bedrijfs domein"
+
+#: ../lib/modules/sambaGroupMapping.inc:67
+#: ../lib/modules/sambaGroupMapping.inc:207
+msgid "Domain Group"
+msgstr "Domein groep"
+
+#: ../lib/modules/sambaAccount.inc:49
+#: ../lib/modules/sambaSamAccount.inc:65
+#: ../lib/modules/sambaGroupMapping.inc:57
+msgid "Domain Guests"
+msgstr "Domein gast"
+
+#: ../lib/modules/sambaAccount.inc:52
+#: ../lib/modules/sambaSamAccount.inc:67
+#: ../lib/modules/sambaGroupMapping.inc:63
+msgid "Domain Policy Admins"
+msgstr "Beheerders domein beleid"
+
+#: ../lib/types/smbDomain.inc:80
+#: ../lib/modules/sambaDomain.inc:63
+#: ../lib/modules/sambaDomain.inc:93
+#: ../lib/modules/sambaDomain.inc:217
+#: ../lib/modules/sambaDomain.inc:223
+#: ../lib/modules/sambaDomain.inc:408
+msgid "Domain SID"
+msgstr "Domein SID"
+
+#: ../lib/modules/sambaAccount.inc:51
+#: ../lib/modules/sambaSamAccount.inc:67
+#: ../lib/modules/sambaGroupMapping.inc:61
+msgid "Domain Schema Admins"
+msgstr "Beheerders domein schema"
+
+#: ../lib/modules/sambaAccount.inc:48
+#: ../lib/modules/sambaSamAccount.inc:65
+#: ../lib/modules/sambaSamAccount.inc:1452
+#: ../lib/modules/sambaGroupMapping.inc:56
+msgid "Domain Users"
+msgstr "Domein gebruikers"
+
+#: ../lib/modules/sambaGroupMapping.inc:262
+msgid "Domain administrators"
+msgstr "Domeinbeheerders"
+
+#: ../lib/types/smbDomain.inc:81
+#: ../lib/modules/sambaAccount.inc:72
+#: ../lib/modules/sambaDomain.inc:59
+#: ../lib/modules/sambaDomain.inc:86
+#: ../lib/modules/sambaDomain.inc:204
+#: ../lib/modules/sambaDomain.inc:210
+#: ../lib/modules/sambaDomain.inc:405
+msgid "Domain name"
+msgstr "Domeinnaam"
+
+#: ../lib/modules/sambaAccount.inc:72
+#: ../lib/modules/sambaAccount.inc:73
+msgid "Domain name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and -."
+msgstr "Domeinnaam bevat ongeldige tekens. Geldige tekens zijn: a-z, A-Z, 0-9 en -."
+
+#: ../lib/modules/sambaDomain.inc:136
+#: ../lib/modules/sambaDomain.inc:137
+msgid "Domain name is invalid!"
+msgstr "Domeinnaam is ongeldig!"
+
+#: ../templates/main_header.php:57
+msgid "Donate"
+msgstr "Schenken"
+
+#: ../templates/pdfedit/pdfpage.php:468
+msgid "Down"
+msgstr "Naar beneden"
+
+#: ../templates/masscreate.php:264
+msgid "Download sample CSV file"
+msgstr "Download voorbeeld CSV bestand"
+
+#: ../lib/modules/sambaAccount.inc:371
+#: ../lib/modules/sambaSamAccount.inc:212
+msgid "Drive letter assigned on windows workstations as homedirectory."
+msgstr "Toegekend stationsaanduiding aan homedirectory op het windows werkstation."
+
+#: ../lib/types/user.inc:89
+msgid "E-Mail"
+msgstr "E-mail"
+
+#: ../lib/modules/kolabUser.inc:138
+msgid "EMail alias"
+msgstr "E-mail alias"
+
+#: ../lib/modules/kolabUser.inc:139
+msgid "EMail alias for this account."
+msgstr "E-mail alias voor deze account"
+
+#: ../lib/modules/kolabUser.inc:224
+msgid "EMail alias is invalid!"
+msgstr "E-mail alias is ongeldig"
+
+#: ../lib/modules/kolabUser.inc:142
+msgid "EMail alias list"
+msgstr "E-mail alias lijst"
+
+#: ../lib/modules/kolabUser.inc:225
+msgid "EMail alias list has invalid format!"
+msgstr "E-mail alias lijst heeft ongeldig formaat!"
+
+#: ../lib/modules/kolabUser.inc:188
+#: ../lib/modules/kolabUser.inc:387
+#: ../lib/modules/kolabUser.inc:813
+msgid "EMail aliases"
+msgstr "E-mail aliassen"
+
+#: ../lib/types/group.inc:140
+#: ../lib/types/user.inc:191
+#: ../lib/lists.inc:370
+msgid "Edit"
+msgstr "Bewerken"
+
+#: ../templates/pdfedit/pdfmain.php:130
+msgid "Edit PDF structure"
+msgstr "PDF structuur bewerken"
+
+#: ../templates/config/confmain.php:215
+msgid "Edit account types"
+msgstr "Account types bewerken"
+
+#: ../lib/modules/posixAccount.inc:888
+msgid "Edit groups"
+msgstr "Groepen bewerken"
+
+#: ../lib/modules/sambaSamAccount.inc:896
+msgid "Edit logon hours"
+msgstr "Inlog uren bewerken"
+
+#: ../lib/modules/posixGroup.inc:178
+msgid "Edit members"
+msgstr "Leden bewerken"
+
+#: ../templates/config/confmain.php:217
+msgid "Edit modules"
+msgstr "Modules bewerken"
+
+#: ../templates/profedit/profilemain.php:140
+msgid "Edit profile"
+msgstr "Profiel bewerken"
+
+#: ../lib/modules/sambaAccount.inc:761
+#: ../lib/modules/sambaSamAccount.inc:852
+msgid "Edit workstations"
+msgstr "Werkstations bewerken"
+
+#: ../lib/modules/inetOrgPerson.inc:66
+#: ../lib/modules/inetOrgPerson.inc:106
+#: ../lib/modules/inetOrgPerson.inc:153
+#: ../lib/modules/inetOrgPerson.inc:287
+#: ../lib/modules/inetOrgPerson.inc:615
+#: ../lib/modules/inetOrgPerson.inc:769
+msgid "Employee type"
+msgstr "Type werknemer"
+
+#: ../lib/modules/inetOrgPerson.inc:288
+msgid "Employee type: Contractor, Employee, Intern, Temp, External, ..."
+msgstr "Type werknemer: gecontracteerd, werknemer, intern, tijdelijk, extern, ..."
+
+#: ../templates/login.php:345
+msgid "Empty password submitted. Please try again."
+msgstr "Leeg wachtwoord niet toegestaan. Probeer opnieuw."
+
+#: ../templates/tree/download_binary_attr.php:70
+msgid "Encountered an error while performing search."
+msgstr "Er is een fout opgetreden tijdens de zoekopdracht."
+
+#: ../templates/tree/add_value_form.php:136
+msgid "Enter the value you would like to add:"
+msgstr "Geef de waarde die u graag wilt toevoegen:"
+
+#: ../lib/export.inc:407
+msgid "Entry"
+msgstr "Entree"
+
+#: ../templates/tree/rdelete.php:114
+#, php-format
+msgid "Entry %s and sub-tree deleted successfully."
+msgstr "Entree %s en onderliggende entrees met succes verwijderd"
+
+#: ../templates/tree/delete.php:103
+#, php-format
+msgid "Entry %s deleted successfully."
+msgstr "Entree %s met succes verwijderd"
+
+#: ../templates/schema/schema.php:170
+msgid "Equality"
+msgstr "Gelijkheid"
+
+#: ../templates/delete.php:229
+#, php-format
+msgid "Error while deleting DN: %s"
+msgstr "Fout tijdens verwijderen DN: %s"
+
+#: ../help/help.inc:132
+msgid "Every account type needs exactly one base module. This module provides a structural object class."
+msgstr "Ieder account type heeft precies een basismodule nodig. Deze module levert een structural class object."
+
+#: ../help/help.inc:75
+#: ../help/help.inc:81
+#: ../help/help.inc:87
+#: ../help/help.inc:92
+msgid "Example"
+msgstr "Voorbeeld"
+
+#: ../templates/masscreate.php:151
+#: ../templates/masscreate.php:306
+msgid "Example value"
+msgstr "Voorbeeld waarde"
+
+#: ../help/help.inc:63
+msgid "Examples"
+msgstr "Voorbeelden"
+
+#: ../templates/tree/edit.php:116
+#: ../templates/tree/export_form.php:87
+#: ../templates/tree/export_form.php:95
+msgid "Export"
+msgstr "Uitvoer"
+
+#: ../templates/tree/export_form.php:134
+msgid "Export format"
+msgstr "Uitvoer formaat"
+
+#: ../templates/tree/add_attr.php:128
+msgid "Failed to add the attribute."
+msgstr "Fout bij toevoegen van attribuut"
+
+#: ../templates/initsuff.php:149
+msgid "Failed to create entry!"
+msgstr "Entree maken mislukt!"
+
+#: ../templates/tree/rdelete.php:117
+#: ../templates/tree/rdelete.php:138
+#: ../templates/tree/rdelete.php:150
+#, php-format
+msgid "Failed to delete entry %s"
+msgstr "Verwijderen entree %s mislukt"
+
+#: ../lib/modules/inetOrgPerson.inc:54
+#: ../lib/modules/inetOrgPerson.inc:201
+#: ../lib/modules/inetOrgPerson.inc:319
+#: ../lib/modules/inetOrgPerson.inc:320
+#: ../lib/modules/inetOrgPerson.inc:600
+#: ../lib/modules/inetOrgPerson.inc:777
+msgid "Fax number"
+msgstr "Faxnummer"
+
+#: ../lib/modules/sambaSamAccount.inc:221
+msgid "File name and path relative to netlogon-share which should be executed on logon. $user and $group are replaced with user and group name."
+msgstr "Bestandsnaam en pad, relatief ten opzichte van netlogon-share. dat uitgevoerd moet worden tijdens de logon. $gebruiker en $groep worden vervangen door gebruikers- en groepsnaam."
+
+#: ../lib/modules/sambaAccount.inc:380
+msgid "File name and path relative to the netlogon-share which should be executed on logon. $user and $group are replaced with user and group name."
+msgstr "Bestandsnaam en pad, relatief ten opzichte van netlogon-share. dat uitgevoerd moet worden tijdens de logon. $gebruiker en $groep worden vervangen door gebruikers- en groepsnaam."
+
+#: ../templates/tools.php:61
+msgid "File upload"
+msgstr "Bestand upload"
+
+#: ../templates/tree/add_attr.php:91
+msgid "File upload failed!"
+msgstr "Bestand upload is mislukt!"
+
+#: ../lib/lists.inc:331
+msgid "Filter"
+msgstr "Filter"
+
+#: ../lib/types/user.inc:85
+#: ../lib/modules/inetOrgPerson.inc:46
+#: ../lib/modules/inetOrgPerson.inc:128
+#: ../lib/modules/inetOrgPerson.inc:279
+#: ../lib/modules/inetOrgPerson.inc:532
+#: ../lib/modules/inetOrgPerson.inc:767
+msgid "First name"
+msgstr "Voornaam"
+
+#: ../lib/modules/inetOrgPerson.inc:46
+#: ../lib/modules/inetOrgPerson.inc:47
+msgid "First name contains invalid characters!"
+msgstr "Voornaam bevat ongeldige tekens!"
+
+#: ../lib/modules/inetOrgPerson.inc:280
+msgid "First name of user. Only letters, - and spaces are allowed."
+msgstr "Voornaam van gebruiker; alleen letters, - en spaties zijn toegestaan."
+
+#: ../lib/modules/kolabUser.inc:123
+msgid "For automatic invitation handling."
+msgstr "Voor automatische uitnodigingshandeling"
+
+#: ../lib/modules/kolabUser.inc:87
+#: ../lib/modules/kolabUser.inc:154
+#: ../lib/modules/kolabUser.inc:200
+#: ../lib/modules/kolabUser.inc:332
+#: ../lib/modules/kolabUser.inc:791
+msgid "Free/Busy interval"
+msgstr "Vrij/bezig interval"
+
+#: ../lib/modules/kolabUser.inc:232
+#: ../lib/modules/kolabUser.inc:233
+msgid "Free/Busy interval must be a number!"
+msgstr "Vrij/bezig interval moet een getal zijn!"
+
+#: ../lib/modules/sambaSamAccount.inc:950
+msgid "Friday"
+msgstr "Vrijdag"
+
+#: ../lib/types/host.inc:85
+#: ../lib/types/group.inc:81
+#: ../lib/types/user.inc:82
+#: ../lib/modules/posixGroup.inc:169
+#: ../lib/modules/posixGroup.inc:374
+#: ../lib/modules/posixGroup.inc:404
+#: ../lib/modules/posixGroup.inc:436
+#: ../lib/modules/posixGroup.inc:457
+#: ../lib/modules/posixGroup.inc:477
+#: ../lib/modules/posixAccount.inc:48
+#: ../lib/modules/posixAccount.inc:1110
+#: ../lib/modules/sambaGroupMapping.inc:314
+msgid "GID number"
+msgstr "GID nummer"
+
+#: ../lib/modules/posixGroup.inc:477
+msgid "GID number has changed. Please select checkbox to change GID number of users and hosts."
+msgstr "GID nummer is veranderd. Selecteer checkbox om GID nummer van gebruikers en hosts te veranderen."
+
+#: ../lib/modules/posixAccount.inc:48
+#, php-format
+msgid "GID number has changed. To keep file ownership you have to run the following command as root: 'find / -gid %s -uid %s -exec chgrp %s {} \\;'"
+msgstr "GID nummer is veranderd. Om de GID van de bestaande bestanden ook aan te passen voer het volgende commando als root uit: 'find / -gid %s -uid %s -exec chrgrp %s {} \\;'"
+
+#: ../lib/modules/posixGroup.inc:484
+msgid "GID number has to be a numeric value!"
+msgstr "GIDnummer moet een nummerieke waarde zijn!"
+
+#: ../lib/modules/posixGroup.inc:330
+msgid "GID ranges for Unix groups"
+msgstr "GID range voor Unix groepen"
+
+#: ../lib/modules/posixAccount.inc:243
+#: ../lib/modules/posixAccount.inc:275
+#: ../lib/modules/posixAccount.inc:345
+#: ../lib/modules/posixAccount.inc:391
+#: ../lib/modules/posixAccount.inc:877
+#: ../lib/modules/posixAccount.inc:1111
+msgid "Gecos"
+msgstr "Gecos"
+
+#: ../lib/modules/posixGroup.inc:184
+#: ../lib/modules/posixAccount.inc:904
+msgid "Generate password"
+msgstr "Genereer wachtwoord"
+
+#: ../lib/modules/kolabUser.inc:177
+msgid "Germany"
+msgstr "Duitsland"
+
+#: ../templates/schema/schema.php:132
+#: ../templates/schema/schema.php:269
+#: ../templates/schema/schema.php:300
+#: ../templates/schema/schema.php:325
+msgid "Go"
+msgstr "Ga"
+
+#: ../lib/modules/quota.inc:102
+#: ../lib/modules/quota.inc:306
+msgid "Grace block period"
+msgstr "Respijtperiode blok"
+
+#: ../lib/modules/quota.inc:103
+msgid "Grace block period. Most filesystems use a fixed maximum value of 7 days."
+msgstr "Respijtperiode blok. Meeste bestandsystemen hanteren een vaststaand maximum van 7 dagen."
+
+#: ../lib/modules/quota.inc:119
+msgid "Grace inode (files) period. Most filesystems use a fixed maximum value of 7 days."
+msgstr "Respijtperiode inode (bestanden). Meeste bestandsystemen hanteren een vaststaand maximum van 7 dagen."
+
+#: ../lib/modules/quota.inc:118
+#: ../lib/modules/quota.inc:310
+msgid "Grace inode period"
+msgstr "Respijtperiode inode"
+
+#: ../lib/types/group.inc:51
+msgid "Group accounts (e.g. Unix and Samba)"
+msgstr "Groepaccounts (bijv. Unix en Samba)"
+
+#: ../lib/types/group.inc:84
+#: ../lib/modules/posixGroup.inc:380
+msgid "Group description"
+msgstr "Omschrijving groep"
+
+#: ../lib/modules/posixGroup.inc:409
+msgid "Group description. If left empty group name will be used."
+msgstr "Omschrijving groep. Indien leeg zal naam van de groep worden gebruikt"
+
+#: ../lib/types/group.inc:83
+msgid "Group member DNs"
+msgstr "Groep lid DN's"
+
+#: ../lib/types/group.inc:82
+#: ../lib/modules/posixGroup.inc:177
+#: ../lib/modules/posixGroup.inc:242
+#: ../lib/modules/posixGroup.inc:386
+#: ../lib/modules/posixGroup.inc:412
+#: ../lib/modules/posixGroup.inc:416
+#: ../lib/modules/posixGroup.inc:458
+msgid "Group members"
+msgstr "Groep leden"
+
+#: ../lib/types/group.inc:80
+#: ../lib/modules/posixGroup.inc:165
+#: ../lib/modules/posixGroup.inc:366
+#: ../lib/modules/posixGroup.inc:400
+#: ../lib/modules/posixGroup.inc:456
+#: ../lib/modules/posixGroup.inc:485
+#: ../lib/modules/posixGroup.inc:486
+#: ../lib/modules/posixGroup.inc:487
+msgid "Group name"
+msgstr "Groep naam"
+
+#: ../lib/modules/posixGroup.inc:487
+#: ../lib/modules/posixGroup.inc:488
+msgid "Group name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !"
+msgstr "Groep naam bevat ongeldige tekens. Geldige tekens zijn :a-z, A-Z, 0-9 en .-_ !"
+
+#: ../lib/modules/posixGroup.inc:486
+msgid "Group name in use. Selected next free group name."
+msgstr "Groep naam is in gebruik. Kies een volgende vrije groep naam."
+
+#: ../lib/modules/posixGroup.inc:401
+msgid "Group name of the group which should be created. Valid characters are: a-z,0-9, .-_. LAM does not allow a number as first character because groupadd also does not allow it. LAM does not allow capital letters A-Z because it can cause several problems. If group name is already used group name will be expanded with a number. The next free number will be used."
+msgstr "Groep naam van de groep zal worden aangemaakt. Geldige tekens zijn: a-z, 0-9, .-_. LAM accepteert geen nummers als eerste karakter omdat groeptoevoeging dit niet toestaat. LAM accepteert geen hoofdletters A-Z omdat het verschillende problemen kan opleveren. Als de groep naam al wordt gebruikt als groep naam zal hier een nummer aan worden toegevoegd. Het eerst volgende vrije nummer zal worden gebruikt."
+
+#: ../lib/modules/posixGroup.inc:392
+#: ../lib/modules/posixGroup.inc:420
+msgid "Group password"
+msgstr "Groep wachtwoord"
+
+#: ../lib/modules/sambaGroupMapping.inc:212
+msgid "Group type"
+msgstr "Groep type"
+
+#: ../lib/types/group.inc:42
+msgid "Groups"
+msgstr "Groepen"
+
+#: ../lib/modules/quota.inc:439
+msgid "Hard block"
+msgstr "Uiterste blok"
+
+#: ../lib/modules/quota.inc:98
+#: ../lib/modules/quota.inc:99
+#: ../lib/modules/quota.inc:305
+#: ../lib/modules/quota.inc:362
+msgid "Hard block limit"
+msgstr "Uiterste blok limiet"
+
+#: ../lib/modules/quota.inc:441
+msgid "Hard inode"
+msgstr "Uiterste inode"
+
+#: ../lib/modules/quota.inc:115
+msgid "Hard inode (files) limit"
+msgstr "Uiterste inode (bestands) limiet"
+
+#: ../lib/modules/quota.inc:114
+#: ../lib/modules/quota.inc:309
+#: ../lib/modules/quota.inc:364
+msgid "Hard inode limit"
+msgstr "Uiterste inode limiet"
+
+#: ../templates/pdfedit/pdfpage.php:414
+msgid "Headline"
+msgstr "Kopregel"
+
+#: ../templates/ou_edit.php:172
+#: ../templates/ou_edit.php:185
+#: ../templates/masscreate.php:146
+#: ../templates/masscreate.php:159
+#: ../templates/masscreate.php:293
+#: ../templates/config/profmanage.php:183
+#: ../templates/config/profmanage.php:235
+#: ../templates/config/profmanage.php:265
+#: ../templates/config/profmanage.php:299
+#: ../templates/config/profmanage.php:347
+#: ../templates/config/profmanage.php:375
+#: ../templates/config/profmanage.php:408
+#: ../templates/config/confmodules.php:117
+#: ../templates/config/confmain.php:162
+#: ../templates/config/confmain.php:176
+#: ../templates/config/confmain.php:198
+#: ../templates/config/confmain.php:219
+#: ../templates/config/confmain.php:278
+#: ../templates/config/confmain.php:323
+#: ../templates/config/confmain.php:342
+#: ../templates/config/confmain.php:351
+#: ../templates/config/confmain.php:369
+#: ../templates/config/confmain.php:383
+#: ../templates/config/conftypes.php:197
+#: ../templates/config/conftypes.php:213
+#: ../templates/config/conflogin.php:126
+#: ../templates/pdfedit/pdfpage.php:749
+#: ../templates/profedit/profilepage.php:193
+#: ../templates/profedit/profilepage.php:213
+#: ../templates/profedit/profilepage.php:244
+#: ../lib/lists.inc:327
+#: ../lib/modules.inc:655
+msgid "Help"
+msgstr "Help"
+
+#: ../templates/tools.php:83
+msgid "Here you can browse LDAP object classes and attributes."
+msgstr "Hier kun je LDAP objectclasses en -attributen doorkijken."
+
+#: ../templates/masscreate.php:87
+msgid "Here you can create multiple accounts by providing a CSV file."
+msgstr "Hier kunt u meerdere accounts aanmaken door een CSV bestand op te geven."
+
+#: ../lib/modules/posixAccount.inc:329
+msgid "Here you can enter a list of additional group memberships. The group names are separated by commas."
+msgstr "Hier kunt u een lijst opgeven van additionele groepsleden. De groepsnamen worden gescheiden met een komma."
+
+#: ../help/help.inc:134
+msgid "Here you can input small filter expressions (e.g. 'value' or 'v*'). LAM will filter case-insensitive."
+msgstr "Hier kan een kleine filter expressie (bijv. 'waarde' of 'w*'). LAM zal hoofdletter ongevoelig filteren."
+
+#: ../help/help.inc:147
+msgid "Here you can load an account profile to set default settings for your account. The \"default\" profile is automatically loaded for new accounts."
+msgstr "Hier kan een account profiel geladen worden dat als default waarde zal gelden voor je account. Het \"default\" profiel wordt  auatomatisch geladen voor nieuwe accounts."
+
+#: ../templates/tools.php:55
+msgid "Here you can manage your account profiles."
+msgstr "Hier kunt u uw account profielen beheren."
+
+#: ../help/help.inc:151
+msgid "Here you can select a PDF structure and export the account to a PDF file."
+msgstr "Hier kunt u een PDF struktuur selecteren en een account uitvoeren naar een PDF bestand."
+
+#: ../help/help.inc:115
+msgid "Here you can select which plugins you want to use for account management."
+msgstr "Hier kan aangegeven worden welke plugin gebruikt wordt voor het beheer van de accounts."
+
+#: ../templates/tree/edit.php:103
+msgid "Hide internal attributes"
+msgstr "Verberg interne attributen"
+
+#: ../templates/tree/edit.php:120
+msgid "Hint: To delete an attribute, empty the text field and click save."
+msgstr "Hint: om attributen te verwijderen, leeg het tekst veld en druk op bewaren."
+
+#: ../lib/modules/posixAccount.inc:378
+msgid "Hold the CTRL-key to (de)select multiple groups."
+msgstr "Om meerdere groepen te (de)selecteren, houdt de CTRL-knop ingedrukt."
+
+#: ../lib/types/user.inc:87
+#: ../lib/modules/posixAccount.inc:43
+#: ../lib/modules/posixAccount.inc:71
+#: ../lib/modules/posixAccount.inc:72
+#: ../lib/modules/posixAccount.inc:214
+#: ../lib/modules/posixAccount.inc:332
+#: ../lib/modules/posixAccount.inc:336
+#: ../lib/modules/posixAccount.inc:353
+#: ../lib/modules/posixAccount.inc:712
+#: ../lib/modules/posixAccount.inc:891
+#: ../lib/modules/posixAccount.inc:1038
+#: ../lib/modules/posixAccount.inc:1114
+msgid "Home directory"
+msgstr "Homedirectory"
+
+#: ../lib/modules/posixAccount.inc:43
+#, php-format
+msgid "Home directory changed. To keep home directory you have to run the following command as root: 'mv %s %s'"
+msgstr "De homedirectory is veranderd. Om de homedirectory te bewaren moet u de volgende commando uitvoeren: 'mv %s %s'"
+
+#: ../lib/modules/sambaAccount.inc:138
+#: ../lib/modules/sambaAccount.inc:269
+#: ../lib/modules/sambaAccount.inc:370
+#: ../lib/modules/sambaAccount.inc:748
+#: ../lib/modules/sambaAccount.inc:849
+#: ../lib/modules/sambaSamAccount.inc:211
+#: ../lib/modules/sambaSamAccount.inc:336
+#: ../lib/modules/sambaSamAccount.inc:839
+#: ../lib/modules/sambaSamAccount.inc:1047
+#: ../lib/modules/sambaSamAccount.inc:1191
+msgid "Home drive"
+msgstr "Home station"
+
+#: ../lib/modules/sambaAccount.inc:61
+#: ../lib/modules/sambaAccount.inc:62
+#: ../lib/modules/sambaAccount.inc:144
+#: ../lib/modules/sambaAccount.inc:275
+#: ../lib/modules/sambaAccount.inc:373
+#: ../lib/modules/sambaAccount.inc:751
+#: ../lib/modules/sambaAccount.inc:848
+#: ../lib/modules/sambaSamAccount.inc:76
+#: ../lib/modules/sambaSamAccount.inc:77
+#: ../lib/modules/sambaSamAccount.inc:214
+#: ../lib/modules/sambaSamAccount.inc:342
+#: ../lib/modules/sambaSamAccount.inc:842
+#: ../lib/modules/sambaSamAccount.inc:1053
+#: ../lib/modules/sambaSamAccount.inc:1190
+msgid "Home path"
+msgstr "Home pad"
+
+#: ../lib/modules/sambaAccount.inc:61
+#: ../lib/modules/sambaSamAccount.inc:76
+#: ../lib/modules/sambaSamAccount.inc:78
+msgid "Home path is invalid."
+msgstr "Home pad is ongeldig."
+
+#: ../lib/modules/posixAccount.inc:71
+#: ../lib/modules/posixAccount.inc:73
+msgid "Homedirectory contains invalid characters."
+msgstr "Home directory bevat ongeldige tekens."
+
+#: ../lib/types/host.inc:51
+msgid "Host accounts (e.g. Samba)"
+msgstr "Host account (bijv. Samba)"
+
+#: ../lib/types/host.inc:83
+msgid "Host description"
+msgstr "Host omschrijving"
+
+#: ../lib/modules/account.inc:74
+#: ../lib/modules/posixAccount.inc:392
+#: ../lib/modules/posixAccount.inc:400
+msgid "Host description. If left empty host name will be used."
+msgstr "Host omschrijving. Indien leeg gelaten zal host naam worden gebruikt."
+
+#: ../lib/modules/account.inc:83
+msgid "Host list"
+msgstr "Host lijst"
+
+#: ../lib/types/host.inc:80
+#: ../lib/types/host.inc:81
+#: ../lib/modules/posixAccount.inc:85
+#: ../lib/modules/posixAccount.inc:86
+#: ../lib/modules/posixAccount.inc:88
+#: ../lib/modules/posixAccount.inc:254
+#: ../lib/modules/posixAccount.inc:387
+msgid "Host name"
+msgstr "Host naam"
+
+#: ../lib/modules/posixAccount.inc:92
+msgid "Host name already exists!"
+msgstr "Host naam bestaat al!"
+
+#: ../lib/modules/posixAccount.inc:90
+msgid "Host name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !"
+msgstr "Host naam bevat ongeldige tekens. Geldige tekens zijn: a-z, A-Z, 0-9 and .-_ !"
+
+#: ../lib/modules/posixAccount.inc:86
+msgid "Host name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ ! Host name must end with $ !"
+msgstr "Host naam bevat ongeldige tekens. Geldige tekens zijn: a-z, A-Z, 0-9 and .-_ ! Host naam moet eindigen op $ !"
+
+#: ../lib/modules/posixAccount.inc:88
+msgid "Host name in use. Selected next free host name."
+msgstr "Host naam is in gebruik. Selecteer een nieuwe vrije naam."
+
+#: ../lib/modules/posixAccount.inc:388
+msgid "Host name of the host which should be created. Valid characters are: a-z,0-9, .-_$. LAM does not allow a number as first character because useradd also does not allow it. LAM does not allow capital letters A-Z because it can cause several problems. Host names are always ending with $. If last character is not $ it will be added. If host name is already used host name will be expanded with a number. The next free number will be used."
+msgstr "Host naam van de host welke moet worden aangemaakt. Geldige tekens zijn: a-z,0-9, .-_$. LAM staat geen nummer als eerste teken toe omdat useradd dit ook niet toestaat. LAM accepteert geen hoofdletters A-Z omdat het diverse problemen kan veroorzaken. Host namen eindigen altijd op $. Als laatste karakter niet eindigt op  $ zal deze worden toegevoegd. Als de hos naam al in gebruik is zal er een nummer aan worden toegevoegd. Het eerst volgende vrije nummer zal worden gebruikt."
+
+#: ../lib/types/host.inc:42
+#: ../lib/modules/posixAccount.inc:66
+#: ../lib/modules/posixAccount.inc:67
+#: ../lib/modules/posixAccount.inc:69
+#: ../lib/modules/posixAccount.inc:146
+msgid "Hosts"
+msgstr "Hosts"
+
+#: ../lib/modules/posixGroup.inc:480
+#: ../lib/modules/posixGroup.inc:608
+#: ../lib/modules/posixAccount.inc:76
+#: ../lib/modules/posixAccount.inc:659
+msgid "ID is already in use"
+msgstr "ID wordt al gebruikt"
+
+#: ../lib/modules/posixGroup.inc:478
+#: ../lib/modules/posixGroup.inc:479
+#: ../lib/modules/posixGroup.inc:480
+#: ../lib/modules/posixGroup.inc:604
+#: ../lib/modules/posixGroup.inc:608
+#: ../lib/modules/posixAccount.inc:74
+#: ../lib/modules/posixAccount.inc:75
+#: ../lib/modules/posixAccount.inc:76
+#: ../lib/modules/posixAccount.inc:655
+#: ../lib/modules/posixAccount.inc:659
+msgid "ID-Number"
+msgstr "ID-nummer"
+
+#: ../templates/masscreate.php:150
+#: ../templates/masscreate.php:163
+#: ../templates/masscreate.php:298
+msgid "Identifier"
+msgstr "Identificeerder"
+
+#: ../lib/modules/sambaAccount.inc:342
+#: ../lib/modules/sambaSamAccount.inc:183
+msgid "If checked Unix password will also be used as Samba password."
+msgstr "Indien aangevinkt zal het Unix wachtwoord ook gebruikt worden als Samba wachtwoord."
+
+#: ../lib/modules/posixGroup.inc:429
+#: ../lib/modules/posixAccount.inc:366
+msgid "If checked account will be deactivated by putting a \"!\" before the encrypted password."
+msgstr "Indien aangevinkt zal het account deactiveerd worden door een \"!\" voor het versleutelde wachtwoord te plaatsen."
+
+#: ../lib/modules/sambaAccount.inc:360
+#: ../lib/modules/sambaSamAccount.inc:201
+msgid "If checked account will be deactivated. (Setting D-Flag)"
+msgstr "Indien aangevinkt zal het account gedeactiveerd worden (middels D-vlag)"
+
+#: ../lib/modules/posixGroup.inc:425
+#: ../lib/modules/sambaAccount.inc:348
+#: ../lib/modules/sambaSamAccount.inc:189
+#: ../lib/modules/posixAccount.inc:362
+msgid "If checked no password will be used."
+msgstr "Indien aangevinkt zal geen wachtwoord gebruikt worden."
+
+#: ../lib/modules/sambaAccount.inc:354
+#: ../lib/modules/sambaSamAccount.inc:195
+msgid "If checked password does not expire. (Setting X-Flag)"
+msgstr "Indien aangevinkt zal wachtwoord niet verlopen (middels X-vlag)"
+
+#: ../lib/modules/posixGroup.inc:405
+msgid "If empty GID number will be generated automaticly depending on your configuration settings."
+msgstr "Als het GID nummer leeg is, zal deze automatisch gegenereerd worden afhankelijk van uw configuratie instellingen."
+
+#: ../lib/modules/posixAccount.inc:321
+msgid "If empty UID number will be generated automaticly."
+msgstr "Als UID nummer leeg is zal deze automatisch gegenereerd worden."
+
+#: ../lib/modules/sambaAccount.inc:345
+#: ../lib/modules/sambaSamAccount.inc:186
+msgid "If set to \"true\" Unix password will also be used as Samba password."
+msgstr "Indien ingesteld als \"truer\" zal het Unix wachtwoord ook worden gebruikt als Samba wachtwoord."
+
+#: ../lib/modules/sambaAccount.inc:363
+#: ../lib/modules/sambaSamAccount.inc:204
+msgid "If set to \"true\" account will be deactivated. (Setting D-Flag)"
+msgstr "Indien ingesteld als \"true\" zal het account worden gedeactiveerd. (Instelling D-vlag)"
+
+#: ../lib/modules/sambaAccount.inc:351
+#: ../lib/modules/sambaSamAccount.inc:192
+msgid "If set to \"true\" no password will be used."
+msgstr "Indien ingesteld als \"true\" , zal er geen wachtwoord worden gebruikt."
+
+#: ../lib/modules/sambaAccount.inc:357
+#: ../lib/modules/sambaSamAccount.inc:198
+msgid "If set to \"true\" password does not expire. (Setting X-Flag)"
+msgstr "Indien ingesteld als \"true\" zal het wachtwoord niet verlopen. (Instelling X-vlag)"
+
+#: ../lib/modules/sambaSamAccount.inc:240
+msgid "If you leave this empty LAM will use: uidNumber*2 + sambaAlgorithmicRidBase."
+msgstr "Als dit veld leeg blijft zal LAM de volgende waarde gebruiken: uid nummer*2 + samba algoritmeRIDBase"
+
+#: ../help/help.inc:109
+msgid "If you want to change the current preferences password, please enter it here."
+msgstr "Als u het huidige preferentie wachtwoord wilt wijzigen, voert hetdan  hier in."
+
+#: ../help/help.inc:128
+msgid "If you want to change your master configuration password, please enter it here."
+msgstr "Als u het masterconfiguratie wachtwoord wilt wijzigen, voer het dan hier in."
+
+#: ../lib/modules/sambaAccount.inc:395
+msgid "If you want to create domain administrators or other special users use this option."
+msgstr "Als u een domeinbeheerder of andere speciale gebruikers wilt aanmaken gebruik dan deze optie."
+
+#: ../lib/modules/sambaAccount.inc:389
+#: ../lib/modules/sambaGroupMapping.inc:288
+msgid "If you want to use a well known RID you can selcet a well known group."
+msgstr "Als u een bekende RID wilt gebruiken, kunt u een bekende groep selecteren."
+
+#: ../templates/tree/export_form.php:119
+msgid "Include system attributes"
+msgstr "Sluit systeem attributen in"
+
+#: ../templates/schema/schema.php:400
+#: ../templates/schema/schema.php:421
+msgid "Inherited from"
+msgstr "Geërfd van"
+
+#: ../templates/schema/schema.php:161
+#: ../templates/schema/schema.php:357
+msgid "Inherits from"
+msgstr "Erft van"
+
+#: ../lib/modules/quota.inc:51
+msgid "Inode hard quota"
+msgstr "Uiterste inode quotum"
+
+#: ../lib/modules/quota.inc:51
+#: ../lib/modules/quota.inc:52
+msgid "Inode hard quota contains invalid characters. Only natural numbers are allowed."
+msgstr "Uiterste inode quotum bevat ongeldige tekens; alleen getallen zijn toegestaan."
+
+#: ../lib/modules/quota.inc:55
+msgid "Inode quota"
+msgstr "Inode quotum"
+
+#: ../lib/modules/quota.inc:49
+msgid "Inode soft quota"
+msgstr "Zachte inode quotum"
+
+#: ../lib/modules/quota.inc:49
+#: ../lib/modules/quota.inc:50
+msgid "Inode soft quota contains invalid characters. Only natural numbers are allowed."
+msgstr "Zachte inode quotum bevat ongeldig tekens; alleen getallen zijn toegestaan."
+
+#: ../lib/modules/quota.inc:55
+#: ../lib/modules/quota.inc:56
+msgid "Inode soft quota must be smaller than inode hard quota."
+msgstr "Zachte inode quotum moet kleiner zijn dat de uiterste inode quotum."
+
+#: ../lib/modules/sambaAccount.inc:62
+#: ../lib/modules/sambaAccount.inc:63
+#: ../lib/modules/sambaSamAccount.inc:77
+msgid "Inserted user or group name in home path."
+msgstr "Ingevoegde gebruiker of groep naam in home pad."
+
+#: ../lib/modules/sambaAccount.inc:68
+#: ../lib/modules/sambaSamAccount.inc:83
+msgid "Inserted user or group name in logon script."
+msgstr "Ingevoegde gebruiker of groep in loginscript."
+
+#: ../lib/modules/sambaAccount.inc:65
+#: ../lib/modules/sambaAccount.inc:66
+#: ../lib/modules/sambaSamAccount.inc:80
+msgid "Inserted user or group name in profile path."
+msgstr "Ingevoegde gebruiker of groep naam in profielpad."
+
+#: ../lib/modules/sambaGroupMapping.inc:72
+msgid "Invalid Account"
+msgstr "Ongeldig account"
+
+#: ../templates/massBuildAccounts.php:166
+msgid "Invalid RDN attribute!"
+msgstr "Ongeldig RDN attribuut!"
+
+#: ../lib/modules/posixGroup.inc:200
+#: ../lib/modules/posixGroup.inc:432
+#: ../lib/modules/posixAccount.inc:369
+#: ../lib/modules/posixAccount.inc:920
+msgid "Invalid password"
+msgstr "Ongeldig wachtwoord"
+
+#: ../lib/status.inc:65
+msgid "Invalid/Missing Message type"
+msgstr "Ongeldig/ontbrekend type boodschap"
+
+#: ../lib/modules/kolabUser.inc:122
+#: ../lib/modules/kolabUser.inc:169
+#: ../lib/modules/kolabUser.inc:370
+#: ../lib/modules/kolabUser.inc:803
+msgid "Invitation policy"
+msgstr "Invitatiebeleid"
+
+#: ../lib/modules/kolabUser.inc:126
+msgid "Invitation policy list"
+msgstr "Lijst van invitatiebeleid"
+
+#: ../lib/modules/posixGroup.inc:478
+#: ../lib/modules/posixAccount.inc:75
+msgid "It is possible that this ID-number is reused. This can cause several problems because files with old permissions might still exist. To avoid this warning set maxUID to a higher value."
+msgstr "Het is mogelijk dat dit ID-nummer wordt hergebruikt. Dit kan verschillende problemen veroorzaken omdat bestanden met oude permissies nog kunnen bestaan. Om dit te voorkomen kunt u de maxUID een hogere waarde geven."
+
+#: ../lib/modules/inetOrgPerson.inc:64
+#: ../lib/modules/inetOrgPerson.inc:102
+#: ../lib/modules/inetOrgPerson.inc:147
+#: ../lib/modules/inetOrgPerson.inc:275
+#: ../lib/modules/inetOrgPerson.inc:611
+#: ../lib/modules/inetOrgPerson.inc:766
+msgid "Job title"
+msgstr "Functieomschrijving"
+
+#: ../lib/modules/inetOrgPerson.inc:276
+msgid "Job title of user: President, department manager, ..."
+msgstr "Functieomschrijving van de gebruiker: directeur, bedrijfleider, ...."
+
+#: ../templates/schema/schema.php:259
+msgid "Jump to a matching rule"
+msgstr "Verspring naar een correspondentie regel"
+
+#: ../templates/schema/schema.php:118
+msgid "Jump to an attribute type"
+msgstr "Verspring naar een attribuut type"
+
+#: ../templates/schema/schema.php:312
+#: ../templates/schema/schema.php:362
+#: ../templates/schema/schema.php:377
+msgid "Jump to an object class"
+msgstr "Verspring naar een object klasse"
+
+#: ../lib/modules/kolabUser.inc:71
+msgid "Kolab"
+msgstr "Kolab"
+
+#: ../templates/tree/delete_form.php:99
+#, php-format
+msgid "LAM can recursively delete this entry and all of its children. See below for a list of all the entries that this action will delete. Do you want to do this?"
+msgstr "LAM kan deze entree en alle onderliggende gegevens recursief verwijderen. Hieronder staat aan een lijst met alle entrees die deze actie kan verwijderen. Doorgaan?"
+
+#: ../templates/massBuildAccounts.php:190
+msgid "LAM has checked your input and is now ready to create the accounts."
+msgstr "LAM heeft uw invoer gecontroleerd en is nu klaar om de accounts te maken."
+
+#: ../lib/modules/posixGroup.inc:441
+#: ../lib/modules/posixAccount.inc:317
+msgid "LAM supports CRYPT, SHA, SSHA, MD5 and SMD5 to generate the hash value of passwords. SSHA and CRYPT are the most common but CRYPT does not support passwords greater than 8 letters. We do not recommend to use plain text passwords."
+msgstr "LAM ondersteunt CRYPT, SHA, SSHA, MD5 en SMD5 om de hash waarde van wachtwoorden te genereren. SSHA en CRYPT zijn de meeste gebruikte maar CRYPT ondersteunt geen wachtwoorden langer dan 8 letters. Wij raden  het gebruik van niet versleutelde wachtwoorden af."
+
+#: ../templates/tree/create.php:180
+#: ../templates/massDoUpload.php:86
+#, php-format
+msgid "LAM was unable to create account %s! An LDAP error occured."
+msgstr "LAM kan geen account %s maken! Een LDAP fout is opgetreden."
+
+#: ../lib/modules/sambaGroupMapping.inc:367
+msgid "LAM was unable to find a Samba 3 domain with this name!"
+msgstr "LAM heeft geen Samba 3 domein gevonden met deze naam!"
+
+#: ../lib/modules/sambaSamAccount.inc:102
+msgid "LAM was unable to find a domain with this name!"
+msgstr "LAM heeft geen domein gevonden met deze naam!"
+
+#: ../lib/modules/posixAccount.inc:93
+msgid "LAM was unable to find a group with this name!"
+msgstr "Lam heeft geen groep gevonden met deze naam!"
+
+#: ../lib/modules/posixAccount.inc:1473
+#, php-format
+msgid "LAM was unable to modify group memberships for group: %s"
+msgstr "Lam was niet in staat de groepsleden te veranderen voor groep: %s"
+
+#: ../templates/profedit/profilepage.php:174
+msgid "LDAP"
+msgstr "LDAP"
+
+#: ../templates/config/confmodules.php:71
+#: ../templates/config/confsave.php:68
+#: ../templates/config/confmain.php:143
+#: ../templates/config/conftypes.php:153
+msgid "LDAP Account Manager Configuration"
+msgstr "LDAP account manager configuratie"
+
+#: ../lib/lists.inc:639
+msgid "LDAP Search failed! Please check your preferences."
+msgstr "LDAP zoekopdracht is mislukt! Controleert u a.u.b uw instellingen."
+
+#: ../templates/config/conftypes.php:80
+msgid "LDAP Suffix is invalid!"
+msgstr "LDAP achtervoegsel is ongeldig!"
+
+#: ../templates/login.php:387
+msgid "LDAP error, server says:"
+msgstr "LDAP fout, server meldt:"
+
+#: ../lib/modules.inc:993
+msgid "LDAP operation successful."
+msgstr "LDAP operatie is succesvol."
+
+#: ../templates/login.php:282
+msgid "LDAP server"
+msgstr "LDAP server"
+
+#: ../lib/lists.inc:625
+msgid "LDAP sizelimit exceeded, not all entries are shown."
+msgstr "Limiet aantal entrees dat getoond kan worden is overschreven; niet alle gegevens worden getoond."
+
+#: ../templates/config/conftypes.php:193
+#: ../templates/profedit/profilepage.php:178
+#: ../help/help.inc:72
+msgid "LDAP suffix"
+msgstr "LDAP achtervoegsel"
+
+#: ../templates/massDoUpload.php:122
+msgid "LDAP upload has finished"
+msgstr "LDAP upload is voltooid"
+
+#: ../templates/massDoUpload.php:70
+msgid "LDAP upload in progress. Please wait."
+msgstr "LDAP upload is bezig. S.v.p. wachten."
+
+#: ../lib/export.inc:441
+#, php-format
+msgid "LDIF Export for: %s"
+msgstr "LDIF uitvoer voor: %s"
+
+#: ../templates/login.php:231
+msgid "Language"
+msgstr "Taal"
+
+#: ../templates/config/confsave.php:108
+msgid "Language is not defined!"
+msgstr "Taal is niet gedefinieerd!"
+
+#: ../templates/config/confmain.php:286
+msgid "Language settings"
+msgstr "Taal instellingen"
+
+#: ../lib/types/user.inc:86
+#: ../lib/modules/inetOrgPerson.inc:48
+#: ../lib/modules/inetOrgPerson.inc:134
+#: ../lib/modules/inetOrgPerson.inc:283
+#: ../lib/modules/inetOrgPerson.inc:536
+#: ../lib/modules/inetOrgPerson.inc:768
+msgid "Last name"
+msgstr "Achternaam"
+
+#: ../lib/modules/inetOrgPerson.inc:48
+#: ../lib/modules/inetOrgPerson.inc:49
+msgid "Last name contains invalid characters!"
+msgstr "Achternaam bevat ongeldige tekens!"
+
+#: ../lib/modules/inetOrgPerson.inc:284
+msgid "Last name of user. Only letters, - and spaces are allowed."
+msgstr "Achternaam van gebruiker. Alleen letters, - en spaties zijn toegestaan."
+
+#: ../lib/modules/shadowAccount.inc:307
+msgid "Last password change"
+msgstr "Laatste wachtwoord verandering"
+
+#: ../templates/tree/export_form.php:147
+msgid "Line ends"
+msgstr "Regel eindigt"
+
+#: ../templates/config/conftypes.php:209
+#: ../help/help.inc:84
+msgid "List attributes"
+msgstr "Lijstattributen"
+
+#: ../templates/config/conftypes.php:87
+msgid "List attributes are invalid!"
+msgstr "Ljstattributen lijst zijn ongeldig!"
+
+#: ../lib/modules/sambaAccount.inc:383
+#: ../lib/modules/sambaSamAccount.inc:224
+msgid "List of Samba workstations the user is allowed to login. Empty means every workstation."
+msgstr "Lijst van Samba werkstations waarop gebruiker mag inloggen. Leeg betekent op elke werkstation."
+
+#: ../templates/config/confsave.php:92
+msgid "List of admin users is empty or invalid!"
+msgstr "Lijst van beheerders  is leeg of ongeldig!"
+
+#: ../templates/tree/delete_form.php:129
+msgid "List of entries to be deleted:"
+msgstr "Lijst met entrees die verwijderd gaan worden:"
+
+#: ../templates/config/confmain.php:365
+msgid "List of valid users"
+msgstr "Lijst van geldige gebruikers"
+
+#: ../templates/config/confmain.php:261
+msgid "List settings"
+msgstr "Lijst instellingen"
+
+#: ../lib/modules.inc:1039
+#: ../lib/modules.inc:1042
+#: ../help/help.inc:146
+msgid "Load profile"
+msgstr "Load profiel"
+
+#: ../lib/modules/sambaGroupMapping.inc:69
+msgid "Local Group"
+msgstr "Lokale Groep"
+
+#: ../lib/modules/inetLocalMailRecipient.inc:60
+#: ../lib/modules/inetLocalMailRecipient.inc:199
+msgid "Local address"
+msgstr "Lokaal adres"
+
+#: ../lib/modules/inetLocalMailRecipient.inc:64
+#: ../lib/modules/inetLocalMailRecipient.inc:97
+#: ../lib/modules/inetLocalMailRecipient.inc:361
+msgid "Local address list"
+msgstr "Lokaal adreslijst"
+
+#: ../lib/modules/posixGroup.inc:205
+#: ../lib/modules/posixAccount.inc:235
+#: ../lib/modules/posixAccount.inc:925
+#: ../lib/modules/posixAccount.inc:1050
+msgid "Lock password"
+msgstr "Blokkeer wachtwoord"
+
+#: ../templates/login.php:257
+#: ../templates/config/conflogin.php:56
+#: ../help/help.inc:58
+msgid "Login"
+msgstr "Login"
+
+#: ../lib/types/user.inc:88
+#: ../lib/modules/posixAccount.inc:221
+#: ../lib/modules/posixAccount.inc:373
+#: ../lib/modules/posixAccount.inc:931
+#: ../lib/modules/posixAccount.inc:1042
+#: ../lib/modules/posixAccount.inc:1116
+msgid "Login shell"
+msgstr "Login shell"
+
+#: ../templates/pdfedit/pdfpage.php:425
+msgid "Logo"
+msgstr "Logo"
+
+#: ../lib/modules/sambaSamAccount.inc:103
+#: ../lib/modules/sambaSamAccount.inc:248
+#: ../lib/modules/sambaSamAccount.inc:251
+#: ../lib/modules/sambaSamAccount.inc:380
+#: ../lib/modules/sambaSamAccount.inc:895
+#: ../lib/modules/sambaSamAccount.inc:1088
+msgid "Logon hours"
+msgstr "Logonuren"
+
+#: ../lib/modules/sambaAccount.inc:67
+#: ../lib/modules/sambaAccount.inc:68
+#: ../lib/modules/sambaAccount.inc:156
+#: ../lib/modules/sambaAccount.inc:287
+#: ../lib/modules/sambaAccount.inc:379
+#: ../lib/modules/sambaAccount.inc:757
+#: ../lib/modules/sambaAccount.inc:850
+#: ../lib/modules/sambaSamAccount.inc:82
+#: ../lib/modules/sambaSamAccount.inc:83
+#: ../lib/modules/sambaSamAccount.inc:220
+#: ../lib/modules/sambaSamAccount.inc:354
+#: ../lib/modules/sambaSamAccount.inc:848
+#: ../lib/modules/sambaSamAccount.inc:1065
+#: ../lib/modules/sambaSamAccount.inc:1192
+msgid "Logon script"
+msgstr "Logonscript"
+
+#: ../lib/modules/sambaAccount.inc:67
+#: ../lib/modules/sambaAccount.inc:69
+#: ../lib/modules/sambaSamAccount.inc:82
+#: ../lib/modules/sambaSamAccount.inc:84
+msgid "Logon script is invalid!"
+msgstr "Logonscript is ongeldig!"
+
+#: ../templates/main_header.php:66
+#: ../templates/logout.php:62
+msgid "Logout"
+msgstr "Logout"
+
+#: ../lib/modules/ieee802device.inc:50
+#: ../lib/modules/ieee802device.inc:56
+#: ../lib/modules/ieee802device.inc:67
+#: ../lib/modules/ieee802device.inc:137
+msgid "MAC address"
+msgstr "MAC adres"
+
+#: ../lib/modules/ieee802device.inc:60
+msgid "MAC address list"
+msgstr "MAC adresljist"
+
+#: ../lib/modules/ieee802device.inc:254
+msgid "MAC address(es)"
+msgstr "MAC adres(sen)"
+
+#: ../lib/types/mailAlias.inc:42
+#: ../lib/modules/nisMailAlias.inc:54
+msgid "Mail aliases"
+msgstr "Mail aliassen"
+
+#: ../lib/modules/kolabUser.inc:91
+#: ../lib/modules/kolabUser.inc:158
+#: ../lib/modules/kolabUser.inc:206
+#: ../lib/modules/kolabUser.inc:327
+#: ../lib/modules/kolabUser.inc:787
+msgid "Mail quota"
+msgstr "Mail quota"
+
+#: ../lib/modules/kolabUser.inc:234
+#: ../lib/modules/kolabUser.inc:235
+msgid "Mail quota must be a number!"
+msgstr "Mail quota moet een getal zijn!"
+
+#: ../lib/modules/inetLocalMailRecipient.inc:50
+msgid "Mail routing"
+msgstr "Mail routereing"
+
+#: ../lib/modules/kolabUser.inc:79
+#: ../lib/modules/inetLocalMailRecipient.inc:68
+#: ../lib/modules/inetLocalMailRecipient.inc:74
+#: ../lib/modules/inetLocalMailRecipient.inc:103
+#: ../lib/modules/inetLocalMailRecipient.inc:193
+#: ../lib/modules/inetLocalMailRecipient.inc:364
+msgid "Mail server"
+msgstr "Mail server"
+
+#: ../lib/modules/kolabUser.inc:150
+#: ../lib/modules/kolabUser.inc:181
+#: ../lib/modules/kolabUser.inc:315
+#: ../lib/modules/kolabUser.inc:321
+#: ../lib/modules/kolabUser.inc:783
+msgid "Mailbox home server"
+msgstr "Mailbox home server"
+
+#: ../lib/modules/kolabUser.inc:230
+msgid "Mailbox home server name is empty!"
+msgstr "Mailbox home server naam is leeg!"
+
+#: ../lib/modules/kolabUser.inc:228
+#: ../lib/modules/kolabUser.inc:229
+msgid "Mailbox home server name is invalid!"
+msgstr "Mailbox home server naam is ongeldig!"
+
+#: ../lib/types/mailAlias.inc:51
+msgid "Mailing aliases (e.g. NIS mail aliases)"
+msgstr "Mailing aliassen (bijv. NIS mail aliassen)"
+
+#: ../lib/modules/nisMailAlias.inc:63
+msgid "Mails to this name are forwarded to the recipients."
+msgstr "E-mail naar deze  naam worden doorgestuurd naar de ontvangers."
+
+#: ../templates/pdfedit/pdfpage.php:616
+#: ../lib/modules.inc:945
+#: ../lib/modules.inc:973
+msgid "Main"
+msgstr "Hoofd"
+
+#: ../templates/config/conflogin.php:137
+msgid "Manage profiles"
+msgstr "Beheer profielen"
+
+#: ../lib/modules/inetOrgPerson.inc:159
+#: ../lib/modules/inetOrgPerson.inc:291
+#: ../lib/modules/inetOrgPerson.inc:642
+#: ../lib/modules/inetOrgPerson.inc:770
+msgid "Manager"
+msgstr "Beheerder"
+
+#: ../templates/tools.php:69
+msgid "Manages OU objects in your LDAP tree."
+msgstr "Beheert OU objecten in de LDAP boom"
+
+#: ../lib/modules/kolabUser.inc:53
+msgid "Manual"
+msgstr "Handmatig"
+
+#: ../lib/modules/kolabUser.inc:55
+msgid "Manual if conflicts"
+msgstr "Handmatig indien conflicteert"
+
+#: ../lib/modules/kolabUser.inc:419
+#: ../lib/modules/kolabUser.inc:595
+msgid "Mark account for deletion"
+msgstr "Markeer account om te verwijdern"
+
+#: ../lib/modules/kolabUser.inc:162
+msgid "Mark for deletion"
+msgstr "Markeer om te verwijderen"
+
+#: ../templates/config/profmanage.php:398
+msgid "Master Password:"
+msgstr "Master wachtwoord:"
+
+#: ../help/help.inc:129
+msgid "Master password"
+msgstr "Master wachtwoord"
+
+#: ../templates/config/profmanage.php:68
+msgid "Master password is wrong!"
+msgstr "Master wachtwoord is fout!"
+
+#: ../templates/config/profmanage.php:128
+msgid "Master passwords are different or empty!"
+msgstr "Masterwachtworden zijn verschillend of leeg!"
+
+#: ../templates/schema/schema.php:272
+msgid "Matching rule OID"
+msgstr "Corresponderende OID regel"
+
+#: ../templates/schema/schema.php:81
+#: ../templates/schema/schema.php:82
+msgid "Matching rules"
+msgstr "Correspondentie regels"
+
+#: ../templates/config/confsave.php:102
+msgid "Max list entries is invalid!"
+msgstr "Maximum lijstentrees is niet valide!"
+
+#: ../lib/modules/posixGroup.inc:316
+#: ../lib/modules/posixGroup.inc:482
+#: ../lib/modules/posixGroup.inc:483
+msgid "Maximum GID number"
+msgstr "Maximum GID nummer"
+
+#: ../lib/modules/posixGroup.inc:333
+msgid "Maximum GID number for Unix groups"
+msgstr "Maximum GID nummer voor Unix groepen"
+
+#: ../lib/modules/posixGroup.inc:482
+msgid "Maximum GID number is invalid or empty!"
+msgstr "Maximum GID nummer is ongeldig of leeg!"
+
+#: ../lib/modules/posixGroup.inc:483
+msgid "Maximum GID number must be greater than minimum GID number!"
+msgstr "Maximum GID nummer moet groter zijn dan minimum GID nummer!"
+
+#: ../lib/modules/posixAccount.inc:65
+#: ../lib/modules/posixAccount.inc:67
+#: ../lib/modules/posixAccount.inc:68
+#: ../lib/modules/posixAccount.inc:69
+#: ../lib/modules/posixAccount.inc:140
+#: ../lib/modules/posixAccount.inc:149
+msgid "Maximum UID number"
+msgstr "Maximum UID number"
+
+#: ../lib/modules/posixAccount.inc:170
+msgid "Maximum UID number for Unix accounts (hosts)"
+msgstr "Maximum UID nummer voor Unix accounts (hosts)"
+
+#: ../lib/modules/posixAccount.inc:168
+msgid "Maximum UID number for Unix accounts (users)"
+msgstr "Maximum UID nummer voor Unix accounts (gebruikers)"
+
+#: ../lib/modules/posixAccount.inc:65
+#: ../lib/modules/posixAccount.inc:67
+msgid "Maximum UID number is invalid!"
+msgstr "Maximum UID nummer is ongeldig!"
+
+#: ../lib/modules/posixAccount.inc:68
+#: ../lib/modules/posixAccount.inc:69
+msgid "Maximum UID number must be greater than minimum UID number!"
+msgstr "Maximum UID nummer moet groter zijn dan minimum UID nummer!"
+
+#: ../templates/tree/add_attr_form.php:166
+#, php-format
+msgid "Maximum file size: %s"
+msgstr "Maximum bestandsgrootte: %s"
+
+#: ../templates/tree/add_value_form.php:193
+#: ../templates/schema/schema.php:218
+msgid "Maximum length"
+msgstr "Maximum lengte"
+
+#: ../templates/config/confmain.php:266
+#: ../help/help.inc:94
+msgid "Maximum list entries"
+msgstr "Maximum lijstentrees"
+
+#: ../lib/modules/shadowAccount.inc:94
+#: ../lib/modules/shadowAccount.inc:161
+#: ../lib/modules/shadowAccount.inc:191
+#: ../lib/modules/shadowAccount.inc:282
+msgid "Maximum password age"
+msgstr "Maximum levensduur wachtwoord"
+
+#: ../lib/modules/inetOrgPerson.inc:136
+msgid "Miller"
+msgstr "Miller"
+
+#: ../lib/modules/posixGroup.inc:313
+#: ../lib/modules/posixGroup.inc:481
+msgid "Minimum GID number"
+msgstr "Minimum GID nummer"
+
+#: ../lib/modules/posixGroup.inc:332
+msgid "Minimum GID number for Unix groups"
+msgstr "Minimum GID nummer voor Unix groepen"
+
+#: ../lib/modules/posixGroup.inc:481
+msgid "Minimum GID number is invalid or empty!"
+msgstr "Minimum GID nummer is ongeldig of leeg!"
+
+#: ../lib/modules/posixAccount.inc:64
+#: ../lib/modules/posixAccount.inc:66
+#: ../lib/modules/posixAccount.inc:137
+#: ../lib/modules/posixAccount.inc:146
+msgid "Minimum UID number"
+msgstr "Minimum UID nummer"
+
+#: ../lib/modules/posixAccount.inc:169
+msgid "Minimum UID number for Unix accounts (hosts)"
+msgstr "Minimum UID nummer voor Unix accounts (hosts)"
+
+#: ../lib/modules/posixAccount.inc:167
+msgid "Minimum UID number for Unix accounts (users)"
+msgstr "Minimum UID nummer voor Unix accounts (gebruikers)"
+
+#: ../lib/modules/posixAccount.inc:64
+#: ../lib/modules/posixAccount.inc:66
+msgid "Minimum UID number is invalid!"
+msgstr "Minimum UID nummer is ongeldig!"
+
+#: ../lib/modules/shadowAccount.inc:89
+#: ../lib/modules/shadowAccount.inc:157
+#: ../lib/modules/shadowAccount.inc:185
+#: ../lib/modules/shadowAccount.inc:279
+msgid "Minimum password age"
+msgstr "Minimum levensduur wachtwoord"
+
+#: ../lib/modules/inetOrgPerson.inc:52
+#: ../lib/modules/inetOrgPerson.inc:195
+#: ../lib/modules/inetOrgPerson.inc:315
+#: ../lib/modules/inetOrgPerson.inc:316
+#: ../lib/modules/inetOrgPerson.inc:596
+#: ../lib/modules/inetOrgPerson.inc:776
+msgid "Mobile number"
+msgstr "Mobiel nummer"
+
+#: ../lib/modules.inc:893
+#: ../lib/modules.inc:1048
+msgid "Modify Account"
+msgstr "Veranderen account"
+
+#: ../templates/config/confmodules.php:82
+msgid "Module selection"
+msgstr "Module selectie"
+
+#: ../lib/modules/sambaSamAccount.inc:949
+msgid "Monday"
+msgstr "Maandag"
+
+#: ../lib/modules/quota.inc:86
+#: ../lib/modules/quota.inc:302
+#: ../lib/modules/quota.inc:360
+#: ../lib/modules/quota.inc:437
+msgid "Mountpoint"
+msgstr "Mount-punt"
+
+#: ../lib/modules/quota.inc:87
+msgid "Mountpoint of device with enabled quotas."
+msgstr "Mount-punt van device met waarvoor quotas gelden."
+
+#: ../lib/modules/inetOrgPerson.inc:179
+msgid "Mycity"
+msgstr "Mijnwoonplaats"
+
+#: ../lib/modules/inetOrgPerson.inc:167
+msgid "Mystreetname 42"
+msgstr "MijnStraatnaam 42"
+
+#: ../templates/tree/templates/creation/new_ou_template.php:59
+#: ../templates/tree/templates/creation/new_ou_template.php:104
+#: ../templates/schema/schema.php:272
+#: ../templates/pdfedit/pdfdelete.php:56
+#: ../templates/pdfedit/pdfdelete.php:59
+#: ../templates/pdfedit/pdfdelete.php:84
+#: ../templates/pdfedit/pdfpage.php:668
+msgid "Name"
+msgstr "Naam"
+
+#: ../help/help.inc:141
+msgid "Name under which the profile will be saved. If a profile with the same name exists, it will be overwritten."
+msgstr "Naam waaronder het profiel zal worden opgeslagen. Als het profiel met dezelfde naam al bestaat, zal deze overschreven worden."
+
+#: ../lib/modules/ieee802device.inc:144
+msgid "New MAC address"
+msgstr "Nieuw MAC adres"
+
+#: ../templates/ou_edit.php:63
+msgid "New OU created successfully."
+msgstr "Nieuwe OU met succes aangemaakt"
+
+#: ../templates/config/confmain.php:378
+msgid "New Password"
+msgstr "Nieuw wachtwoord"
+
+#: ../lib/modules/ldapPublicKey.inc:135
+msgid "New SSH public key"
+msgstr "Nieuwe SSH publieke sleutel"
+
+#: ../lib/types/mailAlias.inc:108
+msgid "New alias"
+msgstr "Nieuwe alias"
+
+#: ../templates/config/profmanage.php:135
+msgid "New default profile set successfully."
+msgstr "Nieuw standaard profile is met succes ingesteld."
+
+#: ../lib/types/smbDomain.inc:108
+msgid "New domain"
+msgstr "Nieuw domein"
+
+#: ../lib/types/group.inc:110
+msgid "New group"
+msgstr "Nieuwe groep"
+
+#: ../lib/types/host.inc:112
+msgid "New host"
+msgstr "Nieuwe host"
+
+#: ../lib/modules/inetLocalMailRecipient.inc:206
+msgid "New local address"
+msgstr "Nieuw lokaal adres"
+
+#: ../templates/config/profmanage.php:368
+msgid "New master password"
+msgstr "Nieuw master wachtwoord"
+
+#: ../templates/config/profmanage.php:126
+msgid "New master password set successfully."
+msgstr "Nieuw master wachtwoord is met succes gemaakt"
+
+#: ../lib/lists.inc:96
+msgid "New object"
+msgstr "Nieuw object"
+
+#: ../templates/tree/templates/creation/new_ou_template.php:47
+#: ../templates/ou_edit.php:164
+#: ../help/help.inc:157
+msgid "New organizational unit"
+msgstr "Nieuwe organisatie unit"
+
+#: ../templates/config/profmanage.php:116
+msgid "New password set successfully."
+msgstr "Nieuw wachtwoord is succesvol geplaatst"
+
+#: ../lib/modules/nisMailAlias.inc:178
+msgid "New recipient"
+msgstr "Nieuwe ontvanger"
+
+#: ../templates/tree/add_oclass_form.php:130
+msgid "New required attributes:"
+msgstr "Nieuwe gevraagde attributen:"
+
+#: ../lib/types/user.inc:122
+msgid "New user"
+msgstr "Nieuwe gebruiker"
+
+#: ../templates/tree/update_confirm.php:150
+msgid "New value"
+msgstr "Nieuwe waarde"
+
+#: ../templates/tree/create_form.php:137
+#: ../templates/tree/templates/creation/custom.php:86
+#: ../templates/tree/templates/creation/new_ou_template.php:69
+msgid "Next"
+msgstr "Volgende"
+
+#: ../lib/modules/sambaDomain.inc:67
+#: ../lib/modules/sambaDomain.inc:107
+#: ../lib/modules/sambaDomain.inc:229
+#: ../lib/modules/sambaDomain.inc:411
+msgid "Next RID"
+msgstr "Volgende RID"
+
+#: ../lib/modules/sambaDomain.inc:140
+#: ../lib/modules/sambaDomain.inc:141
+msgid "Next RID is not a number!"
+msgstr "Volgende RID is geen nummer!"
+
+#: ../lib/modules/sambaDomain.inc:68
+msgid "Next RID to use when creating accounts (only used by Winbind)."
+msgstr "Volgende RID gebruiken bij maken accounts (alleen bij Winbind)"
+
+#: ../lib/modules/sambaDomain.inc:76
+msgid "Next RID to use when creating group accounts (only used by Winbind)."
+msgstr "Volgende RID gebruiken bij maken groep accounts (alleen bij Winbind)"
+
+#: ../lib/modules/sambaDomain.inc:72
+msgid "Next RID to use when creating user accounts (only used by Winbind)."
+msgstr "Volgende RID gebruiken bij maken gebruikers accounts (alleen bij Winbind)"
+
+#: ../lib/modules/sambaDomain.inc:75
+#: ../lib/modules/sambaDomain.inc:119
+#: ../lib/modules/sambaDomain.inc:239
+#: ../lib/modules/sambaDomain.inc:417
+msgid "Next group RID"
+msgstr "Volgende RID groep"
+
+#: ../lib/modules/sambaDomain.inc:144
+#: ../lib/modules/sambaDomain.inc:145
+msgid "Next group RID is not a number!"
+msgstr "Volgende RID groep is geen getal!"
+
+#: ../lib/modules/sambaDomain.inc:71
+#: ../lib/modules/sambaDomain.inc:113
+#: ../lib/modules/sambaDomain.inc:234
+#: ../lib/modules/sambaDomain.inc:414
+msgid "Next user RID"
+msgstr "Volgende RID gebruiker"
+
+#: ../lib/modules/sambaDomain.inc:142
+#: ../lib/modules/sambaDomain.inc:143
+msgid "Next user RID is not a number!"
+msgstr "Volgende RID gebruiker is geen getal!"
+
+#: ../templates/schema/schema.php:157
+#: ../templates/schema/schema.php:199
+#: ../templates/schema/schema.php:204
+#: ../templates/schema/schema.php:209
+msgid "No"
+msgstr "Nee"
+
+#: ../lib/modules/sambaSamAccount.inc:421
+#: ../lib/modules/sambaSamAccount.inc:498
+#: ../lib/modules/sambaSamAccount.inc:744
+#: ../lib/modules/sambaGroupMapping.inc:88
+#: ../lib/modules/sambaGroupMapping.inc:173
+#: ../lib/modules/sambaGroupMapping.inc:399
+msgid "No Samba 3 domains found in LDAP! Please create one first."
+msgstr "Geen Samba 3 domeinen gevonden in LDAP! Eerst een domein maken."
+
+#: ../lib/modules/posixAccount.inc:417
+#: ../lib/modules/posixAccount.inc:579
+#: ../lib/modules/posixAccount.inc:859
+msgid "No Unix groups found in LDAP! Please create one first."
+msgstr "Geen Unix groepen gevonden in LDAP! Eerst groepen maken."
+
+#: ../lib/types/mailAlias.inc:107
+msgid "No aliases found!"
+msgstr "Geen aliassen gevonden!"
+
+#: ../templates/initsuff.php:161
+msgid "No changes were made."
+msgstr "Er zijn geen veranderingen aangebracht."
+
+#: ../templates/config/conflogin.php:92
+msgid "No configuration profiles found. Please create one."
+msgstr "Geen configuratieprofielen gevonden. Eerst een maken."
+
+#: ../templates/schema/schema.php:148
+msgid "No description"
+msgstr "Geen omschrijving"
+
+#: ../lib/types/smbDomain.inc:107
+msgid "No domains found!"
+msgstr "Geen domeinen gevonden!"
+
+#: ../lib/modules/inetOrgPerson.inc:77
+msgid "No file selected."
+msgstr "Geen bestanden geselecteerd."
+
+#: ../lib/modules/posixGroup.inc:479
+#: ../lib/modules/posixAccount.inc:74
+msgid "No free ID-Number!"
+msgstr "Geen vrije ID-nummer!"
+
+#: ../lib/types/group.inc:109
+msgid "No groups found!"
+msgstr "Geen groepen gevonden!"
+
+#: ../lib/types/host.inc:111
+msgid "No hosts found!"
+msgstr "Geen hosts gevonden!"
+
+#: ../templates/tree/edit.php:188
+msgid "No internal attributes"
+msgstr "Geen interne attributen"
+
+#: ../templates/pdfedit/pdfpage.php:389
+msgid "No logo"
+msgstr "Geen logo"
+
+#: ../lib/lists.inc:95
+msgid "No objects found!"
+msgstr "Geen objecten gevonden!"
+
+#: ../templates/config/confmodules.php:261
+msgid "No or more than one base module selected!"
+msgstr "Geen of meerdere basismodule(s) geselecteerd!"
+
+#: ../templates/config/confmain.php:91
+msgid "No password was entered!"
+msgstr "Geen wachtwoord ingevoerd!"
+
+#: ../templates/pdfedit/pdfpage.php:121
+msgid "No section text specified"
+msgstr "Geen sectie tekst gespecificeerd"
+
+#: ../templates/pdfedit/pdfpage.php:125
+msgid "No static text specified"
+msgstr "Geen statische tekst gespecificeerd"
+
+#: ../templates/tree/edit.php:80
+msgid "No such entry!"
+msgstr "Zo'n entree bestaat niet!"
+
+#: ../templates/schema/schema.php:441
+#, php-format
+msgid "No such schema item: \"%s\""
+msgstr "Zo'n schemaitem als: \"%s\" bestaat niet"
+
+#: ../lib/types/user.inc:121
+msgid "No users found!"
+msgstr "Geen gebruikers gevonden!"
+
+#: ../help/help.inc:69
+msgid "Note"
+msgstr "Aantekening"
+
+#: ../templates/tree/add_value_form.php:114
+msgid "Note: You will get an \"inappropriate matching\" error if you have not setup an EQUALITY rule on your LDAP server for this attribute."
+msgstr "Aantekening: U zult een \"inappropriate matching\" (niet passende combinatie) fout krijgen als u geen setup voor  EQUALITY regel heeft in de LDAP server voor dit attribuut."
+
+#: ../templates/delete.php:92
+msgid "Number of child entries"
+msgstr "Aantal afgeleide (child) entrees"
+
+#: ../lib/modules/shadowAccount.inc:154
+msgid "Number of days a user can login even his password has expired. -1=always."
+msgstr "Aantal dagen waarop een gebruiker nog kan inloggen zelfs als zijn wachtwoord is verlopen. -1=altijd."
+
+#: ../lib/modules/shadowAccount.inc:158
+msgid "Number of days a user has to wait until he\\'s allowed to change his password again. If set value must be 0<."
+msgstr "Aantal dagen dat de gebruiker moet wachten voordat hij/zij zijn/haar wachtwoord opnieuw mag wijzigen. De waarde moet groter dan nul zijn."
+
+#: ../lib/modules/shadowAccount.inc:162
+msgid "Number of days after a user has to change his password again. If set value must be 0<."
+msgstr "Aantal dagen dat de gebruiker zijn wachtwoord opnieuw moet wijzigen.  De waarde moet groter dan nul zijn."
+
+#: ../templates/schema/schema.php:151
+#: ../templates/schema/schema.php:348
+msgid "OID"
+msgstr "OID"
+
+#: ../templates/ou_edit.php:69
+msgid "OU already exists!"
+msgstr "OU bestaat al!"
+
+#: ../templates/ou_edit.php:80
+msgid "OU deleted successfully."
+msgstr "OU met succes verwijderd."
+
+#: ../templates/ou_edit.php:151
+#: ../templates/tools.php:68
+msgid "OU editor"
+msgstr "OU editor"
+
+#: ../templates/ou_edit.php:73
+msgid "OU is invalid!"
+msgstr "OU is ongeldig!"
+
+#: ../templates/ou_edit.php:110
+msgid "OU is not empty or invalid!"
+msgstr "OU is niet leeg of ongeldig!"
+
+#: ../help/help.inc:157
+#: ../help/help.inc:159
+msgid "OU-Editor"
+msgstr "OU-editor"
+
+#: ../templates/tree/templates/creation/custom.php:70
+#: ../templates/schema/schema.php:69
+#: ../templates/schema/schema.php:70
+msgid "Object classes"
+msgstr "Objectklassen"
+
+#: ../lib/modules.inc:1080
+#: ../lib/modules.inc:1118
+#: ../lib/modules.inc:1215
+#, php-format
+msgid "ObjectClass %s required but not defined in LDAP."
+msgstr "Objectklasse %s is verplicht maar niet gedefinieerd in LDAP."
+
+#: ../templates/schema/schema.php:156
+#: ../templates/schema/schema.php:287
+msgid "Obsolete"
+msgstr "Verouderd"
+
+#: ../templates/config/conflogin.php:122
+#: ../templates/config/conflogin.php:123
+msgid "Ok"
+msgstr "Ok"
+
+#: ../templates/tree/update_confirm.php:149
+msgid "Old value"
+msgstr "Eerdere waarde"
+
+#: ../templates/tree/export_form.php:74
+msgid "One (one level beneath base)"
+msgstr "Een (een niveau onder basis)"
+
+#: ../templates/tree/templates/creation/custom.php:209
+#: ../templates/schema/schema.php:388
+msgid "Optional attributes"
+msgstr "Optionele attributen"
+
+#: ../templates/tree/templates/creation/custom.php:225
+msgid "Optional binary attributes"
+msgstr "Optioneel binaire attributen"
+
+#: ../templates/schema/schema.php:175
+msgid "Ordering"
+msgstr "Sortering"
+
+#: ../templates/tree/templates/templates.inc:46
+msgid "Organizational unit"
+msgstr "Organizational unit (Organisatorisch eenheid)"
+
+#: ../templates/tools.php:75
+msgid "PDF editor"
+msgstr "PDF editor"
+
+#: ../templates/pdfedit/pdfpage.php:450
+#: ../lib/lists.inc:491
+msgid "PDF structure"
+msgstr "PDF struktuur"
+
+#: ../templates/pdfedit/pdfpage.php:108
+msgid "PDF structure was successfully saved."
+msgstr "PDF struktuur is met succes opgeslagen"
+
+#: ../templates/pdfedit/pdfmain.php:110
+msgid "PDF structures"
+msgstr "PDF strukturen"
+
+#: ../templates/pdfedit/pdfpage.php:103
+msgid "PDF-structure name not valid"
+msgstr "PDF struktuur naam is ongeldig"
+
+#: ../templates/pdfedit/pdfpage.php:409
+msgid "Page settings"
+msgstr "Pagina instellingen"
+
+#: ../templates/schema/schema.php:370
+msgid "Parent to"
+msgstr "Ouder van"
+
+#: ../templates/login.php:221
+#: ../lib/modules/posixGroup.inc:182
+#: ../lib/modules/posixGroup.inc:192
+#: ../lib/modules/posixGroup.inc:274
+#: ../lib/modules/posixGroup.inc:474
+#: ../lib/modules/posixGroup.inc:475
+#: ../lib/modules/posixGroup.inc:476
+#: ../lib/modules/sambaAccount.inc:74
+#: ../lib/modules/sambaAccount.inc:75
+#: ../lib/modules/sambaAccount.inc:217
+#: ../lib/modules/sambaSamAccount.inc:87
+#: ../lib/modules/sambaSamAccount.inc:88
+#: ../lib/modules/sambaSamAccount.inc:277
+#: ../lib/modules/posixAccount.inc:78
+#: ../lib/modules/posixAccount.inc:79
+#: ../lib/modules/posixAccount.inc:80
+#: ../lib/modules/posixAccount.inc:229
+#: ../lib/modules/posixAccount.inc:357
+#: ../lib/modules/posixAccount.inc:902
+#: ../lib/modules/posixAccount.inc:912
+#: ../lib/modules/posixAccount.inc:1003
+#: ../lib/modules/posixAccount.inc:1115
+#: ../lib/modules/inetOrgPerson.inc:74
+#: ../lib/modules/inetOrgPerson.inc:75
+#: ../lib/modules/inetOrgPerson.inc:339
+#: ../lib/modules/inetOrgPerson.inc:558
+#: ../lib/modules/inetOrgPerson.inc:569
+#: ../lib/modules/inetOrgPerson.inc:702
+msgid "Password"
+msgstr "Wachtwoord"
+
+#: ../templates/config/confsave.php:186
+msgid "Password changed!"
+msgstr "Wachtwoord is veranderd!"
+
+#: ../lib/modules/posixGroup.inc:475
+#: ../lib/modules/sambaAccount.inc:75
+#: ../lib/modules/sambaAccount.inc:76
+#: ../lib/modules/sambaSamAccount.inc:88
+#: ../lib/modules/sambaSamAccount.inc:89
+#: ../lib/modules/posixAccount.inc:79
+#: ../lib/modules/posixAccount.inc:81
+#: ../lib/modules/inetOrgPerson.inc:75
+#: ../lib/modules/inetOrgPerson.inc:76
+msgid "Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !"
+msgstr "Wachtwoord bevat ongeldige tekens. Geldige tekens: a-z, A-Z, 0-9 en #*,.;:_-+!$%&/|?{[()]}= !"
+
+#: ../lib/modules/sambaAccount.inc:124
+#: ../lib/modules/sambaAccount.inc:239
+#: ../lib/modules/sambaAccount.inc:353
+#: ../lib/modules/sambaAccount.inc:356
+#: ../lib/modules/sambaAccount.inc:722
+#: ../lib/modules/sambaSamAccount.inc:194
+#: ../lib/modules/sambaSamAccount.inc:197
+#: ../lib/modules/sambaSamAccount.inc:299
+#: ../lib/modules/sambaSamAccount.inc:799
+#: ../lib/modules/sambaSamAccount.inc:1028
+msgid "Password does not expire"
+msgstr "Wachtwoord verloopt niet"
+
+#: ../lib/modules/shadowAccount.inc:49
+#: ../lib/modules/shadowAccount.inc:84
+#: ../lib/modules/shadowAccount.inc:153
+#: ../lib/modules/shadowAccount.inc:179
+#: ../lib/modules/shadowAccount.inc:276
+#: ../lib/modules/shadowAccount.inc:310
+msgid "Password expiration"
+msgstr "Wachtwoord verloop"
+
+#: ../lib/modules/shadowAccount.inc:49
+#: ../lib/modules/shadowAccount.inc:50
+msgid "Password expiration must be are natural number or -1."
+msgstr "Wachtwoord verloopperiode moet een getal zijn of -1."
+
+#: ../lib/modules/posixGroup.inc:320
+#: ../lib/modules/posixGroup.inc:440
+#: ../lib/modules/posixAccount.inc:155
+#: ../lib/modules/posixAccount.inc:316
+msgid "Password hash type"
+msgstr "Type hash wachtwoord"
+
+#: ../lib/modules/posixAccount.inc:171
+msgid "Password hash type for Unix accounts"
+msgstr "Type hash wachtwoord voor de Unix accounts"
+
+#: ../lib/modules/posixGroup.inc:334
+msgid "Password hash type for Unix groups"
+msgstr "Type hash wachtwoord voor de Unix groepen"
+
+#: ../lib/modules/shadowAccount.inc:47
+#: ../lib/modules/shadowAccount.inc:53
+msgid "Password maxage"
+msgstr "Maximum wachtwoord levensduur"
+
+#: ../lib/modules/shadowAccount.inc:47
+#: ../lib/modules/shadowAccount.inc:48
+msgid "Password maximum age must be are natural number."
+msgstr "Maximum wachtwoord levensduur moet een getal zijn."
+
+#: ../lib/modules/shadowAccount.inc:53
+#: ../lib/modules/shadowAccount.inc:54
+msgid "Password maximum age must be bigger as password minimum age."
+msgstr "Maximum wachtwoord levensduurd moet hoger zijn dan het minimum."
+
+#: ../lib/modules/shadowAccount.inc:45
+msgid "Password minage"
+msgstr "Minimale wachtwoord levensduur"
+
+#: ../lib/modules/shadowAccount.inc:45
+#: ../lib/modules/shadowAccount.inc:46
+msgid "Password minimum age must be are natural number."
+msgstr "Minimum wachtwoord levensduur moet een getal zijn."
+
+#: ../lib/modules/shadowAccount.inc:51
+#: ../lib/modules/shadowAccount.inc:79
+#: ../lib/modules/shadowAccount.inc:149
+#: ../lib/modules/shadowAccount.inc:173
+#: ../lib/modules/shadowAccount.inc:273
+#: ../lib/modules/shadowAccount.inc:308
+msgid "Password warning"
+msgstr "Wachtwoord waarschuwing"
+
+#: ../lib/modules/shadowAccount.inc:51
+#: ../lib/modules/shadowAccount.inc:52
+msgid "Password warning must be are natural number."
+msgstr "Wachtwoord waarschuwing moet een natuurlijk getal zijn."
+
+#: ../templates/config/confsave.php:180
+msgid "Passwords are different!"
+msgstr "Wachtwoorden verschillen!"
+
+#: ../lib/modules/sambaAccount.inc:377
+#: ../lib/modules/sambaSamAccount.inc:218
+msgid "Path of the user profile. Can be a local absolute path or a UNC-path (\\\\server\\share). $user and $group are replaced with user and group name."
+msgstr "Pad naar gebruikersprofiel. Mag een lokaal absolut pad zijn of een UNC (\\\\server\\share). $user en $group worden vervangen door de gebruiker- en groepsnaam."
+
+#: ../templates/config/confmain.php:346
+msgid "Path to external script"
+msgstr "Pad naar extern script"
+
+#: ../templates/tree/delete_form.php:80
+msgid "Permanently delete all children, too?"
+msgstr "Ook definitief de afgeleiden entrees verwijderen?"
+
+#: ../lib/modules/inetOrgPerson.inc:90
+msgid "Personal"
+msgstr "Persoonlijk"
+
+#: ../lib/modules/inetOrgPerson.inc:658
+msgid "Photo"
+msgstr "Foto"
+
+#: ../lib/modules/inetOrgPerson.inc:745
+msgid "Photo file (JPG format)"
+msgstr "Fotobestand (JPG formaat)"
+
+#: ../lib/modules/ldapPublicKey.inc:59
+msgid "Please a comma separated list of your public SSH keys."
+msgstr "S.v.p. een komma gescheiden lijst van de publieke SSH sleutels ingeven."
+
+#: ../templates/delete.php:80
+msgid "Please confirm:"
+msgstr "S.v.p. bevestigen:"
+
+#: ../lib/modules/sambaSamAccount.inc:90
+msgid "Please enter a RID number or the name of a special account!"
+msgstr "Voer een RID nummer in of de naam van een speciaal account!"
+
+#: ../lib/modules/inetOrgPerson.inc:336
+msgid "Please enter a comma separated list of host names where this user is allowed to log in. Can be left empty."
+msgstr "S.v.p. een kommagescheiden lijst van hostnamen invoeren waar deze gebruiker mag inloggen. Mag open gelaten worden."
+
+#: ../lib/modules/sambaAccount.inc:70
+#: ../lib/modules/sambaAccount.inc:71
+#: ../lib/modules/sambaSamAccount.inc:85
+#: ../lib/modules/sambaSamAccount.inc:86
+msgid "Please enter a comma separated list of host names!"
+msgstr "S.v.p. een kommagescheiden lijst van hostnamen invoeren."
+
+#: ../lib/modules/kolabUser.inc:291
+#: ../lib/modules/kolabUser.inc:294
+#, php-format
+msgid "Please enter a user password on this page: %s"
+msgstr "S.v.p. een gebruikerswachtwoord voor deze pagina invoeren: %s"
+
+#: ../lib/modules/posixAccount.inc:98
+#: ../lib/modules/posixAccount.inc:99
+#: ../lib/modules/inetOrgPerson.inc:68
+#: ../lib/modules/inetOrgPerson.inc:69
+msgid "Please enter a valid common name!"
+msgstr "S.v.p. een valide common name ingeven!"
+
+#: ../lib/modules/sambaAccount.inc:83
+#: ../lib/modules/sambaAccount.inc:84
+#: ../lib/modules/sambaSamAccount.inc:98
+#: ../lib/modules/sambaSamAccount.inc:99
+#: ../lib/modules/sambaSamAccount.inc:100
+msgid "Please enter a valid date in format DD-MM-YYYY."
+msgstr "S.v.p. een geldige datum invoeren in formaat DD-MM-YYYY."
+
+#: ../lib/modules/sambaAccount.inc:77
+#: ../lib/modules/sambaAccount.inc:78
+#: ../lib/modules/sambaSamAccount.inc:92
+#: ../lib/modules/sambaSamAccount.inc:93
+msgid "Please enter a valid display name!"
+msgstr "S.v.p. een geldige displaynaam invoeren!"
+
+#: ../lib/modules/sambaAccount.inc:85
+#: ../lib/modules/sambaSamAccount.inc:101
+msgid "Please enter a valid drive letter."
+msgstr "S.v.p. een geldige stationsletter invoeren."
+
+#: ../lib/modules/inetOrgPerson.inc:56
+#: ../lib/modules/inetOrgPerson.inc:57
+msgid "Please enter a valid eMail address!"
+msgstr "S.v.p. een geldig e-mail adres invoeren!"
+
+#: ../lib/modules/inetOrgPerson.inc:66
+#: ../lib/modules/inetOrgPerson.inc:67
+msgid "Please enter a valid employee type!"
+msgstr "S.v.p. een geldig werknemerstype invoeren!"
+
+#: ../lib/modules/inetOrgPerson.inc:54
+#: ../lib/modules/inetOrgPerson.inc:55
+msgid "Please enter a valid fax number!"
+msgstr "S.v.p. een geldig faxnummer invoeren!"
+
+#: ../lib/modules/sambaAccount.inc:86
+msgid "Please enter a valid group RID."
+msgstr "S.v.p. een geldige RID groep invoeren!"
+
+#: ../lib/modules/sambaSamAccount.inc:105
+msgid "Please enter a valid group name!"
+msgstr "S.v.p. een geldige groepsnaam invoeren!"
+
+#: ../lib/modules/inetOrgPerson.inc:64
+#: ../lib/modules/inetOrgPerson.inc:65
+msgid "Please enter a valid job title!"
+msgstr "S.v.p. een geldige functieomschrijving invoeren!"
+
+#: ../lib/modules/inetOrgPerson.inc:52
+#: ../lib/modules/inetOrgPerson.inc:53
+msgid "Please enter a valid mobile number!"
+msgstr "S.v.p. een geldig mobiel nummer invoeren!"
+
+#: ../lib/modules/inetOrgPerson.inc:60
+#: ../lib/modules/inetOrgPerson.inc:61
+msgid "Please enter a valid postal address!"
+msgstr "S.v.p. een geldig postadres invoeren!"
+
+#: ../lib/modules/inetOrgPerson.inc:62
+#: ../lib/modules/inetOrgPerson.inc:63
+msgid "Please enter a valid postal code!"
+msgstr "S.v.p. een geldige postcode invoeren!"
+
+#: ../lib/modules/sambaAccount.inc:87
+msgid "Please enter a valid special user name."
+msgstr "S.vp. een geldige speciale gebruikersnaam invoeren."
+
+#: ../lib/modules/inetOrgPerson.inc:58
+#: ../lib/modules/inetOrgPerson.inc:59
+msgid "Please enter a valid street name!"
+msgstr "S.v.p. een geldige straatnaam invoeren!"
+
+#: ../lib/modules/inetOrgPerson.inc:50
+#: ../lib/modules/inetOrgPerson.inc:51
+msgid "Please enter a valid telephone number!"
+msgstr "S.v.p. een geldig telefoonnummer invoeren!"
+
+#: ../lib/modules/posixGroup.inc:604
+#: ../lib/modules/posixAccount.inc:655
+#, php-format
+msgid "Please enter a value between %s and %s!"
+msgstr "S.v.p. een waarde invullen tussen %s en %s!"
+
+#: ../lib/modules/kolabUser.inc:298
+#, php-format
+msgid "Please enter an email address on this page: %s"
+msgstr "S.v.p. een e-mailadres invoeren op deze pagina: %s"
+
+#: ../templates/config/conflogin.php:86
+msgid "Please enter password to change preferences:"
+msgstr "S.v.p. wachtwoord invoeren om voorkeuren te wijzigen:"
+
+#: ../lib/modules.inc:883
+msgid "Please enter the account information on the other pages first."
+msgstr "S.v.p. eerst de account informatie op de andere pagina's invoeren."
+
+#: ../help/help.inc:59
+msgid "Please enter the configuration password. This is NOT your LDAP password. It is stored in your .conf-file. If this is the first time you log in, enter \"lam\"."
+msgstr "S.v.p. configuratie wachtwoord invoeren. Dit is NIET uw LDAP wachtwoord. Het staat vermeld in uw .conf-bestand. Als dit de eerste keer is dat u inlogt, gebruik \"lam\"."
+
+#: ../help/help.inc:130
+msgid "Please enter the master configuration password. This is NOT your LDAP password. It is stored in your config.cfg file. If this is the first time you log in, enter \"lam\"."
+msgstr "S.v.p. master configuratie wachtwoord invoeren. Dit is NIET uw LDAP wachtwoord. Het staat vermeld in uw config.cfg bestand. Als het de eerste keer is dat u inlogt, gebruik \"lam\""
+
+#: ../help/help.inc:118
+msgid "Please enter the name of the new profile and the password to change its settings. Profile names may contain letters, numbers and -/_."
+msgstr "S.v.p. de naam van het nieuwe profiel invoeren en het wachtwoord om de instellingen te wijzigen. Profielnamen kunnen letter, nummers en -/_ bevatten."
+
+#: ../help/help.inc:120
+msgid "Please enter the new name of the profile. The name may contain letters, numbers and -/_."
+msgstr "S.v.p. de nieuwe naam van het profiel invoeren. De naam mag letters, nummers en -/_ bevatten."
+
+#: ../lib/modules/posixAccount.inc:358
+#: ../lib/modules/inetOrgPerson.inc:340
+msgid "Please enter the password which you want to set for this account."
+msgstr "S.v.p. het wachtwoord invoeren dat u wilt gebruiken voor dit account."
+
+#: ../lib/modules/posixAccount.inc:333
+msgid "Please enter the path to the user's home directory."
+msgstr "S.v.p. het pad aangeven naar de homedirectory van de gebruiker."
+
+#: ../lib/modules/quota.inc:123
+msgid "Please enter the quota settings for this mount point. The syntax is: {soft block limit},{hard block limit},{soft inode limit},{hard inode limit}"
+msgstr "S.v.p. de quotum gegevens voor dit mount-punt ingeven. Syntax is: {zachte blok limiet},{uiterste blok limiet},{zachte inode limiet},{uiterste inode limiet}"
+
+#: ../lib/modules/posixAccount.inc:78
+#: ../lib/modules/inetOrgPerson.inc:74
+msgid "Please enter the same password in both password fields."
+msgstr "S.v.p. hetzelfde wachtwoord in beide wachtwoordvelden invoeren."
+
+#: ../lib/modules/posixGroup.inc:474
+#: ../lib/modules/sambaAccount.inc:74
+#: ../lib/modules/sambaSamAccount.inc:87
+msgid "Please enter the same password in both password-fields."
+msgstr "S.v.p. hetzelfde wachtwoord in beide wachtwoordvelden invoeren."
+
+#: ../lib/modules/ldapPublicKey.inc:55
+msgid "Please enter your public SSH key."
+msgstr "S.v.p. de publieke SSH key invoeren."
+
+#: ../templates/masscreate.php:121
+msgid "Please provide a CSV formated file with your account data. The cells in the first row must be filled with the column identifiers. The following rows represent one account for each row."
+msgstr "S.v.p. een CSV file met de account gegevens ingeven. De cellen van de eerste rij moeten de kolomidentiecatie bevatten. De volgende rijen vertegenwoordigen ieder een account."
+
+#: ../lib/status.inc:66
+msgid "Please report this error to the Bug-Tracker at {link=http://lam.sourceforge.net}LDAP Account Manager Development Team{endlink}. The error number is {bold}0001:Invalid/Missing Message type.{endbold} Thank you."
+msgstr "S.v.p. een rapport van deze fout versturen naar Bug-Tracker op {link=http://lam.sourceforge.net}LDAP Account Manager Development Team{endlink}. Het fout nummer is {bold}0001:Invalid/Missing Message type.{endbold} Bedankt."
+
+#: ../lib/modules/inetOrgPerson.inc:344
+msgid "Please select an image file to upload. It must be in JPG format (.jpg/.jpeg)."
+msgstr "S.v.p. een image bestand selecteren om te uploaden. Het moet in een JPG formaat (.jpg/.jpeg)."
+
+#: ../lib/modules.inc:934
+msgid "Please select page:"
+msgstr "S.v.p. pagina selecteren:"
+
+#: ../templates/masscreate.php:93
+msgid "Please select your account type:"
+msgstr "S.v.p. uw account type selecteren:"
+
+#: ../templates/login.php:194
+msgid "Please select your user name and enter your password to log in"
+msgstr "S.v.p. uw gebruikersnaam selecteren en geef uw wachtwoord om in te loggen"
+
+#: ../lib/modules.inc:926
+#, php-format
+msgid "Please set up all required attributes on page: %s"
+msgstr "S.v.p. allebenodigde attributen instellen op pagina: %s"
+
+#: ../templates/config/profmanage.php:148
+msgid "Please set up your master configuration file (config/config.cfg) first!"
+msgstr "S.v.p. eerst uw master configuratie bestand instellen (config/config.cfg)!"
+
+#: ../lib/modules/kolabUser.inc:223
+msgid "Policy list has invalid format!"
+msgstr "Beleidslijst heeft een ongeldig formaat!"
+
+#: ../templates/pdfedit/pdfpage.php:711
+msgid "Position"
+msgstr "Positie"
+
+#: ../templates/masscreate.php:164
+#: ../templates/masscreate.php:302
+#: ../lib/modules/sambaGroupMapping.inc:368
+msgid "Possible values"
+msgstr "Mogelijke waarden"
+
+#: ../lib/modules/inetOrgPerson.inc:183
+#: ../lib/modules/inetOrgPerson.inc:299
+#: ../lib/modules/inetOrgPerson.inc:300
+#: ../lib/modules/inetOrgPerson.inc:580
+#: ../lib/modules/inetOrgPerson.inc:772
+msgid "Post office box"
+msgstr "Postbus "
+
+#: ../lib/modules/inetOrgPerson.inc:60
+#: ../lib/modules/inetOrgPerson.inc:177
+#: ../lib/modules/inetOrgPerson.inc:307
+#: ../lib/modules/inetOrgPerson.inc:588
+#: ../lib/modules/inetOrgPerson.inc:774
+msgid "Postal address"
+msgstr "Postadres"
+
+#: ../lib/modules/inetOrgPerson.inc:308
+msgid "Postal address, city"
+msgstr "Postadres, plaats"
+
+#: ../lib/modules/inetOrgPerson.inc:62
+#: ../lib/modules/inetOrgPerson.inc:171
+#: ../lib/modules/inetOrgPerson.inc:303
+#: ../lib/modules/inetOrgPerson.inc:304
+#: ../lib/modules/inetOrgPerson.inc:584
+#: ../lib/modules/inetOrgPerson.inc:773
+msgid "Postal code"
+msgstr "Postcode"
+
+#: ../help/help.inc:88
+msgid "Predefined values"
+msgstr "Voorgedefinieerde waarden"
+
+#: ../lib/modules/inetOrgPerson.inc:149
+msgid "President"
+msgstr "President"
+
+#: ../lib/modules/posixGroup.inc:490
+#: ../lib/modules/posixAccount.inc:201
+#: ../lib/modules/posixAccount.inc:268
+#: ../lib/modules/posixAccount.inc:324
+#: ../lib/modules/posixAccount.inc:349
+#: ../lib/modules/posixAccount.inc:395
+#: ../lib/modules/posixAccount.inc:881
+#: ../lib/modules/posixAccount.inc:1029
+#: ../lib/modules/posixAccount.inc:1057
+#: ../lib/modules/posixAccount.inc:1112
+msgid "Primary group"
+msgstr "Primaire groep"
+
+#: ../templates/config/profmanage.php:106
+msgid "Profile deleted."
+msgstr "Profiel verwijderd."
+
+#: ../templates/tools.php:54
+msgid "Profile editor"
+msgstr "Profiel editor"
+
+#: ../templates/config/profmanage.php:50
+#: ../templates/config/profmanage.php:161
+#: ../help/help.inc:117
+#: ../help/help.inc:119
+#: ../help/help.inc:121
+#: ../help/help.inc:123
+#: ../help/help.inc:125
+#: ../help/help.inc:127
+#: ../help/help.inc:129
+msgid "Profile management"
+msgstr "Profiel beheer"
+
+#: ../templates/config/profmanage.php:176
+#: ../templates/config/profmanage.php:228
+#: ../templates/profedit/profilepage.php:239
+#: ../help/help.inc:140
+msgid "Profile name"
+msgstr "Profiel naam"
+
+#: ../templates/config/profmanage.php:90
+#: ../templates/config/profmanage.php:101
+msgid "Profile name is invalid!"
+msgstr "Profiel naam is ongeldig!"
+
+#: ../templates/config/profmanage.php:192
+#: ../templates/config/profmanage.php:292
+msgid "Profile password"
+msgstr "Profiel wachtwoord"
+
+#: ../templates/config/profmanage.php:88
+#: ../templates/config/profmanage.php:118
+msgid "Profile passwords are different or empty!"
+msgstr "Profiel wachtwoorden zijn verschillend of leeg!"
+
+#: ../lib/modules/sambaAccount.inc:64
+#: ../lib/modules/sambaAccount.inc:65
+#: ../lib/modules/sambaAccount.inc:150
+#: ../lib/modules/sambaAccount.inc:281
+#: ../lib/modules/sambaAccount.inc:376
+#: ../lib/modules/sambaAccount.inc:754
+#: ../lib/modules/sambaAccount.inc:851
+#: ../lib/modules/sambaSamAccount.inc:79
+#: ../lib/modules/sambaSamAccount.inc:80
+#: ../lib/modules/sambaSamAccount.inc:217
+#: ../lib/modules/sambaSamAccount.inc:348
+#: ../lib/modules/sambaSamAccount.inc:845
+#: ../lib/modules/sambaSamAccount.inc:1059
+#: ../lib/modules/sambaSamAccount.inc:1193
+msgid "Profile path"
+msgstr "Profiel pad"
+
+#: ../lib/modules/sambaAccount.inc:64
+#: ../lib/modules/sambaSamAccount.inc:79
+#: ../lib/modules/sambaSamAccount.inc:81
+msgid "Profile path is invalid!"
+msgstr "Profiel pad is ongeldig!"
+
+#: ../templates/profedit/profilepage.php:120
+msgid "Profile was saved."
+msgstr "Profiel is bewaard."
+
+#: ../lib/modules/quota.inc:70
+#: ../lib/modules/quota.inc:122
+msgid "Quota"
+msgstr "Quota"
+
+#: ../lib/modules/quota.inc:485
+msgid "Quota for:"
+msgstr "Quota voor:"
+
+#: ../lib/modules/quota.inc:57
+msgid "Quota has wrong format!"
+msgstr "Quotum heeft verkeerd format!"
+
+#: ../templates/tree/templates/creation/custom.php:62
+msgid "RDN"
+msgstr "RDN"
+
+#: ../templates/masscreate.php:156
+#: ../templates/profedit/profilepage.php:198
+#: ../lib/modules.inc:1031
+#: ../help/help.inc:138
+msgid "RDN identifier"
+msgstr "RDN identificeerder"
+
+#: ../lib/types/host.inc:82
+msgid "RID (Windows UID)"
+msgstr "RID (Windows UID)"
+
+#: ../lib/modules/sambaDomain.inc:79
+#: ../lib/modules/sambaDomain.inc:100
+#: ../lib/modules/sambaDomain.inc:246
+#: ../lib/modules/sambaDomain.inc:252
+#: ../lib/modules/sambaDomain.inc:420
+msgid "RID base"
+msgstr "RID basis"
+
+#: ../templates/tree/templates/creation/new_ou_template.php:99
+msgid "Really create this new OU?"
+msgstr "Werkelijk een nieuwe OU aanmaken?"
+
+#: ../templates/tree/edit.php:520
+msgid "Really delete attribute?"
+msgstr "Werkelijk attribuut verwijderen?"
+
+#: ../lib/modules/nisMailAlias.inc:66
+#: ../lib/modules/nisMailAlias.inc:171
+msgid "Recipient"
+msgstr "Ontvanger"
+
+#: ../lib/types/mailAlias.inc:81
+#: ../lib/modules/nisMailAlias.inc:70
+#: ../lib/modules/nisMailAlias.inc:84
+#: ../lib/modules/nisMailAlias.inc:326
+msgid "Recipient list"
+msgstr "Lijst met ontvangers"
+
+#: ../templates/tree/rdelete.php:71
+msgid "Recursive delete progress"
+msgstr "Voortgang recursief verwijderen"
+
+#: ../templates/config/confmain.php:388
+msgid "Reenter Password"
+msgstr "Wachtwoord opnieuw ingeven"
+
+#: ../templates/config/profmanage.php:384
+msgid "Reenter new master password"
+msgstr "Nieuw master wachtwoord opnieuw ingevn"
+
+#: ../templates/config/profmanage.php:201
+#: ../templates/config/profmanage.php:308
+msgid "Reenter profile password"
+msgstr "Profiel wachtwoord opnieuw ingeven"
+
+#: ../templates/tree/edit.php:100
+#: ../lib/tree.inc:64
+#: ../lib/tree.inc:65
+#: ../lib/lists.inc:271
+msgid "Refresh"
+msgstr "Vernieuwen"
+
+#: ../lib/modules/kolabUser.inc:54
+msgid "Reject if conflicts"
+msgstr "Afwijzen als het conflicteert"
+
+#: ../templates/tree/templates/creation/custom.php:62
+msgid "Relative distinguished name"
+msgstr "Relative distinguished name"
+
+#: ../templates/pdfedit/pdfpage.php:474
+#: ../lib/modules/ieee802device.inc:139
+#: ../lib/modules/kolabUser.inc:359
+#: ../lib/modules/kolabUser.inc:378
+#: ../lib/modules/kolabUser.inc:404
+#: ../lib/modules/ldapPublicKey.inc:130
+#: ../lib/modules/inetLocalMailRecipient.inc:201
+#: ../lib/modules/nisMailAlias.inc:173
+msgid "Remove"
+msgstr "Verwijderen"
+
+#: ../templates/config/conftypes.php:220
+msgid "Remove this account type"
+msgstr "Verwijder dit account type"
+
+#: ../templates/config/profmanage.php:224
+#: ../help/help.inc:119
+msgid "Rename profile"
+msgstr "Hernoem profiel"
+
+#: ../templates/config/profmanage.php:97
+msgid "Renamed profile."
+msgstr "Hernoemd profiel"
+
+#: ../lib/modules/posixGroup.inc:186
+#: ../lib/modules/posixGroup.inc:278
+#: ../lib/modules/sambaAccount.inc:711
+#: ../lib/modules/sambaSamAccount.inc:789
+#: ../lib/modules/posixAccount.inc:906
+#: ../lib/modules/posixAccount.inc:1007
+#: ../lib/modules/inetOrgPerson.inc:562
+#: ../lib/modules/inetOrgPerson.inc:706
+msgid "Repeat password"
+msgstr "Herhaal wachtwoord"
+
+#: ../lib/modules/posixAccount.inc:72
+#: ../lib/modules/posixAccount.inc:712
+msgid "Replaced $user or $group in homedir."
+msgstr "Vervangen $user of $groep in homedirectory."
+
+#: ../templates/tree/edit.php:241
+#, php-format
+msgid "Required attribute for objectClass(es) %s"
+msgstr "Verplicht attribuut voor objectklas(sen) %s"
+
+#: ../templates/tree/templates/creation/custom.php:187
+#: ../templates/schema/schema.php:387
+msgid "Required attributes"
+msgstr "Verplichte attributen"
+
+#: ../templates/config/confmain.php:403
+#: ../templates/profedit/profilepage.php:249
+msgid "Reset"
+msgstr "Reset"
+
+#: ../lib/modules.inc:937
+#: ../lib/modules.inc:965
+msgid "Reset changes"
+msgstr "Reset veranderingeren"
+
+#: ../lib/modules/sambaAccount.inc:338
+#: ../lib/modules/sambaAccount.inc:801
+#: ../lib/modules/sambaSamAccount.inc:179
+#: ../lib/modules/sambaSamAccount.inc:902
+msgid "Reset password"
+msgstr "Reset wachtwoord"
+
+#: ../lib/modules/inetLocalMailRecipient.inc:56
+#: ../lib/modules/inetLocalMailRecipient.inc:91
+#: ../lib/modules/inetLocalMailRecipient.inc:188
+#: ../lib/modules/inetLocalMailRecipient.inc:358
+msgid "Routing address"
+msgstr "Routing adres"
+
+#: ../lib/modules/ldapPublicKey.inc:48
+#: ../lib/modules/ldapPublicKey.inc:54
+#: ../lib/modules/ldapPublicKey.inc:58
+#: ../lib/modules/ldapPublicKey.inc:66
+#: ../lib/modules/ldapPublicKey.inc:128
+msgid "SSH public key"
+msgstr "SSH publiek sleutel"
+
+#: ../lib/modules/ldapPublicKey.inc:200
+msgid "SSH public key(s)"
+msgstr "SSH publiek sleutel(s)"
+
+#: ../lib/modules/sambaAccount.inc:105
+msgid "Samba 2"
+msgstr "Samba 2"
+
+#: ../lib/modules/sambaSamAccount.inc:122
+#: ../lib/modules/sambaGroupMapping.inc:232
+msgid "Samba 3"
+msgstr "Samba 3"
+
+#: ../lib/modules/sambaDomain.inc:138
+#: ../lib/modules/sambaDomain.inc:139
+msgid "Samba 3 domain SID is invalid!"
+msgstr "Samba 3 domein SID is ongeldig!"
+
+#: ../lib/types/smbDomain.inc:51
+msgid "Samba 3 domain entries"
+msgstr "Samba 3 domein entrees"
+
+#: ../lib/modules/sambaSamAccount.inc:238
+#: ../lib/modules/sambaSamAccount.inc:242
+#: ../lib/modules/sambaSamAccount.inc:373
+#: ../lib/modules/sambaSamAccount.inc:397
+msgid "Samba RID"
+msgstr "Samba RID"
+
+#: ../lib/modules/sambaGroupMapping.inc:266
+#: ../lib/modules/sambaGroupMapping.inc:291
+msgid "Samba RID number"
+msgstr "Samba RID nummer"
+
+#: ../lib/modules/sambaGroupMapping.inc:260
+msgid "Samba display name"
+msgstr "Samba display naam"
+
+#: ../lib/modules/sambaDomain.inc:47
+msgid "Samba domain"
+msgstr "Samba domein"
+
+#: ../lib/modules/sambaGroupMapping.inc:252
+msgid "Samba domain name"
+msgstr "Samba domeinnaam"
+
+#: ../lib/types/smbDomain.inc:42
+msgid "Samba domains"
+msgstr "Samba domeinen"
+
+#: ../lib/modules/sambaGroupMapping.inc:272
+#: ../lib/modules/sambaGroupMapping.inc:299
+#: ../lib/modules/sambaGroupMapping.inc:317
+msgid "Samba group type"
+msgstr "Samba groep type"
+
+#: ../lib/modules/sambaAccount.inc:335
+#: ../lib/modules/sambaAccount.inc:708
+#: ../lib/modules/sambaSamAccount.inc:176
+#: ../lib/modules/sambaSamAccount.inc:785
+msgid "Samba password"
+msgstr "Samba wachtwoord"
+
+#: ../lib/modules/sambaAccount.inc:70
+#: ../lib/modules/sambaAccount.inc:162
+#: ../lib/modules/sambaAccount.inc:293
+#: ../lib/modules/sambaAccount.inc:382
+#: ../lib/modules/sambaAccount.inc:385
+#: ../lib/modules/sambaAccount.inc:760
+#: ../lib/modules/sambaAccount.inc:852
+#: ../lib/modules/sambaSamAccount.inc:85
+#: ../lib/modules/sambaSamAccount.inc:223
+#: ../lib/modules/sambaSamAccount.inc:226
+#: ../lib/modules/sambaSamAccount.inc:360
+#: ../lib/modules/sambaSamAccount.inc:851
+#: ../lib/modules/sambaSamAccount.inc:1071
+#: ../lib/modules/sambaSamAccount.inc:1194
+msgid "Samba workstations"
+msgstr "Samba werkstations"
+
+#: ../lib/modules/sambaSamAccount.inc:950
+msgid "Saturday"
+msgstr "Zaterdag"
+
+#: ../templates/tree/edit.php:507
+#: ../templates/pdfedit/pdfpage.php:769
+#: ../templates/profedit/profilepage.php:247
+msgid "Save"
+msgstr "Bewaar"
+
+#: ../help/help.inc:148
+msgid "Save account"
+msgstr "Bwaar account"
+
+#: ../templates/tree/export_form.php:123
+msgid "Save as file"
+msgstr "Bewaar als bestand"
+
+#: ../templates/tools.php:82
+msgid "Schema browser"
+msgstr "Schema browser"
+
+#: ../templates/pdfedit/pdfdelete.php:56
+#: ../templates/pdfedit/pdfdelete.php:59
+msgid "Scope"
+msgstr "Bereik"
+
+#: ../help/help.inc:98
+msgid "Script path"
+msgstr "Script pad"
+
+#: ../templates/config/confsave.php:114
+msgid "Script path is invalid!"
+msgstr "Script pad is ongeldig!"
+
+#: ../help/help.inc:103
+msgid "Script server"
+msgstr "Script server"
+
+#: ../templates/config/confsave.php:120
+msgid "Script server is invalid!"
+msgstr "Script server is ongeldig!"
+
+#: ../templates/config/confmain.php:333
+msgid "Script settings"
+msgstr "Script instellingen"
+
+#: ../templates/tree/export_form.php:114
+#: ../lib/export.inc:443
+#: ../lib/export.inc:513
+msgid "Search filter"
+msgstr "Zoek filter"
+
+#: ../templates/tree/export_form.php:102
+#: ../lib/export.inc:442
+#: ../lib/export.inc:512
+msgid "Search scope"
+msgstr "Reikwjdte zoekopdracht"
+
+#: ../templates/pdfedit/pdfpage.php:660
+msgid "Section"
+msgstr "Sektie"
+
+#: ../templates/config/confmain.php:361
+msgid "Security settings"
+msgstr "Veiligheidsinstellingen"
+
+#: ../lib/lists.inc:625
+msgid "See README.openldap.txt to solve this problem."
+msgstr "Lees README.openldap.txt om dit probleem op te lossen."
+
+#: ../templates/help.php:112
+msgid "See also"
+msgstr "Zie ook "
+
+#: ../templates/tree/create_form.php:76
+msgid "Select a template for the creation process"
+msgstr "Selecteer een sjabloon voor het creatieproces"
+
+#: ../lib/types/group.inc:180
+#: ../lib/types/user.inc:216
+#: ../lib/lists.inc:395
+msgid "Select all"
+msgstr "Alles selecteren"
+
+#: ../lib/modules/posixAccount.inc:973
+msgid "Selected groups"
+msgstr "Geselecteerde groepen"
+
+#: ../templates/config/confmodules.php:176
+msgid "Selected modules"
+msgstr "Geslecteerde modules"
+
+#: ../lib/modules/posixGroup.inc:244
+msgid "Selected users"
+msgstr "Geselecteerde gebruikers"
+
+#: ../templates/config/confsave.php:82
+msgid "Server Address is empty!"
+msgstr "Server adres is leeg!"
+
+#: ../templates/config/confmain.php:156
+#: ../help/help.inc:60
+msgid "Server address"
+msgstr "Server adres"
+
+#: ../templates/config/confmain.php:337
+msgid "Server of external script"
+msgstr "Server van extern script"
+
+#: ../templates/config/confmain.php:153
+msgid "Server settings"
+msgstr "Server instellingen"
+
+#: ../lib/modules/posixGroup.inc:196
+#: ../lib/modules/posixAccount.inc:916
+#: ../lib/modules/posixAccount.inc:1046
+msgid "Set no password"
+msgstr "Geen wachtwoord instellen"
+
+#: ../templates/config/profmanage.php:288
+#: ../help/help.inc:123
+msgid "Set profile password"
+msgstr "Profiel wachtwoord instellen"
+
+#: ../lib/modules/posixGroup.inc:421
+msgid "Sets the group password."
+msgstr "Wachtwoord van de groep instellen."
+
+#: ../lib/modules/shadowAccount.inc:68
+msgid "Shadow"
+msgstr "Schaduw"
+
+#: ../templates/massBuildAccounts.php:198
+msgid "Show LDIF file"
+msgstr "Toon  LDIF bestand"
+
+#: ../templates/tree/edit.php:106
+msgid "Show internal attributes"
+msgstr "Toon interne attributen"
+
+#: ../templates/schema/schema.php:198
+msgid "Single valued"
+msgstr "Enkelvoudige waarde"
+
+#: ../lib/modules/quota.inc:438
+msgid "Soft block"
+msgstr "Zacht blok"
+
+#: ../lib/modules/quota.inc:94
+#: ../lib/modules/quota.inc:304
+#: ../lib/modules/quota.inc:361
+msgid "Soft block limit"
+msgstr "Zachte blok limiet"
+
+#: ../lib/modules/quota.inc:95
+msgid "Soft block limit."
+msgstr "Zachte blok limiet."
+
+#: ../lib/modules/quota.inc:440
+msgid "Soft inode"
+msgstr "Soft inode"
+
+#: ../lib/modules/quota.inc:111
+msgid "Soft inode (files) limit."
+msgstr "Zachte inode (bestanden) limiet"
+
+#: ../lib/modules/quota.inc:110
+#: ../lib/modules/quota.inc:308
+#: ../lib/modules/quota.inc:363
+msgid "Soft inode limit"
+msgstr "Zachte inode limiet"
+
+#: ../templates/tree/edit.php:136
+#, php-format
+msgid "Some attributes (%s) were modified and are highlighted below."
+msgstr "Enkele attributen %s zijn gewijzigd en hieronder geaccentueerd."
+
+#: ../lib/modules.inc:925
+msgid "Some required information is missing"
+msgstr "Sommeige benodigde informatie ontbreekt"
+
+#: ../templates/help.php:145
+#, php-format
+msgid "Sorry this help id ({bold}%s{endbold}) is not available for this module ({bold}%s{endbold})."
+msgstr "Sorry deze help id ({bold}%s{endbold}) is niet beschikbaar voor deze module ({bold}%s{endbold})."
+
+#: ../templates/help.php:159
+#, php-format
+msgid "Sorry this help number ({bold}%d{endbold}) is not available."
+msgstr "Sorry dit help nummer ({bold}%d{endbold}) is niet beschikbaar."
+
+#: ../lib/modules/sambaAccount.inc:306
+#: ../lib/modules/sambaAccount.inc:394
+#: ../lib/modules/sambaAccount.inc:792
+#: ../lib/modules/sambaSamAccount.inc:235
+#: ../lib/modules/sambaSamAccount.inc:886
+msgid "Special user"
+msgstr "Speciale gebruiker"
+
+#: ../templates/pdfedit/pdfpage.php:538
+#: ../templates/pdfedit/pdfpage.php:544
+#: ../templates/pdfedit/pdfpage.php:694
+msgid "Static text"
+msgstr "Statische tekst"
+
+#: ../templates/tree/templates/creation/custom.php:54
+msgid "Step 1 of 2: Name and object class(es)"
+msgstr "Stap 1 van 2: Naam en object klas(sen)"
+
+#: ../templates/tree/templates/creation/custom.php:177
+msgid "Step 2 of 2: Specify attributes and values"
+msgstr "Stap 2 van 2: Specificeer attributen en waarden"
+
+#: ../lib/modules/inetOrgPerson.inc:130
+msgid "Steve"
+msgstr "Steve"
+
+#: ../lib/modules/sambaAccount.inc:213
+#: ../lib/modules/sambaSamAccount.inc:273
+#: ../lib/modules/posixAccount.inc:191
+#: ../lib/modules/inetOrgPerson.inc:220
+msgid "Steve Miller"
+msgstr "Steve Miller"
+
+#: ../lib/modules/posixAccount.inc:245
+msgid "Steve Miller,Room 2.14,123-123-1234,123-123-1234"
+msgstr "Steve Miller,Kamer 2.14,123-123-1234,123-123-1234"
+
+#: ../lib/modules/inetOrgPerson.inc:58
+#: ../lib/modules/inetOrgPerson.inc:165
+#: ../lib/modules/inetOrgPerson.inc:295
+#: ../lib/modules/inetOrgPerson.inc:296
+#: ../lib/modules/inetOrgPerson.inc:576
+#: ../lib/modules/inetOrgPerson.inc:771
+msgid "Street"
+msgstr "Straat"
+
+#: ../templates/pdfedit/pdfpage.php:743
+msgid "Structure name"
+msgstr "Struktuurnaam"
+
+#: ../templates/tree/export_form.php:75
+msgid "Sub (entire subtree)"
+msgstr "Sub (volledige subtree)"
+
+#: ../templates/tree/export_form.php:164
+#: ../templates/ou_edit.php:105
+#: ../templates/ou_edit.php:192
+#: ../templates/masscreate.php:106
+#: ../templates/config/profmanage.php:403
+#: ../templates/config/confmodules.php:104
+#: ../templates/config/confmodules.php:107
+#: ../templates/config/confmain.php:401
+#: ../templates/config/conftypes.php:232
+#: ../templates/pdfedit/pdfdelete.php:90
+#: ../templates/pdfedit/pdfpage.php:735
+#: ../templates/pdfedit/pdfmain.php:152
+#: ../templates/profedit/profiledelete.php:81
+#: ../templates/profedit/profilemain.php:164
+#: ../lib/modules/posixGroup.inc:283
+#: ../lib/modules/sambaAccount.inc:802
+#: ../lib/modules/sambaSamAccount.inc:903
+#: ../lib/modules/sambaSamAccount.inc:989
+#: ../lib/modules/posixAccount.inc:1012
+#: ../lib/modules/inetOrgPerson.inc:711
+msgid "Submit"
+msgstr "Verzend"
+
+#: ../templates/schema/schema.php:180
+msgid "Substring Rule"
+msgstr "Substring regel"
+
+#: ../templates/tree/rdelete.php:135
+#: ../templates/tree/rdelete.php:147
+msgid "Success"
+msgstr "Succes"
+
+#: ../lib/lists.inc:465
+#: ../lib/modules.inc:1018
+msgid "Suffix"
+msgstr "Achtervoegsel"
+
+#: ../lib/modules/sambaSamAccount.inc:950
+msgid "Sunday"
+msgstr "Zondag"
+
+#: ../templates/tree/add_value_form.php:189
+#: ../templates/schema/schema.php:185
+msgid "Syntax"
+msgstr "Syntax"
+
+#: ../templates/schema/schema.php:93
+msgid "Syntax OID"
+msgstr "Syntax OID"
+
+#: ../templates/schema/schema.php:77
+#: ../templates/schema/schema.php:78
+msgid "Syntaxes"
+msgstr "Syntaxes"
+
+#: ../lib/modules/kolabUser.inc:222
+msgid "Target of invitation policy is invalid!"
+msgstr "Doel van invitatiebeleid is niet valide!"
+
+#: ../lib/modules/inetOrgPerson.inc:50
+#: ../lib/modules/inetOrgPerson.inc:189
+#: ../lib/modules/inetOrgPerson.inc:311
+#: ../lib/modules/inetOrgPerson.inc:312
+#: ../lib/modules/inetOrgPerson.inc:592
+#: ../lib/modules/inetOrgPerson.inc:775
+msgid "Telephone number"
+msgstr "Telefoonnummer"
+
+#: ../lib/modules/inetOrgPerson.inc:155
+msgid "Temp"
+msgstr "Tijdelijk"
+
+#: ../lib/modules/inetOrgPerson.inc:143
+msgid "Temp, contract until december"
+msgstr "Tijdelijk, contract loopt tot december"
+
+#: ../templates/tree/create_form.php:82
+msgid "Template"
+msgstr "Sjabloon"
+
+#: ../help/help.inc:112
+msgid "Text for user PDF"
+msgstr "Tekst voor gebruiker PDF"
+
+#: ../lib/modules/kolabUser.inc:159
+msgid "The Cyrus mail quota for users in MBytes, leave blank for unlimited space."
+msgstr "The Cyrus mail quota voor gebruikers in MBytes, open laten voor ongelimiteerde ruimte."
+
+#: ../lib/modules/sambaDomain.inc:64
+msgid "The SID of your Samba server. Get it with \"net getlocalsid\"."
+msgstr "De SID van de Samba server. Te bepalen met  \"net getlocalsid\"."
+
+#: ../lib/modules/posixAccount.inc:70
+msgid "The UID ranges for users and hosts overlap! This is a problem because LAM uses the highest UID in use + 1 for new accounts. Please set the minimum UID to equal values or use independent ranges."
+msgstr "De UID range voor gebruikers en hosts overlappen. Dit is een probleem omdat LAM de hoogste UID+1 gebruikt voor een nieuw account. Bepaal eenzelfde minimum UID of gebruik onafhankelijke reeksen."
+
+#: ../templates/tree/templates/creation/custom.php:99
+#, php-format
+msgid "The container you specified (%s) does not exist. Please try again."
+msgstr "De opgegeven container (%s) bestaat niet. Probeer nogmaals."
+
+#: ../lib/modules/kolabUser.inc:147
+msgid "The country name of the user."
+msgstr "De landsnaam behorende bij de gebruiker."
+
+#: ../lib/modules/shadowAccount.inc:55
+msgid "The expiration date is invalid."
+msgstr "De vervaldatum is ongeldig."
+
+#: ../templates/initsuff.php:178
+msgid "The following suffix(es) are missing in LDAP. LAM can create them for you."
+msgstr "De volgende achtervoegsel(s) ontbreken in LDAP. LAM kan ze aanmaken."
+
+#: ../lib/modules/sambaSamAccount.inc:103
+#: ../lib/modules/sambaSamAccount.inc:104
+msgid "The format of the logon hours field is invalid!"
+msgstr "Het formaat van het veld met de loginuren is ongeldig!"
+
+#: ../templates/pdfedit/pdfpage.php:121
+msgid "The headline for a new section must contain at least one character."
+msgstr "De kopregel voor een nieuwe sectie moet tenminste een teken bevatten."
+
+#: ../lib/modules.inc:882
+#, php-format
+msgid "The module %s is not yet ready."
+msgstr "De module %s is nog niet klaar."
+
+#: ../templates/pdfedit/pdfpage.php:103
+msgid "The name for that PDF-structure you submitted is not valid. A valid name must constist at least of one of the following characters 'a-z','A-Z','0-9','_','-','.'."
+msgstr "De naam voor de PDF-structuur die u wilt toestaan is niet geldig. Een geldige naam moet tenminste bestaan uit een van de volgende tekens: 'a-z','A-Z','0-9','_','-','.'."
+
+#: ../lib/modules/kolabUser.inc:151
+msgid "The name of the server where the mailbox is located."
+msgstr "De naam van de server waar de mailbox is gesitueerd."
+
+#: ../lib/modules/sambaDomain.inc:60
+msgid "The name of your Windows domain or workgroup."
+msgstr "De naam van uw Windows domein of werkgroep."
+
+#: ../help/help.inc:143
+msgid "The new account will be saved under this LDAP suffix."
+msgstr "Het nieuwe account zal bewaard worden onder dit LDAP achtervoegsel."
+
+#: ../templates/config/confmain.php:104
+msgid "The password is invalid! Please try again."
+msgstr "Het wachtwoord is ongeldig! Probeer opnieuw."
+
+#: ../lib/modules/posixAccount.inc:325
+msgid "The primary group for this account. You can insert a GID number or a group name."
+msgstr "De primaire groep voor deze account. Een GID of groepsnaam kan opgegeven worden."
+
+#: ../lib/modules/posixAccount.inc:396
+msgid "The primary group the host should be member of."
+msgstr "De primaire groep waarvan de host lid zou moeten zijn."
+
+#: ../lib/modules/posixAccount.inc:350
+msgid "The primary group the user should be member of."
+msgstr "De primaire groep waarvan de gebruiker lid zou moeten zijn."
+
+#: ../templates/pdfedit/pdfpage.php:125
+msgid "The static text must contain at least one character."
+msgstr "De statische tekst moet tenminste een teken bevatten."
+
+#: ../templates/tree/add_oclass_form.php:121
+msgid "There are new required attributes which need to be set."
+msgstr "Er zijn nieuwe verplichte attributen die moeten worden ingesteld."
+
+#: ../lib/modules/posixGroup.inc:490
+msgid "There are still users who have this group as their primary group."
+msgstr "Er zijn nog gebruikers die deze groep als primaire groep hebben."
+
+#: ../lib/modules/sambaGroupMapping.inc:366
+msgid "There can be only one group of this type."
+msgstr "Er mag maar een groep bestaan van dit type."
+
+#: ../templates/massDoUpload.php:124
+msgid "There were errors while uploading:"
+msgstr "Er zijn fouten opgetreden tijdens het uploaden:"
+
+#: ../lib/modules/posixGroup.inc:437
+msgid "These are the minimum and maximum numbers to use for group IDs when creating new group accounts. New group accounts will always get the highest number in use plus one."
+msgstr "Dit zijn de minimum en maximum nummers voor een groep IDsvoor het aanmalen van een nieuwe groep. Nieuwe groepaccount zullen altijd het hoogste nummer + 1 toegewezen krijgen."
+
+#: ../lib/modules/posixAccount.inc:313
+msgid "These are the minimum and maximum numbers to use for machine IDs when creating new accounts for Samba hosts. The range should be different from that of users. New host accounts will always get the highest number in use plus one."
+msgstr "Dit zijn de minimum en maximum nummers voor machine IDs voor het aanmaken van nieuwe Samba host accounts. Dit bereik dient verschilend te zijn van dat van de gebruikers. Nieuwe host accounts zullen altijd het hoogdte nummer krijgen + 1."
+
+#: ../lib/modules/posixAccount.inc:309
+msgid "These are the minimum and maximum numbers to use for user IDs when creating new user accounts. The range should be different from that of machines. New user accounts will always get the highest number in use plus one."
+msgstr "Dit zijn de minimum en maximum nummers voor een gebruiker IDs die gebruikt worden bij het aanmaken van nieuwe gebruikersaccounts. Dit bereik moet verschillen met dan van de host. Nieuwe gebryuikers accounts zullen altijd het hoogste nummer + 1 toegewezen krijgen."
+
+#: ../lib/modules/posixAccount.inc:94
+msgid "This GID number is invalid! Please provide either a number or a group name."
+msgstr "De GID is niet valide! S.v.p. een getal of een groepsnaam opgeven."
+
+#: ../lib/modules/kolabUser.inc:304
+msgid "This account is marked for deletion."
+msgstr "Dit account is gemerkt als te verwjderen."
+
+#: ../lib/modules/sambaSamAccount.inc:236
+msgid "This allows you to define this account as a special user like administrator or guest."
+msgstr "Dit biedt de mogelijkheid een account als speciale gebruiker de definieren zoals beheerder of gast."
+
+#: ../help/help.inc:124
+msgid "This changes the password of the selected profile."
+msgstr "Dit verandert het wachtwoord van het geselecteeerde profiel."
+
+#: ../help/help.inc:126
+msgid "This changes the profile which is selected by default at login."
+msgstr "Dit verandert het profiel dat als default wordt gekozen bij de login."
+
+#: ../templates/massBuildAccounts.php:148
+msgid "This column is defined to include unique entries but duplicates were found:"
+msgstr "Deze kolom is zo gedefinieerd dat het alleen unieke entrees kan bevatten, maar er zijn dubbele waarden gevonden:"
+
+#: ../help/help.inc:97
+msgid "This defines the language of the login window and sets this language as the default language. Users can change the language at login."
+msgstr "Dit bepaalt de taal van het loginscherm en het zal als standaard taal gebruikt worden. Gebruikers kunnen de taal bij login wijzigen."
+
+#: ../lib/pdf.inc:455
+msgid "This document was automatically created by LDAP Account Manager"
+msgstr "Dit document is automatisch gecreeerd door LDAP Account Manager"
+
+#: ../templates/tree/edit.php:205
+msgid "This entry has no attributes"
+msgstr "Deze entree heeft geen attributen"
+
+#: ../templates/tree/delete_form.php:95
+#, php-format
+msgid "This entry is the root of a sub-tree containing %s entries."
+msgstr "Deze entree is de basis voor een subtree met %s entrees."
+
+#: ../lib/modules/posixAccount.inc:95
+msgid "This gecos value is invalid!"
+msgstr "Dit gecos veld is niet valide!"
+
+#: ../lib/modules/ieee802device.inc:61
+msgid "This is a comma separated list of MAC addresses."
+msgstr "Dit is een komma gescheiden lijst van MAC adressen"
+
+#: ../lib/modules/kolabUser.inc:135
+msgid "This is a comma separated list of delegates."
+msgstr "Dit is een komma gescheiden lijst van gedelegeerden."
+
+#: ../lib/modules/kolabUser.inc:143
+msgid "This is a comma separated list of eMail aliases."
+msgstr "Dit is een komma gescheiden lijst van e-mail aliassen"
+
+#: ../lib/modules/kolabUser.inc:127
+msgid "This is a comma separated list of invitation policies."
+msgstr "Dit is een komma gescheiden lijst van  invitatie beleidsregels."
+
+#: ../lib/modules/nisMailAlias.inc:71
+msgid "This is a comma separated list of recipients."
+msgstr "Dit is een komma gescheiden lijst van ontvangers"
+
+#: ../lib/modules/inetLocalMailRecipient.inc:65
+msgid "This is a comma separated list of the users public email addresses."
+msgstr "Dit is een komma gescheiden lijst van publieke e-mail adressen van de gebruiker."
+
+#: ../help/help.inc:90
+msgid "This is a list of valid DN entries of all users that are allowed to login to LDAP Account Manager. The user names have to be separated by semicolons."
+msgstr "Dit is een lijst van valide DN entrees van alle gebruikers die het toegestaan zijn om in te loggen in LDAP Account Manager. De gebruikersnamen dienen gescheiden te worden door een puntkomma."
+
+#: ../templates/masscreate.php:211
+msgid "This is an example how it would look in your spreadsheet program before you convert to CSV:"
+msgstr "Dit is een voorbeeld hoe het eruit zou zien in een spreadsheet voordat het geconverteerd wordt naar CVS:"
+
+#: ../lib/modules/inetOrgPerson.inc:73
+msgid "This is not a valid DN!"
+msgstr "Dit is geen geldige DN!"
+
+#: ../lib/modules/sambaSamAccount.inc:91
+msgid "This is not a valid RID number!"
+msgstr "Dit is geen geldig RID nummer!"
+
+#: ../lib/modules/sambaGroupMapping.inc:368
+msgid "This is not a valid Samba 3 group type!"
+msgstr "Dit is geen geldige Samba 3 groep!"
+
+#: ../lib/modules/inetLocalMailRecipient.inc:61
+msgid "This is one of the users public email addresses."
+msgstr "Dit is een van de publieke e-mail adressen van de gebruiker."
+
+#: ../lib/modules/nisMailAlias.inc:67
+msgid "This is one recipient for this alias."
+msgstr "Dit is een ontvanger voor deze alias."
+
+#: ../lib/modules/inetOrgPerson.inc:292
+msgid "This is the LDAP DN of the user's manager. Use this property to represent hierarchies in your company."
+msgstr "Dit is de LDAP DN van de gebruikersbeheerder. Gebruik deze eigenschap om hierarchie in je bedrijf te representeren."
+
+#: ../lib/modules/ieee802device.inc:57
+msgid "This is the MAC address of the network card of the device (e.g. 00:01:02:DE:EF:18)."
+msgstr "Dit is het MAC adres van de netwerkinterface van het device (bijv. 00:02:DE:EF:18)."
+
+#: ../lib/modules/sambaAccount.inc:392
+msgid "This is the RID of the user's primary Windows group."
+msgstr "Dit is de RID van de primaire Windows groep van de gebruiker."
+
+#: ../lib/modules/sambaSamAccount.inc:233
+msgid "This is the SID of the user's primary Windows group."
+msgstr "Dit is de SID van de primaire Windows groep van de gebruiker."
+
+#: ../help/help.inc:99
+msgid "This is the absolute path to an external script for setting quotas and creating home directories."
+msgstr "Dit is het absolute pad naar een extern script waarmee quota's ingesteld kunnen worden en homedirectories gemaakt kunnen worden."
+
+#: ../lib/modules/sambaAccount.inc:336
+#: ../lib/modules/sambaSamAccount.inc:177
+msgid "This is the account's Windows password."
+msgstr "Dit is het Windows wachtwoord van het account."
+
+#: ../lib/modules/sambaAccount.inc:333
+#: ../lib/modules/sambaSamAccount.inc:174
+msgid "This is the account's full name on Windows systems."
+msgstr "Dit is de volledige naam van het account op Windows systemen."
+
+#: ../lib/modules/sambaSamAccount.inc:255
+#: ../lib/modules/shadowAccount.inc:166
+msgid "This is the date when the account will expire. Format: DD-MM-YYYY"
+msgstr "Dit is de datum waarop het account zal verlopen. Format: DD-MM-YYYY"
+
+#: ../lib/modules/sambaGroupMapping.inc:284
+msgid "This is the group name which will be shown in Windows."
+msgstr "Dit is de groepsnaam die getoond zal worden in Windows."
+
+#: ../help/help.inc:139
+msgid "This is the identifier for the relative DN value. It must be one of the given allowed LDAP attributes (e.g. user accounts usually use \"uid\" while groups use \"cn\")."
+msgstr "Hiermee wordt de relatieve DN waarde geidentificeerd. Het moet een van de gegeven toegestane LDAP attributen zijn (bijv. gebruikersaccount is gewoonlijk  \"uid\" terwijl groepen  meestal \"cn\" gebruiken)."
+
+#: ../help/help.inc:85
+msgid "This is the list of attributes to show in the account list. The entries can either be predefined values, \"#attribute\", or individual ones, \"attribute:description\". Several entries are seperated by semicolons."
+msgstr "Dit is een lijst van attributen die getoond worden in de account lijst. De entrees kunnen ofwel voorgedefinieerde waarden,  \"#attribute\", of afzonderlijke,  \"attribute:description\". De verschillende entrees worden door een puntkomma gescheiden."
+
+#: ../lib/modules/inetLocalMailRecipient.inc:69
+msgid "This is the mail server for the user."
+msgstr "Dit is de mailserver voor de gebruiker."
+
+#: ../lib/modules/inetOrgPerson.inc:328
+msgid "This is the natural name of the user. If empty, the first and last name is used."
+msgstr "Dit is de algemene naam van de gebruiker; indien leeg wordt de voor- en achternaam gebruikt."
+
+#: ../lib/modules/posixAccount.inc:382
+msgid "This is the natural name of the user. If empty, the first and last name or user name is used."
+msgstr "Dit is de algemene naam van een gebruiker. Indien leeg wordt de voor- en achternaam of de gebruikersnaam gebruikt."
+
+#: ../help/help.inc:95
+msgid "This is the number of rows to show in the user/group/host list. If more entries are found the list will be split into several pages."
+msgstr "Dit is het aantal rijen die getoond worden in de gebruiker/goep/host list. Als er meer entrees zin wordt de lijst verdeel over meerdere pagina's."
+
+#: ../lib/modules/sambaGroupMapping.inc:292
+msgid "This is the relative ID (similar to UID on Unix) for Windows accounts. If you leave this empty LAM will calculate the RID from the UID. This can be either a number or the name of a special group:"
+msgstr "Dit is de relatieve ID (vergelijkbaar met UID in Unix) voor Window accounts. Als het niet gevuld wordt zal LAM een RID bepalen op basis van de UID. Dit kan ofwel een nummer of de naam van een speciale groep zijn."
+
+#: ../lib/modules/sambaSamAccount.inc:239
+msgid "This is the relative ID number for your Windows account. You can either enter a number or one of these special accounts: "
+msgstr "Dit is het relatieve ID nummer van je Windows account. Een nummer kan ingegeven worden of een van de deze speciale accounts:"
+
+#: ../lib/modules/sambaSamAccount.inc:243
+msgid "This is the relative ID number for your host account. If you leave this empty LAM will use: uidNumber*2 + sambaAlgorithmicRidBase."
+msgstr "Dit is het relatieve ID nummer van je host account. Als het niet ingevuld wordt zal LAM uidNumber*2 + sambaAlgorithmicRidBase gebruiken."
+
+#: ../help/help.inc:61
+msgid "This is the server address of your LDAP server. Use ldap:// for standard LDAP connections and ldaps:// for encrypted (require server certificates) connections. The port value is optional."
+msgstr "Dit is het adres van de LDAP server. Gebruik ldap:// voor een standaard LDAP connectie en ldaps:// voor een encrypted (met server certificaat) verbinding. De poortwaarde is optioneel."
+
+#: ../help/help.inc:104
+msgid "This is the server where the lamdaemon script is stored. LDAP Account Manager will make a SSH connection to this server with user name and password provided at login."
+msgstr "Dit is de server waar de LAM-daemon script opgeslagen is. LDAP Account Manager zal een SSH connectie naar deze server opbouwen met de gebruikersnaam en wachtwoord welke bij de login gegeven zijn."
+
+#: ../help/help.inc:79
+msgid "This is the suffix for the LDAP tree viewer."
+msgstr "Dit is achtervoegsel voor de LDAP boom browser."
+
+#: ../help/help.inc:73
+msgid "This is the suffix of the LDAP tree from where to search for LDAP entries. Only entries in this subtree will be displayed in the account list. When creating a new accont this will be the DN where it is saved."
+msgstr "Dit is achtervoegsel voor de LDAP boom vanwaar LDAP entrees gezocht worden. Alleen entrees in deze subtree worden getoond in de account lijst. Wanneer een nieuw account word gecreeerd zal dit de DN zijn waar het wordt opgeslagen."
+
+#: ../lib/modules/inetLocalMailRecipient.inc:57
+msgid "This is the target email address for the user's mails."
+msgstr "Dit is het uiteindelijke e-mail adres voor de gebruikers berichten."
+
+#: ../help/help.inc:111
+msgid "This is the time in minutes which LAM caches its LDAP searches. Shorter times will stress LDAP more but decrease the possibility that changes are not identified."
+msgstr "Dit is de tijd in minuten waarin LAM de zoekresultaten tussentijds bewaart. Een kortere tijd belast LDAP meer maar vermindert de kans dat veranderingen niet gezien worden."
+
+#: ../lib/modules/kolabUser.inc:155
+msgid "This is the time limit (in days) for other users who want to check future appointments. If you leave this blank the default (60 days) will be set."
+msgstr "Dit is de tijdslimiet (in dagen) voor andere gebruikers die hun aankomende afspraken willen controleren. Indien leeg wordt de default waarde (60 dagen) gehanteerd."
+
+#: ../lib/modules/sambaSamAccount.inc:230
+msgid "This is the user's primary Windows group."
+msgstr "Dit is de primaire Windows groep van de gebruiker."
+
+#: ../lib/modules/posixAccount.inc:96
+msgid "This login shell is invalid!"
+msgstr "De login shell in ongeldig!"
+
+#: ../templates/schema/schema.php:354
+msgid "This object class is obsolete."
+msgstr "Deze objectklasse is obsoleet."
+
+#: ../lib/modules/sambaSamAccount.inc:249
+msgid "This option defines the allowed logon hours for this account."
+msgstr "Deze optie bepaalt de toegestane login uren voor dit account."
+
+#: ../lib/modules/sambaSamAccount.inc:252
+msgid "This option defines the allowed logon hours for this account. The format is the same as for the LDAP attribute. The 24*7 hours are represented as 168 bit which are saved as 21 hex (21*8 = 168) values. The first bit represents Sunday 0:00 - 0:59 in GMT."
+msgstr "Deze optie bepaalt de toegestane login uren voor dit account. Het formaat is hetzelfde als voor het LDAP attribuut. De 24*7 uren worden als 168 Bit gerepresenteert, die als 21 Hex-waarde (21*8 = 168) opgeslagen wordt. Het eerste bit representeert zondag 00:00 - 00:59 GMT."
+
+#: ../help/help.inc:149
+msgid "This saves your account to the LDAP database."
+msgstr "Dit slaat je account op in de LDAP database."
+
+#: ../help/help.inc:113
+msgid "This text will appear on top of every user PDF file."
+msgstr "Deze tekst zal bovenaan iedere PDF pagina verschijnen."
+
+#: ../templates/tools.php:76
+msgid "This tool allows you to customize the PDF pages."
+msgstr "Dit hulpmiddel maakt het mogelijk de PDF pagina's aan te passen."
+
+#: ../templates/lists/userlink.php:63
+msgid "This user was not found!"
+msgstr "Deze gebruiker is niet aangetroffen!"
+
+#: ../lib/modules/sambaAccount.inc:79
+#: ../lib/modules/sambaAccount.inc:80
+#: ../lib/modules/sambaAccount.inc:81
+#: ../lib/modules/sambaAccount.inc:82
+#: ../lib/modules/sambaSamAccount.inc:94
+#: ../lib/modules/sambaSamAccount.inc:95
+#: ../lib/modules/sambaSamAccount.inc:96
+#: ../lib/modules/sambaSamAccount.inc:97
+msgid "This value can only be \\\"true\\\" or \\\"false\\\"!"
+msgstr "Deze waarde kan alleen maar  \\\"true\\\" or \\\"false\\\" zijn!"
+
+#: ../lib/modules/posixAccount.inc:97
+msgid "This value can only be \\\"true\\\" or \\\"false\\\"."
+msgstr "Deze waarde kan alleen maar  \\\"true\\\" or \\\"false\\\" zijn."
+
+#: ../lib/modules/posixGroup.inc:489
+msgid "This value must be a list of user names separated by semicolons."
+msgstr "Deze waarde moet een lijst met gebruikersnamen zijn gescheiden door een puntkomma."
+
+#: ../help/help.inc:158
+msgid "This will create a new organizational unit under the selected one."
+msgstr "Dit zal een nieuwe organisatie eenheid creeren onder de geselecteerde eenheid."
+
+#: ../help/help.inc:160
+msgid "This will delete the selected organizational unit. The OU has to be empty."
+msgstr "Dit zal de geselecteerde organisatie eenheid verwijderen. De OU moet leeg zijn."
+
+#: ../help/help.inc:122
+msgid "This will delete the selected profile."
+msgstr "Dit zal het geselecteerde profiel verwijderen."
+
+#: ../lib/modules/sambaAccount.inc:339
+#: ../lib/modules/sambaSamAccount.inc:180
+msgid "This will reset the host's password to a default value."
+msgstr "Dtr zal het wachtwoord van de host terugzetten naar de default waarde."
+
+#: ../lib/modules/kolabUser.inc:163
+msgid "This will set a special flag on the account which tells Kolabd to remove it. Use this to cleanly delete Kolab accounts (e.g. this removes mail boxes)."
+msgstr "Dit zal een speciale vlag instellen voor dit account wat aan Kolabd duidelijk maakt het te verwijderen. Gebruik het om op een nette manier Kolab accounts te verwijderen (bijv. dit verwijdert de postbussen)."
+
+#: ../lib/modules/posixGroup.inc:433
+#: ../lib/modules/posixAccount.inc:370
+msgid "This will set an invalid password which prevents logins with this account."
+msgstr "Dit zal een ongeldig wachtwoord veroorzaken waardoor dit account niet meer kan inloggen."
+
+#: ../lib/modules/sambaSamAccount.inc:949
+msgid "Thursday"
+msgstr "Donderdag"
+
+#: ../lib/modules/sambaSamAccount.inc:983
+msgid "Time"
+msgstr "Tijd"
+
+#: ../lib/modules/posixAccount.inc:374
+msgid "To disable login use /bin/false. The list of shells is read from lam/config/shells"
+msgstr "Om een login onmogelijk te maken gebruik /bin/false. Een lijst met mogelijke shells wordt uit lam/config/shells gehaald."
+
+#: ../templates/main_header.php:59
+msgid "Tools"
+msgstr "Hulpmiddelen"
+
+#: ../lib/export.inc:444
+#: ../lib/export.inc:514
+msgid "Total entries"
+msgstr "Totaal aantal entrees"
+
+#: ../lib/types/user.inc:232
+msgid "Translate GID number to group name"
+msgstr "Vertaal GID nummer naar groepsnaam"
+
+#: ../templates/config/confmain.php:172
+#: ../help/help.inc:78
+msgid "Tree suffix"
+msgstr "Achtervoegsel van de boom"
+
+#: ../templates/main_header.php:78
+msgid "Tree view"
+msgstr "Kijk op de boom"
+
+#: ../templates/config/confsave.php:97
+msgid "TreeSuffix is invalid!"
+msgstr "Achtervoegsel van de boom is niet valide!"
+
+#: ../lib/modules/sambaSamAccount.inc:949
+msgid "Tuesday"
+msgstr "Dinsdag"
+
+#: ../templates/schema/schema.php:352
+msgid "Type"
+msgstr "Type"
+
+#: ../lib/modules/posixAccount.inc:82
+msgid "UID"
+msgstr "UID"
+
+#: ../lib/modules/posixAccount.inc:82
+msgid "UID has changed. Do you want to change home directory?"
+msgstr "De UID is veranderd; moet de homedirectory aangepast worden?"
+
+#: ../lib/modules/posixAccount.inc:77
+msgid "UID must be a number. It has to be inside the UID range which is defined in your configuration profile."
+msgstr "UID moet een getal zijn en het moet liggen binnen de range die in het configuratieprofiel is aangegeven."
+
+#: ../lib/types/host.inc:84
+#: ../lib/types/user.inc:81
+#: ../lib/modules/posixAccount.inc:53
+#: ../lib/modules/posixAccount.inc:195
+#: ../lib/modules/posixAccount.inc:262
+#: ../lib/modules/posixAccount.inc:308
+#: ../lib/modules/posixAccount.inc:312
+#: ../lib/modules/posixAccount.inc:320
+#: ../lib/modules/posixAccount.inc:873
+#: ../lib/modules/posixAccount.inc:1109
+msgid "UID number"
+msgstr "UID nummer"
+
+#: ../lib/modules/posixAccount.inc:53
+#, php-format
+msgid "UID number has changed. To keep file ownership you have to run the following command as root: 'find / -uid %s -exec chown %s {} \\;'"
+msgstr "UID nummer is veranderd. Om de eigenaar van de bestaande bestanden ook aan te passen voer het volgende commando als root uit:  'find / -uid %s -exec chown %s {} \\;"
+
+#: ../lib/modules/posixAccount.inc:70
+#: ../lib/modules/posixAccount.inc:165
+msgid "UID ranges for Unix accounts"
+msgstr "Range UID voor Unix accounts."
+
+#: ../lib/modules/sambaAccount.inc:374
+#: ../lib/modules/sambaSamAccount.inc:215
+msgid "UNC-path (\\\\server\\share) of homedirectory. $user and $group are replaced with user and group name."
+msgstr "UNC-pad (\\\\server\\share) van de homedirectory. $user en $group worden vervanen door gebruikers- en groepsnaam."
+
+#: ../templates/ou_edit.php:66
+msgid "Unable to create new OU!"
+msgstr "Onmogelijk nieuwe OU te maken!"
+
+#: ../templates/config/profmanage.php:86
+msgid "Unable to create new profile!"
+msgstr "Onmogelijk nieuw profiel te maken"
+
+#: ../templates/ou_edit.php:83
+msgid "Unable to delete OU!"
+msgstr "Onmogelijk OU te verwijderen!"
+
+#: ../templates/pdfedit/pdfdelete.php:56
+msgid "Unable to delete PDF structure!"
+msgstr "Onmogelijk PDF struktuur te verwijderen!"
+
+#: ../templates/config/profmanage.php:108
+#: ../templates/profedit/profiledelete.php:60
+msgid "Unable to delete profile!"
+msgstr "Onmogelijk profiel te verwijderen!"
+
+#: ../lib/modules/posixAccount.inc:1273
+#: ../lib/modules/posixAccount.inc:1490
+msgid "Unable to find group in LDAP."
+msgstr "Onmogelijk groep te vinden in LDAP."
+
+#: ../templates/config/confmain.php:318
+msgid "Unable to load available languages. Setting English as default language. For further instructions please contact the Admin of this site."
+msgstr "Niet mogelijk de beschibare talen te laden. Engels wordt als standaard taal inegsteld. Voor nadere instructies raadpleeg de beheerder van deze site."
+
+#: ../lib/profiles.inc:91
+#: ../lib/profiles.inc:95
+msgid "Unable to load profile!"
+msgstr "Onmogelijk profiel te laden!"
+
+#: ../templates/schema/schema.php:97
+#: ../templates/schema/schema.php:115
+#: ../templates/schema/schema.php:276
+#: ../templates/schema/schema.php:310
+msgid "Unable to retrieve schema!"
+msgstr "Niet mogelijk het schema op te halen!"
+
+#: ../templates/profedit/profilepage.php:125
+msgid "Unable to save profile!"
+msgstr "Onmogelijk profiel te bewaren!"
+
+#: ../lib/modules/posixGroup.inc:305
+#: ../lib/modules/posixAccount.inc:123
+msgid "Unix"
+msgstr "Unix"
+
+#: ../lib/modules/inetOrgPerson.inc:44
+#: ../lib/modules/inetOrgPerson.inc:237
+#: ../lib/modules/inetOrgPerson.inc:335
+#: ../lib/modules/inetOrgPerson.inc:623
+#: ../lib/modules/inetOrgPerson.inc:765
+msgid "Unix workstations"
+msgstr "Unix werkstations"
+
+#: ../lib/modules/inetOrgPerson.inc:44
+#: ../lib/modules/inetOrgPerson.inc:45
+msgid "Unix workstations are invalid!"
+msgstr "Unix werkstations zijn ongeldig!"
+
+#: ../templates/config/confmodules.php:233
+msgid "Unsolved dependency:"
+msgstr "Niet opgeloste afhankelijkheden:"
+
+#: ../templates/pdfedit/pdfpage.php:462
+msgid "Up"
+msgstr "Omhoog"
+
+#: ../templates/massBuildAccounts.php:195
+msgid "Upload accounts to LDAP"
+msgstr "Upload accounts naar LDAP"
+
+#: ../templates/masscreate.php:129
+msgid "Upload file and create accounts"
+msgstr "Upload bestand en creeer accounts"
+
+#: ../lib/modules.inc:472
+#, php-format
+msgid "Upload was stopped after errors in %s module!"
+msgstr "Upload is gestopt na fouten in module %s!"
+
+#: ../templates/schema/schema.php:213
+msgid "Usage"
+msgstr "Gebruik"
+
+#: ../lib/modules/sambaAccount.inc:112
+#: ../lib/modules/sambaAccount.inc:223
+#: ../lib/modules/sambaAccount.inc:341
+#: ../lib/modules/sambaAccount.inc:344
+#: ../lib/modules/sambaSamAccount.inc:182
+#: ../lib/modules/sambaSamAccount.inc:185
+#: ../lib/modules/sambaSamAccount.inc:283
+msgid "Use Unix password"
+msgstr "Gebruik Unix wachtwoord"
+
+#: ../templates/pdfedit/pdfpage.php:420
+#: ../templates/pdfedit/pdfpage.php:433
+msgid "Use default"
+msgstr "Gebruik default"
+
+#: ../help/help.inc:101
+#: ../help/help.inc:106
+msgid "Use it at your own risk and read the documentation for lamdaemon before you use it!"
+msgstr "Gebruik is voor eigen risico en lees de documentatie van lamdaemon voordat het gebruikt wordt!"
+
+#: ../lib/modules/posixGroup.inc:424
+#: ../lib/modules/sambaAccount.inc:118
+#: ../lib/modules/sambaAccount.inc:231
+#: ../lib/modules/sambaAccount.inc:347
+#: ../lib/modules/sambaAccount.inc:350
+#: ../lib/modules/sambaAccount.inc:719
+#: ../lib/modules/sambaSamAccount.inc:188
+#: ../lib/modules/sambaSamAccount.inc:191
+#: ../lib/modules/sambaSamAccount.inc:291
+#: ../lib/modules/sambaSamAccount.inc:796
+#: ../lib/modules/sambaSamAccount.inc:1016
+#: ../lib/modules/posixAccount.inc:361
+msgid "Use no password"
+msgstr "Geen wachtwoord gebruiken"
+
+#: ../lib/modules/sambaAccount.inc:715
+#: ../lib/modules/sambaSamAccount.inc:792
+#: ../lib/modules/sambaSamAccount.inc:1010
+msgid "Use unix password"
+msgstr "Gebruik Unix wachtwoord"
+
+#: ../lib/modules/quota.inc:90
+#: ../lib/modules/quota.inc:303
+msgid "Used blocks"
+msgstr "In gebruik zijnde blokken"
+
+#: ../lib/modules/quota.inc:91
+msgid "Used blocks. 1000 blocks are usually 1MB"
+msgstr "In gebruik zijnde blokken. 1.000 blokken is doorgaans 1 Mb"
+
+#: ../templates/schema/schema.php:272
+msgid "Used by attributes"
+msgstr "Gebruikt door attributen"
+
+#: ../templates/schema/schema.php:241
+msgid "Used by object classes"
+msgstr "Gebruikt door objectklassen"
+
+#: ../lib/modules/sambaDomain.inc:80
+msgid "Used for calculating RIDs from UID/GID. Do not change if unsure."
+msgstr "Wordt gebruikt om de RID uit rekenen aan de hand van UID/GID. Indien onzeker, niet veranderen."
+
+#: ../lib/modules/quota.inc:106
+#: ../lib/modules/quota.inc:307
+msgid "Used inodes"
+msgstr "In gebruik zijnde inodes"
+
+#: ../lib/modules/quota.inc:107
+msgid "Used inodes (files)"
+msgstr "In gebruik zijnde inodes (bestanden)"
+
+#: ../lib/modules/sambaGroupMapping.inc:66
+msgid "User"
+msgstr "Gebruiker"
+
+#: ../lib/types/user.inc:80
+msgid "User ID"
+msgstr "Gebruiker ID"
+
+#: ../lib/types/user.inc:51
+msgid "User accounts (e.g. Unix, Samba and Kolab)"
+msgstr "Gebruiker accounts (bijv. Unix, Samba en Kolab)"
+
+#: ../lib/modules/sambaAccount.inc:255
+#: ../lib/modules/sambaAccount.inc:365
+#: ../lib/modules/sambaAccount.inc:731
+#: ../lib/modules/sambaSamAccount.inc:206
+#: ../lib/modules/sambaSamAccount.inc:315
+#: ../lib/modules/sambaSamAccount.inc:808
+msgid "User can change password"
+msgstr "Gebruiker mag wachtwoord wijzigen"
+
+#: ../lib/modules/posixAccount.inc:346
+msgid "User description. If left empty first and last name will be used."
+msgstr "Gebruikersomschrijving. Indien open gelaten zal voor- en achternaam worden gebruikt."
+
+#: ../lib/modules/inetOrgPerson.inc:272
+msgid "User description. If left empty sur- and give name will be used."
+msgstr "Omschrijving gebruiker. Indien leeg worden voor- en achternaam gebruikt."
+
+#: ../templates/schema/schema.php:208
+msgid "User modification"
+msgstr "Aanpassing gebruiker"
+
+#: ../lib/modules/sambaAccount.inc:262
+#: ../lib/modules/sambaAccount.inc:367
+#: ../lib/modules/sambaAccount.inc:739
+#: ../lib/modules/sambaSamAccount.inc:208
+#: ../lib/modules/sambaSamAccount.inc:322
+#: ../lib/modules/sambaSamAccount.inc:816
+msgid "User must change password"
+msgstr "Gebruiker moet wachtwoord veranderen"
+
+#: ../templates/login.php:200
+#: ../lib/types/user.inc:83
+#: ../lib/modules/account.inc:90
+#: ../lib/modules/account.inc:110
+#: ../lib/modules/account.inc:112
+#: ../lib/modules/account.inc:113
+#: ../lib/modules/account.inc:205
+#: ../lib/modules/account.inc:226
+#: ../lib/modules/sambaSamAccount.inc:1189
+#: ../lib/modules/posixAccount.inc:83
+#: ../lib/modules/posixAccount.inc:84
+#: ../lib/modules/posixAccount.inc:87
+#: ../lib/modules/posixAccount.inc:181
+#: ../lib/modules/posixAccount.inc:341
+#: ../lib/modules/posixAccount.inc:865
+#: ../lib/modules/posixAccount.inc:1107
+#: ../lib/modules/inetOrgPerson.inc:70
+#: ../lib/modules/inetOrgPerson.inc:225
+#: ../lib/modules/inetOrgPerson.inc:331
+#: ../lib/modules/inetOrgPerson.inc:527
+#: ../lib/modules/inetOrgPerson.inc:780
+msgid "User name"
+msgstr "Gebruikersnaam"
+
+#: ../lib/modules/posixAccount.inc:91
+#: ../lib/modules/inetOrgPerson.inc:72
+msgid "User name already exists!"
+msgstr "Gebruikersnaam bestaat al!"
+
+#: ../lib/modules/account.inc:110
+#: ../lib/modules/account.inc:111
+#: ../lib/modules/account.inc:113
+#: ../lib/modules/posixAccount.inc:84
+#: ../lib/modules/posixAccount.inc:89
+#: ../lib/modules/inetOrgPerson.inc:70
+#: ../lib/modules/inetOrgPerson.inc:71
+msgid "User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !"
+msgstr "Gebruikersnaam bevat ongeldige tekens. Geldige tekens zijn: a-z, A-Z, 0-9 and .-_ !"
+
+#: ../lib/modules/posixAccount.inc:87
+msgid "User name in use. Selected next free user name."
+msgstr "Gebruikersnaam wordt al gebruikt. Selecteer een volgende vrije gebruikersnaam."
+
+#: ../lib/modules/posixAccount.inc:342
+#: ../lib/modules/inetOrgPerson.inc:332
+msgid "User name of the user who should be created. Valid characters are: a-z,0-9, .-_. LAM does not allow a number as first character because useradd also does not allow it. LAM does not allow capital letters A-Z because it can cause several problems. If user name is already used user name will be expanded with a number. The next free number will be used. Warning: Older systems have problems with user names longer than 8 characters. You can not log in to Windows if user name is longer than 16 characters."
+msgstr "Naam van de gebruiker die gecreerd moet worden. Geldige tekens zijn:  a-z, 0-9, .-_. LAM staat niet toe dat een getal als eerste teken gebruikt wordt omdat useradd dat ook niet toestaat. LAM staat ook hoofdletter gebruik (A-Z) niet toe omdat het tot serieuze problemen kan leiden. Als de gebruikersnaam al in gebruik is wordt de naam uitgebreid met een getal. Het eerst vrije getal wordt gebruikt. Waarschuwing: oudere systemen hebben problemen met gebruikersnamen langer dan acht tekens. Verder, je kunt niet inlooggen op een Windows systeem als de gebruikersnaam langer dan 16 tekens is."
+
+#: ../lib/types/user.inc:42
+#: ../lib/modules/posixAccount.inc:64
+#: ../lib/modules/posixAccount.inc:65
+#: ../lib/modules/posixAccount.inc:68
+#: ../lib/modules/posixAccount.inc:137
+msgid "Users"
+msgstr "Gebruikers"
+
+#: ../lib/modules/posixGroup.inc:413
+msgid "Users who are member of the current group."
+msgstr "Gebruikers welke lid zijn van de huidige groep."
+
+#: ../lib/modules/posixGroup.inc:417
+msgid "Users who will become member of the current group. User names are separated by semicolons."
+msgstr "Gebruikers die lid worden van deze groep. De namen worden gescheiden door een puntkomma."
+
+#: ../templates/tree/creation_template.php:85
+msgid "Using template:"
+msgstr "Het volgende sjabloon wordt gebruikt:"
+
+#: ../help/help.inc:89
+msgid "Valid users"
+msgstr "Geldige gebruikers"
+
+#: ../templates/delete.php:187
+#: ../lib/modules.inc:1568
+#, php-format
+msgid "Was unable to add attribtues to DN: %s."
+msgstr "Het is niet gelukt de volgende attributen toe te voegen aan DN: %s"
+
+#: ../lib/modules.inc:1517
+#: ../lib/modules.inc:1529
+#, php-format
+msgid "Was unable to create DN: %s."
+msgstr "Het is niet gelukt om DN te maken: %s."
+
+#: ../templates/tree/delete.php:109
+#: ../templates/delete.php:278
+#: ../templates/delete.php:283
+#: ../lib/modules.inc:1512
+#, php-format
+msgid "Was unable to delete DN: %s."
+msgstr "Het is niet gelukt om DN te verwijderen: %s."
+
+#: ../templates/tree/update.php:105
+#: ../templates/tree/add_oclass.php:89
+#: ../templates/tree/add_oclass_form.php:158
+#: ../templates/delete.php:179
+#: ../lib/modules.inc:1560
+#, php-format
+msgid "Was unable to modify attribtues from DN: %s."
+msgstr "Modificeren van de attributen van DN: %s  was niet mogelijk."
+
+#: ../templates/delete.php:195
+#: ../lib/modules.inc:1576
+#, php-format
+msgid "Was unable to remove attribtues from DN: %s."
+msgstr "Het is niet gelukt om attributen te verwijderen van DN: %s."
+
+#: ../lib/modules/sambaSamAccount.inc:949
+msgid "Wednesday"
+msgstr "Woensdag"
+
+#: ../help/help.inc:71
+msgid "When using ldaps:// be sure to use exactly the same IP/domain name as in your certificate!"
+msgstr "Indien ldaps:// wordt gebruikt wees er dan zeker van dat dezelfde IP/domeinnaam gebruikt wordt als in het certificaat!"
+
+#: ../lib/modules/sambaAccount.inc:398
+#: ../lib/modules/sambaSamAccount.inc:246
+msgid "Windows domain name of account."
+msgstr "Windows domeinnaam of account."
+
+#: ../lib/modules/sambaAccount.inc:299
+#: ../lib/modules/sambaAccount.inc:777
+#: ../lib/modules/sambaSamAccount.inc:366
+#: ../lib/modules/sambaSamAccount.inc:868
+#: ../lib/modules/sambaSamAccount.inc:1197
+#: ../lib/modules/sambaGroupMapping.inc:202
+#: ../lib/modules/sambaGroupMapping.inc:315
+msgid "Windows group"
+msgstr "Windows groep"
+
+#: ../lib/modules/sambaAccount.inc:391
+msgid "Windows group RID"
+msgstr "Windows groep RID"
+
+#: ../lib/modules/sambaAccount.inc:388
+#: ../lib/modules/sambaGroupMapping.inc:287
+msgid "Windows group name"
+msgstr "Windows groepsnaam"
+
+#: ../lib/modules/sambaGroupMapping.inc:300
+msgid "Windows group type."
+msgstr "Windows groepstype."
+
+#: ../lib/modules/sambaSamAccount.inc:229
+msgid "Windows primary group"
+msgstr "Primaire Windows groep"
+
+#: ../lib/modules/sambaSamAccount.inc:232
+msgid "Windows primary group SID"
+msgstr "SID primaire Windows groep"
+
+#: ../lib/modules/sambaGroupMapping.inc:296
+msgid "Windows-Domain name of group."
+msgstr "Windows-Domein naam van de groep."
+
+#: ../lib/modules/sambaDomain.inc:88
+msgid "Workgroup"
+msgstr "Werkgroep"
+
+#: ../templates/login.php:382
+msgid "Wrong password/user name combination. Please try again."
+msgstr "Verkeerde wachtwoord/gebruikersnaam combinatie. Probeer opnieuw."
+
+#: ../templates/schema/schema.php:157
+#: ../templates/schema/schema.php:199
+#: ../templates/schema/schema.php:204
+#: ../templates/schema/schema.php:209
+msgid "Yes"
+msgstr "Ja"
+
+#: ../lib/modules/posixGroup.inc:485
+msgid "You are using a capital letters. This can cause problems because Windows isn't case-sensitive."
+msgstr "Er worden hoofdletters gebruikt. Dit kan problemen geven omdat Windows niet hoofdletter gevoelig is."
+
+#: ../lib/modules/account.inc:112
+#: ../lib/modules/posixAccount.inc:83
+#: ../lib/modules/posixAccount.inc:85
+msgid "You are using a capital letters. This can cause problems because windows isn't case-sensitive."
+msgstr "Er worden hoofdletters gebruikt. Dit kan problemen geven omdat Windows niet hoofdletter gevoelig is."
+
+#: ../lib/modules/posixAccount.inc:80
+msgid "You cannot use these password options at the same time."
+msgstr "U kunt deze wachtwoordopties niet tegelijkertijd gebruiken."
+
+#: ../lib/modules/posixGroup.inc:476
+msgid "You cannot use this password options at the same time."
+msgstr "U kunt deze wachtwoordopties niet tegelijkertijd gebruiken"
+
+#: ../templates/tree/templates/creation/custom.php:106
+msgid "You did not select any object classes for this object. Please go back and do so."
+msgstr "Er is geen enkele objectklasse gekozen voor dit object. Ga terug en kies er een."
+
+#: ../templates/logout.php:72
+msgid "You have been logged off from LDAP Account Manager."
+msgstr "U bent uitgelogd van LDAP account manager."
+
+#: ../templates/tree/add_attr.php:75
+msgid "You left the attribute value blank. Please go back and try again."
+msgstr "U heeft de attribuut waarde open gelaten. Ga terug en probeer het opnieuw."
+
+#: ../templates/tree/create.php:81
+#, php-format
+msgid "You left the value blank for required attribute: %s."
+msgstr "U heeft de waarde open gelaten voor het verplichte attribuut: %s"
+
+#: ../templates/tree/update_confirm.php:250
+msgid "You made no changes."
+msgstr "U heeft geen veranderingen gemaakt."
+
+#: ../templates/tree/add_attr_form.php:164
+msgid "Your PHP configuration has disabled file uploads. Please check php.ini before proceeding."
+msgstr "De PHP configuratie staat geen upload van bestanden toe. Controleer php.ini voor verder te gaan."
+
+#: ../lib/config.inc:335
+msgid "Your settings were successfully saved."
+msgstr "Uw instellingen zijn met succes bewaard."
+
+#: ../templates/tree/update_confirm.php:188
+#: ../templates/tree/update_confirm.php:200
+msgid "[attribute deleted]"
+msgstr "[attribuut verwijderd]"
+
+#: ../lib/modules/sambaAccount.inc:277
+#: ../lib/modules/sambaSamAccount.inc:344
+msgid "\\\\server\\homes\\smiller"
+msgstr "\\\\server\\homes\\smiller"
+
+#: ../lib/modules/sambaAccount.inc:283
+#: ../lib/modules/sambaSamAccount.inc:350
+msgid "\\\\server\\profiles\\smiller"
+msgstr "\\\\server\\profielen\\smiller"
+
+#: ../templates/tree/edit.php:489
+msgid "add value"
+msgstr "waarde toevoegen"
+
+#: ../lib/modules/posixGroup.inc:368
+msgid "adminstrators"
+msgstr "beheerders"
+
+#: ../templates/schema/schema.php:224
+msgid "character"
+msgstr "teken"
+
+#: ../templates/schema/schema.php:223
+msgid "characters"
+msgstr "tekens"
+
+#: ../help/help.inc:83
+msgid "dc=yourcompany,dc=com"
+msgstr "dc=uwbedrijf, dc=com"
+
+#: ../templates/tree/edit.php:309
+msgid "delete attribute"
+msgstr "verwijder attribuut"
+
+#: ../templates/tree/edit.php:174
+#: ../templates/tree/edit.php:176
+#: ../templates/tree/edit.php:303
+#: ../templates/tree/edit.php:305
+#: ../templates/tree/add_value_form.php:106
+#: ../templates/tree/add_value_form.php:109
+msgid "download value"
+msgstr "download waarde"
+
+#: ../lib/modules/inetOrgPerson.inc:56
+#: ../lib/modules/inetOrgPerson.inc:207
+#: ../lib/modules/inetOrgPerson.inc:323
+#: ../lib/modules/inetOrgPerson.inc:324
+#: ../lib/modules/inetOrgPerson.inc:604
+#: ../lib/modules/inetOrgPerson.inc:778
+msgid "eMail address"
+msgstr "e-mail adres"
+
+#: ../templates/tree/edit.php:386
+msgid "false"
+msgstr "onwaar"
+
+#: ../lib/modules/posixAccount.inc:210
+msgid "group01,group02"
+msgstr "groep01,groep02"
+
+#: ../lib/modules/quota.inc:146
+#: ../lib/modules/quota.inc:148
+#: ../lib/modules/quota.inc:197
+#: ../lib/modules/quota.inc:199
+msgid "hours"
+msgstr "uren"
+
+#: ../lib/tree.inc:1163
+msgid "jpegPhoto contains errors"
+msgstr "jpegPhoto bevat fouten"
+
+#: ../help/help.inc:65
+msgid "ldap://localhost:389 connects to localhost using a standard LDAP connection on port 389"
+msgstr "ldap://localhost:389 verbindt met een standaard LDAP connectie aan localhost via poort 389"
+
+#: ../help/help.inc:67
+msgid "ldaps://141.40.146.133 connects to 141.40.146.133 using an encrypted LDAP connection."
+msgstr "ldaps://141.40.146.133 connect naar 141.40.146.133 wat gebruik maakt van een versleutelde LDAP connectie."
+
+#: ../lib/modules/posixAccount.inc:270
+msgid "machines"
+msgstr "machines"
+
+#: ../lib/modules/sambaAccount.inc:315
+#: ../lib/modules/sambaAccount.inc:325
+#: ../lib/modules/sambaSamAccount.inc:267
+#: ../lib/modules/sambaSamAccount.inc:393
+msgid "mydomain"
+msgstr "mijndomein"
+
+#: ../lib/modules/sambaSamAccount.inc:368
+msgid "mygroup"
+msgstr "mijngroep"
+
+#: ../templates/tree/templates/creation/custom.php:189
+#: ../templates/tree/templates/creation/custom.php:212
+#: ../templates/schema/schema.php:164
+#: ../templates/schema/schema.php:233
+#: ../templates/schema/schema.php:244
+#: ../templates/schema/schema.php:293
+#: ../templates/schema/schema.php:359
+#: ../templates/schema/schema.php:374
+#: ../templates/schema/schema.php:408
+#: ../templates/schema/schema.php:430
+msgid "none"
+msgstr "geen"
+
+#: ../templates/tree/edit.php:387
+msgid "none, remove value"
+msgstr "geen, verwijder waarde"
+
+#: ../templates/schema/schema.php:220
+msgid "not applicable"
+msgstr "niet toepasbaar"
+
+#: ../templates/schema/schema.php:171
+#: ../templates/schema/schema.php:176
+#: ../templates/schema/schema.php:181
+#: ../templates/schema/schema.php:214
+msgid "not specified"
+msgstr "niet gespecificeerd"
+
+#: ../help/help.inc:77
+msgid "ou=People,dc=yourcompany,dc=com will read and store all accounts in this subtree."
+msgstr "ou=People,dc=yourcompany,dc=com zal alle accounts in deze subtree lezen en opslaan"
+
+#: ../lib/modules/posixAccount.inc:256
+msgid "pc01$"
+msgstr "pc01$"
+
+#: ../lib/modules/posixAccount.inc:277
+msgid "pc01,Room 2.34"
+msgstr "pc01,Kamer 2.34"
+
+#: ../lib/modules/inetOrgPerson.inc:239
+msgid "pc01,pc02"
+msgstr "pc01,pc02"
+
+#: ../templates/tree/edit.php:241
+#: ../templates/config/confmain.php:414
+#: ../lib/modules.inc:1061
+msgid "required"
+msgstr "verplicht"
+
+#: ../templates/config/confmain.php:415
+msgid "required for Samba 3 accounts"
+msgstr "verplicht voor Samba 3 accounts"
+
+#: ../lib/modules/posixGroup.inc:394
+#: ../lib/modules/sambaAccount.inc:219
+#: ../lib/modules/sambaSamAccount.inc:279
+#: ../lib/modules/posixAccount.inc:231
+msgid "secret"
+msgstr "geheim"
+
+#: ../lib/modules/posixAccount.inc:183
+#: ../lib/modules/inetOrgPerson.inc:227
+#: ../lib/modules/nisMailAlias.inc:86
+msgid "smiller"
+msgstr "smiller"
+
+#: ../templates/tree/edit.php:432
+msgid "structural"
+msgstr "structureel"
+
+#: ../templates/tree/edit.php:384
+msgid "true"
+msgstr "waar"
+
+#: ../lib/modules/posixGroup.inc:388
+msgid "user01,user02,user03"
+msgstr "gebruiker01,gebruiker02,gebruiker03"
+
+#: ../lib/modules/inetOrgPerson.inc:209
+msgid "user@company.com"
+msgstr "gebruiker@bedrijf.com"
+
+#: ../lib/modules/posixAccount.inc:203
+msgid "users"
+msgstr "gebruikers"
+
