@@ -11,6 +11,9 @@ ca_ES.utf8:UTF-8:Català (Catalunya)
 # German
 de_DE.utf8:UTF-8:Deutsch (Deutschland)
 
+# Dutch
+nl_NL.utf8:UTF-8:Nederlands (Nederland)
+
 # English
 en_GB.utf8:UTF-8:English (Great Britain)
 
