@@ -30,6 +30,8 @@ $Id$
 
 /**
 * The account type for Samba domains.
+*
+* @package types
 */
 class smbDomain extends baseType {
 	

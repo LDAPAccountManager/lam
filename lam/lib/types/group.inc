@@ -30,6 +30,8 @@ $Id$
 
 /**
 * The account type for group accounts (e.g. Unix and Samba).
+*
+* @package types
 */
 class group extends baseType {
 	

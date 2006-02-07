@@ -30,6 +30,8 @@ $Id$
 
 /**
 * The account type for user accounts (e.g. Unix, Samba and Kolab).
+*
+* @package types
 */
 class user extends baseType {
 	

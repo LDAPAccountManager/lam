@@ -30,6 +30,8 @@ $Id$
 
 /**
 * The account type for host accounts (e.g. Samba).
+*
+* @package types
 */
 class host extends baseType {
 	

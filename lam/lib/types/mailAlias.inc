@@ -30,6 +30,8 @@ $Id$
 
 /**
 * The account type for mail aliases.
+*
+* @package types
 */
 class mailAlias extends baseType {
 	
