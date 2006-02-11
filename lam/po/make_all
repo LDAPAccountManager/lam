@@ -3,6 +3,10 @@ echo "Generating Catalan translation template"
 ./make_po_ca
 tar -czf messages.po_ca.tar.gz messages.po  
 echo " "
+echo "Generating Dutch translation template"
+./make_po_nl
+tar -czf messages.po_nl.tar.gz messages.po  
+echo " "
 echo "Generating Spanish translation template"
 ./make_po_es
 tar -czf messages.po_es.tar.gz messages.po  
