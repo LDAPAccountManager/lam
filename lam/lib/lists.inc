@@ -252,10 +252,10 @@ class lamList {
 		if (!$sort) $sort = strtolower($attr_array[0]);
 		if ($sort != "dn") {
 			// sort by first attribute with name $sort
-			return strcmp($a[$sort][0], $b[$sort][0]);
+			return strnatcmp($a[$sort][0], $b[$sort][0]);
 		}
 		else {
-			return strcmp($a[$sort], $b[$sort]);
+			return strnatcmp($a[$sort], $b[$sort]);
 		}
 	}
 
