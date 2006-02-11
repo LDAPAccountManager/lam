@@ -695,8 +695,10 @@ class sambaAccount extends baseModule {
 			2 => array('kind' => 'help', 'value' => 'displayName'));
 		// user attributes
 		if ($_SESSION[$this->base]->type=='user') {
-			$canchangedate = getdate($this->attributes['pwdCanChange'][0]);
-			$mustchangedate = getdate($this->attributes['pwdMustChange'][0]);
+			if (isset($this->attributes['pwdCanChange'][0])) $canchangedate = getdate(intval($this->attributes['pwdCanChange'][0]));
+			else $canchangedate = getdate(0);
+			if (isset($this->attributes['pwdMustChange'][0])) $mustchangedate = getdate(intval($this->attributes['pwdMustChange'][0]));
+			else $mustchangedate = getdate(0);
 			$return[] = array ( 0 => array ( 'kind' => 'input', 'name' => 'pwdCanChange_h', 'type' => 'hidden', 'value' => $canchangedate['hours']),
 					1 => array ( 'kind' => 'input', 'name' => 'pwdCanChange_m', 'type' => 'hidden', 'value' => $canchangedate['minutes']),
 					2 => array ( 'kind' => 'input', 'name' => 'pwdCanChange_s', 'type' => 'hidden', 'value' => $canchangedate['seconds']),

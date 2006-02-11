@@ -770,9 +770,12 @@ class sambaSamAccount extends baseModule {
 				}
 			}
 		}
-		$canchangedate = getdate($this->attributes['sambaPwdCanChange'][0]);
-		$mustchangedate = getdate($this->attributes['sambaPwdMustChange'][0]);
-		$expiredate = getdate($this->attributes['sambaKickoffTime'][0]);
+		if (isset($this->attributes['sambaPwdCanChange'][0])) $canchangedate = getdate(intval($this->attributes['sambaPwdCanChange'][0]));
+		else $canchangedate = getdate(0);
+		if (isset($this->attributes['sambaPwdMustChange'][0])) $mustchangedate = getdate(intval($this->attributes['sambaPwdMustChange'][0]));
+		else $mustchangedate = getdate(0);
+		if (isset($this->attributes['sambaKickoffTime'][0])) $expiredate = getdate(intval($this->attributes['sambaKickoffTime'][0]));
+		else $expiredate = getdate(0);
 
 		$return[] = array(
 			0 => array('kind' => 'text', 'text' => _('Display name')),
