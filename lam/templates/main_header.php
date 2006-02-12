@@ -75,10 +75,10 @@ if ($_SESSION['config']->get_Suffix('tree') != "") $lists++;
 		<td></td>
 		<?php
 			if ($_SESSION['config']->get_Suffix('tree') != "") {
-				echo '<td width="120" align="center"><img src="../graphics/process.png">&nbsp;<a href="./tree/tree_view.php" target="mainpart"><big>' . _("Tree view") . '</big></a></td>' . "\n";
+				echo '<td align="center"><img src="../graphics/process.png">&nbsp;<a href="./tree/tree_view.php" target="mainpart"><big>' . _("Tree view") . '</big></a></td>' . "\n";
 			}
 			for ($i = 0; $i < sizeof($types); $i++) {
-				echo '<td width="120" align="center">';
+				echo '<td align="center">';
 					echo '<img src="../graphics/' . $types[$i] . '.png">&nbsp;';
 					echo '<a href="./lists/list.php?type=' . $types[$i] . '" target="mainpart"><big>' . getTypeAlias($types[$i]) . '</big></a>';
 				echo '</td>' . "\n";
