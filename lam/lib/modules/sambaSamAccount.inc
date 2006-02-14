@@ -898,7 +898,7 @@ class sambaSamAccount extends baseModule {
 				1 => array ( 'kind' => 'select', 'name' => 'sambaSID', 'options' => $options, 'options_selected' => $selected),
 				2 => array ( 'kind' => 'help', 'value' => 'specialUser' ));
 			}
-		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Domain') ),
+		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Domain') . "*" ),
 			1 => array ( 'kind' => 'select', 'name' => 'sambaDomainName', 'options' => $sambaDomainNames, 'options_selected' => array($sel_domain)),
 			2 => array ( 'kind' => 'help', 'value' => 'domain' ));
 		// logon hours
