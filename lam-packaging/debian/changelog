@@ -1,3 +1,10 @@
+ldap-account-manager (1.0.0-1) unstable; urgency=low
+
+  * Updated to new upstream release.
+  * Please consider adding php5 on dependecies (Closes: #351683)
+
+ -- Roland Gruber <post@rolandgruber.de>  Tue, 21 Feb 2006 19:53:41 +0100
+
 ldap-account-manager (1.0.rc2-1) experimental; urgency=low
 
   * Updated to new upstream release.
