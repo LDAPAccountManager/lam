@@ -9,8 +9,8 @@ LAM - Readme
   address book entries, NIS mail aliases and MAC addresses. There is a tree
   viewer included to allow access to the raw LDAP attributes. You can use
   templates for account creation and use multiple configuration profiles.
-  LAM is translated to Catalan, Chinese (Traditional), English, French, German, Hungarian, Italian,
-  Spanish and Japanese.
+  LAM is translated to Catalan, Chinese (Traditional), Dutch, English, French,
+  German, Hungarian, Italian, Spanish and Japanese.
 
   http://sourceforge.net/projects/lam/
 
