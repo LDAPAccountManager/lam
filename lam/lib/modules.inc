@@ -812,19 +812,10 @@ class accountContainer {
 				}
 				if ($this->subpage=='finish') {
 					if ($post['createagain']) {
-						// Reset objects
-						$modules = array_keys($this->module);
-						foreach ($modules as $module) unset($this->module[$module]);
-						// Reset accountContainer
-						$this->dn = '';
-						$this->dn_orig = '';
-						$this->attributes = array();
-						$this->order = array();
-						$this->current_page = 0;
-						$this->subpage = '';
-						// Add all required objects etc.
-						$this->new_account();
-						$result = 0;
+						// open fresh account page
+						unset($_SESSION[$this->base]);
+						metaRefresh("edit.php?type=" . $this->type);
+						exit();
 					}
 					if ($post['backmain']) {
 						// Return to account list
