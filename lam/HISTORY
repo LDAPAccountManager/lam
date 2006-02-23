@@ -8,6 +8,7 @@
     -> fixed login problems for AD servers
     -> improved sorting of account lists
     -> fixed language setting in default configuration profile
+    -> fixed PHP5 warnings (getdate() and mktime())
 
 08.02.2006 1.0.rc2
    - new translation: Dutch

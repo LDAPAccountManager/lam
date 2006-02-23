@@ -564,12 +564,15 @@ class sambaSamAccount extends baseModule {
 		}
 		// user attributes
 		if ($_SESSION[$this->base]->type=='user') {
-			$this->attributes['sambaPwdCanChange'][0] = mktime($post['sambaPwdCanChange_h'], $post['sambaPwdCanChange_m'], $post['sambaPwdCanChange_s'],
-				$post['sambaPwdCanChange_mon'], $post['sambaPwdCanChange_day'], $post['sambaPwdCanChange_yea']);
-			$this->attributes['sambaPwdMustChange'][0] = mktime($post['sambaPwdMustChange_h'], $post['sambaPwdMustChange_m'], $post['sambaPwdMustChange_s'],
-				$post['sambaPwdMustChange_mon'], $post['sambaPwdMustChange_day'], $post['sambaPwdMustChange_yea']);
-			$this->attributes['sambaKickoffTime'][0] = mktime($post['sambaExpire_h'], $post['sambaExpire_m'], $post['sambaExpire_s'],
-				$post['sambaExpire_mon'], $post['sambaExpire_day'], $post['sambaExpire_yea']);
+			$this->attributes['sambaPwdCanChange'][0] = mktime(intval($post['sambaPwdCanChange_h']), intval($post['sambaPwdCanChange_m']),
+				intval($post['sambaPwdCanChange_s']), intval($post['sambaPwdCanChange_mon']), intval($post['sambaPwdCanChange_day']),
+				intval($post['sambaPwdCanChange_yea']));
+			$this->attributes['sambaPwdMustChange'][0] = mktime(intval($post['sambaPwdMustChange_h']), intval($post['sambaPwdMustChange_m']),
+				intval($post['sambaPwdMustChange_s']), intval($post['sambaPwdMustChange_mon']), intval($post['sambaPwdMustChange_day']),
+				intval($post['sambaPwdMustChange_yea']));
+			$this->attributes['sambaKickoffTime'][0] = mktime(intval($post['sambaExpire_h']), intval($post['sambaExpire_m']),
+				intval($post['sambaExpire_s']), intval($post['sambaExpire_mon']), intval($post['sambaExpire_day']),
+				intval($post['sambaExpire_yea']));
 			$this->attributes['sambaHomePath'][0] = $post['sambaHomePath'];
 			if ($post['sambaHomeDrive'] == "-")
 				$this->attributes['sambaHomeDrive'][0] = '';
@@ -1163,8 +1166,8 @@ class sambaSamAccount extends baseModule {
 		}
 		// expiration date
 		if (isset($profile['sambaSamAccount_expire_day'][0]) && ($profile['sambaSamAccount_expire_day'][0] != "")) {
-			$date = mktime(10, 0, 0, $profile['sambaSamAccount_expire_mon'][0],
-				$profile['sambaSamAccount_expire_day'][0], $profile['sambaSamAccount_expire_yea'][0]);
+			$date = mktime(10, 0, 0, intval($profile['sambaSamAccount_expire_mon'][0]),
+				intval($profile['sambaSamAccount_expire_day'][0]), intval($profile['sambaSamAccount_expire_yea'][0]));
 			$this->attributes['sambaKickoffTime'][0] = $date;
 		}
 		// domain -> change SID
@@ -1329,7 +1332,7 @@ class sambaSamAccount extends baseModule {
 				if ($rawAccounts[$i][$ids['sambaSamAccount_pwdCanChange']] != "") {
 					if (get_preg($rawAccounts[$i][$ids['sambaSamAccount_pwdCanChange']], 'date')) {
 						$parts = explode("-", $rawAccounts[$i][$ids['sambaSamAccount_pwdCanChange']]);
-						$time = mktime(0, 0, 0, $parts[1], $parts[0], $parts[2]);
+						$time = mktime(0, 0, 0, intval($parts[1]), intval($parts[0]), intval($parts[2]));
 						$partialAccounts[$i]['sambaPwdCanChange'] = $time;
 					}
 					else {
@@ -1342,7 +1345,7 @@ class sambaSamAccount extends baseModule {
 				if ($rawAccounts[$i][$ids['sambaSamAccount_pwdMustChange']] != "") {
 					if (get_preg($rawAccounts[$i][$ids['sambaSamAccount_pwdMustChange']], 'date')) {
 						$parts = explode("-", $rawAccounts[$i][$ids['sambaSamAccount_pwdMustChange']]);
-						$time = mktime(0, 0, 0, $parts[1], $parts[0], $parts[2]);
+						$time = mktime(0, 0, 0, intval($parts[1]), intval($parts[0]), intval($parts[2]));
 						$partialAccounts[$i]['sambaPwdMustChange'] = $time;
 					}
 					else {
@@ -1355,7 +1358,7 @@ class sambaSamAccount extends baseModule {
 				if ($rawAccounts[$i][$ids['sambaSamAccount_expireDate']] != "") {
 					if (get_preg($rawAccounts[$i][$ids['sambaSamAccount_expireDate']], 'date')) {
 						$parts = explode("-", $rawAccounts[$i][$ids['sambaSamAccount_expireDate']]);
-						$time = mktime(0, 0, 0, $parts[1], $parts[0], $parts[2]);
+						$time = mktime(0, 0, 0, intval($parts[1]), intval($parts[0]), intval($parts[2]));
 						$partialAccounts[$i]['sambaKickoffTime'] = $time;
 					}
 					else {

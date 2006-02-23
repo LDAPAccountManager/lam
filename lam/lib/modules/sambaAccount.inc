@@ -549,10 +549,12 @@ class sambaAccount extends baseModule {
 			}
 		// check values for user account
 		if ($this->scope == 'user') {
-			$this->attributes['pwdCanChange'][0] = mktime($post['pwdCanChange_h'], $post['pwdCanChange_m'], $post['pwdCanChange_s'],
-				$post['pwdCanChange_mon'], $post['pwdCanChange_day'], $post['pwdCanChange_yea']);
-			$this->attributes['pwdMustChange'][0] = mktime($post['pwdMustChange_h'], $post['pwdMustChange_m'], $post['pwdMustChange_s'],
-				$post['pwdMustChange_mon'], $post['pwdMustChange_day'], $post['pwdMustChange_yea']);
+			$this->attributes['pwdCanChange'][0] = mktime(intval($post['pwdCanChange_h']), intval($post['pwdCanChange_m']),
+				intval($post['pwdCanChange_s']), intval($post['pwdCanChange_mon']), intval($post['pwdCanChange_day']),
+				intval($post['pwdCanChange_yea']));
+			$this->attributes['pwdMustChange'][0] = mktime(intval($post['pwdMustChange_h']), intval($post['pwdMustChange_m']),
+				intval($post['pwdMustChange_s']), intval($post['pwdMustChange_mon']), intval($post['pwdMustChange_day']),
+				intval($post['pwdMustChange_yea']));
 			$this->attributes['smbHome'][0] = $post['smbHome'];
 			$this->attributes['homeDrive'][0] = $post['homeDrive'];
 			$this->attributes['scriptPath'][0] = $post['scriptPath'];
@@ -963,7 +965,7 @@ class sambaAccount extends baseModule {
 				if ($rawAccounts[$i][$ids['sambaAccount_pwdCanChange']] != "") {
 					if (get_preg($rawAccounts[$i][$ids['sambaAccount_pwdCanChange']], 'date')) {
 						$parts = explode("-", $rawAccounts[$i][$ids['sambaAccount_pwdCanChange']]);
-						$time = mktime(0, 0, 0, $parts[1], $parts[0], $parts[2]);
+						$time = mktime(0, 0, 0, intval($parts[1]), intval($parts[0]), intval($parts[2]));
 						$partialAccounts[$i]['pwdCanChange'] = $time;
 					}
 					else {
@@ -976,7 +978,7 @@ class sambaAccount extends baseModule {
 				if ($rawAccounts[$i][$ids['sambaAccount_pwdMustChange']] != "") {
 					if (get_preg($rawAccounts[$i][$ids['sambaAccount_pwdMustChange']], 'date')) {
 						$parts = explode("-", $rawAccounts[$i][$ids['sambaAccount_pwdMustChange']]);
-						$time = mktime(0, 0, 0, $parts[1], $parts[0], $parts[2]);
+						$time = mktime(0, 0, 0, intval($parts[1]), intval($parts[0]), intval($parts[2]));
 						$partialAccounts[$i]['pwdMustChange'] = $time;
 					}
 					else {

@@ -247,7 +247,8 @@ class shadowAccount extends baseModule {
 		$this->attributes['shadowMax'][0] = $post['shadowMax'];
 		$this->attributes['shadowWarning'][0] = $post['shadowWarning'];
 		$this->attributes['shadowInactive'][0] = $post['shadowInactive'];
-		$this->attributes['shadowExpire'][0] = intval(mktime(10, 0, 0, $post['shadowExpire_mon'],$post['shadowExpire_day'], $post['shadowExpire_yea'])/3600/24);
+		$this->attributes['shadowExpire'][0] = intval(mktime(10, 0, 0, intval($post['shadowExpire_mon']), intval($post['shadowExpire_day']),
+			intval($post['shadowExpire_yea']))/3600/24);
 		if ( !get_preg($this->attributes['shadowMin'][0], 'digit'))  $triggered_messages['shadowMin'][] = $this->messages['shadowMin'][0];
 		if ( !get_preg($this->attributes['shadowMax'][0], 'digit')) $triggered_messages['shadowMax'][] = $this->messages['shadowMax'][0];
 		if ( $this->attributes['shadowMin'][0] > $this->attributes['shadowMax'][0]) $triggered_messages['shadowMin'][] = $this->messages['shadow_cmp'][0];
@@ -380,7 +381,7 @@ class shadowAccount extends baseModule {
 			if ($rawAccounts[$i][$ids['shadowAccount_expireDay']] != '') {
 				if (get_preg($rawAccounts[$i][$ids['shadowAccount_expireDay']], 'date')) {
 					$parts = explode('-', $rawAccounts[$i][$ids['shadowAccount_expireDay']]);
-					$partialAccounts[$i]['shadowExpire'][] = intval(mktime(10, 0, 0, $parts[1], $parts[0], $parts[2])/3600/24);
+					$partialAccounts[$i]['shadowExpire'][] = intval(mktime(10, 0, 0, intval($parts[1]), intval($parts[0]), intval($parts[2]))/3600/24);
 				}
 				else {
 					$errMsg = $this->messages['shadow_expireDate'][0];
@@ -403,8 +404,8 @@ class shadowAccount extends baseModule {
 		// special profile options
 		// expiration date
 		if (isset($profile['shadowAccount_shadowExpire_day'][0]) && ($profile['shadowAccount_shadowExpire_day'][0] != "")) {
-			$date = intval(mktime(10, 0, 0, $profile['shadowAccount_shadowExpire_mon'][0],
-				$profile['shadowAccount_shadowExpire_day'][0], $profile['shadowAccount_shadowExpire_yea'][0])/3600/24);
+			$date = intval(mktime(10, 0, 0, intval($profile['shadowAccount_shadowExpire_mon'][0]),
+				intval($profile['shadowAccount_shadowExpire_day'][0]), intval($profile['shadowAccount_shadowExpire_yea'][0]))/3600/24);
 			$this->attributes['shadowExpire'][0] = $date;
 		}
 	}
