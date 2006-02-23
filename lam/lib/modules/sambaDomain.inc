@@ -294,7 +294,7 @@ class sambaDomain extends baseModule {
 		else {
 			$this->attributes['sambaNextGroupRid'][0] = $_POST['nextGroupRID'];
 		}
-		return $errors;
+		return array($errors);
 	}
 
 	/**
