@@ -464,7 +464,7 @@ function get_preg($argument, $regexp) {
 					break;
 		case 'realname':	// Allow all but \, <, >, =, $, ?
 		case 'cn':
-					$pregexpr = '/^[^\\\<>=\\$\\?]+$/';
+					$pregexpr = '/^[^\\\<>=\\$\\?]+(\\$)?$/';
 					break;
 		case "telephone":	// Allow numbers, space, brackets, /-+.
 					$pregexpr = '/^(\\+)*([0-9\\.\\ \\(\\)\\/-])*$/';
