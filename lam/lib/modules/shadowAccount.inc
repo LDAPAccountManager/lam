@@ -217,9 +217,11 @@ class shadowAccount extends baseModule {
 		$return = $_SESSION[$this->base]->save_module_attributes($this->attributes, $this->orig);
 		// Set shadowLastchange manual.
 		if (isset($_SESSION[$this->base]->module['posixAccount']->orig['userPassword'][0])) {
-			// TODO fixme ****** fix this behavoir 
-			if ($_SESSION[$this->base]->module['posixAccount']->orig['userPassword'][0] != $_SESSION[$this->base]->module['posixAccount']->attributes['userPassword'][0] && $_SESSION[$this->base]->module['posixAccount']->attributes['userPassword'][0]!='')
+			if ($_SESSION[$this->base]->module['posixAccount']->orig['userPassword'][0] != $_SESSION[$this->base]->module['posixAccount']->attributes['userPassword'][0])
 				$return[$_SESSION[$this->base]->dn]['modify']['shadowLastChange'] = array(intval(time()/3600/24));
+		}
+		elseif ($_SESSION[$this->base]->isNewAccount) {
+			$return[$_SESSION[$this->base]->dn]['add']['shadowLastChange'] = array(intval(time()/3600/24));
 		}
 		// do not set password if posixAccount is active
 		$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
@@ -325,6 +327,8 @@ class shadowAccount extends baseModule {
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// add object class
 			if (!in_array("shadowAccount", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "shadowAccount";
+			// shadow last change
+			$partialAccounts[$i]['shadowLastChange'] = array(intval(time()/3600/24));
 			// password warning
 			if ($rawAccounts[$i][$ids['shadowAccount_warning']] != '') {
 				if (get_preg($rawAccounts[$i][$ids['shadowAccount_warning']], 'digit')) {
