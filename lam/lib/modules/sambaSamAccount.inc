@@ -1250,6 +1250,7 @@ class sambaSamAccount extends baseModule {
 					}
 				}
 				// password
+				$partialAccounts[$i]['sambaPwdLastSet'] = time();
 				if (!get_preg($rawAccounts[$i][$ids['sambaSamAccount_password']], 'password')) {
 					$errMsg = $this->messages['sambaLMPassword'][2];
 					array_push($errMsg, array($i));
