@@ -38,18 +38,29 @@ include_once('ldap.inc');
 * @package lib
 */
 class cache {
+	
+	/** This variable contains the cache */
+	var $ldapcache;
+	/** This variable contains a list and their scope of attributes which should be cached */
+	var $attributes;
+	/** This is the last timestamp on which the LDAP cache has been refreshed */
+	var $time;
+
+	/**
+	 * Constructor.
+	 *
+	 * @return cache cache object
+	 */
 	function cache() {
 		$this->time = 0;
 		$this->attributes = array();
 	}
 
-	var $ldapcache; // This variable contains the cache
-	var $attributes; // This variable contains a list and their scope of attributes which should be cached
-	var $time; // This is the laste timestamp ldap cache has been refreshed
-
-	/* This function adds attributes to cache
-	* syntax of $attributes is array( scope1 => array ( attributes ), scope2 => array ( attributes ), ...)
-	*/
+	/**
+	 * This function adds attributes to the cache.
+	 * 
+	 * @param array $attributes syntax: is array( scope1 => array ( attributes ), scope2 => array ( attributes ), ...)
+	 */
 	function add_cache($attributes) {
 		if (!is_array($attributes)) trigger_error('Argument of add_cache must be : array ( scope => array(attribute1(string), attribute2(string), ..), scope => ... ).', E_USER_ERROR);
 		foreach ($attributes as $attribute) {
@@ -73,7 +84,7 @@ class cache {
 	*
 	* @param mixed $attributes One (string) or many (array) attribute names.
 	* @param string $objectClass The resulting entries need to contain this object class.
-	* @param mixed $scope the account type(s) as string or array
+	* @param mixed $scopelist the account type(s) as string or array, all scopes if NULL given
 	* @return array The found LDAP entries.
 	* <br>Format: array(dn1 => array(uidnumber1), dn2 => array(uidnumber2), ... ) if $attributes is of type string
 	* <br>or array(dn1 => array(uid => array(myuid), uidNumber => array(1234)), ... ) if $attributes is an array
@@ -83,7 +94,8 @@ class cache {
 		$return = array();
 		$this->refresh_cache();
 		if (is_array($scopelist)) $scopes = $scopelist;
-			else $scopes = array($scopelist);
+		elseif (is_string($scopelist)) $scopes = array($scopelist);
+		else $scopes = getTypes();
 		// Add cache entry dynamic
 		if (!is_array($attributes)) $attributes = array($attributes);
 		$add = array();
@@ -116,14 +128,18 @@ class cache {
 		return $return;
 	}
 
-	/* This functions returns the dn if a dn with $attribute=$value is found
-	* $values is the value $attribute is set to
-	* $scopelist mixed the account type(s) as string or array
-	*/
+	/**
+	 * This function returns the DN if an LDAP entry with $attribute=$value is found.
+	 * 
+	 * @param string $value is the searched value of the attribute $attribute
+	 * @param string $attribute name of the LDAP attribute
+	 * @param mixed $scopelist the account type(s) as string or array, all scopes if NULL given
+	 */
 	function in_cache($value, $attribute, $scopelist) {
 		$this->refresh_cache();
 		if (is_array($scopelist)) $scopes = $scopelist;
-		else $scopes = array($scopelist);
+		elseif (is_string($scopelist)) $scopes = array($scopelist);
+		else $scopes = getTypes();
 		// Add cache entry dynamic
 		$add = array();
 		foreach ($scopes as $scope) {
@@ -146,11 +162,14 @@ class cache {
 			}
 		// Return false if value wasn't found
 		return false;
-		}
+	}
 
 
-	/* This functions refreshs the cache
-	*/
+	/**
+	 *  This function refreshes the cache.
+	 * 
+	 * @param boolean $rebuild forces a refresh if set to true
+	 */
 	function refresh_cache($rebuild=false) {
 		if ($this->time + $_SESSION['config']->get_cacheTimeoutSec() < time() || $rebuild) {
 			// unset old cache
@@ -209,9 +228,11 @@ class cache {
 	}
 
 
-	/* This function will return an array with all groupnames
-	* found in ldap. Groupnames are taken from cache-array.
-	*/
+	/**
+	 * This function returns an array with all group names which were found in the LDAP directory.
+	 * 
+	 * @return array group names
+	 */
 	function findgroups() {
 		$dn_groups = $_SESSION['cache']->get_cache('cn', 'posixGroup', 'group');
 		if (is_array($dn_groups)) {
@@ -221,12 +242,15 @@ class cache {
 			return $return;
 			}
 		return array();
-		}
+	}
 
 
-	/* This function will return the groupname to an existing gidNumber
-	* groupnames are taken from cache-array
-	*/
+	/**
+	 * This function returns the group name to an existing gidNumber.
+	 * 
+	 * @param string $gidNumber GID number
+	 * @return group name
+	 */
 	function getgrnam($gidNumber) {
 		$dn_groups = $_SESSION['cache']->get_cache('gidNumber', 'posixGroup', 'group');
 		if (is_array($dn_groups)) {
@@ -238,7 +262,7 @@ class cache {
 			return $return;
 			}
 		else return -1;
-		}
+	}
 
 	/**
 	* Encrypts LDAP cache before saving to session file.
