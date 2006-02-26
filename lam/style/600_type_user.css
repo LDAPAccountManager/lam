@@ -93,6 +93,7 @@ td.usernav-activepage {
 /* main fieldset */
 fieldset.useredit {
   background-color:#fff2a3;
+  border:1px solid #9b8523;
 }
 
 /* legend of main fieldset */
@@ -103,11 +104,13 @@ fieldset.useredit legend {
 /* subfieldset */
 fieldset.useredit fieldset {
   background-color:#fff2a3;
+  border:1px solid #9b8523;
 }
 
 /* subsubfieldset */
 fieldset.useredit fieldset fieldset {
   background-color:#fff2a3;
+  border:1px solid #9b8523;
 }
 
 /* select boxes */

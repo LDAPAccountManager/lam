@@ -80,6 +80,7 @@ tr.hostlist-checked {
 
 fieldset.hostedit {
   background-color:#ffe2dd;
+  border:1px solid #911a1a;
 }
 
 fieldset.hostedit legend {
@@ -88,10 +89,12 @@ fieldset.hostedit legend {
 
 fieldset.hostedit fieldset {
   background-color:#ffe2dd;
+  border:1px solid #911a1a;
 }
 
 fieldset.hostedit fieldset fieldset {
   background-color:#ffe2dd;
+  border:1px solid #911a1a;
 }
 
 fieldset.hostedit select {

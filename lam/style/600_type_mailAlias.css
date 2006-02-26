@@ -80,6 +80,7 @@ tr.mailAliaslist-checked {
 
 fieldset.mailAliasedit {
   background-color:#fff3c8;
+  border:1px solid #af8800;
 }
 
 fieldset.mailAliasedit legend {
@@ -88,10 +89,12 @@ fieldset.mailAliasedit legend {
 
 fieldset.mailAliasedit fieldset {
   background-color:#fff3c8;
+  border:1px solid #af8800;
 }
 
 fieldset.mailAliasedit fieldset fieldset {
   background-color:#fff3c8;
+  border:1px solid #af8800;
 }
 
 fieldset.mailAliasedit select {

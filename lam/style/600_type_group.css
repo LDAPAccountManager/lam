@@ -80,6 +80,7 @@ tr.grouplist-checked {
 
 fieldset.groupedit {
   background-color:#d6e3ff;
+  border:1px solid #7167bf;
 }
 
 fieldset.groupedit legend {
@@ -88,10 +89,12 @@ fieldset.groupedit legend {
 
 fieldset.groupedit fieldset {
   background-color:#d6e3ff;
+  border:1px solid #7167bf;
 }
 
 fieldset.groupedit fieldset fieldset {
   background-color:#d6e3ff;
+  border:1px solid #7167bf;
 }
 
 fieldset.groupedit select {

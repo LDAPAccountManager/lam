@@ -81,6 +81,7 @@ tr.smbDomainlist-checked {
 
 fieldset.smbDomainedit {
   background-color:#c9ddd2;
+  border:1px solid #1d993e;
 }
 
 fieldset.smbDomainedit legend {
@@ -89,10 +90,12 @@ fieldset.smbDomainedit legend {
 
 fieldset.smbDomainedit fieldset {
   background-color:#c9ddd2;
+  border:1px solid #1d993e;
 }
 
 fieldset.smbDomainedit fieldset fieldset {
   background-color:#c9ddd2;
+  border:1px solid #1d993e;
 }
 
 fieldset.smbDomainedit select {
