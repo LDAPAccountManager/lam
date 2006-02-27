@@ -24,9 +24,6 @@ rm -r lam/po
 rm -r lam/tests
 rm lam/.cvsignore
 rm lam/config/.cvsignore
-# TODO remove
-rm -r lam/debian
-# TODO remove
 mv lam ldap-account-manager-$VERSION
 
 # tar.gz
