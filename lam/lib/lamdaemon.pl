@@ -65,7 +65,7 @@ sub get_fs { # Load mountpoints from mtab if enabled quotas
 	}
 
 # ***************** Check values
-if ($( == 0 ) { # we are root
+if ($< == 0 ) { # we are root
 	# Drop root Previleges
 	($<, $>) = ($>, $<);
 	if ($ARGV[0] eq "*test") {
@@ -87,17 +87,17 @@ if ($( == 0 ) { # we are root
 				$vals[1] eq 'home' && do {
 					switch2: {
 						$vals[2] eq 'add' && do {
-							# split homedir to set all directories below the last dir. to 755
+							# split homedir to set all directories below the last dir. to 0755
 							my $path = $user[7];
 							$path =~ s,/(?:[^/]*)$,,;
 							($<, $>) = ($>, $<); # Get root privileges
 							if (! -e $path) {
-							    system 'mkdir', '-m 755', '-p', $path; # Create paths to homedir
+							    system 'mkdir', '-m', '0755', '-p', $path; # Create paths to homedir
 							    }
 							if (! -e $user[7]) {
-								system 'mkdir', '-m 755', $user[7]; # Create himdir itself
-								system "cp -a /etc/skel/* /etc/skel/.[^.]* $user[7]"; # Copy /etc/sekl into homedir
-								system 'chown', '-R', "$user[2]:$user[3]" , $user[7]; # Change owner to new user
+								system 'mkdir', '-m', '0755', $user[7]; # Create homedir itself
+								system ("(cd /etc/skel && tar cf - .) | (cd $user[7] && tar xf -)"); # Copy /etc/sekl into homedir
+								system 'chown', '-hR', "$user[2]:$user[3]" , $user[7]; # Change owner to new user
 								if (-e '/usr/sbin/useradd.local') {
 									system '/usr/sbin/useradd.local', $user[0]; # run useradd-script
 									}
@@ -110,7 +110,7 @@ if ($( == 0 ) { # we are root
 							};
 						$vals[2] eq 'rem' && do {
 							($<, $>) = ($>, $<); # Get root previliges
-							if (-d $user[7]) {
+							if (-d $user[7] && $user[7] ne '/') {
 								# Fixme, only delete files owned by user.
 								system 'rm', '-R', $user[7]; # Delete Homedirectory
 								if (-e '/usr/sbin/userdel.local') {
