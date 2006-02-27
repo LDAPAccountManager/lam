@@ -22,6 +22,27 @@
 #
 #  LDAP Account Manager daemon to create and delete homedirecotries and quotas
 
+# set a known path
+my $path = "";
+if (-d "/sbin") {
+	if ($path eq "") { $path = "/sbin"; }
+	else { $path = "$path:/sbin"; }
+}
+if (-d "/usr/sbin") {
+	if ($path eq "") { $path = "/usr/sbin"; }
+	else { $path = "$path:/usr/sbin"; }
+}
+if (-l "/bin") {
+	if ($path eq "") { $path = "/usr/bin"; }
+	else { $path = "$path:/usr/bin"; }
+}
+else {
+	if ($path eq "") { $path = "/bin:/usr/bin"; }
+	else { $path = "$path:/bin:/usr/bin"; }
+}
+if (-d "/opt/sbin") { $path = "$path:/opt/sbin"; }
+if (-d "/opt/bin") { $path = "$path:/opt/bin"; }
+$ENV{"PATH"} = $path;
 
 #use strict; # Use strict for security reasons
 
@@ -111,11 +132,15 @@ if ($< == 0 ) { # we are root
 						$vals[2] eq 'rem' && do {
 							($<, $>) = ($>, $<); # Get root previliges
 							if (-d $user[7] && $user[7] ne '/') {
-								# Fixme, only delete files owned by user.
+							    if ((stat($user[7]))[4] eq $user[2]) {
 								system 'rm', '-R', $user[7]; # Delete Homedirectory
 								if (-e '/usr/sbin/userdel.local') {
 									system '/usr/sbin/userdel.local', $user[0];
 									}
+							    }
+							    else {
+								$return = "ERROR,Lamdaemon,Homedirectory not owned by $user[2].:$return";
+							    }
 								}
 							else {
 								$return = "ERROR,Lamdaemon,Homedirectory doesn't exists.:$return";

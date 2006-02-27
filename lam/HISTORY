@@ -10,6 +10,8 @@
     -> fixed language setting in default configuration profile
     -> fixed PHP5 warnings (getdate() and mktime())
     -> error messages in Samba domain module (1437425)
+    -> fixed expired passwords with shadowAccount module
+    -> added lamdaemon.pl compatibility and security patches by Tim Rice
 
 
 08.02.2006 1.0.rc2
