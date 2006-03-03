@@ -4,7 +4,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
-  Copyright (C) 2003  Michael Drgner
+  Copyright (C) 2003 - 2006  Michael Drgner
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by

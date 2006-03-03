@@ -8,7 +8,7 @@ $Id$
   Copyright (C) 2004  David Smith and phpLDAPadmin developers
   
   The original code was modified to fit for LDAP Account Manager by Roland Gruber.
-  Copyright (C) 2005  Roland Gruber
+  Copyright (C) 2005 - 2006  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by

@@ -3,6 +3,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
   Copyright (C) 2003  Leonhard Walchshäusl
+  Copyright (C) 2005 - 2006  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -29,7 +30,7 @@ $Id$
  */
 
 h1,h2,h3,h4,p,ul,ol,li,div,td,th,address,blockquote,b,i {
-  font-family:sans-serif;
+  font-family:Arial,Tahoma,Verdana,sans-serif;
 }
 
 body {

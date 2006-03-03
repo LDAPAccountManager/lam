@@ -1,7 +1,7 @@
 #!/bin/bash
 # $Id$
 #
-# Copyright (C) 2004  Roland Gruber
+# Copyright (C) 2004 - 2006  Roland Gruber
 # This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
 
 # This script is run after make_po to merge the existing Hungarian translations to messages.po

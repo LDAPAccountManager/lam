@@ -1,4 +1,12 @@
 #!/bin/bash
+# $Id$
+#
+# Copyright (C) 2004 - 2006  Roland Gruber
+# This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
+
+# This script is run to create archives of all messages.po files.
+
+#!/bin/bash
 echo "Generating Catalan translation template"
 ./make_po_ca
 tar -czf messages.po_ca.tar.gz messages.po  
