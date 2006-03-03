@@ -11,7 +11,7 @@ Installation Instructions for LAM
    - OpenLDAP (>2.0)
    - A web browser :-)
 
-   MHash is only needed if you use PHP < 4.3 and want to use SHA or SSHA
+   MHash is only needed if you use PHP < 4.3 and if you want to use SHA or SSHA
    for password hashes.
    MCrypt will be used to store your LDAP password encrypted in the session file.
 
@@ -29,9 +29,9 @@ Installation Instructions for LAM
 2. Installation
 
    * Extract package with:
-     tar xzf ldap-account-manager_<version>.tar.gz
+     tar xzf ldap-account-manager-<version>.tar.gz
 
-   * Copy files into the html-file scope of the webserver. For example
+   * Copy the files into the html-file scope of the webserver. For example
      /apache/htdocs.
 
    * Set appropriate file permissions:
