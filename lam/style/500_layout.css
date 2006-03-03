@@ -29,7 +29,7 @@ $Id$
  */
 
 h1,h2,h3,h4,p,ul,ol,li,div,td,th,address,blockquote,b,i {
-  font-family:Arial,Verdana,sans-serif;
+  font-family:sans-serif;
 }
 
 body {
