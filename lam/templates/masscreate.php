@@ -117,8 +117,13 @@ else {
 * @param string $scope account type
 */
 function showMainPage($scope) {
+	echo "<h1 align=\"center\">" . _("File upload") . "</h1>";
 	echo "<p>\n";
 		echo _("Please provide a CSV formated file with your account data. The cells in the first row must be filled with the column identifiers. The following rows represent one account for each row.");
+		echo "<br>";
+		echo _("Check your input carefully. LAM will only do some basic checks on the upload data.");
+		echo "<br><br>";
+		echo _("Hint: Format all cells as text in your spreadsheet program.");
 	echo "</p>\n";
 	
 	echo "<p>&nbsp;</p>\n";
@@ -132,6 +137,8 @@ function showMainPage($scope) {
 	echo "</form>\n";
 
 	echo "<p>&nbsp;</p>\n";
+	
+	echo _("Here is a list of possible columns. The red columns must be included in the CSV file and filled with data for all accounts.");
 
 	echo "<p><big><b>" . _("Columns:") . "</b></big></p>\n";
 
