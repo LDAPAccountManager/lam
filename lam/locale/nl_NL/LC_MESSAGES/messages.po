@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: LAM 0.5\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de\n"
 "POT-Creation-Date: 2004-01-14 17:45+0200\n"
-"PO-Revision-Date: 2006-02-06 02:12+0100\n"
+"PO-Revision-Date: 2006-02-14 10:49+0100\n"
 "Last-Translator: Ruud Baart <R.J.Baart@prompt.nl>\n"
 "Language-Team: German <post@rolandgruber.de>\n"
 "MIME-Version: 1.0\n"
@@ -57,11 +57,11 @@ msgstr "(hint: laat \"ou=\" weg)"
 
 #: ../templates/tree/add_attr_form.php:135
 msgid "(no new attributes available for this entry)"
-msgstr "(geen nieuw attributen beschikbaar voor deze ingang)"
+msgstr "(geen nieuw attributen beschikbaar voor deze entree)"
 
 #: ../templates/tree/add_attr_form.php:173
 msgid "(no new binary attributes available for this entry)"
-msgstr "(geen nieuw binair attributen beschikbaar voor deze ingang)"
+msgstr "(geen nieuw binair attributen beschikbaar voor deze entree)"
 
 #: ../lib/modules/posixAccount.inc:216
 msgid "/home/smiller"
@@ -69,7 +69,7 @@ msgstr "/home/smiller"
 
 #: ../templates/massBuildAccounts.php:113
 msgid "A required column is missing in your CSV file."
-msgstr "Een verplichte kolom ontbreekt in het CSV bestand"
+msgstr "Een verplichte kolom ontbreekt in het CSV bestand."
 
 #: ../lib/modules/kolabUser.inc:131
 msgid "A user may define who is allowed to act on behalf of herself. This property is checked when using the Kolab smtp daemon (Postfix) to send emails."
@@ -244,7 +244,7 @@ msgstr "Lijst accounts - Filters"
 
 #: ../templates/delete.php:88
 msgid "Account name:"
-msgstr "Naam account"
+msgstr "Naam account:"
 
 #: ../templates/pdfedit/pdfdelete.php:81
 msgid "Account type"
@@ -388,7 +388,7 @@ msgstr "Altijd afwijzen"
 #: ../templates/tree/edit.php:138
 #, php-format
 msgid "An attribute (%s) was modified and is highlighted below."
-msgstr "Een attribuut (%s) is gewijzigd en hieronder geaccentueerd"
+msgstr "Een attribuut (%s) is gewijzigd en is hieronder geaccentueerd."
 
 #: ../lib/modules/kolabUser.inc:349
 #: ../lib/modules/kolabUser.inc:803
@@ -546,7 +546,7 @@ msgstr "Zachte blok quotum bevat ongeldige tekens; alleen getallen zijn toegesta
 #: ../lib/modules/quota.inc:53
 #: ../lib/modules/quota.inc:54
 msgid "Block soft quota must be smaller than block hard quota."
-msgstr "Zachte blok quotum dient kleiner te zijn dat het uiterste blokquotum"
+msgstr "Zachte blok quotum dient kleiner te zijn dat het uiterste blokquotum."
 
 #: ../lib/modules/sambaGroupMapping.inc:70
 msgid "Builtin Group"
@@ -581,7 +581,7 @@ msgstr "Cache timeout is ongeldig!"
 #: ../lib/modules/shadowAccount.inc:158
 #: ../lib/modules/shadowAccount.inc:162
 msgid "Can be left empty."
-msgstr "Kan open gelaten worden"
+msgstr "Kan open gelaten worden."
 
 #: ../templates/tree/update_confirm.php:237
 #: ../templates/tree/delete_form.php:118
@@ -639,11 +639,11 @@ msgstr "Verander achtervoegsel"
 #: ../lib/baseModule.inc:569
 #, php-format
 msgid "Changed value %s because only numeric values are allowed."
-msgstr "Waarde %s is veranderd omdat alleen getallen zijn toegestaan"
+msgstr "Waarde %s is veranderd omdat alleen getallen toegestaan zijn."
 
 #: ../lib/baseModule.inc:600
 msgid "Changed value because only ASCII characters are allowed."
-msgstr "Waarde is veranderd omdat alleen ASCII karakters zijn toegestaan."
+msgstr "Waarde is veranderd omdat alleen ASCII tekens toegestaan zijn."
 
 #: ../templates/tree/create_form.php:75
 msgid "Choose a template"
@@ -652,11 +652,11 @@ msgstr "Kies een sjabloon"
 #: ../templates/tree/create.php:165
 #: ../lib/config.inc:111
 msgid "Click here if you are not directed to the next page."
-msgstr "Klik hier als u niet wordt doorverwezen naar de volgende pagina"
+msgstr "Klik hier als u niet wordt doorverwezen naar de volgende pagina."
 
 #: ../templates/schema/schema.php:203
 msgid "Collective"
-msgstr "Verzamelen"
+msgstr "Verzamelde"
 
 #: ../templates/masscreate.php:136
 msgid "Columns:"
@@ -770,7 +770,7 @@ msgstr "PDF bestand maken"
 
 #: ../lib/types/mailAlias.inc:111
 msgid "Create PDF for all aliases"
-msgstr "PDFvoor alle aliassen maken"
+msgstr "PDF voor alle aliassen maken"
 
 #: ../lib/types/smbDomain.inc:111
 msgid "Create PDF for all domains"
@@ -790,7 +790,7 @@ msgstr "PDF voor alle hosts maken"
 
 #: ../lib/types/user.inc:125
 msgid "Create PDF for all users"
-msgstr "PDF voor alle gebruiikers maken"
+msgstr "PDF voor alle gebruikers maken"
 
 #: ../lib/types/mailAlias.inc:110
 msgid "Create PDF for selected alias(es)"
@@ -1032,7 +1032,7 @@ msgstr "Verwijderd profiel:"
 #: ../templates/tree/rdelete.php:144
 #, php-format
 msgid "Deleting %s"
-msgstr "Bezig met verwijder van %s"
+msgstr "Bezig met verwijderen van %s"
 
 #: ../templates/delete.php:134
 msgid "Deleting. Please stand by ..."
@@ -1081,7 +1081,7 @@ msgstr "Display naam"
 
 #: ../lib/modules.inc:471
 msgid "Displayed account numbers start at \"0\". Add 2 to get the row in your spreadsheet."
-msgstr "Getoonde account nummers beginnen met \"0\". Voeg 2 toe om de rij in de spreadsheet in te krijgen."
+msgstr "Getoonde account nummers beginnen met \"0\". Tel er 2 bij om de rij in de spreadsheet in te krijgen."
 
 #: ../templates/ou_edit.php:98
 msgid "Do you really want to delete this OU?"
@@ -1093,7 +1093,7 @@ msgstr "Weet u zeker dat u deze PDF structuur wilt verwijderen?"
 
 #: ../templates/profedit/profiledelete.php:77
 msgid "Do you really want to delete this profile?"
-msgstr "Weet u zeker dat u deze profiel wilt verwijderen?"
+msgstr "Weet u zeker dat u dit profiel wilt verwijderen?"
 
 #: ../lib/modules/kolabUser.inc:591
 msgid "Do you really want to mark this account for deletion?"
@@ -1139,7 +1139,7 @@ msgstr "Domeinbeheerders"
 #: ../lib/modules/sambaSamAccount.inc:66
 #: ../lib/modules/sambaGroupMapping.inc:60
 msgid "Domain Certificate Admins"
-msgstr "Beheerder domein certificaat"
+msgstr "Beheerders domeincertificaat"
 
 #: ../lib/modules/sambaAccount.inc:49
 #: ../lib/modules/sambaAccount.inc:541
@@ -1147,24 +1147,24 @@ msgstr "Beheerder domein certificaat"
 #: ../lib/modules/sambaSamAccount.inc:548
 #: ../lib/modules/sambaGroupMapping.inc:58
 msgid "Domain Computers"
-msgstr "Domein computers"
+msgstr "Domeincomputers"
 
 #: ../lib/modules/sambaAccount.inc:50
 #: ../lib/modules/sambaSamAccount.inc:66
 #: ../lib/modules/sambaGroupMapping.inc:59
 msgid "Domain Controllers"
-msgstr "Domein controllers"
+msgstr "Domeincontrollers"
 
 #: ../lib/modules/sambaAccount.inc:51
 #: ../lib/modules/sambaSamAccount.inc:67
 #: ../lib/modules/sambaGroupMapping.inc:62
 msgid "Domain Enterprise Admins"
-msgstr "Bheerder bedrijfs domein"
+msgstr "Beheerder bedrijfsdomein"
 
 #: ../lib/modules/sambaGroupMapping.inc:67
 #: ../lib/modules/sambaGroupMapping.inc:207
 msgid "Domain Group"
-msgstr "Domein groep"
+msgstr "Domeingroep"
 
 #: ../lib/modules/sambaAccount.inc:49
 #: ../lib/modules/sambaSamAccount.inc:65
@@ -1176,7 +1176,7 @@ msgstr "Domein gast"
 #: ../lib/modules/sambaSamAccount.inc:67
 #: ../lib/modules/sambaGroupMapping.inc:63
 msgid "Domain Policy Admins"
-msgstr "Beheerders domein beleid"
+msgstr "Beheerders domeinbeleid"
 
 #: ../lib/types/smbDomain.inc:80
 #: ../lib/modules/sambaDomain.inc:63
@@ -1198,7 +1198,7 @@ msgstr "Beheerders domein schema"
 #: ../lib/modules/sambaSamAccount.inc:1452
 #: ../lib/modules/sambaGroupMapping.inc:56
 msgid "Domain Users"
-msgstr "Domein gebruikers"
+msgstr "Domeingebruikers"
 
 #: ../lib/modules/sambaGroupMapping.inc:262
 msgid "Domain administrators"
@@ -1226,11 +1226,11 @@ msgstr "Domeinnaam is ongeldig!"
 
 #: ../templates/main_header.php:57
 msgid "Donate"
-msgstr "Schenken"
+msgstr "Donatie"
 
 #: ../templates/pdfedit/pdfpage.php:468
 msgid "Down"
-msgstr "Naar beneden"
+msgstr "Omloaag"
 
 #: ../templates/masscreate.php:264
 msgid "Download sample CSV file"
@@ -1251,11 +1251,11 @@ msgstr "E-mail alias"
 
 #: ../lib/modules/kolabUser.inc:139
 msgid "EMail alias for this account."
-msgstr "E-mail alias voor deze account"
+msgstr "E-mail alias voor dit account"
 
 #: ../lib/modules/kolabUser.inc:224
 msgid "EMail alias is invalid!"
-msgstr "E-mail alias is ongeldig"
+msgstr "E-mail alias is ongeldig!"
 
 #: ../lib/modules/kolabUser.inc:142
 msgid "EMail alias list"
@@ -1263,7 +1263,7 @@ msgstr "E-mail alias lijst"
 
 #: ../lib/modules/kolabUser.inc:225
 msgid "EMail alias list has invalid format!"
-msgstr "E-mail alias lijst heeft ongeldig formaat!"
+msgstr "Lijst met e-mail aliassen heeft ongeldig formaat!"
 
 #: ../lib/modules/kolabUser.inc:188
 #: ../lib/modules/kolabUser.inc:387
@@ -1279,36 +1279,36 @@ msgstr "Bewerken"
 
 #: ../templates/pdfedit/pdfmain.php:130
 msgid "Edit PDF structure"
-msgstr "PDF structuur bewerken"
+msgstr "Bewerk PDF structuur"
 
 #: ../templates/config/confmain.php:215
 msgid "Edit account types"
-msgstr "Account types bewerken"
+msgstr "Bewerk account types"
 
 #: ../lib/modules/posixAccount.inc:888
 msgid "Edit groups"
-msgstr "Groepen bewerken"
+msgstr "Bewerk groepen"
 
 #: ../lib/modules/sambaSamAccount.inc:896
 msgid "Edit logon hours"
-msgstr "Inlog uren bewerken"
+msgstr "Bewerk inloguren"
 
 #: ../lib/modules/posixGroup.inc:178
 msgid "Edit members"
-msgstr "Leden bewerken"
+msgstr "Bewerk leden"
 
 #: ../templates/config/confmain.php:217
 msgid "Edit modules"
-msgstr "Modules bewerken"
+msgstr "Bewerk modules"
 
 #: ../templates/profedit/profilemain.php:140
 msgid "Edit profile"
-msgstr "Profiel bewerken"
+msgstr "Bewerk profiel"
 
 #: ../lib/modules/sambaAccount.inc:761
 #: ../lib/modules/sambaSamAccount.inc:852
 msgid "Edit workstations"
-msgstr "Werkstations bewerken"
+msgstr "Bewerk werkstations"
 
 #: ../lib/modules/inetOrgPerson.inc:66
 #: ../lib/modules/inetOrgPerson.inc:106
@@ -1321,7 +1321,7 @@ msgstr "Type werknemer"
 
 #: ../lib/modules/inetOrgPerson.inc:288
 msgid "Employee type: Contractor, Employee, Intern, Temp, External, ..."
-msgstr "Type werknemer: gecontracteerd, werknemer, intern, tijdelijk, extern, ..."
+msgstr "Type werknemer: werknemer, intern, tijdelijk, extern, ..."
 
 #: ../templates/login.php:345
 msgid "Empty password submitted. Please try again."
@@ -1333,7 +1333,7 @@ msgstr "Er is een fout opgetreden tijdens de zoekopdracht."
 
 #: ../templates/tree/add_value_form.php:136
 msgid "Enter the value you would like to add:"
-msgstr "Geef de waarde die u graag wilt toevoegen:"
+msgstr "Geef de waarde die u wilt toevoegen:"
 
 #: ../lib/export.inc:407
 msgid "Entry"
@@ -1342,12 +1342,12 @@ msgstr "Entree"
 #: ../templates/tree/rdelete.php:114
 #, php-format
 msgid "Entry %s and sub-tree deleted successfully."
-msgstr "Entree %s en onderliggende entrees met succes verwijderd"
+msgstr "Entree %s en onderliggende entrees met succes verwijderd."
 
 #: ../templates/tree/delete.php:103
 #, php-format
 msgid "Entry %s deleted successfully."
-msgstr "Entree %s met succes verwijderd"
+msgstr "Entree %s met succes verwijderd."
 
 #: ../templates/schema/schema.php:170
 msgid "Equality"
@@ -1360,7 +1360,7 @@ msgstr "Fout tijdens verwijderen DN: %s"
 
 #: ../help/help.inc:132
 msgid "Every account type needs exactly one base module. This module provides a structural object class."
-msgstr "Ieder account type heeft precies een basismodule nodig. Deze module levert een structural class object."
+msgstr "Ieder account type heeft precies een basismodule nodig. Deze module levert een structural objectclass."
 
 #: ../help/help.inc:75
 #: ../help/help.inc:81
@@ -1390,7 +1390,7 @@ msgstr "Uitvoer formaat"
 
 #: ../templates/tree/add_attr.php:128
 msgid "Failed to add the attribute."
-msgstr "Fout bij toevoegen van attribuut"
+msgstr "Toevoegen van het attribuut mislukt."
 
 #: ../templates/initsuff.php:149
 msgid "Failed to create entry!"
@@ -1557,7 +1557,7 @@ msgstr "Omschrijving groep"
 
 #: ../lib/modules/posixGroup.inc:409
 msgid "Group description. If left empty group name will be used."
-msgstr "Omschrijving groep. Indien leeg zal naam van de groep worden gebruikt"
+msgstr "Omschrijving groep. Indien leeg zal naam van de groep worden gebruikt."
 
 #: ../lib/types/group.inc:83
 msgid "Group member DNs"
@@ -1676,7 +1676,7 @@ msgstr "Help"
 
 #: ../templates/tools.php:83
 msgid "Here you can browse LDAP object classes and attributes."
-msgstr "Hier kun je LDAP objectclasses en -attributen doorkijken."
+msgstr "Hier kunnen de LDAP objectclasses en -attributen doorgebladerd worden."
 
 #: ../templates/masscreate.php:87
 msgid "Here you can create multiple accounts by providing a CSV file."
@@ -1781,7 +1781,7 @@ msgstr "Home directory bevat ongeldige tekens."
 
 #: ../lib/types/host.inc:51
 msgid "Host accounts (e.g. Samba)"
-msgstr "Host account (bijv. Samba)"
+msgstr "Host accounts (bijv. Samba)"
 
 #: ../lib/types/host.inc:83
 msgid "Host description"
@@ -1874,7 +1874,7 @@ msgstr "Indien aangevinkt zal het account deactiveerd worden door een \"!\" voor
 #: ../lib/modules/sambaAccount.inc:360
 #: ../lib/modules/sambaSamAccount.inc:201
 msgid "If checked account will be deactivated. (Setting D-Flag)"
-msgstr "Indien aangevinkt zal het account gedeactiveerd worden (middels D-vlag)"
+msgstr "Indien aangevinkt zal het account gedeactiveerd worden (middels D-vlag)."
 
 #: ../lib/modules/posixGroup.inc:425
 #: ../lib/modules/sambaAccount.inc:348
@@ -1886,7 +1886,7 @@ msgstr "Indien aangevinkt zal geen wachtwoord gebruikt worden."
 #: ../lib/modules/sambaAccount.inc:354
 #: ../lib/modules/sambaSamAccount.inc:195
 msgid "If checked password does not expire. (Setting X-Flag)"
-msgstr "Indien aangevinkt zal wachtwoord niet verlopen (middels X-vlag)"
+msgstr "Indien aangevinkt zal wachtwoord niet verlopen (middels X-vlag)."
 
 #: ../lib/modules/posixGroup.inc:405
 msgid "If empty GID number will be generated automaticly depending on your configuration settings."
@@ -2340,7 +2340,7 @@ msgstr "Mail quota moet een getal zijn!"
 
 #: ../lib/modules/inetLocalMailRecipient.inc:50
 msgid "Mail routing"
-msgstr "Mail routereing"
+msgstr "Mail routering"
 
 #: ../lib/modules/kolabUser.inc:79
 #: ../lib/modules/inetLocalMailRecipient.inc:68
@@ -3509,7 +3509,7 @@ msgstr "RID basis"
 
 #: ../templates/tree/templates/creation/new_ou_template.php:99
 msgid "Really create this new OU?"
-msgstr "Werkelijk een nieuwe OU aanmaken?"
+msgstr "Werkelijk deze nieuwe OU aanmaken?"
 
 #: ../templates/tree/edit.php:520
 msgid "Really delete attribute?"
@@ -4312,7 +4312,7 @@ msgstr "Dit is de algemene naam van de gebruiker; indien leeg wordt de voor- en 
 
 #: ../lib/modules/posixAccount.inc:382
 msgid "This is the natural name of the user. If empty, the first and last name or user name is used."
-msgstr "Dit is de algemene naam van een gebruiker. Indien leeg wordt de voor- en achternaam of de gebruikersnaam gebruikt."
+msgstr "Dit is de algemene naam van de gebruiker; indien leeg wordt de voor- en achternaam of de gebruikersnaam gebruikt."
 
 #: ../help/help.inc:95
 msgid "This is the number of rows to show in the user/group/host list. If more entries are found the list will be split into several pages."
@@ -4471,7 +4471,7 @@ msgstr "Achtervoegsel van de boom"
 
 #: ../templates/main_header.php:78
 msgid "Tree view"
-msgstr "Kijk op de boom"
+msgstr "LDAP boom"
 
 #: ../templates/config/confsave.php:97
 msgid "TreeSuffix is invalid!"
