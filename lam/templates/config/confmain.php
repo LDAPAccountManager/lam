@@ -381,11 +381,11 @@ echo ("<table border=0>\n");
 
 echo "<tr>";
 echo "<td align=\"left\"><pre>";
-	echo "<input tabindex=\"$tabindex\" type=\"submit\" name=\"submitconf\" value=\"" . _("Submit") . "\">";
+	echo "<input tabindex=\"$tabindex\" type=\"submit\" name=\"submitconf\" value=\"" . _("Ok") . "\">";
 	$tabindex++;
 	echo "<input tabindex=\"$tabindex\" type=\"reset\" name=\"resetconf\" value=\"" . _("Reset") . "\">";
 	$tabindex++;
-	echo "<input tabindex=\"$tabindex\" type=\"submit\" name=\"back\" value=\"" . _("Abort") . "\"\n";
+	echo "<input tabindex=\"$tabindex\" type=\"submit\" name=\"back\" value=\"" . _("Cancel") . "\"\n";
 	$tabindex++;
 
 echo ("></pre></td></tr>\n");

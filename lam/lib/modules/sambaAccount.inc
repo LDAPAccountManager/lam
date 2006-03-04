@@ -803,7 +803,7 @@ class sambaAccount extends baseModule {
 		if ($_SESSION[$this->base]->type=='host') {
 			$return[] = array ( 0 => array ( 'kind' => 'input', 'name' => 'acctFlagsW', 'type' => 'hidden', 'value' => 'true' ));
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Reset password') ),
-				1 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'ResetSambaPassword', 'value' => _('Submit')),
+				1 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'ResetSambaPassword', 'value' => _('Reset')),
 				2 => array ( 'kind' => 'help', 'value' => 'resetPassword' ));
 		}
 		return $return;

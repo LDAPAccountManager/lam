@@ -232,8 +232,8 @@ if (sizeof($activeTypes) > 0) {
 
 // submit and abort button
 echo "<p>";
-echo "<input type=\"submit\" name=\"submit\" value=\"" . _("Submit") . "\">\n";
-echo "<input type=\"submit\" name=\"abort\" value=\"" . _("Abort") . "\">\n";
+echo "<input type=\"submit\" name=\"submit\" value=\"" . _("Ok") . "\">\n";
+echo "<input type=\"submit\" name=\"abort\" value=\"" . _("Cancel") . "\">\n";
 echo "<input type=\"hidden\" name=\"postAvailable\" value=\"yes\">\n";
 echo "</p>";
 

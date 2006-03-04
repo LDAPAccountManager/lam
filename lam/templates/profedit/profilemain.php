@@ -161,8 +161,8 @@ for ($i = 0; $i < sizeof($profileClasses); $i++) {
 
 
 echo "<p>\n";
-echo "<input type=\"submit\" name=\"submit\" value=\"" . _("Submit") . "\">\n";
-echo "<input type=\"submit\" name=\"abort\" value=\"" . _("Abort") . "\">\n";
+echo "<input type=\"submit\" name=\"submit\" value=\"" . _("Ok") . "\">\n";
+echo "<input type=\"submit\" name=\"abort\" value=\"" . _("Cancel") . "\">\n";
 echo "</p>\n";
 
 echo "</form>\n";

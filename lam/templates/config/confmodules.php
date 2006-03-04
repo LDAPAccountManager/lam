@@ -106,13 +106,13 @@ for ($i = 0; $i < sizeof($account_list); $i++) {
 echo "<p>\n";
 	// disable button if there are conflicts/depends
 	if ($allDependenciesOk) {
-		echo "<input type=\"submit\" value=\"" . _("Submit") . "\" name=\"submit\">\n";
+		echo "<input type=\"submit\" value=\"" . _("Ok") . "\" name=\"submit\">\n";
 	}
 	else {
-		echo "<input type=\"submit\" value=\"" . _("Submit") . "\" name=\"submit\" disabled>\n";
+		echo "<input type=\"submit\" value=\"" . _("Ok") . "\" name=\"submit\" disabled>\n";
 	}
 	echo "&nbsp;";
-	echo "<input type=\"submit\" value=\"" . _("Abort") . "\" name=\"abort\">\n";
+	echo "<input type=\"submit\" value=\"" . _("Cancel") . "\" name=\"abort\">\n";
 echo "</p>\n";
 
 echo "<p><br><br>\n";

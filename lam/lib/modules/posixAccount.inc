@@ -1009,8 +1009,8 @@ class posixAccount extends baseModule {
 		$return[] = array(
 			0 => array('kind' => 'table', 'value' => array(
 				0 => array(
-					0 => array('kind' => 'input', 'type' => 'submit', 'value' => _('Submit'), 'name' => 'form_subpage_posixAccount_attributes_submit'),
-					1 => array('kind' => 'input', 'type' => 'submit', 'value' => _('Back'), 'name' => 'form_subpage_posixAccount_attributes_back'),
+					0 => array('kind' => 'input', 'type' => 'submit', 'value' => _('Ok'), 'name' => 'form_subpage_posixAccount_attributes_submit'),
+					1 => array('kind' => 'input', 'type' => 'submit', 'value' => _('Cancel'), 'name' => 'form_subpage_posixAccount_attributes_back'),
 					2 => array('kind' => 'text')))));
 		return $return;
 	}

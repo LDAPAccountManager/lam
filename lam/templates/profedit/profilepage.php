@@ -249,7 +249,7 @@ echo ("<input tabindex=\"$tabindex\" type=\"submit\" name=\"save\" value=\"" . _
 $tabindex++;
 echo ("<input tabindex=\"$tabindex\" type=\"reset\" name=\"reset\" value=\"" . _("Reset") . "\">\n");
 $tabindex++;
-echo ("<input tabindex=\"$tabindex\" type=\"submit\" name=\"abort\" value=\"" . _("Abort") . "\">\n");
+echo ("<input tabindex=\"$tabindex\" type=\"submit\" name=\"abort\" value=\"" . _("Cancel") . "\">\n");
 echo "<input type=\"hidden\" name=\"accounttype\" value=\"$type\">\n";
 
 echo ("</form></body></html>\n");

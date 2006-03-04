@@ -400,7 +400,7 @@ if (!isset($cfg->default) && !isset($cfg->password)) {
 			&nbsp
 			<input type="password" name="passwd">
 			&nbsp
-			<input type="submit" name="submit" value=" <?php echo _("Submit"); ?> ">
+			<input type="submit" name="submit" value=" <?php echo _("Ok"); ?> ">
 			&nbsp
 			<?PHP
 				// help link

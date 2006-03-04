@@ -103,7 +103,7 @@ else {
 	}
 	echo "</table>\n";
 	echo "<br><br>\n";
-	echo "<input type=\"submit\" name=\"submit\" value=\"". _("Submit") . "\">\n";
+	echo "&nbsp;&nbsp;&nbsp;&nbsp;<input type=\"submit\" name=\"submit\" value=\"". _("Ok") . "\">\n";
 	echo "</form>\n";
 	
 	echo "</body>\n";

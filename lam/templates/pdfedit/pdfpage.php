@@ -732,7 +732,7 @@ foreach($_SESSION['availablePDFFields'] as $module => $fields) {
 					<td colspan="3">
 						<fieldset>
 							<legend>
-								<b><?php echo _("Submit"); ?></b>
+								<b><?php echo _("Save"); ?></b>
 							</legend>
 							<table border="0" align="left">
 							<?php
@@ -769,7 +769,7 @@ foreach($_SESSION['availablePDFFields'] as $module => $fields) {
 										<input type="submit" name="submit" value="<?php echo _("Save");?>">
 									</td>
 									<td>
-										<input type="submit" name="abort" value="<?php echo _("Abort");?>">
+										<input type="submit" name="abort" value="<?php echo _("Cancel");?>">
 									</td>
 									<td>
 										&nbsp

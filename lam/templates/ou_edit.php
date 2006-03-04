@@ -102,8 +102,8 @@ if ($_POST['submit']) {
 					"<input type=\"hidden\" name=\"type\" value=\"del_" . $types[$i] . "\">\n" .
 					"<input type=\"hidden\" name=\"submit\" value=\"submit\">\n" .
 					"<input type=\"hidden\" name=\"deletename_" . $types[$i] . "\" value=\"" . $_POST['deletename_' . $types[$i]] . "\">\n" .
-					"<input type=\"submit\" name=\"sure\" value=\"" . _("Submit") . "\">\n" .
-					"<input type=\"submit\" name=\"abort\" value=\"" . _("Abort") . "\">\n" .
+					"<input type=\"submit\" name=\"sure\" value=\"" . _("Delete") . "\">\n" .
+					"<input type=\"submit\" name=\"abort\" value=\"" . _("Cancel") . "\">\n" .
 					"</form>";
 			}
 			else {
@@ -189,7 +189,7 @@ function display_main() {
 		echo ("<br>\n");
 	}
 
-	echo ("<input type=\"submit\" name=\"submit\" value=\"" . _("Submit") . "\">");
+	echo ("<input type=\"submit\" name=\"submit\" value=\"" . _("Ok") . "\">");
 	echo ("</form>\n");
 	echo ("</body></html>\n");
 }

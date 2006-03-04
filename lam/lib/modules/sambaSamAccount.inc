@@ -914,7 +914,7 @@ class sambaSamAccount extends baseModule {
 		if ($_SESSION[$this->base]->type=='host') {
 			$return[] = array ( 0 => array ( 'kind' => 'input', 'name' => 'sambaAcctFlagsW', 'type' => 'hidden', 'value' => 'true' ));
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Reset password') ),
-				1 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'ResetSambaPassword', 'value' => _('Submit')),
+				1 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'ResetSambaPassword', 'value' => _('Reset')),
 				2 => array ( 'kind' => 'help', 'value' => 'resetPassword' ));
 			}
 		return $return;
@@ -1000,8 +1000,8 @@ class sambaSamAccount extends baseModule {
 		}
 		$return[] = array(0 => array('kind' => 'text', 'text' => '&nbsp;', 'td' => array('colspan' => 8)));
 		$return[] = array(
-			0 => array('kind' => 'input', 'name' => 'form_subpage_sambaSamAccount_attributes_submit', 'type' => 'submit', 'value' => _('Submit'), 'td' => array('align' => 'right')),
-			1 => array('kind' => 'input', 'name' => 'form_subpage_sambaSamAccount_attributes_abort', 'type' => 'submit', 'value' => _('Abort'), 'td' => array('align' => 'left'))
+			0 => array('kind' => 'input', 'name' => 'form_subpage_sambaSamAccount_attributes_submit', 'type' => 'submit', 'value' => _('Ok'), 'td' => array('align' => 'right')),
+			1 => array('kind' => 'input', 'name' => 'form_subpage_sambaSamAccount_attributes_abort', 'type' => 'submit', 'value' => _('Cancel'), 'td' => array('align' => 'left'))
 		);
 		return $return;
 	}

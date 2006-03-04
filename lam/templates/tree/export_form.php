@@ -161,7 +161,7 @@ echo "</head>\n";
     <tr>
       <td colspan="2">
 	    <center>
-          <input type="submit" name="target" value="<?php echo _('Submit'); ?>" />
+          <input type="submit" name="target" value="<?php echo _('Ok'); ?>" />
 	    </center>
 	  </td>
     </tr>

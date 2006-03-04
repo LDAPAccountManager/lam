@@ -148,8 +148,8 @@ echo $_SESSION['header'];
 		<p>
 		<input type="hidden" name="forward" value="yes">
 
-		<input type="submit" name="submit" value="<?php echo _("Submit"); ?>">
-		<input type="submit" name="abort" value="<?php echo _("Abort"); ?>">
+		<input type="submit" name="submit" value="<?php echo _("Ok"); ?>">
+		<input type="submit" name="abort" value="<?php echo _("Cancel"); ?>">
 		</p>
 
 		</form>
