@@ -250,7 +250,7 @@ class posixGroup extends baseModule {
 							1 => array(
 								0 => array('kind' => 'input', 'type' => 'submit', 'name' => 'removeusers_button', 'value' => '=>', 'td' => array('align' => 'center'))),
 							2 => array(
-								0 => array('kind' => 'help', 'value' => 'adduser', 'td' => array('align' => 'center'))))),
+								0 => array('kind' => 'help', 'value' => 'members', 'td' => array('align' => 'center'))))),
 					2 => array('kind' => 'fieldset', 'td' => array('valign' => 'top'), 'legend' => _("Available users"), 'value' => array(
 						0 => array(
 							0 => array('kind' => 'select', 'name' => 'addusers', 'size' => '15', 'multiple' => true, 'options' => $users))))
@@ -410,7 +410,7 @@ class posixGroup extends baseModule {
 			),
 			'members' => array(
 				"Headline" => _("Group members"),
-				"Text" => _("Users who are member of the current group.")
+				"Text" => _("Users who are member of the current group. Users who have set their primary group to this group will not be shown.")
 			),
 			'upload_members' => array(
 				"Headline" => _("Group members"),
