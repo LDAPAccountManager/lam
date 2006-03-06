@@ -302,7 +302,7 @@ function getConfigOptions($scopes) {
 	$modules = array_keys($scopes);
 	for ($i = 0; $i < sizeof($modules); $i++) {
 		$m = new $modules[$i]('none');
-		$return[$modules[$i]] = $m->get_configOptions($scopes[$modules[$i]]);
+		$return[$modules[$i]] = $m->get_configOptions($scopes[$modules[$i]], $scopes);
 	}
 	return $return;
 }

@@ -1,3 +1,7 @@
+??? 1.0.1
+   - merged password hash settings for Unix users and groups
+
+
 01.03.2006 1.0.0
    - new architecture with support for more account types
    - new translations: Traditional Chinese, Dutch

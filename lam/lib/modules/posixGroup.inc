@@ -105,7 +105,7 @@ class posixGroup extends baseModule {
 			// password
 			if ($rawAccounts[$i][$ids['posixGroup_password']] != "") {
 				if (get_preg($rawAccounts[$i][$ids['posixGroup_password']], 'password')) {
-					$partialAccounts[$i]['userPassword'] = pwd_hash($rawAccounts[$i][$ids['posixGroup_password']], true, $this->moduleSettings['posixGroup_pwdHash'][0]);
+					$partialAccounts[$i]['userPassword'] = pwd_hash($rawAccounts[$i][$ids['posixGroup_password']], true, $this->moduleSettings['posixAccount_pwdHash'][0]);
 				}
 				else {
 					$error_messages[] = $this->messages['userPassword'][1];
@@ -315,15 +315,7 @@ class posixGroup extends baseModule {
 				2 => array('kind' => 'text', 'value' => '&nbsp;'),
 				3 => array('kind' => 'text', 'text' => '<b>' . _('Maximum GID number') . " *: </b>"),
 				4 => array('kind' => 'input', 'name' => 'posixGroup_maxGID', 'type' => 'text', 'size' => '10', 'maxlength' => '255'),
-				5 => array('kind' => 'help', 'value' => 'minMaxGID')),
-			array(
-				0 => array('kind' => 'text', 'text' => '<b>' . _("Password hash type") . ': &nbsp;</b>'),
-				1 => array('kind' => 'select', 'name' => 'posixGroup_pwdHash', 'size' => '1',
-				'options' => array("CRYPT", "SHA", "SSHA", "MD5", "SMD5", "PLAIN"), 'options_selected' => array('SSHA')),
-				2 => array('kind' => 'text', 'value' => '&nbsp;'),
-				3 => array('kind' => 'text', 'value' => '&nbsp;'),
-				4 => array('kind' => 'text', 'value' => '&nbsp;'),
-				5 => array('kind' => 'help', 'value' => 'pwdHash'))
+				5 => array('kind' => 'help', 'value' => 'minMaxGID'))
 		);
 		// configuration descriptions
 		$return['config_descriptions'] = array(
@@ -331,7 +323,7 @@ class posixGroup extends baseModule {
 			'descriptions' => array(
 				'posixGroup_minGID' => _("Minimum GID number for Unix groups"),
 				'posixGroup_maxGID' => _("Maximum GID number for Unix groups"),
-				'posixGroup_pwdHash' => _("Password hash type for Unix groups"),
+				'posixAccount_pwdHash' => _("Password hash type for Unix groups"),
 			)
 		);
 		// configuration checks
@@ -445,6 +437,29 @@ class posixGroup extends baseModule {
 		return $return;
 	}
 
+
+	/**
+	* Returns a list of elements for the configuration.
+	*
+	* @param array $scopes account types (user, group, host)
+	* @param array $allScopes list of all modules and active scopes
+	* @return array configuration elements
+	*/
+	function get_configOptions($scopes, $allScopes) {
+		$return = parent::get_configOptions($scopes, $allScopes);
+		$pwdHash = array(
+			0 => array('kind' => 'text', 'text' => '<b>' . _("Password hash type") . ': &nbsp;</b>'),
+			1 => array('kind' => 'select', 'name' => 'posixAccount_pwdHash', 'size' => '1',
+				'options' => array("CRYPT", "SHA", "SSHA", "MD5", "SMD5", "PLAIN"), 'options_selected' => array('SSHA')),
+			2 => array('kind' => 'text', 'value' => '&nbsp;'),
+			3 => array('kind' => 'text', 'value' => '&nbsp;'),
+			4 => array('kind' => 'text', 'value' => '&nbsp;'),
+			5 => array('kind' => 'help', 'value' => 'pwdHash')
+			);
+		// display password hash option only if posixAccount module is not used
+		if (!isset($allScopes['posixAccount'])) $return[] = $pwdHash;
+		return $return;
+	}
 
 	/**
 	* Returns the PDF entries for this module.
@@ -754,7 +769,7 @@ class posixGroup extends baseModule {
 				$return[$_SESSION[$this->base]->dn]['modify']['userPassword'][0] = '*';
 			// password changed
 			elseif (($this->attributes['userPassword'][0] != $this->orig['userPassword'][0]) && $this->attributes['userPassword'][0] != '')
-				$return[$_SESSION[$this->base]->dn]['modify']['userPassword'][0] = pwd_hash($this->attributes['userPassword'][0], !$this->userPassword_lock, $this->moduleSettings['posixGroup_pwdHash'][0]);
+				$return[$_SESSION[$this->base]->dn]['modify']['userPassword'][0] = pwd_hash($this->attributes['userPassword'][0], !$this->userPassword_lock, $this->moduleSettings['posixAccount_pwdHash'][0]);
 			// lock account if required
 			elseif ($this->userPassword_lock && (pwd_disable($this->orig['userPassword'][0]) != $this->orig['userPassword'][0]))
 				$return[$_SESSION[$this->base]->dn]['modify']['userPassword'][0] = pwd_disable($this->orig['userPassword'][0]);
@@ -768,11 +783,11 @@ class posixGroup extends baseModule {
 		else {
 			// New user or no old password set
 			if ($this->userPassword_nopassword) // use no password
-				$return[$_SESSION[$this->base]->dn]['add']['userPassword'][0] = pwd_hash('', !$this->userPassword_lock, $this->moduleSettings['posixGroup_pwdHash'][0]);
+				$return[$_SESSION[$this->base]->dn]['add']['userPassword'][0] = pwd_hash('', !$this->userPassword_lock, $this->moduleSettings['posixAccount_pwdHash'][0]);
 			else if ($this->userPassword_invalid) // use '*' as password
 				$return[$_SESSION[$this->base]->dn]['add']['userPassword'][0] = '*';
 			else if ($this->attributes['userPassword'][0] != '') // set password if set
-				$return[$_SESSION[$this->base]->dn]['add']['userPassword'][0] = pwd_hash($this->attributes['userPassword'][0], !$this->userPassword_lock, $this->moduleSettings['posixGroup_pwdHash'][0]);
+				$return[$_SESSION[$this->base]->dn]['add']['userPassword'][0] = pwd_hash($this->attributes['userPassword'][0], !$this->userPassword_lock, $this->moduleSettings['posixAccount_pwdHash'][0]);
 		}
 
 		// Remove primary group from users from memberUid

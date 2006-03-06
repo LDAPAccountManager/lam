@@ -323,9 +323,10 @@ class baseModule {
 	* Returns a list of elements for the configuration.
 	*
 	* @param array $scopes account types (user, group, host)
+	* @param array $allScopes list of all modules and active scopes
 	* @return array configuration elements
 	*/
-	function get_configOptions($scopes) {
+	function get_configOptions($scopes, $allScopes) {
 		$return = array();
 		for ($i = 0; $i < sizeof($scopes); $i++) {
 			if (isset($this->meta['config_options'][$scopes[$i]])) $return = array_merge($return, $this->meta['config_options'][$scopes[$i]]);
