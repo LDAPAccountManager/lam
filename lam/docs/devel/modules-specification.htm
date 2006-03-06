@@ -201,7 +201,8 @@ true);</span><br style="font-weight: bold;">
   <tbody>
     <tr>
       <td style="vertical-align: top; text-align: center;"><span
- style="font-weight: bold;">function get_configOptions($scopes)</span><br>
+ style="font-weight: bold;">function get_configOptions($scopes,
+$allScopes)</span><br>
       </td>
     </tr>
   </tbody>
@@ -211,7 +212,9 @@ Returns a list of configuration options.<br>
 <span style="font-weight: bold;">$scopes</span> is a list of <span
  style="font-style: italic;">account types</span> (user, group, host)
 which are used.<br>
-<span style="font-weight: bold;"></span><br>
+<span style="font-weight: bold;">$allScopes</span> is a list of all
+active account modules and their scopes (module =&gt; array(scopes))<br>
+<br>
 The return value is an array
 that contains <span style="font-weight: bold;">meta HTML code</span>.<br>
 <br>
