@@ -592,6 +592,18 @@ function parseHtml($module, $input, $values, $restricted, &$tabindex, &$tabindex
 						echo $output;
 						$ret[$input[$i][$j]['name']] = $type;	// save type
 						break;
+					// text area
+					case 'textarea':
+						echo "<textarea";
+						if (isset($input[$i][$j]['name'])) echo ' name="' . $input[$i][$j]['name'] . '"';
+						if (isset($input[$i][$j]['readonly']) && (isset($input[$i][$j]['readonly']) === true)) echo ' readonly';
+						echo ' cols="' . $input[$i][$j]['cols'] . '"';
+						echo ' rows="' . $input[$i][$j]['rows'] . '"';
+						echo ">";
+						if (isset($values[$input[$i][$j]['name']])) echo $values[$input[$i][$j]['name']];
+						else echo $input[$i][$j]['value'];
+						echo "</textarea>";
+						break;
 					// inner fieldset
 					case 'fieldset':
 						echo "<fieldset>\n";
