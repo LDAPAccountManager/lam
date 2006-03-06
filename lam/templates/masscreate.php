@@ -123,7 +123,7 @@ function showMainPage($scope) {
 		echo "<br>";
 		echo _("Check your input carefully. LAM will only do some basic checks on the upload data.");
 		echo "<br><br>";
-		echo _("Hint: Format all cells as text in your spreadsheet program.");
+		echo _("Hint: Format all cells as text in your spreadsheet program and turn off auto correction.");
 	echo "</p>\n";
 	
 	echo "<p>&nbsp;</p>\n";
