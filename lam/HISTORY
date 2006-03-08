@@ -1,5 +1,7 @@
 ??? 1.0.1
    - merged password hash settings for Unix users and groups
+   - fixed bugs:
+    -> Samba hash values were wrong in some rare cases (1440021)
 
 
 01.03.2006 1.0.0

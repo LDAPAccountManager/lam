@@ -134,6 +134,14 @@ var $sbox = array(array(array(14,  4, 13,  1,  2, 15, 11,  8,  3, 10,  6, 12,  5
              array( 2,  1, 14,  7,  4, 10,  8, 13, 15, 12,  9,  0,  3,  5,  6, 11)));
 
 	/**
+	* Fixes too large numbers
+	*/
+	function x($i) {
+		if ($i < 0) return 4294967296 - $i;
+		else return $i;
+	}
+
+	/**
 	* @param integer count
 	* @param array $data
 	* @return array
@@ -335,7 +343,11 @@ var $sbox = array(array(array(14,  4, 13,  1,  2, 15, 11,  8,  3, 10,  6, 12,  5
 	# Support functions
 	# Ported from SAMBA/source/lib/md4.c:F,G and H respectfully
 	function F($X, $Y, $Z) {
-		return ($X&$Y) | ((~$X)&$Z);
+		$ret = (($X&$Y) | ((~((int)$X))&$Z));
+		if ($this->x($ret) > 4294967296) {
+			$ret = (2*4294967296) - $this->x($ret);
+		}
+		return $ret;
 	}
 
 	function G($X, $Y, $Z) {
@@ -467,6 +479,9 @@ var $sbox = array(array(array(14,  4, 13,  1,  2, 15, 11,  8,  3, 10,  6, 12,  5
 		$sum[1] &= 0xffff;
 		$sum[0] &= 0xffff;
 		$ret = ($sum[0]<<16) | $sum[1];
+		if ($this->x($ret) > 4294967296) {
+			$ret = (2*4294967296) - $this->x($ret);
+		}
 		return $ret;
 	}
 
@@ -492,7 +507,14 @@ var $sbox = array(array(array(14,  4, 13,  1,  2, 15, 11,  8,  3, 10,  6, 12,  5
 	# Renamed to prevent clash with SAMBA/source/libsmb/smbdes.c:lshift
 	function md4lshift($x, $s) {
 		$x &= 0xFFFFFFFF;
-		return ((($x<<$s)&0xFFFFFFFF) | $this->unsigned_shift_r($x, (32-$s)));
+		if ($this->x($x) > 4294967296) {
+			$x = (2*4294967296) - $this->x($x);
+		}
+		$ret = ((($x<<$s)&0xFFFFFFFF) | $this->unsigned_shift_r($x, (32-$s)));
+		if ($this->x($ret) > 4294967296) {
+			$ret = (2*4294967296) - $this->x($ret);
+		}
+		return $ret;
 	}
 
 	/**
