@@ -27,6 +27,13 @@ rm lam/config/.cvsignore
 mv lam ldap-account-manager-$VERSION
 
 # tar.gz
+cp lam-packaging/autoconf/configure.ac ldap-account-manager-$VERSION/
+cp lam-packaging/autoconf/Makefile.in ldap-account-manager-$VERSION/
+cd ldap-account-manager-$VERSION
+touch install.sh
+autoconf
+rm configure.ac
+cd ..
 tar cfvz ldap-account-manager-$VERSION.tar.gz ldap-account-manager-$VERSION
 
 # Debian
