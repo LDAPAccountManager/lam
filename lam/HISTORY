@@ -1,4 +1,5 @@
 ??? 1.0.1
+   - LAM can now be installed with "configure" and "make install"
    - merged password hash settings for Unix users and groups
    - fixed bugs:
     -> Samba hash values were wrong in some rare cases (1440021)

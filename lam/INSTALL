@@ -28,28 +28,31 @@ Installation Instructions for LAM
 
 2. Installation
 
-   * Extract package with:
-     tar xzf ldap-account-manager-<version>.tar.gz
+   1. Extract package with:
+      tar xzf ldap-account-manager-<version>.tar.gz
 
-   * Copy the files into the html-file scope of the webserver. For example
-     /apache/htdocs.
+   2a. Copy the files into the html-file scope of the webserver. For example
+       /apache/htdocs.
 
-   * Set appropriate file permissions:
-     - lam/sess: write permission for apache user
-     - lam/tmp: write permission for apache user
-     - lam/config (with subdirectories): write permission for apache user
-     - lam/lib: lamdaemon.pl must be set executable (See also
-       docs/readme.lamdeamon.txt)
+       Set appropriate file permissions:
+        - lam/sess: write permission for apache user
+        - lam/tmp: write permission for apache user
+        - lam/config (with subdirectories): write permission for apache user
+        - lam/lib: lamdaemon.pl must be set executable (See also
+          docs/readme.lamdeamon.txt)
 
-   * Configure config.cfg and create a configuration profile.
-     Copy config.cfg_sample to config.cfg and set the master password and default
-     profile.
+   2b. You can also use the included configure script to install LAM. See
+       "./configure --help" for a list of install options.
 
-     Open the index.html in your web browser:
-     - Follow the link "Configuration Login" from the start page.
-       (The default password to edit the options is "lam")
-     - Select the default lam profile or create a new profile.
-     - Change the settings to fit your environment.
+   3. Configure config.cfg and create a configuration profile.
+      Copy config.cfg_sample to config.cfg and set the master password and default
+      profile.
+
+      Open the index.html in your web browser:
+       - Follow the link "Configuration Login" from the start page.
+        (The default password to edit the options is "lam")
+       - Select the default lam profile or create a new profile.
+       - Change the settings to fit your environment.
 
 
 
