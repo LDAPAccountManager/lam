@@ -641,13 +641,21 @@ function parseHtml($module, $input, $values, $restricted, &$tabindex, &$tabindex
 						}
 						if (isset($values[$input[$i][$j]['name']])) $input[$i][$j]['options_selected'] = $values[$input[$i][$j]['name']];
 						// merge both option arrays and sort them.
-						$options = array_merge ($input[$i][$j]['options'], $input[$i][$j]['options_selected'] );
-						$options = array_unique($options);
+						$options = $input[$i][$j]['options'];
+						if (!isset($input[$i][$j]['descriptiveOptions']) || ($input[$i][$j]['descriptiveOptions'] === false)) {
+							// merge both option arrays and sort them.
+							$options = array_merge($input[$i][$j]['options'], $input[$i][$j]['options_selected'] );
+							$options = array_unique($options);
+						}
 						if (!isset($input[$i][$j]['noSorting']) || !$input[$i][$j]['noSorting']) {
 							sort($options);
 						}
 						foreach ($options as $option) {
-							if ($option!='') {
+							if (isset($input[$i][$j]['descriptiveOptions']) && ($input[$i][$j]['descriptiveOptions'] === true)) {
+								if (in_array($option[0], $input[$i][$j]['options_selected'])) echo "<option value=\"" . $option[0] . "\" selected>" . $option[1] . "</option>\n";
+								else echo "<option value=\"" . $option[0] . "\">" . $option[1] . "</option>\n";								
+							}
+							elseif ($option!='') {
 								if (in_array($option, $input[$i][$j]['options_selected'])) echo "<option selected>" . $option . "</option>\n";
 								else echo "<option>" . $option . "</option>\n";
 							}
@@ -694,6 +702,7 @@ function parseHtml($module, $input, $values, $restricted, &$tabindex, &$tabindex
 	echo "</table>\n";
 	return $ret;
 }
+
 
 /**
 * This class includes all modules and attributes of an account.
