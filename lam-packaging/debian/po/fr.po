@@ -13,10 +13,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: ldap-account-manager_0.5.1-1\n"
+"Project-Id-Version: ldap-account-manager_1.0.0-1\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de\n"
-"POT-Creation-Date: 2005-11-08 20:24+0100\n"
-"PO-Revision-Date: 2005-11-10 19:28+0100\n"
+"POT-Creation-Date: 2006-02-27 14:33+0100\n"
+"PO-Revision-Date: 2006-03-04 09:24+0100\n"
 "Last-Translator: Steve Petruzzello <dlist@bluewin.ch>\n"
 "Language-Team: French <debian-l10n-french@lists.debian.org>\n"
 "MIME-Version: 1.0\n"
@@ -110,3 +110,20 @@ msgstr ""
 "Veuillez noter que la nouvelle version utilise de nouveaux formats de "
 "fichiers pour la configuration et les profils. Vous devez mettre à jour "
 "votre configuration et créer de nouveaux profils de compte."
+
+#. Type: note
+#. Description
+#: ../templates:42
+msgid "Upgrade from pre-1.0.0 versions"
+msgstr "Mise à jour des versions pre-1.0.0"
+
+#. Type: note
+#. Description
+#: ../templates:42
+msgid ""
+"Please note that this version uses new file formats for the configuration "
+"profiles. Please edit your configuration files and save the new settings."
+msgstr ""
+"Veuillez noter que cette nouvelle version utilise de nouveaux formats de "
+"fichiers pour la configuration des profils. Vous devez mettre à jour votre "
+"configuration et sauver les nouveaux réglages."
