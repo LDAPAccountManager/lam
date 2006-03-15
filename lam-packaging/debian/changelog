@@ -1,3 +1,11 @@
+ldap-account-manager (1.0.1-1) unstable; urgency=low
+
+  * Updated to new upstream release.
+  * [intl:fr] ldap-account-manager debconf template translation (Closes:
+    #356839)
+
+ -- Roland Gruber <post@rolandgruber.de>  Wed, 15 Mar 2006 16:04:05 +0100
+
 ldap-account-manager (1.0.0-1) unstable; urgency=low
 
   * Updated to new upstream release.
