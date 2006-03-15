@@ -252,7 +252,10 @@ class sambaSamAccount extends baseModule {
 				"Text" => _("This option defines the allowed logon hours for this account. The format is the same as for the LDAP attribute. The 24*7 hours are represented as 168 bit which are saved as 21 hex (21*8 = 168) values. The first bit represents Sunday 0:00 - 0:59 in GMT.")),
 			'expireDate' => array (
 				"Headline" => _("Account expiration date"),
-				"Text" => _("This is the date when the account will expire. Format: DD-MM-YYYY"))
+				"Text" => _("This is the date when the account will expire. Format: DD-MM-YYYY")),
+			'timeZone' => array (
+				"Headline" => _("Time zone"),
+				"Text" => _("This is the time zone of your Samba server. LAM needs this information to display the logon hours correctly."))
 		);
 		// upload dependencies
 		$return['upload_preDepends'] = array('posixAccount', 'inetOrgPerson');
@@ -401,6 +404,44 @@ class sambaSamAccount extends baseModule {
 				)
 			);
 		}
+		// configuration options
+		$return['config_options']['user'] = array(
+		array(
+			0 => array('kind' => 'text', 'text' => '<b>' . _("Time zone") . ': &nbsp;</b>'),
+			1 => array('kind' => 'select', 'name' => 'sambaSamAccount_timeZone', 'size' => '1',
+				'options' => array(
+					array('-12', "GMT-12: " . _("Eniwetok, Kwajalein")),
+					array('-11', "GMT-11: " . _("Midway Island, Samoa")),
+					array('-10', "GMT-10: " . _("Hawaii")),
+					array('-9', "GMT-09: " . _("Alaska")),
+					array('-8', "GMT-08: " . _("Pacific Time (US & Canada)")),
+					array('-7', "GMT-07: " . _("Mountain Time (US & Canada)")),
+					array('-6', "GMT-06: " . _("Central Time (US & Canada), Mexico City")),
+					array('-5', "GMT-05: " . _("Eastern Time (US & Canada), Bogota")),
+					array('-4', "GMT-04: " . _("Atlantic time (Canada), Caracas")),
+					array('-3', "GMT-03: " . _("Brazil, Buenos Aires")),
+					array('-2', "GMT-02: " . _("Mid-Atlantic")),
+					array('-1', "GMT-01: " . _("Azores, Cape Verde Islands")),
+					array('0', 'GMT: ' . _("Western Europe Time, London, Lisbon")),
+					array('1', "GMT+01: " . _("Central Europe Time, Paris, Berlin")),
+					array('2', "GMT+02: " . _("Eastern Europe Time, South Africa")),
+					array('3', "GMT+03: " . _("Baghdad, Riyadh, Moscow")),
+					array('4', "GMT+04: " . _("Abu Dhabi, Muscat, Baku")),
+					array('5', "GMT+05: " . _("Islamabad, Karachi")),
+					array('6', "GMT+06: " . _("Almaty, Dhaka, Colombo")),
+					array('7', "GMT+07: " . _("Bangkok, Hanoi, Jakarta")),
+					array('8', "GMT+08: " . _("Beijing, Perth, Singapore")),
+					array('9', "GMT+09: " . _("Tokyo, Seoul, Osaka, Yakutsk")),
+					array('10', "GMT+10: " . _("East Australian Standard, Guam")),
+					array('11', "GMT+11: " . _("Magadan, Solomon Islands")),
+					array('12', "GMT+12: " . _("Auckland, Fiji, Kamchatka")),
+					),
+					'options_selected' => array('0'),
+					'descriptiveOptions' => true),
+			2 => array('kind' => 'help', 'value' => 'timeZone'))
+		);
+		// configuration descriptions
+		$return['config_descriptions'] = array('legend' => _("Samba 3 settings"), 'descriptions' => array());
 		return $return;
 	}
 
@@ -960,6 +1001,10 @@ class sambaSamAccount extends baseModule {
 	* @return array meta HTML code
 	*/
 	function display_html_logonHours(&$post) {
+		$timeZone = 0;
+		if (isset($this->moduleSettings['sambaSamAccount_timeZone']) && is_array($this->moduleSettings['sambaSamAccount_timeZone'])) {
+			$timeZone = $this->moduleSettings['sambaSamAccount_timeZone'][0];
+		}
 		$days = array(1 => _('Monday'), 2 => _('Tuesday'), 3 => _('Wednesday'), 4 => _('Thursday'),
 			5 => _('Friday'), 6 => _('Saturday'), 0 => _('Sunday'));
 		if (!$this->attributes['sambaLogonHours'][0]) {
@@ -983,15 +1028,22 @@ class sambaSamAccount extends baseModule {
 		}
 		// display input
 		for ($i = 0; $i < 24*7; $i++) {
+			$hr = $i + $timeZone;
+			if ($hr < 0) {
+				$hr = $hr + 24*7;
+			}
+			elseif ($hr >= 24*7) {
+				$hr = $hr - 24*7;
+			}
 			if ($i % 7 == 0) {
 				$return[0][floor($i / 24)+1] = array('kind' => 'text',
 					'text' => '<b>' . $days[floor($i / 24)] . '</b>',
 					'td' => array('width' => "11%", 'align' => 'center'));
 			}
 			$return[$i % 24 + 1][floor($i/24) + 1] = array('kind' => 'input',
-				'name' => 'lh_' . $i,
+				'name' => 'lh_' . $hr,
 				'type' => 'checkbox',
-				'checked' => $hour[$i] ? true : false,
+				'checked' => $hour[$hr] ? true : false,
 				'td' => array('align' => 'center'));
 		}
 		$return[0][0] = array('kind' => 'text', 'text' => '<b>' . _('Time') . '</b>', 'td' => array('width' => "12.5%"));
