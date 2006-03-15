@@ -527,7 +527,7 @@ class posixAccount extends baseModule {
 			// Add new memberships
 			if (is_array($this->groups))
 			foreach ($this->groups as $group) {
-				$dn = $_SESSION['ldap']->in_cache ($group, 'cn', 'group');
+				$dn = $_SESSION['cache']->in_cache($group, 'cn', 'group');
 				$return[$dn]['add']['memberUid'][0] = $this->attributes['uid'][0];
 			}
 		}

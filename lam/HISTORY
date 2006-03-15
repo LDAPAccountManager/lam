@@ -3,7 +3,8 @@
    - Samba 3: readded time zone selection for logon hours
    - Unix: merged password hash settings for Unix users and groups
    - fixed bugs:
-    -> Samba hash values were wrong in some rare cases (1440021)
+    -> Samba 3: hash values were wrong in some rare cases (1440021)
+    -> Unix: call of unknown function (1450464)
 
 
 01.03.2006 1.0.0
