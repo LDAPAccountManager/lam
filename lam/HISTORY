@@ -1,9 +1,10 @@
 ??? 1.0.1
    - LAM can now be installed with "configure" and "make install"
-   - Samba 3: readded time zone selection for logon hours
    - Unix: merged password hash settings for Unix users and groups
+   - Samba 3: added Windows group to profile options
    - fixed bugs:
     -> Samba 3: hash values were wrong in some rare cases (1440021)
+    -> Samba 3: readded time zone selection for logon hours (1407761)
     -> Unix: call of unknown function (1450464)
 
 

@@ -809,7 +809,7 @@ class sambaSamAccount extends baseModule {
 			}
 			elseif ($this->attributes['sambaDomainName'][0]!='') {
 				if ($this->attributes['sambaDomainName'][0] == $sambaDomains[$i]->name) {
-					$SID = $domainSID;
+					$SID = $sambaDomains[$i]->SID;
 					$sel_domain = $sambaDomains[$i]->name;
 				}
 			}
@@ -1149,6 +1149,17 @@ class sambaSamAccount extends baseModule {
 				1 => array('kind' => 'select', 'name' => 'sambaSamAccount_sambaDomainName', 'options' => $sambaDomainNames, 'options_selected' => array()),
 				2 => array('kind' => 'help', 'value' => 'domain')
 				);
+			// Windows group
+			$groups = array();
+			foreach ($this->rids as $key => $value) {
+				$groups[] = array($value, $key);
+			}
+			$groups[] = array("-", "-");
+			$return[] = array(
+				0 => array('kind' => 'text', 'text' => _('Windows group') . ': '),
+				1 => array('kind' => 'select', 'name' => 'sambaSamAccount_group', 'options' => $groups, 'options_selected' => array('513'), 'descriptiveOptions' => true),
+				2 => array('kind' => 'help', 'value' => 'group')
+				);
 			// logon hours
 			$return[] = array(
 				0 => array('kind' => 'text', 'text' => _('Logon hours') . ': '),
@@ -1242,6 +1253,25 @@ class sambaSamAccount extends baseModule {
 					$this->attributes['sambaSID'][0] = $SID;
 				}
 			}
+		}
+		// primary group
+		if (isset($profile['sambaSamAccount_sambaDomainName'][0])) {
+			$domains = search_domains();
+			$domSID = '';
+			// find domain SID
+			for ($i = 0; $i < sizeof($domains); $i++) {
+				if ($domains[$i]->name == $profile['sambaSamAccount_sambaDomainName'][0]) {
+					$domSID = $domains[$i]->SID;
+					break;
+				}
+			}
+			if ($domSID != '') {
+				// set primary group if selected
+				if (isset($profile['sambaSamAccount_group'][0]) && ($profile['sambaSamAccount_group'][0] != "-")) {
+					$this->attributes['sambaPrimaryGroupSID'][0] = $domSID . "-" . $profile['sambaSamAccount_group'][0];
+				}
+			}
+			
 		}
 	}
 
