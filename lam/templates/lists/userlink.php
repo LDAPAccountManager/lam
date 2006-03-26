@@ -30,14 +30,15 @@ $Id$
 * @author Roland Gruber
 */
 
+/** security functions */
+include_once("../../lib/security.inc");
 /** Needed to find DNs of users */
-include_once ("../../lib/ldap.inc");
+include_once("../../lib/ldap.inc");
 /** Used to display error messages */
-include_once ("../../lib/status.inc");
+include_once("../../lib/status.inc");
 
 // start session
-session_save_path("../../sess");
-@session_start();
+startSecureSession();
 
 setlanguage();
 

@@ -29,14 +29,15 @@ $Id$
 * @author Roland Gruber
 */
 
+/** security functions */
+include_once("../../lib/security.inc");
 /** Used to get type information. */
 include_once("../../lib/types.inc");
 /** Access to configuration options */
-include_once ("../../lib/config.inc");
+include_once("../../lib/config.inc");
 
 // start session
-session_save_path("../../sess");
-@session_start();
+startSecureSession();
 
 setlanguage();
 

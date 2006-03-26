@@ -31,6 +31,8 @@ $Id$
 * @package PDF
 */
 
+/** security functions */
+include_once("../../lib/security.inc");
 /** access to PDF configuration files */
 include_once('../../lib/pdfstruct.inc');
 /** LDAP object */
@@ -43,8 +45,7 @@ include_once('../../lib/modules.inc');
 include_once('../../lib/xml_parser.inc');
 
 // start session
-session_save_path("../../sess");
-@session_start();
+startSecureSession();
 
 setlanguage();
 

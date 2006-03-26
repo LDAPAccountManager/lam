@@ -30,6 +30,8 @@ $Id$
 * @author Roland Gruber
 */
 
+/** security functions */
+include_once('../../lib/security.inc');
 /** tree functions */
 include_once('../../lib/tree.inc');
 /** access to configuration */
@@ -38,8 +40,7 @@ include_once('../../lib/config.inc');
 include_once('../../lib/ldap.inc');
 
 // start session
-session_save_path("../../sess");
-@session_start();
+startSecureSession();
 
 // get encoding
 $lang = explode(":",$_SESSION['language']);

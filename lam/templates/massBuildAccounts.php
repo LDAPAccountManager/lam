@@ -28,6 +28,8 @@ $Id$
 * @package tools
 */
 
+/** security functions */
+include_once("../lib/security.inc");
 /** access to configuration */
 include_once('../lib/config.inc');
 /** status messages */
@@ -37,8 +39,7 @@ include_once('../lib/modules.inc');
 
 
 // Start session
-session_save_path('../sess');
-@session_start();
+startSecureSession();
 
 // Redirect to startpage if user is not loged in
 if (!isset($_SESSION['loggedIn'])) {

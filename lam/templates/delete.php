@@ -29,6 +29,8 @@
 */
 
 
+/** security functions */
+include_once("../lib/security.inc");
 /** account functions */
 include_once('../lib/account.inc');
 /** current configuration options */
@@ -43,8 +45,7 @@ include_once('../lib/lamdaemon.inc');
 include_once('../lib/modules.inc');
 
 // Start session
-session_save_path('../sess');
-@session_start();
+startSecureSession();
 
 // Redirect to startpage if user is not loged in
 if (!isset($_SESSION['loggedIn'])) {

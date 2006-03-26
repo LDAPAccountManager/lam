@@ -30,6 +30,8 @@ $Id$
 * @author Tilo Lutz
 */
 
+/** security functions */
+include_once("../../lib/security.inc");
 /** configuration options */
 include_once('../../lib/config.inc');
 /** functions to load and save profiles */
@@ -42,8 +44,7 @@ include_once('../../lib/pdf.inc');
 include_once('../../lib/modules.inc');
 
 // Start session
-session_save_path('../../sess');
-@session_start();
+startSecureSession();
 
 // Redirect to startpage if user is not loged in
 if (!isset($_SESSION['loggedIn'])) {

@@ -31,9 +31,9 @@ $Id$
 
 
 /** Access to config functions */
-include_once ('../../lib/config.inc');
+include_once('../../lib/config.inc');
 /** Access to module lists */
-include_once ('../../lib/modules.inc');
+include_once('../../lib/modules.inc');
 
 // start session
 session_save_path("../../sess");

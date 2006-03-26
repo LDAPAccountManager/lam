@@ -35,14 +35,15 @@ if (function_exists('mcrypt_create_iv')) {
 	setcookie("IV", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", 0, "/");
 }
 
+/** security functions */
+include_once("../lib/security.inc");
 /** Used to display status messages */
 include_once("../lib/status.inc");
 /** LDAP settings are deleted at logout */
 include_once("../lib/ldap.inc");
 
 // start session
-session_save_path("../sess");
-@session_start();
+startSecureSession();
 
 // close LDAP connection
 @$_SESSION["ldap"]->destroy();

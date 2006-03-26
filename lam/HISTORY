@@ -1,7 +1,8 @@
-??? 1.0.1
+12.04.2006 1.0.1
    - LAM can now be installed with "configure" and "make install"
    - Unix: merged password hash settings for Unix users and groups
    - Samba 3: added Windows group to profile options
+   - security: LAM checks the session id and client IP
    - fixed bugs:
     -> Samba 3: hash values were wrong in some rare cases (1440021)
     -> Samba 3: readded time zone selection for logon hours (1407761)

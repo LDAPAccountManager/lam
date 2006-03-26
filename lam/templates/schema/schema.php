@@ -31,6 +31,8 @@ $Id$
  */
  
  
+/** security functions */
+include_once("../../lib/security.inc");
 /** access to LDAP server */
 include_once("../../lib/ldap.inc");
 /** access to configuration options */
@@ -39,8 +41,7 @@ include_once("../../lib/config.inc");
 require_once("../../lib/schema.inc");
 
 // start session
-session_save_path("../../sess");
-@session_start();
+startSecureSession();
 
 setlanguage();
 

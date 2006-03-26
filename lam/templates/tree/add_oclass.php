@@ -45,6 +45,8 @@ $Id$
  * @author Roland Gruber
  */
 
+/** security functions */
+include_once('../../lib/security.inc');
 /** tree functions */
 include_once('../../lib/tree.inc');
 /** access to configuration */
@@ -55,8 +57,7 @@ include_once('../../lib/ldap.inc');
 include_once('../../lib/status.inc');
 
 // start session
-session_save_path("../../sess");
-@session_start();
+startSecureSession();
 
 setlanguage();
 

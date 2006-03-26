@@ -31,9 +31,9 @@ $Id$
 
 
 /** Access to config functions */
-include_once ('../../lib/config.inc');
+include_once('../../lib/config.inc');
 /** Access to account types */
-include_once ('../../lib/types.inc');
+include_once('../../lib/types.inc');
 
 // start session
 session_save_path("../../sess");

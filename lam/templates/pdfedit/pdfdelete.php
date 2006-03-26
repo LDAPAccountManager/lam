@@ -28,12 +28,13 @@ $Id$
 * @author Michael Dürgner
 */
 
+/** security functions */
+include_once("../../lib/security.inc");
 /** helper functions for pdf */
 include_once('../../lib/pdfstruct.inc');
 
 // start session
-session_save_path("../../sess");
-@session_start();
+startSecureSession();
 
 setlanguage();
 

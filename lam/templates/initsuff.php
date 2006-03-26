@@ -28,16 +28,17 @@ $Id$
 * @package main
 */
 
+/** security functions */
+include_once("../lib/security.inc");
 /** access to configuration settings */
-include_once ("../lib/config.inc");
+include_once("../lib/config.inc");
 /** LDAP access */
-include_once ("../lib/ldap.inc");
+include_once("../lib/ldap.inc");
 /** status messages */
-include_once ("../lib/status.inc");
+include_once("../lib/status.inc");
 
 // start session
-session_save_path("../sess");
-@session_start();
+startSecureSession();
 
 setlanguage();
 
