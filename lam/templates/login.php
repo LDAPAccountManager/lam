@@ -362,8 +362,11 @@ if(!empty($_POST['checklogin']))
 			$_SESSION['header'] .= "<html>\n<head>\n";
 			$_SESSION['header'] .= "<meta http-equiv=\"content-type\" content=\"text/html; charset=" . $current_language[1] . "\">\n";
 			$_SESSION['header'] .= "<meta http-equiv=\"pragma\" content=\"no-cache\">\n		<meta http-equiv=\"cache-control\" content=\"no-cache\">";
-
-			include("./main.php"); // Load main frame
+			// set security settings for session
+			$_SESSION['sec_session_id'] = session_id();
+			$_SESSION['sec_client_ip'] = $_SERVER['REMOTE_ADDR'];
+			// Load main frame
+			include("./main.php");
 		}
 		else
 		{
