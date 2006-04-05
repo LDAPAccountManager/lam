@@ -1376,6 +1376,8 @@ class accountContainer {
 		$attrNames = array_keys($attr);
 		for ($i = 0; $i < sizeof($attrNames); $i++) unset($attr[$attrNames[$i]]['count']);
 		unset($attr['count']);
+		// fix spelling errors
+		$attr = $this->fixLDAPAttributes($attr, $modules);
 		// get binary attributes
 		$binaryAttr = array('jpegPhoto');
 		for ($i = 0; $i < sizeof($binaryAttr); $i++) {
@@ -1399,7 +1401,50 @@ class accountContainer {
 		// sort module buttons
 		$this->sortModules();
 		return 0;
+	}
+	
+	/**
+	 * Fixes spelling errors in the attribute names.
+	 *
+	 * @param array $attributes LDAP attributes
+	 * @param array $modules list of active modules
+	 * @return array fixed attributes
+	 */
+	function fixLDAPAttributes($attributes, $modules) {
+		if (!is_array($attributes)) return $attributes;
+		$keys = array_keys($attributes);
+		// get correct object class names
+		$objectClasses = array();
+		foreach ($modules as $module) {
+			$moduleObj = new $module($this->type);
+			$objectClasses = array_merge($objectClasses, $moduleObj->getManagedObjectClasses());
 		}
+		// check object classes
+		for ($i = 0; $i < sizeof($keys); $i++) {
+			if (strtolower($keys[$i]) == 'objectclass') {
+				// fix object class attribute
+				if ($keys[$i] != 'objectClass') {
+					$temp = $attributes[$keys[$i]];
+					unset($attributes[$keys[$i]]);
+					$attributes['objectClass'] = $temp;
+				}
+				// fix object classes
+				for ($attrClass = 0; $attrClass < sizeof($attributes['objectClass']); $attrClass++) {
+					for ($modClass = 0; $modClass < sizeof($objectClasses); $modClass++) {
+						if (strtolower($attributes['objectClass'][$attrClass]) == strtolower($objectClasses[$modClass])) {
+							if ($attributes['objectClass'][$attrClass] != $objectClasses[$modClass]) {
+								unset($attributes['objectClass'][$attrClass]);
+								$attributes['objectClass'][] = $objectClasses[$modClass];
+							}
+							break;
+						}
+					}
+				}
+				break;
+			}
+		}
+		return $attributes;
+	}
 
 	/**
 	* This function will prepare the object for a new account.

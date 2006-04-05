@@ -47,6 +47,8 @@ class ieee802Device extends baseModule {
 		$return["alias"] = _("MAC address");
 		// module dependencies
 		$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
+		// managed object classes
+		$return['objectClasses'] = array('ieee802Device');
 		// help Entries
 		$return['help'] = array(
 			'mac' => array(

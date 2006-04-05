@@ -53,6 +53,8 @@ class sambaDomain extends baseModule {
 		$return["ldap_filter"] = array('or' => "(objectClass=sambaDomain)");
 		// module dependencies
 		$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
+		// managed object classes
+		$return['objectClasses'] = array('sambaDomain');
 		// help Entries
 		$return['help'] = array(
 			'domainName' => array(

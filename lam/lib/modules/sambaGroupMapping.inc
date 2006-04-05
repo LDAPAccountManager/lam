@@ -232,6 +232,8 @@ class sambaGroupMapping extends baseModule {
 		$return["alias"] = _('Samba 3');
 		// module dependencies
 		$return['dependencies'] = array('depends' => array('posixGroup'), 'conflicts' => array());
+		// managed object classes
+		$return['objectClasses'] = array('sambaGroupMapping');
 		// available PDF fields
 		$return['PDF_fields'] = array(
 			'gidNumber',

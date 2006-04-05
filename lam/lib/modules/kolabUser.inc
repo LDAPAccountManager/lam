@@ -73,6 +73,8 @@ class kolabUser extends baseModule {
 		$return['dependencies'] = array('depends' => array('inetOrgPerson'), 'conflicts' => array());
 		// LDAP filter
 		$return["ldap_filter"] = array('or' => "(objectClass=kolabInetOrgPerson)");
+		// managed object classes
+		$return['objectClasses'] = array('kolabInetOrgPerson');
 		// profile options
 		$return['profile_options'] = array(
 			array(
@@ -242,7 +244,6 @@ class kolabUser extends baseModule {
 	*/
 	function load_attributes($attr) {
 		$this->attributes['objectClass'] = array();
-		$this->attributes['macAddress'] = array();
 		$this->orig['objectClass'] = array();
 		$this->orig['kolabInvitationPolicy'] = array();
 		// load Kolab attributes

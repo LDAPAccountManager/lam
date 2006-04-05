@@ -53,6 +53,8 @@ class nisMailAlias extends baseModule {
 		$return["RDN"] = array("cn" => "normal");
 		// module dependencies
 		$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
+		// managed object classes
+		$return['objectClasses'] = array('nisMailAlias');
 		// help Entries
 		$return['help'] = array(
 			'alias' => array(

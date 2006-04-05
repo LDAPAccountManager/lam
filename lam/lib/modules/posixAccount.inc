@@ -123,6 +123,8 @@ class posixAccount extends baseModule {
 		$return["alias"] = _("Unix");
 		// RDN attributes
 		$return["RDN"] = array("uid" => "normal", "cn" => "low");
+		// managed object classes
+		$return['objectClasses'] = array('posixAccount');
 		// profile checks
 		$return['profile_checks']['posixAccount_homeDirectory'] = array('type' => 'ext_preg', 'regex' => 'homeDirectory',
 		'error_message' => $this->messages['homeDirectory'][0]);

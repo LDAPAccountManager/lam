@@ -68,6 +68,8 @@ class shadowAccount extends baseModule {
 		$return["alias"] = _('Shadow');
 		// module dependencies
 		$return['dependencies'] = array('depends' => array('posixAccount'), 'conflicts' => array());
+		// managed object classes
+		$return['objectClasses'] = array('shadowAccount');
 		// lists for expiration date
 		$day = array(); $mon = array(); $year = array();
 		for ( $i=1; $i<=31; $i++ ) $day[] = $i;

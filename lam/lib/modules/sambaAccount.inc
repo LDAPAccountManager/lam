@@ -105,6 +105,8 @@ class sambaAccount extends baseModule {
 		$return["alias"] = _('Samba 2');
 		// module dependencies
 		$return['dependencies'] = array('depends' => array('posixAccount'), 'conflicts' => array());
+		// managed object classes
+		$return['objectClasses'] = array('sambaAccount');
 		// profile options
 		if ($this->get_scope() == 'user') {
 			// set Unix password for Samba

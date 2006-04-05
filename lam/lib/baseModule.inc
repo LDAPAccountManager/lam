@@ -664,6 +664,17 @@ class baseModule {
 	function display_html_delete(&$post) {
 		return 0;
 	}
+	
+	/**
+	 * Returns a list of managed object classes for this module.
+	 * This is used to fix incorrect spelled object class names.
+	 *
+	 * @return array list of object classes
+	 */
+	function getManagedObjectClasses() {
+		if (isset($this->meta['objectClasses']) && is_array($this->meta['objectClasses'])) return $this->meta['objectClasses'];
+		else return array();
+	}
 
 }
 

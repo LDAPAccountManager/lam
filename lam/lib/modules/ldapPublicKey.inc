@@ -48,6 +48,8 @@ class ldapPublicKey extends baseModule {
 		$return["alias"] = _("SSH public key");
 		// module dependencies
 		$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
+		// managed object classes
+		$return['objectClasses'] = array('ldapPublicKey');
 		// help Entries
 		$return['help'] = array(
 			'key' => array(

@@ -96,6 +96,8 @@ class inetOrgPerson extends baseModule {
 		$return["ldap_filter"] = array('or' => "(objectClass=inetOrgPerson)");
 		// module dependencies
 		$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
+		// managed object classes
+		$return['objectClasses'] = array('inetOrgPerson');
 		// profile elements
 		$return['profile_options'] = array(
 			array(

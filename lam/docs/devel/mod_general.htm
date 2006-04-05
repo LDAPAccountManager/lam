@@ -229,9 +229,52 @@ is set dynamically<br>
 </table>
 <br>
 <br>
-<h2><br>
+<h2>6. Managed object classes<br>
 </h2>
 <h2></h2>
+You can tell LAM what object classes are managed by your module.<br>
+LAM will then check the spelling of the objectClass attributes and
+correct it automatically. This is useful if other applications (e.g.
+smbldap-tools) also create accounts and the spelling is differnt.<br>
+<br>
+<span style="font-weight: bold; text-decoration: underline;">Example:</span><br>
+<br>
+The <span style="font-style: italic;">ieee802Device</span> module
+manages one object class.<br>
+<br>
+<table style="width: 100%; text-align: left;" class="mod-code"
+ border="0" cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
+&nbsp;&nbsp;&nbsp; * Returns meta data that is interpreted by parent
+class<br>
+&nbsp;&nbsp;&nbsp; *<br>
+&nbsp;&nbsp;&nbsp; * @return array array with meta data<br>
+&nbsp;&nbsp;&nbsp; */<br>
+&nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">function</span>
+get_metaData() {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $return = array();<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // manages host accounts<br>
+      <span style="color: rgb(255, 0, 0);">&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; </span>$return["account_types"] = array("host");<br
+ style="color: rgb(255, 0, 0);">
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // alias name<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;$return["alias"] = _("MAC
+address");<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // module dependencies<br>
+&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp; &nbsp;$return['dependencies'] = array('depends' =&gt;
+array('account'), 'conflicts' =&gt; array());<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // managed object classes<br>
+      <span style="color: rgb(255, 0, 0);">&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp; &nbsp;$return['objectClasses'] = array('ieee802Device');</span><br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return $return;<br>
+&nbsp;&nbsp;&nbsp; }<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
 <br>
 <br>
 <span style="font-weight: bold;"></span>

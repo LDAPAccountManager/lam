@@ -59,6 +59,8 @@ class account extends baseModule {
 		$return["RDN"] = array("uid" => "low");
 		// module dependencies
 		$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
+		// managed object classes
+		$return['objectClasses'] = array('account');
 		// available PDF fields
 		$return['PDF_fields'] = array(
 			'description'

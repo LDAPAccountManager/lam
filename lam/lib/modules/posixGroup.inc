@@ -307,6 +307,8 @@ class posixGroup extends baseModule {
 		$return["RDN"] = array("cn" => "normal");
 		// module dependencies
 		$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
+		// managed object classes
+		$return['objectClasses'] = array('posixGroup');
 		// configuration options
 		$return['config_options']['group'] = array(
 			array(

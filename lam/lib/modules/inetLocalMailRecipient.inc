@@ -47,6 +47,8 @@ class inetLocalMailRecipient extends baseModule {
 		$return["alias"] = _("Mail routing");
 		// module dependencies
 		$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
+		// managed object classes
+		$return['objectClasses'] = array('inetLocalMailRecipient');
 		// help Entries
 		$return['help'] = array(
 			'routingAdr' => array(
