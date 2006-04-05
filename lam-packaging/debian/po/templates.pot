@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de\n"
-"POT-Creation-Date: 2005-11-08 20:24+0100\n"
+"POT-Creation-Date: 2006-04-05 17:55+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -86,4 +86,18 @@ msgid ""
 "Please note that this version uses new file formats for configuration and "
 "account profiles. You will have to update your configuration and create new "
 "account profiles."
+msgstr ""
+
+#. Type: note
+#. Description
+#: ../templates:42
+msgid "Upgrade from pre-1.0.0 versions"
+msgstr ""
+
+#. Type: note
+#. Description
+#: ../templates:42
+msgid ""
+"Please note that this version uses new file formats for the configuration "
+"profiles. Please edit your configuration files and save the new settings."
 msgstr ""

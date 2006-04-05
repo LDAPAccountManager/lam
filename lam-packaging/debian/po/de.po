@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de\n"
-"POT-Creation-Date: 2005-11-08 20:24+0100\n"
+"POT-Creation-Date: 2006-04-05 17:55+0200\n"
 "PO-Revision-Date: 2005-11-10 17:12+0100\n"
 "Last-Translator: Roland Gruber <post@rolandgruber.de>\n"
 "Language-Team: Deutsch <lam-i18n@lists.sourceforge.org>\n"
@@ -92,7 +92,8 @@ msgstr "Soll(en) der/die Webserver jetzt neugestartet werden?"
 #. Description
 #: ../templates:30
 msgid "Your webserver(s) need to be restarted in order to apply the changes."
-msgstr "Sie müssen ihre(n) Webserver neustarten um die Änderungen zu übernehmen."
+msgstr ""
+"Sie müssen ihre(n) Webserver neustarten um die Änderungen zu übernehmen."
 
 #. Type: note
 #. Description
@@ -112,3 +113,19 @@ msgstr ""
 "Konfiguration und Account-Profile verwendet. Sie müssen die Konfiguration "
 "anpassen und neue Account-Profile erstellen."
 
+#. Type: note
+#. Description
+#: ../templates:42
+msgid "Upgrade from pre-1.0.0 versions"
+msgstr "Aktualisierung von Versionen vor 1.0.0"
+
+#. Type: note
+#. Description
+#: ../templates:42
+msgid ""
+"Please note that this version uses new file formats for the configuration "
+"profiles. Please edit your configuration files and save the new settings."
+msgstr ""
+"Bitte beachten Sie, dass diese Version neue Dateiformate für die "
+"Konfiguration verwendet. Sie müssen die Konfiguration "
+"anpassen und die neuen Einstellungen speichern."
