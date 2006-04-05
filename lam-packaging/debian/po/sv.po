@@ -14,9 +14,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ldap-account-manager 0.5.1-1\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-07-24 21:48+0200\n"
-"PO-Revision-Date: 2006-01-19 22:49+0100\n"
+"Report-Msgid-Bugs-To: post@rolandgruber.de\n"
+"POT-Creation-Date: 2006-04-05 17:55+0200\n"
+"PO-Revision-Date: 2006-04-05 18:57+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "MIME-Version: 1.0\n"
@@ -68,18 +68,39 @@ msgstr "Vill du starta om din webbserver nu?"
 #. Type: boolean
 #. Description
 #: ../templates:30
-msgid "Remember that in order to apply the changes your webserver(s) need to be restarted."
-msgstr "Tänk på att för att verkställa ändringarna till din webbserver behöver den startas om."
+msgid "Your webserver(s) need to be restarted in order to apply the changes."
+msgstr "Din webbserver behöver startas om för att ändringarna ska bli aktiva."
 
 #. Type: note
 #. Description
-#: ../templates:36
-msgid "It seems that you are upgrading LAM from a version before 0.5.0."
-msgstr "Det verkar som om du uppgraderar LAM från en version före 0.5.0."
+#: ../templates:35
+msgid "Upgrade from pre-0.5.0 versions"
+msgstr "Uppgradera från versioner före 0.5.0"
 
 #. Type: note
 #. Description
-#: ../templates:36
+#: ../templates:35
 msgid "Please note that this version uses new file formats for configuration and account profiles. You will have to update your configuration and create new account profiles."
 msgstr "Notera att den här versionen använder nya filformat för konfiguration och kontoprofiler. Du behöver uppdatera din konfiguration och skapa nya kontoprofiler."
+
+#. Type: note
+#. Description
+#: ../templates:42
+msgid "Upgrade from pre-1.0.0 versions"
+msgstr "Uppgradera från versioner före 1.0.0"
+
+#. Type: note
+#. Description
+#: ../templates:42
+msgid "Please note that this version uses new file formats for the configuration profiles. Please edit your configuration files and save the new settings."
+msgstr "Notera att den här versionen använder nya filformat för konfigurationsprofiler. Redigera dina konfigurationsfiler och spara de nya inställningarna."
+
+#~ msgid ""
+#~ "Remember that in order to apply the changes your webserver(s) need to be "
+#~ "restarted."
+#~ msgstr ""
+#~ "Tänk på att för att verkställa ändringarna till din webbserver behöver "
+#~ "den startas om."
+#~ msgid "It seems that you are upgrading LAM from a version before 0.5.0."
+#~ msgstr "Det verkar som om du uppgraderar LAM från en version före 0.5.0."
 

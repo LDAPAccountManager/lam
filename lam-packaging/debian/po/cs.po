@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ldap-account-manager\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de\n"
-"POT-Creation-Date: 2005-11-08 20:24+0100\n"
-"PO-Revision-Date: 2005-11-13 11:04+0100\n"
+"POT-Creation-Date: 2006-04-05 17:55+0200\n"
+"PO-Revision-Date: 2006-04-05 18:36+0200\n"
 "Last-Translator: Miroslav Kure <kurem@debian.cz>\n"
 "Language-Team: Czech <debian-l10n-czech@lists.debian.org>\n"
 "MIME-Version: 1.0\n"
@@ -30,9 +30,9 @@ msgid ""
 "choose to configure Apache(2) LAM can be accessed at http(s)://localhost/lam"
 msgstr ""
 "LDAP Account Manager podporuje libovolný webový server, pod kterým běží "
-"PHP4, avšak automatické nastavení umí pouze ve spojení se servery Apache "
-"a Apache2. Zvolíte-li nastavení Apache(2), LAM bude přístupný na adrese "
-"http(s)://localhost/lam."
+"PHP4, avšak automatické nastavení umí pouze ve spojení se servery Apache a "
+"Apache2. Zvolíte-li nastavení Apache(2), LAM bude přístupný na adrese http"
+"(s)://localhost/lam."
 
 #. Type: string
 #. Description
@@ -68,8 +68,8 @@ msgid ""
 msgstr ""
 "Konfigurační profily jsou chráněny hlavním heslem. Toto heslo budete "
 "potřebovat při vytváření a mazání profilů. Výchozí hodnota je \"lam\" a "
-"můžete ji změnit kdykoliv později přímo v LAM. Pokud si budete přát, "
-"můžete tuto hodnotu změnit právě teď."
+"můžete ji změnit kdykoliv později přímo v LAM. Pokud si budete přát, můžete "
+"tuto hodnotu změnit právě teď."
 
 #. Type: boolean
 #. Description
@@ -99,5 +99,22 @@ msgid ""
 "account profiles."
 msgstr ""
 "Poznamenejme, že tato verze používá nový formát konfiguračních souborů a "
-"souborů s profily. To znamená, že budete muset vytvořit nové profily účtů "
-"a aktualizovat své konfigurační soubory."
+"souborů s profily. To znamená, že budete muset vytvořit nové profily účtů a "
+"aktualizovat své konfigurační soubory."
+
+#. Type: note
+#. Description
+#: ../templates:42
+msgid "Upgrade from pre-1.0.0 versions"
+msgstr "Přechod z verzí před 1.0.0"
+
+#. Type: note
+#. Description
+#: ../templates:42
+msgid ""
+"Please note that this version uses new file formats for the configuration "
+"profiles. Please edit your configuration files and save the new settings."
+msgstr ""
+"Vemte prosím na vědomí, že tato verze používá nový formát konfiguračních "
+"profilů. Upravte prosím své konfigurační soubory a toto nové nastavení "
+"uložte ."
