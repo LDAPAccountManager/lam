@@ -1,5 +1,6 @@
 12.04.2006 1.0.1
    - LAM can now be installed with "configure" and "make install"
+   - added workaround for misspelled object classes (e.g. sambaSAMAccount by smbldap-tools)
    - Unix: merged password hash settings for Unix users and groups
    - Samba 3: added Windows group to profile options
    - security: LAM checks the session id and client IP
