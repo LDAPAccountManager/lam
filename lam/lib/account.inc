@@ -449,7 +449,7 @@ function get_preg($argument, $regexp) {
 	$pregexpr = '';
 	switch ($regexp) {
 		case 'password':
-					$pregexpr = '/^([[:alnum:]\\ \\|\\#\\*\\,\\.\\;\\:\\_\\+\\!\\%\\&\\/\\?\\{\\(\\)\\}\\[\\]=-])*$/u';
+					$pregexpr = '/^([[:alnum:]\\^\\ \\|\\#\\*\\,\\.\\;\\:\\_\\+\\!\\%\\&\\/\\?\\{\\(\\)\\}\\[\\]=-])*$/u';
 					break;
 		case 'groupname':	// first character must be a letter. All letters, numbers, space and ._- are allowed characters
 		case 'username':	// first character must be a letter. All letters, numbers, space and ._- are allowed characters
