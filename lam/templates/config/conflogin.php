@@ -86,12 +86,12 @@ echo $_SESSION['header'];
 				<td style="border-style:none" rowspan="3" width="20"></td>
 			</tr>
 			<tr>
-				<td style="border-style:none" align="center"><b> <?php echo _("Please enter password to change preferences:"); ?> </b></td>
+				<td style="border-style:none" align="center"><b> <?php echo _("Please enter your password to change the server preferences:"); ?> </b></td>
 			</tr>
 			<tr><td style="border-style:none" >&nbsp;</td></tr>
 <?php
 	$files = getConfigProfiles();
-	if (sizeof($files) < 1) $message = _("No configuration profiles found. Please create one.");
+	if (sizeof($files) < 1) $message = _("No server profiles found. Please create one.");
 	// print message if login was incorrect or no config profiles are present
 	if (isset($message)) {  // $message is set by confmain.php (requires conflogin.php then)
 		echo "<tr>\n";
@@ -136,7 +136,7 @@ echo $_SESSION['header'];
 			</tr>
 			<tr>
 				<td style="border-style:none" align="center">
-					<b><a href="profmanage.php"><?php echo _("Manage profiles") ?></a></b>
+					<b><a href="profmanage.php"><?php echo _("Manage server profiles") ?></a></b>
 				</td>
 			</tr>
 			<tr>
