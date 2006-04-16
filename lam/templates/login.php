@@ -169,7 +169,9 @@ function display_LoginPage($config_object) {
 		<table width="100%" border="0">
 			<tr>
 				<td width="100%" align="right">
-					<a href="./config/conflogin.php" target="_self"><?php echo _("Configuration login"); ?></a>
+					<a href="./config/mainlogin.php"><?php echo _("Edit general settings") ?></a>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<a href="./config/conflogin.php" target="_self"><?php echo _("Edit server profiles"); ?></a>
 				</td>
 			</tr>
 		</table>
