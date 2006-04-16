@@ -789,7 +789,7 @@ class CfgMain {
 		// check if we have to add new entries (e.g. if user upgraded LAM and has an old config file)
 		if (!$save_password == True) array_push($file_array, "\n\n# password to add/delete/rename configuration profiles\n" . "password: " . $this->password);
 		if (!$save_default == True) array_push($file_array, "\n\n# default profile, without \".conf\"\n" . "default: " . $this->default);
-		$file = fopen($conffile, "w");
+		$file = @fopen($conffile, "w");
 		if ($file) {
 			for ($i = 0; $i < sizeof($file_array); $i++) fputs($file, $file_array[$i]);
 			fclose($file);
