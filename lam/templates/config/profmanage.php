@@ -117,16 +117,6 @@ if ($_POST['submit']) {
 		}
 		else $error = _("Profile passwords are different or empty!");
 	}
-	// set master password
-	elseif ($_POST['action'] == "setmasterpass") {
-		if ($_POST['masterpassword'] && $_POST['masterpassword2'] && ($_POST['masterpassword'] == $_POST['masterpassword2'])) {
-			$config = new CfgMain();
-			$config->password = $_POST['masterpassword'];
-			$config->save();
-			$msg = _("New master password set successfully.");
-		}
-		else $error = _("Master passwords are different or empty!");
-	}
 	// set default profile
 	elseif ($_POST['action'] == "setdefault") {
 		$config = new CfgMain();
@@ -163,7 +153,7 @@ if (!isset($cfg->default) && !isset($cfg->password)) {
 			<table cellspacing=0 border=0>
 
 				<!-- add profile -->
-				<tr bgcolor="#dbdbff">
+				<tr>
 					<td>
 						<input type="radio" name="action" value="add" checked>
 					</td>
@@ -185,7 +175,7 @@ if (!isset($cfg->default) && !isset($cfg->password)) {
 					?>
 					</td>
 				</tr>
-				<tr bgcolor="#dbdbff">
+				<tr>
 					<td>&nbsp;</td>
 					<td>&nbsp;</td>
 					<td align="right">
@@ -194,7 +184,7 @@ if (!isset($cfg->default) && !isset($cfg->password)) {
 					</td>
 					<td></td>
 				</tr>
-				<tr bgcolor="#dbdbff">
+				<tr>
 					<td>&nbsp;</td>
 					<td>&nbsp;</td>
 					<td align="right">
@@ -209,7 +199,7 @@ if (!isset($cfg->default) && !isset($cfg->password)) {
 				</tr>
 
 				<!-- rename profile -->
-				<tr bgcolor="#dbdbff">
+				<tr>
 					<td>
 						<input type="radio" name="action" value="rename">
 					</td>
@@ -243,7 +233,7 @@ if (!isset($cfg->default) && !isset($cfg->password)) {
 				</tr>
 
 				<!-- delete profile -->
-				<tr bgcolor="#dbdbff">
+				<tr>
 					<td>
 						<input type="radio" name="action" value="delete">
 					</td>
@@ -273,7 +263,7 @@ if (!isset($cfg->default) && !isset($cfg->password)) {
 				</tr>
 
 				<!-- set profile password -->
-				<tr bgcolor="#dbdbff">
+				<tr>
 					<td>
 						<input type="radio" name="action" value="setpass">
 					</td>
@@ -301,7 +291,7 @@ if (!isset($cfg->default) && !isset($cfg->password)) {
 					?>
 					</td>
 				</tr>
-				<tr bgcolor="#dbdbff">
+				<tr>
 					<td>&nbsp;</td>
 					<td>&nbsp;</td>
 					<td align="right">
@@ -314,12 +304,9 @@ if (!isset($cfg->default) && !isset($cfg->password)) {
 				<tr>
 					<td colspan=4>&nbsp</td>
 				</tr>
-				<tr>
-					<td colspan=4>&nbsp</td>
-				</tr>
 
 				<!-- change default profile -->
-				<tr bgcolor="#dbdbff">
+				<tr>
 					<td>
 						<input type="radio" name="action" value="setdefault">
 					</td>
@@ -350,43 +337,6 @@ if (!isset($cfg->default) && !isset($cfg->password)) {
 					</td>
 				</tr>
 
-				<tr>
-					<td colspan=4>&nbsp</td>
-				</tr>
-
-				<!-- set master password -->
-				<tr bgcolor="#dbdbff">
-					<td>
-						<input type="radio" name="action" value="setmasterpass">
-					</td>
-					<td>
-						<b>
-							<?php echo _("Change master password"); ?>
-						</b>
-					</td>
-					<td align="right">
-						<?php echo _("New master password") . ":"; ?>
-						<input type="password" name="masterpassword">
-					</td>
-					<td>&nbsp;
-					<?PHP
-						// help link
-						echo "<a href=\"../help.php?HelpNumber=235\" target=\"lamhelp\">";
-						echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
-						echo "</a>\n";
-					?>
-					</td>
-				</tr>
-				<tr bgcolor="#dbdbff">
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td align="right">
-						<?php echo _("Reenter new master password") . ":"; ?>
-						<input type="password" name="masterpassword2">
-					</td>
-					<td>&nbsp;</td>
-				</tr>
-
 			</table>
 			</fieldset>
 			</td></tr>
@@ -395,7 +345,7 @@ if (!isset($cfg->default) && !isset($cfg->password)) {
 
 			<!-- password field and submit button -->
 			<b>
-				<?php echo _("Master Password:"); ?>
+				<?php echo _("Master password:"); ?>
 			</b>
 			&nbsp
 			<input type="password" name="passwd">
