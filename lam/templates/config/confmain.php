@@ -383,8 +383,7 @@ echo "<tr>";
 echo "<td align=\"left\"><pre>";
 	echo "<input tabindex=\"$tabindex\" type=\"submit\" name=\"submitconf\" value=\"" . _("Ok") . "\">";
 	$tabindex++;
-	echo "<input tabindex=\"$tabindex\" type=\"reset\" name=\"resetconf\" value=\"" . _("Reset") . "\">";
-	$tabindex++;
+	echo "&nbsp;";
 	echo "<input tabindex=\"$tabindex\" type=\"submit\" name=\"back\" value=\"" . _("Cancel") . "\"\n";
 	$tabindex++;
 
