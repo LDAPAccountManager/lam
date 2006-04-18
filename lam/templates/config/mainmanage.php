@@ -70,30 +70,30 @@ echo $_SESSION['header'];
 
 // check if submit button was pressed
 if ($_POST['submit']) {
+	$errors = array();
 	// set master password
 	if (isset($_POST['masterpassword']) && ($_POST['masterpassword'] != "")) {
 		if ($_POST['masterpassword'] && $_POST['masterpassword2'] && ($_POST['masterpassword'] == $_POST['masterpassword2'])) {
 			$cfg->password = $_POST['masterpassword'];
-			$cfg->save();
 			$msg = _("New master password set successfully.");
 			unset($_SESSION["mainconf_password"]);
 		}
-		else $error = _("Master passwords are different or empty!");
+		else $errors[] = _("Master passwords are different or empty!");
+	}
+	// set session timeout
+	$cfg->sessionTimeout = $_POST['sessionTimeout'];
+	// save settings
+	$cfg->save();
+	// print messages
+	if (sizeof($errors) > 0) {
+		for ($i = 0; $i < sizeof($errors); $i++) StatusMessage("ERROR", $errors[$i]);
 	}
 	else {
-		$msg = _("No changes were made.");
+		StatusMessage("INFO", _("Your settings were successfully saved."));
+		// back to login page
+		echo "<p><a href=\"../login.php\">" . _("Back to login") . "</a></p>";
+		exit();
 	}
-	// print messages
-	if ($error || $msg) {
-		if ($error) StatusMessage("ERROR", "", $error);
-		if ($msg) {
-			StatusMessage("INFO", "", $msg);
-			// back to login page
-			echo "<p><a href=\"../login.php\">" . _("Back to login") . "</a></p>";
-			exit();
-		}
-	}
-	else exit;
 }
 ?>
 
@@ -103,6 +103,40 @@ if ($_POST['submit']) {
 		<table border="0">
 		<tr><td>
 		<fieldset>
+			<legend><b> <?php echo _("Security settings"); ?> </b></legend>
+			<p>
+			<table cellspacing="0" border="0">
+				<!-- session timeout -->
+				<tr>
+					<td align="right">
+						<?php echo _("Session timeout"); ?>
+						<SELECT name="sessionTimeout">
+						<?php
+						$options = array(5, 10, 20, 30, 60);
+						for ($i = 0; $i < sizeof($options); $i++) {
+							if ($cfg->sessionTimeout == $options[$i]) {
+								echo "<option selected>" . $cfg->sessionTimeout . "</option>";
+							}
+							else {
+								echo "<option>" . $options[$i] . "</option>";
+							}
+						}
+						?>
+						</SELECT>
+					</td>
+					<td>&nbsp;
+					<?PHP
+						// help link
+						echo "<a href=\"../help.php?HelpNumber=238\" target=\"lamhelp\">";
+						echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
+						echo "</a>\n";
+					?>
+					</td>
+				</tr>
+			</table>
+		</fieldset>
+		<BR>
+		<fieldset>
 			<legend><b> <?php echo _("Change master password"); ?> </b></legend>
 			<p>
 			<table cellspacing="0" border="0">
@@ -110,7 +144,7 @@ if ($_POST['submit']) {
 				<tr>
 					<td align="right">
 						<FONT color="Red"><B>
-						<?php echo _("New master password") . ":"; ?>
+						<?php echo _("New master password"); ?>
 						</B></FONT>
 						<input type="password" name="masterpassword">
 					</td>
@@ -126,7 +160,7 @@ if ($_POST['submit']) {
 				<tr>
 					<td align="right">
 						<FONT color="Red"><B>
-						<?php echo _("Reenter new master password") . ":"; ?>
+						<?php echo _("Reenter new master password"); ?>
 						</B></FONT>
 						<input type="password" name="masterpassword2">
 					</td>

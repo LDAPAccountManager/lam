@@ -367,6 +367,7 @@ if(!empty($_POST['checklogin']))
 			// set security settings for session
 			$_SESSION['sec_session_id'] = session_id();
 			$_SESSION['sec_client_ip'] = $_SERVER['REMOTE_ADDR'];
+			$_SESSION['sec_sessionTime'] = time();
 			// Load main frame
 			include("./main.php");
 		}
@@ -407,6 +408,7 @@ else
 	$default_Config = new CfgMain();
 	$default_Profile = $default_Config->default;
 	$_SESSION["config"] = new Config($default_Profile); // Create new Config object
+	$_SESSION["cfgMain"] = $default_Config; // Create new CfgMain object
 
 	display_LoginPage($_SESSION["config"]); // Load Login page
 }

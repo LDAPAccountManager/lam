@@ -28,11 +28,16 @@ $Id$
 * @author Roland Gruber
 */
 
+/** configuration options */
+include_once('config.inc');
+
 /**
  * Starts a session and checks the environment.
  * The script is stopped if one of the checks fail.
  */
 function startSecureSession() {
+	// check if client IP is on the list of valid IPs
+	checkClientIP();
 	// start session
 	if (isset($_SESSION)) unset($_SESSION);
 	$sessionDir = substr(__FILE__, 0, strlen(__FILE__) - 17) . "/sess";
@@ -48,10 +53,15 @@ function startSecureSession() {
 		// IP is invalid
 		die();
 	}
-	// check if client IP is on the list of valid IPs
-	checkClientIP();
 	// check if session time has not expired
-	// TODO
+	if (($_SESSION['sec_sessionTime'] + (60 * $_SESSION['cfgMain']->sessionTimeout)) > time()) {
+		// ok, update time
+		$_SESSION['sec_sessionTime'] = time();
+	}
+	else {
+		// session expired, logoff user
+		logoffAndBackToLoginPage();
+	}
 }
 
 /**
@@ -81,6 +91,47 @@ function checkUserTime($dn) {
  */
 function getValidUserDNs($dn) {
 	return array("uid=test,o=test", "uid=test2,o=test");
+}
+
+/**
+ * Logs off the user and displays the login page.
+ *
+ */
+function logoffAndBackToLoginPage() {
+	// delete key and iv in cookie
+	if (function_exists('mcrypt_create_iv')) {
+		setcookie("Key", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", 0, "/");
+		setcookie("IV", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", 0, "/");
+	}
+	// close LDAP connection
+	@$_SESSION["ldap"]->destroy();
+	// link back to login page
+	$paths = array('./', '../', '../../', '../../../');
+	$page = 'login.php';
+	for ($i = 0; $i < sizeof($paths); $i++) {
+		if (file_exists($paths[$i] . $page)) {
+			$page = $paths[$i] . $page;
+			break;
+		}
+	}
+	echo $_SESSION['header'];
+	echo "<title></title>\n";
+	echo "</head>\n";
+	echo "<body>\n";
+	// print JavaScript refresh
+	echo "<script type=\"text/javascript\">\n";
+	echo "top.location.href = \"" . $page . "\";\n";
+	echo "</script>\n";
+	// print link if refresh does not work
+	echo "<p>\n";
+	echo "<a target=\"_top\" href=\"" . $page . "\">" . _("Your session expired, click here to go back to the login page.") . "</a>\n";
+	echo "</p>\n";
+	echo "</body>\n";
+	echo "</html>\n";
+	// destroy session
+	session_destroy();
+	unset($_SESSION);
+	die();
 }
 
 ?>

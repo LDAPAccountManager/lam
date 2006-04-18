@@ -718,11 +718,15 @@ class CfgMain {
 
 	/** Password to change config.cfg */
 	var $password;
+	
+	/** Time of inactivity before session times out (minutes) */
+	var $sessionTimeout;
 
 	/**
 	* Loads preferences from config file
 	*/
 	function CfgMain() {
+		$this->sessionTimeout = 30;
 		$this->reload();
 	}
 
@@ -742,11 +746,15 @@ class CfgMain {
 				if (($line == "")||($line[0] == "#")) continue; // ignore comments
 				// search keywords
 				if (substr($line, 0, 10) == "password: ") {
-					$this->password = substr($line, 10, strlen($line)-10);
+					$this->password = substr($line, 10, strlen($line) - 10);
 					continue;
 				}
 				if (substr($line, 0, 9) == "default: ") {
-					$this->default = substr($line, 9, strlen($line)-9);
+					$this->default = substr($line, 9, strlen($line) - 9);
+					continue;
+				}
+				if (substr($line, 0, 16) == "sessionTimeout: ") {
+					$this->sessionTimeout = intval(substr($line, 16, strlen($line) - 16));
 					continue;
 				}
 			}
@@ -784,11 +792,17 @@ class CfgMain {
 					$save_default = True;
 					continue;
 				}
+				if (substr($file_array[$i], 0, 16) == "sessionTimeout: ") {
+					$file_array[$i] = "sessionTimeout: " . $this->sessionTimeout . "\n";
+					$save_sessionTimeout = True;
+					continue;
+				}
 			}
 		}
 		// check if we have to add new entries (e.g. if user upgraded LAM and has an old config file)
 		if (!$save_password == True) array_push($file_array, "\n\n# password to add/delete/rename configuration profiles\n" . "password: " . $this->password);
 		if (!$save_default == True) array_push($file_array, "\n\n# default profile, without \".conf\"\n" . "default: " . $this->default);
+		if (!$save_sessionTimeout == True) array_push($file_array, "\n\n# session timeout in minutes\n" . "sessionTimeout: " . $this->sessionTimeout);
 		$file = @fopen($conffile, "w");
 		if ($file) {
 			for ($i = 0; $i < sizeof($file_array); $i++) fputs($file, $file_array[$i]);
