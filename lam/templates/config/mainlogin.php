@@ -115,7 +115,7 @@ echo $_SESSION['header'];
 				<td style="border-style:none" align="center">
 					<input type="password" name="passwd">
 					<input type="submit" name="submit" value="<?php echo _("Ok"); ?>">
-					&nbsp;<a href="../help.php?HelpNumber=200" target="lamhelp">
+					&nbsp;<a href="../help.php?HelpNumber=236" target="lamhelp">
 					<img src="../../graphics/help.png" alt="<?php echo _('Help'); ?>" title="<?php echo _('Help'); ?>">
 					</a>
 				</td>
