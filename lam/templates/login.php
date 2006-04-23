@@ -30,6 +30,8 @@ $Id$
 
 /** status messages */
 include_once("../lib/status.inc");
+/** security functions */
+include_once("../lib/security.inc");
 
 // check environment
 $criticalErrors = array();
@@ -193,7 +195,7 @@ function display_LoginPage($config_object) {
 						<table width="580">
 							<tr>
 								<td style="border-style:none" height="70" colspan="2" align="center">
-									<font color="darkblue"><b><big><?php echo _("Please select your user name and enter your password to log in"); ?></big></b></font>
+									<font color="darkblue"><b><big><?php echo _("Please select your user name and enter your password to log in."); ?></big></b></font>
 								</td>
 							</tr>
 							<tr>
@@ -289,7 +291,7 @@ function display_LoginPage($config_object) {
 							<tr>
 							<td style="border-style:none" height="30"><b>
 								<?php
-								echo _("Configuration profile") . ": ";
+								echo _("Server profile") . ": ";
 								if(empty($_POST['profileChange'])) {
 									$_POST['profile'] = $_SESSION['config']->file;
 								}
@@ -368,29 +370,31 @@ if(!empty($_POST['checklogin']))
 			$_SESSION['sec_session_id'] = session_id();
 			$_SESSION['sec_client_ip'] = $_SERVER['REMOTE_ADDR'];
 			$_SESSION['sec_sessionTime'] = time();
+			// logging
+			logNewMessage(LOG_NOTICE, 'User ' . $_POST['username'] . ' successfully logged in.');
 			// Load main frame
 			include("./main.php");
 		}
 		else
 		{
-			if ($result === False)
-			{
+			if ($result === False) {
 				$error_message = _("Cannot connect to specified LDAP server. Please try again.");
+				logNewMessage(LOG_ERR, 'User ' . $_POST['username'] . ' failed to log in (LDAP error: ' . ldap_err2str($result) . ').');
 				display_LoginPage($_SESSION['config']); // connection failed
 			}
-			elseif ($result == 81)
-			{
+			elseif ($result == 81) {
 				$error_message = _("Cannot connect to specified LDAP server. Please try again.");
+				logNewMessage(LOG_ERR, 'User ' . $_POST['username'] . ' failed to log in (LDAP error: ' . ldap_err2str($result) . ').');
 				display_LoginPage($_SESSION['config']); // connection failed
 			}
-			elseif ($result == 49)
-			{
+			elseif ($result == 49) {
 				$error_message = _("Wrong password/user name combination. Please try again.");
+				logNewMessage(LOG_ERR, 'User ' . $_POST['username'] . ' failed to log in (wrong password).');
 				display_LoginPage($_SESSION['config']); // Username/password invalid. Return to login page.
 			}
-			else
-			{
+			else {
 				$error_message = _("LDAP error, server says:") .  "\n<br>($result) " . ldap_err2str($result);
+				logNewMessage(LOG_ERR, 'User ' . $_POST['username'] . ' failed to log in (LDAP error: ' . ldap_err2str($result) . ').');
 				display_LoginPage($_SESSION['config']); // other errors
 			}
 		}

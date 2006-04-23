@@ -70,6 +70,13 @@ echo $_SESSION['header'];
 
 // check if submit button was pressed
 if ($_POST['submit']) {
+	// remove double slashes if magic quotes are on
+	if (get_magic_quotes_gpc() == 1) {
+		$postKeys = array_keys($_POST);
+		for ($i = 0; $i < sizeof($postKeys); $i++) {
+			if (is_string($_POST[$postKeys[$i]])) $_POST[$postKeys[$i]] = stripslashes($_POST[$postKeys[$i]]);
+		}
+	}
 	$errors = array();
 	// set master password
 	if (isset($_POST['masterpassword']) && ($_POST['masterpassword'] != "")) {
@@ -82,6 +89,17 @@ if ($_POST['submit']) {
 	}
 	// set session timeout
 	$cfg->sessionTimeout = $_POST['sessionTimeout'];
+	// set log level
+	$cfg->logLevel = $_POST['logLevel'];
+	// set log destination
+	if ($_POST['logDestination'] == "none") $cfg->logDestination = "NONE";
+	elseif ($_POST['logDestination'] == "syslog") $cfg->logDestination = "SYSLOG";
+	else {
+		if (isset($_POST['logFile']) && ($_POST['logFile'] != "") && eregi("^[a-z0-9/\\\:\\._-]+$", $_POST['logFile'])) {
+			$cfg->logDestination = $_POST['logFile'];
+		}
+		else $errors[] = _("The log file is empty or contains invalid characters! Valid characters are: a-z, A-Z, 0-9, /, \\, ., :, _ and -.");
+	}
 	// save settings
 	$cfg->save();
 	// print messages
@@ -133,6 +151,97 @@ if ($_POST['submit']) {
 					?>
 					</td>
 				</tr>
+			</table>
+		</fieldset>
+		<BR>
+		<fieldset>
+			<legend><b> <?php echo _("Logging"); ?> </b></legend>
+			<p>
+			<table cellspacing="0" border="0">
+				<!-- log level -->
+				<tr>
+					<td>
+						<?php echo _("Log level"); ?>
+						<SELECT name="logLevel">
+						<?php
+						$options = array(_("Notice"), _("Warning"), _("Error"));
+						$levels = array(LOG_NOTICE, LOG_WARNING, LOG_ERR);
+						for ($i = 0; $i < sizeof($options); $i++) {
+							if ($cfg->logLevel == $levels[$i]) {
+								echo "<option selected value=\"" . $levels[$i] . "\">" . $options[$i] . "</option>";
+							}
+							else {
+								echo "<option value=\"" . $levels[$i] . "\">" . $options[$i] . "</option>";
+							}
+						}
+						?>
+						</SELECT>
+					</td>
+					<td>&nbsp;
+					<?PHP
+						// help link
+						echo "<a href=\"../help.php?HelpNumber=239\" target=\"lamhelp\">";
+						echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
+						echo "</a>\n";
+					?>
+					</td>
+				</tr>
+				<TR><TD colspan="2">&nbsp;</TD></TR>
+				<TR>
+					<TD>
+						<?PHP
+							echo _("Log destination") . ":";
+						?>
+					</TD>
+					<TD>&nbsp;
+					<?PHP
+						// help link
+						echo "<a href=\"../help.php?HelpNumber=240\" target=\"lamhelp\">";
+						echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
+						echo "</a>\n";
+					?>					
+					</TD>
+				</TR>
+				<TR>
+					<TD colspan="2">
+					<?PHP
+						$noLogChecked = false;
+						if ($cfg->logDestination == "NONE") $noLogChecked = true;
+						echo "<input type=\"radio\" name=\"logDestination\" value=\"none\"";
+						if ($noLogChecked) echo " checked";
+						echo ">" . _("No logging") . "\n";
+					?>
+					</TD>
+				</TR>
+				<TR>
+					<TD colspan="2">
+					<?PHP
+						$syslogChecked = false;
+						if ($cfg->logDestination == "SYSLOG") {
+							$syslogChecked = true;
+						}
+						echo "<input type=\"radio\" name=\"logDestination\" value=\"syslog\"";
+						if ($syslogChecked) echo " checked";
+						echo ">" . _("System logging") . "\n";
+					?>
+					</TD>
+				</TR>
+				<TR>
+					<TD colspan="2">
+					<?PHP
+						$logFile = "";
+						$logFileChecked = false;
+						if (($cfg->logDestination != "NONE") && ($cfg->logDestination != "SYSLOG")) {
+							$logFile = $cfg->logDestination;
+							$logFileChecked = true;
+						}
+						echo "<input type=\"radio\" name=\"logDestination\" value=\"file\"";
+						if ($logFileChecked) echo " checked";
+						echo ">" . _("File") . "\n";
+						echo "<input type=\"text\" name=\"logFile\" value=\"" . $logFile . "\">\n";
+					?>
+					</TD>
+				</TR>
 			</table>
 		</fieldset>
 		<BR>

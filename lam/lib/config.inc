@@ -721,12 +721,24 @@ class CfgMain {
 	
 	/** Time of inactivity before session times out (minutes) */
 	var $sessionTimeout;
-
+	
+	/** log level */
+	var $logLevel;
+	
+	/** log destination ("SYSLOG":syslog, "/...":file, "NONE":none) */
+	var $logDestination;
+	
+	/** list of data fields to save in config file */
+	var $settings = array("password", "default", "sessionTimeout", "logLevel", "logDestination");
+	
 	/**
 	* Loads preferences from config file
 	*/
 	function CfgMain() {
+		// set default values
 		$this->sessionTimeout = 30;
+		$this->logLevel = LOG_NOTICE;
+		$this->logDestination = "SYSLOG";
 		$this->reload();
 	}
 
@@ -745,17 +757,13 @@ class CfgMain {
 				$line = trim($line);  // remove spaces at the beginning and end
 				if (($line == "")||($line[0] == "#")) continue; // ignore comments
 				// search keywords
-				if (substr($line, 0, 10) == "password: ") {
-					$this->password = substr($line, 10, strlen($line) - 10);
-					continue;
-				}
-				if (substr($line, 0, 9) == "default: ") {
-					$this->default = substr($line, 9, strlen($line) - 9);
-					continue;
-				}
-				if (substr($line, 0, 16) == "sessionTimeout: ") {
-					$this->sessionTimeout = intval(substr($line, 16, strlen($line) - 16));
-					continue;
+				for ($i = 0; $i < sizeof($this->settings); $i++) {
+					$keyword = $this->settings[$i];
+					$keylen = strlen($keyword);
+					if (strtolower(substr($line, 0, $keylen + 2)) == strtolower($keyword . ": ")) {
+						$this->$keyword = substr($line, $keylen + 2, strlen($line) - $keylen - 2);
+						break;
+					}
 				}
 			}
 			fclose($file);
@@ -779,30 +787,28 @@ class CfgMain {
 			}
 			fclose($file);
 			// generate new configuration file
+			$saved = array();
 			for ($i = 0; $i < sizeof($file_array); $i++) {
-				if (($file_array[$i] == "\n")||($file_array[$i][0] == "#")) continue; // ignore comments
-				// search for keywords
-				if (substr($file_array[$i], 0, 10) == "password: ") {
-					$file_array[$i] = "password: " . $this->password . "\n";
-					$save_password = True;
-					continue;
-				}
-				if (substr($file_array[$i], 0, 9) == "default: ") {
-					$file_array[$i] = "default: " . $this->default . "\n";
-					$save_default = True;
-					continue;
-				}
-				if (substr($file_array[$i], 0, 16) == "sessionTimeout: ") {
-					$file_array[$i] = "sessionTimeout: " . $this->sessionTimeout . "\n";
-					$save_sessionTimeout = True;
-					continue;
+				$line = trim($file_array[$i]);
+				if (($line == "")||($line[0] == "#")) continue; // ignore comments and empty lines
+				// search keywords
+				for ($k = 0; $k < sizeof($this->settings); $k++) {
+					$keyword = $this->settings[$k];
+					$keylen = strlen($keyword);
+					if (strtolower(substr($line, 0, $keylen + 1)) == strtolower($keyword . ":")) {
+						$file_array[$i] = $keyword . ": " . $this->$keyword . "\n";
+						$saved[] = $keyword;	// mark keyword as saved
+						break;
+					}
 				}
 			}
 		}
 		// check if we have to add new entries (e.g. if user upgraded LAM and has an old config file)
-		if (!$save_password == True) array_push($file_array, "\n\n# password to add/delete/rename configuration profiles\n" . "password: " . $this->password);
-		if (!$save_default == True) array_push($file_array, "\n\n# default profile, without \".conf\"\n" . "default: " . $this->default);
-		if (!$save_sessionTimeout == True) array_push($file_array, "\n\n# session timeout in minutes\n" . "sessionTimeout: " . $this->sessionTimeout);
+		if (!in_array("password", $saved)) array_push($file_array, "\n\n# password to add/delete/rename configuration profiles\n" . "password: " . $this->password);
+		if (!in_array("default", $saved)) array_push($file_array, "\n\n# default profile, without \".conf\"\n" . "default: " . $this->default);
+		if (!in_array("sessionTimeout", $saved)) array_push($file_array, "\n\n# session timeout in minutes\n" . "sessionTimeout: " . $this->sessionTimeout);
+		if (!in_array("logLevel", $saved)) array_push($file_array, "\n\n# log level\n" . "logLevel: " . $this->logLevel);
+		if (!in_array("logDestination", $saved)) array_push($file_array, "\n\n# log destination\n" . "logDestination: " . $this->logDestination);
 		$file = @fopen($conffile, "w");
 		if ($file) {
 			for ($i = 0; $i < sizeof($file_array); $i++) fputs($file, $file_array[$i]);
@@ -813,7 +819,7 @@ class CfgMain {
 			exit;
 		}
 	}
-
+	
 }
 
 ?>

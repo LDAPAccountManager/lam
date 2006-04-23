@@ -41,6 +41,8 @@ include_once("baseModule.inc");
 include_once("ldap.inc");
 /** lamdaemon functions */
 include_once("lamdaemon.inc");
+/** security functions */
+include_once("security.inc");
  
 /**
 * This includes all module files.

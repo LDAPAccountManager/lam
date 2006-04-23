@@ -45,6 +45,10 @@ include_once("../lib/ldap.inc");
 // start session
 startSecureSession();
 
+// log message
+$ldapUser = $_SESSION['ldap']->decrypt_login();
+logNewMessage(LOG_NOTICE, 'User ' . $ldapUser[0] . ' logged off.');
+
 // close LDAP connection
 @$_SESSION["ldap"]->destroy();
 

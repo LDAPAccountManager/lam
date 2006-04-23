@@ -30,6 +30,8 @@ $Id$
 
 /** configuration options */
 include_once('config.inc');
+/** ldap connection */
+include_once('ldap.inc');
 
 /**
  * Starts a session and checks the environment.
@@ -98,6 +100,9 @@ function getValidUserDNs($dn) {
  *
  */
 function logoffAndBackToLoginPage() {
+	// log message
+	$ldapUser = $_SESSION['ldap']->decrypt_login();
+	logNewMessage(LOG_WARNING, 'Session of user ' . $ldapUser[0] . ' expired.');
 	// delete key and iv in cookie
 	if (function_exists('mcrypt_create_iv')) {
 		setcookie("Key", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", 0, "/");
@@ -132,6 +137,44 @@ function logoffAndBackToLoginPage() {
 	session_destroy();
 	unset($_SESSION);
 	die();
+}
+
+/**
+ * Puts a new message in the log file.
+ *
+ * @param string $level log level (LOG_NOTICE, LOG_WARNING, LOG_ERR)
+ * @param string $message log message
+ */
+function logNewMessage($level, $message) {
+	$possibleLevels = array(LOG_NOTICE => 'NOTICE', LOG_WARNING => 'WARNING', LOG_ERR => 'ERROR');
+	if (!in_array($level, array_keys($possibleLevels))) StatusMessage('ERROR', 'Invalid log level!', $level);
+	if (isset($_SESSION['cfgMain'])) $cfg = $_SESSION['cfgMain'];
+	else $cfg = new CfgMain();
+	// check if logging is disabled
+	if ($cfg->logDestination == 'NONE') return;
+	// check if log level is high enough
+	elseif ($cfg->logLevel < $level) return;
+	// ok to log, build log message
+	$prefix = "LDAP Account Manager - " . $possibleLevels[$level] . ": ";	
+	$message = $prefix . $message;
+	// Syslog logging
+	if ($cfg->logDestination == 'SYSLOG') {
+		syslog($level, $message);
+	}
+	// log to file
+	else {
+		touch($cfg->logDestination);
+		if (is_writable($cfg->logDestination)) {
+			$file = fopen($cfg->logDestination, 'a');
+			if ($file) {
+				fwrite($file, $message . "\n");
+				fclose($file);
+			}
+		}
+		else {
+			StatusMessage('ERROR', 'Unable to write to log file!', $cfg->logDestination);
+		}
+	}
 }
 
 ?>

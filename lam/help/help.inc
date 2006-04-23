@@ -130,6 +130,10 @@ $helpArray = array (
 					"Text" => _("Every account type needs exactly one base module. This module provides a structural object class.")),
 				"238" => array ("ext" => "FALSE", "Headline" => _("Session timeout"),
 					"Text" => _("This is the time (in minutes) of inactivity after which a user is automatically logged off.")),
+				"239" => array ("ext" => "FALSE", "Headline" => _("Log level"),
+					"Text" => _("Please select your prefered log level. Messages with a lower level will not be logged.")),
+				"240" => array ("ext" => "FALSE", "Headline" => _("Log destination"),
+					"Text" => _("Here you can select where LAM should save its log messages. System logging will go to Syslog on Unix systems and event log on Windows. You can also select an extra file.")),
 				"250" => array ("ext" => "FALSE", "Headline" => _("Account lists - Filters"),
 					"Text" => _("Here you can input small filter expressions (e.g. 'value' or 'v*'). LAM will filter case-insensitive.")),
 				// 300 - 399
