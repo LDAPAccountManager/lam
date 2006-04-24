@@ -20,7 +20,7 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 AC_PREREQ(2.53)
-AC_INIT(ldap-account-manager, 1.0.rc2, lam-public@lists.sourceforge.net)
+AC_INIT(ldap-account-manager, @@VERSION@@, lam-public@lists.sourceforge.net)
 AC_CONFIG_SRCDIR(INSTALL)
 AC_PREFIX_DEFAULT(/usr/local/lam)
 
