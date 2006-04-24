@@ -15,7 +15,7 @@ msgstr ""
 
 #: ../lib/modules/posixAccount.inc:354
 msgid "$user and $group are replaced with user name or primary group name."
-msgstr "$user en $groep zijn vervangen door gebruikersnaam of de naam van de primaire groep."
+msgstr "$user en $group zijn vervangen door gebruikersnaam of de naam van de primaire groep."
 
 #: ../lib/types/mailAlias.inc:106
 #, php-format
@@ -1414,11 +1414,11 @@ msgstr "Faxnummer"
 
 #: ../lib/modules/sambaSamAccount.inc:221
 msgid "File name and path relative to netlogon-share which should be executed on logon. $user and $group are replaced with user and group name."
-msgstr "Bestandsnaam en pad, relatief ten opzichte van netlogon-share. dat uitgevoerd moet worden tijdens de logon. $gebruiker en $groep worden vervangen door gebruikers- en groepsnaam."
+msgstr "Bestandsnaam en pad, relatief ten opzichte van netlogon-share. dat uitgevoerd moet worden tijdens de logon. $user en $group worden vervangen door gebruikers- en groepsnaam."
 
 #: ../lib/modules/sambaAccount.inc:380
 msgid "File name and path relative to the netlogon-share which should be executed on logon. $user and $group are replaced with user and group name."
-msgstr "Bestandsnaam en pad, relatief ten opzichte van netlogon-share. dat uitgevoerd moet worden tijdens de logon. $gebruiker en $groep worden vervangen door gebruikers- en groepsnaam."
+msgstr "Bestandsnaam en pad, relatief ten opzichte van netlogon-share. dat uitgevoerd moet worden tijdens de logon. $user en $group worden vervangen door gebruikers- en groepsnaam."
 
 #: ../templates/tools.php:61
 msgid "File upload"
@@ -3597,7 +3597,7 @@ msgstr "Herhaal wachtwoord"
 #: ../lib/modules/posixAccount.inc:72
 #: ../lib/modules/posixAccount.inc:712
 msgid "Replaced $user or $group in homedir."
-msgstr "Vervangen $user of $groep in homedirectory."
+msgstr "Vervangen $user of $group in homedirectory."
 
 #: ../templates/tree/edit.php:241
 #, php-format
