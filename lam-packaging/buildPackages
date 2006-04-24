@@ -31,8 +31,10 @@ cp lam-packaging/autoconf/configure.ac ldap-account-manager-$VERSION/
 cp lam-packaging/autoconf/Makefile.in ldap-account-manager-$VERSION/
 cd ldap-account-manager-$VERSION
 touch install.sh
+perl -pi -e "s/\\@\\@VERSION\\@\\@/$VERSION/g" configure.ac
 autoconf
 rm configure.ac
+rm -r autom4te.cache
 cd ..
 tar cfvz ldap-account-manager-$VERSION.tar.gz ldap-account-manager-$VERSION
 
