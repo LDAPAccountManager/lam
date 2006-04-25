@@ -89,6 +89,27 @@ if ($_POST['submit']) {
 	}
 	// set session timeout
 	$cfg->sessionTimeout = $_POST['sessionTimeout'];
+	// set allowed hosts
+	if (isset($_POST['allowedHosts'])) {
+		$allowedHosts = $_POST['allowedHosts'];
+		$allowedHostsList = explode("\n", $allowedHosts);
+		for ($i = 0; $i < sizeof($allowedHostsList); $i++) {
+			$allowedHostsList[$i] = trim($allowedHostsList[$i]);
+			// ignore empty lines
+			if ($allowedHostsList[$i] == "") {
+				unset($allowedHostsList[$i]);
+				continue;
+			}
+			// check each line
+			$ipRegex = '^[0-9\\.\\*]+$';
+			if (!ereg($ipRegex, $allowedHostsList[$i]) || (strlen($allowedHostsList[$i]) > 15)) {
+				$errors[] = sprintf(_("The IP address %s is invalid!"), $allowedHostsList[$i]);
+			}
+		}
+		$allowedHosts = implode(",", $allowedHostsList);
+	}
+	else $allowedHosts = "";
+	$cfg->allowedHosts = $allowedHosts;
 	// set log level
 	$cfg->logLevel = $_POST['logLevel'];
 	// set log destination
@@ -118,7 +139,7 @@ if ($_POST['submit']) {
 		<br>
 		<!-- form for adding/renaming/deleting profiles -->
 		<form action="mainmanage.php" method="post">
-		<table border="0">
+		<table border="0" align="center">
 		<tr><td>
 		<fieldset>
 			<legend><b> <?php echo _("Security settings"); ?> </b></legend>
@@ -126,8 +147,10 @@ if ($_POST['submit']) {
 			<table cellspacing="0" border="0">
 				<!-- session timeout -->
 				<tr>
-					<td align="right">
+					<td align="left">
 						<?php echo _("Session timeout"); ?>
+					</td>
+					<td>
 						<SELECT name="sessionTimeout">
 						<?php
 						$options = array(5, 10, 20, 30, 60);
@@ -146,6 +169,23 @@ if ($_POST['submit']) {
 					<?PHP
 						// help link
 						echo "<a href=\"../help.php?HelpNumber=238\" target=\"lamhelp\">";
+						echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
+						echo "</a>\n";
+					?>
+					</td>
+				</tr>
+				<!-- allowed hosts -->
+				<tr>
+					<td align="left">
+						<?php echo _("Allowed hosts"); ?>
+					</td>
+					<td>
+						<TEXTAREA cols="30" rows="7" name="allowedHosts"><?php echo implode("\n", explode(",", $cfg->allowedHosts)); ?></TEXTAREA>
+					</td>
+					<td>&nbsp;
+					<?PHP
+						// help link
+						echo "<a href=\"../help.php?HelpNumber=241\" target=\"lamhelp\">";
 						echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
 						echo "</a>\n";
 					?>
@@ -279,10 +319,13 @@ if ($_POST['submit']) {
 			</table>
 			</fieldset>
 			</td></tr>
+			<TR>
+				<TD>
+					<BR>
+					<input type="submit" name="submit" value=" <?php echo _("Ok"); ?> ">
+				</TD>
+			</TR>
 			</table>
-			<BR>
-			
-			<input type="submit" name="submit" value=" <?php echo _("Ok"); ?> ">
 			
 		</form>
 		<p><br></p>

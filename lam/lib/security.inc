@@ -33,6 +33,9 @@ include_once('config.inc');
 /** ldap connection */
 include_once('ldap.inc');
 
+// check client IP address
+checkClientIP();
+
 /**
  * Starts a session and checks the environment.
  * The script is stopped if one of the checks fail.
@@ -72,27 +75,26 @@ function startSecureSession() {
  *
  */
 function checkClientIP() {
-	
-}
-
-/**
- * Checks if the user is allowed to access LAM at this time.
- * The script is stopped if time is exceeded.
- *
- * @param unknown_type $dn
- */
-function checkUserTime($dn) {
-	
-}
-
-/**
- * Returns a list of DNs of valid LAM users.
- *
- * @param string $dn configuration DN
- * @return  array $dn user list
- */
-function getValidUserDNs($dn) {
-	return array("uid=test,o=test", "uid=test2,o=test");
+	$cfg = new CfgMain();
+	$allowedHosts = $cfg->allowedHosts;
+	// skip test if no hosts are defined
+	if ($allowedHosts == "") return;
+	$allowedHosts = explode(",", $allowedHosts);
+	$grantAccess = false;
+	for ($i = 0; $i < sizeof($allowedHosts); $i++) {
+		$host = $allowedHosts[$i];
+		$ipRegex = '^[0-9\\.\\*]+$';
+		if (!ereg($ipRegex, $host)) continue;
+		$hostRegex = str_replace(".", "\\.", $host);
+		$hostRegex = '^' . str_replace("*", ".*", $hostRegex) . '$';
+		$clientIP = $_SERVER['REMOTE_ADDR'];
+		if (ereg($hostRegex, $clientIP)) {
+			// client is allowed to access LAM
+			$grantAccess = true;
+		}
+	}
+	// stop script is client may not access LAM
+	if (!$grantAccess) die();
 }
 
 /**

@@ -728,8 +728,12 @@ class CfgMain {
 	/** log destination ("SYSLOG":syslog, "/...":file, "NONE":none) */
 	var $logDestination;
 	
+	/** list of hosts which may access LAM */
+	var $allowedHosts;
+	
 	/** list of data fields to save in config file */
-	var $settings = array("password", "default", "sessionTimeout", "logLevel", "logDestination");
+	var $settings = array("password", "default", "sessionTimeout",
+		"logLevel", "logDestination", "allowedHosts");
 	
 	/**
 	* Loads preferences from config file
@@ -739,6 +743,7 @@ class CfgMain {
 		$this->sessionTimeout = 30;
 		$this->logLevel = LOG_NOTICE;
 		$this->logDestination = "SYSLOG";
+		$this->allowedHosts = "";
 		$this->reload();
 	}
 
@@ -809,6 +814,7 @@ class CfgMain {
 		if (!in_array("sessionTimeout", $saved)) array_push($file_array, "\n\n# session timeout in minutes\n" . "sessionTimeout: " . $this->sessionTimeout);
 		if (!in_array("logLevel", $saved)) array_push($file_array, "\n\n# log level\n" . "logLevel: " . $this->logLevel);
 		if (!in_array("logDestination", $saved)) array_push($file_array, "\n\n# log destination\n" . "logDestination: " . $this->logDestination);
+		if (!in_array("allowedHosts", $saved)) array_push($file_array, "\n\n# list of hosts which may access LAM\n" . "allowedHosts: " . $this->allowedHosts);
 		$file = @fopen($conffile, "w");
 		if ($file) {
 			for ($i = 0; $i < sizeof($file_array); $i++) fputs($file, $file_array[$i]);
