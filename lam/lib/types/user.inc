@@ -131,7 +131,6 @@ class lamUserList extends lamList {
 	* Manages all POST actions (e.g. button pressed) for the account lists.
 	*/
 	function listDoPost() {
-		parent::listDoPost();
 		// check if primary group should be translated
 		if (isset($_POST['apply_trans_primary'])) {
 			$this->trans_primary = $_POST['trans_primary'];
@@ -151,6 +150,8 @@ class lamUserList extends lamList {
 				}
 			}
 		}
+		if (isset($_POST['trans_primary'])) unset($_POST['trans_primary']);
+		parent::listDoPost();
 	}
 
 	/**
