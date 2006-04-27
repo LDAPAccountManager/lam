@@ -117,7 +117,7 @@ if ($< == 0 ) { # we are root
 							    }
 							if (! -e $user[7]) {
 								system 'mkdir', '-m', '0755', $user[7]; # Create homedir itself
-								system ("(cd /etc/skel && tar cf - .) | (cd $user[7] && tar xf -)"); # Copy /etc/sekl into homedir
+								system ("(cd /etc/skel && tar cf - .) | (cd $user[7] && tar xmf -)"); # Copy /etc/sekl into homedir
 								system 'chown', '-hR', "$user[2]:$user[3]" , $user[7]; # Change owner to new user
 								if (-e '/usr/sbin/useradd.local') {
 									system '/usr/sbin/useradd.local', $user[0]; # run useradd-script
