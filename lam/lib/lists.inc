@@ -431,6 +431,7 @@ class lamList {
 				$list = array();
 				// load accounts from LDAP
 				for ($i = 0; $i < sizeof($accounts); $i++) {
+					if (!isset($this->entries[$accounts[$i]]['dn'])) continue;
 					$_SESSION["accountPDF-$i"] = new accountContainer($this->type, "accountPDF-$i");
 					$_SESSION["accountPDF-$i"]->load_account($this->entries[$accounts[$i]]['dn']);
 					$list[$i] = $_SESSION["accountPDF-$i"];
