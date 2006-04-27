@@ -1,3 +1,9 @@
+??? 1.0.2
+   - security enhancements: session timeout, logging, host restrictions
+   - fixed bugs:
+    -> PDF creation bug when GID translation is activated (1477111)
+
+
 12.04.2006 1.0.1
    - LAM can now be installed with "configure" and "make install"
    - added workaround for misspelled object classes (e.g. sambaSAMAccount by smbldap-tools)
