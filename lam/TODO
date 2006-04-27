@@ -7,8 +7,3 @@
 
  - full integration of phpLDAPadmin
 
-1.0.2
-
- - enhanced security settings:
-  -> restrict access to specific hosts
-  -> manage LAM admins in LDAP
