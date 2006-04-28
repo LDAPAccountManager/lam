@@ -40,6 +40,7 @@ include_once("createntlm.inc");
 * @return array list of shell names
 */
 function getshells() {
+	if (!isset($_SESSION['lampath'])) return array();
 	// Load shells from file
 	if (file_exists($_SESSION['lampath'] . 'config/shells')) {
 		$shells = file($_SESSION['lampath'] . 'config/shells');
@@ -449,7 +450,7 @@ function get_preg($argument, $regexp) {
 	$pregexpr = '';
 	switch ($regexp) {
 		case 'password':
-					$pregexpr = '/^([[:alnum:]\\^\\ \\|\\#\\*\\,\\.\\;\\:\\_\\+\\!\\%\\&\\/\\?\\{\\(\\)\\}\\[\\]=-])*$/u';
+					$pregexpr = '/^([[:alnum:]\\^\\ \\|\\#\\*\\,\\.\\;\\:\\_\\+\\!\\%\\&\\/\\?\\{\\(\\)\\}\\[\\]\\$@=-])*$/u';
 					break;
 		case 'groupname':	// first character must be a letter. All letters, numbers, space and ._- are allowed characters
 		case 'username':	// first character must be a letter. All letters, numbers, space and ._- are allowed characters
