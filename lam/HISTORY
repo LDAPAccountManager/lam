@@ -2,6 +2,8 @@
    - security enhancements: session timeout, logging, host restrictions
    - fixed bugs:
     -> PDF creation bug when GID translation is activated (1477111)
+    -> allow "@" in passwords (1477878)
+    -> Samba 2/3: fixed NT hashes
 
 
 12.04.2006 1.0.1

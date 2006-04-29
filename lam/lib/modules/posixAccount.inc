@@ -125,6 +125,8 @@ class posixAccount extends baseModule {
 		$return["RDN"] = array("uid" => "normal", "cn" => "low");
 		// managed object classes
 		$return['objectClasses'] = array('posixAccount');
+		// PHP extensions
+		$return['extensions'] = array('mhash');
 		// profile checks
 		$return['profile_checks']['posixAccount_homeDirectory'] = array('type' => 'ext_preg', 'regex' => 'homeDirectory',
 		'error_message' => $this->messages['homeDirectory'][0]);
@@ -583,7 +585,7 @@ class posixAccount extends baseModule {
 		$this->attributes['homeDirectory'][0] = $post['homeDirectory'];
 		$this->attributes['loginShell'][0] = $post['loginShell'];
 		if (isset($post['gecos'])) $this->attributes['gecos'][0] = $post['gecos'];
-		if ($post['createhomedir']) $this->createhomedir = true;
+		if (isset($post['createhomedir'])) $this->createhomedir = true;
 		else $this->createhomedir = false;
 		if ($this->orig['uid'][0]!='' && $post['uid']!=$this->attributes['uid'][0])
 			$triggered_messages['uid'][] = $this->messages['uid'][0];
@@ -672,30 +674,31 @@ class posixAccount extends baseModule {
 			if ( !get_preg($this->attributes['homeDirectory'][0], 'homeDirectory' ))
 			$triggered_messages['homeDirecotry'][] = $this->messages['homeDirectory'][0];
 		}
-		if (($post['userPassword_lock'] && $post['userPassword_invalid']) || ($post['userPassword_nopassword'] && $post['userPassword_invalid'])) {
+		if ((isset($post['userPassword_lock']) && isset($post['userPassword_invalid'])) ||
+			(isset($post['userPassword_nopassword']) && isset($post['userPassword_invalid']))) {
 			// found invalid password parameter combination
 			$triggered_messages['userPassword'][] = $this->messages['userPassword'][3];
 		}
 		else {
-			if ($post['userPassword_nopassword']) {
+			if (isset($post['userPassword_nopassword'])) {
 				$this->userPassword_nopassword=true;
 				$this->userPassword_invalid=false;
 				$this->attributes['userPassword'][0] = '';
 				$post['userPassword2'] = '';
-				if ($post['userPassword_lock'])
+				if (isset($post['userPassword_lock']))
 					$this->userPassword_lock=true;
 				else $this->userPassword_lock=false;
 			}
 			else {
 				$this->userPassword_nopassword=false;
-				if ($post['userPassword_invalid']) {
+				if (isset($post['userPassword_invalid'])) {
 					$this->userPassword_invalid=true;
 					$this->userPassword_lock=false;
 					$post['userPassword2'] = '';
 				}
 				else {
 					$this->userPassword_invalid=false;
-					if ($post['genpass']) $this->attributes['userPassword'][0] = genpasswd();
+					if (isset($post['genpass'])) $this->attributes['userPassword'][0] = genpasswd();
 					elseif ($_SESSION[$this->base]->isNewAccount) {
 						if ($post['userPassword'] != $post['userPassword2'])
 							$triggered_messages['userPassword'][] = $this->messages['userPassword'][0];
@@ -703,7 +706,7 @@ class posixAccount extends baseModule {
 						if (!get_preg($this->attributes['userPassword'][0], 'password'))
 							$triggered_messages['userPassword'][] = $this->messages['userPassword'][1];
 					}
-					if ($post['userPassword_lock']) $this->userPassword_lock=true;
+					if (isset($post['userPassword_lock'])) $this->userPassword_lock=true;
 					else $this->userPassword_lock=false;
 				}
 			}
@@ -841,7 +844,7 @@ class posixAccount extends baseModule {
 	function display_html_attributes(&$post) {
 		// check password format if called the first time
 		if (!isset($this->userPassword_invalid)) {
-			if ($this->attributes['userPassword'][0]) {
+			if (isset($this->attributes['userPassword'][0])) {
 				if ($this->attributes['userPassword'][0] == '*') $this->userPassword_invalid = true;
 				else $this->userPassword_invalid = false;
 				if (pwd_is_enabled($this->attributes['userPassword'][0])) $this->userPassword_lock = false;

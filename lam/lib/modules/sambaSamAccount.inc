@@ -126,6 +126,8 @@ class sambaSamAccount extends baseModule {
 		$return['dependencies'] = array('depends' => array('posixAccount'), 'conflicts' => array());
 		// managed object classes
 		$return['objectClasses'] = array('sambaSamAccount');
+		// PHP extensions
+		$return['extensions'] = array('mhash');
 		// profile checks
 		$return['profile_checks']['sambaSamAccount_smbhome'] = array(
 			'type' => 'ext_preg',

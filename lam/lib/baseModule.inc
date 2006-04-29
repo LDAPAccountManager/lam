@@ -557,8 +557,11 @@ class baseModule {
 	* The maximum length of the attributes is checked, too.
 	*
 	* @return mixed 0 if no errors/warnings occured, otherwise an array of status messages.
+	* 
+	* TODO: remove this function and move checks to posixAccount.inc
 	*/
 	function input_check() {
+		$messages = array();
 		// Do a check for every ldap attribute
 		$attributes = array_keys($this->attributes);
 		for ($i=0; $i<count($attributes); $i++) {
@@ -674,6 +677,16 @@ class baseModule {
 	function getManagedObjectClasses() {
 		if (isset($this->meta['objectClasses']) && is_array($this->meta['objectClasses'])) return $this->meta['objectClasses'];
 		else return array();
+	}
+	
+	/**
+	 * Returns a list of required PHP extensions.
+	 *
+	 * @return array extensions
+	 */
+	function getRequiredExtensions() {
+		if (isset($this->meta['extensions']) && is_array($this->meta['extensions'])) return $this->meta['extensions'];
+		else return array();		
 	}
 
 }

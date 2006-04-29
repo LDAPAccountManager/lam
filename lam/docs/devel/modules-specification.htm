@@ -515,8 +515,22 @@ internal data structures.<br>
 is an hash array (identifier =&gt; array(values))&nbsp; with all values
 of an account profile.<br>
 <br>
-<h3><br>
-</h3>
+<h3>2.1.20. getRequiredExtensions*</h3>
+<br>
+<table border="0" cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top; text-align: center;"><span
+ style="font-weight: bold;">function getRequiredExtensions()</span><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+This function returns a list of PHP extensions (e.g. mhash) which are
+needed by this module.<br>
+<br>
+<br>
 <br>
 <br>
 <h3>2.2. Functions which are called inside of an account container<br>
@@ -1442,6 +1456,14 @@ return value of get_uploadColumns().<br>
 the
 return value of get_uploadPreDepends().<br>
 </span></span><br>
+<h3>6.15 getRequiredExtensions()<br>
+</h3>
+"extensions" =&gt; array()<br>
+<span style="font-weight: bold;"><br>
+<span style="font-style: italic;"></span></span><span
+ style="font-weight: bold;">Example:</span><span
+ style="font-style: italic; font-weight: bold;"> array('mhash')</span><br>
+<br>
 <span style="font-weight: bold;"></span><span style="font-weight: bold;"><span
  style="font-style: italic;"></span></span><span
  style="font-style: italic; font-weight: bold;"></span><span

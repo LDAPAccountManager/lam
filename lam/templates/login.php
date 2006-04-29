@@ -179,10 +179,13 @@ function display_LoginPage($config_object) {
 		</table>
 		<hr><br><br>
 		<?php
-		// check if all password hashes are possible
-		if ((! function_exists('mHash')) && (! function_exists('sha1'))) {
-			StatusMessage("INFO", "Your PHP does not support MHash or sha1(), you will only be able to use CRYPT/PLAIN/MD5/SMD5 for user passwords!", "Please install MHash or update to PHP >4.3.");
-			echo "<br><br>";
+		// check extensions
+		$extList = getRequiredExtensions();
+		for ($i = 0; $i < sizeof($extList); $i++) {
+			if (!extension_loaded($extList[$i])) {
+				StatusMessage("ERROR", _("A required extension is missing!"), $extList[$i]);
+				echo "<br>";
+			}
 		}
 		?>
 		<table width="650" align="center" border="2" rules="none" bgcolor="white">

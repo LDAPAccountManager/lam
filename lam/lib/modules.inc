@@ -529,6 +529,27 @@ function doUploadPostActions($scope, $data, $ids, $failed) {
 }
 
 /**
+* Returns true if the module is a base module
+*
+* @return array required extensions
+*/
+function getRequiredExtensions() {
+	$extList = array();
+	$scopes = $_SESSION['config']->get_ActiveTypes();
+	for ($i = 0; $i < sizeof($scopes); $i++) {
+		$mods = $_SESSION['config']->get_AccountModules($scopes[$i]);
+		for ($m = 0; $m < sizeof($mods); $m++) {
+			$module = new $mods[$m]($scopes[$i]);
+			$ext = $module->getRequiredExtensions();
+			for ($e = 0; $e < sizeof($ext); $e++) {
+				if (!in_array($ext[$e], $extList)) $extList[] = $ext[$e];
+			}
+		}
+	}
+	return $extList;
+}
+
+/**
 * Takes a list of meta-HTML elements and prints the equivalent HTML output.
 *
 * @param string $module Name of account module
