@@ -489,7 +489,7 @@ class posixGroup extends baseModule {
 	**/
 	function load_Messages() {
 		$this->messages['userPassword'][0] = array('ERROR', _('Password'), _('Please enter the same password in both password-fields.'));
-		$this->messages['userPassword'][1] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
+		$this->messages['userPassword'][1] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}=@$ !'));
 		$this->messages['userPassword'][3] = array('ERROR', _('Password'), _('You cannot use this password options at the same time.'));
 		$this->messages['gidNumber'][0] = array('INFO', _('GID number'), _('GID number has changed. Please select checkbox to change GID number of users and hosts.'));
 		$this->messages['gidNumber'][2] = array('WARN', _('ID-Number'), _('It is possible that this ID-number is reused. This can cause several problems because files with old permissions might still exist. To avoid this warning set maxUID to a higher value.'));
