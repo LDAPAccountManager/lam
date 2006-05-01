@@ -128,11 +128,7 @@ class<br>
 &nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">function</span>
 get_metaData() {<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $return = array();<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // manages host accounts<br>
-      <span style="color: rgb(255, 0, 0);">&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp; </span>$return["account_types"] = array("host");<br
- style="color: rgb(255, 0, 0);">
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // alias name<br>
+&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // alias name<br>
       <span style="color: rgb(255, 0, 0);">&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp; &nbsp;$return["alias"] = _("MAC address");</span><br
  style="color: rgb(255, 0, 0);">
@@ -172,14 +168,7 @@ class<br>
 &nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">function</span>
 get_metaData() {<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $return = array();<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // manages host accounts<br>
-      <span style="color: rgb(255, 0, 0);">&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp; </span>$return["account_types"] = array("host");<br
- style="color: rgb(255, 0, 0);">
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // alias name<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;$return["alias"] = _("MAC
-address");<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // module dependencies<br>
+&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // module dependencies<br>
       <span style="color: rgb(255, 0, 0);">&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp; &nbsp;$return['dependencies'] = array('depends' =&gt;
 array('account'), 'conflicts' =&gt; array());</span><br
@@ -255,20 +244,50 @@ class<br>
 &nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">function</span>
 get_metaData() {<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $return = array();<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // manages host accounts<br>
-      <span style="color: rgb(255, 0, 0);">&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp; </span>$return["account_types"] = array("host");<br
- style="color: rgb(255, 0, 0);">
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // alias name<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;$return["alias"] = _("MAC
-address");<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // module dependencies<br>
-&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp; &nbsp;$return['dependencies'] = array('depends' =&gt;
-array('account'), 'conflicts' =&gt; array());<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // managed object classes<br>
+&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // managed object classes<br>
       <span style="color: rgb(255, 0, 0);">&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp; &nbsp;$return['objectClasses'] = array('ieee802Device');</span><br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return $return;<br>
+&nbsp;&nbsp;&nbsp; }<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<br>
+<h2>7. Known LDAP aliases<br>
+</h2>
+LDAP attributes can have several names (e.g. "cn" and "commonName" are
+the same). If you manage such attributes then tell LAM about the alias
+names.<br>
+LAM will then convert all alias names to the given attribute names
+automatically.<br>
+<br>
+<span style="font-weight: bold; text-decoration: underline;">Example:</span><br>
+<br>
+The <span style="font-style: italic;">posixGroup</span> module manages
+the "cn" attribute. This attribute is also known under the alias
+"commonName".<br>
+This way the module will never see attributes called "commonName"
+because LAM renames them as soon as the LDAP entry is loaded.<br>
+<br>
+<table style="width: 100%; text-align: left;" class="mod-code"
+ border="0" cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
+&nbsp;&nbsp;&nbsp; * Returns meta data that is interpreted by parent
+class<br>
+&nbsp;&nbsp;&nbsp; *<br>
+&nbsp;&nbsp;&nbsp; * @return array array with meta data<br>
+&nbsp;&nbsp;&nbsp; */<br>
+&nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">function</span>
+get_metaData() {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $return = array();<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // LDAP aliases<br>
+      <span style="color: rgb(255, 0, 0);">&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp; &nbsp;$return['LDAPaliases'] = array('commonName' =&gt;
+'cn');</span><br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return $return;<br>
 &nbsp;&nbsp;&nbsp; }<br>
       </td>

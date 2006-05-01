@@ -1323,6 +1323,10 @@ class accountContainer {
 	* @return array an array which can be passed to $this->saveAccount()
 	*/
 	function save_module_attributes($attributes, $orig) {
+		$toadd = array();
+		$tomodify = array();
+		$torem = array();
+		$notchanged = array();
 		// Get list of all "easy" attributes
 		$attr_names = array_keys($attributes);
 		// Get attributes which should be added
@@ -1436,14 +1440,26 @@ class accountContainer {
 	function fixLDAPAttributes($attributes, $modules) {
 		if (!is_array($attributes)) return $attributes;
 		$keys = array_keys($attributes);
-		// get correct object class names
+		// get correct object class names, aliases and attributes
 		$objectClasses = array();
+		$aliases = array();
 		foreach ($modules as $module) {
 			$moduleObj = new $module($this->type);
 			$objectClasses = array_merge($objectClasses, $moduleObj->getManagedObjectClasses());
+			$aliases = array_merge($aliases, $moduleObj->getLDAPAliases());
 		}
-		// check object classes
+		// convert alias names to lower case (for easier comparison)
+		$aliasKeys = array_keys($aliases);
+		for ($i = 0; $i < sizeof($aliasKeys); $i++) {
+			if ($aliasKeys[$i] != strtolower($aliasKeys[$i])) {
+				$aliases[strtolower($aliasKeys[$i])] = $aliases[$aliasKeys[$i]];
+				unset($aliases[$aliasKeys[$i]]);
+				$aliasKeys[$i] = strtolower($aliasKeys[$i]);
+			}
+		}
+		// fix object classes and attributes
 		for ($i = 0; $i < sizeof($keys); $i++) {
+			// check object classes
 			if (strtolower($keys[$i]) == 'objectclass') {
 				// fix object class attribute
 				if ($keys[$i] != 'objectClass') {
@@ -1463,7 +1479,13 @@ class accountContainer {
 						}
 					}
 				}
-				break;
+			}
+			else {
+				// fix aliases
+				if (in_array(strtolower($keys[$i]), $aliasKeys)) {
+					$attributes[$aliases[strtolower($keys[$i])]] = $attributes[$keys[$i]];
+					unset($attributes[$keys[$i]]);
+				}
 			}
 		}
 		return $attributes;

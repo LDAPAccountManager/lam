@@ -680,6 +680,17 @@ class baseModule {
 	}
 	
 	/**
+	 * Returns a list of aliases for LDAP attributes.
+	 * All alias attributes will be renamed to the given attribute names.
+	 *
+	 * @return array list of aliases (alias name => attribute name)
+	 */
+	function getLDAPAliases() {
+		if (isset($this->meta['LDAPaliases']) && is_array($this->meta['LDAPaliases'])) return $this->meta['LDAPaliases'];
+		else return array();
+	}
+	
+	/**
 	 * Returns a list of required PHP extensions.
 	 *
 	 * @return array extensions

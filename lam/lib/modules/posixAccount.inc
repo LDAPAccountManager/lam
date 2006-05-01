@@ -125,6 +125,8 @@ class posixAccount extends baseModule {
 		$return["RDN"] = array("uid" => "normal", "cn" => "low");
 		// managed object classes
 		$return['objectClasses'] = array('posixAccount');
+		// LDAP aliases
+		$return['LDAPaliases'] = array('commonName' => 'cn');
 		// PHP extensions
 		$return['extensions'] = array('mhash');
 		// profile checks

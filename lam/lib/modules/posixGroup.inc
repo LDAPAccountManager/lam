@@ -309,6 +309,8 @@ class posixGroup extends baseModule {
 		$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
 		// managed object classes
 		$return['objectClasses'] = array('posixGroup');
+		// LDAP aliases
+		$return['LDAPaliases'] = array('commonName' => 'cn');
 		// configuration options
 		$return['config_options']['group'] = array(
 			array(

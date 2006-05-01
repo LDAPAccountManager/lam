@@ -143,7 +143,24 @@ This is used to fix spelling errors in LDAP-Entries (e.g. if
 <span style="font-weight: bold;">Example: <span
  style="font-style: italic;">return "('posixAccount')"</span></span><br>
 <span style="font-weight: bold; color: rgb(255, 0, 0);"></span><br>
-<h3>2.1.6. get_RDNAttributes*</h3>
+<h3>2.1.6. getLDAPAliases*</h3>
+<br>
+<table border="0" cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top; text-align: center;"><span
+ style="font-weight: bold;">function getLDAPAliases()</span><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+This function returns a list of LDAP attribute alias names.<br>
+<br>
+<span style="font-weight: bold;">return array(&lt;alias name&gt; =&gt;
+&lt;attribute name&gt;)</span><br>
+<br>
+<h3>2.1.7. get_RDNAttributes*</h3>
 <br>
 <table border="0" cellpadding="2" cellspacing="2">
   <tbody>
@@ -168,7 +185,7 @@ for the RDN selection.<br>
 'normal', 'cn' =&gt; 'low')"</span></span><br>
 <br>
 <span style="font-weight: bold; color: rgb(255, 0, 0);"></span>
-<h3>2.1.7. get_dependencies*</h3>
+<h3>2.1.8. get_dependencies*</h3>
 <br>
 <table border="0" cellpadding="2" cellspacing="2">
   <tbody>
@@ -198,7 +215,7 @@ your module depends on one of these modules.<br>
 =&gt; array("exim"));</span><br
  style="font-weight: bold; font-style: italic;">
 <br>
-<h3>2.1.8. get_metaData()</h3>
+<h3>2.1.9. get_metaData()</h3>
 <br>
 <table border="0" cellpadding="2" cellspacing="2">
   <tbody>
@@ -215,7 +232,7 @@ Returns an hash array including meta data for the baseModule.<br>
 <span style="font-weight: bold;">Example: return array("is_base" =&gt;
 true);</span><br style="font-weight: bold;">
 <br>
-<h3>2.1.9. get_configOptions()*</h3>
+<h3>2.1.10. get_configOptions()*</h3>
 <br>
 <table border="0" cellpadding="2" cellspacing="2">
   <tbody>
@@ -244,7 +261,7 @@ as keywords to load and save settings. We recommend to use the module
 name as prefix for them (e.g. posixAccount_homeDirectory) to avoid
 naming confilcts.<br>
 <br>
-<h3>2.1.10. get_configDescriptions()*</h3>
+<h3>2.1.11. get_configDescriptions()*</h3>
 <br>
 <table border="0" cellpadding="2" cellspacing="2">
   <tbody>
@@ -269,7 +286,7 @@ array with this format:<br>
 &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 'descriptions' =&gt; array('option1'
 =&gt; 'description1', ...))</span><br>
 <br>
-<h3>2.1.11. check_configOptions*</h3>
+<h3>2.1.12. check_configOptions*</h3>
 <br>
 <table border="0" cellpadding="2" cellspacing="2">
   <tbody>
@@ -297,7 +314,7 @@ If no errors occured the function returns an empty array.<span
  style="font-weight: bold;"></span><br>
 <br style="font-weight: bold;">
 <span style="font-weight: bold;"></span>
-<h3>2.1.12. get_scope()</h3>
+<h3>2.1.13. get_scope()</h3>
 <br>
 <table border="0" cellpadding="2" cellspacing="2">
   <tbody>
@@ -314,7 +331,7 @@ Returns the account type (user/group/host) of this module object.<br>
 <span style="font-weight: bold;">This function is provided by the
 baseModule and should not be overwritten.</span><br>
 <br>
-<h3>2.1.13. get_uploadColumns*</h3>
+<h3>2.1.14. get_uploadColumns*</h3>
 <br>
 <table border="0" cellpadding="2" cellspacing="2">
   <tbody>
@@ -359,7 +376,7 @@ all values of this column must be different values <span
   </li>
 </ul>
 <br>
-<h3>2.1.14. get_uploadPreDepends*</h3>
+<h3>2.1.15. get_uploadPreDepends*</h3>
 <br>
 <table border="0" cellpadding="2" cellspacing="2">
   <tbody>
@@ -375,7 +392,7 @@ Returns a list of module names which must be processed before this
 module at builing accounts.<br>
 The named modules may not be active, LAM will check this automatically.<br>
 <br>
-<h3>2.1.15. build_uploadAccounts</h3>
+<h3>2.1.16. build_uploadAccounts</h3>
 <br>
 <table border="0" cellpadding="2" cellspacing="2">
   <tbody>
@@ -402,7 +419,7 @@ format is the same as used for ldap_add().<br>
 Returns an array which contains sub arrays to generate StatusMessages
 if any errors occured.<br>
 <br>
-<h3>2.1.16. do_uploadPostActions</h3>
+<h3>2.1.17. do_uploadPostActions</h3>
 <br>
 <table border="0" cellpadding="2" cellspacing="2">
   <tbody>
@@ -448,7 +465,7 @@ array()</span>&nbsp;&nbsp; // List of arrays which are used to generate
 StatusMessages<br>
 &nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">)</span><br>
 <br>
-<h3>2.1.17. get_profileOptions*</h3>
+<h3>2.1.18. get_profileOptions*</h3>
 <br>
 <table border="0" cellpadding="2" cellspacing="2">
   <tbody>
@@ -472,7 +489,7 @@ as keywords to load and save profiles. We recommend to use the module
 name as prefix for them (e.g. posixAccount_homeDirectory) to avoid
 naming confilcts.<br>
 <br>
-<h3>2.1.18. check_profileOptions*</h3>
+<h3>2.1.19. check_profileOptions*</h3>
 <br>
 <table border="0" cellpadding="2" cellspacing="2">
   <tbody>
@@ -496,7 +513,7 @@ head, 2 =&gt; message text, 3 =&gt; additional variables).<br>
 If no errors occured the function returns an empty array.<span
  style="font-weight: bold;"></span><br>
 <br>
-<h3>2.1.19. load_profile*</h3>
+<h3>2.1.20. load_profile*</h3>
 <br>
 <table border="0" cellpadding="2" cellspacing="2">
   <tbody>
@@ -515,7 +532,7 @@ internal data structures.<br>
 is an hash array (identifier =&gt; array(values))&nbsp; with all values
 of an account profile.<br>
 <br>
-<h3>2.1.20. getRequiredExtensions*</h3>
+<h3>2.1.21. getRequiredExtensions*</h3>
 <br>
 <table border="0" cellpadding="2" cellspacing="2">
   <tbody>
@@ -530,9 +547,9 @@ of an account profile.<br>
 This function returns a list of PHP extensions (e.g. mhash) which are
 needed by this module.<br>
 <br>
+<span style="font-weight: bold;"><br>
 <br>
-<br>
-<br>
+</span>
 <h3>2.2. Functions which are called inside of an account container<br>
 </h3>
 <h3>2.2.1. init</h3>
@@ -1288,8 +1305,19 @@ array("user", "host")</span><br style="font-weight: bold;">
  style="font-style: italic; font-weight: bold;"> array('posixAccount')<br>
 <br>
 </span>
+<h3>6.5 getLDAPaliases()<br>
+</h3>
+"LDAPaliases" =&gt; array()<br>
+<span style="font-weight: bold;"><br>
+<span style="font-style: italic;"></span></span><span
+ style="font-weight: bold;">Example:</span><span
+ style="font-style: italic; font-weight: bold;"> array('commonName'
+=&gt; 'cn')</span><br>
+<br>
+<span style="font-style: italic; font-weight: bold;"><br>
+</span>
 <span style="font-style: italic; font-weight: bold;"></span>
-<h3>6.5 get_RDNAttributes()</h3>
+<h3>6.6 get_RDNAttributes()</h3>
 &nbsp;&nbsp;&nbsp; "RDN" =&gt; array<br>
 <br>
 <span style="font-weight: bold;">&nbsp;&nbsp; Example:</span><span
@@ -1298,7 +1326,7 @@ array("user", "host")</span><br style="font-weight: bold;">
 <br>
 </span>
 <span style="font-style: italic; font-weight: bold;"></span>
-<h3>6.6 get_dependencies()<br>
+<h3>6.7 get_dependencies()<br>
 </h3>
 &nbsp;&nbsp;&nbsp; "dependencies" =&gt; array<br>
 <br>
@@ -1310,7 +1338,7 @@ array("user", "host")</span><br style="font-weight: bold;">
 =&gt; array("exim")</span></span><span
  style="font-style: italic; font-weight: bold;">)<br>
 </span><br>
-<h3>6.7 get_profileOptions()<br>
+<h3>6.8 get_profileOptions()<br>
 </h3>
 &nbsp;&nbsp;&nbsp; "profile_options" =&gt; array<br>
 <br>
@@ -1319,7 +1347,7 @@ array("user", "host")</span><br style="font-weight: bold;">
 return value of get_profileOptions().<br>
 <br>
 </span></span>
-<h3>6.8 check_profileOptions()<br>
+<h3>6.9 check_profileOptions()<br>
 </h3>
 &nbsp;&nbsp;&nbsp; "profile_checks" =&gt; array<br>
 <br>
@@ -1394,7 +1422,7 @@ head, 2 =&gt; message text, 3 =&gt; additional variables)</li>
   </ul>
 </ul>
 <br>
-<h3>6.9 load_profile()<br>
+<h3>6.10 load_profile()<br>
 </h3>
 &nbsp;&nbsp;&nbsp; "profile_mappings" =&gt; array('profile_identifier1'
 =&gt; 'LDAP_attribute1', 'profile_identifier2' =&gt; 'LDAP_attribute2')<br>
@@ -1403,7 +1431,7 @@ head, 2 =&gt; message text, 3 =&gt; additional variables)</li>
 $this-&gt;attributes.<br>
 <span style="font-weight: bold;"><span style="font-style: italic;"><br>
 </span></span>
-<h3>6.10 get_configOptions()<br>
+<h3>6.11 get_configOptions()<br>
 </h3>
 &nbsp;&nbsp;&nbsp; "config_options" =&gt; array('user' =&gt; array,
 'host' =&gt; array, 'all' =&gt; array)<br>
@@ -1419,7 +1447,7 @@ the
 return value of get_configOptions().<br>
 <br>
 </span></span>
-<h3>6.11 get_configDescriptions()<br>
+<h3>6.12 get_configDescriptions()<br>
 </h3>
 &nbsp;&nbsp;&nbsp; "config_descriptions" =&gt; array<br>
 <br>
@@ -1428,7 +1456,7 @@ return value of get_configOptions().<br>
 return value of get_configDescriptions().<br>
 <br>
 </span></span>
-<h3>6.12 check_configOptions()<br>
+<h3>6.13 check_configOptions()<br>
 </h3>
 &nbsp;&nbsp;&nbsp; "config_checks" =&gt; array('user' =&gt; array,
 'host' =&gt; 'array', 'all' =&gt; array)<br>
@@ -1442,21 +1470,21 @@ the other values only if they are inside the <span
 check_profileOptions().<br>
 <br>
 </span></span>
-<h3>6.13 get_uploadColumns()</h3>
+<h3>6.14 get_uploadColumns()</h3>
 "upload_columns" =&gt; array()<br>
 <span style="font-weight: bold;"><br>
 <span style="font-style: italic;">Syntax for array is the same as for
 the
 return value of get_uploadColumns().<br>
 </span></span><br>
-<h3>6.14 get_uploadPreDepends()</h3>
+<h3>6.15 get_uploadPreDepends()</h3>
 "upload_preDepends" =&gt; array()<br>
 <span style="font-weight: bold;"><br>
 <span style="font-style: italic;">Syntax for array is the same as for
 the
 return value of get_uploadPreDepends().<br>
 </span></span><br>
-<h3>6.15 getRequiredExtensions()<br>
+<h3>6.16 getRequiredExtensions()<br>
 </h3>
 "extensions" =&gt; array()<br>
 <span style="font-weight: bold;"><br>
