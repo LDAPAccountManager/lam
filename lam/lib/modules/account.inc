@@ -61,6 +61,8 @@ class account extends baseModule {
 		$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
 		// managed object classes
 		$return['objectClasses'] = array('account');
+		// LDAP aliases
+		$return['LDAPaliases'] = array('userid' => 'uid');
 		// available PDF fields
 		$return['PDF_fields'] = array(
 			'description'
