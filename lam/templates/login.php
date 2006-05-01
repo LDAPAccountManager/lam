@@ -187,6 +187,11 @@ function display_LoginPage($config_object) {
 				echo "<br>";
 			}
 		}
+		// check if session expired
+		if (isset($_GET['expired'])) {
+			StatusMessage("ERROR", _("Your session expired, please log in again."));
+			echo "<br>";
+		}
 		?>
 		<table width="650" align="center" border="2" rules="none" bgcolor="white">
 			<tr>

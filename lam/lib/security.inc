@@ -121,6 +121,7 @@ function logoffAndBackToLoginPage() {
 			break;
 		}
 	}
+	$page .= "?expired=yes";
 	echo $_SESSION['header'];
 	echo "<title></title>\n";
 	echo "</head>\n";
