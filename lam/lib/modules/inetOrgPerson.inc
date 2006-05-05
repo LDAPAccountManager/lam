@@ -339,7 +339,7 @@ class inetOrgPerson extends baseModule {
 				),
 				'workstations' => array (
 					"Headline" => _("Unix workstations"),
-					"Text" => _("Please enter a comma separated list of host names where this user is allowed to log in. Can be left empty.")
+					"Text" => _("Please enter a comma separated list of host names where this user is allowed to log in. If you enable host restrictions for your servers then \"*\" means every host and an empty field means no host.")
 				),
 				'userPassword' => array(
 					"Headline" => _("Password"),
@@ -487,12 +487,15 @@ class inetOrgPerson extends baseModule {
 		// handle host-attribute in on epice because it's not set by default
 		if (isset($this->attributes['host'])) {
 			$host = $post['host'];
-			if (!get_preg($host,'unixhost'))
+			if (!get_preg($host,'unixhost')) {
 				$triggered_messages['host'][] = $this->messages['host'][0];
+			}
 			$hosts = explode(",", $host);
 			$this->attributes['host'] = array();
-			foreach ($hosts as $host)
-				if ($host!="") $this->attributes['host'][] = $host;
+			for ($i = 0; $i < sizeof($hosts); $i++)
+				if ($hosts[$i] != "") {
+					$this->attributes['host'][] = $hosts[$i];
+				}
 			}
 		// Do some regex-checks and return error if attributes are set to wrong values
 		if (($this->attributes['givenName'][0] != '') && !get_preg($this->attributes['givenName'][0], 'realname')) $triggered_messages['givenName'][] = $this->messages['givenName'][0];

@@ -502,7 +502,7 @@ function get_preg($argument, $regexp) {
 					$pregexpr = '/^([A-Za-z0-9\\.\\_-])+$/';
 					break;
 		case "unixhost":		// Unix hosts
-					$pregexpr = '/^([a-z0-9,\\.\\_-])*$/';
+					$pregexpr = '/^([a-z0-9,\\.\\*_-])*$/';
 					break;
 		case 'digit2':			// Same as digit but also -1
 					$pregexpr = '/^(([-][1])|([[:digit:]]*))$/';
