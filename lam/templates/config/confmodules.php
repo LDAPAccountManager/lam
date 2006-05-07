@@ -54,7 +54,7 @@ $conf = &$_SESSION['conf_config'];
 
 
 // user pressed submit/abort button
-if ($_POST['submit']) {
+if (isset($_POST['submit'])) {
 	// save new module settings
 	$_SESSION['conf_accountTypesOld'] = $_SESSION['conf_accountTypes'];
 	$conf->set_typeSettings($_SESSION['conf_typeSettings']);
@@ -62,7 +62,7 @@ if ($_POST['submit']) {
 	metarefresh('confmain.php?modulesback=true');
 	exit;
 }
-elseif ($_POST['abort']) {
+elseif (isset($_POST['abort'])) {
 	// no changes
 	$_SESSION['conf_accountTypes'] = $_SESSION['conf_accountTypesOld'];
 	metarefresh('confmain.php?modulesback=true');
@@ -151,7 +151,7 @@ function config_showAccountModules($scope, $title) {
 	$no_missing_basemodule = true;
 	
 	// remove modules from selection
-	if ($_POST[$scope . '_selected'] && ($_POST[$scope . '_remove'])) {
+	if (isset($_POST[$scope . '_selected']) && isset($_POST[$scope . '_remove'])) {
 		$new_selected = array();
 		for ($i = 0; $i < sizeof($selected); $i++) {
 			if (! in_array($selected[$i], $_POST[$scope . '_selected'])) $new_selected[] = $selected[$i];
@@ -161,7 +161,7 @@ function config_showAccountModules($scope, $title) {
 	}
 	
 	// add modules to selection
-	elseif ($_POST[$scope . '_available'] && ($_POST[$scope . '_add'])) {
+	elseif (isset($_POST[$scope . '_available']) && isset($_POST[$scope . '_add'])) {
 		$new_selected = $selected;
 		for ($i = 0; $i < sizeof($_POST[$scope . '_available']); $i++) {
 			if (! in_array($_POST[$scope . '_available'][$i], $selected)) $new_selected[] = $_POST[$scope . '_available'][$i];
