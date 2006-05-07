@@ -26,11 +26,8 @@ $Id$
 /**
  * LDAP Account Manager help page.
  * 
- * @author Michael Dürgner
- * @version 0.5
+ * @author Michael Duergner
  * @package Help
- * @copyright Copyright (C) 2003-2004 Michael Dürgner
- * @license GPL
  */
 
 /**
@@ -92,7 +89,7 @@ function echoHTMLFoot()
  */
 function displayHelp($helpEntry,$helpVariables) {
 	/* Load external help page */
-	if($helpEntry["ext"] == "TRUE")
+	if (isset($helpEntry["ext"]) && ($helpEntry["ext"] == "TRUE"))
 	{
 		echoHTMLHead();
 		include_once("../help/" . $helpEntry["Link"]);
@@ -106,7 +103,7 @@ function displayHelp($helpEntry,$helpVariables) {
 		$format = "		<p class=\"help\">" . $helpEntry['Text'] . "</p>\n";
 		array_unshift($helpVariables,$format);
 		call_user_func_array("printf",$helpVariables);
-		if(is_array($helpArray['SeeAlso'])) {
+		if(isset($helpArray['SeeAlso']) && is_array($helpArray['SeeAlso'])) {
 			while($current = current($helpEntry["SeeAlso"]))
 			{
 				echo '		<p class="help">' . (( isset($current['link'])) ? '<a class="helpSeeAlso" href="' . $current['link'] . '">' : '') . _('See also') . ': ' . $current['text'] . (( isset($current['link'])) ? '</a>' : '') . '</p>\n';
