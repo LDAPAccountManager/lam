@@ -1103,7 +1103,7 @@ class accountContainer {
 
 	/**
 	* Add attributes to variable. Syntax is array( attribute = array ( objectClass1 => MUST|MAX, objectClass2 => MUST|MAY ), ... )
-	* @todo document this function
+	* @todo remove this function when get_module_attributes() is changed
 	*/
 	function add_attributes($objectClass) {
 		// loop through every existing objectlass and select current objectClass
@@ -1191,6 +1191,7 @@ class accountContainer {
 	* @param boolean $original If original is true references will be set to original attributes. This are the original attributes
 	* when an LDAP entry is loaded.
 	* @return array list of attributes
+	* @todo Remove this function 
 	*/
 	function get_module_attributes($objectClass, $original=false) {
 		// Add account type to object
@@ -1329,48 +1330,48 @@ class accountContainer {
 		$notchanged = array();
 		// Get list of all "easy" attributes
 		$attr_names = array_keys($attributes);
-		// Get attributes which should be added
+		// find changed attributes
 		for ($i=0; $i<count($attr_names); $i++) {
+			// find deleted attributes
 			for ($j=0; $j<count($orig[$attr_names[$i]]); $j++) {
 				if (is_array($attributes[$attr_names[$i]])) {
-					if (!in_array($orig[$attr_names[$i]][$j], $attributes[$attr_names[$i]]))
+					if (!in_array($orig[$attr_names[$i]][$j], $attributes[$attr_names[$i]])) {
 						if (($orig[$attr_names[$i]][$j]!='') && ($attr_names[$i]!='objectClass')) $torem[$attr_names[$i]][] = $orig[$attr_names[$i]][$j];
 					}
-				else if (($orig[$attr_names[$i]][$j]!='') && ($attr_names[$i]!='objectClass')) $torem[$attr_names[$i]][] = $orig[$attr_names[$i]][$j];
 				}
+				else if (($orig[$attr_names[$i]][$j]!='') && ($attr_names[$i]!='objectClass')) $torem[$attr_names[$i]][] = $orig[$attr_names[$i]][$j];
+			}
+			// find new attributes
 			for ($j=0; $j<count($attributes[$attr_names[$i]]); $j++) {
 				if (is_array($orig[$attr_names[$i]])) {
 					if (!in_array($attributes[$attr_names[$i]][$j], $orig[$attr_names[$i]]))
 						if ($attributes[$attr_names[$i]][$j]!='') $toadd[$attr_names[$i]][] = $attributes[$attr_names[$i]][$j];
-					}
-				else if ($attributes[$attr_names[$i]][$j]!='') $toadd[$attr_names[$i]][] = $attributes[$attr_names[$i]][$j];
 				}
+				else if ($attributes[$attr_names[$i]][$j]!='') $toadd[$attr_names[$i]][] = $attributes[$attr_names[$i]][$j];
+			}
+			// find unchanged attributes
 			for ($j=0; $j<count($attributes[$attr_names[$i]]); $j++) {
 				if (is_array($orig[$attr_names[$i]]) && is_array($attributes[$attr_names[$i]])) {
 					if (($attributes[$attr_names[$i]][$j]==$orig[$attr_names[$i]][$j]) && $attributes[$attr_names[$i]][$j]!='')
 						$notchanged[$attr_names[$i]][] = $attributes[$attr_names[$i]][$j];
-					}
 				}
 			}
+		}
 		// create modify with add and remove
-		if (is_array($toadd)) {
-			$attributes2 = array_keys($toadd);
-			for ($i=0; $i<count($attributes2); $i++) {
-				if (isset($torem[$attributes2[$i]]))
-					/* found modify entry
-					* Some ldap attributes must be set exactly one time.
-					* Adding or removing such an attribute wont't work
-					* because it would conflict with an ldap schema.
-					* Therefore when an attribute has only one entry
-					* and is set in $toadd and $torem this will be merged
-					* to $tomodify
-					*/
-					if ((count($toadd[$attributes2[$i]]==0)) && (count($torem[$attributes2[$i]]==0))) {
-						// found attribute which should only modified
-						$tomodify[$attributes2[$i]] = $toadd[$attributes2[$i]];
-						unset($toadd[$attributes2[$i]]);
-						unset($torem[$attributes2[$i]]);
+		$attributes2 = array_keys($toadd);
+		for ($i=0; $i<count($attributes2); $i++) {
+			if (isset($torem[$attributes2[$i]]))
+				if ((count($toadd[$attributes2[$i]]) > 0) && (count($torem[$attributes2[$i]]) > 0)) {
+					// found attribute which should be modified
+					$tomodify[$attributes2[$i]] = $toadd[$attributes2[$i]];
+					// merge unchanged values
+					if (isset($notchanged[$attributes2[$i]])) {
+						$tomodify[$attributes2[$i]] = array_merge($tomodify[$attributes2[$i]], $notchanged[$attributes2[$i]]);
+						unset($notchanged[$attributes2[$i]]);
 					}
+					// remove old add and remove commands
+					unset($toadd[$attributes2[$i]]);
+					unset($torem[$attributes2[$i]]);
 				}
 			}
 		if (count($toadd)!=0) $return[$this->dn]['add'] = $toadd;
@@ -1544,12 +1545,7 @@ class accountContainer {
 					}
 				}
 			}
-		/* We have to some string checks now. Not every ldap attributes allow utf8
-		 * strings. Therefore we do a syntax check here and change utf8 strings to ascci
-		 * strings. Only "7bit" ascci is allowed
-		*/
-		// TODO how do we interact with the user and show him what has been changed
-		// Complete dn with uid or cn=
+		// Complete dn with RDN attribute
 		$search = $this->rdn;
 		$added = false;
 		foreach ($attributes as $DN) {
@@ -1580,77 +1576,68 @@ class accountContainer {
 			}
 		// Set to true if an real error has happened
 		$stopprocessing = false;
-		// Add new DN
-		if (isset($attributes[$DNs[$i]]['errors'])) {
-			foreach ($attributes[$DNs[$i]]['errors'] as $singleerror) {
-				$errors[] = $singleerror;
-				if ($singleerror[0] == 'ERROR') $stopprocessing = true;
+		if (strtolower($this->dn) != strtolower($this->dn_orig)) {
+			// move existing DN
+			if ($this->dn_orig!='') {
+				// merge attributes together
+				$attr = array();
+				if (is_array($attributes[$this->dn]['add'])) $attr = array_merge_recursive($attr, $attributes[$this->dn]['add']);
+				if (is_array($attributes[$this->dn]['notchanged'])) $attr = array_merge_recursive($attr, $attributes[$this->dn]['notchanged']);
+				if (is_array($attributes[$this->dn]['modify'])) $attr = array_merge_recursive($attr, $attributes[$this->dn]['modify']);
+				// add attributes which are not controlled by modules from original account
+				$attrNames = array_keys($this->attributes_orig);
+				for ($i = 0; $i < sizeof($attrNames); $i++) {
+					if (!isset($attr[$attrNames[$i]])) $attr[$attrNames[$i]] = $this->attributes_orig[$attrNames[$i]];
+				}
+				// add missing object classes
+				for ($i = 0; $i < sizeof($this->attributes_orig['objectClass']); $i++) {
+					if (!in_array($this->attributes_orig['objectClass'][$i], $attr['objectClass'])) {
+						$attr['objectClass'][] = $this->attributes_orig['objectClass'][$i];
+					}
+				}
+				$success = ldap_add($_SESSION['ldap']->server(), $this->dn, $attr);
+				if ($success) {
+					$success = ldap_delete($_SESSION['ldap']->server(), $this->dn_orig);
+					if (!$success) {
+						$errors[] = array('ERROR', sprintf(_('Was unable to delete DN: %s.'), $this->dn_orig), ldap_error($_SESSION['ldap']->server()));
+						$stopprocessing = true;
+					}
+				}
+				if (!$success) {
+					$errors[] = array('ERROR', sprintf(_('Was unable to create DN: %s.'), $this->dn), ldap_error($_SESSION['ldap']->server()));
+					$stopprocessing = true;
 				}
 			}
-		if (!$stopprocessing) {
-			if (strtolower($this->dn) != strtolower($this->dn_orig)) {
-				// move existing DN
-				if ($this->dn_orig!='') {
-					// merge attributes together
-					$attr = array();
-					if (is_array($attributes[$this->dn]['add'])) $attr = array_merge_recursive($attr, $attributes[$this->dn]['add']);
-					if (is_array($attributes[$this->dn]['notchanged'])) $attr = array_merge_recursive($attr, $attributes[$this->dn]['notchanged']);
-					if (is_array($attributes[$this->dn]['modify'])) $attr = array_merge_recursive($attr, $attributes[$this->dn]['modify']);
-					// add attributes which are not controlled by modules from original account
-					$attrNames = array_keys($this->attributes_orig);
-					for ($i = 0; $i < sizeof($attrNames); $i++) {
-						if (!isset($attr[$attrNames[$i]])) $attr[$attrNames[$i]] = $this->attributes_orig[$attrNames[$i]];
-					}
-					// add missing object classes
-					for ($i = 0; $i < sizeof($this->attributes_orig['objectClass']); $i++) {
-						if (!in_array($this->attributes_orig['objectClass'][$i], $attr['objectClass'])) {
-							$attr['objectClass'][] = $this->attributes_orig['objectClass'][$i];
-						}
-					}
-					$success = ldap_add($_SESSION['ldap']->server(), $this->dn, $attr);
-					if ($success) {
-						$success = ldap_delete($_SESSION['ldap']->server(), $this->dn_orig);
-						if (!$success) {
-							$errors[] = array('ERROR', sprintf(_('Was unable to delete DN: %s.'), $this->dn_orig), ldap_error($_SESSION['ldap']->server()));
-							$stopprocessing = true;
-						}
-					}
-					if (!$success) {
-						$errors[] = array('ERROR', sprintf(_('Was unable to create DN: %s.'), $this->dn), ldap_error($_SESSION['ldap']->server()));
-						$stopprocessing = true;
-					}
+			// create complete new dn
+			else {
+				$attr = array();
+				if (is_array($attributes[$this->dn]['add'])) $attr = array_merge_recursive($attr, $attributes[$this->dn]['add']);
+				if (is_array($attributes[$this->dn]['notchanged'])) $attr = array_merge_recursive($attr, $attributes[$this->dn]['notchanged']);
+				if (is_array($attributes[$this->dn]['modify'])) $attr = array_merge_recursive($attr, $attributes[$this->dn]['modify']);
+				$success = ldap_add($_SESSION['ldap']->server(), $this->dn, $attr);
+				if (!$success) {
+					$errors[] = array('ERROR', sprintf(_('Was unable to create DN: %s.'), $this->dn), ldap_error($_SESSION['ldap']->server()));
+					$stopprocessing = true;
 				}
-				// create complete new dn
-				else {
-					$attr = array();
-					if (is_array($attributes[$this->dn]['add'])) $attr = array_merge_recursive($attr, $attributes[$this->dn]['add']);
-					if (is_array($attributes[$this->dn]['notchanged'])) $attr = array_merge_recursive($attr, $attributes[$this->dn]['notchanged']);
-					if (is_array($attributes[$this->dn]['modify'])) $attr = array_merge_recursive($attr, $attributes[$this->dn]['modify']);
-					$success = ldap_add($_SESSION['ldap']->server(), $this->dn, $attr);
-					if (!$success) {
-						$errors[] = array('ERROR', sprintf(_('Was unable to create DN: %s.'), $this->dn), ldap_error($_SESSION['ldap']->server()));
-						$stopprocessing = true;
-					}
-					// lamdaemon commands for the new account
-					if (!$stopprocessing) {
-						$DN = $attributes[$this->dn];
-						if (is_array($DN['lamdaemon']['command'])) $result = lamdaemon($DN['lamdaemon']['command']);
-						// Error somewhere in lamdaemon
-						if (is_array($result)) {
-							foreach ($result as $singleresult) {
-								if (is_array($singleresult)) {
-									if ($singleresult[0] == 'ERROR') $stopprocessing = true;
-									$temparray[0] = $singleresult[0];
-									$temparray[1] = _($singleresult[1]);
-									$temparray[2] = _($singleresult[2]);
-									$errors[] = $temparray;
-								}
+				// lamdaemon commands for the new account
+				if (!$stopprocessing) {
+					$DN = $attributes[$this->dn];
+					if (is_array($DN['lamdaemon']['command'])) $result = lamdaemon($DN['lamdaemon']['command']);
+					// Error somewhere in lamdaemon
+					if (is_array($result)) {
+						foreach ($result as $singleresult) {
+							if (is_array($singleresult)) {
+								if ($singleresult[0] == 'ERROR') $stopprocessing = true;
+								$temparray[0] = $singleresult[0];
+								$temparray[1] = _($singleresult[1]);
+								$temparray[2] = _($singleresult[2]);
+								$errors[] = $temparray;
 							}
 						}
 					}
 				}
-				unset($attributes[$this->dn]);
 			}
+			unset($attributes[$this->dn]);
 		}
 		$DNs = array_keys($attributes);
 		for ($i=0; $i<count($DNs); $i++) {
