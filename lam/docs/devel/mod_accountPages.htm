@@ -190,8 +190,7 @@ checks<br>
 &nbsp;&nbsp;&nbsp; */<br>
 &nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">function</span> <span
  style="color: rgb(255, 0, 0);">process_attributes</span>($post) {<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $this-&gt;triggered_messages =
-array();<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $errors = array();<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
 $this-&gt;attributes['macAddress'] = array();<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // check old MACs<br>
@@ -216,8 +215,8 @@ $this-&gt;messages['mac'][0];<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $message[] =
 $post['macAddress' . $i];<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
-$this-&gt;triggered_messages[] = array($message);<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $errors[] =
+array($message);<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
@@ -245,25 +244,13 @@ $this-&gt;messages['mac'][0];<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $message[] = $post['macAddress'];<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $this-&gt;triggered_messages[] =
-array($message);<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $errors[] = array($message);<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
 $this-&gt;attributes['macAddress'] =
 array_unique($this-&gt;attributes['macAddress']);<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if
-(sizeof($this-&gt;triggered_messages) &gt; 0) {<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
-$this-&gt;inputCorrect = false;<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return
-$this-&gt;triggered_messages;<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; else {<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
-$this-&gt;inputCorrect = true;<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return 0;<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return $errors;<br>
 &nbsp;&nbsp;&nbsp; }<br>
       </td>
     </tr>
