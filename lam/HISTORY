@@ -1,9 +1,11 @@
 ??? 1.0.2
    - security enhancements: session timeout, logging, host restrictions
+   - handle LDAP attribute aliases correctly
    - fixed bugs:
     -> PDF creation bug when GID translation is activated (1477111)
     -> allow "@" in passwords (1477878)
     -> Samba 2/3: fixed NT hashes
+    -> fixed handling of multi-value attributes (e.g. in inetLocalMailRecipient)
 
 
 12.04.2006 1.0.1
