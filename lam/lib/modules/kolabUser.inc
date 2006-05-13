@@ -75,6 +75,9 @@ class kolabUser extends baseModule {
 		$return["ldap_filter"] = array('or' => "(objectClass=kolabInetOrgPerson)");
 		// managed object classes
 		$return['objectClasses'] = array('kolabInetOrgPerson');
+		// managed attributes
+		$return['attributes'] = array('c', 'alias', 'kolabHomeServer', 'kolabHomeMTA', 'kolabDelegate',
+			'cyrus-userquota', 'kolabInvitationPolicy', 'kolabFreeBusyFuture', 'kolabDeleteflag');
 		// profile options
 		$return['profile_options'] = array(
 			array(
@@ -237,31 +240,6 @@ class kolabUser extends baseModule {
 		$this->messages['quota'][1] = array('ERROR', _('Account %s:') . ' kolabUser_quota', _('Mail quota must be a number!'));
 	}
 	
-	/**
-	* This function loads all needed attributes into the object.
-	*
-	* @param array $attr an array as it is retured from ldap_get_attributes
-	*/
-	function load_attributes($attr) {
-		$this->attributes['objectClass'] = array();
-		$this->orig['objectClass'] = array();
-		$this->orig['kolabInvitationPolicy'] = array();
-		// load Kolab attributes
-		$attributes = array('objectClass', 'c', 'kolabHomeServer', 'kolabInvitationPolicy',
-			'alias', 'kolabDelegate', 'kolabFreeBusyFuture', 'cyrus-userquota', 'kolabDeleteflag');
-		for ($i = 0; $i < sizeof($attributes); $i++) {
-			if (isset($attr[$attributes[$i]])) {
-				$this->attributes[$attributes[$i]] = $attr[$attributes[$i]];
-				$this->orig[$attributes[$i]] = $attr[$attributes[$i]];
-			}
-		}
-		// add object class if needed
-		if (! in_array('kolabInetOrgPerson', $this->orig['objectClass'])) {
-			$this->attributes['objectClass'][] = 'kolabInetOrgPerson';
-		}
-		return 0;
-	}
-
 	/**
 	* Returns a list of modifications which have to be made to the LDAP account.
 	*

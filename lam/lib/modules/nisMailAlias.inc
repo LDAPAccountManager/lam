@@ -55,6 +55,8 @@ class nisMailAlias extends baseModule {
 		$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
 		// managed object classes
 		$return['objectClasses'] = array('nisMailAlias');
+		// managed attributes
+		$return['attributes'] = array('cn', 'rfc822MailMember');
 		// help Entries
 		$return['help'] = array(
 			'alias' => array(
@@ -102,37 +104,6 @@ class nisMailAlias extends baseModule {
 		$this->messages['recipient'][1] = array('ERROR', _('Account %s:') . ' nisMailAlias_recipient', 'Recipient is invalid!');
 	}
 	
-	/**
-	* This function loads all needed attributes into the object.
-	*
-	* @param array $attr an array as it is retured from ldap_get_attributes
-	*/
-	function load_attributes($attr) {
-		$this->attributes['objectClass'] = array();
-		$this->attributes['rfc822MailMember'] = array();
-		$this->attributes['cn'] = array();
-		$this->orig['objectClass'] = array();
-		$this->orig['rfc822MailMember'] = array();
-		$this->orig['cn'] = array();
-		if (isset($attr['objectClass'])) {
-			$this->attributes['objectClass'] = $attr['objectClass'];
-			$this->orig['objectClass'] = $attr['objectClass'];
-		}
-		if (isset($attr['cn'])) {
-			$this->attributes['cn'] = $attr['cn'];
-			$this->orig['cn'] = $attr['cn'];
-		}
-		if (isset($attr['rfc822MailMember'])) {
-			$this->attributes['rfc822MailMember'] = $attr['rfc822MailMember'];
-			$this->orig['rfc822MailMember'] = $attr['rfc822MailMember'];
-		}
-		// add object class if needed
-		if (! in_array('nisMailAlias', $this->orig['objectClass'])) {
-			$this->attributes['objectClass'][] = 'nisMailAlias';
-		}
-		return 0;
-	}
-
 	/**
 	* Returns a list of modifications which have to be made to the LDAP account.
 	*

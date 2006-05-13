@@ -49,6 +49,8 @@ class inetLocalMailRecipient extends baseModule {
 		$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
 		// managed object classes
 		$return['objectClasses'] = array('inetLocalMailRecipient');
+		// managed attributes
+		$return['attributes'] = array('mailLocalAddress', 'mailHost', 'mailRoutingAddress');
 		// help Entries
 		$return['help'] = array(
 			'routingAdr' => array(
@@ -124,43 +126,6 @@ class inetLocalMailRecipient extends baseModule {
 	}
 	
 	/**
-	* This function loads all needed attributes into the object.
-	*
-	* @param array $attr an array as it is retured from ldap_get_attributes
-	*/
-	function load_attributes($attr) {
-		$this->attributes['objectClass'] = array();
-		$this->attributes['mailLocalAddress'] = array();
-		$this->attributes['mailRoutingAddress'] = array();
-		$this->attributes['mailHost'] = array();
-		$this->orig['objectClass'] = array();
-		$this->orig['mailLocalAddress'] = array();
-		$this->orig['mailRoutingAddress'] = array();
-		$this->orig['mailHost'] = array();
-		if (isset($attr['objectClass'])) {
-			$this->attributes['objectClass'] = $attr['objectClass'];
-			$this->orig['objectClass'] = $attr['objectClass'];
-		}
-		if (isset($attr['mailLocalAddress'])) {
-			$this->attributes['mailLocalAddress'] = $attr['mailLocalAddress'];
-			$this->orig['mailLocalAddress'] = $attr['mailLocalAddress'];
-		}
-		if (isset($attr['mailRoutingAddress'])) {
-			$this->attributes['mailRoutingAddress'] = $attr['mailRoutingAddress'];
-			$this->orig['mailRoutingAddress'] = $attr['mailRoutingAddress'];
-		}
-		if (isset($attr['mailHost'])) {
-			$this->attributes['mailHost'] = $attr['mailHost'];
-			$this->orig['mailHost'] = $attr['mailHost'];
-		}
-		// add object class if needed
-		if (! in_array('inetLocalMailRecipient', $this->orig['objectClass'])) {
-			$this->attributes['objectClass'][] = 'inetLocalMailRecipient';
-		}
-		return 0;
-	}
-
-	/**
 	* This function will create the meta HTML code to show a page with all attributes.
 	*
 	* @param array $post HTTP-POST values
@@ -168,20 +133,26 @@ class inetLocalMailRecipient extends baseModule {
 	function display_html_attributes(&$post) {
 		$return = array();
 		// mail routing address
+		$routingAddress = '';
+		if (isset($this->attributes['mailRoutingAddress'][0])) $routingAddress = $this->attributes['mailRoutingAddress'][0];
 		$return[] = array(
 			0 => array('kind' => 'text', 'text' => _('Routing address')),
-			1 => array('kind' => 'input', 'name' => 'routingAdr', 'type' => 'text', 'size' => '20', 'value' => $this->attributes['mailRoutingAddress'][0]),
+			1 => array('kind' => 'input', 'name' => 'routingAdr', 'type' => 'text', 'size' => '20', 'value' => $routingAddress),
 			2 => array('kind' => 'help', 'value' => 'routingAdr'));
 		// mail server
+		$mailServer = '';
+		if (isset($this->attributes['mailHost'][0])) $mailServer = $this->attributes['mailHost'][0];
 		$return[] = array(
 			0 => array('kind' => 'text', 'text' => _('Mail server')),
-			1 => array('kind' => 'input', 'name' => 'host', 'type' => 'text', 'size' => '20', 'value' => $this->attributes['mailHost'][0]),
+			1 => array('kind' => 'input', 'name' => 'host', 'type' => 'text', 'size' => '20', 'value' => $mailServer),
 			2 => array('kind' => 'help', 'value' => 'host'));
 		// list current local addresses
-		for ($i = 0; $i < sizeof($this->attributes['mailLocalAddress']); $i++) {
+		$localAdresses = array();
+		if (isset($this->attributes['mailLocalAddress'])) $localAdresses = $this->attributes['mailLocalAddress'];
+		for ($i = 0; $i < sizeof($localAdresses); $i++) {
 			$return[] = array(
 				0 => array('kind' => 'text', 'text' => _('Local address')),
-				1 => array('kind' => 'input', 'name' => 'localAdr' . $i, 'type' => 'text', 'size' => '20', 'value' => $this->attributes['mailLocalAddress'][$i]),
+				1 => array('kind' => 'input', 'name' => 'localAdr' . $i, 'type' => 'text', 'size' => '20', 'value' => $localAdresses[$i]),
 				2 => array('kind' => 'input', 'type' => 'submit', 'name' => 'delAdr' . $i, 'value' => _("Remove")),
 				3 => array('kind' => 'help', 'value' => 'localAdr'));
 		}
@@ -191,7 +162,7 @@ class inetLocalMailRecipient extends baseModule {
 			1 => array('kind' => 'input', 'name' => 'localAdr', 'type' => 'text', 'size' => '20', 'value' => ''),
 			2 => array('kind' => 'input', 'type' => 'submit', 'name' => 'addAdr', 'value' => _("Add")),
 			3 => array('kind' => 'help', 'value' => 'localAdr'),
-			4 => array('kind' => 'input', 'type' => 'hidden', 'value' => sizeof($this->attributes['mailLocalAddress']), 'name' => 'adr_number'));
+			4 => array('kind' => 'input', 'type' => 'hidden', 'value' => sizeof($localAdresses), 'name' => 'adr_number'));
 		return $return;
 	}
 

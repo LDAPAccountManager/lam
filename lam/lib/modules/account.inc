@@ -63,6 +63,8 @@ class account extends baseModule {
 		$return['objectClasses'] = array('account');
 		// LDAP aliases
 		$return['LDAPaliases'] = array('userid' => 'uid');
+		// managed attributes
+		$return['attributes'] = array('uid', 'description');
 		// available PDF fields
 		$return['PDF_fields'] = array(
 			'description'
@@ -144,21 +146,6 @@ class account extends baseModule {
 		return "enabled";
 	}
 
-	/**
-	* This function loads all attributes into the object.
-	*
-	* @param array $attr an array as it is retured from ldap_get_attributes()
-	*/
-	function load_attributes($attr) {
-		parent::load_attributes($attr);
-		// uid is not loaded automatically because it is called userid in schema
-		if (isset($attr['uid'])) {
-			$this->orig['uid'] = $attr['uid'];
-			$this->attributes['uid'] = $attr['uid'];
-		}
-		return 0;
-	}
-	
 	/* This function returns an array with 4 entries:
 	* array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr), 'lamdaemon' => array(cmds)), DN2 .... )
 	* DN is the DN to change. It may be possible to change several DNs,

@@ -50,6 +50,8 @@ class ldapPublicKey extends baseModule {
 		$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
 		// managed object classes
 		$return['objectClasses'] = array('ldapPublicKey');
+		// managed attributes
+		$return['attributes'] = array('sshPublicKey');
 		// help Entries
 		$return['help'] = array(
 			'key' => array(
@@ -75,31 +77,6 @@ class ldapPublicKey extends baseModule {
 			'sshPublicKey'
 		);
 		return $return;
-	}
-
-	/**
-	* This function loads all needed attributes into the object.
-	*
-	* @param array $attr an array as it is retured from ldap_get_attributes
-	*/
-	function load_attributes($attr) {
-		$this->attributes['objectClass'] = array();
-		$this->attributes['sshPublicKey'] = array();
-		$this->orig['objectClass'] = array();
-		$this->orig['sshPublicKey'] = array();
-		if (isset($attr['objectClass'])) {
-			$this->attributes['objectClass'] = $attr['objectClass'];
-			$this->orig['objectClass'] = $attr['objectClass'];
-		}
-		if (isset($attr['sshPublicKey'])) {
-			$this->attributes['sshPublicKey'] = $attr['sshPublicKey'];
-			$this->orig['sshPublicKey'] = $attr['sshPublicKey'];
-		}
-		// add object class if needed
-		if (! in_array('ldapPublicKey', $this->orig['objectClass'])) {
-			$this->attributes['objectClass'][] = 'ldapPublicKey';
-		}
-		return 0;
 	}
 
 	/**

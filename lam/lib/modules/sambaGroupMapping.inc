@@ -174,29 +174,32 @@ class sambaGroupMapping extends baseModule {
 			return;
 		}
 		// Get Domain-SID from group SID
-		if ($this->attributes['sambaSID'][0]!='')
+		if (isset($this->attributes['sambaSID'][0])) {
 			$domainSID = substr($this->attributes['sambaSID'][0], 0, strrpos($this->attributes['sambaSID'][0], "-"));
+		}
 		for ($i=0; $i<count($sambaDomains); $i++ ) {
 			// List with all valid domains
 			$sambaDomainNames[] = $sambaDomains[$i]->name;
-			if ($domainSID==$sambaDomains[$i]->SID) {
+			if (isset($domainSID) && ($domainSID==$sambaDomains[$i]->SID)) {
 				$SID = $sambaDomains[$i]->SID;
 				$sel_domain = $sambaDomains[$i]->name;
-				}
 			}
+		}
+		$displayName = '';
+		if (isset($this->attributes['displayName'][0])) $displayName = $this->attributes['displayName'][0];
 		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Display name') ),
-			1 => array ( 'kind' => 'input', 'name' => 'displayName', 'type' => 'text', 'size' => '30', 'maxlength' => '50', 'value' => $this->attributes['displayName'][0]),
+			1 => array ( 'kind' => 'input', 'name' => 'displayName', 'type' => 'text', 'size' => '30', 'maxlength' => '50', 'value' => $displayName),
 			2 => array ( 'kind' => 'help', 'value' => 'displayName' ));
 
 		$names = array_keys($this->rids);
 		$wrid=false;
 		for ($i=0; $i<count($names); $i++) {
-			if ($this->attributes['sambaSID'][0]==$SID."-".$this->rids[$names[$i]]) {
+			if (isset($this->attributes['sambaSID'][0]) && ($this->attributes['sambaSID'][0]==$SID."-".$this->rids[$names[$i]])) {
 				$selected[] = $names[$i];
 				$wrid=true;
-				}
-			else $options[] = $names[$i];
 			}
+			else $options[] = $names[$i];
+		}
 		if ($wrid) $options[] = $_SESSION[$this->base]->module['posixGroup']->attributes['cn'][0];
 			else $selected[] = $_SESSION[$this->base]->module['posixGroup']->attributes['cn'][0];
 		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Windows group') ),
@@ -206,14 +209,16 @@ class sambaGroupMapping extends baseModule {
 		$names = array_keys($this->sambaGroupTypes);
 		$selected = array( _('Domain Group') );
 		for ($i=0; $i<count($names); $i++) {
-			if ($this->attributes['sambaGroupType'][0]==$this->sambaGroupTypes[$names[$i]])
-				$selected = array( $names[$i] );
-				}
+			if (!isset($this->attributes['sambaGroupType'][0])) break;
+			if ($this->attributes['sambaGroupType'][0]==$this->sambaGroupTypes[$names[$i]]) $selected = array( $names[$i] );
+		}
 		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Group type') ),
 			1 => array ( 'kind' => 'select', 'name' => 'sambaGroupType', 'options' => $names , 'options_selected' => $selected ),
 			2 => array ( 'kind' => 'help', 'value' => 'sambaDomainName' ));
+		$selectedDomain = array();
+		if (isset($sel_domain)) $selectedDomain = array($sel_domain);
 		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Domain') ),
-			1 => array ( 'kind' => 'select', 'name' => 'sambaDomainName', 'options' => $sambaDomainNames, 'options_selected' => array ( $sel_domain ) ),
+			1 => array ( 'kind' => 'select', 'name' => 'sambaDomainName', 'options' => $sambaDomainNames, 'options_selected' => $selectedDomain),
 			2 => array ( 'kind' => 'help', 'value' => 'sambaDomainName' ));
 
 		return $return;
@@ -234,6 +239,8 @@ class sambaGroupMapping extends baseModule {
 		$return['dependencies'] = array('depends' => array('posixGroup'), 'conflicts' => array());
 		// managed object classes
 		$return['objectClasses'] = array('sambaGroupMapping');
+		// managed attributes
+		$return['attributes'] = array('gidNumber', 'sambaSID', 'sambaGroupType', 'displayName', 'sambaSIDList', 'description');
 		// available PDF fields
 		$return['PDF_fields'] = array(
 			'gidNumber',
@@ -396,6 +403,7 @@ class sambaGroupMapping extends baseModule {
 	* @return array list of info/error messages
 	*/
 	function process_attributes(&$post) {
+		$triggered_messages = array();
 		$sambaDomains = search_domains();
 		if (sizeof($sambaDomains) == 0) {
 			return array(array(array("ERROR", _('No Samba 3 domains found in LDAP! Please create one first.'))));
@@ -405,11 +413,13 @@ class sambaGroupMapping extends baseModule {
 		$this->attributes['sambaGroupType'][0] = $this->sambaGroupTypes[$post['sambaGroupType']];
 
 		// Get Domain SID from name
-		for ($i=0; $i<count($sambaDomains); $i++ )
+		for ($i=0; $i<count($sambaDomains); $i++ ) {
+			if (!isset($post['sambaDomainName'])) break;
 			if ($post['sambaDomainName'] == $sambaDomains[$i]->name) {
 				$SID = $sambaDomains[$i]->SID;
-				$RIDbase = $sambaDomain[$i]->RIDbase;
-				}
+				$RIDbase = $sambaDomains[$i]->RIDbase;
+			}
+		}
 		// Load attributes
 		$this->attributes['displayName'][0] = $post['displayName'];
 		$rids = array_keys($this->rids);
@@ -430,13 +440,8 @@ class sambaGroupMapping extends baseModule {
 			}
 		}
 		if (!$wrid) $this->attributes['sambaSID'][0] = $SID . "-" . ($_SESSION[$this->base]->module['posixGroup']->attributes['gidNumber'][0]*2+$RIDbase+1);
-
 		// Return error-messages
-		if (count($triggered_messages)!=0) {
-			$this->triggered_messages = $triggered_messages;
-			return $triggered_messages;
-		}
-		else $this->triggered_messages = array();
+		return $triggered_messages;
 	}
 
 
@@ -453,15 +458,19 @@ class sambaGroupMapping extends baseModule {
 		$sambaDomains = search_domains();
 		// Get Domain-SID from group SID
 		$domainSID = substr($this->attributes['sambaSID'][0], 0, strrpos($this->attributes['sambaSID'][0], "-"));
-		for ($i=0; $i<count($sambaDomains); $i++ )
-			if ($domainSID==$sambaDomains[$i]->SID)
+		for ($i=0; $i<count($sambaDomains); $i++ ) {
+			if ($domainSID==$sambaDomains[$i]->SID) {
 				$SID = $sambaDomains[$i]->SID;
+				$RIDbase = $sambaDomains[$i]->RIDbase;
+			}
+		}
 		$names = array_keys($this->rids);
 		$wrid=false;
-		for ($i=0; $i<count($names); $i++)
+		for ($i=0; $i<count($names); $i++) {
 			if ($this->attributes['sambaSID'][0]==$SID."-".$this->rids[$names[$i]]) {
 				$wrid=true;
-				}
+			}
+		}
 		if (!$wrid) $this->attributes['sambaSID'][0] == $SID."-".($_SESSION[$this->base]->module['posixGroup']->attributes['gidNumber'][0]*2+1+$RIDbase);
 		$return = $_SESSION[$this->base]->save_module_attributes($this->attributes, $this->orig);
 

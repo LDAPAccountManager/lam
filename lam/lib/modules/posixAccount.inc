@@ -127,6 +127,9 @@ class posixAccount extends baseModule {
 		$return['objectClasses'] = array('posixAccount');
 		// LDAP aliases
 		$return['LDAPaliases'] = array('commonName' => 'cn', 'userid' => 'uid');
+		// managed attributes
+		$return['attributes'] = array('cn', 'uid', 'uidNumber', 'gidNumber', 'homeDirectory',
+			'userPassword', 'loginShell', 'gecos', 'description');
 		// PHP extensions
 		$return['extensions'] = array('mhash');
 		// profile checks
@@ -451,9 +454,11 @@ class posixAccount extends baseModule {
 		return true;
 	}
 
-	/* This function loads all attributes into the object
-	* $attr is an array as it's retured from ldap_get_attributes
-	*/
+	/**
+	 * This function loads all needed LDAP attributes.
+	 * 
+	 * @param array $attr list of attributes
+	 */
 	function load_attributes($attr) {
 		parent::load_attributes($attr);
 		// get additional group memberships
@@ -467,7 +472,6 @@ class posixAccount extends baseModule {
 			}
 		}
 		$this->groups_orig = $this->groups;
-		return 0;
 	}
 
 	/* This function returns an array with 3 entries:

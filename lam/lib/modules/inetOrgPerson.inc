@@ -102,6 +102,10 @@ class inetOrgPerson extends baseModule {
 		$return['LDAPaliases'] = array('commonName' => 'cn', 'surname' => 'sn', 'streetAddress' => 'street',
 			'fax' => 'facsimileTelephoneNumber', 'gn' => 'givenName', 'userid' => 'uid', 'rfc822Mailbox' => 'mail',
 			'mobileTelephoneNumber' => 'mobile');
+		// managed attributes
+		$return['attributes'] = array('uid', 'cn', 'employeeType', 'givenName', 'jpegPhoto', 'mail', 'manager', 'mobile',
+			'host', 'title', 'telephoneNumber', 'facsimileTelephoneNumber', 'street', 'postOfficeBox', 'postalCode', 'postalAddress',
+			'sn', 'userPassword', 'description');
 		// profile elements
 		$return['profile_options'] = array(
 			array(
@@ -485,18 +489,19 @@ class inetOrgPerson extends baseModule {
 		}
 
 		// handle host-attribute in on epice because it's not set by default
-		if (isset($this->attributes['host'])) {
+		if ($_SESSION['ldap']->supports_unix_hosts) {
 			$host = $post['host'];
 			if (!get_preg($host,'unixhost')) {
 				$triggered_messages['host'][] = $this->messages['host'][0];
 			}
 			$hosts = explode(",", $host);
 			$this->attributes['host'] = array();
-			for ($i = 0; $i < sizeof($hosts); $i++)
+			for ($i = 0; $i < sizeof($hosts); $i++) {
 				if ($hosts[$i] != "") {
 					$this->attributes['host'][] = $hosts[$i];
 				}
 			}
+		}
 		// Do some regex-checks and return error if attributes are set to wrong values
 		if (($this->attributes['givenName'][0] != '') && !get_preg($this->attributes['givenName'][0], 'realname')) $triggered_messages['givenName'][] = $this->messages['givenName'][0];
 		if ( !get_preg($this->attributes['sn'][0], 'realname')) $triggered_messages['sn'][] = $this->messages['lastname'][0];
@@ -656,7 +661,7 @@ class inetOrgPerson extends baseModule {
 			1 => array ( 'kind' => 'input', 'name' => 'employeeType', 'type' => 'text', 'size' => '30',
 				'maxlength' => '255', 'value' => $employeeType),
 			2 => array ('kind' => 'help', 'value' => 'employeeType'));
-		if (isset($this->attributes['host'])) {
+		if ($_SESSION['ldap']->supports_unix_hosts) {
 			$hostvalue = "";
 			if (is_array($this->attributes['host'])) {
 				$hostvalue .= implode(",", $this->attributes['host']);

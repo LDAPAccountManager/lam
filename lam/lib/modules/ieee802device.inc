@@ -49,6 +49,8 @@ class ieee802Device extends baseModule {
 		$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
 		// managed object classes
 		$return['objectClasses'] = array('ieee802Device');
+		// managed attributes
+		$return['attributes'] = array('macAddress');
 		// help Entries
 		$return['help'] = array(
 			'mac' => array(
@@ -84,31 +86,6 @@ class ieee802Device extends baseModule {
 	}
 	
 	/**
-	* This function loads all needed attributes into the object.
-	*
-	* @param array $attr an array as it is retured from ldap_get_attributes
-	*/
-	function load_attributes($attr) {
-		$this->attributes['objectClass'] = array();
-		$this->attributes['macAddress'] = array();
-		$this->orig['objectClass'] = array();
-		$this->orig['macAddress'] = array();
-		if (isset($attr['objectClass'])) {
-			$this->attributes['objectClass'] = $attr['objectClass'];
-			$this->orig['objectClass'] = $attr['objectClass'];
-		}
-		if (isset($attr['macAddress'])) {
-			$this->attributes['macAddress'] = $attr['macAddress'];
-			$this->orig['macAddress'] = $attr['macAddress'];
-		}
-		// add object class if needed
-		if (! in_array('ieee802Device', $this->orig['objectClass'])) {
-			$this->attributes['objectClass'][] = 'ieee802Device';
-		}
-		return 0;
-	}
-
-	/**
 	* This function will create the meta HTML code to show a page with all attributes.
 	*
 	* @param array $post HTTP-POST values
@@ -141,7 +118,7 @@ class ieee802Device extends baseModule {
 	* @return array list of info/error messages
 	*/
 	function process_attributes(&$post) {
-		$this->triggered_messages = array();
+		$errors = array();
 		$this->attributes['macAddress'] = array();
 		// check old MACs
 		if (isset($post['mac_number'])) {
@@ -152,7 +129,7 @@ class ieee802Device extends baseModule {
 					if (!get_preg($post['macAddress' . $i], 'macAddress')) {
 						$message = $this->messages['mac'][0];
 						$message[] = $post['macAddress' . $i];
-						$this->triggered_messages[] = array($message);
+						$errors[] = array($message);
 					}
 					$this->attributes['macAddress'][] = $post['macAddress' . $i];
 				}
@@ -167,16 +144,11 @@ class ieee802Device extends baseModule {
 			else {
 					$message = $this->messages['mac'][0];
 					$message[] = $post['macAddress'];
-					$this->triggered_messages[] = array($message);
+					$errors[] = array($message);
 			}
 		}
 		$this->attributes['macAddress'] = array_unique($this->attributes['macAddress']);
-		if (sizeof($this->triggered_messages) > 0) {
-			return $this->triggered_messages;
-		}
-		else {
-			return array();
-		}
+		return $errors;
 	}
 
 	/**

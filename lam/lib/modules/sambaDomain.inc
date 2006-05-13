@@ -55,6 +55,9 @@ class sambaDomain extends baseModule {
 		$return['dependencies'] = array('depends' => array(), 'conflicts' => array());
 		// managed object classes
 		$return['objectClasses'] = array('sambaDomain');
+		// managed attributes
+		$return['attributes'] = array('sambaDomainName', 'sambaSID', 'sambaNextRid', 'sambaNextGroupRid',
+			'sambaNextUserRid', 'sambaAlgorithmicRidBase');
 		// help Entries
 		$return['help'] = array(
 			'domainName' => array(
@@ -149,35 +152,6 @@ class sambaDomain extends baseModule {
 		$this->messages['RIDbase'][1] = array('ERROR', _('Account %s:') . ' sambaDomain_RIDbase', _('Algorithmic RID base is not a number!'));
 	}
 	
-	/**
-	* This function loads all needed attributes into the object.
-	*
-	* @param array $attr an array as it is retured from ldap_get_attributes
-	*/
-	function load_attributes($attr) {
-		$attributes = array('sambaAlgorithmicRidBase', 'sambaDomainName', 'sambaNextGroupRid',
-			'sambaNextRid', 'sambaNextUserRid', 'sambaSID');
-		$this->attributes['objectClass'] = array();
-		$this->attributes['macAddress'] = array();
-		$this->orig['objectClass'] = array();
-		$this->orig['macAddress'] = array();
-		if (isset($attr['objectClass'])) {
-			$this->attributes['objectClass'] = $attr['objectClass'];
-			$this->orig['objectClass'] = $attr['objectClass'];
-		}
-		for ($i = 0; $i < sizeof($attributes); $i++) {
-			if (isset($attr[$attributes[$i]])) {
-				$this->attributes[$attributes[$i]] = $attr[$attributes[$i]];
-				$this->orig[$attributes[$i]] = $attr[$attributes[$i]];
-			}
-		}
-		// add object class if needed
-		if (! in_array('sambaDomain', $this->orig['objectClass'])) {
-			$this->attributes['objectClass'][] = 'sambaDomain';
-		}
-		return 0;
-	}
-
 	/**
 	* This function will create the meta HTML code to show a page with all attributes.
 	*

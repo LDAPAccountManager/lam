@@ -855,19 +855,19 @@ class accountContainer {
 					}
 				}
 				if ($this->subpage=='finish') {
-					if ($post['createagain']) {
+					if (isset($post['createagain'])) {
 						// open fresh account page
 						unset($_SESSION[$this->base]);
 						metaRefresh("edit.php?type=" . $this->type);
 						exit();
 					}
-					if ($post['backmain']) {
+					if (isset($post['backmain'])) {
 						// Return to account list
 						unset($_SESSION[$this->base]);
 						metaRefresh("../lists/list.php?type=" . $this->type);
 						exit;
 					}
-					if ($post['outputpdf']) {
+					if (isset($post['outputpdf'])) {
 						// Create / display PDf-file
 						createModulePDF(array($_SESSION[$this->base]), $post['pdfStructure']);
 						exit;
@@ -1099,222 +1099,7 @@ class accountContainer {
 		echo "</body>\n";
 		echo "</html>\n";
 		return 0;
-		}
-
-	/**
-	* Add attributes to variable. Syntax is array( attribute = array ( objectClass1 => MUST|MAX, objectClass2 => MUST|MAY ), ... )
-	* @todo remove this function when get_module_attributes() is changed
-	*/
-	function add_attributes($objectClass) {
-		// loop through every existing objectlass and select current objectClass
-		$line=-1;
-		for ($i=0; $i<count($_SESSION['ldap']->objectClasses) || $i==-1; $i++) {
-			if (strpos(strtolower($_SESSION['ldap']->objectClasses[$i]), strtolower("NAME '$objectClass'"))) $line = $i;
-			}
-		// Return error if objectClass isn't found
-		if ($line==-1) trigger_error (sprintf(_("ObjectClass %s required but not defined in LDAP."), $objectClass), E_USER_WARNING);
-		// create array with must-attributes
-		// Get startposition in string
-		if (strpos($_SESSION['ldap']->objectClasses[$line],  'MUST (')) {
-			$string_withtail = substr($_SESSION['ldap']->objectClasses[$line], strpos($_SESSION['ldap']->objectClasses[$line],  'MUST (')+6);
-			// Now we have a string with all must-attributes
-			$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
-			$string = trim($string);
-			$must = explode(" $ ", $string);
-			// Ad must
-			foreach ($must as $attribute) {
-				if (!isset($this->attributes[$attribute])) $this->attributes[$attribute][$objectClass] = 'MUST';
-					else $this->attributes[$attribute][$objectClass] = 'MUST';
-				}
-			}
-		// create array with may-attributes
-		// Get startposition in string
-		if (strpos($_SESSION['ldap']->objectClasses[$line],  'MAY (')) {
-			$string_withtail = substr($_SESSION['ldap']->objectClasses[$line], strpos($_SESSION['ldap']->objectClasses[$line],  'MAY (')+5);
-			// Now we have a string with all must-attributes
-			$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
-			$string = trim($string);
-			$may = explode(" $ ", $string);
-			// Ad may
-			foreach ($may as $attribute) {
-				if (!isset($this->attributes[$attribute])) $this->attributes[$attribute][$objectClass] = 'MAY';
-					else $this->attributes[$attribute][$objectClass] = 'MAY';
-				}
-			}
-		// Get attributes of subclasses
-		while (strpos($_SESSION['ldap']->objectClasses[$line], "SUP ")) {
-			$string_withtail = substr($_SESSION['ldap']->objectClasses[$line], strpos($_SESSION['ldap']->objectClasses[$line],  'SUP ')+4);
-			$subclass = substr($string_withtail, 0, strpos($string_withtail, ' '));
-			// Add account type to object
-			for ($i=0; $i<count($_SESSION['ldap']->objectClasses) || $i==-1; $i++) {
-				if (strpos($_SESSION['ldap']->objectClasses[$i], "NAME '$subclass'")) $line = $i;
-				}
-			// Return error if objectClass isn't found
-			if ($line==-1) trigger_error (sprintf(_("ObjectClass %s required but not defined in LDAP."), $objectClass), E_USER_WARNING);
-			// create array with must-attributes
-			// Get startposition in string
-			if (strpos($_SESSION['ldap']->objectClasses[$line],  'MUST (')) {
-				$string_withtail = substr($_SESSION['ldap']->objectClasses[$line], strpos($_SESSION['ldap']->objectClasses[$line],  'MUST (')+6);
-				// Now we have a string with all must-attributes
-				$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
-				$string = trim($string);
-				$must = explode(" $ ", $string);
-				// Ad must
-				foreach ($must as $attribute) {
-					if (!isset($this->attributes[$attribute])) $this->attributes[$attribute][$objectClass] = 'MUST';
-						else $this->attributes[$attribute][$objectClass] = 'MUST';
-					}
-				}
-			// create array with may-attributes
-			// Get startposition in string
-			if (strpos($_SESSION['ldap']->objectClasses[$line],  'MAY (')) {
-				$string_withtail = substr($_SESSION['ldap']->objectClasses[$line], strpos($_SESSION['ldap']->objectClasses[$line],  'MAY (')+5);
-				// Now we have a string with all must-attributes
-				$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
-				$string = trim($string);
-				$may = explode(" $ ", $string);
-				// Ad may
-				foreach ($may as $attribute) {
-					if (!isset($this->attributes[$attribute])) $this->attributes[$attribute][$objectClass] = 'MAY';
-						else $this->attributes[$attribute][$objectClass] = 'MAY';
-					}
-				}
-			}
-		}
-
-	/**
-	* This function returns all LDAP attributes which are used by the given object class.
-	* LDAP attributs which are already in use by another object class are passed as reference.
-	* <br>Therefore this function must be called as reference: $result =& ..get_module_attributes
-	*
-	* @param string $objectClass object class name
-	* @param boolean $original If original is true references will be set to original attributes. This are the original attributes
-	* when an LDAP entry is loaded.
-	* @return array list of attributes
-	* @todo Remove this function 
-	*/
-	function get_module_attributes($objectClass, $original=false) {
-		// Add account type to object
-		$line=-1;
-		for ($i=0; $i<count($_SESSION['ldap']->objectClasses) || $i==-1; $i++) {
-			if (strpos(strtolower($_SESSION['ldap']->objectClasses[$i]), strtolower("NAME '$objectClass'"))) $line = $i;
-			}
-		// Return empty array if no objectClass wasn't found
-		if ($line==-1) return array();
-		if (strpos($_SESSION['ldap']->objectClasses[$line],  'MUST (')) {
-			$string_withtail = substr($_SESSION['ldap']->objectClasses[$line], strpos($_SESSION['ldap']->objectClasses[$line],  'MUST (')+6);
-			// Now we have a string with all must-attributes
-			$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
-			$string = trim($string);
-			// Add must
-			foreach (explode(" $ ", $string) as $attribute) {
-				$return[$attribute] = array();
-			}
-		}
-		elseif (strpos($_SESSION['ldap']->objectClasses[$line],  'MUST ')) {
-			$string_withtail = substr($_SESSION['ldap']->objectClasses[$line], strpos($_SESSION['ldap']->objectClasses[$line],  'MUST ')+5);
-			// Now we have a string with the must-attribute
-			$string = substr($string_withtail, 0, strpos($string_withtail, ' '));
-			$string = trim($string);
-			// Add must
-			$return[$string] = array();
-		}
-		// create array with may-attributes
-		// Get startposition in string
-		if (strpos($_SESSION['ldap']->objectClasses[$line],  'MAY (')) {
-			$string_withtail = substr($_SESSION['ldap']->objectClasses[$line], strpos($_SESSION['ldap']->objectClasses[$line],  'MAY (')+5);
-			// Now we have a string with all must-attributes
-			$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
-			$string = trim($string);
-			// Add may
-			foreach (explode(" $ ", $string) as $attribute) {
-				$return[$attribute] = array();
-			}
-		}
-		elseif (strpos($_SESSION['ldap']->objectClasses[$line],  'MAY ')) {
-			$string_withtail = substr($_SESSION['ldap']->objectClasses[$line], strpos($_SESSION['ldap']->objectClasses[$line],  'MAY ')+4);
-			// Now we have a string with the may-attribute
-			$string = substr($string_withtail, 0, strpos($string_withtail, ' '));
-			$string = trim($string);
-			// Add must
-			$return[$string] = array();
-		}
-		// Get attributes of subclasses
-		while (strpos($_SESSION['ldap']->objectClasses[$line], "SUP ")) {
-			$string_withtail = substr($_SESSION['ldap']->objectClasses[$line], strpos($_SESSION['ldap']->objectClasses[$line],  'SUP ')+4);
-			$subclass = substr($string_withtail, 0, strpos($string_withtail, ' '));
-			// Add account type to object
-			for ($i=0; $i<count($_SESSION['ldap']->objectClasses) || $i==-1; $i++) {
-				if (strpos($_SESSION['ldap']->objectClasses[$i], "NAME '$subclass'")) $line = $i;
-				}
-			// Return error if objectClass isn't found
-			if ($line==-1) trigger_error (sprintf(_("ObjectClass %s required but not defined in LDAP."), $subclass), E_USER_WARNING);
-			// create array with must-attributes
-			// Get startposition in string
-			if (strpos($_SESSION['ldap']->objectClasses[$line],  'MUST (')) {
-				$string_withtail = substr($_SESSION['ldap']->objectClasses[$line], strpos($_SESSION['ldap']->objectClasses[$line],  'MUST (')+6);
-				// Now we have a string with all must-attributes
-				$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
-				$string = trim($string);
-				// Add must
-				foreach (explode(" $ ", $string) as $attribute) {
-					$return[$attribute] = array();
-				}
-			}
-			elseif (strpos($_SESSION['ldap']->objectClasses[$line],  'MUST ')) {
-				$string_withtail = substr($_SESSION['ldap']->objectClasses[$line], strpos($_SESSION['ldap']->objectClasses[$line],  'MUST ')+5);
-				// Now we have a string with the must-attribute
-				$string = substr($string_withtail, 0, strpos($string_withtail, ' '));
-				$string = trim($string);
-				// Add must
-				$return[$string] = array();
-			}
-			// create array with may-attributes
-			// Get startposition in string
-			if (strpos($_SESSION['ldap']->objectClasses[$line],  'MAY (')) {
-				$string_withtail = substr($_SESSION['ldap']->objectClasses[$line], strpos($_SESSION['ldap']->objectClasses[$line],  'MAY (')+5);
-				// Now we have a string with all must-attributes
-				$string = substr($string_withtail, 0, strpos($string_withtail, ')'));
-				$string = trim($string);
-				// Add may
-				foreach (explode(" $ ", $string) as $attribute) {
-					$return[$attribute] = array();
-				}
-			}
-			elseif (strpos($_SESSION['ldap']->objectClasses[$line],  'MAY ')) {
-				$string_withtail = substr($_SESSION['ldap']->objectClasses[$line], strpos($_SESSION['ldap']->objectClasses[$line],  'MAY ')+4);
-				// Now we have a string with the may-attribute
-				$string = substr($string_withtail, 0, strpos($string_withtail, ' '));
-				$string = trim($string);
-				// Add must
-				$return[$string] = array();
-			}
-		}
-
-		// make references with attibutes which are used by more than one module
-		$newattributes = array_keys($return);
-		$module = array_keys($this->module);
-		if (!$original) {
-			// Only add attributes when original is false. We don't want to add them twice
-			$this->add_attributes($objectClass);
-			for ($i=0; $i<count($module); $i++) {
-				if ($module[$i]!=$objectClass)
-					foreach ($newattributes as $attribute)
-						if (isset($this->module[$module[$i]]->attributes[$attribute]) && ($attribute!='objectClass'))
-							$return[$attribute] =& $this->module[$module[$i]]->attributes[$attribute];
-				}
-			}
-		else {		
-			for ($i=0; $i<count($module); $i++) {
-				if ($module[$i]!=$objectClass)
-					foreach ($newattributes as $attribute)
-						if (isset($this->module[$module[$i]]->orig[$attribute]) && ($attribute!='objectClass'))
-							$return[$attribute] =& $this->module[$module[$i]]->orig[$attribute];
-				}
-			}
-		$return['objectClass'] = array();
-		return $return;
-		}
+	}
 
 	/**
 	* This function checks which LDAP attributes have changed while the account was edited.
@@ -1671,16 +1456,18 @@ class accountContainer {
 
 		if (!$stopprocessing) {
 			foreach ($attributes as $DN) {
-				if (is_array($DN['lamdaemon']['command'])) $result = lamdaemon($DN['lamdaemon']['command']);
-				// Error somewhere in lamdaemon
-				if (is_array($result)) {
-					foreach ($result as $singleresult) {
-						if (is_array($singleresult)) {
-							if ($singleresult[0] == 'ERROR') $stopprocessing = true;
-							$temparray[0] = $singleresult[0];
-							$temparray[1] = _($singleresult[1]);
-							$temparray[2] = _($singleresult[2]);
-							$errors[] = $temparray;
+				if (isset($DN['lamdaemon']['command']) && is_array($DN['lamdaemon']['command'])) {
+					$result = lamdaemon($DN['lamdaemon']['command']);
+					// Error somewhere in lamdaemon
+					if (isset($result) && is_array($result)) {
+						foreach ($result as $singleresult) {
+							if (is_array($singleresult)) {
+								if ($singleresult[0] == 'ERROR') $stopprocessing = true;
+								$temparray[0] = $singleresult[0];
+								$temparray[1] = _($singleresult[1]);
+								$temparray[2] = _($singleresult[2]);
+								$errors[] = $temparray;
+							}
 						}
 					}
 				}

@@ -231,7 +231,7 @@ class posixGroup extends baseModule {
 				// users who can be added have a uid and gidNumber
 				if (isset($dn_users[$DNs[$i]]['uid'][0]) && isset($dn_users[$DNs[$i]]['gidNumber'][0]) &&
 				// are not already member
-				!in_array($dn_users[$DNs[$i]]['uid'][0], $this->attributes['memberUid']) &&
+				(!isset($this->attributes['memberUid']) || !in_array($dn_users[$DNs[$i]]['uid'][0], $this->attributes['memberUid'])) &&
 				// and do not have this group as their primary group
 				!($this->attributes['gidNumber'][0] == $dn_users[$DNs[$i]]['gidNumber'][0])) {
 					$users[] = $dn_users[$DNs[$i]]['uid'][0];
@@ -311,6 +311,8 @@ class posixGroup extends baseModule {
 		$return['objectClasses'] = array('posixGroup');
 		// LDAP aliases
 		$return['LDAPaliases'] = array('commonName' => 'cn');
+		// managed attributes
+		$return['attributes'] = array('cn', 'gidNumber', 'userPassword', 'memberUid', 'description');
 		// configuration options
 		$return['config_options']['group'] = array(
 			array(
@@ -703,6 +705,7 @@ class posixGroup extends baseModule {
 	* @return array list of info/error messages
 	*/
 	function process_user(&$post) {
+		if (!isset($this->attributes['memberUid'])) $this->attributes['memberUid'] = array();
 		if (isset($post['addusers']) && isset($post['addusers_button'])) { // Add users to list
 			// Add new user
 			$this->attributes['memberUid'] = @array_merge($this->attributes['memberUid'], $post['addusers']);

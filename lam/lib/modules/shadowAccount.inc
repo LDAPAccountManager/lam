@@ -70,6 +70,9 @@ class shadowAccount extends baseModule {
 		$return['dependencies'] = array('depends' => array('posixAccount'), 'conflicts' => array());
 		// managed object classes
 		$return['objectClasses'] = array('shadowAccount');
+		// managed attributes
+		$return['attributes'] = array('userPassword', 'shadowLastChange', 'shadowMin', 'shadowMax', 'shadowWarning',
+			'shadowInactive', 'shadowExpire');
 		// lists for expiration date
 		$day = array(); $mon = array(); $year = array();
 		for ( $i=1; $i<=31; $i++ ) $day[] = $i;
@@ -142,8 +145,7 @@ class shadowAccount extends baseModule {
 			'shadowLastChange',
 			'shadowWarning',
 			'shadowInactive',
-			'shadowExpire',
-			'description'
+			'shadowExpire'
 		);
 		// help Entries
 		$return['help'] = array (
@@ -246,6 +248,7 @@ class shadowAccount extends baseModule {
 	* @return array list of info/error messages
 	*/
 	function process_attributes(&$post) {
+		$triggered_messages = array();
 		// Load attributes
 		$this->attributes['shadowMin'][0] = $post['shadowMin'];
 		$this->attributes['shadowMax'][0] = $post['shadowMax'];
@@ -258,11 +261,7 @@ class shadowAccount extends baseModule {
 		if ( $this->attributes['shadowMin'][0] > $this->attributes['shadowMax'][0]) $triggered_messages['shadowMin'][] = $this->messages['shadow_cmp'][0];
 		if ( !get_preg($this->attributes['shadowInactive'][0], 'digit2')) $triggered_messages['shadowInactive'][] = $this->messages['inactive'][0];
 		if ( !get_preg($this->attributes['shadowWarning'][0], 'digit')) $triggered_messages['shadowWarning'][] = $this->messages['shadowWarning'][0];
-		if (count($triggered_messages)!=0) {
-			$this->triggered_messages = $triggered_messages;
-			return $triggered_messages;
-		}
-		else $this->triggered_messages = array();
+		return $triggered_messages;
 	}
 
 	/**
@@ -273,19 +272,29 @@ class shadowAccount extends baseModule {
 	*/
 	function display_html_attributes(&$post) {
 		// Use dd-mm-yyyy format of date because it's easier to read for humans
-		$date = getdate ($this->attributes['shadowExpire'][0]*3600*24);
+		$shAccExpirationDate = 0;
+		if (isset($this->attributes['shadowExpire'][0])) $shAccExpirationDate = $this->attributes['shadowExpire'][0];
+		$date = getdate($shAccExpirationDate*3600*24);
 
+		$shWarning = '';
+		if (isset($this->attributes['shadowWarning'][0])) $shWarning = $this->attributes['shadowWarning'][0];
 		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Password warning') ),
-			1 => array ( 'kind' => 'input', 'name' => 'shadowWarning', 'type' => 'text', 'size' => '5', 'maxlength' => '4', 'value' => $this->attributes['shadowWarning'][0] ),
+			1 => array ( 'kind' => 'input', 'name' => 'shadowWarning', 'type' => 'text', 'size' => '5', 'maxlength' => '4', 'value' => $shWarning),
 			2 => array ( 'kind' => 'help', 'value' => 'shadowWarning' ));
+		$shPwdExpiration = '';
+		if (isset($this->attributes['shadowInactive'][0])) $shPwdExpiration = $this->attributes['shadowInactive'][0];
 		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Password expiration') ),
-			1 => array ( 'kind' => 'input', 'name' => 'shadowInactive', 'type' => 'text', 'size' => '5', 'maxlength' => '4', 'value' => $this->attributes['shadowInactive'][0] ),
+			1 => array ( 'kind' => 'input', 'name' => 'shadowInactive', 'type' => 'text', 'size' => '5', 'maxlength' => '4', 'value' => $shPwdExpiration),
 			2 => array ( 'kind' => 'help', 'value' => 'shadowInactive' ));
+		$shMinAge = '';
+		if (isset($this->attributes['shadowMin'][0])) $shMinAge = $this->attributes['shadowMin'][0];
 		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Minimum password age') ),
-			1 => array ( 'kind' => 'input', 'name' => 'shadowMin', 'type' => 'text', 'size' => '5', 'maxlength' => '5', 'value' => $this->attributes['shadowMin'][0] ),
+			1 => array ( 'kind' => 'input', 'name' => 'shadowMin', 'type' => 'text', 'size' => '5', 'maxlength' => '5', 'value' => $shMinAge),
 			2 => array ( 'kind' => 'help', 'value' => 'shadowMin' ));
+		$shMaxAge = '';
+		if (isset($this->attributes['shadowMax'][0])) $shMaxAge = $this->attributes['shadowMax'][0];
 		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Maximum password age') ),
-			1 => array ( 'kind' => 'input', 'name' => 'shadowMax', 'type' => 'text', 'size' => '5', 'maxlength' => '5', 'value' => $this->attributes['shadowMax'][0] ),
+			1 => array ( 'kind' => 'input', 'name' => 'shadowMax', 'type' => 'text', 'size' => '5', 'maxlength' => '5', 'value' => $shMaxAge),
 			2 => array ( 'kind' => 'help', 'value' => 'shadowMax' ));
 
 		for ( $i=1; $i<=31; $i++ ) $mday[] = $i;
@@ -312,8 +321,7 @@ class shadowAccount extends baseModule {
 		return array('shadowAccount_shadowLastChange' => array('<block><key>' . _('Last password change') . '</key><value>' . $this->attributes['shadowLastChange'][0] . '</value></block>'),
 			'shadowAccount_shadowWarning' => array('<block><key>' . _('Password warning') . '</key><value>' . $this->attributes['shadowWarn'][0] . '</value><block>'),
 			'shadowAccount_shadowInactive' => array('<block><key>' . _('Account inactive') . '</key><value>' . $this->attributes['shadowInactive'][0] . '</value></block>'),
-			'shadowAccount_shadowExpire' => array('<block><key>' . _('Password expiration') . '</key><value>' . date('d. m. Y',$this->attributes['shadowExpire'][0]) . '</value></block>'),
-			'shadowAccount_description' => array('<block><key>' . _('Description') . '</key><value>' . $this->attributes['description'][0] . '</value></block>'));
+			'shadowAccount_shadowExpire' => array('<block><key>' . _('Password expiration') . '</key><value>' . date('d. m. Y',$this->attributes['shadowExpire'][0]) . '</value></block>'));
 	}
 
 	/**

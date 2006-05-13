@@ -107,6 +107,10 @@ class sambaAccount extends baseModule {
 		$return['dependencies'] = array('depends' => array('posixAccount'), 'conflicts' => array());
 		// managed object classes
 		$return['objectClasses'] = array('sambaAccount');
+		// managed attributes
+		$return['attributes'] = array('rid', 'lmPassword', 'ntPassword', 'pwdLastSet', 'logonTime', 'logoffTime',
+			'kickoffTime', 'pwdCanChange', 'pwdMustChange', 'acctFlags', 'displayName', 'smbHome', 'homeDrive',
+			'scriptPath', 'profilePath', 'userWorkstations', 'primaryGroupID', 'domain');
 		// PHP extensions
 		$return['extensions'] = array('mhash');
 		// profile options
@@ -461,8 +465,7 @@ class sambaAccount extends baseModule {
 			if (strpos($this->attributes['acctFlags'][0], "X")) $this->noexpire = true;
 			else $this->noexpire = false;
 		}
-		return 0;
-		}
+	}
 
 	/* This function returns an array with 3 entries:
 	* array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )

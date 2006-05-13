@@ -88,40 +88,39 @@ class baseModule {
 	*/
 	function init($base) {
 		$this->base = $base;
-		// Create Arrays with ldap attributes
-		$this->attributes = $_SESSION[$this->base]->get_module_attributes(get_class($this));
-		$this->orig = $_SESSION[$this->base]->get_module_attributes(get_class($this), true);
-		$line=-1;
-		for ($i=0; $i<count($_SESSION['ldap']->objectClasses) || $i==-1; $i++) {
-			if (strpos(strtolower($_SESSION['ldap']->objectClasses[$i]), strtolower("NAME '".get_class($this)."'"))) $line = $i;
-			}
-		$objectClassName = substr($_SESSION['ldap']->objectClasses[$line], 6+strpos($_SESSION['ldap']->objectClasses[$line], "NAME '"), strlen(get_class($this)) );
-		$this->attributes['objectClass'][0] = $objectClassName;
 	}
 
 
 	/**
-	* This function loads all standard LDAP attributes. It is used
-	* by the modules to reduce code
+	* This function loads the LDAP attributes for this module.
 	*
-	* @param array $attr attribute list
+	* @param array $attributes attribute list
 	*/
-	function load_attributes($attr) {
-		// Load attributes which are displayed
-		$objectClassName = $this->attributes['objectClass'];
-		$attributes = array_keys($attr);
-		foreach ($attributes as $attribute) {
-			if (isset($this->attributes[$attribute])) {
-				// decode as unicode
-				$this->attributes[$attribute] = $attr[$attribute];
-				$this->orig[$attribute] = $attr[$attribute];
+	function load_attributes($attributes) {
+		$this->attributes = array();
+		$this->attributes = array();
+		// load object classes
+		if (isset($attributes['objectClass'])) {
+			$this->attributes['objectClass'] = $attributes['objectClass'];
+			$this->orig['objectClass'] = $attributes['objectClass'];
+		}
+		else {
+			$this->attributes['objectClass'] = array();
+			$this->orig['objectClass'] = array();
+		}
+		// add object classes if needed
+		$objectClasses = $this->getManagedObjectClasses();
+		for ($i = 0; $i < sizeof($objectClasses); $i++) {
+			if (!in_array($objectClasses[$i], $this->attributes['objectClass'])) $this->attributes['objectClass'][] = $objectClasses[$i];
+		}
+		// load attributes
+		$attributeNames = $this->getManagedAttributes();
+		for ($i = 0; $i < sizeof($attributeNames); $i++) {
+			if (isset($attributes[$attributeNames[$i]])) {
+				$this->attributes[$attributeNames[$i]] = $attributes[$attributeNames[$i]];
+				$this->orig[$attributeNames[$i]] = $attributes[$attributeNames[$i]];
 			}
 		}
-		$this->attributes['objectClass'] = $objectClassName;
-		if (in_array($objectClassName[0], $attr['objectClass']))
-			$this->orig['objectClass'] = $objectClassName;
-		else $this->orig['objectClass'] = array();
-		return 0;
 	}
 
 	/**
@@ -160,7 +159,7 @@ class baseModule {
 	* @return boolean true if base module
 	*/
 	function is_base_module() {
-		if ($this->meta['is_base'] == true) return true;
+		if (isset($this->meta['is_base']) && ($this->meta['is_base'] == true)) return true;
 		else return false;
 	}
 
@@ -360,7 +359,7 @@ class baseModule {
 		$messages = array();
 		$scopes[] = 'all'; // add checks that are independent of scope
 		for ($s = 0; $s < sizeof($scopes); $s++) {
-			if (is_array($this->meta['config_checks'][$scopes[$s]])) {
+			if (isset($this->meta['config_checks'][$scopes[$s]]) && is_array($this->meta['config_checks'][$scopes[$s]])) {
 				$identifiers = array_keys($this->meta['config_checks'][$scopes[$s]]);
 				for ($i = 0; $i < sizeof($identifiers); $i++) {
 					// check if option is required
@@ -687,6 +686,17 @@ class baseModule {
 	 */
 	function getLDAPAliases() {
 		if (isset($this->meta['LDAPaliases']) && is_array($this->meta['LDAPaliases'])) return $this->meta['LDAPaliases'];
+		else return array();
+	}
+	
+	/**
+	 * Returns a list of LDAP attributes which are managed by this module.
+	 * All attribute names will be renamed to match the given spelling.
+	 *
+	 * @return array list of attributes
+	 */
+	function getManagedAttributes() {
+		if (isset($this->meta['attributes']) && is_array($this->meta['attributes'])) return $this->meta['attributes'];
 		else return array();
 	}
 	

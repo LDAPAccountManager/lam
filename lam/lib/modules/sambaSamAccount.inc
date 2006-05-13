@@ -126,6 +126,11 @@ class sambaSamAccount extends baseModule {
 		$return['dependencies'] = array('depends' => array('posixAccount'), 'conflicts' => array());
 		// managed object classes
 		$return['objectClasses'] = array('sambaSamAccount');
+		// managed attributes
+		$return['attributes'] = array('uid', 'sambaSID', 'sambaLMPassword', 'sambaNTPassword', 'sambaPwdLastSet', 
+			'sambaLogonTime', 'sambaLogoffTime', 'sambaKickoffTime', 'sambaPwdCanChange', 'sambaPwdMustChange', 'sambaAcctFlags',
+			'displayName', 'sambaHomePath', 'sambaHomeDrive', 'sambaLogonScript', 'sambaProfilePath',
+			'sambaUserWorkstations', 'sambaPrimaryGroupSID', 'sambaDomainName', 'sambaLogonHours');
 		// PHP extensions
 		$return['extensions'] = array('mhash');
 		// profile checks
@@ -161,14 +166,12 @@ class sambaSamAccount extends baseModule {
 		// available PDF fields
 		$return['PDF_fields'] = array(
 			'displayName',
-			'uid',
 			'sambaHomePath',
 			'sambaHomeDrive',
 			'sambaLogonScript',
 			'sambaProfilePath',
 			'sambaUserWorkstations',
 			'sambaDomainName',
-			'description',
 			'sambaPrimaryGroupSID'
 		);
 		// help Entries
@@ -505,8 +508,7 @@ class sambaSamAccount extends baseModule {
 			if (strpos($this->attributes['sambaAcctFlags'][0], "X")) $this->noexpire = true;
 			else $this->noexpire = false;
 		}
-		return 0;
-		}
+	}
 
 	/* This function returns an array with 3 entries:
 	* array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
@@ -1286,14 +1288,12 @@ class sambaSamAccount extends baseModule {
 	*/
 	function get_pdfEntries() {
 		return array(	'sambaSamAccount_displayName' => array('<block><key>' . _('Display name') . '</key><value' . $this->attributes['displayName'][0] . '</value></block>'),
-							'sambaSamAccount_uid' => array('<block><key>' . _('User name') . '</key><value>' . $this->attributes['uid'][0] . '</value></block>'),
 							'sambaSamAccount_sambaHomePath' => array('<block><key>' . _('Home path') . '</key><value>' . $this->attributes['sambaHomeDrive'][0] . '</value></block>'),
 							'sambaSamAccount_sambaHomeDrive' => array('<block><key>' . _('Home drive') . '</key><value>' . $this->attributes['sambaHomePath'][0] . '</value></block>'),
 							'sambaSamAccount_sambaLogonScript' => array('<block><key>' . _('Logon script') . '</key><value>' . $this->attributes['sambaLogonScript'][0] . '</value></block>'),
 							'sambaSamAccount_sambaProfilePath' => array('<block><key>' . _('Profile path') . '</key><value>' . $this->attributes['sambaProfilePath'][0] . '</value></block>'),
 							'sambaSamAccount_sambaUserWorkstations' => array('<block><key>' . _('Samba workstations') . '</key><value>' . $this->attributes['sambaUserWorkstations'][0] . '</value></block>'),
 							'sambaSamAccount_sambaDomainName' => array('<block><key>' . _('Domain') . '</key><value>' . $this->attributes['sambaDomainName'][0] . '</value></block>'),
-							'sambaSamAccount_description' => array('<block><key>' . _('Description') . '</key><value>' . $this->attributes['description'][0] . '</value></block>'),
 							'sambaSamAccount_sambaPrimaryGroupSID' => array('<block><key>' . _('Windows group') . '</key><value>' . $this->attributes['sambaPrimaryGroupSID'][0] . '</value></block>'));
 	}
 
