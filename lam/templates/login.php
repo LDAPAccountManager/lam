@@ -183,7 +183,7 @@ function display_LoginPage($config_object) {
 		$extList = getRequiredExtensions();
 		for ($i = 0; $i < sizeof($extList); $i++) {
 			if (!extension_loaded($extList[$i])) {
-				StatusMessage("ERROR", _("A required extension is missing!"), $extList[$i]);
+				StatusMessage("ERROR", _("A required PHP extension is missing!"), $extList[$i]);
 				echo "<br>";
 			}
 		}

@@ -345,7 +345,7 @@ if (!isset($cfg->default) && !isset($cfg->password)) {
 
 			<!-- password field and submit button -->
 			<b>
-				<?php echo _("Master password:"); ?>
+				<?php echo _("Master password"); ?>:
 			</b>
 			&nbsp
 			<input type="password" name="passwd">
