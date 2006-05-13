@@ -1,6 +1,27 @@
 Upgrade instructions:
 =====================
 
+1.0.0 -> 1.0.2:
+===============
+
+Users:
+
+No changes.
+
+
+Developers:
+
+New module functions:
+  - getRequiredExtensions: Allows to define required PHP extensions
+  - getManagedObjectClasses: Definition of managed object classes for this module
+  - getLDAPAliases: list of LDAP alias names which are replaced by LAM
+  - getManagedAttributes: list of LDAP attributes which are managed by this module
+
+The LDAP attributes are no longer loaded by reading the LDAP schema. If your
+module does not implement the load_attributes() function then you have to use
+getManagedAttributes() or the meta data to specify them.
+
+
 0.5.x -> 1.0.0:
 ===============
 
