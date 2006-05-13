@@ -62,7 +62,7 @@ echo ("<title>LDAP Account Manager</title>\n");
 echo ("<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">");
 echo ("</head>\n");
 echo ("<frameset rows=\"130,*\">\n");
-echo ("<frame src=\"./main_header.php\" name=\"head\" frameborder=\"0\" scrolling=\"no\">\n");
+echo ("<frame src=\"./main_header.php\" name=\"head\" frameborder=\"0\" scrolling=\"yes\">\n");
 // display page to add suffixes, if needed
 if (sizeof($new_suffs) > 0) echo ("<frame src=\"initsuff.php?suffs='" . implode(";", $new_suffs) .
 	"'\" name=\"mainpart\" frameborder=\"0\" scrolling=\"yes\">\n");

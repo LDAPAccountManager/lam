@@ -67,14 +67,16 @@ $types = $_SESSION['config']->get_ActiveTypes();
 	</tr>
 	<tr>
 		<?php
-		echo "<td colspan=3 align=\"center\">";
+		echo "<td colspan=3 align=\"center\" style=\"white-space:nowrap;\">";
+			$linkList = array();
 			if ($_SESSION['config']->get_Suffix('tree') != "") {
-				echo '<img src="../graphics/process.png">&nbsp;<a href="./tree/tree_view.php" target="mainpart"><big>' . _("Tree view") . '</big></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . "\n";
+				$linkList[] = '<img src="../graphics/process.png">&nbsp;<a href="./tree/tree_view.php" target="mainpart"><big>' . _("Tree view") . '</big></a>' . "\n";
 			}
 			for ($i = 0; $i < sizeof($types); $i++) {
-					echo '<img src="../graphics/' . $types[$i] . '.png">&nbsp;';
-					echo '<a href="./lists/list.php?type=' . $types[$i] . '" target="mainpart"><big>' . getTypeAlias($types[$i]) . '</big></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+					$linkList[] = '<img src="../graphics/' . $types[$i] . '.png">&nbsp;' .
+						'<a href="./lists/list.php?type=' . $types[$i] . '" target="mainpart"><big>' . getTypeAlias($types[$i]) . '</big></a>';
 			}
+			echo implode('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;', $linkList);
 		echo "</td>";
 		?>
 	</tr>
