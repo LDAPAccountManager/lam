@@ -23,7 +23,7 @@
 		<entry name="inetOrgPerson_host" />
 	</section>
 	<section name="Windows settings">
-		<entry name="sambaAccount_uid" />
+		<entry name="sambaAccount_displayName" />
 		<entry name="sambaAccount_password" />
 		<entry name="sambaAccount_homeDrive" />
 		<entry name="sambaAccount_scriptPath" />
