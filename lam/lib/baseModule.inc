@@ -88,6 +88,15 @@ class baseModule {
 	*/
 	function init($base) {
 		$this->base = $base;
+		$this->attributes = array();
+		$this->orig = array();
+		// add object classes if needed
+		$this->attributes['objectClass'] = array();
+		$this->orig['objectClass'] = array();
+		$objectClasses = $this->getManagedObjectClasses();
+		for ($i = 0; $i < sizeof($objectClasses); $i++) {
+			if (!in_array($objectClasses[$i], $this->attributes['objectClass'])) $this->attributes['objectClass'][] = $objectClasses[$i];
+		}
 	}
 
 
