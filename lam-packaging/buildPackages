@@ -12,8 +12,8 @@ cd /daten/projekte/lam/pakete
 
 export CVS_TAG=$1
 
-cvs -z3 -d:ext:gruberroland@cvs.sourceforge.net:/cvsroot/lam export -r $CVS_TAG lam
-cvs -z3 -d:ext:gruberroland@cvs.sourceforge.net:/cvsroot/lam export -r $CVS_TAG lam-packaging
+cvs -z3 -d:ext:gruberroland@lam.cvs.sourceforge.net:/cvsroot/lam export -r $CVS_TAG lam
+cvs -z3 -d:ext:gruberroland@lam.cvs.sourceforge.net:/cvsroot/lam export -r $CVS_TAG lam-packaging
 
 cp lam-packaging/getVersion ./
 export VERSION=`./getVersion`
