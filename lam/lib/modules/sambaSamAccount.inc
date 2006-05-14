@@ -480,7 +480,7 @@ class sambaSamAccount extends baseModule {
 	function module_ready() {
 		if ($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]=='') return false;
 		if ($_SESSION[$this->base]->module['posixAccount']->attributes['uidNumber'][0]=='') return false;
-		if ($this->attributes['uid'][0]=='') return false;
+		if ($_SESSION[$this->base]->module['posixAccount']->attributes['uid'][0]=='') return false;
 		return true;
 	}
 
@@ -813,7 +813,7 @@ class sambaSamAccount extends baseModule {
 					$sel_domain = $sambaDomains[$i]->name;
 				}
 			}
-			elseif ($this->attributes['sambaDomainName'][0]!='') {
+			elseif (isset($this->attributes['sambaDomainName'][0]) && ($this->attributes['sambaDomainName'][0]!='')) {
 				if ($this->attributes['sambaDomainName'][0] == $sambaDomains[$i]->name) {
 					$SID = $sambaDomains[$i]->SID;
 					$sel_domain = $sambaDomains[$i]->name;
