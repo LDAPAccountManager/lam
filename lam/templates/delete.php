@@ -280,8 +280,14 @@ function deleteDN($dn) {
 	}
 	// delete parent DN
 	$success = @ldap_delete($_SESSION['ldap']->server(), $dn);
+	$ldapUser = $_SESSION['ldap']->decrypt_login();
+	$ldapUser = $ldapUser[0];
 	if (!$success) {
+		logNewMessage(LOG_ERR, '[' . $ldapUser .'] Unable to delete DN: ' . $dn . ' (' . ldap_err2str(ldap_errno($_SESSION['ldap']->server())) . ').');
 		$errors[] = array ('ERROR', sprintf(_('Was unable to delete DN: %s.'), $dn), ldap_error($_SESSION['ldap']->server()));
+	}
+	else {
+		logNewMessage(LOG_NOTICE, '[' . $ldapUser .'] Deleted DN: ' . $dn);
 	}
 	return $errors;
 }
