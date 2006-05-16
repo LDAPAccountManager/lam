@@ -34,9 +34,6 @@ $Id$
 */
 class kolabUser extends baseModule {
 	
-	/** used for account pages, true if input data is correct */
-	var $inputCorrect = false;
-	
 	/** list of invitation policies */
 	var $invitationPolicies;
 
@@ -412,8 +409,8 @@ class kolabUser extends baseModule {
 	* @return array list of info/error messages
 	*/
 	function process_attributes(&$post) {
+		$errors = array();
 		if ($post['form_subpage_kolabUser_deleteUser_open'])  return;
-		$this->triggered_messages = array();
 		$this->attributes['kolabInvitationPolicy'] = array();
 		// country
 		if (isset($post['country'])) {
@@ -423,13 +420,13 @@ class kolabUser extends baseModule {
 			else {
 				$message = $this->messages['country'][0];
 				$message[] = $post['country'];
-				$this->triggered_messages[] = array($message);
+				$errors[] = array($message);
 			}
 		}
 		// mailbox server
 		if (isset($post['homeServer'])) {
 			if ($post['homeServer'] == "") {
-				$this->triggered_messages[] = array($this->messages['homeServer'][2]);
+				$errors[] = array($this->messages['homeServer'][2]);
 			}
 			elseif (get_preg($post['homeServer'], 'DNSname')) {
 				$this->attributes['kolabHomeServer'][0] = $post['homeServer'];
@@ -437,7 +434,7 @@ class kolabUser extends baseModule {
 			else {
 				$message = $this->messages['homeServer'][0];
 				$message[] = $post['homeServer'];
-				$this->triggered_messages[] = array($message);
+				$errors[] = array($message);
 			}
 		}
 		// check old invitation policies
@@ -455,7 +452,7 @@ class kolabUser extends baseModule {
 				if (!get_preg($post['invPol1' . $i], 'email')) {
 					$message = $this->messages['invPol'][0];
 					$message[] = $post['invPol1' . $i];
-					$this->triggered_messages[] = array($message);
+					$errors[] = array($message);
 				}
 				else {
 					$this->attributes['kolabInvitationPolicy'][] = $post['invPol1' . $i] . ':' . $policies[$post['invPol2' . $i]];
@@ -469,7 +466,7 @@ class kolabUser extends baseModule {
 			if (!get_preg($post['invPol1'], 'email')) {
 				$message = $this->messages['invPol'][0];
 				$message[] = $post['invPol1'];
-				$this->triggered_messages[] = array($message);
+				$errors[] = array($message);
 			}
 			else {
 				$this->attributes['kolabInvitationPolicy'][] = $post['invPol1'] . ':' . $policies[$post['invPol2']];
@@ -492,7 +489,7 @@ class kolabUser extends baseModule {
 				if (!get_preg($post['alias' . $i], 'email')) {
 					$message = $this->messages['alias'][0];
 					$message[] = $post['alias' . $i];
-					$this->triggered_messages[] = array($message);
+					$errors[] = array($message);
 				}
 				$this->attributes['alias'][] = $post['alias' . $i];
 			}
@@ -504,7 +501,7 @@ class kolabUser extends baseModule {
 			if (!get_preg($post['alias'], 'email')) {
 				$message = $this->messages['alias'][0];
 				$message[] = $post['alias'];
-				$this->triggered_messages[] = array($message);
+				$errors[] = array($message);
 			}
 			else {
 				$this->attributes['alias'][] = $post['alias'];
@@ -535,7 +532,7 @@ class kolabUser extends baseModule {
 			else {
 				$message = $this->messages['freeBusy'][0];
 				$message[] = $post['freeBusy'];
-				$this->triggered_messages[] = array($message);
+				$errors[] = array($message);
 			}
 		}
 		// Cyrus mail quota
@@ -546,17 +543,10 @@ class kolabUser extends baseModule {
 			else {
 				$message = $this->messages['quota'][0];
 				$message[] = $post['quota'];
-				$this->triggered_messages[] = array($message);
+				$errors[] = array($message);
 			}
 		}
-		// check if all was correct
-		if (sizeof($this->triggered_messages) > 0) {
-			$this->inputCorrect = false;
-			return $this->triggered_messages;
-		}
-		else {
-			$this->inputCorrect = true;
-		}
+		return $errors;
 	}
 
 	/**
@@ -597,12 +587,9 @@ class kolabUser extends baseModule {
 		if (!$_SESSION[$this->base]->module['inetOrgPerson']->attributes['mail'][0]) return false;
 		if ($_SESSION[$this->base]->isNewAccount) {
 			if (isset($_SESSION[$this->base]->module['posixAccount']) && !$_SESSION[$this->base]->module['posixAccount']->attributes['userPassword'][0]) return false;
-			elseif (isset($_SESSION[$this->base]->module['inetOrgPerson']) && !$_SESSION[$this->base]->module['inetOrgPerson']->attributes['userPassword'][0]) return false;
-			return $this->inputCorrect;
+			if (isset($_SESSION[$this->base]->module['inetOrgPerson']) && !$_SESSION[$this->base]->module['inetOrgPerson']->attributes['userPassword'][0]) return false;
 		}
-		else {
-			return true;
-		}
+		return true;
 	}
 	
 	/**

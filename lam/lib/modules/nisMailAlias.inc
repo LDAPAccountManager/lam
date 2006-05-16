@@ -161,7 +161,7 @@ class nisMailAlias extends baseModule {
 	* @return array list of info/error messages
 	*/
 	function process_attributes(&$post) {
-		$this->triggered_messages = array();
+		$errors = array();
 		$this->attributes['cn'] = array();
 		$this->attributes['rfc822MailMember'] = array();
 		// check alias name
@@ -171,7 +171,7 @@ class nisMailAlias extends baseModule {
 		else {
 				$message = $this->messages['alias'][0];
 				$message[] = $post['cn'];
-				$this->triggered_messages[] = array($message);
+				$errors[] = array($message);
 		}
 		// check old recipients
 		if (isset($post['rec_number'])) {
@@ -182,7 +182,7 @@ class nisMailAlias extends baseModule {
 					if (!get_preg($post['rfc822MailMember' . $i], 'nis_recipient')) {
 						$message = $this->messages['recipient'][0];
 						$message[] = $post['rfc822MailMember' . $i];
-						$this->triggered_messages[] = array($message);
+						$errors[] = array($message);
 					}
 					$this->attributes['rfc822MailMember'][] = $post['rfc822MailMember' . $i];
 				}
@@ -197,16 +197,11 @@ class nisMailAlias extends baseModule {
 			else {
 					$message = $this->messages['recipient'][0];
 					$message[] = $post['rfc822MailMember'];
-					$this->triggered_messages[] = array($message);
+					$errors[] = array($message);
 			}
 		}
 		$this->attributes['rfc822MailMember'] = array_unique($this->attributes['rfc822MailMember']);
-		if (sizeof($this->triggered_messages) > 0) {
-			return $this->triggered_messages;
-		}
-		else {
-			return array();
-		}
+		return $errors;
 	}
 
 	/**

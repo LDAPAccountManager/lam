@@ -174,7 +174,7 @@ class inetLocalMailRecipient extends baseModule {
 	* @return array list of info/error messages
 	*/
 	function process_attributes(&$post) {
-		$this->triggered_messages = array();
+		$errors = array();
 		$this->attributes['mailRoutingAddress'] = array();
 		$this->attributes['mailLocalAddress'] = array();
 		$this->attributes['mailHost'] = array();
@@ -187,7 +187,7 @@ class inetLocalMailRecipient extends baseModule {
 			else {
 					$message = $this->messages['routingAdr'][0];
 					$message[] = $post['routingAdr'];
-					$this->triggered_messages[] = array($message);
+					$errors[] = array($message);
 			}
 		}
 		// check mail server
@@ -199,7 +199,7 @@ class inetLocalMailRecipient extends baseModule {
 			else {
 					$message = $this->messages['host'][0];
 					$message[] = $post['host'];
-					$this->triggered_messages[] = array($message);
+					$errors[] = array($message);
 			}
 		}
 		// check old local addresses
@@ -211,7 +211,7 @@ class inetLocalMailRecipient extends baseModule {
 					if (!get_preg($post['localAdr' . $i], 'mailLocalAddress')) {
 						$message = $this->messages['localAdr'][0];
 						$message[] = $post['localAdr' . $i];
-						$this->triggered_messages[] = array($message);
+						$errors[] = array($message);
 					}
 					$this->attributes['mailLocalAddress'][] = $post['localAdr' . $i];
 				}
@@ -226,16 +226,11 @@ class inetLocalMailRecipient extends baseModule {
 			else {
 					$message = $this->messages['localAdr'][0];
 					$message[] = $post['localAdr'];
-					$this->triggered_messages[] = array($message);
+					$errors[] = array($message);
 			}
 		}
 		$this->attributes['mailLocalAddress'] = array_unique($this->attributes['mailLocalAddress']);
-		if (sizeof($this->triggered_messages) > 0) {
-			return $this->triggered_messages;
-		}
-		else {
-			return array();
-		}
+		return $errors;
 	}
 
 	/**
