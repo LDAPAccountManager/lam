@@ -554,11 +554,12 @@ class posixGroup extends baseModule {
 	* @return array list of info/error messages
 	*/
 	function process_attributes(&$post) {
+		$errors = array();
 		$this->attributes['description'][0] = $post['description'];
 
 		if (($post['userPassword_lock'] && $post['userPassword_invalid']) || ($post['userPassword_nopassword'] && $post['userPassword_invalid'])) {
 			// found invalid password parameter combination
-			$triggered_messages['userPassword'][] = $this->messages['userPassword'][3];
+			$errors['userPassword'][] = $this->messages['userPassword'][3];
 		}
 		else {
 			if ($post['userPassword_nopassword']) {
@@ -582,10 +583,10 @@ class posixGroup extends baseModule {
 					if ($post['genpass']) $this->attributes['userPassword'][0] = genpasswd();
 					elseif ($_SESSION[$this->base]->isNewAccount) {
 						if ($post['userPassword'] != $post['userPassword2'])
-							$triggered_messages['userPassword'][] = $this->messages['userPassword'][0];
+							$errors['userPassword'][] = $this->messages['userPassword'][0];
 						else $this->attributes['userPassword'][0] = $post['userPassword'];
 						if (!get_preg($this->attributes['userPassword'][0], 'password'))
-							$triggered_messages['userPassword'][] = $this->messages['userPassword'][1];
+							$errors['userPassword'][] = $this->messages['userPassword'][1];
 					}
 					if ($post['userPassword_lock']) $this->userPassword_lock=true;
 					else $this->userPassword_lock=false;
@@ -593,7 +594,7 @@ class posixGroup extends baseModule {
 			}
 		if ($post['changegids']) $this->changegids=true;
 		else $this->changegids=false;
-		if ($this->attributes['gidNumber'][0]!=$post['gidNumber'] || ($this->triggered_messages['gidNumber'][0]='ERROR')) {
+		if ($this->attributes['gidNumber'][0]!=$post['gidNumber']) {
 			// Check if GID is valid. If none value was entered, the next useable value will be inserted
 			// load min and max GID number
 			$minID = intval($this->moduleSettings['posixGroup_minGID'][0]);
@@ -605,15 +606,15 @@ class posixGroup extends baseModule {
 				sort ($gids, SORT_NUMERIC);
 			}
 			$this->attributes['gidNumber'][0]=$post['gidNumber'];
-				if ($this->attributes['gidNumber'][0]=='') {
+			if ($this->attributes['gidNumber'][0]=='') {
 				// No id-number given, find free GID
 				if ($this->orig['gidNumber'][0]=='') {
-					$newGID = $this->getNextGIDs(1, $triggered_messages);
+					$newGID = $this->getNextGIDs(1, $errors);
 					if (is_array($newGID)) {
 						$this->attributes['gidNumber'][0] = $newGID[0];
 					}
 					else {
-						$triggered_messages['gidNumber'][] = $this->messages['gidNumber'][3];
+						$errors['gidNumber'][] = $this->messages['gidNumber'][3];
 					}
 				}
 				else $this->attributes['gidNumber'][0] = $this->orig['gidNumber'][0];
@@ -622,26 +623,26 @@ class posixGroup extends baseModule {
 			else {
 				// Check manual ID
 				// id-number is out of valid range
-				if ( ($this->attributes['gidNumber'][0]!=$post['gidNumber']) && ($this->attributes['gidNumber'][0] < $minID || $this->attributes['gidNumber'][0] > $maxID)) $triggered_messages['gidNumber'][] = array('ERROR', _('ID-Number'), sprintf(_('Please enter a value between %s and %s!'), $minID, $maxID));
+				if (($this->attributes['gidNumber'][0] < $minID) || ($this->attributes['gidNumber'][0] > $maxID) || !is_numeric($this->attributes['gidNumber'][0])) $errors['gidNumber'][] = array('ERROR', _('ID-Number'), sprintf(_('Please enter a value between %s and %s!'), $minID, $maxID));
 				// $uids is allways an array but not if no entries were found
 				if (is_array($gids)) {
 					// id-number is in use and account is a new account
-					if ((in_array($this->attributes['gidNumber'][0], $gids)) && $this->orig['gidNumber'][0]=='') $triggered_messages['gidNumber'][] = array('ERROR', _('ID-Number'), _('ID is already in use'));
+					if ((in_array($this->attributes['gidNumber'][0], $gids)) && $this->orig['gidNumber'][0]=='') $errors['gidNumber'][] = array('ERROR', _('ID-Number'), _('ID is already in use'));
 					// id-number is in use, account is existing account and id-number is not used by itself
 					if ((in_array($this->attributes['gidNumber'][0], $gids)) && $this->orig['gidNumber'][0]!='' && ($this->orig['gidNumber'][0] != $this->attributes['gidNumber'][0]) ) {
-						$triggered_messages['gidNumber'][] = $this->messages['gidNumber'][4];
+						$errors['gidNumber'][] = $this->messages['gidNumber'][4];
 						$this->attributes['gidNumber'][0] = $this->orig['gidNumber'][0];
 					}
 				}
 			}
 		}
-		if ($this->attributes['cn'][0]!=$post['cn'] || ($this->triggered_messages['cn'][0]='ERROR')) {
+		if ($this->attributes['cn'][0]!=$post['cn']) {
 			$this->attributes['cn'][0] = $post['cn'];
 			if (($this->attributes['cn'][0] != $post['cn']) &&  ereg('[A-Z]$', $post['cn']))
-				$triggered_messages['cn'][] = $this->messages['cn'][0];
+				$errors['cn'][] = $this->messages['cn'][0];
 			// Check if Groupname contains only valid characters
 			if ( !get_preg($this->attributes['cn'][0],'groupname'))
-			$triggered_messages['cn'][] = $this->messages['cn'][2];
+			$errors['cn'][] = $this->messages['cn'][2];
 			// Create automatic useraccount with number if original user already exists
 			// Reset name to original name if new name is in use
 			// Set username back to original name if new username is in use
@@ -681,19 +682,16 @@ class posixGroup extends baseModule {
 			}
 			// Show warning if lam has changed username
 			if ($this->attributes['cn'][0] != $post['cn']) {
-				$triggered_messages['cn'][] = $this->messages['cn'][0];
+				$errors['cn'][] = $this->messages['cn'][0];
 			}
-		// show info when gidnumber has changed
-		if (($this->orig['gidNumber'][0]!=$this->attributes['gidNumber'][0]) && $this->orig['gidNumber'][0]!='' && $post['gidNumber']!=$this->attributes['gidNumber'][0])
-		$triggered_messages['gidNumber'][] = $this->messages['gidNumber'][0];
+			// show info when gidnumber has changed
+			if (($this->orig['gidNumber'][0]!=$this->attributes['gidNumber'][0]) && $this->orig['gidNumber'][0]!='' && $post['gidNumber']!=$this->attributes['gidNumber'][0])
+			$errors['gidNumber'][] = $this->messages['gidNumber'][0];
 		}
 		}
 		// Return error-messages
-		if (count($triggered_messages)!=0) {
-			$this->triggered_messages = $triggered_messages;
-			return $triggered_messages;
-		}
-		else $this->triggered_messages = array();
+		print_r($errors);
+		return $errors;
 	}
 
 
@@ -791,10 +789,14 @@ class posixGroup extends baseModule {
 			// New user or no old password set
 			if ($this->userPassword_nopassword) // use no password
 				$return[$_SESSION[$this->base]->dn]['add']['userPassword'][0] = pwd_hash('', !$this->userPassword_lock, $this->moduleSettings['posixAccount_pwdHash'][0]);
-			else if ($this->userPassword_invalid) // use '*' as password
+			elseif ($this->userPassword_invalid) {
+				// use '*' as password
 				$return[$_SESSION[$this->base]->dn]['add']['userPassword'][0] = '*';
-			else if ($this->attributes['userPassword'][0] != '') // set password if set
+			}
+			elseif ($this->attributes['userPassword'][0] != '') {
+				// set password if set
 				$return[$_SESSION[$this->base]->dn]['add']['userPassword'][0] = pwd_hash($this->attributes['userPassword'][0], !$this->userPassword_lock, $this->moduleSettings['posixAccount_pwdHash'][0]);
+			}
 		}
 
 		// Remove primary group from users from memberUid
@@ -843,27 +845,6 @@ class posixGroup extends baseModule {
 					}
 				}
 			}
-			// change sambaPrimaryGroupSID
-			$line=-1;
-			for ($i=0; $i<count($_SESSION['ldap']->objectClasses) || $i==-1; $i++) {
-				if (strpos($_SESSION['ldap']->objectClasses[$i], "NAME 'sambaSamAccount'")) $line = $i;
-			}
-			if ($line!=-1) {
-				$result = $_SESSION['cache']->get_cache('sambaPrimaryGroupSID', 'sambaSamAccount', array('user', 'host'));
-				if (is_array($result)) {
-					$DNs = array_keys($result);
-					for ($i=0; $i<count($DNs); $i++) {
-						// Get Domain SID from name
-						$sambaDomains = search_domains();
-						// Get Domain-SID from group SID
-						$domainSID = substr($result[$DNs[$i]], 0, strrpos($result[$DNs[$i]], "-"));
-						for ($i=0; $i<count($sambaDomains); $i++ )
-						if ($domainSID==$sambaDomains[$i]->SID)
-						$RIDbase = $sambaDomains[$i]->RIDbase;
-						if ($result[$DNs[$i]][0] == $SID . "-" . $this->orig['gidNumber'][0]*2+1+$RIDbase ) $return[$DNs[$i]]['modify']['sambaPrimaryGroupSID'][0] = $SID . "-" . $this->attributes['gidNumber'][0]*2+1+$RIDbase;
-					}
-				}
-			}
 		}
 		return $return;
 	}
@@ -873,10 +854,10 @@ class posixGroup extends baseModule {
 	* Returns one or more free GID numbers.
 	*
 	* @param integer $count Number of needed free GIDs.
-	* @param array $triggered_messages list of error messages where errors can be added
+	* @param array $errors list of error messages where errors can be added
 	* @return mixed Null if no GIDs are free else an array of free GIDs. 
 	*/
-	function getNextGIDs($count, &$triggered_messages) {
+	function getNextGIDs($count, &$errors) {
 		$ret = array();
 		$minID = intval($this->moduleSettings['posixGroup_minGID'][0]);
 		$maxID = intval($this->moduleSettings['posixGroup_maxGID'][0]);
@@ -915,7 +896,7 @@ class posixGroup extends baseModule {
 						sort ($gids, SORT_NUMERIC);
 					}
 					// show warning message
-					$triggered_messages['gidNumber'][] = $this->messages['gidNumber'][2];
+					$errors['gidNumber'][] = $this->messages['gidNumber'][2];
 				}
 			}
 			else {
