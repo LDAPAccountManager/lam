@@ -172,23 +172,25 @@ class account extends baseModule {
 	* @param array $post HTTP-POST values
 	* @return array list of info/error messages
 	*/
-	function process_attributes(&$post) {
+	function process_attributes($post) {
+		$errors = array();
 		// Load attributes
 		$this->attributes['description'][0] = $post['description'];
 		// user name if no posixAccount
 		$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
 		if (!in_array('posixAccount', $modules)) {
 			$this->attributes['uid'][0] = $post['uid'];
-			if (!get_preg($this->attributes['uid'][0], '!upper')) $triggered_messages['uid'][] = $this->messages['uid'][2];
-			if (!get_preg($this->attributes['uid'][0], 'username')) $triggered_messages['uid'][] = $this->messages['uid'][3];
+			if (!get_preg($this->attributes['uid'][0], '!upper')) $errors['uid'][] = $this->messages['uid'][2];
+			if (!get_preg($this->attributes['uid'][0], 'username')) $errors['uid'][] = $this->messages['uid'][3];
 		}
+		return $errors;
 	}
 
 	/* This function will create the html-page
 	* to show a page with all attributes.
 	* It will output a complete html-table
 	*/
-	function display_html_attributes(&$post) {
+	function display_html_attributes($post) {
 		// user name if no posixAccount
 		$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
 		if (!in_array('posixAccount', $modules)) {
@@ -247,7 +249,7 @@ class account extends baseModule {
 				else {
 					$errMsg = $this->messages['uid'][1];
 					array_push($errMsg, array($i));
-					$triggered_messages[] = $errMsg;
+					$messages[] = $errMsg;
 				}
 			}
 		}
