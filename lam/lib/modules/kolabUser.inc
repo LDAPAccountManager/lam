@@ -613,7 +613,7 @@ class kolabUser extends baseModule {
 				else {
 					$errMsg = $this->messages['country'][1];
 					array_push($errMsg, array($i));
-					$triggered_messages[] = $errMsg;
+					$messages[] = $errMsg;
 				}
 			}
 			// mailbox server
@@ -624,7 +624,7 @@ class kolabUser extends baseModule {
 				else {
 					$errMsg = $this->messages['homeServer'][1];
 					array_push($errMsg, array($i));
-					$triggered_messages[] = $errMsg;
+					$messages[] = $errMsg;
 				}
 			}
 			// add invitation policies
@@ -715,7 +715,7 @@ class kolabUser extends baseModule {
 				else {
 					$errMsg = $this->messages['freeBusy'][1];
 					array_push($errMsg, array($i));
-					$triggered_messages[] = $errMsg;
+					$messages[] = $errMsg;
 				}
 			}
 			// Cyrus mail quota
@@ -726,7 +726,7 @@ class kolabUser extends baseModule {
 				else {
 					$errMsg = $this->messages['quota'][1];
 					array_push($errMsg, array($i));
-					$triggered_messages[] = $errMsg;
+					$messages[] = $errMsg;
 				}
 			}
 		}

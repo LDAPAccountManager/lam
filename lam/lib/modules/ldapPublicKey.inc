@@ -112,7 +112,6 @@ class ldapPublicKey extends baseModule {
 	* @return array list of info/error messages
 	*/
 	function process_attributes(&$post) {
-		$this->triggered_messages = array();
 		$this->attributes['sshPublicKey'] = array();
 		// check old keys
 		if (isset($post['key_number'])) {
@@ -128,6 +127,7 @@ class ldapPublicKey extends baseModule {
 			$this->attributes['sshPublicKey'][] = $post['sshPublicKey'];
 		}
 		$this->attributes['sshPublicKey'] = array_unique($this->attributes['sshPublicKey']);
+		return array();
 	}
 
 	/**
