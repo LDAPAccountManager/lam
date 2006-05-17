@@ -248,7 +248,7 @@ class shadowAccount extends baseModule {
 	* @return array list of info/error messages
 	*/
 	function process_attributes(&$post) {
-		$triggered_messages = array();
+		$errors = array();
 		// Load attributes
 		$this->attributes['shadowMin'][0] = $post['shadowMin'];
 		$this->attributes['shadowMax'][0] = $post['shadowMax'];
@@ -256,12 +256,12 @@ class shadowAccount extends baseModule {
 		$this->attributes['shadowInactive'][0] = $post['shadowInactive'];
 		$this->attributes['shadowExpire'][0] = intval(mktime(10, 0, 0, intval($post['shadowExpire_mon']), intval($post['shadowExpire_day']),
 			intval($post['shadowExpire_yea']))/3600/24);
-		if ( !get_preg($this->attributes['shadowMin'][0], 'digit'))  $triggered_messages['shadowMin'][] = $this->messages['shadowMin'][0];
-		if ( !get_preg($this->attributes['shadowMax'][0], 'digit')) $triggered_messages['shadowMax'][] = $this->messages['shadowMax'][0];
-		if ( $this->attributes['shadowMin'][0] > $this->attributes['shadowMax'][0]) $triggered_messages['shadowMin'][] = $this->messages['shadow_cmp'][0];
-		if ( !get_preg($this->attributes['shadowInactive'][0], 'digit2')) $triggered_messages['shadowInactive'][] = $this->messages['inactive'][0];
-		if ( !get_preg($this->attributes['shadowWarning'][0], 'digit')) $triggered_messages['shadowWarning'][] = $this->messages['shadowWarning'][0];
-		return $triggered_messages;
+		if ( !get_preg($this->attributes['shadowMin'][0], 'digit'))  $errors['shadowMin'][] = $this->messages['shadowMin'][0];
+		if ( !get_preg($this->attributes['shadowMax'][0], 'digit')) $errors['shadowMax'][] = $this->messages['shadowMax'][0];
+		if ( $this->attributes['shadowMin'][0] > $this->attributes['shadowMax'][0]) $errors['shadowMin'][] = $this->messages['shadow_cmp'][0];
+		if ( !get_preg($this->attributes['shadowInactive'][0], 'digit2')) $errors['shadowInactive'][] = $this->messages['inactive'][0];
+		if ( !get_preg($this->attributes['shadowWarning'][0], 'digit')) $errors['shadowWarning'][] = $this->messages['shadowWarning'][0];
+		return $errors;
 	}
 
 	/**
