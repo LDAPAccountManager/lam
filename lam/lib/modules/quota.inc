@@ -262,6 +262,7 @@ class quota extends baseModule {
 	* @return array list of info/error messages
 	*/
 	function process_attributes(&$post) {
+		$errors = array();
 		// Write all general values into $account_new
 		$i=0;
 		// loop for every mointpoint with quotas
@@ -272,26 +273,21 @@ class quota extends baseModule {
 			$this->quota[$i][7] = $post[$i . '_7'];
 			// Check if values are OK and set automatic values. if not error-variable will be set
 			if (!get_preg($this->quota[$i][2], 'digit'))
-				$triggered_messages[$this->quota[$i][2]][] = $this->messages['softblock'][0];
+				$errors[$this->quota[$i][2]][] = $this->messages['softblock'][0];
 			if (!get_preg($this->quota[$i][3], 'digit'))
-				$triggered_messages[$this->quota[$i][3]][] = $this->messages['hardblock'][0];
+				$errors[$this->quota[$i][3]][] = $this->messages['hardblock'][0];
 			if (!get_preg($this->quota[$i][6], 'digit'))
-				$triggered_messages[$this->quota[$i][6]][] = $this->messages['softinode'][0];
+				$errors[$this->quota[$i][6]][] = $this->messages['softinode'][0];
 			if (!get_preg($this->quota[$i][7], 'digit'))
-				$triggered_messages[$this->quota[$i][7]][] = $this->messages['hardinode'][0];
+				$errors[$this->quota[$i][7]][] = $this->messages['hardinode'][0];
 			if (intval($this->quota[$i][2]) > intval($this->quota[$i][3]))
-				$triggered_messages[$this->quota[$i][2]][] = $this->messages['block_cmp'][0];
+				$errors[$this->quota[$i][2]][] = $this->messages['block_cmp'][0];
 			if (intval($this->quota[$i][6]) > intval($this->quota[$i][7]))
-				$triggered_messages[$this->quota[$i][6]][] = $this->messages['inode_cmp'][0];
+				$errors[$this->quota[$i][6]][] = $this->messages['inode_cmp'][0];
 			$i++;
 			}
-
-		if (count($triggered_messages)!=0) {
-			$this->triggered_messages = $triggered_messages;
-			return $triggered_messages;
-		}
-		else $this->triggered_messages = array();
-		}
+		return $errors;
+	}
 
 	/* This function will create the html-page
 	* to show a page with all attributes.
