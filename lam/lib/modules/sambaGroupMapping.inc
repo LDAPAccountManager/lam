@@ -111,7 +111,7 @@ class sambaGroupMapping extends baseModule {
 		for ($i = 0; $i < sizeof($domains); $i++) {
 			$nameToRIDBase[$domains[$i]->name] = $domains[$i]->RIDbase;
 		}
-		$triggered_messages = array();
+		$errors = array();
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			// group type
 			if ($rawAccounts[$i][$ids['sambaGroupMapping_groupType']] != "") {
@@ -124,7 +124,7 @@ class sambaGroupMapping extends baseModule {
 				else {  // invalid type
 					$errMsg = $this->messages['groupType'][0];
 					array_push($errMsg, array($i, implode(", ", array_keys($this->sambaGroupTypes) + $this->sambaGroupTypes)));
-					$triggered_messages[] = $errMsg;
+					$errors[] = $errMsg;
 				}
 			}
 			else {
@@ -137,7 +137,7 @@ class sambaGroupMapping extends baseModule {
 				$errMsg = $this->messages['sambaSID'][1];
 				array_push($errMsg, $rawAccounts[$i][$ids['sambaGroupMapping_domain']]);
 				array_push($errMsg, $i);
-				$triggered_messages[] = $errMsg;
+				$errors[] = $errMsg;
 			}
 			else {
 				// RID
@@ -160,7 +160,7 @@ class sambaGroupMapping extends baseModule {
 				$partialAccounts[$i]['displayName'] = $rawAccounts[$i][$ids['sambaGroupMapping_name']];
 			}
 		}
-		return $triggered_messages;
+		return $errors;
 	}
 
 	/* This function will create the html-page
@@ -403,7 +403,7 @@ class sambaGroupMapping extends baseModule {
 	* @return array list of info/error messages
 	*/
 	function process_attributes(&$post) {
-		$triggered_messages = array();
+		$errors = array();
 		$sambaDomains = search_domains();
 		if (sizeof($sambaDomains) == 0) {
 			return array(array(array("ERROR", _('No Samba 3 domains found in LDAP! Please create one first.'))));
@@ -434,14 +434,14 @@ class sambaGroupMapping extends baseModule {
 					if ($_SESSION['cache']->in_cache($SID."-".$this->rids[$rids[$i]], 'sambaSID', 'group')) {
 						$message = $this->messages['sambaSID'][0];
 						$message[] = $rids[$i];
-						$triggered_messages['sambaSID'][] = $message;
+						$errors['sambaSID'][] = $message;
 					}
 				}
 			}
 		}
 		if (!$wrid) $this->attributes['sambaSID'][0] = $SID . "-" . ($_SESSION[$this->base]->module['posixGroup']->attributes['gidNumber'][0]*2+$RIDbase+1);
 		// Return error-messages
-		return $triggered_messages;
+		return $errors;
 	}
 
 
