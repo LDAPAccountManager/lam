@@ -548,6 +548,7 @@ class sambaSamAccount extends baseModule {
 	* @return array list of info/error messages
 	*/
 	function process_attributes(&$post) {
+		$errors = array();
 		$sambaDomains = search_domains();
 		if (sizeof($sambaDomains) == 0) {
 			return array(array(array("ERROR", _('No Samba 3 domains found in LDAP! Please create one first.'))));
@@ -595,7 +596,7 @@ class sambaSamAccount extends baseModule {
 		// display name
 		$this->attributes['displayName'][0] = $post['displayName'];
 		if (!($this->attributes['displayName'][0] == '') && !(get_preg($this->attributes['displayName'][0], 'realname'))) {
-			$triggered_messages['displayName'][] = $this->messages['displayName'][1];
+			$errors['displayName'][] = $this->messages['displayName'][1];
 		}
 
 		// host attributes
@@ -659,11 +660,11 @@ class sambaSamAccount extends baseModule {
 			else $this->useunixpwd = false;
 			if (!$this->useunixpwd && isset($post['sambaLMPassword']) && ($post['sambaLMPassword'] != '')) {
 				if ($post['sambaLMPassword'] != $post['sambaLMPassword2']) {
-					$triggered_messages['sambaLMPassword'][] = $this->messages['sambaLMPassword'][0];
+					$errors['sambaLMPassword'][] = $this->messages['sambaLMPassword'][0];
 					unset ($post['sambaLMPassword2']);
 				}
 				else {
-					if (!get_preg($post['sambaLMPassword'], 'password')) $triggered_messages['sambaLMPassword'][] = $this->messages['sambaLMPassword'][1];
+					if (!get_preg($post['sambaLMPassword'], 'password')) $errors['sambaLMPassword'][] = $this->messages['sambaLMPassword'][1];
 					else {
 						$this->attributes['sambaLMPassword'][0] = lmPassword($post['sambaLMPassword']);
 						$this->attributes['sambaNTPassword'][0] = ntPassword($post['sambaLMPassword']);
@@ -687,31 +688,27 @@ class sambaSamAccount extends baseModule {
 			// Check values
 			$this->attributes['sambaHomePath'][0] = str_replace('$user', $_SESSION[$this->base]->module['posixAccount']->attributes['uid'][0], $this->attributes['sambaHomePath'][0]);
 			$this->attributes['sambaHomePath'][0] = str_replace('$group', $_SESSION['cache']->getgrnam($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]), $this->attributes['sambaHomePath'][0]);
-			if ($this->attributes['sambaHomePath'][0] != $post['sambaHomePath']) $triggered_messages['sambaHomePath'][] = $this->messages['homePath'][1];
+			if ($this->attributes['sambaHomePath'][0] != $post['sambaHomePath']) $errors['sambaHomePath'][] = $this->messages['homePath'][1];
 			$this->attributes['sambaLogonScript'][0] = str_replace('$user', $_SESSION[$this->base]->module['posixAccount']->attributes['uid'][0], $this->attributes['sambaLogonScript'][0]);
 			$this->attributes['sambaLogonScript'][0] = str_replace('$group', $_SESSION['cache']->getgrnam($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]), $this->attributes['sambaLogonScript'][0]);
-			if ($this->attributes['sambaLogonScript'][0] != $post['sambaLogonScript']) $triggered_messages['sambaLogonScript'][] = $this->messages['logonScript'][1];
+			if ($this->attributes['sambaLogonScript'][0] != $post['sambaLogonScript']) $errors['sambaLogonScript'][] = $this->messages['logonScript'][1];
 			$this->attributes['sambaProfilePath'][0] = str_replace('$user', $_SESSION[$this->base]->module['posixAccount']->attributes['uid'][0], $this->attributes['sambaProfilePath'][0]);
 			$this->attributes['sambaProfilePath'][0] = str_replace('$group', $_SESSION['cache']->getgrnam($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]), $this->attributes['sambaProfilePath'][0]);
-			if ($this->attributes['sambaProfilePath'][0] != $post['sambaProfilePath']) $triggered_messages['sambaProfilePath'][] = $this->messages['profilePath'][1];
+			if ($this->attributes['sambaProfilePath'][0] != $post['sambaProfilePath']) $errors['sambaProfilePath'][] = $this->messages['profilePath'][1];
 			if ( (!$this->attributes['sambaHomePath'][0]=='') && (!get_preg($this->attributes['sambaHomePath'][0], 'UNC')))
-				$triggered_messages['sambaHomePath'][] = $this->messages['homePath'][0];
+				$errors['sambaHomePath'][] = $this->messages['homePath'][0];
 			if ( (!$this->attributes['sambaLogonScript'][0]=='') && (!get_preg($this->attributes['sambaLogonScript'][0], 'logonscript')))
-				$triggered_messages['sambaScriptPath'][] = $this->messages['logonScript'][0];
+				$errors['sambaScriptPath'][] = $this->messages['logonScript'][0];
 			if (!($this->attributes['sambaProfilePath'][0] == '') &&
 				!(get_preg($this->attributes['sambaProfilePath'][0], 'UNC') xor get_preg($this->attributes['sambaProfilePath'][0], 'homeDirectory')))
-					$triggered_messages['sambaProfilePath'][] = $this->messages['profilePath'][0];
+					$errors['sambaProfilePath'][] = $this->messages['profilePath'][0];
 		}
 		else {  // host
 			if (!$this->attributes['sambaSID'][0]) {
 				$this->attributes['sambaSID'][0] = $SID."-". (($_SESSION[$this->base]->module['posixAccount']->attributes['uidNumber'][0]*2)+$RIDbase);
 			}
 		}
-		if (count($triggered_messages)!=0) {
-			$this->triggered_messages = $triggered_messages;
-			return $triggered_messages;
-		}
-		else $this->triggered_messages = array();
+		return $errors;
 	}
 
 	/**
@@ -721,7 +718,7 @@ class sambaSamAccount extends baseModule {
 	* @param array $post HTTP-POST values
 	* @return array list of info/error messages
 	*/
-	function process_sambaUserWorkstations(&$post) {
+	function process_sambaUserWorkstations($post) {
 		// Load attributes
 		if ($_SESSION[$this->base]->type=='user') {
 			if (isset($post['availableSambaUserWorkstations']) && isset($post['sambaUserWorkstations_add'])) { // Add workstations to list
@@ -771,7 +768,7 @@ class sambaSamAccount extends baseModule {
 	* @param array $post HTTP-POST values
 	* @return array list of info/error messages
 	*/
-	function process_logonHours(&$post) {
+	function process_logonHours($post) {
 		if ($post['form_subpage_sambaSamAccount_attributes_abort']) return;
 		// set new logon hours
 		$logonHours = '';
@@ -795,12 +792,12 @@ class sambaSamAccount extends baseModule {
 	* to show a page with all attributes.
 	* It will output a complete html-table
 	*/
-	function display_html_attributes(&$post) {
+	function display_html_attributes($post) {
 		// Get Domain SID from user SID
 		$sambaDomains = search_domains();
 		if (sizeof($sambaDomains) == 0) {
 			StatusMessage("ERROR", _('No Samba 3 domains found in LDAP! Please create one first.'), '');
-			return;
+			return array();
 		}
 		if ($this->attributes['sambaSID'][0]!='') {
 			$domainSID = substr($this->attributes['sambaSID'][0], 0, strrpos($this->attributes['sambaSID'][0], "-"));
@@ -965,13 +962,13 @@ class sambaSamAccount extends baseModule {
 				2 => array ( 'kind' => 'help', 'value' => 'resetPassword' ));
 			}
 		return $return;
-		}
+	}
 
 	/* This function will create the html-page
 	* to show a page with all attributes.
 	* It will output a complete html-table
 	*/
-	function display_html_sambaUserWorkstations(&$post) {
+	function display_html_sambaUserWorkstations($post) {
 		if ($_SESSION[$this->base]->type=='user') {
 			// Get list of all hosts.
 			$result = $_SESSION['cache']->get_cache('uid', 'sambaSamAccount', 'host');
@@ -998,7 +995,7 @@ class sambaSamAccount extends baseModule {
 				2 => array ('kind' => 'text'));
 			}
 		return $return;
-		}
+	}
 
 	/**
 	* This function will create the HTML page to edit logon hours.
@@ -1006,7 +1003,7 @@ class sambaSamAccount extends baseModule {
 	* @param array $post HTTP POST variables
 	* @return array meta HTML code
 	*/
-	function display_html_logonHours(&$post) {
+	function display_html_logonHours($post) {
 		$timeZone = 0;
 		if (isset($this->moduleSettings['sambaSamAccount_timeZone']) && is_array($this->moduleSettings['sambaSamAccount_timeZone'])) {
 			$timeZone = $this->moduleSettings['sambaSamAccount_timeZone'][0];
@@ -1306,7 +1303,7 @@ class sambaSamAccount extends baseModule {
 	* @return array list of error messages if any
 	*/
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts) {
-		$triggered_messages = array();
+		$errors = array();
 		// get list of Samba 3 domains
 		$domains = search_domains();
 		// get list of Unix groups and their sambaSID + gidNumber
@@ -1332,7 +1329,7 @@ class sambaSamAccount extends baseModule {
 					else {
 						$errMsg = $this->messages['displayName'][0];
 						array_push($errMsg, array($i));
-						$triggered_messages[] = $errMsg;
+						$errors[] = $errMsg;
 					}
 				}
 				// password
@@ -1340,7 +1337,7 @@ class sambaSamAccount extends baseModule {
 				if (!get_preg($rawAccounts[$i][$ids['sambaSamAccount_password']], 'password')) {
 					$errMsg = $this->messages['sambaLMPassword'][2];
 					array_push($errMsg, array($i));
-					$triggered_messages[] = $errMsg;
+					$errors[] = $errMsg;
 				}
 				// use Unix password
 				if ($rawAccounts[$i][$ids['sambaSamAccount_pwdUnix']] == "") {  // default: use Unix
@@ -1360,7 +1357,7 @@ class sambaSamAccount extends baseModule {
 				else {
 					$errMsg = $this->messages['pwdUnix'][0];
 					array_push($errMsg, array($i));
-					$triggered_messages[] = $errMsg;
+					$errors[] = $errMsg;
 				}
 				// use no password
 				if ($rawAccounts[$i][$ids['sambaSamAccount_noPassword']] != "") {
@@ -1373,7 +1370,7 @@ class sambaSamAccount extends baseModule {
 					else {
 						$errMsg = $this->messages['noPassword'][0];
 						array_push($errMsg, array($i));
-						$triggered_messages[] = $errMsg;
+						$errors[] = $errMsg;
 					}
 				}
 				// account flags
@@ -1389,7 +1386,7 @@ class sambaSamAccount extends baseModule {
 					else {
 						$errMsg = $this->messages['noExpire'][0];
 						array_push($errMsg, array($i));
-						$triggered_messages[] = $errMsg;
+						$errors[] = $errMsg;
 					}
 				}
 				// account is deactivated
@@ -1402,7 +1399,7 @@ class sambaSamAccount extends baseModule {
 					else {
 						$errMsg = $this->messages['deactivated'][0];
 						array_push($errMsg, array($i));
-						$triggered_messages[] = $errMsg;
+						$errors[] = $errMsg;
 					}
 				}
 				// set flags
@@ -1425,7 +1422,7 @@ class sambaSamAccount extends baseModule {
 					else {
 						$errMsg = $this->messages['pwdCanChange'][0];
 						array_push($errMsg, array($i));
-						$triggered_messages[] = $errMsg;
+						$errors[] = $errMsg;
 					}
 				}
 				// passsword must be changed
@@ -1438,7 +1435,7 @@ class sambaSamAccount extends baseModule {
 					else {
 						$errMsg = $this->messages['pwdMustChange'][0];
 						array_push($errMsg, array($i));
-						$triggered_messages[] = $errMsg;
+						$errors[] = $errMsg;
 					}
 				}
 				// expiration date
@@ -1451,7 +1448,7 @@ class sambaSamAccount extends baseModule {
 					else {
 						$errMsg = $this->messages['expireDate'][0];
 						array_push($errMsg, array($i));
-						$triggered_messages[] = $errMsg;
+						$errors[] = $errMsg;
 					}
 				}
 				// home drive
@@ -1462,7 +1459,7 @@ class sambaSamAccount extends baseModule {
 					else {
 						$errMsg = $this->messages['homeDrive'][0];
 						array_push($errMsg, array($i));
-						$triggered_messages[] = $errMsg;
+						$errors[] = $errMsg;
 					}
 				}
 				// home path
@@ -1473,7 +1470,7 @@ class sambaSamAccount extends baseModule {
 					else {
 						$errMsg = $this->messages['homePath'][2];
 						array_push($errMsg, array($i));
-						$triggered_messages[] = $errMsg;
+						$errors[] = $errMsg;
 					}
 				}
 				// profile path
@@ -1484,7 +1481,7 @@ class sambaSamAccount extends baseModule {
 					else {
 						$errMsg = $this->messages['profilePath'][2];
 						array_push($errMsg, array($i));
-						$triggered_messages[] = $errMsg;
+						$errors[] = $errMsg;
 					}
 				}
 				// logon script
@@ -1495,7 +1492,7 @@ class sambaSamAccount extends baseModule {
 					else {
 						$errMsg = $this->messages['logonScript'][2];
 						array_push($errMsg, array($i));
-						$triggered_messages[] = $errMsg;
+						$errors[] = $errMsg;
 					}
 				}
 				// workstations
@@ -1506,7 +1503,7 @@ class sambaSamAccount extends baseModule {
 					else {
 						$errMsg = $this->messages['workstations'][1];
 						array_push($errMsg, array($i));
-						$triggered_messages[] = $errMsg;
+						$errors[] = $errMsg;
 					}
 				}
 				// domain
@@ -1524,7 +1521,7 @@ class sambaSamAccount extends baseModule {
 				else {
 					$errMsg = $this->messages['domain'][0];
 					array_push($errMsg, array($i));
-					$triggered_messages[] = $errMsg;
+					$errors[] = $errMsg;
 				}
 				// group
 				if ($rawAccounts[$i][$ids['sambaSamAccount_group']] != "") {
@@ -1545,7 +1542,7 @@ class sambaSamAccount extends baseModule {
 					else {
 						$errMsg = $this->messages['group'][0];
 						array_push($errMsg, array($i));
-						$triggered_messages[] = $errMsg;
+						$errors[] = $errMsg;
 					}
 				}
 				else {
@@ -1563,7 +1560,7 @@ class sambaSamAccount extends baseModule {
 					else {
 						$errMsg = $this->messages['rid'][2];
 						array_push($errMsg, array($i));
-						$triggered_messages[] = $errMsg;
+						$errors[] = $errMsg;
 					}
 				}
 				else {
@@ -1578,7 +1575,7 @@ class sambaSamAccount extends baseModule {
 					else {
 						$errMsg = $this->messages['logonHours'][1];
 						array_push($errMsg, array($i));
-						$triggered_messages[] = $errMsg;
+						$errors[] = $errMsg;
 					}
 				}
 				else {
@@ -1605,7 +1602,7 @@ class sambaSamAccount extends baseModule {
 				else {
 					$errMsg = $this->messages['domain'][0];
 					array_push($errMsg, array($i));
-					$triggered_messages[] = $errMsg;
+					$errors[] = $errMsg;
 				}
 				// RID
 				if ($rawAccounts[$i][$ids['sambaSamAccount_rid']] != "") {
@@ -1615,7 +1612,7 @@ class sambaSamAccount extends baseModule {
 					else {
 						$errMsg = $this->messages['rid'][3];
 						array_push($errMsg, array($i));
-						$triggered_messages[] = $errMsg;
+						$errors[] = $errMsg;
 					}
 				}
 				else {
@@ -1629,7 +1626,7 @@ class sambaSamAccount extends baseModule {
 				$partialAccounts[$i]['sambaAcctFlags'] = "[W          ]";
 			}
 		}
-		return $triggered_messages;
+		return $errors;
 	}
 
 }
