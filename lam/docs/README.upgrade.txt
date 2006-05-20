@@ -21,6 +21,9 @@ The LDAP attributes are no longer loaded by reading the LDAP schema. If your
 module does not implement the load_attributes() function then you have to use
 getManagedAttributes() or the meta data to specify them.
 
+The class variable "triggered_messages" in baseModule was removed.
+
+
 
 0.5.x -> 1.0.0:
 ===============

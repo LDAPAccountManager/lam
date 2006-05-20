@@ -440,7 +440,7 @@ class inetOrgPerson extends baseModule {
 	* @return array list of info/error messages
 	*/
 	function process_attributes(&$post) {
-		$triggered_messages = array();
+		$errors = array();
 		// Load attributes
 		$this->attributes['description'][0] = $post['description'];
 		$this->attributes['sn'][0] = $post['sn'];
@@ -466,7 +466,7 @@ class inetOrgPerson extends baseModule {
 		if (!in_array('posixAccount', $modules)) {
 			// uid
 			if (!get_preg($post['userName'], 'username')) {
-				$triggered_messages['uid'][] = $this->messages['uid'][0];
+				$errors['uid'][] = $this->messages['uid'][0];
 			}
 			else {
 				$this->attributes['uid'][0] = $post['userName'];
@@ -484,7 +484,7 @@ class inetOrgPerson extends baseModule {
 				$this->attributes['cn'][0] = $post['cn'];
 			}
 			if (!get_preg($this->attributes['cn'][0], 'cn')) {
-				$triggered_messages['cn'][] = $this->messages['cn'][0];
+				$errors['cn'][] = $this->messages['cn'][0];
 			}
 		}
 
@@ -492,7 +492,7 @@ class inetOrgPerson extends baseModule {
 		if ($_SESSION['ldap']->supports_unix_hosts) {
 			$host = $post['host'];
 			if (!get_preg($host,'unixhost')) {
-				$triggered_messages['host'][] = $this->messages['host'][0];
+				$errors['host'][] = $this->messages['host'][0];
 			}
 			$hosts = explode(",", $host);
 			$this->attributes['host'] = array();
@@ -503,24 +503,24 @@ class inetOrgPerson extends baseModule {
 			}
 		}
 		// Do some regex-checks and return error if attributes are set to wrong values
-		if (($this->attributes['givenName'][0] != '') && !get_preg($this->attributes['givenName'][0], 'realname')) $triggered_messages['givenName'][] = $this->messages['givenName'][0];
-		if ( !get_preg($this->attributes['sn'][0], 'realname')) $triggered_messages['sn'][] = $this->messages['lastname'][0];
-		if ( !get_preg($this->attributes['telephoneNumber'][0], 'telephone')) $triggered_messages['telephoneNumber'][] = $this->messages['telephoneNumber'][0];
-		if ( !get_preg($this->attributes['mobile'][0], 'telephone')) $triggered_messages['mobileTelephoneNumber'][] = $this->messages['mobileTelephone'][0];
-		if ( !get_preg($this->attributes['facsimileTelephoneNumber'][0], 'telephone')) $triggered_messages['facsimileTelephoneNumber'][] = $this->messages['facsimileNumber'][0];
-		if (($this->attributes['mail'][0] != '') && !get_preg($this->attributes['mail'][0], 'email')) $triggered_messages['mail'][] = $this->messages['email'][0];
-		if ( !get_preg($this->attributes['street'][0], 'street')) $triggered_messages['street'][] = $this->messages['street'][0];
-		if ( !get_preg($this->attributes['postalAddress'][0], 'postalAddress')) $triggered_messages['postalAdress'][] = $this->messages['postalAddress'][0];
-		if ( !get_preg($this->attributes['postalCode'][0], 'postalCode')) $triggered_messages['personal_postalCode'][] = $this->messages['postalCode'][0];
-		if ( !get_preg($this->attributes['title'][0], 'title')) $triggered_messages['title'][] = $this->messages['title'][0];
-		if ( !get_preg($this->attributes['employeeType'][0], 'employeeType')) $triggered_messages['employeeType'][] = $this->messages['employeeType'][0];
+		if (($this->attributes['givenName'][0] != '') && !get_preg($this->attributes['givenName'][0], 'realname')) $errors['givenName'][] = $this->messages['givenName'][0];
+		if ( !get_preg($this->attributes['sn'][0], 'realname')) $errors['sn'][] = $this->messages['lastname'][0];
+		if ( !get_preg($this->attributes['telephoneNumber'][0], 'telephone')) $errors['telephoneNumber'][] = $this->messages['telephoneNumber'][0];
+		if ( !get_preg($this->attributes['mobile'][0], 'telephone')) $errors['mobileTelephoneNumber'][] = $this->messages['mobileTelephone'][0];
+		if ( !get_preg($this->attributes['facsimileTelephoneNumber'][0], 'telephone')) $errors['facsimileTelephoneNumber'][] = $this->messages['facsimileNumber'][0];
+		if (($this->attributes['mail'][0] != '') && !get_preg($this->attributes['mail'][0], 'email')) $errors['mail'][] = $this->messages['email'][0];
+		if ( !get_preg($this->attributes['street'][0], 'street')) $errors['street'][] = $this->messages['street'][0];
+		if ( !get_preg($this->attributes['postalAddress'][0], 'postalAddress')) $errors['postalAdress'][] = $this->messages['postalAddress'][0];
+		if ( !get_preg($this->attributes['postalCode'][0], 'postalCode')) $errors['personal_postalCode'][] = $this->messages['postalCode'][0];
+		if ( !get_preg($this->attributes['title'][0], 'title')) $errors['title'][] = $this->messages['title'][0];
+		if ( !get_preg($this->attributes['employeeType'][0], 'employeeType')) $errors['employeeType'][] = $this->messages['employeeType'][0];
 		if ($post['userPassword']) {
 			if ($post['userPassword'] != $post['userPassword2']) {
-				$triggered_messages['userPassword'][] = $this->messages['userPassword'][0];
+				$errors['userPassword'][] = $this->messages['userPassword'][0];
 			}
 			else {
 				if (!get_preg($post['userPassword'], 'password')) {
-					$triggered_messages['userPassword'][] = $this->messages['userPassword'][1];
+					$errors['userPassword'][] = $this->messages['userPassword'][1];
 				}
 				else {
 					$this->attributes['userPassword'][0] = $post['userPassword'];
@@ -529,7 +529,7 @@ class inetOrgPerson extends baseModule {
 		}
 		if ($post['delPhoto']) $this->attributes['jpegPhoto'] = array();
 		// Return error-messages
-		return $triggered_messages;
+		return $errors;
 	}
 
 	/* This function will create the html-page
@@ -835,7 +835,7 @@ class inetOrgPerson extends baseModule {
 	* @return array list of error messages if any
 	*/
 	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts) {
-		$triggered_messages = array();
+		$errors = array();
 		for ($i = 0; $i < sizeof($rawAccounts); $i++) {
 			if (!in_array("inetOrgPerson", $partialAccounts[$i]['objectClass'])) $partialAccounts[$i]['objectClass'][] = "inetOrgPerson";
 			// last name
@@ -845,7 +845,7 @@ class inetOrgPerson extends baseModule {
 			else {
 				$errMsg = $this->messages['lastname'][1];
 				array_push($errMsg, array($i));
-				$triggered_messages[] = $errMsg;
+				$errors[] = $errMsg;
 			}
 			// first name
 			if ($rawAccounts[$i][$ids['inetOrgPerson_firstName']] != "") {
@@ -855,7 +855,7 @@ class inetOrgPerson extends baseModule {
 				else {
 					$errMsg = $this->messages['givenName'][1];
 					array_push($errMsg, array($i));
-					$triggered_messages[] = $errMsg;
+					$errors[] = $errMsg;
 				}
 			}
 			// description
@@ -878,7 +878,7 @@ class inetOrgPerson extends baseModule {
 				else {
 					$errMsg = $this->messages['title'][1];
 					array_push($errMsg, array($i));
-					$triggered_messages[] = $errMsg;
+					$errors[] = $errMsg;
 				}
 			}
 			// employee type
@@ -889,7 +889,7 @@ class inetOrgPerson extends baseModule {
 				else {
 					$errMsg = $this->messages['employeeType'][1];
 					array_push($errMsg, array($i));
-					$triggered_messages[] = $errMsg;
+					$errors[] = $errMsg;
 				}
 			}
 			// manager
@@ -900,7 +900,7 @@ class inetOrgPerson extends baseModule {
 				else {
 					$errMsg = $this->messages['manager'][0];
 					array_push($errMsg, array($i));
-					$triggered_messages[] = $errMsg;
+					$errors[] = $errMsg;
 				}
 			}
 			// street
@@ -911,7 +911,7 @@ class inetOrgPerson extends baseModule {
 				else {
 					$errMsg = $this->messages['street'][1];
 					array_push($errMsg, array($i));
-					$triggered_messages[] = $errMsg;
+					$errors[] = $errMsg;
 				}
 			}
 			// post office box
@@ -926,7 +926,7 @@ class inetOrgPerson extends baseModule {
 				else {
 					$errMsg = $this->messages['postalCode'][1];
 					array_push($errMsg, array($i));
-					$triggered_messages[] = $errMsg;
+					$errors[] = $errMsg;
 				}
 			}
 			// postal address
@@ -937,7 +937,7 @@ class inetOrgPerson extends baseModule {
 				else {
 					$errMsg = $this->messages['postalAddress'][1];
 					array_push($errMsg, array($i));
-					$triggered_messages[] = $errMsg;
+					$errors[] = $errMsg;
 				}
 			}
 			// telephone
@@ -948,7 +948,7 @@ class inetOrgPerson extends baseModule {
 				else {
 					$errMsg = $this->messages['telephoneNumber'][1];
 					array_push($errMsg, array($i));
-					$triggered_messages[] = $errMsg;
+					$errors[] = $errMsg;
 				}
 			}
 			// mobile
@@ -959,7 +959,7 @@ class inetOrgPerson extends baseModule {
 				else {
 					$errMsg = $this->messages['mobileTelephone'][1];
 					array_push($errMsg, array($i));
-					$triggered_messages[] = $errMsg;
+					$errors[] = $errMsg;
 				}
 			}
 			// facsimile
@@ -970,7 +970,7 @@ class inetOrgPerson extends baseModule {
 				else {
 					$errMsg = $this->messages['facsimileNumber'][1];
 					array_push($errMsg, array($i));
-					$triggered_messages[] = $errMsg;
+					$errors[] = $errMsg;
 				}
 			}
 			// eMail
@@ -981,7 +981,7 @@ class inetOrgPerson extends baseModule {
 				else {
 					$errMsg = $this->messages['email'][1];
 					array_push($errMsg, array($i));
-					$triggered_messages[] = $errMsg;
+					$errors[] = $errMsg;
 				}
 			}
 			// Unix workstations
@@ -992,7 +992,7 @@ class inetOrgPerson extends baseModule {
 				else {
 					$errMsg = $this->messages['host'][1];
 					array_push($errMsg, array($i));
-					$triggered_messages[] = $errMsg;
+					$errors[] = $errMsg;
 				}
 			}
 			$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
@@ -1005,7 +1005,7 @@ class inetOrgPerson extends baseModule {
 					else {
 						$errMsg = $this->messages['cn'][1];
 						array_push($errMsg, array($i));
-						$triggered_messages[] = $errMsg;
+						$errors[] = $errMsg;
 					}
 				}
 				else {
@@ -1026,7 +1026,7 @@ class inetOrgPerson extends baseModule {
 				if (in_array($rawAccounts[$i][$ids['inetOrgPerson_userName']], $existingUsers)) {
 					$errMsg = $this->messages['uid'][3];
 					array_push($errMsg, array($i));
-					$triggered_messages[] = $errMsg;
+					$errors[] = $errMsg;
 				}
 				elseif (get_preg($rawAccounts[$i][$ids['inetOrgPerson_userName']], 'username')) {
 					$partialAccounts[$i]['uid'] = $rawAccounts[$i][$ids['inetOrgPerson_userName']];
@@ -1034,11 +1034,11 @@ class inetOrgPerson extends baseModule {
 				else {
 					$errMsg = $this->messages['uid'][1];
 					array_push($errMsg, array($i));
-					$triggered_messages[] = $errMsg;
+					$errors[] = $errMsg;
 				}
 			}
 		}
-		return $triggered_messages;
+		return $errors;
 	}
 
 	
