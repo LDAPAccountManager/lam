@@ -214,7 +214,7 @@ class lamList {
 				}
 			}
 		}
-		if (sizeof($entries) == 0) StatusMessage("WARN", "", $this->labels['error_noneFound']);  // TODO correct message
+		if (sizeof($entries) == 0) StatusMessage("WARN", $this->labels['error_noneFound']);
 		return $entries;
 	}
 	
