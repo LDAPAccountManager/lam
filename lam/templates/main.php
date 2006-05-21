@@ -61,7 +61,7 @@ echo "<meta http-equiv=\"cache-control\" content=\"no-cache\">\n";
 echo ("<title>LDAP Account Manager</title>\n");
 echo ("<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">");
 echo ("</head>\n");
-echo ("<frameset rows=\"130,*\">\n");
+echo ("<frameset rows=\"150,*\">\n");
 echo ("<frame src=\"./main_header.php\" name=\"head\" frameborder=\"0\">\n");
 // display page to add suffixes, if needed
 if (sizeof($new_suffs) > 0) echo ("<frame src=\"initsuff.php?suffs='" . implode(";", $new_suffs) .
