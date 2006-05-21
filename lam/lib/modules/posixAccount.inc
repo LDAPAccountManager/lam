@@ -796,11 +796,44 @@ class posixAccount extends baseModule {
 			if ($_SESSION[$this->base]->isNewAccount && !get_preg($this->attributes['userPassword'][0], 'password'))
 			$errors['userPassword'][] = $this->messages['userPassword'][1];
 		}
-		$temp = $this->input_check();
-		// TODO is this really OK?
-		if (is_array($temp)) $errors = array_merge_recursive($errors, $temp);
+		$attributeList = array('gecos', 'homeDirectory');
+		for ($i = 0; $i < sizeof($attributeList); $i++) {
+			if (isset($this->attributes[$attributeList[$i]][0])) {
+				$value = $this->attributes[$attributeList[$i]][0];
+				$replacedValue = $this->checkASCII($value);
+				if ($value != $replacedValue) {
+					$this->attributes[$attributeList[$i]][0] = $replacedValue;
+					$errors['ascii'][] = array('WARN', $attributeList[$i], _('Changed value because only ASCII characters are allowed.'));
+				}
+			}
+		}
 		// Return error-messages
 		return $errors;
+	}
+
+	/**
+	* Checks if an attribute contains only ASCII charaters and replaces invalid characters.
+	*
+	* @param string $attribute attribute value
+	* @return string attribute value with replaced non-ASCII characters
+	*/
+	function checkASCII($attribute) {
+		// convert UTF8 to ASCII
+		$convert = array ( 'ä' => 'ae', 'Ä' => 'Ae', 'ö' => 'oe', 'Ö' => 'Oe', 'ü' => 'ue', 'Ü' => 'Ue',
+			'ß' => 'ss', 'é' => 'e', 'è' => 'e', 'ô' => 'o', 'ç' => 'c'
+			);
+		$index = array_keys($convert);
+		// replace special characters
+		for ($k = 0; $k < count($index); $k++) {
+			$attribute = str_replace($index[$k], $convert[$index[$k]], $attribute);
+		}
+		// remove remaining UTF-8 characters
+		for ($c = 0; $c < strlen($attribute); $c++) {
+			if (ord($attribute[$c]) > 127) {
+				$attribute = substr($attribute, 0, $c) . substr($attribute, $c + 2);
+			}
+		}
+		return $attribute;
 	}
 
 	/**

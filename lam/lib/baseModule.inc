@@ -556,67 +556,6 @@ class baseModule {
 	}
 
 	/**
-	* Checks if the attribute values follow the LDAP syntax.
-	* Not every LDAP attribute allows UTF-8 strings. Therefore we do a syntax check here
-	* and change UTF-8 strings to ASCII strings if needed.
-	* The maximum length of the attributes is checked, too.
-	*
-	* @return mixed 0 if no errors/warnings occured, otherwise an array of status messages.
-	* 
-	* TODO: remove this function and move checks to posixAccount.inc
-	*/
-	function input_check() {
-		$messages = array();
-		// Do a check for every ldap attribute
-		$attributes = array_keys($this->attributes);
-		for ($i=0; $i<count($attributes); $i++) {
-			if ($_SESSION['ldap']->attributes[$attributes[$i]]['SYNTAX']=='1.3.6.1.4.1.1466.115.121.1.36') {
-				// found numeric attribute
-				for ($j=0; $j<count($this->attributes[$attributes[$i]]); $j++)
-					if ($this->attributes[$attributes[$i]][$j]!=intval($this->attributes[$attributes[$i]][$j])) {
-					$this->attributes[$attributes[$i]][$j] = intval($this->attributes[$attributes[$i]][$j]);
-					$messages[$attributes[$i]] = array('WARN', _($attributes[$i]), _('Changed value %s because only numeric values are allowed.'));
-					}
-			}
-			else if ($_SESSION['ldap']->attributes[$attributes[$i]]['SYNTAX']=='1.3.6.1.4.1.1466.115.121.1.26' ||
-				$_SESSION['ldap']->attributes[$attributes[$i]]['SYNTAX']=='1.3.6.1.4.1.1466.115.121.1.44' ||
-				$_SESSION['ldap']->attributes[$attributes[$i]]['SYNTAX']=='1.3.6.1.4.1.1466.115.121.1.11') {
-				// found "7bit" ascii attribute
-				// convert utf8 in us-ascii
-				$convert = array ( 'ä' => 'ae', 'Ä' => 'Ae', 'ö' => 'Oe', 'ü' => 'ue', 'Ü' => 'Ue',
-					'ß' => 'ss', 'é' => 'e', 'è' => 'e', 'ô' => 'o', 'ç' => 'c'
-					);
-				$index = array_keys($convert);
-				for ($j=0; $j<count($this->attributes[$attributes[$i]]); $j++) {
-					$replaced = false;
-					// replace special characters
-					for ($k=0; $k<count($index); $k++) {
-						$temp = str_replace($index[$k], $convert[$index[$k]], $this->attributes[$attributes[$i]][$j]);
-						if ($temp!=$this->attributes[$attributes[$i]][$j]) {
-							$this->attributes[$attributes[$i]][$j] = $temp;
-							$replaced = true;
-						}
-					}
-					// remove remaining UTF-8 characters
-					for ($c = 0; $c < strlen($this->attributes[$attributes[$i]][$j]); $c++) {
-						if (ord($this->attributes[$attributes[$i]][$j][$c]) > 127) {
-							$this->attributes[$attributes[$i]][$j] = substr($this->attributes[$attributes[$i]][$j], 0, $c) .
-								substr($this->attributes[$attributes[$i]][$j], $c + 2);
-							$replaced = true;
-						}
-					}
-					if ($replaced) {
-						$messages[$attributes[$i]][] = array('WARN', _($attributes[$i]), _('Changed value because only ASCII characters are allowed.'));
-					}
-				}
-			}
-		// TODO length check
-		}
-		if (count($messages)!=0) return $messages;
-		else return 0;
-	}
-	
-	/**
 	* This function executes one post upload action.
 	*
 	* @param array $data array containing one account in each element
