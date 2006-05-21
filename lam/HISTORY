@@ -1,4 +1,4 @@
-??? 1.0.2
+24.05.2006 1.0.2
    - security enhancements: session timeout, logging, host restrictions
    - handle LDAP attribute aliases correctly
    - fixed bugs:
