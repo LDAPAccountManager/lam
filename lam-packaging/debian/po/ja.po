@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ja\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de\n"
-"POT-Creation-Date: 2006-05-22 14:26+0200\n"
+"POT-Creation-Date: 2006-05-22 14:34+0200\n"
 "PO-Revision-Date: 2005-08-17 17:22+0900\n"
 "Last-Translator: Yasuhiro Magara <gama@lifemedia.co.jp>\n"
 "Language-Team: Japanese <gama@users.sourceforge.jp>\n"
@@ -53,8 +53,7 @@ msgstr "別名の入力:"
 #, fuzzy
 msgid ""
 "LAM will add an alias to your httpd.conf which allows you to access LAM at "
-"http(s)://localhost/lam. If you want an alias other than \"lam\" then you "
-"can specify it here."
+"http(s)://localhost/lam. You may select an alias other than \"lam\"."
 msgstr ""
 "LAMは http(s)://localhost/lam としてLAMにアクセスできるように、httpd.confに別"
 "名を追加します。もしも\"lam\"以外の別名にしたい場合は、ここに入力してくださ"
@@ -63,7 +62,8 @@ msgstr ""
 #. Type: string
 #. Description
 #: ../templates:21
-msgid "Enter master configuration password (clear text):"
+#, fuzzy
+msgid "Master configuration password (clear text):"
 msgstr "マスター構成パスワードを入力してください(クリアテキスト):"
 
 #. Type: string

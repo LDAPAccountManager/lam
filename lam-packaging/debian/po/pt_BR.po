@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ldap-account-manager\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de\n"
-"POT-Creation-Date: 2006-05-22 14:26+0200\n"
+"POT-Creation-Date: 2006-05-22 14:34+0200\n"
 "PO-Revision-Date: 2006-04-09 18:49-0300\n"
 "Last-Translator: Felipe Augusto van de Wiel (faw) <felipe@cathedrallabs."
 "org>\n"
@@ -52,8 +52,7 @@ msgstr "Digite o apelido (alias):"
 #, fuzzy
 msgid ""
 "LAM will add an alias to your httpd.conf which allows you to access LAM at "
-"http(s)://localhost/lam. If you want an alias other than \"lam\" then you "
-"can specify it here."
+"http(s)://localhost/lam. You may select an alias other than \"lam\"."
 msgstr ""
 "LAM vai adicionar um apelido (alias) ao seu httpd.conf que permitirá que "
 "você acesse o LAM em http(s)://localhost/lam. Se você deseja um outro "
@@ -62,7 +61,8 @@ msgstr ""
 #. Type: string
 #. Description
 #: ../templates:21
-msgid "Enter master configuration password (clear text):"
+#, fuzzy
+msgid "Master configuration password (clear text):"
 msgstr "Digite a senha mestra de configuração (texto plano):"
 
 #. Type: string

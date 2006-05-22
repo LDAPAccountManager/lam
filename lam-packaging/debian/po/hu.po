@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LAM 0.4.2\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de\n"
-"POT-Creation-Date: 2006-05-22 14:26+0200\n"
+"POT-Creation-Date: 2006-05-22 14:34+0200\n"
 "PO-Revision-Date: 2005-08-25 23:12+0100\n"
 "Last-Translator: Kakasy Gergely <kakasy@citromail.hu>\n"
 "Language-Team: Hungarian <LL@li.org>\n"
@@ -57,8 +57,7 @@ msgstr "Adja meg az alias-t:"
 #, fuzzy
 msgid ""
 "LAM will add an alias to your httpd.conf which allows you to access LAM at "
-"http(s)://localhost/lam. If you want an alias other than \"lam\" then you "
-"can specify it here."
+"http(s)://localhost/lam. You may select an alias other than \"lam\"."
 msgstr ""
 "A LAM egy alias-t ad az Ön httpd.conf file-jához, ezzel lehetővé téve, hogy "
 "elérhesse a LAM-ot a http(s)://localhost/lam címen. Ha a \"lam\"-on kívül "
@@ -67,7 +66,8 @@ msgstr ""
 #. Type: string
 #. Description
 #: ../templates:21
-msgid "Enter master configuration password (clear text):"
+#, fuzzy
+msgid "Master configuration password (clear text):"
 msgstr "Adja meg a mester beállításokat védő jelszót (clear text):"
 
 #. Type: string

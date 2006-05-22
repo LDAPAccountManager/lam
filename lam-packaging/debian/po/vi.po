@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ldap-account-manager\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de\n"
-"POT-Creation-Date: 2006-05-22 14:26+0200\n"
+"POT-Creation-Date: 2006-05-22 14:34+0200\n"
 "PO-Revision-Date: 2006-04-06 15:36+0930\n"
 "Last-Translator: Clytie Siddall <clytie@riverland.net.au>\n"
 "Language-Team: Vietnamese <gnomevi-list@lists.sourceforge.net>\n"
@@ -47,8 +47,7 @@ msgstr "Gõ bí danh:"
 #, fuzzy
 msgid ""
 "LAM will add an alias to your httpd.conf which allows you to access LAM at "
-"http(s)://localhost/lam. If you want an alias other than \"lam\" then you "
-"can specify it here."
+"http(s)://localhost/lam. You may select an alias other than \"lam\"."
 msgstr ""
 "BQT sẽ thêm một bí danh vào tập tin cấu hình <httpd.conf> của bạn, mà cho "
 "phép bạn truy cập BQT tại <http(s)://localhost/lam>. Nếu bạn muốn có bí danh "
@@ -57,7 +56,8 @@ msgstr ""
 #. Type: string
 #. Description
 #: ../templates:21
-msgid "Enter master configuration password (clear text):"
+#, fuzzy
+msgid "Master configuration password (clear text):"
 msgstr "Gõ mật khẩu cấu hình chủ (chữ xem được):"
 
 #. Type: string

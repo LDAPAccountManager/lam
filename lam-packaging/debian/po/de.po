@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de\n"
-"POT-Creation-Date: 2006-05-22 14:26+0200\n"
+"POT-Creation-Date: 2006-05-22 14:34+0200\n"
 "PO-Revision-Date: 2005-11-10 17:12+0100\n"
 "Last-Translator: Roland Gruber <post@rolandgruber.de>\n"
 "Language-Team: Deutsch <lam-i18n@lists.sourceforge.org>\n"
@@ -56,8 +56,7 @@ msgstr "Alias eingeben:"
 #: ../templates:13
 msgid ""
 "LAM will add an alias to your httpd.conf which allows you to access LAM at "
-"http(s)://localhost/lam. If you want an alias other than \"lam\" then you "
-"can specify it here."
+"http(s)://localhost/lam. You may select an alias other than \"lam\"."
 msgstr ""
 "LAM wird der httpd.conf einen Alias hinzufügen, der es erlaubt LAM über http"
 "(s)://localhost/lam zu erreichen. Wenn Sie einen anderen Alias als \"lam\" "
@@ -66,8 +65,8 @@ msgstr ""
 #. Type: string
 #. Description
 #: ../templates:21
-msgid "Enter master configuration password (clear text):"
-msgstr "Geben Sie das Hauptpasswort für die Konfiguration an (im Klartext):"
+msgid "Master configuration password (clear text):"
+msgstr "Hauptpasswort für die Konfiguration (im Klartext):"
 
 #. Type: string
 #. Description
@@ -128,4 +127,3 @@ msgstr ""
 "Bitte beachten Sie, dass diese Version neue Dateiformate für die "
 "Konfiguration verwendet. Sie müssen die Konfiguration anpassen und die neuen "
 "Einstellungen speichern."
-
