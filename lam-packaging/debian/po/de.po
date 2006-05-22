@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de\n"
-"POT-Creation-Date: 2006-05-22 14:34+0200\n"
+"POT-Creation-Date: 2006-05-22 14:39+0200\n"
 "PO-Revision-Date: 2005-11-10 17:12+0100\n"
 "Last-Translator: Roland Gruber <post@rolandgruber.de>\n"
 "Language-Team: Deutsch <lam-i18n@lists.sourceforge.org>\n"
@@ -48,8 +48,8 @@ msgstr ""
 #. Type: string
 #. Description
 #: ../templates:13
-msgid "Enter alias:"
-msgstr "Alias eingeben:"
+msgid "Alias name:"
+msgstr "Aliasname:"
 
 #. Type: string
 #. Description

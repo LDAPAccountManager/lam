@@ -10,7 +10,7 @@ _Description: Web server configuration:
 Template: ldap-account-manager/alias
 Type: string
 Default: lam
-_Description: Enter alias:
+_Description: Alias name:
  LAM will add an alias to your httpd.conf which allows you to
  access LAM at http(s)://localhost/lam. You may select an alias other than
  "lam".

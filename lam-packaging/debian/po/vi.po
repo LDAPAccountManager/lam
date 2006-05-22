@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ldap-account-manager\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de\n"
-"POT-Creation-Date: 2006-05-22 14:34+0200\n"
+"POT-Creation-Date: 2006-05-22 14:39+0200\n"
 "PO-Revision-Date: 2006-04-06 15:36+0930\n"
 "Last-Translator: Clytie Siddall <clytie@riverland.net.au>\n"
 "Language-Team: Vietnamese <gnomevi-list@lists.sourceforge.net>\n"
@@ -38,8 +38,8 @@ msgstr ""
 #. Type: string
 #. Description
 #: ../templates:13
-msgid "Enter alias:"
-msgstr "Gõ bí danh:"
+msgid "Alias name:"
+msgstr ""
 
 #. Type: string
 #. Description
@@ -119,6 +119,9 @@ msgid ""
 msgstr ""
 "Hãy ghi chú rằng phiên bản này sử dụng dạng thức tập tin mới cho hồ sơ cấu "
 "hình. Vui lòng hiệu chỉnh các tập tin cấu hình và lưu thiết lập mới đó."
+
+#~ msgid "Enter alias:"
+#~ msgstr "Gõ bí danh:"
 
 #~ msgid "Which webserver would you like to configure automatically?"
 #~ msgstr "Bạn có muốn tự động cấu hình trình phục vụ Mạng nào?"

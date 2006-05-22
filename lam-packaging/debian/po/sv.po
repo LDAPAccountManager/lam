@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ldap-account-manager 0.5.1-1\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de\n"
-"POT-Creation-Date: 2006-05-22 14:34+0200\n"
+"POT-Creation-Date: 2006-05-22 14:39+0200\n"
 "PO-Revision-Date: 2006-04-05 18:57+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
@@ -45,8 +45,8 @@ msgstr ""
 #. Type: string
 #. Description
 #: ../templates:13
-msgid "Enter alias:"
-msgstr "Ange alias:"
+msgid "Alias name:"
+msgstr ""
 
 #. Type: string
 #. Description
@@ -126,6 +126,9 @@ msgstr ""
 "Notera att den här versionen använder nya filformat för "
 "konfigurationsprofiler. Redigera dina konfigurationsfiler och spara de nya "
 "inställningarna."
+
+#~ msgid "Enter alias:"
+#~ msgstr "Ange alias:"
 
 #~ msgid "Which webserver would you like to configure automatically?"
 #~ msgstr "Vilken webbserver vill du automatiskt konfigurera?"

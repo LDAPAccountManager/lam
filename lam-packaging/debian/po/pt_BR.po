@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ldap-account-manager\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de\n"
-"POT-Creation-Date: 2006-05-22 14:34+0200\n"
+"POT-Creation-Date: 2006-05-22 14:39+0200\n"
 "PO-Revision-Date: 2006-04-09 18:49-0300\n"
 "Last-Translator: Felipe Augusto van de Wiel (faw) <felipe@cathedrallabs."
 "org>\n"
@@ -43,8 +43,8 @@ msgstr ""
 #. Type: string
 #. Description
 #: ../templates:13
-msgid "Enter alias:"
-msgstr "Digite o apelido (alias):"
+msgid "Alias name:"
+msgstr ""
 
 #. Type: string
 #. Description
@@ -127,6 +127,9 @@ msgstr ""
 "Por favor note que esta versão utiliza novos formatos para a configuração "
 "dos perfis. Por favor edite seus arquivos de configuração e salve as novas "
 "configurações."
+
+#~ msgid "Enter alias:"
+#~ msgstr "Digite o apelido (alias):"
 
 #~ msgid "Which webserver would you like to configure automatically?"
 #~ msgstr "Qual servidor web você gostaria de configurar automaticamente?"

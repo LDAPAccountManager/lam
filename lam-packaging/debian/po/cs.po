@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ldap-account-manager\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de\n"
-"POT-Creation-Date: 2006-05-22 14:34+0200\n"
+"POT-Creation-Date: 2006-05-22 14:39+0200\n"
 "PO-Revision-Date: 2006-04-05 18:36+0200\n"
 "Last-Translator: Miroslav Kure <kurem@debian.cz>\n"
 "Language-Team: Czech <debian-l10n-czech@lists.debian.org>\n"
@@ -37,8 +37,8 @@ msgstr ""
 #. Type: string
 #. Description
 #: ../templates:13
-msgid "Enter alias:"
-msgstr "Zadejte alias:"
+msgid "Alias name:"
+msgstr ""
 
 #. Type: string
 #. Description
@@ -120,6 +120,9 @@ msgstr ""
 "Vemte prosím na vědomí, že tato verze používá nový formát konfiguračních "
 "profilů. Upravte prosím své konfigurační soubory a toto nové nastavení "
 "uložte ."
+
+#~ msgid "Enter alias:"
+#~ msgstr "Zadejte alias:"
 
 #~ msgid "Which webserver would you like to configure automatically?"
 #~ msgstr "Který webový server chcete nastavit automaticky?"

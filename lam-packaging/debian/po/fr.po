@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ldap-account-manager_1.0.0-1\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de\n"
-"POT-Creation-Date: 2006-05-22 14:34+0200\n"
+"POT-Creation-Date: 2006-05-22 14:39+0200\n"
 "PO-Revision-Date: 2006-03-04 09:24+0100\n"
 "Last-Translator: Steve Petruzzello <dlist@bluewin.ch>\n"
 "Language-Team: French <debian-l10n-french@lists.debian.org>\n"
@@ -45,8 +45,8 @@ msgstr ""
 #. Type: string
 #. Description
 #: ../templates:13
-msgid "Enter alias:"
-msgstr "Alias :"
+msgid "Alias name:"
+msgstr ""
 
 #. Type: string
 #. Description
@@ -129,6 +129,9 @@ msgstr ""
 "Veuillez noter que cette nouvelle version utilise de nouveaux formats de "
 "fichiers pour la configuration des profils. Vous devez mettre à jour votre "
 "configuration et sauver les nouveaux réglages."
+
+#~ msgid "Enter alias:"
+#~ msgstr "Alias :"
 
 #~ msgid "Which webserver would you like to configure automatically?"
 #~ msgstr "Serveur web à configurer automatiquement :"

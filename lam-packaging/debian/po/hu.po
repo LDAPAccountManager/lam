@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LAM 0.4.2\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de\n"
-"POT-Creation-Date: 2006-05-22 14:34+0200\n"
+"POT-Creation-Date: 2006-05-22 14:39+0200\n"
 "PO-Revision-Date: 2005-08-25 23:12+0100\n"
 "Last-Translator: Kakasy Gergely <kakasy@citromail.hu>\n"
 "Language-Team: Hungarian <LL@li.org>\n"
@@ -48,8 +48,8 @@ msgstr ""
 #. Type: string
 #. Description
 #: ../templates:13
-msgid "Enter alias:"
-msgstr "Adja meg az alias-t:"
+msgid "Alias name:"
+msgstr ""
 
 #. Type: string
 #. Description
@@ -130,6 +130,9 @@ msgstr ""
 "Kérem, jegyezze meg, hogy ez a verzió új file formátumokat használ a "
 "beállításokhoz és a témaszám-profilokhoz. Frissítenie kell a beállításait és "
 "új témaszámokat kell létrehoznia."
+
+#~ msgid "Enter alias:"
+#~ msgstr "Adja meg az alias-t:"
 
 #~ msgid "Which webserver would you like to configure automatically?"
 #~ msgstr "Mely webszervert szeretné automatikusan beállítani?"

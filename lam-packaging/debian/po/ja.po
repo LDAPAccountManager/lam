@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ja\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de\n"
-"POT-Creation-Date: 2006-05-22 14:34+0200\n"
+"POT-Creation-Date: 2006-05-22 14:39+0200\n"
 "PO-Revision-Date: 2005-08-17 17:22+0900\n"
 "Last-Translator: Yasuhiro Magara <gama@lifemedia.co.jp>\n"
 "Language-Team: Japanese <gama@users.sourceforge.jp>\n"
@@ -44,8 +44,8 @@ msgstr ""
 #. Type: string
 #. Description
 #: ../templates:13
-msgid "Enter alias:"
-msgstr "別名の入力:"
+msgid "Alias name:"
+msgstr ""
 
 #. Type: string
 #. Description
@@ -126,6 +126,9 @@ msgstr ""
 "注意：このバージョンでは新しいファイルフォーマットの構成とアカウントプロファ"
 "イルを使用します。構成のアップグレードとアカウントプロファイルの新規作成が必"
 "要です。"
+
+#~ msgid "Enter alias:"
+#~ msgstr "別名の入力:"
 
 #~ msgid "Which webserver would you like to configure automatically?"
 #~ msgstr "どのwebサーバーを自動構成しますか?"
