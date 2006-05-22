@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ldap-account-manager_1.0.0-1\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de\n"
-"POT-Creation-Date: 2006-02-27 14:33+0100\n"
+"POT-Creation-Date: 2006-05-22 14:26+0200\n"
 "PO-Revision-Date: 2006-03-04 09:24+0100\n"
 "Last-Translator: Steve Petruzzello <dlist@bluewin.ch>\n"
 "Language-Team: French <debian-l10n-french@lists.debian.org>\n"
@@ -26,8 +26,8 @@ msgstr ""
 #. Type: multiselect
 #. Description
 #: ../templates:5
-msgid "Which webserver would you like to configure automatically?"
-msgstr "Serveur web à configurer automatiquement :"
+msgid "Web server configuration:"
+msgstr ""
 
 #. Type: multiselect
 #. Description
@@ -51,10 +51,11 @@ msgstr "Alias :"
 #. Type: string
 #. Description
 #: ../templates:13
+#, fuzzy
 msgid ""
 "LAM will add an alias to your httpd.conf which allows you to access LAM at "
-"http(s)://localhost/lam. If you want an alias other than \"lam\" please "
-"specify it here."
+"http(s)://localhost/lam. If you want an alias other than \"lam\" then you "
+"can specify it here."
 msgstr ""
 "LAM ajoute un alias au fichier httpd.conf, ce qui permet d'accéder à LAM à "
 "l'adresse http(s)://localhost/lam. Si vous désirez un alias différent de "
@@ -69,10 +70,11 @@ msgstr "Mot de passe principal (en clair) :"
 #. Type: string
 #. Description
 #: ../templates:21
+#, fuzzy
 msgid ""
 "The configuration profiles are secured by a master password. You will need "
 "it to create and delete profiles. As default it is set to \"lam\" and can be "
-"changed directly in LAM. But you can also change it now."
+"changed directly in LAM."
 msgstr ""
 "Les profils de configuration sont protégés par un mot de passe principal. "
 "Vous en aurez besoin pour créer et effacer les profils. Sa valeur par défaut "
@@ -81,13 +83,13 @@ msgstr ""
 
 #. Type: boolean
 #. Description
-#: ../templates:30
+#: ../templates:29
 msgid "Would you like to restart your webserver(s) now?"
 msgstr "Faut-il redémarrer le(s) serveur(s) web maintenant ?"
 
 #. Type: boolean
 #. Description
-#: ../templates:30
+#: ../templates:29
 msgid "Your webserver(s) need to be restarted in order to apply the changes."
 msgstr ""
 "Le(s) serveur(s) web doivent être redémarrés afin que les changements soient "
@@ -95,13 +97,13 @@ msgstr ""
 
 #. Type: note
 #. Description
-#: ../templates:35
+#: ../templates:34
 msgid "Upgrade from pre-0.5.0 versions"
 msgstr "Mise à jour des versions pre-0.5.0"
 
 #. Type: note
 #. Description
-#: ../templates:35
+#: ../templates:34
 msgid ""
 "Please note that this version uses new file formats for configuration and "
 "account profiles. You will have to update your configuration and create new "
@@ -113,13 +115,13 @@ msgstr ""
 
 #. Type: note
 #. Description
-#: ../templates:42
+#: ../templates:41
 msgid "Upgrade from pre-1.0.0 versions"
 msgstr "Mise à jour des versions pre-1.0.0"
 
 #. Type: note
 #. Description
-#: ../templates:42
+#: ../templates:41
 msgid ""
 "Please note that this version uses new file formats for the configuration "
 "profiles. Please edit your configuration files and save the new settings."
@@ -127,3 +129,6 @@ msgstr ""
 "Veuillez noter que cette nouvelle version utilise de nouveaux formats de "
 "fichiers pour la configuration des profils. Vous devez mettre à jour votre "
 "configuration et sauver les nouveaux réglages."
+
+#~ msgid "Which webserver would you like to configure automatically?"
+#~ msgstr "Serveur web à configurer automatiquement :"

@@ -2,8 +2,9 @@ Source: ldap-account-manager
 Maintainer: Roland Gruber <post@rolandgruber.de>
 Section: web
 Priority: extra
-Standards-Version: 3.6.2
-Build-Depends-Indep: po-debconf, debhelper (>= 4.1.16)
+Standards-Version: 3.7.2
+Build-Depends-Indep: po-debconf
+Build-Depends: debhelper (>= 4.1.16)
 
 Package: ldap-account-manager
 Architecture: all

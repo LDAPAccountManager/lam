@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ldap-account-manager 0.5.1-1\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de\n"
-"POT-Creation-Date: 2006-04-05 17:55+0200\n"
+"POT-Creation-Date: 2006-05-22 14:26+0200\n"
 "PO-Revision-Date: 2006-04-05 18:57+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
@@ -26,14 +26,21 @@ msgstr ""
 #. Type: multiselect
 #. Description
 #: ../templates:5
-msgid "Which webserver would you like to configure automatically?"
-msgstr "Vilken webbserver vill du automatiskt konfigurera?"
+msgid "Web server configuration:"
+msgstr ""
 
 #. Type: multiselect
 #. Description
 #: ../templates:5
-msgid "LDAP Account Manager supports any webserver that supports PHP4, but this automatic configuration process only supports Apache and Apache2. If you choose to configure Apache(2) LAM can be accessed at http(s)://localhost/lam"
-msgstr "LDAP Account Manager har stöd för de webbservrar som har stöd för PHP4 men den här automatiska konfigurationsprocessen har endast stöd för Apache och Apache2. Om du väljer att konfigurera Apache(2) kan LAM nås på http(s)://localhost/lam"
+msgid ""
+"LDAP Account Manager supports any webserver that supports PHP4, but this "
+"automatic configuration process only supports Apache and Apache2. If you "
+"choose to configure Apache(2) LAM can be accessed at http(s)://localhost/lam"
+msgstr ""
+"LDAP Account Manager har stöd för de webbservrar som har stöd för PHP4 men "
+"den här automatiska konfigurationsprocessen har endast stöd för Apache och "
+"Apache2. Om du väljer att konfigurera Apache(2) kan LAM nås på http(s)://"
+"localhost/lam"
 
 #. Type: string
 #. Description
@@ -44,8 +51,15 @@ msgstr "Ange alias:"
 #. Type: string
 #. Description
 #: ../templates:13
-msgid "LAM will add an alias to your httpd.conf which allows you to access LAM at http(s)://localhost/lam. If you want an alias other than \"lam\" please specify it here."
-msgstr "LAM kommer att lägga till ett alias till din httpd.conf som låter dig att nå LAM på http(s)://localhost/lam. Om du vill använda ett annat alias än \"lam\" kan du ange det här."
+#, fuzzy
+msgid ""
+"LAM will add an alias to your httpd.conf which allows you to access LAM at "
+"http(s)://localhost/lam. If you want an alias other than \"lam\" then you "
+"can specify it here."
+msgstr ""
+"LAM kommer att lägga till ett alias till din httpd.conf som låter dig att nå "
+"LAM på http(s)://localhost/lam. Om du vill använda ett annat alias än \"lam"
+"\" kan du ange det här."
 
 #. Type: string
 #. Description
@@ -56,44 +70,65 @@ msgstr "Ange lösenord för huvudkonfigurationen (klartext):"
 #. Type: string
 #. Description
 #: ../templates:21
-msgid "The configuration profiles are secured by a master password. You will need it to create and delete profiles. As default it is set to \"lam\" and can be changed directly in LAM. But you can also change it now."
-msgstr "Konfigurationsprofilerna är uppsäkrade av ett huvudlösenord. Du kommer att behöva det för att skapa och ta bort profiler. Som standard är det satt till \"lam\" och kan ändras direkt i LAM men du kan även ändra det här och nu."
+#, fuzzy
+msgid ""
+"The configuration profiles are secured by a master password. You will need "
+"it to create and delete profiles. As default it is set to \"lam\" and can be "
+"changed directly in LAM."
+msgstr ""
+"Konfigurationsprofilerna är uppsäkrade av ett huvudlösenord. Du kommer att "
+"behöva det för att skapa och ta bort profiler. Som standard är det satt till "
+"\"lam\" och kan ändras direkt i LAM men du kan även ändra det här och nu."
 
 #. Type: boolean
 #. Description
-#: ../templates:30
+#: ../templates:29
 msgid "Would you like to restart your webserver(s) now?"
 msgstr "Vill du starta om din webbserver nu?"
 
 #. Type: boolean
 #. Description
-#: ../templates:30
+#: ../templates:29
 msgid "Your webserver(s) need to be restarted in order to apply the changes."
 msgstr "Din webbserver behöver startas om för att ändringarna ska bli aktiva."
 
 #. Type: note
 #. Description
-#: ../templates:35
+#: ../templates:34
 msgid "Upgrade from pre-0.5.0 versions"
 msgstr "Uppgradera från versioner före 0.5.0"
 
 #. Type: note
 #. Description
-#: ../templates:35
-msgid "Please note that this version uses new file formats for configuration and account profiles. You will have to update your configuration and create new account profiles."
-msgstr "Notera att den här versionen använder nya filformat för konfiguration och kontoprofiler. Du behöver uppdatera din konfiguration och skapa nya kontoprofiler."
+#: ../templates:34
+msgid ""
+"Please note that this version uses new file formats for configuration and "
+"account profiles. You will have to update your configuration and create new "
+"account profiles."
+msgstr ""
+"Notera att den här versionen använder nya filformat för konfiguration och "
+"kontoprofiler. Du behöver uppdatera din konfiguration och skapa nya "
+"kontoprofiler."
 
 #. Type: note
 #. Description
-#: ../templates:42
+#: ../templates:41
 msgid "Upgrade from pre-1.0.0 versions"
 msgstr "Uppgradera från versioner före 1.0.0"
 
 #. Type: note
 #. Description
-#: ../templates:42
-msgid "Please note that this version uses new file formats for the configuration profiles. Please edit your configuration files and save the new settings."
-msgstr "Notera att den här versionen använder nya filformat för konfigurationsprofiler. Redigera dina konfigurationsfiler och spara de nya inställningarna."
+#: ../templates:41
+msgid ""
+"Please note that this version uses new file formats for the configuration "
+"profiles. Please edit your configuration files and save the new settings."
+msgstr ""
+"Notera att den här versionen använder nya filformat för "
+"konfigurationsprofiler. Redigera dina konfigurationsfiler och spara de nya "
+"inställningarna."
+
+#~ msgid "Which webserver would you like to configure automatically?"
+#~ msgstr "Vilken webbserver vill du automatiskt konfigurera?"
 
 #~ msgid ""
 #~ "Remember that in order to apply the changes your webserver(s) need to be "
@@ -101,6 +136,6 @@ msgstr "Notera att den här versionen använder nya filformat för konfigurationspr
 #~ msgstr ""
 #~ "Tänk på att för att verkställa ändringarna till din webbserver behöver "
 #~ "den startas om."
+
 #~ msgid "It seems that you are upgrading LAM from a version before 0.5.0."
 #~ msgstr "Det verkar som om du uppgraderar LAM från en version före 0.5.0."
-

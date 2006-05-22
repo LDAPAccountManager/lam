@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de\n"
-"POT-Creation-Date: 2006-04-05 17:55+0200\n"
+"POT-Creation-Date: 2006-05-22 14:26+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,7 +19,7 @@ msgstr ""
 #. Type: multiselect
 #. Description
 #: ../templates:5
-msgid "Which webserver would you like to configure automatically?"
+msgid "Web server configuration:"
 msgstr ""
 
 #. Type: multiselect
@@ -42,8 +42,8 @@ msgstr ""
 #: ../templates:13
 msgid ""
 "LAM will add an alias to your httpd.conf which allows you to access LAM at "
-"http(s)://localhost/lam. If you want an alias other than \"lam\" please "
-"specify it here."
+"http(s)://localhost/lam. If you want an alias other than \"lam\" then you "
+"can specify it here."
 msgstr ""
 
 #. Type: string
@@ -58,30 +58,30 @@ msgstr ""
 msgid ""
 "The configuration profiles are secured by a master password. You will need "
 "it to create and delete profiles. As default it is set to \"lam\" and can be "
-"changed directly in LAM. But you can also change it now."
+"changed directly in LAM."
 msgstr ""
 
 #. Type: boolean
 #. Description
-#: ../templates:30
+#: ../templates:29
 msgid "Would you like to restart your webserver(s) now?"
 msgstr ""
 
 #. Type: boolean
 #. Description
-#: ../templates:30
+#: ../templates:29
 msgid "Your webserver(s) need to be restarted in order to apply the changes."
 msgstr ""
 
 #. Type: note
 #. Description
-#: ../templates:35
+#: ../templates:34
 msgid "Upgrade from pre-0.5.0 versions"
 msgstr ""
 
 #. Type: note
 #. Description
-#: ../templates:35
+#: ../templates:34
 msgid ""
 "Please note that this version uses new file formats for configuration and "
 "account profiles. You will have to update your configuration and create new "
@@ -90,13 +90,13 @@ msgstr ""
 
 #. Type: note
 #. Description
-#: ../templates:42
+#: ../templates:41
 msgid "Upgrade from pre-1.0.0 versions"
 msgstr ""
 
 #. Type: note
 #. Description
-#: ../templates:42
+#: ../templates:41
 msgid ""
 "Please note that this version uses new file formats for the configuration "
 "profiles. Please edit your configuration files and save the new settings."

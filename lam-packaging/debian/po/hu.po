@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LAM 0.4.2\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de\n"
-"POT-Creation-Date: 2005-11-08 20:24+0100\n"
+"POT-Creation-Date: 2006-05-22 14:26+0200\n"
 "PO-Revision-Date: 2005-08-25 23:12+0100\n"
 "Last-Translator: Kakasy Gergely <kakasy@citromail.hu>\n"
 "Language-Team: Hungarian <LL@li.org>\n"
@@ -29,8 +29,8 @@ msgstr ""
 #. Type: multiselect
 #. Description
 #: ../templates:5
-msgid "Which webserver would you like to configure automatically?"
-msgstr "Mely webszervert szeretné automatikusan beállítani?"
+msgid "Web server configuration:"
+msgstr ""
 
 #. Type: multiselect
 #. Description
@@ -54,10 +54,11 @@ msgstr "Adja meg az alias-t:"
 #. Type: string
 #. Description
 #: ../templates:13
+#, fuzzy
 msgid ""
 "LAM will add an alias to your httpd.conf which allows you to access LAM at "
-"http(s)://localhost/lam. If you want an alias other than \"lam\" please "
-"specify it here."
+"http(s)://localhost/lam. If you want an alias other than \"lam\" then you "
+"can specify it here."
 msgstr ""
 "A LAM egy alias-t ad az Ön httpd.conf file-jához, ezzel lehetővé téve, hogy "
 "elérhesse a LAM-ot a http(s)://localhost/lam címen. Ha a \"lam\"-on kívül "
@@ -72,10 +73,11 @@ msgstr "Adja meg a mester beállításokat védő jelszót (clear text):"
 #. Type: string
 #. Description
 #: ../templates:21
+#, fuzzy
 msgid ""
 "The configuration profiles are secured by a master password. You will need "
 "it to create and delete profiles. As default it is set to \"lam\" and can be "
-"changed directly in LAM. But you can also change it now."
+"changed directly in LAM."
 msgstr ""
 "A beállítási profilokat mesterjelszó védi. Ezt a profilok létrehozásához és "
 "törléséhez létre kell hoznia. Alapértelmezés szerint a jelszó \"lam\", és a "
@@ -83,25 +85,25 @@ msgstr ""
 
 #. Type: boolean
 #. Description
-#: ../templates:30
+#: ../templates:29
 msgid "Would you like to restart your webserver(s) now?"
 msgstr "Szeretné a webszerver(eket) most újraindítani?"
 
 #. Type: boolean
 #. Description
-#: ../templates:30
+#: ../templates:29
 msgid "Your webserver(s) need to be restarted in order to apply the changes."
 msgstr ""
 
 #. Type: note
 #. Description
-#: ../templates:35
+#: ../templates:34
 msgid "Upgrade from pre-0.5.0 versions"
 msgstr ""
 
 #. Type: note
 #. Description
-#: ../templates:35
+#: ../templates:34
 msgid ""
 "Please note that this version uses new file formats for configuration and "
 "account profiles. You will have to update your configuration and create new "
@@ -110,6 +112,27 @@ msgstr ""
 "Kérem, jegyezze meg, hogy ez a verzió új file formátumokat használ a "
 "beállításokhoz és a témaszám-profilokhoz. Frissítenie kell a beállításait és "
 "új témaszámokat kell létrehoznia."
+
+#. Type: note
+#. Description
+#: ../templates:41
+msgid "Upgrade from pre-1.0.0 versions"
+msgstr ""
+
+#. Type: note
+#. Description
+#: ../templates:41
+#, fuzzy
+msgid ""
+"Please note that this version uses new file formats for the configuration "
+"profiles. Please edit your configuration files and save the new settings."
+msgstr ""
+"Kérem, jegyezze meg, hogy ez a verzió új file formátumokat használ a "
+"beállításokhoz és a témaszám-profilokhoz. Frissítenie kell a beállításait és "
+"új témaszámokat kell létrehoznia."
+
+#~ msgid "Which webserver would you like to configure automatically?"
+#~ msgstr "Mely webszervert szeretné automatikusan beállítani?"
 
 #~ msgid ""
 #~ "Remember that in order to apply the changes your webserver(s) need to be "

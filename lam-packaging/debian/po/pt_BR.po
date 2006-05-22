@@ -6,24 +6,26 @@
 # 
 # 
 msgid ""
-msgstr "pt_BR\n"
+msgstr ""
 "Project-Id-Version: ldap-account-manager\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de\n"
-"POT-Creation-Date: 2006-04-05 17:55+0200\n"
+"POT-Creation-Date: 2006-05-22 14:26+0200\n"
 "PO-Revision-Date: 2006-04-09 18:49-0300\n"
-"Last-Translator: Felipe Augusto van de Wiel (faw) <felipe@cathedrallabs.org>\n"
+"Last-Translator: Felipe Augusto van de Wiel (faw) <felipe@cathedrallabs."
 "org>\n"
 "Language-Team: l10n-portuguese <debian-l10n-portuguese@lists.debian.org\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: \n"
+"pt_BR\n"
+"org>\n"
 "pt_BR utf8\n"
 
 #. Type: multiselect
 #. Description
 #: ../templates:5
-msgid "Which webserver would you like to configure automatically?"
-msgstr "Qual servidor web você gostaria de configurar automaticamente?"
+msgid "Web server configuration:"
+msgstr ""
 
 #. Type: multiselect
 #. Description
@@ -47,10 +49,11 @@ msgstr "Digite o apelido (alias):"
 #. Type: string
 #. Description
 #: ../templates:13
+#, fuzzy
 msgid ""
 "LAM will add an alias to your httpd.conf which allows you to access LAM at "
-"http(s)://localhost/lam. If you want an alias other than \"lam\" please "
-"specify it here."
+"http(s)://localhost/lam. If you want an alias other than \"lam\" then you "
+"can specify it here."
 msgstr ""
 "LAM vai adicionar um apelido (alias) ao seu httpd.conf que permitirá que "
 "você acesse o LAM em http(s)://localhost/lam. Se você deseja um outro "
@@ -65,10 +68,11 @@ msgstr "Digite a senha mestra de configuração (texto plano):"
 #. Type: string
 #. Description
 #: ../templates:21
+#, fuzzy
 msgid ""
 "The configuration profiles are secured by a master password. You will need "
 "it to create and delete profiles. As default it is set to \"lam\" and can be "
-"changed directly in LAM. But you can also change it now."
+"changed directly in LAM."
 msgstr ""
 "Os perfis de configuração são protegidos por uma senha mestra. Você "
 "precisará dela para criar e remover perfis. Como padrão ela está definida "
@@ -77,13 +81,13 @@ msgstr ""
 
 #. Type: boolean
 #. Description
-#: ../templates:30
+#: ../templates:29
 msgid "Would you like to restart your webserver(s) now?"
 msgstr "Você gostaria de reiniciar seu(s) servidor(es) web agora?"
 
 #. Type: boolean
 #. Description
-#: ../templates:30
+#: ../templates:29
 msgid "Your webserver(s) need to be restarted in order to apply the changes."
 msgstr ""
 "Seu(s) servidor(es) web precisa(m) ser reiniciado(s) para que as alterações "
@@ -91,13 +95,13 @@ msgstr ""
 
 #. Type: note
 #. Description
-#: ../templates:35
+#: ../templates:34
 msgid "Upgrade from pre-0.5.0 versions"
 msgstr "Atualizar de versões pre-0.5.0"
 
 #. Type: note
 #. Description
-#: ../templates:35
+#: ../templates:34
 msgid ""
 "Please note that this version uses new file formats for configuration and "
 "account profiles. You will have to update your configuration and create new "
@@ -109,13 +113,13 @@ msgstr ""
 
 #. Type: note
 #. Description
-#: ../templates:42
+#: ../templates:41
 msgid "Upgrade from pre-1.0.0 versions"
 msgstr "Atualizar a partir de versões anteriores a 1.0.0"
 
 #. Type: note
 #. Description
-#: ../templates:42
+#: ../templates:41
 msgid ""
 "Please note that this version uses new file formats for the configuration "
 "profiles. Please edit your configuration files and save the new settings."
@@ -123,3 +127,6 @@ msgstr ""
 "Por favor note que esta versão utiliza novos formatos para a configuração "
 "dos perfis. Por favor edite seus arquivos de configuração e salve as novas "
 "configurações."
+
+#~ msgid "Which webserver would you like to configure automatically?"
+#~ msgstr "Qual servidor web você gostaria de configurar automaticamente?"

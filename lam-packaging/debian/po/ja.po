@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ja\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de\n"
-"POT-Creation-Date: 2005-11-08 20:24+0100\n"
+"POT-Creation-Date: 2006-05-22 14:26+0200\n"
 "PO-Revision-Date: 2005-08-17 17:22+0900\n"
 "Last-Translator: Yasuhiro Magara <gama@lifemedia.co.jp>\n"
 "Language-Team: Japanese <gama@users.sourceforge.jp>\n"
@@ -26,8 +26,8 @@ msgstr ""
 #. Type: multiselect
 #. Description
 #: ../templates:5
-msgid "Which webserver would you like to configure automatically?"
-msgstr "どのwebサーバーを自動構成しますか?"
+msgid "Web server configuration:"
+msgstr ""
 
 #. Type: multiselect
 #. Description
@@ -50,10 +50,11 @@ msgstr "別名の入力:"
 #. Type: string
 #. Description
 #: ../templates:13
+#, fuzzy
 msgid ""
 "LAM will add an alias to your httpd.conf which allows you to access LAM at "
-"http(s)://localhost/lam. If you want an alias other than \"lam\" please "
-"specify it here."
+"http(s)://localhost/lam. If you want an alias other than \"lam\" then you "
+"can specify it here."
 msgstr ""
 "LAMは http(s)://localhost/lam としてLAMにアクセスできるように、httpd.confに別"
 "名を追加します。もしも\"lam\"以外の別名にしたい場合は、ここに入力してくださ"
@@ -68,10 +69,11 @@ msgstr "マスター構成パスワードを入力してください(クリア�
 #. Type: string
 #. Description
 #: ../templates:21
+#, fuzzy
 msgid ""
 "The configuration profiles are secured by a master password. You will need "
 "it to create and delete profiles. As default it is set to \"lam\" and can be "
-"changed directly in LAM. But you can also change it now."
+"changed directly in LAM."
 msgstr ""
 "構成プロファイルはマスターパスワードで保護されます。マスターパスワードは、プ"
 "ロファイルの新規作成および削除の際に必要となります。デフォルトでは\"lam\"が設"
@@ -79,25 +81,25 @@ msgstr ""
 
 #. Type: boolean
 #. Description
-#: ../templates:30
+#: ../templates:29
 msgid "Would you like to restart your webserver(s) now?"
 msgstr "今すぐwebサーバーを再起動しますか?"
 
 #. Type: boolean
 #. Description
-#: ../templates:30
+#: ../templates:29
 msgid "Your webserver(s) need to be restarted in order to apply the changes."
 msgstr ""
 
 #. Type: note
 #. Description
-#: ../templates:35
+#: ../templates:34
 msgid "Upgrade from pre-0.5.0 versions"
 msgstr ""
 
 #. Type: note
 #. Description
-#: ../templates:35
+#: ../templates:34
 msgid ""
 "Please note that this version uses new file formats for configuration and "
 "account profiles. You will have to update your configuration and create new "
@@ -106,6 +108,27 @@ msgstr ""
 "注意：このバージョンでは新しいファイルフォーマットの構成とアカウントプロファ"
 "イルを使用します。構成のアップグレードとアカウントプロファイルの新規作成が必"
 "要です。"
+
+#. Type: note
+#. Description
+#: ../templates:41
+msgid "Upgrade from pre-1.0.0 versions"
+msgstr ""
+
+#. Type: note
+#. Description
+#: ../templates:41
+#, fuzzy
+msgid ""
+"Please note that this version uses new file formats for the configuration "
+"profiles. Please edit your configuration files and save the new settings."
+msgstr ""
+"注意：このバージョンでは新しいファイルフォーマットの構成とアカウントプロファ"
+"イルを使用します。構成のアップグレードとアカウントプロファイルの新規作成が必"
+"要です。"
+
+#~ msgid "Which webserver would you like to configure automatically?"
+#~ msgstr "どのwebサーバーを自動構成しますか?"
 
 #~ msgid ""
 #~ "Remember that in order to apply the changes your webserver(s) need to be "

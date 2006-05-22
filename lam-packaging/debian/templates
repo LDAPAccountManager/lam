@@ -2,7 +2,7 @@ Template: ldap-account-manager/config-webserver
 Type: multiselect
 Choices: apache, apache-ssl, apache-perl, apache2
 Default: apache, apache-ssl, apache-perl, apache2
-_Description: Which webserver would you like to configure automatically?
+_Description: Web server configuration:
  LDAP Account Manager supports any webserver that supports PHP4, but this
  automatic configuration process only supports Apache and Apache2.
  If you choose to configure Apache(2) LAM can be accessed at http(s)://localhost/lam
@@ -13,7 +13,7 @@ Default: lam
 _Description: Enter alias:
  LAM will add an alias to your httpd.conf which allows you to
  access LAM at http(s)://localhost/lam. If you want an alias other than
- "lam" please specify it here.
+ "lam" then you can specify it here.
 
 Template: ldap-account-manager/passwd
 Type: string
@@ -21,8 +21,7 @@ Default: lam
 _Description: Enter master configuration password (clear text):
  The configuration profiles are secured by a master password.
  You will need it to create and delete profiles. As default it is
- set to "lam" and can be changed directly in LAM. But you can also
- change it now.
+ set to "lam" and can be changed directly in LAM.
 
 Template: ldap-account-manager/restart-webserver
 Type: boolean
