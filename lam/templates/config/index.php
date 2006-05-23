@@ -63,7 +63,7 @@ echo $_SESSION['header'];
 		<TABLE border="0">
 		<?php
 			if (is_dir("../selfService")) echo "<tr><td rowspan=4 width=20>&nbsp;</td><td></td><td></td></tr>\n";
-			else echo "<tr><td rowspan=2 width=20>&nbsp;</td><td></td><td></td></tr>\n";
+			else echo "<tr><td rowspan=3 width=20>&nbsp;</td><td></td><td></td></tr>\n";
 		?>
 		<TR>
 			<TD width="60" height="70">
