@@ -53,25 +53,26 @@ $types = $_SESSION['config']->get_ActiveTypes();
 <table border=0 width="100%">
 	<tr>
 		<td width="200">
-			<img alt="donations" src="../graphics/smile.png">&nbsp;<a href="http://lam.sourceforge.net/sponsors/donations.htm" target="_blank"><?php echo _("Donate") ?></a>
+			<a href="http://lam.sourceforge.net/sponsors/donations.htm" target="_blank"><img alt="donations" src="../graphics/smile.png">&nbsp;<?php echo _("Donate") ?></a>
 			<br><br>
-			<img alt="tools" src="../graphics/tools.png">&nbsp;<a href="tools.php" target="mainpart"><BIG><B><?php echo _("Tools") ?></B></BIG></a>
+			<a href="tools.php" target="mainpart"><img alt="tools" src="../graphics/tools.png">&nbsp;<BIG><B><?php echo _("Tools") ?></B></BIG></a>
 		</td>
 		<td align="center">
 			<a href="http://lam.sourceforge.net" target="new_window"><img src="../graphics/banner.jpg" border=1 alt="LDAP Account Manager"></a>
 		</td>
-	<td width="200" align="right" height=20><img alt="logout" src="../graphics/go.png">&nbsp;<a href="./logout.php" target="_top"><big><b><?php echo _("Logout") ?></b></big></a></td>
+	<td width="200" align="right" height=20><a href="./logout.php" target="_top"><img alt="logout" src="../graphics/go.png">&nbsp;<big><b><?php echo _("Logout") ?></b></big></a></td>
 	</tr>
 </table>
 	<p align="center">
 		<?php
 			$linkList = array();
 			if ($_SESSION['config']->get_Suffix('tree') != "") {
-				$linkList[] = '<img alt="tree view" src="../graphics/process.png">&nbsp;<a href="./tree/tree_view.php" target="mainpart"><big>' . _("Tree view") . '</big></a>' . "\n";
+				$linkList[] = '<a href="./tree/tree_view.php" target="mainpart"><img alt="tree view" src="../graphics/process.png">&nbsp;<big>' . _("Tree view") . '</big></a>' . "\n";
 			}
 			for ($i = 0; $i < sizeof($types); $i++) {
-					$linkList[] = '<img alt="' . $types[$i] . '" src="../graphics/' . $types[$i] . '.png">&nbsp;' .
-						'<a href="./lists/list.php?type=' . $types[$i] . '" target="mainpart"><big>' . getTypeAlias($types[$i]) . '</big></a>';
+					$linkList[] = '<a href="./lists/list.php?type=' . $types[$i] . '" target="mainpart">' .
+					'<img alt="' . $types[$i] . '" src="../graphics/' . $types[$i] . '.png">&nbsp;' .
+					'<big>' . getTypeAlias($types[$i]) . '</big></a>';
 			}
 			echo implode('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;', $linkList);
 		?>
