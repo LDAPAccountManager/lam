@@ -592,9 +592,10 @@ class posixGroup extends baseModule {
 					else $this->userPassword_lock=false;
 				}
 			}
+		}
 		if ($post['changegids']) $this->changegids=true;
 		else $this->changegids=false;
-		if ($this->attributes['gidNumber'][0]!=$post['gidNumber']) {
+		if (($this->attributes['gidNumber'][0] != $post['gidNumber']) || !isset($this->attributes['gidNumber'][0])) {
 			// Check if GID is valid. If none value was entered, the next useable value will be inserted
 			// load min and max GID number
 			$minID = intval($this->moduleSettings['posixGroup_minGID'][0]);
@@ -605,7 +606,7 @@ class posixGroup extends baseModule {
 				foreach ($dn_gids as $gid) $gids[] = $gid[0];
 				sort ($gids, SORT_NUMERIC);
 			}
-			$this->attributes['gidNumber'][0]=$post['gidNumber'];
+			$this->attributes['gidNumber'][0] = $post['gidNumber'];
 			if ($this->attributes['gidNumber'][0]=='') {
 				// No id-number given, find free GID
 				if ($this->orig['gidNumber'][0]=='') {
@@ -623,11 +624,18 @@ class posixGroup extends baseModule {
 			else {
 				// Check manual ID
 				// id-number is out of valid range
-				if (($this->attributes['gidNumber'][0] < $minID) || ($this->attributes['gidNumber'][0] > $maxID) || !is_numeric($this->attributes['gidNumber'][0])) $errors['gidNumber'][] = array('ERROR', _('ID-Number'), sprintf(_('Please enter a value between %s and %s!'), $minID, $maxID));
+				if (($this->attributes['gidNumber'][0] < $minID) || ($this->attributes['gidNumber'][0] > $maxID) || !is_numeric($this->attributes['gidNumber'][0])) {
+					$errors['gidNumber'][] = array('ERROR', _('ID-Number'), sprintf(_('Please enter a value between %s and %s!'), $minID, $maxID));
+					if (isset($this->orig['gidNumber'][0])) $this->attributes['gidNumber'][0] = $this->orig['gidNumber'][0];
+					else unset($this->attributes['gidNumber'][0]);
+				}
 				// $uids is allways an array but not if no entries were found
 				if (is_array($gids)) {
 					// id-number is in use and account is a new account
-					if ((in_array($this->attributes['gidNumber'][0], $gids)) && $this->orig['gidNumber'][0]=='') $errors['gidNumber'][] = array('ERROR', _('ID-Number'), _('ID is already in use'));
+					if ((in_array($this->attributes['gidNumber'][0], $gids)) && $this->orig['gidNumber'][0]=='') {
+						$errors['gidNumber'][] = array('ERROR', _('ID-Number'), _('ID is already in use'));
+						unset($this->attributes['gidNumber'][0]);
+					}
 					// id-number is in use, account is existing account and id-number is not used by itself
 					if ((in_array($this->attributes['gidNumber'][0], $gids)) && $this->orig['gidNumber'][0]!='' && ($this->orig['gidNumber'][0] != $this->attributes['gidNumber'][0]) ) {
 						$errors['gidNumber'][] = $this->messages['gidNumber'][4];
@@ -685,12 +693,11 @@ class posixGroup extends baseModule {
 				$errors['cn'][] = $this->messages['cn'][0];
 			}
 			// show info when gidnumber has changed
-			if (($this->orig['gidNumber'][0]!=$this->attributes['gidNumber'][0]) && $this->orig['gidNumber'][0]!='' && $post['gidNumber']!=$this->attributes['gidNumber'][0])
-			$errors['gidNumber'][] = $this->messages['gidNumber'][0];
-		}
+			if (($this->orig['gidNumber'][0]!=$this->attributes['gidNumber'][0]) && $this->orig['gidNumber'][0]!='' && $post['gidNumber']!=$this->attributes['gidNumber'][0]) {
+				$errors['gidNumber'][] = $this->messages['gidNumber'][0];
+			}
 		}
 		// Return error-messages
-		print_r($errors);
 		return $errors;
 	}
 
