@@ -654,6 +654,17 @@ class baseModule {
 		if (isset($this->meta['extensions']) && is_array($this->meta['extensions'])) return $this->meta['extensions'];
 		else return array();		
 	}
+	
+	/**
+	 * Returns a list of possible search attributes for the self service.
+	 *
+	 * @return array attributes
+	 */
+	function getSelfServiceSearchAttributes() {
+		if (isset($this->meta['selfServiceSearchAttributes']) && is_array($this->meta['selfServiceSearchAttributes'])) return $this->meta['selfServiceSearchAttributes'];
+		else return array();			
+	}
+
 
 }
 
