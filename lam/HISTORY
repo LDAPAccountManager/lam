@@ -1,3 +1,10 @@
+??? 1.0.3
+   - fixed bugs:
+    -> Kolab: fixed problem with message about missing password
+    -> Unix groups: fixed auto GID
+    -> Shadow: account expiration date was incorrect in some time zones
+
+
 24.05.2006 1.0.2
    - security enhancements: session timeout, logging, host restrictions
    - handle LDAP attribute aliases correctly
