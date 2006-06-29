@@ -13,10 +13,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: ldap-account-manager_1.0.0-1\n"
+"Project-Id-Version: ldap-account-manager_1.0.2-1\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de\n"
 "POT-Creation-Date: 2006-05-22 14:39+0200\n"
-"PO-Revision-Date: 2006-03-04 09:24+0100\n"
+"PO-Revision-Date: 2006-05-26 11:45+0100\n"
 "Last-Translator: Steve Petruzzello <dlist@bluewin.ch>\n"
 "Language-Team: French <debian-l10n-french@lists.debian.org>\n"
 "MIME-Version: 1.0\n"
@@ -27,7 +27,7 @@ msgstr ""
 #. Description
 #: ../templates:5
 msgid "Web server configuration:"
-msgstr ""
+msgstr "Configuration du serveur web :"
 
 #. Type: multiselect
 #. Description
@@ -37,21 +37,20 @@ msgid ""
 "automatic configuration process only supports Apache and Apache2. If you "
 "choose to configure Apache(2) LAM can be accessed at http(s)://localhost/lam"
 msgstr ""
-"LDAP Account Manager gère tous les serveurs web qui gérent PHP4, mais ce "
-"processus de configuration automatique ne gère qu'Apache et Apache2. Si vous "
-"choisissez de configurer Apache(2), vous pourrez accéder à LAM via l'adresse "
-"http(s)://localhost/lam"
+"LDAP Account Manager s'occupe de tous les serveurs web qui gérent PHP4, mais "
+"ce processus de configuration ne fonctionne qu'avec Apache et Apache2. Si "
+"vous choisissez de configurer Apache(2), vous pourrez accéder à LAM via "
+"l'adresse http(s)://localhost/lam"
 
 #. Type: string
 #. Description
 #: ../templates:13
 msgid "Alias name:"
-msgstr ""
+msgstr "Alias :"
 
 #. Type: string
 #. Description
 #: ../templates:13
-#, fuzzy
 msgid ""
 "LAM will add an alias to your httpd.conf which allows you to access LAM at "
 "http(s)://localhost/lam. You may select an alias other than \"lam\"."
@@ -63,23 +62,20 @@ msgstr ""
 #. Type: string
 #. Description
 #: ../templates:21
-#, fuzzy
 msgid "Master configuration password (clear text):"
 msgstr "Mot de passe principal (en clair) :"
 
 #. Type: string
 #. Description
 #: ../templates:21
-#, fuzzy
 msgid ""
 "The configuration profiles are secured by a master password. You will need "
 "it to create and delete profiles. As default it is set to \"lam\" and can be "
 "changed directly in LAM."
 msgstr ""
 "Les profils de configuration sont protégés par un mot de passe principal. "
-"Vous en aurez besoin pour créer et effacer les profils. Sa valeur par défaut "
-"est « lam » et vous pourrez le modifier directement dans LAM ou le changer "
-"maintenant."
+"Vous en aurez besoin pour créer et effacer des profils. Sa valeur par défaut "
+"est « lam » et vous pourrez le modifier directement dans LAM."
 
 #. Type: boolean
 #. Description
@@ -99,7 +95,7 @@ msgstr ""
 #. Description
 #: ../templates:34
 msgid "Upgrade from pre-0.5.0 versions"
-msgstr "Mise à jour des versions pre-0.5.0"
+msgstr "Mise à niveau depuis les versions pre-0.5.0"
 
 #. Type: note
 #. Description
@@ -117,7 +113,7 @@ msgstr ""
 #. Description
 #: ../templates:41
 msgid "Upgrade from pre-1.0.0 versions"
-msgstr "Mise à jour des versions pre-1.0.0"
+msgstr "Mise à niveau depuis les versions pre-1.0.0"
 
 #. Type: note
 #. Description
