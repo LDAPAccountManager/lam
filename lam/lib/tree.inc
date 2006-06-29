@@ -1109,7 +1109,7 @@ function get_enc_type( $user_password )
     /* Capture the stuff in the { } to determine if this is crypt, md5, etc. */
     $enc_type = null;
     if( preg_match( "/{([^}]+)}/", $user_password, $enc_type) ) 
-        return $enc_type[1]; 
+        return strtoupper($enc_type[1]); 
     else
         return null;
 }
