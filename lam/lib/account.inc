@@ -467,8 +467,8 @@ function get_preg($argument, $regexp) {
 		case 'cn':
 					$pregexpr = '/^[^\\\<>=\\$\\?]+(\\$)?$/';
 					break;
-		case "telephone":	// Allow numbers, space, brackets, /-+.
-					$pregexpr = '/^(\\+)*([0-9\\.\\ \\(\\)\\/-])*$/';
+		case "telephone":	// Allow letters, numbers, space, brackets, /-+.
+					$pregexpr = '/^(\\+)*([0-9a-zA-Z\\.\\ \\(\\)\\/-])*$/';
 					break;
 		case "email":
 					$pregexpr = '/^([0-9a-zA-Z\\._-])+[@]([0-9a-zA-Z-])+([.]([0-9a-zA-Z-])+)*$/';
