@@ -132,7 +132,7 @@ class sambaSamAccount extends baseModule {
 			'displayName', 'sambaHomePath', 'sambaHomeDrive', 'sambaLogonScript', 'sambaProfilePath',
 			'sambaUserWorkstations', 'sambaPrimaryGroupSID', 'sambaDomainName', 'sambaLogonHours');
 		// PHP extensions
-		$return['extensions'] = array('mhash');
+		$return['extensions'] = array('mhash', 'iconv');
 		// profile checks
 		$return['profile_checks']['sambaSamAccount_smbhome'] = array(
 			'type' => 'ext_preg',
