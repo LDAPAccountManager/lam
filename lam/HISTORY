@@ -3,6 +3,7 @@
     -> Kolab: fixed problem with message about missing password
     -> Unix groups: fixed auto GID
     -> Shadow: account expiration date was incorrect in some time zones
+    -> User list: fixed problems when deleting users and translated GIDs are activated (1503367)
 
 
 24.05.2006 1.0.2
