@@ -1232,7 +1232,7 @@ class sambaSamAccount extends baseModule {
 		}
 		// expiration date
 		if (isset($profile['sambaSamAccount_expire_day'][0]) && ($profile['sambaSamAccount_expire_day'][0] != "")) {
-			$date = mktime(10, 0, 0, intval($profile['sambaSamAccount_expire_mon'][0]),
+			$date = mktime(0, 0, 0, intval($profile['sambaSamAccount_expire_mon'][0]),
 				intval($profile['sambaSamAccount_expire_day'][0]), intval($profile['sambaSamAccount_expire_yea'][0]));
 			$this->attributes['sambaKickoffTime'][0] = $date;
 		}
