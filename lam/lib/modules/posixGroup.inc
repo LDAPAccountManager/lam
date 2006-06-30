@@ -751,6 +751,21 @@ class posixGroup extends baseModule {
 		if (sizeof($messages) > 0) return $messages;
 	}
 	
+	/**
+	 * This function loads all needed LDAP attributes.
+	 * 
+	 * @param array $attr list of attributes
+	 */
+	function load_attributes($attr) {
+		parent::load_attributes($attr);
+		// set password options
+		if (!isset($this->attributes['userPassword'][0])) $this->userPassword_nopassword = true;
+		else {
+			if (pwd_is_enabled($this->attributes['userPassword'][0])) $this->userPassword_lock = false;
+			else $this->userPassword_lock = true;
+		}
+	}
+
 	/* This function returns an array with 3 entries:
 	* array( DN1 ('add' => array($attr), 'remove' => array($attr), 'modify' => array($attr)), DN2 .... )
 	* DN is the DN to change. It may be possible to change several DNs,
