@@ -1,3 +1,15 @@
+ldap-account-manager (1.0.3-1) unstable; urgency=low
+
+  * Updated to new upstream release.
+  * Account expiration date wierdness (Closes: #368806)
+  * Incorrect display of password encryption (Closes: #368805)
+  * [intl:fr] ldap-account-manager debconf templates translation
+    (Closes: #373181)
+  * Invalid/Lock password auto reverts (Closes: #375453)
+  * Invalid/Lock password options conflict (Closes: #375452)
+
+ -- Roland Gruber <post@rolandgruber.de>  Fri, 30 Jun 2006 11:40:00 +0200
+
 ldap-account-manager (1.0.2-1) unstable; urgency=low
 
   * Updated to new upstream release.
