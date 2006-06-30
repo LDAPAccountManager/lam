@@ -480,6 +480,12 @@ class posixAccount extends baseModule {
 			}
 		}
 		$this->groups_orig = $this->groups;
+		// set password options
+		if (!isset($this->attributes['userPassword'][0])) $this->userPassword_nopassword = true;
+		else {
+			if (pwd_is_enabled($this->attributes['userPassword'][0])) $this->userPassword_lock = false;
+			else $this->userPassword_lock = true;
+		}
 	}
 
 	/* This function returns an array with 3 entries:
