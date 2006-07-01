@@ -150,7 +150,7 @@ class posixGroup extends baseModule {
 	* to show a page with all attributes.
 	* It will output a complete html-table
 	*/
-	function display_html_attributes(&$post) {
+	function display_html_attributes($post) {
 		// check password format if called the first time
 		if (!isset($this->userPassword_invalid)) {
 			if ($this->attributes['userPassword'][0]) {
@@ -221,7 +221,7 @@ class posixGroup extends baseModule {
 	* @param array $post HTTP-POST
 	* @return array meta HTML output
 	*/
-	function display_html_user(&$post) {
+	function display_html_user($post) {
 		// load list with all users
 		$dn_users = $_SESSION['cache']->get_cache(array('uid', 'gidNumber'), 'posixAccount', 'user');
 		$users = array();
@@ -269,7 +269,7 @@ class posixGroup extends baseModule {
 	* @param array $post HTTP-POST
 	* @return array meta HTML code
 	*/
-	function display_html_password(&$post) {
+	function display_html_password($post) {
 		$return[] = array(
 			0 => array('kind' => 'text', 'text' => _('Password') ),
 			1 => array('kind' => 'input', 'name' => 'userPassword', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => ""),
@@ -709,7 +709,7 @@ class posixGroup extends baseModule {
 	* @param array $post HTTP-POST values
 	* @return array list of info/error messages
 	*/
-	function process_user(&$post) {
+	function process_user($post) {
 		if (!isset($this->attributes['memberUid'])) $this->attributes['memberUid'] = array();
 		if (isset($post['addusers']) && isset($post['addusers_button'])) { // Add users to list
 			// Add new user
@@ -734,8 +734,8 @@ class posixGroup extends baseModule {
 	* @param array $post HTTP-POST values
 	* @return array list of info/error messages
 	*/
-	function process_password(&$post) {
-		if ($post['form_subpage_posixGroup_attributes_back']) return;
+	function process_password($post) {
+		if ($post['form_subpage_posixGroup_attributes_back']) return array();
 		$messages = array();
 		if ($post['userPassword'] != $post['userPassword2']) {
 			$messages['userPassword'][] = $this->messages['userPassword'][0];
@@ -748,7 +748,7 @@ class posixGroup extends baseModule {
 				$this->userPassword_lock = false;
 				$this->userPassword_nopassword = false;
 			}
-		if (sizeof($messages) > 0) return $messages;
+		return $messages;
 	}
 	
 	/**
