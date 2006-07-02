@@ -1,8 +1,9 @@
-??? 1.0.3
+04.07.2006 1.0.3
    - fixed bugs:
     -> Kolab: fixed problem with message about missing password
     -> Unix groups: fixed auto GID
     -> Unix users/groups: fixed silent unlocking of passwords
+    -> Unix users/groups: removed invalid password option
     -> Shadow: account expiration date was incorrect in some time zones
     -> User list: fixed problems when deleting users and translated GIDs are activated (1503367)
 
