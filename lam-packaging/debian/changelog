@@ -7,8 +7,18 @@ ldap-account-manager (1.0.3-1) unstable; urgency=low
     (Closes: #373181)
   * Invalid/Lock password auto reverts (Closes: #375453)
   * Invalid/Lock password options conflict (Closes: #375452)
+  * Ack NMU. (Closes: #368804)
 
- -- Roland Gruber <post@rolandgruber.de>  Fri, 30 Jun 2006 11:40:00 +0200
+ -- Roland Gruber <post@rolandgruber.de>  Mon,  3 Jul 2006 22:01:54 +0200
+
+ldap-account-manager (1.0.2-1.1) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Make the "Invalid password" option set the hash to "{CRYPT}*" (which is an
+    invalid hash) instead of "*" (which means the plaintext password "*").
+    (Closes: #368804)
+
+ -- Steinar H. Gunderson <sesse@debian.org>  Thu, 15 Jun 2006 22:20:21 +0200
 
 ldap-account-manager (1.0.2-1) unstable; urgency=low
 
