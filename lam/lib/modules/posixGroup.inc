@@ -694,12 +694,6 @@ class posixGroup extends baseModule {
 		if (isset($post['addusers']) && isset($post['addusers_button'])) { // Add users to list
 			// Add new user
 			$this->attributes['memberUid'] = @array_merge($this->attributes['memberUid'], $post['addusers']);
-			// remove duplicates
-			$this->attributes['memberUid'] = @array_flip($this->attributes['memberUid']);
-			array_unique($this->attributes['memberUid']);
-			$this->attributes['memberUid'] = @array_flip($this->attributes['memberUid']);
-			// sort users
-			sort($this->attributes['memberUid']);
 		}
 		elseif (isset($post['removeusers']) && isset($post['removeusers_button'])) { // remove users from list
 			$this->attributes['memberUid'] = array_delete($post['removeusers'], $this->attributes['memberUid']);
@@ -791,24 +785,6 @@ class posixGroup extends baseModule {
 				$return[$_SESSION[$this->base]->dn]['add']['userPassword'][0] = pwd_hash($this->attributes['userPassword'][0], !$this->userPassword_lock, $this->moduleSettings['posixAccount_pwdHash'][0]);
 			}
 		}
-
-		// Remove primary group from users from memberUid
-		$users_dn = $_SESSION['cache']->get_cache('gidNumber', 'posixAccount', 'user');
-		if (is_array($users_dn)) {
-			$DNs = array_keys($users_dn);
-			for ($i=0; $i<count($DNs); $i++) {
-				if ($users_dn[$DNs[$i]][0]==$this->attributes['gidNumber'][0]) {
-					$thisuser = substr($DNs[$i], 4, strpos($DNs[$i], ",")-4);
-					if (@in_array($thisuser, $this->attribtues['memberUid'])) {
-						$this->attribtues['memberUid'] = @array_flip($this->attribtues['memberUid']);
-						unset($this->attribtues['memberUid'][$thisuser]);
-						$this->attribtues['memberUid'] = @array_flip($this->attribtues['memberUid']);
-					}
-				}
-			}
-		}
-
-
 		// Change gids of users and hosts?
 		if ($this->changegids) {
 			// get gidNumber
