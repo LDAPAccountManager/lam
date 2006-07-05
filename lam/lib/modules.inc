@@ -1135,10 +1135,11 @@ class accountContainer {
 				else if ($attributes[$attr_names[$i]][$j]!='') $toadd[$attr_names[$i]][] = $attributes[$attr_names[$i]][$j];
 			}
 			// find unchanged attributes
-			for ($j=0; $j<count($attributes[$attr_names[$i]]); $j++) {
-				if (is_array($orig[$attr_names[$i]]) && is_array($attributes[$attr_names[$i]])) {
-					if (($attributes[$attr_names[$i]][$j]==$orig[$attr_names[$i]][$j]) && $attributes[$attr_names[$i]][$j]!='')
+			if (is_array($orig[$attr_names[$i]]) && is_array($attributes[$attr_names[$i]])) {
+				for ($j=0; $j<count($attributes[$attr_names[$i]]); $j++) {
+					if (($attributes[$attr_names[$i]][$j] != '') && in_array($attributes[$attr_names[$i]][$j], $orig[$attr_names[$i]])) {
 						$notchanged[$attr_names[$i]][] = $attributes[$attr_names[$i]][$j];
+					}
 				}
 			}
 		}
@@ -1369,8 +1370,16 @@ class accountContainer {
 				// merge attributes together
 				$attr = array();
 				if (is_array($attributes[$this->dn]['add'])) $attr = array_merge_recursive($attr, $attributes[$this->dn]['add']);
-				if (is_array($attributes[$this->dn]['notchanged'])) $attr = array_merge_recursive($attr, $attributes[$this->dn]['notchanged']);
 				if (is_array($attributes[$this->dn]['modify'])) $attr = array_merge_recursive($attr, $attributes[$this->dn]['modify']);
+				// add unchanged attributes if not already set
+				if (is_array($attributes[$this->dn]['notchanged'])) {
+					$notChangedKeys = array_keys($attributes[$this->dn]['notchanged']);
+					for ($i = 0; $i < sizeof($notChangedKeys); $i++) {
+						if (!isset($attr[$notChangedKeys[$i]])) {
+							$attr[$notChangedKeys[$i]] = $attributes[$this->dn]['notchanged'][$notChangedKeys[$i]];
+						}
+					}
+				}
 				// add attributes which are not controlled by modules from original account
 				$attrNames = array_keys($this->attributes_orig);
 				for ($i = 0; $i < sizeof($attrNames); $i++) {
