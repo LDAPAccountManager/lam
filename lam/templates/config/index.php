@@ -93,12 +93,12 @@ echo $_SESSION['header'];
 		if (is_dir("../selfService")) {
 			echo "<TR>\n";
 				echo "<TD height=\"70\">\n";
-				echo "<a href=\"../selfService/confLogin.php\" target=\"_self\">\n";
+				echo "<a href=\"../selfService/adminLogin.php\" target=\"_self\">\n";
 					echo "<IMG height=\"50\" width=\"50\" alt=\"self service\" src=\"../../graphics/bigPeople.png\">\n";
 				echo "</a>\n";
 				echo "</TD>\n";
 				echo "<TD>\n";
-				echo "<a href=\"../selfService/confLogin.php\" target=\"_self\">\n";
+				echo "<a href=\"../selfService/adminLogin.php\" target=\"_self\">\n";
 					echo _("Edit self service");
 				echo "</a>\n";
 				echo "</TD>\n";
