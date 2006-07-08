@@ -69,7 +69,7 @@ if ($_POST['submit']) {
 	}
 	// add new profile
 	elseif ($_POST['action'] == "add") {
-		if (eregi("^[a-z0-9\-_]+$", $_POST['addprofile']) && !in_array($_POST['addprofile'], getConfigProfiles())) {
+		if (eregi("^[a-z0-9_-]+$", $_POST['addprofile']) && !in_array($_POST['addprofile'], getConfigProfiles())) {
 			// check profile password
 			if ($_POST['addpassword'] && $_POST['addpassword2'] && ($_POST['addpassword'] == $_POST['addpassword2'])) {
 				// create new profile file
@@ -91,7 +91,7 @@ if ($_POST['submit']) {
 	}
 	// rename profile
 	elseif ($_POST['action'] == "rename") {
-		if (eregi("^[a-z0-9\-_]+$", $_POST['renfilename']) && !in_array($_POST['renprofile'], getConfigProfiles())) {
+		if (eregi("^[a-z0-9_-]+$", $_POST['renfilename']) && !in_array($_POST['renfilename'], getConfigProfiles())) {
 			if (rename("../../config/" . $_POST['oldfilename'] . ".conf",
 				"../../config/" . $_POST['renfilename'] . ".conf")) {
 				$msg = _("Renamed profile.");
@@ -102,7 +102,7 @@ if ($_POST['submit']) {
 	}
 	// delete profile
 	elseif ($_POST['action'] == "delete") {
-		if (@unlink("../../config/" . $_POST['delfilename'] . ".conf")) {
+		if (eregi("^[a-z0-9_-]+$", $_POST['delfilename']) && @unlink("../../config/" . $_POST['delfilename'] . ".conf")) {
 			$msg = _("Profile deleted.");
 		}
 		else $error = _("Unable to delete profile!");
@@ -126,8 +126,8 @@ if ($_POST['submit']) {
 	}
 	// print messages
 	if ($error || $msg) {
-		if ($error) StatusMessage("ERROR", "", $error);
-		if ($msg) StatusMessage("INFO", "", $msg);
+		if ($error) StatusMessage("ERROR", $error);
+		if ($msg) StatusMessage("INFO", $msg);
 	}
 	else exit;
 }
