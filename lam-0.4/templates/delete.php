@@ -40,6 +40,7 @@ setlanguage();
 
 // use references because session-vars can change in future
 $ldap_intern =& $_SESSION['ldap'];
+$header_intern =& $_SESSION['header'];
 $config_intern =& $_SESSION['config'];
 $delete_dn =& $_SESSION['delete_dn'];
 
@@ -52,11 +53,13 @@ if ($_POST['backmain']) {
 	}
 
 // Print header and part of body
-echo $_SESSION['header'];
+echo $header_intern;
 echo '<title>';
 echo _('Delete Account');
 echo '</title>'."\n".
 	'<link rel="stylesheet" type="text/css" href="../style/layout.css">'."\n".
+	'<meta http-equiv="pragma" content="no-cache">'."\n".
+	'<meta http-equiv="cache-control" content="no-cache">'."\n".
 	'</head>'."\n".
 	'<body>'."\n".
 	'<form action="delete.php" method="post">'."\n";
@@ -106,10 +109,13 @@ if ($_GET['type']) {
 		}
 
 	// Print buttons
-	echo "<br>\n";
-	echo '<input name="delete_yes" type="submit" value="' . _('Commit') . '">';
-	echo '&nbsp;<input name="delete_no" type="submit" value="' . _('Cancel') . '">';
-	echo "</fieldset>\n";
+	echo "<br><table border=0>\n";
+	echo '<tr><td>'.
+		'<input name="delete_no" type="submit" value="';
+	echo _('Cancel'); echo '"></td><td></td><td>'.
+		'<input name="delete_yes" type="submit" value="';
+	echo _('Commit'); echo '"></td></tr>';
+	echo "</table></fieldset>\n";
 	}
 
 
@@ -132,11 +138,11 @@ if ($_POST['delete_yes']) {
 			echo "</b></legend>\n";
 			break;
 		}
-	// Store kind of DNs
 	echo '<input name="type" type="hidden" value="'.$_POST['type'].'">';
 	echo "<br><table border=0 >\n";
-	// Loop for every DN which should be deleted
+	// Store kind of DNs
 	foreach ($delete_dn as $dn) {
+		// Loop for every DN which should be deleted
 		switch ($_POST['type']) {
 			case 'user':
 				// Get username from DN
@@ -152,13 +158,7 @@ if ($_POST['delete_yes']) {
 					$success = ldap_mod_del($ldap_intern->server(), ldap_get_dn($ldap_intern->server(), $entry) , array('memberUid' => $username));
 					// *** fixme add error-message if memberUid couldn't be deleted
 					$entry = ldap_next_entry($ldap_intern->server(), $entry);
-				}
-				if ($config_intern->scriptServer && isset($username)) {
-					// Remove homedir if required
-					if ($_POST['f_rem_home']) remhomedir($username);
-					// Remove quotas if lamdaemon.pl is used
-					remquotas($username, 'user');
-				}
+					}
 				// Delete user itself
 				$success = ldap_delete($ldap_intern->server(), $dn);
 				if (!$success) $error = _('Could not delete user:').' '.$dn;
@@ -184,15 +184,17 @@ if ($_POST['delete_yes']) {
 				// Print error if still users in group
 				if (!$result) $error = _('Could not delete group. Still users in group:').' '.$dn;
 				else {
-					// Remove quotas if lamdaemon.pl is used
-					if ($config_intern->scriptServer && isset($groupname)) {
-						remquotas($groupname, 'group');
-					}
 					// Delete group itself
 					$success = ldap_delete($ldap_intern->server(), $dn);
 					if (!$success) $error = _('Could not delete group:').' '.$dn;
 					}
 				break;
+			}
+		if ($config_intern->scriptServer && isset($usernames)) {
+			// Remove homedir if required
+			if ($_POST['f_rem_home']) remhomedir($usernames);
+			// Remove quotas if lamdaemon.pl is used
+			remquotas($usernames, 'user');
 			}
 		// Remove DNs from cache-array
 		if ($success && isset($_SESSION[$_POST['type'].'DN'][$dn])) unset($_SESSION[$_POST['type'].'DN'][$dn]);

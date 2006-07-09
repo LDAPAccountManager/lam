@@ -76,7 +76,6 @@ if (isset($_GET['DN']) && $_GET['DN']!='') {
 	$account_old =& $_SESSION['account_'.$varkey.'_account_old'];
 	// get "real" DN from variable
 	$DN = str_replace("\'", '',$_GET['DN']);
-	if ($_GET['DN'] == $DN) $DN = str_replace("'", '',$_GET['DN']);
 	// Load existing group
 	$account_new = loadgroup($DN);
 	// Get a copy of original host
@@ -135,7 +134,6 @@ switch ($_POST['select']) {
 		do { // X-Or, only one if() can be true
 			if (isset($_POST['users']) && isset($_POST['add'])) { // Add users to list
 				// Add new user
-				if (!is_array($account_new->unix_memberUid)) $account_new->unix_memberUid = array();
 				$account_new->unix_memberUid = array_merge($account_new->unix_memberUid, $_POST['users']);
 				// remove doubles
 				$account_new->unix_memberUid = array_flip($account_new->unix_memberUid);
@@ -483,7 +481,7 @@ switch ($select_local) {
 		// unset timestamp stored in $temp2[0]
 		unset($temp2[0]);
 		// load list with all users
-		foreach ($temp2 as $temp) $users[] = $temp['uid'];
+		foreach ($temp2 as $temp) $users[] = $temp['cn'];
 		// sort users
 		if (is_array($users)) sort($users, SORT_STRING);
 		// remove users which are allready additional members of group
@@ -494,16 +492,16 @@ switch ($select_local) {
 		*/
 		// Do a ldap-search
 		if (isset($account_old->general_uidNumber))
-			$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_UserSuffix(), "(&(objectClass=PosixAccount)(gidNumber=$account_old->general_uidNumber))", array('uid'));
-		else $result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_UserSuffix(), "(&(objectClass=PosixAccount)(gidNumber=$account_new->general_uidNumber))", array('uid'));
+			$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_UserSuffix(), "(&(objectClass=PosixAccount)(gidNumber=$account_old->general_uidNumber))", array('cn'));
+		else $result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_UserSuffix(), "(&(objectClass=PosixAccount)(gidNumber=$account_new->general_uidNumber))", array('cn'));
 		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
 		// loop for every user which is primary member of group
 		while ($entry) {
 			$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
-			if (isset($attr['uid'][0])) {
+			if (isset($attr['cn'][0])) {
 				// Remove user from user list
 				$users = @array_flip($users);
-				unset ($users[$attr['uid'][0]]);
+				unset ($users[$attr['cn'][0]]);
 				$users = @array_flip($users);
 				}
 			// Go to next entry
@@ -813,12 +811,12 @@ switch ($select_local) {
 		echo "<table border=0 width=\"100%\">\n<tr>\n<td>";
 		echo "<fieldset class=\"groupedit-middle\"><legend class=\"groupedit-bright\"><b>";
 		echo _("Save profile");
-		echo "</b></legend>\n";
+		echo "</b></legend>\n<table border=0 width=\"100%\">\n<tr>\n<td>";
 		echo '<input name="f_finish_safeProfile" type="text" size="30" maxlength="50">';
-		echo "&nbsp;<input name=\"save\" type=\"submit\" $disabled value=\"";
+		echo "</td><td><input name=\"save\" type=\"submit\" $disabled value=\"";
 		echo _('Save profile');
-		echo '">&nbsp;<a href="../help.php?HelpNumber=457" target="lamhelp">'._('Help');
-		echo "</a>\n</fieldset>\n</td></tr>\n<tr><td>\n";
+		echo '"></td><td><a href="../help.php?HelpNumber=457" target="lamhelp">'._('Help');
+		echo "</a></td>\n</tr>\n</table>\n</fieldset>\n</td></tr>\n<tr><td>\n";
 		echo "<fieldset class=\"groupedit-bright\"><legend class=\"groupedit-bright\"><b>";
 		if ($account_old) echo _('Modify');
 		 else echo _('Create');
@@ -844,19 +842,20 @@ switch ($select_local) {
 		// Final Settings
 		echo '<input name="select" type="hidden" value="finish">';
 		echo "<fieldset class=\"groupedit-bright\"><legend class=\"groupedit-bright\"><b>"._('Note')."</b></legend>\n";
-		if ($account_old) {
-			printf(_("Group %s has been modified."), $account_new->general_username);
-		}
-		else {
-			printf(_("Group %s has been created."), $account_new->general_username);
-		}
-		echo "<br><br>";
-		if (!$account_old) {
-			echo '<input name="createagain" type="submit" value="'; echo _('Create another group'); echo '">';
-		}
-		echo '<input name="outputpdf" type="submit" value="'; echo _('Create PDF file'); echo '">'.
-			'&nbsp;<input name="backmain" type="submit" value="'; echo _('Back to group list'); echo '">'.
-			'</fieldset'."\n";
+		echo "<table border=0 width=\"100%\">";
+		echo '<tr><td>';
+		echo _('Group').' ';
+		echo $account_new->general_username;
+		if ($account_old) echo ' '._('has been modified').'.';
+		 else echo ' '._('has been created').'.';
+		echo '</td></tr>'."\n".'<tr><td>';
+		if (!$account_old)
+			{ echo' <input name="createagain" type="submit" value="'; echo _('Create another group'); echo '">'; }
+		echo '</td>'."\n".'<td>'.
+			'<input name="outputpdf" type="submit" value="'; echo _('Create PDF file'); echo '">'.
+			'</td>'."\n".'<td>'.
+			'<input name="backmain" type="submit" value="'; echo _('Back to group list'); echo '">'.
+			'</td></tr></table></fieldset'."\n";
 		break;
 
 	}

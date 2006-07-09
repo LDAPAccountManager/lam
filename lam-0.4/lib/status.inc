@@ -23,9 +23,6 @@ $Id$
   LDAP Account Manager status messages.
 */
 
-// PHP 5 compatibility
-if( phpversion() >= "5" ) ini_set( "zend.ze1_compatibility_mode", 1 );
-
 function StatusMessage($MessageTyp,$MessageHeadline,$MessageText,$MessageVariables = array()) {
 	/* Setting CSS-StyleSheet class depending on the $MessageTyp and rewriting $MessageTyp with a readable string. */
 	if($MessageTyp == "INFO") {
@@ -58,13 +55,11 @@ function StatusMessage($MessageTyp,$MessageHeadline,$MessageText,$MessageVariabl
 	$MessageHeadline = "<h2 " . $class . ">" . $MessageHeadline . "</h2>"; // Format $MessageHeadline
 	$MessageText = "<p " . $class . ">" . $MessageText . "</p>"; // Format $MessageText
 	$format = "<div " . $class . ">\n<br>\n<table>\n<tr>\n<td>" . $MessageTyp . "</td>\n<td>" . $MessageHeadline . $MessageText . "</td>\n</tr>\n</table>\n<br>\n</div>\n";
-	if (is_array($MessageVariables)) {
-		array_unshift($MessageVariables, $format);
-		call_user_func_array('printf',$MessageVariables);
+	for($i=0;$i<count($MessageVariables);$i++) {
+		$variables .= "," . $MessageVariables[$i];
 	}
-	else {
-		printf($format, $MessageVariables);
-	}
+	$command = 'printf("' . addslashes($format) . '"' . $variables . ');';
+	eval($command);
 }
 
 /* Use the three replace functions on the submitted Text. */

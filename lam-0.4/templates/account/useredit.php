@@ -79,7 +79,6 @@ if (isset($_GET['DN']) && $_GET['DN']!='') {
 	$account_old =& $_SESSION['account_'.$varkey.'_account_old'];
 	// get "real" DN from variable
 	$DN = str_replace("\'", '',$_GET['DN']);
-	if ($_GET['DN'] == $DN) $DN = str_replace("'", '',$_GET['DN']);
 	// Load existing group
 	$account_new = loaduser($DN);
 	$account_old = $account_new;
@@ -158,12 +157,11 @@ switch ($_POST['select']) {
 		do { // X-Or, only one if() can be true
 			if (isset($_POST['allgroups']) && isset($_POST['add'])) { // Add groups to list
 				// Add new group
-				if (!is_array($account_new->general_groupadd)) $account_new->general_groupadd = array();
-				$account_new->general_groupadd = array_merge($account_new->general_groupadd, $_POST['allgroups']);
+				$account_new->general_groupadd = @array_merge($account_new->general_groupadd, $_POST['allgroups']);
 				// remove doubles
-				$account_new->general_groupadd = array_flip($account_new->general_groupadd);
+				$account_new->general_groupadd = @array_flip($account_new->general_groupadd);
 				array_unique($account_new->general_groupadd);
-				$account_new->general_groupadd = array_flip($account_new->general_groupadd);
+				$account_new->general_groupadd = @array_flip($account_new->general_groupadd);
 				// sort groups
 				sort($account_new->general_groupadd);
 				break;
@@ -294,7 +292,7 @@ switch ($_POST['select']) {
 			$account_new->general_homedir = str_replace('$group', $account_new->general_group, $account_new->general_homedir);
 			if ($account_new->general_username != '')
 				$account_new->general_homedir = str_replace('$user', $account_new->general_username, $account_new->general_homedir);
-			if ($account_new->general_homedir != $_POST['f_general_homedir']) $errors[] = array('INFO', _('Home directory'), _('Replaced $%s or $%s in homedir.'), array('user', 'group'));
+			if ($account_new->general_homedir != $_POST['f_general_homedir']) $errors[] = array('INFO', _('Home directory'), _('Replaced $user or $group in homedir.'));
 			if ( !ereg('^[/]([a-z]|[A-Z])([a-z]|[A-Z]|[0-9]|[.]|[-]|[_])*([/]([a-z]|[A-Z])([a-z]|[A-Z]|[0-9]|[.]|[-]|[_])*)*$', $account_new->general_homedir ))
 				$errors[] = array('ERROR', _('Home directory'), _('Homedirectory contains invalid characters.'));
 			// Check if UID is valid. If none value was entered, the next useable value will be inserted
@@ -312,12 +310,14 @@ switch ($_POST['select']) {
 	case 'unix':
 		// Write all general values into $account_new
 		if (isset($_POST['f_unix_password'])) {
-			// Encrypt password
+			// Encraypt password
+			$iv = base64_decode($_COOKIE["IV"]);
+			$key = base64_decode($_COOKIE["Key"]);
 			if ($_POST['f_unix_password'] != $_POST['f_unix_password2']) {
 				$errors[] = array('ERROR', _('Password'), _('Please enter the same password in both password-fields.'));
 				unset ($_POST['f_unix_password2']);
 				}
-				else $account_new->unix_password = base64_encode($_SESSION['ldap']->encrypt($_POST['f_unix_password']));
+				else $account_new->unix_password = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $_POST['f_unix_password'], MCRYPT_MODE_ECB, $iv));
 			}
 		 else $account_new->unix_password = '';
 		if ($_POST['f_unix_password_no']) $account_new->unix_password_no = true;
@@ -333,7 +333,9 @@ switch ($_POST['select']) {
 			else $account_new->unix_deactivated = false;
 		if ($_POST['genpass']) {
 			// Generate a random password if generate-button was pressed
-			$account_new->unix_password = base64_encode($_SESSION['ldap']->encrypt(genpasswd()));
+			$iv = base64_decode($_COOKIE["IV"]);
+			$key = base64_decode($_COOKIE["Key"]);
+			$account_new->unix_password = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, genpasswd(), MCRYPT_MODE_ECB, $iv));
 			unset ($_POST['f_unix_password2']);
 			// Keep unix-page acitve
 			$select_local = 'unix';
@@ -341,7 +343,10 @@ switch ($_POST['select']) {
 		// Check if values are OK and set automatic values. if not error-variable will be set
 		else { // account.inc
 			if ($account_new->unix_password != '') {
-				$password = $_SESSION['ldap']->decrypt(base64_decode($account_new->unix_password));
+				$iv = base64_decode($_COOKIE["IV"]);
+				$key = base64_decode($_COOKIE["Key"]);
+				$password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($account_new->unix_password), MCRYPT_MODE_ECB, $iv);
+				$password = str_replace(chr(00), '', $password);
 				}
 			if (!ereg('^([a-z]|[A-Z]|[0-9]|[\|]|[\#]|[\*]|[\,]|[\.]|[\;]|[\:]|[\_]|[\-]|[\+]|[\!]|[\%]|[\&]|[\/]|[\?]|[\{]|[\[]|[\(]|[\)]|[\]]|[\}])*$', $password))
 				$errors[] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
@@ -366,14 +371,9 @@ switch ($_POST['select']) {
 		if ($_POST['f_smb_useunixpwd']) $account_new->smb_useunixpwd = true;
 			else $account_new->smb_useunixpwd = false;
 		$account_new->smb_homedrive = $_POST['f_smb_homedrive'];
-		if (get_magic_quotes_gpc() == 1) {
-			$_POST['f_smb_smbhome'] = stripslashes($_POST['f_smb_smbhome']);
-			$_POST['f_smb_profilePath'] = stripslashes($_POST['f_smb_profilePath']);
-			$_POST['f_smb_scriptpath'] = stripslashes($_POST['f_smb_scriptpath']);
-		}
 		$account_new->smb_scriptPath = $_POST['f_smb_scriptpath'];
-		$account_new->smb_smbhome = $_POST['f_smb_smbhome'];
-		$account_new->smb_profilePath = $_POST['f_smb_profilePath'];
+		$account_new->smb_smbhome = stripslashes($_POST['f_smb_smbhome']);
+		$account_new->smb_profilePath = stripslashes($_POST['f_smb_profilePath']);
 		$account_new->smb_displayName = $_POST['f_smb_displayName'];
 		if ($_POST['f_smb_flagsD']) $account_new->smb_flags['D'] = true;
 			else $account_new->smb_flags['D'] = false;
@@ -412,6 +412,8 @@ switch ($_POST['select']) {
 					break;
 				}
 			}
+		$iv = base64_decode($_COOKIE["IV"]);
+		$key = base64_decode($_COOKIE["Key"]);
 		// Set Samba password
 		if (isset($_POST['f_smb_password']) && !$account_new->smb_useunixpwd) {
 			// Encraypt password
@@ -419,32 +421,34 @@ switch ($_POST['select']) {
 				$errors[] = array('ERROR', _('Password'), _('Please enter the same password in both password-fields.'));
 				unset ($_POST['f_smb_password2']);
 				}
-				else $account_new->smb_password = base64_encode($_SESSION['ldap']->encrypt($_POST['f_smb_password']));
+				else $account_new->smb_password = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $_POST['f_smb_password'], MCRYPT_MODE_ECB, $iv));
 			}
 		 	else $account_new->smb_password = '';
 		if ( (($account_new->smb_useunixpwd && !$account_old) || ($account_new->smb_useunixpwd && $account_new->unix_password!='')) && isset($account_new->unix_password) ) {
 			// Set Samba-Password to unix-password if option is set
-			$smb_password = $_SESSION['ldap']->decrypt(base64_decode($account_new->unix_password));
-			$account_new->smb_password = base64_encode($_SESSION['ldap']->encrypt($smb_password));
+			$unix_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($account_new->unix_password), MCRYPT_MODE_ECB, $iv);
+			$smb_password = str_replace(chr(00), '', $unix_password);
+			$account_new->smb_password = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $smb_password, MCRYPT_MODE_ECB, $iv));
 			}
 		// Check values
 		$account_new->smb_scriptPath = str_replace('$user', $account_new->general_username, $account_new->smb_scriptPath);
 		$account_new->smb_scriptPath = str_replace('$group', $account_new->general_group, $account_new->smb_scriptPath);
-		if ($account_new->smb_scriptPath != $_POST['f_smb_scriptpath']) $errors[] = array('INFO', _('Logon script'), _('Inserted user- or groupname in scriptpath.'));
+		if ($account_new->smb_scriptPath != $_POST['f_smb_scriptpath']) $errors[] = array('INFO', _('Script path'), _('Inserted user- or groupname in scriptpath.'));
 		$account_new->smb_profilePath = str_replace('$user', $account_new->general_username, $account_new->smb_profilePath);
 		$account_new->smb_profilePath = str_replace('$group', $account_new->general_group, $account_new->smb_profilePath);
-		if ($account_new->smb_profilePath != $_POST['f_smb_profilePath']) $errors[] = array('INFO', _('Profile path'), _('Inserted user- or groupname in profilepath.'));
+		if ($account_new->smb_profilePath != stripslashes($_POST['f_smb_profilePath'])) $errors[] = array('INFO', _('Profile path'), _('Inserted user- or groupname in profilepath.'));
 		$account_new->smb_smbhome = str_replace('$user', $account_new->general_username, $account_new->smb_smbhome);
 		$account_new->smb_smbhome = str_replace('$group', $account_new->general_group, $account_new->smb_smbhome);
-		if ($account_new->smb_smbhome != $_POST['f_smb_smbhome']) $errors[] = array('INFO', _('Home path'), _('Inserted user- or groupname in HomePath.'));
-		if ( (!$account_new->smb_smbhome=='') && (!ereg('^(([\][\])|(%))([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+([\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+)+$', $account_new->smb_smbhome)))
+		if ($account_new->smb_smbhome != stripslashes($_POST['f_smb_smbhome'])) $errors[] = array('INFO', _('Home path'), _('Inserted user- or groupname in HomePath.'));
+		if ( (!$account_new->smb_smbhome=='') && (!ereg('^[\][\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+([\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+)+$', $account_new->smb_smbhome)))
 				$errors[] = array('ERROR', _('Home path'), _('Home path is invalid.'));
 		if ( !ereg('^([a-z]|[A-Z]|[0-9]|[\|]|[\#]|[\*]|[\,]|[\.]|[\;]|[\:]|[\_]|[\-]|[\+]|[\!]|[\%]|[\&]|[\/]|[\?]|[\{]|[\[]|[\(]|[\)]|[\]]|[\}])*$',
 			$smb_password)) $errors[] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}= !'));
-		if ( (!$account_new->smb_scriptPath=='') && (!eregi('^([\\])*([a-z0-9\\._%äöüß-])+(\\\([a-z0-9\\._%äöüß-])+)*((\.bat)|(\.cmd)|(\.exe))$', $account_new->smb_scriptPath)))
-			$errors[] = array('ERROR', _('Logon script'), _('Logon script is invalid!'));
-		if ( (!$account_new->smb_profilePath=='') && (!eregi('^[/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*([/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*)*$', $account_new->smb_profilePath))
-			&& (!eregi('^(([\][\])|(%))([a-z0-9_]|[.]|[-]|[%])+([\]([a-z0-9_]|[.]|[-]|[%])+)+$', $account_new->smb_profilePath)))
+		if ( (!$account_new->smb_scriptPath=='') && (!ereg('^([/])*([a-z]|[0-9]|[.]|[-]|[_]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+([a-z]|[0-9]|[.]|[-]|[_]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])*'.
+			'([/]([a-z]|[0-9]|[.]|[-]|[_]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])+([a-z]|[0-9]|[.]|[-]|[_]|[%]|[ä]|[Ä]|[ö]|[Ö]|[ü]|[Ü]|[ß])*)*(([.][b][a][t])|([.][c][m][d]))$', $account_new->smb_scriptPath)))
+			$errors[] = array('ERROR', _('Script path'), _('Script path is invalid!'));
+		if ( (!$account_new->smb_profilePath=='') && (!ereg('^[/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*([/][a-z]([a-z]|[0-9]|[.]|[-]|[_]|[%])*)*$', $account_new->smb_profilePath))
+			&& (!ereg('^[\][\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+([\]([a-z]|[A-Z]|[0-9]|[.]|[-]|[%])+)+$', $account_new->smb_profilePath)))
 				$errors[] = array('ERROR', _('Profile path'), _('Profile path is invalid!'));
 		if ((!$account_new->smb_domain=='') && (!is_object($account_new->smb_domain)) && !ereg('^([a-z]|[A-Z]|[0-9]|[-])+$', $account_new->smb_domain))
 			$errors[] = array('ERROR', _('Domain name'), _('Domain name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and -.'));
@@ -493,7 +497,7 @@ switch ($_POST['select']) {
 		if ( !ereg('^(([0-9]|[A-Z]|[a-z]|[.]|[-]|[_])+[@]([0-9]|[A-Z]|[a-z]|[-])+([.]([0-9]|[A-Z]|[a-z]|[-])+)*)*$', $account_new->personal_mail))  $errors[] = array('ERROR', _('eMail address'), _('Please enter a valid eMail address!'));
 		if ( !ereg('^([0-9]|[A-Z]|[a-z]|[-]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $account_new->personal_street))  $errors[] = array('ERROR', _('Street'), _('Please enter a valid street name!'));
 		if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $account_new->personal_postalAddress))  $errors[] = array('ERROR', _('Postal address'), _('Please enter a valid postal address!'));
-		if ( !ereg('^([0-9]|[A-Z]|[a-z]|[-]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $account_new->personal_title))  $errors[] = array('ERROR', _('Job title'), _('Please enter a valid job title!'));
+		if ( !ereg('^([0-9]|[A-Z]|[a-z]|[-]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $account_new->personal_title))  $errors[] = array('ERROR', _('Title'), _('Please enter a valid title!'));
 		if ( !ereg('^([0-9]|[A-Z]|[a-z]|[ ]|[.]|[Ä]|[ä]|[Ö]|[ö]|[Ü]|[ü]|[ß])*$', $account_new->personal_employeeType))  $errors[] = array('ERROR', _('Employee type'), _('Please enter a valid employee type!'));
 		if ( !ereg('^([0-9]|[A-Z]|[a-z])*$', $account_new->personal_postalCode))  $errors[] = array('ERROR', _('Postal code'), _('Please enter a valid postal code!'));
 		break;
@@ -588,7 +592,7 @@ do { // X-Or, only one if() can be true
 				$errors[] = array('WARN', _('ObjectClass shadowAccount not found.'), _('Have to add objectClass shadowAccount.'));
 			if ($config_intern->is_samba3()) {
 				if (!in_array('sambaSamAccount', $account_old->general_objectClass))
-					$errors[] = array('WARN', _('ObjectClass sambaSamAccount not found.'), _('Have to add objectClass sambaSamAccount. User with sambaAccount will be updated.'));
+					$errors[] = array('WARN', _('ObjectClass sambaSamAccount not found.'), _('Have to add objectClass sambaSamAccount. USer with sambaAccount will be updated.'));
 				}
 			else {
 				if (!in_array('sambaAccount', $account_old->general_objectClass))
@@ -749,9 +753,8 @@ echo "</title>\n".
 	"<input name=\"varkey\" type=\"hidden\" value=\"".$varkey."\">\n";
 
 // Display errir-messages
-if (is_array($errors)) {
-	for ($i=0; $i<sizeof($errors); $i++) StatusMessage($errors[$i][0], $errors[$i][1], $errors[$i][2], $errors[$i][3]);
-}
+if (is_array($errors))
+	for ($i=0; $i<sizeof($errors); $i++) StatusMessage($errors[$i][0], $errors[$i][1], $errors[$i][2]);
 
 // print_r($account_new);
 //print_r($account_old);
@@ -775,7 +778,7 @@ switch ($select_local) {
 		// unset timestamp stored in $temp2[0]
 		unset($temp2[0]);
 		// Remove $ from workstations
-		foreach ($temp2 as $temp) $hosts[] = str_replace("$", '',$temp['uid']);
+		foreach ($temp2 as $temp) $hosts[] = str_replace("$", '',$temp['cn']);
 		// sort workstations
 		sort($hosts, SORT_STRING);
 		// get workstation array
@@ -1031,7 +1034,10 @@ switch ($select_local) {
 		// Unix Password Settings
 		// decrypt password
 		if ($account_new->unix_password != '') {
-			$password = $_SESSION['ldap']->decrypt(base64_decode($account_new->unix_password));
+			$iv = base64_decode($_COOKIE["IV"]);
+			$key = base64_decode($_COOKIE["Key"]);
+			$password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($account_new->unix_password), MCRYPT_MODE_ECB, $iv);
+			$password = str_replace(chr(00), '', $password);
 			}
 		 else $password='';
 		// Use dd-mm-yyyy format of date because it's easier to read for humans
@@ -1126,7 +1132,7 @@ switch ($select_local) {
 		if ($_SESSION['ldap']->supports_unix_hosts) {
 			echo '<tr><td>';
 			echo _('Unix workstations');
-			echo '</td>'."\n".'<td><input name="f_unix_host" type="text" size="20" maxlength="200" value="' . $account_new->unix_host . '">'.
+			echo '</td>'."\n".'<td><input name="f_unix_host" type="text" size="20" maxlength="80" value="' . $account_new->unix_host . '">'.
 				'</td>'."\n".'<td>'.
 				'<a href="../help.php?HelpNumber=466" target="lamhelp">'._('Help').
 				"</a></td>\n</tr>\n";
@@ -1139,7 +1145,10 @@ switch ($select_local) {
 		// Samba Settings
 		// decrypt password
 		if ($account_new->smb_password != '') {
-			$password = $_SESSION['ldap']->decrypt(base64_decode($account_new->smb_password));
+			$iv = base64_decode($_COOKIE["IV"]);
+			$key = base64_decode($_COOKIE["Key"]);
+			$password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($account_new->smb_password), MCRYPT_MODE_ECB, $iv);
+			$password = str_replace(chr(00), '', $password);
 			}
 		else $password = "";
 		if ($config_intern->is_samba3()) $samba3domains = $ldap_intern->search_domains($config_intern->get_domainSuffix());
@@ -1270,7 +1279,7 @@ switch ($select_local) {
 			'</td>'."\n".'<td>'.
 			'<a href="../help.php?HelpNumber=435" target="lamhelp">'._('Help').'</a>'.
 			'</td></tr>'."\n".'<tr><td>';
-		echo _('Logon script');
+		echo _('Script path');
 		echo '</td>'."\n".'<td><input name="f_smb_scriptpath" type="text" size="20" maxlength="80" value="' . $account_new->smb_scriptPath . '">'.
 		'</td>'."\n".'<td>'.
 			'<a href="../help.php?HelpNumber=434" target="lamhelp">'._('Help').'</a>'.
@@ -1464,7 +1473,7 @@ switch ($select_local) {
 		echo "</fieldset></td></tr></table></td>\n<td valign=\"top\">";
 		echo "<table border=0 width=\"100%\"><tr><td><fieldset class=\"useredit-bright\"><legend class=\"useredit-bright\"><b>"._('Personal properties')."</b></legend>\n";
 		echo "<table border=0 width=\"100%\"><tr><td>";
-		echo _('Job title');
+		echo _('Title');
 		echo '</td>'."\n".'<td>'.
 			'<input name="f_personal_title" type="text" size="10" maxlength="10" value="' . $account_new->personal_title . '"> ';
 		echo $account_new->general_givenname . ' ' . $account_new->general_surname . '</td><td>'.
@@ -1532,7 +1541,7 @@ switch ($select_local) {
 		echo "<input name=\"next_quota\" type=\"submit\""; if (!isset($config_intern->scriptPath)) echo " disabled ";
 		echo "value=\""; echo _('Quota'); echo "\">\n<br>";
 		echo "<input name=\"next_personal\" type=\"submit\" value=\""; echo _('Personal'); echo "\">\n<br>";
-		echo "<input name=\"next_final\" type=\"submit\" disabled value=\""; echo _('Final');
+		echo "<input name=\"next_final\" type=\"submit\" disabed value=\""; echo _('Final');
 		echo "\">";
 		if (isset($account_old)) {
 			echo "<br><br>";
@@ -1545,39 +1554,41 @@ switch ($select_local) {
 		echo "<table border=0 width=\"100%\">\n<tr>\n<td>";
 		echo "<table border=0 width=\"100%\"><tr><td><fieldset class=\"useredit-dark\"><legend class=\"useredit-bright\"><b>";
 		echo _("Save profile");
-		echo "</b></legend>\n";
+		echo "</b></legend>\n<table border=0 width=\"100%\">\n<tr>\n<td>";
 		echo '<input name="f_finish_safeProfile" type="text" size="30" maxlength="50">';
-		echo "&nbsp;<input name=\"save\" type=\"submit\" $disabled value=\"";
+		echo "</td><td><input name=\"save\" type=\"submit\" $disabled value=\"";
 		echo _('Save profile');
-		echo '">&nbsp;<a href="../help.php?HelpNumber=457" target="lamhelp">'._('Help');
-		echo "</a>\n</fieldset>\n</td></tr>\n<tr><td>\n";
+		echo '"></td><td><a href="../help.php?HelpNumber=457" target="lamhelp">'._('Help');
+		echo "</a></td>\n</tr>\n</table>\n</fieldset>\n</td></tr>\n<tr><td>\n";
 		echo "<fieldset class=\"useredit-bright\"><legend class=\"useredit-bright\"><b>";
 		if ($account_old) echo _('Modify');
 		 else echo _('Create');
 		echo "</b></legend>\n";
-		echo "<input name=\"create\" type=\"submit\" value=\"";
+		echo "<table border=0 width=\"100%\">";
+		echo "<tr><td><input name=\"create\" type=\"submit\" value=\"";
 		if ($account_old) echo _('Modify Account');
 		 else echo _('Create Account');
 		echo '">'."\n";
-		echo "</fieldset>\n</td></tr></table></td></tr></table>\n</tr></table>";
+		echo "</td></tr></table></fieldset>\n</td></tr></table></td></tr></table>\n</tr></table>";
 		break;
 	case 'finish':
 		// Final Settings
 		echo '<input name="select" type="hidden" value="finish">';
 		echo "<fieldset class=\"groupedit-bright\"><legend class=\"useredit-bright\"><b>"._('Note')."</b></legend>\n";
-		if ($account_old) {
-			printf(_("User %s has been modified."), $account_new->general_username);
-		}
-		else {
-			printf(_("User %s has been created."), $account_new->general_username);
-		}
-		echo '<br><br>';
-		if (!$account_old) {
-			echo '<input name="createagain" type="submit" value="'; echo _('Create another user'); echo '">&nbsp;';
-		}
-		echo '<input name="outputpdf" type="submit" value="'; echo _('Create PDF file'); echo '">'.
-			'&nbsp;<input name="backmain" type="submit" value="'; echo _('Back to user list'); echo '">'.
-			'</fieldset'."\n";
+		echo "<table border=0 width=\"100%\"><tr><td>";
+		echo '<tr><td>';
+		echo _('User ');
+		echo $account_new->general_username;
+		if ($account_old) echo ' '._('has been modified').'.';
+		 else echo ' '._('has been created').'.';
+		echo '</td></tr>'."\n".'<tr><td>';
+		if (!$account_old)
+			{ echo '<input name="createagain" type="submit" value="'; echo _('Create another user'); echo '">'; }
+		echo '</td>'."\n".'<td>'.
+			'<input name="outputpdf" type="submit" value="'; echo _('Create PDF file'); echo '">'.
+			'</td>'."\n".'<td>'.
+			'<input name="backmain" type="submit" value="'; echo _('Back to user list'); echo '">'.
+			'</td></tr></table></fieldset'."\n";
 		break;
 	}
 

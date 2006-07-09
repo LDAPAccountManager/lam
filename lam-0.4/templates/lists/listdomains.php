@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
-  Copyright (C) 2003 - 2004  Roland Gruber
+  Copyright (C) 2003  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -53,11 +53,9 @@ if ($_POST['new_domain'] || $_POST['del_domain']){
 		// search for checkboxes
 		$domains = array_keys($_POST, "on");
 		$domainstr = implode(";", $domains);
-		if ($domainstr) {
-			metaRefresh("../domain.php?action=delete&amp;DN='$domainstr'");
-			exit;
+		metaRefresh("../domain.php?action=delete&amp;DN='$domainstr'");
 		}
-	}
+		exit;
 }
 
 echo $_SESSION['header'];
@@ -98,7 +96,7 @@ if (! $_GET['norefresh']) {
 	$attrs = $attr_array;
 	$sr = @ldap_search($_SESSION["ldap"]->server(), $dom_suffix, $filter, $attrs);
 	if (ldap_errno($_SESSION["ldap"]->server()) == 4) {
-		StatusMessage("WARN", _("LDAP sizelimit exceeded, not all entries are shown."), _("See README.openldap.txt to solve this problem."));
+		StatusMessage("WARN", _("LDAP sizelimit exceeded, not all entries are shown."), "See README.openldap to solve this problem.");
 	}
 	if ($sr) {
 		$dom_info = ldap_get_entries($_SESSION["ldap"]->server, $sr);

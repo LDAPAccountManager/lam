@@ -23,16 +23,8 @@ $Id$
 
 // ldap.inc provides basic functions to connect to the OpenLDAP server.
 
-// PHP 5 compatibility
-if( phpversion() >= "5" ) ini_set( "zend.ze1_compatibility_mode", 1 );
-
 include_once("config.inc");
-include_once("blowfish.inc");
 
-// converts a HEX string to a binary value
-function hex2bin($value) {
-	return pack("H*", $value);
-}
 
 // returns the hash value of a plain text password
 // the hash algorithm depends on the configuration file
@@ -41,10 +33,9 @@ function hex2bin($value) {
 function pwd_hash($password, $enabled=true) {
 	// check for empty password
 	if (! $password || ($password == "")) {
-		return "";
+		if ($enabled) return "";
+		else return "!";
 	}
-	// calculate new random number
-	$_SESSION['ldap']->new_rand();
 	// hash password with algorithm from config file
 	$hash = "";
 	switch ($_SESSION['config']->get_pwdhash()) {
@@ -52,70 +43,34 @@ function pwd_hash($password, $enabled=true) {
 			$hash = "{CRYPT}" . crypt($password);
 			break;
 		case 'MD5':
-			$hash = "{MD5}" . base64_encode(hex2bin(md5($password)));
+			$hash = "{MD5}" . base64_encode(mHash(MHASH_MD5, $password));
 			break;
 		case 'SMD5':
-				$salt0 = substr(pack("h*", md5($_SESSION['ldap']->rand)), 0, 8);
-				$salt = substr(pack("H*", md5($salt0 . $password)), 0, 4);
-				$hash = "{SMD5}" . base64_encode(hex2bin(md5($password . $salt)) . $salt);
+			$salt = mhash_keygen_s2k(MHASH_MD5, $password, substr(pack("h*", md5(mt_rand())), 0, 8), 4);
+			$hash = base64_encode(mHash(MHASH_MD5, $password . $salt) . $salt);
+			$hash = "{SMD5}" . $hash;
 			break;
 		case 'SHA':
-			// PHP 4.3+ can use sha1() function
-			if (function_exists(sha1)) {
-				$hash = "{SHA}" . base64_encode(hex2bin(sha1($password)));
-			}
-			// otherwise use MHash
-			elseif (function_exists(mHash)) {
-				$hash = "{SHA}" . base64_encode(mHash(MHASH_SHA1, $password));
-			}
-			// if SHA1 is not possible use crypt()
-			else {
-				$hash = "{CRYPT}" . crypt($password);
-			}
+			$hash = base64_encode(mHash(MHASH_SHA1, $password));
+			$hash = "{SHA}" . $hash;
 			break;
 		case 'SSHA':
-			// PHP 4.3+ can use sha1() function
-			if (function_exists(sha1)) {
-				$salt0 = substr(pack("h*", md5($_SESSION['ldap']->rand)), 0, 8);
-				$salt = substr(pack("H*", sha1($salt0 . $password)), 0, 4);
-				$hash = "{SSHA}" . base64_encode(hex2bin(sha1($password . $salt)) . $salt);
-			}
-			// otherwise use MHash
-			elseif (function_exists(mHash)) {
-				$salt = mhash_keygen_s2k(MHASH_SHA1, $password, substr(pack("h*", md5($_SESSION['ldap']->rand)), 0, 8), 4);
-				$hash = base64_encode(mHash(MHASH_SHA1, $password . $salt) . $salt);
-				$hash = "{SSHA}" . $hash;
-			}
-			// if SSHA is not possible use crypt()
-			else {
-				$hash = "{CRYPT}" . crypt($password);
-			}
+			$salt = mhash_keygen_s2k(MHASH_SHA1, $password, substr(pack("h*", md5(mt_rand())), 0, 8), 4);
+			$hash = base64_encode(mHash(MHASH_SHA1, $password . $salt) . $salt);
+			$hash = "{SSHA}" . $hash;
 			break;
 		case 'PLAIN':
 			$hash = $password;
 			break;
 		// use SSHA if the setting is invalid
 		default:
-			// PHP 4.3+ can use sha1() function
-			if (function_exists(sha1)) {
-				$salt0 = substr(pack("h*", md5($_SESSION['ldap']->rand)), 0, 8);
-				$salt = substr(pack("H*", sha1($salt0 . $password)), 0, 4);
-				$hash = "{SSHA}" . base64_encode(hex2bin(sha1($password . $salt)) . $salt);
-			}
-			// otherwise use MHash
-			elseif (function_exists(mHash)) {
-				$salt = mhash_keygen_s2k(MHASH_SHA1, $password, substr(pack("h*", md5($_SESSION['ldap']->rand)), 0, 8), 4);
-				$hash = base64_encode(mHash(MHASH_SHA1, $password . $salt) . $salt);
-				$hash = "{SSHA}" . $hash;
-			}
-			// if SSHA is not possible use crypt()
-			else {
-				$hash = "{CRYPT}" . crypt($password);
-			}
+			$salt = mhash_keygen_s2k(MHASH_SHA1, $password, substr(pack("h*", md5(mt_rand())), 0, 8), 4);
+			$hash = base64_encode(mHash(MHASH_SHA1, $password . $salt) . $salt);
+			$hash = "{SSHA}" . $hash;
 		break;
 	}
 	// enable/disable password
-	if (! $enabled) return pwd_disable($hash);
+	if (! $enabled) return "!" . $hash;
 	else return $hash;
 }
 
@@ -124,21 +79,12 @@ function pwd_hash($password, $enabled=true) {
 // and returns the new hash string
 // hash: hash value to enable
 function pwd_enable($hash) {
-	// check if password is disabled (old wrong LAM method)
-	if ((substr($hash, 0, 2) == "!{") || ((substr($hash, 0, 2) == "*{"))) {
+	// check if password is disabled
+	if ((substr($hash, 0, 1) == "!") || ((substr($hash, 0, 1) == "*"))) {
 		return substr($hash, 1, strlen($hash));
 	}
-	// check for "!" or "*" at beginning of password hash
 	else {
-		if (substr($hash, 0, 1) == "{") {
-			$pos = strpos($hash, "}");
-			if ((substr($hash, $pos + 1, 1) == "!") || (substr($hash, $pos + 1, 1) == "*")) {
-				// enable hash
-				return substr($hash, 0, $pos + 1) . substr($hash, $pos + 2, strlen($hash));
-			}
-			else return $hash;  // not disabled
-		}
-		else return $hash;  // password is plain text
+		return $hash;
 	}
 }
 
@@ -146,35 +92,20 @@ function pwd_enable($hash) {
 // and returns the new hash string
 // hash: hash value to disable
 function pwd_disable($hash) {
-	// check if password is disabled (old wrong LAM method)
-	if ((substr($hash, 0, 2) == "!{") || ((substr($hash, 0, 2) == "*{"))) {
+	// check if already disabled
+	if ((substr($hash, 0, 1) == "!") || ((substr($hash, 0, 1) == "*"))) {
 		return $hash;
 	}
-	// check for "!" or "*" at beginning of password hash
 	else {
-		if (substr($hash, 0, 1) == "{") {
-			$pos = strpos($hash, "}");
-			if ((substr($hash, $pos + 1, 1) == "!") || (substr($hash, $pos + 1, 1) == "*")) {
-				// hash already disabled
-				return $hash;
-			}
-			else return substr($hash, 0, $pos + 1) . "!" . substr($hash, $pos + 1, strlen($hash));  // not disabled
-		}
-		else return $hash;  // password is plain text
+		return "!" . $hash;
 	}
 }
 
 // checks if a password hash is enabled/disabled
 // returns true if the password is marked as enabled
 function pwd_is_enabled($hash) {
-	// disabled passwords have a "!" or "*" at the beginning (old wrong LAM method)
-	if ((substr($hash, 0, 2) == "!{") || ((substr($hash, 0, 2) == "*{"))) return false;
-	if (substr($hash, 0, 1) == "{") {
-		$pos = strrpos($hash, "}");
-		// check if hash starts with "!" or "*"
-		if ((substr($hash, $pos + 1, 1) == "!") || (substr($hash, $pos + 1, 1) == "*")) return false;
-		else return true;
-	}
+	// disabled passwords have a "!" or "*" at the beginning
+	if ((substr($hash, 0, 1) == "!") || ((substr($hash, 0, 1) == "*"))) return false;
 	else return true;
 }
 
@@ -260,7 +191,7 @@ class Ldap{
 			return false;
 		}
 		// save password und username encrypted
-		$this->encrypt_login($user, $passwd);
+		$this->encrypt($user, $passwd);
 		$this->server = @ldap_connect($this->conf->get_ServerURL());
 		if ($this->server) {
 			// use LDAPv3
@@ -269,7 +200,7 @@ class Ldap{
 			if (function_exists('ldap_start_tls')) {
 				@ldap_start_tls($this->server);
 				// connect without TLS if it failed
-				if (ldap_errno($this->server) != 0) {
+				if (ldap_errno($this->server) > 0) {
 					@ldap_close($this->server);
 					$this->server = @ldap_connect($this->conf->get_ServerURL());
 					ldap_set_option($this->server, LDAP_OPT_PROTOCOL_VERSION, 3);
@@ -413,7 +344,7 @@ class Ldap{
 
 	// reconnects to LDAP server when deserialized
 	function __wakeup() {
-		$data = $this->decrypt_login();
+		$data = $this->decrypt();
 		$this->connect($data[0], $data[1]);
 		// change random number
 		mt_srand($this->rand + (microtime() * 1000000));
@@ -435,81 +366,32 @@ class Ldap{
 		}
 	}
 
-	// calculates a new value for rand
-	function new_rand() {
-		// change random number
-		mt_srand($this->rand + (microtime() * 1000000));
-		$this->rand = mt_rand();
-	}
-
-	// encrypts a string
-	// $data: string to encrypt
-	// return: encrypted string
-	function encrypt($data) {
-		// use MCrypt if available
-		if (function_exists(mcrypt_create_iv)) {
-			// read key and iv from cookie
-			$iv = base64_decode($_COOKIE["IV"]);
-			$key = base64_decode($_COOKIE["Key"]);
-			// encrypt string
-			return mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $data, MCRYPT_MODE_ECB, $iv);
-		}
-		// use Blowfish if MCrypt is not available
-		else {
-			// read key and iv from cookie
-			$iv = base64_decode($_COOKIE["IV"]);
-			$key = base64_decode($_COOKIE["Key"]);
-			$b_key = $iv . $key;
-			// encrypt string
-			$b_fish = new Cipher_blowfish();
-			return $b_fish->encrypt($data, $b_key);
-		}
-	}
-
-	// decrypts a string
-	// $data: string to decrypt
-	// return: decrypted string
-	function decrypt($data) {
-		// use MCrypt if available
-		if (function_exists(mcrypt_create_iv)) {
-			// read key and iv from cookie
-			$iv = base64_decode($_COOKIE["IV"]);
-			$key = base64_decode($_COOKIE["Key"]);
-			// decrypt string
-			$ret = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, $data, MCRYPT_MODE_ECB, $iv);
-			$ret = str_replace(chr(00), "", $ret);
-			return $ret;
-		}
-		// use Blowfish if MCrypt is not available
-		else {
-			// read key and iv from cookie
-			$iv = base64_decode($_COOKIE["IV"]);
-			$key = base64_decode($_COOKIE["Key"]);
-			$b_key = $iv . $key;
-			// decrypt string
-			$b_fish = new Cipher_blowfish();
-			return $b_fish->decrypt($data, $b_key);
-		}
-	}
-
 	// encrypts username and password
 	// $username: LDAP user name
 	// $password: LDAP password
-	function encrypt_login($username, $password) {
+	function encrypt($username, $password) {
+		// read key and iv from cookie
+		$iv = base64_decode($_COOKIE["IV"]);
+		$key = base64_decode($_COOKIE["Key"]);
 		// encrypt username and password
-		$this->username = base64_encode($this->encrypt($username));
-		$this->password = base64_encode($this->encrypt($password));
+		$this->username = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $username, MCRYPT_MODE_ECB, $iv));
+		$this->password = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $password, MCRYPT_MODE_ECB, $iv));
 	}
 
 	// decrypts username and password
 	// returns an array
 	// return[0]: user name
 	// return[1]: password
-	function decrypt_login() {
+	function decrypt() {
+		// read key and iv from cookie
+		$iv = base64_decode($_COOKIE["IV"]);
+		$key = base64_decode($_COOKIE["Key"]);
 		// decrypt username and password
-		$username = $this->decrypt(base64_decode($this->username));
-		$password = $this->decrypt(base64_decode($this->password));
+		$username = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($this->username), MCRYPT_MODE_ECB, $iv);
+		$password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($this->password), MCRYPT_MODE_ECB, $iv);
 		$ret = array($username, $password);
+		$ret[0] = str_replace(chr(00), "", $ret[0]);
+		$ret[1] = str_replace(chr(00), "", $ret[1]);
 		return $ret;
 	}
 

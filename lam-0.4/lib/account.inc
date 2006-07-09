@@ -23,8 +23,6 @@ $Id$
   LDAP Account Manager functions used by account.php
 */
 
-// PHP 5 compatibility
-if( phpversion() >= "5" ) ini_set( "zend.ze1_compatibility_mode", 1 );
 
 // This class keeps all needed values for any account
 class account {
@@ -203,16 +201,24 @@ function getquotas($users) {
 	if (is_array($users)) $return = $users;
 		else $return[0] = $users;
 	// get username and password of the current lam-admin
-	$ldap_q = $_SESSION['ldap']->decrypt_login();
+	$ldap_q = $_SESSION['ldap']->decrypt();
+	/* $towrite has the following syntax:
+	* admin-username, admin-password, account with quotas, 'quota', operation='get', type=user|group
+	* use escapeshellarg to make exec() shell-safe
+	*/
+	$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." ".
+		escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]);
+	/* scriptServer is the IP to remote-host to which lam should connect via ssh
+	* scriptPath is Path to lamdaemon.pl on remote system
+	*/
 	if (is_array($return)) {
 		for($i=0; $i<count($return); $i++)
 			// put string to trasmit together
 			if ($return[$i]->general_username!='') $userstring .= $return[$i]->general_username." quota get ".$return[$i]->type."\n";
 				else $userstring .= "+ quota get ".$return[$i]->type."\n";
 		}
-	if (function_exists('proc_open')) {
+	if (function_exists(proc_open)) {
 		// New Code, requires PHP 4.3
-		$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." - -";
 		$descriptorspec = array(
 			0 => array("pipe", "r"), // stdin
 			1 => array("pipe", "w"), // stout
@@ -227,9 +233,6 @@ function getquotas($users) {
 			* $pipes[1] is readable handle to child stdout
 			* any error is send to /dev/null
 			*/
-			// user+passwd
-			fwrite($pipes[0], $ldap_q[0] . "\n");
-			fwrite($pipes[0], $ldap_q[1] . "\n");
 			// Write one output-line for every user
 			fwrite($pipes[0], $userstring);
 			fclose($pipes[0]);
@@ -242,8 +245,6 @@ function getquotas($users) {
 			}
 		}
 	else { // PHP 4.3>
-		$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." ".
-			escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]);
 		$command = escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".$towrite;
 		$pipe = popen("echo \"$userstring\"|$command" , 'r');
 		while(!feof($pipe)) {
@@ -298,7 +299,13 @@ function getquotas($users) {
 */
 function setquotas($values2) {
 	// get username and password of the current lam-admin
-	$ldap_q = $_SESSION['ldap']->decrypt_login();
+	$ldap_q = $_SESSION['ldap']->decrypt();
+	/* $towrite has the following syntax:
+	* admin-username, admin-password, account with quotas, 'quota', operation='set', type=user|group
+	* use escapeshellarg to make exec() shell-safe
+	*/
+	$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." ".
+		escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]);
 
 	/* Check wich quotas have changed
 	* Because we can not send an array to lamdaemon.pl we have to put all
@@ -333,9 +340,8 @@ function setquotas($values2) {
 		$userstring = $values2->general_username." quota set ".$values2->type." ".$quotastring."\n";
 		}
 
-	if (function_exists('proc_open')) {
+	if (function_exists(proc_open)) {
 		// New Code, requires PHP 4.3
-		$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." - -";
 		$descriptorspec = array(
 			0 => array("pipe", "r"), // stdin
 			1 => array("pipe", "w"), // stout
@@ -350,9 +356,6 @@ function setquotas($values2) {
 			* $pipes[1] is readable handle to child stdout
 			* any error is send to /dev/null
 			*/
-			// user+passwd
-			fwrite($pipes[0], $ldap_q[0] . "\n");
-			fwrite($pipes[0], $ldap_q[1] . "\n");
 			// Write to stdin
 			fwrite($pipes[0], $userstring);
 			}
@@ -365,8 +368,6 @@ function setquotas($values2) {
 		proc_close($process);
 		}
 	else { // PHP 4.3>
-		$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." ".
-			escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]);
 		$command = escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".$towrite;
 		$pipe = popen("echo \"$userstring\"|$command" , 'r');
 		while(!feof($pipe)) {
@@ -389,7 +390,13 @@ function setquotas($values2) {
 */
 function remquotas($users, $type) {
 	// get username and password of the current lam-admin
-	$ldap_q = $_SESSION['ldap']->decrypt_login();
+	$ldap_q = $_SESSION['ldap']->decrypt();
+	/* $towrite has the following syntax:
+	* admin-username, admin-password, account with quotas, 'quota', operation='rem', type=user|group
+	* use escapeshellarg to make exec() shell-safe
+	*/
+	$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." ".
+		escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]);
 
 	if (is_array($users)) {
 		foreach ($users as $user) {
@@ -398,9 +405,8 @@ function remquotas($users, $type) {
 		}
 	else $userstring = "$users quota rem $type\n";
 
-	if (function_exists('proc_open')) {
+	if (function_exists(proc_open)) {
 		// New Code, requires PHP 4.3
-		$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." - -";
 		$descriptorspec = array(
 			0 => array("pipe", "r"), // stdin
 			1 => array("pipe", "w"), // stout
@@ -415,9 +421,6 @@ function remquotas($users, $type) {
 			* $pipes[1] is readable handle to child stdout
 			* any error is send to /dev/null
 			*/
-			// user+passwd
-			fwrite($pipes[0], $ldap_q[0] . "\n");
-			fwrite($pipes[0], $ldap_q[1] . "\n");
 			// Write to stdin
 			fwrite($pipes[0], $userstring);
 			}
@@ -430,8 +433,6 @@ function remquotas($users, $type) {
 		proc_close($process);
 		}
 	else { // PHP 4.3>
-		$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." ".
-			escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]);
 		$command = escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".$towrite;
 		$pipe = popen("echo \"$userstring\"|$command" , 'r');
 		while(!feof($pipe)) {
@@ -454,7 +455,13 @@ function remquotas($users, $type) {
 */
 function addhomedir($users) {
 	// get username and password of the current lam-admin
-	$ldap_q = $_SESSION['ldap']->decrypt_login();
+	$ldap_q = $_SESSION['ldap']->decrypt();
+	/* $towrite has the following syntax:
+	* admin-username, admin-password, owner of homedir, 'home', operation='add'
+	* use escapeshellarg to make exec() shell-safe
+	*/
+	$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." ".
+		escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]);
 
 	if (is_array($users)) {
 		foreach ($users as $user) {
@@ -463,9 +470,8 @@ function addhomedir($users) {
 		}
 	else $userstring = "$users home add\n";
 
-	if (function_exists('proc_open')) {
+	if (function_exists(proc_open)) {
 		// New Code, requires PHP 4.3
-		$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." - -";
 		$descriptorspec = array(
 			0 => array("pipe", "r"), // stdin
 			1 => array("pipe", "w"), // stout
@@ -480,9 +486,6 @@ function addhomedir($users) {
 			* $pipes[1] is readable handle to child stdout
 			* any error is send to /dev/null
 			*/
-			// user+passwd
-			fwrite($pipes[0], $ldap_q[0] . "\n");
-			fwrite($pipes[0], $ldap_q[1] . "\n");
 			// Write to stdin
 			fwrite($pipes[0], $userstring);
 			}
@@ -495,8 +498,6 @@ function addhomedir($users) {
 		proc_close($process);
 		}
 	else { // PHP 4.3>
-		$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." ".
-			escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]);
 		$command = escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".$towrite;
 		$pipe = popen("echo \"$userstring\"|$command" , 'r');
 		while(!feof($pipe)) {
@@ -520,7 +521,13 @@ function addhomedir($users) {
 */
 function remhomedir($users) {
 	// get username and password of the current lam-admin
-	$ldap_q = $_SESSION['ldap']->decrypt_login();
+	$ldap_q = $_SESSION['ldap']->decrypt();
+	/* $towrite has the following syntax:
+	* admin-username, admin-password, owner of homedir, 'home', operation='add'
+	* use escapeshellarg to make exec() shell-safe
+	*/
+	$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." ".
+		escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]);
 
 	if (is_array($users)) {
 		foreach ($users as $user) {
@@ -529,9 +536,8 @@ function remhomedir($users) {
 		}
 	else $userstring = "$users home rem\n";
 
-	if (function_exists('proc_open')) {
+	if (function_exists(proc_open)) {
 		// New Code, requires PHP 4.3
-		$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." - -";
 		$descriptorspec = array(
 			0 => array("pipe", "r"), // stdin
 			1 => array("pipe", "w"), // stout
@@ -546,9 +552,6 @@ function remhomedir($users) {
 			* $pipes[1] is readable handle to child stdout
 			* any error is send to /dev/null
 			*/
-			// user+passwd
-			fwrite($pipes[0], $ldap_q[0] . "\n");
-			fwrite($pipes[0], $ldap_q[1] . "\n");
 			// Write to stdin
 			fwrite($pipes[0], $userstring);
 			}
@@ -561,8 +564,6 @@ function remhomedir($users) {
 		proc_close($process);
 		}
 	else { // PHP 4.3>
-		$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." ".
-			escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]);
 		$command = escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".$towrite;
 		$pipe = popen("echo \"$userstring\"|$command" , 'r');
 		while(!feof($pipe)) {
@@ -606,14 +607,14 @@ function ldapreload($type) {
 				$_SESSION['userDN'][0] = time();
 				// Search 4 values which should be cached
 				$result = @ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_UserSuffix(),
-					'(&(objectClass=posixAccount)(!(uid=*$)))', array('uid', 'uidNumber'), 0);
+					'(&(objectClass=posixAccount)(!(uid=*$)))', array('cn', 'uidNumber'), 0);
 				// Write search result in array
 				$entry = @ldap_first_entry($_SESSION['ldap']->server(), $result);
 				while ($entry) {
 					$dn = (ldap_get_dn($_SESSION['ldap']->server(), $entry));
 					$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
-					if (isset($attr['uid'][0]))
-						$_SESSION['userDN'][$dn]['uid'] = $attr['uid'][0];
+					if (isset($attr['cn'][0]))
+						$_SESSION['userDN'][$dn]['cn'] = $attr['cn'][0];
 					if (isset($attr['uidNumber'][0]))
 						$_SESSION['userDN'][$dn]['uidNumber'] = $attr['uidNumber'][0];
 					$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
@@ -659,14 +660,14 @@ function ldapreload($type) {
 				$_SESSION['hostDN'][0] = time();
 				// Search 4 values which should be cached
 				$result = @ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_HostSuffix(),
-					'(&(objectClass=posixAccount)(uid=*$))', array('uid', 'uidNumber'), 0);
+					'(&(objectClass=posixAccount)(uid=*$))', array('cn', 'uidNumber'), 0);
 				// Write search result in array
 				$entry = @ldap_first_entry($_SESSION['ldap']->server(), $result);
 				while ($entry) {
 					$dn = (ldap_get_dn($_SESSION['ldap']->server(), $entry));
 					$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
-					if (isset($attr['uid'][0]))
-						$_SESSION['hostDN'][$dn]['uid'] = $attr['uid'][0];
+					if (isset($attr['cn'][0]))
+						$_SESSION['hostDN'][$dn]['cn'] = $attr['cn'][0];
 					if (isset($attr['uidNumber'][0]))
 						$_SESSION['hostDN'][$dn]['uidNumber'] = $attr['uidNumber'][0];
 					$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
@@ -1016,16 +1017,6 @@ function loaduser($dns) {
 				$j++;
 				}
 
-			// fix misspelled object classes
-			$j = 0;
-			while (isset($attr['objectClass'][$j])) {
-				if (strtolower($attr['objectClass'][$j]) == "inetorgperson") $attr['objectClass'][$j] = "inetOrgPerson";
-				else if (strtolower($attr['objectClass'][$j]) == "posixaccount") $attr['objectClass'][$j] = "posixAccount";
-				else if (strtolower($attr['objectClass'][$j]) == "sambaaccount") $attr['objectClass'][$j] = "sambaAccount";
-				else if (strtolower($attr['objectClass'][$j]) == "sambasamaccount") $attr['objectClass'][$j] = "sambaSamAccount";
-				else if (strtolower($attr['objectClass'][$j]) == "shadowaccount") $attr['objectClass'][$j] = "shadowAccount";
-				$j++;
-			}
 			// load objectclasses
 			$j=0;
 			while (isset($attr['objectClass'][$j])) {
@@ -1163,15 +1154,6 @@ function loadhost($dn) {
 	// Set host samba flags
 	$return->smb_flags['W'] = true;
 	$return->smb_flags['X'] = true;
-	// fix misspelled object classes
-	$j = 0;
-	while (isset($attr['objectClass'][$j])) {
-		if (strtolower($attr['objectClass'][$j]) == "account") $attr['objectClass'][$j] = "account";
-		else if (strtolower($attr['objectClass'][$j]) == "posixaccount") $attr['objectClass'][$j] = "posixAccount";
-		else if (strtolower($attr['objectClass'][$j]) == "sambaaccount") $attr['objectClass'][$j] = "sambaAccount";
-		else if (strtolower($attr['objectClass'][$j]) == "sambasamaccount") $attr['objectClass'][$j] = "sambaSamAccount";
-		$j++;
-	}
 	// load objectclasses
 	$i=0;
 	while (isset($attr['objectClass'][$i])) {
@@ -1275,13 +1257,6 @@ function loadgroup($dn) {
 	* Some values don't have to be set. These are only loaded if they are set
 	*/
 
-	// fix misspelled object classes
-	$j = 0;
-	while (isset($attr['objectClass'][$j])) {
-		if (strtolower($attr['objectClass'][$j]) == "posixgroup") $attr['objectClass'][$j] = "posixGroup";
-		else if (strtolower($attr['objectClass'][$j]) == "sambagroupmapping") $attr['objectClass'][$j] = "sambaGroupMapping";
-		$j++;
-	}
 	// load objectclasses
 	$i=0;
 	while (isset($attr['objectClass'][$i])) {
@@ -1334,12 +1309,17 @@ function createuser($values, $uselamdaemon=true) {
 	// Create DN for new user account
 	$values->general_dn = 'uid=' . $values->general_username . ',' . $values->general_dn;
 	// decrypt password because we don't want to store them unencrypted in session
+	$iv = base64_decode($_COOKIE["IV"]);
+	$key = base64_decode($_COOKIE["Key"]);
 	if ($values->unix_password != '') {
-		$values->unix_password = $_SESSION['ldap']->decrypt(base64_decode($values->unix_password));
+		$values->unix_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($values->unix_password), MCRYPT_MODE_ECB, $iv);
+		$values->unix_password = str_replace(chr(00), '', $values->unix_password);
 		}
 	if ($values->smb_password != '') {
-		$values->smb_password = $_SESSION['ldap']->decrypt(base64_decode($values->smb_password));
+		$values->smb_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($values->smb_password), MCRYPT_MODE_ECB, $iv);
+		$values->smb_password = str_replace(chr(00), '', $values->smb_password);
 		}
+
 	// Attributes which are required
 	$attr['cn'] = $values->general_username;
 	$attr['uid'] = $values->general_username;
@@ -1370,7 +1350,6 @@ function createuser($values, $uselamdaemon=true) {
 	// explode host-string and save every allowed host as separate attribute
 	$values->unix_host = str_replace(' ', '', $values->unix_host);
 	$hosts = explode (',', $values->unix_host);
-	$hosts = array_unique($hosts);
 	$i=0;
 	while(isset($hosts[$i])) {
 		if ($hosts[$i]!='') $attr['host'][$i] = $hosts[$i];
@@ -1387,19 +1366,19 @@ function createuser($values, $uselamdaemon=true) {
 			$attr['sambaLMPassword'] = 'NO PASSWORD*****';
 			}
 		else {
+			// use escapeshellarg() to make command shell-secure
 			// Set samba-passwords with external perl-script
-			$attr['sambaNTPassword'] = getNTPasswordHash($values->smb_password);
-			$attr['sambaLMPassword'] = getLMPasswordHash($values->smb_password);
+			$attr['sambaNTPassword'] = exec(escapeshellarg($_SESSION['lampath'].'lib/createntlm.pl')." nt ".escapeshellarg($values->smb_password));
+			$attr['sambaLMPassword'] = exec(escapeshellarg($_SESSION['lampath'].'lib/createntlm.pl')." lm ".escapeshellarg($values->smb_password));
 			}
 		$attr['sambaPwdLastSet'] = time();
 		// Generate SID
 		$attr['sambaSID'] = $values->smb_domain->SID . "-"  . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase); // sambaAccount_may
 
+		//if ($values->smb_mapgroup!='') $attr['sambaPrimaryGroupSID'] = $values->smb_mapgroup; // sambaAccount_req
 		ldapreload('group');
 		foreach ($_SESSION['groupDN'] as $groupname) {
-			if ($groupname['cn'] == $values->general_group) {
-				if ($groupname['sambaSID']) $attr['sambaPrimaryGroupSID'] = $groupname['sambaSID'];
-				}
+			if ($groupname['cn'] == $values->general_group) $attr['sambaPrimaryGroupSID'] = $groupname['sambaSID'];
 			}
 		if ($values->smb_pwdcanchange!='') $attr['sambaPwdCanChange'] = $values->smb_pwdcanchange; // sambaAccount_may
 			else $attr['sambaPwdCanChange'] = time(); // sambaAccount_may
@@ -1423,9 +1402,10 @@ function createuser($values, $uselamdaemon=true) {
 			$attr['lmPassword'] = 'NO PASSWORD*****';
 			}
 		else {
+			// use escapeshellarg() to make command shell-secure
 			// Set samba-passwords with external perl-script
-			$attr['ntPassword'] = getNTPasswordHash($values->smb_password);
-			$attr['lmPassword'] = getLMPasswordHash($values->smb_password);
+			$attr['ntPassword'] = exec(escapeshellarg($_SESSION['lampath'].'lib/createntlm.pl')." nt ".escapeshellarg($values->smb_password));
+			$attr['lmPassword'] = exec(escapeshellarg($_SESSION['lampath'].'lib/createntlm.pl')." lm ".escapeshellarg($values->smb_password));
 			}
 		$attr['pwdLastSet'] = time();
 		// Generate pseudo SID
@@ -1475,7 +1455,6 @@ function createuser($values, $uselamdaemon=true) {
 	if (isset($values->general_groupadd[0]))
 		// Loop for every group
 		foreach ($values->general_groupadd as $group2) {
-			if (! isset($group2) || ($group2 == "")) continue;
 			// Search for group in LDAP
 			$result = ldap_search($_SESSION['ldap']->server(), $_SESSION['config']->get_GroupSuffix(), "(&(objectclass=posixGroup)(cn=$group2))", array(''));
 			$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
@@ -1520,11 +1499,15 @@ function modifyuser($values,$values_old,$uselamdaemon=true) { // Will modify the
 	// Create DN for new user account
 	$values->general_dn = 'uid=' . $values->general_username . ',' . $values->general_dn;
 	// decrypt password because we don't want to store them unencrypted in session
+	$iv = base64_decode($_COOKIE["IV"]);
+	$key = base64_decode($_COOKIE["Key"]);
 	if ($values->unix_password != '') {
-		$values->unix_password = $_SESSION['ldap']->decrypt(base64_decode($values->unix_password));
+		$values->unix_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($values->unix_password), MCRYPT_MODE_ECB, $iv);
+		$values->unix_password = str_replace(chr(00), '', $values->unix_password);
 		}
 	if ($values->smb_password != '') {
-		$values->smb_password = $_SESSION['ldap']->decrypt(base64_decode($values->smb_password));
+		$values->smb_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($values->smb_password), MCRYPT_MODE_ECB, $iv);
+		$values->smb_password = str_replace(chr(00), '', $values->smb_password);
 		}
 	// Attributes which are required
 	if ($values->general_username != $values_old->general_username) {
@@ -1533,9 +1516,9 @@ function modifyuser($values,$values_old,$uselamdaemon=true) { // Will modify the
 		}
 	if ($values->general_uidNumber != $values_old->general_uidNumber) {
 		$attr['uidNumber'] = $values->general_uidNumber;
-		// Because sambaSID(rid) is related to uidNumber we have to change it if uidNumbaer has changed
+		// Because sambaSid(rid) is related to uidNumber we have to change it if uidNumbaer has changed
 		if ($_SESSION['config']->is_samba3())
-			$attr['sambaSID'] = $values->smb_domain->SID . "-" . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase);
+			$attr['sambaSid'] = $values->smb_domain->SID . "-" . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase);
 		else $attr['rid'] = (2 * $values->general_uidNumber + 1000);
 		}
 	if ($values->general_group != $values_old->general_group) {
@@ -1544,28 +1527,14 @@ function modifyuser($values,$values_old,$uselamdaemon=true) { // Will modify the
 		if ($_SESSION['config']->is_samba3()) {
 			// We use samba 3 schema
 			// Change SID only if we don't use a well known SID
-			$found = false;
-			if (substr($values->smb_mapgroup, sizeof($values->smb_mapgroup)-5, 4) == '-512') $found=true;
-			if (substr($values->smb_mapgroup, sizeof($values->smb_mapgroup)-5, 4) == '-513') $found=true;
-			if (substr($values->smb_mapgroup, sizeof($values->smb_mapgroup)-5, 4) == '-514') $found=true;
-			if (!$found) {
-				ldapreload('group');
-				foreach ($_SESSION['groupDN'] as $groupname) {
-					if ($groupname['cn'] == $values->general_group) {
-						if ($groupname['sambaSID']) $attr['sambaPrimaryGroupSID'] = $groupname['sambaSID'];
-						else {
-							// remove primaryGroupSID if new group has no SID
-							$attr['sambaPrimaryGroupSID'] = $values_old->smb_mapgroup;
-							$attr_rem['sambaPrimaryGroupSID'] = $values_old->smb_mapgroup;
-							}
-						}
-					}
+			ldapreload('group');
+			foreach ($_SESSION['groupDN'] as $groupname) {
+				if ($groupname['cn'] == $values->general_group) $attr['sambaPrimaryGroupSID'] = $groupname['sambaSID'];
 				}
 			}
 		else {
 			// We use old samba 2.2 schema
 			// Change SID only if we don't use a well known SID
-			$found = false;
 			if ($values->smb_mapgroup== '512') $found=true;
 			if ($values->smb_mapgroup== '513') $found=true;
 			if ($values->smb_mapgroup== '514') $found=true;
@@ -1605,15 +1574,21 @@ function modifyuser($values,$values_old,$uselamdaemon=true) { // Will modify the
 	// Check if shadow expire has changed
 	if ($values->unix_pwdexpire != $values_old->unix_pwdexpire) $attr['shadowExpire'] = intval($values->unix_pwdexpire / 86400) ;
 	// Set unix password
-	if ($values->unix_password=='') {  // $values->unix_password=='' means use old password
-		if ($values->unix_deactivated != $values_old->unix_deactivated) {  // check if password was enabled/disabled
-			if ($values->unix_deactivated) {
-				$attr['userPassword'] = pwd_disable($values_old->unix_password);
+	if ($values->unix_password=='') {
+		// $values->unix_password=='' means use old password
+		if ($values->unix_deactivated != $values_old->unix_deactivated) {
+			// (de)activate password
+			// Split old password hash in {CRYPT} and password-hash
+			$i = 0;
+			while ($values_old->unix_password{$i} != '}') $i++;
+			$passwd = substr($values_old->unix_password, $i+1 );
+			$crypt = substr($values_old->unix_password, 0, $i+1 );
+			// remove trailing ! from password hash
+			if ($passwd{0} == '!') $passwd = substr($passwd, 1);
+			// Write new password
+			if ($values->unix_deactivated) $attr['userPassword'] = $crypt.'!'.$passwd;
+				else $attr['userPassword'] = $crypt.$passwd;
 			}
-			else {
-				$attr['userPassword'] = pwd_enable($values_old->unix_password);
-			}
-		}
 		if ($values->unix_password_no) {
 			// use no password
 			if ($values->unix_deactivated) $attr['userPassword'] = pwd_hash('', false);
@@ -1632,7 +1607,6 @@ function modifyuser($values,$values_old,$uselamdaemon=true) { // Will modify the
 	if (($values->unix_host != $values_old->unix_host)) {
 		$values->unix_host = str_replace(' ', '', $values->unix_host);
 		$host = explode (',', $values->unix_host);
-		$host = array_unique($host);
 		$values_old->unix_host = str_replace(' ', '', $values_old->unix_host);
 		$host_old = explode (',', $values_old->unix_host);
 		if ($host[0]=='') $attr_rem['host'] = $host_old;
@@ -1672,7 +1646,7 @@ function modifyuser($values,$values_old,$uselamdaemon=true) { // Will modify the
 			$attr['displayName'] = utf8_encode($values->smb_displayName); // sambaAccount_may
 			$attr['sambaAcctFlags'] = smbflag($values->flags); // sambaAccount_may
 			$attr['sambaDomainName'] = $values->smb_domain->name; // sambaAccount_may
-			$attr['sambaSID'] = $values->smb_domain->SID . "-" . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase); // sambaAccount_may
+			$attr['sambaSid'] = $values->smb_domain->SID . "-" . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase); // sambaAccount_may
 			$attr['sambaPrimaryGroupSID'] = $values->smb_mapgroup; // sambaAccount_req
 			// remove old attributes
 			if (in_array('sambaAccount', $attr_old['objectClass'])) $attr_rem['objectClass'] = 'sambaAccount';
@@ -1702,9 +1676,10 @@ function modifyuser($values,$values_old,$uselamdaemon=true) { // Will modify the
 			}
 		 else
 			if ($values->smb_password!='') {
+				// use escapeshellarg() to make command shell-secure
 				// Set samba-passwords with external perl-script
-				$attr['sambaNTPassword'] = getNTPasswordHash($values->smb_password);
-				$attr['sambaLMPassword'] = getLMPasswordHash($values->smb_password);
+				$attr['sambaNTPassword'] = exec(escapeshellarg($_SESSION['lampath'].'lib/createntlm.pl')." nt ".escapeshellarg($values->smb_password));
+				$attr['sambaLMPassword'] = exec(escapeshellarg($_SESSION['lampath'].'lib/createntlm.pl')." lm ".escapeshellarg($values->smb_password));
 				$attr['sambaPwdLastSet'] = time(); // sambaAccount_may
 				}
 		// Check which Samba-Attributes have changed
@@ -1723,27 +1698,18 @@ function modifyuser($values,$values_old,$uselamdaemon=true) { // Will modify the
 		if (($values->smb_smbuserworkstations=='') && ($values->smb_smbuserworkstations!=$values_old->smb_smbuserworkstations))$attr_rem['sambaUserWorkstations'] = $values_old->smb_smbuserworkstations; // sambaAccount_may
 		if ($values->smb_domain->name!=$values_old->smb_domain->name) {
 			$attr['sambaDomainName'] = $values->smb_domain->name; // sambaAccount_may
-			$attr['sambaSID'] = $values->smb_domain->SID . "-" . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase);
+			$attr['sambaSid'] = $values->smb_domain->SID . "-" . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase);
 			$attr['sambaPrimaryGroupSID'] = $values->smb_domain->SID . "-".
 				(2 * getgid($values->general_group) + $values->smb_domain->RIDbase+1);
 			}
 		if (($values->smb_mapgroup!='') && ($values->smb_mapgroup!=$values_old->smb_mapgroup)) {
-			$found = false;
-			if (substr($values->smb_mapgroup, sizeof($values->smb_mapgroup)-5, 4) == '-512') $found=true;
-			if (substr($values->smb_mapgroup, sizeof($values->smb_mapgroup)-5, 4) == '-513') $found=true;
-			if (substr($values->smb_mapgroup, sizeof($values->smb_mapgroup)-5, 4) == '-514') $found=true;
-			if (!$found) {  // use group SID
-				ldapreload('group');
-				foreach ($_SESSION['groupDN'] as $groupname) {
-					if ($groupname['cn'] == $values->general_group) $attr['sambaPrimaryGroupSID'] = $groupname['sambaSID'];
+			ldapreload('group');
+			foreach ($_SESSION['groupDN'] as $groupname) {
+				if ($groupname['cn'] == $values->general_group) $attr['sambaPrimaryGroupSID'] = $groupname['sambaSID'];
 				}
 			}
-			else {  // use special SID
-				$attr['sambaPrimaryGroupSID'] = $values->smb_mapgroup;
-			}
-		}
 		if ($values->smb_displayName != $values_old->smb_displayName) $attr['displayName'] = utf8_encode($values->smb_displayName); // sambaAccount_may
-	}
+		}
 	else {
 		// use old samba 2.2 objectclass
 		if (!in_array('sambaAccount', $values->general_objectClass)) {
@@ -1806,9 +1772,10 @@ function modifyuser($values,$values_old,$uselamdaemon=true) { // Will modify the
 			}
 		 else
 			if ($values->smb_password!='') {
+				// use escapeshellarg() to make command shell-secure
 				// Set samba-passwords with external perl-script
-				$attr['ntPassword'] = getNTPasswordHash($values->smb_password);
-				$attr['lmPassword'] = getLMPasswordHash($values->smb_password);
+				$attr['ntPassword'] = exec(escapeshellarg($_SESSION['lampath'].'lib/createntlm.pl')." nt ".escapeshellarg($values->smb_password));
+				$attr['lmPassword'] = exec(escapeshellarg($_SESSION['lampath'].'lib/createntlm.pl')." lm ".escapeshellarg($values->smb_password));
 				$attr['pwdLastSet'] = time(); // sambaAccount_may
 				}
 		// Check which Samba-Attributes have changed
@@ -1852,19 +1819,19 @@ function modifyuser($values,$values_old,$uselamdaemon=true) { // Will modify the
 	if (($values->personal_facsimileTelephoneNumber != $values_old->personal_facsimileTelephoneNumber) && ($values->personal_facsimileTelephoneNumber!=''))
 		$attr['facsimileTelephoneNumber'] = utf8_encode($values->personal_facsimileTelephoneNumber);
 	if (($values->personal_facsimileTelephoneNumber != $values_old->personal_facsimileTelephoneNumber) && ($values->personal_facsimileTelephoneNumber==''))
-		$attr_rem['facsimileTelephoneNumber'] = array();
+		$attr_rem['facsimileTelephoneNumber'] = utf8_encode($values_old->personal_facsimileTelephoneNumber);
 	if (($values->personal_street != $values_old->personal_street) && ($values->personal_street!=''))
 		$attr['street'] = utf8_encode($values->personal_street);
 	if (($values->personal_street != $values_old->personal_street) && ($values->personal_street==''))
 		$attr_rem['street'] = utf8_encode($values_old->personal_street);
-	if (($values->personal_postalCode != $values_old->personal_postalCode) && ($values->personal_postalCode!=''))
-		$attr['postalCode'] = utf8_encode($values->personal_postalCode);
-	if (($values->personal_postalCode != $values_old->personal_postalCode) && ($values->personal_postalCode==''))
-		$attr_rem['postalCode'] = utf8_encode($values_old->personal_postalCode);
+	if (($values->personal_street != $values_old->personal_street) && ($values->personal_street!=''))
+		$attr['postalCode'] = utf8_encode($values->personal_street);
+	if (($values->personal_street != $values_old->personal_street) && ($values->personal_street==''))
+		$attr_rem['postalCode'] = utf8_encode($values_old->personal_street);
 	if (($values->personal_postalAddress != $values_old->personal_postalAddress) && ($values->personal_postalAddress!=''))
 		$attr['postalAddress'] = utf8_encode($values->personal_postalAddress);
 	if (($values->personal_postalAddress != $values_old->personal_postalAddress) && ($values->personal_postalAddress==''))
-		$attr_rem['postalAddress'] = array();
+		$attr_rem['postalAddress'] = utf8_encode($values_old->personal_postalAddress);
 	if (($values->personal_employeeType != $values_old->personal_employeeType) && ($values->personal_employeeType!=''))
 		$attr['employeeType'] = utf8_encode($values->personal_employeeType);
 	if (($values->personal_employeeType != $values_old->personal_employeeType) && ($values->personal_employeeType==''))
@@ -1919,7 +1886,7 @@ function modifyuser($values,$values_old,$uselamdaemon=true) { // Will modify the
 					$i=0;
 					for ($i=0; $i<count($dn); $i++) {
 						if ($_SESSION['groupDN'][$dn]['memberUid'][$i] == $values->general_username) unset ($_SESSION['groupDN'][$dn]['memberUid'][$i]);
-						$_SESSION['groupDN'][$dn]['memberUid'][$i] = array_values($_SESSION['groupDN'][$dn]['memberUid']);
+						$_SESSION['groupDN'][$dn]['memberUid'][$i] = array_values($_SESSION['groupDN'][$dn]['memberUid'][$i]);
 						}
 					}
 				}
@@ -2025,8 +1992,9 @@ function modifyuser($values,$values_old,$uselamdaemon=true) { // Will modify the
 */
 function createhost($values) {
 	// These Objectclasses are needed for an host account
-	$attr['objectClass'][] = 'posixAccount';
-	$attr['objectClass'][] = 'account';
+	$attr['objectClass'][0] = 'posixAccount';
+	$attr['objectClass'][1] = 'shadowAccount';
+	$attr['objectClass'][2] = 'account';
 	// Create DN for new host account
 	$values->general_dn = 'uid=' . $values->general_username . ',' . $values->general_dn;
 	// Attributes which are required
@@ -2047,10 +2015,10 @@ function createhost($values) {
 	// Samba attributes
 	if ($_SESSION['config']->is_samba3()) {
 		// Add all attributes as samba3 objectclass
-		$attr['objectClass'][] = 'sambaSamAccount';
-		// password for new hosts is hostname
-		$attr['sambaNTPassword'] = getNTPasswordHash(substr($values->general_username, 0, strlen($values->general_username) - 1));
-		$attr['sambaLMPassword'] = getLMPasswordHash(substr($values->general_username, 0, strlen($values->general_username) - 1));
+		$attr['objectClass'][3] = 'sambaSamAccount';
+		// "Standard" password for new hosts
+		$attr['sambaNTPassword'] = '0CB6948805F797BF2A82807973B89537';
+		$attr['sambaLMPassword'] = '01FC5A6BE7BC6929AAD3B435B51404EE';
 		$attr['sambaPwdLastSet'] = time(); // sambaAccount_may
 		$attr['sambaSID'] = $values->smb_domain->SID . "-" . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase); // sambaAccount_may
 		$attr['sambaPrimaryGroupSID'] = $values->smb_domain->SID . "-515"; // sambaAccount_req
@@ -2061,10 +2029,10 @@ function createhost($values) {
 		}
 	else {
 		// Add all attributes as samba2.2 objectclass
-		$attr['objectClass'][] = 'sambaAccount';
-		// password for new hosts is hostname
-		$attr['ntPassword'] = getNTPasswordHash(substr($values->general_username, 0, strlen($values->general_username) - 1));
-		$attr['lmPassword'] = getLMPasswordHash(substr($values->general_username, 0, strlen($values->general_username) - 1));
+		$attr['objectClass'][3] = 'sambaAccount';
+		// "Standard" password for new hosts
+		$attr['ntPassword'] = '0CB6948805F797BF2A82807973B89537';
+		$attr['lmPassword'] = '01FC5A6BE7BC6929AAD3B435B51404EE';
 		$attr['pwdLastSet'] = time(); // sambaAccount_may
 		$attr['rid'] = (2 * $values->general_uidNumber + 1000); // sambaAccount_may
 		$attr['primaryGroupID'] = (2 * getgid($values->general_group) + 1001); // sambaAccount_req
@@ -2101,19 +2069,23 @@ function modifyhost($values,$values_old) {
 		$attr['objectClass'] = $values->general_objectClass;
 		$attr['objectClass'][] = 'posixAccount';
 		}
+	if (!in_array('shadowAccount', $values->general_objectClass)) {
+		if (!isset($attr['objectClass'])) $attr['objectClass'] = $values->general_objectClass;
+		$attr['objectClass'][] = 'shadowAccount';
+		}
 	// Create DN for new host account
 	$values->general_dn = 'uid=' . $values->general_username . ',' . $values->general_dn;
 
 	// Attributes which are required
 	if ($values->general_username != $values_old->general_username) {
-		$attr['cn'] = $values->general_username; // posixAccount_req sambaAccount_may
+		$attr['cn'] = $values->general_username; // posixAccount_req shadowAccount_req sambaAccount_may
 		$attr['uid'] = $values->general_username; // posixAccount_req
 		}
 	if ($values->general_uidNumber != $values_old->general_uidNumber) {
 		$attr['uidNumber'] = $values->general_uidNumber;
-		// Because sambaSID(rid) is related to uidNumber we have to change it if uidNumbaer has changed
+		// Because sambaSid(rid) is related to uidNumber we have to change it if uidNumbaer has changed
 		if ($_SESSION['config']->is_samba3())
-			$attr['sambaSID'] = $values->smb_domain->SID . "-" . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase);
+			$attr['sambaSid'] = $values->smb_domain->SID . "-" . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase);
 		else $attr['rid'] = (2 * $values->general_uidNumber + 1000);
 		}
 	if ($values->general_group != $values_old->general_group) {
@@ -2168,7 +2140,7 @@ function modifyhost($values,$values_old) {
 			$attr['displayName'] = utf8_encode($values->smb_displayName); // sambaAccount_may
 			$attr['sambaAcctFlags'] = smbflag($values->smb_flags); // sambaAccount_may
 			$attr['sambaDomainName'] = $values->smb_domain->name; // sambaAccount_may
-			$attr['sambaSID'] = $values->smb_domain->SID . "-" . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase); // sambaAccount_may
+			$attr['sambaSid'] = $values->smb_domain->SID . "-" . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase); // sambaAccount_may
 			$attr['sambaPrimaryGroupSID'] = $values->smb_domain->SID . "-" . (2 * getgid($values->general_group) + $values->smb_domain->RIDbase +1); // sambaAccount_req
 			// remove old attributes
 			if (in_array('sambaAccount', $attr_old['objectClass'])) $attr_rem['objectClass'] = 'sambaAccount';
@@ -2191,14 +2163,14 @@ function modifyhost($values,$values_old) {
 			}
 		// Reset password
 		if ($values->smb_flags['N']) {
-			// password for new hosts is hostname
-			$attr['sambaNTPassword'] = getNTPasswordHash(substr($values->general_username, 0, strlen($values->general_username) - 1));
-			$attr['sambaLMPassword'] = getLMPasswordHash(substr($values->general_username, 0, strlen($values->general_username) - 1));
+			// "Standard" password for new hosts
+			$attr['sambaNTPassword'] = '0CB6948805F797BF2A82807973B89537';
+			$attr['sambaLMPassword'] = '01FC5A6BE7BC6929AAD3B435B51404EE';
 			$attr['sambaPwdLastSet'] = time(); // sambaAccount_may
 			}
 		if ($values->smb_domain->name!=$values_old->smb_domain->name) {
 			$attr['sambaDomainName'] = $values->smb_domain->name; // sambaAccount_may
-			$attr['sambaSID'] = $values->smb_domain->SID . "-" . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase);
+			$attr['sambaSid'] = $values->smb_domain->SID . "-" . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase);
 			$attr['sambaPrimaryGroupSID'] = $values->smb_domain->SID . "-".
 				(2 * getgid($values->general_group) + $values->smb_domain->RIDbase+1);
 			}
@@ -2258,9 +2230,9 @@ function modifyhost($values,$values_old) {
 			if (isset($attr_old['sambaSID'][0])) $attr_rem['sambaSID'] = $attr_old['sambaSID'][0];
 			}
 		if ($values->smb_flags['N']) {
-			// password for new hosts is hostname
-			$attr['ntPassword'] = getNTPasswordHash(substr($values->general_username, 0, strlen($values->general_username) - 1));
-			$attr['lmPassword'] = getLMPasswordHash(substr($values->general_username, 0, strlen($values->general_username) - 1));
+			// "Standard" password for new hosts
+			$attr['ntPassword'] = '0CB6948805F797BF2A82807973B89537';
+			$attr['lmPassword'] = '01FC5A6BE7BC6929AAD3B435B51404EE';
 			$attr['pwdLastSet'] = time(); // sambaAccount_may
 			}
 		if (isset($attr_old['sambaSID'][0])) $attr_rem['sambaSID'] = $attr_old['sambaSID'][0];
@@ -2382,7 +2354,6 @@ function creategroup($values, $uselamdaemon=true) {
 *	5 == Error while modifying Account
 */
 function modifygroup($values,$values_old, $uselamdaemon=true) {
-	print_r($values);print_r($values_old);
 	// Add missing objectclasses to group
 	if (!in_array('posixGroup', $values->general_objectClass)) {
 		$attr['objectClass'] = $values->general_objectClass;
@@ -2401,7 +2372,7 @@ function modifygroup($values,$values_old, $uselamdaemon=true) {
 	if ($values->general_uidNumber != $values_old->general_uidNumber) {
 		$attr['gidNumber'] = $values->general_uidNumber;
 		// Set correct SID if UID was changed
-		if ($_SESSION['config']->is_samba3()) $attr['sambaSID'] = $values->smb_domain->SID . "-" . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase +1);
+		if ($_SESSION['config']->is_samba3()) $attr['sambaSid'] = $values->smb_domain->SID . "-" . (2 * $values->general_uidNumber + $values->smb_domain->RIDbase +1);
 		}
 	if ($values->general_gecos != $values_old->general_gecos) $attr['description'] = utf8_encode($values->general_gecos);
 	if ($values->smb_displayName != $values_old->smb_displayName)
@@ -2496,34 +2467,5 @@ function modifygroup($values,$values_old, $uselamdaemon=true) {
 	return 3;
 	}
 
-/**
-*  Returns the nt password hash of a given password.
-*  $password: The cleartext password
-*/
-function getNTPasswordHash($password) {
-	// if Perl is installed in default directory use it
-	if (file_exists("/usr/bin/perl")) {
-		return exec('/usr/bin/perl ' . escapeshellarg($_SESSION['lampath'].'lib/createntlm.pl')." nt ".escapeshellarg($password));
-	}
-	// otherwise use Perl in search path
-	else {
-		return exec('perl ' . escapeshellarg($_SESSION['lampath'].'lib/createntlm.pl')." nt ".escapeshellarg($password));
-	}
-}
-
-/**
-*  Returns the lanman password hash of a given password.
-*  $password: The cleartext password
-*/
-function getLMPasswordHash($password) {
-	// if Perl is installed in default directory use it
-	if (file_exists("/usr/bin/perl")) {
-		return exec('/usr/bin/perl ' . escapeshellarg($_SESSION['lampath'].'lib/createntlm.pl')." lm ".escapeshellarg($password));
-	}
-	// otherwise use Perl in search path
-	else {
-		return exec('perl ' . escapeshellarg($_SESSION['lampath'].'lib/createntlm.pl')." lm ".escapeshellarg($password));
-	}
-}
 
 ?>

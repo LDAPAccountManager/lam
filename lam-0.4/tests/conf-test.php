@@ -29,7 +29,7 @@ echo "<html><head><title></title><link rel=\"stylesheet\" type=\"text/css\" href
 echo ("<b> Current Config</b><br><br>");
 $conf->printconf();
 echo ("<br><br><big><b> Starting Test...</b></big><br><br>");
-// now all preferences are loaded
+// now all prferences are loaded
 echo ("Loading preferences...");
 $ServerURL = $conf->get_ServerURL();
 $cachetimeout = $conf->get_cacheTimeout();
@@ -131,7 +131,7 @@ $conf2->set_hostlistAttributes($hostlistAttributes);
 $conf2->set_maxlistentries($maxlistentries);
 $conf2->set_defaultLanguage($defaultlanguage);
 $conf2->set_scriptPath($scriptpath);
-$conf2->set_scriptServer($scriptServer);
+$conf2->set_scriptServer($scriptserver);
 $conf2->set_samba3($samba3);
 $conf2->set_pwdhash($pwdhash);
 $conf2->save();

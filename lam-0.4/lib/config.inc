@@ -24,23 +24,19 @@ $Id$
 
 */
 
-// PHP 5 compatibility
-if( phpversion() >= "5" ) ini_set( "zend.ze1_compatibility_mode", 1 );
-
 include_once("status.inc");
 
 // sets language settings for automatic translation
 function setlanguage() {
-	if (!isset($_SESSION['language'])) {
-		$_SESSION['language'] = "en_GB.:ISO-8859-1:English (Great Britain)";
+	if ($_SESSION['language']) {
+		$language = explode(":", $_SESSION['language']);
+		putenv("LANG=" . $language[0]);  // e.g. LANG=de_DE
+		setlocale(LC_ALL, $language[0]);  // set LC_ALL to de_DE
+		$locdir = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/locale";  // set path to translations
+		bindtextdomain("messages", $locdir);
+		textdomain("messages");
 	}
-	$language = explode(":", $_SESSION['language']);
-	putenv("LANG=" . $language[0]);  // e.g. LANG=de_DE
-	setlocale(LC_ALL, $language[0]);  // set LC_ALL to de_DE
-	$locdir = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/locale";  // set path to translations
-	bindtextdomain("messages", $locdir);
-	textdomain("messages");
-	header("Content-type: text/html; charset=" . $language[1], true);
+	else echo _("Language not defined in session!");
 }
 
 // returns an array of string with all available configuration profiles (without .conf)
@@ -168,10 +164,6 @@ class Config {
 		$conffile = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/config/" . $this->file . ".conf";
 		if (is_file($conffile) == True) {
 			$file = fopen($conffile, "r");
-			if (!$file) {
-				StatusMessage("ERROR", "", _("Unable to load configuration!") . " (" . $conffile . ")");
-				return;
-			}
 			while (!feof($file)) {
 				$line = fgets($file, 1024);
 				$line = trim($line);  // remove spaces at the beginning and end
@@ -206,10 +198,6 @@ class Config {
 		$conffile = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/config/" . $this->file . ".conf";
 		if (is_file($conffile) == True) {
 			$file = fopen($conffile, "r");
-			if (!$file) {
-				StatusMessage("ERROR", "", _("Cannot open config file!") . " (" . $conffile . ")");
-				return;
-			}
 			$file_array = array();
 			// read config file
 			while (!feof($file)) {
@@ -336,7 +324,7 @@ class Config {
 	// returns true if $value has correct format
 	function set_Adminstring($value) {
 		if (is_string($value) &&
-		eregi("^[^;]+(;[^;]+)*$", $value)) {
+		eregi("^[a-z0-9\\-]+=[a-z0-9\\-]+(,[a-z0-9\\-]+=[a-z0-9 \\-]+)+(;[a-z0-9\\-]+=[a-z0-9\\-]+(,[a-z0-9\\-]+=[a-z0-9 \\-]+)+)*$", $value)) {
 			$this->Admins = $value;
 		}
 		else return false;
@@ -366,7 +354,7 @@ class Config {
 	// $value: new user suffix
 	// returns true if $value has correct format
 	function set_UserSuffix($value) {
-		if (is_string($value)) {
+		if (is_string($value) && (eregi("^(([a-z0-9 \\-])*=([a-z0-9 \\-])*)(,([a-z0-9 \\-])*=([a-z0-9 \\-])*)*$", $value))) {
 			$this->usersuffix = $value;
 		}
 		else return false;
@@ -382,7 +370,7 @@ class Config {
 	// $value: new group suffix
 	// returns true if $value has correct format
 	function set_GroupSuffix($value) {
-		if (is_string($value)) {
+		if (is_string($value) && (eregi("^(([a-z0-9 \\-])*=([a-z0-9 \\-])*)(,([a-z0-9 \\-])*=([a-z0-9 \\-])*)*$", $value))) {
 			$this->groupsuffix = $value;
 		}
 		else return false;
@@ -398,7 +386,7 @@ class Config {
 	// $value: new host suffix
 	// returns true if $value has correct format
 	function set_HostSuffix($value) {
-		if (is_string($value)) {
+		if (is_string($value) && (eregi("^(([a-z0-9 \\-])*=([a-z0-9 \\-])*)(,([a-z0-9 \\-])*=([a-z0-9 \\-])*)*$", $value))) {
 		$this->hostsuffix = $value;
 	}
 		else return false;
@@ -415,7 +403,7 @@ class Config {
 	// returns true if $value has correct format
 	function set_DomainSuffix($value) {
 		if (!$value && ($this->get_Samba3() == "no")) $this->domainsuffix = "";
-		elseif (is_string($value)) {
+		elseif (is_string($value) && (eregi("^(([a-z0-9 \\-])*=([a-z0-9 \\-])*)(,([a-z0-9 \\-])*=([a-z0-9 \\-])*)*$", $value))) {
 			$this->domainsuffix = $value;
 		}
 		else return false;
@@ -515,7 +503,7 @@ class Config {
 	// $value: new attribute string
 	// returns true if $value has correct format
 	function set_userlistAttributes($value) {
-		if (is_string($value) && eregi("^((#[^:;]+)|([^:;]*:[^:;]+))(;((#[^:;]+)|([^:;]*:[^:;]+)))*$", $value)) {
+		if (is_string($value) && eregi("^((#[a-z]+)|([a-z]*:[a-z_\\-]+))(;((#[a-z]+)|([a-z]*:[a-z_\\-]+)))*$", $value)) {
 			$this->userlistAttributes = $value;
 		}
 		else return false;
@@ -531,7 +519,7 @@ class Config {
 	// $value: new attribute string
 	// returns true if $value has correct format
 	function set_grouplistAttributes($value) {
-		if (is_string($value) && eregi("^((#[^:;]+)|([^:;]*:[^:;]+))(;((#[^:;]+)|([^:;]*:[^:;]+)))*$", $value)) {
+		if (is_string($value) && eregi("^((#[a-z]+)|([a-z]*:[a-z_\\-]+))(;((#[a-z]+)|([a-z]*:[a-z_\\-]+)))*$", $value)) {
 			$this->grouplistAttributes = $value;
 		}
 		else return false;
@@ -547,7 +535,7 @@ class Config {
 	// $value: new attribute string
 	// returns true if $value has correct format
 	function set_hostlistAttributes($value) {
-		if (is_string($value) && eregi("^((#[^:;]+)|([^:;]*:[^:;]+))(;((#[^:;]+)|([^:;]*:[^:;]+)))*$", $value)) {
+		if (is_string($value) && eregi("^((#[a-z]+)|([a-z]*:[a-z_\\-]+))(;((#[a-z]+)|([a-z]*:[a-z_\\-]+)))*$", $value)) {
 			$this->hostlistAttributes = $value;
 		}
 		else return false;
@@ -727,10 +715,6 @@ class CfgMain {
 		$conffile = substr(__FILE__, 0, strlen(__FILE__) - 15) . "/config/config.cfg";
 		if (is_file($conffile) == True) {
 			$file = fopen($conffile, "r");
-			if (!$file) {
-				StatusMessage("ERROR", "", _("Unable to load configuration!") . " (" . $conffile . ")");
-				return;
-			}
 			while (!feof($file)) {
 				$line = fgets($file, 1024);
 				$line = trim($line);  // remove spaces at the beginning and end
@@ -759,10 +743,6 @@ class CfgMain {
 			// booleans to check if value was already saved
 			$save_password = $save_default = False;
 			$file = fopen($conffile, "r");
-			if (!$file) {
-				StatusMessage("ERROR", "", _("Cannot open config file!") . " (" . $conffile . ")");
-				return;
-			}
 			$file_array = array();
 			// read config file
 			while (!feof($file)) {

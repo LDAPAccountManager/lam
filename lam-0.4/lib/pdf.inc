@@ -23,9 +23,6 @@ $Id$
   LDAP Account Manager lamPDF class and some pdf functions
 */
 
-// PHP 5 compatibility
-if( phpversion() >= "5" ) ini_set( "zend.ze1_compatibility_mode", 1 );
-
 define('FPDF_FONTPATH', 'font/');
 include_once("fpdf.php");
 
@@ -44,6 +41,8 @@ function createUserPDF($accounts) {
 	$pdfFile->setCreator("LDAP Account Manager (pdf.inc)");
 // Loop for every sumbitted account and print its values on a extra page
 	foreach ($accounts as $account) {
+		$iv = base64_decode($_COOKIE['IV']);
+		$key = base64_decode($_COOKIE['Key']);
 		$pdfFile->addPage();
 		// Load string with additional information from session
 		$info_string = $_SESSION['config']->pdftext;
@@ -72,6 +71,9 @@ function createUserPDF($accounts) {
 			}
 		// Split string in array
 		$info_array = explode("\n", $info_string);
+		$pdfFile->setFont("arial","B",12);
+		$pdfFile->Write(5,"- " . _("User Information") . ":");
+		$pdfFile->Ln(6);
 		$pdfFile->setFont("times","",10);
 		foreach ($info_array as $info)
 			$pdfFile->Cell(50,5,$info,0,1,"L",0);
@@ -81,7 +83,7 @@ function createUserPDF($accounts) {
 		$pdfFile->Write(5,"- " . _("Personal User Infos") . ":");
 		$pdfFile->Ln(6);
 		$pdfFile->setFont("times","B",10);
-		$pdfFile->Cell(50,5,_("Job title") . ":",0,0,"R",0);
+		$pdfFile->Cell(50,5,_("Title") . ":",0,0,"R",0);
 		$pdfFile->setFont("times","",10);
 		$pdfFile->Cell(50,5,$account->personal_title,0,1,"L",0);
 		$pdfFile->setFont("times","B",10);
@@ -139,7 +141,8 @@ function createUserPDF($accounts) {
 		elseif($account->unix_password == "") {
 		}
 		else {
-			$account->unix_password = $_SESSION['ldap']->decrypt(base64_decode($account->unix_password));
+			$account->unix_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($account->unix_password), MCRYPT_MODE_ECB, $iv);
+			$account->unix_password = str_replace(chr(00), '', $account->unix_password);
 			$pdfFile->setFont("times","B",10);
 			$pdfFile->Cell(50,5,_("Unix password") . ":",0,0,"R",0);
 			$pdfFile->setFont("times","",10);
@@ -147,16 +150,13 @@ function createUserPDF($accounts) {
 		}
 		$pdfFile->setFont("times","B",10);
 		$pdfFile->Cell(50,5,_("Group(s)") . ":",0,0,"R",0);
-		if ($account->general_group != -1) {
-			$text = $account->general_group;
-			if (sizeof($account->general_groupadd) > 0) $text .= ", " . implode(", ", $account->general_groupadd);
-		}
-		else {
-			$text = "";
-			if (sizeof($account->general_groupadd) > 0) $text = implode(", ", $account->general_groupadd);
+		$text = $account->general_group;
+		$groups = $account->general_groupadd;
+		for($j=0;$j<count($groups);$j++) {
+			$text .= ", " . $groups[$j];
 		}
 		$pdfFile->setFont("times","",10);
-		$pdfFile->MultiCell(0,5,$text,0,"L",0);
+		$pdfFile->Cell(50,5,$text,0,1,"L",0);
 		$pdfFile->setFont("times","B",10);
 		$pdfFile->Cell(50,5,_("Home Directory") . ":",0,0,"R",0);
 		$pdfFile->setFont("times","",10);
@@ -174,7 +174,7 @@ function createUserPDF($accounts) {
 		$pdfFile->setFont("times","B",10);
 		$pdfFile->Cell(50,5,_("Login at host(s)") . ":",0,0,"R",0);
 		$pdfFile->setFont("times","",10);
-		$pdfFile->MultiCell(0,5,implode(", ",explode(",",$account->unix_host)),0,1,"L",0);
+		$pdfFile->Cell(50,5,$account->unix_host,0,1,"L",0);
 // Print Samba settings
 		$pdfFile->Ln(9);
 		$pdfFile->setFont("arial","B",12);
@@ -188,7 +188,7 @@ function createUserPDF($accounts) {
 			$pdfFile->setFont("times","B",10);
 			$pdfFile->Cell(50,5,_("Windows password") . ":",0,0,"R",0);
 			$pdfFile->setFont("times","",10);
-			$pdfFile->Cell(50,5,_("Windows password disabled!"),0,1,"L",0);
+			$pdfFile->Cell(50,5,_("Window password disabled!"),0,1,"L",0);
 		}
 		elseif($account->smb_useunixpwd == "1") {
 			$pdfFile->setFont("times","B",10);
@@ -199,7 +199,8 @@ function createUserPDF($accounts) {
 		elseif($account->smb_password == "") {
 		}
 		else {
-			$account->smb_password = $_SESSION['ldap']->decrypt(base64_decode($account->smb_password));
+			$account->smb_password = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($account->smb_password), MCRYPT_MODE_ECB, $iv);
+			$account->smb_password = str_replace(chr(00), '', $account->smb_password);
 			$pdfFile->setFont("times","B",10);
 			$pdfFile->Cell(50,5,_("Windows password") . ":",0,0,"R",0);
 			$pdfFile->setFont("times","",10);
@@ -210,7 +211,7 @@ function createUserPDF($accounts) {
 		$pdfFile->setFont("times","",10);
 		$pdfFile->Cell(50,5,$account->smb_homedrive,0,1,"L",0);
 		$pdfFile->setFont("times","B",10);
-		$pdfFile->Cell(50,5,_("Logon script") . ":",0,0,"R",0);
+		$pdfFile->Cell(50,5,_("Script path") . ":",0,0,"R",0);
 		$pdfFile->setFont("times","",10);
 		$pdfFile->Cell(50,5,$account->smb_scriptPath,0,1,"L",0);
 		$pdfFile->setFont("times","B",10);
@@ -220,7 +221,7 @@ function createUserPDF($accounts) {
 		$pdfFile->setFont("times","B",10);
 		$pdfFile->Cell(50,5,_("Login at workstation(s)") . ":",0,0,"R",0);
 		$pdfFile->setFont("times","",10);
-		$pdfFile->MultiCell(0,5,implode(", ",explode(",",$account->smb_smbuserworkstations)),0,1,"L",0);
+		$pdfFile->Cell(50,5,$account->smb_smbuserworkstations,0,1,"L",0);
 		$pdfFile->setFont("times","B",10);
 		$pdfFile->Cell(50,5,_("Windows home directory") . ":",0,0,"R",0);
 		$pdfFile->setFont("times","",10);
@@ -312,7 +313,7 @@ function createHostPDF($accounts) {
 		$pdfFile->setFont("times","B",10);
 		$pdfFile->Write(5,_("Primary group") . ": ");
 		$pdfFile->setFont("times","",10);
-		if ($account->general_group != -1) $pdfFile->Write(5,$account->general_group);
+		$pdfFile->Write(5,$account->general_group);
 		$pdfFile->Ln(5);
 		$pdfFile->setFont("times","B",10);
 		$pdfFile->Write(5,_("Domain") . ": ");
@@ -500,7 +501,7 @@ class lamPDF extends FPDF {
 		$this->SetLineWidth(0.8);
 		$this->Line(10,40,200,40);
 		$this->Line(10,42,200,42);
-		$this->SetY(50);
+		$this->SetY(60);
 	}
 
 	// Print page footer

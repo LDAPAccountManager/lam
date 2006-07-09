@@ -72,7 +72,6 @@ if (isset($_GET['DN']) && $_GET['DN']!='') {
 	$account_old =& $_SESSION['account_'.$varkey.'_account_old'];
 	// get "real" DN from variable
 	$DN = str_replace("\'", '',$_GET['DN']);
-	if ($_GET['DN'] == $DN) $DN = str_replace("'", '',$_GET['DN']);
 	// Load existing host
 	$account_new = loadhost($DN);
 	// Get a copy of original host
@@ -104,6 +103,7 @@ else if (count($_POST)==0) {
 	$account_new = loadHostProfile('default');
 	$account_new ->type = 'host';
 	$account_new->smb_flags['W'] = 1;
+	$account_new->smb_flags['X'] = 1;
 	$account_new->general_homedir = '/dev/null';
 	$account_new->general_shell = '/bin/false';
 	}
@@ -133,7 +133,7 @@ switch ($_POST['select']) {
 			// Get copy of hostname so we can check if changes were made
 			$tempname = $account_new->general_username;
 			// Check if Hostname contains only valid characters
-			if ( !eregi('^([a-z0-9_]|[.]|[-]|[$])*$', $account_new->general_username))
+			if ( !ereg('^([a-z]|[A-Z]|[0-9]|[.]|[-]|[$])*$', $account_new->general_username))
 				$errors[] = array('ERROR', _('Host name'), _('Hostname contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !'));
 
 			// Create automatic Hostname with number if original host already exists
@@ -178,7 +178,7 @@ switch ($_POST['select']) {
 			// Check if Name-length is OK. minLength=3, maxLength=20
 			if ( !ereg('.{3,20}', $account_new->general_username)) $errors[] = array('ERROR', _('Name'), _('Name must contain between 3 and 20 characters.'));
 			// Check if Name starts with letter
-			if ( !eregi('^([a-z]).*$', $account_new->general_username))
+			if ( !ereg('^([a-z]|[A-Z]).*$', $account_new->general_username))
 				$errors[] = array('ERROR', _('Name'), _('Name contains invalid characters. First character must be a letter.'));
 			// Set gecos-field to hostname if it's empty
 			if ($account_new->general_gecos=='') {
@@ -217,9 +217,10 @@ switch ($_POST['select']) {
 				$account_new->smb_flags['N']=true;
 				}
 			}
-		// Check object classes. Display warning if object classes were not found
+		// Check Objectclasses. Display Warning if objectclasses don'T fot
 		if (isset($account_old->general_objectClass)) {
 			if (!in_array('posixAccount', $account_old->general_objectClass)) $errors[] = array('WARN', _('ObjectClass posixAccount not found.'), _('Have to add objectClass posixAccount.'));
+			if (!in_array('shadowAccount', $account_old->general_objectClass)) $errors[] = array('WARN', _('ObjectClass shadowAccount not found.'), _('Have to add objectClass shadowAccount.'));
 			if ($config_intern->is_samba3()) {
 				if (!in_array('sambaSamAccount', $account_old->general_objectClass)) $errors[] = array('WARN', _('ObjectClass sambaSamAccount not found.'), _('Have to add objectClass sambaSamAccount. Host with sambaAccount will be updated.'));
 				}
@@ -260,9 +261,6 @@ do { // X-Or, only one if() can be true
 		$_SESSION['account_'.$varkey.'_account_new'] = loadHostProfile('default');
 		$account_new =& $_SESSION['account_'.$varkey.'_account_new'];
 		$account_new ->type = 'host';
-		$account_new->smb_flags['W'] = 1;
-		$account_new->general_homedir = '/dev/null';
-		$account_new->general_shell = '/bin/false';
 		break;
 		}
 	// Load Profile and reset all attributes to settings in profile
@@ -430,49 +428,53 @@ switch ($select_local) {
 			"</td>\n</tr>\n</table>";
 		echo _('Values with * are required');
 		echo "</fieldset>\n";
-		// Show fieldset with modify, undo and back-button
-		echo "<fieldset class=\"hostedit-bright\"><legend class=\"hostedit-bright\"><b>";
-		if ($account_old) echo _('Modify');
-		 else echo _('Create');
-		echo "</b></legend>\n";
-		// display undo-button when editing a host
-		if (isset($account_old)) {
-			echo "<input name=\"next_reset\" type=\"submit\" value=\""; echo _('Undo changes');
-			echo "\">\n";
-			}
-		echo '&nbsp;<input name="create" type="submit" value="';
-		if ($account_old) echo _('Modify Account');
-		else echo _('Create Account');
-		echo "\">";
-		echo "</fieldset>\n";
 		// Show fieldset where to save a new profile
 		echo "<fieldset class=\"hostedit-dark\"><legend class=\"hostedit-bright\"><b>";
 		echo _("Save profile");
 		echo "</b></legend>\n<table border=0 width=\"100%\">\n<tr>\n<td width=\"50%\">";
 		echo '<input name="f_finish_safeProfile" type="text" size="30" maxlength="50">';
-		echo '&nbsp;<input name="save" type="submit" value="';
+		echo '<input name="save" type="submit" value="';
 		echo _('Save profile');
 		echo '"></td><td width="30%"></td><td width="20%"><a href="../help.php?HelpNumber=457" target="lamhelp">'._('Help');
 		echo "</a></td>\n</tr>\n</table>\n</fieldset>";
+		// Show fieldset with modify, undo and back-button
+		echo "<fieldset class=\"hostedit-bright\"><legend class=\"hostedit-bright\"><b>";
+		if ($account_old) echo _('Modify');
+		 else echo _('Create');
+		echo "</b></legend>\n";
+		echo "<table border=0 width=\"100%\"><tr><td width=\"50%\">";
+		// display undo-button when editiing a host
+		if (isset($account_old)) {
+			echo "<input name=\"next_reset\" type=\"submit\" value=\""; echo _('Undo changes');
+			echo "\">\n";
+			}
+		echo "</td>\n<td width=\"30%\">";
+		echo '<input name="create" type="submit" value="';
+		if ($account_old) echo _('Modify Account');
+		 else echo _('Create Account');
+		echo "\">\n</td><td width=\"20%\">";
+		echo "</td></tr></table></fieldset>\n";
 		break;
 
 	case 'finish':
 		// Final Settings
 		echo '<input name="select" type="hidden" value="finish">';
 		echo "<fieldset class=\"hostedit-bright\"><legend class=\"hostedit-bright\"><b>"._('Note')."</b></legend>\n";
-		if ($account_old) {
-			printf(_("Host %s has been modified."), $account_new->general_username);
-		}
-		else {
-			printf(_("Host %s has been created."), $account_new->general_username);
-		}
-		echo '<br><br>';
-		if (!$account_old) {
-			echo '<input name="createagain" type="submit" value="'; echo _('Create another host'); echo '">';
-		}
-		echo '<input name="outputpdf" type="submit" value="'; echo _('Create PDF file'); echo '">'.
-			'&nbsp;<input name="backmain" type="submit" value="'; echo _('Back to host list'); echo '">'.
-			'</fieldset'."\n";
+		echo "<table border=0 width=\"100%\"><tr><td>";
+		echo '<tr><td>';
+		echo _('Host');
+		echo ' '.$account_new->general_username.' ';
+		if ($account_old) echo ' '._('has been modified').'.';
+		 else echo ' '._('has been created').'.';
+		echo '</td></tr>'."\n".'<tr><td>';
+		if (!$account_old)
+			{ echo '<input name="createagain" type="submit" value="'; echo _('Create another host'); echo '">'; }
+		echo '</td>'."\n".'<td>'.
+			'<input name="outputpdf" type="submit" value="'; echo _('Create PDF file'); echo '">'.
+			'</td>'."\n".'<td>'.
+			'<input name="backmain" type="submit" value="'; echo _('Back to host list'); echo '">'.
+			'</td></tr></table></fieldset'."\n";
+
 		break;
 	}
 

@@ -54,16 +54,16 @@ $helpArray = array (
 						":</b><br><br>".
 						_("ou=People,dc=yourcompany,dc=com will read and store all accounts in this subtree.")),
 				"203" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("UID number"),
-					"Text" => _("These are the minimum and maximum numbers to use for user IDs when creating new user accounts. The range should be different from that of machines. New user accounts will always get the highest number in use plus one.")),
+					"Text" => _("These are the minimum and maximum numbers to use for user IDs when creating new user accounts. The range has to be different from that of machines. New user accounts will always get the highest number in use plus one.")),
 				"204" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("GID number"),
 					"Text" => _("These are the minimum and maximum numbers to use for group IDs when creating new group accounts. New group accounts will always get the highest number in use plus one.")),
 				"205" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("Machine number"),
-					"Text" => _("These are the minimum and maximum numbers to use for machine IDs when creating new accounts for Samba hosts. The range should be different from that of users. New host accounts will always get the highest number in use plus one.")),
+					"Text" => _("These are the minimum and maximum numbers to use for machine IDs when creating new accounts for Samba hosts. The range has to be different from that of users. New host accounts will always get the highest number in use plus one.")),
 				"206" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("List attributes"),
-					"Text" => _("This is the list of attributes to show in the user/group/host list. The entries can either be predefined values, \"#attribute\", or individual ones, \"attribute:description\". Several entries are seperated by semicolons.") .
+					"Text" => _("This is the list of attributes to show in the user/group/host list. The entries can either be predefined values, \"#value\", or individual ones, \"value:description\". Several entries are seperated by semicolons.") .
 						"<br><br><b>" .
 						_("Example") .
-						": </b>#homeDirectory;#uid;#uidNumber;#gidNumber;mail:Mail address<br><br><br><u><b>" .
+						": </b>#homeDirectory;#uid;#cn;#uidNumber;#gidNumber;description:UserDescription<br><br><br><u><b>" .
 						_("Predefined values") .
 						":</b></u><br><br><b>" .
 						_("Users") .
@@ -82,17 +82,19 @@ $helpArray = array (
 				"208" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("Maximum list entries"),
 					"Text" => _("This is the number of rows to show in the user/group/host list. If more entries are found the list will be split into several pages.")),
 				"209" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("Default language"),
-					"Text" => _("This defines the language of the login window and sets this language as the default language. Users can change the language at login.")),
+					"Text" => _("Defines the language of the login window and sets this language as the default language. Users can change the language at login.")),
 				"210" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("Script path"),
 					"Text" => _("This is the absolute path to an external script for setting quotas and creating home directories.").
 							"<br><br><b>".
 							_("Use it at your own risk and read the documentation for lamdaemon before you use it!").
-							"</b>"),
+							"</b>",
+					"SeeAlso" => "<a href=\"./help.php?HelpNumber=210\" target=\"_self\">TODO link to lamdaemon doku</a>"),
 				"211" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("Script server"),
 					"Text" => _("This is the server where the lamdaemon script is stored. LDAP Account Manager will make a SSH connection to this server with username and password provided at login.").
 						"<br><br><b>".
 						_("Use it at your own risk and read the documentation for lamdaemon before you use it!").
-						"</b>"),
+						"</b>",
+					"SeeAlso" => "<a href=\"./help.php?HelpNumber=210\" target=\"_self\">TODO link to lamdaemon doku</a>"),
 				"212" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("Change password"),
 					"Text" => _("If you want to change the current preferences password, please enter it here.")),
 				"213" => array ("ext" => "FALSE", "Headline" => _("Configuration Wizard") . " - " . _("Samba version"),
@@ -144,8 +146,7 @@ $helpArray = array (
 				"402" => array ("ext" => "FALSE", "Headline" => _("Additional groups"),
 					"Text" => _("Hold the CTRL-key to (de)select multiple groups."). ' '. _("Can be left empty.")),
 				"403" => array ("ext" => "FALSE", "Headline" => _("Home directory"),
-					"Text" => _("$%s and $%s are replaced with username or primary groupname."),
-					"variables" => array('user', 'group')),
+					"Text" => _("$user and $group are replaced with username or primary groupname.")),
 				"404" => array ("ext" => "FALSE", "Headline" => _("Gecos"),
 					"Text" => _("User description. If left empty sur- and give name will be used.")),
 				"405" => array ("ext" => "FALSE", "Headline" => _("Login shell"),
@@ -208,17 +209,14 @@ $helpArray = array (
 					"Text" => _("If checked account will be deactivated. (Setting D-Flag)")),
 				"433" => array ("ext" => "FALSE", "Headline" => _("Home drive"),
 					"Text" => _("Driveletter assigned on windows workstations as homedirectory.")),
-				"434" => array ("ext" => "FALSE", "Headline" => _("Logon script"),
-					"Text" => _("Filename and -path relative to netlogon-share which should be executed on logon. $%s and $%s are replaced with user- and groupname."). ' '. _("Can be left empty."),
-					"variables" => array('user', 'group')),
+				"434" => array ("ext" => "FALSE", "Headline" => _("Script path"),
+					"Text" => _("Filename and -path relative to netlogon-share which should be executed on logon. \$user and \$group are replaced with user- and groupname."). ' '. _("Can be left empty.")),
 				"435" => array ("ext" => "FALSE", "Headline" => _("Profile path"),
-					"Text" => _("Path of the userprofile. Can be a local absolute path or a UNC-path (\\\\server\\share). $%s and $%s are replaced with user- and groupname."). ' '. _("Can be left empty."),
-					"variables" => array('user', 'group')),
+					"Text" => _("Path of the userprofile. Can be a local absolute path or a UNC-path (\\\\server\\share). \$user and \$group are replaced with user- and groupname."). ' '. _("Can be left empty.")),
 				"436" => array ("ext" => "FALSE", "Headline" => _("Samba workstations"),
 					"Text" => _("List of samba workstations the user is allowed to login. Empty means every workstation."). ' '. _("Can be left empty.")),
 				"437" => array ("ext" => "FALSE", "Headline" => _("Home path"),
-					"Text" => _("UNC-path (\\\\server\\share) of homedirectory. $%s and $%s are replaced with user- and groupname."). ' '. _("Can be left empty."),
-					"variables" => array('user', 'group')),
+					"Text" => _("UNC-path (\\\\server\\share) of homedirectory. \$user and \$group are replaced with user- and groupname."). ' '. _("Can be left empty.")),
 				"438" => array ("ext" => "FALSE", "Headline" => _("Domain"),
 					"Text" => _("Windows-Domain of user."). ' '. _("Can be left empty.")),
 				"439" => array ("ext" => "FALSE", "Headline" => _("Mountpoint"),
@@ -226,29 +224,29 @@ $helpArray = array (
 				"440" => array ("ext" => "FALSE", "Headline" => _("Used blocks"),
 					"Text" => _("Used blocks. 1000 blocks are usually 1MB")),
 				"441" => array ("ext" => "FALSE", "Headline" => _("Soft block limit"),
-					"Text" => _("Soft block limit."), "SeeAlso" => '<a href="http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.4">'.
-						'Quota How-To</a>'),
+					"Text" => _("Soft block limit."), "SeeAlso" => '<a href="http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.4"</a>'.
+						'Quota How-To'),
 				"442" => array ("ext" => "FALSE", "Headline" => _("Hard block limit"),
-					"Text" => _("Hard block limit").'.', "SeeAlso" => '<a href="http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.5">'.
-						'Quota How-To</a>'),
+					"Text" => _("Hard block limit").'.', "SeeAlso" => '<a href="http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.5"</a>'.
+						'Quota How-To'),
 				"443" => array ("ext" => "FALSE", "Headline" => _("Grace block period"),
-					"Text" => _("Grace block period. Most filesystems use a fixed maximum value of 7 days."), "SeeAlso" => '<a href="http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.6">'.
-						'Quota How-To</a>'),
+					"Text" => _("Grace block period. Most filesystems use a fixed maximum value of 7 days."), "SeeAlso" => '<a href="http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.6"</a>'.
+						'Quota How-To'),
 				"444" => array ("ext" => "FALSE", "Headline" => _("Used inodes"),
 					"Text" => _("Used inodes (files)").'.'),
 				"445" => array ("ext" => "FALSE", "Headline" => _("Soft inode limit"),
-					"Text" => _("Soft inode (files) limit."), "SeeAlso" => '<a href="http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.4">'.
-						'Quota How-To</a>'),
+					"Text" => _("Soft inode (files) limit."), "SeeAlso" => '<a href="http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.4"</a>'.
+						'Quota How-To'),
 				"446" => array ("ext" => "FALSE", "Headline" => _("Hard inode limit"),
-					"Text" => _("Hard inode (files) limit").'.', "SeeAlso" => '<a href="http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.5">'.
-						'Quota How-To</a>'),
+					"Text" => _("Hard inode (files) limit").'.', "SeeAlso" => '<a href="http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.5"</a>'.
+						'Quota How-To'),
 				"447" => array ("ext" => "FALSE", "Headline" => _("Grace inode period"),
-					"Text" => _("Grace inode (files) period. Most filesystems use a fixed maximum value of 7 days."), "SeeAlso" => '<a href="http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.6">'.
-						'Quota How-To</a>'),
-				"448" => array ("ext" => "FALSE", "Headline" => _("Job title"),
-					"Text" => _("Job title of user, Vice President, ...")),
+					"Text" => _("Grace inode (files) period. Most filesystems use a fixed maximum value of 7 days."), "SeeAlso" => '<a href="http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/Quota.html#ss4.6"</a>'.
+						'Quota How-To'),
+				"448" => array ("ext" => "FALSE", "Headline" => _("Title"),
+					"Text" => _("Title of user, Mr., Ms., ...")),
 				"449" => array ("ext" => "FALSE", "Headline" => _("Employee type"),
-					"Text" => _("Employee type: Contractor, Employee, Intern, Temp, External, ...")),
+					"Text" => _("Employee type: worker, student, nurse, ...")),
 				"450" => array ("ext" => "FALSE", "Headline" => _("Street"),
 					"Text" => _("Street")),
 				"451" => array ("ext" => "FALSE", "Headline" => _("Postal code"),

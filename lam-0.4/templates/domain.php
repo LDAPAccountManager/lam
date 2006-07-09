@@ -40,8 +40,7 @@ if (($_GET['action'] == "edit") || ($_GET['action'] == "new")) {
 	$domsuff = $_SESSION['ldap']->search_units($_SESSION['config']->get_domainSuffix());
 	if ($_GET['action'] == "edit") {
 		// remove "\'"
-		$_GET['DN'] = str_replace("\\", "", $_GET['DN']);
-		$_GET['DN'] = str_replace("'", "", $_GET['DN']);
+		$_GET['DN'] = str_replace("\\'", "", $_GET['DN']);
 		// load attributes from domain
 		for ($i = 0; $i < sizeof($domlist); $i++) {
 			if ($domlist[$i]->dn == $_GET['DN']) {
@@ -186,8 +185,7 @@ if (($_GET['action'] == "edit") || ($_GET['action'] == "new")) {
 // delete domain, ask if sure
 elseif ($_GET['action'] == "delete") {
 	// remove "\'" and make array
-	$DNs = str_replace("\\", "", $_GET['DN']);
-	$DNs = str_replace("'", "", $DNs);
+	$DNs = str_replace("\\'", "", $_GET['DN']);
 	$DNs = explode(";", $DNs);
 	// display page
 	echo $_SESSION['header'];
@@ -226,8 +224,8 @@ elseif ($_POST['sub_save']) {
 		$suffix = $_SESSION['config']->get_DomainSuffix();
 		$server = $_SESSION['ldap']->server;
 		$filter = "(|(sambasid=" . $_POST['dom_SID'] . ")(sambadomainname=" . $_POST['dom_name'] . "))";
-		$sr = @ldap_search($server, $suffix, $filter, array());
-		$info = @ldap_get_entries($_SESSION["ldap"]->server, $sr);
+		$sr = ldap_search($server, $suffix, $filter, array());
+		$info = ldap_get_entries($_SESSION["ldap"]->server, $sr);
 	}
 	if ($_POST['add'] && !eregi("^[a-z0-9_\\-]+$", $_POST['dom_name'])) StatusMessage("ERROR", "", _("Domain name is invalid!"));
 	elseif ($_POST['add'] && !eregi("^S-[0-9]-[0-9]-[0-9]{2,2}-[0-9]*-[0-9]*-[0-9]*$", $_POST['dom_SID'])) {
@@ -256,8 +254,8 @@ elseif ($_POST['sub_save']) {
 		if ($_POST['dom_DN'] != $newDN) {
 			$success = ldap_rename($_SESSION['ldap']->server(), $_POST['dom_DN'], $RDN, $_POST['dom_suffix'], true);
 		}
-		if ($success) StatusMessage("INFO", _("Domain has been modified."), $DN);
-		else StatusMessage("ERROR", "", _("Failed to modify domain!"));
+		if ($success) StatusMessage("INFO", "Domain has been modified.", $DN);
+		else StatusMessage("ERROR", "", "Failed to modify domain!");
 	}
 	// add entry
 	else {
@@ -300,8 +298,8 @@ elseif ($_POST['sub_delete']) {
 	echo "<body>\n";
 	// delete DNs
 	for ($i = 0; $i < sizeof($DNs); $i++) {
-		if (ldap_delete($_SESSION['ldap']->server(), $DNs[$i])) StatusMessage("INFO", _("Domain deleted successfully."), $DNs[$i]);
-		else StatusMessage("ERROR", _("Unable to delete domain!"), $DNs[$i]);
+		if (ldap_delete($_SESSION['ldap']->server(), $DNs[$i])) StatusMessage("INFO", "Domain deleted successfully.", $DNs[$i]);
+		else StatusMessage("ERROR", "Unable to delete domain!", $DNs[$i]);
 	}
 	echo "<p>&nbsp;</p>\n";
 	echo "<p><a href=\"lists/listdomains.php\">" . _("Back to domain list") . "</a></p>\n";

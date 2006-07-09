@@ -322,7 +322,7 @@ echo ("</tr>\n");
 
 // path to logon scripts
 echo ("<tr>\n");
-echo ("<td align=\"right\"><b>" . _("Logon script") . ": </b></td>\n");
+echo ("<td align=\"right\"><b>" . _("Script path") . ": </b></td>\n");
 echo ("<td><input type=\"text\" value=\"" . $acct->smb_scriptPath . "\" name=\"smb_scriptPath\"></td>\n");
 echo ("<td><a href=\"../help.php?HelpNumber=434\" target=\"lamhelp\">" . _("Help") . "</a></td>\n");
 echo ("</tr>\n");

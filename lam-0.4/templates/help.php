@@ -87,7 +87,7 @@ function displayHelp($helpNumber)
 		//echo "		<p class=\"help\">" . $helpArray[$helpNumber]['Text'] . "</p>\n";
 		if($helpArray[$helpNumber]["SeeAlso"] <> "")
 		{
-			echo "		<p class=\"help\">" . _("See also") . ": " . $helpArray[$helpNumber]['SeeAlso'] . "</p>\n";
+			echo "		<p class=\"help\">See also: " . $helpArray[$helpNumber]['SeeAlso'] . "</p>\n";
 		}
 		echoHTMLFoot();
 	}

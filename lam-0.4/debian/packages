@@ -4,70 +4,20 @@ Source: ldap-account-manager
 Section: web
 Priority: extra
 Maintainer: Roland Gruber <post@rolandgruber.de>
-Standards-Version: 3.6.2
+Standards-Version: 3.5.9
 Home-Page: <URL:http://lam.sf.net>
-Upstream-Source: <URL:http://www.sourceforge.net/projects/lam>
 Description: Webfrontend to manage Samba and Unix accounts
+Origin: debian
 Copyright: GPL
- This software is copyright (c) 2003 - 2004 by Tilo Lutz, Roland Gruber
- and Michael Duergner.
- .
- .
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2 of the License, or
-  (at your option) any later version.
- .
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
- .
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- .
- .
- Some parts of this package have other, compatible licences. These are:
- .
- A: GNU Lesser General Public License
- .
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
- .
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
- .
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- .
- On Debian systems, the complete text of the GNU Lesser General Public
- License can be found in /usr/share/common-licenses/LGPL file.
- .
- B: Freeware
- .
-  You may use, modify and redistribute this software as you wish.
- .
- .
- Programs and licenses with other licenses and/or authors than the
- main license and authors:
- .
- lib/blowfish.inc  A  2002-2003  Mike Cochrane
- lib/fpdf.php  B  2003  Olivier Plathey
+ Copyright 2003 Tilo Lutz, Roland Gruber, Michael Duergner, Leo Walchshaeusel
 Major-Changes:
 
 Package: ldap-account-manager
 Architecture: all
-Depends: php4 | php4-cgi | libapache2-mod-php4, php4-ldap, apache | apache-ssl | httpd, perl, wwwconfig-common, debconf | debconf-2.0
-Recommends: php4-mhash
-Suggests: ldap-server, sudo, php4-mcrypt
+Depends: php4 | php4-cgi, php4-ldap , php4-mcrypt , php4-mhash , apache | apache-ssl | httpd, perl, wwwconfig-common, debconf
+Suggests: ldap-server, sudo
 Conflicts: php4-apc
-Description: webfrontend for managing Unix and Samba accounts in an LDAP directory
+Description: Webfrontend for managing Unix and Samba accounts in a LDAP directory
  LDAP Account Manager (LAM) runs on an existing webserver. LAM
  supports LDAP connections via SSL and TLS. It uses the
  Samba 2.x or Samba 3 schema and manages user, group and host
@@ -76,9 +26,7 @@ Description: webfrontend for managing Unix and Samba accounts in an LDAP directo
  exported as PDF file. There is also a script
  included which manages quota and homedirectories, you have to
  setup sudo if you want to use it. LAM is translated to
- English, French, German, Hungarian and Japanese.
- .
- Homepage: http://lam.sourceforge.net/
+ English and German.
 Install: sh
  yada install -data -into /usr/share/ldap-account-manager index.html
  yada install -data -into /var/lib/ldap-account-manager/tmp tmp/.htaccess
@@ -103,15 +51,11 @@ Install: sh
  yada install -data -into /usr/share/ldap-account-manager/lib lib/*.js
  yada install -exec -into /usr/share/ldap-account-manager/lib lib/*.pl
  yada install -data -into /usr/share/ldap-account-manager/lib/font lib/font/*.php
+ yada install -data -into /usr/share/ldap-account-manager/lib/font/makefont lib/font/makefont/*.php
+ yada install -data -into /usr/share/ldap-account-manager/lib/font/makefont lib/font/makefont/*.map
  yada install -dir /usr/share/ldap-account-manager/locale
  yada install -dir /usr/share/ldap-account-manager/locale/de_DE
  yada install -data -into /usr/share/ldap-account-manager/locale/de_DE/LC_MESSAGES locale/de_DE/LC_MESSAGES/messages.?o
- yada install -dir /usr/share/ldap-account-manager/locale/hu_HU
- yada install -data -into /usr/share/ldap-account-manager/locale/hu_HU/LC_MESSAGES locale/hu_HU/LC_MESSAGES/messages.?o
- yada install -dir /usr/share/ldap-account-manager/locale/ja_JP
- yada install -data -into /usr/share/ldap-account-manager/locale/ja_JP/LC_MESSAGES locale/ja_JP/LC_MESSAGES/messages.?o
- yada install -dir /usr/share/ldap-account-manager/locale/fr_FR
- yada install -data -into /usr/share/ldap-account-manager/locale/fr_FR/LC_MESSAGES locale/fr_FR/LC_MESSAGES/messages.?o
  yada install -data -into /var/lib/ldap-account-manager/sess sess/.htaccess
  yada install -data -into /usr/share/ldap-account-manager/style style/*.css
  yada install -data -into /usr/share/ldap-account-manager/templates templates/*.php
@@ -119,7 +63,6 @@ Install: sh
  yada install -data -into /usr/share/ldap-account-manager/templates/config templates/config/*.php
  yada install -data -into /usr/share/ldap-account-manager/templates/lists templates/lists/*.php
  yada install -data -into /usr/share/ldap-account-manager/templates/profedit templates/profedit/*.php
- yada install -data -into /usr/share/ldap-account-manager/templates/confwiz templates/confwiz/*.php
  yada install -conffile -subdir ldap-account-manager -as apache.conf debian/lam.apache.conf
  yada install -doc -as changelog HISTORY
  yada install -doc -as changelog.Debian debian/changelog
@@ -144,22 +87,11 @@ Templates:
   LAM will add an alias to your httpd.conf which allows you to
   access LAM at http(s)://localhost/lam. If you want an alias other than
   "lam" please specify it here.
- .
- Template: ldap-account-manager/passwd
- Type: string
- Default: lam
- Description: Enter master configuration password (clear text):
-  The configuration profiles are secured by a master password.
-  You will need it to create and delete profiles. As default it is
-  set to "lam" and can be changed directly in LAM. But you can also
-  change it now.
 Config: bash
  db_subst "ldap-account-manager/webserver" "webserver" "Apache" || true
  db_input medium "ldap-account-manager/webserver" || true
  db_go
  db_input low "ldap-account-manager/alias" || true
- db_go
- db_input low "ldap-account-manager/passwd" || true
  db_go
 Preinst: bash
  if [ ! -d /var/lib/ldap-account-manager ]; then \
@@ -190,9 +122,6 @@ Postinst: bash
      alias="$RET"
 	 perl -pi -e "s/Alias \/.* \/usr\/share\/ldap-account-manager/Alias \/$alias \/usr\/share\/ldap-account-manager/g"\
          /etc/ldap-account-manager/apache.conf
-     db_get "ldap-account-manager/passwd"
-     passwd="$RET"
-	 perl -pi -e "s/password: .*/password: $passwd/g" /etc/ldap-account-manager/config.cfg
      db_get "ldap-account-manager/webserver"
      webserver="$RET"
      case "$webserver" in

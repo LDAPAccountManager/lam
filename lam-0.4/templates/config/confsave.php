@@ -71,20 +71,12 @@ if ($passwd != $conf->get_Passwd()) {
 
 echo $_SESSION['header'];
 
-echo "<title>" . _("LDAP Account Manager Configuration") . "</title>\n";
+echo "<title>listusers</title>\n";
 echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
 echo "</head><body>\n";
 
 echo ("<p align=\"center\"><a href=\"http://lam.sf.net\" target=\"new_window\">".
 	"<img src=\"../../graphics/banner.jpg\" border=1 alt=\"LDAP Account Manager\"></a></p><hr><br><br>");
-
-// remove double slashes if magic quotes are on
-if (get_magic_quotes_gpc() == 1) {
-	$suffusers = stripslashes($suffusers);
-	$suffgroups = stripslashes($suffgroups);
-	$suffhosts = stripslashes($suffhosts);
-	$suffdomains = stripslashes($suffdomains);
-}
 
 // check new preferences
 if (!$conf->set_samba3($samba3)) {
@@ -186,7 +178,7 @@ if (!$conf->set_defaultLanguage($lang)) {
 }
 
 if (!$conf->set_scriptpath($scriptpath)) {
-	echo ("<font color=\"red\"><b>" . _("Logon script is invalid!") . "</b></font>");
+	echo ("<font color=\"red\"><b>" . _("Script path is invalid!") . "</b></font>");
 	echo ("\n<br><br><br><a href=\"javascript:history.back()\">" . _("Back to preferences...") . "</a>");
 	exit;
 }

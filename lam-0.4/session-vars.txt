@@ -8,17 +8,18 @@ Alle:
 
 
 massdetail:
-- mass_accounts: Array aus account-Objekten
-- mass_errors:  Array aus Fehlermeldungen. Index ist gleich Index von accounts
+- accounts: Array aus account-Objekten
+- errors:  Array aus Fehlermeldungen. Index ist gleich Index von accounts
 
 
 masscreate:
-- mass_accounts: Array aus account-Objekten
-- mass_pointer: Zeigt auf den aktuellen Startpunkt, ab dem Benutzer angelegt werden sollen.
+- accounts: Array aus account-Objekten
+- pointer: Zeigt auf den aktuellen Startpunkt, ab dem Benutzer angelegt werden sollen.
            Noetig, da mit Meta-Refreshs gearbeitet werden muss
-- mass_errors:  Array aus Fehlermeldungen. Index ist gleich Index von accounts
-- mass_group_suffix: Suffix, unter welchem eine Gruppe bei Bedarf angelegt wird
-- mass_group_selectprofile: Profil, mit dem eine Gruppe bei Bedarf angelegt werden soll
+- errors:  Array aus Fehlermeldungen. Index ist gleich Index von accounts
+- group_suffix: Suffix, unter welchem eine Gruppe bei Bedarf angelegt wird
+- group_selectprofile: Profil, mit dem eine Gruppe bei Bedarf angelegt werden soll
+- rowstart: ??? nicht mehr benutzt
 
 
 main:

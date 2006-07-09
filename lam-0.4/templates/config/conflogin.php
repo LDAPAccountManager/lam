@@ -58,11 +58,6 @@ unset($_SESSION['conf_samba3']);
 unset($_SESSION['conf_pwdhash']);
 unset($_SESSION['conf_filename']);
 
-// remove config wizard settings
-unset($_SESSION['confwiz_config']);
-unset($_SESSION['confwiz_ldap']);
-unset($_SESSION['confwiz_masterpwd']);
-
 echo $_SESSION['header'];
 
 ?>
@@ -81,28 +76,17 @@ echo $_SESSION['header'];
 		<hr><br><br>
 		<!-- form to change existing profiles -->
 		<form action="confmain.php" method="post">
-		<table align="center" border="2" rules="none" bgcolor="white">
+		<table border=0 align="center">
 			<tr>
-				<td style="border-style:none" rowspan="3" width="20"></td>
-				<td style="border-style:none" colspan="2" height="20"></td>
-				<td style="border-style:none" rowspan="3" width="20"></td>
+				<td colspan=4 align="center"><b> <?php echo _("Please enter password to change preferences:"); ?> </b></td>
 			</tr>
-			<tr>
-				<td style="border-style:none" colspan=2 align="center"><b> <?php echo _("Please enter password to change preferences:"); ?> </b></td>
-			</tr>
-			<tr><td style="border-style:none" colspan=2 >&nbsp;</td></tr>
+			<tr><td colspan=4 >&nbsp;</td></tr>
 <?php
 	// print message if login was incorrect
-	if ($message) {
-		echo ("<tr><td style=\"border-style:none\" rowspan=\"2\"></td>" .
-			"<td style=\"border-style:none\" colspan=2 align=\"center\"><b><font color=red>" . $message . "</font></b></td>" .
-			"<td style=\"border-style:none\" rowspan=\"2\"></td></tr>");
-		echo "<tr><td style=\"border-style:none\" colspan=2 >&nbsp;</td></tr>";
-	}
+	if ($message) echo ("<tr><td colspan=4 align=\"center\"><font color=red>" . $message . "</font></td></tr>");
 ?>
 			<tr>
-				<td style="border-style:none" rowspan="4" width="20"></td>
-				<td style="border-style:none" colspan=2 align="center">
+				<td>
 					<select size=1 name="filename">
 					<?php
 						$files = getConfigProfiles();
@@ -114,29 +98,25 @@ echo $_SESSION['header'];
 							}
 					?>
 					</select>
-					<input type="password" name="passwd">
-					<input type="submit" name="submit" value=" <?php echo _("Ok"); ?> ">
-					<a href="../help.php?HelpNumber=200" target="lamhelp"><?php echo _("Help") ?></a></td>
-				<td style="border-style:none" rowspan="4" width="20"></td>
+				</td>
+				<td align="center"><input type="password" name="passwd"></td>
+				<td>
+					<input type="submit" name="submit" value= <?php echo _("Ok"); ?>
+				</td>
+				<td><a href="../help.php?HelpNumber=200" target="lamhelp"><?php echo _("Help") ?></a></td>
 			</tr>
 			<tr>
-				<td  style="border-style:none"colspan=2>&nbsp;</td>
+				<td colspan=3>&nbsp;</td>
 			</tr>
 			<tr>
-				<td style="border-style:none" align="left">
+				<td colspan=3 align="center">
 					<b><a href="profmanage.php"><?php echo _("Manage profiles") ?></a></b>
 				</td>
-				<td style="border-style:none" align="right">
-					<b><a href="../confwiz/start.php"><?php echo _("Configuration wizard") ?></a></b>
-				</td>
-			</tr>
-			<tr>
-				<td style="border-style:none" colspan=2 height="20"></td>
 			</tr>
 		</table>
 		</form>
 
-		<p><br><br><br><br><br></p>
+		<p><br><br><br><br><br><br><br></p>
 
 		<!-- back to login page -->
 		<p>

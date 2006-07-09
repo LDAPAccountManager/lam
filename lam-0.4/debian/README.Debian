@@ -1,8 +1,3 @@
-Samba.schema: LAM currently depends on the schema file from Samba.
-              You can find samba.schema in the Samba tarball (examples/LDAP).
-              Add this file to your slapd.conf to get LAM working.
-
-
 Access to the webfrontend:
 
   - If you configured Apache(-SSL) at installation

@@ -48,7 +48,7 @@ echo $_SESSION['header'];
 		?>
 			<a href="http://lam.sf.net" target="new_window"><img src="../graphics/banner.jpg" border=1 alt="LDAP Account Manager"></a>
 		</td>
-	<td width="100" align="right"><a href="./logout.php" target="_top"><big><b><?php echo _("Logout") ?></b></big></a></td>
+	<td width="100" align="right" height=20><a href="./logout.php" target="_top"><big><b><?php echo _("Logout") ?></b></big></a></td>
 	</tr>
 	<tr>
     	<td align="left"><a href="ou_edit.php" target="mainpart"><?php echo _("OU-Editor") ?></a></td>
@@ -60,8 +60,8 @@ echo $_SESSION['header'];
 	<tr>
 		<?php
 			// Samba 3 has more list views
-			if ($_SESSION['config']->is_samba3()) echo "<td colspan=6><font size=1>&nbsp;</font></td>\n";
-			else echo "<td colspan=5><font size=1>&nbsp;</font></td>\n";
+			if ($_SESSION['config']->is_samba3()) echo "<td colspan=6>&nbsp;</td>\n";
+			else echo "<td colspan=5>&nbsp;</td>\n";
 		?>
 	</tr>
 	<tr>

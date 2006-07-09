@@ -47,14 +47,6 @@ function display_LoginPage($config_object,$profile)
 			$iv = mcrypt_create_iv(32, MCRYPT_RAND);
 		}
 	}
-	// use Blowfish if MCrypt is not available
-	else {
-		// generate iv and key for encryption
-		$key = "";
-		$iv = "";
-		while (strlen($key) < 30) $key .= mt_rand();
-		while (strlen($iv) < 30) $iv .= mt_rand();
-	}
 
 	// save both in cookie
 	setcookie("Key", base64_encode($key), 0, "/");
@@ -96,7 +88,6 @@ function display_LoginPage($config_object,$profile)
 	}
 	else
 	{
-		//TODO Generate Status message
 		$message = _("Unable to load available languages. Setting English as default language. For further instructions please contact the Admin of this site.");
 	}
 
@@ -122,179 +113,164 @@ function display_LoginPage($config_object,$profile)
 		</table>
 		<hr><br><br>
 		<?php
-		// check if all password hashes are possible
-		if ((! function_exists('mHash')) && (! function_exists('sha1'))) {
-			StatusMessage("INFO", "Your PHP does not support MHash or sha1(), you will only be able to use CRYPT/PLAIN/MD5/SMD5 for user passwords!", "Please install MHash or update to PHP >4.3.");
-			echo "<br><br>";
+		if(! function_exists('mcrypt_create_iv')) {
+			StatusMessage("ERROR", "Your PHP does not support MCrypt, you will not be able to log in! Please install the required package.","See http://lam.sf.net/documentation/faq.html#2 for Suse/RedHat");
+			?>
+	</body>
+</html>
+			<?php
+			exit;
 		}
-		// check if PHP has LDAP support
-		if (! function_exists('ldap_search')) {
-			StatusMessage("ERROR", "Your PHP has no LDAP support!", "Please install the LDAP extension for PHP.");
-			echo "<br><br>";
+		if(! function_exists('mHash')) {
+			StatusMessage("WARN", "Your PHP does not support MHash, you will only be able to use CRYPT/PLAIN for user passwords! Please install the required package.","See http://lam.sf.net/documentation/faq.html#2 for Suse/RedHat");
 		}
 		?>
-		<table width="650" align="center" border="2" rules="none" bgcolor="white">
-			<tr>
-				<td style="border-style:none" width="70" rowspan="2">
-					<img src="../graphics/lam.png" alt="Logo">
-				</td>
-				<td width="580">
-					<form action="login.php" method="post">
-						<table width="580">
-							<tr>
-								<td style="border-style:none" height="70" colspan="2" align="center">
-									<font color="darkblue"><b><big><?php echo _("Enter Username and Password for Account"); ?></big></b></font>
-								</td>
-								<td style="border-style:none" rowspan="9" width="70">
-									&nbsp;
-								</td>
-							</tr>
-							<tr>
-								<td style="border-style:none" height="35" align="right"><b>
-									<?php
-									echo _("Username") . ":";
-									?>
-								</b>&nbsp;&nbsp;</td>
-								<td style="border-style:none" height="35" align="left">
-									<select name="username" size="1" tabindex="0">
-									<?php
-									$admins = $config_object->get_Admins();
-									for($i = 0; $i < count($admins); $i++) {
-										$text = explode(",", $admins[$i]);
-										$text = explode("=", $text[0]);
-										?>
-										<option value="<?php echo $admins[$i]; ?>"><?php echo $text[1]; ?></option>
-										<?php
-									}
-									?>
-									</select>
-								</td>
-							</tr>
-							<tr>
-								<td style="border-style:none" height="35" align="right"><b>
-									<?php
-									echo _("Password") . ":";
-									?>
-								</b>&nbsp;&nbsp;</td>
-								<td style="border-style:none" height="35" align="left">
-									<input type="password" name="passwd" tabindex="1">
-								</td>
-							</tr>
-							<tr>
+		<p align="center">
+			<b><?php echo _("Enter Username and Password for Account") . ":"; ?></b>
+		</p>
+		<?php
+		if($error_message != "") {
+		?>
+		<p align="center">
+			<?php
+			echo $error_message;
+			?>
+		</p>
+		<?php
+		}
+		?>
+		<form action="login.php" method="post">
+			<input type="hidden" name="action" value="checklogin">
+			<table width="500" align="center" border="0">
+				<tr>
+					<td width="45%" align="right">
+						<?php
+						echo _("Username") . ":";
+						?>
+					</td>
+					<td width="10%">
+					</td>
+					<td width="45%" align="left">
+						<select name="username" size="1">
+						<?php
+						$admins = $config_object->get_Admins();
+						for($i = 0; $i < count($admins); $i++) {
+							$text = explode(",", $admins[$i]);
+							$text = explode("=", $text[0]);
+							?>
+							<option value="<?php echo $admins[$i]; ?>"><?php echo $text[1]; ?></option>
 							<?php
-							if($message != "") {
-								?>
-								<td height="35" colspan="3" align="center">
-								<?php
-									echo $message;
-								?>
-								</td>
-								<?php
+						}
+						?>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td width="45%" align="right">
+						<?php
+						echo _("Password") . ":";
+						?>
+					</td>
+					<td width="10%">
+					</td>
+					<td width="45%" align="left">
+						<input type="password" name="passwd">
+					</td>
+				</tr>
+				<tr>
+				<?php
+				if($message != "") {
+					?>
+					<td width="100%" colspan="3" align="center">
+					<?php
+						echo $message;
+					?>
+						<input type="hidden" name="language" value="english">
+					</td>
+					<?php
+				}
+				else
+				{
+					?>
+					<td width="45%" align="right">
+						<?php
+						echo _("Your Language") . ":";
+						?>
+					</td>
+					<td width="10%">
+					</td>
+					<td width="45%" align="left">
+						<select name="language" size="1">
+						<?php
+						for($i = 0; $i < count($languages); $i++) {
+							if($languages[$i]["default"] == "YES") {
+							?>
+							<option selected value="<?php echo $languages[$i]["link"] . ":" . $languages[$i]["descr"]; ?>"><?php echo $languages[$i]["descr"]; ?></option>
+							<?php
 							}
 							else
 							{
-								?>
-								<td style="border-style:none" align="right"><b>
-									<?php
-									echo _("Your Language") . ":";
-									?>
-								</b>&nbsp;&nbsp;</td>
-								<td style="border-style:none" height="35" align="left">
-									<select name="language" size="1" tabindex="2">
-									<?php
-									for($i = 0; $i < count($languages); $i++) {
-										if($languages[$i]["default"] == "YES") {
-										?>
-										<option selected value="<?php echo $languages[$i]["link"] . ":" . $languages[$i]["descr"]; ?>"><?php echo $languages[$i]["descr"]; ?></option>
-										<?php
-										}
-										else
-										{
-										?>
-										<option value="<?php echo $languages[$i]["link"] . ":" . $languages[$i]["descr"]; ?>"><?php echo $languages[$i]["descr"]; ?></option>
-										<?php
-										}
-									}
-									?>
-									</select>
-								</td>
-								<?php
-							}
 							?>
-							</tr>
-							<tr>
-								<td style="border-style:none" height="50" colspan="2" align="center">
-									<input name="checklogin" type="hidden" value="checklogin">
-									<input name="submit" type="submit" value="<?php echo _("Login"); ?>" tabindex="3">
-								</td>
-							</tr>
-							<tr>
-								<td style="border-style:none" height="50" colspan="2" align="center">
-									<?php
-										if($error_message != "") {
-											echo "<font color=\"red\"><b>" . $error_message . "</b></font>";
-										}
-									?>
-								</td>
-							</tr>
-						</table>
-					</form>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<form action="login.php" method="post">
-						<table width="580">
-							<tr>
-								<td style="border-style:none" height="30" colspan="2">
-									<hr>
-									<b>
-									<?php
-									echo _("LDAP server") . ": ";
-									?></b>
-									<?php echo $config_object->get_ServerURL(); ?>
-								</td>
-							</tr>
-							<tr>
-							<td style="border-style:none" height="30"><b>
-								<?php
-								echo _("Configuration profile") . ": ";
-								if(!$_POST['profileChange']) {
-									$_POST['profile'] = $_SESSION['config']->file;
-								}
-								?></b>
-								<?php echo $_POST['profile']; ?>
-							</td>
-							<td style="border-style:none" height="30" align="right">
-								<select name="profile" size="1" tabindex="4">
-								<?php
-								for($i=0;$i<count($profiles);$i++) {
-									?>
-									<option value="<?php echo $profiles[$i]; ?>"><?php echo $profiles[$i]; ?></option>
-									<?php
-								}
-								?>
-								</select>
-								<input name="profileChange" type="hidden" value="profileChange">
-								<input name="submit" type="submit" value="<?php echo _("Change Profile"); ?>" tabindex="5">
-							</td>
-							</tr>
-							<tr>
-								<td style="border-style:none" height="10" colspan="2"></td>
-							</tr>
-						</table>
-					</form>
-				</td>
-			</tr>
-		</table>
+							<option value="<?php echo $languages[$i]["link"] . ":" . $languages[$i]["descr"]; ?>"><?php echo $languages[$i]["descr"]; ?></option>
+							<?php
+							}
+						}
+						?>
+						</select>
+					</td>
+					<?php
+				}
+				?>
+				</tr>
+				<tr>
+					<td width="100%" colspan="3" align="center">
+						<input type="submit" name="submit" value="<?php echo _("Login"); ?>">
+					</td>
+				</tr>
+			</table>
+			<br><br>
+			<table width="345" align="center" bgcolor="#C7E7C7" border="0">
+				<tr>
+					<td width="100%" align="center">
+						<?php
+						echo _("You are connecting to ServerURL") . ": ";
+						?>
+						<b><?php echo $config_object->get_ServerURL(); ?></b>
+					</td>
+				</tr>
+			</table>
+		</form>
 		<br><br>
+		<form action="./login.php" method="post" enctype="plain/text">
+			<input type="hidden" name="action" value="profileChange">
+			<p align="center">
+				<?php
+				echo _("You are currently using Profile") . ": ";
+				if(!$_POST['profile']) {
+					$_POST['profile'] = $profile;
+				}
+				?>
+				<b><?php echo $_POST['profile']; ?></b>
+				<br>
+				<select name="profile" size="1">
+				<?php
+				for($i=0;$i<count($profiles);$i++) {
+					?>
+					<option value="<?php echo $profiles[$i]; ?>"><?php echo $profiles[$i]; ?></option>
+					<?php
+				}
+				?>
+				</select>
+				<input type="submit" value="<?php echo _("Change Profile"); ?>">
+			</p>
+		</form>
 	</body>
 </html>
 <?php
 }
 
 // checking if the submitted username/password is correct.
-if($_POST['checklogin'])
+if($_POST['action'] == "checklogin")
 {
 	$_SESSION['lampath'] = realpath('../') . "/";  // Save full path to lam in session
 
@@ -309,9 +285,6 @@ if($_POST['checklogin'])
 	}
 	else
 	{
-		if (get_magic_quotes_gpc() == 1) {
-			$_POST['passwd'] = stripslashes($_POST['passwd']);
-		}
 		$result = $_SESSION['ldap']->connect($_POST['username'],$_POST['passwd']); // Connect to LDAP server for verifing username/password
 
 		if($result === 0) // Username/password correct. Do some configuration and load main frame.
@@ -353,7 +326,7 @@ if($_POST['checklogin'])
 	}
 }
 // Reload loginpage after a profile change
-elseif($_POST['profileChange']) {
+elseif($_POST['action'] == "profileChange") {
 	$_SESSION['config'] = new Config($_POST['profile']); // Recreate the config object with the submited
 
 	display_LoginPage($_SESSION['config'],""); // Load login page

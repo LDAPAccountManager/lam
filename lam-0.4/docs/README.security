@@ -1,0 +1,36 @@
+
+1. Use of SSL
+
+   The data which is transfered between you and the LAM server is very sensitive.
+   Please always use SSL encrypted connections between LAM and your browser to
+   protect yourself against network sniffers.
+
+
+2. LDAP+SSL and TLS
+
+   LAM should start TLS automatically if possible. LDAP+SSL will be used if you use
+   ldaps://servername in your configuration file.
+
+
+3. Chrooted servers
+
+   If your server is chrooted and you have no access to /dev/random or /dev/urandom
+   this can be a security risk. LAM stores your LDAP password encrypted in the session.
+   LAM uses rand() to generate the key if /dev/random and /dev/urandom are not accessible.
+   Therefore the key can be easily guessed.
+   An attaker needs read access to the session file (e.g. by another Apache instance) to
+   exploit this.
+
+
+4. LDAP-password protection
+
+   Your LDAP-password is stored encrypted in the session file. The key and IV to decrypt
+   it are stored in two cookies. We use AES to encrypt the passwort.
+
+
+5. Protection of new user passwords
+
+   These passwords are, if stored in the session file, encrypted with the same key and IV
+   as your LDAP-password.
+
+

@@ -4,7 +4,6 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
   Copyright (C) 2003  Roland Gruber, Leonhard Walchshäusl
-  Copyright (C) 2004  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -68,7 +67,6 @@ if ($_POST['new_user'] || $_POST['del_user'] || $_POST['pdf_user'] || $_POST['pd
 	// add new user
 	if ($_POST['new_user']){
 		metaRefresh("../account/useredit.php?type=user");
-		exit;
 	}
 	// delete user(s)
 	elseif ($_POST['del_user']){
@@ -77,10 +75,7 @@ if ($_POST['new_user'] || $_POST['del_user'] || $_POST['pdf_user'] || $_POST['pd
 			if (eregi("^uid=.*$", $entry)) $users[] = $entry;
 		}
 		$_SESSION['delete_dn'] = $users;
-		if (sizeof($users) > 0) {
-			metaRefresh("../delete.php?type=user");
-			exit;
-		}
+		metaRefresh("../delete.php?type=user");
 	}
 	// PDF for selected users
 	elseif ($_POST['pdf_user']){
@@ -98,7 +93,6 @@ if ($_POST['new_user'] || $_POST['del_user'] || $_POST['pdf_user'] || $_POST['pd
 		if (sizeof($list) > 0) {
 			if ($_SESSION['config']->get_scriptServer()) $list = getquotas($list);
 			createUserPDF($list);
-			exit;
 		}
 	}
 	// PDF for all users
@@ -112,9 +106,9 @@ if ($_POST['new_user'] || $_POST['del_user'] || $_POST['pdf_user'] || $_POST['pd
 		if (sizeof($list) > 0) {
 			if ($_SESSION['config']->get_scriptServer()) $list = getquotas($list);
 			createUserPDF($list);
-			exit;
 		}
 	}
+	exit;
 }
 
 echo $_SESSION['header'];
@@ -200,7 +194,7 @@ else {
 	$attrs = $attr_array;
 	$sr = @ldap_search($_SESSION["ldap"]->server(), $usr_suffix, $filter, $attrs);
 	if (ldap_errno($_SESSION["ldap"]->server()) == 4) {
-		StatusMessage("WARN", _("LDAP sizelimit exceeded, not all entries are shown."), _("See README.openldap.txt to solve this problem."));
+		StatusMessage("WARN", _("LDAP sizelimit exceeded, not all entries are shown."), "See README.openldap to solve this problem.");
 	}
 	if ($sr) {
 		$userinfo = ldap_get_entries ($_SESSION["ldap"]->server, $sr);

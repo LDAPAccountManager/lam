@@ -2,7 +2,7 @@
 LAM - Readme
 ============
 
-  A set of PHP-scripts to administrate Unix and Samba accounts in an LDAP server.
+  A set of PHP-scripts to administrate Unix and Samba accounts in a LDAP server.
   LAM runs on any webserver with PHP4 support and connects to your LDAP server
   unencrypted or via SSL.
   The application manages accounts for users, groups and Samba hosts in
@@ -11,9 +11,10 @@ LAM - Readme
 
   http://sourceforge.net/projects/lam/
 
-    Copyright (C) 2003 - 2004 Michael Duergner <michael@duergner.com>
-                              Roland Gruber <mail@rolandgruber.de>
-                              Tilo Lutz <tilolutz@gmx.de>
+    Copyright (C) 2003 Michael Duergner <michael@duergner.com>
+                       Roland Gruber <mail@rolandgruber.de>
+                       Tilo Lutz <tilolutz@gmx.de>
+                       Leonhard Walchshäusl <dechutes@gmx.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -59,12 +60,19 @@ LAM - Readme
   Installation:
     Please see the INSTALL file.
 
+  Known Bugs:
+    - If you fill in the Unix workstations field the LDAP add/modify operation
+      may fail. This is because the host attribute is provided only by
+      objectClass account which conflicts with inetOrgPerson.
+      If you want to use host restrictions, add the host attribute to
+      inetOrgPerson in your schema file.
+
   Documentation:
-    Basic documentation is available in the directory "docs".
+    Basic documentation available in /docs
 
   Internationalization:
     If you want to use a translated version of LAM be sure to install the
-    needed locales. See locale/ for a list of supported locales and languages.
+    needed locales. See locale/ for a list of supported locales.
     Debian users can add locales with "dpkg-reconfigure locales".
 
   Security:
@@ -72,9 +80,8 @@ LAM - Readme
 
     LAM needs to store your LDAP username + password in the session. The session
     files are saved in sess/ and are accessible only by the web server. To increase
-    security username and password are encrypted with MCrypt/AES or Blowfish.
-    The key and IV are generated at random when you log in. They are stored in two
-    cookies.
+    security username and password are encrypted with AES (256 bit). The key and iv
+    are generated at random when you log in. They are stored in two cookies.
  
 
     Have fun!

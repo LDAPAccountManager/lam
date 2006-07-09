@@ -1,5 +1,0 @@
-<pdf type="mailAlias" filename="printLogo.jpg" headline="Mail alias information" margin-top="10.0" margin-bottom="20.0" margin-left="10.0" margin-right="10.0">
-	<section name="_nisMailAlias_alias">
-		<entry name="nisMailAlias_recipients" />
-	</section>
-</pdf>

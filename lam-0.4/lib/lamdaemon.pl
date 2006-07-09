@@ -71,10 +71,11 @@ if ($( == 0 ) { # we are root
 	if ($ARGV[0] eq "*test") {
 		use Quota; # Needed to get and set quotas
 		print "Perl quota module successfully installed.\n";
-		print "If you haven't seen any errors lamdaemon.pl was set up successfully.\n";
+		print "IF you haven't seen any errors lamdaemon.pl was set up successfully.\n";
 		}
 	else {
 		# loop for every transmitted user
+		# XXX fixme change code to read stdin at once and then loop
 		my $string = do {local $/;<STDIN>};
 		@input = split ("\n", $string );
 		for ($i=0; $i<=$#input; $i++) {
@@ -194,39 +195,24 @@ else {
 	$remotepath = shift @ARGV;
 	use Net::SSH::Perl;
 	if ($ARGV[2] eq "*test") { print "Net::SSH::Perl successfully installed.\n"; }
-	if (($ARGV[0] eq "-") and ($ARGV[1] eq "-")) {  # user+passwd are in STDIN
-		$username = <STDIN>;
-		chop($username);
-		@username = split (',', $username);
-		$username[0] =~ s/uid=//;
-		$username[0] =~ s/cn=//;
-		$username = $username[0];
-		$password = <STDIN>;
-		chop($password);
-	}
-	else {
-		@username = split (',', $ARGV[0]);
-		$username[0] =~ s/uid=//;
-		$username[0] =~ s/cn=//;
-		$username = $username[0];
-		$password = $ARGV[1];
-	}
-	my $ssh = Net::SSH::Perl->new($hostname, options=>[
-		"UserKnownHostsFile /dev/null"],
-		protocol => "2,1" );
-	$ssh->login($username, $password);
+	@username = split (',', $ARGV[0]);
+	$username[0] =~ s/uid=//;
+	$password = $ARGV[1];
 	# Put all transfered lines in one string
 	if ($ARGV[2] ne "*test") {
 		$string = do {local $/;<STDIN>};
-		@string2 = split ("\n", $string);
-		for ($i=0; $i<=$#string2; $i++) {
-			($stdout2, $stderr, $exit) = $ssh->cmd("sudo $remotepath $argv", $string2[$i]);
-			$stdout .= $stdout2;
 		}
-		print $stdout;
+	else { $argv = "*test\n"; }
+	my $ssh = Net::SSH::Perl->new($hostname, options=>[
+		"UserKnownHostsFile /dev/null"],
+		protocol => "2,1" );
+	$ssh->login($username[0], $password);
+	# Change needed to prevent buffer overrun
+	@string2 = split ("\n", $string);
+	for ($i=0; $i<=$#string2; $i++) {
+		($stdout2, $stderr, $exit) = $ssh->cmd("sudo $remotepath $argv", $string2[$i]);
+		$stdout .= $stdout2;
+		}
+	#($stdout, $stderr, $exit) = $ssh->cmd("sudo $remotepath $argv", $string);
+	print $stdout;
 	}
-	else {
-		($stdout, $stderr, $exit) = $ssh->cmd("sudo $remotepath *test");
-		print $stdout;
-	}
-}

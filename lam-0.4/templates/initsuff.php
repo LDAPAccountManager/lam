@@ -39,8 +39,7 @@ if ($_POST['add_suff'] || $_POST['cancel']) {
 		$fail = array();
 		$errors = array();
 		$new_suff = $_POST['new_suff'];
-		$new_suff = str_replace("\\", "", $new_suff);
-		$new_suff = str_replace("'", "", $new_suff);
+		$new_suff = str_replace("\\'", "", $new_suff);
 		$new_suff = explode(";", $new_suff);
 		// add entries
 		for ($i = 0; $i < sizeof($new_suff); $i++) {
@@ -105,12 +104,8 @@ if ($_POST['add_suff'] || $_POST['cancel']) {
 								}
 								else {  // add root entry
 									$attr = array();
-									$attr['objectClass'][] = 'organization';
+									$attr['objectClass'] = 'organization';
 									$attr[$headarray[0]] = $headarray[1];
-									if ($headarray[0] == "dc") {
-										$attr['o'] = $headarray[1];
-										$attr['objectClass'][] = 'dcObject';
-									}
 									$dn = $subsuffs[$k];
 									if (!@ldap_add($_SESSION['ldap']->server(), $dn, $attr)) {
 										$fail[] = $suff;
@@ -177,8 +172,7 @@ if ($_POST['add_suff'] || $_POST['cancel']) {
 
 // first show of page
 $new_suff = $_GET['suffs'];
-$new_suff = str_replace("\\", "", $new_suff);
-$new_suff = str_replace("'", "", $new_suff);
+$new_suff = str_replace("\\'", "", $new_suff);
 $new_suff = explode(";", $new_suff);
 
 echo $_SESSION['header'];
