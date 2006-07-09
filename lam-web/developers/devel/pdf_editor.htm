@@ -1,0 +1,152 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-15"
+ http-equiv="content-type">
+  <title>PDF editor</title>
+  <link rel="stylesheet" type="text/css" href="style/layout.css">
+</head>
+<body>
+
+<p align="center">
+<script type="text/javascript"><!--
+google_ad_client = "pub-4179059556107138";
+google_alternate_ad_url = "http://lam.sourceforge.net/google_adsense_script.html";
+google_ad_width = 728;
+google_ad_height = 90;
+google_ad_format = "728x90_as";
+google_ad_type = "text_image";
+google_ad_channel ="";
+google_page_url = document.location;
+google_color_border = "EEEEEE";
+google_color_bg = "FFFFFF";
+google_color_link = "0000FF";
+google_color_url = "008000";
+google_color_text = "000000";
+//--></script>
+<script type="text/javascript"
+  src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+</p>
+
+
+<h1 style="text-align: center;">PDF editor<br>
+</h1>
+<div style="text-align: center;"><br>
+<img alt="" src="images/lam_pdfEditor.png"
+ style="width: 443px; height: 162px;"><br>
+</div>
+<div style="text-align: center;"><br>
+<br>
+<div style="text-align: left;">The <span style="font-style: italic;">PDF
+editor</span> allows the user to create templates for the PDF output.<br>
+These templates are saved as files in <span style="font-weight: bold;">config/pdf</span>.<br>
+<br>
+<h2>Pdfmain.php<br>
+</h2>
+This is the start page of the <span style="font-style: italic;">PDF
+editor</span>. The user can select to add/modify/remove selected PDF
+profiles.<br>
+<br>
+The list of existing PDF profiles is returned by <span
+ style="font-weight: bold;">getPDFStructureDefinitions()</span> in <span
+ style="font-style: italic;">pdfstruct.inc</span>. It includes all
+structure names without file extensions for a given account type.<br>
+<br>
+Depending on the selection of the user he is forwarded to pdfpage.php
+or pdfdelete.php.<br>
+<br>
+<h2>Pdfpage.php<br>
+</h2>
+The user can edit the PDF structures on this page.<br>
+<br>
+The structure is loaded with <span style="font-weight: bold;">loadPDFStructureDefinitions()</span>
+from <span style="font-style: italic;">pdfstruct.inc</span>. If it
+does not yet exist then the default structure is loaded.<br>
+It is stored in <span style="font-weight: bold; font-style: italic;">$_SESSION['currentPDFStructure']</span>
+(sections) and <span style="font-weight: bold; font-style: italic;">$_SESSION['currentPageDefinitions']</span>
+(head line and logo).<br>
+<br>
+At the top of the page the head line and logo can be edited. The list
+of available logos is retrieved with <span style="font-weight: bold;">getAvailableLogos()</span>
+from <span style="font-style: italic;">pdfstruct.inc</span>.<br>
+<br>
+The sections on the left side are displayed like they are defined in <span
+ style="font-weight: bold; font-style: italic;">$_SESSION['currentPDFStructure']</span>.
+Each item has links to move or delete it. Section titles may be changed.<br>
+<br>
+The list of available PDF entries on the right side is retrieved from <span
+ style="font-weight: bold;">getAvailablePDFFields()</span> in <span
+ style="font-style: italic;">modules.inc</span>.<br>
+<br>
+Near the bottom there the user can add a new section. The list of
+available PDF entries is retrieved as above.<br>
+<br>
+When the user pushes one of the buttons or clicks on a link then there
+are several actions:<br>
+<ul>
+  <li><span style="font-weight: bold;">Abort button:</span> The user is
+redirected back to <span style="font-style: italic;">pdfmain.php</span>.<br>
+  </li>
+  <li><span style="font-weight: bold;">Save button:</span> The
+structure name is checked for correctness and the file is saved with <span
+ style="font-weight: bold;">savePDFStructureDefinitions()</span>
+from <span style="font-style: italic;">pdfstruct.inc</span><span
+ style="font-weight: bold;">.</span></li>
+  <li><span style="font-weight: bold;">Add section button:</span> LAM
+adds a static text or section to the structure.</li>
+  <li><span style="font-weight: bold;">Add entry button:</span> Adds a
+new entry to the selected section.</li>
+  <li><span style="font-weight: bold;">Change name button:</span>
+Changes the name of the section title or the section attribute.</li>
+  <li><span style="font-weight: bold;">Remove entry link:</span> If the
+entry is a section then all parts of this section are removed.
+Otherwise a single entry is removed.</li>
+  <li><span style="font-weight: bold;">Move up/down links:</span> The
+entry or section is moved up or down.</li>
+</ul>
+<br>
+<span style="font-weight: bold; font-style: italic;">$_SESSION['currentPDFStructure']</span>
+is an array that contains all XML tags of the PDF structure. If you
+want to modify the structure always remember to put the opening and
+closing tags at the right place.<br>
+<br>
+<h2>Pdfdelete.php</h2>
+When the user selected to delete a structure in <span
+ style="font-style: italic;">pdfmain.php</span> he is redirected to
+this page.<br>
+<br>
+LAM will ask once again if the user is sure to delete the structure. If
+this is the case the structure will be deleted with <span
+ style="font-weight: bold;">deletePDFStructureDefinition()</span> from <span
+ style="font-style: italic;">pdfstruct.inc</span>.<br>
+<br>
+<br>
+<br>
+<br>
+</div>
+</div>
+
+<p align="center">
+<script type="text/javascript"><!--
+google_ad_client = "pub-4179059556107138";
+google_alternate_ad_url = "http://lam.sourceforge.net/google_adsense_script.html";
+google_ad_width = 728;
+google_ad_height = 90;
+google_ad_format = "728x90_as";
+google_ad_type = "text_image";
+google_ad_channel ="";
+google_page_url = document.location;
+google_color_border = "EEEEEE";
+google_color_bg = "FFFFFF";
+google_color_link = "0000FF";
+google_color_url = "008000";
+google_color_text = "000000";
+//--></script>
+<script type="text/javascript"
+  src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+</p>
+
+</body>
+</html>

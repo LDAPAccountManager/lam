@@ -1,0 +1,187 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-15"
+ http-equiv="content-type">
+  <title>Account modules (modules.inc)</title>
+  <link rel="stylesheet" type="text/css" href="style/layout.css">
+</head>
+<body>
+
+<p align="center">
+<script type="text/javascript"><!--
+google_ad_client = "pub-4179059556107138";
+google_alternate_ad_url = "http://lam.sourceforge.net/google_adsense_script.html";
+google_ad_width = 728;
+google_ad_height = 90;
+google_ad_format = "728x90_as";
+google_ad_type = "text_image";
+google_ad_channel ="";
+google_page_url = document.location;
+google_color_border = "EEEEEE";
+google_color_bg = "FFFFFF";
+google_color_link = "0000FF";
+google_color_url = "008000";
+google_color_text = "000000";
+//--></script>
+<script type="text/javascript"
+  src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+</p>
+
+
+<h1 style="text-align: center;">Account modules (modules.inc)<br>
+</h1>
+<br>
+<span style="font-style: italic;">Modules.inc</span> provides the
+interface to all module specific functions. It includes a list of
+account independent function and the <span style="font-weight: bold;">accountContainer</span>
+class. This class represents an LDAP account.<br>
+You should never call module functions directly, always use a function
+in <span style="font-style: italic;">modules.inc</span>.<br>
+<br>
+<h2>Account independent functions:</h2>
+<br>
+<h3>General functions:</h3>
+<span style="font-weight: bold;">getModuleAlias:</span> This returns
+the alias name of a module. It is used to label buttons or fieldsets.<br>
+<br>
+<span style="font-weight: bold;">parseHtml:</span> Converts the LAM
+meta HTML code to real HTML code.<br>
+<span style="font-weight: bold;"></span><br>
+<br>
+<h3>Functions for LAM configuration:</h3>
+<span style="font-weight: bold;">is_base_module:</span> When the given
+module is a <span style="font-style: italic;">base module</span> then
+this returns <span style="font-style: italic;">true</span>. Every
+account type needs exactly one <span style="font-style: italic;">base
+module</span>.<br>
+<br>
+<span style="font-weight: bold;">getModulesDependencies:</span> Account
+modules can specify dependencies to other modules. E.g. Samba accounts
+always need a Unix part.<br>
+<br>
+<span style="font-weight: bold;">check_module_depends/check_module_conflicts:</span>
+This function checks if all module dependencies are satisfied.<br>
+<br>
+<span style="font-weight: bold;">getAvailableModules:</span> Returns a
+list of available modules. If you need a list of all active modules use
+<span style="font-weight: bold;">$_SESSION['config']-&gt;</span><span
+ class="method-title"><span style="font-weight: bold;">get_AccountModules()</span>.</span><br>
+<br>
+<span style="font-weight: bold;">getConfigOptions:</span> Returns a
+list of all configuration options which were defined by the modules.<br>
+<br>
+<span style="font-weight: bold;">getConfigDescriptions:</span> Returns
+a list of all configuration descriptions and titles for the fieldsets.<br>
+<br>
+<span style="font-weight: bold;">checkConfigOptions:</span> Checks if
+the user filled in valid values for each option.<br>
+<br>
+<br>
+<h3>Account list functions:</h3>
+<span style="font-weight: bold;">get_ldap_filter:</span> Each account
+list shows only entries which match a given LDAP search filter.<br>
+<br>
+<br>
+<h3>Profile/account pages:</h3>
+<span style="font-weight: bold;">getRDNAttributes:</span> This returns
+a list of possible LDAP <span style="font-style: italic;">RDN</span>
+attributes. LAM needs this to build the <span
+ style="font-style: italic;">DN</span> for new accounts.<br>
+<br>
+<span style="font-weight: bold;">getProfileOptions:</span> Returns a
+list of all profile options which were defined by the account modules.<br>
+<br>
+<span style="font-weight: bold;">checkProfileOptions:</span> Checks if
+all module options are correct.<br>
+<br>
+<br>
+<h3>Help functions:</h3>
+<span style="font-weight: bold;">getHelp:</span> Returns a module help
+entry.<br>
+<br>
+<br>
+<h3>PDF functions:</h3>
+<span style="font-weight: bold;">getAvailablePDFFields:</span> Returns
+a list of possible PDF fields.<br>
+<br>
+<br>
+<h3>Upload functions:</h3>
+<span style="font-weight: bold;">getUploadColumns:</span> Returns a
+list of possible upload columns and additional information like a
+description, help entry and example value.<br>
+<br>
+<span style="font-weight: bold;">buildUploadAccounts:</span> Takes the
+input of the CSV file and builds the LDAP accounts.<br>
+<br>
+<span style="font-weight: bold;">doUploadPostActions:</span> Manages
+the execution of actions which need to be done after the accounts are
+created.<br>
+<br>
+<br>
+<h2>Class accountContainer:</h2>
+This class represents a complete LDAP account. It manages all functions
+which concern a specific LDAP entry.<br>
+<br>
+<h4>Important variables:</h4>
+There are some class variables which can be of important use in the
+account modules.<br>
+<br>
+<span style="font-weight: bold;">module:</span> List of account modules
+(array('name' =&gt; 'object')).<br>
+<br>
+<span style="font-weight: bold;">isNewAccount:</span> This variable is <span
+ style="font-style: italic;">true</span> when the account is newly
+created, <span style="font-style: italic;">false</span> if loaded from
+LDAP.<br>
+<br>
+<h4>Function list:</h4>
+<span style="font-weight: bold;">continue_main:</span> This function is
+called when an account page is displayed. It generates the HTML code
+for the account pages.<br>
+<br>
+<span style="font-weight: bold;">get_module_attributes:</span> Returns
+all attributes of a given object class.<br>
+<br>
+<span style="font-weight: bold;">save_module_attributes:</span> Finds
+differences between current and original account.<br>
+<br>
+<span style="font-weight: bold;">load_account:</span> Loads an LDAP
+account.<br>
+<br>
+<span style="font-weight: bold;">new_account:</span> Creates a new
+account.<br>
+<br>
+<span style="font-weight: bold;">save_account:</span> Saves an account
+to LDAP.<br>
+<br>
+<span style="font-weight: bold;">get_pdfEntries:</span> Returns the PDF
+values of an account.<br>
+<br>
+<br>
+<br>
+
+<p align="center">
+<script type="text/javascript"><!--
+google_ad_client = "pub-4179059556107138";
+google_alternate_ad_url = "http://lam.sourceforge.net/google_adsense_script.html";
+google_ad_width = 728;
+google_ad_height = 90;
+google_ad_format = "728x90_as";
+google_ad_type = "text_image";
+google_ad_channel ="";
+google_page_url = document.location;
+google_color_border = "EEEEEE";
+google_color_bg = "FFFFFF";
+google_color_link = "0000FF";
+google_color_url = "008000";
+google_color_text = "000000";
+//--></script>
+<script type="text/javascript"
+  src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+</p>
+
+</body>
+</html>

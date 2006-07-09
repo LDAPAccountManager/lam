@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-15"
+ http-equiv="content-type">
+  <title>config.inc</title>
+  <link rel="stylesheet" type="text/css" href="style/layout.css">
+</head>
+<body>
+
+<p align="center">
+<script type="text/javascript"><!--
+google_ad_client = "pub-4179059556107138";
+google_alternate_ad_url = "http://lam.sourceforge.net/google_adsense_script.html";
+google_ad_width = 728;
+google_ad_height = 90;
+google_ad_format = "728x90_as";
+google_ad_type = "text_image";
+google_ad_channel ="";
+google_page_url = document.location;
+google_color_border = "EEEEEE";
+google_color_bg = "FFFFFF";
+google_color_link = "0000FF";
+google_color_url = "008000";
+google_color_text = "000000";
+//--></script>
+<script type="text/javascript"
+  src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+</p>
+
+
+<h1 style="text-align: center;">config.inc</h1>
+<br>
+<br>
+This file includes all functions needed to manage configuration
+profiles. It includes classes for the profiles itself and the master
+configuration (default profile, master password, etc.).<br>
+<br>
+There are also two global functions for general use: <span
+ style="font-style: italic;">setlanguage</span> and <span
+ style="font-style: italic;">metarefresh</span><br>
+<br>
+<h2>Meta refresh</h2>
+The global function <span
+ style="font-weight: bold; font-style: italic;">metaRefresh()</span>
+takes an URL as argument and prints all HTML code needed for a meta
+refresh to this URL.<br>
+<br>
+<h2>Language</h2>
+LAM uses <span style="font-style: italic;">gettext</span> to translate
+the HTML pages to the different languages. Therefore some preferences
+need to be set on every page load. This is done by <span
+ style="font-style: italic; font-weight: bold;">setlanguage()</span>.<br>
+The function should be called directly after starting the session.<br>
+<br>
+The list of possible languages is stored in <span
+ style="font-style: italic;">config/language</span>. It includes the
+locale name, the character encoding an the language name.<br>
+All languages use UTF-8 as encoding because LDAP also stores values in
+this format.<br>
+<br>
+<h2>Configuration profiles</h2>
+Each configuration profile is saved in a single file in <span
+ style="font-weight: bold;">config/</span>.<br>
+<br>
+There are two types of configuration options:<br>
+<ul>
+  <li>Static options (LDAP server settings, etc.)<br>
+  </li>
+  <li>Module options (UID/GID ranges)<br>
+  </li>
+</ul>
+All static options have a describing comment in the configuration file
+to make it easier for the user to modify the values. The dynamic
+options provided by the modules do not include a comment.<br>
+<br>
+<h2>Master configuration file</h2>
+LAM stores the default configuartion profile and a master password in <span
+ style="font-style: italic;">config/config.cfg</span>.<br>
+The master password is verified when the user wants to create/delete
+configuration profiles.<br>
+
+<p align="center">
+<script type="text/javascript"><!--
+google_ad_client = "pub-4179059556107138";
+google_alternate_ad_url = "http://lam.sourceforge.net/google_adsense_script.html";
+google_ad_width = 728;
+google_ad_height = 90;
+google_ad_format = "728x90_as";
+google_ad_type = "text_image";
+google_ad_channel ="";
+google_page_url = document.location;
+google_color_border = "EEEEEE";
+google_color_bg = "FFFFFF";
+google_color_link = "0000FF";
+google_color_url = "008000";
+google_color_text = "000000";
+//--></script>
+<script type="text/javascript"
+  src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+</p>
+
+</body>
+</html>

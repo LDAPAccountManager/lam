@@ -1,0 +1,252 @@
+<html>
+<head>
+<title>Docs for page config.inc</title>
+<link rel="stylesheet" type="text/css" href="../media/style.css">
+</head>
+<body>
+
+<p align="center">
+<script type="text/javascript"><!--
+google_ad_client = "pub-4179059556107138";
+google_alternate_ad_url = "http://lam.sourceforge.net/google_adsense_script.html";
+google_ad_width = 728;
+google_ad_height = 90;
+google_ad_format = "728x90_as";
+google_ad_type = "text_image";
+google_ad_channel ="";
+google_page_url = document.location;
+google_color_border = "EEEEEE";
+google_color_bg = "FFFFFF";
+google_color_link = "0000FF";
+google_color_url = "008000";
+google_color_text = "000000";
+//--></script>
+<script type="text/javascript"
+  src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+</p>
+
+
+
+<table border="0" cellspacing="0" cellpadding="0" height="48" width="100%">
+  <tr>
+    <td class="header_top">configuration</td>
+  </tr>
+  <tr><td class="header_line"><img src="../media/empty.png" width="1" height="1" border="0" alt=""  /></td></tr>
+  <tr>
+    <td class="header_menu">
+  		  [ <a href="../classtrees_configuration.html" class="menu">class tree: configuration</a> ]
+		  [ <a href="../elementindex_configuration.html" class="menu">index: configuration</a> ]
+		  [ <a href="../elementindex.html" class="menu">all elements</a> ]
+    </td>
+  </tr>
+  <tr><td class="header_line"><img src="../media/empty.png" width="1" height="1" border="0" alt=""  /></td></tr>
+</table>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="200" class="menu">
+	<div id="ric">
+					<p><a href="../ric_README.html">README</a></p>
+					<p><a href="../ric_INSTALL.html">INSTALL</a></p>
+			</div>
+	<div id="todolist">
+			<p><a href="../todolist.html">Todo List</a></p>
+	</div>
+      <b>Packages:</b><br />
+              <a href="../li_configuration.html">configuration</a><br />
+              <a href="../li_Help.html">Help</a><br />
+              <a href="../li_LDAP.html">LDAP</a><br />
+              <a href="../li_lib.html">lib</a><br />
+              <a href="../li_lists.html">lists</a><br />
+              <a href="../li_main.html">main</a><br />
+              <a href="../li_modules.html">modules</a><br />
+              <a href="../li_PDF.html">PDF</a><br />
+              <a href="../li_profiles.html">profiles</a><br />
+              <a href="../li_tests.html">tests</a><br />
+              <a href="../li_tools.html">tools</a><br />
+              <a href="../li_types.html">types</a><br />
+            <br /><br />
+                        <b>Files:</b><br />
+      	  <div class="package">
+			<a href="../configuration/_lib_config_inc.html">		config.inc
+		</a><br>
+			<a href="../configuration/_templates_config_conflogin_php.html">		conflogin.php
+		</a><br>
+			<a href="../configuration/_templates_config_confmain_php.html">		confmain.php
+		</a><br>
+			<a href="../configuration/_templates_config_confmodules_php.html">		confmodules.php
+		</a><br>
+			<a href="../configuration/_templates_config_conftypes_php.html">		conftypes.php
+		</a><br>
+			<a href="../configuration/_templates_config_profmanage_php.html">		profmanage.php
+		</a><br>
+	  </div><br />
+      
+            <b>Classes:</b><br />
+        <div class="package">
+		    		<a href="../configuration/CfgMain.html">CfgMain</a><br />
+	    		<a href="../configuration/Config.html">Config</a><br />
+	  </div>
+                </td>
+    <td>
+      <table cellpadding="10" cellspacing="0" width="100%" border="0"><tr><td valign="top">
+
+<h1>Procedural File: config.inc</h1>
+Source Location: /lib/config.inc<br /><br />
+
+<br>
+<br>
+
+<div class="contents">
+<h2>Classes:</h2>
+<dt><a href="../configuration/Config.html">Config</a></dt>
+	<dd>This class manages .conf files.</dd>
+<dt><a href="../configuration/CfgMain.html">CfgMain</a></dt>
+	<dd>This class manages config.cfg.</dd>
+</div><br /><br />
+
+<h2>Page Details:</h2>
+This file includes functions to manage the configuration files.<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Roland Gruber</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+<h4>Includes:</h4>
+<div class="tags">
+include_once(<a href="../modules/_lib_modules_inc.html">"modules.inc"</a>) [line 35]<br />
+Used to get module information.<br /><br />include_once(<a href="../lib/_lib_status_inc.html">"status.inc"</a>) [line 33]<br />
+Used to print messages.<br /><br />include_once(<a href="../types/_lib_types_inc.html">"types.inc"</a>) [line 37]<br />
+Used to get type information.<br /><br /></div>
+<br /><br />
+<br /><br />
+<br />
+  <hr />
+	<a name="functiongetConfigProfiles"></a>
+	<h3>getConfigProfiles <span class="smalllinenumber">[line 61]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>array getConfigProfiles(
+)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+
+		Returns an array of string with all available configuration profiles (without .conf)<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>profile names</td>
+  </tr>
+</table>
+</div>
+    <br /><br />
+	
+
+    	<div class="top">[ <a href="#top">Top</a> ]</div><br /><br />
+	</div>
+  <hr />
+	<a name="functionLAMVersion"></a>
+	<h3>LAMVersion <span class="smalllinenumber">[line 85]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>string LAMVersion(
+)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+
+		Returns the version number of this LAM installation.<br /><br /><p>Format: &lt;major version&gt;.&lt;minor version&gt;.&lt;patch level&gt;  <br /> Major/minor version are always numbers, patch level may contain letters for inofficial releases only (e.g. 0.5.alpha1).</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>version number</td>
+  </tr>
+</table>
+</div>
+    <br /><br />
+	
+
+    	<div class="top">[ <a href="#top">Top</a> ]</div><br /><br />
+	</div>
+  <hr />
+	<a name="functionmetaRefresh"></a>
+	<h3>metaRefresh <span class="smalllinenumber">[line 103]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>void metaRefresh(
+string $page)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+
+		Prints a meta refresh page<br /><br />    <br /><br />
+	
+
+    		<h4>Parameters</h4>
+    <table border="0" cellspacing="0" cellpadding="0">
+		      <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$page</b>&nbsp;&nbsp;</td>
+        <td>the URL of the target page</td>
+      </tr>
+				</table>
+    	<div class="top">[ <a href="#top">Top</a> ]</div><br /><br />
+	</div>
+  <hr />
+	<a name="functionsetlanguage"></a>
+	<h3>setlanguage <span class="smalllinenumber">[line 42]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>void setlanguage(
+)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+
+		Sets language settings for automatic translation<br /><br />    <br /><br />
+	
+
+    	<div class="top">[ <a href="#top">Top</a> ]</div><br /><br />
+	</div>
+
+        <div class="credit">
+		    <hr />
+		    Documentation generated on Tue, 07 Feb 2006 17:03:36 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.2.3</a>
+	      </div>
+      </td></tr></table>
+    </td>
+  </tr>
+</table>
+
+
+<p align="center">
+<script type="text/javascript"><!--
+google_ad_client = "pub-4179059556107138";
+google_alternate_ad_url = "http://lam.sourceforge.net/google_adsense_script.html";
+google_ad_width = 728;
+google_ad_height = 90;
+google_ad_format = "728x90_as";
+google_ad_type = "text_image";
+google_ad_channel ="";
+google_page_url = document.location;
+google_color_border = "EEEEEE";
+google_color_bg = "FFFFFF";
+google_color_link = "0000FF";
+google_color_url = "008000";
+google_color_text = "000000";
+//--></script>
+<script type="text/javascript"
+  src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+</p>
+
+</body>
+</html>

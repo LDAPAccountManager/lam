@@ -1,0 +1,40 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+Format: 1.7
+Date: Mon,  3 Jul 2006 22:01:54 +0200
+Source: ldap-account-manager
+Binary: ldap-account-manager
+Architecture: source all
+Version: 1.0.3-1
+Distribution: unstable
+Urgency: low
+Maintainer: Roland Gruber <post@rolandgruber.de>
+Changed-By: Roland Gruber <post@rolandgruber.de>
+Description: 
+ ldap-account-manager - webfrontend for managing accounts in an LDAP directory
+Closes: 368804 368805 368806 373181 375452 375453
+Changes: 
+ ldap-account-manager (1.0.3-1) unstable; urgency=low
+ .
+   * Updated to new upstream release.
+   * Account expiration date wierdness (Closes: #368806)
+   * Incorrect display of password encryption (Closes: #368805)
+   * [intl:fr] ldap-account-manager debconf templates translation
+     (Closes: #373181)
+   * Invalid/Lock password auto reverts (Closes: #375453)
+   * Invalid/Lock password options conflict (Closes: #375452)
+   * Ack NMU. (Closes: #368804)
+Files: 
+ 9e1e279b26be5f77c8de52da443d8898 651 web extra ldap-account-manager_1.0.3-1.dsc
+ 6d1ebee537b61a8aae9237cbc4d49747 1544041 web extra ldap-account-manager_1.0.3.orig.tar.gz
+ 4a420d161edfbb2bab96c0c99c97a669 15176 web extra ldap-account-manager_1.0.3-1.diff.gz
+ 8577bbe85e84e878a6ac3db561db7a15 1503036 web extra ldap-account-manager_1.0.3-1_all.deb
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.3 (GNU/Linux)
+
+iD8DBQFEqXkTq/ywNCsrGZ4RArGGAJ4iaWB+20ZzR7henaiQZXhoKdLljACfaXdp
+wzgGXdmjeLsq8w0wiZmY750=
+=K4rn
+-----END PGP SIGNATURE-----

@@ -1,0 +1,86 @@
+/* body { background-color:#F5F5F5; } */
+
+body {
+	font-family:sans-serif;
+	background-image:url("../images/background.png");
+  background-repeat:  repeat-y;
+}
+
+a {
+color:#000080;
+text-decoration:none;
+}
+
+a:visited {
+color:#000080;
+text-decoration:none;
+}
+
+a:hover {
+color:red;
+text-decoration:none;
+}
+
+a:active {
+color:red;
+text-decoration:none;
+}
+
+h1 { color:#253aa3; }
+h2 { color:#000080; font-size:13pt; }
+
+table { border-color:#253aa3; border-style:solid; border-width:1px; }
+th { background-color:#253aa3; text-align:left; font-size:12pt; font-weight:bold; color:#FFFFFF; border-color:#253aa3; border-style:hidden; height:21px; }
+td { padding-left: 15px;border-color:#253aa3; border-style:hidden; font-size:12pt; }
+
+/* background table */
+table.main {
+	border-width:0px;
+}
+
+/* menu */
+td.menu {
+	vertical-align:top;
+}
+
+/* main area */
+td.mainarea {
+	vertical-align:top;
+}
+
+/* home.htm */
+h1.home { text-align:center; color:#000080; }
+p.home { text-align:center; }
+
+h2.features { margin-bottom:0px; }
+p.features { margin:2px; }
+
+/* news/index.htm */
+h2.news { margin-bottom:0px; }
+p.news { margin-top:5px; text-align:justify; }
+
+/* nav.htm */
+table.nav { border-color:#253aa3; border-style:solid; border-width:1px; }
+th.nav { background-color:#253aa3; text-align:left; font-size:12pt; font-weight:bold; color:#FFFFFF; border-color:#253aa3; border-style:hidden; height:21px; }
+td.nav {  padding-left: 15px;background-color:#FFFFFF;border-color:#253aa3; border-style:hidden; font-size:10pt; }
+td.nav-over {  padding-left: 15px;background-color:#a8c3ff;border-color:#201b03; border-style:hidden; font-size:10pt; }
+
+a.download { color:#253aa3; text-decoration:none; font-weight:bold; }
+a.download:hover { color:red;text-decoration:none; }
+
+p.download { font-size:12pt; }
+/* third-party/index.htm */
+table.thirdparty { border-color:#253aa3; border-style:solid; border-width:3px; }
+th.thirdparty { background-color:#253aa3; text-align:left; font-size:16pt; font-weight:bold; color:#FFFFFF; border-color:#253aa3; border-style:hidden; height:25px; }
+td.thirdpartyLink { border-color:#253aa3; border-style:hidden; }
+td.thirdpartySpace { border-color:#253aa3; border-style:hidden; text-align:right; color:#253aa3; font-weight:bold; }
+
+a.thirdparty { color:#253aa3; text-decoration:none; font-weight:bold; }
+a.thirdparty:hover { text-decoration:underline; }
+
+/* Debian page */
+table.debian { border-width:0px; }
+td.debian { font-size:12pt; }
+
+/* documentation/index.htm */
+a.documentation { color:#253aa3; text-decoration:none; font-weight:bold; font-size:12pt; }
