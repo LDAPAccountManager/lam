@@ -422,7 +422,7 @@ function saveSettings() {
 	// check new preferences
 	$errors = array();
 	if (!$conf->set_ServerURL($_POST['serverurl'])) {
-		$errors[] = array("ERROR", _("Server Address is empty!"));
+		$errors[] = array("ERROR", _("Server address is invalid!"));
 	}
 	if (!$conf->set_cacheTimeout($_POST['cachetimeout'])) {
 		$errors[] = array("ERROR", _("Cache timeout is invalid!"));
