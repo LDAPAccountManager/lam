@@ -19,6 +19,7 @@ TAR = @TAR@
 
 prefix=@prefix@
 exec_prefix=@exec_prefix@
+datarootdir = @datarootdir@
 sysconfdir=@sysconfdir@
 localstatedir=@localstatedir@
 mandir=@mandir@
