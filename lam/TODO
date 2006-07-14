@@ -7,3 +7,7 @@
 
  - full integration of phpLDAPadmin
 
+
+1.0.4
+
+ - Samba domains: manage group policies
