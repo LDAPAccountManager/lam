@@ -152,6 +152,12 @@ class selfServiceProfile {
 	/** LDAP suffix */
 	var $LDAPSuffix;
 	
+	/** LDAP user DN*/
+	var $LDAPUser;
+	
+	/** LDAP password */
+	var $LDAPPassword;
+	
 	/** LDAP search attribute */
 	var $searchAttribute;
 	
@@ -170,6 +176,8 @@ class selfServiceProfile {
 		// set default values
 		$this->serverURL = "localhost";
 		$this->LDAPSuffix = "";
+		$this->LDAPUser = "";
+		$this->LDAPPassword = "";
 		$this->searchAttribute = "uid";
 		$this->loginCaption = "Welcome to LAM self service. Please enter your user name and password.";
 		$this->loginAttributeText = "User name";
