@@ -55,6 +55,24 @@ function getSelfServiceSearchAttributes($scope) {
 
 
 /**
+ * Returns the field settings for the self service.
+ *
+ * @param string $scope account type
+ * @return array settings
+ */
+function getSelfServiceFieldSettings($scope) {
+	$return = array();
+	$modules = getAvailableModules($scope);
+	for ($i = 0; $i < sizeof($modules); $i++) {
+		$m = new $modules[$i]($scope);
+		$settings = $m->getSelfServiceFields();
+		if (sizeof($settings) > 0) $return[$modules[$i]] = $settings;
+	}
+	return $return;
+}
+
+
+/**
 * Returns a list of all available self service profiles (without .conf)
 *
 * @return array profile names (array(<account type> => array(<profile1>, <profile2>, ...)))
@@ -87,7 +105,6 @@ function loadSelfServiceProfile($name, $scope) {
 	if (!eregi("^[0-9a-z _-]+$", $name)) return false;
 	if (!eregi("^[0-9a-z _-]+$", $scope)) return false;
 	$profile = new selfServiceProfile();
-	$settings = new selfServiceProfile();
 	$file = substr(__FILE__, 0, strlen(__FILE__) - 20) . "/config/selfService/" . $name . "." . $scope;
 	if (is_file($file) === True) {
 		$file = @fopen($file, "r");
@@ -167,6 +184,15 @@ class selfServiceProfile {
 	/** describing text for search attribute */
 	var $loginAttributeText;
 	
+	/** describing text for self service main page */
+	var $mainPageText;
+	
+	/** input fields
+	 * Format: array(<module> => array(array('name' => <group name>, 'fields' => array(<field1>, <field2>))))
+	 * 
+	 */
+	var $inputFields;
+	
 	/**
 	 * Constructor
 	 *
@@ -181,6 +207,8 @@ class selfServiceProfile {
 		$this->searchAttribute = "uid";
 		$this->loginCaption = "Welcome to LAM self service. Please enter your user name and password.";
 		$this->loginAttributeText = "User name";
+		$this->mainPageText = "<h1>LAM self service</h1>\nHere you can change your personal settings.";
+		$this->inputFields = array();
 	}
 	
 }

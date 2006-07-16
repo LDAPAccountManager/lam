@@ -665,6 +665,16 @@ class baseModule {
 		else return array();			
 	}
 
+	/**
+	 * Returns a list of possible input fields and their descriptions
+	 * Format: array(<field identifier> => <field description>)
+	 *
+	 * @return array fields
+	 */
+	function getSelfServiceFields() {
+		if (isset($this->meta['selfServiceFieldSettings']) && is_array($this->meta['selfServiceFieldSettings'])) return $this->meta['selfServiceFieldSettings'];
+		else return array();					
+	}
 
 }
 

@@ -108,6 +108,11 @@ class inetOrgPerson extends baseModule {
 			'sn', 'userPassword', 'description');
 		// self service search attributes
 		$return['selfServiceSearchAttributes'] = array('uid', 'mail', 'cn', 'surname', 'givenName');
+		// self service field settings
+		$return['selfServiceFieldSettings'] = array('firstName' => _('First name'), 'lastName' => _('Last name'),
+			'mail' => _('eMail address'), 'telephoneNumber' => _('Telephone number'), 'mobile' => _('Mobile number'),
+			'faxNumber' => _('Fax number'), 'street' => _('Street'), 'postalAddress' => _('Postal address'),
+			'postalCode' => _('Postal code'), 'postOfficeBox' => _('Post office box'));
 		// profile elements
 		$return['profile_options'] = array(
 			array(
