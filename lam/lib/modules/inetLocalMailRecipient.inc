@@ -221,6 +221,16 @@ class inetLocalMailRecipient extends baseModule {
 		if (isset($post['localAdr']) && ($post['localAdr'] != "")) {
 			// check if address has correct format
 			if (get_preg($post['localAdr'], 'mailLocalAddress')) {
+				// check if new address is not already in database
+				$data = $_SESSION['cache']->get_cache('mailLocalAddress', 'inetLocalMailRecipient', 'user');
+				$keys = array_keys($data);
+				for ($i = 0; $i < sizeof($keys); $i++) {
+					$adrList = $data[$keys[$i]];
+					if (in_array_ignore_case($post['localAdr'], $adrList)) {
+						$errors['localAdr'][] = array('WARN', _('This mail address is already in use:') . " " . $post['localAdr'], $keys[$i]);
+						break;
+					}
+				}
 				$this->attributes['mailLocalAddress'][] = $post['localAdr'];
 			}
 			else {
