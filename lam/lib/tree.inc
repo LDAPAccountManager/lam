@@ -1089,21 +1089,6 @@ function is_dn_attr( $attr_name )
 	return false;
 }
 
-/**
- * Checks if a string exists in an array, ignoring case.
- */
-function in_array_ignore_case( $needle, $haystack )
-{
-    if( ! is_array( $haystack ) )
-        return false;
-    if( ! is_string( $needle ) )
-        return false;
-    foreach( $haystack as $element )
-        if( is_string( $element ) && 0 == strcasecmp( $needle, $element ) )
-            return true;
-    return false;
-}
-
 function get_enc_type( $user_password )
 {
     /* Capture the stuff in the { } to determine if this is crypt, md5, etc. */
