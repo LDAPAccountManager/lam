@@ -10,6 +10,8 @@
    * Set the remote or local host in the configuration
     (e.g. 127.0.0.1)
    * Path to lamdaemon.pl, e.g. /srv/www/htdocs/lam/lib/lamdaemon.pl
+     If you installed a Debian or RPM package then the script may be located at
+     /usr/share/ldap-account-manager/lib or /var/www/html/lam/lib.
 
 
 2. Set up sudo
