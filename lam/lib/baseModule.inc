@@ -675,6 +675,32 @@ class baseModule {
 		if (isset($this->meta['selfServiceFieldSettings']) && is_array($this->meta['selfServiceFieldSettings'])) return $this->meta['selfServiceFieldSettings'];
 		else return array();					
 	}
+	
+	/**
+	 * Returns the meta HTML code for each input field.
+	 * format: array(<field1> => array(<META HTML>), ...)
+	 * It is not possible to display help links.
+	 *
+	 * @param array $fields list of active fields
+	 * @param array $attributes attributes of LDAP account (attribute names in lower case)
+	 * @return array meta HTML
+	 */
+	function getSelfServiceOptions($fields, $attributes) {
+		// this function must be overwritten by subclasses.
+		return array();
+	}
+
+	/**
+	 * Checks if all input values are correct and returns the LDAP commands which should be executed.
+	 *
+	 * @param string $fields input fields
+	 * @param array $attributes LDAP attributes
+	 * @return array messages and LDAP commands (array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array()))
+	 */
+	function checkSelfServiceOptions($fields, $attributes) {
+		$return = array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array());
+		return $return;
+	}
 
 }
 

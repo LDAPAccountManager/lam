@@ -73,6 +73,49 @@ function getSelfServiceFieldSettings($scope) {
 
 
 /**
+ * Returns meta HTML code for each self service field.
+ *
+ * @param string $scope account type
+ * @param array $fields input fields (array(<moduleName> => array(<field1>, <field2>, ...)))
+ * @param array $attributes LDAP attributes (attribute names in lower case)
+ * @return array meta HTML code (array(<moduleName> => array(<field1> => array(<meta HTML>))))
+ */
+function getSelfServiceOptions($scope, $fields, $attributes) {
+	$return = array();
+	$modules = getAvailableModules($scope);
+	for ($i = 0; $i < sizeof($modules); $i++) {
+		$m = new $modules[$i]($scope);
+		$code = $m->getSelfServiceOptions($fields[$modules[$i]], $attributes);
+		if (sizeof($code) > 0) $return[$modules[$i]] = $code;
+	}
+	return $return;
+}
+
+
+/**
+ * Checks if all input values are correct and returns the LDAP commands which should be executed.
+ *
+ * @param string $scope account type
+ * @param string $fields input fields (array(<moduleName> => array(<field1>, <field2>, ...)))
+ * @param array $attributes LDAP attributes
+ * @return array messages and LDAP commands (array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array()))
+ */
+function checkSelfServiceOptions($scope, $fields, $attributes) {
+	$return = array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array());
+	$modules = getAvailableModules($scope);
+	for ($i = 0; $i < sizeof($modules); $i++) {
+		$m = new $modules[$i]($scope);
+		$result = $m->checkSelfServiceOptions($fields[$modules[$i]], $attributes);
+		if (sizeof($result['messages']) > 0) $return['messages'] = array_merge($result['messages'], $return['messages']);
+		if (sizeof($result['add']) > 0) $return['add'] = array_merge($result['add'], $return['add']);
+		if (sizeof($result['del']) > 0) $return['del'] = array_merge($result['del'], $return['del']);
+		if (sizeof($result['mod']) > 0) $return['mod'] = array_merge($result['mod'], $return['mod']);
+	}
+	return $return;
+}
+
+
+/**
 * Returns a list of all available self service profiles (without .conf)
 *
 * @return array profile names (array(<account type> => array(<profile1>, <profile2>, ...)))
