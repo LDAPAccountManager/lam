@@ -26,7 +26,7 @@ $Id$
 /**
  * LDAP Account Manager help entries.
  * 
- * @author Michael Dürgner
+ * @author Michael Dï¿½rgner
  * @package Help
  */
 
@@ -156,7 +156,24 @@ $helpArray = array (
 				"403" => array ("ext" => "FALSE", "Headline" => _("Create PDF file"),
 					"Text" => _("Here you can select a PDF structure and export the account to a PDF file.")),
 				// 500 - 599
-				// unused				
+				// Roland Gruber
+				// self service
+				"501" => array ("ext" => "FALSE", "Headline" => _("LDAP suffix"),
+					"Text" => _("LAM will search for accounts in this part of the LDAP tree.")),				
+				"502" => array ("ext" => "FALSE", "Headline" => _("LDAP user and password"),
+					"Text" => _("LAM will use this LDAP DN and password to search for accounts. It is sufficient to specify an account with read rights. If nothing is inserted then LAM will try to connect anonymously.")),				
+				"503" => array ("ext" => "FALSE", "Headline" => _("LDAP search attribute"),
+					"Text" => _("This is needed to find the LDAP DNs of your user accounts. E.g. if you use \"uid\" and your user inputs \"miller\" then LAM will search for an account with uid=miller.")),
+				"504" => array ("ext" => "FALSE", "Headline" => _("Login attribute label"),
+					"Text" => _("This text should shortly describe your selected LDAP search attribute (e.g. email or user name).")),				
+				"505" => array ("ext" => "FALSE", "Headline" => _("Login caption"),
+					"Text" => _("This text is displayed on top of the self service login page. You can also input HTML code here.")),
+				"506" => array ("ext" => "FALSE", "Headline" => _("Main page caption"),
+					"Text" => _("This text is displayed on top of the self service main page. You can also input HTML code here.")),
+				"507" => array ("ext" => "FALSE", "Headline" => _("Add new group"),
+					"Text" => _("Adds a new group element to the list of self service options. Use this to structure the input fields.")),
+				"508" => array ("ext" => "FALSE", "Headline" => _("Add input field"),
+					"Text" => _("Adds a new self service option to the selected group element.")),
 				// 600 - 699
 				// Roland Gruber
 				// OU-editor, domain page
