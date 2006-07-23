@@ -1230,11 +1230,20 @@ class accountContainer {
 		// get correct object class names, aliases and attributes
 		$objectClasses = array();
 		$aliases = array();
+		$ldapAttributesTemp = array();
 		foreach ($modules as $module) {
 			$moduleObj = new $module($this->type);
 			$objectClasses = array_merge($objectClasses, $moduleObj->getManagedObjectClasses());
 			$aliases = array_merge($aliases, $moduleObj->getLDAPAliases());
+			$ldapAttributesTemp = array_merge($ldapAttributesTemp, $moduleObj->getManagedAttributes());
 		}
+		// build lower case attribute names
+		$ldapAttributes = array();
+		for ($i = 0; $i < sizeof($ldapAttributesTemp); $i++) {
+			$ldapAttributes[strtolower($ldapAttributesTemp[$i])] = $ldapAttributesTemp[$i];
+			unset($ldapAttributes[$i]);
+		}
+		$ldapAttributesKeys = array_keys($ldapAttributes);
 		// convert alias names to lower case (for easier comparison)
 		$aliasKeys = array_keys($aliases);
 		for ($i = 0; $i < sizeof($aliasKeys); $i++) {
@@ -1272,6 +1281,13 @@ class accountContainer {
 				if (in_array(strtolower($keys[$i]), $aliasKeys)) {
 					$attributes[$aliases[strtolower($keys[$i])]] = $attributes[$keys[$i]];
 					unset($attributes[$keys[$i]]);
+				}
+				// fix attribute names
+				elseif (in_array(strtolower($keys[$i]), $ldapAttributesKeys)) {
+					if ($keys[$i] != $ldapAttributes[strtolower($keys[$i])]) {
+						$attributes[$ldapAttributes[strtolower($keys[$i])]] = $attributes[$keys[$i]];
+						unset($attributes[$keys[$i]]);
+					}
 				}
 			}
 		}
