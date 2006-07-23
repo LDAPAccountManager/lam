@@ -45,8 +45,8 @@ class inetOrgPerson extends baseModule {
 		$this->messages['host'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_hosts', _('Unix workstations are invalid!'));
 		$this->messages['givenName'][0] = array('ERROR', _('First name'), _('First name contains invalid characters!'));
 		$this->messages['givenName'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_lastName', _('First name contains invalid characters!'));
-		$this->messages['lastname'][0] = array('ERROR', _('Last name'), _('Last name contains invalid characters!'));
-		$this->messages['lastname'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_firstName', _('Last name contains invalid characters!'));
+		$this->messages['lastname'][0] = array('ERROR', _('Last name'), _('Last name contains invalid characters or is empty!'));
+		$this->messages['lastname'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_firstName', _('Last name contains invalid characters or is empty!'));
 		$this->messages['telephoneNumber'][0] = array('ERROR', _('Telephone number'), _('Please enter a valid telephone number!'));
 		$this->messages['telephoneNumber'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_telephone', _('Please enter a valid telephone number!'));
 		$this->messages['mobileTelephone'][0] = array('ERROR', _('Mobile number'), _('Please enter a valid mobile number!'));
@@ -446,7 +446,7 @@ class inetOrgPerson extends baseModule {
 	* @param array $post HTTP-POST values
 	* @return array list of info/error messages
 	*/
-	function process_attributes(&$post) {
+	function process_attributes($post) {
 		$errors = array();
 		// Load attributes
 		$this->attributes['description'][0] = $post['description'];
@@ -543,7 +543,7 @@ class inetOrgPerson extends baseModule {
 	* to show a page with all attributes.
 	* It will output a complete html-table
 	*/
-	function display_html_attributes(&$post) {
+	function display_html_attributes($post) {
 		$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
 		if (!in_array('posixAccount', $modules)) {
 			$uid = '';
@@ -727,8 +727,8 @@ class inetOrgPerson extends baseModule {
 	*
 	* @param $post HTTP POST
 	*/
-	function process_password(&$post) {
-		if ($post['form_subpage_inetOrgPerson_attributes_back']) return;
+	function process_password($post) {
+		if ($post['form_subpage_inetOrgPerson_attributes_back']) return array();
 		$messages = array();
 		if ($post['userPassword'] != $post['userPassword2']) {
 			$messages['userPassword'][] = $this->messages['userPassword'][0];
@@ -750,7 +750,7 @@ class inetOrgPerson extends baseModule {
 	* @param array $post HTTP-POST
 	* @return array meta HTML code
 	*/
-	function display_html_password(&$post) {
+	function display_html_password($post) {
 		$return[] = array(
 			0 => array('kind' => 'text', 'text' => _('Password') ),
 			1 => array('kind' => 'input', 'name' => 'userPassword', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => ""),
@@ -772,8 +772,8 @@ class inetOrgPerson extends baseModule {
 	*
 	* @param $post HTTP POST
 	*/
-	function process_photo(&$post) {
-		if ($post['form_subpage_inetOrgPerson_attributes_back']) return;
+	function process_photo($post) {
+		if ($post['form_subpage_inetOrgPerson_attributes_back']) return array();
 		$messages = array();
 		if ($_FILES['photoFile'] && ($_FILES['photoFile']['size'] > 0)) {
 			$handle = fopen($_FILES['photoFile']['tmp_name'], "r");
@@ -793,7 +793,7 @@ class inetOrgPerson extends baseModule {
 	* @param array $post HTTP-POST
 	* @return array meta HTML code
 	*/
-	function display_html_photo(&$post) {
+	function display_html_photo($post) {
 		$return[] = array(
 			0 => array('kind' => 'text', 'text' => _('Photo file (JPG format)') ),
 			1 => array('kind' => 'input', 'name' => 'photoFile', 'type' => 'file'),
@@ -1046,6 +1046,220 @@ class inetOrgPerson extends baseModule {
 			}
 		}
 		return $errors;
+	}
+
+	/**
+	 * Returns the meta HTML code for each input field.
+	 * format: array(<field1> => array(<META HTML>), ...)
+	 * It is not possible to display help links.
+	 *
+	 * @param array $fields list of active fields
+	 * @param array $attributes attributes of LDAP account (attribute names in lower case)
+	 * @return array meta HTML
+	 */
+	function getSelfServiceOptions($fields, $attributes) {
+		$return = array();
+		if (in_array('firstName', $fields)) {
+			$firstName = '';
+			if (isset($attributes['givenName'][0])) $firstName = $attributes['givenName'][0];
+			$return['firstName'] = array(
+				0 => array('kind' => 'text', 'text' => _('First name')),
+				1 => array('kind' => 'input', 'name' => 'inetOrgPerson_firstName', 'type' => 'text', 'size' => '30',
+					'maxlength' => '255', 'value' => $firstName));
+		}
+		if (in_array('lastName', $fields)) {
+			$lastName = '';
+			if (isset($attributes['sn'][0])) $lastName = $attributes['sn'][0];
+			$return['lastName'] = array(
+				0 => array('kind' => 'text', 'text' => _('Last name')),
+				1 => array('kind' => 'input', 'name' => 'inetOrgPerson_lastName', 'type' => 'text', 'size' => '30',
+					'maxlength' => '255', 'value' => $lastName));
+		}
+		if (in_array('mail', $fields)) {
+			$mail = '';
+			if (isset($attributes['mail'][0])) $mail = $attributes['mail'][0];
+			$return['mail'] = array(
+				0 => array('kind' => 'text', 'text' => _('eMail address')),
+				1 => array('kind' => 'input', 'name' => 'inetOrgPerson_mail', 'type' => 'text', 'size' => '30',
+					'maxlength' => '255', 'value' => $mail));
+		}
+		if (in_array('telephoneNumber', $fields)) {
+			$telephoneNumber = '';
+			if (isset($attributes['telephoneNumber'][0])) $telephoneNumber = $attributes['telephoneNumber'][0];
+			$return['telephoneNumber'] = array(
+				0 => array('kind' => 'text', 'text' => _('Telephone number')),
+				1 => array('kind' => 'input', 'name' => 'inetOrgPerson_telephoneNumber', 'type' => 'text', 'size' => '30',
+					'maxlength' => '255', 'value' => $telephoneNumber));
+		}
+		if (in_array('mobile', $fields)) {
+			$mobile = '';
+			if (isset($attributes['mobile'][0])) $mobile = $attributes['mobile'][0];
+			$return['mobile'] = array(
+				0 => array('kind' => 'text', 'text' => _('Mobile telephone number')),
+				1 => array('kind' => 'input', 'name' => 'inetOrgPerson_mobile', 'type' => 'text', 'size' => '30',
+					'maxlength' => '255', 'value' => $mobile));
+		}
+		if (in_array('faxNumber', $fields)) {
+			$faxNumber = '';
+			if (isset($attributes['facsimileTelephoneNumber'][0])) $faxNumber = $attributes['facsimileTelephoneNumber'][0];
+			$return['faxNumber'] = array(
+				0 => array('kind' => 'text', 'text' => _('Fax number')),
+				1 => array('kind' => 'input', 'name' => 'inetOrgPerson_faxNumber', 'type' => 'text', 'size' => '30',
+					'maxlength' => '255', 'value' => $faxNumber));
+		}
+		if (in_array('street', $fields)) {
+			$street = '';
+			if (isset($attributes['street'][0])) $street = $attributes['street'][0];
+			$return['street'] = array(
+				0 => array('kind' => 'text', 'text' => _('Street')),
+				1 => array('kind' => 'input', 'name' => 'inetOrgPerson_street', 'type' => 'text', 'size' => '30',
+					'maxlength' => '255', 'value' => $street));
+		}
+		if (in_array('postalAddress', $fields)) {
+			$postalAddress = '';
+			if (isset($attributes['postalAddress'][0])) $postalAddress = $attributes['postalAddress'][0];
+			$return['postalAddress'] = array(
+				0 => array('kind' => 'text', 'text' => _('Postal address')),
+				1 => array('kind' => 'input', 'name' => 'inetOrgPerson_postalAddress', 'type' => 'text', 'size' => '30',
+					'maxlength' => '255', 'value' => $postalAddress));
+		}
+		if (in_array('postalCode', $fields)) {
+			$postalCode = '';
+			if (isset($attributes['postalCode'][0])) $postalCode = $attributes['postalCode'][0];
+			$return['postalCode'] = array(
+				0 => array('kind' => 'text', 'text' => _('Postal code')),
+				1 => array('kind' => 'input', 'name' => 'inetOrgPerson_postalCode', 'type' => 'text', 'size' => '30',
+					'maxlength' => '255', 'value' => $postalCode));
+		}
+		if (in_array('postOfficeBox', $fields)) {
+			$postOfficeBox = '';
+			if (isset($attributes['postOfficeBox'][0])) $postOfficeBox = $attributes['postOfficeBox'][0];
+			$return['postOfficeBox'] = array(
+				0 => array('kind' => 'text', 'text' => _('Post office box')),
+				1 => array('kind' => 'input', 'name' => 'inetOrgPerson_postOfficeBox', 'type' => 'text', 'size' => '30',
+					'maxlength' => '255', 'value' => $postOfficeBox));
+		}
+		return $return;
+	}
+
+	/**
+	 * Checks if all input values are correct and returns the LDAP commands which should be executed.
+	 *
+	 * @param string $fields input fields
+	 * @param array $attributes LDAP attributes
+	 * @return array messages and LDAP commands (array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array()))
+	 */
+	function checkSelfServiceOptions($fields, $attributes) {
+		$return = array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array());
+		$attributeNames = array(); // list of attributes which should be checked for modification
+		$attributesNew = $attributes;
+		// first name
+		if (in_array('firstName', $fields)) {
+			$attributeNames[] = 'givenName';
+			if (isset($_POST['inetOrgPerson_firstName']) && ($_POST['inetOrgPerson_firstName'] != '')) {
+				if (!get_preg($_POST['inetOrgPerson_firstName'], 'realname')) $return['messages'][] = $this->messages['givenName'][0];
+				else $attributesNew['givenName'][0] = $_POST['inetOrgPerson_firstName'];
+			}
+			elseif (isset($attributes['givenName'])) unset($attributesNew['givenName']);
+		}
+		// last name
+		if (in_array('lastName', $fields)) {
+			$attributeNames[] = 'sn';
+			if (isset($_POST['inetOrgPerson_lastName']) && ($_POST['inetOrgPerson_lastName'] != '')) {
+				if (!get_preg($_POST['inetOrgPerson_lastName'], 'realname')) $return['messages'][] = $this->messages['lastname'][0];
+				else $attributesNew['sn'][0] = $_POST['inetOrgPerson_lastName'];
+			}
+			else {
+				// last name is required attribute
+				$return['messages'][] = $this->messages['lastname'][0];
+			}
+		}
+		// email
+		if (in_array('mail', $fields)) {
+			$attributeNames[] = 'mail';
+			if (isset($_POST['inetOrgPerson_mail']) && ($_POST['inetOrgPerson_mail'] != '')) {
+				if (!get_preg($_POST['inetOrgPerson_mail'], 'email')) $return['messages'][] = $this->messages['email'][0];
+				else $attributesNew['mail'][0] = $_POST['inetOrgPerson_mail'];
+			}
+			elseif (isset($attributes['mail'])) unset($attributesNew['mail']);
+		}
+		// telephone number
+		if (in_array('telephoneNumber', $fields)) {
+			$attributeNames[] = 'telephoneNumber';
+			if (isset($_POST['inetOrgPerson_telephoneNumber']) && ($_POST['inetOrgPerson_telephoneNumber'] != '')) {
+				if (!get_preg($_POST['inetOrgPerson_telephoneNumber'], 'telephone')) $return['messages'][] = $this->messages['telephoneNumber'][0];
+				else $attributesNew['telephoneNumber'][0] = $_POST['inetOrgPerson_telephoneNumber'];
+			}
+			elseif (isset($attributes['telephoneNumber'])) unset($attributesNew['telephoneNumber']);
+		}
+		// fax number
+		if (in_array('faxNumber', $fields)) {
+			$attributeNames[] = 'facsimileTelephoneNumber';
+			if (isset($_POST['inetOrgPerson_faxNumber']) && ($_POST['inetOrgPerson_faxNumber'] != '')) {
+				if (!get_preg($_POST['inetOrgPerson_faxNumber'], 'telephone')) $return['messages'][] = $this->messages['facsimileNumber'][0];
+				else $attributesNew['facsimileTelephoneNumber'][0] = $_POST['inetOrgPerson_faxNumber'];
+			}
+			elseif (isset($attributes['facsimileTelephoneNumber'])) $attributesNew['facsimileTelephoneNumber'] = array();
+		}
+		// mobile telephone number
+		if (in_array('mobile', $fields)) {
+			$attributeNames[] = 'mobile';
+			if (isset($_POST['inetOrgPerson_mobile']) && ($_POST['inetOrgPerson_mobile'] != '')) {
+				if (!get_preg($_POST['inetOrgPerson_mobile'], 'telephone')) $return['messages'][] = $this->messages['mobileTelephone'][0];
+				else $attributesNew['mobile'][0] = $_POST['inetOrgPerson_mobile'];
+			}
+			elseif (isset($attributes['mobile'])) unset($attributesNew['mobile']);
+		}
+		// street
+		if (in_array('street', $fields)) {
+			$attributeNames[] = 'street';
+			if (isset($_POST['inetOrgPerson_street']) && ($_POST['inetOrgPerson_street'] != '')) {
+				if (!get_preg($_POST['inetOrgPerson_street'], 'street')) $return['messages'][] = $this->messages['street'][0];
+				else $attributesNew['street'][0] = $_POST['inetOrgPerson_street'];
+			}
+			elseif (isset($attributes['street'])) unset($attributesNew['street']);
+		}
+		// postal address
+		if (in_array('postalAddress', $fields)) {
+			$attributeNames[] = 'postalAddress';
+			if (isset($_POST['inetOrgPerson_postalAddress']) && ($_POST['inetOrgPerson_postalAddress'] != '')) {
+				if (!get_preg($_POST['inetOrgPerson_postalAddress'], 'postalAddress')) $return['messages'][] = $this->messages['postalAddress'][0];
+				else $attributesNew['postalAddress'][0] = $_POST['inetOrgPerson_postalAddress'];
+			}
+			elseif (isset($attributes['postalAddress'])) $attributesNew['postalAddress'] = array();
+		}
+		// postal code
+		if (in_array('postalCode', $fields)) {
+			$attributeNames[] = 'postalCode';
+			if (isset($_POST['inetOrgPerson_postalCode']) && ($_POST['inetOrgPerson_postalCode'] != '')) {
+				if (!get_preg($_POST['inetOrgPerson_postalCode'], 'postalCode')) $return['messages'][] = $this->messages['postalCode'][0];
+				else $attributesNew['postalCode'][0] = $_POST['inetOrgPerson_postalCode'];
+			}
+			elseif (isset($attributes['postalCode'])) unset($attributesNew['postalCode']);
+		}
+		// post office box
+		if (in_array('postOfficeBox', $fields)) {
+			$attributeNames[] = 'postOfficeBox';
+			if (isset($_POST['inetOrgPerson_postOfficeBox']) && ($_POST['inetOrgPerson_postOfficeBox'] != '')) {
+				$attributesNew['postOfficeBox'][0] = $_POST['inetOrgPerson_postOfficeBox'];
+			}
+			elseif (isset($attributes['postOfficeBox'])) unset($attributesNew['postOfficeBox']);
+		}
+		// find differences
+		for ($i = 0; $i < sizeof($attributeNames); $i++) {
+			$attrName = $attributeNames[$i];
+			if (isset($attributes[$attrName]) && !isset($attributesNew[$attrName])) $return['del'][$attrName] = $attributes[$attrName];
+			elseif (!isset($attributes[$attrName]) && isset($attributesNew[$attrName])) $return['add'][$attrName] = $attributesNew[$attrName];
+			else {
+				for ($a = 0; $a < sizeof($attributes[$attrName]); $a++) {
+					if (!in_array($attributes[$attrName][$a], $attributesNew[$attrName])) {
+						$return['mod'][$attrName] = $attributesNew[$attrName];
+						break;
+					}
+				}
+			}
+		}
+		return $return;
 	}
 
 	
