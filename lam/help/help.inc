@@ -26,7 +26,7 @@ $Id$
 /**
  * LDAP Account Manager help entries.
  * 
- * @author Michael D�rgner
+ * @author Michael Duergner
  * @package Help
  */
 
