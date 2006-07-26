@@ -23,7 +23,7 @@ $Id$
 /**
  * LDAP Account Manager status messages.
  * 
- * @author Michael Dürgner
+ * @author Michael Duergner
  * @package lib
  */
 
@@ -62,8 +62,8 @@ function StatusMessage($MessageTyp,$MessageHeadline,$MessageText='',$MessageVari
 	else {
 		$class = "class=\"statusError\"";
 		$MessageTyp = "ERROR";
-		$MessageHeadline = _("Invalid/Missing Message type");
-		$MessageText = _("Please report this error to the Bug-Tracker at {link=http://lam.sourceforge.net}LDAP Account Manager Development Team{endlink}. The error number is {bold}0001:Invalid/Missing Message type.{endbold} Thank you.");
+		$MessageHeadline = "Invalid/Missing Message type";
+		$MessageText = "Please report this error to the Bug-Tracker at {link=http://lam.sourceforge.net}LDAP Account Manager Development Team{endlink}. Thank you.";
 	}
 
 	$MessageHeadline = parseMessageString($MessageHeadline);
