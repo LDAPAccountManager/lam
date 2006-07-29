@@ -358,7 +358,7 @@ echo ("<tr><td colspan=3>&nbsp;</td></tr>\n");
 
 // new password
 echo ("<tr><td align=\"right\"><font color=\"red\"><b>".
-	_("New Password") . ": </b></font></td>".
+	_("New password") . ": </b></font></td>".
 	"<td align=\"left\"><input tabindex=\"$tabindex\" type=\"password\" name=\"passwd1\"></td>\n");
 $tabindex++;
 echo "<td rowspan=2>";
@@ -368,7 +368,7 @@ echo "</a>\n";
 echo "</td></tr>\n";
 // reenter password
 echo ("<tr><td align=\"right\"><font color=\"red\"><b>".
-	_("Reenter Password") . ": </b></font></td>".
+	_("Reenter password") . ": </b></font></td>".
 	"<td align=\"left\"><input tabindex=\"$tabindex\" type=\"password\" name=\"passwd2\"></td></tr>\n");
 $tabindex++;
 echo ("</table>\n");
