@@ -71,10 +71,10 @@ echo $_SESSION['header'];
 				<IMG height="50" width="50" alt="general settings" src="../../graphics/bigTools.png">
 			</a>
 			</TD>
-			<TD>
+			<TD><BIG>
 			<a href="mainlogin.php">
 				<?php echo _("Edit general settings") ?>
-			</a>
+			</a></BIG>
 			</TD>
 		</TR>
 		<TR>
@@ -83,10 +83,10 @@ echo $_SESSION['header'];
 				<IMG height="50" width="50" alt="server settings" src="../../graphics/bigServers.png">
 			</a>
 			</TD>
-			<TD>
+			<TD><BIG>
 			<a href="conflogin.php" target="_self">
 				<?php echo _("Edit server profiles"); ?>
-			</a>
+			</a></BIG>
 			</TD>
 		</TR>
 		<?php
@@ -97,10 +97,10 @@ echo $_SESSION['header'];
 					echo "<IMG height=\"50\" width=\"50\" alt=\"self service\" src=\"../../graphics/bigPeople.png\">\n";
 				echo "</a>\n";
 				echo "</TD>\n";
-				echo "<TD>\n";
+				echo "<TD><BIG>\n";
 				echo "<a href=\"../selfService/adminLogin.php\" target=\"_self\">\n";
 					echo _("Edit self service");
-				echo "</a>\n";
+				echo "</a></BIG>\n";
 				echo "</TD>\n";
 			echo "</TR>\n";
 		}
