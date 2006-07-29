@@ -42,9 +42,9 @@ class shadowAccount extends baseModule {
 	*/
 	function load_Messages() {
 		// error messages for input checks
-		$this->messages['shadowMin'][0] = array('ERROR', _('Password minage'), _('Password minimum age must be are natural number.'));
+		$this->messages['shadowMin'][0] = array('ERROR', _('Minimum password age'), _('Password minimum age must be are natural number.'));
 		$this->messages['shadowMin'][1] = array('ERROR', _('Account %s:') . ' shadowAccount_minAge', _('Password minimum age must be are natural number.'));
-		$this->messages['shadowMax'][0] = array('ERROR', _('Password maxage'), _('Password maximum age must be are natural number.'));
+		$this->messages['shadowMax'][0] = array('ERROR', _('Maximum password age'), _('Password maximum age must be are natural number.'));
 		$this->messages['shadowMax'][1] = array('ERROR', _('Account %s:') . ' shadowAccount_maxAge', _('Password maximum age must be are natural number.'));
 		$this->messages['inactive'][0] = array('ERROR', _('Password expiration'), _('Password expiration must be are natural number or -1.'));
 		$this->messages['inactive'][1] = array('ERROR', _('Account %s:') . ' shadowAccount_ignoreExpire', _('Password expiration must be are natural number or -1.'));
