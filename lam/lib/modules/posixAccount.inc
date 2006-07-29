@@ -140,6 +140,10 @@ class posixAccount extends baseModule {
 			'userPassword', 'loginShell', 'gecos', 'description');
 		// PHP extensions
 		$return['extensions'] = array('mhash');
+		// self service search attributes
+		$return['selfServiceSearchAttributes'] = array('uid');
+		// self service field settings
+		$return['selfServiceFieldSettings'] = array('password' => _('Password'));
 		// profile checks
 		$return['profile_checks']['posixAccount_homeDirectory'] = array('type' => 'ext_preg', 'regex' => 'homeDirectory',
 		'error_message' => $this->messages['homeDirectory'][0]);
@@ -1586,6 +1590,56 @@ class posixAccount extends baseModule {
 			}
 		}
 		return $ret;
+	}
+
+	/**
+	 * Returns the meta HTML code for each input field.
+	 * format: array(<field1> => array(<META HTML>), ...)
+	 * It is not possible to display help links.
+	 *
+	 * @param array $fields list of active fields
+	 * @param array $attributes attributes of LDAP account (attribute names in lower case)
+	 * @return array meta HTML
+	 */
+	function getSelfServiceOptions($fields, $attributes) {
+		$return = array();
+		if (in_array('password', $fields)) {
+			$return['password'] = array(
+				0 => array('kind' => 'text', 'text' => _('New password')),
+				1 => array('kind' => 'input', 'name' => 'posixAccount_password', 'type' => 'password', 'size' => '30', 'maxlength' => '255'),
+				2 => array('kind' => 'text', 'text' => _('Reenter password')),
+				3 => array('kind' => 'input', 'name' => 'posixAccount_password2', 'type' => 'password', 'size' => '30', 'maxlength' => '255')
+				);
+		}
+		return $return;
+	}
+
+	/**
+	 * Checks if all input values are correct and returns the LDAP commands which should be executed.
+	 *
+	 * @param string $fields input fields
+	 * @param array $attributes LDAP attributes
+	 * @return array messages and LDAP commands (array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array()))
+	 */
+	function checkSelfServiceOptions($fields, $attributes) {
+		$return = array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array());
+		if (in_array('password', $fields)) {
+			if (isset($_POST['posixAccount_password']) && ($_POST['posixAccount_password'] != '')) {
+				if ($_POST['posixAccount_password'] != $_POST['posixAccount_password2']) {
+					$return['messages'][] = $this->messages['userPassword'][0];
+				}
+				else {
+					if (!get_preg($post['posixAccount_password'], 'password')) {
+						$return['messages'][] = $this->messages['userPassword'][1];
+					}
+					else {
+						$return['mod']['userPassword'][0] = $_POST['posixAccount_password'];
+						$_SESSION['selfService_clientPasswordNew'] = $_POST['posixAccount_password'];
+					}
+				}
+			}
+		}
+		return $return;
 	}
 
 }
