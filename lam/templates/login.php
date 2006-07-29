@@ -59,6 +59,10 @@ for ($i = 0; $i < sizeof($writableDirs); $i++) {
 		$criticalErrors[] = array("ERROR", 'The directory %s is not writable for the web server. Please change your file permissions.', '', array($path));
 	}
 }
+// check session auto start
+if (ini_get("session.auto_start") == "1") {
+	$criticalErrors[] = array("ERROR", "Please deactivate session.auto_start in your php.ini. LAM will not work if it is activated.");
+}
 // stop login if critical errors occured
 if (sizeof($criticalErrors) > 0) {
 	echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
@@ -181,7 +185,7 @@ function display_LoginPage($config_object) {
 		$extList = getRequiredExtensions();
 		for ($i = 0; $i < sizeof($extList); $i++) {
 			if (!extension_loaded($extList[$i])) {
-				StatusMessage("ERROR", _("A required PHP extension is missing!"), $extList[$i]);
+				StatusMessage("ERROR", "A required PHP extension is missing!", $extList[$i]);
 				echo "<br>";
 			}
 		}
