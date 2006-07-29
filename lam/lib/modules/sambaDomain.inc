@@ -57,7 +57,9 @@ class sambaDomain extends baseModule {
 		$return['objectClasses'] = array('sambaDomain');
 		// managed attributes
 		$return['attributes'] = array('sambaDomainName', 'sambaSID', 'sambaNextRid', 'sambaNextGroupRid',
-			'sambaNextUserRid', 'sambaAlgorithmicRidBase');
+			'sambaNextUserRid', 'sambaAlgorithmicRidBase', 'sambaMinPwdLength', 'sambaPwdHistoryLength',
+			'sambaLogonToChgPwd', 'sambaForceLogoff', 'sambaRefuseMachinePwdChange', 'sambaLockoutThreshold',
+			'sambaMinPwdAge', 'sambaMaxPwdAge', 'sambaLockoutDuration', 'sambaLockoutObservationWindow');
 		// help Entries
 		$return['help'] = array(
 			'domainName' => array(
@@ -83,6 +85,46 @@ class sambaDomain extends baseModule {
 			'nextRID' => array(
 				"Headline" => _("RID base"),
 				"Text" => _("Used for calculating RIDs from UID/GID. Do not change if unsure.")
+			),
+			'minPwdLength' => array(
+				"Headline" => _("Minimal password length"),
+				"Text" => _("Here you can specify the minimum number of characters for a user password.")
+			),
+			'pwdHistLength' => array(
+				"Headline" => _("Password history length"),
+				"Text" => _("This is the number of passwords which are saved to prevent that users reuse old passwords.")
+			),
+			'logonToChgPwd' => array(
+				"Headline" => _("Logon for password change"),
+				"Text" => _("If set then users need to login to change their password.")
+			),
+			'forceLogoff' => array(
+				"Headline" => _("Disconnect users outside logon hours"),
+				"Text" => _("Disconnects users if they are loggen in outside logon hours.")
+			),
+			'refuseMachinePwdChange' => array(
+				"Headline" => _("Allow machine password changes"),
+				"Text" => _("Defines if workstations may change their passwords.")
+			),
+			'lockoutThreshold' => array(
+				"Headline" => _("Lockout users after bad logon attempts"),
+				"Text" => _("Here you can define to deactivate accounts after bad logon attempts.")
+			),
+			'minPwdAge' => array(
+				"Headline" => _("Minimum password age"),
+				"Text" => _("Number of seconds after the user is allowed to change his password again.")
+			),
+			'maxPwdAge' => array(
+				"Headline" => _("Maximum password age"),
+				"Text" => _("Number of seconds after which the user must change his password.")
+			),
+			'lockoutDuration' => array(
+				"Headline" => _("Lockout duration"),
+				"Text" => _("This is the time (in minutes) for which the user may not log in after the account was locked. -1 means forever.")
+			),
+			'lockoutObservationWindow' => array(
+				"Headline" => _("Reset time after lockout"),
+				"Text" => _("Number of minutes after which the bad logon attempts are reset.")
 			));
 		// upload fields
 		$return['upload_columns'] = array(
@@ -128,9 +170,10 @@ class sambaDomain extends baseModule {
 		);
 		// available PDF fields
 		$return['PDF_fields'] = array(
-			'domainName', 'domainSID', 'nextRID',
-			'nextUserRID', 'nextGroupRID', 'RIDbase'
-		);
+			'domainName', 'domainSID', 'nextRID', 'nextUserRID', 'nextGroupRID', 'RIDbase',
+			'minPwdLength', 'pwdHistoryLength', 'logonToChgPwd', 'forceLogoff',
+			'refuseMachinePwdChange', 'lockoutThreshold', 'minPwdAge', 'maxPwdAge',
+			'lockoutDuration', 'lockoutObservationWindow');
 		return $return;
 	}
 
@@ -150,6 +193,11 @@ class sambaDomain extends baseModule {
 		$this->messages['nextGroupRID'][1] = array('ERROR', _('Account %s:') . ' sambaDomain_nextGroupRID', _('Next group RID is not a number!'));
 		$this->messages['RIDbase'][0] = array('ERROR', _('Algorithmic RID base is not a number!'));
 		$this->messages['RIDbase'][1] = array('ERROR', _('Account %s:') . ' sambaDomain_RIDbase', _('Algorithmic RID base is not a number!'));
+		$this->messages['pwdAge_cmp'][0] = array('ERROR',  _('Maximum password age'), _('Password maximum age must be bigger as password minimum age.'));
+		$this->messages['pwdAgeMin'][0] = array('ERROR', _('Minimum password age'), _('Password minimum age must be are natural number.'));
+		$this->messages['pwdAgeMax'][0] = array('ERROR', _('Maximum password age'), _('Password maximum age must be are natural number.'));
+		$this->messages['lockoutDuration'][0] = array('ERROR', _('Lockout duration'), _('Lockout duration must be are natural number.'));
+		$this->messages['lockoutObservationWindow'][0] = array('ERROR', _('Reset time after lockout'), _('Reset time after lockout must be are natural number.'));
 	}
 	
 	/**
@@ -185,6 +233,84 @@ class sambaDomain extends baseModule {
 				1 => array('kind' => 'text', 'text' => $this->attributes['sambaSID'][0]),
 				2 => array('kind' => 'help', 'value' => 'domainSID'));
 		}
+
+		$return[] = array(
+			0 => array('kind' => 'text', 'text' => ""),
+			1 => array('kind' => 'text', 'text' => "&nbsp;"),
+			2 => array('kind' => 'text', 'text' => ""));
+
+		/* group policies */
+		
+		// minimum password length
+		$return[] = array(
+			0 => array('kind' => 'text', 'text' => _('Minimal password length')),
+			1 => array('kind' => 'select', 'name' => 'minPwdLength',
+				'options' => array('-', 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15),
+				'options_selected' => $this->attributes['sambaMinPwdLength'][0]),
+			2 => array('kind' => 'help', 'value' => 'minPwdLength'));		
+		// password history length
+		$return[] = array(
+			0 => array('kind' => 'text', 'text' => _('Password history length')),
+			1 => array('kind' => 'select', 'name' => 'pwdHistLength',
+				'options' => array('-', 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15),
+				'options_selected' => $this->attributes['sambaPwdHistoryLength'][0]),
+			2 => array('kind' => 'help', 'value' => 'pwdHistLength'));		
+		// password history length
+		$return[] = array(
+			0 => array('kind' => 'text', 'text' => _('Logon for password change')),
+			1 => array('kind' => 'select', 'name' => 'logonToChgPwd',
+				'options' => array(array('-', '-'), array(0, _('Off')), array(2, _('On'))), 'descriptiveOptions' => true,
+				'options_selected' => $this->attributes['sambaLogonToChgPwd'][0]),
+			2 => array('kind' => 'help', 'value' => 'logonToChgPwd'));		
+		// force logoff
+		$return[] = array(
+			0 => array('kind' => 'text', 'text' => _('Disconnect users outside logon hours')),
+			1 => array('kind' => 'select', 'name' => 'forceLogoff',
+				'options' => array(array('-', '-'), array('-1', _('Off')), array(0, _('On'))), 'descriptiveOptions' => true,
+				'options_selected' => $this->attributes['sambaForceLogoff'][0]),
+			2 => array('kind' => 'help', 'value' => 'forceLogoff'));		
+		// do not allow machine password change
+		$return[] = array(
+			0 => array('kind' => 'text', 'text' => _('Allow machine password changes')),
+			1 => array('kind' => 'select', 'name' => 'refuseMachinePwdChange',
+				'options' => array(array('-', '-'), array('0', _('Off')), array(1, _('On'))), 'descriptiveOptions' => true,
+				'options_selected' => $this->attributes['sambaRefuseMachinePwdChange'][0]),
+			2 => array('kind' => 'help', 'value' => 'refuseMachinePwdChange'));		
+		// Lockout users after bad logon attempts
+		$return[] = array(
+			0 => array('kind' => 'text', 'text' => _('Lockout users after bad logon attempts')),
+			1 => array('kind' => 'select', 'name' => 'lockoutThreshold',
+				'options' => array(array('-', '-'), array('0', _('Off')), array(1, _('On'))), 'descriptiveOptions' => true,
+				'options_selected' => $this->attributes['sambaLockoutThreshold'][0]),
+			2 => array('kind' => 'help', 'value' => 'lockoutThreshold'));		
+		// Minimum password age
+		$return[] = array(
+			0 => array('kind' => 'text', 'text' => _('Minimum password age')),
+			1 => array('kind' => 'input', 'name' => 'minPwdAge', 'type' => 'text', 'value' => $this->attributes['sambaMinPwdAge'][0]),
+			2 => array('kind' => 'help', 'value' => 'minPwdAge'));
+		// Maximum password age
+		$return[] = array(
+			0 => array('kind' => 'text', 'text' => _('Maximum password age')),
+			1 => array('kind' => 'input', 'name' => 'maxPwdAge', 'type' => 'text', 'value' => $this->attributes['sambaMaxPwdAge'][0]),
+			2 => array('kind' => 'help', 'value' => 'maxPwdAge'));
+		// Lockout duration
+		$return[] = array(
+			0 => array('kind' => 'text', 'text' => _('Lockout duration')),
+			1 => array('kind' => 'input', 'name' => 'lockoutDuration', 'type' => 'text', 'value' => $this->attributes['sambaLockoutDuration'][0]),
+			2 => array('kind' => 'help', 'value' => 'lockoutDuration'));
+		// Reset time after lockout 
+		$return[] = array(
+			0 => array('kind' => 'text', 'text' => _('Reset time after lockout')),
+			1 => array('kind' => 'input', 'name' => 'lockoutObservationWindow', 'type' => 'text', 'value' => $this->attributes['sambaLockoutObservationWindow'][0]),
+			2 => array('kind' => 'help', 'value' => 'lockoutObservationWindow'));
+			
+		$return[] = array(
+			0 => array('kind' => 'text', 'text' => ""),
+			1 => array('kind' => 'text', 'text' => "&nbsp;"),
+			2 => array('kind' => 'text', 'text' => ""));
+
+		/* RID settings */	
+			
 		// next RID
 		$return[] = array(
 			0 => array('kind' => 'text', 'text' => _('Next RID')),
@@ -270,6 +396,100 @@ class sambaDomain extends baseModule {
 		else {
 			$this->attributes['sambaNextGroupRid'][0] = $_POST['nextGroupRID'];
 		}
+		// minimum password length
+		if ($_POST['minPwdLength'] === '-') {
+			if (isset($this->attributes['sambaMinPwdLength'])) unset($this->attributes['sambaMinPwdLength'][0]);
+		}
+		else {
+			$this->attributes['sambaMinPwdLength'][0] = $_POST['minPwdLength'];
+		}
+		// password history length
+		if ($_POST['pwdHistLength'] === '-') {
+			if (isset($this->attributes['sambaPwdHistoryLength'])) unset($this->attributes['sambaPwdHistoryLength'][0]);
+		}
+		else {
+			$this->attributes['sambaPwdHistoryLength'][0] = $_POST['pwdHistLength'];
+		}
+		// logon for password change
+		if ($_POST['logonToChgPwd'] === '-') {
+			if (isset($this->attributes['sambaLogonToChgPwd'])) unset($this->attributes['sambaLogonToChgPwd'][0]);
+		}
+		else {
+			$this->attributes['sambaLogonToChgPwd'][0] = $_POST['logonToChgPwd'];
+		}
+		// force logoff
+		if ($_POST['forceLogoff'] === '-') {
+			if (isset($this->attributes['sambaForceLogoff'])) unset($this->attributes['sambaForceLogoff'][0]);
+		}
+		else {
+			$this->attributes['sambaForceLogoff'][0] = $_POST['forceLogoff'];
+		}
+		// do not allow machine password changes
+		if ($_POST['refuseMachinePwdChange'] === '-') {
+			if (isset($this->attributes['sambaRefuseMachinePwdChange'])) unset($this->attributes['sambaRefuseMachinePwdChange'][0]);
+		}
+		else {
+			$this->attributes['sambaRefuseMachinePwdChange'][0] = $_POST['refuseMachinePwdChange'];
+		}
+		// Lockout users after bad logon attempts
+		if ($_POST['lockoutThreshold'] === '-') {
+			if (isset($this->attributes['sambaLockoutThreshold'])) unset($this->attributes['sambaLockoutThreshold'][0]);
+		}
+		else {
+			$this->attributes['sambaLockoutThreshold'][0] = $_POST['lockoutThreshold'];
+		}
+		// Minimum password age
+		if (! isset($_POST['minPwdAge']) || ($_POST['minPwdAge'] == '')) {
+			if (isset($this->attributes['sambaMinPwdAge'])) unset($this->attributes['sambaMinPwdAge'][0]);
+		}
+		else {
+			if (is_numeric($_POST['minPwdAge']) && ($_POST['minPwdAge'] > -2)) {
+				$this->attributes['sambaMinPwdAge'][0] = $_POST['minPwdAge'];
+			}
+			else {
+				$errors[] = $this->messages['pwdAgeMin'][0];
+			}
+		}
+		// Maximum password age
+		if (! isset($_POST['maxPwdAge']) || ($_POST['maxPwdAge'] == '')) {
+			if (isset($this->attributes['sambaMaxPwdAge'])) unset($this->attributes['sambaMaxPwdAge'][0]);
+		}
+		else {
+			if (!is_numeric($_POST['maxPwdAge']) || ($_POST['maxPwdAge'] < -1)) {
+				$errors[] = $this->messages['pwdAgeMax'][0];
+			}
+			elseif ($_POST['maxPwdAge'] < $_POST['minPwdAge']) {
+				$errors[] = $this->messages['pwdAge_cmp'][0];
+			}
+			else {
+				$this->attributes['sambaMaxPwdAge'][0] = $_POST['maxPwdAge'];
+			}
+		}
+		// Lockout duration
+		if (! isset($_POST['lockoutDuration']) || ($_POST['lockoutDuration'] == '')) {
+			if (isset($this->attributes['sambaLockoutDuration'])) unset($this->attributes['sambaLockoutDuration'][0]);
+		}
+		else {
+			if (is_numeric($_POST['lockoutDuration']) && ($_POST['lockoutDuration'] > -2)) {
+				$this->attributes['sambaLockoutDuration'][0] = $_POST['lockoutDuration'];
+			}
+			else {
+				$errors[] = $this->messages['lockoutDuration'][0];
+			}
+		}
+		// Reset time after lockout
+		if (! isset($_POST['lockoutObservationWindow']) || ($_POST['lockoutObservationWindow'] == '')) {
+			if (isset($this->attributes['sambaLockoutObservationWindow'])) unset($this->attributes['sambaLockoutObservationWindow'][0]);
+		}
+		else {
+			if (is_numeric($_POST['lockoutObservationWindow']) && ($_POST['lockoutObservationWindow'] > -1)) {
+				$this->attributes['sambaLockoutObservationWindow'][0] = $_POST['lockoutObservationWindow'];
+			}
+			else {
+				$errors[] = $this->messages['lockoutObservationWindow'][0];
+			}
+		}
+
 		return array($errors);
 	}
 
@@ -379,6 +599,44 @@ class sambaDomain extends baseModule {
 		}
 		if (sizeof($this->attributes['sambaAlgorithmicRidBase']) > 0) {
 			$return['sambaDomain_RIDbase'][0] = '<block><key>' . _('RID base') . '</key><value>' . implode(', ', $this->attributes['sambaAlgorithmicRidBase']) . '</value></block>';
+		}
+		if (isset($this->attributes['sambaMinPwdLength'])) {
+			$return['sambaDomain_minPwdLength'][0] = '<block><key>' . _('Minimal password length') . '</key><value>' . implode(', ', $this->attributes['sambaMinPwdLength']) . '</value></block>';
+		}
+		if (isset($this->attributes['sambaPwdHistoryLength'])) {
+			$return['sambaDomain_pwdHistoryLength'][0] = '<block><key>' . _('Password history length') . '</key><value>' . implode(', ', $this->attributes['sambaPwdHistoryLength']) . '</value></block>';
+		}
+		if (isset($this->attributes['sambaLogonToChgPwd'])) {
+			$logonToChgPwd = _('Off');
+			if ($this->attributes['sambaPwdHistoryLength'][0] == 2) $logonToChgPwd = _('On');
+			$return['sambaDomain_logonToChgPwd'][0] = '<block><key>' . _('Logon for password change') . '</key><value>' . $logonToChgPwd . '</value></block>';
+		}
+		if (isset($this->attributes['sambaForceLogoff'])) {
+			$forceLogoff = _('Off');
+			if ($this->attributes['sambaForceLogoff'][0] == 0) $forceLogoff = _('On');
+			$return['sambaDomain_forceLogoff'][0] = '<block><key>' . _('Disconnect users outside logon hours') . '</key><value>' . $forceLogoff . '</value></block>';
+		}
+		if (isset($this->attributes['sambaRefuseMachinePwdChange'])) {
+			$refuseMachinePwdChange = _('Off');
+			if ($this->attributes['sambaRefuseMachinePwdChange'][0] == 0) $refuseMachinePwdChange = _('On');
+			$return['sambaDomain_refuseMachinePwdChange'][0] = '<block><key>' . _('Allow machine password changes') . '</key><value>' . $refuseMachinePwdChange . '</value></block>';
+		}
+		if (isset($this->attributes['sambaLockoutThreshold'])) {
+			$lockoutThreshold = _('Off');
+			if ($this->attributes['sambaLockoutThreshold'][0] == 1) $lockoutThreshold = _('On');
+			$return['sambaDomain_lockoutThreshold'][0] = '<block><key>' . _('Lockout users after bad logon attempts') . '</key><value>' . $lockoutThreshold . '</value></block>';
+		}
+		if (isset($this->attributes['sambaMinPwdAge'])) {
+			$return['sambaDomain_minPwdAge'][0] = '<block><key>' . _('Minimum password age') . '</key><value>' . implode(', ', $this->attributes['sambaMinPwdAge']) . '</value></block>';
+		}
+		if (isset($this->attributes['sambaMaxPwdAge'])) {
+			$return['sambaDomain_maxPwdAge'][0] = '<block><key>' . _('Maximum password age') . '</key><value>' . implode(', ', $this->attributes['sambaMaxPwdAge']) . '</value></block>';
+		}
+		if (isset($this->attributes['sambaLockoutDuration'])) {
+			$return['sambaDomain_lockoutDuration'][0] = '<block><key>' . _('Lockout duration') . '</key><value>' . implode(', ', $this->attributes['sambaLockoutDuration']) . '</value></block>';
+		}
+		if (isset($this->attributes['sambaLockoutObservationWindow'])) {
+			$return['sambaDomain_lockoutObservationWindow'][0] = '<block><key>' . _('Reset time after lockout') . '</key><value>' . implode(', ', $this->attributes['sambaLockoutObservationWindow']) . '</value></block>';
 		}
 		return $return;
 	}
