@@ -70,10 +70,6 @@ class Ldap{
 	// Capabilities of the LDAP server
 	/** Host attribute in inetOrgPerson */
 	var $supports_unix_hosts = false;
-	/** ObjectClass sambaAccount */
-	var $supports_samba2_schema = false;
-	/** ObjectClass sambaSamAccount */
-	var $supports_samba3_schema = false;
 
 	/** Random number (changes on every page request) */
 	var $rand;
@@ -288,8 +284,6 @@ class Ldap{
 			$line = $this->objectClasses[$i];
 			// search keywords
 			if (strpos($line, "NAME 'inetOrgPerson'") && strpos($line, " host ")) $this->supports_unix_hosts = true;
-			if (strpos($line, "NAME 'sambaAccount'")) $this->supports_samba2_schema = true;
-			if (strpos($line, "NAME 'sambaSamAccount'")) $this->supports_samba3_schema = true;
 		}
 	}
 
@@ -307,7 +301,7 @@ class Ldap{
 		$this->close();
 		// define which attributes to save
 		return array("conf", "username", "password", "objectClasses", "attributes",
-			"supports_unix_hosts", "supports_samba2_schema", "supports_samba3_schema", "rand");
+			"supports_unix_hosts", "rand");
 	}
 
 	/** Reconnects to LDAP server when deserialized */
