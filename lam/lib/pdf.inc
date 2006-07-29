@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
-  Copyright (C) 2003 - 2006  Michael Dürgner
+  Copyright (C) 2003 - 2006  Michael Duergner
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@ $Id$
  * the createModulePDF() function that may be called by other pages
  * and furthermore some helper functions.
  * 
- * @author Michael Dürgner
+ * @author Michael Duergner
  * @package PDF
  */
 
@@ -100,7 +100,7 @@ function createModulePDF($accounts,$pdf_structure="default") {
 				else {
 					$section_headline = $name;
 				}
-				$pdf->setFont($fontName,"B",12);
+				$pdf->setFont($fontName,"B",10);
 				$pdf->Write(0,$section_headline . ":");
 				$pdf->Ln(6);
 			}
@@ -237,23 +237,23 @@ function processLine($line,$first_td = true, $fontName) {
 		$key = true;
 		$line_width = $line_width - 50;
 		$format = processFormatTags($matches[2],'B');
-		$return[] = array('setFont',array($fontName,$format[0],9));
+		$return[] = array('setFont',array($fontName,$format[0],7));
 		$return[] = array('Cell',array(50,5,$format[1] . ':',0,0,'R',0));
-		$return[] = array('setFont',array($fontName,'',9));
+		$return[] = array('setFont',array($fontName,'',7));
 		return array_merge($return,processLine($matches[1] . $matches[3],false,$fontName));
 	}
 	elseif(preg_match($value_pattern,$line,$matches)) {
 		$format = processFormatTags($matches[2],'');
-		$return[] = array('setFont',array($fontName,$format[0],9));
+		$return[] = array('setFont',array($fontName,$format[0],7));
 		$return[] = array('MultiCell',array(0,5,$format[1],0,'L',0));
-		$return[] = array('setFont',array($fontName,'',9));
+		$return[] = array('setFont',array($fontName,'',7));
 		return array_merge($return,processLine($matches[1] . $matches[3],true,$fontName));
 	}
 	elseif(preg_match($p_pattern,$line,$matches)) {
 		$format = processFormatTags($matches[2],'');
-		$return[] = array('setFont',array($fontName,$format[0],9));
+		$return[] = array('setFont',array($fontName,$format[0],7));
 		$return[] = array('Write',array(5,$format[1]));
-		$return[] = array('setFont',array($fontName,'',9));
+		$return[] = array('setFont',array($fontName,'',7));
 		return array_merge($return,processLine($matches[1] . $matches[3],true,$fontName));
 	}
 	elseif(preg_match($td_pattern,$line,$matches)) {
@@ -263,9 +263,9 @@ function processLine($line,$first_td = true, $fontName) {
 		}
 		$format = processFormatTags($matches[3],'');
 		$attrs = processAttributes($matches[2],array('width' => $line_width,'height' => 5,'align' => 'L'));
-		$return[] = array('setFont',array($fontName,$format[0],9));
+		$return[] = array('setFont',array($fontName,$format[0],7));
 		$return[] = array('Cell',array($attrs['width'],$attrs['height'],$format[1],0,0,$attrs['align'],0));
-		$return[] = array('setFont',array($fontName,'',9));
+		$return[] = array('setFont',array($fontName,'',7));
 		return array_merge($return,processLine($matches[1] . $matches[4],$first_td,$fontName));
 	}
 	elseif(preg_match($br_pattern,$line,$matches)) {
@@ -361,7 +361,6 @@ function processAttributes($attrs,$return = array()) {
 /**
  * Creates a LAM information page in PDF format.
  * 
- * @author Michael Dürgner
  * @package PDF
  */
 class lamPDF extends UFPDF {
@@ -451,7 +450,7 @@ class lamPDF extends UFPDF {
 		$this->Line(10,280,200,280);
 		$this->Line(10,282,200,282);
 		$this->SetY(286);
-		$this->SetFont($this->fontName,"",10);
+		$this->SetFont($this->fontName,"",7);
 		$this->Cell(0,5,_("This document was automatically created by LDAP Account Manager"),0,0,"C",0);
 	}
 }
