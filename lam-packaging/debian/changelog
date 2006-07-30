@@ -1,4 +1,10 @@
-ldap-account-manager (1.0.3-1) unstable; urgency=low
+ldap-account-manager (1.0.4RC1) unstable; urgency=low
+
+  * Updated to new upstream release.
+
+ -- Roland Gruber <post@rolandgruber.de>  Sun, 30 Jul 2006 14:36:16 +0200
+
+ldap-account-manager (1.0.3-1) unstable; urgency=high
 
   * Updated to new upstream release.
   * Account expiration date wierdness (Closes: #368806)
