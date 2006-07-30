@@ -335,7 +335,12 @@ function display_LoginPage($config_object) {
 				<TR><TD align="right"><HR>
 					<SMALL>
 					<?php
-						echo "LDAP Account Manager: <b>" . LAMVersion() . "</b>&nbsp;&nbsp;&nbsp;";
+						if (is_dir("./selfService")) {
+							echo "LDAP Account Manager <b>Pro</b>: <b>" . LAMVersion() . "</b>&nbsp;&nbsp;&nbsp;";
+						}
+						else {
+							echo "LDAP Account Manager: <b>" . LAMVersion() . "</b>&nbsp;&nbsp;&nbsp;";
+						}
 					?>
 					</SMALL>
 				</TD></TR>
