@@ -14,6 +14,7 @@ export CVS_TAG=$1
 
 cvs -z3 -d:ext:gruberroland@lam.cvs.sourceforge.net:/cvsroot/lam export -r $CVS_TAG lam
 cvs -z3 -d:ext:gruberroland@lam.cvs.sourceforge.net:/cvsroot/lam export -r $CVS_TAG lam-packaging
+cvs -d/daten/projekte/CVSROOT export -r $CVS_TAG selfService 
 
 cp lam-packaging/getVersion ./
 export VERSION=`./getVersion`
@@ -25,6 +26,11 @@ rm lam/.cvsignore
 rm lam/config/.cvsignore
 mv lam ldap-account-manager-$VERSION
 
+cp -a ldap-account-manager-$VERSION ldap-account-manager-pro-$VERSION
+mkdir LAMPro
+mv ldap-account-manager-pro-$VERSION LAMPro/ldap-account-manager-$VERSION
+mv selfService LAMPro/ldap-account-manager-$VERSION/templates/
+
 # tar.gz
 cp lam-packaging/autoconf/configure.ac ldap-account-manager-$VERSION/
 cp lam-packaging/autoconf/Makefile.in ldap-account-manager-$VERSION/
@@ -35,7 +41,21 @@ autoconf
 rm configure.ac
 rm -r autom4te.cache
 cd ..
-tar cfvz ldap-account-manager-$VERSION.tar.gz ldap-account-manager-$VERSION
+tar cfz ldap-account-manager-$VERSION.tar.gz ldap-account-manager-$VERSION
+
+# tar.gz of LAM Pro
+cd LAMPro
+cp ../lam-packaging/autoconf/configure.ac ldap-account-manager-$VERSION/
+cp ../lam-packaging/autoconf/Makefile.in ldap-account-manager-$VERSION/
+cd ldap-account-manager-$VERSION
+touch install.sh
+perl -pi -e "s/\\@\\@VERSION\\@\\@/$VERSION/g" configure.ac
+autoconf
+rm configure.ac
+rm -r autom4te.cache
+cd ..
+tar cfz ldap-account-manager-$VERSION.tar.gz ldap-account-manager-$VERSION
+cd ..
 
 # Debian
 mkdir Debian
@@ -48,6 +68,19 @@ cd ..
 rm -r ldap-account-manager-$VERSION
 cd ..
 
+# Debian for LAM Pro
+cd LAMPro
+mkdir Debian
+cp ldap-account-manager-$VERSION.tar.gz Debian/ldap-account-manager_$VERSION.orig.tar.gz
+mv ldap-account-manager-$VERSION Debian/
+cp -r ../lam-packaging/debian Debian/ldap-account-manager-$VERSION/
+cd Debian/ldap-account-manager-$VERSION
+debuild
+cd ..
+rm -r ldap-account-manager-$VERSION
+cd ..
+cd ..
+
 # RPM
 perl -pi -e "s/\\@\\@VERSION\\@\\@/$VERSION/g" lam-packaging/RPM/ldap-account-manager.spec
 mkdir RPM
@@ -55,6 +88,15 @@ cp ldap-account-manager-$VERSION.tar.gz /usr/src/rpm/SOURCES
 rpmbuild --clean --rmsource -ba lam-packaging/RPM/ldap-account-manager.spec
 mv /usr/src/rpm/SRPMS/ldap-account-manager-$VERSION-1.src.rpm RPM/
 mv /usr/src/rpm/RPMS/noarch/ldap-account-manager-$VERSION-1.noarch.rpm RPM/
+
+# RPM for LAM Pro
+cd LAMPro
+mkdir RPM
+cp ldap-account-manager-$VERSION.tar.gz /usr/src/rpm/SOURCES/ldap-account-manager-$VERSION.tar.gz
+rpmbuild --clean --rmsource -ba ../lam-packaging/RPM/ldap-account-manager.spec
+mv /usr/src/rpm/SRPMS/ldap-account-manager-$VERSION-1.src.rpm RPM/
+mv /usr/src/rpm/RPMS/noarch/ldap-account-manager-$VERSION-1.noarch.rpm RPM/
+cd ..
 
 # clean up
 rm -r lam-packaging
