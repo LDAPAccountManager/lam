@@ -19,7 +19,6 @@ cp lam-packaging/getVersion ./
 export VERSION=`./getVersion`
 
 # remove files which are not in the final release
-rm lam/session-vars.txt
 rm -r lam/po
 rm -r lam/tests
 rm lam/.cvsignore
