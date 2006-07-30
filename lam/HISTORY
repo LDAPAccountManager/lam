@@ -1,7 +1,7 @@
-??? 1.0.4
+10.08.2006 1.0.4
    - added Russian translation
+   - Samba 3: added policies for domain objects
    - inetLocalMailRecipient: print warning if local address is already in use
-   - fixed bugs:
 
 
 05.07.2006 1.0.3
