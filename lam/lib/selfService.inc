@@ -244,14 +244,21 @@ class selfServiceProfile {
 	function selfServiceProfile() {
 		// set default values
 		$this->serverURL = "localhost";
-		$this->LDAPSuffix = "";
+		$this->LDAPSuffix = "dc=my-domain,dc=com";
 		$this->LDAPUser = "";
 		$this->LDAPPassword = "";
 		$this->searchAttribute = "uid";
 		$this->loginCaption = "Welcome to LAM self service. Please enter your user name and password.";
 		$this->loginAttributeText = "User name";
 		$this->mainPageText = "<h1>LAM self service</h1>\nHere you can change your personal settings.";
-		$this->inputFields = array();
+		$this->inputFields = array(
+			array('name' => 'Personal data',
+				'fields' => array('inetOrgPerson_firstName', 'inetOrgPerson_lastName', 'inetOrgPerson_mail',
+					'inetOrgPerson_telephoneNumber', 'inetOrgPerson_mobile', 'inetOrgPerson_faxNumber',
+					'inetOrgPerson_street', 'inetOrgPerson_postalAddress')),
+			array('name' => 'Password',
+				'fields' => array('posixAccount_password'))
+		);
 	}
 	
 }
