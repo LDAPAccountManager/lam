@@ -140,10 +140,12 @@ class posixAccount extends baseModule {
 			'userPassword', 'loginShell', 'gecos', 'description');
 		// PHP extensions
 		$return['extensions'] = array('mhash');
-		// self service search attributes
-		$return['selfServiceSearchAttributes'] = array('uid');
-		// self service field settings
-		$return['selfServiceFieldSettings'] = array('password' => _('Password'));
+		if ($this->get_scope() == "user") {
+			// self service search attributes
+			$return['selfServiceSearchAttributes'] = array('uid');
+			// self service field settings
+			$return['selfServiceFieldSettings'] = array('password' => _('Password'));
+		}
 		// profile checks
 		$return['profile_checks']['posixAccount_homeDirectory'] = array('type' => 'ext_preg', 'regex' => 'homeDirectory',
 		'error_message' => $this->messages['homeDirectory'][0]);
