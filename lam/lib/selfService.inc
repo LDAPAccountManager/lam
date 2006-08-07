@@ -50,6 +50,8 @@ function getSelfServiceSearchAttributes($scope) {
 		$attributes = $m->getSelfServiceSearchAttributes();
 		$return = array_merge($return, $attributes);
 	}
+	$return = array_unique($return);
+	$return = array_values($return);
 	return $return;
 }
 
