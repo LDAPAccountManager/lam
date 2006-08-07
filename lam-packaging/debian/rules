@@ -24,6 +24,7 @@ install:
 	install -D --mode=644 config/config.cfg_sample debian/ldap-account-manager/var/lib/ldap-account-manager/config/config.cfg_sample
 	cp -r config/profiles debian/ldap-account-manager/var/lib/ldap-account-manager/config/
 	cp -r config/pdf debian/ldap-account-manager/var/lib/ldap-account-manager/config/
+	cp -r config/selfService debian/ldap-account-manager/var/lib/ldap-account-manager/config/
 	cp -r graphics debian/ldap-account-manager/usr/share/ldap-account-manager/
 	install -D --mode=644 help/help.inc debian/ldap-account-manager/usr/share/ldap-account-manager/help/help.inc
 	install -D --mode=644 lib/.htaccess debian/ldap-account-manager/usr/share/ldap-account-manager/lib/.htaccess
