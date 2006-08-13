@@ -128,8 +128,8 @@ class account extends baseModule {
 		$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
 		if (!in_array('posixAccount', $modules) && $this->attributes['uid'][0] == '') return false;
 		return true;
-	}	
-	
+	}
+
 	/**
 	* Controls if the module button the account page is visible and activated.
 	*
@@ -169,17 +169,16 @@ class account extends baseModule {
 	* Processes user input of the primary module page.
 	* It checks if all input values are correct and updates the associated LDAP attributes.
 	*
-	* @param array $post HTTP-POST values
 	* @return array list of info/error messages
 	*/
-	function process_attributes($post) {
+	function process_attributes() {
 		$errors = array();
 		// Load attributes
-		$this->attributes['description'][0] = $post['description'];
+		$this->attributes['description'][0] = $_POST['description'];
 		// user name if no posixAccount
 		$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
 		if (!in_array('posixAccount', $modules)) {
-			$this->attributes['uid'][0] = $post['uid'];
+			$this->attributes['uid'][0] = $_POST['uid'];
 			if (!get_preg($this->attributes['uid'][0], '!upper')) $errors['uid'][] = $this->messages['uid'][2];
 			if (!get_preg($this->attributes['uid'][0], 'username')) $errors['uid'][] = $this->messages['uid'][3];
 		}
@@ -190,7 +189,7 @@ class account extends baseModule {
 	* to show a page with all attributes.
 	* It will output a complete html-table
 	*/
-	function display_html_attributes($post) {
+	function display_html_attributes() {
 		// user name if no posixAccount
 		$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
 		if (!in_array('posixAccount', $modules)) {
@@ -210,7 +209,7 @@ class account extends baseModule {
 
 	/**
 	* Returns the PDF entries for this module.
-	* 
+	*
 	* @return array list of possible PDF entries
 	*/
 	function get_pdfEntries() {
@@ -236,7 +235,7 @@ class account extends baseModule {
 			$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
 			if (!in_array('posixAccount', $modules)) {
 				// description
-				if ($rawAccounts[$i][$ids['account_description']] && ($rawAccounts[$i][$ids['account_description']] != '')) { 
+				if ($rawAccounts[$i][$ids['account_description']] && ($rawAccounts[$i][$ids['account_description']] != '')) {
 					$partialAccounts[$i]['description'] = $rawAccounts[$i][$ids['account_description']];
 				}
 				else {

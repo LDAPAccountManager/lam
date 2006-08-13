@@ -127,7 +127,7 @@ class posixGroup extends baseModule {
 	}
 
 
-	function delete_attributes($post) {
+	function delete_attributes() {
 		$data = $_SESSION['cache']->get_cache('gidNumber', 'posixAccount', 'user');
 		$DNs = array_keys($data);
 		$found = false;
@@ -148,7 +148,7 @@ class posixGroup extends baseModule {
 	* to show a page with all attributes.
 	* It will output a complete html-table
 	*/
-	function display_html_attributes($post) {
+	function display_html_attributes() {
 		// check password format if called the first time
 		if (isset($this->attributes['userPassword'][0])) {
 			if (pwd_is_enabled($this->attributes['userPassword'][0])) $this->userPassword_lock = false;
@@ -208,10 +208,9 @@ class posixGroup extends baseModule {
 	/**
 	* Displays selections to add or remove users from current group.
 	*
-	* @param array $post HTTP-POST
 	* @return array meta HTML output
 	*/
-	function display_html_user($post) {
+	function display_html_user() {
 		// load list with all users
 		$dn_users = $_SESSION['cache']->get_cache(array('uid', 'gidNumber'), 'posixAccount', 'user');
 		$users = array();
@@ -256,10 +255,9 @@ class posixGroup extends baseModule {
 	/**
 	* Displays the password changing dialog.
 	*
-	* @param array $post HTTP-POST
 	* @return array meta HTML code
 	*/
-	function display_html_password($post) {
+	function display_html_password() {
 		$return[] = array(
 			0 => array('kind' => 'text', 'text' => _('Password') ),
 			1 => array('kind' => 'input', 'name' => 'userPassword', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => ""),
@@ -275,7 +273,7 @@ class posixGroup extends baseModule {
 					2 => array('kind' => 'text')))));
 		return $return;
 	}
-	
+
 	/**
 	* Returns meta data that is interpreted by parent class
 	*
@@ -455,7 +453,7 @@ class posixGroup extends baseModule {
 
 	/**
 	* Returns the PDF entries for this module.
-	* 
+	*
 	* @return array list of possible PDF entries
 	*/
 	function get_pdfEntries() {
@@ -539,43 +537,42 @@ class posixGroup extends baseModule {
 	* Processes user input of the primary module page.
 	* It checks if all input values are correct and updates the associated LDAP attributes.
 	*
-	* @param array $post HTTP-POST values
 	* @return array list of info/error messages
 	*/
-	function process_attributes(&$post) {
+	function process_attributes() {
 		$errors = array();
-		$this->attributes['description'][0] = $post['description'];
+		$this->attributes['description'][0] = $_POST['description'];
 
-		if ($post['userPassword_lock'] && $post['userPassword_nopassword']) {
+		if ($_POST['userPassword_lock'] && $_POST['userPassword_nopassword']) {
 			// found invalid password parameter combination
 			$errors['userPassword'][] = $this->messages['userPassword'][3];
 		}
 		else {
-			if ($post['userPassword_nopassword']) {
+			if ($_POST['userPassword_nopassword']) {
 				$this->userPassword_nopassword=true;
 				$this->attributes['userPassword'][0] = '';
-				$post['userPassword2'] = '';
-				if ($post['userPassword_lock'])
+				$_POST['userPassword2'] = '';
+				if ($_POST['userPassword_lock'])
 					$this->userPassword_lock=true;
 				else $this->userPassword_lock=false;
 			}
 			else {
 				$this->userPassword_nopassword=false;
-				if ($post['genpass']) $this->attributes['userPassword'][0] = genpasswd();
+				if ($_POST['genpass']) $this->attributes['userPassword'][0] = genpasswd();
 				elseif ($_SESSION[$this->base]->isNewAccount) {
-					if ($post['userPassword'] != $post['userPassword2'])
+					if ($_POST['userPassword'] != $_POST['userPassword2'])
 						$errors['userPassword'][] = $this->messages['userPassword'][0];
-					else $this->attributes['userPassword'][0] = $post['userPassword'];
+					else $this->attributes['userPassword'][0] = $_POST['userPassword'];
 					if (!get_preg($this->attributes['userPassword'][0], 'password'))
 						$errors['userPassword'][] = $this->messages['userPassword'][1];
 				}
-				if ($post['userPassword_lock']) $this->userPassword_lock=true;
+				if ($_POST['userPassword_lock']) $this->userPassword_lock=true;
 				else $this->userPassword_lock=false;
 			}
 		}
-		if ($post['changegids']) $this->changegids=true;
+		if ($_POST['changegids']) $this->changegids=true;
 		else $this->changegids=false;
-		if (($this->attributes['gidNumber'][0] != $post['gidNumber']) || !isset($this->attributes['gidNumber'][0])) {
+		if (($this->attributes['gidNumber'][0] != $_POST['gidNumber']) || !isset($this->attributes['gidNumber'][0])) {
 			// Check if GID is valid. If none value was entered, the next useable value will be inserted
 			// load min and max GID number
 			$minID = intval($this->moduleSettings['posixGroup_minGID'][0]);
@@ -586,7 +583,7 @@ class posixGroup extends baseModule {
 				foreach ($dn_gids as $gid) $gids[] = $gid[0];
 				sort ($gids, SORT_NUMERIC);
 			}
-			$this->attributes['gidNumber'][0] = $post['gidNumber'];
+			$this->attributes['gidNumber'][0] = $_POST['gidNumber'];
 			if ($this->attributes['gidNumber'][0]=='') {
 				// No id-number given, find free GID
 				if ($this->orig['gidNumber'][0]=='') {
@@ -624,9 +621,9 @@ class posixGroup extends baseModule {
 				}
 			}
 		}
-		if ($this->attributes['cn'][0]!=$post['cn']) {
-			$this->attributes['cn'][0] = $post['cn'];
-			if (($this->attributes['cn'][0] != $post['cn']) &&  ereg('[A-Z]$', $post['cn']))
+		if ($this->attributes['cn'][0]!=$_POST['cn']) {
+			$this->attributes['cn'][0] = $_POST['cn'];
+			if (($this->attributes['cn'][0] != $_POST['cn']) &&  ereg('[A-Z]$', $_POST['cn']))
 				$errors['cn'][] = $this->messages['cn'][0];
 			// Check if Groupname contains only valid characters
 			if ( !get_preg($this->attributes['cn'][0],'groupname'))
@@ -669,11 +666,11 @@ class posixGroup extends baseModule {
 				}
 			}
 			// Show warning if lam has changed username
-			if ($this->attributes['cn'][0] != $post['cn']) {
+			if ($this->attributes['cn'][0] != $_POST['cn']) {
 				$errors['cn'][] = $this->messages['cn'][0];
 			}
 			// show info when gidnumber has changed
-			if (($this->orig['gidNumber'][0]!=$this->attributes['gidNumber'][0]) && $this->orig['gidNumber'][0]!='' && $post['gidNumber']!=$this->attributes['gidNumber'][0]) {
+			if (($this->orig['gidNumber'][0]!=$this->attributes['gidNumber'][0]) && $this->orig['gidNumber'][0]!='' && $_POST['gidNumber']!=$this->attributes['gidNumber'][0]) {
 				$errors['gidNumber'][] = $this->messages['gidNumber'][0];
 			}
 		}
@@ -686,17 +683,16 @@ class posixGroup extends baseModule {
 	* Processes user input of the user selection page.
 	* It checks if all input values are correct and updates the associated LDAP attributes.
 	*
-	* @param array $post HTTP-POST values
 	* @return array list of info/error messages
 	*/
-	function process_user($post) {
+	function process_user() {
 		if (!isset($this->attributes['memberUid'])) $this->attributes['memberUid'] = array();
-		if (isset($post['addusers']) && isset($post['addusers_button'])) { // Add users to list
+		if (isset($_POST['addusers']) && isset($_POST['addusers_button'])) { // Add users to list
 			// Add new user
-			$this->attributes['memberUid'] = @array_merge($this->attributes['memberUid'], $post['addusers']);
+			$this->attributes['memberUid'] = @array_merge($this->attributes['memberUid'], $_POST['addusers']);
 		}
-		elseif (isset($post['removeusers']) && isset($post['removeusers_button'])) { // remove users from list
-			$this->attributes['memberUid'] = array_delete($post['removeusers'], $this->attributes['memberUid']);
+		elseif (isset($_POST['removeusers']) && isset($_POST['removeusers_button'])) { // remove users from list
+			$this->attributes['memberUid'] = array_delete($_POST['removeusers'], $this->attributes['memberUid']);
 		}
 	}
 
@@ -705,28 +701,27 @@ class posixGroup extends baseModule {
 	* Processes user input of the password page.
 	* It checks if all input values are correct and updates the associated LDAP attributes.
 	*
-	* @param array $post HTTP-POST values
 	* @return array list of info/error messages
 	*/
-	function process_password($post) {
-		if ($post['form_subpage_posixGroup_attributes_back']) return array();
+	function process_password() {
+		if ($_POST['form_subpage_posixGroup_attributes_back']) return array();
 		$messages = array();
-		if ($post['userPassword'] != $post['userPassword2']) {
+		if ($_POST['userPassword'] != $_POST['userPassword2']) {
 			$messages['userPassword'][] = $this->messages['userPassword'][0];
-			if (!get_preg($post['userPassword'], 'password'))
+			if (!get_preg($_POST['userPassword'], 'password'))
 				$messages['userPassword'][] = $this->messages['userPassword'][1];
 			}
 			else {
-				$this->attributes['userPassword'][0] = $post['userPassword'];
+				$this->attributes['userPassword'][0] = $_POST['userPassword'];
 				$this->userPassword_lock = false;
 				$this->userPassword_nopassword = false;
 			}
 		return $messages;
 	}
-	
+
 	/**
 	 * This function loads all needed LDAP attributes.
-	 * 
+	 *
 	 * @param array $attr list of attributes
 	 */
 	function load_attributes($attr) {
@@ -824,7 +819,7 @@ class posixGroup extends baseModule {
 	*
 	* @param integer $count Number of needed free GIDs.
 	* @param array $errors list of error messages where errors can be added
-	* @return mixed Null if no GIDs are free else an array of free GIDs. 
+	* @return mixed Null if no GIDs are free else an array of free GIDs.
 	*/
 	function getNextGIDs($count, &$errors) {
 		$ret = array();
@@ -878,5 +873,5 @@ class posixGroup extends baseModule {
 	}
 
 }
-	
+
 ?>

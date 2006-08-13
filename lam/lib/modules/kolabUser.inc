@@ -33,7 +33,7 @@ $Id$
 * @package modules
 */
 class kolabUser extends baseModule {
-	
+
 	/** list of invitation policies */
 	var $invitationPolicies;
 
@@ -236,7 +236,7 @@ class kolabUser extends baseModule {
 		$this->messages['quota'][0] = array('ERROR', _('Mail quota must be a number!'));  // third array value is set dynamically
 		$this->messages['quota'][1] = array('ERROR', _('Account %s:') . ' kolabUser_quota', _('Mail quota must be a number!'));
 	}
-	
+
 	/**
 	* Returns a list of modifications which have to be made to the LDAP account.
 	*
@@ -258,10 +258,8 @@ class kolabUser extends baseModule {
 
 	/**
 	* This function will create the meta HTML code to show a page with all attributes.
-	*
-	* @param array $post HTTP-POST values
 	*/
-	function display_html_attributes(&$post) {
+	function display_html_attributes() {
 		if ($_SESSION[$this->base]->isNewAccount) {
 			if (isset($_SESSION[$this->base]->module['posixAccount'])) {
 				if (!$_SESSION[$this->base]->module['posixAccount']->attributes['userPassword'][0]) {
@@ -409,35 +407,34 @@ class kolabUser extends baseModule {
 	* Processes user input of the primary module page.
 	* It checks if all input values are correct and updates the associated LDAP attributes.
 	*
-	* @param array $post HTTP-POST values
 	* @return array list of info/error messages
 	*/
-	function process_attributes(&$post) {
+	function process_attributes() {
 		$errors = array();
-		if ($post['form_subpage_kolabUser_deleteUser_open'])  return;
+		if ($_POST['form_subpage_kolabUser_deleteUser_open'])  return array();
 		$this->attributes['kolabInvitationPolicy'] = array();
 		// country
-		if (isset($post['country'])) {
-			if (($post['country'] == "") || get_preg($post['country'], 'country')) {
-				$this->attributes['c'][0] = $post['country'];
+		if (isset($_POST['country'])) {
+			if (($_POST['country'] == "") || get_preg($_POST['country'], 'country')) {
+				$this->attributes['c'][0] = $_POST['country'];
 			}
 			else {
 				$message = $this->messages['country'][0];
-				$message[] = $post['country'];
+				$message[] = $_POST['country'];
 				$errors[] = array($message);
 			}
 		}
 		// mailbox server
-		if (isset($post['homeServer'])) {
-			if ($post['homeServer'] == "") {
+		if (isset($_POST['homeServer'])) {
+			if ($_POST['homeServer'] == "") {
 				$errors[] = array($this->messages['homeServer'][2]);
 			}
-			elseif (get_preg($post['homeServer'], 'DNSname')) {
-				$this->attributes['kolabHomeServer'][0] = $post['homeServer'];
+			elseif (get_preg($_POST['homeServer'], 'DNSname')) {
+				$this->attributes['kolabHomeServer'][0] = $_POST['homeServer'];
 			}
 			else {
 				$message = $this->messages['homeServer'][0];
-				$message[] = $post['homeServer'];
+				$message[] = $_POST['homeServer'];
 				$errors[] = array($message);
 			}
 		}
@@ -445,108 +442,108 @@ class kolabUser extends baseModule {
 		$policies = array_flip($this->invitationPolicies);
 		$targets = array();
 		$i = 0;
-		while (isset($post['invPol1' . $i])) {
-			if (isset($post['delInvPol' . $i])) {
+		while (isset($_POST['invPol1' . $i])) {
+			if (isset($_POST['delInvPol' . $i])) {
 				$i++;
 				continue;
 			}
-			if (isset($post['invPol2' . $i]) && ($post['invPol1' . $i] != "") && !in_array($post['invPol1' . $i], $targets)) {
-				$targets[] = $post['invPol1' . $i];
+			if (isset($_POST['invPol2' . $i]) && ($_POST['invPol1' . $i] != "") && !in_array($_POST['invPol1' . $i], $targets)) {
+				$targets[] = $_POST['invPol1' . $i];
 				// check invitation policy
-				if (!get_preg($post['invPol1' . $i], 'email')) {
+				if (!get_preg($_POST['invPol1' . $i], 'email')) {
 					$message = $this->messages['invPol'][0];
-					$message[] = $post['invPol1' . $i];
+					$message[] = $_POST['invPol1' . $i];
 					$errors[] = array($message);
 				}
 				else {
-					$this->attributes['kolabInvitationPolicy'][] = $post['invPol1' . $i] . ':' . $policies[$post['invPol2' . $i]];
+					$this->attributes['kolabInvitationPolicy'][] = $_POST['invPol1' . $i] . ':' . $policies[$_POST['invPol2' . $i]];
 				}
 			}
 			$i++;
 		}
 		// check new invitation policy
-		if (isset($post['invPol1']) && ($post['invPol1'] != "") && !in_array($post['invPol1'], $targets)) {
+		if (isset($_POST['invPol1']) && ($_POST['invPol1'] != "") && !in_array($_POST['invPol1'], $targets)) {
 			// check new invitation policy
-			if (!get_preg($post['invPol1'], 'email')) {
+			if (!get_preg($_POST['invPol1'], 'email')) {
 				$message = $this->messages['invPol'][0];
-				$message[] = $post['invPol1'];
+				$message[] = $_POST['invPol1'];
 				$errors[] = array($message);
 			}
 			else {
-				$this->attributes['kolabInvitationPolicy'][] = $post['invPol1'] . ':' . $policies[$post['invPol2']];
+				$this->attributes['kolabInvitationPolicy'][] = $_POST['invPol1'] . ':' . $policies[$_POST['invPol2']];
 			}
 		}
 		// default invitation policy
-		if (isset($post['defaultInvPol']) && ($post['defaultInvPol'] != "")) {
-			$this->attributes['kolabInvitationPolicy'][] = $policies[$post['defaultInvPol']];
+		if (isset($_POST['defaultInvPol']) && ($_POST['defaultInvPol'] != "")) {
+			$this->attributes['kolabInvitationPolicy'][] = $policies[$_POST['defaultInvPol']];
 		}
 		// check old mail aliases
 		$this->attributes['alias'] = array();
 		$i = 0;
-		while (isset($post['alias' . $i])) {
-			if (isset($post['delAlias' . $i])) {
+		while (isset($_POST['alias' . $i])) {
+			if (isset($_POST['delAlias' . $i])) {
 				$i++;
 				continue;
 			}
-			if (isset($post['alias' . $i]) && ($post['alias' . $i] != "") && !in_array($post['alias' . $i], $this->attributes['alias'])) {
+			if (isset($_POST['alias' . $i]) && ($_POST['alias' . $i] != "") && !in_array($_POST['alias' . $i], $this->attributes['alias'])) {
 				// check mail alias
-				if (!get_preg($post['alias' . $i], 'email')) {
+				if (!get_preg($_POST['alias' . $i], 'email')) {
 					$message = $this->messages['alias'][0];
-					$message[] = $post['alias' . $i];
+					$message[] = $_POST['alias' . $i];
 					$errors[] = array($message);
 				}
-				$this->attributes['alias'][] = $post['alias' . $i];
+				$this->attributes['alias'][] = $_POST['alias' . $i];
 			}
 			$i++;
 		}
 		// check new mail alias
-		if (isset($post['alias']) && ($post['alias'] != "")) {
+		if (isset($_POST['alias']) && ($_POST['alias'] != "")) {
 			// check new mail alias
-			if (!get_preg($post['alias'], 'email')) {
+			if (!get_preg($_POST['alias'], 'email')) {
 				$message = $this->messages['alias'][0];
-				$message[] = $post['alias'];
+				$message[] = $_POST['alias'];
 				$errors[] = array($message);
 			}
 			else {
-				$this->attributes['alias'][] = $post['alias'];
+				$this->attributes['alias'][] = $_POST['alias'];
 			}
 		}
 		$this->attributes['alias'] = array_unique($this->attributes['alias']);
 		// check old delegates
 		$this->attributes['kolabDelegate'] = array();
 		$i = 0;
-		while (isset($post['delegate' . $i])) {
-			if (isset($post['delDelegate' . $i])) {
+		while (isset($_POST['delegate' . $i])) {
+			if (isset($_POST['delDelegate' . $i])) {
 				$i++;
 				continue;
 			}
-			$this->attributes['kolabDelegate'][] = $post['delegate' . $i];
+			$this->attributes['kolabDelegate'][] = $_POST['delegate' . $i];
 			$i++;
 		}
 		// check new delegate
-		if (isset($post['addDelegate']) && ($post['delegate'] != "")) {
-			$this->attributes['kolabDelegate'][] = $post['delegate'];
+		if (isset($_POST['addDelegate']) && ($_POST['delegate'] != "")) {
+			$this->attributes['kolabDelegate'][] = $_POST['delegate'];
 		}
 		$this->attributes['kolabDelegate'] = array_unique($this->attributes['kolabDelegate']);
 		// free/busy future
-		if (isset($post['freeBusy'])) {
-			if (($post['freeBusy'] == "") || get_preg($post['freeBusy'], 'digit')) {
-				$this->attributes['kolabFreeBusyFuture'][0] = $post['freeBusy'];
+		if (isset($_POST['freeBusy'])) {
+			if (($_POST['freeBusy'] == "") || get_preg($_POST['freeBusy'], 'digit')) {
+				$this->attributes['kolabFreeBusyFuture'][0] = $_POST['freeBusy'];
 			}
 			else {
 				$message = $this->messages['freeBusy'][0];
-				$message[] = $post['freeBusy'];
+				$message[] = $_POST['freeBusy'];
 				$errors[] = array($message);
 			}
 		}
 		// Cyrus mail quota
-		if (isset($post['quota'])) {
-			if (($post['quota'] == "") || get_preg($post['quota'], 'digit')) {
-				$this->attributes['cyrus-userquota'][0] = $post['quota'];
+		if (isset($_POST['quota'])) {
+			if (($_POST['quota'] == "") || get_preg($_POST['quota'], 'digit')) {
+				$this->attributes['cyrus-userquota'][0] = $_POST['quota'];
 			}
 			else {
 				$message = $this->messages['quota'][0];
-				$message[] = $post['quota'];
+				$message[] = $_POST['quota'];
 				$errors[] = array($message);
 			}
 		}
@@ -555,10 +552,8 @@ class kolabUser extends baseModule {
 
 	/**
 	* This function will create the meta HTML code to show a page to delete accounts.
-	*
-	* @param array $post HTTP-POST values
 	*/
-	function display_html_deleteUser(&$post) {
+	function display_html_deleteUser() {
 		$return = array();
 		$return[] = array(
 			0 => array('kind' => 'text', 'text' => _('Do you really want to mark this account for deletion?'), 'td' => array('colspan' => 2)));
@@ -569,14 +564,12 @@ class kolabUser extends baseModule {
 			1 => array('kind' => 'input', 'type' => 'submit', 'value' => _('Cancel'), 'name' => 'form_subpage_kolabUser_attributes_cancel'));
 		return $return;
 	}
-	
+
 	/**
 	* Write variables into object and do some regex checks
-	*
-	* @param array $post HTTP-POST values
 	*/
-	function process_deleteUser(&$post) {
-		if ($post['form_subpage_kolabUser_attributes_confirm']) {
+	function process_deleteUser() {
+		if ($_POST['form_subpage_kolabUser_attributes_confirm']) {
 			// set delete flag
 			$this->attributes['kolabDeleteflag'][0] = $this->attributes['kolabHomeServer'][0];
 		}
@@ -599,7 +592,7 @@ class kolabUser extends baseModule {
 		}
 		return true;
 	}
-	
+
 	/**
 	* In this function the LDAP account is built up.
 	*
@@ -743,7 +736,7 @@ class kolabUser extends baseModule {
 
 	/**
 	* Returns the PDF entries for this module.
-	* 
+	*
 	* @return array list of possible PDF entries
 	*/
 	function get_pdfEntries() {

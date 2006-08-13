@@ -56,7 +56,7 @@ class quota extends baseModule {
 	$this->messages['inode_cmp'][1] = array('ERROR', _('Account %s:') . ' %s', _('Inode soft quota must be smaller than inode hard quota.'));
 	$this->messages['upload'][0] = array('ERROR', _('Account %s:') . ' %s', _('Quota has wrong format!'));
 	}
-	
+
 	/**
 	* Returns meta data that is interpreted by parent class
 	*
@@ -173,7 +173,7 @@ class quota extends baseModule {
 		if (!$this->module_ready()) return false;
 		return true;
 	}
-	
+
 	/* This function loads all attributes into the object
 	* $attr is an array as it's retured from ldap_get_attributes
 	*/
@@ -229,6 +229,7 @@ class quota extends baseModule {
 		*/
 
 		$i=0;
+		$quotastring = "";
 		while ($this->quota[$i][0]) {
 			$quotastring = $quotastring . $this->quota[$i][0] . ',' . $this->quota[$i][2] . ',' . $this->quota[$i][3]
 				. ',' . $this->quota[$i][6] . ',' . $this->quota[$i][7] . ':';
@@ -242,8 +243,9 @@ class quota extends baseModule {
 		return $return;
 		}
 
-	function delete_attributes($post) {
+	function delete_attributes() {
 		$i=0;
+		$quotastring = "";
 		while ($this->quota[$i][0]) {
 			$quotastring = $quotastring . $this->quota[$i][0] . ',0,0,0,0:';
 			$i++;
@@ -258,19 +260,18 @@ class quota extends baseModule {
 	* Processes user input of the primary module page.
 	* It checks if all input values are correct and updates the associated LDAP attributes.
 	*
-	* @param array $post HTTP-POST values
 	* @return array list of info/error messages
 	*/
-	function process_attributes(&$post) {
+	function process_attributes() {
 		$errors = array();
 		// Write all general values into $account_new
 		$i=0;
 		// loop for every mointpoint with quotas
 		while ($this->quota[$i][0]) {
-			$this->quota[$i][2] = $post[$i . '_2'];
-			$this->quota[$i][3] = $post[$i . '_3'];
-			$this->quota[$i][6] = $post[$i . '_6'];
-			$this->quota[$i][7] = $post[$i . '_7'];
+			$this->quota[$i][2] = $_POST[$i . '_2'];
+			$this->quota[$i][3] = $_POST[$i . '_3'];
+			$this->quota[$i][6] = $_POST[$i . '_6'];
+			$this->quota[$i][7] = $_POST[$i . '_7'];
 			// Check if values are OK and set automatic values. if not error-variable will be set
 			if (!get_preg($this->quota[$i][2], 'digit'))
 				$errors[$this->quota[$i][2]][] = $this->messages['softblock'][0];
@@ -293,7 +294,7 @@ class quota extends baseModule {
 	* to show a page with all attributes.
 	* It will output a complete html-table
 	*/
-	function display_html_attributes(&$post) {
+	function display_html_attributes() {
 
 		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Mountpoint') ),
 				1 => array ( 'kind' => 'text', 'text' => _('Used blocks') ),
@@ -330,10 +331,6 @@ class quota extends baseModule {
 			$i++;
 			}
 		return $return;
-		}
-
-	function display_html_delete(&$post) {
-		return 0;
 		}
 
 	/**
@@ -405,7 +402,7 @@ class quota extends baseModule {
 		}
 		return $return;
 	}
-	
+
 	/**
 	* Loads the values of an account profile into internal variables.
 	*
@@ -423,7 +420,7 @@ class quota extends baseModule {
 
 	/**
 	* Returns the PDF entries for this module.
-	* 
+	*
 	* @return array list of possible PDF entries
 	*/
 	function get_pdfEntries() {
@@ -485,19 +482,6 @@ class quota extends baseModule {
 		return $return;
 	}
 
-	/**
-	* In this function the LDAP account is built up.
-	*
-	* @param array $rawAccounts list of hash arrays (name => value) from user input
-	* @param array $partialAccounts list of hash arrays (name => value) which are later added to LDAP
-	* @param array $ids list of IDs for column position (e.g. "posixAccount_uid" => 5)
-	* @return array list of error messages if any
-	*/
-	function build_uploadAccounts($rawAccounts, $ids, &$partialAccounts) {
-		// Quota changes no LDAP attributes, all actions are done in doUploadPostActions()
-		return array();
-	}
-	
 	/**
 	* This function executes one post upload action.
 	*

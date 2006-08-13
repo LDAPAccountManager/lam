@@ -33,7 +33,7 @@ $Id$
 * @package modules
 */
 class inetLocalMailRecipient extends baseModule {
-	
+
 	/**
 	* Returns meta data that is interpreted by parent class
 	*
@@ -124,13 +124,11 @@ class inetLocalMailRecipient extends baseModule {
 		$this->messages['host'][0] = array('ERROR', 'Mail server is invalid!');  // third array value is set dynamically
 		$this->messages['host'][1] = array('ERROR', _('Account %s:') . ' inetLocalMailRecipient_server', 'Mail server is invalid!');
 	}
-	
+
 	/**
 	* This function will create the meta HTML code to show a page with all attributes.
-	*
-	* @param array $post HTTP-POST values
 	*/
-	function display_html_attributes(&$post) {
+	function display_html_attributes() {
 		$return = array();
 		// mail routing address
 		$routingAddress = '';
@@ -170,72 +168,71 @@ class inetLocalMailRecipient extends baseModule {
 	* Processes user input of the primary module page.
 	* It checks if all input values are correct and updates the associated LDAP attributes.
 	*
-	* @param array $post HTTP-POST values
 	* @return array list of info/error messages
 	*/
-	function process_attributes(&$post) {
+	function process_attributes() {
 		$errors = array();
 		$this->attributes['mailRoutingAddress'] = array();
 		$this->attributes['mailLocalAddress'] = array();
 		$this->attributes['mailHost'] = array();
 		// check routing address
-		if (isset($post['routingAdr']) && ($post['routingAdr'] != "")) {
+		if (isset($_POST['routingAdr']) && ($_POST['routingAdr'] != "")) {
 			// check if address has correct format
-			if (get_preg($post['routingAdr'], 'email')) {
-				$this->attributes['mailRoutingAddress'][0] = $post['routingAdr'];
+			if (get_preg($_POST['routingAdr'], 'email')) {
+				$this->attributes['mailRoutingAddress'][0] = $_POST['routingAdr'];
 			}
 			else {
 					$message = $this->messages['routingAdr'][0];
-					$message[] = $post['routingAdr'];
+					$message[] = $_POST['routingAdr'];
 					$errors[] = array($message);
 			}
 		}
 		// check mail server
-		if (isset($post['host']) && ($post['host'] != "")) {
+		if (isset($_POST['host']) && ($_POST['host'] != "")) {
 			// check if address has correct format
-			if (get_preg($post['host'], 'DNSname')) {
-				$this->attributes['mailHost'][0] = $post['host'];
+			if (get_preg($_POST['host'], 'DNSname')) {
+				$this->attributes['mailHost'][0] = $_POST['host'];
 			}
 			else {
 					$message = $this->messages['host'][0];
-					$message[] = $post['host'];
+					$message[] = $_POST['host'];
 					$errors[] = array($message);
 			}
 		}
 		// check old local addresses
-		if (isset($post['adr_number'])) {
-			for ($i = 0; $i < $post['adr_number']; $i++) {
-				if (isset($post['delAdr' . $i])) continue;
-				if (isset($post['localAdr' . $i]) && ($post['localAdr' . $i] != "")) {
+		if (isset($_POST['adr_number'])) {
+			for ($i = 0; $i < $_POST['adr_number']; $i++) {
+				if (isset($_POST['delAdr' . $i])) continue;
+				if (isset($_POST['localAdr' . $i]) && ($_POST['localAdr' . $i] != "")) {
 					// check if address has correct format
-					if (!get_preg($post['localAdr' . $i], 'mailLocalAddress')) {
+					if (!get_preg($_POST['localAdr' . $i], 'mailLocalAddress')) {
 						$message = $this->messages['localAdr'][0];
-						$message[] = $post['localAdr' . $i];
+						$message[] = $_POST['localAdr' . $i];
 						$errors[] = array($message);
 					}
-					$this->attributes['mailLocalAddress'][] = $post['localAdr' . $i];
+					$this->attributes['mailLocalAddress'][] = $_POST['localAdr' . $i];
 				}
 			}
 		}
 		// check new local address
-		if (isset($post['localAdr']) && ($post['localAdr'] != "")) {
+		if (isset($_POST['localAdr']) && ($_POST['localAdr'] != "")) {
 			// check if address has correct format
-			if (get_preg($post['localAdr'], 'mailLocalAddress')) {
+			if (get_preg($_POST['localAdr'], 'mailLocalAddress')) {
 				// check if new address is not already in database
 				$data = $_SESSION['cache']->get_cache('mailLocalAddress', 'inetLocalMailRecipient', 'user');
 				$keys = array_keys($data);
 				for ($i = 0; $i < sizeof($keys); $i++) {
 					$adrList = $data[$keys[$i]];
-					if (in_array_ignore_case($post['localAdr'], $adrList)) {
-						$errors['localAdr'][] = array('WARN', _('This mail address is already in use:') . " " . $post['localAdr'], $keys[$i]);
+					if (in_array_ignore_case($_POST['localAdr'], $adrList)) {
+						$errors['localAdr'][] = array('WARN', _('This mail address is already in use:') . " " . $_POST['localAdr'], $keys[$i]);
 						break;
 					}
 				}
-				$this->attributes['mailLocalAddress'][] = $post['localAdr'];
+				$this->attributes['mailLocalAddress'][] = $_POST['localAdr'];
 			}
 			else {
 					$message = $this->messages['localAdr'][0];
-					$message[] = $post['localAdr'];
+					$message[] = $_POST['localAdr'];
 					$errors[] = array($message);
 			}
 		}
@@ -301,7 +298,7 @@ class inetLocalMailRecipient extends baseModule {
 
 	/**
 	* Returns the PDF entries for this module.
-	* 
+	*
 	* @return array list of possible PDF entries
 	*/
 	function get_pdfEntries() {

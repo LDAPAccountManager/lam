@@ -34,7 +34,7 @@ $Id$
 * @package modules
 */
 class ldapPublicKey extends baseModule {
-	
+
 	/**
 	* Returns meta data that is interpreted by parent class
 	*
@@ -81,10 +81,8 @@ class ldapPublicKey extends baseModule {
 
 	/**
 	* This function will create the meta HTML code to show a page with all attributes.
-	*
-	* @param array $post HTTP-POST values
 	*/
-	function display_html_attributes(&$post) {
+	function display_html_attributes() {
 		$return = array();
 		// list current keys
 		for ($i = 0; $i < sizeof($this->attributes['sshPublicKey']); $i++) {
@@ -108,23 +106,22 @@ class ldapPublicKey extends baseModule {
 	* Processes user input of the primary module page.
 	* It checks if all input values are correct and updates the associated LDAP attributes.
 	*
-	* @param array $post HTTP-POST values
 	* @return array list of info/error messages
 	*/
-	function process_attributes(&$post) {
+	function process_attributes() {
 		$this->attributes['sshPublicKey'] = array();
 		// check old keys
-		if (isset($post['key_number'])) {
-			for ($i = 0; $i < $post['key_number']; $i++) {
-				if (isset($post['delKey' . $i])) continue;
-				if (isset($post['sshPublicKey' . $i]) && ($post['sshPublicKey' . $i] != "")) {
-					$this->attributes['sshPublicKey'][] = $post['sshPublicKey' . $i];
+		if (isset($_POST['key_number'])) {
+			for ($i = 0; $i < $_POST['key_number']; $i++) {
+				if (isset($_POST['delKey' . $i])) continue;
+				if (isset($_POST['sshPublicKey' . $i]) && ($_POST['sshPublicKey' . $i] != "")) {
+					$this->attributes['sshPublicKey'][] = $_POST['sshPublicKey' . $i];
 				}
 			}
 		}
 		// check new key
-		if (isset($post['sshPublicKey']) && ($post['sshPublicKey'] != "")) {
-			$this->attributes['sshPublicKey'][] = $post['sshPublicKey'];
+		if (isset($_POST['sshPublicKey']) && ($_POST['sshPublicKey'] != "")) {
+			$this->attributes['sshPublicKey'][] = $_POST['sshPublicKey'];
 		}
 		$this->attributes['sshPublicKey'] = array_unique($this->attributes['sshPublicKey']);
 		return array();

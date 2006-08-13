@@ -33,7 +33,7 @@ $Id$
 * @package modules
 */
 class nisMailAlias extends baseModule {
-	
+
 	/**
 	* Returns meta data that is interpreted by parent class
 	*
@@ -103,7 +103,7 @@ class nisMailAlias extends baseModule {
 		$this->messages['recipient'][0] = array('ERROR', 'Recipient is invalid!');  // third array value is set dynamically
 		$this->messages['recipient'][1] = array('ERROR', _('Account %s:') . ' nisMailAlias_recipient', 'Recipient is invalid!');
 	}
-	
+
 	/**
 	* Returns a list of modifications which have to be made to the LDAP account.
 	*
@@ -125,10 +125,8 @@ class nisMailAlias extends baseModule {
 
 	/**
 	* This function will create the meta HTML code to show a page with all attributes.
-	*
-	* @param array $post HTTP-POST values
 	*/
-	function display_html_attributes(&$post) {
+	function display_html_attributes() {
 		$return = array();
 		// alias name
 		$return[] = array(
@@ -157,46 +155,45 @@ class nisMailAlias extends baseModule {
 	* Processes user input of the primary module page.
 	* It checks if all input values are correct and updates the associated LDAP attributes.
 	*
-	* @param array $post HTTP-POST values
 	* @return array list of info/error messages
 	*/
-	function process_attributes(&$post) {
+	function process_attributes() {
 		$errors = array();
 		$this->attributes['cn'] = array();
 		$this->attributes['rfc822MailMember'] = array();
 		// check alias name
-		if (isset($post['cn']) && ($post['cn'] != "") && get_preg($post['cn'], 'nis_alias')) {
-			$this->attributes['cn'][] = $post['cn'];
+		if (isset($_POST['cn']) && ($_POST['cn'] != "") && get_preg($_POST['cn'], 'nis_alias')) {
+			$this->attributes['cn'][] = $_POST['cn'];
 		}
 		else {
 				$message = $this->messages['alias'][0];
-				$message[] = $post['cn'];
+				$message[] = $_POST['cn'];
 				$errors[] = array($message);
 		}
 		// check old recipients
-		if (isset($post['rec_number'])) {
-			for ($i = 0; $i < $post['rec_number']; $i++) {
-				if (isset($post['delRec' . $i])) continue;
-				if (isset($post['rfc822MailMember' . $i]) && ($post['rfc822MailMember' . $i] != "")) {
+		if (isset($_POST['rec_number'])) {
+			for ($i = 0; $i < $_POST['rec_number']; $i++) {
+				if (isset($_POST['delRec' . $i])) continue;
+				if (isset($_POST['rfc822MailMember' . $i]) && ($_POST['rfc822MailMember' . $i] != "")) {
 					// check if address has correct format
-					if (!get_preg($post['rfc822MailMember' . $i], 'nis_recipient')) {
+					if (!get_preg($_POST['rfc822MailMember' . $i], 'nis_recipient')) {
 						$message = $this->messages['recipient'][0];
-						$message[] = $post['rfc822MailMember' . $i];
+						$message[] = $_POST['rfc822MailMember' . $i];
 						$errors[] = array($message);
 					}
-					$this->attributes['rfc822MailMember'][] = $post['rfc822MailMember' . $i];
+					$this->attributes['rfc822MailMember'][] = $_POST['rfc822MailMember' . $i];
 				}
 			}
 		}
 		// check new recipient
-		if (isset($post['rfc822MailMember']) && ($post['rfc822MailMember'] != "")) {
+		if (isset($_POST['rfc822MailMember']) && ($_POST['rfc822MailMember'] != "")) {
 			// check if address has correct format
-			if (get_preg($post['rfc822MailMember'], 'nis_recipient')) {
-				$this->attributes['rfc822MailMember'][] = $post['rfc822MailMember'];
+			if (get_preg($_POST['rfc822MailMember'], 'nis_recipient')) {
+				$this->attributes['rfc822MailMember'][] = $_POST['rfc822MailMember'];
 			}
 			else {
 					$message = $this->messages['recipient'][0];
-					$message[] = $post['rfc822MailMember'];
+					$message[] = $_POST['rfc822MailMember'];
 					$errors[] = array($message);
 			}
 		}
@@ -264,7 +261,7 @@ class nisMailAlias extends baseModule {
 
 	/**
 	* Returns the PDF entries for this module.
-	* 
+	*
 	* @return array list of possible PDF entries
 	*/
 	function get_pdfEntries() {

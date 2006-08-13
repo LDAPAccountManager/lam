@@ -33,7 +33,7 @@ $Id$
 * @package modules
 */
 class ieee802Device extends baseModule {
-	
+
 	/**
 	* Returns meta data that is interpreted by parent class
 	*
@@ -84,13 +84,12 @@ class ieee802Device extends baseModule {
 		$this->messages['mac'][0] = array('ERROR', 'MAC address is invalid!');  // third array value is set dynamically
 		$this->messages['mac'][1] = array('ERROR', _('Account %s:') . ' ieee802Device_mac', 'MAC address is invalid!');
 	}
-	
+
 	/**
 	* This function will create the meta HTML code to show a page with all attributes.
 	*
-	* @param array $post HTTP-POST values
 	*/
-	function display_html_attributes(&$post) {
+	function display_html_attributes() {
 		$return = array();
 		// list current MACs
 		for ($i = 0; $i < sizeof($this->attributes['macAddress']); $i++) {
@@ -114,36 +113,35 @@ class ieee802Device extends baseModule {
 	* Processes user input of the primary module page.
 	* It checks if all input values are correct and updates the associated LDAP attributes.
 	*
-	* @param array $post HTTP-POST values
 	* @return array list of info/error messages
 	*/
-	function process_attributes(&$post) {
+	function process_attributes() {
 		$errors = array();
 		$this->attributes['macAddress'] = array();
 		// check old MACs
-		if (isset($post['mac_number'])) {
-			for ($i = 0; $i < $post['mac_number']; $i++) {
-				if (isset($post['delMAC' . $i])) continue;
-				if (isset($post['macAddress' . $i]) && ($post['macAddress' . $i] != "")) {
+		if (isset($_POST['mac_number'])) {
+			for ($i = 0; $i < $_POST['mac_number']; $i++) {
+				if (isset($_POST['delMAC' . $i])) continue;
+				if (isset($_POST['macAddress' . $i]) && ($_POST['macAddress' . $i] != "")) {
 					// check if address has correct format
-					if (!get_preg($post['macAddress' . $i], 'macAddress')) {
+					if (!get_preg($_POST['macAddress' . $i], 'macAddress')) {
 						$message = $this->messages['mac'][0];
-						$message[] = $post['macAddress' . $i];
+						$message[] = $_POST['macAddress' . $i];
 						$errors[] = array($message);
 					}
-					$this->attributes['macAddress'][] = $post['macAddress' . $i];
+					$this->attributes['macAddress'][] = $_POST['macAddress' . $i];
 				}
 			}
 		}
 		// check new MAC
-		if (isset($post['macAddress']) && ($post['macAddress'] != "")) {
+		if (isset($_POST['macAddress']) && ($_POST['macAddress'] != "")) {
 			// check if address has correct format
-			if (get_preg($post['macAddress'], 'macAddress')) {
-				$this->attributes['macAddress'][] = $post['macAddress'];
+			if (get_preg($_POST['macAddress'], 'macAddress')) {
+				$this->attributes['macAddress'][] = $_POST['macAddress'];
 			}
 			else {
 					$message = $this->messages['mac'][0];
-					$message[] = $post['macAddress'];
+					$message[] = $_POST['macAddress'];
 					$errors[] = array($message);
 			}
 		}
@@ -185,7 +183,7 @@ class ieee802Device extends baseModule {
 
 	/**
 	* Returns the PDF entries for this module.
-	* 
+	*
 	* @return array list of possible PDF entries
 	*/
 	function get_pdfEntries() {

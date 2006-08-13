@@ -1,20 +1,20 @@
 <?php
 /*
 	$Id$
-	
+
 	This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
 	Copyright (C) 2003 - 2006  Tilo Lutz
-	
+
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
 	the Free Software Foundation; either version 2 of the License, or
 	(at your option) any later version.
-	
+
 	This program is distributed in the hope that it will be useful,
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 	GNU General Public License for more details.
-	
+
 	You should have received a copy of the GNU General Public License
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -464,7 +464,7 @@ class posixAccount extends baseModule {
 
 	/**
 	 * This function loads all needed LDAP attributes.
-	 * 
+	 *
 	 * @param array $attr list of attributes
 	 */
 	function load_attributes($attr) {
@@ -570,7 +570,12 @@ class posixAccount extends baseModule {
 		return $return;
 	}
 
-	function delete_attributes($post) {
+	/**
+	* Additional LDAP operations on delete.
+	*
+	* @return List of LDAP operations, same as for save_attributes()
+	*/
+	function delete_attributes() {
 		$return = array();
 		// remove memberUids if set
 		$groups = $_SESSION['cache']->get_cache('memberUid', 'posixGroup', 'group');
@@ -579,7 +584,7 @@ class posixAccount extends baseModule {
 		for ($i=0; $i<count($DNs); $i++) {
 			if (in_array($this->attributes['uid'][0], $groups[$DNs[$i]])) $return[$DNs[$i]]['remove']['memberUid'][] = $this->attributes['uid'][0];
 		}
-		if ($post['deletehomedir']) $return[$_SESSION[$this->base]->dn_orig]['lamdaemon']['command'][] = $this->attributes['uid'][0] . " home rem";
+		if ($_POST['deletehomedir']) $return[$_SESSION[$this->base]->dn_orig]['lamdaemon']['command'][] = $this->attributes['uid'][0] . " home rem";
 		return $return;
 	}
 
@@ -587,34 +592,33 @@ class posixAccount extends baseModule {
 	* Processes user input of the primary module page.
 	* It checks if all input values are correct and updates the associated LDAP attributes.
 	*
-	* @param array $post HTTP-POST values
 	* @return array list of info/error messages
 	*/
-	function process_attributes(&$post) {
+	function process_attributes() {
 		$errors = array();
 		$groups = $_SESSION['cache']->findgroups(); // list of all groupnames
 		if (count($groups)==0) {
 			return array(array(array("ERROR", _('No Unix groups found in LDAP! Please create one first.'), '')));
 		}
-		$this->attributes['homeDirectory'][0] = $post['homeDirectory'];
-		$this->attributes['loginShell'][0] = $post['loginShell'];
-		if (isset($post['gecos'])) $this->attributes['gecos'][0] = $post['gecos'];
-		if (isset($post['createhomedir'])) $this->createhomedir = true;
+		$this->attributes['homeDirectory'][0] = $_POST['homeDirectory'];
+		$this->attributes['loginShell'][0] = $_POST['loginShell'];
+		if (isset($_POST['gecos'])) $this->attributes['gecos'][0] = $_POST['gecos'];
+		if (isset($_POST['createhomedir'])) $this->createhomedir = true;
 		else $this->createhomedir = false;
-		if ($this->orig['uid'][0]!='' && $post['uid']!=$this->attributes['uid'][0])
+		if ($this->orig['uid'][0]!='' && $_POST['uid']!=$this->attributes['uid'][0])
 			$errors['uid'][] = $this->messages['uid'][0];
-		if ($this->orig['gidNumber'][0]!='' && $_SESSION['cache']->getgid($post['gidNumber'])!=$this->attributes['gidNumber'][0])
+		if ($this->orig['gidNumber'][0]!='' && $_SESSION['cache']->getgid($_POST['gidNumber'])!=$this->attributes['gidNumber'][0])
 			$errors['gidNumber'][] = $this->dynamic_Message('gidNumber',0);
-		if ($this->orig['uidNumber'][0]!='' && $post['uidNumber']!=$this->attributes['uidNumber'][0])
+		if ($this->orig['uidNumber'][0]!='' && $_POST['uidNumber']!=$this->attributes['uidNumber'][0])
 			$errors['uidNumber'][] = $this->dynamic_Message('uidNumber',0);
-		if (isset($post['homeDirectory']) && $this->orig['homeDirectory'][0]!='' && $post['homeDirectory']!=$this->attributes['homeDirectory'][0])
+		if (isset($_POST['homeDirectory']) && $this->orig['homeDirectory'][0]!='' && $_POST['homeDirectory']!=$this->attributes['homeDirectory'][0])
 			$errors['homeDirectory'][] = $this->dynamic_Message('homeDirectory',0);
 		// Load attributes
-		$this->attributes['uid'][0] = $post['uid'];
-		$this->attributes['cn'][0] = $post['cn'];
+		$this->attributes['uid'][0] = $_POST['uid'];
+		$this->attributes['cn'][0] = $_POST['cn'];
 		if ($this->attributes['cn'][0] == '') {
-			if (($this->scope == 'host') && (substr($post['uid'], -1, 1) == '$')) {
-				$this->attributes['cn'][0] = substr($post['uid'], 0, strlen($post['uid']) - 1);
+			if (($this->scope == 'host') && (substr($_POST['uid'], -1, 1) == '$')) {
+				$this->attributes['cn'][0] = substr($_POST['uid'], 0, strlen($_POST['uid']) - 1);
 			}
 			elseif (isset($_SESSION[$this->base]->module['inetOrgPerson'])) {
 				if ($_SESSION[$this->base]->module['inetOrgPerson']->attributes['givenName'][0]) {
@@ -624,18 +628,18 @@ class posixAccount extends baseModule {
 					$this->attributes['cn'][0] = $_SESSION[$this->base]->module['inetOrgPerson']->attributes['sn'][0];
 				}
 				else {
-					$this->attributes['cn'][0] = $post['uid'];
+					$this->attributes['cn'][0] = $_POST['uid'];
 				}
 			}
 			else {
-				$this->attributes['cn'][0] = $post['uid'];
+				$this->attributes['cn'][0] = $_POST['uid'];
 			}
 		}
 		if (!get_preg($this->attributes['cn'][0], 'cn')) {
 			$errors['cn'][] = $this->messages['cn'][0];
 		}
-		$this->attributes['uidNumber'][0] = $post['uidNumber'];
-		$this->attributes['gidNumber'][0] = $_SESSION['cache']->getgid($post['gidNumber']);
+		$this->attributes['uidNumber'][0] = $_POST['uidNumber'];
+		$this->attributes['gidNumber'][0] = $_SESSION['cache']->getgid($_POST['gidNumber']);
 		// Check if UID is valid. If none value was entered, the next useable value will be inserted
 		// load min and may uidNumber
 		if ($_SESSION[$this->base]->type=='user') {
@@ -683,42 +687,42 @@ class posixAccount extends baseModule {
 			}
 		}
 		if ($_SESSION[$this->base]->type=='user') {
-			if (($this->attributes['uid'][0] != $post['uid']) &&  !get_preg($post['uid'], '!upper'))
+			if (($this->attributes['uid'][0] != $_POST['uid']) &&  !get_preg($_POST['uid'], '!upper'))
 			$errors['uid'][] = $this->messages['uid'][1];
 			if ( !get_preg($this->attributes['homeDirectory'][0], 'homeDirectory' ))
 			$errors['homeDirecotry'][] = $this->messages['homeDirectory'][0];
 		}
-		if (isset($post['userPassword_lock']) && isset($post['userPassword_nopassword'])) {
+		if (isset($_POST['userPassword_lock']) && isset($_POST['userPassword_nopassword'])) {
 			// found invalid password parameter combination
 			$errors['userPassword'][] = $this->messages['userPassword'][3];
 		}
 		else {
-			if (isset($post['userPassword_nopassword'])) {
+			if (isset($_POST['userPassword_nopassword'])) {
 				$this->userPassword_nopassword=true;
 				$this->attributes['userPassword'][0] = '';
-				$post['userPassword2'] = '';
-				if (isset($post['userPassword_lock']))
+				$_POST['userPassword2'] = '';
+				if (isset($_POST['userPassword_lock']))
 					$this->userPassword_lock=true;
 				else $this->userPassword_lock=false;
 			}
 			else {
 				$this->userPassword_nopassword=false;
-				if (isset($post['genpass'])) $this->attributes['userPassword'][0] = genpasswd();
+				if (isset($_POST['genpass'])) $this->attributes['userPassword'][0] = genpasswd();
 				elseif ($_SESSION[$this->base]->isNewAccount) {
-					if ($post['userPassword'] != $post['userPassword2'])
+					if ($_POST['userPassword'] != $_POST['userPassword2'])
 						$errors['userPassword'][] = $this->messages['userPassword'][0];
-					else $this->attributes['userPassword'][0] = $post['userPassword'];
+					else $this->attributes['userPassword'][0] = $_POST['userPassword'];
 					if (!get_preg($this->attributes['userPassword'][0], 'password'))
 						$errors['userPassword'][] = $this->messages['userPassword'][1];
 				}
-				if (isset($post['userPassword_lock'])) $this->userPassword_lock=true;
+				if (isset($_POST['userPassword_lock'])) $this->userPassword_lock=true;
 				else $this->userPassword_lock=false;
 			}
 			if ($_SESSION[$this->base]->type=='user') {
 				$this->attributes['homeDirectory'][0] = str_replace('$group', $_SESSION['cache']->getgrnam($this->attributes['gidNumber'][0]), $this->attributes['homeDirectory'][0]);
 				if ($this->attributes['uid'][0] != '')
 				$this->attributes['homeDirectory'][0] = str_replace('$user', $this->attributes['uid'][0], $this->attributes['homeDirectory'][0]);
-				if ($this->attributes['homeDirectory'][0] != $post['homeDirectory']) $errors['homeDirecotry'][] = array('INFO', _('Home directory'), _('Replaced $user or $group in homedir.'));
+				if ($this->attributes['homeDirectory'][0] != $_POST['homeDirectory']) $errors['homeDirecotry'][] = array('INFO', _('Home directory'), _('Replaced $user or $group in homedir.'));
 				// Check if Username contains only valid characters
 				if ( !get_preg($this->attributes['uid'][0], 'username'))
 				$errors['uid'][] = $this->messages['uid'][2];
@@ -727,7 +731,7 @@ class posixAccount extends baseModule {
 				// add "$" to uid if needed
 				if (substr($this->attributes['uid'][0], -1, 1) != '$') {
 					$this->attributes['uid'][0] .= '$';
-					$post['uid'] .= '$';
+					$_POST['uid'] .= '$';
 				}
 				// Check if Hostname contains only valid characters
 				if ( !get_preg($this->attributes['uid'][0], 'hostname'))
@@ -779,7 +783,7 @@ class posixAccount extends baseModule {
 				}
 			}
 			// Show warning if lam has changed username
-			if ($this->attributes['uid'][0] != $post['uid']) {
+			if ($this->attributes['uid'][0] != $_POST['uid']) {
 				if ($_SESSION[$this->base]->type=='user') $errors['uid'][] = $this->messages['uid'][5];
 				if ($_SESSION[$this->base]->type=='host') $errors['uid'][] = $this->messages['uid'][6];
 			}
@@ -830,16 +834,15 @@ class posixAccount extends baseModule {
 	* Processes user input of the group selection page.
 	* It checks if all input values are correct and updates the associated LDAP attributes.
 	*
-	* @param array $post HTTP-POST values
 	* @return array list of info/error messages
 	*/
-	function process_group($post) {
-		if (isset($post['addgroups']) && isset($post['addgroups_button'])) { // Add groups to list
+	function process_group() {
+		if (isset($_POST['addgroups']) && isset($_POST['addgroups_button'])) { // Add groups to list
 			// Add new group
-			$this->groups = @array_merge($this->groups, $post['addgroups']);
+			$this->groups = @array_merge($this->groups, $_POST['addgroups']);
 		}
-		elseif (isset($post['removegroups']) && isset($post['removegroups_button'])) { // remove groups from list
-			$this->groups = array_delete($post['removegroups'], $this->groups);
+		elseif (isset($_POST['removegroups']) && isset($_POST['removegroups_button'])) { // remove groups from list
+			$this->groups = array_delete($_POST['removegroups'], $this->groups);
 		}
 	}
 
@@ -847,33 +850,32 @@ class posixAccount extends baseModule {
 	* Processes user input of the password page.
 	* It checks if all input values are correct and updates the associated LDAP attributes.
 	*
-	* @param array $post HTTP-POST values
 	* @return array list of info/error messages
 	*/
-	function process_password($post) {
-		if ($post['form_subpage_posixAccount_attributes_back']) return array();
+	function process_password() {
+		if ($_POST['form_subpage_posixAccount_attributes_back']) return array();
 		$messages = array();
-		if ($post['userPassword'] != $post['userPassword2']) {
+		if ($_POST['userPassword'] != $_POST['userPassword2']) {
 			$messages['userPassword'][] = $this->messages['userPassword'][0];
 		}
 		else {
-			if (!get_preg($post['userPassword'], 'password')) {
+			if (!get_preg($_POST['userPassword'], 'password')) {
 				$messages['userPassword'][] = $this->messages['userPassword'][1];
 			}
 			else {
-				$this->attributes['userPassword'][0] = $post['userPassword'];
+				$this->attributes['userPassword'][0] = $_POST['userPassword'];
 				$this->userPassword_lock = false;
 				$this->userPassword_nopassword = false;
 			}
 		}
 		return $messages;
 	}
-	
+
 	/* This function will create the html-page
 	* to show a page with all attributes.
 	* It will output a complete html-table
 	*/
-	function display_html_attributes($post) {
+	function display_html_attributes() {
 		// check password format if called the first time
 		if (isset($this->attributes['userPassword'][0])) {
 			if (pwd_is_enabled($this->attributes['userPassword'][0])) $this->userPassword_lock = false;
@@ -965,7 +967,7 @@ class posixAccount extends baseModule {
 	return $return;
 	}
 
-	function display_html_delete($post) {
+	function display_html_delete() {
 		if ($this->scope == 'user' && isset($_SESSION['config']->scriptPath)) {
 			$return[] = array (
 				0 => array('kind' => 'text', 'text' => _('Delete home directory')),
@@ -978,10 +980,9 @@ class posixAccount extends baseModule {
 	/**
 	* Displays the group selection.
 	*
-	* @param array $post HTTP-POST
 	* @return array meta HTML code
 	*/
-	function display_html_group($post) {
+	function display_html_group() {
 		// load list with all groups
 		$dn_groups = $_SESSION['cache']->get_cache('cn', 'posixGroup', 'group');
 		$DNs = array_keys($dn_groups);
@@ -1024,10 +1025,9 @@ class posixAccount extends baseModule {
 	/**
 	* Displays the password changing dialog.
 	*
-	* @param array $post HTTP-POST
 	* @return array meta HTML code
 	*/
-	function display_html_password($post) {
+	function display_html_password() {
 		$return[] = array(
 			0 => array('kind' => 'text', 'text' => _('Password') ),
 			1 => array('kind' => 'input', 'name' => 'userPassword', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => ""),
@@ -1128,7 +1128,7 @@ class posixAccount extends baseModule {
 
 	/**
 	* Returns the PDF entries for this module.
-	* 
+	*
 	* @return array list of possible PDF entries
 	*/
 	function get_pdfEntries() {
@@ -1367,7 +1367,7 @@ class posixAccount extends baseModule {
 				// description
 				$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
 				if (!in_array('inetOrgPerson', $modules)) {
-					if ($rawAccounts[$i][$ids['posixAccount_description']] && ($rawAccounts[$i][$ids['posixAccount_description']] != '')) { 
+					if ($rawAccounts[$i][$ids['posixAccount_description']] && ($rawAccounts[$i][$ids['posixAccount_description']] != '')) {
 						$partialAccounts[$i]['description'] = $rawAccounts[$i][$ids['posixAccount_description']];
 					}
 					else {
@@ -1415,7 +1415,7 @@ class posixAccount extends baseModule {
 					$errors[] = $errMsg;
 				}
 				// description
-				if ($rawAccounts[$i][$ids['posixAccount_description']] && ($rawAccounts[$i][$ids['posixAccount_description']] != '')) { 
+				if ($rawAccounts[$i][$ids['posixAccount_description']] && ($rawAccounts[$i][$ids['posixAccount_description']] != '')) {
 					$partialAccounts[$i]['description'] = $rawAccounts[$i][$ids['posixAccount_description']];
 				}
 				else {
@@ -1440,7 +1440,7 @@ class posixAccount extends baseModule {
 		}
 		return $errors;
 	}
-	
+
 	/**
 	* This function executes one post upload action.
 	*
@@ -1535,7 +1535,7 @@ class posixAccount extends baseModule {
 	*
 	* @param integer $count Number of needed free UIDs.
 	* @param array $errors list of error messages where errors can be added
-	* @return mixed Null if no UIDs are free else an array of free UIDs. 
+	* @return mixed Null if no UIDs are free else an array of free UIDs.
 	*/
 	function getNextUIDs($count, &$errors) {
 		$ret = array();
@@ -1631,7 +1631,7 @@ class posixAccount extends baseModule {
 					$return['messages'][] = $this->messages['userPassword'][0];
 				}
 				else {
-					if (!get_preg($post['posixAccount_password'], 'password')) {
+					if (!get_preg($_POST['posixAccount_password'], 'password')) {
 						$return['messages'][] = $this->messages['userPassword'][1];
 					}
 					else {

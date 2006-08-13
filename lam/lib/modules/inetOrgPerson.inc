@@ -75,8 +75,8 @@ class inetOrgPerson extends baseModule {
 		$this->messages['userPassword'][1] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}=@$ !'));
 		$this->messages['userPassword'][2] = array('ERROR', _('Account %s:') . ' posixAccount_password', _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}=@$ !'));
 		$this->messages['photo'][0] = array('ERROR', _('No file selected.'));
-	}	
-	
+	}
+
 	/**
 	* Returns meta data that is interpreted by parent class
 	*
@@ -283,7 +283,7 @@ class inetOrgPerson extends baseModule {
 		}
 		// help Entries
 		$return['help'] = array (
-			'user' => array (	
+			'user' => array (
 				'description' => array (
 					"Headline" => _("Description"),
 					"Text" => _("User description. If left empty sur- and give name will be used.")
@@ -362,7 +362,7 @@ class inetOrgPerson extends baseModule {
 				)
 			)
 		);
-		
+
 		return $return;
 	}
 
@@ -381,8 +381,8 @@ class inetOrgPerson extends baseModule {
 		}
 		if (!isset($this->attributes['sn'][0]) || ($this->attributes['sn'][0] == '')) return false;
 		return true;
-	}	
-		
+	}
+
 	/**
 	* Controls if the module button the account page is visible and activated.
 	*
@@ -417,7 +417,7 @@ class inetOrgPerson extends baseModule {
 		$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
 		if (in_array('posixAccount', $modules)) {
 			if (isset($return[$_SESSION[$this->base]->dn]['modify']['userPassword'])) {
-				unset($return[$_SESSION[$this->base]->dn]['modify']['userPassword']); 	 
+				unset($return[$_SESSION[$this->base]->dn]['modify']['userPassword']);
 			}
 			if (isset($return[$_SESSION[$this->base]->dn]['add']['userPassword'])) {
 				unset($return[$_SESSION[$this->base]->dn]['add']['userPassword']);
@@ -443,27 +443,26 @@ class inetOrgPerson extends baseModule {
 	* Processes user input of the primary module page.
 	* It checks if all input values are correct and updates the associated LDAP attributes.
 	*
-	* @param array $post HTTP-POST values
 	* @return array list of info/error messages
 	*/
-	function process_attributes($post) {
+	function process_attributes() {
 		$errors = array();
 		// Load attributes
-		$this->attributes['description'][0] = $post['description'];
-		$this->attributes['sn'][0] = $post['sn'];
-		$this->attributes['givenName'][0] = $post['givenName'];
-		$this->attributes['title'][0] = $post['title'];
-		$this->attributes['mail'][0] = $post['mail'];
-		$this->attributes['telephoneNumber'][0] = $post['telephoneNumber'];
-		$this->attributes['mobile'][0] = $post['mobileTelephoneNumber'];
-		$this->attributes['facsimileTelephoneNumber'][0] = $post['facsimileTelephoneNumber'];
-		$this->attributes['street'][0] = $post['street'];
-		$this->attributes['postOfficeBox'][0] = $post['postOfficeBox'];
-		$this->attributes['postalCode'][0] = $post['postalCode'];
-		$this->attributes['postalAddress'][0] = $post['postalAddress'];
-		$this->attributes['employeeType'][0] = $post['employeeType'];
-		if ($post['manager'] != '-') {
-			$this->attributes['manager'][0] = $post['manager'];
+		$this->attributes['description'][0] = $_POST['description'];
+		$this->attributes['sn'][0] = $_POST['sn'];
+		$this->attributes['givenName'][0] = $_POST['givenName'];
+		$this->attributes['title'][0] = $_POST['title'];
+		$this->attributes['mail'][0] = $_POST['mail'];
+		$this->attributes['telephoneNumber'][0] = $_POST['telephoneNumber'];
+		$this->attributes['mobile'][0] = $_POST['mobileTelephoneNumber'];
+		$this->attributes['facsimileTelephoneNumber'][0] = $_POST['facsimileTelephoneNumber'];
+		$this->attributes['street'][0] = $_POST['street'];
+		$this->attributes['postOfficeBox'][0] = $_POST['postOfficeBox'];
+		$this->attributes['postalCode'][0] = $_POST['postalCode'];
+		$this->attributes['postalAddress'][0] = $_POST['postalAddress'];
+		$this->attributes['employeeType'][0] = $_POST['employeeType'];
+		if ($_POST['manager'] != '-') {
+			$this->attributes['manager'][0] = $_POST['manager'];
 		}
 		else {
 			unset($this->attributes['manager'][0]);
@@ -472,23 +471,23 @@ class inetOrgPerson extends baseModule {
 		$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
 		if (!in_array('posixAccount', $modules)) {
 			// uid
-			if (!get_preg($post['userName'], 'username')) {
+			if (!get_preg($_POST['userName'], 'username')) {
 				$errors['uid'][] = $this->messages['uid'][0];
 			}
 			else {
-				$this->attributes['uid'][0] = $post['userName'];
+				$this->attributes['uid'][0] = $_POST['userName'];
 			}
 			// cn
-			if ($post['cn'] == '') {
-				if ($post['givenName'] != '') {
-					$this->attributes['cn'][0] = $post['givenName'] . " " . $post['sn'];
+			if ($_POST['cn'] == '') {
+				if ($_POST['givenName'] != '') {
+					$this->attributes['cn'][0] = $_POST['givenName'] . " " . $_POST['sn'];
 				}
 				else {
-					$this->attributes['cn'][0] = $post['sn'];
+					$this->attributes['cn'][0] = $_POST['sn'];
 				}
 			}
 			else {
-				$this->attributes['cn'][0] = $post['cn'];
+				$this->attributes['cn'][0] = $_POST['cn'];
 			}
 			if (!get_preg($this->attributes['cn'][0], 'cn')) {
 				$errors['cn'][] = $this->messages['cn'][0];
@@ -497,7 +496,7 @@ class inetOrgPerson extends baseModule {
 
 		// handle host-attribute in on epice because it's not set by default
 		if ($_SESSION['ldap']->supports_unix_hosts) {
-			$host = $post['host'];
+			$host = $_POST['host'];
 			if (!get_preg($host,'unixhost')) {
 				$errors['host'][] = $this->messages['host'][0];
 			}
@@ -521,20 +520,20 @@ class inetOrgPerson extends baseModule {
 		if ( !get_preg($this->attributes['postalCode'][0], 'postalCode')) $errors['personal_postalCode'][] = $this->messages['postalCode'][0];
 		if ( !get_preg($this->attributes['title'][0], 'title')) $errors['title'][] = $this->messages['title'][0];
 		if ( !get_preg($this->attributes['employeeType'][0], 'employeeType')) $errors['employeeType'][] = $this->messages['employeeType'][0];
-		if ($post['userPassword']) {
-			if ($post['userPassword'] != $post['userPassword2']) {
+		if ($_POST['userPassword']) {
+			if ($_POST['userPassword'] != $_POST['userPassword2']) {
 				$errors['userPassword'][] = $this->messages['userPassword'][0];
 			}
 			else {
-				if (!get_preg($post['userPassword'], 'password')) {
+				if (!get_preg($_POST['userPassword'], 'password')) {
 					$errors['userPassword'][] = $this->messages['userPassword'][1];
 				}
 				else {
-					$this->attributes['userPassword'][0] = $post['userPassword'];
+					$this->attributes['userPassword'][0] = $_POST['userPassword'];
 				}
 			}
 		}
-		if ($post['delPhoto']) $this->attributes['jpegPhoto'] = array();
+		if ($_POST['delPhoto']) $this->attributes['jpegPhoto'] = array();
 		// Return error-messages
 		return $errors;
 	}
@@ -543,7 +542,7 @@ class inetOrgPerson extends baseModule {
 	* to show a page with all attributes.
 	* It will output a complete html-table
 	*/
-	function display_html_attributes($post) {
+	function display_html_attributes() {
 		$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
 		if (!in_array('posixAccount', $modules)) {
 			$uid = '';
@@ -724,21 +723,19 @@ class inetOrgPerson extends baseModule {
 
 	/**
 	* Sets a new password.
-	*
-	* @param $post HTTP POST
 	*/
-	function process_password($post) {
-		if ($post['form_subpage_inetOrgPerson_attributes_back']) return array();
+	function process_password() {
+		if ($_POST['form_subpage_inetOrgPerson_attributes_back']) return array();
 		$messages = array();
-		if ($post['userPassword'] != $post['userPassword2']) {
+		if ($_POST['userPassword'] != $_POST['userPassword2']) {
 			$messages['userPassword'][] = $this->messages['userPassword'][0];
 		}
 		else {
-			if (!get_preg($post['userPassword'], 'password')) {
+			if (!get_preg($_POST['userPassword'], 'password')) {
 				$messages['userPassword'][] = $this->messages['userPassword'][1];
 			}
 			else {
-				$this->attributes['userPassword'][0] = $post['userPassword'];
+				$this->attributes['userPassword'][0] = $_POST['userPassword'];
 			}
 		}
 		return $messages;
@@ -747,10 +744,9 @@ class inetOrgPerson extends baseModule {
 	/**
 	* Displays the password changing dialog.
 	*
-	* @param array $post HTTP-POST
 	* @return array meta HTML code
 	*/
-	function display_html_password($post) {
+	function display_html_password() {
 		$return[] = array(
 			0 => array('kind' => 'text', 'text' => _('Password') ),
 			1 => array('kind' => 'input', 'name' => 'userPassword', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => ""),
@@ -769,11 +765,9 @@ class inetOrgPerson extends baseModule {
 
 	/**
 	* Sets a new photo.
-	*
-	* @param $post HTTP POST
 	*/
-	function process_photo($post) {
-		if ($post['form_subpage_inetOrgPerson_attributes_back']) return array();
+	function process_photo() {
+		if ($_POST['form_subpage_inetOrgPerson_attributes_back']) return array();
 		$messages = array();
 		if ($_FILES['photoFile'] && ($_FILES['photoFile']['size'] > 0)) {
 			$handle = fopen($_FILES['photoFile']['tmp_name'], "r");
@@ -790,10 +784,9 @@ class inetOrgPerson extends baseModule {
 	/**
 	* Displays the photo upload page.
 	*
-	* @param array $post HTTP-POST
 	* @return array meta HTML code
 	*/
-	function display_html_photo($post) {
+	function display_html_photo() {
 		$return[] = array(
 			0 => array('kind' => 'text', 'text' => _('Photo file (JPG format)') ),
 			1 => array('kind' => 'input', 'name' => 'photoFile', 'type' => 'file'),
@@ -809,7 +802,7 @@ class inetOrgPerson extends baseModule {
 
 	/**
 	* Returns the PDF entries for this module.
-	* 
+	*
 	* @return array list of possible PDF entries
 	*/
 	function get_pdfEntries() {
@@ -1262,7 +1255,7 @@ class inetOrgPerson extends baseModule {
 		return $return;
 	}
 
-	
+
 }
 
 ?>
