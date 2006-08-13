@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../lib/modules/posixAccount.inc:363
+#: ../lib/modules/posixAccount.inc:375
 msgid "$user and $group are replaced with user name or primary group name."
 msgstr "$user和$group會被使用者帳號及主要群組名稱所取代"
 
@@ -65,37 +65,31 @@ msgstr "(這個項目沒有新的屬性)"
 msgid "(no new binary attributes available for this entry)"
 msgstr "(這個項目沒有新的binary屬性)"
 
-#: ../lib/modules/posixAccount.inc:225
+#: ../lib/modules/posixAccount.inc:237
 msgid "/home/smiller"
-msgstr ""
-
-#: ../templates/login.php:186
-msgid "A required PHP extension is missing!"
-msgstr "缺少一些必要的php延伸功能模組"
+msgstr "/home/smiller"
 
 #: ../templates/massBuildAccounts.php:114
 msgid "A required column is missing in your CSV file."
 msgstr "您的CSV檔中缺少一個必要欄位."
 
-#: ../lib/modules/kolabUser.inc:136
-msgid ""
-"A user may define who is allowed to act on behalf of herself. This property "
+#: ../lib/modules/kolabUser.inc:133
+msgid "A user may define who is allowed to act on behalf of herself. This property "
 "is checked when using the Kolab smtp daemon (Postfix) to send emails."
-msgstr ""
-"使用者可以容許誰來扮演自身的行為,在Kolab smtp 伺服器(Postfix)送出電子郵件時會"
+msgstr "使用者可以容許誰來扮演自身的行為,在Kolab smtp 伺服器(Postfix)送出電子郵件時會"
 "檢查這個屬性"
 
 #: ../lib/modules/sambaSamAccount.inc:436
 msgid "Abu Dhabi, Muscat, Baku"
-msgstr ""
+msgstr "阿布達比, 馬斯喀特, 巴庫"
 
 #: ../lib/modules/account.inc:53
 msgid "Account"
 msgstr "使用者帳號"
 
 #: ../templates/massBuildAccounts.php:167 ../lib/modules/account.inc:117
-#: ../lib/modules/ieee802device.inc:85 ../lib/modules/posixGroup.inc:505
-#: ../lib/modules/posixGroup.inc:509 ../lib/modules/posixGroup.inc:510
+#: ../lib/modules/ieee802device.inc:85 ../lib/modules/posixGroup.inc:492
+#: ../lib/modules/posixGroup.inc:496 ../lib/modules/posixGroup.inc:497
 #: ../lib/modules/quota.inc:46 ../lib/modules/quota.inc:48
 #: ../lib/modules/quota.inc:50 ../lib/modules/quota.inc:52
 #: ../lib/modules/quota.inc:54 ../lib/modules/quota.inc:56
@@ -119,24 +113,24 @@ msgstr "使用者帳號"
 #: ../lib/modules/sambaSamAccount.inc:101
 #: ../lib/modules/sambaSamAccount.inc:102
 #: ../lib/modules/sambaSamAccount.inc:104
-#: ../lib/modules/sambaSamAccount.inc:105 ../lib/modules/posixAccount.inc:73
-#: ../lib/modules/posixAccount.inc:77 ../lib/modules/posixAccount.inc:81
-#: ../lib/modules/posixAccount.inc:89 ../lib/modules/posixAccount.inc:90
-#: ../lib/modules/posixAccount.inc:91 ../lib/modules/posixAccount.inc:92
-#: ../lib/modules/posixAccount.inc:93 ../lib/modules/posixAccount.inc:94
-#: ../lib/modules/posixAccount.inc:95 ../lib/modules/posixAccount.inc:96
-#: ../lib/modules/posixAccount.inc:97 ../lib/modules/posixAccount.inc:99
-#: ../lib/modules/kolabUser.inc:228 ../lib/modules/kolabUser.inc:230
-#: ../lib/modules/kolabUser.inc:232 ../lib/modules/kolabUser.inc:234
-#: ../lib/modules/kolabUser.inc:236 ../lib/modules/kolabUser.inc:238
-#: ../lib/modules/kolabUser.inc:240 ../lib/modules/sambaGroupMapping.inc:376
+#: ../lib/modules/sambaSamAccount.inc:105 ../lib/modules/posixAccount.inc:81
+#: ../lib/modules/posixAccount.inc:85 ../lib/modules/posixAccount.inc:89
+#: ../lib/modules/posixAccount.inc:97 ../lib/modules/posixAccount.inc:98
+#: ../lib/modules/posixAccount.inc:99 ../lib/modules/posixAccount.inc:100
+#: ../lib/modules/posixAccount.inc:101 ../lib/modules/posixAccount.inc:102
+#: ../lib/modules/posixAccount.inc:103 ../lib/modules/posixAccount.inc:104
+#: ../lib/modules/posixAccount.inc:105 ../lib/modules/posixAccount.inc:107
+#: ../lib/modules/kolabUser.inc:225 ../lib/modules/kolabUser.inc:227
+#: ../lib/modules/kolabUser.inc:229 ../lib/modules/kolabUser.inc:231
+#: ../lib/modules/kolabUser.inc:233 ../lib/modules/kolabUser.inc:235
+#: ../lib/modules/kolabUser.inc:237 ../lib/modules/sambaGroupMapping.inc:376
 #: ../lib/modules/sambaGroupMapping.inc:377
 #: ../lib/modules/shadowAccount.inc:46 ../lib/modules/shadowAccount.inc:48
 #: ../lib/modules/shadowAccount.inc:50 ../lib/modules/shadowAccount.inc:52
 #: ../lib/modules/shadowAccount.inc:54 ../lib/modules/shadowAccount.inc:55
-#: ../lib/modules/sambaDomain.inc:142 ../lib/modules/sambaDomain.inc:144
-#: ../lib/modules/sambaDomain.inc:146 ../lib/modules/sambaDomain.inc:148
-#: ../lib/modules/sambaDomain.inc:150 ../lib/modules/sambaDomain.inc:152
+#: ../lib/modules/sambaDomain.inc:185 ../lib/modules/sambaDomain.inc:187
+#: ../lib/modules/sambaDomain.inc:189 ../lib/modules/sambaDomain.inc:191
+#: ../lib/modules/sambaDomain.inc:193 ../lib/modules/sambaDomain.inc:195
 #: ../lib/modules/inetOrgPerson.inc:45 ../lib/modules/inetOrgPerson.inc:47
 #: ../lib/modules/inetOrgPerson.inc:49 ../lib/modules/inetOrgPerson.inc:51
 #: ../lib/modules/inetOrgPerson.inc:53 ../lib/modules/inetOrgPerson.inc:55
@@ -158,14 +152,14 @@ msgstr "使用者帳號 %s:"
 msgid "Account creation via file upload"
 msgstr "使用上傳檔案建立帳號"
 
-#: ../lib/modules/posixGroup.inc:426 ../lib/modules/posixAccount.inc:374
+#: ../lib/modules/posixGroup.inc:416 ../lib/modules/posixAccount.inc:386
 msgid "Account deactivated"
 msgstr "帳號已停用"
 
 #: ../lib/modules/sambaSamAccount.inc:261
 #: ../lib/modules/sambaSamAccount.inc:339
-#: ../lib/modules/sambaSamAccount.inc:885
-#: ../lib/modules/sambaSamAccount.inc:1106
+#: ../lib/modules/sambaSamAccount.inc:882
+#: ../lib/modules/sambaSamAccount.inc:1103
 #: ../lib/modules/shadowAccount.inc:104 ../lib/modules/shadowAccount.inc:169
 #: ../lib/modules/shadowAccount.inc:201 ../lib/modules/shadowAccount.inc:303
 msgid "Account expiration date"
@@ -177,11 +171,11 @@ msgstr "帳號停用(inactive)"
 
 #: ../lib/modules/sambaAccount.inc:138 ../lib/modules/sambaAccount.inc:255
 #: ../lib/modules/sambaAccount.inc:367 ../lib/modules/sambaAccount.inc:370
-#: ../lib/modules/sambaAccount.inc:736 ../lib/modules/sambaSamAccount.inc:207
+#: ../lib/modules/sambaAccount.inc:733 ../lib/modules/sambaSamAccount.inc:207
 #: ../lib/modules/sambaSamAccount.inc:210
 #: ../lib/modules/sambaSamAccount.inc:317
-#: ../lib/modules/sambaSamAccount.inc:863
-#: ../lib/modules/sambaSamAccount.inc:1094
+#: ../lib/modules/sambaSamAccount.inc:860
+#: ../lib/modules/sambaSamAccount.inc:1091
 msgid "Account is deactivated"
 msgstr "帳號停用"
 
@@ -206,11 +200,12 @@ msgid "Account types and modules"
 msgstr "帳號類型和模組"
 
 #: ../help/help.inc:114
-msgid ""
-"Account types define which sorts of LDAP entries (e.g. users and groups) "
+msgid "Account types define which sorts of LDAP entries (e.g. users and groups) "
 "should be managed. The account modules define which properties (e.g. Unix "
 "and Samba) can be edited."
-msgstr ""
+msgstr "帳號類型定義要管理那一類的LDAP項目(如 使用者 和 群組)."
+"帳號模組定義要編修那一些屬性"
+"(如 Unix 和 Samba)"
 
 #: ../lib/modules.inc:1022
 msgid "Account was created successfully."
@@ -220,7 +215,7 @@ msgstr "帳號新增成功"
 msgid "Account was modified successfully."
 msgstr "帳號修改成功"
 
-#: ../lib/modules/posixAccount.inc:346
+#: ../lib/modules/posixAccount.inc:358
 msgid "Activating this checkbox will remove the user's home directory."
 msgstr "設定這個核取方塊將會刪除使用者個人目錄."
 
@@ -234,13 +229,17 @@ msgstr "啟用的(active)帳號類型"
 #: ../templates/tree/add_attr_form.php:130
 #: ../templates/tree/add_attr_form.php:162
 #: ../templates/config/conftypes.php:178 ../templates/pdfedit/pdfpage.php:725
-#: ../lib/modules/ieee802device.inc:107 ../lib/modules/kolabUser.inc:346
-#: ../lib/modules/kolabUser.inc:363 ../lib/modules/kolabUser.inc:389
+#: ../lib/modules/ieee802device.inc:107 ../lib/modules/kolabUser.inc:347
+#: ../lib/modules/kolabUser.inc:364 ../lib/modules/kolabUser.inc:390
 #: ../lib/modules/ldapPublicKey.inc:101
 #: ../lib/modules/inetLocalMailRecipient.inc:163
 #: ../lib/modules/nisMailAlias.inc:150
 msgid "Add"
 msgstr "新增"
+
+#: ../templates/selfService/adminMain.php:445 ../help/help.inc:175
+msgid "Add input field"
+msgstr "新增設定輸入欄位"
 
 #: ../templates/tree/edit.php:127 ../templates/tree/add_value_form.php:95
 #: ../templates/tree/add_attr_form.php:72
@@ -253,12 +252,17 @@ msgstr "新增屬性"
 msgid "Add new binary attribute"
 msgstr "新增binary的屬性."
 
-#: ../lib/modules/inetOrgPerson.inc:353 ../lib/modules/inetOrgPerson.inc:706
-#: ../lib/modules/inetOrgPerson.inc:797
+#: ../templates/selfService/adminMain.php:428 ../help/help.inc:173
+msgid "Add new group"
+msgstr "新增群組"
+
+#: ../lib/modules/inetOrgPerson.inc:360 ../lib/modules/inetOrgPerson.inc:713
+#: ../lib/modules/inetOrgPerson.inc:804
 msgid "Add photo"
 msgstr "新增相片"
 
-#: ../templates/config/profmanage.php:162 ../help/help.inc:115
+#: ../templates/config/profmanage.php:162
+#: ../templates/selfService/profManage.php:137 ../help/help.inc:115
 msgid "Add profile"
 msgstr "新增設定檔"
 
@@ -270,18 +274,29 @@ msgstr "增加區段或靜態文字"
 msgid "Adding attribute failed!"
 msgstr "新增屬性失敗!"
 
-#: ../lib/modules/posixAccount.inc:217 ../lib/modules/posixAccount.inc:337
-#: ../lib/modules/posixAccount.inc:386 ../lib/modules/posixAccount.inc:898
-#: ../lib/modules/posixAccount.inc:982 ../lib/modules/posixAccount.inc:1044
-#: ../lib/modules/posixAccount.inc:1124
+#: ../lib/modules/posixAccount.inc:229 ../lib/modules/posixAccount.inc:349
+#: ../lib/modules/posixAccount.inc:394 ../lib/modules/posixAccount.inc:918
+#: ../lib/modules/posixAccount.inc:998 ../lib/modules/posixAccount.inc:1060
+#: ../lib/modules/posixAccount.inc:1140
 msgid "Additional groups"
 msgstr "附加的群組"
 
 #: ../templates/massDoUpload.php:103
 msgid "Additional tasks for module:"
-msgstr ""
+msgstr "模組的其他任務:"
 
-#: ../lib/modules/posixGroup.inc:380
+#: ../help/help.inc:174
+msgid ""
+"Adds a new group element to the list of self service options. Use this to "
+"structure the input fields."
+msgstr "新增一個新的群組元件到self service的選項. 使用這個功能來"
+"建構輸入欄位."
+
+#: ../help/help.inc:176
+msgid "Adds a new self service option to the selected group element."
+msgstr "新增一個新的self service選項到所選定的群組元件."
+
+#: ../lib/modules/posixGroup.inc:370
 msgid "Administrators group"
 msgstr "管理者群組"
 
@@ -289,13 +304,13 @@ msgstr "管理者群組"
 msgid "Alaska"
 msgstr "阿拉斯加"
 
-#: ../lib/modules/sambaDomain.inc:151 ../lib/modules/sambaDomain.inc:152
+#: ../lib/modules/sambaDomain.inc:194 ../lib/modules/sambaDomain.inc:195
 msgid "Algorithmic RID base is not a number!"
 msgstr "RID的演算基底不是數字!"
 
 #: ../lib/types/mailAlias.inc:82 ../lib/modules/nisMailAlias.inc:63
 #: ../lib/modules/nisMailAlias.inc:78 ../lib/modules/nisMailAlias.inc:135
-#: ../lib/modules/nisMailAlias.inc:278
+#: ../lib/modules/nisMailAlias.inc:273
 msgid "Alias name"
 msgstr "別名"
 
@@ -303,30 +318,36 @@ msgstr "別名"
 msgid "Aliases"
 msgstr "別名"
 
+#: ../templates/selfService/selfServiceMain.php:128
 #: ../templates/initsuff.php:156
 msgid "All changes were successful."
 msgstr "更改成功."
+
+#: ../lib/modules/sambaDomain.inc:106 ../lib/modules/sambaDomain.inc:274
+#: ../lib/modules/sambaDomain.inc:622
+msgid "Allow machine password changes"
+msgstr "容許改變主機密碼"
 
 #: ../templates/config/mainmanage.php:180 ../lib/types/user.inc:86
 #: ../help/help.inc:137
 msgid "Allowed hosts"
 msgstr "允許的主機"
 
-#: ../lib/modules/sambaAccount.inc:834 ../lib/modules/sambaAccount.inc:835
-#: ../lib/modules/sambaSamAccount.inc:986
-#: ../lib/modules/sambaSamAccount.inc:987
+#: ../lib/modules/sambaAccount.inc:831 ../lib/modules/sambaAccount.inc:832
+#: ../lib/modules/sambaSamAccount.inc:983
+#: ../lib/modules/sambaSamAccount.inc:984
 msgid "Allowed workstations"
 msgstr "允許的工作站"
 
 #: ../lib/modules/sambaSamAccount.inc:438
 msgid "Almaty, Dhaka, Colombo"
-msgstr ""
+msgstr "Almaty, Dhaka, 可倫坡"
 
-#: ../lib/modules/kolabUser.inc:51
+#: ../lib/modules/kolabUser.inc:48
 msgid "Always accept"
 msgstr "都接受"
 
-#: ../lib/modules/kolabUser.inc:52
+#: ../lib/modules/kolabUser.inc:49
 msgid "Always reject"
 msgstr "都拒絕"
 
@@ -335,7 +356,7 @@ msgstr "都拒絕"
 msgid "An attribute (%s) was modified and is highlighted below."
 msgstr "下列反白的屬性(%s)已被修改."
 
-#: ../lib/modules/kolabUser.inc:328 ../lib/modules/kolabUser.inc:782
+#: ../lib/modules/kolabUser.inc:329 ../lib/modules/kolabUser.inc:777
 msgid "Anyone"
 msgstr "任何人"
 
@@ -349,7 +370,7 @@ msgstr "確定永久刪除這個物件?"
 
 #: ../lib/modules/sambaSamAccount.inc:428
 msgid "Atlantic time (Canada), Caracas"
-msgstr ""
+msgstr "大西洋時間(加拿大), 卡拉卡斯"
 
 #: ../templates/tree/update_confirm.php:149
 msgid "Attribute"
@@ -361,7 +382,7 @@ msgstr "屬性類型"
 
 #: ../lib/modules/sambaSamAccount.inc:444
 msgid "Auckland, Fiji, Kamchatka"
-msgstr ""
+msgstr "奧克蘭, 斐濟, 堪察加半島"
 
 #: ../templates/pdfedit/pdfpage.php:603
 msgid "Available PDF fields"
@@ -371,7 +392,7 @@ msgstr "有效的PDF欄位"
 msgid "Available account types"
 msgstr "有效的帳號類型"
 
-#: ../lib/modules/posixAccount.inc:994
+#: ../lib/modules/posixAccount.inc:1010
 msgid "Available groups"
 msgstr "有效的群組"
 
@@ -379,27 +400,29 @@ msgstr "有效的群組"
 msgid "Available modules"
 msgstr "有效的模組"
 
-#: ../lib/modules/posixGroup.inc:254
+#: ../lib/modules/posixGroup.inc:244
 msgid "Available users"
 msgstr "有效的使用者"
 
-#: ../lib/modules/sambaAccount.inc:840 ../lib/modules/sambaSamAccount.inc:992
+#: ../lib/modules/sambaAccount.inc:837 ../lib/modules/sambaSamAccount.inc:989
 msgid "Available workstations"
 msgstr "有效的工作站"
 
 #: ../lib/modules/sambaSamAccount.inc:431
 msgid "Azores, Cape Verde Islands"
-msgstr ""
+msgstr "亞速爾群島, 維德角"
 
-#: ../templates/tree/update_confirm.php:252 ../lib/modules/posixGroup.inc:260
-#: ../lib/modules/posixGroup.inc:284 ../lib/modules/sambaAccount.inc:845
-#: ../lib/modules/sambaSamAccount.inc:996 ../lib/modules/posixAccount.inc:1000
-#: ../lib/modules/inetOrgPerson.inc:798
+#: ../templates/tree/update_confirm.php:252 ../lib/modules/posixGroup.inc:250
+#: ../lib/modules/posixGroup.inc:274 ../lib/modules/sambaAccount.inc:842
+#: ../lib/modules/sambaSamAccount.inc:993 ../lib/modules/posixAccount.inc:1016
+#: ../lib/modules/inetOrgPerson.inc:805
 msgid "Back"
 msgstr "返回"
 
-#: ../templates/config/confmain.php:508 ../templates/config/conflogin.php:152
-#: ../templates/config/mainlogin.php:137 ../templates/logout.php:78
+#: ../templates/config/index.php:113 ../templates/config/confmain.php:508
+#: ../templates/config/conflogin.php:152 ../templates/config/mainlogin.php:137
+#: ../templates/selfService/adminLogin.php:149
+#: ../templates/selfService/adminMain.php:78 ../templates/logout.php:78
 msgid "Back to Login"
 msgstr "回登入畫面"
 
@@ -435,16 +458,17 @@ msgid "Back to profile editor"
 msgstr "返回設定檔編輯器"
 
 #: ../templates/config/profmanage.php:367
+#: ../templates/selfService/profManage.php:267
 msgid "Back to profile login"
 msgstr "回設定檔登入畫面"
 
 #: ../lib/modules/sambaSamAccount.inc:435
 msgid "Baghdad, Riyadh, Moscow"
-msgstr ""
+msgstr "巴格達, 利雅德, 莫斯科"
 
 #: ../lib/modules/sambaSamAccount.inc:439
 msgid "Bangkok, Hanoi, Jakarta"
-msgstr ""
+msgstr "曼谷, 河內, 雅加達"
 
 #: ../templates/tree/export_form.php:74
 msgid "Base (base DN only)"
@@ -464,7 +488,7 @@ msgstr "開頭"
 
 #: ../lib/modules/sambaSamAccount.inc:440
 msgid "Beijing, Perth, Singapore"
-msgstr ""
+msgstr "北京, 柏斯, 新加坡"
 
 #: ../templates/tree/edit.php:172 ../templates/tree/edit.php:301
 msgid "Binary value"
@@ -500,7 +524,7 @@ msgstr "區塊軟性配額必須比硬性配額小."
 
 #: ../lib/modules/sambaSamAccount.inc:429
 msgid "Brazil, Buenos Aires"
-msgstr ""
+msgstr "巴西, 布宜若斯艾利斯"
 
 #: ../lib/modules/sambaGroupMapping.inc:70
 msgid "Builtin Group"
@@ -523,7 +547,7 @@ msgstr "快取期限設定錯誤!"
 #: ../lib/modules/sambaAccount.inc:406 ../lib/modules/sambaSamAccount.inc:222
 #: ../lib/modules/sambaSamAccount.inc:225
 #: ../lib/modules/sambaSamAccount.inc:228
-#: ../lib/modules/sambaSamAccount.inc:234 ../lib/modules/posixAccount.inc:387
+#: ../lib/modules/sambaSamAccount.inc:234 ../lib/modules/posixAccount.inc:395
 #: ../lib/modules/sambaGroupMapping.inc:305
 #: ../lib/modules/shadowAccount.inc:154 ../lib/modules/shadowAccount.inc:158
 #: ../lib/modules/shadowAccount.inc:162 ../lib/modules/shadowAccount.inc:166
@@ -534,18 +558,21 @@ msgstr "可以留空白"
 #: ../templates/tree/delete_form.php:119 ../templates/tree/delete_form.php:168
 #: ../templates/ou_edit.php:107 ../templates/config/confmodules.php:115
 #: ../templates/config/confmain.php:387 ../templates/config/conftypes.php:236
+#: ../templates/selfService/adminMain.php:489
 #: ../templates/pdfedit/pdfdelete.php:92 ../templates/pdfedit/pdfpage.php:773
 #: ../templates/pdfedit/pdfmain.php:153 ../templates/delete.php:112
 #: ../templates/profedit/profiledelete.php:83
 #: ../templates/profedit/profilepage.php:253
 #: ../templates/profedit/profilemain.php:166 ../templates/initsuff.php:189
-#: ../lib/modules/sambaSamAccount.inc:1062
-#: ../lib/modules/posixAccount.inc:1024 ../lib/modules/kolabUser.inc:575
-#: ../lib/modules/inetOrgPerson.inc:758
+#: ../lib/modules/sambaSamAccount.inc:1059
+#: ../lib/modules/posixAccount.inc:1040 ../lib/modules/kolabUser.inc:569
+#: ../lib/modules/inetOrgPerson.inc:765
 msgid "Cancel"
 msgstr "取消"
 
-#: ../templates/login.php:389 ../templates/login.php:394
+#: ../templates/login.php:391 ../templates/login.php:396
+#: ../templates/selfService/selfServiceLogin.php:105
+#: ../templates/selfService/selfServiceLogin.php:109
 msgid "Cannot connect to specified LDAP server. Please try again."
 msgstr "無法連結所指定的LDAP伺服器,請再試一次."
 
@@ -553,19 +580,24 @@ msgstr "無法連結所指定的LDAP伺服器,請再試一次."
 msgid "Cannot open config file!"
 msgstr "無法開啟設定檔!"
 
+#: ../templates/selfService/adminMain.php:310
+msgid "Captions and labels"
+msgstr "標題和標籤"
+
 #: ../lib/modules/sambaSamAccount.inc:433
 msgid "Central Europe Time, Paris, Berlin"
-msgstr ""
+msgstr "歐洲中央時間, 巴黎, 柏林"
 
 #: ../lib/modules/sambaSamAccount.inc:426
 msgid "Central Time (US & Canada), Mexico City"
-msgstr ""
+msgstr "中央時間(美國和加拿大), 墨西哥市 "
 
+#: ../templates/selfService/adminMain.php:371
 #: ../templates/pdfedit/pdfpage.php:499 ../templates/pdfedit/pdfpage.php:505
 msgid "Change"
 msgstr "更改"
 
-#: ../lib/modules/posixGroup.inc:211
+#: ../lib/modules/posixGroup.inc:201
 msgid "Change GID number of users and hosts"
 msgstr "更改使用者和主機的GID編號"
 
@@ -577,33 +609,28 @@ msgstr "變更預設的設定檔"
 msgid "Change master password"
 msgstr "變更系統管理者密碼"
 
-#: ../lib/modules/posixGroup.inc:193 ../lib/modules/posixAccount.inc:924
-#: ../lib/modules/inetOrgPerson.inc:595 ../help/help.inc:106
+#: ../lib/modules/posixGroup.inc:187 ../lib/modules/posixAccount.inc:944
+#: ../lib/modules/inetOrgPerson.inc:602 ../help/help.inc:106
 msgid "Change password"
 msgstr "更改密碼"
 
-#: ../templates/login.php:320
+#: ../templates/login.php:322
 msgid "Change profile"
 msgstr "變更系統設定檔"
 
-#: ../lib/lists.inc:475
+#: ../lib/lists.inc:484
 msgid "Change suffix"
 msgstr "更改尾碼"
 
-#: ../lib/baseModule.inc:581
-#, php-format
-msgid "Changed value %s because only numeric values are allowed."
-msgstr ""
-
-#: ../lib/baseModule.inc:612
+#: ../lib/modules/posixAccount.inc:794
 msgid "Changed value because only ASCII characters are allowed."
 msgstr "值己被改變,因為只能使用ASCII字元."
 
 #: ../templates/masscreate.php:125
-msgid ""
-"Check your input carefully. LAM will only do some basic checks on the upload "
+msgid "Check your input carefully. LAM will only do some basic checks on the upload "
 "data."
-msgstr ""
+msgstr "請仔細檢查您的輸入. LAM對上傳的資料只做基本的"
+"檢查."
 
 #: ../templates/tree/create_form.php:76
 msgid "Choose a template"
@@ -615,7 +642,7 @@ msgstr "如果沒有自動跳頁的話,請按這裡前往."
 
 #: ../templates/schema/schema.php:204
 msgid "Collective"
-msgstr ""
+msgstr "集合"
 
 #: ../templates/masscreate.php:144
 msgid "Columns:"
@@ -631,13 +658,17 @@ msgstr "使用者可以登入的samba工作站,可逗點分隔.留空白表示�
 msgid "Commit"
 msgstr "送出"
 
-#: ../lib/modules/posixAccount.inc:98 ../lib/modules/posixAccount.inc:198
-#: ../lib/modules/posixAccount.inc:390 ../lib/modules/posixAccount.inc:880
-#: ../lib/modules/posixAccount.inc:1119 ../lib/modules/inetOrgPerson.inc:68
-#: ../lib/modules/inetOrgPerson.inc:228 ../lib/modules/inetOrgPerson.inc:337
-#: ../lib/modules/inetOrgPerson.inc:564 ../lib/modules/inetOrgPerson.inc:825
+#: ../lib/modules/posixAccount.inc:106 ../lib/modules/posixAccount.inc:210
+#: ../lib/modules/posixAccount.inc:398 ../lib/modules/posixAccount.inc:900
+#: ../lib/modules/posixAccount.inc:1135 ../lib/modules/inetOrgPerson.inc:68
+#: ../lib/modules/inetOrgPerson.inc:235 ../lib/modules/inetOrgPerson.inc:344
+#: ../lib/modules/inetOrgPerson.inc:571 ../lib/modules/inetOrgPerson.inc:832
 msgid "Common name"
 msgstr "使用者全名"
+
+#: ../templates/config/index.php:48
+msgid "Configuration overview"
+msgstr "設定總覽"
 
 #: ../help/help.inc:56 ../help/help.inc:58 ../help/help.inc:70
 #: ../help/help.inc:76 ../help/help.inc:82 ../help/help.inc:87
@@ -649,7 +680,7 @@ msgstr "設定精靈"
 
 #: ../templates/config/confmodules.php:250
 msgid "Conflicting module:"
-msgstr ""
+msgstr "衝突的模組:"
 
 #: ../templates/tree/templates/creation/custom.php:66
 #: ../templates/tree/templates/creation/new_ou_template.php:105
@@ -665,6 +696,7 @@ msgid "Could not perform ldap_modify operation."
 msgstr "無法執行ldap_modify指令"
 
 #: ../templates/config/profmanage.php:99
+#: ../templates/selfService/profManage.php:85
 msgid "Could not rename file!"
 msgstr "無法更改檔名"
 
@@ -672,13 +704,13 @@ msgstr "無法更改檔名"
 msgid "Could not save PDF profile, access denied."
 msgstr "無法儲存PDF設定檔,拒絕存取."
 
-#: ../lib/modules/kolabUser.inc:88 ../lib/modules/kolabUser.inc:151
-#: ../lib/modules/kolabUser.inc:180 ../lib/modules/kolabUser.inc:288
-#: ../lib/modules/kolabUser.inc:758
+#: ../lib/modules/kolabUser.inc:85 ../lib/modules/kolabUser.inc:148
+#: ../lib/modules/kolabUser.inc:177 ../lib/modules/kolabUser.inc:289
+#: ../lib/modules/kolabUser.inc:753
 msgid "Country"
 msgstr "國籍"
 
-#: ../lib/modules/kolabUser.inc:231 ../lib/modules/kolabUser.inc:232
+#: ../lib/modules/kolabUser.inc:228 ../lib/modules/kolabUser.inc:229
 msgid "Country name is invalid!"
 msgstr "國籍名稱錯誤!"
 
@@ -761,7 +793,7 @@ msgstr "建立新的設定檔"
 msgid "Create another account"
 msgstr "新增另一個帳號"
 
-#: ../lib/modules/posixAccount.inc:907
+#: ../lib/modules/posixAccount.inc:927
 msgid "Create home directory"
 msgstr "建立個人目錄"
 
@@ -777,6 +809,7 @@ msgid "Create new entry"
 msgstr "新增項目"
 
 #: ../templates/config/profmanage.php:84
+#: ../templates/selfService/profManage.php:68
 msgid "Created new profile."
 msgstr "新增系統設定檔"
 
@@ -797,9 +830,9 @@ msgstr "自定"
 #: ../templates/tree/update_confirm.php:76
 #: ../templates/tree/add_attr_form.php:73 ../templates/tree/delete_form.php:77
 #: ../templates/tree/delete_form.php:151 ../templates/delete.php:90
-#: ../lib/modules.inc:1492
+#: ../lib/modules.inc:1541
 msgid "DN"
-msgstr ""
+msgstr "DN"
 
 #: ../templates/masscreate.php:147
 msgid "DN settings"
@@ -840,19 +873,23 @@ msgstr "預設語言"
 msgid "Default value"
 msgstr "預設值"
 
-#: ../lib/modules/kolabUser.inc:135 ../lib/modules/kolabUser.inc:139
-#: ../lib/modules/kolabUser.inc:199 ../lib/modules/kolabUser.inc:392
-#: ../lib/modules/kolabUser.inc:796
-msgid "Delegates"
-msgstr ""
+#: ../lib/modules/sambaDomain.inc:107
+msgid "Defines if workstations may change their passwords."
+msgstr "定義工作站是否可以更改其密碼."
 
-#: ../lib/modules/kolabUser.inc:236
+#: ../lib/modules/kolabUser.inc:132 ../lib/modules/kolabUser.inc:136
+#: ../lib/modules/kolabUser.inc:196 ../lib/modules/kolabUser.inc:393
+#: ../lib/modules/kolabUser.inc:791
+msgid "Delegates"
+msgstr "Delegates"
+
+#: ../lib/modules/kolabUser.inc:233
 msgid "Delegates has invalid format!"
 msgstr "Delegates的格式錯誤"
 
 #: ../templates/tree/edit.php:114 ../templates/tree/delete_form.php:159
 #: ../templates/ou_edit.php:106 ../templates/pdfedit/pdfdelete.php:91
-#: ../templates/delete.php:111 ../lib/tree.inc:1164
+#: ../templates/delete.php:111 ../lib/tree.inc:1149
 msgid "Delete"
 msgstr "刪除"
 
@@ -865,7 +902,7 @@ msgstr "刪除 %s"
 msgid "Delete Account"
 msgstr "刪除帳號"
 
-#: ../lib/modules/kolabUser.inc:401
+#: ../lib/modules/kolabUser.inc:402
 msgid "Delete Kolab account"
 msgstr "刪除Kolab帳號"
 
@@ -890,7 +927,7 @@ msgstr "刪除網域"
 msgid "Delete group"
 msgstr "刪除群組"
 
-#: ../lib/modules/posixAccount.inc:953
+#: ../lib/modules/posixAccount.inc:969
 msgid "Delete home directory"
 msgstr "刪除使用者個人目錄"
 
@@ -907,15 +944,16 @@ msgstr "刪除物件"
 msgid "Delete operation canceled."
 msgstr "已取消刪除動作"
 
-#: ../templates/ou_edit.php:178 ../help/help.inc:165
+#: ../templates/ou_edit.php:178 ../help/help.inc:182
 msgid "Delete organizational unit"
 msgstr "刪除organizational unit"
 
-#: ../lib/modules/inetOrgPerson.inc:709
+#: ../lib/modules/inetOrgPerson.inc:716
 msgid "Delete photo"
 msgstr "刪除相片"
 
 #: ../templates/config/profmanage.php:248
+#: ../templates/selfService/profManage.php:227
 #: ../templates/profedit/profiledelete.php:53
 #: ../templates/profedit/profilemain.php:154 ../help/help.inc:119
 msgid "Delete profile"
@@ -955,24 +993,33 @@ msgstr "正在刪除..."
 #: ../templates/tree/add_value_form.php:186 ../templates/schema/schema.php:94
 #: ../templates/schema/schema.php:148 ../templates/schema/schema.php:351
 #: ../lib/types/user.inc:92 ../lib/modules/account.inc:79
-#: ../lib/modules/account.inc:103 ../lib/modules/account.inc:202
-#: ../lib/modules/account.inc:216 ../lib/modules/posixGroup.inc:173
-#: ../lib/modules/posixGroup.inc:406 ../lib/modules/posixGroup.inc:480
-#: ../lib/modules/sambaAccount.inc:865 ../lib/modules/posixAccount.inc:296
-#: ../lib/modules/posixAccount.inc:408
+#: ../lib/modules/account.inc:103 ../lib/modules/account.inc:204
+#: ../lib/modules/account.inc:218 ../lib/modules/posixGroup.inc:167
+#: ../lib/modules/posixGroup.inc:396 ../lib/modules/posixGroup.inc:466
+#: ../lib/modules/sambaAccount.inc:862 ../lib/modules/posixAccount.inc:308
+#: ../lib/modules/posixAccount.inc:416
 #: ../lib/modules/sambaGroupMapping.inc:327
-#: ../lib/modules/inetOrgPerson.inc:151 ../lib/modules/inetOrgPerson.inc:281
-#: ../lib/modules/inetOrgPerson.inc:571 ../lib/modules/inetOrgPerson.inc:810
+#: ../lib/modules/inetOrgPerson.inc:158 ../lib/modules/inetOrgPerson.inc:288
+#: ../lib/modules/inetOrgPerson.inc:578 ../lib/modules/inetOrgPerson.inc:817
 msgid "Description"
 msgstr "說明"
 
+#: ../lib/modules/sambaDomain.inc:102 ../lib/modules/sambaDomain.inc:267
+#: ../lib/modules/sambaDomain.inc:617
+msgid "Disconnect users outside logon hours"
+msgstr "超過可登入時間則中斷使用者連結"
+
+#: ../lib/modules/sambaDomain.inc:103
+msgid "Disconnects users if they are loggen in outside logon hours."
+msgstr "如果使用者在可登入時間之外已登入,則中斷其連結."
+
 #: ../lib/modules/sambaAccount.inc:78 ../lib/modules/sambaAccount.inc:219
-#: ../lib/modules/sambaAccount.inc:340 ../lib/modules/sambaAccount.inc:702
-#: ../lib/modules/sambaAccount.inc:858 ../lib/modules/sambaSamAccount.inc:93
+#: ../lib/modules/sambaAccount.inc:340 ../lib/modules/sambaAccount.inc:699
+#: ../lib/modules/sambaAccount.inc:855 ../lib/modules/sambaSamAccount.inc:93
 #: ../lib/modules/sambaSamAccount.inc:180
 #: ../lib/modules/sambaSamAccount.inc:281
-#: ../lib/modules/sambaSamAccount.inc:831
-#: ../lib/modules/sambaSamAccount.inc:1290
+#: ../lib/modules/sambaSamAccount.inc:828
+#: ../lib/modules/sambaSamAccount.inc:1287
 #: ../lib/modules/sambaGroupMapping.inc:190
 #: ../lib/modules/sambaGroupMapping.inc:292
 #: ../lib/modules/sambaGroupMapping.inc:325
@@ -980,10 +1027,10 @@ msgid "Display name"
 msgstr "顯示名稱"
 
 #: ../lib/modules.inc:473
-msgid ""
-"Displayed account numbers start at \"0\". Add 2 to get the row in your "
+msgid "Displayed account numbers start at \"0\". Add 2 to get the row in your "
 "spreadsheet."
-msgstr ""
+msgstr "顯示的帳號編號從\"0\"開始. 要加上2才是您的試算表上的"
+"列數."
 
 #: ../templates/ou_edit.php:99
 msgid "Do you really want to delete this OU?"
@@ -997,7 +1044,7 @@ msgstr "確定刪除這個PDF架構?"
 msgid "Do you really want to delete this profile?"
 msgstr "確定刪除這個設定檔?"
 
-#: ../lib/modules/kolabUser.inc:570
+#: ../lib/modules/kolabUser.inc:564
 msgid "Do you really want to mark this account for deletion?"
 msgstr "確定將這個帳號標示為刪除?"
 
@@ -1011,14 +1058,14 @@ msgstr "確定更改?"
 
 #: ../lib/modules/sambaAccount.inc:177 ../lib/modules/sambaAccount.inc:321
 #: ../lib/modules/sambaAccount.inc:331 ../lib/modules/sambaAccount.inc:405
-#: ../lib/modules/sambaAccount.inc:807 ../lib/modules/sambaAccount.inc:864
+#: ../lib/modules/sambaAccount.inc:804 ../lib/modules/sambaAccount.inc:861
 #: ../lib/modules/sambaSamAccount.inc:252
 #: ../lib/modules/sambaSamAccount.inc:274
 #: ../lib/modules/sambaSamAccount.inc:400
-#: ../lib/modules/sambaSamAccount.inc:951
-#: ../lib/modules/sambaSamAccount.inc:1154
-#: ../lib/modules/sambaSamAccount.inc:1184
-#: ../lib/modules/sambaSamAccount.inc:1296
+#: ../lib/modules/sambaSamAccount.inc:948
+#: ../lib/modules/sambaSamAccount.inc:1151
+#: ../lib/modules/sambaSamAccount.inc:1181
+#: ../lib/modules/sambaSamAccount.inc:1293
 #: ../lib/modules/sambaGroupMapping.inc:68
 #: ../lib/modules/sambaGroupMapping.inc:220
 #: ../lib/modules/sambaGroupMapping.inc:304
@@ -1031,70 +1078,70 @@ msgstr "網域"
 #: ../lib/modules/sambaGroupMapping.inc:55
 #: ../lib/modules/sambaGroupMapping.inc:277
 msgid "Domain Admins"
-msgstr ""
+msgstr "網域管理者"
 
 #: ../lib/modules/sambaAccount.inc:50 ../lib/modules/sambaSamAccount.inc:66
 #: ../lib/modules/sambaGroupMapping.inc:60
 msgid "Domain Certificate Admins"
-msgstr ""
+msgstr "網域認證管理者"
 
-#: ../lib/modules/sambaAccount.inc:49 ../lib/modules/sambaAccount.inc:548
+#: ../lib/modules/sambaAccount.inc:49 ../lib/modules/sambaAccount.inc:549
 #: ../lib/modules/sambaSamAccount.inc:66
-#: ../lib/modules/sambaSamAccount.inc:603
+#: ../lib/modules/sambaSamAccount.inc:604
 #: ../lib/modules/sambaGroupMapping.inc:58
 msgid "Domain Computers"
-msgstr ""
+msgstr "網域電腦"
 
 #: ../lib/modules/sambaAccount.inc:50 ../lib/modules/sambaSamAccount.inc:66
 #: ../lib/modules/sambaGroupMapping.inc:59
 msgid "Domain Controllers"
-msgstr ""
+msgstr "網域控制器"
 
 #: ../lib/modules/sambaAccount.inc:51 ../lib/modules/sambaSamAccount.inc:67
 #: ../lib/modules/sambaGroupMapping.inc:62
 msgid "Domain Enterprise Admins"
-msgstr ""
+msgstr "網域企業管理者"
 
 #: ../lib/modules/sambaGroupMapping.inc:67
 #: ../lib/modules/sambaGroupMapping.inc:210
 msgid "Domain Group"
-msgstr ""
+msgstr "網域群組"
 
 #: ../lib/modules/sambaAccount.inc:49 ../lib/modules/sambaSamAccount.inc:65
 #: ../lib/modules/sambaGroupMapping.inc:57
 msgid "Domain Guests"
-msgstr ""
+msgstr "網域來賓"
 
 #: ../lib/modules/sambaAccount.inc:52 ../lib/modules/sambaSamAccount.inc:67
 #: ../lib/modules/sambaGroupMapping.inc:63
 msgid "Domain Policy Admins"
-msgstr ""
+msgstr "網域原則管理者"
 
-#: ../lib/types/smbDomain.inc:82 ../lib/modules/sambaDomain.inc:68
-#: ../lib/modules/sambaDomain.inc:98 ../lib/modules/sambaDomain.inc:178
-#: ../lib/modules/sambaDomain.inc:184 ../lib/modules/sambaDomain.inc:369
+#: ../lib/types/smbDomain.inc:82 ../lib/modules/sambaDomain.inc:70
+#: ../lib/modules/sambaDomain.inc:140 ../lib/modules/sambaDomain.inc:226
+#: ../lib/modules/sambaDomain.inc:232 ../lib/modules/sambaDomain.inc:589
 msgid "Domain SID"
 msgstr "網域SID"
 
 #: ../lib/modules/sambaAccount.inc:51 ../lib/modules/sambaSamAccount.inc:67
 #: ../lib/modules/sambaGroupMapping.inc:61
 msgid "Domain Schema Admins"
-msgstr ""
+msgstr "網域 Schema 管理者"
 
 #: ../lib/modules/sambaAccount.inc:48 ../lib/modules/sambaSamAccount.inc:65
-#: ../lib/modules/sambaSamAccount.inc:1553
+#: ../lib/modules/sambaSamAccount.inc:1550
 #: ../lib/modules/sambaGroupMapping.inc:56
 msgid "Domain Users"
-msgstr ""
+msgstr "網域使用者"
 
 #: ../lib/modules/sambaGroupMapping.inc:271
 msgid "Domain administrators"
-msgstr ""
+msgstr "網域管理者"
 
 #: ../lib/types/smbDomain.inc:83 ../lib/modules/sambaAccount.inc:72
-#: ../lib/modules/sambaDomain.inc:64 ../lib/modules/sambaDomain.inc:91
-#: ../lib/modules/sambaDomain.inc:165 ../lib/modules/sambaDomain.inc:171
-#: ../lib/modules/sambaDomain.inc:366
+#: ../lib/modules/sambaDomain.inc:66 ../lib/modules/sambaDomain.inc:133
+#: ../lib/modules/sambaDomain.inc:213 ../lib/modules/sambaDomain.inc:219
+#: ../lib/modules/sambaDomain.inc:586
 msgid "Domain name"
 msgstr "網域名稱"
 
@@ -1104,7 +1151,7 @@ msgid ""
 "and -."
 msgstr "網域名稱包含無效字元,只能使用 a-z, A-Z, 0-9 和 -"
 
-#: ../lib/modules/sambaDomain.inc:141 ../lib/modules/sambaDomain.inc:142
+#: ../lib/modules/sambaDomain.inc:184 ../lib/modules/sambaDomain.inc:185
 msgid "Domain name is invalid!"
 msgstr "網域名稱無效!"
 
@@ -1114,7 +1161,7 @@ msgstr "捐 贈"
 
 #: ../templates/pdfedit/pdfpage.php:469
 msgid "Down"
-msgstr ""
+msgstr "往下"
 
 #: ../templates/masscreate.php:272
 msgid "Download sample CSV file"
@@ -1128,42 +1175,42 @@ msgstr "Windows 分配給使用者個人目錄使用的網路磁碟機編號"
 msgid "E-Mail"
 msgstr "電子信箱"
 
-#: ../lib/modules/kolabUser.inc:143
+#: ../lib/modules/kolabUser.inc:140
 msgid "EMail alias"
 msgstr "電子信箱別名"
 
-#: ../lib/modules/kolabUser.inc:144
+#: ../lib/modules/kolabUser.inc:141
 msgid "EMail alias for this account."
 msgstr "這個帳號的電子信箱別名"
 
-#: ../lib/modules/kolabUser.inc:229
+#: ../lib/modules/kolabUser.inc:226
 msgid "EMail alias is invalid!"
 msgstr "電子信箱別名無效!"
 
-#: ../lib/modules/kolabUser.inc:147
+#: ../lib/modules/kolabUser.inc:144
 msgid "EMail alias list"
 msgstr "電子信箱別名清單"
 
-#: ../lib/modules/kolabUser.inc:230
+#: ../lib/modules/kolabUser.inc:227
 msgid "EMail alias list has invalid format!"
 msgstr "電子信箱別名清單的格式錯誤!"
 
-#: ../lib/modules/kolabUser.inc:193 ../lib/modules/kolabUser.inc:366
-#: ../lib/modules/kolabUser.inc:792
+#: ../lib/modules/kolabUser.inc:190 ../lib/modules/kolabUser.inc:367
+#: ../lib/modules/kolabUser.inc:787
 msgid "EMail aliases"
 msgstr "電子信箱別名"
 
 #: ../lib/modules/sambaSamAccount.inc:442
 msgid "East Australian Standard, Guam"
-msgstr ""
+msgstr "東澳標準時間, 關島"
 
 #: ../lib/modules/sambaSamAccount.inc:434
 msgid "Eastern Europe Time, South Africa"
-msgstr ""
+msgstr "東歐時間, 南非"
 
 #: ../lib/modules/sambaSamAccount.inc:427
 msgid "Eastern Time (US & Canada), Bogota"
-msgstr ""
+msgstr "美東時間(美國和加拿大), 波哥大"
 
 #: ../lib/types/group.inc:142 ../lib/types/user.inc:193 ../lib/lists.inc:370
 msgid "Edit"
@@ -1177,19 +1224,19 @@ msgstr "編輯PDF架構"
 msgid "Edit account types"
 msgstr "編輯帳號類型"
 
-#: ../templates/login.php:174 ../templates/config/mainmanage.php:58
+#: ../templates/config/mainmanage.php:58 ../templates/config/index.php:76
 msgid "Edit general settings"
 msgstr "編輯一般設定"
 
-#: ../lib/modules/posixAccount.inc:899
+#: ../lib/modules/posixAccount.inc:919
 msgid "Edit groups"
 msgstr "設定群組"
 
-#: ../lib/modules/sambaSamAccount.inc:957
+#: ../lib/modules/sambaSamAccount.inc:954
 msgid "Edit logon hours"
 msgstr "設定可登入時間"
 
-#: ../lib/modules/posixGroup.inc:178
+#: ../lib/modules/posixGroup.inc:172
 msgid "Edit members"
 msgstr "設定成員"
 
@@ -1201,25 +1248,29 @@ msgstr "編輯模組"
 msgid "Edit profile"
 msgstr "編輯設定檔"
 
-#: ../templates/login.php:176
+#: ../templates/config/index.php:102
+msgid "Edit self service"
+msgstr "編修 self service"
+
+#: ../templates/config/index.php:88
 msgid "Edit server profiles"
 msgstr "編輯伺服器設定檔"
 
-#: ../lib/modules/sambaAccount.inc:772 ../lib/modules/sambaSamAccount.inc:913
+#: ../lib/modules/sambaAccount.inc:769 ../lib/modules/sambaSamAccount.inc:910
 msgid "Edit workstations"
 msgstr "設定工作站"
 
-#: ../lib/modules/inetOrgPerson.inc:66 ../lib/modules/inetOrgPerson.inc:116
-#: ../lib/modules/inetOrgPerson.inc:163 ../lib/modules/inetOrgPerson.inc:297
-#: ../lib/modules/inetOrgPerson.inc:660 ../lib/modules/inetOrgPerson.inc:815
+#: ../lib/modules/inetOrgPerson.inc:66 ../lib/modules/inetOrgPerson.inc:123
+#: ../lib/modules/inetOrgPerson.inc:170 ../lib/modules/inetOrgPerson.inc:304
+#: ../lib/modules/inetOrgPerson.inc:667 ../lib/modules/inetOrgPerson.inc:822
 msgid "Employee type"
 msgstr "受雇類別"
 
-#: ../lib/modules/inetOrgPerson.inc:298
+#: ../lib/modules/inetOrgPerson.inc:305
 msgid "Employee type: Contractor, Employee, Intern, Temp, External, ..."
 msgstr "受雇類別:包商,雇員,實習者,臨時員工..."
 
-#: ../templates/login.php:357
+#: ../templates/login.php:359
 msgid "Empty password submitted. Please try again."
 msgstr "密碼空白,請重試."
 
@@ -1229,7 +1280,7 @@ msgstr "搜尋時發生錯誤."
 
 #: ../lib/modules/sambaSamAccount.inc:420
 msgid "Eniwetok, Kwajalein"
-msgstr ""
+msgstr "埃尼威托克島, 瓜加林島"
 
 #: ../templates/tree/add_value_form.php:137
 msgid "Enter the value you would like to add:"
@@ -1255,7 +1306,7 @@ msgstr "相等比對規則"
 
 #: ../templates/config/mainmanage.php:207
 msgid "Error"
-msgstr ""
+msgstr "錯誤"
 
 #: ../templates/delete.php:230
 #, php-format
@@ -1263,11 +1314,9 @@ msgid "Error while deleting DN: %s"
 msgstr "刪除DN: %s 時發生錯誤"
 
 #: ../help/help.inc:130
-msgid ""
-"Every account type needs exactly one base module. This module provides a "
+msgid "Every account type needs exactly one base module. This module provides a "
 "structural object class."
-msgstr ""
-"每個帳號類型都一定要有一個基本模組.這個模組提供一個結構性(structural)的物件類"
+msgstr "每個帳號類型都一定要有一個基本模組.這個模組提供一個結構性(structural)的物件類"
 "別."
 
 #: ../help/help.inc:73 ../help/help.inc:79 ../help/help.inc:85
@@ -1306,9 +1355,10 @@ msgstr "新增項目失敗!"
 msgid "Failed to delete entry %s"
 msgstr "刪除 %s 項目失敗!"
 
-#: ../lib/modules/inetOrgPerson.inc:54 ../lib/modules/inetOrgPerson.inc:211
-#: ../lib/modules/inetOrgPerson.inc:329 ../lib/modules/inetOrgPerson.inc:330
-#: ../lib/modules/inetOrgPerson.inc:639 ../lib/modules/inetOrgPerson.inc:823
+#: ../lib/modules/inetOrgPerson.inc:54 ../lib/modules/inetOrgPerson.inc:114
+#: ../lib/modules/inetOrgPerson.inc:218 ../lib/modules/inetOrgPerson.inc:336
+#: ../lib/modules/inetOrgPerson.inc:337 ../lib/modules/inetOrgPerson.inc:646
+#: ../lib/modules/inetOrgPerson.inc:830 ../lib/modules/inetOrgPerson.inc:1106
 msgid "Fax number"
 msgstr "傳真號碼"
 
@@ -1317,20 +1367,16 @@ msgid "File"
 msgstr "檔案"
 
 #: ../lib/modules/sambaSamAccount.inc:228
-msgid ""
-"File name and path relative to netlogon-share which should be executed on "
+msgid "File name and path relative to netlogon-share which should be executed on "
 "logon. $user and $group are replaced with user and group name."
-msgstr ""
-"在使用者登入時會自動執行的指令檔檔名及其相對路徑. $user 和$group 會以使用者及"
+msgstr "在使用者登入時會自動執行的指令檔檔名及其相對路徑. $user 和$group 會以使用者及"
 "群組名稱來置換"
 
 #: ../lib/modules/sambaAccount.inc:388
-msgid ""
-"File name and path relative to the netlogon-share which should be executed "
+msgid "File name and path relative to the netlogon-share which should be executed "
 "on logon. $user and $group are replaced with user and group name."
-msgstr ""
-"登入時自動執行的檔案名稱及其相對路徑.$user 會$group 會以使用者及群組名稱所置"
-"換"
+msgstr "登入時自動執行的檔案名稱及其相對路徑."
+"$user 會$group 會以使用者及群組名稱所置換."
 
 #: ../templates/tools.php:62 ../templates/masscreate.php:121
 msgid "File upload"
@@ -1345,8 +1391,9 @@ msgid "Filter"
 msgstr "搜尋過濾器"
 
 #: ../lib/types/user.inc:87 ../lib/modules/inetOrgPerson.inc:46
-#: ../lib/modules/inetOrgPerson.inc:138 ../lib/modules/inetOrgPerson.inc:289
-#: ../lib/modules/inetOrgPerson.inc:551 ../lib/modules/inetOrgPerson.inc:813
+#: ../lib/modules/inetOrgPerson.inc:112 ../lib/modules/inetOrgPerson.inc:145
+#: ../lib/modules/inetOrgPerson.inc:296 ../lib/modules/inetOrgPerson.inc:558
+#: ../lib/modules/inetOrgPerson.inc:820 ../lib/modules/inetOrgPerson.inc:1066
 msgid "First name"
 msgstr "名字"
 
@@ -1354,71 +1401,69 @@ msgstr "名字"
 msgid "First name contains invalid characters!"
 msgstr "名字包含無效字元"
 
-#: ../lib/modules/inetOrgPerson.inc:290
+#: ../lib/modules/inetOrgPerson.inc:297
 msgid "First name of user. Only letters, - and spaces are allowed."
 msgstr "使用者的名字(first name),只容許使用字母,-(減號)和空白"
 
-#: ../lib/modules/kolabUser.inc:128
+#: ../lib/modules/kolabUser.inc:125
 msgid "For automatic invitation handling."
-msgstr ""
+msgstr "處理自動的invitation"
 
-#: ../lib/modules/kolabUser.inc:92 ../lib/modules/kolabUser.inc:159
-#: ../lib/modules/kolabUser.inc:205 ../lib/modules/kolabUser.inc:311
-#: ../lib/modules/kolabUser.inc:770
+#: ../lib/modules/kolabUser.inc:89 ../lib/modules/kolabUser.inc:156
+#: ../lib/modules/kolabUser.inc:202 ../lib/modules/kolabUser.inc:312
+#: ../lib/modules/kolabUser.inc:765
 msgid "Free/Busy interval"
 msgstr "Free/Busy 間隔時間"
 
-#: ../lib/modules/kolabUser.inc:237 ../lib/modules/kolabUser.inc:238
+#: ../lib/modules/kolabUser.inc:234 ../lib/modules/kolabUser.inc:235
 msgid "Free/Busy interval must be a number!"
 msgstr "Free/Busy的間隔必須是時間一個數字!"
 
-#: ../lib/modules/sambaSamAccount.inc:1015
+#: ../lib/modules/sambaSamAccount.inc:1012
 msgid "Friday"
 msgstr "星期五"
 
 #: ../lib/types/host.inc:87 ../lib/types/group.inc:83 ../lib/types/user.inc:84
-#: ../lib/modules/posixGroup.inc:169 ../lib/modules/posixGroup.inc:372
-#: ../lib/modules/posixGroup.inc:402 ../lib/modules/posixGroup.inc:434
-#: ../lib/modules/posixGroup.inc:478 ../lib/modules/posixGroup.inc:498
-#: ../lib/modules/posixAccount.inc:48 ../lib/modules/posixAccount.inc:1121
+#: ../lib/modules/posixGroup.inc:163 ../lib/modules/posixGroup.inc:362
+#: ../lib/modules/posixGroup.inc:392 ../lib/modules/posixGroup.inc:420
+#: ../lib/modules/posixGroup.inc:464 ../lib/modules/posixGroup.inc:485
+#: ../lib/modules/posixAccount.inc:56 ../lib/modules/posixAccount.inc:1137
 #: ../lib/modules/sambaGroupMapping.inc:323
 msgid "GID number"
 msgstr "GID編號"
 
-#: ../lib/modules/posixGroup.inc:498
+#: ../lib/modules/posixGroup.inc:485
 msgid ""
 "GID number has changed. Please select checkbox to change GID number of users "
 "and hosts."
 msgstr "GID的編號已經更改,請選擇核取方塊來改變使用者帳號和主機帳號的GID"
 
-#: ../lib/modules/posixAccount.inc:48
+#: ../lib/modules/posixAccount.inc:56
 #, php-format
-msgid ""
-"GID number has changed. To keep file ownership you have to run the following "
+msgid "GID number has changed. To keep file ownership you have to run the following "
 "command as root: 'find / -gid %s -uid %s -exec chgrp %s {} \\;'"
-msgstr ""
-"GID的編號已經更改,要保持正確的檔案擁有群組,您必須以root的身分執行以下命令: "
+msgstr "GID的編號已經更改,要保持正確的檔案擁有群組,您必須以root的身分執行以下命令: "
 "'find / -gid %s -uid %s -exec chgrp %s {} \\;'"
 
-#: ../lib/modules/posixGroup.inc:505
+#: ../lib/modules/posixGroup.inc:492
 msgid "GID number has to be a numeric value!"
 msgstr "GID必須使用數字"
 
-#: ../lib/modules/posixGroup.inc:328
+#: ../lib/modules/posixGroup.inc:318
 msgid "GID ranges for Unix groups"
 msgstr "unix群組使用的GID範圍"
 
-#: ../lib/modules/posixAccount.inc:252 ../lib/modules/posixAccount.inc:284
-#: ../lib/modules/posixAccount.inc:354 ../lib/modules/posixAccount.inc:400
-#: ../lib/modules/posixAccount.inc:888 ../lib/modules/posixAccount.inc:1122
+#: ../lib/modules/posixAccount.inc:264 ../lib/modules/posixAccount.inc:296
+#: ../lib/modules/posixAccount.inc:366 ../lib/modules/posixAccount.inc:408
+#: ../lib/modules/posixAccount.inc:908 ../lib/modules/posixAccount.inc:1138
 msgid "Gecos"
 msgstr "備註資料(Gecos)"
 
-#: ../lib/modules/posixGroup.inc:184 ../lib/modules/posixAccount.inc:915
+#: ../lib/modules/posixGroup.inc:178 ../lib/modules/posixAccount.inc:935
 msgid "Generate password"
 msgstr "產生密碼"
 
-#: ../lib/modules/kolabUser.inc:182
+#: ../lib/modules/kolabUser.inc:179
 msgid "Germany"
 msgstr "德國"
 
@@ -1427,34 +1472,37 @@ msgstr "德國"
 msgid "Go"
 msgstr "開始"
 
-#: ../lib/modules/quota.inc:102 ../lib/modules/quota.inc:306
+#: ../lib/modules/quota.inc:102 ../lib/modules/quota.inc:302
 msgid "Grace block period"
 msgstr "區塊配額的寬限期"
 
 #: ../lib/modules/quota.inc:103
-msgid ""
-"Grace block period. Most filesystems use a fixed maximum value of 7 days."
+msgid "Grace block period. Most filesystems use a fixed maximum value of 7 days."
 msgstr "區塊配額的寬限期,大部分的檔案系統都設定最大為7天."
 
 #: ../lib/modules/quota.inc:119
-msgid ""
-"Grace inode (files) period. Most filesystems use a fixed maximum value of 7 "
+msgid "Grace inode (files) period. Most filesystems use a fixed maximum value of 7 "
 "days."
-msgstr "inode(檔案數目)配額的寬限期,大部分的檔案系統都設定最大為7天."
+msgstr "inode(檔案數目)配額的寬限期,大部分的檔案系統都設定最大為7"
+"天."
 
-#: ../lib/modules/quota.inc:118 ../lib/modules/quota.inc:310
+#: ../lib/modules/quota.inc:118 ../lib/modules/quota.inc:306
 msgid "Grace inode period"
 msgstr "inode(檔案數目)配額的寬限期"
+
+#: ../templates/selfService/adminMain.php:460
+msgid "Group"
+msgstr "群組"
 
 #: ../lib/types/group.inc:53
 msgid "Group accounts (e.g. Unix and Samba)"
 msgstr "群組帳號(例如:Unix和Samba)"
 
-#: ../lib/types/group.inc:86 ../lib/modules/posixGroup.inc:378
+#: ../lib/types/group.inc:86 ../lib/modules/posixGroup.inc:368
 msgid "Group description"
 msgstr "群組說明"
 
-#: ../lib/modules/posixGroup.inc:407
+#: ../lib/modules/posixGroup.inc:397
 msgid "Group description. If left empty group name will be used."
 msgstr "群組的說明,若留空白,則預設值是群組名稱."
 
@@ -1462,43 +1510,43 @@ msgstr "群組的說明,若留空白,則預設值是群組名稱."
 msgid "Group member DNs"
 msgstr "群組成員的DN"
 
-#: ../lib/types/group.inc:84 ../lib/modules/posixGroup.inc:177
-#: ../lib/modules/posixGroup.inc:242 ../lib/modules/posixGroup.inc:384
-#: ../lib/modules/posixGroup.inc:410 ../lib/modules/posixGroup.inc:414
-#: ../lib/modules/posixGroup.inc:479
+#: ../lib/types/group.inc:84 ../lib/modules/posixGroup.inc:171
+#: ../lib/modules/posixGroup.inc:232 ../lib/modules/posixGroup.inc:374
+#: ../lib/modules/posixGroup.inc:400 ../lib/modules/posixGroup.inc:404
+#: ../lib/modules/posixGroup.inc:465
 msgid "Group members"
 msgstr "群組成員"
 
-#: ../lib/types/group.inc:82 ../lib/modules/posixGroup.inc:165
-#: ../lib/modules/posixGroup.inc:364 ../lib/modules/posixGroup.inc:398
-#: ../lib/modules/posixGroup.inc:477 ../lib/modules/posixGroup.inc:506
-#: ../lib/modules/posixGroup.inc:507 ../lib/modules/posixGroup.inc:508
+#: ../lib/types/group.inc:82 ../lib/modules/posixGroup.inc:159
+#: ../lib/modules/posixGroup.inc:354 ../lib/modules/posixGroup.inc:388
+#: ../lib/modules/posixGroup.inc:463 ../lib/modules/posixGroup.inc:493
+#: ../lib/modules/posixGroup.inc:494 ../lib/modules/posixGroup.inc:495
 msgid "Group name"
 msgstr "群組名稱"
 
-#: ../lib/modules/posixGroup.inc:508 ../lib/modules/posixGroup.inc:509
-msgid ""
-"Group name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 "
+#: ../lib/modules/posixGroup.inc:495 ../lib/modules/posixGroup.inc:496
+msgid "Group name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 "
 "and .-_ !"
-msgstr "群組名稱包含無效字元,可用的字元為: a-z, A-Z, 0-9, 及 -(減號)_(底線) !"
+msgstr "群組名稱包含無效字元,可用的字元為: a-z, A-Z, 0-9, 及 "
+"-(減號)_(底線) !"
 
-#: ../lib/modules/posixGroup.inc:507
+#: ../lib/modules/posixGroup.inc:494
 msgid "Group name in use. Selected next free group name."
 msgstr "群組名稱已被使用,請選擇可用的群組名稱."
 
-#: ../lib/modules/posixGroup.inc:399
-msgid ""
-"Group name of the group which should be created. Valid characters are: a-z,0-"
+#: ../lib/modules/posixGroup.inc:389
+msgid "Group name of the group which should be created. Valid characters are: a-z,0-"
 "9, .-_. LAM does not allow a number as first character because groupadd also "
 "does not allow it. LAM does not allow capital letters A-Z because it can "
 "cause several problems. If group name is already used group name will be "
 "expanded with a number. The next free number will be used."
-msgstr ""
-"群組名稱.可用的字元為:a-z,0-9,.-_ .因為groupadd指令不允許以數字開頭的群組名"
-"稱,所以LAM也不允許.另外也不能使用大寫字母,因為會造成一些問題.如果該群組名稱已"
-"經存在,則會在結尾自動加上下一個可用的數字"
+msgstr "群組名稱.可用的字元為:a-z,0-9,.-_ ."
+"因為groupadd指令不允許以數字開頭的群組名稱,"
+"所以LAM也不允許."
+"另外也不能使用大寫字母,因為會造成一些問題."
+"如果該群組名稱已經存在,則會在結尾自動加上下一個可用的數字"
 
-#: ../lib/modules/posixGroup.inc:390 ../lib/modules/posixGroup.inc:418
+#: ../lib/modules/posixGroup.inc:380 ../lib/modules/posixGroup.inc:408
 msgid "Group password"
 msgstr "群組密碼"
 
@@ -1510,31 +1558,31 @@ msgstr "群組類型"
 msgid "Groups"
 msgstr "群組帳號"
 
-#: ../lib/modules/quota.inc:439
+#: ../lib/modules/quota.inc:435
 msgid "Hard block"
 msgstr "區塊配碩"
 
 #: ../lib/modules/quota.inc:98 ../lib/modules/quota.inc:99
-#: ../lib/modules/quota.inc:305 ../lib/modules/quota.inc:362
+#: ../lib/modules/quota.inc:301 ../lib/modules/quota.inc:358
 msgid "Hard block limit"
-msgstr ""
+msgstr "硬性區塊配額限制"
 
-#: ../lib/modules/quota.inc:441
+#: ../lib/modules/quota.inc:437
 msgid "Hard inode"
-msgstr ""
+msgstr "硬性檔案數目"
 
 #: ../lib/modules/quota.inc:115
 msgid "Hard inode (files) limit"
-msgstr ""
+msgstr "硬性檔案數目限制"
 
-#: ../lib/modules/quota.inc:114 ../lib/modules/quota.inc:309
-#: ../lib/modules/quota.inc:364
+#: ../lib/modules/quota.inc:114 ../lib/modules/quota.inc:305
+#: ../lib/modules/quota.inc:360
 msgid "Hard inode limit"
-msgstr ""
+msgstr "硬性檔案數目限制"
 
 #: ../lib/modules/sambaSamAccount.inc:422
 msgid "Hawaii"
-msgstr ""
+msgstr "夏威夷"
 
 #: ../templates/pdfedit/pdfpage.php:415
 msgid "Headline"
@@ -1561,6 +1609,21 @@ msgstr "標題"
 #: ../templates/config/confmain.php:352 ../templates/config/confmain.php:366
 #: ../templates/config/conftypes.php:201 ../templates/config/conftypes.php:217
 #: ../templates/config/conflogin.php:128 ../templates/config/mainlogin.php:119
+#: ../templates/selfService/profManage.php:159
+#: ../templates/selfService/profManage.php:199
+#: ../templates/selfService/profManage.php:234
+#: ../templates/selfService/profManage.php:258
+#: ../templates/selfService/adminLogin.php:125
+#: ../templates/selfService/adminMain.php:235
+#: ../templates/selfService/adminMain.php:249
+#: ../templates/selfService/adminMain.php:263
+#: ../templates/selfService/adminMain.php:277
+#: ../templates/selfService/adminMain.php:300
+#: ../templates/selfService/adminMain.php:320
+#: ../templates/selfService/adminMain.php:335
+#: ../templates/selfService/adminMain.php:350
+#: ../templates/selfService/adminMain.php:434
+#: ../templates/selfService/adminMain.php:468
 #: ../templates/pdfedit/pdfpage.php:750
 #: ../templates/profedit/profilepage.php:195
 #: ../templates/profedit/profilepage.php:215
@@ -1570,10 +1633,10 @@ msgid "Help"
 msgstr "說明"
 
 #: ../templates/masscreate.php:142
-msgid ""
-"Here is a list of possible columns. The red columns must be included in the "
+msgid "Here is a list of possible columns. The red columns must be included in the "
 "CSV file and filled with data for all accounts."
-msgstr ""
+msgstr "這裡有一些可能的欄位.紅色的欄位必須包含在CSV檔內,"
+"而且填上用所有帳號的資料."
 
 #: ../templates/tools.php:84
 msgid "Here you can browse LDAP object classes and attributes."
@@ -1583,25 +1646,25 @@ msgstr "可以瀏覽LDAP中的物件類別及屬性."
 msgid "Here you can create multiple accounts by providing a CSV file."
 msgstr "您可以上傳CSV檔來建立大量帳號"
 
-#: ../lib/modules/posixAccount.inc:338
-msgid ""
-"Here you can enter a list of additional group memberships. The group names "
+#: ../lib/modules/sambaDomain.inc:111
+msgid "Here you can define to deactivate accounts after bad logon attempts."
+msgstr "您可以在這裡定義錯誤登入嘗試多次後即停用帳號."
+
+#: ../lib/modules/posixAccount.inc:350
+msgid "Here you can enter a list of additional group memberships. The group names "
 "are separated by commas."
-msgstr ""
+msgstr "您可以在此輸入一些額外的群組成員."
+"群組名稱以逗點分隔."
 
 #: ../help/help.inc:140
-msgid ""
-"Here you can input small filter expressions (e.g. 'value' or 'v*'). LAM will "
+msgid "Here you can input small filter expressions (e.g. 'value' or 'v*'). LAM will "
 "filter case-insensitive."
-msgstr ""
-"您可以在此輸入簡單的過濾搜尋語法(例如:'value'或'v*').在搜尋時不分大小寫."
+msgstr "您可以在此輸入簡單的過濾搜尋語法(例如:'value'或'v*').在搜尋時不分大小寫."
 
 #: ../help/help.inc:153
-msgid ""
-"Here you can load an account profile to set default settings for your "
+msgid "Here you can load an account profile to set default settings for your "
 "account. The \"default\" profile is automatically loaded for new accounts."
-msgstr ""
-"您可以指定一個帳號原則的設定檔來設定帳號的預設值.新增的帳號會自動使用"
+msgstr "您可以指定一個帳號原則的設定檔來設定帳號的預設值.新增的帳號會自動使用"
 "\"default\"設定檔."
 
 #: ../templates/tools.php:56
@@ -1611,74 +1674,78 @@ msgstr "您可以在此編輯帳號設定檔."
 #: ../help/help.inc:157
 msgid ""
 "Here you can select a PDF structure and export the account to a PDF file."
-msgstr ""
+msgstr "您可以在此選擇一個PDF架構,然後將帳號滙出成PDF檔."
 
 #: ../help/help.inc:136
-msgid ""
-"Here you can select where LAM should save its log messages. System logging "
+msgid "Here you can select where LAM should save its log messages. System logging "
 "will go to Syslog on Unix systems and event log on Windows. You can also "
 "select an extra file."
-msgstr ""
+msgstr "您可以在此選擇LAM要將記錄的訊息存放在何處."
+"系統記錄在Unix系統上表示Syslog,在Windows系統上表示事件記錄."
+"您也可以選擇一個其他檔案."
 
 #: ../help/help.inc:113
-msgid ""
-"Here you can select which plugins you want to use for account management."
+msgid "Here you can select which plugins you want to use for account management."
 msgstr "您可以選擇一些帳號管理的額外功能(plugins)"
+
+#: ../lib/modules/sambaDomain.inc:91
+msgid "Here you can specify the minimum number of characters for a user password."
+msgstr "您可以在此指定使用者密碼的最小長度."
 
 #: ../templates/tree/edit.php:104
 msgid "Hide internal attributes"
 msgstr "隱藏內部屬性"
 
 #: ../templates/masscreate.php:127
-msgid ""
-"Hint: Format all cells as text in your spreadsheet program and turn off auto "
+msgid "Hint: Format all cells as text in your spreadsheet program and turn off auto "
 "correction."
-msgstr ""
+msgstr "提示: 將試算表的表格格式設定為文字,然後關閉"
+"自動修正的功能"
 
 #: ../templates/tree/edit.php:121
 msgid "Hint: To delete an attribute, empty the text field and click save."
 msgstr "提示:要刪除一個屬性,只要將其欄位值清空然後按儲存."
 
-#: ../lib/modules/posixAccount.inc:387
+#: ../lib/modules/posixAccount.inc:395
 msgid "Hold the CTRL-key to (de)select multiple groups."
 msgstr "按CTRL鍵可以複選群組."
 
-#: ../lib/types/user.inc:89 ../lib/modules/posixAccount.inc:43
-#: ../lib/modules/posixAccount.inc:71 ../lib/modules/posixAccount.inc:72
-#: ../lib/modules/posixAccount.inc:223 ../lib/modules/posixAccount.inc:341
-#: ../lib/modules/posixAccount.inc:345 ../lib/modules/posixAccount.inc:362
-#: ../lib/modules/posixAccount.inc:723 ../lib/modules/posixAccount.inc:902
-#: ../lib/modules/posixAccount.inc:1049 ../lib/modules/posixAccount.inc:1125
+#: ../lib/types/user.inc:89 ../lib/modules/posixAccount.inc:51
+#: ../lib/modules/posixAccount.inc:79 ../lib/modules/posixAccount.inc:80
+#: ../lib/modules/posixAccount.inc:235 ../lib/modules/posixAccount.inc:353
+#: ../lib/modules/posixAccount.inc:357 ../lib/modules/posixAccount.inc:374
+#: ../lib/modules/posixAccount.inc:719 ../lib/modules/posixAccount.inc:922
+#: ../lib/modules/posixAccount.inc:1065 ../lib/modules/posixAccount.inc:1141
 msgid "Home directory"
 msgstr "個人目錄"
 
-#: ../lib/modules/posixAccount.inc:43
+#: ../lib/modules/posixAccount.inc:51
 #, php-format
-msgid ""
-"Home directory changed. To keep home directory you have to run the following "
+msgid "Home directory changed. To keep home directory you have to run the following "
 "command as root: 'mv %s %s'"
-msgstr ""
+msgstr "使用者目錄已被改變. 要維持一致性,您應該以root的身分執行以下命令:"
+"'mv %s %s'"
 
 #: ../lib/modules/sambaAccount.inc:146 ../lib/modules/sambaAccount.inc:277
-#: ../lib/modules/sambaAccount.inc:378 ../lib/modules/sambaAccount.inc:759
-#: ../lib/modules/sambaAccount.inc:860 ../lib/modules/sambaSamAccount.inc:218
+#: ../lib/modules/sambaAccount.inc:378 ../lib/modules/sambaAccount.inc:756
+#: ../lib/modules/sambaAccount.inc:857 ../lib/modules/sambaSamAccount.inc:218
 #: ../lib/modules/sambaSamAccount.inc:346
-#: ../lib/modules/sambaSamAccount.inc:900
-#: ../lib/modules/sambaSamAccount.inc:1119
-#: ../lib/modules/sambaSamAccount.inc:1292
+#: ../lib/modules/sambaSamAccount.inc:897
+#: ../lib/modules/sambaSamAccount.inc:1116
+#: ../lib/modules/sambaSamAccount.inc:1289
 msgid "Home drive"
 msgstr "個人目錄網路磁碟"
 
 #: ../lib/modules/sambaAccount.inc:61 ../lib/modules/sambaAccount.inc:62
 #: ../lib/modules/sambaAccount.inc:152 ../lib/modules/sambaAccount.inc:283
-#: ../lib/modules/sambaAccount.inc:381 ../lib/modules/sambaAccount.inc:762
-#: ../lib/modules/sambaAccount.inc:859 ../lib/modules/sambaSamAccount.inc:76
+#: ../lib/modules/sambaAccount.inc:381 ../lib/modules/sambaAccount.inc:759
+#: ../lib/modules/sambaAccount.inc:856 ../lib/modules/sambaSamAccount.inc:76
 #: ../lib/modules/sambaSamAccount.inc:77
 #: ../lib/modules/sambaSamAccount.inc:221
 #: ../lib/modules/sambaSamAccount.inc:352
-#: ../lib/modules/sambaSamAccount.inc:903
-#: ../lib/modules/sambaSamAccount.inc:1125
-#: ../lib/modules/sambaSamAccount.inc:1291
+#: ../lib/modules/sambaSamAccount.inc:900
+#: ../lib/modules/sambaSamAccount.inc:1122
+#: ../lib/modules/sambaSamAccount.inc:1288
 msgid "Home path"
 msgstr "個人目錄的路徑"
 
@@ -1687,20 +1754,20 @@ msgstr "個人目錄的路徑"
 msgid "Home path is invalid."
 msgstr "個人目錄路徑無效"
 
-#: ../lib/modules/posixAccount.inc:71 ../lib/modules/posixAccount.inc:73
+#: ../lib/modules/posixAccount.inc:79 ../lib/modules/posixAccount.inc:81
 msgid "Homedirectory contains invalid characters."
 msgstr "個人目錄包含無效字元"
 
 #: ../lib/types/host.inc:53
 msgid "Host accounts (e.g. Samba)"
-msgstr ""
+msgstr "主機帳號(例如 Samba)"
 
 #: ../lib/types/host.inc:85
 msgid "Host description"
 msgstr "主機說明"
 
-#: ../lib/modules/account.inc:80 ../lib/modules/posixAccount.inc:401
-#: ../lib/modules/posixAccount.inc:409
+#: ../lib/modules/account.inc:80 ../lib/modules/posixAccount.inc:409
+#: ../lib/modules/posixAccount.inc:417
 msgid "Host description. If left empty host name will be used."
 msgstr "主機的說明,若留空白,預設使用主機名稱."
 
@@ -1709,64 +1776,62 @@ msgid "Host list"
 msgstr "主機清單"
 
 #: ../lib/types/host.inc:82 ../lib/types/host.inc:83
-#: ../lib/modules/posixAccount.inc:85 ../lib/modules/posixAccount.inc:86
-#: ../lib/modules/posixAccount.inc:88 ../lib/modules/posixAccount.inc:263
-#: ../lib/modules/posixAccount.inc:396
+#: ../lib/modules/posixAccount.inc:93 ../lib/modules/posixAccount.inc:94
+#: ../lib/modules/posixAccount.inc:96 ../lib/modules/posixAccount.inc:275
+#: ../lib/modules/posixAccount.inc:404
 msgid "Host name"
 msgstr "主機名稱"
 
-#: ../lib/modules/posixAccount.inc:92
+#: ../lib/modules/posixAccount.inc:100
 msgid "Host name already exists!"
 msgstr "主機名稱已經存在!"
 
-#: ../lib/modules/posixAccount.inc:90
+#: ../lib/modules/posixAccount.inc:98
 msgid ""
 "Host name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 "
 "and .-_ !"
 msgstr "主機名稱包含無效字元,可用的字元包含 a-z, A-Z, 0-9 及 .-_"
 
-#: ../lib/modules/posixAccount.inc:86
-msgid ""
-"Host name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 "
+#: ../lib/modules/posixAccount.inc:94
+msgid "Host name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 "
 "and .-_ ! Host name must end with $ !"
-msgstr ""
-"主機名稱包含無效字元,可用的字元包含 a-z, A-Z, 0-9 及 .-_ ! 主機名稱必須以$結"
-"束!"
+msgstr "主機名稱包含無效字元,可用的字元包含 a-z, A-Z, 0-9 及 .-_ ! "
+"主機名稱必須以 $ 結束!"
 
-#: ../lib/modules/posixAccount.inc:88
+#: ../lib/modules/posixAccount.inc:96
 msgid "Host name in use. Selected next free host name."
-msgstr ""
+msgstr "主機名稱已被使用,請選擇可用的主機名稱."
 
-#: ../lib/modules/posixAccount.inc:397
-msgid ""
-"Host name of the host which should be created. Valid characters are: a-z,0-"
+#: ../lib/modules/posixAccount.inc:405
+msgid "Host name of the host which should be created. Valid characters are: a-z,0-"
 "9, .-_$. LAM does not allow a number as first character because useradd also "
 "does not allow it. LAM does not allow capital letters A-Z because it can "
 "cause several problems. Host names are always ending with $. If last "
 "character is not $ it will be added. If host name is already used host name "
 "will be expanded with a number. The next free number will be used."
-msgstr ""
-"主機名稱.可用的字元為:a-z,0-9,.-_$ .因為useradd指令不允許以數字開頭的名稱,所"
-"以LAM也不允許.另外也不能使用大寫字母,因為會造成一些問題.主機名稱必須以$結尾."
-"如果不是,系統會自動加上.如果該主機名稱已經存在,則會在結尾自動加上下一個可用的"
-"數字"
+msgstr "主機必須指定主機名稱.可用的字元為:a-z,0-9,.-_$ ."
+"因為useradd指令不允許以數字開頭的名稱,所以LAM也不允許."
+"另外也不能使用大寫字母,因為會造成一些問題.主機名稱必須以$結尾."
+"如果不是,系統會自動加上."
+"如果該主機名稱已經存在,"
+"則會在結尾自動加上下一個可用的數字"
 
-#: ../lib/types/host.inc:44 ../lib/modules/posixAccount.inc:66
-#: ../lib/modules/posixAccount.inc:67 ../lib/modules/posixAccount.inc:69
-#: ../lib/modules/posixAccount.inc:155
+#: ../lib/types/host.inc:44 ../lib/modules/posixAccount.inc:74
+#: ../lib/modules/posixAccount.inc:75 ../lib/modules/posixAccount.inc:77
+#: ../lib/modules/posixAccount.inc:167
 msgid "Hosts"
 msgstr "主機帳號"
 
-#: ../lib/modules/posixGroup.inc:501 ../lib/modules/posixGroup.inc:629
-#: ../lib/modules/posixAccount.inc:76 ../lib/modules/posixAccount.inc:669
+#: ../lib/modules/posixGroup.inc:488 ../lib/modules/posixGroup.inc:616
+#: ../lib/modules/posixAccount.inc:84 ../lib/modules/posixAccount.inc:675
 msgid "ID is already in use"
 msgstr "ID已經存在"
 
-#: ../lib/modules/posixGroup.inc:499 ../lib/modules/posixGroup.inc:500
-#: ../lib/modules/posixGroup.inc:501 ../lib/modules/posixGroup.inc:625
-#: ../lib/modules/posixGroup.inc:629 ../lib/modules/posixAccount.inc:74
-#: ../lib/modules/posixAccount.inc:75 ../lib/modules/posixAccount.inc:76
-#: ../lib/modules/posixAccount.inc:665 ../lib/modules/posixAccount.inc:669
+#: ../lib/modules/posixGroup.inc:486 ../lib/modules/posixGroup.inc:487
+#: ../lib/modules/posixGroup.inc:488 ../lib/modules/posixGroup.inc:608
+#: ../lib/modules/posixGroup.inc:616 ../lib/modules/posixAccount.inc:82
+#: ../lib/modules/posixAccount.inc:83 ../lib/modules/posixAccount.inc:84
+#: ../lib/modules/posixAccount.inc:671 ../lib/modules/posixAccount.inc:675
 msgid "ID-Number"
 msgstr "ID編號"
 
@@ -1779,7 +1844,7 @@ msgstr "名稱"
 msgid "If checked Unix password will also be used as Samba password."
 msgstr "使用Unix的密碼當smaba的密碼."
 
-#: ../lib/modules/posixGroup.inc:427 ../lib/modules/posixAccount.inc:375
+#: ../lib/modules/posixGroup.inc:417 ../lib/modules/posixAccount.inc:387
 msgid ""
 "If checked account will be deactivated by putting a \"!\" before the "
 "encrypted password."
@@ -1789,8 +1854,7 @@ msgstr "這個帳號將會被停用,就是在加密的密碼前放上!號."
 msgid "If checked account will be deactivated. (Setting D-Flag)"
 msgstr "帳號會被關閉(設定 D 旗標)"
 
-#: ../lib/modules/posixGroup.inc:423 ../lib/modules/sambaAccount.inc:356
-#: ../lib/modules/sambaSamAccount.inc:196 ../lib/modules/posixAccount.inc:371
+#: ../lib/modules/sambaAccount.inc:356 ../lib/modules/sambaSamAccount.inc:196
 msgid "If checked no password will be used."
 msgstr "該帳號不需密碼"
 
@@ -1798,15 +1862,19 @@ msgstr "該帳號不需密碼"
 msgid "If checked password does not expire. (Setting X-Flag)"
 msgstr "該帳號的密碼不會過期(設定 X 旗標)"
 
-#: ../lib/modules/posixGroup.inc:403
+#: ../lib/modules/posixGroup.inc:393
 msgid ""
 "If empty GID number will be generated automaticly depending on your "
 "configuration settings."
 msgstr "若留空白,依則會自動產生,端視於您的環境設定."
 
-#: ../lib/modules/posixAccount.inc:330
+#: ../lib/modules/posixAccount.inc:342
 msgid "If empty UID number will be generated automaticly."
 msgstr "若留空白,則會自動產生."
+
+#: ../lib/modules/sambaDomain.inc:99
+msgid "If set then users need to login to change their password."
+msgstr "若被設定,則使用者必須先更改其密碼才能登入."
 
 #: ../lib/modules/sambaAccount.inc:353 ../lib/modules/sambaSamAccount.inc:193
 msgid "If set to \"true\" Unix password will also be used as Samba password."
@@ -1849,8 +1917,7 @@ msgstr "建立網域管理者或其他特殊帳號."
 #: ../lib/modules/sambaAccount.inc:397
 #: ../lib/modules/sambaGroupMapping.inc:297
 msgid "If you want to use a well known RID you can selcet a well known group."
-msgstr ""
-"如果您想要使用著名的(well-known)的RID,您可以選擇一個著名的(well-known)群組."
+msgstr "如果您想要使用著名的(well-known)的RID,您可以選擇一個著名的(well-known)群組."
 
 #: ../templates/tree/export_form.php:120
 msgid "Include system attributes"
@@ -1892,6 +1959,10 @@ msgstr "inode軟性配額包含無效字元.只能使用自然數."
 msgid "Inode soft quota must be smaller than inode hard quota."
 msgstr "inode軟性配額必須小於硬性配額."
 
+#: ../templates/selfService/adminMain.php:362
+msgid "Input fields"
+msgstr "輸入欄位"
+
 #: ../lib/modules/sambaAccount.inc:62 ../lib/modules/sambaAccount.inc:63
 #: ../lib/modules/sambaSamAccount.inc:77
 msgid "Inserted user or group name in home path."
@@ -1914,44 +1985,34 @@ msgstr "無效的帳號"
 msgid "Invalid RDN attribute!"
 msgstr "無效的RDN屬性!"
 
-#: ../lib/modules/posixGroup.inc:200 ../lib/modules/posixGroup.inc:430
-#: ../lib/modules/posixAccount.inc:378 ../lib/modules/posixAccount.inc:931
-msgid "Invalid password"
-msgstr "無效的密碼"
-
-#: ../lib/status.inc:65
-msgid "Invalid/Missing Message type"
-msgstr "無效的或遺漏的訊息類型"
-
-#: ../lib/modules/kolabUser.inc:127 ../lib/modules/kolabUser.inc:174
-#: ../lib/modules/kolabUser.inc:349 ../lib/modules/kolabUser.inc:782
+#: ../lib/modules/kolabUser.inc:124 ../lib/modules/kolabUser.inc:171
+#: ../lib/modules/kolabUser.inc:350 ../lib/modules/kolabUser.inc:777
 msgid "Invitation policy"
-msgstr ""
+msgstr "Invitation 原則"
 
-#: ../lib/modules/kolabUser.inc:131
+#: ../lib/modules/kolabUser.inc:128
 msgid "Invitation policy list"
-msgstr ""
+msgstr "Invitation 原則列表"
 
 #: ../lib/modules/sambaSamAccount.inc:437
 msgid "Islamabad, Karachi"
-msgstr ""
+msgstr "伊斯蘭馬巴德, 喀拉蚩港市"
 
-#: ../lib/modules/posixGroup.inc:499 ../lib/modules/posixAccount.inc:75
-msgid ""
-"It is possible that this ID-number is reused. This can cause several "
+#: ../lib/modules/posixGroup.inc:486 ../lib/modules/posixAccount.inc:83
+msgid "It is possible that this ID-number is reused. This can cause several "
 "problems because files with old permissions might still exist. To avoid this "
 "warning set maxUID to a higher value."
-msgstr ""
-"這個UID可能被再度使用.這會造成一些問題.因為可能會存在屬於該ID的舊檔案.要避免"
+msgstr "這個UID可能會被重覆使用.這會造成一些問題."
+"因為可能會存在屬於該ID權限的舊檔案.要避免"
 "這個警告訊息,請將最大的UID設高一點."
 
-#: ../lib/modules/inetOrgPerson.inc:64 ../lib/modules/inetOrgPerson.inc:112
-#: ../lib/modules/inetOrgPerson.inc:157 ../lib/modules/inetOrgPerson.inc:285
-#: ../lib/modules/inetOrgPerson.inc:654 ../lib/modules/inetOrgPerson.inc:812
+#: ../lib/modules/inetOrgPerson.inc:64 ../lib/modules/inetOrgPerson.inc:119
+#: ../lib/modules/inetOrgPerson.inc:164 ../lib/modules/inetOrgPerson.inc:292
+#: ../lib/modules/inetOrgPerson.inc:661 ../lib/modules/inetOrgPerson.inc:819
 msgid "Job title"
 msgstr "職稱"
 
-#: ../lib/modules/inetOrgPerson.inc:286
+#: ../lib/modules/inetOrgPerson.inc:293
 msgid "Job title of user: President, department manager, ..."
 msgstr "使用者的職稱.如總裁,部長...."
 
@@ -1968,32 +2029,36 @@ msgstr "選擇一個屬性類型"
 msgid "Jump to an object class"
 msgstr "選擇一個物件類別"
 
-#: ../lib/modules/kolabUser.inc:71
+#: ../lib/modules/kolabUser.inc:68
 msgid "Kolab"
-msgstr ""
+msgstr "Kolab"
 
 #: ../templates/tree/delete_form.php:100
 #, php-format
-msgid ""
-"LAM can recursively delete this entry and all of its children. See below for "
+msgid "LAM can recursively delete this entry and all of its children. See below for "
 "a list of all the entries that this action will delete. Do you want to do "
 "this?"
-msgstr ""
-"LAM能遞迴地刪除這個項目及其所有子項目檢視下列將被刪除的所有項目,確定刪除?"
+msgstr "LAM能遞迴地刪除這個項目及其所有子項目檢視下列將被刪除的所有項目. "
+"下列是將被刪除的項目清單."
+" 確定刪除?"
+
+#: ../templates/login.php:178 ../templates/config/index.php:60
+msgid "LAM configuration"
+msgstr "LAM系統設定"
 
 #: ../templates/massBuildAccounts.php:191
 msgid "LAM has checked your input and is now ready to create the accounts."
 msgstr "LAM已經檢查您的輸入,現在準備建立帳號."
 
-#: ../lib/modules/posixGroup.inc:439 ../lib/modules/posixAccount.inc:326
-msgid ""
-"LAM supports CRYPT, SHA, SSHA, MD5 and SMD5 to generate the hash value of "
+#: ../lib/modules/posixGroup.inc:425 ../lib/modules/posixAccount.inc:338
+msgid "LAM supports CRYPT, SHA, SSHA, MD5 and SMD5 to generate the hash value of "
 "passwords. SSHA and CRYPT are the most common but CRYPT does not support "
 "passwords greater than 8 letters. We do not recommend to use plain text "
 "passwords."
-msgstr ""
-"LAM支援CRYPT, SHA, SSHA, MD5 和 SMD5的雜湊演算法,用來產生密碼的雜湊值.SSHA和"
-"CRYPT是最常用的,但CRYPT並不支援超過8個字元的密碼.我們不建議使用明文的密碼"
+msgstr "LAM支援CRYPT, SHA, SSHA, MD5 和 SMD5的雜湊演算法,用來產生密碼的雜湊值."
+"SSHA和CRYPT是最常用的."
+"但CRYPT並不支援超過8個字元的密碼. 我們不建議使用明文的"
+"密碼"
 
 #: ../templates/tree/create.php:181 ../templates/massDoUpload.php:87
 #, php-format
@@ -2008,25 +2073,38 @@ msgstr "LAM找不到這個名稱的Samba3網域!"
 msgid "LAM was unable to find a domain with this name!"
 msgstr "LAM找不到這個網域!"
 
-#: ../lib/modules/posixAccount.inc:93
+#: ../lib/modules/posixAccount.inc:101
 msgid "LAM was unable to find a group with this name!"
 msgstr "LAM找不到這個群組"
 
-#: ../lib/modules/posixAccount.inc:1484
+#: ../lib/modules/posixAccount.inc:1500
 #, php-format
 msgid "LAM was unable to modify group memberships for group: %s"
 msgstr "LAM無法修改 %s 群組的成員"
 
+#: ../help/help.inc:162
+msgid "LAM will search for accounts in this part of the LDAP tree."
+msgstr "LAM將在LDAP樹的此處開始搜尋帳號."
+
+#: ../help/help.inc:164
+msgid "LAM will use this LDAP DN and password to search for accounts. It is "
+"sufficient to specify an account with read rights. If nothing is inserted "
+"then LAM will try to connect anonymously."
+msgstr "LAM將會使用這個LDAP DN及密碼來搜尋帳號. "
+"這個帳號只需擁有讀取的權限即可. 如果未輸入任何內容,"
+"則LAM將會以匿名的方式連結LDAP."
+
 #: ../templates/profedit/profilepage.php:176
 msgid "LDAP"
-msgstr ""
+msgstr "LDAP"
 
 #: ../templates/config/confmodules.php:76 ../templates/config/confmain.php:120
 #: ../templates/config/confmain.php:501 ../templates/config/conftypes.php:154
+#: ../templates/selfService/adminMain.php:72
 msgid "LDAP Account Manager Configuration"
 msgstr "LDAP Account Manager設定"
 
-#: ../lib/lists.inc:640
+#: ../lib/lists.inc:649
 msgid "LDAP Search failed! Please check your preferences."
 msgstr "LDAP搜尋失敗! 請檢查您的設定."
 
@@ -2034,7 +2112,7 @@ msgstr "LDAP搜尋失敗! 請檢查您的設定."
 msgid "LDAP Suffix is invalid!"
 msgstr "LDAP的尾碼無效!"
 
-#: ../templates/login.php:404
+#: ../templates/login.php:406
 msgid "LDAP error, server says:"
 msgstr "LDAP錯誤, 伺服器訊息:"
 
@@ -2042,16 +2120,26 @@ msgstr "LDAP錯誤, 伺服器訊息:"
 msgid "LDAP operation successful."
 msgstr "LDAP操作成功."
 
-#: ../templates/login.php:294
+#: ../templates/selfService/adminMain.php:273
+msgid "LDAP password"
+msgstr "LDAP 密碼"
+
+#: ../templates/selfService/adminMain.php:286 ../help/help.inc:165
+msgid "LDAP search attribute"
+msgstr "LDAP搜尋屬性"
+
+#: ../templates/login.php:296
 msgid "LDAP server"
 msgstr "LDAP伺服器"
 
-#: ../lib/lists.inc:626
+#: ../lib/lists.inc:635
 msgid "LDAP sizelimit exceeded, not all entries are shown."
 msgstr "超過LDAP限制的大小,無法顯示全部項目."
 
 #: ../templates/config/conftypes.php:197
+#: ../templates/selfService/adminMain.php:245
 #: ../templates/profedit/profilepage.php:180 ../help/help.inc:70
+#: ../help/help.inc:161
 msgid "LDAP suffix"
 msgstr "LDAP的尾碼"
 
@@ -2063,12 +2151,20 @@ msgstr "LDAP上載完成"
 msgid "LDAP upload in progress. Please wait."
 msgstr "LDAP上載中,請稍候."
 
+#: ../templates/selfService/adminMain.php:259
+msgid "LDAP user"
+msgstr "LDAP 使用者"
+
+#: ../help/help.inc:163
+msgid "LDAP user and password"
+msgstr "LDAP 使用者及密碼"
+
 #: ../lib/export.inc:441
 #, php-format
 msgid "LDIF Export for: %s"
 msgstr "匯出節點 %s 的LDIF檔"
 
-#: ../templates/login.php:243
+#: ../templates/login.php:245
 msgid "Language"
 msgstr "語言"
 
@@ -2081,16 +2177,17 @@ msgid "Language settings"
 msgstr "語言設定"
 
 #: ../lib/types/user.inc:88 ../lib/modules/inetOrgPerson.inc:48
-#: ../lib/modules/inetOrgPerson.inc:144 ../lib/modules/inetOrgPerson.inc:293
-#: ../lib/modules/inetOrgPerson.inc:557 ../lib/modules/inetOrgPerson.inc:814
+#: ../lib/modules/inetOrgPerson.inc:112 ../lib/modules/inetOrgPerson.inc:151
+#: ../lib/modules/inetOrgPerson.inc:300 ../lib/modules/inetOrgPerson.inc:564
+#: ../lib/modules/inetOrgPerson.inc:821 ../lib/modules/inetOrgPerson.inc:1074
 msgid "Last name"
 msgstr "姓氏"
 
 #: ../lib/modules/inetOrgPerson.inc:48 ../lib/modules/inetOrgPerson.inc:49
-msgid "Last name contains invalid characters!"
-msgstr "姓氏包含錯誤字元!"
+msgid "Last name contains invalid characters or is empty!"
+msgstr "姓氏包含錯誤字元或是空白!"
 
-#: ../lib/modules/inetOrgPerson.inc:294
+#: ../lib/modules/inetOrgPerson.inc:301
 msgid "Last name of user. Only letters, - and spaces are allowed."
 msgstr "使用者的姓氏,只能使用字母, - 和空白."
 
@@ -2101,6 +2198,10 @@ msgstr "最後密碼變更"
 #: ../templates/tree/export_form.php:148
 msgid "Line ends"
 msgstr "每一行結尾的格式"
+
+#: ../templates/selfService/adminMain.php:217
+msgid "Link to login page for this self service profile"
+msgstr "連結到此self service設定檔的登入頁面."
 
 #: ../templates/config/conftypes.php:213 ../help/help.inc:82
 msgid "List attributes"
@@ -2118,7 +2219,7 @@ msgstr "容許這個使用者可登入的Samba工作站清單.空白表示任何
 
 #: ../templates/config/confmain.php:431
 msgid "List of admin users is empty or invalid!"
-msgstr ""
+msgstr "管理者清單是空的或是無效的."
 
 #: ../templates/tree/delete_form.php:130
 msgid "List of entries to be deleted:"
@@ -2147,14 +2248,28 @@ msgstr "本機地址"
 
 #: ../lib/modules/inetLocalMailRecipient.inc:65
 #: ../lib/modules/inetLocalMailRecipient.inc:98
-#: ../lib/modules/inetLocalMailRecipient.inc:308
+#: ../lib/modules/inetLocalMailRecipient.inc:313
 msgid "Local address list"
 msgstr "本機地址清單"
 
-#: ../lib/modules/posixGroup.inc:205 ../lib/modules/posixAccount.inc:244
-#: ../lib/modules/posixAccount.inc:936 ../lib/modules/posixAccount.inc:1061
+#: ../lib/modules/posixGroup.inc:195 ../lib/modules/posixAccount.inc:256
+#: ../lib/modules/posixAccount.inc:952 ../lib/modules/posixAccount.inc:1077
 msgid "Lock password"
 msgstr "鎖定密碼"
+
+#: ../lib/modules/sambaDomain.inc:122 ../lib/modules/sambaDomain.inc:199
+#: ../lib/modules/sambaDomain.inc:298 ../lib/modules/sambaDomain.inc:636
+msgid "Lockout duration"
+msgstr "帳號鎖住期間"
+
+#: ../lib/modules/sambaDomain.inc:199
+msgid "Lockout duration must be are natural number."
+msgstr "帳號鎖住期間必須是自然數."
+
+#: ../lib/modules/sambaDomain.inc:110 ../lib/modules/sambaDomain.inc:281
+#: ../lib/modules/sambaDomain.inc:627
+msgid "Lockout users after bad logon attempts"
+msgstr "在多次錯誤登入嘗試之後鎖住帳號."
 
 #: ../templates/config/mainmanage.php:233 ../help/help.inc:135
 msgid "Log destination"
@@ -2168,14 +2283,25 @@ msgstr "記錄層級"
 msgid "Logging"
 msgstr "記錄"
 
-#: ../templates/login.php:269 ../templates/config/conflogin.php:59
-#: ../templates/config/mainlogin.php:67 ../help/help.inc:56
+#: ../templates/login.php:271 ../templates/config/conflogin.php:59
+#: ../templates/config/mainlogin.php:67
+#: ../templates/selfService/selfServiceLogin.php:130
+#: ../templates/selfService/adminLogin.php:61
+#: ../templates/selfService/adminMain.php:218 ../help/help.inc:56
 msgid "Login"
 msgstr "登入"
 
-#: ../lib/types/user.inc:90 ../lib/modules/posixAccount.inc:230
-#: ../lib/modules/posixAccount.inc:382 ../lib/modules/posixAccount.inc:942
-#: ../lib/modules/posixAccount.inc:1053 ../lib/modules/posixAccount.inc:1127
+#: ../templates/selfService/adminMain.php:314 ../help/help.inc:167
+msgid "Login attribute label"
+msgstr "登入屬性標籤"
+
+#: ../templates/selfService/adminMain.php:329 ../help/help.inc:169
+msgid "Login caption"
+msgstr "登入標題"
+
+#: ../lib/types/user.inc:90 ../lib/modules/posixAccount.inc:242
+#: ../lib/modules/posixAccount.inc:390 ../lib/modules/posixAccount.inc:958
+#: ../lib/modules/posixAccount.inc:1069 ../lib/modules/posixAccount.inc:1143
 msgid "Login shell"
 msgstr "登入的shell"
 
@@ -2183,25 +2309,30 @@ msgstr "登入的shell"
 msgid "Logo"
 msgstr "標誌"
 
+#: ../lib/modules/sambaDomain.inc:98 ../lib/modules/sambaDomain.inc:260
+#: ../lib/modules/sambaDomain.inc:612
+msgid "Logon for password change"
+msgstr "登入密碼變更"
+
 #: ../lib/modules/sambaSamAccount.inc:103
 #: ../lib/modules/sambaSamAccount.inc:255
 #: ../lib/modules/sambaSamAccount.inc:258
 #: ../lib/modules/sambaSamAccount.inc:390
-#: ../lib/modules/sambaSamAccount.inc:956
-#: ../lib/modules/sambaSamAccount.inc:1171
+#: ../lib/modules/sambaSamAccount.inc:953
+#: ../lib/modules/sambaSamAccount.inc:1168
 msgid "Logon hours"
 msgstr "可登入時間"
 
 #: ../lib/modules/sambaAccount.inc:67 ../lib/modules/sambaAccount.inc:68
 #: ../lib/modules/sambaAccount.inc:164 ../lib/modules/sambaAccount.inc:295
-#: ../lib/modules/sambaAccount.inc:387 ../lib/modules/sambaAccount.inc:768
-#: ../lib/modules/sambaAccount.inc:861 ../lib/modules/sambaSamAccount.inc:82
+#: ../lib/modules/sambaAccount.inc:387 ../lib/modules/sambaAccount.inc:765
+#: ../lib/modules/sambaAccount.inc:858 ../lib/modules/sambaSamAccount.inc:82
 #: ../lib/modules/sambaSamAccount.inc:83
 #: ../lib/modules/sambaSamAccount.inc:227
 #: ../lib/modules/sambaSamAccount.inc:364
-#: ../lib/modules/sambaSamAccount.inc:909
-#: ../lib/modules/sambaSamAccount.inc:1137
-#: ../lib/modules/sambaSamAccount.inc:1293
+#: ../lib/modules/sambaSamAccount.inc:906
+#: ../lib/modules/sambaSamAccount.inc:1134
+#: ../lib/modules/sambaSamAccount.inc:1290
 msgid "Logon script"
 msgstr "登入指令檔"
 
@@ -2210,6 +2341,7 @@ msgstr "登入指令檔"
 msgid "Logon script is invalid!"
 msgstr "登入指令檔無效!"
 
+#: ../templates/selfService/selfServiceMain.php:200
 #: ../templates/main_header.php:63 ../templates/logout.php:67
 msgid "Logout"
 msgstr "登出"
@@ -2229,19 +2361,19 @@ msgstr "MAC位址"
 
 #: ../lib/modules/sambaSamAccount.inc:443
 msgid "Magadan, Solomon Islands"
-msgstr ""
+msgstr "馬加丹, 所羅門群島"
 
 #: ../lib/types/mailAlias.inc:44 ../lib/modules/nisMailAlias.inc:51
 msgid "Mail aliases"
 msgstr "郵件別名"
 
-#: ../lib/modules/kolabUser.inc:96 ../lib/modules/kolabUser.inc:163
-#: ../lib/modules/kolabUser.inc:211 ../lib/modules/kolabUser.inc:306
-#: ../lib/modules/kolabUser.inc:766
+#: ../lib/modules/kolabUser.inc:93 ../lib/modules/kolabUser.inc:160
+#: ../lib/modules/kolabUser.inc:208 ../lib/modules/kolabUser.inc:307
+#: ../lib/modules/kolabUser.inc:761
 msgid "Mail quota"
 msgstr "郵件大小限制"
 
-#: ../lib/modules/kolabUser.inc:239 ../lib/modules/kolabUser.inc:240
+#: ../lib/modules/kolabUser.inc:236 ../lib/modules/kolabUser.inc:237
 msgid "Mail quota must be a number!"
 msgstr "郵件大小限制值必須是一個數字"
 
@@ -2249,28 +2381,28 @@ msgstr "郵件大小限制值必須是一個數字"
 msgid "Mail routing"
 msgstr "郵件寄送"
 
-#: ../lib/modules/kolabUser.inc:84
+#: ../lib/modules/kolabUser.inc:81
 #: ../lib/modules/inetLocalMailRecipient.inc:69
 #: ../lib/modules/inetLocalMailRecipient.inc:75
 #: ../lib/modules/inetLocalMailRecipient.inc:104
 #: ../lib/modules/inetLocalMailRecipient.inc:146
-#: ../lib/modules/inetLocalMailRecipient.inc:311
+#: ../lib/modules/inetLocalMailRecipient.inc:316
 msgid "Mail server"
 msgstr "郵件伺服器"
 
-#: ../lib/modules/kolabUser.inc:155 ../lib/modules/kolabUser.inc:186
-#: ../lib/modules/kolabUser.inc:294 ../lib/modules/kolabUser.inc:300
-#: ../lib/modules/kolabUser.inc:762
+#: ../lib/modules/kolabUser.inc:152 ../lib/modules/kolabUser.inc:183
+#: ../lib/modules/kolabUser.inc:295 ../lib/modules/kolabUser.inc:301
+#: ../lib/modules/kolabUser.inc:757
 msgid "Mailbox home server"
 msgstr ""
 
-#: ../lib/modules/kolabUser.inc:235
+#: ../lib/modules/kolabUser.inc:232
 msgid "Mailbox home server name is empty!"
-msgstr ""
+msgstr "Mailbox home server 名稱是空的"
 
-#: ../lib/modules/kolabUser.inc:233 ../lib/modules/kolabUser.inc:234
+#: ../lib/modules/kolabUser.inc:230 ../lib/modules/kolabUser.inc:231
 msgid "Mailbox home server name is invalid!"
-msgstr ""
+msgstr "Mailbox home server名稱無效!"
 
 #: ../lib/types/mailAlias.inc:53
 msgid "Mailing aliases (e.g. NIS mail aliases)"
@@ -2285,12 +2417,20 @@ msgstr "寄到這個名稱的郵件會被轉寄到這些收件人."
 msgid "Main"
 msgstr "主設定(Main)"
 
+#: ../templates/selfService/adminMain.php:344 ../help/help.inc:171
+msgid "Main page caption"
+msgstr "主頁標題"
+
+#: ../templates/selfService/adminLogin.php:136
+msgid "Manage self service profiles"
+msgstr "管理本身服務設定檔"
+
 #: ../templates/config/conflogin.php:139
 msgid "Manage server profiles"
 msgstr "管理伺服器設定檔"
 
-#: ../lib/modules/inetOrgPerson.inc:169 ../lib/modules/inetOrgPerson.inc:301
-#: ../lib/modules/inetOrgPerson.inc:688 ../lib/modules/inetOrgPerson.inc:816
+#: ../lib/modules/inetOrgPerson.inc:176 ../lib/modules/inetOrgPerson.inc:308
+#: ../lib/modules/inetOrgPerson.inc:695 ../lib/modules/inetOrgPerson.inc:823
 msgid "Manager"
 msgstr "管理者"
 
@@ -2298,33 +2438,35 @@ msgstr "管理者"
 msgid "Manages OU objects in your LDAP tree."
 msgstr "管理LDAP中的OU物件."
 
-#: ../lib/modules/kolabUser.inc:53
+#: ../lib/modules/kolabUser.inc:50
 msgid "Manual"
 msgstr "手動"
 
-#: ../lib/modules/kolabUser.inc:55
+#: ../lib/modules/kolabUser.inc:52
 msgid "Manual if conflicts"
 msgstr "如果衝突的話使用手動"
 
-#: ../lib/modules/kolabUser.inc:398 ../lib/modules/kolabUser.inc:574
+#: ../lib/modules/kolabUser.inc:399 ../lib/modules/kolabUser.inc:568
 msgid "Mark account for deletion"
-msgstr ""
+msgstr "標示要刪除的帳號"
 
-#: ../lib/modules/kolabUser.inc:167
+#: ../lib/modules/kolabUser.inc:164
 msgid "Mark for deletion"
 msgstr ""
 
-#: ../templates/config/profmanage.php:348 ../help/help.inc:127
+#: ../templates/config/profmanage.php:348
+#: ../templates/selfService/profManage.php:248 ../help/help.inc:127
 msgid "Master password"
 msgstr "系統管理者密碼"
 
 #: ../templates/config/profmanage.php:68
+#: ../templates/selfService/profManage.php:56
 msgid "Master password is wrong!"
-msgstr ""
+msgstr "管理者密碼錯誤!"
 
 #: ../templates/config/mainmanage.php:88
 msgid "Master passwords are different or empty!"
-msgstr ""
+msgstr "管理者密碼不同或空白!"
 
 #: ../templates/schema/schema.php:273
 msgid "Matching rule OID"
@@ -2336,44 +2478,44 @@ msgstr "比對規則"
 
 #: ../templates/config/confmain.php:437
 msgid "Max list entries is invalid!"
-msgstr ""
+msgstr "列出最多項目值無效!"
 
-#: ../lib/modules/posixGroup.inc:322 ../lib/modules/posixGroup.inc:503
-#: ../lib/modules/posixGroup.inc:504
+#: ../lib/modules/posixGroup.inc:312 ../lib/modules/posixGroup.inc:490
+#: ../lib/modules/posixGroup.inc:491
 msgid "Maximum GID number"
 msgstr "最大GID編號"
 
-#: ../lib/modules/posixGroup.inc:331
+#: ../lib/modules/posixGroup.inc:321
 msgid "Maximum GID number for Unix groups"
 msgstr "Unix群組的最大GID編號"
 
-#: ../lib/modules/posixGroup.inc:503
+#: ../lib/modules/posixGroup.inc:490
 msgid "Maximum GID number is invalid or empty!"
 msgstr "最大的GID錯誤或空白"
 
-#: ../lib/modules/posixGroup.inc:504
+#: ../lib/modules/posixGroup.inc:491
 msgid "Maximum GID number must be greater than minimum GID number!"
 msgstr "最大的GID必須大於最小的GID!"
 
-#: ../lib/modules/posixAccount.inc:65 ../lib/modules/posixAccount.inc:67
-#: ../lib/modules/posixAccount.inc:68 ../lib/modules/posixAccount.inc:69
-#: ../lib/modules/posixAccount.inc:149 ../lib/modules/posixAccount.inc:158
+#: ../lib/modules/posixAccount.inc:73 ../lib/modules/posixAccount.inc:75
+#: ../lib/modules/posixAccount.inc:76 ../lib/modules/posixAccount.inc:77
+#: ../lib/modules/posixAccount.inc:161 ../lib/modules/posixAccount.inc:170
 msgid "Maximum UID number"
 msgstr "最大UID編號"
 
-#: ../lib/modules/posixAccount.inc:179
+#: ../lib/modules/posixAccount.inc:191
 msgid "Maximum UID number for Unix accounts (hosts)"
 msgstr "Unix帳號(主機)的最大UID編號"
 
-#: ../lib/modules/posixAccount.inc:177
+#: ../lib/modules/posixAccount.inc:189
 msgid "Maximum UID number for Unix accounts (users)"
 msgstr "Unix帳號(使用者)的最大UID編號"
 
-#: ../lib/modules/posixAccount.inc:65 ../lib/modules/posixAccount.inc:67
+#: ../lib/modules/posixAccount.inc:73 ../lib/modules/posixAccount.inc:75
 msgid "Maximum UID number is invalid!"
 msgstr "最大UID錯誤"
 
-#: ../lib/modules/posixAccount.inc:68 ../lib/modules/posixAccount.inc:69
+#: ../lib/modules/posixAccount.inc:76 ../lib/modules/posixAccount.inc:77
 msgid "Maximum UID number must be greater than minimum UID number!"
 msgstr "最大的UID必須大於最小的UID!"
 
@@ -2390,61 +2532,78 @@ msgstr "最大長度"
 msgid "Maximum list entries"
 msgstr "最大的清單項目"
 
+#: ../lib/modules/shadowAccount.inc:47 ../lib/modules/shadowAccount.inc:53
 #: ../lib/modules/shadowAccount.inc:99 ../lib/modules/shadowAccount.inc:165
 #: ../lib/modules/shadowAccount.inc:195 ../lib/modules/shadowAccount.inc:296
+#: ../lib/modules/sambaDomain.inc:118 ../lib/modules/sambaDomain.inc:196
+#: ../lib/modules/sambaDomain.inc:198 ../lib/modules/sambaDomain.inc:293
+#: ../lib/modules/sambaDomain.inc:633
 msgid "Maximum password age"
 msgstr "密碼最長生命期"
 
 #: ../lib/modules/sambaSamAccount.inc:430
 msgid "Mid-Atlantic"
-msgstr ""
+msgstr "Mid-Atlantic"
 
 #: ../lib/modules/sambaSamAccount.inc:421
 msgid "Midway Island, Samoa"
-msgstr ""
+msgstr "中途島, 薩摩亞"
 
-#: ../lib/modules/inetOrgPerson.inc:146
+#: ../lib/modules/inetOrgPerson.inc:153
 msgid "Miller"
 msgstr ""
 
-#: ../lib/modules/posixGroup.inc:319 ../lib/modules/posixGroup.inc:502
+#: ../lib/modules/sambaDomain.inc:90 ../lib/modules/sambaDomain.inc:246
+#: ../lib/modules/sambaDomain.inc:604
+msgid "Minimal password length"
+msgstr "最短密碼長度"
+
+#: ../lib/modules/posixGroup.inc:309 ../lib/modules/posixGroup.inc:489
 msgid "Minimum GID number"
 msgstr "最小的GID編號"
 
-#: ../lib/modules/posixGroup.inc:330
+#: ../lib/modules/posixGroup.inc:320
 msgid "Minimum GID number for Unix groups"
 msgstr "Unix群組的最小GID編號"
 
-#: ../lib/modules/posixGroup.inc:502
+#: ../lib/modules/posixGroup.inc:489
 msgid "Minimum GID number is invalid or empty!"
 msgstr "最小GID錯誤或空白!"
 
-#: ../lib/modules/posixAccount.inc:64 ../lib/modules/posixAccount.inc:66
-#: ../lib/modules/posixAccount.inc:146 ../lib/modules/posixAccount.inc:155
+#: ../lib/modules/posixAccount.inc:72 ../lib/modules/posixAccount.inc:74
+#: ../lib/modules/posixAccount.inc:158 ../lib/modules/posixAccount.inc:167
 msgid "Minimum UID number"
 msgstr "最小UID編號"
 
-#: ../lib/modules/posixAccount.inc:178
+#: ../lib/modules/posixAccount.inc:190
 msgid "Minimum UID number for Unix accounts (hosts)"
 msgstr "unix帳號(主機)的最小UID"
 
-#: ../lib/modules/posixAccount.inc:176
+#: ../lib/modules/posixAccount.inc:188
 msgid "Minimum UID number for Unix accounts (users)"
 msgstr "unix帳號(使用者)的最小UID"
 
-#: ../lib/modules/posixAccount.inc:64 ../lib/modules/posixAccount.inc:66
+#: ../lib/modules/posixAccount.inc:72 ../lib/modules/posixAccount.inc:74
 msgid "Minimum UID number is invalid!"
 msgstr "最小UID錯誤!"
 
-#: ../lib/modules/shadowAccount.inc:94 ../lib/modules/shadowAccount.inc:161
-#: ../lib/modules/shadowAccount.inc:189 ../lib/modules/shadowAccount.inc:291
+#: ../lib/modules/shadowAccount.inc:45 ../lib/modules/shadowAccount.inc:94
+#: ../lib/modules/shadowAccount.inc:161 ../lib/modules/shadowAccount.inc:189
+#: ../lib/modules/shadowAccount.inc:291 ../lib/modules/sambaDomain.inc:114
+#: ../lib/modules/sambaDomain.inc:197 ../lib/modules/sambaDomain.inc:288
+#: ../lib/modules/sambaDomain.inc:630
 msgid "Minimum password age"
 msgstr "密碼最短的生命期"
 
-#: ../lib/modules/inetOrgPerson.inc:52 ../lib/modules/inetOrgPerson.inc:205
-#: ../lib/modules/inetOrgPerson.inc:325 ../lib/modules/inetOrgPerson.inc:326
-#: ../lib/modules/inetOrgPerson.inc:633 ../lib/modules/inetOrgPerson.inc:822
+#: ../lib/modules/inetOrgPerson.inc:52 ../lib/modules/inetOrgPerson.inc:113
+#: ../lib/modules/inetOrgPerson.inc:212 ../lib/modules/inetOrgPerson.inc:332
+#: ../lib/modules/inetOrgPerson.inc:333 ../lib/modules/inetOrgPerson.inc:640
+#: ../lib/modules/inetOrgPerson.inc:829
 msgid "Mobile number"
+msgstr "手機號碼"
+
+#: ../lib/modules/inetOrgPerson.inc:1098
+msgid "Mobile telephone number"
 msgstr "手機號碼"
 
 #: ../lib/modules.inc:928 ../lib/modules.inc:1083
@@ -2455,7 +2614,7 @@ msgstr "修改帳號"
 msgid "Module selection"
 msgstr "模組選擇"
 
-#: ../lib/modules/sambaSamAccount.inc:1014
+#: ../lib/modules/sambaSamAccount.inc:1011
 msgid "Monday"
 msgstr "星期一"
 
@@ -2463,22 +2622,22 @@ msgstr "星期一"
 msgid "Mountain Time (US & Canada)"
 msgstr ""
 
-#: ../lib/modules/quota.inc:86 ../lib/modules/quota.inc:302
-#: ../lib/modules/quota.inc:360 ../lib/modules/quota.inc:437
+#: ../lib/modules/quota.inc:86 ../lib/modules/quota.inc:298
+#: ../lib/modules/quota.inc:356 ../lib/modules/quota.inc:433
 msgid "Mountpoint"
-msgstr ""
+msgstr "掛載點"
 
 #: ../lib/modules/quota.inc:87
 msgid "Mountpoint of device with enabled quotas."
 msgstr "啟動磁碟配額的裝置所掛載的位置."
 
-#: ../lib/modules/inetOrgPerson.inc:189
+#: ../lib/modules/inetOrgPerson.inc:196
 msgid "Mycity"
-msgstr ""
+msgstr "居住的城市"
 
-#: ../lib/modules/inetOrgPerson.inc:177
+#: ../lib/modules/inetOrgPerson.inc:184
 msgid "Mystreetname 42"
-msgstr ""
+msgstr "居住的街道 42號"
 
 #: ../templates/tree/templates/creation/new_ou_template.php:59
 #: ../templates/tree/templates/creation/new_ou_template.php:104
@@ -2489,10 +2648,10 @@ msgid "Name"
 msgstr "名稱"
 
 #: ../help/help.inc:147
-msgid ""
-"Name under which the profile will be saved. If a profile with the same name "
+msgid "Name under which the profile will be saved. If a profile with the same name "
 "exists, it will be overwritten."
-msgstr "這個設定檔的名稱,如果相同的設定檔名稱已存在,則會直接覆蓋."
+msgstr "這個設定檔的名稱,如果相同的設定檔名稱已"
+"存在,則會直接覆蓋."
 
 #: ../lib/modules/ieee802device.inc:105
 msgid "New MAC address"
@@ -2502,13 +2661,9 @@ msgstr "新增MAC位址"
 msgid "New OU created successfully."
 msgstr "新增OU成功."
 
-#: ../templates/config/confmain.php:361
-msgid "New Password"
-msgstr "新密碼"
-
 #: ../lib/modules/ldapPublicKey.inc:99
 msgid "New SSH public key"
-msgstr ""
+msgstr "新增SSH公開金鑰"
 
 #: ../lib/types/mailAlias.inc:110
 msgid "New alias"
@@ -2516,7 +2671,7 @@ msgstr "新的別名"
 
 #: ../templates/config/profmanage.php:125
 msgid "New default profile set successfully."
-msgstr ""
+msgstr "設定預設設定檔成功."
 
 #: ../lib/types/smbDomain.inc:110
 msgid "New domain"
@@ -2547,9 +2702,13 @@ msgid "New object"
 msgstr "新增物件"
 
 #: ../templates/tree/templates/creation/new_ou_template.php:47
-#: ../templates/ou_edit.php:165 ../help/help.inc:163
+#: ../templates/ou_edit.php:165 ../help/help.inc:180
 msgid "New organizational unit"
 msgstr "新增organizational unit物件"
+
+#: ../templates/config/confmain.php:361 ../lib/modules/posixAccount.inc:1608
+msgid "New password"
+msgstr "新密碼"
 
 #: ../templates/config/profmanage.php:116
 msgid "New password set successfully."
@@ -2557,11 +2716,11 @@ msgstr "新密碼設定成功."
 
 #: ../lib/modules/nisMailAlias.inc:148
 msgid "New recipient"
-msgstr ""
+msgstr "新增收信者"
 
 #: ../templates/tree/add_oclass_form.php:131
 msgid "New required attributes:"
-msgstr ""
+msgstr "新增的必要屬性"
 
 #: ../lib/types/user.inc:124
 msgid "New user"
@@ -2577,42 +2736,42 @@ msgstr "新的值"
 msgid "Next"
 msgstr "下一步"
 
-#: ../lib/modules/sambaDomain.inc:72 ../lib/modules/sambaDomain.inc:112
-#: ../lib/modules/sambaDomain.inc:190 ../lib/modules/sambaDomain.inc:372
+#: ../lib/modules/sambaDomain.inc:74 ../lib/modules/sambaDomain.inc:154
+#: ../lib/modules/sambaDomain.inc:316 ../lib/modules/sambaDomain.inc:592
 msgid "Next RID"
 msgstr "下一個RID"
 
-#: ../lib/modules/sambaDomain.inc:145 ../lib/modules/sambaDomain.inc:146
+#: ../lib/modules/sambaDomain.inc:188 ../lib/modules/sambaDomain.inc:189
 msgid "Next RID is not a number!"
 msgstr "下一個RID不是一個數字!"
 
-#: ../lib/modules/sambaDomain.inc:73
+#: ../lib/modules/sambaDomain.inc:75
 msgid "Next RID to use when creating accounts (only used by Winbind)."
 msgstr "建立帳號時所使用的下一個RID(只有Winbind才會用到)."
 
-#: ../lib/modules/sambaDomain.inc:81
+#: ../lib/modules/sambaDomain.inc:83
 msgid "Next RID to use when creating group accounts (only used by Winbind)."
 msgstr "建立群組時所使用的下一個RID(只有Winbind才會用到)."
 
-#: ../lib/modules/sambaDomain.inc:77
+#: ../lib/modules/sambaDomain.inc:79
 msgid "Next RID to use when creating user accounts (only used by Winbind)."
 msgstr "建立使用者帳號時使用的下一個RID(只有Winbind才會用到)."
 
-#: ../lib/modules/sambaDomain.inc:80 ../lib/modules/sambaDomain.inc:124
-#: ../lib/modules/sambaDomain.inc:200 ../lib/modules/sambaDomain.inc:378
+#: ../lib/modules/sambaDomain.inc:82 ../lib/modules/sambaDomain.inc:166
+#: ../lib/modules/sambaDomain.inc:326 ../lib/modules/sambaDomain.inc:598
 msgid "Next group RID"
 msgstr "下一個群組的RID"
 
-#: ../lib/modules/sambaDomain.inc:149 ../lib/modules/sambaDomain.inc:150
+#: ../lib/modules/sambaDomain.inc:192 ../lib/modules/sambaDomain.inc:193
 msgid "Next group RID is not a number!"
 msgstr "下一個群組RID不是數字!"
 
-#: ../lib/modules/sambaDomain.inc:76 ../lib/modules/sambaDomain.inc:118
-#: ../lib/modules/sambaDomain.inc:195 ../lib/modules/sambaDomain.inc:375
+#: ../lib/modules/sambaDomain.inc:78 ../lib/modules/sambaDomain.inc:160
+#: ../lib/modules/sambaDomain.inc:321 ../lib/modules/sambaDomain.inc:595
 msgid "Next user RID"
 msgstr "下一個使用者的RID"
 
-#: ../lib/modules/sambaDomain.inc:147 ../lib/modules/sambaDomain.inc:148
+#: ../lib/modules/sambaDomain.inc:190 ../lib/modules/sambaDomain.inc:191
 msgid "Next user RID is not a number!"
 msgstr "下一個使用者RID不是數字!"
 
@@ -2622,16 +2781,16 @@ msgid "No"
 msgstr "否"
 
 #: ../lib/modules/sambaSamAccount.inc:469
-#: ../lib/modules/sambaSamAccount.inc:553
-#: ../lib/modules/sambaSamAccount.inc:802
+#: ../lib/modules/sambaSamAccount.inc:554
+#: ../lib/modules/sambaSamAccount.inc:799
 #: ../lib/modules/sambaGroupMapping.inc:88
 #: ../lib/modules/sambaGroupMapping.inc:173
 #: ../lib/modules/sambaGroupMapping.inc:409
 msgid "No Samba 3 domains found in LDAP! Please create one first."
 msgstr "在LDAP沒有任何Samba 3網域,請先建立一個."
 
-#: ../lib/modules/posixAccount.inc:426 ../lib/modules/posixAccount.inc:589
-#: ../lib/modules/posixAccount.inc:870
+#: ../lib/modules/posixAccount.inc:434 ../lib/modules/posixAccount.inc:595
+#: ../lib/modules/posixAccount.inc:890
 msgid "No Unix groups found in LDAP! Please create one first."
 msgstr "在LDAP中沒有Unix群組,請先建立."
 
@@ -2655,7 +2814,7 @@ msgstr "找不到網域!"
 msgid "No file selected."
 msgstr "沒有選擇檔案"
 
-#: ../lib/modules/posixGroup.inc:500 ../lib/modules/posixAccount.inc:74
+#: ../lib/modules/posixGroup.inc:487 ../lib/modules/posixAccount.inc:82
 msgid "No free ID-Number!"
 msgstr "沒有可用的ID編號!"
 
@@ -2721,11 +2880,9 @@ msgid "Note"
 msgstr "注意"
 
 #: ../templates/tree/add_value_form.php:115
-msgid ""
-"Note: You will get an \"inappropriate matching\" error if you have not setup "
+msgid "Note: You will get an \"inappropriate matching\" error if you have not setup "
 "an EQUALITY rule on your LDAP server for this attribute."
-msgstr ""
-"注意:如果您沒有在LDAP伺服器為這個屬性設定一個EQUALITY規則,就會發生"
+msgstr "注意:如果您沒有在LDAP伺服器為這個屬性設定一個EQUALITY規則,就會發生"
 "\"inappropriate matching\"的錯誤訊息."
 
 #: ../templates/config/mainmanage.php:207
@@ -2753,9 +2910,21 @@ msgid ""
 "must be 0<."
 msgstr "幾天之後,密碼必須更改.若有設定,其值必須>0."
 
+#: ../lib/modules/sambaDomain.inc:127
+msgid "Number of minutes after which the bad logon attempts are reset."
+msgstr "幾分鐘之後,錯誤登入嘗試次數會被重設."
+
+#: ../lib/modules/sambaDomain.inc:115
+msgid "Number of seconds after the user is allowed to change his password again."
+msgstr "容許使用者再度更改密碼的間隔時間,以秒為單位."
+
+#: ../lib/modules/sambaDomain.inc:119
+msgid "Number of seconds after which the user must change his password."
+msgstr "多後之後使用者必須更改密碼.(密碼到期),以秒為單位"
+
 #: ../templates/schema/schema.php:152 ../templates/schema/schema.php:349
 msgid "OID"
-msgstr ""
+msgstr "OID"
 
 #: ../templates/ou_edit.php:70
 msgid "OU already exists!"
@@ -2777,7 +2946,7 @@ msgstr "OU 無效!"
 msgid "OU is not empty or invalid!"
 msgstr "OU 不是空的或者是無效的!"
 
-#: ../help/help.inc:163 ../help/help.inc:165
+#: ../help/help.inc:180 ../help/help.inc:182
 msgid "OU-Editor"
 msgstr "OU編輯器"
 
@@ -2790,6 +2959,13 @@ msgstr "物件類別"
 msgid "Obsolete"
 msgstr "已過時"
 
+#: ../lib/modules/sambaDomain.inc:262 ../lib/modules/sambaDomain.inc:269
+#: ../lib/modules/sambaDomain.inc:276 ../lib/modules/sambaDomain.inc:283
+#: ../lib/modules/sambaDomain.inc:610 ../lib/modules/sambaDomain.inc:615
+#: ../lib/modules/sambaDomain.inc:620 ../lib/modules/sambaDomain.inc:625
+msgid "Off"
+msgstr "Off"
+
 #: ../templates/tree/export_form.php:165 ../templates/ou_edit.php:193
 #: ../templates/masscreate.php:107 ../templates/config/profmanage.php:353
 #: ../templates/config/mainmanage.php:325
@@ -2797,17 +2973,32 @@ msgstr "已過時"
 #: ../templates/config/confmodules.php:112
 #: ../templates/config/confmain.php:384 ../templates/config/conftypes.php:235
 #: ../templates/config/conflogin.php:124 ../templates/config/conflogin.php:125
-#: ../templates/config/mainlogin.php:117 ../templates/pdfedit/pdfmain.php:152
+#: ../templates/config/mainlogin.php:117
+#: ../templates/selfService/selfServiceLogin.php:204
+#: ../templates/selfService/profManage.php:253
+#: ../templates/selfService/adminLogin.php:121
+#: ../templates/selfService/adminLogin.php:122
+#: ../templates/selfService/adminMain.php:432
+#: ../templates/selfService/adminMain.php:466
+#: ../templates/selfService/adminMain.php:486
+#: ../templates/pdfedit/pdfmain.php:152
 #: ../templates/profedit/profiledelete.php:82
-#: ../templates/profedit/profilemain.php:165 ../lib/modules/posixGroup.inc:283
-#: ../lib/modules/sambaSamAccount.inc:1061
-#: ../lib/modules/posixAccount.inc:1023 ../lib/modules/inetOrgPerson.inc:757
+#: ../templates/profedit/profilemain.php:165 ../lib/modules/posixGroup.inc:273
+#: ../lib/modules/sambaSamAccount.inc:1058
+#: ../lib/modules/posixAccount.inc:1039 ../lib/modules/inetOrgPerson.inc:764
 msgid "Ok"
 msgstr "確定"
 
 #: ../templates/tree/update_confirm.php:150
 msgid "Old value"
 msgstr "舊的值"
+
+#: ../lib/modules/sambaDomain.inc:262 ../lib/modules/sambaDomain.inc:269
+#: ../lib/modules/sambaDomain.inc:276 ../lib/modules/sambaDomain.inc:283
+#: ../lib/modules/sambaDomain.inc:611 ../lib/modules/sambaDomain.inc:616
+#: ../lib/modules/sambaDomain.inc:621 ../lib/modules/sambaDomain.inc:626
+msgid "On"
+msgstr "On"
 
 #: ../templates/tree/export_form.php:75
 msgid "One (one level beneath base)"
@@ -2828,13 +3019,13 @@ msgstr "排序規則"
 
 #: ../templates/tree/templates/templates.inc:46
 msgid "Organizational unit"
-msgstr ""
+msgstr "Organizational unit"
 
 #: ../templates/tools.php:76
 msgid "PDF editor"
 msgstr "PDF編輯器"
 
-#: ../templates/pdfedit/pdfpage.php:451 ../lib/lists.inc:492
+#: ../templates/pdfedit/pdfpage.php:451 ../lib/lists.inc:501
 msgid "PDF structure"
 msgstr "PDF的架構"
 
@@ -2852,7 +3043,7 @@ msgstr "PDF架構名稱無效"
 
 #: ../lib/modules/sambaSamAccount.inc:424
 msgid "Pacific Time (US & Canada)"
-msgstr ""
+msgstr "太平洋時間(美國和加拿大)"
 
 #: ../templates/pdfedit/pdfpage.php:410
 msgid "Page settings"
@@ -2862,42 +3053,43 @@ msgstr "頁面設定"
 msgid "Parent to"
 msgstr "子代"
 
-#: ../templates/login.php:233 ../lib/modules/posixGroup.inc:182
-#: ../lib/modules/posixGroup.inc:192 ../lib/modules/posixGroup.inc:274
-#: ../lib/modules/posixGroup.inc:495 ../lib/modules/posixGroup.inc:496
-#: ../lib/modules/posixGroup.inc:497 ../lib/modules/sambaAccount.inc:74
-#: ../lib/modules/sambaAccount.inc:75 ../lib/modules/sambaAccount.inc:225
-#: ../lib/modules/sambaSamAccount.inc:87 ../lib/modules/sambaSamAccount.inc:88
-#: ../lib/modules/sambaSamAccount.inc:287 ../lib/modules/posixAccount.inc:78
-#: ../lib/modules/posixAccount.inc:79 ../lib/modules/posixAccount.inc:80
-#: ../lib/modules/posixAccount.inc:238 ../lib/modules/posixAccount.inc:366
-#: ../lib/modules/posixAccount.inc:913 ../lib/modules/posixAccount.inc:923
-#: ../lib/modules/posixAccount.inc:1014 ../lib/modules/posixAccount.inc:1126
-#: ../lib/modules/inetOrgPerson.inc:74 ../lib/modules/inetOrgPerson.inc:75
-#: ../lib/modules/inetOrgPerson.inc:349 ../lib/modules/inetOrgPerson.inc:583
-#: ../lib/modules/inetOrgPerson.inc:594 ../lib/modules/inetOrgPerson.inc:748
+#: ../templates/login.php:235
+#: ../templates/selfService/selfServiceLogin.php:190
+#: ../lib/modules/posixGroup.inc:176 ../lib/modules/posixGroup.inc:186
+#: ../lib/modules/posixGroup.inc:264 ../lib/modules/posixGroup.inc:482
+#: ../lib/modules/posixGroup.inc:483 ../lib/modules/posixGroup.inc:484
+#: ../lib/modules/sambaAccount.inc:74 ../lib/modules/sambaAccount.inc:75
+#: ../lib/modules/sambaAccount.inc:225 ../lib/modules/sambaSamAccount.inc:87
+#: ../lib/modules/sambaSamAccount.inc:88
+#: ../lib/modules/sambaSamAccount.inc:287 ../lib/modules/posixAccount.inc:86
+#: ../lib/modules/posixAccount.inc:87 ../lib/modules/posixAccount.inc:88
+#: ../lib/modules/posixAccount.inc:146 ../lib/modules/posixAccount.inc:250
+#: ../lib/modules/posixAccount.inc:378 ../lib/modules/posixAccount.inc:933
+#: ../lib/modules/posixAccount.inc:943 ../lib/modules/posixAccount.inc:1030
+#: ../lib/modules/posixAccount.inc:1142 ../lib/modules/inetOrgPerson.inc:74
+#: ../lib/modules/inetOrgPerson.inc:75 ../lib/modules/inetOrgPerson.inc:356
+#: ../lib/modules/inetOrgPerson.inc:590 ../lib/modules/inetOrgPerson.inc:601
+#: ../lib/modules/inetOrgPerson.inc:755
 msgid "Password"
 msgstr "密碼"
 
-#: ../lib/modules/posixGroup.inc:496 ../lib/modules/sambaAccount.inc:75
+#: ../lib/modules/posixGroup.inc:483 ../lib/modules/sambaAccount.inc:75
 #: ../lib/modules/sambaAccount.inc:76 ../lib/modules/sambaSamAccount.inc:88
-#: ../lib/modules/sambaSamAccount.inc:89 ../lib/modules/posixAccount.inc:79
-#: ../lib/modules/posixAccount.inc:81 ../lib/modules/inetOrgPerson.inc:75
+#: ../lib/modules/sambaSamAccount.inc:89 ../lib/modules/posixAccount.inc:87
+#: ../lib/modules/posixAccount.inc:89 ../lib/modules/inetOrgPerson.inc:75
 #: ../lib/modules/inetOrgPerson.inc:76
-msgid ""
-"Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 "
+msgid "Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 "
 "and #*,.;:_-+!$%&/|?{[()]}=@$ !"
-msgstr ""
-"密碼包含無效字元,有效的字元包含 a-z, A-Z, 0-9, "
-"#*,.;:_-+!$%&/|?{[()]}=@$ !"
+msgstr "密碼包含無效字元,有效的字元包含 a-z, A-Z, 0-9,"
+" 以及 #*,.;:_-+!$%&/|?{[()]}=@$ !"
 
 #: ../lib/modules/sambaAccount.inc:132 ../lib/modules/sambaAccount.inc:247
 #: ../lib/modules/sambaAccount.inc:361 ../lib/modules/sambaAccount.inc:364
-#: ../lib/modules/sambaAccount.inc:733 ../lib/modules/sambaSamAccount.inc:201
+#: ../lib/modules/sambaAccount.inc:730 ../lib/modules/sambaSamAccount.inc:201
 #: ../lib/modules/sambaSamAccount.inc:204
 #: ../lib/modules/sambaSamAccount.inc:309
-#: ../lib/modules/sambaSamAccount.inc:860
-#: ../lib/modules/sambaSamAccount.inc:1100
+#: ../lib/modules/sambaSamAccount.inc:857
+#: ../lib/modules/sambaSamAccount.inc:1097
 msgid "Password does not expire"
 msgstr "密碼不會過期"
 
@@ -2911,36 +3103,36 @@ msgstr "密碼寬限期"
 msgid "Password expiration must be are natural number or -1."
 msgstr "密碼寬限期必須是自然數或-1."
 
-#: ../lib/modules/posixGroup.inc:438 ../lib/modules/posixGroup.inc:457
-#: ../lib/modules/posixAccount.inc:164 ../lib/modules/posixAccount.inc:325
+#: ../lib/modules/posixGroup.inc:424 ../lib/modules/posixGroup.inc:443
+#: ../lib/modules/posixAccount.inc:176 ../lib/modules/posixAccount.inc:337
 msgid "Password hash type"
 msgstr "密碼雜湊類型"
 
-#: ../lib/modules/posixAccount.inc:180
+#: ../lib/modules/posixAccount.inc:192
 msgid "Password hash type for Unix accounts"
 msgstr "unix帳號的密碼雜湊類型"
 
-#: ../lib/modules/posixGroup.inc:332
+#: ../lib/modules/posixGroup.inc:322
 msgid "Password hash type for Unix groups"
 msgstr "unix群組的密碼雜湊類型"
 
-#: ../lib/modules/shadowAccount.inc:47 ../lib/modules/shadowAccount.inc:53
-msgid "Password maxage"
-msgstr "密碼最大生命期"
+#: ../lib/modules/sambaDomain.inc:94 ../lib/modules/sambaDomain.inc:253
+#: ../lib/modules/sambaDomain.inc:607
+msgid "Password history length"
+msgstr "歷史密碼的次數"
 
 #: ../lib/modules/shadowAccount.inc:47 ../lib/modules/shadowAccount.inc:48
+#: ../lib/modules/sambaDomain.inc:198
 msgid "Password maximum age must be are natural number."
 msgstr "密碼最大生命期必須是一個自然數."
 
 #: ../lib/modules/shadowAccount.inc:53 ../lib/modules/shadowAccount.inc:54
+#: ../lib/modules/sambaDomain.inc:196
 msgid "Password maximum age must be bigger as password minimum age."
 msgstr "密碼最大生命期必須大於密碼最小生命期."
 
-#: ../lib/modules/shadowAccount.inc:45
-msgid "Password minage"
-msgstr "密碼最小生命期"
-
 #: ../lib/modules/shadowAccount.inc:45 ../lib/modules/shadowAccount.inc:46
+#: ../lib/modules/sambaDomain.inc:197
 msgid "Password minimum age must be are natural number."
 msgstr "密碼最小生命期必須是一個自然數."
 
@@ -2959,12 +3151,10 @@ msgid "Passwords are different!"
 msgstr "密碼不同!"
 
 #: ../lib/modules/sambaAccount.inc:385 ../lib/modules/sambaSamAccount.inc:225
-msgid ""
-"Path of the user profile. Can be a local absolute path or a UNC-path (\\"
+msgid "Path of the user profile. Can be a local absolute path or a UNC-path (\\"
 "\\server\\share). $user and $group are replaced with user and group name."
-msgstr ""
-"使用者設定檔的路徑,可以是絕對路徑或UNC路徑(\\\\server\\share).$user和$group會"
-"以使用者及群組名稱來置換."
+msgstr "使用者設定檔的路徑,可以是絕對路徑或UNC路徑"
+"(\\\\server\\share).$user和$group會以使用者及群組名稱來置換."
 
 #: ../templates/config/confmain.php:329
 msgid "Path to external script"
@@ -2978,11 +3168,11 @@ msgstr "也要刪除所有子項目?"
 msgid "Personal"
 msgstr "個人資訊"
 
-#: ../lib/modules/inetOrgPerson.inc:704
+#: ../lib/modules/inetOrgPerson.inc:711
 msgid "Photo"
 msgstr "相片"
 
-#: ../lib/modules/inetOrgPerson.inc:791
+#: ../lib/modules/inetOrgPerson.inc:798
 msgid "Photo file (JPG format)"
 msgstr "相片檔 (JPG格式)"
 
@@ -2998,27 +3188,25 @@ msgstr "請確認:"
 msgid "Please enter a RID number or the name of a special account!"
 msgstr "請輸入特殊帳號的名稱或RID!"
 
-#: ../lib/modules/inetOrgPerson.inc:346
-msgid ""
-"Please enter a comma separated list of host names where this user is allowed "
+#: ../lib/modules/inetOrgPerson.inc:353
+msgid "Please enter a comma separated list of host names where this user is allowed "
 "to log in. If you enable host restrictions for your servers then \"*\" means "
 "every host and an empty field means no host."
-msgstr ""
-"請輸入允許使用者登入的主機清單,以逗點分隔."
-"如果您的伺服器已使用主機限制功能,則星號(*)表示所有主機,"
-"空白表示沒有任何主機."
+msgstr "請輸入允許使用者登入的主機清單,以逗點分隔."
+"如果您的伺服器已使用主機限制功能,則星號(*)表示"
+"所有主機,空白表示沒有任何主機."
 
 #: ../lib/modules/sambaAccount.inc:70 ../lib/modules/sambaAccount.inc:71
 #: ../lib/modules/sambaSamAccount.inc:85 ../lib/modules/sambaSamAccount.inc:86
 msgid "Please enter a comma separated list of host names!"
 msgstr "請輸入以逗點分隔的主機清單!"
 
-#: ../lib/modules/kolabUser.inc:270 ../lib/modules/kolabUser.inc:273
+#: ../lib/modules/kolabUser.inc:268 ../lib/modules/kolabUser.inc:273
 #, php-format
 msgid "Please enter a user password on this page: %s"
 msgstr "請在這一頁輸入使用者密碼:%s"
 
-#: ../lib/modules/posixAccount.inc:98 ../lib/modules/posixAccount.inc:99
+#: ../lib/modules/posixAccount.inc:106 ../lib/modules/posixAccount.inc:107
 #: ../lib/modules/inetOrgPerson.inc:68 ../lib/modules/inetOrgPerson.inc:69
 msgid "Please enter a valid common name!"
 msgstr "請輸入有效的全名!"
@@ -3086,12 +3274,12 @@ msgstr "請輸入有效的街道名稱!"
 msgid "Please enter a valid telephone number!"
 msgstr "請輸入有效的電話號碼!"
 
-#: ../lib/modules/posixGroup.inc:625 ../lib/modules/posixAccount.inc:665
+#: ../lib/modules/posixGroup.inc:608 ../lib/modules/posixAccount.inc:671
 #, php-format
 msgid "Please enter a value between %s and %s!"
 msgstr "請輸入一個位於 %s 和 %s 之間的值.!"
 
-#: ../lib/modules/kolabUser.inc:277
+#: ../lib/modules/kolabUser.inc:278
 #, php-format
 msgid "Please enter an email address on this page: %s"
 msgstr "請在這個頁面輸入電子信箱:%s"
@@ -3101,22 +3289,20 @@ msgid "Please enter the account information on the other pages first."
 msgstr "請先在另一頁輸入帳號資訊."
 
 #: ../help/help.inc:57
-msgid ""
-"Please enter the configuration password. This is NOT your LDAP password. It "
+msgid "Please enter the configuration password. This is NOT your LDAP password. It "
 "is stored in your .conf-file. If this is the first time you log in, enter "
 "\"lam\"."
-msgstr ""
-"請輸入這個設定檔的密碼.這不是您的LDAP密碼.這個密碼儲存在您的 .conf檔內.如果您"
-"是第一次登入,請輸入\"lam\"."
+msgstr "請輸入這個設定檔的密碼.這不是您的LDAP密碼.這個密碼"
+"儲存在您的 .conf檔內.如果您是第一次登入,請輸入"
+"\"lam\"."
 
 #: ../help/help.inc:128
-msgid ""
-"Please enter the master configuration password. This is NOT your LDAP "
+msgid "Please enter the master configuration password. This is NOT your LDAP "
 "password. It is stored in your config.cfg file. If this is the first time "
 "you log in, enter \"lam\"."
-msgstr ""
-"請輸入這個系統管理者的密碼.這不是您的LDAP密碼.這個密碼儲存在您的 config.conf"
-"檔內.如果您是第一次登入,請輸入\"lam\"."
+msgstr "請輸入這個系統管理者的密碼.這不是您的LDAP"
+"密碼.這個密碼儲存在您的 config.conf 檔內.如果您是第一次登入,請輸入"
+"\"lam\"."
 
 #: ../templates/config/mainlogin.php:97
 msgid "Please enter the master password to change the general preferences:"
@@ -3134,30 +3320,34 @@ msgid ""
 "numbers and -/_."
 msgstr "請輸入新的設定檔名稱.可以包含字母,數字和 -/_ ."
 
-#: ../lib/modules/posixAccount.inc:367 ../lib/modules/inetOrgPerson.inc:350
+#: ../lib/modules/posixAccount.inc:379 ../lib/modules/inetOrgPerson.inc:357
 msgid "Please enter the password which you want to set for this account."
 msgstr "請輸入這個帳號的密碼."
 
-#: ../lib/modules/posixAccount.inc:342
+#: ../lib/modules/posixAccount.inc:354
 msgid "Please enter the path to the user's home directory."
 msgstr "請輸入使用者個人目錄的路徑."
 
 #: ../lib/modules/quota.inc:123
-msgid ""
-"Please enter the quota settings for this mount point. The syntax is: {soft "
+msgid "Please enter the quota settings for this mount point. The syntax is: {soft "
 "block limit},{hard block limit},{soft inode limit},{hard inode limit}"
-msgstr ""
-"請設定這個掛載點的磁碟配額.語法是:{軟性區塊配額},{強制區塊配額},{軟性inode配"
-"額},{強制inode配額}"
+msgstr "請設定這個掛載點的磁碟配額.語法是:{軟性區塊配額},{強制區塊配額},{軟性檔案數目配"
+"額},{強制檔案數目配額}"
 
-#: ../lib/modules/posixAccount.inc:78 ../lib/modules/inetOrgPerson.inc:74
+#: ../lib/modules/posixAccount.inc:86 ../lib/modules/inetOrgPerson.inc:74
 msgid "Please enter the same password in both password fields."
 msgstr "二個密碼欄位請輸入相同的密碼."
 
-#: ../lib/modules/posixGroup.inc:495 ../lib/modules/sambaAccount.inc:74
+#: ../lib/modules/posixGroup.inc:482 ../lib/modules/sambaAccount.inc:74
 #: ../lib/modules/sambaSamAccount.inc:87
 msgid "Please enter the same password in both password-fields."
 msgstr "二個密碼欄位請輸入相同的密碼."
+
+#: ../templates/selfService/adminLogin.php:96
+msgid "Please enter your master configuration password to change the self service "
+"profile:"
+msgstr "請輸入您的管理密碼以更改 self service "
+"設定:"
 
 #: ../templates/config/conflogin.php:89
 msgid "Please enter your password to change the server preferences:"
@@ -3168,26 +3358,15 @@ msgid "Please enter your public SSH key."
 msgstr "請輸入您的ssh公開鑰."
 
 #: ../templates/masscreate.php:123
-msgid ""
-"Please provide a CSV formated file with your account data. The cells in the "
+msgid "Please provide a CSV formated file with your account data. The cells in the "
 "first row must be filled with the column identifiers. The following rows "
 "represent one account for each row."
-msgstr ""
-"請上傳一個包含帳號資料的CSV檔,檔案中的第一列必須是欄位名稱,第二列開始每一列表"
-"示一個帳號."
+msgstr "請上傳一個包含帳號資料的CSV檔,檔案中的"
+"第一列必須是欄位名稱,第二列開始每一列"
+"表示一個帳號."
 
-#: ../lib/status.inc:66
-msgid ""
-"Please report this error to the Bug-Tracker at {link=http://lam.sourceforge."
-"net}LDAP Account Manager Development Team{endlink}. The error number is "
-"{bold}0001:Invalid/Missing Message type.{endbold} Thank you."
-msgstr ""
-"請向{link=http://lam.sourceforge.net}LDAP Account Manager開發團隊{endlink}回"
-"報這個錯誤.這個錯誤編號是{bold}0001:無效或遺漏的訊息類型.{endbold}. 感謝您."
-
-#: ../lib/modules/inetOrgPerson.inc:354
-msgid ""
-"Please select an image file to upload. It must be in JPG format (.jpg/.jpeg)."
+#: ../lib/modules/inetOrgPerson.inc:361
+msgid "Please select an image file to upload. It must be in JPG format (.jpg/.jpeg)."
 msgstr "請選擇一個圖形檔.它必須是JPG格式(.jpg/.jpeg)."
 
 #: ../lib/modules.inc:969
@@ -3199,12 +3378,12 @@ msgid "Please select your account type:"
 msgstr "請選擇帳號類型:"
 
 #: ../help/help.inc:134
-msgid ""
-"Please select your prefered log level. Messages with a lower level will not "
+msgid "Please select your prefered log level. Messages with a lower level will not "
 "be logged."
-msgstr ""
+msgstr "請選擇您喜好的記錄等級. 比此等級低的訊息不會"
+"被記錄."
 
-#: ../templates/login.php:206
+#: ../templates/login.php:208
 msgid "Please select your user name and enter your password to log in."
 msgstr "請選擇使用者帳號並輸入密碼."
 
@@ -3214,10 +3393,11 @@ msgid "Please set up all required attributes on page: %s"
 msgstr "請設定好在 %s 頁面的所有必要資訊"
 
 #: ../templates/config/profmanage.php:138
+#: ../templates/selfService/profManage.php:113
 msgid "Please set up your master configuration file (config/config.cfg) first!"
 msgstr "請先設定您的系統管理者設定檔(config/config.cfg)!"
 
-#: ../lib/modules/kolabUser.inc:228
+#: ../lib/modules/kolabUser.inc:225
 msgid "Policy list has invalid format!"
 msgstr "原則清單包含無效的格式!"
 
@@ -3230,25 +3410,28 @@ msgstr "位置"
 msgid "Possible values"
 msgstr "可能的值"
 
-#: ../lib/modules/inetOrgPerson.inc:193 ../lib/modules/inetOrgPerson.inc:309
-#: ../lib/modules/inetOrgPerson.inc:310 ../lib/modules/inetOrgPerson.inc:609
-#: ../lib/modules/inetOrgPerson.inc:818
+#: ../lib/modules/inetOrgPerson.inc:115 ../lib/modules/inetOrgPerson.inc:200
+#: ../lib/modules/inetOrgPerson.inc:316 ../lib/modules/inetOrgPerson.inc:317
+#: ../lib/modules/inetOrgPerson.inc:616 ../lib/modules/inetOrgPerson.inc:825
+#: ../lib/modules/inetOrgPerson.inc:1138
 msgid "Post office box"
 msgstr "郵政信箱"
 
-#: ../lib/modules/inetOrgPerson.inc:60 ../lib/modules/inetOrgPerson.inc:187
-#: ../lib/modules/inetOrgPerson.inc:317 ../lib/modules/inetOrgPerson.inc:621
-#: ../lib/modules/inetOrgPerson.inc:820
+#: ../lib/modules/inetOrgPerson.inc:60 ../lib/modules/inetOrgPerson.inc:114
+#: ../lib/modules/inetOrgPerson.inc:194 ../lib/modules/inetOrgPerson.inc:324
+#: ../lib/modules/inetOrgPerson.inc:628 ../lib/modules/inetOrgPerson.inc:827
+#: ../lib/modules/inetOrgPerson.inc:1122
 msgid "Postal address"
 msgstr "居住地址"
 
-#: ../lib/modules/inetOrgPerson.inc:318
+#: ../lib/modules/inetOrgPerson.inc:325
 msgid "Postal address, city"
 msgstr "居住地址."
 
-#: ../lib/modules/inetOrgPerson.inc:62 ../lib/modules/inetOrgPerson.inc:181
-#: ../lib/modules/inetOrgPerson.inc:313 ../lib/modules/inetOrgPerson.inc:314
-#: ../lib/modules/inetOrgPerson.inc:615 ../lib/modules/inetOrgPerson.inc:819
+#: ../lib/modules/inetOrgPerson.inc:62 ../lib/modules/inetOrgPerson.inc:115
+#: ../lib/modules/inetOrgPerson.inc:188 ../lib/modules/inetOrgPerson.inc:320
+#: ../lib/modules/inetOrgPerson.inc:321 ../lib/modules/inetOrgPerson.inc:622
+#: ../lib/modules/inetOrgPerson.inc:826 ../lib/modules/inetOrgPerson.inc:1130
 msgid "Postal code"
 msgstr "郵遞區號"
 
@@ -3256,28 +3439,31 @@ msgstr "郵遞區號"
 msgid "Predefined values"
 msgstr "已定義的值"
 
-#: ../lib/modules/inetOrgPerson.inc:159
+#: ../lib/modules/inetOrgPerson.inc:166
 msgid "President"
-msgstr ""
+msgstr "President"
 
-#: ../lib/modules/posixGroup.inc:511 ../lib/modules/posixAccount.inc:210
-#: ../lib/modules/posixAccount.inc:277 ../lib/modules/posixAccount.inc:333
-#: ../lib/modules/posixAccount.inc:358 ../lib/modules/posixAccount.inc:404
-#: ../lib/modules/posixAccount.inc:892 ../lib/modules/posixAccount.inc:1040
-#: ../lib/modules/posixAccount.inc:1068 ../lib/modules/posixAccount.inc:1123
+#: ../lib/modules/posixGroup.inc:498 ../lib/modules/posixAccount.inc:222
+#: ../lib/modules/posixAccount.inc:289 ../lib/modules/posixAccount.inc:345
+#: ../lib/modules/posixAccount.inc:370 ../lib/modules/posixAccount.inc:412
+#: ../lib/modules/posixAccount.inc:912 ../lib/modules/posixAccount.inc:1056
+#: ../lib/modules/posixAccount.inc:1084 ../lib/modules/posixAccount.inc:1139
 msgid "Primary group"
 msgstr "主要群組"
 
 #: ../templates/config/profmanage.php:106
+#: ../templates/selfService/profManage.php:96
 msgid "Profile deleted."
-msgstr ""
+msgstr "設定檔已刪除."
 
 #: ../templates/tools.php:55
 msgid "Profile editor"
 msgstr "設定檔編輯器"
 
 #: ../templates/config/profmanage.php:50
-#: ../templates/config/profmanage.php:151 ../help/help.inc:115
+#: ../templates/config/profmanage.php:151
+#: ../templates/selfService/profManage.php:36
+#: ../templates/selfService/profManage.php:126 ../help/help.inc:115
 #: ../help/help.inc:117 ../help/help.inc:119 ../help/help.inc:121
 #: ../help/help.inc:123
 msgid "Profile management"
@@ -3285,12 +3471,16 @@ msgstr "系統設定檔管理"
 
 #: ../templates/config/profmanage.php:166
 #: ../templates/config/profmanage.php:218
+#: ../templates/selfService/profManage.php:141
+#: ../templates/selfService/profManage.php:192
 #: ../templates/profedit/profilepage.php:241 ../help/help.inc:146
 msgid "Profile name"
 msgstr "設定檔名稱"
 
 #: ../templates/config/profmanage.php:90
 #: ../templates/config/profmanage.php:101
+#: ../templates/selfService/profManage.php:72
+#: ../templates/selfService/profManage.php:87
 msgid "Profile name is invalid!"
 msgstr "設定檔名稱無效!"
 
@@ -3306,14 +3496,14 @@ msgstr "設定檔的密碼不同或空白!"
 
 #: ../lib/modules/sambaAccount.inc:64 ../lib/modules/sambaAccount.inc:65
 #: ../lib/modules/sambaAccount.inc:158 ../lib/modules/sambaAccount.inc:289
-#: ../lib/modules/sambaAccount.inc:384 ../lib/modules/sambaAccount.inc:765
-#: ../lib/modules/sambaAccount.inc:862 ../lib/modules/sambaSamAccount.inc:79
+#: ../lib/modules/sambaAccount.inc:384 ../lib/modules/sambaAccount.inc:762
+#: ../lib/modules/sambaAccount.inc:859 ../lib/modules/sambaSamAccount.inc:79
 #: ../lib/modules/sambaSamAccount.inc:80
 #: ../lib/modules/sambaSamAccount.inc:224
 #: ../lib/modules/sambaSamAccount.inc:358
-#: ../lib/modules/sambaSamAccount.inc:906
-#: ../lib/modules/sambaSamAccount.inc:1131
-#: ../lib/modules/sambaSamAccount.inc:1294
+#: ../lib/modules/sambaSamAccount.inc:903
+#: ../lib/modules/sambaSamAccount.inc:1128
+#: ../lib/modules/sambaSamAccount.inc:1291
 msgid "Profile path"
 msgstr "設定檔路徑"
 
@@ -3330,9 +3520,9 @@ msgstr "設定檔已儲存."
 msgid "Quota"
 msgstr "磁碟配額"
 
-#: ../lib/modules/quota.inc:485
+#: ../lib/modules/quota.inc:481
 msgid "Quota for:"
-msgstr ""
+msgstr "配額:"
 
 #: ../lib/modules/quota.inc:57
 msgid "Quota has wrong format!"
@@ -3340,7 +3530,7 @@ msgstr "磁碟配額的格式錯誤!"
 
 #: ../templates/tree/templates/creation/custom.php:62
 msgid "RDN"
-msgstr ""
+msgstr "RDN"
 
 #: ../templates/masscreate.php:164 ../templates/profedit/profilepage.php:200
 #: ../lib/modules.inc:1066 ../help/help.inc:144
@@ -3351,11 +3541,11 @@ msgstr "RDN屬性"
 msgid "RID (Windows UID)"
 msgstr "RID (Windows UID)"
 
-#: ../lib/modules/sambaDomain.inc:84 ../lib/modules/sambaDomain.inc:105
-#: ../lib/modules/sambaDomain.inc:207 ../lib/modules/sambaDomain.inc:213
-#: ../lib/modules/sambaDomain.inc:381
+#: ../lib/modules/sambaDomain.inc:86 ../lib/modules/sambaDomain.inc:147
+#: ../lib/modules/sambaDomain.inc:333 ../lib/modules/sambaDomain.inc:339
+#: ../lib/modules/sambaDomain.inc:601
 msgid "RID base"
-msgstr ""
+msgstr "RID base"
 
 #: ../templates/tree/templates/creation/new_ou_template.php:99
 msgid "Really create this new OU?"
@@ -3370,21 +3560,21 @@ msgid "Recipient"
 msgstr "收件者"
 
 #: ../lib/types/mailAlias.inc:83 ../lib/modules/nisMailAlias.inc:71
-#: ../lib/modules/nisMailAlias.inc:85 ../lib/modules/nisMailAlias.inc:281
+#: ../lib/modules/nisMailAlias.inc:85 ../lib/modules/nisMailAlias.inc:276
 msgid "Recipient list"
 msgstr "收件者清單"
 
 #: ../templates/tree/rdelete.php:72
 msgid "Recursive delete progress"
-msgstr ""
-
-#: ../templates/config/confmain.php:371
-msgid "Reenter Password"
-msgstr "確認密碼"
+msgstr "遞迴刪除"
 
 #: ../templates/config/mainmanage.php:312
 msgid "Reenter new master password"
 msgstr "再次輸入系統管理者密碼"
+
+#: ../templates/config/confmain.php:371 ../lib/modules/posixAccount.inc:1610
+msgid "Reenter password"
+msgstr "確認密碼"
 
 #: ../templates/config/profmanage.php:191
 #: ../templates/config/profmanage.php:298
@@ -3396,17 +3586,17 @@ msgstr "再次輸入設定檔密碼"
 msgid "Refresh"
 msgstr "重新整理"
 
-#: ../lib/modules/kolabUser.inc:54
+#: ../lib/modules/kolabUser.inc:51
 msgid "Reject if conflicts"
-msgstr ""
+msgstr "如果衝突則拒絕"
 
 #: ../templates/tree/templates/creation/custom.php:62
 msgid "Relative distinguished name"
 msgstr "相對識別名稱(RDN)"
 
 #: ../templates/pdfedit/pdfpage.php:475 ../lib/modules/ieee802device.inc:100
-#: ../lib/modules/kolabUser.inc:338 ../lib/modules/kolabUser.inc:357
-#: ../lib/modules/kolabUser.inc:383 ../lib/modules/ldapPublicKey.inc:94
+#: ../lib/modules/kolabUser.inc:339 ../lib/modules/kolabUser.inc:358
+#: ../lib/modules/kolabUser.inc:384 ../lib/modules/ldapPublicKey.inc:94
 #: ../lib/modules/inetLocalMailRecipient.inc:156
 #: ../lib/modules/nisMailAlias.inc:143
 msgid "Remove"
@@ -3416,22 +3606,24 @@ msgstr "刪除"
 msgid "Remove this account type"
 msgstr "刪除這個帳號類型:"
 
-#: ../templates/config/profmanage.php:214 ../help/help.inc:117
+#: ../templates/config/profmanage.php:214
+#: ../templates/selfService/profManage.php:188 ../help/help.inc:117
 msgid "Rename profile"
 msgstr "更改設定檔名稱"
 
 #: ../templates/config/profmanage.php:97
+#: ../templates/selfService/profManage.php:83
 msgid "Renamed profile."
 msgstr ""
 
-#: ../lib/modules/posixGroup.inc:186 ../lib/modules/posixGroup.inc:278
-#: ../lib/modules/sambaAccount.inc:722 ../lib/modules/sambaSamAccount.inc:850
-#: ../lib/modules/posixAccount.inc:917 ../lib/modules/posixAccount.inc:1018
-#: ../lib/modules/inetOrgPerson.inc:587 ../lib/modules/inetOrgPerson.inc:752
+#: ../lib/modules/posixGroup.inc:180 ../lib/modules/posixGroup.inc:268
+#: ../lib/modules/sambaAccount.inc:719 ../lib/modules/sambaSamAccount.inc:847
+#: ../lib/modules/posixAccount.inc:937 ../lib/modules/posixAccount.inc:1034
+#: ../lib/modules/inetOrgPerson.inc:594 ../lib/modules/inetOrgPerson.inc:759
 msgid "Repeat password"
 msgstr "確認密碼"
 
-#: ../lib/modules/posixAccount.inc:72 ../lib/modules/posixAccount.inc:723
+#: ../lib/modules/posixAccount.inc:80 ../lib/modules/posixAccount.inc:719
 msgid "Replaced $user or $group in homedir."
 msgstr ""
 
@@ -3446,7 +3638,7 @@ msgid "Required attributes"
 msgstr "必要的屬性"
 
 #: ../templates/profedit/profilepage.php:251
-#: ../lib/modules/sambaAccount.inc:813 ../lib/modules/sambaSamAccount.inc:964
+#: ../lib/modules/sambaAccount.inc:810 ../lib/modules/sambaSamAccount.inc:961
 msgid "Reset"
 msgstr "重設"
 
@@ -3454,16 +3646,25 @@ msgstr "重設"
 msgid "Reset changes"
 msgstr "重新設定"
 
-#: ../lib/modules/sambaAccount.inc:346 ../lib/modules/sambaAccount.inc:812
+#: ../lib/modules/sambaAccount.inc:346 ../lib/modules/sambaAccount.inc:809
 #: ../lib/modules/sambaSamAccount.inc:186
-#: ../lib/modules/sambaSamAccount.inc:963
+#: ../lib/modules/sambaSamAccount.inc:960
 msgid "Reset password"
 msgstr "重設密碼"
+
+#: ../lib/modules/sambaDomain.inc:126 ../lib/modules/sambaDomain.inc:200
+#: ../lib/modules/sambaDomain.inc:303 ../lib/modules/sambaDomain.inc:639
+msgid "Reset time after lockout"
+msgstr "停權後重設時間"
+
+#: ../lib/modules/sambaDomain.inc:200
+msgid "Reset time after lockout must be are natural number."
+msgstr "鎖定密碼後的重設時間必須是一個自然數."
 
 #: ../lib/modules/inetLocalMailRecipient.inc:57
 #: ../lib/modules/inetLocalMailRecipient.inc:92
 #: ../lib/modules/inetLocalMailRecipient.inc:139
-#: ../lib/modules/inetLocalMailRecipient.inc:305
+#: ../lib/modules/inetLocalMailRecipient.inc:310
 msgid "Routing address"
 msgstr "繞送的地址"
 
@@ -3475,7 +3676,7 @@ msgstr "SSH公開金鑰"
 
 #: ../lib/modules/ldapPublicKey.inc:164
 msgid "SSH public key(s)"
-msgstr ""
+msgstr "SSH 公開金鑰"
 
 #: ../lib/modules/sambaAccount.inc:105
 msgid "Samba 2"
@@ -3486,9 +3687,9 @@ msgstr "Samba 2"
 msgid "Samba 3"
 msgstr "Samba 3"
 
-#: ../lib/modules/sambaDomain.inc:143 ../lib/modules/sambaDomain.inc:144
+#: ../lib/modules/sambaDomain.inc:186 ../lib/modules/sambaDomain.inc:187
 msgid "Samba 3 domain SID is invalid!"
-msgstr ""
+msgstr "Samba 3 網域 SID 錯誤!"
 
 #: ../lib/types/smbDomain.inc:53
 msgid "Samba 3 domain entries"
@@ -3530,33 +3731,34 @@ msgstr "Samba 網域"
 #: ../lib/modules/sambaGroupMapping.inc:308
 #: ../lib/modules/sambaGroupMapping.inc:326
 msgid "Samba group type"
-msgstr ""
+msgstr "Samba 群組類型"
 
-#: ../lib/modules/sambaAccount.inc:343 ../lib/modules/sambaAccount.inc:719
+#: ../lib/modules/sambaAccount.inc:343 ../lib/modules/sambaAccount.inc:716
 #: ../lib/modules/sambaSamAccount.inc:183
-#: ../lib/modules/sambaSamAccount.inc:846
+#: ../lib/modules/sambaSamAccount.inc:843
 msgid "Samba password"
 msgstr "Samba的密碼"
 
 #: ../lib/modules/sambaAccount.inc:70 ../lib/modules/sambaAccount.inc:170
 #: ../lib/modules/sambaAccount.inc:301 ../lib/modules/sambaAccount.inc:390
-#: ../lib/modules/sambaAccount.inc:393 ../lib/modules/sambaAccount.inc:771
-#: ../lib/modules/sambaAccount.inc:863 ../lib/modules/sambaSamAccount.inc:85
+#: ../lib/modules/sambaAccount.inc:393 ../lib/modules/sambaAccount.inc:768
+#: ../lib/modules/sambaAccount.inc:860 ../lib/modules/sambaSamAccount.inc:85
 #: ../lib/modules/sambaSamAccount.inc:230
 #: ../lib/modules/sambaSamAccount.inc:233
 #: ../lib/modules/sambaSamAccount.inc:370
-#: ../lib/modules/sambaSamAccount.inc:912
-#: ../lib/modules/sambaSamAccount.inc:1143
-#: ../lib/modules/sambaSamAccount.inc:1295
+#: ../lib/modules/sambaSamAccount.inc:909
+#: ../lib/modules/sambaSamAccount.inc:1140
+#: ../lib/modules/sambaSamAccount.inc:1292
 msgid "Samba workstations"
 msgstr "Samba工作站"
 
-#: ../lib/modules/sambaSamAccount.inc:1015
+#: ../lib/modules/sambaSamAccount.inc:1012
 msgid "Saturday"
-msgstr ""
+msgstr "星期六"
 
-#: ../templates/tree/edit.php:508 ../templates/pdfedit/pdfpage.php:736
-#: ../templates/pdfedit/pdfpage.php:770
+#: ../templates/tree/edit.php:508
+#: ../templates/selfService/selfServiceMain.php:197
+#: ../templates/pdfedit/pdfpage.php:736 ../templates/pdfedit/pdfpage.php:770
 #: ../templates/profedit/profilepage.php:249
 msgid "Save"
 msgstr "儲存"
@@ -3615,9 +3817,9 @@ msgstr "區段"
 msgid "Security settings"
 msgstr "安全性設定"
 
-#: ../lib/lists.inc:626
+#: ../lib/lists.inc:635
 msgid "See README.openldap.txt to solve this problem."
-msgstr ""
+msgstr "參考 README.openldap.txt 來解決此問題."
 
 #: ../templates/help.php:109
 msgid "See also"
@@ -3631,7 +3833,7 @@ msgstr "為所要新增的物件選擇一種樣版"
 msgid "Select all"
 msgstr "全選"
 
-#: ../lib/modules/posixAccount.inc:984
+#: ../lib/modules/posixAccount.inc:1000
 msgid "Selected groups"
 msgstr "已選擇的群組"
 
@@ -3639,27 +3841,38 @@ msgstr "已選擇的群組"
 msgid "Selected modules"
 msgstr "已選擇的模組"
 
-#: ../lib/modules/posixGroup.inc:244
+#: ../lib/modules/posixGroup.inc:234
 msgid "Selected users"
 msgstr "已選擇的使用者"
 
-#: ../templates/config/confmain.php:425
-msgid "Server Address is empty!"
-msgstr "伺服器位址空白!"
+#: ../templates/selfService/adminMain.php:189
+msgid "Self service configuration"
+msgstr "Self service 設定"
 
-#: ../templates/config/confmain.php:141 ../help/help.inc:58
+#: ../templates/selfService/adminMain.php:201
+msgid "Self service configuration editor"
+msgstr "Self service設定編輯器"
+
+#: ../templates/config/confmain.php:141
+#: ../templates/selfService/adminMain.php:229 ../help/help.inc:58
 msgid "Server address"
 msgstr "伺服器位址"
+
+#: ../templates/config/confmain.php:425
+#: ../templates/selfService/adminMain.php:53
+msgid "Server address is invalid!"
+msgstr "伺服器位址錯誤!"
 
 #: ../templates/config/confmain.php:320
 msgid "Server of external script"
 msgstr "外部指令檔所在的伺服器位置"
 
-#: ../templates/login.php:302
+#: ../templates/login.php:304
 msgid "Server profile"
 msgstr "伺服器設定檔"
 
 #: ../templates/config/confmain.php:138
+#: ../templates/selfService/adminMain.php:226
 msgid "Server settings"
 msgstr "伺服器環境設定"
 
@@ -3667,8 +3880,8 @@ msgstr "伺服器環境設定"
 msgid "Session timeout"
 msgstr "連結(Session)期限"
 
-#: ../lib/modules/posixGroup.inc:196 ../lib/modules/posixAccount.inc:927
-#: ../lib/modules/posixAccount.inc:1057
+#: ../lib/modules/posixGroup.inc:190 ../lib/modules/posixAccount.inc:947
+#: ../lib/modules/posixAccount.inc:1073
 msgid "Set no password"
 msgstr "不設密碼"
 
@@ -3676,17 +3889,17 @@ msgstr "不設密碼"
 msgid "Set profile password"
 msgstr "更改設定檔密碼"
 
-#: ../lib/modules/posixGroup.inc:419
+#: ../lib/modules/posixGroup.inc:409
 msgid "Sets the group password."
 msgstr "設定這個群組的密碼."
 
 #: ../lib/modules/shadowAccount.inc:68
 msgid "Shadow"
-msgstr ""
+msgstr "Shadow"
 
 #: ../templates/massBuildAccounts.php:199
 msgid "Show LDIF file"
-msgstr ""
+msgstr "顯示 LDIF 檔"
 
 #: ../templates/tree/edit.php:107
 msgid "Show internal attributes"
@@ -3696,57 +3909,49 @@ msgstr "顯示內部屬性"
 msgid "Single valued"
 msgstr "只含單一值"
 
-#: ../lib/modules/quota.inc:438
+#: ../lib/modules/quota.inc:434
 msgid "Soft block"
-msgstr ""
+msgstr "軟性區塊配額"
 
-#: ../lib/modules/quota.inc:94 ../lib/modules/quota.inc:304
-#: ../lib/modules/quota.inc:361
+#: ../lib/modules/quota.inc:94 ../lib/modules/quota.inc:300
+#: ../lib/modules/quota.inc:357
 msgid "Soft block limit"
-msgstr ""
+msgstr "軟性區塊配額限制"
 
 #: ../lib/modules/quota.inc:95
 msgid "Soft block limit."
-msgstr ""
+msgstr "軟性區塊配額限制."
 
-#: ../lib/modules/quota.inc:440
+#: ../lib/modules/quota.inc:436
 msgid "Soft inode"
-msgstr ""
+msgstr "軟性檔案數目配額"
 
 #: ../lib/modules/quota.inc:111
 msgid "Soft inode (files) limit."
-msgstr ""
+msgstr "軟性檔案數目配額限制."
 
-#: ../lib/modules/quota.inc:110 ../lib/modules/quota.inc:308
-#: ../lib/modules/quota.inc:363
+#: ../lib/modules/quota.inc:110 ../lib/modules/quota.inc:304
+#: ../lib/modules/quota.inc:359
 msgid "Soft inode limit"
-msgstr ""
+msgstr "軟性檔案數目配額限制."
 
 #: ../templates/tree/edit.php:137
 #, php-format
 msgid "Some attributes (%s) were modified and are highlighted below."
-msgstr ""
+msgstr "以下反白的屬性( %s )已被修改."
 
 #: ../lib/modules.inc:960
 msgid "Some required information is missing"
 msgstr "缺少一些必要的資訊"
 
-#: ../templates/help.php:142
-#, php-format
-msgid ""
-"Sorry this help id ({bold}%s{endbold}) is not available for this module "
-"({bold}%s{endbold})."
-msgstr ""
-"抱歉,這個說明檔 ({bold}%s{endbold})並不適用 ({bold}%s{endbold}) 這個模組."
-
 #: ../templates/help.php:156
 #, php-format
 msgid "Sorry this help number ({bold}%d{endbold}) is not available."
-msgstr ""
+msgstr "抱歉,這個說明檔 ({bold}%d{endbold})並不存在."
 
 #: ../lib/modules/sambaAccount.inc:314 ../lib/modules/sambaAccount.inc:402
-#: ../lib/modules/sambaAccount.inc:803 ../lib/modules/sambaSamAccount.inc:242
-#: ../lib/modules/sambaSamAccount.inc:947
+#: ../lib/modules/sambaAccount.inc:800 ../lib/modules/sambaSamAccount.inc:242
+#: ../lib/modules/sambaSamAccount.inc:944
 msgid "Special user"
 msgstr "特殊群組"
 
@@ -3757,28 +3962,29 @@ msgstr "靜態文字"
 
 #: ../templates/tree/templates/creation/custom.php:54
 msgid "Step 1 of 2: Name and object class(es)"
-msgstr ""
+msgstr "步驟1: 名稱和物件類別"
 
 #: ../templates/tree/templates/creation/custom.php:177
 msgid "Step 2 of 2: Specify attributes and values"
-msgstr ""
+msgstr "步驟2:指定屬性及屬性值"
 
-#: ../lib/modules/inetOrgPerson.inc:140
+#: ../lib/modules/inetOrgPerson.inc:147
 msgid "Steve"
-msgstr ""
+msgstr "Steve"
 
 #: ../lib/modules/sambaAccount.inc:221 ../lib/modules/sambaSamAccount.inc:283
-#: ../lib/modules/posixAccount.inc:200 ../lib/modules/inetOrgPerson.inc:230
+#: ../lib/modules/posixAccount.inc:212 ../lib/modules/inetOrgPerson.inc:237
 msgid "Steve Miller"
-msgstr ""
+msgstr "Steve Miller"
 
-#: ../lib/modules/posixAccount.inc:254
+#: ../lib/modules/posixAccount.inc:266
 msgid "Steve Miller,Room 2.14,123-123-1234,123-123-1234"
-msgstr ""
+msgstr "Steve Miller,Room 2.14,123-123-1234,123-123-1234"
 
-#: ../lib/modules/inetOrgPerson.inc:58 ../lib/modules/inetOrgPerson.inc:175
-#: ../lib/modules/inetOrgPerson.inc:305 ../lib/modules/inetOrgPerson.inc:306
-#: ../lib/modules/inetOrgPerson.inc:603 ../lib/modules/inetOrgPerson.inc:817
+#: ../lib/modules/inetOrgPerson.inc:58 ../lib/modules/inetOrgPerson.inc:114
+#: ../lib/modules/inetOrgPerson.inc:182 ../lib/modules/inetOrgPerson.inc:312
+#: ../lib/modules/inetOrgPerson.inc:313 ../lib/modules/inetOrgPerson.inc:610
+#: ../lib/modules/inetOrgPerson.inc:824 ../lib/modules/inetOrgPerson.inc:1114
 msgid "Street"
 msgstr "街道"
 
@@ -3796,13 +4002,13 @@ msgstr "子字串比對規則"
 
 #: ../templates/tree/rdelete.php:136 ../templates/tree/rdelete.php:148
 msgid "Success"
-msgstr ""
+msgstr "成功"
 
-#: ../lib/lists.inc:466 ../lib/modules.inc:1053
+#: ../lib/lists.inc:475 ../lib/modules.inc:1053
 msgid "Suffix"
 msgstr "尾碼"
 
-#: ../lib/modules/sambaSamAccount.inc:1015
+#: ../lib/modules/sambaSamAccount.inc:1012
 msgid "Sunday"
 msgstr "星期日"
 
@@ -3820,23 +4026,24 @@ msgstr "語法"
 
 #: ../templates/config/mainmanage.php:265
 msgid "System logging"
-msgstr ""
+msgstr "系統記錄"
 
-#: ../lib/modules/kolabUser.inc:227
+#: ../lib/modules/kolabUser.inc:224
 msgid "Target of invitation policy is invalid!"
 msgstr "?"
 
-#: ../lib/modules/inetOrgPerson.inc:50 ../lib/modules/inetOrgPerson.inc:199
-#: ../lib/modules/inetOrgPerson.inc:321 ../lib/modules/inetOrgPerson.inc:322
-#: ../lib/modules/inetOrgPerson.inc:627 ../lib/modules/inetOrgPerson.inc:821
+#: ../lib/modules/inetOrgPerson.inc:50 ../lib/modules/inetOrgPerson.inc:113
+#: ../lib/modules/inetOrgPerson.inc:206 ../lib/modules/inetOrgPerson.inc:328
+#: ../lib/modules/inetOrgPerson.inc:329 ../lib/modules/inetOrgPerson.inc:634
+#: ../lib/modules/inetOrgPerson.inc:828 ../lib/modules/inetOrgPerson.inc:1090
 msgid "Telephone number"
 msgstr "電話號碼"
 
-#: ../lib/modules/inetOrgPerson.inc:165
+#: ../lib/modules/inetOrgPerson.inc:172
 msgid "Temp"
 msgstr ""
 
-#: ../lib/modules/inetOrgPerson.inc:153
+#: ../lib/modules/inetOrgPerson.inc:160
 msgid "Temp, contract until december"
 msgstr ""
 
@@ -3848,7 +4055,7 @@ msgstr "樣版"
 msgid "Text for user PDF"
 msgstr ""
 
-#: ../lib/modules/kolabUser.inc:164
+#: ../lib/modules/kolabUser.inc:161
 msgid ""
 "The Cyrus mail quota for users in MBytes, leave blank for unlimited space."
 msgstr "使用者的Cyrus郵件空間配額,若留空白表示沒有限制."
@@ -3858,31 +4065,30 @@ msgstr "使用者的Cyrus郵件空間配額,若留空白表示沒有限制."
 msgid "The IP address %s is invalid!"
 msgstr "IP位址: %s 無效"
 
-#: ../lib/modules/sambaDomain.inc:69
+#: ../lib/modules/sambaDomain.inc:71
 msgid "The SID of your Samba server. Get it with \"net getlocalsid\"."
 msgstr "您的Samba伺服器的SID,使用\"net getlocalsid\"指令可以取得."
 
-#: ../lib/modules/posixAccount.inc:70
-msgid ""
-"The UID ranges for users and hosts overlap! This is a problem because LAM "
+#: ../lib/modules/posixAccount.inc:78
+msgid "The UID ranges for users and hosts overlap! This is a problem because LAM "
 "uses the highest UID in use + 1 for new accounts. Please set the minimum UID "
 "to equal values or use independent ranges."
-msgstr ""
-"使用者帳號和主機帳號的UID重疊!這個問題是因為LAM使用目前被使用的最高UID+1來配"
-"發UID給新的帳號.請將最小的UID值設為相等或使用各自獨立的UID範圍."
+msgstr "使用者帳號和主機帳號的UID重疊!這個問題是因為 LAM "
+"使用目前被使用的最高UID+1來配發UID給新的帳號.請將最小的UID值"
+"設為相等或使用各自獨立的UID範圍."
 
 #: ../templates/tree/templates/creation/custom.php:99
 #, php-format
 msgid "The container you specified (%s) does not exist. Please try again."
 msgstr "您所指定的%s容器節點並不存在,請重試."
 
-#: ../lib/modules/kolabUser.inc:152
+#: ../lib/modules/kolabUser.inc:149
 msgid "The country name of the user."
 msgstr "使用者的國籍."
 
 #: ../lib/modules/shadowAccount.inc:55
 msgid "The expiration date is invalid."
-msgstr ""
+msgstr "到期日(有效期間)無效."
 
 #: ../templates/initsuff.php:179
 msgid ""
@@ -3899,11 +4105,9 @@ msgid "The headline for a new section must contain at least one character."
 msgstr "區段標題不能空白."
 
 #: ../templates/config/mainmanage.php:122
-msgid ""
-"The log file is empty or contains invalid characters! Valid characters are: "
+msgid "The log file is empty or contains invalid characters! Valid characters are: "
 "a-z, A-Z, 0-9, /, \\, ., :, _ and -."
-msgstr ""
-"記錄檔是空的或包含無效字元,有效字元包含 "
+msgstr "記錄檔是空的或包含無效字元,有效字元包含 "
 "a-z, A-Z, 0-9, /, \\, ., :, _ 和 -."
 
 #: ../lib/modules.inc:917
@@ -3918,11 +4122,11 @@ msgid ""
 "9','_','-','.'."
 msgstr "PDF架構名稱無效.有效的名稱至少要包含一個下列字元:a-z,A-Z,0-9,_,- ."
 
-#: ../lib/modules/kolabUser.inc:156
+#: ../lib/modules/kolabUser.inc:153
 msgid "The name of the server where the mailbox is located."
 msgstr "郵件檔案所在的伺服器名稱."
 
-#: ../lib/modules/sambaDomain.inc:65
+#: ../lib/modules/sambaDomain.inc:67
 msgid "The name of your Windows domain or workgroup."
 msgstr "您的windows網域或群組的名稱."
 
@@ -3931,20 +4135,21 @@ msgid "The new account will be saved under this LDAP suffix."
 msgstr "該帳號會被儲存在這個LDAP節點之下"
 
 #: ../templates/config/confmain.php:70 ../templates/config/mainlogin.php:56
+#: ../templates/selfService/adminLogin.php:51
 msgid "The password is invalid! Please try again."
 msgstr "密碼無效,請重試!"
 
-#: ../lib/modules/posixAccount.inc:334
+#: ../lib/modules/posixAccount.inc:346
 msgid ""
 "The primary group for this account. You can insert a GID number or a group "
 "name."
 msgstr "這個帳號所隸屬的主要群組.可以使用群組GID或群組名稱."
 
-#: ../lib/modules/posixAccount.inc:405
+#: ../lib/modules/posixAccount.inc:413
 msgid "The primary group the host should be member of."
 msgstr "該主機所隸屬的主要群組."
 
-#: ../lib/modules/posixAccount.inc:359
+#: ../lib/modules/posixAccount.inc:371
 msgid "The primary group the user should be member of."
 msgstr "該使用者隸屬的主要群組."
 
@@ -3954,9 +4159,9 @@ msgstr "靜態文字至少要包含一個字元."
 
 #: ../templates/tree/add_oclass_form.php:122
 msgid "There are new required attributes which need to be set."
-msgstr ""
+msgstr "必須設定一些新的必要屬性."
 
-#: ../lib/modules/posixGroup.inc:511
+#: ../lib/modules/posixGroup.inc:498
 msgid "There are still users who have this group as their primary group."
 msgstr "仍有使用者以這個群組為其主要群組."
 
@@ -3968,40 +4173,38 @@ msgstr "只能有一個此類型的群組."
 msgid "There were errors while uploading:"
 msgstr "上傳發生錯誤."
 
-#: ../lib/modules/posixGroup.inc:435
-msgid ""
-"These are the minimum and maximum numbers to use for group IDs when creating "
+#: ../lib/modules/posixGroup.inc:421
+msgid "These are the minimum and maximum numbers to use for group IDs when creating "
 "new group accounts. New group accounts will always get the highest number in "
 "use plus one."
-msgstr ""
-"當新增群組帳號時,所能配發的最小及最大的GID編號.新的群組帳號會配發目前已被使用"
+msgstr "當新增群組帳號時,所能配發的最小及最大的GID編號."
+"新的群組帳號會配發目前已被使用"
 "的最大GID編號加1的號碼."
 
-#: ../lib/modules/posixAccount.inc:322
-msgid ""
-"These are the minimum and maximum numbers to use for machine IDs when "
+#: ../lib/modules/posixAccount.inc:334
+msgid "These are the minimum and maximum numbers to use for machine IDs when "
 "creating new accounts for Samba hosts. The range should be different from "
 "that of users. New host accounts will always get the highest number in use "
 "plus one."
-msgstr ""
-"當新增Samba主機帳號時,可以配發的最小及最大UID,這個範圍應該和使用者帳號的UID有"
-"所區隔.新的主機帳號會配發目前已被使用的UID編號加1的號碼."
+msgstr "當新增Samba主機帳號時,可以配發的最小及最大UID,"
+"這個範圍應該和使用者帳號的UID有所區隔."
+"新的主機帳號會配發目前已被使用的UID編號"
+"加1的號碼."
 
-#: ../lib/modules/posixAccount.inc:318
-msgid ""
-"These are the minimum and maximum numbers to use for user IDs when creating "
+#: ../lib/modules/posixAccount.inc:330
+msgid "These are the minimum and maximum numbers to use for user IDs when creating "
 "new user accounts. The range should be different from that of machines. New "
 "user accounts will always get the highest number in use plus one."
-msgstr ""
-"新增使用者帳號時,所能配發的最小及最大UID,其範圍依機器而定.新的使用者帳號會配"
-"發目前已被使用的最大編號加1的UID號碼."
+msgstr "新增使用者帳號時,所能配發的最小及最大UID,"
+"其範圍應該和主機帳號不同.新的"
+"使用者帳號會配發目前已被使用的最大編號加1的UID號碼."
 
-#: ../lib/modules/posixAccount.inc:94
+#: ../lib/modules/posixAccount.inc:102
 msgid ""
 "This GID number is invalid! Please provide either a number or a group name."
 msgstr "GID無效,請提供編號或群組名稱"
 
-#: ../lib/modules/kolabUser.inc:283
+#: ../lib/modules/kolabUser.inc:284
 msgid "This account is marked for deletion."
 msgstr "這個帳號被標示為刪除."
 
@@ -4030,7 +4233,7 @@ msgid ""
 "default language. Users can change the language at login."
 msgstr "設定登入畫面的預設語言,使用者也可以在登入畫面中更改."
 
-#: ../lib/pdf.inc:455
+#: ../lib/pdf.inc:454
 msgid "This document was automatically created by LDAP Account Manager"
 msgstr "本文件由LDAP Account Manager自動產生"
 
@@ -4043,7 +4246,7 @@ msgstr "這個項目沒有任何屬性"
 msgid "This entry is the root of a sub-tree containing %s entries."
 msgstr "這個項目是一個包含 %s 個項目的子樹的根."
 
-#: ../lib/modules/posixAccount.inc:95
+#: ../lib/modules/posixAccount.inc:103
 msgid "This gecos value is invalid!"
 msgstr "備註(gecos)欄位的內容無效"
 
@@ -4051,15 +4254,15 @@ msgstr "備註(gecos)欄位的內容無效"
 msgid "This is a comma separated list of MAC addresses."
 msgstr "這是以逗點分隔的MAC位址清單."
 
-#: ../lib/modules/kolabUser.inc:140
+#: ../lib/modules/kolabUser.inc:137
 msgid "This is a comma separated list of delegates."
 msgstr "這是以逗點分隔的delegate清單."
 
-#: ../lib/modules/kolabUser.inc:148
+#: ../lib/modules/kolabUser.inc:145
 msgid "This is a comma separated list of eMail aliases."
 msgstr "這是以逗點分隔的郵件別名清單."
 
-#: ../lib/modules/kolabUser.inc:132
+#: ../lib/modules/kolabUser.inc:129
 msgid "This is a comma separated list of invitation policies."
 msgstr "這是以逗點分隔的MAC位址清單."
 
@@ -4075,19 +4278,28 @@ msgstr "這是以逗點分隔的使用者公開的email清單."
 msgid ""
 "This is a list of IP addresses from hosts who may access LAM. You can use \"*"
 "\" as wildcard (e.g. 192.168.0.*)."
-msgstr ""
+msgstr "這是一組可以存取LAM的主機位址清單. 可以使用\"*"
+"\" 當萬用字元(例如 192.168.0.*)."
 
 #: ../help/help.inc:88
-msgid ""
-"This is a list of valid DN entries of all users that are allowed to login to "
+msgid "This is a list of valid DN entries of all users that are allowed to login to "
 "LDAP Account Manager. The user names have to be separated by semicolons."
-msgstr "所有可以登入LAM的使用者DN,以分號來分隔."
+msgstr "這是所有可以登入LAM 的使用者DN 列表,"
+"以分號來分隔."
 
 #: ../templates/masscreate.php:219
 msgid ""
 "This is an example how it would look in your spreadsheet program before you "
 "convert to CSV:"
 msgstr "以下是一個未儲存成CSV檔前的試算表可能的樣子:"
+
+#: ../help/help.inc:166
+msgid "This is needed to find the LDAP DNs of your user accounts. E.g. if you use "
+"\"uid\" and your user inputs \"miller\" then LAM will search for an account "
+"with uid=miller."
+msgstr "這是用來搜尋使用者帳號的 LDAP DN. 例如,若您使用"
+"\"uid\" 而使用者輸入 \"miller\" ,則LAM將會"
+"使用 uid=miller 這個條件來搜尋帳號."
 
 #: ../lib/modules/inetOrgPerson.inc:73
 msgid "This is not a valid DN!"
@@ -4109,7 +4321,7 @@ msgstr "這是一個使用者公開的email地址."
 msgid "This is one recipient for this alias."
 msgstr "這是這個別名所屬的收件者."
 
-#: ../lib/modules/inetOrgPerson.inc:302
+#: ../lib/modules/inetOrgPerson.inc:309
 msgid ""
 "This is the LDAP DN of the user's manager. Use this property to represent "
 "hierarchies in your company."
@@ -4130,11 +4342,10 @@ msgid "This is the SID of the user's primary Windows group."
 msgstr "這是該使用者主要windodws群組的SID."
 
 #: ../help/help.inc:97
-msgid ""
-"This is the absolute path to an external script for setting quotas and "
+msgid "This is the absolute path to an external script for setting quotas and "
 "creating home directories."
-msgstr ""
-"這是外部指令檔的絕對路徑,這個指令檔用來設定磁碟配額及建立使用者個人目錄."
+msgstr "這是外部指令檔的絕對路徑,這個指令檔用來設定磁碟配額及"
+"建立使用者個人目錄."
 
 #: ../lib/modules/sambaAccount.inc:344 ../lib/modules/sambaSamAccount.inc:184
 msgid "This is the account's Windows password."
@@ -4153,141 +4364,143 @@ msgid "This is the group name which will be shown in Windows."
 msgstr "會顯示在windows端的群組名稱."
 
 #: ../help/help.inc:145
-msgid ""
-"This is the identifier for the relative DN value. It must be one of the "
+msgid "This is the identifier for the relative DN value. It must be one of the "
 "given allowed LDAP attributes (e.g. user accounts usually use \"uid\" while "
 "groups use \"cn\")."
-msgstr ""
-"指定那一個屬性做為該項目的相對識別名稱(RDN).您必需從下拉式表單中選擇其一(例"
-"如,使者帳號通常使用\"uid\",而群組通常使用\"cn\""
+msgstr "指定那一個屬性做為該項目的相對識別名稱(RDN).您必需從下拉式表單中選擇其一(例如,使者帳號通常使用\"uid\",而"
+"群組通常使用\"cn\""
 
 #: ../help/help.inc:83
-msgid ""
-"This is the list of attributes to show in the account list. The entries can "
+msgid "This is the list of attributes to show in the account list. The entries can "
 "either be predefined values, \"#attribute\", or individual ones, \"attribute:"
 "description\". Several entries are seperated by semicolons."
-msgstr ""
-"這是要顯示在使用者/群組/主機 清單中的屬性欄位,這些屬性欄位的名稱可以"
-"事先以變數來定義,如\"#屬性名稱變數\",或是是直接指定,如\"attribute:屬性欄位名稱\"."
-"多個屬位欄位要以分號來分隔."
+msgstr "這是要顯示在使用者/群組/主機 清單中的屬性欄位,這些屬性欄位的名稱"
+"可以事先以變數來定義,如\"#屬性名稱變數\",或是是直接指定,如\"attribute:"
+"屬性欄位名稱\".多個屬位欄位要以分號來分隔."
 
 #: ../lib/modules/inetLocalMailRecipient.inc:70
 msgid "This is the mail server for the user."
-msgstr ""
+msgstr "這是使用者所使用的郵件伺服器."
 
-#: ../lib/modules/inetOrgPerson.inc:338
-msgid ""
-"This is the natural name of the user. If empty, the first and last name is "
+#: ../lib/modules/inetOrgPerson.inc:345
+msgid "This is the natural name of the user. If empty, the first and last name is "
 "used."
-msgstr ""
+msgstr "這是使用者的natural name. 若未填寫, 則會"
+"使用first 和 last name."
 
-#: ../lib/modules/posixAccount.inc:391
-msgid ""
-"This is the natural name of the user. If empty, the first and last name or "
+#: ../lib/modules/posixAccount.inc:399
+msgid "This is the natural name of the user. If empty, the first and last name or "
 "user name is used."
-msgstr "這是使用者的自然名稱.若留空白,會使用姓氏和名字."
+msgstr "這是使用者的natural name.若留空白,會使用first and last name或"
+"user name."
+
+#: ../lib/modules/sambaDomain.inc:95
+msgid "This is the number of passwords which are saved to prevent that users reuse "
+"old passwords."
+msgstr "這是指要儲存歷史密碼的次數,以防止使用者重覆使用"
+"舊密碼."
 
 #: ../help/help.inc:93
-msgid ""
-"This is the number of rows to show in the user/group/host list. If more "
+msgid "This is the number of rows to show in the user/group/host list. If more "
 "entries are found the list will be split into several pages."
-msgstr "顯示在每一頁使用者/群組/主機 清單中的列數.超過則會以分頁來顯示."
+msgstr "顯示在每一頁使用者/群組/主機 清單中的列數.搜尋到的"
+"項目超過此數會以分頁來顯示."
 
 #: ../lib/modules/sambaGroupMapping.inc:301
-msgid ""
-"This is the relative ID (similar to UID on Unix) for Windows accounts. If "
+msgid "This is the relative ID (similar to UID on Unix) for Windows accounts. If "
 "you leave this empty LAM will calculate the RID from the UID. This can be "
 "either a number or the name of a special group:"
-msgstr ""
-"這個群組帳號的RID(relative ID,類似於Unix的UID).若留空白,系統將會依據UID來自動"
-"計算出RID.可以設一個數字或是特殊群組的名稱之一:"
+msgstr "這個群組帳號的RID(relative ID,類似於Unix的UID).若"
+"留空白,系統將會依據UID來自動計算出RID.可以"
+"設一個數字或是特殊群組的名稱之一:"
 
 #: ../lib/modules/sambaSamAccount.inc:246
-msgid ""
-"This is the relative ID number for your Windows account. You can either "
+msgid "This is the relative ID number for your Windows account. You can either "
 "enter a number or one of these special accounts: "
-msgstr ""
-"這是您的windows帳號的RID(relative ID),您可以輸入數字或者是以下特殊帳號的其中"
-"之一."
+msgstr "這是您的windows帳號的RID(relative ID),您可以"
+"輸入數字或者是以下特殊帳號的其中之一:"
 
 #: ../lib/modules/sambaSamAccount.inc:250
-msgid ""
-"This is the relative ID number for your host account. If you leave this "
+msgid "This is the relative ID number for your host account. If you leave this "
 "empty LAM will use: uidNumber*2 + sambaAlgorithmicRidBase."
-msgstr ""
-"這個主機帳號的RID,若留空白,則會使用uidNumber*2 + sambaAlgorithmicRidBase演算"
-"法來自動計算."
+msgstr "這個主機帳號的RID,若留"
+"空白,則會使用uidNumber*2 + sambaAlgorithmicRidBase演算法來自動計算."
 
 #: ../help/help.inc:59
-msgid ""
-"This is the server address of your LDAP server. Use ldap:// for standard "
+msgid "This is the server address of your LDAP server. Use ldap:// for standard "
 "LDAP connections and ldaps:// for encrypted (require server certificates) "
 "connections. The port value is optional."
-msgstr ""
-"這是指您的LDAP伺服器位址.ldap:// 的格式表示標準的LDAP連結, ldaps:// 表示加密"
-"(需要伺服器憑證)連結.這個選項是選擇性"
+msgstr "這是指您的LDAP伺服器位址.ldap:// 的格式表示標準的"
+"LDAP連結, ldaps:// 表示加密(需要伺服器憑證)"
+"連結.這個選項是選填的."
 
 #: ../help/help.inc:102
-msgid ""
-"This is the server where the lamdaemon script is stored. LDAP Account "
+msgid "This is the server where the lamdaemon script is stored. LDAP Account "
 "Manager will make a SSH connection to this server with user name and "
 "password provided at login."
-msgstr ""
-"這是指lamdaemon指令檔所在的伺服器.LAM會以SSH來連結這台伺服器,並以使用者登入時"
-"所輸入的帳號及密碼來連結."
+msgstr "這是指 lamdaemon 指令檔所在的伺服器."
+"LAM會以SSH來連結這台伺服器,並以使用者登入時所輸入的帳號及"
+"密碼來連結."
 
 #: ../help/help.inc:77
 msgid "This is the suffix for the LDAP tree viewer."
 msgstr "設定LDAP樹狀瀏覽器的尾碼."
 
 #: ../help/help.inc:71
-msgid ""
-"This is the suffix of the LDAP tree from where to search for LDAP entries. "
+msgid "This is the suffix of the LDAP tree from where to search for LDAP entries. "
 "Only entries in this subtree will be displayed in the account list. When "
 "creating a new accont this will be the DN where it is saved."
-msgstr ""
-"LDAP會從這個尾碼子樹開始搜尋使用者/群組/主機 項目.只有位於這個尾碼節點以下的"
-"項目,才會顯示在使用者/群組/主機 的清單中.在建立新帳號時,這就是它的DN尾碼,就是"
-"它所儲存的位置所在."
+msgstr "LDAP會從這個尾碼子樹開始搜尋使用者/群組/主機 項目."
+"只有位於這個尾碼節點以下的項目,才會顯示在使用者/群組/主機 的清單中.在"
+"建立新帳號時,這就是它的DN尾碼,就是它所儲存的位置所在."
 
 #: ../lib/modules/inetLocalMailRecipient.inc:58
 msgid "This is the target email address for the user's mails."
-msgstr ""
+msgstr "這是使用者的郵件地址."
+
+#: ../lib/modules/sambaDomain.inc:123
+msgid "This is the time (in minutes) for which the user may not log in after the "
+"account was locked. -1 means forever."
+msgstr "這是指使用者在停權以後多久時間(分鐘為單位)不能再登入."
+"-1表示永遠."
 
 #: ../help/help.inc:132
-msgid ""
-"This is the time (in minutes) of inactivity after which a user is "
+msgid "This is the time (in minutes) of inactivity after which a user is "
 "automatically logged off."
-msgstr ""
+msgstr "這是指使用者登入後多久時間(分鐘)沒有動作會被"
+"自動登出."
 
 #: ../help/help.inc:109
-msgid ""
-"This is the time in minutes which LAM caches its LDAP searches. Shorter "
+msgid "This is the time in minutes which LAM caches its LDAP searches. Shorter "
 "times will stress LDAP more but decrease the possibility that changes are "
 "not identified."
-msgstr ""
-"LAM會快取LDAP的搜尋結果,這裡設定快取的有效時間,以分為單位,設定較短的時間,會使"
-"用LDAP較多的效能,但能減少因為改變而造成的資料不一致性."
+msgstr "LAM會快取LDAP的搜尋結果,這裡設定快取的有效時間,以分為單位,設定較短的"
+"時間,會占用LDAP較多的效能,但能減少因為改變而造成的資料"
+"不一致的問題."
 
-#: ../lib/modules/kolabUser.inc:160
+#: ../lib/modules/kolabUser.inc:157
 msgid ""
 "This is the time limit (in days) for other users who want to check future "
 "appointments. If you leave this blank the default (60 days) will be set."
 msgstr ""
 
 #: ../lib/modules/sambaSamAccount.inc:265
-msgid ""
-"This is the time zone of your Samba server. LAM needs this information to "
+msgid "This is the time zone of your Samba server. LAM needs this information to "
 "display the logon hours correctly."
-msgstr ""
+msgstr "這是指 Samba 伺服器所在位置的時區. LAM依據此資訊來正確"
+"顯示可登入時間."
 
 #: ../lib/modules/sambaSamAccount.inc:237
 msgid "This is the user's primary Windows group."
 msgstr "這是該使用者隸屬的主要windodws群組."
 
-#: ../lib/modules/posixAccount.inc:96
+#: ../lib/modules/posixAccount.inc:104
 msgid "This login shell is invalid!"
 msgstr "登入shell錯誤!"
+
+#: ../lib/modules/inetLocalMailRecipient.inc:230
+msgid "This mail address is already in use:"
+msgstr "這個 Email 已經存在: "
 
 #: ../templates/schema/schema.php:355
 msgid "This object class is obsolete."
@@ -4298,19 +4511,37 @@ msgid "This option defines the allowed logon hours for this account."
 msgstr "設定這個帳號可以登入的時間"
 
 #: ../lib/modules/sambaSamAccount.inc:259
-msgid ""
-"This option defines the allowed logon hours for this account. The format is "
+msgid "This option defines the allowed logon hours for this account. The format is "
 "the same as for the LDAP attribute. The 24*7 hours are represented as 168 "
 "bit which are saved as 21 hex (21*8 = 168) values. The first bit represents "
 "Sunday 0:00 - 0:59 in GMT."
-msgstr ""
-"設定這個帳號可以登入的時間.The format is the same as for the LDAP attribute."
-"使用168(24*7)個位元來表示,這168個位元以21個位元組來儲存(21*8=168).第一個位元"
+msgstr "設定這個帳號可以登入的時間.The format is "
+"the same as for the LDAP attribute. 使用168(24*7)個位元來表示,這168個"
+"位元以21個位元組來儲存(21*8=168).第一個位元"
 "表示格林威治時間星期日0:00-0:59."
 
 #: ../help/help.inc:155
 msgid "This saves your account to the LDAP database."
 msgstr "將帳號的設定儲存到LDAP資料庫中"
+
+#: ../help/help.inc:170
+msgid "This text is displayed on top of the self service login page. You can also "
+"input HTML code here."
+msgstr "這些文字會顯示在 self service 登入頁的上方. 您也可以"
+"輸入 HTML 語法."
+
+#: ../help/help.inc:172
+msgid ""
+"This text is displayed on top of the self service main page. You can also "
+"input HTML code here."
+msgstr "這些文字會顯示在 self service 主頁的上方. 您也可以"
+"輸入 HTML 語法."
+
+#: ../help/help.inc:168
+msgid "This text should shortly describe your selected LDAP search attribute (e.g. "
+"email or user name)."
+msgstr "這些文字用來簡短描述您所選擇的LDAP搜尋屬性(例如 "
+"email 或 使用者名稱)."
 
 #: ../help/help.inc:111
 msgid "This text will appear on top of every user PDF file."
@@ -4331,19 +4562,19 @@ msgstr "找不到這個使用者!"
 msgid "This value can only be \\\"true\\\" or \\\"false\\\"!"
 msgstr "這個值只能是true或false."
 
-#: ../lib/modules/posixAccount.inc:97
+#: ../lib/modules/posixAccount.inc:105
 msgid "This value can only be \\\"true\\\" or \\\"false\\\"."
 msgstr "這個值只能是true或false."
 
-#: ../lib/modules/posixGroup.inc:510
+#: ../lib/modules/posixGroup.inc:497
 msgid "This value must be a list of user names separated by semicolons."
 msgstr "這個值是以分號分隔的使用者名稱清單."
 
-#: ../help/help.inc:164
+#: ../help/help.inc:181
 msgid "This will create a new organizational unit under the selected one."
 msgstr "在所選擇的節點下建立一個ou物件"
 
-#: ../help/help.inc:166
+#: ../help/help.inc:183
 msgid ""
 "This will delete the selected organizational unit. The OU has to be empty."
 msgstr "刪除所選擇的ou物件,這個ou物件必需是空的."
@@ -4356,43 +4587,38 @@ msgstr "刪除選定的設定檔."
 msgid "This will reset the host's password to a default value."
 msgstr "會將主機密碼回復為預設值."
 
-#: ../lib/modules/kolabUser.inc:168
-msgid ""
-"This will set a special flag on the account which tells Kolabd to remove it. "
+#: ../lib/modules/kolabUser.inc:165
+msgid "This will set a special flag on the account which tells Kolabd to remove it. "
 "Use this to cleanly delete Kolab accounts (e.g. this removes mail boxes)."
-msgstr ""
-"這會在這個帳號設定一些特殊旗標.以通知Kolabd刪除這個帳號.這麼做可以完全刪除"
-"Kolab帳號(包含其郵件檔案)."
+msgstr "這會在這個帳號設定一些特殊旗標.以通知Kolabd刪除這個帳號."
+"這麼做可以完全刪除 Kolab帳號 (包含其郵件檔案)."
 
-#: ../lib/modules/posixGroup.inc:431 ../lib/modules/posixAccount.inc:379
-msgid ""
-"This will set an invalid password which prevents logins with this account."
-msgstr "這會設定一個無效的密碼,以防止這個帳號登入."
+#: ../lib/modules/posixGroup.inc:413 ../lib/modules/posixAccount.inc:383
+msgid "This will set no password which prevents logins with this account."
+msgstr "這不會設定密碼,以防止這個帳號登入."
 
-#: ../lib/modules/sambaSamAccount.inc:1014
+#: ../lib/modules/sambaSamAccount.inc:1011
 msgid "Thursday"
 msgstr "星期四"
 
-#: ../lib/modules/sambaSamAccount.inc:1055
+#: ../lib/modules/sambaSamAccount.inc:1052
 msgid "Time"
 msgstr ""
 
 #: ../lib/modules/sambaSamAccount.inc:264
 #: ../lib/modules/sambaSamAccount.inc:417
 msgid "Time zone"
-msgstr ""
+msgstr "時區"
 
-#: ../lib/modules/posixAccount.inc:383
-msgid ""
-"To disable login use /bin/false. The list of shells is read from lam/config/"
+#: ../lib/modules/posixAccount.inc:391
+msgid "To disable login use /bin/false. The list of shells is read from lam/config/"
 "shells"
-msgstr ""
-"設定為/bin/false表示該使用者無法使用shell登入,這裡的shell清單取自lam/config/"
+msgstr "設定為/bin/false表示該使用者無法使用shell登入,這裡的shell清單取自lam/config/"
 "shells檔案中."
 
 #: ../lib/modules/sambaSamAccount.inc:441
 msgid "Tokyo, Seoul, Osaka, Yakutsk"
-msgstr ""
+msgstr "東京, 首爾, 大阪, 亞庫次克"
 
 #: ../templates/main_header.php:58
 msgid "Tools"
@@ -4410,7 +4636,7 @@ msgstr "將GID編號轉換為群組名稱"
 msgid "Tree suffix"
 msgstr "樹狀結構的尾碼"
 
-#: ../templates/main_header.php:73
+#: ../templates/main_header.php:70
 msgid "Tree view"
 msgstr "樹狀結構"
 
@@ -4418,62 +4644,66 @@ msgstr "樹狀結構"
 msgid "TreeSuffix is invalid!"
 msgstr "樹狀結構的尾碼無效!"
 
-#: ../lib/modules/sambaSamAccount.inc:1014
+#: ../lib/modules/sambaSamAccount.inc:1011
 msgid "Tuesday"
 msgstr "星期二"
 
+#: ../templates/selfService/profManage.php:144
 #: ../templates/schema/schema.php:353
 msgid "Type"
 msgstr "類型"
 
-#: ../lib/modules/posixAccount.inc:82
+#: ../lib/modules/posixAccount.inc:90
 msgid "UID"
 msgstr "UID"
 
-#: ../lib/modules/posixAccount.inc:82
+#: ../lib/modules/posixAccount.inc:90
 msgid "UID has changed. Do you want to change home directory?"
 msgstr "UID已經改變,要改變個人目錄嗎?"
 
-#: ../lib/modules/posixAccount.inc:77
+#: ../lib/modules/posixAccount.inc:85
 msgid ""
 "UID must be a number. It has to be inside the UID range which is defined in "
 "your configuration profile."
 msgstr "UID必須是一個數字,位於您所設定的範圍內."
 
 #: ../lib/types/host.inc:86 ../lib/types/user.inc:83
-#: ../lib/modules/posixAccount.inc:53 ../lib/modules/posixAccount.inc:204
-#: ../lib/modules/posixAccount.inc:271 ../lib/modules/posixAccount.inc:317
-#: ../lib/modules/posixAccount.inc:321 ../lib/modules/posixAccount.inc:329
-#: ../lib/modules/posixAccount.inc:884 ../lib/modules/posixAccount.inc:1120
+#: ../lib/modules/posixAccount.inc:61 ../lib/modules/posixAccount.inc:216
+#: ../lib/modules/posixAccount.inc:283 ../lib/modules/posixAccount.inc:329
+#: ../lib/modules/posixAccount.inc:333 ../lib/modules/posixAccount.inc:341
+#: ../lib/modules/posixAccount.inc:904 ../lib/modules/posixAccount.inc:1136
 msgid "UID number"
 msgstr "UID編號"
 
-#: ../lib/modules/posixAccount.inc:53
+#: ../lib/modules/posixAccount.inc:61
 #, php-format
-msgid ""
-"UID number has changed. To keep file ownership you have to run the following "
+msgid "UID number has changed. To keep file ownership you have to run the following "
 "command as root: 'find / -uid %s -exec chown %s {} \\;'"
-msgstr ""
-"使用者的UID已經變更.要維持所屬檔案的使用者,您必須以root的身分執行: 'find / -"
-"uid %s -exec chown %s {} \\;'"
+msgstr "使用者的UID已經變更.要維持所屬檔案的使用者,您必須以root的身分執行以下"
+"命令: 'find / -uid %s -exec chown %s {} \\;'"
 
-#: ../lib/modules/posixAccount.inc:70 ../lib/modules/posixAccount.inc:174
+#: ../lib/modules/posixAccount.inc:78 ../lib/modules/posixAccount.inc:186
 msgid "UID ranges for Unix accounts"
 msgstr "Unix帳號使用的的UID範圍"
 
 #: ../lib/modules/sambaAccount.inc:382 ../lib/modules/sambaSamAccount.inc:222
-msgid ""
-"UNC-path (\\\\server\\share) of homedirectory. $user and $group are replaced "
+msgid "UNC-path (\\\\server\\share) of homedirectory. $user and $group are replaced "
 "with user and group name."
-msgstr ""
-"使用者個人目錄的UNC路徑(\\\\server\\share).$user和$group會以使用者及群組名稱"
-"來置換."
+msgstr "使用者個人目錄的UNC路徑(\\\\server\\share).$user和$group會"
+"以使用者及群組名稱來置換."
+
+#: ../templates/selfService/selfServiceMain.php:118
+msgid "Unable to change your account. Maybe you do not have enough rights to change "
+"the settings."
+msgstr "無法改變您的帳號. 可能是因為您沒有足夠的權限更改"
+"這些設定."
 
 #: ../templates/ou_edit.php:67
 msgid "Unable to create new OU!"
 msgstr "無法建立新的OU!"
 
 #: ../templates/config/profmanage.php:86
+#: ../templates/selfService/profManage.php:70
 msgid "Unable to create new profile!"
 msgstr "無法建立新的設定檔!"
 
@@ -4486,22 +4716,23 @@ msgid "Unable to delete PDF structure!"
 msgstr "無法刪除PDF架構!"
 
 #: ../templates/config/profmanage.php:108
+#: ../templates/selfService/profManage.php:98
 #: ../templates/profedit/profiledelete.php:61
 msgid "Unable to delete profile!"
 msgstr "無法刪除設定檔!"
 
-#: ../lib/modules/posixAccount.inc:1284 ../lib/modules/posixAccount.inc:1501
+#: ../lib/modules/posixAccount.inc:1300 ../lib/modules/posixAccount.inc:1517
 msgid "Unable to find group in LDAP."
 msgstr "LDAP中找不到群組."
 
 #: ../templates/config/confmain.php:301
-msgid ""
-"Unable to load available languages. Setting English as default language. For "
+msgid "Unable to load available languages. Setting English as default language. For "
 "further instructions please contact the Admin of this site."
-msgstr ""
-"無法載入語言設定檔,將使用英語為預設語言.請洽網站管理員取得更進一步的訊息."
+msgstr "無法載入語言設定檔,將使用英語為預設語言.請洽網站管理員取得更"
+"進一步的訊息."
 
-#: ../lib/profiles.inc:91 ../lib/profiles.inc:95
+#: ../lib/profiles.inc:91 ../lib/profiles.inc:95 ../lib/selfService.inc:160
+#: ../lib/selfService.inc:164
 msgid "Unable to load profile!"
 msgstr "無法載入設定檔!"
 
@@ -4510,17 +4741,18 @@ msgstr "無法載入設定檔!"
 msgid "Unable to retrieve schema!"
 msgstr "無法取得shcema資料!"
 
+#: ../templates/selfService/adminMain.php:88
 #: ../templates/profedit/profilepage.php:127
 msgid "Unable to save profile!"
 msgstr "無法儲存設定檔!"
 
-#: ../lib/modules/posixGroup.inc:305 ../lib/modules/posixAccount.inc:123
+#: ../lib/modules/posixGroup.inc:295 ../lib/modules/posixAccount.inc:131
 msgid "Unix"
 msgstr "unix"
 
-#: ../lib/modules/inetOrgPerson.inc:44 ../lib/modules/inetOrgPerson.inc:247
-#: ../lib/modules/inetOrgPerson.inc:345 ../lib/modules/inetOrgPerson.inc:669
-#: ../lib/modules/inetOrgPerson.inc:811
+#: ../lib/modules/inetOrgPerson.inc:44 ../lib/modules/inetOrgPerson.inc:254
+#: ../lib/modules/inetOrgPerson.inc:352 ../lib/modules/inetOrgPerson.inc:676
+#: ../lib/modules/inetOrgPerson.inc:818
 msgid "Unix workstations"
 msgstr "unix工作站"
 
@@ -4530,7 +4762,7 @@ msgstr "unix工作站無效!"
 
 #: ../templates/config/confmodules.php:238
 msgid "Unsolved dependency:"
-msgstr ""
+msgstr "未解決的相依性問題:"
 
 #: ../templates/pdfedit/pdfpage.php:463
 msgid "Up"
@@ -4571,29 +4803,29 @@ msgid ""
 "use it!"
 msgstr "在使用之前要讀取lamdaemon的說明文件,並且後果自負!"
 
-#: ../lib/modules/posixGroup.inc:422 ../lib/modules/sambaAccount.inc:126
+#: ../lib/modules/posixGroup.inc:412 ../lib/modules/sambaAccount.inc:126
 #: ../lib/modules/sambaAccount.inc:239 ../lib/modules/sambaAccount.inc:355
-#: ../lib/modules/sambaAccount.inc:358 ../lib/modules/sambaAccount.inc:730
+#: ../lib/modules/sambaAccount.inc:358 ../lib/modules/sambaAccount.inc:727
 #: ../lib/modules/sambaSamAccount.inc:195
 #: ../lib/modules/sambaSamAccount.inc:198
 #: ../lib/modules/sambaSamAccount.inc:301
-#: ../lib/modules/sambaSamAccount.inc:857
-#: ../lib/modules/sambaSamAccount.inc:1088 ../lib/modules/posixAccount.inc:370
+#: ../lib/modules/sambaSamAccount.inc:854
+#: ../lib/modules/sambaSamAccount.inc:1085 ../lib/modules/posixAccount.inc:382
 msgid "Use no password"
 msgstr "不需密碼"
 
-#: ../lib/modules/sambaAccount.inc:726 ../lib/modules/sambaSamAccount.inc:853
-#: ../lib/modules/sambaSamAccount.inc:1082
+#: ../lib/modules/sambaAccount.inc:723 ../lib/modules/sambaSamAccount.inc:850
+#: ../lib/modules/sambaSamAccount.inc:1079
 msgid "Use unix password"
 msgstr "使用unix的密碼"
 
-#: ../lib/modules/quota.inc:90 ../lib/modules/quota.inc:303
+#: ../lib/modules/quota.inc:90 ../lib/modules/quota.inc:299
 msgid "Used blocks"
 msgstr "已使用的區塊"
 
 #: ../lib/modules/quota.inc:91
 msgid "Used blocks. 1000 blocks are usually 1MB"
-msgstr ""
+msgstr "已使用的區塊數. 1000個區塊約等於1MB"
 
 #: ../templates/schema/schema.php:273
 msgid "Used by attributes"
@@ -4603,11 +4835,11 @@ msgstr "被那些屬性使用"
 msgid "Used by object classes"
 msgstr "有使用的物件類別"
 
-#: ../lib/modules/sambaDomain.inc:85
+#: ../lib/modules/sambaDomain.inc:87
 msgid "Used for calculating RIDs from UID/GID. Do not change if unsure."
 msgstr "從UID/GID來計算RID的基底,不了解的話請不要更動."
 
-#: ../lib/modules/quota.inc:106 ../lib/modules/quota.inc:307
+#: ../lib/modules/quota.inc:106 ../lib/modules/quota.inc:303
 msgid "Used inodes"
 msgstr "已使用的inodes"
 
@@ -4625,20 +4857,20 @@ msgstr "使用者帳號"
 
 #: ../lib/types/user.inc:53
 msgid "User accounts (e.g. Unix, Samba and Kolab)"
-msgstr ""
+msgstr "使用者帳號(例如 Unix, Samba及Kolab)"
 
 #: ../lib/modules/sambaAccount.inc:263 ../lib/modules/sambaAccount.inc:373
-#: ../lib/modules/sambaAccount.inc:742 ../lib/modules/sambaSamAccount.inc:213
+#: ../lib/modules/sambaAccount.inc:739 ../lib/modules/sambaSamAccount.inc:213
 #: ../lib/modules/sambaSamAccount.inc:325
-#: ../lib/modules/sambaSamAccount.inc:869
+#: ../lib/modules/sambaSamAccount.inc:866
 msgid "User can change password"
 msgstr "使用者可以更改密碼的日期"
 
-#: ../lib/modules/posixAccount.inc:355
+#: ../lib/modules/posixAccount.inc:367
 msgid "User description. If left empty first and last name will be used."
 msgstr "該使用者的描述,若留空白則使用姓氏 名字."
 
-#: ../lib/modules/inetOrgPerson.inc:282
+#: ../lib/modules/inetOrgPerson.inc:289
 msgid "User description. If left empty sur- and give name will be used."
 msgstr "該使用者的描述,若留空白則使用姓氏 名字"
 
@@ -4647,72 +4879,71 @@ msgid "User modification"
 msgstr ""
 
 #: ../lib/modules/sambaAccount.inc:270 ../lib/modules/sambaAccount.inc:375
-#: ../lib/modules/sambaAccount.inc:750 ../lib/modules/sambaSamAccount.inc:215
+#: ../lib/modules/sambaAccount.inc:747 ../lib/modules/sambaSamAccount.inc:215
 #: ../lib/modules/sambaSamAccount.inc:332
-#: ../lib/modules/sambaSamAccount.inc:877
+#: ../lib/modules/sambaSamAccount.inc:874
 msgid "User must change password"
 msgstr "使用者必須更改密碼的日期"
 
-#: ../templates/login.php:212 ../lib/types/user.inc:85
+#: ../templates/login.php:214 ../lib/types/user.inc:85
 #: ../lib/modules/account.inc:96 ../lib/modules/account.inc:116
 #: ../lib/modules/account.inc:118 ../lib/modules/account.inc:119
-#: ../lib/modules/account.inc:196 ../lib/modules/account.inc:217
-#: ../lib/modules/posixAccount.inc:83 ../lib/modules/posixAccount.inc:84
-#: ../lib/modules/posixAccount.inc:87 ../lib/modules/posixAccount.inc:190
-#: ../lib/modules/posixAccount.inc:350 ../lib/modules/posixAccount.inc:876
-#: ../lib/modules/posixAccount.inc:1118 ../lib/modules/inetOrgPerson.inc:70
-#: ../lib/modules/inetOrgPerson.inc:235 ../lib/modules/inetOrgPerson.inc:341
-#: ../lib/modules/inetOrgPerson.inc:544 ../lib/modules/inetOrgPerson.inc:826
+#: ../lib/modules/account.inc:198 ../lib/modules/account.inc:219
+#: ../lib/modules/posixAccount.inc:91 ../lib/modules/posixAccount.inc:92
+#: ../lib/modules/posixAccount.inc:95 ../lib/modules/posixAccount.inc:202
+#: ../lib/modules/posixAccount.inc:362 ../lib/modules/posixAccount.inc:896
+#: ../lib/modules/posixAccount.inc:1134 ../lib/modules/inetOrgPerson.inc:70
+#: ../lib/modules/inetOrgPerson.inc:242 ../lib/modules/inetOrgPerson.inc:348
+#: ../lib/modules/inetOrgPerson.inc:551 ../lib/modules/inetOrgPerson.inc:833
 msgid "User name"
 msgstr "使用者帳號"
 
-#: ../lib/modules/posixAccount.inc:91 ../lib/modules/inetOrgPerson.inc:72
+#: ../lib/modules/posixAccount.inc:99 ../lib/modules/inetOrgPerson.inc:72
 msgid "User name already exists!"
 msgstr "使用者名稱已經存在!"
 
 #: ../lib/modules/account.inc:116 ../lib/modules/account.inc:117
-#: ../lib/modules/account.inc:119 ../lib/modules/posixAccount.inc:84
-#: ../lib/modules/posixAccount.inc:89 ../lib/modules/inetOrgPerson.inc:70
+#: ../lib/modules/account.inc:119 ../lib/modules/posixAccount.inc:92
+#: ../lib/modules/posixAccount.inc:97 ../lib/modules/inetOrgPerson.inc:70
 #: ../lib/modules/inetOrgPerson.inc:71
 msgid ""
 "User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 "
 "and .-_ !"
 msgstr "使用者名稱包含無效字元.只能使用a-z,A-Z,0-9,及 .-_!"
 
-#: ../lib/modules/posixAccount.inc:87
+#: ../lib/modules/posixAccount.inc:95
 msgid "User name in use. Selected next free user name."
 msgstr "使用者名稱已存在,請選擇可用的名稱."
 
-#: ../lib/modules/posixAccount.inc:351 ../lib/modules/inetOrgPerson.inc:342
-msgid ""
-"User name of the user who should be created. Valid characters are: a-z,0-"
+#: ../lib/modules/posixAccount.inc:363 ../lib/modules/inetOrgPerson.inc:349
+msgid "User name of the user who should be created. Valid characters are: a-z,0-"
 "9, .-_. LAM does not allow a number as first character because useradd also "
 "does not allow it. LAM does not allow capital letters A-Z because it can "
 "cause several problems. If user name is already used user name will be "
 "expanded with a number. The next free number will be used. Warning: Older "
 "systems have problems with user names longer than 8 characters. You can not "
 "log in to Windows if user name is longer than 16 characters."
-msgstr ""
-"該使用者的帳號.有效的字元為:a-z,0-9.-_. LAM和useradd命令一樣都不容許以數字開"
-"頭的帳號. LAM也不容許含大寫字元的帳號,因為會造成一些問題.如果指定的帳號已經存"
-"在,則會自動在帳號後面加上下一個可用的數字. 警告:超過8個字元的帳號在舊的系統上"
-"會造成問題.如果超過16個字元就不能登入windows."
+msgstr "該使用者的帳號.有效的字元為:a-z,0-"
+"9.-_. LAM和useradd命令一樣都不容許以數字開頭的帳號."
+" LAM也不容許含大寫字元的帳號,因為會"
+"造成一些問題.如果指定的帳號已經存在,則會自動在帳號後面"
+"加上下一個可用的數字. 警告:超過8個字元的帳號在舊的"
+"系統上會造成問題.如果超過16個字元就不能"
+"登入windows."
 
-#: ../lib/types/user.inc:44 ../lib/modules/posixAccount.inc:64
-#: ../lib/modules/posixAccount.inc:65 ../lib/modules/posixAccount.inc:68
-#: ../lib/modules/posixAccount.inc:146
+#: ../lib/types/user.inc:44 ../lib/modules/posixAccount.inc:72
+#: ../lib/modules/posixAccount.inc:73 ../lib/modules/posixAccount.inc:76
+#: ../lib/modules/posixAccount.inc:158
 msgid "Users"
 msgstr "使用者帳號"
 
-#: ../lib/modules/posixGroup.inc:411
+#: ../lib/modules/posixGroup.inc:401
 msgid ""
 "Users who are member of the current group. Users who have set their primary "
 "group to this group will not be shown."
-msgstr ""
-"目前群組的成員."
-" 這裡不會顯示將此群組設為主要群組的使用者"
+msgstr "目前群組的成員. 這裡不會顯示將此群組設為主要群組的使用者"
 
-#: ../lib/modules/posixGroup.inc:415
+#: ../lib/modules/posixGroup.inc:405
 msgid ""
 "Users who will become member of the current group. User names are separated "
 "by semicolons."
@@ -4728,59 +4959,59 @@ msgstr "有效的使用者"
 
 #: ../templates/config/mainmanage.php:207
 msgid "Warning"
-msgstr ""
+msgstr "警告"
 
-#: ../templates/delete.php:188 ../lib/modules.inc:1442
+#: ../templates/delete.php:188 ../lib/modules.inc:1484
 #, php-format
 msgid "Was unable to add attribtues to DN: %s."
 msgstr "無法增加屬性到 %s 這個DN中."
 
-#: ../lib/modules.inc:1392 ../lib/modules.inc:1404
+#: ../lib/modules.inc:1425 ../lib/modules.inc:1438
 #, php-format
 msgid "Was unable to create DN: %s."
 msgstr "無法建立這個DN: %s."
 
 #: ../templates/tree/delete.php:110 ../templates/delete.php:279
-#: ../templates/delete.php:284 ../lib/modules.inc:1387
+#: ../templates/delete.php:287 ../lib/modules.inc:1416
 #, php-format
 msgid "Was unable to delete DN: %s."
 msgstr "無法刪除DN: %s."
 
 #: ../templates/tree/update.php:106 ../templates/tree/add_oclass.php:90
 #: ../templates/tree/add_oclass_form.php:159 ../templates/delete.php:180
-#: ../lib/modules.inc:1434
+#: ../lib/modules.inc:1472
 #, php-format
 msgid "Was unable to modify attribtues from DN: %s."
 msgstr "無法變更DN: %s 的屬性"
 
-#: ../templates/delete.php:196 ../lib/modules.inc:1450
+#: ../templates/delete.php:196 ../lib/modules.inc:1496
 #, php-format
 msgid "Was unable to remove attribtues from DN: %s."
 msgstr "無法刪除DN: %s 的屬性."
 
-#: ../lib/modules/sambaSamAccount.inc:1014
+#: ../lib/modules/sambaSamAccount.inc:1011
 msgid "Wednesday"
 msgstr "星期三"
 
 #: ../lib/modules/sambaSamAccount.inc:432
 msgid "Western Europe Time, London, Lisbon"
-msgstr ""
+msgstr "西歐時間, 倫敦, 里斯本"
 
 #: ../help/help.inc:69
-msgid ""
-"When using ldaps:// be sure to use exactly the same IP/domain name as in "
+msgid "When using ldaps:// be sure to use exactly the same IP/domain name as in "
 "your certificate!"
-msgstr "當您使用ldaps:// 時必須使用和您的憑證完全相同的 ip/domain!"
+msgstr "當您使用ldaps:// 時必須使用和"
+"您的憑證完全相同的 ip/domain!"
 
 #: ../lib/modules/sambaAccount.inc:406 ../lib/modules/sambaSamAccount.inc:253
 msgid "Windows domain name of account."
 msgstr "帳號所屬的windows網域"
 
-#: ../lib/modules/sambaAccount.inc:307 ../lib/modules/sambaAccount.inc:788
+#: ../lib/modules/sambaAccount.inc:307 ../lib/modules/sambaAccount.inc:785
 #: ../lib/modules/sambaSamAccount.inc:376
-#: ../lib/modules/sambaSamAccount.inc:929
-#: ../lib/modules/sambaSamAccount.inc:1165
-#: ../lib/modules/sambaSamAccount.inc:1297
+#: ../lib/modules/sambaSamAccount.inc:926
+#: ../lib/modules/sambaSamAccount.inc:1162
+#: ../lib/modules/sambaSamAccount.inc:1294
 #: ../lib/modules/sambaGroupMapping.inc:205
 #: ../lib/modules/sambaGroupMapping.inc:324
 msgid "Windows group"
@@ -4811,11 +5042,12 @@ msgstr "Windows主群組的SID"
 msgid "Windows-Domain name of group."
 msgstr "這個群組所屬的windows網域名稱."
 
-#: ../lib/modules/sambaDomain.inc:93
+#: ../lib/modules/sambaDomain.inc:135
 msgid "Workgroup"
 msgstr "工作群組"
 
-#: ../templates/login.php:399
+#: ../templates/login.php:401 ../templates/selfService/selfServiceLogin.php:89
+#: ../templates/selfService/selfServiceLogin.php:101
 msgid "Wrong password/user name combination. Please try again."
 msgstr "密碼/使用者 錯誤,請重試!"
 
@@ -4824,24 +5056,24 @@ msgstr "密碼/使用者 錯誤,請重試!"
 msgid "Yes"
 msgstr "是"
 
-#: ../lib/modules/posixGroup.inc:506
+#: ../lib/modules/posixGroup.inc:493
 msgid ""
 "You are using a capital letters. This can cause problems because Windows "
 "isn't case-sensitive."
 msgstr "您使用了大寫字元,這會造成一些問題,因為windows不區分大小寫."
 
-#: ../lib/modules/account.inc:118 ../lib/modules/posixAccount.inc:83
-#: ../lib/modules/posixAccount.inc:85
+#: ../lib/modules/account.inc:118 ../lib/modules/posixAccount.inc:91
+#: ../lib/modules/posixAccount.inc:93
 msgid ""
 "You are using a capital letters. This can cause problems because windows "
 "isn't case-sensitive."
 msgstr "您使用了大寫字元,這會造成一些問題,因為windows不區分大小寫."
 
-#: ../lib/modules/posixAccount.inc:80
+#: ../lib/modules/posixAccount.inc:88
 msgid "You cannot use these password options at the same time."
 msgstr "無法同時使用這些密碼選項."
 
-#: ../lib/modules/posixGroup.inc:497
+#: ../lib/modules/posixGroup.inc:484
 msgid "You cannot use this password options at the same time."
 msgstr "無法同時使用這些密碼選項."
 
@@ -4876,13 +5108,14 @@ msgstr "PHP設定無法上傳檔案,請檢查php.ini ."
 
 #: ../lib/security.inc:135
 msgid "Your session expired, click here to go back to the login page."
-msgstr ""
+msgstr "您的連線已過期, 請按此重新登入."
 
-#: ../templates/login.php:192
+#: ../templates/login.php:194
 msgid "Your session expired, please log in again."
-msgstr ""
+msgstr "您的連線已過期, 請重新登入."
 
-#: ../templates/config/mainmanage.php:131 ../lib/config.inc:339
+#: ../templates/config/mainmanage.php:131
+#: ../templates/selfService/adminMain.php:77 ../lib/config.inc:339
 msgid "Your settings were successfully saved."
 msgstr "設定儲存成功."
 
@@ -4893,17 +5126,17 @@ msgstr "[屬性刪除]"
 
 #: ../lib/modules/sambaAccount.inc:285 ../lib/modules/sambaSamAccount.inc:354
 msgid "\\\\server\\homes\\smiller"
-msgstr ""
+msgstr "\\\\server\\homes\\smiller"
 
 #: ../lib/modules/sambaAccount.inc:291 ../lib/modules/sambaSamAccount.inc:360
 msgid "\\\\server\\profiles\\smiller"
-msgstr ""
+msgstr "\\\\server\\profiles\\smiller"
 
 #: ../templates/tree/edit.php:490
 msgid "add value"
 msgstr "新增屬性值"
 
-#: ../lib/modules/posixGroup.inc:366
+#: ../lib/modules/posixGroup.inc:356
 msgid "adminstrators"
 msgstr ""
 
@@ -4913,11 +5146,11 @@ msgstr ""
 
 #: ../templates/schema/schema.php:224
 msgid "characters"
-msgstr "字元"
+msgstr ""
 
 #: ../help/help.inc:81
 msgid "dc=yourcompany,dc=com"
-msgstr ""
+msgstr "dc=yourcompany,dc=com"
 
 #: ../templates/tree/edit.php:310
 msgid "delete attribute"
@@ -4930,28 +5163,29 @@ msgstr "刪除屬性"
 msgid "download value"
 msgstr "下載值"
 
-#: ../lib/modules/inetOrgPerson.inc:56 ../lib/modules/inetOrgPerson.inc:217
-#: ../lib/modules/inetOrgPerson.inc:333 ../lib/modules/inetOrgPerson.inc:334
-#: ../lib/modules/inetOrgPerson.inc:645 ../lib/modules/inetOrgPerson.inc:824
+#: ../lib/modules/inetOrgPerson.inc:56 ../lib/modules/inetOrgPerson.inc:113
+#: ../lib/modules/inetOrgPerson.inc:224 ../lib/modules/inetOrgPerson.inc:340
+#: ../lib/modules/inetOrgPerson.inc:341 ../lib/modules/inetOrgPerson.inc:652
+#: ../lib/modules/inetOrgPerson.inc:831 ../lib/modules/inetOrgPerson.inc:1082
 msgid "eMail address"
 msgstr "電子郵件地址"
 
 #: ../templates/tree/edit.php:387
 msgid "false"
-msgstr ""
+msgstr "失敗"
 
-#: ../lib/modules/posixAccount.inc:219
+#: ../lib/modules/posixAccount.inc:231
 msgid "group01,group02"
-msgstr ""
+msgstr "group01,group02"
 
 #: ../lib/modules/quota.inc:146 ../lib/modules/quota.inc:148
 #: ../lib/modules/quota.inc:197 ../lib/modules/quota.inc:199
 msgid "hours"
 msgstr ""
 
-#: ../lib/tree.inc:1163
+#: ../lib/tree.inc:1148
 msgid "jpegPhoto contains errors"
-msgstr "jpeg相片錯誤"
+msgstr "jpegPhote 錯誤"
 
 #: ../help/help.inc:63
 msgid ""
@@ -4965,7 +5199,7 @@ msgid ""
 "connection."
 msgstr "ldaps://141.40.146.133 表示使用加密的LDAP連結到141.40.146.133"
 
-#: ../lib/modules/posixAccount.inc:279
+#: ../lib/modules/posixAccount.inc:291
 msgid "machines"
 msgstr ""
 
@@ -5002,27 +5236,25 @@ msgid "not specified"
 msgstr "未指定"
 
 #: ../help/help.inc:75
-msgid ""
-"ou=People,dc=yourcompany,dc=com will read and store all accounts in this "
+msgid "ou=People,dc=yourcompany,dc=com will read and store all accounts in this "
 "subtree."
-msgstr ""
-"ou=People,dc=yourcompany,dc=com 表示將會讀取這個子樹下的帳號或將帳號儲存在這"
+msgstr "ou=People,dc=yourcompany,dc=com 表示將會讀取這個子樹下的帳號或將帳號儲存在這"
 "個子樹下."
 
-#: ../lib/modules/posixAccount.inc:265
+#: ../lib/modules/posixAccount.inc:277
 msgid "pc01$"
-msgstr ""
+msgstr "pc01$"
 
-#: ../lib/modules/posixAccount.inc:286
+#: ../lib/modules/posixAccount.inc:298
 msgid "pc01,Room 2.34"
-msgstr ""
+msgstr "pc01,Room 2.34"
 
-#: ../lib/modules/inetOrgPerson.inc:249
+#: ../lib/modules/inetOrgPerson.inc:256
 msgid "pc01,pc02"
-msgstr ""
+msgstr "pc01,pc02"
 
 #: ../templates/tree/edit.php:242 ../templates/config/confmain.php:396
-#: ../lib/modules.inc:1096
+#: ../templates/selfService/adminMain.php:498 ../lib/modules.inc:1096
 msgid "required"
 msgstr "必要的選項"
 
@@ -5030,12 +5262,12 @@ msgstr "必要的選項"
 msgid "required for Samba 3 accounts"
 msgstr "對Samba 3的帳號來說是必要的選項"
 
-#: ../lib/modules/posixGroup.inc:392 ../lib/modules/sambaAccount.inc:227
-#: ../lib/modules/sambaSamAccount.inc:289 ../lib/modules/posixAccount.inc:240
+#: ../lib/modules/posixGroup.inc:382 ../lib/modules/sambaAccount.inc:227
+#: ../lib/modules/sambaSamAccount.inc:289 ../lib/modules/posixAccount.inc:252
 msgid "secret"
 msgstr ""
 
-#: ../lib/modules/posixAccount.inc:192 ../lib/modules/inetOrgPerson.inc:237
+#: ../lib/modules/posixAccount.inc:204 ../lib/modules/inetOrgPerson.inc:244
 #: ../lib/modules/nisMailAlias.inc:87
 msgid "smiller"
 msgstr ""
@@ -5048,17 +5280,44 @@ msgstr ""
 msgid "true"
 msgstr ""
 
-#: ../lib/modules/posixGroup.inc:386
+#: ../lib/modules/posixGroup.inc:376
 msgid "user01,user02,user03"
-msgstr ""
+msgstr "user01,user02,user03"
 
-#: ../lib/modules/inetOrgPerson.inc:219
+#: ../lib/modules/inetOrgPerson.inc:226
 msgid "user@company.com"
-msgstr ""
+msgstr "user@company.com"
 
-#: ../lib/modules/posixAccount.inc:212
+#: ../lib/modules/posixAccount.inc:224
 msgid "users"
 msgstr ""
+
+#~ msgid "A required PHP extension is missing!"
+#~ msgstr "缺少一些必要的php延伸功能模組"
+
+#~ msgid "Invalid password"
+#~ msgstr "無效的密碼"
+
+#~ msgid "Invalid/Missing Message type"
+#~ msgstr "無效的或遺漏的訊息類型"
+
+#~ msgid "Password maxage"
+#~ msgstr "密碼最大生命期"
+
+#~ msgid "Password minage"
+#~ msgstr "密碼最小生命期"
+
+#~ msgid ""
+#~ "Please report this error to the Bug-Tracker at {link=http://lam."
+#~ "sourceforge.net}LDAP Account Manager Development Team{endlink}. The error "
+#~ "number is {bold}0001:Invalid/Missing Message type.{endbold} Thank you."
+#~ msgstr ""
+#~ "請向{link=http://lam.sourceforge.net}LDAP Account Manager開發團隊{endlink}"
+#~ "回報這個錯誤.這個錯誤編號是{bold}0001:無效或遺漏的訊息類型.{endbold}. 感謝"
+#~ "您."
+
+#~ msgid "Server Address is empty!"
+#~ msgstr "伺服器位址空白!"
 
 #~ msgid "Abort"
 #~ msgstr "放棄"
@@ -5068,12 +5327,6 @@ msgstr ""
 
 #~ msgid "Back to preferences..."
 #~ msgstr "返回設定畫面..."
-
-#~ msgid "Configuration login"
-#~ msgstr "管理系統設定檔"
-
-#~ msgid "Configuration profile"
-#~ msgstr "目前的系統設定檔"
 
 #~ msgid "Master Password:"
 #~ msgstr "系統管理者密碼:"
