@@ -33,7 +33,7 @@ $Id$
 * @package modules
 */
 class sambaDomain extends baseModule {
-	
+
 	/**
 	* Returns meta data that is interpreted by parent class
 	*
@@ -199,13 +199,11 @@ class sambaDomain extends baseModule {
 		$this->messages['lockoutDuration'][0] = array('ERROR', _('Lockout duration'), _('Lockout duration must be are natural number.'));
 		$this->messages['lockoutObservationWindow'][0] = array('ERROR', _('Reset time after lockout'), _('Reset time after lockout must be are natural number.'));
 	}
-	
+
 	/**
 	* This function will create the meta HTML code to show a page with all attributes.
-	*
-	* @param array $post HTTP-POST values
 	*/
-	function display_html_attributes(&$post) {
+	function display_html_attributes() {
 		$return = array();
 		// domain name
 		if ($_SESSION[$this->base]->isNewAccount) {
@@ -240,49 +238,49 @@ class sambaDomain extends baseModule {
 			2 => array('kind' => 'text', 'text' => ""));
 
 		/* group policies */
-		
+
 		// minimum password length
 		$return[] = array(
 			0 => array('kind' => 'text', 'text' => _('Minimal password length')),
 			1 => array('kind' => 'select', 'name' => 'minPwdLength',
 				'options' => array('-', 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15),
 				'options_selected' => $this->attributes['sambaMinPwdLength'][0]),
-			2 => array('kind' => 'help', 'value' => 'minPwdLength'));		
+			2 => array('kind' => 'help', 'value' => 'minPwdLength'));
 		// password history length
 		$return[] = array(
 			0 => array('kind' => 'text', 'text' => _('Password history length')),
 			1 => array('kind' => 'select', 'name' => 'pwdHistLength',
 				'options' => array('-', 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15),
 				'options_selected' => $this->attributes['sambaPwdHistoryLength'][0]),
-			2 => array('kind' => 'help', 'value' => 'pwdHistLength'));		
+			2 => array('kind' => 'help', 'value' => 'pwdHistLength'));
 		// password history length
 		$return[] = array(
 			0 => array('kind' => 'text', 'text' => _('Logon for password change')),
 			1 => array('kind' => 'select', 'name' => 'logonToChgPwd',
 				'options' => array(array('-', '-'), array(0, _('Off')), array(2, _('On'))), 'descriptiveOptions' => true,
 				'options_selected' => $this->attributes['sambaLogonToChgPwd'][0]),
-			2 => array('kind' => 'help', 'value' => 'logonToChgPwd'));		
+			2 => array('kind' => 'help', 'value' => 'logonToChgPwd'));
 		// force logoff
 		$return[] = array(
 			0 => array('kind' => 'text', 'text' => _('Disconnect users outside logon hours')),
 			1 => array('kind' => 'select', 'name' => 'forceLogoff',
 				'options' => array(array('-', '-'), array('-1', _('Off')), array(0, _('On'))), 'descriptiveOptions' => true,
 				'options_selected' => $this->attributes['sambaForceLogoff'][0]),
-			2 => array('kind' => 'help', 'value' => 'forceLogoff'));		
+			2 => array('kind' => 'help', 'value' => 'forceLogoff'));
 		// do not allow machine password change
 		$return[] = array(
 			0 => array('kind' => 'text', 'text' => _('Allow machine password changes')),
 			1 => array('kind' => 'select', 'name' => 'refuseMachinePwdChange',
 				'options' => array(array('-', '-'), array('0', _('Off')), array(1, _('On'))), 'descriptiveOptions' => true,
 				'options_selected' => $this->attributes['sambaRefuseMachinePwdChange'][0]),
-			2 => array('kind' => 'help', 'value' => 'refuseMachinePwdChange'));		
+			2 => array('kind' => 'help', 'value' => 'refuseMachinePwdChange'));
 		// Lockout users after bad logon attempts
 		$return[] = array(
 			0 => array('kind' => 'text', 'text' => _('Lockout users after bad logon attempts')),
 			1 => array('kind' => 'select', 'name' => 'lockoutThreshold',
 				'options' => array(array('-', '-'), array('0', _('Off')), array(1, _('On'))), 'descriptiveOptions' => true,
 				'options_selected' => $this->attributes['sambaLockoutThreshold'][0]),
-			2 => array('kind' => 'help', 'value' => 'lockoutThreshold'));		
+			2 => array('kind' => 'help', 'value' => 'lockoutThreshold'));
 		// Minimum password age
 		$return[] = array(
 			0 => array('kind' => 'text', 'text' => _('Minimum password age')),
@@ -298,19 +296,19 @@ class sambaDomain extends baseModule {
 			0 => array('kind' => 'text', 'text' => _('Lockout duration')),
 			1 => array('kind' => 'input', 'name' => 'lockoutDuration', 'type' => 'text', 'value' => $this->attributes['sambaLockoutDuration'][0]),
 			2 => array('kind' => 'help', 'value' => 'lockoutDuration'));
-		// Reset time after lockout 
+		// Reset time after lockout
 		$return[] = array(
 			0 => array('kind' => 'text', 'text' => _('Reset time after lockout')),
 			1 => array('kind' => 'input', 'name' => 'lockoutObservationWindow', 'type' => 'text', 'value' => $this->attributes['sambaLockoutObservationWindow'][0]),
 			2 => array('kind' => 'help', 'value' => 'lockoutObservationWindow'));
-			
+
 		$return[] = array(
 			0 => array('kind' => 'text', 'text' => ""),
 			1 => array('kind' => 'text', 'text' => "&nbsp;"),
 			2 => array('kind' => 'text', 'text' => ""));
 
-		/* RID settings */	
-			
+		/* RID settings */
+
 		// next RID
 		$return[] = array(
 			0 => array('kind' => 'text', 'text' => _('Next RID')),
@@ -347,10 +345,9 @@ class sambaDomain extends baseModule {
 	* Processes user input of the primary module page.
 	* It checks if all input values are correct and updates the associated LDAP attributes.
 	*
-	* @param array $post HTTP-POST values
 	* @return array list of info/error messages
 	*/
-	function process_attributes(&$post) {
+	function process_attributes() {
 		$errors = array();
 		if ($_SESSION[$this->base]->isNewAccount) {
 			// domain SID
@@ -577,7 +574,7 @@ class sambaDomain extends baseModule {
 
 	/**
 	* Returns the PDF entries for this module.
-	* 
+	*
 	* @return array list of possible PDF entries
 	*/
 	function get_pdfEntries() {

@@ -54,7 +54,7 @@ class shadowAccount extends baseModule {
 		$this->messages['shadow_cmp'][1] = array('ERROR',  _('Account %s:') . ' shadowAccount_min/maxAge', _('Password maximum age must be bigger as password minimum age.'));
 		$this->messages['shadow_expireDate'][0] = array('ERROR',  _('Account %s:') . ' shadowAccount_expireDate', _('The expiration date is invalid.'));
 	}
-	
+
 	/**
 	* Returns meta data that is interpreted by parent class
 	*
@@ -231,7 +231,7 @@ class shadowAccount extends baseModule {
 		$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
 		if (in_array('posixAccount', $modules)) {
 			if (isset($return[$_SESSION[$this->base]->dn]['modify']['userPassword'])) {
-				unset($return[$_SESSION[$this->base]->dn]['modify']['userPassword']); 	 
+				unset($return[$_SESSION[$this->base]->dn]['modify']['userPassword']);
 			}
 			if (isset($return[$_SESSION[$this->base]->dn]['add']['userPassword'])) {
 				unset($return[$_SESSION[$this->base]->dn]['add']['userPassword']);
@@ -244,18 +244,17 @@ class shadowAccount extends baseModule {
 	* Processes user input of the primary module page.
 	* It checks if all input values are correct and updates the associated LDAP attributes.
 	*
-	* @param array $post HTTP-POST values
 	* @return array list of info/error messages
 	*/
-	function process_attributes(&$post) {
+	function process_attributes() {
 		$errors = array();
 		// Load attributes
-		$this->attributes['shadowMin'][0] = $post['shadowMin'];
-		$this->attributes['shadowMax'][0] = $post['shadowMax'];
-		$this->attributes['shadowWarning'][0] = $post['shadowWarning'];
-		$this->attributes['shadowInactive'][0] = $post['shadowInactive'];
-		$this->attributes['shadowExpire'][0] = intval(mktime(0, 0, 0, intval($post['shadowExpire_mon']), intval($post['shadowExpire_day']),
-			intval($post['shadowExpire_yea']))/3600/24);
+		$this->attributes['shadowMin'][0] = $_POST['shadowMin'];
+		$this->attributes['shadowMax'][0] = $_POST['shadowMax'];
+		$this->attributes['shadowWarning'][0] = $_POST['shadowWarning'];
+		$this->attributes['shadowInactive'][0] = $_POST['shadowInactive'];
+		$this->attributes['shadowExpire'][0] = intval(mktime(0, 0, 0, intval($_POST['shadowExpire_mon']), intval($_POST['shadowExpire_day']),
+			intval($_POST['shadowExpire_yea']))/3600/24);
 		if ( !get_preg($this->attributes['shadowMin'][0], 'digit'))  $errors['shadowMin'][] = $this->messages['shadowMin'][0];
 		if ( !get_preg($this->attributes['shadowMax'][0], 'digit')) $errors['shadowMax'][] = $this->messages['shadowMax'][0];
 		if ( $this->attributes['shadowMin'][0] > $this->attributes['shadowMax'][0]) $errors['shadowMin'][] = $this->messages['shadow_cmp'][0];
@@ -267,10 +266,9 @@ class shadowAccount extends baseModule {
 	/**
 	* This function will create the meta HTML code to show a page with all attributes.
 	*
-	* @param array $post HTTP POST data
 	* @return array meta HTML code
 	*/
-	function display_html_attributes(&$post) {
+	function display_html_attributes() {
 		// Use dd-mm-yyyy format of date because it's easier to read for humans
 		$shAccExpirationDate = 0;
 		if (isset($this->attributes['shadowExpire'][0])) $shAccExpirationDate = $this->attributes['shadowExpire'][0];
@@ -314,7 +312,7 @@ class shadowAccount extends baseModule {
 
 	/**
 	* Returns the PDF entries for this module.
-	* 
+	*
 	* @return array list of possible PDF entries
 	*/
 	function get_pdfEntries() {
@@ -423,7 +421,7 @@ class shadowAccount extends baseModule {
 			$this->attributes['shadowExpire'][0] = $date;
 		}
 	}
-	
+
 }
 
 ?>

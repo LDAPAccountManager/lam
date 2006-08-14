@@ -85,7 +85,7 @@ class sambaAccount extends baseModule {
 		$this->messages['homeDrive'][0] = array('ERROR', _('Account %s:') . ' sambaAccount_homeDrive', _('Please enter a valid drive letter.'));
 		$this->messages['group'][0] = array('ERROR', _('Account %s:') . ' sambaAccount_group', _('Please enter a valid group RID.'));
 		$this->messages['specialUser'][0] = array('ERROR', _('Account %s:') . ' sambaAccount_specialUser', _('Please enter a valid special user name.'));
-	
+
 	}
 
 	/**
@@ -431,7 +431,7 @@ class sambaAccount extends baseModule {
 	var $noexpire;
 	/** account deactivated? */
 	var $deactivated;
-	
+
 	/** Array of well known rids */
 	var $rids;
 
@@ -450,7 +450,7 @@ class sambaAccount extends baseModule {
 		if (!$this->module_ready()) return false;
 		if ($this->attributes['rid'][0] == '') return false;
 		return true;
-	}	
+	}
 
 	/* This function loads all attributes into the object
 	* $attr is an array as it's retured from ldap_get_attributes
@@ -499,39 +499,38 @@ class sambaAccount extends baseModule {
 	* Processes user input of the primary module page.
 	* It checks if all input values are correct and updates the associated LDAP attributes.
 	*
-	* @param array $post HTTP-POST values
 	* @return array list of info/error messages
 	*/
-	function process_attributes(&$post) {
+	function process_attributes() {
 		$errors = array();
-		$this->attributes['domain'][0] = $post['domain'];
+		$this->attributes['domain'][0] = $_POST['domain'];
 		// Start character
 		$flag = "[";
-		if ($post['acctFlagsD']) {
+		if ($_POST['acctFlagsD']) {
 			$flag .= "D";
 			$this->deactivated = true;
 		}
 		else {
 			$this->deactivated = false;
 		}
-		if ($post['acctFlagsX']) {
+		if ($_POST['acctFlagsX']) {
 			$flag .= "X";
 			$this->noexpire = true;
 		}
 		else {
 			$this->noexpire = false;
 		}
-		if ($post['acctFlagsN']) {
+		if ($_POST['acctFlagsN']) {
 			$flag .= "N";
 			$this->nopwd = true;
 		}
 		else {
 			$this->nopwd = false;
 		}
-		if ($post['acctFlagsS']) $flag .= "S";
-		if ($post['acctFlagsH']) $flag .= "H";
-		if ($post['acctFlagsW']) $flag .= "W";
-		if ($post['acctFlagsU']) $flag .= "U";
+		if ($_POST['acctFlagsS']) $flag .= "S";
+		if ($_POST['acctFlagsH']) $flag .= "H";
+		if ($_POST['acctFlagsW']) $flag .= "W";
+		if ($_POST['acctFlagsU']) $flag .= "U";
 		// Expand string to fixed length
 		$flag = str_pad($flag, 12);
 		// End character
@@ -539,7 +538,7 @@ class sambaAccount extends baseModule {
 		$this->attributes['acctFlags'][0] = $flag;
 
 		// display name
-		$this->attributes['displayName'][0] = $post['displayName'];
+		$this->attributes['displayName'][0] = $_POST['displayName'];
 		if (!($this->attributes['displayName'][0] == '') && !(get_preg($this->attributes['displayName'][0], 'realname'))) {
 			$errors['displayName'][] = $this->messages['displayName'][1];
 		}
@@ -547,7 +546,7 @@ class sambaAccount extends baseModule {
 		// host attributes
 		if ($_SESSION[$this->base]->type=='host') {
 			$this->attributes['primaryGroupID'][0] = $this->rids[_('Domain Computers')];
-			if ($post['ResetSambaPassword'] || (!$this->attributes['lmPassword'][0])) {
+			if ($_POST['ResetSambaPassword'] || (!$this->attributes['lmPassword'][0])) {
 				$hostname = $_SESSION[$this->base]->module['posixAccount']->attributes['uid'][0];
 				$hostname = substr($hostname, 0, strlen($hostname) - 1);
 				$this->attributes['lmPassword'][0] = lmPassword($hostname);
@@ -557,66 +556,66 @@ class sambaAccount extends baseModule {
 			}
 		// check values for user account
 		if ($this->scope == 'user') {
-			$this->attributes['pwdCanChange'][0] = mktime(intval($post['pwdCanChange_h']), intval($post['pwdCanChange_m']),
-				intval($post['pwdCanChange_s']), intval($post['pwdCanChange_mon']), intval($post['pwdCanChange_day']),
-				intval($post['pwdCanChange_yea']));
-			$this->attributes['pwdMustChange'][0] = mktime(intval($post['pwdMustChange_h']), intval($post['pwdMustChange_m']),
-				intval($post['pwdMustChange_s']), intval($post['pwdMustChange_mon']), intval($post['pwdMustChange_day']),
-				intval($post['pwdMustChange_yea']));
-			$this->attributes['smbHome'][0] = $post['smbHome'];
-			$this->attributes['homeDrive'][0] = $post['homeDrive'];
-			$this->attributes['scriptPath'][0] = $post['scriptPath'];
-			$this->attributes['profilePath'][0] = $post['profilePath'];
+			$this->attributes['pwdCanChange'][0] = mktime(intval($_POST['pwdCanChange_h']), intval($_POST['pwdCanChange_m']),
+				intval($_POST['pwdCanChange_s']), intval($_POST['pwdCanChange_mon']), intval($_POST['pwdCanChange_day']),
+				intval($_POST['pwdCanChange_yea']));
+			$this->attributes['pwdMustChange'][0] = mktime(intval($_POST['pwdMustChange_h']), intval($_POST['pwdMustChange_m']),
+				intval($_POST['pwdMustChange_s']), intval($_POST['pwdMustChange_mon']), intval($_POST['pwdMustChange_day']),
+				intval($_POST['pwdMustChange_yea']));
+			$this->attributes['smbHome'][0] = $_POST['smbHome'];
+			$this->attributes['homeDrive'][0] = $_POST['homeDrive'];
+			$this->attributes['scriptPath'][0] = $_POST['scriptPath'];
+			$this->attributes['profilePath'][0] = $_POST['profilePath'];
 			$rids = array_keys($this->rids);
 			$wrid = false;
 			for ($i=0; $i<count($rids); $i++) {
-				if ($post['primaryGroupID'] == $rids[$i]) {
+				if ($_POST['primaryGroupID'] == $rids[$i]) {
 					$wrid = true;
 					$this->attributes['primaryGroupID'][0] = $this->rids[$rids[$i]];
 					break;
 				}
 			}
 			if (!$wrid) $this->attributes['primaryGroupID'][0] = ($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]*2)+1001;
-			if ($post['useunixpwd']) $this->useunixpwd = true;
+			if ($_POST['useunixpwd']) $this->useunixpwd = true;
 				else $this->useunixpwd = false;
-			if ($post['useunixpwd']) {
+			if ($_POST['useunixpwd']) {
 				$this->useunixpwd = true;
 				$this->attributes['lmPassword'][0] = lmPassword($_SESSION[$this->base]->module['posixAccount']->attributes['userPassword'][0]);
 				$this->attributes['ntPassword'][0] = ntPassword($_SESSION[$this->base]->module['posixAccount']->attributes['userPassword'][0]);
 				$this->attributes['pwdLastSet'][0] = time();
 			}
 			else $this->useunixpwd = false;
-			if (!$this->useunixpwd && isset($post['lmPassword']) && ($post['lmPassword'] != '')) {
-				if ($post['lmPassword'] != $post['lmPassword2']) {
+			if (!$this->useunixpwd && isset($_POST['lmPassword']) && ($_POST['lmPassword'] != '')) {
+				if ($_POST['lmPassword'] != $_POST['lmPassword2']) {
 					$errors['lmPassword'][] = $this->messages['lmPassword'][0];
-					unset ($post['lmPassword2']);
+					unset ($_POST['lmPassword2']);
 				}
 				else {
-					if ( !get_preg($post['lmPassword'], 'password')) $errors['lmPassword'][] = $this->messages['lmPassword'][1];
+					if ( !get_preg($_POST['lmPassword'], 'password')) $errors['lmPassword'][] = $this->messages['lmPassword'][1];
 					else {
-						$this->attributes['lmPassword'][0] = lmPassword($post['lmPassword']);
-						$this->attributes['ntPassword'][0] = ntPassword($post['lmPassword']);
+						$this->attributes['lmPassword'][0] = lmPassword($_POST['lmPassword']);
+						$this->attributes['ntPassword'][0] = ntPassword($_POST['lmPassword']);
 						$this->attributes['pwdLastSet'][0] = time();
 					}
 				}
 			}
 			// rid
 			$specialNames = array_keys($this->rids);
-			if (in_array($post['rid'], $specialNames)) {
-				$this->attributes['rid'][0] = $this->rids[$post['rid']];
+			if (in_array($_POST['rid'], $specialNames)) {
+				$this->attributes['rid'][0] = $this->rids[$_POST['rid']];
 			}
 			else {
 				$this->attributes['rid'][0] = $_SESSION[$this->base]->module['posixAccount']->attributes['uidNumber'][0]*2+1000;
 			}
 			$this->attributes['smbHome'][0] = str_replace('$user', $_SESSION[$this->base]->module['posixAccount']->attributes['uid'][0], $this->attributes['smbHome'][0]);
 			$this->attributes['smbHome'][0] = str_replace('$group', $_SESSION['cache']->getgrnam($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]), $this->attributes['smbHome'][0]);
-			if ($this->attributes['smbHome'][0] != $post['smbHome']) $errors['smbHome'][] = $this->messages['homePath'][1];
+			if ($this->attributes['smbHome'][0] != $_POST['smbHome']) $errors['smbHome'][] = $this->messages['homePath'][1];
 			$this->attributes['scriptPath'][0] = str_replace('$user', $_SESSION[$this->base]->module['posixAccount']->attributes['uid'][0], $this->attributes['scriptPath'][0]);
 			$this->attributes['scriptPath'][0] = str_replace('$group', $_SESSION['cache']->getgrnam($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]), $this->attributes['scriptPath'][0]);
-			if ($this->attributes['scriptPath'][0] != $post['scriptPath']) $errors['scriptPath'][] = $this->messages['logonScript'][1];
+			if ($this->attributes['scriptPath'][0] != $_POST['scriptPath']) $errors['scriptPath'][] = $this->messages['logonScript'][1];
 			$this->attributes['profilePath'][0] = str_replace('$user', $_SESSION[$this->base]->module['posixAccount']->attributes['uid'][0], $this->attributes['profilePath'][0]);
 			$this->attributes['profilePath'][0] = str_replace('$group', $_SESSION['cache']->getgrnam($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]), $this->attributes['profilePath'][0]);
-			if ($this->attributes['profiletPath'][0] != $post['profilePath']) $errors['profilePath'][] = $this->messages['profilePath'][1];
+			if ($this->attributes['profiletPath'][0] != $_POST['profilePath']) $errors['profilePath'][] = $this->messages['profilePath'][1];
 			if ( (!$this->attributes['smbHome'][0]=='') && (!get_preg($this->attributes['smbHome'][0], 'UNC')))
 					$errors['smbHome'][] = $this->messages['homePath'][0];
 			if ( (!$this->attributes['scriptPath'][0]=='') && (!get_preg($this->attributes['scriptPath'][0], 'logonscript')))
@@ -644,13 +643,12 @@ class sambaAccount extends baseModule {
 	* Processes user input of the workstation selection page.
 	* It checks if all input values are correct and updates the associated LDAP attributes.
 	*
-	* @param array $post HTTP-POST values
 	* @return array list of info/error messages
 	*/
-	function process_userWorkstations(&$post) {
+	function process_userWorkstations() {
 		// Load attributes
 		if ($_SESSION[$this->base]->type=='user') {
-			if (isset($post['availableUserWorkstations']) && isset($post['userWorkstations_add'])) { // Add workstations to list
+			if (isset($_POST['availableUserWorkstations']) && isset($_POST['userWorkstations_add'])) { // Add workstations to list
 				$temp = str_replace(' ', '', $this->attributes['userWorkstations'][0]);
 				$workstations = explode (',', $temp);
 				for ($i=0; $i<count($workstations); $i++) {
@@ -658,7 +656,7 @@ class sambaAccount extends baseModule {
 				}
 				$workstations = array_values($workstations);
 				// Add new // Add workstations
-				$workstations = array_merge($workstations, $post['availableUserWorkstations']);
+				$workstations = array_merge($workstations, $_POST['availableUserWorkstations']);
 				// remove doubles
 				$workstations = array_flip($workstations);
 				array_unique($workstations);
@@ -671,7 +669,7 @@ class sambaAccount extends baseModule {
 					$this->attributes['userWorkstations'][0] = $this->attributes['userWorkstations'][0] . "," . $workstations[$i];
 				}
 			}
-			elseif (isset($post['userWorkstations']) && isset($post['userWorkstations_remove'])) { // remove // Add workstations from list
+			elseif (isset($_POST['userWorkstations']) && isset($_POST['userWorkstations_remove'])) { // remove // Add workstations from list
 				// Put all workstations in array
 				$temp = str_replace(' ', '', $this->attributes['userWorkstations'][0]);
 				$workstations = explode (',', $temp);
@@ -680,7 +678,7 @@ class sambaAccount extends baseModule {
 				}
 				$workstations = array_values($workstations);
 				// Remove unwanted workstations from array
-				$workstations = array_delete($post['userWorkstations'], $workstations);
+				$workstations = array_delete($_POST['userWorkstations'], $workstations);
 				// Recreate workstation string
 				$this->attributes['userWorkstations'][0] = $workstations[0];
 				for ($i=1; $i<count($workstations); $i++) {
@@ -694,7 +692,7 @@ class sambaAccount extends baseModule {
 	* to show a page with all attributes.
 	* It will output a complete html-table
 	*/
-	function display_html_attributes(&$post) {
+	function display_html_attributes() {
 		$return[] = array(
 			0 => array('kind' => 'text', 'text' => _('Display name')),
 			1 => array('kind' => 'input', 'type' => 'text', 'name' => 'displayName', 'size' => '20', 'value' => $this->attributes['displayName'][0]),
@@ -817,7 +815,7 @@ class sambaAccount extends baseModule {
 	* to show a page with all attributes.
 	* It will output a complete html-table
 	*/
-	function display_html_userWorkstations(&$post) {
+	function display_html_userWorkstations() {
 		if ($_SESSION[$this->base]->type=='user') {
 			// Get list of all hosts.
 			$result = $_SESSION['cache']->get_cache('uid', 'sambaAccount', 'host');
@@ -845,10 +843,10 @@ class sambaAccount extends baseModule {
 		}
 		return $return;
 	}
-	
+
 	/**
 	* Returns the PDF entries for this module.
-	* 
+	*
 	* @return array list of possible PDF entries
 	*/
 	function get_pdfEntries() {
@@ -1153,8 +1151,8 @@ class sambaAccount extends baseModule {
 			$this->deactivated = false;
 		}
 	}
-	
-	
+
+
 }
 
 ?>

@@ -43,7 +43,7 @@ class sambaGroupMapping extends baseModule {
 	var $rids;
 	/** Array of sambaGroupTypes */
 	var $sambaGroupTypes;
-	
+
 	/**
 	* Creates a new module for Samba 3 groups.
 	*
@@ -167,7 +167,7 @@ class sambaGroupMapping extends baseModule {
 	* to show a page with all attributes.
 	* It will output a complete html-table
 	*/
-	function display_html_attributes(&$post) {
+	function display_html_attributes() {
 		$sambaDomains = search_domains();
 		if (sizeof($sambaDomains) == 0) {
 			StatusMessage("ERROR", _('No Samba 3 domains found in LDAP! Please create one first.'), '');
@@ -309,14 +309,14 @@ class sambaGroupMapping extends baseModule {
 				"Text" => _("Windows group type.")
 			)
 		);
-		
+
 		return $return;
 	}
 
 
 	/**
 	* Returns the PDF entries for this module.
-	* 
+	*
 	* @return array list of possible PDF entries
 	*/
 	function get_pdfEntries() {
@@ -399,33 +399,32 @@ class sambaGroupMapping extends baseModule {
 	* Processes user input of the primary module page.
 	* It checks if all input values are correct and updates the associated LDAP attributes.
 	*
-	* @param array $post HTTP-POST values
 	* @return array list of info/error messages
 	*/
-	function process_attributes(&$post) {
+	function process_attributes() {
 		$errors = array();
 		$sambaDomains = search_domains();
 		if (sizeof($sambaDomains) == 0) {
 			return array(array(array("ERROR", _('No Samba 3 domains found in LDAP! Please create one first.'))));
 		}
 		// Save attributes
-		$this->attributes['displayName'][0] = $post['displayName'];
-		$this->attributes['sambaGroupType'][0] = $this->sambaGroupTypes[$post['sambaGroupType']];
+		$this->attributes['displayName'][0] = $_POST['displayName'];
+		$this->attributes['sambaGroupType'][0] = $this->sambaGroupTypes[$_POST['sambaGroupType']];
 
 		// Get Domain SID from name
 		for ($i=0; $i<count($sambaDomains); $i++ ) {
-			if (!isset($post['sambaDomainName'])) break;
-			if ($post['sambaDomainName'] == $sambaDomains[$i]->name) {
+			if (!isset($_POST['sambaDomainName'])) break;
+			if ($_POST['sambaDomainName'] == $sambaDomains[$i]->name) {
 				$SID = $sambaDomains[$i]->SID;
 				$RIDbase = $sambaDomains[$i]->RIDbase;
 			}
 		}
 		// Load attributes
-		$this->attributes['displayName'][0] = $post['displayName'];
+		$this->attributes['displayName'][0] = $_POST['displayName'];
 		$rids = array_keys($this->rids);
 		$wrid = false;
 		for ($i=0; $i<count($rids); $i++) {
-			if ($post['sambaSID'] == $rids[$i]) {
+			if ($_POST['sambaSID'] == $rids[$i]) {
 				$wrid = true;
 				// Get Domain SID
 				$this->attributes['sambaSID'][0] = $SID."-".$this->rids[$rids[$i]];

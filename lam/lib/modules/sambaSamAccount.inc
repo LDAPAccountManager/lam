@@ -52,7 +52,7 @@ class sambaSamAccount extends baseModule {
 	var $hex2bitstring = array('0' => '0000', '1' => '0001', '2' => '0010', '3' => '0011', '4' => '0100',
 		'5' => '0101', '6' => '0110', '7' => '0111', '8' => '1000', '9' => '1001', 'A' => '1010',
 		'B' => '1011', 'C' => '1100', 'D' => '1101', 'E' => '1110', 'F' => '1111');
-	
+
 
 	/**
 	* Creates a new sambaSamAccount object.
@@ -104,7 +104,7 @@ class sambaSamAccount extends baseModule {
 		$this->messages['logonHours'][1] = array('ERROR', _('Account %s:') . ' sambaSamAccount_logonHours', _('The format of the logon hours field is invalid!'));
 		$this->messages['group'][0] = array('ERROR', _('Account %s:') . ' sambaSamAccount_group', _('Please enter a valid group name!'));
 	}
-	
+
 	/**
 	* Returns meta data that is interpreted by parent class
 	*
@@ -127,7 +127,7 @@ class sambaSamAccount extends baseModule {
 		// managed object classes
 		$return['objectClasses'] = array('sambaSamAccount');
 		// managed attributes
-		$return['attributes'] = array('uid', 'sambaSID', 'sambaLMPassword', 'sambaNTPassword', 'sambaPwdLastSet', 
+		$return['attributes'] = array('uid', 'sambaSID', 'sambaLMPassword', 'sambaNTPassword', 'sambaPwdLastSet',
 			'sambaLogonTime', 'sambaLogoffTime', 'sambaKickoffTime', 'sambaPwdCanChange', 'sambaPwdMustChange', 'sambaAcctFlags',
 			'displayName', 'sambaHomePath', 'sambaHomeDrive', 'sambaLogonScript', 'sambaProfilePath',
 			'sambaUserWorkstations', 'sambaPrimaryGroupSID', 'sambaDomainName', 'sambaLogonHours');
@@ -494,7 +494,7 @@ class sambaSamAccount extends baseModule {
 		if ($this->attributes['sambaSID'][0] == '') return false;
 		return true;
 	}
-	
+
 	/* This function loads all attributes into the object
 	* $attr is an array as it's retured from ldap_get_attributes
 	*/
@@ -544,17 +544,16 @@ class sambaSamAccount extends baseModule {
 	* Processes user input of the primary module page.
 	* It checks if all input values are correct and updates the associated LDAP attributes.
 	*
-	* @param array $post HTTP-POST values
 	* @return array list of info/error messages
 	*/
-	function process_attributes(&$post) {
+	function process_attributes() {
 		$errors = array();
 		$sambaDomains = search_domains();
 		if (sizeof($sambaDomains) == 0) {
 			return array(array(array("ERROR", _('No Samba 3 domains found in LDAP! Please create one first.'))));
 		}
 		// Save attributes
-		$this->attributes['sambaDomainName'][0] = $post['sambaDomainName'];
+		$this->attributes['sambaDomainName'][0] = $_POST['sambaDomainName'];
 		// Get Domain SID from name
 		for ($i=0; $i<count($sambaDomains); $i++ )
 			if ($this->attributes['sambaDomainName'][0] == $sambaDomains[$i]->name) {
@@ -562,31 +561,31 @@ class sambaSamAccount extends baseModule {
 				$RIDbase = $sambaDomains[$i]->RIDbase;
 				}
 		$flag = "[";
-		if ($post['sambaAcctFlagsD']) {
+		if ($_POST['sambaAcctFlagsD']) {
 			$flag .= "D";
 			$this->deactivated = true;
 		}
 		else {
 			$this->deactivated = false;
 		}
-		if ($post['sambaAcctFlagsX']) {
+		if ($_POST['sambaAcctFlagsX']) {
 			$flag .= "X";
 			$this->noexpire = true;
 		}
 		else {
 			$this->noexpire = false;
 		}
-		if ($post['sambaAcctFlagsN']) {
+		if ($_POST['sambaAcctFlagsN']) {
 			$flag .= "N";
 			$this->nopwd = true;
 		}
 		else {
 			$this->nopwd = false;
 		}
-		if ($post['sambaAcctFlagsS']) $flag .= "S";
-		if ($post['sambaAcctFlagsH']) $flag .= "H";
-		if ($post['sambaAcctFlagsW']) $flag .= "W";
-		if ($post['sambaAcctFlagsU']) $flag .= "U";
+		if ($_POST['sambaAcctFlagsS']) $flag .= "S";
+		if ($_POST['sambaAcctFlagsH']) $flag .= "H";
+		if ($_POST['sambaAcctFlagsW']) $flag .= "W";
+		if ($_POST['sambaAcctFlagsU']) $flag .= "U";
 		// Expand string to fixed length
 		$flag = str_pad($flag, 12);
 		// End character
@@ -594,7 +593,7 @@ class sambaSamAccount extends baseModule {
 		$this->attributes['sambaAcctFlags'][0] = $flag;
 
 		// display name
-		$this->attributes['displayName'][0] = $post['displayName'];
+		$this->attributes['displayName'][0] = $_POST['displayName'];
 		if (!($this->attributes['displayName'][0] == '') && !(get_preg($this->attributes['displayName'][0], 'realname'))) {
 			$errors['displayName'][] = $this->messages['displayName'][1];
 		}
@@ -602,7 +601,7 @@ class sambaSamAccount extends baseModule {
 		// host attributes
 		if ($_SESSION[$this->base]->type=='host') {
 			$this->attributes['sambaPrimaryGroupSID'][0] = $SID."-".$this->rids[_('Domain Computers')];
-			if ($post['ResetSambaPassword'] || !$this->attributes['sambaLMPassword'][0]) {
+			if ($_POST['ResetSambaPassword'] || !$this->attributes['sambaLMPassword'][0]) {
 				$hostname = $_SESSION[$this->base]->module['posixAccount']->attributes['uid'][0];
 				$hostname = substr($hostname, 0, strlen($hostname) - 1);
 				$this->attributes['sambaLMPassword'][0] = lmPassword($hostname);
@@ -612,26 +611,26 @@ class sambaSamAccount extends baseModule {
 		}
 		// user attributes
 		if ($_SESSION[$this->base]->type=='user') {
-			$this->attributes['sambaPwdCanChange'][0] = mktime(intval($post['sambaPwdCanChange_h']), intval($post['sambaPwdCanChange_m']),
-				intval($post['sambaPwdCanChange_s']), intval($post['sambaPwdCanChange_mon']), intval($post['sambaPwdCanChange_day']),
-				intval($post['sambaPwdCanChange_yea']));
-			$this->attributes['sambaPwdMustChange'][0] = mktime(intval($post['sambaPwdMustChange_h']), intval($post['sambaPwdMustChange_m']),
-				intval($post['sambaPwdMustChange_s']), intval($post['sambaPwdMustChange_mon']), intval($post['sambaPwdMustChange_day']),
-				intval($post['sambaPwdMustChange_yea']));
-			$this->attributes['sambaKickoffTime'][0] = mktime(intval($post['sambaExpire_h']), intval($post['sambaExpire_m']),
-				intval($post['sambaExpire_s']), intval($post['sambaExpire_mon']), intval($post['sambaExpire_day']),
-				intval($post['sambaExpire_yea']));
-			$this->attributes['sambaHomePath'][0] = $post['sambaHomePath'];
-			if ($post['sambaHomeDrive'] == "-")
+			$this->attributes['sambaPwdCanChange'][0] = mktime(intval($_POST['sambaPwdCanChange_h']), intval($_POST['sambaPwdCanChange_m']),
+				intval($_POST['sambaPwdCanChange_s']), intval($_POST['sambaPwdCanChange_mon']), intval($_POST['sambaPwdCanChange_day']),
+				intval($_POST['sambaPwdCanChange_yea']));
+			$this->attributes['sambaPwdMustChange'][0] = mktime(intval($_POST['sambaPwdMustChange_h']), intval($_POST['sambaPwdMustChange_m']),
+				intval($_POST['sambaPwdMustChange_s']), intval($_POST['sambaPwdMustChange_mon']), intval($_POST['sambaPwdMustChange_day']),
+				intval($_POST['sambaPwdMustChange_yea']));
+			$this->attributes['sambaKickoffTime'][0] = mktime(intval($_POST['sambaExpire_h']), intval($_POST['sambaExpire_m']),
+				intval($_POST['sambaExpire_s']), intval($_POST['sambaExpire_mon']), intval($_POST['sambaExpire_day']),
+				intval($_POST['sambaExpire_yea']));
+			$this->attributes['sambaHomePath'][0] = $_POST['sambaHomePath'];
+			if ($_POST['sambaHomeDrive'] == "-")
 				$this->attributes['sambaHomeDrive'][0] = '';
 			else
-				$this->attributes['sambaHomeDrive'][0] = $post['sambaHomeDrive'];
-			$this->attributes['sambaLogonScript'][0] = $post['sambaLogonScript'];
-			$this->attributes['sambaProfilePath'][0] = $post['sambaProfilePath'];
+				$this->attributes['sambaHomeDrive'][0] = $_POST['sambaHomeDrive'];
+			$this->attributes['sambaLogonScript'][0] = $_POST['sambaLogonScript'];
+			$this->attributes['sambaProfilePath'][0] = $_POST['sambaProfilePath'];
 			$rids = array_keys($this->rids);
 			$wrid = false;
 			for ($i=0; $i<count($rids); $i++) {
-				if ($post['sambaPrimaryGroupSID'] == $rids[$i]) {
+				if ($_POST['sambaPrimaryGroupSID'] == $rids[$i]) {
 					$wrid = true;
 					// Get Domain SID
 					$this->attributes['sambaPrimaryGroupSID'][0] = $SID."-".$this->rids[$rids[$i]];
@@ -651,34 +650,34 @@ class sambaSamAccount extends baseModule {
 				}
 			}
 
-			if ($post['useunixpwd']) {
+			if ($_POST['useunixpwd']) {
 				$this->useunixpwd = true;
 				$this->attributes['sambaLMPassword'][0] = lmPassword($_SESSION[$this->base]->module['posixAccount']->attributes['userPassword'][0]);
 				$this->attributes['sambaNTPassword'][0] = ntPassword($_SESSION[$this->base]->module['posixAccount']->attributes['userPassword'][0]);
 				$this->attributes['sambaPwdLastSet'][0] = time();
 			}
 			else $this->useunixpwd = false;
-			if (!$this->useunixpwd && isset($post['sambaLMPassword']) && ($post['sambaLMPassword'] != '')) {
-				if ($post['sambaLMPassword'] != $post['sambaLMPassword2']) {
+			if (!$this->useunixpwd && isset($_POST['sambaLMPassword']) && ($_POST['sambaLMPassword'] != '')) {
+				if ($_POST['sambaLMPassword'] != $_POST['sambaLMPassword2']) {
 					$errors['sambaLMPassword'][] = $this->messages['sambaLMPassword'][0];
-					unset ($post['sambaLMPassword2']);
+					unset ($_POST['sambaLMPassword2']);
 				}
 				else {
-					if (!get_preg($post['sambaLMPassword'], 'password')) $errors['sambaLMPassword'][] = $this->messages['sambaLMPassword'][1];
+					if (!get_preg($_POST['sambaLMPassword'], 'password')) $errors['sambaLMPassword'][] = $this->messages['sambaLMPassword'][1];
 					else {
-						$this->attributes['sambaLMPassword'][0] = lmPassword($post['sambaLMPassword']);
-						$this->attributes['sambaNTPassword'][0] = ntPassword($post['sambaLMPassword']);
+						$this->attributes['sambaLMPassword'][0] = lmPassword($_POST['sambaLMPassword']);
+						$this->attributes['sambaNTPassword'][0] = ntPassword($_POST['sambaLMPassword']);
 						$this->attributes['sambaPwdLastSet'][0] = time();
 					}
 				}
 			}
 			$specialRids = array_flip($this->rids);
 			// set special RID if selected
-			if (in_array($post['sambaSID'], $specialRids)) {
-				$this->attributes['sambaSID'][0] = $SID . '-' . $this->rids[$post['sambaSID']];
+			if (in_array($_POST['sambaSID'], $specialRids)) {
+				$this->attributes['sambaSID'][0] = $SID . '-' . $this->rids[$_POST['sambaSID']];
 			}
 			// standard RID
-			else if ($post['sambaSID'] == "-") {
+			else if ($_POST['sambaSID'] == "-") {
 				$rid = substr($this->attributes['sambaSID'][0], strrpos($this->attributes['sambaSID'][0], '-') + 1, strlen($this->attributes['sambaSID'][0]));
 				// change only if not yet set or previously set to special SID
 				if (!$this->attributes['sambaSID'][0] || in_array($rid, $this->rids)) {
@@ -688,13 +687,13 @@ class sambaSamAccount extends baseModule {
 			// Check values
 			$this->attributes['sambaHomePath'][0] = str_replace('$user', $_SESSION[$this->base]->module['posixAccount']->attributes['uid'][0], $this->attributes['sambaHomePath'][0]);
 			$this->attributes['sambaHomePath'][0] = str_replace('$group', $_SESSION['cache']->getgrnam($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]), $this->attributes['sambaHomePath'][0]);
-			if ($this->attributes['sambaHomePath'][0] != $post['sambaHomePath']) $errors['sambaHomePath'][] = $this->messages['homePath'][1];
+			if ($this->attributes['sambaHomePath'][0] != $_POST['sambaHomePath']) $errors['sambaHomePath'][] = $this->messages['homePath'][1];
 			$this->attributes['sambaLogonScript'][0] = str_replace('$user', $_SESSION[$this->base]->module['posixAccount']->attributes['uid'][0], $this->attributes['sambaLogonScript'][0]);
 			$this->attributes['sambaLogonScript'][0] = str_replace('$group', $_SESSION['cache']->getgrnam($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]), $this->attributes['sambaLogonScript'][0]);
-			if ($this->attributes['sambaLogonScript'][0] != $post['sambaLogonScript']) $errors['sambaLogonScript'][] = $this->messages['logonScript'][1];
+			if ($this->attributes['sambaLogonScript'][0] != $_POST['sambaLogonScript']) $errors['sambaLogonScript'][] = $this->messages['logonScript'][1];
 			$this->attributes['sambaProfilePath'][0] = str_replace('$user', $_SESSION[$this->base]->module['posixAccount']->attributes['uid'][0], $this->attributes['sambaProfilePath'][0]);
 			$this->attributes['sambaProfilePath'][0] = str_replace('$group', $_SESSION['cache']->getgrnam($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]), $this->attributes['sambaProfilePath'][0]);
-			if ($this->attributes['sambaProfilePath'][0] != $post['sambaProfilePath']) $errors['sambaProfilePath'][] = $this->messages['profilePath'][1];
+			if ($this->attributes['sambaProfilePath'][0] != $_POST['sambaProfilePath']) $errors['sambaProfilePath'][] = $this->messages['profilePath'][1];
 			if ( (!$this->attributes['sambaHomePath'][0]=='') && (!get_preg($this->attributes['sambaHomePath'][0], 'UNC')))
 				$errors['sambaHomePath'][] = $this->messages['homePath'][0];
 			if ( (!$this->attributes['sambaLogonScript'][0]=='') && (!get_preg($this->attributes['sambaLogonScript'][0], 'logonscript')))
@@ -715,13 +714,12 @@ class sambaSamAccount extends baseModule {
 	* Processes user input of the primary module page.
 	* It checks if all input values are correct and updates the associated LDAP attributes.
 	*
-	* @param array $post HTTP-POST values
 	* @return array list of info/error messages
 	*/
-	function process_sambaUserWorkstations($post) {
+	function process_sambaUserWorkstations() {
 		// Load attributes
 		if ($_SESSION[$this->base]->type=='user') {
-			if (isset($post['availableSambaUserWorkstations']) && isset($post['sambaUserWorkstations_add'])) { // Add workstations to list
+			if (isset($_POST['availableSambaUserWorkstations']) && isset($_POST['sambaUserWorkstations_add'])) { // Add workstations to list
 				$temp = str_replace(' ', '', $this->attributes['sambaUserWorkstations'][0]);
 				$workstations = explode (',', $temp);
 				for ($i=0; $i<count($workstations); $i++) {
@@ -729,7 +727,7 @@ class sambaSamAccount extends baseModule {
 				}
 				$workstations = array_values($workstations);
 				// Add new // Add workstations
-				$workstations = array_merge($workstations, $post['availableSambaUserWorkstations']);
+				$workstations = array_merge($workstations, $_POST['availableSambaUserWorkstations']);
 				// remove doubles
 				$workstations = array_flip($workstations);
 				array_unique($workstations);
@@ -742,7 +740,7 @@ class sambaSamAccount extends baseModule {
 					$this->attributes['sambaUserWorkstations'][0] = $this->attributes['sambaUserWorkstations'][0] . "," . $workstations[$i];
 					}
 				}
-			elseif (isset($post['sambaUserWorkstations']) && isset($post['sambaUserWorkstations_remove'])) { // remove // Add workstations from list
+			elseif (isset($_POST['sambaUserWorkstations']) && isset($_POST['sambaUserWorkstations_remove'])) { // remove // Add workstations from list
 				// Put all workstations in array
 				$temp = str_replace(' ', '', $this->attributes['sambaUserWorkstations'][0]);
 				$workstations = explode (',', $temp);
@@ -751,7 +749,7 @@ class sambaSamAccount extends baseModule {
 				}
 				$workstations = array_values($workstations);
 				// Remove unwanted workstations from array
-				$workstations = array_delete($post['sambaUserWorkstations'], $workstations);
+				$workstations = array_delete($_POST['sambaUserWorkstations'], $workstations);
 				// Recreate workstation string
 				$this->attributes['sambaUserWorkstations'][0] = $workstations[0];
 				for ($i=1; $i<count($workstations); $i++) {
@@ -765,15 +763,14 @@ class sambaSamAccount extends baseModule {
 	* Processes user input of the logon hours page.
 	* It checks if all input values are correct and updates the associated LDAP attributes.
 	*
-	* @param array $post HTTP-POST values
 	* @return array list of info/error messages
 	*/
-	function process_logonHours($post) {
-		if ($post['form_subpage_sambaSamAccount_attributes_abort']) return;
+	function process_logonHours() {
+		if ($_POST['form_subpage_sambaSamAccount_attributes_abort']) return;
 		// set new logon hours
 		$logonHours = '';
 		for ($i = 0; $i < 24*7; $i++) {
-			$logonHours .= isset($post['lh_' . $i]) ? '1' : '0';
+			$logonHours .= isset($_POST['lh_' . $i]) ? '1' : '0';
 		}
 		// reconstruct HEX string
 		$bitstring2hex = array_flip($this->hex2bitstring);
@@ -787,12 +784,12 @@ class sambaSamAccount extends baseModule {
 		}
 		$this->attributes['sambaLogonHours'][0] = $logonHoursNew;
 	}
-	
+
 	/* This function will create the html-page
 	* to show a page with all attributes.
 	* It will output a complete html-table
 	*/
-	function display_html_attributes($post) {
+	function display_html_attributes() {
 		// Get Domain SID from user SID
 		$sambaDomains = search_domains();
 		if (sizeof($sambaDomains) == 0) {
@@ -968,7 +965,7 @@ class sambaSamAccount extends baseModule {
 	* to show a page with all attributes.
 	* It will output a complete html-table
 	*/
-	function display_html_sambaUserWorkstations($post) {
+	function display_html_sambaUserWorkstations() {
 		if ($_SESSION[$this->base]->type=='user') {
 			// Get list of all hosts.
 			$result = $_SESSION['cache']->get_cache('uid', 'sambaSamAccount', 'host');
@@ -1000,10 +997,9 @@ class sambaSamAccount extends baseModule {
 	/**
 	* This function will create the HTML page to edit logon hours.
 	*
-	* @param array $post HTTP POST variables
 	* @return array meta HTML code
 	*/
-	function display_html_logonHours($post) {
+	function display_html_logonHours() {
 		$timeZone = 0;
 		if (isset($this->moduleSettings['sambaSamAccount_timeZone']) && is_array($this->moduleSettings['sambaSamAccount_timeZone'])) {
 			$timeZone = $this->moduleSettings['sambaSamAccount_timeZone'][0];
@@ -1185,7 +1181,7 @@ class sambaSamAccount extends baseModule {
 		}
 		return $return;
 	}
-	
+
 	/**
 	* Loads the values of an account profile into internal variables.
 	*
@@ -1274,13 +1270,13 @@ class sambaSamAccount extends baseModule {
 					$this->attributes['sambaPrimaryGroupSID'][0] = $domSID . "-" . $profile['sambaSamAccount_group'][0];
 				}
 			}
-			
+
 		}
 	}
 
 	/**
 	* Returns the PDF entries for this module.
-	* 
+	*
 	* @return array list of possible PDF entries
 	*/
 	function get_pdfEntries() {
@@ -1531,8 +1527,8 @@ class sambaSamAccount extends baseModule {
 							$partialAccounts[$i]['sambaPrimaryGroupSID'] = $groups_cn[$rawAccounts[$i][$ids['sambaSamAccount_group']]]['SID'];
 						}
 						else {
-							$partialAccounts[$i]['sambaPrimaryGroupSID'] = $domains[$domIndex]->SID . '-' . 
-							($groups_cn[$rawAccounts[$i][$ids['sambaSamAccount_group']]]['gid'] * 2 + 
+							$partialAccounts[$i]['sambaPrimaryGroupSID'] = $domains[$domIndex]->SID . '-' .
+							($groups_cn[$rawAccounts[$i][$ids['sambaSamAccount_group']]]['gid'] * 2 +
 							 $domains[$domIndex]->RIDbase + 1);
 						}
 					}
