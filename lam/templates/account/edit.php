@@ -81,6 +81,6 @@ if (get_magic_quotes_gpc() == 1) {
 }
 
 // show account page
-$_SESSION['account']->continue_main($_POST);
+$_SESSION['account']->continue_main();
 
 ?>

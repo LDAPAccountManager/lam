@@ -1,3 +1,9 @@
+??? 1.0.5
+
+  Developers:
+  - API changes: removed $post parameters from module functions (delete_attributes(),
+    process_...(), display_html_...()). Use $_POST instead.
+
 10.08.2006 1.0.4
    - added Russian translation
    - Samba 3: added policies for domain objects
@@ -84,7 +90,7 @@
    - fixed bugs:
     -> creation of home directories did not work
     -> allow spaces in profile names (1333058)
-    -> fixed problem with magic_quotes_gpc in profile editor (1333069)    
+    -> fixed problem with magic_quotes_gpc in profile editor (1333069)
     -> inetOrgPerson: deletion of postal address and fax number now works
 
 

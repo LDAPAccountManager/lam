@@ -24,7 +24,7 @@ $Id$
 
 /**
 * Interface between modules and other parts of LAM.
-* 
+*
 * @package modules
 * @author Tilo Lutz
 * @author Michael Duergner
@@ -43,7 +43,7 @@ include_once("ldap.inc");
 include_once("lamdaemon.inc");
 /** security functions */
 include_once("security.inc");
- 
+
 /**
 * This includes all module files.
 */
@@ -676,7 +676,7 @@ function parseHtml($module, $input, $values, $restricted, &$tabindex, &$tabindex
 						foreach ($options as $option) {
 							if (isset($input[$i][$j]['descriptiveOptions']) && ($input[$i][$j]['descriptiveOptions'] === true)) {
 								if (in_array($option[0], $input[$i][$j]['options_selected'])) echo "<option value=\"" . $option[0] . "\" selected>" . $option[1] . "</option>\n";
-								else echo "<option value=\"" . $option[0] . "\">" . $option[1] . "</option>\n";								
+								else echo "<option value=\"" . $option[0] . "\">" . $option[1] . "</option>\n";
 							}
 							elseif ($option!='') {
 								if (in_array($option, $input[$i][$j]['options_selected'])) echo "<option selected>" . $option . "</option>\n";
@@ -744,7 +744,7 @@ class accountContainer {
 		* types are: user, group, host
 		*/
 		// Check input variable
-		
+
 		if (!is_string($type)) trigger_error('Argument of accountContainer must be string.', E_USER_ERROR);
 		if (!is_string($base)) trigger_error('Argument of accountContainer must be string.', E_USER_ERROR);
 		$this->type = $type;
@@ -761,44 +761,44 @@ class accountContainer {
 	* Syntax is attribute => array ( objectClass => MUST or MAY, ...)
 	*/
 	var $attributes;
-	
+
 	/**
 	* This variale stores the account type.
 	* Currently "user", "group" and "host" are supported.
 	*/
 	var $type;
-	
+
 	/** This is an array with all module objects */
 	var $module;
-	
+
 	/** DN suffix of the account */
 	var $dn;
-	
+
 	/** DN suffix of account when it was loaded */
 	var $dn_orig;
-	
+
 	/** RDN attribute of this account */
 	var $rdn;
-	
+
 	/** original LDAP attributes when account was loaded from LDAP */
 	var $attributes_orig;
-	
+
 	/** Module order */
 	var $order;
-	
+
 	/** Name of accountContainer variable in session */
 	var $base;
-	
+
 	/** This variable stores the name of the currently displayed page */
 	var $current_page;
-	
+
 	/** This variable is set to the pagename of a subpage if it should be displayed */
 	var $subpage;
-	
+
 	/** True if this is a newly created account */
 	var $isNewAccount;
 
-	
+
 	/**
 	* Returns the accout type of this object (e.g. user, group, host).
 	*
@@ -807,16 +807,14 @@ class accountContainer {
 	function get_type() {
 		return $this->type;
 		}
-	
+
 	/**
 	* This function is called when the user clicks on any button on the account pages.
 	* It prints the HTML code of each account page.
-	*
-	* @param array $post HTTP POST variables
 	*/
-	function continue_main($post) {
+	function continue_main() {
 		if ($this->subpage=='') $this->subpage='attributes';
-		if (isset($post['form_main_reset'])) {
+		if (isset($_POST['form_main_reset'])) {
 			$this->load_account($this->dn_orig);
 			}
 		else {
@@ -824,13 +822,13 @@ class accountContainer {
 				if ($this->subpage=='attributes') {
 					$result = 0;
 					// change dn
-					if (isset($post['suffix']) && ($post['suffix'] != '')) $this->dn = $post['suffix'];
+					if (isset($_POST['suffix']) && ($_POST['suffix'] != '')) $this->dn = $_POST['suffix'];
 					// change RDN
-					if (isset($post['rdn'])) $this->rdn = $post['rdn'];
-						
+					if (isset($_POST['rdn'])) $this->rdn = $_POST['rdn'];
+
 					// load profile
-					if (isset($post['selectLoadProfile']) && isset($post['loadProfile'])) {
-						$profile = loadAccountProfile($post['selectLoadProfile'], $this->type);
+					if (isset($_POST['selectLoadProfile']) && isset($_POST['loadProfile'])) {
+						$profile = loadAccountProfile($_POST['selectLoadProfile'], $this->type);
 						// pass profile to each module
 						$modules = array_keys($this->module);
 						foreach ($modules as $module) $this->module[$module]->load_profile($profile);
@@ -845,7 +843,7 @@ class accountContainer {
 						$result = 0;
 					}
 					// save account
-					if (isset($post['create'])) {
+					if (isset($_POST['create'])) {
 						$errors = $this->save_account();
 						if (is_array($errors)) {
 							$result = array($errors);
@@ -855,26 +853,26 @@ class accountContainer {
 					}
 				}
 				if ($this->subpage=='finish') {
-					if (isset($post['createagain'])) {
+					if (isset($_POST['createagain'])) {
 						// open fresh account page
 						unset($_SESSION[$this->base]);
 						metaRefresh("edit.php?type=" . $this->type);
 						exit();
 					}
-					if (isset($post['backmain'])) {
+					if (isset($_POST['backmain'])) {
 						// Return to account list
 						unset($_SESSION[$this->base]);
 						metaRefresh("../lists/list.php?type=" . $this->type);
 						exit;
 					}
-					if (isset($post['outputpdf'])) {
+					if (isset($_POST['outputpdf'])) {
 						// Create / display PDf-file
-						createModulePDF(array($_SESSION[$this->base]), $post['pdfStructure']);
+						createModulePDF(array($_SESSION[$this->base]), $_POST['pdfStructure']);
 						exit;
 					}
 				}
 			}
-			else $result = call_user_func(array(&$this->module[$this->order[$this->current_page]], 'process_'.$this->subpage), $post);
+			else $result = call_user_func(array(&$this->module[$this->order[$this->current_page]], 'process_'.$this->subpage));
 		}
 		// change to next page
 		$errorsOccured = false;
@@ -882,7 +880,7 @@ class accountContainer {
 			$errorKeys = array_keys($result);
 			for ($i = 0; $i < sizeof($errorKeys); $i++) {
 				for ($m = 0; $m < sizeof($result[$errorKeys[$i]]); $m++) {
-					if (($result[$errorKeys[$i]][$m][0] == 'ERROR') || ($result[$errorKeys[$i]][$m][0] == 'WARN')) {
+					if ($result[$errorKeys[$i]][$m][0] == 'ERROR') {
 						$errorsOccured = true;
 						break;
 					}
@@ -891,7 +889,7 @@ class accountContainer {
 		}
 		if (!$errorsOccured) {
 			// go to subpage of current module
-			$postKeys = array_keys($post);
+			$postKeys = array_keys($_POST);
 			for ($p = 0; $p < sizeof($postKeys); $p++) {
 				if (is_string($postKeys[$p]) && (strpos($postKeys[$p], 'form_subpage_' . $this->order[$this->current_page]) === 0)) {
 					$temp = substr($postKeys[$p], strlen($this->order[$this->current_page]) + 14);
@@ -902,13 +900,13 @@ class accountContainer {
 				}
 			}
 			// change module page if requested
-			if (isset($post['form_main_main'])) {
+			if (isset($_POST['form_main_main'])) {
 				$this->current_page = 0;
 				$this->subpage='attributes';
 			}
 			else {
 				for ($i=1; $i<count($this->order); $i++ ) {
-					if (isset($post['form_main_'.$this->order[$i]])) {
+					if (isset($_POST['form_main_'.$this->order[$i]])) {
 						if ($this->module[$this->order[$i]]->module_ready()) {
 							$this->current_page = $i;
 							$this->subpage='attributes';
@@ -954,7 +952,7 @@ class accountContainer {
 					if (!$this->module[$module]->module_complete()) {
 						$disabled = true;
 						$incompleteModules[] = $this->module[$module]->get_alias();
-					}		
+					}
 				}
 				if (sizeof($incompleteModules) > 0) {
 					StatusMessage('INFO', _('Some required information is missing'),
@@ -964,7 +962,7 @@ class accountContainer {
 		}
 		// Create left module-menu
 		echo "<table border=0 width=\"100%\">\n<tr valign=\"top\"><td width=\"15%\">";
-		
+
 		echo "<fieldset class=\"".$this->type."edit\"><legend><b>";
 			echo _('Please select page:');
 			echo "</b></legend><center>\n";
@@ -1015,7 +1013,7 @@ class accountContainer {
 			}
 		// display html-code from mdule
 		$return = array();
-		if ($this->current_page == 0) {			
+		if ($this->current_page == 0) {
 			if ($this->subpage == 'finish') {
 				// Show success message
 				if ($this->dn_orig == '') {
@@ -1066,7 +1064,7 @@ class accountContainer {
 					0 => array('kind' => 'text', 'text' => _('RDN identifier')),
 					1 => array('kind' => 'select', 'name' => 'rdn', 'options' => $rdnlist, 'options_selected' => $rdnSelected, 'noSorting' => true),
 					2 => array ('kind' => 'help', 'value' => '301'));
-		
+
 				// Get list of profiles
 				$profilelist = getAccountProfiles($this->type);
 				if (count($profilelist)!=0) {
@@ -1087,7 +1085,7 @@ class accountContainer {
 					2 => array ('kind' => 'help', 'value' => '402'));
 			}
 		}
-		else $return = call_user_func(array($this->module[$this->order[$this->current_page]], 'display_html_'.$this->subpage), $post);
+		else $return = call_user_func(array($this->module[$this->order[$this->current_page]], 'display_html_'.$this->subpage));
 		$y = 5000;
 		$z = 10000;
 		parseHtml($this->order[$this->current_page], $return, array(), false, $y, $z, $this->type);
@@ -1103,7 +1101,7 @@ class accountContainer {
 
 	/**
 	* This function checks which LDAP attributes have changed while the account was edited.
-	* 
+	*
 	* @param array $attributes list of current LDAP attributes
 	* @param array $orig list of old attributes when account was loaded
 	* @return array an array which can be passed to $this->saveAccount()
@@ -1203,7 +1201,7 @@ class accountContainer {
 		}
 		// save original attributes
 		$this->attributes_orig = $attr;
-				
+
 		foreach ($modules as $module) {
 			if (!isset($this->module[$module])) {
 				$this->module[$module] = new $module($this->type);
@@ -1216,7 +1214,7 @@ class accountContainer {
 		$this->sortModules();
 		return 0;
 	}
-	
+
 	/**
 	 * Fixes spelling errors in the attribute names.
 	 *
@@ -1529,7 +1527,7 @@ class accountContainer {
 
 	/**
 	 * Returns a list of possible PDF entries for this account.
-	 * 
+	 *
 	 * @return list of PDF entries (array(<name> => <PDF lines>))
 	 */
 	function get_pdfEntries() {
@@ -1602,7 +1600,7 @@ class accountContainer {
 		array_unshift($order, 'main');
 		$this->order = $order;
 	}
-	
+
 	/**
 	* Encrypts sensitive data before storing in session.
 	*
@@ -1616,7 +1614,7 @@ class accountContainer {
 		// save all attributes
 		return array_keys(get_object_vars($this));
 	}
-	
+
 	/**
 	* Decrypts sensitive data after accountContainer was loaded from session.
 	*/

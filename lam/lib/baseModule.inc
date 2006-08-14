@@ -53,7 +53,7 @@ class baseModule {
 
 	/** contains all ldap attributes which should be written */
 	var $attributes;
-	
+
 	/** contains all ldap attributes which are loaded from ldap */
 	var $orig;
 
@@ -323,7 +323,7 @@ class baseModule {
 			}
 		}
 	}
-	
+
 	/**
 	* Returns a list of elements for the configuration.
 	*
@@ -379,7 +379,7 @@ class baseModule {
 							if ($options[$identifiers[$i]][0] == '') continue;
 							if (! get_preg($options[$identifiers[$i]][0], $this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['regex'])) {
 								$messages[] = $this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['error_message'];
-							}	
+							}
 							break;
 						// check by regular expression (case insensitive)
 						case "regex_i":
@@ -387,7 +387,7 @@ class baseModule {
 							if ($options[$identifiers[$i]][0] == '') continue;
 							if (! eregi($this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['regex'], $options[$identifiers[$i]][0])) {
 								$messages[] = $this->meta['config_checks'][$scopes[$s]][$identifiers[$i]]['error_message'];
-							}	
+							}
 							break;
 						// check by regular expression (case sensitive)
 						case "regex":
@@ -435,27 +435,27 @@ class baseModule {
 		}
 		return $messages;
 	}
-	
+
 	/**
 	 * Returns an array with all fields available for this account type on the PDF
 	 * output. This method may be overwritten by subclasses or it may be used
 	 * by using entries in the $this->meta['PDF_fields'] array of the specific sub-
 	 * class.
-	 * 
+	 *
 	 * @param string $scope account type
 	 * @return array list of available fields for PDF output
 	 */
 	function get_pdfFields() {
 		return ((isset($this->meta['PDF_fields'])) ? $this->meta['PDF_fields'] : array());
 	}
-	
+
 	/**
 	 * Returns a hastable with all entries that may be printed out in the PDF. The
 	 * syntax of the hashtable is specified by the module specification and the
-	 * corresponding DTD. This method must be overwritten in case that there 
+	 * corresponding DTD. This method must be overwritten in case that there
 	 * are non static things to be returned. The $this->meta['PDF_entries'] array
 	 * may be used when there is only static content.
-	 * 
+	 *
 	 * @param string $scope account type
 	 * @return array hastable of entries for the PDF. Each entry is an array where
 	 * each entry is treated as a new line in the PDF.
@@ -505,14 +505,14 @@ class baseModule {
 		// must be implemented in sub modules
 		return array();
 	}
-	
+
 	/**
 	 * This function return the help entry array for a specific help id. Normally this->meta can be used.
-	 * 
+	 *
 	 * @param string $id The id string for the help entry needed.
 	 * @param string $scope The scope for which the help entry should be retrieved. May be empty when
 	 * there is now difference of the help entry depending on the actual scope.
-	 * 
+	 *
 	 * @return array The desired help entry.
 	 */
 	function get_help($id) {
@@ -545,7 +545,7 @@ class baseModule {
 	function module_complete() {
 		return true;
 	}
-	
+
 	/**
 	* Controls if the module button the account page is visible and activated.
 	*
@@ -595,23 +595,21 @@ class baseModule {
 	/**
 	* Dummy function for modules which use no special options on account deletion.
 	*
-	* @param $post The HTTP POST variables of the delete page
 	* @return List of LDAP operations, same as for save_attributes()
 	*/
-	function delete_attributes($post) {
+	function delete_attributes() {
 		return 0;
 	}
 
 	/**
 	* Dummy function for modules which do not print extra HTML code on account deletion.
 	*
-	* @param $post HTTP POST values
 	* @return meta HTML code
 	*/
-	function display_html_delete(&$post) {
+	function display_html_delete() {
 		return 0;
 	}
-	
+
 	/**
 	 * Returns a list of managed object classes for this module.
 	 * This is used to fix incorrect spelled object class names.
@@ -622,7 +620,7 @@ class baseModule {
 		if (isset($this->meta['objectClasses']) && is_array($this->meta['objectClasses'])) return $this->meta['objectClasses'];
 		else return array();
 	}
-	
+
 	/**
 	 * Returns a list of aliases for LDAP attributes.
 	 * All alias attributes will be renamed to the given attribute names.
@@ -633,7 +631,7 @@ class baseModule {
 		if (isset($this->meta['LDAPaliases']) && is_array($this->meta['LDAPaliases'])) return $this->meta['LDAPaliases'];
 		else return array();
 	}
-	
+
 	/**
 	 * Returns a list of LDAP attributes which are managed by this module.
 	 * All attribute names will be renamed to match the given spelling.
@@ -644,7 +642,7 @@ class baseModule {
 		if (isset($this->meta['attributes']) && is_array($this->meta['attributes'])) return $this->meta['attributes'];
 		else return array();
 	}
-	
+
 	/**
 	 * Returns a list of required PHP extensions.
 	 *
@@ -652,9 +650,9 @@ class baseModule {
 	 */
 	function getRequiredExtensions() {
 		if (isset($this->meta['extensions']) && is_array($this->meta['extensions'])) return $this->meta['extensions'];
-		else return array();		
+		else return array();
 	}
-	
+
 	/**
 	 * Returns a list of possible search attributes for the self service.
 	 *
@@ -662,7 +660,7 @@ class baseModule {
 	 */
 	function getSelfServiceSearchAttributes() {
 		if (isset($this->meta['selfServiceSearchAttributes']) && is_array($this->meta['selfServiceSearchAttributes'])) return $this->meta['selfServiceSearchAttributes'];
-		else return array();			
+		else return array();
 	}
 
 	/**
@@ -673,9 +671,9 @@ class baseModule {
 	 */
 	function getSelfServiceFields() {
 		if (isset($this->meta['selfServiceFieldSettings']) && is_array($this->meta['selfServiceFieldSettings'])) return $this->meta['selfServiceFieldSettings'];
-		else return array();					
+		else return array();
 	}
-	
+
 	/**
 	 * Returns the meta HTML code for each input field.
 	 * format: array(<field1> => array(<META HTML>), ...)
