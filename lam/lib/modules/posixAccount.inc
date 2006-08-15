@@ -38,34 +38,7 @@
 class posixAccount extends baseModule {
 
 	/**
-	 * Builds error messages
-	 * @todo remove this function, StatusMessage can handle parameters
-	 *
-	 * @param unknown_type $attribute
-	 * @param unknown_type $id
-	 * @return unknown
-	 */
-	function dynamic_Message($attribute, $id) {
-		switch ($attribute) {
-			case 'homeDirectory': switch ($id) {
-				case 2: return array('INFO', _('Home directory'), sprintf(_('Home directory changed. To keep home directory you have to run the following command as root: \'mv %s %s\''), $this->orig['homeDirectory'][0], $this->attributes['homeDirectory'][0]));
-				break;
-			}
-			break;
-			case 'gidNumber': switch ($id) {
-				case 0: return array('INFO', _('GID number'), sprintf(_('GID number has changed. To keep file ownership you have to run the following command as root: \'find / -gid %s -uid %s -exec chgrp %s {} \;\''), $this->orig['gidNumber'][0], $this->orig['uidNumber'][0], $_SESSION['cache']->getgid($this->attribtues['gidNumber'][0])));
-				break;
-			}
-			break;
-			case 'uidNumber': switch ($id) {
-				case 0: return array('INFO', _('UID number'), sprintf(_('UID number has changed. To keep file ownership you have to run the following command as root: \'find / -uid %s -exec chown %s {} \;\''), $this->orig['uidNumber'][0], $this->attributes['uidNumber'][0]));
-				break;
-			}
-			break;
-		}
-	}
-
-	/** this functin fills the error message array with messages
+	 *  This function fills the error message array with messages.
 	**/
 	function load_Messages() {
 		// error messages for input checks
@@ -79,10 +52,12 @@ class posixAccount extends baseModule {
 		$this->messages['homeDirectory'][0] = array('ERROR', _('Home directory'), _('Homedirectory contains invalid characters.'));
 		$this->messages['homeDirectory'][1] = array('INFO', _('Home directory'), _('Replaced $user or $group in homedir.'));
 		$this->messages['homeDirectory'][2] = array('ERROR', _('Account %s:') . ' posixAccount_homedir', _('Homedirectory contains invalid characters.'));
+		$this->messages['homeDirectory'][3] = array('INFO', _('Home directory'), _('Home directory changed. To keep home directory you have to run the following command as root: \'mv %s %s\''));
 		$this->messages['uidNumber'][1] = array('ERROR', _('ID-Number'), _('No free ID-Number!'));
 		$this->messages['uidNumber'][2] = array('WARN', _('ID-Number'), _('It is possible that this ID-number is reused. This can cause several problems because files with old permissions might still exist. To avoid this warning set maxUID to a higher value.'));
 		$this->messages['uidNumber'][3] = array('ERROR', _('ID-Number'), _('ID is already in use'));
 		$this->messages['uidNumber'][4] = array('ERROR', _('Account %s:') . ' posixAccount_uid', _('UID must be a number. It has to be inside the UID range which is defined in your configuration profile.'));
+		$this->messages['uidNumber'][5] = array('INFO', _('UID number'), _('UID number has changed. To keep file ownership you have to run the following command as root: \'find / -uid %s -exec chown %s {} \;\''));
 		$this->messages['userPassword'][0] = array('ERROR', _('Password'), _('Please enter the same password in both password fields.'));
 		$this->messages['userPassword'][1] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}=@$ !'));
 		$this->messages['userPassword'][3] = array('ERROR', _('Password'), _('You cannot use these password options at the same time.'));
@@ -100,6 +75,7 @@ class posixAccount extends baseModule {
 		$this->messages['uid'][10] = array('ERROR', _('Account %s:') . ' posixAccount_hostName', _('Host name already exists!'));
 		$this->messages['gidNumber'][0] = array('ERROR', _('Account %s:') . ' posixAccount_group', _('LAM was unable to find a group with this name!'));
 		$this->messages['gidNumber'][1] = array('ERROR', _('Account %s:') . ' posixAccount_group', _('This GID number is invalid! Please provide either a number or a group name.'));
+		$this->messages['gidNumber'][2] = array('INFO', _('GID number'), _('GID number has changed. To keep file ownership you have to run the following command as root: \'find / -gid %s -uid %s -exec chgrp %s {} \;\''));
 		$this->messages['gecos'][0] = array('ERROR', _('Account %s:') . ' posixAccount_gecos', _('This gecos value is invalid!'));
 		$this->messages['shell'][0] = array('ERROR', _('Account %s:') . ' posixAccount_shell', _('This login shell is invalid!'));
 		$this->messages['passwordDisabled'][0] = array('ERROR', _('Account %s:') . ' posixAccount_passwordDisabled', _('This value can only be \"true\" or \"false\".'));
@@ -600,19 +576,28 @@ class posixAccount extends baseModule {
 		if (count($groups)==0) {
 			return array(array(array("ERROR", _('No Unix groups found in LDAP! Please create one first.'), '')));
 		}
-		$this->attributes['homeDirectory'][0] = $_POST['homeDirectory'];
 		$this->attributes['loginShell'][0] = $_POST['loginShell'];
 		if (isset($_POST['gecos'])) $this->attributes['gecos'][0] = $_POST['gecos'];
 		if (isset($_POST['createhomedir'])) $this->createhomedir = true;
 		else $this->createhomedir = false;
 		if ($this->orig['uid'][0]!='' && $_POST['uid']!=$this->attributes['uid'][0])
 			$errors['uid'][] = $this->messages['uid'][0];
-		if ($this->orig['gidNumber'][0]!='' && $_SESSION['cache']->getgid($_POST['gidNumber'])!=$this->attributes['gidNumber'][0])
-			$errors['gidNumber'][] = $this->dynamic_Message('gidNumber',0);
-		if ($this->orig['uidNumber'][0]!='' && $_POST['uidNumber']!=$this->attributes['uidNumber'][0])
-			$errors['uidNumber'][] = $this->dynamic_Message('uidNumber',0);
-		if (isset($_POST['homeDirectory']) && $this->orig['homeDirectory'][0]!='' && $_POST['homeDirectory']!=$this->attributes['homeDirectory'][0])
-			$errors['homeDirectory'][] = $this->dynamic_Message('homeDirectory',0);
+		if ($this->orig['gidNumber'][0]!='' && $_SESSION['cache']->getgid($_POST['gidNumber'])!=$this->attributes['gidNumber'][0]) {
+			$errorMessage = $this->messages['gidNumber'][2];
+			$errorMessage[] = array($this->orig['gidNumber'][0], $this->orig['uidNumber'][0], $_POST['gidNumber']);
+			$errors['gidNumber'][] = $errorMessage;
+		}
+		if ($this->orig['uidNumber'][0]!='' && $_POST['uidNumber']!=$this->attributes['uidNumber'][0]) {
+			$errorMessage = $this->messages['uidNumber'][5];
+			$errorMessage[] = array($this->orig['uidNumber'][0], $_POST['uidNumber']);
+			$errors['uidNumber'][] = $errorMessage;
+		}
+		if (isset($_POST['homeDirectory']) && $this->orig['homeDirectory'][0]!='' && $_POST['homeDirectory']!=$this->attributes['homeDirectory'][0]) {
+			$errorMessage = $this->messages['homeDirectory'][3];
+			$errorMessage[] = array($this->orig['homeDirectory'][0], $_POST['homeDirectory']);
+			$errors['homeDirectory'][] = $errorMessage;
+		}
+		$this->attributes['homeDirectory'][0] = $_POST['homeDirectory'];
 		// Load attributes
 		$this->attributes['uid'][0] = $_POST['uid'];
 		$this->attributes['cn'][0] = $_POST['cn'];
