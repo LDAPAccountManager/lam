@@ -934,7 +934,9 @@ class accountContainer {
 		if (is_array($result)) {
 			foreach ($result as $result2) {
 				if (is_array($result2)) {
-					for ($i=0; $i<sizeof($result2); $i++) StatusMessage($result2[$i][0], $result2[$i][1], $result2[$i][2]);
+					for ($i=0; $i<sizeof($result2); $i++) {
+						call_user_func_array("StatusMessage", $result2[$i]);
+					}
 				}
 			}
 			if (isset($stopProcessing) && ($stopProcessing == true)) {
