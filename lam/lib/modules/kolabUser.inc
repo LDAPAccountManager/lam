@@ -421,13 +421,13 @@ class kolabUser extends baseModule {
 			else {
 				$message = $this->messages['country'][0];
 				$message[] = $_POST['country'];
-				$errors[] = array($message);
+				$errors[] = $message;
 			}
 		}
 		// mailbox server
 		if (isset($_POST['homeServer'])) {
 			if ($_POST['homeServer'] == "") {
-				$errors[] = array($this->messages['homeServer'][2]);
+				$errors[] = $this->messages['homeServer'][2];
 			}
 			elseif (get_preg($_POST['homeServer'], 'DNSname')) {
 				$this->attributes['kolabHomeServer'][0] = $_POST['homeServer'];
@@ -435,7 +435,7 @@ class kolabUser extends baseModule {
 			else {
 				$message = $this->messages['homeServer'][0];
 				$message[] = $_POST['homeServer'];
-				$errors[] = array($message);
+				$errors[] = $message;
 			}
 		}
 		// check old invitation policies
@@ -453,7 +453,7 @@ class kolabUser extends baseModule {
 				if (!get_preg($_POST['invPol1' . $i], 'email')) {
 					$message = $this->messages['invPol'][0];
 					$message[] = $_POST['invPol1' . $i];
-					$errors[] = array($message);
+					$errors[] = $message;
 				}
 				else {
 					$this->attributes['kolabInvitationPolicy'][] = $_POST['invPol1' . $i] . ':' . $policies[$_POST['invPol2' . $i]];
@@ -467,7 +467,7 @@ class kolabUser extends baseModule {
 			if (!get_preg($_POST['invPol1'], 'email')) {
 				$message = $this->messages['invPol'][0];
 				$message[] = $_POST['invPol1'];
-				$errors[] = array($message);
+				$errors[] = $message;
 			}
 			else {
 				$this->attributes['kolabInvitationPolicy'][] = $_POST['invPol1'] . ':' . $policies[$_POST['invPol2']];
@@ -490,7 +490,7 @@ class kolabUser extends baseModule {
 				if (!get_preg($_POST['alias' . $i], 'email')) {
 					$message = $this->messages['alias'][0];
 					$message[] = $_POST['alias' . $i];
-					$errors[] = array($message);
+					$errors[] = $message;
 				}
 				$this->attributes['alias'][] = $_POST['alias' . $i];
 			}
@@ -502,7 +502,7 @@ class kolabUser extends baseModule {
 			if (!get_preg($_POST['alias'], 'email')) {
 				$message = $this->messages['alias'][0];
 				$message[] = $_POST['alias'];
-				$errors[] = array($message);
+				$errors[] = $message;
 			}
 			else {
 				$this->attributes['alias'][] = $_POST['alias'];
@@ -533,7 +533,7 @@ class kolabUser extends baseModule {
 			else {
 				$message = $this->messages['freeBusy'][0];
 				$message[] = $_POST['freeBusy'];
-				$errors[] = array($message);
+				$errors[] = $message;
 			}
 		}
 		// Cyrus mail quota
@@ -544,7 +544,7 @@ class kolabUser extends baseModule {
 			else {
 				$message = $this->messages['quota'][0];
 				$message[] = $_POST['quota'];
-				$errors[] = array($message);
+				$errors[] = $message;
 			}
 		}
 		return $errors;

@@ -877,13 +877,10 @@ class accountContainer {
 		// change to next page
 		$errorsOccured = false;
 		if (is_array($result)) {  // messages were returned, check for errors
-			$errorKeys = array_keys($result);
-			for ($i = 0; $i < sizeof($errorKeys); $i++) {
-				for ($m = 0; $m < sizeof($result[$errorKeys[$i]]); $m++) {
-					if ($result[$errorKeys[$i]][$m][0] == 'ERROR') {
-						$errorsOccured = true;
-						break;
-					}
+			for ($i = 0; $i < sizeof($result); $i++) {
+				if ($result[$i][0] == 'ERROR') {
+					$errorsOccured = true;
+					break;
 				}
 			}
 		}
@@ -932,12 +929,8 @@ class accountContainer {
 		echo "<form enctype=\"multipart/form-data\" action=\"edit.php\" method=\"post\">\n";
 		// Display error-messages
 		if (is_array($result)) {
-			foreach ($result as $result2) {
-				if (is_array($result2)) {
-					for ($i=0; $i<sizeof($result2); $i++) {
-						call_user_func_array("StatusMessage", $result2[$i]);
-					}
-				}
+			for ($i=0; $i<sizeof($result); $i++) {
+				call_user_func_array("StatusMessage", $result[$i]);
 			}
 			if (isset($stopProcessing) && ($stopProcessing == true)) {
 				echo "</body>\n";
@@ -1130,7 +1123,9 @@ class accountContainer {
 			for ($j=0; $j<count($attributes[$attr_names[$i]]); $j++) {
 				if (is_array($orig[$attr_names[$i]])) {
 					if (!in_array($attributes[$attr_names[$i]][$j], $orig[$attr_names[$i]]))
-						if ($attributes[$attr_names[$i]][$j]!='') $toadd[$attr_names[$i]][] = $attributes[$attr_names[$i]][$j];
+						if ($attributes[$attr_names[$i]][$j]!='') {
+							$toadd[$attr_names[$i]][] = $attributes[$attr_names[$i]][$j];
+						}
 				}
 				else if ($attributes[$attr_names[$i]][$j]!='') $toadd[$attr_names[$i]][] = $attributes[$attr_names[$i]][$j];
 			}

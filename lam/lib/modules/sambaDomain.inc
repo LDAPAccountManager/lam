@@ -487,7 +487,7 @@ class sambaDomain extends baseModule {
 			}
 		}
 
-		return array($errors);
+		return $errors;
 	}
 
 	/**

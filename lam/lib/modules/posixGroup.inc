@@ -545,7 +545,7 @@ class posixGroup extends baseModule {
 
 		if ($_POST['userPassword_lock'] && $_POST['userPassword_nopassword']) {
 			// found invalid password parameter combination
-			$errors['userPassword'][] = $this->messages['userPassword'][3];
+			$errors[] = $this->messages['userPassword'][3];
 		}
 		else {
 			if ($_POST['userPassword_nopassword']) {
@@ -561,10 +561,10 @@ class posixGroup extends baseModule {
 				if ($_POST['genpass']) $this->attributes['userPassword'][0] = genpasswd();
 				elseif ($_SESSION[$this->base]->isNewAccount) {
 					if ($_POST['userPassword'] != $_POST['userPassword2'])
-						$errors['userPassword'][] = $this->messages['userPassword'][0];
+						$errors[] = $this->messages['userPassword'][0];
 					else $this->attributes['userPassword'][0] = $_POST['userPassword'];
 					if (!get_preg($this->attributes['userPassword'][0], 'password'))
-						$errors['userPassword'][] = $this->messages['userPassword'][1];
+						$errors[] = $this->messages['userPassword'][1];
 				}
 				if ($_POST['userPassword_lock']) $this->userPassword_lock=true;
 				else $this->userPassword_lock=false;
@@ -592,7 +592,7 @@ class posixGroup extends baseModule {
 						$this->attributes['gidNumber'][0] = $newGID[0];
 					}
 					else {
-						$errors['gidNumber'][] = $this->messages['gidNumber'][3];
+						$errors[] = $this->messages['gidNumber'][3];
 					}
 				}
 				else $this->attributes['gidNumber'][0] = $this->orig['gidNumber'][0];
@@ -602,7 +602,7 @@ class posixGroup extends baseModule {
 				// Check manual ID
 				// id-number is out of valid range
 				if (($this->attributes['gidNumber'][0] < $minID) || ($this->attributes['gidNumber'][0] > $maxID) || !is_numeric($this->attributes['gidNumber'][0])) {
-					$errors['gidNumber'][] = array('ERROR', _('ID-Number'), sprintf(_('Please enter a value between %s and %s!'), $minID, $maxID));
+					$errors[] = array('ERROR', _('ID-Number'), sprintf(_('Please enter a value between %s and %s!'), $minID, $maxID));
 					if (isset($this->orig['gidNumber'][0])) $this->attributes['gidNumber'][0] = $this->orig['gidNumber'][0];
 					else unset($this->attributes['gidNumber'][0]);
 				}
@@ -610,12 +610,12 @@ class posixGroup extends baseModule {
 				if (is_array($gids)) {
 					// id-number is in use and account is a new account
 					if ((in_array($this->attributes['gidNumber'][0], $gids)) && $this->orig['gidNumber'][0]=='') {
-						$errors['gidNumber'][] = array('ERROR', _('ID-Number'), _('ID is already in use'));
+						$errors[] = array('ERROR', _('ID-Number'), _('ID is already in use'));
 						unset($this->attributes['gidNumber'][0]);
 					}
 					// id-number is in use, account is existing account and id-number is not used by itself
 					if ((in_array($this->attributes['gidNumber'][0], $gids)) && $this->orig['gidNumber'][0]!='' && ($this->orig['gidNumber'][0] != $this->attributes['gidNumber'][0]) ) {
-						$errors['gidNumber'][] = $this->messages['gidNumber'][4];
+						$errors[] = $this->messages['gidNumber'][4];
 						$this->attributes['gidNumber'][0] = $this->orig['gidNumber'][0];
 					}
 				}
@@ -624,10 +624,10 @@ class posixGroup extends baseModule {
 		if ($this->attributes['cn'][0]!=$_POST['cn']) {
 			$this->attributes['cn'][0] = $_POST['cn'];
 			if (($this->attributes['cn'][0] != $_POST['cn']) &&  ereg('[A-Z]$', $_POST['cn']))
-				$errors['cn'][] = $this->messages['cn'][0];
+				$errors[] = $this->messages['cn'][0];
 			// Check if Groupname contains only valid characters
 			if ( !get_preg($this->attributes['cn'][0],'groupname'))
-			$errors['cn'][] = $this->messages['cn'][2];
+			$errors[] = $this->messages['cn'][2];
 			// Create automatic useraccount with number if original user already exists
 			// Reset name to original name if new name is in use
 			// Set username back to original name if new username is in use
@@ -667,11 +667,11 @@ class posixGroup extends baseModule {
 			}
 			// Show warning if lam has changed username
 			if ($this->attributes['cn'][0] != $_POST['cn']) {
-				$errors['cn'][] = $this->messages['cn'][0];
+				$errors[] = $this->messages['cn'][0];
 			}
 			// show info when gidnumber has changed
 			if (($this->orig['gidNumber'][0]!=$this->attributes['gidNumber'][0]) && $this->orig['gidNumber'][0]!='' && $_POST['gidNumber']!=$this->attributes['gidNumber'][0]) {
-				$errors['gidNumber'][] = $this->messages['gidNumber'][0];
+				$errors[] = $this->messages['gidNumber'][0];
 			}
 		}
 		// Return error-messages
@@ -694,6 +694,7 @@ class posixGroup extends baseModule {
 		elseif (isset($_POST['removeusers']) && isset($_POST['removeusers_button'])) { // remove users from list
 			$this->attributes['memberUid'] = array_delete($_POST['removeusers'], $this->attributes['memberUid']);
 		}
+		return array();
 	}
 
 
@@ -705,18 +706,18 @@ class posixGroup extends baseModule {
 	*/
 	function process_password() {
 		if ($_POST['form_subpage_posixGroup_attributes_back']) return array();
-		$messages = array();
+		$errors = array();
 		if ($_POST['userPassword'] != $_POST['userPassword2']) {
-			$messages['userPassword'][] = $this->messages['userPassword'][0];
+			$errors[] = $this->messages['userPassword'][0];
 			if (!get_preg($_POST['userPassword'], 'password'))
-				$messages['userPassword'][] = $this->messages['userPassword'][1];
+				$errors[] = $this->messages['userPassword'][1];
 			}
 			else {
 				$this->attributes['userPassword'][0] = $_POST['userPassword'];
 				$this->userPassword_lock = false;
 				$this->userPassword_nopassword = false;
 			}
-		return $messages;
+		return $errors;
 	}
 
 	/**
@@ -860,7 +861,7 @@ class posixGroup extends baseModule {
 						sort ($gids, SORT_NUMERIC);
 					}
 					// show warning message
-					$errors['gidNumber'][] = $this->messages['gidNumber'][2];
+					$errors[] = $this->messages['gidNumber'][2];
 				}
 			}
 			else {

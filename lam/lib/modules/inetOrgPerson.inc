@@ -472,7 +472,7 @@ class inetOrgPerson extends baseModule {
 		if (!in_array('posixAccount', $modules)) {
 			// uid
 			if (!get_preg($_POST['userName'], 'username')) {
-				$errors['uid'][] = $this->messages['uid'][0];
+				$errors[] = $this->messages['uid'][0];
 			}
 			else {
 				$this->attributes['uid'][0] = $_POST['userName'];
@@ -490,7 +490,7 @@ class inetOrgPerson extends baseModule {
 				$this->attributes['cn'][0] = $_POST['cn'];
 			}
 			if (!get_preg($this->attributes['cn'][0], 'cn')) {
-				$errors['cn'][] = $this->messages['cn'][0];
+				$errors[] = $this->messages['cn'][0];
 			}
 		}
 
@@ -498,7 +498,7 @@ class inetOrgPerson extends baseModule {
 		if ($_SESSION['ldap']->supports_unix_hosts) {
 			$host = $_POST['host'];
 			if (!get_preg($host,'unixhost')) {
-				$errors['host'][] = $this->messages['host'][0];
+				$errors[] = $this->messages['host'][0];
 			}
 			$hosts = explode(",", $host);
 			$this->attributes['host'] = array();
@@ -509,24 +509,24 @@ class inetOrgPerson extends baseModule {
 			}
 		}
 		// Do some regex-checks and return error if attributes are set to wrong values
-		if (($this->attributes['givenName'][0] != '') && !get_preg($this->attributes['givenName'][0], 'realname')) $errors['givenName'][] = $this->messages['givenName'][0];
-		if ( !get_preg($this->attributes['sn'][0], 'realname')) $errors['sn'][] = $this->messages['lastname'][0];
-		if ( !get_preg($this->attributes['telephoneNumber'][0], 'telephone')) $errors['telephoneNumber'][] = $this->messages['telephoneNumber'][0];
-		if ( !get_preg($this->attributes['mobile'][0], 'telephone')) $errors['mobileTelephoneNumber'][] = $this->messages['mobileTelephone'][0];
-		if ( !get_preg($this->attributes['facsimileTelephoneNumber'][0], 'telephone')) $errors['facsimileTelephoneNumber'][] = $this->messages['facsimileNumber'][0];
-		if (($this->attributes['mail'][0] != '') && !get_preg($this->attributes['mail'][0], 'email')) $errors['mail'][] = $this->messages['email'][0];
-		if ( !get_preg($this->attributes['street'][0], 'street')) $errors['street'][] = $this->messages['street'][0];
-		if ( !get_preg($this->attributes['postalAddress'][0], 'postalAddress')) $errors['postalAdress'][] = $this->messages['postalAddress'][0];
-		if ( !get_preg($this->attributes['postalCode'][0], 'postalCode')) $errors['personal_postalCode'][] = $this->messages['postalCode'][0];
-		if ( !get_preg($this->attributes['title'][0], 'title')) $errors['title'][] = $this->messages['title'][0];
-		if ( !get_preg($this->attributes['employeeType'][0], 'employeeType')) $errors['employeeType'][] = $this->messages['employeeType'][0];
+		if (($this->attributes['givenName'][0] != '') && !get_preg($this->attributes['givenName'][0], 'realname')) $errors[] = $this->messages['givenName'][0];
+		if ( !get_preg($this->attributes['sn'][0], 'realname')) $errors[] = $this->messages['lastname'][0];
+		if ( !get_preg($this->attributes['telephoneNumber'][0], 'telephone')) $errors[] = $this->messages['telephoneNumber'][0];
+		if ( !get_preg($this->attributes['mobile'][0], 'telephone')) $errors[] = $this->messages['mobileTelephone'][0];
+		if ( !get_preg($this->attributes['facsimileTelephoneNumber'][0], 'telephone')) $errors[] = $this->messages['facsimileNumber'][0];
+		if (($this->attributes['mail'][0] != '') && !get_preg($this->attributes['mail'][0], 'email')) $errors[] = $this->messages['email'][0];
+		if ( !get_preg($this->attributes['street'][0], 'street')) $errors[] = $this->messages['street'][0];
+		if ( !get_preg($this->attributes['postalAddress'][0], 'postalAddress')) $errors[] = $this->messages['postalAddress'][0];
+		if ( !get_preg($this->attributes['postalCode'][0], 'postalCode')) $errors[] = $this->messages['postalCode'][0];
+		if ( !get_preg($this->attributes['title'][0], 'title')) $errors[] = $this->messages['title'][0];
+		if ( !get_preg($this->attributes['employeeType'][0], 'employeeType')) $errors[] = $this->messages['employeeType'][0];
 		if ($_POST['userPassword']) {
 			if ($_POST['userPassword'] != $_POST['userPassword2']) {
-				$errors['userPassword'][] = $this->messages['userPassword'][0];
+				$errors[] = $this->messages['userPassword'][0];
 			}
 			else {
 				if (!get_preg($_POST['userPassword'], 'password')) {
-					$errors['userPassword'][] = $this->messages['userPassword'][1];
+					$errors[] = $this->messages['userPassword'][1];
 				}
 				else {
 					$this->attributes['userPassword'][0] = $_POST['userPassword'];

@@ -184,7 +184,7 @@ class inetLocalMailRecipient extends baseModule {
 			else {
 					$message = $this->messages['routingAdr'][0];
 					$message[] = $_POST['routingAdr'];
-					$errors[] = array($message);
+					$errors[] = $message;
 			}
 		}
 		// check mail server
@@ -196,7 +196,7 @@ class inetLocalMailRecipient extends baseModule {
 			else {
 					$message = $this->messages['host'][0];
 					$message[] = $_POST['host'];
-					$errors[] = array($message);
+					$errors[] = $message;
 			}
 		}
 		// check old local addresses
@@ -208,7 +208,7 @@ class inetLocalMailRecipient extends baseModule {
 					if (!get_preg($_POST['localAdr' . $i], 'mailLocalAddress')) {
 						$message = $this->messages['localAdr'][0];
 						$message[] = $_POST['localAdr' . $i];
-						$errors[] = array($message);
+						$errors[] = $message;
 					}
 					$this->attributes['mailLocalAddress'][] = $_POST['localAdr' . $i];
 				}
@@ -224,7 +224,7 @@ class inetLocalMailRecipient extends baseModule {
 				for ($i = 0; $i < sizeof($keys); $i++) {
 					$adrList = $data[$keys[$i]];
 					if (in_array_ignore_case($_POST['localAdr'], $adrList)) {
-						$errors['localAdr'][] = array('WARN', _('This mail address is already in use:') . " " . $_POST['localAdr'], $keys[$i]);
+						$errors[] = array('WARN', _('This mail address is already in use:') . " " . $_POST['localAdr'], $keys[$i]);
 						break;
 					}
 				}
@@ -233,7 +233,7 @@ class inetLocalMailRecipient extends baseModule {
 			else {
 					$message = $this->messages['localAdr'][0];
 					$message[] = $_POST['localAdr'];
-					$errors[] = array($message);
+					$errors[] = $message;
 			}
 		}
 		$this->attributes['mailLocalAddress'] = array_unique($this->attributes['mailLocalAddress']);

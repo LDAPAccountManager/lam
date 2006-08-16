@@ -127,7 +127,7 @@ class ieee802Device extends baseModule {
 					if (!get_preg($_POST['macAddress' . $i], 'macAddress')) {
 						$message = $this->messages['mac'][0];
 						$message[] = $_POST['macAddress' . $i];
-						$errors[] = array($message);
+						$errors[] = $message;
 					}
 					$this->attributes['macAddress'][] = $_POST['macAddress' . $i];
 				}
@@ -142,7 +142,7 @@ class ieee802Device extends baseModule {
 			else {
 					$message = $this->messages['mac'][0];
 					$message[] = $_POST['macAddress'];
-					$errors[] = array($message);
+					$errors[] = $message;
 			}
 		}
 		$this->attributes['macAddress'] = array_unique($this->attributes['macAddress']);

@@ -179,8 +179,8 @@ class account extends baseModule {
 		$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
 		if (!in_array('posixAccount', $modules)) {
 			$this->attributes['uid'][0] = $_POST['uid'];
-			if (!get_preg($this->attributes['uid'][0], '!upper')) $errors['uid'][] = $this->messages['uid'][2];
-			if (!get_preg($this->attributes['uid'][0], 'username')) $errors['uid'][] = $this->messages['uid'][3];
+			if (!get_preg($this->attributes['uid'][0], '!upper')) $errors[] = $this->messages['uid'][2];
+			if (!get_preg($this->attributes['uid'][0], 'username')) $errors[] = $this->messages['uid'][3];
 		}
 		return $errors;
 	}

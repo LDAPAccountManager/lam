@@ -433,7 +433,7 @@ class sambaGroupMapping extends baseModule {
 					if ($_SESSION['cache']->in_cache($SID."-".$this->rids[$rids[$i]], 'sambaSID', 'group')) {
 						$message = $this->messages['sambaSID'][0];
 						$message[] = $rids[$i];
-						$errors['sambaSID'][] = $message;
+						$errors[] = $message;
 					}
 				}
 			}

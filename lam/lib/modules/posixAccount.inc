@@ -581,21 +581,21 @@ class posixAccount extends baseModule {
 		if (isset($_POST['createhomedir'])) $this->createhomedir = true;
 		else $this->createhomedir = false;
 		if ($this->orig['uid'][0]!='' && $_POST['uid']!=$this->attributes['uid'][0])
-			$errors['uid'][] = $this->messages['uid'][0];
+			$errors[] = $this->messages['uid'][0];
 		if ($this->orig['gidNumber'][0]!='' && $_SESSION['cache']->getgid($_POST['gidNumber'])!=$this->attributes['gidNumber'][0]) {
 			$errorMessage = $this->messages['gidNumber'][2];
 			$errorMessage[] = array($this->orig['gidNumber'][0], $this->orig['uidNumber'][0], $_POST['gidNumber']);
-			$errors['gidNumber'][] = $errorMessage;
+			$errors[] = $errorMessage;
 		}
 		if ($this->orig['uidNumber'][0]!='' && $_POST['uidNumber']!=$this->attributes['uidNumber'][0]) {
 			$errorMessage = $this->messages['uidNumber'][5];
 			$errorMessage[] = array($this->orig['uidNumber'][0], $_POST['uidNumber']);
-			$errors['uidNumber'][] = $errorMessage;
+			$errors[] = $errorMessage;
 		}
 		if (isset($_POST['homeDirectory']) && $this->orig['homeDirectory'][0]!='' && $_POST['homeDirectory']!=$this->attributes['homeDirectory'][0]) {
 			$errorMessage = $this->messages['homeDirectory'][3];
 			$errorMessage[] = array($this->orig['homeDirectory'][0], $_POST['homeDirectory']);
-			$errors['homeDirectory'][] = $errorMessage;
+			$errors[] = $errorMessage;
 		}
 		$this->attributes['homeDirectory'][0] = $_POST['homeDirectory'];
 		// Load attributes
@@ -621,7 +621,7 @@ class posixAccount extends baseModule {
 			}
 		}
 		if (!get_preg($this->attributes['cn'][0], 'cn')) {
-			$errors['cn'][] = $this->messages['cn'][0];
+			$errors[] = $this->messages['cn'][0];
 		}
 		$this->attributes['uidNumber'][0] = $_POST['uidNumber'];
 		$this->attributes['gidNumber'][0] = $_SESSION['cache']->getgid($_POST['gidNumber']);
@@ -650,7 +650,7 @@ class posixAccount extends baseModule {
 					$this->attributes['uidNumber'][0] = $newUID[0];
 				}
 				else {
-					$errors['uidNumber'][] = $this->messages['uidNumber'][3];
+					$errors[] = $this->messages['uidNumber'][3];
 				}
 			}
 			else $this->attributes['uidNumber'][0] = $this->orig['uidNumber'][0];
@@ -659,27 +659,27 @@ class posixAccount extends baseModule {
 		else {
 			// Check manual ID
 			// id-number is out of valid range
-			if (!is_numeric($this->attributes['uidNumber'][0]) || ($this->attributes['uidNumber'][0] < $minID) || ($this->attributes['uidNumber'][0] > $maxID)) $errors['uidNumber'][] = array('ERROR', _('ID-Number'), sprintf(_('Please enter a value between %s and %s!'), $minID, $maxID));
+			if (!is_numeric($this->attributes['uidNumber'][0]) || ($this->attributes['uidNumber'][0] < $minID) || ($this->attributes['uidNumber'][0] > $maxID)) $errors[] = array('ERROR', _('ID-Number'), sprintf(_('Please enter a value between %s and %s!'), $minID, $maxID));
 			// $uids is allways an array but not if no entries were found
 			if (is_array($uids)) {
 				// id-number is in use and account is a new account
-				if ((in_array($this->attributes['uidNumber'][0], $uids)) && $this->orig['uidNumber'][0]=='') $errors['uidNumber'][] = array('ERROR', _('ID-Number'), _('ID is already in use'));
+				if ((in_array($this->attributes['uidNumber'][0], $uids)) && $this->orig['uidNumber'][0]=='') $errors[] = array('ERROR', _('ID-Number'), _('ID is already in use'));
 				// id-number is in use, account is existing account and id-number is not used by itself
 				if ((in_array($this->attributes['uidNumber'][0], $uids)) && $this->orig['uidNumber'][0]!='' && ($this->orig['uidNumber'][0] != $this->attributes['uidNumber'][0]) ) {
-					$errors['uidNumber'][] = $this->messages['uidNumber'][3];
+					$errors[] = $this->messages['uidNumber'][3];
 					$this->attributes['uidNumber'][0] = $this->orig['uidNumber'][0];
 				}
 			}
 		}
 		if ($_SESSION[$this->base]->type=='user') {
 			if (($this->attributes['uid'][0] != $_POST['uid']) &&  !get_preg($_POST['uid'], '!upper'))
-			$errors['uid'][] = $this->messages['uid'][1];
+			$errors[] = $this->messages['uid'][1];
 			if ( !get_preg($this->attributes['homeDirectory'][0], 'homeDirectory' ))
-			$errors['homeDirecotry'][] = $this->messages['homeDirectory'][0];
+			$errors[] = $this->messages['homeDirectory'][0];
 		}
 		if (isset($_POST['userPassword_lock']) && isset($_POST['userPassword_nopassword'])) {
 			// found invalid password parameter combination
-			$errors['userPassword'][] = $this->messages['userPassword'][3];
+			$errors[] = $this->messages['userPassword'][3];
 		}
 		else {
 			if (isset($_POST['userPassword_nopassword'])) {
@@ -695,10 +695,10 @@ class posixAccount extends baseModule {
 				if (isset($_POST['genpass'])) $this->attributes['userPassword'][0] = genpasswd();
 				elseif ($_SESSION[$this->base]->isNewAccount) {
 					if ($_POST['userPassword'] != $_POST['userPassword2'])
-						$errors['userPassword'][] = $this->messages['userPassword'][0];
+						$errors[] = $this->messages['userPassword'][0];
 					else $this->attributes['userPassword'][0] = $_POST['userPassword'];
 					if (!get_preg($this->attributes['userPassword'][0], 'password'))
-						$errors['userPassword'][] = $this->messages['userPassword'][1];
+						$errors[] = $this->messages['userPassword'][1];
 				}
 				if (isset($_POST['userPassword_lock'])) $this->userPassword_lock=true;
 				else $this->userPassword_lock=false;
@@ -707,10 +707,10 @@ class posixAccount extends baseModule {
 				$this->attributes['homeDirectory'][0] = str_replace('$group', $_SESSION['cache']->getgrnam($this->attributes['gidNumber'][0]), $this->attributes['homeDirectory'][0]);
 				if ($this->attributes['uid'][0] != '')
 				$this->attributes['homeDirectory'][0] = str_replace('$user', $this->attributes['uid'][0], $this->attributes['homeDirectory'][0]);
-				if ($this->attributes['homeDirectory'][0] != $_POST['homeDirectory']) $errors['homeDirecotry'][] = array('INFO', _('Home directory'), _('Replaced $user or $group in homedir.'));
+				if ($this->attributes['homeDirectory'][0] != $_POST['homeDirectory']) $errors[] = array('INFO', _('Home directory'), _('Replaced $user or $group in homedir.'));
 				// Check if Username contains only valid characters
 				if ( !get_preg($this->attributes['uid'][0], 'username'))
-				$errors['uid'][] = $this->messages['uid'][2];
+				$errors[] = $this->messages['uid'][2];
 			}
 			if ($_SESSION[$this->base]->type=='host') {
 				// add "$" to uid if needed
@@ -720,7 +720,7 @@ class posixAccount extends baseModule {
 				}
 				// Check if Hostname contains only valid characters
 				if ( !get_preg($this->attributes['uid'][0], 'hostname'))
-				$errors['uid'][] = $this->messages['uid'][4];
+				$errors[] = $this->messages['uid'][4];
 				if (!$this->attributes['homeDirectory'][0]) {
 					$this->attributes['homeDirectory'][0] = '/dev/null';
 				}
@@ -769,11 +769,11 @@ class posixAccount extends baseModule {
 			}
 			// Show warning if lam has changed username
 			if ($this->attributes['uid'][0] != $_POST['uid']) {
-				if ($_SESSION[$this->base]->type=='user') $errors['uid'][] = $this->messages['uid'][5];
-				if ($_SESSION[$this->base]->type=='host') $errors['uid'][] = $this->messages['uid'][6];
+				if ($_SESSION[$this->base]->type=='user') $errors[] = $this->messages['uid'][5];
+				if ($_SESSION[$this->base]->type=='host') $errors[] = $this->messages['uid'][6];
 			}
 			if ($_SESSION[$this->base]->isNewAccount && !get_preg($this->attributes['userPassword'][0], 'password'))
-			$errors['userPassword'][] = $this->messages['userPassword'][1];
+			$errors[] = $this->messages['userPassword'][1];
 		}
 		$attributeList = array('gecos', 'homeDirectory');
 		for ($i = 0; $i < sizeof($attributeList); $i++) {
@@ -782,7 +782,7 @@ class posixAccount extends baseModule {
 				$replacedValue = $this->checkASCII($value);
 				if ($value != $replacedValue) {
 					$this->attributes[$attributeList[$i]][0] = $replacedValue;
-					$errors['ascii'][] = array('WARN', $attributeList[$i], _('Changed value because only ASCII characters are allowed.'));
+					$errors[] = array('WARN', $attributeList[$i], _('Changed value because only ASCII characters are allowed.'));
 				}
 			}
 		}
@@ -829,6 +829,7 @@ class posixAccount extends baseModule {
 		elseif (isset($_POST['removegroups']) && isset($_POST['removegroups_button'])) { // remove groups from list
 			$this->groups = array_delete($_POST['removegroups'], $this->groups);
 		}
+		return array();
 	}
 
 	/**
@@ -839,13 +840,13 @@ class posixAccount extends baseModule {
 	*/
 	function process_password() {
 		if ($_POST['form_subpage_posixAccount_attributes_back']) return array();
-		$messages = array();
+		$errors = array();
 		if ($_POST['userPassword'] != $_POST['userPassword2']) {
-			$messages['userPassword'][] = $this->messages['userPassword'][0];
+			$errors[] = $this->messages['userPassword'][0];
 		}
 		else {
 			if (!get_preg($_POST['userPassword'], 'password')) {
-				$messages['userPassword'][] = $this->messages['userPassword'][1];
+				$errors[] = $this->messages['userPassword'][1];
 			}
 			else {
 				$this->attributes['userPassword'][0] = $_POST['userPassword'];
@@ -853,7 +854,7 @@ class posixAccount extends baseModule {
 				$this->userPassword_nopassword = false;
 			}
 		}
-		return $messages;
+		return $errors;
 	}
 
 	/* This function will create the html-page
@@ -1567,7 +1568,7 @@ class posixAccount extends baseModule {
 						sort ($uids, SORT_NUMERIC);
 					}
 					// show warning message
-					$errors['uidNumber'][] = $this->messages['uidNumber'][2];
+					$errors[] = $this->messages['uidNumber'][2];
 				}
 			}
 			else {

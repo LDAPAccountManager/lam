@@ -274,17 +274,17 @@ class quota extends baseModule {
 			$this->quota[$i][7] = $_POST[$i . '_7'];
 			// Check if values are OK and set automatic values. if not error-variable will be set
 			if (!get_preg($this->quota[$i][2], 'digit'))
-				$errors[$this->quota[$i][2]][] = $this->messages['softblock'][0];
+				$errors[] = $this->messages['softblock'][0];
 			if (!get_preg($this->quota[$i][3], 'digit'))
-				$errors[$this->quota[$i][3]][] = $this->messages['hardblock'][0];
+				$errors[] = $this->messages['hardblock'][0];
 			if (!get_preg($this->quota[$i][6], 'digit'))
-				$errors[$this->quota[$i][6]][] = $this->messages['softinode'][0];
+				$errors[] = $this->messages['softinode'][0];
 			if (!get_preg($this->quota[$i][7], 'digit'))
-				$errors[$this->quota[$i][7]][] = $this->messages['hardinode'][0];
+				$errors[] = $this->messages['hardinode'][0];
 			if (intval($this->quota[$i][2]) > intval($this->quota[$i][3]))
-				$errors[$this->quota[$i][2]][] = $this->messages['block_cmp'][0];
+				$errors[] = $this->messages['block_cmp'][0];
 			if (intval($this->quota[$i][6]) > intval($this->quota[$i][7]))
-				$errors[$this->quota[$i][6]][] = $this->messages['inode_cmp'][0];
+				$errors[] = $this->messages['inode_cmp'][0];
 			$i++;
 			}
 		return $errors;

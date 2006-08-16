@@ -255,11 +255,11 @@ class shadowAccount extends baseModule {
 		$this->attributes['shadowInactive'][0] = $_POST['shadowInactive'];
 		$this->attributes['shadowExpire'][0] = intval(mktime(0, 0, 0, intval($_POST['shadowExpire_mon']), intval($_POST['shadowExpire_day']),
 			intval($_POST['shadowExpire_yea']))/3600/24);
-		if ( !get_preg($this->attributes['shadowMin'][0], 'digit'))  $errors['shadowMin'][] = $this->messages['shadowMin'][0];
-		if ( !get_preg($this->attributes['shadowMax'][0], 'digit')) $errors['shadowMax'][] = $this->messages['shadowMax'][0];
-		if ( $this->attributes['shadowMin'][0] > $this->attributes['shadowMax'][0]) $errors['shadowMin'][] = $this->messages['shadow_cmp'][0];
-		if ( !get_preg($this->attributes['shadowInactive'][0], 'digit2')) $errors['shadowInactive'][] = $this->messages['inactive'][0];
-		if ( !get_preg($this->attributes['shadowWarning'][0], 'digit')) $errors['shadowWarning'][] = $this->messages['shadowWarning'][0];
+		if ( !get_preg($this->attributes['shadowMin'][0], 'digit'))  $errors[] = $this->messages['shadowMin'][0];
+		if ( !get_preg($this->attributes['shadowMax'][0], 'digit')) $errors[] = $this->messages['shadowMax'][0];
+		if ( $this->attributes['shadowMin'][0] > $this->attributes['shadowMax'][0]) $errors[] = $this->messages['shadow_cmp'][0];
+		if ( !get_preg($this->attributes['shadowInactive'][0], 'digit2')) $errors[] = $this->messages['inactive'][0];
+		if ( !get_preg($this->attributes['shadowWarning'][0], 'digit')) $errors[] = $this->messages['shadowWarning'][0];
 		return $errors;
 	}
 

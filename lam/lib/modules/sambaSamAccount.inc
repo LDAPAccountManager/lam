@@ -595,7 +595,7 @@ class sambaSamAccount extends baseModule {
 		// display name
 		$this->attributes['displayName'][0] = $_POST['displayName'];
 		if (!($this->attributes['displayName'][0] == '') && !(get_preg($this->attributes['displayName'][0], 'realname'))) {
-			$errors['displayName'][] = $this->messages['displayName'][1];
+			$errors[] = $this->messages['displayName'][1];
 		}
 
 		// host attributes
@@ -659,11 +659,11 @@ class sambaSamAccount extends baseModule {
 			else $this->useunixpwd = false;
 			if (!$this->useunixpwd && isset($_POST['sambaLMPassword']) && ($_POST['sambaLMPassword'] != '')) {
 				if ($_POST['sambaLMPassword'] != $_POST['sambaLMPassword2']) {
-					$errors['sambaLMPassword'][] = $this->messages['sambaLMPassword'][0];
+					$errors[] = $this->messages['sambaLMPassword'][0];
 					unset ($_POST['sambaLMPassword2']);
 				}
 				else {
-					if (!get_preg($_POST['sambaLMPassword'], 'password')) $errors['sambaLMPassword'][] = $this->messages['sambaLMPassword'][1];
+					if (!get_preg($_POST['sambaLMPassword'], 'password')) $errors[] = $this->messages['sambaLMPassword'][1];
 					else {
 						$this->attributes['sambaLMPassword'][0] = lmPassword($_POST['sambaLMPassword']);
 						$this->attributes['sambaNTPassword'][0] = ntPassword($_POST['sambaLMPassword']);
@@ -687,20 +687,20 @@ class sambaSamAccount extends baseModule {
 			// Check values
 			$this->attributes['sambaHomePath'][0] = str_replace('$user', $_SESSION[$this->base]->module['posixAccount']->attributes['uid'][0], $this->attributes['sambaHomePath'][0]);
 			$this->attributes['sambaHomePath'][0] = str_replace('$group', $_SESSION['cache']->getgrnam($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]), $this->attributes['sambaHomePath'][0]);
-			if ($this->attributes['sambaHomePath'][0] != $_POST['sambaHomePath']) $errors['sambaHomePath'][] = $this->messages['homePath'][1];
+			if ($this->attributes['sambaHomePath'][0] != $_POST['sambaHomePath']) $errors[] = $this->messages['homePath'][1];
 			$this->attributes['sambaLogonScript'][0] = str_replace('$user', $_SESSION[$this->base]->module['posixAccount']->attributes['uid'][0], $this->attributes['sambaLogonScript'][0]);
 			$this->attributes['sambaLogonScript'][0] = str_replace('$group', $_SESSION['cache']->getgrnam($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]), $this->attributes['sambaLogonScript'][0]);
-			if ($this->attributes['sambaLogonScript'][0] != $_POST['sambaLogonScript']) $errors['sambaLogonScript'][] = $this->messages['logonScript'][1];
+			if ($this->attributes['sambaLogonScript'][0] != $_POST['sambaLogonScript']) $errors[] = $this->messages['logonScript'][1];
 			$this->attributes['sambaProfilePath'][0] = str_replace('$user', $_SESSION[$this->base]->module['posixAccount']->attributes['uid'][0], $this->attributes['sambaProfilePath'][0]);
 			$this->attributes['sambaProfilePath'][0] = str_replace('$group', $_SESSION['cache']->getgrnam($_SESSION[$this->base]->module['posixAccount']->attributes['gidNumber'][0]), $this->attributes['sambaProfilePath'][0]);
-			if ($this->attributes['sambaProfilePath'][0] != $_POST['sambaProfilePath']) $errors['sambaProfilePath'][] = $this->messages['profilePath'][1];
+			if ($this->attributes['sambaProfilePath'][0] != $_POST['sambaProfilePath']) $errors[] = $this->messages['profilePath'][1];
 			if ( (!$this->attributes['sambaHomePath'][0]=='') && (!get_preg($this->attributes['sambaHomePath'][0], 'UNC')))
-				$errors['sambaHomePath'][] = $this->messages['homePath'][0];
+				$errors[] = $this->messages['homePath'][0];
 			if ( (!$this->attributes['sambaLogonScript'][0]=='') && (!get_preg($this->attributes['sambaLogonScript'][0], 'logonscript')))
-				$errors['sambaScriptPath'][] = $this->messages['logonScript'][0];
+				$errors[] = $this->messages['logonScript'][0];
 			if (!($this->attributes['sambaProfilePath'][0] == '') &&
 				!(get_preg($this->attributes['sambaProfilePath'][0], 'UNC') xor get_preg($this->attributes['sambaProfilePath'][0], 'homeDirectory')))
-					$errors['sambaProfilePath'][] = $this->messages['profilePath'][0];
+					$errors[] = $this->messages['profilePath'][0];
 		}
 		else {  // host
 			if (!$this->attributes['sambaSID'][0]) {
@@ -757,6 +757,7 @@ class sambaSamAccount extends baseModule {
 				}
 			}
 		}
+		return array();
 	}
 
 	/**
@@ -783,6 +784,7 @@ class sambaSamAccount extends baseModule {
 			$logonHoursNew = $logonHoursNew . $hex;
 		}
 		$this->attributes['sambaLogonHours'][0] = $logonHoursNew;
+		return array();
 	}
 
 	/* This function will create the html-page

@@ -1,8 +1,11 @@
-??? 1.0.5
+??? 1.1.0
 
   Developers:
-  - API changes: removed $post parameters from module functions (delete_attributes(),
-    process_...(), display_html_...()). Use $_POST instead.
+    API changes:
+    - removed $post parameters from module functions (delete_attributes(),
+      process_...(), display_html_...()). Use $_POST instead.
+    - process_...() functions: returned messages are no longer grouped
+      (e.g. return: array(array('INFO', 'headline', 'text')), array('INFO', 'headline2', 'text2')))
 
 10.08.2006 1.0.4
    - added Russian translation

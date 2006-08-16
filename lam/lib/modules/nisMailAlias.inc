@@ -168,7 +168,7 @@ class nisMailAlias extends baseModule {
 		else {
 				$message = $this->messages['alias'][0];
 				$message[] = $_POST['cn'];
-				$errors[] = array($message);
+				$errors[] = $message;
 		}
 		// check old recipients
 		if (isset($_POST['rec_number'])) {
@@ -179,7 +179,7 @@ class nisMailAlias extends baseModule {
 					if (!get_preg($_POST['rfc822MailMember' . $i], 'nis_recipient')) {
 						$message = $this->messages['recipient'][0];
 						$message[] = $_POST['rfc822MailMember' . $i];
-						$errors[] = array($message);
+						$errors[] = $message;
 					}
 					$this->attributes['rfc822MailMember'][] = $_POST['rfc822MailMember' . $i];
 				}
@@ -194,7 +194,7 @@ class nisMailAlias extends baseModule {
 			else {
 					$message = $this->messages['recipient'][0];
 					$message[] = $_POST['rfc822MailMember'];
-					$errors[] = array($message);
+					$errors[] = $message;
 			}
 		}
 		$this->attributes['rfc822MailMember'] = array_unique($this->attributes['rfc822MailMember']);
