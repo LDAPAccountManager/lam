@@ -1,9 +1,4 @@
-1.0 and later
-
- - lamdaemon without Perl
-
-
-1.1
+1.2
 
  - full integration of phpLDAPadmin
 

@@ -96,11 +96,11 @@ if ($< == 0 ) { # we are root
 		}
 	else {
 		# loop for every transmitted user
-		while (1) {
-			my $input = <STDIN>;
-			chop($input);
+		my $string = do {local $/;<STDIN>};
+		@input = split ("\n", $string );
+		for ($i=0; $i<=$#input; $i++) {
 			$return = "";
-			@vals = split (' ', $input);
+			@vals = split (' ', $input[$i]);
 			switch: {
 				# Get user information
 				if (($vals[3] eq 'user') || ($vals[1] eq 'home')) { @user = getpwnam($vals[0]); }
@@ -192,9 +192,6 @@ if ($< == 0 ) { # we are root
 							while ($quota_usr[$i][0]) {
 								$dev = Quota::getqcarg($quota[$i][0]);
 								$return = Quota::setqlim($dev,$user[2],$quota[$i][1],$quota[$i][2],$quota[$i][3],$quota[$i][4],1,$group);
-								if ($return == -1) {
-										$return = "ERROR,Lamdaemon,Unable to set quota!";
-									}
 								$i++;
 								}
 							($<, $>) = ($>, $<); # Give up root previleges
@@ -208,12 +205,7 @@ if ($< == 0 ) { # we are root
 									$dev = Quota::getqcarg($quota_usr[$i][1]);
 									@temp = Quota::query($dev,$user[2],$group);
 									if ($temp[0]ne'') {
-										if ($temp == -1) {
-												$return = "ERROR,Lamdaemon,Unable to read quota!";
-											}
-										else {
-											$return = "$quota_usr[$i][1],$temp[0],$temp[1],$temp[2],$temp[3],$temp[4],$temp[5],$temp[6],$temp[7]:$return";
-											}
+										$return = "$quota_usr[$i][1],$temp[0],$temp[1],$temp[2],$temp[3],$temp[4],$temp[5],$temp[6],$temp[7]:$return";
 										}
 									else { $return = "$quota_usr[$i][1],0,0,0,0,0,0,0,0:$return"; }
 									}
@@ -234,5 +226,45 @@ if ($< == 0 ) { # we are root
 		}
 	}
 else {
-	print "ERROR,Lamdaemon,Not called as root!\n";
-}
+	$hostname = shift @ARGV;
+	$remotepath = shift @ARGV;
+	use Net::SSH::Perl;
+	if ($ARGV[2] eq "*test") { print "Net::SSH::Perl successfully installed.\n"; }
+	if (($ARGV[0] eq "-") and ($ARGV[1] eq "-")) {  # user+passwd are in STDIN
+		$username = <STDIN>;
+		chop($username);
+		@username = split (',', $username);
+		$username[0] =~ s/uid=//;
+		$username[0] =~ s/cn=//;
+		$username = $username[0];
+		$password = <STDIN>;
+		chop($password);
+	}
+	else {
+		@username = split (',', $ARGV[0]);
+		$username[0] =~ s/uid=//;
+		$username[0] =~ s/cn=//;
+		$username = $username[0];
+		$password = $ARGV[1];
+	}
+	# Put all transfered lines in one string
+	if ($ARGV[2] ne "*test") {
+		$string = do {local $/;<STDIN>};
+		}
+	else {
+		$argv = "*test\n";
+		$string = " \n";
+	}
+	my $ssh = Net::SSH::Perl->new($hostname, options=>[
+		"UserKnownHostsFile /dev/null"],
+		protocol => "2,1", debug => 0 );
+	$ssh->login($username, $password);
+	# Change needed to prevent buffer overrun
+	@string2 = split ("\n", $string);
+	for ($i=0; $i<=$#string2; $i++) {
+		($stdout2, $stderr, $exit) = $ssh->cmd("sudo $remotepath $argv", $string2[$i]);
+		$stdout .= $stdout2;
+		}
+	#($stdout, $stderr, $exit) = $ssh->cmd("sudo $remotepath $argv", $string);
+	print $stdout;
+	}

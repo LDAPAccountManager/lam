@@ -1,6 +1,24 @@
 Upgrade instructions:
 =====================
 
+1.0.4 -> 1.1.0:
+===============
+
+Users:
+
+If you use the lamdaemon.pl script to manage quotas and home directories please
+read docs/README.lamdaemon.txt.
+
+
+Developers:
+
+API changes:
+ - removed $post parameters from module functions (delete_attributes(),
+   process_...(), display_html_...()). Use $_POST instead.
+ - process_...() functions: returned messages are no longer grouped
+   (e.g. return: array(array('INFO', 'headline', 'text'), array('INFO', 'headline2', 'text2')))
+
+
 1.0.0 -> 1.0.2:
 ===============
 

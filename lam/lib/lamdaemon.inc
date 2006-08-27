@@ -38,6 +38,11 @@ $Id$
 *
 */
 function lamdaemon($commands) {
+	// use new PHP SSH mechanismn
+	if (function_exists("ssh2_connect")) {
+		return lamdaemonSSH($commands);
+	}
+
 	// get username and password of the current lam-admin
 	$ldap_q = $_SESSION['ldap']->decrypt_login();
 
@@ -51,7 +56,7 @@ function lamdaemon($commands) {
 			1 => array("pipe", "w"), // stout
 			2 => array("file", "/dev/null", "a") // sterr
 			);
-		$process = proc_open(escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".$towrite,
+		$process = proc_open(escapeshellarg($_SESSION['lampath']."lib/lamdaemonOld.pl")." ".$towrite,
 			$descriptorspec,
 			$pipes);
 		if (is_resource($process)) {
@@ -77,7 +82,7 @@ function lamdaemon($commands) {
 	else { // PHP 4.3>
 		$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." ".
 			escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]);
-		$command = escapeshellarg($_SESSION['lampath']."lib/lamdaemon.pl")." ".$towrite;
+		$command = escapeshellarg($_SESSION['lampath']."lib/lamdaemonOld.pl")." ".$towrite;
 		$pipe = popen("echo \"$userstring\"|$command" , 'r');
 		while(!feof($pipe)) {
 			//$output .= fread($pipe, 1024);
@@ -92,6 +97,40 @@ function lamdaemon($commands) {
 	else {
 		return false;
 	}
+}
+
+/**
+* Sends commands to lamdaemon script via PHP SSH functions.
+*
+* @param array $commands List of command lines
+* @return array Output of lamdaemon
+*
+*/
+function lamdaemonSSH($commands) {
+	$commands = implode("\n", $commands) . "\n";
+	// get username and password of the current lam-admin
+	$credentials = $_SESSION['ldap']->decrypt_login();
+	$handle = ssh2_connect($_SESSION['config']->scriptServer);
+	if ($handle) {
+		$sr = ldap_read($_SESSION['ldap']->server(), $credentials[0], "objectClass=posixAccount", array('uid'));
+		$entry = ldap_get_entries($_SESSION['ldap']->server(), $sr);
+		$userName = $entry[0]['uid'][0];
+		if (!$userName) return array();
+		ssh2_auth_password($handle, $userName, $credentials[1]);
+		$shell = ssh2_exec($handle, "sudo " . $_SESSION['config']->scriptPath);
+		fwrite($shell, $commands);
+		$return = array();
+		while (sizeof($return) < sizeof($commands)) {
+			usleep(100);
+			$read = split("\n", trim(fread($shell, 100000)));
+			if ((sizeof($read) == 1) && (!isset($read[0]) || ($read[0] == ""))) continue;
+			for ($i = 0; $i < sizeof($read); $i++) {
+				$return[] = $read[$i];
+			}
+		}
+		return $return;
+	}
+	return array();
 }
 
 ?>
