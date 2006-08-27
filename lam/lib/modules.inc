@@ -813,6 +813,7 @@ class accountContainer {
 	* It prints the HTML code of each account page.
 	*/
 	function continue_main() {
+		$result = array();
 		if ($this->subpage=='') $this->subpage='attributes';
 		if (isset($_POST['form_main_reset'])) {
 			$this->load_account($this->dn_orig);
@@ -820,7 +821,6 @@ class accountContainer {
 		else {
 			if ($this->current_page==0) {
 				if ($this->subpage=='attributes') {
-					$result = 0;
 					// change dn
 					if (isset($_POST['suffix']) && ($_POST['suffix'] != '')) $this->dn = $_POST['suffix'];
 					// change RDN
@@ -840,13 +840,12 @@ class accountContainer {
 						if (isset($profile['ldap_suffix'][0])) {
 							$this->dn = $profile['ldap_suffix'][0];
 						}
-						$result = 0;
 					}
 					// save account
 					if (isset($_POST['create'])) {
 						$errors = $this->save_account();
-						if (is_array($errors)) {
-							$result = array($errors);
+						if (sizeof($errors) > 0) {
+							$result = $errors;
 							$stopProcessing = true;
 						}
 						else $this->subpage = 'finish';
@@ -1322,6 +1321,7 @@ class accountContainer {
 	* @return array list of status messages if any errors occured
 	*/
 	function save_account() {
+		$errors = array();
 		$ldapUser = $_SESSION['ldap']->decrypt_login();
 		$ldapUser = $ldapUser[0];
 		$module = array_keys ($this->module);
@@ -1439,16 +1439,21 @@ class accountContainer {
 				// lamdaemon commands for the new account
 				if (!$stopprocessing) {
 					$DN = $attributes[$this->dn];
-					if (is_array($DN['lamdaemon']['command'])) $result = lamdaemon($DN['lamdaemon']['command']);
-					// Error somewhere in lamdaemon
-					if (is_array($result)) {
-						foreach ($result as $singleresult) {
-							if (is_array($singleresult)) {
-								if ($singleresult[0] == 'ERROR') $stopprocessing = true;
-								$temparray[0] = $singleresult[0];
-								$temparray[1] = _($singleresult[1]);
-								$temparray[2] = _($singleresult[2]);
-								$errors[] = $temparray;
+					if (is_array($DN['lamdaemon']['command'])) {
+						$result = lamdaemon($DN['lamdaemon']['command']);
+						// Error somewhere in lamdaemon
+						if (is_array($result)) {
+							foreach ($result as $singleresult) {
+								$singleresult = explode(",", $singleresult);
+								if (is_array($singleresult)) {
+									if ($singleresult[0] == 'ERROR') {
+										$stopprocessing = true;
+										$temparray[0] = $singleresult[0];
+										$temparray[1] = _($singleresult[1]);
+										$temparray[2] = _($singleresult[2]);
+										$errors[] = $temparray;
+									}
+								}
 							}
 						}
 					}
@@ -1505,12 +1510,15 @@ class accountContainer {
 					// Error somewhere in lamdaemon
 					if (isset($result) && is_array($result)) {
 						foreach ($result as $singleresult) {
+							$singleresult = explode(",", $singleresult);
 							if (is_array($singleresult)) {
-								if ($singleresult[0] == 'ERROR') $stopprocessing = true;
-								$temparray[0] = $singleresult[0];
-								$temparray[1] = _($singleresult[1]);
-								$temparray[2] = _($singleresult[2]);
-								$errors[] = $temparray;
+								if ($singleresult[0] == 'ERROR') {
+									$stopprocessing = true;
+									$temparray[0] = $singleresult[0];
+									$temparray[1] = _($singleresult[1]);
+									$temparray[2] = _($singleresult[2]);
+									$errors[] = $temparray;
+								}
 							}
 						}
 					}
@@ -1518,8 +1526,7 @@ class accountContainer {
 			}
 		}
 		$_SESSION['cache']->refresh_cache(true);
-		if (count($errors)!=0) return $errors;
-		return 0;
+		return $errors;
 	}
 
 	/**
