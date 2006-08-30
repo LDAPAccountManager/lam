@@ -15,5 +15,3 @@ sambaSamAccount_sambaHomeDrive: U:
 sambaSamAccount_group: 513
 posixAccount_homeDirectory: /home/$user
 posixAccount_loginShell: /bin/bash
-posixAccount_userPassword_no: false
-posixAccount_userPassword_lock: false
