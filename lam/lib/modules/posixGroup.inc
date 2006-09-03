@@ -38,12 +38,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 class posixGroup extends baseModule {
 
-	// Variables
-	// Use a unix password?
-	var $userPassword_nopassword;
-	// Lock password
-	var $userPassword_lock;
-	// change gids of users and hosts?
+	/** change GIDs of users and hosts? */
 	var $changegids;
 
 
@@ -149,12 +144,6 @@ class posixGroup extends baseModule {
 	* It will output a complete html-table
 	*/
 	function display_html_attributes() {
-		// check password format if called the first time
-		if (isset($this->attributes['userPassword'][0])) {
-			if (pwd_is_enabled($this->attributes['userPassword'][0])) $this->userPassword_lock = false;
-			else $this->userPassword_lock = true;
-		}
-		else $this->userPassword_nopassword = true;
 		$return[] = array(
 			0 => array('kind' => 'text', 'text' => _("Group name").'*'),
 			1 => array('kind' => 'input', 'name' => 'cn', 'type' => 'text', 'size' => '20', 'maxlength' => '20', 'value' => $this->attributes['cn'][0]),
@@ -168,33 +157,33 @@ class posixGroup extends baseModule {
 			1 => array('kind' => 'input', 'name' => 'description', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => $this->attributes['description'][0]),
 			2 => array ('kind' => 'help', 'value' => 'description'));
 		$return[] = array(
-			0 => array('kind' => 'text', 'text' => _("Group members")),
-			1 => array('kind' => 'input', 'name' => 'form_subpage_posixGroup_user_open', 'type' => 'submit', 'value' => _('Edit members')),
-			2 => array ('kind' => 'help', 'value' => 'members'));
-		if ($_SESSION[$this->base]->isNewAccount) {
-			$return[] = array(
-				0 => array('kind' => 'text', 'text' => _('Password')),
-				1 => array('kind' => 'input', 'name' => 'userPassword', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => $this->attributes['userPassword'][0]),
-				2 => array('kind' => 'input', 'name' => 'genpass', 'type' => 'submit', 'value' => _('Generate password')));
-			$return[] = array(
-				0 => array('kind' => 'text', 'text' => _('Repeat password')),
-				1 => array('kind' => 'input', 'name' => 'userPassword2', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => $this->attributes['userPassword'][0]),
-				2 => array('kind' => 'help', 'value' => 'password'));
-		}
-		else {
+		0 => array('kind' => 'text', 'text' => _("Group members")),
+		1 => array('kind' => 'input', 'name' => 'form_subpage_posixGroup_user_open', 'type' => 'submit', 'value' => _('Edit members')),
+		2 => array ('kind' => 'help', 'value' => 'members'));
+		if (!isset($this->attributes['userPassword'][0])) {
 			$return[] = array(
 				0 => array('kind' => 'text', 'text' => _('Password') ),
-				1 => array('kind' => 'input', 'name' => 'form_subpage_posixGroup_password_open', 'type' => 'submit', 'value' => _('Change password')));
+				1 => array('kind' => 'input', 'name' => 'form_subpage_posixGroup_password_open', 'type' => 'submit', 'value' => _('Set password')));
 		}
-		$return[] = array(
-			0 => array('kind' => 'text', 'text' => _('Set no password')),
-			1 => array('kind' => 'input', 'name' => 'userPassword_nopassword', 'type' => 'checkbox', 'checked' => $this->userPassword_nopassword),
-			2 => array('kind' => 'help', 'value' => 'userPassword_no'));
-		if ($_SESSION[$this->base]->isNewAccount || isset($this->attributes['userPassword'][0])) {
+		else {
+			if (pwd_is_enabled($this->attributes['userPassword'][0])) {
+				$lockOption = array('kind' => 'input', 'name' => 'form_subpage_posixGroup_attributes_lockPassword', 'type' => 'submit', 'value' => _('Lock password'));
+			}
+			else {
+				$lockOption = array('kind' => 'input', 'name' => 'form_subpage_posixGroup_attributes_unlockPassword', 'type' => 'submit', 'value' => _('Unlock password'));
+			}
+			$return[] = array(array('kind' => 'text', 'text' => ""));
 			$return[] = array(
-				0 => array('kind' => 'text', 'text' => _('Lock password')),
-				1 => array('kind' => 'input', 'name' => 'userPassword_lock', 'type' => 'checkbox', 'checked' => $this->userPassword_lock),
-				2 => array('kind' => 'help', 'value' => 'userPassword_lock'));
+				array('kind' => 'text', 'text' => _('Password') ),
+				array('kind' => 'table', 'value' => array(
+					array(
+						array('kind' => 'input', 'name' => 'form_subpage_posixGroup_password_open', 'type' => 'submit', 'value' => _('Change password'))
+					),
+					array($lockOption),
+					array(
+						array('kind' => 'input', 'name' => 'form_subpage_posixGroup_attributes_removePassword', 'type' => 'submit', 'value' => _('Remove password'))
+					)
+				)));
 		}
 		if ($this->attributes['gidNumber'][0]!=$this->orig['gidNumber'][0] && $this->orig['gidNumber'][0]!='')
 		$return[] = array(
@@ -406,14 +395,6 @@ class posixGroup extends baseModule {
 				"Headline" => _("Group password"),
 				"Text" => _("Sets the group password.")
 			),
-			'userPassword_no' => array(
-				"Headline" => _("Use no password"),
-				"Text" => _("This will set no password which prevents logins with this account.")
-			),
-			'userPassword_lock' => array(
-				"Headline" => _("Account deactivated"),
-				"Text" => _("If checked account will be deactivated by putting a \"!\" before the encrypted password.")
-			),
 			'minMaxGID' => array(
 				"Headline" => _("GID number"),
 				"Text" => _("These are the minimum and maximum numbers to use for group IDs when creating new group accounts. New group accounts will always get the highest number in use plus one.")
@@ -479,7 +460,6 @@ class posixGroup extends baseModule {
 	function load_Messages() {
 		$this->messages['userPassword'][0] = array('ERROR', _('Password'), _('Please enter the same password in both password-fields.'));
 		$this->messages['userPassword'][1] = array('ERROR', _('Password'), _('Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}=@$ !'));
-		$this->messages['userPassword'][3] = array('ERROR', _('Password'), _('You cannot use this password options at the same time.'));
 		$this->messages['gidNumber'][0] = array('INFO', _('GID number'), _('GID number has changed. Please select checkbox to change GID number of users and hosts.'));
 		$this->messages['gidNumber'][2] = array('WARN', _('ID-Number'), _('It is possible that this ID-number is reused. This can cause several problems because files with old permissions might still exist. To avoid this warning set maxUID to a higher value.'));
 		$this->messages['gidNumber'][3] = array('ERROR', _('ID-Number'), _('No free ID-Number!'));
@@ -542,33 +522,14 @@ class posixGroup extends baseModule {
 	function process_attributes() {
 		$errors = array();
 		$this->attributes['description'][0] = $_POST['description'];
-
-		if ($_POST['userPassword_lock'] && $_POST['userPassword_nopassword']) {
-			// found invalid password parameter combination
-			$errors[] = $this->messages['userPassword'][3];
+		if (isset($_POST['form_subpage_posixGroup_attributes_lockPassword'])) {
+			$this->attributes['userPassword'][0] = pwd_disable($this->attributes['userPassword'][0]);
 		}
-		else {
-			if ($_POST['userPassword_nopassword']) {
-				$this->userPassword_nopassword=true;
-				$this->attributes['userPassword'][0] = '';
-				$_POST['userPassword2'] = '';
-				if ($_POST['userPassword_lock'])
-					$this->userPassword_lock=true;
-				else $this->userPassword_lock=false;
-			}
-			else {
-				$this->userPassword_nopassword=false;
-				if ($_POST['genpass']) $this->attributes['userPassword'][0] = genpasswd();
-				elseif ($_SESSION[$this->base]->isNewAccount) {
-					if ($_POST['userPassword'] != $_POST['userPassword2'])
-						$errors[] = $this->messages['userPassword'][0];
-					else $this->attributes['userPassword'][0] = $_POST['userPassword'];
-					if (!get_preg($this->attributes['userPassword'][0], 'password'))
-						$errors[] = $this->messages['userPassword'][1];
-				}
-				if ($_POST['userPassword_lock']) $this->userPassword_lock=true;
-				else $this->userPassword_lock=false;
-			}
+		if (isset($_POST['form_subpage_posixGroup_attributes_unlockPassword'])) {
+			$this->attributes['userPassword'][0] = pwd_enable($this->attributes['userPassword'][0]);
+		}
+		if (isset($_POST['form_subpage_posixGroup_attributes_removePassword'])) {
+			unset($this->attributes['userPassword']);
 		}
 		if ($_POST['changegids']) $this->changegids=true;
 		else $this->changegids=false;
@@ -713,26 +674,9 @@ class posixGroup extends baseModule {
 				$errors[] = $this->messages['userPassword'][1];
 			}
 			else {
-				$this->attributes['userPassword'][0] = $_POST['userPassword'];
-				$this->userPassword_lock = false;
-				$this->userPassword_nopassword = false;
+				$this->attributes['userPassword'][0] = pwd_hash($_POST['userPassword']);
 			}
 		return $errors;
-	}
-
-	/**
-	 * This function loads all needed LDAP attributes.
-	 *
-	 * @param array $attr list of attributes
-	 */
-	function load_attributes($attr) {
-		parent::load_attributes($attr);
-		// set password options
-		if (!isset($this->attributes['userPassword'][0])) $this->userPassword_nopassword = true;
-		else {
-			if (pwd_is_enabled($this->attributes['userPassword'][0])) $this->userPassword_lock = false;
-			else $this->userPassword_lock = true;
-		}
 	}
 
 	/* This function returns an array with 3 entries:
@@ -749,38 +693,6 @@ class posixGroup extends baseModule {
 			return array();
 		}
 		$return = $_SESSION[$this->base]->save_module_attributes($this->attributes, $this->orig);
-		// unset password when needed
-		if (isset($return[$_SESSION[$this->base]->dn]['add']['userPassword']))
-		unset($return[$_SESSION[$this->base]->dn]['add']['userPassword']);
-		if (isset($return[$_SESSION[$this->base]->dn]['modify']['userPassword']))
-		unset($return[$_SESSION[$this->base]->dn]['modify']['userPassword']);
-		if (isset($return[$_SESSION[$this->base]->dn]['notchanged']['userPassword']))
-		unset($return[$_SESSION[$this->base]->dn]['notchanged']['userPassword']);
-		// Set unix password
-		if (isset($this->orig['userPassword'][0])) {
-			// use no password, do nothing
-			if ($this->userPassword_nopassword) {}
-			// password changed
-			elseif (($this->attributes['userPassword'][0] != $this->orig['userPassword'][0]) && $this->attributes['userPassword'][0] != '')
-				$return[$_SESSION[$this->base]->dn]['modify']['userPassword'][0] = pwd_hash($this->attributes['userPassword'][0], !$this->userPassword_lock, $this->moduleSettings['posixAccount_pwdHash'][0]);
-			// lock account if required
-			elseif ($this->userPassword_lock && (pwd_disable($this->orig['userPassword'][0]) != $this->orig['userPassword'][0]))
-				$return[$_SESSION[$this->base]->dn]['modify']['userPassword'][0] = pwd_disable($this->orig['userPassword'][0]);
-			// unlock password if required
-			elseif (!$this->userPassword_lock && (pwd_enable($this->orig['userPassword'][0]) != $this->orig['userPassword'][0]))
-				$return[$_SESSION[$this->base]->dn]['modify']['userPassword'][0] = pwd_enable($this->orig['userPassword'][0]);
-			// password has not changed
-			else
-				$return[$_SESSION[$this->base]->dn]['notchanged']['userPassword'][0] = $this->orig['userPassword'][0];
-		}
-		else {
-			// New user or no old password set
-			if ($this->userPassword_nopassword) {}// use no password
-			elseif ($this->attributes['userPassword'][0] != '') {
-				// set password if set
-				$return[$_SESSION[$this->base]->dn]['add']['userPassword'][0] = pwd_hash($this->attributes['userPassword'][0], !$this->userPassword_lock, $this->moduleSettings['posixAccount_pwdHash'][0]);
-			}
-		}
 		// Change gids of users and hosts?
 		if ($this->changegids) {
 			// get gidNumber
