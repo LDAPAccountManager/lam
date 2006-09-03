@@ -38,7 +38,7 @@ $Id$
 class sambaSamAccount extends baseModule {
 
 	// Variables
-	/** use unix password as samba password? */
+	/** use Unix password as samba password? */
 	var $useunixpwd;
 	/** use no password? */
 	var $nopwd;
@@ -460,7 +460,7 @@ class sambaSamAccount extends baseModule {
 	function init($base) {
 		// call parent init
 		parent::init($base);
-		$this->useunixpwd=false;
+		$this->useunixpwd = true;
 		$this->noexpire = true;
 		$this->nopwd = false;
 		$this->deactivated = false;
@@ -652,8 +652,8 @@ class sambaSamAccount extends baseModule {
 
 			if ($_POST['useunixpwd']) {
 				$this->useunixpwd = true;
-				$this->attributes['sambaLMPassword'][0] = lmPassword($_SESSION[$this->base]->module['posixAccount']->attributes['userPassword'][0]);
-				$this->attributes['sambaNTPassword'][0] = ntPassword($_SESSION[$this->base]->module['posixAccount']->attributes['userPassword'][0]);
+				$this->attributes['sambaLMPassword'][0] = lmPassword($_SESSION[$this->base]->module['posixAccount']->clearTextPassword);
+				$this->attributes['sambaNTPassword'][0] = ntPassword($_SESSION[$this->base]->module['posixAccount']->clearTextPassword);
 				$this->attributes['sambaPwdLastSet'][0] = time();
 			}
 			else $this->useunixpwd = false;
@@ -845,8 +845,8 @@ class sambaSamAccount extends baseModule {
 			$return[] = array(
 				0 => array('kind' => 'text', 'text' => _('Repeat password')),
 				1 => array('kind' => 'input', 'name' => 'sambaLMPassword2', 'type' => 'password', 'size' => '20', 'maxlength' => '255'));
-			if ($_SESSION[$this->base]->module['posixAccount']->orig['userPassword'][0] != $_SESSION[$this->base]->module['posixAccount']->attributes['userPassword'][0]) {
-				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Use unix password') ),
+			if (isset($_SESSION[$this->base]->module['posixAccount']->clearTextPassword)) {
+				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Use Unix password') ),
 					1 => array ( 'kind' => 'input', 'name' => 'useunixpwd', 'type' => 'checkbox', 'checked' => $this->useunixpwd),
 					2 => array ('kind' => 'help', 'value' => 'useunixpwd'));
 			}
@@ -1074,7 +1074,7 @@ class sambaSamAccount extends baseModule {
 			for ( $i=2003; $i<=2030; $i++ ) $year[] = $i;
 			// use Unix password as Samba password
 			$return[] = array(
-				0 => array('kind' => 'text', 'text' => _('Use unix password') . ': '),
+				0 => array('kind' => 'text', 'text' => _('Use Unix password') . ': '),
 				1 => array('kind' => 'input', 'name' => 'sambaSamAccount_useunixpwd', 'type' => 'checkbox', 'checked' => true),
 				2 => array('kind' => 'help', 'value' => 'pwdunix')
 				);

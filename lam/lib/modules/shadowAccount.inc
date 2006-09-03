@@ -71,7 +71,7 @@ class shadowAccount extends baseModule {
 		// managed object classes
 		$return['objectClasses'] = array('shadowAccount');
 		// managed attributes
-		$return['attributes'] = array('userPassword', 'shadowLastChange', 'shadowMin', 'shadowMax', 'shadowWarning',
+		$return['attributes'] = array('shadowLastChange', 'shadowMin', 'shadowMax', 'shadowWarning',
 			'shadowInactive', 'shadowExpire');
 		// lists for expiration date
 		$day = array(); $mon = array(); $year = array();
@@ -220,22 +220,11 @@ class shadowAccount extends baseModule {
 	function save_attributes() {
 		$return = $_SESSION[$this->base]->save_module_attributes($this->attributes, $this->orig);
 		// Set shadowLastchange manual.
-		if (isset($_SESSION[$this->base]->module['posixAccount']->orig['userPassword'][0])) {
-			if ($_SESSION[$this->base]->module['posixAccount']->orig['userPassword'][0] != $_SESSION[$this->base]->module['posixAccount']->attributes['userPassword'][0])
-				$return[$_SESSION[$this->base]->dn]['modify']['shadowLastChange'] = array(intval(time()/3600/24));
+		if (isset($_SESSION[$this->base]->module['posixAccount']->clearTextPassword)) {
+			$return[$_SESSION[$this->base]->dn]['modify']['shadowLastChange'] = array(intval(time()/3600/24));
 		}
 		elseif ($_SESSION[$this->base]->isNewAccount) {
 			$return[$_SESSION[$this->base]->dn]['add']['shadowLastChange'] = array(intval(time()/3600/24));
-		}
-		// do not set password if posixAccount is active
-		$modules = $_SESSION['config']->get_AccountModules($this->get_scope());
-		if (in_array('posixAccount', $modules)) {
-			if (isset($return[$_SESSION[$this->base]->dn]['modify']['userPassword'])) {
-				unset($return[$_SESSION[$this->base]->dn]['modify']['userPassword']);
-			}
-			if (isset($return[$_SESSION[$this->base]->dn]['add']['userPassword'])) {
-				unset($return[$_SESSION[$this->base]->dn]['add']['userPassword']);
-			}
 		}
 		return $return;
 	}

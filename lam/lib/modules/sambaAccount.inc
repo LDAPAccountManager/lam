@@ -416,14 +416,14 @@ class sambaAccount extends baseModule {
 	function init($base) {
 		// call parent init
 		parent::init($base);
-		$this->useunixpwd = false;
+		$this->useunixpwd = true;
 		$this->noexpire = true;
 		$this->nopwd = false;
 		$this->deactivated = false;
 		}
 
 	// Variables
-	/** use unix password as samba password? */
+	/** use Unix password as samba password? */
 	var $useunixpwd;
 	/** use no password? */
 	var $nopwd;
@@ -580,8 +580,8 @@ class sambaAccount extends baseModule {
 				else $this->useunixpwd = false;
 			if ($_POST['useunixpwd']) {
 				$this->useunixpwd = true;
-				$this->attributes['lmPassword'][0] = lmPassword($_SESSION[$this->base]->module['posixAccount']->attributes['userPassword'][0]);
-				$this->attributes['ntPassword'][0] = ntPassword($_SESSION[$this->base]->module['posixAccount']->attributes['userPassword'][0]);
+				$this->attributes['lmPassword'][0] = lmPassword($_SESSION[$this->base]->module['posixAccount']->clearTextPassword);
+				$this->attributes['ntPassword'][0] = ntPassword($_SESSION[$this->base]->module['posixAccount']->clearTextPassword);
 				$this->attributes['pwdLastSet'][0] = time();
 			}
 			else $this->useunixpwd = false;
@@ -718,8 +718,8 @@ class sambaAccount extends baseModule {
 				0 => array('kind' => 'text', 'text' => _('Repeat password') ),
 				1 => array('kind' => 'input', 'name' => 'lmPassword2', 'type' => 'password', 'size' => '20', 'maxlength' => '255', 'value' => ''),
 				2 => array('kind' => 'help', 'value' => 'password'));
-			if ($_SESSION[$this->base]->module['posixAccount']->orig['userPassword'][0] != $_SESSION[$this->base]->module['posixAccount']->attributes['userPassword'][0]) {
-				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Use unix password') ),
+			if (isset($_SESSION[$this->base]->module['posixAccount']->clearTextPassword)) {
+				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Use Unix password') ),
 					1 => array ( 'kind' => 'input', 'name' => 'useunixpwd', 'type' => 'checkbox', 'checked' => $this->useunixpwd, 'value' => true),
 					2 => array ('kind' => 'help', 'value' => 'pwdUnix'));
 				}
