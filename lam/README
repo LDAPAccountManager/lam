@@ -52,7 +52,8 @@ LAM - Readme
 
   Internationalisation:
     If you want to use a translated version of LAM be sure to install the
-    needed locales. See locale/ for a list of supported locales and languages.
+    needed locales. See the LAM "locale" directory for a list of supported locales and languages.
+    You can get a list of all installed locales on your sysem by executing: locale -a
     Debian users can add locales with "dpkg-reconfigure locales".
 
   Security:
