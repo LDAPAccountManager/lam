@@ -1105,8 +1105,15 @@ class accountContainer {
 		$tomodify = array();
 		$torem = array();
 		$notchanged = array();
-		// Get list of all "easy" attributes
+		// get list of all attributes
 		$attr_names = array_keys($attributes);
+		$orig_names = array_keys($orig);
+		// find deleted attributes (in $orig but no longer in $attributes)
+		for ($i = 0; $i < sizeof($orig_names); $i++) {
+			if (!isset($attributes[$orig_names[$i]])) {
+				$torem[$orig_names[$i]] = $orig[$orig_names[$i]];
+			}
+		}
 		// find changed attributes
 		for ($i=0; $i<count($attr_names); $i++) {
 			// find deleted attributes
