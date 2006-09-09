@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: messages\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de \n"
 "POT-Creation-Date: 2004-01-14 17:45+0200\n"
-"PO-Revision-Date: 2006-09-03 18:27+0200\n"
+"PO-Revision-Date: 2006-09-09 13:55+0200\n"
 "Last-Translator: Roland Gruber <post@rolandgruber.de>\n"
 "Language-Team:  <de@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -453,7 +453,7 @@ msgstr "Zurück zur Accountliste"
 msgid "Back to group list"
 msgstr "Zurück zur Gruppenliste"
 
-#: ../templates/delete.php:237
+#: ../templates/delete.php:238
 msgid "Back to list"
 msgstr "Zurück zur Liste"
 
@@ -987,7 +987,7 @@ msgstr "Lösche Benutzer"
 msgid "Deleted Account"
 msgstr "Gelöschter Account"
 
-#: ../templates/delete.php:225
+#: ../templates/delete.php:226
 #, php-format
 msgid "Deleted DN: %s"
 msgstr "Gelöschter DN: %s"
@@ -1332,7 +1332,7 @@ msgstr "Gleichheit"
 msgid "Error"
 msgstr "Fehler"
 
-#: ../templates/delete.php:230
+#: ../templates/delete.php:231
 #, php-format
 msgid "Error while deleting DN: %s"
 msgstr "Fehler beim Löschen von DN: %s"
@@ -1505,7 +1505,7 @@ msgstr "Deutschland"
 msgid "Go"
 msgstr "Weiter"
 
-#: ../lib/modules/quota.inc:102 ../lib/modules/quota.inc:303
+#: ../lib/modules/quota.inc:102 ../lib/modules/quota.inc:314
 msgid "Grace block period"
 msgstr "Block-Frist"
 
@@ -1519,7 +1519,7 @@ msgid ""
 "days."
 msgstr "Inode-Frist. Viele Dateisysteme verwenden ein festes Maximum von 7 Tagen."
 
-#: ../lib/modules/quota.inc:118 ../lib/modules/quota.inc:307
+#: ../lib/modules/quota.inc:118 ../lib/modules/quota.inc:318
 msgid "Grace inode period"
 msgstr "Inode-Frist"
 
@@ -1597,16 +1597,16 @@ msgstr "Gruppentyp"
 msgid "Groups"
 msgstr "Gruppen"
 
-#: ../lib/modules/quota.inc:432
+#: ../lib/modules/quota.inc:443
 msgid "Hard block"
 msgstr "hartes Block-Limit"
 
 #: ../lib/modules/quota.inc:98 ../lib/modules/quota.inc:99
-#: ../lib/modules/quota.inc:302 ../lib/modules/quota.inc:355
+#: ../lib/modules/quota.inc:313 ../lib/modules/quota.inc:366
 msgid "Hard block limit"
 msgstr "hartes Block-Limit"
 
-#: ../lib/modules/quota.inc:434
+#: ../lib/modules/quota.inc:445
 msgid "Hard inode"
 msgstr "hartes Inode-Limit"
 
@@ -1614,8 +1614,8 @@ msgstr "hartes Inode-Limit"
 msgid "Hard inode (files) limit"
 msgstr "Hartes Inode-Limit (Datein)"
 
-#: ../lib/modules/quota.inc:114 ../lib/modules/quota.inc:306
-#: ../lib/modules/quota.inc:357
+#: ../lib/modules/quota.inc:114 ../lib/modules/quota.inc:317
+#: ../lib/modules/quota.inc:368
 msgid "Hard inode limit"
 msgstr "hartes Inode-Limit"
 
@@ -2721,8 +2721,8 @@ msgstr "Montag"
 msgid "Mountain Time (US & Canada)"
 msgstr "Mountain Time (USA & Kanada)"
 
-#: ../lib/modules/quota.inc:86 ../lib/modules/quota.inc:299
-#: ../lib/modules/quota.inc:353 ../lib/modules/quota.inc:430
+#: ../lib/modules/quota.inc:86 ../lib/modules/quota.inc:310
+#: ../lib/modules/quota.inc:364 ../lib/modules/quota.inc:441
 msgid "Mountpoint"
 msgstr "Mountpunkt"
 
@@ -3655,7 +3655,7 @@ msgstr "Profil wurde gespeichert."
 msgid "Quota"
 msgstr "Quota"
 
-#: ../lib/modules/quota.inc:478
+#: ../lib/modules/quota.inc:489
 msgid "Quota for:"
 msgstr "Quota für:"
 
@@ -4046,12 +4046,12 @@ msgstr "Interne Attribute anzeigen"
 msgid "Single valued"
 msgstr "Einzelwert"
 
-#: ../lib/modules/quota.inc:431
+#: ../lib/modules/quota.inc:442
 msgid "Soft block"
 msgstr "weiches Block-Limit"
 
-#: ../lib/modules/quota.inc:94 ../lib/modules/quota.inc:301
-#: ../lib/modules/quota.inc:354
+#: ../lib/modules/quota.inc:94 ../lib/modules/quota.inc:312
+#: ../lib/modules/quota.inc:365
 msgid "Soft block limit"
 msgstr "weiches Block-Limit"
 
@@ -4059,7 +4059,7 @@ msgstr "weiches Block-Limit"
 msgid "Soft block limit."
 msgstr "weiches Block-Limit"
 
-#: ../lib/modules/quota.inc:433
+#: ../lib/modules/quota.inc:444
 msgid "Soft inode"
 msgstr "weiches Inode-Limit"
 
@@ -4067,8 +4067,8 @@ msgstr "weiches Inode-Limit"
 msgid "Soft inode (files) limit."
 msgstr "Weiches Inode-Limit (Dateien)."
 
-#: ../lib/modules/quota.inc:110 ../lib/modules/quota.inc:305
-#: ../lib/modules/quota.inc:356
+#: ../lib/modules/quota.inc:110 ../lib/modules/quota.inc:316
+#: ../lib/modules/quota.inc:367
 msgid "Soft inode limit"
 msgstr "weiches Inode-Limit"
 
@@ -4832,6 +4832,10 @@ msgstr "Zeit"
 msgid "Time zone"
 msgstr "Zeitzone"
 
+#: ../lib/lamdaemon.inc:126
+msgid "Timeout while executing lamdaemon commands!"
+msgstr "Während der Ausführung der Lamdaemon-Kommandos wurde die maximale Ausführungszeit überschritten!"
+
 #: ../lib/modules/posixAccount.inc:372
 msgid ""
 "To disable login use /bin/false. The list of shells is read from lam/config/"
@@ -4931,6 +4935,10 @@ msgstr ""
 "Ihr Konto konnte nicht verändert werden. Vielleicht fehlen Ihnen die nötigen "
 "Rechte zur Änderung?"
 
+#: ../lib/lamdaemon.inc:139
+msgid "Unable to connect to remote server!"
+msgstr "Kann keine Verbindung zum Server herstellen!"
+
 #: ../templates/ou_edit.php:67
 msgid "Unable to create new OU!"
 msgstr "Kann neue OU nicht erstellen!"
@@ -4967,8 +4975,8 @@ msgstr ""
 "gesetzt. Für weitere Anweisungen wenden Sie sich bitte an den Administrator "
 "dieser Seite."
 
-#: ../lib/profiles.inc:91 ../lib/profiles.inc:95 ../lib/selfService.inc:162
-#: ../lib/selfService.inc:166
+#: ../lib/profiles.inc:91 ../lib/profiles.inc:95 ../lib/selfService.inc:164
+#: ../lib/selfService.inc:168
 msgid "Unable to load profile!"
 msgstr "Kann das Profil nicht laden!"
 
@@ -5057,7 +5065,7 @@ msgstr ""
 msgid "Use no password"
 msgstr "Kein Passwort setzen"
 
-#: ../lib/modules/quota.inc:90 ../lib/modules/quota.inc:300
+#: ../lib/modules/quota.inc:90 ../lib/modules/quota.inc:311
 msgid "Used blocks"
 msgstr "Benutzte Blöcke"
 
@@ -5079,7 +5087,7 @@ msgstr ""
 "Wird für die Berechnung der RIDs aus UID/GID verwendet. Nicht ändern, wenn "
 "Sie nicht sicher sind."
 
-#: ../lib/modules/quota.inc:106 ../lib/modules/quota.inc:304
+#: ../lib/modules/quota.inc:106 ../lib/modules/quota.inc:315
 msgid "Used inodes"
 msgstr "benutzte Inodes"
 
@@ -5221,8 +5229,8 @@ msgstr "Konnte keine Attribute zum DN hinzufügen: %s."
 msgid "Was unable to create DN: %s."
 msgstr "Konnte DN nicht erstellen: %s."
 
-#: ../templates/tree/delete.php:110 ../templates/delete.php:279
-#: ../templates/delete.php:287 ../lib/modules.inc:1418
+#: ../templates/tree/delete.php:110 ../templates/delete.php:280
+#: ../templates/delete.php:288 ../lib/modules.inc:1418
 #, php-format
 msgid "Was unable to delete DN: %s."
 msgstr "Konnte DN nicht löschen: %s."
@@ -5432,8 +5440,8 @@ msgstr "falsch"
 msgid "group01,group02"
 msgstr "gruppe01,gruppe02"
 
-#: ../lib/modules/quota.inc:146 ../lib/modules/quota.inc:148
-#: ../lib/modules/quota.inc:197 ../lib/modules/quota.inc:199
+#: ../lib/modules/quota.inc:157 ../lib/modules/quota.inc:159
+#: ../lib/modules/quota.inc:208 ../lib/modules/quota.inc:210
 msgid "hours"
 msgstr "Stunden"
 
