@@ -104,7 +104,7 @@ if ($< == 0 ) { # we are root
 			switch: {
 				# Get user information
 				if (($vals[3] eq 'user') || ($vals[1] eq 'home')) { @user = getpwnam($vals[0]); }
-					else { @user = getgrnam($vals[0]); }
+				else { @user = getgrnam($vals[0]); }
 				$vals[1] eq 'home' && do {
 					switch2: {
 						$vals[2] eq 'add' && do {
@@ -113,44 +113,46 @@ if ($< == 0 ) { # we are root
 							$path =~ s,/(?:[^/]*)$,,;
 							($<, $>) = ($>, $<); # Get root privileges
 							if (! -e $path) {
-							    system 'mkdir', '-m', '0755', '-p', $path; # Create paths to homedir
-							    }
+								system 'mkdir', '-m', '0755', '-p', $path; # Create paths to homedir
+							}
 							if (! -e $user[7]) {
 								system 'mkdir', '-m', '0755', $user[7]; # Create homedir itself
 								system ("(cd /etc/skel && tar cf - .) | (cd $user[7] && tar xmf -)"); # Copy /etc/sekl into homedir
 								system 'chown', '-hR', "$user[2]:$user[3]" , $user[7]; # Change owner to new user
 								if (-e '/usr/sbin/useradd.local') {
 									system '/usr/sbin/useradd.local', $user[0]; # run useradd-script
-									}
 								}
+								$return = "Ok";
+							}
 							else {
-								$return = "ERROR,Lamdaemon,Homedirectory already exists.:$return";
-								}
+								$return = "ERROR,Lamdaemon,Home directory already exists.";
+							}
 							($<, $>) = ($>, $<); # Give up root previleges
 							last switch2;
-							};
+						};
 						$vals[2] eq 'rem' && do {
 							($<, $>) = ($>, $<); # Get root previliges
 							if (-d $user[7] && $user[7] ne '/') {
-							    if ((stat($user[7]))[4] eq $user[2]) {
-								system 'rm', '-R', $user[7]; # Delete Homedirectory
-								if (-e '/usr/sbin/userdel.local') {
-									system '/usr/sbin/userdel.local', $user[0];
+								if ((stat($user[7]))[4] eq $user[2]) {
+									system 'rm', '-R', $user[7]; # Delete Homedirectory
+									if (-e '/usr/sbin/userdel.local') {
+										system '/usr/sbin/userdel.local', $user[0];
 									}
-							    }
-							    else {
-								$return = "ERROR,Lamdaemon,Homedirectory not owned by $user[2].:$return";
-							    }
+									$return = "Ok";
 								}
+								else {
+									$return = "ERROR,Lamdaemon,Home directory not owned by $user[2].";
+								}
+							}
 							else {
-								$return = "ERROR,Lamdaemon,Homedirectory doesn't exists.:$return";
+								$return = "ERROR,Lamdaemon,Home directory does not exist.";
 								}
 							($<, $>) = ($>, $<); # Give up root previleges
 							last switch2;
 							};
+							# Show error if undfined command is used
+							$return = "ERROR,Lamdaemon,Unknown command $vals[2].";
 						}
-					# Show error if undfined command is used
-					$return = "ERROR,Lamdaemon,Unknown command $vals[2].:$return";
 					last switch;
 					};
 				$vals[1] eq 'quota' && do {
@@ -223,11 +225,11 @@ if ($< == 0 ) { # we are root
 							($<, $>) = ($>, $<); # Give up root previleges
 							last switch2;
 							};
-						$return = "ERROR,Lamdaemon,Unknown command $vals[2].:$return";
+						$return = "ERROR,Lamdaemon,Unknown command $vals[2].";
 						}
 					};
 					last switch;
-				$return = "ERROR,Lamdaemon,Unknown command $vals[1].:$return";
+				$return = "ERROR,Lamdaemon,Unknown command $vals[1].";
 				};
 				print "$return\n";
 			}

@@ -116,19 +116,29 @@ function lamdaemonSSH($commands) {
 		$entry = ldap_get_entries($_SESSION['ldap']->server(), $sr);
 		$userName = $entry[0]['uid'][0];
 		if (!$userName) return array();
-		ssh2_auth_password($handle, $userName, $credentials[1]);
-		$shell = ssh2_exec($handle, "sudo " . $_SESSION['config']->scriptPath);
-		fwrite($shell, $commands);
-		$return = array();
-		while (sizeof($return) < sizeof($commands)) {
-			usleep(100);
-			$read = split("\n", trim(fread($shell, 100000)));
-			if ((sizeof($read) == 1) && (!isset($read[0]) || ($read[0] == ""))) continue;
-			for ($i = 0; $i < sizeof($read); $i++) {
-				$return[] = $read[$i];
+		if (@ssh2_auth_password($handle, $userName, $credentials[1])) {
+			$shell = ssh2_exec($handle, "sudo " . $_SESSION['config']->scriptPath);
+			fwrite($shell, $commands);
+			$return = array();
+			$time = time() + (sizeof($commands) * 30);
+			while (sizeof($return) < sizeof($commands)) {
+				if ($time < time()) {
+					$return = array("ERROR," . _("Timeout while executing lamdaemon commands!") . ",");
+					return $return;
+				}
+				usleep(100);
+				$read = split("\n", trim(fread($shell, 100000)));
+				if ((sizeof($read) == 1) && (!isset($read[0]) || ($read[0] == ""))) continue;
+				for ($i = 0; $i < sizeof($read); $i++) {
+					$return[] = $read[$i];
+				}
 			}
+			return $return;
 		}
-		return $return;
+		else {
+			$return = array("ERROR," . _('Unable to connect to remote server!') . "," . $_SESSION['config']->scriptServer);
+			return $return;
+		}
 	}
 	return array();
 }
