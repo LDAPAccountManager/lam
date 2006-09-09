@@ -132,6 +132,17 @@ class quota extends baseModule {
 		parent::init($base);
 		// Get basic quotas for new account
 		$output_array = lamdaemon(array("+ quota get " . $_SESSION[$this->base]->type));
+		// Error somewhere in lamdaemon
+		if (isset($output_array) && is_array($output_array)) {
+			foreach ($output_array as $singleresult) {
+				$singleresult = explode(",", $singleresult);
+				if (is_array($singleresult)) {
+					if ($singleresult[0] == 'ERROR') {
+						StatusMessage($singleresult[0], $singleresult[1], $singleresult[2]);
+					}
+				}
+			}
+		}
 		// process quotas
 		if (is_array($output_array)) {
 			$all_quota = explode(':', $output_array[0]);
