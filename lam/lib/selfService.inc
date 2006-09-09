@@ -25,7 +25,7 @@ $Id$
 /**
 * Interface between modules and self service pages.
 * This file also includes the self service profile class and helper functions.
-* 
+*
 * @package selfService
 * @author Roland Gruber
 */
@@ -86,6 +86,7 @@ function getSelfServiceOptions($scope, $fields, $attributes) {
 	$return = array();
 	$modules = getAvailableModules($scope);
 	for ($i = 0; $i < sizeof($modules); $i++) {
+		if (!isset($fields[$modules[$i]])) continue;
 		$m = new $modules[$i]($scope);
 		$code = $m->getSelfServiceOptions($fields[$modules[$i]], $attributes);
 		if (sizeof($code) > 0) $return[$modules[$i]] = $code;
@@ -106,6 +107,7 @@ function checkSelfServiceOptions($scope, $fields, $attributes) {
 	$return = array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array());
 	$modules = getAvailableModules($scope);
 	for ($i = 0; $i < sizeof($modules); $i++) {
+		if (!isset($fields[$modules[$i]])) continue;
 		$m = new $modules[$i]($scope);
 		$result = $m->checkSelfServiceOptions($fields[$modules[$i]], $attributes);
 		if (sizeof($result['messages']) > 0) $return['messages'] = array_merge($result['messages'], $return['messages']);
@@ -207,37 +209,37 @@ function saveSelfServiceProfile($name, $scope, $profile) {
  * @package selfService
  */
 class selfServiceProfile {
-	
+
 	/** server address */
 	var $serverURL;
-	
+
 	/** LDAP suffix */
 	var $LDAPSuffix;
-	
+
 	/** LDAP user DN*/
 	var $LDAPUser;
-	
+
 	/** LDAP password */
 	var $LDAPPassword;
-	
+
 	/** LDAP search attribute */
 	var $searchAttribute;
-	
+
 	/** describing text for user login */
 	var $loginCaption;
-	
+
 	/** describing text for search attribute */
 	var $loginAttributeText;
-	
+
 	/** describing text for self service main page */
 	var $mainPageText;
-	
+
 	/** input fields
 	 * Format: array(<module> => array(array('name' => <group name>, 'fields' => array(<field1>, <field2>))))
-	 * 
+	 *
 	 */
 	var $inputFields;
-	
+
 	/**
 	 * Constructor
 	 *
@@ -262,7 +264,7 @@ class selfServiceProfile {
 				'fields' => array('posixAccount_password'))
 		);
 	}
-	
+
 }
 
 ?>
