@@ -205,6 +205,7 @@ if ($_POST['delete']) {
 				if (!is_array($result)) continue;
 				// check for error somewhere in lamdaemon
 				foreach ($result as $singleresult) {
+					$singleresult = explode(",", $singleresult);
 					if (is_array($singleresult)) {
 						if ($singleresult[0] == 'ERROR') {
 							$stopprocessing = true;
