@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: LAM 0.5\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de\n"
 "POT-Creation-Date: 2004-01-14 17:45+0200\n"
-"PO-Revision-Date: 2006-07-06 14:34+0500\n"
+"PO-Revision-Date: 2006-09-12 16:05+0500\n"
 "Last-Translator: Anatoly Turov <turov@vsmpo.ru>\n"
 "Language-Team: Russian <turov@vsmpo.ru>\n"
 "MIME-Version: 1.0\n"
@@ -16,7 +16,7 @@ msgstr ""
 "X-Poedit-Country: RUSSIAN FEDERATION\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
-#: ../lib/modules/posixAccount.inc:371
+#: ../lib/modules/posixAccount.inc:360
 msgid "$user and $group are replaced with user name or primary group name."
 msgstr "$user и $group будут заменены именем пользователя или группы."
 
@@ -66,13 +66,9 @@ msgstr "(нет новых доступных аттрибутов для это
 msgid "(no new binary attributes available for this entry)"
 msgstr "(нет новых доступных бинарных аттрибутов для этой записи)"
 
-#: ../lib/modules/posixAccount.inc:233
+#: ../lib/modules/posixAccount.inc:222
 msgid "/home/smiller"
 msgstr "/home/smiller"
-
-#: ../templates/login.php:184
-msgid "A required PHP extension is missing!"
-msgstr "Нужное PHP-расширение не найдено"
 
 #: ../templates/massBuildAccounts.php:114
 msgid "A required column is missing in your CSV file."
@@ -93,9 +89,9 @@ msgstr "Account"
 #: ../templates/massBuildAccounts.php:167
 #: ../lib/modules/account.inc:117
 #: ../lib/modules/ieee802device.inc:85
-#: ../lib/modules/posixGroup.inc:505
-#: ../lib/modules/posixGroup.inc:509
-#: ../lib/modules/posixGroup.inc:510
+#: ../lib/modules/posixGroup.inc:470
+#: ../lib/modules/posixGroup.inc:474
+#: ../lib/modules/posixGroup.inc:475
 #: ../lib/modules/quota.inc:46
 #: ../lib/modules/quota.inc:48
 #: ../lib/modules/quota.inc:50
@@ -138,19 +134,19 @@ msgstr "Account"
 #: ../lib/modules/sambaSamAccount.inc:102
 #: ../lib/modules/sambaSamAccount.inc:104
 #: ../lib/modules/sambaSamAccount.inc:105
+#: ../lib/modules/posixAccount.inc:62
+#: ../lib/modules/posixAccount.inc:67
+#: ../lib/modules/posixAccount.inc:71
+#: ../lib/modules/posixAccount.inc:79
+#: ../lib/modules/posixAccount.inc:80
 #: ../lib/modules/posixAccount.inc:81
-#: ../lib/modules/posixAccount.inc:85
-#: ../lib/modules/posixAccount.inc:89
-#: ../lib/modules/posixAccount.inc:97
-#: ../lib/modules/posixAccount.inc:98
-#: ../lib/modules/posixAccount.inc:99
-#: ../lib/modules/posixAccount.inc:100
-#: ../lib/modules/posixAccount.inc:101
-#: ../lib/modules/posixAccount.inc:102
-#: ../lib/modules/posixAccount.inc:103
-#: ../lib/modules/posixAccount.inc:104
-#: ../lib/modules/posixAccount.inc:105
-#: ../lib/modules/posixAccount.inc:107
+#: ../lib/modules/posixAccount.inc:82
+#: ../lib/modules/posixAccount.inc:83
+#: ../lib/modules/posixAccount.inc:84
+#: ../lib/modules/posixAccount.inc:86
+#: ../lib/modules/posixAccount.inc:87
+#: ../lib/modules/posixAccount.inc:88
+#: ../lib/modules/posixAccount.inc:90
 #: ../lib/modules/kolabUser.inc:225
 #: ../lib/modules/kolabUser.inc:227
 #: ../lib/modules/kolabUser.inc:229
@@ -166,12 +162,12 @@ msgstr "Account"
 #: ../lib/modules/shadowAccount.inc:52
 #: ../lib/modules/shadowAccount.inc:54
 #: ../lib/modules/shadowAccount.inc:55
-#: ../lib/modules/sambaDomain.inc:142
-#: ../lib/modules/sambaDomain.inc:144
-#: ../lib/modules/sambaDomain.inc:146
-#: ../lib/modules/sambaDomain.inc:148
-#: ../lib/modules/sambaDomain.inc:150
-#: ../lib/modules/sambaDomain.inc:152
+#: ../lib/modules/sambaDomain.inc:185
+#: ../lib/modules/sambaDomain.inc:187
+#: ../lib/modules/sambaDomain.inc:189
+#: ../lib/modules/sambaDomain.inc:191
+#: ../lib/modules/sambaDomain.inc:193
+#: ../lib/modules/sambaDomain.inc:195
 #: ../lib/modules/inetOrgPerson.inc:45
 #: ../lib/modules/inetOrgPerson.inc:47
 #: ../lib/modules/inetOrgPerson.inc:49
@@ -202,23 +198,22 @@ msgstr "Учетная запись %s"
 msgid "Account creation via file upload"
 msgstr "Учетная запись будет создана после загрузки файла"
 
-#: ../lib/modules/posixGroup.inc:426
-#: ../lib/modules/posixAccount.inc:382
+#: ../lib/modules/posixAccount.inc:367
 msgid "Account deactivated"
 msgstr "Учетная запись отключена"
 
 #: ../lib/modules/sambaSamAccount.inc:261
 #: ../lib/modules/sambaSamAccount.inc:339
-#: ../lib/modules/sambaSamAccount.inc:882
-#: ../lib/modules/sambaSamAccount.inc:1103
+#: ../lib/modules/sambaSamAccount.inc:881
+#: ../lib/modules/sambaSamAccount.inc:1101
 #: ../lib/modules/shadowAccount.inc:104
 #: ../lib/modules/shadowAccount.inc:169
 #: ../lib/modules/shadowAccount.inc:201
-#: ../lib/modules/shadowAccount.inc:303
+#: ../lib/modules/shadowAccount.inc:290
 msgid "Account expiration date"
 msgstr "Срок действия учетной записи"
 
-#: ../lib/modules/shadowAccount.inc:323
+#: ../lib/modules/shadowAccount.inc:310
 msgid "Account inactive"
 msgstr "Учетная запись неактивна"
 
@@ -226,12 +221,12 @@ msgstr "Учетная запись неактивна"
 #: ../lib/modules/sambaAccount.inc:255
 #: ../lib/modules/sambaAccount.inc:367
 #: ../lib/modules/sambaAccount.inc:370
-#: ../lib/modules/sambaAccount.inc:733
+#: ../lib/modules/sambaAccount.inc:732
 #: ../lib/modules/sambaSamAccount.inc:207
 #: ../lib/modules/sambaSamAccount.inc:210
 #: ../lib/modules/sambaSamAccount.inc:317
-#: ../lib/modules/sambaSamAccount.inc:860
-#: ../lib/modules/sambaSamAccount.inc:1091
+#: ../lib/modules/sambaSamAccount.inc:859
+#: ../lib/modules/sambaSamAccount.inc:1089
 msgid "Account is deactivated"
 msgstr "Учетная запись отключена"
 
@@ -260,15 +255,15 @@ msgstr "Типы учетных записей и модули"
 msgid "Account types define which sorts of LDAP entries (e.g. users and groups) should be managed. The account modules define which properties (e.g. Unix and Samba) can be edited."
 msgstr "Типы учетных записей определяют какими записями в LDAP (пользователи, группы) можно управлять. Модули определяют какое свойство (Unix, Samba) можно редактировать."
 
-#: ../lib/modules.inc:1022
+#: ../lib/modules.inc:1014
 msgid "Account was created successfully."
 msgstr "Учетная запись создана успешно"
 
-#: ../lib/modules.inc:1025
+#: ../lib/modules.inc:1017
 msgid "Account was modified successfully."
 msgstr "Учетная запись изменена успешно"
 
-#: ../lib/modules/posixAccount.inc:354
+#: ../lib/modules/posixAccount.inc:343
 msgid "Activating this checkbox will remove the user's home directory."
 msgstr "Поставьте галочку для удаления домашней директории пользователя"
 
@@ -283,15 +278,20 @@ msgstr "Активные учетные записи"
 #: ../templates/tree/add_attr_form.php:162
 #: ../templates/config/conftypes.php:178
 #: ../templates/pdfedit/pdfpage.php:725
-#: ../lib/modules/ieee802device.inc:107
-#: ../lib/modules/kolabUser.inc:343
-#: ../lib/modules/kolabUser.inc:360
-#: ../lib/modules/kolabUser.inc:386
-#: ../lib/modules/ldapPublicKey.inc:101
-#: ../lib/modules/inetLocalMailRecipient.inc:163
-#: ../lib/modules/nisMailAlias.inc:150
+#: ../lib/modules/ieee802device.inc:106
+#: ../lib/modules/kolabUser.inc:345
+#: ../lib/modules/kolabUser.inc:362
+#: ../lib/modules/kolabUser.inc:388
+#: ../lib/modules/ldapPublicKey.inc:99
+#: ../lib/modules/inetLocalMailRecipient.inc:161
+#: ../lib/modules/nisMailAlias.inc:148
 msgid "Add"
 msgstr "Добавить"
+
+#: ../templates/selfService/adminMain.php:445
+#: ../help/help.inc:175
+msgid "Add input field"
+msgstr "Добавить поле ввода"
 
 #: ../templates/tree/edit.php:127
 #: ../templates/tree/add_value_form.php:95
@@ -305,13 +305,19 @@ msgstr "Добавить новый аттрибут"
 msgid "Add new binary attribute"
 msgstr "Добавить новый бинарный аттрибут"
 
-#: ../lib/modules/inetOrgPerson.inc:355
-#: ../lib/modules/inetOrgPerson.inc:708
-#: ../lib/modules/inetOrgPerson.inc:799
+#: ../templates/selfService/adminMain.php:428
+#: ../help/help.inc:173
+msgid "Add new group"
+msgstr "Добавить новую группу"
+
+#: ../lib/modules/inetOrgPerson.inc:360
+#: ../lib/modules/inetOrgPerson.inc:712
+#: ../lib/modules/inetOrgPerson.inc:797
 msgid "Add photo"
 msgstr "Добавить фото"
 
 #: ../templates/config/profmanage.php:162
+#: ../templates/selfService/profManage.php:137
 #: ../help/help.inc:115
 msgid "Add profile"
 msgstr "Добавить профиль"
@@ -324,13 +330,13 @@ msgstr "Добавить секцию или текст"
 msgid "Adding attribute failed!"
 msgstr "Добавление аттрибута не удалось!"
 
-#: ../lib/modules/posixAccount.inc:225
-#: ../lib/modules/posixAccount.inc:345
-#: ../lib/modules/posixAccount.inc:394
-#: ../lib/modules/posixAccount.inc:935
-#: ../lib/modules/posixAccount.inc:1019
-#: ../lib/modules/posixAccount.inc:1081
-#: ../lib/modules/posixAccount.inc:1161
+#: ../lib/modules/posixAccount.inc:214
+#: ../lib/modules/posixAccount.inc:334
+#: ../lib/modules/posixAccount.inc:375
+#: ../lib/modules/posixAccount.inc:836
+#: ../lib/modules/posixAccount.inc:914
+#: ../lib/modules/posixAccount.inc:975
+#: ../lib/modules/posixAccount.inc:1033
 msgid "Additional groups"
 msgstr "Дополнительные группы"
 
@@ -338,7 +344,15 @@ msgstr "Дополнительные группы"
 msgid "Additional tasks for module:"
 msgstr "Дополнительные задачи для модуля:"
 
-#: ../lib/modules/posixGroup.inc:380
+#: ../help/help.inc:174
+msgid "Adds a new group element to the list of self service options. Use this to structure the input fields."
+msgstr "Добавление нового элемента группы для конфигурации. Это используется для создания структуры полей для ввода."
+
+#: ../help/help.inc:176
+msgid "Adds a new self service option to the selected group element."
+msgstr "Добавление новых опций для выбранного элемента группы."
+
+#: ../lib/modules/posixGroup.inc:357
 msgid "Administrators group"
 msgstr "Administrators group"
 
@@ -346,16 +360,16 @@ msgstr "Administrators group"
 msgid "Alaska"
 msgstr "Alaska"
 
-#: ../lib/modules/sambaDomain.inc:151
-#: ../lib/modules/sambaDomain.inc:152
+#: ../lib/modules/sambaDomain.inc:194
+#: ../lib/modules/sambaDomain.inc:195
 msgid "Algorithmic RID base is not a number!"
 msgstr "Алгоритм RID базы не число!"
 
 #: ../lib/types/mailAlias.inc:82
 #: ../lib/modules/nisMailAlias.inc:63
 #: ../lib/modules/nisMailAlias.inc:78
-#: ../lib/modules/nisMailAlias.inc:135
-#: ../lib/modules/nisMailAlias.inc:273
+#: ../lib/modules/nisMailAlias.inc:133
+#: ../lib/modules/nisMailAlias.inc:270
 msgid "Alias name"
 msgstr "Имя псевдонима"
 
@@ -363,9 +377,16 @@ msgstr "Имя псевдонима"
 msgid "Aliases"
 msgstr "Псевдонимы"
 
+#: ../templates/selfService/selfServiceMain.php:128
 #: ../templates/initsuff.php:156
 msgid "All changes were successful."
 msgstr "Все изменения прошли успешно."
+
+#: ../lib/modules/sambaDomain.inc:106
+#: ../lib/modules/sambaDomain.inc:272
+#: ../lib/modules/sambaDomain.inc:619
+msgid "Allow machine password changes"
+msgstr "Позволено изменить пароль компьютера"
 
 #: ../templates/config/mainmanage.php:180
 #: ../lib/types/user.inc:86
@@ -373,10 +394,10 @@ msgstr "Все изменения прошли успешно."
 msgid "Allowed hosts"
 msgstr "Разрешенные компьютеры"
 
+#: ../lib/modules/sambaAccount.inc:830
 #: ../lib/modules/sambaAccount.inc:831
-#: ../lib/modules/sambaAccount.inc:832
+#: ../lib/modules/sambaSamAccount.inc:982
 #: ../lib/modules/sambaSamAccount.inc:983
-#: ../lib/modules/sambaSamAccount.inc:984
 msgid "Allowed workstations"
 msgstr "Разрешенные компьютеры"
 
@@ -397,8 +418,8 @@ msgstr "Всегда отклонять"
 msgid "An attribute (%s) was modified and is highlighted below."
 msgstr "Аттрибут (%s) был изменен и выделен другим цветом."
 
-#: ../lib/modules/kolabUser.inc:325
-#: ../lib/modules/kolabUser.inc:769
+#: ../lib/modules/kolabUser.inc:327
+#: ../lib/modules/kolabUser.inc:770
 msgid "Anyone"
 msgstr "Любой"
 
@@ -435,7 +456,7 @@ msgstr "Доступные поля PDF"
 msgid "Available account types"
 msgstr "Доступные типы учетных записей"
 
-#: ../lib/modules/posixAccount.inc:1031
+#: ../lib/modules/posixAccount.inc:926
 msgid "Available groups"
 msgstr "Доступные группы"
 
@@ -443,12 +464,12 @@ msgstr "Доступные группы"
 msgid "Available modules"
 msgstr "Доступные модули"
 
-#: ../lib/modules/posixGroup.inc:254
+#: ../lib/modules/posixGroup.inc:232
 msgid "Available users"
 msgstr "Доступные пользователи"
 
-#: ../lib/modules/sambaAccount.inc:837
-#: ../lib/modules/sambaSamAccount.inc:989
+#: ../lib/modules/sambaAccount.inc:836
+#: ../lib/modules/sambaSamAccount.inc:988
 msgid "Available workstations"
 msgstr "Доступные компьютеры"
 
@@ -457,12 +478,12 @@ msgid "Azores, Cape Verde Islands"
 msgstr "Azores, Cape Verde Islands"
 
 #: ../templates/tree/update_confirm.php:252
-#: ../lib/modules/posixGroup.inc:260
-#: ../lib/modules/posixGroup.inc:284
-#: ../lib/modules/sambaAccount.inc:842
-#: ../lib/modules/sambaSamAccount.inc:993
-#: ../lib/modules/posixAccount.inc:1037
-#: ../lib/modules/inetOrgPerson.inc:800
+#: ../lib/modules/posixGroup.inc:238
+#: ../lib/modules/posixGroup.inc:261
+#: ../lib/modules/sambaAccount.inc:841
+#: ../lib/modules/sambaSamAccount.inc:992
+#: ../lib/modules/posixAccount.inc:932
+#: ../lib/modules/inetOrgPerson.inc:798
 msgid "Back"
 msgstr "Назад"
 
@@ -470,6 +491,8 @@ msgstr "Назад"
 #: ../templates/config/confmain.php:508
 #: ../templates/config/conflogin.php:152
 #: ../templates/config/mainlogin.php:137
+#: ../templates/selfService/adminLogin.php:149
+#: ../templates/selfService/adminMain.php:78
 #: ../templates/logout.php:78
 msgid "Back to Login"
 msgstr "Вернуться на начало"
@@ -484,7 +507,7 @@ msgstr "Вернуться в OU-редактор"
 msgid "Back to PDF Editor"
 msgstr "Вернуться в PDF-редактор"
 
-#: ../lib/modules.inc:1034
+#: ../lib/modules.inc:1026
 msgid "Back to account list"
 msgstr "Вернуться к списку пользователей"
 
@@ -492,7 +515,7 @@ msgstr "Вернуться к списку пользователей"
 msgid "Back to group list"
 msgstr "Вернуться к списку групп"
 
-#: ../templates/delete.php:237
+#: ../templates/delete.php:238
 msgid "Back to list"
 msgstr "Вернуться к списку"
 
@@ -508,6 +531,7 @@ msgid "Back to profile editor"
 msgstr "Вернуться в редактор профилей"
 
 #: ../templates/config/profmanage.php:367
+#: ../templates/selfService/profManage.php:267
 msgid "Back to profile login"
 msgstr "Вернуться назад"
 
@@ -602,7 +626,7 @@ msgstr "Таймаут кэша неправильный!"
 #: ../lib/modules/sambaSamAccount.inc:225
 #: ../lib/modules/sambaSamAccount.inc:228
 #: ../lib/modules/sambaSamAccount.inc:234
-#: ../lib/modules/posixAccount.inc:395
+#: ../lib/modules/posixAccount.inc:376
 #: ../lib/modules/sambaGroupMapping.inc:305
 #: ../lib/modules/shadowAccount.inc:154
 #: ../lib/modules/shadowAccount.inc:158
@@ -618,6 +642,7 @@ msgstr "Можно оставить пустым."
 #: ../templates/config/confmodules.php:115
 #: ../templates/config/confmain.php:387
 #: ../templates/config/conftypes.php:236
+#: ../templates/selfService/adminMain.php:489
 #: ../templates/pdfedit/pdfdelete.php:92
 #: ../templates/pdfedit/pdfpage.php:773
 #: ../templates/pdfedit/pdfmain.php:153
@@ -626,15 +651,17 @@ msgstr "Можно оставить пустым."
 #: ../templates/profedit/profilepage.php:253
 #: ../templates/profedit/profilemain.php:166
 #: ../templates/initsuff.php:189
-#: ../lib/modules/sambaSamAccount.inc:1059
-#: ../lib/modules/posixAccount.inc:1061
-#: ../lib/modules/kolabUser.inc:565
-#: ../lib/modules/inetOrgPerson.inc:760
+#: ../lib/modules/sambaSamAccount.inc:1057
+#: ../lib/modules/posixAccount.inc:955
+#: ../lib/modules/kolabUser.inc:564
+#: ../lib/modules/inetOrgPerson.inc:761
 msgid "Cancel"
 msgstr "Отмена"
 
-#: ../templates/login.php:387
-#: ../templates/login.php:392
+#: ../templates/login.php:396
+#: ../templates/login.php:401
+#: ../templates/selfService/selfServiceLogin.php:105
+#: ../templates/selfService/selfServiceLogin.php:109
 msgid "Cannot connect to specified LDAP server. Please try again."
 msgstr "Не возможно подключиться к выбранному LDAP серверу. Пожалуйста, попробуйте еще раз."
 
@@ -642,6 +669,10 @@ msgstr "Не возможно подключиться к выбранному L
 #: ../lib/config.inc:824
 msgid "Cannot open config file!"
 msgstr "Не возможно открыть конфигурационный файл!"
+
+#: ../templates/selfService/adminMain.php:310
+msgid "Captions and labels"
+msgstr "Заголовки и ярлыки"
 
 #: ../lib/modules/sambaSamAccount.inc:433
 msgid "Central Europe Time, Paris, Berlin"
@@ -651,12 +682,13 @@ msgstr "Central Europe Time, Paris, Berlin"
 msgid "Central Time (US & Canada), Mexico City"
 msgstr "Central Time (US & Canada), Mexico City"
 
+#: ../templates/selfService/adminMain.php:371
 #: ../templates/pdfedit/pdfpage.php:499
 #: ../templates/pdfedit/pdfpage.php:505
 msgid "Change"
 msgstr "Изменить"
 
-#: ../lib/modules/posixGroup.inc:211
+#: ../lib/modules/posixGroup.inc:190
 msgid "Change GID number of users and hosts"
 msgstr "Изменен GID пользователя и компьютера"
 
@@ -670,22 +702,22 @@ msgstr "Изменение профиля по умолчанию"
 msgid "Change master password"
 msgstr "Изменить мастер-пароль"
 
-#: ../lib/modules/posixGroup.inc:193
-#: ../lib/modules/posixAccount.inc:961
-#: ../lib/modules/inetOrgPerson.inc:597
+#: ../lib/modules/posixGroup.inc:180
+#: ../lib/modules/posixAccount.inc:865
+#: ../lib/modules/inetOrgPerson.inc:601
 #: ../help/help.inc:106
 msgid "Change password"
 msgstr "Изменение пароля"
 
-#: ../templates/login.php:318
+#: ../templates/login.php:322
 msgid "Change profile"
 msgstr "Сменить профиль"
 
-#: ../lib/lists.inc:475
+#: ../lib/lists.inc:484
 msgid "Change suffix"
 msgstr "Суффикс изменен"
 
-#: ../lib/modules/posixAccount.inc:806
+#: ../lib/modules/posixAccount.inc:727
 msgid "Changed value because only ASCII characters are allowed."
 msgstr "Изменять значение допускается только ASCII символами."
 
@@ -719,16 +751,16 @@ msgstr "Список компьютеров (разделенных запято
 msgid "Commit"
 msgstr "Подтвердить"
 
-#: ../lib/modules/posixAccount.inc:106
-#: ../lib/modules/posixAccount.inc:206
-#: ../lib/modules/posixAccount.inc:398
-#: ../lib/modules/posixAccount.inc:917
-#: ../lib/modules/posixAccount.inc:1156
+#: ../lib/modules/posixAccount.inc:89
+#: ../lib/modules/posixAccount.inc:195
+#: ../lib/modules/posixAccount.inc:379
+#: ../lib/modules/posixAccount.inc:818
+#: ../lib/modules/posixAccount.inc:1028
 #: ../lib/modules/inetOrgPerson.inc:68
-#: ../lib/modules/inetOrgPerson.inc:230
-#: ../lib/modules/inetOrgPerson.inc:339
-#: ../lib/modules/inetOrgPerson.inc:566
-#: ../lib/modules/inetOrgPerson.inc:827
+#: ../lib/modules/inetOrgPerson.inc:235
+#: ../lib/modules/inetOrgPerson.inc:344
+#: ../lib/modules/inetOrgPerson.inc:570
+#: ../lib/modules/inetOrgPerson.inc:825
 msgid "Common name"
 msgstr "Общее имя"
 
@@ -772,6 +804,7 @@ msgid "Could not perform ldap_modify operation."
 msgstr "Не возможно выполнить ldap_modify операцию."
 
 #: ../templates/config/profmanage.php:99
+#: ../templates/selfService/profManage.php:85
 msgid "Could not rename file!"
 msgstr "Не возможно переименовать файл!"
 
@@ -782,8 +815,8 @@ msgstr "Не возможно сохранить PDF профиль, досту�
 #: ../lib/modules/kolabUser.inc:85
 #: ../lib/modules/kolabUser.inc:148
 #: ../lib/modules/kolabUser.inc:177
-#: ../lib/modules/kolabUser.inc:285
-#: ../lib/modules/kolabUser.inc:745
+#: ../lib/modules/kolabUser.inc:287
+#: ../lib/modules/kolabUser.inc:746
 msgid "Country"
 msgstr "Страна"
 
@@ -798,7 +831,7 @@ msgstr "Название страны не правильное!"
 msgid "Create"
 msgstr "Создать"
 
-#: ../lib/modules.inc:1084
+#: ../lib/modules.inc:1076
 msgid "Create Account"
 msgstr "Создать учетную запись"
 
@@ -807,7 +840,7 @@ msgstr "Создать учетную запись"
 msgid "Create Object"
 msgstr "Создать обьект"
 
-#: ../lib/modules.inc:1041
+#: ../lib/modules.inc:1033
 #: ../help/help.inc:156
 msgid "Create PDF file"
 msgstr "Создать PDF файл"
@@ -868,15 +901,15 @@ msgstr "Создать новый PDF шаблон:"
 msgid "Create a new profile"
 msgstr "Создать новый профиль"
 
-#: ../lib/modules.inc:1033
+#: ../lib/modules.inc:1025
 msgid "Create another account"
 msgstr "Создать другую учетную запись"
 
-#: ../lib/modules/posixAccount.inc:944
+#: ../lib/modules/posixAccount.inc:845
 msgid "Create home directory"
 msgstr "Создать домашнюю директорию"
 
-#: ../lib/modules.inc:929
+#: ../lib/modules.inc:923
 msgid "Create new Account"
 msgstr "Создать новую учетную запись"
 
@@ -893,6 +926,7 @@ msgid "Create new entry"
 msgstr "Создать новую запись"
 
 #: ../templates/config/profmanage.php:84
+#: ../templates/selfService/profManage.php:68
 msgid "Created new profile."
 msgstr "Создан новый профиль."
 
@@ -916,7 +950,7 @@ msgstr "Выборочно"
 #: ../templates/tree/delete_form.php:77
 #: ../templates/tree/delete_form.php:151
 #: ../templates/delete.php:90
-#: ../lib/modules.inc:1516
+#: ../lib/modules.inc:1550
 msgid "DN"
 msgstr "DN"
 
@@ -962,11 +996,15 @@ msgstr "Язык по умолчанию"
 msgid "Default value"
 msgstr "Значение по умолчанию"
 
+#: ../lib/modules/sambaDomain.inc:107
+msgid "Defines if workstations may change their passwords."
+msgstr "Определяет, может ли меняться пароль компьютеров."
+
 #: ../lib/modules/kolabUser.inc:132
 #: ../lib/modules/kolabUser.inc:136
 #: ../lib/modules/kolabUser.inc:196
-#: ../lib/modules/kolabUser.inc:389
-#: ../lib/modules/kolabUser.inc:783
+#: ../lib/modules/kolabUser.inc:391
+#: ../lib/modules/kolabUser.inc:784
 msgid "Delegates"
 msgstr "Делегирования"
 
@@ -979,7 +1017,7 @@ msgstr "Делегирование имеет не правильный форм
 #: ../templates/ou_edit.php:106
 #: ../templates/pdfedit/pdfdelete.php:91
 #: ../templates/delete.php:111
-#: ../lib/tree.inc:1164
+#: ../lib/tree.inc:1149
 msgid "Delete"
 msgstr "Удалить"
 
@@ -993,7 +1031,7 @@ msgstr "Удалить %s"
 msgid "Delete Account"
 msgstr "Удалить учетную запись"
 
-#: ../lib/modules/kolabUser.inc:398
+#: ../lib/modules/kolabUser.inc:400
 msgid "Delete Kolab account"
 msgstr "Удалить учетную запись Kolab"
 
@@ -1019,7 +1057,7 @@ msgstr "Удалить домен"
 msgid "Delete group"
 msgstr "Удалить группу"
 
-#: ../lib/modules/posixAccount.inc:990
+#: ../lib/modules/posixAccount.inc:886
 msgid "Delete home directory"
 msgstr "Удалить домашнюю директорию"
 
@@ -1037,15 +1075,16 @@ msgid "Delete operation canceled."
 msgstr "Операция отменена."
 
 #: ../templates/ou_edit.php:178
-#: ../help/help.inc:165
+#: ../help/help.inc:182
 msgid "Delete organizational unit"
 msgstr "Удалить обьект"
 
-#: ../lib/modules/inetOrgPerson.inc:711
+#: ../lib/modules/inetOrgPerson.inc:715
 msgid "Delete photo"
 msgstr "Удалить фото"
 
 #: ../templates/config/profmanage.php:248
+#: ../templates/selfService/profManage.php:227
 #: ../templates/profedit/profiledelete.php:53
 #: ../templates/profedit/profilemain.php:154
 #: ../help/help.inc:119
@@ -1060,7 +1099,7 @@ msgstr "Удалить пользователя"
 msgid "Deleted Account"
 msgstr "Deleted Account"
 
-#: ../templates/delete.php:225
+#: ../templates/delete.php:226
 #, php-format
 msgid "Deleted DN: %s"
 msgstr "Удалить DN: %s"
@@ -1091,32 +1130,42 @@ msgstr "Удаление. Пожалуйста ждите..."
 #: ../lib/types/user.inc:92
 #: ../lib/modules/account.inc:79
 #: ../lib/modules/account.inc:103
-#: ../lib/modules/account.inc:204
-#: ../lib/modules/account.inc:218
-#: ../lib/modules/posixGroup.inc:173
-#: ../lib/modules/posixGroup.inc:406
-#: ../lib/modules/posixGroup.inc:480
-#: ../lib/modules/sambaAccount.inc:862
-#: ../lib/modules/posixAccount.inc:304
-#: ../lib/modules/posixAccount.inc:416
+#: ../lib/modules/account.inc:203
+#: ../lib/modules/account.inc:217
+#: ../lib/modules/posixGroup.inc:156
+#: ../lib/modules/posixGroup.inc:383
+#: ../lib/modules/posixGroup.inc:445
+#: ../lib/modules/sambaAccount.inc:861
+#: ../lib/modules/posixAccount.inc:293
+#: ../lib/modules/posixAccount.inc:397
 #: ../lib/modules/sambaGroupMapping.inc:327
-#: ../lib/modules/inetOrgPerson.inc:153
-#: ../lib/modules/inetOrgPerson.inc:283
-#: ../lib/modules/inetOrgPerson.inc:573
-#: ../lib/modules/inetOrgPerson.inc:812
+#: ../lib/modules/inetOrgPerson.inc:158
+#: ../lib/modules/inetOrgPerson.inc:288
+#: ../lib/modules/inetOrgPerson.inc:577
+#: ../lib/modules/inetOrgPerson.inc:810
 msgid "Description"
 msgstr "Описание"
+
+#: ../lib/modules/sambaDomain.inc:102
+#: ../lib/modules/sambaDomain.inc:265
+#: ../lib/modules/sambaDomain.inc:614
+msgid "Disconnect users outside logon hours"
+msgstr "Отключение пользователей в неразрешенное время для входа"
+
+#: ../lib/modules/sambaDomain.inc:103
+msgid "Disconnects users if they are loggen in outside logon hours."
+msgstr "Отключение пользователей, если они подключены в неразрешенное время."
 
 #: ../lib/modules/sambaAccount.inc:78
 #: ../lib/modules/sambaAccount.inc:219
 #: ../lib/modules/sambaAccount.inc:340
-#: ../lib/modules/sambaAccount.inc:699
-#: ../lib/modules/sambaAccount.inc:855
+#: ../lib/modules/sambaAccount.inc:698
+#: ../lib/modules/sambaAccount.inc:854
 #: ../lib/modules/sambaSamAccount.inc:93
 #: ../lib/modules/sambaSamAccount.inc:180
 #: ../lib/modules/sambaSamAccount.inc:281
-#: ../lib/modules/sambaSamAccount.inc:828
-#: ../lib/modules/sambaSamAccount.inc:1287
+#: ../lib/modules/sambaSamAccount.inc:827
+#: ../lib/modules/sambaSamAccount.inc:1285
 #: ../lib/modules/sambaGroupMapping.inc:190
 #: ../lib/modules/sambaGroupMapping.inc:292
 #: ../lib/modules/sambaGroupMapping.inc:325
@@ -1139,7 +1188,7 @@ msgstr "Вы действительно хотите удалить этот PDF
 msgid "Do you really want to delete this profile?"
 msgstr "Вы действительно хотите удалить этот профиль?"
 
-#: ../lib/modules/kolabUser.inc:560
+#: ../lib/modules/kolabUser.inc:559
 msgid "Do you really want to mark this account for deletion?"
 msgstr "Вы действительно хотите отметить эту учетную запись для удаления?"
 
@@ -1155,15 +1204,15 @@ msgstr "Вы действительно хотите сделать эти из�
 #: ../lib/modules/sambaAccount.inc:321
 #: ../lib/modules/sambaAccount.inc:331
 #: ../lib/modules/sambaAccount.inc:405
-#: ../lib/modules/sambaAccount.inc:804
-#: ../lib/modules/sambaAccount.inc:861
+#: ../lib/modules/sambaAccount.inc:803
+#: ../lib/modules/sambaAccount.inc:860
 #: ../lib/modules/sambaSamAccount.inc:252
 #: ../lib/modules/sambaSamAccount.inc:274
 #: ../lib/modules/sambaSamAccount.inc:400
-#: ../lib/modules/sambaSamAccount.inc:948
-#: ../lib/modules/sambaSamAccount.inc:1151
-#: ../lib/modules/sambaSamAccount.inc:1181
-#: ../lib/modules/sambaSamAccount.inc:1293
+#: ../lib/modules/sambaSamAccount.inc:947
+#: ../lib/modules/sambaSamAccount.inc:1149
+#: ../lib/modules/sambaSamAccount.inc:1179
+#: ../lib/modules/sambaSamAccount.inc:1291
 #: ../lib/modules/sambaGroupMapping.inc:68
 #: ../lib/modules/sambaGroupMapping.inc:220
 #: ../lib/modules/sambaGroupMapping.inc:304
@@ -1186,9 +1235,9 @@ msgid "Domain Certificate Admins"
 msgstr "Domain Certificate Admins"
 
 #: ../lib/modules/sambaAccount.inc:49
-#: ../lib/modules/sambaAccount.inc:549
+#: ../lib/modules/sambaAccount.inc:548
 #: ../lib/modules/sambaSamAccount.inc:66
-#: ../lib/modules/sambaSamAccount.inc:604
+#: ../lib/modules/sambaSamAccount.inc:603
 #: ../lib/modules/sambaGroupMapping.inc:58
 msgid "Domain Computers"
 msgstr "Domain Computers"
@@ -1223,11 +1272,11 @@ msgid "Domain Policy Admins"
 msgstr "Domain Policy Admins"
 
 #: ../lib/types/smbDomain.inc:82
-#: ../lib/modules/sambaDomain.inc:68
-#: ../lib/modules/sambaDomain.inc:98
-#: ../lib/modules/sambaDomain.inc:178
-#: ../lib/modules/sambaDomain.inc:184
-#: ../lib/modules/sambaDomain.inc:369
+#: ../lib/modules/sambaDomain.inc:70
+#: ../lib/modules/sambaDomain.inc:140
+#: ../lib/modules/sambaDomain.inc:224
+#: ../lib/modules/sambaDomain.inc:230
+#: ../lib/modules/sambaDomain.inc:586
 msgid "Domain SID"
 msgstr "SID домена"
 
@@ -1239,7 +1288,7 @@ msgstr "Domain Schema Admins"
 
 #: ../lib/modules/sambaAccount.inc:48
 #: ../lib/modules/sambaSamAccount.inc:65
-#: ../lib/modules/sambaSamAccount.inc:1550
+#: ../lib/modules/sambaSamAccount.inc:1548
 #: ../lib/modules/sambaGroupMapping.inc:56
 msgid "Domain Users"
 msgstr "Domain Users"
@@ -1250,11 +1299,11 @@ msgstr "Domain administrators"
 
 #: ../lib/types/smbDomain.inc:83
 #: ../lib/modules/sambaAccount.inc:72
-#: ../lib/modules/sambaDomain.inc:64
-#: ../lib/modules/sambaDomain.inc:91
-#: ../lib/modules/sambaDomain.inc:165
-#: ../lib/modules/sambaDomain.inc:171
-#: ../lib/modules/sambaDomain.inc:366
+#: ../lib/modules/sambaDomain.inc:66
+#: ../lib/modules/sambaDomain.inc:133
+#: ../lib/modules/sambaDomain.inc:211
+#: ../lib/modules/sambaDomain.inc:217
+#: ../lib/modules/sambaDomain.inc:583
 msgid "Domain name"
 msgstr "Имя домена"
 
@@ -1263,8 +1312,8 @@ msgstr "Имя домена"
 msgid "Domain name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and -."
 msgstr "Имя домена содержит не допустимые символы. Допустимые: a-z, A-Z, 0-9 и -."
 
-#: ../lib/modules/sambaDomain.inc:141
-#: ../lib/modules/sambaDomain.inc:142
+#: ../lib/modules/sambaDomain.inc:184
+#: ../lib/modules/sambaDomain.inc:185
 msgid "Domain name is invalid!"
 msgstr "Имя домена неправильное!"
 
@@ -1310,8 +1359,8 @@ msgid "EMail alias list has invalid format!"
 msgstr "Список почтовых псевдонимов имеет неправильный формат!"
 
 #: ../lib/modules/kolabUser.inc:190
-#: ../lib/modules/kolabUser.inc:363
-#: ../lib/modules/kolabUser.inc:779
+#: ../lib/modules/kolabUser.inc:365
+#: ../lib/modules/kolabUser.inc:780
 msgid "EMail aliases"
 msgstr "Почтовые псевдонимы"
 
@@ -1346,15 +1395,15 @@ msgstr "Редактировать типы учетных записей"
 msgid "Edit general settings"
 msgstr "Редактор основных настроек"
 
-#: ../lib/modules/posixAccount.inc:936
+#: ../lib/modules/posixAccount.inc:837
 msgid "Edit groups"
 msgstr "Редактировать группы"
 
-#: ../lib/modules/sambaSamAccount.inc:954
+#: ../lib/modules/sambaSamAccount.inc:953
 msgid "Edit logon hours"
 msgstr "Редактировать время для входа"
 
-#: ../lib/modules/posixGroup.inc:178
+#: ../lib/modules/posixGroup.inc:161
 msgid "Edit members"
 msgstr "Редактировать членов"
 
@@ -1374,25 +1423,25 @@ msgstr "Редактировать собственный сервис"
 msgid "Edit server profiles"
 msgstr "Редактировать профили сервера"
 
-#: ../lib/modules/sambaAccount.inc:769
-#: ../lib/modules/sambaSamAccount.inc:910
+#: ../lib/modules/sambaAccount.inc:768
+#: ../lib/modules/sambaSamAccount.inc:909
 msgid "Edit workstations"
 msgstr "Редактировать компьютеры"
 
 #: ../lib/modules/inetOrgPerson.inc:66
-#: ../lib/modules/inetOrgPerson.inc:118
-#: ../lib/modules/inetOrgPerson.inc:165
-#: ../lib/modules/inetOrgPerson.inc:299
-#: ../lib/modules/inetOrgPerson.inc:662
-#: ../lib/modules/inetOrgPerson.inc:817
+#: ../lib/modules/inetOrgPerson.inc:123
+#: ../lib/modules/inetOrgPerson.inc:170
+#: ../lib/modules/inetOrgPerson.inc:304
+#: ../lib/modules/inetOrgPerson.inc:666
+#: ../lib/modules/inetOrgPerson.inc:815
 msgid "Employee type"
 msgstr "Тип должности"
 
-#: ../lib/modules/inetOrgPerson.inc:300
+#: ../lib/modules/inetOrgPerson.inc:305
 msgid "Employee type: Contractor, Employee, Intern, Temp, External, ..."
 msgstr "Тип должности: Contractor, Employee, Intern, Temp, External, ..."
 
-#: ../templates/login.php:355
+#: ../templates/login.php:364
 msgid "Empty password submitted. Please try again."
 msgstr "Пустой пароль подтвержден. Пожалуйста, попробуйте еще раз."
 
@@ -1430,7 +1479,7 @@ msgstr "Эквивалент"
 msgid "Error"
 msgstr "Ошибка"
 
-#: ../templates/delete.php:230
+#: ../templates/delete.php:231
 #, php-format
 msgid "Error while deleting DN: %s"
 msgstr "Ошибка при удалении DN: %s"
@@ -1481,11 +1530,13 @@ msgid "Failed to delete entry %s"
 msgstr "Не удалось удалить строку %s"
 
 #: ../lib/modules/inetOrgPerson.inc:54
-#: ../lib/modules/inetOrgPerson.inc:213
-#: ../lib/modules/inetOrgPerson.inc:331
-#: ../lib/modules/inetOrgPerson.inc:332
-#: ../lib/modules/inetOrgPerson.inc:641
-#: ../lib/modules/inetOrgPerson.inc:825
+#: ../lib/modules/inetOrgPerson.inc:114
+#: ../lib/modules/inetOrgPerson.inc:218
+#: ../lib/modules/inetOrgPerson.inc:336
+#: ../lib/modules/inetOrgPerson.inc:337
+#: ../lib/modules/inetOrgPerson.inc:645
+#: ../lib/modules/inetOrgPerson.inc:823
+#: ../lib/modules/inetOrgPerson.inc:1099
 msgid "Fax number"
 msgstr "Факс"
 
@@ -1516,10 +1567,12 @@ msgstr "Фильтр"
 
 #: ../lib/types/user.inc:87
 #: ../lib/modules/inetOrgPerson.inc:46
-#: ../lib/modules/inetOrgPerson.inc:140
-#: ../lib/modules/inetOrgPerson.inc:291
-#: ../lib/modules/inetOrgPerson.inc:553
-#: ../lib/modules/inetOrgPerson.inc:815
+#: ../lib/modules/inetOrgPerson.inc:112
+#: ../lib/modules/inetOrgPerson.inc:145
+#: ../lib/modules/inetOrgPerson.inc:296
+#: ../lib/modules/inetOrgPerson.inc:557
+#: ../lib/modules/inetOrgPerson.inc:813
+#: ../lib/modules/inetOrgPerson.inc:1059
 msgid "First name"
 msgstr "Имя"
 
@@ -1528,7 +1581,7 @@ msgstr "Имя"
 msgid "First name contains invalid characters!"
 msgstr "Имя содержит не правильные символы!"
 
-#: ../lib/modules/inetOrgPerson.inc:292
+#: ../lib/modules/inetOrgPerson.inc:297
 msgid "First name of user. Only letters, - and spaces are allowed."
 msgstr "Имя пользователя. Одна буква и пробелы допустимы."
 
@@ -1539,8 +1592,8 @@ msgstr "Для автоматической обработки приглаше�
 #: ../lib/modules/kolabUser.inc:89
 #: ../lib/modules/kolabUser.inc:156
 #: ../lib/modules/kolabUser.inc:202
-#: ../lib/modules/kolabUser.inc:308
-#: ../lib/modules/kolabUser.inc:757
+#: ../lib/modules/kolabUser.inc:310
+#: ../lib/modules/kolabUser.inc:758
 msgid "Free/Busy interval"
 msgstr "Интервал Свободно/Занято"
 
@@ -1549,55 +1602,50 @@ msgstr "Интервал Свободно/Занято"
 msgid "Free/Busy interval must be a number!"
 msgstr "Интервал Свободно/Занято должен быть цифрой!"
 
-#: ../lib/modules/sambaSamAccount.inc:1012
+#: ../lib/modules/sambaSamAccount.inc:1010
 msgid "Friday"
 msgstr "Пятница"
 
 #: ../lib/types/host.inc:87
 #: ../lib/types/group.inc:83
 #: ../lib/types/user.inc:84
-#: ../lib/modules/posixGroup.inc:169
-#: ../lib/modules/posixGroup.inc:372
-#: ../lib/modules/posixGroup.inc:402
-#: ../lib/modules/posixGroup.inc:434
-#: ../lib/modules/posixGroup.inc:478
-#: ../lib/modules/posixGroup.inc:498
-#: ../lib/modules/posixAccount.inc:56
-#: ../lib/modules/posixAccount.inc:1158
+#: ../lib/modules/posixGroup.inc:152
+#: ../lib/modules/posixGroup.inc:349
+#: ../lib/modules/posixGroup.inc:379
+#: ../lib/modules/posixGroup.inc:399
+#: ../lib/modules/posixGroup.inc:443
+#: ../lib/modules/posixGroup.inc:463
+#: ../lib/modules/posixAccount.inc:85
+#: ../lib/modules/posixAccount.inc:1030
 #: ../lib/modules/sambaGroupMapping.inc:323
 msgid "GID number"
 msgstr "GID"
 
-#: ../lib/modules/posixGroup.inc:498
+#: ../lib/modules/posixGroup.inc:463
 msgid "GID number has changed. Please select checkbox to change GID number of users and hosts."
 msgstr "GID изменен. Пожалуйста поставьте галочку для изменения GID пользователя и компьютера."
 
-#: ../lib/modules/posixAccount.inc:56
+#: ../lib/modules/posixAccount.inc:85
 #, php-format
 msgid "GID number has changed. To keep file ownership you have to run the following command as root: 'find / -gid %s -uid %s -exec chgrp %s {} \\;'"
 msgstr "GID изменен. Для изменеия прав владельца файла выполните следующую команду (из под root): 'find / -gid %s -uid %s -exec chgrp %s {} \\;'"
 
-#: ../lib/modules/posixGroup.inc:505
+#: ../lib/modules/posixGroup.inc:470
 msgid "GID number has to be a numeric value!"
 msgstr "GID имеет числовое значение!"
 
-#: ../lib/modules/posixGroup.inc:328
+#: ../lib/modules/posixGroup.inc:305
 msgid "GID ranges for Unix groups"
 msgstr "GID диапазон для UNIX групп"
 
-#: ../lib/modules/posixAccount.inc:260
-#: ../lib/modules/posixAccount.inc:292
-#: ../lib/modules/posixAccount.inc:362
-#: ../lib/modules/posixAccount.inc:408
-#: ../lib/modules/posixAccount.inc:925
-#: ../lib/modules/posixAccount.inc:1159
+#: ../lib/modules/posixAccount.inc:249
+#: ../lib/modules/posixAccount.inc:281
+#: ../lib/modules/posixAccount.inc:351
+#: ../lib/modules/posixAccount.inc:389
+#: ../lib/modules/posixAccount.inc:826
+#: ../lib/modules/posixAccount.inc:1031
 msgid "Gecos"
 msgstr "Описание (gecos)"
-
-#: ../lib/modules/posixGroup.inc:184
-#: ../lib/modules/posixAccount.inc:952
-msgid "Generate password"
-msgstr "Случайный пароль"
 
 #: ../lib/modules/kolabUser.inc:179
 msgid "Germany"
@@ -1611,7 +1659,7 @@ msgid "Go"
 msgstr "Вперед"
 
 #: ../lib/modules/quota.inc:102
-#: ../lib/modules/quota.inc:302
+#: ../lib/modules/quota.inc:314
 msgid "Grace block period"
 msgstr "Период мягкого лимита"
 
@@ -1624,20 +1672,24 @@ msgid "Grace inode (files) period. Most filesystems use a fixed maximum value of
 msgstr "Период мягкого лимита. Некоторые файловые системы позволяют выбрать максимальное значение 7 дней."
 
 #: ../lib/modules/quota.inc:118
-#: ../lib/modules/quota.inc:306
+#: ../lib/modules/quota.inc:318
 msgid "Grace inode period"
 msgstr "Период мягкого лимита"
+
+#: ../templates/selfService/adminMain.php:460
+msgid "Group"
+msgstr "Группы"
 
 #: ../lib/types/group.inc:53
 msgid "Group accounts (e.g. Unix and Samba)"
 msgstr "Учетные записи групп (т.е. Unix и Samba)"
 
 #: ../lib/types/group.inc:86
-#: ../lib/modules/posixGroup.inc:378
+#: ../lib/modules/posixGroup.inc:355
 msgid "Group description"
 msgstr "Описание группы"
 
-#: ../lib/modules/posixGroup.inc:407
+#: ../lib/modules/posixGroup.inc:384
 msgid "Group description. If left empty group name will be used."
 msgstr "Описание группы. Если не задано, будет использовано имя группы."
 
@@ -1646,41 +1698,41 @@ msgid "Group member DNs"
 msgstr "DN членов группы"
 
 #: ../lib/types/group.inc:84
-#: ../lib/modules/posixGroup.inc:177
-#: ../lib/modules/posixGroup.inc:242
-#: ../lib/modules/posixGroup.inc:384
-#: ../lib/modules/posixGroup.inc:410
-#: ../lib/modules/posixGroup.inc:414
-#: ../lib/modules/posixGroup.inc:479
+#: ../lib/modules/posixGroup.inc:160
+#: ../lib/modules/posixGroup.inc:220
+#: ../lib/modules/posixGroup.inc:361
+#: ../lib/modules/posixGroup.inc:387
+#: ../lib/modules/posixGroup.inc:391
+#: ../lib/modules/posixGroup.inc:444
 msgid "Group members"
 msgstr "Члены группы"
 
 #: ../lib/types/group.inc:82
-#: ../lib/modules/posixGroup.inc:165
-#: ../lib/modules/posixGroup.inc:364
-#: ../lib/modules/posixGroup.inc:398
-#: ../lib/modules/posixGroup.inc:477
-#: ../lib/modules/posixGroup.inc:506
-#: ../lib/modules/posixGroup.inc:507
-#: ../lib/modules/posixGroup.inc:508
+#: ../lib/modules/posixGroup.inc:148
+#: ../lib/modules/posixGroup.inc:341
+#: ../lib/modules/posixGroup.inc:375
+#: ../lib/modules/posixGroup.inc:442
+#: ../lib/modules/posixGroup.inc:471
+#: ../lib/modules/posixGroup.inc:472
+#: ../lib/modules/posixGroup.inc:473
 msgid "Group name"
 msgstr "Имя группы"
 
-#: ../lib/modules/posixGroup.inc:508
-#: ../lib/modules/posixGroup.inc:509
+#: ../lib/modules/posixGroup.inc:473
+#: ../lib/modules/posixGroup.inc:474
 msgid "Group name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !"
 msgstr "Имя группы содержит не допустимые символы. Допустимые: a-z, A-Z, 0-9 и .-_ !"
 
-#: ../lib/modules/posixGroup.inc:507
+#: ../lib/modules/posixGroup.inc:472
 msgid "Group name in use. Selected next free group name."
 msgstr "Имя группы уже используется. Выберите следующее свободное имя."
 
-#: ../lib/modules/posixGroup.inc:399
+#: ../lib/modules/posixGroup.inc:376
 msgid "Group name of the group which should be created. Valid characters are: a-z,0-9, .-_. LAM does not allow a number as first character because groupadd also does not allow it. LAM does not allow capital letters A-Z because it can cause several problems. If group name is already used group name will be expanded with a number. The next free number will be used."
 msgstr "Имя создаваемой группы. Допустимые символы: a-z,0-9, .-_. LAM не позволяет делать число первым символом, так как groupadd может делать этого. LAM не позволяет делать заглавные буквы A-Z первым символом, потому что это может вызвать несколько проблем. Если имя группы уже существует, то к названию будет добавлено число."
 
-#: ../lib/modules/posixGroup.inc:390
-#: ../lib/modules/posixGroup.inc:418
+#: ../lib/modules/posixGroup.inc:367
+#: ../lib/modules/posixGroup.inc:395
 msgid "Group password"
 msgstr "Пароль группы"
 
@@ -1692,18 +1744,18 @@ msgstr "Тип группы"
 msgid "Groups"
 msgstr "Группы"
 
-#: ../lib/modules/quota.inc:435
+#: ../lib/modules/quota.inc:443
 msgid "Hard block"
 msgstr "Hard block"
 
 #: ../lib/modules/quota.inc:98
 #: ../lib/modules/quota.inc:99
-#: ../lib/modules/quota.inc:301
-#: ../lib/modules/quota.inc:358
+#: ../lib/modules/quota.inc:313
+#: ../lib/modules/quota.inc:366
 msgid "Hard block limit"
 msgstr "Жесткий лимит"
 
-#: ../lib/modules/quota.inc:437
+#: ../lib/modules/quota.inc:445
 msgid "Hard inode"
 msgstr "Hard inode"
 
@@ -1712,8 +1764,8 @@ msgid "Hard inode (files) limit"
 msgstr "Жесткий лимит кол-ва файлов (inodes), используемых пользователем."
 
 #: ../lib/modules/quota.inc:114
-#: ../lib/modules/quota.inc:305
-#: ../lib/modules/quota.inc:360
+#: ../lib/modules/quota.inc:317
+#: ../lib/modules/quota.inc:368
 msgid "Hard inode limit"
 msgstr "Жесткий лимит"
 
@@ -1756,6 +1808,21 @@ msgstr "Заголовок"
 #: ../templates/config/conftypes.php:217
 #: ../templates/config/conflogin.php:128
 #: ../templates/config/mainlogin.php:119
+#: ../templates/selfService/profManage.php:159
+#: ../templates/selfService/profManage.php:199
+#: ../templates/selfService/profManage.php:234
+#: ../templates/selfService/profManage.php:258
+#: ../templates/selfService/adminLogin.php:125
+#: ../templates/selfService/adminMain.php:235
+#: ../templates/selfService/adminMain.php:249
+#: ../templates/selfService/adminMain.php:263
+#: ../templates/selfService/adminMain.php:277
+#: ../templates/selfService/adminMain.php:300
+#: ../templates/selfService/adminMain.php:320
+#: ../templates/selfService/adminMain.php:335
+#: ../templates/selfService/adminMain.php:350
+#: ../templates/selfService/adminMain.php:434
+#: ../templates/selfService/adminMain.php:468
 #: ../templates/pdfedit/pdfpage.php:750
 #: ../templates/profedit/profilepage.php:195
 #: ../templates/profedit/profilepage.php:215
@@ -1777,7 +1844,11 @@ msgstr "Здесь можно посмотреть LDAP обьекты и атт
 msgid "Here you can create multiple accounts by providing a CSV file."
 msgstr "Здесь можно создать несколько учетных записей при помощи CSV файла."
 
-#: ../lib/modules/posixAccount.inc:346
+#: ../lib/modules/sambaDomain.inc:111
+msgid "Here you can define to deactivate accounts after bad logon attempts."
+msgstr "Здесь отключается учетная запись после неудачных попыток входа."
+
+#: ../lib/modules/posixAccount.inc:335
 msgid "Here you can enter a list of additional group memberships. The group names are separated by commas."
 msgstr "Здесь можно выбрать другие группы, для членства в них. Имена групп разделены запятыми."
 
@@ -1805,6 +1876,10 @@ msgstr "Здесь можно выбрать куда LAM будет сохра�
 msgid "Here you can select which plugins you want to use for account management."
 msgstr "Здесь можно выбрать, какие плугины использовать для управления учетными записями."
 
+#: ../lib/modules/sambaDomain.inc:91
+msgid "Here you can specify the minimum number of characters for a user password."
+msgstr "Здесь задается минимальное кол-во символов для пароля пользователя."
+
 #: ../templates/tree/edit.php:104
 msgid "Hide internal attributes"
 msgstr "Скрытые внутренние аттрибуты"
@@ -1817,26 +1892,26 @@ msgstr "Подсказка: Отформатируйте все ячейки к�
 msgid "Hint: To delete an attribute, empty the text field and click save."
 msgstr "Подсказка: для удаления аттрибута, очистите строку и нажмите сохранить."
 
-#: ../lib/modules/posixAccount.inc:395
+#: ../lib/modules/posixAccount.inc:376
 msgid "Hold the CTRL-key to (de)select multiple groups."
 msgstr "Удерживайте CTRL для выбора нескольких групп."
 
 #: ../lib/types/user.inc:89
-#: ../lib/modules/posixAccount.inc:51
-#: ../lib/modules/posixAccount.inc:79
-#: ../lib/modules/posixAccount.inc:80
-#: ../lib/modules/posixAccount.inc:231
-#: ../lib/modules/posixAccount.inc:349
-#: ../lib/modules/posixAccount.inc:353
-#: ../lib/modules/posixAccount.inc:370
-#: ../lib/modules/posixAccount.inc:731
-#: ../lib/modules/posixAccount.inc:939
-#: ../lib/modules/posixAccount.inc:1086
-#: ../lib/modules/posixAccount.inc:1162
+#: ../lib/modules/posixAccount.inc:60
+#: ../lib/modules/posixAccount.inc:61
+#: ../lib/modules/posixAccount.inc:63
+#: ../lib/modules/posixAccount.inc:220
+#: ../lib/modules/posixAccount.inc:338
+#: ../lib/modules/posixAccount.inc:342
+#: ../lib/modules/posixAccount.inc:359
+#: ../lib/modules/posixAccount.inc:652
+#: ../lib/modules/posixAccount.inc:840
+#: ../lib/modules/posixAccount.inc:980
+#: ../lib/modules/posixAccount.inc:1034
 msgid "Home directory"
 msgstr "Домашний каталог"
 
-#: ../lib/modules/posixAccount.inc:51
+#: ../lib/modules/posixAccount.inc:63
 #, php-format
 msgid "Home directory changed. To keep home directory you have to run the following command as root: 'mv %s %s'"
 msgstr "Домашний каталог изменен. Чтобы не потерять домашний каталог выполните (из под root): 'mv %s %s'"
@@ -1844,13 +1919,13 @@ msgstr "Домашний каталог изменен. Чтобы не поте
 #: ../lib/modules/sambaAccount.inc:146
 #: ../lib/modules/sambaAccount.inc:277
 #: ../lib/modules/sambaAccount.inc:378
-#: ../lib/modules/sambaAccount.inc:756
-#: ../lib/modules/sambaAccount.inc:857
+#: ../lib/modules/sambaAccount.inc:755
+#: ../lib/modules/sambaAccount.inc:856
 #: ../lib/modules/sambaSamAccount.inc:218
 #: ../lib/modules/sambaSamAccount.inc:346
-#: ../lib/modules/sambaSamAccount.inc:897
-#: ../lib/modules/sambaSamAccount.inc:1116
-#: ../lib/modules/sambaSamAccount.inc:1289
+#: ../lib/modules/sambaSamAccount.inc:896
+#: ../lib/modules/sambaSamAccount.inc:1114
+#: ../lib/modules/sambaSamAccount.inc:1287
 msgid "Home drive"
 msgstr "Сетевой диск"
 
@@ -1859,15 +1934,15 @@ msgstr "Сетевой диск"
 #: ../lib/modules/sambaAccount.inc:152
 #: ../lib/modules/sambaAccount.inc:283
 #: ../lib/modules/sambaAccount.inc:381
-#: ../lib/modules/sambaAccount.inc:759
-#: ../lib/modules/sambaAccount.inc:856
+#: ../lib/modules/sambaAccount.inc:758
+#: ../lib/modules/sambaAccount.inc:855
 #: ../lib/modules/sambaSamAccount.inc:76
 #: ../lib/modules/sambaSamAccount.inc:77
 #: ../lib/modules/sambaSamAccount.inc:221
 #: ../lib/modules/sambaSamAccount.inc:352
-#: ../lib/modules/sambaSamAccount.inc:900
-#: ../lib/modules/sambaSamAccount.inc:1122
-#: ../lib/modules/sambaSamAccount.inc:1288
+#: ../lib/modules/sambaSamAccount.inc:899
+#: ../lib/modules/sambaSamAccount.inc:1120
+#: ../lib/modules/sambaSamAccount.inc:1286
 msgid "Home path"
 msgstr "Путь к добашнему каталогу"
 
@@ -1877,8 +1952,8 @@ msgstr "Путь к добашнему каталогу"
 msgid "Home path is invalid."
 msgstr "Путь к добашнему каталогу не правильный."
 
-#: ../lib/modules/posixAccount.inc:79
-#: ../lib/modules/posixAccount.inc:81
+#: ../lib/modules/posixAccount.inc:60
+#: ../lib/modules/posixAccount.inc:62
 msgid "Homedirectory contains invalid characters."
 msgstr "Домашний каталог содержит не допустимые символы."
 
@@ -1891,8 +1966,8 @@ msgid "Host description"
 msgstr "Описание компьютера"
 
 #: ../lib/modules/account.inc:80
-#: ../lib/modules/posixAccount.inc:409
-#: ../lib/modules/posixAccount.inc:417
+#: ../lib/modules/posixAccount.inc:390
+#: ../lib/modules/posixAccount.inc:398
 msgid "Host description. If left empty host name will be used."
 msgstr "Описание компьютера. Если не задано, будет использовано имя компьютера."
 
@@ -1902,59 +1977,59 @@ msgstr "Список компьютеров"
 
 #: ../lib/types/host.inc:82
 #: ../lib/types/host.inc:83
-#: ../lib/modules/posixAccount.inc:93
-#: ../lib/modules/posixAccount.inc:94
-#: ../lib/modules/posixAccount.inc:96
-#: ../lib/modules/posixAccount.inc:271
-#: ../lib/modules/posixAccount.inc:404
+#: ../lib/modules/posixAccount.inc:75
+#: ../lib/modules/posixAccount.inc:76
+#: ../lib/modules/posixAccount.inc:78
+#: ../lib/modules/posixAccount.inc:260
+#: ../lib/modules/posixAccount.inc:385
 msgid "Host name"
 msgstr "Имя компьютера"
 
-#: ../lib/modules/posixAccount.inc:100
+#: ../lib/modules/posixAccount.inc:82
 msgid "Host name already exists!"
 msgstr "Имя компьютера уже существует!"
 
-#: ../lib/modules/posixAccount.inc:98
+#: ../lib/modules/posixAccount.inc:80
 msgid "Host name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !"
 msgstr "Имя компьютера содержит не допустимые символы. Допустимые: a-z, A-Z, 0-9 и .-_ !"
 
-#: ../lib/modules/posixAccount.inc:94
+#: ../lib/modules/posixAccount.inc:76
 msgid "Host name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ ! Host name must end with $ !"
 msgstr "Имя компьютера содержит не допустимые символы. Допустимые: a-z, A-Z, 0-9 и .-_ ! Имя должно заканчиваться на $ !"
 
-#: ../lib/modules/posixAccount.inc:96
+#: ../lib/modules/posixAccount.inc:78
 msgid "Host name in use. Selected next free host name."
 msgstr "Имя компьютера используется. Выберите другое имя."
 
-#: ../lib/modules/posixAccount.inc:405
+#: ../lib/modules/posixAccount.inc:386
 msgid "Host name of the host which should be created. Valid characters are: a-z,0-9, .-_$. LAM does not allow a number as first character because useradd also does not allow it. LAM does not allow capital letters A-Z because it can cause several problems. Host names are always ending with $. If last character is not $ it will be added. If host name is already used host name will be expanded with a number. The next free number will be used."
 msgstr "Имя создаваемого компьютера. Допустимые символы: a-z,0-9, .-_$. LAM не позволяет делать число первым символом, так как useradd не позволяет делать этого. LAM не позволяет делать заглавные буквы A-Z потому что это может вызвать несколько проблем. Имя компьютера всегда заканчивается на $ . Если имя уже существует, то к названию будет добавлено число."
 
 #: ../lib/types/host.inc:44
-#: ../lib/modules/posixAccount.inc:74
-#: ../lib/modules/posixAccount.inc:75
-#: ../lib/modules/posixAccount.inc:77
-#: ../lib/modules/posixAccount.inc:163
+#: ../lib/modules/posixAccount.inc:55
+#: ../lib/modules/posixAccount.inc:56
+#: ../lib/modules/posixAccount.inc:58
+#: ../lib/modules/posixAccount.inc:152
 msgid "Hosts"
 msgstr "Компьютеры"
 
-#: ../lib/modules/posixGroup.inc:501
-#: ../lib/modules/posixGroup.inc:630
-#: ../lib/modules/posixAccount.inc:84
-#: ../lib/modules/posixAccount.inc:677
+#: ../lib/modules/posixGroup.inc:466
+#: ../lib/modules/posixGroup.inc:574
+#: ../lib/modules/posixAccount.inc:66
+#: ../lib/modules/posixAccount.inc:634
 msgid "ID is already in use"
 msgstr "ID занят"
 
-#: ../lib/modules/posixGroup.inc:499
-#: ../lib/modules/posixGroup.inc:500
-#: ../lib/modules/posixGroup.inc:501
-#: ../lib/modules/posixGroup.inc:626
-#: ../lib/modules/posixGroup.inc:630
-#: ../lib/modules/posixAccount.inc:82
-#: ../lib/modules/posixAccount.inc:83
-#: ../lib/modules/posixAccount.inc:84
-#: ../lib/modules/posixAccount.inc:673
-#: ../lib/modules/posixAccount.inc:677
+#: ../lib/modules/posixGroup.inc:464
+#: ../lib/modules/posixGroup.inc:465
+#: ../lib/modules/posixGroup.inc:466
+#: ../lib/modules/posixGroup.inc:566
+#: ../lib/modules/posixGroup.inc:574
+#: ../lib/modules/posixAccount.inc:64
+#: ../lib/modules/posixAccount.inc:65
+#: ../lib/modules/posixAccount.inc:66
+#: ../lib/modules/posixAccount.inc:630
+#: ../lib/modules/posixAccount.inc:634
 msgid "ID-Number"
 msgstr "ID-Number"
 
@@ -1969,8 +2044,7 @@ msgstr "Идентификатор"
 msgid "If checked Unix password will also be used as Samba password."
 msgstr "Если отмечено, пароль Unix будет использоваться и для Samba."
 
-#: ../lib/modules/posixGroup.inc:427
-#: ../lib/modules/posixAccount.inc:383
+#: ../lib/modules/posixAccount.inc:368
 msgid "If checked account will be deactivated by putting a \"!\" before the encrypted password."
 msgstr "Если отмечено, учетная запись будет деактивирована (вставлен \"!\" перед паролем)."
 
@@ -1979,10 +2053,8 @@ msgstr "Если отмечено, учетная запись будет деа
 msgid "If checked account will be deactivated. (Setting D-Flag)"
 msgstr "Если отмечено, учетная запись будет деактивирована. (Установлен D-Flag)."
 
-#: ../lib/modules/posixGroup.inc:423
 #: ../lib/modules/sambaAccount.inc:356
 #: ../lib/modules/sambaSamAccount.inc:196
-#: ../lib/modules/posixAccount.inc:379
 msgid "If checked no password will be used."
 msgstr "Если отмечено, пароль не будет использован."
 
@@ -1991,13 +2063,17 @@ msgstr "Если отмечено, пароль не будет использо
 msgid "If checked password does not expire. (Setting X-Flag)"
 msgstr "Если отмечено, пароль никогда не устареет. (Установлен X-Flag)."
 
-#: ../lib/modules/posixGroup.inc:403
+#: ../lib/modules/posixGroup.inc:380
 msgid "If empty GID number will be generated automaticly depending on your configuration settings."
 msgstr "Если не задано, GID будет сгенерирован автоматически, в зависимости от конфигурации."
 
-#: ../lib/modules/posixAccount.inc:338
+#: ../lib/modules/posixAccount.inc:327
 msgid "If empty UID number will be generated automaticly."
 msgstr "Если не задано, UID будет сгенерирован автоматически."
+
+#: ../lib/modules/sambaDomain.inc:99
+msgid "If set then users need to login to change their password."
+msgstr "Если установлено, после входа пользователь обязан сменить пароль."
 
 #: ../lib/modules/sambaAccount.inc:353
 #: ../lib/modules/sambaSamAccount.inc:193
@@ -2081,6 +2157,10 @@ msgstr "Inode soft quota содержит не допустимые символ
 msgid "Inode soft quota must be smaller than inode hard quota."
 msgstr "Inode soft quota должна быть меньше inode hard quota."
 
+#: ../templates/selfService/adminMain.php:362
+msgid "Input fields"
+msgstr "Поля для ввода"
+
 #: ../lib/modules/sambaAccount.inc:62
 #: ../lib/modules/sambaAccount.inc:63
 #: ../lib/modules/sambaSamAccount.inc:77
@@ -2106,21 +2186,10 @@ msgstr "Invalid Account"
 msgid "Invalid RDN attribute!"
 msgstr "Не правильный RID аттрибут!"
 
-#: ../lib/modules/posixGroup.inc:200
-#: ../lib/modules/posixGroup.inc:430
-#: ../lib/modules/posixAccount.inc:386
-#: ../lib/modules/posixAccount.inc:968
-msgid "Invalid password"
-msgstr "Не правильный пароль"
-
-#: ../lib/status.inc:65
-msgid "Invalid/Missing Message type"
-msgstr "Не правильный тип сообщения"
-
 #: ../lib/modules/kolabUser.inc:124
 #: ../lib/modules/kolabUser.inc:171
-#: ../lib/modules/kolabUser.inc:346
-#: ../lib/modules/kolabUser.inc:769
+#: ../lib/modules/kolabUser.inc:348
+#: ../lib/modules/kolabUser.inc:770
 msgid "Invitation policy"
 msgstr "Политика приглашения"
 
@@ -2132,21 +2201,21 @@ msgstr "Список политик приглашения"
 msgid "Islamabad, Karachi"
 msgstr "Islamabad, Karachi"
 
-#: ../lib/modules/posixGroup.inc:499
-#: ../lib/modules/posixAccount.inc:83
+#: ../lib/modules/posixGroup.inc:464
+#: ../lib/modules/posixAccount.inc:65
 msgid "It is possible that this ID-number is reused. This can cause several problems because files with old permissions might still exist. To avoid this warning set maxUID to a higher value."
 msgstr "Возможно этот ID уже используется. Это может вызвать проблемы, потому что файлы со старыми разрешениями могут еще существовать. Установите maxUID больше."
 
 #: ../lib/modules/inetOrgPerson.inc:64
-#: ../lib/modules/inetOrgPerson.inc:114
-#: ../lib/modules/inetOrgPerson.inc:159
-#: ../lib/modules/inetOrgPerson.inc:287
-#: ../lib/modules/inetOrgPerson.inc:656
-#: ../lib/modules/inetOrgPerson.inc:814
+#: ../lib/modules/inetOrgPerson.inc:119
+#: ../lib/modules/inetOrgPerson.inc:164
+#: ../lib/modules/inetOrgPerson.inc:292
+#: ../lib/modules/inetOrgPerson.inc:660
+#: ../lib/modules/inetOrgPerson.inc:812
 msgid "Job title"
 msgstr "Должность"
 
-#: ../lib/modules/inetOrgPerson.inc:288
+#: ../lib/modules/inetOrgPerson.inc:293
 msgid "Job title of user: President, department manager, ..."
 msgstr "Должность пользователя:  President, department manager, .."
 
@@ -2173,7 +2242,7 @@ msgstr "Kolab"
 msgid "LAM can recursively delete this entry and all of its children. See below for a list of all the entries that this action will delete. Do you want to do this?"
 msgstr "LAM может рекурсивно удалить эту запись и всех потомков. Ниже смотрите список удаляемых записей. Удалить?"
 
-#: ../templates/login.php:174
+#: ../templates/login.php:178
 #: ../templates/config/index.php:60
 msgid "LAM configuration"
 msgstr "Конфигурация LAM"
@@ -2182,8 +2251,8 @@ msgstr "Конфигурация LAM"
 msgid "LAM has checked your input and is now ready to create the accounts."
 msgstr "LAM проверил введенные данные и готов создать учетную запись."
 
-#: ../lib/modules/posixGroup.inc:439
-#: ../lib/modules/posixAccount.inc:334
+#: ../lib/modules/posixGroup.inc:404
+#: ../lib/modules/posixAccount.inc:323
 msgid "LAM supports CRYPT, SHA, SSHA, MD5 and SMD5 to generate the hash value of passwords. SSHA and CRYPT are the most common but CRYPT does not support passwords greater than 8 letters. We do not recommend to use plain text passwords."
 msgstr "LAM поддерживает CRYPT, SHA, SSHA, MD5 и SMD5 для создания хэша пароля. SSHA и CRYPT в большинстве случаев подойдут, но CRYPT не поддерживает больше 8 символов. Не рекомендуется хранить пароль в открытом виде (PLAIN)."
 
@@ -2201,14 +2270,22 @@ msgstr "LAM не удалось найти Samba3 домен с этим име�
 msgid "LAM was unable to find a domain with this name!"
 msgstr "LAM не удалось найти домен с этим именем!"
 
-#: ../lib/modules/posixAccount.inc:101
+#: ../lib/modules/posixAccount.inc:83
 msgid "LAM was unable to find a group with this name!"
 msgstr "LAM не удалось найти группу с этим именем!"
 
-#: ../lib/modules/posixAccount.inc:1521
+#: ../lib/modules/posixAccount.inc:1396
 #, php-format
 msgid "LAM was unable to modify group memberships for group: %s"
 msgstr "LAM не удалось поменять членов для группы: %s"
+
+#: ../help/help.inc:162
+msgid "LAM will search for accounts in this part of the LDAP tree."
+msgstr "LAM будет искать учетные записи в этой части дерева LDAP."
+
+#: ../help/help.inc:164
+msgid "LAM will use this LDAP DN and password to search for accounts. It is sufficient to specify an account with read rights. If nothing is inserted then LAM will try to connect anonymously."
+msgstr "LAM будет использовать эту DN запись и пароль для поиска учетных записей. Достаточно указать учетную запись с правами на чтение. Если ничего не указано, LAM будет подключаться как гость (anonymous)."
 
 #: ../templates/profedit/profilepage.php:176
 msgid "LDAP"
@@ -2218,10 +2295,11 @@ msgstr "LDAP"
 #: ../templates/config/confmain.php:120
 #: ../templates/config/confmain.php:501
 #: ../templates/config/conftypes.php:154
+#: ../templates/selfService/adminMain.php:72
 msgid "LDAP Account Manager Configuration"
 msgstr "LDAP Account Manager конфигурация"
 
-#: ../lib/lists.inc:640
+#: ../lib/lists.inc:649
 msgid "LDAP Search failed! Please check your preferences."
 msgstr "Поиск в LDAP не удался! Проверьте настройки."
 
@@ -2229,25 +2307,36 @@ msgstr "Поиск в LDAP не удался! Проверьте настрой�
 msgid "LDAP Suffix is invalid!"
 msgstr "LDAP Suffix не правильный!"
 
-#: ../templates/login.php:402
+#: ../templates/login.php:411
 msgid "LDAP error, server says:"
 msgstr "Ошибка LDAP, сервер ответил:"
 
-#: ../lib/modules.inc:1028
+#: ../lib/modules.inc:1020
 msgid "LDAP operation successful."
 msgstr "LDAP операция завершена успешно."
 
-#: ../templates/login.php:292
+#: ../templates/selfService/adminMain.php:273
+msgid "LDAP password"
+msgstr "LDAP пароль"
+
+#: ../templates/selfService/adminMain.php:286
+#: ../help/help.inc:165
+msgid "LDAP search attribute"
+msgstr "LDAP аттрибут поиска"
+
+#: ../templates/login.php:296
 msgid "LDAP server"
 msgstr "LDAP сервер"
 
-#: ../lib/lists.inc:626
+#: ../lib/lists.inc:635
 msgid "LDAP sizelimit exceeded, not all entries are shown."
 msgstr "Превышен лимит размера LDAP, показаны не все записи."
 
 #: ../templates/config/conftypes.php:197
+#: ../templates/selfService/adminMain.php:245
 #: ../templates/profedit/profilepage.php:180
 #: ../help/help.inc:70
+#: ../help/help.inc:161
 msgid "LDAP suffix"
 msgstr "LDAP суффикс"
 
@@ -2259,12 +2348,20 @@ msgstr "LDAP загрузка завершена"
 msgid "LDAP upload in progress. Please wait."
 msgstr "LDAP загрузка в процессе. Пожалуйста ждите."
 
+#: ../templates/selfService/adminMain.php:259
+msgid "LDAP user"
+msgstr "LDAP пользователь"
+
+#: ../help/help.inc:163
+msgid "LDAP user and password"
+msgstr "LDAP пользователь и пароль"
+
 #: ../lib/export.inc:441
 #, php-format
 msgid "LDIF Export for: %s"
 msgstr "LDIF экспорт для: %s"
 
-#: ../templates/login.php:241
+#: ../templates/login.php:245
 msgid "Language"
 msgstr "Язык"
 
@@ -2278,29 +2375,35 @@ msgstr "Языковые настройки"
 
 #: ../lib/types/user.inc:88
 #: ../lib/modules/inetOrgPerson.inc:48
-#: ../lib/modules/inetOrgPerson.inc:146
-#: ../lib/modules/inetOrgPerson.inc:295
-#: ../lib/modules/inetOrgPerson.inc:559
-#: ../lib/modules/inetOrgPerson.inc:816
+#: ../lib/modules/inetOrgPerson.inc:112
+#: ../lib/modules/inetOrgPerson.inc:151
+#: ../lib/modules/inetOrgPerson.inc:300
+#: ../lib/modules/inetOrgPerson.inc:563
+#: ../lib/modules/inetOrgPerson.inc:814
+#: ../lib/modules/inetOrgPerson.inc:1067
 msgid "Last name"
 msgstr "Фамилия"
 
 #: ../lib/modules/inetOrgPerson.inc:48
 #: ../lib/modules/inetOrgPerson.inc:49
-msgid "Last name contains invalid characters!"
-msgstr "Фамилия содержит неправильные символы!"
+msgid "Last name contains invalid characters or is empty!"
+msgstr "Фамилия содержит неправильные символы или пуста!"
 
-#: ../lib/modules/inetOrgPerson.inc:296
+#: ../lib/modules/inetOrgPerson.inc:301
 msgid "Last name of user. Only letters, - and spaces are allowed."
 msgstr "Фамилия пользователя. Только буквы и пробелы допускаются."
 
-#: ../lib/modules/shadowAccount.inc:321
+#: ../lib/modules/shadowAccount.inc:308
 msgid "Last password change"
 msgstr "Последнее изменение пароля"
 
 #: ../templates/tree/export_form.php:148
 msgid "Line ends"
 msgstr "Конец линии"
+
+#: ../templates/selfService/adminMain.php:217
+msgid "Link to login page for this self service profile"
+msgstr "Ссылка на страницу входа для профиля конфигурации"
 
 #: ../templates/config/conftypes.php:213
 #: ../help/help.inc:82
@@ -2332,8 +2435,8 @@ msgstr "Список существующих пользователей"
 msgid "List settings"
 msgstr "Список учетных записей"
 
-#: ../lib/modules.inc:1074
-#: ../lib/modules.inc:1077
+#: ../lib/modules.inc:1066
+#: ../lib/modules.inc:1069
 #: ../help/help.inc:152
 msgid "Load profile"
 msgstr "Загрузить профиль"
@@ -2343,22 +2446,38 @@ msgid "Local Group"
 msgstr "Local Group"
 
 #: ../lib/modules/inetLocalMailRecipient.inc:61
-#: ../lib/modules/inetLocalMailRecipient.inc:154
+#: ../lib/modules/inetLocalMailRecipient.inc:152
 msgid "Local address"
 msgstr "Локальный адрес"
 
 #: ../lib/modules/inetLocalMailRecipient.inc:65
 #: ../lib/modules/inetLocalMailRecipient.inc:98
-#: ../lib/modules/inetLocalMailRecipient.inc:303
+#: ../lib/modules/inetLocalMailRecipient.inc:310
 msgid "Local address list"
 msgstr "Список локальных адресов"
 
-#: ../lib/modules/posixGroup.inc:205
-#: ../lib/modules/posixAccount.inc:252
-#: ../lib/modules/posixAccount.inc:973
-#: ../lib/modules/posixAccount.inc:1098
+#: ../lib/modules/posixGroup.inc:170
+#: ../lib/modules/posixAccount.inc:241
+#: ../lib/modules/posixAccount.inc:856
 msgid "Lock password"
 msgstr "Пароль закрыт"
+
+#: ../lib/modules/sambaDomain.inc:122
+#: ../lib/modules/sambaDomain.inc:199
+#: ../lib/modules/sambaDomain.inc:296
+#: ../lib/modules/sambaDomain.inc:633
+msgid "Lockout duration"
+msgstr "Продолжительность выхода"
+
+#: ../lib/modules/sambaDomain.inc:199
+msgid "Lockout duration must be are natural number."
+msgstr "Продолжительность выхода должна быть целым числом."
+
+#: ../lib/modules/sambaDomain.inc:110
+#: ../lib/modules/sambaDomain.inc:279
+#: ../lib/modules/sambaDomain.inc:624
+msgid "Lockout users after bad logon attempts"
+msgstr "Вышедшие пользователи после неудачных попыток входа"
 
 #: ../templates/config/mainmanage.php:233
 #: ../help/help.inc:135
@@ -2374,19 +2493,32 @@ msgstr "Уровень вывода"
 msgid "Logging"
 msgstr "Лог-файл"
 
-#: ../templates/login.php:267
+#: ../templates/login.php:271
 #: ../templates/config/conflogin.php:59
 #: ../templates/config/mainlogin.php:67
+#: ../templates/selfService/selfServiceLogin.php:130
+#: ../templates/selfService/adminLogin.php:61
+#: ../templates/selfService/adminMain.php:218
 #: ../help/help.inc:56
 msgid "Login"
 msgstr "Вход"
 
+#: ../templates/selfService/adminMain.php:314
+#: ../help/help.inc:167
+msgid "Login attribute label"
+msgstr "Ярлык атрибутов входа"
+
+#: ../templates/selfService/adminMain.php:329
+#: ../help/help.inc:169
+msgid "Login caption"
+msgstr "Заголовок входа"
+
 #: ../lib/types/user.inc:90
-#: ../lib/modules/posixAccount.inc:238
-#: ../lib/modules/posixAccount.inc:390
-#: ../lib/modules/posixAccount.inc:979
-#: ../lib/modules/posixAccount.inc:1090
-#: ../lib/modules/posixAccount.inc:1164
+#: ../lib/modules/posixAccount.inc:227
+#: ../lib/modules/posixAccount.inc:371
+#: ../lib/modules/posixAccount.inc:875
+#: ../lib/modules/posixAccount.inc:984
+#: ../lib/modules/posixAccount.inc:1035
 msgid "Login shell"
 msgstr "Оболочка"
 
@@ -2394,12 +2526,18 @@ msgstr "Оболочка"
 msgid "Logo"
 msgstr "Изображение"
 
+#: ../lib/modules/sambaDomain.inc:98
+#: ../lib/modules/sambaDomain.inc:258
+#: ../lib/modules/sambaDomain.inc:609
+msgid "Logon for password change"
+msgstr "Вход в систему для изменения пароля"
+
 #: ../lib/modules/sambaSamAccount.inc:103
 #: ../lib/modules/sambaSamAccount.inc:255
 #: ../lib/modules/sambaSamAccount.inc:258
 #: ../lib/modules/sambaSamAccount.inc:390
-#: ../lib/modules/sambaSamAccount.inc:953
-#: ../lib/modules/sambaSamAccount.inc:1168
+#: ../lib/modules/sambaSamAccount.inc:952
+#: ../lib/modules/sambaSamAccount.inc:1166
 msgid "Logon hours"
 msgstr "Часы для входа"
 
@@ -2408,15 +2546,15 @@ msgstr "Часы для входа"
 #: ../lib/modules/sambaAccount.inc:164
 #: ../lib/modules/sambaAccount.inc:295
 #: ../lib/modules/sambaAccount.inc:387
-#: ../lib/modules/sambaAccount.inc:765
-#: ../lib/modules/sambaAccount.inc:858
+#: ../lib/modules/sambaAccount.inc:764
+#: ../lib/modules/sambaAccount.inc:857
 #: ../lib/modules/sambaSamAccount.inc:82
 #: ../lib/modules/sambaSamAccount.inc:83
 #: ../lib/modules/sambaSamAccount.inc:227
 #: ../lib/modules/sambaSamAccount.inc:364
-#: ../lib/modules/sambaSamAccount.inc:906
-#: ../lib/modules/sambaSamAccount.inc:1134
-#: ../lib/modules/sambaSamAccount.inc:1290
+#: ../lib/modules/sambaSamAccount.inc:905
+#: ../lib/modules/sambaSamAccount.inc:1132
+#: ../lib/modules/sambaSamAccount.inc:1288
 msgid "Logon script"
 msgstr "Стартовый скрипт"
 
@@ -2427,6 +2565,7 @@ msgstr "Стартовый скрипт"
 msgid "Logon script is invalid!"
 msgstr "Стартовый скрипт неправильный!"
 
+#: ../templates/selfService/selfServiceMain.php:200
 #: ../templates/main_header.php:63
 #: ../templates/logout.php:67
 msgid "Logout"
@@ -2435,7 +2574,7 @@ msgstr "Выход"
 #: ../lib/modules/ieee802device.inc:47
 #: ../lib/modules/ieee802device.inc:57
 #: ../lib/modules/ieee802device.inc:68
-#: ../lib/modules/ieee802device.inc:98
+#: ../lib/modules/ieee802device.inc:97
 msgid "MAC address"
 msgstr "MAC address"
 
@@ -2443,7 +2582,7 @@ msgstr "MAC address"
 msgid "MAC address list"
 msgstr "Список MAC адресов"
 
-#: ../lib/modules/ieee802device.inc:194
+#: ../lib/modules/ieee802device.inc:192
 msgid "MAC address(es)"
 msgstr "MAC адрес(а)"
 
@@ -2459,8 +2598,8 @@ msgstr "Почтовые псевдонимы"
 #: ../lib/modules/kolabUser.inc:93
 #: ../lib/modules/kolabUser.inc:160
 #: ../lib/modules/kolabUser.inc:208
-#: ../lib/modules/kolabUser.inc:303
-#: ../lib/modules/kolabUser.inc:753
+#: ../lib/modules/kolabUser.inc:305
+#: ../lib/modules/kolabUser.inc:754
 msgid "Mail quota"
 msgstr "Mail quota"
 
@@ -2477,16 +2616,16 @@ msgstr "Mail routing"
 #: ../lib/modules/inetLocalMailRecipient.inc:69
 #: ../lib/modules/inetLocalMailRecipient.inc:75
 #: ../lib/modules/inetLocalMailRecipient.inc:104
-#: ../lib/modules/inetLocalMailRecipient.inc:146
-#: ../lib/modules/inetLocalMailRecipient.inc:306
+#: ../lib/modules/inetLocalMailRecipient.inc:144
+#: ../lib/modules/inetLocalMailRecipient.inc:313
 msgid "Mail server"
 msgstr "Почтовый сервер"
 
 #: ../lib/modules/kolabUser.inc:152
 #: ../lib/modules/kolabUser.inc:183
-#: ../lib/modules/kolabUser.inc:291
-#: ../lib/modules/kolabUser.inc:297
-#: ../lib/modules/kolabUser.inc:749
+#: ../lib/modules/kolabUser.inc:293
+#: ../lib/modules/kolabUser.inc:299
+#: ../lib/modules/kolabUser.inc:750
 msgid "Mailbox home server"
 msgstr "Домашний почтовый сервер"
 
@@ -2508,19 +2647,28 @@ msgid "Mails to this name are forwarded to the recipients."
 msgstr "Почта для этого имени будет перенаправлена для получателей."
 
 #: ../templates/pdfedit/pdfpage.php:617
-#: ../lib/modules.inc:980
-#: ../lib/modules.inc:1008
+#: ../lib/modules.inc:972
+#: ../lib/modules.inc:1000
 msgid "Main"
 msgstr "Main"
+
+#: ../templates/selfService/adminMain.php:344
+#: ../help/help.inc:171
+msgid "Main page caption"
+msgstr "Заголовок главной страницы"
+
+#: ../templates/selfService/adminLogin.php:136
+msgid "Manage self service profiles"
+msgstr "Управление профилями"
 
 #: ../templates/config/conflogin.php:139
 msgid "Manage server profiles"
 msgstr "Управление профилями"
 
-#: ../lib/modules/inetOrgPerson.inc:171
-#: ../lib/modules/inetOrgPerson.inc:303
-#: ../lib/modules/inetOrgPerson.inc:690
-#: ../lib/modules/inetOrgPerson.inc:818
+#: ../lib/modules/inetOrgPerson.inc:176
+#: ../lib/modules/inetOrgPerson.inc:308
+#: ../lib/modules/inetOrgPerson.inc:694
+#: ../lib/modules/inetOrgPerson.inc:816
 msgid "Manager"
 msgstr "Менеджер"
 
@@ -2536,8 +2684,8 @@ msgstr "Вручную"
 msgid "Manual if conflicts"
 msgstr "Вручную, если конфликты"
 
-#: ../lib/modules/kolabUser.inc:395
-#: ../lib/modules/kolabUser.inc:564
+#: ../lib/modules/kolabUser.inc:397
+#: ../lib/modules/kolabUser.inc:563
 msgid "Mark account for deletion"
 msgstr "Выделить учетную запись для удаления"
 
@@ -2546,11 +2694,13 @@ msgid "Mark for deletion"
 msgstr "Выделить для удаления"
 
 #: ../templates/config/profmanage.php:348
+#: ../templates/selfService/profManage.php:248
 #: ../help/help.inc:127
 msgid "Master password"
 msgstr "Мастер-пароль"
 
 #: ../templates/config/profmanage.php:68
+#: ../templates/selfService/profManage.php:56
 msgid "Master password is wrong!"
 msgstr "Пароль не правильный!"
 
@@ -2571,48 +2721,48 @@ msgstr "Совпадающие правила"
 msgid "Max list entries is invalid!"
 msgstr "Главные списки не правильные!"
 
-#: ../lib/modules/posixGroup.inc:322
-#: ../lib/modules/posixGroup.inc:503
-#: ../lib/modules/posixGroup.inc:504
+#: ../lib/modules/posixGroup.inc:299
+#: ../lib/modules/posixGroup.inc:468
+#: ../lib/modules/posixGroup.inc:469
 msgid "Maximum GID number"
 msgstr "Максимальный GID"
 
-#: ../lib/modules/posixGroup.inc:331
+#: ../lib/modules/posixGroup.inc:308
 msgid "Maximum GID number for Unix groups"
 msgstr "Максимальный GID для Unix групп"
 
-#: ../lib/modules/posixGroup.inc:503
+#: ../lib/modules/posixGroup.inc:468
 msgid "Maximum GID number is invalid or empty!"
 msgstr "Максимальный GID неправильный или пуст!"
 
-#: ../lib/modules/posixGroup.inc:504
+#: ../lib/modules/posixGroup.inc:469
 msgid "Maximum GID number must be greater than minimum GID number!"
 msgstr "Максимальный GID должен быть больше минимального GID!"
 
-#: ../lib/modules/posixAccount.inc:73
-#: ../lib/modules/posixAccount.inc:75
-#: ../lib/modules/posixAccount.inc:76
-#: ../lib/modules/posixAccount.inc:77
-#: ../lib/modules/posixAccount.inc:157
-#: ../lib/modules/posixAccount.inc:166
+#: ../lib/modules/posixAccount.inc:54
+#: ../lib/modules/posixAccount.inc:56
+#: ../lib/modules/posixAccount.inc:57
+#: ../lib/modules/posixAccount.inc:58
+#: ../lib/modules/posixAccount.inc:146
+#: ../lib/modules/posixAccount.inc:155
 msgid "Maximum UID number"
 msgstr "Максимальный UID"
 
-#: ../lib/modules/posixAccount.inc:187
+#: ../lib/modules/posixAccount.inc:176
 msgid "Maximum UID number for Unix accounts (hosts)"
 msgstr "Максимальный UID для Unix учетных записей (компьютеров)"
 
-#: ../lib/modules/posixAccount.inc:185
+#: ../lib/modules/posixAccount.inc:174
 msgid "Maximum UID number for Unix accounts (users)"
 msgstr "Максимальный UID для Unix учетных записей (пользователей)"
 
-#: ../lib/modules/posixAccount.inc:73
-#: ../lib/modules/posixAccount.inc:75
+#: ../lib/modules/posixAccount.inc:54
+#: ../lib/modules/posixAccount.inc:56
 msgid "Maximum UID number is invalid!"
 msgstr "Максимальный UID не правильный!"
 
-#: ../lib/modules/posixAccount.inc:76
-#: ../lib/modules/posixAccount.inc:77
+#: ../lib/modules/posixAccount.inc:57
+#: ../lib/modules/posixAccount.inc:58
 msgid "Maximum UID number must be greater than minimum UID number!"
 msgstr "Максимальный UID должен быть больше минимального UID!"
 
@@ -2631,10 +2781,17 @@ msgstr "Максимальная длина"
 msgid "Maximum list entries"
 msgstr "Максимальное кол-во записей в списке"
 
+#: ../lib/modules/shadowAccount.inc:47
+#: ../lib/modules/shadowAccount.inc:53
 #: ../lib/modules/shadowAccount.inc:99
 #: ../lib/modules/shadowAccount.inc:165
 #: ../lib/modules/shadowAccount.inc:195
-#: ../lib/modules/shadowAccount.inc:296
+#: ../lib/modules/shadowAccount.inc:283
+#: ../lib/modules/sambaDomain.inc:118
+#: ../lib/modules/sambaDomain.inc:196
+#: ../lib/modules/sambaDomain.inc:198
+#: ../lib/modules/sambaDomain.inc:291
+#: ../lib/modules/sambaDomain.inc:630
 msgid "Maximum password age"
 msgstr "Максимальный срок действия пароля"
 
@@ -2646,61 +2803,77 @@ msgstr "Mid-Atlantic"
 msgid "Midway Island, Samoa"
 msgstr "Midway Island, Samoa"
 
-#: ../lib/modules/inetOrgPerson.inc:148
+#: ../lib/modules/inetOrgPerson.inc:153
 msgid "Miller"
 msgstr "Miller"
 
-#: ../lib/modules/posixGroup.inc:319
-#: ../lib/modules/posixGroup.inc:502
+#: ../lib/modules/sambaDomain.inc:90
+#: ../lib/modules/sambaDomain.inc:244
+#: ../lib/modules/sambaDomain.inc:601
+msgid "Minimal password length"
+msgstr "Минимальная длина пароля"
+
+#: ../lib/modules/posixGroup.inc:296
+#: ../lib/modules/posixGroup.inc:467
 msgid "Minimum GID number"
 msgstr "Минимальный GID"
 
-#: ../lib/modules/posixGroup.inc:330
+#: ../lib/modules/posixGroup.inc:307
 msgid "Minimum GID number for Unix groups"
 msgstr "Минимальный GID для Unix групп"
 
-#: ../lib/modules/posixGroup.inc:502
+#: ../lib/modules/posixGroup.inc:467
 msgid "Minimum GID number is invalid or empty!"
 msgstr "Минимальный GID неправильный или пустой!"
 
-#: ../lib/modules/posixAccount.inc:72
-#: ../lib/modules/posixAccount.inc:74
-#: ../lib/modules/posixAccount.inc:154
-#: ../lib/modules/posixAccount.inc:163
+#: ../lib/modules/posixAccount.inc:53
+#: ../lib/modules/posixAccount.inc:55
+#: ../lib/modules/posixAccount.inc:143
+#: ../lib/modules/posixAccount.inc:152
 msgid "Minimum UID number"
 msgstr "Минимальный UID"
 
-#: ../lib/modules/posixAccount.inc:186
+#: ../lib/modules/posixAccount.inc:175
 msgid "Minimum UID number for Unix accounts (hosts)"
 msgstr "Минимальный UID для Unix учетных записей (компьютеры)"
 
-#: ../lib/modules/posixAccount.inc:184
+#: ../lib/modules/posixAccount.inc:173
 msgid "Minimum UID number for Unix accounts (users)"
 msgstr "Минимальный UID для Unix учетных записей (пользователи)"
 
-#: ../lib/modules/posixAccount.inc:72
-#: ../lib/modules/posixAccount.inc:74
+#: ../lib/modules/posixAccount.inc:53
+#: ../lib/modules/posixAccount.inc:55
 msgid "Minimum UID number is invalid!"
 msgstr "Минимальный UID неправильный!"
 
+#: ../lib/modules/shadowAccount.inc:45
 #: ../lib/modules/shadowAccount.inc:94
 #: ../lib/modules/shadowAccount.inc:161
 #: ../lib/modules/shadowAccount.inc:189
-#: ../lib/modules/shadowAccount.inc:291
+#: ../lib/modules/shadowAccount.inc:278
+#: ../lib/modules/sambaDomain.inc:114
+#: ../lib/modules/sambaDomain.inc:197
+#: ../lib/modules/sambaDomain.inc:286
+#: ../lib/modules/sambaDomain.inc:627
 msgid "Minimum password age"
 msgstr "Минимальный срок действия пароля"
 
 #: ../lib/modules/inetOrgPerson.inc:52
-#: ../lib/modules/inetOrgPerson.inc:207
-#: ../lib/modules/inetOrgPerson.inc:327
-#: ../lib/modules/inetOrgPerson.inc:328
-#: ../lib/modules/inetOrgPerson.inc:635
-#: ../lib/modules/inetOrgPerson.inc:824
+#: ../lib/modules/inetOrgPerson.inc:113
+#: ../lib/modules/inetOrgPerson.inc:212
+#: ../lib/modules/inetOrgPerson.inc:332
+#: ../lib/modules/inetOrgPerson.inc:333
+#: ../lib/modules/inetOrgPerson.inc:639
+#: ../lib/modules/inetOrgPerson.inc:822
 msgid "Mobile number"
 msgstr "Мобильный номер"
 
-#: ../lib/modules.inc:928
-#: ../lib/modules.inc:1083
+#: ../lib/modules/inetOrgPerson.inc:1091
+msgid "Mobile telephone number"
+msgstr "Мобильный телефон"
+
+#: ../lib/modules.inc:922
+#: ../lib/modules.inc:1075
 msgid "Modify Account"
 msgstr "Изменить учетную запись"
 
@@ -2708,7 +2881,7 @@ msgstr "Изменить учетную запись"
 msgid "Module selection"
 msgstr "Выбор модуля"
 
-#: ../lib/modules/sambaSamAccount.inc:1011
+#: ../lib/modules/sambaSamAccount.inc:1009
 msgid "Monday"
 msgstr "Понедельник"
 
@@ -2717,9 +2890,9 @@ msgid "Mountain Time (US & Canada)"
 msgstr "Mountain Time (US & Canada)"
 
 #: ../lib/modules/quota.inc:86
-#: ../lib/modules/quota.inc:298
-#: ../lib/modules/quota.inc:356
-#: ../lib/modules/quota.inc:433
+#: ../lib/modules/quota.inc:310
+#: ../lib/modules/quota.inc:364
+#: ../lib/modules/quota.inc:441
 msgid "Mountpoint"
 msgstr "Точка подключения"
 
@@ -2727,11 +2900,11 @@ msgstr "Точка подключения"
 msgid "Mountpoint of device with enabled quotas."
 msgstr "Подключенные устройства с включенными квотами"
 
-#: ../lib/modules/inetOrgPerson.inc:191
+#: ../lib/modules/inetOrgPerson.inc:196
 msgid "Mycity"
 msgstr "Mycity"
 
-#: ../lib/modules/inetOrgPerson.inc:179
+#: ../lib/modules/inetOrgPerson.inc:184
 msgid "Mystreetname 42"
 msgstr "Mystreetname 42"
 
@@ -2749,7 +2922,7 @@ msgstr "Имя"
 msgid "Name under which the profile will be saved. If a profile with the same name exists, it will be overwritten."
 msgstr "Имя, с которым будет сохранен профиль. Если имя существует, то будет перезаписано."
 
-#: ../lib/modules/ieee802device.inc:105
+#: ../lib/modules/ieee802device.inc:104
 msgid "New MAC address"
 msgstr "Новый MAC адрес"
 
@@ -2757,11 +2930,7 @@ msgstr "Новый MAC адрес"
 msgid "New OU created successfully."
 msgstr "Новый OU создан успешно."
 
-#: ../templates/config/confmain.php:361
-msgid "New Password"
-msgstr "Новый пароль"
-
-#: ../lib/modules/ldapPublicKey.inc:99
+#: ../lib/modules/ldapPublicKey.inc:97
 msgid "New SSH public key"
 msgstr "Новый SSH публичный ключ"
 
@@ -2785,7 +2954,7 @@ msgstr "Новая группа"
 msgid "New host"
 msgstr "Новый компьютер"
 
-#: ../lib/modules/inetLocalMailRecipient.inc:161
+#: ../lib/modules/inetLocalMailRecipient.inc:159
 msgid "New local address"
 msgstr "Новый адрес"
 
@@ -2803,15 +2972,20 @@ msgstr "Новый обьект"
 
 #: ../templates/tree/templates/creation/new_ou_template.php:47
 #: ../templates/ou_edit.php:165
-#: ../help/help.inc:163
+#: ../help/help.inc:180
 msgid "New organizational unit"
 msgstr "Новый обьект"
+
+#: ../templates/config/confmain.php:361
+#: ../lib/modules/posixAccount.inc:1504
+msgid "New password"
+msgstr "Новый пароль"
 
 #: ../templates/config/profmanage.php:116
 msgid "New password set successfully."
 msgstr "Новый пароль задан успешно."
 
-#: ../lib/modules/nisMailAlias.inc:148
+#: ../lib/modules/nisMailAlias.inc:146
 msgid "New recipient"
 msgstr "Получатель"
 
@@ -2833,51 +3007,51 @@ msgstr "Новое значение"
 msgid "Next"
 msgstr "Следующий"
 
-#: ../lib/modules/sambaDomain.inc:72
-#: ../lib/modules/sambaDomain.inc:112
-#: ../lib/modules/sambaDomain.inc:190
-#: ../lib/modules/sambaDomain.inc:372
+#: ../lib/modules/sambaDomain.inc:74
+#: ../lib/modules/sambaDomain.inc:154
+#: ../lib/modules/sambaDomain.inc:314
+#: ../lib/modules/sambaDomain.inc:589
 msgid "Next RID"
 msgstr "Следующий RID"
 
-#: ../lib/modules/sambaDomain.inc:145
-#: ../lib/modules/sambaDomain.inc:146
+#: ../lib/modules/sambaDomain.inc:188
+#: ../lib/modules/sambaDomain.inc:189
 msgid "Next RID is not a number!"
 msgstr "Следующий RID не цифра!"
 
-#: ../lib/modules/sambaDomain.inc:73
+#: ../lib/modules/sambaDomain.inc:75
 msgid "Next RID to use when creating accounts (only used by Winbind)."
 msgstr "Следующий RID используется после создания учетных записей (используется только для Winbind)."
 
-#: ../lib/modules/sambaDomain.inc:81
+#: ../lib/modules/sambaDomain.inc:83
 msgid "Next RID to use when creating group accounts (only used by Winbind)."
 msgstr "Следующий RID используется после создания групповых учетных записей (используется только для Winbind)."
 
-#: ../lib/modules/sambaDomain.inc:77
+#: ../lib/modules/sambaDomain.inc:79
 msgid "Next RID to use when creating user accounts (only used by Winbind)."
 msgstr "Следующий RID используется после создания учетных записей пользователей (используется только для Winbind)."
 
-#: ../lib/modules/sambaDomain.inc:80
-#: ../lib/modules/sambaDomain.inc:124
-#: ../lib/modules/sambaDomain.inc:200
-#: ../lib/modules/sambaDomain.inc:378
+#: ../lib/modules/sambaDomain.inc:82
+#: ../lib/modules/sambaDomain.inc:166
+#: ../lib/modules/sambaDomain.inc:324
+#: ../lib/modules/sambaDomain.inc:595
 msgid "Next group RID"
 msgstr "Следующий RID группы"
 
-#: ../lib/modules/sambaDomain.inc:149
-#: ../lib/modules/sambaDomain.inc:150
+#: ../lib/modules/sambaDomain.inc:192
+#: ../lib/modules/sambaDomain.inc:193
 msgid "Next group RID is not a number!"
 msgstr "Следующий RID группы не цифра!"
 
-#: ../lib/modules/sambaDomain.inc:76
-#: ../lib/modules/sambaDomain.inc:118
-#: ../lib/modules/sambaDomain.inc:195
-#: ../lib/modules/sambaDomain.inc:375
+#: ../lib/modules/sambaDomain.inc:78
+#: ../lib/modules/sambaDomain.inc:160
+#: ../lib/modules/sambaDomain.inc:319
+#: ../lib/modules/sambaDomain.inc:592
 msgid "Next user RID"
 msgstr "Следующий RID пользователя"
 
-#: ../lib/modules/sambaDomain.inc:147
-#: ../lib/modules/sambaDomain.inc:148
+#: ../lib/modules/sambaDomain.inc:190
+#: ../lib/modules/sambaDomain.inc:191
 msgid "Next user RID is not a number!"
 msgstr "Следующий RID пользователя не цифра!"
 
@@ -2889,17 +3063,17 @@ msgid "No"
 msgstr "Нет"
 
 #: ../lib/modules/sambaSamAccount.inc:469
-#: ../lib/modules/sambaSamAccount.inc:554
-#: ../lib/modules/sambaSamAccount.inc:799
+#: ../lib/modules/sambaSamAccount.inc:553
+#: ../lib/modules/sambaSamAccount.inc:798
 #: ../lib/modules/sambaGroupMapping.inc:88
 #: ../lib/modules/sambaGroupMapping.inc:173
-#: ../lib/modules/sambaGroupMapping.inc:409
+#: ../lib/modules/sambaGroupMapping.inc:408
 msgid "No Samba 3 domains found in LDAP! Please create one first."
 msgstr "Samba 3 домены не найдены в LDAP! Пожалуйста, вначале создайте их."
 
-#: ../lib/modules/posixAccount.inc:434
-#: ../lib/modules/posixAccount.inc:597
-#: ../lib/modules/posixAccount.inc:907
+#: ../lib/modules/posixAccount.inc:415
+#: ../lib/modules/posixAccount.inc:536
+#: ../lib/modules/posixAccount.inc:808
 msgid "No Unix groups found in LDAP! Please create one first."
 msgstr "Unix группы не найдены в LDAP! Пожалуйста, вначале создайте их."
 
@@ -2923,8 +3097,8 @@ msgstr "Не найдены домены!"
 msgid "No file selected."
 msgstr "Файл не выбран."
 
-#: ../lib/modules/posixGroup.inc:500
-#: ../lib/modules/posixAccount.inc:82
+#: ../lib/modules/posixGroup.inc:465
+#: ../lib/modules/posixAccount.inc:64
 msgid "No free ID-Number!"
 msgstr "ID не свободный!"
 
@@ -3013,6 +3187,18 @@ msgstr "Кол-во дней, прежде чем пользователь см�
 msgid "Number of days after a user has to change his password again. If set value must be 0<."
 msgstr "Кол-во дней, прежде чем пользователь должен поменять свой пароль. Это значение должно быть больше нуля."
 
+#: ../lib/modules/sambaDomain.inc:127
+msgid "Number of minutes after which the bad logon attempts are reset."
+msgstr "Время (в минутах), для сброса, после неудачной регистрации."
+
+#: ../lib/modules/sambaDomain.inc:115
+msgid "Number of seconds after the user is allowed to change his password again."
+msgstr "Кол-во секунд, после чего пользователю позволено сменить пароль снова."
+
+#: ../lib/modules/sambaDomain.inc:119
+msgid "Number of seconds after which the user must change his password."
+msgstr "Кол-во секунд, после чего пользователь должен изменить этот пароль."
+
 #: ../templates/schema/schema.php:152
 #: ../templates/schema/schema.php:349
 msgid "OID"
@@ -3039,8 +3225,8 @@ msgstr "OU не правильный!"
 msgid "OU is not empty or invalid!"
 msgstr "OU не пуст или не правильный!"
 
-#: ../help/help.inc:163
-#: ../help/help.inc:165
+#: ../help/help.inc:180
+#: ../help/help.inc:182
 msgid "OU-Editor"
 msgstr "OU-Редактор"
 
@@ -3055,6 +3241,17 @@ msgstr "Object classes"
 msgid "Obsolete"
 msgstr "Устаревший"
 
+#: ../lib/modules/sambaDomain.inc:260
+#: ../lib/modules/sambaDomain.inc:267
+#: ../lib/modules/sambaDomain.inc:274
+#: ../lib/modules/sambaDomain.inc:281
+#: ../lib/modules/sambaDomain.inc:607
+#: ../lib/modules/sambaDomain.inc:612
+#: ../lib/modules/sambaDomain.inc:617
+#: ../lib/modules/sambaDomain.inc:622
+msgid "Off"
+msgstr "Выключено"
+
 #: ../templates/tree/export_form.php:165
 #: ../templates/ou_edit.php:193
 #: ../templates/masscreate.php:107
@@ -3067,19 +3264,37 @@ msgstr "Устаревший"
 #: ../templates/config/conflogin.php:124
 #: ../templates/config/conflogin.php:125
 #: ../templates/config/mainlogin.php:117
+#: ../templates/selfService/selfServiceLogin.php:204
+#: ../templates/selfService/profManage.php:253
+#: ../templates/selfService/adminLogin.php:121
+#: ../templates/selfService/adminLogin.php:122
+#: ../templates/selfService/adminMain.php:432
+#: ../templates/selfService/adminMain.php:466
+#: ../templates/selfService/adminMain.php:486
 #: ../templates/pdfedit/pdfmain.php:152
 #: ../templates/profedit/profiledelete.php:82
 #: ../templates/profedit/profilemain.php:165
-#: ../lib/modules/posixGroup.inc:283
-#: ../lib/modules/sambaSamAccount.inc:1058
-#: ../lib/modules/posixAccount.inc:1060
-#: ../lib/modules/inetOrgPerson.inc:759
+#: ../lib/modules/posixGroup.inc:260
+#: ../lib/modules/sambaSamAccount.inc:1056
+#: ../lib/modules/posixAccount.inc:954
+#: ../lib/modules/inetOrgPerson.inc:760
 msgid "Ok"
 msgstr "Ok"
 
 #: ../templates/tree/update_confirm.php:150
 msgid "Old value"
 msgstr "Старое значение"
+
+#: ../lib/modules/sambaDomain.inc:260
+#: ../lib/modules/sambaDomain.inc:267
+#: ../lib/modules/sambaDomain.inc:274
+#: ../lib/modules/sambaDomain.inc:281
+#: ../lib/modules/sambaDomain.inc:608
+#: ../lib/modules/sambaDomain.inc:613
+#: ../lib/modules/sambaDomain.inc:618
+#: ../lib/modules/sambaDomain.inc:623
+msgid "On"
+msgstr "Включено"
 
 #: ../templates/tree/export_form.php:75
 msgid "One (one level beneath base)"
@@ -3107,7 +3322,7 @@ msgid "PDF editor"
 msgstr "PDF редактор"
 
 #: ../templates/pdfedit/pdfpage.php:451
-#: ../lib/lists.inc:492
+#: ../lib/lists.inc:501
 msgid "PDF structure"
 msgstr "PDF шаблон"
 
@@ -3135,44 +3350,44 @@ msgstr "Настройки страницы"
 msgid "Parent to"
 msgstr "Родитель к"
 
-#: ../templates/login.php:231
-#: ../lib/modules/posixGroup.inc:182
-#: ../lib/modules/posixGroup.inc:192
-#: ../lib/modules/posixGroup.inc:274
-#: ../lib/modules/posixGroup.inc:495
-#: ../lib/modules/posixGroup.inc:496
-#: ../lib/modules/posixGroup.inc:497
+#: ../templates/login.php:235
+#: ../templates/selfService/selfServiceLogin.php:190
+#: ../lib/modules/posixGroup.inc:165
+#: ../lib/modules/posixGroup.inc:177
+#: ../lib/modules/posixGroup.inc:251
+#: ../lib/modules/posixGroup.inc:461
+#: ../lib/modules/posixGroup.inc:462
 #: ../lib/modules/sambaAccount.inc:74
 #: ../lib/modules/sambaAccount.inc:75
 #: ../lib/modules/sambaAccount.inc:225
 #: ../lib/modules/sambaSamAccount.inc:87
 #: ../lib/modules/sambaSamAccount.inc:88
 #: ../lib/modules/sambaSamAccount.inc:287
-#: ../lib/modules/posixAccount.inc:86
-#: ../lib/modules/posixAccount.inc:87
-#: ../lib/modules/posixAccount.inc:88
-#: ../lib/modules/posixAccount.inc:246
-#: ../lib/modules/posixAccount.inc:374
-#: ../lib/modules/posixAccount.inc:950
-#: ../lib/modules/posixAccount.inc:960
-#: ../lib/modules/posixAccount.inc:1051
-#: ../lib/modules/posixAccount.inc:1163
+#: ../lib/modules/posixAccount.inc:69
+#: ../lib/modules/posixAccount.inc:70
+#: ../lib/modules/posixAccount.inc:130
+#: ../lib/modules/posixAccount.inc:235
+#: ../lib/modules/posixAccount.inc:363
+#: ../lib/modules/posixAccount.inc:851
+#: ../lib/modules/posixAccount.inc:862
+#: ../lib/modules/posixAccount.inc:945
+#: ../lib/modules/posixAccount.inc:1038
 #: ../lib/modules/inetOrgPerson.inc:74
 #: ../lib/modules/inetOrgPerson.inc:75
-#: ../lib/modules/inetOrgPerson.inc:351
-#: ../lib/modules/inetOrgPerson.inc:585
-#: ../lib/modules/inetOrgPerson.inc:596
-#: ../lib/modules/inetOrgPerson.inc:750
+#: ../lib/modules/inetOrgPerson.inc:356
+#: ../lib/modules/inetOrgPerson.inc:589
+#: ../lib/modules/inetOrgPerson.inc:600
+#: ../lib/modules/inetOrgPerson.inc:751
 msgid "Password"
 msgstr "Пароль"
 
-#: ../lib/modules/posixGroup.inc:496
+#: ../lib/modules/posixGroup.inc:462
 #: ../lib/modules/sambaAccount.inc:75
 #: ../lib/modules/sambaAccount.inc:76
 #: ../lib/modules/sambaSamAccount.inc:88
 #: ../lib/modules/sambaSamAccount.inc:89
-#: ../lib/modules/posixAccount.inc:87
-#: ../lib/modules/posixAccount.inc:89
+#: ../lib/modules/posixAccount.inc:70
+#: ../lib/modules/posixAccount.inc:71
 #: ../lib/modules/inetOrgPerson.inc:75
 #: ../lib/modules/inetOrgPerson.inc:76
 msgid "Password contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and #*,.;:_-+!$%&/|?{[()]}=@$ !"
@@ -3182,12 +3397,12 @@ msgstr "Пароль содержит недопустимые символы. �
 #: ../lib/modules/sambaAccount.inc:247
 #: ../lib/modules/sambaAccount.inc:361
 #: ../lib/modules/sambaAccount.inc:364
-#: ../lib/modules/sambaAccount.inc:730
+#: ../lib/modules/sambaAccount.inc:729
 #: ../lib/modules/sambaSamAccount.inc:201
 #: ../lib/modules/sambaSamAccount.inc:204
 #: ../lib/modules/sambaSamAccount.inc:309
-#: ../lib/modules/sambaSamAccount.inc:857
-#: ../lib/modules/sambaSamAccount.inc:1097
+#: ../lib/modules/sambaSamAccount.inc:856
+#: ../lib/modules/sambaSamAccount.inc:1095
 msgid "Password does not expire"
 msgstr "Пароль не устаревает"
 
@@ -3195,8 +3410,8 @@ msgstr "Пароль не устаревает"
 #: ../lib/modules/shadowAccount.inc:89
 #: ../lib/modules/shadowAccount.inc:157
 #: ../lib/modules/shadowAccount.inc:183
-#: ../lib/modules/shadowAccount.inc:286
-#: ../lib/modules/shadowAccount.inc:324
+#: ../lib/modules/shadowAccount.inc:273
+#: ../lib/modules/shadowAccount.inc:311
 msgid "Password expiration"
 msgstr "Дней, с устаревшим паролем"
 
@@ -3205,42 +3420,42 @@ msgstr "Дней, с устаревшим паролем"
 msgid "Password expiration must be are natural number or -1."
 msgstr "Истечение пароля должно быть целым числом или -1."
 
-#: ../lib/modules/posixGroup.inc:438
-#: ../lib/modules/posixGroup.inc:457
-#: ../lib/modules/posixAccount.inc:172
-#: ../lib/modules/posixAccount.inc:333
+#: ../lib/modules/posixGroup.inc:403
+#: ../lib/modules/posixGroup.inc:422
+#: ../lib/modules/posixAccount.inc:161
+#: ../lib/modules/posixAccount.inc:322
 msgid "Password hash type"
 msgstr "Тип хэша пароля"
 
-#: ../lib/modules/posixAccount.inc:188
+#: ../lib/modules/posixAccount.inc:177
 msgid "Password hash type for Unix accounts"
 msgstr "Тип хэша пароля для Unix учетных записей"
 
-#: ../lib/modules/posixGroup.inc:332
+#: ../lib/modules/posixGroup.inc:309
 msgid "Password hash type for Unix groups"
 msgstr "Тип хэша пароля для Unix групп"
 
-#: ../lib/modules/shadowAccount.inc:47
-#: ../lib/modules/shadowAccount.inc:53
-msgid "Password maxage"
-msgstr "Максимальный срок жизни пароля"
+#: ../lib/modules/sambaDomain.inc:94
+#: ../lib/modules/sambaDomain.inc:251
+#: ../lib/modules/sambaDomain.inc:604
+msgid "Password history length"
+msgstr "Длина истории пароля"
 
 #: ../lib/modules/shadowAccount.inc:47
 #: ../lib/modules/shadowAccount.inc:48
+#: ../lib/modules/sambaDomain.inc:198
 msgid "Password maximum age must be are natural number."
 msgstr "Максимальный срок жизни пароля должно быть целое число."
 
 #: ../lib/modules/shadowAccount.inc:53
 #: ../lib/modules/shadowAccount.inc:54
+#: ../lib/modules/sambaDomain.inc:196
 msgid "Password maximum age must be bigger as password minimum age."
 msgstr "Максимальный срок жизни пароля должен быть больше минимального срока."
 
 #: ../lib/modules/shadowAccount.inc:45
-msgid "Password minage"
-msgstr "Минимальный срок жизни пароля"
-
-#: ../lib/modules/shadowAccount.inc:45
 #: ../lib/modules/shadowAccount.inc:46
+#: ../lib/modules/sambaDomain.inc:197
 msgid "Password minimum age must be are natural number."
 msgstr "Минимальный срок жизни пароля должно быть целое число."
 
@@ -3248,8 +3463,8 @@ msgstr "Минимальный срок жизни пароля должно б�
 #: ../lib/modules/shadowAccount.inc:84
 #: ../lib/modules/shadowAccount.inc:153
 #: ../lib/modules/shadowAccount.inc:177
-#: ../lib/modules/shadowAccount.inc:281
-#: ../lib/modules/shadowAccount.inc:322
+#: ../lib/modules/shadowAccount.inc:268
+#: ../lib/modules/shadowAccount.inc:309
 msgid "Password warning"
 msgstr "Предупреждение об устаревании пароля"
 
@@ -3279,11 +3494,11 @@ msgstr "Всегда удалять всех потомков?"
 msgid "Personal"
 msgstr "Personal"
 
-#: ../lib/modules/inetOrgPerson.inc:706
+#: ../lib/modules/inetOrgPerson.inc:710
 msgid "Photo"
 msgstr "Фото"
 
-#: ../lib/modules/inetOrgPerson.inc:793
+#: ../lib/modules/inetOrgPerson.inc:791
 msgid "Photo file (JPG format)"
 msgstr "Фото файл (в формате JPG)"
 
@@ -3299,7 +3514,7 @@ msgstr "Пожалуйста, подтвердите:"
 msgid "Please enter a RID number or the name of a special account!"
 msgstr "Пожалуйста, введите RID или имя специальной учетной записи!"
 
-#: ../lib/modules/inetOrgPerson.inc:348
+#: ../lib/modules/inetOrgPerson.inc:353
 msgid "Please enter a comma separated list of host names where this user is allowed to log in. If you enable host restrictions for your servers then \"*\" means every host and an empty field means no host."
 msgstr "Пожалуйста, введите список компьютеров (разделенный запятыми), разрешенных для входа этого пользователя. \"*\" означает любой компьютер, пусто - не разрешен ни один из компьютеров."
 
@@ -3310,14 +3525,14 @@ msgstr "Пожалуйста, введите список компьютеров
 msgid "Please enter a comma separated list of host names!"
 msgstr "Пожалуйста, введите список имен компьютеров (разделенный запятыми) !"
 
-#: ../lib/modules/kolabUser.inc:267
-#: ../lib/modules/kolabUser.inc:270
+#: ../lib/modules/kolabUser.inc:266
+#: ../lib/modules/kolabUser.inc:271
 #, php-format
 msgid "Please enter a user password on this page: %s"
 msgstr "Пожалуйста, введите пароль пользователя на этой странице: %s"
 
-#: ../lib/modules/posixAccount.inc:106
-#: ../lib/modules/posixAccount.inc:107
+#: ../lib/modules/posixAccount.inc:89
+#: ../lib/modules/posixAccount.inc:90
 #: ../lib/modules/inetOrgPerson.inc:68
 #: ../lib/modules/inetOrgPerson.inc:69
 msgid "Please enter a valid common name!"
@@ -3400,18 +3615,18 @@ msgstr "Пожалуйста, введите правильное названи
 msgid "Please enter a valid telephone number!"
 msgstr "Пожалуйста, введите правильный номер телефона!"
 
-#: ../lib/modules/posixGroup.inc:626
-#: ../lib/modules/posixAccount.inc:673
+#: ../lib/modules/posixGroup.inc:566
+#: ../lib/modules/posixAccount.inc:630
 #, php-format
 msgid "Please enter a value between %s and %s!"
 msgstr "Пожалуйста, введите значение между %s и %s !"
 
-#: ../lib/modules/kolabUser.inc:274
+#: ../lib/modules/kolabUser.inc:276
 #, php-format
 msgid "Please enter an email address on this page: %s"
 msgstr "Пожалуйста, введите электронный адрес на этой странице: %s"
 
-#: ../lib/modules.inc:918
+#: ../lib/modules.inc:912
 msgid "Please enter the account information on the other pages first."
 msgstr "Пожалуйста, введите информацию об учетной записи сперва на другой странице."
 
@@ -3435,12 +3650,12 @@ msgstr "Пожалуйста, введите имя нового профиля 
 msgid "Please enter the new name of the profile. The name may contain letters, numbers and -/_."
 msgstr "Пожалуйста, введите новое имя профиля. Имя профиля может содержать буквы, цифры и -/_."
 
-#: ../lib/modules/posixAccount.inc:375
-#: ../lib/modules/inetOrgPerson.inc:352
+#: ../lib/modules/posixAccount.inc:364
+#: ../lib/modules/inetOrgPerson.inc:357
 msgid "Please enter the password which you want to set for this account."
 msgstr "Пожалуйста, введите пароль для этой учетной записи."
 
-#: ../lib/modules/posixAccount.inc:350
+#: ../lib/modules/posixAccount.inc:339
 msgid "Please enter the path to the user's home directory."
 msgstr "Пожалуйста, введите путь для домашнего каталога."
 
@@ -3448,16 +3663,20 @@ msgstr "Пожалуйста, введите путь для домашнего 
 msgid "Please enter the quota settings for this mount point. The syntax is: {soft block limit},{hard block limit},{soft inode limit},{hard inode limit}"
 msgstr "Пожалуйста, введите квоту для этого диска. Синтаксис: {Мягкое ограничение на размер файлов}{Жесткое ограничение на размер файлов}{Мягкое ограничение на кол-во файлов}{Жесткое ограничение на кол-во файлов}"
 
-#: ../lib/modules/posixAccount.inc:86
+#: ../lib/modules/posixAccount.inc:69
 #: ../lib/modules/inetOrgPerson.inc:74
 msgid "Please enter the same password in both password fields."
 msgstr "Пожалуйста, наберите какой-нибудь пароль в обоих полях."
 
-#: ../lib/modules/posixGroup.inc:495
+#: ../lib/modules/posixGroup.inc:461
 #: ../lib/modules/sambaAccount.inc:74
 #: ../lib/modules/sambaSamAccount.inc:87
 msgid "Please enter the same password in both password-fields."
 msgstr "Пожалуйста, наберите какой-нибудь пароль в обоих полях."
+
+#: ../templates/selfService/adminLogin.php:96
+msgid "Please enter your master configuration password to change the self service profile:"
+msgstr "Пожалуйста, введите пароль для изменений настроек сервера:"
 
 #: ../templates/config/conflogin.php:89
 msgid "Please enter your password to change the server preferences:"
@@ -3471,15 +3690,11 @@ msgstr "Пожалуйста, введите Ваш публичный SSH кл�
 msgid "Please provide a CSV formated file with your account data. The cells in the first row must be filled with the column identifiers. The following rows represent one account for each row."
 msgstr "Подготовьте CSV файл с данными учетных записей. Ячейки в первом ряду должны содержать названия столбцов. Последующие ряды содержат данные."
 
-#: ../lib/status.inc:66
-msgid "Please report this error to the Bug-Tracker at {link=http://lam.sourceforge.net}LDAP Account Manager Development Team{endlink}. The error number is {bold}0001:Invalid/Missing Message type.{endbold} Thank you."
-msgstr "Пожалуйста отправьте сообщение об ошибке на Bug-Tracker {link=http://lam.sourceforge.net}LDAP Account Manager Development Team{endlink}. Номер ошибки {bold}0001:Invalid/Missing Message type.{endbold} Спасибо."
-
-#: ../lib/modules/inetOrgPerson.inc:356
+#: ../lib/modules/inetOrgPerson.inc:361
 msgid "Please select an image file to upload. It must be in JPG format (.jpg/.jpeg)."
 msgstr "Пожалуйста выберите файл с изображением для загрузки. Должен быть JPG формат (.jpg/.jpeg)."
 
-#: ../lib/modules.inc:969
+#: ../lib/modules.inc:961
 msgid "Please select page:"
 msgstr "Выберите страницу:"
 
@@ -3491,16 +3706,17 @@ msgstr "Пожалуйста выберите тип учетной записи
 msgid "Please select your prefered log level. Messages with a lower level will not be logged."
 msgstr "Выберите уровень вывода отладочной информации, (лог файл)."
 
-#: ../templates/login.php:204
+#: ../templates/login.php:208
 msgid "Please select your user name and enter your password to log in."
 msgstr "Пожалуйста выберите имя пользователя и введите пароль."
 
-#: ../lib/modules.inc:961
+#: ../lib/modules.inc:953
 #, php-format
 msgid "Please set up all required attributes on page: %s"
 msgstr "Пожалуйста настройте все необходимые аттрибуты на странице: %s"
 
 #: ../templates/config/profmanage.php:138
+#: ../templates/selfService/profManage.php:113
 msgid "Please set up your master configuration file (config/config.cfg) first!"
 msgstr "Вначале настройте основной кофигурационный файл (config/config.cfg)!"
 
@@ -3518,32 +3734,38 @@ msgstr "Позиция"
 msgid "Possible values"
 msgstr "Возможные значения"
 
-#: ../lib/modules/inetOrgPerson.inc:195
-#: ../lib/modules/inetOrgPerson.inc:311
-#: ../lib/modules/inetOrgPerson.inc:312
-#: ../lib/modules/inetOrgPerson.inc:611
-#: ../lib/modules/inetOrgPerson.inc:820
+#: ../lib/modules/inetOrgPerson.inc:115
+#: ../lib/modules/inetOrgPerson.inc:200
+#: ../lib/modules/inetOrgPerson.inc:316
+#: ../lib/modules/inetOrgPerson.inc:317
+#: ../lib/modules/inetOrgPerson.inc:615
+#: ../lib/modules/inetOrgPerson.inc:818
+#: ../lib/modules/inetOrgPerson.inc:1131
 msgid "Post office box"
 msgstr "Почтовый ящик"
 
 #: ../lib/modules/inetOrgPerson.inc:60
-#: ../lib/modules/inetOrgPerson.inc:189
-#: ../lib/modules/inetOrgPerson.inc:319
-#: ../lib/modules/inetOrgPerson.inc:623
-#: ../lib/modules/inetOrgPerson.inc:822
+#: ../lib/modules/inetOrgPerson.inc:114
+#: ../lib/modules/inetOrgPerson.inc:194
+#: ../lib/modules/inetOrgPerson.inc:324
+#: ../lib/modules/inetOrgPerson.inc:627
+#: ../lib/modules/inetOrgPerson.inc:820
+#: ../lib/modules/inetOrgPerson.inc:1115
 msgid "Postal address"
 msgstr "Почтовый адрес"
 
-#: ../lib/modules/inetOrgPerson.inc:320
+#: ../lib/modules/inetOrgPerson.inc:325
 msgid "Postal address, city"
 msgstr "Почтовый адрес, город"
 
 #: ../lib/modules/inetOrgPerson.inc:62
-#: ../lib/modules/inetOrgPerson.inc:183
-#: ../lib/modules/inetOrgPerson.inc:315
-#: ../lib/modules/inetOrgPerson.inc:316
-#: ../lib/modules/inetOrgPerson.inc:617
-#: ../lib/modules/inetOrgPerson.inc:821
+#: ../lib/modules/inetOrgPerson.inc:115
+#: ../lib/modules/inetOrgPerson.inc:188
+#: ../lib/modules/inetOrgPerson.inc:320
+#: ../lib/modules/inetOrgPerson.inc:321
+#: ../lib/modules/inetOrgPerson.inc:621
+#: ../lib/modules/inetOrgPerson.inc:819
+#: ../lib/modules/inetOrgPerson.inc:1123
 msgid "Postal code"
 msgstr "Почтовый код"
 
@@ -3551,24 +3773,25 @@ msgstr "Почтовый код"
 msgid "Predefined values"
 msgstr "Предустановленные аттрибуты"
 
-#: ../lib/modules/inetOrgPerson.inc:161
+#: ../lib/modules/inetOrgPerson.inc:166
 msgid "President"
 msgstr "President"
 
-#: ../lib/modules/posixGroup.inc:511
-#: ../lib/modules/posixAccount.inc:218
-#: ../lib/modules/posixAccount.inc:285
-#: ../lib/modules/posixAccount.inc:341
-#: ../lib/modules/posixAccount.inc:366
-#: ../lib/modules/posixAccount.inc:412
-#: ../lib/modules/posixAccount.inc:929
-#: ../lib/modules/posixAccount.inc:1077
-#: ../lib/modules/posixAccount.inc:1105
-#: ../lib/modules/posixAccount.inc:1160
+#: ../lib/modules/posixGroup.inc:476
+#: ../lib/modules/posixAccount.inc:207
+#: ../lib/modules/posixAccount.inc:274
+#: ../lib/modules/posixAccount.inc:330
+#: ../lib/modules/posixAccount.inc:355
+#: ../lib/modules/posixAccount.inc:393
+#: ../lib/modules/posixAccount.inc:830
+#: ../lib/modules/posixAccount.inc:971
+#: ../lib/modules/posixAccount.inc:991
+#: ../lib/modules/posixAccount.inc:1032
 msgid "Primary group"
 msgstr "Основная группа"
 
 #: ../templates/config/profmanage.php:106
+#: ../templates/selfService/profManage.php:96
 msgid "Profile deleted."
 msgstr "Профиль удален."
 
@@ -3578,6 +3801,8 @@ msgstr "Редактор профилей"
 
 #: ../templates/config/profmanage.php:50
 #: ../templates/config/profmanage.php:151
+#: ../templates/selfService/profManage.php:36
+#: ../templates/selfService/profManage.php:126
 #: ../help/help.inc:115
 #: ../help/help.inc:117
 #: ../help/help.inc:119
@@ -3588,6 +3813,8 @@ msgstr "Управление профилями"
 
 #: ../templates/config/profmanage.php:166
 #: ../templates/config/profmanage.php:218
+#: ../templates/selfService/profManage.php:141
+#: ../templates/selfService/profManage.php:192
 #: ../templates/profedit/profilepage.php:241
 #: ../help/help.inc:146
 msgid "Profile name"
@@ -3595,6 +3822,8 @@ msgstr "Имя профиля"
 
 #: ../templates/config/profmanage.php:90
 #: ../templates/config/profmanage.php:101
+#: ../templates/selfService/profManage.php:72
+#: ../templates/selfService/profManage.php:87
 msgid "Profile name is invalid!"
 msgstr "Имя профиля неправильное!"
 
@@ -3613,15 +3842,15 @@ msgstr "Пароли профиля не совпадают или пусты!"
 #: ../lib/modules/sambaAccount.inc:158
 #: ../lib/modules/sambaAccount.inc:289
 #: ../lib/modules/sambaAccount.inc:384
-#: ../lib/modules/sambaAccount.inc:762
-#: ../lib/modules/sambaAccount.inc:859
+#: ../lib/modules/sambaAccount.inc:761
+#: ../lib/modules/sambaAccount.inc:858
 #: ../lib/modules/sambaSamAccount.inc:79
 #: ../lib/modules/sambaSamAccount.inc:80
 #: ../lib/modules/sambaSamAccount.inc:224
 #: ../lib/modules/sambaSamAccount.inc:358
-#: ../lib/modules/sambaSamAccount.inc:903
-#: ../lib/modules/sambaSamAccount.inc:1128
-#: ../lib/modules/sambaSamAccount.inc:1291
+#: ../lib/modules/sambaSamAccount.inc:902
+#: ../lib/modules/sambaSamAccount.inc:1126
+#: ../lib/modules/sambaSamAccount.inc:1289
 msgid "Profile path"
 msgstr "Путь к профилю"
 
@@ -3640,7 +3869,7 @@ msgstr "Профиль сохранен."
 msgid "Quota"
 msgstr "Quota"
 
-#: ../lib/modules/quota.inc:481
+#: ../lib/modules/quota.inc:489
 msgid "Quota for:"
 msgstr "Ограничение для:"
 
@@ -3654,7 +3883,7 @@ msgstr "RDN"
 
 #: ../templates/masscreate.php:164
 #: ../templates/profedit/profilepage.php:200
-#: ../lib/modules.inc:1066
+#: ../lib/modules.inc:1058
 #: ../help/help.inc:144
 msgid "RDN identifier"
 msgstr "Идентификатор RDN"
@@ -3663,11 +3892,11 @@ msgstr "Идентификатор RDN"
 msgid "RID (Windows UID)"
 msgstr "RID (Windows UID)"
 
-#: ../lib/modules/sambaDomain.inc:84
-#: ../lib/modules/sambaDomain.inc:105
-#: ../lib/modules/sambaDomain.inc:207
-#: ../lib/modules/sambaDomain.inc:213
-#: ../lib/modules/sambaDomain.inc:381
+#: ../lib/modules/sambaDomain.inc:86
+#: ../lib/modules/sambaDomain.inc:147
+#: ../lib/modules/sambaDomain.inc:331
+#: ../lib/modules/sambaDomain.inc:337
+#: ../lib/modules/sambaDomain.inc:598
 msgid "RID base"
 msgstr "RID base"
 
@@ -3680,14 +3909,14 @@ msgid "Really delete attribute?"
 msgstr "Действительно удалить аттрибут?"
 
 #: ../lib/modules/nisMailAlias.inc:67
-#: ../lib/modules/nisMailAlias.inc:141
+#: ../lib/modules/nisMailAlias.inc:139
 msgid "Recipient"
 msgstr "Получатель"
 
 #: ../lib/types/mailAlias.inc:83
 #: ../lib/modules/nisMailAlias.inc:71
 #: ../lib/modules/nisMailAlias.inc:85
-#: ../lib/modules/nisMailAlias.inc:276
+#: ../lib/modules/nisMailAlias.inc:273
 msgid "Recipient list"
 msgstr "Список получателей"
 
@@ -3695,13 +3924,14 @@ msgstr "Список получателей"
 msgid "Recursive delete progress"
 msgstr "Процесс рекурсивного удаления"
 
-#: ../templates/config/confmain.php:371
-msgid "Reenter Password"
-msgstr "Повторите ввод пароля"
-
 #: ../templates/config/mainmanage.php:312
 msgid "Reenter new master password"
 msgstr "Повторить"
+
+#: ../templates/config/confmain.php:371
+#: ../lib/modules/posixAccount.inc:1506
+msgid "Reenter password"
+msgstr "Повторить ввод пароля"
 
 #: ../templates/config/profmanage.php:191
 #: ../templates/config/profmanage.php:298
@@ -3724,42 +3954,47 @@ msgid "Relative distinguished name"
 msgstr "Относительное отличительное имя"
 
 #: ../templates/pdfedit/pdfpage.php:475
-#: ../lib/modules/ieee802device.inc:100
-#: ../lib/modules/kolabUser.inc:335
-#: ../lib/modules/kolabUser.inc:354
-#: ../lib/modules/kolabUser.inc:380
-#: ../lib/modules/ldapPublicKey.inc:94
-#: ../lib/modules/inetLocalMailRecipient.inc:156
-#: ../lib/modules/nisMailAlias.inc:143
+#: ../lib/modules/ieee802device.inc:99
+#: ../lib/modules/kolabUser.inc:337
+#: ../lib/modules/kolabUser.inc:356
+#: ../lib/modules/kolabUser.inc:382
+#: ../lib/modules/ldapPublicKey.inc:92
+#: ../lib/modules/inetLocalMailRecipient.inc:154
+#: ../lib/modules/nisMailAlias.inc:141
 msgid "Remove"
 msgstr "Удалить"
+
+#: ../lib/modules/posixGroup.inc:184
+#: ../lib/modules/posixAccount.inc:869
+msgid "Remove password"
+msgstr "Удалить пароль"
 
 #: ../templates/config/conftypes.php:224
 msgid "Remove this account type"
 msgstr "Удалить этот тип учетной записи"
 
 #: ../templates/config/profmanage.php:214
+#: ../templates/selfService/profManage.php:188
 #: ../help/help.inc:117
 msgid "Rename profile"
 msgstr "Переименовать профиль"
 
 #: ../templates/config/profmanage.php:97
+#: ../templates/selfService/profManage.php:83
 msgid "Renamed profile."
 msgstr "Профиль переименован."
 
-#: ../lib/modules/posixGroup.inc:186
-#: ../lib/modules/posixGroup.inc:278
-#: ../lib/modules/sambaAccount.inc:719
-#: ../lib/modules/sambaSamAccount.inc:847
-#: ../lib/modules/posixAccount.inc:954
-#: ../lib/modules/posixAccount.inc:1055
-#: ../lib/modules/inetOrgPerson.inc:589
-#: ../lib/modules/inetOrgPerson.inc:754
+#: ../lib/modules/posixGroup.inc:255
+#: ../lib/modules/sambaAccount.inc:718
+#: ../lib/modules/sambaSamAccount.inc:846
+#: ../lib/modules/posixAccount.inc:949
+#: ../lib/modules/inetOrgPerson.inc:593
+#: ../lib/modules/inetOrgPerson.inc:755
 msgid "Repeat password"
 msgstr "Повторите пароль"
 
-#: ../lib/modules/posixAccount.inc:80
-#: ../lib/modules/posixAccount.inc:731
+#: ../lib/modules/posixAccount.inc:61
+#: ../lib/modules/posixAccount.inc:652
 msgid "Replaced $user or $group in homedir."
 msgstr "Перемещен $user или $group в домашний каталог."
 
@@ -3774,27 +4009,38 @@ msgid "Required attributes"
 msgstr "Требуемые аттрибуты"
 
 #: ../templates/profedit/profilepage.php:251
-#: ../lib/modules/sambaAccount.inc:810
-#: ../lib/modules/sambaSamAccount.inc:961
+#: ../lib/modules/sambaAccount.inc:809
+#: ../lib/modules/sambaSamAccount.inc:960
 msgid "Reset"
 msgstr "Сброс"
 
-#: ../lib/modules.inc:972
-#: ../lib/modules.inc:1000
+#: ../lib/modules.inc:964
+#: ../lib/modules.inc:992
 msgid "Reset changes"
 msgstr "Сброс изменений"
 
 #: ../lib/modules/sambaAccount.inc:346
-#: ../lib/modules/sambaAccount.inc:809
+#: ../lib/modules/sambaAccount.inc:808
 #: ../lib/modules/sambaSamAccount.inc:186
-#: ../lib/modules/sambaSamAccount.inc:960
+#: ../lib/modules/sambaSamAccount.inc:959
 msgid "Reset password"
 msgstr "Сброс пароля"
 
+#: ../lib/modules/sambaDomain.inc:126
+#: ../lib/modules/sambaDomain.inc:200
+#: ../lib/modules/sambaDomain.inc:301
+#: ../lib/modules/sambaDomain.inc:636
+msgid "Reset time after lockout"
+msgstr "Время сброса после выхода"
+
+#: ../lib/modules/sambaDomain.inc:200
+msgid "Reset time after lockout must be are natural number."
+msgstr "Время сброса после выхода должно быть целое число."
+
 #: ../lib/modules/inetLocalMailRecipient.inc:57
 #: ../lib/modules/inetLocalMailRecipient.inc:92
-#: ../lib/modules/inetLocalMailRecipient.inc:139
-#: ../lib/modules/inetLocalMailRecipient.inc:300
+#: ../lib/modules/inetLocalMailRecipient.inc:137
+#: ../lib/modules/inetLocalMailRecipient.inc:307
 msgid "Routing address"
 msgstr "Перенаправляемый адрес"
 
@@ -3802,11 +4048,11 @@ msgstr "Перенаправляемый адрес"
 #: ../lib/modules/ldapPublicKey.inc:58
 #: ../lib/modules/ldapPublicKey.inc:62
 #: ../lib/modules/ldapPublicKey.inc:70
-#: ../lib/modules/ldapPublicKey.inc:92
+#: ../lib/modules/ldapPublicKey.inc:90
 msgid "SSH public key"
 msgstr "SSH public key"
 
-#: ../lib/modules/ldapPublicKey.inc:164
+#: ../lib/modules/ldapPublicKey.inc:161
 msgid "SSH public key(s)"
 msgstr "SSH публичные ключи"
 
@@ -3819,8 +4065,8 @@ msgstr "Samba 2"
 msgid "Samba 3"
 msgstr "Samba 3"
 
-#: ../lib/modules/sambaDomain.inc:143
-#: ../lib/modules/sambaDomain.inc:144
+#: ../lib/modules/sambaDomain.inc:186
+#: ../lib/modules/sambaDomain.inc:187
 msgid "Samba 3 domain SID is invalid!"
 msgstr "Samba 3 domain SID не правильный!"
 
@@ -3867,9 +4113,9 @@ msgid "Samba group type"
 msgstr "Samba тип группы"
 
 #: ../lib/modules/sambaAccount.inc:343
-#: ../lib/modules/sambaAccount.inc:716
+#: ../lib/modules/sambaAccount.inc:715
 #: ../lib/modules/sambaSamAccount.inc:183
-#: ../lib/modules/sambaSamAccount.inc:843
+#: ../lib/modules/sambaSamAccount.inc:842
 msgid "Samba password"
 msgstr "Samba пароль"
 
@@ -3878,23 +4124,24 @@ msgstr "Samba пароль"
 #: ../lib/modules/sambaAccount.inc:301
 #: ../lib/modules/sambaAccount.inc:390
 #: ../lib/modules/sambaAccount.inc:393
-#: ../lib/modules/sambaAccount.inc:768
-#: ../lib/modules/sambaAccount.inc:860
+#: ../lib/modules/sambaAccount.inc:767
+#: ../lib/modules/sambaAccount.inc:859
 #: ../lib/modules/sambaSamAccount.inc:85
 #: ../lib/modules/sambaSamAccount.inc:230
 #: ../lib/modules/sambaSamAccount.inc:233
 #: ../lib/modules/sambaSamAccount.inc:370
-#: ../lib/modules/sambaSamAccount.inc:909
-#: ../lib/modules/sambaSamAccount.inc:1140
-#: ../lib/modules/sambaSamAccount.inc:1292
+#: ../lib/modules/sambaSamAccount.inc:908
+#: ../lib/modules/sambaSamAccount.inc:1138
+#: ../lib/modules/sambaSamAccount.inc:1290
 msgid "Samba workstations"
 msgstr "Samba компьютеры"
 
-#: ../lib/modules/sambaSamAccount.inc:1012
+#: ../lib/modules/sambaSamAccount.inc:1010
 msgid "Saturday"
 msgstr "Суббота"
 
 #: ../templates/tree/edit.php:508
+#: ../templates/selfService/selfServiceMain.php:197
 #: ../templates/pdfedit/pdfpage.php:736
 #: ../templates/pdfedit/pdfpage.php:770
 #: ../templates/profedit/profilepage.php:249
@@ -3959,7 +4206,7 @@ msgstr "Секция"
 msgid "Security settings"
 msgstr "Настройки безопасности"
 
-#: ../lib/lists.inc:626
+#: ../lib/lists.inc:635
 msgid "See README.openldap.txt to solve this problem."
 msgstr "Смотрите README.openldap.txt для решения этой проблемы."
 
@@ -3977,7 +4224,7 @@ msgstr "Выберите шаблон для создания"
 msgid "Select all"
 msgstr "Выбрать все"
 
-#: ../lib/modules/posixAccount.inc:1021
+#: ../lib/modules/posixAccount.inc:916
 msgid "Selected groups"
 msgstr "Выбранные группы"
 
@@ -3985,28 +4232,39 @@ msgstr "Выбранные группы"
 msgid "Selected modules"
 msgstr "Выбранные модули"
 
-#: ../lib/modules/posixGroup.inc:244
+#: ../lib/modules/posixGroup.inc:222
 msgid "Selected users"
 msgstr "Выбранные пользователи"
 
-#: ../templates/config/confmain.php:425
-msgid "Server Address is empty!"
-msgstr "Адрес сервера пуст!"
+#: ../templates/selfService/adminMain.php:189
+msgid "Self service configuration"
+msgstr "Конфигурация своего сервиса"
+
+#: ../templates/selfService/adminMain.php:201
+msgid "Self service configuration editor"
+msgstr "Редактор конфигурации"
 
 #: ../templates/config/confmain.php:141
+#: ../templates/selfService/adminMain.php:229
 #: ../help/help.inc:58
 msgid "Server address"
 msgstr "Адрес сервера"
+
+#: ../templates/config/confmain.php:425
+#: ../templates/selfService/adminMain.php:53
+msgid "Server address is invalid!"
+msgstr "Неправильный адрес сервера!"
 
 #: ../templates/config/confmain.php:320
 msgid "Server of external script"
 msgstr "Сервер внешнего скрипта"
 
-#: ../templates/login.php:300
+#: ../templates/login.php:304
 msgid "Server profile"
 msgstr "Профиль сервера"
 
 #: ../templates/config/confmain.php:138
+#: ../templates/selfService/adminMain.php:226
 msgid "Server settings"
 msgstr "Настройки сервера"
 
@@ -4015,18 +4273,17 @@ msgstr "Настройки сервера"
 msgid "Session timeout"
 msgstr "Таймаут сессии"
 
-#: ../lib/modules/posixGroup.inc:196
-#: ../lib/modules/posixAccount.inc:964
-#: ../lib/modules/posixAccount.inc:1094
-msgid "Set no password"
-msgstr "Нет пароля"
+#: ../lib/modules/posixGroup.inc:166
+#: ../lib/modules/posixAccount.inc:852
+msgid "Set password"
+msgstr "Установить пароль"
 
 #: ../templates/config/profmanage.php:278
 #: ../help/help.inc:121
 msgid "Set profile password"
 msgstr "Изменить пароль профиля"
 
-#: ../lib/modules/posixGroup.inc:419
+#: ../lib/modules/posixGroup.inc:396
 msgid "Sets the group password."
 msgstr "Установка пароля на группу."
 
@@ -4046,13 +4303,13 @@ msgstr "Показать скрытые аттрибуты"
 msgid "Single valued"
 msgstr "Одно значение"
 
-#: ../lib/modules/quota.inc:434
+#: ../lib/modules/quota.inc:442
 msgid "Soft block"
 msgstr "Soft block"
 
 #: ../lib/modules/quota.inc:94
-#: ../lib/modules/quota.inc:300
-#: ../lib/modules/quota.inc:357
+#: ../lib/modules/quota.inc:312
+#: ../lib/modules/quota.inc:365
 msgid "Soft block limit"
 msgstr "Мягкий лимит"
 
@@ -4060,7 +4317,7 @@ msgstr "Мягкий лимит"
 msgid "Soft block limit."
 msgstr "Мягкий лимит блоков, используемых пользователем. 1000 соответствуют 1Мб."
 
-#: ../lib/modules/quota.inc:436
+#: ../lib/modules/quota.inc:444
 msgid "Soft inode"
 msgstr "Soft inode"
 
@@ -4069,8 +4326,8 @@ msgid "Soft inode (files) limit."
 msgstr "Мягкий лимит кол-ва файлов (inodes), используемых пользователем."
 
 #: ../lib/modules/quota.inc:110
-#: ../lib/modules/quota.inc:304
-#: ../lib/modules/quota.inc:359
+#: ../lib/modules/quota.inc:316
+#: ../lib/modules/quota.inc:367
 msgid "Soft inode limit"
 msgstr "Мягкий лимит"
 
@@ -4079,7 +4336,7 @@ msgstr "Мягкий лимит"
 msgid "Some attributes (%s) were modified and are highlighted below."
 msgstr "Некоторые аттрибуты (%s) были изменены и выделены ниже."
 
-#: ../lib/modules.inc:960
+#: ../lib/modules.inc:952
 msgid "Some required information is missing"
 msgstr "Не вся необходимая информация"
 
@@ -4095,9 +4352,9 @@ msgstr "Извините этот номер помощи ({bold}%d{endbold}) н
 
 #: ../lib/modules/sambaAccount.inc:314
 #: ../lib/modules/sambaAccount.inc:402
-#: ../lib/modules/sambaAccount.inc:800
+#: ../lib/modules/sambaAccount.inc:799
 #: ../lib/modules/sambaSamAccount.inc:242
-#: ../lib/modules/sambaSamAccount.inc:944
+#: ../lib/modules/sambaSamAccount.inc:943
 msgid "Special user"
 msgstr "Специальный пользователь"
 
@@ -4115,27 +4372,29 @@ msgstr "Шаг 1 из 2: Имя и object class(es)"
 msgid "Step 2 of 2: Specify attributes and values"
 msgstr "Шаг 2 из 2: Определите аттрибуты и значения"
 
-#: ../lib/modules/inetOrgPerson.inc:142
+#: ../lib/modules/inetOrgPerson.inc:147
 msgid "Steve"
 msgstr "Steve"
 
 #: ../lib/modules/sambaAccount.inc:221
 #: ../lib/modules/sambaSamAccount.inc:283
-#: ../lib/modules/posixAccount.inc:208
-#: ../lib/modules/inetOrgPerson.inc:232
+#: ../lib/modules/posixAccount.inc:197
+#: ../lib/modules/inetOrgPerson.inc:237
 msgid "Steve Miller"
 msgstr "Steve Miller"
 
-#: ../lib/modules/posixAccount.inc:262
+#: ../lib/modules/posixAccount.inc:251
 msgid "Steve Miller,Room 2.14,123-123-1234,123-123-1234"
 msgstr "Steve Miller,Room 2.14,123-123-1234,123-123-1234"
 
 #: ../lib/modules/inetOrgPerson.inc:58
-#: ../lib/modules/inetOrgPerson.inc:177
-#: ../lib/modules/inetOrgPerson.inc:307
-#: ../lib/modules/inetOrgPerson.inc:308
-#: ../lib/modules/inetOrgPerson.inc:605
-#: ../lib/modules/inetOrgPerson.inc:819
+#: ../lib/modules/inetOrgPerson.inc:114
+#: ../lib/modules/inetOrgPerson.inc:182
+#: ../lib/modules/inetOrgPerson.inc:312
+#: ../lib/modules/inetOrgPerson.inc:313
+#: ../lib/modules/inetOrgPerson.inc:609
+#: ../lib/modules/inetOrgPerson.inc:817
+#: ../lib/modules/inetOrgPerson.inc:1107
 msgid "Street"
 msgstr "Улица"
 
@@ -4156,12 +4415,12 @@ msgstr "Substring Rule"
 msgid "Success"
 msgstr "Удачно"
 
-#: ../lib/lists.inc:466
-#: ../lib/modules.inc:1053
+#: ../lib/lists.inc:475
+#: ../lib/modules.inc:1045
 msgid "Suffix"
 msgstr "Суффикс"
 
-#: ../lib/modules/sambaSamAccount.inc:1012
+#: ../lib/modules/sambaSamAccount.inc:1010
 msgid "Sunday"
 msgstr "Воскресение"
 
@@ -4188,19 +4447,21 @@ msgid "Target of invitation policy is invalid!"
 msgstr "Цель политики приглашения недействительна!"
 
 #: ../lib/modules/inetOrgPerson.inc:50
-#: ../lib/modules/inetOrgPerson.inc:201
-#: ../lib/modules/inetOrgPerson.inc:323
-#: ../lib/modules/inetOrgPerson.inc:324
-#: ../lib/modules/inetOrgPerson.inc:629
-#: ../lib/modules/inetOrgPerson.inc:823
+#: ../lib/modules/inetOrgPerson.inc:113
+#: ../lib/modules/inetOrgPerson.inc:206
+#: ../lib/modules/inetOrgPerson.inc:328
+#: ../lib/modules/inetOrgPerson.inc:329
+#: ../lib/modules/inetOrgPerson.inc:633
+#: ../lib/modules/inetOrgPerson.inc:821
+#: ../lib/modules/inetOrgPerson.inc:1083
 msgid "Telephone number"
 msgstr "Телефонный номер"
 
-#: ../lib/modules/inetOrgPerson.inc:167
+#: ../lib/modules/inetOrgPerson.inc:172
 msgid "Temp"
 msgstr "Temp"
 
-#: ../lib/modules/inetOrgPerson.inc:155
+#: ../lib/modules/inetOrgPerson.inc:160
 msgid "Temp, contract until december"
 msgstr "Temp, contract until december"
 
@@ -4221,11 +4482,11 @@ msgstr "Cyrus почтовая квота для пользователей в M
 msgid "The IP address %s is invalid!"
 msgstr "IP адрес %s неправильный!"
 
-#: ../lib/modules/sambaDomain.inc:69
+#: ../lib/modules/sambaDomain.inc:71
 msgid "The SID of your Samba server. Get it with \"net getlocalsid\"."
 msgstr "SID Вашего Samba сервера. Узнать можно, выполнив: \"net getlocalsid\"."
 
-#: ../lib/modules/posixAccount.inc:78
+#: ../lib/modules/posixAccount.inc:59
 msgid "The UID ranges for users and hosts overlap! This is a problem because LAM uses the highest UID in use + 1 for new accounts. Please set the minimum UID to equal values or use independent ranges."
 msgstr "UID область для пользователей и компьютеров частично совпадают! Это возникает из-за того, что LAM использует наибольший UID +1 ,для новых учетных записей. Выставите нужный минимальный UID или используйте другую область."
 
@@ -4259,7 +4520,7 @@ msgstr "Заголовок для новой секции должен соде�
 msgid "The log file is empty or contains invalid characters! Valid characters are: a-z, A-Z, 0-9, /, \\, ., :, _ and -."
 msgstr "Лог файл пуст или содержит неправильные символы! Правильные: a-z, A-Z, 0-9, /, \\, ., :, _ и -."
 
-#: ../lib/modules.inc:917
+#: ../lib/modules.inc:911
 #, php-format
 msgid "The module %s is not yet ready."
 msgstr "Модуль %s еще не готов."
@@ -4272,7 +4533,7 @@ msgstr "Имя PDF шаблона неправильное. Разрешенны
 msgid "The name of the server where the mailbox is located."
 msgstr "Имя сервера, содержащего почтовые ящики."
 
-#: ../lib/modules/sambaDomain.inc:65
+#: ../lib/modules/sambaDomain.inc:67
 msgid "The name of your Windows domain or workgroup."
 msgstr "Имя Windows домена или рабочей группы."
 
@@ -4282,18 +4543,19 @@ msgstr "Новая учетная запись будет сохранена в 
 
 #: ../templates/config/confmain.php:70
 #: ../templates/config/mainlogin.php:56
+#: ../templates/selfService/adminLogin.php:51
 msgid "The password is invalid! Please try again."
 msgstr "Пароль неправильный! Попробуйте еще раз."
 
-#: ../lib/modules/posixAccount.inc:342
+#: ../lib/modules/posixAccount.inc:331
 msgid "The primary group for this account. You can insert a GID number or a group name."
 msgstr "Основная группа для этой учетной записи. Нужно ввести GID или имя группы."
 
-#: ../lib/modules/posixAccount.inc:413
+#: ../lib/modules/posixAccount.inc:394
 msgid "The primary group the host should be member of."
 msgstr "Основная группа компьютера."
 
-#: ../lib/modules/posixAccount.inc:367
+#: ../lib/modules/posixAccount.inc:356
 msgid "The primary group the user should be member of."
 msgstr "Основная группа пользователя."
 
@@ -4305,7 +4567,7 @@ msgstr "Статичный текст должен содержать хотя �
 msgid "There are new required attributes which need to be set."
 msgstr "Есть новые необходимые аттрибуты, которые нужно настроить."
 
-#: ../lib/modules/posixGroup.inc:511
+#: ../lib/modules/posixGroup.inc:476
 msgid "There are still users who have this group as their primary group."
 msgstr "Все еще есть пользователи, использующие эту группу, как основную."
 
@@ -4317,23 +4579,23 @@ msgstr "Может быть только одна группа этого тип
 msgid "There were errors while uploading:"
 msgstr "При загрузке возникли ошибки:"
 
-#: ../lib/modules/posixGroup.inc:435
+#: ../lib/modules/posixGroup.inc:400
 msgid "These are the minimum and maximum numbers to use for group IDs when creating new group accounts. New group accounts will always get the highest number in use plus one."
 msgstr "Мин. и макс. число (ID группы) при создании новых учетных записей для групп. Новая учетная запись будет создана с наибольшим числом, которое используется, плюс один."
 
-#: ../lib/modules/posixAccount.inc:330
+#: ../lib/modules/posixAccount.inc:319
 msgid "These are the minimum and maximum numbers to use for machine IDs when creating new accounts for Samba hosts. The range should be different from that of users. New host accounts will always get the highest number in use plus one."
 msgstr "Мин. и макс. число (ID компьютера) при создании новых учетных записей для компьютеров. Диапазон чисел должен быть отличен от диапазона ID для пользователей. Новая учетная запись будет создана с наибольшим числом, которое используется, плюс один."
 
-#: ../lib/modules/posixAccount.inc:326
+#: ../lib/modules/posixAccount.inc:315
 msgid "These are the minimum and maximum numbers to use for user IDs when creating new user accounts. The range should be different from that of machines. New user accounts will always get the highest number in use plus one."
 msgstr "Мин. и макс. число (ID пользователя) при создании новых учетных записей пользователей. Диапазон чисел должен быть отличен от диапазона ID для компьютеров. Новая учетная запись будет создана с наибольшим числом, которое используется, плюс один."
 
-#: ../lib/modules/posixAccount.inc:102
+#: ../lib/modules/posixAccount.inc:84
 msgid "This GID number is invalid! Please provide either a number or a group name."
 msgstr "GID неправильный! Должно быть число или название группы."
 
-#: ../lib/modules/kolabUser.inc:280
+#: ../lib/modules/kolabUser.inc:282
 msgid "This account is marked for deletion."
 msgstr "Эта учетная запись отмечена для удаления."
 
@@ -4357,7 +4619,7 @@ msgstr "Эта колонка была определена для включе�
 msgid "This defines the language of the login window and sets this language as the default language. Users can change the language at login."
 msgstr "Это определяет язык окна логина и устанавливает этот язык как язык по умолчанию. Пользователи могут изменить язык после логина."
 
-#: ../lib/pdf.inc:455
+#: ../lib/pdf.inc:454
 msgid "This document was automatically created by LDAP Account Manager"
 msgstr "Этот документ был создан автоматически LDAP Account Manager"
 
@@ -4370,7 +4632,7 @@ msgstr "Эта запись не имеет аттрибутов"
 msgid "This entry is the root of a sub-tree containing %s entries."
 msgstr "Эта запись является корневой для поддерева, содержащего %s записи."
 
-#: ../lib/modules/posixAccount.inc:103
+#: ../lib/modules/posixAccount.inc:86
 msgid "This gecos value is invalid!"
 msgstr "Этот gecos неправильный!"
 
@@ -4410,6 +4672,10 @@ msgstr "Список DN пользователей, кому разрешено 
 msgid "This is an example how it would look in your spreadsheet program before you convert to CSV:"
 msgstr "Пример как это выглядит в электронной таблице, перед конвертацией в CSV:"
 
+#: ../help/help.inc:166
+msgid "This is needed to find the LDAP DNs of your user accounts. E.g. if you use \"uid\" and your user inputs \"miller\" then LAM will search for an account with uid=miller."
+msgstr "Это нужно для поиска в LDAP отличительных имен (DN) учетных записей. Т.е. если Вы используете \"uid\" и ваш пользователь наберет \"miller\" , LAM будет искать учетную запись с uid=miller."
+
 #: ../lib/modules/inetOrgPerson.inc:73
 msgid "This is not a valid DN!"
 msgstr "Это неправильный DN!"
@@ -4430,7 +4696,7 @@ msgstr "Адрес, на который будет перенаправлять�
 msgid "This is one recipient for this alias."
 msgstr "Получатель для этого псевдонима."
 
-#: ../lib/modules/inetOrgPerson.inc:304
+#: ../lib/modules/inetOrgPerson.inc:309
 msgid "This is the LDAP DN of the user's manager. Use this property to represent hierarchies in your company."
 msgstr "Это - DN менеджера пользователя. Используется для предоставления иерархии в вашей компании."
 
@@ -4481,13 +4747,17 @@ msgstr "Это список аттрибутов, показываемых в с
 msgid "This is the mail server for the user."
 msgstr "Это почтовый сервер для этого пользователя."
 
-#: ../lib/modules/inetOrgPerson.inc:340
+#: ../lib/modules/inetOrgPerson.inc:345
 msgid "This is the natural name of the user. If empty, the first and last name is used."
 msgstr "Это настоящее имя пользователя. Пусто - будут использованы имя и фамилия."
 
-#: ../lib/modules/posixAccount.inc:399
+#: ../lib/modules/posixAccount.inc:380
 msgid "This is the natural name of the user. If empty, the first and last name or user name is used."
 msgstr "Это настоящее имя пользователя. Пусто - будут использованы имя и фамилия или имя пользователя."
+
+#: ../lib/modules/sambaDomain.inc:95
+msgid "This is the number of passwords which are saved to prevent that users reuse old passwords."
+msgstr "Это число хранимых паролей пользователя, для предотвращения повторного использования."
 
 #: ../help/help.inc:93
 msgid "This is the number of rows to show in the user/group/host list. If more entries are found the list will be split into several pages."
@@ -4525,6 +4795,10 @@ msgstr "Это суффикс, от которого будет производ
 msgid "This is the target email address for the user's mails."
 msgstr "Адрес пользователя."
 
+#: ../lib/modules/sambaDomain.inc:123
+msgid "This is the time (in minutes) for which the user may not log in after the account was locked. -1 means forever."
+msgstr "Это - время (в минутах), после которого пользователь не сможет зарегестрироваться, после того, как учетная запись будет закрыта. -1 всегда."
+
 #: ../help/help.inc:132
 msgid "This is the time (in minutes) of inactivity after which a user is automatically logged off."
 msgstr "Таймаут (в минутах), при неактивности пользователя, сессия будет принудительно завершена."
@@ -4545,9 +4819,13 @@ msgstr "Временная зона для Samba сервера. Эта инфо
 msgid "This is the user's primary Windows group."
 msgstr "Это основная Windows группа."
 
-#: ../lib/modules/posixAccount.inc:104
+#: ../lib/modules/posixAccount.inc:87
 msgid "This login shell is invalid!"
 msgstr "Эта оболочка для входа неправильная!"
+
+#: ../lib/modules/inetLocalMailRecipient.inc:227
+msgid "This mail address is already in use:"
+msgstr "Этот адрес уже используется"
 
 #: ../templates/schema/schema.php:355
 msgid "This object class is obsolete."
@@ -4564,6 +4842,18 @@ msgstr "Эта опция устанавливает разрешенное вр
 #: ../help/help.inc:155
 msgid "This saves your account to the LDAP database."
 msgstr "Это сохранение учетной записи в LDAP."
+
+#: ../help/help.inc:170
+msgid "This text is displayed on top of the self service login page. You can also input HTML code here."
+msgstr "Этот текст будет наверху входной страницы настроек. Допускается HTML код."
+
+#: ../help/help.inc:172
+msgid "This text is displayed on top of the self service main page. You can also input HTML code here."
+msgstr "Этот текст показывается вверху главной страницы настроек. Можно использовать HTML код."
+
+#: ../help/help.inc:168
+msgid "This text should shortly describe your selected LDAP search attribute (e.g. email or user name)."
+msgstr "Этот текст кратко описывает выбранный признак для поиска в LDAP (например электронная почта или имя пользователя)."
 
 #: ../help/help.inc:111
 msgid "This text will appear on top of every user PDF file."
@@ -4588,19 +4878,19 @@ msgstr "Этот пользователь не найден!"
 msgid "This value can only be \\\"true\\\" or \\\"false\\\"!"
 msgstr "Только \\\"true\\\" или \\\"false\\\"!"
 
-#: ../lib/modules/posixAccount.inc:105
+#: ../lib/modules/posixAccount.inc:88
 msgid "This value can only be \\\"true\\\" or \\\"false\\\"."
 msgstr "Только \\\"true\\\" или \\\"false\\\"."
 
-#: ../lib/modules/posixGroup.inc:510
+#: ../lib/modules/posixGroup.inc:475
 msgid "This value must be a list of user names separated by semicolons."
 msgstr "Эта запись должна быть списком имен пользователей, разделенных точкой с запятой."
 
-#: ../help/help.inc:164
+#: ../help/help.inc:181
 msgid "This will create a new organizational unit under the selected one."
 msgstr "Создание новой записи, в качестве поддерева для выбранного OU."
 
-#: ../help/help.inc:166
+#: ../help/help.inc:183
 msgid "This will delete the selected organizational unit. The OU has to be empty."
 msgstr "Удаление этой OU записи. Поле должно быть пустым."
 
@@ -4617,16 +4907,11 @@ msgstr "Это сбросит пароль компьютера в значен�
 msgid "This will set a special flag on the account which tells Kolabd to remove it. Use this to cleanly delete Kolab accounts (e.g. this removes mail boxes)."
 msgstr "Это устанавливает специальный флаг, говорящий Kolabd удалить эту учетную запись. Используйте это для удаления Kolab аккаунтов (т.е. удаления почтовых ящиков)."
 
-#: ../lib/modules/posixGroup.inc:431
-#: ../lib/modules/posixAccount.inc:387
-msgid "This will set an invalid password which prevents logins with this account."
-msgstr "Это установит неправильный пароль, чтобы запретить логиниться с этой уч. записью."
-
-#: ../lib/modules/sambaSamAccount.inc:1011
+#: ../lib/modules/sambaSamAccount.inc:1009
 msgid "Thursday"
 msgstr "Четверг"
 
-#: ../lib/modules/sambaSamAccount.inc:1052
+#: ../lib/modules/sambaSamAccount.inc:1050
 msgid "Time"
 msgstr "Время"
 
@@ -4635,7 +4920,11 @@ msgstr "Время"
 msgid "Time zone"
 msgstr "Временная зона"
 
-#: ../lib/modules/posixAccount.inc:391
+#: ../lib/lamdaemon.inc:126
+msgid "Timeout while executing lamdaemon commands!"
+msgstr "Перерыв, пока lamdaemon выполняет команды!"
+
+#: ../lib/modules/posixAccount.inc:372
 msgid "To disable login use /bin/false. The list of shells is read from lam/config/shells"
 msgstr "Чтобы отключить вход используйте /bin/false. Список оболочек читайте в lam/config/shells"
 
@@ -4669,46 +4958,47 @@ msgstr "Просмотр дерева"
 msgid "TreeSuffix is invalid!"
 msgstr "Суффикс дерева (TreeSuffix)  не правильный!"
 
-#: ../lib/modules/sambaSamAccount.inc:1011
+#: ../lib/modules/sambaSamAccount.inc:1009
 msgid "Tuesday"
 msgstr "Вторник"
 
+#: ../templates/selfService/profManage.php:144
 #: ../templates/schema/schema.php:353
 msgid "Type"
 msgstr "Тип"
 
-#: ../lib/modules/posixAccount.inc:90
+#: ../lib/modules/posixAccount.inc:72
 msgid "UID"
 msgstr "UID"
 
-#: ../lib/modules/posixAccount.inc:90
+#: ../lib/modules/posixAccount.inc:72
 msgid "UID has changed. Do you want to change home directory?"
 msgstr "UID был изменен. Хотите удалить домашний каталог?"
 
-#: ../lib/modules/posixAccount.inc:85
+#: ../lib/modules/posixAccount.inc:67
 msgid "UID must be a number. It has to be inside the UID range which is defined in your configuration profile."
 msgstr "UID должен быть цифрой. UID задается из диапазона, установленного в конфигурационном профиле."
 
 #: ../lib/types/host.inc:86
 #: ../lib/types/user.inc:83
-#: ../lib/modules/posixAccount.inc:61
-#: ../lib/modules/posixAccount.inc:212
-#: ../lib/modules/posixAccount.inc:279
-#: ../lib/modules/posixAccount.inc:325
-#: ../lib/modules/posixAccount.inc:329
-#: ../lib/modules/posixAccount.inc:337
-#: ../lib/modules/posixAccount.inc:921
-#: ../lib/modules/posixAccount.inc:1157
+#: ../lib/modules/posixAccount.inc:68
+#: ../lib/modules/posixAccount.inc:201
+#: ../lib/modules/posixAccount.inc:268
+#: ../lib/modules/posixAccount.inc:314
+#: ../lib/modules/posixAccount.inc:318
+#: ../lib/modules/posixAccount.inc:326
+#: ../lib/modules/posixAccount.inc:822
+#: ../lib/modules/posixAccount.inc:1029
 msgid "UID number"
 msgstr "UID"
 
-#: ../lib/modules/posixAccount.inc:61
+#: ../lib/modules/posixAccount.inc:68
 #, php-format
 msgid "UID number has changed. To keep file ownership you have to run the following command as root: 'find / -uid %s -exec chown %s {} \\;'"
 msgstr "UID был изменен. Чтобы не потерять владельца файлов надо выполнить: (из под root) 'find / -uid %s -exec chown %s {} \\;'"
 
-#: ../lib/modules/posixAccount.inc:78
-#: ../lib/modules/posixAccount.inc:182
+#: ../lib/modules/posixAccount.inc:59
+#: ../lib/modules/posixAccount.inc:171
 msgid "UID ranges for Unix accounts"
 msgstr "Диапазон UID для уч. записей UNIX"
 
@@ -4717,11 +5007,20 @@ msgstr "Диапазон UID для уч. записей UNIX"
 msgid "UNC-path (\\\\server\\share) of homedirectory. $user and $group are replaced with user and group name."
 msgstr "UNC-путь (\\\\server\\share) для домашнего каталога. Вместо $user и $group будет подставлено имя пользователя и группы."
 
+#: ../templates/selfService/selfServiceMain.php:118
+msgid "Unable to change your account. Maybe you do not have enough rights to change the settings."
+msgstr "Невозможно изменить Вашу учетную запись. Возможно у Вас нет прав для изменения настроек."
+
+#: ../lib/lamdaemon.inc:139
+msgid "Unable to connect to remote server!"
+msgstr "Не возможно подключиться к удаленному серверу!"
+
 #: ../templates/ou_edit.php:67
 msgid "Unable to create new OU!"
 msgstr "Не возможно создать новый OU!"
 
 #: ../templates/config/profmanage.php:86
+#: ../templates/selfService/profManage.php:70
 msgid "Unable to create new profile!"
 msgstr "Не возможно создать новый профиль!"
 
@@ -4734,12 +5033,13 @@ msgid "Unable to delete PDF structure!"
 msgstr "Не возможно удалить PDF структуру!"
 
 #: ../templates/config/profmanage.php:108
+#: ../templates/selfService/profManage.php:98
 #: ../templates/profedit/profiledelete.php:61
 msgid "Unable to delete profile!"
 msgstr "Не возможно удалить профиль!"
 
-#: ../lib/modules/posixAccount.inc:1321
-#: ../lib/modules/posixAccount.inc:1538
+#: ../lib/modules/posixAccount.inc:1196
+#: ../lib/modules/posixAccount.inc:1413
 msgid "Unable to find group in LDAP."
 msgstr "Не возможно найти группу!"
 
@@ -4749,6 +5049,8 @@ msgstr "Не возможно загрузить доступные языки. 
 
 #: ../lib/profiles.inc:91
 #: ../lib/profiles.inc:95
+#: ../lib/selfService.inc:164
+#: ../lib/selfService.inc:168
 msgid "Unable to load profile!"
 msgstr "Не возможно загрузить профиль!"
 
@@ -4759,20 +5061,21 @@ msgstr "Не возможно загрузить профиль!"
 msgid "Unable to retrieve schema!"
 msgstr "Не возможно восстановить схему!"
 
+#: ../templates/selfService/adminMain.php:88
 #: ../templates/profedit/profilepage.php:127
 msgid "Unable to save profile!"
 msgstr "Не возможно сохранить профиль!"
 
-#: ../lib/modules/posixGroup.inc:305
-#: ../lib/modules/posixAccount.inc:131
+#: ../lib/modules/posixGroup.inc:282
+#: ../lib/modules/posixAccount.inc:114
 msgid "Unix"
 msgstr "Unix"
 
 #: ../lib/modules/inetOrgPerson.inc:44
-#: ../lib/modules/inetOrgPerson.inc:249
-#: ../lib/modules/inetOrgPerson.inc:347
-#: ../lib/modules/inetOrgPerson.inc:671
-#: ../lib/modules/inetOrgPerson.inc:813
+#: ../lib/modules/inetOrgPerson.inc:254
+#: ../lib/modules/inetOrgPerson.inc:352
+#: ../lib/modules/inetOrgPerson.inc:675
+#: ../lib/modules/inetOrgPerson.inc:811
 msgid "Unix workstations"
 msgstr "Unix компьютер"
 
@@ -4780,6 +5083,11 @@ msgstr "Unix компьютер"
 #: ../lib/modules/inetOrgPerson.inc:45
 msgid "Unix workstations are invalid!"
 msgstr "Unix компьютер не правильный!"
+
+#: ../lib/modules/posixGroup.inc:173
+#: ../lib/modules/posixAccount.inc:859
+msgid "Unlock password"
+msgstr "Пароль открыт"
 
 #: ../templates/config/confmodules.php:238
 msgid "Unsolved dependency:"
@@ -4810,9 +5118,12 @@ msgstr "Использовать"
 #: ../lib/modules/sambaAccount.inc:231
 #: ../lib/modules/sambaAccount.inc:349
 #: ../lib/modules/sambaAccount.inc:352
+#: ../lib/modules/sambaAccount.inc:722
 #: ../lib/modules/sambaSamAccount.inc:189
 #: ../lib/modules/sambaSamAccount.inc:192
 #: ../lib/modules/sambaSamAccount.inc:293
+#: ../lib/modules/sambaSamAccount.inc:849
+#: ../lib/modules/sambaSamAccount.inc:1077
 msgid "Use Unix password"
 msgstr "Использовать Unix пароль"
 
@@ -4826,29 +5137,21 @@ msgstr "По умолчанию"
 msgid "Use it at your own risk and read the documentation for lamdaemon before you use it!"
 msgstr "Используйте это на свой страх и риск, читайте документацию для lamdaemon прежде, чем Вы используете это!"
 
-#: ../lib/modules/posixGroup.inc:422
 #: ../lib/modules/sambaAccount.inc:126
 #: ../lib/modules/sambaAccount.inc:239
 #: ../lib/modules/sambaAccount.inc:355
 #: ../lib/modules/sambaAccount.inc:358
-#: ../lib/modules/sambaAccount.inc:727
+#: ../lib/modules/sambaAccount.inc:726
 #: ../lib/modules/sambaSamAccount.inc:195
 #: ../lib/modules/sambaSamAccount.inc:198
 #: ../lib/modules/sambaSamAccount.inc:301
-#: ../lib/modules/sambaSamAccount.inc:854
-#: ../lib/modules/sambaSamAccount.inc:1085
-#: ../lib/modules/posixAccount.inc:378
+#: ../lib/modules/sambaSamAccount.inc:853
+#: ../lib/modules/sambaSamAccount.inc:1083
 msgid "Use no password"
 msgstr "Использовать без пароля"
 
-#: ../lib/modules/sambaAccount.inc:723
-#: ../lib/modules/sambaSamAccount.inc:850
-#: ../lib/modules/sambaSamAccount.inc:1079
-msgid "Use unix password"
-msgstr "Использовать unix пароль"
-
 #: ../lib/modules/quota.inc:90
-#: ../lib/modules/quota.inc:299
+#: ../lib/modules/quota.inc:311
 msgid "Used blocks"
 msgstr "Занято блоков"
 
@@ -4864,12 +5167,12 @@ msgstr "Использовано аттрибутами"
 msgid "Used by object classes"
 msgstr "Использовано object classes"
 
-#: ../lib/modules/sambaDomain.inc:85
+#: ../lib/modules/sambaDomain.inc:87
 msgid "Used for calculating RIDs from UID/GID. Do not change if unsure."
 msgstr "Использовано для вычисления RIDs из UID/GID. Не изменяйте, если не уверены."
 
 #: ../lib/modules/quota.inc:106
-#: ../lib/modules/quota.inc:303
+#: ../lib/modules/quota.inc:315
 msgid "Used inodes"
 msgstr "Кол-во файлов"
 
@@ -4891,18 +5194,18 @@ msgstr "Учетные записи пользователей (т.е. Unix, Sam
 
 #: ../lib/modules/sambaAccount.inc:263
 #: ../lib/modules/sambaAccount.inc:373
-#: ../lib/modules/sambaAccount.inc:739
+#: ../lib/modules/sambaAccount.inc:738
 #: ../lib/modules/sambaSamAccount.inc:213
 #: ../lib/modules/sambaSamAccount.inc:325
-#: ../lib/modules/sambaSamAccount.inc:866
+#: ../lib/modules/sambaSamAccount.inc:865
 msgid "User can change password"
 msgstr "Пользователь может сменить пароль"
 
-#: ../lib/modules/posixAccount.inc:363
+#: ../lib/modules/posixAccount.inc:352
 msgid "User description. If left empty first and last name will be used."
 msgstr "Описание пользователя. Если не задано, будут использованы имя и фамилия."
 
-#: ../lib/modules/inetOrgPerson.inc:284
+#: ../lib/modules/inetOrgPerson.inc:289
 msgid "User description. If left empty sur- and give name will be used."
 msgstr "Описание пользователя. Если не задано, будут использованы sur- и give имена."
 
@@ -4912,37 +5215,37 @@ msgstr "Изменяет пользователя"
 
 #: ../lib/modules/sambaAccount.inc:270
 #: ../lib/modules/sambaAccount.inc:375
-#: ../lib/modules/sambaAccount.inc:747
+#: ../lib/modules/sambaAccount.inc:746
 #: ../lib/modules/sambaSamAccount.inc:215
 #: ../lib/modules/sambaSamAccount.inc:332
-#: ../lib/modules/sambaSamAccount.inc:874
+#: ../lib/modules/sambaSamAccount.inc:873
 msgid "User must change password"
 msgstr "Пользователь должен сменить пароль"
 
-#: ../templates/login.php:210
+#: ../templates/login.php:214
 #: ../lib/types/user.inc:85
 #: ../lib/modules/account.inc:96
 #: ../lib/modules/account.inc:116
 #: ../lib/modules/account.inc:118
 #: ../lib/modules/account.inc:119
-#: ../lib/modules/account.inc:198
-#: ../lib/modules/account.inc:219
-#: ../lib/modules/posixAccount.inc:91
-#: ../lib/modules/posixAccount.inc:92
-#: ../lib/modules/posixAccount.inc:95
-#: ../lib/modules/posixAccount.inc:198
-#: ../lib/modules/posixAccount.inc:358
-#: ../lib/modules/posixAccount.inc:913
-#: ../lib/modules/posixAccount.inc:1155
+#: ../lib/modules/account.inc:197
+#: ../lib/modules/account.inc:218
+#: ../lib/modules/posixAccount.inc:73
+#: ../lib/modules/posixAccount.inc:74
+#: ../lib/modules/posixAccount.inc:77
+#: ../lib/modules/posixAccount.inc:187
+#: ../lib/modules/posixAccount.inc:347
+#: ../lib/modules/posixAccount.inc:814
+#: ../lib/modules/posixAccount.inc:1027
 #: ../lib/modules/inetOrgPerson.inc:70
-#: ../lib/modules/inetOrgPerson.inc:237
-#: ../lib/modules/inetOrgPerson.inc:343
-#: ../lib/modules/inetOrgPerson.inc:546
-#: ../lib/modules/inetOrgPerson.inc:828
+#: ../lib/modules/inetOrgPerson.inc:242
+#: ../lib/modules/inetOrgPerson.inc:348
+#: ../lib/modules/inetOrgPerson.inc:550
+#: ../lib/modules/inetOrgPerson.inc:826
 msgid "User name"
 msgstr "Имя пользователя"
 
-#: ../lib/modules/posixAccount.inc:99
+#: ../lib/modules/posixAccount.inc:81
 #: ../lib/modules/inetOrgPerson.inc:72
 msgid "User name already exists!"
 msgstr "Имя пользователя уже существует!"
@@ -4950,35 +5253,35 @@ msgstr "Имя пользователя уже существует!"
 #: ../lib/modules/account.inc:116
 #: ../lib/modules/account.inc:117
 #: ../lib/modules/account.inc:119
-#: ../lib/modules/posixAccount.inc:92
-#: ../lib/modules/posixAccount.inc:97
+#: ../lib/modules/posixAccount.inc:74
+#: ../lib/modules/posixAccount.inc:79
 #: ../lib/modules/inetOrgPerson.inc:70
 #: ../lib/modules/inetOrgPerson.inc:71
 msgid "User name contains invalid characters. Valid characters are: a-z, A-Z, 0-9 and .-_ !"
 msgstr "Имя пользователя содержит недопустимые символы. Допустимые: a-z, A-Z, 0-9 and .-_ !"
 
-#: ../lib/modules/posixAccount.inc:95
+#: ../lib/modules/posixAccount.inc:77
 msgid "User name in use. Selected next free user name."
 msgstr "Имя пользователя занято. Выберите следующее свободное имя."
 
-#: ../lib/modules/posixAccount.inc:359
-#: ../lib/modules/inetOrgPerson.inc:344
+#: ../lib/modules/posixAccount.inc:348
+#: ../lib/modules/inetOrgPerson.inc:349
 msgid "User name of the user who should be created. Valid characters are: a-z,0-9, .-_. LAM does not allow a number as first character because useradd also does not allow it. LAM does not allow capital letters A-Z because it can cause several problems. If user name is already used user name will be expanded with a number. The next free number will be used. Warning: Older systems have problems with user names longer than 8 characters. You can not log in to Windows if user name is longer than 16 characters."
 msgstr "Имя создаваемого пользователя. Разрешенные символы: a-z,0-9, .-_. LAM не допускает использование цифры, в качестве первого символа, поскольку useradd также не позволяет сделать этого. Также не допускается использование заглавных букв, в качестве первого символа. Если имя пользователя существует, оно будет дополнено цифрой. ВНИМАНИЕ: Старые системы не поддерживают имена длиннее 8 символов. Если имя будет длиннее 16 символов, Windows может не пустить такого пользователя."
 
 #: ../lib/types/user.inc:44
-#: ../lib/modules/posixAccount.inc:72
-#: ../lib/modules/posixAccount.inc:73
-#: ../lib/modules/posixAccount.inc:76
-#: ../lib/modules/posixAccount.inc:154
+#: ../lib/modules/posixAccount.inc:53
+#: ../lib/modules/posixAccount.inc:54
+#: ../lib/modules/posixAccount.inc:57
+#: ../lib/modules/posixAccount.inc:143
 msgid "Users"
 msgstr "Пользователи"
 
-#: ../lib/modules/posixGroup.inc:411
+#: ../lib/modules/posixGroup.inc:388
 msgid "Users who are member of the current group. Users who have set their primary group to this group will not be shown."
 msgstr "Пользователи, являющиеся членами этой группы. Пользователи, которые установили эту группу, как первичную, не будут показываться."
 
-#: ../lib/modules/posixGroup.inc:415
+#: ../lib/modules/posixGroup.inc:392
 msgid "Users who will become member of the current group. User names are separated by semicolons."
 msgstr "Пользователи, которые станут членами группы. Имена разделены точками с запятой."
 
@@ -4995,21 +5298,21 @@ msgid "Warning"
 msgstr "Опасность"
 
 #: ../templates/delete.php:188
-#: ../lib/modules.inc:1459
+#: ../lib/modules.inc:1491
 #, php-format
 msgid "Was unable to add attribtues to DN: %s."
 msgstr "Не возможно добавить аттрибуты к DN: %s."
 
-#: ../lib/modules.inc:1400
-#: ../lib/modules.inc:1413
+#: ../lib/modules.inc:1427
+#: ../lib/modules.inc:1440
 #, php-format
 msgid "Was unable to create DN: %s."
 msgstr "Не возможно создать DN: %s."
 
 #: ../templates/tree/delete.php:110
-#: ../templates/delete.php:279
-#: ../templates/delete.php:287
-#: ../lib/modules.inc:1391
+#: ../templates/delete.php:280
+#: ../templates/delete.php:288
+#: ../lib/modules.inc:1418
 #, php-format
 msgid "Was unable to delete DN: %s."
 msgstr "Не возможно удалить DN: %s."
@@ -5018,18 +5321,18 @@ msgstr "Не возможно удалить DN: %s."
 #: ../templates/tree/add_oclass.php:90
 #: ../templates/tree/add_oclass_form.php:159
 #: ../templates/delete.php:180
-#: ../lib/modules.inc:1447
+#: ../lib/modules.inc:1479
 #, php-format
 msgid "Was unable to modify attribtues from DN: %s."
 msgstr "Не возможно изменить аттрибуты из DN: %s."
 
 #: ../templates/delete.php:196
-#: ../lib/modules.inc:1471
+#: ../lib/modules.inc:1503
 #, php-format
 msgid "Was unable to remove attribtues from DN: %s."
 msgstr "Не возможно удалить аттрибуты из DN: %s."
 
-#: ../lib/modules/sambaSamAccount.inc:1011
+#: ../lib/modules/sambaSamAccount.inc:1009
 msgid "Wednesday"
 msgstr "Среда"
 
@@ -5047,11 +5350,11 @@ msgid "Windows domain name of account."
 msgstr "Имя домена учетной записи Windows."
 
 #: ../lib/modules/sambaAccount.inc:307
-#: ../lib/modules/sambaAccount.inc:785
+#: ../lib/modules/sambaAccount.inc:784
 #: ../lib/modules/sambaSamAccount.inc:376
-#: ../lib/modules/sambaSamAccount.inc:926
-#: ../lib/modules/sambaSamAccount.inc:1162
-#: ../lib/modules/sambaSamAccount.inc:1294
+#: ../lib/modules/sambaSamAccount.inc:925
+#: ../lib/modules/sambaSamAccount.inc:1160
+#: ../lib/modules/sambaSamAccount.inc:1292
 #: ../lib/modules/sambaGroupMapping.inc:205
 #: ../lib/modules/sambaGroupMapping.inc:324
 msgid "Windows group"
@@ -5082,11 +5385,13 @@ msgstr "SID основной Windows группы"
 msgid "Windows-Domain name of group."
 msgstr "Имя домена учетной записи Windows."
 
-#: ../lib/modules/sambaDomain.inc:93
+#: ../lib/modules/sambaDomain.inc:135
 msgid "Workgroup"
 msgstr "Workgroup"
 
-#: ../templates/login.php:397
+#: ../templates/login.php:406
+#: ../templates/selfService/selfServiceLogin.php:89
+#: ../templates/selfService/selfServiceLogin.php:101
 msgid "Wrong password/user name combination. Please try again."
 msgstr "Неправильные имя/пароль. Попробуйте еще раз."
 
@@ -5097,23 +5402,15 @@ msgstr "Неправильные имя/пароль. Попробуйте ещ�
 msgid "Yes"
 msgstr "Да"
 
-#: ../lib/modules/posixGroup.inc:506
+#: ../lib/modules/posixGroup.inc:471
 msgid "You are using a capital letters. This can cause problems because Windows isn't case-sensitive."
 msgstr "Вы используете заглавные буквы. Это может вызвать проблемы, потому что Windows не чувствительна к регистру."
 
 #: ../lib/modules/account.inc:118
-#: ../lib/modules/posixAccount.inc:91
-#: ../lib/modules/posixAccount.inc:93
+#: ../lib/modules/posixAccount.inc:73
+#: ../lib/modules/posixAccount.inc:75
 msgid "You are using a capital letters. This can cause problems because windows isn't case-sensitive."
 msgstr "Вы используете заглавные буквы. Это может вызвать проблемы, потому что Windows не чувствительна к регистру."
-
-#: ../lib/modules/posixAccount.inc:88
-msgid "You cannot use these password options at the same time."
-msgstr "Вы не можете использовать эти опции пароля в то же самое время."
-
-#: ../lib/modules/posixGroup.inc:497
-msgid "You cannot use this password options at the same time."
-msgstr "Вы не можете использовать эти опции пароля в то же самое время."
 
 #: ../templates/tree/templates/creation/custom.php:106
 msgid "You did not select any object classes for this object. Please go back and do so."
@@ -5144,11 +5441,12 @@ msgstr "Конфигурация PHP не позволяет загружать 
 msgid "Your session expired, click here to go back to the login page."
 msgstr "Сессия устарела, нажмите здесь для возврата на страницу для входа."
 
-#: ../templates/login.php:190
+#: ../templates/login.php:194
 msgid "Your session expired, please log in again."
 msgstr "Сессия устарела, пожалуйста войдите снова."
 
 #: ../templates/config/mainmanage.php:131
+#: ../templates/selfService/adminMain.php:77
 #: ../lib/config.inc:339
 msgid "Your settings were successfully saved."
 msgstr "Ваши настройки сохранены успешно."
@@ -5172,7 +5470,7 @@ msgstr "\\\\server\\profiles\\smiller"
 msgid "add value"
 msgstr "добавить значение"
 
-#: ../lib/modules/posixGroup.inc:366
+#: ../lib/modules/posixGroup.inc:343
 msgid "adminstrators"
 msgstr "adminstrators"
 
@@ -5202,11 +5500,13 @@ msgid "download value"
 msgstr "загрузить значение"
 
 #: ../lib/modules/inetOrgPerson.inc:56
-#: ../lib/modules/inetOrgPerson.inc:219
-#: ../lib/modules/inetOrgPerson.inc:335
-#: ../lib/modules/inetOrgPerson.inc:336
-#: ../lib/modules/inetOrgPerson.inc:647
-#: ../lib/modules/inetOrgPerson.inc:826
+#: ../lib/modules/inetOrgPerson.inc:113
+#: ../lib/modules/inetOrgPerson.inc:224
+#: ../lib/modules/inetOrgPerson.inc:340
+#: ../lib/modules/inetOrgPerson.inc:341
+#: ../lib/modules/inetOrgPerson.inc:651
+#: ../lib/modules/inetOrgPerson.inc:824
+#: ../lib/modules/inetOrgPerson.inc:1075
 msgid "eMail address"
 msgstr "eMail адрес"
 
@@ -5214,18 +5514,18 @@ msgstr "eMail адрес"
 msgid "false"
 msgstr "false"
 
-#: ../lib/modules/posixAccount.inc:227
+#: ../lib/modules/posixAccount.inc:216
 msgid "group01,group02"
 msgstr "group01,group02"
 
-#: ../lib/modules/quota.inc:146
-#: ../lib/modules/quota.inc:148
-#: ../lib/modules/quota.inc:197
-#: ../lib/modules/quota.inc:199
+#: ../lib/modules/quota.inc:157
+#: ../lib/modules/quota.inc:159
+#: ../lib/modules/quota.inc:208
+#: ../lib/modules/quota.inc:210
 msgid "hours"
 msgstr "часы"
 
-#: ../lib/tree.inc:1163
+#: ../lib/tree.inc:1148
 msgid "jpegPhoto contains errors"
 msgstr "jpegPhoto содержит ошибки"
 
@@ -5237,7 +5537,7 @@ msgstr "ldap://localhost:389 - подключение к localhost исполь�
 msgid "ldaps://141.40.146.133 connects to 141.40.146.133 using an encrypted LDAP connection."
 msgstr "ldaps://141.40.146.133 - подключение к 141.40.146.133 использует защищенное LDAP соединение."
 
-#: ../lib/modules/posixAccount.inc:287
+#: ../lib/modules/posixAccount.inc:276
 msgid "machines"
 msgstr "machines"
 
@@ -5284,21 +5584,22 @@ msgstr "не определено"
 msgid "ou=People,dc=yourcompany,dc=com will read and store all accounts in this subtree."
 msgstr "ou=People,dc=yourcompany,dc=com - в этом поддереве будут читаться и сохраняться учетные записи."
 
-#: ../lib/modules/posixAccount.inc:273
+#: ../lib/modules/posixAccount.inc:262
 msgid "pc01$"
 msgstr "pc01$"
 
-#: ../lib/modules/posixAccount.inc:294
+#: ../lib/modules/posixAccount.inc:283
 msgid "pc01,Room 2.34"
 msgstr "pc01,Room 2.34"
 
-#: ../lib/modules/inetOrgPerson.inc:251
+#: ../lib/modules/inetOrgPerson.inc:256
 msgid "pc01,pc02"
 msgstr "pc01,pc02"
 
 #: ../templates/tree/edit.php:242
 #: ../templates/config/confmain.php:396
-#: ../lib/modules.inc:1096
+#: ../templates/selfService/adminMain.php:498
+#: ../lib/modules.inc:1088
 msgid "required"
 msgstr "обязательно"
 
@@ -5306,15 +5607,15 @@ msgstr "обязательно"
 msgid "required for Samba 3 accounts"
 msgstr "требуется для Samba 3 учетных записей"
 
-#: ../lib/modules/posixGroup.inc:392
+#: ../lib/modules/posixGroup.inc:369
 #: ../lib/modules/sambaAccount.inc:227
 #: ../lib/modules/sambaSamAccount.inc:289
-#: ../lib/modules/posixAccount.inc:248
+#: ../lib/modules/posixAccount.inc:237
 msgid "secret"
 msgstr "secret"
 
-#: ../lib/modules/posixAccount.inc:200
-#: ../lib/modules/inetOrgPerson.inc:239
+#: ../lib/modules/posixAccount.inc:189
+#: ../lib/modules/inetOrgPerson.inc:244
 #: ../lib/modules/nisMailAlias.inc:87
 msgid "smiller"
 msgstr "smiller"
@@ -5327,15 +5628,49 @@ msgstr "structural"
 msgid "true"
 msgstr "true"
 
-#: ../lib/modules/posixGroup.inc:386
+#: ../lib/modules/posixGroup.inc:363
 msgid "user01,user02,user03"
 msgstr "user01,user02,user03"
 
-#: ../lib/modules/inetOrgPerson.inc:221
+#: ../lib/modules/inetOrgPerson.inc:226
 msgid "user@company.com"
 msgstr "user@company.com"
 
-#: ../lib/modules/posixAccount.inc:220
+#: ../lib/modules/posixAccount.inc:209
 msgid "users"
 msgstr "users"
+
+#~ msgid "A required PHP extension is missing!"
+#~ msgstr "Нужное PHP-расширение не найдено"
+#~ msgid "Generate password"
+#~ msgstr "Случайный пароль"
+#~ msgid "Invalid password"
+#~ msgstr "Не правильный пароль"
+#~ msgid "Invalid/Missing Message type"
+#~ msgstr "Не правильный тип сообщения"
+#~ msgid "Password maxage"
+#~ msgstr "Максимальный срок жизни пароля"
+#~ msgid "Password minage"
+#~ msgstr "Минимальный срок жизни пароля"
+#~ msgid ""
+#~ "Please report this error to the Bug-Tracker at {link=http://lam."
+#~ "sourceforge.net}LDAP Account Manager Development Team{endlink}. The error "
+#~ "number is {bold}0001:Invalid/Missing Message type.{endbold} Thank you."
+#~ msgstr ""
+#~ "Пожалуйста отправьте сообщение об ошибке на Bug-Tracker {link=http://lam."
+#~ "sourceforge.net}LDAP Account Manager Development Team{endlink}. Номер "
+#~ "ошибки {bold}0001:Invalid/Missing Message type.{endbold} Спасибо."
+#~ msgid "Server Address is empty!"
+#~ msgstr "Адрес сервера пуст!"
+#~ msgid ""
+#~ "This will set an invalid password which prevents logins with this account."
+#~ msgstr ""
+#~ "Это установит неправильный пароль, чтобы запретить логиниться с этой уч. "
+#~ "записью."
+#~ msgid "Use unix password"
+#~ msgstr "Использовать unix пароль"
+#~ msgid "You cannot use these password options at the same time."
+#~ msgstr "Вы не можете использовать эти опции пароля в то же самое время."
+#~ msgid "You cannot use this password options at the same time."
+#~ msgstr "Вы не можете использовать эти опции пароля в то же самое время."
 
