@@ -112,10 +112,17 @@ function lamdaemonSSH($commands) {
 	$credentials = $_SESSION['ldap']->decrypt_login();
 	$handle = ssh2_connect($_SESSION['config']->scriptServer);
 	if ($handle) {
-		$sr = ldap_read($_SESSION['ldap']->server(), $credentials[0], "objectClass=posixAccount", array('uid'));
-		$entry = ldap_get_entries($_SESSION['ldap']->server(), $sr);
+		$sr = @ldap_read($_SESSION['ldap']->server(), $credentials[0], "objectClass=posixAccount", array('uid'));
+		if (!$sr) {
+			$return = array("ERROR," . _("Your LAM admin user must be a valid Unix account to work with lamdaemon!") . ",");
+			return $return;
+		}
+		$entry = @ldap_get_entries($_SESSION['ldap']->server(), $sr);
 		$userName = $entry[0]['uid'][0];
-		if (!$userName) return array();
+		if (!$userName) {
+			$return = array("ERROR," . _("Your LAM admin user must be a valid Unix account to work with lamdaemon!") . ",");
+			return $return;
+		}
 		if (@ssh2_auth_password($handle, $userName, $credentials[1])) {
 			$shell = ssh2_exec($handle, "sudo " . $_SESSION['config']->scriptPath);
 			fwrite($shell, $commands);
