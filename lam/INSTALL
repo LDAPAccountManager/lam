@@ -5,8 +5,10 @@ Installation Instructions for LAM
 
 1. Requirements
 
-   - Apache webserver (SSL optional) with installed PHP-Module (PHP-Module with
-     ldap, gettext, xml, mcrypt+mhash optional)
+   - Apache webserver (SSL optional) with PHP module (PHP with
+     ldap, gettext, xml and optional mcrypt)
+   - some LAM plugins may require additional PHP extensions (you will get a
+     note on the login page if something is missing)
    - Perl (optional, needed only for lamdaemon)
    - OpenLDAP (>2.0)
    - A web browser :-)
