@@ -816,8 +816,8 @@ class accountContainer {
 		$result = array();
 		if ($this->subpage=='') $this->subpage='attributes';
 		if (isset($_POST['form_main_reset'])) {
-			$this->load_account($this->dn_orig);
-			}
+			$result = $this->load_account($this->dn_orig);
+		}
 		else {
 			if ($this->current_page==0) {
 				if ($this->subpage=='attributes') {
@@ -1172,12 +1172,20 @@ class accountContainer {
 	* Loads an LDAP account with the given DN.
 	*
 	* @param string $dn the DN of the account
+	* @return array error messages
 	*/
 	function load_account($dn) {
+		$this->module = array();
 		$modules = $_SESSION['config']->get_AccountModules($this->type);
 		$search = substr($dn, 0, strpos($dn, ','));
-		$result = ldap_search($_SESSION['ldap']->server(), $dn, $search);
-		$entry = ldap_first_entry($_SESSION['ldap']->server(), $result);
+		$result = @ldap_search($_SESSION['ldap']->server(), $dn, $search);
+		if (!$result) {
+			return array(array("ERROR", _("Unable to load LDAP entry: ") . $dn, ldap_error($_SESSION['ldap']->server())));
+		}
+		$entry = @ldap_first_entry($_SESSION['ldap']->server(), $result);
+		if (!$entry) {
+			return array(array("ERROR", _("Unable to load LDAP entry: ") . $dn, ldap_error($_SESSION['ldap']->server())));
+		}
 		$this->dn = substr($dn, strpos($dn, ',')+1);
 		$this->dn_orig = $dn;
 		// extract RDN
@@ -1215,7 +1223,7 @@ class accountContainer {
 
 		// sort module buttons
 		$this->sortModules();
-		return 0;
+		return array();
 	}
 
 	/**

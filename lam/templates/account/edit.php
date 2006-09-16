@@ -62,7 +62,19 @@ if (isset($_GET['DN'])) {
 	if ($_GET['type'] == $type) $type = str_replace("'", '',$_GET['type']);
 	if ($_GET['DN'] == $DN) $DN = str_replace("'", '',$_GET['DN']);
 	$_SESSION['account'] = new accountContainer($type, 'account');
-	$_SESSION['account']->load_account($DN);
+	$result = $_SESSION['account']->load_account($DN);
+	if (sizeof($result) > 0) {
+		echo $_SESSION['header'];
+		echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
+		echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/type_" . $type . ".css\">\n";
+		echo "</head><body>\n";
+		for ($i=0; $i<sizeof($result); $i++) {
+			call_user_func_array("StatusMessage", $result[$i]);
+		}
+		echo "</body>\n";
+		echo "</html>\n";
+		die();
+	}
 }
 // new account
 else if (count($_POST)==0) {
