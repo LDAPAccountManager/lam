@@ -3,8 +3,7 @@ Maintainer: Roland Gruber <post@rolandgruber.de>
 Section: web
 Priority: extra
 Standards-Version: 3.7.2
-Build-Depends-Indep: po-debconf
-Build-Depends: debhelper (>= 4.1.16)
+Build-Depends: debhelper (>= 4.1.16), po-debconf
 
 Package: ldap-account-manager
 Architecture: all
