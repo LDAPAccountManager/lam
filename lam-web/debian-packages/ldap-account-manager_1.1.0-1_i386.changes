@@ -1,0 +1,32 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+Format: 1.7
+Date: Sat,  9 Sep 2006 13:50:43 +0200
+Source: ldap-account-manager
+Binary: ldap-account-manager
+Architecture: source all
+Version: 1.1.0-1
+Distribution: unstable
+Urgency: low
+Maintainer: Roland Gruber <post@rolandgruber.de>
+Changed-By: Roland Gruber <post@rolandgruber.de>
+Description: 
+ ldap-account-manager - webfrontend for managing accounts in an LDAP directory
+Changes: 
+ ldap-account-manager (1.1.0-1) unstable; urgency=low
+ .
+   * New upstream release (1.1.0)
+Files: 
+ f7c457e38bd3640320607d4cec5909c4 631 web extra ldap-account-manager_1.1.0-1.dsc
+ 54b03f28baa43ab2cac4b6982740d4ff 1667277 web extra ldap-account-manager_1.1.0.orig.tar.gz
+ 73663dc545077b47abbbf098fdbfef1e 15279 web extra ldap-account-manager_1.1.0-1.diff.gz
+ e31d3bae5434733e8a34b139642a23b3 1619024 web extra ldap-account-manager_1.1.0-1_all.deb
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.5 (GNU/Linux)
+
+iD8DBQFFDuvuq/ywNCsrGZ4RAuekAJ9oCd96JWeJC5Js/MIvvcCgiK47JgCfW04B
+jeSWs/Wtpnb8xDOTouZNumU=
+=Sjge
+-----END PGP SIGNATURE-----
