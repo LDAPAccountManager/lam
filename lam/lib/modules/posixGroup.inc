@@ -674,7 +674,7 @@ class posixGroup extends baseModule {
 				$errors[] = $this->messages['userPassword'][1];
 			}
 			else {
-				$this->attributes['userPassword'][0] = pwd_hash($_POST['userPassword']);
+				$this->attributes['userPassword'][0] = pwd_hash($_POST['userPassword'], true, $this->moduleSettings['posixAccount_pwdHash'][0]);
 			}
 		return $errors;
 	}
