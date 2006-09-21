@@ -499,7 +499,7 @@ function get_preg($argument, $regexp) {
 					$pregexpr = '/^[^\\\<>=\\$\\?]*$/';
 					break;
 		case "homeDirectory":		// Homapath, /path/......
-					$pregexpr = '/^([\/]([[:alnum:]\\$\\.\\ \\_-])+)+$/u';
+					$pregexpr = '/^([\/]([[:alnum:]\\$\\.\\ \\_-])+)+(\/)?$/u';
 					break;
 		case "digit":		// Normal number
 					$pregexpr = '/^[[:digit:]]*$/';
