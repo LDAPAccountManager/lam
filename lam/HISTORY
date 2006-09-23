@@ -1,3 +1,7 @@
+??? 1.1.1
+   - fixed bugs:
+    -> Unix: password hashing problem (1562426)
+
 20.09.2006 1.1.0
    - Lamdaemon now uses the SSH implementation from PECL which is much more stable
    - Samba 2/3: "Use Unix password" now on by default (1517678)
