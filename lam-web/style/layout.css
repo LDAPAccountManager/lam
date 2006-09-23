@@ -84,3 +84,9 @@ td.debian { font-size:12pt; }
 
 /* documentation/index.htm */
 a.documentation { color:#253aa3; text-decoration:none; font-weight:bold; font-size:12pt; }
+
+/* bugs */
+td.bugGrave { padding-left: 1px;background-color:red; }
+td.bugNormal { padding-left: 1px;background-color:#ffc600; }
+td.bugMinor { padding-left: 1px;background-color:yellow; }
+td.bugOther { padding-left: 1px; }
