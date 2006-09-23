@@ -1126,15 +1126,27 @@ class posixAccount extends baseModule {
 				$needAutoUID[] = $i;
 			}
 			elseif (get_preg($rawAccounts[$i][$ids['posixAccount_uid']], 'digit')) {
-				if (($this->get_scope() == 'user') &&
-				($rawAccounts[$i][$ids['posixAccount_uid']] > $this->moduleSettings['posixAccount_minUID'][0]) &&
-				($rawAccounts[$i][$ids['posixAccount_uid']] < $this->moduleSettings['posixAccount_maxUID'][0])) {
-					$partialAccounts[$i]['uidNumber'] = $rawAccounts[$i][$ids['posixAccount_uid']];
+				if ($this->get_scope() == 'user') {
+					if (($rawAccounts[$i][$ids['posixAccount_uid']] > $this->moduleSettings['posixAccount_minUID'][0]) &&
+						($rawAccounts[$i][$ids['posixAccount_uid']] < $this->moduleSettings['posixAccount_maxUID'][0])) {
+						$partialAccounts[$i]['uidNumber'] = $rawAccounts[$i][$ids['posixAccount_uid']];
+					}
+					else {
+						$errMsg = $this->messages['uidNumber'][4];
+						array_push($errMsg, array($i));
+						$errors[] = $errMsg;
+					}
 				}
-				elseif (($this->get_scope() == 'host') &&
-				($rawAccounts[$i][$ids['posixAccount_uid']] > $this->moduleSettings['posixAccount_minMachine'][0]) &&
-				($rawAccounts[$i][$ids['posixAccount_uid']] < $this->moduleSettings['posixAccount_maxMachine'][0])) {
-					$partialAccounts[$i]['uidNumber'] = $rawAccounts[$i][$ids['posixAccount_uid']];
+				elseif ($this->get_scope() == 'host') {
+					if (($rawAccounts[$i][$ids['posixAccount_uid']] > $this->moduleSettings['posixAccount_minMachine'][0]) &&
+						($rawAccounts[$i][$ids['posixAccount_uid']] < $this->moduleSettings['posixAccount_maxMachine'][0])) {
+						$partialAccounts[$i]['uidNumber'] = $rawAccounts[$i][$ids['posixAccount_uid']];
+					}
+					else {
+						$errMsg = $this->messages['uidNumber'][4];
+						array_push($errMsg, array($i));
+						$errors[] = $errMsg;
+					}
 				}
 			}
 			else {
