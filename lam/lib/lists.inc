@@ -42,46 +42,46 @@ include_once("pdf.inc");
  *
  * @package lists
  * @author Roland Gruber
- * 
+ *
  */
 class lamList {
-	
+
 	/** Account type */
 	var $type;
-	
+
 	/** current page number */
 	var $page = 1;
-	
+
 	/** list of LDAP attributes */
 	var $attrArray = array();
-	
+
 	/** list of attribute descriptions */
 	var $descArray = array();
-	
+
 	/** maximum count of entries per page */
 	var $maxPageEntries = 10;
-	
+
 	/** sort column name */
 	var $sortColumn;
-	
+
 	/** LDAP suffix */
 	var $suffix;
-	
+
 	/** refresh page switch */
 	var $refresh = true;
-	
+
 	/** LDAP entries */
 	var $entries;
-	
+
 	/** filter string to include in URL */
 	var $filterText;
-	
+
 	/** list of possible LDAP suffixes(organizational units) */
 	var $possibleSuffixes;
-	
+
 	/** list of account specific labels */
 	var $labels;
-	
+
 	/**
 	 * Constructor
 	 *
@@ -98,7 +98,7 @@ class lamList {
 			'createPDF' => _("Create PDF for selected object(s)"),
 			'createPDFAll' => _("Create PDF for all objects"));
 	}
-	
+
 	/**
 	 * Prints the HTML code to display the list view.
 	 */
@@ -159,9 +159,16 @@ class lamList {
 		$filter = array();
 		// build filter array
 		for ($i = 0; $i < sizeof($this->attrArray); $i++) {
-			if (isset($_POST["filter" . strtolower($this->attrArray[$i])]) && eregi('^([0-9a-z _\\*\\$-])+$', $_POST["filter" . strtolower($this->attrArray[$i])])) {
-				$filter[$this->attrArray[$i]]['original'] = $_POST["filter" . strtolower($this->attrArray[$i])];
-				$filter[$this->attrArray[$i]]['regex'] = $_POST["filter" . strtolower($this->attrArray[$i])];
+			$foundFilter = null;
+			if (isset($_GET["filter" . strtolower($this->attrArray[$i])])) {
+				$foundFilter = $_GET["filter" . strtolower($this->attrArray[$i])];
+			}
+			if (isset($_POST["filter" . strtolower($this->attrArray[$i])])) {
+				$foundFilter = $_POST["filter" . strtolower($this->attrArray[$i])];
+			}
+			if (isset($foundFilter) && eregi('^([0-9a-z _\\*\\$-])+$', $foundFilter)) {
+				$filter[$this->attrArray[$i]]['original'] = $foundFilter;
+				$filter[$this->attrArray[$i]]['regex'] = $foundFilter;
 				// replace special characters
 				$filter[$this->attrArray[$i]]['regex'] = str_replace("*", "(.)*", $filter[$this->attrArray[$i]]['regex']);
 				$filter[$this->attrArray[$i]]['regex'] = str_replace('$', '[$]', $filter[$this->attrArray[$i]]['regex']);
@@ -184,8 +191,8 @@ class lamList {
 		$this->filterText = $searchFilter;
 		return $filter;
 	}
-	
-	
+
+
 	/**
 	* Removes all entries which do not fit to the filter.
 	*
@@ -217,8 +224,8 @@ class lamList {
 		if (sizeof($entries) == 0) StatusMessage("WARN", $this->labels['error_noneFound']);
 		return $entries;
 	}
-	
-	
+
+
 	/**
 	* Sorts an account list by a given attribute
 	*
@@ -232,8 +239,8 @@ class lamList {
 		usort($info, array($this, "cmp_array"));
 		return $info;
 	}
-	
-	
+
+
 	/**
 	* Compare function used for usort-method
 	*
@@ -265,7 +272,7 @@ class lamList {
 	* @param integer $count number of account entries
 	*/
 	function listDrawNavigationBar($count) {
-	
+
 		echo("<table class=\"" . $this->type . "nav\" width=\"100%\" border=\"0\">\n");
 		echo("<tr>\n");
 		echo("<td><input type=\"submit\" name=\"refresh\" value=\"" . _("Refresh") . "\">&nbsp;&nbsp;");
@@ -276,19 +283,19 @@ class lamList {
 			echo("&lt;=");
 		}
 		echo("&nbsp;");
-	
+
 		if ($this->page < ($count / $this->maxPageEntries)) {
 			echo("<a href=\"list.php?type=" . $this->type . "&amp;norefresh=true&amp;page=" . ($this->page + 1) . "&amp;sort=" . $this->sortColumn . $this->filterText . "\">=&gt;</a>\n");
 		}
 		else {
 			echo("=&gt;</td>");
 		}
-	
+
 		echo("<td class=\"" . $this->type . "nav-text\">");
 		echo"&nbsp;";
 		printf($this->labels['nav'], $count);
 		echo("</td>");
-	
+
 		echo("<td class=\"" . $this->type . "nav-activepage\" align=\"right\">");
 		for ($i = 0; $i < ($count / $this->maxPageEntries); $i++) {
 			if ($i == $this->page - 1) {
@@ -300,7 +307,7 @@ class lamList {
 		}
 		echo("</td></tr></table>\n");
 	}
-	
+
 	/**
 	* Prints the attribute and filter row at the account table head
 	*/
@@ -318,7 +325,7 @@ class lamList {
 				"sort=" . strtolower($this->attrArray[$k]) . $this->filterText . "&amp;norefresh=y" . "\">" . $this->descArray[$k] . "</a></th>\n";
 		}
 		echo "</tr>\n";
-		
+
 		// print filter row
 		echo "<tr align=\"center\" class=\"" . $this->type . "list\">\n";
 		echo "<td width=22 height=34>";
@@ -333,6 +340,9 @@ class lamList {
 		// print input boxes for filters
 		for ($k = 0; $k < sizeof ($this->descArray); $k++) {
 			$value = "";
+			if (isset($_GET["filter" . strtolower($this->attrArray[$k])])) {
+				$value = " value=\"" . $_GET["filter" . strtolower($this->attrArray[$k])] . "\"";
+			}
 			if (isset($_POST["filter" . strtolower($this->attrArray[$k])])) {
 				$value = " value=\"" . $_POST["filter" . strtolower($this->attrArray[$k])] . "\"";
 			}
@@ -345,7 +355,7 @@ class lamList {
 
 	/**
 	* Prints the entry list
-	* 
+	*
 	* @param array $info entries
 	*/
 	function listPrintTableBody($info) {
@@ -390,15 +400,15 @@ class lamList {
 		$colspan = sizeof($this->attrArray) + 1;
 		echo "<tr class=\"" . $this->type . "list\">\n";
 		echo "<td align=\"center\"><img src=\"../../graphics/select.png\" alt=\"select all\"></td>\n";
-		echo "<td colspan=$colspan>&nbsp;<a href=\"list.php?type=" . $this->type . "&amp;norefresh=y&amp;page=" . $this->page . 
+		echo "<td colspan=$colspan>&nbsp;<a href=\"list.php?type=" . $this->type . "&amp;norefresh=y&amp;page=" . $this->page .
 			"&amp;sort=" . $this->sortColumn . $this->filterText . "&amp;selectall=yes\">" .
 			"<font color=\"black\"><b>" . _("Select all") . "</b></font></a></td>\n";
 		echo "</tr>\n";
 		echo ("</table>");
-		
+
 		echo ("<br>");
 	}
-	
+
 	/**
 	* Manages all POST actions (e.g. button pressed) for the account lists.
 	*/
@@ -465,7 +475,7 @@ class lamList {
 			}
 		}
 	}
-	
+
 	/**
 	* Prints a combobox with possible sub-DNs.
 	*/
@@ -485,7 +495,7 @@ class lamList {
 			echo ("</p>\n");
 		}
 	}
-	
+
 	/**
 	 * Prints the create, delete and PDF buttons.
 	 *
@@ -510,7 +520,7 @@ class lamList {
 			echo "</fieldset>";
 		}
 	}
-	
+
 	/**
 	 * Prints the HTML head.
 	 */
@@ -522,7 +532,7 @@ class lamList {
 		echo "</head><body>\n";
 		$this->listPrintJavaScript();
 	}
-	
+
 	/**
 	* Prints JavaScript code needed for mouse-over effects.
 	*/
@@ -534,13 +544,13 @@ class lamList {
 			echo "cbox = document.getElementsByName(box)[0];\n";
 			echo "if (cbox.checked == false) list.setAttribute('class', scope + 'list-over', 0);\n";
 		echo "}";
-		
+
 		// mouseOut function
 		echo "function list_out(list, box, scope) {\n";
 			echo "cbox = document.getElementsByName(box)[0];\n";
 			echo "if (cbox.checked == false) list.setAttribute('class', scope + 'list', 0);\n";
 		echo "}\n";
-		
+
 		// onClick function
 		echo "function list_click(list, box, scope) {\n";
 			echo "cbox = document.getElementsByName(box)[0];\n";
@@ -556,7 +566,7 @@ class lamList {
 		echo "//-->\n";
 		echo "</script>\n";
 	}
-	
+
 	/**
 	* Returns an hash array containing with all attributes to be shown and their descriptions.
 	* Format: array(attribute => description)
@@ -593,7 +603,7 @@ class lamList {
 		}
 		return $ret;
 	}
-	
+
 	/**
 	 * Sets some internal parameters.
 	 */
@@ -621,7 +631,7 @@ class lamList {
 		if (isset($_GET['norefresh'])) $this->refresh = false;
 		if (isset($_POST['refresh'])) $this->refresh = true;
 	}
-	
+
 	/**
 	 * Rereads the entries from LDAP.
 	 */
