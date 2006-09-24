@@ -56,7 +56,7 @@ if (! $passwd) {
 }
 
 if (!isset($_SESSION['conf_config']) && isset($_POST['filename'])) {
-	$_SESSION['conf_config'] = new Config($_POST['filename']);	
+	$_SESSION['conf_config'] = new LAMConfig($_POST['filename']);
 }
 $conf = &$_SESSION['conf_config'];
 
@@ -102,7 +102,7 @@ if (isset($_GET["typesback"])) {
 	// check if a new account type was added
 	if (isset($_GET["typeschanged"])) {
 		metaRefresh("confmodules.php");
-		exit;		
+		exit;
 	}
 }
 
@@ -411,7 +411,7 @@ echo ("</html>\n");
 function saveSettings() {
 	$conf = &$_SESSION['conf_config'];
 	$types = $conf->get_ActiveTypes();
-	
+
 	// remove double slashes if magic quotes are on
 	if (get_magic_quotes_gpc() == 1) {
 		$postKeys = array_keys($_POST);
@@ -505,7 +505,7 @@ function saveSettings() {
 			"<img src=\"../../graphics/banner.jpg\" border=1 alt=\"LDAP Account Manager\"></a></p><hr><br><br>");
 		$conf->set_moduleSettings($options);
 		$conf->save();
-		echo ("<br><br><br><br><br><a href=\"../login.php\" target=\"_top\">" . _("Back to Login") . "</a>");	
+		echo ("<br><br><br><br><br><a href=\"../login.php\" target=\"_top\">" . _("Back to Login") . "</a>");
 		echo("</body></html>");
 		// remove settings from session
 		$sessionKeys = array_keys($_SESSION);

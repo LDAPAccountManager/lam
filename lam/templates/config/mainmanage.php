@@ -21,7 +21,7 @@ $Id$
 
 */
 
-  
+
 /**
 * Manages the main configuration options.
 *
@@ -41,7 +41,7 @@ session_save_path("../../sess");
 
 setlanguage();
 
-$cfg = new CfgMain();
+$cfg = new LAMCfgMain();
 
 // check if user is logged in
 if (!isset($_SESSION["mainconf_password"]) || ($_SESSION["mainconf_password"] != $cfg->password)) {
@@ -239,7 +239,7 @@ if ($_POST['submit']) {
 						echo "<a href=\"../help.php?HelpNumber=240\" target=\"lamhelp\">";
 						echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
 						echo "</a>\n";
-					?>					
+					?>
 					</TD>
 				</TR>
 				<TR>
@@ -326,7 +326,7 @@ if ($_POST['submit']) {
 				</TD>
 			</TR>
 			</table>
-			
+
 		</form>
 		<p><br></p>
 

@@ -417,16 +417,16 @@ if(!empty($_POST['checklogin']))
 }
 // Reload loginpage after a profile change
 elseif(!empty($_POST['profileChange'])) {
-	$_SESSION['config'] = new Config($_POST['profile']); // Recreate the config object with the submited
+	$_SESSION['config'] = new LAMConfig($_POST['profile']); // Recreate the config object with the submited
 	display_LoginPage($_SESSION['config']); // Load login page
 }
 // Load login page
 else
 {
 	$_SESSION['loggedIn'] = false;
-	$default_Config = new CfgMain();
+	$default_Config = new LAMCfgMain();
 	$default_Profile = $default_Config->default;
-	$_SESSION["config"] = new Config($default_Profile); // Create new Config object
+	$_SESSION["config"] = new LAMConfig($default_Profile); // Create new Config object
 	$_SESSION["cfgMain"] = $default_Config; // Create new CfgMain object
 
 	display_LoginPage($_SESSION["config"]); // Load Login page

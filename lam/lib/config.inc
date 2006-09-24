@@ -120,7 +120,7 @@ function metaRefresh($page) {
 *
 * @package configuration
 */
-class Config {
+class LAMConfig {
 
 	/** Server address (e.g. ldap://127.0.0.1:389) */
 	var $ServerURL;
@@ -182,7 +182,7 @@ class Config {
 	*
 	* @param integer $file Index number in config file array
 	*/
-	function Config($file = 0) {
+	function LAMConfig($file = 0) {
 		// load first profile if none is given
 		if (!is_string($file)) {
 			$profiles = getConfigProfiles();
@@ -672,7 +672,7 @@ class Config {
 		if (($this->activeTypes == '') || !isset($this->activeTypes)) return array();
 		else return explode(",", $this->activeTypes);
 	}
-	
+
 	/**
 	* Sets the list of active types.
 	*
@@ -711,34 +711,34 @@ class Config {
 *
 * @package configuration
 */
-class CfgMain {
+class LAMCfgMain {
 
 	/** Default profile */
 	var $default;
 
 	/** Password to change config.cfg */
 	var $password;
-	
+
 	/** Time of inactivity before session times out (minutes) */
 	var $sessionTimeout;
-	
+
 	/** log level */
 	var $logLevel;
-	
+
 	/** log destination ("SYSLOG":syslog, "/...":file, "NONE":none) */
 	var $logDestination;
-	
+
 	/** list of hosts which may access LAM */
 	var $allowedHosts;
-	
+
 	/** list of data fields to save in config file */
 	var $settings = array("password", "default", "sessionTimeout",
 		"logLevel", "logDestination", "allowedHosts");
-	
+
 	/**
 	* Loads preferences from config file
 	*/
-	function CfgMain() {
+	function LAMCfgMain() {
 		// set default values
 		$this->sessionTimeout = 30;
 		$this->logLevel = LOG_NOTICE;
@@ -825,7 +825,7 @@ class CfgMain {
 			exit;
 		}
 	}
-	
+
 }
 
 ?>

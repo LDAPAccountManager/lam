@@ -32,7 +32,7 @@ $Id$
 /** access to configuration functions */
 include ("../lib/config.inc");
 
-$conf = new Config('test');
+$conf = new LAMConfig('test');
 echo "<html><head><title></title><link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\"></head><body>";
 echo ("<br><br><big><b> Starting Test...</b></big><br><br>");
 // now all preferences are loaded
@@ -76,7 +76,7 @@ $conf->save();
 echo ("done<br>");
 // at last all preferences are read from lam.conf and compared
 echo ("Loading and comparing...");
-$conf2 = new Config('test');
+$conf2 = new LAMConfig('test');
 if ($conf2->get_ServerURL() != "ldap://123.345.678.123:777") echo ("<br><font color=\"#FF0000\">Saving ServerURL failed!</font><br>");
 if ($conf2->get_cacheTimeout() != "33") echo ("<br><font color=\"#FF0000\">Saving Cache timeout failed!</font><br>");
 if ($conf2->get_Passwd() != "123456abcde") echo ("<br><font color=\"#FF0000\">Saving password failed!</font><br>");

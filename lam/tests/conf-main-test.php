@@ -9,12 +9,12 @@ $Id$
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
   (at your option) any later version.
-  
+
   This program is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
-  
+
   You should have received a copy of the GNU General Public License
   along with this program; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,7 +32,7 @@ $Id$
 /** configuration interface */
 include ("../lib/config.inc");
 
-$conf = new CfgMain();
+$conf = new LAMCfgMain();
 echo "<html><head><title></title><link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\"></head><body>";
 echo ("<b> Current Values</b><br><br>");
 echo "<b>Password: </b>" . $conf->password . "<br>\n";
@@ -51,7 +51,7 @@ $conf->save();
 echo ("done<br>");
 // at last all preferences are read from config.cfg and compared
 echo ("Loading and comparing...");
-$conf = new CfgMain();
+$conf = new LAMCfgMain();
 if ($conf->password != "123456") echo ("<br><font color=\"#FF0000\">Saving password failed!</font><br>");
 if ($conf->default != "lam") echo ("<br><font color=\"#FF0000\">Saving Default failed!</font><br>");
 echo ("done<br>");

@@ -51,7 +51,7 @@ function startSecureSession() {
 	// check session id
 	if (! isset($_SESSION["sec_session_id"]) || ($_SESSION["sec_session_id"] != session_id())) {
 		// session id is invalid
-		die();		
+		die();
 	}
 	// check if client IP has not changed
 	if (!isset($_SESSION["sec_client_ip"]) || ($_SESSION["sec_client_ip"] != $_SERVER['REMOTE_ADDR'])) {
@@ -75,7 +75,7 @@ function startSecureSession() {
  *
  */
 function checkClientIP() {
-	$cfg = new CfgMain();
+	$cfg = new LAMCfgMain();
 	$allowedHosts = $cfg->allowedHosts;
 	// skip test if no hosts are defined
 	if ($allowedHosts == "") return;
@@ -152,13 +152,13 @@ function logNewMessage($level, $message) {
 	$possibleLevels = array(LOG_NOTICE => 'NOTICE', LOG_WARNING => 'WARNING', LOG_ERR => 'ERROR');
 	if (!in_array($level, array_keys($possibleLevels))) StatusMessage('ERROR', 'Invalid log level!', $level);
 	if (isset($_SESSION['cfgMain'])) $cfg = $_SESSION['cfgMain'];
-	else $cfg = new CfgMain();
+	else $cfg = new LAMCfgMain();
 	// check if logging is disabled
 	if ($cfg->logDestination == 'NONE') return;
 	// check if log level is high enough
 	elseif ($cfg->logLevel < $level) return;
 	// ok to log, build log message
-	$prefix = "LDAP Account Manager - " . $possibleLevels[$level] . ": ";	
+	$prefix = "LDAP Account Manager - " . $possibleLevels[$level] . ": ";
 	$message = $prefix . $message;
 	// Syslog logging
 	if ($cfg->logDestination == 'SYSLOG') {

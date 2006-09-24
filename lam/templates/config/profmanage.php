@@ -21,7 +21,7 @@ $Id$
 
 */
 
-  
+
 /**
 * Configuration profile management.
 *
@@ -60,7 +60,7 @@ echo $_SESSION['header'];
 
 <?php
 
-$cfg = new CfgMain();
+$cfg = new LAMCfgMain();
 // check if submit button was pressed
 if ($_POST['submit']) {
 	// check master password
@@ -78,7 +78,7 @@ if ($_POST['submit']) {
 				$file = is_file("../../config/" . $_POST['addprofile'] . ".conf");
 				if ($file) {
 					// load as config and write new password
-					$conf = new Config($_POST['addprofile']);
+					$conf = new LAMConfig($_POST['addprofile']);
 					$conf->Passwd = $_POST['addpassword'];
 					$conf->save();
 					$msg = _("Created new profile.");
@@ -110,7 +110,7 @@ if ($_POST['submit']) {
 	// set new profile password
 	elseif ($_POST['action'] == "setpass") {
 		if ($_POST['setpassword'] && $_POST['setpassword2'] && ($_POST['setpassword'] == $_POST['setpassword2'])) {
-			$config = new Config($_POST['setprofile']);
+			$config = new LAMConfig($_POST['setprofile']);
 			$config->set_Passwd($_POST['setpassword']);
 			$config->save();
 			$msg = _("New password set successfully.");
@@ -119,7 +119,7 @@ if ($_POST['submit']) {
 	}
 	// set default profile
 	elseif ($_POST['action'] == "setdefault") {
-		$config = new CfgMain();
+		$config = new LAMCfgMain();
 		$config->default = $_POST['defaultfilename'];
 		$config->save();
 		$msg = _("New default profile set successfully.");
@@ -314,7 +314,7 @@ if (!isset($cfg->default) && !isset($cfg->password)) {
 						<select size=1 name="defaultfilename">
 						<?php
 							$files = getConfigProfiles();
-							$conf = new CfgMain();
+							$conf = new LAMCfgMain();
 							$defaultprofile = $conf->default;
 							for ($i = 0; $i < sizeof($files); $i++) {
 								if ($files[$i] == $defaultprofile) echo ("<option selected>" . $files[$i] . "</option>\n");

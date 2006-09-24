@@ -110,7 +110,7 @@ echo $_SESSION['header'];
 					<?php
 						if (sizeof($files) > 0) {
 							echo "<select size=1 name=\"filename\">\n";
-							$conf = new CfgMain();
+							$conf = new LAMCfgMain();
 							$defaultprofile = $conf->default;
 							for ($i = 0; $i < sizeof($files); $i++) {
 								if ($files[$i] == $defaultprofile) echo ("<option selected>" . $files[$i] . "</option>\n");
