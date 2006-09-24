@@ -1,6 +1,8 @@
 ??? 1.1.1
    - fixed bugs:
     -> Unix: password hashing problem (1562426)
+    -> Unix: No error message for wrong UID numbers in file upload
+    -> Filters in account lists get lost when sorting the table
 
 20.09.2006 1.1.0
    - Lamdaemon now uses the SSH implementation from PECL which is much more stable
