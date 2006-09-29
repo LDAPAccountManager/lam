@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ldap-account-manager\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de\n"
-"POT-Creation-Date: 2006-05-22 14:39+0200\n"
-"PO-Revision-Date: 2006-04-05 18:36+0200\n"
+"POT-Creation-Date: 2006-08-07 18:43+0200\n"
+"PO-Revision-Date: 2006-09-25 20:56+0200\n"
 "Last-Translator: Miroslav Kure <kurem@debian.cz>\n"
 "Language-Team: Czech <debian-l10n-czech@lists.debian.org>\n"
 "MIME-Version: 1.0\n"
@@ -17,13 +17,13 @@ msgstr ""
 
 #. Type: multiselect
 #. Description
-#: ../templates:5
+#: ../templates:1001
 msgid "Web server configuration:"
-msgstr ""
+msgstr "Nastavení webového serveru:"
 
 #. Type: multiselect
 #. Description
-#: ../templates:5
+#: ../templates:1001
 msgid ""
 "LDAP Account Manager supports any webserver that supports PHP4, but this "
 "automatic configuration process only supports Apache and Apache2. If you "
@@ -36,33 +36,29 @@ msgstr ""
 
 #. Type: string
 #. Description
-#: ../templates:13
+#: ../templates:2001
 msgid "Alias name:"
-msgstr ""
+msgstr "Alias:"
 
 #. Type: string
 #. Description
-#: ../templates:13
-#, fuzzy
+#: ../templates:2001
 msgid ""
 "LAM will add an alias to your httpd.conf which allows you to access LAM at "
 "http(s)://localhost/lam. You may select an alias other than \"lam\"."
 msgstr ""
-"LAM do vašeho httpd.conf přidá alias, díky kterému můžete k LAM přistupovat "
-"přes url http(s)://localhost/lam. Chcete-li použít jiný alias než \"lam\", "
-"můžete jej zadat právě teď."
+"LAM přidá do vašeho httpd.conf alias, který vám umožní přistupovat k LAM "
+"přes adresu http(s)://localhost/lam. Můžete zadat i jiný alias než \"lam\"."
 
 #. Type: string
 #. Description
-#: ../templates:21
-#, fuzzy
+#: ../templates:3001
 msgid "Master configuration password (clear text):"
-msgstr "Zadejte hlavní konfigurační heslo (nešifrovaný text):"
+msgstr "Hlavní konfigurační heslo (nešifrovaný text):"
 
 #. Type: string
 #. Description
-#: ../templates:21
-#, fuzzy
+#: ../templates:3001
 msgid ""
 "The configuration profiles are secured by a master password. You will need "
 "it to create and delete profiles. As default it is set to \"lam\" and can be "
@@ -70,31 +66,30 @@ msgid ""
 msgstr ""
 "Konfigurační profily jsou chráněny hlavním heslem. Toto heslo budete "
 "potřebovat při vytváření a mazání profilů. Výchozí hodnota je \"lam\" a "
-"můžete ji změnit kdykoliv později přímo v LAM. Pokud si budete přát, můžete "
-"tuto hodnotu změnit právě teď."
+"můžete ji změnit kdykoliv později přímo v LAM."
 
 #. Type: boolean
 #. Description
-#: ../templates:29
+#: ../templates:4001
 msgid "Would you like to restart your webserver(s) now?"
 msgstr "Chcete nyní restartovat svůj webový server (servery)?"
 
 #. Type: boolean
 #. Description
-#: ../templates:29
+#: ../templates:4001
 msgid "Your webserver(s) need to be restarted in order to apply the changes."
 msgstr ""
 "Aby se vaše nové nastavení aktivovalo, musí se webové servery restartovat."
 
 #. Type: note
 #. Description
-#: ../templates:34
+#: ../templates:5001
 msgid "Upgrade from pre-0.5.0 versions"
 msgstr "Přechod z verzí před 0.5.0"
 
 #. Type: note
 #. Description
-#: ../templates:34
+#: ../templates:5001
 msgid ""
 "Please note that this version uses new file formats for configuration and "
 "account profiles. You will have to update your configuration and create new "
@@ -106,13 +101,13 @@ msgstr ""
 
 #. Type: note
 #. Description
-#: ../templates:41
+#: ../templates:6001
 msgid "Upgrade from pre-1.0.0 versions"
 msgstr "Přechod z verzí před 1.0.0"
 
 #. Type: note
 #. Description
-#: ../templates:41
+#: ../templates:6001
 msgid ""
 "Please note that this version uses new file formats for the configuration "
 "profiles. Please edit your configuration files and save the new settings."
