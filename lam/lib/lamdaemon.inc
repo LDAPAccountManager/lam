@@ -147,6 +147,10 @@ function lamdaemonSSH($commands) {
 			return $return;
 		}
 	}
+	else {
+		$return = array("ERROR," . _('Unable to connect to remote server!') . "," . $_SESSION['config']->scriptServer);
+		return $return;
+	}
 	return array();
 }
 
