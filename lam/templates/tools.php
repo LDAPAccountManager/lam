@@ -85,6 +85,13 @@ $tools[] = array(
 		"link" => "schema/schema.php"
 	);
 
+// tests
+$tools[] = array(
+		"name" => _("Tests"),
+		"description" => _("Here you can test if certain LAM features work on your installation."),
+		"link" => "tests/index.php"
+	);
+
 echo "<p>&nbsp;</p>\n";
 
 // print tools table

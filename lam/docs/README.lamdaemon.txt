@@ -73,6 +73,9 @@ to point to lamdaemonOld.pl.
 
        If you want to compile it yourself, get the sources here: http://pecl.php.net/package/ssh2
 
+       After installing the PHP module please add this line to your php.ini:
+       extension=ssh2.so
+
 
 5. Set up SSH
 =============
@@ -88,6 +91,9 @@ Now everything should work fine.
 
 6. Debugging lamdaemon
 ======================
+
+   - There is a test page for lamdaemon:
+     Login to LAM and open Tools -> Tests -> Lamdaemon test
 
    - Check /var/log/auth.log or the equivalent on your system
      This file contains messages about all logins. If the ssh login
