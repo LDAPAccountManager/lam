@@ -1,4 +1,6 @@
 ??? 1.1.1
+   - Lamdaemon: added test page (Tools -> Tests -> Lamdaemon test)
+   - LAM Pro: Samba passwords can now be synchronized with Unix password
    - fixed bugs:
     -> Unix: password hashing problem (1562426)
     -> Unix: No error message for wrong UID numbers in file upload
