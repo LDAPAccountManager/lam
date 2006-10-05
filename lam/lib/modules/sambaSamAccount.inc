@@ -174,6 +174,10 @@ class sambaSamAccount extends baseModule {
 			'sambaDomainName',
 			'sambaPrimaryGroupSID'
 		);
+		$return['selfServiceFieldSettings'] = array(
+			'syncNTPassword' => _('Sync Samba NT password with Unix password'),
+			'syncLMPassword' => _('Sync Samba LM password with Unix password')
+		);
 		// help Entries
 		$return['help'] = array (
 			"displayName" => array(
@@ -1625,6 +1629,38 @@ class sambaSamAccount extends baseModule {
 			}
 		}
 		return $errors;
+	}
+
+	/**
+	 * Checks if all input values are correct and returns the LDAP commands which should be executed.
+	 *
+	 * @param string $fields input fields
+	 * @param array $attributes LDAP attributes
+	 * @return array messages and LDAP commands (array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array()))
+	 */
+	function checkSelfServiceOptions($fields, $attributes) {
+		$return = array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array());
+		if (isset($_POST['posixAccount_password']) && ($_POST['posixAccount_password'] != '')) {
+			if ($_POST['posixAccount_password'] != $_POST['posixAccount_password2']) {
+				return;
+			}
+			else {
+				if (!get_preg($_POST['posixAccount_password'], 'password')) {
+					return;
+				}
+				else {
+					
+					// sync password
+					if (in_array('syncNTPassword', $fields)) {
+						$return['mod']['sambaNTPassword'][0] = ntPassword($_POST['posixAccount_password']);
+					}
+					if (in_array('syncLMPassword', $fields)) {
+						$return['mod']['sambaLMPassword'][0] = lmPassword($_POST['posixAccount_password']);
+					}
+				}
+			}
+		}
+		return $return;
 	}
 
 }
