@@ -62,7 +62,7 @@ if (!isset($_SESSION['config']->scriptServer) || (strlen($_SESSION['config']->sc
 	echo "<td bgcolor=\"red\">" . _("No lamdaemon server set, please update your LAM configuration settings.") . "</td>";
 }
 elseif (!isset($_SESSION['config']->scriptPath) || (strlen($_SESSION['config']->scriptPath) < 10)) {
-	echo "<td>" . _("Error") . "&nbsp;&nbsp;</td>\n";
+	echo "<td bgcolor=\"red\">" . _("Error") . "&nbsp;&nbsp;</td>\n";
 	echo "<td bgcolor=\"red\">" . _("No lamdaemon path set, please update your LAM configuration settings.") . "</td>";
 	$stopTest = true;
 }
@@ -92,7 +92,7 @@ if (!$stopTest) {
 		echo "<td bgcolor=\"green\">" . sprintf(_("Using %s to connect to remote server."), $userName) . "</td>";
 	}
 	else {
-		echo "<td>" . _("Error") . "&nbsp;&nbsp;</td>\n";
+		echo "<td bgcolor=\"red\">" . _("Error") . "&nbsp;&nbsp;</td>\n";
 		echo "<td bgcolor=\"red\">" . _("Your LAM admin user must be a valid Unix account to work with lamdaemon!") . "</td>";
 		$stopTest = true;
 	}
@@ -109,7 +109,7 @@ if (!$stopTest) {
 		echo "<td bgcolor=\"green\">" . _("SSH2 module is installed.") . "</td>";
 	}
 	else {
-		echo "<td>" . _("Error") . "&nbsp;&nbsp;</td>\n";
+		echo "<td bgcolor=\"red\">" . _("Error") . "&nbsp;&nbsp;</td>\n";
 		echo "<td bgcolor=\"red\">" . _("Please install the SSH2 module for PHP and activate it in your php.ini!") . "</td>";
 		$stopTest = true;		
 	}
