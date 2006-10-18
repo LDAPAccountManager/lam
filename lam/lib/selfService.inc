@@ -35,6 +35,16 @@ include_once("modules.inc");
 /** account types */
 include_once("types.inc");
 
+/**
+ * Returns if this is a LAM Pro installation.
+ *
+ * @return boolean LAM Pro installation
+ */
+function isLAMProVersion() {
+	$dir = substr(__FILE__, 0, strlen(__FILE__) - 20) . "/templates/selfService";
+	return is_dir($dir);
+}
+
 
 /**
  * Returns a list of possible search attributes for the self service.

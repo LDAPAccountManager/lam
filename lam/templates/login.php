@@ -32,6 +32,8 @@ $Id$
 include_once("../lib/status.inc");
 /** security functions */
 include_once("../lib/security.inc");
+/** self service functions */
+include_once("../lib/selfService.inc");
 
 // check environment
 $criticalErrors = array();
@@ -174,7 +176,14 @@ function display_LoginPage($config_object) {
 		</p>
 		<table width="100%" border="0">
 			<tr>
-				<td width="100%" align="right">
+				<TD width="50%" align="left">
+					<?PHP
+						if (!isLAMProVersion()) {
+							echo "<a href=\"http://lam.sourceforge.net/lamPro/index.htm\">" . _("Want more features? Get LAM Pro!") . "</a>";
+						}
+					?>
+				</TD>
+				<td width="50%" align="right">
 					<a href="./config/index.php"><IMG alt="configuration" src="../graphics/tools.png">&nbsp;<?php echo _("LAM configuration") ?></a>
 				</td>
 			</tr>
@@ -335,7 +344,7 @@ function display_LoginPage($config_object) {
 				<TR><TD align="right"><HR>
 					<SMALL>
 					<?php
-						if (is_dir("./selfService")) {
+						if (isLAMProVersion()) {
 							echo "LDAP Account Manager <b>Pro</b>: <b>" . LAMVersion() . "</b>&nbsp;&nbsp;&nbsp;";
 						}
 						else {

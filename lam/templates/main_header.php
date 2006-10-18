@@ -32,6 +32,8 @@ $Id$
 include_once("../lib/security.inc");
 /** access to configuration options */
 include_once("../lib/config.inc");
+/** self service functions */
+include_once("../lib/selfService.inc");
 
 // start session
 startSecureSession();
@@ -53,8 +55,12 @@ $types = $_SESSION['config']->get_ActiveTypes();
 <table border=0 width="100%">
 	<tr>
 		<td width="200">
-			<a href="http://lam.sourceforge.net/sponsors/donations.htm" target="_blank"><img alt="donations" src="../graphics/smile.png">&nbsp;<?php echo _("Donate") ?></a>
-			<br><br>
+			<?PHP
+			if (!isLAMProVersion()) {
+				echo "<a href=\"http://lam.sourceforge.net/sponsors/donations.htm\" target=\"_blank\"><img alt=\"donations\" src=\"../graphics/smile.png\">&nbsp;" . _("Donate") . "</a>";
+				echo "<br><br>";
+			}
+			?>
 			<a href="tools.php" target="mainpart"><img alt="tools" src="../graphics/tools.png">&nbsp;<BIG><B><?php echo _("Tools") ?></B></BIG></a>
 		</td>
 		<td align="center">
