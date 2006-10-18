@@ -242,8 +242,6 @@ class shadowAccount extends baseModule {
 		$this->attributes['shadowMax'][0] = $_POST['shadowMax'];
 		$this->attributes['shadowWarning'][0] = $_POST['shadowWarning'];
 		$this->attributes['shadowInactive'][0] = $_POST['shadowInactive'];
-		$this->attributes['shadowExpire'][0] = intval(mktime(0, 0, 0, intval($_POST['shadowExpire_mon']), intval($_POST['shadowExpire_day']),
-			intval($_POST['shadowExpire_yea']))/3600/24);
 		if ( !get_preg($this->attributes['shadowMin'][0], 'digit'))  $errors[] = $this->messages['shadowMin'][0];
 		if ( !get_preg($this->attributes['shadowMax'][0], 'digit')) $errors[] = $this->messages['shadowMax'][0];
 		if ( $this->attributes['shadowMin'][0] > $this->attributes['shadowMax'][0]) $errors[] = $this->messages['shadow_cmp'][0];
@@ -258,13 +256,10 @@ class shadowAccount extends baseModule {
 	* @return array meta HTML code
 	*/
 	function display_html_attributes() {
-		// Use dd-mm-yyyy format of date because it's easier to read for humans
-		$shAccExpirationDate = 0;
-		if (isset($this->attributes['shadowExpire'][0])) $shAccExpirationDate = $this->attributes['shadowExpire'][0];
-		$date = getdate($shAccExpirationDate*3600*24);
-
 		$shWarning = '';
-		if (isset($this->attributes['shadowWarning'][0])) $shWarning = $this->attributes['shadowWarning'][0];
+		if (isset($this->attributes['shadowWarning'][0])) {
+			$shWarning = $this->attributes['shadowWarning'][0];
+		}
 		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Password warning') ),
 			1 => array ( 'kind' => 'input', 'name' => 'shadowWarning', 'type' => 'text', 'size' => '5', 'maxlength' => '4', 'value' => $shWarning),
 			2 => array ( 'kind' => 'help', 'value' => 'shadowWarning' ));
@@ -284,6 +279,55 @@ class shadowAccount extends baseModule {
 			1 => array ( 'kind' => 'input', 'name' => 'shadowMax', 'type' => 'text', 'size' => '5', 'maxlength' => '5', 'value' => $shMaxAge),
 			2 => array ( 'kind' => 'help', 'value' => 'shadowMax' ));
 
+		$expirationDate = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+		if (isset($this->attributes['shadowExpire'][0])) {
+			$shAccExpirationDate = $this->attributes['shadowExpire'][0];
+			$date = getdate($shAccExpirationDate*3600*24);
+			$expirationDate = $date['mday'] . "." . $date['mon'] . "." . $date['year'];
+		}
+		$return[] = array(
+			array('kind' => 'text', 'text' => _('Account expiration date')),
+			array('kind' => 'table', 'value' => array(array(
+				array('kind' => 'text', 'text' => $expirationDate),
+				array('kind' => 'input', 'name' => 'form_subpage_shadowAccount_expire_open', 'type' => 'submit', 'value' => _('Change'))
+			))),
+			array('kind' => 'help', 'value' => 'shadowExpire' ));
+
+		return $return;
+	}
+
+	/**
+	* Processes user input of the expiration page.
+	* It checks if all input values are correct and updates the associated LDAP attributes.
+	*
+	* @return array list of info/error messages
+	*/
+	function process_expire() {
+		$errors = array();
+		// set expiration date
+		if (isset($_POST['form_subpage_shadowAccount_attributes_change'])) {
+		$this->attributes['shadowExpire'][0] = intval(gmmktime(0, 0, 0, intval($_POST['shadowExpire_mon']), intval($_POST['shadowExpire_day']),
+			intval($_POST['shadowExpire_yea']))/3600/24);
+		}
+		// remove expiration date
+		elseif (isset($_POST['form_subpage_shadowAccount_attributes_del'])) {
+			unset($this->attributes['shadowExpire']);
+		}
+		return $errors;		
+	}
+	
+	/**
+	* This function will create the meta HTML code to show a page with the expiration date.
+	*
+	* @return array meta HTML code
+	*/
+	function display_html_expire() {
+		$return = array();
+		$shAccExpirationDate = 0;
+		if (isset($this->attributes['shadowExpire'][0])) {
+			$shAccExpirationDate = $this->attributes['shadowExpire'][0];
+		}
+		$date = getdate($shAccExpirationDate*3600*24);
 		for ( $i=1; $i<=31; $i++ ) $mday[] = $i;
 		for ( $i=1; $i<=12; $i++ ) $mon[] = $i;
 		for ( $i=2003; $i<=2030; $i++ ) $year[] = $i;
@@ -295,8 +339,16 @@ class shadowAccount extends baseModule {
 				2 => array ( 'kind' => 'select', 'name' => 'shadowExpire_yea',
 					'options' => $year, 'options_selected' => $date['year'])))),
 			2 => array ( 'kind' => 'help', 'value' => 'shadowExpire' ));
-
-		return $return;
+		$buttons = array();
+		$buttons[] = array('kind' => 'input', 'name' => 'form_subpage_shadowAccount_attributes_change', 'type' => 'submit', 'value' => _('Change'));
+		if (isset($this->attributes['shadowExpire'][0])) {
+			$buttons[] = array('kind' => 'input', 'name' => 'form_subpage_shadowAccount_attributes_del', 'type' => 'submit', 'value' => _('Remove'));
+		}
+		$buttons[] = array('kind' => 'input', 'name' => 'form_subpage_shadowAccount_attributes_back', 'type' => 'submit', 'value' => _('Cancel'));
+		$return[] = array(
+			array('kind' => 'table', 'td' => array('colspan' => 3), 'value' => array($buttons))
+		);
+		return $return;	
 	}
 
 	/**
