@@ -1,4 +1,4 @@
-ldap-account-manager (1.1.1.rc1-1) unstable; urgency=low
+ldap-account-manager (1.1.1.RC1-1) unstable; urgency=low
 
   * new upstream release
   * [l10n] Updated Czech translation of ldap-account-manager debconf
