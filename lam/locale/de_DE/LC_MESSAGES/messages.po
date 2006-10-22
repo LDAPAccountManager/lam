@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: messages\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de \n"
 "POT-Creation-Date: 2004-01-14 17:45+0200\n"
-"PO-Revision-Date: 2006-10-22 10:13+0200\n"
+"PO-Revision-Date: 2006-10-22 10:16+0200\n"
 "Last-Translator: Roland Gruber <post@rolandgruber.de>\n"
 "Language-Team:  <de@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -3869,7 +3869,7 @@ msgstr "SSH-Verbindung"
 
 #: ../templates/tests/lamdaemonTest.php:134
 msgid "SSH connection could be established."
-msgstr "Die SSH-Verbindung konnte nicht aufgebaut werden."
+msgstr "Die SSH-Verbindung konnte erfolgreich aufgebaut werden."
 
 #: ../lib/modules/ldapPublicKey.inc:48 ../lib/modules/ldapPublicKey.inc:58
 #: ../lib/modules/ldapPublicKey.inc:62 ../lib/modules/ldapPublicKey.inc:70
