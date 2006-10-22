@@ -71,9 +71,7 @@ if ($_GET['type']) {
 	$_SESSION['account'] = new accountContainer($_GET['type'], 'account');
 	// Show HTML Page
 	echo $_SESSION['header'];
-	echo "<title>";
-	echo _("Delete Account");
-	echo "</title>\n";
+	echo "<title>LDAP Account Manager</title>\n";
 	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">\n";
 	echo "</head><body>\n";
 	echo "<form action=\"delete.php\" method=\"post\">\n";
@@ -124,9 +122,7 @@ if ($_POST['cancel']) {
 if ($_POST['delete']) {
 	// Show HTML Page
 	echo $_SESSION['header'];
-	echo "<title>";
-	echo _("Delete Account");
-	echo "</title>\n";
+	echo "<title>LDAP Account Manager</title>\n";
 	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/layout.css\">\n";
 	echo "</head><body>\n";
 	echo "<form action=\"delete.php\" method=\"post\">\n";

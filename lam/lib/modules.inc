@@ -918,10 +918,7 @@ class accountContainer {
 		}
 		// Write HTML-Code
 		echo $_SESSION['header'];
-		echo "<title>";
-		if ($this->dn_orig!='') echo _("Modify Account");
-			else echo _("Create new Account");
-		echo "</title>\n";
+		echo "<title>LDAP Account Manager</title>\n";
 		echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/layout.css\">\n";
 		echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../../style/type_" . $this->type . ".css\">\n";
 		echo "</head><body>\n";
@@ -1072,8 +1069,8 @@ class accountContainer {
 					);
 				}
 				$return[] = array(0 => array('kind' => 'text', 'text' => '&nbsp;')); // empty line
-				if ($this->dn_orig!='') $text = _('Modify Account');
-					else $text = _('Create Account');
+				if ($this->dn_orig!='') $text = _('Modify account');
+					else $text = _('Create account');
 				$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => $text ),
 					1 => array ( 'kind' => 'input', 'type' => 'submit', 'name' => 'create', 'value' => $text, 'disabled' => $disabled),
 					2 => array ('kind' => 'help', 'value' => '402'));

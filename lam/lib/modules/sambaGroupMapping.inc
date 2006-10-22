@@ -52,24 +52,24 @@ class sambaGroupMapping extends baseModule {
 	function sambaGroupMapping($scope) {
 		// load error messages
 		$this->rids = array(
-			_('Domain Admins') => 512,
-			_('Domain Users') => 513,
-			_('Domain Guests') => 514,
-			_('Domain Computers') => 515,
-			_('Domain Controllers') => 516,
-			_('Domain Certificate Admins') => 517,
-			_('Domain Schema Admins') => 518,
-			_('Domain Enterprise Admins') => 519,
-			_('Domain Policy Admins') => 520);
+			_('Domain admins') => 512,
+			_('Domain users') => 513,
+			_('Domain guests') => 514,
+			_('Domain computers') => 515,
+			_('Domain controllers') => 516,
+			_('Domain certificate admins') => 517,
+			_('Domain schema admins') => 518,
+			_('Domain enterprise admins') => 519,
+			_('Domain policy admins') => 520);
 
 		$this->sambaGroupTypes = array (
 			_('User') => 1,
-			_('Domain Group') => 2,
+			_('Domain group') => 2,
 			_('Domain') => 3,
-			_('Local Group') => 4,
-			_('Builtin Group') => 5,
-			_('Deleted Account') => 6,
-			_('Invalid Account') => 7
+			_('Local group') => 4,
+			_('Builtin group') => 5,
+			_('Deleted account') => 6,
+			_('Invalid account') => 7
 			);
 		// call parent constructor
 		parent::baseModule($scope);

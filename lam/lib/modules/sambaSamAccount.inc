@@ -62,9 +62,9 @@ class sambaSamAccount extends baseModule {
 	function sambaSamAccount($scope) {
 	// List of well known rids
 	$this->rids = array(
-		_('Domain Admins') => 512, _('Domain Users') => 513, _('Domain Guests') => 514,
-		_('Domain Computers') => 515, _('Domain Controllers') => 516, _('Domain Certificate Admins') => 517,
-		_('Domain Schema Admins') => 518, _('Domain Enterprise Admins') => 519, _('Domain Policy Admins') => 520);
+		_('Domain admins') => 512, _('Domain users') => 513, _('Domain guests') => 514,
+		_('Domain computers') => 515, _('Domain controllers') => 516, _('Domain certificate admins') => 517,
+		_('Domain schema admins') => 518, _('Domain enterprise admins') => 519, _('Domain policy admins') => 520);
 	// call parent constructor
 	parent::baseModule($scope);
 	}
