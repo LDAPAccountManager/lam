@@ -1,3 +1,11 @@
+ldap-account-manager (1.1.1.rc1-1) unstable; urgency=low
+
+  * new upstream release
+  * [l10n] Updated Czech translation of ldap-account-manager debconf
+    mesages (Closes: #389624)
+
+ -- Roland Gruber <post@rolandgruber.de>  Sun, 22 Oct 2006 20:30:19 +0200
+
 ldap-account-manager (1.1.0-1) unstable; urgency=low
 
   * New upstream release (1.1.0)
