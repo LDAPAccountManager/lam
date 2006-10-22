@@ -207,7 +207,7 @@ class sambaGroupMapping extends baseModule {
 			2 => array ( 'kind' => 'help', 'value' => 'sambaSID' ));
 
 		$names = array_keys($this->sambaGroupTypes);
-		$selected = array( _('Domain Group') );
+		$selected = array( _('Domain group') );
 		for ($i=0; $i<count($names); $i++) {
 			if (!isset($this->attributes['sambaGroupType'][0])) break;
 			if ($this->attributes['sambaGroupType'][0]==$this->sambaGroupTypes[$names[$i]]) $selected = array( $names[$i] );
@@ -274,7 +274,7 @@ class sambaGroupMapping extends baseModule {
 					'name' => 'sambaGroupMapping_rid',
 					'description' => _('Samba RID number'),
 					'help' => 'rid',
-					'example' => _('Domain Admins')
+					'example' => _('Domain admins')
 				),
 				array(
 					'name' => 'sambaGroupMapping_groupType',

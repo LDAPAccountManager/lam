@@ -313,7 +313,7 @@ class sambaAccount extends baseModule {
 					'name' => 'sambaAccount_specialUser',
 					'description' => _('Special user'),
 					'help' => 'specialUser',
-					'example' => _('Domain Admins'),
+					'example' => _('Domain admins'),
 					'values' => implode(", ", array_keys($this->rids))
 				),
 				array(
@@ -545,7 +545,7 @@ class sambaAccount extends baseModule {
 
 		// host attributes
 		if ($_SESSION[$this->base]->type=='host') {
-			$this->attributes['primaryGroupID'][0] = $this->rids[_('Domain Computers')];
+			$this->attributes['primaryGroupID'][0] = $this->rids[_('Domain computers')];
 			if ($_POST['ResetSambaPassword'] || (!$this->attributes['lmPassword'][0])) {
 				$hostname = $_SESSION[$this->base]->module['posixAccount']->attributes['uid'][0];
 				$hostname = substr($hostname, 0, strlen($hostname) - 1);

@@ -604,7 +604,7 @@ class sambaSamAccount extends baseModule {
 
 		// host attributes
 		if ($_SESSION[$this->base]->type=='host') {
-			$this->attributes['sambaPrimaryGroupSID'][0] = $SID."-".$this->rids[_('Domain Computers')];
+			$this->attributes['sambaPrimaryGroupSID'][0] = $SID."-".$this->rids[_('Domain computers')];
 			if ($_POST['ResetSambaPassword'] || !$this->attributes['sambaLMPassword'][0]) {
 				$hostname = $_SESSION[$this->base]->module['posixAccount']->attributes['uid'][0];
 				$hostname = substr($hostname, 0, strlen($hostname) - 1);
@@ -1549,7 +1549,7 @@ class sambaSamAccount extends baseModule {
 				}
 				else {
 					// default domain users
-					$partialAccounts[$i]['sambaPrimaryGroupSID'] = $domains[$domIndex]->SID . '-' . $this->rids[_('Domain Users')];
+					$partialAccounts[$i]['sambaPrimaryGroupSID'] = $domains[$domIndex]->SID . '-' . $this->rids[_('Domain users')];
 				}
 				// special user
 				if ($rawAccounts[$i][$ids['sambaSamAccount_rid']] != "") {
