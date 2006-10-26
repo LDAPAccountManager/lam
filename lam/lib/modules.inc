@@ -1177,11 +1177,11 @@ class accountContainer {
 		$search = substr($dn, 0, strpos($dn, ','));
 		$result = @ldap_search($_SESSION['ldap']->server(), $dn, $search);
 		if (!$result) {
-			return array(array("ERROR", _("Unable to load LDAP entry: ") . $dn, ldap_error($_SESSION['ldap']->server())));
+			return array(array("ERROR", _("Unable to load LDAP entry:") . " " . $dn, ldap_error($_SESSION['ldap']->server())));
 		}
 		$entry = @ldap_first_entry($_SESSION['ldap']->server(), $result);
 		if (!$entry) {
-			return array(array("ERROR", _("Unable to load LDAP entry: ") . $dn, ldap_error($_SESSION['ldap']->server())));
+			return array(array("ERROR", _("Unable to load LDAP entry:") . " " . $dn, ldap_error($_SESSION['ldap']->server())));
 		}
 		$this->dn = substr($dn, strpos($dn, ',')+1);
 		$this->dn_orig = $dn;
