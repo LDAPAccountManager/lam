@@ -1,8 +1,9 @@
-ldap-account-manager (1.1.1.RC1-1) unstable; urgency=low
+ldap-account-manager (1.1.1-1) unstable; urgency=medium
 
   * new upstream release
   * [l10n] Updated Czech translation of ldap-account-manager debconf
     mesages (Closes: #389624)
+  * urgency set to medium to get 1.1.1 into Etch
 
  -- Roland Gruber <post@rolandgruber.de>  Sun, 22 Oct 2006 20:30:19 +0200
 

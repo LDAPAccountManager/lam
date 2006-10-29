@@ -1,4 +1,4 @@
-??? 1.1.1
+01.11.2006 1.1.1
    - Lamdaemon: added test page (Tools -> Tests -> Lamdaemon test)
    - LAM Pro: Samba passwords can now be synchronized with Unix password
    - Shadow account: better management of expiration date
