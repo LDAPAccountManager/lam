@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: LAM 0.5\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de\n"
 "POT-Creation-Date: 2004-01-14 17:45+0200\n"
-"PO-Revision-Date: 2006-09-12 16:05+0500\n"
+"PO-Revision-Date: 2006-11-01 12:38+0500\n"
 "Last-Translator: Anatoly Turov <turov@vsmpo.ru>\n"
 "Language-Team: Russian <turov@vsmpo.ru>\n"
 "MIME-Version: 1.0\n"
@@ -78,7 +78,7 @@ msgstr "Нужный столбец не найден в CSV файле"
 msgid "A user may define who is allowed to act on behalf of herself. This property is checked when using the Kolab smtp daemon (Postfix) to send emails."
 msgstr "Пользователь может определять, кому разрешено действовать от его имени. Это свойство проверяется при использовании Kolab smtp демона (Postfix) для отправки почты."
 
-#: ../lib/modules/sambaSamAccount.inc:436
+#: ../lib/modules/sambaSamAccount.inc:440
 msgid "Abu Dhabi, Muscat, Baku"
 msgstr "Abu Dhabi, Muscat, Baku"
 
@@ -202,18 +202,19 @@ msgstr "Учетная запись будет создана после заг�
 msgid "Account deactivated"
 msgstr "Учетная запись отключена"
 
-#: ../lib/modules/sambaSamAccount.inc:261
-#: ../lib/modules/sambaSamAccount.inc:339
-#: ../lib/modules/sambaSamAccount.inc:881
-#: ../lib/modules/sambaSamAccount.inc:1101
+#: ../lib/modules/sambaSamAccount.inc:265
+#: ../lib/modules/sambaSamAccount.inc:343
+#: ../lib/modules/sambaSamAccount.inc:885
+#: ../lib/modules/sambaSamAccount.inc:1105
 #: ../lib/modules/shadowAccount.inc:104
 #: ../lib/modules/shadowAccount.inc:169
 #: ../lib/modules/shadowAccount.inc:201
-#: ../lib/modules/shadowAccount.inc:290
+#: ../lib/modules/shadowAccount.inc:289
+#: ../lib/modules/shadowAccount.inc:334
 msgid "Account expiration date"
 msgstr "Срок действия учетной записи"
 
-#: ../lib/modules/shadowAccount.inc:310
+#: ../lib/modules/shadowAccount.inc:362
 msgid "Account inactive"
 msgstr "Учетная запись неактивна"
 
@@ -222,11 +223,11 @@ msgstr "Учетная запись неактивна"
 #: ../lib/modules/sambaAccount.inc:367
 #: ../lib/modules/sambaAccount.inc:370
 #: ../lib/modules/sambaAccount.inc:732
-#: ../lib/modules/sambaSamAccount.inc:207
-#: ../lib/modules/sambaSamAccount.inc:210
-#: ../lib/modules/sambaSamAccount.inc:317
-#: ../lib/modules/sambaSamAccount.inc:859
-#: ../lib/modules/sambaSamAccount.inc:1089
+#: ../lib/modules/sambaSamAccount.inc:211
+#: ../lib/modules/sambaSamAccount.inc:214
+#: ../lib/modules/sambaSamAccount.inc:321
+#: ../lib/modules/sambaSamAccount.inc:863
+#: ../lib/modules/sambaSamAccount.inc:1093
 msgid "Account is deactivated"
 msgstr "Учетная запись отключена"
 
@@ -234,7 +235,7 @@ msgstr "Учетная запись отключена"
 msgid "Account lists - Filters"
 msgstr "Список учетных записей - Фильтры"
 
-#: ../templates/delete.php:89
+#: ../templates/delete.php:87
 msgid "Account name:"
 msgstr "Имя учетной записи"
 
@@ -255,11 +256,11 @@ msgstr "Типы учетных записей и модули"
 msgid "Account types define which sorts of LDAP entries (e.g. users and groups) should be managed. The account modules define which properties (e.g. Unix and Samba) can be edited."
 msgstr "Типы учетных записей определяют какими записями в LDAP (пользователи, группы) можно управлять. Модули определяют какое свойство (Unix, Samba) можно редактировать."
 
-#: ../lib/modules.inc:1014
+#: ../lib/modules.inc:1011
 msgid "Account was created successfully."
 msgstr "Учетная запись создана успешно"
 
-#: ../lib/modules.inc:1017
+#: ../lib/modules.inc:1014
 msgid "Account was modified successfully."
 msgstr "Учетная запись изменена успешно"
 
@@ -356,7 +357,7 @@ msgstr "Добавление новых опций для выбранного �
 msgid "Administrators group"
 msgstr "Administrators group"
 
-#: ../lib/modules/sambaSamAccount.inc:423
+#: ../lib/modules/sambaSamAccount.inc:427
 msgid "Alaska"
 msgstr "Alaska"
 
@@ -396,12 +397,12 @@ msgstr "Разрешенные компьютеры"
 
 #: ../lib/modules/sambaAccount.inc:830
 #: ../lib/modules/sambaAccount.inc:831
-#: ../lib/modules/sambaSamAccount.inc:982
-#: ../lib/modules/sambaSamAccount.inc:983
+#: ../lib/modules/sambaSamAccount.inc:986
+#: ../lib/modules/sambaSamAccount.inc:987
 msgid "Allowed workstations"
 msgstr "Разрешенные компьютеры"
 
-#: ../lib/modules/sambaSamAccount.inc:438
+#: ../lib/modules/sambaSamAccount.inc:442
 msgid "Almaty, Dhaka, Colombo"
 msgstr "Almaty, Dhaka, Colombo"
 
@@ -431,7 +432,7 @@ msgstr "Применить"
 msgid "Are you sure you want to permanently delete this object?"
 msgstr "Вы уверены, что Вы хотите совсем удалить этот обьект?"
 
-#: ../lib/modules/sambaSamAccount.inc:428
+#: ../lib/modules/sambaSamAccount.inc:432
 msgid "Atlantic time (Canada), Caracas"
 msgstr "Atlantic time (Canada), Caracas"
 
@@ -444,7 +445,7 @@ msgstr "Аттрибут"
 msgid "Attribute types"
 msgstr "Типы аттрибутов"
 
-#: ../lib/modules/sambaSamAccount.inc:444
+#: ../lib/modules/sambaSamAccount.inc:448
 msgid "Auckland, Fiji, Kamchatka"
 msgstr "Auckland, Fiji, Kamchatka"
 
@@ -469,11 +470,11 @@ msgid "Available users"
 msgstr "Доступные пользователи"
 
 #: ../lib/modules/sambaAccount.inc:836
-#: ../lib/modules/sambaSamAccount.inc:988
+#: ../lib/modules/sambaSamAccount.inc:992
 msgid "Available workstations"
 msgstr "Доступные компьютеры"
 
-#: ../lib/modules/sambaSamAccount.inc:431
+#: ../lib/modules/sambaSamAccount.inc:435
 msgid "Azores, Cape Verde Islands"
 msgstr "Azores, Cape Verde Islands"
 
@@ -481,7 +482,7 @@ msgstr "Azores, Cape Verde Islands"
 #: ../lib/modules/posixGroup.inc:238
 #: ../lib/modules/posixGroup.inc:261
 #: ../lib/modules/sambaAccount.inc:841
-#: ../lib/modules/sambaSamAccount.inc:992
+#: ../lib/modules/sambaSamAccount.inc:996
 #: ../lib/modules/posixAccount.inc:932
 #: ../lib/modules/inetOrgPerson.inc:798
 msgid "Back"
@@ -507,7 +508,7 @@ msgstr "Вернуться в OU-редактор"
 msgid "Back to PDF Editor"
 msgstr "Вернуться в PDF-редактор"
 
-#: ../lib/modules.inc:1026
+#: ../lib/modules.inc:1023
 msgid "Back to account list"
 msgstr "Вернуться к списку пользователей"
 
@@ -515,7 +516,7 @@ msgstr "Вернуться к списку пользователей"
 msgid "Back to group list"
 msgstr "Вернуться к списку групп"
 
-#: ../templates/delete.php:238
+#: ../templates/delete.php:234
 msgid "Back to list"
 msgstr "Вернуться к списку"
 
@@ -535,11 +536,11 @@ msgstr "Вернуться в редактор профилей"
 msgid "Back to profile login"
 msgstr "Вернуться назад"
 
-#: ../lib/modules/sambaSamAccount.inc:435
+#: ../lib/modules/sambaSamAccount.inc:439
 msgid "Baghdad, Riyadh, Moscow"
 msgstr "Baghdad, Riyadh, Moscow"
 
-#: ../lib/modules/sambaSamAccount.inc:439
+#: ../lib/modules/sambaSamAccount.inc:443
 msgid "Bangkok, Hanoi, Jakarta"
 msgstr "Bangkok, Hanoi, Jakarta"
 
@@ -560,7 +561,7 @@ msgstr "Основной модуль"
 msgid "Beginning"
 msgstr "Начало"
 
-#: ../lib/modules/sambaSamAccount.inc:440
+#: ../lib/modules/sambaSamAccount.inc:444
 msgid "Beijing, Perth, Singapore"
 msgstr "Beijing, Perth, Singapore"
 
@@ -596,13 +597,13 @@ msgstr "Block soft quota содержит не допустимые символ
 msgid "Block soft quota must be smaller than block hard quota."
 msgstr "Block soft quota должна быть меньше block hard quota."
 
-#: ../lib/modules/sambaSamAccount.inc:429
+#: ../lib/modules/sambaSamAccount.inc:433
 msgid "Brazil, Buenos Aires"
 msgstr "Brazil, Buenos Aires"
 
 #: ../lib/modules/sambaGroupMapping.inc:70
-msgid "Builtin Group"
-msgstr "Builtin Group"
+msgid "Builtin group"
+msgstr "Встроенная группа"
 
 #: ../templates/masscreate.php:134
 msgid "CSV file:"
@@ -622,10 +623,10 @@ msgstr "Таймаут кэша неправильный!"
 #: ../lib/modules/sambaAccount.inc:388
 #: ../lib/modules/sambaAccount.inc:394
 #: ../lib/modules/sambaAccount.inc:406
-#: ../lib/modules/sambaSamAccount.inc:222
-#: ../lib/modules/sambaSamAccount.inc:225
-#: ../lib/modules/sambaSamAccount.inc:228
-#: ../lib/modules/sambaSamAccount.inc:234
+#: ../lib/modules/sambaSamAccount.inc:226
+#: ../lib/modules/sambaSamAccount.inc:229
+#: ../lib/modules/sambaSamAccount.inc:232
+#: ../lib/modules/sambaSamAccount.inc:238
 #: ../lib/modules/posixAccount.inc:376
 #: ../lib/modules/sambaGroupMapping.inc:305
 #: ../lib/modules/shadowAccount.inc:154
@@ -646,20 +647,21 @@ msgstr "Можно оставить пустым."
 #: ../templates/pdfedit/pdfdelete.php:92
 #: ../templates/pdfedit/pdfpage.php:773
 #: ../templates/pdfedit/pdfmain.php:153
-#: ../templates/delete.php:112
+#: ../templates/delete.php:110
 #: ../templates/profedit/profiledelete.php:83
 #: ../templates/profedit/profilepage.php:253
 #: ../templates/profedit/profilemain.php:166
 #: ../templates/initsuff.php:189
-#: ../lib/modules/sambaSamAccount.inc:1057
+#: ../lib/modules/sambaSamAccount.inc:1061
 #: ../lib/modules/posixAccount.inc:955
 #: ../lib/modules/kolabUser.inc:564
+#: ../lib/modules/shadowAccount.inc:347
 #: ../lib/modules/inetOrgPerson.inc:761
 msgid "Cancel"
 msgstr "Отмена"
 
-#: ../templates/login.php:396
-#: ../templates/login.php:401
+#: ../templates/login.php:405
+#: ../templates/login.php:410
 #: ../templates/selfService/selfServiceLogin.php:105
 #: ../templates/selfService/selfServiceLogin.php:109
 msgid "Cannot connect to specified LDAP server. Please try again."
@@ -674,17 +676,19 @@ msgstr "Не возможно открыть конфигурационный ф
 msgid "Captions and labels"
 msgstr "Заголовки и ярлыки"
 
-#: ../lib/modules/sambaSamAccount.inc:433
+#: ../lib/modules/sambaSamAccount.inc:437
 msgid "Central Europe Time, Paris, Berlin"
 msgstr "Central Europe Time, Paris, Berlin"
 
-#: ../lib/modules/sambaSamAccount.inc:426
+#: ../lib/modules/sambaSamAccount.inc:430
 msgid "Central Time (US & Canada), Mexico City"
 msgstr "Central Time (US & Canada), Mexico City"
 
 #: ../templates/selfService/adminMain.php:371
 #: ../templates/pdfedit/pdfpage.php:499
 #: ../templates/pdfedit/pdfpage.php:505
+#: ../lib/modules/shadowAccount.inc:292
+#: ../lib/modules/shadowAccount.inc:343
 msgid "Change"
 msgstr "Изменить"
 
@@ -709,17 +713,21 @@ msgstr "Изменить мастер-пароль"
 msgid "Change password"
 msgstr "Изменение пароля"
 
-#: ../templates/login.php:322
+#: ../templates/login.php:331
 msgid "Change profile"
 msgstr "Сменить профиль"
 
-#: ../lib/lists.inc:484
+#: ../lib/lists.inc:494
 msgid "Change suffix"
 msgstr "Суффикс изменен"
 
 #: ../lib/modules/posixAccount.inc:727
 msgid "Changed value because only ASCII characters are allowed."
 msgstr "Изменять значение допускается только ASCII символами."
+
+#: ../templates/tests/index.php:56
+msgid "Check if quotas and homedirectories can be managed."
+msgstr "Проверить, можно ли управлять домашними каталогами и квотами."
 
 #: ../templates/masscreate.php:125
 msgid "Check your input carefully. LAM will only do some basic checks on the upload data."
@@ -743,7 +751,7 @@ msgid "Columns:"
 msgstr "Столбцы:"
 
 #: ../lib/modules/sambaAccount.inc:394
-#: ../lib/modules/sambaSamAccount.inc:234
+#: ../lib/modules/sambaSamAccount.inc:238
 msgid "Comma separated list of Samba workstations the user is allowed to login. Empty means every workstation."
 msgstr "Список компьютеров (разделенных запятой) на которые пользователю позволено входить. Пусто - любой компьютер."
 
@@ -831,16 +839,12 @@ msgstr "Название страны не правильное!"
 msgid "Create"
 msgstr "Создать"
 
-#: ../lib/modules.inc:1076
-msgid "Create Account"
-msgstr "Создать учетную запись"
-
 #: ../templates/tree/creation_template.php:85
 #: ../templates/tree/create_form.php:75
 msgid "Create Object"
 msgstr "Создать обьект"
 
-#: ../lib/modules.inc:1033
+#: ../lib/modules.inc:1030
 #: ../help/help.inc:156
 msgid "Create PDF file"
 msgstr "Создать PDF файл"
@@ -901,17 +905,17 @@ msgstr "Создать новый PDF шаблон:"
 msgid "Create a new profile"
 msgstr "Создать новый профиль"
 
-#: ../lib/modules.inc:1025
+#: ../lib/modules.inc:1073
+msgid "Create account"
+msgstr "Создать учетную запись"
+
+#: ../lib/modules.inc:1022
 msgid "Create another account"
 msgstr "Создать другую учетную запись"
 
 #: ../lib/modules/posixAccount.inc:845
 msgid "Create home directory"
 msgstr "Создать домашнюю директорию"
-
-#: ../lib/modules.inc:923
-msgid "Create new Account"
-msgstr "Создать новую учетную запись"
 
 #: ../templates/tree/edit.php:125
 #: ../templates/tree/tree.php:186
@@ -949,8 +953,8 @@ msgstr "Выборочно"
 #: ../templates/tree/add_attr_form.php:73
 #: ../templates/tree/delete_form.php:77
 #: ../templates/tree/delete_form.php:151
-#: ../templates/delete.php:90
-#: ../lib/modules.inc:1550
+#: ../templates/delete.php:88
+#: ../lib/modules.inc:1555
 msgid "DN"
 msgstr "DN"
 
@@ -973,12 +977,12 @@ msgid "Data field for RDN is empty!"
 msgstr "Данных для RDN нет!"
 
 #: ../lib/modules/sambaAccount.inc:374
-#: ../lib/modules/sambaSamAccount.inc:214
+#: ../lib/modules/sambaSamAccount.inc:218
 msgid "Date after the user is able to change his password. Format: DD-MM-YYYY"
 msgstr "Дата после которой пользователь может поменять свой пароль. Формат: DD-MM-YYYY"
 
 #: ../lib/modules/sambaAccount.inc:376
-#: ../lib/modules/sambaSamAccount.inc:216
+#: ../lib/modules/sambaSamAccount.inc:220
 msgid "Date after the user must change his password. Format: DD-MM-YYYY"
 msgstr "Дата после которой пользователь должен поменять свой пароль. Формат: DD-MM-YYYY"
 
@@ -1016,7 +1020,7 @@ msgstr "Делегирование имеет не правильный форм
 #: ../templates/tree/delete_form.php:159
 #: ../templates/ou_edit.php:106
 #: ../templates/pdfedit/pdfdelete.php:91
-#: ../templates/delete.php:111
+#: ../templates/delete.php:109
 #: ../lib/tree.inc:1149
 msgid "Delete"
 msgstr "Удалить"
@@ -1025,11 +1029,6 @@ msgstr "Удалить"
 #, php-format
 msgid "Delete %s"
 msgstr "Удалить %s"
-
-#: ../templates/delete.php:75
-#: ../templates/delete.php:128
-msgid "Delete Account"
-msgstr "Удалить учетную запись"
 
 #: ../lib/modules/kolabUser.inc:400
 msgid "Delete Kolab account"
@@ -1095,11 +1094,7 @@ msgstr "Удалить профиль"
 msgid "Delete user"
 msgstr "Удалить пользователя"
 
-#: ../lib/modules/sambaGroupMapping.inc:71
-msgid "Deleted Account"
-msgstr "Deleted Account"
-
-#: ../templates/delete.php:226
+#: ../templates/delete.php:222
 #, php-format
 msgid "Deleted DN: %s"
 msgstr "Удалить DN: %s"
@@ -1107,6 +1102,10 @@ msgstr "Удалить DN: %s"
 #: ../templates/pdfedit/pdfdelete.php:60
 msgid "Deleted PDF structure:"
 msgstr "Удалить PDF структуру:"
+
+#: ../lib/modules/sambaGroupMapping.inc:71
+msgid "Deleted account"
+msgstr "Удаленная учетная запись"
 
 #: ../templates/profedit/profiledelete.php:63
 msgid "Deleted profile:"
@@ -1119,7 +1118,7 @@ msgstr "Удалить профиль:"
 msgid "Deleting %s"
 msgstr "Удалить %s"
 
-#: ../templates/delete.php:135
+#: ../templates/delete.php:131
 msgid "Deleting. Please stand by ..."
 msgstr "Удаление. Пожалуйста ждите..."
 
@@ -1162,10 +1161,10 @@ msgstr "Отключение пользователей, если они под�
 #: ../lib/modules/sambaAccount.inc:698
 #: ../lib/modules/sambaAccount.inc:854
 #: ../lib/modules/sambaSamAccount.inc:93
-#: ../lib/modules/sambaSamAccount.inc:180
-#: ../lib/modules/sambaSamAccount.inc:281
-#: ../lib/modules/sambaSamAccount.inc:827
-#: ../lib/modules/sambaSamAccount.inc:1285
+#: ../lib/modules/sambaSamAccount.inc:184
+#: ../lib/modules/sambaSamAccount.inc:285
+#: ../lib/modules/sambaSamAccount.inc:831
+#: ../lib/modules/sambaSamAccount.inc:1289
 #: ../lib/modules/sambaGroupMapping.inc:190
 #: ../lib/modules/sambaGroupMapping.inc:292
 #: ../lib/modules/sambaGroupMapping.inc:325
@@ -1192,7 +1191,7 @@ msgstr "Вы действительно хотите удалить этот п�
 msgid "Do you really want to mark this account for deletion?"
 msgstr "Вы действительно хотите отметить эту учетную запись для удаления?"
 
-#: ../templates/delete.php:84
+#: ../templates/delete.php:82
 msgid "Do you really want to remove the following accounts?"
 msgstr "Вы действительно хотите удалить следующие учетные записи?"
 
@@ -1206,70 +1205,19 @@ msgstr "Вы действительно хотите сделать эти из�
 #: ../lib/modules/sambaAccount.inc:405
 #: ../lib/modules/sambaAccount.inc:803
 #: ../lib/modules/sambaAccount.inc:860
-#: ../lib/modules/sambaSamAccount.inc:252
-#: ../lib/modules/sambaSamAccount.inc:274
-#: ../lib/modules/sambaSamAccount.inc:400
-#: ../lib/modules/sambaSamAccount.inc:947
-#: ../lib/modules/sambaSamAccount.inc:1149
-#: ../lib/modules/sambaSamAccount.inc:1179
-#: ../lib/modules/sambaSamAccount.inc:1291
+#: ../lib/modules/sambaSamAccount.inc:256
+#: ../lib/modules/sambaSamAccount.inc:278
+#: ../lib/modules/sambaSamAccount.inc:404
+#: ../lib/modules/sambaSamAccount.inc:951
+#: ../lib/modules/sambaSamAccount.inc:1153
+#: ../lib/modules/sambaSamAccount.inc:1183
+#: ../lib/modules/sambaSamAccount.inc:1295
 #: ../lib/modules/sambaGroupMapping.inc:68
 #: ../lib/modules/sambaGroupMapping.inc:220
 #: ../lib/modules/sambaGroupMapping.inc:304
 #: ../lib/modules/sambaGroupMapping.inc:347
 msgid "Domain"
 msgstr "Domain"
-
-#: ../lib/modules/sambaAccount.inc:48
-#: ../lib/modules/sambaAccount.inc:316
-#: ../lib/modules/sambaSamAccount.inc:65
-#: ../lib/modules/sambaGroupMapping.inc:55
-#: ../lib/modules/sambaGroupMapping.inc:277
-msgid "Domain Admins"
-msgstr "Domain Admins"
-
-#: ../lib/modules/sambaAccount.inc:50
-#: ../lib/modules/sambaSamAccount.inc:66
-#: ../lib/modules/sambaGroupMapping.inc:60
-msgid "Domain Certificate Admins"
-msgstr "Domain Certificate Admins"
-
-#: ../lib/modules/sambaAccount.inc:49
-#: ../lib/modules/sambaAccount.inc:548
-#: ../lib/modules/sambaSamAccount.inc:66
-#: ../lib/modules/sambaSamAccount.inc:603
-#: ../lib/modules/sambaGroupMapping.inc:58
-msgid "Domain Computers"
-msgstr "Domain Computers"
-
-#: ../lib/modules/sambaAccount.inc:50
-#: ../lib/modules/sambaSamAccount.inc:66
-#: ../lib/modules/sambaGroupMapping.inc:59
-msgid "Domain Controllers"
-msgstr "Domain Controllers"
-
-#: ../lib/modules/sambaAccount.inc:51
-#: ../lib/modules/sambaSamAccount.inc:67
-#: ../lib/modules/sambaGroupMapping.inc:62
-msgid "Domain Enterprise Admins"
-msgstr "Domain Enterprise Admins"
-
-#: ../lib/modules/sambaGroupMapping.inc:67
-#: ../lib/modules/sambaGroupMapping.inc:210
-msgid "Domain Group"
-msgstr "Domain Group"
-
-#: ../lib/modules/sambaAccount.inc:49
-#: ../lib/modules/sambaSamAccount.inc:65
-#: ../lib/modules/sambaGroupMapping.inc:57
-msgid "Domain Guests"
-msgstr "Domain Guests"
-
-#: ../lib/modules/sambaAccount.inc:52
-#: ../lib/modules/sambaSamAccount.inc:67
-#: ../lib/modules/sambaGroupMapping.inc:63
-msgid "Domain Policy Admins"
-msgstr "Domain Policy Admins"
 
 #: ../lib/types/smbDomain.inc:82
 #: ../lib/modules/sambaDomain.inc:70
@@ -1280,22 +1228,54 @@ msgstr "Domain Policy Admins"
 msgid "Domain SID"
 msgstr "SID домена"
 
-#: ../lib/modules/sambaAccount.inc:51
-#: ../lib/modules/sambaSamAccount.inc:67
-#: ../lib/modules/sambaGroupMapping.inc:61
-msgid "Domain Schema Admins"
-msgstr "Domain Schema Admins"
-
-#: ../lib/modules/sambaAccount.inc:48
-#: ../lib/modules/sambaSamAccount.inc:65
-#: ../lib/modules/sambaSamAccount.inc:1548
-#: ../lib/modules/sambaGroupMapping.inc:56
-msgid "Domain Users"
-msgstr "Domain Users"
-
 #: ../lib/modules/sambaGroupMapping.inc:271
 msgid "Domain administrators"
 msgstr "Domain administrators"
+
+#: ../lib/modules/sambaAccount.inc:48
+#: ../lib/modules/sambaAccount.inc:316
+#: ../lib/modules/sambaSamAccount.inc:65
+#: ../lib/modules/sambaGroupMapping.inc:55
+#: ../lib/modules/sambaGroupMapping.inc:277
+msgid "Domain admins"
+msgstr "Администраторы домена"
+
+#: ../lib/modules/sambaAccount.inc:50
+#: ../lib/modules/sambaSamAccount.inc:66
+#: ../lib/modules/sambaGroupMapping.inc:60
+msgid "Domain certificate admins"
+msgstr "Сертифицированные администраторы домена"
+
+#: ../lib/modules/sambaAccount.inc:49
+#: ../lib/modules/sambaAccount.inc:548
+#: ../lib/modules/sambaSamAccount.inc:66
+#: ../lib/modules/sambaSamAccount.inc:607
+#: ../lib/modules/sambaGroupMapping.inc:58
+msgid "Domain computers"
+msgstr "Компьютеры домена"
+
+#: ../lib/modules/sambaAccount.inc:50
+#: ../lib/modules/sambaSamAccount.inc:66
+#: ../lib/modules/sambaGroupMapping.inc:59
+msgid "Domain controllers"
+msgstr "Контроллеры домена"
+
+#: ../lib/modules/sambaAccount.inc:51
+#: ../lib/modules/sambaSamAccount.inc:67
+#: ../lib/modules/sambaGroupMapping.inc:62
+msgid "Domain enterprise admins"
+msgstr "Администраторы уровня предприятия"
+
+#: ../lib/modules/sambaGroupMapping.inc:67
+#: ../lib/modules/sambaGroupMapping.inc:210
+msgid "Domain group"
+msgstr "Группа домена"
+
+#: ../lib/modules/sambaAccount.inc:49
+#: ../lib/modules/sambaSamAccount.inc:65
+#: ../lib/modules/sambaGroupMapping.inc:57
+msgid "Domain guests"
+msgstr "Гости домена"
 
 #: ../lib/types/smbDomain.inc:83
 #: ../lib/modules/sambaAccount.inc:72
@@ -1317,7 +1297,26 @@ msgstr "Имя домена содержит не допустимые симв�
 msgid "Domain name is invalid!"
 msgstr "Имя домена неправильное!"
 
-#: ../templates/main_header.php:56
+#: ../lib/modules/sambaAccount.inc:52
+#: ../lib/modules/sambaSamAccount.inc:67
+#: ../lib/modules/sambaGroupMapping.inc:63
+msgid "Domain policy admins"
+msgstr "Администраторы политик домена"
+
+#: ../lib/modules/sambaAccount.inc:51
+#: ../lib/modules/sambaSamAccount.inc:67
+#: ../lib/modules/sambaGroupMapping.inc:61
+msgid "Domain schema admins"
+msgstr "Администраторы схем домена"
+
+#: ../lib/modules/sambaAccount.inc:48
+#: ../lib/modules/sambaSamAccount.inc:65
+#: ../lib/modules/sambaSamAccount.inc:1552
+#: ../lib/modules/sambaGroupMapping.inc:56
+msgid "Domain users"
+msgstr "Пользователи домена"
+
+#: ../templates/main_header.php:60
 msgid "Donate"
 msgstr "Спонсировать"
 
@@ -1330,7 +1329,7 @@ msgid "Download sample CSV file"
 msgstr "Скачать пример CSV файла"
 
 #: ../lib/modules/sambaAccount.inc:379
-#: ../lib/modules/sambaSamAccount.inc:219
+#: ../lib/modules/sambaSamAccount.inc:223
 msgid "Drive letter assigned on windows workstations as homedirectory."
 msgstr "Имя сетевого диска подключенного как домашний каталог."
 
@@ -1364,21 +1363,21 @@ msgstr "Список почтовых псевдонимов имеет непр
 msgid "EMail aliases"
 msgstr "Почтовые псевдонимы"
 
-#: ../lib/modules/sambaSamAccount.inc:442
+#: ../lib/modules/sambaSamAccount.inc:446
 msgid "East Australian Standard, Guam"
 msgstr "East Australian Standard, Guam"
 
-#: ../lib/modules/sambaSamAccount.inc:434
+#: ../lib/modules/sambaSamAccount.inc:438
 msgid "Eastern Europe Time, South Africa"
 msgstr "Eastern Europe Time, South Africa"
 
-#: ../lib/modules/sambaSamAccount.inc:427
+#: ../lib/modules/sambaSamAccount.inc:431
 msgid "Eastern Time (US & Canada), Bogota"
 msgstr "Eastern Time (US & Canada), Bogota"
 
 #: ../lib/types/group.inc:142
 #: ../lib/types/user.inc:193
-#: ../lib/lists.inc:370
+#: ../lib/lists.inc:380
 msgid "Edit"
 msgstr "Редактировать"
 
@@ -1399,7 +1398,7 @@ msgstr "Редактор основных настроек"
 msgid "Edit groups"
 msgstr "Редактировать группы"
 
-#: ../lib/modules/sambaSamAccount.inc:953
+#: ../lib/modules/sambaSamAccount.inc:957
 msgid "Edit logon hours"
 msgstr "Редактировать время для входа"
 
@@ -1424,7 +1423,7 @@ msgid "Edit server profiles"
 msgstr "Редактировать профили сервера"
 
 #: ../lib/modules/sambaAccount.inc:768
-#: ../lib/modules/sambaSamAccount.inc:909
+#: ../lib/modules/sambaSamAccount.inc:913
 msgid "Edit workstations"
 msgstr "Редактировать компьютеры"
 
@@ -1441,7 +1440,7 @@ msgstr "Тип должности"
 msgid "Employee type: Contractor, Employee, Intern, Temp, External, ..."
 msgstr "Тип должности: Contractor, Employee, Intern, Temp, External, ..."
 
-#: ../templates/login.php:364
+#: ../templates/login.php:373
 msgid "Empty password submitted. Please try again."
 msgstr "Пустой пароль подтвержден. Пожалуйста, попробуйте еще раз."
 
@@ -1449,7 +1448,7 @@ msgstr "Пустой пароль подтвержден. Пожалуйста, 
 msgid "Encountered an error while performing search."
 msgstr "Ошибка при поиске."
 
-#: ../lib/modules/sambaSamAccount.inc:420
+#: ../lib/modules/sambaSamAccount.inc:424
 msgid "Eniwetok, Kwajalein"
 msgstr "Eniwetok, Kwajalein"
 
@@ -1475,11 +1474,17 @@ msgstr "Строка %s удалена успешно."
 msgid "Equality"
 msgstr "Эквивалент"
 
+#: ../templates/tests/lamdaemonTest.php:61
+#: ../templates/tests/lamdaemonTest.php:65
+#: ../templates/tests/lamdaemonTest.php:95
+#: ../templates/tests/lamdaemonTest.php:112
+#: ../templates/tests/lamdaemonTest.php:137
+#: ../templates/tests/lamdaemonTest.php:182
 #: ../templates/config/mainmanage.php:207
 msgid "Error"
 msgstr "Ошибка"
 
-#: ../templates/delete.php:231
+#: ../templates/delete.php:227
 #, php-format
 msgid "Error while deleting DN: %s"
 msgstr "Ошибка при удалении DN: %s"
@@ -1503,6 +1508,10 @@ msgstr "Возможное значение"
 #: ../help/help.inc:61
 msgid "Examples"
 msgstr "Примеры"
+
+#: ../templates/tests/lamdaemonTest.php:148
+msgid "Execute lamdaemon"
+msgstr "Выполните lamdaemon"
 
 #: ../templates/tree/edit.php:117
 #: ../templates/tree/export_form.php:88
@@ -1544,7 +1553,7 @@ msgstr "Факс"
 msgid "File"
 msgstr "Запись в файл"
 
-#: ../lib/modules/sambaSamAccount.inc:228
+#: ../lib/modules/sambaSamAccount.inc:232
 msgid "File name and path relative to netlogon-share which should be executed on logon. $user and $group are replaced with user and group name."
 msgstr "Имя файла и путь относительно папки netlogon, который должен быть выполнен при входе в систему. Вместо $user и $group будет подставлено имя группы и пользователя."
 
@@ -1561,7 +1570,7 @@ msgstr "Загрузка файла"
 msgid "File upload failed!"
 msgstr "Загрузка файла не удалась!"
 
-#: ../lib/lists.inc:331
+#: ../lib/lists.inc:338
 msgid "Filter"
 msgstr "Фильтр"
 
@@ -1602,7 +1611,7 @@ msgstr "Интервал Свободно/Занято"
 msgid "Free/Busy interval must be a number!"
 msgstr "Интервал Свободно/Занято должен быть цифрой!"
 
-#: ../lib/modules/sambaSamAccount.inc:1010
+#: ../lib/modules/sambaSamAccount.inc:1014
 msgid "Friday"
 msgstr "Пятница"
 
@@ -1769,7 +1778,7 @@ msgstr "Жесткий лимит кол-ва файлов (inodes), испол�
 msgid "Hard inode limit"
 msgstr "Жесткий лимит"
 
-#: ../lib/modules/sambaSamAccount.inc:422
+#: ../lib/modules/sambaSamAccount.inc:426
 msgid "Hawaii"
 msgstr "Hawaii"
 
@@ -1827,7 +1836,7 @@ msgstr "Заголовок"
 #: ../templates/profedit/profilepage.php:195
 #: ../templates/profedit/profilepage.php:215
 #: ../templates/profedit/profilepage.php:246
-#: ../lib/lists.inc:327
+#: ../lib/lists.inc:334
 #: ../lib/modules.inc:698
 msgid "Help"
 msgstr "Помощь"
@@ -1880,6 +1889,10 @@ msgstr "Здесь можно выбрать, какие плугины испо
 msgid "Here you can specify the minimum number of characters for a user password."
 msgstr "Здесь задается минимальное кол-во символов для пароля пользователя."
 
+#: ../templates/tools.php:91
+msgid "Here you can test if certain LAM features work on your installation."
+msgstr "Здесь можно протестировать, будут ли работать определенные функции LAM"
+
 #: ../templates/tree/edit.php:104
 msgid "Hide internal attributes"
 msgstr "Скрытые внутренние аттрибуты"
@@ -1921,11 +1934,11 @@ msgstr "Домашний каталог изменен. Чтобы не поте
 #: ../lib/modules/sambaAccount.inc:378
 #: ../lib/modules/sambaAccount.inc:755
 #: ../lib/modules/sambaAccount.inc:856
-#: ../lib/modules/sambaSamAccount.inc:218
-#: ../lib/modules/sambaSamAccount.inc:346
-#: ../lib/modules/sambaSamAccount.inc:896
-#: ../lib/modules/sambaSamAccount.inc:1114
-#: ../lib/modules/sambaSamAccount.inc:1287
+#: ../lib/modules/sambaSamAccount.inc:222
+#: ../lib/modules/sambaSamAccount.inc:350
+#: ../lib/modules/sambaSamAccount.inc:900
+#: ../lib/modules/sambaSamAccount.inc:1118
+#: ../lib/modules/sambaSamAccount.inc:1291
 msgid "Home drive"
 msgstr "Сетевой диск"
 
@@ -1938,11 +1951,11 @@ msgstr "Сетевой диск"
 #: ../lib/modules/sambaAccount.inc:855
 #: ../lib/modules/sambaSamAccount.inc:76
 #: ../lib/modules/sambaSamAccount.inc:77
-#: ../lib/modules/sambaSamAccount.inc:221
-#: ../lib/modules/sambaSamAccount.inc:352
-#: ../lib/modules/sambaSamAccount.inc:899
-#: ../lib/modules/sambaSamAccount.inc:1120
-#: ../lib/modules/sambaSamAccount.inc:1286
+#: ../lib/modules/sambaSamAccount.inc:225
+#: ../lib/modules/sambaSamAccount.inc:356
+#: ../lib/modules/sambaSamAccount.inc:903
+#: ../lib/modules/sambaSamAccount.inc:1124
+#: ../lib/modules/sambaSamAccount.inc:1290
 msgid "Home path"
 msgstr "Путь к добашнему каталогу"
 
@@ -2040,7 +2053,7 @@ msgid "Identifier"
 msgstr "Идентификатор"
 
 #: ../lib/modules/sambaAccount.inc:350
-#: ../lib/modules/sambaSamAccount.inc:190
+#: ../lib/modules/sambaSamAccount.inc:194
 msgid "If checked Unix password will also be used as Samba password."
 msgstr "Если отмечено, пароль Unix будет использоваться и для Samba."
 
@@ -2049,17 +2062,17 @@ msgid "If checked account will be deactivated by putting a \"!\" before the encr
 msgstr "Если отмечено, учетная запись будет деактивирована (вставлен \"!\" перед паролем)."
 
 #: ../lib/modules/sambaAccount.inc:368
-#: ../lib/modules/sambaSamAccount.inc:208
+#: ../lib/modules/sambaSamAccount.inc:212
 msgid "If checked account will be deactivated. (Setting D-Flag)"
 msgstr "Если отмечено, учетная запись будет деактивирована. (Установлен D-Flag)."
 
 #: ../lib/modules/sambaAccount.inc:356
-#: ../lib/modules/sambaSamAccount.inc:196
+#: ../lib/modules/sambaSamAccount.inc:200
 msgid "If checked no password will be used."
 msgstr "Если отмечено, пароль не будет использован."
 
 #: ../lib/modules/sambaAccount.inc:362
-#: ../lib/modules/sambaSamAccount.inc:202
+#: ../lib/modules/sambaSamAccount.inc:206
 msgid "If checked password does not expire. (Setting X-Flag)"
 msgstr "Если отмечено, пароль никогда не устареет. (Установлен X-Flag)."
 
@@ -2076,26 +2089,26 @@ msgid "If set then users need to login to change their password."
 msgstr "Если установлено, после входа пользователь обязан сменить пароль."
 
 #: ../lib/modules/sambaAccount.inc:353
-#: ../lib/modules/sambaSamAccount.inc:193
+#: ../lib/modules/sambaSamAccount.inc:197
 msgid "If set to \"true\" Unix password will also be used as Samba password."
 msgstr "Если установлено \"true\", пароль Unix будет использоваться и для Samba."
 
 #: ../lib/modules/sambaAccount.inc:371
-#: ../lib/modules/sambaSamAccount.inc:211
+#: ../lib/modules/sambaSamAccount.inc:215
 msgid "If set to \"true\" account will be deactivated. (Setting D-Flag)"
 msgstr "Если установлено \"true\", учетная запись будет деактивирована. (Установлен D-Flag)."
 
 #: ../lib/modules/sambaAccount.inc:359
-#: ../lib/modules/sambaSamAccount.inc:199
+#: ../lib/modules/sambaSamAccount.inc:203
 msgid "If set to \"true\" no password will be used."
 msgstr "Если установлено \"true\", пароль не будет использован."
 
 #: ../lib/modules/sambaAccount.inc:365
-#: ../lib/modules/sambaSamAccount.inc:205
+#: ../lib/modules/sambaSamAccount.inc:209
 msgid "If set to \"true\" password does not expire. (Setting X-Flag)"
 msgstr "Если установлено \"true\", пароль никогда не устареет. (Установлен X-Flag)."
 
-#: ../lib/modules/sambaSamAccount.inc:247
+#: ../lib/modules/sambaSamAccount.inc:251
 msgid "If you leave this empty LAM will use: uidNumber*2 + sambaAlgorithmicRidBase."
 msgstr "Если не задано, LAM использует: uidNumber*2 + sambaAlgorithmicRidBase."
 
@@ -2178,13 +2191,13 @@ msgstr "Имя пользователя или группы включено в 
 msgid "Inserted user or group name in profile path."
 msgstr "Имя пользователя или группы включено в путь профиля."
 
-#: ../lib/modules/sambaGroupMapping.inc:72
-msgid "Invalid Account"
-msgstr "Invalid Account"
-
 #: ../templates/massBuildAccounts.php:167
 msgid "Invalid RDN attribute!"
 msgstr "Не правильный RID аттрибут!"
+
+#: ../lib/modules/sambaGroupMapping.inc:72
+msgid "Invalid account"
+msgstr "Не правильный аккаунт"
 
 #: ../lib/modules/kolabUser.inc:124
 #: ../lib/modules/kolabUser.inc:171
@@ -2197,7 +2210,7 @@ msgstr "Политика приглашения"
 msgid "Invitation policy list"
 msgstr "Список политик приглашения"
 
-#: ../lib/modules/sambaSamAccount.inc:437
+#: ../lib/modules/sambaSamAccount.inc:441
 msgid "Islamabad, Karachi"
 msgstr "Islamabad, Karachi"
 
@@ -2242,7 +2255,7 @@ msgstr "Kolab"
 msgid "LAM can recursively delete this entry and all of its children. See below for a list of all the entries that this action will delete. Do you want to do this?"
 msgstr "LAM может рекурсивно удалить эту запись и всех потомков. Ниже смотрите список удаляемых записей. Удалить?"
 
-#: ../templates/login.php:178
+#: ../templates/login.php:187
 #: ../templates/config/index.php:60
 msgid "LAM configuration"
 msgstr "Конфигурация LAM"
@@ -2255,6 +2268,10 @@ msgstr "LAM проверил введенные данные и готов со�
 #: ../lib/modules/posixAccount.inc:323
 msgid "LAM supports CRYPT, SHA, SSHA, MD5 and SMD5 to generate the hash value of passwords. SSHA and CRYPT are the most common but CRYPT does not support passwords greater than 8 letters. We do not recommend to use plain text passwords."
 msgstr "LAM поддерживает CRYPT, SHA, SSHA, MD5 и SMD5 для создания хэша пароля. SSHA и CRYPT в большинстве случаев подойдут, но CRYPT не поддерживает больше 8 символов. Не рекомендуется хранить пароль в открытом виде (PLAIN)."
+
+#: ../templates/tests/index.php:51
+msgid "LAM tests"
+msgstr "LAM тесты"
 
 #: ../templates/tree/create.php:181
 #: ../templates/massDoUpload.php:87
@@ -2274,7 +2291,7 @@ msgstr "LAM не удалось найти домен с этим именем!"
 msgid "LAM was unable to find a group with this name!"
 msgstr "LAM не удалось найти группу с этим именем!"
 
-#: ../lib/modules/posixAccount.inc:1396
+#: ../lib/modules/posixAccount.inc:1408
 #, php-format
 msgid "LAM was unable to modify group memberships for group: %s"
 msgstr "LAM не удалось поменять членов для группы: %s"
@@ -2299,7 +2316,7 @@ msgstr "LDAP"
 msgid "LDAP Account Manager Configuration"
 msgstr "LDAP Account Manager конфигурация"
 
-#: ../lib/lists.inc:649
+#: ../lib/lists.inc:659
 msgid "LDAP Search failed! Please check your preferences."
 msgstr "Поиск в LDAP не удался! Проверьте настройки."
 
@@ -2307,11 +2324,11 @@ msgstr "Поиск в LDAP не удался! Проверьте настрой�
 msgid "LDAP Suffix is invalid!"
 msgstr "LDAP Suffix не правильный!"
 
-#: ../templates/login.php:411
+#: ../templates/login.php:420
 msgid "LDAP error, server says:"
 msgstr "Ошибка LDAP, сервер ответил:"
 
-#: ../lib/modules.inc:1020
+#: ../lib/modules.inc:1017
 msgid "LDAP operation successful."
 msgstr "LDAP операция завершена успешно."
 
@@ -2324,11 +2341,11 @@ msgstr "LDAP пароль"
 msgid "LDAP search attribute"
 msgstr "LDAP аттрибут поиска"
 
-#: ../templates/login.php:296
+#: ../templates/login.php:305
 msgid "LDAP server"
 msgstr "LDAP сервер"
 
-#: ../lib/lists.inc:635
+#: ../lib/lists.inc:645
 msgid "LDAP sizelimit exceeded, not all entries are shown."
 msgstr "Превышен лимит размера LDAP, показаны не все записи."
 
@@ -2361,7 +2378,24 @@ msgstr "LDAP пользователь и пароль"
 msgid "LDIF Export for: %s"
 msgstr "LDIF экспорт для: %s"
 
-#: ../templates/login.php:245
+#: ../templates/tests/lamdaemonTest.php:59
+msgid "Lamdaemon server and path"
+msgstr "Сервер и путь для lamdaemon"
+
+#: ../templates/tests/lamdaemonTest.php:179
+msgid "Lamdaemon successfully run."
+msgstr "Lamdaemon успешно запущен."
+
+#: ../templates/tests/index.php:55
+#: ../templates/tests/lamdaemonTest.php:51
+msgid "Lamdaemon test"
+msgstr "Тест lamdaemon"
+
+#: ../templates/tests/lamdaemonTest.php:195
+msgid "Lamdaemon test finished."
+msgstr "Lamdaemon тест закончен."
+
+#: ../templates/login.php:254
 msgid "Language"
 msgstr "Язык"
 
@@ -2393,7 +2427,7 @@ msgstr "Фамилия содержит неправильные символы 
 msgid "Last name of user. Only letters, - and spaces are allowed."
 msgstr "Фамилия пользователя. Только буквы и пробелы допускаются."
 
-#: ../lib/modules/shadowAccount.inc:308
+#: ../lib/modules/shadowAccount.inc:360
 msgid "Last password change"
 msgstr "Последнее изменение пароля"
 
@@ -2415,7 +2449,7 @@ msgid "List attributes are invalid!"
 msgstr "Список аттрибутов не правильный!"
 
 #: ../lib/modules/sambaAccount.inc:391
-#: ../lib/modules/sambaSamAccount.inc:231
+#: ../lib/modules/sambaSamAccount.inc:235
 msgid "List of Samba workstations the user is allowed to login. Empty means every workstation."
 msgstr "Список Samba компьютеров на которые пользователю разрешено входить. Не задано - любой компьютер."
 
@@ -2435,15 +2469,11 @@ msgstr "Список существующих пользователей"
 msgid "List settings"
 msgstr "Список учетных записей"
 
+#: ../lib/modules.inc:1063
 #: ../lib/modules.inc:1066
-#: ../lib/modules.inc:1069
 #: ../help/help.inc:152
 msgid "Load profile"
 msgstr "Загрузить профиль"
-
-#: ../lib/modules/sambaGroupMapping.inc:69
-msgid "Local Group"
-msgstr "Local Group"
 
 #: ../lib/modules/inetLocalMailRecipient.inc:61
 #: ../lib/modules/inetLocalMailRecipient.inc:152
@@ -2455,6 +2485,10 @@ msgstr "Локальный адрес"
 #: ../lib/modules/inetLocalMailRecipient.inc:310
 msgid "Local address list"
 msgstr "Список локальных адресов"
+
+#: ../lib/modules/sambaGroupMapping.inc:69
+msgid "Local group"
+msgstr "Локальная группа"
 
 #: ../lib/modules/posixGroup.inc:170
 #: ../lib/modules/posixAccount.inc:241
@@ -2493,7 +2527,7 @@ msgstr "Уровень вывода"
 msgid "Logging"
 msgstr "Лог-файл"
 
-#: ../templates/login.php:271
+#: ../templates/login.php:280
 #: ../templates/config/conflogin.php:59
 #: ../templates/config/mainlogin.php:67
 #: ../templates/selfService/selfServiceLogin.php:130
@@ -2533,11 +2567,11 @@ msgid "Logon for password change"
 msgstr "Вход в систему для изменения пароля"
 
 #: ../lib/modules/sambaSamAccount.inc:103
-#: ../lib/modules/sambaSamAccount.inc:255
-#: ../lib/modules/sambaSamAccount.inc:258
-#: ../lib/modules/sambaSamAccount.inc:390
-#: ../lib/modules/sambaSamAccount.inc:952
-#: ../lib/modules/sambaSamAccount.inc:1166
+#: ../lib/modules/sambaSamAccount.inc:259
+#: ../lib/modules/sambaSamAccount.inc:262
+#: ../lib/modules/sambaSamAccount.inc:394
+#: ../lib/modules/sambaSamAccount.inc:956
+#: ../lib/modules/sambaSamAccount.inc:1170
 msgid "Logon hours"
 msgstr "Часы для входа"
 
@@ -2550,11 +2584,11 @@ msgstr "Часы для входа"
 #: ../lib/modules/sambaAccount.inc:857
 #: ../lib/modules/sambaSamAccount.inc:82
 #: ../lib/modules/sambaSamAccount.inc:83
-#: ../lib/modules/sambaSamAccount.inc:227
-#: ../lib/modules/sambaSamAccount.inc:364
-#: ../lib/modules/sambaSamAccount.inc:905
-#: ../lib/modules/sambaSamAccount.inc:1132
-#: ../lib/modules/sambaSamAccount.inc:1288
+#: ../lib/modules/sambaSamAccount.inc:231
+#: ../lib/modules/sambaSamAccount.inc:368
+#: ../lib/modules/sambaSamAccount.inc:909
+#: ../lib/modules/sambaSamAccount.inc:1136
+#: ../lib/modules/sambaSamAccount.inc:1292
 msgid "Logon script"
 msgstr "Стартовый скрипт"
 
@@ -2566,7 +2600,7 @@ msgid "Logon script is invalid!"
 msgstr "Стартовый скрипт неправильный!"
 
 #: ../templates/selfService/selfServiceMain.php:200
-#: ../templates/main_header.php:63
+#: ../templates/main_header.php:69
 #: ../templates/logout.php:67
 msgid "Logout"
 msgstr "Выход"
@@ -2586,7 +2620,7 @@ msgstr "Список MAC адресов"
 msgid "MAC address(es)"
 msgstr "MAC адрес(а)"
 
-#: ../lib/modules/sambaSamAccount.inc:443
+#: ../lib/modules/sambaSamAccount.inc:447
 msgid "Magadan, Solomon Islands"
 msgstr "Magadan, Solomon Islands"
 
@@ -2647,8 +2681,8 @@ msgid "Mails to this name are forwarded to the recipients."
 msgstr "Почта для этого имени будет перенаправлена для получателей."
 
 #: ../templates/pdfedit/pdfpage.php:617
-#: ../lib/modules.inc:972
-#: ../lib/modules.inc:1000
+#: ../lib/modules.inc:969
+#: ../lib/modules.inc:997
 msgid "Main"
 msgstr "Main"
 
@@ -2786,7 +2820,7 @@ msgstr "Максимальное кол-во записей в списке"
 #: ../lib/modules/shadowAccount.inc:99
 #: ../lib/modules/shadowAccount.inc:165
 #: ../lib/modules/shadowAccount.inc:195
-#: ../lib/modules/shadowAccount.inc:283
+#: ../lib/modules/shadowAccount.inc:278
 #: ../lib/modules/sambaDomain.inc:118
 #: ../lib/modules/sambaDomain.inc:196
 #: ../lib/modules/sambaDomain.inc:198
@@ -2795,11 +2829,11 @@ msgstr "Максимальное кол-во записей в списке"
 msgid "Maximum password age"
 msgstr "Максимальный срок действия пароля"
 
-#: ../lib/modules/sambaSamAccount.inc:430
+#: ../lib/modules/sambaSamAccount.inc:434
 msgid "Mid-Atlantic"
 msgstr "Mid-Atlantic"
 
-#: ../lib/modules/sambaSamAccount.inc:421
+#: ../lib/modules/sambaSamAccount.inc:425
 msgid "Midway Island, Samoa"
 msgstr "Midway Island, Samoa"
 
@@ -2850,7 +2884,7 @@ msgstr "Минимальный UID неправильный!"
 #: ../lib/modules/shadowAccount.inc:94
 #: ../lib/modules/shadowAccount.inc:161
 #: ../lib/modules/shadowAccount.inc:189
-#: ../lib/modules/shadowAccount.inc:278
+#: ../lib/modules/shadowAccount.inc:273
 #: ../lib/modules/sambaDomain.inc:114
 #: ../lib/modules/sambaDomain.inc:197
 #: ../lib/modules/sambaDomain.inc:286
@@ -2872,20 +2906,19 @@ msgstr "Мобильный номер"
 msgid "Mobile telephone number"
 msgstr "Мобильный телефон"
 
-#: ../lib/modules.inc:922
-#: ../lib/modules.inc:1075
-msgid "Modify Account"
+#: ../lib/modules.inc:1072
+msgid "Modify account"
 msgstr "Изменить учетную запись"
 
 #: ../templates/config/confmodules.php:87
 msgid "Module selection"
 msgstr "Выбор модуля"
 
-#: ../lib/modules/sambaSamAccount.inc:1009
+#: ../lib/modules/sambaSamAccount.inc:1013
 msgid "Monday"
 msgstr "Понедельник"
 
-#: ../lib/modules/sambaSamAccount.inc:425
+#: ../lib/modules/sambaSamAccount.inc:429
 msgid "Mountain Time (US & Canada)"
 msgstr "Mountain Time (US & Canada)"
 
@@ -2977,7 +3010,7 @@ msgid "New organizational unit"
 msgstr "Новый обьект"
 
 #: ../templates/config/confmain.php:361
-#: ../lib/modules/posixAccount.inc:1504
+#: ../lib/modules/posixAccount.inc:1516
 msgid "New password"
 msgstr "Новый пароль"
 
@@ -3062,9 +3095,9 @@ msgstr "Следующий RID пользователя не цифра!"
 msgid "No"
 msgstr "Нет"
 
-#: ../lib/modules/sambaSamAccount.inc:469
-#: ../lib/modules/sambaSamAccount.inc:553
-#: ../lib/modules/sambaSamAccount.inc:798
+#: ../lib/modules/sambaSamAccount.inc:473
+#: ../lib/modules/sambaSamAccount.inc:557
+#: ../lib/modules/sambaSamAccount.inc:802
 #: ../lib/modules/sambaGroupMapping.inc:88
 #: ../lib/modules/sambaGroupMapping.inc:173
 #: ../lib/modules/sambaGroupMapping.inc:408
@@ -3113,6 +3146,14 @@ msgstr "Компьютеры не найдены!"
 #: ../templates/tree/edit.php:189
 msgid "No internal attributes"
 msgstr "Нет внутренних аттрибутов."
+
+#: ../templates/tests/lamdaemonTest.php:66
+msgid "No lamdaemon path set, please update your LAM configuration settings."
+msgstr "Не установлен путь к скрипту lamdaemon, проверьте конфигурацию LAM."
+
+#: ../templates/tests/lamdaemonTest.php:62
+msgid "No lamdaemon server set, please update your LAM configuration settings."
+msgstr "Не установлено имя сервера, где находится lamdaemon, проверьте конфигурацию LAM."
 
 #: ../templates/config/mainmanage.php:252
 msgid "No logging"
@@ -3171,7 +3212,7 @@ msgstr "Примечание: Вы получите \"ошибку сравне�
 msgid "Notice"
 msgstr "Напоминание"
 
-#: ../templates/delete.php:93
+#: ../templates/delete.php:91
 msgid "Number of child entries"
 msgstr "Число потомков записи"
 
@@ -3253,6 +3294,11 @@ msgid "Off"
 msgstr "Выключено"
 
 #: ../templates/tree/export_form.php:165
+#: ../templates/tests/lamdaemonTest.php:70
+#: ../templates/tests/lamdaemonTest.php:91
+#: ../templates/tests/lamdaemonTest.php:108
+#: ../templates/tests/lamdaemonTest.php:133
+#: ../templates/tests/lamdaemonTest.php:178
 #: ../templates/ou_edit.php:193
 #: ../templates/masscreate.php:107
 #: ../templates/config/profmanage.php:353
@@ -3275,7 +3321,7 @@ msgstr "Выключено"
 #: ../templates/profedit/profiledelete.php:82
 #: ../templates/profedit/profilemain.php:165
 #: ../lib/modules/posixGroup.inc:260
-#: ../lib/modules/sambaSamAccount.inc:1056
+#: ../lib/modules/sambaSamAccount.inc:1060
 #: ../lib/modules/posixAccount.inc:954
 #: ../lib/modules/inetOrgPerson.inc:760
 msgid "Ok"
@@ -3322,7 +3368,7 @@ msgid "PDF editor"
 msgstr "PDF редактор"
 
 #: ../templates/pdfedit/pdfpage.php:451
-#: ../lib/lists.inc:501
+#: ../lib/lists.inc:511
 msgid "PDF structure"
 msgstr "PDF шаблон"
 
@@ -3338,7 +3384,7 @@ msgstr "PDF шаблоны"
 msgid "PDF-structure name not valid"
 msgstr "Имя PDF шаблона не правильное"
 
-#: ../lib/modules/sambaSamAccount.inc:424
+#: ../lib/modules/sambaSamAccount.inc:428
 msgid "Pacific Time (US & Canada)"
 msgstr "Pacific Time (US & Canada)"
 
@@ -3350,7 +3396,7 @@ msgstr "Настройки страницы"
 msgid "Parent to"
 msgstr "Родитель к"
 
-#: ../templates/login.php:235
+#: ../templates/login.php:244
 #: ../templates/selfService/selfServiceLogin.php:190
 #: ../lib/modules/posixGroup.inc:165
 #: ../lib/modules/posixGroup.inc:177
@@ -3362,7 +3408,7 @@ msgstr "Родитель к"
 #: ../lib/modules/sambaAccount.inc:225
 #: ../lib/modules/sambaSamAccount.inc:87
 #: ../lib/modules/sambaSamAccount.inc:88
-#: ../lib/modules/sambaSamAccount.inc:287
+#: ../lib/modules/sambaSamAccount.inc:291
 #: ../lib/modules/posixAccount.inc:69
 #: ../lib/modules/posixAccount.inc:70
 #: ../lib/modules/posixAccount.inc:130
@@ -3398,11 +3444,11 @@ msgstr "Пароль содержит недопустимые символы. �
 #: ../lib/modules/sambaAccount.inc:361
 #: ../lib/modules/sambaAccount.inc:364
 #: ../lib/modules/sambaAccount.inc:729
-#: ../lib/modules/sambaSamAccount.inc:201
-#: ../lib/modules/sambaSamAccount.inc:204
-#: ../lib/modules/sambaSamAccount.inc:309
-#: ../lib/modules/sambaSamAccount.inc:856
-#: ../lib/modules/sambaSamAccount.inc:1095
+#: ../lib/modules/sambaSamAccount.inc:205
+#: ../lib/modules/sambaSamAccount.inc:208
+#: ../lib/modules/sambaSamAccount.inc:313
+#: ../lib/modules/sambaSamAccount.inc:860
+#: ../lib/modules/sambaSamAccount.inc:1099
 msgid "Password does not expire"
 msgstr "Пароль не устаревает"
 
@@ -3410,8 +3456,8 @@ msgstr "Пароль не устаревает"
 #: ../lib/modules/shadowAccount.inc:89
 #: ../lib/modules/shadowAccount.inc:157
 #: ../lib/modules/shadowAccount.inc:183
-#: ../lib/modules/shadowAccount.inc:273
-#: ../lib/modules/shadowAccount.inc:311
+#: ../lib/modules/shadowAccount.inc:268
+#: ../lib/modules/shadowAccount.inc:363
 msgid "Password expiration"
 msgstr "Дней, с устаревшим паролем"
 
@@ -3463,8 +3509,8 @@ msgstr "Минимальный срок жизни пароля должно б�
 #: ../lib/modules/shadowAccount.inc:84
 #: ../lib/modules/shadowAccount.inc:153
 #: ../lib/modules/shadowAccount.inc:177
-#: ../lib/modules/shadowAccount.inc:268
-#: ../lib/modules/shadowAccount.inc:309
+#: ../lib/modules/shadowAccount.inc:263
+#: ../lib/modules/shadowAccount.inc:361
 msgid "Password warning"
 msgstr "Предупреждение об устаревании пароля"
 
@@ -3478,7 +3524,7 @@ msgid "Passwords are different!"
 msgstr "Пароли не совпадают!"
 
 #: ../lib/modules/sambaAccount.inc:385
-#: ../lib/modules/sambaSamAccount.inc:225
+#: ../lib/modules/sambaSamAccount.inc:229
 msgid "Path of the user profile. Can be a local absolute path or a UNC-path (\\\\server\\share). $user and $group are replaced with user and group name."
 msgstr "Путь к профилю пользователя. Должен быть задан локально - абсолютный путь или UNC-путь (\\\\server\\share). В качестве $user и $group будут подставлены имена пользователя и группы."
 
@@ -3506,7 +3552,7 @@ msgstr "Фото файл (в формате JPG)"
 msgid "Please a comma separated list of your public SSH keys."
 msgstr "Пожалуйста, список Ваших публичных SSH ключей (разделенных запятыми)."
 
-#: ../templates/delete.php:81
+#: ../templates/delete.php:79
 msgid "Please confirm:"
 msgstr "Пожалуйста, подтвердите:"
 
@@ -3686,6 +3732,10 @@ msgstr "Пожалуйста, введите пароль для изменен�
 msgid "Please enter your public SSH key."
 msgstr "Пожалуйста, введите Ваш публичный SSH ключ."
 
+#: ../templates/tests/lamdaemonTest.php:113
+msgid "Please install the SSH2 module for PHP and activate it in your php.ini!"
+msgstr "Установите модуль SSH2 для PHP и активируйте его в php.ini !"
+
 #: ../templates/masscreate.php:123
 msgid "Please provide a CSV formated file with your account data. The cells in the first row must be filled with the column identifiers. The following rows represent one account for each row."
 msgstr "Подготовьте CSV файл с данными учетных записей. Ячейки в первом ряду должны содержать названия столбцов. Последующие ряды содержат данные."
@@ -3694,7 +3744,7 @@ msgstr "Подготовьте CSV файл с данными учетных з�
 msgid "Please select an image file to upload. It must be in JPG format (.jpg/.jpeg)."
 msgstr "Пожалуйста выберите файл с изображением для загрузки. Должен быть JPG формат (.jpg/.jpeg)."
 
-#: ../lib/modules.inc:961
+#: ../lib/modules.inc:958
 msgid "Please select page:"
 msgstr "Выберите страницу:"
 
@@ -3706,11 +3756,11 @@ msgstr "Пожалуйста выберите тип учетной записи
 msgid "Please select your prefered log level. Messages with a lower level will not be logged."
 msgstr "Выберите уровень вывода отладочной информации, (лог файл)."
 
-#: ../templates/login.php:208
+#: ../templates/login.php:217
 msgid "Please select your user name and enter your password to log in."
 msgstr "Пожалуйста выберите имя пользователя и введите пароль."
 
-#: ../lib/modules.inc:953
+#: ../lib/modules.inc:950
 #, php-format
 msgid "Please set up all required attributes on page: %s"
 msgstr "Пожалуйста настройте все необходимые аттрибуты на странице: %s"
@@ -3846,11 +3896,11 @@ msgstr "Пароли профиля не совпадают или пусты!"
 #: ../lib/modules/sambaAccount.inc:858
 #: ../lib/modules/sambaSamAccount.inc:79
 #: ../lib/modules/sambaSamAccount.inc:80
-#: ../lib/modules/sambaSamAccount.inc:224
-#: ../lib/modules/sambaSamAccount.inc:358
-#: ../lib/modules/sambaSamAccount.inc:902
-#: ../lib/modules/sambaSamAccount.inc:1126
-#: ../lib/modules/sambaSamAccount.inc:1289
+#: ../lib/modules/sambaSamAccount.inc:228
+#: ../lib/modules/sambaSamAccount.inc:362
+#: ../lib/modules/sambaSamAccount.inc:906
+#: ../lib/modules/sambaSamAccount.inc:1130
+#: ../lib/modules/sambaSamAccount.inc:1293
 msgid "Profile path"
 msgstr "Путь к профилю"
 
@@ -3883,7 +3933,7 @@ msgstr "RDN"
 
 #: ../templates/masscreate.php:164
 #: ../templates/profedit/profilepage.php:200
-#: ../lib/modules.inc:1058
+#: ../lib/modules.inc:1055
 #: ../help/help.inc:144
 msgid "RDN identifier"
 msgstr "Идентификатор RDN"
@@ -3929,7 +3979,7 @@ msgid "Reenter new master password"
 msgstr "Повторить"
 
 #: ../templates/config/confmain.php:371
-#: ../lib/modules/posixAccount.inc:1506
+#: ../lib/modules/posixAccount.inc:1518
 msgid "Reenter password"
 msgstr "Повторить ввод пароля"
 
@@ -3941,7 +3991,7 @@ msgstr "Повторите пароль"
 #: ../templates/tree/edit.php:101
 #: ../lib/tree.inc:64
 #: ../lib/tree.inc:65
-#: ../lib/lists.inc:271
+#: ../lib/lists.inc:278
 msgid "Refresh"
 msgstr "Обновить"
 
@@ -3958,6 +4008,7 @@ msgstr "Относительное отличительное имя"
 #: ../lib/modules/kolabUser.inc:337
 #: ../lib/modules/kolabUser.inc:356
 #: ../lib/modules/kolabUser.inc:382
+#: ../lib/modules/shadowAccount.inc:345
 #: ../lib/modules/ldapPublicKey.inc:92
 #: ../lib/modules/inetLocalMailRecipient.inc:154
 #: ../lib/modules/nisMailAlias.inc:141
@@ -3986,7 +4037,7 @@ msgstr "Профиль переименован."
 
 #: ../lib/modules/posixGroup.inc:255
 #: ../lib/modules/sambaAccount.inc:718
-#: ../lib/modules/sambaSamAccount.inc:846
+#: ../lib/modules/sambaSamAccount.inc:850
 #: ../lib/modules/posixAccount.inc:949
 #: ../lib/modules/inetOrgPerson.inc:593
 #: ../lib/modules/inetOrgPerson.inc:755
@@ -4010,19 +4061,19 @@ msgstr "Требуемые аттрибуты"
 
 #: ../templates/profedit/profilepage.php:251
 #: ../lib/modules/sambaAccount.inc:809
-#: ../lib/modules/sambaSamAccount.inc:960
+#: ../lib/modules/sambaSamAccount.inc:964
 msgid "Reset"
 msgstr "Сброс"
 
-#: ../lib/modules.inc:964
-#: ../lib/modules.inc:992
+#: ../lib/modules.inc:961
+#: ../lib/modules.inc:989
 msgid "Reset changes"
 msgstr "Сброс изменений"
 
 #: ../lib/modules/sambaAccount.inc:346
 #: ../lib/modules/sambaAccount.inc:808
-#: ../lib/modules/sambaSamAccount.inc:186
-#: ../lib/modules/sambaSamAccount.inc:959
+#: ../lib/modules/sambaSamAccount.inc:190
+#: ../lib/modules/sambaSamAccount.inc:963
 msgid "Reset password"
 msgstr "Сброс пароля"
 
@@ -4044,6 +4095,14 @@ msgstr "Время сброса после выхода должно быть ц
 msgid "Routing address"
 msgstr "Перенаправляемый адрес"
 
+#: ../templates/tests/lamdaemonTest.php:123
+msgid "SSH connection"
+msgstr "SSH подключение"
+
+#: ../templates/tests/lamdaemonTest.php:134
+msgid "SSH connection could be established."
+msgstr "SSH соединение может быть установлено."
+
 #: ../lib/modules/ldapPublicKey.inc:48
 #: ../lib/modules/ldapPublicKey.inc:58
 #: ../lib/modules/ldapPublicKey.inc:62
@@ -4055,6 +4114,14 @@ msgstr "SSH public key"
 #: ../lib/modules/ldapPublicKey.inc:161
 msgid "SSH public key(s)"
 msgstr "SSH публичные ключи"
+
+#: ../templates/tests/lamdaemonTest.php:106
+msgid "SSH2 module"
+msgstr "SSH2 модуль"
+
+#: ../templates/tests/lamdaemonTest.php:109
+msgid "SSH2 module is installed."
+msgstr "SSH2 модуль инсталлирован."
 
 #: ../lib/modules/sambaAccount.inc:105
 msgid "Samba 2"
@@ -4074,14 +4141,14 @@ msgstr "Samba 3 domain SID не правильный!"
 msgid "Samba 3 domain entries"
 msgstr "Учетные записи доменов Samba 3"
 
-#: ../lib/modules/sambaSamAccount.inc:451
+#: ../lib/modules/sambaSamAccount.inc:455
 msgid "Samba 3 settings"
 msgstr "Samba 3 настройки"
 
-#: ../lib/modules/sambaSamAccount.inc:245
 #: ../lib/modules/sambaSamAccount.inc:249
-#: ../lib/modules/sambaSamAccount.inc:383
-#: ../lib/modules/sambaSamAccount.inc:407
+#: ../lib/modules/sambaSamAccount.inc:253
+#: ../lib/modules/sambaSamAccount.inc:387
+#: ../lib/modules/sambaSamAccount.inc:411
 msgid "Samba RID"
 msgstr "Samba RID"
 
@@ -4114,8 +4181,8 @@ msgstr "Samba тип группы"
 
 #: ../lib/modules/sambaAccount.inc:343
 #: ../lib/modules/sambaAccount.inc:715
-#: ../lib/modules/sambaSamAccount.inc:183
-#: ../lib/modules/sambaSamAccount.inc:842
+#: ../lib/modules/sambaSamAccount.inc:187
+#: ../lib/modules/sambaSamAccount.inc:846
 msgid "Samba password"
 msgstr "Samba пароль"
 
@@ -4127,16 +4194,16 @@ msgstr "Samba пароль"
 #: ../lib/modules/sambaAccount.inc:767
 #: ../lib/modules/sambaAccount.inc:859
 #: ../lib/modules/sambaSamAccount.inc:85
-#: ../lib/modules/sambaSamAccount.inc:230
-#: ../lib/modules/sambaSamAccount.inc:233
-#: ../lib/modules/sambaSamAccount.inc:370
-#: ../lib/modules/sambaSamAccount.inc:908
-#: ../lib/modules/sambaSamAccount.inc:1138
-#: ../lib/modules/sambaSamAccount.inc:1290
+#: ../lib/modules/sambaSamAccount.inc:234
+#: ../lib/modules/sambaSamAccount.inc:237
+#: ../lib/modules/sambaSamAccount.inc:374
+#: ../lib/modules/sambaSamAccount.inc:912
+#: ../lib/modules/sambaSamAccount.inc:1142
+#: ../lib/modules/sambaSamAccount.inc:1294
 msgid "Samba workstations"
 msgstr "Samba компьютеры"
 
-#: ../lib/modules/sambaSamAccount.inc:1010
+#: ../lib/modules/sambaSamAccount.inc:1014
 msgid "Saturday"
 msgstr "Суббота"
 
@@ -4206,7 +4273,7 @@ msgstr "Секция"
 msgid "Security settings"
 msgstr "Настройки безопасности"
 
-#: ../lib/lists.inc:635
+#: ../lib/lists.inc:645
 msgid "See README.openldap.txt to solve this problem."
 msgstr "Смотрите README.openldap.txt для решения этой проблемы."
 
@@ -4220,7 +4287,7 @@ msgstr "Выберите шаблон для создания"
 
 #: ../lib/types/group.inc:182
 #: ../lib/types/user.inc:218
-#: ../lib/lists.inc:395
+#: ../lib/lists.inc:405
 msgid "Select all"
 msgstr "Выбрать все"
 
@@ -4259,7 +4326,7 @@ msgstr "Неправильный адрес сервера!"
 msgid "Server of external script"
 msgstr "Сервер внешнего скрипта"
 
-#: ../templates/login.php:304
+#: ../templates/login.php:313
 msgid "Server profile"
 msgstr "Профиль сервера"
 
@@ -4336,7 +4403,7 @@ msgstr "Мягкий лимит"
 msgid "Some attributes (%s) were modified and are highlighted below."
 msgstr "Некоторые аттрибуты (%s) были изменены и выделены ниже."
 
-#: ../lib/modules.inc:952
+#: ../lib/modules.inc:949
 msgid "Some required information is missing"
 msgstr "Не вся необходимая информация"
 
@@ -4353,8 +4420,8 @@ msgstr "Извините этот номер помощи ({bold}%d{endbold}) н
 #: ../lib/modules/sambaAccount.inc:314
 #: ../lib/modules/sambaAccount.inc:402
 #: ../lib/modules/sambaAccount.inc:799
-#: ../lib/modules/sambaSamAccount.inc:242
-#: ../lib/modules/sambaSamAccount.inc:943
+#: ../lib/modules/sambaSamAccount.inc:246
+#: ../lib/modules/sambaSamAccount.inc:947
 msgid "Special user"
 msgstr "Специальный пользователь"
 
@@ -4377,7 +4444,7 @@ msgid "Steve"
 msgstr "Steve"
 
 #: ../lib/modules/sambaAccount.inc:221
-#: ../lib/modules/sambaSamAccount.inc:283
+#: ../lib/modules/sambaSamAccount.inc:287
 #: ../lib/modules/posixAccount.inc:197
 #: ../lib/modules/inetOrgPerson.inc:237
 msgid "Steve Miller"
@@ -4415,14 +4482,26 @@ msgstr "Substring Rule"
 msgid "Success"
 msgstr "Удачно"
 
-#: ../lib/lists.inc:475
-#: ../lib/modules.inc:1045
+#: ../templates/tests/lamdaemonTest.php:172
+msgid "Sudo is not setup correctly!"
+msgstr "Настройка sudo не правильная!"
+
+#: ../lib/lists.inc:485
+#: ../lib/modules.inc:1042
 msgid "Suffix"
 msgstr "Суффикс"
 
-#: ../lib/modules/sambaSamAccount.inc:1010
+#: ../lib/modules/sambaSamAccount.inc:1014
 msgid "Sunday"
 msgstr "Воскресение"
+
+#: ../lib/modules/sambaSamAccount.inc:179
+msgid "Sync Samba LM password with Unix password"
+msgstr "Синхронизировать Samba LM пароль с Unix паролем"
+
+#: ../lib/modules/sambaSamAccount.inc:178
+msgid "Sync Samba NT password with Unix password"
+msgstr "Синхронизировать Samba NT пароль с Unix паролем"
 
 #: ../templates/tree/add_value_form.php:190
 #: ../templates/schema/schema.php:186
@@ -4468,6 +4547,10 @@ msgstr "Temp, contract until december"
 #: ../templates/tree/create_form.php:83
 msgid "Template"
 msgstr "Шаблон"
+
+#: ../templates/tools.php:90
+msgid "Tests"
+msgstr "Тесты"
 
 #: ../help/help.inc:110
 msgid "Text for user PDF"
@@ -4599,7 +4682,7 @@ msgstr "GID неправильный! Должно быть число или н
 msgid "This account is marked for deletion."
 msgstr "Эта учетная запись отмечена для удаления."
 
-#: ../lib/modules/sambaSamAccount.inc:243
+#: ../lib/modules/sambaSamAccount.inc:247
 msgid "This allows you to define this account as a special user like administrator or guest."
 msgstr "Это позволяет Вам определять эту учетную запись как специальный пользователь, т.е.  администратор или гость."
 
@@ -4708,7 +4791,7 @@ msgstr "Это - MAC адрес сетевого адаптера (т.е. 00:01:
 msgid "This is the RID of the user's primary Windows group."
 msgstr "Это - RID основной Windows группы пользователей."
 
-#: ../lib/modules/sambaSamAccount.inc:240
+#: ../lib/modules/sambaSamAccount.inc:244
 msgid "This is the SID of the user's primary Windows group."
 msgstr "Это - SID основной Windows группы пользователей."
 
@@ -4717,16 +4800,16 @@ msgid "This is the absolute path to an external script for setting quotas and cr
 msgstr "Это абсолютный путь для внешнего скрипта для установки квоты и создания домашнего каталога."
 
 #: ../lib/modules/sambaAccount.inc:344
-#: ../lib/modules/sambaSamAccount.inc:184
+#: ../lib/modules/sambaSamAccount.inc:188
 msgid "This is the account's Windows password."
 msgstr "Это пароль учетной записи Windows."
 
 #: ../lib/modules/sambaAccount.inc:341
-#: ../lib/modules/sambaSamAccount.inc:181
+#: ../lib/modules/sambaSamAccount.inc:185
 msgid "This is the account's full name on Windows systems."
 msgstr "Это полное имя учетной записи на Windows системах."
 
-#: ../lib/modules/sambaSamAccount.inc:262
+#: ../lib/modules/sambaSamAccount.inc:266
 #: ../lib/modules/shadowAccount.inc:170
 msgid "This is the date when the account will expire. Format: DD-MM-YYYY"
 msgstr "Дата, до которой эта учетная запись активна. Формат: DD-MM-YYYY"
@@ -4767,11 +4850,11 @@ msgstr "Это кол-во строк для показа списка уч. з�
 msgid "This is the relative ID (similar to UID on Unix) for Windows accounts. If you leave this empty LAM will calculate the RID from the UID. This can be either a number or the name of a special group:"
 msgstr "Это ID (подобный UID в Unix) для учетных записей Windows. Если оставить поле пустым, LAM вычислит RID из UID. Может быть числом или именем специальной группы:"
 
-#: ../lib/modules/sambaSamAccount.inc:246
+#: ../lib/modules/sambaSamAccount.inc:250
 msgid "This is the relative ID number for your Windows account. You can either enter a number or one of these special accounts: "
 msgstr "Это ID для учетных записей Windows. Можно ввести число или одну из специальных уч. записей:"
 
-#: ../lib/modules/sambaSamAccount.inc:250
+#: ../lib/modules/sambaSamAccount.inc:254
 msgid "This is the relative ID number for your host account. If you leave this empty LAM will use: uidNumber*2 + sambaAlgorithmicRidBase."
 msgstr "Это ID для учетных записей компьютеров. Если оставить поле пустым, LAM использует: uidNumber*2 + sambaAlgorithmicRidBase."
 
@@ -4811,11 +4894,11 @@ msgstr "Это время (в минутах), в течении которог�
 msgid "This is the time limit (in days) for other users who want to check future appointments. If you leave this blank the default (60 days) will be set."
 msgstr "Это лимит времени для других пользователей, кто хочет проверить будущее назначение. Если не задано, будет установлено 60 дней."
 
-#: ../lib/modules/sambaSamAccount.inc:265
+#: ../lib/modules/sambaSamAccount.inc:269
 msgid "This is the time zone of your Samba server. LAM needs this information to display the logon hours correctly."
 msgstr "Временная зона для Samba сервера. Эта информация нужна для правильной настройки интервала времени для разрешенного входа."
 
-#: ../lib/modules/sambaSamAccount.inc:237
+#: ../lib/modules/sambaSamAccount.inc:241
 msgid "This is the user's primary Windows group."
 msgstr "Это основная Windows группа."
 
@@ -4831,11 +4914,11 @@ msgstr "Этот адрес уже используется"
 msgid "This object class is obsolete."
 msgstr "Этот object class устарел."
 
-#: ../lib/modules/sambaSamAccount.inc:256
+#: ../lib/modules/sambaSamAccount.inc:260
 msgid "This option defines the allowed logon hours for this account."
 msgstr "Эта опция устанавливает разрешенное время для входа."
 
-#: ../lib/modules/sambaSamAccount.inc:259
+#: ../lib/modules/sambaSamAccount.inc:263
 msgid "This option defines the allowed logon hours for this account. The format is the same as for the LDAP attribute. The 24*7 hours are represented as 168 bit which are saved as 21 hex (21*8 = 168) values. The first bit represents Sunday 0:00 - 0:59 in GMT."
 msgstr "Эта опция устанавливает разрешенное время для входа. 24*7 представлены как 168 bit , сохранены как 21 hex (21*8 = 168). Первый бит - Sunday 0:00 - 0:59 in GMT."
 
@@ -4899,7 +4982,7 @@ msgid "This will delete the selected profile."
 msgstr "Удаление выбранного профиля."
 
 #: ../lib/modules/sambaAccount.inc:347
-#: ../lib/modules/sambaSamAccount.inc:187
+#: ../lib/modules/sambaSamAccount.inc:191
 msgid "This will reset the host's password to a default value."
 msgstr "Это сбросит пароль компьютера в значение по умолчанию."
 
@@ -4907,20 +4990,21 @@ msgstr "Это сбросит пароль компьютера в значен�
 msgid "This will set a special flag on the account which tells Kolabd to remove it. Use this to cleanly delete Kolab accounts (e.g. this removes mail boxes)."
 msgstr "Это устанавливает специальный флаг, говорящий Kolabd удалить эту учетную запись. Используйте это для удаления Kolab аккаунтов (т.е. удаления почтовых ящиков)."
 
-#: ../lib/modules/sambaSamAccount.inc:1009
+#: ../lib/modules/sambaSamAccount.inc:1013
 msgid "Thursday"
 msgstr "Четверг"
 
-#: ../lib/modules/sambaSamAccount.inc:1050
+#: ../lib/modules/sambaSamAccount.inc:1054
 msgid "Time"
 msgstr "Время"
 
-#: ../lib/modules/sambaSamAccount.inc:264
-#: ../lib/modules/sambaSamAccount.inc:417
+#: ../lib/modules/sambaSamAccount.inc:268
+#: ../lib/modules/sambaSamAccount.inc:421
 msgid "Time zone"
 msgstr "Временная зона"
 
-#: ../lib/lamdaemon.inc:126
+#: ../templates/tests/lamdaemonTest.php:160
+#: ../lib/lamdaemon.inc:133
 msgid "Timeout while executing lamdaemon commands!"
 msgstr "Перерыв, пока lamdaemon выполняет команды!"
 
@@ -4928,11 +5012,11 @@ msgstr "Перерыв, пока lamdaemon выполняет команды!"
 msgid "To disable login use /bin/false. The list of shells is read from lam/config/shells"
 msgstr "Чтобы отключить вход используйте /bin/false. Список оболочек читайте в lam/config/shells"
 
-#: ../lib/modules/sambaSamAccount.inc:441
+#: ../lib/modules/sambaSamAccount.inc:445
 msgid "Tokyo, Seoul, Osaka, Yakutsk"
 msgstr "Tokyo, Seoul, Osaka, Yakutsk"
 
-#: ../templates/main_header.php:58
+#: ../templates/main_header.php:64
 msgid "Tools"
 msgstr "Утилиты"
 
@@ -4950,7 +5034,7 @@ msgstr "Перевести GID в имя группы"
 msgid "Tree suffix"
 msgstr "Суффикс дерева"
 
-#: ../templates/main_header.php:70
+#: ../templates/main_header.php:76
 msgid "Tree view"
 msgstr "Просмотр дерева"
 
@@ -4958,7 +5042,7 @@ msgstr "Просмотр дерева"
 msgid "TreeSuffix is invalid!"
 msgstr "Суффикс дерева (TreeSuffix)  не правильный!"
 
-#: ../lib/modules/sambaSamAccount.inc:1009
+#: ../lib/modules/sambaSamAccount.inc:1013
 msgid "Tuesday"
 msgstr "Вторник"
 
@@ -5003,7 +5087,7 @@ msgid "UID ranges for Unix accounts"
 msgstr "Диапазон UID для уч. записей UNIX"
 
 #: ../lib/modules/sambaAccount.inc:382
-#: ../lib/modules/sambaSamAccount.inc:222
+#: ../lib/modules/sambaSamAccount.inc:226
 msgid "UNC-path (\\\\server\\share) of homedirectory. $user and $group are replaced with user and group name."
 msgstr "UNC-путь (\\\\server\\share) для домашнего каталога. Вместо $user и $group будет подставлено имя пользователя и группы."
 
@@ -5011,7 +5095,9 @@ msgstr "UNC-путь (\\\\server\\share) для домашнего катало�
 msgid "Unable to change your account. Maybe you do not have enough rights to change the settings."
 msgstr "Невозможно изменить Вашу учетную запись. Возможно у Вас нет прав для изменения настроек."
 
-#: ../lib/lamdaemon.inc:139
+#: ../templates/tests/lamdaemonTest.php:138
+#: ../lib/lamdaemon.inc:146
+#: ../lib/lamdaemon.inc:151
 msgid "Unable to connect to remote server!"
 msgstr "Не возможно подключиться к удаленному серверу!"
 
@@ -5038,10 +5124,15 @@ msgstr "Не возможно удалить PDF структуру!"
 msgid "Unable to delete profile!"
 msgstr "Не возможно удалить профиль!"
 
-#: ../lib/modules/posixAccount.inc:1196
-#: ../lib/modules/posixAccount.inc:1413
+#: ../lib/modules/posixAccount.inc:1208
+#: ../lib/modules/posixAccount.inc:1425
 msgid "Unable to find group in LDAP."
 msgstr "Не возможно найти группу!"
+
+#: ../lib/modules.inc:1180
+#: ../lib/modules.inc:1184
+msgid "Unable to load LDAP entry:"
+msgstr "Не возможно загрузить LDAP запись:"
 
 #: ../templates/config/confmain.php:301
 msgid "Unable to load available languages. Setting English as default language. For further instructions please contact the Admin of this site."
@@ -5049,8 +5140,8 @@ msgstr "Не возможно загрузить доступные языки. 
 
 #: ../lib/profiles.inc:91
 #: ../lib/profiles.inc:95
-#: ../lib/selfService.inc:164
-#: ../lib/selfService.inc:168
+#: ../lib/selfService.inc:174
+#: ../lib/selfService.inc:178
 msgid "Unable to load profile!"
 msgstr "Не возможно загрузить профиль!"
 
@@ -5070,6 +5161,10 @@ msgstr "Не возможно сохранить профиль!"
 #: ../lib/modules/posixAccount.inc:114
 msgid "Unix"
 msgstr "Unix"
+
+#: ../templates/tests/lamdaemonTest.php:79
+msgid "Unix account"
+msgstr "Unix учетная запись"
 
 #: ../lib/modules/inetOrgPerson.inc:44
 #: ../lib/modules/inetOrgPerson.inc:254
@@ -5119,11 +5214,11 @@ msgstr "Использовать"
 #: ../lib/modules/sambaAccount.inc:349
 #: ../lib/modules/sambaAccount.inc:352
 #: ../lib/modules/sambaAccount.inc:722
-#: ../lib/modules/sambaSamAccount.inc:189
-#: ../lib/modules/sambaSamAccount.inc:192
-#: ../lib/modules/sambaSamAccount.inc:293
-#: ../lib/modules/sambaSamAccount.inc:849
-#: ../lib/modules/sambaSamAccount.inc:1077
+#: ../lib/modules/sambaSamAccount.inc:193
+#: ../lib/modules/sambaSamAccount.inc:196
+#: ../lib/modules/sambaSamAccount.inc:297
+#: ../lib/modules/sambaSamAccount.inc:853
+#: ../lib/modules/sambaSamAccount.inc:1081
 msgid "Use Unix password"
 msgstr "Использовать Unix пароль"
 
@@ -5142,11 +5237,11 @@ msgstr "Используйте это на свой страх и риск, чи
 #: ../lib/modules/sambaAccount.inc:355
 #: ../lib/modules/sambaAccount.inc:358
 #: ../lib/modules/sambaAccount.inc:726
-#: ../lib/modules/sambaSamAccount.inc:195
-#: ../lib/modules/sambaSamAccount.inc:198
-#: ../lib/modules/sambaSamAccount.inc:301
-#: ../lib/modules/sambaSamAccount.inc:853
-#: ../lib/modules/sambaSamAccount.inc:1083
+#: ../lib/modules/sambaSamAccount.inc:199
+#: ../lib/modules/sambaSamAccount.inc:202
+#: ../lib/modules/sambaSamAccount.inc:305
+#: ../lib/modules/sambaSamAccount.inc:857
+#: ../lib/modules/sambaSamAccount.inc:1087
 msgid "Use no password"
 msgstr "Использовать без пароля"
 
@@ -5195,9 +5290,9 @@ msgstr "Учетные записи пользователей (т.е. Unix, Sam
 #: ../lib/modules/sambaAccount.inc:263
 #: ../lib/modules/sambaAccount.inc:373
 #: ../lib/modules/sambaAccount.inc:738
-#: ../lib/modules/sambaSamAccount.inc:213
-#: ../lib/modules/sambaSamAccount.inc:325
-#: ../lib/modules/sambaSamAccount.inc:865
+#: ../lib/modules/sambaSamAccount.inc:217
+#: ../lib/modules/sambaSamAccount.inc:329
+#: ../lib/modules/sambaSamAccount.inc:869
 msgid "User can change password"
 msgstr "Пользователь может сменить пароль"
 
@@ -5216,13 +5311,13 @@ msgstr "Изменяет пользователя"
 #: ../lib/modules/sambaAccount.inc:270
 #: ../lib/modules/sambaAccount.inc:375
 #: ../lib/modules/sambaAccount.inc:746
-#: ../lib/modules/sambaSamAccount.inc:215
-#: ../lib/modules/sambaSamAccount.inc:332
-#: ../lib/modules/sambaSamAccount.inc:873
+#: ../lib/modules/sambaSamAccount.inc:219
+#: ../lib/modules/sambaSamAccount.inc:336
+#: ../lib/modules/sambaSamAccount.inc:877
 msgid "User must change password"
 msgstr "Пользователь должен сменить пароль"
 
-#: ../templates/login.php:214
+#: ../templates/login.php:223
 #: ../lib/types/user.inc:85
 #: ../lib/modules/account.inc:96
 #: ../lib/modules/account.inc:116
@@ -5285,6 +5380,16 @@ msgstr "Пользователи, являющиеся членами этой �
 msgid "Users who will become member of the current group. User names are separated by semicolons."
 msgstr "Пользователи, которые станут членами группы. Имена разделены точками с запятой."
 
+#: ../templates/tests/lamdaemonTest.php:71
+#, php-format
+msgid "Using %s as lamdaemon remote server."
+msgstr "Используйте %s lamdaemon удаленный сервер."
+
+#: ../templates/tests/lamdaemonTest.php:92
+#, php-format
+msgid "Using %s to connect to remote server."
+msgstr "Используйте %s чтобы подключиться к удаленному серверу."
+
 #: ../templates/tree/creation_template.php:86
 msgid "Using template:"
 msgstr "Используйте шаблон:"
@@ -5293,26 +5398,30 @@ msgstr "Используйте шаблон:"
 msgid "Valid users"
 msgstr "Доступные пользователи"
 
+#: ../templates/login.php:182
+msgid "Want more features? Get LAM Pro!"
+msgstr "Хотите больше возможностей? Используйте LAM Pro!"
+
 #: ../templates/config/mainmanage.php:207
 msgid "Warning"
 msgstr "Опасность"
 
-#: ../templates/delete.php:188
-#: ../lib/modules.inc:1491
+#: ../templates/delete.php:184
+#: ../lib/modules.inc:1496
 #, php-format
 msgid "Was unable to add attribtues to DN: %s."
 msgstr "Не возможно добавить аттрибуты к DN: %s."
 
-#: ../lib/modules.inc:1427
-#: ../lib/modules.inc:1440
+#: ../lib/modules.inc:1432
+#: ../lib/modules.inc:1445
 #, php-format
 msgid "Was unable to create DN: %s."
 msgstr "Не возможно создать DN: %s."
 
 #: ../templates/tree/delete.php:110
-#: ../templates/delete.php:280
-#: ../templates/delete.php:288
-#: ../lib/modules.inc:1418
+#: ../templates/delete.php:276
+#: ../templates/delete.php:284
+#: ../lib/modules.inc:1423
 #, php-format
 msgid "Was unable to delete DN: %s."
 msgstr "Не возможно удалить DN: %s."
@@ -5320,23 +5429,23 @@ msgstr "Не возможно удалить DN: %s."
 #: ../templates/tree/update.php:106
 #: ../templates/tree/add_oclass.php:90
 #: ../templates/tree/add_oclass_form.php:159
-#: ../templates/delete.php:180
-#: ../lib/modules.inc:1479
+#: ../templates/delete.php:176
+#: ../lib/modules.inc:1484
 #, php-format
 msgid "Was unable to modify attribtues from DN: %s."
 msgstr "Не возможно изменить аттрибуты из DN: %s."
 
-#: ../templates/delete.php:196
-#: ../lib/modules.inc:1503
+#: ../templates/delete.php:192
+#: ../lib/modules.inc:1508
 #, php-format
 msgid "Was unable to remove attribtues from DN: %s."
 msgstr "Не возможно удалить аттрибуты из DN: %s."
 
-#: ../lib/modules/sambaSamAccount.inc:1009
+#: ../lib/modules/sambaSamAccount.inc:1013
 msgid "Wednesday"
 msgstr "Среда"
 
-#: ../lib/modules/sambaSamAccount.inc:432
+#: ../lib/modules/sambaSamAccount.inc:436
 msgid "Western Europe Time, London, Lisbon"
 msgstr "Western Europe Time, London, Lisbon"
 
@@ -5345,16 +5454,16 @@ msgid "When using ldaps:// be sure to use exactly the same IP/domain name as in 
 msgstr "Используя ldaps:// нужно убедиться, что ip адрес соответствует используемому в сертификате!"
 
 #: ../lib/modules/sambaAccount.inc:406
-#: ../lib/modules/sambaSamAccount.inc:253
+#: ../lib/modules/sambaSamAccount.inc:257
 msgid "Windows domain name of account."
 msgstr "Имя домена учетной записи Windows."
 
 #: ../lib/modules/sambaAccount.inc:307
 #: ../lib/modules/sambaAccount.inc:784
-#: ../lib/modules/sambaSamAccount.inc:376
-#: ../lib/modules/sambaSamAccount.inc:925
-#: ../lib/modules/sambaSamAccount.inc:1160
-#: ../lib/modules/sambaSamAccount.inc:1292
+#: ../lib/modules/sambaSamAccount.inc:380
+#: ../lib/modules/sambaSamAccount.inc:929
+#: ../lib/modules/sambaSamAccount.inc:1164
+#: ../lib/modules/sambaSamAccount.inc:1296
 #: ../lib/modules/sambaGroupMapping.inc:205
 #: ../lib/modules/sambaGroupMapping.inc:324
 msgid "Windows group"
@@ -5373,11 +5482,11 @@ msgstr "Имя Windows группы"
 msgid "Windows group type."
 msgstr "Тип Windows группы"
 
-#: ../lib/modules/sambaSamAccount.inc:236
+#: ../lib/modules/sambaSamAccount.inc:240
 msgid "Windows primary group"
 msgstr "Основная Windows группа"
 
-#: ../lib/modules/sambaSamAccount.inc:239
+#: ../lib/modules/sambaSamAccount.inc:243
 msgid "Windows primary group SID"
 msgstr "SID основной Windows группы"
 
@@ -5389,7 +5498,7 @@ msgstr "Имя домена учетной записи Windows."
 msgid "Workgroup"
 msgstr "Workgroup"
 
-#: ../templates/login.php:406
+#: ../templates/login.php:415
 #: ../templates/selfService/selfServiceLogin.php:89
 #: ../templates/selfService/selfServiceLogin.php:101
 msgid "Wrong password/user name combination. Please try again."
@@ -5433,6 +5542,12 @@ msgstr "Пустое значение для необходимого аттри
 msgid "You made no changes."
 msgstr "Вы не сделали никаких изменений."
 
+#: ../templates/tests/lamdaemonTest.php:96
+#: ../lib/lamdaemon.inc:117
+#: ../lib/lamdaemon.inc:123
+msgid "Your LAM admin user must be a valid Unix account to work with lamdaemon!"
+msgstr "Чтобы lamdaemon работал, LAM администратор должен иметь действующий Unix аккаунт!"
+
 #: ../templates/tree/add_attr_form.php:165
 msgid "Your PHP configuration has disabled file uploads. Please check php.ini before proceeding."
 msgstr "Конфигурация PHP не позволяет загружать файлы. Проверьте php.ini."
@@ -5441,7 +5556,7 @@ msgstr "Конфигурация PHP не позволяет загружать 
 msgid "Your session expired, click here to go back to the login page."
 msgstr "Сессия устарела, нажмите здесь для возврата на страницу для входа."
 
-#: ../templates/login.php:194
+#: ../templates/login.php:203
 msgid "Your session expired, please log in again."
 msgstr "Сессия устарела, пожалуйста войдите снова."
 
@@ -5457,12 +5572,12 @@ msgid "[attribute deleted]"
 msgstr "[attribute deleted]"
 
 #: ../lib/modules/sambaAccount.inc:285
-#: ../lib/modules/sambaSamAccount.inc:354
+#: ../lib/modules/sambaSamAccount.inc:358
 msgid "\\\\server\\homes\\smiller"
 msgstr "\\\\server\\homes\\smiller"
 
 #: ../lib/modules/sambaAccount.inc:291
-#: ../lib/modules/sambaSamAccount.inc:360
+#: ../lib/modules/sambaSamAccount.inc:364
 msgid "\\\\server\\profiles\\smiller"
 msgstr "\\\\server\\profiles\\smiller"
 
@@ -5543,12 +5658,12 @@ msgstr "machines"
 
 #: ../lib/modules/sambaAccount.inc:323
 #: ../lib/modules/sambaAccount.inc:333
-#: ../lib/modules/sambaSamAccount.inc:277
-#: ../lib/modules/sambaSamAccount.inc:403
+#: ../lib/modules/sambaSamAccount.inc:281
+#: ../lib/modules/sambaSamAccount.inc:407
 msgid "mydomain"
 msgstr "mydomain"
 
-#: ../lib/modules/sambaSamAccount.inc:378
+#: ../lib/modules/sambaSamAccount.inc:382
 msgid "mygroup"
 msgstr "mygroup"
 
@@ -5599,7 +5714,7 @@ msgstr "pc01,pc02"
 #: ../templates/tree/edit.php:242
 #: ../templates/config/confmain.php:396
 #: ../templates/selfService/adminMain.php:498
-#: ../lib/modules.inc:1088
+#: ../lib/modules.inc:1085
 msgid "required"
 msgstr "обязательно"
 
@@ -5609,7 +5724,7 @@ msgstr "требуется для Samba 3 учетных записей"
 
 #: ../lib/modules/posixGroup.inc:369
 #: ../lib/modules/sambaAccount.inc:227
-#: ../lib/modules/sambaSamAccount.inc:289
+#: ../lib/modules/sambaSamAccount.inc:293
 #: ../lib/modules/posixAccount.inc:237
 msgid "secret"
 msgstr "secret"
@@ -5640,6 +5755,10 @@ msgstr "user@company.com"
 msgid "users"
 msgstr "users"
 
+#~ msgid "Create new Account"
+#~ msgstr "Создать новую учетную запись"
+#~ msgid "Delete Account"
+#~ msgstr "Удалить учетную запись"
 #~ msgid "A required PHP extension is missing!"
 #~ msgstr "Нужное PHP-расширение не найдено"
 #~ msgid "Generate password"
