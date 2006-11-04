@@ -64,5 +64,5 @@ Installation Instructions for LAM
 
    Needed changes in your php.ini:
 
-    * memory_limit = 32M
+    * memory_limit = 64M
 
