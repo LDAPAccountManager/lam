@@ -93,7 +93,7 @@ if (!$stopTest) {
 	}
 	else {
 		echo "<td bgcolor=\"red\">" . _("Error") . "&nbsp;&nbsp;</td>\n";
-		echo "<td bgcolor=\"red\">" . _("Your LAM admin user must be a valid Unix account to work with lamdaemon!") . "</td>";
+		echo "<td bgcolor=\"red\">" . sprintf(_("Your LAM admin user (%s) must be a valid Unix account to work with lamdaemon!"), $credentials[0]) . "</td>";
 		$stopTest = true;
 	}
 	echo "</tr>\n";
@@ -143,51 +143,68 @@ if (!$stopTest) {
 
 flush();
 
-// run lamdaemon and get user quotas
-if (!$stopTest) {
-	echo "<tr class=\"userlist\">\n<td>" . _("Execute lamdaemon") . "&nbsp;&nbsp;</td>\n";
+$stopTest = lamTestLamdaemon("+ test basic\n", $stopTest, $handle, _("Execute lamdaemon"));
+$stopTest = lamTestLamdaemon("+ test quota\n", $stopTest, $handle, _("Lamdaemon: Quota module installed"));
+$stopTest = lamTestLamdaemon("+ quota get user\n", $stopTest, $handle, _("Lamdaemon: read quotas"));
+
+/**
+ * Runs a test case of lamdaemon.
+ *
+ * @param string $command test command
+ * @param boolean $stopTest specifies if test should be run
+ * @param connection $handle SSH connection
+ * @param string $testText describing text
+ * @return boolean true, if errors occured
+ */
+function lamTestLamdaemon($command, $stopTest, $handle, $testText) {
+	// run lamdaemon and get user quotas
+	if (!$stopTest) {
+		echo "<tr class=\"userlist\">\n<td>" . $testText . "&nbsp;&nbsp;</td>\n";
+		flush();
+		$lamdaemonOk = false;
+		$errorMessage = "";
+		$shell = ssh2_exec($handle, "sudo " . $_SESSION['config']->scriptPath);
+		$stderr = ssh2_fetch_stream($shell, SSH2_STREAM_STDERR);
+		fwrite($shell, $command);
+		$return = array();
+		$time = time() + 20;
+		while (sizeof($return) < 1) {
+			if ($time < time()) {
+				$lamdaemonOk = false;
+				$return[] = "ERROR," . _("Timeout while executing lamdaemon commands!");
+				break;
+			}
+			usleep(100);
+			$read = split("\n", trim(fread($shell, 100000)));
+			if ((sizeof($read) == 1) && (!isset($read[0]) || ($read[0] == ""))) continue;
+			for ($i = 0; $i < sizeof($read); $i++) {
+				$return[] = $read[$i];
+			}
+		}
+		$errOut = @fread($stderr, 100000);
+		if ((stripos($errOut, "sudoers") !== false) || (stripos($errOut, "sorry") !== false)) {
+			$return[] = "ERROR," . _("Sudo is not setup correctly!") . "," . str_replace(",", " ", $errOut);
+		}
+		if ((sizeof($return) == 1) && (stripos($return[0], "error") === false)) {
+			$lamdaemonOk = true;
+		}
+		if ($lamdaemonOk) {
+			echo "<td bgcolor=\"green\">" . _("Ok") . "</td>";
+			echo "<td bgcolor=\"green\">" . _("Lamdaemon successfully run.") . "</td>";
+		}
+		else {
+			echo "<td bgcolor=\"red\">" . _("Error") . "&nbsp;&nbsp;</td>\n";
+			echo "<td bgcolor=\"red\">\n";
+			for ($i = 0; $i < sizeof($return); $i++) {
+				call_user_func_array('StatusMessage', split(",", $return[$i]));
+			}
+			echo "</td>\n";
+			$stopTest = true;		
+		}
+		echo "</tr>\n";
+	}
 	flush();
-	$lamdaemonOk = false;
-	$errorMessage = "";
-	$shell = ssh2_exec($handle, "sudo " . $_SESSION['config']->scriptPath);
-	$stderr = ssh2_fetch_stream($shell, SSH2_STREAM_STDERR);
-	fwrite($shell, "+ quota get user\n");
-	$return = array();
-	$time = time() + 20;
-	while (sizeof($return) < 1) {
-		if ($time < time()) {
-			$lamdaemonOk = false;
-			$errorMessage = _("Timeout while executing lamdaemon commands!");
-			break;
-		}
-		usleep(100);
-		$read = split("\n", trim(fread($shell, 100000)));
-		if ((sizeof($read) == 1) && (!isset($read[0]) || ($read[0] == ""))) continue;
-		for ($i = 0; $i < sizeof($read); $i++) {
-			$return[] = $read[$i];
-		}
-	}
-	$errOut = @fread($stderr, 100000);
-	if ((stripos($errOut, "sudoers") !== false) || (stripos($errOut, "sorry") !== false)) {
-		$return[] = "ERROR," . _("Sudo is not setup correctly!") . "," . str_replace(",", " ", $errOut);
-	}
-	if ((sizeof($return) == 1) && (stripos($return[0], "error") === false)) {
-		$lamdaemonOk = true;
-	}
-	if ($lamdaemonOk) {
-		echo "<td bgcolor=\"green\">" . _("Ok") . "</td>";
-		echo "<td bgcolor=\"green\">" . _("Lamdaemon successfully run.") . "</td>";
-	}
-	else {
-		echo "<td bgcolor=\"red\">" . _("Error") . "&nbsp;&nbsp;</td>\n";
-		echo "<td bgcolor=\"red\">\n";
-		for ($i = 0; $i < sizeof($return); $i++) {
-			call_user_func_array('StatusMessage', split(",", $return[$i]));
-		}
-		echo "</td>\n";
-		$stopTest = true;		
-	}
-	echo "</tr>\n";
+	return $stopTest;
 }
 
 echo "</table>\n";
