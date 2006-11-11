@@ -615,15 +615,6 @@ class sambaSamAccount extends baseModule {
 		}
 		// user attributes
 		if ($_SESSION[$this->base]->type=='user') {
-			$this->attributes['sambaPwdCanChange'][0] = mktime(intval($_POST['sambaPwdCanChange_h']), intval($_POST['sambaPwdCanChange_m']),
-				intval($_POST['sambaPwdCanChange_s']), intval($_POST['sambaPwdCanChange_mon']), intval($_POST['sambaPwdCanChange_day']),
-				intval($_POST['sambaPwdCanChange_yea']));
-			$this->attributes['sambaPwdMustChange'][0] = mktime(intval($_POST['sambaPwdMustChange_h']), intval($_POST['sambaPwdMustChange_m']),
-				intval($_POST['sambaPwdMustChange_s']), intval($_POST['sambaPwdMustChange_mon']), intval($_POST['sambaPwdMustChange_day']),
-				intval($_POST['sambaPwdMustChange_yea']));
-			$this->attributes['sambaKickoffTime'][0] = mktime(intval($_POST['sambaExpire_h']), intval($_POST['sambaExpire_m']),
-				intval($_POST['sambaExpire_s']), intval($_POST['sambaExpire_mon']), intval($_POST['sambaExpire_day']),
-				intval($_POST['sambaExpire_yea']));
 			$this->attributes['sambaHomePath'][0] = $_POST['sambaHomePath'];
 			if ($_POST['sambaHomeDrive'] == "-")
 				$this->attributes['sambaHomeDrive'][0] = '';
@@ -791,6 +782,47 @@ class sambaSamAccount extends baseModule {
 		return array();
 	}
 
+	/**
+	* Processes user input of the time selection page.
+	*
+	* @return array list of info/error messages
+	*/
+	function process_time() {
+		$return = array();
+		// find button name
+		$buttonName = '';
+		$postKeys = array_keys($_POST);
+		for ($i = 0; $i < sizeof($postKeys); $i++) {
+			if (strpos($postKeys[$i], 'form_subpage_sambaSamAccount_attributes_') !== false) {
+				$buttonName = $postKeys[$i];
+			}
+		}
+		if (($buttonName == '') || (strpos($buttonName, '_back') !== false)) return array();
+		// get attribute name
+		$attr = '';
+		if (strpos($buttonName, 'sambaPwdCanChange') !== false) {
+			$attr = 'sambaPwdCanChange';
+		}
+		elseif (strpos($buttonName, 'sambaPwdMustChange') !== false) {
+			$attr = 'sambaPwdMustChange';
+		}
+		elseif (strpos($buttonName, 'sambaKickoffTime') !== false) {
+			$attr = 'sambaKickoffTime';
+		}
+		if ($attr == '') return array();
+		// determine action
+		if (strpos($buttonName, '_change') !== false) {
+			// set new time
+			$this->attributes[$attr][0] = gmmktime(0, 0, 0, intval($_POST['expire_mon']), intval($_POST['expire_day']),
+				intval($_POST['expire_yea']));
+		}
+		elseif (strpos($buttonName, '_del') !== false) {
+			// remove attribute value
+			unset($this->attributes[$attr]);
+		}
+		return $return;
+	}
+
 	/* This function will create the html-page
 	* to show a page with all attributes.
 	* It will output a complete html-table
@@ -820,12 +852,6 @@ class sambaSamAccount extends baseModule {
 				}
 			}
 		}
-		if (isset($this->attributes['sambaPwdCanChange'][0])) $canchangedate = getdate(intval($this->attributes['sambaPwdCanChange'][0]));
-		else $canchangedate = getdate(0);
-		if (isset($this->attributes['sambaPwdMustChange'][0])) $mustchangedate = getdate(intval($this->attributes['sambaPwdMustChange'][0]));
-		else $mustchangedate = getdate(0);
-		if (isset($this->attributes['sambaKickoffTime'][0])) $expiredate = getdate(intval($this->attributes['sambaKickoffTime'][0]));
-		else $expiredate = getdate(0);
 
 		$return[] = array(
 			0 => array('kind' => 'text', 'text' => _('Display name')),
@@ -863,33 +889,43 @@ class sambaSamAccount extends baseModule {
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Account is deactivated') ),
 				1 => array ( 'kind' => 'input', 'name' => 'sambaAcctFlagsD', 'type' => 'checkbox', 'checked' => $this->deactivated, 'value' => 'true'),
 				2 => array ('kind' => 'help', 'value' => 'deactivated'));
-			for ( $i=1; $i<=31; $i++ ) $mday[] = $i;
-			for ( $i=1; $i<=12; $i++ ) $mon[] = $i;
-			for ( $i=2003; $i<=2030; $i++ ) $year[] = $i;
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('User can change password') ),
-				1 => array ( 'kind' => 'table', 'value' => array ( 0 => array ( 0 => array ( 'kind' => 'select', 'name' => 'sambaPwdCanChange_day',
-						'options' => $mday, 'options_selected' => array($canchangedate['mday'])),
-					1 => array ( 'kind' => 'select', 'name' => 'sambaPwdCanChange_mon',
-						'options' => $mon, 'options_selected' => array($canchangedate['mon'])),
-					2 => array ( 'kind' => 'select', 'name' => 'sambaPwdCanChange_yea',
-						'options' => $year, 'options_selected' => array($canchangedate['year']))))),
-				2 => array ( 'kind' => 'help', 'value' => 'pwdCanChange' ));
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('User must change password') ),
-				1 => array ( 'kind' => 'table', 'value' => array ( 0 => array ( 0 => array ( 'kind' => 'select', 'name' => 'sambaPwdMustChange_day',
-						'options' => $mday, 'options_selected' => array($mustchangedate['mday'])),
-					1 => array ( 'kind' => 'select', 'name' => 'sambaPwdMustChange_mon',
-						'options' => $mon, 'options_selected' => array($mustchangedate['mon'])),
-					2 => array ( 'kind' => 'select', 'name' => 'sambaPwdMustChange_yea',
-						'options' => $year, 'options_selected' => array($mustchangedate['year']))))),
-				2 => array ( 'kind' => 'help', 'value' => 'pwdMustChange' ));
-			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Account expiration date') ),
-				1 => array ( 'kind' => 'table', 'value' => array ( 0 => array ( 0 => array ( 'kind' => 'select', 'name' => 'sambaExpire_day',
-						'options' => $mday, 'options_selected' => $expiredate['mday']),
-					1 => array ( 'kind' => 'select', 'name' => 'sambaExpire_mon',
-						'options' => $mon, 'options_selected' => $expiredate['mon']),
-					2 => array ( 'kind' => 'select', 'name' => 'sambaExpire_yea',
-						'options' => $year, 'options_selected' => $expiredate['year'])))),
-				2 => array ( 'kind' => 'help', 'value' => 'expireDate' ));
+
+			$dateValue = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+			if (isset($this->attributes['sambaPwdCanChange'][0])) {
+				$date = getdate($this->attributes['sambaPwdCanChange'][0]);
+				$dateValue = $date['mday'] . "." . $date['mon'] . "." . $date['year'];
+			}
+			$return[] = array(
+				array('kind' => 'text', 'text' => _('User can change password')),
+				array('kind' => 'table', 'value' => array(array(
+					array('kind' => 'text', 'text' => $dateValue),
+					array('kind' => 'input', 'name' => 'form_subpage_sambaSamAccount_time_sambaPwdCanChange', 'type' => 'submit', 'value' => _('Change'))
+				))),
+				array('kind' => 'help', 'value' => 'pwdCanChange' ));
+			$dateValue = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+			if (isset($this->attributes['sambaPwdMustChange'][0])) {
+				$date = getdate($this->attributes['sambaPwdMustChange'][0]);
+				$dateValue = $date['mday'] . "." . $date['mon'] . "." . $date['year'];
+			}
+			$return[] = array(
+				array('kind' => 'text', 'text' => _('User must change password')),
+				array('kind' => 'table', 'value' => array(array(
+					array('kind' => 'text', 'text' => $dateValue),
+					array('kind' => 'input', 'name' => 'form_subpage_sambaSamAccount_time_sambaPwdMustChange', 'type' => 'submit', 'value' => _('Change'))
+				))),
+				array('kind' => 'help', 'value' => 'pwdMustChange' ));
+			$dateValue = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+			if (isset($this->attributes['sambaKickoffTime'][0])) {
+				$date = getdate($this->attributes['sambaKickoffTime'][0]);
+				$dateValue = $date['mday'] . "." . $date['mon'] . "." . $date['year'];
+			}
+			$return[] = array(
+				array('kind' => 'text', 'text' => _('Account expiration date')),
+				array('kind' => 'table', 'value' => array(array(
+					array('kind' => 'text', 'text' => $dateValue),
+					array('kind' => 'input', 'name' => 'form_subpage_sambaSamAccount_time_sambaKickoffTime', 'type' => 'submit', 'value' => _('Change'))
+				))),
+				array('kind' => 'help', 'value' => 'expireDate' ));
 
 			$drives = array('-');
 			for ($i=90; $i>67; $i--) $drives[] = chr($i).':';
@@ -1061,6 +1097,57 @@ class sambaSamAccount extends baseModule {
 			1 => array('kind' => 'input', 'name' => 'form_subpage_sambaSamAccount_attributes_abort', 'type' => 'submit', 'value' => _('Cancel'), 'td' => array('align' => 'left'))
 		);
 		return $return;
+	}
+
+	/**
+	* This function will create the meta HTML code to show a page to change time values.
+	*
+	* @return array meta HTML code
+	*/
+	function display_html_time() {
+		$return = array();
+		// determine attribute
+		if (isset($_POST['form_subpage_sambaSamAccount_time_sambaPwdCanChange'])) {
+			$attr = 'sambaPwdCanChange';
+			$text = _('User can change password');
+			$help = "pwdCanChange";
+		}
+		elseif (isset($_POST['form_subpage_sambaSamAccount_time_sambaPwdMustChange'])) {
+			$attr = 'sambaPwdMustChange';
+			$text = _('User must change password');
+			$help = "pwdMustChange";
+		}
+		if (isset($_POST['form_subpage_sambaSamAccount_time_sambaKickoffTime'])) {
+			$attr = 'sambaKickoffTime';
+			$text = _('Account expiration date');
+			$help = "expireDate";
+		}
+		$time = 0;
+		if (isset($this->attributes[$attr][0])) {
+			$time = $this->attributes[$attr][0];
+		}
+		$date = getdate($time);
+		for ( $i=1; $i<=31; $i++ ) $mday[] = $i;
+		for ( $i=1; $i<=12; $i++ ) $mon[] = $i;
+		for ( $i=2003; $i<=2030; $i++ ) $year[] = $i;
+		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => $text),
+			1 => array ( 'kind' => 'table', 'value' => array ( 0 => array ( 0 => array ( 'kind' => 'select', 'name' => 'expire_day',
+					'options' => $mday, 'options_selected' => $date['mday']),
+				1 => array ( 'kind' => 'select', 'name' => 'expire_mon',
+					'options' => $mon, 'options_selected' => $date['mon']),
+				2 => array ( 'kind' => 'select', 'name' => 'expire_yea',
+					'options' => $year, 'options_selected' => $date['year'])))),
+			2 => array ( 'kind' => 'help', 'value' => $help));
+		$buttons = array();
+		$buttons[] = array('kind' => 'input', 'name' => 'form_subpage_sambaSamAccount_attributes_change' . $attr, 'type' => 'submit', 'value' => _('Change'));
+		if (isset($this->attributes[$attr][0])) {
+			$buttons[] = array('kind' => 'input', 'name' => 'form_subpage_sambaSamAccount_attributes_del' . $attr, 'type' => 'submit', 'value' => _('Remove'));
+		}
+		$buttons[] = array('kind' => 'input', 'name' => 'form_subpage_sambaSamAccount_attributes_back' . $attr, 'type' => 'submit', 'value' => _('Cancel'));
+		$return[] = array(
+			array('kind' => 'table', 'td' => array('colspan' => 3), 'value' => array($buttons))
+		);
+		return $return;	
 	}
 
 	/**
