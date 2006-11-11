@@ -1541,7 +1541,7 @@ class posixAccount extends baseModule {
 						$return['messages'][] = $this->messages['userPassword'][1];
 					}
 					else {
-						$return['mod']['userPassword'][0] = $_POST['posixAccount_password'];
+						$return['mod']['userPassword'][0] = pwd_hash($_POST['posixAccount_password'], true, 'SSHA');
 						$_SESSION['selfService_clientPasswordNew'] = $_POST['posixAccount_password'];
 					}
 				}
