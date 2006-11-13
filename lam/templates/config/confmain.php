@@ -194,7 +194,9 @@ echo ("<fieldset><legend><b>" . _("Account types and modules") . "</b></legend>"
 // Account modules
 $types = $conf->get_ActiveTypes();
 for ($i = 0; $i < sizeof($types); $i++) {
-	echo "<b>" . getTypeAlias($types[$i]) . ": </b>" . implode(", ", $conf->get_AccountModules($types[$i])) . "<br>\n";
+	$moduleNames = $conf->get_AccountModules($types[$i]);
+	for ($m = 0; $m < sizeof($moduleNames); $m++) $moduleNames[$m] = getModuleAlias($moduleNames[$m], $types[$i]);
+	echo "<b>" . getTypeAlias($types[$i]) . ": </b>" . implode(", ", $moduleNames) . "<br>\n";
 }
 echo "<br>\n";
 echo "<input tabindex=\"$tabindex\" type=\"submit\" name=\"edittypes\" value=\"" . _("Edit account types") . "\">&nbsp;&nbsp;";
@@ -223,8 +225,6 @@ for ($m = 0; $m < sizeof($types); $m++) {
 $options = getConfigOptions($scopes);
 // get current setting
 $old_options = $conf->get_moduleSettings();
-// get module descriptions
-$moduleDescriptions = getConfigDescriptions();
 
 
 // display module boxes
@@ -233,7 +233,7 @@ $_SESSION['conf_types'] = array();
 for ($i = 0; $i < sizeof($modules); $i++) {
 	if (sizeof($options[$modules[$i]]) < 1) continue;
 	echo "<fieldset>\n";
-	echo "<legend><b>" . $moduleDescriptions['legend'][$modules[$i]] . "</b></legend>\n";
+	echo "<legend><b>" . getModuleAlias($modules[$i], "none") . "</b></legend>\n";
 	$configTypes = parseHtml($modules[$i], $options[$modules[$i]], $old_options, true, $tabindex, $tabindexLink, 'config');
 	$_SESSION['conf_types'] = array_merge($configTypes, $_SESSION['conf_types']);
 	echo "</fieldset>\n";

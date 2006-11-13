@@ -451,8 +451,6 @@ class sambaSamAccount extends baseModule {
 					'descriptiveOptions' => true),
 			2 => array('kind' => 'help', 'value' => 'timeZone'))
 		);
-		// configuration descriptions
-		$return['config_descriptions'] = array('legend' => _("Samba 3 settings"), 'descriptions' => array());
 		return $return;
 	}
 

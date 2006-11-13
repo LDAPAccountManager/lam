@@ -1,9 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-<head>
-  <meta content="text/html; charset=ISO-8859-15"
- http-equiv="content-type">
-  <title>Module specification</title>
+<html><head>
+  <meta content="text/html; charset=ISO-8859-15" http-equiv="content-type"><title>Module specification</title>
+  
   <style>
 <!--
 	h2 {
@@ -19,8 +17,7 @@
 		background-color:#bdcaff;
 	}
 -->
-  </style>
-</head>
+  </style></head>
 <body>
 <h1 style="text-align: center;">This document describes the module
 interface for LDAP Account Manager</h1>
@@ -45,8 +42,7 @@ All module classes should extend the baseModule class.<br>
 <table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td style="vertical-align: top; text-align: center;"><span
- style="font-weight: bold;">function can_manage()</span><br>
+      <td style="vertical-align: top; text-align: center;"><span style="font-weight: bold;">function can_manage()</span><br>
       </td>
     </tr>
   </tbody>
@@ -62,8 +58,7 @@ otherwise <span style="font-style: italic;">false</span>.<br>
 <table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td style="vertical-align: top; text-align: center;"><span
- style="font-weight: bold;">function get_alias()</span><br>
+      <td style="vertical-align: top; text-align: center;"><span style="font-weight: bold;">function get_alias()</span><br>
       </td>
     </tr>
   </tbody>
@@ -83,8 +78,7 @@ sure that there is a general alias for unknown types.<br>
 <table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td style="vertical-align: top; text-align: center;"><span
- style="font-weight: bold;">function is_base_module()</span><br>
+      <td style="vertical-align: top; text-align: center;"><span style="font-weight: bold;">function is_base_module()</span><br>
       </td>
     </tr>
   </tbody>
@@ -103,8 +97,7 @@ is structural.<br>
 <table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td style="vertical-align: top; text-align: center;"><span
- style="font-weight: bold;">function get_ldap_filter()</span><br>
+      <td style="vertical-align: top; text-align: center;"><span style="font-weight: bold;">function get_ldap_filter()</span><br>
       </td>
     </tr>
   </tbody>
@@ -119,8 +112,7 @@ combined with the "and" parts.<br>
 The resulting LDAP filter will look like this:
 (&amp;(|(OR1)(OR2)(OR3))(AND1)(AND2)(AND3))<br>
 <br>
-<span style="font-weight: bold;">Example: <span
- style="font-style: italic;">return "('or' =&gt;
+<span style="font-weight: bold;">Example: <span style="font-style: italic;">return "('or' =&gt;
 '(objectClass=posixAccount)', 'and' =&gt; '(!(uid=*$))')"</span></span><br>
 <span style="font-weight: bold; color: rgb(255, 0, 0);"></span><br>
 <h3>2.1.5. getManagedObjectClasses*</h3>
@@ -128,8 +120,7 @@ The resulting LDAP filter will look like this:
 <table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td style="vertical-align: top; text-align: center;"><span
- style="font-weight: bold;">function getManagedObjectClasses()</span><br>
+      <td style="vertical-align: top; text-align: center;"><span style="font-weight: bold;">function getManagedObjectClasses()</span><br>
       </td>
     </tr>
   </tbody>
@@ -140,16 +131,14 @@ Returns an array of object class names which are managed by this module.<br>
 This is used to fix spelling errors in LDAP-Entries (e.g. if
 "posixACCOUNT" is read instead of "posixAccount" from LDAP).<br>
 <br>
-<span style="font-weight: bold;">Example: <span
- style="font-style: italic;">return "('posixAccount')"</span></span><br>
+<span style="font-weight: bold;">Example: <span style="font-style: italic;">return "('posixAccount')"</span></span><br>
 <span style="font-weight: bold; color: rgb(255, 0, 0);"></span><br>
 <h3>2.1.6. getLDAPAliases*</h3>
 <br>
 <table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td style="vertical-align: top; text-align: center;"><span
- style="font-weight: bold;">function getLDAPAliases()</span><br>
+      <td style="vertical-align: top; text-align: center;"><span style="font-weight: bold;">function getLDAPAliases()</span><br>
       </td>
     </tr>
   </tbody>
@@ -165,8 +154,7 @@ This function returns a list of LDAP attribute alias names.<br>
 <table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td style="vertical-align: top; text-align: center;"><span
- style="font-weight: bold;">function get_RDNAttributes()</span><br>
+      <td style="vertical-align: top; text-align: center;"><span style="font-weight: bold;">function get_RDNAttributes()</span><br>
       </td>
     </tr>
   </tbody>
@@ -180,8 +168,7 @@ priority <span style="font-style: italic;">("low"/"normal"/"high")</span>.<br>
 Attributes with higher priority are placed higher in the drop down box
 for the RDN selection.<br>
 <br>
-<span style="font-weight: bold;">Example: <span
- style="font-style: italic;">return "('uid' =&gt;
+<span style="font-weight: bold;">Example: <span style="font-style: italic;">return "('uid' =&gt;
 'normal', 'cn' =&gt; 'low')"</span></span><br>
 <br>
 <span style="font-weight: bold; color: rgb(255, 0, 0);"></span>
@@ -190,8 +177,7 @@ for the RDN selection.<br>
 <table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td
- style="vertical-align: top; text-align: center; font-weight: bold;">function
+      <td style="vertical-align: top; text-align: center; font-weight: bold;">function
 get_dependencies()<br>
       </td>
     </tr>
@@ -200,28 +186,23 @@ get_dependencies()<br>
 <br>
 This function returns a list of modules it depends on.<br>
 <br>
-The return value is an array with two sub arrays, <span
- style="font-weight: bold;">"depends"</span> and <span
- style="font-weight: bold;">"conficts"</span>.<br>
+The return value is an array with two sub arrays, <span style="font-weight: bold;">"depends"</span> and <span style="font-weight: bold;">"conficts"</span>.<br>
 All values of the conflict array are string values with module names.<br>
 All values of the depends array are either string values with module
 names or arrays which include only string values with module names. If
 an element of the depends array is itself an array, this means that
 your module depends on one of these modules.<br>
 <br>
-<span style="font-weight: bold;">Example: </span><span
- style="font-weight: bold; font-style: italic;">return array("depends"
+<span style="font-weight: bold;">Example: </span><span style="font-weight: bold; font-style: italic;">return array("depends"
 =&gt; array("posixAccount", array("qmail", "sendmail")), "conflicts"
-=&gt; array("exim"));</span><br
- style="font-weight: bold; font-style: italic;">
+=&gt; array("exim"));</span><br style="font-weight: bold; font-style: italic;">
 <br>
 <h3>2.1.9. get_metaData()</h3>
 <br>
 <table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td style="vertical-align: top; text-align: center;"><span
- style="font-weight: bold;">function get_metaData()</span><br>
+      <td style="vertical-align: top; text-align: center;"><span style="font-weight: bold;">function get_metaData()</span><br>
       </td>
     </tr>
   </tbody>
@@ -237,8 +218,7 @@ true);</span><br style="font-weight: bold;">
 <table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td style="vertical-align: top; text-align: center;"><span
- style="font-weight: bold;">function get_configOptions($scopes,
+      <td style="vertical-align: top; text-align: center;"><span style="font-weight: bold;">function get_configOptions($scopes,
 $allScopes)</span><br>
       </td>
     </tr>
@@ -246,8 +226,7 @@ $allScopes)</span><br>
 </table>
 <br>
 Returns a list of configuration options.<br>
-<span style="font-weight: bold;">$scopes</span> is a list of <span
- style="font-style: italic;">account types</span> (user, group, host)
+<span style="font-weight: bold;">$scopes</span> is a list of <span style="font-style: italic;">account types</span> (user, group, host)
 which are used.<br>
 <span style="font-weight: bold;">$allScopes</span> is a list of all
 active account modules and their scopes (module =&gt; array(scopes))<br>
@@ -260,39 +239,12 @@ The <span style="font-style: italic;">name</span> attributes are used
 as keywords to load and save settings. We recommend to use the module
 name as prefix for them (e.g. posixAccount_homeDirectory) to avoid
 naming confilcts.<br>
-<br>
-<h3>2.1.11. get_configDescriptions()*</h3>
-<br>
-<table border="0" cellpadding="2" cellspacing="2">
-  <tbody>
-    <tr>
-      <td style="vertical-align: top; text-align: center;"><span
- style="font-weight: bold;">function get_configDescriptions()</span><br>
-      </td>
-    </tr>
-  </tbody>
-</table>
-<br>
-Returns the description of every configuration option and the legend of
-the module fieldset on the configuration page.<br>
-<span style="font-weight: bold;"></span><br>
-The <span style="font-style: italic;">return</span> value is a hash
-array with this format:<br>
-&nbsp;&nbsp;&nbsp; <br>
-<span style="font-weight: bold;">&nbsp;&nbsp;&nbsp; array( 'legend'
-=&gt; 'Some general description for fieldset',</span><br
- style="font-weight: bold;">
-<span style="font-weight: bold;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;
-&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 'descriptions' =&gt; array('option1'
-=&gt; 'description1', ...))</span><br>
-<br>
-<h3>2.1.12. check_configOptions*</h3>
+<br><h3>2.1.11. check_configOptions*</h3>
 <br>
 <table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td style="vertical-align: top; text-align: center;"><span
- style="font-weight: bold;">function check_configOptions($scopes,
+      <td style="vertical-align: top; text-align: center;"><span style="font-weight: bold;">function check_configOptions($scopes,
 $options)</span><br>
       </td>
     </tr>
@@ -310,17 +262,15 @@ are all arrays containing one or more elements.<br>
 If the input data is invalid the return value is an array that contains
 arrays to build StatusMessages (0 =&gt; message type, 1 =&gt; message
 head, 2 =&gt; message text, 3 =&gt; additional variables).<br>
-If no errors occured the function returns an empty array.<span
- style="font-weight: bold;"></span><br>
+If no errors occured the function returns an empty array.<span style="font-weight: bold;"></span><br>
 <br style="font-weight: bold;">
 <span style="font-weight: bold;"></span>
-<h3>2.1.13. get_scope()</h3>
+<h3>2.1.12. get_scope()</h3>
 <br>
 <table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td style="vertical-align: top; text-align: center;"><span
- style="font-weight: bold;">function get_scope()</span><br>
+      <td style="vertical-align: top; text-align: center;"><span style="font-weight: bold;">function get_scope()</span><br>
       </td>
     </tr>
   </tbody>
@@ -331,13 +281,12 @@ Returns the account type (user/group/host) of this module object.<br>
 <span style="font-weight: bold;">This function is provided by the
 baseModule and should not be overwritten.</span><br>
 <br>
-<h3>2.1.14. get_uploadColumns*</h3>
+<h3>2.1.13. get_uploadColumns*</h3>
 <br>
 <table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td style="vertical-align: top; text-align: center;"><span
- style="font-weight: bold;">function get_uploadColumns()</span><br>
+      <td style="vertical-align: top; text-align: center;"><span style="font-weight: bold;">function get_uploadColumns()</span><br>
       </td>
     </tr>
   </tbody>
@@ -356,33 +305,26 @@ help:</span> help ID</li>
   <li><span style="font-weight: bold;"><span style="font-style: italic;">string</span>
 example:</span> example value</li>
   <li><span style="font-weight: bold;"><span style="font-style: italic;">string</span>
-values:</span> possible input values<span style="font-style: italic;"> </span><span
- style="font-weight: bold; font-style: italic;">(optional)</span></li>
-  <li><span style="font-weight: bold; font-style: italic;">string</span><span
- style="font-weight: bold;"> default:</span><span
- style="font-weight: bold; font-style: italic;"> </span>default value <span
- style="font-weight: bold; font-style: italic;">(optional)</span><br>
+values:</span> possible input values<span style="font-style: italic;"> </span><span style="font-weight: bold; font-style: italic;">(optional)</span></li>
+  <li><span style="font-weight: bold; font-style: italic;">string</span><span style="font-weight: bold;"> default:</span><span style="font-weight: bold; font-style: italic;"> </span>default value <span style="font-weight: bold; font-style: italic;">(optional)</span><br>
   </li>
   <li><span style="font-weight: bold;"><span style="font-style: italic;">boolean</span>
-required:</span> true, if user must set a value for this column <span
- style="font-weight: bold; font-style: italic;">(optional, default:
+required:</span> true, if user must set a value for this column <span style="font-weight: bold; font-style: italic;">(optional, default:
 "false")</span><br>
   </li>
   <li><span style="font-weight: bold;"><span style="font-style: italic;">boolean</span>
 unique:</span> true if
-all values of this column must be different values <span
- style="font-style: italic; font-weight: bold;">(optional, default:
+all values of this column must be different values <span style="font-style: italic; font-weight: bold;">(optional, default:
 "false")</span><br>
   </li>
 </ul>
 <br>
-<h3>2.1.15. get_uploadPreDepends*</h3>
+<h3>2.1.14. get_uploadPreDepends*</h3>
 <br>
 <table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td style="vertical-align: top; text-align: center;"><span
- style="font-weight: bold;">function get_uploadPreDepends()</span><br>
+      <td style="vertical-align: top; text-align: center;"><span style="font-weight: bold;">function get_uploadPreDepends()</span><br>
       </td>
     </tr>
   </tbody>
@@ -392,13 +334,12 @@ Returns a list of module names which must be processed before this
 module at builing accounts.<br>
 The named modules may not be active, LAM will check this automatically.<br>
 <br>
-<h3>2.1.16. build_uploadAccounts</h3>
+<h3>2.1.15. build_uploadAccounts</h3>
 <br>
 <table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td style="vertical-align: top; text-align: center;"><span
- style="font-weight: bold;">function get_uploadAccounts($rawAccounts,
+      <td style="vertical-align: top; text-align: center;"><span style="font-weight: bold;">function get_uploadAccounts($rawAccounts,
 $ids, $partialAccounts)</span><br>
       </td>
     </tr>
@@ -419,13 +360,12 @@ format is the same as used for ldap_add().<br>
 Returns an array which contains sub arrays to generate StatusMessages
 if any errors occured.<br>
 <br>
-<h3>2.1.17. do_uploadPostActions</h3>
+<h3>2.1.16. do_uploadPostActions</h3>
 <br>
 <table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td style="vertical-align: top; text-align: center;"><span
- style="font-weight: bold;">function do_uploadPostActions($data, $ids,
+      <td style="vertical-align: top; text-align: center;"><span style="font-weight: bold;">function do_uploadPostActions($data, $ids,
 $failed, &amp;$temp)</span><br>
       </td>
     </tr>
@@ -436,8 +376,7 @@ This function is responsible to do additional tasks after the account
 has been created in LDAP.<br>
 E.g. modifying group memberships, adding Quota etc..<br>
 <br>
-This function is called as long as the returned status is <span
- style="font-style: italic;">'finished'</span>. Please make sure that
+This function is called as long as the returned status is <span style="font-style: italic;">'finished'</span>. Please make sure that
 one function call lasts no longer than 3-4 seconds. Otherwise the
 upload may fail because the time limit is exceeded. You should not make
 more than one LDAP operation in each call.<br>
@@ -465,13 +404,12 @@ array()</span>&nbsp;&nbsp; // List of arrays which are used to generate
 StatusMessages<br>
 &nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">)</span><br>
 <br>
-<h3>2.1.18. get_profileOptions*</h3>
+<h3>2.1.17. get_profileOptions*</h3>
 <br>
 <table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td style="vertical-align: top; text-align: center;"><span
- style="font-weight: bold;">function get_profileOptions()</span><br>
+      <td style="vertical-align: top; text-align: center;"><span style="font-weight: bold;">function get_profileOptions()</span><br>
       </td>
     </tr>
   </tbody>
@@ -489,13 +427,12 @@ as keywords to load and save profiles. We recommend to use the module
 name as prefix for them (e.g. posixAccount_homeDirectory) to avoid
 naming confilcts.<br>
 <br>
-<h3>2.1.19. check_profileOptions*</h3>
+<h3>2.1.18. check_profileOptions*</h3>
 <br>
 <table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td style="vertical-align: top; text-align: center;"><span
- style="font-weight: bold;">function check_profileOptions($options)</span><br>
+      <td style="vertical-align: top; text-align: center;"><span style="font-weight: bold;">function check_profileOptions($options)</span><br>
       </td>
     </tr>
   </tbody>
@@ -510,16 +447,14 @@ are all arrays containing one or more elements.<br>
 If the input data is invalid the return value is an array that contains
 arrays to build StatusMessages (0 =&gt; message type, 1 =&gt; message
 head, 2 =&gt; message text, 3 =&gt; additional variables).<br>
-If no errors occured the function returns an empty array.<span
- style="font-weight: bold;"></span><br>
+If no errors occured the function returns an empty array.<span style="font-weight: bold;"></span><br>
 <br>
-<h3>2.1.20. load_profile*</h3>
+<h3>2.1.19. load_profile*</h3>
 <br>
 <table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td style="vertical-align: top; text-align: center;"><span
- style="font-weight: bold;">function load_profile($profile)</span><br>
+      <td style="vertical-align: top; text-align: center;"><span style="font-weight: bold;">function load_profile($profile)</span><br>
       </td>
     </tr>
   </tbody>
@@ -532,13 +467,12 @@ internal data structures.<br>
 is an hash array (identifier =&gt; array(values))&nbsp; with all values
 of an account profile.<br>
 <br>
-<h3>2.1.21. getRequiredExtensions*</h3>
+<h3>2.1.20. getRequiredExtensions*</h3>
 <br>
 <table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td style="vertical-align: top; text-align: center;"><span
- style="font-weight: bold;">function getRequiredExtensions()</span><br>
+      <td style="vertical-align: top; text-align: center;"><span style="font-weight: bold;">function getRequiredExtensions()</span><br>
       </td>
     </tr>
   </tbody>
@@ -547,6 +481,95 @@ of an account profile.<br>
 This function returns a list of PHP extensions (e.g. mhash) which are
 needed by this module.<br>
 <br>
+
+<h3>2.1.21. getSelfServiceSearchAttributes*</h3>
+
+<br>
+
+<table border="0" cellpadding="2" cellspacing="2">
+
+  <tbody>
+    <tr>
+      <td style="vertical-align: top; text-align: center;"><span style="font-weight: bold;">function getSelfServiceSearchAttributes()</span><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<br>
+
+This function returns a list of possible LDAP attributes (e.g. uid, cn, ...) which can be used to search for LDAP objects.<br>
+<br>
+
+<h3>2.1.22. getSelfServiceFields*</h3>
+
+<br>
+
+<table border="0" cellpadding="2" cellspacing="2">
+
+  <tbody>
+    <tr>
+      <td style="vertical-align: top; text-align: center;"><span style="font-weight: bold;">function getSelfServiceFields()</span><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<br>
+
+This function returns a list of possible self service fields and their descriptions.<br>
+<br>
+<span style="font-weight: bold;">return array ('myField' =&gt; 'Field description');</span><br>
+<br>
+
+<h3>2.1.23. getSelfServiceOptions</h3>
+
+<br>
+
+<table border="0" cellpadding="2" cellspacing="2">
+
+  <tbody>
+    <tr>
+      <td style="vertical-align: top; text-align: center;"><span style="font-weight: bold;">function getSelfServiceOptions($fields, $attributes)</span><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<br>
+Builds and returns the meta HTML code for each self service field.<br>
+<br>
+<span style="font-weight: bold;">$fields:</span> list of self service field names<br>
+<span style="font-weight: bold;">$attributes:</span> LDAP attributes of the current account (all lower case)<br>
+<br>
+
+<h3>2.1.24. checkSelfServiceOptions</h3>
+
+<br>
+
+<table border="0" cellpadding="2" cellspacing="2">
+
+  <tbody>
+    <tr>
+      <td style="vertical-align: top; text-align: center;"><span style="font-weight: bold;">function checkSelfServiceOptions($fields, $attributes)</span><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<br>
+Returns a list of LDAP operations and error messages.<br>
+<span style="font-weight: bold;"><br>
+$fields:</span> list of self service field names<br>
+
+<span style="font-weight: bold;">$attributes:</span> LDAP attributes of the current account (all lower case)<br>
+<br>
+<span style="font-weight: bold;">return array(</span><br style="font-weight: bold;">
+<span style="font-weight: bold;">&nbsp;&nbsp;&nbsp; 'messages' =&gt; array(array('ERROR', 'Error topic', 'Error message')),</span><br style="font-weight: bold;">
+<span style="font-weight: bold;">&nbsp;&nbsp;&nbsp; 'add' =&gt; array('mail' =&gt; array('test@test.com')),</span><br style="font-weight: bold;">
+<span style="font-weight: bold;">&nbsp;&nbsp;&nbsp; 'mod' =&gt; array(),</span><br style="font-weight: bold;">
+<span style="font-weight: bold;">&nbsp;&nbsp;&nbsp; 'del' =&gt; array(),</span><br style="font-weight: bold;">
+<span style="font-weight: bold;">);</span><br style="font-weight: bold;">
 <span style="font-weight: bold;"><br>
 <br>
 </span>
@@ -557,15 +580,13 @@ needed by this module.<br>
 <table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td style="vertical-align: top; text-align: center;"><span
- style="font-weight: bold;">function init($base)</span><br>
+      <td style="vertical-align: top; text-align: center;"><span style="font-weight: bold;">function init($base)</span><br>
       </td>
     </tr>
   </tbody>
 </table>
 <br>
-Every module needs a initializing function that has an<span
- style="font-style: italic;"> <span style="font-weight: bold;">account
+Every module needs a initializing function that has an<span style="font-style: italic;"> <span style="font-weight: bold;">account
 container</span></span> as argument $base.<br>
 With this account container you can interact with other modules and use
 several helper functions.<br>
@@ -575,8 +596,7 @@ several helper functions.<br>
 <table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td style="vertical-align: top; text-align: center;"><span
- style="font-weight: bold;">function module_ready()</span><br>
+      <td style="vertical-align: top; text-align: center;"><span style="font-weight: bold;">function module_ready()</span><br>
       </td>
     </tr>
   </tbody>
@@ -595,16 +615,14 @@ which returns <span style="font-weight: bold;">true</span> as default.<br>
 <table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td style="vertical-align: top; text-align: center;"><span
- style="font-weight: bold;">function module_complete()</span><br>
+      <td style="vertical-align: top; text-align: center;"><span style="font-weight: bold;">function module_complete()</span><br>
       </td>
     </tr>
   </tbody>
 </table>
 <br>
 This function tells LAM if it can create/modify the LDAP account. If
-your module needs any additional input then set this to <span
- style="font-weight: bold;">false</span>. The user will be notified
+your module needs any additional input then set this to <span style="font-weight: bold;">false</span>. The user will be notified
 that your module needs more input.<br>
 <br>
 This function is implemented by the <span style="font-style: italic;">baseModule</span>
@@ -616,8 +634,7 @@ which returns <span style="font-weight: bold;">true</span> as default.<br>
 <table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td style="vertical-align: top; text-align: center;"><span
- style="font-weight: bold;">function getButtonStatus()</span><br>
+      <td style="vertical-align: top; text-align: center;"><span style="font-weight: bold;">function getButtonStatus()</span><br>
       </td>
     </tr>
   </tbody>
@@ -641,8 +658,7 @@ shown<br>
 <table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td style="vertical-align: top; text-align: center;"><span
- style="font-weight: bold;">function get_help($helpID)</span><br>
+      <td style="vertical-align: top; text-align: center;"><span style="font-weight: bold;">function get_help($helpID)</span><br>
       </td>
     </tr>
   </tbody>
@@ -662,8 +678,7 @@ section 4. "Help entry syntax".<br>
 <table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td style="vertical-align: top; text-align: center;"><span
- style="font-weight: bold;">function get_PDF_Entries()</span><br>
+      <td style="vertical-align: top; text-align: center;"><span style="font-weight: bold;">function get_PDF_Entries()</span><br>
       </td>
     </tr>
   </tbody>
@@ -684,8 +699,7 @@ syntax".<br>
 <table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td style="vertical-align: top; text-align: center;"><span
- style="font-weight: bold;">function dynamic_Message($attribute, $id)</span><br>
+      <td style="vertical-align: top; text-align: center;"><span style="font-weight: bold;">function dynamic_Message($attribute, $id)</span><br>
       </td>
     </tr>
   </tbody>
@@ -705,8 +719,7 @@ Returnis an array as expected from StatusMessage().<br>
 <table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td style="vertical-align: top; text-align: center;"><span
- style="font-weight: bold;">function load_Messages()</span><br>
+      <td style="vertical-align: top; text-align: center;"><span style="font-weight: bold;">function load_Messages()</span><br>
       </td>
     </tr>
   </tbody>
@@ -724,8 +737,7 @@ $this-&gt;messages[x][y][z]<br>
 <table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td style="vertical-align: top; text-align: center;"><span
- style="font-weight: bold;">function load_attributes($attr)</span><br>
+      <td style="vertical-align: top; text-align: center;"><span style="font-weight: bold;">function load_attributes($attr)</span><br>
       </td>
     </tr>
   </tbody>
@@ -750,8 +762,7 @@ separat.<br>
 <table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td style="vertical-align: top; text-align: center;"><span
- style="font-weight: bold;">function save_attributes()</span><br>
+      <td style="vertical-align: top; text-align: center;"><span style="font-weight: bold;">function save_attributes()</span><br>
       </td>
     </tr>
   </tbody>
@@ -780,8 +791,7 @@ and <span style="font-weight: bold;">$this-&gt;orig</span>.<br>
 <table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td style="vertical-align: top; text-align: center;"><span
- style="font-weight: bold;">function delete_attributes($post)</span><br>
+      <td style="vertical-align: top; text-align: center;"><span style="font-weight: bold;">function delete_attributes($post)</span><br>
       </td>
     </tr>
   </tbody>
@@ -799,8 +809,7 @@ deleted.<br>
 <table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td style="vertical-align: top; text-align: center;"><span
- style="font-weight: bold;">function process_attributes($post)</span><br>
+      <td style="vertical-align: top; text-align: center;"><span style="font-weight: bold;">function process_attributes($post)</span><br>
       </td>
     </tr>
   </tbody>
@@ -826,8 +835,7 @@ allowed here.'));<br>
 <table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td style="vertical-align: top; text-align: center;"><span
- style="font-weight: bold;">function process_*($post)</span><br>
+      <td style="vertical-align: top; text-align: center;"><span style="font-weight: bold;">function process_*($post)</span><br>
       </td>
     </tr>
   </tbody>
@@ -846,8 +854,7 @@ is needed to interact with the user.<br>
 <table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td style="vertical-align: top; text-align: center;"><span
- style="font-weight: bold;">function display_html_attributes($post)</span><br>
+      <td style="vertical-align: top; text-align: center;"><span style="font-weight: bold;">function display_html_attributes($post)</span><br>
       </td>
     </tr>
   </tbody>
@@ -866,8 +873,7 @@ is needed t interact with the user.<br>
 <table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td style="vertical-align: top; text-align: center;"><span
- style="font-weight: bold;">function display_html_*($post)</span><br>
+      <td style="vertical-align: top; text-align: center;"><span style="font-weight: bold;">function display_html_*($post)</span><br>
       </td>
     </tr>
   </tbody>
@@ -887,8 +893,7 @@ is needed t interact with the user.<br>
 <table border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
-      <td style="vertical-align: top; text-align: center;"><span
- style="font-weight: bold;">function display_html_delete($post)</span><br>
+      <td style="vertical-align: top; text-align: center;"><span style="font-weight: bold;">function display_html_delete($post)</span><br>
       </td>
     </tr>
   </tbody>
@@ -913,15 +918,9 @@ formats.</span><br>
 The modules are not allowed to display HTML code directly but return
 meta HTML code. This allows to have a common design for all module
 pages.<br>
-Meta HTML code is always returned as a three dimensional <span
- style="font-weight: bold;">array[a][b][c]</span> where <span
- style="font-weight: bold;">a</span> is the row number, <span
- style="font-weight: bold;">b</span> is the coumn number and <span
- style="font-weight: bold;">c</span> is is a <span
- style="font-style: italic;">data elememt</span>.<br>
+Meta HTML code is always returned as a three dimensional <span style="font-weight: bold;">array[a][b][c]</span> where <span style="font-weight: bold;">a</span> is the row number, <span style="font-weight: bold;">b</span> is the coumn number and <span style="font-weight: bold;">c</span> is is a <span style="font-style: italic;">data elememt</span>.<br>
 <br>
-<span style="font-weight: bold;">Format for <span
- style="font-style: italic;">data elements</span>:</span><br>
+<span style="font-weight: bold;">Format for <span style="font-style: italic;">data elements</span>:</span><br>
 <br>
 A <span style="font-style: italic;">data element</span> is an array
 which contains the data to display.<br>
@@ -938,8 +937,7 @@ fieldset.</li>
   <ul>
     <li><span style="font-weight: bold;">legend:</span> The legend of
 the fieldset.</li>
-    <li><span style="font-weight: bold;">value:</span> A <span
- style="font-style: italic;">data element</span>. Can be used
+    <li><span style="font-weight: bold;">value:</span> A <span style="font-style: italic;">data element</span>. Can be used
 recursively.</li>
   </ul>
   <li><span style="font-weight: bold;">help:</span> Adds a help link.</li>
@@ -998,8 +996,7 @@ true then the entries will not be sorted. Default is false.<br>
   <li><span style="font-weight: bold;">table:</span> Adds a table. Can
 be used recursively.</li>
   <ul>
-    <li><span style="font-weight: bold;">value:</span> A <span
- style="font-style: italic;">data element</span>. Can be used
+    <li><span style="font-weight: bold;">value:</span> A <span style="font-style: italic;">data element</span>. Can be used
 recursively.</li>
   </ul>
   <li><span style="font-weight: bold;">text:</span> Inserts a text
@@ -1058,10 +1055,7 @@ height attribute for td elements<br>
 Input buttons which should load a different subpage of a module must
 have a special <span style="font-style: italic;">name </span>attribute:<br>
 <br>
-<span style="font-weight: bold;">name</span> =&gt; 'form_subpage_' . <span
- style="font-style: italic;">&lt;module name&gt;</span> . '_' . <span
- style="font-style: italic;">&lt;subpage name&gt;</span> . '_' . <span
- style="font-style: italic;">&lt;button name&gt;</span><br>
+<span style="font-weight: bold;">name</span> =&gt; 'form_subpage_' . <span style="font-style: italic;">&lt;module name&gt;</span> . '_' . <span style="font-style: italic;">&lt;subpage name&gt;</span> . '_' . <span style="font-style: italic;">&lt;button name&gt;</span><br>
 <ul>
   <li><span style="font-weight: bold;">&lt;module name&gt;:</span> name
 of this account module (e.g. 'posixAccount')</li>
@@ -1073,8 +1067,7 @@ name to distinguish buttons (e.g. 'ok'/'cancel'/'back')<br>
 </ul>
 <br>
 <br>
-<span style="font-weight: bold;">Example:</span><span
- style="font-family: monospace;"><br>
+<span style="font-weight: bold;">Example:</span><span style="font-family: monospace;"><br>
 <br>
 </span><code>array(<br>
 &nbsp; 0 =&gt; array(<br>
@@ -1112,19 +1105,16 @@ the help entry.
 <br>
 <h3><br>
 4.1. Internal help entries</h3>
-<span style="font-weight: bold;">ext</span> <span
- style="font-style: italic;">(REQUIRED)</span> <br>
+<span style="font-weight: bold;">ext</span> <span style="font-style: italic;">(REQUIRED)</span> <br>
 Must be <b>FALSE</b> in this case.
 <br>
 <br>
-<span style="font-weight: bold;">Headline</span> <span
- style="font-style: italic;">(REQUIRED)</span> <br>
+<span style="font-weight: bold;">Headline</span> <span style="font-style: italic;">(REQUIRED)</span> <br>
 The headline of this help entry. Can consist of any alpha-numeric
 characters. No HTML/CSS elements are not allowed here.
 <br>
 <br>
-<span style="font-weight: bold;">Text</span> <span
- style="font-style: italic;">(REQUIRED)</span> <br>
+<span style="font-weight: bold;">Text</span> <span style="font-style: italic;">(REQUIRED)</span> <br>
 The text of this help entry. Can constist if any alpha-numeric
 characters and can contain placeholder for variables passed to this
 help entry. The placeholder must follow the syntax for placeholder
@@ -1141,8 +1131,7 @@ number except the '0'.</li>
   <li>2. This number ($i) must either be '1' or $i -1 must be present.</li>
 </ul>
 <br>
-<span style="font-weight: bold;">SeeAlso</span> <span
- style="font-style: italic;">(OPTIONAL)</span> <br>
+<span style="font-weight: bold;">SeeAlso</span> <span style="font-style: italic;">(OPTIONAL)</span> <br>
 An array of references to anonther related subjects. Each row of the
 array must contain a field called "text" with the text that should be
 displayed and may contain a field called "link" which is used as value
@@ -1151,13 +1140,11 @@ for the href attribute of a HTML <a> tag when set.
 </a>
 <h3><a><br>
 4.2. External help entries</a></h3>
-<span style="font-weight: bold;"><a>ext</a></span><a> <span
- style="font-style: italic;">(REQUIRED)</span> <br>
+<span style="font-weight: bold;"><a>ext</a></span><a> <span style="font-style: italic;">(REQUIRED)</span> <br>
 Must be <b>TRUE</b> in this case.
 <br>
 <br>
-<span style="font-weight: bold;">Link</span> <span
- style="font-style: italic;">(REQUIRED)</span> <br>
+<span style="font-weight: bold;">Link</span> <span style="font-style: italic;">(REQUIRED)</span> <br>
 The complete filename of the file stored under the help/ directory
 which should be displayed when this help entry is called.
 </a><br>
@@ -1166,8 +1153,7 @@ which should be displayed when this help entry is called.
 </h3>
 <h2>5. PDF syntax</h2>
 The get_pdfEntries() function uses XML formatted commands to define the
-PDF output. Each part in the PDF document is surrounded by <span
- style="font-weight: bold; font-style: italic;">"&lt;block&gt;"</span>
+PDF output. Each part in the PDF document is surrounded by <span style="font-weight: bold; font-style: italic;">"&lt;block&gt;"</span>
 and <span style="font-weight: bold; font-style: italic;">"&lt;/block&gt;"</span>.<br>
 <br>
 Inside the &lt;block&gt; tags there are different ways to format the
@@ -1177,54 +1163,35 @@ output:<br>
 and value:</span> <span style="font-weight: bold; font-style: italic;">&lt;block&gt;&lt;key&gt;</span>attribute
 name<span style="font-weight: bold; font-style: italic;">&lt;/key&gt;&lt;value&gt;</span>attribute
 value<span style="font-weight: bold; font-style: italic;">&lt;/value&gt;&lt;/block&gt;</span></li>
-  <li><span style="font-weight: bold;">table:</span> <span
- style="font-weight: bold; font-style: italic;">&lt;block&gt;&lt;key&gt;</span>attribute
-name<span style="font-weight: bold; font-style: italic;">&lt;/key&gt;&lt;tr&gt;&lt;td&gt;</span>value<span
- style="font-weight: bold; font-style: italic;">&lt;td&gt;</span><span
- style="font-weight: bold; font-style: italic;">&lt;td&gt;</span>value<span
- style="font-weight: bold; font-style: italic;">&lt;td&gt;</span><span
- style="font-weight: bold; font-style: italic;">&lt;/tr&gt;&lt;/block&gt;&lt;block&gt;&lt;tr&gt;&lt;td&gt;</span>value<span
- style="font-weight: bold; font-style: italic;">&lt;/td&gt;</span><span
- style="font-weight: bold; font-style: italic;">&lt;td&gt;</span>value<span
- style="font-weight: bold; font-style: italic;">&lt;td&gt;</span><span
- style="font-weight: bold; font-style: italic;">&lt;/tr&gt;&lt;/block&gt;</span><span
- style="font-weight: bold; font-style: italic;"></span></li>
+  <li><span style="font-weight: bold;">table:</span> <span style="font-weight: bold; font-style: italic;">&lt;block&gt;&lt;key&gt;</span>attribute
+name<span style="font-weight: bold; font-style: italic;">&lt;/key&gt;&lt;tr&gt;&lt;td&gt;</span>value<span style="font-weight: bold; font-style: italic;">&lt;td&gt;</span><span style="font-weight: bold; font-style: italic;">&lt;td&gt;</span>value<span style="font-weight: bold; font-style: italic;">&lt;td&gt;</span><span style="font-weight: bold; font-style: italic;">&lt;/tr&gt;&lt;/block&gt;&lt;block&gt;&lt;tr&gt;&lt;td&gt;</span>value<span style="font-weight: bold; font-style: italic;">&lt;/td&gt;</span><span style="font-weight: bold; font-style: italic;">&lt;td&gt;</span>value<span style="font-weight: bold; font-style: italic;">&lt;td&gt;</span><span style="font-weight: bold; font-style: italic;">&lt;/tr&gt;&lt;/block&gt;</span><span style="font-weight: bold; font-style: italic;"></span></li>
 </ul>
 <br>
 Special commands:<br style="font-weight: bold;">
 <ul>
   <li><span style="font-weight: bold;">Alignment in &lt;td&gt;:</span>
-You can specify the alignment in &lt;td&gt; tags with <span
- style="font-weight: bold; font-style: italic;">align=(L|R|C)</span>
+You can specify the alignment in &lt;td&gt; tags with <span style="font-weight: bold; font-style: italic;">align=(L|R|C)</span>
 (e.g. &lt;td align=\"L\"&gt;)</li>
   <li><span style="font-weight: bold;">Cell width: &lt;td&gt;</span>
 allows an attribute "width" to set the cell width (e.g. &lt;td
 width=20%&gt; or &lt;td width=30&gt;).<br>
   </li>
   <li><span style="font-weight: bold;">Line breaks:</span> Line breaks
-can be specified by adding a <span
- style="font-weight: bold; font-style: italic;">&lt;br /&gt;</span>
+can be specified by adding a <span style="font-weight: bold; font-style: italic;">&lt;br /&gt;</span>
 tag. The new line will start at the left border of the PDF document.</li>
 </ul>
 <br>
-<span style="font-weight: bold; text-decoration: underline;">Examples:</span><br
- style="font-weight: bold; text-decoration: underline;">
+<span style="font-weight: bold; text-decoration: underline;">Examples:</span><br style="font-weight: bold; text-decoration: underline;">
 <br>
-<span style="font-weight: bold;">1. Simple name+value lines:</span><br
- style="font-weight: bold;">
+<span style="font-weight: bold;">1. Simple name+value lines:</span><br style="font-weight: bold;">
 <br>
 In most cases you will just want to display a single line per attribute
 with its name and value.<br>
 <br>
 &nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">'myAttribute'</span>
-=&gt; <span style="font-weight: bold;">'<span
- style="font-style: italic;">&lt;block&gt;&lt;key&gt;</span></span>AttrName<span
- style="font-weight: bold; font-style: italic;">&lt;/key&gt;&lt;value&gt;</span>12345<span
- style="font-weight: bold; font-style: italic;">&lt;/value&gt;&lt;/block&gt;</span><span
- style="font-weight: bold;">'</span><br>
+=&gt; <span style="font-weight: bold;">'<span style="font-style: italic;">&lt;block&gt;&lt;key&gt;</span></span>AttrName<span style="font-weight: bold; font-style: italic;">&lt;/key&gt;&lt;value&gt;</span>12345<span style="font-weight: bold; font-style: italic;">&lt;/value&gt;&lt;/block&gt;</span><span style="font-weight: bold;">'</span><br>
 <br>
-This will give the following PDF output: <span
- style="font-weight: bold;">AttrName:</span> 12345<br>
+This will give the following PDF output: <span style="font-weight: bold;">AttrName:</span> 12345<br>
 <br>
 <span style="font-weight: bold;"><br>
 2. Multiline values:</span><br>
@@ -1237,22 +1204,14 @@ one column but can just use more &lt;td&gt; tags per &lt;block&gt; tag
 to display more columns.<br>
 <br>
 &nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">'myAttribute'</span>
-=&gt; <span style="font-weight: bold;">'<span
- style="font-style: italic;">&lt;block&gt;&lt;key&gt;</span></span>AttrName<span
- style="font-weight: bold; font-style: italic;">&lt;/key&gt;&lt;tr&gt;&lt;td
-align=\"L\"&gt;</span>123<span
- style="font-weight: bold; font-style: italic;">&lt;/td&gt;&lt;/tr&gt;&lt;/block&gt;&lt;block&gt;&lt;tr&gt;&lt;td
-align=\"L\"&gt;</span>456<span
- style="font-weight: bold; font-style: italic;">&lt;/td&gt;&lt;/tr&gt;&lt;/block&gt;&lt;block&gt;&lt;tr&gt;&lt;td
-align=\"L\"&gt;</span>789<span
- style="font-weight: bold; font-style: italic;">&lt;/td&gt;&lt;/tr&gt;&lt;/block&gt;</span><span
- style="font-weight: bold;">'</span><br>
+=&gt; <span style="font-weight: bold;">'<span style="font-style: italic;">&lt;block&gt;&lt;key&gt;</span></span>AttrName<span style="font-weight: bold; font-style: italic;">&lt;/key&gt;&lt;tr&gt;&lt;td
+align=\"L\"&gt;</span>123<span style="font-weight: bold; font-style: italic;">&lt;/td&gt;&lt;/tr&gt;&lt;/block&gt;&lt;block&gt;&lt;tr&gt;&lt;td
+align=\"L\"&gt;</span>456<span style="font-weight: bold; font-style: italic;">&lt;/td&gt;&lt;/tr&gt;&lt;/block&gt;&lt;block&gt;&lt;tr&gt;&lt;td
+align=\"L\"&gt;</span>789<span style="font-weight: bold; font-style: italic;">&lt;/td&gt;&lt;/tr&gt;&lt;/block&gt;</span><span style="font-weight: bold;">'</span><br>
 <br>
 This will give the following PDF output: <br>
 <br>
-<table
- style="text-align: left; background-color: rgb(255, 255, 255); width: 121px; height: 79px;"
- border="0" cellpadding="2" cellspacing="2">
+<table style="text-align: left; background-color: rgb(255, 255, 255); width: 121px; height: 79px;" border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
       <td style="vertical-align: top;"><span style="font-weight: bold;">AttrName:</span><br>
@@ -1263,8 +1222,7 @@ This will give the following PDF output: <br>
     <tr>
       <td style="vertical-align: top;"><br>
       </td>
-      <td
- style="vertical-align: top; background-color: rgb(255, 255, 255);">456<br>
+      <td style="vertical-align: top; background-color: rgb(255, 255, 255);">456<br>
       </td>
     </tr>
     <tr>
@@ -1293,25 +1251,21 @@ array("user", "host")</span><br style="font-weight: bold;">
 <h3>6.3 get_ldap_filter()</h3>
 &nbsp;&nbsp;&nbsp; "ldap_filter" =&gt; array<br>
 <br>
-<span style="font-weight: bold;">&nbsp;&nbsp; Example:</span><span
- style="font-style: italic; font-weight: bold;"> array('or' =&gt;
+<span style="font-weight: bold;">&nbsp;&nbsp; Example:</span><span style="font-style: italic; font-weight: bold;"> array('or' =&gt;
 'objectClass=posixAccount', 'and' =&gt; '(!(uid=*$))')<br>
 <br>
 </span>
 <h3>6.4 getManagedObjectClasses()</h3>
 &nbsp;&nbsp;&nbsp; "objectClasses" =&gt; array<br>
 <br>
-<span style="font-weight: bold;">&nbsp;&nbsp; Example:</span><span
- style="font-style: italic; font-weight: bold;"> array('posixAccount')<br>
+<span style="font-weight: bold;">&nbsp;&nbsp; Example:</span><span style="font-style: italic; font-weight: bold;"> array('posixAccount')<br>
 <br>
 </span>
 <h3>6.5 getLDAPaliases()<br>
 </h3>
 "LDAPaliases" =&gt; array()<br>
 <span style="font-weight: bold;"><br>
-<span style="font-style: italic;"></span></span><span
- style="font-weight: bold;">Example:</span><span
- style="font-style: italic; font-weight: bold;"> array('commonName'
+<span style="font-style: italic;"></span></span><span style="font-weight: bold;">Example:</span><span style="font-style: italic; font-weight: bold;"> array('commonName'
 =&gt; 'cn')</span><br>
 <br>
 <span style="font-style: italic; font-weight: bold;"><br>
@@ -1320,8 +1274,7 @@ array("user", "host")</span><br style="font-weight: bold;">
 <h3>6.6 get_RDNAttributes()</h3>
 &nbsp;&nbsp;&nbsp; "RDN" =&gt; array<br>
 <br>
-<span style="font-weight: bold;">&nbsp;&nbsp; Example:</span><span
- style="font-style: italic; font-weight: bold;"> array('uid' =&gt;
+<span style="font-weight: bold;">&nbsp;&nbsp; Example:</span><span style="font-style: italic; font-weight: bold;"> array('uid' =&gt;
 'normal', 'cn' =&gt; 'low')<br>
 <br>
 </span>
@@ -1330,20 +1283,15 @@ array("user", "host")</span><br style="font-weight: bold;">
 </h3>
 &nbsp;&nbsp;&nbsp; "dependencies" =&gt; array<br>
 <br>
-<span style="font-weight: bold;">&nbsp;&nbsp; Example:</span><span
- style="font-style: italic; font-weight: bold;"> array(</span><span
- style="font-style: italic; font-weight: bold;"><span
- style="font-weight: bold; font-style: italic;">"depends"
+<span style="font-weight: bold;">&nbsp;&nbsp; Example:</span><span style="font-style: italic; font-weight: bold;"> array(</span><span style="font-style: italic; font-weight: bold;"><span style="font-weight: bold; font-style: italic;">"depends"
 =&gt; array("posixAccount", array("qmail", "sendmail")), "conflicts"
-=&gt; array("exim")</span></span><span
- style="font-style: italic; font-weight: bold;">)<br>
+=&gt; array("exim")</span></span><span style="font-style: italic; font-weight: bold;">)<br>
 </span><br>
 <h3>6.8 get_profileOptions()<br>
 </h3>
 &nbsp;&nbsp;&nbsp; "profile_options" =&gt; array<br>
 <br>
-<span style="font-weight: bold;">&nbsp;&nbsp; <span
- style="font-style: italic;">Syntax for array is the same as for the
+<span style="font-weight: bold;">&nbsp;&nbsp; <span style="font-style: italic;">Syntax for array is the same as for the
 return value of get_profileOptions().<br>
 <br>
 </span></span>
@@ -1360,61 +1308,32 @@ the names of the option identifiers.<br>
   <li style="font-weight: bold;">type:<span style="font-weight: normal;">
 determines how to check input</span></li>
   <ul>
-    <li style="font-weight: bold;">regex:<span
- style="font-weight: normal;"> check with regular expression from <span
- style="font-style: italic;">regex</span> variable, case sensitive</span></li>
-    <li style="font-weight: bold;">regex_i:<span
- style="font-weight: normal;"> check with regular expression from <span
- style="font-style: italic;">regex</span> variable, case insensitive</span></li>
-    <li style="font-weight: bold;"><span style="font-weight: normal;"><span
- style="font-weight: bold;">int_greater:</span> integer value of <span
- style="font-style: italic;">cmp_name1</span> must be
-greater than the integer value from the option <span
- style="font-style: italic;">cmp_name2</span></span></li>
-    <li style="font-weight: bold;"><span style="font-weight: normal;"><span
- style="font-weight: bold;">int_greaterOrEqual:</span> integer value</span><span
- style="font-weight: normal;"><span style="font-weight: normal;"> of <span
- style="font-style: italic;">cmp_name1</span></span></span><span
- style="font-weight: normal;">
-must be greater or equal than the integer value from the option <span
- style="font-style: italic;">cmp_name2</span></span></li>
+    <li style="font-weight: bold;">regex:<span style="font-weight: normal;"> check with regular expression from <span style="font-style: italic;">regex</span> variable, case sensitive</span></li>
+    <li style="font-weight: bold;">regex_i:<span style="font-weight: normal;"> check with regular expression from <span style="font-style: italic;">regex</span> variable, case insensitive</span></li>
+    <li style="font-weight: bold;"><span style="font-weight: normal;"><span style="font-weight: bold;">int_greater:</span> integer value of <span style="font-style: italic;">cmp_name1</span> must be
+greater than the integer value from the option <span style="font-style: italic;">cmp_name2</span></span></li>
+    <li style="font-weight: bold;"><span style="font-weight: normal;"><span style="font-weight: bold;">int_greaterOrEqual:</span> integer value</span><span style="font-weight: normal;"><span style="font-weight: normal;"> of <span style="font-style: italic;">cmp_name1</span></span></span><span style="font-weight: normal;">
+must be greater or equal than the integer value from the option <span style="font-style: italic;">cmp_name2</span></span></li>
   </ul>
-  <li style="font-weight: bold;">error_message:<span
- style="font-weight: normal;"> message that is displayed if input value
+  <li style="font-weight: bold;">error_message:<span style="font-weight: normal;"> message that is displayed if input value
 was syntactically incorrect</span></li>
   <ul>
     <li style="font-weight: bold;"><span style="font-weight: normal;">array
 to build StatusMessages (0 =&gt; message type, 1 =&gt; message
-head, 2 =&gt; message text, 3 =&gt; additional variables)</span><span
- style="font-weight: normal;"></span></li>
+head, 2 =&gt; message text, 3 =&gt; additional variables)</span><span style="font-weight: normal;"></span></li>
   </ul>
-  <li style="font-weight: bold;">regex:<span
- style="font-weight: normal;"> regular expression string (only if <span
- style="font-style: italic;">type</span> is <span
- style="font-style: italic;">regex</span>/<span
- style="font-style: italic;">regex_i</span>)</span></li>
-  <li style="font-weight: bold;"><span style="font-weight: normal;"><span
- style="font-weight: normal;"><span style="font-weight: bold;">cmp_name1:</span>
+  <li style="font-weight: bold;">regex:<span style="font-weight: normal;"> regular expression string (only if <span style="font-style: italic;">type</span> is <span style="font-style: italic;">regex</span>/<span style="font-style: italic;">regex_i</span>)</span></li>
+  <li style="font-weight: bold;"><span style="font-weight: normal;"><span style="font-weight: normal;"><span style="font-weight: bold;">cmp_name1:</span>
 name of first input
-variable that is used for comparison (only if <span
- style="font-style: italic;">type</span> is <span
- style="font-style: italic;">int_greater/int_greaterOrEqual</span>)</span></span></li>
-  <li style="font-weight: bold;"><span style="font-weight: normal;"><span
- style="font-weight: bold;">cmp_name2:</span> name of second input
-variable that is used for comparison (only if <span
- style="font-style: italic;">type</span> is <span
- style="font-style: italic;">int_greater/int_greaterOrEqual</span>)<br>
+variable that is used for comparison (only if <span style="font-style: italic;">type</span> is <span style="font-style: italic;">int_greater/int_greaterOrEqual</span>)</span></span></li>
+  <li style="font-weight: bold;"><span style="font-weight: normal;"><span style="font-weight: bold;">cmp_name2:</span> name of second input
+variable that is used for comparison (only if <span style="font-style: italic;">type</span> is <span style="font-style: italic;">int_greater/int_greaterOrEqual</span>)<br>
     </span></li>
-  <li><span style="font-weight: bold;">required:</span> <span
- style="font-style: italic;">true</span> or <span
- style="font-style: italic;">false</span>, if this input field must be
+  <li><span style="font-weight: bold;">required:</span> <span style="font-style: italic;">true</span> or <span style="font-style: italic;">false</span>, if this input field must be
 filled set to true (optional)<span style="font-weight: bold;"><br>
     </span></li>
-  <li><span style="font-weight: bold;">required_message:</span> message<span
- style="font-weight: normal;"> that is displayed if no input value was
-given</span><span style="font-weight: normal;"> (only if <span
- style="font-style: italic;">required</span> == true)</span><span
- style="font-weight: bold;"></span></li>
+  <li><span style="font-weight: bold;">required_message:</span> message<span style="font-weight: normal;"> that is displayed if no input value was
+given</span><span style="font-weight: normal;"> (only if <span style="font-style: italic;">required</span> == true)</span><span style="font-weight: bold;"></span></li>
   <ul>
     <li>&nbsp;array to build StatusMessages (0 =&gt; message type, 1
 =&gt; message
@@ -1437,65 +1356,60 @@ $this-&gt;attributes.<br>
 'host' =&gt; array, 'all' =&gt; array)<br>
 <br>
 &nbsp;&nbsp;&nbsp; The values from <span style="font-weight: bold;">'all'</span>
-are always returned, the other values only if they are inside the <span
- style="font-style: italic;">$scopes</span> array.<br
- style="font-weight: bold;">
+are always returned, the other values only if they are inside the <span style="font-style: italic;">$scopes</span> array.<br style="font-weight: bold;">
 <br style="font-weight: bold;">
-<span style="font-weight: bold;">&nbsp;&nbsp; <span
- style="font-style: italic;">Syntax for sub arrays is the same as for
+<span style="font-weight: bold;">&nbsp;&nbsp; <span style="font-style: italic;">Syntax for sub arrays is the same as for
 the
 return value of get_configOptions().<br>
-<br>
-</span></span>
-<h3>6.12 get_configDescriptions()<br>
-</h3>
-&nbsp;&nbsp;&nbsp; "config_descriptions" =&gt; array<br>
-<br>
-<span style="font-weight: bold;">&nbsp;&nbsp; <span
- style="font-style: italic;">Syntax for array is the same as for the
-return value of get_configDescriptions().<br>
-<br>
-</span></span>
-<h3>6.13 check_configOptions()<br>
+<br></span></span><span style="font-weight: bold;"><span style="font-style: italic;"></span></span><h3>6.12 check_configOptions()<br>
 </h3>
 &nbsp;&nbsp;&nbsp; "config_checks" =&gt; array('user' =&gt; array,
 'host' =&gt; 'array', 'all' =&gt; array)<br>
 <br>
 &nbsp;&nbsp;&nbsp; The values from 'all' are always used for checking,
-the other values only if they are inside the <span
- style="font-style: italic;">$scopes</span> array.<br>
+the other values only if they are inside the <span style="font-style: italic;">$scopes</span> array.<br>
 <span style="font-weight: bold;"><br style="font-weight: bold;">
-</span><span style="font-weight: bold;">&nbsp;&nbsp; <span
- style="font-style: italic;">Syntax for sub arrays is the same as for
+</span><span style="font-weight: bold;">&nbsp;&nbsp; <span style="font-style: italic;">Syntax for sub arrays is the same as for
 check_profileOptions().<br>
 <br>
 </span></span>
-<h3>6.14 get_uploadColumns()</h3>
+<h3>6.13 get_uploadColumns()</h3>
 "upload_columns" =&gt; array()<br>
 <span style="font-weight: bold;"><br>
 <span style="font-style: italic;">Syntax for array is the same as for
 the
 return value of get_uploadColumns().<br>
 </span></span><br>
-<h3>6.15 get_uploadPreDepends()</h3>
+<h3>6.14 get_uploadPreDepends()</h3>
 "upload_preDepends" =&gt; array()<br>
 <span style="font-weight: bold;"><br>
 <span style="font-style: italic;">Syntax for array is the same as for
 the
 return value of get_uploadPreDepends().<br>
 </span></span><br>
-<h3>6.16 getRequiredExtensions()<br>
+<h3>6.15 getRequiredExtensions()<br>
 </h3>
 "extensions" =&gt; array()<br>
 <span style="font-weight: bold;"><br>
-<span style="font-style: italic;"></span></span><span
- style="font-weight: bold;">Example:</span><span
- style="font-style: italic; font-weight: bold;"> array('mhash')</span><br>
+<span style="font-style: italic;"></span></span><span style="font-weight: bold;">Example:</span><span style="font-style: italic; font-weight: bold;"> array('mhash')</span><br>
 <br>
-<span style="font-weight: bold;"></span><span style="font-weight: bold;"><span
- style="font-style: italic;"></span></span><span
- style="font-style: italic; font-weight: bold;"></span><span
- style="font-style: italic; font-weight: bold;"></span><span
- style="font-style: italic; font-weight: bold;"></span>
-</body>
-</html>
+
+<h3>6.16 getSelfServiceSearchAttributes()<br>
+</h3>
+
+"selfServiceSearchAttributes" =&gt; array()<br>
+
+<span style="font-weight: bold;"><br>
+<span style="font-style: italic;"></span></span><span style="font-weight: bold;">Example:</span><span style="font-style: italic; font-weight: bold;"> array('uid')</span><br>
+<br>
+
+<h3>6.17 getSelfServiceFields()<br>
+</h3>
+
+"selfServiceFieldSettings" =&gt; array()<br>
+
+<span style="font-weight: bold;"><br>
+<span style="font-style: italic;"></span></span><span style="font-weight: bold;">Example:</span><span style="font-style: italic; font-weight: bold;"> array('pwd' =&gt; 'Password')</span><br>
+<br>
+<span style="font-weight: bold;"></span><span style="font-weight: bold;"><span style="font-style: italic;"></span></span><span style="font-style: italic; font-weight: bold;"></span><span style="font-style: italic; font-weight: bold;"></span><span style="font-style: italic; font-weight: bold;"></span>
+</body></html>

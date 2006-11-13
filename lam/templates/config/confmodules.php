@@ -184,12 +184,12 @@ function config_showAccountModules($scope, $title) {
 							if (in_array($selected[$i], $available)) {  // selected modules must be available
 								if (is_base_module($selected[$i], $scope)) {  // mark base modules
 									echo "<option value=\"" . $selected[$i] . "\">";
-									echo $selected[$i] . "(" . getModuleAlias($selected[$i], $scope) .  ")(*)";
+									echo getModuleAlias($selected[$i], $scope) . "(" . $selected[$i] .  ")(*)";
 									echo "</option>\n";
 								}
 								else {
 									echo "<option value=\"" . $selected[$i] . "\">";
-									echo $selected[$i] . "(" . getModuleAlias($selected[$i], $scope) .  ")";
+									echo getModuleAlias($selected[$i], $scope) . "(" . $selected[$i] .  ")";
 									echo "</option>\n";
 								}
 							}
@@ -212,12 +212,12 @@ function config_showAccountModules($scope, $title) {
 							if (! in_array($available[$i], $selected)) {  // display non-selected modules
 								if (is_base_module($available[$i], $scope)) {  // mark base modules
 									echo "<option value=\"" . $available[$i] . "\">";
-									echo $available[$i] . "(" . getModuleAlias($available[$i], $scope) .  ")(*)";
+									echo getModuleAlias($available[$i], $scope) . "(" . $available[$i] .  ")(*)";
 									echo "</option>\n";
 								}
 								else {
 									echo "<option value=\"" . $available[$i] . "\">";
-									echo $available[$i] . "(" . getModuleAlias($available[$i], $scope) .  ")";
+									echo getModuleAlias($available[$i], $scope) . "(" . $available[$i] .  ")";
 									echo "</option>\n";
 								}
 							}

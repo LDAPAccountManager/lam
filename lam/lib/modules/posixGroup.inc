@@ -293,21 +293,12 @@ class posixGroup extends baseModule {
 		// configuration options
 		$return['config_options']['group'] = array(
 			array(
-				0 => array('kind' => 'text', 'text' => '<b>' . _('Minimum GID number') . " *: </b>"),
+				0 => array('kind' => 'text', 'text' => '<b>' . _("Groups") . ': &nbsp;</b>' . _('Minimum GID number') . " *: "),
 				1 => array('kind' => 'input', 'name' => 'posixGroup_minGID', 'type' => 'text', 'size' => '10', 'maxlength' => '255'),
 				2 => array('kind' => 'text', 'value' => '&nbsp;'),
-				3 => array('kind' => 'text', 'text' => '<b>' . _('Maximum GID number') . " *: </b>"),
+				3 => array('kind' => 'text', 'text' => _('Maximum GID number') . " *: "),
 				4 => array('kind' => 'input', 'name' => 'posixGroup_maxGID', 'type' => 'text', 'size' => '10', 'maxlength' => '255'),
 				5 => array('kind' => 'help', 'value' => 'minMaxGID'))
-		);
-		// configuration descriptions
-		$return['config_descriptions'] = array(
-			'legend' => _("GID ranges for Unix groups"),
-			'descriptions' => array(
-				'posixGroup_minGID' => _("Minimum GID number for Unix groups"),
-				'posixGroup_maxGID' => _("Maximum GID number for Unix groups"),
-				'posixAccount_pwdHash' => _("Password hash type for Unix groups"),
-			)
 		);
 		// configuration checks
 		$return['config_checks']['group']['posixGroup_minGID'] = array (

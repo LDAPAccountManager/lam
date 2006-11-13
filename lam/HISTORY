@@ -1,3 +1,11 @@
+??? 1.2.0
+  - Samba: better handling of date values
+
+  Developers:
+    API changes:
+    - removed get_configDescription() from module interface
+
+
 01.11.2006 1.1.1
    - Lamdaemon: added test page (Tools -> Tests -> Lamdaemon test)
    - LAM Pro: Samba passwords can now be synchronized with Unix password
@@ -17,6 +25,7 @@
       process_...(), display_html_...()). Use $_POST instead.
     - process_...() functions: returned messages are no longer grouped
       (e.g. return: array(array('INFO', 'headline', 'text'), array('INFO', 'headline2', 'text2')))
+
 
 10.08.2006 1.0.4
    - added Russian translation

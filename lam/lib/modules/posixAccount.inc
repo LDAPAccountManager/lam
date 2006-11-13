@@ -140,19 +140,19 @@ class posixAccount extends baseModule {
 		// configuration options
 		$return['config_options']['user'] = array(
 		array(
-			0 => array('kind' => 'text', 'text' => '<b>' . _("Users") . ': &nbsp;</b>' . _('Minimum UID number') . ": "),
+			0 => array('kind' => 'text', 'text' => '<b>' . _("Users") . ': &nbsp;</b>' . _('Minimum UID number') . "*: "),
 			1 => array('kind' => 'input', 'name' => 'posixAccount_minUID', 'type' => 'text', 'size' => '10', 'maxlength' => '255'),
 			2 => array('kind' => 'text', 'value' => '&nbsp;'),
-			3 => array('kind' => 'text', 'text' => _('Maximum UID number') . ": "),
+			3 => array('kind' => 'text', 'text' => _('Maximum UID number') . "*: "),
 			4 => array('kind' => 'input', 'name' => 'posixAccount_maxUID', 'type' => 'text', 'size' => '10', 'maxlength' => '255'),
 			5 => array('kind' => 'help', 'value' => 'minMaxUser'))
 		);
 		$return['config_options']['host'] = array(
 		array(
-			0 => array('kind' => 'text', 'text' => '<b>' . _("Hosts") . ': &nbsp;</b>' . _('Minimum UID number') . ": "),
+			0 => array('kind' => 'text', 'text' => '<b>' . _("Hosts") . ': &nbsp;</b>' . _('Minimum UID number') . "*: "),
 			1 => array('kind' => 'input', 'name' => 'posixAccount_minMachine', 'type' => 'text', 'size' => '10', 'maxlength' => '255'),
 			2 => array('kind' => 'text', 'value' => '&nbsp;'),
-			3 => array('kind' => 'text', 'text' => _('Maximum UID number') . ": "),
+			3 => array('kind' => 'text', 'text' => _('Maximum UID number') . "*: "),
 			4 => array('kind' => 'input', 'name' => 'posixAccount_maxMachine', 'type' => 'text', 'size' => '10', 'maxlength' => '255'),
 			5 => array('kind' => 'help', 'value' => 'minMaxHost'))
 		);
@@ -165,17 +165,6 @@ class posixAccount extends baseModule {
 			3 => array('kind' => 'text', 'value' => '&nbsp;'),
 			4 => array('kind' => 'text', 'value' => '&nbsp;'),
 			5 => array('kind' => 'help', 'value' => 'pwdHash'))
-		);
-		// configuration descriptions
-		$return['config_descriptions'] = array(
-			'legend' => _("UID ranges for Unix accounts"),
-			'descriptions' => array(
-			'posixAccount_minUID' => _("Minimum UID number for Unix accounts (users)"),
-			'posixAccount_maxUID' => _("Maximum UID number for Unix accounts (users)"),
-			'posixAccount_minMachine' => _("Minimum UID number for Unix accounts (hosts)"),
-			'posixAccount_maxMachine' => _("Maximum UID number for Unix accounts (hosts)"),
-			'posixAccount_pwdHash' => _("Password hash type for Unix accounts"),
-		)
 		);
 		// upload
 		$return['upload_preDepends'] = array('inetOrgPerson');

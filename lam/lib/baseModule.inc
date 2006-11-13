@@ -341,20 +341,6 @@ class baseModule {
 	}
 
 	/**
-	* Returns an array containing descriptions shown on configuration pages.
-	*
-	* The returned array has the format array('legend' => '...', descriptions => array('option1' => '...', ...)).
-	* <br> The "legend" value is used as text for the fieldset, the descriptions are used when the configuration is printed.
-	*
-	* @return array configuration elements
-	*/
-	function get_configDescriptions() {
-		$return = array('legend' => 'no description', 'descriptions' => array());
-		if (isset($this->meta['config_descriptions'])) $return = $this->meta['config_descriptions'];
-		return $return;
-	}
-
-	/**
 	* Checks input values of module settings.
 	*
 	* @param array $scopes list of account types which are used
