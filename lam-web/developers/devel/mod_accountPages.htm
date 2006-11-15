@@ -1,33 +1,9 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-<head>
-  <title>Module HowTo - Account pages</title>
-  <link rel="stylesheet" type="text/css" href="style/layout.css">
-</head>
+<html><head><title>Module HowTo - Account pages</title>
+  
+  <link rel="stylesheet" type="text/css" href="style/layout.css"></head>
+
 <body>
-
-<p align="center">
-<script type="text/javascript"><!--
-google_ad_client = "pub-4179059556107138";
-google_alternate_ad_url = "http://lam.sourceforge.net/google_adsense_script.html";
-google_ad_width = 728;
-google_ad_height = 90;
-google_ad_format = "728x90_as";
-google_ad_type = "text_image";
-google_ad_channel ="";
-google_page_url = document.location;
-google_color_border = "EEEEEE";
-google_color_bg = "FFFFFF";
-google_color_link = "0000FF";
-google_color_url = "008000";
-google_color_text = "000000";
-//--></script>
-<script type="text/javascript"
-  src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
-</script>
-</p>
-
-
 <div style="text-align: center;">
 <h1>Module HowTo - Account pages<br>
 </h1>
@@ -40,25 +16,21 @@ Every time the user selects an existing account to modify LAM will load
 the complete LDAP entry of it. Your module then should select the
 attributes which are useful for it.<br>
 There are two variables in <span style="font-style: italic;">baseModule</span>
-which should be used to store the attributes. The <span
- style="font-weight: bold;">$attributes</span> variable stores the
-current attributes including changes the user made. The <span
- style="font-weight: bold;">$orig</span> variable stores the attributes
+which should be used to store the attributes. The <span style="font-weight: bold;">$attributes</span> variable stores the
+current attributes including changes the user made. The <span style="font-weight: bold;">$orig</span> variable stores the attributes
 as they were originally when the account was loaded. This allows you to
 see what changes were made.<br>
 <br>
 The <span style="font-weight: bold;">load_attributes()</span> function
 in your module gets the complete attribute list from LDAP.<br>
 <br>
-<span style="font-weight: bold; text-decoration: underline;">Example:</span><br
- style="font-weight: bold; text-decoration: underline;">
+<span style="font-weight: bold; text-decoration: underline;">Example:</span><br style="font-weight: bold; text-decoration: underline;">
 <br>
 The <span style="font-style: italic;">ieee802Device</span> uses an
 object class and the <span style="font-style: italic;">'macAddress'</span>
 attribute. Therefore we will save this two values.<br>
 <br>
-<table style="width: 100%; text-align: left;" class="mod-code"
- border="0" cellpadding="2" cellspacing="2">
+<table style="width: 100%; text-align: left;" class="mod-code" border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
       <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
@@ -68,8 +40,7 @@ object.<br>
 &nbsp;&nbsp;&nbsp; * @param array $attr an array as it is retured from
 ldap_get_attributes<br>
 &nbsp;&nbsp;&nbsp; */<br>
-&nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">function</span> <span
- style="color: rgb(255, 0, 0);">load_attributes</span>($attr) {<br>
+&nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">function</span> <span style="color: rgb(255, 0, 0);">load_attributes</span>($attr) {<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
 $this-&gt;attributes['objectClass'] = array();<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
@@ -104,15 +75,12 @@ $this-&gt;orig['macAddress'] = $attr['macAddress'];<br>
 <br>
 <h2>2. Page display</h2>
 Now that you have defined your subpages you will need one function for
-each page to display it. The function must return <span
- style="font-style: italic;">meta HTML code</span> as defined in the <span
- style="font-style: italic;">modules specification</span>.<br>
+each page to display it. The function must return <span style="font-style: italic;">meta HTML code</span> as defined in the <span style="font-style: italic;">modules specification</span>.<br>
 This function is called <span style="font-weight: bold;">display_html_&lt;page
 name&gt;()</span> where <span style="font-style: italic;">&lt;page
 name&gt;</span> is the name of your subpage.<br>
 <br>
-<span style="font-weight: bold; text-decoration: underline;">Example:</span><br
- style="font-weight: bold; text-decoration: underline;">
+<span style="font-weight: bold; text-decoration: underline;">Example:</span><br style="font-weight: bold; text-decoration: underline;">
 <br>
 The
 <span style="font-style: italic;">ieee802Device</span>
@@ -123,8 +91,7 @@ second an input field for new values.<br>
 The variable <span style="font-style: italic;">$this-&gt;attributes</span>
 contains the LDAP attributes which are useful for this module.<br>
 <br>
-<table style="width: 100%; text-align: left;" class="mod-code"
- border="0" cellpadding="2" cellspacing="2">
+<table style="width: 100%; text-align: left;" class="mod-code" border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
       <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
@@ -133,8 +100,7 @@ show a page with all attributes.<br>
 &nbsp;&nbsp;&nbsp; *<br>
 &nbsp;&nbsp;&nbsp; * @param array $post HTTP-POST values<br>
 &nbsp;&nbsp;&nbsp; */<br>
-&nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">function</span> <span
- style="color: rgb(255, 0, 0);">display_html_attributes</span>($post) {<br>
+&nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">function</span> <span style="color: rgb(255, 0, 0);">display_html_attributes</span>($post) {<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $return = array();<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // list current MACs<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; for ($i = 0; $i &lt;
@@ -186,12 +152,10 @@ This function is called <span style="font-weight: bold;">process_&lt;page
 name&gt;()</span> where <span style="font-style: italic;">&lt;page
 name&gt;</span> is the name of your subpage.<br>
 <br>
-If all input data is ok then return "0" or an array containing no error
-message. If you return one or more error messages then the user will be
+If all input data is ok then return an empty array. If you return one or more error messages then the user will be
 redirected to your page.<br>
 <br>
-<span style="font-weight: bold; text-decoration: underline;">Example:</span><br
- style="font-weight: bold; text-decoration: underline;">
+<span style="font-weight: bold; text-decoration: underline;">Example:</span><br style="font-weight: bold; text-decoration: underline;">
 <br>
 The
 <span style="font-style: italic;">ieee802Device</span>
@@ -201,8 +165,7 @@ and therefore only <span style="font-style: italic;">process_attributes()</span>
 The function checks the input fields and fills the LDAP attributes. If
 all is ok it will enable the user to move to another module page.<br>
 <br>
-<table style="width: 100%; text-align: left;" class="mod-code"
- border="0" cellpadding="2" cellspacing="2">
+<table style="width: 100%; text-align: left;" class="mod-code" border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
       <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
@@ -211,10 +174,8 @@ checks<br>
 &nbsp;&nbsp;&nbsp; *<br>
 &nbsp;&nbsp;&nbsp; * @param array $post HTTP-POST values<br>
 &nbsp;&nbsp;&nbsp; */<br>
-&nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">function</span> <span
- style="color: rgb(255, 0, 0);">process_attributes</span>($post) {<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $this-&gt;triggered_messages =
-array();<br>
+&nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">function</span> <span style="color: rgb(255, 0, 0);">process_attributes</span>($post) {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $errors = array();<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
 $this-&gt;attributes['macAddress'] = array();<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // check old MACs<br>
@@ -239,8 +200,7 @@ $this-&gt;messages['mac'][0];<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $message[] =
 $post['macAddress' . $i];<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
-$this-&gt;triggered_messages[] = array($message);<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $errors[] = $message;<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
@@ -268,25 +228,13 @@ $this-&gt;messages['mac'][0];<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $message[] = $post['macAddress'];<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $this-&gt;triggered_messages[] =
-array($message);<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $errors[] = $message;<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
 $this-&gt;attributes['macAddress'] =
 array_unique($this-&gt;attributes['macAddress']);<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if
-(sizeof($this-&gt;triggered_messages) &gt; 0) {<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
-$this-&gt;inputCorrect = false;<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return
-$this-&gt;triggered_messages;<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; else {<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
-$this-&gt;inputCorrect = true;<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return 0;<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return $errors;<br>
 &nbsp;&nbsp;&nbsp; }<br>
       </td>
     </tr>
@@ -296,13 +244,10 @@ $this-&gt;inputCorrect = true;<br>
 <br>
 <h2>4. Defining that your module is ready for user input and LDAP
 add/modify</h2>
-In most cases you will not need to implement these functions. The <span
- style="font-style: italic;">baseModule</span> will return <span
- style="font-style: italic;">true</span> for both functions.<br>
+In most cases you will not need to implement these functions. The <span style="font-style: italic;">baseModule</span> will return <span style="font-style: italic;">true</span> for both functions.<br>
 <br>
 <span style="text-decoration: underline;"><br>
-There are two functions which control the module status:</span><br
- style="text-decoration: underline;">
+There are two functions which control the module status:</span><br style="text-decoration: underline;">
 <br>
 The <span style="font-weight: bold;">module_ready()</span> function
 has to
@@ -314,14 +259,12 @@ modules (e.g. you need the user name from posixAccount first).<br>
 <br>
 The second function is
 <span style="font-weight: bold;">module_complete()</span>. The user
-cannot do the LDAP operation if one or more modules return <span
- style="font-style: italic;">false</span>. This defines if all needed
+cannot do the LDAP operation if one or more modules return <span style="font-style: italic;">false</span>. This defines if all needed
 input data for your module was entered.<br>
 Use this function if you want to check that all required attributes are
 set.<br>
 <br>
-<span style="font-weight: bold; text-decoration: underline;">Example:</span><br
- style="font-weight: bold; text-decoration: underline;">
+<span style="font-weight: bold; text-decoration: underline;">Example:</span><br style="font-weight: bold; text-decoration: underline;">
 <br>
 The <span style="font-style: italic;">sambaSamAccount</span>
 module needs the user's <span style="font-style: italic;">uidNumber</span>
@@ -329,8 +272,7 @@ and <span style="font-style: italic;">gidNumber</span> before it can
 accept input and the account needs a <span style="font-style: italic;">sambaSID</span>
 before it can be saved.<br>
 <br>
-<table style="width: 100%; text-align: left;" class="mod-code"
- border="0" cellpadding="2" cellspacing="2">
+<table style="width: 100%; text-align: left;" class="mod-code" border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
       <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
@@ -341,8 +283,7 @@ other modules which was not yet entered.<br>
 &nbsp;&nbsp;&nbsp; *<br>
 &nbsp;&nbsp;&nbsp; * @return boolean true, if page can be displayed<br>
 &nbsp;&nbsp;&nbsp; */<br>
-&nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">function</span> <span
- style="color: rgb(255, 0, 0);">module_ready</span>() {<br>
+&nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">function</span> <span style="color: rgb(255, 0, 0);">module_ready</span>() {<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if
 ($_SESSION[$this-&gt;base]-&gt;module['posixAccount']-&gt;attributes['gidNumber'][0]=='')
 return false;<br>
@@ -360,8 +301,7 @@ for this module have been made.<br>
 &nbsp;&nbsp;&nbsp; *<br>
 &nbsp;&nbsp;&nbsp; * @return boolean true, if settings are complete<br>
 &nbsp;&nbsp;&nbsp; */<br>
-&nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">function</span> <span
- style="color: rgb(255, 0, 0);">module_complete</span>() {<br>
+&nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">function</span> <span style="color: rgb(255, 0, 0);">module_complete</span>() {<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if (!$this-&gt;module_ready())
 return false;<br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if
@@ -377,9 +317,7 @@ return false;<br>
 <br>
 <h2>5. Saving the LDAP attributes<br>
 </h2>
-In most cases you will not have to implement this option if you use <span
- style="font-weight: bold;">$this-&gt;attributes</span> and <span
- style="font-weight: bold;">$this-&gt;orig</span> to manage the LDAP
+In most cases you will not have to implement this option if you use <span style="font-weight: bold;">$this-&gt;attributes</span> and <span style="font-weight: bold;">$this-&gt;orig</span> to manage the LDAP
 attributes. The <span style="font-style: italic;">baseModule</span>
 will generate the save comands for you.<br>
 <br>
@@ -388,15 +326,13 @@ user clicks on the add/modify button your module will be asked what
 changes have to be made.<br>
 This is done in the function <span style="font-weight: bold;">save_attributes()</span>.<br>
 <br>
-<span style="font-weight: bold; text-decoration: underline;">Example:</span><br
- style="font-weight: bold; text-decoration: underline;">
+<span style="font-weight: bold; text-decoration: underline;">Example:</span><br style="font-weight: bold; text-decoration: underline;">
 <br>
 The <span style="font-style: italic;">kolabUser</span> module uses
 this function to make sure that its object class is saved. Other
 modules (e.g. quota) use it build the lamdaemon commands.<br>
 <br>
-<table style="width: 100%; text-align: left;" class="mod-code"
- border="0" cellpadding="2" cellspacing="2">
+<table style="width: 100%; text-align: left;" class="mod-code" border="0" cellpadding="2" cellspacing="2">
   <tbody>
     <tr>
       <td style="vertical-align: top;">&nbsp;&nbsp;&nbsp; /**<br>
@@ -438,27 +374,4 @@ $this-&gt;attributes['objectClass'][] = 'kolabInetOrgPerson';<br>
 <h2><span style="font-weight: bold;"></span></h2>
 </div>
 </div>
-
-<p align="center">
-<script type="text/javascript"><!--
-google_ad_client = "pub-4179059556107138";
-google_alternate_ad_url = "http://lam.sourceforge.net/google_adsense_script.html";
-google_ad_width = 728;
-google_ad_height = 90;
-google_ad_format = "728x90_as";
-google_ad_type = "text_image";
-google_ad_channel ="";
-google_page_url = document.location;
-google_color_border = "EEEEEE";
-google_color_bg = "FFFFFF";
-google_color_link = "0000FF";
-google_color_url = "008000";
-google_color_text = "000000";
-//--></script>
-<script type="text/javascript"
-  src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
-</script>
-</p>
-
-</body>
-</html>
+</body></html>
