@@ -1,0 +1,696 @@
+<html>
+<head>
+<title>Docs For Class smbHash</title>
+<link rel="stylesheet" type="text/css" href="../media/style.css">
+</head>
+<body>
+
+<table border="0" cellspacing="0" cellpadding="0" height="48" width="100%">
+  <tr>
+    <td class="header_top">modules</td>
+  </tr>
+  <tr><td class="header_line"><img src="../media/empty.png" width="1" height="1" border="0" alt=""  /></td></tr>
+  <tr>
+    <td class="header_menu">
+  		  [ <a href="../classtrees_modules.html" class="menu">class tree: modules</a> ]
+		  [ <a href="../elementindex_modules.html" class="menu">index: modules</a> ]
+		  [ <a href="../elementindex.html" class="menu">all elements</a> ]
+    </td>
+  </tr>
+  <tr><td class="header_line"><img src="../media/empty.png" width="1" height="1" border="0" alt=""  /></td></tr>
+</table>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="200" class="menu">
+	<div id="ric">
+					<p><a href="../ric_README.html">README</a></p>
+					<p><a href="../ric_INSTALL.html">INSTALL</a></p>
+			</div>
+      <b>Packages:</b><br />
+              <a href="../li_configuration.html">configuration</a><br />
+              <a href="../li_Help.html">Help</a><br />
+              <a href="../li_LDAP.html">LDAP</a><br />
+              <a href="../li_lib.html">lib</a><br />
+              <a href="../li_lists.html">lists</a><br />
+              <a href="../li_main.html">main</a><br />
+              <a href="../li_modules.html">modules</a><br />
+              <a href="../li_PDF.html">PDF</a><br />
+              <a href="../li_profiles.html">profiles</a><br />
+              <a href="../li_selfService.html">selfService</a><br />
+              <a href="../li_tests.html">tests</a><br />
+              <a href="../li_tools.html">tools</a><br />
+              <a href="../li_types.html">types</a><br />
+            <br /><br />
+                        <b>Files:</b><br />
+      	  <div class="package">
+			<a href="../modules/_lib_modules_account_inc.html">		account.inc
+		</a><br>
+			<a href="../modules/_lib_baseModule_inc.html">		baseModule.inc
+		</a><br>
+			<a href="../modules/_lib_createntlm_inc.html">		createntlm.inc
+		</a><br>
+			<a href="../modules/_templates_account_edit_php.html">		edit.php
+		</a><br>
+			<a href="../modules/_lib_modules_ieee802device_inc.html">		ieee802device.inc
+		</a><br>
+			<a href="../modules/_lib_modules_inetLocalMailRecipient_inc.html">		inetLocalMailRecipient.inc
+		</a><br>
+			<a href="../modules/_lib_modules_inetOrgPerson_inc.html">		inetOrgPerson.inc
+		</a><br>
+			<a href="../modules/_lib_modules_kolabUser_inc.html">		kolabUser.inc
+		</a><br>
+			<a href="../modules/_lib_lamdaemon_inc.html">		lamdaemon.inc
+		</a><br>
+			<a href="../modules/_lib_modules_ldapPublicKey_inc.html">		ldapPublicKey.inc
+		</a><br>
+			<a href="../modules/_lib_modules_inc.html">		modules.inc
+		</a><br>
+			<a href="../modules/_lib_modules_nisMailAlias_inc.html">		nisMailAlias.inc
+		</a><br>
+			<a href="../modules/_lib_modules_posixAccount_inc.html">		posixAccount.inc
+		</a><br>
+			<a href="../modules/_lib_modules_posixGroup_inc.html">		posixGroup.inc
+		</a><br>
+			<a href="../modules/_lib_modules_quota_inc.html">		quota.inc
+		</a><br>
+			<a href="../modules/_lib_modules_sambaAccount_inc.html">		sambaAccount.inc
+		</a><br>
+			<a href="../modules/_lib_modules_sambaDomain_inc.html">		sambaDomain.inc
+		</a><br>
+			<a href="../modules/_lib_modules_sambaGroupMapping_inc.html">		sambaGroupMapping.inc
+		</a><br>
+			<a href="../modules/_lib_modules_sambaSamAccount_inc.html">		sambaSamAccount.inc
+		</a><br>
+			<a href="../modules/_lib_modules_shadowAccount_inc.html">		shadowAccount.inc
+		</a><br>
+	  </div><br />
+      
+      
+            <b>Classes:</b><br />
+        <div class="package">
+		    		<a href="../modules/account.html">account</a><br />
+	    		<a href="../modules/accountContainer.html">accountContainer</a><br />
+	    		<a href="../modules/baseModule.html">baseModule</a><br />
+	    		<a href="../modules/ieee802Device.html">ieee802Device</a><br />
+	    		<a href="../modules/inetLocalMailRecipient.html">inetLocalMailRecipient</a><br />
+	    		<a href="../modules/inetOrgPerson.html">inetOrgPerson</a><br />
+	    		<a href="../modules/kolabUser.html">kolabUser</a><br />
+	    		<a href="../modules/ldapPublicKey.html">ldapPublicKey</a><br />
+	    		<a href="../modules/nisMailAlias.html">nisMailAlias</a><br />
+	    		<a href="../modules/posixAccount.html">posixAccount</a><br />
+	    		<a href="../modules/posixGroup.html">posixGroup</a><br />
+	    		<a href="../modules/quota.html">quota</a><br />
+	    		<a href="../modules/samba3domain.html">samba3domain</a><br />
+	    		<a href="../modules/sambaAccount.html">sambaAccount</a><br />
+	    		<a href="../modules/sambaDomain.html">sambaDomain</a><br />
+	    		<a href="../modules/sambaGroupMapping.html">sambaGroupMapping</a><br />
+	    		<a href="../modules/sambaSamAccount.html">sambaSamAccount</a><br />
+	    		<a href="../modules/shadowAccount.html">shadowAccount</a><br />
+	    		<a href="../modules/smbHash.html">smbHash</a><br />
+	  </div>
+                </td>
+    <td>
+      <table cellpadding="10" cellspacing="0" width="100%" border="0"><tr><td valign="top">
+
+<h1>Class: smbHash</h1>
+Source Location: /lib/createntlm.inc<br /><br />
+
+
+
+<table width="100%" border="0">
+<tr><td valign="top">
+
+<h3><a href="#class_details">Class Overview</a></h3>
+<pre></pre><br />
+<div class="description">Calculates NT and LM hashes.</div><br /><br />
+
+
+
+
+
+
+        
+</td>
+
+<td valign="top">
+<h3><a href="#class_vars">Variables</a></h3>
+<ul>
+    <li><a href="../modules/smbHash.html#var$perm1">$perm1</a></li>
+    <li><a href="../modules/smbHash.html#var$perm2">$perm2</a></li>
+    <li><a href="../modules/smbHash.html#var$perm3">$perm3</a></li>
+    <li><a href="../modules/smbHash.html#var$perm4">$perm4</a></li>
+    <li><a href="../modules/smbHash.html#var$perm5">$perm5</a></li>
+    <li><a href="../modules/smbHash.html#var$perm6">$perm6</a></li>
+    <li><a href="../modules/smbHash.html#var$sbox">$sbox</a></li>
+    <li><a href="../modules/smbHash.html#var$sc">$sc</a></li>
+  </ul>
+</td>
+
+
+<td valign="top">
+<h3><a href="#class_methods">Methods</a></h3>
+<ul>
+    <li><a href="../modules/smbHash.html#methoddoHash">doHash</a></li>
+    <li><a href="../modules/smbHash.html#methodE_P16">E_P16</a></li>
+    <li><a href="../modules/smbHash.html#methodlmhash">lmhash</a></li>
+    <li><a href="../modules/smbHash.html#methodlshift">lshift</a></li>
+    <li><a href="../modules/smbHash.html#methodmxor">mxor</a></li>
+    <li><a href="../modules/smbHash.html#methodnthash">nthash</a></li>
+    <li><a href="../modules/smbHash.html#methodpermute">permute</a></li>
+    <li><a href="../modules/smbHash.html#methodsmb_hash">smb_hash</a></li>
+    <li><a href="../modules/smbHash.html#methodstr_to_key">str_to_key</a></li>
+    <li><a href="../modules/smbHash.html#methodunsigned_shift_r">unsigned_shift_r</a></li>
+    <li><a href="../modules/smbHash.html#methodx">x</a></li>
+  </ul>
+</td>
+
+</tr></table>
+<hr />
+
+<table width="100%" border="0"><tr>
+
+
+
+
+
+
+
+</tr></table>
+<hr />
+
+<a name="class_details"></a>
+<h3>Class Details</h3>
+<div class="tags">
+[line 41]<br />
+Calculates NT and LM hashes.<br /><br /><p>The important functions are lmhash($password) and nthash($password).</p><br /></div><br /><br />
+<div class="top">[ <a href="#top">Top</a> ]</div><br />
+
+<hr />
+<a name="class_vars"></a>
+<h3>Class Variables</h3>
+<div class="tags">
+	<a name="var$perm1"></a>
+	<p></p>
+	<h4>$perm1 = <span class="value">array(57,&nbsp;49,&nbsp;41,&nbsp;33,&nbsp;25,&nbsp;17,&nbsp;&nbsp;9,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1,&nbsp;58,&nbsp;50,&nbsp;42,&nbsp;34,&nbsp;26,&nbsp;18,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;10,&nbsp;&nbsp;2,&nbsp;59,&nbsp;51,&nbsp;43,&nbsp;35,&nbsp;27,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;19,&nbsp;11,&nbsp;&nbsp;3,&nbsp;60,&nbsp;52,&nbsp;44,&nbsp;36,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;63,&nbsp;55,&nbsp;47,&nbsp;39,&nbsp;31,&nbsp;23,&nbsp;15,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7,&nbsp;62,&nbsp;54,&nbsp;46,&nbsp;38,&nbsp;30,&nbsp;22,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;14,&nbsp;&nbsp;6,&nbsp;61,&nbsp;53,&nbsp;45,&nbsp;37,&nbsp;29,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;21,&nbsp;13,&nbsp;&nbsp;5,&nbsp;28,&nbsp;20,&nbsp;12,&nbsp;&nbsp;4)</span></h4>
+	<p>[line 45]</p>
+  
+  <br />
+	<div class="tags">
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td><b>Type:</b>&nbsp;&nbsp;</td>
+      <td>mixed</td>
+    </tr>
+      </table>
+	</div><br /><br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="var$perm2"></a>
+	<p></p>
+	<h4>$perm2 = <span class="value">array(14,&nbsp;17,&nbsp;11,&nbsp;24,&nbsp;&nbsp;1,&nbsp;&nbsp;5,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3,&nbsp;28,&nbsp;15,&nbsp;&nbsp;6,&nbsp;21,&nbsp;10,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;23,&nbsp;19,&nbsp;12,&nbsp;&nbsp;4,&nbsp;26,&nbsp;&nbsp;8,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;16,&nbsp;&nbsp;7,&nbsp;27,&nbsp;20,&nbsp;13,&nbsp;&nbsp;2,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;41,&nbsp;52,&nbsp;31,&nbsp;37,&nbsp;47,&nbsp;55,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;30,&nbsp;40,&nbsp;51,&nbsp;45,&nbsp;33,&nbsp;48,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;44,&nbsp;49,&nbsp;39,&nbsp;56,&nbsp;34,&nbsp;53,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;46,&nbsp;42,&nbsp;50,&nbsp;36,&nbsp;29,&nbsp;32)</span></h4>
+	<p>[line 54]</p>
+  
+  <br />
+	<div class="tags">
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td><b>Type:</b>&nbsp;&nbsp;</td>
+      <td>mixed</td>
+    </tr>
+      </table>
+	</div><br /><br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="var$perm3"></a>
+	<p></p>
+	<h4>$perm3 = <span class="value">array(58,&nbsp;50,&nbsp;42,&nbsp;34,&nbsp;26,&nbsp;18,&nbsp;10,&nbsp;&nbsp;2,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;60,&nbsp;52,&nbsp;44,&nbsp;36,&nbsp;28,&nbsp;20,&nbsp;12,&nbsp;&nbsp;4,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;62,&nbsp;54,&nbsp;46,&nbsp;38,&nbsp;30,&nbsp;22,&nbsp;14,&nbsp;&nbsp;6,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;64,&nbsp;56,&nbsp;48,&nbsp;40,&nbsp;32,&nbsp;24,&nbsp;16,&nbsp;&nbsp;8,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;57,&nbsp;49,&nbsp;41,&nbsp;33,&nbsp;25,&nbsp;17,&nbsp;&nbsp;9,&nbsp;&nbsp;1,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;59,&nbsp;51,&nbsp;43,&nbsp;35,&nbsp;27,&nbsp;19,&nbsp;11,&nbsp;&nbsp;3,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;61,&nbsp;53,&nbsp;45,&nbsp;37,&nbsp;29,&nbsp;21,&nbsp;13,&nbsp;&nbsp;5,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;63,&nbsp;55,&nbsp;47,&nbsp;39,&nbsp;31,&nbsp;23,&nbsp;15,&nbsp;&nbsp;7)</span></h4>
+	<p>[line 63]</p>
+  
+  <br />
+	<div class="tags">
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td><b>Type:</b>&nbsp;&nbsp;</td>
+      <td>mixed</td>
+    </tr>
+      </table>
+	</div><br /><br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="var$perm4"></a>
+	<p></p>
+	<h4>$perm4 = <span class="value">array(32,&nbsp;&nbsp;1,&nbsp;&nbsp;2,&nbsp;&nbsp;3,&nbsp;&nbsp;4,&nbsp;&nbsp;5,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4,&nbsp;&nbsp;5,&nbsp;&nbsp;6,&nbsp;&nbsp;7,&nbsp;&nbsp;8,&nbsp;&nbsp;9,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;8,&nbsp;&nbsp;9,&nbsp;10,&nbsp;11,&nbsp;12,&nbsp;13,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;12,&nbsp;13,&nbsp;14,&nbsp;15,&nbsp;16,&nbsp;17,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;16,&nbsp;17,&nbsp;18,&nbsp;19,&nbsp;20,&nbsp;21,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;20,&nbsp;21,&nbsp;22,&nbsp;23,&nbsp;24,&nbsp;25,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;24,&nbsp;25,&nbsp;26,&nbsp;27,&nbsp;28,&nbsp;29,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;28,&nbsp;29,&nbsp;30,&nbsp;31,&nbsp;32,&nbsp;&nbsp;1)</span></h4>
+	<p>[line 72]</p>
+  
+  <br />
+	<div class="tags">
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td><b>Type:</b>&nbsp;&nbsp;</td>
+      <td>mixed</td>
+    </tr>
+      </table>
+	</div><br /><br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="var$perm5"></a>
+	<p></p>
+	<h4>$perm5 = <span class="value">array(16,&nbsp;&nbsp;7,&nbsp;20,&nbsp;21,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;29,&nbsp;12,&nbsp;28,&nbsp;17,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1,&nbsp;15,&nbsp;23,&nbsp;26,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5,&nbsp;18,&nbsp;31,&nbsp;10,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2,&nbsp;&nbsp;8,&nbsp;24,&nbsp;14,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;32,&nbsp;27,&nbsp;&nbsp;3,&nbsp;&nbsp;9,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;19,&nbsp;13,&nbsp;30,&nbsp;&nbsp;6,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;22,&nbsp;11,&nbsp;&nbsp;4,&nbsp;25)</span></h4>
+	<p>[line 81]</p>
+  
+  <br />
+	<div class="tags">
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td><b>Type:</b>&nbsp;&nbsp;</td>
+      <td>mixed</td>
+    </tr>
+      </table>
+	</div><br /><br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="var$perm6"></a>
+	<p></p>
+	<h4>$perm6 = <span class="value">array(40,&nbsp;&nbsp;8,&nbsp;48,&nbsp;16,&nbsp;56,&nbsp;24,&nbsp;64,&nbsp;32,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;39,&nbsp;&nbsp;7,&nbsp;47,&nbsp;15,&nbsp;55,&nbsp;23,&nbsp;63,&nbsp;31,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;38,&nbsp;&nbsp;6,&nbsp;46,&nbsp;14,&nbsp;54,&nbsp;22,&nbsp;62,&nbsp;30,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;37,&nbsp;&nbsp;5,&nbsp;45,&nbsp;13,&nbsp;53,&nbsp;21,&nbsp;61,&nbsp;29,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;36,&nbsp;&nbsp;4,&nbsp;44,&nbsp;12,&nbsp;52,&nbsp;20,&nbsp;60,&nbsp;28,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;35,&nbsp;&nbsp;3,&nbsp;43,&nbsp;11,&nbsp;51,&nbsp;19,&nbsp;59,&nbsp;27,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;34,&nbsp;&nbsp;2,&nbsp;42,&nbsp;10,&nbsp;50,&nbsp;18,&nbsp;58,&nbsp;26,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;33,&nbsp;&nbsp;1,&nbsp;41,&nbsp;&nbsp;9,&nbsp;49,&nbsp;17,&nbsp;57,&nbsp;25)</span></h4>
+	<p>[line 90]</p>
+  
+  <br />
+	<div class="tags">
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td><b>Type:</b>&nbsp;&nbsp;</td>
+      <td>mixed</td>
+    </tr>
+      </table>
+	</div><br /><br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="var$sbox"></a>
+	<p></p>
+	<h4>$sbox = <span class="value">array(array(array(14,&nbsp;&nbsp;4,&nbsp;13,&nbsp;&nbsp;1,&nbsp;&nbsp;2,&nbsp;15,&nbsp;11,&nbsp;&nbsp;8,&nbsp;&nbsp;3,&nbsp;10,&nbsp;&nbsp;6,&nbsp;12,&nbsp;&nbsp;5,&nbsp;&nbsp;9,&nbsp;&nbsp;0,&nbsp;&nbsp;7),array(0,15,7,4,14,2,13,1,10,6,12,11,9,5,3,8),array(4,1,14,8,13,6,2,11,15,12,9,7,3,10,5,0),array(15,12,8,2,4,9,1,7,5,11,3,14,10,0,6,13)),array(array(15,1,8,14,6,11,3,4,9,7,2,13,12,0,5,10),array(3,13,4,7,15,2,8,14,12,0,1,10,6,9,11,5),array(0,14,7,11,10,4,13,1,5,8,12,6,9,3,2,15),array(13,8,10,1,3,15,4,2,11,6,7,12,0,5,14,9)),array(array(10,0,9,14,6,3,15,5,1,13,12,7,11,4,2,8),array(13,7,0,9,3,4,6,10,2,8,5,14,12,11,15,1),array(13,6,4,9,8,15,3,0,11,1,2,12,5,10,14,7),array(1,10,13,0,6,9,8,7,4,15,14,3,11,5,2,12)),array(array(7,13,14,3,0,6,9,10,1,2,8,5,11,12,4,15),array(13,8,11,5,6,15,0,3,4,7,2,12,1,10,14,9),array(10,6,9,0,12,11,7,13,15,1,3,14,5,2,8,4),array(3,15,0,6,10,1,13,8,9,4,5,11,12,7,2,14)),array(array(2,12,4,1,7,10,11,6,8,5,3,15,13,0,14,9),array(14,11,2,12,4,7,13,1,5,0,15,10,3,9,8,6),array(4,2,1,11,10,13,7,8,15,9,12,5,6,3,0,14),array(11,8,12,7,1,14,2,13,6,15,0,9,10,4,5,3)),array(array(12,1,10,15,9,2,6,8,0,13,3,4,14,7,5,11),array(10,15,4,2,7,12,9,5,6,1,13,14,0,11,3,8),array(9,14,15,5,2,8,12,3,7,0,4,10,1,13,11,6),array(4,3,2,12,9,5,15,10,11,14,1,7,6,0,8,13)),array(array(4,11,2,14,15,0,8,13,3,12,9,7,5,10,6,1),array(13,0,11,7,4,9,1,10,14,3,5,12,2,15,8,6),array(1,4,11,13,12,3,7,14,10,15,6,8,0,5,9,2),array(6,11,13,8,1,4,10,7,9,5,0,15,14,2,3,12)),array(array(13,2,8,4,6,15,11,1,10,9,3,14,5,0,12,7),array(1,15,13,8,10,3,7,4,12,5,6,11,0,14,9,2),array(7,11,4,1,9,12,14,2,0,6,10,13,15,3,5,8),array(2,1,14,7,4,10,8,13,15,12,9,0,3,5,6,11)))</span></h4>
+	<p>[line 103]</p>
+  
+  <br />
+	<div class="tags">
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td><b>Type:</b>&nbsp;&nbsp;</td>
+      <td>mixed</td>
+    </tr>
+      </table>
+	</div><br /><br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+	<a name="var$sc"></a>
+	<p></p>
+	<h4>$sc = <span class="value">array(1,&nbsp;1,&nbsp;2,&nbsp;2,&nbsp;2,&nbsp;2,&nbsp;2,&nbsp;2,&nbsp;1,&nbsp;2,&nbsp;2,&nbsp;2,&nbsp;2,&nbsp;2,&nbsp;2,&nbsp;1)</span></h4>
+	<p>[line 99]</p>
+  
+  <br />
+	<div class="tags">
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td><b>Type:</b>&nbsp;&nbsp;</td>
+      <td>mixed</td>
+    </tr>
+      </table>
+	</div><br /><br />
+	<div class="top">[ <a href="#top">Top</a> ]</div><br />
+</div><br />
+
+<hr />
+<a name="class_methods"></a>
+<h3>Class Methods</h3>
+<div class="tags">
+
+  <hr />
+	<a name="methoddoHash"></a>
+	<h3>method doHash <span class="smalllinenumber">[line 189]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>array doHash(
+array
+$in, array
+$key, boolean
+$forw)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		<br /><br />
+
+	
+
+
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">array&nbsp;&nbsp;</td>
+        <td><b>$in</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+          <tr>
+        <td class="type">array&nbsp;&nbsp;</td>
+        <td><b>$key</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+          <tr>
+        <td class="type">boolean&nbsp;&nbsp;</td>
+        <td><b>$forw</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodE_P16"></a>
+	<h3>method E_P16 <span class="smalllinenumber">[line 290]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>void E_P16(
+mixed
+$in)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		<br /><br />
+
+	
+
+
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodlmhash"></a>
+	<h3>method lmhash <span class="smalllinenumber">[line 314]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>string lmhash(
+[string
+$password = ""])</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Calculates the LM hash of a given password.<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>hash value</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+
+
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$password</b>&nbsp;&nbsp;</td>
+        <td>password</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodlshift"></a>
+	<h3>method lshift <span class="smalllinenumber">[line 149]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>array lshift(
+integer
+$count, array
+$data)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		<br /><br />
+
+	
+
+
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">array&nbsp;&nbsp;</td>
+        <td><b>$data</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+          <tr>
+        <td class="type">integer&nbsp;&nbsp;</td>
+        <td><b>$count</b>&nbsp;&nbsp;</td>
+        <td>count</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodmxor"></a>
+	<h3>method mxor <span class="smalllinenumber">[line 175]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>array mxor(
+array
+$in1, array
+$in2)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		<br /><br />
+
+	
+
+
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">array&nbsp;&nbsp;</td>
+        <td><b>$in1</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+          <tr>
+        <td class="type">array&nbsp;&nbsp;</td>
+        <td><b>$in2</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodnthash"></a>
+	<h3>method nthash <span class="smalllinenumber">[line 331]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>string nthash(
+[string
+$password = ""])</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Calculates the NT hash of a given password.<br /><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>return:</b>&nbsp;&nbsp;</td><td>hash value</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+
+
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$password</b>&nbsp;&nbsp;</td>
+        <td>password</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodpermute"></a>
+	<h3>method permute <span class="smalllinenumber">[line 162]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>array permute(
+array
+$in, array
+$p, mixed
+$n)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		<br /><br />
+
+	
+
+
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">array&nbsp;&nbsp;</td>
+        <td><b>$in</b>&nbsp;&nbsp;</td>
+        <td>in input data</td>
+      </tr>
+          <tr>
+        <td class="type">array&nbsp;&nbsp;</td>
+        <td><b>$p</b>&nbsp;&nbsp;</td>
+        <td>p permutation</td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodsmb_hash"></a>
+	<h3>method smb_hash <span class="smalllinenumber">[line 270]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>void smb_hash(
+mixed
+$in, mixed
+$key, mixed
+$forw)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		<br /><br />
+
+	
+
+
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodstr_to_key"></a>
+	<h3>method str_to_key <span class="smalllinenumber">[line 255]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>void str_to_key(
+mixed
+$str)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		<br /><br />
+
+	
+
+
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodunsigned_shift_r"></a>
+	<h3>method unsigned_shift_r <span class="smalllinenumber">[line 340]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>void unsigned_shift_r(
+mixed
+$a, mixed
+$b)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Unsigned shift operation for 32bit values.<br /><br /><p>PHP 4 only supports signed shifts by default.</p><br /><br /><br />
+
+	
+
+
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodx"></a>
+	<h3>method x <span class="smalllinenumber">[line 139]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>void x(
+mixed
+$i)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Fixes too large numbers<br /><br /><br /><br />
+
+	
+
+
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+</div><br />
+
+
+        <div class="credit">
+		    <hr />
+		    Documentation generated on Wed, 15 Nov 2006 18:00:41 +0100 by <a href="http://www.phpdoc.org">phpDocumentor 1.2.3</a>
+	      </div>
+      </td></tr></table>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
