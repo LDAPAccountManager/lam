@@ -5,7 +5,6 @@
   <link rel="stylesheet" type="text/css" href="style/layout.css">
 </head>
 <body>
-<div style="text-align: center;">
 <h1>Module HowTo - Configuration options<br>
 </h1>
 <div style="text-align: left;"><br>
@@ -193,61 +192,6 @@ check for the nonexistant option "cmpGID" and define it as optional.
 This will do the comparison check.<br>
 <br>
 <br>
-<h2>3. Descriptions</h2>
-What is still missing is a descriptive title for the fieldset in the
-configuration editor and a description for each configuration option
-which is displayed when the user saves the settings.<br>
-<br>
-These descriptions are defined with <span style="font-weight: bold;">get_configDescriptions()</span>
-or <span style="font-weight: bold;">meta['config_descriptions']</span>.<br>
-<br>
-<span style="font-weight: bold; text-decoration: underline;">Example:</span><br
- style="font-weight: bold; text-decoration: underline;">
-<br>
-The <span style="font-style: italic;">posixGroup</span> module will
-set a title for the fieldset and a description for the three
-configuration options.<br>
-<br>
-<table style="width: 100%; text-align: left;" class="mod-code"
- border="0" cellpadding="2" cellspacing="2">
-  <tbody>
-    <tr>
-      <td style="vertical-align: top;">&nbsp; &nbsp; /**<br>
-&nbsp;&nbsp;&nbsp; * Returns meta data that is interpreted by parent
-class<br>
-&nbsp;&nbsp;&nbsp; *<br>
-&nbsp;&nbsp;&nbsp; * @return array array with meta data<br>
-&nbsp;&nbsp;&nbsp; */<br>
-&nbsp;&nbsp;&nbsp;<span style="font-weight: bold;"> function</span>
-get_metaData() {<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; $return = array();<br>
-&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; // configuration descriptions<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;$return[<span
- style="color: rgb(255, 0, 0);">'config_descriptions'</span>] = array(<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;'legend' =&gt;
-_("GID ranges for Unix groups"),<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;'descriptions'
-=&gt; array(<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
-&nbsp;'posixGroup_minGID' =&gt; _("Minimum GID number for Unix groups"),<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
-&nbsp;'posixGroup_maxGID' =&gt; _("Maximum GID number for Unix groups"),<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
-&nbsp;'posixGroup_pwdHash' =&gt; _("Password hash type for Unix
-groups"),<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;)<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [...]<br>
-      </td>
-    </tr>
-  </tbody>
-</table>
-<br>
-This will set the fieldset title to "GID ranges for Unix groups" and
-the descriptions for the settings list.<br>
-<span style="font-weight: bold;"></span>
-<h2><span style="font-weight: bold;"></span></h2>
-</div>
 </div>
 </body>
 </html>
