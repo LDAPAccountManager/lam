@@ -212,6 +212,40 @@ function saveSelfServiceProfile($name, $scope, $profile) {
 	return true;
 }
 
+/**
+* Returns a hash array (module name => elements) of all module options for the configuration page.
+*
+* @param string $scope account type
+* @return array configuration options
+*/
+function getSelfServiceSettings($scope) {
+	$return = array();
+	$modules = getAvailableModules($scope);
+	for ($i = 0; $i < sizeof($modules); $i++) {
+		$m = new $modules[$i]($scope);
+		$return[$modules[$i]] = $m->getSelfServiceSettings();
+	}
+	return $return;
+}
+
+/**
+* Checks if the self service settings are valid
+*
+* @param string $scope account type
+* @param array $options hash array containing all options (name => array(...))
+* @return array list of error messages
+*/
+function checkSelfServiceSettings($scope, $options) {
+	$return = array();
+	$modules = getAvailableModules($scope);
+	for ($i = 0; $i < sizeof($modules); $i++) {
+		$m = new $modules[$i]($scope);
+		$errors = $m->checkSelfServiceSettings($options);
+		$return = array_merge($return, $errors);
+	}
+	return $return;
+}
+
 
 /**
  * Includes all settings of a self service profile.
@@ -249,6 +283,9 @@ class selfServiceProfile {
 	 *
 	 */
 	var $inputFields;
+	
+	/** configuration settings of modules */
+	var $moduleSettings;
 
 	/**
 	 * Constructor

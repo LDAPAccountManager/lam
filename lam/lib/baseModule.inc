@@ -48,6 +48,9 @@ class baseModule {
 	/** configuration settings of all modules */
 	var $moduleSettings;
 
+	/** self service settings of all modules */
+	var $selfServiceSettings;
+
 	/** name of parent accountContainer ($_SESSION[$base]) */
 	var $base;
 
@@ -69,7 +72,9 @@ class baseModule {
 		$this->scope = $scope;
 		$this->load_Messages();
 		$this->meta = $this->get_metaData();
+		// load configuration
 		if (isset($_SESSION['config'])) $this->moduleSettings = $_SESSION['config']->get_moduleSettings();
+		if (isset($_SESSION['selfServiceProfile'])) $this->selfServiceSettings = $_SESSION['selfServiceProfile']->moduleSettings;
 	}
 
 	/**
@@ -684,6 +689,27 @@ class baseModule {
 	function checkSelfServiceOptions($fields, $attributes) {
 		$return = array('messages' => array(), 'add' => array(), 'del' => array(), 'mod' => array());
 		return $return;
+	}
+
+	/**
+	 * Returns a list of self service configuration settings.
+	 *
+	 * @return array settings
+	 */
+	function getSelfServiceSettings() {
+		if (isset($this->meta['selfServiceSettings']) && is_array($this->meta['selfServiceSettings'])) return $this->meta['selfServiceSettings'];
+		else return array();
+	}
+
+	/**
+	 * Checks if the self service settings are valid.
+	 *
+	 * @param array $options settings
+	 * @return array error messages
+	 */
+	function checkSelfServiceSettings($options) {
+		// needs to be implemented by the subclasses, if needed
+		return array();
 	}
 
 }

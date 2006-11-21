@@ -128,6 +128,17 @@ class posixAccount extends baseModule {
 			$return['selfServiceSearchAttributes'] = array('uid');
 			// self service field settings
 			$return['selfServiceFieldSettings'] = array('password' => _('Password'));
+			// self service configuration settings
+			$return['selfServiceSettings'] = array(
+			array(
+				0 => array('kind' => 'text', 'text' => '<b>' . _("Password hash type") . ': &nbsp;</b>'),
+				1 => array('kind' => 'select', 'name' => 'posixAccount_pwdHash', 'size' => '1',
+					'options' => array("CRYPT", "SHA", "SSHA", "MD5", "SMD5", "PLAIN"), 'options_selected' => array('SSHA')),
+				2 => array('kind' => 'text', 'value' => '&nbsp;'),
+				3 => array('kind' => 'text', 'value' => '&nbsp;'),
+				4 => array('kind' => 'text', 'value' => '&nbsp;'),
+				5 => array('kind' => 'help', 'value' => 'pwdHash'))
+			);
 		}
 		// profile checks
 		$return['profile_checks']['posixAccount_homeDirectory'] = array('type' => 'ext_preg', 'regex' => 'homeDirectory',
@@ -1530,7 +1541,7 @@ class posixAccount extends baseModule {
 						$return['messages'][] = $this->messages['userPassword'][1];
 					}
 					else {
-						$return['mod']['userPassword'][0] = pwd_hash($_POST['posixAccount_password'], true, 'SSHA');
+						$return['mod']['userPassword'][0] = pwd_hash($_POST['posixAccount_password'], true, $this->selfServiceSettings['posixAccount_pwdHash'][0]);
 						$_SESSION['selfService_clientPasswordNew'] = $_POST['posixAccount_password'];
 					}
 				}
