@@ -1,9 +1,11 @@
 ??? 1.2.0
   - Samba: better handling of date values
+  - LAM Pro: modules can define configuration settings (Unix: password hashing)
 
   Developers:
     API changes:
     - removed get_configDescription() from module interface
+    - added functions to handle configuration settings for LAM Pro
 
 
 01.11.2006 1.1.1
