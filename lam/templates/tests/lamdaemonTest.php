@@ -182,10 +182,10 @@ function lamTestLamdaemon($command, $stopTest, $handle, $testText) {
 			}
 		}
 		$errOut = @fread($stderr, 100000);
-		if ((stripos($errOut, "sudoers") !== false) || (stripos($errOut, "sorry") !== false)) {
+		if ((strpos(strtolower($errOut), "sudoers") !== false) || (strpos(strtolower($errOut), "sorry") !== false)) {
 			$return[] = "ERROR," . _("Sudo is not setup correctly!") . "," . str_replace(",", " ", $errOut);
 		}
-		if ((sizeof($return) == 1) && (stripos($return[0], "error") === false)) {
+		if ((sizeof($return) == 1) && (strpos(strtolower($return[0]), "error") === false)) {
 			$lamdaemonOk = true;
 		}
 		if ($lamdaemonOk) {
