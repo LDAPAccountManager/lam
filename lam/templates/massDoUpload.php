@@ -100,7 +100,7 @@ if (($_SESSION['mass_counter'] < sizeof($accounts)) || !isset($_SESSION['mass_po
 			$_SESSION['mass_postActions']['finished'] = true;
 		}
 		for ($i = 0; $i < sizeof($return['errors']); $i++) $_SESSION['mass_errors'][] = $return['errors'][$i];
-		echo "<h1>" . _("Additional tasks for module:") . ' ' . $return['module'] . "</h1>\n";
+		echo "<h1>" . _("Additional tasks for module:") . ' ' . getModuleAlias($return['module'], $_SESSION['mass_scope']) . "</h1>\n";
 		echo "<table align=\"center\" width=\"80%\" style=\"border-color: grey\" border=\"2\" cellspacing=\"0\" rules=\"none\">\n";
 		echo "<tr><td bgcolor=\"blue\" width=\"" . $return['progress'] . "%\">&nbsp;</td>";
 		echo "<td bgcolor=\"grey\" width=\"" . (100 - $return['progress']) . "%\">&nbsp;</td></tr>\n";
