@@ -80,7 +80,7 @@ $helpArray = array (
 						":</b><br><br>".
 						_("dc=yourcompany,dc=com")),
 				"206" => array ("ext" => "FALSE", "Headline" => _("Configuration wizard") . " - " . _("List attributes"),
-					"Text" => _("This is the list of attributes to show in the account list. The entries can either be predefined values, \"#attribute\", or individual ones, \"attribute:description\". Several entries are seperated by semicolons.") .
+					"Text" => _("This is the list of attributes to show in the account list. The entries can either be predefined values, \"#attribute\", or individual ones, \"attribute:description\". Several entries are separated by semicolons.") .
 						"<br><br><br><big><b>" .
 						_("Example") . ": </b></big>#homeDirectory;#uid;#uidNumber;#gidNumber;mail:Mail address<br><br>" .
 						"<br><big><b>" . _("Predefined values") . ":</b></big><br><br><br>" . $entry206Example),
