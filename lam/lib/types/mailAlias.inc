@@ -80,7 +80,7 @@ class mailAlias extends baseType {
 	function getListAttributeDescriptions() {
 		return array(
 			"cn" => _("Alias name"),
-			"rfc822MailMember" => _("Recipient list")
+			"rfc822mailmember" => _("Recipient list")
 			);
 	}
 

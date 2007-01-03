@@ -79,8 +79,8 @@ class smbDomain extends baseType {
 	*/
 	function getListAttributeDescriptions() {
 		return array(
-			"sambaSID" => _("Domain SID"),
-			"sambaDomainName" => _("Domain name")
+			"sambasid" => _("Domain SID"),
+			"sambadomainname" => _("Domain name")
 			);
 	}
 
