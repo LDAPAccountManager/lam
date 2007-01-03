@@ -82,7 +82,7 @@ class sambaDomain extends baseModule {
 				"Headline" => _("Next group RID"),
 				"Text" => _("Next RID to use when creating group accounts (only used by Winbind).")
 			),
-			'nextRID' => array(
+			'RIDbase' => array(
 				"Headline" => _("RID base"),
 				"Text" => _("Used for calculating RIDs from UID/GID. Do not change if unsure.")
 			),

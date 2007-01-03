@@ -396,6 +396,10 @@ class posixAccount extends baseModule {
 				'description' => array (
 					"Headline" => _("Description"),
 					"Text" => _("Host description. If left empty host name will be used.")
+				),
+				'cn' => array (
+					"Headline" => _("Common name"),
+					"Text" => _("This is the natural name of the host. If empty, the host name will be used.")
 				)
 			)
 		);
