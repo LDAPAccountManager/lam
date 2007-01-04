@@ -344,9 +344,10 @@ echo ("<p></p>\n");
 echo ("<fieldset><legend><b>" . _("Security settings") . "</b></legend>\n");
 echo ("<table border=0>\n");
 // admin list
+$adminText = implode("\n", explode(";", $conf->get_Adminstring()));
 echo ("<tr><td align=\"right\"><b>".
 	_("List of valid users") . " *: </b></td>".
-	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"admins\" value=\"" . $conf->get_Adminstring() . "\"></td>\n");
+	"<td><textarea tabindex=\"$tabindex\" size=50 type=\"text\" name=\"admins\" cols=75 rows=5>" . $adminText . "</textarea></td>\n");
 echo "<td>";
 echo "<a href=\"../help.php?HelpNumber=207\" target=\"lamhelp\">";
 echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
@@ -427,7 +428,14 @@ function saveSettings() {
 	if (!$conf->set_cacheTimeout($_POST['cachetimeout'])) {
 		$errors[] = array("ERROR", _("Cache timeout is invalid!"));
 	}
-	if (!$conf->set_Adminstring($_POST['admins'])) {
+	$adminText = $_POST['admins'];
+	$adminText = explode("\n", $adminText);
+	$adminTextNew = array();
+	for ($i = 0; $i < sizeof($adminText); $i++) {
+		if (trim($adminText[$i]) == "") continue;
+		$adminTextNew[] = trim($adminText[$i]);
+	}
+	if (!$conf->set_Adminstring(implode(";", $adminTextNew))) {
 		$errors[] = array("ERROR", _("List of admin users is empty or invalid!"));
 	}
 	if (!$conf->set_Suffix("tree", $_POST['sufftree'])) {

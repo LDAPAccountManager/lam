@@ -85,7 +85,7 @@ $helpArray = array (
 						_("Example") . ": </b></big>#homeDirectory;#uid;#uidNumber;#gidNumber;mail:Mail address<br><br>" .
 						"<br><big><b>" . _("Predefined values") . ":</b></big><br><br><br>" . $entry206Example),
 				"207" => array ("ext" => "FALSE", "Headline" => _("Configuration wizard") . " - " . _("Valid users"),
-					"Text" => _("This is a list of valid DN entries of all users that are allowed to login to LDAP Account Manager. The user names have to be separated by semicolons.") .
+					"Text" => _("This is a list of valid DN entries of all users that are allowed to login to LDAP Account Manager. Please enter one DN per line.") .
 						"<br><br><b>" .
 						_("Example") .
 						": </b>cn=admin,dc=yourdomain,dc=org;cn=manager,dc=yourdomain,dc=org"),
