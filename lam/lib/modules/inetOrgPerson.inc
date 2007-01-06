@@ -728,11 +728,11 @@ class inetOrgPerson extends baseModule {
 		if ($_POST['form_subpage_inetOrgPerson_attributes_back']) return array();
 		$messages = array();
 		if ($_POST['userPassword'] != $_POST['userPassword2']) {
-			$messages['userPassword'][] = $this->messages['userPassword'][0];
+			$messages[] = $this->messages['userPassword'][0];
 		}
 		else {
 			if (!get_preg($_POST['userPassword'], 'password')) {
-				$messages['userPassword'][] = $this->messages['userPassword'][1];
+				$messages[] = $this->messages['userPassword'][1];
 			}
 			else {
 				$this->attributes['userPassword'][0] = $_POST['userPassword'];
@@ -776,7 +776,7 @@ class inetOrgPerson extends baseModule {
 			$this->attributes['jpegPhoto'][0] = $data;
 		}
 		else {
-			$messages['photo'][] = $this->messages['photo'][0];
+			$messages[] = $this->messages['photo'][0];
 		}
 		return $messages;
 	}
