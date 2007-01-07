@@ -209,7 +209,10 @@ class sambaSamAccount extends baseModule {
 				"Text" => _("If set to \"true\" password does not expire. (Setting X-Flag)")),
 			"deactivated" => array(
 				"ext" => "FALSE", "Headline" => _("Account is deactivated"),
-				"Text" => _("If checked account will be deactivated. (Setting D-Flag)")),
+				"Text" => _("If checked then the account will be deactivated. (Setting D-Flag)")),
+			"locked" => array(
+				"ext" => "FALSE", "Headline" => _("Account is locked"),
+				"Text" => _("If checked then the account will be locked (setting L-Flag). You usually want to use this setting to unlock user accounts which were locked because of failed login attempts.")),
 			"deactivatedUpload" => array(
 				"ext" => "FALSE", "Headline" => _("Account is deactivated"),
 				"Text" => _("If set to \"true\" account will be deactivated. (Setting D-Flag)")),
@@ -588,6 +591,7 @@ class sambaSamAccount extends baseModule {
 		if ($_POST['sambaAcctFlagsH']) $flag .= "H";
 		if ($_POST['sambaAcctFlagsW']) $flag .= "W";
 		if ($_POST['sambaAcctFlagsU']) $flag .= "U";
+		if ($_POST['sambaAcctFlagsL']) $flag .= "L";
 		// Expand string to fixed length
 		$flag = str_pad($flag, 12);
 		// End character
@@ -879,14 +883,21 @@ class sambaSamAccount extends baseModule {
 					2 => array ('kind' => 'help', 'value' => 'useunixpwd'));
 			}
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Use no password') ),
-				1 => array ( 'kind' => 'input', 'name' => 'sambaAcctFlagsN', 'type' => 'checkbox', 'checked' => $this->nopwd, 'value' => 'true'),
+				1 => array ( 'kind' => 'input', 'name' => 'sambaAcctFlagsN', 'type' => 'checkbox', 'checked' => $this->nopwd),
 				2 => array ('kind' => 'help', 'value' => 'noPassword'));
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Password does not expire') ),
-				1 => array ( 'kind' => 'input', 'name' => 'sambaAcctFlagsX', 'type' => 'checkbox', 'checked' => $this->noexpire, 'value' => 'true'),
+				1 => array ( 'kind' => 'input', 'name' => 'sambaAcctFlagsX', 'type' => 'checkbox', 'checked' => $this->noexpire),
 				2 => array ('kind' => 'help', 'value' => 'noExpire'));
 			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Account is deactivated') ),
-				1 => array ( 'kind' => 'input', 'name' => 'sambaAcctFlagsD', 'type' => 'checkbox', 'checked' => $this->deactivated, 'value' => 'true'),
+				1 => array ( 'kind' => 'input', 'name' => 'sambaAcctFlagsD', 'type' => 'checkbox', 'checked' => $this->deactivated),
 				2 => array ('kind' => 'help', 'value' => 'deactivated'));
+			$locked = false;
+			if (isset($this->attributes['sambaAcctFlags'][0]) && (strpos($this->attributes['sambaAcctFlags'][0], "L") !== false)) {
+				$locked = true;
+			}
+			$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Account is locked') ),
+				1 => array ( 'kind' => 'input', 'name' => 'sambaAcctFlagsL', 'type' => 'checkbox', 'checked' => $locked),
+				2 => array ('kind' => 'help', 'value' => 'locked'));
 
 			$dateValue = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 			if (isset($this->attributes['sambaPwdCanChange'][0])) {
