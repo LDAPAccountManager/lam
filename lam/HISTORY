@@ -1,5 +1,5 @@
 24.01.2007 1.2.0
-  - Samba: better handling of date values
+  - Samba 3: better handling of date values
   - Samba 3: Handling of locked accounts (RFE 1609076)
   - LAM Pro: modules can define configuration settings (Unix: password hashing)
   - LAM Pro: management of groupOfNames and groupOfUniqueNames entries (RFE 875482)
