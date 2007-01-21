@@ -14,7 +14,7 @@ msgstr ""
 "Project-Id-Version: messages\n"
 "Report-Msgid-Bugs-To: post@rolandgruber.de \n"
 "POT-Creation-Date: 2004-01-14 17:45+0200\n"
-"PO-Revision-Date: 2007-01-18 21:30+0100\n"
+"PO-Revision-Date: 2007-01-21 16:52+0100\n"
 "Last-Translator: Kakasy Gergely <kakasy.g@gmail.com>\n"
 "Language-Team: Hungarian\n"
 "MIME-Version: 1.0\n"
@@ -27,13 +27,13 @@ msgstr ""
 #: ../lib/modules/posixAccount.inc:360
 msgid "$user and $group are replaced with user name or primary group name."
 msgstr ""
-"a $user és a $group a felhasználónévvel vagy az elsődleges csoportnévvel "
+"A(z) $user és a $group a felhasználónévvel vagy az elsődleges csoportnévvel "
 "helyettesítve."
 
 #: ../lib/types/mailAlias.inc:108
 #, php-format
 msgid "%s alias(es) found"
-msgstr "%s alias-t találtam"
+msgstr "%s álnevet találtam"
 
 #: ../lib/types/smbDomain.inc:108
 #, php-format
@@ -82,7 +82,7 @@ msgstr "/home/imolnar"
 
 #: ../templates/massBuildAccounts.php:114
 msgid "A required column is missing in your CSV file."
-msgstr "Egy szükséges oszlop hiányzik az Ön CSV file-jából."
+msgstr "Egy szükséges oszlop hiányzik az Ön CSV fájljából."
 
 #: ../lib/modules/kolabUser.inc:133
 msgid ""
@@ -91,7 +91,7 @@ msgid ""
 msgstr ""
 "A felhasználó meghatározhatja, ki az, aki önhatalmúlag tevékenykedhet. Ez a "
 "tulajdonság akkor kerül ellenőrzésre, amikor a Kolab smtp daemon-t (Postfix) "
-"használjuk email-ek küldésére."
+"használjuk e-mail-ek küldésére."
 
 #: ../lib/modules/sambaSamAccount.inc:443
 msgid "Abu Dhabi, Muscat, Baku"
@@ -99,7 +99,7 @@ msgstr "Abu Dhabi, Maszkat, Baku"
 
 #: ../lib/modules/account.inc:53
 msgid "Account"
-msgstr "Témaszám"
+msgstr "Fiók"
 
 #: ../templates/massBuildAccounts.php:167 ../lib/modules/account.inc:131
 #: ../lib/modules/ieee802device.inc:85 ../lib/modules/posixGroup.inc:461
@@ -160,15 +160,15 @@ msgstr "Témaszám"
 #: ../lib/modules/nisMailAlias.inc:102 ../lib/modules/nisMailAlias.inc:104
 #, php-format
 msgid "Account %s:"
-msgstr "%s témaszám:"
+msgstr "%s fiók:"
 
 #: ../templates/masscreate.php:83
 msgid "Account creation via file upload"
-msgstr "Témaszám létrehozása file feltöltésével"
+msgstr "Fiók létrehozása fájl feltöltésével"
 
 #: ../lib/modules/posixAccount.inc:367
 msgid "Account deactivated"
-msgstr "Témaszám letiltva"
+msgstr "Fiók letiltva"
 
 #: ../lib/modules/sambaSamAccount.inc:268
 #: ../lib/modules/sambaSamAccount.inc:346
@@ -179,11 +179,11 @@ msgstr "Témaszám letiltva"
 #: ../lib/modules/shadowAccount.inc:201 ../lib/modules/shadowAccount.inc:289
 #: ../lib/modules/shadowAccount.inc:334
 msgid "Account expiration date"
-msgstr "A témaszám lejáratának dátuma"
+msgstr "A fiók lejáratának dátuma"
 
 #: ../lib/modules/shadowAccount.inc:362
 msgid "Account inactive"
-msgstr "Használaton kívüli témaszám"
+msgstr "Használaton kívüli fiók"
 
 #: ../lib/modules/sambaAccount.inc:138 ../lib/modules/sambaAccount.inc:255
 #: ../lib/modules/sambaAccount.inc:367 ../lib/modules/sambaAccount.inc:370
@@ -193,32 +193,32 @@ msgstr "Használaton kívüli témaszám"
 #: ../lib/modules/sambaSamAccount.inc:891
 #: ../lib/modules/sambaSamAccount.inc:1189
 msgid "Account is deactivated"
-msgstr "Témaszám letiltva"
+msgstr "Fiók letiltva"
 
 #: ../lib/modules/sambaSamAccount.inc:214
 #: ../lib/modules/sambaSamAccount.inc:898
 msgid "Account is locked"
-msgstr "Témaszám zárolva"
+msgstr "Fiók zárolva"
 
 #: ../help/help.inc:139
 msgid "Account lists - Filters"
-msgstr "Témaszámlisták - Szűrők"
+msgstr "Fióklisták - Szűrők"
 
 #: ../templates/delete.php:87
 msgid "Account name:"
-msgstr "Témaszám neve"
+msgstr "Fiók neve"
 
 #: ../templates/pdfedit/pdfdelete.php:82 ../lib/modules/groupOfNames.inc:219
 msgid "Account type"
-msgstr "Témaszám típusa"
+msgstr "Fiók típusa"
 
 #: ../templates/config/conftypes.php:168
 msgid "Account type selection"
-msgstr "Témaszám típusának kiválasztása"
+msgstr "Fiók típusának kiválasztása"
 
 #: ../templates/config/confmain.php:192 ../help/help.inc:112
 msgid "Account types and modules"
-msgstr "Témaszám-típusok és modulok"
+msgstr "Fióktípusok és modulok"
 
 #: ../help/help.inc:114
 msgid ""
@@ -226,17 +226,17 @@ msgid ""
 "should be managed. The account modules define which properties (e.g. Unix "
 "and Samba) can be edited."
 msgstr ""
-"A témaszám-típusok határozzák meg, hogy milyen fajta LDAP bejegyzéseket (pl. "
-"felhasználók és csoportok) kell beállítani.A témaszám-modulok azt határozzák "
+"A fióktípusok határozzák meg, hogy milyen fajta LDAP bejegyzéseket (pl. "
+"felhasználók és csoportok) kell beállítani.A fiókmodulok azt határozzák "
 "meg, hogy mely tulajdonságok (pl. Unix és Samba) szerkeszthetõek."
 
 #: ../lib/modules.inc:985
 msgid "Account was created successfully."
-msgstr "Témaszám sikeresen létrehozva."
+msgstr "Fiók sikeresen létrehozva."
 
 #: ../lib/modules.inc:988
 msgid "Account was modified successfully."
-msgstr "Témaszám sikeresen módosítva."
+msgstr "Fiók sikeresen módosítva."
 
 #: ../lib/modules/posixAccount.inc:343
 msgid "Activating this checkbox will remove the user's home directory."
@@ -244,7 +244,7 @@ msgstr "A jelölõnégyzet megjelölésével törli a felhasználó home könyvt
 
 #: ../templates/config/conftypes.php:189
 msgid "Active account types"
-msgstr "Aktív témaszám-típusok"
+msgstr "Aktív fióktípusok"
 
 #: ../templates/tree/add_value_form.php:157
 #: ../templates/tree/add_value_form.php:182
@@ -341,11 +341,11 @@ msgstr "Az algoritmikus RID alap nem szám!"
 #: ../lib/modules/nisMailAlias.inc:78 ../lib/modules/nisMailAlias.inc:133
 #: ../lib/modules/nisMailAlias.inc:270
 msgid "Alias name"
-msgstr "Alias név"
+msgstr "Álnév"
 
 #: ../templates/schema/schema.php:231
 msgid "Aliases"
-msgstr "Alias-ok"
+msgstr "Álnevek"
 
 #: ../templates/selfService/selfServiceMain.php:129
 #: ../templates/initsuff.php:156
@@ -419,7 +419,7 @@ msgstr "Rendelkezésre álló PDF mezők"
 
 #: ../templates/config/conftypes.php:172
 msgid "Available account types"
-msgstr "Rendelkezésre álló témaszám-típusok"
+msgstr "Rendelkezésre álló fióktípusok"
 
 #: ../lib/modules/posixAccount.inc:930
 msgid "Available groups"
@@ -465,7 +465,7 @@ msgstr "Vissza a PDF szerkesztőbe"
 
 #: ../lib/modules.inc:997
 msgid "Back to account list"
-msgstr "Vissza a témaszámlistához"
+msgstr "Vissza a fióklistához"
 
 #: ../templates/lists/userlink.php:66
 msgid "Back to group list"
@@ -565,7 +565,7 @@ msgstr "Beépített csoport"
 
 #: ../templates/masscreate.php:134
 msgid "CSV file:"
-msgstr "CSV file:"
+msgstr "CSV fájl:"
 
 #: ../templates/config/confmain.php:171 ../help/help.inc:108
 msgid "Cache timeout"
@@ -613,7 +613,7 @@ msgstr "Nem tudok csatlakozni a megadott LDAP szerverhez. Kérem, próbálja új
 
 #: ../lib/config.inc:342 ../lib/config.inc:824
 msgid "Cannot open config file!"
-msgstr "Nem tudom megnyitni a konfigurációs file-t!"
+msgstr "Nem tudom megnyitni a konfigurációs fájlt!"
 
 #: ../templates/selfService/adminMain.php:345
 msgid "Captions and labels"
@@ -748,7 +748,7 @@ msgstr "Nem sikerült végrehajtani az ldap_modify műveletet."
 #: ../templates/config/profmanage.php:99
 #: ../templates/selfService/profManage.php:85
 msgid "Could not rename file!"
-msgstr "Nem tudom átnevezni a file-t!"
+msgstr "Nem tudom átnevezni a fájlt!"
 
 #: ../templates/pdfedit/pdfpage.php:112
 msgid "Could not save PDF profile, access denied."
@@ -777,11 +777,11 @@ msgstr "Objektum létrehozása"
 
 #: ../lib/modules.inc:1004 ../help/help.inc:156
 msgid "Create PDF file"
-msgstr "PDF file létrehozása"
+msgstr "PDF fájl létrehozása"
 
 #: ../lib/types/mailAlias.inc:113
 msgid "Create PDF for all aliases"
-msgstr "PDF létrehozása az összes aliashoz"
+msgstr "PDF létrehozása az összes álnévhez"
 
 #: ../lib/types/smbDomain.inc:113
 msgid "Create PDF for all domains"
@@ -805,23 +805,23 @@ msgstr "PDF létrehozása az összes felhasználóhoz"
 
 #: ../lib/types/mailAlias.inc:112
 msgid "Create PDF for selected alias(es)"
-msgstr "PDF létrehozása a kiválasztott alias(ok)hoz"
+msgstr "PDF létrehozása a kiválasztott álnévhez"
 
 #: ../lib/types/smbDomain.inc:112
 msgid "Create PDF for selected domain(s)"
-msgstr "PDF létrehozása a kiválasztott tartomány(ok)hoz"
+msgstr "PDF létrehozása a kiválasztott tartományhoz"
 
 #: ../lib/types/group.inc:114
 msgid "Create PDF for selected group(s)"
-msgstr "PDF létrehozása a kiválasztott csoport(ok)hoz"
+msgstr "PDF létrehozása a kiválasztott csoporthoz"
 
 #: ../lib/types/host.inc:116
 msgid "Create PDF for selected host(s)"
-msgstr "PDF létrehozása a kiválasztott gazdaállomás(ok)hoz"
+msgstr "PDF létrehozása a kiválasztott gazdaállomáshoz"
 
 #: ../lib/lists.inc:98
 msgid "Create PDF for selected object(s)"
-msgstr "PDF létrehozása a kiválasztott objektum(ok)hoz"
+msgstr "PDF létrehozása a kiválasztott objektumhoz"
 
 #: ../lib/types/user.inc:126
 msgid "Create PDF for selected user(s)"
@@ -837,11 +837,11 @@ msgstr "Új profil létrehozása"
 
 #: ../lib/modules.inc:1047
 msgid "Create account"
-msgstr "Témaszám létrehozása"
+msgstr "Fiók létrehozása"
 
 #: ../lib/modules.inc:996
 msgid "Create another account"
-msgstr "Másik témaszám létrehozása"
+msgstr "Másik fiók létrehozása"
 
 #: ../lib/modules/posixAccount.inc:849
 msgid "Create home directory"
@@ -861,7 +861,7 @@ msgstr "Új profil létrehozva."
 
 #: ../templates/tools.php:63
 msgid "Creates accounts by uploading a CSV formated file."
-msgstr "Témaszámok létrehozása CSV formátumú file feltöltésével."
+msgstr "Fiókok létrehozása CSV formátumú fájl feltöltésével."
 
 #: ../templates/tree/add_value_form.php:101
 msgid "Current list of values for attribute:"
@@ -952,7 +952,7 @@ msgstr "%s törlése"
 
 #: ../lib/modules/kolabUser.inc:400
 msgid "Delete Kolab account"
-msgstr "Kolab témaszám törlése"
+msgstr "Kolab fiók törlése"
 
 #: ../templates/pdfedit/pdfdelete.php:49 ../templates/pdfedit/pdfmain.php:142
 msgid "Delete PDF structure"
@@ -960,7 +960,7 @@ msgstr "PDF szerkezet törlése"
 
 #: ../lib/types/mailAlias.inc:111
 msgid "Delete alias"
-msgstr "Alias törlése"
+msgstr "Álnév törlése"
 
 #: ../templates/tree/delete_form.php:111
 #, php-format
@@ -1022,7 +1022,7 @@ msgstr "Törölt PDF szerkezet:"
 
 #: ../lib/modules/sambaGroupMapping.inc:71
 msgid "Deleted account"
-msgstr "Törölt témaszám"
+msgstr "Törölt fiók"
 
 #: ../templates/profedit/profiledelete.php:63
 msgid "Deleted profile:"
@@ -1076,14 +1076,14 @@ msgstr ""
 #: ../lib/modules/sambaGroupMapping.inc:292
 #: ../lib/modules/sambaGroupMapping.inc:325
 msgid "Display name"
-msgstr "Képernyőnév"
+msgstr "Megjelenített név"
 
 #: ../lib/modules.inc:447
 msgid ""
 "Displayed account numbers start at \"0\". Add 2 to get the row in your "
 "spreadsheet."
 msgstr ""
-"A kijelzett témaszámok \"0\"-nál kezdődnek. Adjon 2-őt az értékhez, hogy "
+"A kijelzett fiókok \"0\"-nál kezdődnek. Adjon 2-őt az értékhez, hogy "
 "megkapja a táblázatban az ennek megfelelő sor számát."
 
 #: ../templates/ou_edit.php:99
@@ -1100,11 +1100,11 @@ msgstr "Valóban törli ezt a profilt?"
 
 #: ../lib/modules/kolabUser.inc:559
 msgid "Do you really want to mark this account for deletion?"
-msgstr "Valóban törlésre jelöli ezt a témaszámot?"
+msgstr "Valóban törlésre jelöli ezt a fiókot?"
 
 #: ../templates/delete.php:82
 msgid "Do you really want to remove the following accounts?"
-msgstr "Valóban törli a következő témaszámokat?"
+msgstr "Valóban törli a következő fiókokat?"
 
 #: ../templates/tree/update_confirm.php:143
 msgid "Do you want to make these changes?"
@@ -1221,7 +1221,7 @@ msgstr "Lefelé"
 
 #: ../templates/masscreate.php:272
 msgid "Download sample CSV file"
-msgstr "Minta CSV file letöltése"
+msgstr "Minta CSV fájl letöltése"
 
 #: ../lib/modules/sambaAccount.inc:379 ../lib/modules/sambaSamAccount.inc:226
 msgid "Drive letter assigned on windows workstations as homedirectory."
@@ -1231,32 +1231,32 @@ msgstr ""
 
 #: ../lib/types/user.inc:91
 msgid "E-Mail"
-msgstr "E-Mail"
+msgstr "E-mail"
 
 #: ../lib/modules/kolabUser.inc:140
 msgid "EMail alias"
-msgstr "Email alias"
+msgstr "E-mail álnév"
 
 #: ../lib/modules/kolabUser.inc:141
 msgid "EMail alias for this account."
-msgstr "Email alias ehhez a témaszámhoz."
+msgstr "E-mail álnév ehhez a fiókhoz."
 
 #: ../lib/modules/kolabUser.inc:226
 msgid "EMail alias is invalid!"
-msgstr "Az email alias érvénytelen!"
+msgstr "Az e-mail álnév érvénytelen!"
 
 #: ../lib/modules/kolabUser.inc:144
 msgid "EMail alias list"
-msgstr "Email alias-ok listája"
+msgstr "E-mail álnevek listája"
 
 #: ../lib/modules/kolabUser.inc:227
 msgid "EMail alias list has invalid format!"
-msgstr "Az email alias-ok listája érvénytelen formájú!"
+msgstr "Az e-mail álnevek listája érvénytelen formájú!"
 
 #: ../lib/modules/kolabUser.inc:190 ../lib/modules/kolabUser.inc:365
 #: ../lib/modules/kolabUser.inc:780
 msgid "EMail aliases"
-msgstr "Email alias-ok"
+msgstr "E-mail álnevek"
 
 #: ../lib/modules/sambaSamAccount.inc:449
 msgid "East Australian Standard, Guam"
@@ -1280,7 +1280,7 @@ msgstr "PDF szerkezet szerkesztése"
 
 #: ../templates/config/confmain.php:202
 msgid "Edit account types"
-msgstr "Témaszám-típusok szerkesztése"
+msgstr "Fióktípusok szerkesztése"
 
 #: ../templates/config/mainmanage.php:58 ../templates/config/index.php:76
 msgid "Edit general settings"
@@ -1351,12 +1351,12 @@ msgstr "Bejegyzés"
 #: ../templates/tree/rdelete.php:115
 #, php-format
 msgid "Entry %s and sub-tree deleted successfully."
-msgstr "A %s bejegyzés és az al-fa sikeresen törölve."
+msgstr "A(z) %s bejegyzés és az al-fa sikeresen törölve."
 
 #: ../templates/tree/delete.php:104
 #, php-format
 msgid "Entry %s deleted successfully."
-msgstr "A %s bejegyzés sikeresen törölve."
+msgstr "A(z) %s bejegyzés sikeresen törölve."
 
 #: ../templates/schema/schema.php:171
 msgid "Equality"
@@ -1382,7 +1382,7 @@ msgid ""
 "Every account type needs exactly one base module. This module provides a "
 "structural object class."
 msgstr ""
-"Minden témaszámtípushoz pontosan egy alapmodul szükséges. Ez a modul "
+"Minden fióktípushoz pontosan egy alapmodul szükséges. Ez a modul "
 "strukturális objektumosztályt képez."
 
 #: ../help/help.inc:73 ../help/help.inc:79 ../help/help.inc:85
@@ -1423,7 +1423,7 @@ msgstr "Nem sikerült a bejegyzést létrehozni!"
 #: ../templates/tree/rdelete.php:151
 #, php-format
 msgid "Failed to delete entry %s"
-msgstr "Nem sikerült a %s bejegyzést törölni!"
+msgstr "Nem sikerült a(z) %s bejegyzést törölni!"
 
 #: ../lib/modules/inetOrgPerson.inc:54 ../lib/modules/inetOrgPerson.inc:114
 #: ../lib/modules/inetOrgPerson.inc:218 ../lib/modules/inetOrgPerson.inc:336
@@ -1434,14 +1434,14 @@ msgstr "Fax-szám"
 
 #: ../templates/config/mainmanage.php:280
 msgid "File"
-msgstr "File"
+msgstr "Fájl"
 
 #: ../lib/modules/sambaSamAccount.inc:235
 msgid ""
 "File name and path relative to netlogon-share which should be executed on "
 "logon. $user and $group are replaced with user and group name."
 msgstr ""
-"A belépéskor végrehajtandó file neve és elérési útja a netlogon-share-hez "
+"A belépéskor végrehajtandó fájl neve és elérési útja a netlogon-share-hez "
 "viszonyítva. A $user és $group változók a felhasználó- és csoportnévvel "
 "lesznek helyettesítve."
 
@@ -1450,13 +1450,13 @@ msgid ""
 "File name and path relative to the netlogon-share which should be executed "
 "on logon. $user and $group are replaced with user and group name."
 msgstr ""
-"A belépéskor végrehajtandó file neve és elérési útja a netlogon-share-hez "
+"A belépéskor végrehajtandó fájl neve és elérési útja a netlogon-share-hez "
 "viszonyítva. A $user és $group változók a felhasználó- és csoportnévvel "
 "lesznek helyettesítve."
 
 #: ../templates/tools.php:62 ../templates/masscreate.php:121
 msgid "File upload"
-msgstr "File feltöltése"
+msgstr "Fájl feltöltése"
 
 #: ../templates/tree/add_attr.php:92
 msgid "File upload failed!"
@@ -1571,7 +1571,7 @@ msgstr "Csoport"
 
 #: ../lib/types/group.inc:53
 msgid "Group accounts (e.g. Unix and Samba)"
-msgstr "Csoport témaszámok (pl. Unix és Samba)"
+msgstr "Csoport fiókok (pl. Unix és Samba)"
 
 #: ../lib/types/group.inc:86 ../lib/modules/posixGroup.inc:346
 msgid "Group description"
@@ -1729,7 +1729,7 @@ msgid ""
 "CSV file and filled with data for all accounts."
 msgstr ""
 "Ez egy, a létrehozható oszlopokból álló lista. A piros oszlopoknak "
-"szerepelniük kell a CSV file-ban és minden témaszám részére ki kell őket "
+"szerepelniük kell a CSV file-ban és minden fiók részére ki kell őket "
 "tölteni."
 
 #: ../templates/tools.php:84
@@ -1738,13 +1738,13 @@ msgstr "Itt megtekintheti az LDAP objektumosztályokat és attribútumokat."
 
 #: ../templates/masscreate.php:88
 msgid "Here you can create multiple accounts by providing a CSV file."
-msgstr "Itt egy CSV file megadásával több témaszámot hozhat létre."
+msgstr "Itt egy CSV file megadásával több fiókot hozhat létre."
 
 #: ../lib/modules/sambaDomain.inc:111
 msgid "Here you can define to deactivate accounts after bad logon attempts."
 msgstr ""
-"Itt állíthatja be, hogy sikertelen belépési kísérletek után a témaszámok "
-"felfüggesztésre kerüljenek."
+"Itt állíthatja be, hogy sikertelen belépési kísérletek után a fiókok "
+"letiltásra kerüljenek."
 
 #: ../lib/modules/groupOfNames.inc:61
 msgid "Here you can enter a description for this group."
@@ -1771,18 +1771,18 @@ msgid ""
 "Here you can load an account profile to set default settings for your "
 "account. The \"default\" profile is automatically loaded for new accounts."
 msgstr ""
-"Itt betölthet egy témaszám-profilt, amellyel beállíthatja témaszámának "
+"Itt betölthet egy fiók-profilt, amellyel beállíthatja fiókjának "
 "alapértelmezéseit. Az \"alapértelmezett\" (\"default\") profil az új "
-"témaszámokhoz automatikusan betöltõdik."
+"fiókokhoz automatikusan betöltõdik."
 
 #: ../templates/tools.php:56
 msgid "Here you can manage your account profiles."
-msgstr "Itt beállíthatja témaszámához tartozó profiljait."
+msgstr "Itt beállíthatja fiókjához tartozó profiljait."
 
 #: ../help/help.inc:157
 msgid "Here you can select a PDF structure and export the account to a PDF file."
 msgstr ""
-"Itt kiválaszthat egy PDF-struktúrát, és a témaszámot egy PDF file-ba "
+"Itt kiválaszthat egy PDF-struktúrát, és a fiókot egy PDF file-ba "
 "exportálhatja. "
 
 #: ../help/help.inc:136
@@ -1798,7 +1798,7 @@ msgstr ""
 #: ../help/help.inc:113
 msgid "Here you can select which plugins you want to use for account management."
 msgstr ""
-"Itt kiválaszthatja, mely plugin-okat szeretné használni témaszámának "
+"Itt kiválaszthatja, mely plugin-okat szeretné használni fiókjának "
 "beállításai során."
 
 #: ../lib/modules/sambaDomain.inc:91
@@ -1887,7 +1887,7 @@ msgstr "A home könyvtár neve érvénytelen karaktereket tartalmaz."
 
 #: ../lib/types/host.inc:53
 msgid "Host accounts (e.g. Samba)"
-msgstr "Gazdaállomás témaszámok (pl. Samba)"
+msgstr "Gazdaállomás fiókok (pl. Samba)"
 
 #: ../lib/types/host.inc:85
 msgid "Host description"
@@ -1985,12 +1985,12 @@ msgid ""
 "If checked account will be deactivated by putting a \"!\" before the "
 "encrypted password."
 msgstr ""
-"Ha bejelöli, a témaszám letiltásra kerül a titkosított jelszó elé helyezett "
+"Ha bejelöli, a fiók letiltásra kerül a titkosított jelszó elé helyezett "
 "\"!\" karakterrel."
 
 #: ../lib/modules/sambaAccount.inc:368
 msgid "If checked account will be deactivated. (Setting D-Flag)"
-msgstr "Ha bejelöli, a témaszámot letiltom. (A D-Flag beállítása)"
+msgstr "Ha bejelöli, a fiókot letiltom. (A D-Flag beállítása)"
 
 #: ../lib/modules/sambaAccount.inc:356 ../lib/modules/sambaSamAccount.inc:200
 msgid "If checked no password will be used."
@@ -2002,7 +2002,7 @@ msgstr "Ha bejelöli, a jelszavak nem járnak le sohasem. (Az X-Flag beállítá
 
 #: ../lib/modules/sambaSamAccount.inc:212
 msgid "If checked then the account will be deactivated. (Setting D-Flag)"
-msgstr "Ha bejelöli, a témaszámot letiltom. (A D-Flag beállítása)"
+msgstr "Ha bejelöli, a fiókot letiltom. (A D-Flag beállítása)"
 
 #: ../lib/modules/sambaSamAccount.inc:215
 msgid ""
@@ -2010,8 +2010,8 @@ msgid ""
 "want to use this setting to unlock user accounts which were locked because "
 "of failed login attempts."
 msgstr ""
-"Ha bejelöli, a témaszám zárolva lesz (az L-Flag beállítása). Valószínűleg "
-"erre a beállításra van szüksége, ha olyan témaszámokat akar újra megnyitni, "
+"Ha bejelöli, a fiók zárolva lesz (az L-Flag beállítása). Valószínűleg "
+"erre a beállításra van szüksége, ha olyan fiókokat akar újra megnyitni, "
 "melyek sikertelen belépési kísérletek miatt zárolódtak. "
 
 #: ../lib/modules/posixGroup.inc:371
@@ -2038,7 +2038,7 @@ msgstr "Ha értéke \"true\", a Unix jelszó szolgál majd samba jelszóként is
 
 #: ../lib/modules/sambaAccount.inc:371 ../lib/modules/sambaSamAccount.inc:218
 msgid "If set to \"true\" account will be deactivated. (Setting D-Flag)"
-msgstr "Ha bejelöli, akkor a témaszámot letiltja. (A D-Flag beállítása)"
+msgstr "Ha bejelöli, akkor a fiókot letiltja. (A D-Flag beállítása)"
 
 #: ../lib/modules/sambaAccount.inc:359 ../lib/modules/sambaSamAccount.inc:203
 msgid "If set to \"true\" no password will be used."
@@ -2149,7 +2149,7 @@ msgstr "Érvénytelen RDN attribútum!"
 
 #: ../lib/modules/sambaGroupMapping.inc:72
 msgid "Invalid account"
-msgstr "Érvénytelen témaszám"
+msgstr "Érvénytelen fiók"
 
 #: ../lib/modules/kolabUser.inc:124 ../lib/modules/kolabUser.inc:171
 #: ../lib/modules/kolabUser.inc:348 ../lib/modules/kolabUser.inc:770
@@ -2220,7 +2220,7 @@ msgstr "LAM beállítás"
 #: ../templates/massBuildAccounts.php:191
 msgid "LAM has checked your input and is now ready to create the accounts."
 msgstr ""
-"A LAM ellenőrízte az Ön által bevitt adatokat, és készen áll a témaszámok "
+"A LAM ellenőrízte az Ön által bevitt adatokat, és készen áll a fiókok "
 "létrehozására."
 
 #: ../lib/modules/posixGroup.inc:395 ../lib/modules/posixAccount.inc:323
@@ -2242,7 +2242,7 @@ msgstr "LAM tesztek"
 #: ../templates/tree/create.php:181 ../templates/massDoUpload.php:87
 #, php-format
 msgid "LAM was unable to create account %s! An LDAP error occured."
-msgstr "A LAM nem tudta létrehozni a %s témaszámot! LDAP hiba történt."
+msgstr "A LAM nem tudta létrehozni a(z) %s fiókot! LDAP hiba történt."
 
 #: ../lib/modules/sambaGroupMapping.inc:376
 msgid "LAM was unable to find a Samba 3 domain with this name!"
@@ -2259,11 +2259,11 @@ msgstr "A LAM nem talált ilyen nevű csoportot!"
 #: ../lib/modules/posixAccount.inc:1412
 #, php-format
 msgid "LAM was unable to modify group memberships for group: %s"
-msgstr "A LAM nem tudta a %s csoport tagsági viszonyait megváltoztatni!"
+msgstr "A LAM nem tudta a(z) %s csoport tagsági viszonyait megváltoztatni!"
 
 #: ../help/help.inc:162
 msgid "LAM will search for accounts in this part of the LDAP tree."
-msgstr "A LAM az LDAP-fa e részén fog témaszámok után keresni."
+msgstr "A LAM az LDAP-fa e részén fog fiókok után keresni."
 
 #: ../help/help.inc:164
 msgid ""
@@ -2271,8 +2271,8 @@ msgid ""
 "sufficient to specify an account with read rights. If nothing is inserted "
 "then LAM will try to connect anonymously."
 msgstr ""
-"A LAM ezt az LDAP DN-t és jelszót fogja használni a témaszámok keresésekor. "
-"Elég, ha csak olvasási jogosultsággal bíró témaszámot ad meg. Ha semmit nem "
+"A LAM ezt az LDAP DN-t és jelszót fogja használni a fiókok keresésekor. "
+"Elég, ha csak olvasási jogosultsággal bíró fiókot ad meg. Ha semmit nem "
 "ad meg, a LAM névtelenül (anonim módon) próbál majd csatlakozni."
 
 #: ../templates/profedit/profilepage.php:176
@@ -2572,7 +2572,7 @@ msgstr "Magadan, Salamon-szigetek"
 
 #: ../lib/types/mailAlias.inc:44 ../lib/modules/nisMailAlias.inc:51
 msgid "Mail aliases"
-msgstr "Levél alias-ok"
+msgstr "Levelezési álnevek"
 
 #: ../lib/modules/kolabUser.inc:93 ../lib/modules/kolabUser.inc:160
 #: ../lib/modules/kolabUser.inc:208 ../lib/modules/kolabUser.inc:305
@@ -2613,7 +2613,7 @@ msgstr "A postafiók home-szerverének neve érvénytelen!"
 
 #: ../lib/types/mailAlias.inc:53
 msgid "Mailing aliases (e.g. NIS mail aliases)"
-msgstr "Levelezési aliasok (pl. NIS levél-aliasok)"
+msgstr "Levelezési álnevek (pl. NIS levelezési álnevek)"
 
 #: ../lib/modules/nisMailAlias.inc:64
 msgid "Mails to this name are forwarded to the recipients."
@@ -2655,7 +2655,7 @@ msgstr "Ütközés esetén kézi fogadás"
 
 #: ../lib/modules/kolabUser.inc:397 ../lib/modules/kolabUser.inc:563
 msgid "Mark account for deletion"
-msgstr "A témaszám törlésre jelölése"
+msgstr "A fiók törlésre jelölése"
 
 #: ../lib/modules/kolabUser.inc:164
 msgid "Mark for deletion"
@@ -2797,7 +2797,7 @@ msgstr "Mobiltelefonszám"
 
 #: ../lib/modules.inc:1046
 msgid "Modify account"
-msgstr "Témaszám módosítása"
+msgstr "Fiók módosítása"
 
 #: ../templates/config/confmodules.php:87
 msgid "Module selection"
@@ -2858,7 +2858,7 @@ msgstr "Új SSH publikus kulcs"
 
 #: ../lib/types/mailAlias.inc:110
 msgid "New alias"
-msgstr "Új alias"
+msgstr "Új álnév"
 
 #: ../templates/config/profmanage.php:125
 msgid "New default profile set successfully."
@@ -2943,19 +2943,19 @@ msgstr "A következő RID értéke nem szám!"
 #: ../lib/modules/sambaDomain.inc:75
 msgid "Next RID to use when creating accounts (only used by Winbind)."
 msgstr ""
-"A következő RID, melyet témaszámok létrehozásakor használni kell (csak a "
+"A következő RID, melyet fiókok létrehozásakor használni kell (csak a "
 "Winbind használja)"
 
 #: ../lib/modules/sambaDomain.inc:83
 msgid "Next RID to use when creating group accounts (only used by Winbind)."
 msgstr ""
-"A következő RID, melyet csoport témaszámok létrehozásakor használni kell "
+"A következő RID, melyet csoport fiókok létrehozásakor használni kell "
 "(csak a Winbind használja)."
 
 #: ../lib/modules/sambaDomain.inc:79
 msgid "Next RID to use when creating user accounts (only used by Winbind)."
 msgstr ""
-"A következő RID, melyet felhasználói témaszámok létrehozásakor használni "
+"A következő RID, melyet felhasználói fiókok létrehozásakor használni "
 "kell (csak a Winbind használja)."
 
 #: ../lib/modules/sambaDomain.inc:82 ../lib/modules/sambaDomain.inc:166
@@ -2997,7 +2997,7 @@ msgstr "Nincsenek Unix csoportok az LDAP-ban! Kérem, készítsen egyet!"
 
 #: ../lib/types/mailAlias.inc:109
 msgid "No aliases found!"
-msgstr "Nincsenek aliasok!"
+msgstr "Nem találtam álneveket!"
 
 #: ../templates/initsuff.php:162
 msgid "No changes were made."
@@ -3414,7 +3414,7 @@ msgstr "Kérem erősítse meg:"
 
 #: ../lib/modules/sambaSamAccount.inc:90
 msgid "Please enter a RID number or the name of a special account!"
-msgstr "Kérem, adjon meg RID számot vagy egy különleges témaszám nevét!"
+msgstr "Kérem, adjon meg RID számot vagy egy különleges fiók nevét!"
 
 #: ../lib/modules/inetOrgPerson.inc:353
 msgid ""
@@ -3455,7 +3455,7 @@ msgstr "Kérem, adjon meg érvényes dátumot NN-HH-ÉÉÉÉ formában."
 #: ../lib/modules/sambaAccount.inc:77 ../lib/modules/sambaAccount.inc:78
 #: ../lib/modules/sambaSamAccount.inc:92 ../lib/modules/sambaSamAccount.inc:93
 msgid "Please enter a valid display name!"
-msgstr "Kérem, adjon meg érvényes képernyőnevet!"
+msgstr "Kérem, adjon meg érvényes megjelenített nevet!"
 
 #: ../lib/modules/sambaAccount.inc:85 ../lib/modules/sambaSamAccount.inc:101
 msgid "Please enter a valid drive letter."
@@ -3521,7 +3521,7 @@ msgstr "Kérem, adjon meg e-mail címet ezen az oldalon: %s"
 
 #: ../lib/modules.inc:886
 msgid "Please enter the account information on the other pages first."
-msgstr "Kérem, elõbb a többi oldalon adja meg a témaszám adatait."
+msgstr "Kérem, elõbb a többi oldalon adja meg a fiók adatait."
 
 #: ../help/help.inc:57
 msgid ""
@@ -3566,7 +3566,7 @@ msgstr ""
 
 #: ../lib/modules/posixAccount.inc:364 ../lib/modules/inetOrgPerson.inc:357
 msgid "Please enter the password which you want to set for this account."
-msgstr "Kérem, adja meg az ehhez a témaszámhoz szánt jelszót."
+msgstr "Kérem, adja meg az ehhez a fiókhoz szánt jelszót."
 
 #: ../lib/modules/posixAccount.inc:339
 msgid "Please enter the path to the user's home directory."
@@ -3615,9 +3615,9 @@ msgid ""
 "first row must be filled with the column identifiers. The following rows "
 "represent one account for each row."
 msgstr ""
-"Kérem, adjon meg témaszámának adatait tartalmazó, CSV formátumú file-t. Az "
+"Kérem, adjon meg fiókjának adatait tartalmazó, CSV formátumú file-t. Az "
 "első sor celláit az oszlopok azonosítóival kell kitölteni. A következő sorok "
-"egyenként egy-egy témaszámot jelentenek."
+"egyenként egy-egy fiókot jelentenek."
 
 #: ../lib/modules/inetOrgPerson.inc:361
 msgid "Please select an image file to upload. It must be in JPG format (.jpg/.jpeg)."
@@ -3631,7 +3631,7 @@ msgstr "Kérem, válassza ki az oldalt:"
 
 #: ../templates/masscreate.php:94
 msgid "Please select your account type:"
-msgstr "Kérem, válassza ki témaszámának típusát:"
+msgstr "Kérem, válassza ki fiókjának típusát:"
 
 #: ../help/help.inc:134
 msgid ""
@@ -3871,7 +3871,7 @@ msgstr "A kiválasztott bejegyzések törlése"
 
 #: ../templates/config/conftypes.php:224
 msgid "Remove this account type"
-msgstr "A témaszám-típus törlése"
+msgstr "A fióktípus törlése"
 
 #: ../templates/config/profmanage.php:214
 #: ../templates/selfService/profManage.php:188 ../help/help.inc:117
@@ -3896,7 +3896,7 @@ msgstr "A home könyvtárban a $user vagy $group értéke átállítva."
 #: ../templates/tree/edit.php:242
 #, php-format
 msgid "Required attribute for objectClass(es) %s"
-msgstr "A %s objektumOsztály(ok)hoz szükséges attribútum"
+msgstr "A(z) %s objektumOsztályhoz szükséges attribútum"
 
 #: ../templates/tree/templates/creation/custom.php:187
 #: ../templates/schema/schema.php:388
@@ -3991,7 +3991,7 @@ msgstr "Samba RID-érték"
 
 #: ../lib/modules/sambaGroupMapping.inc:269
 msgid "Samba display name"
-msgstr "Samba képernyőnév"
+msgstr "Samba megjelenített név"
 
 #: ../lib/modules/sambaDomain.inc:47
 msgid "Samba domain"
@@ -4043,11 +4043,11 @@ msgstr "Mentés"
 
 #: ../help/help.inc:154
 msgid "Save account"
-msgstr "Témaszám mentése"
+msgstr "Fiók mentése"
 
 #: ../templates/tree/export_form.php:124
 msgid "Save as file"
-msgstr "File-ként mentés"
+msgstr "Fájlként mentés"
 
 #: ../templates/tools.php:83
 msgid "Schema browser"
@@ -4248,7 +4248,7 @@ msgstr "Statikus szöveg"
 
 #: ../templates/tree/templates/creation/custom.php:54
 msgid "Step 1 of 2: Name and object class(es)"
-msgstr "Első lépés a kettőből: Név és objektumosztály(ok)"
+msgstr "Első lépés a kettőből: Név és objektum osztály"
 
 #: ../templates/tree/templates/creation/custom.php:177
 msgid "Step 2 of 2: Specify attributes and values"
@@ -4381,8 +4381,8 @@ msgid ""
 "to equal values or use independent ranges."
 msgstr ""
 "A felhasználókra és a gazdaállomásokra vonatkozó UID-értékektartományai "
-"átfedést mutatnak! Ez azért gond, mert a LAM új témaszámok létrehozásakor a "
-"használatban levő UID-értéket 1-el megnöveli az új témaszám részére. Kérem, "
+"átfedést mutatnak! Ez azért gond, mert a LAM új fiókok létrehozásakor a "
+"használatban levő UID-értéket 1-el megnöveli az új fiók részére. Kérem, "
 "állítsa a minimális UID-értékeket egyenlő értékre, vagy használjon egymástól "
 "független tartományokat!"
 
@@ -4423,7 +4423,7 @@ msgstr ""
 #: ../lib/modules.inc:885
 #, php-format
 msgid "The module %s is not yet ready."
-msgstr "A %s modul még nem készült el."
+msgstr "A(z) %s modul még nem készült el."
 
 #: ../templates/pdfedit/pdfpage.php:104
 msgid ""
@@ -4445,7 +4445,7 @@ msgstr "Az Ön Windows tartományának vagy munkacsoportjának neve."
 
 #: ../help/help.inc:149
 msgid "The new account will be saved under this LDAP suffix."
-msgstr "Az új témaszám ezzel az LDAP-utótaggal lesz elmentve."
+msgstr "Az új fiók ezzel az LDAP-utótaggal lesz elmentve."
 
 #: ../lib/modules/groupOfNames.inc:65
 msgid "The owner of this group."
@@ -4461,7 +4461,7 @@ msgid ""
 "The primary group for this account. You can insert a GID number or a group "
 "name."
 msgstr ""
-"A témaszámhoz tartozó elsődleges csoport neve. Megadhat GID-számot vagy "
+"A fiókhoz tartozó elsődleges csoport neve. Megadhat GID-számot vagy "
 "csoportnevet."
 
 #: ../lib/modules/posixAccount.inc:394
@@ -4499,7 +4499,7 @@ msgid ""
 "use plus one."
 msgstr ""
 "Ezek a minimális és maximális számértékek, melyek a csoport ID-khez "
-"használhatóak új csoport-témaszámok létrehozásakor. Az új csoport-témaszámok "
+"használhatóak új csoport-fiókok létrehozásakor. Az új csoport-fiókok "
 "mindig a már felhasznált legnagyobb számot 1-el megnövelt értéket kapják."
 
 #: ../lib/modules/posixAccount.inc:319
@@ -4511,8 +4511,8 @@ msgid ""
 msgstr ""
 "Ezek a minimális és maximális számértékek, melyek a gép ID-khez "
 "használhatóak új Samba gazdagépek létrehozásakor. A tartománynak a "
-"felhasználók esetében használt tartománytól el kell térnie. Az új gazdagép--"
-"témaszámok mindig a már felhasznált legnagyobb szám 1-el megnövelt értékét "
+"felhasználók esetében használt tartománytól el kell térnie. Az új gazdagép-fiókok "
+"mindig a már felhasznált legnagyobb szám 1-el megnövelt értékét "
 "kapják."
 
 #: ../lib/modules/posixAccount.inc:315
@@ -4522,9 +4522,9 @@ msgid ""
 "user accounts will always get the highest number in use plus one."
 msgstr ""
 "Ezek a minimális és maximális számértékek, melyek a felhasználói ID-khez "
-"használhatóak új felhasználói témaszámok létrehozásakor. A tartománynak a "
+"használhatóak új felhasználói fiókok létrehozásakor. A tartománynak a "
 "gépek esetében használt tartománytól el kell térnie. Az új felhasználói "
-"témaszámok mindig a már felhasznált legnagyobb szám 1-el megnövelt értékét "
+"fiókok mindig a már felhasznált legnagyobb szám 1-el megnövelt értékét "
 "kapják."
 
 #: ../lib/modules/posixAccount.inc:84
@@ -4533,14 +4533,14 @@ msgstr "Ez a GID-érték érvénytelen! Kérem, adjon meg egy számot vagyegy cs
 
 #: ../lib/modules/kolabUser.inc:282
 msgid "This account is marked for deletion."
-msgstr "A témaszám törlésre lett jelölve."
+msgstr "A fiók törlésre lett jelölve."
 
 #: ../lib/modules/sambaSamAccount.inc:250
 msgid ""
 "This allows you to define this account as a special user like administrator "
 "or guest."
 msgstr ""
-"Ezzel olyan különleges felhasználói témaszámot hozhat létre, mint például az "
+"Ezzel olyan különleges felhasználói fiókot hozhat létre, mint például az "
 "adminisztrátori vagy a vendég."
 
 #: ../help/help.inc:122
@@ -4592,7 +4592,7 @@ msgstr "A meghatalmazottak listája, vesszővel elválasztva."
 
 #: ../lib/modules/kolabUser.inc:145
 msgid "This is a comma separated list of eMail aliases."
-msgstr "Email alias-ok listája, vesszővel elválasztva."
+msgstr "E-mail álnevek listája, vesszővel elválasztva."
 
 #: ../lib/modules/kolabUser.inc:129
 msgid "This is a comma separated list of invitation policies."
@@ -4604,7 +4604,7 @@ msgstr "A címzettek listája, vesszővel elválasztva."
 
 #: ../lib/modules/inetLocalMailRecipient.inc:66
 msgid "This is a comma separated list of the users public email addresses."
-msgstr "A nyilvános email címek listája, vesszővel elválasztva."
+msgstr "A nyilvános e-mail címek listája, vesszővel elválasztva."
 
 #: ../help/help.inc:138
 msgid ""
@@ -4646,9 +4646,9 @@ msgid ""
 "\"uid\" and your user inputs \"miller\" then LAM will search for an account "
 "with uid=miller."
 msgstr ""
-"Ez szükséges ahhoz, hogy a felhasználói témaszám LDAP DN-jeit megtaláljuk. "
+"Ez szükséges ahhoz, hogy a felhasználói fiók LDAP DN-jeit megtaláljuk. "
 "Pl. ha az uid-et használja és a \"molnar\" értéket adja meg, akkor a LAM "
-"olyan témaszámot keres, ahol az uid=molnar."
+"olyan fiókot keres, ahol az uid=molnar."
 
 #: ../lib/modules/inetOrgPerson.inc:73
 msgid "This is not a valid DN!"
@@ -4664,11 +4664,11 @@ msgstr "Ez a Samba 3 csoporttípus nem érvényes!"
 
 #: ../lib/modules/inetLocalMailRecipient.inc:62
 msgid "This is one of the users public email addresses."
-msgstr "Ez a felhasználók nyilvános email címeinek egyike."
+msgstr "Ez a felhasználók nyilvános e-mail címeinek egyike."
 
 #: ../lib/modules/nisMailAlias.inc:68
 msgid "This is one recipient for this alias."
-msgstr "Ez egy ehhez az alias-hoz tartozó címzett."
+msgstr "Egy címzett, aki ehhez az álnévhez tartozik."
 
 #: ../lib/modules/inetOrgPerson.inc:309
 msgid ""
@@ -4702,15 +4702,15 @@ msgstr ""
 
 #: ../lib/modules/sambaAccount.inc:344 ../lib/modules/sambaSamAccount.inc:188
 msgid "This is the account's Windows password."
-msgstr "Ez a témaszám Windows-jelszava."
+msgstr "Ez a fiók Windows-jelszava."
 
 #: ../lib/modules/sambaAccount.inc:341 ../lib/modules/sambaSamAccount.inc:185
 msgid "This is the account's full name on Windows systems."
-msgstr "Ez a témaszám teljes neve a Windows rendszerekben."
+msgstr "Ez a fiók teljes neve a Windows rendszerekben."
 
 #: ../lib/modules/sambaSamAccount.inc:269 ../lib/modules/shadowAccount.inc:170
 msgid "This is the date when the account will expire. Format: DD-MM-YYYY"
-msgstr "A témaszám lejáratának dátuma. Formátum: NN-HH-ÉÉÉÉ"
+msgstr "A fiók lejáratának dátuma. Formátum: NN-HH-ÉÉÉÉ"
 
 #: ../lib/modules/sambaGroupMapping.inc:293
 msgid "This is the group name which will be shown in Windows."
@@ -4723,7 +4723,7 @@ msgid ""
 "groups use \"cn\")."
 msgstr ""
 "Ez a relatív DN-érték azonosítója. A megadott LDAP attribútumok egyike kell "
-"legyen (pl. a felhasználói témaszámok gyakran \"uid\"-ot használnak, míg a "
+"legyen (pl. a felhasználói fiókok gyakran \"uid\"-ot használnak, míg a "
 "csoportok a \"cn\"-t)."
 
 #: ../help/help.inc:83
@@ -4732,7 +4732,7 @@ msgid ""
 "either be predefined values, \"#attribute\", or individual ones, \"attribute:"
 "description\". Several entries are separated by semicolons."
 msgstr ""
-"Ez azon attribútumok listája, melyeknek látszódniuk kell a témaszám-listán. "
+"Ez azon attribútumok listája, melyeknek látszódniuk kell a fióklistán. "
 "A bejegyzések vagy előre meghatározott értékek , \"#attribútum\", vagy "
 "egyedi értékek, \"attribútum:leírás\" formában. A különböző bejegyzéseket "
 "pontosvesszővel kell elválasztani."
@@ -4789,7 +4789,7 @@ msgid ""
 "you leave this empty LAM will calculate the RID from the UID. This can be "
 "either a number or the name of a special group:"
 msgstr ""
-"Ez a relatív ID a Windows témaszámokhoz (a Unix UID-jéhez hasonló). Ha "
+"Ez a relatív ID a Windows fiókokhoz (a Unix UID-jéhez hasonló). Ha "
 "üresen hagyja, a LAM az RID-et az UID-ből számítja majd ki. Lehet szám vagy "
 "a következő különleges csoportok nevének egyike: "
 
@@ -4798,15 +4798,15 @@ msgid ""
 "This is the relative ID number for your Windows account. You can either "
 "enter a number or one of these special accounts: "
 msgstr ""
-"Ez a relatív ID szám az Ön Windows témaszámához. Megadhat egy számot, vagy "
-"egyet ezek közül a különleges témaszámok közül:"
+"Ez a relatív ID szám az Ön Windows fiókjához. Megadhat egy számot, vagy "
+"egyet ezek közül a különleges fiókok közül:"
 
 #: ../lib/modules/sambaSamAccount.inc:257
 msgid ""
 "This is the relative ID number for your host account. If you leave this "
 "empty LAM will use: uidNumber*2 + sambaAlgorithmicRidBase."
 msgstr ""
-"Ez az Ön gazdaállomásán levő témaszámhoz tartozó relatív ID szám. Ha üresen "
+"Ez az Ön gazdaállomásán levő fiókhoz tartozó relatív ID szám. Ha üresen "
 "hagyja, a LAM a következőt veszi figyelembe: uidSzám*2 + "
 "sambaAlgoritmikusRidAlap."
 
@@ -4842,19 +4842,19 @@ msgid ""
 "creating a new accont this will be the DN where it is saved."
 msgstr ""
 "Ez az utótagja az LDAP fának ahonnan az LDAP bejegyzések keresése kezdődik. "
-"Csak az ezen az al-fán található bejegyzések szerepelnek majd a témaszám-"
-"listán. Új témaszám létrehozásakor ez lesz a DN, ahová a témaszám elmentődik."
+"Csak az ezen az al-fán található bejegyzések szerepelnek majd a fióklistán. "
+"Új fiók létrehozásakor ez lesz a DN, ahová a fiók elmentődik."
 
 #: ../lib/modules/inetLocalMailRecipient.inc:58
 msgid "This is the target email address for the user's mails."
-msgstr "Ez a felhasználó leveleihez tartozó email cím."
+msgstr "Ez a felhasználó leveleihez tartozó e-mail cím."
 
 #: ../lib/modules/sambaDomain.inc:123
 msgid ""
 "This is the time (in minutes) for which the user may not log in after the "
 "account was locked. -1 means forever."
 msgstr ""
-"Ennyi ideig (percben mérve) nem léphet be az a felhasználó, akinek témaszáma "
+"Ennyi ideig (percben mérve) nem léphet be az a felhasználó, akinek fiókja "
 "zárolva lett. A -1 jelentése: örökké."
 
 #: ../help/help.inc:132
@@ -4910,7 +4910,7 @@ msgstr "Ez az objektumosztály elavult."
 
 #: ../lib/modules/sambaSamAccount.inc:263
 msgid "This option defines the allowed logon hours for this account."
-msgstr "Ez a beállítás adja meg, hogy mikor lehet ezzel a témaszámmal belépni."
+msgstr "Ez a beállítás adja meg, hogy mikor lehet ezzel a fiókkal belépni."
 
 #: ../lib/modules/sambaSamAccount.inc:266
 msgid ""
@@ -4919,14 +4919,14 @@ msgid ""
 "bit which are saved as 21 hex (21*8 = 168) values. The first bit represents "
 "Sunday 0:00 - 0:59 in GMT."
 msgstr ""
-"Ez a beállítás megadja a témaszámnak engedélyezett belépési időt. Formátuma "
+"Ez a beállítás megadja a fióknak engedélyezett belépési időt. Formátuma "
 "ugyanaz, mint az LDAP attribútumé. A 24*7 óra 168 bites értékként jelenik "
 "meg, amely 21 hex (21*8=168) értékként kerül elmentésre. Az első bit "
 "jelenentése: vasárnap 0:00-0:59 GMT szerint."
 
 #: ../help/help.inc:155
 msgid "This saves your account to the LDAP database."
-msgstr "Ezzel menti témaszámát az LDAP adatbázisba."
+msgstr "Ezzel menti fiókját az LDAP adatbázisba."
 
 #: ../help/help.inc:170
 msgid ""
@@ -4948,7 +4948,7 @@ msgid ""
 "email or user name)."
 msgstr ""
 "Ez a szöveg röviden leírja a kiválasztott LDAP keresési attribútumot (pl. "
-"email vagy felhasználói név)."
+"e-mail vagy felhasználói név)."
 
 #: ../help/help.inc:111
 msgid "This text will appear on top of every user PDF file."
@@ -5002,8 +5002,8 @@ msgid ""
 "This will set a special flag on the account which tells Kolabd to remove it. "
 "Use this to cleanly delete Kolab accounts (e.g. this removes mail boxes)."
 msgstr ""
-"Ez egy különleges flag-et állít be a témaszámhoz, amely a Kolabd-t utasítja "
-"a törlésre. Ezt használja, ha Kolab témaszámokat kíván tisztán törölni (pl. "
+"Ez egy különleges flag-et állít be a fiókhoz, amely a Kolabd-t utasítja "
+"a törlésre. Ezt használja, ha Kolab fiókokat kíván tisztán törölni (pl. "
 "a postafiókok megszüntetésére)."
 
 #: ../lib/modules/sambaSamAccount.inc:1058
@@ -5104,7 +5104,7 @@ msgstr ""
 
 #: ../lib/modules/posixAccount.inc:59
 msgid "UID ranges for Unix accounts"
-msgstr "Kérem, adja meg az UID-tartományokat a Unix-témaszámokhoz:"
+msgstr "Kérem, adja meg az UID-tartományokat a Unix-fiókokhoz:"
 
 #: ../lib/modules/sambaAccount.inc:382 ../lib/modules/sambaSamAccount.inc:229
 msgid ""
@@ -5119,7 +5119,7 @@ msgid ""
 "Unable to change your account. Maybe you do not have enough rights to change "
 "the settings."
 msgstr ""
-"Nem sikerült a témaszám megváltoztatása. Talán nincsenek meg a jogosultságai "
+"Nem sikerült a fiók megváltoztatása. Talán nincsenek meg a jogosultságai "
 "a beállítások megváltoztatásához."
 
 #: ../templates/tests/lamdaemonTest.php:138 ../lib/lamdaemon.inc:146
@@ -5188,7 +5188,7 @@ msgstr "Unix"
 
 #: ../templates/tests/lamdaemonTest.php:79
 msgid "Unix account"
-msgstr "Unix témaszám"
+msgstr "Unix fiók"
 
 #: ../lib/modules/inetOrgPerson.inc:44 ../lib/modules/inetOrgPerson.inc:254
 #: ../lib/modules/inetOrgPerson.inc:352 ../lib/modules/inetOrgPerson.inc:675
@@ -5214,16 +5214,16 @@ msgstr "fel"
 
 #: ../templates/massBuildAccounts.php:196
 msgid "Upload accounts to LDAP"
-msgstr "A témaszámok feltöltése az LDAP-ba"
+msgstr "A fiókok feltöltése az LDAP-ba"
 
 #: ../templates/masscreate.php:135
 msgid "Upload file and create accounts"
-msgstr "File feltöltése és témaszámok létrehozása"
+msgstr "Fájl feltöltése és fiókok létrehozása"
 
 #: ../lib/modules.inc:448
 #, php-format
 msgid "Upload was stopped after errors in %s module!"
-msgstr "A feltöltés leállítva a %s modulban történt hiba után!"
+msgstr "A feltöltés leállítva a(z) %s modulban történt hiba után!"
 
 #: ../templates/schema/schema.php:214
 msgid "Usage"
@@ -5301,7 +5301,7 @@ msgstr "Felhasználó ID"
 
 #: ../lib/types/user.inc:53
 msgid "User accounts (e.g. Unix, Samba and Kolab)"
-msgstr "Felhasználói témaszámok (pl. Unix, Samba, Kolab)"
+msgstr "Felhasználói fiókok (pl. Unix, Samba, Kolab)"
 
 #: ../lib/modules/sambaAccount.inc:263 ../lib/modules/sambaAccount.inc:373
 #: ../lib/modules/sambaAccount.inc:738 ../lib/modules/sambaSamAccount.inc:220
@@ -5419,12 +5419,12 @@ msgstr ""
 #: ../templates/tests/lamdaemonTest.php:71
 #, php-format
 msgid "Using %s as lamdaemon remote server."
-msgstr "A %s lamdaemon-t használom távoli szerverként."
+msgstr "A(z) %s lamdaemon-t használom távoli szerverként."
 
 #: ../templates/tests/lamdaemonTest.php:92
 #, php-format
 msgid "Using %s to connect to remote server."
-msgstr "A %s használatával kapcsolódok a távoli szerverhez."
+msgstr "A(z) %s használatával kapcsolódok a távoli szerverhez."
 
 #: ../templates/tree/creation_template.php:86
 msgid "Using template:"
@@ -5544,8 +5544,8 @@ msgid ""
 "You are using a capital letters. This can cause problems because Windows "
 "isn't case-sensitive."
 msgstr ""
-"Nagy betűket használ. Ez gondokat jelenthet, mert a Windows nem case-"
-"szenzitív."
+"Nagy betűket használ. Ez gondokat jelenthet, mert a Windows nem különbözteti meg "
+"a kis- és nagybetűket."
 
 #: ../lib/modules/account.inc:132 ../lib/modules/posixAccount.inc:73
 #: ../lib/modules/posixAccount.inc:75
@@ -5553,8 +5553,8 @@ msgid ""
 "You are using a capital letters. This can cause problems because windows "
 "isn't case-sensitive."
 msgstr ""
-"Nagy betűket használ. Ez gondokat jelenthet, mert a Windows nem case-"
-"szenzitív."
+"Nagy betűket használ. Ez gondokat jelenthet, mert a Windows nem különbözteti meg a "
+"kis- és nagybetűket."
 
 #: ../templates/tree/templates/creation/custom.php:106
 msgid ""
@@ -5591,13 +5591,13 @@ msgstr "A csoporthoz legalább egy tagot hozzá kell adni."
 #, php-format
 msgid "Your LAM admin user (%s) must be a valid Unix account to work with lamdaemon!"
 msgstr ""
-"A (%s) LAM adminisztrátornak érvényes Unix témaszámnak kell lennie, hogy a "
+"A(z) (%s) LAM adminisztrátornak érvényes Unix fióknak kell lennie, hogy a "
 "lamdaemon-nal tudjon dolgozni!"
 
 #: ../lib/lamdaemon.inc:117 ../lib/lamdaemon.inc:123
 msgid "Your LAM admin user must be a valid Unix account to work with lamdaemon!"
 msgstr ""
-"A LAM adminisztrátornak érvényes Unix témaszámnak kell lennie, hogy a "
+"A LAM adminisztrátornak érvényes Unix fióknak kell lennie, hogy a "
 "lamdaemon-nal tudjon dolgozni!"
 
 #: ../templates/tree/add_attr_form.php:165
@@ -5672,7 +5672,7 @@ msgstr "az érték letöltése"
 #: ../lib/modules/inetOrgPerson.inc:341 ../lib/modules/inetOrgPerson.inc:651
 #: ../lib/modules/inetOrgPerson.inc:824 ../lib/modules/inetOrgPerson.inc:1075
 msgid "eMail address"
-msgstr "email cím"
+msgstr "e-mail cím"
 
 #: ../templates/tree/edit.php:387
 msgid "false"
@@ -5748,7 +5748,7 @@ msgid ""
 "ou=People,dc=yourcompany,dc=com will read and store all accounts in this "
 "subtree."
 msgstr ""
-"ou=emberek,dc=az_ön_cége,dc=com minden témaszámot ezen az al-fán olvas és "
+"ou=emberek,dc=az_ön_cége,dc=com minden fiókot ezen az al-fán olvas és "
 "tárol."
 
 #: ../lib/modules/posixAccount.inc:262
@@ -5770,7 +5770,7 @@ msgstr "szükséges"
 
 #: ../templates/config/confmain.php:398
 msgid "required for Samba 3 accounts"
-msgstr "Samba 3 témaszámokhoz szükséges"
+msgstr "Samba 3 fiókokhoz szükséges"
 
 #: ../lib/modules/posixGroup.inc:360 ../lib/modules/sambaAccount.inc:227
 #: ../lib/modules/sambaSamAccount.inc:296 ../lib/modules/posixAccount.inc:237
