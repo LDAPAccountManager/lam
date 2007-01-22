@@ -1,5 +1,4 @@
-<pdf type="user" headline="User information">
-	<text name="user" />
+<pdf type="user" filename="printLogo.jpg" headline="User information">
 	<section name="Personal user information">
 		<entry name="inetOrgPerson_title" />
 		<entry name="inetOrgPerson_givenName" />
@@ -23,14 +22,13 @@
 		<entry name="inetOrgPerson_host" />
 	</section>
 	<section name="Windows settings">
-		<entry name="sambaAccount_displayName" />
-		<entry name="sambaAccount_password" />
-		<entry name="sambaAccount_homeDrive" />
-		<entry name="sambaAccount_scriptPath" />
-		<entry name="sambaAccount_smbHome" />
-		<entry name="sambaAccount_userWorkstations" />
-		<entry name="sambaAccount_homePath" />
-		<entry name="sambaAccount_domain" /> 
+		<entry name="sambaSamAccount_displayName" />
+		<entry name="sambaSamAccount_sambaDomainName" />
+		<entry name="sambaSamAccount_sambaHomeDrive" />
+		<entry name="sambaSamAccount_sambaHomePath" />
+		<entry name="sambaSamAccount_sambaLogonScript" />
+		<entry name="sambaSamAccount_sambaProfilePath" />
+		<entry name="sambaSamAccount_sambaUserWorkstations" />
 	</section>
 	<section name="Quota Settings">
 		<entry name="quota_quotas" />

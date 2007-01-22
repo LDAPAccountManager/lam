@@ -1,9 +1,9 @@
-<pdf type="host" headline="Host information">
+<pdf type="host" filename="printLogo.jpg" headline="Host information" margin-top="10.0" margin-bottom="20.0" margin-left="10.0" margin-right="10.0">
 	<section name="_posixAccount_uid">
 		<entry name="main_dn" />
 		<entry name="posixAccount_description" />
 		<entry name="posixAccount_uidNumber" />
 		<entry name="posixAccount_primaryGroup" />
-		<entry name="sambaAccount_domain" />
+		<entry name="sambaSamAccount_sambaDomainName" />
 	</section>
 </pdf>
