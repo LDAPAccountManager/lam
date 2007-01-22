@@ -112,34 +112,6 @@ function createModulePDF($accounts,$pdf_structure="default") {
 			elseif($entry['tag'] == "TEXT") {
 				// Load PDF text from structure array
 				$info_string = $entry['value'];
-				// Get all allowed vairables from account-object
-				$values = get_object_vars($account);
-				$values = array_keys($values);
-				// Replace $varstring in string with variable
-				foreach ($values as $value) {
-					// replace string
-					if (is_string($account->$value)) {
-						$info_string = str_replace('$'.$value, $account->$value, $info_string);
-					}
-					// replace object
-					elseif (is_object($account->$value)) {
-						$values2 = get_object_vars($account->$value);
-						$values2 = array_keys($values2);
-						foreach ($values2 as $value2) {
-							$info_string = str_replace('$'.$value.'->'.$value2, $account->$value->$value2, $info_string);
-							}
-						}
-					// replace array
-					elseif (is_array($account->$value)) {
-						foreach ($account->$value as $sub_array2) {
-							$sub_array .= $sub_array2.", ";
-						}
-						$sub_array = substr($sub_array, 0, -2);
-						$info_string = str_replace('$'.$value, $sub_array, $info_string);
-					}
-				}
-				// Split string in array
-				$info_array = explode("\n", $info_string);
 				// Set font for text
 				$pdf->setFont($fontName,"",10);
 				$pdf->MultiCell(0,5,$info_string,0,"L",0);
