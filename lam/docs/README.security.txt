@@ -32,3 +32,14 @@
    encrypted.
 
 
+5. Apache configuration
+
+   LAM includes several .htaccess files to protect your configuration files and temporary
+   data. Apache is often configured to not use .htaccess files by default.
+   Therefore, please check your Apache configuration and change the override setting to:
+
+     AllowOverride All
+
+   If you are experienced in configuring Apache then you can also copy the security settings
+   from the .htaccess files to your main Apache configuration.
+
