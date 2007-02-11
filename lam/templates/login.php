@@ -209,7 +209,7 @@ function display_LoginPage($config_object) {
 				<td style="border-style:none" width="70" rowspan="2">
 					<img src="../graphics/lam.png" alt="Logo">
 				</td>
-				<td width="580">
+				<td style="border-style:none" width="580">
 					<form action="login.php" method="post">
 						<table width="580">
 							<tr>
@@ -294,7 +294,7 @@ function display_LoginPage($config_object) {
 				</td>
 			</tr>
 			<tr>
-				<td>
+				<td style="border-style:none">
 					<form action="login.php" method="post">
 						<table width="580">
 							<tr>
