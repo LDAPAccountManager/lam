@@ -218,16 +218,12 @@ class lamUserList extends lamList {
 			"<font color=\"black\"><b>" . _("Select all") . "</b></font></a></td>\n";
 		echo "</tr>\n";
 		echo ("</table>");
-		
-		echo ("<br>");
 	}
 	
 	/**
-	 * Prints the create, delete and PDF buttons.
-	 *
-	 * @param boolean $createOnly true if only the create button should be displayed
+	 * Prints additional option fields for specific object types.
 	 */
-	function listPrintButtons($createOnly) {
+	function listPrintAdditionalOptions() {
 		// show translate GID to group name box if there is a column with gidnumber
 		if (in_array("gidnumber", $this->attrArray)) {
 			echo "<p align=\"left\">\n";
@@ -239,9 +235,6 @@ class lamUserList extends lamList {
 			echo ("&nbsp;&nbsp;<input class=\"" . $this->type . "\" type=\"submit\" name=\"apply_trans_primary\" value=\"" . _("Apply") . "\">");
 			echo "</p>\n";
 		}
-		
-		echo ("<p>&nbsp;</p>\n");
-		parent::listPrintButtons($createOnly);
 	}
 
 }

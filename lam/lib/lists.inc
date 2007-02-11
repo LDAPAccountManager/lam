@@ -121,6 +121,9 @@ class lamList {
 		echo ("<form action=\"list.php?type=" . $this->type . "&amp;norefresh=true\" method=\"post\">\n");
 		// draw account list if accounts were found
 		if (sizeof($filteredEntries) > 0) {
+			// buttons
+			$this->listPrintButtons(false);
+			echo ("<hr color=\"#999999\">\n");
 			// navigation bar
 			$this->listDrawNavigationBar(sizeof($filteredEntries));
 			echo ("<br>\n");
@@ -128,22 +131,24 @@ class lamList {
 			$this->listPrintTableHeader();
 			// account table body
 			$this->listPrintTableBody($filteredEntries);
+			echo ("<br>\n");
 			// navigation bar
 			$this->listDrawNavigationBar(sizeof($filteredEntries));
 			echo ("<br>\n");
-			// print combobox with possible sub-DNs
-			$this->listShowOUSelection();
-			// buttons
-			$this->listPrintButtons(false);
+			// other options
+			$this->listPrintAdditionalOptions();
+			// PDF bar
+			$this->listPrintPDFButtons();
 		}
 		else {
+			// buttons
+			$this->listPrintButtons(true);
+			echo ("<hr>\n");
 			// account table head
 			$this->listPrintTableHeader();
 			echo "</table><br>\n";
-			// print combobox with possible sub-DNs
-			$this->listShowOUSelection();
-			echo ("<br>\n");
-			$this->listPrintButtons(true);
+			// other options
+			$this->listPrintAdditionalOptions();
 		}
 		echo ("</form>\n");
 		echo "</body></html>\n";
@@ -405,8 +410,6 @@ class lamList {
 			"<font color=\"black\"><b>" . _("Select all") . "</b></font></a></td>\n";
 		echo "</tr>\n";
 		echo ("</table>");
-
-		echo ("<br>");
 	}
 
 	/**
@@ -481,7 +484,6 @@ class lamList {
 	*/
 	function listShowOUSelection() {
 		if (sizeof($this->possibleSuffixes) > 1) {
-			echo ("<p align=\"left\">\n");
 			echo ("<b>" . _("Suffix") . ": </b>");
 			echo ("<select class=\"" . $this->type . "\" size=1 name=\"suffix\">\n");
 			for ($i = 0; $i < sizeof($this->possibleSuffixes); $i++) {
@@ -492,7 +494,6 @@ class lamList {
 			}
 			echo ("</select>\n");
 			echo ("<input class=\"" . $this->type . "\" type=\"submit\" name=\"refresh\" value=\"" . _("Change suffix") . "\">");
-			echo ("</p>\n");
 		}
 	}
 
@@ -502,23 +503,37 @@ class lamList {
 	 * @param boolean $createOnly true if only the create button should be displayed
 	 */
 	function listPrintButtons($createOnly) {
+		echo "<table border=0 width=\"100%\">\n";
+		echo "<tr>\n";
+		echo "<td align=\"left\">\n";
 		// add/delete/PDF buttons
 		echo ("<input class=\"" . $this->type . "\" type=\"submit\" name=\"new\" value=\"" . $this->labels['newEntry'] . "\">\n");
 		if (!$createOnly) {
 			echo ("<input class=\"" . $this->type . "\" type=\"submit\" name=\"del\" value=\"" . $this->labels['deleteEntry'] . "\">\n");
-			echo ("<br><br><br>\n");
-			echo "<fieldset class=\"" . $this->type . "edit\"><legend><b>PDF</b></legend>\n";
-			echo ("<b>" . _('PDF structure') . ":</b>&nbsp;&nbsp;<select name=\"pdf_structure\">\n");
-			$pdf_structures = getPDFStructureDefinitions($this->type);
-			foreach($pdf_structures as $pdf_structure) {
-				echo "<option " . (($pdf_structure == 'default') ? " selected" : "") . ">" . $pdf_structure . "</option>";
-			}
-			echo "</select>&nbsp;&nbsp;&nbsp;&nbsp;\n";
-			echo ("<input type=\"submit\" name=\"pdf\" value=\"" . $this->labels['createPDF'] . "\">\n");
-			echo "&nbsp;";
-			echo ("<input type=\"submit\" name=\"pdf_all\" value=\"" . $this->labels['createPDFAll'] . "\">\n");
-			echo "</fieldset>";
 		}
+		echo "</td>\n";
+		echo "<td align=\"right\">\n";
+			$this->listShowOUSelection();
+		echo "</td>\n";
+		echo "</tr>\n";
+		echo "</table>\n";
+	}
+	
+	/**
+	 * Prints the PDF button bar.
+	 */
+	function listPrintPDFButtons() {
+		echo "<fieldset class=\"" . $this->type . "edit\"><legend><b>PDF</b></legend>\n";
+		echo ("<b>" . _('PDF structure') . ":</b>&nbsp;&nbsp;<select name=\"pdf_structure\">\n");
+		$pdf_structures = getPDFStructureDefinitions($this->type);
+		foreach($pdf_structures as $pdf_structure) {
+			echo "<option " . (($pdf_structure == 'default') ? " selected" : "") . ">" . $pdf_structure . "</option>";
+		}
+		echo "</select>&nbsp;&nbsp;&nbsp;&nbsp;\n";
+		echo ("<input type=\"submit\" name=\"pdf\" value=\"" . $this->labels['createPDF'] . "\">\n");
+		echo "&nbsp;";
+		echo ("<input type=\"submit\" name=\"pdf_all\" value=\"" . $this->labels['createPDFAll'] . "\">\n");
+		echo "</fieldset>";
 	}
 
 	/**
@@ -660,6 +675,13 @@ class lamList {
 		}
 		// generate list of possible suffixes
 		$this->possibleSuffixes = $_SESSION['ldap']->search_units($_SESSION["config"]->get_Suffix($this->type));
+	}
+	
+	/**
+	 * Prints additional option fields for specific object types.
+	 */
+	function listPrintAdditionalOptions() {
+		// may be used by subclasses
 	}
 
 }

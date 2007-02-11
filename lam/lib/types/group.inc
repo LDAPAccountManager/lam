@@ -182,8 +182,6 @@ class lamGroupList extends lamList {
 			"<font color=\"black\"><b>" . _("Select all") . "</b></font></a></td>\n";
 		echo "</tr>\n";
 		echo ("</table>");
-		
-		echo ("<br>");
 	}
 	
 }
