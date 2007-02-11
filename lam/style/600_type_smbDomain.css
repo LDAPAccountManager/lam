@@ -28,10 +28,15 @@ $Id$
 
 /* */
 table.smbDomainnav {
-  background-color:#a8ddbf;
+  background-color:#c9ddd2;
   border-width:1px;
   border-style:solid;
   border-color:#1d993e;
+}
+
+/* input elements */
+table.smbDomainnav input {
+  background-color:#a8ddbf;
 }
 
 /* text in navigation bar */
@@ -53,6 +58,11 @@ table.smbDomainlist {
   border-color:#1d993e;
 }
 
+/* input elements */
+table.smbDomainlist input {
+  background-color:#a8ddbf;
+}
+
 /* color of entry rows */
 tr.smbDomainlist {
   background-color:#c9ddd2;
@@ -70,7 +80,7 @@ th.smbDomainlist-sort {
 
 /* color of rows on mouseOver */
 tr.smbDomainlist-over {
-  background-color:#ffe265;
+  background-color:#a8ddbf;
 }
 
 /* color of checked rows */
@@ -101,3 +111,19 @@ fieldset.smbDomainedit fieldset fieldset {
 fieldset.smbDomainedit select {
   background-color:#a8ddbf;
 }
+
+/* input elements */
+fieldset.smbDomainedit input {
+  background-color:#a8ddbf;
+}
+
+/* input elements */
+input.smbDomain {
+  background-color:#a8ddbf;
+}
+
+/* select elements */
+select.smbDomain {
+  background-color:#a8ddbf;
+}
+

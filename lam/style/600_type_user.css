@@ -36,6 +36,11 @@ table.userlist {
   border-color:#9b8523;
 }
 
+/* input elements */
+table.userlist input {
+  background-color:#fff2a3;
+}
+
 /* color of entry rows */
 tr.userlist {
   background-color:#fffde2;
@@ -49,7 +54,7 @@ tr.userlist-head {
 
 /* color of rows on mouseOver */
 tr.userlist-over {
-  background-color:#ccccff;
+  background-color:#fff2a3;
 }
 
 /* color of checked rows */
@@ -67,10 +72,15 @@ th.userlist-sort {
 
 /* style of navigation bar */
 table.usernav {
-  background-color:#fff2a3;
+  background-color:#fffde2;
   border-width:1px;
   border-style:solid;
   border-color:#9b8523;
+}
+
+/* input elements */
+table.usernav input {
+  background-color:#fff2a3;
 }
 
 /* text area in the center, e.g. "100 object(s) found" */
@@ -92,7 +102,7 @@ td.usernav-activepage {
 
 /* main fieldset */
 fieldset.useredit {
-  background-color:#fff2a3;
+  background-color:#fffde2;
   border:1px solid #9b8523;
 }
 
@@ -103,20 +113,34 @@ fieldset.useredit legend {
 
 /* subfieldset */
 fieldset.useredit fieldset {
-  background-color:#fff2a3;
+  background-color:#fffde2;
   border:1px solid #9b8523;
 }
 
 /* subsubfieldset */
 fieldset.useredit fieldset fieldset {
-  background-color:#fff2a3;
+  background-color:#fffde2;
   border:1px solid #9b8523;
 }
 
 /* select boxes */
 fieldset.useredit select {
-  background-color:#fffde2;
+  background-color:#fff2a3;
+}
+
+/* input elements */
+fieldset.useredit input {
+  background-color:#fff2a3;
+}
+
+/* input elements */
+input.user {
+  background-color:#fff2a3;
+}
+
+/* select elements */
+select.user {
+  background-color:#fff2a3;
 }
 
 
- 

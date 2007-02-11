@@ -28,10 +28,15 @@ $Id$
 
 /* navigation bar */
 table.groupnav {
-  background-color:#a8c3ff;
+  background-color:#d6e3ff;
   border-width:1px;
   border-style:solid;
   border-color:#7167bf;
+}
+
+/* input elements */
+table.groupnav input {
+  background-color:#a8c3ff;
 }
 
 /* text in navigation bar */
@@ -53,6 +58,11 @@ table.grouplist {
   border-color:#7167bf;
 }
 
+/* input elements */
+table.grouplist input {
+  background-color:#a8c3ff;
+}
+
 /* color of entry rows */
 tr.grouplist {
   background-color:#d6e3ff;
@@ -70,7 +80,7 @@ th.grouplist-sort {
 
 /* color of rows on mouseOver */
 tr.grouplist-over {
-  background-color:#C7E7C7;
+  background-color:#a8c3ff;
 }
 
 /* color of checked rows */
@@ -98,6 +108,21 @@ fieldset.groupedit fieldset fieldset {
 }
 
 fieldset.groupedit select {
+  background-color:#a8c3ff;
+}
+
+/* input elements */
+fieldset.groupedit input {
+  background-color:#a8c3ff;
+}
+
+/* input elements */
+input.group {
+  background-color:#a8c3ff;
+}
+
+/* select elements */
+select.group {
   background-color:#a8c3ff;
 }
 

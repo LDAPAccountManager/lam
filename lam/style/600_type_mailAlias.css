@@ -28,10 +28,15 @@ $Id$
 
 /* navigation bar */
 table.mailAliasnav {
-  background-color:#ffe27f;
+  background-color:#fff3c8;
   border-width:1px;
   border-style:solid;
   border-color:#af8800;
+}
+
+/* input elements */
+table.mailAliasnav input {
+  background-color:#ffe27f;
 }
 
 /* text in navigation bar */
@@ -53,6 +58,11 @@ table.mailAliaslist {
   border-color:#af8800;
 }
 
+/* input elements */
+table.mailAliaslist input {
+  background-color:#ffe27f;
+}
+
 /* color of entry rows */
 tr.mailAliaslist {
   background-color:#fff3c8;
@@ -70,7 +80,7 @@ th.mailAliaslist-sort {
 
 /* color of rows on mouseOver */
 tr.mailAliaslist-over {
-  background-color:#d6e3ff;
+  background-color:#ffe27f;
 }
 
 /* color of checked rows */
@@ -98,6 +108,21 @@ fieldset.mailAliasedit fieldset fieldset {
 }
 
 fieldset.mailAliasedit select {
+  background-color:#ffe27f;
+}
+
+/* input elements */
+fieldset.mailAliasedit input {
+  background-color:#ffe27f;
+}
+
+/* input elements */
+input.mailAlias {
+  background-color:#ffe27f;
+}
+
+/* select elements */
+select.mailAlias {
   background-color:#ffe27f;
 }
 

@@ -28,10 +28,15 @@ $Id$
 
 /* */
 table.hostnav {
-  background-color:#ffc4ba;
+  background-color:#ffe2dd;
   border-width:1px;
   border-style:solid;
   border-color:#911a1a;
+}
+
+/* input elements */
+table.hostnav input {
+  background-color:#ffc4ba;
 }
 
 /* text in navigation bar */
@@ -53,6 +58,11 @@ table.hostlist {
   border-color:#911a1a;
 }
 
+/* input elements */
+table.hostlist input {
+  background-color:#ffc4ba;
+}
+
 /* color of entry rows */
 tr.hostlist {
   background-color:#ffe2dd;
@@ -70,7 +80,7 @@ th.hostlist-sort {
 
 /* color of rows on mouseOver */
 tr.hostlist-over {
-  background-color:#ffe265;
+  background-color:#ffc4ba;
 }
 
 /* color of checked rows */
@@ -98,6 +108,21 @@ fieldset.hostedit fieldset fieldset {
 }
 
 fieldset.hostedit select {
+  background-color:#ffc4ba;
+}
+
+/* input elements */
+fieldset.hostedit input {
+  background-color:#ffc4ba;
+}
+
+/* input elements */
+input.host {
+  background-color:#ffc4ba;
+}
+
+/* select elements */
+select.host {
   background-color:#ffc4ba;
 }
 
