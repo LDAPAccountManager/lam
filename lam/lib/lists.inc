@@ -507,7 +507,7 @@ class lamList {
 		if (!$createOnly) {
 			echo ("<input class=\"" . $this->type . "\" type=\"submit\" name=\"del\" value=\"" . $this->labels['deleteEntry'] . "\">\n");
 			echo ("<br><br><br>\n");
-			echo "<fieldset class=\"useredit\"><legend><b>PDF</b></legend>\n";
+			echo "<fieldset class=\"" . $this->type . "edit\"><legend><b>PDF</b></legend>\n";
 			echo ("<b>" . _('PDF structure') . ":</b>&nbsp;&nbsp;<select name=\"pdf_structure\">\n");
 			$pdf_structures = getPDFStructureDefinitions($this->type);
 			foreach($pdf_structures as $pdf_structure) {
