@@ -483,7 +483,7 @@ class lamList {
 		if (sizeof($this->possibleSuffixes) > 1) {
 			echo ("<p align=\"left\">\n");
 			echo ("<b>" . _("Suffix") . ": </b>");
-			echo ("<select size=1 name=\"suffix\">\n");
+			echo ("<select class=\"" . $this->type . "\" size=1 name=\"suffix\">\n");
 			for ($i = 0; $i < sizeof($this->possibleSuffixes); $i++) {
 				if ($this->suffix == $this->possibleSuffixes[$i]) {
 					echo ("<option selected>" . $this->possibleSuffixes[$i] . "</option>\n");
@@ -491,7 +491,7 @@ class lamList {
 				else echo("<option>" . $this->possibleSuffixes[$i] . "</option>\n");
 			}
 			echo ("</select>\n");
-			echo ("<input type=\"submit\" name=\"refresh\" value=\"" . _("Change suffix") . "\">");
+			echo ("<input class=\"" . $this->type . "\" type=\"submit\" name=\"refresh\" value=\"" . _("Change suffix") . "\">");
 			echo ("</p>\n");
 		}
 	}
@@ -503,11 +503,11 @@ class lamList {
 	 */
 	function listPrintButtons($createOnly) {
 		// add/delete/PDF buttons
-		echo ("<input type=\"submit\" name=\"new\" value=\"" . $this->labels['newEntry'] . "\">\n");
+		echo ("<input class=\"" . $this->type . "\" type=\"submit\" name=\"new\" value=\"" . $this->labels['newEntry'] . "\">\n");
 		if (!$createOnly) {
-			echo ("<input type=\"submit\" name=\"del\" value=\"" . $this->labels['deleteEntry'] . "\">\n");
+			echo ("<input class=\"" . $this->type . "\" type=\"submit\" name=\"del\" value=\"" . $this->labels['deleteEntry'] . "\">\n");
 			echo ("<br><br><br>\n");
-			echo "<fieldset><legend><b>PDF</b></legend>\n";
+			echo "<fieldset class=\"useredit\"><legend><b>PDF</b></legend>\n";
 			echo ("<b>" . _('PDF structure') . ":</b>&nbsp;&nbsp;<select name=\"pdf_structure\">\n");
 			$pdf_structures = getPDFStructureDefinitions($this->type);
 			foreach($pdf_structures as $pdf_structure) {

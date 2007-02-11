@@ -233,10 +233,10 @@ class lamUserList extends lamList {
 			echo "<p align=\"left\">\n";
 			echo "<b>" . _("Translate GID number to group name") . ": </b>";
 			if ($this->trans_primary == "on") {
-				echo "<input type=\"checkbox\" name=\"trans_primary\" checked>";
+				echo "<input class=\"" . $this->type . "\" type=\"checkbox\" name=\"trans_primary\" checked>";
 			}
-			else echo "<input type=\"checkbox\" name=\"trans_primary\">";
-			echo ("&nbsp;&nbsp;<input type=\"submit\" name=\"apply_trans_primary\" value=\"" . _("Apply") . "\">");
+			else echo "<input class=\"" . $this->type . "\" type=\"checkbox\" name=\"trans_primary\">";
+			echo ("&nbsp;&nbsp;<input class=\"" . $this->type . "\" type=\"submit\" name=\"apply_trans_primary\" value=\"" . _("Apply") . "\">");
 			echo "</p>\n";
 		}
 		
