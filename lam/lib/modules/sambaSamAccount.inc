@@ -1383,14 +1383,32 @@ class sambaSamAccount extends baseModule {
 	* @return array list of possible PDF entries
 	*/
 	function get_pdfEntries() {
-		return array(	'sambaSamAccount_displayName' => array('<block><key>' . _('Display name') . '</key><value' . $this->attributes['displayName'][0] . '</value></block>'),
-							'sambaSamAccount_sambaHomePath' => array('<block><key>' . _('Home path') . '</key><value>' . $this->attributes['sambaHomeDrive'][0] . '</value></block>'),
-							'sambaSamAccount_sambaHomeDrive' => array('<block><key>' . _('Home drive') . '</key><value>' . $this->attributes['sambaHomePath'][0] . '</value></block>'),
-							'sambaSamAccount_sambaLogonScript' => array('<block><key>' . _('Logon script') . '</key><value>' . $this->attributes['sambaLogonScript'][0] . '</value></block>'),
-							'sambaSamAccount_sambaProfilePath' => array('<block><key>' . _('Profile path') . '</key><value>' . $this->attributes['sambaProfilePath'][0] . '</value></block>'),
-							'sambaSamAccount_sambaUserWorkstations' => array('<block><key>' . _('Samba workstations') . '</key><value>' . $this->attributes['sambaUserWorkstations'][0] . '</value></block>'),
-							'sambaSamAccount_sambaDomainName' => array('<block><key>' . _('Domain') . '</key><value>' . $this->attributes['sambaDomainName'][0] . '</value></block>'),
-							'sambaSamAccount_sambaPrimaryGroupSID' => array('<block><key>' . _('Windows group') . '</key><value>' . $this->attributes['sambaPrimaryGroupSID'][0] . '</value></block>'));
+		$return = array();
+		if (isset($this->attributes['displayName'][0])) {
+			$return['sambaSamAccount_displayName'] = array('<block><key>' . _('Display name') . '</key><value>' . $this->attributes['displayName'][0] . '</value></block>');
+		}
+		if (isset($this->attributes['sambaHomeDrive'][0])) {
+			$return['sambaSamAccount_sambaHomePath'] = array('<block><key>' . _('Home path') . '</key><value>' . $this->attributes['sambaHomeDrive'][0] . '</value></block>');
+		}
+		if (isset($this->attributes['sambaHomePath'][0])) {
+			$return['sambaSamAccount_sambaHomeDrive'] = array('<block><key>' . _('Home drive') . '</key><value>' . $this->attributes['sambaHomePath'][0] . '</value></block>');
+		}
+		if (isset($this->attributes['sambaLogonScript'][0])) {
+			$return['sambaSamAccount_sambaLogonScript'] = array('<block><key>' . _('Logon script') . '</key><value>' . $this->attributes['sambaLogonScript'][0] . '</value></block>');
+		}
+		if (isset($this->attributes['sambaProfilePath'][0])) {
+			$return['sambaSamAccount_sambaProfilePath'] = array('<block><key>' . _('Profile path') . '</key><value>' . $this->attributes['sambaProfilePath'][0] . '</value></block>');
+		}
+		if (isset($this->attributes['sambaUserWorkstations'][0])) {
+			$return['sambaSamAccount_sambaUserWorkstations'] = array('<block><key>' . _('Samba workstations') . '</key><value>' . $this->attributes['sambaUserWorkstations'][0] . '</value></block>');
+		}
+		if (isset($this->attributes['sambaDomainName'][0])) {
+			$return['sambaSamAccount_sambaDomainName'] = array('<block><key>' . _('Domain') . '</key><value>' . $this->attributes['sambaDomainName'][0] . '</value></block>');
+		}
+		if (isset($this->attributes['sambaPrimaryGroupSID'][0])) {
+			$return['sambaSamAccount_sambaPrimaryGroupSID'] = array('<block><key>' . _('Windows group') . '</key><value>' . $this->attributes['sambaPrimaryGroupSID'][0] . '</value></block>');
+		}
+		return $return;
 	}
 
 	/**

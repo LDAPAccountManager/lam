@@ -851,7 +851,7 @@ class sambaAccount extends baseModule {
 	* @return array list of possible PDF entries
 	*/
 	function get_pdfEntries() {
-		return array(	'sambaAccount_displayName' => array('<block><key>' . _('Display name') . '</key><value' . $this->attributes['displayName'][0] . '</value></block>'),
+		return array(	'sambaAccount_displayName' => array('<block><key>' . _('Display name') . '</key><value>' . $this->attributes['displayName'][0] . '</value></block>'),
 							'sambaAccount_smbHome' => array('<block><key>' . _('Home path') . '</key><value>' . $this->attributes['smbHome'][0] . '</value></block>'),
 							'sambaAccount_homeDrive' => array('<block><key>' . _('Home drive') . '</key><value>' . $this->attributes['homePath'][0] . '</value></block>'),
 							'sambaAccount_scriptPath' => array('<block><key>' . _('Logon script') . '</key><value>' . $this->attributes['scriptPath'][0] . '</value></block>'),
