@@ -1,3 +1,9 @@
+??? 1.3.0
+  - improved design
+  - fixed bugs:
+   -> ShadowAccount: PDF entry for expire date was wrong (1658868)
+
+
 24.01.2007 1.2.0
   - Samba 3: better handling of date values
   - Samba 3: Handling of locked accounts (RFE 1609076)

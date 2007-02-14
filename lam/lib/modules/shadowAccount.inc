@@ -4,6 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
   Copyright (C) 2003 - 2006  Tilo Lutz
+  Copyright (C) 2007  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -360,7 +361,7 @@ class shadowAccount extends baseModule {
 		return array('shadowAccount_shadowLastChange' => array('<block><key>' . _('Last password change') . '</key><value>' . $this->attributes['shadowLastChange'][0] . '</value></block>'),
 			'shadowAccount_shadowWarning' => array('<block><key>' . _('Password warning') . '</key><value>' . $this->attributes['shadowWarn'][0] . '</value><block>'),
 			'shadowAccount_shadowInactive' => array('<block><key>' . _('Account inactive') . '</key><value>' . $this->attributes['shadowInactive'][0] . '</value></block>'),
-			'shadowAccount_shadowExpire' => array('<block><key>' . _('Password expiration') . '</key><value>' . date('d. m. Y',$this->attributes['shadowExpire'][0]) . '</value></block>'));
+			'shadowAccount_shadowExpire' => array('<block><key>' . _('Password expiration') . '</key><value>' . date('d. m. Y',$this->attributes['shadowExpire'][0]*24*3600) . '</value></block>'));
 	}
 
 	/**
