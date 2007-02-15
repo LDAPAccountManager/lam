@@ -30,7 +30,7 @@ install:
 	install -D --mode=644 lib/.htaccess debian/ldap-account-manager/usr/share/ldap-account-manager/lib/.htaccess
 	install -D --mode=644 lib/*.inc debian/ldap-account-manager/usr/share/ldap-account-manager/lib
 	install -D --mode=644 lib/ufpdf.php debian/ldap-account-manager/usr/share/ldap-account-manager/lib/ufpdf.php
-	install -D --mode=755 lib/lamdaemon.pl debian/ldap-account-manager/usr/share/ldap-account-manager/lib/lamdaemon.pl
+	install -D --mode=755 lib/*.pl debian/ldap-account-manager/usr/share/ldap-account-manager/lib
 	cp -r lib/font debian/ldap-account-manager/usr/share/ldap-account-manager/lib/
 	cp -r lib/modules debian/ldap-account-manager/usr/share/ldap-account-manager/lib/
 	cp -r lib/types debian/ldap-account-manager/usr/share/ldap-account-manager/lib/
