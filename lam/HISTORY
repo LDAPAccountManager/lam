@@ -2,6 +2,7 @@
   - improved design
   - fixed bugs:
    -> ShadowAccount: PDF entry for expire date was wrong (1658868)
+   -> Debian package did not include lamdaemonOld.pl (1660493)
 
 
 24.01.2007 1.2.0
