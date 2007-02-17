@@ -183,7 +183,6 @@ class lamUserList extends lamList {
 					$binData = ldap_get_values_len($_SESSION['ldap']->server(), $tempEntry, $attribute);
 					if (isset($binData['count'])) unset($binData['count']);
 					$entry[$attribute] = $binData;
-					echo "servus";
 				}
 			}
 			$jpeg_filename = 'jpg' . $_SESSION['ldap']->new_rand() . '.jpg';
