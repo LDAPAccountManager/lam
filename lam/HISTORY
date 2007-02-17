@@ -7,6 +7,7 @@
   Developers:
     API changes:
     - added listPrintTableCellContent() to class lamList
+    - added listPrintAdditionalOptions() to class lamList
 
 
 24.01.2007 1.2.0

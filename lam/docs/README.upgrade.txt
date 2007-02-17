@@ -14,9 +14,12 @@ Developers:
 
 New lamList function:
 
- The function listPrintTableCellContent() allows you to control how the LDAP
- attributes are displayed in the table. This can be used to display links
- or binary data.
+ - listPrintTableCellContent(): This function allows you to control how the LDAP
+   attributes are displayed in the table. This can be used to display links
+   or binary data.
+
+ - listPrintAdditionalOptions(): If you want to display additional conrols for a list
+   please use this function. The controls will be placed under the account table.
 
 
 
