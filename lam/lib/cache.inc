@@ -4,6 +4,7 @@ $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
   Copyright (C) 2003 - 2006  Tilo Lutz
+  Copyright (C) 2007 Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -25,6 +26,7 @@ $Id$
 * Provides a cache for LDAP attributes.
 *
 * @author Tilo Lutz
+* @author Roland Gruber
 * @package lib
 */
 
@@ -182,26 +184,29 @@ class cache {
 				$search = $this->attributes[$scope];
 				$search[] = 'objectClass';
 				$result = @ldap_search($_SESSION['ldap']->server(), $suffix, 'objectClass=*', $search, 0);
-				// Write search result in array
-				$entry = @ldap_first_entry($_SESSION['ldap']->server(), $result);
-				while ($entry) {
-					$dn = (ldap_get_dn($_SESSION['ldap']->server(), $entry));
-					$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
-					// unset double entries
-					for ($i=0; $i<count($attr); $i++) {
-						if (isset($attr[$i])) unset($attr[$i]);
+				if ($result) {
+					// Write search result in array
+					$entry = @ldap_first_entry($_SESSION['ldap']->server(), $result);
+					while ($entry) {
+						$dn = (ldap_get_dn($_SESSION['ldap']->server(), $entry));
+						$attr = ldap_get_attributes($_SESSION['ldap']->server(), $entry);
+						// unset double entries
+						for ($i=0; $i<count($attr); $i++) {
+							if (isset($attr[$i])) unset($attr[$i]);
+						}
+						// unset every count entry
+						unset ($attr['count']);
+						$attributes = array_keys($attr);
+						foreach ($attributes as $attribute) {
+							unset ($attr[$attribute]['count']);
+						}
+						// Write new cache entry
+						$addcache = $attr;
+						unset ($addcache['objectClass']);
+						if (count($addcache)!=0) $this->ldapcache[$scope][$dn] = $attr;
+						$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
 					}
-					// unset every count entry
-					unset ($attr['count']);
-					$attributes = array_keys($attr);
-					foreach ($attributes as $attribute) {
-						unset ($attr[$attribute]['count']);
-					}
-					// Write new cache entry
-					$addcache = $attr;
-					unset ($addcache['objectClass']);
-					if (count($addcache)!=0) $this->ldapcache[$scope][$dn] = $attr;
-					$entry = ldap_next_entry($_SESSION['ldap']->server(), $entry);
+					ldap_free_result($result);
 				}
 			}
 			$this->time = time();
