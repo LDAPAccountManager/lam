@@ -110,80 +110,37 @@ class lamGroupList extends lamList {
 			'nav' => _("%s group(s) found"),
 			'error_noneFound' => _("No groups found!"),
 			'newEntry' => _("New group"),
-			'deleteEntry' => _("Delete group"),
+			'deleteEntry' => _("Delete group(s)"),
 			'createPDF' => _("Create PDF for selected group(s)"),
 			'createPDFAll' => _("Create PDF for all groups"));
 	}
 	
 	/**
-	* Prints the entry list
-	* 
-	* @param array $info entries
-	*/
-	function listPrintTableBody($info) {
-		// calculate which rows to show
-		$table_begin = ($this->page - 1) * $this->maxPageEntries;
-		if (($this->page * $this->maxPageEntries) > sizeof($info)) $table_end = sizeof($info);
-		else $table_end = ($this->page * $this->maxPageEntries);
-		// print account list
-		for ($i = $table_begin; $i < $table_end; $i++) {
-			echo("<tr class=\"" . $this->type . "list\" onMouseOver=\"list_over(this, '" . $info[$i]['LAM_ID'] . "', '" . $this->type . "')\"\n" .
-				" onMouseOut=\"list_out(this, '" . $info[$i]['LAM_ID'] . "', '" . $this->type . "')\"\n" .
-				" onClick=\"list_click(this, '" . $info[$i]['LAM_ID'] . "', '" . $this->type . "')\"\n" .
-				" onDblClick=\"parent.frames[1].location.href='../account/edit.php?type=" . $this->type . "&amp;DN=" . $info[$i]['dn'] . "'\">\n");
-			if (isset($_GET['selectall'])) {
-				echo " <td height=22 align=\"center\"><input onClick=\"list_click(this, '" . $info[$i]['LAM_ID'] . "', '" . $this->type . "')\"" .
-					" type=\"checkbox\" checked name=\"" . $info[$i]['LAM_ID'] . "\"></td>\n";
+	 * Prints the content of a cell in the account list for a given LDAP entry and attribute.
+	 *
+	 * @param array $entry LDAP attributes
+	 * @param string $attribute attribute name
+	 */
+	function listPrintTableCellContent(&$entry, &$attribute) {
+		if ($attribute == "memberuid") {
+			if (!is_array($entry[$attribute]) || (sizeof($entry[$attribute]) < 1)) return;
+			if (isset($entry[$attribute]['count'])) unset($entry[$attribute]['count']);
+			// sort array
+			sort($entry[$attribute]);
+			// make a link for each member of the group
+			$linklist = array();
+			for ($d = 0; $d < sizeof($entry[$attribute]); $d++) {
+				$user = $entry[$attribute][$d]; // user name
+				$linklist[$d] = "<a href=\"userlink.php?user='" . $user . "' \">" . $user . "</a>";
 			}
-			else {
-				echo " <td height=22 align=\"center\"><input onClick=\"list_click(this, '" . $info[$i]['LAM_ID'] . "', '" . $this->type . "')\"" .
-					" type=\"checkbox\" name=\"" . $info[$i]['LAM_ID'] . "\"></td>\n";
-			}
-			echo (" <td align='center'><a href=\"../account/edit.php?type=" . $this->type . "&amp;DN='" . $info[$i]['dn'] . "'\">" . _("Edit") . "</a></td>\n");
-			for ($k = 0; $k < sizeof($this->attrArray); $k++) {
-				echo ("<td>");
-				// print all attribute entries seperated by "; "
-				$attrName = strtolower($this->attrArray[$k]);
-				if (isset($info[$i][$attrName]) && sizeof($info[$i][$attrName]) > 0) {
-					// delete "count" entry
-					unset($info[$i][$attrName]['count']);
-					// generate links for group members
-					if ($attrName == "memberuid") {
-						// sort array
-						sort($info[$i][$attrName]);
-						// make a link for each member of the group
-						$linklist = array();
-						for ($d = 0; $d < sizeof($info[$i][$attrName]); $d++) {
-							$user = $info[$i][$attrName][$d]; // user name
-							$linklist[$d] = "<a href=\"userlink.php?user='" . $user . "' \">" . $user . "</a>";
-						}
-						echo implode("; ", $linklist);
-					}
-					// print all other attributes
-					else {
-						if (is_array($info[$i][$attrName])) {
-							// sort array
-							sort($info[$i][$attrName]);
-							echo implode("; ", $info[$i][$attrName]);
-						}
-						else echo $info[$i][$attrName];
-					}
-				}
-				echo ("</td>\n");
-			}
-			echo("</tr>\n");
+			echo implode("; ", $linklist);
 		}
-		// display select all link
-		$colspan = sizeof($this->attrArray) + 1;
-		echo "<tr class=\"" . $this->type . "list\">\n";
-		echo "<td align=\"center\"><img src=\"../../graphics/select.png\" alt=\"select all\"></td>\n";
-		echo "<td colspan=$colspan>&nbsp;<a href=\"list.php?type=" . $this->type . "&amp;norefresh=y&amp;page=" . $this->page . 
-			"&amp;sort=" . $this->sortColumn . $this->filterText . "&amp;selectall=yes\">" .
-			"<font color=\"black\"><b>" . _("Select all") . "</b></font></a></td>\n";
-		echo "</tr>\n";
-		echo ("</table>");
+		// print all other attributes
+		else {
+			parent::listPrintTableCellContent($entry, $attribute);
+		}
 	}
-	
+
 }
 
 

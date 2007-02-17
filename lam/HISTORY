@@ -4,6 +4,10 @@
    -> ShadowAccount: PDF entry for expire date was wrong (1658868)
    -> Debian package did not include lamdaemonOld.pl (1660493)
 
+  Developers:
+    API changes:
+    - added listPrintTableCellContent() to class lamList
+
 
 24.01.2007 1.2.0
   - Samba 3: better handling of date values

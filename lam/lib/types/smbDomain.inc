@@ -108,7 +108,7 @@ class lamSmbDomainList extends lamList {
 			'nav' => _("%s domain(s) found"),
 			'error_noneFound' => _("No domains found!"),
 			'newEntry' => _("New domain"),
-			'deleteEntry' => _("Delete domain"),
+			'deleteEntry' => _("Delete domain(s)"),
 			'createPDF' => _("Create PDF for selected domain(s)"),
 			'createPDFAll' => _("Create PDF for all domains"));
 	}

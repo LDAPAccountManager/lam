@@ -2,6 +2,24 @@ Upgrade instructions:
 =====================
 
 
+1.2.0 -> 1.3.0:
+===============
+
+Users:
+
+No changes.
+
+
+Developers:
+
+New lamList function:
+
+ The function listPrintTableCellContent() allows you to control how the LDAP
+ attributes are displayed in the table. This can be used to display links
+ or binary data.
+
+
+
 1.1.x -> 1.2.0:
 ===============
 

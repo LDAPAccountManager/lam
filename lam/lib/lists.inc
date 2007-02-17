@@ -204,26 +204,27 @@ class lamList {
 	* @return array filtered list of accounts
 	*/
 	function listFilterAccounts() {
-		$entries = $this->entries;
+		$entries = array();
 		$filter = $this->listBuildFilter();
 		$attributes = array_keys($filter);
-		for ($r = 0; $r < sizeof($entries); $r++) {
+		for ($r = 0; $r < sizeof($this->entries); $r++) {
+			$skip = false;
 			for ($a = 0; $a < sizeof($attributes); $a++) {
 				// check if filter fits
 				$found = false;
-				for ($i = 0; $i < sizeof($entries[$r][$attributes[$a]]); $i++) {
-					if (eregi($filter[$attributes[$a]]['regex'], $entries[$r][$attributes[$a]][$i])) {
+				for ($i = 0; $i < sizeof($this->entries[$r][$attributes[$a]]); $i++) {
+					if (eregi($filter[$attributes[$a]]['regex'], $this->entries[$r][$attributes[$a]][$i])) {
 						$found = true;
 						break;
 					}
 				}
 				if (!$found) {
-					// remove account and reindex array
-					unset($entries[$r]);
-					$entries = array_values($entries);
-					$r--;
+					$skip = true;
 					break;
 				}
+			}
+			if (!$skip) {
+				$entries[] = &$this->entries[$r];
 			}
 		}
 		if (sizeof($entries) == 0) StatusMessage("WARN", $this->labels['error_noneFound']);
@@ -237,7 +238,7 @@ class lamList {
 	* @param array $info the account list
 	* @return array sorted account list
 	*/
-	function listSort($info) {
+	function listSort(&$info) {
 		if (!is_array($this->attrArray)) return $info;
 		if (!is_string($this->sortColumn)) return $info;
 		// sort and return account list
@@ -256,7 +257,7 @@ class lamList {
 	* @param array $b second row which is compared
 	* @return integer 0 if both are equal, 1 if $a is greater, -1 if $b is greater
 	*/
-	function cmp_array($a, $b) {
+	function cmp_array(&$a, &$b) {
 		// sort specifies the sort column
 		$sort = $this->sortColumn;
 		$attr_array = $this->attrArray;
@@ -363,7 +364,7 @@ class lamList {
 	*
 	* @param array $info entries
 	*/
-	function listPrintTableBody($info) {
+	function listPrintTableBody(&$info) {
 		// calculate which rows to show
 		$table_begin = ($this->page - 1) * $this->maxPageEntries;
 		if (($this->page * $this->maxPageEntries) > sizeof($info)) $table_end = sizeof($info);
@@ -385,18 +386,8 @@ class lamList {
 			echo (" <td align='center'><a href=\"../account/edit.php?type=" . $this->type . "&amp;DN='" . $info[$i]['dn'] . "'\">" . _("Edit") . "</a></td>\n");
 			for ($k = 0; $k < sizeof($this->attrArray); $k++) {
 				echo ("<td>");
-				// print all attribute entries seperated by "; "
 				$attrName = strtolower($this->attrArray[$k]);
-				if (isset($info[$i][$attrName]) && sizeof($info[$i][$attrName]) > 0) {
-					// delete "count" entry
-					unset($info[$i][$attrName]['count']);
-					if (is_array($info[$i][$attrName])) {
-						// sort array
-						sort($info[$i][$attrName]);
-						echo implode("; ", $info[$i][$attrName]);
-					}
-					else echo $info[$i][$attrName];
-				}
+				$this->listPrintTableCellContent($info[$i], $attrName);
 				echo ("</td>\n");
 			}
 			echo("</tr>\n");
@@ -410,6 +401,26 @@ class lamList {
 			"<font color=\"black\"><b>" . _("Select all") . "</b></font></a></td>\n";
 		echo "</tr>\n";
 		echo ("</table>");
+	}
+	
+	/**
+	 * Prints the content of a cell in the account list for a given LDAP entry and attribute.
+	 *
+	 * @param array $entry LDAP attributes
+	 * @param string $attribute attribute name
+	 */
+	function listPrintTableCellContent(&$entry, &$attribute) {
+		// print all attribute entries seperated by "; "
+		if (isset($entry[$attribute]) && sizeof($entry[$attribute]) > 0) {
+			// delete "count" entry
+			unset($entry[$attribute]['count']);
+			if (is_array($entry[$attribute])) {
+				// sort array
+				sort($entry[$attribute]);
+				echo implode("; ", $entry[$attribute]);
+			}
+			else echo $entry[$attribute];
+		}		
 	}
 
 	/**
@@ -665,7 +676,10 @@ class lamList {
 			// delete first array entry which is "count"
 			unset($info['count']);
 			// save position in original $info
-			for ($i = 0; $i < sizeof($info); $i++) $info[$i]['LAM_ID'] = $i;
+			for ($i = 0; $i < sizeof($info); $i++) {
+				$info[$i]['LAM_ID'] = $i;
+				if (isset($info[$i]['count'])) unset($info[$i]['count']);
+			}
 			// save results
 			$this->entries = $info;
 		}

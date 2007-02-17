@@ -89,7 +89,8 @@ class user extends baseType {
 			"homedirectory" => _("Home directory"),
 			"loginshell" => _("Login shell"),
 			"mail" => _("E-Mail"),
-			"gecos" => _("Description")
+			"gecos" => _("Description"),
+			"jpegphoto" => _('Photo')
 			);
 	}
 
@@ -122,7 +123,7 @@ class lamUserList extends lamList {
 			'nav' => _("%s user(s) found"),
 			'error_noneFound' => _("No users found!"),
 			'newEntry' => _("New user"),
-			'deleteEntry' => _("Delete user"),
+			'deleteEntry' => _("Delete user(s)"),
 			'createPDF' => _("Create PDF for selected user(s)"),
 			'createPDFAll' => _("Create PDF for all users"));
 	}
@@ -154,72 +155,50 @@ class lamUserList extends lamList {
 	}
 
 	/**
-	* Prints the entry list
-	* 
-	* @param array $info entries
-	*/
-	function listPrintTableBody($info) {
-		// calculate which rows to show
-		$table_begin = ($this->page - 1) * $this->maxPageEntries;
-		if (($this->page * $this->maxPageEntries) > sizeof($info)) $table_end = sizeof($info);
-		else $table_end = ($this->page * $this->maxPageEntries);
-		// translate GIDs and resort array if selected
-		if ($this->trans_primary == "on") {
-			// translate GIDs
-			for ($i = 0; $i < sizeof($info); $i++) {
-				if (isset($this->trans_primary_hash[$info[$i]['gidnumber'][0]])) {
-					$info[$i]['gidnumber'][0] = $this->trans_primary_hash[$info[$i]['gidnumber'][0]];
-				}
-			}
-			// resort if needed
-			if ($this->sortColumn == "gidnumber") {
-				$info = $this->listSort($info);
-			}
-		}
-		// print account list
-		for ($i = $table_begin; $i < $table_end; $i++) {
-			echo("<tr class=\"" . $this->type . "list\" onMouseOver=\"list_over(this, '" . $info[$i]['LAM_ID'] . "', '" . $this->type . "')\"\n" .
-				" onMouseOut=\"list_out(this, '" . $info[$i]['LAM_ID'] . "', '" . $this->type . "')\"\n" .
-				" onClick=\"list_click(this, '" . $info[$i]['LAM_ID'] . "', '" . $this->type . "')\"\n" .
-				" onDblClick=\"parent.frames[1].location.href='../account/edit.php?type=" . $this->type . "&amp;DN=" . $info[$i]['dn'] . "'\">\n");
-			if (isset($_GET['selectall'])) {
-				echo " <td height=22 align=\"center\"><input onClick=\"list_click(this, '" . $info[$i]['LAM_ID'] . "', '" . $this->type . "')\"" .
-					" type=\"checkbox\" checked name=\"" . $info[$i]['LAM_ID'] . "\"></td>\n";
+	 * Prints the content of a cell in the account list for a given LDAP entry and attribute.
+	 *
+	 * @param array $entry LDAP attributes
+	 * @param string $attribute attribute name
+	 */
+	function listPrintTableCellContent(&$entry, &$attribute) {
+		// check if there is something to display at all
+		if (!is_array($entry[$attribute]) || (sizeof($entry[$attribute]) < 1)) return;
+		if (isset($entry[$attribute]['count'])) unset($entry[$attribute]['count']);
+		// translate GID to group name
+		if (($attribute == "gidnumber") && ($this->trans_primary == "on")) {
+			if (isset($this->trans_primary_hash[$entry[$attribute][0]])) {
+				echo $this->trans_primary_hash[$entry[$attribute][0]];
 			}
 			else {
-				echo " <td height=22 align=\"center\"><input onClick=\"list_click(this, '" . $info[$i]['LAM_ID'] . "', '" . $this->type . "')\"" .
-					" type=\"checkbox\" name=\"" . $info[$i]['LAM_ID'] . "\"></td>\n";
+				parent::listPrintTableCellContent($entry, $attribute);
 			}
-			echo (" <td align='center'><a href=\"../account/edit.php?type=" . $this->type . "&amp;DN='" . $info[$i]['dn'] . "'\">" . _("Edit") . "</a></td>\n");
-			for ($k = 0; $k < sizeof($this->attrArray); $k++) {
-				echo ("<td>");
-				// print all attribute entries seperated by "; "
-				$attrName = strtolower($this->attrArray[$k]);
-				if (isset($info[$i][$attrName]) && sizeof($info[$i][$attrName]) > 0) {
-					// delete "count" entry
-					unset($info[$i][$attrName]['count']);
-					if (is_array($info[$i][$attrName])) {
-						// sort array
-						sort($info[$i][$attrName]);
-						echo implode("; ", $info[$i][$attrName]);
-					}
-					else echo $info[$i][$attrName];
-				}
-				echo ("</td>\n");
-			}
-			echo("</tr>\n");
 		}
-		// display select all link
-		$colspan = sizeof($this->attrArray) + 1;
-		echo "<tr class=\"" . $this->type . "list\">\n";
-		echo "<td align=\"center\"><img src=\"../../graphics/select.png\" alt=\"select all\"></td>\n";
-		echo "<td colspan=$colspan>&nbsp;<a href=\"list.php?type=" . $this->type . "&amp;norefresh=y&amp;page=" . $this->page . 
-			"&amp;sort=" . $this->sortColumn . $this->filterText . "&amp;selectall=yes\">" .
-			"<font color=\"black\"><b>" . _("Select all") . "</b></font></a></td>\n";
-		echo "</tr>\n";
-		echo ("</table>");
+		// show user photos
+		elseif ($attribute == "jpegphoto") {
+			if (sizeof($entry[$attribute][0]) < 100) {
+				// looks like we have read broken binary data, reread photo
+				$result = @ldap_search($_SESSION['ldap']->server(), $entry['dn'], $attribute . "=*");
+				if ($result) {
+					$tempEntry = @ldap_first_entry($_SESSION['ldap']->server(), $result);
+					$binData = ldap_get_values_len($_SESSION['ldap']->server(), $tempEntry, $attribute);
+					if (isset($binData['count'])) unset($binData['count']);
+					$entry[$attribute] = $binData;
+					echo "servus";
+				}
+			}
+			$jpeg_filename = 'jpg' . $_SESSION['ldap']->new_rand() . '.jpg';
+			$outjpeg = @fopen($_SESSION['lampath'] . 'tmp/' . $jpeg_filename, "wb");
+			fwrite($outjpeg, $entry[$attribute][0]);
+			fclose ($outjpeg);
+			$photoFile = '../../tmp/' . $jpeg_filename;
+			echo "<img src=\"" . $photoFile . "\" alt=\"" . _('Photo') . "\">";
+		}
+		// print all other attributes
+		else {
+			parent::listPrintTableCellContent($entry, $attribute);
+		}
 	}
-	
+
 	/**
 	 * Prints additional option fields for specific object types.
 	 */
