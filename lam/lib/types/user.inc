@@ -177,12 +177,14 @@ class lamUserList extends lamList {
 		elseif ($attribute == "jpegphoto") {
 			if (sizeof($entry[$attribute][0]) < 100) {
 				// looks like we have read broken binary data, reread photo
-				$result = @ldap_search($_SESSION['ldap']->server(), $entry['dn'], $attribute . "=*");
+				$result = @ldap_search($_SESSION['ldap']->server(), $entry['dn'], $attribute . "=*", array($attribute));
 				if ($result) {
 					$tempEntry = @ldap_first_entry($_SESSION['ldap']->server(), $result);
-					$binData = ldap_get_values_len($_SESSION['ldap']->server(), $tempEntry, $attribute);
-					if (isset($binData['count'])) unset($binData['count']);
-					$entry[$attribute] = $binData;
+					if ($tempEntry) {
+						$binData = ldap_get_values_len($_SESSION['ldap']->server(), $tempEntry, $attribute);
+						if (isset($binData['count'])) unset($binData['count']);
+						$entry[$attribute] = $binData;
+					}
 				}
 			}
 			$jpeg_filename = 'jpg' . $_SESSION['ldap']->new_rand() . '.jpg';
