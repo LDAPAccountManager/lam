@@ -113,7 +113,7 @@ class inetOrgPerson extends baseModule {
 		$return['selfServiceFieldSettings'] = array('firstName' => _('First name'), 'lastName' => _('Last name'),
 			'mail' => _('eMail address'), 'telephoneNumber' => _('Telephone number'), 'mobile' => _('Mobile number'),
 			'faxNumber' => _('Fax number'), 'street' => _('Street'), 'postalAddress' => _('Postal address'),
-			'postalCode' => _('Postal code'), 'postOfficeBox' => _('Post office box'));
+			'postalCode' => _('Postal code'), 'postOfficeBox' => _('Post office box'), 'jpegPhoto' => _('Photo'));
 		// profile elements
 		$return['profile_options'] = array(
 			array(
@@ -1133,6 +1133,39 @@ class inetOrgPerson extends baseModule {
 				1 => array('kind' => 'input', 'name' => 'inetOrgPerson_postOfficeBox', 'type' => 'text', 'size' => '30',
 					'maxlength' => '255', 'value' => $postOfficeBox));
 		}
+		if (in_array('jpegPhoto', $fields)) {
+			if (isset($attributes['jpegPhoto'][0])) {
+				$jpeg_filename = 'jpegPhoto' . session_id() . '.jpg';
+				$outjpeg = fopen(realpath('../../') . '/tmp/' . $jpeg_filename, "wb");
+				fwrite($outjpeg, $attributes['jpegPhoto'][0]);
+				fclose ($outjpeg);
+				$photoFile = '../../tmp/' . $jpeg_filename;
+				$return['jpegPhoto'] = array(
+					array('kind' => 'text', 'text' => _('Photo')),
+					array('kind' => 'table', 'value' => array(
+						array(
+							array('kind' => 'image', 'alt' => _('Photo'), 'path' => $photoFile)
+						),
+						array(
+							array('kind' => 'table', 'value' => array(array(
+								array('kind' => 'input', 'type' => 'checkbox', 'name' => 'removeReplacePhoto'),
+								array('kind' => 'text', 'text' => _('Remove/replace photo')),
+								array('kind' => 'input', 'name' => 'replacePhotoFile', 'type' => 'file')
+							))),
+						)
+					))
+				);
+			}
+			else {
+				$return['jpegPhoto'] = array(
+					array('kind' => 'text', 'text' => _('Photo')),
+					array('kind' => 'table', 'value' => array(array(
+						array('kind' => 'text', 'text' => _('Add photo')),
+						array('kind' => 'input', 'name' => 'photoFile', 'type' => 'file')
+					)))
+				);	
+			}
+		}
 		return $return;
 	}
 
@@ -1238,6 +1271,26 @@ class inetOrgPerson extends baseModule {
 				$attributesNew['postOfficeBox'][0] = $_POST['inetOrgPerson_postOfficeBox'];
 			}
 			elseif (isset($attributes['postOfficeBox'])) unset($attributesNew['postOfficeBox']);
+		}
+		// photo
+		if (in_array('jpegPhoto', $fields)) {
+			if ($_FILES['photoFile'] && ($_FILES['photoFile']['size'] > 0)) {
+				$handle = fopen($_FILES['photoFile']['tmp_name'], "r");
+				$data = fread($handle, 1000000);
+				fclose($handle);
+				$return['add']['jpegPhoto'][0] = $data;
+			}
+			if ($_POST['removeReplacePhoto'] == 'on') {
+				if ($_FILES['replacePhotoFile'] && ($_FILES['replacePhotoFile']['size'] > 0)) {
+					$handle = fopen($_FILES['replacePhotoFile']['tmp_name'], "r");
+					$data = fread($handle, 1000000);
+					fclose($handle);
+					$return['mod']['jpegPhoto'][0] = $data;
+				}
+				else {
+					$return['mod']['jpegPhoto'] = array();
+				}
+			}
 		}
 		// find differences
 		for ($i = 0; $i < sizeof($attributeNames); $i++) {

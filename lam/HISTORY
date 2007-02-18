@@ -1,5 +1,7 @@
 ??? 1.3.0
   - improved design
+  - user list can now display jpegPhoto attributes
+  - LAM Pro: users may change their photos (jpegPhoto)
   - fixed bugs:
    -> ShadowAccount: PDF entry for expire date was wrong (1658868)
    -> Debian package did not include lamdaemonOld.pl (1660493)
