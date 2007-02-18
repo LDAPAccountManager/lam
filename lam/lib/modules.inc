@@ -559,7 +559,7 @@ function parseHtml($module, $input, $values, $restricted, &$tabindex, &$tabindex
 					// input fields
 					case 'input':
 						$type = $input[$i][$j]['type'];
-						if ($restricted && (($type == "submit") || ($type == "reset") || ($type == "file"))) break;	// no buttons in restricted mode
+						if ($restricted && (($type == "submit") || ($type == "reset"))) break;	// no buttons in restricted mode
 						$output = "<input";
 						if ($input[$i][$j]['name']!='') $output .= ' name="' . $input[$i][$j]['name'] . '"';
 						if ($type != '') $output .= ' type="' . $type . '"';
