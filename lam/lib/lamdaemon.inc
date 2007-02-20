@@ -26,6 +26,7 @@ $Id$
 *
 * @author Tilo Lutz
 * @author Roland Gruber
+* @author Thomas Manninger
 *
 * @package modules
 */
@@ -34,13 +35,14 @@ $Id$
 * Sends commands to lamdaemon script.
 *
 * @param array $commands List of command lines
+* @param string $server remote server
 * @return array Output of lamdaemon
 *
 */
-function lamdaemon($commands) {
+function lamdaemon($commands, $server) {
 	// use new PHP SSH mechanismn
 	if (function_exists("ssh2_connect")) {
-		return lamdaemonSSH($commands);
+		return lamdaemonSSH($commands, $server);
 	}
 
 	// get username and password of the current lam-admin
@@ -50,7 +52,7 @@ function lamdaemon($commands) {
 	$output_array = array();
 	if (function_exists('proc_open')) {
 		// New Code, requires PHP 4.3
-		$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." - -";
+		$towrite = escapeshellarg($server)." ".escapeshellarg($_SESSION['config']->scriptPath)." - -";
 		$descriptorspec = array(
 			0 => array("pipe", "r"), // stdin
 			1 => array("pipe", "w"), // stout
@@ -80,7 +82,7 @@ function lamdaemon($commands) {
 		proc_close($process);
 		}
 	else { // PHP 4.3>
-		$towrite = escapeshellarg($_SESSION['config']->scriptServer)." ".escapeshellarg($_SESSION['config']->scriptPath)." ".
+		$towrite = escapeshellarg($server)." ".escapeshellarg($_SESSION['config']->scriptPath)." ".
 			escapeshellarg($ldap_q[0]).' '.escapeshellarg($ldap_q[1]);
 		$command = escapeshellarg($_SESSION['lampath']."lib/lamdaemonOld.pl")." ".$towrite;
 		$pipe = popen("echo \"$userstring\"|$command" , 'r');
@@ -103,14 +105,15 @@ function lamdaemon($commands) {
 * Sends commands to lamdaemon script via PHP SSH functions.
 *
 * @param array $commands List of command lines
+* @param string $server remote server
 * @return array Output of lamdaemon
 *
 */
-function lamdaemonSSH($commands) {
+function lamdaemonSSH($commands, $server) {
 	$commands = implode("\n", $commands) . "\n";
 	// get username and password of the current lam-admin
 	$credentials = $_SESSION['ldap']->decrypt_login();
-	$handle = ssh2_connect($_SESSION['config']->scriptServer);
+	$handle = ssh2_connect($server);
 	if ($handle) {
 		$sr = @ldap_read($_SESSION['ldap']->server(), $credentials[0], "objectClass=posixAccount", array('uid'));
 		if (!$sr) {
@@ -143,12 +146,12 @@ function lamdaemonSSH($commands) {
 			return $return;
 		}
 		else {
-			$return = array("ERROR," . _('Unable to connect to remote server!') . "," . $_SESSION['config']->scriptServer);
+			$return = array("ERROR," . _('Unable to connect to remote server!') . "," . $server);
 			return $return;
 		}
 	}
 	else {
-		$return = array("ERROR," . _('Unable to connect to remote server!') . "," . $_SESSION['config']->scriptServer);
+		$return = array("ERROR," . _('Unable to connect to remote server!') . "," . $server);
 		return $return;
 	}
 	return array();
