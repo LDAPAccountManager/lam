@@ -4,6 +4,7 @@
 #
 #  This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
 #  Copyright (C) 2003 - 2006  Tilo Lutz
+#  Copyright (C) 2006 - 2007  Roland Gruber
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -123,11 +124,12 @@ if ($< == 0 ) { # we are root
 							system 'mkdir', '-m', '0755', '-p', $path; # Create paths to homedir
 						}
 						if (! -e $user[7]) {
-							system 'mkdir', '-m', '0755', $user[7]; # Create homedir itself
+							system 'mkdir', '-m', $vals[3], $user[7]; # Create homedir itself
 							system ("(cd /etc/skel && tar cf - .) | (cd $user[7] && tar xmf -)"); # Copy /etc/sekl into homedir
 							system 'chown', '-hR', "$user[2]:$user[3]" , $user[7]; # Change owner to new user
 							if (-e '/usr/sbin/useradd.local') {
 								system '/usr/sbin/useradd.local', $user[0]; # run useradd-script
+								system 'chmod', '-R', $vals[3], $user[7];     # Edit chmod rights
 							}
 							$return = "Ok";
 						}
@@ -152,7 +154,7 @@ if ($< == 0 ) { # we are root
 							}
 						}
 						else {
-							$return = "ERROR,Lamdaemon,Home directory does not exist.";
+							$return = "INFO,Lamdaemon,The directory which should be deleted was not found, skipped.";
 							}
 						($<, $>) = ($>, $<); # Give up root previleges
 						last switch2;
