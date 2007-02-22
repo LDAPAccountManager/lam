@@ -113,7 +113,7 @@ function lamdaemonSSH($commands, $server) {
 	$commands = implode("\n", $commands) . "\n";
 	// get username and password of the current lam-admin
 	$credentials = $_SESSION['ldap']->decrypt_login();
-	$handle = ssh2_connect($server);
+	$handle = @ssh2_connect($server);
 	if ($handle) {
 		$sr = @ldap_read($_SESSION['ldap']->server(), $credentials[0], "objectClass=posixAccount", array('uid'));
 		if (!$sr) {
