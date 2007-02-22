@@ -4,6 +4,7 @@
 
 	This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
 	Copyright (C) 2003 - 2006  Tilo Lutz
+	Copyright (C) 2007  Roland Gruber
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -25,6 +26,7 @@
 * Used to delete accounts from LDAP tree.
 *
 * @author Tilo Lutz
+* @author Roland Gruber
 * @package main
 */
 
@@ -196,28 +198,15 @@ if ($_POST['delete']) {
 			}
 		}
 		if (!$stopprocessing) {
-			foreach ($attributes as $DN) {
-				if (is_array($DN['lamdaemon']['command'])) $result = lamdaemon($DN['lamdaemon']['command']);
-				if (!is_array($result)) continue;
-				// check for error somewhere in lamdaemon
-				foreach ($result as $singleresult) {
-					$singleresult = explode(",", $singleresult);
-					if (is_array($singleresult)) {
-						if ($singleresult[0] == 'ERROR') {
-							$stopprocessing = true;
-							$temparray[0] = $singleresult[0];
-							$temparray[1] = $singleresult[1];
-							$temparray[2] = $singleresult[2];
-							$errors[] = $temparray;
-						}
-					}
-				}
-			}
-		}
-		if (!$stopprocessing) {
 			$errors = deleteDN($_SESSION['delete_dn'][$m]);
 			if (sizeof($errors) > 0) $stopprocessing = true;
 		}
+		if (!$stopprocessing) {
+			// post delete actions
+			foreach ($module as $singlemodule) {
+			$_SESSION['account']->module[$singlemodule]->postDeleteActions();
+			}
+		}		
 		if (!$stopprocessing) {
 			echo sprintf(_('Deleted DN: %s'), $_SESSION['delete_dn'][$m]) . "<br>\n";
 			foreach ($errors as $error) StatusMessage($error[0], $error[1], $error[2]);
