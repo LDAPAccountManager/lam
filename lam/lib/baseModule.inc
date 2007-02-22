@@ -584,6 +584,22 @@ class baseModule {
 	}
 
 	/**
+	 * Allows the module to run commands after the LDAP entry was changed or created.
+	 *
+	 * @param boolean $newAccount new account
+	 */
+	function postModifyActions($newAccount) {
+		return;
+	}
+	
+	/**
+	 * Allows the module to run commands after the LDAP entry was deleted.
+	 */
+	function postDeleteActions() {
+		return;
+	}
+	
+	/**
 	* Dummy function for modules which use no special options on account deletion.
 	*
 	* @return List of LDAP operations, same as for save_attributes()
