@@ -27,6 +27,7 @@ $Id$
 *
 * @package configuration
 * @author Roland Gruber
+* @author Thomas Manninger
 */
 
 
@@ -317,8 +318,8 @@ echo ("<fieldset><legend><b>" . _("Script settings") . "</b></legend>\n");
 echo ("<table border=0>\n");
 
 echo ("<tr><td align=\"right\"><b>".
-	_("Server of external script") . ": </b></td>".
-	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"scriptserver\" value=\"" . $conf->get_scriptServer() . "\"></td>\n");
+	_("Server list") . ": </b></td>".
+	"<td><input tabindex=\"$tabindex\" size=50 type=\"text\" name=\"scriptservers\" value=\"" . $conf->get_scriptServers(false) . "\"></td>\n");
 $tabindex++;
 echo "<td>";
 echo "<a href=\"../help.php?HelpNumber=211\" target=\"lamhelp\">";
@@ -331,6 +332,51 @@ echo ("<tr><td align=\"right\"><b>".
 $tabindex++;
 echo "<td>";
 echo "<a href=\"../help.php?HelpNumber=210\" target=\"lamhelp\">";
+echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
+echo "</a>\n";
+echo "</td></tr>\n";
+echo "<tr><td align=\"right\"><b>". _("Rights for the home directory") . ": </b></td>\n";
+$owr = "";
+$oww = "";
+$owe = "";
+$grr = "";
+$grw = "";
+$gre = "";
+$otr = "";
+$otw = "";
+$ote = "";
+$chmod = $conf->get_scriptRights();
+if (checkChmod("read","owner", $chmod)) $owr = 'checked';
+if (checkChmod("write","owner", $chmod)) $oww = 'checked';
+if (checkChmod("execute","owner", $chmod)) $owe = 'checked';
+if (checkChmod("read","group", $chmod)) $grr = 'checked';
+if (checkChmod("write","group", $chmod)) $grw = 'checked';
+if (checkChmod("execute","group", $chmod)) $gre = 'checked';
+if (checkChmod("read","other", $chmod)) $otr = 'checked';
+if (checkChmod("write","other", $chmod)) $otw = 'checked';
+if (checkChmod("execute","other", $chmod)) $ote = 'checked';
+
+echo "<td align=\"center\">\n";
+	echo "<table width=\"280\"><tr align=\"center\">\n";
+	echo "<td width=\"70\"></td><th width=\"70\">" . _("Read") . "</th>\n";
+	echo "<th width=\"70\">" . _("Write") . "</th>\n";
+	echo "<th width=\"70\">"._("Execute")."</th></tr>\n";
+	echo "<tr align=\"center\"><th align=\"left\">"._("Owner")."</th>\n";
+	echo "<td><input type=\"checkbox\" name=\"chmod_owr\" " . $owr . "></td>\n";
+	echo "<td><input type=\"checkbox\" name=\"chmod_oww\" " . $oww . "></td>\n";
+	echo "<td><input type=\"checkbox\" name=\"chmod_owe\" " . $owe . "></td></tr>\n";
+	echo "<tr align=\"center\"><th align=\"left\">"._("Group")."</th>\n";
+	echo "<td><input type=\"checkbox\" name=\"chmod_grr\" " . $grr . "></td>\n";
+	echo "<td><input type=\"checkbox\" name=\"chmod_grw\" " . $grw . "></td>\n";
+	echo "<td><input type=\"checkbox\" name=\"chmod_gre\" " . $gre . "></td></tr>\n";
+	echo "<tr align=\"center\"><th align=\"left\">"._("Other")."</th>\n";
+	echo "<td><input type=\"checkbox\" name=\"chmod_otr\" " . $otr . "></td>\n";
+	echo "<td><input type=\"checkbox\" name=\"chmod_otw\" " . $otw . "></td>\n";
+	echo "<td><input type=\"checkbox\" name=\"chmod_ote\" " . $ote . "></td>\n";
+	echo "</tr></table>";
+	$tabindex++;
+echo "<td>";
+echo "<a href=\"../help.php?HelpNumber=213\" target=\"lamhelp\">";
 echo "<img src=\"../../graphics/help.png\" alt=\"" . _('Help') . "\" title=\"" . _('Help') . "\">";
 echo "</a>\n";
 echo "</td></tr>\n";
@@ -450,8 +496,24 @@ function saveSettings() {
 	if (!$conf->set_scriptpath($_POST['scriptpath'])) {
 		$errors[] = array("ERROR", _("Script path is invalid!"));
 	}
-	if (!$conf->set_scriptserver($_POST['scriptserver'])) {
+	if (!$conf->set_scriptservers($_POST['scriptservers'])) {
 		$errors[] = array("ERROR", _("Script server is invalid!"));
+	}
+	$chmodOwner = 0;
+	$chmodGroup = 0;
+	$chmodOther = 0;
+	if ($_POST['chmod_owr'] == 'on') $chmodOwner += 4;
+	if ($_POST['chmod_oww'] == 'on') $chmodOwner += 2;
+	if ($_POST['chmod_owe'] == 'on') $chmodOwner += 1;
+	if ($_POST['chmod_grr'] == 'on') $chmodGroup += 4;
+	if ($_POST['chmod_grw'] == 'on') $chmodGroup += 2;
+	if ($_POST['chmod_gre'] == 'on') $chmodGroup += 1;
+	if ($_POST['chmod_otr'] == 'on') $chmodOther += 4;
+	if ($_POST['chmod_otw'] == 'on') $chmodOther += 2;
+	if ($_POST['chmod_ote'] == 'on') $chmodOther += 1;
+	$chmod = $chmodOwner . $chmodGroup . $chmodOther;
+	if (!$conf->set_scriptrights($chmod)) {
+		$errors[] = array("ERROR", _("Script chmod is invalid!"));
 	}
 	// check if password was changed
 	if (isset($_POST['passwd1']) && ($_POST['passwd1'] != '')) {

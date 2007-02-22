@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
-  Copyright (C) 2003 - 2006  Roland Gruber
+  Copyright (C) 2003 - 2007  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@ $Id$
 *
 * @package configuration
 * @author Roland Gruber
+* @author Thomas Manninger
 */
 
 /** Used to print messages. */
@@ -51,6 +52,46 @@ function setlanguage() {
 	bind_textdomain_codeset("messages", $language[1]);
 	textdomain("messages");
 	header("Content-type: text/html; charset=" . $language[1], true);
+}
+
+/**
+ * Return $return, if the the chmod rights where set
+ *
+ * @param: $right:   read,write or execute
+ * @param: $target:  owner,group or other
+ * @param: $chmod:  the chmod rights
+ *
+ * @return true, if the chmod $right for $target were set
+ */
+function checkChmod($right, $target, $chmod) {
+	$right_arr=array("read","write","execute");
+	$target_arr=array("owner","group","other");
+
+	// Check, if $right and $target has right parameters
+	if (!in_array($right, $right_arr) ||!in_array($target, $target_arr)) {
+		return false;
+	}
+	
+	$chmod_num = -1;
+	// owner:
+	if ($target == "owner") $chmod_num = 0;
+	if ($target == "group") $chmod_num = 1;
+	if ($target == "other") $chmod_num = 2;
+	
+	// Cut the number from the chmod:
+	$chmod_num = $chmod{$chmod_num};
+	
+	// Now check, if the chmod_num can be right with the $right
+	// What numbers allow "read"
+	$read = array(4,5,6,7);
+	// What numbers allow "write"
+	$write = array(2,3,6,7);
+	// What numbers allow "execute"
+	$execute = array(1,3,5,7);
+	if (($right == "read") && in_array($chmod_num, $read)) return true;
+	elseif (($right == "write") && in_array($chmod_num, $write)) return true;
+	elseif (($right == "execute") && in_array($chmod_num, $execute)) return true;
+	else return false;
 }
 
 /**
@@ -155,12 +196,17 @@ class LAMConfig {
 	var $scriptPath;
 
 	/**
-	* Server where lamdaemon script is executed
+	 * The rights for the home directory
+	 */
+	var $scriptRights;
+
+	/**
+	* Servers where lamdaemon script is executed
 	*
 	* This is used for managing quota and home directories.
 	* optional setting, may not be defined
 	*/
-	var $scriptServer;
+	var $scriptServers;
 
 	/** LDAP cache timeout */
 	var $cachetimeout;
@@ -173,7 +219,7 @@ class LAMConfig {
 
 	/** List of all settings in config file */
 	var $settings = array("ServerURL", "Passwd", "Admins", "treesuffix", "maxlistentries",
-		"defaultLanguage", "scriptPath", "scriptServer", "cachetimeout",
+		"defaultLanguage", "scriptPath", "scriptServers", "scriptRights", "cachetimeout",
 		"modules", "activeTypes", "types");
 
 
@@ -314,7 +360,8 @@ class LAMConfig {
 			if (!in_array("maxlistentries", $saved)) array_push($file_array, "\n\n# maximum number of rows to show in user/group/host lists\n" . "maxlistentries: " . $this->maxlistentries . "\n");
 			if (!in_array("defaultLanguage", $saved)) array_push($file_array, "\n\n# default language (a line from config/language)\n" . "defaultLanguage: " . $this->defaultLanguage . "\n");
 			if (!in_array("scriptPath", $saved)) array_push($file_array, "\n\n# Path to external Script\n" . "scriptPath: " . $this->scriptPath . "\n");
-			if (!in_array("scriptServer", $saved)) array_push($file_array, "\n\n# Server of external Script\n" . "scriptServer: " . $this->scriptServer . "\n");
+			if (!in_array("scriptServers", $saved)) array_push($file_array, "\n\n# Servers of external script\n" . "scriptServers: " . $this->scriptServers . "\n");
+			if (!in_array("scriptRights", $saved)) array_push($file_array, "\n\n# Access rights for home directories\n" . "scriptRights: " . $this->scriptRights . "\n");
 			if (!in_array("cachetimeout", $saved)) array_push($file_array, "\n\n# Number of minutes LAM caches LDAP searches.\n" . "cacheTimeout: " . $this->cachetimeout . "\n");
 			if (!in_array("activeTypes", $saved)) array_push($file_array, "\n\n# List of active account types.\n" . "activeTypes: " . $this->activeTypes . "\n");
 			// check if all module settings were added
@@ -548,29 +595,93 @@ class LAMConfig {
 		else return false;
 		return true;
 	}
-
+	
 	/**
-	* Returns the server of the external script
+	* Returns the servers of the external script as a Array
 	*
-	* @return string script server
+	* @return string script servers
 	*/
-	function get_scriptServer() {
-		return $this->scriptServer;
+	function get_scriptServers() {
+	    return $this->scriptServers;
+	}
+	
+	/**
+	* Sets the servers of the external script
+	*
+	* @param string $value new script servers
+	* @return boolean true if $value has correct format
+	*/
+	function set_scriptServers($value) {
+		if (!$value) {
+			$this->scriptServers = ""; // optional parameter
+			return true;
+		}
+		// Explode the value to an array
+		$array_string = explode(";", $value);
+		if (count($array_string) > 0) {
+			// Check all IPs in the exploded Array
+			$valid_ips = array();
+			foreach($array_string as $arr_value) {
+				// Explode name and IP, if a name exists
+				if (eregi(":", $arr_value)) {
+					$arr_value_explode = explode(":", $arr_value);
+					$ip = $arr_value_explode[1];
+					$servername = $arr_value_explode[0];
+				}
+				else {
+			 		$ip = $arr_value;
+					$servername = "";
+				}
+				if (isset($ip) && is_string($ip) && eregi("^[a-z0-9\\-]+(\\.[a-z0-9\\-]+)*$", $ip)) {
+					// Check if the IP has a server name
+					if (!empty($servername)) {
+						$valid_ips[] = $servername.":".$ip;
+					}
+					else {
+						$valid_ips[] = $ip;
+					}
+				}
+			}
+			// Check that the array is not empty
+			if ($array_string > 0) {
+				$this->scriptServers = implode(";", $valid_ips);
+				return true;
+			}
+			else {
+				// The array is empty, there was no valid IP
+				return false;
+			}
+		}
+		else {
+			return false;
+		}
+	}
+	
+	/**
+	 * Returns the chmod value for new home directories.
+	 * 
+	 * @return string rights
+	 */
+	function get_scriptRights() {
+		if (!isset($this->scriptRights)) return '755';
+		return $this->scriptRights;
 	}
 
 	/**
-	* Sets the server of the external script
+	* Sets the rights for the home directory.
 	*
-	* @param string $value new script server
-	* @return boolean true if $value has correct format
+	* @param string $chmod the rights
+	* @return boolean true if values has correct format
 	*/
-	function set_scriptServer($value) {
-		if (!$value) $this->scriptServer = ""; // optional parameter
-		elseif (is_string($value) && eregi("^[a-z0-9\\-]+(\\.[a-z0-9\\-]+)*$", $value)) {
-			$this->scriptServer = $value;
+	function set_scriptRights($chmod) {
+		// check if the chmod is correct:
+		if ($chmod > 0 && $chmod <=777) {
+		    $this->scriptRights=$chmod;
+		    return true;
 		}
-		else return false;
-		return true;
+		else {
+		    return false;
+		}
 	}
 
 	/**
