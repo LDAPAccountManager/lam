@@ -214,7 +214,7 @@ class sambaGroupMapping extends baseModule {
 		}
 		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Group type') ),
 			1 => array ( 'kind' => 'select', 'name' => 'sambaGroupType', 'options' => $names , 'options_selected' => $selected ),
-			2 => array ( 'kind' => 'help', 'value' => 'sambaDomainName' ));
+			2 => array ( 'kind' => 'help', 'value' => 'type' ));
 		$selectedDomain = array();
 		if (isset($sel_domain)) $selectedDomain = array($sel_domain);
 		$return[] = array ( 0 => array ( 'kind' => 'text', 'text' => _('Domain') ),
