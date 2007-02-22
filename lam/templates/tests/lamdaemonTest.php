@@ -3,7 +3,7 @@
 $Id$
 
   This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
-  Copyright (C) 2006  Roland Gruber
+  Copyright (C) 2006 - 2007  Roland Gruber
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@ $Id$
 * Tests the lamdaemon script.
 *
 * @author Roland Gruber
+* @author Thomas Manninger
 * @package tools
 */
 
@@ -49,103 +50,6 @@ echo "</head>";
 echo "<body>\n";
 
 echo "<h1 align=\"center\">" . _("Lamdaemon test") . "</h1>\n";
-
-echo "<table class=\"userlist\" rules=\"none\">\n";
-
-flush();
-$stopTest = false;
-
-// check script server and path
-echo "<tr class=\"userlist\">\n<td>" . _("Lamdaemon server and path") . "&nbsp;&nbsp;</td>\n";
-if (!isset($_SESSION['config']->scriptServer) || (strlen($_SESSION['config']->scriptServer) < 3)) {
-	echo "<td>" . _("Error") . "</td>\n";
-	echo "<td bgcolor=\"red\">" . _("No lamdaemon server set, please update your LAM configuration settings.") . "</td>";
-}
-elseif (!isset($_SESSION['config']->scriptPath) || (strlen($_SESSION['config']->scriptPath) < 10)) {
-	echo "<td bgcolor=\"red\">" . _("Error") . "&nbsp;&nbsp;</td>\n";
-	echo "<td bgcolor=\"red\">" . _("No lamdaemon path set, please update your LAM configuration settings.") . "</td>";
-	$stopTest = true;
-}
-else {
-	echo "<td bgcolor=\"green\">" . _("Ok") . "&nbsp;&nbsp;</td>\n";
-	echo "<td bgcolor=\"green\">" . sprintf(_("Using %s as lamdaemon remote server."), $_SESSION['config']->scriptServer) . "</td>";
-}
-echo "</tr>\n";
-
-flush();
-
-// check Unix account of LAM admin
-if (!$stopTest) {
-	echo "<tr class=\"userlist\">\n<td>" . _("Unix account") . "&nbsp;&nbsp;</td>\n";
-	$credentials = $_SESSION['ldap']->decrypt_login();
-	$unixOk = false;
-	$sr = @ldap_read($_SESSION['ldap']->server(), $credentials[0], "objectClass=posixAccount", array('uid'));
-	if ($sr) {
-		$entry = @ldap_get_entries($_SESSION['ldap']->server(), $sr);
-		$userName = $entry[0]['uid'][0];
-		if ($userName) {
-			$unixOk = true;		
-		}
-	}
-	if ($unixOk) {
-		echo "<td bgcolor=\"green\">" . _("Ok") . "</td>\n";
-		echo "<td bgcolor=\"green\">" . sprintf(_("Using %s to connect to remote server."), $userName) . "</td>";
-	}
-	else {
-		echo "<td bgcolor=\"red\">" . _("Error") . "&nbsp;&nbsp;</td>\n";
-		echo "<td bgcolor=\"red\">" . sprintf(_("Your LAM admin user (%s) must be a valid Unix account to work with lamdaemon!"), $credentials[0]) . "</td>";
-		$stopTest = true;
-	}
-	echo "</tr>\n";
-}
-
-flush();
-
-// check SSH2 function
-if (!$stopTest) {
-	echo "<tr class=\"userlist\">\n<td>" . _("SSH2 module") . "&nbsp;&nbsp;</td>\n";
-	if (function_exists("ssh2_connect")) {
-		echo "<td bgcolor=\"green\">" . _("Ok") . "</td>";
-		echo "<td bgcolor=\"green\">" . _("SSH2 module is installed.") . "</td>";
-	}
-	else {
-		echo "<td bgcolor=\"red\">" . _("Error") . "&nbsp;&nbsp;</td>\n";
-		echo "<td bgcolor=\"red\">" . _("Please install the SSH2 module for PHP and activate it in your php.ini!") . "</td>";
-		$stopTest = true;		
-	}
-	echo "</tr>\n";
-}
-
-flush();
-
-// check SSH login
-if (!$stopTest) {
-	echo "<tr class=\"userlist\">\n<td>" . _("SSH connection") . "&nbsp;&nbsp;</td>\n";
-	flush();
-	$sshOk = false;
-	$handle = @ssh2_connect($_SESSION['config']->scriptServer);
-	if ($handle) {
-		if (@ssh2_auth_password($handle, $userName, $credentials[1])) {
-			$sshOk = true;
-		}
-	}
-	if ($sshOk) {
-		echo "<td bgcolor=\"green\">" . _("Ok") . "</td>";
-		echo "<td bgcolor=\"green\">" . _("SSH connection could be established.") . "</td>";
-	}
-	else {
-		echo "<td bgcolor=\"red\">" . _("Error") . "&nbsp;&nbsp;</td>\n";
-		echo "<td bgcolor=\"red\">" . _("Unable to connect to remote server!") . "</td>";
-		$stopTest = true;		
-	}
-	echo "</tr>\n";
-}
-
-flush();
-
-$stopTest = lamTestLamdaemon("+ test basic\n", $stopTest, $handle, _("Execute lamdaemon"));
-$stopTest = lamTestLamdaemon("+ test quota\n", $stopTest, $handle, _("Lamdaemon: Quota module installed"));
-$stopTest = lamTestLamdaemon("+ quota get user\n", $stopTest, $handle, _("Lamdaemon: read quotas"));
 
 /**
  * Runs a test case of lamdaemon.
@@ -199,7 +103,7 @@ function lamTestLamdaemon($command, $stopTest, $handle, $testText) {
 				call_user_func_array('StatusMessage', split(",", $return[$i]));
 			}
 			echo "</td>\n";
-			$stopTest = true;		
+			$stopTest = true;
 		}
 		echo "</tr>\n";
 	}
@@ -207,7 +111,120 @@ function lamTestLamdaemon($command, $stopTest, $handle, $testText) {
 	return $stopTest;
 }
 
-echo "</table>\n";
+$servers = explode(";", $_SESSION['config']->get_scriptServers());
+for ($i = 0; $i < sizeof($servers); $i++) {
+	$servers[$i] = explode(":", $servers[$i]);
+	$serverName = $servers[$i][0];
+	$title = $serverName;
+	$serverDisplayName = $servers[$i][0];
+	if (isset($servers[$i][1])) {
+		$serverDisplayName = $servers[$i][1];
+		$title = $serverDisplayName . " (" . $serverName . ")";
+	}
+
+	echo "<table class=\"userlist\" rules=\"none\" width=\"750\">\n";
+
+	flush();
+	$stopTest = false;
+
+	echo "<tr class=\"userlist\">\n<td colspan=\"3\" align=\"center\"><b>$title</b>\n</td>\n</tr>";
+
+	// check script server and path
+	echo "<tr class=\"userlist\">\n<td>" . _("Lamdaemon server and path") . "&nbsp;&nbsp;</td>\n";
+	if (!isset($serverName) || (strlen($serverName) < 3)) {
+		echo "<td>" . _("Error") . "</td>\n";
+		echo "<td bgcolor=\"red\">" . _("No lamdaemon server set, please update your LAM configuration settings.") . "</td>";
+	}
+	elseif (!isset($_SESSION['config']->scriptPath) || (strlen($_SESSION['config']->scriptPath) < 10)) {
+		echo "<td bgcolor=\"red\">" . _("Error") . "&nbsp;&nbsp;</td>\n";
+		echo "<td bgcolor=\"red\">" . _("No lamdaemon path set, please update your LAM configuration settings.") . "</td>";
+		$stopTest = true;
+	}
+	else {
+		echo "<td bgcolor=\"green\">" . _("Ok") . "&nbsp;&nbsp;</td>\n";
+		echo "<td bgcolor=\"green\">" . sprintf(_("Using %s as lamdaemon remote server."), $serverName) . "</td>";
+	}
+	echo "</tr>\n";
+
+	flush();
+
+	// check Unix account of LAM admin
+	if (!$stopTest) {
+		echo "<tr class=\"userlist\">\n<td>" . _("Unix account") . "&nbsp;&nbsp;</td>\n";
+		$credentials = $_SESSION['ldap']->decrypt_login();
+		$unixOk = false;
+		$sr = @ldap_read($_SESSION['ldap']->server(), $credentials[0], "objectClass=posixAccount", array('uid'));
+		if ($sr) {
+			$entry = @ldap_get_entries($_SESSION['ldap']->server(), $sr);
+			$userName = $entry[0]['uid'][0];
+			if ($userName) {
+				$unixOk = true;
+			}
+		}
+		if ($unixOk) {
+			echo "<td bgcolor=\"green\">" . _("Ok") . "</td>\n";
+			echo "<td bgcolor=\"green\">" . sprintf(_("Using %s to connect to remote server."), $userName) . "</td>";
+		}
+		else {
+			echo "<td bgcolor=\"red\">" . _("Error") . "&nbsp;&nbsp;</td>\n";
+			echo "<td bgcolor=\"red\">" . sprintf(_("Your LAM admin user (%s) must be a valid Unix account to work with lamdaemon!"), $credentials[0]) . "</td>";
+			$stopTest = true;
+		}
+		echo "</tr>\n";
+	}
+
+	flush();
+
+	// check SSH2 function
+	if (!$stopTest) {
+		echo "<tr class=\"userlist\">\n<td>" . _("SSH2 module") . "&nbsp;&nbsp;</td>\n";
+		if (function_exists("ssh2_connect")) {
+			echo "<td bgcolor=\"green\">" . _("Ok") . "</td>";
+			echo "<td bgcolor=\"green\">" . _("SSH2 module is installed.") . "</td>";
+		}
+		else {
+			echo "<td bgcolor=\"red\">" . _("Error") . "&nbsp;&nbsp;</td>\n";
+			echo "<td bgcolor=\"red\">" . _("Please install the SSH2 module for PHP and activate it in your php.ini!") . "</td>";
+			$stopTest = true;
+		}
+		echo "</tr>\n";
+	}
+
+	flush();
+
+	// check SSH login
+	if (!$stopTest) {
+		echo "<tr class=\"userlist\">\n<td>" . _("SSH connection") . "&nbsp;&nbsp;</td>\n";
+		flush();
+		$sshOk = false;
+		$handle = @ssh2_connect($serverName);
+		if ($handle) {
+			if (@ssh2_auth_password($handle, $userName, $credentials[1])) {
+				$sshOk = true;
+			}
+		}
+		if ($sshOk) {
+			echo "<td bgcolor=\"green\">" . _("Ok") . "</td>";
+			echo "<td bgcolor=\"green\">" . _("SSH connection could be established.") . "</td>";
+		}
+		else {
+			echo "<td bgcolor=\"red\">" . _("Error") . "&nbsp;&nbsp;</td>\n";
+			echo "<td bgcolor=\"red\">" . _("Unable to connect to remote server!") . "</td>";
+			$stopTest = true;
+		}
+		echo "</tr>\n";
+	}
+
+	flush();
+
+	$stopTest = lamTestLamdaemon("+ test basic\n", $stopTest, $handle, _("Execute lamdaemon"));
+	$stopTest = lamTestLamdaemon("+ test quota\n", $stopTest, $handle, _("Lamdaemon: Quota module installed"));
+	$stopTest = lamTestLamdaemon("+ quota get user\n", $stopTest, $handle, _("Lamdaemon: read quotas"));
+
+	echo "<br />";
+	
+	echo "</table>\n";
+}
 
 echo "<h2>" . _("Lamdaemon test finished.") . "</h2>\n";
 
