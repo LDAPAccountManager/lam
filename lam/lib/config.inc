@@ -206,7 +206,7 @@ class LAMConfig {
 	* This is used for managing quota and home directories.
 	* optional setting, may not be defined
 	*/
-	var $scriptServers;
+	var $scriptServer;
 
 	/** LDAP cache timeout */
 	var $cachetimeout;
@@ -219,7 +219,7 @@ class LAMConfig {
 
 	/** List of all settings in config file */
 	var $settings = array("ServerURL", "Passwd", "Admins", "treesuffix", "maxlistentries",
-		"defaultLanguage", "scriptPath", "scriptServers", "scriptRights", "cachetimeout",
+		"defaultLanguage", "scriptPath", "scriptServer", "scriptRights", "cachetimeout",
 		"modules", "activeTypes", "types");
 
 
@@ -360,7 +360,7 @@ class LAMConfig {
 			if (!in_array("maxlistentries", $saved)) array_push($file_array, "\n\n# maximum number of rows to show in user/group/host lists\n" . "maxlistentries: " . $this->maxlistentries . "\n");
 			if (!in_array("defaultLanguage", $saved)) array_push($file_array, "\n\n# default language (a line from config/language)\n" . "defaultLanguage: " . $this->defaultLanguage . "\n");
 			if (!in_array("scriptPath", $saved)) array_push($file_array, "\n\n# Path to external Script\n" . "scriptPath: " . $this->scriptPath . "\n");
-			if (!in_array("scriptServers", $saved)) array_push($file_array, "\n\n# Servers of external script\n" . "scriptServers: " . $this->scriptServers . "\n");
+			if (!in_array("scriptServer", $saved)) array_push($file_array, "\n\n# Servers of external script\n" . "scriptServer: " . $this->scriptServer . "\n");
 			if (!in_array("scriptRights", $saved)) array_push($file_array, "\n\n# Access rights for home directories\n" . "scriptRights: " . $this->scriptRights . "\n");
 			if (!in_array("cachetimeout", $saved)) array_push($file_array, "\n\n# Number of minutes LAM caches LDAP searches.\n" . "cacheTimeout: " . $this->cachetimeout . "\n");
 			if (!in_array("activeTypes", $saved)) array_push($file_array, "\n\n# List of active account types.\n" . "activeTypes: " . $this->activeTypes . "\n");
@@ -602,7 +602,7 @@ class LAMConfig {
 	* @return string script servers
 	*/
 	function get_scriptServers() {
-	    return $this->scriptServers;
+	    return $this->scriptServer;
 	}
 	
 	/**
@@ -613,7 +613,7 @@ class LAMConfig {
 	*/
 	function set_scriptServers($value) {
 		if (!$value) {
-			$this->scriptServers = ""; // optional parameter
+			$this->scriptServer = ""; // optional parameter
 			return true;
 		}
 		// Explode the value to an array
@@ -644,7 +644,7 @@ class LAMConfig {
 			}
 			// Check that the array is not empty
 			if ($array_string > 0) {
-				$this->scriptServers = implode(";", $valid_ips);
+				$this->scriptServer = implode(";", $valid_ips);
 				return true;
 			}
 			else {
