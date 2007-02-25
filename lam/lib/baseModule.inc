@@ -584,7 +584,18 @@ class baseModule {
 	}
 
 	/**
-	 * Allows the module to run commands after the LDAP entry was changed or created.
+	 * Allows the module to run commands before the LDAP entry is changed or created.
+	 * An error message should be printed if the function returns false.
+	 * 
+	 * @param boolean $newAccount new account
+	 * @return true, if no problems occured
+	 */
+	function preModifyActions($newAccount) {
+		return true;
+	}
+	
+	/**
+	 * Allows the module to run commands after the LDAP entry is changed or created.
 	 *
 	 * @param boolean $newAccount new account
 	 */
@@ -593,7 +604,17 @@ class baseModule {
 	}
 	
 	/**
-	 * Allows the module to run commands after the LDAP entry was deleted.
+	 * Allows the module to run commands before the LDAP entry is deleted.
+	 * An error message should be printed if the function returns false.
+	 * 
+	 * @return true, if no problems occured
+	 */
+	function preDeleteActions() {
+		return true;
+	}
+	
+	/**
+	 * Allows the module to run commands after the LDAP entry is deleted.
 	 */
 	function postDeleteActions() {
 		return;
