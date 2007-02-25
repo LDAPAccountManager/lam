@@ -1,15 +1,21 @@
 ??? 1.3.0
   - improved design
   - user list can now display jpegPhoto attributes
+  - lamdaemon: support for multiple servers
   - LAM Pro: users may change their photos (jpegPhoto)
   - fixed bugs:
    -> ShadowAccount: PDF entry for expire date was wrong (1658868)
+   -> Samba groups: fixed help entry (patch 1664542)
    -> Debian package did not include lamdaemonOld.pl (1660493)
 
   Developers:
     API changes:
     - added listPrintTableCellContent() to class lamList
     - added listPrintAdditionalOptions() to class lamList
+    - added preModifyActions() to class baseModule
+    - added postModifyActions() to class baseModule
+    - added preDeleteActions() to class baseModule
+    - added postDeleteActions() to class baseModule
 
 
 24.01.2007 1.2.0

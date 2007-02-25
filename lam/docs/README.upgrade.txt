@@ -21,6 +21,14 @@ New lamList function:
  - listPrintAdditionalOptions(): If you want to display additional conrols for a list
    please use this function. The controls will be placed under the account table.
 
+No more lamdaemon commands via delete_attributes() and save_attributes() in account modules.
+Please use these new functions to call lamdaemon directly:
+
+ - preModifyActions()
+ - postModifyActions()
+ - preDeleteActions()
+ - postDeleteActions()
+
 
 
 1.1.x -> 1.2.0:
