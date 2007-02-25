@@ -45,6 +45,10 @@ if (-d "/opt/sbin") { $path = "$path:/opt/sbin"; }
 if (-d "/opt/bin") { $path = "$path:/opt/bin"; }
 $ENV{"PATH"} = $path;
 
+# get hostname
+$hostname = `hostname`;
+chop($hostname);
+
 #use strict; # Use strict for security reasons
 
 @quota_grp;
@@ -131,10 +135,10 @@ if ($< == 0 ) { # we are root
 								system '/usr/sbin/useradd.local', $user[0]; # run useradd-script
 								system 'chmod', '-R', $vals[3], $user[7];     # Edit chmod rights
 							}
-							$return = "Ok";
+							$return = "INFO,Lamdaemon ($hostname),Home directory created (" . $user[7] . ").";
 						}
 						else {
-							$return = "ERROR,Lamdaemon,Home directory already exists.";
+							$return = "ERROR,Lamdaemon ($hostname),Home directory already exists (" . $user[7] . ").";
 						}
 						($<, $>) = ($>, $<); # Give up root previleges
 						last switch2;
@@ -150,17 +154,17 @@ if ($< == 0 ) { # we are root
 								$return = "Ok";
 							}
 							else {
-								$return = "ERROR,Lamdaemon,Home directory not owned by $user[2].";
+								$return = "ERROR,Lamdaemon ($hostname),Home directory not owned by $user[2].";
 							}
 						}
 						else {
-							$return = "INFO,Lamdaemon,The directory which should be deleted was not found, skipped.";
+							$return = "INFO,Lamdaemon ($hostname),The directory which should be deleted was not found (skipped).";
 							}
 						($<, $>) = ($>, $<); # Give up root previleges
 						last switch2;
 						};
 						# Show error if undfined command is used
-						$return = "ERROR,Lamdaemon,Unknown command $vals[2].";
+						$return = "ERROR,Lamdaemon ($hostname),Unknown command $vals[2].";
 					}
 				last switch;
 				};
@@ -204,7 +208,7 @@ if ($< == 0 ) { # we are root
 							$dev = Quota::getqcarg($quota[$i][0]);
 							$return = Quota::setqlim($dev,$user[2],$quota[$i][1],$quota[$i][2],$quota[$i][3],$quota[$i][4],1,$group);
 							if ($return == -1) {
-									$return = "ERROR,Lamdaemon,Unable to set quota!";
+									$return = "ERROR,Lamdaemon ($hostname),Unable to set quota!";
 								}
 							$i++;
 							}
@@ -220,7 +224,7 @@ if ($< == 0 ) { # we are root
 								@temp = Quota::query($dev,$user[2],$group);
 								if ($temp[0]ne'') {
 									if ($temp == -1) {
-											$return = "ERROR,Lamdaemon,Unable to read quota!";
+											$return = "ERROR,Lamdaemon ($hostname),Unable to read quota!";
 										}
 									else {
 										$return = "$quota_usr[$i][1],$temp[0],$temp[1],$temp[2],$temp[3],$temp[4],$temp[5],$temp[6],$temp[7]:$return";
@@ -234,15 +238,15 @@ if ($< == 0 ) { # we are root
 						($<, $>) = ($>, $<); # Give up root previleges
 						last switch2;
 						};
-					$return = "ERROR,Lamdaemon,Unknown command $vals[2].";
+					$return = "ERROR,Lamdaemon ($hostname),Unknown command $vals[2].";
 					}
 				};
 				last switch;
-			$return = "ERROR,Lamdaemon,Unknown command $vals[1].";
+			$return = "ERROR,Lamdaemon ($hostname),Unknown command $vals[1].";
 			};
 			print "$return\n";
 		}
 	}
 else {
-	print "ERROR,Lamdaemon,Not called as root!\n";
+	print "ERROR,Lamdaemon ($hostname),Not called as root!\n";
 }
