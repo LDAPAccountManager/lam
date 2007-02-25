@@ -4,7 +4,7 @@
 
 	This code is part of LDAP Account Manager (http://www.sourceforge.net/projects/lam)
 	Copyright (C) 2003 - 2006  Tilo Lutz
-                2005 - 2007  Roland Gruber
+    Copyright (C) 2005 - 2007  Roland Gruber
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@
 * @author Tilo Lutz
 * @author Roland Gruber
 * @author Michael Duergner
+* @author Thomas Manninger
 */
 
 /**
@@ -44,6 +45,7 @@ class posixAccount extends baseModule {
 	var $groups;
 	var $groups_orig;
 	var $createhomedir;
+	var $lamdaemonServer;
 	var $clearTextPassword;
 
 	/**
@@ -89,6 +91,7 @@ class posixAccount extends baseModule {
 		$this->messages['passwordDisabled'][0] = array('ERROR', _('Account %s:') . ' posixAccount_passwordDisabled', _('This value can only be \"true\" or \"false\".'));
 		$this->messages['cn'][0] = array('ERROR', _('Common name'), _('Please enter a valid common name!'));
 		$this->messages['cn'][1] = array('ERROR', _('Account %s:') . ' inetOrgPerson_cn', _('Please enter a valid common name!'));
+		$this->messages['createhomediron'][0] = array('ERROR', _('Home directory'), _('Choose a server for the home directory!'));
 	}
 
 	/**
@@ -505,11 +508,47 @@ class posixAccount extends baseModule {
 				}
 			}
 		}
-		// fixme TODO lamdeamon without DN
-		if ($this->createhomedir) $return[$_SESSION[$this->base]->dn]['lamdaemon']['command'][] = $this->attributes['uid'][0] . " home add";
 		return $return;
 	}
 
+	/**
+	 * Allows the module to run commands after the LDAP entry was changed or created.
+	 *
+	 * @param boolean $newAccount new account
+	 */
+	function postModifyActions($newAccount) {
+		// create home directory if needed
+		if ($this->createhomedir) {
+			$server = null;
+			$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
+			for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
+				$temp = explode(":", $lamdaemonServers[$i]);
+				if (isset($temp[1])) {
+					if ($temp[1] == $this->lamdaemonServer) {
+						$server = $temp[0];
+						break;
+					}
+				}
+				elseif ($temp[0] == $this->lamdaemonServer) {
+					$server = $temp[0];
+					break;
+				}
+			}
+			$result = lamdaemon(array($this->attributes['uid'][0] . " home add 0".$_SESSION['config']->scriptRights), $server);
+			// lamdaemon results
+			if (is_array($result)) {
+				foreach ($result as $singleresult) {
+					$singleresult = explode(",", $singleresult);
+					if (is_array($singleresult)) {
+						if (($singleresult[0] == 'ERROR') || ($singleresult[0] == 'INFO') || ($singleresult[0] == 'WARN')) {
+							call_user_func_array('StatusMessage', $singleresult);
+						}
+					}
+				}
+			}
+		}
+	}
+	
 	/**
 	* Additional LDAP operations on delete.
 	*
@@ -524,10 +563,46 @@ class posixAccount extends baseModule {
 		for ($i=0; $i<count($DNs); $i++) {
 			if (in_array($this->attributes['uid'][0], $groups[$DNs[$i]])) $return[$DNs[$i]]['remove']['memberUid'][] = $this->attributes['uid'][0];
 		}
-		if ($_POST['deletehomedir']) $return[$_SESSION[$this->base]->dn_orig]['lamdaemon']['command'][] = $this->attributes['uid'][0] . " home rem";
 		return $return;
 	}
 
+	/**
+	 * Allows the module to run commands before the LDAP entry is deleted.
+	 * An error message should be printed if the function returns false.
+	 * 
+	 * @return true, if no problems occured
+	 */
+	function preDeleteActions() {
+		$return = true;
+		if ($_POST['deletehomedir']) {
+			// get list of lamdaemon servers
+			$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
+			for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
+				$temp = explode(":", $lamdaemonServers[$i]);
+				$lamdaemonServers[$i] = $temp[0];
+			}
+			// try to delete directory on all servers
+			for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
+				$result = lamdaemon(array($this->attributes['uid'][0] . " home rem"), $lamdaemonServers[$i]);
+				// lamdaemon results
+				if (is_array($result)) {
+					foreach ($result as $singleresult) {
+						$singleresult = explode(",", $singleresult);
+						if (is_array($singleresult)) {
+							if (($singleresult[0] == 'ERROR') || ($singleresult[0] == 'WARN')) {
+								call_user_func_array('StatusMessage', $singleresult);
+							}
+							elseif ($singleresult[0] == 'INFO'){
+								call_user_func_array('StatusMessage', $singleresult);
+							}
+						}
+					}
+				}
+			}
+		}
+		return $return;
+	}
+	
 	/**
 	* Processes user input of the primary module page.
 	* It checks if all input values are correct and updates the associated LDAP attributes.
@@ -542,8 +617,6 @@ class posixAccount extends baseModule {
 		}
 		$this->attributes['loginShell'][0] = $_POST['loginShell'];
 		if (isset($_POST['gecos'])) $this->attributes['gecos'][0] = $_POST['gecos'];
-		if (isset($_POST['createhomedir'])) $this->createhomedir = true;
-		else $this->createhomedir = false;
 		if ($this->orig['uid'][0]!='' && $_POST['uid']!=$this->attributes['uid'][0])
 			$errors[] = $this->messages['uid'][0];
 		if ($this->orig['gidNumber'][0]!='' && $_SESSION['cache']->getgid($_POST['gidNumber'])!=$this->attributes['gidNumber'][0]) {
@@ -561,6 +634,25 @@ class posixAccount extends baseModule {
 			$errorMessage[] = array($this->orig['homeDirectory'][0], $_POST['homeDirectory']);
 			$errors[] = $errorMessage;
 		}
+		// get list of DNS names or IPs
+		$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
+		for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
+			$temp = explode(":", $lamdaemonServers[$i]);
+			if (isset($temp[1])) $lamdaemonServers[$i] = $temp[1];
+			else $lamdaemonServers[$i] = $temp[0];
+		}
+		if (isset($_POST['createhomedir'])) {
+			$this->createhomedir = true;
+	 		if (!in_array($_POST['createhomediron'], $lamdaemonServers)) {
+	 			$errorMessage = $this->messages['createhomediron'][0];
+	   			$errorMessage[] = array($this->orig['createhomediron'][0]);
+				$errors[] = $errorMessage;
+			}
+			else {
+				$this->lamdaemonServer = $_POST['createhomediron'];
+			}
+		}
+		else $this->createhomedir = false;
 		$this->attributes['homeDirectory'][0] = $_POST['homeDirectory'];
 		// Load attributes
 		if (isset($_POST['form_subpage_posixAccount_attributes_lockPassword'])) {
@@ -850,6 +942,17 @@ class posixAccount extends baseModule {
 					0 => array('kind' => 'text', 'text' => _('Create home directory')),
 					1 => array('kind' => 'input', 'name' => 'createhomedir', 'type' => 'checkbox', 'checked' => $this->createhomedir),
 					2 => array('kind' => 'help', 'value' => 'createhomedir'));
+				// get list of lamdaemon servers
+				$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
+				for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
+					$temp = explode(":", $lamdaemonServers[$i]);
+					if (isset($temp[1])) $lamdaemonServers[$i] = $temp[1];
+					else $lamdaemonServers[$i] = $temp[0];
+				}
+				$return[] = array(
+					0 => array('kind' => 'text', 'text' => _('Create home directory on')),
+					1 => array('kind' => 'select', 'name' => 'createhomediron', 'options' => $lamdaemonServers, 'options_selected' => $this->lamdaemonServer),
+					2 => array('kind' => 'help', 'value' => 'createhomediron'));
 			}
 			if (!isset($this->attributes['userPassword'][0])) {
 				$return[] = array(
