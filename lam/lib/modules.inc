@@ -1422,28 +1422,6 @@ class accountContainer {
 				else {
 					logNewMessage(LOG_NOTICE, '[' . $ldapUser .'] Created DN: ' . $this->dn);
 				}
-				// lamdaemon commands for the new account
-				if (!$stopprocessing) {
-					$DN = $attributes[$this->dn];
-					if (is_array($DN['lamdaemon']['command'])) {
-						$result = lamdaemon($DN['lamdaemon']['command']);
-						// Error somewhere in lamdaemon
-						if (is_array($result)) {
-							foreach ($result as $singleresult) {
-								$singleresult = explode(",", $singleresult);
-								if (is_array($singleresult)) {
-									if ($singleresult[0] == 'ERROR') {
-										$stopprocessing = true;
-										$temparray[0] = $singleresult[0];
-										$temparray[1] = _($singleresult[1]);
-										$temparray[2] = _($singleresult[2]);
-										$errors[] = $temparray;
-									}
-								}
-							}
-						}
-					}
-				}
 			}
 			unset($attributes[$this->dn]);
 		}
@@ -1490,25 +1468,9 @@ class accountContainer {
 		}
 
 		if (!$stopprocessing) {
-			foreach ($attributes as $DN) {
-				if (isset($DN['lamdaemon']['command']) && is_array($DN['lamdaemon']['command'])) {
-					$result = lamdaemon($DN['lamdaemon']['command']);
-					// Error somewhere in lamdaemon
-					if (isset($result) && is_array($result)) {
-						foreach ($result as $singleresult) {
-							$singleresult = explode(",", $singleresult);
-							if (is_array($singleresult)) {
-								if ($singleresult[0] == 'ERROR') {
-									$stopprocessing = true;
-									$temparray[0] = $singleresult[0];
-									$temparray[1] = _($singleresult[1]);
-									$temparray[2] = _($singleresult[2]);
-									$errors[] = $temparray;
-								}
-							}
-						}
-					}
-				}
+			// post modify actions
+			foreach ($module as $singlemodule) {
+				$this->module[$singlemodule]->postModifyActions($this->isNewAccount);
 			}
 		}
 		$_SESSION['cache']->refresh_cache(true);
