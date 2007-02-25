@@ -140,59 +140,71 @@ if ($_POST['delete']) {
 		// First load DN.
 		$_SESSION['account']->load_account($_SESSION['delete_dn'][$m]);
 		// get commands and changes of each attribute
-		$module = array_keys ($_SESSION['account']->module);
+		$module = array_keys($_SESSION['account']->module);
 		$attributes = array();
 		$errors = array();
-		// load attributes
-		foreach ($module as $singlemodule) {
-			// load changes
-			$temp = $_SESSION['account']->module[$singlemodule]->delete_attributes();
-			if (is_array($temp)) {
-				// merge changes
-				$DNs = array_keys($temp);
-				// *** fixme don't include references
-				$attributes = array_merge_recursive($temp, $attributes);
-				for ($i=0; $i<count($DNs); $i++) {
-					$ops = array_keys($temp[$DNs[$i]]);
-					for ($j=0; $j<count($ops); $j++) {
-						$attrs = array_keys($temp[$DNs[$i]][$ops[$j]]);
-						for ($k=0; $k<count($attrs); $k++)
-						$attributes[$DNs[$i]][$ops[$j]][$attrs[$k]] = array_unique($attributes[$DNs[$i]][$ops[$j]][$attrs[$k]]);
+		// predelete actions
+		if (!$stopprocessing) {
+			foreach ($module as $singlemodule) {
+				$success = $_SESSION['account']->module[$singlemodule]->preDeleteActions();
+				if (!$success) {
+					$stopprocessing = true;
+					break;
+				}
+			}
+		}		
+		if (!$stopprocessing) {
+			// load attributes
+			foreach ($module as $singlemodule) {
+				// load changes
+				$temp = $_SESSION['account']->module[$singlemodule]->delete_attributes();
+				if (is_array($temp)) {
+					// merge changes
+					$DNs = array_keys($temp);
+					// *** fixme don't include references
+					$attributes = array_merge_recursive($temp, $attributes);
+					for ($i=0; $i<count($DNs); $i++) {
+						$ops = array_keys($temp[$DNs[$i]]);
+						for ($j=0; $j<count($ops); $j++) {
+							$attrs = array_keys($temp[$DNs[$i]][$ops[$j]]);
+							for ($k=0; $k<count($attrs); $k++)
+							$attributes[$DNs[$i]][$ops[$j]][$attrs[$k]] = array_unique($attributes[$DNs[$i]][$ops[$j]][$attrs[$k]]);
+						}
 					}
 				}
 			}
-		}
-		$DNs = array_keys($attributes);
-		for ($i=0; $i<count($DNs); $i++) {
-			if (isset($attributes[$DNs[$i]]['errors'])) {
-				foreach ($attributes[$DNs[$i]]['errors'] as $singleerror) {
-					$errors[] = $singleerror;
-					if ($singleerror[0] == 'ERROR') $stopprocessing = true;
-				}
-			}
-			if (!$stopprocessing) {
-				// modify attributes
-				if (isset($attributes[$DNs[$i]]['modify']) && !$stopprocessing) {
-					$success = @ldap_mod_replace($_SESSION['ldap']->server(), $DNs[$i], $attributes[$DNs[$i]]['modify']);
-					if (!$success) {
-						$errors[] = array ('ERROR', sprintf(_('Was unable to modify attribtues from DN: %s.'), $DNs[$i]), ldap_error($_SESSION['ldap']->server()));
-						$stopprocessing = true;
+			$DNs = array_keys($attributes);
+			for ($i=0; $i<count($DNs); $i++) {
+				if (isset($attributes[$DNs[$i]]['errors'])) {
+					foreach ($attributes[$DNs[$i]]['errors'] as $singleerror) {
+						$errors[] = $singleerror;
+						if ($singleerror[0] == 'ERROR') $stopprocessing = true;
 					}
 				}
-				// add attributes
-				if (isset($attributes[$DNs[$i]]['add']) && !$stopprocessing) {
-					$success = @ldap_mod_add($_SESSION['ldap']->server(), $DNs[$i], $attributes[$DNs[$i]]['add']);
-					if (!$success) {
-						$errors[] = array ('ERROR', sprintf(_('Was unable to add attribtues to DN: %s.'), $DNs[$i]), ldap_error($_SESSION['ldap']->server()));
-						$stopprocessing = true;
+				if (!$stopprocessing) {
+					// modify attributes
+					if (isset($attributes[$DNs[$i]]['modify']) && !$stopprocessing) {
+						$success = @ldap_mod_replace($_SESSION['ldap']->server(), $DNs[$i], $attributes[$DNs[$i]]['modify']);
+						if (!$success) {
+							$errors[] = array ('ERROR', sprintf(_('Was unable to modify attribtues from DN: %s.'), $DNs[$i]), ldap_error($_SESSION['ldap']->server()));
+							$stopprocessing = true;
+						}
 					}
-				}
-				// removce attributes
-				if (isset($attributes[$DNs[$i]]['remove']) && !$stopprocessing) {
-					$success = @ldap_mod_del($_SESSION['ldap']->server(), $DNs[$i], $attributes[$DNs[$i]]['remove']);
-					if (!$success) {
-						$errors[] = array ('ERROR', sprintf(_('Was unable to remove attribtues from DN: %s.'), $DNs[$i]), ldap_error($_SESSION['ldap']->server()));
-						$stopprocessing = true;
+					// add attributes
+					if (isset($attributes[$DNs[$i]]['add']) && !$stopprocessing) {
+						$success = @ldap_mod_add($_SESSION['ldap']->server(), $DNs[$i], $attributes[$DNs[$i]]['add']);
+						if (!$success) {
+							$errors[] = array ('ERROR', sprintf(_('Was unable to add attribtues to DN: %s.'), $DNs[$i]), ldap_error($_SESSION['ldap']->server()));
+							$stopprocessing = true;
+						}
+					}
+					// removce attributes
+					if (isset($attributes[$DNs[$i]]['remove']) && !$stopprocessing) {
+						$success = @ldap_mod_del($_SESSION['ldap']->server(), $DNs[$i], $attributes[$DNs[$i]]['remove']);
+						if (!$success) {
+							$errors[] = array ('ERROR', sprintf(_('Was unable to remove attribtues from DN: %s.'), $DNs[$i]), ldap_error($_SESSION['ldap']->server()));
+							$stopprocessing = true;
+						}
 					}
 				}
 			}
@@ -201,10 +213,10 @@ if ($_POST['delete']) {
 			$errors = deleteDN($_SESSION['delete_dn'][$m]);
 			if (sizeof($errors) > 0) $stopprocessing = true;
 		}
+		// post delete actions
 		if (!$stopprocessing) {
-			// post delete actions
 			foreach ($module as $singlemodule) {
-			$_SESSION['account']->module[$singlemodule]->postDeleteActions();
+				$_SESSION['account']->module[$singlemodule]->postDeleteActions();
 			}
 		}		
 		if (!$stopprocessing) {
