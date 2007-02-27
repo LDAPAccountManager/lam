@@ -938,10 +938,6 @@ class posixAccount extends baseModule {
 				1 => array('kind' => 'input', 'name' => 'homeDirectory', 'type' => 'text', 'size' => '30', 'maxlength' => '255', 'value' => $this->attributes['homeDirectory'][0]),
 				2 => array('kind' => 'help', 'value' => 'homeDirectory'));
 			if ($_SESSION[$this->base]->isNewAccount && isset($_SESSION['config']->scriptPath)) {
-				$return[] = array(
-					0 => array('kind' => 'text', 'text' => _('Create home directory')),
-					1 => array('kind' => 'input', 'name' => 'createhomedir', 'type' => 'checkbox', 'checked' => $this->createhomedir),
-					2 => array('kind' => 'help', 'value' => 'createhomedir'));
 				// get list of lamdaemon servers
 				$lamdaemonServers = explode(";", $_SESSION['config']->get_scriptServers());
 				for ($i = 0; $i < sizeof($lamdaemonServers); $i++) {
@@ -950,9 +946,12 @@ class posixAccount extends baseModule {
 					else $lamdaemonServers[$i] = $temp[0];
 				}
 				$return[] = array(
-					0 => array('kind' => 'text', 'text' => _('Create home directory on')),
-					1 => array('kind' => 'select', 'name' => 'createhomediron', 'options' => $lamdaemonServers, 'options_selected' => $this->lamdaemonServer),
-					2 => array('kind' => 'help', 'value' => 'createhomediron'));
+					array('kind' => 'text', 'text' => _('Create home directory')),
+					array('kind' => 'table', 'value' => array(array(
+						array('kind' => 'input', 'name' => 'createhomedir', 'type' => 'checkbox', 'checked' => $this->createhomedir),
+						array('kind' => 'select', 'name' => 'createhomediron', 'options' => $lamdaemonServers, 'options_selected' => $this->lamdaemonServer),
+					))),
+					array('kind' => 'help', 'value' => 'createhomedir'));
 			}
 			if (!isset($this->attributes['userPassword'][0])) {
 				$return[] = array(
